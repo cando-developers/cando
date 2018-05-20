@@ -46,9 +46,6 @@ namespace kinematics
 
 #if INIT_TO_FACTORIES
 
-#define ARGS_ChainNode_O_make "()"
-#define DECL_ChainNode_O_make ""
-#define DOCS_ChainNode_O_make "make ChainNode"
   ChainNode_sp ChainNode_O::make()
     {
       IMPLEMENT_ME();

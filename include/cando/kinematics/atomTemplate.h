@@ -46,11 +46,7 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace kinematics
 {
-
-    class DelayedBondedAtom;
-
-
-
+  FORWARD(DelayedBondedJoint);
     FORWARD(AtomTemplate);
     FORWARD(Checkpoint);
     class Checkpoint_O : public core::General_O
@@ -67,51 +63,51 @@ namespace kinematics
 				  const core::Symbol_sp& topologyName);
     public:
 	/*! Set up the DelayedBondedAtom */
-	virtual void setupDelayedBondedAtom(DelayedBondedAtom* atom) const;
+	virtual void setupDelayedBondedAtom(DelayedBondedJoint_sp atom) const;
 	virtual core::Symbol_sp atomName() const {_OF(); SUBCLASS_MUST_IMPLEMENT();};
     };
 
 
-    class CheckpointAtom_O : public Checkpoint_O
+    class CheckpointJoint_O : public Checkpoint_O
     {
-	LISP_CLASS(kinematics,KinPkg,CheckpointAtom_O,"CheckpointAtom",Checkpoint_O);
+	LISP_CLASS(kinematics,KinPkg,CheckpointJoint_O,"CheckpointAtom",Checkpoint_O);
 #if INIT_TO_FACTORIES
     public:
-	static CheckpointAtom_sp make(core::Symbol_sp atomName);
+	static CheckpointJoint_sp make(core::Symbol_sp atomName);
 #endif
     public:
 //	DECLARE_STANDARD_LISP_FUNCTIONS();
 //	DECLARE_ARCHIVE();
-	DEFAULT_CTOR_DTOR(CheckpointAtom_O);
+	DEFAULT_CTOR_DTOR(CheckpointJoint_O);
     private:
 	/*! The name of the atom that must be built (the checkpoint) before a
 	  DelayedBondedAtom is built */
         core::Symbol_sp	_AtomName;
     public:
-	virtual void setupDelayedBondedAtom(DelayedBondedAtom* atom) const;
+	virtual void setupDelayedBondedAtom(DelayedBondedJoint_sp atom) const;
 	virtual core::Symbol_sp atomName() const {return this->_AtomName;};
     };
 
 
-    class CheckpointOutPlugAtom_O : public Checkpoint_O
+    class CheckpointOutPlugJoint_O : public Checkpoint_O
     {
-	LISP_CLASS(kinematics,KinPkg,CheckpointOutPlugAtom_O,"CheckpointOutPlugAtom",Checkpoint_O);
+	LISP_CLASS(kinematics,KinPkg,CheckpointOutPlugJoint_O,"CheckpointOutPlugAtom",Checkpoint_O);
 #if INIT_TO_FACTORIES
     public:
-	static CheckpointOutPlugAtom_sp make(const chem::OutPlug_sp& outPlug);
+	static CheckpointOutPlugJoint_sp make(chem::OutPlug_sp outPlug);
 #endif
     public:
 //	DECLARE_STANDARD_LISP_FUNCTIONS();
 //	DECLARE_ARCHIVE();
-	CheckpointOutPlugAtom_O() : _Plug(_Nil<chem::OutPlug_O>()) {};
-	virtual ~CheckpointOutPlugAtom_O() {};
+	CheckpointOutPlugJoint_O() : _Plug(_Nil<chem::OutPlug_O>()) {};
+	virtual ~CheckpointOutPlugJoint_O() {};
     private:
 	/*! The name of the plug on the other side of which the Bond1 atom
 	  must be built (the checkpoint) before a
 	  DelayedBondedAtom is built */
 	chem::OutPlug_sp	_Plug;
     public:
-	virtual void setupDelayedBondedAtom(DelayedBondedAtom* atom) const;
+	virtual void setupDelayedBondedAtom(DelayedBondedJoint_sp atom) const;
 	virtual core::Symbol_sp atomName() const {return this->_Plug->getB0();};
 };
 
@@ -154,7 +150,7 @@ namespace kinematics
 
 
 	typedef adapt::SymbolMap<BondId_O> PlugNamesToBondIdMap;
-	virtual Atom_sp writeIntoAtomTree(const AtomTree_sp& atomTree,
+	virtual Joint_sp writeIntoAtomTree(const AtomTree_sp& atomTree,
 					  uint moleculeId,
 					  uint residueId,
 					  const BondId_sp& incoming,
@@ -166,7 +162,7 @@ namespace kinematics
 
 
 	/*! Extract the internal coordinates from the atom */
-	virtual void extractInternalCoords(Atom_sp const& atom) {THROW_HARD_ERROR(BF("Subclass must implement"));};
+	virtual void extractInternalCoords(Joint_sp const& atom) {THROW_HARD_ERROR(BF("Subclass must implement"));};
 
 	AtomTemplate_O() : _Parent(_Nil<AtomTemplate_O>()), _Id(-1), _Comment("") {};
 	virtual ~AtomTemplate_O() {};
@@ -180,7 +176,7 @@ namespace kinematics
 	LISP_CLASS(kinematics,KinPkg,BondedAtomTemplate_O,"BondedAtomTemplate",AtomTemplate_O);
 #if INIT_TO_FACTORIES
     public:
-	static BondedAtomTemplate_sp make(const chem::OutPlug_sp& outPlug);
+	static BondedAtomTemplate_sp make(chem::OutPlug_sp outPlug);
 #endif
     public:
 //	DECLARE_STANDARD_LISP_FUNCTIONS();
@@ -200,7 +196,7 @@ namespace kinematics
 	/*! Return a Cons of children */
 	core::List_sp children();
 
-	void addChildren(Atom_sp& me,
+	void addChildren(Joint_sp me,
 			 uint moleculeId,
 			 uint residueId,
 			 const AtomTree_sp& atomTree,
@@ -208,13 +204,13 @@ namespace kinematics
 			 const PlugNamesToBondIdMap& outgoing);
 
 
-	virtual Atom_sp writeIntoAtomTree(const AtomTree_sp& atomTree,
+	virtual Joint_sp writeIntoAtomTree(const AtomTree_sp& atomTree,
 					  uint moleculeId,
 					  uint residueId,
 					  const BondId_sp& incoming,
 					  const PlugNamesToBondIdMap& outgoing,
 					  bool rootNode = false);
-	void setupOutPlugAtomTree(Atom_sp owned,
+	void setupOutPlugAtomTree(Joint_sp owned,
 				  const AtomTree_sp& atomTree,
 				  uint moleculeId,
 				  uint residueId,
@@ -223,12 +219,12 @@ namespace kinematics
 
 
 	/*! Extract the internal coordinates from the atom */
-	virtual void extractInternalCoords(Atom_sp const& atom);
+	virtual void extractInternalCoords(Joint_sp const& atom);
 
 
 
 //	DEFAULT_CTOR_DTOR(BondedAtomTemplate_O);
-	BondedAtomTemplate_O() : _Distance(0.0), _Theta(0.0), _Phi(0.0), _OutPlug(_Nil<chem::OutPlug_O>()) {};
+	BondedAtomTemplate_O() : _Distance(0.0), _Theta(0.0), _Phi(0.0), _OutPlug(_Unbound<chem::OutPlug_O>()) {};
     };
 
 
@@ -252,7 +248,7 @@ namespace kinematics
 	Checkpoint_sp	_Checkpoint;
     public:
 
-	virtual Atom_sp writeIntoAtomTree(const AtomTree_sp& atomTree,
+	virtual Joint_sp writeIntoAtomTree(const AtomTree_sp& atomTree,
 					  uint moleculeId,
 					  uint residueId,
 					  const BondId_sp& incoming,
@@ -262,7 +258,7 @@ namespace kinematics
 
 
 //	DEFAULT_CTOR_DTOR(DelayedBondedAtomTemplate_O);	
-	DelayedBondedAtomTemplate_O() : _Checkpoint(_Nil<CheckpointAtom_O>()) {};
+	DelayedBondedAtomTemplate_O() : _Checkpoint(_Nil<CheckpointJoint_O>()) {};
 	virtual ~DelayedBondedAtomTemplate_O() {};
     };
 
@@ -280,7 +276,7 @@ namespace kinematics
 	LISP_CLASS(kinematics,KinPkg,RootBondedAtomTemplate_O,"RootBondedAtomTemplate",BondedAtomTemplate_O);
 #if INIT_TO_FACTORIES
     public:
-	static RootBondedAtomTemplate_sp make(const core::Symbol_sp& constitutionName, const core::Symbol_sp topologyName, const chem::Plug_sp& inPlug);
+	static RootBondedAtomTemplate_sp make(core::Symbol_sp constitutionName, core::Symbol_sp topologyName, chem::Plug_sp inPlug);
 #endif
     public:
 //	DECLARE_STANDARD_LISP_FUNCTIONS();
@@ -291,7 +287,7 @@ namespace kinematics
 	/*! Can be InPlug or JumpPlug */
 	chem::Plug_sp		_InPlug;
     public:
-	virtual Atom_sp writeIntoAtomTree(const AtomTree_sp& atomTree,
+	virtual Joint_sp writeIntoAtomTree(const AtomTree_sp& atomTree,
 					  uint moleculeId,
 					  uint residueId,
 					  const BondId_sp& incoming,
@@ -311,8 +307,8 @@ namespace kinematics
 };
 
 TRANSLATE(kinematics::Checkpoint_O);
-TRANSLATE(kinematics::CheckpointAtom_O);
-TRANSLATE(kinematics::CheckpointOutPlugAtom_O);
+TRANSLATE(kinematics::CheckpointJoint_O);
+TRANSLATE(kinematics::CheckpointOutPlugJoint_O);
 TRANSLATE(kinematics::AtomTemplate_O);
 TRANSLATE(kinematics::BondedAtomTemplate_O);
 TRANSLATE(kinematics::DelayedBondedAtomTemplate_O);

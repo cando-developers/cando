@@ -39,7 +39,7 @@ namespace kinematics
     {
 	friend class RootBondedAtom;
 	friend class DelayedBondedAtom;
-    private:
+    public:
 	core::Symbol_sp			_ConstitutionName;
 	core::Symbol_sp			_TopologyName;
 	chem::ConstitutionAtomIndex0N	_Bond1Id;

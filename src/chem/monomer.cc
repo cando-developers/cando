@@ -408,23 +408,20 @@ uint Monomer_O::numberOfCouplings() const {
   return this->_Couplings.size();
 }
 
-#if 0
-// Do this in oligomer.cc
 CL_LISPIFY_NAME("getTopology");
 CL_DEFMETHOD     Topology_sp	Monomer_O::getTopology()
 {
-  CandoDatabase_sp	bdb;
   Constitution_sp	constitution;
   MonomerContext_sp	context;
   Topology_sp		topology;
+  CandoDatabase_sp      bdb;
   bdb = getCandoDatabase();
-  constitution = core::eval::funcall(_sym_constitutionForNameOrPdb,bdb,this->getName());
+  constitution = gc::As<Constitution_sp>(core::eval::funcall(_sym_constitutionForNameOrPdb,bdb,this->monomerName()));
   ASSERTNOTNULL(constitution);
   ASSERT(constitution.notnilp());
   topology = constitution->getTopologyForMonomerEnvironment(this->sharedThis<Monomer_O>());
   return topology;
 }
-#endif
 
 
 //

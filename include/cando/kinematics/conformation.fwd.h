@@ -32,15 +32,15 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace kinematics
 {
 
-    EXTERN_PREDEFINED_SYMBOL(_sym_KinPkg_resizeMoleculesEvent);
-    EXTERN_PREDEFINED_SYMBOL(_sym_KinPkg_buildMoleculeUsingOligomerEvent);
-    EXTERN_PREDEFINED_SYMBOL(_sym_kw_newValue);
-    EXTERN_PREDEFINED_SYMBOL(_sym_kw_oldValue);
-    EXTERN_PREDEFINED_SYMBOL(_sym_kw_moleculeId);
-    EXTERN_PREDEFINED_SYMBOL(_sym_kw_residueId);
+  EXTERN_SYMBOL(KinPkg_resizeMoleculesEvent);
+  EXTERN_SYMBOL(KinPkg_buildMoleculeUsingOligomerEvent);
+  EXTERN_SYMBOL(kw_newValue);
+  EXTERN_SYMBOL(kw_oldValue);
+  EXTERN_SYMBOL(kw_moleculeId);
+  EXTERN_SYMBOL(kw_residueId);
 
-    FORWARD(Conformation);
+  FORWARD(Conformation);
 
-}; /* kinematics
+}; /* kinematics */
 
 #endif /* _CONFORMATION_FWD_H */

@@ -33,15 +33,6 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace kinematics
 {
-    core::Lisp_sp WeakAtomHandle::lisp() const
-    {
-	if ( this->_Tree == NULL )
-	{
-	    THROW_HARD_ERROR(BF("Tried to get lisp object for undefined WeakAtomHandle"));
-	}
-	return this->_Tree->lisp();
-    }
-
 
     AtomTree_sp WeakAtomHandle::atomTree() const
     {
@@ -199,7 +190,7 @@ namespace kinematics
     {
 	this->_Tree = handle._Tree;
 	this->_HolderIndex = handle._HolderIndex;
-	if ( this->isDefined() )
+	if ( this->boundp() )
 	{
 	    this->incrementRefCount();
 	}

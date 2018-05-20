@@ -33,7 +33,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/kinematics/chainNode.fwd.h>
 #include <cando/kinematics/atomTree.fwd.h>
 #include <cando/chem/atomId.h>
-#include <cando/kinematics/atomHandle.h>
 #include <cando/kinematics/kinematicsPackage.h>
 
 namespace kinematics
@@ -44,31 +43,31 @@ namespace kinematics
     /*! @class Wraps an AtomTree and an AtomHandle and provides
       safe, reference counted access to the underlying Atom.
     */
-    class Atom_O : public core::General_O
+    class Joint_O : public core::General_O
     {
-	LISP_CLASS(kinematics,KinPkg,Atom_O,"Atom",core::General_O);
+	LISP_CLASS(kinematics,KinPkg,Joint_O,"Atom",core::General_O);
     private:
 	AtomTree_sp		_AtomTree;
 	RefCountedAtomHandle	_Handle;
     public:
-    Atom_O() : _Handle() {}
-	Atom_O(const AtomTree_sp& tree, const RefCountedAtomHandle& handle);
+    Joint_O() : _Handle() {}
+	Joint_O(const AtomTree_sp& tree, Joint_sp handle);
 
 	//! Copy ctor increments ref count
-	Atom_O(const Atom_O& other);
-	virtual ~Atom_O();
+	Joint_O(const Joint_O& other);
+	virtual ~Joint_O();
 
     public:
-	static Atom_sp create(const RefCountedAtomHandle& handle)
+	static Joint_sp create(Joint_sp handle)
 	{
-	    GC_ALLOCATE(Atom_O,atom);
+	    GC_ALLOCATE(Joint_O,atom);
 	    atom->_AtomTree = handle.atomTree();
 	    atom->_Handle = handle;
 	    return atom;
 	}
-	static Atom_sp create(const AtomTree_sp& tree, uint handleIndex)
+	static Joint_sp create(const AtomTree_sp& tree, uint handleIndex)
 	{
-	    GC_ALLOCATE(Atom_O,atom);
+	    GC_ALLOCATE(Joint_O,atom);
 	    atom->_AtomTree = tree;
 	    RefCountedAtomHandle handle(tree.get(),handleIndex);
 	    try
@@ -112,7 +111,7 @@ namespace kinematics
 	}
 
 
-	Atom_O& operator=(const Atom_O& other);
+	Joint_O& operator=(const Joint_O& other);
 
 	string asString() const;
 
@@ -129,21 +128,21 @@ namespace kinematics
 	string comment() const;
 
 	/*! Append the atom as a child of this atom, this wraps appendChild */
-	void appendChild(Atom_sp atom);
+	void appendChild(Joint_sp atom);
 
 
 	/*! Insert the atom as a child of this atom, this wraps insertChild */
-	void insertChild(Atom_sp atom);
+	void insertChild(Joint_sp atom);
 
 
 	/*! Erase the atom */
-	void eraseChild(Atom_sp atom);
+	void eraseChild(Joint_sp atom);
 
 	/*! Wrap setComment */
-	Atom_sp setComment(const string& comment);
+	Joint_sp setComment(const string& comment);
 
 	/*! Return the index of the child of this Atom */
-	int indexOfChild(Atom_sp atom);
+	int indexOfChild(Joint_sp atom);
 
 	/*! Return a string representation */
 	string __repr__() const;
@@ -155,17 +154,17 @@ namespace kinematics
 	Vector3 getPosition() const;
 
 	/*! Get parent */
-        gc::Nilable<Atom_sp> parent() const;
+        gc::Nilable<Joint_sp> parent() const;
 
 
 	/*! Get stubAtom1 */
-        gc::Nilable<Atom_sp> stubAtom1() const;
+        gc::Nilable<Joint_sp> stubAtom1() const;
 
 	/*! Get stubAtom2 */
-        gc::Nilable<Atom_sp> stubAtom2() const;
+        gc::Nilable<Joint_sp> stubAtom2() const;
 
 	/*! Get stubAtom3 */
-        gc::Nilable<Atom_sp> stubAtom3(AtomTree_sp tree) const;
+        gc::Nilable<Joint_sp> stubAtom3(AtomTree_sp tree) const;
 
 
 #if 0
@@ -182,6 +181,6 @@ namespace kinematics
 
 }; /* kinematics */
 
-TRANSLATE(kinematics::Atom_O);
+TRANSLATE(kinematics::Joint_O);
 
-#endif /* _kinematics_Atom_H */
+#endif /* _kinematics_Joint_H */

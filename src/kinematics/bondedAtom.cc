@@ -39,8 +39,29 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace kinematics
 {
+void BondedJoint_O::fields(core::Record_sp record) {
+  record->field(INTERN_(kw,num_children),this->_NumberOfChildren);
+  static_assert(BondedJoint_O::MaxChildren==5);
+  record->field_if_not_unbound(INTERN_(kw,child0),this->_Children[0]);
+  record->field_if_not_unbound(INTERN_(kw,child1),this->_Children[1]);
+  record->field_if_not_unbound(INTERN_(kw,child2),this->_Children[2]);
+  record->field_if_not_unbound(INTERN_(kw,child3),this->_Children[3]);
+  record->field_if_not_unbound(INTERN_(kw,child4),this->_Children[4]);
+  record->field(INTERN_(kw,phi),this->_Phi);
+  record->field(INTERN_(kw,theta),this->_Theta);
+  record->field(INTERN_(kw,distance),this->_Distance);
+  record->field(INTERN_(kw,dof_propagates),this->_DofChangePropagatesToYoungerSiblings);
+  this->Base::fields(record);
+}
 
-    void BondedAtom::_insertChild(int before, const RefCountedAtomHandle& child)
+
+void BondedJoint_O::initialize() {
+  for (int i=0; i<MaxChildren; ++i ) {
+    this->_Children[i].reset_();
+  }
+}
+
+    void BondedJoint_O::_insertChild(int before, Joint_sp child)
     {
 	if ( this->_numberOfChildren()>this->_maxNumberOfChildren() )
 	{
@@ -52,41 +73,41 @@ namespace kinematics
 	this->_NumberOfChildren++;
     }
 
-    void BondedAtom::_releaseChild(int idx)
+    void BondedJoint_O::_releaseChild(int idx)
     {
 	if ( this->_numberOfChildren() == 0 )
 	{
 	    THROW_HARD_ERROR(BF("There are no children to delete"));
 	}
-	this->_Children[idx].reset();
 	int num = this->_numberOfChildren() - 1;
 	for ( int i=idx; i < num; i++ )
 	{
 	    this->_Children[i] = this->_Children[i+1];
 	}
 	this->_NumberOfChildren--;
+        this->_Children[this->_NumberOfChildren].reset_();
     }
 
 
-    void BondedAtom::_releaseAllChildren()
+    void BondedJoint_O::_releaseAllChildren()
     {
 	if ( this->_numberOfChildren() == 0 ) return;
 	int num = this->_numberOfChildren();
 	for ( int idx=0; idx < num; idx++ )
 	{
-	    this->_Children[idx].reset();
+          this->_Children[idx].reset_();
 	}
 	this->_NumberOfChildren = 0;
     }
 
 
 
-    RefCountedAtomHandle BondedAtom::stubAtom3(AtomTree_sp at) const
+    Joint_sp BondedJoint_O::stubAtom3(AtomTree_sp at) const
     {_OF();
-	if ( this->parent().get()->isJump() )
+      if ( gc::IsA<JumpJoint_sp>(this->parent()))
 	{
 	    ASSERT(this->parent().get()->stubDefined());
-	    RefCountedAtomHandle p_stub2( this->parent().get()->stubAtom2() );
+	    Joint_sp p_stub2( this->parent().get()->stubAtom2() );
 	    chem::AtomId const & p_stub2_id( p_stub2.get()->id() );
 	    if ( this->id() == p_stub2_id )
 	    {
@@ -100,7 +121,7 @@ namespace kinematics
 	}
     }
 
-    void BondedAtom::updateInternalCoords( Stub & stub,
+    void BondedJoint_O::updateInternalCoords( Stub & stub,
 					   bool recursive,
 					   AtomTree_sp at)
     {_OF();
@@ -181,43 +202,43 @@ namespace kinematics
  
 	    for ( int it=0; it<this->_numberOfChildren(); it++ )
 	    {
-		this->_child(it).get()->updateInternalCoords( newStub, true, at );
+		this->_child(it)->updateInternalCoords( newStub, true, at );
 	    }
 	}
     }
 
 
-    bool BondedAtom::keepDofFixed(DofType dof,AtomTree_sp at) const
+    bool BondedJoint_O::keepDofFixed(DofType dof,AtomTree_sp at) const
     {_OF();
 	if ( dof == DofType::distance )
 	{
 	    return false;
 	} else if ( dof == DofType::theta )
 	{
-	    return ( this->parent().get()->isJump()
-		     && this->id() == this->parent().get()->stubAtom2Id() );
+          return ( gc::IsA<JumpJoint_sp>(this->parent())
+		     && this->id() == this->parent()->stubAtom2Id() );
 	} else if ( dof == DofType::phi )
 	{
-	    Atom* parentP = this->parent().get();
-	    if ( parentP->isJump() &&
-		 ( this->id() == parentP->stubAtom2Id() ||
-		   this->id() == parentP->stubAtom3Id(at) ) ) return true;
-	    if ( ! parentP->parent().isDefined() ) return false;
-	    Atom* grandParentP = parentP->parent().get();
-	    return ( grandParentP->isJump()
-		     && this->id() == grandParentP->stubAtom3Id(at));
+          Joint_sp parent = this->parent();
+          if ( gc::IsA<JumpJoint_sp>(parent) &&
+               ( this->id() == parent->stubAtom2Id() ||
+                 this->id() == parent->stubAtom3Id(at) ) ) return true;
+          if ( parent->parent().unboundp() ) return false;
+          Joint_sp grandParent = parent->parent();
+          return ( gc::IsA<JumpJoint_sp>(grandParent)
+                   && this->id() == grandParent->stubAtom3Id(at));
 	} else
 	{
-	    SIMPLE_ERROR(BF("BondedAtom::keepDofFixed: BAD_DOF: %s") % dof.asString() );
+          SIMPLE_ERROR(BF("BondedJoint_O::keepDofFixed: BAD_DOF: %s") % dof.asString() );
 	}
 	return false;
     }
 
 
-    string BondedAtom::asString() const
+    string BondedJoint_O::asString() const
     {
 	stringstream ss;
-	ss << this->Atom::asString();
+	ss << this->Joint_O::asString();
 	ss << (BF("  _Distance[%lf]  _Theta[%lf]/deg  _Phi[%lf]/deg")
 	       % this->_Distance
 	       % (this->_Theta/0.0174533)
@@ -226,7 +247,7 @@ namespace kinematics
     }
 
 
-    void BondedAtom::updateXyzCoords(Stub& stub,AtomTree_sp at)
+    void BondedJoint_O::updateXyzCoords(Stub& stub,AtomTree_sp at)
     {_OF();
 	ASSERTF(stub.isOrthogonal(1e-3),BF("The Stub is not orthogonal - stub:\n%s") % stub.asString());
 	stub.multiplyRotationPart(XRotationMatrixRadians(this->_Phi));
@@ -244,7 +265,7 @@ namespace kinematics
 	this->position(newStub.translation());
 	for ( int ii=0; ii < this->_numberOfChildren(); ii++)
 	{
-	    this->_child(ii).get()->updateXyzCoords(newStub,at);
+	    this->_child(ii)->updateXyzCoords(newStub,at);
 	}
 	this->_DofChangePropagatesToYoungerSiblings = false;
 	this->noteXyzUpToDate();
@@ -253,7 +274,7 @@ namespace kinematics
 
 
 
-    void BondedAtom::updateXyzCoords(AtomTree_sp at)
+    void BondedJoint_O::updateXyzCoords(AtomTree_sp at)
     {_OF();
 	/// dof_change_propagates_to_younger_siblings_ will be set to false inside
 	/// update_xyz_coords -- keep a local copy.
@@ -264,14 +285,14 @@ namespace kinematics
 	/// The stub is passed to update_xyz_coords, and this atom will modify it;
 	/// after which the stub is ready to be passed to the younger siblings.
 	Stub stub( this->getInputStub(at) );
-	this->BondedAtom::updateXyzCoords(stub,at);
+	this->BondedJoint_O::updateXyzCoords(stub,at);
 	if ( local_dof_change_propagates_to_younger_siblings )
 	{
-	    ASSERTF(this->_Parent.isDefined(),BF("Parent is not defined"));
-	    RefCountedAtomHandle parent = this->_Parent;
+	    ASSERTF(this->_Parent.boundp(),BF("Parent is not defined"));
+	    Joint_sp parent = this->_Parent;
 	    int ii = 0;
 	    /// you had better find yourself in your parent's atom list.
-	    while ( parent.get()->_child(ii).get() != this )
+	    while ( parent->_child(ii) != this->asSmartPtr() )
 	    {
 		++ii;
 		ASSERTF(ii != parent.get()->_numberOfChildren(),
@@ -280,14 +301,14 @@ namespace kinematics
 	    }
 	    while ( ii != parent.get()->_numberOfChildren() )
 	    {
-		parent.get()->_child(ii).get()->updateXyzCoords(stub,at);
+		parent->_child(ii)->updateXyzCoords(stub,at);
 		++ii;
 	    }
 	}
     }
 
 
-    double BondedAtom::dof(DofType const& dof) const
+    double BondedJoint_O::dof(DofType const& dof) const
     {_OF();
 	if ( dof == DofType::phi )
 	{
@@ -303,7 +324,7 @@ namespace kinematics
     }
 
 
-    core::Symbol_sp BondedAtom::typeSymbol() const {_OF(); return _sym_bonded;};
+    core::Symbol_sp BondedJoint_O::typeSymbol() const {_OF(); return _sym_bonded;};
 
 
 

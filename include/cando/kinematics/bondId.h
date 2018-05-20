@@ -40,27 +40,20 @@ namespace kinematics
 
     class BondId_O : public core::General_O
 {
-    friend class BondedAtomTemplate_O;
-    friend class RootBondedAtomTemplate_O;
-
     LISP_CLASS(kinematics,KinPkg,BondId_O,"BondId",core::General_O);
-#if INIT_TO_FACTORIES
  public:
     static BondId_sp make();
-#else
-    DECLARE_INIT();
-#endif
 //    DECLARE_ARCHIVE();
     DEFAULT_CTOR_DTOR(BondId_O);
-private: // instance variables here
-    Atom_sp	_Parent;
-    Atom_sp	_Child;
+public: // instance variables here
+    Joint_sp	_Parent;
+    Joint_sp	_Child;
 
 public: // Functions here
     void initialize();
 
 public:
-    static BondId_sp create(Atom_sp parent, Atom_sp child);
+    static BondId_sp create(Joint_sp parent, Joint_sp child);
 };
 
 }; /* kinematics */

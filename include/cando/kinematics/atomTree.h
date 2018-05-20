@@ -51,15 +51,11 @@ namespace kinematics
 {
 
     FORWARD(AtomTemplate);
+    FORWARD(JumpJoint);
 
     class AtomHolder : public PoolMember
     {
-	friend class AtomTree_O;
-	friend class Atom_O;
-	friend class Atom;
-	friend class WeakAtomHandle;
-	friend class RefCountedAtomHandle;
-    private:
+    public:
 	//! Number of references to this resource
 	uint		_RefCountOrNextUnused;
 	//! The type of the resource
@@ -102,67 +98,38 @@ namespace kinematics
 
     class ExecutableAtomTreeWalkFunctor : public AtomTreeWalkFunctor
     {
-    private:
+    public:
 	core::Function_sp	_Callback;
     public:
-	ExecutableAtomTreeWalkFunctor(core::Function_sp callback,core::Lisp_sp lisp) :
-	AtomTreeWalkFunctor(lisp), _Callback(callback) {};
-	void operator()(kinematics::Atom_sp atom) const;
+	ExecutableAtomTreeWalkFunctor(core::Function_sp callback) : _Callback(callback) {};
+	void operator()(kinematics::Joint_sp atom) const;
     };
 
 
 
     class AtomTree_O : public core::General_O
     {
-	friend class Atom_O;
-	friend class Atom;
-	friend class RefCountedAtomHandle;
-	friend class WeakAtomHandle;
 	LISP_CLASS(kinematics,KinPkg,AtomTree_O,"AtomTree",core::General_O);
     public:
+    bool fieldsp() const { return true; };
+    void fields(core::Record_sp node);
 	void initialize();
-    private:
+    public:
 	//! The root of the tree
-	Atom_sp				_Root;
+	Joint_sp				_Root;
 	/*! chem::AtomIdMap maps AtomId's to Atoms in the tree */
-	chem::AtomIdMap<WeakAtomHandle>	_AtomMap;
-
-	//------- The following store atoms in pools for better cache performance -------
-
-	//! All Atoms are indirectly referenced from this table that is indexed with WeakAtomHandle
-	Pool<AtomHolder>	_AtomHolders;
-	//! All JumpAtoms are stored in this vector
-	Pool<JumpAtom>		_JumpAtoms;
-	//! All OriginJumpAtoms are stored in this vector
-	Pool<OriginJumpAtom>	_OriginJumpAtoms;
-	//! All BondedAtoms are stored in this vector
-	Pool<BondedAtom>	_BondedAtoms;
-	//! All RootBondedAtoms are stored in this vector
-	Pool<RootBondedAtom>	_RootBondedAtoms;
-	//! All BondedAtoms are stored in this vector
-	Pool<DelayedBondedAtom>	_DelayedBondedAtoms;
+	chem::AtomIdMap<Joint_sp>	_AtomMap;
+        
     public:
-    AtomTree_O() :
-	_AtomHolders(_lisp,"AtomHolders"),
-	_JumpAtoms(_lisp,"JumpAtoms"),
-	_OriginJumpAtoms(_lisp,"OriginJumpAtoms"),
-	_BondedAtoms(_lisp,"BondedAtoms"),
-	_RootBondedAtoms(_lisp,"RootBondedAtoms"),
-	_DelayedBondedAtoms(_lisp,"DelayedBondedAtoms") {};
-
-    protected:
-	/*! Release the AtomHandle pointed to by handle */
-	void releaseHandle(RefCountedAtomHandle& handle);
-    public:
-
+    AtomTree_O() : _Root() {};
 
 	/*! Lookup the atom by atomId */
-	RefCountedAtomHandle lookup(const chem::AtomId& atomId) const;
+	Joint_sp lookup(const chem::AtomId& atomId) const;
 
-	/*! Lookup the atom by atomId and return it as a shared Atom_O */
-	Atom_sp atomTreeLookupAtomid(const chem::AtomId& atomId) const;
+	/*! Lookup the atom by atomId and return it as a shared Joint_O */
+	Joint_sp atomTreeLookupAtomid(const chem::AtomId& atomId) const;
 
-	int numberOfMolecules() const { return this->_AtomMap.numberOfMolecules();};
+	size_t numberOfMolecules() const { return this->_AtomMap.numberOfMolecules();};
 
 	/*! Given the molecule Id return the number of residues in it */
 	int numberOfResiduesInMolecule(int mid) const { return this->_AtomMap.numberOfResidues(mid);};
@@ -171,58 +138,52 @@ namespace kinematics
 	int numberOfAtomsInResidueInMolecule(int mid,int rid) const { return this->_AtomMap.numberOfAtoms(mid,rid);};
 
 
+#if 0
 	/*! Return the total number of entries in the atom tree */
 	int numberOfEntries() const { return this->_AtomHolders.size();};
 
 	/*! Return the total number of entries in the atom tree */
 	int numberOfAtoms() const {return this->_AtomHolders.size();};
-
+#endif
 
 	/*! Return the root of the AtomTree */
-	Atom_sp root() const;
+	Joint_sp root() const { return this->_Root; };
 
 
 	/*! Print a description of the kin:Atom */
 	string asString() const;
 
 
-	/*! Create a shared Atom_sp for the atom */
-	Atom_sp _initializeNewAtom(uint holderIndex, const chem::AtomId& atomId );
+	/*! Create a shared Joint_sp for the atom */
+	Joint_sp _initializeNewAtom(Joint_sp atom, const chem::AtomId& atomId );
 
 	template <class T>
-	    Atom_sp _newAtom(Pool<T>& pool, const chem::AtomId& atomId, const string& comment)
+          Joint_sp _newAtom(const chem::AtomId& atomId, const string& comment)
 	{_OF();
-	    LOG(BF("BEFORE_ALLOC AtomTree:%s") % this->__repr__());
-	    T entry(atomId,comment);
-	    AtomHolder holder;
-	    holder._RefCountOrNextUnused = 0;
-	    holder._Type = T::nodeType;
-	    holder._NodeIndex = pool.allocate(entry);
-	    uint holderIndex = this->_AtomHolders.allocate(holder);
-	    LOG(BF("Allocated AtomHolder[%d] for %s") % holderIndex % comment );
-	    return this->_initializeNewAtom(holderIndex,atomId);
+          GC_ALLOCATE_VARIADIC(T,atom,atomId,comment);
+          return this->_initializeNewAtom(atom,atomId);
 	};
 
 
 	/*! Return a new JumpAtom */
-	Atom_sp newJumpAtom(const chem::AtomId& atomId, const string& comment);
+	Joint_sp newJumpAtom(const chem::AtomId& atomId, const string& comment);
 
 
 	/*! Return a new OriginJumpAtom */
-	Atom_sp newOriginJumpAtom(const chem::AtomId& atomId, const string& comment);
+	Joint_sp newOriginJumpAtom(const chem::AtomId& atomId, const string& comment);
 
 
 	/*! allocate a new BondedAtom */
-	Atom_sp newBondedAtom(const chem::AtomId& atomId, const string& comment);
+	Joint_sp newBondedAtom(const chem::AtomId& atomId, const string& comment);
 
 	/*! allocate a new RootBondedAtom */
-	Atom_sp newRootBondedAtom(const chem::AtomId& atomId, const string& comment,
+	Joint_sp newRootBondedAtom(const chem::AtomId& atomId, const string& comment,
 				  core::Symbol_sp constitutionName,
 				  core::Symbol_sp topologyName,
 				  chem::Plug_sp inPlug );
 
 	/*! allocate a new DelayedBondedAtom */
-	Atom_sp newDelayedBondedAtom(const chem::AtomId& atomId, const string& comment);
+	Joint_sp newDelayedBondedAtom(const chem::AtomId& atomId, const string& comment);
 
 
 	/*! Resize the number of molecules */
@@ -236,7 +197,7 @@ namespace kinematics
 
 
 	/*! Update the mapping between the AtomId and the Atom */
-	void updateAtomIdMap(const chem::AtomId& atomId, const WeakAtomHandle& atomHandle );
+	void updateAtomIdMap(const chem::AtomId& atomId, Joint_sp atomHandle );
 
 
 
@@ -259,7 +220,7 @@ namespace kinematics
 				      int residueId,
 				      chem::CandoDatabase_sp db,
 				      MonomerNode_sp chainNode,
-				      Atom_sp parent,
+				      Joint_sp parent,
 				      bool rootNode = false);
 
 	/*! Build a Molecule according to the plan in ChainNode */
@@ -285,7 +246,7 @@ namespace kinematics
 
 	/*! Walk the atoms in a Residue and evaluate the executable for each Atom
 	 The executable should evaluate a single argument which is the atom */
-	void walkResidue(int residueId, Atom_sp const& rootAtom, core::Function_sp exec);
+	void walkResidue(int residueId, Joint_sp const& rootAtom, core::Function_sp exec);
 
 
     }; // AtomTree

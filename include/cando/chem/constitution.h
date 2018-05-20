@@ -58,6 +58,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/common.h>
 #include <clasp/core/array.h>
 #include <cando/adapt/stringList.fwd.h>
+#include <cando/adapt/symbolMap.h>
 #include <cando/geom/vector2.h>
 #include <cando/geom/vector3.h>
 #include <cando/adapt/quickDom.fwd.h>

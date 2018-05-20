@@ -55,7 +55,7 @@ class ChiDihedral_O : public core::General_O
 public:
 	void initialize();
 
-private: // instance variables here
+public: // instance variables here
 	chem::ConstitutionIndex0N	_Atom1;
 	chem::ConstitutionIndex0N	_Atom2;
 	chem::ConstitutionIndex0N	_Atom3;

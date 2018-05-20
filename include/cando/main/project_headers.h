@@ -1,3 +1,4 @@
+#define USE_KINEMATICS
 /*
     File: project_headers.h
 */
@@ -321,6 +322,49 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/units/unit.h>
 #include <cando/units/unitsFoundation.h>
 #include <cando/units/unitsPackage.h>
+
+#ifdef USE_KINEMATICS
+#include <cando/kinematics/aggregateNode.h>
+#include <cando/kinematics/atom.fwd.h>
+#include <cando/kinematics/atom.h>
+#include <cando/kinematics/atomTemplate.fwd.h>
+#include <cando/kinematics/atomTemplate.h>
+#include <cando/kinematics/atomTree.fwd.h>
+#include <cando/kinematics/atomTree.h>
+#include <cando/kinematics/bondId.fwd.h>
+#include <cando/kinematics/bondId.h>
+#include <cando/kinematics/bondedAtom.h>
+#include <cando/kinematics/chainNode.fwd.h>
+#include <cando/kinematics/chainNode.h>
+#include <cando/kinematics/chiDihedrals.fwd.h>
+#include <cando/kinematics/chiDihedrals.h>
+#include <cando/kinematics/conformation.fwd.h>
+#include <cando/kinematics/conformation.h>
+#include <cando/kinematics/delayedBondedAtom.h>
+#include <cando/kinematics/dofId.h>
+#include <cando/kinematics/dofType.h>
+#include <cando/kinematics/foldTree.h>
+#include <cando/kinematics/jump.h>
+#include <cando/kinematics/jumpAtom.h>
+#include <cando/kinematics/kinFoundation.h>
+#include <cando/kinematics/kinematicsPackage.h>
+#include <cando/kinematics/monomerBaseNode.fwd.h>
+#include <cando/kinematics/monomerBaseNode.h>
+#include <cando/kinematics/monomerId.h>
+#include <cando/kinematics/monomerIdMap.h>
+#include <cando/kinematics/monomerNode.fwd.h>
+#include <cando/kinematics/monomerNode.h>
+#include <cando/kinematics/originJumpAtom.h>
+#include <cando/kinematics/otherPackageClasses.h>
+#include <cando/kinematics/pool.h>
+#include <cando/kinematics/ringClosingMonomerNode.h>
+#include <cando/kinematics/rootAtomInfo.h>
+#include <cando/kinematics/rootBondedAtom.h>
+#include <cando/kinematics/rotamer.h>
+#include <cando/kinematics/stub.fwd.h>
+#include <cando/kinematics/stub.h>
+#endif
+
 #endif
 
 #ifdef GC_INTERFACE_GC_MANAGED_TYPES
@@ -366,6 +410,19 @@ GC_MANAGED_TYPE(gctools::GCVector_moveable<core::T_O *>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<double>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<float>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::SmallOrderedSet<gctools::smart_ptr<chem::Atom_O>>>);
+
+#ifdef USE_KINEMATICS
+GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<kinematics::AtomTemplate_O>>);
+GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<kinematics::MonomerNode_O>>);
+GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<kinematics::ChainNode_O>>);
+GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<kinematics::Rotamer_O>>);
+GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<kinematics::Joint_O>>);
+GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<kinematics::ChiDihedral_O>>);
+GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<kinematics::BackboneDependentRotamerSet_O>>);
+GC_MANAGED_TYPE(gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>, gctools::smart_ptr<kinematics::MonomerNode_O> > > );
+#endif
+
+
 GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<chem::StereoisomerAtoms_O>>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<adapt::QDomNode_O>>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<chem::AGEdge_O>>);

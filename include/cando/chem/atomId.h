@@ -126,13 +126,19 @@ namespace translate
                                    core::clasp_to_fixnum(core::oCadr(o)),
                                    core::clasp_to_fixnum(core::oCaddr(o)))
 	{
-#if 0
-	    core::List_sp args = o.as<core::Cons_O>();
-	    int moleculeId = core::oCar(args).as<core::Rational_O>()->as_int();
-	    int residueId = args->ocadr().as<core::Rational_O>()->as_int();
-	    int atomId = args->ocaddr().as<core::Rational_O>()->as_int();
-	    _v.set(moleculeId,residueId,atomId);
-#endif
+	}
+    };
+
+    template <>
+      struct	from_object<chem::AtomId>
+    {
+	typedef	chem::AtomId		ExpectedType;
+	typedef	chem::AtomId			DeclareType;
+	DeclareType _v;
+    from_object(core::T_sp o) : _v(core::clasp_to_fixnum(core::oCar(o)),
+                                   core::clasp_to_fixnum(core::oCadr(o)),
+                                   core::clasp_to_fixnum(core::oCaddr(o)))
+	{
 	}
     };
 

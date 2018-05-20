@@ -45,19 +45,17 @@ namespace kinematics
 	this->_ConstitutionName = constitutionName;
 	this->_TopologyName = topologyName;
 	this->_Bond1Id = UndefinedUnsignedInt;
-	if ( plug->isAssignableTo<chem::InPlug_O>() )
+	if ( gc::IsA<chem::InPlug_sp>(plug) )
 	{
-          chem::InPlug_sp inPlug = plug.as<chem::InPlug_O>();
-          if ( inPlug->hasB1() )
+          chem::InPlug_sp inPlug = gc::As_unsafe<chem::InPlug_sp>(plug);
+          if ( inPlug->getB1().notnilp() )
           {
             core::Symbol_sp bond1AtomName = inPlug->getB1();
             LOG(BF("InPlug has a Bond1 atom[%s]") % bond1AtomName); 
             chem::CandoDatabase_sp db = chem::getCandoDatabase();
             chem::Constitution_sp constitution = db->getEntity(constitutionName).as<chem::Constitution_O>();
             chem::ConstitutionAtoms_sp constitutionAtoms = constitution->getConstitutionAtoms();
-            chem::ConstitutionAtom_sp bond1ConstitutionAtom = constitutionAtoms->atomWithName(bond1AtomName);
-            this->_Bond1Id = bond1ConstitutionAtom->atomIndex();
-            LOG(BF("The Bond1Id is %d") % this->_Bond1Id );
+            this->_Bond1Id = constitutionAtoms->index(bond1AtomName);
           } else
           {
             LOG(BF("There is no Bond1 atom"));

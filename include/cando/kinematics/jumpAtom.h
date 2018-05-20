@@ -23,8 +23,8 @@ THE SOFTWARE.
 This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
 */
 /* -^- */
-#ifndef	kinematics_jumpAtom_H
-#define kinematics_jumpAtom_H
+#ifndef	kinematics_jumpJoint_H
+#define kinematics_jumpJoint_H
 
 #include <clasp/core/foundation.h>
 #include <cando/kinematics/atom.h>
@@ -34,79 +34,80 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace kinematics
 {
 
-    class JumpAtom : public Atom
-    {
-    public:
-	static const NodeType nodeType = jumpAtom;
+  FORWARD(JumpJoint);
+  class JumpJoint_O : public Joint_O {
+    LISP_CLASS(kinematics,KinPkg,JumpJoint_O,"JumpAtom",Joint_O);
+  public:
+    static const NodeType nodeType = jumpAtom;
 
-    protected:
-	Jump			_Jump;
+  protected:
+    Jump			_Jump;
 	/*! JumpAtoms can have unlimited numbers of children */
-	vector< RefCountedAtomHandle >	_Children;
-    protected:
+    gc::Vec0< Joint_sp >	_Children;
+  protected:
 	/*! Bonded atoms can have different numbers of children wrt JumpAtoms */
-	virtual int _maxNumberOfChildren() const { return INT_MAX;};
+    virtual int _maxNumberOfChildren() const { return INT_MAX;};
 	/*! Return the current number of children */
-	virtual int _numberOfChildren() const {return this->_Children.size();};
+    virtual int _numberOfChildren() const {return this->_Children.size();};
 	/*! Get the value of the indexed child */
-	virtual RefCountedAtomHandle& _child(int idx) {return this->_Children[idx];};
-	virtual RefCountedAtomHandle const& _child(int idx) const {return this->_Children[idx];};
+    virtual Joint_sp _child(int idx) {return this->_Children[idx];};
+    virtual Joint_sp _child(int idx) const {return this->_Children[idx];};
 	/*! Set the value of a child */
-	virtual void _setChild(int idx,const RefCountedAtomHandle& v) {this->_Children[idx] = v;};
+    virtual void _setChild(int idx,Joint_sp v) {this->_Children[idx] = v;};
 	/*! Delete the child at the given index */
-	virtual void _releaseChild(int idx); //  {this->_Children.erase(this->_Children.begin()+idx);};
+    virtual void _releaseChild(int idx); //  {this->_Children.erase(this->_Children.begin()+idx);};
 	/*! Insert the child at the given index - this does the work of opening up a space and putting the new value in */
-	virtual void _insertChild(int idx, const RefCountedAtomHandle& c); //  {this->_Children.insert(this->_Children.begin()+idx,c);};
+    virtual void _insertChild(int idx, Joint_sp c); //  {this->_Children.insert(this->_Children.begin()+idx,c);};
 	/*! Insert the child at the given index - this does the work of opening up a space and putting the new value in */
-	virtual void _appendChild(const RefCountedAtomHandle& c); //  {this->_Children.push_back(c);};
+    virtual void _appendChild(Joint_sp c); //  {this->_Children.push_back(c);};
 
 	/*! Delete all children for dtor */
-	virtual void _releaseAllChildren();
+    virtual void _releaseAllChildren();
 
-    public:
+  public:
 	/*! Empty ctor */
-	JumpAtom() {};
+    JumpJoint_O() {};
 
-    JumpAtom(const chem::AtomId& atomId, const string& comment) : Atom(atomId,comment) {};
+  JumpJoint_O(const chem::AtomId& atomId, const string& comment) : Joint_O(atomId,comment) {};
 
 
 
-	virtual core::Symbol_sp typeSymbol() const;
+    virtual core::Symbol_sp typeSymbol() const;
 
 
 	/*! Update the internal coordinates */
-	virtual void updateInternalCoords(Stub& stub,
-					  bool const recursive,
-	    AtomTree_sp at);
+    virtual void updateInternalCoords(Stub& stub,
+                                      bool const recursive,
+                                      AtomTree_sp at);
 
 
 	/*! Yes, this is a JumpAtom */
-	bool isJump() const { return true;};
+    bool isJump() const { return true;};
 
 	/*! Return the stubAtom1 */
-	virtual RefCountedAtomHandle stubAtom1() const;
+    virtual Joint_sp stubAtom1() const;
 
 	/*! Return the stubAtom2 */
-	virtual RefCountedAtomHandle stubAtom2() const;
+    virtual Joint_sp stubAtom2() const;
 
 	/*! Return the stubAtom3 */
-	virtual RefCountedAtomHandle stubAtom3(AtomTree_sp at) const;
+    virtual Joint_sp stubAtom3(AtomTree_sp at) const;
 
-	bool keepDofFixed(DofType dof) const;
+    bool keepDofFixed(DofType dof) const;
 
 
 	/*! Update the external coordinates */
-	virtual void updateXyzCoords(AtomTree_sp at);
+    virtual void updateXyzCoords(AtomTree_sp at);
 
 
 	/*! Update the external coordinates using the input stub */
-	virtual void updateXyzCoords(Stub& stub,AtomTree_sp at);
+    virtual void updateXyzCoords(Stub& stub,AtomTree_sp at);
 
 
 	/*! Return the DOF */
-	double dof(DofType const& dof) const;
+    double dof(DofType const& dof) const;
 	
-    };
+  };
 
 
 

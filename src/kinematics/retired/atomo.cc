@@ -110,7 +110,7 @@ namespace kinematics
     {_OF();
 	ASSERT(this->_AtomTree == child->_AtomTree);
 	Atom* parent = this->get();
-	parent->appendChild(child->handle());
+	parent->appendChild(child);
     }
 	
 
@@ -118,37 +118,9 @@ namespace kinematics
     {_OF();
 	ASSERT(this->_AtomTree == child->_AtomTree);
 	Atom* parent = this->get();
-	parent->insertChild(child->handle());
+	parent->insertChild(child);
     }
 	
-
-    void Atom_O::eraseChild(Atom_sp child)
-    {_OF();
-	Atom* atom = this->handle().get();
-	for (int i=0; i<atom->_numberOfChildren(); i++ )
-	{
-	    if (child->_Handle.holderIndex() == atom->_child(i).holderIndex())
-	    {
-		atom->_releaseChild(i);
-		return;
-	    }
-	}
-	SIMPLE_ERROR(BF("Could not find child"));
-    }
-
-
-    int Atom_O::indexOfChild(Atom_sp child)
-    {_OF();
-	Atom* atom = this->handle().get();
-	for (int i=0; i<atom->_numberOfChildren(); i++ )
-	{
-	    if (child->_Handle.holderIndex() == atom->_child(i).holderIndex())
-	    {
-		return i;
-	    }
-	}
-	SIMPLE_ERROR(BF("Could not find child"));
-    }
 
 
     string Atom_O::__repr__() const
@@ -161,7 +133,7 @@ namespace kinematics
 	ss << (BF("%s@%p handle[%d]")
 	       % this->get()->typeSymbol()
 	       % (void*)(this->get())
-	       % this->handle().holderIndex() ).str();
+	       % _rep_(this->asSmartPtr())).str();
 	return ss.str();
     }
 

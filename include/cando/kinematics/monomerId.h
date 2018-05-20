@@ -64,7 +64,6 @@ namespace kinematics
     /*! @class Wrap MonomerId inside of a Lisp class */
     class MonomerId_O : public core::General_O
     {
-	friend class FoldTree_O;
 	LISP_CLASS(kinematics,KinPkg,MonomerId_O,"MonomerId",core::General_O);
 #if INIT_TO_FACTORIES
     public:

@@ -39,7 +39,7 @@ namespace kinematics
 
 
 
-    BondId_sp BondId_O::create(Atom_sp parent, Atom_sp child)
+    BondId_sp BondId_O::create(Joint_sp parent, Joint_sp child)
     {
 	GC_ALLOCATE(BondId_O, bondId );
 	bondId->_Parent = parent;
@@ -49,9 +49,6 @@ namespace kinematics
 
 #if INIT_TO_FACTORIES
 
-#define ARGS_BondId_O_make "()"
-#define DECL_BondId_O_make ""
-#define DOCS_BondId_O_make "make BondId_O"
   BondId_sp BondId_O::make()
   {
     IMPLEMENT_ME();

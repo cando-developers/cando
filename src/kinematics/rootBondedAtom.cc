@@ -39,7 +39,7 @@ namespace kinematics
 
 
 
-    void RootBondedAtom::setup(core::Symbol_sp constitutionName,
+    void RootBondedJoint_O::setup(core::Symbol_sp constitutionName,
 			       core::Symbol_sp topologyName,
 			       chem::Plug_sp inPlug)
     {
@@ -48,7 +48,7 @@ namespace kinematics
 
 
 
-    core::Symbol_sp RootBondedAtom::typeSymbol() const
+    core::Symbol_sp RootBondedJoint_O::typeSymbol() const
     {_OF();
 	return _sym_rootBonded;
     };

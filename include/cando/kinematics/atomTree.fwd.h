@@ -42,18 +42,12 @@ namespace kinematics
 
     class AtomHolder;
     FORWARD(AtomTree);
-    FORWARD(Atom);
+    FORWARD(Joint);
 
 
-    class AtomTreeWalkFunctor
-    {
-    protected:
-	core::Lisp_sp	_Lisp;
+    class AtomTreeWalkFunctor {
     public:
-    AtomTreeWalkFunctor(core::Lisp_sp lisp) : _Lisp(lisp) {};
-
-	core::Lisp_sp lisp() const { return this->_Lisp;};
-	virtual void operator()(kinematics::Atom_sp atom) const;
+	virtual void operator()(kinematics::Joint_sp atom) const;
     };
 
 

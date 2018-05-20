@@ -40,35 +40,16 @@ namespace kinematics
 //
 
 
+void FoldTree_O::fields(core::Record_sp node)
+{
+  node->field(INTERN_(kw,aggregate_node),this->_AggregateNode);
+}
 
 
-
-#if INIT_TO_FACTORIES
-
-#define ARGS_FoldTree_O_make "()"
-#define DECL_FoldTree_O_make ""
-#define DOCS_FoldTree_O_make "make FoldTree"
-  FoldTree_sp FoldTree_O::make()
-    {
-      IMPLEMENT_ME();
-    };
-
-#else
-    core::T_sp FoldTree_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
-    {
-//      this->Base::__init__(exec,args,env,lisp);
-//      arg = translate::from_object<XXXX>::convert(env->lookup(this->Package(),"YYY"));
-	return _Nil<core::T_O>();
-    }
-#endif
-
-#ifdef XML_ARCHIVE
-    void FoldTree_O::archiveBase(core::ArchiveP node)
-    {
-        this->Base::archiveBase(node);
-	// Archive other instance variables here
-    }
-#endif
+FoldTree_sp FoldTree_O::make()
+{
+  IMPLEMENT_ME();
+};
 
 
     void FoldTree_O::initialize()

@@ -23,8 +23,8 @@ THE SOFTWARE.
 This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
 */
 /* -^- */
-#ifndef	kinematics_rootBondedAtom_H
-#define kinematics_rootBondedAtom_H
+#ifndef	kinematics_rootBondedJoint_H
+#define kinematics_rootBondedJoint_H
 
 #include <clasp/core/foundation.h>
 #include <cando/kinematics/kinFoundation.h>
@@ -37,19 +37,19 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace kinematics
 {
 
-    class RootBondedAtom : public BondedAtom
+  FORWARD(RootBondedJoint);
+    class RootBondedJoint_O : public BondedJoint_O
     {
+	LISP_CLASS(kinematics,KinPkg,RootBondedJoint_O,"RootBondedAtom",BondedJoint_O);
     public:
 	static const NodeType nodeType = rootBondedAtom;
     protected:
 	/*! Store the Id of the Bond1 atom if we have one
 	  otherwise it will be UndefinedUnsignedInt */
 	RootAtomInfo	_RootInfo;
-    private:
     public:
-    RootBondedAtom() : BondedAtom() {};
-    RootBondedAtom(const chem::AtomId& atomId,const string& comment) :
-	BondedAtom(atomId,comment) {};
+    RootBondedJoint_O(const chem::AtomId& atomId,const string& comment) :
+	BondedJoint_O(atomId,comment) {};
 
 
 	virtual RootAtomInfo const * rootAtomInfo() const { return &this->_RootInfo;};

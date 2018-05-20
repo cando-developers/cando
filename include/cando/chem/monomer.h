@@ -215,7 +215,7 @@ namespace chem {
     CL_DEFMETHOD 	void	setId(core::Symbol_sp id) { this->_Id = id; };
     CL_LISPIFY_NAME("getId");
     CL_DEFMETHOD 	core::Symbol_sp getId() { return this->_Id; };
-//    Topology_sp	getTopology();
+    Topology_sp	getTopology();
     RingClosingPlug_sp getMissingRingClosingPlug(Monomer_sp mate);
     CL_LISPIFY_NAME("getTemporaryResidue");
     CL_DEFMETHOD 	Residue_sp	getTemporaryResidue()

@@ -42,9 +42,7 @@ namespace kinematics
 
 #if INIT_TO_FACTORIES
 
-#define ARGS_ChiDihedral_O_make "(atom1-index atom2-index atom3-index atom4-index)"
-#define DECL_ChiDihedral_O_make ""
-#define DOCS_ChiDihedral_O_make "make ChiDihedral"
+CL_LISPIFY_NAME(make-ChiDihedral);
   ChiDihedral_sp ChiDihedral_O::make(const int atom1Index, const int atom2Index, const int atom3Index, const int atom4Index)
     {
 	GC_ALLOCATE(ChiDihedral_O, me );
