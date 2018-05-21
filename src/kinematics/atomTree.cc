@@ -186,12 +186,11 @@ void AtomTree_O::replaceMonomerSubTree(const BondId_sp& incoming, const map<core
 
 void AtomTree_O::recursivelyBuildMolecule(int moleculeId,
                                           int residueId,
-                                          chem::CandoDatabase_sp db,
                                           MonomerNode_sp monomerNode,
                                           Joint_sp parent,
                                           bool rootNode)
 {_OF();
-  core::List_sp constitutionAndTopology = monomerNode->identifyConstitutionAndTopology(db);
+  core::List_sp constitutionAndTopology = monomerNode->identifyConstitutionAndTopology();
   chem::Constitution_sp constitution = oCar(constitutionAndTopology).as<chem::Constitution_O>();
   chem::Topology_sp topology = oCadr(constitutionAndTopology).as<chem::Topology_O>();
   {_BLOCK_TRACEF(BF("Building constitution[%s] Topology[%s]")
@@ -228,7 +227,7 @@ void AtomTree_O::recursivelyBuildMolecule(int moleculeId,
         MonomerNode_sp nextMonomerNode = monomerNode->_Children.get(outPlug->getName());
         int nextResidueId = nextMonomerNode->_MonomerId;
         ASSERT(nextResidueId<(int)this->_AtomMap[moleculeId].size());
-        this->recursivelyBuildMolecule(moleculeId,nextResidueId,db,nextMonomerNode,bond0Parent);
+        this->recursivelyBuildMolecule(moleculeId,nextResidueId,nextMonomerNode,bond0Parent);
       }
     }
   }	
@@ -248,7 +247,6 @@ void AtomTree_O::buildMoleculeUsingChainNode(int moleculeId, ChainNode_sp chainN
   LOG(BF("Building moleculeId[%d]") % moleculeId);
   this->recursivelyBuildMolecule(moleculeId,
                                  monomerNode->_MonomerId,
-                                 db,
                                  monomerNode,
                                  this->_Root,
                                  true);

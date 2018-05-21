@@ -130,9 +130,9 @@ MonomerNode_sp MonomerNode_O::make()
     }
 
 
-core::List_sp MonomerNode_O::identifyConstitutionAndTopology(chem::CandoDatabase_sp db)
+core::List_sp MonomerNode_O::identifyConstitutionAndTopology()
 {
-  chem::Constitution_sp constitution  = gc::As<chem::Constitution_sp>(core::eval::funcall(chem::_sym_constitutionForNameOrPdb,db,this->monomerName()));
+  chem::Constitution_sp constitution  = gc::As<chem::Constitution_sp>(core::eval::funcall(chem::_sym_constitutionForNameOrPdb,_Nil<core::T_O>(),this->monomerName()));
   if ( constitution.nilp() )
   {
     SIMPLE_ERROR(BF("Could not find Constitution for monomer[%s]")

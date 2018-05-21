@@ -218,7 +218,6 @@ namespace kinematics
 	*/
 	void recursivelyBuildMolecule(int moleculeId,
 				      int residueId,
-				      chem::CandoDatabase_sp db,
 				      MonomerNode_sp chainNode,
 				      Joint_sp parent,
 				      bool rootNode = false);

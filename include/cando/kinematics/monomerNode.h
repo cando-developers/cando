@@ -92,7 +92,7 @@ public: // Functions here
 
 	/*! Return the Constitution and Topology for this ChainNode
 	 as a two element Cons */
-	core::List_sp identifyConstitutionAndTopology(chem::CandoDatabase_sp db);
+	core::List_sp identifyConstitutionAndTopology();
 
 	/*! Return a description of this MonomerNode and its children */
 	string asString() const;
