@@ -233,12 +233,13 @@ FFStretchDb_sp ReadAmberParameters_O::parseStretchDb(core::T_sp fin)
     core::T_sp tline = core::cl__read_line(fin,_Nil<core::T_O>(),_Nil<core::T_O>());
     if (tline.nilp()) break;
     string line = tline.as<core::Str_O>()->get();
+    line = core::trimWhiteSpace(line);
     if ( line.size() == 0 )
     {
       done = true;
     } else {
       LOG(BF("Parsing line|%s|") % line.c_str()  );
-//      printf("%s:%d reading line: %s\n", __FILE__, __LINE__, line.c_str());
+      //printf("%s:%d reading line: %s\n", __FILE__, __LINE__, line.c_str());
       string types = line.substr(0,5);
       vector<string>typeParts = core::split(types,"-");
       if (typeParts.size() <2) {
@@ -278,6 +279,7 @@ FFAngleDb_sp ReadAmberParameters_O::parseAngleDb(core::T_sp fin)
     core::T_sp tline = core::cl__read_line(fin,_Nil<T_O>(),_Nil<T_O>());
     if (tline.nilp()) break;
     string line = tline.as<core::Str_O>()->get();
+    line = core::trimWhiteSpace(line);
     if (line.size()== 0)
     {
       done = true;
@@ -395,6 +397,7 @@ FFItorDb_sp ReadAmberParameters_O::parseItorDb(core::T_sp fin)
     core::T_sp tline = core::cl__read_line(fin,_Nil<T_O>(),_Nil<T_O>());
     if (tline.nilp()) break;
     string line = tline.as<core::Str_O>()->get();
+    line = core::trimWhiteSpace(line);
 //      printf("%s:%d line: %s\n", __FILE__, __LINE__, line.c_str());
     if (line.size()== 0)
     {

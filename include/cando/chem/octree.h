@@ -87,6 +87,7 @@ namespace chem {
   Atom_sp                	aClosestAtom;
   double                	dClosestDistance;
   gctools::Vec0<int>            PiDensities;
+  gctools::Vec0<int>            iNodeNumCharges;
   gctools::Vec0<float>          _PfCharges;       /* float to save space */
   gctools::Vec0<double>         PdHalfEdges;
   gctools::Vec0<double>         PdHalfDiagonals;
