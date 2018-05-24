@@ -99,11 +99,6 @@
     (maphash (lambda (k v) (push k ffs)) leap.core:*force-fields*)
     ffs))
 
-(defun list-objects ()
-  (let ((objects nil))
-    (maphash (lambda (k v) (push k objects)) leap.core:*objects*)
-    objects))
-
 (defun load-atom-type-rules (filename &optional (force-field :default))
   (let* ((path (leap.core:search-path filename))
          (fftypedb (with-open-file (fin path)

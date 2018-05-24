@@ -197,7 +197,11 @@ void AtomTree_O::recursivelyBuildMolecule(int moleculeId,
                  % _rep_(constitution->getName()) % _rep_(topology->getName()) );
     chem::ConstitutionAtoms_sp constitutionAtoms = constitution->getConstitutionAtoms();
     this->resizeAtoms(moleculeId,residueId,constitutionAtoms->numberOfAtoms());
-    AtomTemplate_sp atomTemplate = topology->properties()->gethash(_lisp->intern(":atomTemplate")).as<AtomTemplate_O>();
+    core::T_sp template = topology->properties()->gethash(INTERN_(kw,atomTemplate));
+    if (template.nilp()) {
+      SIMPLE_ERROR(BF("The topology %s is missing an :atom-template parameter") % _rep_(topology));
+    }
+    AtomTemplate_sp atomTemplate = gc::As<AtomTemplate_sp>(template);
     BondId_sp incoming = BondId_O::create(parent,_Nil<core::T_O>());
     AtomTemplate_O::PlugNamesToBondIdMap outgoing;
 	    //
@@ -242,7 +246,6 @@ void AtomTree_O::buildMoleculeUsingChainNode(int moleculeId, ChainNode_sp chainN
   int numResidues = oligomer->numberOfMonomers();
   this->resizeResidues(moleculeId,numResidues);
   MonomerNode_sp monomerNode = chainNode->_RootMonomerNode;
-  chem::CandoDatabase_sp db = chem::_sym_candoDatabase->symbolValue().as<chem::CandoDatabase_O>();
   ASSERTF(this->_Root.notnilp(),BF("The Root of the AtomTree cannot be nil"));
   LOG(BF("Building moleculeId[%d]") % moleculeId);
   this->recursivelyBuildMolecule(moleculeId,

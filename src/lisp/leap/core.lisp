@@ -93,8 +93,6 @@
 ;;;
 ;;; Maintain a hash-table that maps object names to objects
 ;;; 
-(defparameter *objects* (make-hash-table :test #'equal))
-
 (define-condition object-not-found ()
   ((name :initarg :name :reader name)))
 
@@ -110,7 +108,7 @@ Associate the name with the object"
   "* Arguments
 - name : Symbol
 * Description
-Lookup the object in the *objects*."
+Lookup the object in the variable space."
   (variable-lookup name *leap-env* errorp error-value))
 
 

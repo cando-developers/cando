@@ -108,7 +108,6 @@
    #:clear-force-field
    #:add-force-field-or-modification
    #:*force-fields*
-   #:*objects*
    #:add-pdb-atom-map
    #:add-pdb-res-map
    #:leap-lookup-variable-reader-macro)
