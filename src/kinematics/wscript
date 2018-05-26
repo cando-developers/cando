@@ -1,7 +1,7 @@
 def build(bld):
     for name in [
         'aggregateNode',
-        'atomTemplate',
+        'jointTemplate',
         'atomTree',
         'bondId',
         'bondedAtom',

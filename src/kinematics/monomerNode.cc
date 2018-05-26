@@ -130,14 +130,13 @@ MonomerNode_sp MonomerNode_O::make()
     }
 
 
-core::List_sp MonomerNode_O::identifyConstitutionAndTopology()
+chem::Constitution_mv MonomerNode_O::identifyConstitutionAndTopology()
 {
-  chem::Constitution_sp constitution  = gc::As<chem::Constitution_sp>(core::eval::funcall(chem::_sym_constitutionForNameOrPdb,_Nil<core::T_O>(),this->monomerName()));
-  if ( constitution.nilp() )
-  {
-    SIMPLE_ERROR(BF("Could not find Constitution for monomer[%s]")
-                 % _rep_(this->_MonomerName) );
+  core::T_sp tconstitution = core::eval::funcall(chem::_sym_constitutionForNameOrPdb,_Nil<core::T_O>(),this->monomerName());
+  if (tconstitution.nilp()) {
+    SIMPLE_ERROR(BF("Could not find constitution for monomer %s") % _rep_(this->_MonomerName));
   }
+  chem::Constitution_sp constitution  = gc::As<chem::Constitution_sp>(tconstitution);
   adapt::SymbolSet_sp myPlugNameSet = adapt::SymbolSet_O::create();
   if ( this->_ParentPlugName.notnilp() )
   {
@@ -148,12 +147,11 @@ core::List_sp MonomerNode_O::identifyConstitutionAndTopology()
   {
     myPlugNameSet->insert(it->first);
   }
-  chem::Topology_sp topology = _Nil<chem::Topology_O>();
+  chem::Topology_sp topology; // default is 0x0
   chem::Constitution_O::TopologyMap::iterator it;
   {_BLOCK_TRACEF(BF("Looking for Topology with plugs: %s") % myPlugNameSet->asString() );
     for ( it= constitution->begin_Topologies();
-          it!=constitution->end_Topologies(); it++ )
-    {
+          it!=constitution->end_Topologies(); it++ ) {
       if ( (it->second)->hasMatchingPlugsWithMates(myPlugNameSet))
       {
         topology = it->second;
@@ -161,12 +159,11 @@ core::List_sp MonomerNode_O::identifyConstitutionAndTopology()
       }
     }
   }
-  if ( topology.nilp() )
-  {
+  if (!topology) {
     SIMPLE_ERROR(BF("No topology could be found for monomer[%s] with plugs[%s]")
                  % _rep_(this->_MonomerName) % myPlugNameSet->asString() );
   }
-  return core::Cons_O::createList(constitution,topology);
+  return Values(constitution, topology);
 }
 
 

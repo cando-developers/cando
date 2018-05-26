@@ -1,5 +1,5 @@
 /*
-    File: atomTemplate.cc
+    File: jointTemplate.cc
 */
 /*
 Open Source License
@@ -27,7 +27,7 @@ This is an open source license for the CANDO software from Temple University, bu
 
 #include <clasp/core/common.h>
 #include <clasp/core/evaluator.h>
-#include <cando/kinematics/atomTemplate.h>
+#include <cando/kinematics/jointTemplate.h>
 #include <cando/chem/plug.h>
 #include <clasp/core/environment.h>
 #include <cando/chem/candoDatabase.h>
@@ -48,10 +48,6 @@ namespace kinematics
 
 
 
-
-#if INIT_TO_FACTORIES
-
-
     Checkpoint_sp Checkpoint_O::make(const core::Symbol_sp& constitutionName,
 				     const core::Symbol_sp& topologyName )
     {
@@ -62,20 +58,6 @@ namespace kinematics
 	ASSERTF(me->_TopologyName.notnilp(),BF("You must provide topologyName"));
 	return me;
     }
-
-#endif
-
-#ifdef XML_ARCHIVE
-    void Checkpoint_O::archiveBase(core::ArchiveP node)
-    {
-        this->Base::archiveBase(node);
-	node->attribute("constitutionName",this->_ConstitutionName);
-	node->attribute("topologyName",this->_TopologyName );
-	// Archive other instance variables here
-    }
-#endif
-
-
 
     void Checkpoint_O::setupDelayedBondedAtom(DelayedBondedJoint_sp atom) const
     {_OF();
@@ -93,9 +75,6 @@ namespace kinematics
 
 
 
-
-#if INIT_TO_FACTORIES
-
 CL_LISPIFY_NAME("make-checkpoint-joint");
 CheckpointJoint_sp CheckpointJoint_O::make(core::Symbol_sp atomName)
     {
@@ -103,20 +82,6 @@ CheckpointJoint_sp CheckpointJoint_O::make(core::Symbol_sp atomName)
 	me->_AtomName = atomName;
 	return me;
     };
-
-#else
-
-    core::T_sp CheckpointJoint_O::__init__(core::Function_sp exec, core::Cons_sp args,
-					 core::Environment_sp env, core::Lisp_sp lisp)
-    {
-	this->Base::__init__(exec,args,env,lisp);
-	this->_AtomName = translate::from_object<string>::convert(env->lookup(this->Package(),"atomName"));
-	ASSERTF(this->_AtomName!="",BF("You must provide atomName"));
-	return _Nil<core::T_O>();
-    }
-
-#endif
-
 
 
     void CheckpointJoint_O::setupDelayedBondedAtom(DelayedBondedJoint_sp atom) const
@@ -133,8 +98,6 @@ CheckpointJoint_sp CheckpointJoint_O::make(core::Symbol_sp atomName)
 
 
 
-#if INIT_TO_FACTORIES
-
 CL_LISPIFY_NAME(make-checkpoint-out-plug-joint);
   CheckpointOutPlugJoint_sp CheckpointOutPlugJoint_O::make(chem::OutPlug_sp outPlug)
     {
@@ -143,28 +106,6 @@ CL_LISPIFY_NAME(make-checkpoint-out-plug-joint);
 	ASSERTF(me->_Plug.notnilp(),BF("You must provide outPlug argument"));
 	return me;
     };
-
-#else
-
-    core::T_sp CheckpointOutPlugJoint_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
-    {
-	this->Base::__init__(exec,args,env,lisp);
-	this->_Plug = translate::from_object<chem::OutPlug_O>::convert(env->lookup(this->Package(),"outPlug"));
-	ASSERTF(this->_Plug.notnilp(),BF("You must provide outPlug argument"));
-	return _Nil<core::T_O>();
-    }
-
-#endif
-
-#ifdef XML_ARCHIVE
-    void CheckpointOutPlugJoint_O::archiveBase(core::ArchiveP node)
-    {
-        this->Base::archiveBase(node);
-	// Archive other instance variables here
-	node->archiveObject("OutPlug",this->_Plug);
-    }
-#endif
-
 
     void CheckpointOutPlugJoint_O::setupDelayedBondedAtom(DelayedBondedJoint_sp atom) const
     {_OF();
@@ -177,46 +118,17 @@ CL_LISPIFY_NAME(make-checkpoint-out-plug-joint);
 //
 
 
-
-
-#if INIT_TO_FACTORIES
-
 CL_LISPIFY_NAME("make-atom-template");
-  AtomTemplate_sp AtomTemplate_O::make(const int id, const string& comment, AtomTemplate_sp parent)
+  JointTemplate_sp JointTemplate_O::make(const int id, const string& comment, JointTemplate_sp parent)
     {
-        GC_ALLOCATE(AtomTemplate_O, me );
+        GC_ALLOCATE(JointTemplate_O, me );
 	me->_Id = id;
 	me->_Comment = comment;
 	me->_Parent = parent;
 	return me;
     };
 
-#else
-
-    core::T_sp AtomTemplate_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
-    {
-	this->_Id = translate::from_object<int>::convert(env->lookup(this->Package(),"id"));
-	this->_Comment = translate::from_object<string>::convert(env->lookup(this->Package(),"comment"));
-	this->_Parent = env->lookup(this->Package(),"parent").as<AtomTemplate_O>();
-	return _Nil<core::T_O>();
-    }
-
-#endif
-
-#ifdef XML_ARCHIVE
-    void AtomTemplate_O::archiveBase(core::ArchiveP node)
-    {
-        this->Base::archiveBase(node);
-	// Archive other instance variables here
-	node->archiveWeakPointer("parent",this->_Parent);
-	node->attribute("id",this->_Id);
-	node->attribute("comment",this->_Comment);
-    }
-#endif
-
-
-
-core::Symbol_sp AtomTemplate_O::atomName(chem::ConstitutionAtoms_sp constitutionAtoms) const
+core::Symbol_sp JointTemplate_O::atomName(chem::ConstitutionAtoms_sp constitutionAtoms) const
     {
       if ( this->_Id==-1) return _Nil<core::Symbol_O>();
 	chem::ConstitutionAtom_sp ca = (*constitutionAtoms)[this->_Id];
@@ -225,7 +137,7 @@ core::Symbol_sp AtomTemplate_O::atomName(chem::ConstitutionAtoms_sp constitution
 	
 
 
-gc::Nilable<AtomTemplate_sp> AtomTemplate_O::parent() const
+gc::Nilable<JointTemplate_sp> JointTemplate_O::parent() const
 {
   return this->_Parent;
 }
@@ -239,43 +151,17 @@ gc::Nilable<AtomTemplate_sp> AtomTemplate_O::parent() const
 
 
 
-
-#if INIT_TO_FACTORIES
-
 CL_LISPIFY_NAME(make-bonded-atom-template);
-  BondedAtomTemplate_sp BondedAtomTemplate_O::make(chem::OutPlug_sp outPlug)
+  BondedJointTemplate_sp BondedJointTemplate_O::make(chem::OutPlug_sp outPlug)
   {
-      GC_ALLOCATE(BondedAtomTemplate_O, me );
+      GC_ALLOCATE(BondedJointTemplate_O, me );
     me->_OutPlug = outPlug;
     return me;
   };
 
-#else
-
-    core::T_sp BondedAtomTemplate_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
-    {
-	this->Base::__init__(exec,args,env,lisp);
-	this->_OutPlug = translate::from_object<chem::OutPlug_sp>::convert(env->lookup(Pkg(),"outPlug"));
-	return _Nil<core::T_O>();
-    }
-
-#endif
-
-#ifdef XML_ARCHIVE
-    void BondedAtomTemplate_O::archiveBase(core::ArchiveP node)
-    {
-        this->Base::archiveBase(node);
-	// Archive other instance variables here
-	node->attribute("dist",this->_Distance);
-	node->attribute("theta",this->_Theta);
-	node->attribute("phi",this->_Phi);
-	node->archiveVector0("children",this->_Children);
-	node->attributeIfNotNil("outPlug",this->_OutPlug);
-    }
-#endif
 
 
-core::List_sp BondedAtomTemplate_O::children() {
+core::List_sp BondedJointTemplate_O::children() {
   core::List_sp l = _Nil<core::T_O>();
   for ( int i(0), iEnd(this->_Children.size()); i<iEnd; ++i ) {
     l = core::Cons_O::create(this->_Children[i],l);
@@ -284,7 +170,7 @@ core::List_sp BondedAtomTemplate_O::children() {
 }
 
 
-    void BondedAtomTemplate_O::addChildren(Joint_sp me,
+    void BondedJointTemplate_O::addChildren(Joint_sp me,
 					   uint moleculeId,
 					   uint residueId,
 					   const AtomTree_sp& atomTree,
@@ -315,7 +201,7 @@ core::List_sp BondedAtomTemplate_O::children() {
     }
 
 
-    Joint_sp BondedAtomTemplate_O::writeIntoAtomTree(const AtomTree_sp& atomTree,
+    Joint_sp BondedJointTemplate_O::writeIntoAtomTree(const AtomTree_sp& atomTree,
 						    uint moleculeId,
 						    uint residueId,
 						    const BondId_sp& incoming,
@@ -340,7 +226,7 @@ core::List_sp BondedAtomTemplate_O::children() {
 
 
 
-    void BondedAtomTemplate_O::extractInternalCoords(Joint_sp const& atom)
+    void BondedJointTemplate_O::extractInternalCoords(Joint_sp const& atom)
     {
 	this->_Distance = atom->dof(DofType::distance);
 	this->_Theta = atom->dof(DofType::theta);
@@ -350,7 +236,7 @@ core::List_sp BondedAtomTemplate_O::children() {
 
 
 
-    void BondedAtomTemplate_O::setupOutPlugAtomTree(Joint_sp owned,
+    void BondedJointTemplate_O::setupOutPlugAtomTree(Joint_sp owned,
 						    const AtomTree_sp& atomTree,
 						    uint moleculeId,
 						    uint residueId,
@@ -384,41 +270,16 @@ core::List_sp BondedAtomTemplate_O::children() {
 //
 
 
-
-
-#if INIT_TO_FACTORIES
-
-CL_LISPIFY_NAME(make-DelayedBondedAtomTemplate);
-DelayedBondedAtomTemplate_sp DelayedBondedAtomTemplate_O::make(const Checkpoint_sp& checkpoint)
+CL_LISPIFY_NAME(make-DelayedBondedJointTemplate);
+DelayedBondedJointTemplate_sp DelayedBondedJointTemplate_O::make(const Checkpoint_sp& checkpoint)
     {
-        GC_ALLOCATE(DelayedBondedAtomTemplate_O, me );
+        GC_ALLOCATE(DelayedBondedJointTemplate_O, me );
 	me->_Checkpoint = checkpoint;
 	return me;
     };
 
-#else
 
-    core::T_sp DelayedBondedAtomTemplate_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
-    {
-	this->Base::__init__(exec,args,env,lisp);
-	this->_Checkpoint = translate::from_object<Checkpoint_O>::convert(env->lookup(this->Package(),"checkpoint"));
-	return _Nil<core::T_O>();
-    }
-
-#endif
-
-#ifdef XML_ARCHIVE
-    void DelayedBondedAtomTemplate_O::archiveBase(core::ArchiveP node)
-    {
-        this->Base::archiveBase(node);
-	// Archive other instance variables here
-	node->archiveObject("checkpoint",this->_Checkpoint);
-    }
-#endif
-
-
-
-    Joint_sp DelayedBondedAtomTemplate_O::writeIntoAtomTree(const AtomTree_sp& atomTree,
+    Joint_sp DelayedBondedJointTemplate_O::writeIntoAtomTree(const AtomTree_sp& atomTree,
 							   uint moleculeId,
 							   uint residueId,
 							   const BondId_sp& incoming,
@@ -450,13 +311,10 @@ DelayedBondedAtomTemplate_sp DelayedBondedAtomTemplate_O::make(const Checkpoint_
 
 
 
-
-#if INIT_TO_FACTORIES
-
-CL_LISPIFY_NAME(make-RootBondedAtomTemplate);
-  RootBondedAtomTemplate_sp RootBondedAtomTemplate_O::make(core::Symbol_sp constitutionName, const core::Symbol_sp topologyName, chem::Plug_sp inPlug)
+CL_LISPIFY_NAME(make-RootBondedJointTemplate);
+  RootBondedJointTemplate_sp RootBondedJointTemplate_O::make(core::Symbol_sp constitutionName, const core::Symbol_sp topologyName, chem::Plug_sp inPlug)
   {
-      GC_ALLOCATE(RootBondedAtomTemplate_O, me );
+      GC_ALLOCATE(RootBondedJointTemplate_O, me );
     me->_ConstitutionName = constitutionName;
     ASSERTF(me->_ConstitutionName.notnilp(),BF("You must provide constitutionName"));
     me->_TopologyName = topologyName;
@@ -466,35 +324,8 @@ CL_LISPIFY_NAME(make-RootBondedAtomTemplate);
     return me;
   };
 
-#else
 
-    core::T_sp RootBondedAtomTemplate_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
-    {
-      this->Base::__init__(exec,args,env,lisp);
-      this->_ConstitutionName = translate::from_object<core::Symbol_O>::convert(env->lookup(Pkg(),"constitutionName"));
-      ASSERTF(this->_ConstitutionName.notnilp(),BF("You must provide constitutionName"));
-      this->_TopologyName = translate::from_object<core::Symbol_O>::convert(env->lookup(Pkg(),"topologyName"));
-      ASSERTF(this->_TopologyName.notnilp(),BF("You must provide topologyName"));
-      this->_InPlug = translate::from_object<chem::Plug_O>::convert(env->lookup(this->Package(),"inPlug"));
-      ASSERTF(this->_InPlug.notnilp(),BF("You must provide inPlug"));
-      return _Nil<core::T_O>();
-    }
-
-#endif
-
-#ifdef XML_ARCHIVE
-    void RootBondedAtomTemplate_O::archiveBase(core::ArchiveP node)
-    {
-        this->Base::archiveBase(node);
-	node->attribute("constitutionName",this->_ConstitutionName);
-	node->attribute("topologyName",this->_TopologyName);
-	node->archiveObject("plug",this->_InPlug);
-    }
-#endif
-
-
-
-Joint_sp RootBondedAtomTemplate_O::writeIntoAtomTree(const AtomTree_sp& atomTree,
+Joint_sp RootBondedJointTemplate_O::writeIntoAtomTree(const AtomTree_sp& atomTree,
 						    uint moleculeId,
 						    uint residueId,
 						    const BondId_sp& incoming,

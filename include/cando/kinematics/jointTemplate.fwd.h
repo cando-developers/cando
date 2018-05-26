@@ -1,5 +1,5 @@
 /*
-    File: atomTemplate.fwd.h
+    File: jointTemplate.fwd.h
 */
 /*
 Open Source License
@@ -23,7 +23,7 @@ THE SOFTWARE.
 This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
 */
 /* -^- */
-/* @(#)atomTemplate.fwd.h
+/* @(#)jointTemplate.fwd.h
  */
 
 #ifndef _ATOMTEMPLATE_FWD_H
@@ -31,14 +31,14 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace kinematics
 {
-    FORWARD(AtomTemplate);
+    FORWARD(JointTemplate);
     FORWARD(CheckpointBase);
     FORWARD(CheckpointJoint);
     FORWARD(CheckpointOutPlugJoint);
-    FORWARD(BondedAtomTemplate);
-    FORWARD(DelayedBondedAtomTemplate);
-    FORWARD(RootBondedAtomTemplate);
-    FORWARD(Bond0AtomTemplate);
+    FORWARD(BondedJointTemplate);
+    FORWARD(DelayedBondedJointTemplate);
+    FORWARD(RootBondedJointTemplate);
+    FORWARD(Bond0JointTemplate);
 };
 
 

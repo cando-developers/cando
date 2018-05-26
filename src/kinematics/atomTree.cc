@@ -36,7 +36,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/symbolTable.h>
 #include <clasp/core/evaluator.h>
 #include <cando/chem/candoDatabase.h>
-#include <cando/kinematics/atomTemplate.h>
+#include <cando/kinematics/jointTemplate.h>
 #include <cando/kinematics/stub.h>
 #include <cando/kinematics/monomerNode.h>
 #include <cando/kinematics/chainNode.h>
@@ -176,7 +176,7 @@ void AtomTree_O::updateAtomIdMap(const chem::AtomId& atomId, Joint_sp atomHandle
 
 
 #if 0
-void AtomTree_O::replaceMonomerSubTree(const BondId_sp& incoming, const map<core::Symbol_sp,const BondId_sp>& outgoing, const AtomTemplate_sp& newSubTreeTemplate )
+void AtomTree_O::replaceMonomerSubTree(const BondId_sp& incoming, const map<core::Symbol_sp,const BondId_sp>& outgoing, const JointTemplate_sp& newSubTreeTemplate )
 {_OF();
   newSubTreeTemplate->writeIntoAtomTree(this->sharedThis<AtomTree_O>(),incoming,outgoing);
 }
@@ -190,26 +190,26 @@ void AtomTree_O::recursivelyBuildMolecule(int moleculeId,
                                           Joint_sp parent,
                                           bool rootNode)
 {_OF();
-  core::List_sp constitutionAndTopology = monomerNode->identifyConstitutionAndTopology();
-  chem::Constitution_sp constitution = oCar(constitutionAndTopology).as<chem::Constitution_O>();
-  chem::Topology_sp topology = oCadr(constitutionAndTopology).as<chem::Topology_O>();
+  chem::Constitution_mv constitutionAndTopology = monomerNode->identifyConstitutionAndTopology();
+  chem::Constitution_sp constitution = constitutionAndTopology;
+  chem::Topology_sp topology = constitutionAndTopology.second().as<chem::Topology_O>();
   {_BLOCK_TRACEF(BF("Building constitution[%s] Topology[%s]")
                  % _rep_(constitution->getName()) % _rep_(topology->getName()) );
     chem::ConstitutionAtoms_sp constitutionAtoms = constitution->getConstitutionAtoms();
     this->resizeAtoms(moleculeId,residueId,constitutionAtoms->numberOfAtoms());
-    core::T_sp template = topology->properties()->gethash(INTERN_(kw,atomTemplate));
-    if (template.nilp()) {
+    core::T_sp ttemplate = topology->properties()->gethash(INTERN_(kw,jointTemplate));
+    if (ttemplate.nilp()) {
       SIMPLE_ERROR(BF("The topology %s is missing an :atom-template parameter") % _rep_(topology));
     }
-    AtomTemplate_sp atomTemplate = gc::As<AtomTemplate_sp>(template);
+    JointTemplate_sp jointTemplate = gc::As<JointTemplate_sp>(ttemplate);
     BondId_sp incoming = BondId_O::create(parent,_Nil<core::T_O>());
-    AtomTemplate_O::PlugNamesToBondIdMap outgoing;
+    JointTemplate_O::PlugNamesToBondIdMap outgoing;
 	    //
-	    // Write the sub tree described by atomTemplate into the AtomTree
+	    // Write the sub tree described by jointTemplate into the AtomTree
 	    // recursively
-    ASSERTF(atomTemplate.notnilp(),BF("The AtomTemplate for Topology[%s] is nil")
+    ASSERTF(jointTemplate.notnilp(),BF("The JointTemplate for Topology[%s] is nil")
             % _rep_(topology->getName()) );
-    atomTemplate->writeIntoAtomTree(this->sharedThis<AtomTree_O>(),
+    jointTemplate->writeIntoAtomTree(this->sharedThis<AtomTree_O>(),
                                     moleculeId,
                                     residueId,
                                     incoming,
@@ -219,13 +219,11 @@ void AtomTree_O::recursivelyBuildMolecule(int moleculeId,
 	    // create their children and connect them to our OutPlug atoms
 	    //
     chem::Topology_O::Plugs::iterator it;
-    for ( it=topology->_Plugs.begin(); it!=topology->_Plugs.end(); it++ )
-    {
-      if ( gc::IsA<chem::OutPlug_sp>(it->second) )
-      {
-        chem::OutPlug_O::smart_ptr_type outPlug = gc::As_unsafe<chem::OutPlug_sp>(it->second);
+    for ( it=topology->_Plugs.begin(); it!=topology->_Plugs.end(); it++ ) {
+      if ( gc::IsA<chem::OutPlug_sp>(it->second) ) {
+        chem::OutPlug_sp outPlug = gc::As_unsafe<chem::OutPlug_sp>(it->second);
         core::Symbol_sp atomB0 = outPlug->getB0();
-        int  constitutionBond0AtomId = constitutionAtoms->index(atomB0);
+        int constitutionBond0AtomId = constitutionAtoms->index(atomB0);
         chem::AtomId atomId(moleculeId,residueId,constitutionBond0AtomId);
         Joint_sp bond0Parent = this->_AtomMap[atomId];
         MonomerNode_sp nextMonomerNode = monomerNode->_Children.get(outPlug->getName());

@@ -41,7 +41,7 @@ namespace kinematics
 {
 void BondedJoint_O::fields(core::Record_sp record) {
   record->field(INTERN_(kw,num_children),this->_NumberOfChildren);
-  static_assert(BondedJoint_O::MaxChildren==5);
+  static_assert(BondedJoint_O::MaxChildren==5,"BondedJoint_O::MaxChildren has changed from 5 - update the code below");
   record->field_if_not_unbound(INTERN_(kw,child0),this->_Children[0]);
   record->field_if_not_unbound(INTERN_(kw,child1),this->_Children[1]);
   record->field_if_not_unbound(INTERN_(kw,child2),this->_Children[2]);

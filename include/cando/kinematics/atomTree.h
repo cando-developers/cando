@@ -50,7 +50,7 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace kinematics
 {
 
-    FORWARD(AtomTemplate);
+    FORWARD(JointTemplate);
     FORWARD(JumpJoint);
 
     class AtomHolder : public PoolMember
@@ -201,7 +201,7 @@ namespace kinematics
 
 
 
-	/*! Replace an existing sub-tree with a sub-tree derived from an AtomTemplate that
+	/*! Replace an existing sub-tree with a sub-tree derived from an JointTemplate that
 	  is the root of a new sub-tree.  (incoming) represents a bond within the AtomTree
 	  whose child atom  will be replaced by the new sub-tree.
 	  This function will identify all of the connections going out of the monomer sub-tree

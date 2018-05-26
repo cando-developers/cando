@@ -327,8 +327,8 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/kinematics/aggregateNode.h>
 #include <cando/kinematics/atom.fwd.h>
 #include <cando/kinematics/atom.h>
-#include <cando/kinematics/atomTemplate.fwd.h>
-#include <cando/kinematics/atomTemplate.h>
+#include <cando/kinematics/jointTemplate.fwd.h>
+#include <cando/kinematics/jointTemplate.h>
 #include <cando/kinematics/atomTree.fwd.h>
 #include <cando/kinematics/atomTree.h>
 #include <cando/kinematics/bondId.fwd.h>
@@ -412,7 +412,7 @@ GC_MANAGED_TYPE(gctools::GCVector_moveable<float>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::SmallOrderedSet<gctools::smart_ptr<chem::Atom_O>>>);
 
 #ifdef USE_KINEMATICS
-GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<kinematics::AtomTemplate_O>>);
+GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<kinematics::JointTemplate_O>>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<kinematics::MonomerNode_O>>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<kinematics::ChainNode_O>>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<kinematics::Rotamer_O>>);
