@@ -1780,7 +1780,7 @@ CL_END_ENUM(_sym__PLUS_atomFlagSymbolConverter_PLUS_);
 
 ConstitutionAtom_sp Atom_O::asConstitutionAtom(ConstitutionAtomIndex0N index)
 {_OF();
-  ConstitutionAtom_sp ca = makeConstitutionAtom(this->getName(),this->_Element);
+  ConstitutionAtom_sp ca = makeConstitutionAtom(this->getName(),this->_Element,this->_Properties);
   return ca;
 }
 

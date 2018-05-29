@@ -52,6 +52,7 @@ void ConstitutionAtom_O::fields(core::Record_sp node)
   node->field(INTERN_(kw,name),this->_AtomName);
   node->field(INTERN_(kw,element),this->_Element);
   node->field(INTERN_(kw,bonds),this->_Bonds);
+  node->field_if_not_nil(INTERN_(kw,properties),this->_Properties);
   this->Base::fields(node);
 }  
 
@@ -178,8 +179,8 @@ CL_DEFMETHOD     int ConstitutionAtoms_O::index(MatterName name) const
 }
 
 
-#if 0
-CL_LISPIFY_NAME("buildResidue");
+CL_DOCSTRING(R"(Create a chem:residue that has all the atoms/bonds and all the necessary atom/bond
+properties set properly for this chem:constitution-atoms.)");
 CL_DEFMETHOD     Residue_sp ConstitutionAtoms_O::buildResidue()
 {
   Residue_sp res = Residue_O::create();
@@ -193,27 +194,28 @@ CL_DEFMETHOD     Residue_sp ConstitutionAtoms_O::buildResidue()
     Atom_sp atom = Atom_O::create();
     atom->setName((*ci)->_AtomName);
     atom->setElement((*ci)->_Element);
+    atom->setProperties(core::cl__copy_list((*ci)->_Properties));
     atoms[idx] = atom;
-    res->putMatter((*ci)->_AtomIndex,atom);
+    res->putMatter(idx,atom);
   }
+  idx = 0;
   for ( gctools::Vec0<ConstitutionAtom_sp>::const_iterator ci=this->_Atoms.begin();
-        ci!=this->_Atoms.end(); ci++ )
+        ci!=this->_Atoms.end(); ci++, idx++ )
   {
-    ASSERT_lt((*ci)->_AtomIndex,(int)atoms.size());
-    Atom_sp fromAtom = atoms[(*ci)->_AtomIndex];
+    ASSERT_lt(idx,(int)atoms.size());
+    Atom_sp fromAtom = atoms[idx];
     for ( gctools::Vec0<ConstitutionBond_sp>::const_iterator bi=(*ci)->_Bonds.begin(); bi!=(*ci)->_Bonds.end(); bi++ )
     {
 		// Avoid making bonds twice
-      if ( (*bi)->_AtomIndex < (*ci)->_AtomIndex ) continue;
-      ASSERT_lt((*bi)->_AtomIndex,(int)atoms.size());
-      Atom_sp toAtom = atoms[(*bi)->_AtomIndex];
+      if ( (*bi)->_ToAtomIndex < idx ) continue;
+      ASSERT_lt((*bi)->_ToAtomIndex,(int)atoms.size());
+      Atom_sp toAtom = atoms[(*bi)->_ToAtomIndex];
       BondOrder order = (*bi)->_BondOrder;
       fromAtom->bondTo(toAtom,order);
     }
   }
   return res;
 }
-#endif
 
 // Stuff
 

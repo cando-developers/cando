@@ -33,7 +33,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <vector>
 #include <set>
 #include <clasp/core/common.h>
-
+#include <clasp/core/lispList.h>
 #include <cando/chem/atom.fwd.h>
 #include <cando/chem/bond.fwd.h>
 #include <cando/chem/residue.fwd.h>
@@ -49,6 +49,7 @@ namespace chem
   class ConstitutionBond_O : public core::CxxObject_O
   {
     friend class ConstitutionAtoms_O;
+    CL_DOCSTRING(R"(Describes a bond from one chem:constitution-atom to another.)");
     LISP_CLASS(chem,ChemPkg,ConstitutionBond_O,"ConstitutionBond",core::CxxObject_O);
     public:
 	//! The ConstitutionAtomIndex0N of the atom that is bonded to
@@ -79,11 +80,14 @@ namespace chem
     friend class StereoisomerAtom_O;
     friend class StereoisomerVirtualAtom_O;
 
+    CL_DOCSTRING(R"(Maintains information to create a chem:atom within a chem:residue. 
+It stores the atom name, element, properties and a vector of bonds in the form of chem:constitution-bond(s).)");
     LISP_CLASS(chem,ChemPkg,ConstitutionAtom_O,"ConstitutionAtom",core::CxxObject_O);
   public:
   public:
-    MatterName		_AtomName;
-    Element			_Element;
+    MatterName                          _AtomName;
+    Element			        _Element;
+    core::List_sp                       _Properties;
     gctools::Vec0<ConstitutionBond_sp>	_Bonds;
   public:
     bool fieldsp() const { return true; };
@@ -95,11 +99,11 @@ namespace chem
     virtual bool isVirtualAtom() { return false;};
 	/*! Append a ConstitutionBond_sp to our list of bonds */
     void addConstitutionBond(ConstitutionBond_sp cb) {this->_Bonds.push_back(cb);};
-  ConstitutionAtom_O(MatterName atomName, Element element) : _AtomName(atomName), _Element(element) {};
+  ConstitutionAtom_O(MatterName atomName, Element element, core::List_sp properties) : _AtomName(atomName), _Element(element), _Properties(core::cl__copy_list(properties)) {};
   };
 
-  CL_DEFUN inline ConstitutionAtom_sp makeConstitutionAtom(chem::MatterName uniqueAtomName, chem::Element element) {
-    return gctools::GC<ConstitutionAtom_O>::allocate(uniqueAtomName,element);
+  CL_DEFUN inline ConstitutionAtom_sp makeConstitutionAtom(chem::MatterName uniqueAtomName, chem::Element element, core::List_sp properties) {
+    return gctools::GC<ConstitutionAtom_O>::allocate(uniqueAtomName,element,properties);
   }
 
   class ConstitutionVirtualAtom_O : public ConstitutionAtom_O
@@ -111,17 +115,22 @@ namespace chem
     virtual bool isVirtualAtom() { return true;};
 
   public:
-  ConstitutionVirtualAtom_O(MatterName atomname, Element element, CalculatePosition_sp calcPos) :
-    ConstitutionAtom_O(atomname,element), _CalculatePositionCode(calcPos) {};
+  ConstitutionVirtualAtom_O(MatterName atomname, Element element, core::List_sp properties, CalculatePosition_sp calcPos) :
+    ConstitutionAtom_O(atomname,element,properties), _CalculatePositionCode(calcPos) {};
   };
 
-  CL_DEFUN inline ConstitutionVirtualAtom_sp makeConstitutionVirtualAtom(core::Symbol_sp atomName, chem::Element element, chem::CalculatePosition_sp calcPos) {
-    return gctools::GC<ConstitutionVirtualAtom_O>::allocate(atomName,element,calcPos);
+  CL_DEFUN inline ConstitutionVirtualAtom_sp makeConstitutionVirtualAtom(core::Symbol_sp atomName, chem::Element element, core::List_sp properties, chem::CalculatePosition_sp calcPos) {
+    return gctools::GC<ConstitutionVirtualAtom_O>::allocate(atomName,element,properties,calcPos);
   }
 
   class ConstitutionAtoms_O : public core::CxxObject_O
   {
     friend class StereoisomerAtoms_O;
+    CL_DOCSTRING(R"(Stores a vector of chem:constitution-atom(s) that are used to create chem:residue(s) and other things
+like residues. This class can be used to create all of the atoms in the residue, with atom names and elements and connect them
+up with bonds with the correct bond orders.  It doesn't connect the atoms to other residues so there will be dangling bonds
+that need to be formed later to other residues. The vector of chem:constitution-atom(s) have a specific order and 
+the chem:constitution-atom(s) can be accessed using integer indices.)");
     LISP_CLASS(chem,ChemPkg,ConstitutionAtoms_O,"ConstitutionAtoms",core::CxxObject_O);
   private: // instance variables
 	//! A list of ConstitutionAtoms
@@ -156,9 +165,7 @@ namespace chem
 	//! Return a StringSet of the ConstitutionAtom names
     adapt::SymbolSet_sp atomNamesAsSymbolSet();
 
-	/*! Create a Residue that has all the atoms/bonds and all the necessary atom/bond
-	  properties set properly for this ConstitutionAtoms */
-//    Residue_sp buildResidue();
+    Residue_sp buildResidue();
     
     ConstitutionAtoms_O( const ConstitutionAtoms_O& ss ); //!< Copy constructor
     DEFAULT_CTOR_DTOR(ConstitutionAtoms_O);

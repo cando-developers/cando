@@ -49,11 +49,12 @@ namespace kinematics
   FORWARD(DelayedBondedJoint);
   FORWARD(JointTemplate);
   FORWARD(Checkpoint);
-  class Checkpoint_O : public core::General_O
+  class Checkpoint_O : public core::CxxObject_O
   {
-    LISP_CLASS(kinematics,KinPkg,Checkpoint_O,"Checkpoint",core::General_O);
-//	DECLARE_STANDARD_LISP_FUNCTIONS();
-//	DECLARE_ARCHIVE();
+    LISP_CLASS(kinematics,KinPkg,Checkpoint_O,"Checkpoint",core::CxxObject_O);
+  public:
+    bool fieldsp() const { return true; };
+    void fields(core::Record_sp node);
     DEFAULT_CTOR_DTOR(Checkpoint_O);
   protected:
     core::Symbol_sp	_ConstitutionName;
@@ -64,13 +65,16 @@ namespace kinematics
   public:
 	/*! Set up the DelayedBondedAtom */
     virtual void setupDelayedBondedAtom(DelayedBondedJoint_sp atom) const;
-    virtual core::Symbol_sp atomName() const {_OF(); SUBCLASS_MUST_IMPLEMENT();};
+    CL_DEFMETHOD virtual core::Symbol_sp atomName() const {_OF(); SUBCLASS_MUST_IMPLEMENT();};
   };
 
 
   class CheckpointJoint_O : public Checkpoint_O
   {
-    LISP_CLASS(kinematics,KinPkg,CheckpointJoint_O,"CheckpointAtom",Checkpoint_O);
+    LISP_CLASS(kinematics,KinPkg,CheckpointJoint_O,"CheckpointJoint",Checkpoint_O);
+  public:
+    bool fieldsp() const { return true; };
+    void fields(core::Record_sp node);
   public:
     static CheckpointJoint_sp make(core::Symbol_sp atomName);
     DEFAULT_CTOR_DTOR(CheckpointJoint_O);
@@ -86,7 +90,10 @@ namespace kinematics
 
   class CheckpointOutPlugJoint_O : public Checkpoint_O
   {
-    LISP_CLASS(kinematics,KinPkg,CheckpointOutPlugJoint_O,"CheckpointOutPlugAtom",Checkpoint_O);
+    LISP_CLASS(kinematics,KinPkg,CheckpointOutPlugJoint_O,"CheckpointOutPlugJoint",Checkpoint_O);
+  public:
+    bool fieldsp() const { return true; };
+    void fields(core::Record_sp node);
   public:
     static CheckpointOutPlugJoint_sp make(chem::OutPlug_sp outPlug);
   CheckpointOutPlugJoint_O() : _Plug(_Nil<chem::OutPlug_O>()) {};
@@ -106,9 +113,12 @@ namespace kinematics
 
 /*! Builds Atoms within an AtomTree
  */
-  class JointTemplate_O : public core::General_O
+  class JointTemplate_O : public core::CxxObject_O
   {
-    LISP_CLASS(kinematics,KinPkg,JointTemplate_O,"JointTemplate",core::General_O);
+    LISP_CLASS(kinematics,KinPkg,JointTemplate_O,"JointTemplate",core::CxxObject_O);
+  public:
+    bool fieldsp() const { return true; };
+    void fields(core::Record_sp node);
   public:
     static JointTemplate_sp make(const int id, const string& comment, const JointTemplate_sp parent);
   protected:
@@ -157,6 +167,9 @@ namespace kinematics
   {
     LISP_CLASS(kinematics,KinPkg,BondedJointTemplate_O,"BondedJointTemplate",JointTemplate_O);
   public:
+    bool fieldsp() const { return true; };
+    void fields(core::Record_sp node);
+  public:
     static BondedJointTemplate_sp make(chem::OutPlug_sp outPlug);
   public:
     typedef gctools::Vec0<JointTemplate_sp>	ChildList;
@@ -169,7 +182,7 @@ namespace kinematics
   public:
     chem::OutPlug_sp outPlug() const { return this->_OutPlug;};
 
-    void addChild(JointTemplate_sp child) {this->_Children.push_back(child);};
+    CL_DEFMETHOD void addChild(JointTemplate_sp child) {this->_Children.push_back(child);};
 	/*! Return a Cons of children */
     core::List_sp children();
 
@@ -212,6 +225,9 @@ namespace kinematics
   {
     LISP_CLASS(kinematics,KinPkg,DelayedBondedJointTemplate_O,"DelayedBondedJointTemplate",BondedJointTemplate_O);
   public:
+    bool fieldsp() const { return true; };
+    void fields(core::Record_sp node);
+  public:
     static DelayedBondedJointTemplate_sp make(const Checkpoint_sp& checkpoint);
   protected:
 	/*! Defines the atom, either in the current residue or in the following
@@ -246,6 +262,9 @@ namespace kinematics
   class RootBondedJointTemplate_O : public BondedJointTemplate_O
   {
     LISP_CLASS(kinematics,KinPkg,RootBondedJointTemplate_O,"RootBondedJointTemplate",BondedJointTemplate_O);
+  public:
+    bool fieldsp() const { return true; };
+    void fields(core::Record_sp node);
   public:
     static RootBondedJointTemplate_sp make(core::Symbol_sp constitutionName, core::Symbol_sp topologyName, chem::Plug_sp inPlug);
   protected:

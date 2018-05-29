@@ -82,20 +82,18 @@ class CDNode_O : public core::CxxObject_O
   std::string       		_Label;
   StereochemistryType		_StereochemistryType;
   ConfigurationEnum		_Configuration;
+  core::List_sp _AtomProperties;
+  core::List_sp _ResidueProperties;
+  core::List_sp _MoleculeProperties;
  private:	// generated
   gc::Nilable<Atom_sp>		_Atom;
   gc::Nilable<CDNode_sp>		_BackSpan;
   gc::Nilable<CDNode_sp>		_NextSpan;
-  core::List_sp _AtomProperties;
-  core::List_sp _ResidueProperties;
-  core::List_sp _MoleculeProperties;
  public:
   void	initialize();
  public:
-#if 0
   bool fieldsp() const { return true; };
   void fields(core::Record_sp node);
-#endif
  private:
   std::string	_extractLabel(adapt::QDomNode_sp node);
  public:
@@ -137,10 +135,8 @@ private:
 public:
 	void	initialize();
  public:
-#if 0
         bool fieldsp() const { return true; };
         void fields(core::Record_sp node);
-#endif
 public:
 	string	getOrderAsString();
 	CDBondOrder	getOrder() { return this->_Order; };
@@ -173,9 +169,9 @@ public:
     typedef gctools::Vec0<CDBond_sp>	CDBonds;
     typedef gctools::SmallMap<Atom_sp,CDNode_sp> AtomsToBonds; // map<Atom_sp,CDNode_sp>	AtomsToBonds;
     typedef gctools::SmallMap<int,CDNode_sp> IntMappedCDNodes; // typedef map<int,CDNode_sp>		IntMappedCDNodes;
-private:
+//private:
     core::Symbol_sp		_ConstitutionName;
-    IntMappedCDNodes		_Nodes;
+    gctools::SmallMap<int,CDNode_sp>		_Nodes;
     AtomsToBonds		_AtomsToNodes;
     CDBonds			_Bonds;
     int				_LargestId;
@@ -184,10 +180,8 @@ private:
 public:
     void	initialize();
  public:
-#if 0
     bool fieldsp() const { return true; };
     void fields(core::Record_sp node);
-#endif
 private:
     bool _asKeyedObject(core::Symbol_sp label, core::Symbol_sp& keyword, core::T_sp& obj);
 private:
@@ -245,29 +239,15 @@ CL_DEFMETHOD core::T_sp getMolecule() { return this->_Molecule; };
 SMART(CDText );
 class CDText_O : public core::CxxObject_O
 {
-    LISP_CLASS(chem,ChemPkg,CDText_O,"CDText",core::CxxObject_O);
+  LISP_CLASS(chem,ChemPkg,CDText_O,"CDText",core::CxxObject_O);
  public:
-    static CDText_sp make(core::HashTableEq_sp kprops);
-private:
-	string			_Text;
-	core::HashTableEq_sp		_Properties;
-public:
-	void	initialize();
+  bool fieldsp() const { return true; };
+  void fields(core::Record_sp node);
  public:
-#if 0
-        bool fieldsp() const { return true; };
-        void fields(core::Record_sp node);
-#endif
-public:
-
-	void	parseFromXml(adapt::QDomNode_sp xml, bool print);
-
-	bool	hasProperties();
-	core::HashTableEq_sp getProperties() { return this->_Properties; };
-
-	CDText_O( const CDText_O& ss ); //!< Copy constructor
-
-	DEFAULT_CTOR_DTOR(CDText_O);
+  core::T_sp		_Code;
+ public:
+  bool parseFromXml(adapt::QDomNode_sp xml, bool print);
+ CDText_O() : _Code(_Nil<core::T_O>()) {};
 };
 
 
@@ -276,64 +256,62 @@ public:
 SMART(ChemDraw );
 class ChemDraw_O : public core::CxxObject_O
 {
-    LISP_CLASS(chem,ChemPkg,ChemDraw_O,"ChemDraw",core::CxxObject_O);
+  LISP_CLASS(chem,ChemPkg,ChemDraw_O,"ChemDraw",core::CxxObject_O);
  public:
-    static ChemDraw_sp make(core::T_sp stream, bool print=false);
+    bool fieldsp() const { return true; };
+    void fields(core::Record_sp node);
  public:
-    static void lisp_initGlobals(core::Lisp_sp lisp);
-public:
-    typedef	gctools::Vec0<CDFragment_sp>	Fragments;
-	typedef adapt::SymbolMap<CDFragment_O>	NamedFragments;
-private:
-	Fragments	_AllFragments;
-	NamedFragments	_NamedFragments;
-public:
-//	void	archive(core::ArchiveP node);
-	void	initialize();
+  static ChemDraw_sp make(core::T_sp stream, bool print=false);
  public:
-#if 0
-        bool fieldsp() const { return true; };
-        void fields(core::Record_sp node);
-#endif
-private:
-	string	_getAtomName(adapt::QDomNode_sp node);
-public:
-        void parse(core::T_sp strm, bool print);
-        void parseChild(adapt::QDomNode_sp child, bool print);
+  static void lisp_initGlobals(core::Lisp_sp lisp);
+ public:
+  typedef	gctools::Vec0<CDFragment_sp>	Fragments;
+  typedef adapt::SymbolMap<CDFragment_O>	NamedFragments;
+    
+ private:
+  Fragments	_AllFragments;
+  NamedFragments	_NamedFragments;
+  core::T_sp            _Code;
+ public:
+ private:
+  string	_getAtomName(adapt::QDomNode_sp node);
+ public:
+  void parse(core::T_sp strm, bool print);
+  void parseChild(adapt::QDomNode_sp child, bool print);
 
 	/*! Set the properties for the named fragment.
 	  @param fragmentName The name of the fragment whose properties are being set
 	  @param properties is a property list (keyword symbol/object pairs) */
-        void setFragmentProperties(core::Symbol_sp name
-                                       , core::T_sp comment
-                                       , core::T_sp chiral_centers
-                                       , core::T_sp group
-                                       , core::T_sp name_template
-                                       , core::T_sp pdb_template
-                                       , core::T_sp restraints
-                                       , core::T_sp residue_charge
-                                       , core::T_sp restrained_pi_bonds
-                                       , core::T_sp caps);
+  void setFragmentProperties(core::Symbol_sp name
+                             , core::T_sp comment
+                             , core::T_sp chiral_centers
+                             , core::T_sp group
+                             , core::T_sp name_template
+                             , core::T_sp pdb_template
+                             , core::T_sp restraints
+                             , core::T_sp residue_charge
+                             , core::T_sp restrained_pi_bonds
+                             , core::T_sp caps);
 
 
 
-	core::List_sp getFragments();
-CL_LISPIFY_NAME("allFragmentsAsList");
-CL_DEFMETHOD 	core::List_sp allFragmentsAsList() { return this->getFragments();};
-	core::List_sp getSubSetOfFragments(adapt::SymbolSet_sp subsetNames );
-
+  core::List_sp getFragments();
+  CL_LISPIFY_NAME("allFragmentsAsList");
+  CL_DEFMETHOD 	core::List_sp allFragmentsAsList() { return this->getFragments();};
+  core::List_sp getSubSetOfFragments(adapt::SymbolSet_sp subsetNames );
+  CL_DEFMETHOD core::T_sp ChemDrawCode() const { return this->_Code; };
 
     /*! Return the entire ChemDraw file as an Aggregate and each structure
       is a Molecule with the name given by the hashed-bond-:name attribute
     */
-    Aggregate_sp asAggregate();
+  Aggregate_sp asAggregate();
 
-
-	ChemDraw_O( const ChemDraw_O& ss ); //!< Copy constructor
-
-	DEFAULT_CTOR_DTOR(ChemDraw_O);
+ ChemDraw_O() : _Code(_Nil<core::T_O>()) {};
 };
 
 
 };
+
+DECLARE_ENUM_SYMBOL_TRANSLATOR(chem::CDBondOrder,chem::_sym__PLUS_CDBondOrderConverter_PLUS_);
+
 #endif //]

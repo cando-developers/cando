@@ -81,8 +81,6 @@ public:
 //    Atom_sp lookupAtom(const AtomId& atomId) const;
 
 
-    virtual string __repr__() const;
-
     char	getMatterType() { return AGGREGATE_CLASS; };
 
     contentIterator begin_molecules() { return this->_contents.begin(); };

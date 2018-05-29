@@ -73,7 +73,7 @@ CL_EXTERN_DEFMETHOD(Matter_O,(Matter_sp(Matter_O::*)() const)&Matter_O::containe
 string Matter_O::__repr__() const
 {
   stringstream ss;
-  ss << this->className();
+  ss << "#<" << this->className() << " " << _rep_(this->getName()) << ">";
   return ss.str();
 }
 //
@@ -215,47 +215,51 @@ void Matter_O::applyPropertyList(core::List_sp list)
 }
     
 CL_LISPIFY_NAME("clearProperty");
-CL_DEFMETHOD void Matter_O::clearProperty(core::Symbol_sp prop)
+CL_DEFMETHOD void Matter_O::clearProperty(core::Symbol_sp symbol)
 {
-  this->_Properties = core::core__rem_f(this->_Properties,prop);
+  this->_Properties = core::core__rem_f(this->_Properties,symbol);
 }
 
-CL_LISPIFY_NAME("setProperty");
-CL_DEFMETHOD void Matter_O::setProperty(core::Symbol_sp prop, core::T_sp val)
+CL_DOCSTRING("Set the property **symbol** of **this** (a chem:matter) to **value**.");
+CL_DEFMETHOD void Matter_O::setProperty(core::Symbol_sp symbol, core::T_sp value)
 {
-  this->_Properties = core::core__put_f(this->_Properties,val,prop);
+  this->_Properties = core::core__put_f(this->_Properties,value,symbol);
 }
 
+CL_DOCSTRING("Set the property **symbol** of **this** (a chem:matter) to T.");
 CL_LISPIFY_NAME("setPropertyTrue");
-CL_DEFMETHOD void Matter_O::setPropertyTrue(core::Symbol_sp prop)
+CL_DEFMETHOD void Matter_O::setPropertyTrue(core::Symbol_sp symbol)
 {
-  this->_Properties = core::core__put_f(this->_Properties,_lisp->_true(),prop);
+  this->_Properties = core::core__put_f(this->_Properties,_lisp->_true(),symbol);
 }
 
+
+CL_DOCSTRING("Return the property **symbol** of **this** (a chem:matter) - if it isn't defined return NIL.");
 CL_LISPIFY_NAME("Matter-getProperty");
-CL_DEFMETHOD core::T_sp Matter_O::getProperty(core::Symbol_sp prop)
+CL_DEFMETHOD core::T_sp Matter_O::getProperty(core::Symbol_sp symbol)
 {
-  core::T_sp res = core::cl__getf(this->_Properties,prop,_Unbound<core::T_O>());
+  core::T_sp res = core::cl__getf(this->_Properties,symbol,_Unbound<core::T_O>());
   if (res.unboundp()) {
     stringstream props;
     props << _rep_(this->_Properties);
-    SIMPLE_ERROR(BF("You asked for an unknown property[%s] for matter[%s@%p] - the available properties are[%s]") % _rep_(prop) % this->__repr__() % this % props.str()  );
+    SIMPLE_ERROR(BF("You asked for an unknown property[%s] for matter[%s@%p] - the available properties are[%s]") % _rep_(symbol) % this->__repr__() % this % props.str()  );
   }
   return res;
 }
 
+CL_DOCSTRING("Return the property **symbol** of **this** (a chem:matter) - if it isn't defined return **defval**.");
 CL_LISPIFY_NAME("Matter-getPropertyOrDefault");
 CL_DEFMETHOD core::T_sp Matter_O::getPropertyOrDefault(core::Symbol_sp prop,core::T_sp defval)
 {
   return core::cl__getf(this->_Properties,prop,defval);
 }
 
+CL_DOCSTRING("Return T if the property **symbol** of **this** (a chem:matter) is defined.");
 CL_LISPIFY_NAME("hasProperty");
-CL_DEFMETHOD bool Matter_O::hasProperty(core::Symbol_sp prop)
+CL_DEFMETHOD bool Matter_O::hasProperty(core::Symbol_sp symbol)
 {
-  return !core::cl__getf(this->_Properties,prop,_Unbound<core::T_O>()).unboundp();
+  return !core::cl__getf(this->_Properties,symbol,_Unbound<core::T_O>()).unboundp();
 }
-
 
 
 CL_LISPIFY_NAME("firstAtomWithName");

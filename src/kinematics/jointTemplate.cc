@@ -47,8 +47,12 @@ namespace kinematics
 //
 
 
+void Checkpoint_O::fields(core::Record_sp node) {
+  node->field(INTERN_(kw,constitution_name),this->_ConstitutionName);
+  node->field(INTERN_(kw,topology_name),this->_TopologyName);
+}
 
-    Checkpoint_sp Checkpoint_O::make(const core::Symbol_sp& constitutionName,
+Checkpoint_sp Checkpoint_O::make(const core::Symbol_sp& constitutionName,
 				     const core::Symbol_sp& topologyName )
     {
         GC_ALLOCATE(Checkpoint_O, me);
@@ -73,6 +77,10 @@ namespace kinematics
 // ----------------------------------------------------------------------
 //
 
+void CheckpointJoint_O::fields(core::Record_sp node) {
+  node->field(INTERN_(kw,atom_name),this->_AtomName);
+  this->Base::fields(node);
+}
 
 
 CL_LISPIFY_NAME("make-checkpoint-joint");
@@ -97,6 +105,10 @@ CheckpointJoint_sp CheckpointJoint_O::make(core::Symbol_sp atomName)
 
 
 
+void CheckpointOutPlugJoint_O::fields(core::Record_sp node) {
+  node->field(INTERN_(kw,out_plug),this->_Plug);
+  this->Base::fields(node);
+}
 
 CL_LISPIFY_NAME(make-checkpoint-out-plug-joint);
   CheckpointOutPlugJoint_sp CheckpointOutPlugJoint_O::make(chem::OutPlug_sp outPlug)
@@ -117,6 +129,13 @@ CL_LISPIFY_NAME(make-checkpoint-out-plug-joint);
 // ----------------------------------------------------------------------
 //
 
+
+void JointTemplate_O::fields(core::Record_sp node) {
+  node->field_if_not_nil(INTERN_(kw,parent),this->_Parent);
+  node->field(INTERN_(kw,id),this->_Id);
+  node->field(INTERN_(kw,comment),this->_Comment);
+  this->Base::fields(node);
+}
 
 CL_LISPIFY_NAME("make-atom-template");
   JointTemplate_sp JointTemplate_O::make(const int id, const string& comment, JointTemplate_sp parent)
@@ -150,6 +169,14 @@ gc::Nilable<JointTemplate_sp> JointTemplate_O::parent() const
 //
 
 
+void BondedJointTemplate_O::fields(core::Record_sp node) {
+  node->field(INTERN_(kw,children),this->_Children);
+  node->field_if_not_default(INTERN_(kw,distance),this->_Distance,0.0);
+  node->field_if_not_default(INTERN_(kw,theta),this->_Theta,0.0);
+  node->field_if_not_default(INTERN_(kw,phi),this->_Phi,0.0);
+  node->field(INTERN_(kw,out_plug),this->_OutPlug);
+  this->Base::fields(node);
+}
 
 CL_LISPIFY_NAME(make-bonded-atom-template);
   BondedJointTemplate_sp BondedJointTemplate_O::make(chem::OutPlug_sp outPlug)
@@ -161,7 +188,7 @@ CL_LISPIFY_NAME(make-bonded-atom-template);
 
 
 
-core::List_sp BondedJointTemplate_O::children() {
+CL_DEFMETHOD core::List_sp BondedJointTemplate_O::children() {
   core::List_sp l = _Nil<core::T_O>();
   for ( int i(0), iEnd(this->_Children.size()); i<iEnd; ++i ) {
     l = core::Cons_O::create(this->_Children[i],l);
@@ -269,6 +296,10 @@ core::List_sp BondedJointTemplate_O::children() {
 // ----------------------------------------------------------------------
 //
 
+void DelayedBondedJointTemplate_O::fields(core::Record_sp node) {
+  node->field(INTERN_(kw,checkpoint),this->_Checkpoint);
+  this->Base::fields(node);
+}
 
 CL_LISPIFY_NAME(make-DelayedBondedJointTemplate);
 DelayedBondedJointTemplate_sp DelayedBondedJointTemplate_O::make(const Checkpoint_sp& checkpoint)
@@ -310,6 +341,12 @@ DelayedBondedJointTemplate_sp DelayedBondedJointTemplate_O::make(const Checkpoin
 //
 
 
+void RootBondedJointTemplate_O::fields(core::Record_sp node) {
+  node->field(INTERN_(kw,constitution_name),this->_ConstitutionName);
+  node->field(INTERN_(kw,topology_name),this->_TopologyName);
+  node->field(INTERN_(kw,in_plug),this->_InPlug);
+  this->Base::fields(node);
+}
 
 CL_LISPIFY_NAME(make-RootBondedJointTemplate);
   RootBondedJointTemplate_sp RootBondedJointTemplate_O::make(core::Symbol_sp constitutionName, const core::Symbol_sp topologyName, chem::Plug_sp inPlug)

@@ -56,10 +56,6 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace chem {
 
-    string Aggregate_O::__repr__() const
-    {
-	return this->Base::__repr__();
-    }
 
 #ifdef XML_ARCHIVE
     Aggregate_sp	Aggregate_O::open(T_sp pathDesignator)

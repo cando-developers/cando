@@ -51,7 +51,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/cipPrioritizer.h>
 #include <cando/chem/constitutionAtoms.h>
 #include <clasp/core/wrappers.h>
-
+#include <cando/geom/ovector2.h>
 
 namespace chem
 {
@@ -73,7 +73,6 @@ void	CDNode_O::initialize()
   this->Base::initialize();
   this->_Atom = _Nil<Atom_O>();
 }
-#if 0
 void CDNode_O::fields(core::Record_sp node)
 {
   node->field(INTERN_(kw,id),this->_Id);
@@ -85,9 +84,8 @@ void CDNode_O::fields(core::Record_sp node)
   node->field(INTERN_(kw,atom_properties),this->_AtomProperties);
   node->field(INTERN_(kw,residue_properties),this->_ResidueProperties);
   node->field(INTERN_(kw,molecule_properties),this->_MoleculeProperties);
-  this->Base(node);
+  this->Base::fields(node);
 }
-#endif
 
 std::string CDNode_O::_extractLabel(adapt::QDomNode_sp node)
 {
@@ -184,7 +182,6 @@ void	CDBond_O::initialize()
   this->_EndNode = _Nil<CDNode_O>();
 }
 
-#if 0
 void CDBond_O::fields(core::Record_sp node)
 {
   node->field(INTERN_(kw,idbegin),this->_IdBegin);
@@ -194,7 +191,6 @@ void CDBond_O::fields(core::Record_sp node)
   node->field(INTERN_(kw,order),this->_Order);
   this->Base::fields(node);
 }
-#endif
 
 string	CDBond_O::getOrderAsString()
 {
@@ -276,6 +272,18 @@ void	CDBond_O::parseFromXml(adapt::QDomNode_sp xml, bool verbose)
   if (verbose) BFORMAT_T(BF("CDBond _IdBegin(%s) _IdEnd(%s) order(%s) display(%s)\n") % this->_IdBegin % this->_IdEnd % order % display );
 }
 
+
+
+void CDFragment_O::fields(core::Record_sp node)
+{
+  node->field(INTERN_(kw,constitutionName),this->_ConstitutionName);
+  node->field(INTERN_(kw,nodes),this->_Nodes);
+  node->field(INTERN_(kw,atomsToBonds),this->_AtomsToNodes);
+  node->field(INTERN_(kw,bonds),this->_Bonds);
+  node->field(INTERN_(kw,largestId),this->_LargestId);
+  node->field_if_not_nil(INTERN_(kw,molecule),this->_Molecule);
+  this->Base::fields(node);
+}
 
 void	CDFragment_O::initialize()
 {_OF();
@@ -923,29 +931,16 @@ string CDFragment_O::__repr__() const
   return ss.str();
 }
 
-CDText_sp CDText_O::make(core::HashTableEq_sp kprops)
-{
-  IMPLEMENT_ME();
-};
 
-void	CDText_O::initialize()
+void CDText_O::fields(core::Record_sp node)
 {
-  this->Base::initialize();
-  this->_Properties = core::HashTableEq_O::create_default();
+  node->field(INTERN_(kw,code),this->_Code);
 }
-
-
-bool	CDText_O::hasProperties() 
-{ 
-  return this->_Properties->size()>0; 
-};
-
-
 
 /*!
  * Text blocks should be list of key: value pairs separated by line feeds
  */
-void	CDText_O::parseFromXml(adapt::QDomNode_sp text, bool verbose)
+bool CDText_O::parseFromXml(adapt::QDomNode_sp text, bool verbose)
 {
   core::List_sp xmls = text->childrenWithName("s");
   stringstream ss;
@@ -954,38 +949,26 @@ void	CDText_O::parseFromXml(adapt::QDomNode_sp text, bool verbose)
     ss << child->getData();
   }
   string name = ss.str();
-  this->_Text = core::trimWhiteSpace(name);
-  if ( this->_Text[0] != '(' )
+  string stext = core::trimWhiteSpace(name);
+  if ( stext[0] != '(' )
   {
     LOG(BF("Text block is not code") );
-    return;
+    return false;
   }
-  if (verbose) BFORMAT_T(BF("CDText parsed: %s") % this->_Text);
-  core::StringInputStream_sp sin = core::cl__make_string_input_stream(core::Str_O::create(this->_Text)
+  if (verbose) BFORMAT_T(BF("CDText parsed: %s") % stext);
+  core::StringInputStream_sp sin = core::cl__make_string_input_stream(core::Str_O::create(stext)
                                                                       ,core::clasp_make_fixnum(0)
                                                                       ,_Nil<core::T_O>());
-#if 0
-  core::Reader_sp reader = core::Reader_O::create(sin,lisp);
-  core::Cons_sp block = reader->read(true,_Nil<core::T_O>()).as<core::Cons_O>();
-#endif
+  
+  core::DynamicScopeManager scope(cl::_sym_STARpackageSTAR,_lisp->findPackage(ChemPkg));
   core::List_sp block = read_lisp_object(sin,true,_Nil<core::T_O>(),false);
   core::cl__close(sin);
-  LOG(BF("Parsed text block: %s\n") % this->_Text);
+  LOG(BF("Parsed text block: %s\n") % stext);
   if ( block.nilp() ) {
-    SIMPLE_ERROR(BF("Error compiling code:\n"+this->_Text));
+    SIMPLE_ERROR(BF("Error compiling code:\n"+stext));
   }
-  LOG(BF("About to evaluate CDText: %s") % _rep_(block) );
-  core::List_sp result = core::eval::evaluate(block,_Nil<core::Environment_O>());
-  this->_Properties = core::HashTableEq_O::create_default();
-  while (result.notnilp()) {
-    core::T_sp key = oCar(result);
-    core::T_sp value = oCadr(result);
-    result = oCddr(result);
-    if ( chem::_sym__PLUS_validChemdrawKeywords_PLUS_->symbolValue().as<core::HashTable_O>()->gethash(key).notnilp() ) {
-      set_property(this->_Properties,key,value);
-      if (verbose) BFORMAT_T(BF("   setting property %s to %s\n") % core::_rep_(key) % core::_rep_(value));
-    } else SIMPLE_ERROR(BF("Illegal chemdraw keyword: %s value: %s") % _rep_(key) % _rep_(value) );
-  }
+  this->_Code = block;
+  return true;
 }
 
 SYMBOL_EXPORT_SC_(KeywordPkg,comment);
@@ -1020,13 +1003,13 @@ CL_INITIALIZE void initialize_valid_chemdraw_keywords()
 
 
 
-
-
-
-void	ChemDraw_O::initialize()
+void ChemDraw_O::fields(core::Record_sp node)
 {
-  this->Base::initialize();
+  node->field(INTERN_(kw,allFragments),this->_AllFragments);
+  node->field(INTERN_(kw,namedFragments),this->_NamedFragments);
+  node->field(INTERN_(kw,code),this->_Code);
 }
+
 
 
 /*
@@ -1046,14 +1029,6 @@ CL_DEFUN ChemDraw_sp ChemDraw_O::make(core::T_sp stream, bool verbose)
   me->parse(stream,verbose); // me->parse(stream);
   return me;
 };
-
-#ifdef XML_ARCHIVE
-void	ChemDraw_O::archive(core::ArchiveP node)
-{
-  IMPLEMENT_ME();
-}
-#endif
-
 
 #if 0
 #define ARGS_core_ "(name &key comment chiral-centers group name-template pdb-template restraints residue-charge restrained-pi-bonds caps)"
@@ -1135,25 +1110,9 @@ void ChemDraw_O::parseChild( adapt::QDomNode_sp child, bool verbose )
     }
   } else if ( child->getLocalName() == "t" ) {
     GC_ALLOCATE(CDText_O, text );
-    text->parseFromXml(child,verbose);
-#if 0
-    if ( text->hasProperties() )
-    {
-      LOG(BF("Found properties: %s") % _rep_(text) );
-      core::HashTableEq_sp properties = text->getProperties();
-      if (!properties->contains(INTERN_(kw,name)))
-      {
-        SIMPLE_ERROR(BF("Every properties block must have a property(name:)"));
-      }
-      core::Symbol_sp constitutionName = properties->gethash(INTERN_(kw,name)).as<core::Symbol_O>();
-      if ( !this->_NamedFragments.contains(constitutionName) )
-      {
-        SIMPLE_ERROR(BF("Could not find fragment with name("+_rep_(constitutionName)+")"));
-      }
-      CDFragment_sp fragment = this->_NamedFragments.get(constitutionName);
-      fragment->addProperties(properties);
+    if (text->parseFromXml(child,verbose)) {
+      this->_Code = core::Cons_O::create(text->_Code,this->_Code);
     }
-#endif
   } else if ( child->getLocalName() == "group" ) {
     if (verbose) BFORMAT_T(BF("ChemDraw_O::parsing group start...\n"));
     for ( adapt::QDomNode_O::iterator it=child->begin_Children(); it!=child->end_Children(); it++ ) {
@@ -1233,7 +1192,37 @@ CL_DEFMETHOD     core::List_sp	ChemDraw_O::getSubSetOfFragments(adapt::SymbolSet
 }
 
 
+SYMBOL_EXPORT_SC_(ChemPkg,singleCDBond);
+SYMBOL_EXPORT_SC_(ChemPkg,doubleCDBond);
+SYMBOL_EXPORT_SC_(ChemPkg,tripleCDBond);
+SYMBOL_EXPORT_SC_(ChemPkg,dativeCDBond);
+SYMBOL_EXPORT_SC_(ChemPkg,singleDashCDBond);
+SYMBOL_EXPORT_SC_(ChemPkg,doubleDashCDBond);
+SYMBOL_EXPORT_SC_(ChemPkg,tripleDashCDBond);
+SYMBOL_EXPORT_SC_(ChemPkg,hashCDBond);
+SYMBOL_EXPORT_SC_(ChemPkg,hollowWedgeCDBond);
+SYMBOL_EXPORT_SC_(ChemPkg,wedgeHashCDBond);
+SYMBOL_EXPORT_SC_(ChemPkg,wedgeCDBond);
+SYMBOL_EXPORT_SC_(ChemPkg,wavyCDBond);
+SYMBOL_EXPORT_SC_(ChemPkg,unknownCDBond);
 
+SYMBOL_EXPORT_SC_(ChemPkg,_PLUS_CDBondOrderConverter_PLUS_);
+
+CL_BEGIN_ENUM(CDBondOrder,_sym__PLUS_CDBondOrderConverter_PLUS_,"CDBondOrder");
+CL_VALUE_ENUM(_sym_singleCDBond,singleCDBond);
+CL_VALUE_ENUM(_sym_doubleCDBond,doubleCDBond);
+CL_VALUE_ENUM(_sym_tripleCDBond,tripleCDBond);
+CL_VALUE_ENUM(_sym_dativeCDBond,dativeCDBond);
+CL_VALUE_ENUM(_sym_singleDashCDBond,singleDashCDBond);
+CL_VALUE_ENUM(_sym_doubleDashCDBond,doubleDashCDBond);
+CL_VALUE_ENUM(_sym_tripleDashCDBond,tripleDashCDBond);
+CL_VALUE_ENUM(_sym_hashCDBond,hashCDBond);
+CL_VALUE_ENUM(_sym_hollowWedgeCDBond,hollowWedgeCDBond);
+CL_VALUE_ENUM(_sym_wedgeHashCDBond,wedgeHashCDBond);
+CL_VALUE_ENUM(_sym_wedgeCDBond,wedgeCDBond);
+CL_VALUE_ENUM(_sym_wavyCDBond,wavyCDBond);
+CL_VALUE_ENUM(_sym_unknownCDBond,unknownCDBond);
+CL_END_ENUM(_sym__PLUS_CDBondOrderConverter_PLUS_);
 
     
 

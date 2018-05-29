@@ -77,6 +77,10 @@
 (format t "Starting Cando~%")
 (format t "*features* -> ~a~%" *features*)
 
+;;; The following will set the starting value for
+;;; *package* for to :cando-user for every new thread
+(core:symbol-global-value-set '*package* (find-package :cando-user))
+
 #-cando-jupyter
 (progn
   (if (member :setup-cando *features*)
