@@ -50,6 +50,8 @@
 #include <clasp/core/evaluator.h>
 #include <cando/chem/aggregate.h>
 
+
+
 namespace chem {
 
 time_t	time_start;
@@ -801,8 +803,7 @@ int Octree_O::iBuildInteriorOctant( OctNode_sp PonNode, int iAtoms, gctools::Vec
 SYMBOL_EXPORT_SC_(KeywordPkg,solvent);
 SYMBOL_EXPORT_SC_(ChemPkg,lookup_atom_properties_radius);
 //CL_DEFMETHOD Octree_sp Octree_O::octOctTreeCreate(Aggregate_sp uUnit, int iType, double dGridSpace, double dAddExtent, double dShellExtent,
-CL_DEFMETHOD void Octree_O::octOctTreeCreate(Aggregate_sp uUnit, int iType, double dGridSpace, double dAddExtent, double dShellExtent,
-                                             int iIncludeSolvent, bool bVerbose )
+CL_DEFMETHOD void Octree_O::octOctTreeCreate(Aggregate_sp uUnit, int iType, double dGridSpace, double dAddExtent, double dShellExtent, FFNonbondDb_sp nonbondDb,  int iIncludeSolvent, bool bVerbose)
 {
  // Octree_sp		  octTree;
   Vector3                 vMinCorner, vMaxCorner, vAtom;
@@ -861,7 +862,7 @@ CL_DEFMETHOD void Octree_O::octOctTreeCreate(Aggregate_sp uUnit, int iType, doub
             aAtom = lAtoms.getAtom();
             vaAtoms.push_back(aAtom); // VarArrayAdd( vaAtoms, (GENP)&aAtom );
             // iDefaultedRadius += iAtomSetTmpRadius( aAtom );
-            core::T_mv result = core::eval::funcall(chem::_sym_lookup_atom_properties_radius,aAtom);
+            core::T_mv result = core::eval::funcall(chem::_sym_lookup_atom_properties_radius,aAtom, nonbondDb);
             aAtom->dAtomTemp = core::clasp_to_double(result);
             core::T_sp defaulted = result.second();
             iDefaultedRadius += defaulted.isTrue() ? 1 : 0;
@@ -1271,7 +1272,7 @@ void Octree_O::OctNodeInitCharges( OctNode_sp PonNode, int iDistanceCharge)
           if ( d < PaAtom->dAtomTemp )
             iCompCharge = 0;
         }
-
+//	printf("%s:%d:%s vPoint -> %d, %d, %d, %f\n", __FILE__, __LINE__, __FUNCTION__, PonNode->iStatus, PonNode->iNodeNum, PonNode->iDepth, PonNode->_PfCharges[pfccount]);
         if ( iCompCharge ) {
 				/*
 				 *  Keep track of max, min charges and 
@@ -1542,7 +1543,6 @@ CL_DEFMETHOD void Octree_O::OctNodePrintGrid( OctNode_sp PonNode, int iColor)
 
 /* global for speed */
 
-static int	boxct[8];
 
 //static void Octree_O::SplitIncludedNode( OctNode_sp PonNode )
 void Octree_O::SplitIncludedNode( OctNode_sp PonNode)
@@ -1550,6 +1550,7 @@ void Octree_O::SplitIncludedNode( OctNode_sp PonNode)
   int		          i, j, k, nchild, ct, ct2, ccharge, cnode;
   gctools::Vec0<float>    PfTmpCharges;
   float                 PfCharge;
+  int	boxct[8];
   
 //	if ( PonNode->PonChildren != NULL )
 //  for (i=0; i<8; i++){ 

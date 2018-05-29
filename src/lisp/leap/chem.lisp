@@ -124,7 +124,16 @@
             force-field-names)
       nbmerged)))
 
-(defmethod chem:lookup-atom-properties-radius (atom &optional (force-field-name :default))
- ;; "Return (values atom-radius radius-is-default-t-nil)"
-  (values 1.5 t)
-  )
+;;(defmethod chem:lookup-atom-properties-radius (atom &optional (force-field-name :default))
+  ;; "Return (values atom-radius radius-is-default-t-nil)"
+;;  (values 1.5 t))
+
+(defun chem:lookup-atom-properties-radius (atom nonbond-db &optional (force-field-name :default))
+  ;; "Return (values atom-radius radius-is-default-t-nil)"
+  (if (chem:has-type nonbond-db (chem:get-type atom))
+      (let* ((type-index (chem:find-type-index nonbond-db (chem:get-type atom)))
+             (ffnonbond (chem:get-ffnonbond-using-type-index nonbond-db type-index))
+             (atom-radius (chem:get-radius-angstroms ffnonbond)))
+        (values atom-radius nil))
+      (progn
+        (values 1.5 t))))

@@ -36,7 +36,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/atom.h>
 #include <cando/geom/vector3.h>
 #include <cando/chem/chemPackage.h>
-
+#include <cando/chem/ffNonbondDb.h>
 
 namespace chem {
 
@@ -124,7 +124,7 @@ namespace chem {
   void OctNodeUpdateCharge( OctNode_sp PonNode, int iParentAtoms, gctools::Vec0<Atom_sp> PaParentAtoms, int iDistanceCharge );
   int OctNodeCheckSolvent( OctNode_sp PonNode );
   void octOctTreeCreate(Aggregate_sp uUnit, int iType, double dGridSpace, 
-			double dAddExtent, double dShellExtent, int iIncludeSolvent, bool bVerbose);
+			double dAddExtent, double dShellExtent, FFNonbondDb_sp nonbondDb, int iIncludeSolvent, bool bVerbose);
   core::T_mv OctTreeInitCharges(/*Octree_sp octTree,*/ int iAtomOption, int iDielectric, 
                            double dCutDist);	
   void OctTreeDescribe();	/* ( Octree_sp ) */

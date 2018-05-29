@@ -262,7 +262,7 @@ void    FFNonbondDb_O::add(FFNonbond_sp nb)
   this->_Parameters->setf_gethash(nb->getType(),core::clasp_make_fixnum(index));
 }
 
-bool    FFNonbondDb_O::hasType(core::Symbol_sp type)
+CL_DEFMETHOD bool    FFNonbondDb_O::hasType(core::Symbol_sp type)
 {
   return this->_Parameters->gethash(type).notnilp();
 }

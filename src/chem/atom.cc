@@ -880,7 +880,7 @@ CL_DEFMETHOD     string Atom_O::getElementAsString()
   return atomicSymbolFromElement(this->getElement())->symbolName()->get();
 }
 
-core::Symbol_sp Atom_O::getElementAsSymbol() const
+CL_DEFMETHOD core::Symbol_sp Atom_O::getElementAsSymbol() const
 {
   return symbolFromElement(this->getElement());
 }

@@ -87,7 +87,7 @@
                   ion2-atom (chem:content-at ion2-residue 0))
             (chem:add-matter ion2-mol ion2-residue)
             (chem:add-matter ion2-agg ion2-mol)))
-      (chem:oct-oct-tree-create oct-tree mol oct-shell grid-space ion-min-size shell-extent 0 t)
+      (chem:oct-oct-tree-create oct-tree mol oct-shell grid-space ion-min-size shell-extent nonbond-db 0 t)
       (multiple-value-bind (min-charge-point max-charge-point)
           (chem:oct-tree-init-charges oct-tree at-octree dielectric ion1-size)
         (loop 
@@ -114,8 +114,8 @@
                 (setf min-charge-point min-new-charge-point)
                 (setf max-charge-point max-new-charge-point))
            do (decf ion1-number)
-           do (if ion2
-                  (progn 
+           do (if (and ion2 (> ion2-number 0))
+                   (progn 
                     (if (< (chem:get-charge ion2-atom) 0)
                         (setf new-point max-charge-point)
                         (setf new-point min-charge-point))
@@ -136,10 +136,5 @@
                                                        (if ion1 ion1-size ion2-size))
                         (setf min-charge-point min-new-charge-point)
                         (setf max-charge-point max-new-charge-point)))
-                    (decf ion2-number)))
-             ) ;;loop end
-        ))
-    
-    )
-  )
+                    (decf ion2-number))))))))
 
