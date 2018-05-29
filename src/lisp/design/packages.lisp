@@ -31,3 +31,16 @@
   (:documentation
    "Embryonic joint-tree code"))
 
+(defpackage #:design.oligomer
+  (:use #:cl )
+  (:export )
+  (:documentation
+   "Embryonic joint-tree code"))
+
+
+(defpackage #:design
+  (:use #:cl )
+  (:export )
+  (:documentation
+   "Embryonic joint-tree code"))
+

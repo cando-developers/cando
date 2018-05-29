@@ -1,4 +1,4 @@
-(in-package :design)
+(in-package :design.joint-tree)
 
 
 (defun interpret-builder-info-instruction (instr residue)
@@ -70,7 +70,7 @@ Return a list of prepare-topology objects"
   (let ((code (chem:chem-draw-code chem-draw-object))
         (extracted-topologys nil))
     (loop for fragment in (chem:all-fragments-as-list chem-draw-object)
-          do (do-residues (residue (chem:get-molecule fragment))
+          do (cando:do-residues (residue (chem:get-molecule fragment))
                (when (chem:has-property residue :topology-name)
                  (push (make-instance 'prepare-topology
                                       :name (chem:matter-get-property residue :topology-name)
@@ -163,7 +163,6 @@ Return a list of prepare-topology objects"
                (format result "~s/~s" child-name (kin:atom-template-comment child))))
     (get-output-stream-string result)))
 
-#+(or)
 (defun dump-build-order-recursively (parent-template cur-template constitution-atoms sout)
   (format sout "~s~%" (one-atom-as-string cur-template constitution-atoms))
   (dolist (child (kin:children cur-template))
@@ -182,11 +181,11 @@ Return a list of prepare-topology objects"
        (when root-atom-prop
          (error "joint-template-factory problem - atom has entity-to-delay-children-for and root-atom-prop - atom[~s] constitutionName[~s] topologyName[~s]"  atom constitution-name topology-name))
        (let ((checkpoint (if (type-of entity-to-delay-children-for 'chem:plug)
-                             (core:make-cxx-object 'kin:checkpoint-out-plug-atom
+                             (core:make-cxx-object 'kin:checkpoint-out-plug-joint
                                                    :constitution-name constitution-name
                                                    :topology-name topology-name
                                                    :out-plug entity-to-delay-children-for)
-                             (core:make-cxx-object 'kin:checkpoint-atom
+                             (core:make-cxx-object 'kin:checkpoint-joint
                                                    :constitution-name constitution-name
                                                    :topology-name topology-name
                                                    :atom-name (chem:atom-name entity-to-delay-children-for)))))
@@ -206,6 +205,7 @@ Return a list of prepare-topology objects"
                                                              :out-plug out-plug-atom-prop))
       (t (core:make-cxx-object 'kin:bonded-joint-template :id atom-index
                                                           :parent parent-template
+                                                          :children #()
                                                           :comment comment
                                                           :out-plug out-plug-atom-prop)))))
 
@@ -347,5 +347,3 @@ Return a list of prepare-topology objects"
 
 
 
-      
-(build-internal-coordinate-joint-template-tree (car (extract-topologys *be*)))
