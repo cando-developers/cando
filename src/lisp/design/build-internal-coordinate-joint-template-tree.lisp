@@ -151,20 +151,19 @@ Return a list of prepare-topology objects"
 ;;       (addAtomToIcoorTableRecursively icoorTable me child))))
 ;; 
 
-#+(or)
 (defun one-atom-as-string (me constitution-atoms)
   (let ((target (make-string-output-stream))
         (result (make-string-output-stream)))
-    (format target "~s" (kin:atom-name me constitution-atoms))
-    (format target "/~s" (class-name (class-of me)))
-    (format result "~30s: " (get-output-stream-string target))
-    (loop for child in (kin:bonded-joint-template-children me)
-          do (let ((child-name (kin:atom-name child constitution-atoms)))
-               (format result "~s/~s" child-name (kin:atom-template-comment child))))
+    (format target "~a" (kin:joint-template-atom-name me constitution-atoms))
+    (format target "/~a" (class-name (class-of me)))
+    (format result "~30a: " (get-output-stream-string target))
+    (loop for child in (kin:children me)
+          do (let ((child-name (kin:joint-template-atom-name child constitution-atoms)))
+               (format result "~a/~a" child-name (kin:joint-template-comment child))))
     (get-output-stream-string result)))
 
 (defun dump-build-order-recursively (parent-template cur-template constitution-atoms sout)
-  (format sout "~s~%" (one-atom-as-string cur-template constitution-atoms))
+  (format sout "~a~%" (one-atom-as-string cur-template constitution-atoms))
   (dolist (child (kin:children cur-template))
     (dump-build-order-recursively cur-template child constitution-atoms sout)))
 
@@ -191,6 +190,7 @@ Return a list of prepare-topology objects"
                                                    :atom-name (chem:atom-name entity-to-delay-children-for)))))
          (core:make-cxx-object 'kin:delayed-bonded-joint-template :id atom-index
                                                                   :parent parent-template
+                                                                  :children #()
                                                                   :checkpoint checkpoint
                                                                   :comment comment
                                                                   :out-plug out-plug-atom-prop )))
@@ -340,7 +340,7 @@ Return a list of prepare-topology objects"
       (let ((tree-template (build-atom-tree-template-recursively nil fragment root-atom constitution-atoms name name)))
         (let ((build-order (with-output-to-string (sout)
                              (dump-build-order-recursively nil tree-template constitution-atoms sout))))
-          (format t "Build order~a~%~a" build-order))
+          (format t "Build order:~%~a~%" build-order))
         tree-template))))
 
 

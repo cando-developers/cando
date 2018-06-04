@@ -132,14 +132,16 @@ namespace kinematics
 
 	/*! Return the atomName for this Template by looking up its index
 	  in the ConstitutionAtoms object */
-    core::Symbol_sp atomName(chem::ConstitutionAtoms_sp ca) const;
+    core::Symbol_sp jointTemplateAtomName(chem::ConstitutionAtoms_sp ca) const;
 
 	/*! Return the ConstitutionAtomIndex0N id for the JointTemplate */
     chem::ConstitutionAtomIndex0N id() const { return this->_Id;};
 
 	/*! Return the comment associated with this object */
-    string comment() const { return this->_Comment;};
+    CL_LISPIFY_NAME(joint-template-comment);
+    CL_DEFMETHOD string comment() const { return this->_Comment;};
 
+    CL_DEFMETHOD chem::ConstitutionAtomIndex0N constitutionAtomIndex() const { return this->_Id; };
 
     typedef adapt::SymbolMap<BondId_O> PlugNamesToBondIdMap;
     virtual Joint_sp writeIntoAtomTree(const AtomTree_sp& atomTree,

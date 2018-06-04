@@ -83,7 +83,6 @@ void CheckpointJoint_O::fields(core::Record_sp node) {
 }
 
 
-CL_LISPIFY_NAME("make-checkpoint-joint");
 CheckpointJoint_sp CheckpointJoint_O::make(core::Symbol_sp atomName)
     {
         GC_ALLOCATE(CheckpointJoint_O, me );
@@ -110,7 +109,6 @@ void CheckpointOutPlugJoint_O::fields(core::Record_sp node) {
   this->Base::fields(node);
 }
 
-CL_LISPIFY_NAME(make-checkpoint-out-plug-joint);
   CheckpointOutPlugJoint_sp CheckpointOutPlugJoint_O::make(chem::OutPlug_sp outPlug)
     {
         GC_ALLOCATE(CheckpointOutPlugJoint_O, me );
@@ -137,7 +135,6 @@ void JointTemplate_O::fields(core::Record_sp node) {
   this->Base::fields(node);
 }
 
-CL_LISPIFY_NAME("make-atom-template");
   JointTemplate_sp JointTemplate_O::make(const int id, const string& comment, JointTemplate_sp parent)
     {
         GC_ALLOCATE(JointTemplate_O, me );
@@ -147,7 +144,11 @@ CL_LISPIFY_NAME("make-atom-template");
 	return me;
     };
 
-core::Symbol_sp JointTemplate_O::atomName(chem::ConstitutionAtoms_sp constitutionAtoms) const
+CL_DOCSTRING(R"(Return the atom name for this joint-template. 
+You need to pass the constitution-atoms that this joint-template's atom id indexes in to 
+because the joint-template doesn't store the atom name, just an index into a constitution-atoms object.)");
+CL_LISPIFY_NAME("joint-template-atom-name");
+CL_DEFMETHOD core::Symbol_sp JointTemplate_O::jointTemplateAtomName(chem::ConstitutionAtoms_sp constitutionAtoms) const
     {
       if ( this->_Id==-1) return _Nil<core::Symbol_O>();
 	chem::ConstitutionAtom_sp ca = (*constitutionAtoms)[this->_Id];
@@ -178,7 +179,6 @@ void BondedJointTemplate_O::fields(core::Record_sp node) {
   this->Base::fields(node);
 }
 
-CL_LISPIFY_NAME(make-bonded-atom-template);
   BondedJointTemplate_sp BondedJointTemplate_O::make(chem::OutPlug_sp outPlug)
   {
       GC_ALLOCATE(BondedJointTemplate_O, me );
@@ -188,6 +188,7 @@ CL_LISPIFY_NAME(make-bonded-atom-template);
 
 
 
+CL_LISPIFY_NAME(children);
 CL_DEFMETHOD core::List_sp BondedJointTemplate_O::children() {
   core::List_sp l = _Nil<core::T_O>();
   for ( int i(0), iEnd(this->_Children.size()); i<iEnd; ++i ) {
@@ -301,7 +302,6 @@ void DelayedBondedJointTemplate_O::fields(core::Record_sp node) {
   this->Base::fields(node);
 }
 
-CL_LISPIFY_NAME(make-DelayedBondedJointTemplate);
 DelayedBondedJointTemplate_sp DelayedBondedJointTemplate_O::make(const Checkpoint_sp& checkpoint)
     {
         GC_ALLOCATE(DelayedBondedJointTemplate_O, me );
@@ -348,7 +348,6 @@ void RootBondedJointTemplate_O::fields(core::Record_sp node) {
   this->Base::fields(node);
 }
 
-CL_LISPIFY_NAME(make-RootBondedJointTemplate);
   RootBondedJointTemplate_sp RootBondedJointTemplate_O::make(core::Symbol_sp constitutionName, const core::Symbol_sp topologyName, chem::Plug_sp inPlug)
   {
       GC_ALLOCATE(RootBondedJointTemplate_O, me );
