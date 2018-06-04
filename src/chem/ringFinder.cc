@@ -57,7 +57,7 @@ __END_DOC
 #include <cando/chem/bond.h>
 #include <clasp/core/lispDefinitions.h>
 #include <clasp/core/wrappers.h>
-
+#include <clasp/core/evaluator.h>
 
 namespace chem {
 
@@ -770,7 +770,7 @@ CL_DEFMETHOD void RingFinder_O::findRings(int numAtoms)
 // if we try more than this many times
     // and don't find all the rings then something is wrong
   int trigger = numAtoms*2;
-  for (int numSteps = 0; numSteps<10; ++numSteps ) {
+  for (int numSteps = 0; numSteps<std::min(numAtoms,10); ++numSteps ) {
 //  while ( this->_finalRings.size() < numberOfRingsExpected ) {
     LOG(BF("Looking for rings, stage= %d : trigger[%d] : numAtoms[%d] : numberOfRingsExpected[%d]") % stage % trigger % numAtoms % numberOfRingsExpected  );
     this->advanceRingSearch(stage);
@@ -780,7 +780,7 @@ CL_DEFMETHOD void RingFinder_O::findRings(int numAtoms)
     trigger--;
     if ( trigger<=0 )
     {
-      SIMPLE_ERROR(BF("We advanced the ring search way beyond the number of times we should have needed to - there are %d atoms and %d rings expected and we advanced the search %d times") % numAtoms % numberOfRingsExpected % stage );
+      SIMPLE_WARN(BF("We advanced the ring search way beyond the number of times we should have needed to - there are %d atoms and %d rings expected and we advanced the search %d times") % numAtoms % numberOfRingsExpected % stage );
     }
   }
 }
