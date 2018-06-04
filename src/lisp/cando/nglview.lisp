@@ -189,3 +189,69 @@
                                      (setf resulta a))) agg)
                         resulta)))
 
+
+
+
+(defclass cando-structure (nglv:structure)
+  ((%matter :initarg :matter :accessor matter)))
+
+(defmethod nglv:ext ((self cando-structure))
+  "mol2")
+
+(defmethod nglv:get-structure-string ((self cando-structure))
+  (check-type self cando-structure)
+  (check-type (matter self) chem:aggregate)
+  (progn
+    (cl-jupyter:logg 2 "Generating mol2 as string~%")
+    (chem:aggregate-as-mol2-string (matter self) t))
+  #++(progn
+       (cl-jupyter:logg 2 "Saving structure to /tmp/structure.mol2~%")
+       (cando:save-mol2 (matter self) "/tmp/structure.mol2" :use-sybyl-types t)
+       (with-open-file (stream "/tmp/structure.mol2" :direction :input)
+	 (let* ((entire-file (make-string (+ (file-length stream) 2)
+					  :initial-element #\newline)))
+	   (read-sequence entire-file stream)
+	   (close stream)
+	   entire-file))))
+
+
+
+(defclass cando-trajectory (nglv:trajectory nglv:structure)
+  ((trajectory :initarg :trajectory :accessor trajectory
+               :initform (make-array 16 :fill-pointer 0 :adjustable t))
+   (number-of-atoms :initarg :number-of-atoms :accessor number-of-atoms)
+   (matter :initarg :matter :accessor matter)))
+
+(defmethod initialize-instance :after ((self cando-trajectory) &key)
+  (setf (gethash "cando" nglv:*BACKENDS*) 'cando-trajectory)
+  (values))
+
+(defmethod nglv:ext ((self cando-trajectory))
+  "mol2")
+
+(defmethod nglv:get-structure-name ((self cando-trajectory))
+  (chem:get-name (matter self)))
+
+(defmethod nglv:get-structure-string ((self cando-trajectory))
+  (chem:aggregate-as-mol2-string (matter self) t))
+
+(defun make-cando-trajectory (structure)
+  (make-instance 'cando-trajectory :matter structure
+                 :number-of-atoms (chem:number-of-atoms structure)))
+
+(defmethod nglv:append-coordinates ((self cando-trajectory) coordinates)
+  (vector-push-extend coordinates (trajectory self)))
+
+(defmethod nglv:get-coordinates ((self cando-trajectory) index)
+  (aref (trajectory self) index))
+
+(defmethod nglv:n-frames ((self cando-trajectory))
+  (length (trajectory self)))
+
+(defun show-cando-trajectory (trajectory &rest kwargs &key &allow-other-keys)
+  (apply #'nglv:make-nglwidget :structure trajectory kwargs))
+
+(defun show-aggregate (aggregate &rest kwargs &key &allow-other-keys)
+  (let ((structure (make-instance 'cando-structure :matter aggregate)))
+    (apply #'nglv:make-nglwidget :structure structure kwargs)))
+
