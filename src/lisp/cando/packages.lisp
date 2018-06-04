@@ -213,6 +213,7 @@
    #:do-atoms
    #:remove-molecules
    #:combine
+   #:show-aggregate
    ))
 
 
