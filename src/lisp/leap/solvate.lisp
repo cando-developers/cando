@@ -37,7 +37,12 @@
          (when (< dz dzmin)
            (setf dzmin dz))))
      matter)
-    (values x-vec y-vec z-vec (- dxmax dxmin) (- dymax dymin) (- dzmax  dzmin))))
+    (if (chem:has-property matter :bounding-box)
+        (values x-vec y-vec z-vec
+               (first (chem:matter-get-property matter :bounding-box))
+               (second (chem:matter-get-property matter :bounding-box))
+               (third (chem:matter-get-property matter :bounding-box)))
+        (values x-vec y-vec z-vec (- dxmax dxmin) (- dymax dymin) (- dzmax  dzmin)))))
          
 ;;; xstart,ystart,zstart is the CENTER of the first solvent box that goes at the max XYZ corner.
 ;;; ix,iy,iz is the number of solvent boxes
@@ -65,7 +70,7 @@
 
 ;;Closeness controls how close solvent can get to solute before they are considered to be overlapping.
 ;;Farness defines shell's range.
-(defun tool-solvate-and-shell (original-solute solvent width-list &key (closeness 0.0) (farness 10.0) shell oct isotropic verbose)
+(defun tool-solvate-and-shell (solute solvent width-list &key (closeness 0.0) (farness 10.0) shell oct isotropic verbose)
   (check-type width-list list)
   (let* ((solvent-box (chem:matter-get-property solvent :bounding-box))
          (solvent-x-width (first solvent-box))
@@ -77,7 +82,8 @@
          xwidth ywidth zwidth
          ix iy iz
          xstart ystart zstart
-         (solute (chem:matter-copy original-solute)))
+         ;;Make a copy of original solute just in case.
+         (original-solute (chem:matter-copy solute)))
     (let* ((solute-center (chem:geometric-center solute))
            (transform-to-origin (geom:make-m4-translate (geom:v* solute-center -1.0))))
       (chem:apply-transform-to-atoms solute transform-to-origin))
@@ -118,7 +124,9 @@
                                         (invalid-solvent-shell solute-xvec solute-yvec solute-zvec solvent-molecule farness)
                                         (invalid-solvent-rectangular xwidth ywidth zwidth solvent-molecule)))))))
       (tool-add-all-boxes solute test-function solvent ix iy iz xstart ystart zstart solvent-x-width solvent-y-width solvent-z-width)
-      solute)))
+      solute)
+    (unless shell
+      (chem:set-property solute :bounding-box (list xwidth ywidth zwidth)))))
 
 (defun overlap-solvent (solute-xvec solute-yvec solute-zvec mol atom-max-r)
   (let* ((2xatom-max-r (* atom-max-r 2.0))
