@@ -57,7 +57,7 @@ namespace kinematics
         void fields(core::Record_sp node);
         
     DelayedBondedJoint_O() : BondedJoint_O() {};
-    DelayedBondedJoint_O(const chem::AtomId& atomId,const string& comment) : BondedJoint_O(atomId,comment) {};
+    DelayedBondedJoint_O(const chem::AtomId& atomId,core::T_sp name, const string& comment) : BondedJoint_O(atomId,name,comment) {};
 
 	virtual core::Symbol_sp typeSymbol() const;
 

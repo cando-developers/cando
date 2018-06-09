@@ -120,11 +120,12 @@ namespace kinematics
     bool fieldsp() const { return true; };
     void fields(core::Record_sp node);
   public:
-    static JointTemplate_sp make(const int id, const string& comment, const JointTemplate_sp parent);
+    static JointTemplate_sp make(const int id, core::T_sp name, const string& comment, const JointTemplate_sp parent);
   protected:
 	//! Point to the parent atom (also used to contruct linked list of unused PoolMembers)
     gc::Nilable<JointTemplate_sp>			_Parent;
     chem::ConstitutionAtomIndex0N	_Id;
+    core::T_sp                          _Name;
     string				_Comment;
   public:
 	/*! Return the parent */
@@ -158,7 +159,10 @@ namespace kinematics
 	/*! Extract the internal coordinates from the atom */
     virtual void extractInternalCoords(Joint_sp const& atom) {THROW_HARD_ERROR(BF("Subclass must implement"));};
 
-  JointTemplate_O() : _Parent(_Nil<JointTemplate_O>()), _Id(-1), _Comment("") {};
+    CL_LISPIFY_NAME(children);
+    CL_DEFMETHOD virtual core::List_sp children() const {return _Nil<core::T_O>();}
+    
+  JointTemplate_O() : _Parent(_Nil<JointTemplate_O>()), _Id(-1), _Name(_Nil<core::T_O>()), _Comment("") {};
     virtual ~JointTemplate_O() {};
   };
 

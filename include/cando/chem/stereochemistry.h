@@ -65,6 +65,7 @@ namespace chem
   SMART(StereoConfiguration);
   class StereoConfiguration_O : public core::CxxObject_O
   {
+    CL_DOCSTRING(R"(Store the stereochemical configuration :R or :S for a single atom represented by the atoms name)");
     LISP_CLASS(chem,ChemPkg,StereoConfiguration_O,"StereoConfiguration",core::CxxObject_O);
   public:
     CL_LISPIFY_NAME(make_stereo_configuration);
@@ -95,6 +96,7 @@ namespace chem
  */
   SMART(Stereoisomer);
   class Stereoisomer_O : public Entity_O {
+    CL_DOCSTRING(R"(Stores the stereochemical configuration of a collection of atoms and a name for the stereoisomer)");
     LISP_CLASS(chem,ChemPkg,Stereoisomer_O,"Stereoisomer",Entity_O);
   public:
     CL_LISPIFY_NAME(make_stereoisomer);
@@ -132,13 +134,14 @@ namespace chem
   SMART(StereoInformation);
   class StereoInformation_O : public core::CxxObject_O
   {
+    CL_DOCSTRING(R"(Store a list of stereoisomers and a mapping of names to stereoisomers. The names are compared using EQ and they can be symbols or fixnums that represent absolute stereochemistry using a canonical order of stereocenters that si defined by the individual stereoisomers and must be consistent across them.)");
     LISP_CLASS(chem,ChemPkg,StereoInformation_O,"StereoInformation",core::CxxObject_O);
   public:
     CL_LISPIFY_NAME(make_stereoinformation);
     CL_DEF_CLASS_METHOD static StereoInformation_sp make(core::List_sp stereoisomers, core::List_sp restraints);
   private:
     gctools::Vec0<Stereoisomer_sp>		_Stereoisomers;
-    adapt::SymbolMap<Stereoisomer_O>	_NameOrPdbToStereoisomer;
+    gc::SmallMap<core::T_sp,Stereoisomer_sp>	_NameOrPdbToStereoisomer;
     gctools::Vec0<ComplexRestraint_sp>	_ComplexRestraints;
   public:
     StereoInformation_O() {};
@@ -166,27 +169,27 @@ namespace chem
 
     void addStereoisomer(Stereoisomer_sp s);
 //    void addProChiralCenter(RPProChiralCenter s);
-    Stereoisomer_sp	getStereoisomer(core::Symbol_sp nameOrPdb);
+    Stereoisomer_sp	getStereoisomer(core::T_sp nameOrPdb);
 
 	    //! Return true if this StereoInformation recognizes the name or pdb name
-    bool	recognizesNameOrPdb(core::Symbol_sp nm)
+    bool	recognizesNameOrPdb(core::T_sp nm)
     {
       return ( this->_NameOrPdbToStereoisomer.contains(nm) != 0);
     };
 	    //! The name of the monomer with the nameOrPdb
-    core::Symbol_sp	nameFromNameOrPdb(core::Symbol_sp np)
+    core::T_sp	nameFromNameOrPdb(core::T_sp np)
     {
       Stereoisomer_sp i;
-      try {i = this->_NameOrPdbToStereoisomer[np];}
+      try {i = this->_NameOrPdbToStereoisomer.get(np);}
       catch (...) {CELL_ERROR(np);};
       ASSERTNOTNULL(i);
       return i->getName();
     };
 	    //! The pdb_name of the monomer with the nameOrPdb
-    core::Symbol_sp	pdbFromNameOrPdb(core::Symbol_sp np)
+    core::T_sp	pdbFromNameOrPdb(core::T_sp np)
     {
       Stereoisomer_sp i;
-      try {i = this->_NameOrPdbToStereoisomer[np];}
+      try {i = this->_NameOrPdbToStereoisomer.get(np);}
       catch (...) {CELL_ERROR(np);};
       ASSERTNOTNULL(i);
       return i->getPdb();

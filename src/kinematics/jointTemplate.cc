@@ -131,14 +131,16 @@ void CheckpointOutPlugJoint_O::fields(core::Record_sp node) {
 void JointTemplate_O::fields(core::Record_sp node) {
   node->field_if_not_nil(INTERN_(kw,parent),this->_Parent);
   node->field(INTERN_(kw,id),this->_Id);
+  node->field(INTERN_(kw,name),this->_Name);
   node->field(INTERN_(kw,comment),this->_Comment);
   this->Base::fields(node);
 }
 
-  JointTemplate_sp JointTemplate_O::make(const int id, const string& comment, JointTemplate_sp parent)
+JointTemplate_sp JointTemplate_O::make(const int id, core::T_sp name, const string& comment, JointTemplate_sp parent)
     {
         GC_ALLOCATE(JointTemplate_O, me );
 	me->_Id = id;
+        me->_Name = name;
 	me->_Comment = comment;
 	me->_Parent = parent;
 	return me;
@@ -188,8 +190,7 @@ void BondedJointTemplate_O::fields(core::Record_sp node) {
 
 
 
-CL_LISPIFY_NAME(children);
-CL_DEFMETHOD core::List_sp BondedJointTemplate_O::children() {
+core::List_sp BondedJointTemplate_O::children() {
   core::List_sp l = _Nil<core::T_O>();
   for ( int i(0), iEnd(this->_Children.size()); i<iEnd; ++i ) {
     l = core::Cons_O::create(this->_Children[i],l);
@@ -237,7 +238,7 @@ CL_DEFMETHOD core::List_sp BondedJointTemplate_O::children() {
 						    bool rootNode)
     {
 	chem::AtomId atomId(moleculeId,residueId,this->_Id);
-	Joint_sp ownedBonded = atomTree->newBondedAtom(atomId,this->_Comment);
+	Joint_sp ownedBonded = atomTree->newBondedAtom(atomId,this->_Name,this->_Comment);
 	this->addChildren(ownedBonded,moleculeId,residueId,atomTree,incoming,outgoing);
 	if ( this->outPlug().boundp() )
 	{
@@ -318,7 +319,7 @@ DelayedBondedJointTemplate_sp DelayedBondedJointTemplate_O::make(const Checkpoin
 							   bool rootNode)
     {
 	chem::AtomId atomId(moleculeId,residueId,this->_Id);
-	Joint_sp ownedBonded = atomTree->newDelayedBondedAtom(atomId,this->_Comment);
+	Joint_sp ownedBonded = atomTree->newDelayedBondedAtom(atomId,this->_Name,this->_Comment);
 	this->_Checkpoint->setupDelayedBondedAtom(gc::As<DelayedBondedJoint_sp>(ownedBonded));
 	this->addChildren(ownedBonded,moleculeId,residueId,atomTree,incoming,outgoing);
 	if ( this->outPlug().boundp() )
@@ -380,10 +381,12 @@ Joint_sp RootBondedJointTemplate_O::writeIntoAtomTree(const AtomTree_sp& atomTre
     Joint_sp owned;
     if (gc::IsA<JumpJoint_sp>(incomingParent) && rootNode )
     {
-	owned = atomTree->newJumpAtom(atomId,this->_Comment);
+      owned = atomTree->newJumpAtom(atomId,this->_Name,this->_Comment);
     } else
     {
-	owned = atomTree->newRootBondedAtom(atomId,this->_Comment,
+	owned = atomTree->newRootBondedAtom(atomId,
+                                            this->_Name,
+                                            this->_Comment,
 					    this->_ConstitutionName,
 					    this->_TopologyName,
 					    this->_InPlug);

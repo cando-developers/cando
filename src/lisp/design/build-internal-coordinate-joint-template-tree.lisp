@@ -188,23 +188,28 @@ Return a list of prepare-topology objects"
                                                    :constitution-name constitution-name
                                                    :topology-name topology-name
                                                    :atom-name (chem:atom-name entity-to-delay-children-for)))))
-         (core:make-cxx-object 'kin:delayed-bonded-joint-template :id atom-index
-                                                                  :parent parent-template
-                                                                  :children #()
-                                                                  :checkpoint checkpoint
-                                                                  :comment comment
-                                                                  :out-plug out-plug-atom-prop )))
+         (core:make-cxx-object 'kin:delayed-bonded-joint-template
+                               :id atom-index
+                               :name atom-name
+                               :parent parent-template
+                               :children #()
+                               :checkpoint checkpoint
+                               :comment comment
+                               :out-plug out-plug-atom-prop )))
       (root-atom-prop
-       (core:make-cxx-object 'kin:root-bonded-joint-template :id atom-index
-                                                             :parent parent-template
-                                                             :children #()
-                                                             :constitution-name constitution-name
-                                                             :topology-name topology-name
-                                                             :in-plug root-atom-prop
-                                                             :comment comment
-                                                             :out-plug out-plug-atom-prop))
+       (core:make-cxx-object 'kin:root-bonded-joint-template
+                             :id atom-index
+                             :parent parent-template
+                             :name atom-name
+                             :children #()
+                             :constitution-name constitution-name
+                             :topology-name topology-name
+                             :in-plug root-atom-prop
+                             :comment comment
+                             :out-plug out-plug-atom-prop))
       (t (core:make-cxx-object 'kin:bonded-joint-template :id atom-index
                                                           :parent parent-template
+                                                          :name atom-name
                                                           :children #()
                                                           :comment comment
                                                           :out-plug out-plug-atom-prop)))))

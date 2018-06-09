@@ -65,6 +65,7 @@ namespace kinematics
     protected:
 	//! Point to the parent atom (also used to contruct linked list of unused PoolMembers)
 	Joint_sp 	_Parent;
+        core::T_sp      _Name;
 	chem::AtomId	_Id;
 	Vector3		_Position;
 #if DEBUG_KIN_ATOM
@@ -103,12 +104,13 @@ namespace kinematics
   	virtual void _releaseAllChildren() = 0;
     public:
 
-    Joint_O() : _Parent(_Unbound<Joint_O>()), _Id() {};
-	Joint_O(const chem::AtomId& atomId, const string& comment) :
-	    _Parent(),
-	    _Id(atomId)
+    Joint_O() : _Parent(_Unbound<Joint_O>()), _Name(_Unbound<core::T_O>()), _Id() {};
+    Joint_O(const chem::AtomId& atomId, core::T_sp name, const string& comment) :
+        _Parent(),
+          _Name(name),
+          _Id(atomId)
 #if DEBUG_KIN_ATOM
-	    , _Comment(comment)
+          , _Comment(comment)
 #endif
 	{};
 

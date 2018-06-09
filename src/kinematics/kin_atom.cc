@@ -45,6 +45,7 @@ FORWARD(JumpAtom);
 
 void Joint_O::fields(core::Record_sp node) {
   node->field(INTERN_(kw,parent),this->_Parent);
+  node->field(INTERN_(kw,name),this->_Name);
   node->field(INTERN_(kw,id),this->_Id);
   node->field_if_not_default(INTERN_(kw,pos),this->_Position, Vector3());
 }

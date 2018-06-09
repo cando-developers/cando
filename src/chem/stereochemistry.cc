@@ -283,7 +283,7 @@ void	StereoInformation_O::addProChiralCenter(RPProChiralCenter s)
 #endif
 
 
-Stereoisomer_sp	StereoInformation_O::getStereoisomer(core::Symbol_sp  nameOrPdb )
+Stereoisomer_sp	StereoInformation_O::getStereoisomer(core::T_sp  nameOrPdb )
 {_OF();
   return this->_NameOrPdbToStereoisomer.get(nameOrPdb);
 }

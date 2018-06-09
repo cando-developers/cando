@@ -92,7 +92,7 @@ void AtomTree_O::fields(core::Record_sp node) {
 void AtomTree_O::initialize()
 {
   chem::AtomId id;
-  this->_Root = this->newOriginJumpAtom(id,"-root-");
+  this->_Root = this->newOriginJumpAtom(id,_Nil<core::T_O>(),"-root-");
 }
 
 
@@ -137,35 +137,35 @@ Joint_sp AtomTree_O::_initializeNewAtom(Joint_sp atom, const chem::AtomId& atomI
 }
 
 
-Joint_sp AtomTree_O::newJumpAtom(const chem::AtomId& atomId, const string& comment)
+Joint_sp AtomTree_O::newJumpAtom(const chem::AtomId& atomId, core::T_sp name, const string& comment)
 {_OF();
-  return this->_newAtom<JumpJoint_O>(atomId,comment);
+  return this->_newAtom<JumpJoint_O>(atomId,name,comment);
 };
 
-Joint_sp AtomTree_O::newOriginJumpAtom(const chem::AtomId& atomId,const string& comment)
+Joint_sp AtomTree_O::newOriginJumpAtom(const chem::AtomId& atomId, core::T_sp name,const string& comment)
 {_OF();
-  return this->_newAtom<OriginJumpJoint_O>(atomId,comment);
+  return this->_newAtom<OriginJumpJoint_O>(atomId,name,comment);
 };
 
 
-Joint_sp AtomTree_O::newBondedAtom(const chem::AtomId& atomId, const string& comment)
+Joint_sp AtomTree_O::newBondedAtom(const chem::AtomId& atomId, core::T_sp name, const string& comment)
 {_OF();
-  return this->_newAtom<BondedJoint_O>(atomId,comment);
+  return this->_newAtom<BondedJoint_O>(atomId,name,comment);
 };
 
-Joint_sp AtomTree_O::newRootBondedAtom(const chem::AtomId& atomId, const string& comment,
+Joint_sp AtomTree_O::newRootBondedAtom(const chem::AtomId& atomId, core::T_sp name,  const string& comment,
                                        core::Symbol_sp constitutionName,
                                        core::Symbol_sp topologyName,
                                        chem::Plug_sp inPlug)
 {_OF();
-  RootBondedJoint_sp atom = this->_newAtom<RootBondedJoint_O>(atomId,comment);
+  RootBondedJoint_sp atom = this->_newAtom<RootBondedJoint_O>(atomId,name,comment);
   atom->setup(constitutionName,topologyName,inPlug);
   return atom;
 };
 
-Joint_sp AtomTree_O::newDelayedBondedAtom(const chem::AtomId& atomId,const string& comment)
+Joint_sp AtomTree_O::newDelayedBondedAtom(const chem::AtomId& atomId,core::T_sp name, const string& comment)
 {_OF();
-  return this->_newAtom<DelayedBondedJoint_O>(atomId,comment);
+  return this->_newAtom<DelayedBondedJoint_O>(atomId,name,comment);
 };
 
 void AtomTree_O::updateAtomIdMap(const chem::AtomId& atomId, Joint_sp atomHandle )

@@ -10,4 +10,6 @@
   :components
   ((:file "packages")
    (:file "build-internal-coordinate-joint-template-tree")
+   (:file "graphviz-draw-joint-template")
+   (:file "graphviz-draw-joint-tree")
    ))

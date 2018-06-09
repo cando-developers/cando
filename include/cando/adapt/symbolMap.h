@@ -67,8 +67,9 @@ template <typename OT>
   from_object(core::T_sp o) {
     if ( core::Cons_sp co = o.asOrNull<core::Cons_O>() ) {
       for ( auto cur : (core::List_sp)(co) ) {
-        core::Cons_sp apair = gc::As<core::Cons_sp>(oCar(cur));
-        core::Symbol_sp key = gc::As<core::Symbol_sp>(oCar(apair));
+        core::Cons_sp apair = gc::As_unsafe<core::Cons_sp>(CONS_CAR(cur));
+        ASSERT(gc::IsA<core::Symbol_sp>(oCar(apair)));
+        core::Symbol_sp key = gc::As_unsafe<core::Symbol_sp>(oCar(apair));
         core::T_sp value = oCdr(apair);
         this->_v.insert2(key,value);
       }

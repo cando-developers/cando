@@ -68,7 +68,7 @@ namespace kinematics
 	/*! Empty ctor */
     JumpJoint_O() {};
 
-  JumpJoint_O(const chem::AtomId& atomId, const string& comment) : Joint_O(atomId,comment) {};
+  JumpJoint_O(const chem::AtomId& atomId, core::T_sp name, const string& comment) : Joint_O(atomId,name,comment) {};
 
 
 

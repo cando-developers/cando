@@ -158,32 +158,32 @@ namespace kinematics
 	Joint_sp _initializeNewAtom(Joint_sp atom, const chem::AtomId& atomId );
 
 	template <class T>
-          Joint_sp _newAtom(const chem::AtomId& atomId, const string& comment)
+          Joint_sp _newAtom(const chem::AtomId& atomId, core::T_sp name, const string& comment)
 	{_OF();
-          GC_ALLOCATE_VARIADIC(T,atom,atomId,comment);
+          GC_ALLOCATE_VARIADIC(T,atom,atomId,name,comment);
           return this->_initializeNewAtom(atom,atomId);
 	};
 
 
 	/*! Return a new JumpAtom */
-	Joint_sp newJumpAtom(const chem::AtomId& atomId, const string& comment);
+	Joint_sp newJumpAtom(const chem::AtomId& atomId, core::T_sp name, const string& comment);
 
 
 	/*! Return a new OriginJumpAtom */
-	Joint_sp newOriginJumpAtom(const chem::AtomId& atomId, const string& comment);
+	Joint_sp newOriginJumpAtom(const chem::AtomId& atomId, core::T_sp name, const string& comment);
 
 
 	/*! allocate a new BondedAtom */
-	Joint_sp newBondedAtom(const chem::AtomId& atomId, const string& comment);
+	Joint_sp newBondedAtom(const chem::AtomId& atomId, core::T_sp name, const string& comment);
 
 	/*! allocate a new RootBondedAtom */
-	Joint_sp newRootBondedAtom(const chem::AtomId& atomId, const string& comment,
+	Joint_sp newRootBondedAtom(const chem::AtomId& atomId, core::T_sp name, const string& comment,
 				  core::Symbol_sp constitutionName,
 				  core::Symbol_sp topologyName,
 				  chem::Plug_sp inPlug );
 
 	/*! allocate a new DelayedBondedAtom */
-	Joint_sp newDelayedBondedAtom(const chem::AtomId& atomId, const string& comment);
+	Joint_sp newDelayedBondedAtom(const chem::AtomId& atomId, core::T_sp name, const string& comment);
 
 
 	/*! Resize the number of molecules */

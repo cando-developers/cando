@@ -49,7 +49,8 @@ SMART(ChemInfo);
 SMART(ComplexRestraint );
 class ComplexRestraint_O : public core::CxxObject_O
 {
-    LISP_CLASS(chem,ChemPkg,ComplexRestraint_O,"ComplexRestraint",core::CxxObject_O);
+  CL_DOCSTRING(R"(Subclasses represent restraints for double bonds and axial/equatorial for exocyclic atoms)");
+  LISP_CLASS(chem,ChemPkg,ComplexRestraint_O,"ComplexRestraint",core::CxxObject_O);
 #if INIT_TO_FACTORIES
  public:
     static ComplexRestraint_sp make();

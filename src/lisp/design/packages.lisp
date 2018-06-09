@@ -44,3 +44,12 @@
   (:documentation
    "Embryonic joint-tree code"))
 
+(defpackage #:design.graphviz-draw-joint-template
+  (:use #:cl)
+  (:export
+   #:draw-joint-template))
+
+(defpackage #:design.graphviz-draw-joint-tree
+  (:use #:cl)
+  (:export
+   #:draw-joint-tree))

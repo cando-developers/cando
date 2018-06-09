@@ -48,8 +48,8 @@ namespace kinematics
 	  otherwise it will be UndefinedUnsignedInt */
 	RootAtomInfo	_RootInfo;
     public:
-    RootBondedJoint_O(const chem::AtomId& atomId,const string& comment) :
-	BondedJoint_O(atomId,comment) {};
+    RootBondedJoint_O(const chem::AtomId& atomId,core::T_sp name, const string& comment) :
+	BondedJoint_O(atomId,name,comment) {};
 
 
 	virtual RootAtomInfo const * rootAtomInfo() const { return &this->_RootInfo;};

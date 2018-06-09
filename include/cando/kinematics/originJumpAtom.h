@@ -42,7 +42,7 @@ namespace kinematics
     static const NodeType nodeType = originJumpAtom;
   public:
 	/*! Empty ctor */
-  OriginJumpJoint_O(const chem::AtomId& atomId,const string& comment) : JumpJoint_O(atomId,comment) {};
+  OriginJumpJoint_O(const chem::AtomId& atomId, core::T_sp name, const string& comment) : JumpJoint_O(atomId,name,comment) {};
 
 
 
