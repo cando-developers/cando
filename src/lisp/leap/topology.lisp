@@ -4,6 +4,52 @@
   ((aggregate :initarg :aggregate :accessor aggregate)
    ))
 
+
+(defun find-unique-name (name-string-set prefix name-index)
+  "Assemble a name from prefix and name-index and if it is not in name-string-set
+then return it and the incremented name-index.  If it is in the name-string-set
+keep incrementing name-index until a name is found that is NOT in name-string-set."
+  (let ((*print-base* 36))
+    (loop for tries below 1000
+          do (let ((new-name (format nil "~a~s" prefix (incf name-index))))
+               (unless (gethash new-name name-string-set)
+                 (return-from find-unique-name (values new-name name-index)))))
+    (error "More than 1000 names were generated and no unique names were found")))
+    
+(defun compress-atom-names (atom-names)
+  "Construct a hash-table that maps current atom-names to 4 character atom names.
+Return (values compressed-atom-name-map max-atom-name-length). "
+  (let ((name-map (make-hash-table))
+        (name-string-set (make-hash-table :test #'equal))
+        (name-index-map (make-hash-table :test #'equal))
+        (max-name-length 0)
+        (pathological-case-counter 0))
+    (loop for name across atom-names
+          do (setf (gethash name name-map) nil))
+    (loop for name being the hash-keys in name-map
+          do (setf (gethash (string name) name-string-set) T))
+    (loop for name being the hash-keys in name-map
+          for name-string = (string name)
+          for non-alpha = (position-if-not #'alpha-char-p name-string)
+          for prefix = (subseq name-string 0 non-alpha)
+          for name-index = (gethash prefix name-index-map 0)
+          do (when (> (length (string name)) max-name-length)
+               (setf max-name-length (length (string name))))
+             (if (> (length name-string) 4)
+                 (multiple-value-bind (unique-name new-name-index)
+                     (find-unique-name name-string-set prefix name-index)
+                   (when (> (length unique-name) 4)
+                     ;; We have a pathological case where a name is still >4 chars
+                     (multiple-value-setq (unique-name new-name-index)
+                       (find-unique-name name-string-set "%" pathological-case-counter))
+                     (setf pathological-case-counter new-name-index)
+                     (when (> (length unique-name) 4)
+                       (error "A hyper-pathological event has taken place - we could not identify a unique atom name with < 4 characters for ~a - we got ~a" name unique-name)))
+                   (setf (gethash name name-map) unique-name)
+                   (setf (gethash prefix name-index-map) new-name-index))
+                 (setf (gethash name name-map) (string name))))
+    (values name-map max-name-length)))
+    
 (defun collapse-stretch-parameters (kb-vec r0-vec atom1-vec atom2-vec)
   (let ((j-vec (make-array 256 :fill-pointer 0 :adjustable t))
         (jnext 0)
@@ -71,7 +117,7 @@
              for i2 = (aref i2-vector i)
              for atom1 = (aref atom1-vector i)
              for atom2 = (aref atom2-vector i)
-             do (format t "atom1: ~a atom2: ~a i1: ~a i2: ~a~% " atom1 atom2 i1 i2)
+;;;             do (format t "atom1: ~a atom2: ~a i1: ~a i2: ~a~% " atom1 atom2 i1 i2)
              do (if (or (eq (chem:get-element atom1) :h)
                         (eq (chem:get-element atom2) :h))
                     (progn
@@ -108,7 +154,7 @@
        for key = (canonical-angle-key (chem:get-type atom1) (chem:get-type atom2) (chem:get-type atom3))
        for kti = (aref kt-vec i)
        for t0i = (aref t0-vec i)
-       do (format t "atom1: ~a atom2: ~a atom3: ~a  key: ~a~% " atom1 atom2 atom3 key)
+;;;       do (format t "atom1: ~a atom2: ~a atom3: ~a  key: ~a~% " atom1 atom2 atom3 key)
        do (if (setf jtemp (gethash key uniques))
               (vector-push-extend jtemp j-vec)
               (progn
@@ -226,7 +272,7 @@
        for ini = (aref in-vec i)
        for phasei = (aref phase-vec i)
        for key = (intern (format nil "~f-~d-~f" vi ini phasei) :keyword) 
-       do (format t "atom1: ~a atom2: ~a atom3: ~a atom4 ~a key: ~a vi: ~a ini ~a phase ~a~% " atom1 atom2 atom3 atom4 key vi ini phasei)
+;;;       do (format t "atom1: ~a atom2: ~a atom3: ~a atom4 ~a key: ~a vi: ~a ini ~a phase ~a~% " atom1 atom2 atom3 atom4 key vi ini phasei)
        do (if (setf jtemp (gethash key uniques))
               (vector-push-extend jtemp j-vec)
               (progn
@@ -236,7 +282,7 @@
                 (vector-push-extend ini inj-vec)
                 (vector-push-extend phasei phasej-vec)
                 (vector-push-extend proper properj-vec)
-                (format t " ~a ~a~% " vi ini)
+;;;                (format t " ~a ~a~% " vi ini)
                 (incf jnext))))
     (values j-vec vj-vec inj-vec phasej-vec properj-vec)))
 
@@ -315,14 +361,16 @@
          (atom3-vector (cdr (assoc :atom3 dihedral-vectors)))
          (atom4-vector (cdr (assoc :atom4 dihedral-vectors)))
          )
-    (format t "v-vector ~s~%" v-vector)
-    (format t "in-vector ~s~%" in-vector)
-    (format t "phase-vector ~s~%" phase-vector)
-    (format t "i1-vector ~s~%" i1-vector)
-    (format t "i2-vector ~s~%" i2-vector)
-    (format t "i3-vector ~s~%" i3-vector)
-    (format t "i4-vector ~s~%" i4-vector)
-    (format t "proper-vector ~s~%" proper-vector)
+    #+(or)
+    (progn
+      (format t "v-vector ~s~%" v-vector)
+      (format t "in-vector ~s~%" in-vector)
+      (format t "phase-vector ~s~%" phase-vector)
+      (format t "i1-vector ~s~%" i1-vector)
+      (format t "i2-vector ~s~%" i2-vector)
+      (format t "i3-vector ~s~%" i3-vector)
+      (format t "i4-vector ~s~%" i4-vector)
+      (format t "proper-vector ~s~%" proper-vector))
     (let ((indices (if (check-if-dihedrals-are-ordered proper-vector i1-vector i2-vector i3-vector i4-vector in-vector)
                        (make-indices (length v-vector))
                        (sort-dihedrals proper-vector i1-vector i2-vector i3-vector i4-vector in-vector)))))
@@ -568,8 +616,6 @@
      (lambda (r)
        (incf molecule-count))
      aggregate)
-    (format t "residue-count ~a~%" residue-count)
-    (format t "molecule-count ~a~%" molecule-count)
     (values residue-count molecule-count)
     ))
 
@@ -588,14 +634,14 @@
     (fortran:with-fortran-output-file (ftop topology-pathname :direction :output)
       (fortran:debug "-1-")             ;
       (fortran:fformat 1 "%-80s")
-;;                  (fortran:fwrite (core:strftime 81 "%%VERSION  VERSION_STAMP = V0002.000  DATE = %m/%d/%y  %H:%M:%S"))
+      ;;                  (fortran:fwrite (core:strftime 81 "%%VERSION  VERSION_STAMP = V0002.000  DATE = %m/%d/%y  %H:%M:%S"))
 ;;; temporary!!!
-    (multiple-value-bind (second minute hour date month year)
-                  (get-decoded-time)
-      (fortran:fwrite (format
-                       nil
-                       "%VERSION  VERSION_STAMP = V0001.000  DATE = ~2,'0d/~2,'0d/~2,'0d  ~2,'0d:~2,'0d:~2,'0d"
-                       month date (- year 2000) hour minute second)))
+      (multiple-value-bind (second minute hour date month year)
+          (get-decoded-time)
+        (fortran:fwrite (format
+                         nil
+                         "%VERSION  VERSION_STAMP = V0001.000  DATE = ~2,'0d/~2,'0d/~2,'0d  ~2,'0d:~2,'0d:~2,'0d"
+                         month date (- year 2000) hour minute second)))
       (fortran:fwrite "%FLAG TITLE")
       (fortran:fwrite "%FORMAT(20a4)")
       (fortran:fwrite (string (chem:get-name aggregate)))
@@ -718,8 +764,13 @@
         (fortran:fwrite "%FORMAT(20a4)")
         (fortran:debug "-3-")
         (fortran:fformat 20 "%-4s")
-        (loop for name across atom-name
-              do (fortran:fwrite (string name)))
+        (multiple-value-bind (compressed-atom-names max-name-length)
+            (compress-atom-names atom-name)
+          (loop for name across atom-name
+                for compressed-name = (gethash name compressed-atom-names)
+                when (> (length compressed-name) 4)
+                  do (error "There is an atom name ~a that cannot be made unique and less than 4 characters we generated ~a !!!" name compressed-name)
+                do (fortran:fwrite compressed-name)))
         (fortran:end-line)
         ;; write the atom names
 
@@ -1154,7 +1205,7 @@
               (fortran:debug "-39-")
               (fortran:fformat 10 "%8d")
               (loop for natom across atoms-per-molecule
-                 do (fortran:fwrite natom))
+                    do (fortran:fwrite natom))
               (fortran:end-line)
               ;; number of atoms per molecule
               
@@ -1233,10 +1284,11 @@
             (fortran:fwrite (float (first solvent-box)))
             (fortran:fwrite (float (second solvent-box)))
             (fortran:fwrite (float (third solvent-box)))
-            (fortran:fwrite "90.0000000")   ;box angle
+            (fortran:fwrite "90.0000000") ;box angle
             (fortran:fwrite "90.0000000") 
             (fortran:fwrite "90.0000000")))
-      (fortran:end-line))))
+      (fortran:end-line)))
+  t)
 
 (defvar %flag-title "%FLAG TITLE")
 (defvar %flag-pointers "%FLAG POINTERS")
@@ -1348,7 +1400,7 @@
                        ifcap (aref pointers 29)
                        numextra (aref pointers 30)
                        ncopy (aref pointers 31))))
-             (format t "nparm ~a nnb ~a nres ~a nbona ~a~%" nparm nnb nres nbona))
+             )
             ((string-equal %flag-atom-name line :end2 (length %flag-atom-name))
              (fortran:fread-line-or-error fif) 
              (multiple-value-bind (per-line format-char width decimal)
