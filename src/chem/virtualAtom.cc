@@ -52,6 +52,12 @@ namespace chem {
     return va;
 }
 
+void VirtualAtom_O::fields(core::Record_sp node) {
+  node->field_if_not_unbound(INTERN_(kw,calculate_position),this->_CalculatePosition);
+  this->Base::fields(node);
+}
+
+
 //
 // Copy constructor
 //

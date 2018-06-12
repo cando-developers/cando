@@ -131,6 +131,8 @@ namespace kinematics
 	/*! Return the parent */
     gc::Nilable<JointTemplate_sp> parent() const;
 
+    virtual core::T_sp name() const;
+    
 	/*! Return the atomName for this Template by looking up its index
 	  in the ConstitutionAtoms object */
     core::Symbol_sp jointTemplateAtomName(chem::ConstitutionAtoms_sp ca) const;
@@ -190,7 +192,7 @@ namespace kinematics
 
     CL_DEFMETHOD void addChild(JointTemplate_sp child) {this->_Children.push_back(child);};
 	/*! Return a Cons of children */
-    core::List_sp children();
+    core::List_sp children() const;
 
     void addChildren(Joint_sp me,
                      uint moleculeId,

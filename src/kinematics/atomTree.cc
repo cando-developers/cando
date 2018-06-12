@@ -197,7 +197,7 @@ void AtomTree_O::recursivelyBuildMolecule(int moleculeId,
                  % _rep_(constitution->getName()) % _rep_(topology->getName()) );
     chem::ConstitutionAtoms_sp constitutionAtoms = constitution->getConstitutionAtoms();
     this->resizeAtoms(moleculeId,residueId,constitutionAtoms->numberOfAtoms());
-    core::T_sp ttemplate = topology->properties()->gethash(INTERN_(kw,jointTemplate));
+    core::T_sp ttemplate = topology->getProperty(INTERN_(kw,jointTemplate));
     if (ttemplate.nilp()) {
       SIMPLE_ERROR(BF("The topology %s is missing an :atom-template parameter") % _rep_(topology));
     }

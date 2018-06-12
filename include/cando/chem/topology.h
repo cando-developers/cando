@@ -145,6 +145,24 @@ struct gctools::GCInfo<chem::Topology_O> {
 namespace chem {
 class Topology_O : public core::CxxObject_O
 {
+  CL_DOCSTRING(R"(A Topology describes one way that a Constitution can be connected to other Constitutions.
+  It maintains a list of Plugs that describe how this Topology can plug into other Constitutions/Topologys.
+  For example, a bis-amino acid can plug into two other bis-amino acids through DKPs on the leading end
+  or the trailing end.  The same bis-amino acid could also have an incoming DKP and an outgoing peptide-amide
+  and something on the outgoing ester.  The same bis-amino acid could also have an incoming peptide-amide
+  an outgoing peptide-amide and something else connected to the trailing secondary amine and the leading 
+  carbonyl group.  Each of these scenarios is described by a different Topology.
+  A Topology also contains ExtractScaffold and ExtractFragment objects that know how to extract coordinates 
+  from a Residue in the given Topology.
+
+  A Topology also defines a map of atom names to atomic types and atomic charges. Atom types and charges will
+  be topology dependent but the element is not and so the Constitution provides a map of atom names to atomic elements.
+
+  I'm disabling the following for now - until I see a reason to turn it back on.
+Each Topology is uniquely identified within a CandoDatabase by a TopologyIndex0N identifier that ranges
+  between 0 and N-(the number of unique Topologys in the database).  This is to facilitate atom based lookups
+  that describe the number of bonds between atoms in two interconnected Topologys.
+)");
   LISP_CLASS(chem,ChemPkg,Topology_O,"Topology",core::CxxObject_O); 
  public:
  public:
@@ -154,13 +172,13 @@ class Topology_O : public core::CxxObject_O
   typedef Plug_O	plugOType;
   typedef adapt::SymbolMap<Plug_O> Plugs;
  public:
-  core::Symbol_sp				_Name;
-  Constitution_sp				_Constitution;
-  core::Vector_sp                             _AtomInfo;
+  core::Symbol_sp			      _Name;
+  Constitution_sp			      _Constitution;
+  gctools::Vec0<TopologyAtomInfo_sp>          _AtomInfo;
   core::Symbol_sp                             _StereoisomerCoding; // kw::_sym_absolute or kw::_sym_coded
   Fixnum                                      _NumberOfStereoisomers;
   gctools::Vec0<StereoisomerAtoms_sp>         _StereoisomerAtomProperties;
-  core::HashTableEq_sp			      _Properties;
+  core::List_sp 			      _Properties;
   core::Symbol_sp                             _DefaultOutPlugName;
   Plugs			                      _Plugs;
  public:
@@ -179,9 +197,26 @@ class Topology_O : public core::CxxObject_O
   void setFromMonomer(Monomer_sp mon);
  public:
   void setConstitution(Constitution_sp c);
+		/*! Remove the property from this Matters property list
+		 */
+  void	clearProperty(core::Symbol_sp propertySymbol);
+		/*! Define/set the value of the property.
+		 * If it already exists it is overwritten.
+		 */
+  void	setProperty(core::Symbol_sp propertySymbol, core::T_sp value);
+		/*! Return the value of the property.
+		 * Throw an exception if the property isn't defined.
+		 */
+  core::T_sp getProperty(core::Symbol_sp propertySymbol );
+		/*! Return the value of the property or the
+		 * default if it isn't defined.
+		 */
+  core::T_sp getPropertyOrDefault(core::Symbol_sp propertySymbol, core::T_sp defVal );
+		/*! Return true if the property exists.
+		 */
+  bool	hasProperty(core::Symbol_sp propertySymbol );
+
  public:
-    /* You can attach properties to the Topology later */
-  core::HashTableEq_sp properties() const;
 
   string description() const;
   CL_DEFMETHOD Constitution_sp	getConstitution() const { return this->_Constitution; };
@@ -235,9 +270,11 @@ class Topology_O : public core::CxxObject_O
   bool	matchesMonomerEnvironment( Monomer_sp mon );
   RingClosingPlug_sp provideMissingRingClosingPlug( Monomer_sp mon );
 
+#if 0
   CL_DEFMETHOD core::T_sp atomInfo() const { return this->_AtomInfo; };
   CL_DEFMETHOD core::T_sp setf_atomInfo(core::Vector_sp ai) { this->_AtomInfo = ai; return ai; };
-
+#endif
+  
   void mapPlugs(std::function<void(Plug_sp)> );
 
   core::List_sp extractFragmentsAsList();
@@ -252,10 +289,23 @@ class Topology_O : public core::CxxObject_O
   void setStereoisomerAtoms(core::Symbol_sp coding, core::List_sp stereoisomer_atoms);
   core::T_mv lookupStereoisomerAtoms(Fixnum index);
     
- Topology_O() : _Name(_Nil<core::Symbol_O>()), _Constitution(_Unbound<chem::Constitution_O>()) {};
- Topology_O(core::Symbol_sp name, Constitution_sp constitution) : _Name(name), _Constitution(constitution) {};
+ Topology_O() : _Name(_Nil<core::Symbol_O>()),
+    _Constitution(_Unbound<chem::Constitution_O>()),
+//    _AtomInfo(_Unbound<core::Vector_O>()),
+    _StereoisomerCoding(kw::_sym_absolute),
+    _NumberOfStereoisomers(0),
+    _Properties(_Nil<core::T_O>()),
+    _DefaultOutPlugName(_Nil<core::T_O>())
+    {};
+ Topology_O(core::Symbol_sp name, Constitution_sp constitution) : _Name(name),
+    _Constitution(constitution),
+//    _AtomInfo(_Unbound<core::Vector_O>()),
+    _StereoisomerCoding(kw::_sym_absolute),
+    _NumberOfStereoisomers(0),
+    _Properties(_Nil<core::T_O>()),
+    _DefaultOutPlugName(_Nil<core::T_O>())
+    {};
 };
-
 
  void connect_residues(Topology_sp prev_topology,
                        Residue_sp prev_residue,

@@ -3,6 +3,20 @@
 
 (defun interpret-builder-info-instruction (instr residue)
   (cond
+    ((eq (car instr) 'chem:origin-plug)
+     (destructuring-bind (cmd atom-name plug-name) instr
+       (declare (ignore cmd))
+       (let* ((atom (when (chem:has-atom-with-name residue atom-name)
+                      (chem:first-atom-with-name residue atom-name))))
+         (when atom
+           (chem:make-origin-plug plug-name atom-name)))))
+    ((eq (car instr) 'chem:jump-plug)
+     (destructuring-bind (cmd atom-name plug-name) instr
+       (declare (ignore cmd))
+       (let* ((atom (when (chem:has-atom-with-name residue atom-name)
+                      (chem:first-atom-with-name residue atom-name))))
+         (when atom
+           (chem:make-jump-plug plug-name atom-name)))))
     ((eq (car instr) 'chem:in-plug)
      (destructuring-bind (cmd
                           atom-name
@@ -32,6 +46,20 @@
                       (chem:first-atom-with-name residue atom-name))))
          (when atom
            (chem:make-out-plug plug-name nil nil atom-name bond-order atom2-name bond-order2)))))
+    ((eq (car instr) 'chem:ring-closing-plug)
+     (destructuring-bind (cmd
+                          atom-name
+                          plug-name
+                          &key
+                            (bond-order :single-bond)
+                            atom2-name
+                            (bond-order2 :single-bond))
+         instr
+       (declare (ignore cmd))
+       (let* ((atom (when (chem:has-atom-with-name residue atom-name)
+                      (chem:first-atom-with-name residue atom-name))))
+         (when atom
+           (chem:make-ring-closing-plug plug-name nil nil atom-name bond-order atom2-name bond-order2)))))
     (t (error "Unknown instruction ~a" instr))))
      
             
@@ -63,10 +91,10 @@
   (print-unreadable-object (obj stream)
     (format stream "~a ~a" (class-name (class-of obj)) (name obj))))
 
-(defun extract-topologys (chem-draw-object)
+(defun extract-prepare-topologys (chem-draw-object)
   "Loop through all of the fragments in the **chem-draw-object** and then loop through all of the residues
-in each fragment. Those residues that have the property :topology-name are topology's that we want to extract.
-Return a list of prepare-topology objects"
+in each fragment. Those residues that have the property :topology-name are topology's that we need to extract.
+Return a list of prepare-topology objects - one for each residue that we need to extract."
   (let ((code (chem:chem-draw-code chem-draw-object))
         (extracted-topologys nil))
     (loop for fragment in (chem:all-fragments-as-list chem-draw-object)
@@ -97,7 +125,7 @@ Return a list of prepare-topology objects"
   (let ((res nil))
     (loop for p in plugs
           do (let ((atom-name (chem:get-b0 p)))
-               (unless (not (contains res atomName))
+               (unless (not (contains res atom-name))
                  (error "The atom name[~s] is already in the set[~s]" atom-name res))
                (push atom-name res)))
     res))
@@ -106,25 +134,25 @@ Return a list of prepare-topology objects"
   (let ((res nil))
     (loop for p in plugs
           do (when (chem:get-b1 p)
-               (let ((chem:atom-name (chem:get-b1 p)))
+               (let ((atom-name (chem:get-b1 p)))
                  (unless (not (member atom-name res))
                    (error "The atom name[~s] is already in the listset[~s]" atom-name res))
                  (unless (not (member atom-name out-plug-bond0-atoms-set))
-                   (error "An atom can't be both a bond0 and bond1 atom!!! Something is wrong with the plugs")))
-                 (push atomName res)))
+                   (error "An atom can't be both a bond0 and bond1 atom!!! Something is wrong with the plugs"))
+                 (push atom-name res))))
     res))
 
 (defun get-all-stub-pivot-atoms-as-set (plugs out-plug-bond0-atoms-set )
   (let ((res (ObjectSet))
-        (plugCounter 0))
+        (plug-counter 0))
     (loop for p in plugs
           do (when (chem:has-stub-pivot-atom p)
-               (let ((atomName (getB1 p)))
+               (let ((atom-name (getB1 p)))
                  (unless (not (member atom-name res))
                    (error "The atom name[~s] is already in the set[~s]" atom-name res))
                  (unless (not (member atom-name out-plug-bond0-atoms-set))
-                   (error "An atom can't be both a bond0 and bond1 atom!!! Something is wrong with the plugs")))
-               (push atom-name res))
+                   (error "An atom can't be both a bond0 and bond1 atom!!! Something is wrong with the plugs"))
+                 (push atom-name res)))
              (incf plug-counter))
     res))
 
@@ -142,8 +170,8 @@ Return a list of prepare-topology objects"
 ;; 
 ;; (defun addAtomToICoorTableRecursively (icoorTable parent me)
 ;;   (let ((buildAtom (cond
-;;                  ((getProperty me :bond1Atom) (OddICoorAtom (atomName me)))
-;;                  ( true (NormalICoorAtom (atomName me))))))
+;;                  ((getProperty me :bond1Atom) (OddICoorAtom (atom-name me)))
+;;                  ( true (NormalICoorAtom (atom-name me))))))
 ;;     (setProperty me :buildAtom buildAtom)
 ;; ;    (setStubAtoms buildAtom parent)
 ;;     (appendEntry icoorTable buildAtom)
@@ -336,16 +364,20 @@ Return a list of prepare-topology objects"
                                                    (cond
                                                      ((> wa wb) t)
                                                      ((< wa wb) nil)
-                                                     (t (string< (string (chem:atom-name a)) (string (chem:atom-name b))))))))))
+                                                     (t (string< (string (chem:atom-name a))
+                                                                 (string (chem:atom-name b))))))))))
           (chem:set-property atom :children sorted-children)))
       ;;
       ;; Ok, now every atom has :children defined and they are sorted in order of how they
       ;; should be built - now we are ready to build the InternalCoordinateTable for the residue
       ;;
-      (let ((tree-template (build-atom-tree-template-recursively nil fragment root-atom constitution-atoms name name)))
+      (let ((tree-template (build-atom-tree-template-recursively
+                            nil
+                            fragment root-atom constitution-atoms name name)))
+        #+(or)
         (let ((build-order (with-output-to-string (sout)
-                             (dump-build-order-recursively nil tree-template constitution-atoms sout))))
-          (format t "Build order:~%~a~%" build-order))
+                                   (dump-build-order-recursively nil tree-template constitution-atoms sout))))
+                (format t "Build order:~%~a~%" build-order))
         tree-template))))
 
 

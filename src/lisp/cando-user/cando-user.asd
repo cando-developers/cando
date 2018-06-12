@@ -9,4 +9,5 @@
     :serial t
     :components ((:file "packages")
                  (:file "start-swank")
+                 (:file "graphviz")
                  (:file "cl-jupyter")))

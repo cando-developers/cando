@@ -115,6 +115,8 @@ namespace kinematics
 	{};
 
 	chem::AtomId id() const { return this->_Id;};
+        core::T_sp name() const;
+        
 	virtual core::Symbol_sp typeSymbol() const;
 	virtual string asString() const;
 

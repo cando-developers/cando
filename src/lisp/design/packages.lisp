@@ -25,24 +25,34 @@
 ;; -^-
 (cl:in-package #:common-lisp-user)
 
+(defpackage #:design.load
+  (:use #:cl )
+  (:export
+   load-cdxml
+   )
+  (:documentation
+   "Load cdxml files and build topologies for doing design"))
+
 (defpackage #:design.joint-tree
   (:use #:cl )
-  (:export )
+  (:export
+   name
+   constitution-atoms
+   plugs
+   fragment
+   extract-prepare-topologys)
   (:documentation
    "Embryonic joint-tree code"))
-
-(defpackage #:design.oligomer
-  (:use #:cl )
-  (:export )
-  (:documentation
-   "Embryonic joint-tree code"))
-
 
 (defpackage #:design
   (:use #:cl )
-  (:export )
+  (:export
+   define-part
+   make-oligomer
+   )
   (:documentation
    "Embryonic joint-tree code"))
+
 
 (defpackage #:design.graphviz-draw-joint-template
   (:use #:cl)
