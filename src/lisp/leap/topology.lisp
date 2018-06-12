@@ -528,11 +528,12 @@ Return (values compressed-atom-name-map max-atom-name-length). "
        for atom-name = (chem:elt-atom-name atom-table i)
        for atom-type = (chem:elt-atom-type atom-table i)
        for charge = (chem:elt-charge atom-table i)
-       for mass = (chem:elt-mass atom-table i)
+       ;;for mass = (chem:elt-mass atom-table i)
        for type-index = (chem:elt-type-index atom-table i)
        for atomic-number = (chem:elt-atomic-number atom-table i)
        for ffnonbondi = (chem:get-ffnonbond-using-type-index ffnonbond-db type-index)
        for atom-radius = (chem:get-radius-angstroms ffnonbondi)
+       for mass = (chem:get-mass ffnonbondi)
        do (setf (aref atom-name-vector i) atom-name
                 (aref atom-type-vector i) atom-type
                 (aref charge-vector i) charge

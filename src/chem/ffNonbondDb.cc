@@ -379,6 +379,11 @@ double FFNonbond_O::getEpsilon_kJ() const
   return this->_Epsilon_kJ;
 }
 
+double FFNonbond_O::getMass() const
+{
+  return this->_Mass;
+}
+
 
 string	FFNonbond_O::levelDescription()
 {

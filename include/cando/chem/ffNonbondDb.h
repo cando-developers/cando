@@ -153,6 +153,7 @@ namespace chem {
     CL_DEFMETHOD core::Symbol_sp getType() const { return this->_Type;};
     CL_DEFMETHOD void setPolarizability(double d) { this->_Polarizability = d;};
     CL_DEFMETHOD void setMass(double d) { this->_Mass = d;};
+    CL_DEFMETHOD double getMass() const;
     CL_DEFMETHOD void setRadius_Angstroms(double val);
     CL_DEFMETHOD void setRadius_Nanometers(double val);
 
@@ -165,6 +166,7 @@ namespace chem {
     CL_DEFMETHOD double getEpsilon_kJ() const;
     CL_DEFMETHOD double getEpsilon_kCal() const;
 // get-epsilon-k-cal
+
     virtual	string	levelDescription();
     virtual ParameterType type() { return nonbond; };
     DEFAULT_CTOR_DTOR(FFNonbond_O);
