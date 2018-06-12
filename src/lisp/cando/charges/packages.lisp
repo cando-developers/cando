@@ -27,7 +27,8 @@
 (defpackage #:charges
   (:use #:common-lisp)
   (:export
-   #:calculate-am1-bcc-corrections
+   #:calculate-bcc-corrections
+   #:calculate-am1-bcc-charges
    #:write-sqm-calculation
    #:read-am1-charges
    ))

@@ -299,7 +299,6 @@
    nil
    (lambda (a)
      (let ((ae (chem:get-element a)))
-       (format t "atom name ~a~%" (chem:get-name a))
        (cond
 	 ((eq ae :C) (apply-carbon-atom-types a))
 	 ((eq ae :N) (apply-nitrogen-atom-types a))
@@ -343,7 +342,6 @@
          (bcc-correction 0.0)
 	 (key (car key-sign))
 	 (sign (cadr key-sign)))
-    (format t "key ~a sign ~a~%" key sign)
     (loop for pair in *am1-bcc-raw-data*
        do (when (= (car pair) key)
             (setf bcc-correction (second pair))))
@@ -387,7 +385,7 @@
 ;;; This takes a hashtable of atom->am1charges and another of atoms->bcc-corrections
 ;;;   and adds the am1charge to the bcc-correction and creates another hash-table
 ;;;   of atom->(+ am1charge bcc-correction)
-(defun calculate-am1-bcc-charges (atoms-to-am1-charges atoms-to-bcc-corrections)
+(defun combine-am1-bcc-charges (atoms-to-am1-charges atoms-to-bcc-corrections)
   "Combine Am1 charges with Bcc corrections and return an ObjectMap of atoms to am1bcc charges"
   (let ((atoms-to-am1-bcc-charges (make-hash-table)))
     (maphash (lambda (atom am1charge)
@@ -396,7 +394,19 @@
 		atoms-to-am1-charges)
     atoms-to-am1-bcc-charges))
 
-
+(defun calculate-am1-bcc-charges (aggregate)
+  "Calculate Am1-Bcc charges and add the results to the aggregate."
+  (let ((bcc (calculate-bcc-corrections aggregate))
+         (order (charges:write-sqm-calculation (open "/tmp/sqm-input.txt" :direction :output) aggregate)))
+     (ext:vfork-execvp (list (namestring (translate-logical-pathname #P"amber:bin;sqm"))
+                             "-O"
+                             "-i" "/tmp/sqm-input.txt"
+                             "-o" "/tmp/sqm-output.out")
+      (let* ((am1 (charges:read-am1-charges "/tmp/sqm-output.out" order))
+             (am1-bcc (combine-am1-bcc-charges am1 bcc)))
+            (maphash (lambda (atom charge)
+                        (chem:set-charge atom charge))
+                     am1-bcc)))))
 
 
 
