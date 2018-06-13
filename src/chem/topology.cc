@@ -104,7 +104,7 @@ Topology_mv Topology_O::makeTopologyFromResidue(chem::Residue_sp residue, core::
     TopologyAtomInfo_sp tai = TopologyAtomInfo_O::make(atom->getType(),
                                                        atom->getCharge(),
                                                        constitutionIndex);
-    this->_AtomInfo.push_back(tai);
+    topology->_AtomInfo.push_back(tai);
   }
   return Values(topology,constitution);
 }
@@ -143,10 +143,8 @@ CL_DEFMETHOD Residue_sp Topology_O::build_residue() const
   LOG(BF("creating residue\n"));
   Residue_sp res = Residue_O::make(this->getName());
   LOG(BF("created residue\n"));
-  core::Vector_sp atomInfo = this->_AtomInfo;
   ASSERT(atomInfo.notnilp());
-  size_t numAtoms = atomInfo->arrayTotalSize();
-  LOG(BF("atomInfo->arrayTotalSize() = %d\n") % numAtoms );
+  size_t numAtoms = this->_AtomInfo.size();
   gctools::Vec0<Atom_sp> atoms;
   atoms.resize(numAtoms);
   res->resizeContents(numAtoms);
