@@ -153,7 +153,7 @@ namespace chem {
     CL_DEFMETHOD core::Symbol_sp getType() const { return this->_Type;};
     CL_DEFMETHOD void setPolarizability(double d) { this->_Polarizability = d;};
     CL_DEFMETHOD void setMass(double d) { this->_Mass = d;};
-    CL_DEFMETHOD double getMass() const;
+    double getMass() const;
     CL_DEFMETHOD void setRadius_Angstroms(double val);
     CL_DEFMETHOD void setRadius_Nanometers(double val);
 
