@@ -567,23 +567,28 @@ Return (values compressed-atom-name-map max-atom-name-length). "
          (residue-vector (chem:atom-table-residues atom-table))
          (residue-name-vector (chem:atom-table-residue-names atom-table))
          (molecule-vector (chem:atom-table-atoms-per-molecule atom-table))
+         (residue-pointer-vector (make-array 256 :element-type '(signed-byte 32) :fill-pointer 0 :adjustable t))
          (atoms-per-molecule (make-array 256 :element-type '(signed-byte 32) :fill-pointer 0 :adjustable t))
          (nmolecule 0)
          (nresidue 0)
          (nmxrs 0))
     (setf nmolecule (- (length molecule-vector) 1))
-    (setf nresidue (- (length residue-vector) 1))
+    (setf nresidue (length residue-name-vector))
     (loop for i from 0 below (length residue-vector)
-       for fresidue = (+ (aref residue-vector i) 1)
-       do (setf (aref residue-vector i) fresidue))
+       do (if (= i 0)
+              (vector-push-extend (+ (aref residue-vector 0) 1) residue-pointer-vector)
+              (if (/= (aref residue-vector (- i 1)) (aref residue-vector i))
+                  (vector-push-extend (+ (aref residue-vector i) 1) residue-pointer-vector))))
+    ;;      for fresidue = (+ (aref residue-vector i) 1)
+    ;;      do (setf (aref residue-vector i) fresidue))
     (loop for i from 0 below nresidue
        for inmxrs = (- (aref residue-vector (+ i 1)) (aref residue-vector i))
        do (if (> inmxrs nmxrs)
               (setf nmxrs inmxrs)))
     (loop for i from 0 below nmolecule
-         for natom = (- (aref molecule-vector (+ i 1)) (aref molecule-vector i))
+       for natom = (- (aref molecule-vector (+ i 1)) (aref molecule-vector i))
        do (vector-push-extend natom atoms-per-molecule))
-    (values nresidue nmxrs residue-vector residue-name-vector atoms-per-molecule)))
+    (values nresidue nmxrs residue-pointer-vector residue-name-vector atoms-per-molecule)))
 
 ;; for now, hardwire the Bondi radii
 (defun prepare-generalized-born (atomic-number-vector)
@@ -782,7 +787,7 @@ Return (values compressed-atom-name-map max-atom-name-length). "
         (fortran:debug "-4-")
         (fortran:fformat 5 "%16.8f")
         (loop for ch across charge
-              do (fortran:fwrite ch))
+              do (fortran:fwrite (* ch 18.223)))
         (fortran:end-line)
         ;; write the atom charges
 
