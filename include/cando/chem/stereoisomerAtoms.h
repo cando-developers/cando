@@ -55,7 +55,9 @@ namespace chem
     class StereoisomerAtom_O : public core::CxxObject_O
     {
 	friend class StereoisomerAtoms_O;
-
+        CL_DOCSTRING(R"(Maintain information about an atom with respect to the topology that it belongs.
+A topology cares about properties that are influenced by stereochemistry and how the 
+topology atoms plug into others.  So it stores things like charge and atom type.)");
 	LISP_CLASS(chem,ChemPkg,StereoisomerAtom_O,"StereoisomerAtom",core::CxxObject_O);
     public:
 	void	initialize();
@@ -110,6 +112,8 @@ CL_DEFMETHOD 	void setAtomType(core::Symbol_sp s) { this->_AtomType = s;};
 
     class StereoisomerAtoms_O : public core::CxxObject_O
     {
+        CL_DOCSTRING(R"(Maintain residue information for the topology.  This
+is a list of stereoisomer-atoms.)");
 	LISP_CLASS(chem,ChemPkg,StereoisomerAtoms_O,"StereoisomerAtoms",core::CxxObject_O);
 
     public: // virtual functions inherited from Object

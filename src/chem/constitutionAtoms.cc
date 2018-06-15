@@ -34,6 +34,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/residue.h>
 #include <cando/chem/calculatePosition.h>
 #include <cando/chem/atom.h>
+#include <cando/chem/virtualAtom.h>
 #include <cando/chem/bond.h>
 #include <clasp/core/wrappers.h>
 
@@ -51,10 +52,23 @@ void ConstitutionAtom_O::fields(core::Record_sp node)
 {
   node->field(INTERN_(kw,name),this->_AtomName);
   node->field(INTERN_(kw,element),this->_Element);
+  node->field_if_not_default(INTERN_(kw,stereochemType), this->_StereochemistryType, undefinedCenter);
   node->field(INTERN_(kw,bonds),this->_Bonds);
   node->field_if_not_nil(INTERN_(kw,properties),this->_Properties);
   this->Base::fields(node);
 }  
+
+CL_DOCSTRING(R"(Build a chem:atom from this chem:constitution-atom.)");
+CL_DEFMETHOD Atom_sp ConstitutionAtom_O::buildAtom() const
+{
+  Atom_sp atom = Atom_O::create();
+  atom->setName(this->_AtomName);
+  atom->setElement(this->_Element);
+  atom->setStereochemistryType(this->_StereochemistryType);
+  atom->setProperties(core::cl__copy_list(this->_Properties));
+  return atom;
+}
+
 
 string ConstitutionAtom_O::__repr__() const
 {
@@ -62,24 +76,29 @@ string ConstitutionAtom_O::__repr__() const
   ss << "(" << this->className() << " ";
   ss << " :atomName \"" << this->_AtomName << "\"";
   ss << " :element " << symbolFromElement(this->_Element);
+  if (this->_StereochemistryType != undefinedCenter) {
+    ss << " :stereochemistry-type " << _rep_(gc::As<core::SymbolToEnumConverter_sp>(_sym__PLUS_stereochemistryTypeConverter_PLUS_->symbolValue())->symbolForEnum(this->_StereochemistryType));
+  }
   ss << ")";
   return ss.str();
 }
 
+void ConstitutionVirtualAtom_O::fields(core::Record_sp node)
+{
+  node->field(INTERN_(kw,calculate_position),this->_CalculatePositionCode);
+  this->Base::fields(node);
+}  
 
 
-
-;
-
-
-
-#ifdef XML_ARCHIVE
-void ConstitutionVirtualAtom_O::archiveBase(core::ArchiveP node)
-{_OF();
-  this->Base::archiveBase(node);
+CL_DOCSTRING(R"(Build a chem:virtual-atom from this chem:constitution-virtual-atom.)");
+CL_DEFMETHOD Atom_sp ConstitutionVirtualAtom_O::buildAtom() const
+{
+  VirtualAtom_sp atom = VirtualAtom_O::create(this->_AtomName,this->_CalculatePositionCode);
+  atom->setElement(this->_Element);
+  atom->setStereochemistryType(this->_StereochemistryType);
+  atom->setProperties(core::cl__copy_list(this->_Properties));
+  return atom;
 }
-#endif
-
 
   
 
@@ -194,6 +213,7 @@ CL_DEFMETHOD     Residue_sp ConstitutionAtoms_O::buildResidue()
     Atom_sp atom = Atom_O::create();
     atom->setName((*ci)->_AtomName);
     atom->setElement((*ci)->_Element);
+    atom->setStereochemistryType((*ci)->_StereochemistryType);
     atom->setProperties(core::cl__copy_list((*ci)->_Properties));
     atoms[idx] = atom;
     res->putMatter(idx,atom);

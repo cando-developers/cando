@@ -260,6 +260,12 @@ void JumpPlug_O::fields(core::Record_sp node) {
   this->Base::fields(node);
 }
 
+
+void OriginPlug_O::fields(core::Record_sp node) {
+  node->field(INTERN_(kw,originAtomName),this->_OriginAtomName);
+  this->Base::fields(node);
+}
+
 /*
   __BEGIN_DOC(classes.RingClosingPlug.!class.RingClosingPlug)
   \requiredKeyed{name:}{Text::plugName}

@@ -49,6 +49,8 @@ class VirtualAtom_O : public Atom_O
 public:
 //    void	archive(core::ArchiveP node);
 	void	initialize();
+        bool fieldsp() const {return true;};
+        void fields(core::Record_sp node);
 private:
 		//! Calculate position using a procedure
 	CalculatePosition_sp	_CalculatePosition;

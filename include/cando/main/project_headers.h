@@ -453,6 +453,7 @@ GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<chem::PathMessage_
 GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<chem::ReportBase_O>>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<chem::Residue_O>>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<chem::Rotamer_O>>);
+GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<chem::TopologyAtomInfo_O>>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<chem::StereoConfiguration_O>>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<chem::StereoisomerAtom_O>>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<chem::Stereoisomer_O>>);

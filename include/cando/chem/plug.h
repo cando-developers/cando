@@ -248,7 +248,7 @@ namespace chem
   JumpPlug_O(core::Symbol_sp name, MatterName jumpAtomName ) : Plug_O(name), _JumpAtomName(jumpAtomName) {};
   public:
     CL_LISPIFY_NAME("make-jump-plug");
-    CL_LAMBDA("name");
+    CL_LAMBDA("plug-name jump-atom-name");
     CL_DEF_CLASS_METHOD static JumpPlug_sp make(core::Symbol_sp name, MatterName jumpAtomName) {
       return gctools::GC<JumpPlug_O>::allocate(name,jumpAtomName);
     }
@@ -268,6 +268,35 @@ namespace chem
   };
 
 
+  FORWARD(OriginPlug);
+  class OriginPlug_O : public Plug_O
+  {
+    CL_DOCSTRING(R"(A kind of in-plug that is mounted on the origin.)");
+    LISP_CLASS(chem,ChemPkg,OriginPlug_O,"OriginPlug",Plug_O);
+  public: // ctors
+  OriginPlug_O(core::Symbol_sp name, MatterName originAtomName ) : Plug_O(name), _OriginAtomName(originAtomName) {};
+  public:
+    CL_LISPIFY_NAME("make-origin-plug");
+    CL_LAMBDA("plug-name origin-atom-name");
+    CL_DEF_CLASS_METHOD static OriginPlug_sp make(core::Symbol_sp name, MatterName originAtomName) {
+      return gctools::GC<OriginPlug_O>::allocate(name,originAtomName);
+    }
+  public:
+    virtual void fields(core::Record_sp node);
+  private:
+    MatterName		_OriginAtomName;
+  public:
+
+    /*! Return the name of the root atom */
+    CL_LISPIFY_NAME("rootAtomName");
+    CL_DEFMETHOD     virtual MatterName rootAtomName() const { return this->_OriginAtomName;};
+
+		//! OriginPlugs are a kind of InPlugs
+    bool getIsIn() { return true;};
+
+  };
+
+
 
 
   SMART(RingClosingPlug);
@@ -278,7 +307,6 @@ namespace chem
   RingClosingPlug_O( core::Symbol_sp name, core::List_sp mates, MatterName stubPivotAtom, core::Symbol_sp bond0, BondOrder bondOrder0, core::Symbol_sp bond1, BondOrder bondOrder1 ) : OutPlug_O(name,mates,stubPivotAtom,bond0,bondOrder0,bond1,bondOrder1) {};
   public:
     CL_LISPIFY_NAME("make-ring-closing-plug");
-    CL_LAMBDA("name mates stub_pivot_atom bond0 &optional bond1");
     CL_DEF_CLASS_METHOD static RingClosingPlug_sp make(core::Symbol_sp name, core::List_sp mates, MatterName stubPivotAtom, core::Symbol_sp bond0, BondOrder bondOrder0, core::Symbol_sp bond1, BondOrder bondOrder1) {
       GC_ALLOCATE_VARIADIC(RingClosingPlug_O, me, name, mates, stubPivotAtom, bond0, bondOrder0, bond1, bondOrder1 );
       core::fillVec0(gc::As<core::List_sp>(mates),me->_Mates);

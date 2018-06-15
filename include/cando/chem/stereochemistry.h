@@ -68,8 +68,7 @@ namespace chem
     CL_DOCSTRING(R"(Store the stereochemical configuration :R or :S for a single atom represented by the atoms name)");
     LISP_CLASS(chem,ChemPkg,StereoConfiguration_O,"StereoConfiguration",core::CxxObject_O);
   public:
-    CL_LISPIFY_NAME(make_stereo_configuration);
-    CL_DEF_CLASS_METHOD static StereoConfiguration_sp make(core::Symbol_sp atomName, core::Symbol_sp config);
+    static StereoConfiguration_sp make(core::Symbol_sp atomName, core::Symbol_sp config);
   private:
     MatterName	_AtomName;
     core::Symbol_sp 	_Configuration;
@@ -99,17 +98,17 @@ namespace chem
     CL_DOCSTRING(R"(Stores the stereochemical configuration of a collection of atoms and a name for the stereoisomer)");
     LISP_CLASS(chem,ChemPkg,Stereoisomer_O,"Stereoisomer",Entity_O);
   public:
-    CL_LISPIFY_NAME(make_stereoisomer);
-    CL_DEF_CLASS_METHOD static Stereoisomer_sp make(core::Symbol_sp name, core::Symbol_sp pdb, core::List_sp configs);
-  private:
+    static Stereoisomer_sp make(core::Symbol_sp name, core::Symbol_sp pdb, core::Integer_sp stereoisomer_index, core::List_sp configs);
+  public:
     core::Symbol_sp	_Name;
     core::Symbol_sp	_Pdb;
     core::Symbol_sp	_Enantiomer;
+    core::Integer_sp    _StereoisomerIndex;
 	    // Add configurations here
     gctools::Vec0<StereoConfiguration_sp>	_Configurations;
   public:
     Stereoisomer_O() {};
-  Stereoisomer_O(core::Symbol_sp name, core::Symbol_sp pdbname) : _Name(name), _Pdb(pdbname), _Enantiomer(name) {};
+  Stereoisomer_O(core::Symbol_sp name, core::Symbol_sp pdbname, core::Integer_sp stereoisomer_index) : _Name(name), _Pdb(pdbname), _Enantiomer(name), _StereoisomerIndex(stereoisomer_index) {};
   public:
     bool fieldsp() const { return true; };
     void fields(core::Record_sp node);
@@ -121,6 +120,8 @@ namespace chem
   public:
     CL_DEFMETHOD core::Symbol_sp getName() const {return this->_Name;};
     CL_DEFMETHOD void setName(core::Symbol_sp n) {this->_Name = n;};
+    CL_DEFMETHOD core::Integer_sp getStereoisomerIndex() const {return this->_StereoisomerIndex;};
+    CL_DEFMETHOD void setStereoisomerIndex(core::Integer_sp n) {this->_StereoisomerIndex = n;};
     CL_DEFMETHOD core::Symbol_sp getPdb() {return this->_Pdb;};
     CL_DEFMETHOD void setPdb(core::Symbol_sp p) {this->_Pdb = p;};
     core::Symbol_sp	getEnantiomer()	{return this->_Enantiomer;};

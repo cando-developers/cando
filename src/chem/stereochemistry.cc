@@ -41,6 +41,8 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/representedEntityNameSet.h>
 #include <cando/chem/restraint.h>
 #include <cando/chem/complexRestraints.h>
+#include <clasp/core/sort.h>
+#include <clasp/core/evaluator.h>
 #include <cando/chem/entity.h>
 #include <clasp/core/symbolTable.h>
 #include <clasp/core/wrappers.h>
@@ -82,7 +84,8 @@ Provide the atom name and the stereo-configuration \sa{configuration} of "R" or 
 __END_DOC
 */
 
-StereoConfiguration_sp StereoConfiguration_O::make(core::Symbol_sp atomName, core::Symbol_sp config)
+CL_LISPIFY_NAME(make_stereo_configuration);
+CL_DEF_CLASS_METHOD StereoConfiguration_sp StereoConfiguration_O::make(core::Symbol_sp atomName, core::Symbol_sp config)
 {
   GC_ALLOCATE(StereoConfiguration_O, me );
   me->_AtomName = atomName;
@@ -202,9 +205,10 @@ __BEGIN_DOC(classes.Stereoisomer.!class.Stereoisomer)
 __END_DOC
 */
 
-Stereoisomer_sp Stereoisomer_O::make(core::Symbol_sp name, core::Symbol_sp pdb, core::List_sp configs)
+CL_LISPIFY_NAME(make_stereoisomer);
+CL_DEF_CLASS_METHOD Stereoisomer_sp Stereoisomer_O::make(core::Symbol_sp name, core::Symbol_sp pdb, core::Integer_sp stereoisomer_index, core::List_sp configs)
 {
-  GC_ALLOCATE_VARIADIC(Stereoisomer_O, me, name, pdb);
+  GC_ALLOCATE_VARIADIC(Stereoisomer_O, me, name, pdb, stereoisomer_index);
   for ( auto cur : configs ) me->_Configurations.push_back(oCar(cur).as<StereoConfiguration_O>() );
   return me;
 };
@@ -241,11 +245,9 @@ void	StereoInformation_O::addStereoisomer(Stereoisomer_sp s)
   if ( this->_NameOrPdbToStereoisomer.count(s->getName())>0 ) {
     SIMPLE_ERROR(BF("addStereoisomer monomer name (%s) has already been used") % s->getName());
   }
-  if ( this->_NameOrPdbToStereoisomer.count(s->getPdb())>0 ) {
-    SIMPLE_ERROR(BF("addStereoisomer pdb name (%s) has already been used") % s->getPdb() );
-  }
   this->_NameOrPdbToStereoisomer.set(s->getName(),s);
   this->_NameOrPdbToStereoisomer.set(s->getPdb(),s);
+  this->_NameOrPdbToStereoisomer.set(s->getStereoisomerIndex(),s);
   this->_Stereoisomers.push_back(s);
 }
 
@@ -261,7 +263,15 @@ CL_DEFMETHOD void StereoInformation_O::validate()
     }
     if ( (*it)->getPdb().nilp() ) 
     {
-      SIMPLE_ERROR(BF("StereoInformation has stereoisomer with blank pdb name"));
+      SIMPLE_WARN(BF("StereoInformation has stereoisomer with blank pdb name"));
+    }
+    size_t index = 0;
+    for ( gctools::Vec0<Stereoisomer_sp>::iterator it = this->_Stereoisomers.begin();
+          it != this->_Stereoisomers.end(); it++ ) {
+      if ( core::clasp_number_compare(core::make_fixnum(index),(*it)->getStereoisomerIndex()) != 0) {
+        SIMPLE_WARN(BF("Stereoisomer with stereoisomer index %d does not match the array index in StereoInformation %d") % (*it)->getStereoisomerIndex() % index);
+      }
+      index++;
     }
   }
 }
@@ -307,25 +317,36 @@ __BEGIN_DOC(classes.StereoInformation.!class.StereoInformation)
 __END_DOC
 */
 
+class	OrderByStereoisomerIndex
+{
+public:
+    bool operator()(Stereoisomer_sp x, Stereoisomer_sp y )
+    {
+      if ( core::clasp_number_compare(x->_StereoisomerIndex,y->_StereoisomerIndex) < 0 ) return true;
+	return false;
+    }
+};
 
 StereoInformation_sp StereoInformation_O::make(core::List_sp stereoisomers, core::List_sp restraints)
 {
   GC_ALLOCATE(StereoInformation_O, me );
   core::fillVec0(stereoisomers,me->_Stereoisomers);
+  // sort the stereoisomers by index
+  OrderByStereoisomerIndex byStereoisomerIndex;
+  sort::quickSort(me->_Stereoisomers.begin(),me->_Stereoisomers.end(),byStereoisomerIndex);
   me->_NameOrPdbToStereoisomer.clear();
+  size_t index = 0;
   for ( gctools::Vec0<Stereoisomer_sp>::iterator it = me->_Stereoisomers.begin();
-        it != me->_Stereoisomers.end(); it++ )
-  {
-    if ( me->_NameOrPdbToStereoisomer.count((*it)->getName()) >0 )
-    {
-      SIMPLE_ERROR(BF("Stereoisomer name: "+_rep_((*it)->getName())+" has already been defined"));
+        it != me->_Stereoisomers.end(); it++ ) {
+    if ( core::clasp_number_compare(core::make_fixnum(index),(*it)->getStereoisomerIndex()) != 0) {
+      SIMPLE_WARN(BF("Stereoisomer with stereoisomer index %d does not match the array index in StereoInformation %d") % (*it)->getStereoisomerIndex() % index);
     }
-    if ( me->_NameOrPdbToStereoisomer.count((*it)->getPdb()) >0 )
-    {
-      SIMPLE_ERROR(BF("Stereoisomer pdb: "+_rep_((*it)->getPdb())+" has already been defined"));
+    if ( me->_NameOrPdbToStereoisomer.count((*it)->getName())>0 ) {
+      SIMPLE_ERROR(BF("addStereoisomer monomer name (%s) has already been used") % (*it)->getName());
     }
-    me->_NameOrPdbToStereoisomer.set((*it)->getName(), (*it));
-    me->_NameOrPdbToStereoisomer.set((*it)->getPdb(), (*it));
+    me->_NameOrPdbToStereoisomer.set((*it)->getName(),(*it));
+    me->_NameOrPdbToStereoisomer.set((*it)->getPdb(),(*it));
+    index++;
   }
   return me;
 };

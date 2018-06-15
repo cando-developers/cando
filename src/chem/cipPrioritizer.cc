@@ -509,8 +509,6 @@ bool orderByName( Atom_sp p1, Atom_sp p2 )
   return core::SymbolComparer::order(p1->getName(),p2->getName())<=0;
 }
 
-
-
 CL_LISPIFY_NAME("defineStereochemicalConfigurationsForAllAtoms");
 CL_DEFMETHOD void CipPrioritizer_O::defineStereochemicalConfigurationsForAllAtoms(Matter_sp molOrAgg)
 {
