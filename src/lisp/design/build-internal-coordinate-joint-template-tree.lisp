@@ -61,24 +61,77 @@
          (when atom
            (chem:make-ring-closing-plug plug-name nil nil atom-name bond-order atom2-name bond-order2)))))
     (t (error "Unknown instruction ~a" instr))))
-     
-            
-(defun interpret-plugs (fragment codes)
-  (unless (consp codes)
-    (error "code must be a list"))
-  (loop for code in codes
-        do (unless (and (consp code) (eq (car code) 'chem::builder-info))
-             (let ((demo-code-block "(builder-info
- (out-plug :fg1 :fg1)
- (out-plug :fg2 :fg2)
- (out-plug :fg3 :fg3)
- (out-plug :+default :+default)
- (in-plug :-default :-default :frame :amine)
- (in-plug :fg :-side :amide-dkp))"))
-               (error "interpret-plugs needs a code block that looks like the following~%~a~%" demo-code-block)))
-        append (let ((instructions (cdr code)))
-                 (loop for instr in instructions
-                       collect (interpret-builder-info-instruction instr fragment)))))
+
+(defvar *valid-atom-properties*
+  '(:in :origin :in/origin/out :in/out :out))
+
+(defclass plug-factory ()
+  ((in-atom :initarg :in-atom :initform nil :reader in-atom)
+   (in-name :initarg :in-name :reader :in-name)
+   (origin-atom :initarg :origin-atom-name :initform nil :reader :origin-atom)
+   (origin-name :initarg :origin :reader :origin-name)
+   (out-atom :initarg :out-atom :initform nil :reader out-atom)
+   (out-name :initarg :out-name :reader :out-name))
+  (:documentation "Create plugs of different kinds" ))
+
+(defun in-plug-factory-p (plug-factory)
+  "Return generalized boolean for whether this plug-factory is capable of generating an in-plug"
+  (in-atom plug-factory))
+
+(defun origin-plug-factory-p (plug-factory)
+  "Return generalized boolean for whether this plug-factory is capable of generating an origin-plug"
+  (origin-atom plug-factory))
+
+(defun out-plug-factory-p (plug-factory)
+  "Return generalized boolean for whether this plug-factory is capable of generating an out-plug"
+  (out-atom plug-factory))
+
+(defun gather-plug-factories (residue)
+  "Loop over the atoms in the residue and use the properties to create plug-factory(s).
+The properties can look like:
+:in name (default name is :-default)
+:out name (default name is :+default)
+:origin name (default name is :-origin)
+:in/out (default name is (:-default :+out)
+:in/origin/out (in-name origin-name out-name) default names are (:-default :-origin :+origin)"
+  (flet ((plug-factory-argument-error (atom property value type)
+           (error "The plug argument was incorrect for ~a - the ~a plug was ~a but it must be a ~a"
+                  (chem:get-name residue) property value type))
+         (in-plug-name (name &optional (default :-default)) (if name name default))
+         (origin-plug-name (name) (if name name :+origin))
+         (out-plug-name (name &optional (default :+default)) (or name default)))
+    (let (plug-factories)
+      (cando:do-atoms (atom residue)
+        (when (chem:properties atom)
+          (loop for cur = (chem:properties atom) then (cddr cur)
+                for property = (first cur)
+                for value = (second cur)
+                until (null cur)
+                do (push (case property
+                           (:in
+                            (unless (symbolp value) (plug-factory-argument-error atom property value 'symbol))
+                            (make-instance 'plug-factory :in-atom atom
+                                                         :in-name (in-plug-name value)))
+                           (:out
+                            (unless (symbolp value) (plug-factory-argument-error atom property value 'symbol))
+                            (make-instance 'plug-factory :out-atom atom
+                                                         :out-name (out-plug-name value)))
+                           (:in/out
+                            (unless (listp value) (plug-factory-argument-error atom property value 'list))
+                            (make-instance 'plug-factory :in-atom atom
+                                                         :in-name (in-plug-name (first value) :-default)
+                                                         :out-atom atom
+                                                         :out-name (out-plug-name value :+out)))
+                           (:in/origin/out
+                            (unless (listp value) (plug-factory-argument-error atom property value 'list))
+                            (make-instance 'plug-factory :in-atom atom
+                                                         :in-name (in-plug-name (first value))
+                                                         :origin-atom atom
+                                                         :origin-name (origin-plug-name (second value) :-origin)
+                                                         :out-atom atom
+                                                         :out-name (out-plug-name (third value) :+origin))))
+                         plug-factories))))
+      plug-factories)))
 
 (defclass prepare-topology ()
   ((name :initarg :name :reader name)
@@ -91,23 +144,43 @@
   (print-unreadable-object (obj stream)
     (format stream "~a ~a" (class-name (class-of obj)) (name obj))))
 
+
+(defun extract-residue-plug-factory-alist (chem-draw-object)
+  "Loop through all of the fragments in the **chem-draw-object** and then loop through all of the residues
+in each fragment. Those residues that have the property :topology are topology's that we need to extract.
+Return an alist of (residue . plug-factory-list)."
+  (declare (debug 3))
+  (let ((residue-plug-factory-alist))
+    (loop for fragment in (chem:all-fragments-as-list chem-draw-object)
+          do (cando:do-residues (residue (chem:get-molecule fragment))
+               (when (chem:has-property residue :topology)
+                 (let ((plug-factories (gather-plug-factories residue)))
+                   (push (cons residue plug-factories) residue-plug-factory-alist)))))
+    residue-plug-factory-alist))
+
+#||                   
+  
 (defun extract-prepare-topologys (chem-draw-object)
   "Loop through all of the fragments in the **chem-draw-object** and then loop through all of the residues
 in each fragment. Those residues that have the property :topology-name are topology's that we need to extract.
 Return a list of prepare-topology objects - one for each residue that we need to extract."
-  (let ((code (chem:chem-draw-code chem-draw-object))
-        (extracted-topologys nil))
+  (let ((extracted-topologys nil))
     (loop for fragment in (chem:all-fragments-as-list chem-draw-object)
           do (cando:do-residues (residue (chem:get-molecule fragment))
-               (when (chem:has-property residue :topology-name)
-                 (push (make-instance 'prepare-topology
-                                      :name (chem:matter-get-property residue :topology-name)
-                                      :constitution-atoms (chem:make-constitution-atoms-from-residue residue)
-                                      :plugs (remove nil (interpret-plugs residue code))
-                                      :fragment fragment)
-                       extracted-topologys))))
+               (when (chem:has-property residue :topology)
+                 (let ((plug-factories (gather-plug-factories residue)))
+                   
+                 (loop for plugs in (interpret-plugs residue)
+                       do (push (make-instance 'prepare-topology
+                                               :name (chem:matter-get-property residue :topology-name)
+                                               :constitution-atoms (chem:make-constitution-atoms-from-residue residue)
+                                               :plugs (remove nil (interpret-plugs residue code))
+                                               :fragment fragment)
+                                extracted-topologys))))
     extracted-topologys))
+    ||#
 
+    
 (defun find-in-plug (plugs)
   (loop for p in plugs
         when (chem:get-is-in p)

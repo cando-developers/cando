@@ -461,7 +461,9 @@ core::Symbol_mv parse_property(const string& propertyValue, CDBond_sp bond, cons
 //  printf("%s:%d Parsed property: %s\n", __FILE__, __LINE__, _rep_(property).c_str());
   core::T_sp value = core::cl__read(stream,_Nil<core::T_O>(),eof);
   if ( value == eof ) {
-    SIMPLE_ERROR(BF("Could not parse second part of \"%s\" as a (symbol value) pair - in property bond of order %s other side of bond is \"%s\"") % propertyValue % bond->getOrderAsString() % otherSideValue );
+    // If no value is provided then it will default to NIL
+    value = _Nil<core::T_O>(); 
+    // SIMPLE_ERROR(BF("Could not parse second part of \"%s\" as a (symbol value) pair - in property bond of order %s other side of bond is \"%s\"") % propertyValue % bond->getOrderAsString() % otherSideValue );
   }
 //  printf("%s:%d Parsed value: %s\n", __FILE__, __LINE__, _rep_(value).c_str());
   core::cl__close(stream);
