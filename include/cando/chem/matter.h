@@ -281,6 +281,7 @@ class Matter_O : public core::CxxObject_O
 
   Atom_sp		firstAtomWithName(MatterName name);
 
+  bool          hasContent(Matter_sp maybe_child);
   bool		hasContentWithName(MatterName sName);
   Matter_sp	contentWithName(MatterName sName);
   core::T_sp	contentWithNameOrNil(MatterName sName);

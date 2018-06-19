@@ -37,9 +37,9 @@
   (:use #:cl )
   (:export
    name
-   constitution-atoms
+   constitution
    plugs
-   fragment
+   build-internal-coordinate-joint-template-tree
    extract-prepare-topologys)
   (:documentation
    "Embryonic joint-tree code"))

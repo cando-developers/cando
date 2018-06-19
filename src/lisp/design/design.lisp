@@ -47,7 +47,9 @@ This is for looking up parts but if the thing returned is not a part then return
                               (unless (typep next-top 'chem:topology)
                                 (error "Unexpected object - expected a chem:topology - got ~s" next-top))
                               next-top)
-        for next-residue = (chem:build-residue next-topology)
+        for next-residue = (progn
+                             (format t "About to build residue for next-topology ~a~%" next-topology)
+                             (chem:build-residue next-topology))
         do (setf (gethash next-monomer monomers-to-residues) next-residue)
            (chem:add-matter molecule next-residue)
            (chem:connect-residues prev-topology 
@@ -68,14 +70,18 @@ This is for looking up parts but if the thing returned is not a part then return
         (monomer-out-couplings (make-hash-table))
         (monomers-to-residues (make-hash-table))
         (ring-couplings nil))
+    (format t "Gathering couplings~%")
     (loop for coupling in (chem:couplings-as-list oligomer)
           if (typep coupling 'chem:directional-coupling)
             do (push coupling (gethash (chem:get-in-monomer coupling) monomer-out-couplings))
           else
             do (pushnew coupling ring-couplings)) ; Only add ring coupling when unique
+    (format t "Making molecule~%")
     (let* ((molecule (chem:make-molecule :mol))
            (root-topology (lookup-topology (chem:monomer-name root-monomer)))
-           (root-residue (chem:build-residue root-topology)))
+           (root-residue (progn
+                           (format t "About to build first residue ~a~%" root-topology)
+                           (chem:build-residue root-topology))))
       (unless (typep root-topology 'chem:topology)
         (error "Unexpected object - expected a chem:topology - got ~s" root-topology))
       (setf (gethash root-monomer monomers-to-residues) root-residue)
@@ -282,6 +288,8 @@ than the (chem:number-of-sequences oligomer)."
                               for topology = (lookup-topology (chem:monomer-name part))
                               when (chem:has-plug-named topology in-plug-name)
                                 collect part)))
+      (when (= (length previous-monomer) 0)
+        (error "There is no monomer found with the out-plug-name ~a in the parts ~a" out-plug-name previous-parts))
       (unless (= (length previous-monomer) 1)
         (error "There is more than one monomer(~a) with the out-plug-name ~a" previous-monomer out-plug-name))
       (unless (= (length next-monomer) 1)

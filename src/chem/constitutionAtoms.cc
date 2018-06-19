@@ -27,6 +27,7 @@ This is an open source license for the CANDO software from Temple University, bu
 
 #include <clasp/core/common.h>
 #include <clasp/core/bformat.h>
+#include <clasp/core/ql.h>
 #include <cando/adapt/stringSet.h>
 #include <cando/adapt/adapters.h>
 #include <cando/chem/constitutionAtoms.h>
@@ -197,6 +198,13 @@ CL_DEFMETHOD     int ConstitutionAtoms_O::index(MatterName name) const
   SIMPLE_ERROR(BF("Unknown atom[%s]") % name );
 }
 
+CL_DEFMETHOD core::List_sp ConstitutionAtoms_O::constitutionAtomsAsList() const {
+  ql::list l;
+  for ( int i=0; i<this->_Atoms.size(); ++i ) {
+    l << this->_Atoms[i];
+  }
+  return l.cons();
+}
 
 CL_DOCSTRING(R"(Create a chem:residue that has all the atoms/bonds and all the necessary atom/bond
 properties set properly for this chem:constitution-atoms.)");

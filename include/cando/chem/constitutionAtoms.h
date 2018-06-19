@@ -170,6 +170,8 @@ the chem:constitution-atom(s) can be accessed using integer indices.)");
 	//! Add a ConstitutionVirtualAtom to us and assign it a ConstitutionAtomIndex0N
     void addConstitutionVirtualAtom(ConstitutionVirtualAtom_sp cva);
 
+    core::List_sp constitutionAtomsAsList() const;
+    
 	//! Return a StringSet of the ConstitutionAtom names
     adapt::SymbolSet_sp atomNamesAsSymbolSet();
 
