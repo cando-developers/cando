@@ -488,7 +488,6 @@ Return (values compressed-atom-name-map max-atom-name-length). "
           (cn2-vec (make-array (/ (* ntypes (+ ntypes 1)) 2) :element-type 'double-float))
           (type1 0)
           (type2 0)
-          (curcn 0)
           (rstar 0)
           (epsilonij 0))
 ;;      (format *debug-io* "In generate-nonbond-parameters type-indexj-vec -> ~s~%" type-indexj-vec)
@@ -502,13 +501,12 @@ Return (values compressed-atom-name-map max-atom-name-length). "
                           (ffnonbond2 (chem:get-ffnonbond-using-type-index ffnonbond-db type2)))
                       (setf rstar (+ (chem:get-radius-angstroms ffnonbond1) (chem:get-radius-angstroms ffnonbond2))
                             epsilonij (sqrt (* (chem:get-epsilon-k-cal ffnonbond1) (chem:get-epsilon-k-cal ffnonbond2)))
-                            (aref cn1-vec curcn) (* epsilonij (expt rstar 12.0))
-                            (aref cn2-vec curcn) (* 2.0 epsilonij (expt rstar 6.0))
-                            (aref ico-vec (+ (* ntypes i) j)) (+ curcn 1))
+                            (aref cn1-vec (- (+ (/ (* (+ j 1) j) 2) (+ i 1)) 1)) (* epsilonij (expt rstar 12.0))
+                            (aref cn2-vec (- (+ (/ (* (+ j 1) j) 2) (+ i 1)) 1)) (* 2.0 epsilonij (expt rstar 6.0))
+                            (aref ico-vec (+ (* ntypes i) j)) (+ (/ (* (+ j 1) j) 2) (+ i 1)))
                       (if (< i j)
-                          (setf (aref ico-vec (+ (* ntypes j) i)) (+ curcn 1)))
-;;;                      (format t "type1 ~a type2 ~a~%" type1 type2)
-                      (incf curcn)))))
+                          (setf (aref ico-vec (+ (* ntypes j) i)) (+ (/ (* (+ j 1) j) 2) (+ i 1))))))))
+;;;                      (format t "type1 ~a type2 ~a~%" type1 type2)    
       (values ntypes ico-vec iac-vec local-typej-vec cn1-vec cn2-vec))))
 
 (defun chem:prepare-amber-energy-nonbond (energy-function ffnonbond-db)
@@ -785,7 +783,7 @@ Return (values compressed-atom-name-map max-atom-name-length). "
         (fortran:fwrite "%FLAG CHARGE")
         (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-4-")
-        (fortran:fformat 5 "%16.8f")
+        (fortran:fformat 5 "%16.8e")
         (loop for ch across charge
               do (fortran:fwrite (* ch 18.223)))
         (fortran:end-line)
@@ -807,7 +805,7 @@ Return (values compressed-atom-name-map max-atom-name-length). "
         (fortran:fwrite "%FLAG MASS")
         (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-6-")
-        (fortran:fformat 5 "%16.8f")
+        (fortran:fformat 5 "%16.8e")
         (loop for ma across mass
               do (fortran:fwrite ma))
         (fortran:end-line)
@@ -874,7 +872,7 @@ Return (values compressed-atom-name-map max-atom-name-length). "
         (fortran:fwrite "%FLAG BOND_FORCE_CONSTANT")
         (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-12-")
-        (fortran:fformat 5 "%16.8f")
+        (fortran:fformat 5 "%16.8e")
         (loop for kb across kbj-vec
               do (fortran:fwrite kb))
         (fortran:end-line)
@@ -886,7 +884,7 @@ Return (values compressed-atom-name-map max-atom-name-length). "
         (fortran:fwrite "%FLAG BOND_EQUIL_VALUE")
         (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-13-")
-        (fortran:fformat 5 "%16.8f")
+        (fortran:fformat 5 "%16.8e")
         (loop for r0 across r0j-vec
               do (fortran:fwrite r0))
         (fortran:end-line)
@@ -897,7 +895,7 @@ Return (values compressed-atom-name-map max-atom-name-length). "
         (fortran:fwrite "%FLAG ANGLE_FORCE_CONSTANT")
         (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-14-")
-        (fortran:fformat 5 "%16.8f")
+        (fortran:fformat 5 "%16.8e")
         (loop for kt across ktj-vec
               do (fortran:fwrite kt))
         (fortran:end-line)
@@ -908,7 +906,7 @@ Return (values compressed-atom-name-map max-atom-name-length). "
         (fortran:fwrite "%FLAG ANGLE_EQUIL_VALUE")
         (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-15-")
-        (fortran:fformat 5 "%16.8f")
+        (fortran:fformat 5 "%16.8e")
         (loop for t0 across t0j-vec
               do (fortran:fwrite t0))
         (fortran:end-line)
@@ -919,7 +917,7 @@ Return (values compressed-atom-name-map max-atom-name-length). "
         (fortran:fwrite "%FLAG DIHEDRAL_FORCE_CONSTANT")
         (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-16-")
-        (fortran:fformat 5 "%16.8f")
+        (fortran:fformat 5 "%16.8e")
         (loop for v0 across vj-vec
               do (fortran:fwrite v0))
         (fortran:end-line)
@@ -930,7 +928,7 @@ Return (values compressed-atom-name-map max-atom-name-length). "
         (fortran:fwrite "%FLAG DIHEDRAL_PERIODICITY")
         (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-17-")
-        (fortran:fformat 5 "%16.8f")
+        (fortran:fformat 5 "%16.8e")
         (loop for in0 across inj-vec
               do (fortran:fwrite (float in0)))
         (fortran:end-line)
@@ -941,7 +939,7 @@ Return (values compressed-atom-name-map max-atom-name-length). "
         (fortran:fwrite "%FLAG DIHEDRAL_PHASE")
         (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-18-")
-        (fortran:fformat 5 "%16.8f")
+        (fortran:fformat 5 "%16.8e")
         (loop for p0 across phasej-vec
               do (fortran:fwrite p0))
         (fortran:end-line)
@@ -952,10 +950,10 @@ Return (values compressed-atom-name-map max-atom-name-length). "
         (fortran:fwrite "%FLAG SCEE_SCALE_FACTOR")
         (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-19-")
-        (fortran:fformat 5 "%16.8f")
+        (fortran:fformat 5 "%16.8e")
 ;;; temporary!!!
         (loop repeat nptra
-              do (fortran:fwrite "1.20000000"))
+              do (fortran:fwrite "1.20000000e+00"))
         (fortran:end-line)
         ;; write the 1-4 electrostatic scaling constant
 
@@ -964,10 +962,10 @@ Return (values compressed-atom-name-map max-atom-name-length). "
         (fortran:fwrite "%FLAG SCNB_SCALE_FACTOR")
         (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-20-")
-        (fortran:fformat 5 "%16.8f")
+        (fortran:fformat 5 "%16.8e")
 ;;; temporary!!!
         (loop repeat nptra
-              do (fortran:fwrite "2.00000000"))
+              do (fortran:fwrite "2.00000000e+0"))
         (fortran:end-line)
         ;; write the 1-4 vdw scaling constant
 
@@ -976,7 +974,7 @@ Return (values compressed-atom-name-map max-atom-name-length). "
         (fortran:fwrite "%FLAG SOLTY")
         (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-21-")
-        (fortran:fformat 5 "%16.8f")
+        (fortran:fformat 5 "%16.8e")
         (fortran:end-line)
         ;; currently unused
 
@@ -985,7 +983,7 @@ Return (values compressed-atom-name-map max-atom-name-length). "
         (fortran:fwrite "%FLAG LENNARD_JONES_ACOEF")
         (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-22-")
-        (fortran:fformat 5 "%16.8f")
+        (fortran:fformat 5 "%16.8e")
         (loop for cn1 across cn1-vec
               do (fortran:fwrite cn1))
         (fortran:end-line)
@@ -996,7 +994,7 @@ Return (values compressed-atom-name-map max-atom-name-length). "
         (fortran:fwrite "%FLAG LENNARD_JONES_BCOEF")
         (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-23-")
-        (fortran:fformat 5 "%16.8f")
+        (fortran:fformat 5 "%16.8e")
         (loop for cn2 across cn2-vec
               do (fortran:fwrite cn2))
         (fortran:end-line)
@@ -1127,7 +1125,7 @@ Return (values compressed-atom-name-map max-atom-name-length). "
         (fortran:fwrite "%FLAG HBOND_ACOEF")
         (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-31-")
-        (fortran:fformat 5 "%16.8f")
+        (fortran:fformat 5 "%16.8e")
         (fortran:end-line)
         ;;This term has been dropped from most modern force fields.
 
@@ -1136,7 +1134,7 @@ Return (values compressed-atom-name-map max-atom-name-length). "
         (fortran:fwrite "%FLAG HBOND_BCOEF")
         (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-32-")
-        (fortran:fformat 5 "%16.8f")
+        (fortran:fformat 5 "%16.8e")
         (fortran:end-line)
         ;;This term has been dropped from most modern force fields.
 
@@ -1145,7 +1143,7 @@ Return (values compressed-atom-name-map max-atom-name-length). "
         (fortran:fwrite "%FLAG HBCUT")
         (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-33-")
-        (fortran:fformat 5 "%16.8f")
+        (fortran:fformat 5 "%16.8e")
         (fortran:end-line)
         ;;no longer used for anything.
 
@@ -1220,7 +1218,7 @@ Return (values compressed-atom-name-map max-atom-name-length). "
               (fortran:fwrite "%FLAG BOX_DIMENSIONS")
               (fortran:fwrite "%FORMAT(5E16.8)")
               (fortran:debug "-40-")
-              (fortran:fformat 5 "%16.8f")
+              (fortran:fformat 5 "%16.8e")
               (let ((solvent-box (chem:matter-get-property aggregate :bounding-box)))
                 (unless (and solvent-box (listp solvent-box) (= (length solvent-box) 3))
                   (error "There must be a solvent-box property in the aggregate properties and it must be a list of length three numbers"))
@@ -1244,7 +1242,7 @@ Return (values compressed-atom-name-map max-atom-name-length). "
         (fortran:fwrite "%FLAG RADII")
         (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-42-")
-        (fortran:fformat 5 "%16.8f")
+        (fortran:fformat 5 "%16.8e")
         (loop for radius across atom-radius
               do (fortran:fwrite radius))
         (fortran:end-line)
@@ -1255,7 +1253,7 @@ Return (values compressed-atom-name-map max-atom-name-length). "
         (fortran:fwrite "%FLAG SCREEN")
         (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-43-")
-        (fortran:fformat 5 "%16.8f")
+        (fortran:fformat 5 "%16.8e")
         (loop for screen across generalized-born-screen
               do (fortran:fwrite screen))
         (fortran:end-line)

@@ -3,7 +3,7 @@
           Amber 16 SANDER                              2016
           -------------------------------------------------------
 
-| Run on 06/15/2018 at 09:45:47
+| Run on 06/21/2018 at 11:10:08
 
 |   Executable path: /Users/tuj24515/Development/amber16/bin/sander
 | Working directory: /Users/tuj24515/Development/clasp/extensions/cando/src/tests/alanine-demo
@@ -55,7 +55,7 @@ Minimize
 |  *** cutoff > system size, list only builds once
 |Largest sphere to fit in unit cell has radius =    31.511
 | New format PARM file being parsed.
-| Version =    1.000 Date = 06/14/18 Time = 17:53:13
+| Version =    1.000 Date = 06/21/18 Time = 12:07:38
  NATOM  =      22 NTYPES =       7 NBONH =      12 MBONA  =       9
  NTHETH =      25 MTHETA =      11 NPHIH =      43 MPHIA  =      24
  NHPARM =       0 NPARM  =       0 NNB   =      99 NRES   =       3
@@ -120,7 +120,7 @@ ACE
 
  Number of triangulated 3-point waters found:        0
 
-     Sum of charges from parm topology file =  -0.00000000
+     Sum of charges from parm topology file =  -0.00000001
      Forcing neutrality...
 
 --------------------------------------------------------------------------------
@@ -137,11 +137,11 @@ ACE
 
 
    NSTEP       ENERGY          RMS            GMAX         NAME    NUMBER
-      1      -3.4446E+00     6.3049E+00     1.9553E+01     HB3        14
+      1      -1.3336E+01     5.4690E+00     1.8396E+01     N           7
 
  BOND    =        0.0206  ANGLE   =        0.3620  DIHED      =        9.6440
  VDWAALS =        2.8120  EEL     =      -80.1300  HBOND      =        0.0000
- 1-4 VDW =       14.9075  1-4 EEL =       48.9392  RESTRAINT  =        0.0000
+ 1-4 VDW =        5.0157  1-4 EEL =       48.9392  RESTRAINT  =        0.0000
 
 
   Maximum number of minimization cycles reached.
@@ -152,35 +152,35 @@ ACE
 
 
    NSTEP       ENERGY          RMS            GMAX         NAME    NUMBER
-      1      -3.4446E+00     6.3049E+00     1.9553E+01     HB3        14
+      1      -1.3336E+01     5.4690E+00     1.8396E+01     N           7
 
  BOND    =        0.0206  ANGLE   =        0.3620  DIHED      =        9.6440
  VDWAALS =        2.8120  EEL     =      -80.1300  HBOND      =        0.0000
- 1-4 VDW =       14.9075  1-4 EEL =       48.9392  RESTRAINT  =        0.0000
+ 1-4 VDW =        5.0157  1-4 EEL =       48.9392  RESTRAINT  =        0.0000
 
 --------------------------------------------------------------------------------
    5.  TIMINGS
 --------------------------------------------------------------------------------
 
-|    Read coords time           0.00 ( 5.11% of Total)
-|    Fast Water setup           0.00 ( 0.34% of Total)
-|                Build the list             0.00 (93.79% of List )
-|                Other                      0.00 ( 6.21% of List )
-|             List time                  0.00 (70.61% of Nonbo)
-|             Ewald time                 0.00 (29.39% of Nonbo)
-|          Nonbond force              0.00 (82.09% of Force)
-|          Bond/Angle/Dihedral        0.00 (15.69% of Force)
-|          Other                      0.00 ( 2.22% of Force)
+|    Read coords time           0.00 ( 5.46% of Total)
+|    Fast Water setup           0.00 ( 0.37% of Total)
+|                Build the list             0.00 (94.68% of List )
+|                Other                      0.00 ( 5.32% of List )
+|             List time                  0.00 (77.39% of Nonbo)
+|             Ewald time                 0.00 (22.61% of Nonbo)
+|          Nonbond force              0.00 (85.72% of Force)
+|          Bond/Angle/Dihedral        0.00 (12.69% of Force)
+|          Other                      0.00 ( 1.59% of Force)
 |       Force time                 0.00 (100.0% of Runmd)
-|    Runmd Time                 0.00 (15.58% of Total)
-|    Other                      0.00 (78.97% of Total)
-| Total time                 0.00 (98.37% of ALL  )
+|    Runmd Time                 0.00 (16.57% of Total)
+|    Other                      0.00 (77.60% of Total)
+| Total time                 0.00 (98.36% of ALL  )
 
 | Number of list builds   :          1
 
 | Highest rstack allocated:         70
 | Highest istack allocated:         14
-|           Job began  at 09:45:47.527  on 06/15/2018
-|           Setup done at 09:45:47.530  on 06/15/2018
-|           Run   done at 09:45:47.531  on 06/15/2018
+|           Job began  at 11:10:08.638  on 06/21/2018
+|           Setup done at 11:10:08.641  on 06/21/2018
+|           Run   done at 11:10:08.642  on 06/21/2018
 |     wallclock() was called      58 times
