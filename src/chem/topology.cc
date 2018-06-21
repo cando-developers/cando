@@ -32,6 +32,7 @@ This is an open source license for the CANDO software from Temple University, bu
 
 #include <clasp/core/common.h>
 #include <clasp/core/bformat.h>
+#include <clasp/core/ql.h>
 #include <cando/adapt/stringSet.h>
 #include <cando/adapt/adapters.h>
 #include <cando/chem/topology.h>
@@ -137,6 +138,14 @@ string Topology_O::__repr__() const {
 }
 
 
+core::List_sp Topology_O::atomInfoAsList() const {
+  ql::list l;
+  for ( int i=0; i<this->_AtomInfo.size(); ++i ) {
+    l << this->_AtomInfo[i];
+  }
+  return l.cons();
+}
+
 
 CL_DEFMETHOD Residue_sp Topology_O::build_residue() const
 {
@@ -149,6 +158,9 @@ CL_DEFMETHOD Residue_sp Topology_O::build_residue() const
   atoms.resize(numAtoms);
   res->resizeContents(numAtoms);
   ConstitutionAtoms_sp constitutionAtoms = this->_Constitution->getConstitutionAtoms();
+  if (constitutionAtoms->numberOfAtoms() !=this ->_AtomInfo.size()) {
+    SIMPLE_ERROR(BF("There is a mismatch between the number of atoms in the constitution-atoms (%d) and the number of atoms in the topology AtomInfo (~%) - there is probably a problem with how the topology was constructed") % constitutionAtoms->numberOfAtoms() % this->_AtomInfo.size());
+  }
   size_t idx = 0;
   for ( size_t idx=0, idxEnd(this->_AtomInfo.size()); idx<idxEnd; ++idx ) {
     TopologyAtomInfo_sp ai = this->_AtomInfo[idx];
@@ -163,25 +175,25 @@ CL_DEFMETHOD Residue_sp Topology_O::build_residue() const
     atoms[ai->_ConstitutionAtomIndex] = atom;
     res->putMatter(idx,atom); // order atoms as in Topology
   }
-          for ( size_t i=0, iEnd(constitutionAtoms->numberOfAtoms()); i<iEnd; ++i ) {
-            Atom_sp fromAtom = atoms[i];
-            ConstitutionAtom_sp ca = (*constitutionAtoms)[i];
+  for ( size_t i=0, iEnd(constitutionAtoms->numberOfAtoms()); i<iEnd; ++i ) {
+    Atom_sp fromAtom = atoms[i];
+    ConstitutionAtom_sp ca = (*constitutionAtoms)[i];
 //    printf("%s:%d @%zu fromAtom -> %s\n", __FILE__, __LINE__, i, _rep_(fromAtom).c_str());
-            for ( auto bi=ca->_Bonds.begin(); bi!=ca->_Bonds.end(); ++bi )
-            {
-              if ((*bi)->_ToAtomIndex>=atoms.size()) {
-                SIMPLE_ERROR(BF("Atom index %d out of bounds (num-atoms %d)") % (*bi)->_ToAtomIndex % atoms.size());
-              }
-              Atom_sp toAtom = atoms[(*bi)->_ToAtomIndex];
+    for ( auto bi=ca->_Bonds.begin(); bi!=ca->_Bonds.end(); ++bi )
+    {
+      if ((*bi)->_ToAtomIndex>=atoms.size()) {
+        SIMPLE_ERROR(BF("Atom index %d out of bounds (num-atoms %d)") % (*bi)->_ToAtomIndex % atoms.size());
+      }
+      Atom_sp toAtom = atoms[(*bi)->_ToAtomIndex];
 //      printf("%s:%d     @%d toAtom -> %s\n", __FILE__, __LINE__, (*bi)->_ToAtomIndex, _rep_(toAtom).c_str());
-              if ( fromAtom->atLowerUniqueAtomOrderThan(toAtom) ) {
-                BondOrder order = (*bi)->_BondOrder;
-                fromAtom->bondTo(toAtom,order);
-              }
-            }
-          }
-          return res;
-        }
+      if ( fromAtom->atLowerUniqueAtomOrderThan(toAtom) ) {
+        BondOrder order = (*bi)->_BondOrder;
+        fromAtom->bondTo(toAtom,order);
+      }
+    }
+  }
+  return res;
+}
 
 
 

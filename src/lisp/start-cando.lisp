@@ -70,7 +70,7 @@
         (list (list "**;*.*" (concatenate 'string amber-home "/**/*.*"))))
   (format t "Setting *amber-home* -> ~a~%" amber-home))
 
-#+cando-jupyter(load "source-dir:extensions;cando;src;lisp;build-cando-jupyter.lisp")
+#+cando-jupyter(load "source-dir:extensions;cando;src;lisp;load-cando-jupyter.lisp")
 
 ;;; Setup or startup the Cando system 
 ;;; If :setup-cando is in *features* then don't load the cando system

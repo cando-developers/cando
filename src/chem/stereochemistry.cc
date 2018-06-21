@@ -257,13 +257,8 @@ CL_DEFMETHOD void StereoInformation_O::validate()
 {_OF();
   for ( gctools::Vec0<Stereoisomer_sp>::iterator it=this->_Stereoisomers.begin(); it!=this->_Stereoisomers.end(); it++ )
   {
-    if ( (*it)->getName().nilp() ) 
-    {
+    if ( (*it)->getName().nilp() ) {
       SIMPLE_ERROR(BF("StereoInformation has stereoisomer with blank name"));
-    }
-    if ( (*it)->getPdb().nilp() ) 
-    {
-      SIMPLE_WARN(BF("StereoInformation has stereoisomer with blank pdb name"));
     }
     size_t index = 0;
     for ( gctools::Vec0<Stereoisomer_sp>::iterator it = this->_Stereoisomers.begin();

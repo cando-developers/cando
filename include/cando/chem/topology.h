@@ -270,6 +270,8 @@ Each Topology is uniquely identified within a CandoDatabase by a TopologyIndex0N
   bool	matchesMonomerEnvironment( Monomer_sp mon );
   RingClosingPlug_sp provideMissingRingClosingPlug( Monomer_sp mon );
 
+  core::List_sp atomInfoAsList() const;
+  CL_DEFMETHOD void topologyAddAtomInfo(TopologyAtomInfo_sp atomInfo) { this->_AtomInfo.push_back(atomInfo); };
 #if 0
   CL_DEFMETHOD core::T_sp atomInfo() const { return this->_AtomInfo; };
   CL_DEFMETHOD core::T_sp setf_atomInfo(core::Vector_sp ai) { this->_AtomInfo = ai; return ai; };

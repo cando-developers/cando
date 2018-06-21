@@ -96,6 +96,18 @@ void	Matter_O::eraseContents()
 {
   this->_contents.clear();
 }
+CL_LISPIFY_NAME("hasContent");
+CL_DEFMETHOD bool	Matter_O::hasContent(Matter_sp maybe_child)
+{
+  contentIterator		aCur;
+  for ( aCur=this->_contents.begin();aCur!=this->_contents.end(); aCur++ ) {
+    LOG(BF("Looking at(%s) for(%s)") % (*aCur)->getName().c_str() % sName.c_str()  );
+    if ( (*aCur) == maybe_child ) {
+      return true;
+    }
+  }
+  return false;
+}
 //
 // hasContentWithName
 //

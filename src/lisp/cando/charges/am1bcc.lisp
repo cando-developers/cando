@@ -316,8 +316,7 @@
 	 ((eq ae :Cl) (set-am1-bcc-type a 72))
 	 ((eq ae :Br) (set-am1-bcc-type a 73))
 	 ((eq ae :I)  (set-am1-bcc-type a 74))
-	 #+(or) (t (raise (error (% "Unhandled element[%s]" ae))))
-	 (t (error "Unhandled element[~s]" ae))
+	 (t (warn "Unhandled element in am1-bcc charge calculation [~s]" ae))
 	 )))
    mol))
 

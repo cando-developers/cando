@@ -2,6 +2,7 @@
 
 
 (defun interpret-builder-info-instruction (instr residue)
+  (error "This is currently not used")
   (cond
     ((eq (car instr) 'chem:origin-plug)
      (destructuring-bind (cmd atom-name plug-name) instr
@@ -61,52 +62,295 @@
          (when atom
            (chem:make-ring-closing-plug plug-name nil nil atom-name bond-order atom2-name bond-order2)))))
     (t (error "Unknown instruction ~a" instr))))
-     
-            
-(defun interpret-plugs (fragment codes)
-  (unless (consp codes)
-    (error "code must be a list"))
-  (loop for code in codes
-        do (unless (and (consp code) (eq (car code) 'chem::builder-info))
-             (let ((demo-code-block "(builder-info
- (out-plug :fg1 :fg1)
- (out-plug :fg2 :fg2)
- (out-plug :fg3 :fg3)
- (out-plug :+default :+default)
- (in-plug :-default :-default :frame :amine)
- (in-plug :fg :-side :amide-dkp))"))
-               (error "interpret-plugs needs a code block that looks like the following~%~a~%" demo-code-block)))
-        append (let ((instructions (cdr code)))
-                 (loop for instr in instructions
-                       collect (interpret-builder-info-instruction instr fragment)))))
+
+(defvar *valid-atom-properties*
+  '(:in :origin :in/origin/out :in/out :out))
+
+(defclass plug-factory ()
+  ((in-atom :initarg :in-atom :initform nil :reader in-atom)
+   (in-name :initarg :in-name :reader in-name)
+   (in-plug :initform nil :accessor in-plug)
+   (origin-atom :initarg :origin-atom :initform nil :reader origin-atom)
+   (origin-name :initarg :origin-name :reader origin-name)
+   (origin-plug :initform nil :accessor origin-plug)
+   (out-atom :initarg :out-atom :initform nil :reader out-atom)
+   (out-name :initarg :out-name :reader out-name)
+   (out-plug :initform nil :accessor out-plug))
+  (:documentation "Create plugs of different kinds" ))
+
+(defun maybe-make-origin-plug (origin-plug-factory)
+  "Either return the cached plug or create and cache one"
+  (if (origin-plug origin-plug-factory)
+      (origin-plug origin-plug-factory)
+      (setf (origin-plug origin-plug-factory)
+            (chem:make-origin-plug (origin-name origin-plug-factory)
+                                   (chem:get-name (origin-atom origin-plug-factory))))))
+
+(defun maybe-make-in-plug (in-plug-factory)
+  "Either return the cached plug or create and cache one"
+  (if (in-plug in-plug-factory)
+      (in-plug in-plug-factory)
+      (setf (in-plug in-plug-factory)
+            (chem:make-in-plug (in-name in-plug-factory)
+                               nil
+                               (chem:get-name (in-atom in-plug-factory))
+                               :single-bond
+                               nil ; Handle two bond plugs
+                               :no-bond))))
+
+(defun maybe-make-out-plug (out-plug-factory)
+  "Either return the cached plug or create and cache one"
+  (if (out-plug out-plug-factory)
+      (out-plug out-plug-factory)
+      (setf (out-plug out-plug-factory)
+            (chem:make-out-plug (out-name out-plug-factory)
+                                nil
+                                nil
+                                (chem:get-name (out-atom out-plug-factory))
+                                :single-bond
+                                nil   ; Handle two bond plugs
+                                :no-bond))))
+
+(defun gather-plugs (plug-factory)
+  "Return a list of plugs that the plug-factory created"
+  (let (plugs)
+    (when (out-plug plug-factory) (push (out-plug plug-factory) plugs))
+    (when (in-plug plug-factory) (push (in-plug plug-factory) plugs))
+    (when (origin-plug plug-factory) (push (origin-plug plug-factory) plugs))))
+    
+(defun in-plug-factory-p (plug-factory)
+  "Return generalized boolean for whether this plug-factory is capable of generating an in-plug"
+  (in-atom plug-factory))
+
+(defun origin-plug-factory-p (plug-factory)
+  "Return generalized boolean for whether this plug-factory is capable of generating an origin-plug"
+  (origin-atom plug-factory))
+
+(defun out-plug-factory-p (plug-factory)
+  "Return generalized boolean for whether this plug-factory is capable of generating an out-plug"
+  (out-atom plug-factory))
+
+(defun gather-plug-factories (residue)
+  "Loop over the atoms in the residue and use the properties to create plug-factory(s).
+The properties can look like:
+:in name (default name is :-default)
+:out name (default name is :+default)
+:origin name (default name is :-origin)
+:in/out (default name is (:-default :+out)
+:in/origin/out (in-name origin-name out-name) default names are (:-default :-origin :+origin)"
+  (flet ((plug-factory-argument-error (atom property value type)
+           (error "The plug argument was incorrect for ~a - the ~a plug was ~a but it must be a ~a"
+                  (chem:get-name residue) property value type))
+         (in-plug-name (name &optional (default :-default)) (if name name default))
+         (origin-plug-name (name &optional (default :+origin)) (if name name default))
+         (out-plug-name (name &optional (default :+default)) (or name default))
+         )
+    (let (plug-factories)
+      (cando:do-atoms (atom residue)
+        (when (chem:properties atom)
+          (loop for cur = (chem:properties atom) then (cddr cur)
+                for property = (first cur)
+                for value = (second cur)
+                until (null cur)
+                do (let ((maybe-plug-factory
+                           (case property
+                             (:in
+                              (unless (symbolp value) (plug-factory-argument-error atom property value 'symbol))
+                              (make-instance 'plug-factory :in-atom atom
+                                                           :in-name (in-plug-name value)))
+                             (:out
+                              (unless (symbolp value) (plug-factory-argument-error atom property value 'symbol))
+                              (make-instance 'plug-factory :out-atom atom
+                                                           :out-name (out-plug-name value)))
+                             (:in/out
+                              (unless (listp value) (plug-factory-argument-error atom property value 'list))
+                              (make-instance 'plug-factory :in-atom atom
+                                                           :in-name (in-plug-name (first value) :-default)
+                                                           :out-atom atom
+                                                           :out-name (out-plug-name value :+out)))
+                             (:in/origin/out
+                              (unless (listp value) (plug-factory-argument-error atom property value 'list))
+                              (make-instance 'plug-factory :in-atom atom
+                                                           :in-name (in-plug-name (first value))
+                                                           :origin-atom atom
+                                                           :origin-name (origin-plug-name (second value) :-origin)
+                                                           :out-atom atom
+                                                           :out-name (out-plug-name (third value) :+origin))))))
+                     (when maybe-plug-factory (push maybe-plug-factory plug-factories))))))
+      plug-factories)))
 
 (defclass prepare-topology ()
   ((name :initarg :name :reader name)
+   (constitution :initarg :constitution :reader constitution)
    (constitution-atoms :initarg :constitution-atoms :reader constitution-atoms)
    (plugs :initarg :plugs :reader plugs)
-   (fragment :initarg :fragment :reader fragment))
+   (residue :initarg :residue :reader residue))
   (:documentation "Store information needed to create a new topology"))
 
 (defmethod print-object ((obj prepare-topology) stream)
   (print-unreadable-object (obj stream)
     (format stream "~a ~a" (class-name (class-of obj)) (name obj))))
 
+
+(defun extract-residue-plug-factory-alist (chem-draw-object)
+  "Loop through all of the fragments in the **chem-draw-object** and then loop through all of the residues
+in each fragment. Those residues that have the property :topology are topology's that we need to extract.
+Return an alist of (residue . plug-factory-list)."
+  (declare (debug 3))
+  (let ((residue-plug-factory-alist))
+    (loop for fragment in (chem:all-fragments-as-list chem-draw-object)
+          do (cando:do-residues (residue (chem:get-molecule fragment))
+               (when (chem:has-property residue :topology)
+                 (chem:set-name residue (chem:matter-get-property residue :topology))
+                 (let ((plug-factories (gather-plug-factories residue)))
+                   (push (cons residue plug-factories) residue-plug-factory-alist)))))
+    residue-plug-factory-alist))
+
+(defun identify-root-atom-name (residue plug-factories)
+  "Return the name of the atom that will serve to organize the stereocenters.
+It's either the origin atom or the first in atom found."
+  (loop for plug-factory in plug-factories
+        when (origin-plug-factory-p plug-factory)
+          do (return-from identify-root-atom-name (chem:get-name (origin-atom plug-factory)))
+        when (in-plug-factory-p plug-factory)
+          do (return-from identify-root-atom-name (chem:get-name (in-atom plug-factory))))
+  (error "There must either be an origin-plug or an in-plug in the residue ~a" residue))
+
+(defun build-stereoisomer (name chiral-atoms stereoisomer-index)
+  "Build a stereoisomer. Assemble a name for the stereiosomer using the name and
+the stereoisomer-index.   The stereoisomer-index is like a bit-vector that indicates
+the stereochemistry of this stereoisomer (0 is :S and 1 is :R).
+The name is constructed by appending \"{chiral-atom-name/(S|R),...}\".
+So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
+  (if chiral-atoms
+      (let* ((configurations (loop for chiral-index below (length chiral-atoms)
+                                   for config = (if (logbitp chiral-index stereoisomer-index) :S :R)
+                                   collect config))
+             (stereo-configurations (mapcar (lambda (atom config) (chem:make-stereo-configuration (chem:get-name atom) config))
+                                            chiral-atoms configurations))
+             (new-name-string (format nil "~A[~{~A~^,~}]"
+                                      name
+                                      (mapcar (lambda (atom config)
+                                                (format nil "~A/~A"
+                                                        (string (chem:get-name atom))
+                                                        (string config))) chiral-atoms configurations)))
+             (new-name (intern new-name-string :keyword)))
+        #+(or)
+        (progn
+          (format t "name -> ~a~%" name)
+          (format t "chiral-atoms -> ~a~%" chiral-atoms)
+          (format t "stereoisomer-index -> ~a~%" stereoisomer-index)
+          (format t "new-name -> ~a~%" new-name))
+        (chem:make-stereoisomer new-name nil stereoisomer-index stereo-configurations))
+      (progn
+        #+(or)(format t "Single stereoisomer name -> ~a~%" name)
+        (chem:make-stereoisomer name name 0 nil))))
+
+(defun build-stereoinformation (name constitution-atoms root-atom-name)
+  "Build a residue from the constitution-atoms in **prep-topology**.
+Then identify all stereocenters sorted by distance from the **root-atom-name**.
+Build stereoinformation from all of this and return it."
+  (let* ((residue (chem:build-residue constitution-atoms)))
+;;;      (chem:define-stereochemical-configurations-for-all-atoms residue)
+    (let* ((root-atom (chem:atom-with-name residue root-atom-name))
+           (spanning-loop (chem:make-spanning-loop root-atom))
+           (atoms (chem:all-atoms spanning-loop))
+           (chiral-atoms (remove-if (lambda (x) (null (eq (chem:get-stereochemistry-type x) :chiral))) atoms))
+           (number-of-chiral-atoms (length chiral-atoms))
+           (number-of-stereoisomers (expt 2 number-of-chiral-atoms)))
+      #+(or)
+      (progn
+        (format t "residue: ~s~%" residue)
+        (format t "root atom: ~s~%" root-atom)
+        (format t "chiral atoms: ~s~%" chiral-atoms)
+        (terpri)
+        (terpri))
+      (let ((stereoisomers (loop for stereoisomer-index below number-of-stereoisomers
+                                 for stereoisomer = (build-stereoisomer name chiral-atoms stereoisomer-index)
+                                 collect stereoisomer)))
+        (chem:make-stereoinformation stereoisomers nil)))))
+
+
+
+(defun prepare-topologys-from-plug-factories (name residue plug-factories constitution constitution-atoms)
+  "Create prepare-topology objects using the list of plug-factory objects.
+If there is a plug-factory that can create an origin that is one topology.
+For every plug-factory that can generate an in-plug use that to generate another topology.
+All other plug-factory objects must be capable of generating out-plugs."
+  (let (result
+        (origin-plug-factory (find-if #'origin-plug-factory-p plug-factories)))
+    (when origin-plug-factory
+      (let ((counter 0))
+        (loop for plug-factory in plug-factories
+              if (origin-plug-factory-p plug-factory)
+                count counter)
+        (when (> counter 1) (error "There can only be one plug factory capable of generating an origin-plug")))
+      (let* ((origin-name (origin-name origin-plug-factory))
+             (origin-atom-name (chem:get-name (origin-atom origin-plug-factory)))
+             (origin-plug (maybe-make-origin-plug origin-plug-factory))
+             (out-plugs (loop for plug-factory in plug-factories
+                              if (out-plug-factory-p plug-factory)
+                                collect (maybe-make-out-plug plug-factory)
+                              else
+                                do (error "In residue ~a you have specified an origin-plug ~a on atom ~a and elsewhere there is atom ~a indicated as an in-plug ~a - it must also be convertable to an out-plug"
+                                          origin-name
+                                          origin-atom-name
+                                          (out-name plug-factory)
+                                          (chem:get-name (out-atom plug-factory)))))
+             (plugs (cons origin-plug out-plugs)))
+        ;; If the topology has an origin-plug then name it XXX.ORIGIN
+        (push (make-instance 'prepare-topology
+                             :name (intern (format nil "~a.ORIGIN" (string name)) :keyword)
+                             :constitution constitution
+                             :constitution-atoms constitution-atoms
+                             :plugs plugs
+                             :residue residue)
+              result)))
+    ;; Get all of the plug-factories that can generate in-plugs
+    (let ((in-plug-factories (remove-if (lambda (x) (null (in-plug-factory-p x))) plug-factories)))
+      (loop for in-plug-factory in in-plug-factories
+            for in-plug = (maybe-make-in-plug in-plug-factory)
+            for out-plugs = (loop for out-plug-factory in (remove-if (lambda (x) (eq x in-plug-factory)) plug-factories)
+                                  collect (maybe-make-out-plug out-plug-factory))
+            for plugs = (cons in-plug out-plugs)
+            do (push (make-instance 'prepare-topology
+                                    :name (if (eq (chem:get-name in-plug) :-default)
+                                              name
+                                              (intern (format nil "~a~a" (string name) (string (chem:get-name in-plug))) :keyword))
+                                    :constitution constitution
+                                    :constitution-atoms constitution-atoms
+                                    :plugs plugs
+                                    :residue residue)
+                     result)))
+    result))
+
 (defun extract-prepare-topologys (chem-draw-object)
   "Loop through all of the fragments in the **chem-draw-object** and then loop through all of the residues
 in each fragment. Those residues that have the property :topology-name are topology's that we need to extract.
 Return a list of prepare-topology objects - one for each residue that we need to extract."
-  (let ((code (chem:chem-draw-code chem-draw-object))
-        (extracted-topologys nil))
-    (loop for fragment in (chem:all-fragments-as-list chem-draw-object)
-          do (cando:do-residues (residue (chem:get-molecule fragment))
-               (when (chem:has-property residue :topology-name)
-                 (push (make-instance 'prepare-topology
-                                      :name (chem:matter-get-property residue :topology-name)
-                                      :constitution-atoms (chem:make-constitution-atoms-from-residue residue)
-                                      :plugs (remove nil (interpret-plugs residue code))
-                                      :fragment fragment)
-                       extracted-topologys))))
-    extracted-topologys))
+  (let ((extracted-prepare-topologys nil)
+        (residue-plug-factory-alist (extract-residue-plug-factory-alist chem-draw-object)))
+    ;; For each residue and set of plug-factories construct a constitution-atoms,
+    ;; a stereo-information and a constitution
+    (loop for (residue . plug-factories) in residue-plug-factory-alist
+          for name = (chem:get-name residue)
+          for root-atom-name = (identify-root-atom-name residue plug-factories)
+          for constitution-atoms = (chem:make-constitution-atoms-from-residue residue)
+          for stereo-information = (build-stereoinformation (chem:get-name residue) constitution-atoms root-atom-name)
+          for constitution = (chem:make-constitution (chem:get-name residue)
+                                                     "no-comment"
+                                                     constitution-atoms
+                                                     stereo-information
+                                                     nil #| This should be a list of unique plugs - but I don't have them until prepare-topologys-from-plug-factories below |#
+                                                     nil )
+          ;; Collect a list of prepare-topology that we generate from the list of plug-factories
+          do (loop for prepare-topology in (prepare-topologys-from-plug-factories name residue plug-factories constitution constitution-atoms)
+                   do (push prepare-topology extracted-prepare-topologys))
+             ;; For every plug that was generated by the plug-factories - add it to the constitution
+          do (loop for plug-factory in plug-factories
+                   do (loop for plug in (gather-plugs plug-factory)
+                            do (chem:add-plug constitution (chem:get-name plug) plug))))
+    extracted-prepare-topologys))
 
 (defun find-in-plug (plugs)
   (loop for p in plugs
@@ -196,7 +440,7 @@ Return a list of prepare-topology objects - one for each residue that we need to
     (dump-build-order-recursively cur-template child constitution-atoms sout)))
 
 
-(defun joint-template-factory (parent-template atom constitution-atoms constitution-name topology-name fragment)
+(defun joint-template-factory (parent-template atom constitution-atoms constitution-name topology-name)
   (let* ((out-plug-atom-prop (chem:matter-get-property-or-default atom :out-plug nil))
          (entity-to-delay-children-for (chem:matter-get-property-or-default atom :entity-to-delay-children-for nil))
          (root-atom-prop (chem:matter-get-property-or-default atom :root-atom nil))
@@ -247,27 +491,33 @@ Return a list of prepare-topology objects - one for each residue that we need to
 ;; Build an AtomTreeTemplate recursively using the properties defined
 ;; for each atom
 ;;
-(defun build-atom-tree-template-recursively (parent fragment root constitution-atoms constitution-name topology-name )
-  (let ((root-template (joint-template-factory parent root constitution-atoms constitution-name topology-name fragment))
+(defun build-atom-tree-template-recursively (parent root residue constitution-atoms constitution-name topology-name )
+  (let ((root-template (joint-template-factory parent root constitution-atoms constitution-name topology-name))
         (children (progn
                     (chem:matter-get-property root :children))))
     (loop for child in children
-          do (let ((child-template (build-atom-tree-template-recursively root-template fragment child constitution-atoms constitution-name topology-name )))
-               (kin:add-child root-template child-template)))
+          when (chem:has-content residue child) 
+            do (let ((child-template (build-atom-tree-template-recursively root-template
+                                                                           child
+                                                                           residue
+                                                                           constitution-atoms
+                                                                           constitution-name
+                                                                           topology-name )))
+                 (kin:add-child root-template child-template)))
     root-template))
 
 
 (defun build-internal-coordinate-joint-template-tree (prepare-topology)
 ;;;chemdraw-fragment constitution-atoms plugs constitution-name topology-name)
-  (with-accessors ((name name) (constitution-atoms constitution-atoms)
-                   (plugs plugs) (fragment fragment))
+  (with-accessors ((name name) (residue residue) (plugs plugs) (constitution constitution))
       prepare-topology
-    (let* ((residue (chem:build-residue constitution-atoms))
-           (in-plug (let ((in-plug (find-in-plug plugs)))
+    (let* ((in-plug (let ((in-plug (find-in-plug plugs)))
                       (if in-plug
                           in-plug
                           (error "There has to be an in-plug in topology ~a" name))))
            (outplugs (find-out-plugs plugs))
+           (constitution-atoms (chem:get-constitution-atoms
+                                constitution))
            (root-atom-name (chem:root-atom-name in-plug))
            (root-atom (chem:atom-with-name residue root-atom-name))
            (spanning-loop (chem:make-spanning-loop root-atom))
@@ -373,14 +623,13 @@ Return a list of prepare-topology objects - one for each residue that we need to
       ;;
       (let ((tree-template (build-atom-tree-template-recursively
                             nil
-                            fragment root-atom constitution-atoms name name)))
+                            root-atom
+                            residue
+                            constitution-atoms
+                            name
+                            name)))
         #+(or)
         (let ((build-order (with-output-to-string (sout)
                                    (dump-build-order-recursively nil tree-template constitution-atoms sout))))
                 (format t "Build order:~%~a~%" build-order))
         tree-template))))
-
-
-
-
-
