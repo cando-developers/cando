@@ -445,7 +445,10 @@ Topology_sp	Constitution_O::getTopologyForMonomerEnvironment(Monomer_sp mon )
       return ti->second;
     }
   }
-  SIMPLE_ERROR(BF("There is no topology for this environment"));
+  if (this->_Topologies.size() == 0 ) {
+    SIMPLE_ERROR(BF("There are no topology(s) in the constiutition %s - so we won't find any topology(s) that match the monomer %s environment - did you fail to add topology(s) to the constitution?") % _rep_(this->asSmartPtr()) % _rep_(mon));
+  }
+  SIMPLE_ERROR(BF("There is no topology in constitution %s that matches the monomer %s in its environment - there are %d topology(s) in the constitution") % _rep_(this->asSmartPtr()) % _rep_(mon) % this->_Topologies.size() );
 }
 
 

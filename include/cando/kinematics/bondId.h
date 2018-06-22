@@ -35,29 +35,18 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace kinematics
 {
-
-
-
-    class BondId_O : public core::General_O
-{
-    LISP_CLASS(kinematics,KinPkg,BondId_O,"BondId",core::General_O);
- public:
-    static BondId_sp make();
-//    DECLARE_ARCHIVE();
-    DEFAULT_CTOR_DTOR(BondId_O);
-public: // instance variables here
+  class BondId_O : public core::CxxObject_O
+  {
+    LISP_CLASS(kinematics,KinPkg,BondId_O,"BondId",core::CxxObject_O);
+  public:
+  BondId_O() : _Parent(_Unbound<Joint_O>()), _Child(_Unbound<Joint_O>()) {};
+  public: // instance variables here
     Joint_sp	_Parent;
     Joint_sp	_Child;
-
-public: // Functions here
-    void initialize();
-
-public:
-    static BondId_sp create(Joint_sp parent, Joint_sp child);
-};
+  public:
+    static BondId_sp create(Joint_sp parent, Joint_sp child = _Unbound<Joint_O>());
+  };
 
 }; /* kinematics */
-
-TRANSLATE(kinematics::BondId_O);
 
 #endif /* _BONDID_H */

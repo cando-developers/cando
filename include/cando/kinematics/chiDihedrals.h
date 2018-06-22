@@ -41,9 +41,9 @@ FORWARD(ChiDihedral);
   and the AtomTree.  Each atom index is the ConstitutionAtomIndex0N of the atom in the
   current residue.  A value of -1 refers to atoms in the previous residue.
  */
-class ChiDihedral_O : public core::General_O
+class ChiDihedral_O : public core::CxxObject_O
 {
-    LISP_CLASS(kinematics,KinPkg,ChiDihedral_O,"ChiDihedral",core::General_O);
+    LISP_CLASS(kinematics,KinPkg,ChiDihedral_O,"ChiDihedral",core::CxxObject_O);
 #if INIT_TO_FACTORIES
  public:
     static ChiDihedral_sp make(const int atom1Index, const int atom2Index, const int atom3Index, const int atom4Index);
@@ -80,9 +80,9 @@ FORWARD(ChiList);
 /*! Define a list of ChiDihedral angles that will be used to define
   a Rotamer.
  */
-class ChiList_O : public core::General_O
+class ChiList_O : public core::CxxObject_O
 {
-    LISP_CLASS(kinematics,KinPkg,ChiList_O,"ChiList",core::General_O);
+    LISP_CLASS(kinematics,KinPkg,ChiList_O,"ChiList",core::CxxObject_O);
 #if INIT_TO_FACTORIES
 #else
     DECLARE_INIT();

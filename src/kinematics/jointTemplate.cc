@@ -405,9 +405,7 @@ Joint_sp RootBondedJointTemplate_O::writeIntoAtomTree(const AtomTree_sp& atomTre
     //	I'll insert for now because that will should work for every non root residue
     incomingParent->insertChild(owned);
 
-
-    // Detach the old Atom that we are replacing - this should cause a flurry of handle releases
-    // as the children ref-counts are decremented to zero and they are deleted
+    // Detach the old Atom that we are replacing
     //
     if ( incoming->_Child.boundp() )
     {

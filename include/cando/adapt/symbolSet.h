@@ -56,8 +56,8 @@ SMART(SymbolList);
   A class that stores a set of strings
 */
 SMART(SymbolSet);
- class SymbolSet_O : public core::General_O {
-  LISP_CLASS(adapt, AdaptPkg, SymbolSet_O, "SymbolSet",core::General_O);
+ class SymbolSet_O : public core::CxxObject_O {
+  LISP_CLASS(adapt, AdaptPkg, SymbolSet_O, "SymbolSet",core::CxxObject_O);
 
 public:
   void initialize();

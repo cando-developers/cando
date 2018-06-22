@@ -41,34 +41,18 @@ namespace kinematics
 //
 
 
+void ChainNode_O::fields(core::Record_sp node) {
+  node->field_if_not_unbound(INTERN_(kw,root_monomer_node),this->_RootMonomerNode);
+  node->field_if_not_empty(INTERN_(kw,indexed_monomer_nodes),this->_IndexedMonomerNodes);
+  this->Base::fields(node);
+}
 
 
-
-#if INIT_TO_FACTORIES
 
   ChainNode_sp ChainNode_O::make()
     {
       IMPLEMENT_ME();
     };
-
-#else
-    core::T_sp ChainNode_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
-    {
-//      this->Base::__init__(exec,args,env,lisp);
-//      arg = translate::from_object<XXXX>::convert(env->lookup(this->Package(),"YYY"));
-	return _Nil<core::T_O>();
-    }
-#endif
-
-#ifdef XML_ARCHIVE
-    void ChainNode_O::archiveBase(core::ArchiveP node)
-    {
-        this->Base::archiveBase(node);
-	// Archive other instance variables here
-	IMPLEMENT_ME();
-    }
-#endif
-
 
     void ChainNode_O::initialize()
     {_OF();

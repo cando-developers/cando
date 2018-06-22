@@ -48,6 +48,11 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace kinematics
 {
 
+void AtomTree_O::fields(core::Record_sp node) {
+  node->field_if_not_unbound(INTERN_(kw,root),this->_Root);
+};
+
+
 
 string AtomHolder::typeAsString() const
 {
@@ -68,26 +73,6 @@ string AtomHolder::typeAsString() const
   };
 };
 
-
-void AtomTreeWalkFunctor::operator()(kinematics::Joint_sp atom) const
-{
-  THROW_HARD_ERROR(BF("Subclass of AtomTreeWalkFunctor must define operator()"));
-}
-
-void ExecutableAtomTreeWalkFunctor::operator()(kinematics::Joint_sp atom) const
-{
-  IMPLEMENT_MEF("Improve this");
-#if 0
-  core::Cons_sp args = core::Cons_O::create(atom);
-  core::ValueFrame_sp frame(core::ValueFrame_O::create(args,_Nil<core::T_O>()));
-  core::eval::apply(this->_Callback,frame);
-//	this->_Callback->evaluate(args,_lisp->nil<core::Environment_O>(),this->lisp());
-#endif
-}
-
-void AtomTree_O::fields(core::Record_sp node) {
-  node->field(INTERN_(kw,root),this->_Root);
-};
 
 void AtomTree_O::initialize()
 {
@@ -202,7 +187,7 @@ void AtomTree_O::recursivelyBuildMolecule(int moleculeId,
       SIMPLE_ERROR(BF("The topology %s is missing an :atom-template parameter") % _rep_(topology));
     }
     JointTemplate_sp jointTemplate = gc::As<JointTemplate_sp>(ttemplate);
-    BondId_sp incoming = BondId_O::create(parent,_Nil<core::T_O>());
+    BondId_sp incoming = BondId_O::create(parent);
     JointTemplate_O::PlugNamesToBondIdMap outgoing;
 	    //
 	    // Write the sub tree described by jointTemplate into the AtomTree
@@ -210,11 +195,11 @@ void AtomTree_O::recursivelyBuildMolecule(int moleculeId,
     ASSERTF(jointTemplate.notnilp(),BF("The JointTemplate for Topology[%s] is nil")
             % _rep_(topology->getName()) );
     jointTemplate->writeIntoAtomTree(this->sharedThis<AtomTree_O>(),
-                                    moleculeId,
-                                    residueId,
-                                    incoming,
-                                    outgoing,
-                                    rootNode);
+                                     moleculeId,
+                                     residueId,
+                                     incoming,
+                                     outgoing,
+                                     rootNode);
 	    // Now loop over all the OutPlugs and
 	    // create their children and connect them to our OutPlug atoms
 	    //
@@ -265,28 +250,18 @@ string AtomTree_O::asString() const
 
 
 
-string AtomTree_O::__repr__() const
-{_OF();
-  stringstream ss;
-  ss << (BF("Dump of AtomTree")).str() << std::endl;
-  ss << "IMPLEMENT_ME";
-  return ss.str();
-}
-
-
-void AtomTree_O::walkTree(AtomTreeWalkFunctor& functor)
+void AtomTree_O::walkTree(core::Function_sp callback)
 {_OF();
   OriginJumpJoint_sp originJumpAtom = gc::As<OriginJumpJoint_sp>(this->_Root);
-  originJumpAtom->walkChildren(functor);
+  originJumpAtom->walkChildren(callback);
 }
 
-void AtomTree_O::walk(core::Function_sp exec)
+CL_DEFMETHOD void AtomTree_O::walk(core::Function_sp exec)
 {_OF();
-  ExecutableAtomTreeWalkFunctor functor(exec);
-  this->walkTree(functor);
+  this->walkTree(exec);
 }
 
-void AtomTree_O::updateInternalCoords()
+CL_DEFMETHOD void AtomTree_O::updateInternalCoords()
 {_OF();
   ASSERTF(this->_Root.notnilp(),BF("The Root atom is nil - this should never happen"));
   Stub defaultStub;
@@ -294,10 +269,9 @@ void AtomTree_O::updateInternalCoords()
 }
 
 
-void AtomTree_O::walkResidue( int residueId, Joint_sp const& root, core::Function_sp exec)
+CL_DEFMETHOD void AtomTree_O::walkResidue( int residueId, Joint_sp const& root, core::Function_sp exec)
 {_OF();
-  ExecutableAtomTreeWalkFunctor functor(exec);
-  root->walkResidueTree(residueId,functor);
+  root->walkResidueTree(residueId,exec);
 }
 
 

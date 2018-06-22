@@ -38,7 +38,7 @@ namespace chem
     class AtomId
     {
 	friend class AtomId_O;
-    protected:
+    public:
 	int	_Molecule;
 	int	_Residue;
 	int	_Atom;
@@ -95,7 +95,7 @@ namespace chem
 	friend class AtomIdToAtomMap_O;
 	LISP_CLASS(chem,ChemPkg,AtomId_O,"AtomId",core::CxxObject_O);
 //	DECLARE_ARCHIVE();
-    protected:
+    public:
 	AtomId	_AtomId;
     public:
 	static AtomId_sp make(int mol, int res, int atom);

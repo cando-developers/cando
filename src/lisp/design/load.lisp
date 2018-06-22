@@ -22,9 +22,10 @@
                             for name = (design.joint-tree:name prep-top)
                             for constitution = (design.joint-tree:constitution prep-top)
                             for plugs = (design.joint-tree:plugs prep-top)
-                            for top = (build-topology name constitution plugs)
-                            do (chem:set-property top :joint-template joint-template)
-                            collect top)))
+                            for topology = (build-topology name constitution plugs)
+                            do (chem:add-topology constitution topology)
+                               (chem:set-property topology :joint-template joint-template)
+                            collect topology)))
       (loop for topology in topologys
             do (leap.core:register-variable (chem:get-name topology) topology))
       (values topologys chemdraw prepare-topologys))))

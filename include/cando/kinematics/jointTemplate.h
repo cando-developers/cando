@@ -164,7 +164,7 @@ namespace kinematics
     CL_LISPIFY_NAME(children);
     CL_DEFMETHOD virtual core::List_sp children() const {return _Nil<core::T_O>();}
     
-  JointTemplate_O() : _Parent(_Nil<JointTemplate_O>()), _Id(-1), _Name(_Nil<core::T_O>()), _Comment("") {};
+  JointTemplate_O() : _Parent(_Unbound<JointTemplate_O>()), _Id(-1), _Name(_Nil<core::T_O>()), _Comment("") {};
     virtual ~JointTemplate_O() {};
   };
 

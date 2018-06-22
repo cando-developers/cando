@@ -29,6 +29,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/foundation.h>
 #include <cando/geom/ovector3.h>
 #include <clasp/core/record.h>
+#include <clasp/core/evaluator.h>
 #include <clasp/core/symbolTable.h>
 #include <cando/chem/atomId.h>
 #include <cando/kinematics/atomTree.h>
@@ -43,6 +44,14 @@ FORWARD(JumpAtom);
   ASSERTF(tree->_AtomHolders[handle]._Type != unused,BF("The handle represents an unused node"));
 
 
+string Joint_O::__repr__() const {
+  stringstream ss;
+  ss << "#<";
+  ss << this->className();
+  ss << " " << _rep_(this->_Name) << ">";
+  return ss.str();
+}
+ 
 void Joint_O::fields(core::Record_sp node) {
   node->field(INTERN_(kw,parent),this->_Parent);
   node->field(INTERN_(kw,name),this->_Name); // name
@@ -101,15 +110,13 @@ void Joint_O::appendChild(Joint_sp child)
 void Joint_O::eraseChild(Joint_sp child)
 {_OF();
   Joint_sp atom = this->asSmartPtr();
-  for (int i=0; i<atom->_numberOfChildren(); i++ )
-  {
-    if (child == atom->_child(i))
-    {
+  for (int i=0; i<atom->_numberOfChildren(); i++ ) {
+    if (child == atom->_child(i)) {
       atom->_releaseChild(i);
       return;
     }
   }
-  SIMPLE_ERROR(BF("Could not find child"));
+  SIMPLE_ERROR(BF("Could not find child %s in %s - so it could not be erased") % _rep_(child) % _rep_(this->asSmartPtr()));
 }
 
 
@@ -135,13 +142,13 @@ void Joint_O::insertChild(Joint_sp child)
     LOG(BF("It's a jump, inserting it at the start"));
     this->_insertChild(0,child);
     child.get()->setParent(this->asSmartPtr());
-  } else
-  {
+  } else {
     LOG(BF("It's a non-jump atom"));
     int firstNonJumpIndex = this->firstNonJumpChildIndex();
     if ( firstNonJumpIndex < this->_numberOfChildren() )
     {
-      IMPLEMENT_ME(); // Really? Is the below just for debugging?
+      //  IS THIS CORRECT?????
+      this->_insertChild(firstNonJumpIndex,child);
 #ifdef DEBUG_ON
       Joint_sp firstNonJumpHandle = this->_child(firstNonJumpIndex);
       LOG(BF("The current firstNonJumpHandle is of type: %s")
@@ -153,8 +160,10 @@ void Joint_O::insertChild(Joint_sp child)
     } else
     {
       LOG(BF("We are at the end of the Children - appending"));
+      //  IS THIS CORRECT?????
+      this->_appendChild(child);
     }
-    this->insertChild(firstNonJumpIndex,child);
+    // this->insertChild(firstNonJumpIndex,child);
   }
 }
 
@@ -306,28 +315,28 @@ Stub Joint_O::getInputStub(AtomTree_sp at) const
   }
 }
 
-void Joint_O::walkChildren(const AtomTreeWalkFunctor& functor)
+void Joint_O::walkChildren(core::Function_sp callback)
 {_OF();
   LOG(BF("There are %d children") % this->_numberOfChildren() );
   for ( int i=0; i<this->_numberOfChildren(); i++ )
   {
     Joint_sp child = this->_child(i);
-    functor(child);
-    child->walkChildren(functor);
+    core::eval::funcall(callback,child);
+    child->walkChildren(callback);
   }
 }
 
 
 
-void Joint_O::walkResidueTree(int residueId, const AtomTreeWalkFunctor& functor)
+void Joint_O::walkResidueTree(int residueId, core::Function_sp callback)
 {_OF();
   LOG(BF("There are %d children") % this->_numberOfChildren() );
   for ( int i=0; i<this->_numberOfChildren(); i++ )
   {
     Joint_sp child = this->_child(i);
     if ( child->atomId().residueId() != residueId ) continue;
-    functor(child);
-    child->walkResidueTree(residueId,functor);
+    core::eval::funcall(callback,child);
+    child->walkResidueTree(residueId,callback);
   }
 }
 

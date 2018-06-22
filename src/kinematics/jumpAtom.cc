@@ -36,139 +36,145 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace kinematics
 {
 
-    void JumpJoint_O::_insertChild(int idx, Joint_sp c)
+void JumpJoint_O::fields(core::Record_sp node) {
+  node->field_if_not_empty(INTERN_(kw,children),this->_Children);
+  this->Base::fields(node);
+}
+
+void JumpJoint_O::_insertChild(int idx, Joint_sp c)
+{
+  Joint_sp empty;
+  this->_Children.ensure_initialized();
+  this->_Children.insert(this->_Children.begin()+idx,empty);
+  this->_Children[idx] = c;
+}
+
+
+void JumpJoint_O::_appendChild(Joint_sp c)
+{
+  Joint_sp empty;
+  int idx = this->_Children.size();
+  this->_Children.push_back(empty);
+  this->_Children[idx] = c;
+}
+
+
+void JumpJoint_O::_releaseChild(int idx)
+{
+  this->_Children[idx] = _Unbound<Joint_O>();
+  this->_Children.erase(this->_Children.begin()+idx);
+}
+
+
+void JumpJoint_O::_releaseAllChildren()
+{
+  this->_Children.clear();
+}
+
+
+
+void JumpJoint_O::updateInternalCoords(Stub& stub,
+                                       bool const recursive,
+                                       AtomTree_sp at)
+{_OF();
+  ASSERTF(stub.isOrthogonal(1e-3),BF("The incoming stub is not orthogonal"));
+  Stub newStub(this->getStub(at));
+  this->_Jump.fromStubs(stub,newStub);
+  LOG(BF("Incoming stub:\n%s") % stub.asString() );
+  LOG(BF("My new Stub:\n%s") % newStub.asString() );
+  LOG(BF("Jump:\n%s") % this->_Jump.asString());
+  if ( recursive )
+  {
+    for (int childIdx=0; childIdx<this->_numberOfChildren(); childIdx++ )
     {
-	Joint_sp empty;
-	this->_Children.insert(this->_Children.begin()+idx,empty);
-	this->_Children[idx] = c;
+      this->_child(childIdx).get()->updateInternalCoords(newStub,true,at);
     }
+  }
+}
 
 
-    void JumpJoint_O::_appendChild(Joint_sp c)
+
+Joint_sp JumpJoint_O::stubAtom1() const
+{
+  if (this->stubDefined()) {
+    return this->asSmartPtr();
+  }
+  return this->parent();
+}
+
+Joint_sp JumpJoint_O::stubAtom2() const
+{
+  if ( this->stubDefined() )
+  {
+    return this->getNonJumpAtom(0);
+  } else
+  {
+    return this->parent()->stubAtom2();
+  }
+}
+
+Joint_sp JumpJoint_O::stubAtom3(AtomTree_sp at) const
+{_OF();
+  if ( this->stubDefined() )
+  {
+    Joint_sp first(this->getNonJumpAtom(0));
+    ASSERT(first.boundp());
+    Joint_sp second(first->getNonJumpAtom(0));
+    if ( second.boundp() )
     {
-	Joint_sp empty;
-	int idx = this->_Children.size();
-	this->_Children.push_back(empty);
-	this->_Children[idx] = c;
-    }
-
-
-    void JumpJoint_O::_releaseChild(int idx)
+      return second;
+    } else
     {
-	this->_Children[idx].reset_();
-	this->_Children.erase(this->_Children.begin()+idx);
+      return this->getNonJumpAtom(1);
     }
+  } else
+  {
+    return this->parent()->stubAtom3(at);
+  }
+}
 
-
-    void JumpJoint_O::_releaseAllChildren()
-    {
-	this->_Children.clear();
-    }
-
-
-
-    void JumpJoint_O::updateInternalCoords(Stub& stub,
-					bool const recursive,
-	AtomTree_sp at)
-    {_OF();
-	ASSERTF(stub.isOrthogonal(1e-3),BF("The incoming stub is not orthogonal"));
-	Stub newStub(this->getStub(at));
-	this->_Jump.fromStubs(stub,newStub);
-	LOG(BF("Incoming stub:\n%s") % stub.asString() );
-	LOG(BF("My new Stub:\n%s") % newStub.asString() );
-	LOG(BF("Jump:\n%s") % this->_Jump.asString());
-	if ( recursive )
-	{
-	    for (int childIdx=0; childIdx<this->_numberOfChildren(); childIdx++ )
-	    {
-		this->_child(childIdx).get()->updateInternalCoords(newStub,true,at);
-	    }
-	}
-    }
-
-
-
-    Joint_sp JumpJoint_O::stubAtom1() const
-    {
-      if (this->stubDefined()) {
-        return this->asSmartPtr();
-      }
-      return this->parent();
-    }
-
-    Joint_sp JumpJoint_O::stubAtom2() const
-    {
-	if ( this->stubDefined() )
-	{
-	    return this->getNonJumpAtom(0);
-	} else
-	{
-	    return this->parent()->stubAtom2();
-	}
-    }
-
-    Joint_sp JumpJoint_O::stubAtom3(AtomTree_sp at) const
-    {_OF();
-	if ( this->stubDefined() )
-	{
-	    Joint_sp first(this->getNonJumpAtom(0));
-	    ASSERT(first.boundp());
-	    Joint_sp second(first->getNonJumpAtom(0));
-	    if ( second.boundp() )
-	    {
-		return second;
-	    } else
-	    {
-		return this->getNonJumpAtom(1);
-	    }
-	} else
-	{
-	    return this->parent()->stubAtom3(at);
-	}
-    }
-
-    bool JumpJoint_O::keepDofFixed(DofType dof) const
-    {
-	return (this->parent().boundp());
-    }
+bool JumpJoint_O::keepDofFixed(DofType dof) const
+{
+  return (this->parent().boundp());
+}
 
 
 
     /*! Update the external coordinates using the input stub */
-    void JumpJoint_O::updateXyzCoords(Stub& stub,AtomTree_sp at)
-    {_OF();
-	ASSERTF(stub.isOrthogonal(1e-3),BF("Stub is not orthogonal - stub:\n%s") % stub.asString());
-	Stub newStub;
-	this->_Jump.makeJump(stub,newStub);
-	this->position(newStub.translation());
-	for ( int ii=0; ii<this->_numberOfChildren(); ii++ )
-	{
-	    this->_child(ii).get()->updateXyzCoords(newStub,at);
-	}
-	this->noteXyzUpToDate();
-    }
+void JumpJoint_O::updateXyzCoords(Stub& stub,AtomTree_sp at)
+{_OF();
+  ASSERTF(stub.isOrthogonal(1e-3),BF("Stub is not orthogonal - stub:\n%s") % stub.asString());
+  Stub newStub;
+  this->_Jump.makeJump(stub,newStub);
+  this->position(newStub.translation());
+  for ( int ii=0; ii<this->_numberOfChildren(); ii++ )
+  {
+    this->_child(ii).get()->updateXyzCoords(newStub,at);
+  }
+  this->noteXyzUpToDate();
+}
 
 
 
-    void JumpJoint_O::updateXyzCoords(AtomTree_sp at)
-    {
-	Stub stub(this->getInputStub(at));
-	this->JumpJoint_O::updateXyzCoords(stub,at);
-    }
+void JumpJoint_O::updateXyzCoords(AtomTree_sp at)
+{
+  Stub stub(this->getInputStub(at));
+  this->JumpJoint_O::updateXyzCoords(stub,at);
+}
 
 
 
-    double JumpJoint_O::dof(DofType const& dof) const
-    {_OF();
-	if ( dof.isRigidBodyDof() )
-	{
-	    return _Jump.getRigidBodyDelta(dof,RigidBodyDirection::n2c);
-	}
-	SIMPLE_ERROR(BF("Illegal dof for JumpAtom - I can only return rigid body dofs"));
-    }
+double JumpJoint_O::dof(DofType const& dof) const
+{_OF();
+  if ( dof.isRigidBodyDof() )
+  {
+    return _Jump.getRigidBodyDelta(dof,RigidBodyDirection::n2c);
+  }
+  SIMPLE_ERROR(BF("Illegal dof for JumpAtom - I can only return rigid body dofs"));
+}
 
 
-    core::Symbol_sp JumpJoint_O::typeSymbol() const {_OF(); return _sym_jump;};
+core::Symbol_sp JumpJoint_O::typeSymbol() const {_OF(); return _sym_jump;};
 
 
 

@@ -74,7 +74,7 @@ namespace kinematics
 	virtual void _releaseAllChildren();
 
     public:
-    BondedJoint_O() : Joint_O(), _NumberOfChildren(0) {};
+    BondedJoint_O() : Joint_O(), _NumberOfChildren(0), _Children{_Unbound<Joint_O>(),_Unbound<Joint_O>(),_Unbound<Joint_O>(),_Unbound<Joint_O>(),_Unbound<Joint_O>()} {};
     BondedJoint_O(const chem::AtomId& atomId, core::T_sp name, const string& comment) : Joint_O(atomId,name,comment), _NumberOfChildren(0) {};
 
 	virtual core::Symbol_sp typeSymbol() const;
@@ -98,7 +98,6 @@ namespace kinematics
 
 
 	string asString() const;
-
 
 	/*! Update the external coordinates */
 	virtual void updateXyzCoords(AtomTree_sp at);

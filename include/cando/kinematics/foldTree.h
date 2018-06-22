@@ -39,13 +39,13 @@ FORWARD(AggregateNode);
 
 
 FORWARD(FoldTree);
-class FoldTree_O : public core::General_O
+class FoldTree_O : public core::CxxObject_O
 {
-    LISP_CLASS(kinematics,KinPkg,FoldTree_O,"FoldTree",core::General_O);
+    LISP_CLASS(kinematics,KinPkg,FoldTree_O,"FoldTree",core::CxxObject_O);
  public:
     static FoldTree_sp make();
 //    DECLARE_ARCHIVE();
-    DEFAULT_CTOR_DTOR(FoldTree_O);
+ FoldTree_O() : _AggregateNode(_Unbound<AggregateNode_O>()) {};
 public:
     
     bool fieldsp() const { return true; };

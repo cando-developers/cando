@@ -36,8 +36,8 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace core {
 
 SMART(ObjRef);
- class ObjRef_O : public core::General_O {
-  LISP_CLASS(core, CorePkg, ObjRef_O, "ObjRef",core::General_O);
+ class ObjRef_O : public core::CxxObject_O {
+  LISP_CLASS(core, CorePkg, ObjRef_O, "ObjRef",core::CxxObject_O);
 
 public:
 #if defined(XML_ARCHIVE)

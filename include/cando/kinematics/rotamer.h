@@ -33,9 +33,9 @@ namespace kinematics
 {
 
     FORWARD(Rotamer);
-    class Rotamer_O : public core::General_O
+    class Rotamer_O : public core::CxxObject_O
     {
-	LISP_CLASS(kinematics,KinPkg,Rotamer_O,"Rotamer",core::General_O);
+	LISP_CLASS(kinematics,KinPkg,Rotamer_O,"Rotamer",core::CxxObject_O);
 #if INIT_TO_FACTORIES
     public:
 	static Rotamer_sp make(core::List_sp dihedrals, core::List_sp sigmas, core::List_sp indices, const double probability, const int count);
@@ -61,9 +61,9 @@ namespace kinematics
 
 
     FORWARD(RotamerSetBase);
-    class RotamerSetBase_O : public core::General_O
+    class RotamerSetBase_O : public core::CxxObject_O
     {
-	LISP_CLASS(kinematics,KinPkg,RotamerSetBase_O,"RotamerSetBase",core::General_O);
+	LISP_CLASS(kinematics,KinPkg,RotamerSetBase_O,"RotamerSetBase",core::CxxObject_O);
 #if INIT_TO_FACTORIES
     public:
 	static RotamerSetBase_sp make();
@@ -143,9 +143,9 @@ namespace kinematics
 
 
     FORWARD(BackboneDependentRotamerLibrary);
-    class BackboneDependentRotamerLibrary_O : public core::General_O
+    class BackboneDependentRotamerLibrary_O : public core::CxxObject_O
     {
-	LISP_CLASS(kinematics,KinPkg,BackboneDependentRotamerLibrary_O,"BackboneDependentRotamerLibrary",core::General_O);
+	LISP_CLASS(kinematics,KinPkg,BackboneDependentRotamerLibrary_O,"BackboneDependentRotamerLibrary",core::CxxObject_O);
 #if INIT_TO_FACTORIES
     public:
 	static BackboneDependentRotamerLibrary_sp make(const int phiStep, const int phiStart, const int phiCount, const int psiStep, const int psiStart, const int psiCount);

@@ -46,8 +46,8 @@ SMART(StringList);
   A class that stores a set of strings
 */
 SMART(StringList);
- class StringList_O : public core::General_O {
-  LISP_CLASS(adapt, AdaptPkg, StringList_O, "StringList",core::General_O);
+ class StringList_O : public core::CxxObject_O {
+  LISP_CLASS(adapt, AdaptPkg, StringList_O, "StringList",core::CxxObject_O);
 
 public:
 #if defined(XML_ARCHIVE)

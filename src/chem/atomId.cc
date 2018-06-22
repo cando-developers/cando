@@ -50,14 +50,8 @@ namespace chem
 
 
 
-
-
-#if INIT_TO_FACTORIES
-
-#define ARGS_AtomId_O_make "(molecule residue atom)"
-#define DECL_AtomId_O_make ""
-#define DOCS_AtomId_O_make "make AtomId args: molecule residue atom"
-    AtomId_sp AtomId_O::make(int mol, int res, int atom)
+CL_LISPIFY_NAME(make-atom-id);
+CL_DEFUN AtomId_sp AtomId_O::make(int mol, int res, int atom)
     {
 	GC_ALLOCATE(AtomId_O, ai );
 	ai->_AtomId._Molecule = mol;
@@ -65,7 +59,6 @@ namespace chem
 	ai->_AtomId._Atom = atom;
 	return ai;
     }
-#endif
 
 #ifdef XML_ARCHIVE
     void AtomId_O::archiveBase(core::ArchiveP node)

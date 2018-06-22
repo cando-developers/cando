@@ -25,6 +25,13 @@
 ;; -^-
 (in-package :chem)
 
+(define-condition chem::linear-atoms-error ()
+  ((atoms :initarg :atoms :reader chem:atoms)))
+
+(define-condition chem:linear-angle-error (linear-atoms-error) ())
+(define-condition chem:linear-dihedral-error (linear-atoms-error) ())
+(define-condition chem:linear-improper-restraint-error (linear-atoms-error) ())
+
 
 (define-condition minimizer-error (error)
   ((minimizer :initarg :minimizer

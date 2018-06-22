@@ -62,9 +62,9 @@ namespace kinematics
 
     FORWARD(MonomerId);
     /*! @class Wrap MonomerId inside of a Lisp class */
-    class MonomerId_O : public core::General_O
+    class MonomerId_O : public core::CxxObject_O
     {
-	LISP_CLASS(kinematics,KinPkg,MonomerId_O,"MonomerId",core::General_O);
+	LISP_CLASS(kinematics,KinPkg,MonomerId_O,"MonomerId",core::CxxObject_O);
 #if INIT_TO_FACTORIES
     public:
 	static MonomerId_sp make(const int chain, const int monomer);

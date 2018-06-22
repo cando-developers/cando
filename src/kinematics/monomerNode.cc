@@ -44,90 +44,80 @@ namespace kinematics
 
 
 
+void MonomerNode_O::fields(core::Record_sp node) {
+  node->field(INTERN_(kw,parent),this->_Parent);
+  node->field(INTERN_(kw,parent_plug_name),this->_ParentPlugName);
+  node->field(INTERN_(kw,MonomerId),this->_MonomerId);
+  node->field(INTERN_(kw,Children),this->_Children);
+  node->field(INTERN_(kw,MonomerName),this->_MonomerName);
+  node->field(INTERN_(kw,Topology),this->_Topology);
+  node->field(INTERN_(kw,ConformationIndex),this->_ConformationIndex);
+  this->Base::fields(node);
+}
 
 
-    MonomerNode_sp MonomerNode_O::create(int monomerId)
-    {
-	GC_ALLOCATE(MonomerNode_O, monomerNode );
-	monomerNode->_MonomerId = monomerId;
-	return monomerNode;
-    }
-
-#if INIT_TO_FACTORIES
+MonomerNode_sp MonomerNode_O::create(int monomerId)
+{
+  GC_ALLOCATE(MonomerNode_O, monomerNode );
+  monomerNode->_MonomerId = monomerId;
+  return monomerNode;
+}
 
 CL_LISPIFY_NAME(make-MonomerNode);
 MonomerNode_sp MonomerNode_O::make()
-    {
-      IMPLEMENT_ME();
-    };
+{
+  IMPLEMENT_ME();
+};
 
-#else
-    core::T_sp MonomerNode_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
-    {
-//      this->Base::__init__(exec,args,env,lisp);
-//      arg = translate::from_object<XXXX>::convert(env->lookup(this->Package(),"YYY"));
-	return _Nil<core::T_O>();
-    }
-#endif
-
-#ifdef XML_ARCHIVE
-    void MonomerNode_O::archiveBase(core::ArchiveP node)
-    {
-        this->Base::archiveBase(node);
-	// Archive other instance variables here
-    }
-#endif
-
-
-    void MonomerNode_O::initialize()
-    {_OF();
-        this->Base::initialize();
-    }
+void MonomerNode_O::initialize()
+{_OF();
+  this->Base::initialize();
+}
 
 
 
-    void MonomerNode_O::recursivelyBuildChildren(ChainNode_sp chainNode,
-						 RingClosingMonomerMap ringClosingMonomerMap,
-						 gctools::Nilable<MonomerNode_sp> parent,
-						 gctools::Nilable<chem::DirectionalCoupling_sp> coupling,
-						 chem::Monomer_sp monomer)
-    {
-      LOG(BF("recursivelyBuildChildren on monomer[%s]") % _rep_(monomer->getName()) );
-	this->_Parent = parent;
-	if ( coupling.notnilp() )
-	{
-	    this->_ParentPlugName = coupling->getOutMonomerPlugName();
-	    ASSERTF(chem::DirectionalCoupling_O::isInPlugName(this->_ParentPlugName),
-		    BF("This has to be an inPlugName[%s] - it isnt")
-		    % _rep_(this->_ParentPlugName) );
-	} else
-	{
-          this->_ParentPlugName = _Nil<core::Symbol_O>();
-	}
-	this->_MonomerName = monomer->monomerName();
-	this->_Topology = monomer->getTopology();
-	this->_ConformationIndex = 0;
-	for ( chem::Monomer_O::Couplings::const_iterator it=monomer->_Couplings.begin();
-	      it!=monomer->_Couplings.end(); it++ )
-	{
-	    chem::Coupling_sp coupling = it->second;
-	    if ( coupling->isRingClosing() ) continue;
+void MonomerNode_O::recursivelyBuildChildren(ChainNode_sp chainNode,
+                                             RingClosingMonomerMap ringClosingMonomerMap,
+                                             gctools::Nilable<MonomerNode_sp> parent,
+                                             gctools::Nilable<chem::DirectionalCoupling_sp> coupling,
+                                             chem::Monomer_sp monomer)
+{
+  LOG(BF("recursivelyBuildChildren on monomer[%s]") % _rep_(monomer->getName()) );
+  this->_Parent = parent;
+  if ( coupling.notnilp() )
+  {
+    this->_ParentPlugName = coupling->getOutMonomerPlugName();
+    ASSERTF(chem::DirectionalCoupling_O::isInPlugName(this->_ParentPlugName),
+            BF("This has to be an inPlugName[%s] - it isnt")
+            % _rep_(this->_ParentPlugName) );
+  } else
+  {
+    this->_ParentPlugName = _Nil<core::Symbol_O>();
+  }
+  this->_MonomerName = monomer->monomerName();
+  this->_Topology = monomer->getTopology();
+  this->_ConformationIndex = 0;
+  for ( chem::Monomer_O::Couplings::const_iterator it=monomer->_Couplings.begin();
+        it!=monomer->_Couplings.end(); it++ )
+  {
+    chem::Coupling_sp coupling = it->second;
+    if ( coupling->isRingClosing() ) continue;
 	    /*! Skip InPlugs */
-	    chem::DirectionalCoupling_sp dirCoupling = coupling.as<chem::DirectionalCoupling_O>();
-	    if ( dirCoupling->getInMonomer() != monomer ) continue;
-	    chem::Monomer_sp otherMonomer = dirCoupling->getOutMonomer();
-	    MonomerNode_sp otherMonomerNode = ChainNode_O::monomerNodeFactory(chainNode,ringClosingMonomerMap,otherMonomer);
-	    core::Symbol_sp outPlugName = dirCoupling->getInMonomerPlugName();
-	    ASSERTF(chem::DirectionalCoupling_O::isOutPlugName(outPlugName),
-		    BF("Problem - this[%s] should be an OutPlug name but it isnt")
-		    %_rep_(outPlugName) );
-	    this->_Children.set(outPlugName,otherMonomerNode);
-	    otherMonomerNode->recursivelyBuildChildren(chainNode,
-						       ringClosingMonomerMap,
-						       this->sharedThis<MonomerNode_O>(),
-						       dirCoupling,otherMonomer);
-	}
-    }
+    chem::DirectionalCoupling_sp dirCoupling = coupling.as<chem::DirectionalCoupling_O>();
+    if ( dirCoupling->getInMonomer() != monomer ) continue;
+    chem::Monomer_sp otherMonomer = dirCoupling->getOutMonomer();
+    MonomerNode_sp otherMonomerNode = ChainNode_O::monomerNodeFactory(chainNode,ringClosingMonomerMap,otherMonomer);
+    core::Symbol_sp outPlugName = dirCoupling->getInMonomerPlugName();
+    ASSERTF(chem::DirectionalCoupling_O::isOutPlugName(outPlugName),
+            BF("Problem - this[%s] should be an OutPlug name but it isnt")
+            %_rep_(outPlugName) );
+    this->_Children.set(outPlugName,otherMonomerNode);
+    otherMonomerNode->recursivelyBuildChildren(chainNode,
+                                               ringClosingMonomerMap,
+                                               this->sharedThis<MonomerNode_O>(),
+                                               dirCoupling,otherMonomer);
+  }
+}
 
 
 chem::Constitution_mv MonomerNode_O::identifyConstitutionAndTopology()
@@ -167,31 +157,38 @@ chem::Constitution_mv MonomerNode_O::identifyConstitutionAndTopology()
 }
 
 
-    void MonomerNode_O::describeRecursivelyIntoStringStream(const string& prefix, stringstream& output) const
-    {_OF();
-      LOG(BF("Describing %s[%s]") % this->className() % _rep_(this->_MonomerName) );
-	output << prefix;
-	if ( this->_ParentPlugName.notnilp() )
-	{
-          output << _rep_(this->_ParentPlugName) << " ";
-	}
-	output << this->className()
-	       << "["
-	       << _rep_(this->_MonomerName)
-	       << "]" << std::endl;
-	for ( adapt::SymbolMap<MonomerNode_O>::const_iterator it=this->_Children.begin();
-	      it!=this->_Children.end(); it++ )
-	{
-	    it->second->describeRecursivelyIntoStringStream(prefix+"  ",output);
-	}
-    }
+void MonomerNode_O::describeRecursivelyIntoStringStream(const string& prefix, stringstream& output) const
+{_OF();
+  LOG(BF("Describing %s[%s]") % this->className() % _rep_(this->_MonomerName) );
+  output << prefix;
+  if ( this->_ParentPlugName.notnilp() )
+  {
+    output << _rep_(this->_ParentPlugName) << " ";
+  }
+  output << this->className()
+         << "["
+         << _rep_(this->_MonomerName)
+         << "]" << std::endl;
+  for ( adapt::SymbolMap<MonomerNode_O>::const_iterator it=this->_Children.begin();
+        it!=this->_Children.end(); it++ )
+  {
+    it->second->describeRecursivelyIntoStringStream(prefix+"  ",output);
+  }
+}
 
-    string MonomerNode_O::asString() const
-    {_OF();
-	stringstream out;
-	this->describeRecursivelyIntoStringStream("",out);
-	return out.str();
-    }
+string MonomerNode_O::asString() const
+{_OF();
+  stringstream out;
+  this->describeRecursivelyIntoStringStream("",out);
+  return out.str();
+}
 
-
+string MonomerNode_O::__repr__() const {
+  stringstream ss;
+  ss << "#<";
+  ss << this->className();
+  ss << " " << _rep_(this->_MonomerName) << ">";
+  return ss.str();
+}
+ 
 }; /* kinematics */

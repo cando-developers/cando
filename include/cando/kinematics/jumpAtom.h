@@ -39,7 +39,9 @@ namespace kinematics
     LISP_CLASS(kinematics,KinPkg,JumpJoint_O,"JumpAtom",Joint_O);
   public:
     static const NodeType nodeType = jumpAtom;
-
+  public:
+    bool fieldsp() const { return true; };
+    void fields(core::Record_sp node);
   protected:
     Jump			_Jump;
 	/*! JumpAtoms can have unlimited numbers of children */

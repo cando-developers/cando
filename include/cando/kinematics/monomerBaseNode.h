@@ -34,24 +34,19 @@ namespace kinematics
 {
 
 
-    class MonomerBaseNode_O : public core::General_O
-{
-    LISP_CLASS(kinematics,KinPkg,MonomerBaseNode_O,"MonomerBaseNode",core::General_O);
-#if INIT_TO_FACTORIES
- public:
+  class MonomerBaseNode_O : public core::CxxObject_O
+  {
+    LISP_CLASS(kinematics,KinPkg,MonomerBaseNode_O,"MonomerBaseNode",core::CxxObject_O);
+  public:
     static MonomerBaseNode_sp make();
-#else
-    DECLARE_INIT();
-#endif
-//    DECLARE_ARCHIVE();
     DEFAULT_CTOR_DTOR(MonomerBaseNode_O);
-public:
-	void initialize();
-public:
+  public:
+    void initialize();
+  public:
 	// Functions here
-private:
+  private:
 	// instance variables here
-};
+  };
 
 }; /* kinematics */
 

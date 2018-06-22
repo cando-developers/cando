@@ -39,44 +39,12 @@ namespace kinematics
 
 
 
-    BondId_sp BondId_O::create(Joint_sp parent, Joint_sp child)
-    {
-	GC_ALLOCATE(BondId_O, bondId );
-	bondId->_Parent = parent;
-	bondId->_Child = child;
-	return bondId;
-    }
 
-#if INIT_TO_FACTORIES
-
-  BondId_sp BondId_O::make()
-  {
-    IMPLEMENT_ME();
-  };
-
-#else
-    core::T_sp BondId_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
-    {
-//      this->Base::__init__(exec,args,env,lisp);
-//      arg = translate::from_object<XXXX>::convert(env->lookup(this->Package(),"YYY"));
-	return _Nil<core::T_O>();
-    }
-#endif
-
-#ifdef XML_ARCHIVE
-    void BondId_O::archiveBase(core::ArchiveP node)
-    {
-        this->Base::archiveBase(node);
-	// Archive other instance variables here
-    }
-#endif
-
-
-    void BondId_O::initialize()
-    {_OF();
-        this->Base::initialize();
-    }
-
-    
-
+BondId_sp BondId_O::create(Joint_sp parent, Joint_sp child)
+{
+  GC_ALLOCATE(BondId_O, bondId );
+  bondId->_Parent = parent;
+  bondId->_Child = child;
+  return bondId;
+}
 }; /* kinematics */

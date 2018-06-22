@@ -106,7 +106,7 @@ namespace kinematics
 
     Joint_O() : _Parent(_Unbound<Joint_O>()), _Name(_Unbound<core::T_O>()), _Id() {};
     Joint_O(const chem::AtomId& atomId, core::T_sp name, const string& comment) :
-        _Parent(),
+        _Parent(_Unbound<Joint_O>()),
           _Name(name),
           _Id(atomId)
 #if DEBUG_KIN_ATOM
@@ -119,6 +119,7 @@ namespace kinematics
         
 	virtual core::Symbol_sp typeSymbol() const;
 	virtual string asString() const;
+        virtual string __repr__() const;
 
 	/*! Set the parent, the parent is a weak reference so we don't get reference cycles */
 	void setParent(Joint_sp parent) { this->_Parent = parent;};
@@ -174,7 +175,8 @@ namespace kinematics
 	/*! Return true if this atom is a JumpAtom (or subclass) */
 	virtual bool isJump() const { return false;};
 
-        chem::AtomId atomId() const { return this->_Id; };
+        CL_DEFMETHOD chem::AtomId atomId() const { return this->_Id; };
+        CL_DEFMETHOD chem::AtomId_sp getAtomId() const { return chem::AtomId_O::make(this->_Id._Molecule,this->_Id._Residue,this->_Id._Atom);};
 
 	/*! Return the i(th) non-jump atom */
 	Joint_sp getNonJumpAtom(int idx) const;
@@ -258,10 +260,10 @@ namespace kinematics
 	bool keepDofFixed(DofType dof) const { return false;};
 
 	/*! Walk the tree */
-	void walkChildren(const AtomTreeWalkFunctor& functor);
+	void walkChildren(core::Function_sp callback_one_arg);
 
 	/*! Walk the tree but stay in one residue */
-	void walkResidueTree(int residueId, const AtomTreeWalkFunctor& functor);
+	void walkResidueTree(int residueId, core::Function_sp callback_one_arg);
 
 
 	/*! Update the external coordinates after calculating the input stub */

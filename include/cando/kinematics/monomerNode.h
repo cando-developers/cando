@@ -51,10 +51,11 @@ class MonomerNode_O : public MonomerBaseNode_O
 #else
     DECLARE_INIT();
 #endif
-//    DECLARE_ARCHIVE();
-    DEFAULT_CTOR_DTOR(MonomerNode_O);
+ MonomerNode_O() : _Parent(_Unbound<MonomerNode_O>()), _ParentPlugName(_Unbound<core::Symbol_O>()), _MonomerId(-1), _MonomerName(_Unbound<core::Symbol_O>()), _Topology(_Unbound<chem::Topology_O>()), _ConformationIndex(-1) {};
 public:
-	void initialize();
+    bool fieldsp() const { return true; };
+    void fields(core::Record_sp node);	
+    void initialize();
 public:	// instance variables here
 	/*! Store the parent ChainNode to this one */
 	MonomerNode_sp		_Parent;
@@ -79,6 +80,7 @@ private:
 	/*! Describe recursively into a stringstream */
 	void describeRecursivelyIntoStringStream(const string& prefix, stringstream& output) const;
 
+        string __repr__() const;
 	
 
 public:

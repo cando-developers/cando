@@ -40,13 +40,13 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace kinematics
 {
 void BondedJoint_O::fields(core::Record_sp record) {
-  record->field(INTERN_(kw,num_children),this->_NumberOfChildren);
   static_assert(BondedJoint_O::MaxChildren==5,"BondedJoint_O::MaxChildren has changed from 5 - update the code below");
-  record->field_if_not_unbound(INTERN_(kw,child0),this->_Children[0]);
-  record->field_if_not_unbound(INTERN_(kw,child1),this->_Children[1]);
-  record->field_if_not_unbound(INTERN_(kw,child2),this->_Children[2]);
-  record->field_if_not_unbound(INTERN_(kw,child3),this->_Children[3]);
   record->field_if_not_unbound(INTERN_(kw,child4),this->_Children[4]);
+  record->field_if_not_unbound(INTERN_(kw,child3),this->_Children[3]);
+  record->field_if_not_unbound(INTERN_(kw,child2),this->_Children[2]);
+  record->field_if_not_unbound(INTERN_(kw,child1),this->_Children[1]);
+  record->field_if_not_unbound(INTERN_(kw,child0),this->_Children[0]);
+  record->field(INTERN_(kw,num_children),this->_NumberOfChildren);
   record->field(INTERN_(kw,phi),this->_Phi);
   record->field(INTERN_(kw,theta),this->_Theta);
   record->field(INTERN_(kw,distance),this->_Distance);
@@ -57,7 +57,7 @@ void BondedJoint_O::fields(core::Record_sp record) {
 
 void BondedJoint_O::initialize() {
   for (int i=0; i<MaxChildren; ++i ) {
-    this->_Children[i].reset_();
+    this->_Children[i] = _Unbound<Joint_O>();
   }
 }
 
@@ -85,7 +85,7 @@ void BondedJoint_O::initialize() {
 	    this->_Children[i] = this->_Children[i+1];
 	}
 	this->_NumberOfChildren--;
-        this->_Children[this->_NumberOfChildren].reset_();
+        this->_Children[this->_NumberOfChildren] = _Unbound<Joint_O>();
     }
 
 
@@ -95,7 +95,7 @@ void BondedJoint_O::initialize() {
 	int num = this->_numberOfChildren();
 	for ( int idx=0; idx < num; idx++ )
 	{
-          this->_Children[idx].reset_();
+          this->_Children[idx] = _Unbound<Joint_O>();
 	}
 	this->_NumberOfChildren = 0;
     }

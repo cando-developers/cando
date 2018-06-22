@@ -33,6 +33,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/common.h>
 #include <clasp/core/bformat.h>
 #include <clasp/core/ql.h>
+#include <clasp/core/evaluator.h>
 #include <cando/adapt/stringSet.h>
 #include <cando/adapt/adapters.h>
 #include <cando/chem/topology.h>
@@ -446,14 +447,14 @@ CL_DEFMETHOD Residue_sp Topology_O::build_residue() const
       }
       if ( !mon->hasCouplingWithPlugName(i->second->getName()) ) 
       {
-        LOG(BF("The monomer doesn't have a coupling with plug name[%s]") % _rep_(i->second->getName()) );
+        SIMPLE_WARN(BF("The monomer %s doesn't have a coupling with plug name[%s]") % _rep_(mon) % _rep_(i->second->getName()) );
         return false;
       }
       numPlugsWithMates++;
     }
     if ( numPlugsWithMates != mon->numberOfCouplings() ) 
     {
-      LOG(BF("There is a mismatch with the number of plugs in the topology[%d] and the number of couplings for the monomer[%d]") % numPlugsWithMates % mon->numberOfCouplings() );
+      SIMPLE_WARN(BF("There is a mismatch with the number of plugs %d in the topology %s and the number of couplings %d for the monomer %s") % numPlugsWithMates % _rep_(this->asSmartPtr()) % mon->numberOfCouplings() % _rep_(mon));
       return false;
     }
     LOG(BF("They match"));

@@ -36,43 +36,43 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace kinematics
 {
-
-
-    class ChainNode_O : public MonomerBaseNode_O
-    {
-	LISP_CLASS(kinematics,KinPkg,ChainNode_O,"ChainNode",MonomerBaseNode_O);
-    public:
-	static ChainNode_sp make();
-	DEFAULT_CTOR_DTOR(ChainNode_O);
-    public:
-	void initialize();
-    public:	// instance variables here
+  class ChainNode_O : public MonomerBaseNode_O
+  {
+    LISP_CLASS(kinematics,KinPkg,ChainNode_O,"ChainNode",MonomerBaseNode_O);
+  public:
+    static ChainNode_sp make();
+  ChainNode_O() : _RootMonomerNode(_Unbound<MonomerNode_O>()) {};
+  public:
+    bool fieldsp() const { return true; };
+    void fields(core::Record_sp node);
+    void initialize();
+  public:	// instance variables here
 	/*! Store the root MonomerNode */
-	MonomerNode_sp		_RootMonomerNode;
+    MonomerNode_sp		_RootMonomerNode;
 	/*! monomerId index into the MonomerNodes */
-	gctools::Vec0<MonomerNode_sp>	_IndexedMonomerNodes;
-    public: // Functions here
+    gctools::Vec0<MonomerNode_sp>	_IndexedMonomerNodes;
+  public: // Functions here
 
-	void resizeMonomers(int numMonomers);
+    void resizeMonomers(int numMonomers);
 
 	/*! Build a graph of monomers according to the oligomer */
-	void buildUsingOligomer(chem::Oligomer_sp oligomer, int chainId);
+    void buildUsingOligomer(chem::Oligomer_sp oligomer, int chainId);
 
 
 	/*! Build a MonomerNode or RingClosingMonomerNode depending on whether (monomer)
 	  has a RingClosingOutPlug or not.  If it does have a RingClosingOutPlug then 
 	  update the RingClosingMonomerMap to map the Monomer_sp to the MonomerNode_sp 
 	  so that we can make RingClosing connections after everything is built */
-	static MonomerNode_sp monomerNodeFactory(ChainNode_sp chainNode, RingClosingMonomerMap ringClosingMonomerMap, chem::Monomer_sp monomer);
+    static MonomerNode_sp monomerNodeFactory(ChainNode_sp chainNode, RingClosingMonomerMap ringClosingMonomerMap, chem::Monomer_sp monomer);
 
 	/*! Connect all of the ring closing connections */
-	void makeRingClosingConnections(RingClosingMonomerMap ringClosings);
+    void makeRingClosingConnections(RingClosingMonomerMap ringClosings);
 
 	/*! Return the monomer with the MonomerId */
-	MonomerNode_sp lookupMonomerId(int monomerId) const;
+    MonomerNode_sp lookupMonomerId(int monomerId) const;
 
  
-    };
+  };
 
 }; /* kinematics */
 

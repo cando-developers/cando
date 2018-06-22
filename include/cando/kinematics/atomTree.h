@@ -50,154 +50,144 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace kinematics
 {
 
-    FORWARD(JointTemplate);
-    FORWARD(JumpJoint);
+  FORWARD(JointTemplate);
+  FORWARD(JumpJoint);
 
-    class AtomHolder : public PoolMember
-    {
-    public:
+  class AtomHolder : public PoolMember
+  {
+  public:
 	//! Number of references to this resource
-	uint		_RefCountOrNextUnused;
+    uint		_RefCountOrNextUnused;
 	//! The type of the resource
-	NodeType	_Type;
+    NodeType	_Type;
 	//! The index into the Pool
-	uint		_NodeIndex;
-    public:
-	virtual void setNextUnusedMember(uint idx) { this->_RefCountOrNextUnused = idx;};
-	virtual uint nextUnusedMember() const { return this->_RefCountOrNextUnused;};
-    public:
+    uint		_NodeIndex;
+  public:
+    virtual void setNextUnusedMember(uint idx) { this->_RefCountOrNextUnused = idx;};
+    virtual uint nextUnusedMember() const { return this->_RefCountOrNextUnused;};
+  public:
 
-    AtomHolder() : _Type(unused),_NodeIndex(UndefinedUnsignedInt) {};
+  AtomHolder() : _Type(unused),_NodeIndex(UndefinedUnsignedInt) {};
 
 	
 
 
-	void setRefCount(uint c) { this->_RefCountOrNextUnused = c;};
+    void setRefCount(uint c) { this->_RefCountOrNextUnused = c;};
 
-        uint nodeIndex() const { return this->_NodeIndex;};
-	int refCount() const { return this->_RefCountOrNextUnused;};
-	void refAdd()
-	{
-	    this->_RefCountOrNextUnused++;
-	}
+    uint nodeIndex() const { return this->_NodeIndex;};
+    int refCount() const { return this->_RefCountOrNextUnused;};
+    void refAdd()
+    {
+      this->_RefCountOrNextUnused++;
+    }
 
 	/*! Dec the reference count, if the RefCount got to zero then return true */
-	bool refDec()
-	{
-	    this->_RefCountOrNextUnused--;
-	    return this->_RefCountOrNextUnused==0;
-	}
-
-	string typeAsString() const;
-
-    };
-
-
-
-
-
-    class ExecutableAtomTreeWalkFunctor : public AtomTreeWalkFunctor
+    bool refDec()
     {
-    public:
-	core::Function_sp	_Callback;
-    public:
-	ExecutableAtomTreeWalkFunctor(core::Function_sp callback) : _Callback(callback) {};
-	void operator()(kinematics::Joint_sp atom) const;
-    };
+      this->_RefCountOrNextUnused--;
+      return this->_RefCountOrNextUnused==0;
+    }
+
+    string typeAsString() const;
+
+  };
 
 
 
-    class AtomTree_O : public core::General_O
-    {
-	LISP_CLASS(kinematics,KinPkg,AtomTree_O,"AtomTree",core::General_O);
-    public:
+
+
+
+  class AtomTree_O : public core::CxxObject_O
+  {
+    LISP_CLASS(kinematics,KinPkg,AtomTree_O,"AtomTree",core::CxxObject_O);
+  public:
     bool fieldsp() const { return true; };
     void fields(core::Record_sp node);
-	void initialize();
-    public:
+    void initialize();
+  public:
 	//! The root of the tree
-	Joint_sp				_Root;
+    Joint_sp				_Root;
 	/*! chem::AtomIdMap maps AtomId's to Atoms in the tree */
-	chem::AtomIdMap<Joint_sp>	_AtomMap;
+    chem::AtomIdMap<Joint_sp>	_AtomMap;
         
-    public:
-    AtomTree_O() : _Root() {};
+  public:
+  AtomTree_O() : _Root(_Unbound<Joint_O>()) {};
 
 	/*! Lookup the atom by atomId */
-	Joint_sp lookup(const chem::AtomId& atomId) const;
+    Joint_sp lookup(const chem::AtomId& atomId) const;
 
 	/*! Lookup the atom by atomId and return it as a shared Joint_O */
-	Joint_sp atomTreeLookupAtomid(const chem::AtomId& atomId) const;
+    Joint_sp atomTreeLookupAtomid(const chem::AtomId& atomId) const;
 
-	size_t numberOfMolecules() const { return this->_AtomMap.numberOfMolecules();};
+    size_t numberOfMolecules() const { return this->_AtomMap.numberOfMolecules();};
 
 	/*! Given the molecule Id return the number of residues in it */
-	int numberOfResiduesInMolecule(int mid) const { return this->_AtomMap.numberOfResidues(mid);};
+    int numberOfResiduesInMolecule(int mid) const { return this->_AtomMap.numberOfResidues(mid);};
 
 	/*! Given the molecule Id and residue Id return the number of atoms in it */
-	int numberOfAtomsInResidueInMolecule(int mid,int rid) const { return this->_AtomMap.numberOfAtoms(mid,rid);};
+    int numberOfAtomsInResidueInMolecule(int mid,int rid) const { return this->_AtomMap.numberOfAtoms(mid,rid);};
 
 
 #if 0
 	/*! Return the total number of entries in the atom tree */
-	int numberOfEntries() const { return this->_AtomHolders.size();};
+    int numberOfEntries() const { return this->_AtomHolders.size();};
 
 	/*! Return the total number of entries in the atom tree */
-	int numberOfAtoms() const {return this->_AtomHolders.size();};
+    int numberOfAtoms() const {return this->_AtomHolders.size();};
 #endif
 
 	/*! Return the root of the AtomTree */
-	Joint_sp root() const { return this->_Root; };
+    CL_DEFMETHOD Joint_sp atom_tree_root() const { return this->_Root; };
 
 
 	/*! Print a description of the kin:Atom */
-	string asString() const;
+    string asString() const;
 
 
 	/*! Create a shared Joint_sp for the atom */
-	Joint_sp _initializeNewAtom(Joint_sp atom, const chem::AtomId& atomId );
+    Joint_sp _initializeNewAtom(Joint_sp atom, const chem::AtomId& atomId );
 
-	template <class T>
-          Joint_sp _newAtom(const chem::AtomId& atomId, core::T_sp name, const string& comment)
-	{_OF();
-          GC_ALLOCATE_VARIADIC(T,atom,atomId,name,comment);
-          return this->_initializeNewAtom(atom,atomId);
-	};
+    template <class T>
+      Joint_sp _newAtom(const chem::AtomId& atomId, core::T_sp name, const string& comment)
+    {_OF();
+      GC_ALLOCATE_VARIADIC(T,atom,atomId,name,comment);
+      return this->_initializeNewAtom(atom,atomId);
+    };
 
 
 	/*! Return a new JumpAtom */
-	Joint_sp newJumpAtom(const chem::AtomId& atomId, core::T_sp name, const string& comment);
+    Joint_sp newJumpAtom(const chem::AtomId& atomId, core::T_sp name, const string& comment);
 
 
 	/*! Return a new OriginJumpAtom */
-	Joint_sp newOriginJumpAtom(const chem::AtomId& atomId, core::T_sp name, const string& comment);
+    Joint_sp newOriginJumpAtom(const chem::AtomId& atomId, core::T_sp name, const string& comment);
 
 
 	/*! allocate a new BondedAtom */
-	Joint_sp newBondedAtom(const chem::AtomId& atomId, core::T_sp name, const string& comment);
+    Joint_sp newBondedAtom(const chem::AtomId& atomId, core::T_sp name, const string& comment);
 
 	/*! allocate a new RootBondedAtom */
-	Joint_sp newRootBondedAtom(const chem::AtomId& atomId, core::T_sp name, const string& comment,
-				  core::Symbol_sp constitutionName,
-				  core::Symbol_sp topologyName,
-				  chem::Plug_sp inPlug );
+    Joint_sp newRootBondedAtom(const chem::AtomId& atomId, core::T_sp name, const string& comment,
+                               core::Symbol_sp constitutionName,
+                               core::Symbol_sp topologyName,
+                               chem::Plug_sp inPlug );
 
 	/*! allocate a new DelayedBondedAtom */
-	Joint_sp newDelayedBondedAtom(const chem::AtomId& atomId, core::T_sp name, const string& comment);
+    Joint_sp newDelayedBondedAtom(const chem::AtomId& atomId, core::T_sp name, const string& comment);
 
 
 	/*! Resize the number of molecules */
-	void resizeMolecules(int numMolecules);
+    void resizeMolecules(int numMolecules);
 
 	/*! Resize the number of residues in a molecule */
-	void resizeResidues(int molecule, int numResidues);
+    void resizeResidues(int molecule, int numResidues);
 
 	/*! Resize the number of atoms in a residue in a molecule */
-	void resizeAtoms(int molecule, int residue, int numAtoms );
+    void resizeAtoms(int molecule, int residue, int numAtoms );
 
 
 	/*! Update the mapping between the AtomId and the Atom */
-	void updateAtomIdMap(const chem::AtomId& atomId, Joint_sp atomHandle );
+    void updateAtomIdMap(const chem::AtomId& atomId, Joint_sp atomHandle );
 
 
 
@@ -216,39 +206,35 @@ namespace kinematics
 	  4) (incoming) parent is defined and child is defined
 	      - in that case we are replacing a sub-tree with the new monomer sub-tree
 	*/
-	void recursivelyBuildMolecule(int moleculeId,
-				      int residueId,
-				      MonomerNode_sp chainNode,
-				      Joint_sp parent,
-				      bool rootNode = false);
+    void recursivelyBuildMolecule(int moleculeId,
+                                  int residueId,
+                                  MonomerNode_sp chainNode,
+                                  Joint_sp parent,
+                                  bool rootNode = false);
 
 	/*! Build a Molecule according to the plan in ChainNode */
-	void buildMoleculeUsingChainNode( int moleculeId,
-					     ChainNode_sp chainNode,
-					     chem::Oligomer_sp oligomer);
-
-	/*! Dump the AtomHolders */
-	string __repr__() const;
-
+    void buildMoleculeUsingChainNode( int moleculeId,
+                                      ChainNode_sp chainNode,
+                                      chem::Oligomer_sp oligomer);
 
 	/*! Walk the AtomTree and for each atom evaluate the Executable
 	  with the atom as an argument */
-	void walk(core::Function_sp exec);
+    void walk(core::Function_sp exec);
 
 	/*! Walk the AtomTree and for each atom evaluate the Functor
 	  with the atom as an argument */
-	void walkTree(AtomTreeWalkFunctor& functor);
+    void walkTree(core::Function_sp callback_one_arg);
 
 
 	/*! Update internal coordinates recursively */
-	void updateInternalCoords();
+    void updateInternalCoords();
 
 	/*! Walk the atoms in a Residue and evaluate the executable for each Atom
 	 The executable should evaluate a single argument which is the atom */
-	void walkResidue(int residueId, Joint_sp const& rootAtom, core::Function_sp exec);
+    void walkResidue(int residueId, Joint_sp const& rootAtom, core::Function_sp exec);
 
 
-    }; // AtomTree
+  }; // AtomTree
 
 
 

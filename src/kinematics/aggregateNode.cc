@@ -42,28 +42,28 @@ namespace kinematics
 
 void AggregateNode_O::fields(core::Record_sp node)
 {
-  this->Base::fields(node);
   node->field_if_not_empty(INTERN_(kw,chains),this->_Chains);
+  this->Base::fields(node);
 }
 
 
-    void AggregateNode_O::initialize()
-    {_OF();
-        this->Base::initialize();
-    }
+void AggregateNode_O::initialize()
+{_OF();
+  this->Base::initialize();
+}
 
-    void AggregateNode_O::resizeChains(int numChains)
-    {_OF();
-	int numMolsOld = this->_Chains.size();
-	this->_Chains.resize(numChains);
-	if ( numChains > numMolsOld )
-	{
-	    for ( int i=numMolsOld; i<numChains; i++ )
-	    {
-		this->_Chains[i] = ChainNode_O::create();
-	    }
-	}
+void AggregateNode_O::resizeChains(int numChains)
+{_OF();
+  int numMolsOld = this->_Chains.size();
+  this->_Chains.resize(numChains);
+  if ( numChains > numMolsOld )
+  {
+    for ( int i=numMolsOld; i<numChains; i++ )
+    {
+      this->_Chains[i] = ChainNode_O::create();
     }
+  }
+}
 
     
 

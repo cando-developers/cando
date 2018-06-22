@@ -57,6 +57,4 @@ private:
 
 }; /* kinematics */
 
-TRANSLATE(kinematics::AggregateNode_O);
-
 #endif /* _kinematicsAggregateNode_H */

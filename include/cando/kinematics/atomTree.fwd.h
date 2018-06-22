@@ -45,11 +45,5 @@ namespace kinematics
     FORWARD(Joint);
 
 
-    class AtomTreeWalkFunctor {
-    public:
-	virtual void operator()(kinematics::Joint_sp atom) const;
-    };
-
-
 };
 #endif

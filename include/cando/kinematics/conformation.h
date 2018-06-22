@@ -46,9 +46,9 @@ namespace kinematics
   FORWARD(AtomTree);
 
   FORWARD(Conformation);
-  class Conformation_O : public core::General_O
+  class Conformation_O : public core::CxxObject_O
   {
-    LISP_CLASS(kinematics,KinPkg,Conformation_O,"Conformation",core::General_O);
+    LISP_CLASS(kinematics,KinPkg,Conformation_O,"Conformation",core::CxxObject_O);
   public:
     static Conformation_sp make(core::List_sp oligomers);
     DEFAULT_CTOR_DTOR(Conformation_O);
@@ -78,8 +78,8 @@ namespace kinematics
 	@signal kin:rebuiltMolecule :data ( moleculeId ) */
     void buildMoleculeUsingOligomer(int moleculeId, chem::Oligomer_sp oligomer);
 
-    FoldTree_sp getFoldTree() const { return this->_FoldTree;};
-    AtomTree_sp getAtomTree() const { return this->_AtomTree;};
+    CL_DEFMETHOD FoldTree_sp getFoldTree() const { return this->_FoldTree;};
+    CL_DEFMETHOD AtomTree_sp getAtomTree() const { return this->_AtomTree;};
 
   private:
 	// instance variables here
