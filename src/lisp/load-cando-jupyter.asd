@@ -1,6 +1,6 @@
 (in-package :asdf-user)
 
-(asdf:defsystem build-cando-jupyter
+(asdf:defsystem load-cando-jupyter
   :version "1.2.3"
   :license "Artistic"
   :author "Christian Schafmeister <meister@temple.edu>"
