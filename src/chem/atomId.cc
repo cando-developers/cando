@@ -49,7 +49,7 @@ namespace chem
 
 
 
-
+#if 0
 CL_LISPIFY_NAME(make-atom-id);
 CL_DEFUN AtomId_sp AtomId_O::make(int mol, int res, int atom)
     {
@@ -60,13 +60,6 @@ CL_DEFUN AtomId_sp AtomId_O::make(int mol, int res, int atom)
 	return ai;
     }
 
-#ifdef XML_ARCHIVE
-    void AtomId_O::archiveBase(core::ArchiveP node)
-    {
-	node->attribute("Molecule",this->_AtomId._Molecule);
-	node->attribute("Residue",this->_AtomId._Residue);
-	node->attribute("Atom",this->_AtomId._Atom);
-    }
 #endif
 
 

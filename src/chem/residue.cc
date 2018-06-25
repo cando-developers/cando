@@ -733,9 +733,9 @@ uint Residue_O::numberOfAtoms()
 
 
 
-    Atom_sp Residue_O::atomWithAtomId(AtomId_sp atomId) const
+    Atom_sp Residue_O::atomWithAtomId(const AtomId& atomId) const
     {_OF();
-	int aid = atomId->atomId();
+	int aid = atomId.atomId();
 	if ( aid >=0 && aid <=(int)this->_contents.size() )
 	{
 	    Atom_sp atom = this->_contents[aid].as<Atom_O>();

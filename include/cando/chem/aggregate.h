@@ -75,7 +75,7 @@ public:
     virtual AtomIdToAtomMap_sp buildAtomIdMap() const;
 
 
-    virtual Atom_sp atomWithAtomId(AtomId_sp atomId) const;
+    virtual Atom_sp atomWithAtomId(const AtomId& atomId) const;
 
     /*! Lookup an Atom using the atomId */
 //    Atom_sp lookupAtom(const AtomId& atomId) const;

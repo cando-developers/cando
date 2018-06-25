@@ -53,7 +53,7 @@ This is an open source license for the CANDO software from Temple University, bu
 
 #include <cando/chem/matter.fwd.h>
 #include <cando/chem/atomIdMap.fwd.h>
-#include <cando/chem/atomId.fwd.h>
+#include <cando/chem/atomId.h>
 #include <cando/chem/elements.h>
 #include <clasp/core/hashTable.fwd.h>
 #include <cando/chem/restraint.fwd.h>
@@ -381,7 +381,7 @@ class Matter_O : public core::CxxObject_O
   virtual AtomIdToAtomMap_sp buildAtomIdMap() const;
 
 	/*! Return the atom with the AtomId */
-  virtual Atom_sp atomWithAtomId(AtomId_sp atomId) const;
+  virtual Atom_sp atomWithAtomId(const AtomId& atomId) const;
 
 	/*! Invert the stereochemistry of my immediate restraints */
   void invertStereochemistryOfRestraints();

@@ -171,25 +171,26 @@ void Oligomer_O::setCandoDatabase(CandoDatabase_sp bdb)
 CL_LISPIFY_NAME("monomersAsList");
 CL_DEFMETHOD core::List_sp Oligomer_O::monomersAsList()
 {
-  core::List_sp cons = _Nil<core::T_O>();
+  ql::list result;
   gctools::Vec0<Monomer_sp>::iterator	mi;
   for ( mi=this->_Monomers.begin(); mi!=this->_Monomers.end(); mi++ )
   {
-    cons = core::Cons_O::create(*mi,cons);
+    result << *mi;
   }
-  return cons;
+  return result.cons();
 }
 
 CL_LISPIFY_NAME("couplings-as-list");
 CL_DEFMETHOD core::List_sp Oligomer_O::couplingsAsList()
 {
+  ql::list result;
   core::List_sp cons = _Nil<core::T_O>();
   gctools::Vec0<Coupling_sp>::iterator	mi;
   for ( mi=this->_Couplings.begin(); mi!=this->_Couplings.end(); mi++ )
   {
-    cons = core::Cons_O::create(*mi,cons);
+    result << *mi;
   }
-  return cons;
+  return result.cons();
 }
 
 

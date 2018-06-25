@@ -580,6 +580,7 @@ CL_DEFMETHOD Residue_sp Topology_O::build_residue() const
       StereoisomerAtoms_sp entry = gc::As<StereoisomerAtoms_sp>(tentry);
       this->_StereoisomerAtomProperties.push_back(entry);
     }
+    this->_NumberOfStereoisomers = this->_StereoisomerAtomProperties.size();
   }
 
 

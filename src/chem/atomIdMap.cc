@@ -39,22 +39,56 @@ namespace chem
 
 
 
+class BuildFields : public AtomIdMapFunctor {
+public:
+  core::Vector_sp vector;
+  BuildFields(core::Vector_sp v) : vector(v) {};
+  virtual void operator()(const AtomId& atomId, Atom_sp atom) {
+    vector->vectorPushExtend(core::Cons_O::create(translate::to_object<AtomId>::convert(atomId),atom));
+  }
+};
+
+void AtomIdToAtomMap_O::fields(core::Record_sp node)
+{
+  // this->Base::fields(node);
+  switch (node->stage()) {
+  case core::Record_O::initializing: 
+  case core::Record_O::loading: {
+    core::Vector_sp valueVec;
+    node->field(INTERN_(kw,data), valueVec );
+    this->_AtomIdMap.resize(0);
+    for ( size_t i(0), iEnd(cl__length(valueVec)); i<iEnd; ++i ) {
+      core::Cons_sp keyValue = gc::As<core::Cons_sp>(valueVec->rowMajorAref(i));
+      core::T_sp key = CONS_CAR(keyValue);
+      core::T_sp value = CONS_CDR(keyValue);
+      this->_AtomIdMap[translate::from_object<AtomId>(key)._v] = value;
+    }
+  }
+      break;
+  case core::Record_O::saving: {
+    core::Vector_sp valueVec = core::core__make_vector(_lisp->_true(),
+                                                       256,
+                                                       true,
+                                                       core::make_fixnum(0));
+    size_t idx = 0;
+    BuildFields buildFields(valueVec);
+    this->_AtomIdMap.iterate(buildFields);
+    node->field(INTERN_(kw,data), valueVec);
+  }
+      break;
+  case core::Record_O::patching: {
+    IMPLEMENT_MEF("Do patching");
+  }
+      break;
+  }
+}
+
 
 CL_LISPIFY_NAME("lookup-atom");
-CL_DEFMETHOD     Atom_sp AtomIdToAtomMap_O::lookupAtom(AtomId_sp atomId) const
+CL_DEFMETHOD     Atom_sp AtomIdToAtomMap_O::lookupAtom(const AtomId& atomId) const
     {_OF();
-	return this->_AtomIdMap[atomId->_AtomId];
+	return this->_AtomIdMap[atomId];
     }
-
-
-#ifdef XML_ARCHIVE
-    void AtomIdToAtomMap_O::archiveBase(core::ArchiveP node)
-    {
-        this->Base::archiveBase(node);
-	// Archive other instance variables here
-	IMPLEMENT_ME();
-    }
-#endif
 
 
     void AtomIdToAtomMap_O::initialize()

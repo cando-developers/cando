@@ -87,7 +87,7 @@ namespace chem
 	string asString() const;
     };
 
-
+#if 0
     FORWARD(AtomId);
     /*! @class Wrap AtomId inside of a Lisp class */
     class AtomId_O : public core::CxxObject_O
@@ -96,6 +96,8 @@ namespace chem
 	LISP_CLASS(chem,ChemPkg,AtomId_O,"AtomId",core::CxxObject_O);
 //	DECLARE_ARCHIVE();
     public:
+        bool fieldsp() const { return true; };
+        void fields(core::Record_sp node);
 	AtomId	_AtomId;
     public:
 	static AtomId_sp make(int mol, int res, int atom);
@@ -104,11 +106,13 @@ namespace chem
 	int residueId() const { return this->_AtomId.residueId();};
 	int atomId() const { return this->_AtomId.atomId();};
 
+        string __repr__() const;
+        
 	virtual ~AtomId_O() {};
 CL_LISPIFY_NAME("asString");
 CL_DEFMETHOD 	string asString() const {return this->_AtomId.asString();};
     }; // AtomId_O
-
+#endif
 
 
 };

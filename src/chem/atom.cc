@@ -1723,7 +1723,7 @@ AtomIdToAtomMap_sp Atom_O::buildAtomIdMap() const
 };
 
 
-Atom_sp Atom_O::atomWithAtomId(AtomId_sp atomId) const
+Atom_sp Atom_O::atomWithAtomId(const AtomId& atomId) const
 {_OF();
   SIMPLE_ERROR(BF("Atom should never return atomWithAtomId"));
 };
@@ -1780,7 +1780,7 @@ CL_END_ENUM(_sym__PLUS_atomFlagSymbolConverter_PLUS_);
 
 ConstitutionAtom_sp Atom_O::asConstitutionAtom(ConstitutionAtomIndex0N index)
 {_OF();
-  ConstitutionAtom_sp ca = makeConstitutionAtom(this->getName(),this->_Element,this->_StereochemistryType, this->_Properties);
+  ConstitutionAtom_sp ca = makeConstitutionAtom(this->getName(),this->_Element,index,this->_StereochemistryType, this->_Properties);
   return ca;
 }
 

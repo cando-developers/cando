@@ -253,7 +253,7 @@ namespace chem {
 	/*! Build a map of AtomIds to Atoms */
     virtual AtomIdToAtomMap_sp buildAtomIdMap() const;
 
-    virtual Atom_sp atomWithAtomId(AtomId_sp atomId) const;
+    virtual Atom_sp atomWithAtomId(const AtomId& atomId) const;
 
 
     virtual uint	numberOfAtoms( );

@@ -330,11 +330,6 @@ than the (chem:number-of-sequences oligomer)."
                 (do-coupling oligomer coupling ringp previous-parts new-parts)
                 (setf previous-parts new-parts))))))))
 
-
-
-
-
-
 (defun make-oligomer (tree)
   "Make an oligomer from a description in the **tree**.
 The tree is a nested list of lists that look like 

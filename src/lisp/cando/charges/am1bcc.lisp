@@ -316,7 +316,8 @@
 	 ((eq ae :Cl) (set-am1-bcc-type a 72))
 	 ((eq ae :Br) (set-am1-bcc-type a 73))
 	 ((eq ae :I)  (set-am1-bcc-type a 74))
-	 (t (warn "Unhandled element in am1-bcc charge calculation [~s]" ae))
+	 (t (warn "Unhandled element in am1-bcc charge calculation [~s]" ae)
+            (set-am1-bcc-type a nil))
 	 )))
    mol))
 
@@ -327,25 +328,29 @@
 	(type2 (get-am1-bcc-type a2))
 	(bond-type (get-bond-type bond))
 	(sign 1.0))
-    (when ( > type1 type2 )
-      (let (sw)
-	(setq sw a1) (setq a1 a2) (setq a2 sw)
-	(setq type1 (get-am1-bcc-type a1))
-	(setq type2 (get-am1-bcc-type a2))
-	(setq sign -1.0)))
-    (list (+ (* 10000 type1) (* 100 bond-type) type2) sign)
-    ))
+    (if (and type1 type2)
+        (progn
+          (when ( > type1 type2 )
+            (let (sw)
+              (setq sw a1) (setq a1 a2) (setq a2 sw)
+              (setq type1 (get-am1-bcc-type a1))
+              (setq type2 (get-am1-bcc-type a2))
+              (setq sign -1.0)))
+          (list (+ (* 10000 type1) (* 100 bond-type) type2) sign))
+        (list nil sign))))
 
 (defun lookup-am1-bcc-correction (a1 bond a2)
   (let* ((key-sign (lookup-am1-bcc-key a1 bond a2))
          (bcc-correction 0.0)
-	 (key (car key-sign))
-	 (sign (cadr key-sign)))
-    (loop for pair in *am1-bcc-raw-data*
-       do (when (= (car pair) key)
-            (setf bcc-correction (second pair))))
-    (setf *am1-bcc-parameters* bcc-correction)
-   #+(or) (* (get *am1-bcc-parameters* key) sign)))
+         (key (car key-sign))
+         (sign (cadr key-sign)))
+    (if key
+        (progn
+          (loop for pair in *am1-bcc-raw-data*
+                do (when (= (car pair) key)
+                     (setf bcc-correction (second pair))))
+          (setf *am1-bcc-parameters* bcc-correction))
+        0.0 #| There was no correction - so return 0.0 |#)))
 
 ;;
 ;; Given a molecule (mol) assign the Am1Bcc atom and bond types
@@ -396,16 +401,19 @@
 (defun calculate-am1-bcc-charges (aggregate)
   "Calculate Am1-Bcc charges and add the results to the aggregate."
   (let ((bcc (calculate-bcc-corrections aggregate))
-         (order (charges:write-sqm-calculation (open "/tmp/sqm-input.txt" :direction :output) aggregate)))
-     (ext:vfork-execvp (list (namestring (translate-logical-pathname #P"amber:bin;sqm"))
-                             "-O"
-                             "-i" "/tmp/sqm-input.txt"
-                             "-o" "/tmp/sqm-output.out")
-      (let* ((am1 (charges:read-am1-charges "/tmp/sqm-output.out" order))
-             (am1-bcc (combine-am1-bcc-charges am1 bcc)))
-            (maphash (lambda (atom charge)
-                        (chem:set-charge atom charge))
-                     am1-bcc)))))
+        (order (charges:write-sqm-calculation (open "/tmp/sqm-input.txt" :direction :output) aggregate :qm-theory :pm6))
+        (output-file-name "/tmp/sqm-output.out"))
+    (ext:vfork-execvp (list (namestring (translate-logical-pathname #P"amber:bin;sqm"))
+                            "-O"
+                            "-i" "/tmp/sqm-input.txt"
+                            "-o" output-file-name))
+    (unless (probe-file "/tmp/sqm-output.out")
+      (error "The AM1 charge calculation using the external sqm program did not generate output ~a - did sqm run?" output-file-name))
+    (let* ((am1 (charges:read-am1-charges "/tmp/sqm-output.out" order))
+           (am1-bcc (combine-am1-bcc-charges am1 bcc)))
+      (maphash (lambda (atom charge)
+                 (chem:set-charge atom charge))
+               am1-bcc))))
 
 
 

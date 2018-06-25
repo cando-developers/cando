@@ -122,9 +122,9 @@ void Aggregate_O::fields(core::Record_sp node)
     }
 
 
-Atom_sp Aggregate_O::atomWithAtomId(AtomId_sp atomId) const
+Atom_sp Aggregate_O::atomWithAtomId(const AtomId& atomId) const
     {_OF();
-	int molId = atomId->moleculeId();
+	int molId = atomId.moleculeId();
 	if ( molId >=0 && molId <=(int)this->_contents.size() )
 	{
 	    Molecule_sp molecule = this->_contents[molId].as<Molecule_O>();

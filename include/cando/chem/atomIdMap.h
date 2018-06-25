@@ -37,7 +37,7 @@ namespace chem
     class AtomIdMapFunctor
     {
     public:
-	virtual void operator()(const AtomId& atomId) = 0;
+      virtual void operator()(const AtomId& atomId, Atom_sp atom) = 0;
     };
 
 
@@ -61,7 +61,7 @@ namespace chem
 	/*! Number of atoms */
       int numberOfAtoms(int mid,int rid) const { return this->_MoleculeMap[mid][rid].size(); };
 
-	/*! Iterate over every atom in the AtomIdMap and call the Functor with the AtomId */
+	/*! Iterate over every atom in the AtomIdMap and call the Functor with the AtomId and the atom */
       void iterate(AtomIdMapFunctor& functor) const
       {
         for ( int mid=0; mid<(int)this->_MoleculeMap.size(); mid++ )
@@ -71,7 +71,7 @@ namespace chem
             for ( int aid=0; aid<(int)this->_MoleculeMap[mid][rid].size(); aid++ )
             {
               AtomId atomId(mid,rid,aid);
-              functor(atomId);
+              functor(atomId,this->_MoleculeMap[mid][rid][aid]);
             }
           }
         }
@@ -203,6 +203,8 @@ namespace chem
     private:
 	AtomIdMap<Atom_sp>	_AtomIdMap;
     public:
+        bool fieldsp() const { return true; };
+        void fields(core::Record_sp node);
 	void initialize();
 //	void archiveBase(core::ArchiveP node);
 
@@ -211,7 +213,7 @@ namespace chem
 	void resize(int mol, int numRes);
 	void resize(int mol, int res, int numAtoms);
 	void set(AtomId const& atomId, Atom_sp atom);
-	Atom_sp lookupAtom(AtomId_sp atomId) const;
+	Atom_sp lookupAtom(const AtomId& atomId) const;
 	DEFAULT_CTOR_DTOR(AtomIdToAtomMap_O);
     };
 

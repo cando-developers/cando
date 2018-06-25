@@ -86,6 +86,7 @@ It stores the atom name, element, properties and a vector of bonds in the form o
   public:
   public:
     MatterName                          _AtomName;
+    size_t                              _Index;
     Element			        _Element;
     StereochemistryType                 _StereochemistryType;
     core::List_sp                       _Properties;
@@ -100,14 +101,14 @@ It stores the atom name, element, properties and a vector of bonds in the form o
     virtual bool isVirtualAtom() { return false;};
 	/*! Append a ConstitutionBond_sp to our list of bonds */
     void addConstitutionBond(ConstitutionBond_sp cb) {this->_Bonds.push_back(cb);};
-  ConstitutionAtom_O(MatterName atomName, Element element, StereochemistryType stype, core::List_sp properties) : _AtomName(atomName), _Element(element), _StereochemistryType(stype), _Properties(core::cl__copy_list(properties)) {};
+  ConstitutionAtom_O(MatterName atomName, Element element, size_t index, StereochemistryType stype, core::List_sp properties) : _AtomName(atomName), _Element(element), _Index(index), _StereochemistryType(stype), _Properties(core::cl__copy_list(properties)) {};
 
     virtual Atom_sp buildAtom() const;
   };
 
   // Put the namespace in front of the types - otherwise there will be problems with the wrappers
-  CL_DEFUN inline ConstitutionAtom_sp makeConstitutionAtom(chem::MatterName uniqueAtomName, chem::Element element, chem::StereochemistryType stereochemistry_type, core::List_sp properties) {
-    return gctools::GC<ConstitutionAtom_O>::allocate(uniqueAtomName,element,stereochemistry_type,properties);
+  CL_DEFUN inline ConstitutionAtom_sp makeConstitutionAtom(chem::MatterName uniqueAtomName, chem::Element element, size_t index, chem::StereochemistryType stereochemistry_type, core::List_sp properties) {
+    return gctools::GC<ConstitutionAtom_O>::allocate(uniqueAtomName,element,index,stereochemistry_type,properties);
   }
 
   class ConstitutionVirtualAtom_O : public ConstitutionAtom_O
@@ -121,14 +122,14 @@ It stores the atom name, element, properties and a vector of bonds in the form o
     virtual bool isVirtualAtom() { return true;};
 
   public:
-  ConstitutionVirtualAtom_O(MatterName atomname, Element element, StereochemistryType stype, core::List_sp properties, CalculatePosition_sp calcPos) :
-    ConstitutionAtom_O(atomname,element,stype,properties), _CalculatePositionCode(calcPos) {};
+  ConstitutionVirtualAtom_O(MatterName atomname, Element element, size_t index, StereochemistryType stype, core::List_sp properties, CalculatePosition_sp calcPos) :
+    ConstitutionAtom_O(atomname,element,index,stype,properties), _CalculatePositionCode(calcPos) {};
     virtual Atom_sp buildAtom() const;
   };
 
   // Put the namespace in front of the types - otherwise there will be problems with the wrappers
-  CL_DEFUN inline ConstitutionVirtualAtom_sp makeConstitutionVirtualAtom(core::Symbol_sp atomName, chem::Element element, chem::StereochemistryType stereochemistry_type, core::List_sp properties, chem::CalculatePosition_sp calcPos) {
-    return gctools::GC<ConstitutionVirtualAtom_O>::allocate(atomName,element,stereochemistry_type,properties,calcPos);
+  CL_DEFUN inline ConstitutionVirtualAtom_sp makeConstitutionVirtualAtom(core::Symbol_sp atomName, chem::Element element, size_t index, chem::StereochemistryType stereochemistry_type, core::List_sp properties, chem::CalculatePosition_sp calcPos) {
+    return gctools::GC<ConstitutionVirtualAtom_O>::allocate(atomName,element,index,stereochemistry_type,properties,calcPos);
   }
 
   class ConstitutionAtoms_O : public core::CxxObject_O

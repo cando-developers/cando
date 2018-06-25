@@ -1185,7 +1185,7 @@ CL_DEFMETHOD AtomIdToAtomMap_sp Matter_O::buildAtomIdMap() const
 }
 
 CL_LISPIFY_NAME("atomWithAtomId");
-CL_DEFMETHOD Atom_sp Matter_O::atomWithAtomId(AtomId_sp atomId) const
+CL_DEFMETHOD Atom_sp Matter_O::atomWithAtomId(const AtomId& atomId) const
 {_OF();
   SUBCLASS_MUST_IMPLEMENT();
 }

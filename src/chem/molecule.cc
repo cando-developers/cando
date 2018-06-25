@@ -363,9 +363,9 @@ CL_DEFMETHOD     Residue_sp	Molecule_O::getFirstResidueWithName(MatterName name)
 	return atomIdMap;
     }
 
-    Atom_sp Molecule_O::atomWithAtomId(AtomId_sp atomId) const
+    Atom_sp Molecule_O::atomWithAtomId(const AtomId& atomId) const
     {_OF();
-	int resId = atomId->residueId();
+	int resId = atomId.residueId();
 	if ( resId >=0 && resId <=(int)this->_contents.size() )
 	{
 	    Residue_sp residue = this->_contents[resId].as<Residue_O>();

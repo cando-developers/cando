@@ -52,6 +52,7 @@ void ConstitutionBond_O::fields(core::Record_sp node)
 void ConstitutionAtom_O::fields(core::Record_sp node)
 {
   node->field(INTERN_(kw,name),this->_AtomName);
+  node->field(INTERN_(kw,index),this->_Index);
   node->field(INTERN_(kw,element),this->_Element);
   node->field_if_not_default(INTERN_(kw,stereochemType), this->_StereochemistryType, undefinedCenter);
   node->field(INTERN_(kw,bonds),this->_Bonds);

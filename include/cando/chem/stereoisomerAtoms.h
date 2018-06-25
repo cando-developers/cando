@@ -47,124 +47,114 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace chem
 {
-
-
-
-
-
-    class StereoisomerAtom_O : public core::CxxObject_O
-    {
-	friend class StereoisomerAtoms_O;
-        CL_DOCSTRING(R"(Maintain information about an atom with respect to the topology that it belongs.
+  class StereoisomerAtom_O : public core::CxxObject_O
+  {
+    friend class StereoisomerAtoms_O;
+    CL_DOCSTRING(R"(Maintain information about an atom with respect to the topology that it belongs.
 A topology cares about properties that are influenced by stereochemistry and how the 
 topology atoms plug into others.  So it stores things like charge and atom type.)");
-	LISP_CLASS(chem,ChemPkg,StereoisomerAtom_O,"StereoisomerAtom",core::CxxObject_O);
-    public:
-	void	initialize();
+    LISP_CLASS(chem,ChemPkg,StereoisomerAtom_O,"StereoisomerAtom",core::CxxObject_O);
+  public:
+    bool fieldsp() const { return true; };
+    void fields(core::Record_sp node);
 //	void	archiveBase(core::ArchiveP node);
-    public:
+  public:
 	/*! Construct a StereoisomerAtom given its uniqueAtomName and its unique ConstitutionAtomIndex0N */
-	static StereoisomerAtom_sp create(ConstitutionAtom_sp constitutionAtom );
-    protected:
-	MatterName		_AtomName;
-	ConstitutionAtomIndex0N	_AtomIndex;
-	double			_Charge;
-        core::Symbol_sp		_AtomType;
-    public:
-	string __repr__() const;
-CL_LISPIFY_NAME("atomName");
-CL_DEFMETHOD 	MatterName atomName() { return this->_AtomName;};
-	ConstitutionAtomIndex0N atomIndex() const { return this->_AtomIndex;};
-	virtual bool isVirtualAtom() { return false;};
-CL_LISPIFY_NAME("getCharge");
-CL_DEFMETHOD 	double getCharge() const { return this->_Charge;};
-CL_LISPIFY_NAME("setCharge");
-CL_DEFMETHOD 	void setCharge(double c) { this->_Charge = c;};
-CL_LISPIFY_NAME("getAtomType");
-CL_DEFMETHOD         core::Symbol_sp getAtomType() const { return this->_AtomType;};
-CL_LISPIFY_NAME("setAtomType");
-CL_DEFMETHOD 	void setAtomType(core::Symbol_sp s) { this->_AtomType = s;};
-	DEFAULT_CTOR_DTOR(StereoisomerAtom_O);
-    };
+    static StereoisomerAtom_sp create(ConstitutionAtom_sp constitutionAtom );
+  protected:
+    MatterName		_AtomName;
+    ConstitutionAtomIndex0N	_AtomIndex;
+    double			_Charge;
+    core::Symbol_sp		_AtomType;
+  public:
+    string __repr__() const;
+    CL_LISPIFY_NAME("atomName");
+    CL_DEFMETHOD 	MatterName atomName() { return this->_AtomName;};
+    ConstitutionAtomIndex0N atomIndex() const { return this->_AtomIndex;};
+    virtual bool isVirtualAtom() { return false;};
+    CL_LISPIFY_NAME("getCharge");
+    CL_DEFMETHOD 	double getCharge() const { return this->_Charge;};
+    CL_LISPIFY_NAME("setCharge");
+    CL_DEFMETHOD 	void setCharge(double c) { this->_Charge = c;};
+    CL_LISPIFY_NAME("getAtomType");
+    CL_DEFMETHOD         core::Symbol_sp getAtomType() const { return this->_AtomType;};
+    CL_LISPIFY_NAME("setAtomType");
+    CL_DEFMETHOD 	void setAtomType(core::Symbol_sp s) { this->_AtomType = s;};
+  StereoisomerAtom_O(MatterName name, ConstitutionAtomIndex0N index, double charge, core::Symbol_sp type) : _AtomName(name), _AtomIndex(index), _Charge(charge), _AtomType(type) {};
+  };
 
 
 
-    class StereoisomerVirtualAtom_O : public StereoisomerAtom_O
-    {
-	LISP_CLASS(chem,ChemPkg,StereoisomerVirtualAtom_O,"StereoisomerVirtualAtom",StereoisomerAtom_O);
-    public:
-	void	initialize();
+  class StereoisomerVirtualAtom_O : public StereoisomerAtom_O
+  {
+    LISP_CLASS(chem,ChemPkg,StereoisomerVirtualAtom_O,"StereoisomerVirtualAtom",StereoisomerAtom_O);
+  public:
 //	void	archiveBase(core::ArchiveP node);
-    public:
+  public:
 	/*! Construct a StereoisomerVirtualAtom given its uniqueAtomName and its uique ConstitutionAtomIndex0N */
-	static StereoisomerVirtualAtom_sp create(MatterName uniqueAtomName, ConstitutionAtomIndex0N index,
-						 CalculatePosition_sp code );
+    static StereoisomerVirtualAtom_sp create(MatterName uniqueAtomName, ConstitutionAtomIndex0N index,
+                                             CalculatePosition_sp code );
 	/*! Construct a StereoisomerVirtualAtom given its uniqueAtomName and leave its ConstitutionAtomIndex0N undefined */
-	static StereoisomerVirtualAtom_sp create(ConstitutionVirtualAtom_sp cva );
-    public:
-	virtual bool isVirtualAtom() { return true;};
+    static StereoisomerVirtualAtom_sp create(ConstitutionVirtualAtom_sp cva );
+  public:
+    virtual bool isVirtualAtom() { return true;};
 
-	DEFAULT_CTOR_DTOR(StereoisomerVirtualAtom_O);
-    };
-
-
+  StereoisomerVirtualAtom_O(MatterName name, ConstitutionAtomIndex0N index, double charge, core::Symbol_sp type) : StereoisomerAtom_O(name,index,charge,type) {};
+  };
 
 
-    class StereoisomerAtoms_O : public core::CxxObject_O
-    {
-        CL_DOCSTRING(R"(Maintain residue information for the topology.  This
+
+
+  class StereoisomerAtoms_O : public core::CxxObject_O
+  {
+    CL_DOCSTRING(R"(Maintain residue information for the topology.  This
 is a list of stereoisomer-atoms.)");
-	LISP_CLASS(chem,ChemPkg,StereoisomerAtoms_O,"StereoisomerAtoms",core::CxxObject_O);
+    LISP_CLASS(chem,ChemPkg,StereoisomerAtoms_O,"StereoisomerAtoms",core::CxxObject_O);
 
-    public: // virtual functions inherited from Object
-	void	initialize();
+  public: // virtual functions inherited from Object
+    bool fieldsp() const { return true; };
+    void fields(core::Record_sp node);
 //	void	archiveBase(core::ArchiveP node);
 //	string	__repr__() const;
 
-    private: // instance variables
+  private: // instance variables
 	//! A list of StereoisomerAtoms
-        gctools::Vec0<StereoisomerAtom_sp>	_Atoms;
-    public:
+    gctools::Vec0<StereoisomerAtom_sp>	_Atoms;
+  public:
 	//! Create a StereoisomerAtoms object from a ConstitutionAtoms object
-	static StereoisomerAtoms_sp create(ConstitutionAtoms_sp );
-    public:
+    static StereoisomerAtoms_sp create(ConstitutionAtoms_sp );
+  public:
 
 	/*! Return the number of atoms */
-	int numberOfAtoms() const { return this->_Atoms.size();};
+    int numberOfAtoms() const { return this->_Atoms.size();};
 
 	/*! Return the index of the StereoisomerAtom with the given name */
-	int	index(MatterName name) const;
+    int	index(MatterName name) const;
 
 	/*! Return the StereoisomerAtom with the give ConstitutionAtomIndex0N */
-	StereoisomerAtom_sp& operator[](ConstitutionAtomIndex0N idx);
+    StereoisomerAtom_sp& operator[](ConstitutionAtomIndex0N idx);
 
 	//! Return the StereoisomerAtom that has the give name
-	StereoisomerAtom_sp atomWithName(MatterName name);
+    StereoisomerAtom_sp atomWithName(MatterName name);
 
 	/*! Return the StereoisomerAtom at the given index */
-	StereoisomerAtom_sp atomWithId(ConstitutionAtomIndex0N idx) const;
+    StereoisomerAtom_sp atomWithId(ConstitutionAtomIndex0N idx) const;
 
 
 	//! Add a StereoisomerVirtualAtom to us and assign it a ConstitutionAtomIndex0N
-	void addStereoisomerVirtualAtom(StereoisomerVirtualAtom_sp cva);
+    void addStereoisomerVirtualAtom(StereoisomerVirtualAtom_sp cva);
 
 	//! Return a StringSet of the StereoisomerAtom names
-	adapt::SymbolSet_sp atomNamesAsSymbolSet();
+    adapt::SymbolSet_sp atomNamesAsSymbolSet();
 
 
 	/*! Create a Residue that has all the atoms/bonds and all the necessary atom/bond
 	  properties set properly for this StereoisomerAtoms */
-	Residue_sp makeResidue();
+    Residue_sp makeResidue();
 
-	StereoisomerAtoms_O( const StereoisomerAtoms_O& ss ); //!< Copy constructor
-	DEFAULT_CTOR_DTOR(StereoisomerAtoms_O);
-    };
-
-
-
+    StereoisomerAtoms_O( const StereoisomerAtoms_O& ss ); //!< Copy constructor
+    DEFAULT_CTOR_DTOR(StereoisomerAtoms_O);
+  };
 
 };
-TRANSLATE(chem::StereoisomerAtom_O);
-TRANSLATE(chem::StereoisomerVirtualAtom_O);
-TRANSLATE(chem::StereoisomerAtoms_O);
 #endif //]

@@ -176,7 +176,6 @@ namespace kinematics
 	virtual bool isJump() const { return false;};
 
         CL_DEFMETHOD chem::AtomId atomId() const { return this->_Id; };
-        CL_DEFMETHOD chem::AtomId_sp getAtomId() const { return chem::AtomId_O::make(this->_Id._Molecule,this->_Id._Residue,this->_Id._Atom);};
 
 	/*! Return the i(th) non-jump atom */
 	Joint_sp getNonJumpAtom(int idx) const;
