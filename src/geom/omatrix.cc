@@ -59,11 +59,6 @@ string	OMatrix_O::__repr__() const
   ss << this->_Value.asString();
   return ss.str();
 }
-string	OMatrix_O::__str__()
-{
-  return this->__repr__();
-}
-
 
 CL_LISPIFY_NAME("setFromString");
 CL_DEFMETHOD     void	OMatrix_O::setFromString(const string& s)

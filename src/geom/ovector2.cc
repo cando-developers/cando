@@ -63,10 +63,6 @@ string	OVector2_O::__repr__() const
     ss << this->_Value.getY();
     return ss.str();
 }
-string	OVector2_O::__str__()
-{
-    return this->__repr__();
-}
 
 CL_LISPIFY_NAME("sub");
 CL_DEFMETHOD     Vector2 OVector2_O::sub(const Vector2& other)

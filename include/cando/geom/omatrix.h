@@ -49,7 +49,6 @@ namespace geom {
     
   public:
     string __repr__() const;
-    string __str__() ;
 
 	//! Create a clone of this matrix
     OMatrix_sp clone() const;

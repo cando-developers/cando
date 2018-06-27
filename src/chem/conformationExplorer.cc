@@ -964,24 +964,6 @@ CL_DEFMETHOD     ConformationExplorerEntryStage_sp ConformationExplorer_O::getCl
 	return s;
     }
 
-
-
-    string ConformationExplorer_O::__str__()
-    {
-	stringstream ss;
-	ss << this->Base::__str__();
-	ss << "#ConformationExplorerEntries: " << this->_Entries.size() << std::endl;
-	adapt::StringSet_sp stageNames = adapt::StringSet_O::create();
-        gctools::Vec0<ConformationExplorerEntry_sp>::const_iterator ei;
-	for ( ei=this->_Entries.begin(); ei!=this->_Entries.end(); ei++ )
-	{
-	    adapt::StringSet_sp oneEntryStageNames = (*ei)->getEntryStageNames();
-	    stageNames->insertStringSet(oneEntryStageNames);
-	}
-	ss << "EntryStageNames: %s\n", stageNames->asString().c_str();
-	return ss.str();
-    }
-
 CL_LISPIFY_NAME("findClosestMatchingConformation");
 CL_DEFMETHOD     void ConformationExplorer_O::findClosestMatchingConformation(
 	ConformationExplorerMatch_sp match,

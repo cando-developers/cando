@@ -47,7 +47,6 @@ public:
 	static OVector2_sp sum(core::List_sp args);
 public:
 	string __repr__() const;
-	string __str__() ;
 CL_LISPIFY_NAME("setAll");
 CL_DEFMETHOD 	void setAll(double x, double y) { this->_Value.set(x,y); };
 CL_LISPIFY_NAME("x");

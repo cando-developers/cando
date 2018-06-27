@@ -171,4 +171,3 @@
     (aromatic-rule5 atoms-in-rings)
     (select-aromatic-rings all-rings)))
 
-

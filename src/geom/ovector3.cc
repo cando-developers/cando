@@ -93,9 +93,6 @@ string OVector3_O::__repr__() const {
   ss << " ]";
   return ss.str();
 }
-string OVector3_O::__str__() {
-    return this->__repr__();
-}
 
 CL_NAME("V-");
 CL_DEFMETHOD     Vector3 OVector3_O::sub(const Vector3& other)

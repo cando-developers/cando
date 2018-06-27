@@ -382,7 +382,6 @@ CL_DEFMETHOD 	uint numberOfEntries() { return this->_Entries.size();};
 	geom::Render_sp rendered(core::List_sp options);
 #endif
 #endif
-	string __str__() ;
 
 		/*! Create a new entry but dont add it yet
 		 * Subclasses of ConformationExplorer can return

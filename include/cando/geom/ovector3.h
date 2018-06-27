@@ -66,7 +66,6 @@ public:
 	core::T_sp deepCopy() const;
 	core::T_sp shallowCopy() const { return this->deepCopy();};
     string __repr__() const;
-	string __str__() ;
 CL_LISPIFY_NAME("setAll3");
 CL_DEFMETHOD 	void setAll3(double x, double y, double z) { this->_Value.set(x,y,z); };
 CL_LISPIFY_NAME("vx");
