@@ -311,7 +311,7 @@ CL_DEFMETHOD bool ChemInfo_O::compileSmarts(const string &code) {
   return true;
 }
 
-void ChemInfo_O::defineTests(core::List_sp tests) {
+CL_DEFMETHOD void ChemInfo_O::defineTests(core::List_sp tests) {
   ASSERTNOTNULL(this->_Root);
   ASSERTF(this->_Root.notnilp(), BF("Root must be defined to define tests"));
   for (core::List_sp cur = tests; cur.notnilp(); cur = oCddr(cur)) {
@@ -1755,20 +1755,25 @@ void Root_O::addTest(core::Symbol_sp testSym, core::Function_sp testCode) {
   _OF();
   LOG(BF("Adding test<%s> with code: %s") % _rep_(testSym) % _rep_(testCode));
   this->_Tests->setf_gethash(testSym, testCode);
+  printf("test<%s> testcode %s\n", _rep_(testSym).c_str(), _rep_(testCode).c_str());
 }
 
 bool Root_O::evaluateTest(core::Symbol_sp testSym, Atom_sp atom) {
   _OF();
   ASSERTF(testSym.notnilp(), BF("The test symbol was nil! - this should never occur"));
+  printf("Looking up test with symbol<%s>\n", _rep_(testSym).c_str());
   LOG(BF("Looking up test with symbol<%s>") % _rep_(testSym));
   core::T_mv find = this->_Tests->gethash(testSym);
   if (find.second().nilp()) {
     SIMPLE_ERROR(BF("Could not find named ChemInfo/Smarts test[%s] in Smarts object - available named tests are[%s]") % _rep_(testSym) % this->_Tests->keysAsString());
   }
+  printf("After find.second %s\n", find);
   core::Function_sp testCode = this->_Tests->gethash(find).as<core::Function_O>();
+  printf("testcode %s\n", _rep_(testCode).c_str());
   ASSERTF(testCode.notnilp(), BF("testCode was nil - it should never be"));
   ASSERTF(atom.notnilp(), BF("The atom arg should never be nil"));
   core::List_sp exp = core::Cons_O::createList(testCode, atom);
+  printf("evaluating test: %s\n",  _rep_(exp).c_str());
   LOG(BF("evaluating test: %s") % _rep_(exp));
   core::T_sp res = core::eval::evaluate(exp, _Nil<core::T_O>());
   return res.isTrue();

@@ -246,7 +246,7 @@
 
 (defvar *match-lactone-lactam* (smarts:make-chem-info :smarts "[$(O=C1-[O,N]~[*]~[*]~[*;?1]),$(O=C1-[O,N]~[*]~[*]~[*]~[*;?1]),$(O=C1-[O,N]~[*]~[*]~[*]~[*]~[*;?1]),$(O=C1-[O,N]~[*]~[*]~[*]~[*]~[*]~[*;?1])]"))
 
-(defvar *match-ester-acid* (smarts:make-chem-info :smarts "O=C-[O,N]"))
+(defvar *match-ester-acid* (smarts:make-chem-info :smarts "O=C-[O]"))
 
 (defun apply-oxygen-atom-types (a)
   (cond
@@ -255,8 +255,8 @@
    ((chem:matches *match-ester-acid* a)     (set-am1-bcc-type a 32))
    (t (set-am1-bcc-type a 31))))
 
-(defvar *n-higly-deloc* (smarts:make-chem-info :smarts "N(-[*]=[*])-[*]=[*]"))
-(defvar *ndeloc* (smarts:make-chem-info :smarts "N-[*]=[*]"))
+(defvar *n-higly-deloc* (smarts:make-chem-info :smarts "N(-[C]=[C])-[C]=[C]"))
+(defvar *ndeloc* (smarts:make-chem-info :smarts "N-[C]=[C]"))
 
 
 ;; Figure out what these properties deloc and hdeloc really mean

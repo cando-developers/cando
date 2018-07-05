@@ -3,7 +3,7 @@
           Amber 16 SANDER                              2016
           -------------------------------------------------------
 
-| Run on 06/21/2018 at 11:10:08
+| Run on 07/03/2018 at 10:14:46
 
 |   Executable path: /Users/tuj24515/Development/amber16/bin/sander
 | Working directory: /Users/tuj24515/Development/clasp/extensions/cando/src/tests/alanine-demo
@@ -55,7 +55,7 @@ Minimize
 |  *** cutoff > system size, list only builds once
 |Largest sphere to fit in unit cell has radius =    31.511
 | New format PARM file being parsed.
-| Version =    1.000 Date = 06/21/18 Time = 12:07:38
+| Version =    1.000 Date = 07/03/18 Time = 11:01:03
  NATOM  =      22 NTYPES =       7 NBONH =      12 MBONA  =       9
  NTHETH =      25 MTHETA =      11 NPHIH =      43 MPHIA  =      24
  NHPARM =       0 NPARM  =       0 NNB   =      99 NRES   =       3
@@ -162,25 +162,31 @@ ACE
    5.  TIMINGS
 --------------------------------------------------------------------------------
 
-|    Read coords time           0.00 ( 5.46% of Total)
-|    Fast Water setup           0.00 ( 0.37% of Total)
-|                Build the list             0.00 (94.68% of List )
-|                Other                      0.00 ( 5.32% of List )
-|             List time                  0.00 (77.39% of Nonbo)
-|             Ewald time                 0.00 (22.61% of Nonbo)
-|          Nonbond force              0.00 (85.72% of Force)
-|          Bond/Angle/Dihedral        0.00 (12.69% of Force)
-|          Other                      0.00 ( 1.59% of Force)
+|    Read coords time           0.00 ( 0.12% of Total)
+|    Fast Water setup           0.00 ( 0.01% of Total)
+|                Build the list             0.00 (93.69% of List )
+|                Other                      0.00 ( 6.31% of List )
+|             List time                  0.00 (46.94% of Nonbo)
+|                   Short_ene time             0.00 (97.73% of Direc)
+|                   Other                      0.00 ( 2.27% of Direc)
+|                Direct Ewald time          0.00 (91.93% of Ewald)
+|                Start synchronizatio       0.00 ( 1.05% of Ewald)
+|                Other                      0.00 ( 7.03% of Ewald)
+|             Ewald time                 0.00 (52.89% of Nonbo)
+|             Other                      0.00 ( 0.18% of Nonbo)
+|          Nonbond force              0.00 (86.10% of Force)
+|          Bond/Angle/Dihedral        0.00 (12.15% of Force)
+|          Other                      0.00 ( 1.75% of Force)
 |       Force time                 0.00 (100.0% of Runmd)
-|    Runmd Time                 0.00 (16.57% of Total)
-|    Other                      0.00 (77.60% of Total)
-| Total time                 0.00 (98.36% of ALL  )
+|    Runmd Time                 0.00 ( 0.48% of Total)
+|    Other                      0.13 (99.39% of Total)
+| Total time                 0.13 (95.40% of ALL  )
 
 | Number of list builds   :          1
 
 | Highest rstack allocated:         70
 | Highest istack allocated:         14
-|           Job began  at 11:10:08.638  on 06/21/2018
-|           Setup done at 11:10:08.641  on 06/21/2018
-|           Run   done at 11:10:08.642  on 06/21/2018
+|           Job began  at 10:14:46.393  on 07/03/2018
+|           Setup done at 10:14:46.514  on 07/03/2018
+|           Run   done at 10:14:46.531  on 07/03/2018
 |     wallclock() was called      58 times

@@ -450,7 +450,7 @@ Return (values compressed-atom-name-map max-atom-name-length). "
                                 (setf (aref lp cur) i4)
                                 (setf (aref icp cur) (+ (aref j-vec i) 1))
                                 (incf cur))))
-                    (values with-h without-h iph jph kph lph icph ip jp kp lp icp vj-vec inj-vec phasej-vec)))))))
+                    (values with-h without-h iph jph kph lph icph ip jp kp lp icp vj-vec inj-vec phasej-vec properj-vec)))))))
 
 (defun canonical-nonbond-key (type1 type2)
   (declare (symbol type1 type2))
@@ -656,7 +656,7 @@ Return (values compressed-atom-name-map max-atom-name-length). "
             ntypes atom-name atom-type charge mass atomic-number atom-radius ico iac local-typej-vec cn1-vec cn2-vec #|nonbonds|#
             nbonh mbona ibh jbh icbh ib jb icb kbj-vec r0j-vec #|stretches|#
             ntheth mtheta ith jth kth icth it jt kt1 ict ktj-vec t0j-vec #|angles|#
-            nphih mphia iph jph kph lph icph ip jp kp lp icp vj-vec inj-vec phasej-vec #|dihedrals|#
+            nphih mphia iph jph kph lph icph ip jp kp lp icp vj-vec inj-vec phasej-vec properj-vec #|dihedrals|#
             nhparm nparm  nnb nres residue-vec residue-name-vec atoms-per-molecule generalized-born-screen
             residue-count molecule-count
             nbona    ntheta nphia  NUMBND NUMANG NPTRA
@@ -669,7 +669,7 @@ Return (values compressed-atom-name-map max-atom-name-length). "
           (prepare-amber-energy-stretch energy-function))
         (multiple-value-setq (ntheth mtheta ith jth kth icth it jt kt1 ict ktj-vec t0j-vec)
           (prepare-amber-energy-angle energy-function))
-        (multiple-value-setq (nphih mphia iph jph kph lph icph ip jp kp lp icp vj-vec inj-vec phasej-vec)
+        (multiple-value-setq (nphih mphia iph jph kph lph icph ip jp kp lp icp vj-vec inj-vec phasej-vec properj-vec)
           (prepare-amber-energy-dihedral energy-function))
                                         ;        (multiple-value-setq (ntypes atom-name charge mass atomic-number ico iac local-typej-vec cn1-vec cn2-vec)
                                         ;          (chem:prepare-amber-energy-nonbond energy-function))
@@ -951,9 +951,10 @@ Return (values compressed-atom-name-map max-atom-name-length). "
         (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-19-")
         (fortran:fformat 5 "%16.8e")
-;;; temporary!!!
-        (loop repeat nptra
-              do (fortran:fwrite "1.20000000e+00"))
+        (loop for pr0 across properj-vec
+           do (if pr0
+                  (fortran:fwrite 1.2)
+                  (fortran:fwrite 0.0)))
         (fortran:end-line)
         ;; write the 1-4 electrostatic scaling constant
 
@@ -963,9 +964,10 @@ Return (values compressed-atom-name-map max-atom-name-length). "
         (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-20-")
         (fortran:fformat 5 "%16.8e")
-;;; temporary!!!
-        (loop repeat nptra
-              do (fortran:fwrite "2.00000000e+0"))
+        (loop for pr0 across properj-vec
+           do (if pr0
+                  (fortran:fwrite 2.0)
+                  (fortran:fwrite 0.0)))
         (fortran:end-line)
         ;; write the 1-4 vdw scaling constant
 
