@@ -69,7 +69,7 @@ class ReadAmberParameters_O : public core::CxxObject_O
   ForceField_sp parseAmberFormattedForceField(core::T_sp strm, core::T_sp system);
   ForceField_sp parseFrcModFile(core::T_sp strm, core::T_sp system);
   ForceField_sp parseAmberFormattedForceFieldOrFrcMod(core::T_sp strm, core::T_sp system);
-  void parseAtomEquivalences(core::T_sp fin);
+  void parseAtomEquivalences(core::T_sp fin, FFNonbondDb_sp);
   
  public:
 

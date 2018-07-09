@@ -470,7 +470,7 @@ Return (values compressed-atom-name-map max-atom-name-length). "
        for ffnonbond = (chem:get-ffnonbond-using-type-index ffnonbond-db index)
        for epsilon = (chem:get-epsilon-k-cal ffnonbond)
        for rm =  (chem:get-radius-angstroms ffnonbond)
-       for key = (intern (format nil "~f-~f" epsilon rm) :keyword) 
+       for key = (intern (format nil "~f-~f" epsilon rm) :keyword)
        do (if (setf jtemp (gethash key uniques))        
 ;       do (if (setf jtemp (gethash index uniques))
               (vector-push-extend jtemp iac-vec)

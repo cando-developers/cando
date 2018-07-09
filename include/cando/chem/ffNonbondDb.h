@@ -145,6 +145,7 @@ namespace chem {
     double		_Fcadj;	// formal charge sharing scale factor
     double		_Pbci;	// partial bond charge increment
     DonorAcceptorEnum	_DonorAcceptor;
+    string	        _SameParms;
 
   public:
     string __repr__() const;
@@ -166,7 +167,9 @@ namespace chem {
     CL_DEFMETHOD double getEpsilon_kJ() const;
     CL_DEFMETHOD double getEpsilon_kCal() const;
 // get-epsilon-k-cal
-
+    void setSameParms(string sameparms);
+    string getSameParms() const;
+ 
     virtual	string	levelDescription();
     virtual ParameterType type() { return nonbond; };
     DEFAULT_CTOR_DTOR(FFNonbond_O);

@@ -180,6 +180,7 @@ void	FFNonbond_O::fields(core::Record_sp node)
   node->field_if_not_default(INTERN_(kw,fcadj),this->_Fcadj,0.0);
   node->field_if_not_default(INTERN_(kw,pbci),this->_Pbci,0.0);
   node->field(INTERN_(kw,da),this->_DonorAcceptor );
+  node->field(INTERN_(kw,sameParms),this->_SameParms);
   this->Base::fields(node);
 }
 
@@ -333,6 +334,7 @@ void FFNonbond_O::initialize()
   this->_InitialCharge = 0.0;
   this->_Fcadj = 0.0;
   this->_Pbci = 0.0;
+  this->_SameParms = "";
 }
 
 
@@ -377,6 +379,16 @@ double FFNonbond_O::getEpsilon_kCal() const
 double FFNonbond_O::getEpsilon_kJ() const
 {
   return this->_Epsilon_kJ;
+}
+
+void FFNonbond_O::setSameParms(string sameparms)
+{
+  this->_SameParms = sameparms;
+}
+
+string FFNonbond_O::getSameParms() const
+{
+  return this->_SameParms;
 }
 
 CL_DEFMETHOD double FFNonbond_O::getMass() const
