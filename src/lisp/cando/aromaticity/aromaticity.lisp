@@ -54,8 +54,7 @@
           (set-aromaticity-type a 'ar6 'rule1))
        ))
 
-(defparameter *ar6test* (list '|ar|6 (lambda (a) (eq (chem:matter-get-property-or-default a 'aromaticity nil) 'ar6))))
-
+(defparameter *ar6test* (list 'ar6 (lambda (a) (eq (chem:matter-get-property-or-default a 'aromaticity nil) 'ar6))))
 
 (defparameter *rule2a* (smarts:make-chem-info :tests *ar6test* :smarts "[x]1=[x]-[x]=[x]-[<ar6>]-[<ar6>]-[x&?1]"))
 (defparameter *rule2b* (smarts:make-chem-info :tests *ar6test* :smarts "[x]1-[x]=[x]-[<ar6>]-[<ar6>]-[x]=[x&?1]"))
