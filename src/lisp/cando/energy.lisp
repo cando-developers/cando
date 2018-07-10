@@ -65,8 +65,6 @@
                                :cg-tolerance cg-tolerance
                                :tn-tolerance tn-tolerance)
     (chem:enable-print-intermediate-results minimizer)
-    (chem:set-option energy-function 'chem:nonbond-term nil)
-    (cando:minimize-no-fail minimizer)
     (chem:set-option energy-function 'chem:nonbond-term t)
     (cando:minimize-no-fail minimizer)))
 
@@ -86,6 +84,47 @@
     (apply #'minimize-energy-function energy-func args)
     energy-func))
 
+(defun minimize-energy-function-from-bad-geometry (energy-function &key (restraints-on t)
+                                                                     system
+                                                                     (max-sd-steps 1000)
+                                                                     (max-cg-steps 50000)
+                                                                     (max-tn-steps 0)
+                                                                     (sd-tolerance 5000.0)
+                                                                     (cg-tolerance 0.5)
+                                                                     (tn-tolerance 0.00001))
+  "Minimize the conformational energy for an energy-function"
+  (let ((minimizer (chem:make-minimizer energy-function)))
+    (unless restraints-on
+      (let ((restraint-term (chem:get-anchor-restraint-component energy-function)))
+        (chem:disable restraint-term)))
+    (cando:configure-minimizer minimizer
+                               :max-sd-steps max-sd-steps
+                               :max-cg-steps max-cg-steps
+                               :max-tn-steps max-tn-steps
+                               :sd-tolerance sd-tolerance
+                               :cg-tolerance cg-tolerance
+                               :tn-tolerance tn-tolerance)
+    (chem:enable-print-intermediate-results minimizer)
+    (chem:set-option energy-function 'chem:nonbond-term nil)
+    (cando:minimize-no-fail minimizer)
+    (chem:set-option energy-function 'chem:nonbond-term t)
+    (cando:minimize-no-fail minimizer)))
+
+(defun minimize-from-bad-geometry (agg &rest args
+                                   &key (restraints-on t)
+                                     system
+                                     (max-sd-steps 1000)
+                                     (max-cg-steps 50000)
+                                     (max-tn-steps 0)
+                                     (sd-tolerance 5000.0)
+                                     (cg-tolerance 0.5)
+                                     (tn-tolerance 0.00001)
+                                     (use-excluded-atoms t)
+                                     (assign-types t))
+  "Minimize the conformational energy for an aggregate"
+  (let ((energy-func (chem:make-energy-function agg system :use-excluded-atoms use-excluded-atoms :assign-types assign-types)))
+    (apply #'minimize-energy-function energy-func args)
+    energy-func))
 
 ;;;------------------------------------------------------------
 ;;;

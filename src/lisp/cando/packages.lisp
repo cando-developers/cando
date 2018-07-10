@@ -104,6 +104,8 @@
   (:export
    #:minimize
    #:minimize-energy-function
+   #:minimize-from-bad-geometry
+   #:minimize-energy-function-from-bad-geometry
    #:dump-excluded-atom-list
    ))
 
