@@ -785,7 +785,7 @@ Return (values compressed-atom-name-map max-atom-name-length). "
         (fortran:debug "-4-")
         (fortran:fformat 5 "%16.8e")
         (loop for ch across charge
-              do (fortran:fwrite (* ch 18.223)))
+              do (fortran:fwrite (* ch 18.2223)))
         (fortran:end-line)
         ;; write the atom charges
 
