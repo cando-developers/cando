@@ -590,11 +590,24 @@ Return (values compressed-atom-name-map max-atom-name-length). "
 
 ;; for now, hardwire the Bondi radii
 (defun prepare-generalized-born (atomic-number-vector)
-  (let ((generalized-born-screen (make-array (length atomic-number-vector)))
+  (let ((generalized-born-radius (make-array (length atomic-number-vector)))
+        (generalized-born-screen (make-array (length atomic-number-vector)))
         (atomic-number 0)
+        (radius 0)
         (screen 0))
     (loop for i from 0 below (length atomic-number-vector)
        for atomic-number = (aref atomic-number-vector i)
+       do (case atomic-number (1 (setf radius 1.3))
+                (6 (setf radius 1.7))
+                (7 (setf radius 1.55))
+                (8 (setf radius 1.5))
+                (9 (setf radius 1.5))
+                (14 (setf radius 2.1))
+                (15 (setf radius 1.85))
+                (16 (setf radius 1.8))
+                (17 (setf radius 1.7))
+                (otherwise  (setf radius 1.5)))
+       do (setf (aref generalized-born-radius i) radius)
        do (case atomic-number (1 (setf screen 0.85))
                 (6 (setf screen 0.72))
                 (7 (setf screen 0.79))
@@ -604,7 +617,7 @@ Return (values compressed-atom-name-map max-atom-name-length). "
                 (16 (setf screen 0.96))
                 (otherwise  (setf screen 0.8)))
        do (setf (aref generalized-born-screen i) screen))
-    (values generalized-born-screen)))
+    (values generalized-born-radius generalized-born-screen)))
 
 (defun solvent-pointers (aggregate)
   (let ((residue-count 0)
@@ -657,7 +670,8 @@ Return (values compressed-atom-name-map max-atom-name-length). "
             nbonh mbona ibh jbh icbh ib jb icb kbj-vec r0j-vec #|stretches|#
             ntheth mtheta ith jth kth icth it jt kt1 ict ktj-vec t0j-vec #|angles|#
             nphih mphia iph jph kph lph icph ip jp kp lp icp vj-vec inj-vec phasej-vec properj-vec #|dihedrals|#
-            nhparm nparm  nnb nres residue-vec residue-name-vec atoms-per-molecule generalized-born-screen
+            nhparm nparm  nnb nres residue-vec residue-name-vec atoms-per-molecule
+            generalized-born-radius generalized-born-screen
             residue-count molecule-count
             nbona    ntheta nphia  NUMBND NUMANG NPTRA
             NATYP    NPHB   IFPERT NBPER  NGPER  NDPER
@@ -692,7 +706,9 @@ Return (values compressed-atom-name-map max-atom-name-length). "
         (setf local-typej-vec (cdr (assoc :local-typej-vec atom-vectors)))
         (setf cn1-vec (cdr (assoc :cn1-vec atom-vectors)))
         (setf cn2-vec (cdr (assoc :cn2-vec atom-vectors)))
-        (setf generalized-born-screen (prepare-generalized-born atomic-number))
+        (multiple-value-setq (generalized-born-radius generalized-born-screen)
+          (prepare-generalized-born atomic-number)) 
+                                        ;        (setf generalized-born-screen (prepare-generalized-born atomic-number))
         (setf nhparm 0)
         (setf nparm 0)
         (setf nnb (length excluded-atom-list))
@@ -1247,7 +1263,7 @@ Return (values compressed-atom-name-map max-atom-name-length). "
         (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-42-")
         (fortran:fformat 5 "%16.8e")
-        (loop for radius across atom-radius
+        (loop for radius across generalized-born-radius
               do (fortran:fwrite radius))
         (fortran:end-line)
         ;;Generalized Born intrinsic dielectric radii
