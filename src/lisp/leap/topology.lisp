@@ -702,7 +702,7 @@ Return (values compressed-atom-name-map max-atom-name-length). "
         (setf numbnd (length kbj-vec))
         (setf numang (length ktj-vec))
         (setf nptra (length vj-vec))
-        (setf natyp 0)
+        (setf natyp (length (remove-duplicates atom-type)))
         (setf nphb 0)
         (setf ifpert 0)    
         (setf nbper 0)     
@@ -977,6 +977,8 @@ Return (values compressed-atom-name-map max-atom-name-length). "
         (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-21-")
         (fortran:fformat 5 "%16.8e")
+        (loop repeat natyp
+              do (fortran:fwrite 0.0))
         (fortran:end-line)
         ;; currently unused
 
