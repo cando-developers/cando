@@ -387,7 +387,8 @@ Return (values compressed-atom-name-map max-atom-name-length). "
                          (eq i4x i4prev))
                 (setf (aref i3-vector x) (- i3x)))
            do (when (not properx)
-                (setf (aref i4-vector x) (- i4x)))
+                (setf (aref i3-vector x) (- i3x)
+                      (aref i4-vector x) (- i4x)))
            do (setf proper-prev properx
                     i1prev i1x
                     i2prev i2x
