@@ -220,14 +220,6 @@ void FFNonbondDb_O::forceFieldMerge(FFBaseDb_sp bother)
   if (other->VdwMixWellDefined) {
     this->set_VdwMixWell(other->VdwMixWell);
   }
-#if 1
-  for ( size_t xi(0), xiEnd(this->_Terms.size()); xi<xiEnd; ++xi) {
-    printf("%s:%d  this->_Terms[%lu] = %s\n", __FILE__, __LINE__, xi, _rep_(this->_Terms[xi]->getType()).c_str());
-  }
-  for ( size_t xi(0), xiEnd(other->_Terms.size()); xi<xiEnd; ++xi) {
-    printf("%s:%d  other->_Terms[%lu] = %s\n", __FILE__, __LINE__, xi, _rep_(other->_Terms[xi]->getType()).c_str());
-  }
-#endif
   
   // Merge the terms and overwrite old ones with the same name
   for ( size_t i(0), iEnd(other->_Terms.size()); i<iEnd; ++i ) {
@@ -244,14 +236,8 @@ void FFNonbondDb_O::forceFieldMerge(FFBaseDb_sp bother)
   this->_Parameters->clrhash();
   for ( size_t i(0), iEnd(this->_Terms.size()); i<iEnd; ++i ) {
     this->_Parameters->hash_table_setf_gethash(this->_Terms[i]->getType(),core::make_fixnum(i));
-#if 1
-//    printf("%s:%d  _Parameters  this->_Terms[%lu]->getType() = %s\n", __FILE__, __LINE__, i, _rep_(this->_Parameters->gethash(this->_Terms[i]->getType())).c_str());
-#endif
   }
   this->Base::Base::forceFieldMerge(other);
-  for ( size_t i(0), iEnd(this->_Terms.size()); i<iEnd; ++i ) {
-    printf("%s:%d  _Parameters  this->_Terms[%lu]->getType() = %s\n", __FILE__, __LINE__, i, _rep_(this->_Parameters->gethash(this->_Terms[i]->getType())).c_str());
-  }
 }
 
 void	FFNonbondDb_O::fields(core::Record_sp node)
