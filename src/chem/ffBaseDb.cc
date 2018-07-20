@@ -110,6 +110,10 @@ void FFParameterBaseDb_O::initialize()
 
 void FFParameterBaseDb_O::forceFieldMerge(FFBaseDb_sp other) {
   // inherited classes may overload this function but they need to call this
+  // EXCEPT for FFNonbondDb_O - it uses _Parameters differently and we don't
+  //        want to mess up what it does by stomping on this->_Parameters the way we
+  //        are here.  FFNonbondDb_O will skip over this forceFieldMerge method and
+  //        try to call this->Base::Base::forceFieldMerge(other);
   FFParameterBaseDb_sp parm_other = gc::As<FFParameterBaseDb_sp>(other);
   parm_other->_Parameters->maphash([this] (core::T_sp key, core::T_sp parm) {
       this->_Parameters->setf_gethash(key,parm);
