@@ -163,7 +163,7 @@ core::List_sp OMatrix_O::encode() {
   for ( size_t i(0); i<16; ++i ) {
     v->rowMajorAset(i,core::clasp_make_double_float(this->_Value[i]));
   }
-  return core::Cons_O::create(core::Cons_O::create(INTERN_(kw,m),v));
+  return core::Cons_O::create(core::Cons_O::create(INTERN_(kw,m),v),_Nil<core::T_O>());
 }
 
 void OMatrix_O::decode(core::List_sp c) {

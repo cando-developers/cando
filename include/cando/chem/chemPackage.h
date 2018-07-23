@@ -45,8 +45,6 @@ NAMESPACE_PACKAGE_ASSOCIATION(chem,ChemPkg,"CHEM");
 namespace chem
 {
 
-    extern const char* Chem_nicknames[];
-
     FORWARD(Matter);
     typedef core::Symbol_sp MatterName;
 
@@ -54,7 +52,7 @@ namespace chem
     {
       LISP_CLASS(chem,ChemPkg,ChemExposer_O,"ChemExposer",core::Exposer_O);
     public:
-    ChemExposer_O(core::Lisp_sp lisp) : Exposer_O(lisp,ChemPkg,Chem_nicknames) {};
+    ChemExposer_O(core::Lisp_sp lisp) : Exposer_O(lisp,ChemPkg) {};
         virtual void expose(core::Lisp_sp lisp, WhatToExpose what) const;
     };
 

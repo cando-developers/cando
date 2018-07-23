@@ -111,7 +111,6 @@ typedef bool _Bool;
 #include <clasp/core/lambdaListHandler.h>
 #include <clasp/core/package.h>
 #include <clasp/core/character.h>
-#include <clasp/core/reader.h>
 #include <clasp/core/readtable.h>
 #include <clasp/core/arrayObjects.h>
 #include <clasp/core/intArray.h>

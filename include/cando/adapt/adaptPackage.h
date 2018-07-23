@@ -34,13 +34,11 @@ namespace adapt
 {
 
 
-    extern const char* Adapt_nicknames[];
-
     class AdaptExposer_O : public core::Exposer_O
     {
       LISP_CLASS(adapt,AdaptPkg,AdaptExposer_O,"AdaptExposer",core::Exposer_O);
     public:
-    AdaptExposer_O(core::Lisp_sp lisp) : Exposer_O(lisp,AdaptPkg,Adapt_nicknames) {};
+    AdaptExposer_O(core::Lisp_sp lisp) : Exposer_O(lisp,AdaptPkg) {};
 	virtual void expose(core::Lisp_sp lisp,WhatToExpose what) const;
     };
 

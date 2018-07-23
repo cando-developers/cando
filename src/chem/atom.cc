@@ -445,7 +445,7 @@ CL_DEFMETHOD uint Atom_O::numberOfOpenValence()
       if ( this->getIonization() != 0 )
       {
         core::Warn(core::Str_O::create("Add support for ~d ionization of carbon"),
-                   core::Cons_O::create(core::clasp_make_fixnum(this->getIonization())));
+                   core::Cons_O::create(core::clasp_make_fixnum(this->getIonization()),_Nil<core::T_O>()));
       }
       maxHydrogens = 4;
       break;
@@ -486,7 +486,7 @@ CL_DEFMETHOD core::List_sp Atom_O::createImplicitHydrogenNames()
 {
   uint addHydrogens = this->numberOfOpenValence();
   string nameSuffix = this->getName()->symbolName()->get().substr(1,9999);
-  core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>());
+  core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
   core::Cons_sp cons = first;
   if ( addHydrogens == 1 )
   {
@@ -1534,7 +1534,7 @@ CL_DEFMETHOD     Atom_sp Atom_O::getNextSpan()
 
 core::List_sp Atom_O::_expandLocalSpanningTree(Atom_sp avoidAtom, Bond_sp incomingBond, uint depth)
 {
-  core::Cons_sp localTree = core::Cons_O::create(incomingBond);
+  core::Cons_sp localTree = core::Cons_O::create(incomingBond,_Nil<core::T_O>());
   if ( depth <= 0 ) return localTree;
   core::List_sp tail = localTree;
   for ( VectorBond::iterator bi=this->bonds.begin(); bi!=this->bonds.end(); bi++ )
@@ -1551,7 +1551,7 @@ core::List_sp Atom_O::_expandLocalSpanningTree(Atom_sp avoidAtom, Bond_sp incomi
 CL_LISPIFY_NAME("localSpanningTree");
 CL_DEFMETHOD     core::List_sp Atom_O::localSpanningTree(uint depth)
 {
-  core::Cons_sp localTree = core::Cons_O::create(this->sharedThis<Atom_O>());
+  core::Cons_sp localTree = core::Cons_O::create(this->sharedThis<Atom_O>(),_Nil<core::T_O>());
   if ( depth <= 0 ) return localTree;
   core::List_sp tail = localTree;
   for ( VectorBond::iterator bi=this->bonds.begin(); bi!=this->bonds.end(); bi++ )

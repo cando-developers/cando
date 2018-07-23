@@ -199,7 +199,7 @@ CL_DEFMETHOD     core::List_sp	Monomer_O::plugNamesAndCouplingsAsList()
   {
     Coupling_sp coupling = (ci->second);
     core::Cons_sp oneOne = core::Cons_O::createList(ci->first,coupling);
-    core::Cons_sp one = core::Cons_O::create(oneOne);
+    core::Cons_sp one = core::Cons_O::create(oneOne,_Nil<core::T_O>());
     cur->setCdr(one);
     cur = one;
   }

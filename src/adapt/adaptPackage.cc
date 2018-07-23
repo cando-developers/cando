@@ -58,7 +58,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/posixTime.h>
 #include <clasp/core/random.h>
 #include <clasp/core/readtable.h>
-#include <clasp/core/reader.h>
 #include <clasp/core/record.h>
 #include <clasp/core/singleDispatchMethod.h>
 #include <clasp/core/smallMap.h>

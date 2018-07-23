@@ -198,17 +198,17 @@ CL_LISPIFY_NAME(make-ChiDihedral);
     
 
 core::List_sp RotamerSetBase_O::asList() const
-    {_OF();
-	core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>());
-	core::Cons_sp cur = first;
-	for ( int i=0; i<(int)this->_Rotamers.size(); i++ )
-	{
-	    core::Cons_sp one = core::Cons_O::create(this->_Rotamers[i]);
-	    cur->setCdr(one);
-	    cur = one;
-	}
-	return oCdr(first);
-    }
+{
+  core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
+  core::Cons_sp cur = first;
+  for ( int i=0; i<(int)this->_Rotamers.size(); i++ )
+  {
+    core::Cons_sp one = core::Cons_O::create(this->_Rotamers[i],_Nil<core::T_O>());
+    cur->setCdr(one);
+    cur = one;
+  }
+  return oCdr(first);
+}
 
 
 
@@ -420,16 +420,16 @@ BackboneDependentRotamerLibrary_sp BackboneDependentRotamerLibrary_O::make(const
     }
 
     core::List_sp BackboneDependentRotamerLibrary_O::rotamerSetsAsList() const
-    {_OF();
-	core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>());
-	core::Cons_sp cur = first;
-	for ( int i=0; i<(int)this->_RotamerSets.size(); i++ )
-	{
-	    core::Cons_sp one = core::Cons_O::create(this->_RotamerSets[i]);
-	    cur->setCdr(one);
-	    cur = one;
-	}
-	return oCdr(first);
+    {
+      core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
+      core::Cons_sp cur = first;
+      for ( int i=0; i<(int)this->_RotamerSets.size(); i++ )
+      {
+        core::Cons_sp one = core::Cons_O::create(this->_RotamerSets[i],_Nil<core::T_O>());
+        cur->setCdr(one);
+        cur = one;
+      }
+      return oCdr(first);
     }
 
 }; /* kinematics */

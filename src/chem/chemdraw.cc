@@ -47,7 +47,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/geom/vector3.h>
 #include <cando/chem/loop.h>
 #include <cando/chem/spanningLoop.h>
-#include <clasp/core/reader.h>
 #include <cando/chem/cipPrioritizer.h>
 #include <cando/chem/constitutionAtoms.h>
 #include <clasp/core/wrappers.h>
@@ -452,7 +451,7 @@ core::Symbol_mv parse_property(const string& propertyValue, CDBond_sp bond, cons
 {
   core::T_sp stream = core::cl__make_string_input_stream(core::Str_O::create(propertyValue),core::clasp_make_fixnum(0),_Nil<core::T_O>());
 //  printf("%s:%d Parsing property string: %s\n", __FILE__, __LINE__, propertyValue.c_str());
-  core::T_sp eof = core::Cons_O::create(_Nil<core::T_O>());
+  core::T_sp eof = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
   core::DynamicScopeManager scope(cl::_sym_STARpackageSTAR,_lisp->findPackage(ChemKwPkg));
   core::T_sp property = core::cl__read(stream,_Nil<core::T_O>(),eof);
   if ( property == eof ) {
