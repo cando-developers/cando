@@ -41,14 +41,6 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace units
 {
-
-
-};
-
-
-
-namespace units
-{
 #if 0
 #define EXPOSE_TO_CANDO
 #define Use_UnitsPkg

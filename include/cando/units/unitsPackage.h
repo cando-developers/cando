@@ -30,9 +30,18 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/lisp.h>
 
 
-
-
+PACKAGE_NICKNAME("U");
 PACKAGE_USE("COMMON-LISP");
+PACKAGE_SHADOW("*");
+PACKAGE_SHADOW("/");
+PACKAGE_SHADOW("+");
+PACKAGE_SHADOW("-");
+PACKAGE_SHADOW("SQRT");
+PACKAGE_SHADOW(">");
+PACKAGE_SHADOW(">");
+PACKAGE_SHADOW(">=");
+PACKAGE_SHADOW("<");
+PACKAGE_SHADOW("<=");
 NAMESPACE_PACKAGE_ASSOCIATION(units,UnitsPkg,"UNITS");
 
 
