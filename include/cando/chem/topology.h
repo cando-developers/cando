@@ -190,7 +190,7 @@ Each Topology is uniquely identified within a CandoDatabase by a TopologyIndex0N
   CL_DEF_CLASS_METHOD static Topology_sp make(core::Symbol_sp name, Constitution_sp constitution, core::List_sp plugs );
     
   CL_LISPIFY_NAME(makeTopologyFromResidue);
-  CL_LAMBDA(residue topology_name &optional constitution);
+  CL_LAMBDA(residue topology-name &optional constitution);
   CL_DOCSTRING("Create a topology from a residue. The constitution may be NIL or a constitution to use to define the atoms");
   CL_DEF_CLASS_METHOD static Topology_mv makeTopologyFromResidue(chem::Residue_sp residue, core::Symbol_sp topologyName, core::T_sp constitution);
  protected:

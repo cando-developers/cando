@@ -1022,7 +1022,7 @@ void ChemDraw_O::fields(core::Record_sp node)
 */
 
 CL_LISPIFY_NAME(make-chem-draw);
-CL_LAMBDA(file_name &optional verbose);
+CL_LAMBDA(file-name &optional verbose);
 CL_DOCSTRING("Make a chem:chem-draw object from a string.  If verbose is T then print info to *standard-output*.");
 CL_DEFUN ChemDraw_sp ChemDraw_O::make(core::T_sp stream, bool verbose)
 {

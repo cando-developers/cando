@@ -145,7 +145,7 @@ void energyFunction_initializeSmarts()
 
 
 
-CL_LAMBDA(matter force_field_system &key use_excluded_atoms active_atoms show_progress (assign_types t));
+CL_LAMBDA(matter force-field-system &key use-excluded-atoms active-atoms show-progress (assign-types t));
 CL_LISPIFY_NAME(make_energy_function);
 CL_DEF_CLASS_METHOD EnergyFunction_sp EnergyFunction_O::make(Matter_sp matter, core::T_sp forceFieldSystem, bool useExcludedAtoms, core::T_sp activeAtoms, bool show_progress, bool assign_types)
 {
@@ -1142,7 +1142,7 @@ SYMBOL_EXPORT_SC_(ChemPkg,lookup_force_field_for_molecule);
 SYMBOL_EXPORT_SC_(ChemPkg,lookup_nonbond_force_field_for_aggregate);
 
 CL_LISPIFY_NAME("defineForMatter");
-CL_LAMBDA((energy_function !) matter system &key use_excluded_atoms active_atoms show_progress (assign_types t));
+CL_LAMBDA((energy-function !) matter system &key use-excluded-atoms active-atoms show-progress (assign-types t));
 CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, core::T_sp system, bool useExcludedAtoms, core::T_sp activeAtoms, bool show_progress, bool assign_types )
 {
   if ( !(matter.isA<Aggregate_O>() || matter.isA<Molecule_O>() ) )
@@ -1176,7 +1176,7 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, core::T_sp
 }
 
 
-CL_LAMBDA((energy_function !) molecule force_field &key active_atoms show_progress);
+CL_LAMBDA((energy-function !) molecule force-field &key active-atoms show-progress);
 CL_DOCSTRING("Generate the standard energy function tables. The atom types, and CIP priorities need to be precalculated.");
 CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_sp molecule, ForceField_sp forceField, core::T_sp activeAtoms, bool show_progress )
 {
@@ -1447,7 +1447,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateNonbondEnergyFunctionTables(bool use
 }
 
 
-CL_LAMBDA((energy_function !) matter force_field &key active_atoms show_progress);
+CL_LAMBDA((energy-function !) matter force-field &key active-atoms show-progress);
 CL_DOCSTRING(R"doc(Generate the restraint energy function tables. The atom types, and CIP priorities need to be precalculated.
 This should be called after generateStandardEnergyFunctionTables.)doc");
 CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter_sp matter, FFNonbondDb_sp ffNonbond, core::T_sp activeAtoms, bool show_progress )

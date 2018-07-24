@@ -136,7 +136,7 @@ namespace chem
   PlugWithMates_O(core::Symbol_sp name, core::List_sp mates, core::Symbol_sp bond0, BondOrder bondOrder0, core::Symbol_sp bond1, BondOrder bondOrder1 ) : Plug_O(name), _B0(bond0), _B1(bond1), _BondOrder0(bondOrder0), _BondOrder1(bondOrder1) {};
   public:
     CL_LISPIFY_NAME("make-plug-with-mates");
-    CL_LAMBDA("name mates bond0 bond_order0 &optional bond1 (bondorder1 :single-bond)");
+    CL_LAMBDA("name mates bond0 bond-order0 &optional bond1 (bondorder1 :single-bond)");
     CL_DEF_CLASS_METHOD static PlugWithMates_sp make( core::Symbol_sp name, core::List_sp mates, core::Symbol_sp bond0, BondOrder bondOrder0, core::Symbol_sp bond1, BondOrder bondOrder1 ) {
       PlugWithMates_sp me = gctools::GC<PlugWithMates_O>::allocate(name,mates,bond0,bondOrder0,bond1,bondOrder1);
       core::fillVec0(mates,me->_Mates);
@@ -186,7 +186,7 @@ namespace chem
   OutPlug_O(core::Symbol_sp name, core::List_sp mates, MatterName stubPivotAtom, core::Symbol_sp bond0, BondOrder bondOrder0, core::Symbol_sp bond1, BondOrder bondOrder1) : PlugWithMates_O(name,mates,bond0,bondOrder0,bond1,bondOrder1), _StubPivotAtom(stubPivotAtom) {};
   public:
     CL_LISPIFY_NAME("make-out-plug");
-    CL_LAMBDA("name mates stub_pivot_atom bond0 bondorder0 &optional bond1 (bondorder1 :single-bond)");
+    CL_LAMBDA("name mates stub-pivot-atom bond0 bondorder0 &optional bond1 (bondorder1 :single-bond)");
     CL_DEF_CLASS_METHOD static OutPlug_sp make(core::Symbol_sp name, core::List_sp mates, MatterName stubPivotAtom, core::Symbol_sp bond0, BondOrder bondOrder0, core::Symbol_sp bond1, BondOrder bondOrder1) {
       GC_ALLOCATE_VARIADIC(OutPlug_O, me, name, mates, stubPivotAtom, bond0, bondOrder0, bond1, bondOrder1);
       return me;
