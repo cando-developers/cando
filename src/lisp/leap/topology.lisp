@@ -387,11 +387,11 @@ then don't calculate 1,4 interactions"
             for i2x = (aref i2-vector x)
             for i3x = (aref i3-vector x)
             for i4x = (aref i4-vector x)
-            do (when (or (= ix3 0) (= ix4 0))
-                 (psetf (aref i1-vector x) ix4
-                        (aref i2-vector x) ix3
-                        (aref i3-vector x) ix2
-                        (aref i4-vector x) ix1)))
+            do (when (or (= i3x 0) (= i4x 0))
+                 (psetf (aref i1-vector x) i4x
+                        (aref i2-vector x) i3x
+                        (aref i3-vector x) i2x
+                        (aref i4-vector x) i1x)))
       ;; Modify i1-vector, i2-vector, i3-vector, i4-vector to indicate
       ;; whether 1-4 interaction should be suppressed and  (i3-vector value is negated)
       ;; whether the dihedral is improper or not  (i4-vector value is negated)
@@ -678,7 +678,7 @@ then don't calculate 1,4 interactions"
     (values residue-count molecule-count)
     ))
 
-(defun save-amber-parm-(aggregate topology-pathname coordinate-pathname &key system assign-types)
+(defun save-amber-parm-format (aggregate topology-pathname coordinate-pathname &key system assign-types)
   (let* ((energy-function (chem:make-energy-function aggregate system
                                                      :use-excluded-atoms t
                                                      :assign-types assign-types))
