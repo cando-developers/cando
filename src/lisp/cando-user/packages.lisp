@@ -33,6 +33,7 @@
         #:leap.pdb)
   (:export #:start-swank)
   (:export #:cl-jupyter-kernel-start
+           #:jupyterlab-fork-server
            #:show
            #:repr)
   )

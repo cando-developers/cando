@@ -30,7 +30,7 @@
 
 (in-package :common-lisp-user)
 
-(format t "Running start-cando.lisp script~%")
+(format t "I am running start-cando.lisp script - arguments: ~s~%" core:*command-line-arguments*)
 
 ;;; Load the ASDF package manager
 (require :asdf)
