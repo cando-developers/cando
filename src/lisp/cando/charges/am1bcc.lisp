@@ -415,6 +415,20 @@
                  (chem:set-charge atom charge))
                am1-bcc))))
 
+(defun calculate-mopac-am1-bcc-charges (aggregate)
+  "Calculate Am1-Bcc charges (Am1 charges are calculated in mopac) and add the results to the aggregate."
+  (let ((bcc (calculate-bcc-corrections aggregate))
+        (order (charges:write-mopac-calculation (open "/tmp/mopac.mop" :direction :output) aggregate)))
+    (ext:vfork-execvp (list "/opt/mopac/MOPAC2016.exe"
+                            "/tmp/mopac.mop"))
+    (unless (probe-file "/tmp/mopac.out")
+      (error "The AM1 charge calculation using the mopac program did not generate mopac.out - did mopac run?"))
+    (let* ((am1 (charges:read-mopac-am1-charges "/tmp/mopac.out" order))
+           (am1-bcc (combine-am1-bcc-charges am1 bcc)))
+      (maphash (lambda (atom charge)
+                 (chem:set-charge atom charge))
+               am1-bcc))))
+
 
 
 #||
