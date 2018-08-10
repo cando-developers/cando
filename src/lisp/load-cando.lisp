@@ -1,6 +1,6 @@
 
 (require :asdf)
-(load "~/quicklisp/setup.lisp")
+(load "quicklisp:setup.lisp")
 (asdf:load-asd (merge-pathnames #P"amber/amber.asd" *load-pathname*))
 (asdf:load-asd (merge-pathnames #P"cando/candoview/candoview.asd" *load-pathname*))
 (asdf:load-asd (merge-pathnames #P"cando/candoview/molview.asd" *load-pathname*))
