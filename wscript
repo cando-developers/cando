@@ -39,10 +39,8 @@ class build_extension(waflib.Task.Task):
     def run(self):
         cmd = [ self.inputs[0].abspath(),
                 "-N",
-                "-l", "source-dir:extensions;cando;src;lisp;build-cando.lisp",
-                "-e", "(asdf:make :build-cando :print t :verbose t)",
-                "-l", "source-dir:extensions;cando;src;lisp;build-cando-jupyter.lisp",
-                "-e", "(asdf:make :build-cando-jupyter :print t :verbose t)",
+                "-l", "source-dir:extensions;cando;src;lisp;load-cando.lisp",
+                "-l", "source-dir:extensions;cando;src;lisp;load-cando-jupyter.lisp",
                 "-e", "(core:quit)" ]
         print("build_extension cmd -> %s" % cmd)
         print("build_extension outputs -> %s" % self.outputs)
