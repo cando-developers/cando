@@ -101,12 +101,7 @@ Set the stereochemistry of a collection of stereocenters using a function that r
 Set the stereochemistry of a collection of stereocenters using a alist of atom names to stereochemistry."
   (loop for (name . config) in atom-name-to-config
      do (let ((atom (chem:first-atom-with-name matter name)))
-          (chem:set-configuration atom config))))
-
-(defun set-stereoisomer-mapping (matter atom-name-to-config)
-  (loop for (name . config) in atom-name-to-config          
-     do (let ((atom (chem:first-atom-with-name matter name)))
-          (format t "Atom name: ~a  atom: ~a config: ~a~%" name atom config)
+          (when show (format t "Atom name: ~a  atom: ~a config: ~a~%" name atom config))
           (chem:set-configuration atom config))))
 
 (defun number-of-stereoisomers (chiral-atoms)

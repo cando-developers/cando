@@ -125,10 +125,6 @@
   (cando:set-stereoisomer-func list-of-centers (constantly config) :show show)
   (format t "~a stereocenters set~%" (length list-of-centers)))
 
-(defun calculate-all-stereochemistry (vector-of-centers)
-  (dotimes (i (length vector-of-centers))
-    (format t "Center: ~a  config: ~a~%" (elt vector-of-centers i) (chem:calculate-stereochemical-configuration (elt vector-of-centers i)))))
-
 ;;; Return the number of stereoisomers 
 (defun number-of-stereoisomers (vector-of-centers)
   (expt 2 (length vector-of-centers)))
