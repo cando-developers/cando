@@ -1,6 +1,6 @@
 (in-package :asdf-user)
 
-(defsystem "cando"
+(defsystem "cando-jupyter"
   :description "The CANDO compiler front end jupyter interface"
   :version "0.0.1"
   :author "Christian Schafmeister <chris.schaf@verizon.net>"
