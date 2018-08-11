@@ -34,6 +34,7 @@
 
 ;;; Load the ASDF package manager
 (require :asdf)
+(format t "Loaded asdf version ~s~%" (asdf/upgrade:asdf-version))
 
 (defun all-subdirs (dir)
   (let (dirs)

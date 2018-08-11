@@ -15,6 +15,7 @@
   :serial t
   :components
   ((:file "packages")
+   (:file "basic")
    (:file "print-read")
    (:file "conditions")
    (:file "chemistry")
@@ -35,7 +36,6 @@
    (:file "energy")
    (:file "matter-hierarchy")
    (:file "psf-files")
-   (:file "nglview")
 ;;;     (:file "remove-overlaps")
 ;;;     (:file "matter")
 ;;;     (:file "antique")

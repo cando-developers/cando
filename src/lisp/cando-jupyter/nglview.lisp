@@ -1,5 +1,5 @@
 
-(in-package :cando)
+(in-package :cando-jupyter)
 
 (defun pick-history (widget)
   (funcall (find-symbol "PICK-HISTORY" :NGLV) widget))
@@ -169,9 +169,6 @@
 (defun rotate-z (matter angle-degrees)
   (let ((transform (geom:make-m4-rotate-z (* 0.0174533 angle-degrees))))
     (chem:apply-transform-to-atoms matter transform)))
-
-(defmacro := (a b)
-  `(defparameter ,a ,b))
 
 (defun distance-two-positions (p1 p2)
   (geom:vlength (geom:v- p1 p2)))

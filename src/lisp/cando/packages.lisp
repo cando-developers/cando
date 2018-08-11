@@ -141,6 +141,7 @@
   (:shadowing-import-from :chem "ATOM")
   (:import-from :ext #:chdir #:getcwd)
   (:export
+   #::=
    #:protein
    #:ligand
    #:ion
@@ -194,16 +195,6 @@
    ;;; Stuff for nglview demo
    #:build-hydrogens
    #:atom-map
-   #:named-atom-map
-   #:anchor-named-atom-map
-   #:cartoon-atom-map
-   #:center-on
-   #:rotate-x
-   #:rotate-y
-   #:rotate-z
-   #::=
-   #:distance-two-positions
-   #:picked-atoms
    #:unbuilt-atoms
    #:count-unbuilt-atoms
    #:simple-build-unbuilt-atoms
@@ -215,7 +206,6 @@
    #:do-atoms
    #:remove-molecules
    #:combine
-   #:show-aggregate
    ))
 
 

@@ -25,16 +25,28 @@
 ;; -^-
 (cl:in-package #:common-lisp-user)
 
-(defpackage #:cando-user
-  (:shadowing-import-from :chem "ATOM")
+(defpackage #:cando-jupyter
   (:use #:common-lisp
-        #:cando
-        #:leap
-        #:leap.pdb)
-  (:export #:start-swank)
-  (:export #:cl-jupyter-kernel-start
-           #:show
-           #:repr)
-  )
-
-
+        )
+  (:export
+   #:pick-history
+;;; Stuff for nglview demo
+   #:build-hydrogens
+   #:atom-map
+   #:named-atom-map
+   #:anchor-named-atom-map
+   #:cartoon-atom-map
+   #:set-stereoisomer-using-number
+   #:set-stereoisomer-mapping
+   #:stereocenters-sorted-by-name
+   #:calculate-all-stereochemistry
+   #:center-on
+   #:rotate-x
+   #:rotate-y
+   #:rotate-z
+   #:distance-two-positions
+   #:picked-atoms
+   #:cando-structure
+   #:cando-trajectory
+   #:show-aggregate
+   ))
