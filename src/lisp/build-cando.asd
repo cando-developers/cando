@@ -11,4 +11,4 @@
   :components ()
   :build-operation asdf:monolithic-compile-bundle-op
   :build-pathname #.(merge-pathnames "cando.fasb" (translate-logical-pathname "app-fasl:"))
-  :depends-on ("cando-user"))
+  :depends-on ("cando"))

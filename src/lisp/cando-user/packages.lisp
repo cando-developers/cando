@@ -29,6 +29,7 @@
   (:shadowing-import-from :chem "ATOM")
   (:use #:common-lisp
         #:cando
+        #:cando-jupyter
         #:leap
         #:leap.pdb)
   (:export #:start-swank)

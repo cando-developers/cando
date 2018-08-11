@@ -14,7 +14,7 @@
        (chem:add-matter mol matter)
        (setf matter agg)))
     (t (error "You cannot show a ~a" matter)))
-  (cando:show-aggregate matter))
+  (cando-jupyter:show-aggregate matter))
 
 (defun repr (widget representation &optional (selection "all"))
   (funcall (find-symbol "ADD-REPRESENTATION" :nglv) widget representation :selection selection))
