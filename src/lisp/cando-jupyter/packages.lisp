@@ -38,7 +38,6 @@
    #:cartoon-atom-map
    #:set-stereoisomer-using-number
    #:set-stereoisomer-mapping
-   #:stereocenters-sorted-by-name
    #:calculate-all-stereochemistry
    #:center-on
    #:rotate-x

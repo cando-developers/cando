@@ -153,12 +153,8 @@
    #:from-string
    #:as-string
    #:scramble-positions
-   #:pick-history
    #:jostle
    #:dump-stereocenters
-   #:set-stereoisomer-using-number
-   #:set-stereoisomer-mapping
-   #:stereocenters-sorted-by-name
    #:calculate-all-stereochemistry
    #:set-all-stereocenters-to
    #:gather-stereocenters
@@ -193,8 +189,6 @@
    #:home/
    #:make-topology-from-residue
    ;;; Stuff for nglview demo
-   #:build-hydrogens
-   #:atom-map
    #:unbuilt-atoms
    #:count-unbuilt-atoms
    #:simple-build-unbuilt-atoms

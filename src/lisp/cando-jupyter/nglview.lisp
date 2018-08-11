@@ -120,10 +120,6 @@
      for config = (if (= (logand 1 tnum) 0) :s :r)
      do (format t "~a -> ~a   num: ~a~%" atom config tnum)))
 
-;;; Return a vector of stereocenters sorted by name
-(defun stereocenters-sorted-by-name (matter)
-  (sort (cando:gather-stereocenters matter) #'string< :key #'chem:get-name))
-
 ;;; Set all of the stereocenters to config (:S or :R)
 (defun set-all-stereocenters-to (list-of-centers config &key show)
   (cando:set-stereoisomer-func list-of-centers (constantly config) :show show)
