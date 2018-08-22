@@ -1,5 +1,5 @@
 
-(in-package :cando)
+(in-package :cando-jupyter)
 
 (defun pick-history (widget)
   (funcall (find-symbol "PICK-HISTORY" :NGLV) widget))
@@ -120,18 +120,10 @@
      for config = (if (= (logand 1 tnum) 0) :s :r)
      do (format t "~a -> ~a   num: ~a~%" atom config tnum)))
 
-;;; Return a vector of stereocenters sorted by name
-(defun stereocenters-sorted-by-name (matter)
-  (sort (cando:gather-stereocenters matter) #'string< :key #'chem:get-name))
-
 ;;; Set all of the stereocenters to config (:S or :R)
 (defun set-all-stereocenters-to (list-of-centers config &key show)
   (cando:set-stereoisomer-func list-of-centers (constantly config) :show show)
   (format t "~a stereocenters set~%" (length list-of-centers)))
-
-(defun calculate-all-stereochemistry (vector-of-centers)
-  (dotimes (i (length vector-of-centers))
-    (format t "Center: ~a  config: ~a~%" (elt vector-of-centers i) (chem:calculate-stereochemical-configuration (elt vector-of-centers i)))))
 
 ;;; Return the number of stereoisomers 
 (defun number-of-stereoisomers (vector-of-centers)
@@ -169,9 +161,6 @@
 (defun rotate-z (matter angle-degrees)
   (let ((transform (geom:make-m4-rotate-z (* 0.0174533 angle-degrees))))
     (chem:apply-transform-to-atoms matter transform)))
-
-(defmacro := (a b)
-  `(defparameter ,a ,b))
 
 (defun distance-two-positions (p1 p2)
   (geom:vlength (geom:v- p1 p2)))

@@ -7,7 +7,7 @@
     (if *started-swank*
         (format t "Swank is already running~%")
         (progn
-          (funcall (find-symbol "SAVE-JUPYTER-CELL-STATE" :cl-jupyter-widgets))
+          (funcall (find-symbol "SAVE-JUPYTER-CELL-STATE" :cl-ipywidgets))
           (let* ((slime-home (cond
                                ((and (ext:getenv "SLIME_HOME") (probe-file (pathname (ext:getenv "SLIME_HOME")))))
                                ((probe-file #P"/home/app/slime/"))

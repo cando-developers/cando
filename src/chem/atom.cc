@@ -1320,10 +1320,26 @@ uint Atom_O::maxTotalBondOrder()
 CL_LISPIFY_NAME("totalBondOrder");
 CL_DEFMETHOD     uint Atom_O::totalBondOrder()
 {
+  // If the hybridization is defined - then it was calculated or
+  // set and the bond orders are not reliable - in this case return
+  // what the bond order should be based on hybridization and element.
   if (this->getElement() == element_H) return 1;
-  if (this->getHybridization() == hybridization_sp3) return 4;
-  if (this->getHybridization() == hybridization_sp2) return 3;
-  if (this->getHybridization() == hybridization_sp) return 2;
+  if (this->getHybridization() == hybridization_sp3) {
+    if (this->_Element==element_C) return 4;
+    if (this->_Element==element_N) return 3;
+    if (this->_Element==element_O) return 2;
+    if (this->_Element==element_F) return 1;
+    if (this->_Element==element_Cl) return 1;
+    if (this->_Element==element_Br) return 1;
+    if (this->_Element==element_I) return 1;
+    return 4;
+  }
+  if (this->getHybridization() == hybridization_sp2) {
+    return 3;
+  }
+  if (this->getHybridization() == hybridization_sp) {
+    return 2;
+  }
       // Uncertain hybridization - count bond order
   VectorBond::iterator	b;
   core::List_sp		list;

@@ -141,6 +141,7 @@
   (:shadowing-import-from :chem "ATOM")
   (:import-from :ext #:chdir #:getcwd)
   (:export
+   #::=
    #:protein
    #:ligand
    #:ion
@@ -152,12 +153,8 @@
    #:from-string
    #:as-string
    #:scramble-positions
-   #:pick-history
    #:jostle
    #:dump-stereocenters
-   #:set-stereoisomer-using-number
-   #:set-stereoisomer-mapping
-   #:stereocenters-sorted-by-name
    #:calculate-all-stereochemistry
    #:set-all-stereocenters-to
    #:gather-stereocenters
@@ -192,18 +189,6 @@
    #:home/
    #:make-topology-from-residue
    ;;; Stuff for nglview demo
-   #:build-hydrogens
-   #:atom-map
-   #:named-atom-map
-   #:anchor-named-atom-map
-   #:cartoon-atom-map
-   #:center-on
-   #:rotate-x
-   #:rotate-y
-   #:rotate-z
-   #::=
-   #:distance-two-positions
-   #:picked-atoms
    #:unbuilt-atoms
    #:count-unbuilt-atoms
    #:simple-build-unbuilt-atoms
@@ -215,7 +200,6 @@
    #:do-atoms
    #:remove-molecules
    #:combine
-   #:show-aggregate
    ))
 
 

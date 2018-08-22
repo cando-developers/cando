@@ -30,10 +30,13 @@
 
 (in-package :common-lisp-user)
 
-(format t "I am running start-cando.lisp script - arguments: ~s~%" core:*command-line-arguments*)
+(format t "Starting start-cando.lisp script - arguments: ~s~%" core:*command-line-arguments*)
 
 ;;; Load the ASDF package manager
-(require :asdf)
+(progn
+  (format t "Loading asdf~%")
+  (require :asdf))
+(format t "Loaded asdf version ~s~%" (asdf/upgrade:asdf-version))
 
 (defun all-subdirs (dir)
   (let (dirs)
@@ -70,27 +73,19 @@
         (list (list "**;*.*" (concatenate 'string amber-home "/**/*.*"))))
   (format t "Setting *amber-home* -> ~a~%" amber-home))
 
-#+cando-jupyter(load "source-dir:extensions;cando;src;lisp;load-cando-jupyter.lisp")
-
 ;;; Setup or startup the Cando system 
 ;;; If :setup-cando is in *features* then don't load the cando system
-(format t "Starting Cando~%")
-(format t "*features* -> ~a~%" *features*)
-
-;;; The following will set the starting value for
-;;; *package* for to :cando-user for every new thread
-(core:symbol-global-value-set '*package* (find-package :cando-user))
-
-#-cando-jupyter
 (progn
-  (if (member :setup-cando *features*)
-      (progn
-        (format t "Skipping (asdf:loadsystem :cando)~%"))
-      (progn
-        (format t "Loading Cando system.~%")
-        (load "~/quicklisp/setup.lisp")
-        (funcall (find-symbol "QUICKLOAD" :ql) "cando-user")
-        ;; Ensure that all threads start in the :CANDO-USER package
-        (core:symbol-global-value-set '*package* (find-package :cando-user))))
-  #+(or)(core:process-command-line-load-eval-sequence)
-  #+(or)(core::tpl))
+  (format t "Starting Cando~%")
+  (format t "*features* -> ~a~%" *features*))
+
+(progn
+  (format t "Loading quicklisp.~%")
+  (load "quicklisp:setup.lisp"))
+(progn
+  (format t "Loading cando-user system.~%")
+  (funcall (find-symbol "QUICKLOAD" :ql) "cando-user")
+  ;; Ensure that all threads start in the :CANDO-USER package
+  (core:symbol-global-value-set '*package* (find-package :cando-user)))
+
+

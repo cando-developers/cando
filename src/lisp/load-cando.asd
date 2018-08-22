@@ -9,4 +9,4 @@
   :homepage ""
   :serial T
   :components ()
-  :depends-on ("cando-user"))
+  :depends-on ("cando"))
