@@ -1,4 +1,5 @@
-(cl:in-package #:language.smiles.parser)
+;;;(cl:in-package #:language.smiles.parser)
+(in-package :language.smiles.parser)
 
 (defgeneric parse (input builder &key atom-maps?)
   (:documentation

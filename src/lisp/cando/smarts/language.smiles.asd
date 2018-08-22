@@ -1,3 +1,5 @@
+(in-package :asdf-user)
+
 (defsystem "language.smiles"
   :version    (:read-file-form "version-string.sexp")
   :depends-on ("alexandria"

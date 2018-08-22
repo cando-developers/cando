@@ -4,8 +4,12 @@
 ;;;;
 ;;;; Author: Jan Moringen <jmoringe@techfak.uni-bielefeld.de>
 
-(cl:defpackage #:language.smiles.parser
+(cl:in-package #:common-lisp-user)
+
+;;(cl:defpackage #:language.smiles.parser
+(defpackage #:language.smiles.parser
   (:use
+   #:common-lisp
    #:cl
    #:alexandria
    #:esrap)

@@ -9,7 +9,8 @@
 ;;;; See https://en.wikipedia.org/wiki/Simplified_molecular-input_line-entry_system
 ;;;;     http://www.daylight.com/dayhtml/doc/theory/index.html
 
-(cl:in-package #:language.smiles.parser)
+;;;(cl:in-package #:language.smiles.parser)
+(in-package :language.smiles.parser)
 
 (defrule smiles
     (and (? atom) (? chain))

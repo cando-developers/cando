@@ -1,3 +1,5 @@
+(in-package :asdf-user)
+
 (defsystem language.smarts.language-server
   :description "TODO"
   :license     "TODO"

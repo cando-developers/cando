@@ -1,4 +1,5 @@
-(cl:in-package #:language.smarts.parser)
+;;;(cl:in-package #:language.smarts.parser)
+(in-package :language.smarts.parser)
 
 ;;; Symbols
 

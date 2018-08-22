@@ -4,8 +4,12 @@
 ;;;;
 ;;;; Author: Jan Moringen <jmoringe@techfak.uni-bielefeld.de>
 
-(cl:defpackage #:language.smarts.parser
+(cl:in-package #:common-lisp-user)
+
+;;(cl:defpackage #:language.smarts.parser
+(defpackage #:language.smarts.parser
   (:use
+   #:common-lisp
    #:cl
    #:alexandria
    #:esrap)

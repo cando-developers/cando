@@ -1,3 +1,5 @@
+(in-package :asdf-user)
+
 (defsystem "language.smarts"
   :version    (:read-file-form "version-string.sexp")
   :depends-on ("alexandria"

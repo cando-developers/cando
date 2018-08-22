@@ -1,6 +1,6 @@
 (cl:defpackage #:language.smarts.language-server
   (:use
-   #:cl)
+   #:cl))
 
 (cl:in-package #:language.smarts.language-server)
 

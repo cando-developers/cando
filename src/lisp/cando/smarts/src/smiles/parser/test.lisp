@@ -1,4 +1,5 @@
-(cl:in-package #:language.smiles.parser)
+;;;(cl:in-package #:language.smiles.parser)
+(in-package :language.smiles.parser)
 
 (do-external-symbols (s '#:language.smiles.parser)
   (format t "~36A -> ~A~%" s (not (null (esrap:find-rule s)))))

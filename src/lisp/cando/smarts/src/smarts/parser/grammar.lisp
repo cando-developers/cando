@@ -11,7 +11,8 @@
 ;;;;     https://docs.eyesopen.com/toolkits/cpp/oechemtk/SMARTS.html
 ;;;;     http://www.daylight.com/cheminformatics/index.html
 
-(cl:in-package #:language.smarts.parser)
+;;;(cl:in-package #:language.smarts.parser)
+(in-package :language.smarts.parser)
 
 (defrule smarts
     (and (? atom-pattern) (? chain-pattern))
