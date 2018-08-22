@@ -11,5 +11,6 @@
     ((:file "packages")
      (:file "am1bcc")
      (:file "sqm-interface")
+     (:file "mopac-interface")
      ;;     (:file "bcc")
      ))

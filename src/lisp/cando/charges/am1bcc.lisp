@@ -401,7 +401,7 @@
 (defun calculate-am1-bcc-charges (aggregate)
   "Calculate Am1-Bcc charges and add the results to the aggregate."
   (let ((bcc (calculate-bcc-corrections aggregate))
-        (order (charges:write-sqm-calculation (open "/tmp/sqm-input.txt" :direction :output) aggregate :qm-theory :pm6))
+        (order (charges:write-sqm-calculation (open "/tmp/sqm-input.txt" :direction :output) aggregate))
         (output-file-name "/tmp/sqm-output.out"))
     (ext:vfork-execvp (list (namestring (translate-logical-pathname #P"amber:bin;sqm"))
                             "-O"
@@ -415,7 +415,7 @@
                  (chem:set-charge atom charge))
                am1-bcc))))
 
-(defun calculate-mopac-am1-bcc-charges (aggregate)
+(defun calculate-mopac-am1-bcc-charges (aggregate &key (version :2016))
   "Calculate Am1-Bcc charges (Am1 charges are calculated in mopac) and add the results to the aggregate."
   (let ((bcc (calculate-bcc-corrections aggregate))
         (order (charges:write-mopac-calculation (open "/tmp/mopac.mop" :direction :output) aggregate)))
@@ -423,7 +423,7 @@
                             "/tmp/mopac.mop"))
     (unless (probe-file "/tmp/mopac.out")
       (error "The AM1 charge calculation using the mopac program did not generate mopac.out - did mopac run?"))
-    (let* ((am1 (charges:read-mopac-am1-charges "/tmp/mopac.out" order))
+    (let* ((am1 (charges:read-mopac-am1-charges "/tmp/mopac.out" order version))
            (am1-bcc (combine-am1-bcc-charges am1 bcc)))
       (maphash (lambda (atom charge)
                  (chem:set-charge atom charge))
