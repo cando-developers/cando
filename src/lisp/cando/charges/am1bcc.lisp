@@ -62,7 +62,7 @@
     (240172 -0.0603) (240173 0.0192) (240174 0.1171) (240191 -0.2444)
     (250191 -0.1634) (310131 0.0000) (310141 0.2229) (310142 0.2336) (310151 0.0442)
     (310152 0.2152) (310153 0.2093) (310161 0.0083) (310171 0.0375)
-    (310172 0.0014) (310173 0.0699) (310174 0.1712) (310191 0.2010) (410141 0.0000)
+    (310172 0.0014) (310173 0.0699) (310174 0.1712) (310191 -0.2010) (410141 0.0000)
     (410142 0.2762) (410151 -0.1072) (410161 0.0592) (410171 -0.2769)
     (410172 -0.2065) (410173 -0.1309) (410174 0.0181) (410191 -0.1593) (420142 0.0000)
     (420151 -0.3626) (420152 0.0675) (160751 0.2699) (170717 0.0000)
@@ -329,7 +329,8 @@
 	(bond-type (get-bond-type bond))
 	(sign 1.0))
     (if (and type1 type2)
-        (progn
+        (list (+ (* 10000 type1) (* 100 bond-type) type2) sign)
+        #+(or) (progn
           (when ( > type1 type2 )
             (let (sw)
               (setq sw a1) (setq a1 a2) (setq a2 sw)
@@ -344,6 +345,7 @@
          (bcc-correction 0.0)
          (key (car key-sign))
          (sign (cadr key-sign)))
+    (format t "key ~a~%" key)
     (if key
         (progn
           (loop for pair in *am1-bcc-raw-data*
@@ -366,12 +368,28 @@
     (chem:map-atoms
      nil
      (lambda (a)
-       (let ((atom-correction 0.0))
+;;       (let ((atom-correction 0.0))
 	 (loop for b in (chem:bonds-as-list a)
-	    do (let* ((other (chem:get-other-atom b a))
+               do (let* ((previous-atom-correction 0.0)
+                         (previous-atom-correction-other 0.0)
+                         (atom-correction 0.0)
+                         (atom-correction-other 0.0)
+                         (other (chem:get-other-atom b a))
 		      (bond-correction (lookup-am1-bcc-correction a b other)))
-		 (setq atom-correction (+ atom-correction bond-correction))))
-	 (setf (gethash a correction-map) atom-correction)))
+                 (if (gethash a correction-map)
+                     (setf previous-atom-correction (gethash a correction-map)))
+                 (if (gethash other correction-map)
+                     (setf previous-atom-correction-other (gethash other correction-map))) 
+                 (format t "1 atom a ~a bcc ~a atom b ~a bcc ~a parm ~a~%"
+                         (chem:get-name a) (gethash a correction-map) 
+                         (chem:get-name other) (gethash other correction-map) bond-correction)
+		 (setq atom-correction (+ previous-atom-correction bond-correction))
+                 (setq atom-correction-other (- previous-atom-correction-other bond-correction)) 
+                 (setf (gethash a correction-map) atom-correction)
+                 (setf (gethash other correction-map) atom-correction-other)
+                 (format t "2 atom a ~a bcc ~a atom b ~a bcc ~a~%"
+                         (chem:get-name a) (gethash a correction-map)
+                         (chem:get-name other) (gethash other correction-map)))))
      mol)
 ;;    (loop for a in (all-atoms-as-cons mol nil)
 ;;	 do (let ((atom-correction 0.0))
