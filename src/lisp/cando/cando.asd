@@ -10,7 +10,6 @@
                         :parser.common-rules
                :parser.common-rules.operators
                         :architecture.builder-protocol
-               :cl-nglview
                         )
   :serial t
   :components
