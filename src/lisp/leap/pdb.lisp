@@ -522,7 +522,6 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
                    (setf (current-residue-number reader) res-seq
                          (current-i-code reader) i-code)
                    (let ((pdb-residue (pop-sequence-pdb-residue reader nil nil)))
-                     (format t "popped residue: ~a~%" pdb-residue)
                      (unless pdb-residue
                        (setf (molecule reader) (chem:make-molecule nil))
                        (format t "Starting a new molecule~%")
