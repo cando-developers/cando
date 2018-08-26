@@ -46,31 +46,44 @@
          
 ;;; xstart,ystart,zstart is the CENTER of the first solvent box that goes at the max XYZ corner.
 ;;; ix,iy,iz is the number of solvent boxes
-(defun tool-add-all-boxes (solute test-function solvent ix iy iz xstart ystart zstart xsolvent ysolvent zsolvent)
+(defun tool-add-all-boxes (solute test-function solvent ix iy iz xstart ystart zstart xsolvent ysolvent zsolvent &key verbose)
+  (let* ((solvent-count (* (chem:content-size solvent) ix iy iz))
+         (progress-bar (cando:make-progress-bar :style :bar
+                                                :divisions 100
+                                                :total solvent-count
+                                                :bar-character #\*))
+         (counter 0))
+    (format t "There are ~d solvent molecules and ~d solute atoms~%" solvent-count (chem:number-of-atoms solute))
+    (finish-output)
     (loop for i from 0 below ix
-       for dx = xstart then (- dx xsolvent)
-       do (loop for j from 0 below iy
-             for dy = ystart then (- dy ysolvent)
-             do (loop for k from 0 below iz
-                   for dz = zstart then (- dz zsolvent)
-                   for translate-solvent = (geom:vec dx dy dz)
-                   for solvent-copy = (chem:matter-copy solvent)
-                   for solvent-transform = (geom:make-m4-translate translate-solvent)
-                   do (chem:apply-transform-to-atoms solvent-copy solvent-transform)
-                   ;; Copy only solvent molecules that fit criteria
-                   do (chem:map-molecules
-                       nil
-                       (lambda (solvent-mol)
-                         ;; Check if solvent-mol satisfies criterion - if it does - add it to the solute
-                         (when (funcall test-function solvent-mol)
-                           (chem:add-matter solute solvent-mol))
-                         )
-                       solvent-copy)))))
+          for dx = xstart then (- dx xsolvent)
+          do (loop for j from 0 below iy
+                   for dy = ystart then (- dy ysolvent)
+                   do (loop for k from 0 below iz
+                            for dz = zstart then (- dz zsolvent)
+                            for translate-solvent = (geom:vec dx dy dz)
+                            for solvent-copy = (chem:matter-copy solvent)
+                            for solvent-transform = (geom:make-m4-translate translate-solvent)
+                            do (chem:apply-transform-to-atoms solvent-copy solvent-transform)
+                               ;; Copy only solvent molecules that fit criteria
+                            do (chem:map-molecules
+                                nil
+                                (lambda (solvent-mol)
+                                  ;; Check if solvent-mol satisfies criterion - if it does - add it to the solute
+                                  #+(or)(when (= (floor (mod counter 100)) 0)
+                                          (format t "Counter = ~d~%" counter)
+                                          (finish-output))
+                                  (incf counter)
+                                  (cando:progress-advance progress-bar counter)
+                                  (when (funcall test-function solvent-mol)
+                                    (chem:add-matter solute solvent-mol)))
+                                solvent-copy))))
+    (cando:progress-done progress-bar)))
 
 
 ;;Closeness controls how close solvent can get to solute before they are considered to be overlapping.
 ;;Farness defines shell's range.
-(defun tool-solvate-and-shell (solute solvent width-list &key (closeness 0.0) (farness 10.0) shell oct isotropic verbose)
+(defun tool-solvate-and-shell (solute solvent width-list &key (closeness 0.0) (farness 10.0) shell oct isotropic (verbose t))
   (check-type width-list list)
   (let* ((solvent-box (chem:matter-get-property solvent :bounding-box))
          (solvent-x-width (first solvent-box))
@@ -100,13 +113,13 @@
                 ywidth widthmax
                 zwidth widthmax
                 widthtemp (/ (- (* widthmax widthmax widthmax) widthtemp) widthtemp))
-          (format t "Total bounding box for atom centers:  ~a ~a ~a~%" xwidth ywidth zwidth)
+          (format t "Total bounding box for atom centers:  ~6,2f ~6,2f ~6,2f~%" xwidth ywidth zwidth)
           (format t "(box expansion for 'iso' is ~a )~%" (* 100.0 widthtemp))
           (setf widthtemp (max solute-x-width solute-y-width solute-z-width)
                 solute-x-width widthtemp
                 solute-y-width widthtemp
                 solute-z-width widthtemp))
-        (format t "Total bounding box for atom centers:  ~a ~a ~a~%" xwidth ywidth zwidth))
+        (format t "Total bounding box for atom centers:  ~6,2f ~6,2f ~6,2f~%" xwidth ywidth zwidth))
     (setf 
      ix (+ (truncate (/ xwidth solvent-x-width)) 1)
      iy (+ (truncate (/ ywidth solvent-y-width)) 1)
@@ -114,8 +127,6 @@
      xstart (* 0.5 solvent-x-width (- ix 1))
      ystart (* 0.5 solvent-y-width (- iy 1))
      zstart (* 0.5 solvent-z-width (- iz 1)))
-    (when verbose
-      (format t "xwidth ~a ywidth ~a zwidth ~a ix ~a iy ~a iz ~a xstart ~a ystart ~a zstart ~a~%" xwidth ywidth zwidth ix iy iz xstart ystart zstart))
     (let ((test-function (lambda (solvent-molecule)
                            (and (overlap-solvent solute-xvec solute-yvec solute-zvec solvent-molecule atom-max-r)
                                 (if oct
@@ -123,7 +134,7 @@
                                     (if shell
                                         (invalid-solvent-shell solute-xvec solute-yvec solute-zvec solvent-molecule farness)
                                         (invalid-solvent-rectangular xwidth ywidth zwidth solvent-molecule)))))))
-      (tool-add-all-boxes solute test-function solvent ix iy iz xstart ystart zstart solvent-x-width solvent-y-width solvent-z-width)
+      (tool-add-all-boxes solute test-function solvent ix iy iz xstart ystart zstart solvent-x-width solvent-y-width solvent-z-width :verbose verbose)
       solute)
     (unless shell
       (chem:set-property solute :bounding-box (list xwidth ywidth zwidth)))))
