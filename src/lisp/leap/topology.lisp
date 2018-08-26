@@ -246,43 +246,43 @@ Return (values compressed-atom-name-map max-atom-name-length). "
      :keyword)))
 
 (defun collapse-dihedral-parameters (v-vec in-vec phase-vec proper-vec atom1-vec atom2-vec atom3-vec atom4-vec)
-  (let ((j-vec (make-array 256 :fill-pointer 0 :adjustable t))
+  (let ((j-vec (make-array (length v-vec) :fill-pointer 0))
         (jnext 0)
         jtemp
-        (uniques (make-hash-table :test #'eq))
+        (uniques (make-hash-table :test #'equal))
         (vj-vec (make-array 256 :element-type 'double-float :fill-pointer 0 :adjustable t))
         (inj-vec (make-array 256 :element-type '(integer 1 6) :fill-pointer 0 :adjustable t))
         (phasej-vec (make-array 256 :element-type 'double-float :fill-pointer 0 :adjustable t))
         (properj-vec (make-array 256 :fill-pointer 0 :adjustable t)))
     (loop for i from 0 below (length v-vec)
-       for atom1 = (aref atom1-vec i)
-       for atom2 = (aref atom2-vec i)
-       for atom3 = (aref atom3-vec i)
-       for atom4 = (aref atom4-vec i)
-       for type1 = (chem:get-type atom1)
-       for type2 = (chem:get-type atom2)
-       for type3 = (chem:get-type atom3)
-       for type4 = (chem:get-type atom4)
-;       for in = (aref in-vec i)
-       for proper = (aref proper-vec i)
-;       for key = (if proper
-;                     (canonical-dihedral-key type1 type2 type3 type4 in)
-;                     (canonical-improper-key atom1 atom2 atom3 atom4))
-       for vi = (aref v-vec i)
-       for ini = (aref in-vec i)
-       for phasei = (aref phase-vec i)
-       for key = (intern (format nil "~15f-~d-~f" vi ini phasei) :keyword) 
+          for atom1 = (aref atom1-vec i)
+          for atom2 = (aref atom2-vec i)
+          for atom3 = (aref atom3-vec i)
+          for atom4 = (aref atom4-vec i)
+          for type1 = (chem:get-type atom1)
+          for type2 = (chem:get-type atom2)
+          for type3 = (chem:get-type atom3)
+          for type4 = (chem:get-type atom4)
+                                        ;       for in = (aref in-vec i)
+          for proper = (aref proper-vec i)
+                                        ;       for key = (if proper
+                                        ;                     (canonical-dihedral-key type1 type2 type3 type4 in)
+                                        ;                     (canonical-improper-key atom1 atom2 atom3 atom4))
+          for vi = (aref v-vec i)
+          for ini = (aref in-vec i)
+          for phasei = (aref phase-vec i)
+          for key = (list vi ini phasei)
 ;;;       do (format t "atom1: ~a atom2: ~a atom3: ~a atom4 ~a key: ~a vi: ~a ini ~a phase ~a~% " atom1 atom2 atom3 atom4 key vi ini phasei)
-       do (if (setf jtemp (gethash key uniques))
-              (vector-push-extend jtemp j-vec)
-              (progn
-                (setf (gethash key uniques) jnext)
-                (vector-push-extend jnext j-vec)
-                (vector-push-extend vi vj-vec)
-                (vector-push-extend ini inj-vec)
-                (vector-push-extend phasei phasej-vec)
-                (vector-push-extend proper properj-vec)
-                (incf jnext))))
+          do (if (setf jtemp (gethash key uniques))
+                 (vector-push jtemp j-vec)
+                 (progn
+                   (vector-push jnext j-vec)
+                   (setf (gethash key uniques) jnext)
+                   (vector-push-extend vi vj-vec)
+                   (vector-push-extend ini inj-vec)
+                   (vector-push-extend phasei phasej-vec)
+                   (vector-push-extend proper properj-vec)
+                   (incf jnext))))
     (values j-vec vj-vec inj-vec phasej-vec properj-vec)))
 
 (defun dihedral-sort-order (x y pv iv jv kv lv nv)
@@ -344,12 +344,14 @@ Return (values compressed-atom-name-map max-atom-name-length). "
              (dihedral-sort-order x y pv iv jv kv lv nv)))
       (stable-sort indices #'order))))
 
-(Defun prepare-amber-energy-dihedral (energy-function ib jb it kt)
+(defun prepare-amber-energy-dihedral (energy-function ib jb it kt)
   "Prepare the amber energy dihedral.  
 Use the ib,jb (the atoms of bonds without hydrogen) and
 it,kt (the terminal atoms of angles without hydrogen) and
 if the terminal atoms of a proper dihedral are in one of those two lists
 then don't calculate 1,4 interactions"
+  (format t "Starting prepare-amber-energy-dihedral~%")
+  (finish-output)
   (let* ((energy-dihedral (chem:get-dihedral-component energy-function))
          (dihedral-vectors (chem:extract-vectors-as-alist energy-dihedral))
          (v-vector (cdr (assoc :v dihedral-vectors)))
@@ -381,6 +383,8 @@ then don't calculate 1,4 interactions"
     (let (proper-prev i1prev i2prev i3prev i4prev)
       ;; If i3x or i4x are zero - then they can not be negated
       ;; we have to flip the dihedral order to ensure this does not happen
+      (format t "Ordering i1,i2,i3,i4 prepare-amber-energy-dihedral~%")
+      (finish-output)
       (loop for x below (length v-vector)
             for properx = (aref proper-vector x)
             for i1x = (aref i1-vector x)
@@ -395,51 +399,70 @@ then don't calculate 1,4 interactions"
       ;; Modify i1-vector, i2-vector, i3-vector, i4-vector to indicate
       ;; whether 1-4 interaction should be suppressed and  (i3-vector value is negated)
       ;; whether the dihedral is improper or not  (i4-vector value is negated)
-      (flet ((in-same-bond-or-angle (i1x i4x ib jb it kt)
-               ;; Return T if i1x,i4x are in a bond
-               (loop for bond-index below (length ib)
-                     for ib-index = (aref ib bond-index)
-                     for jb-index = (aref jb bond-index)
-                     when (or (and (= ib-index i1x) (= jb-index i4x))
-                              (and (= ib-index i4x) (= jb-index i1x)))
-                       do (return-from in-same-bond-or-angle t))
-               ;; Return T if i1x,i4x are in an angle
-               (loop for angle-index below (length it)
-                     for it-index = (aref it angle-index)
-                     for kt-index = (aref kt angle-index)
-                     when (or (and (= it-index i1x) (= kt-index i4x))
-                              (and (= it-index i4x) (= kt-index i1x)))
-                       do (return-from in-same-bond-or-angle t))
-               nil))
-        (loop for x below (length v-vector)
-              for properx = (aref proper-vector x)
-              for i1x = (aref i1-vector x)
-              for i2x = (aref i2-vector x)
-              for i3x = (aref i3-vector x)
-              for i4x = (aref i4-vector x)
-              do (cond
-                   ((and properx
-                         proper-prev
-                         (eq i1x i1prev)
-                         (eq i2x i2prev)
-                         (eq i3x i3prev)
-                         (eq i4x i4prev))
-                    (setf (aref i3-vector x) (- i3x)))
-                   (properx
-                    (when (in-same-bond-or-angle i1x i4x ib jb it kt)
-                      (setf (aref i3-vector x) (- i3x))))
-                   (t                   ; It's an improper
-                    (setf (aref i3-vector x) (- i3x)
-                          (aref i4-vector x) (- i4x))))
-                 (setf proper-prev properx
-                       i1prev i1x
-                       i2prev i2x
-                       i3prev i3x
-                       i4prev i4x)))
+      (format t "1-4 interactions prepare-amber-energy-dihedral~%")
+      (finish-output)
+      (let ((in-bond-or-angle (make-hash-table :test #'equal)))
+        (progn
+          (loop for bond-index below (length ib)
+                for ib-index = (aref ib bond-index)
+                for jb-index = (aref jb bond-index)
+                do (setf (gethash (cons ib-index jb-index) in-bond-or-angle) t)
+                   (setf (gethash (cons jb-index ib-index) in-bond-or-angle) t))
+          (loop for angle-index below (length it)
+                for it-index = (aref it angle-index)
+                for kt-index = (aref kt angle-index)
+                do (setf (gethash (cons it-index kt-index) in-bond-or-angle) t)
+                   (setf (gethash (cons kt-index it-index) in-bond-or-angle) t)))
+        (flet ((in-same-bond-or-angle (i1x i4x ib jb it kt)
+                 ;; Return T if i1x,i4x are in a bond
+                 ;; Use hash table
+                 (gethash (cons i1x i4x) in-bond-or-angle)
+                 #+(or)(progn
+                   (loop for bond-index below (length ib)
+                         for ib-index = (aref ib bond-index)
+                         for jb-index = (aref jb bond-index)
+                         when (or (and (= ib-index i1x) (= jb-index i4x))
+                                  (and (= ib-index i4x) (= jb-index i1x)))
+                           do (return-from in-same-bond-or-angle t))
+                   ;; Return T if i1x,i4x are in an angle
+                   (loop for angle-index below (length it)
+                         for it-index = (aref it angle-index)
+                         for kt-index = (aref kt angle-index)
+                         when (or (and (= it-index i1x) (= kt-index i4x))
+                                  (and (= it-index i4x) (= kt-index i1x)))
+                           do (return-from in-same-bond-or-angle t)))
+                 nil))
+          (loop for x below (length v-vector)
+                for properx = (aref proper-vector x)
+                for i1x = (aref i1-vector x)
+                for i2x = (aref i2-vector x)
+                for i3x = (aref i3-vector x)
+                for i4x = (aref i4-vector x)
+                do (cond
+                     ((and properx
+                           proper-prev
+                           (eq i1x i1prev)
+                           (eq i2x i2prev)
+                           (eq i3x i3prev)
+                           (eq i4x i4prev))
+                      (setf (aref i3-vector x) (- i3x)))
+                     (properx
+                      (when (in-same-bond-or-angle i1x i4x ib jb it kt)
+                        (setf (aref i3-vector x) (- i3x))))
+                     (t                 ; It's an improper
+                      (setf (aref i3-vector x) (- i3x)
+                            (aref i4-vector x) (- i4x))))
+                   (setf proper-prev properx
+                         i1prev i1x
+                         i2prev i2x
+                         i3prev i3x
+                         i4prev i4x))))
       (multiple-value-bind (j-vec vj-vec inj-vec phasej-vec properj-vec)
           (collapse-dihedral-parameters v-vector in-vector phase-vector proper-vector atom1-vector atom2-vector atom3-vector atom4-vector)
         (let ((with-h 0)
               (without-h 0))
+          (format t "Counting w and w/o water prepare-amber-energy-dihedral~%")
+          (finish-output)
           (loop for i from 0 below (length v-vector)
                 for atom1 = (aref atom1-vector i)
                 for atom2 = (aref atom2-vector i)
@@ -463,6 +486,8 @@ then don't calculate 1,4 interactions"
                 (icp (make-array without-h :element-type '(signed-byte 32)))
                 (curh 0)
                 (cur 0))
+            (format t "Extracting prepare-amber-energy-dihedral~%")
+            (finish-output)
             (loop for i from 0 below (length v-vector)
                   for v = (aref v-vector i)
                   for in = (aref in-vector i)
@@ -492,7 +517,10 @@ then don't calculate 1,4 interactions"
                            (setf (aref lp cur) i4)
                            (setf (aref icp cur) (+ (aref j-vec i) 1))
                            (incf cur))))
-            (values with-h without-h iph jph kph lph icph ip jp kp lp icp vj-vec inj-vec phasej-vec properj-vec)))))))
+            (values with-h without-h iph jph kph lph icph ip jp kp lp icp vj-vec inj-vec phasej-vec properj-vec))))))
+  (format t "Finishing prepare-amber-energy-dihedral~%")
+  (finish-output)
+  )
 
 (defun canonical-nonbond-key (type1 type2)
   (declare (symbol type1 type2))
@@ -679,7 +707,11 @@ then don't calculate 1,4 interactions"
     ))
 
 (defun save-amber-parm-format (aggregate topology-pathname coordinate-pathname &key system assign-types)
-  (let* ((energy-function (chem:make-energy-function aggregate system
+  (format t "Constructing energy function~%")
+  (finish-output)
+  (let* ((bar (cando:make-progress-bar :style :bar :message "Saving" :total 41 :width 41 :divisions 41))
+         (bar-counter 0)
+         (energy-function (chem:make-energy-function aggregate system
                                                      :use-excluded-atoms t
                                                      :assign-types assign-types))
          (nonbonds (chem:get-nonbond-component energy-function))
@@ -781,6 +813,7 @@ then don't calculate 1,4 interactions"
         ;; --- Done calculating all of the values
         ;; --- Now write out all of the values
         (fortran:fformat 1 "%-80s")
+        (cando:progress-advance bar (incf bar-counter))
         (fortran:fwrite "%FLAG POINTERS")
         (fortran:fwrite "%FORMAT(10I8)")
         (fortran:debug "-2-")
@@ -822,6 +855,7 @@ then don't calculate 1,4 interactions"
 
         ;; Next) 
         (fortran:fformat 1 "%-80s")
+        (cando:progress-advance bar (incf bar-counter))
         (fortran:fwrite "%FLAG ATOM_NAME")
         (fortran:fwrite "%FORMAT(20a4)")
         (fortran:debug "-3-")
@@ -838,6 +872,7 @@ then don't calculate 1,4 interactions"
 
         ;; Next
         (fortran:fformat 1 "%-80s")
+        (cando:progress-advance bar (incf bar-counter))
         (fortran:fwrite "%FLAG CHARGE")
         (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-4-")
@@ -849,6 +884,7 @@ then don't calculate 1,4 interactions"
 
         ;; Next
         (fortran:fformat 1 "%-80s")
+        (cando:progress-advance bar (incf bar-counter))
         (fortran:fwrite "%FLAG ATOMIC_NUMBER")
         (fortran:fwrite "%FORMAT(10I8)")
         (fortran:debug "-5-")
@@ -860,6 +896,7 @@ then don't calculate 1,4 interactions"
 
         ;; Next
         (fortran:fformat 1 "%-80s")
+        (cando:progress-advance bar (incf bar-counter))
         (fortran:fwrite "%FLAG MASS")
         (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-6-")
@@ -871,6 +908,7 @@ then don't calculate 1,4 interactions"
 
         ;; Next
         (fortran:fformat 1 "%-80s")
+        (cando:progress-advance bar (incf bar-counter))
         (fortran:fwrite "%FLAG ATOM_TYPE_INDEX")
         (fortran:fwrite "%FORMAT(10I8)")
         (fortran:debug "-7-")
@@ -882,6 +920,7 @@ then don't calculate 1,4 interactions"
 
         ;; Next
         (fortran:fformat 1 "%-80s")
+        (cando:progress-advance bar (incf bar-counter))
         (fortran:fwrite "%FLAG NUMBER_EXCLUDED_ATOMS")
         (fortran:end-line)
         (fortran:fwrite "%FORMAT(10I8)")
@@ -894,6 +933,7 @@ then don't calculate 1,4 interactions"
 
         ;; Next
         (fortran:fformat 1 "%-80s")
+        (cando:progress-advance bar (incf bar-counter))
         (fortran:fwrite "%FLAG NONBONDED_PARM_INDEX")
         (fortran:fwrite "%FORMAT(10I8)")
         (fortran:debug "-9-")
@@ -905,6 +945,7 @@ then don't calculate 1,4 interactions"
 
         ;; Next
         (fortran:fformat 1 "%-80s")
+        (cando:progress-advance bar (incf bar-counter))
         (fortran:fwrite "%FLAG RESIDUE_LABEL")
         (fortran:fwrite "%FORMAT(20A4)")
         (fortran:debug "-10-")
@@ -916,6 +957,7 @@ then don't calculate 1,4 interactions"
 
         ;; Next
         (fortran:fformat 1 "%-80s")
+        (cando:progress-advance bar (incf bar-counter))
         (fortran:fwrite "%FLAG RESIDUE_POINTER")
         (fortran:fwrite "%FORMAT(10I8)")
         (fortran:debug "-11-")
@@ -927,6 +969,7 @@ then don't calculate 1,4 interactions"
 
         ;; Next
         (fortran:fformat 1 "%-80s")
+        (cando:progress-advance bar (incf bar-counter))
         (fortran:fwrite "%FLAG BOND_FORCE_CONSTANT")
         (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-12-")
@@ -939,6 +982,7 @@ then don't calculate 1,4 interactions"
 
         ;; Next
         (fortran:fformat 1 "%-80s")
+        (cando:progress-advance bar (incf bar-counter))
         (fortran:fwrite "%FLAG BOND_EQUIL_VALUE")
         (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-13-")
@@ -950,6 +994,7 @@ then don't calculate 1,4 interactions"
 
         ;; Next
         (fortran:fformat 1 "%-80s")
+        (cando:progress-advance bar (incf bar-counter))
         (fortran:fwrite "%FLAG ANGLE_FORCE_CONSTANT")
         (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-14-")
@@ -961,6 +1006,7 @@ then don't calculate 1,4 interactions"
 
         ;; Next
         (fortran:fformat 1 "%-80s")
+        (cando:progress-advance bar (incf bar-counter))
         (fortran:fwrite "%FLAG ANGLE_EQUIL_VALUE")
         (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-15-")
@@ -972,6 +1018,7 @@ then don't calculate 1,4 interactions"
 
         ;; Next
         (fortran:fformat 1 "%-80s")
+        (cando:progress-advance bar (incf bar-counter))
         (fortran:fwrite "%FLAG DIHEDRAL_FORCE_CONSTANT")
         (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-16-")
@@ -983,6 +1030,7 @@ then don't calculate 1,4 interactions"
 
         ;; Next
         (fortran:fformat 1 "%-80s")
+        (cando:progress-advance bar (incf bar-counter))
         (fortran:fwrite "%FLAG DIHEDRAL_PERIODICITY")
         (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-17-")
@@ -994,6 +1042,7 @@ then don't calculate 1,4 interactions"
 
         ;; Next
         (fortran:fformat 1 "%-80s")
+        (cando:progress-advance bar (incf bar-counter))
         (fortran:fwrite "%FLAG DIHEDRAL_PHASE")
         (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-18-")
@@ -1005,32 +1054,35 @@ then don't calculate 1,4 interactions"
 
         ;; Next
         (fortran:fformat 1 "%-80s")
+        (cando:progress-advance bar (incf bar-counter))
         (fortran:fwrite "%FLAG SCEE_SCALE_FACTOR")
         (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-19-")
         (fortran:fformat 5 "%16.8e")
         (loop for pr0 across properj-vec
-           do (if pr0
-                  (fortran:fwrite 1.2)
-                  (fortran:fwrite 0.0)))
+              do (if pr0
+                     (fortran:fwrite 1.2)
+                     (fortran:fwrite 0.0)))
         (fortran:end-line)
         ;; write the 1-4 electrostatic scaling constant
 
         ;; Next
         (fortran:fformat 1 "%-80s")
+        (cando:progress-advance bar (incf bar-counter))
         (fortran:fwrite "%FLAG SCNB_SCALE_FACTOR")
         (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-20-")
         (fortran:fformat 5 "%16.8e")
         (loop for pr0 across properj-vec
-           do (if pr0
-                  (fortran:fwrite 2.0)
-                  (fortran:fwrite 0.0)))
+              do (if pr0
+                     (fortran:fwrite 2.0)
+                     (fortran:fwrite 0.0)))
         (fortran:end-line)
         ;; write the 1-4 vdw scaling constant
 
         ;; Next
         (fortran:fformat 1 "%-80s")
+        (cando:progress-advance bar (incf bar-counter))
         (fortran:fwrite "%FLAG SOLTY")
         (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-21-")
@@ -1042,6 +1094,7 @@ then don't calculate 1,4 interactions"
 
         ;; Next
         (fortran:fformat 1 "%-80s")
+        (cando:progress-advance bar (incf bar-counter))
         (fortran:fwrite "%FLAG LENNARD_JONES_ACOEF")
         (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-22-")
@@ -1053,6 +1106,7 @@ then don't calculate 1,4 interactions"
 
         ;; Next
         (fortran:fformat 1 "%-80s")
+        (cando:progress-advance bar (incf bar-counter))
         (fortran:fwrite "%FLAG LENNARD_JONES_BCOEF")
         (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-23-")
@@ -1064,6 +1118,7 @@ then don't calculate 1,4 interactions"
 
         ;; Next
         (fortran:fformat 1 "%-80s")
+        (cando:progress-advance bar (incf bar-counter))
         (fortran:fwrite "%FLAG BONDS_INC_HYDROGEN")
         (fortran:fwrite "%FORMAT(10I8)")
         (fortran:debug "-24-")
@@ -1081,6 +1136,7 @@ then don't calculate 1,4 interactions"
 
         ;; Next
         (fortran:fformat 1 "%-80s")
+        (cando:progress-advance bar (incf bar-counter))
         (fortran:fwrite "%FLAG BONDS_WITHOUT_HYDROGEN")
         (fortran:fwrite "%FORMAT(10I8)")
         (fortran:debug "-25-")
@@ -1097,6 +1153,7 @@ then don't calculate 1,4 interactions"
 
         ;; Next
         (fortran:fformat 1 "%-80s")
+        (cando:progress-advance bar (incf bar-counter))
         (fortran:fwrite "%FLAG ANGLES_INC_HYDROGEN")
         (fortran:fwrite "%FORMAT(10I8)")
         (fortran:debug "-26-")
@@ -1115,6 +1172,7 @@ then don't calculate 1,4 interactions"
 
         ;; Next
         (fortran:fformat 1 "%-80s")
+        (cando:progress-advance bar (incf bar-counter))
         (fortran:fwrite "%FLAG ANGLES_WITHOUT_HYDROGEN")
         (fortran:fwrite "%FORMAT(10I8)")
         (fortran:debug "-27-")
@@ -1133,6 +1191,7 @@ then don't calculate 1,4 interactions"
 
         ;; Next
         (fortran:fformat 1 "%-80s")
+        (cando:progress-advance bar (incf bar-counter))
         (fortran:fwrite "%FLAG DIHEDRALS_INC_HYDROGEN")
         (fortran:fwrite "%FORMAT(10I8)")
         (fortran:debug "-28-")
@@ -1153,6 +1212,7 @@ then don't calculate 1,4 interactions"
 
         ;; Next
         (fortran:fformat 1 "%-80s")
+        (cando:progress-advance bar (incf bar-counter))
         (fortran:fwrite "%FLAG DIHEDRALS_WITHOUT_HYDROGEN")
         (fortran:fwrite "%FORMAT(10I8)")
         (fortran:debug "-29-")
@@ -1173,6 +1233,7 @@ then don't calculate 1,4 interactions"
 
         ;; Next
         (fortran:fformat 1 "%-80s")
+        (cando:progress-advance bar (incf bar-counter))
         (fortran:fwrite "%FLAG EXCLUDED_ATOMS_LIST")
         (fortran:fwrite "%FORMAT(10I8)")
         (fortran:debug "-30-")
@@ -1184,6 +1245,7 @@ then don't calculate 1,4 interactions"
 
         ;; Next
         (fortran:fformat 1 "%-80s")
+        (cando:progress-advance bar (incf bar-counter))
         (fortran:fwrite "%FLAG HBOND_ACOEF")
         (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-31-")
@@ -1193,6 +1255,7 @@ then don't calculate 1,4 interactions"
 
         ;; Next
         (fortran:fformat 1 "%-80s")
+        (cando:progress-advance bar (incf bar-counter))
         (fortran:fwrite "%FLAG HBOND_BCOEF")
         (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-32-")
@@ -1202,6 +1265,7 @@ then don't calculate 1,4 interactions"
 
         ;; Next
         (fortran:fformat 1 "%-80s")
+        (cando:progress-advance bar (incf bar-counter))
         (fortran:fwrite "%FLAG HBCUT")
         (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-33-")
@@ -1211,6 +1275,7 @@ then don't calculate 1,4 interactions"
 
         ;;next
         (fortran:fformat 1 "%-80s")
+        (cando:progress-advance bar (incf bar-counter))
         (fortran:fwrite "%FLAG AMBER_ATOM_TYPE")
         (fortran:fwrite "%FORMAT(20A4)")
         (fortran:debug "-34-")
@@ -1221,6 +1286,7 @@ then don't calculate 1,4 interactions"
 
         ;;next
         (fortran:fformat 1 "%-80s")
+        (cando:progress-advance bar (incf bar-counter))
         (fortran:fwrite "%FLAG TREE_CHAIN_CLASSIFICATION")
         (fortran:fwrite "%FORMAT(20A4)")
         (fortran:debug "-35-")
@@ -1232,6 +1298,7 @@ then don't calculate 1,4 interactions"
 
         ;;next
         (fortran:fformat 1 "%-80s")
+        (cando:progress-advance bar (incf bar-counter))
         (fortran:fwrite "%FLAG JOIN_ARRAY")
         (fortran:fwrite "%FORMAT(10I8)")
         (fortran:debug "-36-")
@@ -1243,6 +1310,7 @@ then don't calculate 1,4 interactions"
 
         ;;next
         (fortran:fformat 1 "%-80s")
+        (cando:progress-advance bar (incf bar-counter))
         (fortran:fwrite "%FLAG IROTAT")
         (fortran:fwrite "%FORMAT(10I8)")
         (fortran:debug "-37-")
@@ -1256,6 +1324,7 @@ then don't calculate 1,4 interactions"
         (if (chem:has-property aggregate :bounding-box)
             (progn
               (fortran:fformat 1 "%-80s")
+              (cando:progress-advance bar (incf bar-counter))
               (fortran:fwrite "%FLAG SOLVENT_POINTERS")
               (fortran:fwrite "%FORMAT(3I8)")
               (fortran:debug "-38-")
@@ -1266,6 +1335,7 @@ then don't calculate 1,4 interactions"
               (fortran:fwrite "2") 
               (fortran:end-line)
               (fortran:fformat 1 "%-80s")
+              (cando:progress-advance bar (incf bar-counter))
               (fortran:fwrite "%FLAG ATOMS_PER_MOLECULE")
               (fortran:fwrite "%FORMAT(10I8)")
               (fortran:debug "-39-")
@@ -1277,6 +1347,7 @@ then don't calculate 1,4 interactions"
               
               ;;next
               (fortran:fformat 1 "%-80s")
+              (cando:progress-advance bar (incf bar-counter))
               (fortran:fwrite "%FLAG BOX_DIMENSIONS")
               (fortran:fwrite "%FORMAT(5E16.8)")
               (fortran:debug "-40-")
@@ -1292,6 +1363,7 @@ then don't calculate 1,4 interactions"
 
         ;;next
         (fortran:fformat 1 "%-80s")
+        (cando:progress-advance bar (incf bar-counter))
         (fortran:fwrite "%FLAG RADIUS_SET")
         (fortran:fwrite "%FORMAT(1a80)")
         (fortran:debug "-41-")
@@ -1301,6 +1373,7 @@ then don't calculate 1,4 interactions"
 
         ;;next
         (fortran:fformat 1 "%-80s")
+        (cando:progress-advance bar (incf bar-counter))
         (fortran:fwrite "%FLAG RADII")
         (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-42-")
@@ -1312,6 +1385,7 @@ then don't calculate 1,4 interactions"
 
         ;;next
         (fortran:fformat 1 "%-80s")
+        (cando:progress-advance bar (incf bar-counter))
         (fortran:fwrite "%FLAG SCREEN")
         (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-43-")
@@ -1353,7 +1427,8 @@ then don't calculate 1,4 interactions"
             (fortran:fwrite "90.0000000") ;box angle
             (fortran:fwrite "90.0000000") 
             (fortran:fwrite "90.0000000")))
-      (fortran:end-line)))
+      (fortran:end-line))
+    (cando:progress-done bar))
   t)
 
 (defvar %flag-title "%FLAG TITLE")
