@@ -418,19 +418,19 @@ then don't calculate 1,4 interactions"
                  ;; Use hash table
                  (gethash (cons i1x i4x) in-bond-or-angle)
                  #+(or)(progn
-                   (loop for bond-index below (length ib)
-                         for ib-index = (aref ib bond-index)
-                         for jb-index = (aref jb bond-index)
-                         when (or (and (= ib-index i1x) (= jb-index i4x))
-                                  (and (= ib-index i4x) (= jb-index i1x)))
-                           do (return-from in-same-bond-or-angle t))
-                   ;; Return T if i1x,i4x are in an angle
-                   (loop for angle-index below (length it)
-                         for it-index = (aref it angle-index)
-                         for kt-index = (aref kt angle-index)
-                         when (or (and (= it-index i1x) (= kt-index i4x))
-                                  (and (= it-index i4x) (= kt-index i1x)))
-                           do (return-from in-same-bond-or-angle t)))
+                         (loop for bond-index below (length ib)
+                               for ib-index = (aref ib bond-index)
+                               for jb-index = (aref jb bond-index)
+                               when (or (and (= ib-index i1x) (= jb-index i4x))
+                                        (and (= ib-index i4x) (= jb-index i1x)))
+                                 do (return-from in-same-bond-or-angle t))
+                         ;; Return T if i1x,i4x are in an angle
+                         (loop for angle-index below (length it)
+                               for it-index = (aref it angle-index)
+                               for kt-index = (aref kt angle-index)
+                               when (or (and (= it-index i1x) (= kt-index i4x))
+                                        (and (= it-index i4x) (= kt-index i1x)))
+                                 do (return-from in-same-bond-or-angle t)))
                  nil))
           (loop for x below (length v-vector)
                 for properx = (aref proper-vector x)
@@ -517,10 +517,7 @@ then don't calculate 1,4 interactions"
                            (setf (aref lp cur) i4)
                            (setf (aref icp cur) (+ (aref j-vec i) 1))
                            (incf cur))))
-            (values with-h without-h iph jph kph lph icph ip jp kp lp icp vj-vec inj-vec phasej-vec properj-vec))))))
-  (format t "Finishing prepare-amber-energy-dihedral~%")
-  (finish-output)
-  )
+            (values with-h without-h iph jph kph lph icph ip jp kp lp icp vj-vec inj-vec phasej-vec properj-vec)))))))
 
 (defun canonical-nonbond-key (type1 type2)
   (declare (symbol type1 type2))
@@ -722,6 +719,8 @@ then don't calculate 1,4 interactions"
          (natom (chem:get-number-of-atoms (chem:atom-table energy-function))))
     ;; Skip assigning MarkMainChainAtoms and MarkSideChain atoms for now
     ;; see (unitio.c:4889).  This won't mean anything for spiroligomers.
+    (format t "Writing to ~a~%" topology-pathname)
+    (finish-output)
     (fortran:with-fortran-output-file (ftop topology-pathname :direction :output)
       (fortran:debug "-1-")             ;
       (fortran:fformat 1 "%-80s")
