@@ -178,9 +178,22 @@ vector<int>& CipPrioritizer_O::getS(Atom_sp a)
 
 void CipPrioritizer_O::assignPriorities(Matter_sp matter)
 {
-    CipPrioritizer_sp prior;
+  CipPrioritizer_sp prior;
+  if (gc::IsA<Molecule_sp>(matter)) {
     prior = CipPrioritizer_O::create();
     prior->assignCahnIngoldPrelogPriorityToAtomsRelativePriority(matter);
+  } else if (gc::IsA<Aggregate_sp>(matter)) {
+    Loop l;
+    l.loopTopGoal(matter,MOLECULES);
+    while ( l.advanceLoopAndProcess() )
+    {
+      Molecule_sp mol = l.getMolecule();
+      prior = CipPrioritizer_O::create();
+      prior->assignCahnIngoldPrelogPriorityToAtomsRelativePriority(mol);
+    }
+  } else {
+    TYPE_ERROR(matter,core::Cons_O::createList(_sym_Aggregate_O,_sym_Molecule_O));
+  }
 }
 
 
