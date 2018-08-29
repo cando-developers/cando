@@ -36,8 +36,6 @@
    #:named-atom-map
    #:anchor-named-atom-map
    #:cartoon-atom-map
-   #:set-stereoisomer-using-number
-   #:set-stereoisomer-mapping
    #:center-on
    #:rotate-x
    #:rotate-y
