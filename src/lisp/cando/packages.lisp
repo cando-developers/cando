@@ -156,10 +156,14 @@
    #:jostle
    #:dump-stereocenters
    #:calculate-all-stereochemistry
-   #:set-all-stereocenters-to
+   #:stereocenters-sorted-by-name
    #:gather-stereocenters
    #:set-stereoisomer
    #:set-stereoisomer-func
+   #:set-stereoisomer-mapping
+   #:set-stereoisomer-using-number
+   #:set-all-stereocenters-to
+   #:number-of-stereoisomers
    #:optimize-structure
    #:configure-minimizer
    #:minimize-no-fail

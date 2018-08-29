@@ -98,14 +98,37 @@ Set the stereochemistry of a collection of stereocenters using a function that r
 - matter : The aggregate/molecule/residue that contains the named atoms.
 - atom-name-to-config :: An alist that maps atom names to :r or :s
 * Description
-Set the stereochemistry of a collection of stereocenters using a alist of atom names to stereochemistry."
+Set the stereochemistry of a collection of stereocenters using a alist of atom names to stereochemistry.
+Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
   (loop for (name . config) in atom-name-to-config
      do (let ((atom (chem:first-atom-with-name matter name)))
           (when show (format t "Atom name: ~a  atom: ~a config: ~a~%" name atom config))
           (chem:set-configuration atom config))))
 
-(defun number-of-stereoisomers (chiral-atoms)
-  (expt 2 (length chiral-atoms)))
+;;; Set a list of stereocenters using an integer
+;;; A 0 bit is :S and 1 bit is :R
+;;; The value 13 is #b1101  and it sets the configuration of the atoms
+;;;    to (:R :S :R :R ).
+;;;  The least significant bit is the first stereocenter and the most significant bit is the last.
+(defun set-stereoisomer-using-number (list-of-centers num)
+  (loop for atom across list-of-centers
+     for tnum = num then (ash tnum -1)
+     for config = (if (= (logand 1 tnum) 0) :s :r)
+     do (format t "~a -> ~a   num: ~a~%" atom config tnum)))
+
+;;; Set all of the stereocenters to config (:S or :R)
+(defun set-all-stereocenters-to (list-of-centers config &key show)
+  (set-stereoisomer-func list-of-centers (constantly config) :show show)
+  (format t "~a stereocenters set~%" (length list-of-centers)))
+
+;;; Return the number of stereoisomers 
+(defun number-of-stereoisomers (vector-of-centers)
+  (expt 2 (length vector-of-centers)))
+
+(defun stereocenters-sorted-by-name (agg)
+  (let ((stereocenters (cando:gather-stereocenters agg)))
+    (sort stereocenters #'string< :key #'chem:get-name)))
+
 
 ;; Recover from minimization problems using Common Lisp restarts
 (defun minimize-no-fail (minimizer)
@@ -358,12 +381,6 @@ Set the stereochemistry of a collection of stereocenters using a alist of atom n
       (t (error "Add support to jostle positions for ~s" matter)))))
 
 
-
-
-
-(defun stereocenters-sorted-by-name (agg)
-  (let ((stereocenters (cando:gather-stereocenters agg)))
-    (sort stereocenters #'string< :key #'chem:get-name)))
     
 (defun assign-configuration (agg configuration)
   (let* ((stereocenters (sort (cando:gather-stereocenters agg) #'string< :key #'chem:get-name)))
