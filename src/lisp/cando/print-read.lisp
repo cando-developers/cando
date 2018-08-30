@@ -28,6 +28,10 @@
 ;; use
 (defmethod cl:print-object ((object core:cxx-object) stream)
   (if (and *print-readably* (core:fieldsp object))
+      (progn
+        (write-string "#i" stream)
+        (write (cons (class-name (class-of object)) (core:encode object)) :stream stream))
+      #+(or)
       (core:print-cxx-object object stream)
       (call-next-method)))
 
