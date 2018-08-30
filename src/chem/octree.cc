@@ -57,11 +57,27 @@ namespace chem {
 time_t	time_start;
 
 /*	status of octree node	*/
+};
 
 #define OCT_UNKNOWN	-1
 #define OCT_INCLUDED	1
 #define OCT_EXCLUDED	2
 #define OCT_PARTIAL	3
+
+SYMBOL_EXPORT_SC_(KeywordPkg,shell);
+SYMBOL_EXPORT_SC_(KeywordPkg,interior_solute);
+SYMBOL_EXPORT_SC_(KeywordPkg,interior_solvent);
+SYMBOL_EXPORT_SC_(ChemPkg,STARoctree_typeSTAR);
+
+CL_BEGIN_ENUM(chem::Octree_O::OctreeType, chem::_sym_STARoctree_typeSTAR, "octree_type");
+CL_VALUE_ENUM(kw::_sym_shell,chem::Octree_O::Shell);
+CL_VALUE_ENUM(kw::_sym_interior_solute,chem::Octree_O::InteriorSolute);
+CL_VALUE_ENUM(kw::_sym_interior_solvent,chem::Octree_O::InteriorSolvent);
+CL_END_ENUM(chem::_sym_STARoctree_typeSTAR);
+CL_ENUM_TRANSLATOR(chem::_sym_STARoctree_typeSTAR,chem::Octree_O::OctreeType);
+
+
+namespace chem{
 
 /* 
  *  globals used for octree evaluation
@@ -131,7 +147,7 @@ string OctNode_O::__repr__() const {
 
 void Octree_O::fields(core::Record_sp node)
 {
-  node->field( INTERN_(kw,type), this->iType);
+  node->field( INTERN_(kw,type), this->type);
   node->field( INTERN_(kw,maxdepth), this->_iMaxDepth);
   node->field( INTERN_(kw,treepoints), this->iTreePoints);
   node->field( INTERN_(kw,dielectric), this->iDielectric);
@@ -803,7 +819,7 @@ int Octree_O::iBuildInteriorOctant( OctNode_sp PonNode, int iAtoms, gctools::Vec
 SYMBOL_EXPORT_SC_(KeywordPkg,solvent);
 SYMBOL_EXPORT_SC_(ChemPkg,lookup_atom_properties_radius);
 //CL_DEFMETHOD Octree_sp Octree_O::octOctTreeCreate(Aggregate_sp uUnit, int iType, double dGridSpace, double dAddExtent, double dShellExtent,
-CL_DEFMETHOD void Octree_O::octOctTreeCreate(Aggregate_sp uUnit, int iType, double dGridSpace, double dAddExtent, double dShellExtent, FFNonbondDb_sp nonbondDb,  int iIncludeSolvent, bool bVerbose)
+CL_DEFMETHOD void Octree_O::octOctTreeCreate(Aggregate_sp uUnit, OctreeType type, double dGridSpace, double dAddExtent, double dShellExtent, FFNonbondDb_sp nonbondDb,  int iIncludeSolvent, bool bVerbose)
 {
  // Octree_sp		  octTree;
   Vector3                 vMinCorner, vMaxCorner, vAtom;
@@ -831,7 +847,7 @@ CL_DEFMETHOD void Octree_O::octOctTreeCreate(Aggregate_sp uUnit, int iType, doub
   //GC_ALLOCATE(Octree_O, octTree); // MALLOC( octTree, OCTREE, sizeof(OCTREEt) );
  // octTree->iType = iType;
   //octTree->dGridSize = dGridSpace;
-  this->iType = iType;
+  this->type = type;
   this->dGridSize = dGridSpace;
  // octTree->PfCharges = NULL;
   // octTree->PdHalfEdges = NULL;
@@ -849,9 +865,9 @@ CL_DEFMETHOD void Octree_O::octOctTreeCreate(Aggregate_sp uUnit, int iType, doub
 
   iDefaultedRadius = 0;
   lRes.loopTopAggregateGoal(uUnit, RESIDUES); // lRes = lLoop( uUnit, RESIDUES );
-  switch ( iType ) {
-  case OCT_SHELL:
-  case OCT_INTERIOR_SOLUTE:
+  switch ( type ) {
+  case Shell:
+  case InteriorSolute:
       // while ((rRes = (RESIDUE) oNext(&lRes))) {
       while (lRes.advance()) {
         rRes = lRes.getResidue();
@@ -871,7 +887,7 @@ CL_DEFMETHOD void Octree_O::octOctTreeCreate(Aggregate_sp uUnit, int iType, doub
       }
       break;
 
-  case OCT_INTERIOR_SOLVENT: {
+  case InteriorSolvent: {
     int nowarning = 1;
     //while ((rRes = (RESIDUE) oNext(&lRes))) {
     while (lRes.advance()){
@@ -970,8 +986,8 @@ return(octTree);
 	/*
 	 *  Expand bounding box if neccessary.
 	 */
-  switch ( iType ) {
-  case OCT_SHELL:
+  switch ( type ) {
+  case Shell:
 		/*
 		 *  Offset shell by max solute atom radius
 		 */
@@ -988,8 +1004,8 @@ return(octTree);
       vMaxCorner.getZ() += dShellRadius;
       break;
       
-  case OCT_INTERIOR_SOLUTE:
-  case OCT_INTERIOR_SOLVENT:
+  case InteriorSolute:
+  case InteriorSolvent:
 		/*
 		 *  Enclose atom centers with radius of largest atom
 		 */
@@ -1001,12 +1017,12 @@ return(octTree);
       vMaxCorner.getZ() += dMaxRadius;
       break;
   default:
-      SIMPLE_ERROR(BF("Octtree type %d is not implemented") % iType);
+      SIMPLE_ERROR(BF("Octtree type %d is not implemented") % type);
   }
 
   if (bVerbose) {
     BFORMAT_T(BF("Total solute charge:  %5.2f  Max atom radius:  %5.2f\n") % dCharge % dMaxRadius );
-    if ( iType == OCT_SHELL )
+    if ( type == Shell )
       BFORMAT_T(BF("Grid extends from solute vdw + %.2f  to  %.2f\n") % dAddExtent % dShellRadius );
     BFORMAT_T(BF("Box:\n" ));
     BFORMAT_T(BF("   enclosing:  %5.2f %5.2f %5.2f   %5.2f %5.2f %5.2f\n") %  vMinCorner.getX() % vMinCorner.getY() % vMinCorner.getZ()
@@ -1110,12 +1126,12 @@ return(octTree);
   this->iNodeCount = 0;
 //  time_start = time((time_t *) 0);
 
-  switch ( iType ) {
-  case OCT_SHELL:
+  switch ( type ) {
+  case Shell:
       iBuild = iBuildShellOctant( this->onHead, iAtoms, vaAtoms, dShellRadius ); //PaAtoms );
       break;
-  case OCT_INTERIOR_SOLUTE:
-  case OCT_INTERIOR_SOLVENT:
+  case InteriorSolute:
+  case InteriorSolvent:
       iBuild = iBuildInteriorOctant( this->onHead, iAtoms, vaAtoms ); //PaAtoms );
       break;
   default:
@@ -1306,7 +1322,7 @@ CL_DEFMETHOD core::T_mv Octree_O::OctTreeInitCharges( /*Octree_sp octTree,*/ int
   int	i, iDistanceCharge, iChargeAtoms;
   Atom_sp	PaAtom;
   
-  if ( this->iType != OCT_SHELL ) {
+  if ( this->type != Shell ) {
     SIMPLE_ERROR(BF("InitCharges: wrong tree type\n"));
 //    printf(( "InitCharges: wrong tree type\n" ));
 //    exit(1);
@@ -1959,7 +1975,7 @@ CL_DEFMETHOD core::T_mv Octree_O::OctTreeUpdateCharge( /*Octree_sp octTree,*/ Ve
   int	i, iDistanceCharge;
   int iChargeAtoms = this->vaAtoms.size();
 
-  if ( this->iType != OCT_SHELL ) {
+  if ( this->type != Shell ) {
     SIMPLE_ERROR(BF("UpdateCharge: wrong tree type\n"));
   }
   if ( this->_PfCharges.size()==0 ) {//( !octTree->PfCharges ) {
@@ -2107,7 +2123,7 @@ VP0(("d= %f \n", d));
 Residue_sp Octree_O::rOctTreeCheckSolvent( /*Octree_sp octTree,*/ Vector3 vPoint )
 {
   //Atom_sp	PaAtom;
-  if ( this->iType != OCT_INTERIOR_SOLVENT ) {
+  if ( this->type != InteriorSolvent ) {
     SIMPLE_ERROR(BF("CheckSolvent: wrong octree type\n"));
 //    printf( "CheckSolvent: wrong octree type\n" );
 //    exit(1);

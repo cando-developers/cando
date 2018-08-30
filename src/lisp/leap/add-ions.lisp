@@ -13,7 +13,6 @@
          (ion1-agg (chem:make-aggregate))
          (target-charge 0)
          (ion-min-size 0.0)
-         (oct-shell 1)
          (grid-space 1.0)
          (shell-extent 4.0)
          (at-octree 1)
@@ -87,7 +86,7 @@
                   ion2-atom (chem:content-at ion2-residue 0))
             (chem:add-matter ion2-mol ion2-residue)
             (chem:add-matter ion2-agg ion2-mol)))
-      (chem:oct-oct-tree-create oct-tree mol oct-shell grid-space ion-min-size shell-extent nonbond-db 0 t)
+      (chem:oct-oct-tree-create oct-tree mol :shell grid-space ion-min-size shell-extent nonbond-db 0 t)
       (multiple-value-bind (min-charge-point max-charge-point)
           (chem:oct-tree-init-charges oct-tree at-octree dielectric ion1-size)
         (loop 

@@ -40,38 +40,40 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace chem {
 
-  FORWARD(OctNode);
-  class OctNode_O : public core::CxxObject_O {
-    LISP_CLASS(chem,ChemPkg,OctNode_O,"OctNode",core::CxxObject_O);
-  public:
-    bool fieldsp() const { return true;};
-    void fields(core::Record_sp record);
-  public:
-    int                         iNodeNum;
-    int                         iStatus;
-    int                         iDepth;
-    Vector3                     vCorner;
-    int                         iAtoms;
-    gctools::Vec0<Atom_sp>      PaAtomList;
-    gctools::Vec0<float>        _PfCharges;       /* float to save space */
-    OctNode_sp                  PonChildren[8];
+FORWARD(OctNode);
+class OctNode_O : public core::CxxObject_O {
+  LISP_CLASS(chem,ChemPkg,OctNode_O,"OctNode",core::CxxObject_O);
+public:
+  bool fieldsp() const { return true;};
+  void fields(core::Record_sp record);
+public:
+  int                         iNodeNum;
+  int                         iStatus;
+  int                         iDepth;
+  Vector3                     vCorner;
+  int                         iAtoms;
+  gctools::Vec0<Atom_sp>      PaAtomList;
+  gctools::Vec0<float>        _PfCharges;       /* float to save space */
+  OctNode_sp                  PonChildren[8];
   OctNode_O() : iDepth(0), iAtoms(0),
-      PonChildren{_Unbound<OctNode_O>(),_Unbound<OctNode_O>(),
-        _Unbound<OctNode_O>(),_Unbound<OctNode_O>(),
-        _Unbound<OctNode_O>(),_Unbound<OctNode_O>(),
-        _Unbound<OctNode_O>(),_Unbound<OctNode_O>()} {};
-    string __repr__() const;
-  };
+                PonChildren{_Unbound<OctNode_O>(),_Unbound<OctNode_O>(),
+                            _Unbound<OctNode_O>(),_Unbound<OctNode_O>(),
+                            _Unbound<OctNode_O>(),_Unbound<OctNode_O>(),
+                            _Unbound<OctNode_O>(),_Unbound<OctNode_O>()} {};
+  string __repr__() const;
+};
 
 
-  FORWARD(Octree);
-  class Octree_O : public core::CxxObject_O {
-    LISP_CLASS(chem,ChemPkg,Octree_O,"Octree",core::CxxObject_O);
-  public:
+
+FORWARD(Octree);
+class Octree_O : public core::CxxObject_O {
+  LISP_CLASS(chem,ChemPkg,Octree_O,"Octree",core::CxxObject_O);
+public:
     bool fieldsp() const { return true;};
     void fields(core::Record_sp record);
-  public:
-  int                           iType;  
+  typedef enum { Shell, InteriorSolute, InteriorSolvent } OctreeType;
+public:
+  OctreeType                    type;  
   int                           _iMaxDepth;
   int                           iTreePoints;
   int                           iDielectric;
@@ -123,7 +125,7 @@ namespace chem {
   int OctNodeDeleteSphere( OctNode_sp PonNode, double dDeleteRadius  );
   void OctNodeUpdateCharge( OctNode_sp PonNode, int iParentAtoms, gctools::Vec0<Atom_sp> PaParentAtoms, int iDistanceCharge );
   int OctNodeCheckSolvent( OctNode_sp PonNode );
-  void octOctTreeCreate(Aggregate_sp uUnit, int iType, double dGridSpace, 
+  void octOctTreeCreate(Aggregate_sp uUnit, OctreeType iType, double dGridSpace, 
 			double dAddExtent, double dShellExtent, FFNonbondDb_sp nonbondDb, int iIncludeSolvent, bool bVerbose);
   core::T_mv OctTreeInitCharges(/*Octree_sp octTree,*/ int iAtomOption, int iDielectric, 
                            double dCutDist);	
