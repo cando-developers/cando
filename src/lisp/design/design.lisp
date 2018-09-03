@@ -361,7 +361,7 @@ Examples:
                      (setf (gethash (chem:get-name topology) origins) topology)
                      (setf (gethash (chem:get-name topology) body) topology)))
           else
-            do (push topology caps))
+            do (setf (gethash push topology caps)))
     (values origins body caps)))
 
 
