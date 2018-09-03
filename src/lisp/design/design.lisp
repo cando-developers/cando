@@ -350,5 +350,18 @@ Examples:
     (interpret-subtree oligomer tree labels)
     oligomer))
 
+(defun classify-topologys (list-of-topologys)
+  (let ((origins (make-hash-table))
+        (body (make-hash-table))
+        (caps (make-hash-table)))
+    (loop for topology in list-of-topologys
+          if (chem:has-in-plug topology)
+            do (let ((in-plug (chem:get-in-plug topology)))
+                 (if (typep in-plug 'chem:origin-plug)
+                     (setf (gethash (chem:get-name topology) origins) topology)
+                     (setf (gethash (chem:get-name topology) body) topology)))
+          else
+            do (push topology caps))
+    (values origins body caps)))
 
 
