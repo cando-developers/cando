@@ -11,5 +11,5 @@
   :serial t
   :components
   ((:file "packages")
-   (:file "nglview")
+   (:file "cando-nglview")
    ))

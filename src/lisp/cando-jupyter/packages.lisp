@@ -26,8 +26,7 @@
 (cl:in-package #:common-lisp-user)
 
 (defpackage #:cando-jupyter
-  (:use #:common-lisp
-        )
+  (:use #:common-lisp)
   (:export
    #:pick-history
 ;;; Stuff for nglview demo
