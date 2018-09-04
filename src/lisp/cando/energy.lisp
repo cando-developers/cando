@@ -44,16 +44,16 @@
       |#
 
 
-(defun minimize-energy-function (energy-function &key (restraints-on t)
-                                                   system
-                                                   (max-sd-steps 1000)
-                                                   (max-cg-steps 50000)
-                                                   (max-tn-steps 0)
-                                                   (sd-tolerance 5000.0)
-                                                   (cg-tolerance 0.5)
-                                                   (tn-tolerance 0.00001))
+(defun minimize-minimizer (minimizer &key (restraints-on t)
+                                       system
+                                       (max-sd-steps 1000)
+                                       (max-cg-steps 50000)
+                                       (max-tn-steps 0)
+                                       (sd-tolerance 5000.0)
+                                       (cg-tolerance 0.5)
+                                       (tn-tolerance 0.00001))
   "Minimize the conformational energy for an energy-function"
-  (let ((minimizer (chem:make-minimizer energy-function)))
+  (let ((energy-function (chem:get-energy-function minimizer)))
     (unless restraints-on
       (let ((restraint-term (chem:get-anchor-restraint-component energy-function)))
         (chem:disable restraint-term)))
@@ -67,6 +67,19 @@
     (chem:enable-print-intermediate-results minimizer)
     (chem:set-option energy-function 'chem:nonbond-term t)
     (cando:minimize-no-fail minimizer)))
+
+(defun minimize-energy-function (energy-function &rest args
+                                 &key (restraints-on t)
+                                   system
+                                   (max-sd-steps 1000)
+                                   (max-cg-steps 50000)
+                                   (max-tn-steps 0)
+                                   (sd-tolerance 5000.0)
+                                   (cg-tolerance 0.5)
+                                   (tn-tolerance 0.00001))
+  "Minimize the conformational energy for an energy-function"
+  (let ((minimizer (chem:make-minimizer energy-function)))
+    (apply #'minimize-minimizer minimizer args)))
 
 (defun minimize (agg &rest args
                  &key (restraints-on t)
