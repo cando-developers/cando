@@ -102,13 +102,12 @@ namespace chem
   public:
     core::Symbol_sp	_Name;
     core::Symbol_sp	_Pdb;
-    core::Symbol_sp	_Enantiomer;
     core::Integer_sp    _StereoisomerIndex;
 	    // Add configurations here
     gctools::Vec0<StereoConfiguration_sp>	_Configurations;
   public:
     Stereoisomer_O() {};
-  Stereoisomer_O(core::Symbol_sp name, core::Symbol_sp pdbname, core::Integer_sp stereoisomer_index) : _Name(name), _Pdb(pdbname), _Enantiomer(name), _StereoisomerIndex(stereoisomer_index) {};
+    Stereoisomer_O(core::Symbol_sp name, core::Symbol_sp pdbname, core::Integer_sp stereoisomer_index) : _Name(name), _Pdb(pdbname), _StereoisomerIndex(stereoisomer_index) {};
   public:
     bool fieldsp() const { return true; };
     void fields(core::Record_sp node);
@@ -124,8 +123,6 @@ namespace chem
     CL_DEFMETHOD void setStereoisomerIndex(core::Integer_sp n) {this->_StereoisomerIndex = n;};
     CL_DEFMETHOD core::Symbol_sp getPdb() {return this->_Pdb;};
     CL_DEFMETHOD void setPdb(core::Symbol_sp p) {this->_Pdb = p;};
-    core::Symbol_sp	getEnantiomer()	{return this->_Enantiomer;};
-    void	setEnantiomer(core::Symbol_sp p) {this->_Enantiomer = p;};
     void	addStereoConfiguration(StereoConfiguration_sp sc) {this->_Configurations.push_back(sc);};
     string __repr__() const;
     gctools::Vec0<StereoConfiguration_sp>::iterator _Configurations_begin() { return this->_Configurations.begin();};
@@ -165,7 +162,7 @@ namespace chem
     gctools::Vec0<ComplexRestraint_sp>::iterator end_ComplexRestraints() { return this->_ComplexRestraints.end();};
 
     CL_DEFMETHOD core::List_sp stereoisomersAsList() { return core::Cons_O::createFromVec0(this->_Stereoisomers); };
-
+    CL_DEFMETHOD size_t number_of_stereoisomers() const { return this->_Stereoisomers.size(); };
     void validate();
 
     void addStereoisomer(Stereoisomer_sp s);

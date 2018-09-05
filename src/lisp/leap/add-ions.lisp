@@ -7,7 +7,7 @@
          (ion1-ffnonbond (chem:get-ffnonbond-using-type-index nonbond-db ion1-type-index))
          (ion1-size (chem:get-radius-angstroms ion1-ffnonbond))
          (ion1-topology (leap.core:lookup-variable ion1))
-         (ion1-residue (chem:build-residue ion1-topology))
+         (ion1-residue (chem:build-residue-single-name ion1-topology))
          (ion1-atom (chem:content-at ion1-residue 0))
          (ion1-mol (chem:make-molecule))
          (ion1-agg (chem:make-aggregate))
@@ -82,7 +82,7 @@
       (if ion2
           (progn 
             (setf ion2-topology (leap.core:lookup-variable ion2)
-                  ion2-residue (chem:build-residue ion2-topology)
+                  ion2-residue (chem:build-residue-single-name ion2-topology)
                   ion2-atom (chem:content-at ion2-residue 0))
             (chem:add-matter ion2-mol ion2-residue)
             (chem:add-matter ion2-agg ion2-mol)))

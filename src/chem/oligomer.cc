@@ -616,7 +616,7 @@ int			residueNetCharge;
       Constitution_sp constitution = core::eval::funcall(_sym_constitutionForNameOrPdb,db,(*mi)->monomerName());
       Topology_sp topology = constitution->getTopologyForMonomerEnvironment(*mi);
       LOG(BF("topology: %s") % _rep_(topology));
-      res = topology->build_residue();
+      res = topology->buildResidueForMonomerName((*mi)->getOneMonomer());
       LOG(BF("res: %s") % _rep_(res));
       constitution->makeResidueConsistentWithStereoisomerNamed(res,(*mi)->monomerName());
       LOG(BF("made res consistent with stereoisomer named res: %s") % _rep_(res));

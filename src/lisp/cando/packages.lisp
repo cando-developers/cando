@@ -103,6 +103,7 @@
   (:use #:common-lisp)
   (:export
    #:minimize
+   #:minimize-minimizer
    #:minimize-energy-function
    #:minimize-from-bad-geometry
    #:minimize-energy-function-from-bad-geometry

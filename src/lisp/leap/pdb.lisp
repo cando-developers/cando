@@ -540,7 +540,7 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
                            (cur-top (current-topology reader)))
                        (if cur-top
                            ;; There is a topology - use it
-                           (let ((cur-res (chem:build-residue cur-top)))
+                           (let ((cur-res (chem:build-residue-single-name cur-top)))
                              (chem:set-id cur-res (calculate-residue-sequence-number res-seq i-code))
                              (setf (current-residue reader) cur-res)
                              (let ((prev-res (previous-residue reader)))

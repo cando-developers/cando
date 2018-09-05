@@ -118,51 +118,6 @@ namespace chem {
 
 
 
-#if 0
-namespace chem {
-  class MonomerBase_O : public Entity_O
-  {
-    LISP_CLASS(chem,ChemPkg,MonomerBase_O,"MonomerBase",Entity_O);
-
-    friend class Topology_O;
-    friend class Constitution_O;
-    friend class MonomerContext_O;
-    friend class AlchemistState_O;
-    friend class AlchemistFingerprint_O;
-  public:
-  public:
-    bool fieldsp() const { return true; };
-    void fields(core::Record_sp node);
-  public:
-    core::Symbol_sp			_Id;
-    uint				_SequenceNumber;
-  public: // archive
-    Couplings			_Couplings;
-    Residue_sp			_TempResidue;
-    int				_TemporaryInt;
-  protected: // archive
-        /*! Aliases identify monomers for searches.
-         * Multiple monomers can share aliases as long as the atoms that are to be
-         * accessed through those aliases are have unique names across those monomers.
-         */
-    adapt::SymbolSet_sp			_Aliases; //!< this will identify monomers for searches
-  protected:
-    friend class Oligomer_O;
-    friend class Coupling_O;
-  public:
-    CL_DEF_CLASS_METHOD static MonomerBase_sp makeMonomer() {
-      GC_ALLOCATE(MonomerBase_O,mon);
-      mon->setId(id);
-      return mon;
-    }
-  public:
-  public:
-    MonomerBase_O() {};
-  };
-};
-#endif
-
-
 template <>
 struct gctools::GCInfo<chem::Monomer_O> {
   static bool constexpr NeedsInitialization = false;
@@ -231,12 +186,6 @@ namespace chem {
 
     adapt::SymbolSet_sp	plugNames() const;
 
-#if 0
-    void	setAliasesFromSymbolList(adapt::SymbolList_sp aliases);
-    void	setAliasesFromCons(core::List_sp aliases);
-//	void	setAliasesFromString(const string& s);
-//    string	getAliasesAsString();
-#endif
   public:
 
     void	setSequenceNumber(uint idx) { this->_SequenceNumber = idx;};
@@ -332,11 +281,11 @@ namespace chem {
         //! Return true if we recognize the alias with the form ";[monomerAlias]@[atomAlias]"
 //    CL_DEFMETHOD virtual bool recognizesAlias(Alias_sp alias);
   public:
-  Monomer_O() : _CurrentMonomerIndex(0) {};
+    Monomer_O() : _CurrentMonomerIndex(0) {};
   };
 };
 
-#endif //]
+#endif //
 
 
 

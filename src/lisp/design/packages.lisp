@@ -39,6 +39,7 @@
    name
    constitution
    plugs
+   stereo-information
    build-internal-coordinate-joint-template-tree
    extract-prepare-topologys)
   (:documentation

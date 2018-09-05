@@ -119,6 +119,10 @@ namespace       chem
     static Minimizer_sp make(ScoringFunction_sp givenEnergyFunction);
   public:
     void initialize();
+#if 0
+    bool fieldsp() const { return true; };
+    void fields(core::Record_sp node);
+#endif
   public:
 //	void	archiveBase(core::ArchiveP node);
 

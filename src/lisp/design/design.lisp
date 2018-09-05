@@ -81,7 +81,7 @@ This is for looking up parts but if the thing returned is not a part then return
            (root-topology (lookup-topology (chem:monomer-name root-monomer)))
            (root-residue (progn
                            (format t "About to build first residue ~a~%" root-topology)
-                           (chem:build-residue root-topology))))
+                           (chem:build-residue-single-name root-topology))))
       (unless (typep root-topology 'chem:topology)
         (error "Unexpected object - expected a chem:topology - got ~s" root-topology))
       (setf (gethash root-monomer monomers-to-residues) root-residue)
@@ -355,13 +355,30 @@ Examples:
         (body (make-hash-table))
         (caps (make-hash-table)))
     (loop for topology in list-of-topologys
-          if (chem:has-in-plug topology)
+          if (chem:out-plugs-as-list topology)
             do (let ((in-plug (chem:get-in-plug topology)))
                  (if (typep in-plug 'chem:origin-plug)
-                     (setf (gethash (chem:get-name topology) origins) topology)
-                     (setf (gethash (chem:get-name topology) body) topology)))
+                     (progn
+                       (format t "origin topology: ~s~%" topology)
+                       (setf (gethash (chem:get-name topology) origins) topology))
+                     (progn
+                       (format t "  body topology: ~s~%" topology)
+                       (setf (gethash (chem:get-name topology) body) topology))))
           else
-            do (setf (gethash (chem:get-name topology) caps) topology))
+            do (progn
+                 (format t "   cap topology: ~s~%" topology)
+                 (setf (gethash (chem:get-name topology) caps) topology)))
     (values origins body caps)))
 
-
+#|
+(defun build-training-oligomers (list-of-topologies caps)
+  (multiple-value-bind (origins body caps)
+      (classify-topologys list-of-topologys)
+    ;; Build training oligomers
+    (let ((oligomer (chem:make-oligomer)))
+      
+    (loop for origin in origins
+          for oligomer = (chem:make-oligomer)
+          for origin-monomer = (chem:make-monomer
+          do (chem:add-mon 
+|#

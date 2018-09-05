@@ -241,21 +241,18 @@ CL_DEFMETHOD     string	Minimizer_O::statusAsString()
   return status;
 }
 
-
-#ifdef XML_ARCHIVE
-void	Minimizer_O::archiveBase(core::ArchiveP node)
+#if 0
+void Minimizer_O::fields(core::Record_sp node)
 {
-  node->attribute("_InitialLineSearchStep",this->_InitialLineSearchStep);
-  node->attribute("_ShowElapsedTime",this->_ShowElapsedTime);
-  node->attribute("_SteepestDescentTolerance",this->_SteepestDescentTolerance);
-  node->attribute("_NumberOfSteepestDescentSteps",this->_NumberOfSteepestDescentSteps);
-  node->attribute("_NumberOfConjugateGradientSteps",this->_NumberOfConjugateGradientSteps);
-  node->attribute("_ConjugateGradientTolerance",this->_ConjugateGradientTolerance);
-  node->attribute("_NumberOfTruncatedNewtonSteps",this->_NumberOfTruncatedNewtonSteps);
-  node->attribute("_TruncatedNewtonTolerance",this->_TruncatedNewtonTolerance);
-  node->attribute("energyFunction",this->_EnergyFunction );
-
-//    node->attribute("_ZZ",this->_ZZ);
+  node->field(INTERN_(kw,InitialLineSearchStep),this->_InitialLineSearchStep);
+  node->field(INTERN_(kw,ShowElapsedTime),this->_ShowElapsedTime);
+  node->field(INTERN_(kw,SteepestDescentTolerance),this->_SteepestDescentTolerance);
+  node->field(INTERN_(kw,NumberOfSteepestDescentSteps),this->_NumberOfSteepestDescentSteps);
+  node->field(INTERN_(kw,NumberOfConjugateGradientSteps),this->_NumberOfConjugateGradientSteps);
+  node->field(INTERN_(kw,ConjugateGradientTolerance),this->_ConjugateGradientTolerance);
+  node->field(INTERN_(kw,NumberOfTruncatedNewtonSteps),this->_NumberOfTruncatedNewtonSteps);
+  node->field(INTERN_(kw,TruncatedNewtonTolerance),this->_TruncatedNewtonTolerance);
+  node->field(INTERN_(kw,EnergyFunction),this->_EnergyFunction );
 }
 #endif
 

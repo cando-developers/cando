@@ -42,9 +42,9 @@ namespace chem
 
 void StereoisomerAtom_O::fields(core::Record_sp node) {
   node->field(INTERN_(kw,AtomName),this->_AtomName);
-  node->field(INTERN_(kw,AtomIndex),this->_AtomIndex);
-  node->field_if_not_default(INTERN_(kw,Charge),this->_Charge,0.0);
-  node->field_if_not_nil(INTERN_(kw,AtomType),this->_AtomType);
+  node->field(INTERN_(kw,ConstitutionAtomIndex),this->_ConstitutionAtomIndex);
+  node->field(INTERN_(kw,AtomCharge),this->_AtomCharge);
+  node->field(INTERN_(kw,AtomType),this->_AtomType);
 };
 
   
@@ -60,12 +60,18 @@ StereoisomerAtom_sp StereoisomerAtom_O::create(ConstitutionAtom_sp constitutionA
   return ta;
 }
 
+StereoisomerAtom_sp StereoisomerAtom_O::make(core::Symbol_sp atomName, core::Symbol_sp type, double charge, ConstitutionAtomIndex0N index )
+{
+  GC_ALLOCATE_VARIADIC(StereoisomerAtom_O, ta, atomName, index, charge, type );
+  return ta;
+}
+
 string StereoisomerAtom_O::__repr__() const
 {
   stringstream ss;
   ss << "( " << this->className() << " ";
   ss << " :atomName \"" << this->_AtomName << "\"";
-  ss << " :atomIndex " << this->_AtomIndex << " )";
+  ss << " :constitutionAtomIndex " << this->_ConstitutionAtomIndex << " )";
   return ss.str();
 }
 
@@ -88,34 +94,40 @@ StereoisomerVirtualAtom_sp StereoisomerVirtualAtom_O::create(ConstitutionVirtual
 
 
 void StereoisomerAtoms_O::fields(core::Record_sp node) {
+  node->field(INTERN_(kw,StereoisomerName),this->_StereoisomerName);
   node->field_if_not_empty(INTERN_(kw,Atoms),this->_Atoms);
 };
 
 ;
-
-StereoisomerAtoms_sp StereoisomerAtoms_O::create(ConstitutionAtoms_sp constitutionAtoms)
+StereoisomerAtoms_sp StereoisomerAtoms_O::create(core::Symbol_sp stereoisomerName )
 {
-  GC_ALLOCATE(StereoisomerAtoms_O, topologyAtoms );
+  GC_ALLOCATE_VARIADIC(StereoisomerAtoms_O, stereoisomerAtoms, stereoisomerName );
+  return stereoisomerAtoms;
+}
+
+StereoisomerAtoms_sp StereoisomerAtoms_O::create(core::Symbol_sp stereoisomerName, ConstitutionAtoms_sp constitutionAtoms)
+{
+  GC_ALLOCATE_VARIADIC(StereoisomerAtoms_O, stereoisomerAtoms, stereoisomerName );
   for ( ConstitutionAtoms_O::iterator it=constitutionAtoms->_Atoms.begin();
         it!=constitutionAtoms->_Atoms.end(); it++)
   {
     ConstitutionAtom_sp ca = *it;
     StereoisomerAtom_sp ta = StereoisomerAtom_O::create(ca);
-    topologyAtoms->_Atoms.push_back(ta);
+    stereoisomerAtoms->_Atoms.push_back(ta);
   }
-  return topologyAtoms;
+  return stereoisomerAtoms;
 }
 
-CL_DEFUN StereoisomerAtoms_sp chem__make_stereoisomer_atoms(ConstitutionAtoms_sp constitutionAtoms)
+CL_DEFUN StereoisomerAtoms_sp chem__make_stereoisomer_atoms(core::Symbol_sp stereoisomerName, ConstitutionAtoms_sp constitutionAtoms)
 {
-  return StereoisomerAtoms_O::create(constitutionAtoms);
+  return StereoisomerAtoms_O::create(stereoisomerName,constitutionAtoms);
 }
 
 
-void StereoisomerAtoms_O::addStereoisomerVirtualAtom(StereoisomerVirtualAtom_sp ca)
+CL_DEFMETHOD void StereoisomerAtoms_O::addStereoisomerAtom(StereoisomerAtom_sp ca)
 {_OF();
   ConstitutionAtomIndex0N nextIndex = this->_Atoms.size();
-  ca->_AtomIndex = nextIndex;
+  ca->_ConstitutionAtomIndex = nextIndex;
   this->_Atoms.push_back(ca);
 };
 

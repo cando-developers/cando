@@ -61,26 +61,23 @@ topology atoms plug into others.  So it stores things like charge and atom type.
   public:
 	/*! Construct a StereoisomerAtom given its uniqueAtomName and its unique ConstitutionAtomIndex0N */
     static StereoisomerAtom_sp create(ConstitutionAtom_sp constitutionAtom );
-  protected:
-    MatterName		_AtomName;
-    ConstitutionAtomIndex0N	_AtomIndex;
-    double			_Charge;
+    static StereoisomerAtom_sp make(core::Symbol_sp atomName, core::Symbol_sp type, double charge, ConstitutionAtomIndex0N index);
+  public:
+    MatterName		        _AtomName;
+    ConstitutionAtomIndex0N	_ConstitutionAtomIndex;
+    double			_AtomCharge;
     core::Symbol_sp		_AtomType;
   public:
     string __repr__() const;
     CL_LISPIFY_NAME("atomName");
     CL_DEFMETHOD 	MatterName atomName() { return this->_AtomName;};
-    ConstitutionAtomIndex0N atomIndex() const { return this->_AtomIndex;};
+    ConstitutionAtomIndex0N constitutionAtomIndex() const { return this->_ConstitutionAtomIndex;};
     virtual bool isVirtualAtom() { return false;};
-    CL_LISPIFY_NAME("getCharge");
-    CL_DEFMETHOD 	double getCharge() const { return this->_Charge;};
-    CL_LISPIFY_NAME("setCharge");
-    CL_DEFMETHOD 	void setCharge(double c) { this->_Charge = c;};
-    CL_LISPIFY_NAME("getAtomType");
+    CL_DEFMETHOD 	double getAtomCharge() const { return this->_AtomCharge;};
+    CL_DEFMETHOD 	void setAtomCharge(double c) { this->_AtomCharge = c;};
     CL_DEFMETHOD         core::Symbol_sp getAtomType() const { return this->_AtomType;};
-    CL_LISPIFY_NAME("setAtomType");
     CL_DEFMETHOD 	void setAtomType(core::Symbol_sp s) { this->_AtomType = s;};
-  StereoisomerAtom_O(MatterName name, ConstitutionAtomIndex0N index, double charge, core::Symbol_sp type) : _AtomName(name), _AtomIndex(index), _Charge(charge), _AtomType(type) {};
+  StereoisomerAtom_O(MatterName name, ConstitutionAtomIndex0N index, double charge, core::Symbol_sp type) : _AtomName(name), _ConstitutionAtomIndex(index), _AtomCharge(charge), _AtomType(type) {};
   };
 
 
@@ -117,12 +114,15 @@ is a list of stereoisomer-atoms.)");
 //	void	archiveBase(core::ArchiveP node);
 //	string	__repr__() const;
 
-  private: // instance variables
+  public: // instance variables
 	//! A list of StereoisomerAtoms
+    core::Symbol_sp _StereoisomerName;
     gctools::Vec0<StereoisomerAtom_sp>	_Atoms;
   public:
 	//! Create a StereoisomerAtoms object from a ConstitutionAtoms object
-    static StereoisomerAtoms_sp create(ConstitutionAtoms_sp );
+    static StereoisomerAtoms_sp create(core::Symbol_sp stereoisomerName );
+	//! Create a StereoisomerAtoms object from a ConstitutionAtoms object
+    static StereoisomerAtoms_sp create(core::Symbol_sp stereoisomerName, ConstitutionAtoms_sp constitutionAtoms);
   public:
 
 	/*! Return the number of atoms */
@@ -142,8 +142,9 @@ is a list of stereoisomer-atoms.)");
 
 
 	//! Add a StereoisomerVirtualAtom to us and assign it a ConstitutionAtomIndex0N
-    void addStereoisomerVirtualAtom(StereoisomerVirtualAtom_sp cva);
+    void addStereoisomerAtom(StereoisomerAtom_sp cva);
 
+    core::Symbol_sp getName() const { return this->_StereoisomerName; };
 	//! Return a StringSet of the StereoisomerAtom names
     adapt::SymbolSet_sp atomNamesAsSymbolSet();
 
@@ -153,7 +154,7 @@ is a list of stereoisomer-atoms.)");
     Residue_sp makeResidue();
 
     StereoisomerAtoms_O( const StereoisomerAtoms_O& ss ); //!< Copy constructor
-    DEFAULT_CTOR_DTOR(StereoisomerAtoms_O);
+    StereoisomerAtoms_O(core::Symbol_sp stereoisomerName) : _StereoisomerName(stereoisomerName) {};
   };
 
 };

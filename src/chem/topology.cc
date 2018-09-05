@@ -50,37 +50,12 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace chem
 {
 
-string TopologyAtomInfo_O::__repr__() const
-{
-  stringstream ss;
-  ss <<  "#<TOPOLOGY-ATOM-INFO :index "
-     << this->_ConstitutionAtomIndex;
-  ss << " :charge " << this->_AtomicCharge;
-  ss << " :fftype " << _rep_(this->_fftype);
-  ss << ">";
-  return ss.str();
-}
-       
-       
-                                           
-                                          
-                                          
-void TopologyAtomInfo_O::fields(core::Record_sp node)
-{
-  node->field(INTERN_(kw,fftype),this->_fftype);
-  node->field(INTERN_(kw,charge),this->_AtomicCharge);
-  node->field(INTERN_(kw,index),this->_ConstitutionAtomIndex);
-  this->Base::fields(node);
-}
-
 
 void Topology_O::fields(core::Record_sp node)
 {
   node->field(INTERN_(kw,name),this->_Name);
   node->field(INTERN_(kw,constitution),this->_Constitution);
-  node->field(INTERN_(kw,atominfo),this->_AtomInfo);
   node->field(INTERN_(kw,stereoisomer_coding), this->_StereoisomerCoding);
-  node->field(INTERN_(kw,num_stereoisomers), this->_NumberOfStereoisomers);
   node->field(INTERN_(kw,stereo_atom_props),this->_StereoisomerAtomProperties);
   node->field(INTERN_(kw,properties),this->_Properties);
   node->field(INTERN_(kw,defaultoutplug),this->_DefaultOutPlugName);
@@ -89,7 +64,7 @@ void Topology_O::fields(core::Record_sp node)
 }
 
 
-Topology_mv Topology_O::makeTopologyFromResidue(chem::Residue_sp residue, core::Symbol_sp topologyName,  core::T_sp tconstitution )
+Topology_mv Topology_O::makeTopologyFromResidue(chem::Residue_sp residue, core::Symbol_sp topologyName, core::T_sp tconstitution, core::Symbol_sp stereoisomerName )
 {
   Constitution_sp constitution;
   if ( constitution.nilp() ) {
@@ -100,14 +75,17 @@ Topology_mv Topology_O::makeTopologyFromResidue(chem::Residue_sp residue, core::
   Topology_sp topology = Topology_O::make(topologyName, constitution, _Nil<core::T_O>() );
   core::VectorTNs_sp vec = core::VectorTNs_O::make(residue->numberOfAtoms(),_Nil<core::T_O>());
   int atomIndex = 0;
+  StereoisomerAtoms_sp stereoisomerAtoms = StereoisomerAtoms_O::create(stereoisomerName);
   for ( auto ai = residue->begin_atoms(); ai!=residue->end_atoms(); ++ai, ++atomIndex) {
     Atom_sp atom = *ai;
     ConstitutionAtomIndex0N constitutionIndex = constitution->getConstitutionAtoms()->index(atom->getName());
-    TopologyAtomInfo_sp tai = TopologyAtomInfo_O::make(atom->getType(),
+    StereoisomerAtom_sp sai = StereoisomerAtom_O::make(atom->getName(),
+                                                       atom->getType(),
                                                        atom->getCharge(),
                                                        constitutionIndex);
-    topology->_AtomInfo.push_back(tai);
+    stereoisomerAtoms->addStereoisomerAtom(sai);
   }
+  topology->_StereoisomerAtomProperties.push_back(stereoisomerAtoms);
   return Values(topology,constitution);
 }
 
@@ -138,39 +116,27 @@ string Topology_O::__repr__() const {
   return ss.str();
 }
 
-
-core::List_sp Topology_O::atomInfoAsList() const {
-  ql::list l;
-  for ( int i=0; i<this->_AtomInfo.size(); ++i ) {
-    l << this->_AtomInfo[i];
-  }
-  return l.cons();
-}
-
-
-CL_DEFMETHOD Residue_sp Topology_O::build_residue() const
+CL_DEFMETHOD Residue_sp Topology_O::buildResidueForIsomer(size_t isomer) const
 {
+  StereoisomerAtoms_sp info = this->_StereoisomerAtomProperties[isomer];
   LOG(BF("creating residue\n"));
-  Residue_sp res = Residue_O::make(this->getName());
+  Residue_sp res = Residue_O::make(info->getName());
   LOG(BF("created residue\n"));
   ASSERT(atomInfo.notnilp());
-  size_t numAtoms = this->_AtomInfo.size();
+  ConstitutionAtoms_sp constitutionAtoms = this->_Constitution->getConstitutionAtoms();
+  size_t numAtoms = constitutionAtoms->numberOfAtoms();
   gctools::Vec0<Atom_sp> atoms;
   atoms.resize(numAtoms);
   res->resizeContents(numAtoms);
-  ConstitutionAtoms_sp constitutionAtoms = this->_Constitution->getConstitutionAtoms();
-  if (constitutionAtoms->numberOfAtoms() !=this ->_AtomInfo.size()) {
-    SIMPLE_ERROR(BF("There is a mismatch between the number of atoms in the constitution-atoms (%d) and the number of atoms in the topology AtomInfo (~%) - there is probably a problem with how the topology was constructed") % constitutionAtoms->numberOfAtoms() % this->_AtomInfo.size());
-  }
   size_t idx = 0;
-  for ( size_t idx=0, idxEnd(this->_AtomInfo.size()); idx<idxEnd; ++idx ) {
-    TopologyAtomInfo_sp ai = this->_AtomInfo[idx];
+  for ( size_t idx=0, idxEnd(numAtoms); idx<idxEnd; ++idx ) {
+    StereoisomerAtom_sp ai = (*info)[idx];
     Atom_sp atom = Atom_O::create();
     ConstitutionAtom_sp ca = (*constitutionAtoms)[ai->constitutionAtomIndex()];
     atom->setName(ca->_AtomName);
     atom->setElement(ca->_Element);
-    atom->setType(ai->_fftype);
-    atom->setCharge(ai->_AtomicCharge);
+    atom->setType(ai->_AtomType);
+    atom->setCharge(ai->_AtomCharge);
     atom->turnOnFlags(needsBuild);
 //    printf("%s:%d  Creating atom@%d -> %s\n", __FILE__, __LINE__, ai->_ConstitutionAtomIndex, _rep_(atom).c_str());
     atoms[ai->_ConstitutionAtomIndex] = atom;
@@ -195,6 +161,44 @@ CL_DEFMETHOD Residue_sp Topology_O::build_residue() const
   }
   return res;
 }
+
+CL_DEFMETHOD Residue_sp Topology_O::buildResidueForMonomerName(core::Symbol_sp monomerName) const {
+  for ( size_t isomer(0); this->_StereoisomerAtomProperties.size(); ++isomer) {
+    if (this->_StereoisomerAtomProperties[isomer]->getName() == monomerName) {
+      return this->buildResidueForIsomer(isomer);
+    }
+  }
+  stringstream snames;
+  for ( size_t isomer(0); this->_StereoisomerAtomProperties.size(); ++isomer) {
+    snames << _rep_(this->_StereoisomerAtomProperties[isomer]->getName()) << " ";
+  }
+  SIMPLE_ERROR(BF("Could not find monomer named %s in topology with names %s") % _rep_(monomerName) % snames.str());
+}
+
+CL_DEFMETHOD Residue_sp Topology_O::buildResidueForIsoname(Isoname_sp isoname) const {
+  if (isoname->_Isomer<this->_StereoisomerAtomProperties.size()) {
+    return this->buildResidueForIsomer(isoname->_Isomer);
+  }
+  stringstream snames;
+  for ( size_t isomer(0); this->_StereoisomerAtomProperties.size(); ++isomer) {
+    snames << _rep_(this->_StereoisomerAtomProperties[isomer]->getName()) << " ";
+  }
+  SIMPLE_ERROR(BF("Could not find isoname %s in topology with names %s") % _rep_(isoname) % snames.str());
+}
+
+CL_DEFMETHOD Residue_sp Topology_O::buildResidueSingleName() const {
+  if (this->_StereoisomerAtomProperties.size()==1) {
+    return this->buildResidueForIsomer(0);
+  }
+  stringstream snames;
+  for ( size_t isomer(0); this->_StereoisomerAtomProperties.size(); ++isomer) {
+    snames << _rep_(this->_StereoisomerAtomProperties[isomer]->getName()) << " ";
+  }
+  SIMPLE_ERROR(BF("This topology does not have a single name - it has names %s") % snames.str());
+}
+
+
+
 
 
 
@@ -307,6 +311,17 @@ CL_DEFMETHOD Residue_sp Topology_O::build_residue() const
       in_atom->bondTo(out_atom, bo);
     }
   }
+
+StereoisomerAtoms_sp Topology_O::getStereoisomerAtoms(core::Symbol_sp stereoisomerName) const
+{
+  for (int i(0); i<this->_StereoisomerAtomProperties.size(); ++i ) {
+    if (stereoisomerName == this->_StereoisomerAtomProperties[i]->getName() ) {
+      return this->_StereoisomerAtomProperties[i];
+    }
+  }
+  SIMPLE_ERROR(BF("Could not find StereoisomerAtoms named %s") % _rep_(stereoisomerName));
+}
+
 
 
   CL_LISPIFY_NAME("getMonomerContext");
@@ -526,7 +541,6 @@ CL_DEFMETHOD Residue_sp Topology_O::build_residue() const
   void	Topology_O::initialize()
   {
     this->Base::initialize();
-    this->_NumberOfStereoisomers = 1;
   }
 
 
@@ -573,14 +587,15 @@ CL_DEFMETHOD Residue_sp Topology_O::build_residue() const
   }
 
 
+
+CL_DOCSTRING(R"(Coding can be either :absolute or :coded. :absolute means the bitvector/integer stereoisomer index is used to determine which stereoisomer is specified.  Coded means the stereoisomer index is looked up in the _StereoisomerAtomProperties.)");
   CL_DEFMETHOD void Topology_O::setStereoisomerAtoms(core::Symbol_sp coding, core::List_sp stereoisomer_atoms) {
     this->_StereoisomerCoding = coding;
     this->_StereoisomerAtomProperties.clear();
     for ( auto tentry : stereoisomer_atoms ) {
-      StereoisomerAtoms_sp entry = gc::As<StereoisomerAtoms_sp>(tentry);
+      StereoisomerAtoms_sp entry = gc::As<StereoisomerAtoms_sp>(CONS_CAR(tentry));
       this->_StereoisomerAtomProperties.push_back(entry);
     }
-    this->_NumberOfStereoisomers = this->_StereoisomerAtomProperties.size();
   }
 
 

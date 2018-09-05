@@ -132,9 +132,7 @@ void	Constitution_O::makeResidueConsistentWithStereoisomerNamed(Residue_sp res,
     res->setName(fullName);
     res->setPdbName(pdbName);
     //
-    //
     // Set chiral restraints
-    //
     //
     si = this->_StereoInformation->getStereoisomer(stereoisomerName);
     gctools::Vec0<StereoConfiguration_sp>::iterator	sci;

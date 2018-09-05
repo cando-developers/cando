@@ -147,7 +147,6 @@ void StereoConfiguration_O::fields(core::Record_sp node) {
 void Stereoisomer_O::fields(core::Record_sp node) {
   node->field(INTERN_(kw,name),this->_Name);
   node->field(INTERN_(kw,pdb),this->_Pdb);
-  node->field(INTERN_(kw,ent),this->_Enantiomer);
   node->field(INTERN_(kw,configs),this->_Configurations);
   this->Base::fields(node);
 }
@@ -339,8 +338,15 @@ StereoInformation_sp StereoInformation_O::make(core::List_sp stereoisomers, core
     if ( me->_NameOrPdbToStereoisomer.count((*it)->getName())>0 ) {
       SIMPLE_ERROR(BF("addStereoisomer monomer name (%s) has already been used") % (*it)->getName());
     }
-    me->_NameOrPdbToStereoisomer.set((*it)->getName(),(*it));
-    me->_NameOrPdbToStereoisomer.set((*it)->getPdb(),(*it));
+    if ((*it)->getName().notnilp()) {
+      me->_NameOrPdbToStereoisomer.set((*it)->getName(),(*it));
+    } else {
+      SIMPLE_ERROR(BF("A stereoisomer name in %s is NIL - this is not allowed") % _rep_(stereoisomers));
+    }
+    if ((*it)->getPdb().notnilp()) {
+      // only non NIL names are added
+      me->_NameOrPdbToStereoisomer.set((*it)->getPdb(),(*it));
+    }
     index++;
   }
   return me;

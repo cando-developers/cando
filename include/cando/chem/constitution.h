@@ -126,7 +126,7 @@ FORWARD(Monomer);
   public:
     typedef	adapt::SymbolMap<Topology_O> TopologyMap; //adapt::SymbolMap<Topology_O>	TopologyMap;
     typedef    	adapt::SymbolMap<Plug_O> PlugMap; // adapt::SymbolMap<Plug_O>		PlugMap;
-  private:
+  public:
     core::Symbol_sp			_Name;
     core::String_sp			_Comment;
 	    /*! An object that that describes the atoms and bonding within this Constitution.
@@ -204,6 +204,7 @@ FORWARD(Monomer);
 
     Topology_sp topologyWithName(core::Symbol_sp name) const;
 
+    CL_DEFMETHOD StereoInformation_sp getStereoInformation() const { return this->_StereoInformation; }
 
     adapt::StringList_sp getMonomerNamesAsStringList();
     adapt::SymbolSet_sp	getMonomerNamesAsSymbolSet();
