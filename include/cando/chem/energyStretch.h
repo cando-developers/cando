@@ -64,37 +64,69 @@ struct TermStretch {
  */
 class EnergyStretch : public EnergyTerm {
 public:
-	string	className()	{ return "EnergyStretch"; };
+  string	className()	{ return "EnergyStretch"; };
 public:
-	TermStretch	term;
-        Atom_sp		_Atom1;
-        Atom_sp		_Atom2;
+  TermStretch	term;
+  Atom_sp		_Atom1;
+  Atom_sp		_Atom2;
 #if TURN_ENERGY_FUNCTION_DEBUG_ON
-	bool		_calcForce;
-	bool		_calcDiagonalHessian;
-	bool		_calcOffDiagonalHessian;
+  bool		_calcForce;
+  bool		_calcDiagonalHessian;
+  bool		_calcOffDiagonalHessian;
 #include <cando/chem/energy_functions/_Stretch_debugEvalDeclares.cc>
 #endif
 
 
-	Atom_sp	getAtom1() {return this->_Atom1;};
-        Atom_sp	getAtom2() {return this->_Atom2;};
-	double	getR0()	{return this->term.r0;};
-	double	getR();
+  Atom_sp	getAtom1() {return this->_Atom1;};
+  Atom_sp	getAtom2() {return this->_Atom2;};
+  double	getR0()	{return this->term.r0;};
+  double	getR();
 
 public:
 //	void	archive(core::ArchiveP node);
 public:
-	adapt::QDomNode_sp	asXml();
-	void	parseFromXmlUsingAtomTable(adapt::QDomNode_sp xml, AtomTable_sp atomTable );
+  adapt::QDomNode_sp	asXml();
+  void	parseFromXmlUsingAtomTable(adapt::QDomNode_sp xml, AtomTable_sp atomTable );
 
 
 		//! Initialize self from a FFStretch parameter and two EnergyAtom(s)
-	void defineFrom( FFStretch_sp stretch, EnergyAtom *ea1, EnergyAtom *ea2, double scale);
+  void defineFrom( FFStretch_sp stretch, EnergyAtom *ea1, EnergyAtom *ea2, double scale);
 		//! Handle situation when FFStretch term could not be found for these two atoms
-	void defineMissing( EnergyAtom *ea1, EnergyAtom *ea2);
+  void defineMissing( EnergyAtom *ea1, EnergyAtom *ea2);
 //        void defineFrom( EnergyAtom *ea1, EnergyAtom *ea2);
+  core::List_sp encode() const;
+  void decode(core::List_sp alist);
 };
+};
+
+
+namespace translate {
+
+template <>
+struct	to_object<chem::EnergyStretch >
+{
+  typedef	core::Cons_sp ExpectedType;
+  typedef	core::Cons_sp DeclareType;
+  static core::T_sp convert(const chem::EnergyStretch& stretch)
+  {
+    return stretch.encode();
+  }
+};
+
+template <>
+struct	from_object<chem::EnergyStretch>
+{
+  typedef	chem::EnergyStretch	ExpectedType;
+  typedef	ExpectedType 		DeclareType;
+	DeclareType _v;
+	from_object(core::T_sp o)
+	{
+          SIMPLE_ERROR(BF("Implement me"));
+        }
+};
+};
+
+namespace chem {
 
 double	_evaluateEnergyOnly_Stretch (
 		double x1,
@@ -110,6 +142,8 @@ class EnergyStretch_O : public EnergyComponent_O
 {
     LISP_CLASS(chem,ChemPkg,EnergyStretch_O,"EnergyStretch",EnergyComponent_O);
 public:
+    bool fieldsp() const { return true; };
+    void fields(core::Record_sp node);
 public: // virtual functions inherited from Object
     void	initialize();
 public:
@@ -170,13 +204,6 @@ public:
     DEFAULT_CTOR_DTOR(EnergyStretch_O);
 };
 
-
-
-
-
-
-
 };
 
-TRANSLATE(chem::EnergyStretch_O);
 #endif //]

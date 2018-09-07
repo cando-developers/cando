@@ -47,6 +47,19 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace chem {
 
 
+core::List_sp EnergyStretch::encode() const {
+  return core::Cons_O::createList(core::Cons_O::create(INTERN_(kw,kb),core::clasp_make_double_float(this->term.kb)),
+                                  core::Cons_O::create(INTERN_(kw,r0),core::clasp_make_double_float(this->term.r0)),
+                                  core::Cons_O::create(INTERN_(kw,i1), core::make_fixnum(this->term.I1)),
+                                  core::Cons_O::create(INTERN_(kw,i2), core::make_fixnum(this->term.I2)),
+                                  core::Cons_O::create(INTERN_(kw,atom1), this->_Atom1),
+                                  core::Cons_O::create(INTERN_(kw,atom2), this->_Atom2));
+}
+
+void EnergyStretch::decode(core::List_sp alist) {
+  SIMPLE_ERROR(BF("Implement decode of EnergyStretch"));
+}
+
 #if XML_ARCHIVE
 void	EnergyStretch::archive(core::ArchiveP node)
 {
@@ -547,14 +560,11 @@ void EnergyStretch_O::initialize()
   this->setErrorThreshold(0.05);
 }
 
-#ifdef XML_ARCHIVE
-void EnergyStretch_O::archiveBase(core::ArchiveP node)
+void EnergyStretch_O::fields(core::Record_sp node)
 {
-  this->Base::archiveBase(node);
-  archiveEnergyComponentTerms<EnergyStretch_O,EnergyStretch>(node,*this);
+  node->field( INTERN_(kw,terms), this->_Terms );
+  this->Base::fields(node);
 }
-#endif
-
 
 void EnergyStretch_O::addTerm(const EnergyStretch& term)
 {
