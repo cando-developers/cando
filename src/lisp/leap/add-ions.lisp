@@ -86,7 +86,9 @@
                   ion2-atom (chem:content-at ion2-residue 0))
             (chem:add-matter ion2-mol ion2-residue)
             (chem:add-matter ion2-agg ion2-mol)))
+      (format t "About to octree-create~%")
       (chem:oct-oct-tree-create oct-tree mol :shell grid-space ion-min-size shell-extent nonbond-db 0 t)
+      (format t "Came out of octree-create~%")
       (multiple-value-bind (min-charge-point max-charge-point)
           (chem:oct-tree-init-charges oct-tree at-octree dielectric ion1-size)
         (loop 

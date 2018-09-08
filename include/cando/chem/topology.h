@@ -237,12 +237,14 @@ public:
 
   CL_DEFMETHOD void addPlug(core::Symbol_sp nm, plugType op ) { this->_Plugs.set(nm, op);};
   bool		hasFlag(core::Symbol_sp f) const;
-  bool		matchesTopology(Topology_sp cm);
+  bool		matchesPlugs(Topology_sp cm);
   bool		matchesContext(MonomerContext_sp cm);
 
+  size_t numberOfStereoisomers() const { return this->_StereoisomerAtomProperties.size(); }
   void addStereoisomerAtoms(StereoisomerAtoms_sp sia);
   void setStereoisomerAtoms(core::Symbol_sp coding, core::List_sp stereoisomer_atoms);
   StereoisomerAtoms_sp getStereoisomerAtoms(core::Symbol_sp stereoisomerName) const;
+  core::Symbol_sp getStereoisomerName(size_t index) const;
   core::T_mv lookupStereoisomerAtoms(Fixnum index);
     
   Topology_O() : _Name(_Nil<core::Symbol_O>()),

@@ -109,6 +109,7 @@ namespace chem {
       GC_ALLOCATE_VARIADIC(Isoname_O,isoname,name,topology,isomer);
       return isoname;
     }
+    string __repr__() const;
     CL_DEFMETHOD core::Symbol_sp name() const { return this->_Name; };
     CL_DEFMETHOD Fixnum isomer() const { return this->_Isomer; };
     CL_DEFMETHOD Topology_sp topology() const { return this->_Topology; };
@@ -127,162 +128,162 @@ struct gctools::GCInfo<chem::Monomer_O> {
 
 namespace chem {
 
-  FORWARD(Monomer);
-  class Monomer_O : public Entity_O
-  {
-    LISP_CLASS(chem,ChemPkg,Monomer_O,"Monomer",Entity_O);
-  public:
-    CL_DEF_CLASS_METHOD static Monomer_sp makeMonomer();
-  public:
-    bool fieldsp() const { return true; };
-    void fields(core::Record_sp node);
-  public:
-    void initialize();
-  public:
+FORWARD(Monomer);
+class Monomer_O : public Entity_O
+{
+  LISP_CLASS(chem,ChemPkg,Monomer_O,"Monomer",Entity_O);
+public:
+  static Monomer_sp makeMonomer(core::List_sp topology_list);
+public:
+  bool fieldsp() const { return true; };
+  void fields(core::Record_sp node);
+public:
+  void initialize();
+public:
 //	void	archiveBase(core::ArchiveP n);
-    friend class	AlchemistState_O;
-  public:
-    typedef gctools::SmallMultimap<core::Symbol_sp,Coupling_sp,core::SymbolComparer> Couplings;
-    typedef gctools::Vec0<Isoname_sp>	Monomers;
-  public:
-    core::Symbol_sp		_Id;
-    uint			_SequenceNumber;
-    Couplings			_Couplings;
-    mutable uint		_CurrentMonomerIndex;
-//    core::Symbol_sp		_GroupName;
-    Monomers			_Monomers;
-    Residue_sp			_TempResidue;
-    int				_TemporaryInt;
+  friend class	AlchemistState_O;
+public:
+  typedef gctools::SmallMultimap<core::Symbol_sp,Coupling_sp,core::SymbolComparer> Couplings;
+public:
+  core::Symbol_sp		_Id;
+  size_t			_SequenceNumber;
+  Couplings			_Couplings;
+  mutable size_t		_CurrentMonomerIndex;
+  mutable size_t                _CurrentStereoisomerOffset;
+  gctools::Vec0<Topology_sp>    _Monomers;
+  Residue_sp			_TempResidue;
+  int				_TemporaryInt;
 //    adapt::SymbolSet_sp			_Aliases; //!< this will identify monomers for searches
-  public:
+public:
 //    virtual Residue_sp	createResidue();
-    void setTempResidue(Residue_sp res)
-    {
-      this->_TempResidue = res;
-    };
+  void setTempResidue(Residue_sp res)
+  {
+    this->_TempResidue = res;
+  };
 //    adapt::SymbolSet_sp getMonomerAliases()	{_OF(); ANN(this->_Aliases);return this->_Aliases; };
         //! Return true if inc worked and false if we carry
-  public:
+public:
 	/*! Return true if we have a RingClosingOutPlug */
-    bool hasRingClosingOutPlug() const;
+  bool hasRingClosingOutPlug() const;
 
-    CL_LISPIFY_NAME("setId");
-    CL_DEFMETHOD 	void	setId(core::Symbol_sp id) { this->_Id = id; };
-    CL_LISPIFY_NAME("getId");
-    CL_DEFMETHOD 	core::Symbol_sp getId() { return this->_Id; };
-    Topology_sp	getTopology();
-    RingClosingPlug_sp getMissingRingClosingPlug(Monomer_sp mate);
-    CL_LISPIFY_NAME("getTemporaryResidue");
-    CL_DEFMETHOD 	Residue_sp	getTemporaryResidue()
-    { _G();
-      ASSERTNOTNULL(this->_TempResidue);
-      return this->_TempResidue;
-    }
-    uint	getTemporaryInt() { return this->_TemporaryInt; }
-    void	setTemporaryInt(uint i) { this->_TemporaryInt = i; }
-    bool hasTemporaryResidue();
-  public:
-    core::List_sp plugNamesAndCouplingsAsList();
+  CL_LISPIFY_NAME("setId");
+  CL_DEFMETHOD 	void	setId(core::Symbol_sp id) { this->_Id = id; };
+  CL_LISPIFY_NAME("getId");
+  CL_DEFMETHOD 	core::Symbol_sp getId() { return this->_Id; };
+  Topology_sp	getTopology();
+  RingClosingPlug_sp getMissingRingClosingPlug(Monomer_sp mate);
+  CL_LISPIFY_NAME("getTemporaryResidue");
+  CL_DEFMETHOD 	Residue_sp	getTemporaryResidue()
+  { _G();
+    ASSERTNOTNULL(this->_TempResidue);
+    return this->_TempResidue;
+  }
+  uint	getTemporaryInt() { return this->_TemporaryInt; }
+  void	setTemporaryInt(uint i) { this->_TemporaryInt = i; }
+  bool hasTemporaryResidue();
+public:
+  core::List_sp plugNamesAndCouplingsAsList();
 
-    adapt::SymbolSet_sp	plugNames() const;
+  CL_DOCSTRING("Return a list of all of the plug names that this monomer has.");
+  CL_DEFMETHOD core::List_sp plugNamesAsList() const;
 
-  public:
+public:
 
-    void	setSequenceNumber(uint idx) { this->_SequenceNumber = idx;};
-    CL_LISPIFY_NAME("getSequenceNumber");
-    CL_DEFMETHOD 	uint	getSequenceNumber() { return this->_SequenceNumber; };
+  void	setSequenceNumber(uint idx) { this->_SequenceNumber = idx;};
+  CL_LISPIFY_NAME("getSequenceNumber");
+  CL_DEFMETHOD 	uint	getSequenceNumber() { return this->_SequenceNumber; };
 
 //	bool	sameAs(Monomer_sp mon) { return this == mon.get(); };
-    string	getAddress();
+  string	getAddress();
 
-    virtual void updateGroupName() { return; };
+  virtual void updateGroupName() { return; };
 
 
-    uint	numberOfCouplings() const;
+  uint	numberOfCouplings() const;
 
-    void	addCoupling(core::Symbol_sp plugName, Coupling_sp out);
+  void	addCoupling(core::Symbol_sp plugName, Coupling_sp out);
         /*! Generate the in-coupling name and add this
          * coupling by that name.
          * Make sure that no other in couplings are defined.
          */
-    void	resetInCoupling();
-    void	setInCoupling(Coupling_sp out);
+  void	resetInCoupling();
+  void	setInCoupling(Coupling_sp out);
         /*! Generate the out-coupling name and add this
          * coupling by that name.
          * Make sure that no other out couplings with this
          * name are defined.
          */
-    void	addOutCoupling(Coupling_sp out);
-    void	removeCouplingToMonomer(Monomer_sp mon);
+  void	addOutCoupling(Coupling_sp out);
+  void	removeCouplingToMonomer(Monomer_sp mon);
 
         /*! Fix the plug name key for the coupling.
          * This has to be done when a coupling name is changed.
          */
-    void	fixPlugNameForCoupling(Coupling_sp coup);
+  void	fixPlugNameForCoupling(Coupling_sp coup);
 
-    CL_DEFMETHOD void	removeCoupling(Coupling_sp coup);
-    CL_DEFMETHOD bool	hasCouplingWithPlugName(core::Symbol_sp s);
-    CL_DEFMETHOD Coupling_sp getCouplingWithPlugName(core::Symbol_sp s);
+  CL_DEFMETHOD void	removeCoupling(Coupling_sp coup);
+  CL_DEFMETHOD bool	hasCouplingWithPlugName(core::Symbol_sp s);
+  CL_DEFMETHOD Coupling_sp getCouplingWithPlugName(core::Symbol_sp s);
         /*! Return true if this monomer has a plug name that points to the coupling
          */
-    bool	hasMatchingPlugNameAndCoupling(core::Symbol_sp plugName, Coupling_sp coup);
-    Coupling_sp getInCoupling();
-    core::Symbol_sp getInCouplingName();
-    bool	hasInCoupling();
-    bool	hasOutCouplings();
+  bool	hasMatchingPlugNameAndCoupling(core::Symbol_sp plugName, Coupling_sp coup);
+  Coupling_sp getInCoupling();
+  core::Symbol_sp getInCouplingName();
+  bool	hasInCoupling();
+  bool	hasOutCouplings();
 //	bool	hasOutCouplingWithName(const string& name);
 
-    gctools::Vec0<Coupling_sp> getOutCouplings();
+  gctools::Vec0<Coupling_sp> getOutCouplings();
 
         /*! Return true if the current monomer context is a valid one
          */
-    bool	isMonomerContextValid();
+  bool	isMonomerContextValid();
 
         /*! Return the current monomer context, throw error if its invalid
          * Use the specific names of the monomers
          */
-    MonomerContext_sp getSpecificMonomerContext();
+  MonomerContext_sp getSpecificMonomerContext();
 
         /*! Return the current monomer context, throw error if its invalid
          * Use the general/group names of the monomers if defined
          */
-    MonomerContext_sp getGeneralMonomerContext();
+  MonomerContext_sp getGeneralMonomerContext();
 
-    void	throwIfBadConnections();
-    bool	checkForBadConnections();
+  void	throwIfBadConnections();
+  bool	checkForBadConnections();
 
-    virtual void checkForErrorsAndUnknownContexts(CandoDatabase_sp bdb);
+  virtual void checkForErrorsAndUnknownContexts(CandoDatabase_sp bdb);
 //    virtual adapt::ObjectSet_sp getAllAliases();
-  public:
-    Constitution_sp getConstitution();
-    Plug_sp getPlugNamed(core::Symbol_sp s);
+public:
+  Constitution_sp getConstitution();
+  Plug_sp getPlugNamed(core::Symbol_sp s);
 
 //! When a residue gets created, temporarily point to it
-  public:	// accessible to AlchemistState
-    virtual uint getMonomerIndex() { return this->_CurrentMonomerIndex; };
-    virtual void setMonomerIndex(uint i) { this->_CurrentMonomerIndex = i; };
+public:	// accessible to AlchemistState
+  size_t numberOfStereoisomers() const;
+//  void randomizeMonomer();
+  bool incrementMonomerIndex();
+  virtual size_t getMonomerIndex() const;
+  virtual void setMonomerIndex(size_t i);
 //    void	_expandGroupName();
-  public:
+public:
         //!< Add another monomer name
-    void addIsoname(Isoname_sp name);
-  public:
-    string __repr__() const;
-    CL_DEFMETHOD virtual core::Symbol_sp monomerName() const;
-    CL_DEFMETHOD virtual Fixnum getIsomer() const;
+  void addTopology(Topology_sp name);
+public:
+  string __repr__() const;
+  CL_DEFMETHOD virtual core::Symbol_sp monomerName() const;
+  CL_DEFMETHOD virtual Fixnum getStereoisomerOffset() const { return this->_CurrentStereoisomerOffset;}; // getIsomer
     //core::Symbol_sp getGroupName() const { return this->_GroupName; };
 //    virtual AtomIndexer_sp getInterestingAtomIndexer();
 //    void setGroupName(core::Symbol_sp groupName);
-    CL_DEFMETHOD Isoname_sp	getOneMonomer() const;
-    string description() const;
-    uint numberOfPossibleMonomers() { return this->_Monomers.size(); };
-    void randomizeMonomer();
-    bool incrementMonomerIndex();
+//  CL_DEFMETHOD Isoname_sp	getIsoname() const;
+  string description() const;
 //    virtual core::List_sp allAtomAliases();
         //! Return true if we recognize the alias with the form ";[monomerAlias]@[atomAlias]"
 //    CL_DEFMETHOD virtual bool recognizesAlias(Alias_sp alias);
-  public:
-    Monomer_O() : _CurrentMonomerIndex(0) {};
-  };
+public:
+  Monomer_O() : _CurrentMonomerIndex(0), _CurrentStereoisomerOffset(0) {};
+};
 };
 
 #endif //

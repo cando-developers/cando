@@ -116,46 +116,41 @@ void Constitution_O::add_topology(Topology_sp topology) {
 void	Constitution_O::makeResidueConsistentWithStereoisomerNamed(Residue_sp res,
 								   core::Symbol_sp stereoisomerName)
 {
-    Stereoisomer_sp				si;
-    string					atomName;
-    Atom_sp					aa;
-    core::T_sp bdb = getCandoDatabase();
-    Constitution_sp residueConstitution = this->asSmartPtr();
-    Constitution_sp stereoisomerConstitution = gc::As<Constitution_sp>(core::eval::funcall(_sym_constitutionForNameOrPdb, bdb,stereoisomerName));
-    if (residueConstitution!=stereoisomerConstitution) {
-      SIMPLE_ERROR(BF("The residue constitution(%s) is different from the "
-                      "stereoisomer(%s) constitution(%s) that you want to change it too")
-                   % residueConstitution->getName() % stereoisomerName % stereoisomerConstitution->getName() );
-    }
-    core::Symbol_sp fullName = gc::As<core::Symbol_sp>(core::eval::funcall(_sym_monomerNameForNameOrPdb,bdb,stereoisomerName));
-    core::Symbol_sp pdbName = gc::As<core::Symbol_sp>(core::eval::funcall(_sym_pdbNameForNameOrPdb,bdb,stereoisomerName));
-    res->setName(fullName);
-    res->setPdbName(pdbName);
+  DEPRECATED();
+  Stereoisomer_sp				si;
+  string					atomName;
+  Atom_sp					aa;
+  core::T_sp bdb = getCandoDatabase();
+  Constitution_sp residueConstitution = this->asSmartPtr();
+  core::Symbol_sp fullName = gc::As<core::Symbol_sp>(core::eval::funcall(_sym_monomerNameForNameOrPdb,bdb,stereoisomerName));
+  core::Symbol_sp pdbName = gc::As<core::Symbol_sp>(core::eval::funcall(_sym_pdbNameForNameOrPdb,bdb,stereoisomerName));
+  res->setName(fullName);
+  res->setPdbName(pdbName);
     //
     // Set chiral restraints
     //
-    si = this->_StereoInformation->getStereoisomer(stereoisomerName);
-    gctools::Vec0<StereoConfiguration_sp>::iterator	sci;
-    for (sci=si->_Configurations_begin();sci!=si->_Configurations_end();sci++){
-	aa = res->atomWithName((*sci)->getAtomName());
-	LOG(BF("Setting the configuration of atom(%s) to(%s)") % aa->description().c_str() % _rep_((*sci)->getConfiguration())  ); //
-	if ( (*sci)->getConfiguration() == chemkw::_sym_S ) {
-	    aa->setConfiguration( S_Configuration );
-	} else if ( (*sci)->getConfiguration() == chemkw::_sym_R ) {
-	    aa->setConfiguration( R_Configuration );
-	}
+  si = this->_StereoInformation->getStereoisomer(stereoisomerName);
+  gctools::Vec0<StereoConfiguration_sp>::iterator	sci;
+  for (sci=si->_Configurations_begin();sci!=si->_Configurations_end();sci++){
+    aa = res->atomWithName((*sci)->getAtomName());
+    LOG(BF("Setting the configuration of atom(%s) to(%s)") % aa->description().c_str() % _rep_((*sci)->getConfiguration())  ); //
+    if ( (*sci)->getConfiguration() == chemkw::_sym_S ) {
+      aa->setConfiguration( S_Configuration );
+    } else if ( (*sci)->getConfiguration() == chemkw::_sym_R ) {
+      aa->setConfiguration( R_Configuration );
     }
+  }
     //
     //
     // Set dihedral restraints for E/Z pi bonds
     //
     //
-    gctools::Vec0<ComplexRestraint_sp>::iterator	tpi;
-    for ( tpi=this->_StereoInformation->begin_ComplexRestraints(); 
-	  tpi!=this->_StereoInformation->end_ComplexRestraints(); tpi++ )
-    {
-	(*tpi)->fillRestraints(res);
-    }
+  gctools::Vec0<ComplexRestraint_sp>::iterator	tpi;
+  for ( tpi=this->_StereoInformation->begin_ComplexRestraints(); 
+        tpi!=this->_StereoInformation->end_ComplexRestraints(); tpi++ )
+  {
+    (*tpi)->fillRestraints(res);
+  }
 }
 
     bool	Constitution_O::recognizesStereoisomerName(core::Symbol_sp nm)

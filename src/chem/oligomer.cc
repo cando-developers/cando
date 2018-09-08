@@ -33,6 +33,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/oligomer.h>
 #include <clasp/core/array.h>
 #include <clasp/core/hashTableEq.h>
+#include <clasp/core/bformat.h>
 #include <cando/chem/molecule.h>
 #include <clasp/core/numerics.h>
 #include <cando/chem/candoScript.h>
@@ -609,21 +610,19 @@ int			residueNetCharge;
     Residue_sp			res;
     Molecule_sp 			mol;
     mol = Molecule_O::create();
+    BFORMAT_T(BF("%s:%d Creating residues\n") % __FILE__ % __LINE__ );
     core::HashTableEq_sp monomersToResidues = core::HashTableEq_O::create_default();
     gctools::Vec0<Monomer_sp>::iterator	mi;
-    core::T_sp db = getCandoDatabase();
     for ( mi=this->_Monomers.begin(); mi!=this->_Monomers.end(); mi++ ) {
-      Constitution_sp constitution = core::eval::funcall(_sym_constitutionForNameOrPdb,db,(*mi)->monomerName());
-      Topology_sp topology = constitution->getTopologyForMonomerEnvironment(*mi);
-      LOG(BF("topology: %s") % _rep_(topology));
-      res = topology->buildResidueForMonomerName((*mi)->getOneMonomer());
-      LOG(BF("res: %s") % _rep_(res));
-      constitution->makeResidueConsistentWithStereoisomerNamed(res,(*mi)->monomerName());
+      Topology_sp topology = (*mi)->getTopology();
+      Constitution_sp constitution = topology->_Constitution;
+      res = topology->buildResidueForMonomerName((*mi)->monomerName());
       LOG(BF("made res consistent with stereoisomer named res: %s") % _rep_(res));
       mol->addMatter(res);
       LOG(BF("Added matter"));
       monomersToResidues->hash_table_setf_gethash((*mi),res);
     }
+    BFORMAT_T(BF("%s:%d Connecting residues\n") % __FILE__ % __LINE__ );
     gctools::Vec0<Coupling_sp>::iterator	ci;
     Monomer_sp	mon1, mon2;
     Residue_sp	res1, res2;
@@ -635,6 +634,7 @@ int			residueNetCharge;
 	ASSERT(mon2.notnilp());
         res1 = gc::As_unsafe<Residue_sp>(monomersToResidues->gethash(mon1));
         res2 = gc::As_unsafe<Residue_sp>(monomersToResidues->gethash(mon2));
+        BFORMAT_T(BF("%s:%d  Connecting residues %s - %s\n") % __FILE__ % __LINE__ % _rep_(res1) % _rep_(res2));
     	(*ci)->doCoupling(res1,res2);
     };
     return mol;
@@ -648,7 +648,7 @@ void Oligomer_O::_gatherMultiMonomers(gctools::Vec0<Monomer_sp>& multiMonomers)
     multiMonomers.clear();
     for ( mi=this->_Monomers.begin(); mi!=this->_Monomers.end(); mi++ )
     {
-	if ( (*mi)->numberOfPossibleMonomers()>1 )
+	if ( (*mi)->numberOfStereoisomers()>1 )
 	{
 	    multiMonomers.push_back(*mi);
 	}
@@ -660,7 +660,7 @@ void Oligomer_O::_gatherMultiMonomers(gctools::Vec0<Monomer_sp>& multiMonomers)
 }
 
 
-
+#if 0
 /*!
  * Perturb one MultiMonomer in the Oligomer.
  * If there are none then do nothing.
@@ -683,9 +683,10 @@ uint				iperturb;
     iperturb = core::randomNumber01()*multiMonomers.size();
     LOG(BF("Randomizing MultiMonomer to %d out of %d") % iperturb % multiMonomers.size());
     ASSERT_lt(iperturb,multiMonomers.size());
+    
     multiMonomers[iperturb]->randomizeMonomer();
 }
-
+#endif
 
 CL_DEFMETHOD void	Oligomer_O::gotoSequence(core::Integer_sp index)
 {
@@ -695,7 +696,7 @@ CL_DEFMETHOD void	Oligomer_O::gotoSequence(core::Integer_sp index)
   Bignum idx = core::clasp_to_mpz(index);
   for ( mi=this->_Monomers.begin(); mi!=this->_Monomers.end(); mi++ )
   {
-    bases.push_back((*mi)->numberOfPossibleMonomers());
+    bases.push_back((*mi)->numberOfStereoisomers());
   }
   digits = core::bignumToMixedBaseDigits(idx,bases);
   for ( mi=this->_Monomers.begin(),di=digits.begin();
@@ -722,10 +723,10 @@ CL_DEFMETHOD Bignum Oligomer_O::currentSequenceIndex()
 {
 vector<int>	digits, bases;
 gctools::Vec0<Monomer_sp>::iterator	mi;
-Bignum			index;
+Bignum			index = 0;
     for ( mi=this->_Monomers.begin(); mi!=this->_Monomers.end(); mi++ )
     {
-        bases.push_back((*mi)->numberOfPossibleMonomers());
+        bases.push_back((*mi)->numberOfStereoisomers());
 	digits.push_back((*mi)->getMonomerIndex());
     }
     index = core::mixedBaseDigitsToBignum(bases,digits);
@@ -745,7 +746,7 @@ vector<int>			bases;
 Bignum				numSeq;
     for ( mi=this->_Monomers.begin(); mi!=this->_Monomers.end(); mi++ )
     {
-        bases.push_back((*mi)->numberOfPossibleMonomers());
+        bases.push_back((*mi)->numberOfStereoisomers());
     }
     numSeq = core::numberOfIndicesForMixedBase(bases);
     return numSeq;
@@ -763,7 +764,7 @@ long unsigned int numSeq;
     for ( mi=this->_Monomers.begin(); mi!=this->_Monomers.end(); mi++ )
     {
         if ( (*mi)->incrementMonomerIndex() ) return true;
-        numSeq *= (*mi)->numberOfPossibleMonomers();
+        numSeq *= (*mi)->numberOfStereoisomers();
     }
     return false;
 }
@@ -787,7 +788,7 @@ void Oligomer_O::_fillMonomerAsString(Monomer_sp mon, stringstream& seq)
     seq <<"( ";
     seq << "monomer '" << _rep_(mon->getId());
 #if 1
-    seq << " ( :part '" <<mon->monomerName()->symbolName() << " :isomer " << mon->getIsomer() <<  ")";
+    seq << " ( :part '" <<mon->monomerName() <<  ")";
 #else
     if ( mon->getGroupName() == mon->monomerName() )
     {

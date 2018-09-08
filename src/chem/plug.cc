@@ -116,6 +116,13 @@ void Plug_O::fields(core::Record_sp node) {
 }
 
 
+string Plug_O::__repr__() const
+{
+  stringstream ss;
+  ss << "#<" << this->className() << " " << _rep_(this->_Name) << ">";
+  return ss.str();
+}
+
 CL_LISPIFY_NAME("otherSidePlugName");
 CL_DEFMETHOD     core::Symbol_sp Plug_O::otherSidePlugName()
 {

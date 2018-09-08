@@ -236,7 +236,7 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
                                                         (string (chem:get-name atom))
                                                         (string config))) chiral-atoms configurations)))
              (new-name (intern new-name-string :keyword)))
-        #+(or)
+        ;;#+(or)
         (progn
           (format t "name -> ~a~%" name)
           (format t "chiral-atoms -> ~a~%" chiral-atoms)
@@ -244,7 +244,7 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
           (format t "new-name -> ~a~%" new-name))
         (chem:make-stereoisomer new-name nil stereoisomer-index stereo-configurations))
       (progn
-        #+(or)(format t "Single stereoisomer name -> ~a~%" name)
+        ;;#+(or)(format t "Single stereoisomer name -> ~a~%" name)
         (chem:make-stereoisomer name name 0 nil))))
 
 (defun build-stereoinformation (name constitution-atoms root-atom-name)

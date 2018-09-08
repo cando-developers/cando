@@ -89,6 +89,11 @@ void Isoname_O::fields(core::Record_sp node)
   this->Base::fields(node);
 }
 
+string Isoname_O::__repr__() const {
+  stringstream ss;
+  ss << "#<" << this->className() << " " << _rep_(this->name()) << ">";
+  return ss.str();
+}
 
 
 #if 0
@@ -215,17 +220,6 @@ bool Monomer_O::hasRingClosingOutPlug() const
     if ( it->second->isRingClosing() ) return true;
   }
   return false;
-}
-
-
-
-adapt::SymbolSet_sp Monomer_O::plugNames() const
-{_OF();
-  adapt::SymbolSet_sp ss = adapt::SymbolSet_O::create();
-  for ( Couplings::const_iterator it = this->_Couplings.begin(); it!=this->_Couplings.end(); ++it ) {
-    ss->insert(it->first);
-  }
-  return ss;
 }
 
 
@@ -395,12 +389,7 @@ CL_DEFMETHOD     MonomerContext_sp Monomer_O::getSpecificMonomerContext()
 
 RingClosingPlug_sp Monomer_O::getMissingRingClosingPlug(Monomer_sp mate)
 {
-  CandoDatabase_sp	bdb;
-  Constitution_sp	constitution;
-  MonomerContext_sp	context;
-  Topology_sp		topology;
-  bdb = getCandoDatabase();
-  constitution = core::eval::funcall(_sym_constitutionForNameOrPdb,bdb,this->monomerName());
+  Constitution_sp	constitution = this->getTopology()->_Constitution;
   return constitution->getMissingRingClosingPlug(this->sharedThis<Monomer_O>(),mate);
 }
 
@@ -411,16 +400,7 @@ uint Monomer_O::numberOfCouplings() const {
 CL_LISPIFY_NAME("getTopology");
 CL_DEFMETHOD     Topology_sp	Monomer_O::getTopology()
 {
-  Constitution_sp	constitution;
-  MonomerContext_sp	context;
-  Topology_sp		topology;
-  CandoDatabase_sp      bdb;
-  bdb = getCandoDatabase();
-  constitution = gc::As<Constitution_sp>(core::eval::funcall(_sym_constitutionForNameOrPdb,bdb,this->monomerName()));
-  ASSERTNOTNULL(constitution);
-  ASSERT(constitution.notnilp());
-  topology = constitution->getTopologyForMonomerEnvironment(this->sharedThis<Monomer_O>());
-  return topology;
+  return this->_Monomers[this->_CurrentMonomerIndex];
 }
 
 
@@ -490,32 +470,24 @@ bool	Monomer_O::hasOutCouplings()
 
 Plug_sp	Monomer_O::getPlugNamed(core::Symbol_sp pn)
 {
-  Constitution_sp con;
-  Plug_sp		plug;
-  con = core::eval::funcall(_sym_constitutionForNameOrPdb,getCandoDatabase(),this->monomerName());
-  ASSERTNOTNULL(con);
-  if ( !con->hasPlugNamed(pn) )
+  Topology_sp topology = this->getTopology();
+  if ( !topology->hasPlugNamed(pn) )
   {
     stringstream ss;
-    ss << "Constitution(" << con->getName();
-    ss << ") does not have plug named(" << _rep_(pn) << ")";
-    ss << "  available plugs(" << con->getPlugNames()->asString() << ")";
+    ss << _rep_(topology);
+    ss << " does not have plug named(" << _rep_(pn) << ")";
     SIMPLE_ERROR(BF("%s")%ss.str());
   }
-  plug = con->getPlugNamed(pn);
-  ASSERTNOTNULL(plug);
+  Plug_sp plug = topology->plugNamed(pn);
   return plug;
 }
 
 
 CL_LISPIFY_NAME("getConstitution");
 CL_DEFMETHOD     Constitution_sp Monomer_O::getConstitution() {
-  core::T_sp db = getCandoDatabase();
-  LOG(BF("status") );
-  core::Symbol_sp nm = this->monomerName();
-  LOG(BF("status") );
-  LOG(BF("Monomer name (%s)") % _rep_(nm) );
-  return core::eval::funcall(_sym_constitutionForNameOrPdb,db,nm);
+  Topology_sp topology = this->getTopology();
+  Constitution_sp con = topology->_Constitution;
+  return con;
 }
 
 Coupling_sp Monomer_O::getCouplingWithPlugName( core::Symbol_sp s) {
@@ -716,52 +688,11 @@ CL_DEFMETHOD     void	Monomer_O::removeCoupling(Coupling_sp coup)
 //---------------------------------------------------------------------
 //---------------------------------------------------------------------
 //---------------------------------------------------------------------
-#if 0
-void MonoMonomer_O::fields(core::Record_sp node)
-{
-  node->field(INTERN_(kw,name),this->_Name);
-  node->field(INTERN_(kw,groupName),this->_GroupName);
-  this->Base::fields(node);
-}
-
-
-void MonoMonomer_O::setMonomerIndex(uint i) {
-  if (i!=0) {
-    SIMPLE_ERROR(BF("set-monomer-index of a MONO-MONOMER was passed the non-zero value of %d") % i);
-  }
-}
-
-
-MonoMonomer_sp MonoMonomer_O::makeMonoMonomer(core::Symbol_sp name)
-{
-  GC_ALLOCATE(MonoMonomer_O, mon);
-  mon->_Name = name;
-  return mon;
-}
-
-void	MonoMonomer_O::_expandGroupName()
-{
-  IMPLEMENT_ME();
-}
-
-void MonoMonomer_O::checkForErrorsAndUnknownContexts(CandoDatabase_sp bdb){
-  IMPLEMENT_ME();
-}
-
-string MonoMonomer_O::__repr__() const {
-  stringstream ss;
-  ss << "#<MONO-MONOMER :monomer " << _rep_(this->getName()) << ">";
-  return ss.str();
-}
-#endif
-
-//---------------------------------------------------------------------
-//---------------------------------------------------------------------
 
 
 string Monomer_O::__repr__() const {
   stringstream ss;
-  ss << "#<MONOMER :index " << this->_CurrentMonomerIndex << " :monomer " << _rep_(this->monomerName()) << ">";
+  ss << "#<MONOMER :index " << this->_CurrentMonomerIndex << " :stereoisomer " << this->_CurrentStereoisomerOffset << " :monomer " << _rep_(this->monomerName()) << ">";
   return ss.str();
 }
 void Monomer_O::fields(core::Record_sp node)
@@ -815,29 +746,38 @@ void Monomer_O::initialize()
 }
 
 
-Monomer_sp Monomer_O::makeMonomer()
+CL_DOCSTRING("Create a monomer using a list of topology objects");
+CL_LAMBDA(&optional topology-list)
+CL_DEF_CLASS_METHOD 
+Monomer_sp Monomer_O::makeMonomer(core::List_sp topology_list)
 {
   GC_ALLOCATE(Monomer_O, me );
+  for ( auto cur : topology_list ) {
+    Topology_sp top = gc::As<Topology_sp>(CONS_CAR(cur));
+    me->addTopology(top);
+  }
   return me;
 };
 
 core::Symbol_sp Monomer_O::monomerName() const
 {_OF();
   if ( this->_Monomers.size() == 0 ) {
-    SIMPLE_ERROR(BF("There are no monomers"));
+    return _Nil<core::Symbol_O>();
   }
-  core::Symbol_sp name = this->getOneMonomer()->_Name;
+  core::Symbol_sp name = this->_Monomers[this->_CurrentMonomerIndex]->getStereoisomerName(this->_CurrentStereoisomerOffset);
 //  printf("%s:%d In Monomer_O::getName() -> %s name->className() -> %s\n", __FILE__, __LINE__, _rep_(name).c_str(), name->className().c_str());
   return name;
 }
 
+#if 0
 Fixnum Monomer_O::getIsomer() const
-{_OF();
+{
   if ( this->_Monomers.size() == 0 ) {
     SIMPLE_ERROR(BF("There are no monomers"));
   }
-  return this->getOneMonomer()->_Isomer;
+  return this->_CurrentStereoisomerOffset;
 }
+#endif
 
 /*! Check for errors and if any of the specific MonomerContexts that
  * this Monomer represents are not found in the CandoDatabase
@@ -852,7 +792,7 @@ CL_DEFMETHOD     void	Monomer_O::checkForErrorsAndUnknownContexts(CandoDatabase_
   bool			allContextsRecognized = true;
   ASSERTNOTNULLP(cdb,"CandoDatabase is undefined");
   this->Monomer_O::checkForErrorsAndUnknownContexts(cdb);
-  if ( this->numberOfPossibleMonomers() == 0 )
+  if ( this->numberOfStereoisomers() == 0 )
   {
     SIMPLE_ERROR(BF("Empty MultiMonomer"));
   }
@@ -886,50 +826,95 @@ CL_DEFMETHOD     void	Monomer_O::checkForErrorsAndUnknownContexts(CandoDatabase_
 #endif
 }
 
-
-
-
+#if 0
 CL_DEFMETHOD void	Monomer_O::addIsoname(Isoname_sp name)
 {
-  this->_Monomers.push_back(name);
-}
-
-
-void	Monomer_O::randomizeMonomer()
-{
-  ASSERT(this->_Monomers.size()>=1);
-  if ( this->_Monomers.size()==1 )
-  {
-    SIMPLE_ERROR(BF("I cannot randomize a MultiMonomer that has only one member"));
-    return;
-  }
-  uint newMonomerIndex = core::randomNumber01()*this->_Monomers.size();
-  if ( newMonomerIndex != this->_CurrentMonomerIndex )
-  {
-    this->_CurrentMonomerIndex = newMonomerIndex;
-  } else
-  {
-    this->_CurrentMonomerIndex++;
-    if ( this->_CurrentMonomerIndex >= this->_Monomers.size() )
-    {
-      this->_CurrentMonomerIndex = 0;
+  Topology_sp topology = name->topology();
+  core::List_sp plugs = topology->plugsAsList();
+  if (this->_Monomers.size()!=0) {
+    Topology_sp topology0 = this->_Monomers[0]->topology();
+    if (!topology0->matchesPlugs(topology)) {
+      SIMPLE_ERROR(BF("The first topology %s in this monomer does not match all of the plugs in the one you are trying to add %s") % _rep_(topology0) % _rep_(topology));
     }
   }
-  LOG(BF("Randomized monomer(%s) to %d out of %d") % this->getComment().c_str()
-      % this->_CurrentMonomerIndex % this->_Monomers.size()  );
+  this->_Monomers.push_back(name);
+}
+#endif
+
+CL_DEFMETHOD void Monomer_O::addTopology(Topology_sp topology)
+{
+  Isoname_sp isoname = Isoname_O::make_isoname(topology->getName(),topology,0);
+  core::List_sp plugs = topology->plugsAsList();
+  if (this->_Monomers.size()!=0) {
+    Topology_sp topology0 = this->_Monomers[0];
+    if (!topology0->matchesPlugs(topology)) {
+      SIMPLE_ERROR(BF("The first topology %s in this monomer does not match all of the plugs in the one you are trying to add %s") % _rep_(topology0) % _rep_(topology));
+    }
+  }
+  this->_Monomers.push_back(topology);
 }
 
 
+CL_DEFMETHOD core::List_sp Monomer_O::plugNamesAsList() const
+{
+  if (this->_Monomers.size()==0) {
+    return _Nil<core::T_O>();
+  }
+  Topology_sp topology0 = this->_Monomers[0];
+  core::List_sp plugs0 = topology0->plugsAsList();
+  ql::list result;
+  for ( auto ocur : plugs0 ) {
+    Plug_sp plug = gc::As<Plug_sp>(CONS_CAR(ocur));
+    result << plug->getName();
+  }
+  return result.cons();
+}
 
+CL_DEFMETHOD size_t Monomer_O::numberOfStereoisomers() const
+{
+  size_t number = 0;
+  for ( auto cur : this->_Monomers ) {
+    number += (cur)->numberOfStereoisomers();
+  }
+  return number;
+}
 
-CL_LISPIFY_NAME("getOneMonomer");
-CL_DEFMETHOD     Isoname_sp	Monomer_O::getOneMonomer() const
+CL_DEFMETHOD void Monomer_O::setMonomerIndex(size_t index) {
+  size_t offset = index;
+  size_t mindex = 0;
+  for ( auto cur : this->_Monomers ) {
+    size_t numberOfStereoisomers = (cur)->numberOfStereoisomers();
+    if (offset<numberOfStereoisomers) {
+      this->_CurrentMonomerIndex = mindex;
+      this->_CurrentStereoisomerOffset = offset;
+      return;
+    }
+    offset -= numberOfStereoisomers;
+    ++mindex;
+  }
+  SIMPLE_ERROR(BF("The index %lu is beyond the number of stereoisomers in this monomer %lu") % index % this->numberOfStereoisomers());
+}
+
+CL_DEFMETHOD size_t Monomer_O::getMonomerIndex() const {
+  size_t index = 0;
+  for ( size_t idx(0), end(this->_CurrentMonomerIndex); idx < end; ++idx ) {
+    index += this->_Monomers[idx]->numberOfStereoisomers();
+  }
+  index += this->_CurrentStereoisomerOffset;
+  return index;
+}
+
+  
+
+#if 0
+CL_LISPIFY_NAME("getIsoname");
+CL_DEFMETHOD     Isoname_sp	Monomer_O::getIsoname() const
 {
   ASSERT(this->_Monomers.size());
   LOG(BF("Looking up monomer: %d") % this->_CurrentMonomerIndex  );
   return this->_Monomers[this->_CurrentMonomerIndex];
 };
-
+#endif
 
 
 
@@ -981,7 +966,7 @@ CL_DEFMETHOD     AtomIndexer_sp	Monomer_O::getInterestingAtomIndexer()
     entityNameSet = bdb->getEntityNameSet(this->getGroupName());
     if ( entityNameSet->supportsInterestingAtomAliases() )
     {
-      atomIndexer = entityNameSet->getAtomIndexerForMonomerName(this->monomerName());
+      atomIndexer = entityNameSet->getAtomIndexerForMonomerName(this->getStereoisomerName());
       return atomIndexer;
     }
   }
@@ -1033,7 +1018,7 @@ adapt::ObjectSet_sp Monomer_O::getAllAliases()
   {
     if ( core::cl__length(this->allAtomAliases()) != 0 )
     {
-      SIMPLE_ERROR(BF("The monomer[%s] doesn't have monomer aliases but it has atom aliases(%s) - this should never happen") % this->monomerName() % _rep_(this->allAtomAliases()) );
+      SIMPLE_ERROR(BF("The monomer[%s] doesn't have monomer aliases but it has atom aliases(%s) - this should never happen") % this->getStereoisomerName() % _rep_(this->allAtomAliases()) );
     }
     return _Nil<adapt::ObjectSet_O>();
   }
@@ -1087,15 +1072,17 @@ bool Monomer_O::recognizesAlias(Alias_sp alias)
 
 bool Monomer_O::incrementMonomerIndex()
 {
-  this->_CurrentMonomerIndex++;
-  if ( this->_CurrentMonomerIndex == this->_Monomers.size() )
-  {
-    LOG(BF("Increment overflow -- resetting to zero") );
-    this->_CurrentMonomerIndex = 0;
-    return false;
+  this->_CurrentStereoisomerOffset++;
+  if (this->_CurrentStereoisomerOffset <this->_Monomers[this->_CurrentMonomerIndex]->numberOfStereoisomers()) {
+    return true;
   }
-  LOG(BF("After increment index(%d)  monomer=%s") % this->_CurrentMonomerIndex % this->description().c_str()  );
-  return true;
+  this->_CurrentStereoisomerOffset = 0;
+  this->_CurrentMonomerIndex++;
+  if (this->_CurrentMonomerIndex < this->_Monomers.size()) {
+    return true;
+  }
+  this->_CurrentMonomerIndex = 0;
+  return false;
 }
 
 

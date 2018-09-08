@@ -447,6 +447,7 @@ Atom_sp		inB0, outB0, inB1, outB1;
     moutPlug = mout->getPlugNamed(this->getOutMonomerPlugName()).as<PlugWithMates_O>();
     ASSERTNOTNULL(minPlug);
     ASSERTNOTNULL(moutPlug);
+#if 0
     		//
 		// Each monomer has a temporary residue must be identical to the
 		// residues that are passed to this routine.
@@ -461,6 +462,7 @@ Atom_sp		inB0, outB0, inB1, outB1;
     ASSERTNOTNULL(weakOutRes);
     	// make sure the monomers residue is the same as the one the caller passes us
     ASSERT(weakOutRes == outResidue );
+#endif
     LOG(BF("Everything seems ok with the residues, let's do the coupling") );
     	// connect the atoms in min/mout according to minPlug/moutPlug
     inB0 = inResidue->atomWithName(minPlug->getB0());

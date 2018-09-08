@@ -113,6 +113,8 @@ namespace chem
     virtual core::Symbol_sp otherSidePlugName();
     virtual bool hasMates() { return false;};
 
+    virtual string __repr__() const;
+    
     CL_DEFMETHOD virtual core::Symbol_sp getB0() const	{ SUBIMP(); };
     CL_DEFMETHOD virtual core::Symbol_sp getB1() const	{ SUBIMP(); };
     CL_DEFMETHOD virtual BondOrder getBondOrder0() const { SUBIMP(); };

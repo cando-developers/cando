@@ -196,7 +196,7 @@ public:
     Monomer_sp	getMonomerWithId(core::Symbol_sp id);
 
     //! Mutate one MultiMonomer
-    void perturbMonomerSequence();
+//    void perturbMonomerSequence();
 
     void	firstSequence();
     bool	incrementSequence();

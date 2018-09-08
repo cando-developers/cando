@@ -74,7 +74,32 @@ CL_VALUE_ENUM(kw::_sym_shell,chem::Octree_O::Shell);
 CL_VALUE_ENUM(kw::_sym_interior_solute,chem::Octree_O::InteriorSolute);
 CL_VALUE_ENUM(kw::_sym_interior_solvent,chem::Octree_O::InteriorSolvent);
 CL_END_ENUM(chem::_sym_STARoctree_typeSTAR);
-CL_ENUM_TRANSLATOR(chem::_sym_STARoctree_typeSTAR,chem::Octree_O::OctreeType);
+// Define a translator for the enum
+#define MY_CL_ENUM_TRANSLATOR(_sym_,_type_) \
+namespace translate { \
+template <> struct to_object<_type_> \
+{								 \
+  typedef	_type_	GivenType;	 \
+  static core::T_sp convert(const GivenType& val) \
+  {_G(); \
+    core::SymbolToEnumConverter_sp converter = _sym_->symbolValue().as<core::SymbolToEnumConverter_O>(); \
+    return (converter->symbolForEnum(val)); \
+  } \
+}; \
+template <> \
+struct from_object<_type_> \
+{								 \
+  typedef	_type_ 	ExpectedType; \
+  typedef	ExpectedType 	DeclareType; \
+  DeclareType _v; \
+  from_object(gctools::smart_ptr<core::T_O> o) { \
+    printf("%s:%d  from_object o -> %s\n", __FILE__, __LINE__, _rep_(o).c_str() ); \
+    core::SymbolToEnumConverter_sp converter = _sym_->symbolValue().as<core::SymbolToEnumConverter_O>(); \
+    _v = converter->enumForSymbol<_type_>(o.as<core::Symbol_O>()); \
+  } \
+}; \
+};
+MY_CL_ENUM_TRANSLATOR(chem::_sym_STARoctree_typeSTAR,chem::Octree_O::OctreeType);
 
 
 namespace chem{

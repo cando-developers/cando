@@ -231,11 +231,7 @@ than the (chem:number-of-sequences oligomer)."
     (leap.core:register-variable name part)))
 
 (defun my-add-monomers (oligomer names)
-  (let ((monomer (chem:make-monomer nil)))
-    (loop for name in names
-          for topology = (lookup-topology name)
-          for isoname = (chem:make-isoname name topology 0)
-          do (chem:add-isoname monomer isoname))
+  (let ((monomer (chem:make-monomer (mapcar #'lookup-topology names))))
     (chem:add-monomer oligomer monomer)
     (values (list monomer) nil)))
 
@@ -276,7 +272,7 @@ than the (chem:number-of-sequences oligomer)."
                                   for name = (chem:monomer-name part)
                                   for topology = (lookup-topology name)
                                   do (format t "do-coupling       part -> ~s~%" part)
-                                     (format t "  (chem:get-one-monomer part) -> ~s~%" (chem:get-one-monomer part))
+                                     (format t "  (chem:monomer-name part) -> ~s~%" (chem:monomer-name part))
                                      (format t "      (type-of part) -> ~s~%" (type-of part))
                                      (format t "  name -> ~s~%" name)
                                      (format t "  (type-of name) -> ~s~%" (type-of name))
@@ -370,15 +366,104 @@ Examples:
                  (setf (gethash (chem:get-name topology) caps) topology)))
     (values origins body caps)))
 
+
+(defun build-focus-monomer (topology-map)
+  (chem:make-monomer (alexandria:hash-table-values topology-map)))
+
+(defun find-unsatisfied-monomer-plug-pairs (oligomer)
+  (let ((monomers (chem:monomers-as-list oligomer)))
+    (loop for monomer in monomers
+          for monomer-name = (chem:monomer-name monomer)
+          for topology = (chem:get-topology monomer)
+          do (format t "topology: ~s~%" topology)
+          for plugs = (chem:plugs-as-list topology)
+          do (format t "plugs: ~s~%" plugs)
+          append (loop for plug in plugs
+                       for plug-name = (chem:get-name plug)
+                       when (and (or (typep plug 'chem:in-plug) (typep plug 'chem:out-plug))
+                                 (not (chem:has-coupling-with-plug-name monomer plug-name)))
+                         collect (cons monomer plug)))))
+
+
+(defun one-round-extend-oligomer-with-caps (oligomer cap-name-map topology-map &key (verbose t))
+  (let ((monomers-plugs (find-unsatisfied-monomer-plug-pairs oligomer)))
+    (when verbose (format t "monomers-plugs: ~%~a~%" monomers-plugs))
+    (if monomers-plugs
+        (progn
+          (when verbose (format t "Extending oligomer with caps~%"))
+          (loop for (monomer . plug) in monomers-plugs
+                for plug-name = (chem:get-name plug)
+                for cap = (gethash (chem:get-name plug) cap-name-map)
+                do (when verbose (format t "Extending monomer ~s  plug ~s~%" monomer plug))
+                   (unless cap
+                     (error "Could not find cap for monomer ~s plug ~s in cap-map"
+                            monomer plug))
+                   (multiple-value-bind (other-topology found)
+                       (gethash cap topology-map)
+                     (when verbose (format t "other-topology ~s~%" other-topology))
+                     (unless found
+                       (error "Could not find topology for cap ~s~%" cap))
+                     (let ((other-monomer (chem:make-monomer (list other-topology))))
+                       (when verbose (format t "Adding new monomer ~s~%" other-monomer))
+                       (chem:add-monomer oligomer other-monomer)
+                       (etypecase plug
+                         (chem:out-plug
+                          (when verbose (format t "Coupling monomer ~s with out coupling~%" other-monomer))
+                          (chem:couple oligomer monomer (chem:coupling-name plug-name) other-monomer))
+                         (chem:in-plug
+                          (when verbose (format t "Coupling monomer ~s with in coupling~%" other-monomer))
+                          (chem:couple oligomer other-monomer (chem:coupling-name plug-name) monomer))))))
+          t)
+        nil)))
+
 #|
-(defun build-training-oligomers (list-of-topologies caps)
-  (multiple-value-bind (origins body caps)
-      (classify-topologys list-of-topologys)
-    ;; Build training oligomers
-    (let ((oligomer (chem:make-oligomer)))
-      
-    (loop for origin in origins
-          for oligomer = (chem:make-oligomer)
-          for origin-monomer = (chem:make-monomer
-          do (chem:add-mon 
+(format t "monomer ~s   plug ~s   cap ~s~%" monomer plug other-topology))))))
+
+(let ((out-monomer (chem:make-monomer 
+(chem:couple oligomer
+
 |#
+
+(defun build-one-training-oligomer (focus-topologys cap-name-map topology-map &key test)
+  (let ((oligomer (core:make-cxx-object 'chem:oligomer))
+        (focus-monomer (build-focus-monomer focus-topologys)))
+    (format t "Focus monomer: ~a~%" focus-monomer)
+    (chem:add-monomer oligomer focus-monomer)
+    ;; Now repeatedly cap the focus monomer until it's finished.
+    (unless test
+      (loop while (one-round-extend-oligomer-with-caps oligomer cap-name-map topology-map)))
+    oligomer))
+
+(defun build-training-oligomers (list-of-topologys cap-name-map)
+  "Create oligomers that describe training molecules"
+  (let ((topology-map (let ((ht (make-hash-table)))
+                        (loop for top in list-of-topologys 
+                              do (setf (gethash (chem:get-name top) ht) top))
+                        ht)))
+    (multiple-value-bind (origins body caps)
+        (classify-topologys list-of-topologys)
+      ;; Build training oligomers for origins
+      ;; First make the focus monomer and add it to the oligomer
+      (loop for focus-topologys in (list origins body)
+            collect (build-one-training-oligomer focus-topologys
+                                                 cap-name-map
+                                                 topology-map)))))
+
+#|
+      (let ((unsatisfied-couplings (find-unsatisfied-couplings oligomer)))
+        
+    (let ((focus-monomer (chem:make-monomer)))
+      ;; Add the origin topologys as isonames
+      (maphash (lambda (name topology)
+                 (let ((isoname-for-topology (chem:make-isoname name topology)))
+                   (chem:add-isoname focus-monomer isoname-for-topology)))
+               origins)
+      focus-monomer)))
+|#
+#||
+    (let ((oligomer (core:make-cxx-object 'chem:oligomer))
+          (focus-monomer (chem:make-monomer)))
+      (chem:add-isoname 
+      (chem:add-monomer oligomer (
+      )))
+||#
