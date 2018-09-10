@@ -385,7 +385,9 @@ double EnergyAngle_O::evaluateAll(chem::NVector_sp 	pos,
 #include	<cando/chem/energy_functions/_Angle_termCode.cc>
                 
       if ( IllegalAngle ) {
-        ERROR(chem::_sym_LinearAngleError,core::Cons_O::createList(kw::_sym_atoms,core::Cons_O::createList(ai->_Atom1,ai->_Atom2,ai->_Atom3)));
+        ERROR(chem::_sym_LinearAngleError,core::Cons_O::createList(kw::_sym_atoms,core::Cons_O::createList(ai->_Atom1,ai->_Atom2,ai->_Atom3),
+                                                                   kw::_sym_coordinates,pos,
+                                                                   kw::_sym_indices,core::Cons_O::createList(core::make_fixnum(I1), core::make_fixnum(I2), core::make_fixnum(I3))));
       }
 #if TURN_ENERGY_FUNCTION_DEBUG_ON //[
       ai->_calcForce = calcForce;

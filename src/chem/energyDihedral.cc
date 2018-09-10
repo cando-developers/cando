@@ -481,7 +481,9 @@ double	EnergyDihedral_O::evaluateAll(NVector_sp 	pos,
 #endif
 #include <cando/chem/energy_functions/_Dihedral_termCode.cc>
       if ( EraseLinearDihedral == 0.0 ) {
-        ERROR(chem::_sym_LinearDihedralError,core::Cons_O::createList(kw::_sym_atoms,core::Cons_O::createList(di->_Atom1,di->_Atom2,di->_Atom3,di->_Atom4)));
+        ERROR(chem::_sym_LinearDihedralError,core::Cons_O::createList(kw::_sym_atoms,core::Cons_O::createList(di->_Atom1,di->_Atom2,di->_Atom3,di->_Atom4),
+                                                                      kw::_sym_coordinates,pos,
+                                                                      kw::_sym_indices,core::Cons_O::createList(core::make_fixnum(I1), core::make_fixnum(I2), core::make_fixnum(I3), core::make_fixnum(I4))));
       }
 #if TURN_ENERGY_FUNCTION_DEBUG_ON //[
       di->_calcForce = calcForce;
@@ -814,6 +816,8 @@ SYMBOL_EXPORT_SC_(KeywordPkg,atom1);
 SYMBOL_EXPORT_SC_(KeywordPkg,atom2);
 SYMBOL_EXPORT_SC_(KeywordPkg,atom3);
 SYMBOL_EXPORT_SC_(KeywordPkg,atom4);
+SYMBOL_EXPORT_SC_(KeywordPkg,coordinates);
+SYMBOL_EXPORT_SC_(KeywordPkg,indices);
 
 CL_DEFMETHOD core::List_sp EnergyDihedral_O::extract_vectors_as_alist() const{
   size_t size = this->_Terms.size();

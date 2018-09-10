@@ -26,7 +26,9 @@
 (in-package :chem)
 
 (define-condition chem::linear-atoms-error ()
-  ((atoms :initarg :atoms :reader chem:atoms)))
+  ((atoms :initarg :atoms :reader chem:atoms)
+   (coordinates :initarg :coordinates :reader coordinates)
+   (indices :initarg :indices :reader chem::indices)))
 
 (define-condition chem:linear-angle-error (linear-atoms-error) ())
 (define-condition chem:linear-dihedral-error (linear-atoms-error) ())

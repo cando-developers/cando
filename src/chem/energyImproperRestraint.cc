@@ -329,7 +329,9 @@ double EnergyImproperRestraint_O::evaluateAll(chem::NVector_sp 	pos,
 #endif
 #include <cando/chem/energy_functions/_ImproperRestraint_termCode.cc>
       if ( EraseLinearDihedral == 0.0 ) {
-        ERROR(chem::_sym_LinearImproperRestraintError, core::Cons_O::createList(kw::_sym_atoms, core::Cons_O::createList(iri->_Atom1,iri->_Atom2,iri->_Atom3,iri->_Atom4)));
+        ERROR(chem::_sym_LinearDihedralError,core::Cons_O::createList(kw::_sym_atoms,core::Cons_O::createList(iri->_Atom1,iri->_Atom2,iri->_Atom3,iri->_Atom4),
+                                                                      kw::_sym_coordinates,pos,
+                                                                      kw::_sym_indices,core::Cons_O::createList(core::make_fixnum(I1), core::make_fixnum(I2), core::make_fixnum(I3), core::make_fixnum(I4))));
       }
 #if TURN_ENERGY_FUNCTION_DEBUG_ON //[
       iri->_calcForce = calcForce;

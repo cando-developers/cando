@@ -88,6 +88,8 @@ namespace       chem
   extern	PreconditionerType	preconditionerTypeFromString(const string& t );
 
 
+struct RestartMinimizer {};
+
   struct MinimizerCondition  {
   };
 
@@ -233,12 +235,12 @@ namespace       chem
     void	debugEndIteration();
 
 
-    void	_displayIntermediateMessage( double		step,
-					     double		fnew,
-					     double		forceMag,
-					     double		forceRmsMag,
-					     double		cosAngle,
-					     bool		steepestDescent );
+    bool _displayIntermediateMessage( double		step,
+                                      double		fnew,
+                                      double		forceMag,
+                                      double		forceRmsMag,
+                                      double		cosAngle,
+                                      bool		steepestDescent );
 
   public:	// should be private
     void _truncatedNewtonInnerLoop(
@@ -303,11 +305,11 @@ namespace       chem
 
 
     void	setEnergyFunction(ScoringFunction_sp ef);
-    void	enablePrintIntermediateResults();
+    void	enablePrintIntermediateResults(size_t steps);
     void	disablePrintIntermediateResults();
-
+    void        setReportEveryNSteps(size_t steps);
+    
     string	configurationAsString();
-
     void	restart();
 
     void	minimizeSteepestDescent();

@@ -846,7 +846,7 @@ void	Minimizer_O::lineSearch(	double	*dPstep,
 
 
 
-void	Minimizer_O::_displayIntermediateMessage(
+bool	Minimizer_O::_displayIntermediateMessage(
                                                  double			step,
                                                  double			fnew,
                                                  double			forceMag,
@@ -858,55 +858,59 @@ void	Minimizer_O::_displayIntermediateMessage(
   double		angle;
   char		buffer[MAX_DISPLAY];
   stringstream	sout;
-  if ( this->_Iteration%10 == 1 || this->_DebugOn ) 
-  {
-    sout << "---Stage-";
+  if ( this->_Iteration % this->_ReportEverySteps == 0 ) {
+    if ( this->_Iteration%(10*this->_ReportEverySteps) == 1 || this->_DebugOn ) 
+    {
+      sout << "---Stage-";
+      if ( this->_ShowElapsedTime )
+      {
+        sout << "Seconds--";
+      }
+      sout << "Step-log(Alpha)--Dir-------------Energy-----------RMSforce";
+      if ( this->_ScoringFunction->scoringFunctionName() != "" ) 
+      {
+        sout << "-------Name";
+      }
+      sout << std::endl;
+    }
+    sout << BF(" min%4s") % this->statusAsShortString();
     if ( this->_ShowElapsedTime )
     {
-      sout << "Seconds--";
+#if USE_POSIX_TIME
+      core::PosixTimeDuration_sp elapsed = core::PosixTimeDuration_O::createDurationSince(this->_StartTime);
+      sout << BF(" %7ld") % elapsed->totalSeconds();
+#endif
     }
-    sout << "Step-log(Alpha)--Dir-------------Energy-----------RMSforce";
+    sout << BF(" %5d") % this->_Iteration;
+    sout << BF(" %9.2lf") % log(step);
+    if ( steepestDescent ) 
+    {
+      sout << "StDesc";
+    } else 
+    {
+      if ( cosAngle < -1.0 ) cosAngle = -1.0;
+      if ( cosAngle > 1.0 ) cosAngle = 1.0;
+      angle = acos(cosAngle)/0.0174533;
+      if ( angle < 0.1 ) 
+      {
+        angle = 0.0;
+      }
+      sout << (BF(" %5.1lf") % angle);
+    }
+    sout << (BF(" %18.3lf") % fnew );
+    sout << (BF(" %18.3lf") % forceRMSMag);
     if ( this->_ScoringFunction->scoringFunctionName() != "" ) 
     {
-      sout << "-------Name";
+      sout << BF(" %s") % this->_ScoringFunction->scoringFunctionName();
     }
-    sout << std::endl;
-  }
-  sout << BF(" min%4s") % this->statusAsShortString();
-  if ( this->_ShowElapsedTime )
-  {
-#if USE_POSIX_TIME
-    core::PosixTimeDuration_sp elapsed = core::PosixTimeDuration_O::createDurationSince(this->_StartTime);
-    sout << BF(" %7ld") % elapsed->totalSeconds();
-#endif
-  }
-  sout << BF(" %5d") % this->_Iteration;
-  sout << BF(" %9.2lf") % log(step);
-  if ( steepestDescent ) 
-  {
-    sout << "StDesc";
-  } else 
-  {
-    if ( cosAngle < -1.0 ) cosAngle = -1.0;
-    if ( cosAngle > 1.0 ) cosAngle = 1.0;
-    angle = acos(cosAngle)/0.0174533;
-    if ( angle < 0.1 ) 
+    core::clasp_writeln_string(sout.str());
+    if ( this->_DebugOn ) 
     {
-      angle = 0.0;
+      this->_Log->addMessage(buffer);
     }
-    sout << (BF(" %5.1lf") % angle);
+    return true;
   }
-  sout << (BF(" %18.3lf") % fnew );
-  sout << (BF(" %18.3lf") % forceRMSMag);
-  if ( this->_ScoringFunction->scoringFunctionName() != "" ) 
-  {
-    sout << BF(" %s") % this->_ScoringFunction->scoringFunctionName();
-  }
-  core::clasp_writeln_string(sout.str());
-  if ( this->_DebugOn ) 
-  {
-    this->_Log->addMessage(buffer);
-  }
+  return false;
 }
 
 
@@ -923,14 +927,15 @@ void	Minimizer_O::_steepestDescent( int numSteps,
   int		iRestartSteps;
   NVector_sp	force, m;
   NVector_sp	s,dir,tv1,tv2;
-  double		forceMag, forceRmsMag,prevStep;
-  double		delta0, deltaNew;
-  double		eSquaredDelta0;
-  double		step, fnew, dirMag;
-  double		cosAngle = 0.0;
+  double	forceMag, forceRmsMag,prevStep;
+  double	delta0, deltaNew;
+  double	eSquaredDelta0;
+  double	step, fnew, dirMag;
+  double	cosAngle = 0.0;
   bool		steepestDescent;
   int		innerSteps;
   int		localSteps, k;
+  bool          printedLatestMessage;
 
   LOG(BF("Checking status") );
   if ( this->_Status == minimizerError ) return;
@@ -1004,12 +1009,11 @@ void	Minimizer_O::_steepestDescent( int numSteps,
   if ( this->_PrintIntermediateResults ) {
     core::clasp_writeln_string("======= Starting Steepest Descent Minimizer");
   }
-  try
-  {
+  try {
     while (1) 
     { _BLOCK_TRACEF(BF("Step %d") %localSteps);
       if (this->_StepCallback.notnilp()) core::eval::funcall(this->_StepCallback,x);
-        
+      
 		//
 		// Absolute gradient test
 		//
@@ -1076,8 +1080,9 @@ void	Minimizer_O::_steepestDescent( int numSteps,
 		    // Print intermediate status
 		    //
         prevStep = step;
+        printedLatestMessage = false;
         if ( this->_PrintIntermediateResults ) {
-          this->_displayIntermediateMessage(step,fnew,forceMag,forceRmsMag,cosAngle,steepestDescent);
+          printedLatestMessage = this->_displayIntermediateMessage(step,fnew,forceMag,forceRmsMag,cosAngle,steepestDescent);
         }
 
         this->lineSearch( &step, &fnew, x, dir, force, tv1, tv2, localSteps, stepReport );
@@ -1095,7 +1100,6 @@ void	Minimizer_O::_steepestDescent( int numSteps,
         if ( this->_DebugOn ) {
           this->stepReport(stepReport,fp,force);
         }
-
 
 #ifdef	VALIDATE_FORCE_ON //[
         this->validateForce(x,force);
@@ -1139,12 +1143,8 @@ void	Minimizer_O::_steepestDescent( int numSteps,
         localSteps++;
         this->_Iteration++;
       }
-#if 0
-      if ( this->_StepCallback.notnilp() )
-      {
-        this->_StepCallback->invoke(this->sharedThis<Minimizer_O>());
-      }
-#endif
+      // Handle queued interrupts
+      gctools::handle_all_queued_interrupts();
     }
   } catch (MinimizerCondition_ExceededNumSteps fail) {
     if ( this->_DebugOn )
@@ -1167,6 +1167,9 @@ void	Minimizer_O::_steepestDescent( int numSteps,
     MINIMIZER_STUCK_ERROR(fail.message());
   }
 
+  if ( this->_PrintIntermediateResults && !printedLatestMessage ) {
+    this->_displayIntermediateMessage(step,fnew,forceMag,forceRmsMag,cosAngle,steepestDescent);
+  }
   fp = dTotalEnergyForce( x, force );
   this->_ScoringFunction->saveCoordinatesAndForcesFromVectors(x,force);
   LOG(BF("Wrote coordinates and force to atoms") );
@@ -1209,6 +1212,7 @@ void	Minimizer_O::_conjugateGradient(int numSteps,
   double		beta, cosAngle, dirMag;
   bool		steepestDescent;
   int		refactor;
+  size_t        printedLatestMessage;
 
   if ( this->_Status == minimizerError ) return;
   this->_Status = conjugateGradientRunning;
@@ -1275,8 +1279,6 @@ void	Minimizer_O::_conjugateGradient(int numSteps,
   try {
     while (1) {
       if (this->_StepCallback.notnilp()) core::eval::funcall(this->_StepCallback,x);
-
-
 	    //
 	    // Absolute gradient test
 	    //
@@ -1361,8 +1363,9 @@ void	Minimizer_O::_conjugateGradient(int numSteps,
         }
 
         prevStep = step;
+        printedLatestMessage = false;
         if ( this->_PrintIntermediateResults ) {
-          this->_displayIntermediateMessage(prevStep,fnew,forceMag,forceRmsMag,cosAngle,steepestDescent);
+          printedLatestMessage = this->_displayIntermediateMessage(prevStep,fnew,forceMag,forceRmsMag,cosAngle,steepestDescent);
         }
 
         this->lineSearch( &step, &fnew, x, d, force,
@@ -1435,10 +1438,8 @@ void	Minimizer_O::_conjugateGradient(int numSteps,
         localSteps++;
         this->_Iteration++;
       }
-#if 0
-      if ( this->_StepCallback.notnilp() )
-        this->_StepCallback->invoke(this->sharedThis<Minimizer_O>());
-#endif
+      // Handle queued interrupts
+      gctools::handle_all_queued_interrupts();
     }
   } catch (MinimizerCondition_ExceededNumSteps fail) {
     if ( this->_DebugOn )
@@ -1472,6 +1473,9 @@ void	Minimizer_O::_conjugateGradient(int numSteps,
     fp = dTotalEnergyForce( x, force );
     this->_ScoringFunction->saveCoordinatesAndForcesFromVectors(x,force);
     MINIMIZER_STUCK_ERROR(fail.message());
+  }
+  if ( this->_PrintIntermediateResults && !printedLatestMessage ) {
+    this->_displayIntermediateMessage(step,fnew,forceMag,forceRmsMag,cosAngle,steepestDescent);
   }
   fp = dTotalEnergyForce( x, force );
   this->_ScoringFunction->saveCoordinatesAndForcesFromVectors(x,force);
@@ -1858,10 +1862,8 @@ void	Minimizer_O::_truncatedNewton(
         MinimizerCondition_ExceededNumSteps fail(chem::_sym_truncated_newton,numSteps);
         throw(fail);
       }
-#if 0
-      if ( this->_StepCallback.notnilp() )
-        this->_StepCallback->invoke(this->sharedThis<Minimizer_O>());
-#endif
+      // Handle queued interrupts
+      gctools::handle_all_queued_interrupts();
     }
   } catch (MinimizerCondition_ExceededNumSteps fail) {
     if ( this->_DebugOn )
@@ -1995,7 +1997,7 @@ CL_DEFMETHOD     void	Minimizer_O::useDefaultSettings()
   this->_TruncatedNewtonPreconditioner = hessianPreconditioner;
   this->_PrintIntermediateResults = false;
   LOG(BF("_PrintIntermediateResults = %d") % this->_PrintIntermediateResults  );
-  this->_ReportEverySteps = -1;
+  this->_ReportEverySteps = 1;
   this->_Status = minimizerIdle;
   this->_ShowElapsedTime = true;
 #ifdef	USE_CALLBACKS
@@ -2012,8 +2014,14 @@ CL_DEFMETHOD     void	Minimizer_O::useDefaultSettings()
 
 
 CL_LISPIFY_NAME("enablePrintIntermediateResults");
-CL_DEFMETHOD     void	Minimizer_O::enablePrintIntermediateResults()
+CL_LAMBDA((chem:minimizer chem:minimizer) cl:&optional (steps 1));
+CL_DEFMETHOD     void	Minimizer_O::enablePrintIntermediateResults(size_t steps)
 {
+  if (steps < 1 ) {
+    this->_ReportEverySteps = 1;
+  } else {
+    this->_ReportEverySteps = steps;
+  }
   this->_PrintIntermediateResults = true;
 }
 
@@ -2069,13 +2077,9 @@ CL_DEFMETHOD     void	Minimizer_O::minimizeSteepestDescent()
         this->_ScoringFunction->loadCoordinatesIntoVector(pos);
         this->_steepestDescent(this->_NumberOfSteepestDescentSteps,pos,
                                this->_SteepestDescentTolerance );
-      } catch ( InteractionCondition ic ) {
-        this->_ScoringFunction->dealWithProblem(ic.condition_name,ic.condition_arguments);
+      } catch ( RestartMinimizer ic ) {
         retries--;
         sawProblem = true;
-        if ( this->_PrintIntermediateResults ) {
-          core::clasp_writeln_string((BF("Dealt with %s %s") % _rep_(ic.condition_name) % _rep_(ic.condition_arguments)).str());
-        }
       }
     } while ( sawProblem && retries > 0 );
   } catch ( MinimizerCondition_ExceededNumSteps fail ) {
@@ -2116,13 +2120,9 @@ CL_DEFMETHOD     void	Minimizer_O::minimizeConjugateGradient()
         this->_ScoringFunction->loadCoordinatesIntoVector(pos);
         this->_conjugateGradient(this->_NumberOfConjugateGradientSteps,pos,
                                  this->_ConjugateGradientTolerance );
-      } catch ( InteractionCondition ld ) {
-        this->_ScoringFunction->dealWithProblem(ld.condition_name,ld.condition_arguments);
+      } catch ( RestartMinimizer ld ) {
         retries--;
         sawProblem = true;
-        if ( this->_PrintIntermediateResults ) {
-          core::clasp_writeln_string((BF("Dealt with %s %s") % _rep_(ld.condition_name) % _rep_(ld.condition_arguments)).str());
-        }
       }
     } while ( sawProblem && retries > 0 );
   } catch ( MinimizerCondition_ExceededNumSteps fail ) {
@@ -2183,13 +2183,9 @@ CL_DEFMETHOD     void	Minimizer_O::minimize()
           this->_truncatedNewton( this->_NumberOfTruncatedNewtonSteps,
                                   pos, this->_TruncatedNewtonTolerance );
         }
-      } catch ( InteractionCondition ld ) {
-        this->_ScoringFunction->dealWithProblem(ld.condition_name,ld.condition_arguments);
+      } catch ( RestartMinimizer ld ) {
         retries--;
         sawProblem = true;
-        if ( this->_PrintIntermediateResults ) {
-          core::clasp_writeln_string((BF("Dealt with %s %s") % _rep_(ld.condition_name) % _rep_(ld.condition_arguments)).str());
-        }
       }
     } while ( sawProblem && retries > 0 );
   } catch ( MinimizerCondition_ExceededNumSteps fail ) {
@@ -2262,6 +2258,13 @@ CL_DEFMETHOD     void	Minimizer_O::restart()
   this->_Message.str("");
   this->_Iteration = 1;
 }
+
+
+CL_DEFUN void chem__restart_minimizer()
+{
+  throw RestartMinimizer();
+}
+
 
 SYMBOL_EXPORT_SC_(ChemPkg,noPreconditioner);
 SYMBOL_EXPORT_SC_(ChemPkg,hessianPreconditioner);

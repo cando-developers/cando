@@ -129,6 +129,22 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
   (let ((stereocenters (cando:gather-stereocenters agg)))
     (sort stereocenters #'string< :key #'chem:get-name)))
 
+(defmacro with-handle-linear-angles-dihedrals (&body body)
+  `(handler-bind
+       ((chem::linear-atoms-error
+          (lambda (condition)
+            (let* ((width 2.0)
+                   (half-width (/ width 2.0)))
+              (loop for atom in (chem:atoms condition)
+                    do (let* ((cp (chem:get-position atom))
+                              (pos (geom:vec
+                                    (+ (- (random width) half-width) (geom:vx cp))
+                                    (+ (- (random width) half-width) (geom:vy cp))
+                                    (+ (- (random width) half-width) (geom:vz cp)))))
+                         (chem:set-position atom pos))))
+            (chem:restart-minimizer))))
+     (progn
+       ,@body)))
 
 ;; Recover from minimization problems using Common Lisp restarts
 (defun minimize-no-fail (minimizer)
@@ -138,7 +154,8 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
           ((chem:minimizer-error (lambda (c)
                                   (warn "The minimizer reported: ~a" c)
                                   (invoke-restart 'skip-rest-of-minimization))))
-        (chem:minimize minimizer))
+        (with-handle-linear-angles-dihedrals
+            (chem:minimize minimizer)))
     ;; skip-rest-of-minimization can also be triggered by the user from the debugger
     (skip-rest-of-minimization ()
       :report "Skip the rest of the current minimization - continue processing"
