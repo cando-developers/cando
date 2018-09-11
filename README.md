@@ -23,7 +23,7 @@ cd clasp/extensions
 git clone https://github.com/drmeister/cando.git
 ```
 
-3. Go to the [instructions](http://clasp-developers/clasp.git) for building Clasp and follow those - Cando will be built within Clasp.
+3. Go to the [instructions](https://github.com/clasp-developers/clasp.git) for building Clasp and follow those - Cando will be built within Clasp.
 
 This will result in Cando being installed within the Clasp source tree at clasp/extensions/cando
 
