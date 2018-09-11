@@ -10,7 +10,12 @@ Cando is an extension of the Clasp Common Lisp programming environment (github.c
 
 Cando needs to be installed within the clasp/extensions directory using the following steps.
 
-1. Clone clasp using: ```git clone https://github.com/clasp-developers/clasp.git```
+1. Clone clasp using: 
+
+```
+git clone https://github.com/clasp-developers/clasp.git
+```
+
 2. Clone cando using:
 
 ```
