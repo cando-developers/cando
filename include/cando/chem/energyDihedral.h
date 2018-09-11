@@ -116,8 +116,40 @@ public:
         void defineFrom( int n, FFPtor_sp term, EnergyAtom *ea1, EnergyAtom *ea2, EnergyAtom *ea3, EnergyAtom *ea4, double scale);
 	void defineMissingProper( EnergyAtom *ea1, EnergyAtom *ea2, EnergyAtom *ea3, EnergyAtom *ea4);
         void defineFrom( int n, FFItor_sp term, EnergyAtom *ea1, EnergyAtom *ea2, EnergyAtom *ea3, EnergyAtom *ea4, double scale);
+        core::List_sp encode() const;
+        void decode(core::List_sp alist);
+};
 };
 
+
+
+namespace translate {
+
+template <>
+struct	to_object<chem::EnergyDihedral >
+{
+  typedef	core::Cons_sp ExpectedType;
+  typedef	core::Cons_sp DeclareType;
+  static core::T_sp convert(const chem::EnergyDihedral& dihedral)
+  {
+    return dihedral.encode();
+  }
+};
+
+template <>
+struct	from_object<chem::EnergyDihedral>
+{
+  typedef	chem::EnergyDihedral	ExpectedType;
+  typedef	ExpectedType 		DeclareType;
+	DeclareType _v;
+	from_object(core::T_sp o)
+	{
+          SIMPLE_ERROR(BF("Implement me"));
+        }
+};
+};
+
+namespace chem {
 
 double  _evaluateEnergyOnly_Dihedral(
                 double x1, double y1, double z1,
@@ -134,6 +166,8 @@ class EnergyDihedral_O : public EnergyComponent_O
 {
     LISP_CLASS(chem,ChemPkg,EnergyDihedral_O,"EnergyDihedral",EnergyComponent_O);
 public:
+    bool fieldsp() const { return true; };
+    void fields(core::Record_sp node);
 public: // virtual functions inherited from Object
     void	initialize();
 //    void	archiveBase(core::ArchiveP node);

@@ -45,6 +45,22 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace chem {
 
+
+core::List_sp EnergyAngle::encode() const {
+  return core::Cons_O::createList(core::Cons_O::create(INTERN_(kw,kt),core::clasp_make_double_float(this->term.kt)),
+                                  core::Cons_O::create(INTERN_(kw,t0),core::clasp_make_double_float(this->term.t0)),
+                                  core::Cons_O::create(INTERN_(kw,i1), core::make_fixnum(this->term.I1)),
+                                  core::Cons_O::create(INTERN_(kw,i2), core::make_fixnum(this->term.I2)),
+                                  core::Cons_O::create(INTERN_(kw,i3), core::make_fixnum(this->term.I3)),
+                                  core::Cons_O::create(INTERN_(kw,atom1), this->_Atom1),
+                                  core::Cons_O::create(INTERN_(kw,atom2), this->_Atom2),
+                                  core::Cons_O::create(INTERN_(kw,atom3), this->_Atom3));
+}
+
+void EnergyAngle::decode(core::List_sp alist) {
+  SIMPLE_ERROR(BF("Implement decode of EnergyAngle"));
+}
+
 #ifdef XML_ARCHIVE
     void	EnergyAngle::archive(core::ArchiveP node)
 {
@@ -617,13 +633,12 @@ void EnergyAngle_O::initialize()
     this->setErrorThreshold(0.2);
 }
 
-#ifdef XML_ARCHIVE
-void EnergyAngle_O::archiveBase(core::ArchiveP node)
+void EnergyAngle_O::fields(core::Record_sp node)
 {
-    this->Base::archiveBase(node);
-    archiveEnergyComponentTerms<EnergyAngle_O,EnergyAngle>(node,*this);
+  node->field( INTERN_(kw,terms), this->_Terms );
+  this->Base::fields(node);
 }
-#endif
+
 
 SYMBOL_EXPORT_SC_(KeywordPkg,kt);
 SYMBOL_EXPORT_SC_(KeywordPkg,t0);

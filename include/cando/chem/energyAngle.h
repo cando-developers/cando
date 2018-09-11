@@ -110,9 +110,38 @@ public:
 					AtomTable_sp	atomTable );
         void defineFrom( FFAngle_sp term, EnergyAtom *ea1, EnergyAtom *ea2, EnergyAtom *ea3, double scale);
 	void defineMissing( EnergyAtom *ea1, EnergyAtom *ea2, EnergyAtom *ea3);
+        core::List_sp encode() const;
+        void decode(core::List_sp alist);
+};
 };
 
+namespace translate {
 
+template <>
+struct	to_object<chem::EnergyAngle >
+{
+  typedef	core::Cons_sp ExpectedType;
+  typedef	core::Cons_sp DeclareType;
+  static core::T_sp convert(const chem::EnergyAngle& angle)
+  {
+    return angle.encode();
+  }
+};
+
+template <>
+struct	from_object<chem::EnergyAngle>
+{
+  typedef	chem::EnergyAngle	ExpectedType;
+  typedef	ExpectedType 		DeclareType;
+	DeclareType _v;
+	from_object(core::T_sp o)
+	{
+          SIMPLE_ERROR(BF("Implement me"));
+        }
+};
+};
+
+namespace chem {
 
 double	_evaluateEnergyOnly_Angle(
 		double x1, double y1, double z1,
@@ -125,6 +154,8 @@ class EnergyAngle_O : public EnergyComponent_O
 {
     LISP_CLASS(chem,ChemPkg,EnergyAngle_O,"EnergyAngle",EnergyComponent_O);
 public:
+    bool fieldsp() const { return true; };
+    void fields(core::Record_sp node);
 public: // virtual functions inherited from Object
     void	initialize();
 //    void	archiveBase(core::ArchiveP node);

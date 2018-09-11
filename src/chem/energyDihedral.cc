@@ -47,6 +47,28 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace chem {
 
 
+core::List_sp EnergyDihedral::encode() const {
+  ql::list result;
+  result << core::Cons_O::create(INTERN_(kw,v), core::clasp_make_double_float(this->term.V))
+         << core::Cons_O::create(INTERN_(kw,in), core::make_fixnum(this->term.IN))
+         << core::Cons_O::create(INTERN_(kw,phase), core::clasp_make_double_float(this->_PhaseRad))
+         << core::Cons_O::create(INTERN_(kw,i1), core::make_fixnum(this->term.I1))
+         << core::Cons_O::create(INTERN_(kw,i2), core::make_fixnum(this->term.I2))
+         << core::Cons_O::create(INTERN_(kw,i3), core::make_fixnum(this->term.I3))
+         << core::Cons_O::create(INTERN_(kw,i4), core::make_fixnum(this->term.I4))
+         << core::Cons_O::create(INTERN_(kw,proper), _lisp->_boolean(this->_Proper))
+         << core::Cons_O::create(INTERN_(kw,atom1), this->_Atom1)
+         << core::Cons_O::create(INTERN_(kw,atom2), this->_Atom2)
+         << core::Cons_O::create(INTERN_(kw,atom3), this->_Atom3)
+         << core::Cons_O::create(INTERN_(kw,atom4), this->_Atom4)
+    ;
+  return result.cons();
+}
+
+void EnergyDihedral::decode(core::List_sp alist) {
+  SIMPLE_ERROR(BF("Implement decode of EnergyDihedral"));
+}
+
 #ifdef XML_ARCHIVE
 void	EnergyDihedral::archive(core::ArchiveP node)
 {
@@ -795,13 +817,11 @@ void EnergyDihedral_O::initialize()
   this->setErrorThreshold(3.0);
 }
 
-#ifdef XML_ARCHIVE
-void EnergyDihedral_O::archiveBase(core::ArchiveP node)
+void EnergyDihedral_O::fields(core::Record_sp node)
 {
-  this->Base::archiveBase(node);
-  archiveEnergyComponentTerms<EnergyDihedral_O,EnergyDihedral>(node,*this);
+  node->field( INTERN_(kw,terms), this->_Terms );
+  this->Base::fields(node);
 }
-#endif
 
 SYMBOL_EXPORT_SC_(KeywordPkg,v);
 SYMBOL_EXPORT_SC_(KeywordPkg,in);
