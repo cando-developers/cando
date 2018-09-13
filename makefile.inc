@@ -1,2 +1,0 @@
-cando-prebuild:
-	sub-prebuild
