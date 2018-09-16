@@ -511,7 +511,7 @@ CL_DEFMETHOD DirectionalCoupling_sp	Oligomer_O::couple( Monomer_sp inMon, core::
   }
   core::Symbol_sp inMonPlugName = DirectionalCoupling_O::outPlugName(name);
   if ( inMon->hasCouplingWithPlugName(inMonPlugName) ) {
-    SIMPLE_ERROR(BF("The first monomer[%s] already has an out coupling with the name: %s") % inMon->monomerName() % name );
+    SIMPLE_ERROR(BF("The first monomer[%s] already has an out coupling with the name: %s") % inMon->currentStereoisomerName() % name );
   }
   LOG(BF("in/out plug names: %s/%s") % _rep_(inMonPlugName) % _rep_(outMonPlugName));
   coupling = DirectionalCoupling_O::make(name,inMon,outMon);
@@ -614,9 +614,14 @@ int			residueNetCharge;
     core::HashTableEq_sp monomersToResidues = core::HashTableEq_O::create_default();
     gctools::Vec0<Monomer_sp>::iterator	mi;
     for ( mi=this->_Monomers.begin(); mi!=this->_Monomers.end(); mi++ ) {
-      Topology_sp topology = (*mi)->getTopology();
+      Topology_sp topology = (*mi)->currentTopology();
       Constitution_sp constitution = topology->_Constitution;
-      res = topology->buildResidueForMonomerName((*mi)->monomerName());
+      core::Symbol_sp stereoisomerName = (*mi)->currentStereoisomerName(); // Should be stereoisomerName()
+      if (chem_verbose(0)) {
+        BFORMAT_T(BF("Building residue for monomer name: %s") % _rep_(stereoisomerName));
+        core::clasp_finish_output_t();
+      }
+      res = topology->buildResidueForMonomerName(stereoisomerName);
       LOG(BF("made res consistent with stereoisomer named res: %s") % _rep_(res));
       mol->addMatter(res);
       LOG(BF("Added matter"));
@@ -788,13 +793,13 @@ void Oligomer_O::_fillMonomerAsString(Monomer_sp mon, stringstream& seq)
     seq <<"( ";
     seq << "monomer '" << _rep_(mon->getId());
 #if 1
-    seq << " ( :part '" <<mon->monomerName() <<  ")";
+    seq << " ( :part '" <<mon->currentStereoisomerName() <<  ")";
 #else
-    if ( mon->getGroupName() == mon->monomerName() )
+    if ( mon->getGroupName() == mon->currentStereoisomerName() )
     {
 	seq << " '" << mon->getGroupName()->symbolName();
     } else {
-      seq << " (GroupPart :group '" << mon->getGroupName()->symbolName() <<" :part '" <<mon->monomerName()->symbolName() << " :isomer " << mon->getIsomer() <<  ")";
+      seq << " (GroupPart :group '" << mon->getGroupName()->symbolName() <<" :part '" <<mon->currentStereoisomerName()->symbolName() << " :isomer " << mon->getIsomer() <<  ")";
     }
 #endif
 #if 0
@@ -869,7 +874,7 @@ void Oligomer_O::_fillSequenceAsFileNameForChildren(Monomer_sp rootMonomer, stri
     {
 //        Monomer_sp mon1 = (*oci)->getMonomer1();
         Monomer_sp mon2 = (*oci)->getMonomer2();
-	seq <<"-" << mon2->monomerName()->symbolName();
+	seq <<"-" << mon2->currentStereoisomerName()->symbolName();
     }
     for ( oci=outCouplings.begin(); oci!=outCouplings.end(); oci++ )
     {
@@ -914,7 +919,7 @@ CL_DEFMETHOD string	Oligomer_O::sequenceAsFileName()
 
     Monomer_sp mon2 = this->rootMonomer();
     stringstream seq;
-    seq << mon2->monomerName()->symbolName();
+    seq << mon2->currentStereoisomerName()->symbolName();
     this->_fillSequenceAsFileNameForChildren(mon2,seq);
 //    seq << "_" << this->getName()->symbolName();
     string name = core::stripCharacters(seq.str(),"()");

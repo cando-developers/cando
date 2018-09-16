@@ -26,7 +26,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #define	DEBUG_LEVEL_NONE
 
 #include <clasp/core/common.h>
-#include <clasp/core/environment.h>
+#include <clasp/core/evaluator.h>
 #include <cando/chem/atomId.h>
 #include <cando/chem/atomIdMap.h>
 #include <cando/chem/atom.h>
@@ -84,38 +84,52 @@ void AtomIdToAtomMap_O::fields(core::Record_sp node)
 }
 
 
-CL_LISPIFY_NAME("lookup-atom");
-CL_DEFMETHOD     Atom_sp AtomIdToAtomMap_O::lookupAtom(const AtomId& atomId) const
-    {_OF();
-	return this->_AtomIdMap[atomId];
-    }
+CL_DEFMETHOD  Atom_sp AtomIdToAtomMap_O::lookupAtom(const AtomId& atomId) const
+{
+  return this->_AtomIdMap.safeLookup(atomId);
+}
 
 
-    void AtomIdToAtomMap_O::initialize()
-    {_OF();
-        this->Base::initialize();
-    }
+void AtomIdToAtomMap_O::initialize()
+{_OF();
+  this->Base::initialize();
+}
 
 
-    void AtomIdToAtomMap_O::resize(int numMols)
-    {_OF();
-	this->_AtomIdMap.resize(numMols);
-    }
+void AtomIdToAtomMap_O::resize(int numMols)
+{_OF();
+  this->_AtomIdMap.resize(numMols);
+}
 
-    void AtomIdToAtomMap_O::resize(int mol, int numRes)
-    {_OF();
-	this->_AtomIdMap.resize(mol,numRes);
-    }
+void AtomIdToAtomMap_O::resize(int mol, int numRes)
+{_OF();
+  this->_AtomIdMap.resize(mol,numRes);
+}
 
-    void AtomIdToAtomMap_O::resize(int mol, int res, int numAtoms)
-    {_OF();
-	this->_AtomIdMap.resize(mol,res,numAtoms);
-    }
-    void AtomIdToAtomMap_O::set(AtomId const& atomId, Atom_sp atom)
-    {_OF();
-	this->_AtomIdMap[atomId] = atom;
-    }
+void AtomIdToAtomMap_O::resize(int mol, int res, int numAtoms)
+{_OF();
+  this->_AtomIdMap.resize(mol,res,numAtoms);
+}
+void AtomIdToAtomMap_O::set(AtomId const& atomId, Atom_sp atom)
+{_OF();
+  this->_AtomIdMap[atomId] = atom;
+}
 
-    
+
+class WalkMap : public AtomIdMapFunctor {
+public:
+  core::Function_sp callback;
+  WalkMap(core::Function_sp c) : callback(c) {};
+  virtual void operator()(const AtomId& atomId, Atom_sp atom) {
+    core::T_sp catomid = translate::to_object<AtomId>::convert(atomId);
+    core::eval::funcall(callback,catomid,atom);
+  }
+};
+
+CL_DEFMETHOD void AtomIdToAtomMap_O::walk(core::Function_sp callback)
+{
+  WalkMap walker(callback);
+  this->_AtomIdMap.iterate(walker);
+}
 
 }; /* chem */

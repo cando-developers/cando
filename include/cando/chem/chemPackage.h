@@ -61,6 +61,7 @@ namespace chem
     /*! Get the default CandoDatabase */
     core::T_sp getCandoDatabase();
 
+bool chem_verbose(size_t level);   
 };
 
 

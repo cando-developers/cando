@@ -45,13 +45,9 @@ namespace kinematics
 class MonomerNode_O : public MonomerBaseNode_O
 {
     LISP_CLASS(kinematics,KinPkg,MonomerNode_O,"MonomerNode",MonomerBaseNode_O);
-#if INIT_TO_FACTORIES
  public:
     static MonomerNode_sp make();
-#else
-    DECLARE_INIT();
-#endif
- MonomerNode_O() : _Parent(_Unbound<MonomerNode_O>()), _ParentPlugName(_Unbound<core::Symbol_O>()), _MonomerId(-1), _MonomerName(_Unbound<core::Symbol_O>()), _Topology(_Unbound<chem::Topology_O>()), _ConformationIndex(-1) {};
+ MonomerNode_O() : _Parent(_Unbound<MonomerNode_O>()), _ParentPlugName(_Unbound<core::Symbol_O>()), _MonomerId(-1), _StereoisomerName(_Unbound<core::Symbol_O>()), _Topology(_Unbound<chem::Topology_O>()), _ConformationIndex(-1) {};
 public:
     bool fieldsp() const { return true; };
     void fields(core::Record_sp node);	
@@ -65,15 +61,15 @@ public:	// instance variables here
 	int			_MonomerId;
 	/*! Store the children of this MonomerNode indexed by PlugNames */
 	adapt::SymbolMap<MonomerNode_O>	_Children;
-	/*! Store the index of the monomer */
-	core::Symbol_sp		_MonomerName;
+  /*! Store the name of the stereoisomer */
+	core::Symbol_sp		_StereoisomerName;
 	/*! Store the Topology of the monomer */
 	chem::Topology_sp	_Topology;
 	/*! Store the current conformation index of this monomer */
 	int			_ConformationIndex;
 private:
 	/*! Return the MonomerName */
-	core::Symbol_sp	monomerName() const { return this->_MonomerName;};
+	core::Symbol_sp	stereoisomerName() const { return this->_StereoisomerName;};
 	/*! Return the Topology */
 	chem::Topology_sp topology() const { return this->_Topology;};
 

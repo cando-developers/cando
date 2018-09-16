@@ -363,7 +363,7 @@ CL_DEFMETHOD     MonomerContext_sp Monomer_O::getSpecificMonomerContext()
   db = getCandoDatabase();
   context = MonomerContext_O::create();
   selfRecognizer = EntityNameSet_O::create();
-  selfRecognizer->setMonomerNameOrPdb(this->monomerName());
+  selfRecognizer->setMonomerNameOrPdb(this->currentStereoisomerName());
   context->setFocus(selfRecognizer);
   for ( ci=this->_Couplings.begin(); ci!=this->_Couplings.end(); ci++ )
   {
@@ -372,7 +372,7 @@ CL_DEFMETHOD     MonomerContext_sp Monomer_O::getSpecificMonomerContext()
     {
       neighborRecognizer = EntityNameSet_O::create();
       neighborMonomer = coupling->getOtherSideMonomer(this->sharedThis<Monomer_O>());
-      neighborRecognizer->setMonomerNameOrPdb(neighborMonomer->monomerName());
+      neighborRecognizer->setMonomerNameOrPdb(neighborMonomer->currentStereoisomerName());
       context->addNeighbor(ci->first,neighborRecognizer);
     } else
     {
@@ -389,7 +389,7 @@ CL_DEFMETHOD     MonomerContext_sp Monomer_O::getSpecificMonomerContext()
 
 RingClosingPlug_sp Monomer_O::getMissingRingClosingPlug(Monomer_sp mate)
 {
-  Constitution_sp	constitution = this->getTopology()->_Constitution;
+  Constitution_sp	constitution = this->currentTopology()->_Constitution;
   return constitution->getMissingRingClosingPlug(this->sharedThis<Monomer_O>(),mate);
 }
 
@@ -397,8 +397,7 @@ uint Monomer_O::numberOfCouplings() const {
   return this->_Couplings.size();
 }
 
-CL_LISPIFY_NAME("getTopology");
-CL_DEFMETHOD     Topology_sp	Monomer_O::getTopology()
+CL_DEFMETHOD     Topology_sp	Monomer_O::currentTopology()
 {
   return this->_Monomers[this->_CurrentMonomerIndex];
 }
@@ -470,7 +469,7 @@ bool	Monomer_O::hasOutCouplings()
 
 Plug_sp	Monomer_O::getPlugNamed(core::Symbol_sp pn)
 {
-  Topology_sp topology = this->getTopology();
+  Topology_sp topology = this->currentTopology();
   if ( !topology->hasPlugNamed(pn) )
   {
     stringstream ss;
@@ -485,7 +484,7 @@ Plug_sp	Monomer_O::getPlugNamed(core::Symbol_sp pn)
 
 CL_LISPIFY_NAME("getConstitution");
 CL_DEFMETHOD     Constitution_sp Monomer_O::getConstitution() {
-  Topology_sp topology = this->getTopology();
+  Topology_sp topology = this->currentTopology();
   Constitution_sp con = topology->_Constitution;
   return con;
 }
@@ -692,7 +691,7 @@ CL_DEFMETHOD     void	Monomer_O::removeCoupling(Coupling_sp coup)
 
 string Monomer_O::__repr__() const {
   stringstream ss;
-  ss << "#<MONOMER :index " << this->_CurrentMonomerIndex << " :stereoisomer " << this->_CurrentStereoisomerOffset << " :monomer " << _rep_(this->monomerName()) << ">";
+  ss << "#<MONOMER :index " << this->_CurrentMonomerIndex << " :stereoisomer " << this->_CurrentStereoisomerOffset << " :monomer " << _rep_(this->currentStereoisomerName()) << ">";
   return ss.str();
 }
 void Monomer_O::fields(core::Record_sp node)
@@ -759,7 +758,19 @@ Monomer_sp Monomer_O::makeMonomer(core::List_sp topology_list)
   return me;
 };
 
+#if 0
 core::Symbol_sp Monomer_O::monomerName() const
+{_OF();
+  if ( this->_Monomers.size() == 0 ) {
+    return _Nil<core::Symbol_O>();
+  }
+  core::Symbol_sp name = this->_Monomers[this->_CurrentMonomerIndex]->getName();
+//  printf("%s:%d In Monomer_O::getName() -> %s name->className() -> %s\n", __FILE__, __LINE__, _rep_(name).c_str(), name->className().c_str());
+  return name;
+}
+#endif
+
+CL_DEFMETHOD core::Symbol_sp Monomer_O::currentStereoisomerName() const
 {_OF();
   if ( this->_Monomers.size() == 0 ) {
     return _Nil<core::Symbol_O>();

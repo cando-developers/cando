@@ -33,6 +33,7 @@ This is an open source license for the CANDO software from Temple University, bu
 
 #include <clasp/core/common.h>
 #include <clasp/core/record.h>
+#include <clasp/core/bformat.h>
 #include <cando/chem/molecule.h>
 #include <cando/chem/loop.h>
 #include <clasp/core/numerics.h>
@@ -343,25 +344,28 @@ CL_DEFMETHOD     Residue_sp	Molecule_O::getFirstResidueWithName(MatterName name)
     }
 
 
-    AtomIdToAtomMap_sp Molecule_O::buildAtomIdMap() const
-    {_OF();
-	AtomIdToAtomMap_sp atomIdMap = AtomIdToAtomMap_O::create();
-	atomIdMap->resize(1);
-	int mid = 0;
-	int numResidues = this->_contents[mid]->_contents.size();
-	atomIdMap->resize(mid,numResidues);
-	for ( int rid =0; rid<numResidues; rid++ )
-	{
-	    int numAtoms = this->_contents[mid]->_contents[rid]->_contents.size();
-	    atomIdMap->resize(mid,rid,numAtoms);
-	    for ( int aid=0; aid<numAtoms; aid++ )
-	    {
-		AtomId atomId(mid,rid,aid);
-		atomIdMap->set(atomId,this->_contents[mid]->_contents[rid]->_contents[aid].as<Atom_O>());
-	    }
-	}
-	return atomIdMap;
+AtomIdToAtomMap_sp Molecule_O::buildAtomIdMap() const
+{
+  AtomIdToAtomMap_sp atomIdMap = AtomIdToAtomMap_O::create();
+  atomIdMap->resize(1);
+  int mid = 0;
+  int numResidues = this->_contents.size();
+  atomIdMap->resize(mid,numResidues);
+  for ( int rid =0; rid<numResidues; rid++ )
+  {
+    int numAtoms = this->_contents[rid]->_contents.size();
+    BFORMAT_T(BF("%s:%d rid %d of %d  numAtoms-> %d\n") % __FILE__ % __LINE__ % rid % numResidues % numAtoms );
+    atomIdMap->resize(mid,rid,numAtoms);
+    for ( int aid=0; aid<numAtoms; aid++ )
+    {
+      AtomId atomId(mid,rid,aid);
+      Atom_sp atom = this->_contents[rid]->_contents[aid].as<Atom_O>();
+      BFORMAT_T(BF("%s:%d Adding %d %d %d -> %s\n") % __FILE__ % __LINE__ % mid % rid % aid % _rep_(atom));
+      atomIdMap->set(atomId,atom);
     }
+  }
+  return atomIdMap;
+}
 
     Atom_sp Molecule_O::atomWithAtomId(const AtomId& atomId) const
     {_OF();

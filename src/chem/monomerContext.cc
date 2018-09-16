@@ -386,7 +386,7 @@ CL_DEFMETHOD     void	MonomerContext_O::setFocusFromMonomer(Monomer_sp mon)
 	EntityNameSet_sp	ss;
 	ss = EntityNameSet_O::create();
 	LOG(BF("status") );
-	ss->setMonomerNameOrPdb(mon->monomerName());
+	ss->setMonomerNameOrPdb(mon->currentStereoisomerName());
 	LOG(BF("status") );
 	this->_Self = ss;
     }

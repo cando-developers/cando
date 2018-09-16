@@ -193,13 +193,13 @@ CL_DEFMETHOD Residue_sp Topology_O::buildResidueForIsomer(size_t isomer) const
 }
 
 CL_DEFMETHOD Residue_sp Topology_O::buildResidueForMonomerName(core::Symbol_sp monomerName) const {
-  for ( size_t isomer(0); this->_StereoisomerAtomProperties.size(); ++isomer) {
+  for ( size_t isomer(0); isomer<this->_StereoisomerAtomProperties.size(); ++isomer) {
     if (this->_StereoisomerAtomProperties[isomer]->getName() == monomerName) {
       return this->buildResidueForIsomer(isomer);
     }
   }
   stringstream snames;
-  for ( size_t isomer(0); this->_StereoisomerAtomProperties.size(); ++isomer) {
+  for ( size_t isomer(0); isomer<this->_StereoisomerAtomProperties.size(); ++isomer) {
     snames << _rep_(this->_StereoisomerAtomProperties[isomer]->getName()) << " ";
   }
   SIMPLE_ERROR(BF("Could not find monomer named %s in topology with names %s") % _rep_(monomerName) % snames.str());
@@ -210,7 +210,7 @@ CL_DEFMETHOD Residue_sp Topology_O::buildResidueForIsoname(Isoname_sp isoname) c
     return this->buildResidueForIsomer(isoname->_Isomer);
   }
   stringstream snames;
-  for ( size_t isomer(0); this->_StereoisomerAtomProperties.size(); ++isomer) {
+  for ( size_t isomer(0); isomer<this->_StereoisomerAtomProperties.size(); ++isomer) {
     snames << _rep_(this->_StereoisomerAtomProperties[isomer]->getName()) << " ";
   }
   SIMPLE_ERROR(BF("Could not find isoname %s in topology with names %s") % _rep_(isoname) % snames.str());
@@ -221,7 +221,7 @@ CL_DEFMETHOD Residue_sp Topology_O::buildResidueSingleName() const {
     return this->buildResidueForIsomer(0);
   }
   stringstream snames;
-  for ( size_t isomer(0); this->_StereoisomerAtomProperties.size(); ++isomer) {
+  for ( size_t isomer(0); isomer<this->_StereoisomerAtomProperties.size(); ++isomer) {
     snames << _rep_(this->_StereoisomerAtomProperties[isomer]->getName()) << " ";
   }
   SIMPLE_ERROR(BF("This topology does not have a single name - it has names %s") % snames.str());

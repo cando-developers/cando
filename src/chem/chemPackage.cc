@@ -144,7 +144,7 @@ SYMBOL_EXPORT_SC_(ChemPkg,recognizesNameOrPdb);
 SYMBOL_EXPORT_SC_(ChemPkg,getMonomerNameForNameOrPdb);
 SYMBOL_EXPORT_SC_(ChemPkg,monomerNameForNameOrPdb);
 SYMBOL_EXPORT_SC_(ChemPkg,pdbNameForNameOrPdb);
-
+SYMBOL_EXPORT_SC_(ChemPkg,STARverboseSTAR); // slow operations print extra output if this is true
 
 namespace chem
 {
@@ -231,6 +231,7 @@ namespace chem
           core::core__pathname_translations(core::Str_O::create("CANDO"),_lisp->_true(),ptsList);
 #endif
           energyFunction_initializeSmarts();
+          _sym_STARverboseSTAR->defparameter(_Nil<core::T_O>());
 	}
 	break;
 	case candoFunctions:
@@ -317,5 +318,20 @@ void chem_initializer()
 }
 
 core::Initializer global_ChemInitializer(chem_initializer);
+
+/*! Return true of the value of chem:*verbose* is not nil and >= level
+*/
+bool chem_verbose(size_t level)
+{
+  core::T_sp verbose = _sym_STARverboseSTAR->symbolValue();
+  if (verbose.notnilp()) {
+    if (verbose.fixnump()) {
+      if (verbose.unsafe_fixnum() >= level) return true;
+      return false;
+    }
+    return true;
+  }
+  return false;
+}
 
 };

@@ -49,7 +49,7 @@ void MonomerNode_O::fields(core::Record_sp node) {
   node->field(INTERN_(kw,parent_plug_name),this->_ParentPlugName);
   node->field(INTERN_(kw,MonomerId),this->_MonomerId);
   node->field(INTERN_(kw,Children),this->_Children);
-  node->field(INTERN_(kw,MonomerName),this->_MonomerName);
+  node->field(INTERN_(kw,StereoisomerName),this->_StereoisomerName);
   node->field(INTERN_(kw,Topology),this->_Topology);
   node->field(INTERN_(kw,ConformationIndex),this->_ConformationIndex);
   this->Base::fields(node);
@@ -94,8 +94,8 @@ void MonomerNode_O::recursivelyBuildChildren(ChainNode_sp chainNode,
   {
     this->_ParentPlugName = _Nil<core::Symbol_O>();
   }
-  this->_MonomerName = monomer->monomerName();
-  this->_Topology = monomer->getTopology();
+  this->_StereoisomerName = monomer->currentStereoisomerName();
+  this->_Topology = monomer->currentTopology();
   this->_ConformationIndex = 0;
   for ( chem::Monomer_O::Couplings::const_iterator it=monomer->_Couplings.begin();
         it!=monomer->_Couplings.end(); it++ )
@@ -122,9 +122,12 @@ void MonomerNode_O::recursivelyBuildChildren(ChainNode_sp chainNode,
 
 chem::Constitution_mv MonomerNode_O::identifyConstitutionAndTopology()
 {
-  core::T_sp tconstitution = core::eval::funcall(chem::_sym_constitutionForNameOrPdb,_Nil<core::T_O>(),this->monomerName());
+  chem::Constitution_sp constitution = this->_Topology->getConstitution();
+  return Values(constitution,this->_Topology);
+#if 0  
+  core::T_sp tconstitution = core::eval::funcall(chem::_sym_constitutionForNameOrPdb,_Nil<core::T_O>(),this->stereoisomerName());
   if (tconstitution.nilp()) {
-    SIMPLE_ERROR(BF("Could not find constitution for monomer %s") % _rep_(this->_MonomerName));
+    SIMPLE_ERROR(BF("Could not find constitution for monomer %s") % _rep_(this->_StereoisomerName));
   }
   chem::Constitution_sp constitution  = gc::As<chem::Constitution_sp>(tconstitution);
   adapt::SymbolSet_sp myPlugNameSet = adapt::SymbolSet_O::create();
@@ -151,15 +154,16 @@ chem::Constitution_mv MonomerNode_O::identifyConstitutionAndTopology()
   }
   if (!topology) {
     SIMPLE_ERROR(BF("No topology could be found for monomer[%s] with plugs[%s]")
-                 % _rep_(this->_MonomerName) % myPlugNameSet->asString() );
+                 % _rep_(this->_StereoisomerName) % myPlugNameSet->asString() );
   }
   return Values(constitution, topology);
+#endif
 }
 
 
 void MonomerNode_O::describeRecursivelyIntoStringStream(const string& prefix, stringstream& output) const
 {_OF();
-  LOG(BF("Describing %s[%s]") % this->className() % _rep_(this->_MonomerName) );
+  LOG(BF("Describing %s[%s]") % this->className() % _rep_(this->_StereoisomerName) );
   output << prefix;
   if ( this->_ParentPlugName.notnilp() )
   {
@@ -167,7 +171,7 @@ void MonomerNode_O::describeRecursivelyIntoStringStream(const string& prefix, st
   }
   output << this->className()
          << "["
-         << _rep_(this->_MonomerName)
+         << _rep_(this->_StereoisomerName)
          << "]" << std::endl;
   for ( adapt::SymbolMap<MonomerNode_O>::const_iterator it=this->_Children.begin();
         it!=this->_Children.end(); it++ )
@@ -187,7 +191,7 @@ string MonomerNode_O::__repr__() const {
   stringstream ss;
   ss << "#<";
   ss << this->className();
-  ss << " " << _rep_(this->_MonomerName) << ">";
+  ss << " " << _rep_(this->_StereoisomerName) << ">";
   return ss.str();
 }
  

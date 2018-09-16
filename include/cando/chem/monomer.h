@@ -170,7 +170,7 @@ public:
   CL_DEFMETHOD 	void	setId(core::Symbol_sp id) { this->_Id = id; };
   CL_LISPIFY_NAME("getId");
   CL_DEFMETHOD 	core::Symbol_sp getId() { return this->_Id; };
-  Topology_sp	getTopology();
+  Topology_sp	currentTopology();
   RingClosingPlug_sp getMissingRingClosingPlug(Monomer_sp mate);
   CL_LISPIFY_NAME("getTemporaryResidue");
   CL_DEFMETHOD 	Residue_sp	getTemporaryResidue()
@@ -271,7 +271,9 @@ public:
   void addTopology(Topology_sp name);
 public:
   string __repr__() const;
-  CL_DEFMETHOD virtual core::Symbol_sp monomerName() const;
+//  CL_DEFMETHOD virtual core::Symbol_sp monomerName() const;
+  core::Symbol_sp currentStereoisomerName() const;
+//  core::Symbol_sp stereoisomerName() const;
   CL_DEFMETHOD virtual Fixnum getStereoisomerOffset() const { return this->_CurrentStereoisomerOffset;}; // getIsomer
     //core::Symbol_sp getGroupName() const { return this->_GroupName; };
 //    virtual AtomIndexer_sp getInterestingAtomIndexer();
