@@ -1,0 +1,86 @@
+
+\def\constitution{\texttt{constitution}}
+\def\residue{\texttt{residue}}
+\def\residues{\texttt{residues}}
+\def\topology{\texttt{topology}}
+\def\topologys{\texttt{topologys}}
+\def\constitutionAtom{\texttt{constitution-atom}}
+\def\constitutionAtoms{\texttt{constitution-atoms}}
+\def\stereoisomerAtom{\texttt{stereisomer-atom}}
+\def\stereoisomerAtoms{\texttt{stereisomer-atoms}}
+\def\coupling{\texttt{coupling}}
+\def\couplings{\texttt{couplings}}
+\def\monomer{\texttt{monomer}}
+\def\monomers{\texttt{monomers}}
+
+
+\chapter{Building Molecules from Parts}
+\label{chap-parts}
+
+\section{Constitution}
+
+A {\constitution} class maintains the description of a residue independent of how it is connected to other residues and stereochemistry. A {\constitution} stores the atoms and properties of the atoms that are independent of connections and stereochemistry. A {\constitution} contains all {\topology}s that share a common {\constitution}.
+
+A {\constitution} contains the following fields:
+
+\begin{itemize}
+\item
+The {\constitutionAtoms} class is a container class that contains all of the atoms in the {\constitution}.
+\item
+A map of plug names to \texttt{plugs} for all possible plugs that can be used to connect into or out of this {\constitution}.
+\item
+A map of all topology names to topology's that share this {\constitution}.
+\item
+A \texttt{stereoinformation} object that contains the names of all stereoisomers that are share this {\constitution}.
+\end{itemize}
+
+\section{Constitution-atoms}
+
+A \texttt{constitution-atoms} object is a container that contains a collection of {\constitutionAtom} objects that are joined to each other by \texttt{constitution-bond} objects. The {\constitutionAtom} objects and \texttt{constitution-bond} objects together form a bidirectional graph that describe a \texttt{residue}.
+\section{Stereoinformation}
+
+A \texttt{stereoinformation} object is a container that describes all of the stereoisomers that share a {\constitution}.
+
+It contains a list of \texttt{stereoisomers} and a map of stereoisomer names to stereoisomers.
+
+
+\section{Topology}
+
+A {\topology} is a class that maintains the description of a residue that connects to other residues through a specific set of \texttt{Plugs} but can exist as multiple stereoisomers.
+A \texttt{topology} contains a set of {\stereoisomerAtoms} objects that describe for each stereoisomer in the \texttt{topology} the atom properties that are specific to the topology and stereoisomer.
+
+
+\section{Stereoisomer-atoms}
+
+This is a named container class whose name is the stereoisomer name that matches one of the \texttt{stereo-information} names in a \texttt{constitution} and contains \texttt{stereoisomer-atom} objects.
+
+\section{Stereoisomer-atom}
+
+This stores information on an atom that is specific to the stereoisomer/\texttt{topology}. 
+This includes:
+\begin{itemize}
+\item
+charge - the atomic charge to place on the atom in any molecules that are built.
+\item
+atom-type - the atom type of the atom.
+\item
+atom-name
+\item
+atom-index - the index into the \texttt{constitution-atoms} that the \texttt{topology} that contains this \texttt{stereoisomer-atom}.
+`\end{itemize}
+
+ The atom charge can be dependent on the stereoisomer because the shape of the molecule effects partial charges.  It is less likely that an atom-type will change with stereochemistry - but if charge does, then atom-type can.  Atom-name and atom-index are used to index into the {\constitutionAtoms} that this {\stereoisomerAtom} belongs to.
+
+\section{Isoname}
+
+Deprecated.
+This identifies a unique stereoisomer. It stores a topology, the name of the topology and an index into the isomers of the topology.
+
+\section{Oligomer}
+
+An \texttt{oligomer} contains a collection of {\monomers} that are joined by a collection of {\couplings} that together form a directed graph.
+
+\section{Monomer}
+
+A {\monomer} is like a residue that can be plugged into any number of other residues through {\couplings}. Unline a residue though, a {\monomer} is mutable - and can be defined to become any one of a set of residues.
+A {\monomer} is node in an \texttt{oligomer}; it is joined to other {\monomer} through {\couplings}. A {\monomer} contains a list of {\topologys}, an index into that list and an index into the list of {\stereoisomerAtoms} within 
