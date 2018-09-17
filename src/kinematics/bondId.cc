@@ -47,4 +47,11 @@ BondId_sp BondId_O::create(Joint_sp parent, Joint_sp child)
   bondId->_Child = child;
   return bondId;
 }
+
+string BondId_O::__repr__() const {
+  stringstream ss;
+  ss << "#<" << this->className() << " :parent " << core::_rep_(this->_Parent) << " :child " << core::_rep_(this->_Child) << ">";
+  return ss.str();
+}
+
 }; /* kinematics */

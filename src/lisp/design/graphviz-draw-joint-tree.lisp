@@ -11,7 +11,7 @@
   (with-open-file (stream filename :direction :output :if-exists :supersede)
     (format stream "digraph G {~%   ordering = out; ~%")
     (let ((*table* (make-hash-table :test #'eq)))
-      (stream-draw-joint joint stream))
+      (stream-draw-joint (kin:atom-tree-root joint) stream))
     (format stream "}~%")))
 
 (defmethod stream-draw-joint :around (joint stream)
@@ -26,7 +26,7 @@
              (format stream "   ~a -> ~a [label = \"~d\"];~%"
                      (id child) (id joint) i))))
 
-(defmethod label (joint)
+(defmethod label ((joint kin:joint))
   (let ((name (string (class-name (class-of joint)))))
     (format nil "~a/~a" name (kin:name joint))))
 

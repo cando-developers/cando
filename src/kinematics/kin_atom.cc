@@ -23,12 +23,13 @@ THE SOFTWARE.
 This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
 */
 /* -^- */
-#define DEBUG_LEVEL_NONE
+#define DEBUG_LEVEL_FULL
 
 
 #include <clasp/core/foundation.h>
 #include <cando/geom/ovector3.h>
 #include <clasp/core/record.h>
+#include <clasp/core/ql.h>
 #include <clasp/core/evaluator.h>
 #include <clasp/core/symbolTable.h>
 #include <cando/chem/atomId.h>
@@ -136,7 +137,7 @@ int Joint_O::indexOfChild(Joint_sp child)
 void Joint_O::insertChild(Joint_sp child)
 {_OF();
   ASSERTF(child.get() != this,BF("Circular atom reference"));
-  LOG(BF("Inserting child of type: %s") % child.holder()->typeAsString() );
+  LOG(BF("Inserting child: %s") % _rep_(child));
   if ( gc::IsA<JumpJoint_sp>(child) )
   {
     LOG(BF("It's a jump, inserting it at the start"));
@@ -152,7 +153,7 @@ void Joint_O::insertChild(Joint_sp child)
 #ifdef DEBUG_ON
       Joint_sp firstNonJumpHandle = this->_child(firstNonJumpIndex);
       LOG(BF("The current firstNonJumpHandle is of type: %s")
-          % firstNonJumpHandle.holder()->typeAsString());
+          % _rep_(firstNonJumpHandle));
       {
         LOG(BF("We are inserting a BondedAtom"));
       }
@@ -243,6 +244,15 @@ Joint_sp Joint_O::getNonJumpAtom(int offset) const
   return this->_child(idx);
 }
 
+CL_DEFMETHOD core::List_sp Joint_O::children() const
+{
+  ql::list l;
+  for ( int i(0), iEnd(this->_numberOfChildren()); i<iEnd; ++i ) {
+    l << this->_child(i);
+  }
+  return l.cons();
+}
+    
 
 Joint_sp Joint_O::previousChild(Joint_sp ch) const
 {_OF();
@@ -284,6 +294,16 @@ Joint_sp Joint_O::inputStubAtom3(AtomTree_sp at) const
   }
 }
 
+CL_DEFMETHOD Vector3 Joint_O::getPosition() const
+{
+  Vector3 pos = this->_Position;
+  return pos;
+}
+
+CL_DEFMETHOD void Joint_O::setPosition(const Vector3& pos)
+{
+  this->_Position = pos;
+}
 
 
 Stub Joint_O::getStub(AtomTree_sp at) const

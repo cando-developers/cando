@@ -70,7 +70,7 @@
 /* Copy the first part of user declarations.  */
 #line 9 "gaff_Parser.yy" /* yacc.c:339  */
 
-#define DEBUG_LEVEL_FULL
+//#define DEBUG_LEVEL_FULL
 #include <string.h>
 #include <iostream>
 #include <string>

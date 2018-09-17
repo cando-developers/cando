@@ -132,7 +132,7 @@ namespace kinematics
     gc::Nilable<JointTemplate_sp> parent() const;
 
     virtual core::T_sp name() const;
-    
+    string __repr__() const;
 	/*! Return the atomName for this Template by looking up its index
 	  in the ConstitutionAtoms object */
     core::Symbol_sp jointTemplateAtomName(chem::ConstitutionAtoms_sp ca) const;

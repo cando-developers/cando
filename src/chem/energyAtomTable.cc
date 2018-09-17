@@ -1,4 +1,4 @@
-#define DEBUG_LEVEL_FULL
+//#define DEBUG_LEVEL_FULL
 /*
     File: energyAtomTable.cc
 */

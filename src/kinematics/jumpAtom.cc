@@ -23,7 +23,7 @@ THE SOFTWARE.
 This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
 */
 /* -^- */
-#define DEBUG_LEVEL_NONE
+#define DEBUG_LEVEL_FULL
 
 
 
@@ -51,11 +51,12 @@ void JumpJoint_O::_insertChild(int idx, Joint_sp c)
 
 
 void JumpJoint_O::_appendChild(Joint_sp c)
-{
+{_OF();
   Joint_sp empty;
-  int idx = this->_Children.size();
+  size_t index = this->_Children.size();
   this->_Children.push_back(empty);
-  this->_Children[idx] = c;
+  this->_Children[index] = c;
+  LOG(BF(" Appending to node %s child %s at index %lu\n") % _rep_(this->asSmartPtr()) % _rep_(c) % index);
 }
 
 

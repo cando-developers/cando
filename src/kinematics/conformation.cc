@@ -23,7 +23,7 @@ THE SOFTWARE.
 This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
 */
 /* -^- */
-#define	DEBUG_LEVEL_NONE
+#define	DEBUG_LEVEL_FULL
 
 #include <clasp/core/common.h>
 #include <cando/kinematics/kinematicsPackage.h>
@@ -58,7 +58,7 @@ void Conformation_O::fields(core::Record_sp node) {
 //
 CL_LISPIFY_NAME(make-conformation);
 CL_DEF_CLASS_METHOD Conformation_sp Conformation_O::make(core::List_sp oligomers)
-{
+{_OF();
   GC_ALLOCATE(Conformation_O, me );
   me->resizeMolecules(core::cl__length(oligomers));
   int moleculeId = 0;

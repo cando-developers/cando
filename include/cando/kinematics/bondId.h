@@ -45,6 +45,7 @@ namespace kinematics
     Joint_sp	_Child;
   public:
     static BondId_sp create(Joint_sp parent, Joint_sp child = _Unbound<Joint_O>());
+    string __repr__() const;
   };
 
 }; /* kinematics */

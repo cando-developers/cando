@@ -102,6 +102,7 @@ namespace kinematics
 
 	/*! Destructors need to delete all Children */
   	virtual void _releaseAllChildren() = 0;
+      virtual core::List_sp children() const;
     public:
 
     Joint_O() : _Parent(_Unbound<Joint_O>()), _Name(_Unbound<core::T_O>()), _Id() {};
@@ -192,6 +193,8 @@ namespace kinematics
 
 	/*! Set the position */
 	void position(const Vector3& pos) { this->_Position = pos;};
+      Vector3 getPosition() const;
+      void setPosition(const Vector3& pos);
 
 	/*! Return the input stub atom */
 	inline Joint_sp inputStubAtom0() const

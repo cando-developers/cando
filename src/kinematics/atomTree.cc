@@ -23,7 +23,7 @@ THE SOFTWARE.
 This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
 */
 /* -^- */
-#define DEBUG_LEVEL_NONE
+#define DEBUG_LEVEL_FULL
 
 #include <clasp/core/common.h>
 #include <clasp/core/environment.h>
@@ -175,12 +175,14 @@ void AtomTree_O::recursivelyBuildMolecule(int moleculeId,
                                           Joint_sp parent,
                                           bool rootNode)
 {_OF();
+  LOG(BF("recursivelyBuildMolecule into parent: %s monomerNode: %s\n") % _rep_(parent) % _rep_(monomerNode));
   chem::Constitution_mv constitutionAndTopology = monomerNode->identifyConstitutionAndTopology();
   chem::Constitution_sp constitution = constitutionAndTopology;
   chem::Topology_sp topology = constitutionAndTopology.second().as<chem::Topology_O>();
+  chem::ConstitutionAtoms_sp constitutionAtoms;
   {_BLOCK_TRACEF(BF("Building constitution[%s] Topology[%s]")
                  % _rep_(constitution->getName()) % _rep_(topology->getName()) );
-    chem::ConstitutionAtoms_sp constitutionAtoms = constitution->getConstitutionAtoms();
+    constitutionAtoms = constitution->getConstitutionAtoms();
     this->resizeAtoms(moleculeId,residueId,constitutionAtoms->numberOfAtoms());
     core::T_sp ttemplate = topology->getProperty(INTERN_(kw,jointTemplate));
     if (ttemplate.nilp()) {
@@ -200,24 +202,24 @@ void AtomTree_O::recursivelyBuildMolecule(int moleculeId,
                                      incoming,
                                      outgoing,
                                      rootNode);
+  }
 	    // Now loop over all the OutPlugs and
 	    // create their children and connect them to our OutPlug atoms
 	    //
-    chem::Topology_O::Plugs::iterator it;
-    for ( it=topology->_Plugs.begin(); it!=topology->_Plugs.end(); it++ ) {
-      if ( gc::IsA<chem::OutPlug_sp>(it->second) ) {
-        chem::OutPlug_sp outPlug = gc::As_unsafe<chem::OutPlug_sp>(it->second);
-        core::Symbol_sp atomB0 = outPlug->getB0();
-        int constitutionBond0AtomId = constitutionAtoms->index(atomB0);
-        chem::AtomId atomId(moleculeId,residueId,constitutionBond0AtomId);
-        Joint_sp bond0Parent = this->_AtomMap[atomId];
-        MonomerNode_sp nextMonomerNode = monomerNode->_Children.get(outPlug->getName());
-        int nextResidueId = nextMonomerNode->_MonomerId;
-        ASSERT(nextResidueId<(int)this->_AtomMap[moleculeId].size());
-        this->recursivelyBuildMolecule(moleculeId,nextResidueId,nextMonomerNode,bond0Parent);
-      }
+  chem::Topology_O::Plugs::iterator it;
+  for ( it=topology->_Plugs.begin(); it!=topology->_Plugs.end(); it++ ) {
+    if ( gc::IsA<chem::OutPlug_sp>(it->second) ) {
+      chem::OutPlug_sp outPlug = gc::As_unsafe<chem::OutPlug_sp>(it->second);
+      core::Symbol_sp atomB0 = outPlug->getB0();
+      int constitutionBond0AtomId = constitutionAtoms->index(atomB0);
+      chem::AtomId atomId(moleculeId,residueId,constitutionBond0AtomId);
+      Joint_sp bond0Parent = this->_AtomMap[atomId];
+      MonomerNode_sp nextMonomerNode = monomerNode->_Children.get(outPlug->getName());
+      int nextResidueId = nextMonomerNode->_MonomerId;
+      ASSERT(nextResidueId<(int)this->_AtomMap[moleculeId].size());
+      this->recursivelyBuildMolecule(moleculeId,nextResidueId,nextMonomerNode,bond0Parent);
     }
-  }	
+  }
 }
 					
 

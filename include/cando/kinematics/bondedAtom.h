@@ -69,7 +69,7 @@ namespace kinematics
 	/*! Insert the child at the given index - this does the work of opening up a space and putting the new value in */
 	virtual void _insertChild(int idx, Joint_sp c );
 	/*! Insert the child at the given index - this does the work of opening up a space and putting the new value in */
-	virtual void _appendChild(Joint_sp c) {this->_Children[this->_NumberOfChildren++] = c; };
+      virtual void _appendChild(Joint_sp c);
 	/*! Delete all of the children for the destructor */
 	virtual void _releaseAllChildren();
 
@@ -110,6 +110,14 @@ namespace kinematics
 
 	/*! Get the value of the DOF */
 	double dof(DofType const& dof) const;
+
+      CL_DEFMETHOD double getDistance() const { return this->_Distance; }
+      CL_DEFMETHOD double getTheta() const { return this->_Theta; };
+      CL_DEFMETHOD double getPhi() const { return this->_Phi; };
+
+      CL_DEFMETHOD void setDistance(double d) { this->_Distance = d;}
+      CL_DEFMETHOD void setTheta(double t) { this->_Theta = t;}
+      CL_DEFMETHOD void setPhi(double p) { this->_Phi = p;}
 
 
     };
