@@ -115,9 +115,9 @@ namespace kinematics
       CL_DEFMETHOD double getTheta() const { return this->_Theta; };
       CL_DEFMETHOD double getPhi() const { return this->_Phi; };
 
-      CL_DEFMETHOD void setDistance(double d) { this->_Distance = d;}
-      CL_DEFMETHOD void setTheta(double t) { this->_Theta = t;}
-      CL_DEFMETHOD void setPhi(double p) { this->_Phi = p;}
+      CL_DEFMETHOD void setDistance(double distance) { this->_Distance = distance;}
+      CL_DEFMETHOD void setTheta(double angle) { this->_Theta = angle;}
+      CL_DEFMETHOD void setPhi(double dihedral) { this->_Phi = dihedral;}
 
 
     };
