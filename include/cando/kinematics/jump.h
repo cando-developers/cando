@@ -73,7 +73,7 @@ namespace kinematics
 
     class Jump
     {
-    protected:
+    public:
 	Matrix		_Transform;
 	RigidBodyDelta	_N2cDelta;
 	RigidBodyDelta	_C2nDelta;

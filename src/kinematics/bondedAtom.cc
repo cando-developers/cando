@@ -254,7 +254,7 @@ void BondedJoint_O::_appendChild(Joint_sp c)
     }
 
 
-    void BondedJoint_O::updateXyzCoords(Stub& stub,AtomTree_sp at)
+    void BondedJoint_O::_updateXyzCoords(Stub& stub,AtomTree_sp at)
     {_OF();
 	ASSERTF(stub.isOrthogonal(1e-3),BF("The Stub is not orthogonal - stub:\n%s") % stub.asString());
 	stub.multiplyRotationPart(XRotationMatrixRadians(this->_Phi));
@@ -272,7 +272,7 @@ void BondedJoint_O::_appendChild(Joint_sp c)
 	this->position(newStub.translation());
 	for ( int ii=0; ii < this->_numberOfChildren(); ii++)
 	{
-	    this->_child(ii)->updateXyzCoords(newStub,at);
+	    this->_child(ii)->_updateXyzCoords(newStub,at);
 	}
 	this->_DofChangePropagatesToYoungerSiblings = false;
 	this->noteXyzUpToDate();
@@ -292,7 +292,7 @@ void BondedJoint_O::_appendChild(Joint_sp c)
 	/// The stub is passed to update_xyz_coords, and this atom will modify it;
 	/// after which the stub is ready to be passed to the younger siblings.
 	Stub stub( this->getInputStub(at) );
-	this->BondedJoint_O::updateXyzCoords(stub,at);
+	this->BondedJoint_O::_updateXyzCoords(stub,at);
 	if ( local_dof_change_propagates_to_younger_siblings )
 	{
 	    ASSERTF(this->_Parent.boundp(),BF("Parent is not defined"));
@@ -308,7 +308,7 @@ void BondedJoint_O::_appendChild(Joint_sp c)
 	    }
 	    while ( ii != parent.get()->_numberOfChildren() )
 	    {
-		parent->_child(ii)->updateXyzCoords(stub,at);
+		parent->_child(ii)->_updateXyzCoords(stub,at);
 		++ii;
 	    }
 	}

@@ -258,7 +258,7 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
     
 (defun bad-geometry-p (agg &optional system)
   "Return true if there are any beyond-threshold force field interactions"
-  (let ((energy-function (chem:make-energy-function agg force-field)))
+  (let ((energy-function (chem:make-energy-function agg system)))
     (let ((fails (chem:check-for-beyond-threshold-interactions system)))
       (if (> fails 0)
           fails

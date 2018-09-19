@@ -37,12 +37,114 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/kinematics/stub.h>
 #include <cando/kinematics/atom.h>
 
+
+SYMBOL_EXPORT_SC_(KeywordPkg,noop_to_external);
+SYMBOL_EXPORT_SC_(KeywordPkg,noop_to_internal);
+SYMBOL_EXPORT_SC_(KeywordPkg,origin_to_external);
+SYMBOL_EXPORT_SC_(KeywordPkg,origin_to_internal);
+SYMBOL_EXPORT_SC_(KeywordPkg,general_to_external);
+SYMBOL_EXPORT_SC_(KeywordPkg,general_to_internal);
+SYMBOL_EXPORT_SC_(KeywordPkg,bond_to_external);
+SYMBOL_EXPORT_SC_(KeywordPkg,bond_to_internal);
+SYMBOL_EXPORT_SC_(KeywordPkg,bond_angle_to_external);
+SYMBOL_EXPORT_SC_(KeywordPkg,bond_angle_to_internal);
+SYMBOL_EXPORT_SC_(KeywordPkg,bond_angle_dihedral_to_external);
+SYMBOL_EXPORT_SC_(KeywordPkg,bond_angle_dihedral_to_internal);
+
+namespace translate
+{
+template <>
+struct	to_object<kinematics::CoordinateCalculator>
+{
+  typedef	core::Symbol_sp	ExpectedType;
+  typedef	core::Symbol_sp	DeclareType;
+  static core::T_sp convert(kinematics::CoordinateCalculator v)
+  {_G();
+    if (v== kinematics::noop_to_external) {
+      return kw::_sym_noop_to_external;
+    } else if (v== kinematics::noop_to_internal) {
+      return kw::_sym_noop_to_internal;
+    } else if (v== kinematics:: origin_to_external) {
+      return kw::_sym_origin_to_external;
+    } else if (v== kinematics::origin_to_internal) {
+      return kw::_sym_origin_to_internal;
+    } else if (v== kinematics::general_to_external) {
+      return kw::_sym_general_to_external;
+    } else if (v== kinematics::general_to_internal) {
+      return kw::_sym_general_to_internal;
+    } else if (v== kinematics::bond_to_external) {
+      return kw::_sym_bond_to_external;
+    } else if (v== kinematics::bond_to_internal) {
+      return kw::_sym_bond_to_internal;
+    } else if (v== kinematics::bond_angle_to_external) {
+      return kw::_sym_bond_angle_to_external;
+    } else if (v== kinematics::bond_angle_to_internal) {
+      return kw::_sym_bond_angle_to_internal;
+    } else if (v== kinematics::bond_angle_dihedral_to_external) {
+      return kw::_sym_bond_angle_dihedral_to_external;
+    } else if (v== kinematics::bond_angle_dihedral_to_internal) {
+      return kw::_sym_bond_angle_dihedral_to_internal;
+    }
+    SIMPLE_ERROR(BF("Cannot convert CoordinateCalculator %p") % v);
+  };
+};
+template <>
+struct translate::from_object<kinematics::CoordinateCalculator>
+{
+  typedef	kinematics::CoordinateCalculator ExpectedType;
+  typedef	ExpectedType DeclareType;
+  DeclareType _v;
+  from_object(core::T_sp o)
+  {
+    core::Symbol_sp sym = o.as<core::Symbol_O>();
+    if (o == kw::_sym_noop_to_external) {
+      this->_v = kinematics::noop_to_external;
+    } else if (o == kw::_sym_noop_to_internal) {
+      this->_v = kinematics::noop_to_internal;
+    } else if (o == kw::_sym_origin_to_external) {
+      this->_v = kinematics::origin_to_external;
+    } else if (o == kw::_sym_origin_to_internal) {
+      this->_v = kinematics::origin_to_internal;
+    } else if (o == kw::_sym_general_to_external) {
+      this->_v = kinematics::general_to_external;
+    } else if (o == kw::_sym_general_to_internal) {
+      this->_v = kinematics::general_to_internal;
+    } else if (o == kw::_sym_bond_to_external) {
+      this->_v = kinematics::bond_to_external;
+    } else if (o == kw::_sym_bond_to_internal) {
+      this->_v = kinematics::bond_to_internal;
+    } else if (o == kw::_sym_bond_angle_to_external) {
+      this->_v = kinematics::bond_angle_to_external;
+    } else if (o == kw::_sym_bond_angle_to_internal) {
+      this->_v = kinematics::bond_angle_to_internal;
+    } else if (o == kw::_sym_bond_angle_dihedral_to_external) {
+      this->_v = kinematics::bond_angle_dihedral_to_external;
+    } else if (o == kw::_sym_bond_angle_dihedral_to_internal) {
+      this->_v = kinematics::bond_angle_dihedral_to_internal;
+    } else {
+      SIMPLE_ERROR(BF("Cannot convert CoordinateCalculator %s") % _rep_(o));
+    }
+  }
+};
+
+  
+
+};
+
+
+
 namespace kinematics {
 FORWARD(JumpAtom);
 
 #define	ASSERT_VALID_HANDLE(tree,handle)				\
   ASSERTF((int)handle<tree->numberOfEntries(),BF("The handle[%d] is out of range (0->%d]") % handle % tree->numberOfEntries()); \
   ASSERTF(tree->_AtomHolders[handle]._Type != unused,BF("The handle represents an unused node"));
+
+
+CL_DEFMETHOD void Joint_O::setToInternal(core::Symbol_sp cc) {this->_ToInternal = translate::from_object<CoordinateCalculator>(cc)._v; };
+CL_DEFMETHOD core::Symbol_sp Joint_O::getToInternal() {return translate::to_object<CoordinateCalculator>::convert(this->_ToInternal); };
+CL_DEFMETHOD void Joint_O::setToExternal(core::Symbol_sp cc) {this->_ToExternal = translate::from_object<CoordinateCalculator>(cc)._v; };
+CL_DEFMETHOD core::Symbol_sp Joint_O::getToExternal() {return translate::to_object<CoordinateCalculator>::convert(this->_ToExternal); };
 
 
 string Joint_O::__repr__() const {
@@ -57,6 +159,8 @@ void Joint_O::fields(core::Record_sp node) {
   node->field(INTERN_(kw,parent),this->_Parent);
   node->field(INTERN_(kw,name),this->_Name); // name
   node->field(INTERN_(kw,id),this->_Id);
+  node->field(INTERN_(kw,to_external),this->_ToExternal);
+  node->field(INTERN_(kw,to_internal),this->_ToInternal);
   node->field_if_not_default(INTERN_(kw,pos),this->_Position, Vector3());
 }
 
@@ -85,6 +189,12 @@ string Joint_O::asString() const
   return ss.str();
 }
 
+void Joint_O::setParent(Joint_sp parent)
+{
+  this->_Parent = parent;
+}
+    
+    
 
 void Joint_O::insertChild(int before, Joint_sp child )
 {_OF();
@@ -361,10 +471,10 @@ void Joint_O::walkResidueTree(int residueId, core::Function_sp callback)
 }
 
 
-void Joint_O::updateXyzCoords(AtomTree_sp at)
+CL_DEFMETHOD void Joint_O::updateXyzCoords(AtomTree_sp at)
 {_OF();
   Stub stub(this->getInputStub(at));
-  this->updateXyzCoords(stub,at);
+  this->_updateXyzCoords(stub,at);
 }
 
 

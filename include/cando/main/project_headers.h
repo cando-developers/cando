@@ -340,6 +340,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/kinematics/chiDihedrals.h>
 #include <cando/kinematics/conformation.fwd.h>
 #include <cando/kinematics/conformation.h>
+#include <cando/kinematics/coordinateCalculators.h>
 #include <cando/kinematics/delayedBondedAtom.h>
 #include <cando/kinematics/dofId.h>
 #include <cando/kinematics/dofType.h>

@@ -8,6 +8,7 @@ def build(bld):
         'chainNode',
         'chiDihedrals',
         'conformation',
+            'coordinateCalculators',
         'delayedBondedAtom',
         'dofType',
         'foldTree',

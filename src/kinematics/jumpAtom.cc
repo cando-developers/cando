@@ -142,7 +142,7 @@ bool JumpJoint_O::keepDofFixed(DofType dof) const
 
 
     /*! Update the external coordinates using the input stub */
-void JumpJoint_O::updateXyzCoords(Stub& stub,AtomTree_sp at)
+void JumpJoint_O::_updateXyzCoords(Stub& stub,AtomTree_sp at)
 {_OF();
   ASSERTF(stub.isOrthogonal(1e-3),BF("Stub is not orthogonal - stub:\n%s") % stub.asString());
   Stub newStub;
@@ -150,7 +150,7 @@ void JumpJoint_O::updateXyzCoords(Stub& stub,AtomTree_sp at)
   this->position(newStub.translation());
   for ( int ii=0; ii<this->_numberOfChildren(); ii++ )
   {
-    this->_child(ii).get()->updateXyzCoords(newStub,at);
+    this->_child(ii).get()->_updateXyzCoords(newStub,at);
   }
   this->noteXyzUpToDate();
 }
@@ -160,7 +160,7 @@ void JumpJoint_O::updateXyzCoords(Stub& stub,AtomTree_sp at)
 void JumpJoint_O::updateXyzCoords(AtomTree_sp at)
 {
   Stub stub(this->getInputStub(at));
-  this->JumpJoint_O::updateXyzCoords(stub,at);
+  this->JumpJoint_O::_updateXyzCoords(stub,at);
 }
 
 

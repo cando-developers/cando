@@ -42,7 +42,7 @@ namespace kinematics
   public:
     bool fieldsp() const { return true; };
     void fields(core::Record_sp node);
-  protected:
+  public:
     Jump			_Jump;
 	/*! JumpAtoms can have unlimited numbers of children */
     gc::Vec0< Joint_sp >	_Children;
@@ -103,7 +103,7 @@ namespace kinematics
 
 
 	/*! Update the external coordinates using the input stub */
-    virtual void updateXyzCoords(Stub& stub,AtomTree_sp at);
+    virtual void _updateXyzCoords(Stub& stub,AtomTree_sp at);
 
 
 	/*! Return the DOF */

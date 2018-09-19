@@ -156,12 +156,13 @@
 
 (defun expanded-atom-set-for-ring (linked-ring)
   (let ((atom-set (make-hash-table)))
-    do (loop for atom in (atoms linked-ring)
+    (loop for atom in (atoms linked-ring)
           do (setf (gethash atom atom-set) atom))
     (expand-atom-set-by-one-bond atom-set)))
 
 
 (defun scramble-linked-rings (linked-rings)
+  "Scramble the coordinates of a set of linked rings"
   (loop for lr in linked-rings
      for x from 0 to (length linked-rings)
      do (cando:scramble-positions (expanded-atom-set-for-ring lr)

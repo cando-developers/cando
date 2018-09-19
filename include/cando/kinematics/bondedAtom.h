@@ -36,6 +36,7 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace kinematics
 {
 
+FORWARD(BondedJoint);
     class BondedJoint_O : public Joint_O
     {
 	LISP_CLASS(kinematics,KinPkg,BondedJoint_O,"BondedAtom",Joint_O);
@@ -46,7 +47,7 @@ namespace kinematics
     public:
 	static const NodeType nodeType = bondedAtom;
 	static const int MaxChildren = 5;
-    protected:
+    public:
 	int		_NumberOfChildren;
         // _Children have the value 0x0 if unbound
 	Joint_sp	_Children[MaxChildren];
@@ -104,7 +105,7 @@ namespace kinematics
 
 
 	/*! Update the external coordinates using the input stub */
-	virtual void updateXyzCoords(Stub& stub,AtomTree_sp at);
+	virtual void _updateXyzCoords(Stub& stub,AtomTree_sp at);
 
 
 
