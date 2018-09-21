@@ -36,6 +36,7 @@ This is an open source license for the CANDO software from Temple University, bu
  */
 #include <clasp/core/foundation.h>
 #include <clasp/core/hashTable.h>
+#include <clasp/core/lispStream.h>
 #include <clasp/core/hashTableEq.h>
 #include <clasp/core/record.h>
 #include <cando/chem/ffTypesDb.h>
@@ -79,10 +80,10 @@ CL_DEFMETHOD core::Symbol_sp FFTypesDb_O::assignType(chem::Atom_sp atom, bool ve
       if ( cheminfo->matches(atom)) {
         AntechamberRoot_sp antechamberRoot = gc::As<AntechamberRoot_sp>(cheminfo->_Root);
         LOG(BF("Rule MATCH!!!") );
-        if (verbose) write_bf_stream(BF("Matched %s\n") % _rep_(cheminfo));
+        if (verbose) core::write_bf_stream(BF("Matched %s\n") % _rep_(cheminfo));
         return antechamberRoot->_AssignType;
       } else {
-        if (verbose) write_bf_stream(BF("Did not match %s\n") % _rep_(cheminfo));
+        if (verbose) core::write_bf_stream(BF("Did not match %s\n") % _rep_(cheminfo));
       }
       LOG(BF("Rule does not match, keep going") );
     }

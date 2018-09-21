@@ -32,6 +32,7 @@ This is an open source license for the CANDO software from Temple University, bu
 
 #include <clasp/core/common.h>
 #include <clasp/core/bformat.h>
+#include <clasp/core/lispStream.h>
 #include <clasp/core/ql.h>
 #include <clasp/core/evaluator.h>
 #include <cando/adapt/stringSet.h>
@@ -120,7 +121,7 @@ string Topology_O::__repr__() const {
 
 CL_DEFMETHOD Residue_sp Topology_O::buildResidueForIsomer(size_t isomer) const
 {
-  write_bf_stream(BF("%s:%d Topology_O::buildResidueForIsomer\n") % __FILE__ % __LINE__ );
+  core::write_bf_stream(BF("%s:%d Topology_O::buildResidueForIsomer\n") % __FILE__ % __LINE__ );
   StereoisomerAtoms_sp info = this->_StereoisomerAtomProperties[isomer];
   LOG(BF("creating residue\n"));
   core::Symbol_sp residueName = info->getName();

@@ -136,7 +136,7 @@ void	CDNode_O::parseFromXml(adapt::QDomNode_sp xml, bool verbose)
   float y = std::stof(posparts[1]);
   this->_Pos = geom::Vector2(x,y);
   this->_Label = this->_extractLabel(xml);
-  if (verbose) write_bf_stream(BF("CDNode id(%s) color(%s) label(%s)\n") % this->_Id % this->_Color % this->_Label );
+  if (verbose) core::write_bf_stream(BF("CDNode id(%s) color(%s) label(%s)\n") % this->_Id % this->_Color % this->_Label );
   LOG(BF("Parsing CDNode with label: %s") % this->_Label);
   this->_StereochemistryType = undefinedCenter;
   this->_Configuration = undefinedConfiguration;
@@ -149,17 +149,17 @@ void	CDNode_O::parseFromXml(adapt::QDomNode_sp xml, bool verbose)
       string as = xml->getAttributeString("AS");
       if ( as == "S" )
       {
-        if (verbose) write_bf_stream(BF("    configuration(S)\n"));
+        if (verbose) core::write_bf_stream(BF("    configuration(S)\n"));
         LOG(BF("Atom has geometry AS=%s") % as );
         this->_Configuration = S_Configuration;
       } else if ( as == "R" )
       {
         LOG(BF("Atom has geometry AS=%s") % as );
-        if (verbose) write_bf_stream(BF("    configuration(R)\n"));
+        if (verbose) core::write_bf_stream(BF("    configuration(R)\n"));
         this->_Configuration = R_Configuration;
       } else
       {
-        if (verbose) write_bf_stream(BF("    could not determin configuration from AS\n"));
+        if (verbose) core::write_bf_stream(BF("    could not determin configuration from AS\n"));
         LOG(BF("Could not interpret geometry AS[%s]") % as );
       }
     }
@@ -268,7 +268,7 @@ void	CDBond_O::parseFromXml(adapt::QDomNode_sp xml, bool verbose)
          _Nil<core::T_O>());
     this->_Order = unknownCDBond;
   }
-  if (verbose) write_bf_stream(BF("CDBond _IdBegin(%s) _IdEnd(%s) order(%s) display(%s)\n") % this->_IdBegin % this->_IdEnd % order % display );
+  if (verbose) core::write_bf_stream(BF("CDBond _IdBegin(%s) _IdEnd(%s) order(%s) display(%s)\n") % this->_IdBegin % this->_IdEnd % order % display );
 }
 
 
@@ -328,7 +328,7 @@ void	CDFragment_O::parseFromXml(adapt::QDomNode_sp fragment, bool verbose)
   adapt::QDomNode_O::iterator	it;
   this->_Nodes.clear();
   this->_AtomsToNodes.clear();
-  if (verbose) write_bf_stream(BF("CDFragment - starting\n"));
+  if (verbose) core::write_bf_stream(BF("CDFragment - starting\n"));
   for ( it=fragment->begin_Children(); it!=fragment->end_Children(); it++ ) {
     adapt::QDomNode_sp child = (*it);
     if ( child->getLocalName() == "n" ) {
@@ -359,7 +359,7 @@ void	CDFragment_O::parseFromXml(adapt::QDomNode_sp fragment, bool verbose)
           % bond->getOrderAsString() % nodeBegin->getLabel() % nodeEnd->getLabel()  );
     }
   }
-  if (verbose) write_bf_stream(BF("CDFragment - done.\n"));
+  if (verbose) core::write_bf_stream(BF("CDFragment - done.\n"));
 }
 
 int CDFragment_O::countNeighbors(CDNode_sp node)
@@ -533,13 +533,13 @@ bool CDFragment_O::interpret(bool verbose)
         core::T_sp value = parsedProperty.second();
         if ( parsedProperty.number_of_values() == 2 ) {
           if ( cdorder == dativeCDBond ) {
-            if (verbose) write_bf_stream(BF("Adding atom property %s value: %s\n") % _rep_(parsedProperty) % _rep_(value));
+            if (verbose) core::write_bf_stream(BF("Adding atom property %s value: %s\n") % _rep_(parsedProperty) % _rep_(value));
             targetNode->_AtomProperties = core__put_f(targetNode->_AtomProperties,value,parsedProperty);
           } else if ( cdorder == hollowWedgeCDBond ) {
-            if (verbose) write_bf_stream(BF("Adding residue property %s value: %s\n") % _rep_(parsedProperty) % _rep_(value));
+            if (verbose) core::write_bf_stream(BF("Adding residue property %s value: %s\n") % _rep_(parsedProperty) % _rep_(value));
             targetNode->_ResidueProperties = core__put_f(targetNode->_ResidueProperties,value,parsedProperty);
           } else if ( cdorder == wavyCDBond ) {
-            if (verbose) write_bf_stream(BF("Adding molecule property %s value: %s\n") % _rep_(parsedProperty) % _rep_(value));
+            if (verbose) core::write_bf_stream(BF("Adding molecule property %s value: %s\n") % _rep_(parsedProperty) % _rep_(value));
             targetNode->_MoleculeProperties = core__put_f(targetNode->_MoleculeProperties,value,parsedProperty);
           } else {
             SIMPLE_ERROR(BF("Cannot interpret bond %s in terms of where to put the property") % (*bi)->getOrderAsString().c_str());
@@ -956,7 +956,7 @@ bool CDText_O::parseFromXml(adapt::QDomNode_sp text, bool verbose)
     LOG(BF("Text block is not code") );
     return false;
   }
-  if (verbose) write_bf_stream(BF("CDText parsed: %s") % stext);
+  if (verbose) core::write_bf_stream(BF("CDText parsed: %s") % stext);
   core::StringInputStream_sp sin = core::cl__make_string_input_stream(core::Str_O::create(stext)
                                                                       ,core::clasp_make_fixnum(0)
                                                                       ,_Nil<core::T_O>());
@@ -1090,7 +1090,7 @@ void	ChemDraw_O::setFragmentProperties(core::List_sp props)
 
 void ChemDraw_O::parseChild( adapt::QDomNode_sp child, bool verbose )
 {
-  if (verbose) write_bf_stream(BF("ChemDraw_O::parse child of page with name(%s)\n") % child->getLocalName());
+  if (verbose) core::write_bf_stream(BF("ChemDraw_O::parse child of page with name(%s)\n") % child->getLocalName());
   if ( child->getLocalName() == "fragment" ) {
     GC_ALLOCATE(CDFragment_O, fragment );
     fragment->parseFromXml(child,verbose);
@@ -1115,18 +1115,18 @@ void ChemDraw_O::parseChild( adapt::QDomNode_sp child, bool verbose )
       this->_Code = core::Cons_O::create(text->_Code,this->_Code);
     }
   } else if ( child->getLocalName() == "group" ) {
-    if (verbose) write_bf_stream(BF("ChemDraw_O::parsing group start...\n"));
+    if (verbose) core::write_bf_stream(BF("ChemDraw_O::parsing group start...\n"));
     for ( adapt::QDomNode_O::iterator it=child->begin_Children(); it!=child->end_Children(); it++ ) {
       this->parseChild(*it,verbose);
     }
-    if (verbose) write_bf_stream(BF("ChemDraw_O::parsing group done.\n"));
+    if (verbose) core::write_bf_stream(BF("ChemDraw_O::parsing group done.\n"));
   }
 }
 
 
 void	ChemDraw_O::parse( core::T_sp strm, bool verbose )
 {
-  if (verbose) write_bf_stream(BF("ChemDraw_O::parse starting\n"));
+  if (verbose) core::write_bf_stream(BF("ChemDraw_O::parse starting\n"));
   adapt::QDomNode_sp xml = adapt::QDomNode_O::parse(strm);
   if ( !xml->hasChildrenWithName("page") )
     SIMPLE_ERROR(BF("Not a cdxml file" ));
@@ -1136,7 +1136,7 @@ void	ChemDraw_O::parse( core::T_sp strm, bool verbose )
   for ( it=page->begin_Children(); it!=page->end_Children(); it++ ) {
     this->parseChild(*it,verbose);
   }
-  if (verbose) write_bf_stream(BF("ChemDraw_O::parse done.\n"));
+  if (verbose) core::write_bf_stream(BF("ChemDraw_O::parse done.\n"));
 }
 
 

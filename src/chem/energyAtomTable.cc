@@ -47,6 +47,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/units/unitsPackage.h>
 #include <cando/units/quantity.h>
 #include <cando/chem/loop.h>
+#include <clasp/core/lispStream.h>
 #include <cando/chem/spanningLoop.h>
 #include <cando/chem/ffNonbondDb.h>
 #include <clasp/core/translators.h>
@@ -216,7 +217,7 @@ CL_DEFMETHOD void	AtomTable_O::dumpTerms()
   for ( eai=this->_Atoms.begin(); eai!=this->_Atoms.end(); eai++ ) {
     as1 = atomLabel(eai->atom());
     str1 = eai->atom()->getType();
-    write_bf_stream(BF("(TERM %d ATOM %-9s %-9s :charge %8.5lf :mass %8.5lf :typeIndex %d)\n")
+    core::write_bf_stream(BF("(TERM %d ATOM %-9s %-9s :charge %8.5lf :mass %8.5lf :typeIndex %d)\n")
               % index
               % as1
               % _rep_(str1)

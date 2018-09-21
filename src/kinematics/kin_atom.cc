@@ -390,16 +390,17 @@ Joint_sp Joint_O::previousChild(Joint_sp ch) const
 Joint_sp Joint_O::inputStubAtom3(AtomTree_sp at) const
 {_OF();
   ASSERTF(this->parent().boundp(),BF("The parent isn't defined"));
+  if (this->parent().unboundp()) {
+    SIMPLE_ERROR(BF("inputStubAtom2 parent of %s isn't defined") % _rep_(this->asSmartPtr()));
+  }
   Joint_sp sibling = this->previousSibling();
   if ( gc::IsA<JumpJoint_sp>(this->asSmartPtr())
        || sibling.unboundp()
        || gc::IsA<JumpJoint_sp>(sibling)
        || (gc::IsA<JumpJoint_sp>(this->parent())
-           && sibling->id() == this->parent()->stubAtom2Id() ) )
-  {
+           && sibling->id() == this->parent()->stubAtom2Id() ) ) {
     return this->parent()->stubAtom3(at);
-  } else
-  {
+  } else {
     return sibling;
   }
 }

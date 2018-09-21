@@ -43,6 +43,8 @@
  */
 
 #include <stdio.h>
+#include <clasp/core/foundation.h>
+#include <clasp/core/lispStream.h>
 #include <cando/chem/loop.h>
 #include <cando/chem/octree.h>
 #include <cando/geom/ovector3.h>
@@ -1046,11 +1048,11 @@ return(octTree);
   }
 
   if (bVerbose) {
-    write_bf_stream(BF("Total solute charge:  %5.2f  Max atom radius:  %5.2f\n") % dCharge % dMaxRadius );
+    core::write_bf_stream(BF("Total solute charge:  %5.2f  Max atom radius:  %5.2f\n") % dCharge % dMaxRadius );
     if ( type == Shell )
-      write_bf_stream(BF("Grid extends from solute vdw + %.2f  to  %.2f\n") % dAddExtent % dShellRadius );
-    write_bf_stream(BF("Box:\n" ));
-    write_bf_stream(BF("   enclosing:  %5.2f %5.2f %5.2f   %5.2f %5.2f %5.2f\n") %  vMinCorner.getX() % vMinCorner.getY() % vMinCorner.getZ()
+      core::write_bf_stream(BF("Grid extends from solute vdw + %.2f  to  %.2f\n") % dAddExtent % dShellRadius );
+    core::write_bf_stream(BF("Box:\n" ));
+    core::write_bf_stream(BF("   enclosing:  %5.2f %5.2f %5.2f   %5.2f %5.2f %5.2f\n") %  vMinCorner.getX() % vMinCorner.getY() % vMinCorner.getZ()
               % vMaxCorner.getX() % vMaxCorner.getY() % vMaxCorner.getZ());
   }
 
@@ -1101,8 +1103,8 @@ return(octTree);
 		/* diagonal = sqrt( 3 * side^2 ) */
     this->PdHalfDiagonals[i] = sqrt( 3.0 * (dTmp * dTmp) );
     if(bVerbose){
-      write_bf_stream(BF("PdHalfEdges:        %5.2f\n") % this->PdHalfEdges[i] );
-      write_bf_stream(BF("PdHalfDiagonals:     %5.2f Angstrom.\n") % this->PdHalfDiagonals[i] );
+      core::write_bf_stream(BF("PdHalfEdges:        %5.2f\n") % this->PdHalfEdges[i] );
+      core::write_bf_stream(BF("PdHalfDiagonals:     %5.2f Angstrom.\n") % this->PdHalfDiagonals[i] );
     }
 
   }
@@ -1118,10 +1120,10 @@ return(octTree);
      this->PiDensities[i] = j;
   
   if (bVerbose) {
-    write_bf_stream(BF("   sized:\t\t\t      %5.2f %5.2f %5.2f\n") % vMaxCorner.getX() % vMaxCorner.getY() % vMaxCorner.getZ());
-    write_bf_stream(BF("   edge:        %5.2f\n") % dTmax );
-    write_bf_stream(BF("Resolution:     %5.2f Angstrom.\n") % this->dGridSize );
-    write_bf_stream(BF("Tree depth: %d\n") % imd);
+    core::write_bf_stream(BF("   sized:\t\t\t      %5.2f %5.2f %5.2f\n") % vMaxCorner.getX() % vMaxCorner.getY() % vMaxCorner.getZ());
+    core::write_bf_stream(BF("   edge:        %5.2f\n") % dTmax );
+    core::write_bf_stream(BF("Resolution:     %5.2f Angstrom.\n") % this->dGridSize );
+    core::write_bf_stream(BF("Tree depth: %d\n") % imd);
   }
 	/*
 	 *  Build head node w/ all atoms in list.
@@ -1171,7 +1173,7 @@ return(octTree);
 //        time((time_t *)0) - time_start );
   if (bVerbose) {
    volumePercentage = 100 * this->fVolume / ( dTmax * dTmax * dTmax );
-   write_bf_stream(BF( "Volume = %5.2f of box, grid points %d\n") % volumePercentage % this->iTreePoints ); //iTreeGridPoints );
+   core::write_bf_stream(BF( "Volume = %5.2f of box, grid points %d\n") % volumePercentage % this->iTreePoints ); //iTreeGridPoints );
   }
 #ifdef OCTDEBUG
   printf(stderr, "depth  r_inc   r_inex  r_out  multin  multout \n");
@@ -1501,40 +1503,40 @@ CL_DEFMETHOD void Octree_O::OctNodePrintGrid( OctNode_sp PonNode, int iColor)
 //        }
         switch ( iColor ) {//switch ( iColorMethod ) {
         case COLOR_RANGE:
-            write_bf_stream(BF(".color %d\n") % 
+            core::write_bf_stream(BF(".color %d\n") % 
                       (int)floor( 5 + 60 *
                                   (PfCharge-this->fMinCharge) / 
                                   (this->fMaxCharge-this->fMinCharge) ) );
-            write_bf_stream(BF(".dot %f %f %f\n") % 
+            core::write_bf_stream(BF(".dot %f %f %f\n") % 
                       vPoint.getX() % vPoint.getY() % vPoint.getZ());
             break;
         case COLOR_CUT:
             if ( PfCharge < -0.1 ){
-              write_bf_stream(BF(".color yellow\n"));
+              core::write_bf_stream(BF(".color yellow\n"));
             } else if ( PfCharge > 0.1 ){
-              write_bf_stream(BF(".color cyan\n"));
+              core::write_bf_stream(BF(".color cyan\n"));
             } else
-              write_bf_stream(BF(".color black\n"));
-            write_bf_stream(BF(".dot %f %f %f\n") % 
+              core::write_bf_stream(BF(".color black\n"));
+            core::write_bf_stream(BF(".dot %f %f %f\n") % 
                       vPoint.getX() % vPoint.getY() % vPoint.getZ());
             break;
         case COLOR_DEPTH:
             if ( PonNode->iDepth == this->_iMaxDepth ){
-              write_bf_stream(BF(".color white\n"));
+              core::write_bf_stream(BF(".color white\n"));
             }else if ( PonNode->iDepth % 2 ){
-              write_bf_stream(BF(".color red\n"));
+              core::write_bf_stream(BF(".color red\n"));
             } else
-              write_bf_stream(BF(".color cyan\n"));
-            write_bf_stream(BF(".dot %f %f %f\n") % 
+              core::write_bf_stream(BF(".color cyan\n"));
+            core::write_bf_stream(BF(".dot %f %f %f\n") % 
                       vPoint.getX() % vPoint.getY() % vPoint.getZ());
             break;
         case COLOR_NONE:
-            write_bf_stream(BF("%f   %f %f %f\n") % 
+            core::write_bf_stream(BF("%f   %f %f %f\n") % 
                       PfCharge %  
                       vPoint.getX() %  vPoint.getY() %  vPoint.getZ());
             break;
         default:
-            write_bf_stream(BF(".color white\n"));
+            core::write_bf_stream(BF(".color white\n"));
         }
         ccharge++ ; //PfCharge++;
       }
@@ -1545,7 +1547,7 @@ CL_DEFMETHOD void Octree_O::OctNodePrintGrid( OctNode_sp PonNode, int iColor)
 //void Octree_O::OctTreePrintGrid( Octree_sp octTree, core::T_sp stream, int iColor ) //char *sFileName, int iColor )
 //{
 //  BFORMAT(stream,BF("x = %d y = %d\n") % x % y );
-//  write_bf_stream(BF("x = %d y = %d\n") % x % y );
+//  core::write_bf_stream(BF("x = %d y = %d\n") % x % y );
 //  
 //  if ( iColor != COLOR_DEPTH  && octTree->PfCharges.size() == 0 ) { //!octTree->PfCharges ) {
 //    printf(( "charge coloring but no charges\n" ));

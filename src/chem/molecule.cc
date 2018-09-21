@@ -34,6 +34,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/common.h>
 #include <clasp/core/record.h>
 #include <clasp/core/bformat.h>
+#include <clasp/core/lispStream.h>
 #include <cando/chem/molecule.h>
 #include <cando/chem/loop.h>
 #include <clasp/core/numerics.h>
@@ -354,13 +355,13 @@ AtomIdToAtomMap_sp Molecule_O::buildAtomIdMap() const
   for ( int rid =0; rid<numResidues; rid++ )
   {
     int numAtoms = this->_contents[rid]->_contents.size();
-    write_bf_stream(BF("%s:%d rid %d of %d  numAtoms-> %d\n") % __FILE__ % __LINE__ % rid % numResidues % numAtoms );
+    core::write_bf_stream(BF("%s:%d rid %d of %d  numAtoms-> %d\n") % __FILE__ % __LINE__ % rid % numResidues % numAtoms );
     atomIdMap->resize(mid,rid,numAtoms);
     for ( int aid=0; aid<numAtoms; aid++ )
     {
       AtomId atomId(mid,rid,aid);
       Atom_sp atom = this->_contents[rid]->_contents[aid].as<Atom_O>();
-      write_bf_stream(BF("%s:%d Adding %d %d %d -> %s\n") % __FILE__ % __LINE__ % mid % rid % aid % _rep_(atom));
+      core::write_bf_stream(BF("%s:%d Adding %d %d %d -> %s\n") % __FILE__ % __LINE__ % mid % rid % aid % _rep_(atom));
       atomIdMap->set(atomId,atom);
     }
   }

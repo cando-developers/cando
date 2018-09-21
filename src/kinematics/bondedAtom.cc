@@ -25,11 +25,12 @@ This is an open source license for the CANDO software from Temple University, bu
 /* -^- */
 #define DEBUG_LEVEL_FULL
 
-
+#define DEBUG_UPDATEXYZCOORDS
 
 #include <clasp/core/foundation.h>
 #include <clasp/core/object.h>
 #include <clasp/core/lisp.h>
+#include <clasp/core/lispStream.h>
 #include <clasp/core/symbolTable.h>
 #include <cando/chem/atomId.h>
 #include <clasp/core/numerics.h>
@@ -257,6 +258,10 @@ void BondedJoint_O::_appendChild(Joint_sp c)
     void BondedJoint_O::_updateXyzCoords(Stub& stub,AtomTree_sp at)
     {_OF();
 	ASSERTF(stub.isOrthogonal(1e-3),BF("The Stub is not orthogonal - stub:\n%s") % stub.asString());
+#ifdef DEBUG_UPDATEXYZCOORDS
+        core::write_bf_stream(BF("Stub =\n%s\n") % stub.asString());
+        core::write_bf_stream(BF("    Stub is orthogonal -> %lf\n") % stub.isOrthogonal(1e-3));
+#endif
 	stub.multiplyRotationPart(XRotationMatrixRadians(this->_Phi));
 	Stub newStub(stub);
 	newStub.multiplyRotationPart(ZRotationMatrixRadians(this->_Theta));
@@ -270,6 +275,9 @@ void BondedJoint_O::_appendChild(Joint_sp c)
 	}
 	newStub.addToTranslation(newStub.rotationColX()*this->_Distance);
 	this->position(newStub.translation());
+#ifdef DEBUG_UPDATEXYZCOORDS
+        core::write_bf_stream(BF("Updated position = %s\n") % this->_Position.asString());
+#endif
 	for ( int ii=0; ii < this->_numberOfChildren(); ii++)
 	{
 	    this->_child(ii)->_updateXyzCoords(newStub,at);

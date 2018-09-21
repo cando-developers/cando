@@ -32,6 +32,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/array.h>
 #include <clasp/core/evaluator.h>
 #include <cando/geom/color.h>
+#include <clasp/core/lispStream.h>
 #include <clasp/core/symbolTable.h>
 #include <clasp/core/nativeVector.h>
 #include <clasp/core/symbolTable.h>
@@ -86,7 +87,7 @@ CL_DEFMETHOD void EnergyRigidBodyNonbond_O::initializeCrossTerms(bool verbose)
   }
   this->_NumberOfTypes = next_type_index;
   if (verbose) {
-    write_bf_stream(BF("There are %d types\n") % this->_NumberOfTypes);
+    core::write_bf_stream(BF("There are %d types\n") % this->_NumberOfTypes);
   }
   this->_CrossTerms.resize(next_type_index*next_type_index);
   double vdwScale = this->getVdwScale();
@@ -103,10 +104,10 @@ CL_DEFMETHOD void EnergyRigidBodyNonbond_O::initializeCrossTerms(bool verbose)
       double dC = 2.0*epsilonij*rStar6*vdwScale;
       RigidBodyNonbondCrossTerm crossTerm(dA,dC);
       if (verbose) {
-        write_bf_stream(BF("Cross term for types %d - %d\n") % xi % yi );
-        write_bf_stream(BF("    type: %d   radius-> %f   epsilon-> %f\n") % xi % ea1._Radius % ea1._Epsilon);
-        write_bf_stream(BF("    type: %d   radius-> %f   epsilon-> %f\n") % yi % ea2._Radius % ea2._Epsilon);
-        write_bf_stream(BF("    dA -> %f      dC -> %f\n") % dA % dC );
+        core::write_bf_stream(BF("Cross term for types %d - %d\n") % xi % yi );
+        core::write_bf_stream(BF("    type: %d   radius-> %f   epsilon-> %f\n") % xi % ea1._Radius % ea1._Epsilon);
+        core::write_bf_stream(BF("    type: %d   radius-> %f   epsilon-> %f\n") % yi % ea2._Radius % ea2._Epsilon);
+        core::write_bf_stream(BF("    dA -> %f      dC -> %f\n") % dA % dC );
       }
       this->crossTerm(xi,yi) = crossTerm;
       this->crossTerm(yi,xi) = crossTerm;
@@ -163,7 +164,7 @@ void	EnergyRigidBodyNonbond_O::dumpTerms()
   for ( size_t rb = 0; rb<this->_RigidBodyEndAtom->length(); ++rb) {
     for ( size_t i = istart; i<(*this->_RigidBodyEndAtom)[rb]; ++i ) {
       RigidBodyAtomInfo& ai = this->_AtomInfoTable[i];
-      write_bf_stream(BF("I1 = %3d  %s  %lf %lf %lf %s\n") % (rb*7) % _rep_(ai._Object) % ai._Radius % ai._Epsilon % ai._Charge % ai._Position.asString());
+      core::write_bf_stream(BF("I1 = %3d  %s  %lf %lf %lf %s\n") % (rb*7) % _rep_(ai._Object) % ai._Radius % ai._Epsilon % ai._Charge % ai._Position.asString());
     }
     istart = (*this->_RigidBodyEndAtom)[rb];
   }

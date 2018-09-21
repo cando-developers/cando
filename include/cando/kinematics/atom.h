@@ -215,6 +215,9 @@ public:
   inline Joint_sp inputStubAtom1() const
   {_OF();
     ASSERTF(this->parent().boundp(),BF("Parent isn't defined"));
+    if (this->parent().unboundp()) {
+      SIMPLE_ERROR(BF("inputStubAtom1 parent of %s isn't defined") % _rep_(this->asSmartPtr()));
+    }
     return this->parent().get()->stubAtom1();
   }
 
@@ -222,6 +225,9 @@ public:
   inline Joint_sp inputStubAtom2() const
   {_OF();
     ASSERTF(this->parent().boundp(),BF("Parent isn't defined"));
+    if (this->parent().unboundp()) {
+      SIMPLE_ERROR(BF("inputStubAtom2 parent of %s isn't defined") % _rep_(this->asSmartPtr()));
+    }
     return this->parent().get()->stubAtom2();
   }
 
