@@ -120,7 +120,7 @@ string Topology_O::__repr__() const {
 
 CL_DEFMETHOD Residue_sp Topology_O::buildResidueForIsomer(size_t isomer) const
 {
-  BFORMAT_T(BF("%s:%d Topology_O::buildResidueForIsomer\n") % __FILE__ % __LINE__ );
+  write_bf_stream(BF("%s:%d Topology_O::buildResidueForIsomer\n") % __FILE__ % __LINE__ );
   StereoisomerAtoms_sp info = this->_StereoisomerAtomProperties[isomer];
   LOG(BF("creating residue\n"));
   core::Symbol_sp residueName = info->getName();

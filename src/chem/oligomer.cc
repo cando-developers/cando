@@ -610,7 +610,7 @@ int			residueNetCharge;
     Residue_sp			res;
     Molecule_sp 			mol;
     mol = Molecule_O::create();
-    BFORMAT_T(BF("%s:%d Creating residues\n") % __FILE__ % __LINE__ );
+    write_bf_stream(BF("%s:%d Creating residues\n") % __FILE__ % __LINE__ );
     core::HashTableEq_sp monomersToResidues = core::HashTableEq_O::create_default();
     gctools::Vec0<Monomer_sp>::iterator	mi;
     for ( mi=this->_Monomers.begin(); mi!=this->_Monomers.end(); mi++ ) {
@@ -618,7 +618,7 @@ int			residueNetCharge;
       Constitution_sp constitution = topology->_Constitution;
       core::Symbol_sp stereoisomerName = (*mi)->currentStereoisomerName(); // Should be stereoisomerName()
       if (chem_verbose(0)) {
-        BFORMAT_T(BF("Building residue for monomer name: %s") % _rep_(stereoisomerName));
+        write_bf_stream(BF("Building residue for monomer name: %s") % _rep_(stereoisomerName));
         core::clasp_finish_output_t();
       }
       res = topology->buildResidueForMonomerName(stereoisomerName);
@@ -627,7 +627,7 @@ int			residueNetCharge;
       LOG(BF("Added matter"));
       monomersToResidues->hash_table_setf_gethash((*mi),res);
     }
-    BFORMAT_T(BF("%s:%d Connecting residues\n") % __FILE__ % __LINE__ );
+    write_bf_stream(BF("%s:%d Connecting residues\n") % __FILE__ % __LINE__ );
     gctools::Vec0<Coupling_sp>::iterator	ci;
     Monomer_sp	mon1, mon2;
     Residue_sp	res1, res2;
@@ -639,7 +639,7 @@ int			residueNetCharge;
 	ASSERT(mon2.notnilp());
         res1 = gc::As_unsafe<Residue_sp>(monomersToResidues->gethash(mon1));
         res2 = gc::As_unsafe<Residue_sp>(monomersToResidues->gethash(mon2));
-        BFORMAT_T(BF("%s:%d  Connecting residues %s - %s\n") % __FILE__ % __LINE__ % _rep_(res1) % _rep_(res2));
+        write_bf_stream(BF("%s:%d  Connecting residues %s - %s\n") % __FILE__ % __LINE__ % _rep_(res1) % _rep_(res2));
     	(*ci)->doCoupling(res1,res2);
     };
     return mol;

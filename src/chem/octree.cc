@@ -1046,11 +1046,11 @@ return(octTree);
   }
 
   if (bVerbose) {
-    BFORMAT_T(BF("Total solute charge:  %5.2f  Max atom radius:  %5.2f\n") % dCharge % dMaxRadius );
+    write_bf_stream(BF("Total solute charge:  %5.2f  Max atom radius:  %5.2f\n") % dCharge % dMaxRadius );
     if ( type == Shell )
-      BFORMAT_T(BF("Grid extends from solute vdw + %.2f  to  %.2f\n") % dAddExtent % dShellRadius );
-    BFORMAT_T(BF("Box:\n" ));
-    BFORMAT_T(BF("   enclosing:  %5.2f %5.2f %5.2f   %5.2f %5.2f %5.2f\n") %  vMinCorner.getX() % vMinCorner.getY() % vMinCorner.getZ()
+      write_bf_stream(BF("Grid extends from solute vdw + %.2f  to  %.2f\n") % dAddExtent % dShellRadius );
+    write_bf_stream(BF("Box:\n" ));
+    write_bf_stream(BF("   enclosing:  %5.2f %5.2f %5.2f   %5.2f %5.2f %5.2f\n") %  vMinCorner.getX() % vMinCorner.getY() % vMinCorner.getZ()
               % vMaxCorner.getX() % vMaxCorner.getY() % vMaxCorner.getZ());
   }
 
@@ -1101,8 +1101,8 @@ return(octTree);
 		/* diagonal = sqrt( 3 * side^2 ) */
     this->PdHalfDiagonals[i] = sqrt( 3.0 * (dTmp * dTmp) );
     if(bVerbose){
-      BFORMAT_T(BF("PdHalfEdges:        %5.2f\n") % this->PdHalfEdges[i] );
-      BFORMAT_T(BF("PdHalfDiagonals:     %5.2f Angstrom.\n") % this->PdHalfDiagonals[i] );
+      write_bf_stream(BF("PdHalfEdges:        %5.2f\n") % this->PdHalfEdges[i] );
+      write_bf_stream(BF("PdHalfDiagonals:     %5.2f Angstrom.\n") % this->PdHalfDiagonals[i] );
     }
 
   }
@@ -1118,10 +1118,10 @@ return(octTree);
      this->PiDensities[i] = j;
   
   if (bVerbose) {
-    BFORMAT_T(BF("   sized:\t\t\t      %5.2f %5.2f %5.2f\n") % vMaxCorner.getX() % vMaxCorner.getY() % vMaxCorner.getZ());
-    BFORMAT_T(BF("   edge:        %5.2f\n") % dTmax );
-    BFORMAT_T(BF("Resolution:     %5.2f Angstrom.\n") % this->dGridSize );
-    BFORMAT_T(BF("Tree depth: %d\n") % imd);
+    write_bf_stream(BF("   sized:\t\t\t      %5.2f %5.2f %5.2f\n") % vMaxCorner.getX() % vMaxCorner.getY() % vMaxCorner.getZ());
+    write_bf_stream(BF("   edge:        %5.2f\n") % dTmax );
+    write_bf_stream(BF("Resolution:     %5.2f Angstrom.\n") % this->dGridSize );
+    write_bf_stream(BF("Tree depth: %d\n") % imd);
   }
 	/*
 	 *  Build head node w/ all atoms in list.
@@ -1171,7 +1171,7 @@ return(octTree);
 //        time((time_t *)0) - time_start );
   if (bVerbose) {
    volumePercentage = 100 * this->fVolume / ( dTmax * dTmax * dTmax );
-   BFORMAT_T(BF( "Volume = %5.2f of box, grid points %d\n") % volumePercentage % this->iTreePoints ); //iTreeGridPoints );
+   write_bf_stream(BF( "Volume = %5.2f of box, grid points %d\n") % volumePercentage % this->iTreePoints ); //iTreeGridPoints );
   }
 #ifdef OCTDEBUG
   printf(stderr, "depth  r_inc   r_inex  r_out  multin  multout \n");
@@ -1501,40 +1501,40 @@ CL_DEFMETHOD void Octree_O::OctNodePrintGrid( OctNode_sp PonNode, int iColor)
 //        }
         switch ( iColor ) {//switch ( iColorMethod ) {
         case COLOR_RANGE:
-            BFORMAT_T(BF(".color %d\n") % 
+            write_bf_stream(BF(".color %d\n") % 
                       (int)floor( 5 + 60 *
                                   (PfCharge-this->fMinCharge) / 
                                   (this->fMaxCharge-this->fMinCharge) ) );
-            BFORMAT_T(BF(".dot %f %f %f\n") % 
+            write_bf_stream(BF(".dot %f %f %f\n") % 
                       vPoint.getX() % vPoint.getY() % vPoint.getZ());
             break;
         case COLOR_CUT:
             if ( PfCharge < -0.1 ){
-              BFORMAT_T(BF(".color yellow\n"));
+              write_bf_stream(BF(".color yellow\n"));
             } else if ( PfCharge > 0.1 ){
-              BFORMAT_T(BF(".color cyan\n"));
+              write_bf_stream(BF(".color cyan\n"));
             } else
-              BFORMAT_T(BF(".color black\n"));
-            BFORMAT_T(BF(".dot %f %f %f\n") % 
+              write_bf_stream(BF(".color black\n"));
+            write_bf_stream(BF(".dot %f %f %f\n") % 
                       vPoint.getX() % vPoint.getY() % vPoint.getZ());
             break;
         case COLOR_DEPTH:
             if ( PonNode->iDepth == this->_iMaxDepth ){
-              BFORMAT_T(BF(".color white\n"));
+              write_bf_stream(BF(".color white\n"));
             }else if ( PonNode->iDepth % 2 ){
-              BFORMAT_T(BF(".color red\n"));
+              write_bf_stream(BF(".color red\n"));
             } else
-              BFORMAT_T(BF(".color cyan\n"));
-            BFORMAT_T(BF(".dot %f %f %f\n") % 
+              write_bf_stream(BF(".color cyan\n"));
+            write_bf_stream(BF(".dot %f %f %f\n") % 
                       vPoint.getX() % vPoint.getY() % vPoint.getZ());
             break;
         case COLOR_NONE:
-            BFORMAT_T(BF("%f   %f %f %f\n") % 
+            write_bf_stream(BF("%f   %f %f %f\n") % 
                       PfCharge %  
                       vPoint.getX() %  vPoint.getY() %  vPoint.getZ());
             break;
         default:
-            BFORMAT_T(BF(".color white\n"));
+            write_bf_stream(BF(".color white\n"));
         }
         ccharge++ ; //PfCharge++;
       }
@@ -1545,7 +1545,7 @@ CL_DEFMETHOD void Octree_O::OctNodePrintGrid( OctNode_sp PonNode, int iColor)
 //void Octree_O::OctTreePrintGrid( Octree_sp octTree, core::T_sp stream, int iColor ) //char *sFileName, int iColor )
 //{
 //  BFORMAT(stream,BF("x = %d y = %d\n") % x % y );
-//  BFORMAT_T(BF("x = %d y = %d\n") % x % y );
+//  write_bf_stream(BF("x = %d y = %d\n") % x % y );
 //  
 //  if ( iColor != COLOR_DEPTH  && octTree->PfCharges.size() == 0 ) { //!octTree->PfCharges ) {
 //    printf(( "charge coloring but no charges\n" ));

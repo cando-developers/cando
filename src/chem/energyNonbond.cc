@@ -54,7 +54,7 @@ This is an open source license for the CANDO software from Temple University, bu
 
 #define DEBUG_NONBOND_TERM 1
 #define LOG_ENERGY(x)
-//#define LOG_ENERGY BFORMAT_T
+//#define LOG_ENERGY write_bf_stream
 
 namespace chem
 {
@@ -858,7 +858,7 @@ void EnergyNonbond_O::construct14InteractionTerms(AtomTable_sp atomTable, Matter
       this->addTerm(energyNonbond);
       ++terms;
     }
-    if (show_progress) BFORMAT_T(BF("Built 14 interaction table with %d terms\n") % terms);
+    if (show_progress) write_bf_stream(BF("Built 14 interaction table with %d terms\n") % terms);
   }
 }
 
@@ -878,7 +878,7 @@ void EnergyNonbond_O::constructNonbondTermsFromAtomTable(bool ignore14s, AtomTab
     gctools::Vec0<EnergyAtom>::iterator	iea2;
     size_t total_comparisons = atomTable->getNumberOfAtoms()*atomTable->getNumberOfAtoms()/2;
     if (show_progress) {
-      BFORMAT_T(BF("For nonbonded interactions, about to carry out %zu atom-to-atom comparisons\n") % total_comparisons);
+      write_bf_stream(BF("For nonbonded interactions, about to carry out %zu atom-to-atom comparisons\n") % total_comparisons);
     }
     for ( iea1 = atomTable->begin();
           iea1 != atomTable->end()-1; iea1++ ) { //Was iea1 != atomTable->end()-1

@@ -354,13 +354,13 @@ AtomIdToAtomMap_sp Molecule_O::buildAtomIdMap() const
   for ( int rid =0; rid<numResidues; rid++ )
   {
     int numAtoms = this->_contents[rid]->_contents.size();
-    BFORMAT_T(BF("%s:%d rid %d of %d  numAtoms-> %d\n") % __FILE__ % __LINE__ % rid % numResidues % numAtoms );
+    write_bf_stream(BF("%s:%d rid %d of %d  numAtoms-> %d\n") % __FILE__ % __LINE__ % rid % numResidues % numAtoms );
     atomIdMap->resize(mid,rid,numAtoms);
     for ( int aid=0; aid<numAtoms; aid++ )
     {
       AtomId atomId(mid,rid,aid);
       Atom_sp atom = this->_contents[rid]->_contents[aid].as<Atom_O>();
-      BFORMAT_T(BF("%s:%d Adding %d %d %d -> %s\n") % __FILE__ % __LINE__ % mid % rid % aid % _rep_(atom));
+      write_bf_stream(BF("%s:%d Adding %d %d %d -> %s\n") % __FILE__ % __LINE__ % mid % rid % aid % _rep_(atom));
       atomIdMap->set(atomId,atom);
     }
   }

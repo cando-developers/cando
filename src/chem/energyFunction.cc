@@ -946,10 +946,10 @@ ForceMatchReport_sp EnergyFunction_O::checkIfAnalyticalForceMatchesNumericalForc
 
 void	EnergyFunction_O::summarizeTerms()
 {
-  BFORMAT_T(BF("Number of atom terms: %d\n") % this->_AtomTable->getNumberOfAtoms() );
-  BFORMAT_T(BF("Number of Stretch terms: %d\n") % this->_Stretch->numberOfTerms() );
-  BFORMAT_T(BF("Number of Angle terms: %d\n") % this->_Angle->numberOfTerms() );
-  BFORMAT_T(BF("Number of Dihedral terms: %d\n") % this->_Dihedral->numberOfTerms() );
+  write_bf_stream(BF("Number of atom terms: %d\n") % this->_AtomTable->getNumberOfAtoms() );
+  write_bf_stream(BF("Number of Stretch terms: %d\n") % this->_Stretch->numberOfTerms() );
+  write_bf_stream(BF("Number of Angle terms: %d\n") % this->_Angle->numberOfTerms() );
+  write_bf_stream(BF("Number of Dihedral terms: %d\n") % this->_Dihedral->numberOfTerms() );
 };
 
 
@@ -1198,7 +1198,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
     	//
 	// Define a Nonbond cross term table
 	//
-  if (show_progress) BFORMAT_T(BF("Starting to build standard energy function tables\n"));
+  if (show_progress) write_bf_stream(BF("Starting to build standard energy function tables\n"));
   GC_ALLOCATE(FFNonbondCrossTermTable_O, temp );
   this->_NonbondCrossTermTable = temp;
   this->_NonbondCrossTermTable->fillUsingFFNonbondDb(forceField->getNonbondDb());
@@ -1240,7 +1240,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
         SIMPLE_WARN(BF("Could not find stretch parameter between %s and %s") % _rep_(a1) % _rep_(a2));
       }
     }
-    if (show_progress) BFORMAT_T(BF("Built stretch table with %d terms added and %d missing terms\n") % terms % missing_terms);
+    if (show_progress) write_bf_stream(BF("Built stretch table with %d terms added and %d missing terms\n") % terms % missing_terms);
   }
 #ifdef	DEBUG_DEFINE_ENERGY
   lisp->print(BF("%s:%d There were %d stretch terms") % __FILE__ % __LINE__ % this->_Stretch.size() );
@@ -1274,7 +1274,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
         ++terms;
       }
     }
-    if (show_progress) BFORMAT_T(BF("Built angle table with %d terms and %d missing terms\n") % terms % missing_terms);
+    if (show_progress) write_bf_stream(BF("Built angle table with %d terms and %d missing terms\n") % terms % missing_terms);
   }
   {_BLOCK_TRACE("Defining PROPERS");
     size_t terms = 0;
@@ -1294,7 +1294,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
       t2 = a2->getType();
       t3 = a3->getType();
       t4 = a4->getType();
-//      BFORMAT_T(BF("atoms types: %s-%s-%s-%s \n") % t1 % t2 % t3 % t4);
+//      write_bf_stream(BF("atoms types: %s-%s-%s-%s \n") % t1 % t2 % t3 % t4);
       ea1 = this->getEnergyAtomPointer(a1);
       ea2 = this->getEnergyAtomPointer(a2);
       ea3 = this->getEnergyAtomPointer(a3);
@@ -1314,7 +1314,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
 //                % t1 % t2 % t3 % t4
 //                );
 #if 0
-            BFORMAT_T(BF( "Adding proper term for atoms %s-%s-%s-%s types: %s-%s-%s-%s /n")%
+            write_bf_stream(BF( "Adding proper term for atoms %s-%s-%s-%s types: %s-%s-%s-%s /n")%
                 ea1->getResidueAndName()
                 % ea2->getResidueAndName()
                 % ea3->getResidueAndName()
@@ -1344,7 +1344,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
             t144 = t1;
           }
 //          LOG(BF("Defining 1-4 interaction %-9s- %-9s   ") % t1 % t4 );
-          BFORMAT_T(BF("Defining 1-4 interaction %-9s- %-9s   \n") % t1 % t4 );
+          write_bf_stream(BF("Defining 1-4 interaction %-9s- %-9s   \n") % t1 % t4 );
 #endif
         } else {
 #ifdef	DEBUG_ON
@@ -1356,15 +1356,15 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
             t144 = t1;
           }
 //          LOG(BF("Ignoring 1-4 interaction %-9s- %-9s    ") % t1 % t4 );
-          BFORMAT_T(BF("Ignoring 1-4 interaction %-9s- %-9s    \n") % t1 % t4 );
+          write_bf_stream(BF("Ignoring 1-4 interaction %-9s- %-9s    \n") % t1 % t4 );
 #endif
         }
 //		ea1->_CloserThan15.insert(ea4->_Atom);
 //		ea4->_CloserThan15.insert(ea1->_Atom);
       }
     }
-//    if (show_progress) BFORMAT_T(BF("Built dihedral table with %d terms and %d missing terms\n") % terms % missing_terms);
-//   BFORMAT_T(BF("Built dihedral table with %d terms and %d missing terms\n") % terms % missing_terms);
+//    if (show_progress) write_bf_stream(BF("Built dihedral table with %d terms and %d missing terms\n") % terms % missing_terms);
+//   write_bf_stream(BF("Built dihedral table with %d terms and %d missing terms\n") % terms % missing_terms);
   }
   {_BLOCK_TRACE("Defining IMPROPERS");
     EnergyDihedral energyDihedral;
@@ -1408,7 +1408,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
         }
       }
     }
-    if (show_progress) BFORMAT_T(BF("Built improper table for %d terms\n") % terms);
+    if (show_progress) write_bf_stream(BF("Built improper table for %d terms\n") % terms);
   }
 //  this->summarizeTerms();
 }
@@ -1419,7 +1419,7 @@ CL_DOCSTRING("Generate the nonbond energy function tables. The atom types, and C
 CL_DEFMETHOD void EnergyFunction_O::generateNonbondEnergyFunctionTables(bool useExcludedAtoms, Matter_sp matter, FFNonbondDb_sp nonbondForceField, core::T_sp activeAtoms, bool show_progress )
 {
   if (show_progress)
-    BFORMAT_T(BF("Built atom table for %d atoms\n") % this->_AtomTable->getNumberOfAtoms());
+    write_bf_stream(BF("Built atom table for %d atoms\n") % this->_AtomTable->getNumberOfAtoms());
 #ifdef	DEBUG_DEFINE_ENERGY
   lisp->print(BF("%s:%d There were %d atoms") % __FILE__ % __LINE__ % this->_AtomTable.size() );
 #endif
@@ -1443,7 +1443,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateNonbondEnergyFunctionTables(bool use
   } else {
     this->_Nonbond->constructNonbondTermsFromAtomTable(false,this->_AtomTable, nonbondForceField, show_progress);
   }
-  if (show_progress) BFORMAT_T(BF("Built nonbond table for %d terms\n") % this->_Nonbond->numberOfTerms());
+  if (show_progress) write_bf_stream(BF("Built nonbond table for %d terms\n") % this->_Nonbond->numberOfTerms());
 }
 
 
@@ -1598,7 +1598,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter
         LOG(BF("There is no chiral restraint for: %s") % a1->description()  );
       }
     }
-    if (show_progress) BFORMAT_T(BF("Built chiral restraints table for %d terms\n") % this->_ChiralRestraint->numberOfTerms());
+    if (show_progress) write_bf_stream(BF("Built chiral restraints table for %d terms\n") % this->_ChiralRestraint->numberOfTerms());
   }
 
 	//
@@ -1634,7 +1634,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter
     {
       LOG(BF("There are no atoms"));
     }
-    if (show_progress) BFORMAT_T(BF("Built anchor restraints table for %d terms\n") % this->_AnchorRestraint->numberOfTerms());
+    if (show_progress) write_bf_stream(BF("Built anchor restraints table for %d terms\n") % this->_AnchorRestraint->numberOfTerms());
   }
 #endif
 	//
@@ -1654,7 +1654,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter
     }
     int startTerms = this->_ImproperRestraint->numberOfTerms();
     this->__createSecondaryAmideRestraints(nitrogens,activeAtoms);
-    if (show_progress) BFORMAT_T(BF("Built secondary amide restraints including %d terms\n") % (this->_ImproperRestraint->numberOfTerms() - startTerms));
+    if (show_progress) write_bf_stream(BF("Built secondary amide restraints including %d terms\n") % (this->_ImproperRestraint->numberOfTerms() - startTerms));
   } else
   {
     LOG(BF("Skipping Secondary amide restraints because _RestrainSecondaryAmides = %d") % this->_RestrainSecondaryAmides );
@@ -1668,7 +1668,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter
   {_BLOCK_TRACE("Defining force-field restraints");
     IterateRestraints_sp restraintIt = IterateRestraints_O::create(matter);
     int terms = this->_applyRestraints(ffNonbond,restraintIt,activeAtoms);
-    if (show_progress) BFORMAT_T(BF("Built restraints including %d terms\n") % terms );
+    if (show_progress) write_bf_stream(BF("Built restraints including %d terms\n") % terms );
   }
   LOG(BF("Done terms") );
 }

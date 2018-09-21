@@ -674,7 +674,7 @@ AtomInfo	one;
               ASSERT(sybylRules);
               core::Symbol_sp type = sybylRules->assignType(a,false);
               one._Type = type;
-              //BFORMAT_T(BF("Assigned sybyl type %s to %s\n") % _rep_(one._Type) % _rep_(a));
+              //write_bf_stream(BF("Assigned sybyl type %s to %s\n") % _rep_(one._Type) % _rep_(a));
             } else {
               if ( a->getType() ) {
                 one._Type = a->getType();

@@ -120,7 +120,7 @@ CL_DEFUN ConstitutionAtoms_sp ConstitutionAtoms_O::makeConstitutionAtomsFromResi
       ConstitutionAtom_sp catom = atom->asConstitutionAtom(index);
       catoms->_Atoms.push_back(catom);
       atomToIndexMap[atom] = index;
-      if (verbose) BFORMAT_T(BF("Atom %s index: %d\n") % _rep_(atom) % index);
+      if (verbose) write_bf_stream(BF("Atom %s index: %d\n") % _rep_(atom) % index);
     }
   }
   {_BLOCK_TRACE("Then define the bonds for each atom using the indices");

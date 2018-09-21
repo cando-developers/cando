@@ -175,8 +175,8 @@ double EnergyRigidBodyStaple_O::evaluateAll(
 { 
   if ( this->_DebugEnergy ) 
   {
-    //BFORMAT_T_CLEAR();
-    BFORMAT_T(BF("%s {\n")% this->className());
+    //write_bf_stream_CLEAR();
+    write_bf_stream(BF("%s {\n")% this->className());
   }
 
   ANN(force);
@@ -241,51 +241,51 @@ double EnergyRigidBodyStaple_O::evaluateAll(
 #include <cando/energy-functions/_STAPLE_debugEvalSet.cc>
 #endif //]
       if ( this->_DebugEnergy ) {
-        BFORMAT_T(BF( "MEISTER staple %d args cando\n")% (i+1) );
-        BFORMAT_T(BF( "MEISTER staple %d address %x \n")% (i+1) % (&(*si)) );
-        BFORMAT_T(BF( "MEISTER staple %d r0  %5.3lf\n")% (i+1) % r0 );
-        BFORMAT_T(BF( "MEISTER staple %d ks  %5.1lf\n")% (i+1) % ks );
-        BFORMAT_T(BF( "MEISTER staple %d I1  %4d\n")% (i+1) % I1 );
-        BFORMAT_T(BF( "MEISTER staple %d I2  %4d\n")% (i+1) % I2 );
-        BFORMAT_T(BF( "MEISTER staple %d ak  %5.3lf %d\n")% (i+1) % ak % (I1/7+1) );
-        BFORMAT_T(BF( "MEISTER staple %d bk  %5.3lf %d\n")% (i+1) % bk % (I1/7+1) );
-        BFORMAT_T(BF( "MEISTER staple %d ck  %5.3lf %d\n")% (i+1) % ck % (I1/7+1) );
-        BFORMAT_T(BF( "MEISTER staple %d dk  %5.3lf %d\n")% (i+1) % dk % (I1/7+1) );
-        BFORMAT_T(BF( "MEISTER staple %d xk  %5.3lf %d\n")% (i+1) % xk % (I1/7+1) ); 
-        BFORMAT_T(BF( "MEISTER staple %d yk  %5.3lf %d\n")% (i+1) % yk % (I1/7+1) );
-        BFORMAT_T(BF( "MEISTER staple %d zk  %5.3lf %d\n")% (i+1) % zk % (I1/7+1) ); 
-        BFORMAT_T(BF( "MEISTER staple %d pxk %5.3lf %d\n")% (i+1) % pxk % (I1/7+1) ); 
-        BFORMAT_T(BF( "MEISTER staple %d pyk %5.3lf %d\n")% (i+1) % pyk % (I1/7+1) );
-        BFORMAT_T(BF( "MEISTER staple %d pzk %5.3lf %d\n")% (i+1) % pzk % (I1/7+1) ); 
-        BFORMAT_T(BF( "MEISTER staple %d al  %5.3lf %d\n")% (i+1) % al % (I2/7+1) );
-        BFORMAT_T(BF( "MEISTER staple %d bl  %5.3lf %d\n")% (i+1) % bl % (I2/7+1) );
-        BFORMAT_T(BF( "MEISTER staple %d cl  %5.3lf %d\n")% (i+1) % cl % (I2/7+1) );
-        BFORMAT_T(BF( "MEISTER staple %d dl  %5.3lf %d\n")% (i+1) % dl % (I2/7+1) );
-        BFORMAT_T(BF( "MEISTER staple %d xl  %5.3lf %d\n")% (i+1) % xl % (I2/7+1) ); 
-        BFORMAT_T(BF( "MEISTER staple %d yl  %5.3lf %d\n")% (i+1) % yl % (I2/7+1) );
-        BFORMAT_T(BF( "MEISTER staple %d zl  %5.3lf %d\n")% (i+1) % zl % (I2/7+1) );
-        BFORMAT_T(BF( "MEISTER staple %d pxl %5.3lf %d\n")% (i+1) % pxl % (I2/7+1) ); 
-        BFORMAT_T(BF( "MEISTER staple %d pyl %5.3lf %d\n")% (i+1) % pyl % (I2/7+1) );
-        BFORMAT_T(BF( "MEISTER staple %d pzl %5.3lf %d\n")% (i+1) % pzl % (I2/7+1) ); 
-        BFORMAT_T(BF( "MEISTER staple %d results\n")% (i+1) );
-        BFORMAT_T(BF( "MEISTER staple %d Energy %lf\n")% (i+1) % Energy );
+        write_bf_stream(BF( "MEISTER staple %d args cando\n")% (i+1) );
+        write_bf_stream(BF( "MEISTER staple %d address %x \n")% (i+1) % (&(*si)) );
+        write_bf_stream(BF( "MEISTER staple %d r0  %5.3lf\n")% (i+1) % r0 );
+        write_bf_stream(BF( "MEISTER staple %d ks  %5.1lf\n")% (i+1) % ks );
+        write_bf_stream(BF( "MEISTER staple %d I1  %4d\n")% (i+1) % I1 );
+        write_bf_stream(BF( "MEISTER staple %d I2  %4d\n")% (i+1) % I2 );
+        write_bf_stream(BF( "MEISTER staple %d ak  %5.3lf %d\n")% (i+1) % ak % (I1/7+1) );
+        write_bf_stream(BF( "MEISTER staple %d bk  %5.3lf %d\n")% (i+1) % bk % (I1/7+1) );
+        write_bf_stream(BF( "MEISTER staple %d ck  %5.3lf %d\n")% (i+1) % ck % (I1/7+1) );
+        write_bf_stream(BF( "MEISTER staple %d dk  %5.3lf %d\n")% (i+1) % dk % (I1/7+1) );
+        write_bf_stream(BF( "MEISTER staple %d xk  %5.3lf %d\n")% (i+1) % xk % (I1/7+1) ); 
+        write_bf_stream(BF( "MEISTER staple %d yk  %5.3lf %d\n")% (i+1) % yk % (I1/7+1) );
+        write_bf_stream(BF( "MEISTER staple %d zk  %5.3lf %d\n")% (i+1) % zk % (I1/7+1) ); 
+        write_bf_stream(BF( "MEISTER staple %d pxk %5.3lf %d\n")% (i+1) % pxk % (I1/7+1) ); 
+        write_bf_stream(BF( "MEISTER staple %d pyk %5.3lf %d\n")% (i+1) % pyk % (I1/7+1) );
+        write_bf_stream(BF( "MEISTER staple %d pzk %5.3lf %d\n")% (i+1) % pzk % (I1/7+1) ); 
+        write_bf_stream(BF( "MEISTER staple %d al  %5.3lf %d\n")% (i+1) % al % (I2/7+1) );
+        write_bf_stream(BF( "MEISTER staple %d bl  %5.3lf %d\n")% (i+1) % bl % (I2/7+1) );
+        write_bf_stream(BF( "MEISTER staple %d cl  %5.3lf %d\n")% (i+1) % cl % (I2/7+1) );
+        write_bf_stream(BF( "MEISTER staple %d dl  %5.3lf %d\n")% (i+1) % dl % (I2/7+1) );
+        write_bf_stream(BF( "MEISTER staple %d xl  %5.3lf %d\n")% (i+1) % xl % (I2/7+1) ); 
+        write_bf_stream(BF( "MEISTER staple %d yl  %5.3lf %d\n")% (i+1) % yl % (I2/7+1) );
+        write_bf_stream(BF( "MEISTER staple %d zl  %5.3lf %d\n")% (i+1) % zl % (I2/7+1) );
+        write_bf_stream(BF( "MEISTER staple %d pxl %5.3lf %d\n")% (i+1) % pxl % (I2/7+1) ); 
+        write_bf_stream(BF( "MEISTER staple %d pyl %5.3lf %d\n")% (i+1) % pyl % (I2/7+1) );
+        write_bf_stream(BF( "MEISTER staple %d pzl %5.3lf %d\n")% (i+1) % pzl % (I2/7+1) ); 
+        write_bf_stream(BF( "MEISTER staple %d results\n")% (i+1) );
+        write_bf_stream(BF( "MEISTER staple %d Energy %lf\n")% (i+1) % Energy );
         if ( calcForce ) {
-          BFORMAT_T(BF( "MEISTER staple %d fak  %5.3lf %d\n")% (i+1) % fak % (I1/7+1) );
-          BFORMAT_T(BF( "MEISTER staple %d fbk  %5.3lf %d\n")% (i+1) % fbk % (I1/7+1) );
-          BFORMAT_T(BF( "MEISTER staple %d fck  %5.3lf %d\n")% (i+1) % fck % (I1/7+1) );
-          BFORMAT_T(BF( "MEISTER staple %d fdk  %5.3lf %d\n")% (i+1) % fdk % (I1/7+1) );
-          BFORMAT_T(BF( "MEISTER staple %d fxk  %5.3lf %d\n")% (i+1) % fxk % (I1/7+1) ); 
-          BFORMAT_T(BF( "MEISTER staple %d fyk  %5.3lf %d\n")% (i+1) % fyk % (I1/7+1) );
-          BFORMAT_T(BF( "MEISTER staple %d fzk  %5.3lf %d\n")% (i+1) % fzk % (I1/7+1) ); 
-          BFORMAT_T(BF( "MEISTER staple %d fal  %5.3lf %d\n")% (i+1) % fal % (I2/7+1) );
-          BFORMAT_T(BF( "MEISTER staple %d fbl  %5.3lf %d\n")% (i+1) % fbl % (I2/7+1) );
-          BFORMAT_T(BF( "MEISTER staple %d fcl  %5.3lf %d\n")% (i+1) % fcl % (I2/7+1) );
-          BFORMAT_T(BF( "MEISTER staple %d fdl  %5.3lf %d\n")% (i+1) % fdl % (I2/7+1) );
-          BFORMAT_T(BF( "MEISTER staple %d fxl  %5.3lf %d\n")% (i+1) % fxl % (I2/7+1) ); 
-          BFORMAT_T(BF( "MEISTER staple %d fyl  %5.3lf %d\n")% (i+1) % fyl % (I2/7+1) );
-          BFORMAT_T(BF( "MEISTER staple %d fzl  %5.3lf %d\n")% (i+1) % fzl % (I2/7+1) );
+          write_bf_stream(BF( "MEISTER staple %d fak  %5.3lf %d\n")% (i+1) % fak % (I1/7+1) );
+          write_bf_stream(BF( "MEISTER staple %d fbk  %5.3lf %d\n")% (i+1) % fbk % (I1/7+1) );
+          write_bf_stream(BF( "MEISTER staple %d fck  %5.3lf %d\n")% (i+1) % fck % (I1/7+1) );
+          write_bf_stream(BF( "MEISTER staple %d fdk  %5.3lf %d\n")% (i+1) % fdk % (I1/7+1) );
+          write_bf_stream(BF( "MEISTER staple %d fxk  %5.3lf %d\n")% (i+1) % fxk % (I1/7+1) ); 
+          write_bf_stream(BF( "MEISTER staple %d fyk  %5.3lf %d\n")% (i+1) % fyk % (I1/7+1) );
+          write_bf_stream(BF( "MEISTER staple %d fzk  %5.3lf %d\n")% (i+1) % fzk % (I1/7+1) ); 
+          write_bf_stream(BF( "MEISTER staple %d fal  %5.3lf %d\n")% (i+1) % fal % (I2/7+1) );
+          write_bf_stream(BF( "MEISTER staple %d fbl  %5.3lf %d\n")% (i+1) % fbl % (I2/7+1) );
+          write_bf_stream(BF( "MEISTER staple %d fcl  %5.3lf %d\n")% (i+1) % fcl % (I2/7+1) );
+          write_bf_stream(BF( "MEISTER staple %d fdl  %5.3lf %d\n")% (i+1) % fdl % (I2/7+1) );
+          write_bf_stream(BF( "MEISTER staple %d fxl  %5.3lf %d\n")% (i+1) % fxl % (I2/7+1) ); 
+          write_bf_stream(BF( "MEISTER staple %d fyl  %5.3lf %d\n")% (i+1) % fyl % (I2/7+1) );
+          write_bf_stream(BF( "MEISTER staple %d fzl  %5.3lf %d\n")% (i+1) % fzl % (I2/7+1) );
         }
-        BFORMAT_T(BF( "MEISTER staple %d stop\n")% (i+1) );
+        write_bf_stream(BF( "MEISTER staple %d stop\n")% (i+1) );
       }
 		/* Add the forces */
 
@@ -299,7 +299,7 @@ double EnergyRigidBodyStaple_O::evaluateAll(
   }
   if ( this->_DebugEnergy ) 
   {
-    BFORMAT_T(BF("%s }")% this->className());
+    write_bf_stream(BF("%s }")% this->className());
   }
   return totalEnergy;
 }

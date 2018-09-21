@@ -79,10 +79,10 @@ CL_DEFMETHOD core::Symbol_sp FFTypesDb_O::assignType(chem::Atom_sp atom, bool ve
       if ( cheminfo->matches(atom)) {
         AntechamberRoot_sp antechamberRoot = gc::As<AntechamberRoot_sp>(cheminfo->_Root);
         LOG(BF("Rule MATCH!!!") );
-        if (verbose) BFORMAT_T(BF("Matched %s\n") % _rep_(cheminfo));
+        if (verbose) write_bf_stream(BF("Matched %s\n") % _rep_(cheminfo));
         return antechamberRoot->_AssignType;
       } else {
-        if (verbose) BFORMAT_T(BF("Did not match %s\n") % _rep_(cheminfo));
+        if (verbose) write_bf_streame(BF("Did not match %s\n") % _rep_(cheminfo));
       }
       LOG(BF("Rule does not match, keep going") );
     }
