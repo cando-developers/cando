@@ -110,9 +110,38 @@ public:
 	void	parseFromXmlUsingAtomTable(adapt::QDomNode_sp xml, AtomTable_sp atomTable );
 
 public:
+        core::List_sp encode() const;
+        void decode(core::List_sp alist);
+};
 };
 
+namespace translate {
 
+  template <>
+struct	to_object<chem::EnergyNonbond>
+  {
+    typedef	core::Cons_sp ExpectedType;
+    typedef	core::Cons_sp DeclareType;
+    static core::T_sp convert(const chem::EnergyNonbond& nonbond)
+    {
+      return nonbond.encode();
+    }
+  };
+  
+  template <>
+    struct	from_object<chem::EnergyNonbond>
+  {
+    typedef	chem::EnergyNonbond	ExpectedType;
+    typedef	ExpectedType 		DeclareType;
+    DeclareType _v;
+    from_object(core::T_sp o)
+    {
+      SIMPLE_ERROR(BF("Implement me"));
+    }
+  };
+};
+
+namespace chem {
 
 double	_evaluateEnergyOnly_Nonbond(
 		double x1, double y1, double z1,
@@ -123,7 +152,11 @@ double	_evaluateEnergyOnly_Nonbond(
 class EnergyNonbond_O : public EnergyComponent_O
 {
   LISP_CLASS(chem,ChemPkg,EnergyNonbond_O,"EnergyNonbond",EnergyComponent_O);
+  
  public:
+  bool fieldsp() const { return true; };
+  void fields(core::Record_sp node);
+  
  public: // virtual functions inherited from Object
   void	initialize();
 //    void	archiveBase(core::ArchiveP node);
@@ -167,6 +200,7 @@ class EnergyNonbond_O : public EnergyComponent_O
   iterator end() { return this->_Terms.end(); };
 //added by G 7.19.2011
  public:
+  //core::List_sp termAtIndex(size_t index) const;
   virtual size_t numberOfTerms() { return this->_Terms.size();};
  public:
   void	setDielectricConstant(double d) { this->_DielectricConstant = d; };
@@ -215,6 +249,8 @@ class EnergyNonbond_O : public EnergyComponent_O
                       gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
                       gc::Nilable<NVector_sp>	hdvec,
                       gc::Nilable<NVector_sp> dvec);
+  
+  void expandExcludedAtomsToTerms();
 
   virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm(
                                                                                NVector_sp pos );

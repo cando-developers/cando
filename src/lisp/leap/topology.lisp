@@ -1414,7 +1414,7 @@ then don't calculate 1,4 interactions"
               for atom = (chem:elt-atom atom-table i)
               for atom-coordinate-index-times3 = (chem:elt-atom-coordinate-index-times3 atom-table i)
               for pos = (chem:get-position atom)
-;;;           do (format *debug-io* "atom-coordinate-index-times3 -> ~a~%" atom-coordinate-index-times3)
+;;;           do (format t "atom-coordinate-index-times3 -> ~a~%" atom-coordinate-index-times3)
               do (progn
                    (fortran:fwrite (geom:vx pos))
                    (fortran:fwrite (geom:vy pos))
@@ -1500,7 +1500,7 @@ then don't calculate 1,4 interactions"
       ;; From here on down - read the input file
       (loop for line = (fortran:fortran-input-file-look-ahead fif)
             while line
-            do (rlog "line ~a~%" line)
+            ;;do (rlog "line ~a~%" line)
             do (verify-%flag-line line)
             do (cond
                  ((string-equal %flag-title line :end2 (length %flag-title))
@@ -1735,67 +1735,67 @@ then don't calculate 1,4 interactions"
                       (fortran:parse-fortran-format-line (fortran:fortran-input-file-look-ahead fif))
                     (fortran:fread-line-or-error fif) 
                     (fortran:fread-vector fif per-line format-char width)))))
-      (rlog "natom -> ~s~%" natom)
-      (rlog "ntypes -> ~s~%" ntypes)
-      (rlog "nbonh -> ~s~%" nbonh)
-      (rlog "mbona -> ~s~%" mbona)
-      (rlog "ntheth -> ~s~%" ntheth)
-      (rlog "mtheta -> ~s~%" mtheta)
-      (rlog "nphih -> ~s~%" nphih)
-      (rlog "mphia -> ~s~%" mphia)
-      (rlog "nhparm -> ~s~%" nhparm)
-      (rlog "nparm -> ~s~%" nparm)
-      (rlog "nnb -> ~s~%" nnb)
-      (rlog "nres -> ~s~%" nres)
-      (rlog "nbona -> ~s~%" nbona)
-      (rlog "ntheta -> ~s~%" ntheta)
-      (rlog "nphia -> ~s~%" nphia)
-      (rlog "numbnd -> ~s~%" numbnd)
-      (rlog "numang -> ~s~%" numang)
-      (rlog "nptra -> ~s~%" nptra)
-      (rlog "natyp -> ~s~%" natyp)
-      (rlog "nphb -> ~s~%" nphb)
-      (rlog "ifpert -> ~s~%" ifpert)
-      (rlog "nbper -> ~s~%" nbper)
-      (rlog "ngper -> ~s~%" ngper)
-      (rlog "ndper -> ~s~%" ndper)
-      (rlog "mbper -> ~s~%" mbper)
-      (rlog "mgper -> ~s~%" mgper)
-      (rlog "mdper -> ~s~%" mdper)
-      (rlog "ifbox -> ~s~%" ifbox)
-      (rlog "nmxrs -> ~s~%" nmxrs)
-      (rlog "ifcap -> ~s~%" ifcap)
-      (rlog "numextra -> ~s~%" numextra)
-      (rlog "ncopy -> ~s~%" ncopy)
-      (rlog "atom-name -> ~s~%" atom-name)
-      (rlog "charge -> ~s~%" charge)
-      (rlog "atomic-number -> ~s~%" atomic-number)
-      (rlog "mass -> ~s~%" mass)
-      (rlog "atom-type-index -> ~s~%" atom-type-index)
-      (rlog "number-excluded-atoms -> ~s~%" number-excluded-atoms)
-      (rlog "nonbonded-parm-index -> ~s~%" nonbonded-parm-index)
-      (rlog "residue-label -> ~s~%" residue-label)
-      (rlog "residue-pointer -> ~s~%" residue-pointer)
-      (rlog "bond-force-constant -> ~s~%" bond-force-constant)
-      (rlog "bond-equil-value -> ~s~%" bond-equil-value)
-      (rlog "angle-force-constant -> ~s~%" angle-force-constant)
-      (rlog "angle-equil-value -> ~s~%" angle-equil-value)
-      (rlog "dihedral-force-constant -> ~s~%" dihedral-force-constant)
-      (rlog "dihedral-periodicity -> ~s~%" dihedral-periodicity)
-      (rlog "dihedral-phase -> ~s~%" dihedral-phase)
-      (rlog "scee-scale-factor -> ~s~%" scee-scale-factor)
-      (rlog "scnb-scale-factor -> ~s~%" scnb-scale-factor)
-      (rlog "solty -> ~s~%" solty)
-      (rlog "lennard-jones-acoef -> ~s~%" lennard-jones-acoef)
-      (rlog "lennard-jones-bcoef -> ~s~%" lennard-jones-bcoef)
-      (rlog "bonds-inc-hydrogen -> ~s~%" bonds-inc-hydrogen)
-      (rlog "bonds-without-hydrogen -> ~s~%" bonds-without-hydrogen)
-      (rlog "angles-inc-hydrogen -> ~s~%" angles-inc-hydrogen)
-      (rlog "angles-without-hydrogen -> ~s~%" angles-without-hydrogen)
-      (rlog "dihedrals-inc-hydrogen -> ~s~%" dihedrals-inc-hydrogen)
-      (rlog "dihedrals-without-hydrogen -> ~s~%" dihedrals-without-hydrogen)
-      (rlog "excluded-atoms-list -> ~s~%" excluded-atoms-list)
-      (rlog "amber-atom-type -> ~s~%" amber-atom-type)
+      ;;(rlog "natom -> ~s~%" natom)
+      ;;(rlog "ntypes -> ~s~%" ntypes)
+      ;;(rlog "nbonh -> ~s~%" nbonh)
+      ;;(rlog "mbona -> ~s~%" mbona)
+      ;;(rlog "ntheth -> ~s~%" ntheth)
+      ;;(rlog "mtheta -> ~s~%" mtheta)
+      ;;(rlog "nphih -> ~s~%" nphih)
+      ;;(rlog "mphia -> ~s~%" mphia)
+      ;;(rlog "nhparm -> ~s~%" nhparm)
+      ;;(rlog "nparm -> ~s~%" nparm)
+      ;;(rlog "nnb -> ~s~%" nnb)
+      ;;(rlog "nres -> ~s~%" nres)
+      ;;(rlog "nbona -> ~s~%" nbona)
+      ;;(rlog "ntheta -> ~s~%" ntheta)
+      ;;(rlog "nphia -> ~s~%" nphia)
+      ;;(rlog "numbnd -> ~s~%" numbnd)
+      ;;(rlog "numang -> ~s~%" numang)
+      ;;(rlog "nptra -> ~s~%" nptra)
+      ;;(rlog "natyp -> ~s~%" natyp)
+      ;;(rlog "nphb -> ~s~%" nphb)
+      ;;(rlog "ifpert -> ~s~%" ifpert)
+      ;;(rlog "nbper -> ~s~%" nbper)
+      ;;(rlog "ngper -> ~s~%" ngper)
+      ;;(rlog "ndper -> ~s~%" ndper)
+      ;;(rlog "mbper -> ~s~%" mbper)
+      ;;(rlog "mgper -> ~s~%" mgper)
+      ;;(rlog "mdper -> ~s~%" mdper)
+      ;;(rlog "ifbox -> ~s~%" ifbox)
+      ;;(rlog "nmxrs -> ~s~%" nmxrs)
+      ;;(rlog "ifcap -> ~s~%" ifcap)
+      ;;(rlog "numextra -> ~s~%" numextra)
+      ;;(rlog "ncopy -> ~s~%" ncopy)
+      ;;(rlog "atom-name -> ~s~%" atom-name)
+      ;;(rlog "charge -> ~s~%" charge)
+      ;;(rlog "atomic-number -> ~s~%" atomic-number)
+      ;;(rlog "mass -> ~s~%" mass)
+      ;;(rlog "atom-type-index -> ~s~%" atom-type-index)
+      ;;(rlog "number-excluded-atoms -> ~s~%" number-excluded-atoms)
+      ;;(rlog "nonbonded-parm-index -> ~s~%" nonbonded-parm-index)
+      ;;(rlog "residue-label -> ~s~%" residue-label)
+      ;;(rlog "residue-pointer -> ~s~%" residue-pointer)
+      ;;(rlog "bond-force-constant -> ~s~%" bond-force-constant)
+      ;;(rlog "bond-equil-value -> ~s~%" bond-equil-value)
+      ;;(rlog "angle-force-constant -> ~s~%" angle-force-constant)
+      ;;(rlog "angle-equil-value -> ~s~%" angle-equil-value)
+      ;;(rlog "dihedral-force-constant -> ~s~%" dihedral-force-constant)
+      ;;(rlog "dihedral-periodicity -> ~s~%" dihedral-periodicity)
+      ;;(rlog "dihedral-phase -> ~s~%" dihedral-phase)
+      ;;(rlog "scee-scale-factor -> ~s~%" scee-scale-factor)
+      ;;(rlog "scnb-scale-factor -> ~s~%" scnb-scale-factor)
+      ;;(rlog "solty -> ~s~%" solty)
+      ;;(rlog "lennard-jones-acoef -> ~s~%" lennard-jones-acoef)
+      ;;(rlog "lennard-jones-bcoef -> ~s~%" lennard-jones-bcoef)
+      ;;(rlog "bonds-inc-hydrogen -> ~s~%" bonds-inc-hydrogen)
+      ;;(rlog "bonds-without-hydrogen -> ~s~%" bonds-without-hydrogen)
+      ;;(rlog "angles-inc-hydrogen -> ~s~%" angles-inc-hydrogen)
+      ;;(rlog "angles-without-hydrogen -> ~s~%" angles-without-hydrogen)
+      ;;(rlog "dihedrals-inc-hydrogen -> ~s~%" dihedrals-inc-hydrogen)
+      ;;(rlog "dihedrals-without-hydrogen -> ~s~%" dihedrals-without-hydrogen)
+      ;;(rlog "excluded-atoms-list -> ~s~%" excluded-atoms-list)
+      ;;(rlog "amber-atom-type -> ~s~%" amber-atom-type)
       (let ((energy-stretch (core:make-cxx-object 'chem:energy-stretch))
             (energy-angle (core:make-cxx-object 'chem:energy-angle))
             (energy-dihedral (core:make-cxx-object 'chem:energy-dihedral))
@@ -1836,6 +1836,7 @@ then don't calculate 1,4 interactions"
             (atoms (make-array natom))
             )
         ;; Create a vector of atoms to pass to the atom-table and to set the atoms for stretch, angle, dihedral etc.
+        (rlog "Create atoms vector~%")
         (loop for i from 0 below natom
               for name = (aref atom-name i)
               for atom-element = (chem:element-for-atomic-number (aref atomic-number i))
@@ -1848,7 +1849,8 @@ then don't calculate 1,4 interactions"
               do (let ((residue (chem:make-residue name)))
                    (loop for atomi from begin-atom-index below end-atom-index
                          do (chem:add-matter residue (aref atoms atomi)))))
-        (rlog "atoms -> ~s~%" atoms)
+        ;;(rlog "atoms -> ~s~%" atoms)
+        (rlog "Create stretch vectors~%")
         (loop for i from 0 below numbnd
               do (loop for j from 0 below nbonh
                        for jicbh = (aref bonds-inc-hydrogen (+ (* j 3) 2))
@@ -1878,9 +1880,10 @@ then don't calculate 1,4 interactions"
         (setf stretch-vectors (acons :i2 i2s-vec stretch-vectors))
         (setf stretch-vectors (acons :atom1 atom1s-vec stretch-vectors))
         (setf stretch-vectors (acons :atom2 atom2s-vec stretch-vectors))
-        (rlog "stretch-vectors -> ~s~%" stretch-vectors)
+        ;;(rlog "stretch-vectors -> ~s~%" stretch-vectors)
         (chem:fill-from-vectors-in-alist energy-stretch stretch-vectors)
 
+        (rlog "Create angle vectors~%")
         (loop for i from 0 below numang
               do (loop for j from 0 below ntheth
                        for jicth = (aref angles-inc-hydrogen (+ (* j 4) 3))
@@ -1915,9 +1918,10 @@ then don't calculate 1,4 interactions"
         (setf angle-vectors (acons :atom1 atom1a-vec angle-vectors))
         (setf angle-vectors (acons :atom2 atom2a-vec angle-vectors))
         (setf angle-vectors (acons :atom3 atom3a-vec angle-vectors))
-        (rlog "angle-vectors -> ~s~%" angle-vectors)
+        ;;(rlog "angle-vectors -> ~s~%" angle-vectors)
         (chem:fill-from-vectors-in-alist energy-angle angle-vectors)
 
+        (rlog "Create dihedral vectors~%")
         (loop for i from 0 below nptra
               do (loop for j from 0 below nphih
                        for jicph = (aref dihedrals-inc-hydrogen (+ (* j 5) 4))
@@ -1980,9 +1984,10 @@ then don't calculate 1,4 interactions"
         (setf dihedral-vectors (acons :atom2 atom2d-vec dihedral-vectors))
         (setf dihedral-vectors (acons :atom3 atom3d-vec dihedral-vectors))
         (setf dihedral-vectors (acons :atom4 atom4d-vec dihedral-vectors))
-        (rlog "dihedral-vectors -> ~s~%" dihedral-vectors)
+        ;;(rlog "dihedral-vectors -> ~s~%" dihedral-vectors)
         (chem::fill-from-vectors-in-alist energy-dihedral dihedral-vectors)
         ;;atom-table
+        (rlog "Create atom-table vectors~%")
         (setf atom-table-vectors (acons :atom-name-vector atom-name atom-table-vectors))
         (setf atom-table-vectors (acons :atom-type-vector amber-atom-type atom-table-vectors))
         (setf atom-table-vectors (acons :charge-vector charge atom-table-vectors))
@@ -1991,11 +1996,13 @@ then don't calculate 1,4 interactions"
                                         ;     (setf atom-table-vectors (acons :residues residue-pointer atom-table-vectors))
                                         ;     (setf atom-table-vectors (acons :residue-names residue-labels atom-table-vectors))
           
-        (rlog "atom-table-vectors -> ~s~%" atom-table-vectors)
+        ;;(rlog "atom-table-vectors -> ~s~%" atom-table-vectors)
         (dolist (entry atom-table-vectors)
           (format *debug-io* "entry -> ~s  (type-of (cdr entry)) -> ~s~%" entry (type-of (cdr entry))))
         (chem::fill-atom-table-from-vectors atom-table atom-table-vectors)
+
         ;;nonbond
+        (rlog "Create nonbond vectors~%")
         (setf nonbond-vectors (acons :ntypes ntypes nonbond-vectors))
         (setf nonbond-vectors (acons :atom-name-vector (copy-seq atom-name) nonbond-vectors))
         (setf nonbond-vectors (acons :charge-vector (copy-seq charge) nonbond-vectors))
@@ -2005,16 +2012,20 @@ then don't calculate 1,4 interactions"
         (setf nonbond-vectors (acons :iac-vec (copy-seq atom-type-index) nonbond-vectors))
         (setf nonbond-vectors (acons :cn1-vec (copy-seq lennard-jones-acoef) nonbond-vectors))
         (setf nonbond-vectors (acons :cn2-vec (copy-seq lennard-jones-bcoef) nonbond-vectors))
-        (rlog "nonbond-vectors -> ~s~%" nonbond-vectors)
+        ;;(rlog "nonbond-vectors -> ~s~%" nonbond-vectors)
         (chem:construct-nonbond-terms-from-aList energy-nonbond nonbond-vectors)
         (loop for i from 0 below (length excluded-atoms-list)
               for atom = (- (aref excluded-atoms-list i) 1)
               do (setf (aref excluded-atoms-list i) atom))
         (chem:set-nonbond-excluded-atom-info energy-nonbond atom-table (copy-seq excluded-atoms-list) (copy-seq number-excluded-atoms))
+
+        ;; for energy nonbond test
+        (chem:expand-excluded-atoms-to-terms energy-nonbond)
         ;;
+
         ;; Now we have energy-stretch, energy-angle, and energy-dihedral
         ;;   we want to put them into an energy-function
-        (rlog "atom-table-vectors -> ~s~%" atom-table-vectors)
+;;        (rlog "atom-table-vectors -> ~s~%" atom-table-vectors)
         ;;
         #+(or) ;; the old code
         (let ((energy-function (core:make-cxx-object 'chem:energy-function
@@ -2033,7 +2044,7 @@ then don't calculate 1,4 interactions"
           (chem:fill-energy-function-from-alist energy-function alist)
           energy-function)
         ))))
-
+ 
 (defun read-amber-coordinate-file (fif)
   (fortran:fread-line fif)       ; Skip the version and timestamp line
   (let* ((line (fortran:fread-line fif))
@@ -2057,50 +2068,6 @@ then don't calculate 1,4 interactions"
 (defstruct stretch-term
   atom1-name atom2-name atom1-type atom2-type kb r0)
 
-#|(defun extract-energy-stretch (energy-function)
-  (let* ((energy-stretch (chem:get-stretch-component energy-function))
-         (stretch-vectors (chem:extract-vectors-as-alist energy-stretch))
-         (kb-vector (cdr (assoc :kb stretch-vectors)))
-         (r0-vector (cdr (assoc :r0 stretch-vectors)))
-         (i1-vector (cdr (assoc :i1 stretch-vectors)))
-         (i2-vector (cdr (assoc :i2 stretch-vectors)))
-         (atom1-vector (cdr (assoc :atom1 stretch-vectors)))
-         (atom2-vector (cdr (assoc :atom2 stretch-vectors)))
-         )
-    (rlog "stretch-vectors ~s~%" stretch-vectors)  
-    (let ((stretches (loop for atom1 across atom1-vector
-                        for atom2 across atom2-vector
-                        for kb across kb-vector
-                        for r0 across r0-vector
-                        for atom1-name = (chem:get-name atom1)
-                        for atom2-name = (chem:get-name atom2)
-                        for atom1-type = (chem:get-type atom1)
-                        for atom2-type = (chem:get-type atom2)
-                        collect (make-stretch-term :atom1-name atom1-name
-                                                   :atom2-name atom2-name
-                                                   :atom1-type atom1-type
-                                                   :atom2-type atom2-type
-                                                   :kb kb
-                                                   :r0 r0))))
-      (rlog "stretch-vectors ~s~%" stretch-vectors) 
-      (loop for stretch in stretches
-         do (when (string> (string (stretch-term-atom1-name stretch))
-                           (string (stretch-term-atom2-name stretch)))
-              (rotatef (stretch-term-atom1-name stretch)
-                       (stretch-term-atom2-name stretch))
-              (rotatef (stretch-term-atom1-type stretch)
-                       (stretch-term-atom2-type stretch))))
-      (flet ((order-stretch (s1 s2)
-               (if (string< (string (stretch-term-atom1-name s1))
-                            (string (stretch-term-atom1-name s2)))
-                   t
-                   (if (string> (string (stretch-term-atom1-name s1))
-                                (string (stretch-term-atom1-name s2)))
-                       nil
-                       (string< (string (stretch-term-atom2-name s1))
-                                (string (stretch-term-atom2-name s2)))))))
-        (sort stretches #'order-stretch)))
-(rlog "stretch-vectors ~s~%" stretch-vectors))) |#
 
 (defun extract-energy-stretch (energy-function)
   (let* ((energy-stretch (chem:get-stretch-component energy-function))
@@ -2113,29 +2080,29 @@ then don't calculate 1,4 interactions"
          (atom2-vector (cdr (assoc :atom2 stretch-vectors)))
          )
     (let ((stretches (loop for atom1 across atom1-vector
-                        for atom2 across atom2-vector
-                        for kb across kb-vector
-                        for r0 across r0-vector
-                        for i1 across i1-vector
-                        for i2 across i2-vector
-                        for atom1-name = atom1
-                        for atom2-name = atom2
-                        for atom1-type = i1
-                        for atom2-type = i2
-                        collect (make-stretch-term :atom1-name atom1-name
-                                                   :atom2-name atom2-name
-                                                   :atom1-type atom1-type
-                                                   :atom2-type atom2-type
-                                                   :kb kb
-                                                   :r0 r0))))
+                           for atom2 across atom2-vector
+                           for kb across kb-vector
+                           for r0 across r0-vector
+                           for i1 across i1-vector
+                           for i2 across i2-vector
+                           for atom1-name = (chem:get-name atom1)
+                           for atom2-name = (chem:get-name atom2)
+                           for atom1-type = i1
+                           for atom2-type = i2
+                           collect (make-stretch-term :atom1-name atom1-name
+                                                      :atom2-name atom2-name
+                                                      :atom1-type atom1-type
+                                                      :atom2-type atom2-type
+                                                      :kb kb
+                                                      :r0 r0))))
       (rlog "stretch-vectors ~s~%" stretch-vectors) 
       (loop for stretch in stretches
-         do (when (string> (string (stretch-term-atom1-name stretch))
-                           (string (stretch-term-atom2-name stretch)))
-              (rotatef (stretch-term-atom1-name stretch)
-                       (stretch-term-atom2-name stretch))
-              (rotatef (stretch-term-atom1-type stretch)
-                       (stretch-term-atom2-type stretch))))
+            do (when (string> (string (stretch-term-atom1-name stretch))
+                              (string (stretch-term-atom2-name stretch)))
+                 (rotatef (stretch-term-atom2-name stretch)
+                          (stretch-term-atom1-name stretch))
+                 (rotatef (stretch-term-atom2-type stretch)
+                          (stretch-term-atom1-type stretch))))
       (flet ((order-stretch (s1 s2)
                (if (string< (string (stretch-term-atom1-name s1))
                             (string (stretch-term-atom1-name s2)))
@@ -2145,8 +2112,10 @@ then don't calculate 1,4 interactions"
                        nil
                        (string< (string (stretch-term-atom2-name s1))
                                 (string (stretch-term-atom2-name s2)))))))
-        (sort stretches #'order-stretch)))
-    (rlog "stretch-vectors ~s~%" stretch-vectors)))
+        (sort stretches #'order-stretch))
+      (with-open-file (stream "/tmp/stretch.dat" :direction :output)
+        (format stream "stretch ~s~%" stretches)))))
+;;    (rlog "stretch-vectors2 ~s~%" stretches)
 
 
 (defstruct angle-term
@@ -2283,4 +2252,56 @@ then don't calculate 1,4 interactions"
         (sort dihedrals #'order-dihedral)))
     (rlog "dihedral-vectors ~s~%" dihedral-vectors)))
 
-                              
+(defun float= (x y &optional (delta 0.01))
+  (let ((absx (abs x)))
+    (if (< absx 1e-6)
+        (< (abs y) 1e-6)
+        (< (/ (abs (- x y)) absx) delta))))
+
+(defun compare-energy-nonbond-parameters (nonbond-vectors1 nonbond-vectors2)
+  (let ((da1-vector (cdr (assoc :da nonbond-vectors1)))
+        (dc1-vector (cdr (assoc :dc nonbond-vectors1)))
+        (charge11-vector (cdr (assoc :charge1 nonbond-vectors1)))
+        (charge12-vector (cdr (assoc :charge2 nonbond-vectors1)))
+        (i11-vector (cdr (assoc :i1 nonbond-vectors1)))
+        (i12-vector (cdr (assoc :i2 nonbond-vectors1)))
+        (atomname11-vector (cdr (assoc :atomname1 nonbond-vectors1)))
+        (atomname12-vector (cdr (assoc :atomname2 nonbond-vectors1)))
+        (da2-vector (cdr (assoc :da nonbond-vectors2)))
+        (dc2-vector (cdr (assoc :dc nonbond-vectors2)))
+        (charge21-vector (cdr (assoc :charge1 nonbond-vectors2)))
+        (charge22-vector (cdr (assoc :charge2 nonbond-vectors2)))
+        (i21-vector (cdr (assoc :i1 nonbond-vectors2)))
+        (i22-vector (cdr (assoc :i2 nonbond-vectors2)))
+        (atomname21-vector (cdr (assoc :atomname1 nonbond-vectors2)))
+        (atomname22-vector (cdr (assoc :atomname2 nonbond-vectors2))))
+    (loop for i from 0 below (length da1-vector)
+          for da1 = (aref da1-vector i)
+          for da2 = (aref da2-vector i)
+          for dc1 = (aref dc1-vector i)
+          for dc2 = (aref dc2-vector i)
+          for charge11 = (aref charge11-vector i)
+          for charge12 = (aref charge12-vector i)
+          for charge21 = (aref charge21-vector i)
+          for charge22 = (aref charge22-vector i)
+          for i11 = (aref i11-vector i)
+          for i12 = (aref i12-vector i)
+          for i21 = (aref i21-vector i)
+          for i22 = (aref i22-vector i)
+          for atomname11 = (aref atomname11-vector i)
+          for atomname12 = (aref atomname12-vector i)
+          for atomname21 = (aref atomname21-vector i)
+          for atomname22 = (aref atomname22-vector i)
+           do (when (or (not (float= da1 da2))
+                       (not (float= dc1 dc2))
+                       (not (float= charge11 charge21))
+                       (not (float= charge12 charge22))
+                       (/= i11 i21)
+                       (/= i12 i22)
+                       )
+               (format t "line ~a da1: ~a dc1: ~a charge11: ~a charge12: ~a atomname11: ~a atomname12: ~a~%"
+                       i da1 dc1 charge11 charge12 atomname11 atomname12)
+               (format t "line ~a da2: ~a dc2: ~a charge21: ~a charge22: ~a atomname21: ~a atomname22: ~a~%"
+                       i da2 dc2 charge21 charge22 atomname21 atomname22)))))
+               
+        

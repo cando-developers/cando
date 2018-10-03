@@ -60,6 +60,22 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace chem
 {
 
+core::List_sp EnergyNonbond::encode() const {
+  return core::Cons_O::createList(core::Cons_O::create(INTERN_(kw,da),core::clasp_make_double_float(this->term.dA)),
+                                  core::Cons_O::create(INTERN_(kw,dc),core::clasp_make_double_float(this->term.dC)),
+                                  core::Cons_O::create(INTERN_(kw,i1), core::make_fixnum(this->term.I1)),
+                                  core::Cons_O::create(INTERN_(kw,i2), core::make_fixnum(this->term.I2)),
+                                  core::Cons_O::create(INTERN_(kw,charge1), core::clasp_make_double_float(this->_Charge1)),
+                                  core::Cons_O::create(INTERN_(kw,charge2), core::clasp_make_double_float(this->_Charge2))
+                                  //core::Cons_O::create(INTERN_(kw,atom1), this->_Atom1),
+                                  //core::Cons_O::create(INTERN_(kw,atom2), this->_Atom2)
+                                  );
+}
+
+ void EnergyNonbond::decode(core::List_sp alist) {
+  SIMPLE_ERROR(BF("Implement decode of EnergyNonbond"));
+}
+
 //
 // Return true if we could fill the energyNonbond term
 // otherwise false usually if we don't recognize one of the atom types like DU
@@ -683,6 +699,126 @@ __attribute__((optnone)) void	EnergyNonbond_O::evaluateUsingExcludedAtoms(NVecto
 
 
 
+CL_DEFMETHOD void EnergyNonbond_O::expandExcludedAtomsToTerms()
+{
+//  printf("%s:%d In evaluateUsingExcludedAtoms starting this->_DebugEnergy -> %d\n", __FILE__, __LINE__, this->_DebugEnergy );
+  if (!this->_iac_vec) {
+    SIMPLE_ERROR(BF("The nonbonded excluded atoms parameters have not been set up"));
+  }
+  core::SimpleVector_int32_t_sp numberOfExcludedAtoms = this->_NumberOfExcludedAtomIndices;
+  core::SimpleVector_int32_t_sp excludedAtomIndices = this->_ExcludedAtomIndices;
+  double vdwScale = this->getVdwScale();
+  double electrostaticScale = this->getElectrostaticScale()*ELECTROSTATIC_MODIFIER/this->getDielectricConstant();
+  LOG(BF("Nonbond component is enabled") );
+  // printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
+  double x1,y1,z1,x2,y2,z2,dA,dC,dQ1Q2,dA_old,dC_old,dQ1Q2_old;
+  int	I1, I2;
+  int i = 0;
+//  int maxIndex = pos->length()/3;
+  int maxIndex = this->_AtomTable->getNumberOfAtoms();
+  printf( "maxindex %d\n", maxIndex);
+  int excludedAtomIndex = 0;
+  int nlocaltype = 0;
+  // Find the max local type
+  for (i=0; i<this->_iac_vec->length(); ++i){
+    if (nlocaltype < (*this->_iac_vec)[i]){
+      nlocaltype = (*this->_iac_vec)[i];
+    }
+  }
+  int count;
+
+  for ( int index1 = 0, index1_end(maxIndex-1); index1 <index1_end; ++index1 ) {
+    LOG(BF("%s ====== top of outer loop - index1 = %d\n") % __FUNCTION__ % index1 );
+    int numberOfExcludedAtomsRemaining = numberOfExcludedAtoms->operator[](index1);
+    LOG(BF("Read numberOfExcludedAtomsRemaining from numberOfExcludedAtoms[%d]= %d\n") % index1 % numberOfExcludedAtomsRemaining);
+          // Skip 0 in excluded atom list that amber requires
+    if (numberOfExcludedAtomsRemaining<0) {
+      ++excludedAtomIndex;
+    }
+    double charge11 = (*this->_charge_vector)[index1];
+    double electrostatic_scaled_charge11 = charge11*electrostaticScale;
+    for ( int index2 = index1+1, index2_end(maxIndex); index2 < index2_end; ++index2 ) {
+      LOG(BF("    --- top of inner loop   numberOfExcludedAtomsRemaining -> %d    index2 -> %d\n") % numberOfExcludedAtomsRemaining % index2 );
+      if (numberOfExcludedAtomsRemaining>0) {
+        LOG(BF("    excludedAtomIndices[%d] -> %d  index2 -> %d\n") % excludedAtomIndex % (*excludedAtomIndices)[excludedAtomIndex] % index2 );
+        if ((*excludedAtomIndices)[excludedAtomIndex] == index2) {
+          LOG(BF("    Excluding atom %d\n") % index2);
+          ++excludedAtomIndex;
+          --numberOfExcludedAtomsRemaining;
+          continue;
+        }
+      }
+      //   cn1i    (*this->_cn1_vec)[cn1i]
+      int localindex1 = (*this->_iac_vec)[index1];
+      int localindex2 = (*this->_iac_vec)[index2];
+      dA = (*this->_cn1_vec)[(*this->_ico_vec)[nlocaltype*(localindex1-1)+localindex2-1]-1];
+      dC = (*this->_cn2_vec)[(*this ->_ico_vec)[nlocaltype*(localindex1-1)+localindex2-1]-1];
+//      printf("%s:%d localindex1 %d and localindex2 %d\n", __FILE__, __LINE__, localindex1, localindex2);
+//      printf("%s:%d dA     %lf and dC     %lf\n", __FILE__, __LINE__, dA, dC);
+      double charge22 = (*this->_charge_vector)[index2];
+      I1 = index1*3; 
+      I2 = index2*3; 
+      EnergyNonbond enb;
+/// Atom-vector in AtomTable is empty
+//      enb._Atom1 = this->_AtomTable->elt_atom(index1);
+//      enb._Atom2 = this->_AtomTable->elt_atom(index2);
+      enb.term.dA = dA;
+      enb.term.dC = dC;
+      enb._Charge1 = charge11;
+      enb._Charge2 = charge22;
+      enb.term.I1 = I1;
+      enb.term.I2 = I2;
+      this->_Terms.push_back(enb);
+//      printf( "nonbond index1 name %s index2 %s\n",  this->_AtomTable->elt_atom_name(index1), this->_AtomTable->elt_atom_name(index2));
+#ifdef DEBUG_NONBOND_TERM
+      if ( this->_DebugEnergy ) {
+        std::string key;
+        std::string atom1Name = gc::As<core::Symbol_sp>((*this->_atom_name_vector)[index1])->symbolNameAsString();
+        std::string atom2Name = gc::As<core::Symbol_sp>((*this->_atom_name_vector)[index2])->symbolNameAsString();
+        if ( atom1Name < atom2Name ) {
+          key = atom1Name+"-"+atom2Name;
+        } else {
+          key = atom2Name+"-"+atom1Name;
+        }
+        //printf( "nonbond %s  vdw(%lf) electrostatic(%lf)\n", (double)this->_EnergyVdw,  this->_EnergyElectrostatic );
+        LOG_ENERGY(BF( "MEISTER nonbond %s args cando\n")% key );
+        LOG_ENERGY(BF( "MEISTER nonbond %s dA %5.3lf\n")% key % dA );
+        LOG_ENERGY(BF( "MEISTER nonbond %s dC %5.3lf\n")% key % dC );
+        LOG_ENERGY(BF( "MEISTER nonbond %s dQ1Q2 %5.3lf\n")% key % dQ1Q2 );
+        LOG_ENERGY(BF( "MEISTER nonbond %s x1 %5.3lf %d\n")% key % x1 % (I1/3+1) );
+        LOG_ENERGY(BF( "MEISTER nonbond %s y1 %5.3lf %d\n")% key % y1 % (I1/3+1) );
+        LOG_ENERGY(BF( "MEISTER nonbond %s z1 %5.3lf %d\n")% key % z1 % (I1/3+1) );
+        LOG_ENERGY(BF( "MEISTER nonbond %s x2 %5.3lf %d\n")% key % x2 % (I2/3+1) );
+        LOG_ENERGY(BF( "MEISTER nonbond %s y2 %5.3lf %d\n")% key % y2 % (I2/3+1) );
+        LOG_ENERGY(BF( "MEISTER nonbond %s z2 %5.3lf %d\n")% key % z2 % (I2/3+1) );
+        LOG_ENERGY(BF( "MEISTER nonbond %s results\n")% key );
+        LOG_ENERGY(BF( "MEISTER nonbond %s evdw %lf\n")% key % Evdw);
+        LOG_ENERGY(BF( "MEISTER nonbond %s eeel %lf\n")% key % Eeel);
+        LOG_ENERGY(BF( "MEISTER nonbond %s Enonbond(evdw+eeel) %lf\n")% key % (Evdw+Eeel) );
+//        if ( calcForce ) { 
+//          LOG_ENERGY(BF( "MEISTER nonbond %s fx1 %lf %d\n")% key % fx1 % (I1/3+1) );
+//          LOG_ENERGY(BF( "MEISTER nonbond %s fy1 %lf %d\n")% key % fy1 % (I1/3+1) );
+//          LOG_ENERGY(BF( "MEISTER nonbond %s fz1 %lf %d\n")% key % fz1 % (I1/3+1) );
+//          LOG_ENERGY(BF( "MEISTER nonbond %s fx2 %lf %d\n")% key % fx2 % (I2/3+1) );
+//          LOG_ENERGY(BF( "MEISTER nonbond %s fy2 %lf %d\n")% key % fy2 % (I2/3+1) );
+//          LOG_ENERGY(BF( "MEISTER nonbond %s fz2 %lf %d\n")% key % fz2 % (I2/3+1) );
+//        }
+        LOG_ENERGY(BF( "MEISTER nonbond %s stop\n")% key );
+      }
+#endif
+      count = count + 1;
+    }
+  }
+  printf ("Number of Nonbond %d\n", count);
+//  printf( "Nonbond energy vdw(%lf) electrostatic(%lf)\n", (double)this->_EnergyVdw,  this->_EnergyElectrostatic );
+  LOG(BF( "Nonbond energy vdw(%lf) electrostatic(%lf)\n")% (double)this->_EnergyVdw % this->_EnergyElectrostatic );
+  LOG(BF( "Nonbond energy }\n"));
+}
+
+
+
+
+
 
 
 
@@ -825,14 +961,11 @@ void EnergyNonbond_O::addTerm(const EnergyNonbond& term)
   this->_Terms.push_back(term);
 }
 
-
-#ifdef XML_ARCHIVE
-void EnergyNonbond_O::archiveBase(core::ArchiveP node)
+void EnergyNonbond_O::fields(core::Record_sp node)
 {
-  this->Base::archiveBase(node);
-  archiveEnergyComponentTerms<EnergyNonbond_O,EnergyNonbond>(node,*this);
+node->field( INTERN_(kw,terms), this->_Terms );
+  this->Base::fields(node);
 }
-#endif
 
 string EnergyNonbond_O::beyondThresholdInteractionsAsString()
 {
@@ -936,8 +1069,10 @@ SYMBOL_EXPORT_SC_(KeywordPkg,da);
 SYMBOL_EXPORT_SC_(KeywordPkg,dc);
 SYMBOL_EXPORT_SC_(KeywordPkg,i1);
 SYMBOL_EXPORT_SC_(KeywordPkg,i2);
-SYMBOL_EXPORT_SC_(KeywordPkg,atom1);
-SYMBOL_EXPORT_SC_(KeywordPkg,atom2);
+SYMBOL_EXPORT_SC_(KeywordPkg,charge1);
+SYMBOL_EXPORT_SC_(KeywordPkg,charge2);
+SYMBOL_EXPORT_SC_(KeywordPkg,atomname1);
+SYMBOL_EXPORT_SC_(KeywordPkg,atomname2);
 
 CL_DEFMETHOD core::List_sp EnergyNonbond_O::extract_vectors_as_alist() const{
   size_t size = this->_Terms.size();
@@ -945,23 +1080,29 @@ CL_DEFMETHOD core::List_sp EnergyNonbond_O::extract_vectors_as_alist() const{
   core::SimpleVectorDouble_sp dc_vec = core::SimpleVectorDouble_O::make(size);
   core::SimpleVector_int32_t_sp i1_vec = core::SimpleVector_int32_t_O::make(size);
   core::SimpleVector_int32_t_sp i2_vec = core::SimpleVector_int32_t_O::make(size);
-  core::SimpleVector_sp atom1_vec = core::SimpleVector_O::make(size);
-  core::SimpleVector_sp atom2_vec = core::SimpleVector_O::make(size);
+  core::SimpleVectorDouble_sp charge1_vec = core::SimpleVectorDouble_O::make(size);
+  core::SimpleVectorDouble_sp charge2_vec = core::SimpleVectorDouble_O::make(size);
+  core::SimpleVector_sp atomname1_vec = core::SimpleVector_O::make(size);
+  core::SimpleVector_sp atomname2_vec = core::SimpleVector_O::make(size);
   for (size_t i=0; i<size; ++i){
     const EnergyNonbond& entry = this->_Terms[i];
     (*da_vec)[i] = entry.term.dA;
     (*dc_vec)[i] = entry.term.dC;
     (*i1_vec)[i] = entry.term.I1;
     (*i2_vec)[i] = entry.term.I2;
-    (*atom1_vec)[i] = entry._Atom1;
-    (*atom2_vec)[i] = entry._Atom2;
+    (*charge1_vec)[i] = this->_AtomTable->elt_charge(entry.term.I1/3);
+    (*charge2_vec)[i] = this->_AtomTable->elt_charge(entry.term.I2/3);
+    (*atomname1_vec)[i] = this->_AtomTable->elt_atom_name(entry.term.I1/3);
+    (*atomname2_vec)[i] = this->_AtomTable->elt_atom_name(entry.term.I2/3);
   }
   return core::Cons_O::createList(core::Cons_O::create(kw::_sym_da, da_vec),
                                   core::Cons_O::create(kw::_sym_dc, dc_vec),
                                   core::Cons_O::create(kw::_sym_i1, i1_vec),
                                   core::Cons_O::create(kw::_sym_i2, i2_vec),
-                                  core::Cons_O::create(kw::_sym_atom1 ,atom1_vec),
-                                  core::Cons_O::create(kw::_sym_atom2 ,atom2_vec));
+                                  core::Cons_O::create(kw::_sym_charge1, charge1_vec),
+                                  core::Cons_O::create(kw::_sym_charge2, charge2_vec),
+                                  core::Cons_O::create(kw::_sym_atomname1 ,atomname1_vec),
+                                  core::Cons_O::create(kw::_sym_atomname2 ,atomname2_vec));
 }
 
 
@@ -1010,4 +1151,11 @@ CL_DEFMETHOD void EnergyNonbond_O::setNonbondExcludedAtomInfo(AtomTable_sp atom_
   this->_NumberOfExcludedAtomIndices = number_excluded_atoms;
 }
 
+//core::List_sp termAtIndex(size_t index) const
+//{
+
+
+//}
+
 };
+

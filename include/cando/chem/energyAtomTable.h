@@ -160,7 +160,7 @@ class AtomTable_O : public core::CxxObject_O
  AtomTable_O() : _Residues(_Unbound<core::MDArray_int32_t_O>()), _ResidueNames(_Unbound<core::MDArrayT_O>()), _AtomsPerMolecule(_Unbound<core::MDArray_int32_t_O>()) {};
 
   virtual void fill_atom_table_from_vectors(core::List_sp values);
-  
+//  int residue_index(int atom_index);
 };
 
 
