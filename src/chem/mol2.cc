@@ -727,9 +727,9 @@ AtomInfo	one;
 	out << residue_temp_int << " ";
 	out << a->containedBy()->getName()->symbolNameAsString() << "_"
 		<< residue_temp_int << " ";
-	out << std::setiosflags(std::ios::fixed)
+	out << std::setiosflags(std::ios::scientific)
             << std::setw(8)
-            << std::setprecision(3);
+            << std::setprecision(4);
 	out << a->getCharge() << std::endl;
     }
 	//
