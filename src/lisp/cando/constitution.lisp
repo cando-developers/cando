@@ -12,6 +12,6 @@
                                                stereoinfo
                                                nil
                                                nil))
-         (topology (chem:make-topology-from-residue residue pdb-name constitution pdb-name)))
+         (topology (chem:make-topology-from-residue residue pdb-name constitution)))
     (chem:add-topology constitution topology)
     (values topology constitution)))
