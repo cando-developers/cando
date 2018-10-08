@@ -64,6 +64,7 @@ namespace chem
     BondOrder bondOrder() const { return this->_BondOrder; };
   public:
   ConstitutionBond_O(ConstitutionAtomIndex0N toAtomIndex, BondOrder bo) : _ToAtomIndex(toAtomIndex), _BondOrder(bo) {};
+    ConstitutionBond_O() {};
   };
 
   CL_DEFUN inline ConstitutionBond_sp makeConstitutionBond(chem::ConstitutionAtomIndex0N index, chem::BondOrder order) {
@@ -102,6 +103,7 @@ It stores the atom name, element, properties and a vector of bonds in the form o
 	/*! Append a ConstitutionBond_sp to our list of bonds */
     void addConstitutionBond(ConstitutionBond_sp cb) {this->_Bonds.push_back(cb);};
   ConstitutionAtom_O(MatterName atomName, Element element, size_t index, StereochemistryType stype, core::List_sp properties) : _AtomName(atomName), _Element(element), _Index(index), _StereochemistryType(stype), _Properties(core::cl__copy_list(properties)) {};
+    ConstitutionAtom_O() {};
 
     virtual Atom_sp buildAtom() const;
   };
@@ -124,6 +126,7 @@ It stores the atom name, element, properties and a vector of bonds in the form o
   public:
   ConstitutionVirtualAtom_O(MatterName atomname, Element element, size_t index, StereochemistryType stype, core::List_sp properties, CalculatePosition_sp calcPos) :
     ConstitutionAtom_O(atomname,element,index,stype,properties), _CalculatePositionCode(calcPos) {};
+    ConstitutionVirtualAtom_O() {};
     virtual Atom_sp buildAtom() const;
   };
 

@@ -28,6 +28,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/common.h>
 
 #include <clasp/core/record.h>
+#include <clasp/core/ql.h>
 #include <clasp/core/environment.h>
 #include <cando/kinematics/kinematicsPackage.h>
 #include <cando/kinematics/chainNode.h>
@@ -60,9 +61,18 @@ void AggregateNode_O::resizeChains(int numChains)
   {
     for ( int i=numMolsOld; i<numChains; i++ )
     {
-      this->_Chains[i] = ChainNode_O::create();
+      this->_Chains[i] = ChainNode_O::create(i);
     }
   }
+}
+
+core::List_sp AggregateNode_O::children() const
+{
+  ql::list l;
+  for ( auto i : this->_Chains ) {
+    l << i;
+  }
+  return l.cons();
 }
 
     

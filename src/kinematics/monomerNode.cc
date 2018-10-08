@@ -27,7 +27,9 @@ This is an open source license for the CANDO software from Temple University, bu
 
 #include <clasp/core/common.h>
 #include <clasp/core/evaluator.h>
+#include <clasp/core/lispStream.h>
 #include <cando/adapt/symbolSet.h>
+#include <cando/kinematics/atom.h>
 #include <cando/chem/monomer.h>
 #include <cando/chem/coupling.h>
 #include <cando/chem/constitution.h>
@@ -47,19 +49,20 @@ namespace kinematics
 void MonomerNode_O::fields(core::Record_sp node) {
   node->field(INTERN_(kw,parent),this->_Parent);
   node->field(INTERN_(kw,parent_plug_name),this->_ParentPlugName);
-  node->field(INTERN_(kw,MonomerId),this->_MonomerId);
+  node->field(INTERN_(kw,Id),this->_Id);
   node->field(INTERN_(kw,Children),this->_Children);
   node->field(INTERN_(kw,StereoisomerName),this->_StereoisomerName);
   node->field(INTERN_(kw,Topology),this->_Topology);
   node->field(INTERN_(kw,ConformationIndex),this->_ConformationIndex);
+  node->field(INTERN_(kw,Joints),this->_Joints);
   this->Base::fields(node);
 }
 
 
-MonomerNode_sp MonomerNode_O::create(int monomerId)
+MonomerNode_sp MonomerNode_O::create(MonomerId monomerId)
 {
   GC_ALLOCATE(MonomerNode_O, monomerNode );
-  monomerNode->_MonomerId = monomerId;
+  monomerNode->_Id = monomerId;
   return monomerNode;
 }
 
@@ -75,6 +78,8 @@ void MonomerNode_O::initialize()
 }
 
 
+CL_LISPIFY_NAME(stereoisomer-name);
+CL_DEFMETHOD core::Symbol_sp	MonomerNode_O::stereoisomerName() const { return this->_StereoisomerName;};
 
 void MonomerNode_O::recursivelyBuildChildren(ChainNode_sp chainNode,
                                              RingClosingMonomerMap ringClosingMonomerMap,
@@ -153,7 +158,7 @@ chem::Constitution_mv MonomerNode_O::identifyConstitutionAndTopology()
     }
   }
   if (!topology) {
-    SIMPLE_ERROR(BF("No topology could be found for monomer[%s] with plugs[%s]")
+    SIMPLE_ERROR(BF("No topology could be found for monomer %s with plugs %s")
                  % _rep_(this->_StereoisomerName) % myPlugNameSet->asString() );
   }
   return Values(constitution, topology);
@@ -194,5 +199,36 @@ string MonomerNode_O::__repr__() const {
   ss << " " << _rep_(this->_StereoisomerName) << ">";
   return ss.str();
 }
- 
+
+void MonomerNode_O::addJoint(size_t index, Joint_sp joint)
+{
+  core::write_bf_stream(BF("%s:%d:%s  joint.id = %s  index -> %lu  joint = %s\n") % __FILE__ % __LINE__ % __FUNCTION__ % joint->atomId().asString() % index % core::_rep_(joint));
+  if (this->_Joints.size() <= index ) {
+    this->_Joints.resize(index+1);
+  }
+  this->_Joints[index] = joint;
+}
+
+core::List_sp MonomerNode_O::children() const
+{
+  ql::list l;
+  for ( auto i : this->_Children ) {
+    l << i.second;
+  }
+  return l.cons();
+}
+
+CL_DEFMETHOD MonomerId MonomerNode_O::monomerId() const
+{
+  return this->_Id;
+}
+
+CL_DOCSTRING("Walk the joints of this monomer-node. Provide a callback that takes two arguments, the joint atom-id index and the joint.");
+CL_DEFMETHOD void MonomerNode_O::walkJoints(core::Function_sp callback) {
+  for ( int i=0, iEnd(this->_Joints.size()); i<iEnd; ++i ) {
+    core::eval::funcall(callback,core::make_fixnum(i),this->_Joints[i]);
+  }
+}
+
+    
 }; /* kinematics */

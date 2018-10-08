@@ -140,7 +140,6 @@ core::List_sp StereoConfiguration_O::create_multiple(core::List_sp atomNames, co
 void StereoConfiguration_O::fields(core::Record_sp node) {
   node->field(INTERN_(kw,name),this->_AtomName);
   node->field(INTERN_(kw,config),this->_Configuration);
-  this->Base::fields(node);
 }
 
 
@@ -236,7 +235,6 @@ void StereoInformation_O::fields(core::Record_sp node) {
   node->field(INTERN_(kw,stereoisomers),this->_Stereoisomers);
   node->field(INTERN_(kw,namemap),this->_NameOrPdbToStereoisomer);
   node->field(INTERN_(kw,restraints),this->_ComplexRestraints);
-  this->Base::fields(node);
 }
 
 void	StereoInformation_O::addStereoisomer(Stereoisomer_sp s)

@@ -106,6 +106,9 @@ namespace geom {
       auto bs = gctools::GC<SimpleVectorCoordinate_O>::allocate_container(length,initialElement,initialElementSupplied,initialContentsSize,initialContents);
       return bs;
     }
+    static SimpleVectorCoordinate_sp copy(SimpleVectorCoordinate_sp original) {
+      return make(original->length(),Vector3(),false,original->length(),&(*original)[0]);
+    }
     static SimpleVectorCoordinate_sp create(core::List_sp elements) {
       size_t sz = core::cl__length(elements);
       size_t i(0);
@@ -178,6 +181,7 @@ namespace geom {
 namespace geom {
   FORWARD(MDArrayCoordinate);
 };
+
 namespace geom {
   class MDArrayCoordinate_O : public core::template_Array<MDArrayCoordinate_O,SimpleMDArrayCoordinate_O,SimpleVectorCoordinate_O,core::MDArray_O> {
     LISP_CLASS(geom, GeomPkg, MDArrayCoordinate_O, "MDArrayCoordinate",core::MDArray_O);
@@ -202,6 +206,10 @@ namespace geom {
     }
     static MDArrayCoordinate_sp make_vector(size_t dimension, simple_element_type initialElement, core::T_sp fillPointer) {
       return make_vector(dimension,initialElement,fillPointer,_Nil<T_O>(),false,core::clasp_make_fixnum(0));
+    }
+    /*! Build a MDArrayCoordinate from a SimpleVectorCoordinate */
+    static MDArrayCoordinate_sp make_vector(geom::SimpleVectorCoordinate_sp data) {
+      return make_vector(data->length(),Vector3(),core::make_fixnum(data->length()),data,false,core::make_fixnum(0));
     }
   public: // make array
   MDArrayCoordinate_O(size_t rank,

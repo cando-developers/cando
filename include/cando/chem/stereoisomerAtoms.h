@@ -78,6 +78,7 @@ topology atoms plug into others.  So it stores things like charge and atom type.
     CL_DEFMETHOD         core::Symbol_sp getAtomType() const { return this->_AtomType;};
     CL_DEFMETHOD 	void setAtomType(core::Symbol_sp s) { this->_AtomType = s;};
   StereoisomerAtom_O(MatterName name, ConstitutionAtomIndex0N index, double charge, core::Symbol_sp type) : _AtomName(name), _ConstitutionAtomIndex(index), _AtomCharge(charge), _AtomType(type) {};
+    StereoisomerAtom_O() {}
   };
 
 
@@ -97,6 +98,7 @@ topology atoms plug into others.  So it stores things like charge and atom type.
     virtual bool isVirtualAtom() { return true;};
 
   StereoisomerVirtualAtom_O(MatterName name, ConstitutionAtomIndex0N index, double charge, core::Symbol_sp type) : StereoisomerAtom_O(name,index,charge,type) {};
+    StereoisomerVirtualAtom_O() {};
   };
 
 
@@ -153,8 +155,8 @@ is a list of stereoisomer-atoms.)");
 	  properties set properly for this StereoisomerAtoms */
     Residue_sp makeResidue();
 
-    StereoisomerAtoms_O( const StereoisomerAtoms_O& ss ); //!< Copy constructor
-    StereoisomerAtoms_O(core::Symbol_sp stereoisomerName) : _StereoisomerName(stereoisomerName) {};
+    StereoisomerAtoms_O(core::Symbol_sp stereoisomerName);
+//    StereoisomerAtoms_O() {};
   };
 
 };

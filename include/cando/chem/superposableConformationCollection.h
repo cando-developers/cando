@@ -35,79 +35,111 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <vector>
 #include <set>
 #include <clasp/core/common.h>
+#include <clasp/core/ql.h>
 #include <cando/chem/conformationCollection.h>
 #include <cando/adapt/stringList.h>
+#include <cando/chem/atom.h>
 #include <clasp/core/intArray.h>
 
 #include <cando/chem/chemPackage.h>
 
 
+
+namespace translate {
+template <>
+struct to_object<gctools::SmallOrderedSet<chem::Atom_sp>, translate::dont_adopt_pointer> {
+  static core::T_sp convert(gctools::SmallOrderedSet<chem::Atom_sp> atoms) {
+    ql::list res;
+    int i(0);
+    for (auto ai = atoms.begin(); ai != atoms.end(); ai++) {
+      res << *ai;
+    }
+    return res.cons();
+  }
+};
+
+template <>
+struct from_object<gctools::SmallOrderedSet<chem::Atom_sp> > {
+  typedef gctools::SmallOrderedSet<chem::Atom_sp> DeclareType;
+  DeclareType _v;
+  from_object(core::T_sp o) {
+    if (o.nilp()) {
+      _v.clear();
+      return;
+    } else if (o.consp()) {
+      core::Cons_sp co = gc::As_unsafe<core::Cons_sp>(o);
+      _v.resize(co->length());
+      int i = 0;
+      for (auto cur : (core::List_sp)co) {
+        _v[i] = gc::As<chem::Atom_sp>(oCar(cur));
+        ++i;
+      }
+      return;
+    }
+    SIMPLE_ERROR_SPRINTF("Add support to convert %s to gctools::SmallOrderedSet<chem::Atom_sp>", _rep_(o).c_str());
+  }
+};
+};
+
+
 namespace chem {
-
-
-
 SMART(ZMatrix);
-
-
-
 
 class SuperposableConformationCollection_O;
     typedef	gctools::smart_ptr<SuperposableConformationCollection_O>	SuperposableConformationCollection_sp;
 SMART(SuperposableConformationCollection);
 class SuperposableConformationCollection_O : public ConformationCollection_O
 {
-    LISP_CLASS(chem,ChemPkg,SuperposableConformationCollection_O,"SuperposableConformationCollection",ConformationCollection_O);
+  LISP_CLASS(chem,ChemPkg,SuperposableConformationCollection_O,"SuperposableConformationCollection",ConformationCollection_O);
 
 public:
-	void initialize();
+  void initialize();
 public:
 //	void	archive(core::ArchiveP node);
 
 private:
-	double		_RmsCutOff;
-	core::IntArray_sp	_SuperposeAtomIndices;
+  double		_RmsCutOff;
+  core::MDArray_size_t_sp	_SuperposeAtomIndices;
 //	string		_SuperposableFileName;
 public:
-	typedef	core::IntArray_O::iterator	superposeAtomIndexIterator;
-public:
 
-	void	setRmsCutOff(double co) { this->_RmsCutOff = co; };
+  CL_DEFMETHOD void	setRmsCutOff(double co) { this->_RmsCutOff = co; };
 
 		//! Clear the superposition atoms
-	void	clearSuperposeAtoms();
+  void	clearSuperposeAtoms();
 		//! Add a superposition atom
-    void	superposeAtomsFromSet(gctools::SmallOrderedSet<Atom_sp> atoms);
+  void	superposeAtomsFromSet(gctools::SmallOrderedSet<Atom_sp> atoms);
 		//! Set up to superpose all heavy atoms
-	void	superposeAllHeavyAtoms();
-	void	addSuperposeAtom(Atom_sp a);
+  void	superposeAllHeavyAtoms();
+  void	addSuperposeAtom(Atom_sp a);
 
 #if 0 // Figure out how to create an iterator that will let us do this
 
-    gctools::SmallOrderedSet<Atom_sp>::iterator begin_SuperposeAtoms()
-		{ return this->_SuperposeAtoms.begin();};
-    gctools::SmallOrderedSet<Atom_sp>::iterator end_SuperposeAtoms()
-		{ return this->_SuperposeAtoms.end();};
+  gctools::SmallOrderedSet<Atom_sp>::iterator begin_SuperposeAtoms()
+  { return this->_SuperposeAtoms.begin();};
+  gctools::SmallOrderedSet<Atom_sp>::iterator end_SuperposeAtoms()
+  { return this->_SuperposeAtoms.end();};
 #endif
 
-    gctools::SmallOrderedSet<Atom_sp>	getSuperposeAtoms();
+  gctools::SmallOrderedSet<Atom_sp>	getSuperposeAtoms();
 
-	int	numberOfSuperposeAtoms();
+  int	numberOfSuperposeAtoms();
 
-	ConformationCollectionEntry_sp createEntryIfConformationIsNew(Matter_sp matter);
+  core::T_sp createEntryIfConformationIsNew(Matter_sp matter);
 
-	void	setEntryCoordinatesAsFixedWithinSuperposeEngine(ConformationCollectionEntry_sp entry, SuperposeEngine_sp sup);
-	void	setEntryCoordinatesAsMoveableWithinSuperposeEngine(ConformationCollectionEntry_sp entry, SuperposeEngine_sp sup);
+  void	setEntryCoordinatesAsFixedWithinSuperposeEngine(ConformationCollectionEntry_sp entry, SuperposeEngine_sp sup);
+  void	setEntryCoordinatesAsMoveableWithinSuperposeEngine(ConformationCollectionEntry_sp entry, SuperposeEngine_sp sup);
 
-	bool canRender() { return true; }
+  bool canRender() { return true; }
 #ifdef RENDER
-	geom::Render_sp rendered(core::List_sp options);
+  geom::Render_sp rendered(core::List_sp options);
 #endif
 
 
-	SuperposableConformationCollection_O( const SuperposableConformationCollection_O& ss ); //!< Copy constructor
+  SuperposableConformationCollection_O( const SuperposableConformationCollection_O& ss ); //!< Copy constructor
 
 
-	DEFAULT_CTOR_DTOR(SuperposableConformationCollection_O);
+  DEFAULT_CTOR_DTOR(SuperposableConformationCollection_O);
 };
 
 

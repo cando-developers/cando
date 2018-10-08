@@ -31,6 +31,6 @@
                                (chem:set-property topology :joint-template joint-template)
                             collect topology)))
       (loop for topology in topologys
-            do (leap.core:register-variable (chem:get-name topology) topology))
+            do (cando:register-topology (chem:get-name topology) topology))
       (values topologys chemdraw prepare-topologys))))
 

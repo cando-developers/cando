@@ -42,6 +42,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <iostream>
 #include <clasp/core/foundation.h>
 #include <clasp/core/object.h>
+#include <clasp/core/lispStream.h>
 #include <clasp/core/lisp.h>
 //#include "core/archiveNode.h"
 
@@ -412,9 +413,10 @@ int	r,c;
 //
 Matrix& Matrix::colX(Vector3 const& v)
 {
-    this->elements[0] = v.getX();
-    this->elements[4] = v.getY();
-    this->elements[8] = v.getZ();
+    this->elements[ 0] = v.getX();
+    this->elements[ 4] = v.getY();
+    this->elements[ 8] = v.getZ();
+    this->elements[12] = 0.0;
     return *this;
 }
 
@@ -423,6 +425,7 @@ Matrix& Matrix::colY(Vector3 const& v)
     this->elements[ 0+1] = v.getX();
     this->elements[ 4+1] = v.getY();
     this->elements[ 8+1] = v.getZ();
+    this->elements[12+1] = 0.0;
     return *this;
 }
 Matrix& Matrix::colZ(Vector3 const& v)
@@ -430,6 +433,7 @@ Matrix& Matrix::colZ(Vector3 const& v)
     this->elements[ 0+2] = v.getX();
     this->elements[ 4+2] = v.getY();
     this->elements[ 8+2] = v.getZ();
+    this->elements[12+2] = 0.0;
     return *this;
 }
 Matrix& Matrix::setTranslate(Vector3 const& v)
@@ -437,6 +441,7 @@ Matrix& Matrix::setTranslate(Vector3 const& v)
     this->elements[ 0+3] = v.getX();
     this->elements[ 4+3] = v.getY();
     this->elements[ 8+3] = v.getZ();
+    this->elements[12+3] = 1.0;
     return *this;
 }
 
@@ -446,6 +451,7 @@ void Matrix::setTranslate(const Matrix& m)
     this->elements[ 0+3] = m.elements[ 0+3];
     this->elements[ 4+3] = m.elements[ 4+3];
     this->elements[ 8+3] = m.elements[ 8+3];
+    this->elements[12+3] = m.elements[12+3];
 }
 
 
@@ -769,34 +775,36 @@ string	Matrix::asStringFast() const
 
 string	Matrix::asString() const
 {
-char	cstr[1024];
-string	out;
-int	r,c;
-double	val;
-stringstream ss;
-    for (r=0; r<4; r++ )
+  char	cstr[1024];
+  string	out;
+  int	r,c;
+  double	val;
+  stringstream ss;
+  ss << "#(";
+  for (r=0; r<4; r++ )
+  {
+    for (c=0; c<4; c++ ) 
     {
-	for (c=0; c<4; c++ ) 
-	{
-	    val = this->atRowCol(r,c);
-	    if ( val == 0.0 )
-	    {
-		strcpy(cstr,"0");
-	    } else if ( val == 1.0 )
-	    {
-		strcpy(cstr,"1");
-	    } else if ( val == -1.0 )
-	    {
-		strcpy(cstr,"-1");
-	    } else
-	    {
-	        sprintf( cstr, "%lf", val );
-	    }
-	    ss << cstr << " ";
-	}
-	ss << std::endl;
+      val = this->atRowCol(r,c);
+      if ( val == 0.0 )
+      {
+        strcpy(cstr,"0");
+      } else if ( val == 1.0 )
+      {
+        strcpy(cstr,"1");
+      } else if ( val == -1.0 )
+      {
+        strcpy(cstr,"-1");
+      } else
+      {
+        sprintf( cstr, "%lf", val );
+      }
+      ss << cstr << " ";
     }
-    return ss.str();
+    ss << std::endl;
+  }
+  ss << ")";
+  return ss.str();
 }
 
 
@@ -1321,4 +1329,107 @@ void rotation_matrix_to_quaternion(double& w, double& x, double& y, double& z, c
   x = (m.atRowCol(2,1)-m.atRowCol(1,2))*wo4;
   y = (m.atRowCol(0,2)-m.atRowCol(2,0))*wo4;
   z = (m.atRowCol(1,0)-m.atRowCol(0,1))*wo4;
+};
+
+
+
+/*! Build Vector3 external coordinate using a coordinate system in a matrix
+and a distance, angle and dihedral angle.
+The matrix has the columns (nx ny nz origin)
+where nx, ny, nz are the orthogonal unit vectors of the coordinate system
+and origin is the origin.
+This uses the technique described in J Comput Chem 26: 1063–1068, 2005
+but it fixes an error in the paper.  The angle here is wrt the nx axis and not 
+the preceeding atoms D C B.
+ */
+Vector3 pointFromMatrixAndInternalCoordinates(const Matrix& coordinateSystem,
+                                              double distance,
+                                              double angle,
+                                              double dihedral,
+                                              Vector3& d2)
+{
+  double cosTheta = std::cos(angle);
+  double sinTheta = std::sin(angle);
+  double cosPhi = std::cos(dihedral);
+  double sinPhi = std::sin(dihedral);
+  d2.set(distance*cosTheta,distance*cosPhi*sinTheta,distance*sinPhi*sinTheta);
+  Vector3 d2p = coordinateSystem * d2;
+  return d2p;
+}
+
+#if 0
+#define VEC_LOG(msg) core::write_bf_stream(BF("%s:%d:%f - ") % __FILE__ % __LINE__ % __FUNCTION__ ); core::write_bf_stream(msg)
+#else
+#define VEC_LOG(msg)
+#endif
+
+
+void internalCoordinatesFromPointAndCoordinateSystem(const Vector3& D, const Matrix& coordinateSystem, double& distance, double& theta, double& phi)
+{
+  VEC_LOG(BF("stub = \n%s\n") % coordinateSystem.asString());
+  Vector3 x = coordinateSystem.colX();
+  Vector3 y = coordinateSystem.colY();
+  Vector3 z = coordinateSystem.colZ();
+  VEC_LOG(BF("x = %s\n") % x.asString());
+  VEC_LOG(BF("y = %s\n") % y.asString());
+  VEC_LOG(BF("z = %s\n") % z.asString());
+  Vector3 C = coordinateSystem.getTranslation();
+  Vector3 CD = D - C;
+  double lengthCD = CD.length();
+  distance = lengthCD;
+  if (lengthCD<SMALL_NUMBER) SIMPLE_ERROR(BF("About to divide by zero"));
+  Vector3 d = CD*(1.0/lengthCD);
+  VEC_LOG(BF("d = %s\n") % d.asString());
+  double dx = d.dotProduct(x);
+  double dy = d.dotProduct(y);
+  double dz = d.dotProduct(z);
+  VEC_LOG(BF("dx = %lf  dy = %lf  dz = %lf\n") % dx % dy % dz );
+  phi = geom::geom__planeVectorAngle(dy,dz);
+  VEC_LOG(BF("  dy = %lf   dz = %lf\n") % dy % dz );
+  VEC_LOG(BF("_Phi = %lf deg\n") % (phi/0.0174533));
+  Vector3 dox(1.0,0.0,0.0);
+  Vector3 dop(dx,dy,dz);
+  VEC_LOG(BF("dop = %s\n") % dop.asString());
+  VEC_LOG(BF("dop.dotProduct(dox) = %lf\n") % dop.dotProduct(dox));
+  if (dop.dotProduct(dox) > (1.0-SMALL_NUMBER)) {
+    theta = 0.0;
+    return;
+  }
+  Vector3 doz = dox.crossProduct(dop);
+  doz = doz.normalized();
+  VEC_LOG(BF("doz = %s\n") % doz.asString());
+  Vector3 doy = doz.crossProduct(dox);
+  VEC_LOG(BF("doy = %s\n") % doy.asString());
+  double eox = dop.dotProduct(dox);
+  double eoy = dop.dotProduct(doy);
+  VEC_LOG(BF("eox = %lf  eoy = %lf\n") % eox % eoy );
+//  double eoz = dop.dotProduct(doz); // Must be 0.0
+  theta = geom::geom__planeVectorAngle(eox,eoy);
+  VEC_LOG(BF("    theta = %lf deg\n") % (theta/0.0174533));
+}
+
+
+
+namespace geom {
+CL_DEFUN Vector3 geom__pointFromMatrixAndInternalCoordinates(const Matrix& coordinateSystem,
+                                                    double distance,
+                                                    double angle,
+                                                    double dihedral)
+{
+  Vector3 d2;
+  return pointFromMatrixAndInternalCoordinates(coordinateSystem,distance,angle,dihedral,d2);
+};
+
+
+CL_DEFUN core::DoubleFloat_mv geom__internalCoordinatesFromPointAndCoordinateSystem(const Vector3& D, const Matrix& coordinateSystem)
+{
+  double distance;
+  double theta;
+  double phi;
+  internalCoordinatesFromPointAndCoordinateSystem(D,coordinateSystem,distance,theta,phi);
+  return Values(core::clasp_make_double_float(distance),
+                core::clasp_make_double_float(theta),
+                core::clasp_make_double_float(phi));
+}
+
 };

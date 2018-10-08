@@ -1,6 +1,7 @@
 
 (in-package :leap.cando-database)
-            
+
+#|
 (defclass leap-cando-database ()
   ())
 
@@ -22,3 +23,4 @@
 
 (defmethod chem:pdb-name-for-name-or-pdb ((db leap-cando-database) name)
   :UNK)
+|#

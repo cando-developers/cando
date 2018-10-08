@@ -33,26 +33,26 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace kinematics
 {
 
-    FORWARD(ChainNode);
+FORWARD(ChainNode);
 
 class AggregateNode_O : public MonomerBaseNode_O
 {
-    friend class FoldTree_O;
-    LISP_CLASS(kinematics,KinPkg,AggregateNode_O,"AggregateNode",MonomerBaseNode_O);
+  friend class FoldTree_O;
+  LISP_CLASS(kinematics,KinPkg,AggregateNode_O,"AggregateNode",MonomerBaseNode_O);
 //    DECLARE_ARCHIVE();
-    DEFAULT_CTOR_DTOR(AggregateNode_O);
+  DEFAULT_CTOR_DTOR(AggregateNode_O);
 public:
-    bool fieldsp() const { return true; };
-    void fields(core::Record_sp node);
-    void initialize();
+  bool fieldsp() const { return true; };
+  void fields(core::Record_sp node);
+  void initialize();
 public:	// Functions here
 	/*! Resize the number of molecules */
-	void resizeChains(int numChains);
-
+  void resizeChains(int numChains);
+  core::List_sp children() const;
 private:
 	// instance variables here
 	/*! Point to the Chains */
-	gctools::Vec0<ChainNode_sp>	_Chains;
+  gctools::Vec0<ChainNode_sp>	_Chains;
 };
 
 }; /* kinematics */

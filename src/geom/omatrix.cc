@@ -27,9 +27,11 @@ This is an open source license for the CANDO software from Temple University, bu
 
 
 #include <clasp/core/common.h>
+#include <clasp/core/lispStream.h>
 #include <cando/geom/omatrix.h>
 #include <cando/geom/vector3.h>
 #include <cando/geom/ovector3.h>
+#include <clasp/core/array.h>
 //#include "core/archiveNode.h"
 #include <clasp/core/wrappers.h>
 
@@ -73,6 +75,25 @@ void	OMatrix_O::setFromStringFast(const string& s)
 }
 #endif
 
+CL_DEFMETHOD void OMatrix_O::setFromVector(core::Array_sp array)
+{
+  if (gc::IsA<core::SimpleVectorDouble_sp>(array)) {
+    core::SimpleVectorDouble_sp svd = gc::As_unsafe<core::SimpleVectorDouble_sp>(array);
+    size_t elements = MIN(16,svd->length());
+    for ( size_t i=0; i<elements; ++i ) {
+      this->_Value[i] = (*svd)[i];
+    }
+  } else {
+    size_t elements = MIN(16,array->arrayTotalSize());
+    for ( size_t i=0; i<elements; ++i ) {
+      core::T_sp el = array->rowMajorAref(i);
+      core::Number_sp num = gc::As<core::Number_sp>(el);
+      double val = core::clasp_to_double(num);
+      this->_Value[i] = val;
+    }
+  }
+}
+    
 void	OMatrix_O::setAll(const Matrix& m)
 {
   this->_Value.setAll(m);

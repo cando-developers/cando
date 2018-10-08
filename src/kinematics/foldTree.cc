@@ -52,58 +52,64 @@ FoldTree_sp FoldTree_O::make()
 };
 
 
-    void FoldTree_O::initialize()
-    {_OF();
-        this->Base::initialize();
-	this->_AggregateNode = AggregateNode_O::create();
-    }
+void FoldTree_O::initialize()
+{_OF();
+  this->Base::initialize();
+  this->_AggregateNode = AggregateNode_O::create();
+}
 
 
-    int FoldTree_O::numberOfChains() const
-    {
-	return this->_AggregateNode->_Chains.size();
-    }
+int FoldTree_O::numberOfChains() const
+{
+  return this->_AggregateNode->_Chains.size();
+}
 
-    void FoldTree_O::resizeChains(int numChains)
-    {
-	this->_AggregateNode->resizeChains(numChains);
-    }
+void FoldTree_O::resizeChains(int numChains)
+{
+  this->_AggregateNode->resizeChains(numChains);
+}
 
-    void FoldTree_O::resizeMonomers(int chainId, int numMonomers)
-    {_OF();
-	ASSERTF(chainId<(int)this->_AggregateNode->_Chains.size(),
-		BF("Illegal chainId[%d] - there are only %d chains")
-		% chainId
-		% this->_AggregateNode->_Chains.size());
-	this->_AggregateNode->_Chains[chainId]->resizeMonomers(numMonomers);
-    }
+void FoldTree_O::resizeMonomers(int chainId, int numMonomers)
+{_OF();
+  ASSERTF(chainId<(int)this->_AggregateNode->_Chains.size(),
+          BF("Illegal chainId[%d] - there are only %d chains")
+          % chainId
+          % this->_AggregateNode->_Chains.size());
+  this->_AggregateNode->_Chains[chainId]->resizeMonomers(numMonomers);
+}
 
 
-    ChainNode_sp FoldTree_O::buildChainUsingOligomer(int chainId, chem::Oligomer_sp oligomer)
-    {_OF();
-	ASSERTF(chainId<this->numberOfChains(),BF("Illegal chainId[%d]") % chainId );
-	this->resizeMonomers(chainId,oligomer->numberOfMonomers());
-	this->_AggregateNode->_Chains[chainId]->buildUsingOligomer(oligomer,chainId);
-	return this->_AggregateNode->_Chains[chainId];
-    }
+ChainNode_sp FoldTree_O::buildChainUsingOligomer(int chainId, chem::Oligomer_sp oligomer)
+{_OF();
+  ASSERTF(chainId<this->numberOfChains(),BF("Illegal chainId[%d]") % chainId );
+  this->resizeMonomers(chainId,oligomer->numberOfMonomers());
+  this->_AggregateNode->_Chains[chainId]->buildUsingOligomer(oligomer,chainId);
+  return this->_AggregateNode->_Chains[chainId];
+}
 	
-    ChainNode_sp FoldTree_O::getChainNode(int chainId) const
-    {_OF();
-	ASSERTF(chainId>0 && chainId<this->numberOfChains(),
-		BF("Illegal chainId[%d]") % chainId );
-	return this->_AggregateNode->_Chains[chainId];
-    }
+ChainNode_sp FoldTree_O::getChainNode(int chainId) const
+{_OF();
+  ASSERTF(chainId>0 && chainId<this->numberOfChains(),
+          BF("Illegal chainId[%d]") % chainId );
+  return this->_AggregateNode->_Chains[chainId];
+}
+
+CL_DEFMETHOD AggregateNode_sp FoldTree_O::foldTreeRoot() const { return this->_AggregateNode; };
 
 
-    MonomerNode_sp FoldTree_O::lookupMonomerId(MonomerId const& monomerId) const
-    {_OF();
-	ASSERTF(monomerId.chainId()<(int)this->_AggregateNode->_Chains.size(),
-		BF("Illegal chainId[%d] - there are only %d chains") % monomerId.chainId()
-		% this->_AggregateNode->_Chains.size() );
-	ChainNode_sp chainNode = this->_AggregateNode->_Chains[monomerId.chainId()];
-	MonomerNode_sp monomer = chainNode->lookupMonomerId(monomerId.monomerId());
-	return monomer;
-    }
+CL_DOCSTRING("Return the monomer-node that corresponds to the monomer-id");
+CL_DEFMETHOD MonomerNode_sp FoldTree_O::lookupMonomerId(MonomerId const& monomerId) const
+{_OF();
+  ASSERTF(monomerId.chainId()<(int)this->_AggregateNode->_Chains.size(),
+          BF("Illegal chainId[%d] - there are only %d chains") % monomerId.chainId()
+          % this->_AggregateNode->_Chains.size() );
+  if (monomerId.chainId()<this->_AggregateNode->_Chains.size()) {
+    ChainNode_sp chainNode = this->_AggregateNode->_Chains[monomerId.chainId()];
+    MonomerNode_sp monomer = chainNode->lookupMonomerId(monomerId.monomerId());
+    return monomer;
+  }
+  SIMPLE_ERROR(BF("Out of bound chain node id %lu must be less than %lu") % monomerId.chainId() % this->_AggregateNode->_Chains.size());
+}
 
 
 }; /* kinematics */

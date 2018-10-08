@@ -28,6 +28,7 @@ This is an open source license for the CANDO software from Temple University, bu
 
 #include <clasp/core/common.h>
 #include <cando/geom/matrix.h>
+#include <cando/geom/omatrix.h>
 #include <cando/kinematics/stub.fwd.h>
 #include <cando/kinematics/kinematicsPackage.h>
 
@@ -37,7 +38,7 @@ namespace kinematics
 
 class Stub
 {
-private: // instance variables here
+public: // instance variables here
 	Matrix	_Transform;
 
 public: // Functions here
@@ -98,6 +99,75 @@ public: // Functions here
 };
 
 }; /* kinematics */
+
+namespace translate
+{
+
+template <>
+struct	from_object<kinematics::Stub>
+{
+  typedef	kinematics::Stub		ExpectedType;
+  typedef	kinematics::Stub		DeclareType;
+  DeclareType _v;
+  from_object(core::T_sp o) : _v(o.as<geom::OMatrix_O>()->ref()) {};
+};
+
+template <>
+struct	from_object<const kinematics::Stub&>
+{
+  typedef	kinematics::Stub		ExpectedType;
+  typedef	kinematics::Stub		DeclareType;
+  DeclareType _v;
+  from_object(core::T_sp o) : _v(o.as<geom::OMatrix_O>()->ref()) {};
+};
+
+
+template <>
+struct	to_object<kinematics::Stub>
+{
+  typedef	geom::OMatrix_sp ExpectedType;
+  typedef	geom::OMatrix_sp DeclareType;
+  static core::T_sp convert(kinematics::Stub pos)
+  {_G();
+    geom::OMatrix_sp ov = geom::OMatrix_O::create();
+    ov->setAll(pos.getTransform());
+    return (ov);
+  }
+};
+
+
+
+
+template <>
+struct	to_object<const kinematics::Stub& >
+{
+  typedef	geom::OMatrix_sp ExpectedType;
+  typedef	geom::OMatrix_sp DeclareType;
+  static core::T_sp convert(const kinematics::Stub& pos)
+  {_G();
+    geom::OMatrix_sp ov = geom::OMatrix_O::create();
+    ov->setAll(pos.getTransform());
+    return (ov);
+  }
+};
+
+
+
+template <>
+struct	to_object<kinematics::Stub& >
+{
+  typedef	geom::OMatrix_sp ExpectedType;
+  typedef	geom::OMatrix_sp DeclareType;
+  static core::T_sp convert(kinematics::Stub& pos)
+  {_G();
+    geom::OMatrix_sp ov = geom::OMatrix_O::create();
+    ov->setAll(pos.getTransform());
+    return (ov);
+  }
+};
+
+
+};
 
 
 #endif /* _kinematics_Stub_H */

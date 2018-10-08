@@ -255,4 +255,14 @@ void quaternion_to_matrix(Matrix& matrix, double w, double x, double y, double z
 void normalized_quaternion_to_matrix(Matrix& matrix, double w, double x, double y, double z, double tx, double ty, double tz );
 void rotation_matrix_to_quaternion(double& w, double& x, double& y, double& z, const Matrix& m);
 
+
+Vector3 pointFromMatrixAndInternalCoordinates(const Matrix& coordinateSystem,
+                                              double distance,
+                                              double angle,
+                                              double dihedral,
+                                              Vector3& d2);
+
+void internalCoordinatesFromPointAndCoordinateSystem(const Vector3& D, const Matrix& coordinateSystem, double& distance, double& theta, double& phi);
+
+
 #endif

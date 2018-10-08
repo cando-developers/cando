@@ -86,11 +86,11 @@ CL_DEFUN OVector3_sp OVector3_O::make(double x, double y, double z)
 
 string OVector3_O::__repr__() const {
   stringstream ss;
-  ss << "[ ";
+  ss << "'( ";
   ss << this->_Value.getX() << " ";
   ss << this->_Value.getY() << " ";
   ss << this->_Value.getZ();
-  ss << " ]";
+  ss << ")";
   return ss.str();
 }
 

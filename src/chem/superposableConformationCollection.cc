@@ -27,7 +27,7 @@ This is an open source license for the CANDO software from Temple University, bu
 
 #include <cando/chem/superposableConformationCollection.h>
 //#include "core/archiveNode.h"
-//#include "core/archive.h"
+#include <clasp/core/lispStream.h>
 #include <cando/chem/superposeEngine.h>
 #include <cando/geom/color.h>
 #include <clasp/core/wrappers.h>
@@ -43,7 +43,7 @@ namespace chem {
 void	SuperposableConformationCollection_O::initialize()
 {
   this->Base::initialize();
-  this->_SuperposeAtomIndices = core::IntArray_O::create();
+  this->_SuperposeAtomIndices = core::MDArray_size_t_O::make_vector(16,0,core::make_fixnum(0),_Nil<core::T_O>(),false,core::make_fixnum(0));
   this->_RmsCutOff = 0.1;
 }
 
@@ -53,15 +53,15 @@ void	SuperposableConformationCollection_O::initialize()
 
 
 
-void	SuperposableConformationCollection_O::clearSuperposeAtoms()
+CL_DEFMETHOD void SuperposableConformationCollection_O::clearSuperposeAtoms()
 {
   ASSERTNOTNULL(this->_SuperposeAtomIndices);
-  this->_SuperposeAtomIndices->clear();
+  this->_SuperposeAtomIndices->fillPointerSet(0);
 }
 
 
 
-void	SuperposableConformationCollection_O::addSuperposeAtom(Atom_sp a)
+CL_DEFMETHOD void SuperposableConformationCollection_O::addSuperposeAtom(Atom_sp a)
 {
   ConformationCollection_O::atomIterator	ai;
   int					idx;
@@ -70,7 +70,7 @@ void	SuperposableConformationCollection_O::addSuperposeAtom(Atom_sp a)
   {
     if ( (*ai) == a )
     {
-      this->_SuperposeAtomIndices->append(idx);
+      this->_SuperposeAtomIndices->vectorPushExtend_size_t(idx);
       return;
     }
   }
@@ -78,7 +78,7 @@ void	SuperposableConformationCollection_O::addSuperposeAtom(Atom_sp a)
 }
 
 
-void	SuperposableConformationCollection_O::superposeAtomsFromSet(gctools::SmallOrderedSet<Atom_sp> atoms)
+CL_DEFMETHOD void	SuperposableConformationCollection_O::superposeAtomsFromSet(gctools::SmallOrderedSet<Atom_sp> atoms)
 {
   gctools::SmallOrderedSet<Atom_sp>::iterator	ai;
   this->clearSuperposeAtoms();
@@ -88,7 +88,7 @@ void	SuperposableConformationCollection_O::superposeAtomsFromSet(gctools::SmallO
   }
 }
 
-void	SuperposableConformationCollection_O::superposeAllHeavyAtoms()
+CL_DEFMETHOD void	SuperposableConformationCollection_O::superposeAllHeavyAtoms()
 {
   ConformationCollection_O::atomIterator	ai;
   int					idx;
@@ -98,21 +98,20 @@ void	SuperposableConformationCollection_O::superposeAllHeavyAtoms()
   {
     if ( (*ai)->getElement() != element_H )
     {
-      this->_SuperposeAtomIndices->append(idx);
+      this->_SuperposeAtomIndices->vectorPushExtend_size_t(idx);
     }
   }
 }
 
 
-gctools::SmallOrderedSet<Atom_sp>	SuperposableConformationCollection_O::getSuperposeAtoms()
+CL_DEFMETHOD gctools::SmallOrderedSet<Atom_sp>	SuperposableConformationCollection_O::getSuperposeAtoms()
 {
   gctools::SmallOrderedSet<Atom_sp>	result;
-  core::IntArray_O::iterator	si;
   Atom_sp			a;
   ASSERTNOTNULL(this->_SuperposeAtomIndices);
-  for ( si=this->_SuperposeAtomIndices->begin();si!=this->_SuperposeAtomIndices->end(); si++ )
+  for ( size_t si=0, siEnd(this->_SuperposeAtomIndices->length()); si<siEnd; si++ )
   {
-    a = this->_AllAtoms[*si];
+    a = this->_AllAtoms[(*this->_SuperposeAtomIndices)[si]];
     result.insert(a);
   }
   return result;
@@ -121,12 +120,13 @@ gctools::SmallOrderedSet<Atom_sp>	SuperposableConformationCollection_O::getSuper
 
 int	SuperposableConformationCollection_O::numberOfSuperposeAtoms()
 {
-  return this->_SuperposeAtomIndices->size();
+  return this->_SuperposeAtomIndices->length();
 }
 
 
 
-ConformationCollectionEntry_sp	SuperposableConformationCollection_O::createEntryIfConformationIsNew(Matter_sp matter)
+CL_DOCSTRING("Create an entry if the conformation is new according to the rms deviation from existing conformations.  If a new entry is created - return it - otherwise return NIL.");
+CL_DEFMETHOD core::T_sp	SuperposableConformationCollection_O::createEntryIfConformationIsNew(Matter_sp matter)
 {
   geom::SimpleVectorCoordinate_sp			newConf;
   SuperposeEngine_sp				superposer;
@@ -178,10 +178,8 @@ ConformationCollectionEntry_sp	SuperposableConformationCollection_O::createEntry
         {
           LOG(BF("Found an identical minimum with rms(%lf)") % rms );
           LOG(BF("Entry will not be added") );
-          ConformationCollectionEntry_sp zilch;
-          zilch = _Nil<ConformationCollectionEntry_O>();
           LOG(BF("Fixed points at the end of superposer: %s") % (newConf->asXmlString().c_str() ) );
-          return zilch;
+          return _Nil<core::T_O>();
         }
         LOG(BF("Moveable points after superpose:%s") % (moveable->asXmlString().c_str() ) );
       }
@@ -194,6 +192,7 @@ ConformationCollectionEntry_sp	SuperposableConformationCollection_O::createEntry
 	//
   entry = this->createEntry();
   entry->setAllCoordinates(newConf);
+  this->_Entries.push_back(entry);
   return entry;
 }
 
@@ -242,7 +241,7 @@ geom::Render_sp	SuperposableConformationCollection_O::rendered(core::List_sp opt
 
 
 
-
+CL_DEFMETHOD
 void	SuperposableConformationCollection_O::setEntryCoordinatesAsFixedWithinSuperposeEngine(
                                                                                               ConformationCollectionEntry_sp entry,
                                                                                               SuperposeEngine_sp superposer )
@@ -251,18 +250,13 @@ void	SuperposableConformationCollection_O::setEntryCoordinatesAsFixedWithinSuper
                              entry->getAllCoordinates());
 }
 
-
+CL_DEFMETHOD
 void	SuperposableConformationCollection_O::setEntryCoordinatesAsMoveableWithinSuperposeEngine(
                                                                                                  ConformationCollectionEntry_sp entry,
                                                                                                  SuperposeEngine_sp superposer )
 {
-  superposer->setMoveablePoints(this->_SuperposeAtomIndices,
-    				entry->getAllCoordinates());
+  superposer->setMoveablePoints(this->_SuperposeAtomIndices, entry->getAllCoordinates());
 }
-
-
-
-
 
 
 

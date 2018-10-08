@@ -232,7 +232,7 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
              (new-name-string (format nil "~A[~{~A~^,~}]"
                                       name
                                       (mapcar (lambda (atom config)
-                                                (format nil "~A/~A"
+                                                (format nil "~A=~A"
                                                         (string (chem:get-name atom))
                                                         (string config))) chiral-atoms configurations)))
              (new-name (intern new-name-string :keyword)))

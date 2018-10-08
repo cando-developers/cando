@@ -48,7 +48,7 @@ class RingClosingMonomerNode_O : public MonomerNode_O
 public:
 	void initialize();
 public:
-	static RingClosingMonomerNode_sp create(int monomerId);
+	static RingClosingMonomerNode_sp create(MonomerId monomerId);
 private:
 	/*! Store weak pointers to the other ring closing monomers indexed
 	  by the name of the ring closing plug */

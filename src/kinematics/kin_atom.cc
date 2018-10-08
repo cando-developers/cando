@@ -31,6 +31,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/record.h>
 #include <clasp/core/ql.h>
 #include <clasp/core/evaluator.h>
+#include <clasp/core/lispStream.h>
 #include <clasp/core/symbolTable.h>
 #include <cando/chem/atomId.h>
 #include <cando/kinematics/atomTree.h>
@@ -417,35 +418,49 @@ CL_DEFMETHOD void Joint_O::setPosition(const Vector3& pos)
 }
 
 
-Stub Joint_O::getStub(AtomTree_sp at) const
-{_OF();
-  LOG(BF("Getting stub for atom[%s]") % this->asString() );
-  LOG(BF("stubAtom1(): %s") % this->stubAtom1().get()->asString() );
-  LOG(BF("stubAtom2(): %s") % this->stubAtom2().get()->asString() );
-  LOG(BF("stubAtom3(): %s") % this->stubAtom3(at).get()->asString() );
-  return Stub(
-              this->position(),
-              this->stubAtom1().get()->position(),
-              this->stubAtom2().get()->position(),
-              this->stubAtom3(at).get()->position());
-};
-
-
-Stub Joint_O::getInputStub(AtomTree_sp at) const
-{_OF();
-  if ( this->parent().boundp() )
-  {
-    return Stub(
-		this->inputStubAtom0().get()->position(),
-		this->inputStubAtom1().get()->position(),
-		this->inputStubAtom2().get()->position(),
-		this->inputStubAtom3(at).get()->position());
-  } else
-  {
-    return Stub();
-  }
+CL_LISPIFY_NAME("clearProperty");
+CL_DEFMETHOD void Joint_O::clearProperty(core::Symbol_sp symbol)
+{
+  this->_Properties = core::core__rem_f(this->_Properties,symbol);
 }
 
+CL_DOCSTRING("Set the property **symbol** of **this** (a chem:matter) to **value**.");
+CL_DEFMETHOD void Joint_O::setProperty(core::Symbol_sp symbol, core::T_sp value)
+{
+  this->_Properties = core::core__put_f(this->_Properties,value,symbol);
+}
+
+
+CL_DOCSTRING("Return the property **symbol** of **this** (a chem:matter) - if it isn't defined return NIL.");
+CL_LISPIFY_NAME("getProperty");
+CL_DEFMETHOD core::T_sp Joint_O::getProperty(core::Symbol_sp symbol)
+{
+  core::T_sp res = core::cl__getf(this->_Properties,symbol,_Unbound<core::T_O>());
+  if (res.unboundp()) {
+    stringstream props;
+    props << _rep_(this->_Properties);
+    SIMPLE_ERROR(BF("You asked for an unknown property[%s] for matter[%s@%p] - the available properties are[%s]") % _rep_(symbol) % this->__repr__() % this % props.str()  );
+  }
+  return res;
+}
+
+CL_DOCSTRING("Return the property **symbol** of **this** (a chem:matter) - if it isn't defined return **defval**.");
+CL_LISPIFY_NAME("getPropertyOrDefault");
+CL_DEFMETHOD core::T_sp Joint_O::getPropertyOrDefault(core::Symbol_sp prop,core::T_sp defval)
+{
+  return core::cl__getf(this->_Properties,prop,defval);
+}
+
+CL_DOCSTRING("Return T if the property **symbol** of **this** (a chem:matter) is defined.");
+CL_LISPIFY_NAME("hasProperty");
+CL_DEFMETHOD bool Joint_O::hasProperty(core::Symbol_sp symbol)
+{
+  return !core::cl__getf(this->_Properties,symbol,_Unbound<core::T_O>()).unboundp();
+}
+
+
+
+       
 void Joint_O::walkChildren(core::Function_sp callback)
 {_OF();
   LOG(BF("There are %d children") % this->_numberOfChildren() );
@@ -471,19 +486,31 @@ void Joint_O::walkResidueTree(int residueId, core::Function_sp callback)
   }
 }
 
+CL_DEFMETHOD void Joint_O::updateInternalCoord()
+{
+  this->_updateInternalCoord();
+}
 
-CL_DEFMETHOD void Joint_O::updateXyzCoords(AtomTree_sp at)
+CL_DEFMETHOD void Joint_O::updateXyzCoord()
 {_OF();
-  Stub stub(this->getInputStub(at));
-  this->_updateXyzCoords(stub,at);
+  KIN_LOG(BF("base method\n"));
+  Stub stub = this->parent()->getStub();
+  this->_updateXyzCoord(stub);
 }
 
 
+CL_DEFMETHOD void Joint_O::updateXyzCoords()
+{_OF();
+  Stub stub = this->parent()->getStub();
+  this->_updateXyzCoords(stub);
+}
 
 SYMBOL_SC_(KinPkg,atom);
 core::Symbol_sp Joint_O::typeSymbol() const {_OF(); return _sym_atom;};
-    
 
+CL_DEFMETHOD core::T_sp Joint_O::getParent() const {
+  return this->_Parent.unboundp() ? _Nil<core::T_O>() : gc::As_unsafe<core::T_sp>(this->_Parent);
+};
 
 
 };

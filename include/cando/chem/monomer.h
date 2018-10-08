@@ -150,16 +150,9 @@ public:
   Couplings			_Couplings;
   mutable size_t		_CurrentMonomerIndex;
   mutable size_t                _CurrentStereoisomerOffset;
-  gctools::Vec0<Topology_sp>    _Monomers;
-  Residue_sp			_TempResidue;
-  int				_TemporaryInt;
+  gctools::Vec0<core::Symbol_sp>    _Monomers;
 //    adapt::SymbolSet_sp			_Aliases; //!< this will identify monomers for searches
 public:
-//    virtual Residue_sp	createResidue();
-  void setTempResidue(Residue_sp res)
-  {
-    this->_TempResidue = res;
-  };
 //    adapt::SymbolSet_sp getMonomerAliases()	{_OF(); ANN(this->_Aliases);return this->_Aliases; };
         //! Return true if inc worked and false if we carry
 public:
@@ -172,15 +165,6 @@ public:
   CL_DEFMETHOD 	core::Symbol_sp getId() { return this->_Id; };
   Topology_sp	currentTopology();
   RingClosingPlug_sp getMissingRingClosingPlug(Monomer_sp mate);
-  CL_LISPIFY_NAME("getTemporaryResidue");
-  CL_DEFMETHOD 	Residue_sp	getTemporaryResidue()
-  { _G();
-    ASSERTNOTNULL(this->_TempResidue);
-    return this->_TempResidue;
-  }
-  uint	getTemporaryInt() { return this->_TemporaryInt; }
-  void	setTemporaryInt(uint i) { this->_TemporaryInt = i; }
-  bool hasTemporaryResidue();
 public:
   core::List_sp plugNamesAndCouplingsAsList();
 
@@ -201,6 +185,7 @@ public:
 
   uint	numberOfCouplings() const;
 
+  void eraseCouplings();
   void	addCoupling(core::Symbol_sp plugName, Coupling_sp out);
         /*! Generate the in-coupling name and add this
          * coupling by that name.
@@ -268,7 +253,7 @@ public:	// accessible to AlchemistState
 //    void	_expandGroupName();
 public:
         //!< Add another monomer name
-  void addTopology(Topology_sp name);
+  void addTopologyName(core::Symbol_sp name);
 public:
   string __repr__() const;
 //  CL_DEFMETHOD virtual core::Symbol_sp monomerName() const;
@@ -284,7 +269,8 @@ public:
         //! Return true if we recognize the alias with the form ";[monomerAlias]@[atomAlias]"
 //    CL_DEFMETHOD virtual bool recognizesAlias(Alias_sp alias);
 public:
-  Monomer_O() : _CurrentMonomerIndex(0), _CurrentStereoisomerOffset(0) {};
+  Monomer_O(const Monomer_O& other);
+  Monomer_O() : _Id(_Nil<core::T_O>()), _CurrentMonomerIndex(0), _CurrentStereoisomerOffset(0) {};
 };
 };
 

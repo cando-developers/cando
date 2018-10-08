@@ -26,6 +26,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #define	DEBUG_LEVEL_NONE
 
 #include <clasp/core/common.h>
+#include <clasp/core/ql.h>
 #include <clasp/core/environment.h>
 #include <cando/chem/monomer.h>
 #include <cando/chem/coupling.h>
@@ -39,6 +40,12 @@ namespace kinematics
 
 // ----------------------------------------------------------------------
 //
+
+ChainNode_sp ChainNode_O::create(int chainId)
+{
+  GC_ALLOCATE_VARIADIC(ChainNode_O, chainNode, chainId );
+  return chainNode;
+}
 
 
 void ChainNode_O::fields(core::Record_sp node) {
@@ -64,17 +71,18 @@ void ChainNode_O::fields(core::Record_sp node) {
 						   RingClosingMonomerMap ringClosingMonomerMap,
 						   chem::Monomer_sp monomer )
     {
-	int seqId = monomer->getSequenceNumber();
-	if ( monomer->hasRingClosingOutPlug() )
-	{
-	    RingClosingMonomerNode_sp monomerNode = RingClosingMonomerNode_O::create(seqId);
-	    ringClosingMonomerMap->setf_gethash(monomer,monomerNode);
-	    chainNode->_IndexedMonomerNodes[seqId] = monomerNode;
-	    return monomerNode;
-	}
-	MonomerNode_sp monomerNode = MonomerNode_O::create(seqId);
-	chainNode->_IndexedMonomerNodes[seqId] = monomerNode;
-	return monomerNode;
+      int seqId = monomer->getSequenceNumber();
+      MonomerId id(chainNode->_Id,seqId);
+      if ( monomer->hasRingClosingOutPlug() )
+      {
+        RingClosingMonomerNode_sp monomerNode = RingClosingMonomerNode_O::create(id);
+        ringClosingMonomerMap->setf_gethash(monomer,monomerNode);
+        chainNode->_IndexedMonomerNodes[seqId] = monomerNode;
+        return monomerNode;
+      }
+      MonomerNode_sp monomerNode = MonomerNode_O::create(id);
+      chainNode->_IndexedMonomerNodes[seqId] = monomerNode;
+      return monomerNode;
     }
 
     void ChainNode_O::makeRingClosingConnections(RingClosingMonomerMap ringClosings)
@@ -109,8 +117,20 @@ void ChainNode_O::fields(core::Record_sp node) {
 		BF("Illegal monomerId[%d] - there are only %d monomerNodes")
 		% monomerId
 		% this->_IndexedMonomerNodes.size());
-	return this->_IndexedMonomerNodes[monomerId];
+        if (monomerId<this->_IndexedMonomerNodes.size()) {
+          return this->_IndexedMonomerNodes[monomerId];
+        }
+        SIMPLE_ERROR(BF("Out of bounds monomerId %lu must be less than %lu") % monomerId % this->_IndexedMonomerNodes.size());
     }
-    
+
+core::List_sp ChainNode_O::children() const
+{
+  ql::list l;
+  for ( auto i = this->_IndexedMonomerNodes.begin(); i!=this->_IndexedMonomerNodes.end(); ++i ) {
+    l << *i;
+  }
+  return l.cons();
+}
+
 
 }; /* kinematics */

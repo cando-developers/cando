@@ -47,7 +47,7 @@ void ConstitutionBond_O::fields(core::Record_sp node)
 {
   node->field(INTERN_(kw,toatom),this->_ToAtomIndex);
   node->field(INTERN_(kw,bond_order),this->_BondOrder);
-  this->Base::fields(node);
+  // this->Base::fields(node);
 }
 
 void ConstitutionAtom_O::fields(core::Record_sp node)

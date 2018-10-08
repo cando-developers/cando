@@ -137,7 +137,8 @@
 (defun distance-two-positions (p1 p2)
   (geom:vlength (geom:v- p1 p2)))
 
-(defun picked-atoms (history agg num)
+(defun picked-atoms (history agg &optional (num 1))
+  "Return a list of the num most recently picked atoms"
     (loop for picked in (reverse (subseq history 0 num))
            collect (let* ((atom (cdr (assoc "atom" picked :test #'string=)))
                            (x (cdr (assoc "x" atom :test #'string=)))
@@ -149,9 +150,6 @@
                                  (when (< (distance-two-positions pos (chem:get-position a)) 0.01) 
                                      (setf resulta a))) agg)
                         resulta)))
-
-
-
 
 (defclass cando-structure (nglv:structure)
   ((%matter :initarg :matter :accessor matter)))

@@ -863,13 +863,9 @@ CL_DEFUN core::T_sp chem__calculate_point()
 
 
 
-#define ARGS_chem__oligomer "(oligomerName parts)"
-#define DECL_chem__oligomer ""
-#define DOCS_chem__oligomer "oligomer"
-CL_DEFUN core::T_sp chem__oligomer(core::Symbol_sp oligomerName, core::List_sp parts)
+CL_DEFUN core::T_sp chem__oligomer(core::List_sp parts)
 {
     Oligomer_sp olig = Oligomer_O::create();
-    olig->setName(oligomerName);
     core::HashTableEq_sp monomerMap = core::HashTableEq_O::create_default();
     CandoDatabase_sp bdb = getCandoDatabase();
     for ( auto p : parts ) {

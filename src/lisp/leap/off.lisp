@@ -256,7 +256,7 @@ Otherwise it's an Aggregate. Return the object."
                    (chem:set-name r unit-name)
                    r)))
         (multiple-value-bind (topology constitution)
-            (cando::make-topology-from-residue res)
+            (cando:make-simple-topology-from-residue res)
           (let ((in-plug-idx (1- (elt (elt connect 0) 0))) ;; connect atoms 1- index
                 (out-plug-idx (1- (elt (elt connect 1) 0)))) ;; connect atoms 1- index
             (when (>= in-plug-idx 0)
@@ -300,7 +300,7 @@ Load the OFF file containing forms into new-leap."
       (let ((ht (leap.off:read-off-lib fin))
             names)
         (maphash (lambda (name form)
-                   (leap.core:register-variable name form)
+                   (cando:register-topology name form)
                    (push name names))
                  ht)
         (nreverse names)))))

@@ -35,6 +35,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/constitutionAtoms.h>
 #include <cando/kinematics/bondedAtom.h>
 #include <cando/kinematics/atomTree.h>
+#include <cando/kinematics/monomerNode.h>
 #include <cando/kinematics/delayedBondedAtom.h>
 #include <clasp/core/wrappers.h>
 
@@ -133,7 +134,6 @@ void JointTemplate_O::fields(core::Record_sp node) {
   node->field(INTERN_(kw,id),this->_Id);
   node->field(INTERN_(kw,name),this->_Name);
   node->field(INTERN_(kw,comment),this->_Comment);
-  this->Base::fields(node);
 }
 
 
@@ -215,20 +215,20 @@ core::List_sp BondedJointTemplate_O::children() const {
 
 
 void BondedJointTemplate_O::addChildren(Joint_sp me,
-                                        uint moleculeId,
-                                        uint residueId,
+                                        MonomerId monomerId,
                                         const AtomTree_sp& atomTree,
                                         const BondId_sp& incoming,
-                                        const PlugNamesToBondIdMap& outgoing)
+                                        const PlugNamesToBondIdMap& outgoing,
+                                        MonomerNode_sp monomerNode)
 {_OF();
   for ( ChildList::iterator it=this->_Children.begin(); it!=this->_Children.end(); it++ )
   {
     LOG(BF("About to write child[%s]") % (*it)->comment() );
     Joint_sp newChild = (*it)->writeIntoAtomTree(atomTree,
-                                                 moleculeId,
-                                                 residueId,
+                                                 monomerId,
                                                  incoming,
-                                                 outgoing);
+                                                 outgoing,
+                                                 monomerNode);
     LOG(BF("Child returned %s") % _rep_(newChild));
 	    /* In case the Array was moved by writeIntoAtomTree we get bonded again */
     Joint_sp bonded = me;
@@ -246,22 +246,21 @@ void BondedJointTemplate_O::addChildren(Joint_sp me,
 
 
 Joint_sp BondedJointTemplate_O::writeIntoAtomTree(const AtomTree_sp& atomTree,
-                                                  uint moleculeId,
-                                                  uint residueId,
+                                                  MonomerId monomerId,
                                                   const BondId_sp& incoming,
                                                   const PlugNamesToBondIdMap& outgoing,
+                                                  MonomerNode_sp monomerNode,
                                                   bool rootNode)
 {_OF();
   LOG(BF("BondedJointTemplate_O::writeIntoAtomTree this: %s  BondId_sp: %s\n") % _rep_(this->asSmartPtr()) % _rep_(incoming));
-  chem::AtomId atomId(moleculeId,residueId,this->_Id);
+  chem::AtomId atomId(monomerId._Chain,monomerId._Monomer,this->_Id);
   Joint_sp ownedBonded = atomTree->newBondedAtom(atomId,this->_Name,this->_Comment);
-  this->addChildren(ownedBonded,moleculeId,residueId,atomTree,incoming,outgoing);
+  monomerNode->addJoint(this->_Id,ownedBonded);
+  this->addChildren(ownedBonded,monomerId,atomTree,incoming,outgoing,monomerNode);
   if ( this->outPlug().boundp() )
   {
     this->setupOutPlugAtomTree(ownedBonded,
                                atomTree,
-                               moleculeId,
-                               residueId,
                                incoming,
                                outgoing);
   }
@@ -283,8 +282,6 @@ void BondedJointTemplate_O::extractInternalCoords(Joint_sp const& atom)
 
 void BondedJointTemplate_O::setupOutPlugAtomTree(Joint_sp owned,
                                                  const AtomTree_sp& atomTree,
-                                                 uint moleculeId,
-                                                 uint residueId,
                                                  const BondId_sp& incoming,
                                                  const PlugNamesToBondIdMap& outgoing )
 {_OF();
@@ -328,23 +325,21 @@ DelayedBondedJointTemplate_sp DelayedBondedJointTemplate_O::make(const Checkpoin
 
 
 Joint_sp DelayedBondedJointTemplate_O::writeIntoAtomTree(const AtomTree_sp& atomTree,
-                                                         uint moleculeId,
-                                                         uint residueId,
+                                                         MonomerId monomerId,
                                                          const BondId_sp& incoming,
                                                          const PlugNamesToBondIdMap& outgoing,
+                                                         MonomerNode_sp monomerNode,
                                                          bool rootNode)
 {
   LOG(BF("BondedJointTemplate_O::writeIntoAtomTree this: %s  BondId_sp: %s\n") % _rep_(this->asSmartPtr()) % _rep_(incoming));
-  chem::AtomId atomId(moleculeId,residueId,this->_Id);
+  chem::AtomId atomId(monomerId._Chain,monomerId._Monomer,this->_Id);
   Joint_sp ownedBonded = atomTree->newDelayedBondedAtom(atomId,this->_Name,this->_Comment);
+  monomerNode->addJoint(this->_Id,ownedBonded);
   this->_Checkpoint->setupDelayedBondedAtom(gc::As<DelayedBondedJoint_sp>(ownedBonded));
-  this->addChildren(ownedBonded,moleculeId,residueId,atomTree,incoming,outgoing);
-  if ( this->outPlug().boundp() )
-  {
+  this->addChildren(ownedBonded,monomerId,atomTree,incoming,outgoing,monomerNode);
+  if ( this->outPlug().boundp() ) {
     this->setupOutPlugAtomTree(ownedBonded,
                                atomTree,
-                               moleculeId,
-                               residueId,
                                incoming,
                                outgoing);
   }
@@ -380,15 +375,15 @@ RootBondedJointTemplate_sp RootBondedJointTemplate_O::make(core::Symbol_sp const
 
 
 Joint_sp RootBondedJointTemplate_O::writeIntoAtomTree(const AtomTree_sp& atomTree,
-                                                      uint moleculeId,
-                                                      uint residueId,
+                                                      MonomerId monomerId,
                                                       const BondId_sp& incoming,
                                                       const PlugNamesToBondIdMap& outgoing,
+                                                      MonomerNode_sp monomerNode,
                                                       bool rootNode)
 {_OF();
   LOG(BF("BondedJointTemplate_O::writeIntoAtomTree this: %s  BondId_sp: %s\n") % _rep_(this->asSmartPtr()) % _rep_(incoming));
   LOG(BF("Writing %s[%s] into AtomTree") % this->className() % this->_Comment );
-  chem::AtomId atomId(moleculeId,residueId,this->_Id);
+  chem::AtomId atomId(monomerId._Chain, monomerId._Monomer,this->_Id);
     // The type of the Atom to write depends on what the incoming atom is
     // If it isJump then make this a JumpAtom otherwise make this a BondedAtom
   Joint_sp incomingParent = incoming->_Parent;
@@ -409,7 +404,8 @@ Joint_sp RootBondedJointTemplate_O::writeIntoAtomTree(const AtomTree_sp& atomTre
                                         this->_TopologyName,
                                         this->_InPlug);
   }
-  this->addChildren(owned,moleculeId,residueId,atomTree,incoming,outgoing);
+  monomerNode->addJoint(this->_Id,owned);
+  this->addChildren(owned,monomerId,atomTree,incoming,outgoing,monomerNode);
     // Attach the new owned atom to the incomingParent as a child
     //
     // QUESTION: If the parent is a Jump atom should I append and otherwise insert????????
@@ -428,8 +424,6 @@ Joint_sp RootBondedJointTemplate_O::writeIntoAtomTree(const AtomTree_sp& atomTre
   {
     this->setupOutPlugAtomTree(owned,
                                atomTree,
-                               moleculeId,
-                               residueId,
                                incoming,
                                outgoing);
   }

@@ -147,10 +147,7 @@ public:
   CL_DOCSTRING(R"doc(Create a topology and return it, after this the topology needs to be added to a constitution)doc");
   CL_DEF_CLASS_METHOD static Topology_sp make(core::Symbol_sp name, Constitution_sp constitution, core::List_sp plugs );
     
-  CL_LISPIFY_NAME(makeTopologyFromResidue);
-  CL_LAMBDA(residue topology-name &optional constitution);
-  CL_DOCSTRING("Create a topology from a residue. The constitution may be NIL or a constitution to use to define the atoms");
-  CL_DEF_CLASS_METHOD static Topology_mv makeTopologyFromResidue(chem::Residue_sp residue, core::Symbol_sp topologyName, core::T_sp constitution, core::Symbol_sp stereoisomerName );
+  static Topology_mv makeTopologyFromResidue(chem::Residue_sp residue, core::Symbol_sp topologyName, core::T_sp constitution);
 protected:
   void setFromMonomer(Monomer_sp mon);
 public:

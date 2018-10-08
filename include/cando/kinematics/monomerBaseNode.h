@@ -44,6 +44,8 @@ namespace kinematics
     void initialize();
   public:
 	// Functions here
+    virtual core::List_sp children() const;
+    
   private:
 	// instance variables here
   };

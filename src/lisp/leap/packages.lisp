@@ -70,8 +70,8 @@
    #:sequences
    #:build-sequence
    #:add-pdb-atom-map
-   #:add-pdb-res-map)
-  )
+   #:add-pdb-res-map
+  ))
 
 
 (defpackage #:leap.off
@@ -89,13 +89,10 @@
 
 (defpackage #:leap.core
   (:use #:common-lisp)
-  (:import-from :leap.pdb
-                #:add-pdb-atom-map
-                #:add-pdb-res-map)
   (:export
    #:evaluate
    #:*leap-env*
-   #:variable-lookup
+   #:lookup-variable
    #:function-lookup
    #:clear-path
    #:add-path
@@ -108,8 +105,6 @@
    #:clear-force-field
    #:add-force-field-or-modification
    #:*force-fields*
-   #:add-pdb-atom-map
-   #:add-pdb-res-map
    #:leap-lookup-variable-reader-macro)
   )
 

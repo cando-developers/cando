@@ -62,37 +62,37 @@ SMART(SuperposeEngine);
 SMART(ConformationCollectionEntry);
 class ConformationCollectionEntry_O : public core::CxxObject_O
 {
-    LISP_CLASS(chem,ChemPkg,ConformationCollectionEntry_O,"ConformationCollectionEntry",core::CxxObject_O);
+  LISP_CLASS(chem,ChemPkg,ConformationCollectionEntry_O,"ConformationCollectionEntry",core::CxxObject_O);
 
 public:
 //    void	archive(core::ArchiveP node);
 private:
-	ConformationCollection_sp	_WeakConformationCollection;
-        geom::SimpleVectorCoordinate_sp		_AllCoordinates;
-	core::HashTableEq_sp		_Data;
+  ConformationCollection_sp	_WeakConformationCollection;
+  geom::SimpleVectorCoordinate_sp		_AllCoordinates;
+  core::HashTableEq_sp		_Data;
 
 public:
-        void setAllCoordinates(geom::SimpleVectorCoordinate_sp ac);
-        geom::SimpleVectorCoordinate_sp getAllCoordinates() { return this->_AllCoordinates; }
+  void setAllCoordinates(geom::SimpleVectorCoordinate_sp ac);
+  geom::SimpleVectorCoordinate_sp getAllCoordinates() { return this->_AllCoordinates; }
 public:
 
-	ConformationCollection_sp	getConformationCollection() {_OF(); ASSERTNOTNULL(this->_WeakConformationCollection);return this->_WeakConformationCollection;};
-	void	setConformationCollection(ConformationCollection_sp s);
+  CL_DEFMETHOD ConformationCollection_sp	getConformationCollection() {_OF(); ASSERTNOTNULL(this->_WeakConformationCollection);return this->_WeakConformationCollection;};
+  void	setConformationCollection(ConformationCollection_sp s);
 //	core::HashTableEq_sp getData() { return this->_Data; };
 
-	void	translateAllCoordinates(const Vector3& offset);
+  void	translateAllCoordinates(const Vector3& offset);
 
-	void	writeCoordinatesToMatter(Matter_sp matter);
-	void	extractCoordinatesFromMatter(Matter_sp matter);
+  void	writeCoordinatesToMatter(Matter_sp matter);
+  void	extractCoordinatesFromMatter(Matter_sp matter);
 
-	virtual	string	coordinatesAsString()	{_OF();SUBCLASS_MUST_IMPLEMENT();};
-	virtual	bool	parseStructureFromFileName(const string& fileName) {_OF();SUBCLASS_MUST_IMPLEMENT();};
+  virtual	string	coordinatesAsString()	{_OF();SUBCLASS_MUST_IMPLEMENT();};
+  virtual	bool	parseStructureFromFileName(const string& fileName) {_OF();SUBCLASS_MUST_IMPLEMENT();};
 
-	void	initialize();
+  void	initialize();
 
 
 
-	DEFAULT_CTOR_DTOR(ConformationCollectionEntry_O);
+  DEFAULT_CTOR_DTOR(ConformationCollectionEntry_O);
 };
 
 
@@ -163,7 +163,7 @@ public:
 		{ return this->_Entries.end();};
 
 		//! Return the index of the entry
-	uint	getEntryIndex(ConformationCollectionEntry_sp entry);
+  size_t	getEntryIndex(ConformationCollectionEntry_sp entry);
 
 
 	virtual void	clearEntries();
@@ -180,15 +180,14 @@ public:
 	 * Subclass this to add the entry in a sorted order
 	 * or to not add entries if they don't meet some criteria
 	 */
-    virtual uint addEntry(ConformationCollectionEntry_sp entry);
+    virtual size_t addEntry(ConformationCollectionEntry_sp entry);
 
-
-	void	addConformationCollection(ConformationCollection_sp structureList);
-	void	addConformationExplorerLatestConformations(ConformationExplorer_sp structureList);
-	void	addConformationExplorerSelectedStageConformations(ConformationExplorer_sp structureList);
-
-	uint		numberOfEntries() { return this->_Entries.size();};
-	uint		numberOfAllAtoms() { return this->_AllAtoms.size();};
+  void	addConformationCollection(ConformationCollection_sp structureList);
+  void	addConformationExplorerLatestConformations(ConformationExplorer_sp structureList);
+  void	addConformationExplorerSelectedStageConformations(ConformationExplorer_sp structureList);
+  
+  CL_DEFMETHOD size_t numberOfEntries() { return this->_Entries.size();};
+  CL_DEFMETHOD size_t numberOfAllAtoms() { return this->_AllAtoms.size();};
 
 	bool canRender() { return true; }
 #ifdef RENDER

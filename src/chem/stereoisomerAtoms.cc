@@ -92,6 +92,12 @@ StereoisomerVirtualAtom_sp StereoisomerVirtualAtom_O::create(ConstitutionVirtual
 }
 
 
+StereoisomerAtoms_O::StereoisomerAtoms_O(core::Symbol_sp stereoisomerName) : _StereoisomerName(stereoisomerName)
+{
+  if (stereoisomerName.unboundp()) {
+    SIMPLE_ERROR(BF("The stereoisomerName was unbound"));
+  }
+};
 
 void StereoisomerAtoms_O::fields(core::Record_sp node) {
   node->field(INTERN_(kw,StereoisomerName),this->_StereoisomerName);

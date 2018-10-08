@@ -169,8 +169,7 @@ void AtomTree_O::replaceMonomerSubTree(const BondId_sp& incoming, const map<core
 
 
 
-void AtomTree_O::recursivelyBuildMolecule(int moleculeId,
-                                          int residueId,
+void AtomTree_O::recursivelyBuildMolecule(MonomerId monomerId,
                                           MonomerNode_sp monomerNode,
                                           Joint_sp parent,
                                           bool rootNode)
@@ -183,7 +182,7 @@ void AtomTree_O::recursivelyBuildMolecule(int moleculeId,
   {_BLOCK_TRACEF(BF("Building constitution[%s] Topology[%s]")
                  % _rep_(constitution->getName()) % _rep_(topology->getName()) );
     constitutionAtoms = constitution->getConstitutionAtoms();
-    this->resizeAtoms(moleculeId,residueId,constitutionAtoms->numberOfAtoms());
+    this->resizeAtoms(monomerId._Chain,monomerId._Monomer,constitutionAtoms->numberOfAtoms());
     core::T_sp ttemplate = topology->getProperty(INTERN_(kw,jointTemplate));
     if (ttemplate.nilp()) {
       SIMPLE_ERROR(BF("The topology %s is missing an :atom-template parameter") % _rep_(topology));
@@ -197,10 +196,10 @@ void AtomTree_O::recursivelyBuildMolecule(int moleculeId,
     ASSERTF(jointTemplate.notnilp(),BF("The JointTemplate for Topology[%s] is nil")
             % _rep_(topology->getName()) );
     jointTemplate->writeIntoAtomTree(this->sharedThis<AtomTree_O>(),
-                                     moleculeId,
-                                     residueId,
+                                     monomerId,
                                      incoming,
                                      outgoing,
+                                     monomerNode,
                                      rootNode);
   }
 	    // Now loop over all the OutPlugs and
@@ -212,12 +211,11 @@ void AtomTree_O::recursivelyBuildMolecule(int moleculeId,
       chem::OutPlug_sp outPlug = gc::As_unsafe<chem::OutPlug_sp>(it->second);
       core::Symbol_sp atomB0 = outPlug->getB0();
       int constitutionBond0AtomId = constitutionAtoms->index(atomB0);
-      chem::AtomId atomId(moleculeId,residueId,constitutionBond0AtomId);
+      chem::AtomId atomId(monomerId._Chain, monomerId._Monomer,constitutionBond0AtomId);
       Joint_sp bond0Parent = this->_AtomMap[atomId];
       MonomerNode_sp nextMonomerNode = monomerNode->_Children.get(outPlug->getName());
-      int nextResidueId = nextMonomerNode->_MonomerId;
-      ASSERT(nextResidueId<(int)this->_AtomMap[moleculeId].size());
-      this->recursivelyBuildMolecule(moleculeId,nextResidueId,nextMonomerNode,bond0Parent);
+      MonomerId nextResidueId = nextMonomerNode->_Id;
+      this->recursivelyBuildMolecule(nextResidueId,nextMonomerNode,bond0Parent);
     }
   }
 }
@@ -233,8 +231,8 @@ void AtomTree_O::buildMoleculeUsingChainNode(int moleculeId, ChainNode_sp chainN
   MonomerNode_sp monomerNode = chainNode->_RootMonomerNode;
   ASSERTF(this->_Root.notnilp(),BF("The Root of the AtomTree cannot be nil"));
   LOG(BF("Building moleculeId[%d]") % moleculeId);
-  this->recursivelyBuildMolecule(moleculeId,
-                                 monomerNode->_MonomerId,
+  MonomerId monomerId(moleculeId,monomerNode->_Id._Monomer);
+  this->recursivelyBuildMolecule(monomerId,
                                  monomerNode,
                                  this->_Root,
                                  true);
@@ -266,8 +264,7 @@ CL_DEFMETHOD void AtomTree_O::walk(core::Function_sp exec)
 CL_DEFMETHOD void AtomTree_O::updateInternalCoords()
 {_OF();
   ASSERTF(this->_Root.notnilp(),BF("The Root atom is nil - this should never happen"));
-  Stub defaultStub;
-  this->_Root->updateInternalCoords(defaultStub,true,this->sharedThis<AtomTree_O>());
+  this->_Root->updateInternalCoords(true,this->sharedThis<AtomTree_O>());
 }
 
 

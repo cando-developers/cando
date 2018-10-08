@@ -124,7 +124,7 @@ namespace chem {
       return ((plugName->symbolName()->rowMajorAref(0).unsafe_character() == OUT_PLUG_PREFIX) || (plugName->symbolName()->rowMajorAref(0).unsafe_character() == IN_PLUG_PREFIX) );
     };
 
-  private:
+  public:
     core::Symbol_sp	_Name;
     Monomer_sp		_InMonomer;
     Monomer_sp		_OutMonomer;

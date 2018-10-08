@@ -30,6 +30,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/adapt/symbolMap.h>
 #include <cando/kinematics/monomerBaseNode.h>
 #include <cando/kinematics/chainNode.fwd.h>
+#include <cando/kinematics/monomerId.h>
 #include <cando/chem/coupling.fwd.h>
 #include <cando/chem/candoDatabase.fwd.h>
 #include <cando/chem/monomer.fwd.h>
@@ -40,61 +41,71 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace kinematics
 {
-
-    FORWARD(MonomerNode);
+FORWARD(Joint);
+FORWARD(MonomerNode);
 class MonomerNode_O : public MonomerBaseNode_O
 {
-    LISP_CLASS(kinematics,KinPkg,MonomerNode_O,"MonomerNode",MonomerBaseNode_O);
- public:
-    static MonomerNode_sp make();
- MonomerNode_O() : _Parent(_Unbound<MonomerNode_O>()), _ParentPlugName(_Unbound<core::Symbol_O>()), _MonomerId(-1), _StereoisomerName(_Unbound<core::Symbol_O>()), _Topology(_Unbound<chem::Topology_O>()), _ConformationIndex(-1) {};
+  LISP_CLASS(kinematics,KinPkg,MonomerNode_O,"MonomerNode",MonomerBaseNode_O);
 public:
-    bool fieldsp() const { return true; };
-    void fields(core::Record_sp node);	
-    void initialize();
+  static MonomerNode_sp make();
+  MonomerNode_O() : _Parent(_Unbound<MonomerNode_O>()), _ParentPlugName(_Unbound<core::Symbol_O>()), _StereoisomerName(_Unbound<core::Symbol_O>()), _Topology(_Unbound<chem::Topology_O>()), _ConformationIndex(-1) {};
+public:
+  bool fieldsp() const { return true; };
+  void fields(core::Record_sp node);	
+  void initialize();
 public:	// instance variables here
 	/*! Store the parent ChainNode to this one */
-	MonomerNode_sp		_Parent;
+  MonomerNode_sp		_Parent;
 	/*! Store the name of the plug to the parent */
-	core::Symbol_sp		_ParentPlugName;
+  core::Symbol_sp		_ParentPlugName;
 	/*! Store the monomerId/residueId of this MonomerNode */
-	int			_MonomerId;
+  MonomerId			_Id;
 	/*! Store the children of this MonomerNode indexed by PlugNames */
-	adapt::SymbolMap<MonomerNode_O>	_Children;
+  adapt::SymbolMap<MonomerNode_O>	_Children;
   /*! Store the name of the stereoisomer */
-	core::Symbol_sp		_StereoisomerName;
+  core::Symbol_sp		_StereoisomerName;
 	/*! Store the Topology of the monomer */
-	chem::Topology_sp	_Topology;
+  chem::Topology_sp	_Topology;
 	/*! Store the current conformation index of this monomer */
-	int			_ConformationIndex;
+  int			_ConformationIndex;
+  /*! Store the AtomTree joints for this MonomerNode_sp */
+  gc::Vec0<Joint_sp>            _Joints;
 private:
 	/*! Return the MonomerName */
-	core::Symbol_sp	stereoisomerName() const { return this->_StereoisomerName;};
+  core::Symbol_sp	stereoisomerName() const;
+  
 	/*! Return the Topology */
-	chem::Topology_sp topology() const { return this->_Topology;};
+CL_DEFMETHOD  chem::Topology_sp topology() const { return this->_Topology;};
 
 	/*! Describe recursively into a stringstream */
-	void describeRecursivelyIntoStringStream(const string& prefix, stringstream& output) const;
+  void describeRecursivelyIntoStringStream(const string& prefix, stringstream& output) const;
 
-        string __repr__() const;
+  string __repr__() const;
 	
 
 public:
-	static MonomerNode_sp create(int monomerId);
+  static MonomerNode_sp create(MonomerId monomerId);
 public: // Functions here
 	/*! Recursively build children Nodes for the OutPlugs of this children and hook them in as my children */
-	void recursivelyBuildChildren(ChainNode_sp chainNode, RingClosingMonomerMap monomerMap,
-                                      gctools::Nilable<MonomerNode_sp> parent,
-				      gctools::Nilable<chem::DirectionalCoupling_sp> coupling,
-                                      chem::Monomer_sp monomer);
+  void recursivelyBuildChildren(ChainNode_sp chainNode, RingClosingMonomerMap monomerMap,
+                                gctools::Nilable<MonomerNode_sp> parent,
+                                gctools::Nilable<chem::DirectionalCoupling_sp> coupling,
+                                chem::Monomer_sp monomer);
 
 	/*! Return the Constitution and Topology for this ChainNode
 	 as a two element Cons */
-        chem::Constitution_mv identifyConstitutionAndTopology();
+  chem::Constitution_mv identifyConstitutionAndTopology();
 
 	/*! Return a description of this MonomerNode and its children */
-	string asString() const;
+  string asString() const;
+  void addJoint(size_t index, Joint_sp joint);
 
+  core::List_sp children() const;
+
+  MonomerId monomerId() const;
+
+  void walkJoints(core::Function_sp callback);
+  
 };
 
 }; /* kinematics */

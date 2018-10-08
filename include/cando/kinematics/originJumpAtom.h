@@ -44,22 +44,16 @@ namespace kinematics
 	/*! Empty ctor */
   OriginJumpJoint_O(const chem::AtomId& atomId, core::T_sp name, const string& comment) : JumpJoint_O(atomId,name,comment) {};
 
-
+    virtual bool correspondsToAtom() const { return false; };
 
     virtual core::Symbol_sp typeSymbol() const;
-
-
-	/*! The stubAtoms of an OriginJumpAtom are all myself */
-    Joint_sp stubAtom1() const { return this->asSmartPtr();};
-    Joint_sp stubAtom2() const { return this->asSmartPtr();};
-    Joint_sp stubAtom3(AtomTree_sp at) const { return this->asSmartPtr();};
+    Stub getStub() const;
 
 	/*! Update the internal coordinates */
-    virtual void updateInternalCoords(Stub& stub,
-                                      bool const recursive,
+    virtual void updateInternalCoords(bool const recursive,
                                       AtomTree_sp at);
 
-
+    void _updateXyzCoord(Stub& stub);
 
 
   };

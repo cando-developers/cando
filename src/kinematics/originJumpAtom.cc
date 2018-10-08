@@ -37,19 +37,24 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace kinematics
 {
 
-void OriginJumpJoint_O::updateInternalCoords(Stub& stub,
-                                             bool const recursive,
+void OriginJumpJoint_O::updateInternalCoords(bool const recursive,
                                              AtomTree_sp at)
 {_OF();
-  Stub start;
-  if ( recursive )
-  {
-    for (int childIdx=0; childIdx<this->_numberOfChildren(); childIdx++ )
-    {
-      this->_child(childIdx).get()->updateInternalCoords(start,true,at);
+  if ( recursive ) {
+    for (int childIdx=0; childIdx<this->_numberOfChildren(); childIdx++ ) {
+      this->_child(childIdx).get()->updateInternalCoords(true,at);
     }
   }
 }
+
+
+
+Stub OriginJumpJoint_O::getStub() const {
+  Stub origin;
+  origin._Transform.setToIdentity();
+  return origin;
+}
+
 
 
 
@@ -58,6 +63,12 @@ core::Symbol_sp OriginJumpJoint_O::typeSymbol() const
   return _sym_origin;
 };
 
+
+void OriginJumpJoint_O::_updateXyzCoord(Stub& stub)
+{_OF();
+  Vector3 origin(0.0,0.0,0.0);
+  this->position(origin);
+}
 
 
 

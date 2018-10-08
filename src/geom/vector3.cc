@@ -152,8 +152,8 @@ stringstream	ss;
     ss.str("");
     ss << std::setw(5) << std::setprecision(4);
     ss << "(" <<this->getX()
-	<< "," <<this->getY()
-	<< "," <<this->getZ()
+	<< " " <<this->getY()
+	<< " " <<this->getZ()
 	<< ") ";
     return ss.str();
 }
@@ -404,4 +404,22 @@ CL_DEFUN Vector3 buildUsingBondAngleDihedral( double distance, const Vector3& vc
   Vector3 dPos = dPosDihedral.add(vc);
   return dPos;
 }
+
+CL_DEFUN double geom__planeVectorAngle(double dx, double dy)
+{
+  double dlen = std::sqrt(dx*dx+dy*dy);
+  if (dlen<SMALL_NUMBER) return 0.0;
+  dx = dx/dlen;
+  dy = dy/dlen;
+  if (std::fabs(dx)<SMALL_NUMBER) {
+    return (MY_PI/2.0) * (dy<0.0? -1.0 : 1.0);
+  } else if (dy<0.0) {
+    return - std::acos(dx);
+  } else {
+    return std::acos(dx);
+  }
+}
+
+
+
 };

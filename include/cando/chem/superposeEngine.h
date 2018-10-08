@@ -47,12 +47,6 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace chem
 {
-
-
-
-
-
-SMART(IntArray);
 SMART(Matter);
 SMART(Atom);
 typedef	enum	{ init, gotFixed, gotMoveable } SuperposeEngineStates;
@@ -76,8 +70,9 @@ class SuperposeEngine_O : public core::CxxObject_O
     LISP_CLASS(chem,ChemPkg,SuperposeEngine_O,"SuperposeEngine",core::CxxObject_O);
 
 public:
-	static void lisp_initGlobals(core::Lisp_sp lisp);
-
+  bool fieldsp() const { return true; };
+  void fields(core::Record_sp node);
+  
 	void	initialize();
 //	void	archiveBase(core::ArchiveP node);
 private:

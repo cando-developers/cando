@@ -29,6 +29,7 @@ This is an open source license for the CANDO software from Temple University, bu
 
 #include <clasp/core/foundation.h>
 #include <cando/kinematics/atomTree.h>
+#include <clasp/core/lispStream.h>
 #include <clasp/core/symbolTable.h>
 #include <cando/kinematics/stub.h>
 #include <cando/kinematics/jumpAtom.h>
@@ -73,22 +74,76 @@ void JumpJoint_O::_releaseAllChildren()
 }
 
 
-
-void JumpJoint_O::updateInternalCoords(Stub& stub,
-                                       bool const recursive,
-                                       AtomTree_sp at)
+void JumpJoint_O::_updateInternalCoord()
 {_OF();
-  ASSERTF(stub.isOrthogonal(1e-3),BF("The incoming stub is not orthogonal"));
-  Stub newStub(this->getStub(at));
-  this->_Jump.fromStubs(stub,newStub);
-  LOG(BF("Incoming stub:\n%s") % stub.asString() );
-  LOG(BF("My new Stub:\n%s") % newStub.asString() );
-  LOG(BF("Jump:\n%s") % this->_Jump.asString());
+  KIN_LOG(BF(" <<< %s\n") % _rep_(this->asSmartPtr()));
+  Vector3 O = this->_Position;
+  if (this->_numberOfChildren()>=2) {
+    Vector3 A = this->_child(0)->_Position;
+    Vector3 B = this->_child(1)->_Position;
+    Vector3 OA = A - O;
+    double lengthOA = OA.length();
+    if (lengthOA<1e-6) SIMPLE_ERROR(BF("You are about to divide by zero"));
+    Vector3 a = OA*(1.0/lengthOA);
+    Vector3 OB = B - O;
+    Vector3 OBxa = OB.crossProduct(a);
+    double lengthOBxa = OBxa.length();
+    if (lengthOBxa<1e-6) SIMPLE_ERROR(BF("You are about to divide by zero"));
+    Vector3 c = OBxa*(1.0/lengthOBxa);
+    Vector3 b = c.crossProduct(a);
+    Matrix labFrame;
+    labFrame.colX(a);
+    labFrame.colY(b);
+    labFrame.colZ(c);
+    labFrame.setTranslate(O);
+    this->_LabFrame = labFrame;
+    JumpJoint_sp jjParent = gc::As<JumpJoint_sp>(this->parent());
+    Matrix parentInverted = jjParent->_LabFrame.invertTransform();
+    this->_ParentRelativeTransform = labFrame*parentInverted;
+    KIN_LOG(BF("relativeTransform = \n%s\n") % this->_ParentRelativeTransform.asString());
+  } else if (this->_numberOfChildren()==1) {
+    Vector3 A = this->_child(0)->_Position;
+    Vector3 OA = A - O;
+    double lengthOA = OA.length();
+    if (lengthOA<1e-6) SIMPLE_ERROR(BF("You are about to divide by zero"));
+    Vector3 a = OA*(1.0/lengthOA);
+      // We need a vector orthogonal to a - used the following reference
+      // https://math.stackexchange.com/questions/133177/finding-a-unit-vector-perpendicular-to-another-vector
+    Vector3& x = a;  // alias a with x to match algorithm
+    Vector3 y(0.0,0.0,0.0);
+    int m = 0;
+    int n = 0;
+    if (std::fabs(x[0]) > 1e-3) { m = 0; n = 1; }
+    else if (std::fabs(x[1]) > 1e-3 ) { m = 1; n = 2; }
+    else { m = 2; n = 0; };
+    y[n] = x[m];
+    y[m] = -x[n];
+    double lengthy = y.length();
+    if (lengthy<1e-6) SIMPLE_ERROR(BF("You are about to divide by zero"));
+    y = y * (1.0/lengthy);
+    // Now y should be orthogonal to a
+    Vector3& b = y;
+    Vector3 c = a.crossProduct(b);
+    Matrix labFrame;
+    labFrame.colX(a);
+    labFrame.colY(b);
+    labFrame.colZ(c);
+    labFrame.setTranslate(O);
+    this->_LabFrame = labFrame;
+    JumpJoint_sp jjParent = gc::As<JumpJoint_sp>(this->parent());
+    Matrix parentInverted = jjParent->_LabFrame.invertTransform();
+    this->_ParentRelativeTransform = labFrame*parentInverted;
+    KIN_LOG(BF("relativeTransform = \n%s\n") % this->_ParentRelativeTransform.asString());
+  }
+}
+
+void JumpJoint_O::updateInternalCoords(bool const recursive,
+                                       AtomTree_sp at) {
+  this->_updateInternalCoord();
   if ( recursive )
   {
-    for (int childIdx=0; childIdx<this->_numberOfChildren(); childIdx++ )
-    {
-      this->_child(childIdx).get()->updateInternalCoords(newStub,true,at);
+    for (int childIdx=0; childIdx<this->_numberOfChildren(); childIdx++ ) {
+      this->_child(childIdx).get()->updateInternalCoords(true,at);
     }
   }
 }
@@ -140,27 +195,40 @@ bool JumpJoint_O::keepDofFixed(DofType dof) const
 }
 
 
-
-    /*! Update the external coordinates using the input stub */
-void JumpJoint_O::_updateXyzCoords(Stub& stub,AtomTree_sp at)
+void JumpJoint_O::_updateXyzCoord(Stub& stub)
 {_OF();
   ASSERTF(stub.isOrthogonal(1e-3),BF("Stub is not orthogonal - stub:\n%s") % stub.asString());
+  this->_LabFrame = stub._Transform.multiplyByMatrix(this->_ParentRelativeTransform);
+  this->position(this->_LabFrame.getTranslation());
+  KIN_LOG(BF("LabFrame.getTranslation() = %s\n") % this->_LabFrame.getTranslation().asString());
+}
+
+
+    /*! Update the external coordinates using the input stub */
+void JumpJoint_O::_updateXyzCoords(Stub& stub)
+{_OF();
+  this->_updateXyzCoord(stub);
   Stub newStub;
-  this->_Jump.makeJump(stub,newStub);
-  this->position(newStub.translation());
-  for ( int ii=0; ii<this->_numberOfChildren(); ii++ )
-  {
-    this->_child(ii).get()->_updateXyzCoords(newStub,at);
+  newStub._Transform = this->_LabFrame;
+  for ( int ii=0; ii<this->_numberOfChildren(); ii++ ) {
+    this->_child(ii).get()->_updateXyzCoords(newStub);
   }
   this->noteXyzUpToDate();
 }
 
+Stub JumpJoint_O::getStub() const {
+  Stub jj;
+  jj._Transform = this->_LabFrame;
+  return jj;
+}
 
 
-void JumpJoint_O::updateXyzCoords(AtomTree_sp at)
+
+void JumpJoint_O::updateXyzCoords()
 {
-  Stub stub(this->getInputStub(at));
-  this->JumpJoint_O::_updateXyzCoords(stub,at);
+  // parent must be an OriginJumpJoint
+  Stub stub = this->parent()->getStub();
+  this->JumpJoint_O::_updateXyzCoords(stub);
 }
 
 
@@ -169,7 +237,8 @@ double JumpJoint_O::dof(DofType const& dof) const
 {_OF();
   if ( dof.isRigidBodyDof() )
   {
-    return _Jump.getRigidBodyDelta(dof,RigidBodyDirection::n2c);
+    SIMPLE_ERROR(BF("Do something for dof"));
+//    return _Jump.getRigidBodyDelta(dof,RigidBodyDirection::n2c);
   }
   SIMPLE_ERROR(BF("Illegal dof for JumpAtom - I can only return rigid body dofs"));
 }

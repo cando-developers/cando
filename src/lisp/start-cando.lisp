@@ -84,7 +84,7 @@
   (load "quicklisp:setup.lisp"))
 (progn
   (format t "Loading cando-user system.~%")
-  (funcall (find-symbol "QUICKLOAD" :ql) "cando-user")
+  (funcall (find-symbol "QUICKLOAD" :ql) "cando-user" :verbose t)
   ;; Ensure that all threads start in the :CANDO-USER package
   (core:symbol-global-value-set '*package* (find-package :cando-user)))
 

@@ -96,10 +96,8 @@ public:
     friend core::T_sp chem__set_oligomer(core::Symbol_sp oligomerName, core::List_sp parts);
     friend core::T_sp chem__oligomer_sequence(Oligomer_sp olig);
 protected:
-    core::Symbol_sp			_Name;
     gctools::Vec0<Monomer_sp>     	_Monomers;
     gctools::Vec0<Coupling_sp>		_Couplings;
-    Monomer_sp	_LastMonomerChanged;
 private:	// Do not archive
 		/*! When one of my MultiMonomers experiences a UserGroupChange
 		 * we will store it here for others to access.
@@ -108,11 +106,11 @@ private:	// Do not archive
     void	sequenceAllMonomers();
     string	stateAsString(uint state);
 
-protected:
+public:
     void _gatherMultiMonomers(gctools::Vec0<Monomer_sp>&multiMonomer);
-    void _fillSequenceAsStringForChildren(Monomer_sp mon, stringstream& seq);
-    void _fillMonomerAsString(Monomer_sp mon, stringstream& seq);
-    void _fillSequenceAsFileNameForChildren(Monomer_sp rootMonomer, stringstream& seq);
+  void _fillSequenceAsStringForChildren(Monomer_sp mon, stringstream& seq) const;
+    void _fillMonomerAsString(Monomer_sp mon, stringstream& seq) const;
+    void _fillSequenceAsFileNameForChildren(Monomer_sp rootMonomer, stringstream& seq) const;
     void _assembleFromParts(core::List_sp parts,CandoDatabase_sp bdb);
 public:
 public:
@@ -121,17 +119,18 @@ public:
 
 public:	// /////////////////////////////////////////////////////////////////
 
-    bool	hasLastMultiMonomerChanged();
-    Monomer_sp getLastMultiMonomerChanged();
-
     core::List_sp monomersAsList();
     core::List_sp couplingsAsList();
 
     monomerIterator begin_Monomers() { return this->_Monomers.begin(); };
     monomerIterator end_Monomers() { return this->_Monomers.end(); };
 
-    uint	numberOfMonomers() { return this->_Monomers.size(); };
+  Monomer_sp monomerWithSequenceNumber(size_t sequence) const;
+  size_t	numberOfMonomers() { return this->_Monomers.size(); };
 
+  /*! Update the monomers so that they have the right couplings */
+  void reinitializeData();
+  
     adapt::SymbolSet_sp allMonomerAliases();
     adapt::ObjectSet_sp getAllAliases();
 
@@ -144,11 +143,6 @@ public:	// /////////////////////////////////////////////////////////////////
     /*! If the groups change then the multi monomers need to be updated
      */
     void		updateMultiMonomers();
-
-CL_LISPIFY_NAME("setName");
-CL_DEFMETHOD     void		setName(core::Symbol_sp nm) { this->_Name = nm;};
-CL_LISPIFY_NAME("getName");
-CL_DEFMETHOD     core::Symbol_sp getName() { return this->_Name;};
 
  bool	checkForErrors();
     //
@@ -184,7 +178,7 @@ public:
 public:
 
     //! Find and return the rootMonomer
-    Monomer_sp	rootMonomer();
+    Monomer_sp	rootMonomer() const;
 
     Molecule_sp	getMolecule();
 
@@ -204,9 +198,12 @@ public:
     Bignum currentSequenceIndex();
     Bignum numberOfSequences();
 
-    string sequenceAsString();
-    string sequenceAsFileName();
+  
+    string sequenceAsString() const;
+    string sequenceAsFileName() const;
 
+  string __repr__() const;
+  
     void	throwIfBadConnections();
 
     void	signalConnectivityChanged();
@@ -217,8 +214,10 @@ public:
      */
     SpecificContextSet_sp	allSpecificMonomerContexts();
 
-
-    DEFAULT_CTOR_DTOR(Oligomer_O);
+  virtual core::T_sp copy() const;
+  
+  Oligomer_O(const Oligomer_O& original);
+  DEFAULT_CTOR_DTOR(Oligomer_O);
 };
 
 extern	Oligomer_sp create_Oligomer();

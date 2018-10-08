@@ -40,10 +40,10 @@ namespace kinematics
 
 
 
-    RingClosingMonomerNode_sp RingClosingMonomerNode_O::create(int monomerId)
+    RingClosingMonomerNode_sp RingClosingMonomerNode_O::create(MonomerId monomerId)
     {
 	GC_ALLOCATE(RingClosingMonomerNode_O, monomerNode );
-	monomerNode->_MonomerId = monomerId;
+	monomerNode->_Id = monomerId;
 	return monomerNode;
     }
 

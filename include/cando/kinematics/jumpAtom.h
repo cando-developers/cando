@@ -43,7 +43,12 @@ namespace kinematics
     bool fieldsp() const { return true; };
     void fields(core::Record_sp node);
   public:
-    Jump			_Jump;
+    Matrix        _LabFrame; // This is the stub for children
+    // _RelativeTransform keeps track of the transform for this JumpJoint that is relative
+    // to the parent. These are like internal coordinates that can move the children
+    // relative to the parent.
+    Matrix        _ParentRelativeTransform;
+    
 	/*! JumpAtoms can have unlimited numbers of children */
     gc::Vec0< Joint_sp >	_Children;
   protected:
@@ -72,14 +77,19 @@ namespace kinematics
 
   JumpJoint_O(const chem::AtomId& atomId, core::T_sp name, const string& comment) : Joint_O(atomId,name,comment) {};
 
-
+    // Return the 'external' coordinate    
+    CL_DEFMETHOD Matrix getLabFrame() const { return this->_LabFrame; };
+    // Return the 'internal' coordinate
+    CL_DEFMETHOD Matrix getParentRelativeTransform() const { return this->_ParentRelativeTransform; };
 
     virtual core::Symbol_sp typeSymbol() const;
 
+    Stub getStub() const;
 
+    virtual void _updateInternalCoord();
+    
 	/*! Update the internal coordinates */
-    virtual void updateInternalCoords(Stub& stub,
-                                      bool const recursive,
+    virtual void updateInternalCoords(bool const recursive,
                                       AtomTree_sp at);
 
 
@@ -99,11 +109,14 @@ namespace kinematics
 
 
 	/*! Update the external coordinates */
-    virtual void updateXyzCoords(AtomTree_sp at);
+    virtual void updateXyzCoords();
 
 
 	/*! Update the external coordinates using the input stub */
-    virtual void _updateXyzCoords(Stub& stub,AtomTree_sp at);
+    virtual void _updateXyzCoords(Stub& stub);
+
+    /*! Update just this joints position */
+    virtual void _updateXyzCoord(Stub& stub);
 
 
 	/*! Return the DOF */

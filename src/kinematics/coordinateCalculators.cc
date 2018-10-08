@@ -52,6 +52,7 @@ void origin_to_internal(Joint_sp joint) {
 
 
 void origin_to_external(Joint_sp joint) {
+#if 0
   // Apply the transform from the joint atom to the tempPos.
   if (!joint->isJump()) {
     SIMPLE_ERROR(BF("joint must be a JumpJoint_sp %s") % _rep_(joint));
@@ -60,6 +61,7 @@ void origin_to_external(Joint_sp joint) {
   Jump& jump = jj->_Jump;
   Vector3 tempPos = Vector3(0.0,0.0,0.0);
   joint->_Position = jump._Transform.multiplyByVector3(tempPos);
+#endif
 };
 
 void bond_to_internal(Joint_sp joint) {
@@ -72,6 +74,7 @@ void bond_to_internal(Joint_sp joint) {
 
 
 void bond_to_external(Joint_sp joint) {
+#if 0
   BondedJoint_sp bjoint = gc::As_unsafe<BondedJoint_sp>(joint);
   Joint_sp bondJoint = joint->_Parent;
   Vector3 tempPos = geom::buildUsingBond(bjoint->_Distance,bondJoint->_Position);
@@ -82,6 +85,7 @@ void bond_to_external(Joint_sp joint) {
   JumpJoint_sp jj = gc::As_unsafe<JumpJoint_sp>(bondJoint);
   Jump& jump = jj->_Jump;
   bjoint->_Position = jump._Transform.multiplyByVector3(tempPos);
+#endif
 };
 
 
@@ -96,6 +100,7 @@ void bond_angle_to_internal(Joint_sp joint) {
 
 
 void bond_angle_to_external(Joint_sp joint) {
+#if 0
   BondedJoint_sp bjoint = gc::As_unsafe<BondedJoint_sp>(joint);
   Joint_sp bondJoint = joint->_Parent;
   Joint_sp angleJoint = bondJoint->_Parent;
@@ -108,6 +113,7 @@ void bond_angle_to_external(Joint_sp joint) {
   JumpJoint_sp jj = gc::As_unsafe<JumpJoint_sp>(angleJoint);
   Jump& jump = jj->_Jump;
   joint->_Position = jump._Transform.multiplyByVector3(tempPos);
+#endif
 }
 
 void bond_angle_dihedral_to_internal(Joint_sp joint) {

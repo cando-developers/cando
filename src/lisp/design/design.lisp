@@ -2,7 +2,7 @@
 (in-package :design)
 
 (defun deftop (residue in-plug-info &rest out-plugs-info)
-  (let ((topology (cando:make-topology-from-residue residue)))
+  (let ((topology (cando:make-simple-topology-from-residue residue)))
     (when in-plug-info
       (destructuring-bind (in-plug-name &optional (atom-name in-plug-name) (bond-order :single-bond))
           (if (consp in-plug-info)
@@ -15,21 +15,18 @@
                           out-plug-info
                           (list out-plug-info))
                     (chem:add-plug topology out-plug-name (chem:make-out-plug out-plug-name nil nil atom-name bond-order))))
-    (leap.core:register-variable (chem:get-name topology) topology)
+    (cando:register-topology (chem:get-name topology) topology)
     topology))
 
 (defun lookup-topology (name)
   "Lookup a named object and if it is a chem:topology return it.
 Otherwise signal an error."
-  (let ((maybe-topology (leap.core:lookup-variable name)))
-    (unless (typep maybe-topology 'chem:topology)
-      (error "Unexpected object - expected a chem:topology - got ~s" maybe-topology))
-    maybe-topology))
+  (cando:lookup-topology name))
 
 (defun lookup-maybe-part (name)
   "Lookup a named object and return it.
 This is for looking up parts but if the thing returned is not a part then return nil."
-  (let ((maybe-part (leap.core:lookup-variable name nil nil)))
+  (let ((maybe-part (cando:lookup-entity name nil)))
     (if (typep maybe-part 'part)
         maybe-part
         nil)))
@@ -229,10 +226,10 @@ than the (chem:number-of-sequences oligomer)."
 (defun define-part (name tree)
   "Create a part and register it by name with leap.core:register-variable."
   (let ((part (make-part name tree)))
-    (leap.core:register-variable name part)))
+    (cando:register-entity name part)))
 
 (defun my-add-monomers (oligomer names)
-  (let ((monomer (chem:make-monomer (mapcar #'lookup-topology names))))
+  (let ((monomer (chem:make-monomer names)))
     (chem:add-monomer oligomer monomer)
     (values (list monomer) nil)))
 
@@ -368,9 +365,6 @@ Examples:
     (values origins body caps)))
 
 
-(defun build-focus-monomer (topology-map)
-  (chem:make-monomer (alexandria:hash-table-values topology-map)))
-
 (defun find-unsatisfied-monomer-plug-pairs (oligomer)
   (let ((monomers (chem:monomers-as-list oligomer)))
     (loop for monomer in monomers
@@ -404,7 +398,7 @@ Examples:
                      (when verbose (format t "other-topology ~s~%" other-topology))
                      (unless found
                        (error "Could not find topology for cap ~s~%" cap))
-                     (let ((other-monomer (chem:make-monomer (list other-topology))))
+                     (let ((other-monomer (chem:make-monomer (list (chem:get-name other-topology)))))
                        (when verbose (format t "Adding new monomer ~s~%" other-monomer))
                        (chem:add-monomer oligomer other-monomer)
                        (etypecase plug
@@ -425,9 +419,35 @@ Examples:
 
 |#
 
-(defun build-one-training-oligomer (focus-topologys cap-name-map topology-map &key test)
+(defun build-superposable-conformation-collection (conformation monomer-id)
+  "Return (values superposable-conformation-collection aggregate)."
+  (let* ((fold-tree (kin:get-fold-tree conformation))
+         (monomer-node (kin:lookup-monomer-id fold-tree monomer-id))
+         (joint-ht (make-hash-table))
+         joints)
+    (kin:walk-joints monomer-node (lambda (index joint)
+                                    (setf (gethash joint joint-ht) t)
+                                    (push joint joints)))
+    (let ((root-joint nil))
+      (kin:walk-joints monomer-node
+                       (lambda (index joint)
+                         (when (null (gethash (kin:get-parent joint) joint-ht))
+                           (setf root-node joint))))
+      (when (typep root-joint 'kin:root-bonded-atom)
+        (let* ((ancestor1 (kin:get-parent root-joint))
+               (ancestor2 (kin:get-parent ancestor1))
+               (ancestor3 (kin:get-parent ancestor2)))
+          (push ancestor1 joints)
+          (push ancestor2 joints)
+          (push ancestor3 joints)))
+      ;; joints contains the joints that we are interested in superposing
+      ;;  now convert that to 
+      joints)))
+
+
+(defun build-one-training-oligomer (focus-topologys-in-list cap-name-map topology-map &key test)
   (let ((oligomer (core:make-cxx-object 'chem:oligomer))
-        (focus-monomer (build-focus-monomer focus-topologys)))
+        (focus-monomer (chem:make-monomer (mapcar #'chem:get-name focus-topologys-in-list))))
     (format t "Focus monomer: ~a~%" focus-monomer)
     (chem:add-monomer oligomer focus-monomer)
     ;; Now repeatedly cap the focus monomer until it's finished.
@@ -445,26 +465,13 @@ Examples:
         (classify-topologys list-of-topologys)
       ;; Build training oligomers for origins
       ;; First make the focus monomer and add it to the oligomer
-      (loop for focus-topologys in (list origins body)
-            collect (build-one-training-oligomer focus-topologys
-                                                 cap-name-map
-                                                 topology-map)))))
+      (append
+       (loop for focus-topologys in (list origins body)
+             collect (build-one-training-oligomer (alexandria:hash-table-values focus-topologys)
+                                                  cap-name-map
+                                                  topology-map))
+       (loop for focus-cap-topology being the hash-values in caps
+             collect (build-one-training-oligomer (list focus-cap-topology)
+                                                  cap-name-map
+                                                  topology-map))))))
 
-#|
-      (let ((unsatisfied-couplings (find-unsatisfied-couplings oligomer)))
-        
-    (let ((focus-monomer (chem:make-monomer)))
-      ;; Add the origin topologys as isonames
-      (maphash (lambda (name topology)
-                 (let ((isoname-for-topology (chem:make-isoname name topology)))
-                   (chem:add-isoname focus-monomer isoname-for-topology)))
-               origins)
-      focus-monomer)))
-|#
-#||
-    (let ((oligomer (core:make-cxx-object 'chem:oligomer))
-          (focus-monomer (chem:make-monomer)))
-      (chem:add-isoname 
-      (chem:add-monomer oligomer (
-      )))
-||#

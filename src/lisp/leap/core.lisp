@@ -50,13 +50,17 @@
 (defun (setf function-lookup) (new-value name environment)
   (setf (gethash name (%functions environment)) new-value))
 
-(defun variable-lookup (name environment &optional errorp error-value)
-  (or (gethash name (%variables environment))
-   (if errorp
-       (error "The variable ~S is not defined" name)
-       error-value)))
+(defun lookup-variable* (name environment &optional errorp error-value)
+  "Lookup a variable in the given environment"
+  (let ((topology (cando:lookup-topology name nil)))
+    (if topology
+        topology
+        (or (gethash name (%variables environment))
+            (if errorp
+                (error "The variable ~S is not defined" name)
+                error-value)))))
 
-(defun (setf variable-lookup) (new-value name environment)
+(defun (setf lookup-variable*) (new-value name environment)
   (setf (gethash name (%variables environment)) new-value))
 
 (defun evaluate (builder ast environment)
@@ -76,8 +80,8 @@
        (:assignment
         (let ((value (first (first (funcall recurse :relations '(:value))))))
           (if (symbolp value)
-              (setf (variable-lookup name environment) (lookup-variable value))
-              (setf (variable-lookup name environment) value))))
+              (setf (lookup-variable* name environment) (lookup-variable value))
+              (setf (lookup-variable* name environment) value))))
        (t
         (funcall recurse))))
 
@@ -102,14 +106,14 @@
 - object :: an object
 * Description
 Associate the name with the object"
-  (setf (variable-lookup name *leap-env*) object))
+  (setf (lookup-variable* name *leap-env*) object))
 
 (defun lookup-variable (name &optional (errorp t) error-value)
   "* Arguments
 - name : Symbol
 * Description
 Lookup the object in the variable space."
-  (variable-lookup name *leap-env* errorp error-value))
+  (lookup-variable* name *leap-env* errorp error-value))
 
 
 (defun leap-lookup-variable-reader-macro (stream char)

@@ -143,6 +143,10 @@
   (:import-from :ext #:chdir #:getcwd)
   (:export
    #::=
+   #:register-topology
+   #:lookup-topology
+   #:register-entity
+   #:lookup-entity
    #:protein
    #:ligand
    #:ion
@@ -192,7 +196,7 @@
    #:make-progress-bar
    #:progress-done
    #:home/
-   #:make-topology-from-residue
+   #:make-simple-topology-from-residue
    ;;; Stuff for nglview demo
    #:unbuilt-atoms
    #:count-unbuilt-atoms

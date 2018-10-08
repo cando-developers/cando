@@ -112,7 +112,6 @@ core::Symbol_sp Mate_O::getName() const
 
 void Plug_O::fields(core::Record_sp node) {
   node->field(INTERN_(kw,name),this->_Name);
-  this->Base::fields(node);
 }
 
 

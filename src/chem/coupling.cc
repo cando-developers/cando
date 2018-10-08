@@ -249,17 +249,6 @@ CL_DEFMETHOD void	DirectionalCoupling_O::throwIfBadConnections()
 }
 
 
-#ifdef XML_ARCHIVE
-    void	DirectionalCoupling_O::archiveBase(core::ArchiveP node)
-{
-    this->Base::archiveBase(node);
-    node->attribute("name", this->_Name );
-    node->archiveWeakPointer("inMonomer", this->_InMonomer );
-    node->archiveWeakPointer("outMonomer", this->_OutMonomer );
-}
-#endif
-
-
 bool	DirectionalCoupling_O::isInCouplingToMonomer(Monomer_sp mon)
 {
 		// Ring closing couplings are never in couplings
@@ -447,22 +436,6 @@ Atom_sp		inB0, outB0, inB1, outB1;
     moutPlug = mout->getPlugNamed(this->getOutMonomerPlugName()).as<PlugWithMates_O>();
     ASSERTNOTNULL(minPlug);
     ASSERTNOTNULL(moutPlug);
-#if 0
-    		//
-		// Each monomer has a temporary residue must be identical to the
-		// residues that are passed to this routine.
-		// This is to ensure that the residues that we are doing the coupling
-		// between are the residues that represent the monomers.
-		//
-    weakInRes = min->getTemporaryResidue();
-    ASSERTNOTNULL(weakInRes);
-    	// make sure the monomers residue is the same as the one the caller passes us
-    ASSERT(weakInRes == inResidue );
-    weakOutRes = mout->getTemporaryResidue();
-    ASSERTNOTNULL(weakOutRes);
-    	// make sure the monomers residue is the same as the one the caller passes us
-    ASSERT(weakOutRes == outResidue );
-#endif
     LOG(BF("Everything seems ok with the residues, let's do the coupling") );
     	// connect the atoms in min/mout according to minPlug/moutPlug
     inB0 = inResidue->atomWithName(minPlug->getB0());
@@ -751,20 +724,6 @@ Atom_sp		inB0, outB0, inB1, outB1;
     mon2Plug = mon2->getPlugNamed(this->getPlug2()).as<PlugWithMates_O>();
     ASSERTNOTNULL(mon1Plug);
     ASSERTNOTNULL(mon2Plug);
-    		//
-		// Each monomer has a temporary residue must be identical to the
-		// residues that are passed to this routine.
-		// This is to ensure that the residues that we are doing the coupling
-		// between are the residues that represent the monomers.
-		//
-    weakInRes = mon1->getTemporaryResidue();
-    ASSERTNOTNULL(weakInRes);
-    	// make sure the monomers residue is the same as the one the caller passes us
-    ASSERT(weakInRes == inResidue );
-    weakOutRes = mon2->getTemporaryResidue();
-    ASSERTNOTNULL(weakOutRes);
-    	// make sure the monomers residue is the same as the one the caller passes us
-    ASSERT(weakOutRes == outResidue );
     LOG(BF("Everything seems ok with the residues, let's do the coupling") );
     	// connect the atoms in mon1/mon2 according to mon1Plug/mon2Plug
     inB0 = inResidue->atomWithName(mon1Plug->getB0());

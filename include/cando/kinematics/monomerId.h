@@ -38,7 +38,7 @@ namespace kinematics
     class MonomerId
     {
 	friend class MonomerId_O;
-    protected:
+    public:
 	int	_Chain;
 	int	_Monomer;
     public:
@@ -92,10 +92,33 @@ namespace translate
 	typedef	kinematics::MonomerId const&		ExpectedType;
 	typedef	kinematics::MonomerId			DeclareType;
 	DeclareType _v;
-    from_object(core::T_sp o) : _v(core::oCar(o).as<core::Fixnum_I>().unsafe_fixnum(),
-                                   core::oCadr(o).as<core::Fixnum_I>().unsafe_fixnum()) {}
+      from_object(core::T_sp o) : _v(gc::As<core::Fixnum_sp>(core::oCar(o)).unsafe_fixnum(),
+                                     gc::As<core::Fixnum_sp>(core::oCadr(o)).unsafe_fixnum()) {}
     };
 
+    template <>
+    struct	from_object<kinematics::MonomerId>
+    {
+	typedef	kinematics::MonomerId const&		ExpectedType;
+	typedef	kinematics::MonomerId			DeclareType;
+	DeclareType _v;
+      from_object(core::T_sp o) : _v(gc::As<core::Fixnum_sp>(core::oCar(o)).unsafe_fixnum(),
+                                     gc::As<core::Fixnum_sp>(core::oCadr(o)).unsafe_fixnum()) {}
+    };
+
+    template <>
+    struct	to_object<kinematics::MonomerId>
+    {
+	typedef	core::List_sp		ExpectedType;
+	typedef	core::List_sp		DeclareType;
+	static core::T_sp convert(kinematics::MonomerId v)
+	{_G();
+	    ExpectedType res = core::Cons_O::createList(
+		core::clasp_make_fixnum(v._Chain),
+		core::clasp_make_fixnum(v._Monomer));
+	    return (res);
+	}
+    };
 
 };
 

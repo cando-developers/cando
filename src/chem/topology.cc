@@ -63,12 +63,16 @@ void Topology_O::fields(core::Record_sp node)
   node->field(INTERN_(kw,properties),this->_Properties);
   node->field(INTERN_(kw,defaultoutplug),this->_DefaultOutPlugName);
   node->field(INTERN_(kw,plugs),this->_Plugs);
-  this->Base::fields(node);
+  // this->Base::fields(node); Base is CxxObject_O
 }
 
 
-Topology_mv Topology_O::makeTopologyFromResidue(chem::Residue_sp residue, core::Symbol_sp topologyName, core::T_sp tconstitution, core::Symbol_sp stereoisomerName )
+CL_LISPIFY_NAME(makeTopologyFromResidue);
+CL_LAMBDA(residue topology-name &optional constitution);
+CL_DOCSTRING("Create a topology from a residue. The constitution may be NIL or a constitution to use to define the atoms");
+CL_DEF_CLASS_METHOD Topology_mv Topology_O::makeTopologyFromResidue(chem::Residue_sp residue, core::Symbol_sp topologyName, core::T_sp tconstitution )
 {
+  core::Symbol_sp stereoisomerName = topologyName;
   Constitution_sp constitution;
   if ( constitution.nilp() ) {
     SIMPLE_ERROR(BF("The constitution was nil - you need to pass a constitution"));
@@ -89,6 +93,7 @@ Topology_mv Topology_O::makeTopologyFromResidue(chem::Residue_sp residue, core::
     stereoisomerAtoms->addStereoisomerAtom(sai);
   }
   topology->_StereoisomerAtomProperties.push_back(stereoisomerAtoms);
+  topology->_StereoisomerCoding = kw::_sym_coded;
   return Values(topology,constitution);
 }
 
@@ -123,8 +128,12 @@ CL_DEFMETHOD Residue_sp Topology_O::buildResidueForIsomer(size_t isomer) const
 {
   core::write_bf_stream(BF("%s:%d Topology_O::buildResidueForIsomer\n") % __FILE__ % __LINE__ );
   StereoisomerAtoms_sp info = this->_StereoisomerAtomProperties[isomer];
+  printf("%s:%d buildResidueForIsomer isomer = %lu  stereoisomerAtoms = %s\n", __FILE__, __LINE__, isomer, _rep_(info).c_str());
   LOG(BF("creating residue\n"));
   core::Symbol_sp residueName = info->getName();
+  if (residueName.unboundp()) {
+    SIMPLE_ERROR(BF("residueName for %s was unbound") % _rep_(info));
+  }
   Residue_sp res = Residue_O::make(residueName);
   LOG(BF("created residue\n"));
   ASSERT(atomInfo.notnilp());
@@ -172,7 +181,8 @@ CL_DEFMETHOD Residue_sp Topology_O::buildResidueForIsomer(size_t isomer) const
   Stereoisomer_sp si = this->_Constitution->getStereoisomerWithName(residueName);
   gctools::Vec0<StereoConfiguration_sp>::iterator	sci;
   for (sci=si->_Configurations_begin();sci!=si->_Configurations_end();sci++){
-    Atom_sp aa = res->atomWithName((*sci)->getAtomName());
+    core::T_sp name = (*sci)->getAtomName();
+    Atom_sp aa = res->atomWithName(name);
     LOG(BF("Setting the configuration of atom(%s) to(%s)") % aa->description().c_str() % _rep_((*sci)->getConfiguration())  ); //
     if ( (*sci)->getConfiguration() == chemkw::_sym_S ) {
       aa->setConfiguration( S_Configuration );

@@ -1,10 +1,16 @@
 (in-package :leap.pdb)
 
-(defparameter *pdb-res-map* (make-hash-table :test #'equal)
+(defparameter *map-pdb-names-to-topology-names* (make-hash-table :test #'equal)
   "Map (residue name . terminus) from pdb files to form names")
 
-(defun lookup-pdb-res-map (name terminalflag)
-  (gethash (cons name terminalflag) *pdb-res-map*))
+(defun lookup-topology-using-pdb-name-and-context (name context)
+  "context is one of :head, :tail or nil?"
+  (multiple-value-bind (topology-name foundp)
+      (gethash (cons name context) *map-pdb-names-to-topology-names*)
+    (if foundp
+        (cando:lookup-topology topology-name t)
+        (let ((topology (cando:lookup-topology name t)))
+          topology))))
 
 (defun add-pdb-res-map (mappings)
   "* Arguments
@@ -30,11 +36,11 @@ the distribution contains default mappings."
              (let* ((res-sym (ensure-symbol res-name))
                     (var-sym (ensure-symbol var-name))
                     (key (cons res-sym term-sym))
-                    (var-old (gethash key *pdb-res-map*)))
+                    (var-old (gethash key *map-pdb-names-to-topology-names*)))
                (when (and var-old (not (eq var-old var-sym)))
                  (warn "The PDB residue name/terminalflag ~a/~a was changed to ~a from ~a"
                        res-sym term-sym var-sym var-old))
-               (setf (gethash key *pdb-res-map*) var-sym))))
+               (setf (gethash key *map-pdb-names-to-topology-names*) var-sym))))
     (dolist (mapping mappings)
       (cond
         ((= (length mapping) 3)
@@ -297,8 +303,7 @@ create more problems."
     (setf (current-reverse-sequence pdb) nil)))
 
 (defun try-to-assign-topology (res scanner)
-  (let* ((topology (or (leap.core:lookup-variable (lookup-pdb-res-map (name res) (context res)) nil nil)
-                   (leap.core:lookup-variable (name res) nil nil))))
+  (let* ((topology (lookup-topology-using-pdb-name-and-context (name res) (context res))))
     (if topology
         (progn
           (assert (not (symbolp topology)))
@@ -469,10 +474,8 @@ values residue-sequences matrices"
                                         (chain-id1 dis)))
                 (res2 (find-pdb-residue scanner (res-seq2 dis)
                                         (chain-id2 dis))))
-            (let* ((top1-name (lookup-pdb-res-map :CYX (context res1)))
-                   (top2-name (lookup-pdb-res-map :CYX (context res2)))
-                   (top1 (leap.core:lookup-variable top1-name nil nil))
-                   (top2 (leap.core:lookup-variable top2-name nil nil)))
+            (let* ((top1 (lookup-topology-using-pdb-name-and-context :CYX (context res1)))
+                   (top2 (lookup-topology-using-pdb-name-and-context :CYX (context res2))))
               ;; If CYX topologies are available - use those
               (when top1 (setf (topology res1) top1))
               (when top2 (setf (topology res2) top2))

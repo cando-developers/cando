@@ -45,14 +45,15 @@ namespace geom {
   public:
         //! Create a 4x4 matrix uninitialized (identity=false) or identity if true
     static OMatrix_sp make(bool identity);
-
-    
   public:
     string __repr__() const;
 
 	//! Create a clone of this matrix
     OMatrix_sp clone() const;
 
+    void setFromVector(core::Array_sp vector);
+    core::Array_sp asVector() const;
+    
     void setToIdentity();
     void setToIndexAsValue();
     void translate(Vector3 pos);

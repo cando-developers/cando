@@ -232,74 +232,6 @@ CL_DEFMETHOD     void	Monomer_O::setAliasesFromCons(core::List_sp aliases)
 }
 #endif
 
-CL_LISPIFY_NAME("hasTemporaryResidue");
-CL_DEFMETHOD     bool Monomer_O::hasTemporaryResidue()
-{_OF();
-  ASSERTNOTNULL(this->_TempResidue);
-  return this->_TempResidue.notnilp();
-};
-
-
-
-#if 0
-AtomBoundFrame_sp Monomer_O::getAtomBoundFrameForInCoupling()
-{
-  if ( !this->hasInCoupling() )
-  {
-    return _Nil<AtomBoundFrame_O>();
-  }
-  DirectionalCoupling_sp coupling = this->getInCoupling();
-  OutPlug_sp preceedingPlug = coupling->getPlugForOtherMonomer(this->sharedThis<Monomer_O>()).as<OutPlug_O>();
-  Monomer_sp preceedingMonomer = coupling->getOtherSideMonomer(this->sharedThis<Monomer_O>());
-  Frame_sp frame = preceedingPlug->getExportFrame();
-  if ( frame.nilp() )
-  {
-    stringstream ss;
-    ss << "In getAtomBoundFrameForInCoupling current monomer=";
-    ss << this->description() << std::endl;
-    ss << " coupling = " << coupling->description() << std::endl;
-    ss << " preceeding monomer is = " << preceedingMonomer->description() << std::endl;
-    ss << " preceeding plug = " << preceedingPlug->description() << std::endl;
-    ss << " It doesn't export a frame but it has to!!!!" << std::endl;
-    SIMPLE_ERROR(BF("%s")%ss.str());
-  }
-  BoundFrame_sp bound = frame->getBoundFrame(preceedingMonomer);
-  if ( !bound.isA<AtomBoundFrame_O>() )
-  {
-    SIMPLE_ERROR(BF("The frame must return an AtomBoundFrame but instead it returned a "+bound->description()));
-  }
-  return bound.as<AtomBoundFrame_O>();
-}
-#endif
-
-#if 0
-void Monomer_O::setAliasesFromString(const string& s)
-{_OF();
-  ASSERTNOTNULL(this->_Aliases);
-  this->_Aliases->setFromString(s);
-};
-#endif
-
-
-#if 0
-CL_LISPIFY_NAME("getAliasesAsString");
-CL_DEFMETHOD     string Monomer_O::getAliasesAsString()
-{_OF();
-  ASSERTNOTNULL(this->_Aliases);
-  return this->_Aliases->asString();
-};
-#endif
-
-
-#if 0
-void	Monomer_O::setAliasesFromSymbolList(adapt::SymbolList_sp aliases)
-{
-  this->_Aliases->clear();
-  this->_Aliases->insertSymbolList(aliases);
-}
-#endif
-
-
 CL_LISPIFY_NAME("checkForBadConnections");
 CL_DEFMETHOD     bool	Monomer_O::checkForBadConnections()
 {
@@ -397,9 +329,10 @@ uint Monomer_O::numberOfCouplings() const {
   return this->_Couplings.size();
 }
 
-CL_DEFMETHOD     Topology_sp	Monomer_O::currentTopology()
+CL_DEFMETHOD Topology_sp Monomer_O::currentTopology()
 {
-  return this->_Monomers[this->_CurrentMonomerIndex];
+  Topology_sp topology = gc::As<Topology_sp>(chem__findTopology(this->_Monomers[this->_CurrentMonomerIndex]));
+  return topology;
 }
 
 
@@ -532,6 +465,10 @@ bool	Monomer_O::hasMatchingPlugNameAndCoupling( core::Symbol_sp plugName, Coupli
 }
 
 
+void Monomer_O::eraseCouplings()
+{
+  this->_Couplings.clear();
+}
 
 CL_LISPIFY_NAME("addCoupling");
 CL_DEFMETHOD     void	Monomer_O::addCoupling( core::Symbol_sp plugName,  Coupling_sp coup)
@@ -734,11 +671,8 @@ void Monomer_O::fields(core::Record_sp node)
 void Monomer_O::initialize()
 {
   this->Base::initialize();
-  this->_TempResidue = _Nil<Residue_O>();
 //        this->_Couplings = core::HashTableEq_O::create_default();
   this->_Id = _Nil<core::Symbol_O>();
-//  this->_Aliases = adapt::SymbolSet_O::create();
-  this->_TemporaryInt = 0;
   this->_SequenceNumber = 0;
   this->_Monomers.clear();
   this->_CurrentMonomerIndex = -1;
@@ -752,30 +686,20 @@ Monomer_sp Monomer_O::makeMonomer(core::List_sp topology_list)
 {
   GC_ALLOCATE(Monomer_O, me );
   for ( auto cur : topology_list ) {
-    Topology_sp top = gc::As<Topology_sp>(CONS_CAR(cur));
-    me->addTopology(top);
+    core::Symbol_sp top = gc::As<core::Symbol_sp>(CONS_CAR(cur));
+    me->addTopologyName(top);
   }
   return me;
 };
 
-#if 0
-core::Symbol_sp Monomer_O::monomerName() const
-{_OF();
-  if ( this->_Monomers.size() == 0 ) {
-    return _Nil<core::Symbol_O>();
-  }
-  core::Symbol_sp name = this->_Monomers[this->_CurrentMonomerIndex]->getName();
-//  printf("%s:%d In Monomer_O::getName() -> %s name->className() -> %s\n", __FILE__, __LINE__, _rep_(name).c_str(), name->className().c_str());
-  return name;
-}
-#endif
 
 CL_DEFMETHOD core::Symbol_sp Monomer_O::currentStereoisomerName() const
 {_OF();
   if ( this->_Monomers.size() == 0 ) {
     return _Nil<core::Symbol_O>();
   }
-  core::Symbol_sp name = this->_Monomers[this->_CurrentMonomerIndex]->getStereoisomerName(this->_CurrentStereoisomerOffset);
+  Topology_sp topology = gc::As<Topology_sp>(chem__findTopology(this->_Monomers[this->_CurrentMonomerIndex]));
+  core::Symbol_sp name = topology->getStereoisomerName(this->_CurrentStereoisomerOffset);
 //  printf("%s:%d In Monomer_O::getName() -> %s name->className() -> %s\n", __FILE__, __LINE__, _rep_(name).c_str(), name->className().c_str());
   return name;
 }
@@ -843,7 +767,7 @@ CL_DEFMETHOD void	Monomer_O::addIsoname(Isoname_sp name)
   Topology_sp topology = name->topology();
   core::List_sp plugs = topology->plugsAsList();
   if (this->_Monomers.size()!=0) {
-    Topology_sp topology0 = this->_Monomers[0]->topology();
+    Topology_sp topology0 = gc::As<Topology_sp>(chem__findTopology(this->_Monomers[0]));
     if (!topology0->matchesPlugs(topology)) {
       SIMPLE_ERROR(BF("The first topology %s in this monomer does not match all of the plugs in the one you are trying to add %s") % _rep_(topology0) % _rep_(topology));
     }
@@ -852,17 +776,17 @@ CL_DEFMETHOD void	Monomer_O::addIsoname(Isoname_sp name)
 }
 #endif
 
-CL_DEFMETHOD void Monomer_O::addTopology(Topology_sp topology)
+CL_DEFMETHOD void Monomer_O::addTopologyName(core::Symbol_sp name)
 {
-  Isoname_sp isoname = Isoname_O::make_isoname(topology->getName(),topology,0);
+  Topology_sp topology = chem__findTopology(name);
   core::List_sp plugs = topology->plugsAsList();
   if (this->_Monomers.size()!=0) {
-    Topology_sp topology0 = this->_Monomers[0];
+    Topology_sp topology0 = gc::As<Topology_sp>(chem__findTopology(this->_Monomers[0]));
     if (!topology0->matchesPlugs(topology)) {
       SIMPLE_ERROR(BF("The first topology %s in this monomer does not match all of the plugs in the one you are trying to add %s") % _rep_(topology0) % _rep_(topology));
     }
   }
-  this->_Monomers.push_back(topology);
+  this->_Monomers.push_back(name);
 }
 
 
@@ -871,7 +795,7 @@ CL_DEFMETHOD core::List_sp Monomer_O::plugNamesAsList() const
   if (this->_Monomers.size()==0) {
     return _Nil<core::T_O>();
   }
-  Topology_sp topology0 = this->_Monomers[0];
+  Topology_sp topology0 = gc::As<Topology_sp>(chem__findTopology(this->_Monomers[0]));
   core::List_sp plugs0 = topology0->plugsAsList();
   ql::list result;
   for ( auto ocur : plugs0 ) {
@@ -885,7 +809,8 @@ CL_DEFMETHOD size_t Monomer_O::numberOfStereoisomers() const
 {
   size_t number = 0;
   for ( auto cur : this->_Monomers ) {
-    number += (cur)->numberOfStereoisomers();
+    Topology_sp topology = gc::As<Topology_sp>(chem__findTopology(cur));
+    number += topology->numberOfStereoisomers();
   }
   return number;
 }
@@ -894,7 +819,8 @@ CL_DEFMETHOD void Monomer_O::setMonomerIndex(size_t index) {
   size_t offset = index;
   size_t mindex = 0;
   for ( auto cur : this->_Monomers ) {
-    size_t numberOfStereoisomers = (cur)->numberOfStereoisomers();
+    Topology_sp topology = gc::As<Topology_sp>(chem__findTopology(cur));
+    size_t numberOfStereoisomers = topology->numberOfStereoisomers();
     if (offset<numberOfStereoisomers) {
       this->_CurrentMonomerIndex = mindex;
       this->_CurrentStereoisomerOffset = offset;
@@ -909,26 +835,14 @@ CL_DEFMETHOD void Monomer_O::setMonomerIndex(size_t index) {
 CL_DEFMETHOD size_t Monomer_O::getMonomerIndex() const {
   size_t index = 0;
   for ( size_t idx(0), end(this->_CurrentMonomerIndex); idx < end; ++idx ) {
-    index += this->_Monomers[idx]->numberOfStereoisomers();
+    Topology_sp topology = gc::As<Topology_sp>(chem__findTopology(this->_Monomers[idx]));
+    index += topology->numberOfStereoisomers();
   }
   index += this->_CurrentStereoisomerOffset;
   return index;
 }
 
   
-
-#if 0
-CL_LISPIFY_NAME("getIsoname");
-CL_DEFMETHOD     Isoname_sp	Monomer_O::getIsoname() const
-{
-  ASSERT(this->_Monomers.size());
-  LOG(BF("Looking up monomer: %d") % this->_CurrentMonomerIndex  );
-  return this->_Monomers[this->_CurrentMonomerIndex];
-};
-#endif
-
-
-
 
 string Monomer_O::description() const
 {//
@@ -1084,7 +998,8 @@ bool Monomer_O::recognizesAlias(Alias_sp alias)
 bool Monomer_O::incrementMonomerIndex()
 {
   this->_CurrentStereoisomerOffset++;
-  if (this->_CurrentStereoisomerOffset <this->_Monomers[this->_CurrentMonomerIndex]->numberOfStereoisomers()) {
+  Topology_sp topology = gc::As<Topology_sp>(chem__findTopology(this->_Monomers[this->_CurrentMonomerIndex]));
+  if (this->_CurrentStereoisomerOffset < topology->numberOfStereoisomers()) {
     return true;
   }
   this->_CurrentStereoisomerOffset = 0;
@@ -1116,17 +1031,17 @@ gctools::Vec0<Coupling_sp>	Monomer_O::getOutCouplings()
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
+Monomer_O::Monomer_O(const Monomer_O& other)
+{
+  this->_Id = other._Id;
+  this->_SequenceNumber = other._SequenceNumber;
+  this->_Couplings.clear();
+  this->_CurrentMonomerIndex = other._CurrentMonomerIndex;
+  this->_CurrentStereoisomerOffset = other._CurrentStereoisomerOffset;
+  this->_Monomers.resize(other._Monomers.size());
+  for ( size_t ii(0),iEnd(other._Monomers.size()); ii<iEnd; ++ii ) {
+    this->_Monomers[ii] = other._Monomers[ii];
+  }
+}
 
 };

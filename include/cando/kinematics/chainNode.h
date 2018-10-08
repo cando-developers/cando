@@ -41,17 +41,19 @@ namespace kinematics
     LISP_CLASS(kinematics,KinPkg,ChainNode_O,"ChainNode",MonomerBaseNode_O);
   public:
     static ChainNode_sp make();
-  ChainNode_O() : _RootMonomerNode(_Unbound<MonomerNode_O>()) {};
+    ChainNode_O(size_t id) : _Id(id), _RootMonomerNode(_Unbound<MonomerNode_O>()) {};
   public:
     bool fieldsp() const { return true; };
     void fields(core::Record_sp node);
     void initialize();
   public:	// instance variables here
+    size_t _Id;
 	/*! Store the root MonomerNode */
     MonomerNode_sp		_RootMonomerNode;
 	/*! monomerId index into the MonomerNodes */
     gctools::Vec0<MonomerNode_sp>	_IndexedMonomerNodes;
   public: // Functions here
+    static ChainNode_sp create(int chainId);
 
     void resizeMonomers(int numMonomers);
 
@@ -71,6 +73,7 @@ namespace kinematics
 	/*! Return the monomer with the MonomerId */
     MonomerNode_sp lookupMonomerId(int monomerId) const;
 
+    core::List_sp children() const;
  
   };
 

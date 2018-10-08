@@ -56,6 +56,9 @@ class Entity_O : public core::CxxObject_O
 {
   LISP_CLASS(chem,ChemPkg,Entity_O,"Entity",core::CxxObject_O);
  public:
+  bool fieldsp() const { return true; };
+  void fields(core::Record_sp node) {}; // nothing to save
+  
   void initialize();
  public:
 //	void	archiveBase(core::ArchiveP node);

@@ -39,6 +39,10 @@ This is an open source license for the CANDO software from Temple University, bu
 //#include "core/archive.fwd.h"
 //#include "core/serialize.h"
 
+
+#define MY_PI 3.1415926535897932
+#define SMALL_NUMBER 1e-6
+
 /*! A vector stores xyz coordinates in Angstroms */
 class Vector3 {
     friend class OVector3_O;
@@ -150,6 +154,10 @@ namespace geom {
   Vector3 buildUsingBondAngleDihedral( double distance, const Vector3& vc,
                                        double angleRad, const Vector3& vb,
                                        double dihedralRad, const Vector3& va );
+
+/*! Return the angle in radians between (1.0,0.0) and (dx,dy). The result will be positive or negative depending on the quadrant of dx,dy */
+double  geom__planeVectorAngle(double dx, double dy);
+
 };
 
 #if defined(OLD_SERIALIZE)

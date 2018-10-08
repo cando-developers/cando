@@ -32,11 +32,15 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/kinematics/atomTree.fwd.h>
 #include <cando/kinematics/dofType.h>
 #include <cando/kinematics/stub.fwd.h>
+#include <cando/kinematics/stub.h>
 #include <cando/kinematics/coordinateCalculators.h>
 #include <cando/kinematics/atom.fwd.h>
 #include <cando/chem/atomId.h>
 #include <cando/kinematics/pool.h>
 
+
+#define PREPARE_ANGLE(ang) (MY_PI-ang)
+#define FINAL_ANGLE(ang) (ang)
 
 // Currently a maximum of 5 children hanging off of any atom
 // means we can handle octahedral coordination but no more
@@ -44,7 +48,12 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace kinematics
 {
 
- 
+
+#if 0
+#define KIN_LOG(msg) core::write_bf_stream(BF("%s:%d:%f - ") % __FILE__ % __LINE__ % __FUNCTION__ ); core::write_bf_stream(msg)
+#else
+#define KIN_LOG(msg)
+#endif
 
 
 #define	DEBUG_KIN_ATOM	1
@@ -68,6 +77,7 @@ public:
   core::T_sp      _Name;
   chem::AtomId	_Id;
   Vector3		_Position;
+  core::List_sp         _Properties;
   CoordinateCalculator  _ToInternal; // Function to calculate internal coordinate
   CoordinateCalculator  _ToExternal; // Function to calculate external coordinate
 #if DEBUG_KIN_ATOM
@@ -112,6 +122,7 @@ public:
     _Parent(_Unbound<Joint_O>()),
     _Name(name),
     _Id(atomId),
+    _Properties(_Nil<core::T_O>()),
     _ToExternal(general_to_external),
     _ToInternal(general_to_internal)    
 #if DEBUG_KIN_ATOM
@@ -119,6 +130,9 @@ public:
 #endif
   {};
 
+  /*! Returns true if the joint represents an atom */
+  CL_DEFMETHOD virtual bool correspondsToAtom() const { return true; };
+  
   chem::AtomId id() const { return this->_Id;};
   core::T_sp name() const;
         
@@ -131,7 +145,8 @@ public:
 
 	/*! Return a Joint_sp for the parent */
   Joint_sp parent() const { return this->_Parent; };
-
+  core::T_sp getParent() const;
+  
 	/*! Insert the child before the (before) index. */
   void insertChild( int before, Joint_sp child );
 
@@ -176,9 +191,10 @@ public:
   void recursiveDumpChildrenIntoStringStream(const string& prefix,
                                              stringstream& out);
 
+  void updateInternalCoord();
+  virtual void _updateInternalCoord() { THROW_HARD_ERROR(BF("Subclass must implement")); };
 	/*! Update the internal coordinates */
-  virtual void updateInternalCoords(Stub& stub,
-                                    bool const recursive,
+  virtual void updateInternalCoords(bool const recursive,
                                     AtomTree_sp at 	) = 0;
 
 	/*! Return true if this atom is a JumpAtom (or subclass) */
@@ -193,9 +209,6 @@ public:
   virtual bool stubDefined() const;
 
 
-	/*! Return the stub for this atom */
-  Stub getStub(AtomTree_sp at) const;
-
 	/*! Return the position */
   Vector3 position() const { return this->_Position;};
 
@@ -203,6 +216,17 @@ public:
   void position(const Vector3& pos) { this->_Position = pos;};
   Vector3 getPosition() const;
   void setPosition(const Vector3& pos);
+
+  CL_LISPIFY_NAME("KIN:PROPERTIES");
+  CL_DEFMETHOD core::List_sp getProperties() const { return this->_Properties; };
+  void clearProperty(core::Symbol_sp propertySymbol);
+  void setProperty(core::Symbol_sp propertySymbol, core::T_sp value);
+  bool hasProperty (core::Symbol_sp propertySymbol);
+  core::T_sp getProperty(core::Symbol_sp propertySymbol);
+  core::T_sp getPropertyOrDefault(core::Symbol_sp propertySymbol,core::T_sp defaultValue);
+
+  Vector3 getPosition2() const;
+  void setPosition2(const Vector3& pos);
 
 	/*! Return the input stub atom */
   inline Joint_sp inputStubAtom0() const
@@ -283,10 +307,17 @@ public:
 
 
 	/*! Update the external coordinates after calculating the input stub */
-  virtual void updateXyzCoords(AtomTree_sp at);
+  virtual void updateXyzCoords();
+
+  /*! Update the external coordinate of just this node */
+  virtual void updateXyzCoord();
 
 	/*! Update the external coordinates using the input stub */
-  virtual void _updateXyzCoords(Stub& stub,AtomTree_sp at) {THROW_HARD_ERROR(BF("Subclass must implement"));};
+  virtual void _updateXyzCoords(Stub& stub) {THROW_HARD_ERROR(BF("Subclass must implement"));};
+
+  virtual void _updateXyzCoord(Stub& stub) {THROW_HARD_ERROR(BF("Subclass must implement"));};
+
+  void _updateChildrenXyzCoords(Stub& stub);
 
 	/*! Ensure proper function of the output-sensitive refold subroutine
 	  derived classes must invoke this function during their updateXyzCoords subroutines
@@ -298,7 +329,7 @@ public:
 
 
 	/*! Return the input stub */
-  Stub getInputStub(AtomTree_sp at) const;
+  virtual CL_DEFMETHOD Stub getStub() const { THROW_HARD_ERROR(BF("Subclass must implement")); };
 
 
 	/*! Return the value of the DOF */

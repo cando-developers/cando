@@ -37,6 +37,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/kinematics/bondId.fwd.h>
 #include <cando/chem/plug.fwd.h>
 #include <cando/kinematics/atom.fwd.h>
+#include <cando/kinematics/monomerId.h>
 #include <cando/kinematics/bondedAtom.h>
 #include <cando/kinematics/rootBondedAtom.h>
 #include <cando/kinematics/chainNode.fwd.h>
@@ -206,8 +207,7 @@ namespace kinematics
 	  4) (incoming) parent is defined and child is defined
 	      - in that case we are replacing a sub-tree with the new monomer sub-tree
 	*/
-    void recursivelyBuildMolecule(int moleculeId,
-                                  int residueId,
+    void recursivelyBuildMolecule(MonomerId monomerId,
                                   MonomerNode_sp chainNode,
                                   Joint_sp parent,
                                   bool rootNode = false);

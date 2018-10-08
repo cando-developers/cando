@@ -64,3 +64,8 @@
   (:use #:cl)
   (:export
    #:draw-joint-tree))
+
+(defpackage #:design.graphviz-draw-fold-tree
+  (:use #:cl)
+  (:export
+   #:draw-fold-tree))

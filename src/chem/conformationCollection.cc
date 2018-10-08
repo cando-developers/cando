@@ -60,7 +60,7 @@ void	ConformationCollectionEntry_O::initialize()
 {
     this->Base::initialize();
     this->_Data = core::HashTableEq_O::create_default();
-    this->_AllCoordinates = geom::SimpleVectorCoordinate_O::create();
+    this->_AllCoordinates = geom::SimpleVectorCoordinate_O::make(16,Vector3(),false,0,NULL);
 }
 
 
@@ -87,7 +87,7 @@ void	ConformationCollectionEntry_O::initialize()
 
 
 
-void	ConformationCollectionEntry_O::setConformationCollection(ConformationCollection_sp s)
+CL_DEFMETHOD void	ConformationCollectionEntry_O::setConformationCollection(ConformationCollection_sp s)
 {
 geom::SimpleVectorCoordinate_sp	ca;
     this->_WeakConformationCollection = s;
@@ -96,7 +96,7 @@ geom::SimpleVectorCoordinate_sp	ca;
 }
 
 
-void	ConformationCollectionEntry_O::setAllCoordinates(geom::SimpleVectorCoordinate_sp ac)
+CL_DEFMETHOD void	ConformationCollectionEntry_O::setAllCoordinates(geom::SimpleVectorCoordinate_sp ac)
 {
     ASSERTNOTNULL(ac);
     LOG(BF("setAllCoordinates:%s") % (ac->asXmlString().c_str() ) );
@@ -106,7 +106,7 @@ void	ConformationCollectionEntry_O::setAllCoordinates(geom::SimpleVectorCoordina
 
 
 
-void	ConformationCollectionEntry_O::writeCoordinatesToMatter(Matter_sp agg)
+CL_DEFMETHOD void	ConformationCollectionEntry_O::writeCoordinatesToMatter(Matter_sp agg)
 {
 ConformationCollection_sp			sl;
  geom::SimpleVectorCoordinate_O::iterator	ci;
@@ -119,7 +119,7 @@ gctools::SmallOrderedSet<Atom_sp>::iterator		ai;
 }
 
 
-void	ConformationCollectionEntry_O::extractCoordinatesFromMatter(Matter_sp matter)
+CL_DEFMETHOD void	ConformationCollectionEntry_O::extractCoordinatesFromMatter(Matter_sp matter)
 {
 ConformationCollection_sp	sl;
 vector<Vector3>::iterator	ci;
@@ -146,14 +146,14 @@ void	ConformationCollection_O::initialize()
 }
 
 
-void	ConformationCollection_O::clearEntries()
+CL_DEFMETHOD void	ConformationCollection_O::clearEntries()
 {
     this->_Entries.clear();
 }
 
 
 
-geom::SimpleVectorCoordinate_sp ConformationCollection_O::_SimpleVectorCoordinate(Matter_sp agg)
+CL_DEFMETHOD geom::SimpleVectorCoordinate_sp ConformationCollection_O::_SimpleVectorCoordinate(Matter_sp agg)
 {
   geom::SimpleVectorCoordinate_O::iterator	ci;
     gctools::SmallOrderedSet<Atom_sp>::iterator		ai;
@@ -174,7 +174,7 @@ geom::SimpleVectorCoordinate_sp ConformationCollection_O::_SimpleVectorCoordinat
 }
 
 
-void	ConformationCollection_O::setMatter(Matter_sp matter)
+CL_DEFMETHOD void ConformationCollection_O::setMatter(Matter_sp matter)
 {
 Loop	loop;
 Atom_sp	a;
@@ -190,17 +190,16 @@ Atom_sp	a;
 
 
 
-
-uint	ConformationCollection_O::addEntry(ConformationCollectionEntry_sp entry)
+CL_DEFMETHOD size_t ConformationCollection_O::addEntry(ConformationCollectionEntry_sp entry)
 {
-    this->_Entries.push_back(entry);
-    return 1;
+  this->_Entries.push_back(entry);
+  return 1;
 }
 
 
 
 
-void	ConformationCollection_O::addConformationCollection(ConformationCollection_sp orig)
+CL_DEFMETHOD void	ConformationCollection_O::addConformationCollection(ConformationCollection_sp orig)
 {
 Matter_sp			matter;
 ConformationCollection_O::entryIterator	si;
@@ -218,7 +217,7 @@ ConformationCollectionEntry_sp		entry;
 
 
 
-void	ConformationCollection_O::addConformationExplorerLatestConformations(ConformationExplorer_sp orig)
+CL_DEFMETHOD void	ConformationCollection_O::addConformationExplorerLatestConformations(ConformationExplorer_sp orig)
 {
 Matter_sp			matter;
 ConformationExplorer_O::entryIterator	si;
@@ -236,8 +235,7 @@ ConformationCollectionEntry_sp			entry;
     }
 }
 
-
-void	ConformationCollection_O::addConformationExplorerSelectedStageConformations(ConformationExplorer_sp orig)
+CL_DEFMETHOD void	ConformationCollection_O::addConformationExplorerSelectedStageConformations(ConformationExplorer_sp orig)
 {
 Matter_sp			matter;
 ConformationExplorer_O::entryIterator	si;
@@ -328,9 +326,9 @@ void	ConformationCollection_O::saveAs(const string& fn)
 }
 #endif
 
-uint	ConformationCollection_O::getEntryIndex(ConformationCollectionEntry_sp entry)
+CL_DEFMETHOD size_t ConformationCollection_O::getEntryIndex(ConformationCollectionEntry_sp entry)
 {
-uint		i;
+size_t		i;
 entryIterator	ei;
     for ( i=0,ei=this->_Entries.begin(); ei!=this->_Entries.end(); ei++,i++ )
     {
@@ -345,7 +343,7 @@ entryIterator	ei;
 
 
 
-ConformationCollectionEntry_sp	ConformationCollection_O::getEntry(uint i)
+CL_DEFMETHOD ConformationCollectionEntry_sp	ConformationCollection_O::getEntry(uint i)
 {
     ASSERT_lessThan(i,this->_Entries.size());
     ConformationCollectionEntry_sp e;
@@ -353,14 +351,17 @@ ConformationCollectionEntry_sp	ConformationCollection_O::getEntry(uint i)
     return e;
 }
 
-ConformationCollectionEntry_sp	ConformationCollection_O::firstEntry()
+CL_DEFMETHOD ConformationCollectionEntry_sp	ConformationCollection_O::firstEntry()
 {
     ASSERT(this->_Entries.size() > 0 );
-    return this->_Entries[0];
+    if (this->_Entries.size()!=0) {
+      return this->_Entries[0];
+    }
+    SIMPLE_ERROR(BF("There are no entries in the conformation-collection"));
 }
 
 
-ConformationCollectionEntry_sp	ConformationCollection_O::createEntry()
+CL_DEFMETHOD ConformationCollectionEntry_sp	ConformationCollection_O::createEntry()
 {
     GC_ALLOCATE(ConformationCollectionEntry_O, entry );
     entry->setConformationCollection(this->sharedThis<ConformationCollection_O>());

@@ -32,6 +32,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/adapt/symbolMap.h>
 #include <cando/chem/plug.h>
 #include <cando/chem/constitutionAtoms.h>
+#include <cando/kinematics/monomerId.h>
 #include <cando/kinematics/kinematicsPackage.h>
 #include <cando/kinematics/atomTree.fwd.h>
 #include <cando/kinematics/jointTemplate.fwd.h>
@@ -49,6 +50,7 @@ namespace kinematics
   FORWARD(DelayedBondedJoint);
   FORWARD(JointTemplate);
   FORWARD(Checkpoint);
+FORWARD(MonomerNode);
   class Checkpoint_O : public core::CxxObject_O
   {
     LISP_CLASS(kinematics,KinPkg,Checkpoint_O,"Checkpoint",core::CxxObject_O);
@@ -148,11 +150,11 @@ namespace kinematics
 
     typedef adapt::SymbolMap<BondId_O> PlugNamesToBondIdMap;
     virtual Joint_sp writeIntoAtomTree(const AtomTree_sp& atomTree,
-                                       uint moleculeId,
-                                       uint residueId,
+                                       MonomerId monomerId,
                                        const BondId_sp& incoming,
                                        const PlugNamesToBondIdMap& outgoing,
-                                       bool rootNode = false )
+                                       MonomerNode_sp monomerNode,
+                                       bool rootNode = false)
     {_OF();
       SUBCLASS_MUST_IMPLEMENT();
     }
@@ -195,23 +197,21 @@ namespace kinematics
     core::List_sp children() const;
 
     void addChildren(Joint_sp me,
-                     uint moleculeId,
-                     uint residueId,
+                     MonomerId monomerId,
                      const AtomTree_sp& atomTree,
                      const BondId_sp& incoming,
-                     const PlugNamesToBondIdMap& outgoing);
+                     const PlugNamesToBondIdMap& outgoing,
+                     MonomerNode_sp monomerNode);
 
 
     virtual Joint_sp writeIntoAtomTree(const AtomTree_sp& atomTree,
-                                       uint moleculeId,
-                                       uint residueId,
+                                       MonomerId monomerId,
                                        const BondId_sp& incoming,
                                        const PlugNamesToBondIdMap& outgoing,
-                                       bool rootNode = false);
+                                       MonomerNode_sp monomerNode,
+                                       bool rootNode = false );
     void setupOutPlugAtomTree(Joint_sp owned,
                               const AtomTree_sp& atomTree,
-                              uint moleculeId,
-                              uint residueId,
                               const BondId_sp& incoming,
                               const PlugNamesToBondIdMap& outgoing );
 
@@ -245,11 +245,11 @@ namespace kinematics
   public:
 
     virtual Joint_sp writeIntoAtomTree(const AtomTree_sp& atomTree,
-                                       uint moleculeId,
-                                       uint residueId,
+                                       MonomerId monomerId,
                                        const BondId_sp& incoming,
                                        const PlugNamesToBondIdMap& outgoing,
-                                       bool rootNode = false);
+                                       MonomerNode_sp monomerNode,
+                                       bool rootNode = false );
 
 
 
@@ -282,10 +282,10 @@ namespace kinematics
     chem::Plug_sp		_InPlug;
   public:
     virtual Joint_sp writeIntoAtomTree(const AtomTree_sp& atomTree,
-                                       uint moleculeId,
-                                       uint residueId,
+                                       MonomerId monomerId,
                                        const BondId_sp& incoming,
                                        const PlugNamesToBondIdMap& outgoing,
+                                       MonomerNode_sp monomerNode,
                                        bool rootNode = false);
 
     DEFAULT_CTOR_DTOR(RootBondedJointTemplate_O);

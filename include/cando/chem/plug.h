@@ -46,7 +46,7 @@ namespace chem
   {
     LISP_CLASS(chem,ChemPkg,Mate_O,"Mate",EntityNameSetWithCap_O);
   public:
-  Mate_O() : _Cap(_Unbound<core::Symbol_O>()) {};
+  Mate_O() : _Cap(_Nil<core::Symbol_O>()) {};
   Mate_O(core::Symbol_sp cap) : _Cap(cap) {};
   public:
     CL_LISPIFY_NAME(make_mate);
@@ -90,12 +90,14 @@ namespace chem
     LISP_CLASS(chem,ChemPkg,Plug_O,"Plug",core::CxxObject_O);
   public:
   Plug_O(core::Symbol_sp name) : _Name(name) {};
+    Plug_O() : _Name(_Nil<core::T_O>()) {};
   public:
     CL_LISPIFY_NAME("make-plug");
     CL_DEF_CLASS_METHOD static Plug_sp make(core::Symbol_sp name) {
       return gctools::GC<Plug_O>::allocate(name);
     }
   public:
+    virtual bool fieldsp() const { return true; };
     virtual void fields(core::Record_sp node);
   public:
     typedef	gctools::Vec0<Mate_sp>	Mates;
@@ -136,6 +138,7 @@ namespace chem
     LISP_CLASS(chem,ChemPkg,PlugWithMates_O,"PlugWithMates",Plug_O);
   public:
   PlugWithMates_O(core::Symbol_sp name, core::List_sp mates, core::Symbol_sp bond0, BondOrder bondOrder0, core::Symbol_sp bond1, BondOrder bondOrder1 ) : Plug_O(name), _B0(bond0), _B1(bond1), _BondOrder0(bondOrder0), _BondOrder1(bondOrder1) {};
+    PlugWithMates_O() {};
   public:
     CL_LISPIFY_NAME("make-plug-with-mates");
     CL_LAMBDA("name mates bond0 bond-order0 &optional bond1 (bondorder1 :single-bond)");
@@ -145,12 +148,13 @@ namespace chem
       return me;
     }
   public:
+    virtual bool fieldsp() const { return true; };
     virtual void fields(core::Record_sp node);
   protected:
     //! Name of atom for first bond
-      core::Symbol_sp			_B0;
+    core::Symbol_sp			_B0 {_Nil<core::Symbol_O>()};
     //! Name of atom for second bond
-    core::Symbol_sp			_B1;
+    core::Symbol_sp			_B1 {_Nil<core::Symbol_O>()};
     BondOrder                           _BondOrder0;
     BondOrder                           _BondOrder1;
     //! RepresentedEntityNameSets that this plug can plug into
@@ -185,7 +189,8 @@ namespace chem
   {
     LISP_CLASS(chem,ChemPkg,OutPlug_O,"OutPlug",PlugWithMates_O);
   public:
-  OutPlug_O(core::Symbol_sp name, core::List_sp mates, MatterName stubPivotAtom, core::Symbol_sp bond0, BondOrder bondOrder0, core::Symbol_sp bond1, BondOrder bondOrder1) : PlugWithMates_O(name,mates,bond0,bondOrder0,bond1,bondOrder1), _StubPivotAtom(stubPivotAtom) {};
+    OutPlug_O(core::Symbol_sp name, core::List_sp mates, MatterName stubPivotAtom, core::Symbol_sp bond0, BondOrder bondOrder0, core::Symbol_sp bond1, BondOrder bondOrder1) : PlugWithMates_O(name,mates,bond0,bondOrder0,bond1,bondOrder1), _StubPivotAtom(stubPivotAtom) {};
+    OutPlug_O() {};
   public:
     CL_LISPIFY_NAME("make-out-plug");
     CL_LAMBDA("name mates stub-pivot-atom bond0 bondorder0 &optional bond1 (bondorder1 :single-bond)");
@@ -195,11 +200,12 @@ namespace chem
     };
 
   public:
+    virtual bool fieldsp() const { return true; };
     virtual void fields(core::Record_sp node);
   private:
 	/*! This contains the name of the atom that we will force to be the third atom
 	  that defines the Stub of the Bond0 atom */
-    MatterName	_StubPivotAtom;
+    MatterName	_StubPivotAtom {_Nil<core::Symbol_O>()};
   public:
 
     CL_LISPIFY_NAME("hasStubPivotAtom");
@@ -217,6 +223,7 @@ namespace chem
     LISP_CLASS(chem,ChemPkg,InPlug_O,"InPlug",PlugWithMates_O);
   public:
   InPlug_O( core::Symbol_sp name, core::List_sp mates, core::Symbol_sp bond0, BondOrder bondOrder0, core::Symbol_sp bond1, BondOrder bondOrder1 ) : PlugWithMates_O(name,mates,bond0,bondOrder0,bond1,bondOrder1) {};
+    InPlug_O() {};
   public:
     CL_LISPIFY_NAME("make-in-plug");
     CL_LAMBDA("name mates bond0 bondorder0 &optional bond1 (bondorder1 :single-bond)");
@@ -225,6 +232,7 @@ namespace chem
       return me;
     };
   public:
+    virtual bool fieldsp() const { return true; };
     virtual void fields(core::Record_sp node);
   public:
   
@@ -248,6 +256,7 @@ namespace chem
     LISP_CLASS(chem,ChemPkg,JumpPlug_O,"JumpPlug",Plug_O);
   public: // ctors
   JumpPlug_O(core::Symbol_sp name, MatterName jumpAtomName ) : Plug_O(name), _JumpAtomName(jumpAtomName) {};
+    JumpPlug_O() {};
   public:
     CL_LISPIFY_NAME("make-jump-plug");
     CL_LAMBDA("plug-name jump-atom-name");
@@ -255,9 +264,10 @@ namespace chem
       return gctools::GC<JumpPlug_O>::allocate(name,jumpAtomName);
     }
   public:
+    virtual bool fieldsp() const { return true; };
     virtual void fields(core::Record_sp node);
   private:
-    MatterName		_JumpAtomName;
+    MatterName		_JumpAtomName {_Nil<core::Symbol_O>()};
   public:
 
     /*! Return the name of the root atom */
@@ -277,6 +287,7 @@ namespace chem
     LISP_CLASS(chem,ChemPkg,OriginPlug_O,"OriginPlug",Plug_O);
   public: // ctors
   OriginPlug_O(core::Symbol_sp name, MatterName originAtomName ) : Plug_O(name), _OriginAtomName(originAtomName) {};
+    OriginPlug_O() {};
   public:
     CL_LISPIFY_NAME("make-origin-plug");
     CL_LAMBDA("plug-name origin-atom-name");
@@ -284,9 +295,10 @@ namespace chem
       return gctools::GC<OriginPlug_O>::allocate(name,originAtomName);
     }
   public:
+    virtual bool fieldsp() const { return true; };
     virtual void fields(core::Record_sp node);
   private:
-    MatterName		_OriginAtomName;
+    MatterName		_OriginAtomName {_Nil<core::Symbol_O>()};
   public:
 
     /*! Return the name of the root atom */
@@ -307,6 +319,7 @@ namespace chem
     LISP_CLASS(chem,ChemPkg,RingClosingPlug_O,"RingClosingPlug",OutPlug_O);
   public:
   RingClosingPlug_O( core::Symbol_sp name, core::List_sp mates, MatterName stubPivotAtom, core::Symbol_sp bond0, BondOrder bondOrder0, core::Symbol_sp bond1, BondOrder bondOrder1 ) : OutPlug_O(name,mates,stubPivotAtom,bond0,bondOrder0,bond1,bondOrder1) {};
+    RingClosingPlug_O() {};
   public:
     CL_LISPIFY_NAME("make-ring-closing-plug");
     CL_DEF_CLASS_METHOD static RingClosingPlug_sp make(core::Symbol_sp name, core::List_sp mates, MatterName stubPivotAtom, core::Symbol_sp bond0, BondOrder bondOrder0, core::Symbol_sp bond1, BondOrder bondOrder1) {
@@ -316,6 +329,7 @@ namespace chem
     };
 
   public:
+    virtual bool fieldsp() const { return true; };
     virtual void fields(core::Record_sp node);
   public:
     bool getIsIn() { return false;};

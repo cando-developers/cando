@@ -90,10 +90,10 @@ FORWARD(BondedJoint);
 	virtual Joint_sp stubAtom3(AtomTree_sp tree) const;
 
 	/*! Update the internal coordinates */
-	virtual void updateInternalCoords(Stub& stub,
-					  bool const recursive,
+	virtual void updateInternalCoords(bool const recursive,
 					  AtomTree_sp at);
 
+      virtual void _updateInternalCoord();
 
 	bool keepDofFixed(DofType dof,AtomTree_sp at) const;
 
@@ -101,15 +101,16 @@ FORWARD(BondedJoint);
 	string asString() const;
 
 	/*! Update the external coordinates */
-	virtual void updateXyzCoords(AtomTree_sp at);
+	virtual void updateXyzCoords();
 
 
 	/*! Update the external coordinates using the input stub */
-	virtual void _updateXyzCoords(Stub& stub,AtomTree_sp at);
+      virtual void _updateXyzCoords(Stub& stub);
+      virtual void _updateXyzCoord(Stub& stub);
 
+      Stub getStub() const;
 
-
-	/*! Get the value of the DOF */
+	/*! Geta the value of the DOF */
 	double dof(DofType const& dof) const;
 
       CL_DEFMETHOD double getDistance() const { return this->_Distance; }
