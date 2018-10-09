@@ -61,7 +61,9 @@
                 error-value)))))
 
 (defun (setf lookup-variable*) (new-value name environment)
-  (setf (gethash name (%variables environment)) new-value))
+  (if (typep new-value 'chem:topology)
+      (cando:register-topology name new-value)
+      (setf (gethash name (%variables environment)) new-value)))
 
 (defun evaluate (builder ast environment)
   (architecture.builder-protocol:walk-nodes

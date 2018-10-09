@@ -300,7 +300,7 @@ Load the OFF file containing forms into new-leap."
       (let ((ht (leap.off:read-off-lib fin))
             names)
         (maphash (lambda (name form)
-                   (cando:register-topology name form)
+                   (leap.core:register-variable name form)
                    (push name names))
                  ht)
         (nreverse names)))))
