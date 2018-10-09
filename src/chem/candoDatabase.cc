@@ -820,6 +820,7 @@ CL_DEFMETHOD void CandoDatabase_O::setf_findTopology(core::T_sp name, Topology_s
 core::T_mv CandoDatabase_O::findTopology(core::T_sp name, bool errorp) const {
   core::T_mv result_mv = this->_Topologys->gethash(name);
   if (result_mv.second().nilp()) {
+    if (!errorp) return Values(_Nil<core::T_O>(),_Nil<core::T_O>());
     SIMPLE_ERROR(BF("Could not find topology with name %s") % core::_rep_(name));
   }
   return result_mv;
