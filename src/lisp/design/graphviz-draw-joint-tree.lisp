@@ -3,16 +3,18 @@
 (in-package :design.graphviz-draw-joint-tree)
 
 (defparameter *table* nil)
+(defparameter *color-joints* nil)
 
 (defun id (ast)
   (symbol-name (gethash ast *table*)))
 
-(defun draw-joint-tree (atom-tree filename)
-  (with-open-file (stream filename :direction :output :if-exists :supersede)
-    (format stream "digraph G {~%   ordering = out; ~%")
-    (let ((*table* (make-hash-table :test #'eq)))
-      (stream-draw-joint (kin:atom-tree-root atom-tree) atom-tree stream))
-    (format stream "}~%")))
+(defun draw-joint-tree (atom-tree filename &optional color-joints)
+  (let ((*color-joints* color-joints))
+    (with-open-file (stream filename :direction :output :if-exists :supersede)
+      (format stream "digraph G {~%   ordering = out; ~%")
+      (let ((*table* (make-hash-table :test #'eq)))
+        (stream-draw-joint (kin:atom-tree-root atom-tree) atom-tree stream))
+      (format stream "}~%"))))
 
 (defmethod stream-draw-joint :around (joint atom-tree stream)
   (when (null (gethash joint *table*))
@@ -34,15 +36,40 @@
   (format stream "   ~a [label = \"~a\"];~%" (id joint) (label joint)))
 
 (defmethod stream-draw-joint ((joint kin:joint) atom-tree stream)
-  (format stream "   ~a [label = \"~a\"];~%" (id joint) (label joint)))
+  (let ((highlight (cond
+                      ((let ((color (and *color-joints* (gethash joint *color-joints*))))
+                         (if color
+                             (format nil "style=filled;color=~a;" color)
+                             nil))
+                       (t "")))))
+    (format stream "   ~a [~alabel = \"~a\"];~%" (id joint) highlight (label joint))))
 
+
+(defmethod stream-draw-joint ((joint kin:bonded-atom) atom-tree stream)
+  (let ((highlight (cond
+                     ((let ((color (and *color-joints* (gethash joint *color-joints*))))
+                         (if color
+                             (format nil "style=filled;color=~a;" color)
+                             nil)))
+                     (t ""))))
+    (format stream "   ~a [~alabel = \"~a\"];~%" (id joint) highlight (label joint))))
+
+
+;;; This version draws joints with internal coordinates
+#+(or)
 (defmethod stream-draw-joint ((joint kin:bonded-atom) atom-tree stream)
   (let* ((pos (kin:get-position joint))
          (start-pos (kin:get-property-or-default joint :start-pos nil))
-         (highlight (if start-pos
-                        (if (> (geom:vlength (geom:v- start-pos pos)) 0.01)
-                            (format nil "style=filled;color=red;")
-                            ""))))
+         (highlight (cond
+                      ((let ((color (and *color-joints* (gethash joint *color-joints*))))
+                         (if color
+                             (format nil "style=filled;color=~a;" color)
+                             nil))
+                       (if start-pos
+                           (if (> (geom:vlength (geom:v- start-pos pos)) 0.01)
+                               (format nil "style=filled;color=red;")
+                               ""))
+                       (t "")))))
     (format stream "   ~a [~alabel = \"~a~%~a~%#(~4,2f ~4,0f ~4,0f)~%~s~%~s~%~s\"];~%"
             (id joint)
             highlight
@@ -56,10 +83,17 @@
             (kin:properties joint))))
 
 (defmethod stream-draw-joint ((joint kin:jump-atom) atom-tree stream)
-  (format stream "   ~a [label = \"~a~%~a~%relative-transform~%~s~%lab-frame~%~s~%~s\"];~%"
+  (let ((highlight (cond
+                     ((let ((color (and *color-joints* (gethash joint *color-joints*))))
+                        (if color
+                            (format nil "style=filled;color=~a;" color)
+                            nil)))
+                     (t ""))))
+  (format stream "   ~a [~alabel = \"~a~%~a~%relative-transform~%~s~%lab-frame~%~s~%~s\"];~%"
           (id joint)
+          highlight
           (label joint)
           (kin:atom-id joint)
           (kin:get-parent-relative-transform joint)
           (kin:get-lab-frame joint)
-          (kin:properties joint)))
+          (kin:properties joint))))
