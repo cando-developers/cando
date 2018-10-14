@@ -153,10 +153,10 @@ CL_DEFMETHOD core::T_sp	SuperposableConformationCollection_O::createEntryIfConfo
 		// Now compare this conformation to every one in the database
 		//
       superposer = SuperposeEngine_O::create();
-      superposer->setFixedPoints(this->_SuperposeAtomIndices,newConf);
+      superposer->setMoveablePoints(this->_SuperposeAtomIndices,newConf);
       double rms;
       gctools::Vec0<ConformationCollectionEntry_sp>::iterator	ci;
-      geom::SimpleVectorCoordinate_sp				moveable;
+      geom::SimpleVectorCoordinate_sp				entryCoordinates;
 
 		//
 		// Loop through the low-high entry range and compare the structures
@@ -164,9 +164,9 @@ CL_DEFMETHOD core::T_sp	SuperposableConformationCollection_O::createEntryIfConfo
 		//
       for ( ci=this->_Entries.begin(); ci!=this->_Entries.end(); ci++ )
       {
-        moveable = (*ci)->getAllCoordinates();
-        LOG(BF("Moveable points before superpose:%s") % (moveable->asXmlString()) );
-        superposer->setMoveablePoints(this->_SuperposeAtomIndices, moveable);
+        entryCoordinates = (*ci)->getAllCoordinates();
+        LOG(BF("Entry coordinates before superpose:%s") % (entryCoordinates->asXmlString()) );
+        superposer->setFixedPoints(this->_SuperposeAtomIndices, entryCoordinates);
         LOG(BF("About to superpose") );
         transform = superposer->superpose();
         rms = superposer->rootMeanSquareDifference();
@@ -181,7 +181,7 @@ CL_DEFMETHOD core::T_sp	SuperposableConformationCollection_O::createEntryIfConfo
           LOG(BF("Fixed points at the end of superposer: %s") % (newConf->asXmlString().c_str() ) );
           return _Nil<core::T_O>();
         }
-        LOG(BF("Moveable points after superpose:%s") % (moveable->asXmlString().c_str() ) );
+        LOG(BF("EntryCoordinates points after superpose:%s") % (entryCoordinates->asXmlString().c_str() ) );
       }
       LOG(BF("Fixed points at the end of superposer: %s") % (newConf->asXmlString().c_str() ) );
     }
@@ -191,6 +191,7 @@ CL_DEFMETHOD core::T_sp	SuperposableConformationCollection_O::createEntryIfConfo
 	// Ok, this is a new structure, so insert it into the list
 	//
   entry = this->createEntry();
+  geom__in_place_transform(newConf,transform);
   entry->setAllCoordinates(newConf);
   this->_Entries.push_back(entry);
   return entry;

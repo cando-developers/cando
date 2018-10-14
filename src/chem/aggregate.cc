@@ -362,7 +362,7 @@ CL_DEFMETHOD core::List_sp	Aggregate_O::atomsWithChimeraSpecifications(const str
         MatterVector& residues = mol->getContents();
 //        printf("%s:%d Using molecule content array to lookup atom\n", __FILE__, __LINE__);
         if ( (fileSequenceNumber-1) < residues.size() ) {
-          res = residues[fileSequenceNumber-1];
+          res = gc::As<Matter_sp>(residues[fileSequenceNumber-1]);
           if ( res->hasAtomWithName(atomSym) ) {
             atom = res->atomWithName(atomSym);
             result = core::Cons_O::create(atom,result);

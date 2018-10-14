@@ -148,7 +148,7 @@ CL_DEFMETHOD 	EntityNameSetBase_sp	getFocus() { return this->_Self; };
 		 * recognizes.  This is done by expanding all 
 		 * group names to monomer names. 
 		 */
-	adapt::SymbolSet_sp	getAllSpecificKeys();
+	adapt::StringSet_sp	getAllSpecificKeys();
 		//! Return the first specific key
     core::Symbol_sp		getFirstSpecificKey();
 

@@ -231,9 +231,9 @@ CL_DEFMETHOD core::Symbol_sp MonomerContext_O::getKey()
 
 
 CL_LISPIFY_NAME("getAllSpecificKeys");
-CL_DEFMETHOD     adapt::SymbolSet_sp	MonomerContext_O::getAllSpecificKeys()
+CL_DEFMETHOD     adapt::StringSet_sp	MonomerContext_O::getAllSpecificKeys()
     {
-	adapt::SymbolSet_sp	expandedList;
+	adapt::StringSet_sp	expandedList;
 	adapt::SymbolSet_sp	selfNames;
 	MCStringStack	name;
 	LOG(BF("Getting context strings for context: %s") % this->asXmlString().c_str()  );

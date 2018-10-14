@@ -13,6 +13,7 @@
    (:file "load")
    (:file "util")
    (:file "design")
+   (:file "trainers")
    (:file "graphviz-draw-joint-template")
    (:file "graphviz-draw-fold-tree")
    (:file "graphviz-draw-joint-tree")

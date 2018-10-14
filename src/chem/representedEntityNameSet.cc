@@ -124,7 +124,7 @@ CL_DEFMETHOD     bool	RepresentedEntityNameSet_O::hasRepresentative()
 	RepresentativeList_sp		objList;
 	Entity_sp			obj;
 	CandoDatabase_sp		bdb;
-	bdb = getCandoDatabase();
+	bdb = gc::As<CandoDatabase_sp>(getCandoDatabase());
 	if ( this->_Representative.nilp() )
 	{
 	    LOG(BF("this->_Representative.nilp -- expanding my EntryNames"));

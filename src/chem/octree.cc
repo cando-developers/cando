@@ -237,14 +237,14 @@ void Octree_O::dumpNode( OctNode_sp PonNode)
   }
 //	if ( PonNode->iStatus == OCT_PARTIAL  &&  PonNode->PonChildren == NULL ) {
   for (i=0; i<8; i++){
-    if ( PonNode->iStatus == OCT_PARTIAL  &&  PonNode->PonChildren[i].nilp() ) {
+    if ( PonNode->iStatus == OCT_PARTIAL  &&  PonNode->PonChildren[i].boundp() ) {
       fprintf(stderr, "partial without children\n");
 #if (!defined WIN32)
 		//kill(0,5);
 #endif
     }
 //	if ( PonNode->PonChildren != NULL ) {
-    if ( PonNode->PonChildren[i].notnilp() ) {
+    if ( PonNode->PonChildren[i].boundp() ) {
       if ( PonNode->iDepth >= this->_iMaxDepth ) {
         fprintf(stderr, "children too deep\n");
 #if (!defined WIN32)
@@ -420,11 +420,11 @@ void Octree_O::DestroyOctant( OctNode_sp PonNode, int iStatus )
 #ifdef DBG2
   fprintf(stderr, "@@@ destroy node 0x%x level %d type %d -> %d", 
           PonNode, PonNode->iLevel,  PonNode->iStatus, iStatus);
-  if (PonNode->PaAtomList.notnilp()) //if ( PonNode->PaAtomList != NULL )
+  if (PonNode->PaAtomList.boundp()) //if ( PonNode->PaAtomList != NULL )
     fprintf(stderr, " atomlist 0x%x", PonNode->PaAtomList);
   else
     fprintf(stderr, " atomlist null");
-  if (PonNode->Ponchildren.notnilp()) //if ( PonNode->PonChildren != NULL )
+  if (PonNode->Ponchildren.boundp()) //if ( PonNode->PonChildren != NULL )
     fprintf(stderr, " children 0x%x\n",  PonNode->PonChildren);
   else
     fprintf(stderr, " children null\n");
@@ -448,7 +448,7 @@ void Octree_O::DestroyOctant( OctNode_sp PonNode, int iStatus )
         DestroyOctant( PonNode->PonChildren[i], OCT_UNKNOWN );
       }
       for (i=0; i<8; i++){
-        PonNode->PonChildren[i]=_Nil<core::T_O>();//	FREE( PonNode->PonChildren );
+        PonNode->PonChildren[i]=_Unbound<OctNode_O>();//	FREE( PonNode->PonChildren );
       }
     }
   PonNode->iStatus = iStatus;
@@ -685,7 +685,7 @@ int Octree_O::iBuildShellOctant( OctNode_sp PonNode, int iAtoms, gctools::Vec0<A
 		//FREE( PonChildren );
 		//PonNode->PonChildren = NULL;
     for (i=0; i<8; i++) {
-      PonNode->PonChildren[i] = _Nil<core::T_O>();
+      PonNode->PonChildren[i] = _Unbound<OctNode_O>();
     }
     PonNode->iStatus = OCT_INCLUDED;
     return(OCT_INCLUDED);
@@ -1243,7 +1243,6 @@ void Octree_O::OctTreeDestroy()// Octree_sp PoctTree )
   //DestroyOctant( PoctTree->onHead, OCT_UNKNOWN );
 	//FREE( *PoctTree );
 	//*PoctTree = NULL;
-  this->asSmartPtr()  = _Nil<core::T_O>();
 //  PoctTree = _Nil<core::T_O>();
   return;
 }
@@ -2110,7 +2109,7 @@ PonNode->vCorner.dZ + 2 * PdHalfEdges[PonNode->iDepth]));
 //	if ( PonNode->PonChildren == NULL ) {
   isPonChildren = false;
   for (i=0; i<8; i++){
-    if ( PonNode->PonChildren[i].notnilp()){
+    if ( PonNode->PonChildren[i].boundp()){
       isPonChildren = true;
     }
   }
@@ -2177,7 +2176,7 @@ Residue_sp Octree_O::rOctTreeCheckSolvent( /*Octree_sp octTree,*/ Vector3 vPoint
   if (!this->OctNodeCheckSolvent( this->onHead ) ) {
     printf("Completely out of solvent bounding area\n");
 //		return(NULL);
-    return(_Nil<core::T_O>());
+    return(_Nil<Residue_O>());
   }
   
 	/*

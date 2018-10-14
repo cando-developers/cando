@@ -9,7 +9,7 @@
       (gethash (cons name context) *map-pdb-names-to-topology-names*)
     (if foundp
         (cando:lookup-topology topology-name t)
-        (let ((topology (cando:lookup-topology name t)))
+        (let ((topology (cando:lookup-topology name nil)))
           topology))))
 
 (defun add-pdb-res-map (mappings)

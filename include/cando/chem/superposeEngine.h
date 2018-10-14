@@ -96,7 +96,10 @@ public:
 	void	appendFixedPoint(const Vector3& pos);
 
 //	geom::SimpleVectorCoordinate_sp	getFixedCoordinates();
-	geom::SimpleVectorCoordinate_sp	getMoveableCoordinates();
+  inline core::Array_sp	getMoveableCoordinates() {
+    return this->_MoveableCoordinates;
+  }
+
 
 //	void	setMoveableIndex(const vector<int> vi);
 	int	getNumberOfFixedPoints();
@@ -116,12 +119,6 @@ public:
 
 	DEFAULT_CTOR_DTOR(SuperposeEngine_O);
 };
-
-inline	geom::SimpleVectorCoordinate_sp	SuperposeEngine_O::getMoveableCoordinates()
-{_OF();
-    ASSERTNOTNULL(this->_MoveableCoordinates);
-    return this->_MoveableCoordinates;
-}
 
 
 

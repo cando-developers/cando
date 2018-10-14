@@ -843,7 +843,7 @@ namespace chem {
     CL_LISPIFY_NAME("make-chain.head");
     CL_DEF_CLASS_METHOD static Chain_sp create_head( BondMatchNode_sp head )
     {
-      return create_head_tail(head,_Nil<core::T_O>());
+      return create_head_tail(head,_Nil<BondListMatchNode_O>());
     }
 
   public:
@@ -1088,7 +1088,7 @@ namespace chem {
                                      AtomOrBondMatchNode_sp node,
                                      BondListMatchNode_sp bl )
     {_G();
-      return create( assignType, node, bl, _Nil<core::T_O>() );
+      return create( assignType, node, bl, _Nil<RootMatchNode_O>() );
     };
     static AntechamberRoot_sp create(core::Symbol_sp assignType,
                                      gc::Nilable<AtomOrBondMatchNode_sp> node )

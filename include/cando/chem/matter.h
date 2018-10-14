@@ -334,7 +334,7 @@ class Matter_O : public core::CxxObject_O
 
   int		contentIndex( Matter_sp c);
   CL_LISPIFY_NAME("contentAt");
-  CL_DEFMETHOD   Matter_sp	contentAt( int i ) { return this->_contents[i]; };
+  CL_DEFMETHOD   Matter_sp	contentAt( size_t i ) const;
   CL_LISPIFY_NAME("contentSize");
   CL_DEFMETHOD   int		contentSize( ) { return this->_contents.size(); };
 
@@ -392,7 +392,7 @@ class Matter_O : public core::CxxObject_O
 //    _Id(1),
 //    _TempFileId(0),
   name(_Nil<core::Symbol_O>()),
-    containerContainedBy(_Unbound<core::T_O>()),
+    containerContainedBy(_Unbound<Matter_O>()),
     _Properties(_Nil<core::T_O>()),
     _Restraints(_Nil<core::T_O>()) {};
 };

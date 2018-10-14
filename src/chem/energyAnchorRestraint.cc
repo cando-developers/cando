@@ -44,7 +44,7 @@ namespace chem {
 
     EnergyAnchorRestraint::EnergyAnchorRestraint()
 {
-  this->_Atom1 = _Nil<core::T_O>();
+  this->_Atom1 = _Nil<Atom_O>();
 }
 
 EnergyAnchorRestraint::~EnergyAnchorRestraint()

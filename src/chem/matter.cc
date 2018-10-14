@@ -70,6 +70,14 @@ CL_EXTERN_DEFMETHOD(Matter_O,(Matter_sp(Matter_O::*)() const)&Matter_O::containe
 //
 
 
+CL_DEFMETHOD Matter_sp Matter_O::contentAt(size_t i) const
+{
+  if (i<this->_contents.size()) {
+    return this->_contents[i];
+  }
+  SIMPLE_ERROR(BF("Content index %lu is out of bounds (max %lu)") % i % this->_contents.size());
+}
+
 string Matter_O::__repr__() const
 {
   stringstream ss;

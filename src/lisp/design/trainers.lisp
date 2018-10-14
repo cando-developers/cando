@@ -16,6 +16,8 @@
    (focus-monomer-sequence-number :initarg :focus-monomer-sequence-number :accessor focus-monomer-sequence-number)
    (context :initarg :context :accessor context)
    (conformation :initarg :conformation :accessor conformation)
+   (aggregate :initarg :aggregate :accessor aggregate)
+   (atom-id-map :initarg :atom-id-map :accessor atom-id-map)
    (superposable-conformation-collection :accessor superposable-conformation-collection)))
 
 (defun collect-focus-joints (conformation focus-monomer-index)
@@ -49,27 +51,29 @@
      (alexandria:hash-table-keys focus-joints)))
 
 (defun augment-trainer-with-superposable-conformation-collection (trainer)
-  (loop for oligomer = (oligomer trainer)
-        for mol = (chem:get-molecule oligomer)
-        for agg = (let ((agg (chem:make-aggregate)))
-                    (chem:add-molecule agg mol)
-                    agg)
-        for conformation = (kin:make-conformation (list oligomer))
-        for focus-joints = (collect-focus-joints conformation (focus-monomer-sequence-number trainer))
-        for atom-id-map = (chem:build-atom-id-map agg)
-        for superpose-atoms = (loop for focus-joint in focus-joints
-                                    for atom = (chem:lookup-atom atom-id-map (kin:atom-id focus-joint))
-                                    when (not (eq (chem:get-element atom) :H))
-                                      collect atom)
-        ;; Now collect the atoms in the aggregate that correspond to the focus
-        for superposable-conformation-collection = (let ((scc (core:make-cxx-object 'chem:superposable-conformation-collection)))
-                                                     (chem:set-rms-cut-off scc 1.0)
-                                                     (chem:set-matter scc agg)
-                                                     (loop for superpose-atom in superpose-atoms
-                                                           do (chem:add-superpose-atom scc superpose-atom))
-                                                     scc)
-        do (setf (superposable-conformation-collection trainer) superposable-conformation-collection)
-        ))
+  (let* ((oligomer (oligomer trainer))
+         (mol (chem:get-molecule oligomer))
+         (agg (let ((agg (chem:make-aggregate)))
+                (chem:add-molecule agg mol)
+                agg))
+         (conformation (kin:make-conformation (list oligomer)))
+         (focus-joints (collect-focus-joints conformation (focus-monomer-sequence-number trainer)))
+         (atom-id-map (chem:build-atom-id-map agg))
+         (superpose-atoms (loop for focus-joint in focus-joints
+                                for atom = (chem:lookup-atom atom-id-map (kin:atom-id focus-joint))
+                                when (not (eq (chem:get-element atom) :H))
+                                  collect atom))
+         ;; Now collect the atoms in the aggregate that correspond to the focus
+         (superposable-conformation-collection (let ((scc (core:make-cxx-object 'chem:superposable-conformation-collection)))
+                                                 (chem:set-rms-cut-off scc 1.0)
+                                                 (chem:set-matter scc agg)
+                                                 (loop for superpose-atom in superpose-atoms
+                                                       do (chem:add-superpose-atom scc superpose-atom))
+                                                 scc)))
+    (setf (conformation trainer) conformation
+          (aggregate trainer) agg
+          (atom-id-map trainer) atom-id-map
+          (superposable-conformation-collection trainer) superposable-conformation-collection)))
 
 
 (defun build-trainers (oligomers)
@@ -91,3 +95,50 @@
 
     
 
+
+(defun jostle-trainer (trainer)
+  (let ((aggregate (aggregate trainer))
+        (atom-id-map (atom-id-map trainer))
+        (superposable-conformation-collection (superposable-conformation-collection trainer)))
+    (cando:jostle aggregate)
+    (energy:minimize aggregate :max-tn-steps 500)
+    (chem:create-entry-if-conformation-is-new superposable-conformation-collection aggregate)))
+
+
+(defun combine-all-coordinates (trainer)
+  (let ((conf-col (superposable-conformation-collection trainer))
+        (conf-col-agg (aggregate trainer))
+        (agg (chem:make-aggregate)))
+    (loop for index below (chem:number-of-entries conf-col)
+          for entry = (chem:get-entry conf-col index)
+          do (chem:write-coordinates-to-matter entry conf-col-agg)
+          do (let ((new-mol (chem:matter-copy (chem:content-at conf-col-agg 0))))
+               (chem:add-matter agg new-mol)))
+    agg))
+
+(defun extract-internal-coordinates (trainer)
+  (let ((conf-col (superposable-conformation-collection trainer))
+        (conf-col-agg (aggregate trainer))
+        (conformation (conformation trainer))
+        (atom-id-map (atom-id-map trainer))
+        (focus-monomer-sequence-number (focus-monomer-sequence-number trainer)))
+    (loop for index below (chem:number-of-entries conf-col)
+          for entry = (chem:get-entry conf-col index)
+          do (chem:write-coordinates-to-matter entry conf-col-agg)
+             (kin:walk (kin:get-atom-tree conformation) 
+                       (lambda (o) 
+                         (let* ((atom (chem:lookup-atom atom-id-map (kin:atom-id o)))
+                                (pos (chem:get-position atom)))
+                           (kin:set-position o pos))))
+             (kin:update-internal-coords (kin:get-atom-tree conformation))
+             (kin:walk-joints (kin:lookup-monomer-id (kin:get-fold-tree conformation)
+                                                     (list 0 focus-monomer-sequence-number))
+                              (lambda (i a) 
+                                (cond
+                                  ((typep a 'kin:bonded-atom) 
+                                   (format t "~a distance = ~4,2f  theta = ~5,2f phi = ~5,2f~%" 
+                                           (kin:atom-id a)
+                                           (kin:get-distance a)
+                                           (/ (kin:get-theta a) 0.0174533)
+                                           (/ (kin:get-phi a) 0.0174533) ))
+                                  (t (format t "~a -> ~a~%" (kin:atom-id a) a))))))))
