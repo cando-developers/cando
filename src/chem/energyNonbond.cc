@@ -62,13 +62,13 @@ namespace chem
 
 core::List_sp EnergyNonbond::encode() const {
   return core::Cons_O::createList(core::Cons_O::create(INTERN_(kw,da),core::clasp_make_double_float(this->term.dA)),
-                                  core::Cons_O::create(INTERN_(kw,dc),core::clasp_make_double_float(this->term.dC)),
+                                  core::Cons_O::create(INTERN_(kw,dc),core::clasp_make_double_float(this->term.dC))
                                   core::Cons_O::create(INTERN_(kw,i1), core::make_fixnum(this->term.I1)),
                                   core::Cons_O::create(INTERN_(kw,i2), core::make_fixnum(this->term.I2)),
                                   core::Cons_O::create(INTERN_(kw,charge1), core::clasp_make_double_float(this->_Charge1)),
                                   core::Cons_O::create(INTERN_(kw,charge2), core::clasp_make_double_float(this->_Charge2))
-                                  //core::Cons_O::create(INTERN_(kw,atom1), this->_Atom1),
-                                  //core::Cons_O::create(INTERN_(kw,atom2), this->_Atom2)
+                                  core::Cons_O::create(INTERN_(kw,atom1), this->_Atom1),
+                                  core::Cons_O::create(INTERN_(kw,atom2), this->_Atom2)
                                   );
 }
 
@@ -717,7 +717,6 @@ CL_DEFMETHOD void EnergyNonbond_O::expandExcludedAtomsToTerms()
 //  int maxIndex = pos->length()/3;
   int maxIndex = this->_AtomTable->getNumberOfAtoms();
   printf( "maxindex %d\n", maxIndex);
-  int excludedAtomIndex = 0;
   int nlocaltype = 0;
   // Find the max local type
   for (i=0; i<this->_iac_vec->length(); ++i){
@@ -725,8 +724,36 @@ CL_DEFMETHOD void EnergyNonbond_O::expandExcludedAtomsToTerms()
       nlocaltype = (*this->_iac_vec)[i];
     }
   }
-  int count;
+  // Count the number of nonbond cross terms that we are going to generate
+  size_t excludedAtomIndex = 0;
+  size_t count = 0;
+  for ( int index1 = 0, index1_end(maxIndex-1); index1 <index1_end; ++index1 ) {
+    LOG(BF("%s ====== top of outer loop - index1 = %d\n") % __FUNCTION__ % index1 );
+    int numberOfExcludedAtomsRemaining = numberOfExcludedAtoms->operator[](index1);
+    LOG(BF("Read numberOfExcludedAtomsRemaining from numberOfExcludedAtoms[%d]= %d\n") % index1 % numberOfExcludedAtomsRemaining);
+          // Skip 0 in excluded atom list that amber requires
+    if (numberOfExcludedAtomsRemaining<0) {
+      ++excludedAtomIndex;
+    }
+    for ( int index2 = index1+1, index2_end(maxIndex); index2 < index2_end; ++index2 ) {
+      LOG(BF("    --- top of inner loop   numberOfExcludedAtomsRemaining -> %d    index2 -> %d\n") % numberOfExcludedAtomsRemaining % index2 );
+      if (numberOfExcludedAtomsRemaining>0) {
+        LOG(BF("    excludedAtomIndices[%d] -> %d  index2 -> %d\n") % excludedAtomIndex % (*excludedAtomIndices)[excludedAtomIndex] % index2 );
+        if ((*excludedAtomIndices)[excludedAtomIndex] == index2) {
+          LOG(BF("    Excluding atom %d\n") % index2);
+          ++excludedAtomIndex;
+          --numberOfExcludedAtomsRemaining;
+          continue;
+        }
+      }
+      ++count;
+    }
+  }
+  this->_Terms.resize(count);
 
+  // Now fill in the terms
+  excludedAtomIndex = 0;
+  size_t termIndex = 0;
   for ( int index1 = 0, index1_end(maxIndex-1); index1 <index1_end; ++index1 ) {
     LOG(BF("%s ====== top of outer loop - index1 = %d\n") % __FUNCTION__ % index1 );
     int numberOfExcludedAtomsRemaining = numberOfExcludedAtoms->operator[](index1);
@@ -768,7 +795,12 @@ CL_DEFMETHOD void EnergyNonbond_O::expandExcludedAtomsToTerms()
       enb._Charge2 = charge22;
       enb.term.I1 = I1;
       enb.term.I2 = I2;
-      this->_Terms.push_back(enb);
+      if (termIndex<count) {
+        this->_Terms[termIndex] = enb;
+      } else {
+        SIMPLE_ERROR(BF("Overflowed the _Terms array with termIndex=%lu and count = %lu\n") % termIndex % count);
+      }
+      ++termIndex;
 //      printf( "nonbond index1 name %s index2 %s\n",  this->_AtomTable->elt_atom_name(index1), this->_AtomTable->elt_atom_name(index2));
 #ifdef DEBUG_NONBOND_TERM
       if ( this->_DebugEnergy ) {
@@ -806,10 +838,8 @@ CL_DEFMETHOD void EnergyNonbond_O::expandExcludedAtomsToTerms()
         LOG_ENERGY(BF( "MEISTER nonbond %s stop\n")% key );
       }
 #endif
-      count = count + 1;
     }
   }
-  printf ("Number of Nonbond %d\n", count);
 //  printf( "Nonbond energy vdw(%lf) electrostatic(%lf)\n", (double)this->_EnergyVdw,  this->_EnergyElectrostatic );
   LOG(BF( "Nonbond energy vdw(%lf) electrostatic(%lf)\n")% (double)this->_EnergyVdw % this->_EnergyElectrostatic );
   LOG(BF( "Nonbond energy }\n"));
@@ -1149,6 +1179,8 @@ CL_DEFMETHOD void EnergyNonbond_O::setNonbondExcludedAtomInfo(AtomTable_sp atom_
   this->_AtomTable = atom_table;
   this->_ExcludedAtomIndices = excluded_atoms_list;
   this->_NumberOfExcludedAtomIndices = number_excluded_atoms;
+    printf("%s:%d:%s   Exiting\n", __FILE__, __LINE__, __FUNCTION__ );
+
 }
 
 //core::List_sp termAtIndex(size_t index) const
