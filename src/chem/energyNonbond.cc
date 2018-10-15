@@ -62,13 +62,13 @@ namespace chem
 
 core::List_sp EnergyNonbond::encode() const {
   return core::Cons_O::createList(core::Cons_O::create(INTERN_(kw,da),core::clasp_make_double_float(this->term.dA)),
-                                  core::Cons_O::create(INTERN_(kw,dc),core::clasp_make_double_float(this->term.dC))
+                                  core::Cons_O::create(INTERN_(kw,dc),core::clasp_make_double_float(this->term.dC)),
                                   core::Cons_O::create(INTERN_(kw,i1), core::make_fixnum(this->term.I1)),
                                   core::Cons_O::create(INTERN_(kw,i2), core::make_fixnum(this->term.I2)),
                                   core::Cons_O::create(INTERN_(kw,charge1), core::clasp_make_double_float(this->_Charge1)),
                                   core::Cons_O::create(INTERN_(kw,charge2), core::clasp_make_double_float(this->_Charge2))
-                                  core::Cons_O::create(INTERN_(kw,atom1), this->_Atom1),
-                                  core::Cons_O::create(INTERN_(kw,atom2), this->_Atom2)
+                                  //core::Cons_O::create(INTERN_(kw,atom1), this->_Atom1),
+                                  //core::Cons_O::create(INTERN_(kw,atom2), this->_Atom2)
                                   );
 }
 
