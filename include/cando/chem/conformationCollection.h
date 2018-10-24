@@ -162,10 +162,17 @@ public:
 	entryIterator	end_Entries()
 		{ return this->_Entries.end();};
 
+  	entryIterator	begin_Entries() const
+		{ return this->_Entries.begin();};
+	entryIterator	end_Entries() const
+		{ return this->_Entries.end();};
+
 		//! Return the index of the entry
   size_t	getEntryIndex(ConformationCollectionEntry_sp entry);
 
 
+  core::List_sp entriesAsList() const;
+  
 	virtual void	clearEntries();
 	ConformationCollectionEntry_sp getEntry(uint i);
 	ConformationCollectionEntry_sp firstEntry();

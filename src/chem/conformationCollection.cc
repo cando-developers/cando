@@ -39,6 +39,7 @@ This is an open source license for the CANDO software from Temple University, bu
 
 #include <clasp/core/foundation.h>
 #include <clasp/core/hashTableEq.h>
+#include <clasp/core/ql.h>
 #include <cando/chem/conformationCollection.h>
 #include <cando/geom/coordinateArray.h>
 #include <cando/chem/loop.h>
@@ -152,8 +153,16 @@ CL_DEFMETHOD void	ConformationCollection_O::clearEntries()
 }
 
 
+CL_DEFMETHOD core::List_sp ConformationCollection_O::entriesAsList() const {
+  ql::list l;
+  for ( auto si=this->begin_Entries(); si!=this->end_Entries(); si++ ) {
+    l << *si;
+  }
+  return l.cons();
+}
 
-CL_DEFMETHOD geom::SimpleVectorCoordinate_sp ConformationCollection_O::_SimpleVectorCoordinate(Matter_sp agg)
+
+geom::SimpleVectorCoordinate_sp ConformationCollection_O::_SimpleVectorCoordinate(Matter_sp agg)
 {
   geom::SimpleVectorCoordinate_O::iterator	ci;
     gctools::SmallOrderedSet<Atom_sp>::iterator		ai;

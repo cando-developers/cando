@@ -355,7 +355,7 @@ SYMBOL_EXPORT_SC_(ClPkg,copy_seq);
 excluded atoms for each atom and the second containing the sorted excluded atom list */
 CL_DEFMETHOD core::T_mv AtomTable_O::calculate_excluded_atom_list()
 {
-  printf("%s:%d In calculate_excludec_atom_list\n", __FILE__, __LINE__ );
+//  printf("%s:%d In calculate_excludec_atom_list\n", __FILE__, __LINE__ );
 
   core::MDArray_int32_t_sp number_excluded_atoms = core::MDArray_int32_t_O::make_vector_with_fill_pointer(32,0,0);
   core::MDArray_int32_t_sp excluded_atoms_list = core::MDArray_int32_t_O::make_vector_with_fill_pointer(32,0,0);

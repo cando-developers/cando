@@ -1080,9 +1080,8 @@ void EnergyNonbond_O::constructNonbondTermsFromAtomTable(bool ignore14s, AtomTab
 
 void EnergyNonbond_O::constructExcludedAtomListFromAtomTable(AtomTable_sp atomTable, FFNonbondDb_sp forceField, bool show_progress)
 {
-  printf("%s:%d In :constructExcludedATomListFromAtomTable\n", __FILE__, __LINE__ );
-  
-  // ------------------------------------------------------------
+//  printf("%s:%d In :constructExcludedATomListFromAtomTable\n", __FILE__, __LINE__ );
+    // ------------------------------------------------------------
   //
   // The new code creates an excluded atom list
   //
@@ -1172,7 +1171,6 @@ CL_DEFMETHOD void EnergyNonbond_O::constructNonbondTermsFromAList(core::List_sp 
 //  this->_local_typej_vec =      safe_alist_lookup(values,kw::_sym_local_typej_vec);      // local-typej-vec
   this->_cn1_vec =              safe_alist_lookup<core::SimpleVectorDouble_sp>(values,kw::_sym_cn1_vec);
   this->_cn2_vec =              safe_alist_lookup<core::SimpleVectorDouble_sp>(values,kw::_sym_cn2_vec);
-  printf("%s:%d:%s   Exiting\n", __FILE__, __LINE__, __FUNCTION__ );
 }
 
 CL_DEFMETHOD void EnergyNonbond_O::setNonbondExcludedAtomInfo(AtomTable_sp atom_table, core::SimpleVector_int32_t_sp excluded_atoms_list, core::SimpleVector_int32_t_sp number_excluded_atoms) {

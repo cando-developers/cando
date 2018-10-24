@@ -202,7 +202,7 @@ string MonomerNode_O::__repr__() const {
 
 void MonomerNode_O::addJoint(size_t index, Joint_sp joint)
 {
-  core::write_bf_stream(BF("%s:%d:%s  joint.id = %s  index -> %lu  joint = %s\n") % __FILE__ % __LINE__ % __FUNCTION__ % joint->atomId().asString() % index % core::_rep_(joint));
+//  core::write_bf_stream(BF("%s:%d:%s  joint.id = %s  index -> %lu  joint = %s\n") % __FILE__ % __LINE__ % __FUNCTION__ % joint->atomId().asString() % index % core::_rep_(joint));
   if (this->_Joints.size() <= index ) {
     this->_Joints.resize(index+1);
   }

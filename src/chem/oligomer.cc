@@ -620,7 +620,7 @@ int			residueNetCharge;
       LOG(BF("Added matter"));
       monomersToResidues->hash_table_setf_gethash((*mi),res);
     }
-    core::write_bf_stream(BF("%s:%d Connecting residues\n") % __FILE__ % __LINE__ );
+//    core::write_bf_stream(BF("%s:%d Connecting residues\n") % __FILE__ % __LINE__ );
     gctools::Vec0<Coupling_sp>::iterator	ci;
     Monomer_sp	mon1, mon2;
     Residue_sp	res1, res2;
@@ -632,7 +632,7 @@ int			residueNetCharge;
 	ASSERT(mon2.notnilp());
         res1 = gc::As_unsafe<Residue_sp>(monomersToResidues->gethash(mon1));
         res2 = gc::As_unsafe<Residue_sp>(monomersToResidues->gethash(mon2));
-        core::write_bf_stream(BF("%s:%d  Connecting residues %s - %s\n") % __FILE__ % __LINE__ % _rep_(res1) % _rep_(res2));
+//        core::write_bf_stream(BF("%s:%d  Connecting residues %s - %s\n") % __FILE__ % __LINE__ % _rep_(res1) % _rep_(res2));
     	(*ci)->doCoupling(res1,res2);
     };
     return mol;
@@ -824,8 +824,8 @@ void Oligomer_O::_fillSequenceAsStringForChildren(Monomer_sp rootMonomer, string
     {
         Monomer_sp mon1 = (*oci)->getMonomer1();
         Monomer_sp mon2 = (*oci)->getMonomer2();
-        printf("%s:%d:%s About to build sequence \n", __FILE__, __LINE__, __FUNCTION__ );
-        printf("%s:%d:%s About to build sequence mon1 -> %s\n", __FILE__, __LINE__, __FUNCTION__, core::_rep_(mon1).c_str() );
+//        printf("%s:%d:%s About to build sequence \n", __FILE__, __LINE__, __FUNCTION__ );
+//        printf("%s:%d:%s About to build sequence mon1 -> %s\n", __FILE__, __LINE__, __FUNCTION__, core::_rep_(mon1).c_str() );
         seq << "( link '"<<mon1->getId()->symbolNameAsString();
 	seq <<" '"<<(*oci)->getName()->symbolNameAsString() << " ";
 	this->_fillMonomerAsString(mon2,seq);

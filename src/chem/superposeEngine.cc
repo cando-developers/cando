@@ -173,7 +173,6 @@ void	SuperposeEngine_O::doSuperpose()
     int				fixedIndicesSize, moveableIndicesSize;
     fixedIndicesSize = this->_FixedIndices->length();
     moveableIndicesSize = this->_MoveableIndices->length();
-    printf("Moveable indices fixed(%d) moveable(%d)\n", fixedIndicesSize, moveableIndicesSize);
     LOG(BF("Moveable indices fixed(%d) moveable(%d)") % fixedIndicesSize % moveableIndicesSize );
     ASSERTP(fixedIndicesSize==moveableIndicesSize,"num. fixed points must equal num. of moveable points");
     ASSERTF(fixedIndicesSize>=3, BF("You must have at least 3 points to superpose and you only have: %d")% fixedIndicesSize );
