@@ -1,0 +1,11 @@
+
+(load "source-dir:extensions;cando;src;lisp;start-cando.lisp")
+(setf *package* :cando-user)
+(defun suppress (func)
+  (format t "function ~a is ignored within mpi~%" func))
+(defun show (&rest args)
+  (suppress "show"))
+(defun png-from-file (&rest args)
+  (suppress "png-from-file"))
+(defun start-swank (&rest args)
+  (suppress "start-swank"))
