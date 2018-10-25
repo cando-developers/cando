@@ -26,7 +26,7 @@
        #+(or)(core:make-cxx-object 'chem:atom-test :sym sym :test :sapelement)
        )
       (:aromatic
-       (chem:create-sap-aromatic-element sym)
+       (chem:create-saparomatic-element sym)
        #+(or)(core:make-cxx-object 'chem:atom-test :sym sym :test :saparomatic-element)))))
 
 (defmethod architecture.builder-protocol:make-node ((builder (eql 'chem:chem-info))
