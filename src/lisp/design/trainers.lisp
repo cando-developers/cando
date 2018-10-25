@@ -85,13 +85,15 @@
                                                     (chem:goto-sequence oligomer sequence-id)
                                                     (chem:copy oligomer))))))
     (loop for oligomer in all-oligomers
-          append (loop for monomer in (chem:monomers-as-list oligomer)
+          do (loop for monomer in (chem:monomers-as-list oligomer)
                        for monomer-sequence-number = (chem:get-sequence-number monomer)
-                       for context = (monomer-context monomer)
-                       collect (make-instance 'trainers
-                                               :oligomer oligomer
-                                               :focus-monomer-sequence-number monomer-sequence-number
-                                               :context (monomer-context monomer))))))
+                   for context = (monomer-context monomer)
+                   do (format t "context: ~a~%" context)
+                   do (setf (gethash context result) (make-instance 'trainers
+                                                                    :oligomer oligomer
+                                                                    :focus-monomer-sequence-number monomer-sequence-number
+                                                                    :context (monomer-context monomer)))))
+    (alexandria:hash-table-values result)))
 
     
 
