@@ -361,7 +361,7 @@ namespace chem {
     virtual uint depth() const;
     virtual string asSmarts() const;
     virtual string __repr__() const;
-  Logical_O() : _Operator(logAlwaysTrue) {};
+    Logical_O() : _Operator(logAlwaysTrue), _Left(_Nil<AtomOrBondMatchNode_O>()), _Right(_Nil<AtomOrBondMatchNode_O>()) {};
     virtual ~Logical_O() {};
   };
 
@@ -486,11 +486,15 @@ namespace chem {
     gc::Nilable<AtomOrBondMatchNode_sp>	_AtomTest;
 
   public:
-    static BondTest_sp create(BondEnum b, gc::Nilable<AtomOrBondMatchNode_sp> node )
+    static BondTest_sp create(BondEnum b, core::T_sp nilOrNode )
     {_G();
       GC_ALLOCATE(BondTest_O, obj ); // RP_Create<BondTest_O>(lisp);
       obj->_Bond = b;
-      obj->_AtomTest = node;
+      if (nilOrNode.nilp()) {
+        obj->_AtomTest = _Nil<core::T_O>();
+      } else {
+        obj->_AtomTest = gc::As<AtomOrBondMatchNode_sp>(nilOrNode);
+      }
       return obj;
     }
 
@@ -664,14 +668,40 @@ namespace chem {
       obj->_SymbolArg = sym;
       return obj;
     };
-    static AtomTest_sp create( AtomTestEnum t) 
-    {_G();
-      return create( t, 0, 0, NULL, _Nil<core::Symbol_O>());
-    };
-    static AtomTest_sp create( AtomTestEnum t, int iArg ) 
-    {_G();
-      return create(  t, iArg, 0, NULL,_Nil<core::Symbol_O>() );
-    };
+    static AtomTest_sp create( AtomTestEnum t) { return create( t, 0, 0, NULL, _Nil<core::Symbol_O>());};
+    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPElectronegativeElement() { return create(SAPElectronegativeElement); };
+    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPAliphatic() { return create(SAPAliphatic); };
+    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPAromatic() { return create(SAPAromatic); };
+    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPChiralityAntiClockwise() { return create(SAPChiralityAntiClockwise); };
+    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPChiralityClockwise() { return create(SAPChiralityClockwise); };
+    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPPiBondOrbital() { return create(SAPPiBondOrbital); };
+    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPWildCard() { return create(SAPWildCard); };
+
+    static AtomTest_sp create( AtomTestEnum t, int iArg ) { return create(  t, iArg, 0, NULL,_Nil<core::Symbol_O>() );};
+    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPAM1_BCC_x( int intVal ) { return create(SAPAM1_BCC_x,intVal); };
+    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPAM1_BCC_y( int intVal ) { return create(SAPAM1_BCC_y,intVal); };
+    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPAromaticPiElectron(int intVal) { return create(SAPAromaticPiElectron,intVal); };
+    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPAtomicMass(int intVal) { return create(SAPAtomicMass,intVal); };
+    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPAtomicNumber(int intVal) { return create(SAPAtomicNumber,intVal); };
+    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPConnectivity(int intVal) { return create(SAPConnectivity,intVal); };
+    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPDegree(int intVal) { return create(SAPDegree,intVal); };
+    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPGroupNumber(int intVal) { return create(SAPGroupNumber,intVal); };
+    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPHeavyAtomTotalBond(int intVal) { return create(SAPHeavyAtomTotalBond,intVal); };
+    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPImplicitHCount(int intVal) { return create(SAPImplicitHCount,intVal); };
+    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPLambda(int intVal) { return create(SAPLambda,intVal); };
+    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPLonePair(int intVal) { return create(SAPLonePair,intVal); };
+    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPNegativeCharge(int intVal) { return create(SAPNegativeCharge,intVal); };
+    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPNegativeFormalCharge(int intVal) { return create(SAPNegativeFormalCharge,intVal); };
+    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPPositiveCharge(int intVal) { return create(SAPPositiveCharge,intVal); };
+    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPPositiveFormalCharge(int intVal) { return create(SAPPositiveFormalCharge,intVal); };
+    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPResidueTest(int intVal) { return create(SAPResidueTest,intVal); };
+    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPRingMembershipCount(int intVal) { return create(SAPRingMembershipCount,intVal); };
+    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPRingSize(int intVal) { return create(SAPRingSize,intVal); };
+    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPRingTest(int intVal) { return create(SAPRingTest,intVal); };
+    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPTotalHCount(int intVal) { return create(SAPTotalHCount,intVal); };
+    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPTransitionMetal(int intVal) { return create(SAPTransitionMetal,intVal); };
+    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPValence(int intVal) { return create(SAPValence,intVal); };
+
     static AtomTest_sp create( AtomTestEnum t, int iArg, int num ) 
     {_G();
       return create( t, iArg, num, NULL,_Nil<core::Symbol_O>() );
@@ -681,11 +711,11 @@ namespace chem {
       LOG(BF("Create an AtomTest with string argument: %s")%el);
       return create( t, 0, 0, el,_Nil<core::Symbol_O>());
     };
-    static AtomTest_sp create( AtomTestEnum t, core::Symbol_sp sym)
-    {
-      LOG(BF("Create an AtomTest with a symbol argument: %s") % sym->__repr__() );
-      return create( t, 0, 0, NULL, sym );
-    }
+    static AtomTest_sp create( AtomTestEnum t, core::Symbol_sp sym) {return create( t, 0, 0, NULL, sym );}
+
+    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPAromaticElement(const std::string& symbolName) { return create(SAPAromaticElement,chem::chemkw_intern(symbolName)); };
+    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPElement(const std::string& symbolName) { return create(SAPElement,chem::chemkw_intern(symbolName)); };
+    
     // Special makers
     CL_LISPIFY_NAME(make-atom-test-in-bond1);
     CL_DEF_CLASS_METHOD static AtomTest_sp create_in_bond1(BondEnum bond)
@@ -845,15 +875,24 @@ namespace chem {
     {
       return create_head_tail(head,_Nil<BondListMatchNode_O>());
     }
-
+    CL_DEF_CLASS_METHOD static Chain_sp create_empty_chain() {
+      GC_ALLOCATE(Chain_O,obj);
+      return obj;
+    }
   public:
-
-
     virtual	ChemInfoType	type() { return chain; };
     virtual	bool		matches( Root_sp root, chem::Atom_sp from, chem::BondList_sp neighbors );
+    CL_DEFMETHOD void chain_set_head(BondMatchNode_sp head) { this->_Head = head; };
+    CL_DEFMETHOD void chain_set_tail(BondListMatchNode_sp tail) { this->_Tail = tail; };
 
-    DEFAULT_CTOR_DTOR(Chain_O);
+    Chain_O() : _Head(_Nil<BondMatchNode_O>()), _Tail(_Nil<BondListMatchNode_O>()) {};
   };
+
+_Nil<core::T_O>()
+_Nil<core::Symbol_O>()
+_Nil<core::Null_O>()
+
+_Nil<BondMatchNode_O>()
 
 
   SMART(Branch);

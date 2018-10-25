@@ -156,7 +156,7 @@ is a list of stereoisomer-atoms.)");
     Residue_sp makeResidue();
 
     StereoisomerAtoms_O(core::Symbol_sp stereoisomerName);
-//    StereoisomerAtoms_O() {};
+    StereoisomerAtoms_O() {};
   };
 
 };

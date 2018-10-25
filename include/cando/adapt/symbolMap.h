@@ -71,7 +71,7 @@ template <typename OT>
         ASSERT(gc::IsA<core::Symbol_sp>(oCar(apair)));
         core::Symbol_sp key = gc::As_unsafe<core::Symbol_sp>(oCar(apair));
         core::T_sp value = oCdr(apair);
-        this->_v.insert2(key,gc::As<gc::smart_ptr<OT>>(value));
+        this->_v.insert2(key,gc::As_unsafe<gc::smart_ptr<OT>>(value)); // handle sharp-equal-wrapper
       }
       return;
     } else if ( o.nilp() ) {
