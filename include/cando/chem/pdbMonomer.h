@@ -85,7 +85,7 @@ public:
 //    void archiveBase(core::ArchiveP node);
 
     private:
-        adapt::SymbolMap<PdbMonomerConnectivity_O>   _Database; // was StringMap
+      gc::SmallMap<core::Symbol_sp, PdbMonomerConnectivity_sp>   _Database; // was StringMap
 public:
 void addMonomer(PdbMonomerConnectivity_sp);
         PdbMonomerConnectivity_sp findMonomer(core::Symbol_sp pdbName);

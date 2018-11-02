@@ -27,7 +27,7 @@ This is an open source license for the CANDO software from Temple University, bu
 
 #include <clasp/core/common.h>
 #include <clasp/core/ql.h>
-#include <clasp/core/environment.h>
+#include <clasp/core/evaluator.h>
 #include <cando/chem/monomer.h>
 #include <cando/chem/coupling.h>
 #include <cando/chem/oligomer.h>
@@ -132,5 +132,11 @@ core::List_sp ChainNode_O::children() const
   return l.cons();
 }
 
+void ChainNode_O::walkMonomerNodes(core::Function_sp callback)
+{
+  for ( auto i = this->_IndexedMonomerNodes.begin(); i!=this->_IndexedMonomerNodes.end(); ++i ) {
+    core::eval::funcall(callback,*i);
+  }
+}
 
 }; /* kinematics */

@@ -192,7 +192,8 @@ void	MapOfMonomerNamesToAtomIndexers_O::set(core::Symbol_sp nm, AtomIndexer_O::s
 
     adapt::SymbolSet_sp MapOfMonomerNamesToAtomIndexers_O::getMonomerNamesAsSymbolSet() const
     {_OF();
-	return adapt::SymbolSet_O::createFromKeysOfSymbolMap(this->_AtomIndexers);
+      IMPLEMENT_ME();
+//	return gc::Small_O::createFromKeysOfSymbolMap(this->_AtomIndexers);
     }
 
     bool MapOfMonomerNamesToAtomIndexers_O::recognizesMonomerName(core::Symbol_sp nm) const

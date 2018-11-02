@@ -136,6 +136,9 @@ void JointTemplate_O::fields(core::Record_sp node) {
   node->field(INTERN_(kw,comment),this->_Comment);
 }
 
+CL_DEFMETHOD size_t JointTemplate_O::id() const {
+  return this->_Id;
+};
 
 string JointTemplate_O::__repr__() const
 {

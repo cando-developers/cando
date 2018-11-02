@@ -74,7 +74,9 @@ namespace kinematics
     MonomerNode_sp lookupMonomerId(int monomerId) const;
 
     core::List_sp children() const;
- 
+
+    void walkMonomerNodes(core::Function_sp callback);
+
   };
 
 }; /* kinematics */

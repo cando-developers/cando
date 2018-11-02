@@ -80,7 +80,7 @@ namespace       chem {
     bool fieldsp() const { return true; };
     void fields(core::Record_sp node);
   public:
-    adapt::SymbolMap<core::String_O>	_database;
+    gc::SmallMap<core::Symbol_sp,core::String_sp>	_database;
   public:
     void forceFieldMerge(InfoDb_sp other) {
       for ( auto it : other->_database ) {

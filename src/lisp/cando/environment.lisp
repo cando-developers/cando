@@ -16,6 +16,10 @@
 (defun register-entity (name entity)
   (error "Implement register-entity")
   )
+
 (defun lookup-entity (name &optional (errorp t))
-  (error "Implement find-entity")
-  #+(or)(chem:find-entity name errorp))
+  (let ((maybe-topology (lookup-topology name nil)))
+    (if maybe-topology
+        maybe-topology
+        (when errorp
+          (error "Implement find-entity for ~a - it isn't a topology" name)))))

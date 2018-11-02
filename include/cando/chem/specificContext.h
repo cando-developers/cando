@@ -110,10 +110,10 @@ public: // virtual functions inherited from Object
 //	string	__repr__() const;
 
 private: // instance variables
-	adapt::SymbolMap<SpecificContext_O>	_KeySets;
+  gc::SmallMap<core::Symbol_sp, SpecificContext_sp>	_KeySets;
 
 public:
-	typedef adapt::SymbolMap<SpecificContext_O>::iterator	iterator;
+  typedef gc::SmallMap<core::Symbol_sp,SpecificContext_sp>::iterator	iterator;
 
 public:	// Creation class functions
 

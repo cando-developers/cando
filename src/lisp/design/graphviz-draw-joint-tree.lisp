@@ -30,18 +30,18 @@
 
 (defmethod label ((joint kin:joint))
   (let ((name (string (class-name (class-of joint)))))
-    (format nil "~a/~a" name (kin:name joint))))
+    (format nil "~a/~a~%~a" name (kin:name joint) (kin:atom-id joint))))
 
 (defmethod stream-draw-joint (joint atom-tree stream)
   (format stream "   ~a [label = \"~a\"];~%" (id joint) (label joint)))
 
 (defmethod stream-draw-joint ((joint kin:joint) atom-tree stream)
   (let ((highlight (cond
-                      ((let ((color (and *color-joints* (gethash joint *color-joints*))))
-                         (if color
-                             (format nil "style=filled;color=~a;" color)
-                             nil))
-                       (t "")))))
+                     ((let ((color (and *color-joints* (gethash joint *color-joints*))))
+                        (if color
+                            (format nil "style=filled;color=~a;" color)
+                            nil))
+                      (t "")))))
     (format stream "   ~a [~alabel = \"~a\"];~%" (id joint) highlight (label joint))))
 
 
@@ -89,11 +89,10 @@
                             (format nil "style=filled;color=~a;" color)
                             nil)))
                      (t ""))))
-  (format stream "   ~a [~alabel = \"~a~%~a~%relative-transform~%~s~%lab-frame~%~s~%~s\"];~%"
+  (format stream "   ~a [~alabel = \"~a~%relative-transform~%~s~%lab-frame~%~s~%~s\"];~%"
           (id joint)
           highlight
           (label joint)
-          (kin:atom-id joint)
           (kin:get-parent-relative-transform joint)
           (kin:get-lab-frame joint)
           (kin:properties joint))))

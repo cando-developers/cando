@@ -92,7 +92,7 @@ public:
 
 
 public:
-	typedef	adapt::SymbolMap<EntityNameSetBase_O>	NeighborMap;
+  typedef	gc::SmallMap<core::Symbol_sp,EntityNameSetBase_sp>	NeighborMap;
 private: // archive
 	EntityNameSetBase_sp		_Self;
 		//! Map coupling names to monomers

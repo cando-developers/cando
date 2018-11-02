@@ -62,7 +62,7 @@ public:
 	/*! Resize the number of Monomers in a Chain */
 	void resizeMonomers(int chainId, int numMonomers );
 
-  AggregateNode_sp foldTreeRoot() const;
+  AggregateNode_sp root() const;
   
 	/*! Build a Chain graph using the oligomer as a plan */
     ChainNode_sp buildChainUsingOligomer(int chainId, chem::Oligomer_sp oligomer);
@@ -73,6 +73,7 @@ public:
     /*! Return the ChainNode for the MonomerId */
     MonomerNode_sp lookupMonomerId(MonomerId const& monomerId) const;
 
+  void walkMonomerNodes(core::Function_sp callback);
 
 private:
 	/*! Point to the AggregateNode that contains the ChainNodes */

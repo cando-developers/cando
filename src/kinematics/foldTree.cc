@@ -26,7 +26,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #define	DEBUG_LEVEL_NONE
 
 #include <clasp/core/common.h>
-#include <clasp/core/environment.h>
+#include <clasp/core/evaluator.h>
 #include <cando/kinematics/aggregateNode.h>
 #include <cando/chem/oligomer.h>
 #include <cando/kinematics/chainNode.h>
@@ -94,7 +94,7 @@ ChainNode_sp FoldTree_O::getChainNode(int chainId) const
   return this->_AggregateNode->_Chains[chainId];
 }
 
-CL_DEFMETHOD AggregateNode_sp FoldTree_O::foldTreeRoot() const { return this->_AggregateNode; };
+CL_DEFMETHOD AggregateNode_sp FoldTree_O::root() const { return this->_AggregateNode; };
 
 
 CL_DOCSTRING("Return the monomer-node that corresponds to the monomer-id");
@@ -111,5 +111,9 @@ CL_DEFMETHOD MonomerNode_sp FoldTree_O::lookupMonomerId(MonomerId const& monomer
   SIMPLE_ERROR(BF("Out of bound chain node id %lu must be less than %lu") % monomerId.chainId() % this->_AggregateNode->_Chains.size());
 }
 
+CL_DEFMETHOD void FoldTree_O::walkMonomerNodes(core::Function_sp callback)
+{
+  this->_AggregateNode->walkMonomerNodes(callback);
+}
 
 }; /* kinematics */

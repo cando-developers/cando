@@ -140,7 +140,7 @@ FORWARD(MonomerNode);
     core::Symbol_sp jointTemplateAtomName(chem::ConstitutionAtoms_sp ca) const;
 
 	/*! Return the ConstitutionAtomIndex0N id for the JointTemplate */
-    chem::ConstitutionAtomIndex0N id() const { return this->_Id;};
+    size_t id() const;
 
 	/*! Return the comment associated with this object */
     CL_LISPIFY_NAME(joint-template-comment);
@@ -148,7 +148,7 @@ FORWARD(MonomerNode);
 
     CL_DEFMETHOD chem::ConstitutionAtomIndex0N constitutionAtomIndex() const { return this->_Id; };
 
-    typedef adapt::SymbolMap<BondId_O> PlugNamesToBondIdMap;
+    typedef gc::SmallMap<core::Symbol_sp,BondId_sp> PlugNamesToBondIdMap;
     virtual Joint_sp writeIntoAtomTree(const AtomTree_sp& atomTree,
                                        MonomerId monomerId,
                                        const BondId_sp& incoming,

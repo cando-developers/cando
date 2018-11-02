@@ -52,7 +52,7 @@ public:
 private:
 	/*! Store weak pointers to the other ring closing monomers indexed
 	  by the name of the ring closing plug */
-	adapt::SymbolMap<RingClosingMonomerNode_O>	_RingClosingChildren;
+  gc::SmallMap<core::Symbol_sp,RingClosingMonomerNode_sp>	_RingClosingChildren;
 public:
 	// Functions here
 

@@ -475,4 +475,36 @@ Examples:
                                                   cap-name-map
                                                   topology-map))))))
 
+(defun monomer-node-context (monomer-node)
+  (let* ((parent-node (kin:parent monomer-node))
+         (parent (if parent-node
+                     (kin:stereoisomer-name parent-node)
+                     nil))
+        (coupling (chem:coupling-name (kin:parent-plug-name monomer-node))))
+    (list coupling (kin:stereoisomer-name monomer-node))))
+
+(defun get-conformation (monomer-node conformations)
+  (let* ((context (monomer-node-context monomer-node))
+         (entry (gethash context conformations))
+         (conformation-index (kin:conformation-index monomer-node))
+         (internals (elt entry conformation-index)))
+    (format t "monomer-node ~s context: ~s ~s~%" monomer-node context internals)
+    internals))
+
+(defun set-conformation (monomer-node coordinates)
+  (let ((internals (get-conformation monomer-node coordinates)))
+    (loop for index = 0 then (+ index 5)
+          until (>= index (length internals))
+          do (let* ((atom-index (elt internals index))
+                    (atom-name (elt internals (+ index 1)))
+                    (dist (elt internals (+ index 2)))
+                    (theta (elt internals (+ index 3)))
+                    (phi (elt internals (+ index 4)))
+                    (joint (kin:joint-at monomer-node atom-index)))
+               (format t "joint: ~a  ~a  name: ~a index: ~a dist: ~a ~a ~a~%" joint (kin:atom-id joint)
+                       atom-name atom-index dist theta phi)
+               (when (typep joint 'kin:bonded-atom)
+                 (kin:set-distance joint dist)
+                 (kin:set-theta joint theta)
+                 (kin:set-phi joint phi))))))
 

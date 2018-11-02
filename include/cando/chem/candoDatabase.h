@@ -95,9 +95,9 @@ public:
   void	initialize();
 
 public:
-  typedef	adapt::SymbolMap<FrameRecognizer_O>	FrameRecognizers;
-  typedef	adapt::SymbolMap<MonomerCoordinates_O>		MonomerCoordinates;
-  typedef adapt::SymbolMap<Entity_O>		Entities;
+  typedef gc::SmallMap<core::Symbol_sp,FrameRecognizer_sp>	FrameRecognizers;
+  typedef gc::SmallMap<core::Symbol_sp,MonomerCoordinates_sp>		MonomerCoordinates;
+  typedef gc::SmallMap<core::Symbol_sp, Entity_sp>		Entities;
 private: // archive
   core::Symbol_sp				_Name;
   string				_DateCreated;

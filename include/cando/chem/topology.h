@@ -130,7 +130,7 @@ public:
 public:
   typedef Plug_sp	plugType;
   typedef Plug_O	plugOType;
-  typedef adapt::SymbolMap<Plug_O> Plugs;
+  typedef gc::SmallMap<core::Symbol_sp,Plug_sp> Plugs;
 public:
   core::Symbol_sp			      _Name;
   Constitution_sp			      _Constitution;

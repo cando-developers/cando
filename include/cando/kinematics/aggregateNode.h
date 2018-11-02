@@ -49,6 +49,7 @@ public:	// Functions here
 	/*! Resize the number of molecules */
   void resizeChains(int numChains);
   core::List_sp children() const;
+  void walkMonomerNodes(core::Function_sp callback);
 private:
 	// instance variables here
 	/*! Point to the Chains */

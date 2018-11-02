@@ -109,9 +109,9 @@ class MapOfMonomerNamesToAtomIndexers_O : public core::CxxObject_O
 public:
 //    void	archive(core::ArchiveP node);
 private:
-    adapt::SymbolMap<AtomIndexer_O>	_AtomIndexers;
+  gc::SmallMap<core::Symbol_sp, AtomIndexer_sp>	_AtomIndexers;
 public:
-    typedef	adapt::SymbolMap<AtomIndexer_O>::iterator	iterator;
+  typedef	gc::SmallMap<core::Symbol_sp,AtomIndexer_sp>::iterator	iterator;
 
 public:
 	iterator	begin() { return this->_AtomIndexers.begin(); };

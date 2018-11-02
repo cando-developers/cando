@@ -128,8 +128,8 @@ public:
         void fields(core::Record_sp node);
 public:
 	string			_AngleFunction;
-    adapt::SymbolMap<core::DoubleFloat_O>		_ZConstants;	//<! Angle parameter constants from Wang et al. J. Comput. Chem 25, 1157-1174 (2004)
-    adapt::SymbolMap<core::DoubleFloat_O>		_CConstants;	//<! Angle parameter constants from Wang et al. J. Comput. Chem 25, 1157-1174 (2004)
+  gc::SmallMap<core::Symbol_sp,core::DoubleFloat_sp>		_ZConstants;	//<! Angle parameter constants from Wang et al. J. Comput. Chem 25, 1157-1174 (2004)
+  gc::SmallMap<core::Symbol_sp, core::DoubleFloat_sp>		_CConstants;	//<! Angle parameter constants from Wang et al. J. Comput. Chem 25, 1157-1174 (2004)
 
 public:
 	void	setAngleFunction(const string& st) {this->_AngleFunction = st;};

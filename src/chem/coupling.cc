@@ -110,8 +110,9 @@ CL_DEFUN core::Symbol_sp  DirectionalCoupling_O::couplingName(core::Symbol_sp na
 	string	rest;
 	if ( sname[0] == IN_PLUG_PREFIX || sname[0] == OUT_PLUG_PREFIX ) {
 	    rest = sname.substr(1,sname.size());
-	} else rest = sname;
-	return chemkw_intern(rest);
+            return chemkw_intern(rest);
+	}
+	return name;
     }
 
 

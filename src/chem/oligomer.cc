@@ -438,6 +438,9 @@ CL_DEFMETHOD Monomer_sp	Oligomer_O::rootMonomer() const
   Monomer_sp	sub;
   Coupling_sp	coupling;
   coupling = _Unbound<Coupling_O>();
+  if (this->_Monomers.size()==0) {
+    SIMPLE_ERROR(BF("There are no monomers, root-monomer can not be determined"));
+  }
   sub = this->_Monomers[0];
   do {
     LOG(BF("Looking at monomer: %s") % sub->description().c_str()  );
@@ -841,7 +844,11 @@ void Oligomer_O::_fillSequenceAsStringForChildren(Monomer_sp rootMonomer, string
 
 string Oligomer_O::__repr__() const {
   stringstream ss;
-  ss << "#<" << this->className() << " " << this->sequenceAsFileName() << ">";
+  ss << "#<" << this->className() << " ";
+  if (this->_Monomers.size()>0) {
+    ss << this->sequenceAsFileName();
+  }
+  ss << ">";
   return ss.str();
 }
 

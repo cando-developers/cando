@@ -888,12 +888,6 @@ namespace chem {
     Chain_O() : _Head(_Nil<BondMatchNode_O>()), _Tail(_Nil<BondListMatchNode_O>()) {};
   };
 
-_Nil<core::T_O>()
-_Nil<core::Symbol_O>()
-_Nil<core::Null_O>()
-
-_Nil<BondMatchNode_O>()
-
 
   SMART(Branch);
   class Branch_O : public BondListMatchNode_O

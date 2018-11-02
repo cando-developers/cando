@@ -10,7 +10,7 @@
   (with-open-file (stream filename :direction :output :if-exists :supersede)
     (format stream "digraph G {~%   ordering = out; ~%")
     (let ((*table* (make-hash-table :test #'eq)))
-      (stream-draw-fold (kin:fold-tree-root fold-tree) fold-tree stream))
+      (stream-draw-fold (kin:root fold-tree) fold-tree stream))
     (format stream "}~%")))
 
 (defmethod stream-draw-fold :around (fold fold-tree stream)

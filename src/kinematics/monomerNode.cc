@@ -230,5 +230,29 @@ CL_DEFMETHOD void MonomerNode_O::walkJoints(core::Function_sp callback) {
   }
 }
 
+CL_DEFMETHOD size_t MonomerNode_O::conformationIndex() const
+{
+  return this->_ConformationIndex;
+};
+CL_DEFMETHOD void MonomerNode_O::setConformationIndex(size_t i) {
+  this->_ConformationIndex = i;
+};
+
+CL_DEFMETHOD core::T_sp MonomerNode_O::parent() const {
+  if (this->_Parent.boundp()) return this->_Parent;
+  return _Nil<core::T_O>();
+}
+
+CL_DEFMETHOD core::Symbol_sp MonomerNode_O::parentPlugName() const {
+  return this->_ParentPlugName;
+}
+
+CL_DEFMETHOD Joint_sp MonomerNode_O::jointAt(size_t i) const {
+  if (i< this->_Joints.size()) {
+    return this->_Joints[i];
+  }
+  SIMPLE_ERROR(BF("Joint index %d must be less than %d") % i % this->_Joints.size());
+}
+
     
 }; /* kinematics */

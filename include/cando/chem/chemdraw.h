@@ -266,7 +266,7 @@ class ChemDraw_O : public core::CxxObject_O
   static void lisp_initGlobals(core::Lisp_sp lisp);
  public:
   typedef	gctools::Vec0<CDFragment_sp>	Fragments;
-  typedef adapt::SymbolMap<CDFragment_O>	NamedFragments;
+  typedef gc::SmallMap<core::Symbol_sp,CDFragment_sp>	NamedFragments;
     
  private:
   Fragments	_AllFragments;

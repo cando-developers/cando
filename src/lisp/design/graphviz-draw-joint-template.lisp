@@ -26,7 +26,7 @@
 
 (defmethod label (joint-template)
   (let ((name (string (class-name (class-of joint-template)))))
-    (format nil "~a/~a" name (kin:name joint-template))))
+    (format nil "~a/~a[~a]" name (kin:name joint-template) (kin:id joint-template))))
 
 (defmethod stream-draw-joint-template ((joint-template kin:joint-template) stream)
   (format stream "   ~a [label = \"~a\"];~%" (id joint-template) (label joint-template)))

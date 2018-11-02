@@ -169,7 +169,7 @@ void AtomTree_O::replaceMonomerSubTree(const BondId_sp& incoming, const map<core
 
 
 
-void AtomTree_O::recursivelyBuildMolecule(MonomerId monomerId,
+DONT_OPTIMIZE_WHEN_DEBUG_RELEASE void AtomTree_O::recursivelyBuildMolecule(MonomerId monomerId,
                                           MonomerNode_sp monomerNode,
                                           Joint_sp parent,
                                           bool rootNode)

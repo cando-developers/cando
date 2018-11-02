@@ -61,13 +61,13 @@ public:	// instance variables here
 	/*! Store the monomerId/residueId of this MonomerNode */
   MonomerId			_Id;
 	/*! Store the children of this MonomerNode indexed by PlugNames */
-  adapt::SymbolMap<MonomerNode_O>	_Children;
+  gc::SmallMap<core::Symbol_sp,MonomerNode_sp>	_Children;
   /*! Store the name of the stereoisomer */
   core::Symbol_sp		_StereoisomerName;
 	/*! Store the Topology of the monomer */
   chem::Topology_sp	_Topology;
 	/*! Store the current conformation index of this monomer */
-  int			_ConformationIndex;
+  size_t			_ConformationIndex;
   /*! Store the AtomTree joints for this MonomerNode_sp */
   gc::Vec0<Joint_sp>            _Joints;
 private:
@@ -99,7 +99,13 @@ public: // Functions here
 	/*! Return a description of this MonomerNode and its children */
   string asString() const;
   void addJoint(size_t index, Joint_sp joint);
+  Joint_sp jointAt(size_t index) const;
 
+  size_t conformationIndex() const;
+  void setConformationIndex(size_t i);
+  core::T_sp parent() const;
+  core::Symbol_sp parentPlugName() const;
+  
   core::List_sp children() const;
 
   MonomerId monomerId() const;

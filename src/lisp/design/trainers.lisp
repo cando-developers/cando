@@ -50,7 +50,7 @@
      ;; Return the focus-joints as a list
      (alexandria:hash-table-keys focus-joints)))
 
-(defun augment-trainer-with-superposable-conformation-collection (trainer)
+(defun augment-trainer-with-superposable-conformation-collection (trainer &key generate-atom-tree-dot)
   (let* ((oligomer (oligomer trainer))
          (mol (chem:get-molecule oligomer))
          (agg (let ((agg (chem:make-aggregate)))
@@ -70,6 +70,14 @@
                                                  (loop for superpose-atom in superpose-atoms
                                                        do (chem:add-superpose-atom scc superpose-atom))
                                                  scc)))
+    (when generate-atom-tree-dot
+      (let* ((context (design::context trainer))
+             (filename (format nil "/tmp/atom-tree-~a-~a-~a.dot"
+                               (first context)
+                               (second context)
+                               (third context))))
+        (design.graphviz-draw-joint-tree:draw-joint-tree (kin:get-atom-tree conformation)
+                                                         filename)))
     (setf (conformation trainer) conformation
           (aggregate trainer) agg
           (atom-id-map trainer) atom-id-map
@@ -98,12 +106,12 @@
     
 
 
-(defun jostle-trainer (trainer)
+(defun jostle-trainer (trainer &key test)
   (let ((aggregate (aggregate trainer))
         (atom-id-map (atom-id-map trainer))
         (superposable-conformation-collection (superposable-conformation-collection trainer)))
     (cando:jostle aggregate)
-    (energy:minimize aggregate :max-tn-steps 500)
+    (unless test (energy:minimize aggregate :max-tn-steps 500))
     (chem:create-entry-if-conformation-is-new superposable-conformation-collection aggregate)))
 
 
@@ -133,14 +141,42 @@
                                 (pos (chem:get-position atom)))
                            (kin:set-position o pos))))
              (kin:update-internal-coords (kin:get-atom-tree conformation))
-          collect (let ((internals (make-array 16 :adjustable t :fill-pointer 0)))
-                    (kin:walk-joints (kin:lookup-monomer-id (kin:get-fold-tree conformation)
-                                                            (list 0 focus-monomer-sequence-number))
-                                     (lambda (i a) 
+          collect (let* ((internals (make-array 16 :adjustable t :fill-pointer 0))
+                         (monomer (kin:lookup-monomer-id (kin:get-fold-tree conformation)
+                                                         (list 0 focus-monomer-sequence-number))))
+                    (format t "Extracting internals for monomer: ~s parentPlugName: ~s~%"
+                            monomer
+                            (kin:parent-plug-name monomer))
+                    (kin:walk-joints monomer
+                                     (lambda (index joint)
+                                       (format t "Extracting internal for ~a index: ~a atom-id: ~a~%"
+                                               (kin:name joint)
+                                               index
+                                               (third (kin:atom-id joint)))
                                        (cond
-                                         ((typep a 'kin:bonded-atom)
-                                          (vector-push-extend (third (kin:atom-id a)) internals)
-                                          (vector-push-extend (kin:get-distance a) internals)
-                                          (vector-push-extend (kin:get-theta a) internals)
-                                          (vector-push-extend (kin:get-phi a) internals)))))
+                                         ((typep joint 'kin:bonded-atom)
+                                          (vector-push-extend (third (kin:atom-id joint)) internals)
+                                          (vector-push-extend (kin:name joint) internals)
+                                          (vector-push-extend (kin:get-distance joint) internals)
+                                          (vector-push-extend (kin:get-theta joint) internals)
+                                          (vector-push-extend (kin:get-phi joint) internals)))))
                     internals))))
+
+
+(defun describe-internal-coordinates (coordinates)
+  (let (context-coords)
+    (maphash (lambda (key coords)
+               (push (cons key coords) context-coords))
+             coordinates)
+    (let ((sorted (sort context-coords
+                        (lambda (x y)
+                          (string< (format nil "~a" (reverse key))
+                                   (format nil "~a" (reverse key)))))))
+      (loop for (context . coords ) in sorted
+            do (format t "context: ~s~%" context)
+               (loop with onec = (first coords)
+                     for index = 0 then (+ index 5)
+                     while (< index (length onec))
+                     do (let ((atom-index (elt onec index))
+                              (atom-name (elt onec (+ index 1))))
+                          (format t "  ~a ~a~%" atom-index atom-name)))))))

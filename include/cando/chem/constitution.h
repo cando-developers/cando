@@ -124,8 +124,8 @@ FORWARD(Monomer);
 
     friend class Monomer_O;
   public:
-    typedef	adapt::SymbolMap<Topology_O> TopologyMap; //adapt::SymbolMap<Topology_O>	TopologyMap;
-    typedef    	adapt::SymbolMap<Plug_O> PlugMap; // adapt::SymbolMap<Plug_O>		PlugMap;
+    typedef	gc::SmallMap<core::Symbol_sp, Topology_sp> TopologyMap;
+    typedef    	gc::SmallMap<core::Symbol_sp, Plug_sp> PlugMap;
   public:
     core::Symbol_sp			_Name;
     core::String_sp			_Comment;
@@ -231,7 +231,7 @@ FORWARD(Monomer);
     CL_LISPIFY_NAME("getPlugNamed");
     CL_DEFMETHOD 	    Plug_sp	getPlugNamed( core::Symbol_sp name) { return this->_PlugsByName[name]; };
     CL_LISPIFY_NAME("addPlug");
-    CL_DEFMETHOD void addPlug(core::Symbol_sp name, Plug_sp plug) { this->_PlugsByName.insert2(name,plug);};
+    CL_DEFMETHOD void addPlug(core::Symbol_sp name, Plug_sp plug) { this->_PlugsByName.insert(pair<core::Symbol_sp,Plug_sp>(name,plug));};
 
 //	void	testConsistency( std::ostream& sout );
 
