@@ -81,7 +81,7 @@ public:
   SymbolSet_sp copy();
 
 CL_LISPIFY_NAME("size");
-CL_DEFMETHOD   uint size() const { return this->_Symbols->hashTableSize(); };
+   CL_DEFMETHOD   uint size() const { IMPLEMENT_ME(); } // return this->_Symbols->hashTableSize(); };
   void remove(Symbol_sp s);
   bool contains(Symbol_sp s);
   bool containsSubset(SymbolSet_sp sub);

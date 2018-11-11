@@ -59,7 +59,7 @@ CL_NAME("INSERT");
 CL_DEFMETHOD   void insert(T_sp obj) { this->_Set->setf_gethash(obj, _lisp->_true()); };
   void remove(T_sp obj) { this->_Set->remhash(obj); };
 CL_LISPIFY_NAME("size");
-CL_DEFMETHOD   int size() { return this->_Set->hashTableSize(); };
+   CL_DEFMETHOD   int size() { IMPLEMENT_ME(); }; // return this->_Set->hashTableSize(); };
 
   List_sp asCons();
 
