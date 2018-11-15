@@ -1,11 +1,9 @@
 (in-package :smarts)
 
-(defun make-chem-info (&key tests smarts)
-  (let ((ci (core:make-cxx-object 'chem:chem-info)))
-    (chem:compile-smarts ci smarts)
-    (if tests
-        (chem:define-tests ci tests))
-    ci))
+;;(defstruct chain-holder contents)
+(defstruct chain
+  head
+  tail)
 
 (defun make-chem-info (&key tests smarts)
   (let ((ci (core:make-cxx-object 'chem:chem-info)))
@@ -14,41 +12,297 @@
         (chem:define-tests ci tests))
     ci))
 
-
-(defmethod architecture.builder-protocol:make-node ((builder (eql 'chem:chem-info))
+(defmethod architecture.builder-protocol:make-node ((builder (eql :cando))
                                                     (head (eql :atom))
                                                     &rest args
-                                                    &key kind symbol bounds)
-  (let ((sym (intern (string-upcase symbol) :keyword)))
+                                                    &key kind symbol
+                                                      atomic-number
+                                                      ring-bond-count
+                                                      total-hydrogen-count
+                                                      smallest-ring-size
+                                                      valence
+                                                      connectivity
+                                                      bounds)
+  (format t ":atom make-node head: ~s args: ~s~%" head args)
+  (let ((sym (intern (string-upcase symbol) :keyword))
+        result)
+    (when kind
+        (ecase kind
+          (:organic
+           (setf result (chem:create-sapelement (string sym)))
+           #+(or)(core:make-cxx-object 'chem:atom-test :sym sym :test :sapelement)
+           )
+          (:aromatic
+           (setf result (chem:create-saparomatic-element (string sym)))
+           #+(or)(core:make-cxx-object 'chem:atom-test :sym sym :test :saparomatic-element))
+          (:inorganic
+           (setf result (chem:create-sapelement (string sym))))
+          (:aliphatic
+           (setf result (chem:create-sapaliphatic)))
+          (:wildcard
+           (setf result (chem:create-sapwild-card)))))
+    (when atomic-number
+      (setf result (chem:create-sapatomic-number atomic-number)))
+    (when total-hydrogen-count
+      (setf result (chem:create-saptotal-hcount total-hydrogen-count)))
+    (when ring-bond-count
+      (setf result (chem:create-sapring-membership-count ring-bond-count)))
+    (when smallest-ring-size
+      (setf result (chem:create-sapring-size smallest-ring-size)))
+    (when valence
+      (setf result (chem:create-sapvalence valence)))
+    (when connectivity
+      (setf result (chem:create-sapconnectivity connectivity)))
+    (format t "Made ~s~%" result)
+    result))
+
+
+(defmethod architecture.builder-protocol:make-node ((builder (eql :cando)) (kind (eql :chain))
+                         &key)
+  (cons nil nil))
+
+(defmethod architecture.builder-protocol:make-node ((builder (eql :cando))
+                                                    (head (eql :bond))
+                                                    &rest args
+                                                    &key kind bounds)
+  (format t ":bond make-node head: ~s args: ~s~%" head args)
+  (let (result)
     (ecase kind
-      (:organic
-       (chem:create-sapelement sym)
-       #+(or)(core:make-cxx-object 'chem:atom-test :sym sym :test :sapelement)
-       )
-      (:aromatic
-       (chem:create-saparomatic-element sym)
-       #+(or)(core:make-cxx-object 'chem:atom-test :sym sym :test :saparomatic-element)))))
+      (:none
+       (setf result (chem:create-sabno-bond nil)))
+      (:single
+       (setf result (chem:create-sabsingle-or-aromatic-bond nil)))
+      (:double
+       (setf result (chem:create-sabdouble-bond nil)))
+      (:triple
+       (setf result (chem:create-sabtriple-bond nil)))
+      (:wildcard
+       (setf result (chem:create-sabany-bond nil)))
+      (:up-or-unspecified
+       (setf result (chem:create-sabdirectional-single-up-or-unspecified nil)))
+      (:down-or-unspecified
+       (setf result (chem:create-sabdirectional-single-down-or-unspecified nil)))
+      (:up
+       (setf result (chem:create-sabdirectional-single-up nil)))
+      (:down
+       (setf result (chem:create-sabdirectional-single-down nil))))
+    (format t "Made ~s~%" result)
+    result))
 
-(defmethod architecture.builder-protocol:make-node ((builder (eql 'chem:chem-info))
-                                                    (head (eql :chain))
-                                                    &rest args)
-  
-  (format t ":chain make-node head: ~s args: ~s~%" head args))
+(defmethod architecture.builder-protocol:make-node ((builder (eql :cando))
+                                                    (head (eql :bracketed-expression))
+                                                    &rest args
+                                                    &key expression)
+  (format t ":bracketed-expression make-node head: ~s args: ~s~%" head args)
+  (let (result)
+    (setf result (chem:create-log-identity nil))
+    result))
 
 
-#+(or)(defmethod architecture.builder-protocol:relate ((builder (eql 'chem:chem-info))
+(defmethod architecture.builder-protocol:make-node ((builder (eql :cando))
+                                                    (head (eql :labeled))
+                                                    &rest args
+                                                    &key  kind symbol label total-hydrogen-count bounds)
+  (format t ":labeled make-node head: ~s args: ~s~%" head args))
+
+
+(defmethod architecture.builder-protocol:make-node ((builder (eql :cando))
+                                                    (head (eql :binary-operator))
+                                                    &rest args
+                                                    &key operator bounds)
+  (format t ":binary-operator make-node head: ~s args: ~s~%" head args)
+  (let (result)
+    (ecase operator
+      (:or
+       (setf result (chem:create-log-or nil nil)))
+      (:strong-and
+       (setf result (chem:create-log-high-precedence-and nil nil)))
+      (:weak-and
+       (setf result (chem:create-log-low-precedence-and nil nil))))
+    (format t "Made ~s~%" result)
+    result))
+
+
+(defmethod architecture.builder-protocol:make-node ((builder (eql :cando))
+                                                    (head (eql :unary-operator))
+                                                    &rest args
+                                                    &key operator bounds)
+  (format t ":recursive make-node head: ~s args: ~s~%" head args)
+  (let (result)
+    (ecase operator
+      (:not
+       (setf result (chem:create-log-not nil))))
+    (format t "Made ~s~%" result)
+    result))
+
+
+(defmethod architecture.builder-protocol:make-node ((builder (eql :cando))
+                                                    (head (eql :chirality))
+                                                    &rest args
+                                                    &key class count bounds)
+  (format t ":chirality make-node head: ~s args: ~s~%" head args)
+  (let (result)
+    (ecase count
+      (1
+       (setf result (chem:create-sapchirality-clockwise)))
+      (2
+        (setf result (chem:create-sapchirality-anti-clockwise))))
+    (format t "Made ~s~%" result)
+    result))
+
+
+(defmethod architecture.builder-protocol:make-node ((builder (eql :cando))
+                                                    (head (eql :charge))
+                                                    &rest args
+                                                    &key which value bounds)
+  (format t ":charge make-node head: ~s args: ~s~%" head args)
+  (let (result)
+    (ecase which
+      (:positive
+       (setf result (chem:create-sappositive-charge value)))
+      (:negative
+       (setf result (chem:create-sapnegative-charge value))))
+    (format t "Made ~s~%" result)
+    result))
+
+
+(defmethod architecture.builder-protocol:make-node ((builder (eql :cando))
+                                                    (head (eql :recursive))
+                                                    &rest args
+                                                    &key pattern)
+  (format t ":recursive make-node head: ~s args: ~s~%" head args))
+
+
+(defmethod architecture.builder-protocol:relate ((builder (eql :cando))
+                                                 (head (eql :atom))
+                                                 (left chem:bond-test)
+                                                 (right chem:atom-test)
+                                                 &key key)
+  (chem::set-atom-test left right)
+  (format t ":atom relate head: ~s left: ~s right:~s~%" head left right)
+  left)
+
+(defmethod architecture.builder-protocol:relate ((builder (eql :cando))
                                                  (head (eql :atom))
                                                  left
-                                                 right)
-  (format t ":atom relate head: ~s left: ~s right:~s~%" head left right))
+                                                 right
+                                                 &key key)
+  (format t ":atom relate head: ~s left: ~s right:~s~%" head left right)
+  left)
 
-#+(or)(defmethod architecture.builder-protocol:relate ((builder (eql 'chem:chem-info))
-                                                 (head (eql :element))
+(defmethod architecture.builder-protocol:relate ((builder (eql :cando))
+                                                 (head (eql :expression))
                                                  left
-                                                 right)
-  (format t ":element relate head: ~s left: ~s right:~s~%" head left right))
+                                                 right
+                                                 &key key)
+  (format t ":expression relate head: ~s left: ~s right:~s~%" head left right)
+  (format nil "relate :expression left: ~s right: ~s~%" left right)
+  left)
+
+(defmethod architecture.builder-protocol:relate ((builder (eql :cando))
+                                                 (head (eql :operand))
+                                                 left
+                                                 right
+                                                 &key key)
+  (format t ":operand relate head: ~s left: ~s right:~s~%" head left right)
+  (format nil ":operand relate head: ~s left: ~s right:~s~%" head left right)
+  left)
+
+(defmethod architecture.builder-protocol:relate ((builder (eql :cando))
+                                                 (head (eql :operand))
+                                                 (left chem:logical)
+                                                 (right chem:atom-test)
+                                                 &key key)
+  (format t ":operand relate head: ~s left: ~s right:~s~%" head left right)
+  (chem::set-atom-test-to-logical left right)
+  (format t "Set atomtest to logical~%")
+  (format nil ":operand relate head: ~s left: ~s right:~s~%" head left right)
+  left)
+
+(defmethod architecture.builder-protocol:relate ((builder (eql :cando))
+                                                 (head (eql :pattern))
+                                                 left
+                                                 right
+                                                 &key key)
+  (format t ":pattern relate head: ~s left: ~s right:~s~%" head left right)
+  left)
 
 
+(defmethod set-tail-or-right ((thing chem:chain) value)
+  (chem:chain-set-tail thing value))
+
+(defmethod set-tail-or-right ((thing chem:branch) value)
+  (chem:branch-set-right thing value))
+
+(defmethod architecture.builder-protocol:relate ((builder  (eql :cando))
+                                                 (relation (eql :element))
+                                                 (left cons)     
+                                                 (right   t)
+                                                 &key)
+  (format t ":element relate head: ~s left: ~s right:~s~%" relation left right)
+  ;; scymtym's suggestion
+  (let ((new (chem:make-chain.head.tail right nil)))
+    (when (not (car left))
+      (setf (car left) new))
+    (alexandria:when-let ((last (cdr left)))
+                         (set-tail-or-right last new)
+                         #+(or)(setf (chain-tail last) new))
+    (setf (cdr left) new))
+  left)
+
+(defmethod architecture.builder-protocol:relate ((builder  (eql :cando))
+                                                 (relation (eql :element))
+                                                 (left cons)     
+                                                 (right chem:chain)
+                                                 &key)
+  (format t ":element branch relate head: ~s left: ~s right:~s~%" relation left right)
+  ;; scymtym's suggestion
+  (let ((branch (chem:make-branch.left.right right nil))) ; (cdr left) right)))
+    (alexandria:when-let ((last (cdr left)))
+                         (format t ":element branch relate chain-set-tail last: ~a branch: ~a~%" last branch)
+                         (set-tail-or-right last branch)
+                         #+(or)(setf (chain-tail last) new))
+    (setf (cdr left) branch))
+  left)
+
+
+(defmethod architecture.builder-protocol:finish-node ((builder (eql :cando))
+                                                      (kind    (eql :chain))
+                                                      (node cons))
+  (format t "finish element ~s~%" node)
+  (car node))
+
+
+(esrap:defrule chain
+    (+ (alpha-char-p character))
+  (:lambda (elements)
+    (architecture.builder-protocol:node* (:chain)
+      (* :element elements))))
+
+
+(defmethod architecture.builder-protocol:finish-node ((builder (eql :cando))
+                                                        (head (eql :element))
+                                                        node)
+  (format t "finish element ~s~%" node)
+ node)
+
+(defmethod architecture.builder-protocol:finish-node ((builder (eql :cando))
+                                                        (head (eql :atom))
+                                                        node)
+  (format t "finish atom ~s~%" node)
+  node)
+
+(defmethod architecture.builder-protocol:finish-node ((builder (eql :cando))
+                                                        (head (eql :bond))
+                                                        node)
+  (format t "finish bond ~s~%" node)
+  node)
+
+(defmethod architecture.builder-protocol:node-relation ((builder (eql :cando))
+                                                      (head   (eql :chain))
+                                                      node)
+  (format t "finish element ~s~%" node)
+  node)
 
 
 (defgeneric build (head tree &rest args))
@@ -84,3 +338,5 @@
       (:aromatic
        (core:make-cxx-object 'chem:atom-test :sym symbol :test :saparomatic-element))
       )))
+
+

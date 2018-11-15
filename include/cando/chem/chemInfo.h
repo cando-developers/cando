@@ -160,20 +160,24 @@ ENUM_TRANSLATOR(chem::BondEnum,chem::_sym_STARSabBondEnumConverterSTAR);
 
 namespace chem {
 
+  size_t next_ChemInfoNodeId();
+  
 /*! Base class for all fragment matching
  */
   SMART(ChemInfoNode);
   class ChemInfoNode_O : public core::CxxObject_O
   {
     LISP_CLASS(chem,ChemPkg,ChemInfoNode_O,"ChemInfoNode",core::CxxObject_O);
-
+  public:
+    size_t  _Id;
   public:
     bool fieldsp() const { return true; };
     void	fields(core::Record_sp node);
   public:
+    string __repr__() const;
     virtual uint depth() const;
     CL_DEFMETHOD virtual string asSmarts() const {_OF();SUBCLASS_MUST_IMPLEMENT();};
-    DEFAULT_CTOR_DTOR(ChemInfoNode_O);
+  ChemInfoNode_O() : _Id(next_ChemInfoNodeId()) {};
   };
 
 
@@ -326,25 +330,44 @@ namespace chem {
   public:
 		// Second argument can be NULL
     static Logical_sp create(LogicalOperatorType op,
-                             AtomOrBondMatchNode_sp a1,
-                             gc::Nilable<AtomOrBondMatchNode_sp> a2 )
+//                             AtomOrBondMatchNode_sp a1,
+//                             gc::Nilable<AtomOrBondMatchNode_sp> a2 )
+                             core::T_sp a1,
+                             core::T_sp a2)
     { _G();
       GC_ALLOCATE(Logical_O, obj ); // RP_Create<Logical_O>(lisp);
       obj->_Operator = op;
-      if ( a1.nilp() ) {
-        SIMPLE_ERROR(BF("Logical operators left child cannot be nil\n"));
+//      if ( a1.nilp() ) {
+//        SIMPLE_ERROR(BF("Logical operators left child cannot be nil\n"));
+//      }
+//      ASSERT(a1.notnilp());
+//      obj->_Left = a1;
+//      obj->_Right = a2;
+      if (a1.nilp()) {
+        obj->_Left = _Nil<core::T_O>();
+      } else {
+        obj->_Left = a1;
       }
-      ASSERT(a1.notnilp());
-      obj->_Left = a1;
-      obj->_Right = a2;
+      if (a2.nilp()) {
+        obj->_Right = _Nil<core::T_O>();
+      } else {
+        obj->_Right = gc::As<AtomOrBondMatchNode_sp>(a2);
+      }
       return obj;
     };
-    static Logical_sp create( LogicalOperatorType op, AtomOrBondMatchNode_sp a1)
+//    static Logical_sp create( LogicalOperatorType op, AtomOrBondMatchNode_sp a1)
+    static Logical_sp create( LogicalOperatorType op, core::T_sp a1)
     {_G();
-      if ( a1.nilp() ) {
-        SIMPLE_ERROR(BF("Logical operators left child cannot be nil\n"));
+//      if ( a1.nilp() ) {
+//        SIMPLE_ERROR(BF("Logical operators left child cannot be nil\n"));
+//      }
+//      return create(op,a1,_Nil<core::T_O>());
+      if (a1.nilp()) {
+        return create(op ,_Nil<core::T_O>(), _Nil<core::T_O>());
+     } else {
+        return create(op, a1, _Nil<core::T_O>());
       }
-      return create(op,a1,_Nil<core::T_O>());
+
     };
   public:
 
@@ -361,6 +384,14 @@ namespace chem {
     virtual uint depth() const;
     virtual string asSmarts() const;
     virtual string __repr__() const;
+
+    static Logical_sp create_logIdentity(core::T_sp nilOrOp);
+    static Logical_sp create_logOr(core::T_sp nilOrOp1, core::T_sp nilOrOp2);
+    static Logical_sp create_logNot(core::T_sp nilOrOp);
+    static Logical_sp create_logLowPrecedenceAnd(core::T_sp nilOrOp1, core::T_sp nilOrOp2);
+    static Logical_sp create_logHighPrecedenceAnd(core::T_sp nilOrOp1, core::T_sp nilOrOp2);
+    void setAtomTestToLogical(core::T_sp atomTest);
+      
     Logical_O() : _Operator(logAlwaysTrue), _Left(_Nil<AtomOrBondMatchNode_O>()), _Right(_Nil<AtomOrBondMatchNode_O>()) {};
     virtual ~Logical_O() {};
   };
@@ -471,7 +502,7 @@ namespace chem {
 
 
 
-
+  FORWARD(AtomTest);
   SMART(BondTest);
   class BondTest_O : public BondMatchNode_O
   {
@@ -508,6 +539,25 @@ namespace chem {
     virtual	bool	matches( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );
     virtual string asSmarts() const;
 
+    static BondTest_sp create_SABNoBond(core::T_sp nilOrNode);
+    static BondTest_sp create_SABSingleOrAromaticBond(core::T_sp nilOrNode);
+    static BondTest_sp create_SABDoubleOrAromaticBond(core::T_sp nilOrNode);
+    static BondTest_sp create_SABTripleOrAromaticBond(core::T_sp nilOrNode);
+    static BondTest_sp create_SABSingleBond(core::T_sp nilOrNode);
+    static BondTest_sp create_SABDoubleBond(core::T_sp nilOrNode);
+    static BondTest_sp create_SABTripleBond(core::T_sp nilOrNode);
+    static BondTest_sp create_SABAromaticBond(core::T_sp nilOrNode);
+    static BondTest_sp create_SABAnyBond(core::T_sp nilOrNode);
+    static BondTest_sp create_SABDirectionalSingleUpOrUnspecified(core::T_sp nilOrNode);
+    static BondTest_sp create_SABDirectionalSingleDownOrUnspecified(core::T_sp nilOrNode);
+    static BondTest_sp create_SABDirectionalSingleUp(core::T_sp nilOrNode);
+    static BondTest_sp create_SABDirectionalSingleDown(core::T_sp nilOrNode);
+
+    void setAtomTest(core::T_sp atomTest);
+
+
+//    void setAtomTest(AtomTest_sp atomTest);
+    
     DEFAULT_CTOR_DTOR(BondTest_O);
   };
 
@@ -863,17 +913,33 @@ namespace chem {
 		//! Second argument can be NULL
     CL_LAMBDA(head tail);
     CL_LISPIFY_NAME("make-chain.head.tail");
-    CL_DEF_CLASS_METHOD static Chain_sp create_head_tail( BondMatchNode_sp head, BondListMatchNode_sp tail ) {
+//    CL_DEF_CLASS_METHOD static Chain_sp create_head_tail( BondMatchNode_sp head, BondListMatchNode_sp tail ) {
+    CL_DEF_CLASS_METHOD static Chain_sp create_head_tail( core::T_sp head, core::T_sp tail ) {
       GC_ALLOCATE(Chain_O, obj ); // RP_Create<Chain_O>(lisp);
-      obj->_Head = head;
-      obj->_Tail = tail;
+//      obj->_Head = head;
+//      obj->_Tail = tail;
+      if (head.nilp()){
+        obj->_Head =  _Nil<core::T_O>();
+      } else {
+        obj->_Head =  gc::As<BondMatchNode_sp>(head);
+      } 
+      if (tail.nilp()){
+        obj->_Tail =  _Nil<core::T_O>();
+      } else {
+        obj->_Tail =  gc::As<BondListMatchNode_sp>(tail);
+      } 
       return obj;
     }
     CL_LAMBDA(head);
     CL_LISPIFY_NAME("make-chain.head");
-    CL_DEF_CLASS_METHOD static Chain_sp create_head( BondMatchNode_sp head )
+//    CL_DEF_CLASS_METHOD static Chain_sp create_head( BondMatchNode_sp head )
+    CL_DEF_CLASS_METHOD static Chain_sp create_head( core::T_sp head )
     {
-      return create_head_tail(head,_Nil<BondListMatchNode_O>());
+      if (head.nilp()){
+        return create_head_tail(_Nil<core::T_O>(),_Nil<BondListMatchNode_O>());
+      } else {
+        return create_head_tail(head,_Nil<BondListMatchNode_O>());
+      }
     }
     CL_DEF_CLASS_METHOD static Chain_sp create_empty_chain() {
       GC_ALLOCATE(Chain_O,obj);
@@ -883,8 +949,18 @@ namespace chem {
     virtual	ChemInfoType	type() { return chain; };
     virtual	bool		matches( Root_sp root, chem::Atom_sp from, chem::BondList_sp neighbors );
     CL_DEFMETHOD void chain_set_head(BondMatchNode_sp head) { this->_Head = head; };
-    CL_DEFMETHOD void chain_set_tail(BondListMatchNode_sp tail) { this->_Tail = tail; };
+//    CL_DEFMETHOD void chain_set_tail(BondListMatchNode_sp tail) { this->_Tail = tail; };
+    CL_DEFMETHOD void chain_set_tail(core::T_sp tail) {
+      if (tail.nilp())
+      {
+        this->_Tail =   _Nil<core::T_O>();
+      } else {
+        this->_Tail = tail;
+      }
+    };
 
+    BondListMatchNode_sp chain_get_tail();
+    
     Chain_O() : _Head(_Nil<BondMatchNode_O>()), _Tail(_Nil<BondListMatchNode_O>()) {};
   };
 
@@ -907,12 +983,29 @@ namespace chem {
 		//! Second argument can be NULL
     CL_LAMBDA(left right);
     CL_LISPIFY_NAME("make-branch.left.right");
-    CL_DEF_CLASS_METHOD static Branch_sp create_left_right( BondListMatchNode_sp left, BondListMatchNode_sp right )
+//    CL_DEF_CLASS_METHOD static Branch_sp create_left_right( BondListMatchNode_sp left, BondListMatchNode_sp right )
+//    {
+//      _G();
+//      GC_ALLOCATE(Branch_O, obj ); // RP_Create<Branch_O>(lisp);
+//      obj->_Left = left;
+//      obj->_Right = right;
+//      return obj;
+//    }
+    CL_DEF_CLASS_METHOD static Branch_sp create_left_right( core::T_sp left, core::T_sp right )
     {
       _G();
       GC_ALLOCATE(Branch_O, obj ); // RP_Create<Branch_O>(lisp);
-      obj->_Left = left;
-      obj->_Right = right;
+      if(left.nilp()){
+       obj->_Left = _Nil<core::T_O>();
+      } else {       
+        obj->_Left = gc::As<BondListMatchNode_sp>(left);
+      }
+       if(right.nilp()){
+       obj->_Right = _Nil<core::T_O>();
+      } else {       
+        obj->_Right = gc::As<BondListMatchNode_sp>(right);
+      }
+      
       return obj;
     }
     CL_LAMBDA(left);
@@ -932,6 +1025,9 @@ namespace chem {
     virtual	bool		matches( Root_sp root, chem::Atom_sp from, chem::BondList_sp neighbors );  /* CHECK CODE TO SEE IF IT HANDLES RIGHT=NULL */
 //virtual	adapt::QDomNode_sp	asXml(string name=XmlTag_Branch());
 //virtual	void	parseFromXml(adapt::QDomNode_sp node);
+
+    void branch_set_left(core::T_sp left);
+    void branch_set_right(core::T_sp right);
 
     DEFAULT_CTOR_DTOR(Branch_O);
   };
@@ -1067,11 +1163,12 @@ namespace chem {
       ANN(obj->_Chain);
       return obj;
     };
+    
     static SmartsRoot_sp create(AtomOrBondMatchNode_sp node )
     {
       return create(node,_Nil<T_O>());
     };
-
+      
   public:
 
 

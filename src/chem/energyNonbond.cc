@@ -724,6 +724,8 @@ CL_DEFMETHOD void EnergyNonbond_O::expandExcludedAtomsToTerms()
       nlocaltype = (*this->_iac_vec)[i];
     }
   }
+  printf("%s:%d:%s    values -> %lu\n", __FILE__, __LINE__, __FUNCTION__, this->_Terms.size());
+
   // Count the number of nonbond cross terms that we are going to generate
   size_t excludedAtomIndex = 0;
   size_t count = 0;
@@ -750,6 +752,7 @@ CL_DEFMETHOD void EnergyNonbond_O::expandExcludedAtomsToTerms()
     }
   }
   this->_Terms.resize(count);
+  printf("%s:%d:%s    values -> %lu\n", __FILE__, __LINE__, __FUNCTION__, this->_Terms.size());
 
   // Now fill in the terms
   excludedAtomIndex = 0;
@@ -840,6 +843,8 @@ CL_DEFMETHOD void EnergyNonbond_O::expandExcludedAtomsToTerms()
 #endif
     }
   }
+  printf("%s:%d:%s    values -> %lu\n", __FILE__, __LINE__, __FUNCTION__, this->_Terms.size());
+
 //  printf( "Nonbond energy vdw(%lf) electrostatic(%lf)\n", (double)this->_EnergyVdw,  this->_EnergyElectrostatic );
   LOG(BF( "Nonbond energy vdw(%lf) electrostatic(%lf)\n")% (double)this->_EnergyVdw % this->_EnergyElectrostatic );
   LOG(BF( "Nonbond energy }\n"));

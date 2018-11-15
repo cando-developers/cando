@@ -50,6 +50,12 @@ extern string antechamberError();
 
 namespace chem {
 
+std::atomic<size_t> global_ChemInfoNodeId;
+size_t next_ChemInfoNodeId()
+{
+  return ++global_ChemInfoNodeId;
+}
+
 class scope_chemInfo {
 public:
   scope_chemInfo(){};
@@ -445,6 +451,13 @@ ChemInfoType chemInfoTypeFromString(const string &name) {
 
 void ChemInfoNode_O::fields(core::Record_sp node) {
   // Nothing to do here
+  node->field(INTERN_(kw,id),this->_Id);
+}
+
+string ChemInfoNode_O::__repr__() const {
+  stringstream ss;
+  ss << "#<" << this->className() << " :id " << this->_Id << ">";
+  return ss.str();
 }
 
 uint ChemInfoNode_O::depth() const {
@@ -633,7 +646,9 @@ void Logical_O::fields(core::Record_sp node) {
 
 string Logical_O::__repr__() const {
   stringstream ss;
-  ss << "#<LOGICAL :op ";
+  ss << "#<LOGICAL ";
+  ss << ":id " << this->_Id;
+  ss << " :op ";
   for ( int i=0; logicalEnum[i]._Enum != -1; ++i ) {
       if (logicalEnum[i]._Enum == this->_Operator) {
           ss << logicalEnum[i]._Key;
@@ -642,6 +657,37 @@ string Logical_O::__repr__() const {
       ss << ">";
             return ss.str();
 }
+
+CL_DEF_CLASS_METHOD Logical_sp Logical_O::create_logIdentity(core::T_sp nilOrOp)
+{
+  return create(logIdentity, nilOrOp );
+};
+
+CL_DEF_CLASS_METHOD Logical_sp Logical_O::create_logOr(core::T_sp nilOrOp1, core::T_sp nilOrOp2)
+{
+  return create(logOr, nilOrOp1, nilOrOp2 );
+};
+
+CL_DEF_CLASS_METHOD Logical_sp Logical_O::create_logNot(core::T_sp nilOrOp)
+{
+  return create(logNot, nilOrOp);
+};
+
+CL_DEF_CLASS_METHOD Logical_sp Logical_O::create_logLowPrecedenceAnd(core::T_sp nilOrOp1, core::T_sp nilOrOp2)
+{
+  return create(logLowPrecedenceAnd, nilOrOp1, nilOrOp2);
+};
+
+CL_DEF_CLASS_METHOD Logical_sp Logical_O::create_logHighPrecedenceAnd(core::T_sp nilOrOp1, core::T_sp nilOrOp2)
+{
+  return create(logHighPrecedenceAnd, nilOrOp1, nilOrOp2);
+};
+
+CL_DEFMETHOD void Logical_O::setAtomTestToLogical(core::T_sp atomTest)
+{
+  this->_Left = atomTest;
+}
+
 // --- TagSet  set a tag for the atom
 
 core::NullTerminatedEnumAssociation bondEnum[] = {
@@ -896,11 +942,69 @@ void BondTest_O::initialize() {
   this->_AtomTest = _Nil<core::T_O>();
 }
 
+CL_DEF_CLASS_METHOD BondTest_sp BondTest_O::create_SABNoBond(core::T_sp nilOrNode) {
+  return create(SABNoBond, nilOrNode);
+};
+
+CL_DEF_CLASS_METHOD BondTest_sp BondTest_O::create_SABSingleOrAromaticBond(core::T_sp nilOrNode) {
+  return create(SABSingleOrAromaticBond, nilOrNode);
+};
+
+CL_DEF_CLASS_METHOD BondTest_sp BondTest_O::create_SABDoubleOrAromaticBond(core::T_sp nilOrNode) {
+  return create(SABDoubleOrAromaticBond, nilOrNode);
+};
+
+CL_DEF_CLASS_METHOD BondTest_sp BondTest_O::create_SABTripleOrAromaticBond(core::T_sp nilOrNode) {
+  return create(SABTripleOrAromaticBond, nilOrNode);
+};
+
+CL_DEF_CLASS_METHOD BondTest_sp BondTest_O::create_SABSingleBond(core::T_sp nilOrNode) {
+  return create(SABSingleBond, nilOrNode);
+};
+
+CL_DEF_CLASS_METHOD BondTest_sp BondTest_O::create_SABDoubleBond(core::T_sp nilOrNode) {
+  return create(SABDoubleBond, nilOrNode);
+};
+
+CL_DEF_CLASS_METHOD BondTest_sp BondTest_O::create_SABTripleBond(core::T_sp nilOrNode) {
+  return create(SABTripleBond, nilOrNode);
+};
+
+CL_DEF_CLASS_METHOD BondTest_sp BondTest_O::create_SABAromaticBond(core::T_sp nilOrNode) {
+  return create(SABAromaticBond, nilOrNode);
+};
+
+CL_DEF_CLASS_METHOD BondTest_sp BondTest_O::create_SABAnyBond(core::T_sp nilOrNode) {
+  return create(SABAnyBond, nilOrNode);
+};
+
+CL_DEF_CLASS_METHOD BondTest_sp BondTest_O::create_SABDirectionalSingleUpOrUnspecified(core::T_sp nilOrNode) {
+  return create(SABDirectionalSingleUpOrUnspecified, nilOrNode);
+};
+
+CL_DEF_CLASS_METHOD BondTest_sp BondTest_O::create_SABDirectionalSingleDownOrUnspecified(core::T_sp nilOrNode) {
+  return create(SABDirectionalSingleDownOrUnspecified, nilOrNode);
+};
+
+CL_DEF_CLASS_METHOD BondTest_sp BondTest_O::create_SABDirectionalSingleUp(core::T_sp nilOrNode) {
+  return create(SABDirectionalSingleUp, nilOrNode);
+};
+
+CL_DEF_CLASS_METHOD BondTest_sp BondTest_O::create_SABDirectionalSingleDown(core::T_sp nilOrNode) {
+  return create(SABDirectionalSingleDown, nilOrNode);
+};
+
+
 string BondTest_O::asSmarts() const {
   _OF();
   stringstream ss;
   ss << "(" << sabToString(this->_Bond) << this->_AtomTest->asSmarts() << ")";
   return ss.str();
+}
+
+CL_DEFMETHOD void BondTest_O::setAtomTest(core::T_sp atomTest)
+{
+  this->_AtomTest = atomTest;
 }
 
 bool BondTest_O::matches(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond) {
@@ -921,8 +1025,8 @@ bool BondTest_O::matches(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond) {
 }
 
 void BondTest_O::fields(core::Record_sp node) {
-  node->/*pod_*/field( INTERN_(kw,bond), this->_Bond);
   node->field( INTERN_(kw,atomTest), this->_AtomTest);
+  node->/*pod_*/field( INTERN_(kw,bond), this->_Bond);
   this->Base::fields(node);
 }
 
@@ -1413,10 +1517,16 @@ bool Chain_O::matches(Root_sp root, chem::Atom_sp from, chem::BondList_sp neighb
 }
 
 void Chain_O::fields(core::Record_sp node) {
-  node->field_if_not_nil( INTERN_(kw,head), this->_Head);
   node->field_if_not_nil( INTERN_(kw,tail), this->_Tail);
+  node->field_if_not_nil( INTERN_(kw,head), this->_Head);
   this->Base::fields(node);
 }
+
+CL_DEFMETHOD BondListMatchNode_sp Chain_O::chain_get_tail(){
+  return this->_Tail;
+}
+
+
 
 // ------ Branch
 
@@ -1495,6 +1605,15 @@ void Branch_O::fields(core::Record_sp node) {
   node->field_if_not_nil( INTERN_(kw,right), this->_Right);
   this->Base::fields(node);
 }
+
+CL_DEFMETHOD void Branch_O::branch_set_left(core::T_sp left){
+  this->_Left = left;
+}
+
+CL_DEFMETHOD void Branch_O::branch_set_right(core::T_sp right){
+  this->_Right = right;
+}
+
 
 //      AfterMatchBondNode
 
