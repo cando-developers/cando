@@ -18,12 +18,18 @@
                                                     &key kind symbol
                                                       atomic-number
                                                       ring-bond-count
-                                                      total-hydrogen-count
+                                                      (total-hydrogen-count nil 
+                                                                            total-hydrogen-count-supplied-p)
+                                                      implicit-hydrogen-count
                                                       smallest-ring-size
                                                       valence
+                                                      degree
                                                       connectivity
                                                       bounds)
   (format t ":atom make-node head: ~s args: ~s~%" head args)
+  (if (and total-hydrogen-count-supplied-p
+           (not total-hydrogen-count))
+      (setf total-hydrogen-count 1))
   (let ((sym (intern (string-upcase symbol) :keyword))
         result)
     (when kind
@@ -45,12 +51,16 @@
       (setf result (chem:create-sapatomic-number atomic-number)))
     (when total-hydrogen-count
       (setf result (chem:create-saptotal-hcount total-hydrogen-count)))
+    (when implicit-hydrogen-count
+      (setf result (chem:create-sapimplicit-hcount implicit-hydrogen-count)))
     (when ring-bond-count
       (setf result (chem:create-sapring-membership-count ring-bond-count)))
     (when smallest-ring-size
       (setf result (chem:create-sapring-size smallest-ring-size)))
     (when valence
       (setf result (chem:create-sapvalence valence)))
+    (when degree
+      (setf result (chem:create-sapdegree degree)))
     (when connectivity
       (setf result (chem:create-sapconnectivity connectivity)))
     (format t "Made ~s~%" result)
@@ -102,8 +112,13 @@
 (defmethod architecture.builder-protocol:make-node ((builder (eql :cando))
                                                     (head (eql :labeled))
                                                     &rest args
-                                                    &key  kind symbol label total-hydrogen-count bounds)
-  (format t ":labeled make-node head: ~s args: ~s~%" head args))
+                                                    &key  label bounds)
+  (format t ":labeled make-node head: ~s args: ~s~%" head args)
+  (let ((sym (intern (write-to-string label) :keyword))
+        result)
+    (setf result (chem:create-tag-set nil sym))
+    result))
+  
 
 
 (defmethod architecture.builder-protocol:make-node ((builder (eql :cando))
@@ -115,7 +130,7 @@
     (ecase operator
       (:or
        (setf result (chem:create-log-or nil nil)))
-      (:strong-and
+      ((:strong-and :implicit-and)
        (setf result (chem:create-log-high-precedence-and nil nil)))
       (:weak-and
        (setf result (chem:create-log-low-precedence-and nil nil))))
@@ -176,9 +191,18 @@
 (defmethod architecture.builder-protocol:relate ((builder (eql :cando))
                                                  (head (eql :atom))
                                                  (left chem:bond-test)
+                                                 (right t)
+                                                 &key key)
+  (chem:set-atom-test left right)
+  (format t ":atom relate head: ~s left: ~s right:~s~%" head left right)
+  left)
+
+(defmethod architecture.builder-protocol:relate ((builder (eql :cando))
+                                                 (head (eql :atom))
+                                                 (left chem:tag-set)
                                                  (right chem:atom-test)
                                                  &key key)
-  (chem::set-atom-test left right)
+  (chem:set-atom-test left right)
   (format t ":atom relate head: ~s left: ~s right:~s~%" head left right)
   left)
 
@@ -200,23 +224,87 @@
   left)
 
 (defmethod architecture.builder-protocol:relate ((builder (eql :cando))
+                                                 (head (eql :expression))
+                                                 (left chem:logical)
+                                                 (right integer)
+                                                 &key key)
+  (format t ":expression relate head: ~s left: ~s right:~s~%" head left right)
+    (let (result)
+      (if (>= right 0)
+          (setf result (chem:create-sappositive-charge right))
+          (setf result (chem:create-sapnegative-charge right)))
+      (format t "Made ~s~%" result)
+      (if (chem:get-left left)
+          (progn
+            (format t "left ~a~%" (chem:get-left left))
+            (chem:set-right left result))
+          (progn
+            (format t "no left~%")
+            (chem:set-left left result))))
+  left)
+
+(defmethod architecture.builder-protocol:relate ((builder (eql :cando))
+                                                 (head (eql :expression))
+                                                 (left chem:logical)
+                                                 (right t)
+                                                 &key key)
+  (format t ":expression relate  head: ~s left: ~s right:~s~%" head left right)
+  (if (chem:get-left left)
+      (progn
+        (format t "left ~a~%" (chem:get-left left))
+        (chem:set-right left right))
+      (progn
+        (format t "no left~%")
+        (chem:set-left left right)))
+  left)
+
+(defmethod architecture.builder-protocol:relate ((builder (eql :cando))
                                                  (head (eql :operand))
                                                  left
                                                  right
                                                  &key key)
-  (format t ":operand relate head: ~s left: ~s right:~s~%" head left right)
-  (format nil ":operand relate head: ~s left: ~s right:~s~%" head left right)
+  (format t ":operand relate b head: ~s left: ~s right:~s~%" head left right)
   left)
 
 (defmethod architecture.builder-protocol:relate ((builder (eql :cando))
                                                  (head (eql :operand))
                                                  (left chem:logical)
-                                                 (right chem:atom-test)
+                                                 (right integer)
+                                                 &key key)
+  (format t ":operand relate a head: ~s left: ~s right:~s~%" head left right)
+    (let (result)
+      (if (>= right)
+          (setf result (chem:create-sapatomic-mass right))
+          (error "mass must be positive"))
+      (format t "Made ~s~%" result)
+      (if (chem:get-left left)
+          (progn
+            (format t "left ~a~%" (chem:get-left left))
+            (chem:set-right left result))
+          (progn
+            (format t "no left~%")
+            (chem:set-left left result)))
+      ;; for [2H]
+      #+(or)(if (chem:get-right left)
+          (format t "type ~a~%" (chem:my-type (chem:get-right left))))
+      #+(or)(if (and (chem:get-right left)
+               (eql (chem:my-type (chem:get-right left)) :saptotal-hcount))
+          (chem:set-right left (chem:create-sappositive-charge right))))
+  left)
+
+(defmethod architecture.builder-protocol:relate ((builder (eql :cando))
+                                                 (head (eql :operand))
+                                                 (left chem:logical)
+                                                 (right t)
                                                  &key key)
   (format t ":operand relate head: ~s left: ~s right:~s~%" head left right)
-  (chem::set-atom-test-to-logical left right)
-  (format t "Set atomtest to logical~%")
-  (format nil ":operand relate head: ~s left: ~s right:~s~%" head left right)
+  (if (chem:get-left left)
+      (progn
+        (format t "left ~a~%" (chem:get-left left))
+        (chem:set-right left right))
+      (progn
+        (format t "no left~%")
+        (chem:set-left left right)))
   left)
 
 (defmethod architecture.builder-protocol:relate ((builder (eql :cando))
@@ -225,7 +313,7 @@
                                                  right
                                                  &key key)
   (format t ":pattern relate head: ~s left: ~s right:~s~%" head left right)
-  left)
+  right)
 
 
 (defmethod set-tail-or-right ((thing chem:chain) value)

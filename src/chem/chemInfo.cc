@@ -683,10 +683,6 @@ CL_DEF_CLASS_METHOD Logical_sp Logical_O::create_logHighPrecedenceAnd(core::T_sp
   return create(logHighPrecedenceAnd, nilOrOp1, nilOrOp2);
 };
 
-CL_DEFMETHOD void Logical_O::setAtomTestToLogical(core::T_sp atomTest)
-{
-  this->_Left = atomTest;
-}
 
 // --- TagSet  set a tag for the atom
 
@@ -755,6 +751,15 @@ void TagSet_O::fields(core::Record_sp node) {
   this->Base::fields(node);
 }
 
+CL_DEF_CLASS_METHOD TagSet_sp TagSet_O::create_tagSet(core::T_sp at, core::Symbol_sp ri) {
+  return create(at, ri);
+}
+
+CL_DEFMETHOD void TagSet_O::setAtomTest(core::T_sp atomTest)
+{
+  this->_AtomTest = atomTest;
+}
+   
 // ------ RingTest
 void RingTest_O::initialize() {
   this->Base::initialize();

@@ -177,6 +177,9 @@ namespace chem {
     string __repr__() const;
     virtual uint depth() const;
     CL_DEFMETHOD virtual string asSmarts() const {_OF();SUBCLASS_MUST_IMPLEMENT();};
+    virtual bool    matches(Root_sp root, chem::Atom_sp atom) {_OF(); SUBCLASS_MUST_IMPLEMENT(); };
+    virtual bool    matches(Root_sp root, chem::Atom_sp atom, chem::Bond_sp bond) {_OF(); SUBCLASS_MUST_IMPLEMENT(); };
+
   ChemInfoNode_O() : _Id(next_ChemInfoNodeId()) {};
   };
 
@@ -324,8 +327,8 @@ namespace chem {
     void	initialize();
   private:
     LogicalOperatorType	_Operator;
-    gc::Nilable<AtomOrBondMatchNode_sp>	_Left;
-    gc::Nilable<AtomOrBondMatchNode_sp>	_Right;
+    gc::Nilable<ChemInfoNode_sp>	_Left;
+    gc::Nilable<ChemInfoNode_sp>	_Right;
 
   public:
 		// Second argument can be NULL
@@ -346,12 +349,12 @@ namespace chem {
       if (a1.nilp()) {
         obj->_Left = _Nil<core::T_O>();
       } else {
-        obj->_Left = a1;
+        obj->_Left = gc::As<ChemInfoNode_sp>(a1);
       }
       if (a2.nilp()) {
         obj->_Right = _Nil<core::T_O>();
       } else {
-        obj->_Right = gc::As<AtomOrBondMatchNode_sp>(a2);
+        obj->_Right = gc::As<ChemInfoNode_sp>(a2);
       }
       return obj;
     };
@@ -379,8 +382,8 @@ namespace chem {
     virtual	bool		matches( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );
     CL_DEFMETHOD core::T_sp getLeft() const { return this->_Left; };
     CL_DEFMETHOD core::T_sp getRight() const { return this->_Right; };
-    CL_DEFMETHOD void setLeft(AtomOrBondMatchNode_sp val) { this->_Left = val; };
-    CL_DEFMETHOD void setRight(AtomOrBondMatchNode_sp val) { this->_Right = val; };
+    CL_DEFMETHOD void setLeft(ChemInfoNode_sp val) { this->_Left = val; };
+    CL_DEFMETHOD void setRight(ChemInfoNode_sp val) { this->_Right = val; };
     virtual uint depth() const;
     virtual string asSmarts() const;
     virtual string __repr__() const;
@@ -390,9 +393,8 @@ namespace chem {
     static Logical_sp create_logNot(core::T_sp nilOrOp);
     static Logical_sp create_logLowPrecedenceAnd(core::T_sp nilOrOp1, core::T_sp nilOrOp2);
     static Logical_sp create_logHighPrecedenceAnd(core::T_sp nilOrOp1, core::T_sp nilOrOp2);
-    void setAtomTestToLogical(core::T_sp atomTest);
       
-    Logical_O() : _Operator(logAlwaysTrue), _Left(_Nil<AtomOrBondMatchNode_O>()), _Right(_Nil<AtomOrBondMatchNode_O>()) {};
+    Logical_O() : _Operator(logAlwaysTrue), _Left(_Nil<ChemInfoNode_O>()), _Right(_Nil<ChemInfoNode_O>()) {};
     virtual ~Logical_O() {};
   };
 
@@ -410,24 +412,32 @@ namespace chem {
     core::Symbol_sp		_RingTag;
     gc::Nilable<AtomOrBondMatchNode_sp>	_AtomTest;
   public:
-    static TagSet_sp create(/* BondEnum b, */ gc::Nilable<AtomOrBondMatchNode_sp> at, core::Symbol_sp ri)
+//    static TagSet_sp create(/* BondEnum b, */ gc::Nilable<AtomOrBondMatchNode_sp> at, core::Symbol_sp ri)
+    static TagSet_sp create(/* BondEnum b, */ core::T_sp at, core::Symbol_sp ri)
     { _G();
       LOG(BF("TagSet_sp create: ringTag = (%s)")%ri);
       GC_ALLOCATE(TagSet_O, obj ); // RP_Create<TagSet_O>(lisp);
 //	    obj->_Bond = b;
-      obj->_AtomTest = at;
+      if(at.nilp()){
+        obj->_AtomTest = _Nil<core::T_O>();
+      } else {
+        obj->_AtomTest = gc::As<AtomOrBondMatchNode_sp>(at);
+      }
       obj->_RingTag = ri;
       return obj;
     };
+
+    static TagSet_sp create_tagSet(core::T_sp at, core::Symbol_sp ri);
   public:
 
+    void setAtomTest(core::T_sp atomTest);
     virtual	ChemInfoType	type() { return tagSet;};
     virtual	bool		matches(Root_sp root, chem::Atom_sp atom );
     virtual string asSmarts() const;
     DEFAULT_CTOR_DTOR(TagSet_O);
   };
 
-
+   
 
   SMART(RingTest);
   class RingTest_O : public AtomOrBondMatchNode_O
@@ -810,7 +820,7 @@ namespace chem {
     
 
   public:
-    AtomTestEnum	myType() { return this->_Test; };
+    CL_DEFMETHOD AtomTestEnum	myType() { return this->_Test; };
     int		getIntArg() { return this->_IntArg; };
     string		testName(AtomTestEnum t) const;
     bool matchesAm1BccX(chem::Atom_sp atom) const;
