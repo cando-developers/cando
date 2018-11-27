@@ -53,7 +53,6 @@ SMART(StringSet);
 
 public:
   void initialize();
-  void archiveBase(core::ArchiveP node);
 
 private:
   set<string> strs;

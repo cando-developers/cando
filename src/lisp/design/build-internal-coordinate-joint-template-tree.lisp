@@ -643,3 +643,26 @@ Return a list of prepare-topology objects - one for each residue that we need to
                                    (dump-build-order-recursively nil tree-template constitution-atoms sout))))
                 (format t "Build order:~%~a~%" build-order))
         tree-template))))
+
+
+(defparameter *max-index* 0)
+(defun walk-joint-templates (node)
+  (setf *max-index* (max *max-index* (kin:id node)))
+  (loop for child in (kin:children node)
+        do (walk-joint-templates child)))
+
+(defun save-joint-templates (node vec)
+  (format t "Setting ~a -> ~a~%" (kin:id node) (kin:name node))
+  (setf (aref vec (kin:id node)) (kin:name node))
+  (loop for child in (kin:children node)
+        do (save-joint-templates child vec)))
+
+(defun sort-joint-templates (tree)
+  (let ((*max-index* 0))
+    (walk-joint-templates tree)
+    (let ((vec (make-array (1+ *max-index*))))
+      (save-joint-templates tree vec)
+      vec)))
+
+      
+  

@@ -55,7 +55,6 @@ class AtomIndexer_O : public core::CxxObject_O
     LISP_CLASS(chem,ChemPkg,AtomIndexer_O,"AtomIndexer",core::CxxObject_O);
 
 public:
-//    void	archive(core::ArchiveP node);
 private:
     gc::Vec0<core::Symbol_sp>	_Names;
 public:
@@ -107,7 +106,6 @@ class MapOfMonomerNamesToAtomIndexers_O : public core::CxxObject_O
     LISP_CLASS(chem,ChemPkg,MapOfMonomerNamesToAtomIndexers_O,"MapOfMonomerNamesToAtomIndexers",core::CxxObject_O);
 
 public:
-//    void	archive(core::ArchiveP node);
 private:
   gc::SmallMap<core::Symbol_sp, AtomIndexer_sp>	_AtomIndexers;
 public:

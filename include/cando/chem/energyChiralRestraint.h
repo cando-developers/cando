@@ -90,7 +90,6 @@ public:
         Atom_sp	getAtom3() { return this->_Atom3; };
         Atom_sp	getAtom4() { return this->_Atom4; };
 public:
-//	void	archive(core::ArchiveP node);
 public:
 	adapt::QDomNode_sp	asXml();
 	void	parseFromXmlUsingAtomTable(adapt::QDomNode_sp xml, AtomTable_sp atomTable );
@@ -117,7 +116,6 @@ class EnergyChiralRestraint_O : public EnergyComponent_O
 public:
 public: // virtual functions inherited from Object
     void	initialize();
-//    void	archiveBase(core::ArchiveP node);
 //	string	__repr__() const;
 
 public:

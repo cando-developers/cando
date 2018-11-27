@@ -220,7 +220,6 @@ public:
   bool fieldsp() const { return true; };
   void fields(core::Record_sp node);
   void initialize();
-//	void archiveBase(core::ArchiveP node);
 
 public:
   void resize(int numMolecules);

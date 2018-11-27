@@ -62,7 +62,6 @@ class MonomerCoordinates_O : public core::CxxObject_O
 #endif
 public:
 	void	initialize();
-//	void	archiveBase(core::ArchiveP node);
 
 public:
     typedef	gctools::Vec0<Rotamer_sp>	Rotamers;

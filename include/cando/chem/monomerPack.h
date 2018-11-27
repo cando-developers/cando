@@ -55,9 +55,6 @@ class MonomerPack_O : public EntityNameSet_O
 public:
 	void initialize();
 public:
-//	void	archive(core::ArchiveP node);
-
-private:
 		//! Store the unique IDs of the Interesting atoms for each monomer
         core::List_sp				_InterestingAtomAliases;
 	MapOfMonomerNamesToAtomIndexers_sp	_AtomIndexers;

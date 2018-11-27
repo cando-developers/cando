@@ -60,7 +60,6 @@ class ComplexRestraint_O : public core::CxxObject_O
 public:
 public: // virtual functions inherited from Object
 	void	initialize();
-//	void	archiveBase(core::ArchiveP node);
 //	string	__repr__() const;
 
 private: // instance variables
@@ -92,7 +91,6 @@ public:
 public:
 public: // virtual functions inherited from Object
     void	initialize();
-//    void	archiveBase(core::ArchiveP node);
 //	string	__repr__() const;
 
 private: // instance variables
@@ -148,9 +146,6 @@ class RestrainedPiBond_O : public ComplexRestraint_O
 #endif
 public:
 public:
-//    void	archive(core::ArchiveP node);
-
-private:
     core::Symbol_sp	_Configuration;	// "E" or "Z"
     MatterName  	_PiAtomX;
     MatterName  	_PiAtomY;

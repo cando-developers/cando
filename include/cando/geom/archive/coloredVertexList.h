@@ -61,7 +61,6 @@ namespace geom
 	DECLARE_INIT();
     public:
 	void initialize();
-//	void archiveBase(core::ArchiveP node);
     private:
 	Vector3	_Pos;
 	Color_sp	_Color;
@@ -87,7 +86,6 @@ namespace geom
     public:
 	void initialize();
     public:
-//	void	archiveBase(core::ArchiveP node);
     private:
         gctools::Vec0<ColoredVertex_sp>	_Vertices;
     public:

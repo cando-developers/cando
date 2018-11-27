@@ -108,7 +108,6 @@ public:
 	double		getCalculatedDihedralDeviation() { return this->_CalculatedDihedralDeviation;};
 
 public:
-//	void	archive(core::ArchiveP node);
 public:
 	adapt::QDomNode_sp	asXml();
 	void	parseFromXmlUsingAtomTable(adapt::QDomNode_sp xml, AtomTable_sp atomTable );
@@ -170,7 +169,6 @@ public:
     void fields(core::Record_sp node);
 public: // virtual functions inherited from Object
     void	initialize();
-//    void	archiveBase(core::ArchiveP node);
 
 public:
     typedef EnergyDihedral	TermType;

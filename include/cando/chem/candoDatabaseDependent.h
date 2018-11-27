@@ -52,14 +52,6 @@ __ BEGIN_CLASS_DEFINITION(CandoDatabase_ODependent,CandoDatabaseDependent,O Envi
 public:
 	void initialize();
 public:
-//	void	archiveBase(core::ArchiveP node);
-//	bool	loadFinalize(core::ArchiveP node);
-private:
-//	CandoDatabase_sp	_WeakCandoDatabase;
-public:
-
-
-//    virtual void	setCandoDatabase(CandoDatabase_sp bdb);
 
 		/*! Return true if this name can not be expanded.
 		 * For instance monomer groups can be expanded to every monomer within them.

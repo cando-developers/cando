@@ -66,7 +66,6 @@ class Twister_O : public core::CxxObject_O
 public:
 	void initialize();
 public:
-//	void	archive(core::ArchiveP node);
 private:
 	Atom_sp			_FixedRef;
 	Atom_sp			_Fixed;
@@ -123,7 +122,6 @@ class TwisterDriver_O : public core::CxxObject_O
     {
 	LISP_CLASS(chem,ChemPkg,TwisterDriver_O,"TwisterDriver",core::CxxObject_O);
 public:
-//	void	archive(core::ArchiveP node);
 
 private:
 	Aggregate_sp		_Aggregate;

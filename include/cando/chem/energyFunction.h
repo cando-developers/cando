@@ -121,7 +121,6 @@ namespace chem {
   public:
     void initialize();
   public:
-//    void	archive(core::ArchiveP node);
     bool fieldsp() const { return true; };
     void fields(core::Record_sp node);
   public:

@@ -46,7 +46,6 @@ namespace geom
 	LISP_CLASS(geom,GeomPkg,PickableObject_O,"PickableObject",core::CxxObject_O);
     public:
 	void	initialize();
-//	void	archiveBase(core::ArchiveP node);
     public:
 	virtual bool isPicked(uint id) {return false;};
 
@@ -63,7 +62,6 @@ namespace geom
     private:
     public:
 	void	initialize();
-//	void	archiveBase(core::ArchiveP node);
     public:
 	DEFAULT_CTOR_DTOR(ControlObject_O);
     };
@@ -82,7 +80,6 @@ namespace geom
 	static DragObject_sp make(core::Function_sp startCode, core::Function_sp dragCode, core::Function_sp releaseCode); // 
     public:
 	void	initialize();
-//	void	archiveBase(core::ArchiveP node);
     public:
 	void setStartCode(core::Function_sp proc) { this->_StartCode = proc;};
 	core::Function_sp getStartCode() { return this->_StartCode;};
@@ -103,7 +100,6 @@ class HighlightedObject_O : public PickableObject_O
     LISP_CLASS(geom,GeomPkg,HighlightedObject_O,"HighlightedObject",PickableObject_O);
 public: // virtual functions inherited from Object
     void	initialize();
-//    void	archiveBase(core::ArchiveP node);
 //	string	__repr__() const;
 
 private: // instance variables - not serialized
@@ -129,7 +125,6 @@ class HighlightedHolder_O : public HighlightedObject_O
     DECLARE_MAKE_INIT();
 public: // virtual functions inherited from Object
     void	initialize();
-//    void	archiveBase(core::ArchiveP node);
 private:
     core::T_sp	_HeldObject;
 public:

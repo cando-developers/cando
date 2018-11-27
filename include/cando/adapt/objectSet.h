@@ -45,9 +45,6 @@ SMART(ObjectSet);
   void initialize();
 
 public:
-#if defined(XML_ARCHIVE)
-  void archive(ArchiveP node);
-#endif // defined(XML_ARCHIVE)
 
 GCPRIVATE:
   HashTableEq_sp _Set;

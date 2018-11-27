@@ -38,7 +38,6 @@ class RotamerAtom
 {
     friend class Rotamer_O;
 private:
-//    void archive(core::ArchiveP node);
 private:
     double	_Distance;
     double	_Angle;

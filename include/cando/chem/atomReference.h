@@ -54,7 +54,6 @@ namespace chem
 	LISP_CLASS(chem,ChemPkg,AtomReferenceBase_O,"AtomReferenceBase",core::CxxObject_O);
     public:
 	void	initialize();
-//	void	archiveBase(core::ArchiveP node);
     public:
 	AtomReferenceBase_O(const core::Lisp_sp& lisp);
 	AtomReferenceBase_O( const AtomReferenceBase_O& ss ); //!< Copy constructor
@@ -72,7 +71,6 @@ namespace chem
 	static AtomReference_sp make(const string& alias);
 #else
 #endif
-//	void archiveBase(core::ArchiveP node);
     private:
 	string	_AtomAlias;
     public:

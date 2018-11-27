@@ -53,7 +53,6 @@ namespace chem
 	LISP_CLASS(chem,ChemPkg,ZMatrixInternal_O,"ZMatrixInternal",core::CxxObject_O);
     public:
 	void initialize();
-//	void	archiveBase(core::ArchiveP node);
     private:
 	ZMatrix_sp	_WeakZMatrix;
 	string		_InternalName;
@@ -97,8 +96,6 @@ CL_DEFMETHOD 	virtual double	getValue() { return this->_Value; };
     {
 	LISP_CLASS(chem,ChemPkg,ZMatrixBondInternal_O,"ZMatrixBondInternal",ZMatrixInternal_O);
     public:
-//	void	archiveBase(core::ArchiveP node);
-    private:
 	uint	_AtomBond;
     public:
 	static ZMatrixBondInternal_sp create(Atom_sp newAtom, Atom_sp bondToAtom,
@@ -137,8 +134,6 @@ CL_DEFMETHOD 	int	getBondAtomIndex() const { return this->_AtomBond;};
 	LISP_CLASS(chem,ChemPkg,ZMatrixAngleInternal_O,"ZMatrixAngleInternal",ZMatrixInternal_O);
 
     public:
-//	void	archiveBase(core::ArchiveP node);
-    private:
 	uint	_AtomBond;
 	uint	_AtomAngle;
     public:
@@ -187,8 +182,6 @@ CL_DEFMETHOD 	int getAngleAtomIndex() const { return this->_AtomAngle;}
 	LISP_CLASS(chem,ChemPkg,ZMatrixDihedralInternal_O,"ZMatrixDihedralInternal",ZMatrixInternal_O);
 
     public:
-//	void	archiveBase(core::ArchiveP node);
-    private:
 	uint	_AtomBond;
 	uint	_AtomAngle;
 	uint	_AtomDihedral;
@@ -245,8 +238,6 @@ CL_DEFMETHOD 	int getDihedralAtomIndex() const { return this->_AtomDihedral;}
 	void initialize();
 	friend class ZMatrix_O;
     public:
-//	void	archiveBase(core::ArchiveP node);
-    protected:
 	string				_ZMatrixAtomName;
 	Atom_sp				_Atom;
 	ZMatrixBondInternal_sp		_Bond;
@@ -296,8 +287,6 @@ CL_DEFMETHOD 	ZMatrixDihedralInternal_sp	getDihedral() {_OF(); ASSERTNOTNULL(thi
 	friend class	ZMatrixAngleInternal_O;
 	friend class	ZMatrixDihedralInternal_O;
     public:
-//	void	archiveBase(core::ArchiveP node);
-    private:
 	Matter_sp		_Matter;
         gctools::Vec0<ZMatrixEntry_sp>	_ZMatrix;
         gctools::Vec0<ZMatrixInternal_sp>	_Internals;

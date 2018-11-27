@@ -46,7 +46,6 @@ namespace chem
 	Atom_sp	_SharedAtom;
 	uint	_IndexTimes3;
     public:
-//	void archive(core::ArchiveP node);
     protected:
 	void setupBase(const Atom_sp& atom, uint indexTimes3)
 	{

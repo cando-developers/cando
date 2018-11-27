@@ -130,6 +130,10 @@ CL_DEFUN StereoisomerAtoms_sp chem__make_stereoisomer_atoms(core::Symbol_sp ster
 }
 
 
+CL_DEFMETHOD core::Symbol_sp StereoisomerAtoms_O::getName() const {
+  return this->_StereoisomerName;
+}
+
 CL_DEFMETHOD void StereoisomerAtoms_O::addStereoisomerAtom(StereoisomerAtom_sp ca)
 {_OF();
   ConstitutionAtomIndex0N nextIndex = this->_Atoms.size();

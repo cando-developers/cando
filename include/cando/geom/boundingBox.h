@@ -46,7 +46,6 @@ namespace geom {
 	LISP_CLASS(geom,GeomPkg,BoundingBox_O,"BoundingBox",core::CxxObject_O);
     public:
 	void	initialize();
-//	void	archiveBase(core::ArchiveP node);
     private:
 	// instance variables
 	bool	_Defined;

@@ -76,7 +76,6 @@ public:
     static const int max_remove = 2;
     gctools::SmallOrderedSet<Atom_sp> _AtomsAtRemoveBondAngle14[max_remove+1]; // s e t<Atom_sp>	_AtomsAtRemoveBondAngle14[3];
 public:
-//	void	archive( core::ArchiveP node);
 
 	bool inBondOrAngle(Atom_sp a) { return (this->_AtomsAtRemoveBondAngle14[0].contains(a)) || (this->_AtomsAtRemoveBondAngle14[1].count(a)>0);};
 	bool relatedBy14(Atom_sp a) { return (this->_AtomsAtRemoveBondAngle14[2].contains(a)); };
@@ -101,7 +100,6 @@ class AtomTable_O : public core::CxxObject_O
   LISP_CLASS(chem,ChemPkg,AtomTable_O,"AtomTable",core::CxxObject_O);
 
  public:
-//    void	archiveBase(core::ArchiveP node);
 
  public:
   void initialize();

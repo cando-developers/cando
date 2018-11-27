@@ -45,10 +45,6 @@ SMART(IntegerKeyObjectDictionary);
 {
     LISP_CLASS(geom,GeomPkg,IntegerKeyObjectDictionary_O,"IntegerKeyObjectDictionary",core::CxxObject_O);
 public:
-#if defined(XML_ARCHIVE)
-	void	archiveBase(ArchiveP node);
-	void	archive(ArchiveP node);
-#endif // defined(XML_ARCHIVE)
 public:
     typedef gctools::smart_ptr<core::T_O>	valueType;
     typedef map<int,core::T_sp>::iterator	iterator;

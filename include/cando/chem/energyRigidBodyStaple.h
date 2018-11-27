@@ -81,10 +81,6 @@ class EnergyRigidBodyStaple_O : public EnergyRigidBodyComponent_O
  public:
  public: // virtual functions inherited from Object
   void	initialize();
-//    void	archiveBase(core::ArchiveP node);
-//	string	__repr__() const;
-
- public:
   typedef EnergyRigidBodyStaple	TermType;
  public: // instance variables
   gctools::Vec0<TermType> _Terms;

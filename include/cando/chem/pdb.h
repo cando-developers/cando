@@ -102,7 +102,6 @@ public:
     {
 	LISP_CLASS(chem,ChemPkg,PdbReader_O,"PdbReader",core::CxxObject_O);
     public:
-//	void	archive(core::ArchiveP node);
 	void	initialize();
     private:
     public:

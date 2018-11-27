@@ -59,7 +59,6 @@ class IterateMatter_O : public core::Iterator_O
     public:
 static void lisp_initGlobals(core::Lisp_sp lisp);
 public:
-//void	archive(core::ArchiveP node);
 	void	initialize();
 public:
 	Matter_sp _Top;

@@ -40,9 +40,6 @@ SMART(ObjRef);
   LISP_CLASS(core, CorePkg, ObjRef_O, "ObjRef",core::CxxObject_O);
 
 public:
-#if defined(XML_ARCHIVE)
-  void archive(ArchiveP node);
-#endif // defined(XML_ARCHIVE)
   void initialize();
 GCPRIVATE:
   string _Selector;

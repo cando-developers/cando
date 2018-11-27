@@ -140,7 +140,6 @@ public:
 public:
   void initialize();
 public:
-//	void	archiveBase(core::ArchiveP n);
   friend class	AlchemistState_O;
 public:
   typedef gctools::SmallMultimap<core::Symbol_sp,Coupling_sp,core::SymbolComparer> Couplings;

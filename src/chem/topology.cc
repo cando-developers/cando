@@ -673,5 +673,11 @@ CL_DEFMETHOD core::T_mv Topology_O::lookupStereoisomerAtoms(Fixnum isomer)
   return Values(_Nil<core::T_O>(),this->_StereoisomerCoding,core::make_fixnum(isomer));
 }
 
+CL_DEFMETHOD void Topology_O::walkStereoisomerAtoms(core::Function_sp func)
+{
+  for ( auto entry : this->_StereoisomerAtomProperties ) {
+    core::eval::funcall(func,entry);
+  }
+};
 
 };

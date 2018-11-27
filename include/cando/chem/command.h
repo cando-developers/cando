@@ -57,7 +57,6 @@ class Command_O : public core::CxxObject_O
     LISP_CLASS(chem,ChemPkg,Command_O,"Command",core::CxxObject_O);
 
 public:
-//    void	archiveBase(core::ArchiveP node);
 public:
 	virtual	void doIt() {};
 	virtual void undoIt() {};

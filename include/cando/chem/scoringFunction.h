@@ -97,7 +97,6 @@ namespace       chem
     string	    _Name;
     bool        _Debug;
   public:
-//    void	archive(core::ArchiveP node);
     CL_DEFMETHOD     void	setScoringFunctionName(const string& nm) { this->_Name = nm; };
     CL_DEFMETHOD     string	scoringFunctionName() { return this->_Name; };
 //    void		writeForceToAtoms(NVector_sp f);

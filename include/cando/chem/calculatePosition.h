@@ -48,7 +48,6 @@ namespace chem {
 	LISP_CLASS(chem,ChemPkg,CalculatePosition_O,"CalculatePosition",core::CxxObject_O);
 public: // virtual functions inherited from Object
 	void	initialize();
-//	void	archiveBase(core::ArchiveP node);
 //	string	__repr__() const;
 
 private: // instance variables
@@ -81,7 +80,6 @@ public:
 #endif
 public: // virtual functions inherited from Object
 	void	initialize();
-//	void	archiveBase(core::ArchiveP node);
 //	string	__repr__() const;
 
 private: // instance variables
@@ -115,7 +113,6 @@ public:
 #endif
 public: // virtual functions inherited from Object
 	void	initialize();
-//	void	archiveBase(core::ArchiveP node);
 
 private: // instance variables
 	MatterName	_FromAtomName;
@@ -145,7 +142,6 @@ public:
 #endif
 public: // virtual functions inherited from Object
 	void	initialize();
-//	void	archiveBase(core::ArchiveP node);
 
 private: // instance variables
 	MatterName	_OriginAtomName;

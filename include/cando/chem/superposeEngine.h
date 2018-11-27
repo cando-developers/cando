@@ -74,7 +74,6 @@ public:
   void fields(core::Record_sp node);
   
 	void	initialize();
-//	void	archiveBase(core::ArchiveP node);
 private:
 	core::MDArray_size_t_sp		_FixedIndices;
 	geom::MDArrayCoordinate_sp	_FixedCoordinates;
@@ -131,7 +130,6 @@ class SuperposeSelectedAtoms_O : public SuperposeEngine_O
 public:
 public:
 	void	initialize();
-//	void	archiveBase(core::ArchiveP node);
 private:
 	Matter_sp		_Matter;
     gctools::Vec0<Atom_sp>		_SuperposeAtoms;

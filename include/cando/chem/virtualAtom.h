@@ -47,7 +47,6 @@ class VirtualAtom_O : public Atom_O
 {
     LISP_CLASS(chem,ChemPkg,VirtualAtom_O,"VirtualAtom",Atom_O);
 public:
-//    void	archive(core::ArchiveP node);
 	void	initialize();
         bool fieldsp() const {return true;};
         void fields(core::Record_sp node);

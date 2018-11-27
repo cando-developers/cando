@@ -77,8 +77,6 @@ public:
     string description() const;
     friend class CandoDatabase_O;
 public:
-//    void	archiveBase(core::ArchiveP node);
-public:
     typedef	adapt::SymbolSet_sp	EntityNames;
 protected:
     /*!Ring closing plugs have optional neighbors */
@@ -215,8 +213,6 @@ public:
 public:
 	static EntityNameSet_sp	create2(core::Symbol_sp nm);
 public:
-//    void	archiveBase(core::ArchiveP node);
-protected:
     core::Symbol_sp		_Name;
 public:
 CL_LISPIFY_NAME("setName");

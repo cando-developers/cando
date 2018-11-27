@@ -56,7 +56,6 @@ class OligomerPart_Base_O : public core::CxxObject_O
     LISP_CLASS(chem,ChemPkg,OligomerPart_Base_O,"OligomerPart-Base",core::CxxObject_O);
 
 public:
-//    void archiveBase(core::ArchiveP node);
 public:
 	virtual Monomer_sp createMonomer(CandoDatabase_sp bdb) {_OF();SUBCLASS_MUST_IMPLEMENT();};
 	DEFAULT_CTOR_DTOR(OligomerPart_Base_O);
@@ -72,7 +71,6 @@ class OligomerPart_Monomer_O : public OligomerPart_Base_O
     LISP_CLASS(chem,ChemPkg,OligomerPart_Monomer_O,"OligomerPart-Monomer",OligomerPart_Base_O);
 
 public:
-//    void archive(core::ArchiveP node);
 public:	// Leave everything exposed to simplify getting values in and out
 	core::Symbol_sp _MonomerId;
 	core::Symbol_sp	_GroupName;
@@ -94,7 +92,6 @@ class OligomerPart_Link_O : public OligomerPart_Base_O
     LISP_CLASS(chem,ChemPkg,OligomerPart_Link_O,"OligomerPart-Link",OligomerPart_Base_O);
 
 public:
-//    void archive(core::ArchiveP node);
 public:	// Leave everything exposed to simplify getting values in and out
 	core::Symbol_sp		_Monomer1Id;
 	core::Symbol_sp		_Coupling;

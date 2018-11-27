@@ -88,7 +88,6 @@ class CandoDatabase_O : public core::CxxObject_O
 public:
   static CandoDatabase_sp make(core::Symbol_sp name);
 public:
-//    void	archiveBase(core::ArchiveP node);
   bool fieldsp() const { return true; };
   void fields(core::Record_sp node);
   
@@ -209,6 +208,8 @@ public:
   /*! Return (values topology t/nil) */
   core::T_mv findTopology(core::T_sp name,bool errorp) const;
   void setf_findTopology(core::T_sp name, Topology_sp topology);
+
+  void walk_topologys(core::Function_sp func);
   
 
 //-----------------------------------------------------------------------------

@@ -79,8 +79,6 @@ public:
 	double		getYa() { return this->term.ya; };
 	double		getZa() { return this->term.za; };
 public:
-//	void	archive(core::ArchiveP node);
-public:
 	adapt::QDomNode_sp	asXml();
 	void	parseFromXmlUsingAtomTable(adapt::QDomNode_sp xml, AtomTable_sp atomTable );
 
@@ -102,7 +100,6 @@ class EnergyAnchorRestraint_O : public EnergyComponent_O
 public:
 public: // virtual functions inherited from Object
     void	initialize();
-//    void	archiveBase(core::ArchiveP node);
 public:
     typedef EnergyAnchorRestraint	TermType;
 public: // instance variables

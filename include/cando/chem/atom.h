@@ -89,8 +89,6 @@ namespace chem
 	//! Set if the restraint is defined
     void setIsDefined(bool d) { this->_Defined = d; };
 	//! Serialize the object
-    void archive(core::ArchiveP node );
-
   };
 #endif
   inline	string	XmlTag_Atom() { return "Atom";};

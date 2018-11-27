@@ -46,7 +46,6 @@ namespace geom {
 	LISP_CLASS(geom,GeomPkg,Range_O,"Range",core::CxxObject_O);
 	DECLARE_INIT();
     public:
-//	void	archive(core::ArchiveP node);
 	void	initialize();
     private:
 	core::LongLongInt	_Begin;

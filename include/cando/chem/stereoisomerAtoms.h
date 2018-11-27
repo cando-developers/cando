@@ -57,7 +57,6 @@ topology atoms plug into others.  So it stores things like charge and atom type.
   public:
     bool fieldsp() const { return true; };
     void fields(core::Record_sp node);
-//	void	archiveBase(core::ArchiveP node);
   public:
 	/*! Construct a StereoisomerAtom given its uniqueAtomName and its unique ConstitutionAtomIndex0N */
     static StereoisomerAtom_sp create(ConstitutionAtom_sp constitutionAtom );
@@ -87,7 +86,6 @@ topology atoms plug into others.  So it stores things like charge and atom type.
   {
     LISP_CLASS(chem,ChemPkg,StereoisomerVirtualAtom_O,"StereoisomerVirtualAtom",StereoisomerAtom_O);
   public:
-//	void	archiveBase(core::ArchiveP node);
   public:
 	/*! Construct a StereoisomerVirtualAtom given its uniqueAtomName and its uique ConstitutionAtomIndex0N */
     static StereoisomerVirtualAtom_sp create(MatterName uniqueAtomName, ConstitutionAtomIndex0N index,
@@ -113,7 +111,6 @@ is a list of stereoisomer-atoms.)");
   public: // virtual functions inherited from Object
     bool fieldsp() const { return true; };
     void fields(core::Record_sp node);
-//	void	archiveBase(core::ArchiveP node);
 //	string	__repr__() const;
 
   public: // instance variables
@@ -146,7 +143,7 @@ is a list of stereoisomer-atoms.)");
 	//! Add a StereoisomerVirtualAtom to us and assign it a ConstitutionAtomIndex0N
     void addStereoisomerAtom(StereoisomerAtom_sp cva);
 
-    core::Symbol_sp getName() const { return this->_StereoisomerName; };
+    CL_DEFMETHOD core::Symbol_sp getName() const;
 	//! Return a StringSet of the StereoisomerAtom names
     adapt::SymbolSet_sp atomNamesAsSymbolSet();
 

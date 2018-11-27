@@ -54,7 +54,6 @@ class PdbMonomerConnectivity_O : public core::CxxObject_O
     LISP_CLASS(chem,ChemPkg,PdbMonomerConnectivity_O,"PdbMonomerConnectivity",core::CxxObject_O);
 public:
     void initialize();
-//void archiveBase(core::ArchiveP node);
 private:
     core::Symbol_sp           _PdbName;
     core::VectorTNs_sp     _LongNames;
@@ -82,7 +81,6 @@ public:
     {
 	LISP_CLASS(chem,ChemPkg,PdbMonomerDatabase_O,"PdbMonomerDatabase",core::CxxObject_O);
 public:
-//    void archiveBase(core::ArchiveP node);
 
     private:
       gc::SmallMap<core::Symbol_sp, PdbMonomerConnectivity_sp>   _Database; // was StringMap

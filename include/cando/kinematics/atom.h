@@ -49,7 +49,7 @@ namespace kinematics
 {
 
 
-#if 1
+#if 0
 #define KIN_LOG(msg) core::write_bf_stream(BF("%s:%d:%f - ") % __FILE__ % __LINE__ % __FUNCTION__ ); core::write_bf_stream(msg)
 #else
 #define KIN_LOG(msg)

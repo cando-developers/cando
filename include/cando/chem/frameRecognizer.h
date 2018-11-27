@@ -55,7 +55,6 @@ class FrameRecognizer_O : public core::CxxObject_O
 #endif
 public:
 	void	initialize();
-//	void	archive(core::ArchiveP node);
 
 private: // ---------------------------------------------------------
 	core::Symbol_sp			_Name;

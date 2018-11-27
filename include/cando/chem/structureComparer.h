@@ -71,7 +71,6 @@ class StructureComparer_O : public core::CxxObject_O
 public:
 	void initialize();
 public:
-//	void	archive(core::ArchiveP node);
 private:
 	Matter_sp				_Matter;
     gctools::SmallOrderedSet<Atom_sp>				_AllAtoms;

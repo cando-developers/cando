@@ -48,7 +48,6 @@ namespace geom
     public:
     public: // virtual functions inherited from Object
 	void	initialize();
-//	void	archiveBase(core::ArchiveP node);
 //	string	__repr__() const;
 
     private: // instance variables
@@ -62,7 +61,6 @@ namespace geom
 	static Color_sp systemColor(core::Symbol_sp name);
 	static Color_sp getOrDefineSystemColor(core::Symbol_sp name, uint rgb);
 	static Color_sp getOrDefineSystemColor(core::Symbol_sp name, double red, double green, double blue);
-	static Color_sp getOrDefineSystemColor(core::ArchiveP node);
     public: // standard colors
 	static Color_sp white();
 	static Color_sp yellow();

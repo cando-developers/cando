@@ -84,8 +84,6 @@ public:
     Vector2	normalized() const;
 
 	void	dump();
-//    void	archive( core::ArchiveP node );
-
 	int	len() { return 2;};
 	double get(int i) const;
 	double getX() const { return this->coords[0]; }

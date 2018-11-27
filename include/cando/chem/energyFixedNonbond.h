@@ -81,8 +81,6 @@ public:
 	bool	defineFrom(Atom_sp a);
 
 public:
-//	void	archive(core::ArchiveP node);
-public:
 	adapt::QDomNode_sp	asXml();
 	void	parseFromXmlRelativeToContainer( adapt::QDomNode_sp xml, Matter_sp parent );
 	void	parseFromXmlUsingAtomTable(adapt::QDomNode_sp xml, AtomTable_sp atomTable );
@@ -114,9 +112,6 @@ class EnergyFixedNonbondRestraint_O : public EnergyComponent_O
 public:
 public: // virtual functions inherited from Object
     void	initialize();
-//    void	archiveBase(core::ArchiveP node);
-
-public:
     typedef FixedNonbondRestraint TermType;
     typedef BeyondThresholdFixedNonbondRestraint BeyondThresholdTermType;
 public: // instance variables

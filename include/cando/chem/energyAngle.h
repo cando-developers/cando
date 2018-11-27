@@ -90,9 +90,6 @@ public:
 #endif
 
 public:
-//	void	archive( core::ArchiveP node );
-
-public:
         Atom_sp	getAtom1() { return this->_Atom1; };
         Atom_sp	getAtom2() { return this->_Atom2; };
         Atom_sp	getAtom3() { return this->_Atom3; };
@@ -158,8 +155,6 @@ public:
     void fields(core::Record_sp node);
 public: // virtual functions inherited from Object
     void	initialize();
-//    void	archiveBase(core::ArchiveP node);
-
 public:
     typedef EnergyAngle	TermType;
 public: // instance variables

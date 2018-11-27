@@ -11,7 +11,9 @@
   (multiple-value-bind (topology foundp)
       (chem:find-topology name errorp)
     topology))
-    
+
+(defun walk-topologys (func)
+  (chem:walk-topologys chem:*cando-database* func))
 
 (defun register-entity (name entity)
   (error "Implement register-entity")

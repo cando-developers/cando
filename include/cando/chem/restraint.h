@@ -65,7 +65,6 @@ class Restraint_O : public core::CxxObject_O
 {
   LISP_CLASS(chem,ChemPkg,Restraint_O,"Restraint",core::CxxObject_O);
  public:
-//    void	archiveBase(core::ArchiveP node);
 //    void	serialize(serialize::SNode node);
 
  private:
@@ -102,10 +101,7 @@ class RestraintAnchor_O : public Restraint_O
 #endif
 
 public:
-//	void	archiveBase(core::ArchiveP node);
-//	void	serialize(serialize::SNode node);
 
-private:
 	Atom_sp		_Atom;
 	Vector3		_Pos;
 	double		_Weight;
@@ -150,10 +146,6 @@ class RestraintChiral_O : public Restraint_O
     LISP_CLASS(chem,ChemPkg,RestraintChiral_O,"RestraintChiral",Restraint_O);
 
 public:
-//    void	archiveBase(core::ArchiveP node);
-//    void	serialize(serialize::SNode node);
-
-private:
 	Atom_sp		_A;
 	int		_Chirality;	// S=1,R=-1
 
@@ -190,10 +182,6 @@ class RestraintDistance_O : public Restraint_O
  public:
   bool fieldsp() const { return true; };
   void	fields(core::Record_sp node);
-
- public:
-//    void	archiveBase(core::ArchiveP node);
-//    void	serialize(serialize::SNode node);
 
  public:
   Atom_sp		_A;
@@ -239,10 +227,6 @@ class RestraintAngle_O : public Restraint_O
 {
     LISP_CLASS(chem,ChemPkg,RestraintAngle_O,"RestraintAngle",Restraint_O);
 public:
-//    void	archiveBase(core::ArchiveP node);
-//    void	serialize(serialize::SNode node);
-
-private:
 	Atom_sp		_A;
 	Atom_sp		_B;
 	Atom_sp		_C;
@@ -288,10 +272,6 @@ class RestraintDihedral_O : public Restraint_O
     LISP_CLASS(chem,ChemPkg,RestraintDihedral_O,"RestraintDihedral",Restraint_O);
 
 public:
-//    void	archiveBase(core::ArchiveP node);
-//    void	serialize(serialize::SNode node);
-
-protected:
 	Atom_sp		_A;
 	Atom_sp		_B;
 	Atom_sp		_C;
@@ -348,8 +328,6 @@ class RestraintFixedNonbond_O : public Restraint_O
 
 public:
 	void	initialize();
-//	void	archiveBase(core::ArchiveP node);
-//	void	serialize(serialize::SNode node);
 protected:
 	Matter_sp	_Matter;
 public:

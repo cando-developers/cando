@@ -89,7 +89,6 @@ public:
         Atom_sp	getAtom4() { return this->_Atom4; };
 	double	getAngle();
 public:
-//	void	archive(core::ArchiveP node);
 public:
 	adapt::QDomNode_sp	asXml();
 	void	parseFromXmlUsingAtomTable(adapt::QDomNode_sp xml, AtomTable_sp atomTable );
@@ -113,7 +112,6 @@ class EnergyImproperRestraint_O : public EnergyComponent_O
 public:
 public: // virtual functions inherited from Object
     void	initialize();
-//    void	archiveBase(core::ArchiveP node);
 //	string	__repr__() const;
 
 public:

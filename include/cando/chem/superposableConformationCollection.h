@@ -95,9 +95,6 @@ class SuperposableConformationCollection_O : public ConformationCollection_O
 public:
   void initialize();
 public:
-//	void	archive(core::ArchiveP node);
-
-private:
   double		_RmsCutOff;
   core::MDArray_size_t_sp	_SuperposeAtomIndices;
 //	string		_SuperposableFileName;

@@ -93,7 +93,6 @@ class EnergyRigidBodyNonbond_O : public EnergyRigidBodyComponent_O
   CL_DEF_CLASS_METHOD static EnergyRigidBodyNonbond_sp make( core::Array_sp end_atoms );
  public: // virtual functions inherited from Object
   void	initialize();
-//    void	archiveBase(core::ArchiveP node);
 //	string	__repr__() const;
  public: // instance variables
   double		_DielectricConstant;

@@ -63,7 +63,6 @@ class Structure_Old_ListEntry_O : public core::CxxObject_O
     LISP_CLASS(chem,ChemPkg,Structure_Old_ListEntry_O,"StructureListEntry",core::CxxObject_O);
 
 public:
-//    void	archive(core::ArchiveP node);
 	void	initialize();
 public:
 static Structure_Old_ListEntry_sp	create(Structure_Old_List_sp s);
@@ -120,9 +119,7 @@ class Structure_Old_List_O : public core::CxxObject_O
 public:
 	void initialize();
 public:
-//	void	archiveBase(core::ArchiveP node);
 public:
-//	void	archive(core::ArchiveP node);
 protected:
 	Matter_sp				_Matter;
     gctools::Vec0<Structure_Old_ListEntry_sp>		_Entries;

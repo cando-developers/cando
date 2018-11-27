@@ -70,7 +70,6 @@ public:
   core::List_sp	_Properties;
  public:
   void initialize();
-//	void	archiveBase(core::ArchiveP node);
 
 
  public:
@@ -169,7 +168,6 @@ class BondList_O : public core::CxxObject_O
  public:
   void initialize();
  public:
-//	void	archiveBase(core::ArchiveP node);
  private:
   gctools::Vec0<Bond_sp>	_Bonds;
 //	gctools::Vec0<Bond_sp>	_Bonds;

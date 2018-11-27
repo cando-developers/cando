@@ -53,7 +53,6 @@ public:
 #endif
 public:
 	void	initialize();
-//	void	archiveBase(core::ArchiveP node);
 
 private:
 	core::Symbol_sp	_Representative;

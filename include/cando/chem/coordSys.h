@@ -67,9 +67,6 @@ class CoordinateSystem_O : public core::CxxObject_O
 public:
 	void initialize();
 public:
-//	void	archive(core::ArchiveP node);
-public:
-public:
 CL_LISPIFY_NAME("setOrigin");
 CL_DEFMETHOD 	void	setOrigin(const Vector3& o)	{ this->origin=o; };
 CL_LISPIFY_NAME("getOrigin");

@@ -55,7 +55,6 @@ namespace chem {
 #endif
 public: // virtual functions inherited from Object
 	void	initialize();
-//	void	archiveBase(core::ArchiveP node);
 //	string	__repr__() const;
 	string description() const;
 

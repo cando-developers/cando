@@ -126,7 +126,6 @@ struct RestartMinimizer {};
     void fields(core::Record_sp node);
 #endif
   public:
-//	void	archiveBase(core::ArchiveP node);
 
   private:
 	// behavior

@@ -159,6 +159,7 @@
    #:as-string
    #:scramble-positions
    #:jostle
+   #:walk-topologys
    #:dump-stereocenters
    #:calculate-all-stereochemistry
    #:stereocenters-sorted-by-name

@@ -120,7 +120,6 @@ FORWARD(Monomer);
   public:
     void initialize();
   public:
-//	    void	archiveBase(core::ArchiveP node);
 
     friend class Monomer_O;
   public:

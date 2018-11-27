@@ -56,7 +56,6 @@
 
 
 ;;; This version draws joints with internal coordinates
-#+(or)
 (defmethod stream-draw-joint ((joint kin:bonded-atom) atom-tree stream)
   (let* ((pos (kin:get-position joint))
          (start-pos (kin:get-property-or-default joint :start-pos nil))
@@ -64,17 +63,19 @@
                       ((let ((color (and *color-joints* (gethash joint *color-joints*))))
                          (if color
                              (format nil "style=filled;color=~a;" color)
-                             nil))
-                       (if start-pos
+                             nil)))
+                      ((if start-pos
                            (if (> (geom:vlength (geom:v- start-pos pos)) 0.01)
                                (format nil "style=filled;color=red;")
-                               ""))
-                       (t "")))))
-    (format stream "   ~a [~alabel = \"~a~%~a~%#(~4,2f ~4,0f ~4,0f)~%~s~%~s~%~s\"];~%"
+                               nil)))
+                      (t ""))))
+    (unless highlight
+      (format t "highlight is NIL!!!!!!!!!~%"))
+    (format stream "   ~a [~alabel = \"~a~%#(~4,2f ~4,0f ~4,0f)~%~s~%~s~%~s\"];~%"
             (id joint)
             highlight
             (label joint)
-            (kin:atom-id joint)
+;;;            (kin:atom-id joint)
             (kin:get-distance joint)
             (/ (kin:get-theta joint) 0.0174533)
             (/ (kin:get-phi joint) 0.0174533)

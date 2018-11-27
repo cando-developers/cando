@@ -68,7 +68,6 @@ class ConformationExplorerEntryStage_O : public core::CxxObject_O
     LISP_CLASS(chem,ChemPkg,ConformationExplorerEntryStage_O,"ConformationExplorerEntryStage",core::CxxObject_O);
 
 public:
-//    void	archiveBase(core::ArchiveP node);
 	void	initialize();
 private:
 	string				_BasedOnStageName;
@@ -174,7 +173,6 @@ class ConformationExplorerEntry_O : public core::CxxObject_O
     friend class ConformationExplorer_O;
     LISP_CLASS(chem,ChemPkg,ConformationExplorerEntry_O,"ConformationExplorerEntry",core::CxxObject_O);
 public:
-//    void	archiveBase(core::ArchiveP node);
 	void	initialize();
 private:
 	ConformationExplorer_sp				_WeakConformationExplorer;
@@ -259,7 +257,6 @@ class ConformationExplorer_O : public core::CxxObject_O
 public:
 	void initialize();
 public:
-//	void	archiveBase(core::ArchiveP node);
 friend class ConformationExplorerEntry_O;
 friend class ConformationExplorerEntryStage_O;
 protected:

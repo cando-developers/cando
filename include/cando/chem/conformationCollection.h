@@ -65,8 +65,6 @@ class ConformationCollectionEntry_O : public core::CxxObject_O
   LISP_CLASS(chem,ChemPkg,ConformationCollectionEntry_O,"ConformationCollectionEntry",core::CxxObject_O);
 
 public:
-//    void	archive(core::ArchiveP node);
-private:
   ConformationCollection_sp	_WeakConformationCollection;
   geom::SimpleVectorCoordinate_sp		_AllCoordinates;
   core::HashTableEq_sp		_Data;
@@ -118,10 +116,6 @@ class ConformationCollection_O : public core::CxxObject_O
 public:
 	void initialize();
 public:
-//	void	archiveBase(core::ArchiveP node);
-public:
-//	void	archive(core::ArchiveP node);
-protected:
 	Matter_sp				_Matter;
     gctools::Vec0<ConformationCollectionEntry_sp>	_Entries;
     gctools::SmallOrderedSet<Atom_sp>			_AllAtoms;

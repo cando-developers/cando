@@ -253,48 +253,6 @@ template <class ComponentType, class EntryType>
 };
 
 
-#ifdef XML_ARCHIVE
-template <class ComponentType, class EntryType>
-  void	archiveEnergyComponentTerms(core::ArchiveP node,ComponentType& component)
-{_G();
-  if ( node->loading() )
-  {
-    core::VectorNodes::iterator	vi;
-    EntryType term(node->lisp());
-    component._Terms.clear();
-    component._BeyondThresholdTerms.clear();
-    for ( vi=node->begin_Children(); vi!=node->end_Children(); vi++ )
-    {
-      if ( (*vi)->isNamed(component.className()+"Term") )
-      {
-        term.archive(*vi);
-        component._Terms.push_back(term);
-      } else if ( (*vi)->isNamed(component.className()+"BeyondThresholdTerm") )
-      {
-        term.archive(*vi);
-        component._BeyondThresholdTerms.push_back(term);
-      } else
-      {
-        ARCHIVE_ERROR(BF("Illegal node"), *vi);
-      }
-    }
-  } else
-  {
-    typename vector<EntryType>::iterator ti;
-    core::ArchiveP	child;
-    for (ti=component._Terms.begin(); ti!=component._Terms.end(); ti++ )
-    {
-      child = node->createChildNode(component.className()+"Term");
-      ti->archive(child);
-    }
-    for (ti=component._BeyondThresholdTerms.begin(); ti!=component._BeyondThresholdTerms.end(); ti++ )
-    {
-      child = node->createChildNode(component.className()+"BeyondThresholdTerm");
-      ti->archive(child);
-    }
-  }
-}
-#endif
 
 
 SMART(EnergyComponent );
@@ -304,10 +262,6 @@ class EnergyComponent_O : public core::CxxObject_O
  public:
  public: // virtual functions inherited from Object
   void initialize();
-#if XML_ARCHIVE
-  void	archiveBase(core::ArchiveP node);
-#endif
-
  protected: // instance variables
   bool		_Enabled;
   double		_Scale;

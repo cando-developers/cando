@@ -52,7 +52,6 @@ class ReportBase_O : public core::CxxObject_O
 
 public:
 void initialize();
-//void	archiveBase(core::ArchiveP node);
 public:
     	int	_Time;
 public:
@@ -66,7 +65,6 @@ class MessageReport_O : public ReportBase_O
     LISP_CLASS(chem,ChemPkg,MessageReport_O,"MessageReport",ReportBase_O);
 
 public:
-//    void	archive(core::ArchiveP node);
 public:
 	string	_Message;
 public:
@@ -83,7 +81,6 @@ class ForceMatchReport_O : public ReportBase_O
     LISP_CLASS(chem,ChemPkg,ForceMatchReport_O,"ForceMatchReport",ReportBase_O);
 
 public:
-//    void	archive(core::ArchiveP node);
 public:
 	string	_Message;
 	NVector_sp	_AnalyticalForce;
@@ -104,7 +101,6 @@ class StepReport_O : public ReportBase_O
 
 public:
 	void	initialize();
-//	void	archive(core::ArchiveP node);
 public:
 	int	_Iteration;
 	double	_Xa;
@@ -173,7 +169,6 @@ class MinimizerLog_O : public core::CxxObject_O
     LISP_CLASS(chem,ChemPkg,MinimizerLog_O,"MinimizerLog",core::CxxObject_O);
 
 public:
-//    void	archive(core::ArchiveP node);
 public:
 		// Permanent information
 	Minimizer_sp		_Minimizer;

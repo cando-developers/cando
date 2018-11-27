@@ -52,9 +52,6 @@ public:
     public:
 	static OVector3_sp make(double x, double y, double z);
 public:
-//	void	archiveBase(core::ArchiveP node);
-//	void	serialize(serialize::SNode node);
-public:
 	static OVector3_sp createFromVector3(const Vector3& pos);
 	static OVector3_sp create(Vector3 const& pos);
     /*! Create from 3 element Cons */

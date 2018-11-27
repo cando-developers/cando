@@ -53,7 +53,6 @@ class VirtualSphere_O : public core::CxxObject_O
 public:
     static void lisp_initGlobals(core::Lisp_sp lisp);
 
-//    void	archiveBase(core::ArchiveP node);
 	void	initialize();
 private:
 	int	_WindowWidth; /*!< Store the width of virtual sphere window */

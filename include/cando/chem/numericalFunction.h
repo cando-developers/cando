@@ -67,8 +67,6 @@ class NumericalFunction_O : public core::CxxObject_O
 public:
 	void initialize();
 public:
-//	void	archive(core::ArchiveP node);
-private:
 	string		title;
 	string		xAxisName;
 	string		yAxisName;

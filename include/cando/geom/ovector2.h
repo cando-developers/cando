@@ -40,7 +40,6 @@ namespace geom {
 public:
 	Vector2	_Value;
 public:
-//	void	archiveBase(core::ArchiveP node);
 public:
 	static OVector2_sp createFromVector2( const Vector2& pos);
     /*! Carry out a vector sum */

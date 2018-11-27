@@ -59,7 +59,6 @@ friend class Trajectory_O;
 public:
 public: // virtual functions inherited from Object
 	void	initialize();
-//	void	archiveBase(core::ArchiveP node);
 //	string	__repr__() const;
 
 private: // instance variables
@@ -107,7 +106,6 @@ public:
 	}
 public: // virtual functions inherited from Object
 	void	initialize();
-//	void	archiveBase(core::ArchiveP node);
 //	string	__repr__() const;
 
 private: // instance variables

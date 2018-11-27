@@ -121,6 +121,7 @@ CL_DEFMETHOD string StringSet_O::asString() {
   return ss.str();
 }
 
+#if 0
 void StringSet_O::archiveBase(ArchiveP node) {
   if (node->loading()) {
     Vector_sp vec = node->getVectorSNodes();
@@ -140,7 +141,7 @@ void StringSet_O::archiveBase(ArchiveP node) {
     node->setVectorSNodesUnsafe(vec);
   }
 }
-
+#endif
 CL_LISPIFY_NAME("contains");
 CL_DEFMETHOD bool StringSet_O::contains(const string &s) {
   

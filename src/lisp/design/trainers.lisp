@@ -127,6 +127,7 @@
     agg))
 
 (defun extract-internal-coordinates (trainer)
+  "Extract internal coordinates for the focus monomer of the trainer"
   (let ((conf-col (superposable-conformation-collection trainer))
         (conf-col-agg (aggregate trainer))
         (conformation (conformation trainer))

@@ -173,7 +173,6 @@ public:
 	/*! Return the Z column */
 	Vector3 colZ() const;
 
-//	void	archive( core::ArchiveP node );
 //	double	*getElements() { return &this->elements.data(); };
 
 		//
@@ -242,7 +241,6 @@ private:
 	void push_back(Matrix& m) { this->_Matrices.push_back(m); };
 	void clear() { this->_Matrices.clear(); };
 public:
-	void	archive( core::ArchiveP node );
 	Matrix& get(uint i);
 	void set(uint i, const Matrix& m) { HARD_ASSERT(i<this->_Matrices.size()); this->_Matrices[i]=m;}
 	void setSize(uint sz) { this->_Matrices.resize(sz); };

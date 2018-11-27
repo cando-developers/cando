@@ -59,7 +59,6 @@ namespace chem
     public:
     public:
 	void	initialize();
-//	void	archiveBase(core::ArchiveP node);
     public:
 	static Alias_sp create(core::Symbol_sp monomerAlias, core::Symbol_sp atomAlias )
 	{

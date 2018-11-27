@@ -83,7 +83,6 @@ public:
   double	getR();
 
 public:
-//	void	archive(core::ArchiveP node);
 public:
   adapt::QDomNode_sp	asXml();
   void	parseFromXmlUsingAtomTable(adapt::QDomNode_sp xml, AtomTable_sp atomTable );

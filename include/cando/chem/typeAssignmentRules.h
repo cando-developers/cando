@@ -47,7 +47,6 @@ namespace chem {
   {
     LISP_CLASS(chem,ChemPkg,OneTypeRule_O,"OneTypeRule",core::CxxObject_O);
   public:
-//	void	archive(core::ArchiveP node);
     void	initialize();
     bool fieldsp() const { return true; };
     void fields(core::Record_sp node);
@@ -72,7 +71,6 @@ namespace chem {
   {
     LISP_CLASS(chem,ChemPkg,TypeAssignmentRules_O,"TypeAssignmentRules",core::CxxObject_O);
   public:
-//	void	archive(core::ArchiveP node);
     void	initialize();
     bool fieldsp() const { return true; };
     void fields(core::Record_sp node);

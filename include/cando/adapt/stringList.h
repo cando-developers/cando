@@ -50,9 +50,6 @@ SMART(StringList);
   LISP_CLASS(adapt, AdaptPkg, StringList_O, "StringList",core::CxxObject_O);
 
 public:
-#if defined(XML_ARCHIVE)
-  void archiveBase(ArchiveP node);
-#endif // defined(XML_ARCHIVE)
 private:
   vector<string> _Contents;
 

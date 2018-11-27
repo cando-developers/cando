@@ -103,7 +103,6 @@ public:
                            EnergyNonbond_sp nb);
 
 public:
-//	void	archive(core::ArchiveP node);
 public:
 	adapt::QDomNode_sp	asXml();
 	void	parseFromXmlRelativeToContainer( adapt::QDomNode_sp xml, Matter_sp parent );
@@ -159,7 +158,6 @@ class EnergyNonbond_O : public EnergyComponent_O
   
  public: // virtual functions inherited from Object
   void	initialize();
-//    void	archiveBase(core::ArchiveP node);
 //	string	__repr__() const;
  public:
   typedef EnergyNonbond TermType;

@@ -59,7 +59,6 @@ class SpecificContext_O : public core::CxxObject_O
     static SpecificContext_sp make();
 public: // virtual functions inherited from Object
 	void	initialize();
-//	void	archive(core::ArchiveP node);
 //	string	__repr__() const;
 
 private: // instance variables
@@ -106,7 +105,6 @@ class SpecificContextSet_O : public core::CxxObject_O
 #endif
 public: // virtual functions inherited from Object
 	void	initialize();
-//	void	archive(core::ArchiveP node);
 //	string	__repr__() const;
 
 private: // instance variables
