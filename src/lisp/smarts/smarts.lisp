@@ -426,5 +426,3 @@
       (:aromatic
        (core:make-cxx-object 'chem:atom-test :sym symbol :test :saparomatic-element))
       )))
-
-

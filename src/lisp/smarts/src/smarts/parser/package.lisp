@@ -17,6 +17,11 @@
   (:shadow
    #:parse)
 
+  ;; Exported rules
+  (:export
+   #:atom-pattern
+   #:recursive)
+
   ;; Parser protocol
   (:export
    #:parse))

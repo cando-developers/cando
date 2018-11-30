@@ -95,7 +95,7 @@
       (* :modifier modifiers))))
 
 (defrule atom-weight
-    parser.common-rules:integer-literal/decimal) ; TODO predicate for plusp. is this an integer?
+    parser.common-rules::integer-literal/decimal/no-sign)
 
 (defrule atom-modifier
     (or hydrogen-count charge chirality))
@@ -117,11 +117,11 @@
                 (or ,rule-name/number ,rule-name/repeat))
 
             (defrule ,rule-name/number
-                (and ,character parser.common-rules:integer-literal/decimal)
+               (and ,character parser.common-rules::integer-literal/decimal/no-sign)
               (:function second)
               (:lambda (count &bounds start end)
                 (architecture.builder-protocol:node* (:charge :which ',value :value count
-                                   :bounds (cons start end)))))
+                                                              :bounds (cons start end)))))
 
             (defrule ,rule-name/repeat
                 (+ ,character)
@@ -152,8 +152,11 @@
 
 ;;; Daylight Theory Manual, page 17
 (defrule atom-map-class
-    (and #\: parser.common-rules:integer-literal/decimal)
+    (and #\: parser.common-rules::integer-literal/decimal/no-sign)
   (:function second)
+  (:lambda (class &bounds start end)
+    (architecture.builder-protocol:node* (:atom-map-class :class class :bounds (cons start end))))
+
   (:when *atom-maps?*))
 
 ;;; Daylight Theory Manual 3.2.2 Bonds

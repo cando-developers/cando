@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE CDXML SYSTEM "http://www.cambridgesoft.com/xml/cdxml.dtd" >
 <CDXML
- CreationProgram="ChemDraw 12.0.3.1216"
+ CreationProgram="ChemDraw 16.0.1.4"
  Name="alanine2.cdxml"
- BoundingBox="122.48 280.07 304.87 375.15"
+ BoundingBox="122.78 281.32 304.16 375.34"
  WindowPosition="0 0"
  WindowSize="0 0"
- WindowIsZoomed="yes"
  FractionalWidths="yes"
  InterpretChemically="yes"
  ShowAtomQuery="yes"
  ShowAtomStereo="no"
  ShowAtomEnhancedStereo="yes"
  ShowAtomNumber="no"
+ ShowResidueID="no"
  ShowBondQuery="yes"
  ShowBondRxn="yes"
  ShowBondStereo="no"
@@ -24,7 +24,7 @@
  LabelFace="96"
  CaptionFont="20"
  CaptionSize="12"
- HashSpacing="2.7"
+ HashSpacing="2.70"
  MarginWidth="2"
  LineWidth="1"
  BoldWidth="4"
@@ -36,10 +36,36 @@
  AminoAcidTermini="HOH"
  ShowSequenceTermini="yes"
  ShowSequenceBonds="yes"
+ ResidueWrapCount="40"
+ ResidueBlockCount="10"
+ ResidueZigZag="yes"
+ NumberResidueBlocks="no"
  PrintMargins="36 36 36 36"
- MacPrintInfo="0003000000480048000000000318026400000000031802640367052803FC00020000004800480000000002D802280001000000640000000100030303000000017FFF000100010000000000000000000000006808001901900000000000200000000000000000000000000000000000000000000000000000"
+ MacPrintInfo="00030000004800480000000002DE0240FFEEFFEE030602520367052803FC000000000000000000000000000000000000006400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+ ChemPropName=""
+ ChemPropFormula="Chemical Formula: "
+ ChemPropExactMass="Exact Mass: "
+ ChemPropMolWt="Molecular Weight: "
+ ChemPropMOverZ="m/z: "
+ ChemPropAnalysis="Elemental Analysis: "
+ ChemPropBoilingPt="Boiling Point: "
+ ChemPropMeltingPt="Melting Point: "
+ ChemPropCritTemp="Critical Temp: "
+ ChemPropCritPres="Critical Pres: "
+ ChemPropCritVol="Critical Vol: "
+ ChemPropGibbs="Gibbs Energy: "
+ ChemPropLogP="Log P: "
+ ChemPropMR="MR: "
+ ChemPropHenry="Henry&apos;s Law: "
+ ChemPropEForm="Heat of Form: "
+ ChemProptPSA="tPSA: "
+ ChemPropID=""
  color="0"
  bgcolor="1"
+ RxnAutonumberStart="1"
+ RxnAutonumberConditions="no"
+ RxnAutonumberStyle="Roman"
+ RxnAutonumberFormat="(#)"
 ><colortable>
 <color r="1" g="1" b="1"/>
 <color r="0" g="0" b="0"/>
@@ -53,7 +79,7 @@
 <font id="20" charset="x-mac-roman" name="Times"/>
 <font id="21" charset="x-mac-roman" name="Helvetica"/>
 </fonttable><page
- id="74"
+ id="76"
  BoundingBox="0 0 540 720"
  HeaderPosition="36"
  FooterPosition="36"
@@ -62,7 +88,8 @@
  WidthPages="1"
 ><fragment
  id="3"
- BoundingBox="122.48 280.07 304.87 375.15"
+ BoundingBox="122.78 281.32 304.16 375.34"
+ Z="1"
 ><n
  id="2"
  p="137 330"
@@ -71,8 +98,8 @@
  NeedsClean="yes"
  AS="N"
 ><t
- p="141.05 333.7"
- BoundingBox="122.48 325.07 141.05 335.95"
+ p="140.61 333.68"
+ BoundingBox="122.78 326.32 140.19 336.13"
  LabelJustification="Right"
  Justification="Right"
  LabelAlignment="Right"
@@ -83,8 +110,8 @@
  NumHydrogens="0"
  NeedsClean="yes"
 ><t
- p="159.8 318.7"
- BoundingBox="159.8 310.07 167 318.7"
+ p="159.37 318.68"
+ BoundingBox="159.81 311.32 166.17 318.87"
  LabelJustification="Left"
  LabelAlignment="Left"
 ><s font="21" size="10" face="96">C</s></t></n><n
@@ -96,8 +123,8 @@
  NeedsClean="yes"
  AS="N"
 ><t
- p="186.13 333.6"
- BoundingBox="186.13 325.2 193.33 342"
+ p="185.35 333.59"
+ BoundingBox="186.11 326.41 191.83 341.95"
  LabelJustification="Left"
  LabelAlignment="Below"
  LineStarts="2 3"
@@ -110,8 +137,8 @@
  NeedsClean="yes"
  AS="N"
 ><t
- p="157.68 288.7"
- BoundingBox="157.68 280.07 165.48 288.7"
+ p="157.29 288.68"
+ BoundingBox="157.68 281.32 164.67 288.89"
  LabelJustification="Left"
 ><s font="21" size="10" face="96">O</s></t></n><n
  id="16"
@@ -120,8 +147,8 @@
  NumHydrogens="0"
  NeedsClean="yes"
 ><t
- p="211.76 318.7"
- BoundingBox="211.76 310.07 218.96 318.7"
+ p="211.33 318.68"
+ BoundingBox="211.77 311.32 218.13 318.87"
  LabelJustification="Left"
  LabelAlignment="Left"
 ><s font="21" size="10" face="96">C</s></t></n><n
@@ -133,19 +160,19 @@
  NeedsClean="yes"
  AS="N"
 ><t
- p="219.74 288.6"
- BoundingBox="219.74 280.2 226.94 288.6"
+ p="218.96 288.59"
+ BoundingBox="219.75 281.41 225.44 288.59"
  LabelJustification="Left"
 ><s font="21" size="10" face="96">H</s></t></n><n
  id="36"
- p="190.9 297.05"
+ p="190.90 297.05"
  Z="34"
  NumHydrogens="3"
  NeedsClean="yes"
  AS="N"
 ><t
- p="194.95 300.75"
- BoundingBox="176.38 292.12 194.95 303"
+ p="194.51 300.73"
+ BoundingBox="176.68 293.37 194.09 303.18"
  LabelJustification="Right"
  Justification="Right"
  LabelAlignment="Right"
@@ -156,8 +183,8 @@
  NumHydrogens="0"
  NeedsClean="yes"
 ><t
- p="235.8 336.65"
- BoundingBox="235.8 328.02 243 336.65"
+ p="235.37 336.63"
+ BoundingBox="235.81 329.27 242.17 336.82"
  LabelJustification="Left"
  LabelAlignment="Below"
 ><s font="21" size="10" face="96">C</s></t></n><n
@@ -169,11 +196,11 @@
  NeedsClean="yes"
  AS="N"
 ><t
- p="263.71 316.31"
- BoundingBox="263.71 307.91 270.91 324.71"
+ p="262.93 316.33"
+ BoundingBox="263.69 309.16 269.41 324.70"
  LabelJustification="Left"
  LabelAlignment="Above"
- LineStarts="2 3"
+ LineStarts="2 4"
 ><s font="21" size="10" face="96">NH</s></t></n><n
  id="57"
  p="239.41 371.45"
@@ -183,8 +210,8 @@
  NeedsClean="yes"
  AS="N"
 ><t
- p="235.91 375.15"
- BoundingBox="235.91 366.52 243.71 375.15"
+ p="235.52 375.13"
+ BoundingBox="235.91 367.77 242.90 375.34"
  LabelJustification="Left"
 ><s font="21" size="10" face="96">O</s></t></n><n
  id="69"
@@ -194,8 +221,8 @@
  NeedsClean="yes"
  AS="N"
 ><t
- p="286.3 344.14"
- BoundingBox="286.3 335.51 304.87 346.39"
+ p="285.87 344.12"
+ BoundingBox="286.31 336.76 304.16 346.57"
  LabelJustification="Left"
  LabelAlignment="Left"
 ><s font="21" size="10" face="96">CH3</s></t></n><b
@@ -230,7 +257,6 @@
  B="16"
  E="18"
  BS="N"
- CrossingBonds="37"
  BeginAttach="0"
 /><b
  id="37"
@@ -238,7 +264,6 @@
  B="16"
  E="36"
  BS="N"
- CrossingBonds="19"
 /><b
  id="41"
  Z="37"
