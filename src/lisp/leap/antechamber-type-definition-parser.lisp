@@ -6,7 +6,7 @@
 ;;; Lexical stuff and reserved words
 
 (defvar *wild-dict* (core:make-cxx-object 'chem:wild-element-dict))
-(defvar *next-chem-info-id*)
+(defparameter *next-chem-info-id* 0)
 
 
 (esrap:defrule skippable
@@ -42,6 +42,7 @@
         antechamber-line...focus-atomic-number
         antechamber-line...residue-list
         antechamber-line...type-name))
+
 
 (esrap:defrule antechamber-line...bond-definitions
     (and type-name/s residue-list/s focus-atomic-number focus-number-of-attached-atoms focus-number-of-attached-hydrogen-atoms focus-number-of-electron-withdrawing-atoms bracketed-atomic-property/s chemical-environment/s bond-definitions/s)
@@ -164,6 +165,7 @@
 (esrap:defrule antechamber-line...residue-list
     (and type-name/s residue-list/s focus-atomic-number)
   (:destructure (type-name residue-list focus-atomic-number)
+                (error "I think antechamber-line...residue-list rule is wrong -because it should recognize the same thing as antechamber-line...focus-atomic-number")
                 (let ((focus (core:make-cxx-object 'chem:antechamber-focus-atom-match
                                                    :id (incf *next-chem-info-id*)
                                                    :residue-names residue-list
@@ -175,11 +177,11 @@
                                         :wild-dict *wild-dict*))))
 
 (esrap:defrule antechamber-line...type-name
-    (and type-name/s focus-atomic-number)
-  (:destructure (type-name focus-atomic-number)
-                (let ((focus (core:make-cxx-object 'chem:antechamber-focus-atom-match
+    (and type-name/?s)
+  (:destructure (type-name)
+                (let ((focus (core:make-cxx-object 'chem:logical
                                                    :id (incf *next-chem-info-id*)
-                                                   :atomic-number focus-atomic-number)))
+                                                   :op :log-always-true)))
                   (core:make-cxx-object 'chem:antechamber-root
                                         :id (incf *next-chem-info-id*)
                                         :assign-type (intern type-name :keyword)
@@ -607,3 +609,9 @@ Read the contents of the filename into memory and return a buffer-stream on it."
     (esrap:parse 'antechamber-line (string-trim '(#\space #\tab) rule-string))))
 
 
+#|
+Test parser
+
+(esrap:parse 'leap.antechamber-type-definition-parser::antechamber-line "ATD ANY ")
+
+|#
