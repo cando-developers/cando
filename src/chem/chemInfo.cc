@@ -451,7 +451,7 @@ ChemInfoType chemInfoTypeFromString(const string &name) {
 
 void ChemInfoNode_O::fields(core::Record_sp node) {
   // Nothing to do here
-  node->field(INTERN_(kw,id),this->_Id);
+  node->field_if_not_default(INTERN_(kw,id),this->_Id,(size_t)0);
 }
 
 string ChemInfoNode_O::__repr__() const {

@@ -6,6 +6,8 @@
 ;;; Lexical stuff and reserved words
 
 (defvar *wild-dict* (core:make-cxx-object 'chem:wild-element-dict))
+(defvar *next-chem-info-id*)
+
 
 (esrap:defrule skippable
     (+ (or parser.common-rules:shell-style-comment
@@ -45,115 +47,144 @@
     (and type-name/s residue-list/s focus-atomic-number focus-number-of-attached-atoms focus-number-of-attached-hydrogen-atoms focus-number-of-electron-withdrawing-atoms bracketed-atomic-property/s chemical-environment/s bond-definitions/s)
   (:destructure (type-name residue-list focus-atomic-number focus-number-of-attached-atoms focus-number-of-attached-hydrogen-atoms focus-number-of-electron-withdrawing-atoms bracketed-atomic-property chemical-environment bond-definitions)
                 (let ((focus (core:make-cxx-object 'chem:antechamber-focus-atom-match
+                                                   :id (incf *next-chem-info-id*)
                                                    :residue-names residue-list
                                                    :atomic-number focus-atomic-number
                                                    :attached-atoms focus-number-of-attached-atoms
                                                    :attached-hs focus-number-of-attached-hydrogen-atoms
                                                    :attached-ewgs focus-number-of-electron-withdrawing-atoms
                                                    :atomic-property bracketed-atomic-property)))
-                  (core:make-cxx-object 'chem:antechamber-root :assign-type (intern type-name :keyword)
-                                                               :first-test focus
-                                                               :chain chemical-environment
-                                                               :after-match-tests bond-definitions
-                                                               :wild-dict *wild-dict*))))
+                  (core:make-cxx-object 'chem:antechamber-root
+                                        :id (incf *next-chem-info-id*)
+                                        :assign-type (intern type-name :keyword)
+                                        :first-test focus
+                                        :chain chemical-environment
+                                        :after-match-tests bond-definitions
+                                        :wild-dict *wild-dict*))))
 
 (esrap:defrule antechamber-line...chemical-environment
     (and type-name/s residue-list/s focus-atomic-number focus-number-of-attached-atoms focus-number-of-attached-hydrogen-atoms focus-number-of-electron-withdrawing-atoms bracketed-atomic-property/s chemical-environment/?s)
   (:destructure (type-name residue-list focus-atomic-number focus-number-of-attached-atoms focus-number-of-attached-hydrogen-atoms focus-number-of-electron-withdrawing-atoms bracketed-atomic-property chemical-environment)
                 (let ((focus (core:make-cxx-object 'chem:antechamber-focus-atom-match
+                                                   :id (incf *next-chem-info-id*)
                                                    :residue-names residue-list
                                                    :atomic-number focus-atomic-number
                                                    :attached-atoms focus-number-of-attached-atoms
                                                    :attached-hs focus-number-of-attached-hydrogen-atoms
                                                    :attached-ewgs focus-number-of-electron-withdrawing-atoms
                                                    :atomic-property bracketed-atomic-property)))
-                  (core:make-cxx-object 'chem:antechamber-root :assign-type (intern type-name :keyword)
-                                                               :first-test focus
-                                                               :chain chemical-environment
-                                                               :wild-dict *wild-dict*))))
+                  (core:make-cxx-object 'chem:antechamber-root
+                                        :id (incf *next-chem-info-id*)
+                                        :assign-type (intern type-name :keyword)
+                                        :first-test focus
+                                        :chain chemical-environment
+                                        :wild-dict *wild-dict*))))
 
 (esrap:defrule antechamber-line...bracketed-atomic-property
     (and type-name/s residue-list/s focus-atomic-number focus-number-of-attached-atoms focus-number-of-attached-hydrogen-atoms focus-number-of-electron-withdrawing-atoms bracketed-atomic-property/?s)
   (:destructure (type-name residue-list focus-atomic-number focus-number-of-attached-atoms focus-number-of-attached-hydrogen-atoms focus-number-of-electron-withdrawing-atoms bracketed-atomic-property)
                 (let ((focus (core:make-cxx-object 'chem:antechamber-focus-atom-match
+                                                   :id (incf *next-chem-info-id*)
                                                    :residue-names residue-list
                                                    :atomic-number focus-atomic-number
                                                    :attached-atoms focus-number-of-attached-atoms
                                                    :attached-hs focus-number-of-attached-hydrogen-atoms
                                                    :attached-ewgs focus-number-of-electron-withdrawing-atoms
                                                    :atomic-property bracketed-atomic-property)))
-                  (core:make-cxx-object 'chem:antechamber-root :assign-type (intern type-name :keyword)
-                                                               :first-test focus
-                                                               :wild-dict *wild-dict*))))
+                  (core:make-cxx-object 'chem:antechamber-root
+                                        :id (incf *next-chem-info-id*)
+                                        :assign-type (intern type-name :keyword)
+                                        :first-test focus
+                                        :wild-dict *wild-dict*))))
 
 (esrap:defrule antechamber-line...focus-number-of-electron-withdrawing-atoms
     (and type-name/s residue-list/s focus-atomic-number focus-number-of-attached-atoms focus-number-of-attached-hydrogen-atoms focus-number-of-electron-withdrawing-atoms)
   (:destructure (type-name residue-list focus-atomic-number focus-number-of-attached-atoms focus-number-of-attached-hydrogen-atoms focus-number-of-electron-withdrawing-atoms)
                 (let ((focus (core:make-cxx-object 'chem:antechamber-focus-atom-match
+                                                   :id (incf *next-chem-info-id*)
                                                    :residue-names residue-list
                                                    :atomic-number focus-atomic-number
                                                    :attached-atoms focus-number-of-attached-atoms
                                                    :attached-hs focus-number-of-attached-hydrogen-atoms
                                                    :attached-ewgs focus-number-of-electron-withdrawing-atoms)))
-                  (core:make-cxx-object 'chem:antechamber-root :assign-type (intern type-name :keyword)
-                                                               :first-test focus
-                                                               :wild-dict *wild-dict*))))
+                  (core:make-cxx-object 'chem:antechamber-root
+                                        :id (incf *next-chem-info-id*)
+                                        :assign-type (intern type-name :keyword)
+                                        :first-test focus
+                                        :wild-dict *wild-dict*))))
 
 (esrap:defrule antechamber-line...focus-number-of-attached-hydrogen-atoms
     (and type-name/s residue-list/s focus-atomic-number focus-number-of-attached-atoms focus-number-of-attached-hydrogen-atoms)
   (:destructure (type-name residue-list focus-atomic-number focus-number-of-attached-atoms focus-number-of-attached-hydrogen-atoms)
                 (let ((focus (core:make-cxx-object 'chem:antechamber-focus-atom-match
+                                                   :id (incf *next-chem-info-id*)
                                                    :residue-names residue-list
                                                    :atomic-number focus-atomic-number
                                                    :attached-atoms focus-number-of-attached-atoms
                                                    :attached-hs focus-number-of-attached-hydrogen-atoms
                                                    :attached-ewgs -1)))
-                  (core:make-cxx-object 'chem:antechamber-root :assign-type (intern type-name :keyword)
-                                                               :first-test focus
-                                                               :wild-dict *wild-dict*))))
+                  (core:make-cxx-object 'chem:antechamber-root
+                                        :id (incf *next-chem-info-id*)
+                                        :assign-type (intern type-name :keyword)
+                                        :first-test focus
+                                        :wild-dict *wild-dict*))))
 
 (esrap:defrule antechamber-line...focus-number-of-attached-atoms
     (and type-name/s residue-list/s focus-atomic-number focus-number-of-attached-atoms)
   (:destructure (type-name residue-list focus-atomic-number focus-number-of-attached-atoms)
                 (let ((focus (core:make-cxx-object 'chem:antechamber-focus-atom-match
+                                                   :id (incf *next-chem-info-id*)
                                                    :residue-names residue-list
                                                    :atomic-number focus-atomic-number
                                                    :attached-atoms focus-number-of-attached-atoms
                                                    :attached-hs -1
                                                    :attached-ewgs -1)))
-                  (core:make-cxx-object 'chem:antechamber-root :assign-type (intern type-name :keyword)
-                                                               :first-test focus
-                                                               :wild-dict *wild-dict*))))
+                  (core:make-cxx-object 'chem:antechamber-root
+                                        :id (incf *next-chem-info-id*)
+                                        :assign-type (intern type-name :keyword)
+                                        :first-test focus
+                                        :wild-dict *wild-dict*))))
 
 (esrap:defrule antechamber-line...focus-atomic-number
     (and type-name/s residue-list/s focus-atomic-number)
   (:destructure (type-name residue-list focus-atomic-number)
                 (let ((focus (core:make-cxx-object 'chem:antechamber-focus-atom-match
+                                                   :id (incf *next-chem-info-id*)
                                                    :residue-names residue-list
                                                    :atomic-number focus-atomic-number
                                                    :attached-atoms -1
                                                    :attached-hs -1
                                                    :attached-ewgs -1)))
-                  (core:make-cxx-object 'chem:antechamber-root :assign-type (intern type-name :keyword)
-                                                               :first-test focus
-                                                               :wild-dict *wild-dict*))))
+                  (core:make-cxx-object 'chem:antechamber-root
+                                        :id (incf *next-chem-info-id*)
+                                        :assign-type (intern type-name :keyword)
+                                        :first-test focus
+                                        :wild-dict *wild-dict*))))
 
 (esrap:defrule antechamber-line...residue-list
-    (and type-name/s residue-list/s)
-  (:destructure (type-name residue-list)
+    (and type-name/s residue-list/s focus-atomic-number)
+  (:destructure (type-name residue-list focus-atomic-number)
                 (let ((focus (core:make-cxx-object 'chem:antechamber-focus-atom-match
-                                                   :residue-names residue-list)))
-                  (core:make-cxx-object 'chem:antechamber-root :assign-type (intern type-name :keyword)
-                                                               :first-test focus
-                                                               :wild-dict *wild-dict*))))
+                                                   :id (incf *next-chem-info-id*)
+                                                   :residue-names residue-list
+                                                   :atomic-number focus-atomic-number)))
+                  (core:make-cxx-object 'chem:antechamber-root
+                                        :id (incf *next-chem-info-id*)
+                                        :assign-type (intern type-name :keyword)
+                                        :first-test focus
+                                        :wild-dict *wild-dict*))))
 
 (esrap:defrule antechamber-line...type-name
-    (and type-name/s)
-  (:destructure (type-name)
-                (let ((focus (core:make-cxx-object 'chem:antechamber-focus-atom-match)))
-                  (core:make-cxx-object 'chem:antechamber-root :assign-type (intern type-name :keyword)
-                                                               :first-test focus
-                                                               :wild-dict *wild-dict*))))
+    (and type-name/s focus-atomic-number)
+  (:destructure (type-name focus-atomic-number)
+                (let ((focus (core:make-cxx-object 'chem:antechamber-focus-atom-match
+                                                   :id (incf *next-chem-info-id*)
+                                                   :atomic-number focus-atomic-number)))
+                  (core:make-cxx-object 'chem:antechamber-root
+                                        :id (incf *next-chem-info-id*)
+                                        :assign-type (intern type-name :keyword)
+                                        :first-test focus
+                                        :wild-dict *wild-dict*))))
 
 
 (defmacro defrule-wild-card-or-number (name)
@@ -181,7 +212,9 @@
     (and wild-card)
   (:lambda (x)
     (declare (ignore x))
-    (core:make-cxx-object 'chem:logical :op :log-always-true)))
+    (core:make-cxx-object 'chem:logical
+                          :id (incf *next-chem-info-id*)
+                          :op :log-always-true)))
 
 (esrap:defrule bracketed-atomic-property.log-op
     (and "[" log-op "]")
@@ -195,7 +228,8 @@
 (esrap:defrule chemical-environment.wild-card
   wild-card
   (:lambda (s)
-    (core:make-cxx-object 'chem:bond-list-match-node)))
+    (core:make-cxx-object 'chem:bond-list-match-node
+                          :id (incf *next-chem-info-id*))))
 
 (esrap:defrule chemical-environment.branches
     (and branches)
@@ -206,6 +240,7 @@
     (and ap-tag ":" ap-tag ":" ap-bond)
   (:destructure (tag1 tag2 bond)
                 (core:make-cxx-object 'chem:after-match-bond-test
+                                      :id (incf *next-chem-info-id*)
                                       :tag1 (intern tag1 :keyword)
                                       :tag2 (intern tag2 :keyword)
                                       :bond bond)))
@@ -327,7 +362,9 @@
         atomic-test.number.antechamber-ring-membership
         atomic-test.antechamber-no-ring-membership)
   (:lambda (value)
-                (core:make-cxx-object 'chem:logical :op :log-identity :left value)))
+    (core:make-cxx-object 'chem:logical
+                          :id (incf *next-chem-info-id*)
+                          :op :log-identity :left value)))
 
 (esrap:defrule atomic-test.bond
   ap-bond
@@ -424,7 +461,9 @@
 
 (esrap:defrule bracketed-atom-property-or-null.null
   skippable?
-  (:lambda (x) (declare (ignore x)) (core:make-cxx-object 'chem:logical)))
+  (:lambda (x) (declare (ignore x)) (core:make-cxx-object 'chem:logical
+                                                          :id (incf *next-chem-info-id*)
+                                                          :op :log-always-true)))
 
 (esrap:defrule bracketed-atom-property-or-null.log-op
     (and "[" log-op "]")
@@ -496,7 +535,9 @@
 
 (defmethod architecture.builder-protocol:make-node ((builder builder) (kind (eql :unary-operator)) &rest args &key value)
   (declare (optimize (debug 3)))
-  (core:make-cxx-object 'chem:logical :op :log-identity))
+  (core:make-cxx-object 'chem:logical
+                        :id (incf *next-chem-info-id*)
+                        :op :log-identity))
 
 
 (defmethod architecture.builder-protocol:make-node ((builder builder) (kind (eql :binary-operator)) &rest args &key operator bounds)
@@ -505,7 +546,9 @@
                            ((eq operator :and) :log-high-precedence-and)
                            ((eq operator :or) :log-or)
                            (t (error "Illegal binary operator ~s" operator)))))
-    (core:make-cxx-object 'chem:logical :op operator-symbol)))
+    (core:make-cxx-object 'chem:logical
+                          :id (incf *next-chem-info-id*)
+                          :op operator-symbol)))
 
 
 (defmethod architecture.builder-protocol:relate ((builder builder) (relation (eql :operand)) (left t) (right t) &key)
@@ -525,7 +568,8 @@ Read the contents of the filename into memory and return a buffer-stream on it."
         (data (make-string (file-length stream)))
         (wild-dict (core:make-cxx-object 'chem:wild-element-dict))
         wild-atom atoms
-        (type-rules (core:make-cxx-object 'chem:fftypes-db)))
+        (type-rules (core:make-cxx-object 'chem:fftypes-db))
+        (*next-chem-info-id* 0))
     (read-sequence data stream)
     (architecture.builder-protocol:with-builder builder
       (with-input-from-string (sin data)
@@ -546,7 +590,8 @@ Read the contents of the filename into memory and return a buffer-stream on it."
                          (string= "ATD" line :start2 0 :end2 #.(length "ATD")))
                     (let* ((*wild-dict* wild-dict)
                            (root (esrap:parse 'antechamber-line (string-trim '(#\space #\tab) line)))
-                           (chem-info (core:make-cxx-object 'chem:chem-info :root root)))
+                           (chem-info (core:make-cxx-object 'chem:chem-info
+                                                            :root root)))
                       (chem:fftypes-db-add type-rules chem-info)))
                    (t
                     #+(or)(format *debug-io* "Unhandled line: ~a~%" line))))))
