@@ -69,7 +69,7 @@
 
 ;; msmarts_Parser.yy:869
 (defrule inorganic-atom-symbol
-    (or "Al" "Ca" "Co" "Cu" "Fe")
+    (or "Al" "Ca" "Co" "Cu" "Fe" "Na")
   (:lambda (symbol &bounds start end)
     (architecture.builder-protocol:node* (:atom :kind :inorganic :symbol symbol :bounds (cons start end)))))
 
