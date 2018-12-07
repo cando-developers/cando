@@ -232,6 +232,7 @@ namespace chem
 #endif
           energyFunction_initializeSmarts();
           _sym_STARverboseSTAR->defparameter(_Nil<core::T_O>());
+          _sym_STARcurrent_colon_operator_hashtableSTAR->defparameter(_Nil<core::T_O>());
 	}
 	break;
 	case candoFunctions:

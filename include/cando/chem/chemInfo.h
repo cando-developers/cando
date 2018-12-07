@@ -64,9 +64,11 @@ namespace chem {
   public:
     bool fieldsp() const { return true; };
     void fields(core::Record_sp node);
+  public:
+    static ChemInfoMatch_sp make(bool matches, core::HashTableEql_sp tags);
   private:
     bool		_Matches;
-    core::HashTableEqual_sp _TagLookup; // core::StringMap<Atom_O>	_TagLookup;
+    core::HashTableEql_sp _TagLookup; // core::StringMap<Atom_O>	_TagLookup;
     core::HashTableEqual_sp _ClosestMatch; // core::StringMap<Atom_O>	_ClosestMatch;
   public:
     string __repr__() const;
@@ -659,6 +661,7 @@ namespace chem {
       SAPAromaticElement	,
       SAPAliphatic		,
       SAPAromatic,
+      SAPAtomMap
   } AtomTestEnum;
 
   extern core::Symbol_sp& _sym_STARAtomTestEnumConverterSTAR;
@@ -761,6 +764,7 @@ namespace chem {
     CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPTotalHCount(int intVal) { return create(SAPTotalHCount,intVal); };
     CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPTransitionMetal(int intVal) { return create(SAPTransitionMetal,intVal); };
     CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPValence(int intVal) { return create(SAPValence,intVal); };
+    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPAtomMap(int intVal) { return create(SAPAtomMap,intVal); };
 
     static AtomTest_sp create( AtomTestEnum t, int iArg, int num ) 
     {_G();
@@ -969,6 +973,7 @@ namespace chem {
       }
     };
 
+    BondMatchNode_sp chain_get_head() { return this->_Head; };
     BondListMatchNode_sp chain_get_tail();
     
     Chain_O() : _Head(_Nil<BondMatchNode_O>()), _Tail(_Nil<BondListMatchNode_O>()) {};
@@ -1173,7 +1178,9 @@ namespace chem {
       ANN(obj->_Chain);
       return obj;
     };
-    
+
+    static SmartsRoot_sp make(ChemInfoNode_sp cinode);
+
     static SmartsRoot_sp create(AtomOrBondMatchNode_sp node )
     {
       return create(node,_Nil<T_O>());

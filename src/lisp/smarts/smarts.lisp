@@ -72,6 +72,15 @@
   (cons nil nil))
 
 (defmethod architecture.builder-protocol:make-node ((builder (eql :cando))
+                                                    (head (eql :atom-map-class))
+                                                    &rest args
+                                                    &key class bounds)
+  (format t ":atom-map-class make-node head: ~s args: ~s~%" head args)
+  (let ((result (chem:create-sapatom-map class)))
+    result)
+ )
+
+(defmethod architecture.builder-protocol:make-node ((builder (eql :cando))
                                                     (head (eql :bond))
                                                     &rest args
                                                     &key kind bounds)

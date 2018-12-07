@@ -78,10 +78,27 @@
 
         atom-pattern/non-literal
 
+        ;; clrule
+        
         language.smiles.parser:atom-map-class
 
         recursive))
 
+#+(or)
+(progn
+  (defrule clrule
+      (and "<" symbol-tag ">")
+    (:lambda (lt sym gt)
+      (architecture.builder-protocol:node* (:atom :clrule sym))))
+
+  (parser.common-rules:defrule/s symbol-tag
+      (and (esrap:character-ranges (#\a #\z) (#\A #\Z))
+           (* (or (esrap:character-ranges (#\a #\z) (#\A #\Z) (#\0 #\9)))))
+    (:text t))
+  )
+
+
+     
 (macrolet
     ((define-rules (&body clauses)
        (let ((rules '()))               ; TODO unused

@@ -34,6 +34,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/hashTableEq.h>
 #include <cando/chem/chemInfo.h>
 #include <clasp/core/hashTableEqual.h>
+#include <clasp/core/hashTableEql.h>
 //#include "core/archiveNode.h"
 #include <clasp/core/evaluator.h>
 #include <clasp/core/environment.h>
@@ -106,10 +107,17 @@ string sabToString(BondEnum sabType) {
   return "{{unknownSabType}}";
 }
 
+ChemInfoMatch_sp ChemInfoMatch_O::make(bool matches, core::HashTableEql_sp tags) {
+  GC_ALLOCATE(ChemInfoMatch_O,match);
+  match->_Matches = matches;
+  match->_TagLookup = tags;
+  return match;
+}
+
 void ChemInfoMatch_O::initialize() {
   this->Base::initialize();
   this->_Matches = false;
-  this->_TagLookup = core::HashTableEqual_O::create_default();
+  this->_TagLookup = core::HashTableEql_O::create_default();
   this->_ClosestMatch = core::HashTableEqual_O::create_default();
 }
 
@@ -195,12 +203,14 @@ void ChemInfoMatch_O::forgetAtomTag(core::Symbol_sp tag) {
   this->_TagLookup->remhash(tag);
 }
 
+#if 0
 CL_LISPIFY_NAME("describeClosestMatch");
 CL_DEFMETHOD void ChemInfoMatch_O::describeClosestMatch() {
   this->_ClosestMatch->mapHash([](core::T_sp key, core::T_sp val) {
       _lisp->print(BF("  tag(%s) = %s") % _rep_(key) % _rep_(val) );
     });
 }
+#endif
 
 #if 0
 BoundFrame_sp ChemInfoMatch_O::boundFrame()
@@ -1122,6 +1132,8 @@ bool AtomTest_O::matchesAm1BccY(chem::Atom_sp atom) const {
   return false;
 }
 
+SYMBOL_EXPORT_SC_(ChemPkg,STARcurrent_colon_operator_hashtableSTAR);
+
 bool AtomTest_O::matches(Root_sp root, chem::Atom_sp atom) {
   _OF();
   int cnt;
@@ -1232,6 +1244,13 @@ bool AtomTest_O::matches(Root_sp root, chem::Atom_sp atom) {
     // each triple bond counts 3
       if (this->_IntArg == atom->getValence())
         goto SUCCESS;
+      break;
+  case SAPAtomMap:
+    {
+      // We have an atom and we have a tag in this->_IntArg
+      core::HashTableEql_sp hashTable = gc::As<core::HashTableEql_sp>(_sym_STARcurrent_colon_operator_hashtableSTAR->symbolValue());
+      hashTable->setf_gethash(core::make_fixnum(this->_IntArg),atom);
+    }
       break;
   case SAPConnectivity: // No implicit H's so Connectivity == Degree
   case SAPDegree:
@@ -1940,6 +1959,27 @@ bool Root_O::matches(Root_sp root, chem::Atom_sp atom) {
   return false;
 }
 
+CL_LISPIFY_NAME("make-smarts-root");
+CL_DEF_CLASS_METHOD SmartsRoot_sp SmartsRoot_O::make(ChemInfoNode_sp cinode)
+{
+  GC_ALLOCATE(SmartsRoot_O,   obj ); // RP_Create<SmartsRoot_O>(lisp);
+  if (gc::IsA<Chain_sp>(cinode)) {
+    Chain_sp chain = gc::As<Chain_sp>(cinode);
+    obj->_FirstTest =  gc::As<AtomOrBondMatchNode_sp>(chain->chain_get_head());
+    obj->_Chain = gc::As<BondListMatchNode_sp>(chain->chain_get_tail());
+    return obj;
+  } else if (gc::IsA<AtomOrBondMatchNode_sp>(cinode)) {
+    obj->_FirstTest = gc::As<AtomOrBondMatchNode_sp>(cinode);
+    obj->_Chain = _Nil<core::T_O>();
+    return obj;
+  }
+  SIMPLE_ERROR(BF("You cannot create a smarts-root with %s") % _rep_(cinode));
+};
+
+
+
+
+
 void SmartsRoot_O::fields(core::Record_sp node) {
   this->Base::fields(node);
 }
@@ -2069,7 +2109,15 @@ CL_DEFMETHOD string ChemInfo_O::asSmarts() const {
 
 
 
-
+CL_DEFUN ChemInfoMatch_sp chem__chem_info_match(Root_sp testRoot, Atom_sp atom)
+{
+  core::HashTableEql_sp colonOperatorHashTable = core::HashTableEql_O::create_default();
+  core::DynamicScopeManager scope(_sym_STARcurrent_colon_operator_hashtableSTAR,colonOperatorHashTable);
+  bool matches = testRoot->matches(testRoot,atom);
+  return ChemInfoMatch_O::make(matches,colonOperatorHashTable);
+}
+  
+  
 
   /*! Hold nodes for the Gaff and Msmarts parsers - rewrite these in Common Lisp */
 SYMBOL_EXPORT_SC_(ChemPkg, STARparserNodeHolderSTAR );
@@ -2206,6 +2254,9 @@ CL_VALUE_ENUM(kw::_sym_SAPAM1_BCC_x, SAPAM1_BCC_x);
 CL_VALUE_ENUM(kw::_sym_SAPAM1_BCC_y, SAPAM1_BCC_y);
 CL_VALUE_ENUM(kw::_sym_SAPLambda, SAPLambda);
 CL_END_ENUM(_sym_STARAtomTestEnumConverterSTAR);
+
+
+
 
 
 }; // namespace chem
