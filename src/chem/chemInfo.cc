@@ -543,6 +543,7 @@ uint Logical_O::depth() const {
 bool Logical_O::matches(Root_sp root, chem::Atom_sp atom) {
   LOG(BF("Logical pattern: %s") % this->asSmarts());
   LOG(BF("Logical match for atom: %s") % atom->description());
+  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
   switch (this->_Operator) {
   case logAlwaysTrue:
       LOG(BF("Always return true"));
@@ -1939,10 +1940,14 @@ bool Root_O::matches(Root_sp root, chem::Atom_sp atom) {
   matches = false;
   ANN(this->_FirstTest);
   if (this->_FirstTest.notnilp()) {
+  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
     LOG(BF("_FirstTest is notNil - testing"));
-    if (!this->_FirstTest->matches(root, atom))
+    if (!this->_FirstTest->matches(root, atom)) {
+      printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
       goto FAIL;
+    }
   }
+  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
   ANN(this->_Chain);
   if (this->_Chain.notnilp()) {
     LOG(BF("_Chain is not Nil - testing "));
@@ -2114,6 +2119,7 @@ CL_DEFUN ChemInfoMatch_sp chem__chem_info_match(Root_sp testRoot, Atom_sp atom)
   core::HashTableEql_sp colonOperatorHashTable = core::HashTableEql_O::create_default();
   core::DynamicScopeManager scope(_sym_STARcurrent_colon_operator_hashtableSTAR,colonOperatorHashTable);
   bool matches = testRoot->matches(testRoot,atom);
+  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
   return ChemInfoMatch_O::make(matches,colonOperatorHashTable);
 }
   
