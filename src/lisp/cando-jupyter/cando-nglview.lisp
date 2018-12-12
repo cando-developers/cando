@@ -235,4 +235,5 @@
               (leap.core:evaluate 'list ',ast leap.core:*leap-env*)))))))
 
 (eval-when (:load-toplevel :execute)
-  (setf cl-jupyter:*read-code-hook* 'parse-lisp-or-leap))
+  (when (find-symbol "*READ-CODE-HOOK*" :cl-jupyter)
+    (setf cl-jupyter:*read-code-hook* 'parse-lisp-or-leap)))
