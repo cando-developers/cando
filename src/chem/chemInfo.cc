@@ -1506,6 +1506,12 @@ uint Chain_O::depth() const {
   return (MAX(af_depth(this->_Head), af_depth(this->_Tail) + 1));
 }
 
+bool Chain_O::matches(Root_sp root, chem::Atom_sp from) {
+  _OF();
+  chem::BondList_sp bonds = from->getBondList();
+  return this->matches(root,from,bonds);
+}
+
 bool Chain_O::matches(Root_sp root, chem::Atom_sp from, chem::BondList_sp neighbors) {
   _OF();
   gctools::Vec0<chem::Bond_sp>::iterator bi;
