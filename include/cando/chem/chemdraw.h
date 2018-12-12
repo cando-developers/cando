@@ -101,13 +101,18 @@ class CDNode_O : public core::CxxObject_O
   void    setId(uint i) { this->_Id = i; };
 //        core::Symbol_sp getLabel() const { return this->_Label;};
 	/*! Parse the label into a name and ionization component "name/[+-] */
-  void getParsedLabel(string& name, int& ionization) const;
+  void getParsedLabel(string& name, bool& saw_ionization, int& ionization, bool& saw_id, int& id) const;
 //	void setLabel(core::Symbol_sp l) { this->_Label = l;};
-  Atom_sp	getAtom() const { return this->_Atom;};
+  CL_DEFMETHOD Atom_sp	getAtom() const { return this->_Atom;};
   void setAtom(Atom_sp a) { this->_Atom = a;};
   void	parseFromXml(adapt::QDomNode_sp xml, bool print);
 
+  CL_DEFMETHOD geom::Vector2 getPosition() const { return this->_Pos; };
+  CL_DEFMETHOD std::string getLabel() const { return this->_Label; };
+  
   void	bondTo( CDNode_sp neighbor, CDBondOrder order);
+
+  string __repr__() const;
 
   CDNode_O( const CDNode_O& ss ); //!< Copy constructor
 
@@ -138,8 +143,8 @@ public:
         bool fieldsp() const { return true; };
         void fields(core::Record_sp node);
 public:
-	string	getOrderAsString();
-	CDBondOrder	getOrder() { return this->_Order; };
+  string	getOrderAsString() const;
+  CL_DEFMETHOD CDBondOrder	getOrder() const { return this->_Order; };
 	void setOrder(CDBondOrder o) { this->_Order = o; };
 	BondOrder	getOrderAsBondOrder();
 	uint		getIdBegin() { return this->_IdBegin;};
@@ -147,12 +152,13 @@ public:
 	uint		getIdEnd() { return this->_IdEnd;};
 	void	setIdEnd(uint i) { this->_IdEnd = i;};
 	void	setBeginNode(CDNode_sp n) { this->_BeginNode = n;};
-	CDNode_sp getBeginNode() {_OF(); ANN(this->_BeginNode);return this->_BeginNode;};
+  CL_DEFMETHOD CDNode_sp getBeginNode() {_OF(); ANN(this->_BeginNode);return this->_BeginNode;};
 	void	setEndNode(CDNode_sp n) { this->_EndNode = n;};
-	CDNode_sp getEndNode() {_OF(); ANN(this->_EndNode);return this->_EndNode;};
+  CL_DEFMETHOD CDNode_sp getEndNode() {_OF(); ANN(this->_EndNode);return this->_EndNode;};
 
 	void	parseFromXml(adapt::QDomNode_sp xml, bool print);
 
+  string __repr__() const;
 	CDBond_O( const CDBond_O& ss ); //!< Copy constructor
 
 	DEFAULT_CTOR_DTOR(CDBond_O);
@@ -192,6 +198,8 @@ public:
 CL_LISPIFY_NAME("getConstitutionName");
 CL_DEFMETHOD     core::Symbol_sp getConstitutionName() { return this->_ConstitutionName;};
 
+  core::List_sp getBonds() const;
+  
 #if 0
     core::HashTableEq_sp getProperties() { return this->_Properties;};
     void	addProperties(core::HashTableEq_sp dict);
@@ -207,7 +215,7 @@ CL_DEFMETHOD     core::Symbol_sp getConstitutionName() { return this->_Constitut
     void	createImplicitHydrogen(CDNode_sp from, const string& name);
     void	parseFromXml(adapt::QDomNode_sp xml, bool print);
     /*! Return false if the fragment couldn't be interpreted */
-    bool	interpret(bool verbose);
+  bool	interpret(bool verbose, bool addHydrogens);
 
     void uniqifyResidueAtomNames(Molecule_sp mol, bool verbose=false);
 CL_LISPIFY_NAME("getMolecule");
@@ -261,7 +269,7 @@ class ChemDraw_O : public core::CxxObject_O
     bool fieldsp() const { return true; };
     void fields(core::Record_sp node);
  public:
-  static ChemDraw_sp make(core::T_sp stream, bool print=false);
+  static ChemDraw_sp make(core::T_sp stream, bool print=false, bool addHydrogens=true);
  public:
   static void lisp_initGlobals(core::Lisp_sp lisp);
  public:
@@ -276,8 +284,8 @@ class ChemDraw_O : public core::CxxObject_O
  private:
   string	_getAtomName(adapt::QDomNode_sp node);
  public:
-  void parse(core::T_sp strm, bool print);
-  void parseChild(adapt::QDomNode_sp child, bool print);
+  void parse(core::T_sp strm, bool print, bool addHydrogens);
+  void parseChild(adapt::QDomNode_sp child, bool print, bool addHydrogens);
 
 	/*! Set the properties for the named fragment.
 	  @param fragmentName The name of the fragment whose properties are being set

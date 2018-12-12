@@ -68,7 +68,8 @@
 
 
 (defmethod architecture.builder-protocol:make-node ((builder (eql :cando)) (kind (eql :chain))
-                         &key)
+                                                    &rest args
+                                                    &key)
   (cons nil nil))
 
 (defmethod architecture.builder-protocol:make-node ((builder (eql :cando))

@@ -83,10 +83,11 @@
         (let ((value (first (first (funcall recurse :relations '(:value))))))
           (if (symbolp value)
               (setf (lookup-variable* name environment) (lookup-variable value))
-              (setf (lookup-variable* name environment) value))))
+              (setf (lookup-variable* name environment) (if (typep value 'number)
+                                                            (float value 1d0)
+                                                            value)))))
        (t
         (funcall recurse))))
-
    ast))
 
 

@@ -88,7 +88,7 @@ public:
 	double get(int i) const;
 	double getX() const { return this->coords[0]; }
 	double getY() const { return this->coords[1]; }
-	string	asString();
+  string	asString() const;
 
 
 private:

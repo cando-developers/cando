@@ -82,6 +82,7 @@
 (progn
   (format t "Loading quicklisp.~%")
   (load "quicklisp:setup.lisp"))
+
 (progn
   (format t "Loading cando-user system.~%")
   (funcall (find-symbol "QUICKLOAD" :ql) "cando-user" :verbose t)

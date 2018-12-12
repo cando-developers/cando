@@ -86,6 +86,13 @@ void CDNode_O::fields(core::Record_sp node)
   this->Base::fields(node);
 }
 
+std::string CDNode_O::__repr__() const {
+  stringstream ss;
+  ss << "#<" << this->className() << " ";
+  ss << this->_Label << " " << this->_Pos.asString() << ">";
+  return ss.str();
+}
+
 std::string CDNode_O::_extractLabel(adapt::QDomNode_sp node)
 {
   string name;
@@ -108,24 +115,35 @@ std::string CDNode_O::_extractLabel(adapt::QDomNode_sp node)
 }
 
 
-void CDNode_O::getParsedLabel(string& name, int& ionization) const
+void CDNode_O::getParsedLabel(string& name, bool& saw_ionization, int& ionization, bool& saw_id, int& id) const
 {
   string label = this->_Label;
   vector<string> parts = core::split(label,"/");
   name = parts[0];
   ionization = 0;
   string ionstr = "";
-  if ( parts.size() == 2 )
-  {
+  saw_ionization = false;
+  saw_id = false;
+  if ( parts.size() == 2 ) {
     ionstr = parts[1];
-    for ( size_t i=0; i<ionstr.size(); i++ )
-    {
-      if ( ionstr[i] == '+' ) ionization++;
-      if ( ionstr[i] == '-' ) ionization--;
+    for ( size_t i=0; i<ionstr.size(); i++ ) {
+      if ( ionstr[i] == '+' ) {
+        ionization++;
+        saw_ionization = true;
+      }
+      if ( ionstr[i] == '-' ) {
+        ionization--;
+        saw_ionization = true;
+      }
+      if ( ionstr[i]>='0' && ionstr[i]<='9') {
+        id = id*10+(ionstr[i]-'0');  // goofy way to parse number +1+2+3 --> +3 123
+        saw_id = true;
+      }
     }
   }
   LOG(BF("parsed[%s] into name[%s] ionization[%d]") % this->getLabel() % name % ionization );
 }
+
 void	CDNode_O::parseFromXml(adapt::QDomNode_sp xml, bool verbose)
 {_OF();
   this->_Id = xml->getAttributeInt("id");
@@ -191,7 +209,15 @@ void CDBond_O::fields(core::Record_sp node)
   this->Base::fields(node);
 }
 
-string	CDBond_O::getOrderAsString()
+std::string CDBond_O::__repr__() const {
+  stringstream ss;
+  ss << "#<" << this->className() << " ";
+  ss << this->_BeginNode->_Label << " " << this->getOrderAsString() << " " << this->_EndNode->_Label << ">";
+  return ss.str();
+}
+
+
+string	CDBond_O::getOrderAsString() const
 {
   switch ( this->_Order )
   {
@@ -362,6 +388,14 @@ void	CDFragment_O::parseFromXml(adapt::QDomNode_sp fragment, bool verbose)
   if (verbose) core::write_bf_stream(BF("CDFragment - done.\n"));
 }
 
+CL_DEFMETHOD core::List_sp CDFragment_O::getBonds() const {
+  ql::list result;
+  for ( size_t idx=0; idx<this->_Bonds.size(); ++idx) {
+    result << this->_Bonds[idx];
+  }
+  return result.cons();
+}
+
 int CDFragment_O::countNeighbors(CDNode_sp node)
 {
   int num = 0;
@@ -481,7 +515,7 @@ core::Symbol_mv parse_property(const string& propertyValue, CDBond_sp bond, cons
  * Look for edges that specify properties and move them into the CDNodes that
 * they target
  */
-bool CDFragment_O::interpret(bool verbose)
+bool CDFragment_O::interpret(bool verbose, bool addHydrogens)
 {
 //  printf("%s:%d  Interpreting a fragment\n", __FILE__, __LINE__ );
   int nextFragmentNameIndex = 1;
@@ -531,6 +565,9 @@ bool CDFragment_O::interpret(bool verbose)
         string propertyCode = propertyNode->_Label;
         core::Symbol_mv parsedProperty = parse_property(propertyCode, *bi, targetNode->_Label);
         core::T_sp value = parsedProperty.second();
+        if (cdorder == dativeCDBond) {
+          targetNode->_AtomProperties = core__put_f(targetNode->_AtomProperties,geom::OVector2_O::createFromVector2(propertyNode->_Pos),INTERN_(kw,property_position));
+        }
         if ( parsedProperty.number_of_values() == 2 ) {
           if ( cdorder == dativeCDBond ) {
             if (verbose) core::write_bf_stream(BF("Adding atom property %s value: %s\n") % _rep_(parsedProperty) % _rep_(value));
@@ -563,26 +600,27 @@ bool CDFragment_O::interpret(bool verbose)
 // IF YOU COMMENT OUT THE NEXT LINE THEN A TRULY FRIGHTENING BUG WILL HAPPEN
   this->_Molecule = mol;
   core::List_sp carbons = mol->allAtomsOfElementAsList(element_C);
-  for ( core::List_sp cur = carbons; cur.consp(); cur = oCdr(cur) ) {
-    core::T_sp ta = oCar(cur);
-    Atom_sp a = gc::As<Atom_sp>(ta);
-    a->fillInImplicitHydrogens();
-  }
+  if (addHydrogens) {
+    for ( core::List_sp cur = carbons; cur.consp(); cur = oCdr(cur) ) {
+      core::T_sp ta = oCar(cur);
+      Atom_sp a = gc::As<Atom_sp>(ta);
+      a->fillInImplicitHydrogens();
+    }
 
-  core::List_sp nitrogens = mol->allAtomsOfElementAsList(element_N);
-  for ( core::List_sp cur = nitrogens; cur.consp(); cur = oCdr(cur) ) {
-    core::T_sp ta = oCar(cur);
-    Atom_sp a = gc::As<Atom_sp>(ta);
-    a->fillInImplicitHydrogens();
-  }
+    core::List_sp nitrogens = mol->allAtomsOfElementAsList(element_N);
+    for ( core::List_sp cur = nitrogens; cur.consp(); cur = oCdr(cur) ) {
+      core::T_sp ta = oCar(cur);
+      Atom_sp a = gc::As<Atom_sp>(ta);
+      a->fillInImplicitHydrogens();
+    }
 
-  core::List_sp oxygens = mol->allAtomsOfElementAsList(element_O);
-  for ( core::List_sp cur = oxygens; cur.consp(); cur = oCdr(cur) ) {
-    core::T_sp ta = oCar(cur);
-    Atom_sp a = gc::As<Atom_sp>(ta);
-    a->fillInImplicitHydrogens();
+    core::List_sp oxygens = mol->allAtomsOfElementAsList(element_O);
+    for ( core::List_sp cur = oxygens; cur.consp(); cur = oCdr(cur) ) {
+      core::T_sp ta = oCar(cur);
+      Atom_sp a = gc::As<Atom_sp>(ta);
+      a->fillInImplicitHydrogens();
+    }
   }
-
   {_BLOCK_TRACEF(BF("Assigning cipPriorities"));
     CipPrioritizer_sp cip = CipPrioritizer_O::create();
     cip->defineStereochemicalConfigurationsForAllAtoms(mol);
@@ -645,12 +683,18 @@ Atom_sp CDFragment_O::createOneAtom(CDNode_sp n)
   a->setContainedBy(_Nil<core::T_O>());
   n->setAtom(a);
   string name;
+  bool saw_ionization = false;
   int ionization;
-  n->getParsedLabel(name,ionization);
+  bool saw_id = false;
+  int id = 0;
+  n->getParsedLabel(name,saw_ionization,ionization,saw_id,id);
   a->setName(chemkw_intern(name));
   a->setIonization(ionization);
   a->setElementFromAtomName();
   a->setProperty(INTERN_(kw,chemdraw_color),core::clasp_make_fixnum(n->_Color));
+  if (saw_id) {
+    a->setProperty(INTERN_(kw,id),core::clasp_make_fixnum(id));
+  }
   a->setStereochemistryType(n->_StereochemistryType);
   a->setConfiguration(n->_Configuration);
   LOG(BF("Just set configuration of atom[%s] to config[%s]")
@@ -662,7 +706,7 @@ Atom_sp CDFragment_O::createOneAtom(CDNode_sp n)
 void CDFragment_O::createAtomsAndBonds()
 {
 	// First create atoms that are on the ends
-	// of solid and dashed bonds
+	// of solid and dashed bonds or the arrow-head of a dative bond
 	// 
   CDBonds::iterator bi;
   for ( bi=this->_Bonds.begin(); bi!=this->_Bonds.end(); bi++ )
@@ -707,6 +751,8 @@ void CDFragment_O::createAtomsAndBonds()
       }
       beginAtom->addBond(bond);
       endAtom->addBond(bond);
+    } else if (o == dativeCDBond) {
+      printf("%s:%d:%s  Handle dativeCDBond with beginNode->%s  endNode->%s\n", __FILE__, __LINE__, __FUNCTION__, _rep_((*bi)->getBeginNode()).c_str(), _rep_((*bi)->getEndNode()).c_str());
     }
   }
 }
@@ -1022,12 +1068,12 @@ void ChemDraw_O::fields(core::Record_sp node)
 */
 
 CL_LISPIFY_NAME(make-chem-draw);
-CL_LAMBDA(file-name &optional verbose);
+CL_LAMBDA(file-name &optional verbose (add-hydrogens t));
 CL_DOCSTRING("Make a chem:chem-draw object from a string.  If verbose is T then print info to *standard-output*.");
-CL_DEFUN ChemDraw_sp ChemDraw_O::make(core::T_sp stream, bool verbose)
+CL_DEFUN ChemDraw_sp ChemDraw_O::make(core::T_sp stream, bool verbose, bool addHydrogens)
 {
   GC_ALLOCATE(ChemDraw_O, me );
-  me->parse(stream,verbose); // me->parse(stream);
+  me->parse(stream,verbose,addHydrogens); // me->parse(stream);
   return me;
 };
 
@@ -1088,13 +1134,13 @@ void	ChemDraw_O::setFragmentProperties(core::List_sp props)
 
 
 
-void ChemDraw_O::parseChild( adapt::QDomNode_sp child, bool verbose )
+void ChemDraw_O::parseChild( adapt::QDomNode_sp child, bool verbose, bool addHydrogens )
 {
   if (verbose) core::write_bf_stream(BF("ChemDraw_O::parse child of page with name(%s)\n") % child->getLocalName());
   if ( child->getLocalName() == "fragment" ) {
     GC_ALLOCATE(CDFragment_O, fragment );
     fragment->parseFromXml(child,verbose);
-    if ( fragment->interpret(verbose) ) {
+    if ( fragment->interpret(verbose, addHydrogens) ) {
 #if 0
       core::HashTableEq_sp properties = fragment->getProperties();
       if ( !properties->contains(INTERN_(kw,name)))
@@ -1117,14 +1163,14 @@ void ChemDraw_O::parseChild( adapt::QDomNode_sp child, bool verbose )
   } else if ( child->getLocalName() == "group" ) {
     if (verbose) core::write_bf_stream(BF("ChemDraw_O::parsing group start...\n"));
     for ( adapt::QDomNode_O::iterator it=child->begin_Children(); it!=child->end_Children(); it++ ) {
-      this->parseChild(*it,verbose);
+      this->parseChild(*it,verbose,addHydrogens);
     }
     if (verbose) core::write_bf_stream(BF("ChemDraw_O::parsing group done.\n"));
   }
 }
 
 
-void	ChemDraw_O::parse( core::T_sp strm, bool verbose )
+void	ChemDraw_O::parse( core::T_sp strm, bool verbose, bool addHydrogens )
 {
   if (verbose) core::write_bf_stream(BF("ChemDraw_O::parse starting\n"));
   adapt::QDomNode_sp xml = adapt::QDomNode_O::parse(strm);
@@ -1134,7 +1180,7 @@ void	ChemDraw_O::parse( core::T_sp strm, bool verbose )
   adapt::QDomNode_O::iterator	it;
   this->_NamedFragments.clear();
   for ( it=page->begin_Children(); it!=page->end_Children(); it++ ) {
-    this->parseChild(*it,verbose);
+    this->parseChild(*it,verbose,addHydrogens);
   }
   if (verbose) core::write_bf_stream(BF("ChemDraw_O::parse done.\n"));
 }

@@ -214,3 +214,25 @@
   (let ((structure (make-instance 'cando-structure :matter aggregate)))
     (apply #'nglv:make-nglwidget :structure structure kwargs)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;;; Change the way that code cells are evaluated to allow
+;;; leap syntax to be used.
+;;;
+;;;
+
+(defun parse-lisp-or-leap (code)
+  (let ((code (string-trim (list #\space #\tab) code)))
+    (if (or (char= (char code 0) #\() (char= (char code 0) #\*))
+        (let ((sexp (read-from-string (format nil "(progn ~A~%)" code))))
+          `(core:call-with-stack-top-hint
+            (lambda ()
+              ,sexp)))
+        (let ((ast (architecture.builder-protocol:with-builder ('list)
+                     (esrap:parse 'leap.parser::leap code))))
+          `(core:call-with-stack-top-hint
+            (lambda ()
+              (leap.core:evaluate 'list ',ast leap.core:*leap-env*)))))))
+
+(eval-when (:load-toplevel :execute)
+  (setf cl-jupyter:*read-code-hook* 'parse-lisp-or-leap))

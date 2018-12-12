@@ -21,7 +21,7 @@
 ;;;
 ;;; LEaP commands
 ;;;
-(defvar *out* *standard-output*)
+(defvar *out* t)
 
 (defun set-variable (entry)
   (let ((variable (first entry))
@@ -42,7 +42,8 @@
 (defun desc (name)
   "Print a description of the object with name."
   (let ((val (leap.core:lookup-variable name)))
-    (format *out* "~S~%" val)))
+    (format *out* "~S~%" val)
+    val))
 
 (defun object (name)
   "Return the object with name."
@@ -66,10 +67,10 @@
   (let ((info (second entry)))
     (add-atom-types info)))
 
+
 (defun load-off (filename)
   "Load an OFF file. OFF files that contain libraries of objects will create those objects in the environment."
   (leap.off:load-off filename))
-
 
 (defun leap.load-off (entry)
   (valid-arguments entry 1)
@@ -137,7 +138,6 @@
                            (make-pathname :type "crd" :defaults top-pathname))))
     (leap.topology:save-amber-parm-format aggregate top-pathname crd-pathname (leap.core:merged-force-field force-field-name))))
 
-
 (defun ensure-string (obj)
   (cond
     ((stringp obj) obj)
@@ -162,23 +162,34 @@
     (error "Bad arguments for ~a" (car entry))))
 
 
-(defparameter *commands*
-  '(("logFile" . log-file)
-    ("desc" . desc)
-    ("loadOff" . load-off)
-    ("source" . source)
-    ("loadAmberParams" . load-amber-params)
-    ("addPdbResMap" . leap.pdb:add-pdb-res-map)
-    ("addAtomTypes" . add-atom-types)
-;;    ("solvateBox" . solvate-box)
-    ))
 
 
 (eval-when (:load-toplevel :execute)
+  (defparameter *commands*
+    '(("logFile" . log-file)
+      ("desc" . desc)
+      ("loadOff" . load-off)
+      ("loadMol2" . load-mol2)
+      ("source" . source)
+      ("loadAmberParams" . load-amber-params)
+      ("addPdbResMap" . leap.pdb:add-pdb-res-map)
+      ("addAtomTypes" . add-atom-types)
+      ("saveAmberParms" . save-amber-parm)
+      ;;    ("solvateBox" . solvate-box)
+      ))
   (dolist (command *commands*)
     (if (fboundp (cdr command))
         (setf (leap.core:function-lookup (car command) leap.core:*leap-env*) (cdr command))
         (error "~a is not a function" (cdr command)))))
+
+
+(defun parse-leap-code (code)
+  (let ((ast (architecture.builder-protocol:with-builder ('list)
+               (esrap:parse 'leap.parser::leap code))))
+    ast))
+
+  
+
 
 ;;(defun solvate-box (solute solvent width-list 
 ;;

@@ -160,7 +160,7 @@ double Vector2::length() const
 
 
 
-string	Vector2::asString()
+string	Vector2::asString() const
 {
 stringstream	ss;
     ss.str("");

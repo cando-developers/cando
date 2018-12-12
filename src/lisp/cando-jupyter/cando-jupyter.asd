@@ -6,6 +6,7 @@
   :author "Christian Schafmeister <chris.schaf@verizon.net>"
   :licence "LGPL-3.0"
   :depends-on (:inet
+               :cando
                :cl-nglview
                )
   :serial t
