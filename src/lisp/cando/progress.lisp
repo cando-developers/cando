@@ -48,8 +48,8 @@
                  stars
                  lines
                  (progress-convenient-time remaining-time))))
-      (default 
-       (format t "~C~va ~3,1f%~@[ elapsed: ~a~]~@[ ETC: ~a~]   "
+      (otherwise
+       (format t "~C~va ~5,1f%~@[ elapsed: ~a~]~@[ ETC: ~a~]   "
                #\return
                (progress-bar-message-width bar)
                (progress-bar-message bar)
