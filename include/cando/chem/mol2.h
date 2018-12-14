@@ -76,15 +76,28 @@ struct ResidueOut {
 
 namespace chem {
 
+class	Mol2File 
+{
+public:
+  core::T_sp	fIn;
+  bool _eof;
+  std::stringstream	mLine;
+public:
+  bool eof() { return this->_eof;};
+  void	advanceLine();
+  stringstream&	line() { return this->mLine; };
+  std::queue<string>	splitLine();
+  bool	hasDataLine();
+  void	openFileName(core::T_sp pn);
+  Mol2File() : _eof(false) {};
+  ~Mol2File();
+};
+
 void	_calculateElementAndHybridization(Atom_sp a);
 
- void	mol2ReadAggregateFromFileName( Aggregate_sp	a, core::T_sp fileName);
+core::T_sp mol2Read( Mol2File& fin);
 
 //Aggregate_sp	mol2ReadAggregate( string fileName );
-
-
-    void	mol2ReadAggregateFromStream( Aggregate_sp 	agg, core::T_sp in );
-
 string	mol2AtomType(Atom_sp a);
 
 

@@ -57,42 +57,6 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace chem {
 
 
-#ifdef XML_ARCHIVE
-    Aggregate_sp	Aggregate_O::open(T_sp pathDesignator)
-    {
-	Aggregate_sp	agg;
-	int		dot;
-	string		ext;
-	dot = fileName.find_last_of('.');
-	ext = fileName.substr(dot+1);
-	if ( ext == "moe" ) {
-	    agg = Aggregate_O::create();
-	    moeReadAggregateFromFileName(agg,fileName.c_str(),lisp);
-	} else if ( ext == "mol2" ) {
-	    agg = Aggregate_O::create();
-	    mol2ReadAggregateFromFileName(agg,fileName.c_str(),lisp);
-	} else if ( ext == "xml" ) {
-	    core::XmlLoadArchive_sp	archive;
-	    archive = core::XmlLoadArchive_O::create();
-	    archive->parse(fileName);
-	    agg = (archive->get("aggregate")).as<Aggregate_O>();
-	} else {
-	    SIMPLE_ERROR(BF("Cannot read aggregate from unknown fileType: %s") % fileName );
-	}
-	return agg;
-    }
-#endif
-
-
-
-#ifdef OLD_SERIALIZE
-    void	Aggregate_O::serialize(serialize::SNode node)
-    {
-	this->Base::serialize(node);
-    }
-#endif
-
-
 void Aggregate_O::fields(core::Record_sp node)
 {
   this->Base::fields(node);

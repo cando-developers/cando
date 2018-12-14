@@ -279,8 +279,9 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
     (format t "Saving matter to ~a~%" npn)
     (chem:save-mol2 matter npn use-sybyl-types)))
 
-(defun load-mol2 (pathname)
-  (let ((npn (merge-pathnames pathname *default-pathname-defaults*)))
+(defun load-mol2 (pathname &key verbose)
+  (let ((npn (merge-pathnames pathname *default-pathname-defaults*))
+        (chem:*verbose* verbose))
     (chem:load-mol2 npn)))
 
 

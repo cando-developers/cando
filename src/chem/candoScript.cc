@@ -30,6 +30,8 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <boost/filesystem.hpp>
 #include <clasp/core/common.h>
 #include <clasp/core/array.h>
+#include <clasp/core/lispStream.h>
+#include <clasp/core/ql.h>
 #include <cando/adapt/stringSet.h>
 #include <clasp/core/symbolTable.h>
 #include <cando/geom/ovector3.h>
@@ -39,6 +41,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/adapt/stringList.h>
 #include <clasp/core/designators.h>
 #include <clasp/core/bundle.h>
+#include <clasp/core/evaluator.h>
 #include <cando/geom/coordinateArray.h>
 #include <cando/chem/candoScript.h>
 #include <cando/chem/candoDatabase.h>
@@ -554,15 +557,75 @@ CL_DEFUN geom::SimpleVectorCoordinate_sp chem__make_simple_vector_coordinate_fro
   return coords;
 }
 
-
-#define ARGS_chem__load_mol2 "(fileName)"
-#define DECL_chem__load_mol2 ""
-#define DOCS_chem__load_mol2 "loadMol2"
+CL_DOCSTRING(R"doc(Load the only or the first aggregate from the mol2 file.)doc");
 CL_DEFUN core::T_sp chem__load_mol2(core::T_sp fileName)
 {
-    Aggregate_sp agg = Aggregate_O::create();
-    mol2ReadAggregateFromFileName(agg,fileName);
-    return agg;
+  Mol2File fin;
+  fin.openFileName(fileName);
+  Aggregate_sp agg = mol2Read(fin);
+  return agg;
+}
+
+
+CL_DOCSTRING(R"doc(Load all or a number of aggregates from the mol2 file.)doc");
+CL_LAMBDA(file-name &optional number-to-load);
+CL_DEFUN core::T_sp chem__load_mol2_list(core::T_sp fileName, core::T_sp number_to_load)
+{
+  core::T_sp make_progress;
+  core::T_sp progress_advance;
+  core::T_sp progress_done;
+  if (chem_verbose(0)) {
+    make_progress = core::eval::funcall(cl::_sym_findSymbol,core::SimpleBaseString_O::make("MAKE-PROGRESS-BAR"),
+                                        core::SimpleBaseString_O::make("CANDO"));
+    progress_advance = core::eval::funcall(cl::_sym_findSymbol,core::SimpleBaseString_O::make("PROGRESS-ADVANCE"),
+                                           core::SimpleBaseString_O::make("CANDO"));
+    progress_done = core::eval::funcall(cl::_sym_findSymbol,core::SimpleBaseString_O::make("PROGRESS-DONE"),
+                                        core::SimpleBaseString_O::make("CANDO"));
+    if (make_progress.nilp()||progress_advance.nilp()||progress_done.nilp()) {
+      SIMPLE_ERROR(BF("Could not get progress bar functions make-progress, progress-advance, progress-done"));
+    }
+  }
+  Mol2File fin;
+  fin.openFileName(fileName);
+  core::T_sp progress_bar = _Nil<core::T_O>();
+  if (chem_verbose(0)) {
+    if (number_to_load.nilp()) {
+      progress_bar = core::eval::funcall(make_progress,
+                                         INTERN_(kw,total), core::cl__file_length(fin.fIn));
+    } else {
+      progress_bar = core::eval::funcall(make_progress,
+                                         INTERN_(kw,total), core::cl__file_length(fin.fIn));
+    }
+  }
+  ql::list result;
+  size_t count = ~0;
+  if (number_to_load.fixnump()) {
+    count = number_to_load.unsafe_fixnum();
+  }
+  size_t num = 0;
+  while (!fin.eof()) {
+    if (count) {
+      core::T_sp tagg = mol2Read(fin);
+      if (gc::IsA<Aggregate_sp>(tagg)) {
+        result << tagg;
+        if (chem_verbose(0)) {
+          if (number_to_load.nilp()) {
+            core::eval::funcall(progress_advance, progress_bar, core::cl__file_position(fin.fIn,_Nil<core::T_O>()));
+          } else {
+            core::eval::funcall(progress_advance, progress_bar, core::make_fixnum((size_t)num));            
+          }
+        }
+      }
+    } else {
+      break;
+    }
+    ++num;
+    --count;
+  }
+  if (chem_verbose(0)) {
+    core::eval::funcall(progress_done,progress_bar);
+  }
+  return result.cons();
 }
 
 
