@@ -434,7 +434,8 @@ namespace chem {
 
     void setAtomTest(core::T_sp atomTest);
     virtual	ChemInfoType	type() { return tagSet;};
-    virtual	bool		matches(Root_sp root, chem::Atom_sp atom );
+    virtual	bool	matches( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );
+    virtual	bool   	matches(Root_sp root, chem::Atom_sp atom );
     virtual string asSmarts() const;
     DEFAULT_CTOR_DTOR(TagSet_O);
   };

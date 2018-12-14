@@ -157,9 +157,12 @@ bool ChemInfoMatch_O::recognizesAtomTag(core::Symbol_sp tag) {
 }
 
 void ChemInfoMatch_O::defineAtomTag(Atom_sp a, core::Symbol_sp tag) {
-  
+  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
+  printf("ringtag %s atom %s \n", _rep_(tag).c_str(), a->description().c_str());
   this->_TagLookup->setf_gethash(tag, a);
+  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
   if (this->_TagLookup->hashTableCount() > this->_ClosestMatch->hashTableCount()) {
+  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
     this->_ClosestMatch = this->_TagLookup;
   }
 }
@@ -543,36 +546,41 @@ uint Logical_O::depth() const {
 bool Logical_O::matches(Root_sp root, chem::Atom_sp atom) {
   LOG(BF("Logical pattern: %s") % this->asSmarts());
   LOG(BF("Logical match for atom: %s") % atom->description());
-  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
   switch (this->_Operator) {
   case logAlwaysTrue:
+      printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
       LOG(BF("Always return true"));
       goto SUCCESS;
       break;
   case logIdentity:
-      LOG(BF("Identity no-op test"));
+  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
+  LOG(BF("Identity no-op test"));
       ASSERT(!this->_Left.nilp());
       if (this->_Left->matches(root, atom))
         goto SUCCESS;
       break;
   case logNot:
+      printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
       LOG(BF("logNot"));
       ASSERT(!this->_Left.nilp());
       if (!(this->_Left->matches(root, atom)))
         goto SUCCESS;
       break;
   case logHighPrecedenceAnd:
+      printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
       LOG(BF("logHighPrecedenceAnd"));
       ASSERT(!this->_Left.nilp());
       if (this->_Left->matches(root, atom) && this->_Right->matches(root, atom))
         goto SUCCESS;
       break;
   case logLowPrecedenceAnd:
+      printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
       LOG(BF("logLowPrecedenceAnd"));
       if (this->_Left->matches(root, atom) && this->_Right->matches(root, atom))
         goto SUCCESS;
       break;
   case logOr: {
+    printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
     LOG(BF("logOr"));
     ASSERT(!this->_Left.nilp());
     bool leftMatch = this->_Left->matches(root, atom);
@@ -729,24 +737,38 @@ string TagSet_O::asSmarts() const {
   return ss.str();
 }
 
+bool TagSet_O::matches(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond) {
+  _OF();
+  LOG(BF("Root_O trying to match pattern: %s") % this->asSmarts());
+  return this->matches(root, bond->getOtherAtom(from));
+};
+
 bool TagSet_O::matches(Root_sp root, chem::Atom_sp atom) {
-  
+  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
+
   chem::Atom_sp ringStartAtom;
   SmartsRoot_sp smartsRoot;
   LOG(BF("TagSet match for atom: %s") % atom->description());
+  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
   if (root->type() != chem::smartsRoot) {
     SIMPLE_ERROR(BF("Trying to carry out a TagSet with a non Smarts root"));
   }
   // First check if the AtomTest matches
   ASSERTNOTNULL(this->_AtomTest);
+  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
   if (!this->_AtomTest->matches(root, atom)) {
     LOG(BF("The _AtomTest failed"));
     goto FAIL;
   }
+  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
+  printf("ringtaag %s atom %s \n", _rep_(this->_RingTag).c_str(), atom->description().c_str());
   // Now handle setting the tag
   smartsRoot = (root).as<SmartsRoot_O>();
+  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
   smartsRoot->getMatch()->defineAtomTag(atom, this->_RingTag);
   LOG(BF("RingTag (%s) defined atom: %s") % this->_RingTag.c_str() % atom->description().c_str());
+  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
+
   //SUCCESS:
   LOG(BF("SUCCESS!"));
   return true;
@@ -1519,22 +1541,29 @@ bool Chain_O::matches(Root_sp root, chem::Atom_sp from, chem::BondList_sp neighb
   LOG(BF("Chain_O matching pattern: %s") % this->asSmarts());
   LOG(BF("There are %d neighbors bondList: %s") % neighbors->size() % neighbors->describeOthers(from));
   for (bi = neighbors->begin(); bi != neighbors->end(); bi++) {
+    printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
     _BLOCK_TRACEF(BF("Checking neighbor for bond: %s") % (*bi)->describeOther(from));
     if (this->_Head->matches(root, from, *bi)) {
+      printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
       LOG(BF("The head matches"));
       Atom_sp other = (*bi)->getOtherAtom(from);
+      printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
       LOG(BF("The other atom: %s") % other->description());
       nextBonds = other->getBondList(); // handle new bonds
+      printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
       LOG(BF("The others bond list before removed from: %s") % nextBonds->describeOthers(other));
       LOG(BF("Removing bond between %s and %s") % from->description() % other->description());
       nextBonds->removeBondBetween(from, other); // (*bi)->getFrom());
+      printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
       LOG(BF("The others bond list after removed from: %s") % nextBonds->describeOthers(other));
       ASSERTNOTNULL(this->_Tail);
       if (this->_Tail.notnilp()) {
+        printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
         if (this->_Tail->matches(root, other, nextBonds))
           goto SUCCESS;
         LOG(BF("The tail exists but doesn't match"));
       } else {
+        printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
         goto SUCCESS;
       }
     }
