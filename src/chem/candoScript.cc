@@ -592,9 +592,9 @@ CL_DEFUN core::T_sp chem__load_mol2_list(core::T_sp fileName, core::T_sp number_
     if (number_to_load.nilp()) {
       progress_bar = core::eval::funcall(make_progress,
                                          INTERN_(kw,total), core::cl__file_length(fin.fIn));
-    } else {
-      progress_bar = core::eval::funcall(make_progress,
-                                         INTERN_(kw,total), core::make_fixnum((size_t)number_to_load));
+    } else if (gc::IsA<Real_sp>{
+        progress_bar = core::eval::funcall(make_progress,
+                                           INTERN_(kw,total), number_to_load);
     }
   }
   ql::list result;
@@ -612,7 +612,7 @@ CL_DEFUN core::T_sp chem__load_mol2_list(core::T_sp fileName, core::T_sp number_
           if (number_to_load.nilp()) {
             core::eval::funcall(progress_advance, progress_bar, core::cl__file_position(fin.fIn,_Nil<core::T_O>()));
           } else {
-            core::eval::funcall(progress_advance, progress_bar, core::make_fixnum((size_t)num));            
+            core::eval::funcall(progress_advance, progress_bar, core::make_fixnum((size_t)num));
           }
         }
       }

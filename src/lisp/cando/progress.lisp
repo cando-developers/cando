@@ -12,7 +12,8 @@
                    (on t)
                  &aux (spacing (if (>= divisions 0)
                                    (/ total divisions)
-                                   (error "divisions must be >0"))))))
+                                   (error "divisions must be >0"))))
+                ))
   on total (advance-counter 1) advance-every-n-calls
   (style :time)
   (bar-character #\*)
@@ -32,7 +33,7 @@
     (format nil "~5,2f days" time)))
 
 (defun progress-display (bar counter)
-  (let* ((fraction (/ counter (progress-bar-total bar)))
+  (let* ((fraction (/ (float counter) (progress-bar-total bar)))
          (elapsed-time (- (get-universal-time) (progress-bar-start-time bar)))
          (expected-time (* (/ 1.0 fraction) elapsed-time))
          (remaining-time (max 0.0 (* (- 1.0 fraction) expected-time))))
