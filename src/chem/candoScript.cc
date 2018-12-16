@@ -594,7 +594,7 @@ CL_DEFUN core::T_sp chem__load_mol2_list(core::T_sp fileName, core::T_sp number_
                                          INTERN_(kw,total), core::cl__file_length(fin.fIn));
     } else {
       progress_bar = core::eval::funcall(make_progress,
-                                         INTERN_(kw,total), core::make_fixnum((size_t)num));
+                                         INTERN_(kw,total), core::make_fixnum((size_t)number_to_load));
     }
   }
   ql::list result;
