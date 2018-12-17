@@ -1101,9 +1101,9 @@ void EnergyFunction_O::__createSecondaryAmideRestraints(gctools::Vec0<Atom_sp>& 
   for ( ni=nitrogens.begin(); ni!=nitrogens.end(); ni++ )
   {
     ChemInfo_sp secondaryAmide = gctools::As<ChemInfo_sp>(chem::_sym_STARsecondaryAmideSmartsSTAR->symbolValue());
-    if ( secondaryAmide->matches(*ni) )
+    ChemInfoMatch_sp match = secondaryAmide->matches_atom(*ni);
+    if ( match->matches() )
     {
-      ChemInfoMatch_sp match = secondaryAmide->getMatch();
       Atom_sp ax = match->tag(chemkw::_sym_1);
       Atom_sp ax1 = match->tag(chemkw::_sym_2);
       Atom_sp ax2 = match->tag(chemkw::_sym_3);

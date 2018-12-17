@@ -12,6 +12,14 @@
         (chem:define-tests ci tests))
     ci))
 
+(defmethod architecture.builder-protocol:make-node :around ((builder (eql :cando))
+                                                            head
+                                                            &rest args
+                                                            &key bounds)
+  (let ((result (call-next-method)))
+    (chem:setf-bounds result bounds)
+    result))
+
 (defmethod architecture.builder-protocol:make-node ((builder (eql :cando))
                                                     (head (eql :atom))
                                                     &rest args
@@ -126,7 +134,7 @@
   (format t ":labeled make-node head: ~s args: ~s~%" head args)
   (let ((sym (intern (write-to-string label) :keyword))
         result)
-    (setf result (chem:create-tag-set nil sym))
+g    (setf result (chem:create-sapring-tag-test sym)
     result))
   
 
@@ -436,3 +444,16 @@
       (:aromatic
        (core:make-cxx-object 'chem:atom-test :sym symbol :test :saparomatic-element))
       )))
+
+
+;;; ------------------------------------------------------------
+;;;
+;;; Everything that depends on SMARTS parsing is initialized now
+;;;
+
+
+(defun chem:parse-smarts (code)
+  (esrap:parse 'language.smarts.parser::smarts code))
+
+(eval-when (:load-toplevel :evaluate)
+  (chem:initalize-smarts-users))

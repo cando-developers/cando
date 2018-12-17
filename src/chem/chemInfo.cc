@@ -45,11 +45,23 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/symbolTable.h>
 #include <clasp/core/wrappers.h>
 
-extern chem::SmartsRoot_sp smarts_compile(const string &input, stringstream &errorStream);
+#if 0
+#define CI_LOG(x) printf x;
+#else
+#define CI_LOG(x)
+#endif
+
+
+//extern chem::SmartsRoot_sp smarts_compile(const string &input, stringstream &errorStream);
 extern chem::AntechamberRoot_sp gaff_compile(const string &input, chem::WildElementDict_sp dict, stringstream &errorStream);
 extern string antechamberError();
 
 namespace chem {
+
+ChemInfoMatch_sp current_match() {
+  ChemInfoMatch_sp match =  gc::As<ChemInfoMatch_sp>(_sym_STARcurrent_matchSTAR->symbolValue());
+  return match;
+}
 
 std::atomic<size_t> global_ChemInfoNodeId;
 size_t next_ChemInfoNodeId()
@@ -107,10 +119,11 @@ string sabToString(BondEnum sabType) {
   return "{{unknownSabType}}";
 }
 
-ChemInfoMatch_sp ChemInfoMatch_O::make(bool matches, core::HashTableEql_sp tags) {
+ChemInfoMatch_sp ChemInfoMatch_O::make(bool matches, core::HashTableEql_sp tags, core::HashTableEql_sp ringLookup) {
   GC_ALLOCATE(ChemInfoMatch_O,match);
   match->_Matches = matches;
   match->_TagLookup = tags;
+  match->_RingLookup = ringLookup;
   return match;
 }
 
@@ -151,18 +164,18 @@ void ChemInfoMatch_O::clearAtomTags() {
   this->_TagLookup->clrhash();
 }
 
-bool ChemInfoMatch_O::recognizesAtomTag(core::Symbol_sp tag) {
+bool ChemInfoMatch_O::recognizesAtomTag(core::T_sp tag) {
   
   return this->_TagLookup->contains(tag);
 }
 
-void ChemInfoMatch_O::defineAtomTag(Atom_sp a, core::Symbol_sp tag) {
-  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
-  printf("ringtag %s atom %s \n", _rep_(tag).c_str(), a->description().c_str());
+void ChemInfoMatch_O::defineAtomTag(Atom_sp a, core::T_sp tag) {
+  CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
+  CI_LOG(("ringtag %s atom %s \n", _rep_(tag).c_str(), a->description().c_str()));
   this->_TagLookup->setf_gethash(tag, a);
-  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
+  CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
   if (this->_TagLookup->hashTableCount() > this->_ClosestMatch->hashTableCount()) {
-  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
+    CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
     this->_ClosestMatch = this->_TagLookup;
   }
 }
@@ -178,20 +191,20 @@ void ChemInfoMatch_O::throwIfInvalid() {
     });
 }
 
-bool ChemInfoMatch_O::hasAtomWithTag(core::Symbol_sp tag) {
+bool ChemInfoMatch_O::hasAtomWithTag(core::T_sp tag) {
   
   return this->_TagLookup->gethash(tag).notnilp();
 }
 
 CL_LISPIFY_NAME("getAtomWithTagOrNil");
-CL_DEFMETHOD gc::Nilable<Atom_sp> ChemInfoMatch_O::getAtomWithTagOrNil(core::Symbol_sp tag) {
+CL_DEFMETHOD core::T_sp ChemInfoMatch_O::getAtomWithTagOrNil(core::T_sp tag) {
   if (!this->hasAtomWithTag(tag))
     return _Nil<core::T_O>();
   return this->getAtomWithTag(tag);
 }
 
 CL_LISPIFY_NAME("getAtomWithTag");
-CL_DEFMETHOD Atom_sp ChemInfoMatch_O::getAtomWithTag(core::Symbol_sp tag) {
+CL_DEFMETHOD Atom_sp ChemInfoMatch_O::getAtomWithTag(core::T_sp tag) {
   
   core::T_mv tatom = this->_TagLookup->gethash(tag);
   if (tatom.nilp()) {
@@ -202,33 +215,18 @@ CL_DEFMETHOD Atom_sp ChemInfoMatch_O::getAtomWithTag(core::Symbol_sp tag) {
   return tatom.as<Atom_O>();
 }
 
-void ChemInfoMatch_O::forgetAtomTag(core::Symbol_sp tag) {
+void ChemInfoMatch_O::forgetAtomTag(core::T_sp tag) {
   this->_TagLookup->remhash(tag);
 }
 
-#if 0
-CL_LISPIFY_NAME("describeClosestMatch");
-CL_DEFMETHOD void ChemInfoMatch_O::describeClosestMatch() {
-  this->_ClosestMatch->mapHash([](core::T_sp key, core::T_sp val) {
-      _lisp->print(BF("  tag(%s) = %s") % _rep_(key) % _rep_(val) );
-    });
+void ChemInfoMatch_O::setRingTag(Atom_sp atom, core::T_sp index) {
+  this->_RingLookup->setf_gethash(index,atom);
 }
-#endif
 
-#if 0
-BoundFrame_sp ChemInfoMatch_O::boundFrame()
-{
-  if ( !this->_Matches )
-  {
-    SIMPLE_ERROR(BF("I cannot create a bound frame because there was no ChemInfo match"));
-  }
-  AtomBoundFrame_sp bound = AtomBoundFrame_O::create();
-  bound->set_oAtom(this->getAtomWithTag("1"));
-  bound->set_pAtom(this->getAtomWithTag("2"));
-  bound->set_qAtom(this->getAtomWithTag("3"));
-  return bound;
+bool ChemInfoMatch_O::matchesRingTag(Atom_sp atom, core::T_sp tag) {
+  core::T_sp thing = this->_RingLookup->gethash(atom,_Nil<T_O>());
+  return thing.notnilp();
 }
-#endif
 
 // ------- WildElementDict_O
 
@@ -311,10 +309,16 @@ uint ChemInfo_O::depth() const {
   return d;
 }
 
+SYMBOL_EXPORT_SC_(ChemPkg,parse_smarts);
+
 CL_LISPIFY_NAME("compileSmarts");
 CL_DEFMETHOD bool ChemInfo_O::compileSmarts(const string &code) {
-  _OF();
   SmartsRoot_sp root;
+  core::SimpleBaseString_sp scode = core::SimpleBaseString_O::make(code);
+  root = gc::As<SmartsRoot_sp>(core::eval::funcall(_sym_parse_smarts,scode));
+  this->_Root = gc::As<Root_sp>(root);
+  this->_Code = code;
+#if 0
   ASSERTNOTNULL(this->_Root);
   this->_Root = _Nil<core::T_O>();
   this->_Code = code;
@@ -327,8 +331,10 @@ CL_DEFMETHOD bool ChemInfo_O::compileSmarts(const string &code) {
     return false;
   }
   this->_CompilerMessage = "Successfully compiled SMARTS";
+#endif
   return true;
 }
+
 
 CL_DEFMETHOD void ChemInfo_O::defineTests(core::List_sp tests) {
   ASSERTNOTNULL(this->_Root);
@@ -381,33 +387,39 @@ bool ChemInfo_O::compileAntechamber(const string &code, WildElementDict_sp dict)
 }
 
 CL_LISPIFY_NAME("matches");
-CL_DEFMETHOD bool ChemInfo_O::matches(chem::Atom_sp a) {
-  
-  ASSERTNOTNULL(this->_Root);
+CL_DEFMETHOD core::T_sp ChemInfo_O::matches(chem::Atom_sp a) {
   if (this->_Root.nilp()) {
     SIMPLE_ERROR(BF("The ChemInfo root is nil!"));
   }
   LOG(BF("Starting ChemInfo::matches process with atom: %s") % a->description());
   LOG(BF("The local atom environment(depth=%d) is:\n%s") % this->depth() % a->localEnvironment(4));
   LOG(BF("The pattern to match is smarts[%s]") % this->_Code);
-  this->_Root->createNewMatch();
-  if (!this->_Root->matches(this->_Root, a))
-    goto FAIL;
-  LOG(BF("SUCCESS!"));
-  this->_Root->getMatch()->throwIfInvalid();
-  this->_Root->getMatch()->setMatches(true);
-  return true;
- FAIL:
-  LOG(BF("FAIL"));
-  this->_Root->getMatch()->setMatches(false);
-  return false;
+  core::T_mv matches_mv = chem__chem_info_match(this->_Root,a);
+  if (matches_mv.notnilp()) {
+    return matches_mv.second();
+  }
+  return _Nil<core::T_O>();
 }
+
+CL_LISPIFY_NAME("matches-atom");
+CL_DEFMETHOD core::T_sp ChemInfo_O::matches_atom(chem::Atom_sp a) {
+  if (this->_Root.nilp()) {
+    SIMPLE_ERROR(BF("The ChemInfo root is nil!"));
+  }
+  LOG(BF("Starting ChemInfo::matches process with atom: %s") % a->description());
+  LOG(BF("The local atom environment(depth=%d) is:\n%s") % this->depth() % a->localEnvironment(4));
+  LOG(BF("The pattern to match is smarts[%s]") % this->_Code);
+  core::T_mv matches_mv = chem__chem_info_match(this->_Root,a);
+  return matches_mv.second();
+}
+
 
 void ChemInfo_O::fields(core::Record_sp node) {
   //  this->Base::fields(node);
   node->field(INTERN_(kw, root), this->_Root);
 }
 
+#if 0
 CL_LISPIFY_NAME("getMatch");
 CL_DEFMETHOD ChemInfoMatch_sp ChemInfo_O::getMatch() {
   
@@ -416,6 +428,8 @@ CL_DEFMETHOD ChemInfoMatch_sp ChemInfo_O::getMatch() {
   ASSERT(this->_Root->getMatch().notnilp());
   return this->_Root->getMatch();
 }
+
+#endif
 
 struct ChemInfoTypeToName {
   ChemInfoType type;
@@ -465,6 +479,7 @@ ChemInfoType chemInfoTypeFromString(const string &name) {
 void ChemInfoNode_O::fields(core::Record_sp node) {
   // Nothing to do here
   node->field_if_not_default(INTERN_(kw,id),this->_Id,(size_t)0);
+  node->field(INTERN_(kw,bounds),this->_Bounds);
 }
 
 string ChemInfoNode_O::__repr__() const {
@@ -548,39 +563,39 @@ bool Logical_O::matches(Root_sp root, chem::Atom_sp atom) {
   LOG(BF("Logical match for atom: %s") % atom->description());
   switch (this->_Operator) {
   case logAlwaysTrue:
-      printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
+      CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
       LOG(BF("Always return true"));
       goto SUCCESS;
       break;
   case logIdentity:
-  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
-  LOG(BF("Identity no-op test"));
+      CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
+      LOG(BF("Identity no-op test"));
       ASSERT(!this->_Left.nilp());
       if (this->_Left->matches(root, atom))
         goto SUCCESS;
       break;
   case logNot:
-      printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
+      CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
       LOG(BF("logNot"));
       ASSERT(!this->_Left.nilp());
       if (!(this->_Left->matches(root, atom)))
         goto SUCCESS;
       break;
   case logHighPrecedenceAnd:
-      printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
+      CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
       LOG(BF("logHighPrecedenceAnd"));
       ASSERT(!this->_Left.nilp());
       if (this->_Left->matches(root, atom) && this->_Right->matches(root, atom))
         goto SUCCESS;
       break;
   case logLowPrecedenceAnd:
-      printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
+      CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
       LOG(BF("logLowPrecedenceAnd"));
       if (this->_Left->matches(root, atom) && this->_Right->matches(root, atom))
         goto SUCCESS;
       break;
   case logOr: {
-    printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
+    CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
     LOG(BF("logOr"));
     ASSERT(!this->_Left.nilp());
     bool leftMatch = this->_Left->matches(root, atom);
@@ -722,6 +737,8 @@ core::NullTerminatedEnumAssociation bondEnum[] = {
     {"SABDirectionalSingleDown", SABDirectionalSingleDown},
     {"", -1}};
 
+
+#if 0
 void TagSet_O::initialize() {
   this->Base::initialize();
   //    this->_Bond = SABAnyBond;
@@ -744,30 +761,30 @@ bool TagSet_O::matches(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond) {
 };
 
 bool TagSet_O::matches(Root_sp root, chem::Atom_sp atom) {
-  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
+  CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
 
   chem::Atom_sp ringStartAtom;
   SmartsRoot_sp smartsRoot;
   LOG(BF("TagSet match for atom: %s") % atom->description());
-  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
-  if (root->type() != chem::smartsRoot) {
+  CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
+  if (!gc::IsA<SmartsRoot_sp>(root)) {
     SIMPLE_ERROR(BF("Trying to carry out a TagSet with a non Smarts root"));
   }
   // First check if the AtomTest matches
   ASSERTNOTNULL(this->_AtomTest);
-  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
+  CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
   if (!this->_AtomTest->matches(root, atom)) {
     LOG(BF("The _AtomTest failed"));
     goto FAIL;
   }
-  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
-  printf("ringtaag %s atom %s \n", _rep_(this->_RingTag).c_str(), atom->description().c_str());
+  CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
+  CI_LOG(("ringtag %s atom %s \n", _rep_(this->_RingTag).c_str(), atom->description().c_str()));
   // Now handle setting the tag
-  smartsRoot = (root).as<SmartsRoot_O>();
-  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
-  smartsRoot->getMatch()->defineAtomTag(atom, this->_RingTag);
+  smartsRoot = gc::As<SmartsRoot_sp>(root);
+  CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
+  smartsRoot->defineAtomRingTag(atom, this->_RingTag);
   LOG(BF("RingTag (%s) defined atom: %s") % this->_RingTag.c_str() % atom->description().c_str());
-  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
+  CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
 
   //SUCCESS:
   LOG(BF("SUCCESS!"));
@@ -792,7 +809,9 @@ CL_DEFMETHOD void TagSet_O::setAtomTest(core::T_sp atomTest)
 {
   this->_AtomTest = atomTest;
 }
-   
+#endif
+
+#if 0
 // ------ RingTest
 void RingTest_O::initialize() {
   this->Base::initialize();
@@ -806,7 +825,7 @@ bool RingTest_O::matches(Root_sp root, chem::Atom_sp atom) {
   chem::Atom_sp ringStartAtom;
   SmartsRoot_sp smartsRoot;
   LOG(BF("RingTest match for atom: %s") % atom->description().c_str());
-  if (root->type() != chem::smartsRoot) {
+  if (!gc::IsA<SmartsRoot_sp>(root)) {
     SIMPLE_ERROR(BF("Trying to carry out a RingTest with a non Smarts root"));
   }
   // First check if the AtomTest matches
@@ -819,7 +838,7 @@ bool RingTest_O::matches(Root_sp root, chem::Atom_sp atom) {
   smartsRoot = (root).as<SmartsRoot_O>();
   // It does recognize the ring ID so check if the current atom is bonded to it
   // and then have the root forget the atom
-  if (!smartsRoot->getMatch()->recognizesAtomTag(this->_RingTag)) {
+  if (!smartsRoot->recognizesAtomRingTag(this->_RingTag)) {
     SIMPLE_ERROR(BF("We are trying to test the atomTag %s but it doesn't exist") % _rep_(this->_RingTag));
   }
   LOG(BF("      RingTest check close"));
@@ -843,6 +862,10 @@ void RingTest_O::fields(core::Record_sp node) {
   node->field( INTERN_(kw,atomTest), this->_AtomTest);
   this->Base::fields(node);
 }
+#endif
+
+
+
 
 // ------ ResidueTest
 
@@ -868,6 +891,8 @@ bool ResidueTest_O::matches(Root_sp root, chem::Atom_sp atom) {
   if (root->type() != chem::smartsRoot) {
     SIMPLE_ERROR(BF("Trying to carry out a ResidueTest with a non Smarts root"));
   }
+  SIMPLE_ERROR(BF("Handle atom tests in ResidueTest"));
+#if 0
   // First check if the AtomTest matches
   ASSERTNOTNULL(this->_AtomTest);
   if (!this->_AtomTest->matches(root, atom)) {
@@ -902,6 +927,7 @@ bool ResidueTest_O::matches(Root_sp root, chem::Atom_sp atom) {
  SUCCESS:
   LOG(BF("SUCCESS!"));
   return true;
+#endif
 }
 
 void ResidueTest_O::fields(core::Record_sp node) {
@@ -1155,7 +1181,7 @@ bool AtomTest_O::matchesAm1BccY(chem::Atom_sp atom) const {
   return false;
 }
 
-SYMBOL_EXPORT_SC_(ChemPkg,STARcurrent_colon_operator_hashtableSTAR);
+SYMBOL_EXPORT_SC_(ChemPkg,STARcurrent_matchSTAR);
 
 bool AtomTest_O::matches(Root_sp root, chem::Atom_sp atom) {
   _OF();
@@ -1207,20 +1233,20 @@ bool AtomTest_O::matches(Root_sp root, chem::Atom_sp atom) {
       }
       LOG(BF("No match")); //
       break;
-  case SAPRingTest:
-      LOG(BF("SAPRingTest looking for tag: %s") % this->_StringArg);
-      if (!root->getMatch()->recognizesAtomTag(chemkw_intern(this->_StringArg))) {
-        SIMPLE_ERROR(BF("We are trying to test the atomTag (" + this->_StringArg + ") but it doesn't exist!"));
-      }
-      LOG(BF("      SAPRingTest check close")); //
-      ringStartAtom = root->getMatch()->getAtomWithTag(chemkw_intern(this->_StringArg));
-      LOG(BF("      checking if %s matches ringStart atom: %s") % atom->description().c_str() % ringStartAtom->description().c_str()); //
-      if (atom == ringStartAtom) {
-        LOG(BF("RING MATCH THEY DO!!!!")); //
+  case SAPRingTagSet:
+      LOG(BF("SAPRingSet looking for tag: %s") % this->_IntArg);
+      current_match()->setRingTag(atom,core::make_fixnum(this->_IntArg));
+      goto SUCCESS;
+      break;
+  case SAPRingTagTest:
+      LOG(BF("SAPRingTest looking for tag: %s") % this->_IntArg);
+      if (current_match()->matchesRingTag(atom,core::make_fixnum(this->_IntArg))) {
         goto SUCCESS;
       }
       break;
   case SAPResidueTest:
+      SIMPLE_ERROR(BF("What do I do with SAPResidueText"));
+#if 0
       LOG(BF("SAPResidueTest looking for tag: %s") % this->_StringArg);
       if (!root->getMatch()->recognizesAtomTag(chemkw_intern(this->_StringArg))) {
         SIMPLE_ERROR(BF("We are trying to test the atomTag (" + this->_StringArg + ") but it doesn't exist!"));
@@ -1232,6 +1258,7 @@ bool AtomTest_O::matches(Root_sp root, chem::Atom_sp atom) {
         LOG(BF("RESIDUE MATCH THEY DO!!!!"));
         goto SUCCESS;
       }
+#endif
       break;
   case SAPAM1_BCC_x:
       if (this->matchesAm1BccX(atom))
@@ -1271,8 +1298,8 @@ bool AtomTest_O::matches(Root_sp root, chem::Atom_sp atom) {
   case SAPAtomMap:
     {
       // We have an atom and we have a tag in this->_IntArg
-      core::HashTableEql_sp hashTable = gc::As<core::HashTableEql_sp>(_sym_STARcurrent_colon_operator_hashtableSTAR->symbolValue());
-      hashTable->setf_gethash(core::make_fixnum(this->_IntArg),atom);
+      ChemInfoMatch_sp match =  gc::As<ChemInfoMatch_sp>(_sym_STARcurrent_matchSTAR->symbolValue());
+      match->defineAtomTag(atom,core::make_fixnum(this->_IntArg));
     }
       break;
   case SAPConnectivity: // No implicit H's so Connectivity == Degree
@@ -1541,29 +1568,29 @@ bool Chain_O::matches(Root_sp root, chem::Atom_sp from, chem::BondList_sp neighb
   LOG(BF("Chain_O matching pattern: %s") % this->asSmarts());
   LOG(BF("There are %d neighbors bondList: %s") % neighbors->size() % neighbors->describeOthers(from));
   for (bi = neighbors->begin(); bi != neighbors->end(); bi++) {
-    printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
+    CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
     _BLOCK_TRACEF(BF("Checking neighbor for bond: %s") % (*bi)->describeOther(from));
     if (this->_Head->matches(root, from, *bi)) {
-      printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
+      CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
       LOG(BF("The head matches"));
       Atom_sp other = (*bi)->getOtherAtom(from);
-      printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
+      CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
       LOG(BF("The other atom: %s") % other->description());
       nextBonds = other->getBondList(); // handle new bonds
-      printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
+      CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
       LOG(BF("The others bond list before removed from: %s") % nextBonds->describeOthers(other));
       LOG(BF("Removing bond between %s and %s") % from->description() % other->description());
       nextBonds->removeBondBetween(from, other); // (*bi)->getFrom());
-      printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
+      CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
       LOG(BF("The others bond list after removed from: %s") % nextBonds->describeOthers(other));
       ASSERTNOTNULL(this->_Tail);
       if (this->_Tail.notnilp()) {
-        printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
+        CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
         if (this->_Tail->matches(root, other, nextBonds))
           goto SUCCESS;
         LOG(BF("The tail exists but doesn't match"));
       } else {
-        printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
+        CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
         goto SUCCESS;
       }
     }
@@ -1822,7 +1849,8 @@ bool AntechamberBondTest_O::matchBasic(AntechamberRoot_sp root, chem::Atom_sp at
       goto FAIL;
   }
   if (this->_Tag.notnilp()) {
-    root->getMatch()->defineAtomTag(atom, this->_Tag);
+    SIMPLE_ERROR(BF("What do I do with the tag %s for AntechamberBondTest %s") % _rep_(this->_Tag) % _rep_(this->asSmartPtr()));
+//    root->getMatch()->defineAtomTag(atom, this->_Tag);
   }
   //SUCCESS:
   LOG(BF("SUCCESS!"));
@@ -1926,8 +1954,12 @@ void Root_O::initialize() {
   this->Base::initialize();
   this->_FirstTest = _Nil<core::T_O>();
   this->_Chain = _Nil<core::T_O>();
-  this->_Match = _Nil<core::T_O>();
   this->_Tests = core::HashTableEq_O::create_default();
+  this->_RingTags = core::HashTableEql_O::create_default();
+}
+
+void Root_O::defineAtomRingTag(Atom_sp atom, size_t tag) {
+  this->_RingTags->setf_gethash(core::make_fixnum(tag),atom);
 }
 
 void Root_O::addTest(core::Symbol_sp testSym, core::Function_sp testCode) {
@@ -1975,14 +2007,14 @@ bool Root_O::matches(Root_sp root, chem::Atom_sp atom) {
   matches = false;
   ANN(this->_FirstTest);
   if (this->_FirstTest.notnilp()) {
-  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
+    CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
     LOG(BF("_FirstTest is notNil - testing"));
     if (!this->_FirstTest->matches(root, atom)) {
-      printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
+      CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
       goto FAIL;
     }
   }
-  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
+  CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
   ANN(this->_Chain);
   if (this->_Chain.notnilp()) {
     LOG(BF("_Chain is not Nil - testing "));
@@ -2149,13 +2181,15 @@ CL_DEFMETHOD string ChemInfo_O::asSmarts() const {
 
 
 
-CL_DEFUN ChemInfoMatch_sp chem__chem_info_match(Root_sp testRoot, Atom_sp atom)
+CL_DEFUN core::T_mv chem__chem_info_match(Root_sp testRoot, Atom_sp atom)
 {
+  core::HashTableEql_sp ringHashTable = core::HashTableEql_O::create_default();
   core::HashTableEql_sp colonOperatorHashTable = core::HashTableEql_O::create_default();
-  core::DynamicScopeManager scope(_sym_STARcurrent_colon_operator_hashtableSTAR,colonOperatorHashTable);
+  ChemInfoMatch_sp current_match = ChemInfoMatch_O::make( false, colonOperatorHashTable, ringHashTable);
+  core::DynamicScopeManager scope(_sym_STARcurrent_matchSTAR,current_match);
   bool matches = testRoot->matches(testRoot,atom);
-  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
-  return ChemInfoMatch_O::make(matches,colonOperatorHashTable);
+  CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
+  return Values(_lisp->_boolean(matches), current_match);
 }
   
   

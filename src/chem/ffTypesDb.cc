@@ -77,7 +77,8 @@ CL_DEFMETHOD core::Symbol_sp FFTypesDb_O::assignType(chem::Atom_sp atom, bool ve
     {_BLOCK_TRACEF(BF("Testing rule code(%s)") % (*it)->getCode().c_str() );
 //		LOG(BF("as xml: %s") % ((*it)->asXmlString().c_str() ) );
       ChemInfo_sp cheminfo = gc::As<ChemInfo_sp>(*it);
-      if ( cheminfo->matches(atom)) {
+      ChemInfoMatch_sp match = cheminfo->matches_atom(atom);
+      if ( match->matches()) {
         AntechamberRoot_sp antechamberRoot = gc::As<AntechamberRoot_sp>(cheminfo->_Root);
         LOG(BF("Rule MATCH!!!") );
         if (verbose) core::write_bf_stream(BF("Matched %s\n") % _rep_(cheminfo));

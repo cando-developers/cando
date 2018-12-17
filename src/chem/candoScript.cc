@@ -45,6 +45,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/geom/coordinateArray.h>
 #include <cando/chem/candoScript.h>
 #include <cando/chem/candoDatabase.h>
+#include <cando/chem/energyFunction.h>
 #include <cando/chem/monomer.h>
 #include <cando/chem/oligomer.h>
 #include <cando/chem/mol2.h>
@@ -65,6 +66,13 @@ extern "C" void add_history(char* line);
 #endif
 
 namespace chem {
+
+
+/*! Everything that depends on SMARTS parsing is initialized here */
+
+CL_DEFUN void chem__initialize_smarts_users() {
+  energyFunction_initializeSmarts();
+}
 
 
 #ifdef XML_ARCHIVE
@@ -592,7 +600,7 @@ CL_DEFUN core::T_sp chem__load_mol2_list(core::T_sp fileName, core::T_sp number_
     if (number_to_load.nilp()) {
       progress_bar = core::eval::funcall(make_progress,
                                          INTERN_(kw,total), core::cl__file_length(fin.fIn));
-    } else if (gc::IsA<Real_sp>{
+    } else if (gc::IsA<core::Real_sp>(number_to_load)){
         progress_bar = core::eval::funcall(make_progress,
                                            INTERN_(kw,total), number_to_load);
     }

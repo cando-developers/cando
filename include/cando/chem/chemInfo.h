@@ -65,9 +65,10 @@ namespace chem {
     bool fieldsp() const { return true; };
     void fields(core::Record_sp node);
   public:
-    static ChemInfoMatch_sp make(bool matches, core::HashTableEql_sp tags);
+    static ChemInfoMatch_sp make(bool matches, core::HashTableEql_sp tags, core::HashTableEql_sp ring);
   private:
     bool		_Matches;
+    core::HashTableEql_sp _RingLookup;
     core::HashTableEql_sp _TagLookup; // core::StringMap<Atom_O>	_TagLookup;
     core::HashTableEqual_sp _ClosestMatch; // core::StringMap<Atom_O>	_ClosestMatch;
   public:
@@ -75,15 +76,18 @@ namespace chem {
     bool matches();
     void setMatches(bool b) { this->_Matches = b;};
     void clearAtomTags();
-    bool	recognizesAtomTag(core::Symbol_sp tag);
-    void	defineAtomTag(Atom_sp a, core::Symbol_sp tag );
-    bool hasAtomWithTag(core::Symbol_sp tag );
-    chem::Atom_sp getAtomWithTag(core::Symbol_sp tag);
-    gc::Nilable<chem::Atom_sp> getAtomWithTagOrNil(core::Symbol_sp tag);
+    bool	recognizesAtomTag(core::T_sp tag);
+    void	defineAtomTag(Atom_sp a, core::T_sp tag );
+    bool hasAtomWithTag(core::T_sp tag );
+    chem::Atom_sp getAtomWithTag(core::T_sp tag);
+    core::T_sp getAtomWithTagOrNil(core::T_sp tag);
 CL_LISPIFY_NAME("tag");
-CL_DEFMETHOD     chem::Atom_sp tag(core::Symbol_sp tag) { return this->getAtomWithTag(tag);};
-    void forgetAtomTag(core::Symbol_sp tag);
+CL_DEFMETHOD     chem::Atom_sp tag(core::T_sp tag) { return this->getAtomWithTag(tag);};
+    void forgetAtomTag(core::T_sp tag);
 
+    void setRingTag(Atom_sp a, core::T_sp tag);
+    bool matchesRingTag(Atom_sp a, core::T_sp tag);
+    
 	/*! Make sure all the matching atoms are unique - otherwise throw an exception */
     void throwIfInvalid();
     void describeClosestMatch();
@@ -172,10 +176,13 @@ namespace chem {
     LISP_CLASS(chem,ChemPkg,ChemInfoNode_O,"ChemInfoNode",core::CxxObject_O);
   public:
     size_t  _Id;
+    core::Cons_sp _Bounds;
   public:
     bool fieldsp() const { return true; };
     void	fields(core::Record_sp node);
   public:
+    CL_DEFMETHOD core::Cons_sp bounds() { return this->_Bounds; };
+    CL_DEFMETHOD void setf_bounds(core::Cons_sp bounds) { this->_Bounds = bounds; }
     string __repr__() const;
     virtual uint depth() const;
     CL_DEFMETHOD virtual string asSmarts() const {_OF();SUBCLASS_MUST_IMPLEMENT();};
@@ -400,6 +407,7 @@ namespace chem {
     virtual ~Logical_O() {};
   };
 
+#if 0
   SMART(TagSet);
   class TagSet_O : public AtomOrBondMatchNode_O
   {
@@ -439,9 +447,9 @@ namespace chem {
     virtual string asSmarts() const;
     DEFAULT_CTOR_DTOR(TagSet_O);
   };
-
+#endif
    
-
+#if 0
   SMART(RingTest);
   class RingTest_O : public AtomOrBondMatchNode_O
   {
@@ -473,7 +481,7 @@ namespace chem {
 
     DEFAULT_CTOR_DTOR(RingTest_O);
   };
-
+#endif
 
 
   SMART(ResidueTest);
@@ -628,8 +636,10 @@ namespace chem {
       SAPElement		,
       SAPTotalHCount		,
       SAPImplicitHCount	,
-      SAPRingTest		,
+      SAPRingTagSet	,
+      SAPRingTagTest	,
       SAPRingMembershipCount	,
+      SAPRingTest,
       SAPRingSize		,
       SAPValence		,
       SAPConnectivity		,
@@ -714,8 +724,8 @@ namespace chem {
     void	fields(core::Record_sp node);
   private:
     AtomTestEnum	_Test;
-    int		_IntArg;
-    int		_NumArg;
+    int		        _IntArg;
+    int		        _NumArg;
     string		_StringArg;
     core::Symbol_sp	_SymbolArg;
   public:
@@ -751,6 +761,8 @@ namespace chem {
     CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPDegree(int intVal) { return create(SAPDegree,intVal); };
     CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPGroupNumber(int intVal) { return create(SAPGroupNumber,intVal); };
     CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPHeavyAtomTotalBond(int intVal) { return create(SAPHeavyAtomTotalBond,intVal); };
+    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPRingTagSet(int intVal) { return create(SAPRingTagSet,intVal); };
+    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPRingTagTest(int intVal) { return create(SAPRingTagTest,intVal); };
     CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPImplicitHCount(int intVal) { return create(SAPImplicitHCount,intVal); };
     CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPLambda(int intVal) { return create(SAPLambda,intVal); };
     CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPLonePair(int intVal) { return create(SAPLonePair,intVal); };
@@ -831,6 +843,7 @@ namespace chem {
     bool matchesAm1BccX(chem::Atom_sp atom) const;
     bool matchesAm1BccY(chem::Atom_sp atom) const;
 
+    CL_DEFMETHOD void set_test(AtomTestEnum test) { this->_Test = test; };
     virtual ChemInfoType    type() { return atomTest;};
     virtual	bool	matches( Root_sp root, chem::Atom_sp atom );
     virtual	bool	matches( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond);
@@ -1120,8 +1133,11 @@ namespace chem {
 	 These can be incorporated into the smarts code as <xxxx> where xxxx is the symbol
 	name of the test. */
     core::HashTableEq_sp		_Tests;
+    core::HashTableEql_sp               _RingTags;
+#if 0
   protected:	// do not archive
     gc::Nilable<ChemInfoMatch_sp>	_Match; //!< Match SMARTS ring ids and Antechamber Atom Tags
+#endif
   public:
     virtual uint depth() const;
     virtual string asSmarts() const;
@@ -1136,11 +1152,13 @@ namespace chem {
 
     void addTest(core::Symbol_sp testSymbol, core::Function_sp testCode);
     bool evaluateTest(core::Symbol_sp testSym, Atom_sp atom);
-
+    void defineAtomRingTag(Atom_sp atom, size_t tag);
+#if 0
     void createNewMatch() { this->_Match = ChemInfoMatch_O::create();};
     void setMatch(ChemInfoMatch_sp match) { this->_Match = match; };
     ChemInfoMatch_sp getMatch() { return this->_Match; };
-
+#endif
+    
     virtual core::Symbol_sp getAssignType() { return _Nil<core::Symbol_O>();};
   public:
 
@@ -1305,8 +1323,11 @@ CL_DEFMETHOD     string	compilerMessage() { return this->_CompilerMessage;};
     void defineTests(core::List_sp tests);
 
     string descriptionOfContents() const;
-    bool	matches(chem::Atom_sp atom);
-    ChemInfoMatch_sp getMatch();
+    /*! Return NIL or the match */
+    core::T_sp 	matches(chem::Atom_sp atom);
+    /*! Return the match which can be tested to determine if match succeeded */
+    core::T_sp 	matches_atom(chem::Atom_sp atom);
+//    ChemInfoMatch_sp getMatch();
 
 		/*! Return the depth of the longest pattern
 		 */
@@ -1356,34 +1377,11 @@ CL_DEFMETHOD     string          getCode() { return this->_Code; };
 #endif
 
 
-
+core::T_mv chem__chem_info_match(Root_sp testRoot, Atom_sp atom);
 
 
 
 
 
 };
-TRANSLATE(chem::ChemInfoMatch_O);
-TRANSLATE(chem::WildElementDict_O);
-TRANSLATE(chem::ChemInfoNode_O);
-TRANSLATE(chem::ResidueList_O);
-TRANSLATE(chem::RootMatchNode_O);
-TRANSLATE(chem::BondMatchNode_O);
-TRANSLATE(chem::AtomOrBondMatchNode_O);
-TRANSLATE(chem::BondListMatchNode_O);
-TRANSLATE(chem::Logical_O);
-TRANSLATE(chem::TagSet_O);
-TRANSLATE(chem::RingTest_O);
-TRANSLATE(chem::ResidueTest_O);
-TRANSLATE(chem::BondTest_O);
-TRANSLATE(chem::AntechamberBondTest_O);
-TRANSLATE(chem::AtomTest_O);
-TRANSLATE(chem::AntechamberFocusAtomMatch_O);
-TRANSLATE(chem::Chain_O);
-TRANSLATE(chem::Branch_O);
-TRANSLATE(chem::AfterMatchBondTest_O);
-TRANSLATE(chem::Root_O);
-TRANSLATE(chem::SmartsRoot_O);
-TRANSLATE(chem::AntechamberRoot_O);
-TRANSLATE(chem::ChemInfo_O);
 #endif

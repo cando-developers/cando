@@ -285,8 +285,7 @@ void RestrainedExoCyclicAtom_O::fillRestraints(Residue_sp residue )
     }
     Atom_sp exoCyclicAtom = residue->atomWithName(this->_ExoCyclicAtomName);
     ChemInfo_sp atomExoToSixMemberedRing = gctools::As<ChemInfo_sp>(chem::_sym_STARAtomExoToSixMemberedRingSTAR->symbolValue());
-    atomExoToSixMemberedRing->matches(exoCyclicAtom);
-    ChemInfoMatch_sp match = atomExoToSixMemberedRing->getMatch();
+    ChemInfoMatch_sp match = atomExoToSixMemberedRing->matches_atom(exoCyclicAtom);
     if ( !match->matches() )
     {
 	SIMPLE_ERROR(BF("In residue(%s) the atom with name(%s) is not exo-cyclic to a six-membered ring") % residue->description() % _rep_(this->_ExoCyclicAtomName) );

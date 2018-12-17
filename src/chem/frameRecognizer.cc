@@ -98,16 +98,19 @@ CL_DEFMETHOD bool	FrameRecognizer_O::recognizes( Atom_sp o )
 {
     ASSERTNOTNULL(this->_ChemInfo);
     ASSERT(this->_ChemInfo->compileSucceeded());
-    return this->_ChemInfo->matches(o);
+    ChemInfoMatch_sp match = this->_ChemInfo->matches_atom(o);
+    return match->matches();
 }
 
 
+#if 0
 CL_LISPIFY_NAME("getMatch");
 CL_DEFMETHOD ChemInfoMatch_sp FrameRecognizer_O::getMatch()
 {
+  ChemInfoMatch_sp match = this->_ChemInfo->matches_atom(
     return this->_ChemInfo->getMatch();
 }
-
+#endif
 
 
     void FrameRecognizer_O::setRecognizerName(core::Symbol_sp fn)

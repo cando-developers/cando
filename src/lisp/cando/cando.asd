@@ -5,13 +5,7 @@
   :version "0.0.1"
   :author "Christian Schafmeister <chris.schaf@verizon.net>"
   :licence "LGPL-3.0"
-  :depends-on (:utility :inet
-                        (:version :esrap "0.15")
-                        :language.smarts
-                        :parser.common-rules
-               :parser.common-rules.operators
-                        :architecture.builder-protocol
-                        )
+  :depends-on (:utility :inet :smarts)
   :serial t
   :components
   ((:file "packages")

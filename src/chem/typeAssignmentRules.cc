@@ -54,7 +54,8 @@ void	OneTypeRule_O::initialize()
 
 bool	OneTypeRule_O::testMatch(Atom_sp atom)
 {
-    return this->_Match->matches(atom);
+  ChemInfoMatch_sp match = this->_Match->matches_atom(atom);
+  return match->matches();
 }
 
 void    OneTypeRule_O::fields(core::Record_sp node)
