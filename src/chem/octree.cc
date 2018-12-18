@@ -71,37 +71,11 @@ SYMBOL_EXPORT_SC_(KeywordPkg,interior_solute);
 SYMBOL_EXPORT_SC_(KeywordPkg,interior_solvent);
 SYMBOL_EXPORT_SC_(ChemPkg,STARoctree_typeSTAR);
 
-CL_BEGIN_ENUM(chem::Octree_O::OctreeType, chem::_sym_STARoctree_typeSTAR, "octree_type");
+CL_BEGIN_ENUM(chem::Octree_O::OctreeEnum, chem::_sym_STARoctree_typeSTAR, "octree_type");
 CL_VALUE_ENUM(kw::_sym_shell,chem::Octree_O::Shell);
 CL_VALUE_ENUM(kw::_sym_interior_solute,chem::Octree_O::InteriorSolute);
 CL_VALUE_ENUM(kw::_sym_interior_solvent,chem::Octree_O::InteriorSolvent);
 CL_END_ENUM(chem::_sym_STARoctree_typeSTAR);
-// Define a translator for the enum
-#define MY_CL_ENUM_TRANSLATOR(_sym_,_type_) \
-namespace translate { \
-template <> struct to_object<_type_> \
-{								 \
-  typedef	_type_	GivenType;	 \
-  static core::T_sp convert(const GivenType& val) \
-  {_G(); \
-    core::SymbolToEnumConverter_sp converter = _sym_->symbolValue().as<core::SymbolToEnumConverter_O>(); \
-    return (converter->symbolForEnum(val)); \
-  } \
-}; \
-template <> \
-struct from_object<_type_> \
-{								 \
-  typedef	_type_ 	ExpectedType; \
-  typedef	ExpectedType 	DeclareType; \
-  DeclareType _v; \
-  from_object(gctools::smart_ptr<core::T_O> o) { \
-    printf("%s:%d  from_object o -> %s\n", __FILE__, __LINE__, _rep_(o).c_str() ); \
-    core::SymbolToEnumConverter_sp converter = _sym_->symbolValue().as<core::SymbolToEnumConverter_O>(); \
-    _v = converter->enumForSymbol<_type_>(o.as<core::Symbol_O>()); \
-  } \
-}; \
-};
-MY_CL_ENUM_TRANSLATOR(chem::_sym_STARoctree_typeSTAR,chem::Octree_O::OctreeType);
 
 
 namespace chem{
@@ -846,7 +820,7 @@ int Octree_O::iBuildInteriorOctant( OctNode_sp PonNode, int iAtoms, gctools::Vec
 SYMBOL_EXPORT_SC_(KeywordPkg,solvent);
 SYMBOL_EXPORT_SC_(ChemPkg,lookup_atom_properties_radius);
 //CL_DEFMETHOD Octree_sp Octree_O::octOctTreeCreate(Aggregate_sp uUnit, int iType, double dGridSpace, double dAddExtent, double dShellExtent,
-CL_DEFMETHOD void Octree_O::octOctTreeCreate(Aggregate_sp uUnit, OctreeType type, double dGridSpace, double dAddExtent, double dShellExtent, FFNonbondDb_sp nonbondDb,  int iIncludeSolvent, bool bVerbose)
+CL_DEFMETHOD void Octree_O::octOctTreeCreate(Aggregate_sp uUnit, OctreeEnum type, double dGridSpace, double dAddExtent, double dShellExtent, FFNonbondDb_sp nonbondDb,  int iIncludeSolvent, bool bVerbose)
 {
  // Octree_sp		  octTree;
   Vector3                 vMinCorner, vMaxCorner, vAtom;

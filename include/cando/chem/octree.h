@@ -71,9 +71,9 @@ class Octree_O : public core::CxxObject_O {
 public:
     bool fieldsp() const { return true;};
     void fields(core::Record_sp record);
-  typedef enum { Shell, InteriorSolute, InteriorSolvent } OctreeType;
+  typedef enum { Shell, InteriorSolute, InteriorSolvent } OctreeEnum;
 public:
-  OctreeType                    type;  
+  OctreeEnum                    type;  
   int                           _iMaxDepth;
   int                           iTreePoints;
   int                           iDielectric;
@@ -125,7 +125,7 @@ public:
   int OctNodeDeleteSphere( OctNode_sp PonNode, double dDeleteRadius  );
   void OctNodeUpdateCharge( OctNode_sp PonNode, int iParentAtoms, gctools::Vec0<Atom_sp> PaParentAtoms, int iDistanceCharge );
   int OctNodeCheckSolvent( OctNode_sp PonNode );
-  void octOctTreeCreate(Aggregate_sp uUnit, OctreeType iType, double dGridSpace, 
+  void octOctTreeCreate(Aggregate_sp uUnit, OctreeEnum iType, double dGridSpace, 
 			double dAddExtent, double dShellExtent, FFNonbondDb_sp nonbondDb, int iIncludeSolvent, bool bVerbose);
   core::T_mv OctTreeInitCharges(/*Octree_sp octTree,*/ int iAtomOption, int iDielectric, 
                            double dCutDist);	
@@ -165,7 +165,6 @@ public:
 
 }; // namespace chem
 
-TRANSLATE(chem::OctNode_O);
-TRANSLATE(chem::Octree_O);
+DECLARE_ENUM_SYMBOL_TRANSLATOR(chem::Octree_O::OctreeEnum, chem::_sym_STARoctree_typeSTAR);
 
 # endif
