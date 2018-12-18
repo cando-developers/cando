@@ -313,9 +313,9 @@ SYMBOL_EXPORT_SC_(ChemPkg,parse_smarts);
 
 CL_LISPIFY_NAME("compileSmarts");
 CL_DEFMETHOD bool ChemInfo_O::compileSmarts(const string &code) {
-  SmartsRoot_sp root;
   core::SimpleBaseString_sp scode = core::SimpleBaseString_O::make(code);
-  root = gc::As<SmartsRoot_sp>(core::eval::funcall(_sym_parse_smarts,scode));
+  ChemInfoNode_sp node = gc::As<ChemInfoNode_sp>(core::eval::funcall(_sym_parse_smarts,scode));
+  SmartsRoot_sp root = SmartsRoot_O::make(node);
   this->_Root = gc::As<Root_sp>(root);
   this->_Code = code;
 #if 0
@@ -339,9 +339,10 @@ CL_DEFMETHOD bool ChemInfo_O::compileSmarts(const string &code) {
 CL_DEFMETHOD void ChemInfo_O::defineTests(core::List_sp tests) {
   ASSERTNOTNULL(this->_Root);
   ASSERTF(this->_Root.notnilp(), BF("Root must be defined to define tests"));
-  for (core::List_sp cur = tests; cur.notnilp(); cur = oCddr(cur)) {
-    core::Symbol_sp testSymbol = oCar(cur).as<core::Symbol_O>();
-    core::Function_sp testCode = oCadr(cur).as<core::Function_O>();
+  for (auto cur : tests) {
+    core::Cons_sp pair = gc::As<core::Cons_sp>(CONS_CAR(cur));
+    core::Symbol_sp testSymbol = oCar(pair).as<core::Symbol_O>();
+    core::Function_sp testCode = oCdr(pair).as<core::Function_O>();
     ASSERTF(testSymbol.notnilp(), BF("The testSymbol was nil"));
     ASSERTF(testCode.notnilp(), BF("The test code was nil"));
     this->_Root->addTest(testSymbol, testCode);
@@ -419,18 +420,6 @@ void ChemInfo_O::fields(core::Record_sp node) {
   node->field(INTERN_(kw, root), this->_Root);
 }
 
-#if 0
-CL_LISPIFY_NAME("getMatch");
-CL_DEFMETHOD ChemInfoMatch_sp ChemInfo_O::getMatch() {
-  
-  ASSERTNOTNULL(this->_Root);
-  ASSERT(this->_Root.notnilp());
-  ASSERT(this->_Root->getMatch().notnilp());
-  return this->_Root->getMatch();
-}
-
-#endif
-
 struct ChemInfoTypeToName {
   ChemInfoType type;
   string name;
@@ -507,12 +496,41 @@ string BondListMatchNode_O::asSmarts() const {
 
 void AtomOrBondMatchNode_O::fields(core::Record_sp node) {
   this->Base::fields(node);
-  // Nothing to do here
+  node->field_if_not_default(INTERN_(kw,ring_test),this->_RingTest,SARNone);
+  node->field_if_not_default(INTERN_(kw,ring_id),this->_RingId,-1);
 }
 
 bool AtomOrBondMatchNode_O::matches(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond) {
-  return this->matches(root, bond->getOtherAtom(from));
+  return (this->matches(root,from) &&
+          this->matches(root, bond->getOtherAtom(from)));
 };
+
+bool AtomOrBondMatchNode_O::matches(Root_sp root, chem::Atom_sp atom) {
+  if (this->_RingTest==SARNone) {
+    return true;
+  } else if (this->_RingTest==SARRingSet) {
+    current_match()->setRingTag(atom,core::make_fixnum(this->_RingId));
+    return true;
+  }
+  // It's SARRingTest
+  return current_match()->matchesRingTag(atom,core::make_fixnum(this->_RingId));
+}
+
+CL_DEFMETHOD void AtomOrBondMatchNode_O::setRingTest(RingTestEnum test) {
+  this->_RingTest = test;
+}
+CL_DEFMETHOD RingTestEnum AtomOrBondMatchNode_O::getRingTest() const {
+  return this->_RingTest;
+}
+
+CL_DEFMETHOD void AtomOrBondMatchNode_O::setRingId(int id) {
+  this->_RingId = id;
+}
+
+CL_DEFMETHOD int AtomOrBondMatchNode_O::getRingId() const {
+  return this->_RingId;
+}
+
 
 void BondMatchNode_O::fields(core::Record_sp node) {
   this->Base::fields(node);
@@ -524,6 +542,13 @@ void Logical_O::initialize() {
   this->_Operator = logAlwaysTrue;
   this->_Left = _Nil<core::T_O>();
   this->_Right = _Nil<core::T_O>();
+}
+
+core::T_sp Logical_O::children() {
+  ql::list result;
+  if (this->_Left.notnilp()) result << this->_Left;
+  if (this->_Right.notnilp()) result << this->_Right;
+  return result.cons();
 }
 
 string Logical_O::asSmarts() const {
@@ -618,7 +643,7 @@ bool Logical_O::matches(Root_sp root, chem::Atom_sp atom) {
   return false;
  SUCCESS:
   LOG(BF("SUCCESS!!!"));
-  return true;
+  return this->Base::matches(root,atom);
 }
 
 bool Logical_O::matches(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond) {
@@ -659,7 +684,7 @@ bool Logical_O::matches(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond) {
   return false;
  SUCCESS:
   LOG(BF("SUCCESS!!!"));
-  return true;
+  return this->Base::matches(root,from,bond);
 }
 
 core::NullTerminatedEnumAssociation logicalEnum[] = {
@@ -738,134 +763,6 @@ core::NullTerminatedEnumAssociation bondEnum[] = {
     {"", -1}};
 
 
-#if 0
-void TagSet_O::initialize() {
-  this->Base::initialize();
-  //    this->_Bond = SABAnyBond;
-  this->_AtomTest = _Nil<core::T_O>();
-  this->_RingTag = _Nil<core::Symbol_O>();
-}
-
-string TagSet_O::asSmarts() const {
-  _OF();
-  stringstream ss;
-  //	ss << sabToString(this->_Bond);
-  ss << this->_AtomTest->asSmarts() << this->_RingTag;
-  return ss.str();
-}
-
-bool TagSet_O::matches(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond) {
-  _OF();
-  LOG(BF("Root_O trying to match pattern: %s") % this->asSmarts());
-  return this->matches(root, bond->getOtherAtom(from));
-};
-
-bool TagSet_O::matches(Root_sp root, chem::Atom_sp atom) {
-  CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
-
-  chem::Atom_sp ringStartAtom;
-  SmartsRoot_sp smartsRoot;
-  LOG(BF("TagSet match for atom: %s") % atom->description());
-  CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
-  if (!gc::IsA<SmartsRoot_sp>(root)) {
-    SIMPLE_ERROR(BF("Trying to carry out a TagSet with a non Smarts root"));
-  }
-  // First check if the AtomTest matches
-  ASSERTNOTNULL(this->_AtomTest);
-  CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
-  if (!this->_AtomTest->matches(root, atom)) {
-    LOG(BF("The _AtomTest failed"));
-    goto FAIL;
-  }
-  CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
-  CI_LOG(("ringtag %s atom %s \n", _rep_(this->_RingTag).c_str(), atom->description().c_str()));
-  // Now handle setting the tag
-  smartsRoot = gc::As<SmartsRoot_sp>(root);
-  CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
-  smartsRoot->defineAtomRingTag(atom, this->_RingTag);
-  LOG(BF("RingTag (%s) defined atom: %s") % this->_RingTag.c_str() % atom->description().c_str());
-  CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
-
-  //SUCCESS:
-  LOG(BF("SUCCESS!"));
-  return true;
- FAIL:
-  LOG(BF("FAIL"));
-  return false;
-}
-
-void TagSet_O::fields(core::Record_sp node) {
-  //    node->attributeEnum( "bond", this->_Bond, bondEnum );
-  node->field(INTERN_(kw, ringTag), this->_RingTag);
-  node->field(INTERN_(kw, atomTest), this->_AtomTest);
-  this->Base::fields(node);
-}
-
-CL_DEF_CLASS_METHOD TagSet_sp TagSet_O::create_tagSet(core::T_sp at, core::Symbol_sp ri) {
-  return create(at, ri);
-}
-
-CL_DEFMETHOD void TagSet_O::setAtomTest(core::T_sp atomTest)
-{
-  this->_AtomTest = atomTest;
-}
-#endif
-
-#if 0
-// ------ RingTest
-void RingTest_O::initialize() {
-  this->Base::initialize();
-  this->_Bond = SABAnyBond;
-  this->_AtomTest = _Nil<core::T_O>();
-  this->_RingTag = _Nil<core::Symbol_O>();
-}
-
-bool RingTest_O::matches(Root_sp root, chem::Atom_sp atom) {
-  
-  chem::Atom_sp ringStartAtom;
-  SmartsRoot_sp smartsRoot;
-  LOG(BF("RingTest match for atom: %s") % atom->description().c_str());
-  if (!gc::IsA<SmartsRoot_sp>(root)) {
-    SIMPLE_ERROR(BF("Trying to carry out a RingTest with a non Smarts root"));
-  }
-  // First check if the AtomTest matches
-  ASSERTNOTNULL(this->_AtomTest);
-  if (!this->_AtomTest->matches(root, atom)) {
-    LOG(BF("The _AtomTest failed"));
-    goto FAIL;
-  }
-  // Now handle the ring test
-  smartsRoot = (root).as<SmartsRoot_O>();
-  // It does recognize the ring ID so check if the current atom is bonded to it
-  // and then have the root forget the atom
-  if (!smartsRoot->recognizesAtomRingTag(this->_RingTag)) {
-    SIMPLE_ERROR(BF("We are trying to test the atomTag %s but it doesn't exist") % _rep_(this->_RingTag));
-  }
-  LOG(BF("      RingTest check close"));
-  ringStartAtom = smartsRoot->getMatch()->getAtomWithTag(this->_RingTag);
-  LOG(BF("      checking if %s matches ringStart atom: %s") % atom->description().c_str() % ringStartAtom->description().c_str());
-  if (atom == ringStartAtom) {
-    LOG(BF("RING MATCH THEY DO!!!!"));
-    goto SUCCESS;
-  }
- FAIL:
-  LOG(BF("FAIL"));
-  return false;
- SUCCESS:
-  LOG(BF("SUCCESS!"));
-  return true;
-}
-
-void RingTest_O::fields(core::Record_sp node) {
-  node->/*pod_*/field( INTERN_(kw,bond), this->_Bond);
-  node->field( INTERN_(kw,ringTag), this->_RingTag);
-  node->field( INTERN_(kw,atomTest), this->_AtomTest);
-  this->Base::fields(node);
-}
-#endif
-
-
-
 
 // ------ ResidueTest
 
@@ -874,6 +771,12 @@ void ResidueTest_O::initialize() {
   this->_Bond = SABAnyBond;
   this->_AtomTest = _Nil<core::T_O>();
   this->_RingTag = _Nil<core::Symbol_O>();
+}
+
+core::T_sp ResidueTest_O::children() {
+  ql::list result;
+  if (this->_AtomTest.notnilp()) result << this->_AtomTest;
+  return result.cons();
 }
 
 string ResidueTest_O::asSmarts() const {
@@ -1058,6 +961,12 @@ CL_DEF_CLASS_METHOD BondTest_sp BondTest_O::create_SABDirectionalSingleDown(core
   return create(SABDirectionalSingleDown, nilOrNode);
 };
 
+core::T_sp BondTest_O::children() {
+  ql::list result;
+  if (this->_AtomTest.notnilp()) result << this->_AtomTest;
+  return result.cons();
+}
+
 
 string BondTest_O::asSmarts() const {
   _OF();
@@ -1104,6 +1013,8 @@ void AtomTest_O::initialize() {
   this->_StringArg = "";
 }
 
+CL_DEFMETHOD int AtomTest_O::getIntArg() { return this->_IntArg;};
+
 bool AtomTest_O::matches(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond) {
   
   LOG(BF("AtomTest_O matching pattern: %s") % this->asSmarts());
@@ -1129,7 +1040,7 @@ bool AtomTest_O::matches(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond) {
   return false;
  SUCCESS:
   LOG(BF("SUCCESS!"));
-  return true;
+  return this->Base::matches(root,from,bond);
 }
 
 bool AtomTest_O::matchesAm1BccX(chem::Atom_sp atom) const {
@@ -1213,8 +1124,8 @@ bool AtomTest_O::matches(Root_sp root, chem::Atom_sp atom) {
       if (atom->isAromatic())
         goto SUCCESS;
       break;
-  case SAPLambda:
-      LOG(BF("SAPLambda<%s> testing %s") % _rep_(this->_SymbolArg) % atom->description());
+  case SAPPredicateName:
+      LOG(BF("SAPPredicateName<%s> testing %s") % _rep_(this->_SymbolArg) % atom->description());
       if (root->evaluateTest(this->_SymbolArg, atom))
         goto SUCCESS;
       break;
@@ -1233,17 +1144,6 @@ bool AtomTest_O::matches(Root_sp root, chem::Atom_sp atom) {
       }
       LOG(BF("No match")); //
       break;
-  case SAPRingTagSet:
-      LOG(BF("SAPRingSet looking for tag: %s") % this->_IntArg);
-      current_match()->setRingTag(atom,core::make_fixnum(this->_IntArg));
-      goto SUCCESS;
-      break;
-  case SAPRingTagTest:
-      LOG(BF("SAPRingTest looking for tag: %s") % this->_IntArg);
-      if (current_match()->matchesRingTag(atom,core::make_fixnum(this->_IntArg))) {
-        goto SUCCESS;
-      }
-      break;
   case SAPResidueTest:
       SIMPLE_ERROR(BF("What do I do with SAPResidueText"));
 #if 0
@@ -1259,14 +1159,6 @@ bool AtomTest_O::matches(Root_sp root, chem::Atom_sp atom) {
         goto SUCCESS;
       }
 #endif
-      break;
-  case SAPAM1_BCC_x:
-      if (this->matchesAm1BccX(atom))
-        goto SUCCESS;
-      break;
-  case SAPAM1_BCC_y:
-      if (this->matchesAm1BccY(atom))
-        goto SUCCESS;
       break;
   case SAPNegativeCharge:       // next
   case SAPPositiveCharge:       // next
@@ -1371,22 +1263,7 @@ bool AtomTest_O::matches(Root_sp root, chem::Atom_sp atom) {
   return false;
  SUCCESS:
   LOG(BF("SUCCESS!"));
-  return true;
-  //
-  //      The rest of these I may handle in the future
-  //
-  //	SAPChiralityAntiClockwiseOrAnyRingBond,
-  //	SAPChiralityClockwise,
-  //	SAPAtomicMass,
-  //	SAPLonePair,
-  //	SAPTotalBondNumber,
-  //	SAPTotalExplicitBondNumber,
-  //	SAPPiBondOrbital,
-  //	SAPAromaticPiElectron,
-  //	SAPHeavyAtomTotalBond,
-  //	SAPGroupNumber,
-  //	SAPTransitionMetal,
-  //	SAPImplicitHCount,
+  return this->Base::matches(root,atom);
 }
 
 string AtomTest_O::asSmarts() const {
@@ -1409,7 +1286,7 @@ string AtomTest_O::asSmarts() const {
   case SAPAliphatic:
       ss << "A";
       break;
-  case SAPLambda:
+  case SAPPredicateName:
       ss << "<" << this->_SymbolArg->symbolNameAsString() << ">";
       break;
   case SAPAtomicNumber:
@@ -1423,12 +1300,6 @@ string AtomTest_O::asSmarts() const {
       break;
   case SAPResidueTest:
       ss << "U" << this->_StringArg;
-      break;
-  case SAPAM1_BCC_x:
-      ss << "x";
-      break;
-  case SAPAM1_BCC_y:
-      ss << "y";
       break;
   case SAPNegativeCharge:       // next
   case SAPNegativeFormalCharge: // next
@@ -1508,9 +1379,8 @@ core::NullTerminatedEnumAssociation testEnum[] = {
     {"SAPArLevel", SAPArLevel},
     {"SAPNoRing", SAPNoRing},
     {"SAPResidueTest", SAPResidueTest},
-    {"SAPAM1_BCC_x", SAPAM1_BCC_x},
-    {"SAPAM1_BCC_y", SAPAM1_BCC_y},
-    {"SAPLambda", SAPLambda},
+    {"SAPPredicateName", SAPPredicateName},
+    {"SAPAtomMap", SAPAtomMap},
     {"", -1}};
 
 string AtomTest_O::testName(AtomTestEnum test) const {
@@ -1548,6 +1418,13 @@ string Chain_O::asSmarts() const {
   if (this->_Tail.notnilp())
     ss << "(" << this->_Tail->asSmarts() << ")";
   return ss.str();
+}
+
+core::T_sp Chain_O::children() {
+  ql::list result;
+  if (this->_Head.notnilp()) result << this->_Head;
+  if (this->_Tail.notnilp()) result << this->_Tail;
+  return result.cons();
 }
 
 uint Chain_O::depth() const {
@@ -1632,6 +1509,14 @@ string Branch_O::asSmarts() const {
     ss << "(" << this->_Right->asSmarts() << ")";
   return ss.str();
 }
+
+core::T_sp Branch_O::children() {
+  ql::list result;
+  if (this->_Left.notnilp()) result << this->_Left;
+  if (this->_Right.notnilp()) result << this->_Right;
+  return result.cons();
+}
+
 
 uint Branch_O::depth() const {
   
@@ -1752,6 +1637,12 @@ void AntechamberFocusAtomMatch_O::fields(core::Record_sp node) {
   this->Base::fields(node);
 }
 
+core::T_sp AntechamberFocusAtomMatch_O::children() {
+  ql::list result;
+  if (this->_AtomicProperty.notnilp()) result << this->_AtomicProperty;
+  return result.cons();
+}
+
 string AntechamberFocusAtomMatch_O::asSmarts() const {
   stringstream ss;
   ss << "{AntechamberFocusAtomMatch ";
@@ -1822,6 +1713,12 @@ bool AntechamberFocusAtomMatch_O::matches(Root_sp root, chem::Atom_sp atom) {
 }
 
 // ------- AntechamberBondTest
+
+core::T_sp AntechamberBondTest_O::children() {
+  ql::list result;
+  if (this->_AtomProperties.notnilp()) result << this->_AtomProperties;
+  return result.cons();
+}
 
 bool AntechamberBondTest_O::matchBasic(AntechamberRoot_sp root, chem::Atom_sp atom) {
   
@@ -1939,6 +1836,13 @@ uint Root_O::depth() const {
   return res;
 }
 
+core::T_sp Root_O::children() {
+  ql::list result;
+  if (this->_FirstTest.notnilp()) result << this->_FirstTest;
+  if (this->_Chain.notnilp()) result << this->_Chain;
+  return result.cons();
+};
+
 string Root_O::asSmarts() const {
   stringstream ss;
   if (this->_FirstTest.notnilp()) {
@@ -1955,11 +1859,6 @@ void Root_O::initialize() {
   this->_FirstTest = _Nil<core::T_O>();
   this->_Chain = _Nil<core::T_O>();
   this->_Tests = core::HashTableEq_O::create_default();
-  this->_RingTags = core::HashTableEql_O::create_default();
-}
-
-void Root_O::defineAtomRingTag(Atom_sp atom, size_t tag) {
-  this->_RingTags->setf_gethash(core::make_fixnum(tag),atom);
 }
 
 void Root_O::addTest(core::Symbol_sp testSym, core::Function_sp testCode) {
@@ -2091,6 +1990,14 @@ void AntechamberRoot_O::fields(core::Record_sp node) {
   this->Base::fields(node);
 }
 
+core::T_sp AntechamberRoot_O::children() {
+  ql::list result;
+  result & this->Base::children();
+  if (this->_AfterMatchTests.notnilp()) result << this->_AfterMatchTests;
+  return result.cons();
+};
+    
+
 string AntechamberRoot_O::descriptionOfContents() const {
   stringstream ss;
   ss << " :assign-type " << _rep_(this->_AssignType);
@@ -2125,24 +2032,6 @@ bool AntechamberRoot_O::matches(Root_sp root, chem::Atom_sp atom) {
   return false;
 }
 
-#if 0
-#ifdef USEBOOSTPYTHON
-void	ChemInfoErrorTranslator( const ChemInfoError& e ) {
-  char	error[1024];
-  stringstream	sstr;
-  sstr.str("");
-  sstr << "ChemInfo compile error " << e._Message << std::endl;
-  ASSERTNOTNULL(e._code);
-  sstr << e._code->compilerMessage() << std::endl;
-  sprintf( error, "%s", sstr.str().c_str() );
-  PyErr_SetString(PyExc_UserWarning, error );
-}
-
-#endif
-#endif
-
-#if INIT_TO_FACTORIES
-
 #define ARGS_ChemInfo_O_make "(tests smarts)"
 #define DECL_ChemInfo_O_make ""
 #define DOCS_ChemInfo_O_make "make ChemInfo"
@@ -2156,22 +2045,6 @@ ChemInfo_sp ChemInfo_O::make(core::List_sp tests, const string &smarts) {
   }
   return me;
 };
-
-#else
-
-core::T_sp ChemInfo_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp bargs, core::Lisp_sp lisp) {
-  _OF();
-  core::Cons_sp tests = translate::from_object<core::Cons_O>::convert(bargs->lookup(Pkg(), "tests"));
-  string smarts = translate::from_object<string>::convert(bargs->lookup(Pkg(), "smarts"));
-  this->compileSmarts(smarts);
-  this->defineTests(tests);
-  if (!this->compileSucceeded()) {
-    SIMPLE_ERROR(BF(this->compilerMessage()));
-  }
-  return _Nil<core::T_O>();
-}
-
-#endif
 
 CL_LISPIFY_NAME("asSmarts");
 CL_DEFMETHOD string ChemInfo_O::asSmarts() const {
@@ -2191,12 +2064,27 @@ CL_DEFUN core::T_mv chem__chem_info_match(Root_sp testRoot, Atom_sp atom)
   CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
   return Values(_lisp->_boolean(matches), current_match);
 }
-  
+
+CL_DEFUN core::T_sp chem__chem_info_node_children(ChemInfoNode_sp node) {
+  return node->children();
+}
+
   
 
   /*! Hold nodes for the Gaff and Msmarts parsers - rewrite these in Common Lisp */
 SYMBOL_EXPORT_SC_(ChemPkg, STARparserNodeHolderSTAR );
-  
+
+SYMBOL_EXPORT_SC_(ChemPkg,STARSarRingTestEnumConverterSTAR);
+SYMBOL_EXPORT_SC_(KeywordPkg,SARNone);
+SYMBOL_EXPORT_SC_(KeywordPkg,SARRingSet);
+SYMBOL_EXPORT_SC_(KeywordPkg,SARRingTest);
+SYMBOL_EXPORT_SC_(ChemPkg,STARSabBondEnumConverterSTAR);
+CL_BEGIN_ENUM(RingTestEnum,_sym_STARSarRingTestEnumConverterSTAR,"SARRingTestEnum");
+CL_VALUE_ENUM(kw::_sym_SARNone, SARNone);
+CL_VALUE_ENUM(kw::_sym_SARRingSet, SARRingSet);
+CL_VALUE_ENUM(kw::_sym_SARRingTest, SARRingTest);
+CL_END_ENUM(_sym_STARSarRingTestEnumConverterSTAR);
+
 SYMBOL_EXPORT_SC_(KeywordPkg,SABNoBond);
 SYMBOL_EXPORT_SC_(KeywordPkg,SABSingleBond);
 SYMBOL_EXPORT_SC_(KeywordPkg,SABSingleOrAromaticBond);
@@ -2246,17 +2134,17 @@ CL_VALUE_ENUM(kw::_sym_logLowPrecedenceAnd,  logLowPrecedenceAnd);
 CL_END_ENUM(_sym_STARLogicalOperatorTypeConverterSTAR);
 
 
+
+
+
 SYMBOL_EXPORT_SC_(KeywordPkg,SAPNone);
 SYMBOL_EXPORT_SC_(KeywordPkg,SAPWildCard);
 SYMBOL_EXPORT_SC_(KeywordPkg,SAPDegree);
 SYMBOL_EXPORT_SC_(KeywordPkg,SAPElement);
-SYMBOL_EXPORT_SC_(KeywordPkg,SAPAromaticElement);
-SYMBOL_EXPORT_SC_(KeywordPkg,SAPAromatic);
-SYMBOL_EXPORT_SC_(KeywordPkg,SAPAliphatic);
 SYMBOL_EXPORT_SC_(KeywordPkg,SAPTotalHCount);
 SYMBOL_EXPORT_SC_(KeywordPkg,SAPImplicitHCount);
-SYMBOL_EXPORT_SC_(KeywordPkg,SAPRingTest);
 SYMBOL_EXPORT_SC_(KeywordPkg,SAPRingMembershipCount);
+SYMBOL_EXPORT_SC_(KeywordPkg,SAPRingTest);
 SYMBOL_EXPORT_SC_(KeywordPkg,SAPRingSize);
 SYMBOL_EXPORT_SC_(KeywordPkg,SAPValence);
 SYMBOL_EXPORT_SC_(KeywordPkg,SAPConnectivity);
@@ -2283,51 +2171,53 @@ SYMBOL_EXPORT_SC_(KeywordPkg,SAPInBond);
 SYMBOL_EXPORT_SC_(KeywordPkg,SAPArLevel);
 SYMBOL_EXPORT_SC_(KeywordPkg,SAPNoRing);
 SYMBOL_EXPORT_SC_(KeywordPkg,SAPResidueTest);
-SYMBOL_EXPORT_SC_(KeywordPkg,SAPAM1_BCC_x);
-SYMBOL_EXPORT_SC_(KeywordPkg,SAPAM1_BCC_y);
-SYMBOL_EXPORT_SC_(KeywordPkg,SAPLambda);
+SYMBOL_EXPORT_SC_(KeywordPkg,SAPPredicateName);
+SYMBOL_EXPORT_SC_(KeywordPkg,SAPAromaticElement);
+SYMBOL_EXPORT_SC_(KeywordPkg,SAPAliphatic);
+SYMBOL_EXPORT_SC_(KeywordPkg,SAPAromatic);
+SYMBOL_EXPORT_SC_(KeywordPkg,SAPAtomMap);
+
 SYMBOL_EXPORT_SC_(ChemPkg, STARAtomTestEnumConverterSTAR);
 CL_BEGIN_ENUM(AtomTestEnum,_sym_STARAtomTestEnumConverterSTAR,"AtomTestEnum");
-CL_VALUE_ENUM(kw::_sym_SAPNone, SAPNone);
-CL_VALUE_ENUM(kw::_sym_SAPWildCard, SAPWildCard);
-CL_VALUE_ENUM(kw::_sym_SAPDegree, SAPDegree);
-CL_VALUE_ENUM(kw::_sym_SAPElement, SAPElement);
-CL_VALUE_ENUM(kw::_sym_SAPAromaticElement, SAPAromaticElement);
-CL_VALUE_ENUM(kw::_sym_SAPAromatic, SAPAromatic);
-CL_VALUE_ENUM(kw::_sym_SAPAliphatic, SAPAliphatic);
-CL_VALUE_ENUM(kw::_sym_SAPTotalHCount, SAPTotalHCount);
-CL_VALUE_ENUM(kw::_sym_SAPImplicitHCount, SAPImplicitHCount);
-CL_VALUE_ENUM(kw::_sym_SAPRingTest, SAPRingTest);
-CL_VALUE_ENUM(kw::_sym_SAPRingMembershipCount, SAPRingMembershipCount);
-CL_VALUE_ENUM(kw::_sym_SAPRingSize, SAPRingSize);
-CL_VALUE_ENUM(kw::_sym_SAPValence, SAPValence);
-CL_VALUE_ENUM(kw::_sym_SAPConnectivity, SAPConnectivity);
-CL_VALUE_ENUM(kw::_sym_SAPNegativeCharge, SAPNegativeCharge);
-CL_VALUE_ENUM(kw::_sym_SAPNegativeFormalCharge, SAPNegativeFormalCharge);
-CL_VALUE_ENUM(kw::_sym_SAPPositiveCharge, SAPPositiveCharge);
-CL_VALUE_ENUM(kw::_sym_SAPPositiveFormalCharge, SAPPositiveFormalCharge);
-CL_VALUE_ENUM(kw::_sym_SAPAtomicNumber, SAPAtomicNumber);
-CL_VALUE_ENUM(kw::_sym_SAPChiralityAntiClockwise, SAPChiralityAntiClockwise);
-CL_VALUE_ENUM(kw::_sym_SAPChiralityClockwise, SAPChiralityClockwise);
-CL_VALUE_ENUM(kw::_sym_SAPAtomicMass, SAPAtomicMass);
-CL_VALUE_ENUM(kw::_sym_SAPLonePair, SAPLonePair);
-CL_VALUE_ENUM(kw::_sym_SAPTotalBondNumber, SAPTotalBondNumber);
-CL_VALUE_ENUM(kw::_sym_SAPTotalExplicitBondNumber, SAPTotalExplicitBondNumber);
-CL_VALUE_ENUM(kw::_sym_SAPPiBondOrbital, SAPPiBondOrbital);
-CL_VALUE_ENUM(kw::_sym_SAPAromaticPiElectron, SAPAromaticPiElectron);
-CL_VALUE_ENUM(kw::_sym_SAPHeavyAtomTotalBond, SAPHeavyAtomTotalBond);
-CL_VALUE_ENUM(kw::_sym_SAPGroupNumber, SAPGroupNumber);
-CL_VALUE_ENUM(kw::_sym_SAPElectronegativeElement, SAPElectronegativeElement);
-CL_VALUE_ENUM(kw::_sym_SAPTransitionMetal, SAPTransitionMetal);
-CL_VALUE_ENUM(kw::_sym_SAPBondedToPrevious, SAPBondedToPrevious);
-CL_VALUE_ENUM(kw::_sym_SAPNotBondedToPrevious, SAPNotBondedToPrevious);
-CL_VALUE_ENUM(kw::_sym_SAPInBond, SAPInBond);
-CL_VALUE_ENUM(kw::_sym_SAPArLevel, SAPArLevel);
-CL_VALUE_ENUM(kw::_sym_SAPNoRing, SAPNoRing);
-CL_VALUE_ENUM(kw::_sym_SAPResidueTest, SAPResidueTest);
-CL_VALUE_ENUM(kw::_sym_SAPAM1_BCC_x, SAPAM1_BCC_x);
-CL_VALUE_ENUM(kw::_sym_SAPAM1_BCC_y, SAPAM1_BCC_y);
-CL_VALUE_ENUM(kw::_sym_SAPLambda, SAPLambda);
+CL_VALUE_ENUM(kw::_sym_SAPNone,SAPNone);
+CL_VALUE_ENUM(kw::_sym_SAPWildCard,SAPWildCard);
+CL_VALUE_ENUM(kw::_sym_SAPDegree,SAPDegree);
+CL_VALUE_ENUM(kw::_sym_SAPElement,SAPElement);
+CL_VALUE_ENUM(kw::_sym_SAPTotalHCount,SAPTotalHCount);
+CL_VALUE_ENUM(kw::_sym_SAPImplicitHCount,SAPImplicitHCount);
+CL_VALUE_ENUM(kw::_sym_SAPRingMembershipCount,SAPRingMembershipCount);
+CL_VALUE_ENUM(kw::_sym_SAPRingTest,SAPRingTest);
+CL_VALUE_ENUM(kw::_sym_SAPRingSize,SAPRingSize);
+CL_VALUE_ENUM(kw::_sym_SAPValence,SAPValence);
+CL_VALUE_ENUM(kw::_sym_SAPConnectivity,SAPConnectivity);
+CL_VALUE_ENUM(kw::_sym_SAPNegativeCharge,SAPNegativeCharge);
+CL_VALUE_ENUM(kw::_sym_SAPNegativeFormalCharge,SAPNegativeFormalCharge);
+CL_VALUE_ENUM(kw::_sym_SAPPositiveCharge,SAPPositiveCharge);
+CL_VALUE_ENUM(kw::_sym_SAPPositiveFormalCharge,SAPPositiveFormalCharge);
+CL_VALUE_ENUM(kw::_sym_SAPAtomicNumber,SAPAtomicNumber);
+CL_VALUE_ENUM(kw::_sym_SAPChiralityAntiClockwise,SAPChiralityAntiClockwise);
+CL_VALUE_ENUM(kw::_sym_SAPChiralityClockwise,SAPChiralityClockwise);
+CL_VALUE_ENUM(kw::_sym_SAPAtomicMass,SAPAtomicMass);
+CL_VALUE_ENUM(kw::_sym_SAPLonePair,SAPLonePair);
+CL_VALUE_ENUM(kw::_sym_SAPTotalBondNumber,SAPTotalBondNumber);
+CL_VALUE_ENUM(kw::_sym_SAPTotalExplicitBondNumber,SAPTotalExplicitBondNumber);
+CL_VALUE_ENUM(kw::_sym_SAPPiBondOrbital,SAPPiBondOrbital);
+CL_VALUE_ENUM(kw::_sym_SAPAromaticPiElectron,SAPAromaticPiElectron);
+CL_VALUE_ENUM(kw::_sym_SAPHeavyAtomTotalBond,SAPHeavyAtomTotalBond);
+CL_VALUE_ENUM(kw::_sym_SAPGroupNumber,SAPGroupNumber);
+CL_VALUE_ENUM(kw::_sym_SAPElectronegativeElement,SAPElectronegativeElement);
+CL_VALUE_ENUM(kw::_sym_SAPTransitionMetal,SAPTransitionMetal);
+CL_VALUE_ENUM(kw::_sym_SAPBondedToPrevious,SAPBondedToPrevious);
+CL_VALUE_ENUM(kw::_sym_SAPNotBondedToPrevious,SAPNotBondedToPrevious);
+CL_VALUE_ENUM(kw::_sym_SAPInBond,SAPInBond);
+CL_VALUE_ENUM(kw::_sym_SAPArLevel,SAPArLevel);
+CL_VALUE_ENUM(kw::_sym_SAPNoRing,SAPNoRing);
+CL_VALUE_ENUM(kw::_sym_SAPResidueTest,SAPResidueTest);
+CL_VALUE_ENUM(kw::_sym_SAPPredicateName,SAPPredicateName);
+CL_VALUE_ENUM(kw::_sym_SAPAromaticElement,SAPAromaticElement);
+CL_VALUE_ENUM(kw::_sym_SAPAliphatic,SAPAliphatic);
+CL_VALUE_ENUM(kw::_sym_SAPAromatic,SAPAromatic);
+CL_VALUE_ENUM(kw::_sym_SAPAtomMap,SAPAtomMap);
 CL_END_ENUM(_sym_STARAtomTestEnumConverterSTAR);
 
 

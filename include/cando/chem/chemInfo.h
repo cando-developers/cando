@@ -40,7 +40,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/adapt/stringSet.fwd.h>
 #include <cando/chem/atom.h>
 
-
 #include <cando/chem/chemPackage.h>
 
 namespace chem {
@@ -188,7 +187,8 @@ namespace chem {
     CL_DEFMETHOD virtual string asSmarts() const {_OF();SUBCLASS_MUST_IMPLEMENT();};
     virtual bool    matches(Root_sp root, chem::Atom_sp atom) {_OF(); SUBCLASS_MUST_IMPLEMENT(); };
     virtual bool    matches(Root_sp root, chem::Atom_sp atom, chem::Bond_sp bond) {_OF(); SUBCLASS_MUST_IMPLEMENT(); };
-
+    virtual core::T_sp children() = 0;
+    
   ChemInfoNode_O() : _Id(next_ChemInfoNodeId()) {};
   };
 
@@ -209,7 +209,6 @@ namespace chem {
 
 
 
-
   SMART(RootMatchNode);
   class RootMatchNode_O : public ChemInfoNode_O
   {
@@ -224,10 +223,6 @@ namespace chem {
     DEFAULT_CTOR_DTOR(RootMatchNode_O);
   };
 
-
-
-
-
   SMART(BondMatchNode);
   class BondMatchNode_O : public ChemInfoNode_O
   {
@@ -238,7 +233,8 @@ namespace chem {
     void	fields(core::Record_sp node);
   public:
     virtual	bool	matches(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond ) {_OF();SUBCLASS_MUST_IMPLEMENT(); };
-
+    virtual core::T_sp children() = 0;
+    
     DEFAULT_CTOR_DTOR(BondMatchNode_O);
   };
 
@@ -246,612 +242,459 @@ namespace chem {
 
 
 
+typedef enum {
+    SARNone, SARRingSet, SARRingTest
+} RingTestEnum;
 
-  SMART(AtomOrBondMatchNode);
-  class AtomOrBondMatchNode_O : public BondMatchNode_O
-  {
-    LISP_CLASS(chem,ChemPkg,AtomOrBondMatchNode_O,"AtomOrBondMatchNode",BondMatchNode_O);
+};
 
-  public:
-    bool fieldsp() const { return true; };
-    void	fields(core::Record_sp node);
-  private:
-  public:
+DECLARE_ENUM_SYMBOL_TRANSLATOR(chem::RingTestEnum,chem::_sym_STARSarRingTestEnumConverterSTAR);
+
+namespace chem {
+SMART(AtomOrBondMatchNode);
+class AtomOrBondMatchNode_O : public BondMatchNode_O
+{
+  LISP_CLASS(chem,ChemPkg,AtomOrBondMatchNode_O,"AtomOrBondMatchNode",BondMatchNode_O);
+public:
+  RingTestEnum   _RingTest;
+  int            _RingId;
+public:
+  bool fieldsp() const { return true; };
+  void fields(core::Record_sp node);
+public:
+  virtual core::T_sp children() = 0;
+  virtual bool    matches(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );
+  virtual	bool	matches(Root_sp root, chem::Atom_sp atom);
+
+  void setRingTest(RingTestEnum test);
+  RingTestEnum getRingTest() const;
+  void setRingId(int id);
+  int getRingId() const;
+
+  AtomOrBondMatchNode_O() : _RingTest(SARNone), _RingId(-1) {};
+};
 
 
-    virtual bool    matches(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );
-    virtual	bool	matches(Root_sp root, chem::Atom_sp atom) {_OF(); SUBCLASS_MUST_IMPLEMENT(); };
-    DEFAULT_CTOR_DTOR(AtomOrBondMatchNode_O);
-  };
 
+SMART(BondListMatchNode);
+class BondListMatchNode_O : public ChemInfoNode_O
+{
+  LISP_CLASS(chem,ChemPkg,BondListMatchNode_O,"BondListMatchNode",ChemInfoNode_O);
 
-
-  SMART(BondListMatchNode);
-  class BondListMatchNode_O : public ChemInfoNode_O
-  {
-    LISP_CLASS(chem,ChemPkg,BondListMatchNode_O,"BondListMatchNode",ChemInfoNode_O);
-
-  public:
-    bool fieldsp() const { return true; };
-    void	fields(core::Record_sp node);
-  private:
-  public:
-    virtual	bool	matches(Root_sp root, chem::Atom_sp from, chem::BondList_sp bondList ) {_OF(); SUBCLASS_MUST_IMPLEMENT(); };
-    virtual string asSmarts() const;
-    DEFAULT_CTOR_DTOR(BondListMatchNode_O);
-  };
+public:
+  bool fieldsp() const { return true; };
+  void	fields(core::Record_sp node);
+private:
+public:
+  virtual core::T_sp children() = 0;
+  virtual	bool	matches(Root_sp root, chem::Atom_sp from, chem::BondList_sp bondList ) {_OF(); SUBCLASS_MUST_IMPLEMENT(); };
+  virtual string asSmarts() const;
+  DEFAULT_CTOR_DTOR(BondListMatchNode_O);
+};
 
 
 
   typedef	enum { logAlwaysTrue, logIdentity, logNot, logHighPrecedenceAnd, logOr, logLowPrecedenceAnd } LogicalOperatorType;
 
-  extern core::Symbol_sp& _sym_STARLogicalOperatorTypeConverterSTAR;
+  extern core::Symbol_sp& _sym_STARSLogicalOperatorTypeConverterSTAR;
 };
 
-
-
-
-namespace translate {
-  template <> struct to_object<chem::LogicalOperatorType>
-  {								
-    typedef	chem::LogicalOperatorType	GivenType;	
-    static core::T_sp convert(const GivenType& val)
-    {_G();
-      core::SymbolToEnumConverter_sp converter = chem::_sym_STARLogicalOperatorTypeConverterSTAR->symbolValue().as<core::SymbolToEnumConverter_O>();
-      return (converter->symbolForEnum(val));
-    }
-  };
-
-  template <>
-    struct from_object<chem::LogicalOperatorType>
-  {								
-    typedef	chem::LogicalOperatorType 	ExpectedType;
-    typedef	chem::LogicalOperatorType 	DeclareType;
-    DeclareType _v;
-    from_object(gctools::smart_ptr<core::T_O> o) {
-      core::SymbolToEnumConverter_sp converter = chem::_sym_STARLogicalOperatorTypeConverterSTAR->symbolValue().as<core::SymbolToEnumConverter_O>();
-      _v = converter->enumForSymbol<chem::LogicalOperatorType>(o.as<core::Symbol_O>());
-    }
-  };
-
-
-};
-
+DECLARE_ENUM_SYMBOL_TRANSLATOR(chem::LogicalOperatorType,chem::_sym_STARLogicalOperatorTypeConverterSTAR);
 
 namespace chem {
 
+class	AtomTest;
 
+SMART(Logical);
+class Logical_O : public AtomOrBondMatchNode_O
+{
+  LISP_CLASS(chem,ChemPkg,Logical_O,"Logical",AtomOrBondMatchNode_O);
+public:
+  bool fieldsp() const { return true; };
+  void	fields(core::Record_sp node);
+  void	initialize();
+private:
+  LogicalOperatorType	_Operator;
+  gc::Nilable<ChemInfoNode_sp>	_Left;
+  gc::Nilable<ChemInfoNode_sp>	_Right;
 
-  class	AtomTest;
-
-
-
-  SMART(Logical);
-  class Logical_O : public AtomOrBondMatchNode_O
-  {
-    LISP_CLASS(chem,ChemPkg,Logical_O,"Logical",AtomOrBondMatchNode_O);
-  public:
-    bool fieldsp() const { return true; };
-    void	fields(core::Record_sp node);
-    void	initialize();
-  private:
-    LogicalOperatorType	_Operator;
-    gc::Nilable<ChemInfoNode_sp>	_Left;
-    gc::Nilable<ChemInfoNode_sp>	_Right;
-
-  public:
+public:
 		// Second argument can be NULL
-    static Logical_sp create(LogicalOperatorType op,
+  static Logical_sp create(LogicalOperatorType op,
 //                             AtomOrBondMatchNode_sp a1,
 //                             gc::Nilable<AtomOrBondMatchNode_sp> a2 )
-                             core::T_sp a1,
-                             core::T_sp a2)
-    { _G();
-      GC_ALLOCATE(Logical_O, obj ); // RP_Create<Logical_O>(lisp);
-      obj->_Operator = op;
-//      if ( a1.nilp() ) {
-//        SIMPLE_ERROR(BF("Logical operators left child cannot be nil\n"));
-//      }
-//      ASSERT(a1.notnilp());
-//      obj->_Left = a1;
-//      obj->_Right = a2;
-      if (a1.nilp()) {
-        obj->_Left = _Nil<core::T_O>();
-      } else {
-        obj->_Left = gc::As<ChemInfoNode_sp>(a1);
-      }
-      if (a2.nilp()) {
-        obj->_Right = _Nil<core::T_O>();
-      } else {
-        obj->_Right = gc::As<ChemInfoNode_sp>(a2);
-      }
-      return obj;
-    };
-//    static Logical_sp create( LogicalOperatorType op, AtomOrBondMatchNode_sp a1)
-    static Logical_sp create( LogicalOperatorType op, core::T_sp a1)
-    {_G();
-//      if ( a1.nilp() ) {
-//        SIMPLE_ERROR(BF("Logical operators left child cannot be nil\n"));
-//      }
-//      return create(op,a1,_Nil<core::T_O>());
-      if (a1.nilp()) {
-        return create(op ,_Nil<core::T_O>(), _Nil<core::T_O>());
-     } else {
-        return create(op, a1, _Nil<core::T_O>());
-      }
-
-    };
-  public:
-
-
-//virtual	adapt::QDomNode_sp	asXml(string name=XmlTag_Logical());
-//virtual	void	parseFromXml(adapt::QDomNode_sp node);
-    virtual	ChemInfoType	type() { return logical; };
-    virtual	bool		matches( Root_sp root, chem::Atom_sp atom );
-    virtual	bool		matches( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );
-    CL_DEFMETHOD core::T_sp getLeft() const { return this->_Left; };
-    CL_DEFMETHOD core::T_sp getRight() const { return this->_Right; };
-    CL_DEFMETHOD void setLeft(ChemInfoNode_sp val) { this->_Left = val; };
-    CL_DEFMETHOD void setRight(ChemInfoNode_sp val) { this->_Right = val; };
-    virtual uint depth() const;
-    virtual string asSmarts() const;
-    virtual string __repr__() const;
-
-    static Logical_sp create_logIdentity(core::T_sp nilOrOp);
-    static Logical_sp create_logOr(core::T_sp nilOrOp1, core::T_sp nilOrOp2);
-    static Logical_sp create_logNot(core::T_sp nilOrOp);
-    static Logical_sp create_logLowPrecedenceAnd(core::T_sp nilOrOp1, core::T_sp nilOrOp2);
-    static Logical_sp create_logHighPrecedenceAnd(core::T_sp nilOrOp1, core::T_sp nilOrOp2);
-      
-    Logical_O() : _Operator(logAlwaysTrue), _Left(_Nil<ChemInfoNode_O>()), _Right(_Nil<ChemInfoNode_O>()) {};
-    virtual ~Logical_O() {};
+                           core::T_sp a1,
+                           core::T_sp a2)
+  { _G();
+    GC_ALLOCATE(Logical_O, obj ); // RP_Create<Logical_O>(lisp);
+    obj->_Operator = op;
+    if (a1.nilp()) {
+      obj->_Left = _Nil<core::T_O>();
+    } else {
+      obj->_Left = gc::As<ChemInfoNode_sp>(a1);
+    }
+    if (a2.nilp()) {
+      obj->_Right = _Nil<core::T_O>();
+    } else {
+      obj->_Right = gc::As<ChemInfoNode_sp>(a2);
+    }
+    return obj;
   };
-
-#if 0
-  SMART(TagSet);
-  class TagSet_O : public AtomOrBondMatchNode_O
-  {
-    LISP_CLASS(chem,ChemPkg,TagSet_O,"TagSet",AtomOrBondMatchNode_O);
-
-  public:
-    bool fieldsp() const { return true; };
-    void	fields(core::Record_sp node);
-    void	initialize();
-  private:
-//        BondEnum        	_Bond;
-    core::Symbol_sp		_RingTag;
-    gc::Nilable<AtomOrBondMatchNode_sp>	_AtomTest;
-  public:
-//    static TagSet_sp create(/* BondEnum b, */ gc::Nilable<AtomOrBondMatchNode_sp> at, core::Symbol_sp ri)
-    static TagSet_sp create(/* BondEnum b, */ core::T_sp at, core::Symbol_sp ri)
-    { _G();
-      LOG(BF("TagSet_sp create: ringTag = (%s)")%ri);
-      GC_ALLOCATE(TagSet_O, obj ); // RP_Create<TagSet_O>(lisp);
-//	    obj->_Bond = b;
-      if(at.nilp()){
-        obj->_AtomTest = _Nil<core::T_O>();
-      } else {
-        obj->_AtomTest = gc::As<AtomOrBondMatchNode_sp>(at);
-      }
-      obj->_RingTag = ri;
-      return obj;
-    };
-
-    static TagSet_sp create_tagSet(core::T_sp at, core::Symbol_sp ri);
-  public:
-
-    void setAtomTest(core::T_sp atomTest);
-    virtual	ChemInfoType	type() { return tagSet;};
-    virtual	bool	matches( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );
-    virtual	bool   	matches(Root_sp root, chem::Atom_sp atom );
-    virtual string asSmarts() const;
-    DEFAULT_CTOR_DTOR(TagSet_O);
-  };
-#endif
-   
-#if 0
-  SMART(RingTest);
-  class RingTest_O : public AtomOrBondMatchNode_O
-  {
-    LISP_CLASS(chem,ChemPkg,RingTest_O,"RingTest",AtomOrBondMatchNode_O);
-
-  public:
-    bool fieldsp() const { return true; };
-    void	fields(core::Record_sp node);
-    void	initialize();
-  private:
-    BondEnum        	_Bond;
-    core::Symbol_sp 		_RingTag;
-    gc::Nilable<AtomOrBondMatchNode_sp>	_AtomTest;
-  public:
-    static RingTest_sp create( BondEnum b, gc::Nilable<AtomOrBondMatchNode_sp> at, core::Symbol_sp ri)
-    {
-      _G();
-      LOG(BF("RingTest_sp create: ringTag = (%s)") % ri );
-      GC_ALLOCATE(RingTest_O, obj ); // RP_Create<RingTest_O>(lisp);
-      obj->_Bond = b;
-      obj->_AtomTest = at;
-      obj->_RingTag = ri;
-      return obj;
-    };
-  public:
-
-    virtual	ChemInfoType	type() { return ringTest;};
-    virtual	bool		matches(Root_sp root, chem::Atom_sp atom );
-
-    DEFAULT_CTOR_DTOR(RingTest_O);
-  };
-#endif
-
-
-  SMART(ResidueTest);
-  class ResidueTest_O : public AtomOrBondMatchNode_O
-  {
-    LISP_CLASS(chem,ChemPkg,ResidueTest_O,"ResidueTest",AtomOrBondMatchNode_O);
-
-  public:
-    bool fieldsp() const { return true; };
-    void	fields(core::Record_sp node);
-    void	initialize();
-  private:
-    BondEnum        	_Bond;
-    core::Symbol_sp			_RingTag;
-    gc::Nilable<AtomOrBondMatchNode_sp>	_AtomTest;
-  public:
-    static ResidueTest_sp create( BondEnum b, gc::Nilable<AtomOrBondMatchNode_sp> at, core::Symbol_sp ri)
-    {
-      _G();
-      LOG(BF("ResidueTest_sp create: ringTag = (%s)")%ri);
-      GC_ALLOCATE(ResidueTest_O, obj ); // RP_Create<ResidueTest_O>(lisp);
-      obj->_Bond = b;
-      obj->_AtomTest = at;
-      obj->_RingTag = ri;
-      return obj;
-    };
-  public:
-
-    virtual	ChemInfoType	type() { return ringTest;};
-    virtual	bool		matches(Root_sp root, chem::Atom_sp atom );
-    virtual string asSmarts() const;
-    DEFAULT_CTOR_DTOR(ResidueTest_O);
-  };
-
-
-
-
-  bool    _matchBondTypes(BondEnum be, chem::BondOrder bo);
-
-
-
-  FORWARD(AtomTest);
-  SMART(BondTest);
-  class BondTest_O : public BondMatchNode_O
-  {
-    LISP_CLASS(chem,ChemPkg,BondTest_O,"BondTest",BondMatchNode_O);
-
-  public:
-    void	initialize();
-    bool fieldsp() const { return true; };
-    void	fields(core::Record_sp node);
-  private:
-    BondEnum		_Bond;
-    gc::Nilable<AtomOrBondMatchNode_sp>	_AtomTest;
-
-  public:
-    static BondTest_sp create(BondEnum b, core::T_sp nilOrNode )
-    {_G();
-      GC_ALLOCATE(BondTest_O, obj ); // RP_Create<BondTest_O>(lisp);
-      obj->_Bond = b;
-      if (nilOrNode.nilp()) {
-        obj->_AtomTest = _Nil<core::T_O>();
-      } else {
-        obj->_AtomTest = gc::As<AtomOrBondMatchNode_sp>(nilOrNode);
-      }
-      return obj;
+  static Logical_sp create( LogicalOperatorType op, core::T_sp a1)
+  {_G();
+    if (a1.nilp()) {
+      return create(op ,_Nil<core::T_O>(), _Nil<core::T_O>());
+    } else {
+      return create(op, a1, _Nil<core::T_O>());
     }
 
-
-  public:
-
-    BondEnum	bondType() { return this->_Bond; };
-
-// virtual	adapt::QDomNode_sp	asXml(string name=XmlTag_BondTest());
-    virtual	ChemInfoType	type() { return bondTest;};
-    virtual	bool	matches( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );
-    virtual string asSmarts() const;
-
-    static BondTest_sp create_SABNoBond(core::T_sp nilOrNode);
-    static BondTest_sp create_SABSingleOrAromaticBond(core::T_sp nilOrNode);
-    static BondTest_sp create_SABDoubleOrAromaticBond(core::T_sp nilOrNode);
-    static BondTest_sp create_SABTripleOrAromaticBond(core::T_sp nilOrNode);
-    static BondTest_sp create_SABSingleBond(core::T_sp nilOrNode);
-    static BondTest_sp create_SABDoubleBond(core::T_sp nilOrNode);
-    static BondTest_sp create_SABTripleBond(core::T_sp nilOrNode);
-    static BondTest_sp create_SABAromaticBond(core::T_sp nilOrNode);
-    static BondTest_sp create_SABAnyBond(core::T_sp nilOrNode);
-    static BondTest_sp create_SABDirectionalSingleUpOrUnspecified(core::T_sp nilOrNode);
-    static BondTest_sp create_SABDirectionalSingleDownOrUnspecified(core::T_sp nilOrNode);
-    static BondTest_sp create_SABDirectionalSingleUp(core::T_sp nilOrNode);
-    static BondTest_sp create_SABDirectionalSingleDown(core::T_sp nilOrNode);
-
-    void setAtomTest(core::T_sp atomTest);
-
-
-//    void setAtomTest(AtomTest_sp atomTest);
-    
-    DEFAULT_CTOR_DTOR(BondTest_O);
   };
+public:
+  virtual	ChemInfoType	type() { return logical; };
+  virtual	bool		matches( Root_sp root, chem::Atom_sp atom );
+  virtual	bool		matches( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );
+  CL_DEFMETHOD core::T_sp getLeft() const { return this->_Left; };
+  CL_DEFMETHOD core::T_sp getRight() const { return this->_Right; };
+  CL_DEFMETHOD void setLeft(ChemInfoNode_sp val) { this->_Left = val; };
+  CL_DEFMETHOD void setRight(ChemInfoNode_sp val) { this->_Right = val; };
+  virtual uint depth() const;
+  virtual string asSmarts() const;
+  virtual string __repr__() const;
 
+  static Logical_sp create_logIdentity(core::T_sp nilOrOp);
+  static Logical_sp create_logOr(core::T_sp nilOrOp1, core::T_sp nilOrOp2);
+  static Logical_sp create_logNot(core::T_sp nilOrOp);
+  static Logical_sp create_logLowPrecedenceAnd(core::T_sp nilOrOp1, core::T_sp nilOrOp2);
+  static Logical_sp create_logHighPrecedenceAnd(core::T_sp nilOrOp1, core::T_sp nilOrOp2);
+  virtual core::T_sp children();
+  Logical_O() : _Operator(logAlwaysTrue), _Left(_Nil<ChemInfoNode_O>()), _Right(_Nil<ChemInfoNode_O>()) {};
+  virtual ~Logical_O() {};
+};
 
+SMART(ResidueTest);
+class ResidueTest_O : public AtomOrBondMatchNode_O
+{
+  LISP_CLASS(chem,ChemPkg,ResidueTest_O,"ResidueTest",AtomOrBondMatchNode_O);
 
-  SMART(AntechamberBondTest);
-  class AntechamberBondTest_O : public BondMatchNode_O
+public:
+  bool fieldsp() const { return true; };
+  void	fields(core::Record_sp node);
+  void	initialize();
+private:
+  BondEnum        	_Bond;
+  core::Symbol_sp			_RingTag;
+  gc::Nilable<AtomOrBondMatchNode_sp>	_AtomTest;
+public:
+  static ResidueTest_sp create( BondEnum b, gc::Nilable<AtomOrBondMatchNode_sp> at, core::Symbol_sp ri)
   {
-    LISP_CLASS(chem,ChemPkg,AntechamberBondTest_O,"AntechamberBondTest",BondMatchNode_O);
+    _G();
+    LOG(BF("ResidueTest_sp create: ringTag = (%s)")%ri);
+    GC_ALLOCATE(ResidueTest_O, obj ); // RP_Create<ResidueTest_O>(lisp);
+    obj->_Bond = b;
+    obj->_AtomTest = at;
+    obj->_RingTag = ri;
+    return obj;
+  };
+public:
 
-  public:
-    void initialize();
-    bool fieldsp() const { return true; };
-    void	fields(core::Record_sp node);
-  private:
-    core::Symbol_sp                   _Element;
-    int                     _Neighbors;
-    gc::Nilable<AtomOrBondMatchNode_sp>	_AtomProperties;
-    core::Symbol_sp                   _Tag;
-  public:
-    CL_LAMBDA(element neighbors props tag);
-    CL_LISPIFY_NAME("make-antechamber-bond-test");
-    CL_DEF_CLASS_METHOD static AntechamberBondTest_sp create_args( core::Symbol_sp element, int neighbors,
-                                                              AtomOrBondMatchNode_sp props, core::Symbol_sp tag )
-    {_G();
-      GC_ALLOCATE(AntechamberBondTest_O, obj ); // RP_Create<AntechamberBondTest_O>(lisp);
-      obj->_Element = element;
-      obj->_Neighbors = neighbors;
-      obj->_AtomProperties = props;
-      obj->_Tag = tag;
-      return obj;
-    };
-  public:
+  virtual	ChemInfoType	type() { return ringTest;};
+  virtual	bool		matches(Root_sp root, chem::Atom_sp atom );
+  virtual string asSmarts() const;
+  virtual core::T_sp children();
+  DEFAULT_CTOR_DTOR(ResidueTest_O);
+};
+
+
+
+
+bool    _matchBondTypes(BondEnum be, chem::BondOrder bo);
+
+
+
+FORWARD(AtomTest);
+SMART(BondTest);
+class BondTest_O : public BondMatchNode_O
+{
+  LISP_CLASS(chem,ChemPkg,BondTest_O,"BondTest",BondMatchNode_O);
+
+public:
+  void	initialize();
+  bool fieldsp() const { return true; };
+  void	fields(core::Record_sp node);
+private:
+  BondEnum		_Bond;
+  gc::Nilable<AtomOrBondMatchNode_sp>	_AtomTest;
+
+public:
+  static BondTest_sp create(BondEnum b, core::T_sp nilOrNode )
+  {_G();
+    GC_ALLOCATE(BondTest_O, obj ); // RP_Create<BondTest_O>(lisp);
+    obj->_Bond = b;
+    if (nilOrNode.nilp()) {
+      obj->_AtomTest = _Nil<core::T_O>();
+    } else {
+      obj->_AtomTest = gc::As<AtomOrBondMatchNode_sp>(nilOrNode);
+    }
+    return obj;
+  }
+public:
+  BondEnum	bondType() { return this->_Bond; };
+  virtual	ChemInfoType	type() { return bondTest;};
+  virtual	bool	matches( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );
+  virtual string asSmarts() const;
+
+  static BondTest_sp create_SABNoBond(core::T_sp nilOrNode);
+  static BondTest_sp create_SABSingleOrAromaticBond(core::T_sp nilOrNode);
+  static BondTest_sp create_SABDoubleOrAromaticBond(core::T_sp nilOrNode);
+  static BondTest_sp create_SABTripleOrAromaticBond(core::T_sp nilOrNode);
+  static BondTest_sp create_SABSingleBond(core::T_sp nilOrNode);
+  static BondTest_sp create_SABDoubleBond(core::T_sp nilOrNode);
+  static BondTest_sp create_SABTripleBond(core::T_sp nilOrNode);
+  static BondTest_sp create_SABAromaticBond(core::T_sp nilOrNode);
+  static BondTest_sp create_SABAnyBond(core::T_sp nilOrNode);
+  static BondTest_sp create_SABDirectionalSingleUpOrUnspecified(core::T_sp nilOrNode);
+  static BondTest_sp create_SABDirectionalSingleDownOrUnspecified(core::T_sp nilOrNode);
+  static BondTest_sp create_SABDirectionalSingleUp(core::T_sp nilOrNode);
+  static BondTest_sp create_SABDirectionalSingleDown(core::T_sp nilOrNode);
+
+  void setAtomTest(core::T_sp atomTest);
+  virtual core::T_sp children();
+  DEFAULT_CTOR_DTOR(BondTest_O);
+};
+
+
+
+SMART(AntechamberBondTest);
+class AntechamberBondTest_O : public BondMatchNode_O
+{
+  LISP_CLASS(chem,ChemPkg,AntechamberBondTest_O,"AntechamberBondTest",BondMatchNode_O);
+
+public:
+  void initialize();
+  bool fieldsp() const { return true; };
+  void	fields(core::Record_sp node);
+private:
+  core::Symbol_sp                   _Element;
+  int                     _Neighbors;
+  gc::Nilable<AtomOrBondMatchNode_sp>	_AtomProperties;
+  core::Symbol_sp                   _Tag;
+public:
+  CL_LAMBDA(element neighbors props tag);
+  CL_LISPIFY_NAME("make-antechamber-bond-test");
+  CL_DEF_CLASS_METHOD static AntechamberBondTest_sp create_args( core::Symbol_sp element, int neighbors,
+                                                                 AtomOrBondMatchNode_sp props, core::Symbol_sp tag )
+  {_G();
+    GC_ALLOCATE(AntechamberBondTest_O, obj ); // RP_Create<AntechamberBondTest_O>(lisp);
+    obj->_Element = element;
+    obj->_Neighbors = neighbors;
+    obj->_AtomProperties = props;
+    obj->_Tag = tag;
+    return obj;
+  };
+public:
 
 //virtual	adapt::QDomNode_sp	asXml(string name=XmlTag_AntechamberBondTest());
 //virtual	void	parseFromXml(adapt::QDomNode_sp node );
-    virtual	ChemInfoType	type() { return antechamberBondTest;};
-    bool	matchBasic( AntechamberRoot_sp root, chem::Atom_sp atom );
-    virtual	bool	matches( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );
-    virtual bool    matches( Root_sp root, chem::Atom_sp atom );
-    virtual string asSmarts() const;
-
-
-    DEFAULT_CTOR_DTOR(AntechamberBondTest_O);
-  };
-
-
-
-
-
-  typedef	enum	{
-      SAPNone		=0,
-      SAPWildCard		,
-      SAPDegree		,
-      SAPElement		,
-      SAPTotalHCount		,
-      SAPImplicitHCount	,
-      SAPRingTagSet	,
-      SAPRingTagTest	,
-      SAPRingMembershipCount	,
-      SAPRingTest,
-      SAPRingSize		,
-      SAPValence		,
-      SAPConnectivity		,
-      SAPNegativeCharge	,
-      SAPNegativeFormalCharge	,
-      SAPPositiveCharge	,
-      SAPPositiveFormalCharge	,
-      SAPAtomicNumber		,
-      SAPChiralityAntiClockwise,
-      SAPChiralityClockwise	,
-      SAPAtomicMass		,
-      SAPLonePair		,
-      SAPTotalBondNumber	,
-      SAPTotalExplicitBondNumber,
-      SAPPiBondOrbital	,
-      SAPAromaticPiElectron	,
-      SAPHeavyAtomTotalBond	,
-      SAPGroupNumber		,
-      SAPElectronegativeElement,
-      SAPTransitionMetal	,
-      SAPBondedToPrevious	,
-      SAPNotBondedToPrevious	,
-      SAPInBond		,
-      SAPArLevel		,
-      SAPNoRing		,
-      SAPResidueTest		,
-      SAPAM1_BCC_x		,
-      SAPAM1_BCC_y		,
-      SAPLambda		,
-      SAPAromaticElement	,
-      SAPAliphatic		,
-      SAPAromatic,
-      SAPAtomMap
-  } AtomTestEnum;
-
-  extern core::Symbol_sp& _sym_STARAtomTestEnumConverterSTAR;
-
+  virtual	ChemInfoType	type() { return antechamberBondTest;};
+  bool	matchBasic( AntechamberRoot_sp root, chem::Atom_sp atom );
+  virtual	bool	matches( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );
+  virtual bool    matches( Root_sp root, chem::Atom_sp atom );
+  virtual string asSmarts() const;
+  virtual core::T_sp children();
+  DEFAULT_CTOR_DTOR(AntechamberBondTest_O);
 };
 
 
 
-namespace translate {
-  template <> struct to_object<chem::AtomTestEnum>
-  {								
-    typedef	chem::AtomTestEnum	GivenType;	
-    static core::T_sp convert(const GivenType& val)
-    {_G();
-      core::SymbolToEnumConverter_sp converter = chem::_sym_STARAtomTestEnumConverterSTAR->symbolValue().as<core::SymbolToEnumConverter_O>();
-      return (converter->symbolForEnum(val));
-    }
-  };
-
-  template <>
-    struct from_object<chem::AtomTestEnum>
-  {								
-    typedef	chem::AtomTestEnum 	ExpectedType;
-    typedef	chem::AtomTestEnum 	DeclareType;
-    DeclareType _v;
-    from_object(gctools::smart_ptr<core::T_O> o) {
-      core::SymbolToEnumConverter_sp converter = chem::_sym_STARAtomTestEnumConverterSTAR->symbolValue().as<core::SymbolToEnumConverter_O>();
-      _v = converter->enumForSymbol<chem::AtomTestEnum>(o.as<core::Symbol_O>());
-    }
-  };
 
 
+typedef	enum	{
+    SAPNone		=0,
+    SAPWildCard		,
+    SAPDegree		,
+    SAPElement		,
+    SAPTotalHCount		,
+    SAPImplicitHCount	,
+    SAPRingMembershipCount	,
+    SAPRingTest,
+    SAPRingSize		,
+    SAPValence		,
+    SAPConnectivity		,
+    SAPNegativeCharge	,
+    SAPNegativeFormalCharge	,
+    SAPPositiveCharge	,
+    SAPPositiveFormalCharge	,
+    SAPAtomicNumber		,
+    SAPChiralityAntiClockwise,
+    SAPChiralityClockwise	,
+    SAPAtomicMass		,
+    SAPLonePair		,
+    SAPTotalBondNumber	,
+    SAPTotalExplicitBondNumber,
+    SAPPiBondOrbital	,
+    SAPAromaticPiElectron	,
+    SAPHeavyAtomTotalBond	,
+    SAPGroupNumber		,
+    SAPElectronegativeElement,
+    SAPTransitionMetal	,
+    SAPBondedToPrevious	,
+    SAPNotBondedToPrevious	,
+    SAPInBond		,
+    SAPArLevel		,
+    SAPNoRing		,
+    SAPResidueTest		,
+    SAPPredicateName		,
+    SAPAromaticElement	,
+    SAPAliphatic		,
+    SAPAromatic,
+    SAPAtomMap
+} AtomTestEnum;
+
+extern core::Symbol_sp& _sym_STARAtomTestEnumConverterSTAR;
 };
 
-
-
+DECLARE_ENUM_SYMBOL_TRANSLATOR(chem::AtomTestEnum,chem::_sym_STARAtomTestEnumConverterSTAR);
 
 
 
 namespace chem {
-  SMART(AtomTest);
-  class AtomTest_O : public AtomOrBondMatchNode_O
-  {
-    LISP_CLASS(chem,ChemPkg,AtomTest_O,"AtomTest",AtomOrBondMatchNode_O);
+SMART(AtomTest);
+class AtomTest_O : public AtomOrBondMatchNode_O
+{
+  LISP_CLASS(chem,ChemPkg,AtomTest_O,"AtomTest",AtomOrBondMatchNode_O);
+  
+public:
+  void initialize();
+  bool fieldsp() const { return true; };
+  void	fields(core::Record_sp node);
+private:
+  AtomTestEnum	_Test;
+  int		        _IntArg;
+  int		        _NumArg;
+  string		_StringArg;
+  core::Symbol_sp	_SymbolArg;
+public:
+  static AtomTest_sp create( AtomTestEnum t, int iArg, int num, const char* el, core::Symbol_sp sym) 
+  {_G();
+    LOG(BF("Creating an AtomTest"));
+    GC_ALLOCATE(AtomTest_O, obj ); // RP_Create<AtomTest_O>(lisp);
+    obj->_Test = t;
+    obj->_IntArg = iArg;
+    obj->_NumArg = num;
+    if ( el != NULL ) {
+      obj->_StringArg = el;
+    } else obj->_StringArg = "";
+    obj->_SymbolArg = sym;
+    return obj;
+  };
+  static AtomTest_sp create( AtomTestEnum t) { return create( t, 0, 0, NULL, _Nil<core::Symbol_O>());};
+  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPElectronegativeElement() { return create(SAPElectronegativeElement); };
+  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPAliphatic() { return create(SAPAliphatic); };
+  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPAromatic() { return create(SAPAromatic); };
+  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPChiralityAntiClockwise() { return create(SAPChiralityAntiClockwise); };
+  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPChiralityClockwise() { return create(SAPChiralityClockwise); };
+  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPPiBondOrbital() { return create(SAPPiBondOrbital); };
+  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPWildCard() { return create(SAPWildCard); };
 
-  public:
-    void initialize();
-    bool fieldsp() const { return true; };
-    void	fields(core::Record_sp node);
-  private:
-    AtomTestEnum	_Test;
-    int		        _IntArg;
-    int		        _NumArg;
-    string		_StringArg;
-    core::Symbol_sp	_SymbolArg;
-  public:
-    static AtomTest_sp create( AtomTestEnum t, int iArg, int num, const char* el, core::Symbol_sp sym) 
-    {_G();
-      LOG(BF("Creating an AtomTest"));
-      GC_ALLOCATE(AtomTest_O, obj ); // RP_Create<AtomTest_O>(lisp);
-      obj->_Test = t;
-      obj->_IntArg = iArg;
-      obj->_NumArg = num;
-      if ( el != NULL ) {
-        obj->_StringArg = el;
-      } else obj->_StringArg = "";
-      obj->_SymbolArg = sym;
-      return obj;
-    };
-    static AtomTest_sp create( AtomTestEnum t) { return create( t, 0, 0, NULL, _Nil<core::Symbol_O>());};
-    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPElectronegativeElement() { return create(SAPElectronegativeElement); };
-    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPAliphatic() { return create(SAPAliphatic); };
-    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPAromatic() { return create(SAPAromatic); };
-    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPChiralityAntiClockwise() { return create(SAPChiralityAntiClockwise); };
-    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPChiralityClockwise() { return create(SAPChiralityClockwise); };
-    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPPiBondOrbital() { return create(SAPPiBondOrbital); };
-    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPWildCard() { return create(SAPWildCard); };
+  static AtomTest_sp create( AtomTestEnum t, int iArg ) { return create(  t, iArg, 0, NULL,_Nil<core::Symbol_O>() );};
+  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPAromaticPiElectron(int intVal) { return create(SAPAromaticPiElectron,intVal); };
+  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPAtomicMass(int intVal) { return create(SAPAtomicMass,intVal); };
+  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPAtomicNumber(int intVal) { return create(SAPAtomicNumber,intVal); };
+  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPConnectivity(int intVal) { return create(SAPConnectivity,intVal); };
+  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPDegree(int intVal) { return create(SAPDegree,intVal); };
+  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPGroupNumber(int intVal) { return create(SAPGroupNumber,intVal); };
+  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPHeavyAtomTotalBond(int intVal) { return create(SAPHeavyAtomTotalBond,intVal); };
+  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPImplicitHCount(int intVal) { return create(SAPImplicitHCount,intVal); };
+  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPLonePair(int intVal) { return create(SAPLonePair,intVal); };
+  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPNegativeCharge(int intVal) { return create(SAPNegativeCharge,intVal); };
+  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPNegativeFormalCharge(int intVal) { return create(SAPNegativeFormalCharge,intVal); };
+  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPPositiveCharge(int intVal) { return create(SAPPositiveCharge,intVal); };
+  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPPositiveFormalCharge(int intVal) { return create(SAPPositiveFormalCharge,intVal); };
+  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPResidueTest(int intVal) { return create(SAPResidueTest,intVal); };
+  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPRingMembershipCount(int intVal) { return create(SAPRingMembershipCount,intVal); };
+  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPRingSize(int intVal) { return create(SAPRingSize,intVal); };
+  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPRingTest(int intVal) { return create(SAPRingTest,intVal); };
+  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPTotalHCount(int intVal) { return create(SAPTotalHCount,intVal); };
+  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPTransitionMetal(int intVal) { return create(SAPTransitionMetal,intVal); };
+  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPValence(int intVal) { return create(SAPValence,intVal); };
+  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPAtomMap(int intVal) { return create(SAPAtomMap,intVal); };
 
-    static AtomTest_sp create( AtomTestEnum t, int iArg ) { return create(  t, iArg, 0, NULL,_Nil<core::Symbol_O>() );};
-    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPAM1_BCC_x( int intVal ) { return create(SAPAM1_BCC_x,intVal); };
-    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPAM1_BCC_y( int intVal ) { return create(SAPAM1_BCC_y,intVal); };
-    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPAromaticPiElectron(int intVal) { return create(SAPAromaticPiElectron,intVal); };
-    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPAtomicMass(int intVal) { return create(SAPAtomicMass,intVal); };
-    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPAtomicNumber(int intVal) { return create(SAPAtomicNumber,intVal); };
-    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPConnectivity(int intVal) { return create(SAPConnectivity,intVal); };
-    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPDegree(int intVal) { return create(SAPDegree,intVal); };
-    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPGroupNumber(int intVal) { return create(SAPGroupNumber,intVal); };
-    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPHeavyAtomTotalBond(int intVal) { return create(SAPHeavyAtomTotalBond,intVal); };
-    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPRingTagSet(int intVal) { return create(SAPRingTagSet,intVal); };
-    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPRingTagTest(int intVal) { return create(SAPRingTagTest,intVal); };
-    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPImplicitHCount(int intVal) { return create(SAPImplicitHCount,intVal); };
-    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPLambda(int intVal) { return create(SAPLambda,intVal); };
-    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPLonePair(int intVal) { return create(SAPLonePair,intVal); };
-    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPNegativeCharge(int intVal) { return create(SAPNegativeCharge,intVal); };
-    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPNegativeFormalCharge(int intVal) { return create(SAPNegativeFormalCharge,intVal); };
-    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPPositiveCharge(int intVal) { return create(SAPPositiveCharge,intVal); };
-    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPPositiveFormalCharge(int intVal) { return create(SAPPositiveFormalCharge,intVal); };
-    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPResidueTest(int intVal) { return create(SAPResidueTest,intVal); };
-    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPRingMembershipCount(int intVal) { return create(SAPRingMembershipCount,intVal); };
-    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPRingSize(int intVal) { return create(SAPRingSize,intVal); };
-    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPRingTest(int intVal) { return create(SAPRingTest,intVal); };
-    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPTotalHCount(int intVal) { return create(SAPTotalHCount,intVal); };
-    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPTransitionMetal(int intVal) { return create(SAPTransitionMetal,intVal); };
-    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPValence(int intVal) { return create(SAPValence,intVal); };
-    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPAtomMap(int intVal) { return create(SAPAtomMap,intVal); };
+  static AtomTest_sp create( AtomTestEnum t, int iArg, int num ) 
+  {_G();
+    return create( t, iArg, num, NULL,_Nil<core::Symbol_O>() );
+  };
+  static AtomTest_sp create( AtomTestEnum t, const char* el ) 
+  {_G();
+    LOG(BF("Create an AtomTest with string argument: %s")%el);
+    return create( t, 0, 0, el,_Nil<core::Symbol_O>());
+  };
+  static AtomTest_sp create( AtomTestEnum t, core::Symbol_sp sym) {return create( t, 0, 0, NULL, sym );}
 
-    static AtomTest_sp create( AtomTestEnum t, int iArg, int num ) 
-    {_G();
-      return create( t, iArg, num, NULL,_Nil<core::Symbol_O>() );
-    };
-    static AtomTest_sp create( AtomTestEnum t, const char* el ) 
-    {_G();
-      LOG(BF("Create an AtomTest with string argument: %s")%el);
-      return create( t, 0, 0, el,_Nil<core::Symbol_O>());
-    };
-    static AtomTest_sp create( AtomTestEnum t, core::Symbol_sp sym) {return create( t, 0, 0, NULL, sym );}
-
-    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPAromaticElement(const std::string& symbolName) { return create(SAPAromaticElement,chem::chemkw_intern(symbolName)); };
-    CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPElement(const std::string& symbolName) { return create(SAPElement,chem::chemkw_intern(symbolName)); };
+  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPAromaticElement(const std::string& symbolName) { return create(SAPAromaticElement,chem::chemkw_intern(symbolName)); };
+  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPElement(const std::string& symbolName) { return create(SAPElement,chem::chemkw_intern(symbolName)); };
+  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPPredicateName(core::Symbol_sp name) { return create(SAPPredicateName,name); };
     
     // Special makers
-    CL_LISPIFY_NAME(make-atom-test-in-bond1);
-    CL_DEF_CLASS_METHOD static AtomTest_sp create_in_bond1(BondEnum bond)
-    {
-      return create( SAPInBond, /*(int)*/bond, 1);
-    }
-    CL_LISPIFY_NAME(make-atom-test-in-bond);
-    CL_DEF_CLASS_METHOD static AtomTest_sp create_in_bond(BondEnum bond, int num)
-    {
-      return create( SAPInBond, /*(int)*/bond, num);
-    }
-    CL_LISPIFY_NAME(make-atom-test-not-bonded-to-previous);
-    CL_DEF_CLASS_METHOD static AtomTest_sp create_not_bonded_to_previous(BondEnum bond)
-    {
-      return create( SAPNotBondedToPrevious, bond );
-    }
-    CL_LISPIFY_NAME(make-atom-test-bonded-to-previous);
-    CL_DEF_CLASS_METHOD static AtomTest_sp create_bonded_to_previous(BondEnum bond)
-    {
-      return create( SAPBondedToPrevious, bond );
-    }
-    CL_LISPIFY_NAME(make-atom-test-ar-level);
-    CL_DEF_CLASS_METHOD static AtomTest_sp create_ar_level(int arLevel)
-    {
-      return create( SAPArLevel, arLevel );
-    }
-    CL_LISPIFY_NAME(make-atom-test-ring-size);
-    CL_DEF_CLASS_METHOD static AtomTest_sp create_ring_size(int size)
-    {
-      return create( SAPRingSize, size );
-    }
-    CL_LISPIFY_NAME(make-atom-test-ring-size2);
-    CL_DEF_CLASS_METHOD static AtomTest_sp create_ring_size2(int size, int num)
-    {
-      return create( SAPRingSize, num, size );
-    }
-    CL_LISPIFY_NAME(make-atom-test-no-ring-membership);
-    CL_DEF_CLASS_METHOD static AtomTest_sp create_no_ring_membership()
-    {
-      return create( SAPNoRing);
-    }
-    
+  CL_LISPIFY_NAME(make-atom-test-in-bond1);
+  CL_DEF_CLASS_METHOD static AtomTest_sp create_in_bond1(BondEnum bond)
+  {
+    return create( SAPInBond, /*(int)*/bond, 1);
+  }
+  CL_LISPIFY_NAME(make-atom-test-in-bond);
+  CL_DEF_CLASS_METHOD static AtomTest_sp create_in_bond(BondEnum bond, int num)
+  {
+    return create( SAPInBond, /*(int)*/bond, num);
+  }
+  CL_LISPIFY_NAME(make-atom-test-not-bonded-to-previous);
+  CL_DEF_CLASS_METHOD static AtomTest_sp create_not_bonded_to_previous(BondEnum bond)
+  {
+    return create( SAPNotBondedToPrevious, bond );
+  }
+  CL_LISPIFY_NAME(make-atom-test-bonded-to-previous);
+  CL_DEF_CLASS_METHOD static AtomTest_sp create_bonded_to_previous(BondEnum bond)
+  {
+    return create( SAPBondedToPrevious, bond );
+  }
+  CL_LISPIFY_NAME(make-atom-test-ar-level);
+  CL_DEF_CLASS_METHOD static AtomTest_sp create_ar_level(int arLevel)
+  {
+    return create( SAPArLevel, arLevel );
+  }
+  CL_LISPIFY_NAME(make-atom-test-ring-size);
+  CL_DEF_CLASS_METHOD static AtomTest_sp create_ring_size(int size)
+  {
+    return create( SAPRingSize, size );
+  }
+  CL_LISPIFY_NAME(make-atom-test-ring-size2);
+  CL_DEF_CLASS_METHOD static AtomTest_sp create_ring_size2(int size, int num)
+  {
+    return create( SAPRingSize, num, size );
+  }
+  CL_LISPIFY_NAME(make-atom-test-no-ring-membership);
+  CL_DEF_CLASS_METHOD static AtomTest_sp create_no_ring_membership()
+  {
+    return create( SAPNoRing);
+  }
+public:
+  CL_DEFMETHOD AtomTestEnum	myType() { return this->_Test; };
+  int getIntArg();
+  string		testName(AtomTestEnum t) const;
+  bool matchesAm1BccX(chem::Atom_sp atom) const;
+  bool matchesAm1BccY(chem::Atom_sp atom) const;
 
-  public:
-    CL_DEFMETHOD AtomTestEnum	myType() { return this->_Test; };
-    int		getIntArg() { return this->_IntArg; };
-    string		testName(AtomTestEnum t) const;
-    bool matchesAm1BccX(chem::Atom_sp atom) const;
-    bool matchesAm1BccY(chem::Atom_sp atom) const;
+  CL_DEFMETHOD void set_test(AtomTestEnum test) { this->_Test = test; };
+  virtual ChemInfoType    type() { return atomTest;};
+  virtual	bool	matches( Root_sp root, chem::Atom_sp atom );
+  virtual	bool	matches( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond);
+  virtual string asSmarts() const;
 
-    CL_DEFMETHOD void set_test(AtomTestEnum test) { this->_Test = test; };
-    virtual ChemInfoType    type() { return atomTest;};
-    virtual	bool	matches( Root_sp root, chem::Atom_sp atom );
-    virtual	bool	matches( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond);
-    virtual string asSmarts() const;
+  virtual core::T_sp children() {
+    return _Nil<core::T_O>();
+  };
 
   AtomTest_O() : _Test(SAPNone), _IntArg(0), _NumArg(0), _StringArg(""), _SymbolArg(_Nil<core::Symbol_O>()) {};
-    virtual ~AtomTest_O() {};
-  };
+  virtual ~AtomTest_O() {};
+};
 
 
 
@@ -859,62 +702,59 @@ namespace chem {
 
 /*!     This is for matching the focus atom for GAFF type assignment rules
  */
-  SMART(AntechamberFocusAtomMatch);
-  class AntechamberFocusAtomMatch_O : public AtomOrBondMatchNode_O
-  {
-    LISP_CLASS(chem,ChemPkg,AntechamberFocusAtomMatch_O,"AntechamberFocusAtomMatch",AtomOrBondMatchNode_O);
+SMART(AntechamberFocusAtomMatch);
+class AntechamberFocusAtomMatch_O : public AtomOrBondMatchNode_O
+{
+  LISP_CLASS(chem,ChemPkg,AntechamberFocusAtomMatch_O,"AntechamberFocusAtomMatch",AtomOrBondMatchNode_O);
 
-  public:
-    void initialize();
-  public:
-    bool fieldsp() const { return true; };
-    void	fields(core::Record_sp node);
-  private:
-    gc::Nilable<ResidueList_sp>  _ResidueNames;
-    int             _AtomicNumber;
-    int             _NumberOfAttachedAtoms;
-    int             _NumberOfAttachedHydrogens;
-    int             _NumberOfElectronWithdrawingGroups;
-    gc::Nilable<AtomOrBondMatchNode_sp>   _AtomicProperty;
-  public:
-    static AntechamberFocusAtomMatch_sp create(gc::Nilable<ResidueList_sp> residueNames,
-                                               int     atomicNumber,
-                                               int     numberOfAttachedAtoms,
-                                               int     numberOfAttachedHydrogens,
-                                               int     numberOfElectronWithdrawingGroups,
-                                               gc::Nilable<AtomOrBondMatchNode_sp> atomicProperty ) 
-    {_G();
-      GC_ALLOCATE(AntechamberFocusAtomMatch_O, obj ); // RP_Create<AntechamberFocusAtomMatch_O>(lisp);
-      obj->_ResidueNames = residueNames;
-      obj->_AtomicNumber = atomicNumber;
-      obj->_NumberOfAttachedAtoms = numberOfAttachedAtoms;
-      obj->_NumberOfAttachedHydrogens = numberOfAttachedHydrogens;
-      obj->_NumberOfElectronWithdrawingGroups =numberOfElectronWithdrawingGroups;
-      obj->_AtomicProperty = atomicProperty;
-      LOG(BF("Created AntechamberFocusAtomMatch@%0X") % obj.get());
-      return obj;
-    };
-    static AntechamberFocusAtomMatch_sp create(
-                                               gc::Nilable<ResidueList_sp> residueNames,
-                                               int     atomicNumber,
-                                               int     numberOfAttachedAtoms,
-                                               int     numberOfAttachedHydrogens,
-                                               int     numberOfElectronWithdrawingGroups )
-    {_G();
-      gc::Nilable<AtomOrBondMatchNode_sp> atomicProperty;
-      atomicProperty = _Nil<core::T_O>();
-      return create( residueNames, atomicNumber, numberOfAttachedAtoms, numberOfAttachedHydrogens, numberOfElectronWithdrawingGroups, atomicProperty);
-    };
-  public:
-    string asSmarts() const;
-
-//virtual	adapt::QDomNode_sp	asXml(string name=XmlTag_AntechamberFocusAtomMatch());
-//virtual	void	parseFromXml(adapt::QDomNode_sp node);
-    virtual	bool	matches( Root_sp root, chem::Atom_sp atom );
-    virtual ChemInfoType    type() { return antechamberFocusAtomMatch; };
-
-    DEFAULT_CTOR_DTOR(AntechamberFocusAtomMatch_O);
+public:
+  void initialize();
+public:
+  bool fieldsp() const { return true; };
+  void	fields(core::Record_sp node);
+private:
+  gc::Nilable<ResidueList_sp>  _ResidueNames;
+  int             _AtomicNumber;
+  int             _NumberOfAttachedAtoms;
+  int             _NumberOfAttachedHydrogens;
+  int             _NumberOfElectronWithdrawingGroups;
+  gc::Nilable<AtomOrBondMatchNode_sp>   _AtomicProperty;
+public:
+  static AntechamberFocusAtomMatch_sp create(gc::Nilable<ResidueList_sp> residueNames,
+                                             int     atomicNumber,
+                                             int     numberOfAttachedAtoms,
+                                             int     numberOfAttachedHydrogens,
+                                             int     numberOfElectronWithdrawingGroups,
+                                             gc::Nilable<AtomOrBondMatchNode_sp> atomicProperty ) 
+  {_G();
+    GC_ALLOCATE(AntechamberFocusAtomMatch_O, obj ); // RP_Create<AntechamberFocusAtomMatch_O>(lisp);
+    obj->_ResidueNames = residueNames;
+    obj->_AtomicNumber = atomicNumber;
+    obj->_NumberOfAttachedAtoms = numberOfAttachedAtoms;
+    obj->_NumberOfAttachedHydrogens = numberOfAttachedHydrogens;
+    obj->_NumberOfElectronWithdrawingGroups =numberOfElectronWithdrawingGroups;
+    obj->_AtomicProperty = atomicProperty;
+    LOG(BF("Created AntechamberFocusAtomMatch@%0X") % obj.get());
+    return obj;
   };
+  static AntechamberFocusAtomMatch_sp create(
+                                             gc::Nilable<ResidueList_sp> residueNames,
+                                             int     atomicNumber,
+                                             int     numberOfAttachedAtoms,
+                                             int     numberOfAttachedHydrogens,
+                                             int     numberOfElectronWithdrawingGroups )
+  {_G();
+    gc::Nilable<AtomOrBondMatchNode_sp> atomicProperty;
+    atomicProperty = _Nil<core::T_O>();
+    return create( residueNames, atomicNumber, numberOfAttachedAtoms, numberOfAttachedHydrogens, numberOfElectronWithdrawingGroups, atomicProperty);
+  };
+public:
+  string asSmarts() const;
+  virtual core::T_sp children();
+  virtual	bool	matches( Root_sp root, chem::Atom_sp atom );
+  virtual ChemInfoType    type() { return antechamberFocusAtomMatch; };
+  DEFAULT_CTOR_DTOR(AntechamberFocusAtomMatch_O);
+};
 
 
 
@@ -922,97 +762,97 @@ namespace chem {
 
 
 
-  SMART(Chain);
-  class Chain_O : public BondListMatchNode_O
-  {
-    LISP_CLASS(chem,ChemPkg,Chain_O,"Chain",BondListMatchNode_O);
+SMART(Chain);
+class Chain_O : public BondListMatchNode_O
+{
+  LISP_CLASS(chem,ChemPkg,Chain_O,"Chain",BondListMatchNode_O);
 
-  public:
-    bool fieldsp() const { return true; };
-    void	fields(core::Record_sp node);
-    void	initialize();
-  private:
-    gc::Nilable<BondMatchNode_sp>	_Head;
-    gc::Nilable<BondListMatchNode_sp>	_Tail;
-  public:
+public:
+  bool fieldsp() const { return true; };
+  void	fields(core::Record_sp node);
+  void	initialize();
+private:
+  gc::Nilable<BondMatchNode_sp>	_Head;
+  gc::Nilable<BondListMatchNode_sp>	_Tail;
+public:
 
-    virtual uint depth() const;
-    virtual string asSmarts() const;
+  virtual uint depth() const;
+  virtual string asSmarts() const;
 		//! Second argument can be NULL
-    CL_LAMBDA(head tail);
-    CL_LISPIFY_NAME("make-chain.head.tail");
+  CL_LAMBDA(head tail);
+  CL_LISPIFY_NAME("make-chain.head.tail");
 //    CL_DEF_CLASS_METHOD static Chain_sp create_head_tail( BondMatchNode_sp head, BondListMatchNode_sp tail ) {
-    CL_DEF_CLASS_METHOD static Chain_sp create_head_tail( core::T_sp head, core::T_sp tail ) {
-      GC_ALLOCATE(Chain_O, obj ); // RP_Create<Chain_O>(lisp);
+  CL_DEF_CLASS_METHOD static Chain_sp create_head_tail( core::T_sp head, core::T_sp tail ) {
+    GC_ALLOCATE(Chain_O, obj ); // RP_Create<Chain_O>(lisp);
 //      obj->_Head = head;
 //      obj->_Tail = tail;
-      if (head.nilp()){
-        obj->_Head =  _Nil<core::T_O>();
-      } else {
-        obj->_Head =  gc::As<BondMatchNode_sp>(head);
-      } 
-      if (tail.nilp()){
-        obj->_Tail =  _Nil<core::T_O>();
-      } else {
-        obj->_Tail =  gc::As<BondListMatchNode_sp>(tail);
-      } 
-      return obj;
-    }
-    CL_LAMBDA(head);
-    CL_LISPIFY_NAME("make-chain.head");
+    if (head.nilp()){
+      obj->_Head =  _Nil<core::T_O>();
+    } else {
+      obj->_Head =  gc::As<BondMatchNode_sp>(head);
+    } 
+    if (tail.nilp()){
+      obj->_Tail =  _Nil<core::T_O>();
+    } else {
+      obj->_Tail =  gc::As<BondListMatchNode_sp>(tail);
+    } 
+    return obj;
+  }
+  CL_LAMBDA(head);
+  CL_LISPIFY_NAME("make-chain.head");
 //    CL_DEF_CLASS_METHOD static Chain_sp create_head( BondMatchNode_sp head )
-    CL_DEF_CLASS_METHOD static Chain_sp create_head( core::T_sp head )
-    {
-      if (head.nilp()){
-        return create_head_tail(_Nil<core::T_O>(),_Nil<BondListMatchNode_O>());
-      } else {
-        return create_head_tail(head,_Nil<BondListMatchNode_O>());
-      }
+  CL_DEF_CLASS_METHOD static Chain_sp create_head( core::T_sp head )
+  {
+    if (head.nilp()){
+      return create_head_tail(_Nil<core::T_O>(),_Nil<BondListMatchNode_O>());
+    } else {
+      return create_head_tail(head,_Nil<BondListMatchNode_O>());
     }
-    CL_DEF_CLASS_METHOD static Chain_sp create_empty_chain() {
-      GC_ALLOCATE(Chain_O,obj);
-      return obj;
-    }
-  public:
-    virtual	ChemInfoType	type() { return chain; };
-    virtual	bool		matches( Root_sp root, chem::Atom_sp from );
-    virtual	bool		matches( Root_sp root, chem::Atom_sp from, chem::BondList_sp neighbors );
-    CL_DEFMETHOD void chain_set_head(BondMatchNode_sp head) { this->_Head = head; };
+  }
+  CL_DEF_CLASS_METHOD static Chain_sp create_empty_chain() {
+    GC_ALLOCATE(Chain_O,obj);
+    return obj;
+  }
+public:
+  virtual	ChemInfoType	type() { return chain; };
+  virtual	bool		matches( Root_sp root, chem::Atom_sp from );
+  virtual	bool		matches( Root_sp root, chem::Atom_sp from, chem::BondList_sp neighbors );
+  CL_DEFMETHOD void chain_set_head(BondMatchNode_sp head) { this->_Head = head; };
 //    CL_DEFMETHOD void chain_set_tail(BondListMatchNode_sp tail) { this->_Tail = tail; };
-    CL_DEFMETHOD void chain_set_tail(core::T_sp tail) {
-      if (tail.nilp())
-      {
-        this->_Tail =   _Nil<core::T_O>();
-      } else {
-        this->_Tail = tail;
-      }
-    };
-
-    BondMatchNode_sp chain_get_head() { return this->_Head; };
-    BondListMatchNode_sp chain_get_tail();
-    
-    Chain_O() : _Head(_Nil<BondMatchNode_O>()), _Tail(_Nil<BondListMatchNode_O>()) {};
+  CL_DEFMETHOD void chain_set_tail(core::T_sp tail) {
+    if (tail.nilp())
+    {
+      this->_Tail =   _Nil<core::T_O>();
+    } else {
+      this->_Tail = tail;
+    }
   };
 
+  BondMatchNode_sp chain_get_head() { return this->_Head; };
+  BondListMatchNode_sp chain_get_tail();
+  virtual core::T_sp children();
+  Chain_O() : _Head(_Nil<BondMatchNode_O>()), _Tail(_Nil<BondListMatchNode_O>()) {};
+};
 
-  SMART(Branch);
-  class Branch_O : public BondListMatchNode_O
-  {
-    LISP_CLASS(chem,ChemPkg,Branch_O,"Branch",BondListMatchNode_O);
 
-  public:
-    bool fieldsp() const { return true; };
-    void	fields(core::Record_sp node);
-    void	initialize();
-  private:
-    gc::Nilable<BondListMatchNode_sp>	_Left;
-    gc::Nilable<BondListMatchNode_sp>	_Right;
-  public:
-    virtual uint depth() const;
-    virtual string asSmarts() const;
+SMART(Branch);
+class Branch_O : public BondListMatchNode_O
+{
+  LISP_CLASS(chem,ChemPkg,Branch_O,"Branch",BondListMatchNode_O);
+
+public:
+  bool fieldsp() const { return true; };
+  void	fields(core::Record_sp node);
+  void	initialize();
+private:
+  gc::Nilable<BondListMatchNode_sp>	_Left;
+  gc::Nilable<BondListMatchNode_sp>	_Right;
+public:
+  virtual uint depth() const;
+  virtual string asSmarts() const;
 		//! Second argument can be NULL
-    CL_LAMBDA(left right);
-    CL_LISPIFY_NAME("make-branch.left.right");
+  CL_LAMBDA(left right);
+  CL_LISPIFY_NAME("make-branch.left.right");
 //    CL_DEF_CLASS_METHOD static Branch_sp create_left_right( BondListMatchNode_sp left, BondListMatchNode_sp right )
 //    {
 //      _G();
@@ -1021,192 +861,161 @@ namespace chem {
 //      obj->_Right = right;
 //      return obj;
 //    }
-    CL_DEF_CLASS_METHOD static Branch_sp create_left_right( core::T_sp left, core::T_sp right )
-    {
-      _G();
-      GC_ALLOCATE(Branch_O, obj ); // RP_Create<Branch_O>(lisp);
-      if(left.nilp()){
-       obj->_Left = _Nil<core::T_O>();
-      } else {       
-        obj->_Left = gc::As<BondListMatchNode_sp>(left);
-      }
-       if(right.nilp()){
-       obj->_Right = _Nil<core::T_O>();
-      } else {       
-        obj->_Right = gc::As<BondListMatchNode_sp>(right);
-      }
-      
-      return obj;
+  CL_DEF_CLASS_METHOD static Branch_sp create_left_right( core::T_sp left, core::T_sp right )
+  {
+    _G();
+    GC_ALLOCATE(Branch_O, obj ); // RP_Create<Branch_O>(lisp);
+    if(left.nilp()){
+      obj->_Left = _Nil<core::T_O>();
+    } else {       
+      obj->_Left = gc::As<BondListMatchNode_sp>(left);
     }
-    CL_LAMBDA(left);
-    CL_LISPIFY_NAME("make-branch.left");
-    CL_DEF_CLASS_METHOD static Branch_sp create_left( BondListMatchNode_sp left ) {
-      _G();
-      GC_ALLOCATE(Branch_O, obj ); // RP_Create<Branch_O>(lisp);
-      obj->_Left = left;
+    if(right.nilp()){
       obj->_Right = _Nil<core::T_O>();
-      return obj;
+    } else {       
+      obj->_Right = gc::As<BondListMatchNode_sp>(right);
     }
-  public:
+      
+    return obj;
+  }
+  CL_LAMBDA(left);
+  CL_LISPIFY_NAME("make-branch.left");
+  CL_DEF_CLASS_METHOD static Branch_sp create_left( BondListMatchNode_sp left ) {
+    _G();
+    GC_ALLOCATE(Branch_O, obj ); // RP_Create<Branch_O>(lisp);
+    obj->_Left = left;
+    obj->_Right = _Nil<core::T_O>();
+    return obj;
+  }
+public:
 
 
 
-    virtual	ChemInfoType	type() { return branch; };
-    virtual	bool		matches( Root_sp root, chem::Atom_sp from, chem::BondList_sp neighbors );  /* CHECK CODE TO SEE IF IT HANDLES RIGHT=NULL */
+  virtual	ChemInfoType	type() { return branch; };
+  virtual	bool		matches( Root_sp root, chem::Atom_sp from, chem::BondList_sp neighbors );  /* CHECK CODE TO SEE IF IT HANDLES RIGHT=NULL */
 //virtual	adapt::QDomNode_sp	asXml(string name=XmlTag_Branch());
 //virtual	void	parseFromXml(adapt::QDomNode_sp node);
 
-    void branch_set_left(core::T_sp left);
-    void branch_set_right(core::T_sp right);
+  void branch_set_left(core::T_sp left);
+  void branch_set_right(core::T_sp right);
 
-    DEFAULT_CTOR_DTOR(Branch_O);
-  };
+  virtual core::T_sp children();
+  DEFAULT_CTOR_DTOR(Branch_O);
+};
 
-#if 0 //[
-  typedef	gctools::smart_ptr<O_AfterMatchTestNode>	RPAfterMatchTestNode;
-  class	AfterMatchTestNode : ChemInfoNode_O
+SMART(AfterMatchBondTest);
+class AfterMatchBondTest_O : public RootMatchNode_O
+{
+  LISP_CLASS(chem,ChemPkg,AfterMatchBondTest_O,"AfterMatchBondTest",RootMatchNode_O);
+
+public:
+  void initialize();
+  bool fieldsp() const { return true; };
+  void	fields(core::Record_sp node);
+private:
+  core::Symbol_sp _AtomTag1;
+  core::Symbol_sp _AtomTag2;
+  BondEnum	_Bond;
+public:
+  static AfterMatchBondTest_sp create( core::Symbol_sp tag1, core::Symbol_sp tag2, BondEnum b)
   {
-  private:
-  public:
-    AfterMatchTestNode();
-//virtual	adapt::QDomNode_sp	asXml(string name) = 0;
-    virtual	bool  		matches( Root_sp root ) {_OF(); SUBCLASS_MUST_IMPLEMENT(); };
-    virtual	~AfterMatchTestNode();
+    _G();
+    GC_ALLOCATE(AfterMatchBondTest_O, obj ); // RP_Create<AfterMatchBondTest_O>(lisp);
+    obj->_AtomTag1 = tag1;
+    obj->_AtomTag2 = tag2;
+    obj->_Bond = b;
+    return obj;
   };
-#endif //]
-
-
-
-
-  SMART(AfterMatchBondTest);
-  class AfterMatchBondTest_O : public RootMatchNode_O
-  {
-    LISP_CLASS(chem,ChemPkg,AfterMatchBondTest_O,"AfterMatchBondTest",RootMatchNode_O);
-
-  public:
-    void initialize();
-    bool fieldsp() const { return true; };
-    void	fields(core::Record_sp node);
-  private:
-    core::Symbol_sp _AtomTag1;
-    core::Symbol_sp _AtomTag2;
-    BondEnum	_Bond;
-  public:
-    static AfterMatchBondTest_sp create( core::Symbol_sp tag1, core::Symbol_sp tag2, BondEnum b)
-    {
-      _G();
-      GC_ALLOCATE(AfterMatchBondTest_O, obj ); // RP_Create<AfterMatchBondTest_O>(lisp);
-      obj->_AtomTag1 = tag1;
-      obj->_AtomTag2 = tag2;
-      obj->_Bond = b;
-      return obj;
-    };
-  public:
+public:
 // virtual	adapt::QDomNode_sp	        asXml(string name=XmlTag_AfterMatchBondTest());
-    virtual	ChemInfoType            type() { return afterMatchBondTest; };
-    virtual	bool    		matches( Root_sp root );
+  virtual	ChemInfoType            type() { return afterMatchBondTest; };
+  virtual	bool    		matches( Root_sp root );
 
 
-    DEFAULT_CTOR_DTOR(AfterMatchBondTest_O);
-  };
-
-
-
+  DEFAULT_CTOR_DTOR(AfterMatchBondTest_O);
+};
 
 
 
 
-  SMART(Root);
-  class Root_O : public AtomOrBondMatchNode_O
-  {
-    LISP_CLASS(chem,ChemPkg,Root_O,"Root",AtomOrBondMatchNode_O);
 
-  public:
-    void initialize();
-  public:
-    bool fieldsp() const { return true; };
-    void	fields(core::Record_sp node);
-  protected:
-    gc::Nilable<AtomOrBondMatchNode_sp>	_FirstTest;
-    gc::Nilable<BondListMatchNode_sp>	_Chain;
+
+
+SMART(Root);
+class Root_O : public AtomOrBondMatchNode_O
+{
+  LISP_CLASS(chem,ChemPkg,Root_O,"Root",AtomOrBondMatchNode_O);
+
+public:
+  void initialize();
+public:
+  bool fieldsp() const { return true; };
+  void	fields(core::Record_sp node);
+protected:
+  gc::Nilable<AtomOrBondMatchNode_sp>	_FirstTest;
+  gc::Nilable<BondListMatchNode_sp>	_Chain;
 	/*! Store tests described as lambdas that take a single atom argument and return a boolean.
 	 These can be incorporated into the smarts code as <xxxx> where xxxx is the symbol
 	name of the test. */
-    core::HashTableEq_sp		_Tests;
-    core::HashTableEql_sp               _RingTags;
-#if 0
-  protected:	// do not archive
-    gc::Nilable<ChemInfoMatch_sp>	_Match; //!< Match SMARTS ring ids and Antechamber Atom Tags
-#endif
-  public:
-    virtual uint depth() const;
-    virtual string asSmarts() const;
-    static Root_sp create(AtomOrBondMatchNode_sp node, BondListMatchNode_sp chain )
-    {
-      GC_ALLOCATE(Root_O, obj ); // RP_Create<Root_O>(lisp);
-      obj->_FirstTest = node;
-      obj->_Chain = chain;
-      ANN(obj->_Chain);
-      return obj;
-    };
-
-    void addTest(core::Symbol_sp testSymbol, core::Function_sp testCode);
-    bool evaluateTest(core::Symbol_sp testSym, Atom_sp atom);
-    void defineAtomRingTag(Atom_sp atom, size_t tag);
-#if 0
-    void createNewMatch() { this->_Match = ChemInfoMatch_O::create();};
-    void setMatch(ChemInfoMatch_sp match) { this->_Match = match; };
-    ChemInfoMatch_sp getMatch() { return this->_Match; };
-#endif
-    
-    virtual core::Symbol_sp getAssignType() { return _Nil<core::Symbol_O>();};
-  public:
-
-
-//virtual	adapt::QDomNode_sp	asXml(string name=XmlTag_Root());
-//virtual	void	parseFromXml(adapt::QDomNode_sp node);
-    virtual	ChemInfoType	type() { return root; };
-    virtual	bool		matches( Root_sp root, chem::Atom_sp atom );
-    virtual	bool		matches( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );
-
-
-    DEFAULT_CTOR_DTOR(Root_O);
+  core::HashTableEq_sp		_Tests;
+//    core::HashTableEql_sp               _RingTags;
+public:
+  virtual uint depth() const;
+  virtual string asSmarts() const;
+  static Root_sp create(AtomOrBondMatchNode_sp node, BondListMatchNode_sp chain )
+  {
+    GC_ALLOCATE(Root_O, obj ); // RP_Create<Root_O>(lisp);
+    obj->_FirstTest = node;
+    obj->_Chain = chain;
+    ANN(obj->_Chain);
+    return obj;
   };
 
+  void addTest(core::Symbol_sp testSymbol, core::Function_sp testCode);
+  bool evaluateTest(core::Symbol_sp testSym, Atom_sp atom);
+  virtual core::Symbol_sp getAssignType() { return _Nil<core::Symbol_O>();};
+  virtual core::T_sp children();
+public:
+  virtual	ChemInfoType	type() { return root; };
+  virtual	bool		matches( Root_sp root, chem::Atom_sp atom );
+  virtual	bool		matches( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );
+  DEFAULT_CTOR_DTOR(Root_O);
+};
 
 
 
 
 
 
-  SMART(SmartsRoot);
-  class SmartsRoot_O : public Root_O
+
+SMART(SmartsRoot);
+class SmartsRoot_O : public Root_O
+{
+  LISP_CLASS(chem,ChemPkg,SmartsRoot_O,"SmartsRoot",Root_O);
+
+public:
+  bool fieldsp() const { return true; };
+  void	fields(core::Record_sp node);
+public:
+
+  static SmartsRoot_sp create(AtomOrBondMatchNode_sp node,
+                              gc::Nilable<BondListMatchNode_sp> chain)
+  { _G();
+    GC_ALLOCATE(SmartsRoot_O,   obj ); // RP_Create<SmartsRoot_O>(lisp);
+    obj->_FirstTest = node;
+    obj->_Chain = chain;
+    ANN(obj->_Chain);
+    return obj;
+  };
+
+  static SmartsRoot_sp make(ChemInfoNode_sp cinode);
+
+  static SmartsRoot_sp create(AtomOrBondMatchNode_sp node )
   {
-    LISP_CLASS(chem,ChemPkg,SmartsRoot_O,"SmartsRoot",Root_O);
-
-  public:
-    bool fieldsp() const { return true; };
-    void	fields(core::Record_sp node);
-  public:
-
-    static SmartsRoot_sp create(AtomOrBondMatchNode_sp node,
-                                gc::Nilable<BondListMatchNode_sp> chain)
-    { _G();
-      GC_ALLOCATE(SmartsRoot_O,   obj ); // RP_Create<SmartsRoot_O>(lisp);
-      obj->_FirstTest = node;
-      obj->_Chain = chain;
-      ANN(obj->_Chain);
-      return obj;
-    };
-
-    static SmartsRoot_sp make(ChemInfoNode_sp cinode);
-
-    static SmartsRoot_sp create(AtomOrBondMatchNode_sp node )
-    {
-      return create(node,_Nil<T_O>());
-    };
+    return create(node,_Nil<T_O>());
+  };
       
-  public:
+public:
 
 
 
@@ -1215,173 +1024,140 @@ namespace chem {
 //        chem::Atom_sp	getRingAtomWithId(int id)	{ return this->_RingLookup[id]; };
 //        void	forgetRingAtomWithId(int id)	{ this->_RingLookup.erase(id); };
 
-    virtual	ChemInfoType	type() { return smartsRoot; };
-    virtual	bool		matches( Root_sp root, chem::Atom_sp atom );
-    virtual	bool		matches( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );
+  virtual	ChemInfoType	type() { return smartsRoot; };
+  virtual	bool		matches( Root_sp root, chem::Atom_sp atom );
+  virtual	bool		matches( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );
 
 
-    DEFAULT_CTOR_DTOR(SmartsRoot_O);
+  DEFAULT_CTOR_DTOR(SmartsRoot_O);
+};
+
+SMART(AntechamberRoot);
+class AntechamberRoot_O : public Root_O
+{
+  LISP_CLASS(chem,ChemPkg,AntechamberRoot_O,"AntechamberRoot",Root_O);
+
+public:
+  void initialize();
+public:
+  bool fieldsp() const { return true; };
+  void	fields(core::Record_sp node);
+public:
+  core::Symbol_sp          _AssignType;
+  gc::Nilable<RootMatchNode_sp>         _AfterMatchTests;
+  gc::Nilable<WildElementDict_sp>       _WildElementDictionary;
+public:
+  static AntechamberRoot_sp create( core::Symbol_sp assignType,
+                                    AtomOrBondMatchNode_sp node,
+                                    BondListMatchNode_sp bl,
+                                    RootMatchNode_sp amt) 
+  {_G();
+    GC_ALLOCATE(AntechamberRoot_O, obj ); // RP_Create<AntechamberRoot_O>(lisp);
+    obj->_FirstTest = node;
+    obj->_Chain = bl;
+    obj->_AssignType = assignType;
+    obj->_AfterMatchTests = amt;
+    obj->_WildElementDictionary = _Nil<core::T_O>();
+    return obj;
   };
-
-  SMART(AntechamberRoot);
-  class AntechamberRoot_O : public Root_O
+  static AntechamberRoot_sp create(core::Symbol_sp assignType,
+                                   AtomOrBondMatchNode_sp node,
+                                   BondListMatchNode_sp bl )
+  {_G();
+    return create( assignType, node, bl, _Nil<RootMatchNode_O>() );
+  };
+  static AntechamberRoot_sp create(core::Symbol_sp assignType,
+                                   gc::Nilable<AtomOrBondMatchNode_sp> node )
   {
-    LISP_CLASS(chem,ChemPkg,AntechamberRoot_O,"AntechamberRoot",Root_O);
-
-  public:
-    void initialize();
-  public:
-    bool fieldsp() const { return true; };
-    void	fields(core::Record_sp node);
-  public:
-    core::Symbol_sp          _AssignType;
-    gc::Nilable<RootMatchNode_sp>         _AfterMatchTests;
-    gc::Nilable<WildElementDict_sp>       _WildElementDictionary;
-  public:
-    static AntechamberRoot_sp create( core::Symbol_sp assignType,
-                                      AtomOrBondMatchNode_sp node,
-                                      BondListMatchNode_sp bl,
-                                      RootMatchNode_sp amt) 
-    {_G();
-      GC_ALLOCATE(AntechamberRoot_O, obj ); // RP_Create<AntechamberRoot_O>(lisp);
-      obj->_FirstTest = node;
-      obj->_Chain = bl;
-      obj->_AssignType = assignType;
-      obj->_AfterMatchTests = amt;
-      obj->_WildElementDictionary = _Nil<core::T_O>();
-      return obj;
-    };
-    static AntechamberRoot_sp create(core::Symbol_sp assignType,
-                                     AtomOrBondMatchNode_sp node,
-                                     BondListMatchNode_sp bl )
-    {_G();
-      return create( assignType, node, bl, _Nil<RootMatchNode_O>() );
-    };
-    static AntechamberRoot_sp create(core::Symbol_sp assignType,
-                                     gc::Nilable<AtomOrBondMatchNode_sp> node )
-    {
-      _G();
-      gc::Nilable<BondListMatchNode_sp> bl = _Nil<core::T_O>();
-      gc::Nilable<RootMatchNode_sp> amt = _Nil<core::T_O>();
-      return create( assignType, node, bl, amt );
-    };
-    CL_DEFMETHOD core::Symbol_sp getAssignType() { return this->_AssignType;};
-  public:
+    _G();
+    gc::Nilable<BondListMatchNode_sp> bl = _Nil<core::T_O>();
+    gc::Nilable<RootMatchNode_sp> amt = _Nil<core::T_O>();
+    return create( assignType, node, bl, amt );
+  };
+  CL_DEFMETHOD core::Symbol_sp getAssignType() { return this->_AssignType;};
+public:
 
 
-    void    setElementWildCardDictionary(WildElementDict_sp dict) {
-      this->_WildElementDictionary = dict; };
-    WildElementDict_sp getElementWildCardDictionary() {
-      return this->_WildElementDictionary; };
+  void    setElementWildCardDictionary(WildElementDict_sp dict) {
+    this->_WildElementDictionary = dict; };
+  WildElementDict_sp getElementWildCardDictionary() {
+    return this->_WildElementDictionary; };
 
 //virtual	adapt::QDomNode_sp	asXml(string name=XmlTag_AntechamberRoot());
 //virtual	void		parseFromXml(adapt::QDomNode_sp node);
-    virtual	ChemInfoType	type() { return antechamberRoot; };
-    virtual	bool		matches( Root_sp root, chem::Atom_sp atom );
-    virtual	bool		matches( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );
+  virtual	ChemInfoType	type() { return antechamberRoot; };
+  virtual	bool		matches( Root_sp root, chem::Atom_sp atom );
+  virtual	bool		matches( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );
 
-    string descriptionOfContents() const;
-    
-    DEFAULT_CTOR_DTOR(AntechamberRoot_O);
-  };
+  string descriptionOfContents() const;
+  virtual core::T_sp children();
+  DEFAULT_CTOR_DTOR(AntechamberRoot_O);
+};
 
+SMART(ChemInfo);
+class ChemInfo_O : public core::CxxObject_O
+{
+  LISP_CLASS(chem,ChemPkg,ChemInfo_O,"ChemInfo",core::CxxObject_O);
+public:
+  static ChemInfo_sp make(core::List_sp tests, const string& smarts);
+public:
+  void	initialize();
+public:
+  bool fieldsp() const { return true; };
+  void	fields(core::Record_sp node);
+public:
+  string		_Code;
+  gc::Nilable<Root_sp> _Root;
+  string		_CompilerMessage;
+public:
 
-
-
-
-  SMART(ChemInfo);
-  class ChemInfo_O : public core::CxxObject_O
-  {
-    LISP_CLASS(chem,ChemPkg,ChemInfo_O,"ChemInfo",core::CxxObject_O);
-#if INIT_TO_FACTORIES
-  public:
-    static ChemInfo_sp make(core::List_sp tests, const string& smarts);
-#else
-    DECLARE_INIT();
-#endif
-  public:
-    void	initialize();
-  public:
-    bool fieldsp() const { return true; };
-    void	fields(core::Record_sp node);
-  public:
-    string		_Code;
-    gc::Nilable<Root_sp> _Root;
-    string		_CompilerMessage;
-  public:
-
-  public: // Factory creation
+public: // Factory creation
 //	static core::T_sp prim_ChemInfo(core::Function_sp e, core::List_sp args, core::Environment_sp environ, core: );
 
-  public:
-    CL_LISPIFY_NAME(ChemInfo-getRoot);
-    CL_DEFMETHOD Root_sp getRoot() const {return this->_Root;};
-    bool	compileSmarts(const string& code );
-    bool	compileAntechamber(const string& code, WildElementDict_sp dict );
-CL_LISPIFY_NAME("compilerMessage");
-CL_DEFMETHOD     string	compilerMessage() { return this->_CompilerMessage;};
-    void defineTests(core::List_sp tests);
+public:
+  CL_LISPIFY_NAME(ChemInfo-getRoot);
+  CL_DEFMETHOD Root_sp getRoot() const {return this->_Root;};
+  bool	compileSmarts(const string& code );
+  bool	compileAntechamber(const string& code, WildElementDict_sp dict );
+  CL_LISPIFY_NAME("compilerMessage");
+  CL_DEFMETHOD     string	compilerMessage() { return this->_CompilerMessage;};
+  void defineTests(core::List_sp tests);
 
-    string descriptionOfContents() const;
+  string descriptionOfContents() const;
     /*! Return NIL or the match */
-    core::T_sp 	matches(chem::Atom_sp atom);
+  core::T_sp 	matches(chem::Atom_sp atom);
     /*! Return the match which can be tested to determine if match succeeded */
-    core::T_sp 	matches_atom(chem::Atom_sp atom);
+  core::T_sp 	matches_atom(chem::Atom_sp atom);
 //    ChemInfoMatch_sp getMatch();
 
 		/*! Return the depth of the longest pattern
 		 */
-    uint	depth() const;
+  uint	depth() const;
 
 
 	/*! Describe local environment around an atom - for debugging pattern matching
 	 Use this and an XML description of the pattern and check the matching by hand */
-    string localAtomEnvironment(int maxDepth) const;
+  string localAtomEnvironment(int maxDepth) const;
 	
 
 
-CL_LISPIFY_NAME("compileSucceeded");
-CL_DEFMETHOD     bool    compileSucceeded() {_OF(); ASSERTNOTNULL(this->_Root);return this->_Root.notnilp(); };
+  CL_LISPIFY_NAME("compileSucceeded");
+  CL_DEFMETHOD     bool    compileSucceeded() {_OF(); ASSERTNOTNULL(this->_Root);return this->_Root.notnilp(); };
 
-    string asSmarts() const;
+  string asSmarts() const;
 
-CL_LISPIFY_NAME("getCode");
-CL_DEFMETHOD     string          getCode() { return this->_Code; };
+  CL_LISPIFY_NAME("getCode");
+  CL_DEFMETHOD     string          getCode() { return this->_Code; };
 
-    core::Symbol_sp getAssignType() { return this->_Root->getAssignType(); };
+  core::Symbol_sp getAssignType() { return this->_Root->getAssignType(); };
 //	ChemInfo_O( const ChemInfo_O& ss ); //!< Copy constructor
 
 
-    DEFAULT_CTOR_DTOR(ChemInfo_O);
-  };
-
-
-#if 0
-  class	ChemInfoError;
-  extern	void	ChemInfoErrorTranslator( const ChemInfoError& e);
-  class	ChemInfoError: public core::CandoException_O
-  {
-  public:
-    ChemInfo_sp	_code;
-  public:
-    string message() 
-    {_
-        ASSERTNOTNULL(this->_code);
-      return (this->_Message+this->_code->compilerMessage());
-    };
-
-    ChemInfoError(string mess, ChemInfo_sp cd)
-    { this->_Message=mess;this->_code = cd; };
-    inline virtual ~ChemInfoError() throw() {};
-  };
-#endif
-
+  DEFAULT_CTOR_DTOR(ChemInfo_O);
+};
 
 core::T_mv chem__chem_info_match(Root_sp testRoot, Atom_sp atom);
 
-
-
-
-
 };
+
 #endif

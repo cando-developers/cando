@@ -44,7 +44,19 @@
   (values (chem:matter-get-property-or-default a 'aromaticity ())
           (chem:matter-get-property-or-default a 'step-assigned ())))
 
-(defparameter *rule1a* (smarts:make-chem-info :smarts "[x]1-[x]=[x]-[x]=[x]-[x]=[x&?1]"))
+(defun abx (atom)
+  (warn "Perform the am1-bcc x test on atom ~s (see msmarts_Parser.yy)" atom)
+  nil)
+
+(defun aby (atom)
+  (warn "Perform the am1-bcc y test on atom ~s (see msmarts_Parser.yy)" atom)
+  nil)
+
+(defparameter *artests* (list (cons :|ar6| (lambda (a) (eq (chem:matter-get-property-or-default a 'aromaticity nil) 'ar6)))
+                              (cons :|abx| #'abx)
+                              (cons :|aby| #'aby)))
+
+(defparameter *rule1a* (smarts:make-chem-info :tests *artests* :smarts "[<abx>]1-[<abx>]=[<abx>]-[<abx>]=[<abx>]-[<abx>]=[<abx>]1"))
 
 ;; Apply aromaticity rule1 of Jakalian, Jack, and Bayly • Vol. 23, No. 16 • Journal of Computational Chemistry
 (defun aromatic-rule1 (atoms-in-rings)
@@ -54,10 +66,10 @@
           (set-aromaticity-type a 'ar6 'rule1))
        ))
 
-(defparameter *ar6test* (list '|ar6| (lambda (a) (eq (chem:matter-get-property-or-default a 'aromaticity nil) 'ar6))))
 
-(defparameter *rule2a* (smarts:make-chem-info :tests *ar6test* :smarts "[x]1=[x]-[x]=[x]-[<ar6>]-[<ar6>]-[x&?1]"))
-(defparameter *rule2b* (smarts:make-chem-info :tests *ar6test* :smarts "[x]1-[x]=[x]-[<ar6>]-[<ar6>]-[x]=[x&?1]"))
+  
+(defparameter *rule2a* (smarts:make-chem-info :tests *artests* :smarts "[<abx>]1=[<abx>]-[<abx>]=[<abx>]-[<ar6>]-[<ar6>]-[<abx>]1"))
+(defparameter *rule2b* (smarts:make-chem-info :tests *artests* :smarts "[<abx>]1-[<abx>]=[<abx>]-[<ar6>]-[<ar6>]-[<abx>]=[<abx>]1"))
 
 
 ;; Apply aromaticity rule of Jakalian, Jack, and Bayly • Vol. 23, No. 16 • Journal of Computational Chemistry
@@ -79,8 +91,8 @@
        do (setq rule-pass (+ rule-pass 1)))))
 
 
-(defparameter *rule3a* (smarts:make-chem-info :tests *ar6test*
-                            :smarts "[x]1=[x]-[<ar6>]-[<ar6>]-[<ar6>]-[<ar6>]-[x&?1]"))
+(defparameter *rule3a* (smarts:make-chem-info :tests *artests*
+                            :smarts "[<abx>]1=[<abx>]-[<ar6>]-[<ar6>]-[<ar6>]-[<ar6>]-[<abx>]1"))
 
 ;; Apply aromaticity rule of Jakalian, Jack, and Bayly • Vol. 23, No. 16 • Journal of Computational Chemistry
 (defun aromatic-rule3 (atoms-in-rings)
@@ -100,10 +112,10 @@
        do (setq atoms-left failed-atoms)
        do (setq rule-pass (+ rule-pass 1)))))
 
-(defparameter *rule4a* (smarts:make-chem-info :smarts "[x]1-[x]=[x]-[C&+]-[x]=[x]-[x]=[x&?1]"))
-(defparameter *rule4b* (smarts:make-chem-info :smarts "[x]1=[x]-[C&+]-[x]=[x]-[x]=[x]-[x&?1]"))
-(defparameter *rule4c* (smarts:make-chem-info :smarts "[x]1-[C&+]-[x]=[x]-[x]=[x]-[x]=[x&?1]"))
-(defparameter *rule4d* (smarts:make-chem-info :smarts "[C&+]1-[x]=[x]-[x]=[x]-[x]=[x]-[C&?1]"))
+(defparameter *rule4a* (smarts:make-chem-info :tests *artests* :smarts "[<abx>]1-[<abx>]=[<abx>]-[C&+]-[<abx>]=[<abx>]-[<abx>]=[<abx>]1"))
+(defparameter *rule4b* (smarts:make-chem-info :tests *artests* :smarts "[<abx>]1=[<abx>]-[C&+]-[<abx>]=[<abx>]-[<abx>]=[<abx>]-[<abx>]1"))
+(defparameter *rule4c* (smarts:make-chem-info :tests *artests* :smarts "[<abx>]1-[C&+]-[<abx>]=[<abx>]-[<abx>]=[<abx>]-[<abx>]=[<abx>]1"))
+(defparameter *rule4d* (smarts:make-chem-info :tests *artests* :smarts "[C&+]1-[<abx>]=[<abx>]-[<abx>]=[<abx>]-[<abx>]=[<abx>]-[C]1"))
 
 ;; Apply aromaticity rule of Jakalian, Jack, and Bayly • Vol. 23, No. 16 • Journal of Computational Chemistry
 (defun aromatic-rule4 (atoms-in-rings)
@@ -116,14 +128,16 @@
            (set-aromaticity-type a 'ar7 'rule4)
            )))
 
-(defparameter *ar67test* (list '|ar67| (lambda (a) (or (eq (chem:matter-get-property-or-default a 'aromaticity nil) 'ar6)
-                                               (eq (chem:matter-get-property-or-default a 'aromaticity nil) 'ar7)))))
+(defparameter *ar67test* (list* (cons :|ar67| (lambda (a) (or (eq (chem:matter-get-property-or-default a 'aromaticity nil) 'ar6)
+                                                              (eq (chem:matter-get-property-or-default a 'aromaticity nil) 'ar7))))
+                                *artests*))
+
 (defparameter *rule5a* (smarts:make-chem-info :tests *ar67test*
-                           :smarts "[y]1-[x&!<ar67>]=[x&!<ar67>]-[x&!<ar67>]=[x&!<ar67>]-[y&?1]"))
+                           :smarts "[<aby>]1-[<abx>&!<ar67>]=[<abx>&!<ar67>]-[<abx>&!<ar67>]=[<abx>&!<ar67>]-[<aby>]1"))
 (defparameter *rule5b* (smarts:make-chem-info :tests *ar67test*
-                           :smarts "[x&!<ar67>]1-[y]-[x&!<ar67>]=[x&!<ar67>]-[x&!<ar67>]=[x&?1]"))
+                           :smarts "[<abx>&!<ar67>]1-[<aby>]-[<abx>&!<ar67>]=[<abx>&!<ar67>]-[<abx>&!<ar67>]=[<abx>]1"))
 (defparameter *rule5c* (smarts:make-chem-info :tests *ar67test*
-                           :smarts "[x&!<ar67>]1=[x&!<ar67>]-[y]-[x&!<ar67>]=[x&!<ar67>]-[x&?1]"))
+                           :smarts "[<abx>&!<ar67>]1=[<abx>&!<ar67>]-[<aby>]-[<abx>&!<ar67>]=[<abx>&!<ar67>]-[<abx>]1"))
 
 ;; Apply aromaticity rule of Jakalian, Jack, and Bayly • Vol. 23, No. 16 • Journal of Computational Chemistry
 (defun aromatic-rule5 (atoms-in-rings)

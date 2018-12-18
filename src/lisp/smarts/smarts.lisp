@@ -5,6 +5,8 @@
   head
   tail)
 
+(defstruct labeled value)
+
 (defun make-chem-info (&key tests smarts)
   (let ((ci (core:make-cxx-object 'chem:chem-info)))
     (chem:compile-smarts ci smarts)
@@ -17,7 +19,17 @@
                                                             &rest args
                                                             &key bounds)
   (let ((result (call-next-method)))
-    (chem:setf-bounds result bounds)
+    (typecase result
+      (cons
+       (cond
+         ((symbolp (car result)) #| do nothing |#)
+         (t (when (car result)
+              (chem:setf-bounds (car result) bounds))
+            (when (cdr result)
+              (chem:setf-bounds (cdr result) bounds)))))
+      (chem:chem-info-node
+       (chem:setf-bounds result bounds))
+      (otherwise (warn "What the heck is this -> ~s and how do we set its bounds" result)))
     result))
 
 (defmethod architecture.builder-protocol:make-node ((builder (eql :cando))
@@ -33,6 +45,7 @@
                                                       valence
                                                       degree
                                                       connectivity
+                                                      lisp-function
                                                       bounds)
   (format t ":atom make-node head: ~s args: ~s~%" head args)
   (if (and total-hydrogen-count-supplied-p
@@ -55,6 +68,8 @@
            (setf result (chem:create-sapaliphatic)))
           (:wildcard
            (setf result (chem:create-sapwild-card)))))
+    (when lisp-function
+      (setf result (chem:create-sappredicate-name lisp-function)))
     (when atomic-number
       (setf result (chem:create-sapatomic-number atomic-number)))
     (when total-hydrogen-count
@@ -132,13 +147,12 @@
                                                     &rest args
                                                     &key  label bounds)
   (format t ":labeled make-node head: ~s args: ~s~%" head args)
-  (let ((sym (intern (write-to-string label) :keyword))
-        result)
-g    (setf result (chem:create-sapring-tag-test sym)
+  (make-labeled :value label))
+#|
+  (let (result)
+    (setf result (chem:create-sapring-tag-test label))
     result))
-  
-
-
+|#
 (defmethod architecture.builder-protocol:make-node ((builder (eql :cando))
                                                     (head (eql :binary-operator))
                                                     &rest args
@@ -206,15 +220,63 @@ g    (setf result (chem:create-sapring-tag-test sym)
   (format t ":recursive make-node head: ~s args: ~s~%" head args))
 
 
+#+(or)
 (defmethod architecture.builder-protocol:relate ((builder (eql :cando))
                                                  (head (eql :atom))
-                                                 (left chem:bond-test)
-                                                 (right t)
+                                                 (left chem:atom-test)
+                                                 (right labeled)
                                                  &key key)
+  (chem:set-ring-test left :sarring-test)
+  (chem:set-ring-id left (labeled-value right))
+  left)
+#+(or)
+(defmethod architecture.builder-protocol:relate ((builder (eql :cando))
+                                                 (head (eql :atom))
+                                                 (left labeled)
+                                                 (right chem:atom-test)
+                                                 &key key)
+  (chem:set-ring-test right :sarring-test)
+  (chem:set-ring-id right (labeled-value left))
+  right)
+(defmethod architecture.builder-protocol:relate ((builder (eql :cando))
+                                                 (head (eql :atom))
+                                                 (left labeled)
+                                                 (right chem:atom-or-bond-match-node)
+                                                 &key key)
+;;;  (format t "(:atom labeled chem:logical) relate head: ~s left: ~s right:~s~%" head left right)
+  (chem:set-ring-test right :sarring-test)
+  (chem:set-ring-id right (labeled-value left))
+  right)
+(defmethod architecture.builder-protocol:relate ((builder (eql :cando))
+                                                 (head (eql :atom))
+                                                 (left chem:atom-or-bond-match-node)
+                                                 (right labeled)
+                                                 &key key)
+;;;  (format t "(:atom chem:logical labeled) relate head: ~s left: ~s right:~s~%" head left right)
+  (chem:set-ring-test left :sarring-test)
+  (chem:set-ring-id left (labeled-value right))
+  left)
+#+(or)(defmethod architecture.builder-protocol:relate ((builder (eql :cando))
+                                                 (head (eql :atom))
+                                                 (left labeled)
+                                                 (right chem:atom-test)
+                                                 &key key)
+  (format t "(:atom labeled t) relate head: ~s left: ~s right:~s~%" head left right)
+  (break "left: ~s right: ~s" left right)
   (chem:set-atom-test left right)
-  (format t ":atom relate head: ~s left: ~s right:~s~%" head left right)
+  left)
+#+(or)
+(defmethod architecture.builder-protocol:relate ((builder (eql :cando))
+                                                 (head (eql :atom))
+                                                 (left t)
+                                                 (right labeled)
+                                                 &key key)
+  (format t "(:atom t labeled) relate head: ~s left: ~s right:~s~%" head left right)
+  (break "left: ~s right: ~s" left right)
+  (chem:set-atom-test left right)
   left)
 
+#+(or)
 (defmethod architecture.builder-protocol:relate ((builder (eql :cando))
                                                  (head (eql :atom))
                                                  (left chem:tag-set)
@@ -226,10 +288,19 @@ g    (setf result (chem:create-sapring-tag-test sym)
 
 (defmethod architecture.builder-protocol:relate ((builder (eql :cando))
                                                  (head (eql :atom))
+                                                 (left chem:bond-test)
+                                                 (right chem:atom-test)
+                                                 &key key)
+;;  (format t "(:atom bond-test atom-test) relate head: ~s left: ~s right:~s~%" head left right)
+  (chem:set-atom-test left right)
+  left)
+
+(defmethod architecture.builder-protocol:relate ((builder (eql :cando))
+                                                 (head (eql :atom))
                                                  left
                                                  right
                                                  &key key)
-  (format t ":atom relate head: ~s left: ~s right:~s~%" head left right)
+  (format t "(:atom t t) relate head: ~s left: ~s right:~s~%" head left right)
   left)
 
 (defmethod architecture.builder-protocol:relate ((builder (eql :cando))
@@ -451,9 +522,72 @@ g    (setf result (chem:create-sapring-tag-test sym)
 ;;; Everything that depends on SMARTS parsing is initialized now
 ;;;
 
+(defvar *smarts-ring-tests*)
+
+(defgeneric walk-smarts (parent child))
+
+(defmethod walk-smarts (grandparent parent)
+  (let ((children (chem:chem-info-node-children parent)))
+    (loop for child in children
+          do (walk-smarts parent child))))
+
+(defmethod walk-smarts (parent (child chem:atom-test))
+  (let ((test-type (chem:get-ring-test child)))
+    (format t "test-type ~s for ~s~%" test-type child)
+    (when (eq test-type :sarring-test)
+      (let* ((tag (chem:get-ring-id child))
+             (bounds (chem:bounds child))
+             (bound-start (cond
+                            ((consp bounds) (car bounds))
+                            ((integerp bounds) bounds)
+                            (t (error "Figure out how to get bounds from ~s" bounds))))
+             (info (gethash tag *smarts-ring-tests*)))
+        (when (or (null info) (< bound-start (car info)))
+          (setf (gethash tag *smarts-ring-tests*) (cons bound-start child)))))))
+
+(defmethod walk-smarts (parent (child chem:logical))
+  (let ((test-type (chem:get-ring-test child)))
+    (format t "test-type ~s for ~s~%" test-type child)
+    (when (eq test-type :sarring-test)
+      (let* ((tag (chem:get-ring-id child))
+             (bounds (chem:bounds child))
+             (bound-start (cond
+                            ((consp bounds) (car bounds))
+                            ((integerp bounds) bounds)
+                            (t (error "Figure out how to get bounds from ~s" bounds))))
+             (info (gethash tag *smarts-ring-tests*)))
+        (when (or (null info) (< bound-start (car info)))
+          (setf (gethash tag *smarts-ring-tests*) (cons bound-start child)))))
+    ;; logicals have children
+    (call-next-method)))
+
+
+(defun change-nodes (ring-test-hashtable)
+  (maphash (lambda (tag info)
+             (let ((bound-start (car info))
+                   (node (cdr info)))
+               (chem:set-ring-test node :sarring-set)))
+           ring-test-hashtable))
+
+(defmacro with-top-walk (&body body)
+  `(let ((*smarts-ring-tests* (make-hash-table :test 'eql)))
+     (progn
+       ,@body)
+     (change-nodes *smarts-ring-tests*)))
+
+(defmethod walk-smarts ((parent chem:logical) (child chem:bond-list-match-node))
+  (with-top-walk
+      (call-next-method)))
 
 (defun chem:parse-smarts (code)
-  (esrap:parse 'language.smarts.parser::smarts code))
+  (let ((result (language.smarts.parser:parse code :cando)))
+    (with-top-walk
+        (walk-smarts nil result))
+    result))
 
-(eval-when (:load-toplevel :evaluate)
-  (chem:initalize-smarts-users))
+
+(defun print-smarts (x) (let ((*print-readably* t)) (print-object x *standard-output*)))
+
+
+(eval-when (:load-toplevel :execute)
+  (chem:initialize-smarts-users))

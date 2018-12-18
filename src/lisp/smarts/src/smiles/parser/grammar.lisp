@@ -55,19 +55,12 @@
 (defrule atom-symbol
     (or inorganic-atom-symbol
         organic-atom-symbol
-        aromatic-atom-symbol
-        lisp-func))
+        aromatic-atom-symbol))
 
 (defrule organic-atom-symbol ; TODO macro
     (or "Br" "B" "Cl" "C" "F" "I" "N" "O" "P" "S")
   (:lambda (symbol &bounds start end)
     (architecture.builder-protocol:node* (:atom :kind :organic :symbol symbol :bounds (cons start end)))))
-
-(defrule lisp-func
-  (and #\< (esrap:character-ranges (#\a #\z) (#\A #\Z))
-       (* (or (esrap:character-ranges (#\a #\z) (#\A #\Z) (#\0 #\0)))))
-  (:lambda (symbol &bounds start end)
-    (architecture.builder-protocol:node* (:atom :kind :test :symbol symbol :bounds (cons start end)))))
 
 (defrule aromatic-atom-symbol
     (or "br" "b" "cl" "c" "f" "i" "n" "o" "p" "s")

@@ -45,8 +45,10 @@
     (and acyclic-atom-pattern (? parser.common-rules:integer-literal/decimal))
   (:destructure (atom label &bounds start end)
     (if label
-        (architecture.builder-protocol:node* (:labeled :label label :bounds (cons start end))
-          (1 :atom atom))
+        (progn
+          (format t "atom-pattern got label |~s| of type |~s|~%" label (class-of label))
+          (architecture.builder-protocol:node* (:labeled :label label :bounds (cons start end))
+                                               (1 :atom atom)))
         atom)))
 
 (defrule acyclic-atom-pattern
@@ -58,6 +60,16 @@
   (:lambda (expression &bounds start end)
     (architecture.builder-protocol:node* (:bracketed-expression :bounds (cons start end))
       (1 :expression expression))))
+
+
+(defrule lisp-func
+  (and #\< (esrap:character-ranges (#\a #\z) (#\A #\Z))
+       (* (or (esrap:character-ranges (#\a #\z) (#\A #\Z) (#\0 #\9))))
+       #\>)
+  (:lambda (symbol-parts &bounds start end)
+    (let ((symbol (intern (esrap:text symbol-parts) :keyword)))
+      (architecture.builder-protocol:node* (:atom :lisp-function symbol
+                                                  :bounds (cons start end))))))
 
 ;;; SMARTS 4.1 Atomic Primitives
 
@@ -71,34 +83,18 @@
 (defrule modified-atom-pattern-body
     (or language.smiles.parser:atom-weight ; TODO this is just a number
         language.smiles.parser:atom-symbol
-
+        lisp-func
+        
         ; language.smiles.parser:hydrogen-count
         language.smiles.parser:charge
         language.smiles.parser:chirality
 
         atom-pattern/non-literal
 
-        ;; clrule
-        
         language.smiles.parser:atom-map-class
 
         recursive))
 
-#+(or)
-(progn
-  (defrule clrule
-      (and "<" symbol-tag ">")
-    (:lambda (lt sym gt)
-      (architecture.builder-protocol:node* (:atom :clrule sym))))
-
-  (parser.common-rules:defrule/s symbol-tag
-      (and (esrap:character-ranges (#\a #\z) (#\A #\Z))
-           (* (or (esrap:character-ranges (#\a #\z) (#\A #\Z) (#\0 #\9)))))
-    (:text t))
-  )
-
-
-     
 (macrolet
     ((define-rules (&body clauses)
        (let ((rules '()))               ; TODO unused
