@@ -175,13 +175,13 @@ namespace chem {
     LISP_CLASS(chem,ChemPkg,ChemInfoNode_O,"ChemInfoNode",core::CxxObject_O);
   public:
     size_t  _Id;
-    core::Cons_sp _Bounds;
+    core::T_sp _Bounds;
   public:
     bool fieldsp() const { return true; };
     void	fields(core::Record_sp node);
   public:
-    CL_DEFMETHOD core::Cons_sp bounds() { return this->_Bounds; };
-    CL_DEFMETHOD void setf_bounds(core::Cons_sp bounds) { this->_Bounds = bounds; }
+    CL_DEFMETHOD core::T_sp bounds() { return this->_Bounds; };
+    CL_DEFMETHOD void setf_bounds(core::T_sp bounds) { this->_Bounds = bounds; }
     string __repr__() const;
     virtual uint depth() const;
     CL_DEFMETHOD virtual string asSmarts() const {_OF();SUBCLASS_MUST_IMPLEMENT();};
