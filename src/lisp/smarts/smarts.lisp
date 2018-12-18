@@ -47,7 +47,7 @@
                                                       connectivity
                                                       lisp-function
                                                       bounds)
-  (format t ":atom make-node head: ~s args: ~s~%" head args)
+;;;  (format t ":atom make-node head: ~s args: ~s~%" head args)
   (if (and total-hydrogen-count-supplied-p
            (not total-hydrogen-count))
       (setf total-hydrogen-count 1))
@@ -86,7 +86,7 @@
       (setf result (chem:create-sapdegree degree)))
     (when connectivity
       (setf result (chem:create-sapconnectivity connectivity)))
-    (format t "Made ~s~%" result)
+;;;    (format t "Made ~s~%" result)
     result))
 
 
@@ -99,7 +99,7 @@
                                                     (head (eql :atom-map-class))
                                                     &rest args
                                                     &key class bounds)
-  (format t ":atom-map-class make-node head: ~s args: ~s~%" head args)
+;;;  (format t ":atom-map-class make-node head: ~s args: ~s~%" head args)
   (let ((result (chem:create-sapatom-map class)))
     result)
  )
@@ -108,7 +108,7 @@
                                                     (head (eql :bond))
                                                     &rest args
                                                     &key kind bounds)
-  (format t ":bond make-node head: ~s args: ~s~%" head args)
+;;;  (format t ":bond make-node head: ~s args: ~s~%" head args)
   (let (result)
     (ecase kind
       (:none
@@ -129,14 +129,14 @@
        (setf result (chem:create-sabdirectional-single-up nil)))
       (:down
        (setf result (chem:create-sabdirectional-single-down nil))))
-    (format t "Made ~s~%" result)
+;;;    (format t "Made ~s~%" result)
     result))
 
 (defmethod architecture.builder-protocol:make-node ((builder (eql :cando))
                                                     (head (eql :bracketed-expression))
                                                     &rest args
                                                     &key expression)
-  (format t ":bracketed-expression make-node head: ~s args: ~s~%" head args)
+;;;  (format t ":bracketed-expression make-node head: ~s args: ~s~%" head args)
   (let (result)
     (setf result (chem:create-log-identity nil))
     result))
@@ -146,7 +146,7 @@
                                                     (head (eql :labeled))
                                                     &rest args
                                                     &key  label bounds)
-  (format t ":labeled make-node head: ~s args: ~s~%" head args)
+;;;  (format t ":labeled make-node head: ~s args: ~s~%" head args)
   (make-labeled :value label))
 #|
   (let (result)
@@ -157,7 +157,7 @@
                                                     (head (eql :binary-operator))
                                                     &rest args
                                                     &key operator bounds)
-  (format t ":binary-operator make-node head: ~s args: ~s~%" head args)
+;;;  (format t ":binary-operator make-node head: ~s args: ~s~%" head args)
   (let (result)
     (ecase operator
       (:or
@@ -166,7 +166,7 @@
        (setf result (chem:create-log-high-precedence-and nil nil)))
       (:weak-and
        (setf result (chem:create-log-low-precedence-and nil nil))))
-    (format t "Made ~s~%" result)
+;;;    (format t "Made ~s~%" result)
     result))
 
 
@@ -174,12 +174,12 @@
                                                     (head (eql :unary-operator))
                                                     &rest args
                                                     &key operator bounds)
-  (format t ":recursive make-node head: ~s args: ~s~%" head args)
+;;;  (format t ":recursive make-node head: ~s args: ~s~%" head args)
   (let (result)
     (ecase operator
       (:not
        (setf result (chem:create-log-not nil))))
-    (format t "Made ~s~%" result)
+;;;    (format t "Made ~s~%" result)
     result))
 
 
@@ -187,14 +187,14 @@
                                                     (head (eql :chirality))
                                                     &rest args
                                                     &key class count bounds)
-  (format t ":chirality make-node head: ~s args: ~s~%" head args)
+;;;  (format t ":chirality make-node head: ~s args: ~s~%" head args)
   (let (result)
     (ecase count
       (1
        (setf result (chem:create-sapchirality-clockwise)))
       (2
         (setf result (chem:create-sapchirality-anti-clockwise))))
-    (format t "Made ~s~%" result)
+;;;    (format t "Made ~s~%" result)
     result))
 
 
@@ -202,14 +202,14 @@
                                                     (head (eql :charge))
                                                     &rest args
                                                     &key which value bounds)
-  (format t ":charge make-node head: ~s args: ~s~%" head args)
+;;;  (format t ":charge make-node head: ~s args: ~s~%" head args)
   (let (result)
     (ecase which
       (:positive
        (setf result (chem:create-sappositive-charge value)))
       (:negative
        (setf result (chem:create-sapnegative-charge value))))
-    (format t "Made ~s~%" result)
+;;;    (format t "Made ~s~%" result)
     result))
 
 
@@ -217,7 +217,8 @@
                                                     (head (eql :recursive))
                                                     &rest args
                                                     &key pattern)
-  (format t ":recursive make-node head: ~s args: ~s~%" head args))
+  (format t ":recursive make-node head: ~s args: ~s~%" head args)
+  )
 
 
 #+(or)
@@ -317,18 +318,18 @@
                                                  (left chem:logical)
                                                  (right integer)
                                                  &key key)
-  (format t ":expression relate head: ~s left: ~s right:~s~%" head left right)
+;;;  (format t ":expression relate head: ~s left: ~s right:~s~%" head left right)
     (let (result)
       (if (>= right 0)
           (setf result (chem:create-sappositive-charge right))
           (setf result (chem:create-sapnegative-charge right)))
-      (format t "Made ~s~%" result)
+;;;      (format t "Made ~s~%" result)
       (if (chem:get-left left)
           (progn
-            (format t "left ~a~%" (chem:get-left left))
+;;;            (format t "left ~a~%" (chem:get-left left))
             (chem:set-right left result))
           (progn
-            (format t "no left~%")
+;;;            (format t "no left~%")
             (chem:set-left left result))))
   left)
 
@@ -337,13 +338,13 @@
                                                  (left chem:logical)
                                                  (right t)
                                                  &key key)
-  (format t ":expression relate  head: ~s left: ~s right:~s~%" head left right)
+;;;  (format t ":expression relate  head: ~s left: ~s right:~s~%" head left right)
   (if (chem:get-left left)
       (progn
-        (format t "left ~a~%" (chem:get-left left))
+;;;        (format t "left ~a~%" (chem:get-left left))
         (chem:set-right left right))
       (progn
-        (format t "no left~%")
+;;;        (format t "no left~%")
         (chem:set-left left right)))
   left)
 
@@ -360,25 +361,25 @@
                                                  (left chem:logical)
                                                  (right integer)
                                                  &key key)
-  (format t ":operand relate a head: ~s left: ~s right:~s~%" head left right)
-    (let (result)
-      (if (>= right)
-          (setf result (chem:create-sapatomic-mass right))
-          (error "mass must be positive"))
-      (format t "Made ~s~%" result)
-      (if (chem:get-left left)
-          (progn
-            (format t "left ~a~%" (chem:get-left left))
-            (chem:set-right left result))
-          (progn
-            (format t "no left~%")
-            (chem:set-left left result)))
-      ;; for [2H]
-      #+(or)(if (chem:get-right left)
-          (format t "type ~a~%" (chem:my-type (chem:get-right left))))
-      #+(or)(if (and (chem:get-right left)
-               (eql (chem:my-type (chem:get-right left)) :saptotal-hcount))
-          (chem:set-right left (chem:create-sappositive-charge right))))
+;;;  (format t ":operand relate a head: ~s left: ~s right:~s~%" head left right)
+  (let (result)
+    (if (>= right)
+        (setf result (chem:create-sapatomic-mass right))
+        (error "mass must be positive"))
+;;;    (format t "Made ~s~%" result)
+    (if (chem:get-left left)
+        (progn
+;;;          (format t "left ~a~%" (chem:get-left left))
+          (chem:set-right left result))
+        (progn
+;;;          (format t "no left~%")
+          (chem:set-left left result)))
+    ;; for [2H]
+    #+(or)(if (chem:get-right left)
+              (format t "type ~a~%" (chem:my-type (chem:get-right left))))
+    #+(or)(if (and (chem:get-right left)
+                   (eql (chem:my-type (chem:get-right left)) :saptotal-hcount))
+              (chem:set-right left (chem:create-sappositive-charge right))))
   left)
 
 (defmethod architecture.builder-protocol:relate ((builder (eql :cando))
@@ -386,13 +387,13 @@
                                                  (left chem:logical)
                                                  (right t)
                                                  &key key)
-  (format t ":operand relate head: ~s left: ~s right:~s~%" head left right)
+;;;  (format t ":operand relate head: ~s left: ~s right:~s~%" head left right)
   (if (chem:get-left left)
       (progn
-        (format t "left ~a~%" (chem:get-left left))
+;;;        (format t "left ~a~%" (chem:get-left left))
         (chem:set-right left right))
       (progn
-        (format t "no left~%")
+;;;        (format t "no left~%")
         (chem:set-left left right)))
   left)
 
@@ -416,7 +417,7 @@
                                                  (left cons)     
                                                  (right   t)
                                                  &key)
-  (format t ":element relate head: ~s left: ~s right:~s~%" relation left right)
+;;;  (format t ":element relate head: ~s left: ~s right:~s~%" relation left right)
   ;; scymtym's suggestion
   (let ((new (chem:make-chain.head.tail right nil)))
     (when (not (car left))
@@ -432,11 +433,11 @@
                                                  (left cons)     
                                                  (right chem:chain)
                                                  &key)
-  (format t ":element branch relate head: ~s left: ~s right:~s~%" relation left right)
+;;;  (format t ":element branch relate head: ~s left: ~s right:~s~%" relation left right)
   ;; scymtym's suggestion
   (let ((branch (chem:make-branch.left.right right nil))) ; (cdr left) right)))
     (alexandria:when-let ((last (cdr left)))
-                         (format t ":element branch relate chain-set-tail last: ~a branch: ~a~%" last branch)
+;;;                         (format t ":element branch relate chain-set-tail last: ~a branch: ~a~%" last branch)
                          (set-tail-or-right last branch)
                          #+(or)(setf (chain-tail last) new))
     (setf (cdr left) branch))
@@ -487,7 +488,7 @@
 (defmethod build ((head (eql :atom)) tree &rest args)
   (cond
     ((consp tree)
-     (format t "Tree: ~s~%" (car (car tree)))
+;;;     (format t "Tree: ~s~%" (car (car tree)))
      (apply 'build (car (car tree))))
     (t (let* ((kind (getf args :kind))
               (symbol-name (getf args :symbol))
@@ -533,7 +534,7 @@
 
 (defmethod walk-smarts (parent (child chem:atom-test))
   (let ((test-type (chem:get-ring-test child)))
-    (format t "test-type ~s for ~s~%" test-type child)
+;;;    (format t "test-type ~s for ~s~%" test-type child)
     (when (eq test-type :sarring-test)
       (let* ((tag (chem:get-ring-id child))
              (bounds (chem:bounds child))
@@ -547,7 +548,7 @@
 
 (defmethod walk-smarts (parent (child chem:logical))
   (let ((test-type (chem:get-ring-test child)))
-    (format t "test-type ~s for ~s~%" test-type child)
+;;;    (format t "test-type ~s for ~s~%" test-type child)
     (when (eq test-type :sarring-test)
       (let* ((tag (chem:get-ring-id child))
              (bounds (chem:bounds child))
