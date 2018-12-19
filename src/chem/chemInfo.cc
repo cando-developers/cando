@@ -1145,7 +1145,7 @@ bool AtomTest_O::matches(Root_sp root, chem::Atom_sp atom) {
       LOG(BF("No match")); //
       break;
   case SAPResidueTest:
-      SIMPLE_ERROR(BF("What do I do with SAPResidueText"));
+      SIMPLE_WARN(BF("What do I do with SAPResidueText"));
 #if 0
       LOG(BF("SAPResidueTest looking for tag: %s") % this->_StringArg);
       if (!root->getMatch()->recognizesAtomTag(chemkw_intern(this->_StringArg))) {
@@ -1746,7 +1746,7 @@ bool AntechamberBondTest_O::matchBasic(AntechamberRoot_sp root, chem::Atom_sp at
       goto FAIL;
   }
   if (this->_Tag.notnilp()) {
-    SIMPLE_ERROR(BF("What do I do with the tag %s for AntechamberBondTest %s") % _rep_(this->_Tag) % _rep_(this->asSmartPtr()));
+    SIMPLE_WARN(BF("%s:%d What do I do with the tag %s for AntechamberBondTest %s") % __FILE__ % __LINE__ % _rep_(this->_Tag) % _rep_(this->asSmartPtr()));
 //    root->getMatch()->defineAtomTag(atom, this->_Tag);
   }
   //SUCCESS:

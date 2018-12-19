@@ -445,12 +445,12 @@
 (esrap:defrule chemical-environment-atom.element.number.bracketed-atom-property-or-null.tag-name-or-null
     (and ap-element-wild number bracketed-atom-property-or-null tag-name-or-null)
   (:destructure (element number property tag)
-                (chem:make-antechamber-bond-test (intern element :keyword) number property (intern tag :keyword))))
+                (chem:make-antechamber-bond-test (intern element :keyword) number property (and nil (intern tag :keyword)))))
 
 (esrap:defrule chemical-environment-atom.element.bracketed-atom-property-or-null.tag-name-or-null
     (and ap-element-wild bracketed-atom-property-or-null tag-name-or-null)
   (:destructure (element property tag)
-                (chem:make-antechamber-bond-test (intern element :keyword) -1 property (intern tag :keyword))))
+                (chem:make-antechamber-bond-test (intern element :keyword) -1 property (and nil (intern tag :keyword)))))
 
 (esrap:defrule element
     (or ap-element-wild
@@ -477,7 +477,7 @@
 
 (esrap:defrule tag-name-or-null.null
     (and)
-  (:constant ""))
+  (:constant nil))
 
 (esrap:defrule tag-name-or-null.ap-tag
     (and "<" ap-tag ">")
