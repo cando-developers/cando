@@ -2,7 +2,7 @@
 
 (defstruct (progress-bar
             (:constructor make-progress-bar
-                (&key (total 100.0) (divisions 10.0)
+                (&key (total 100.0) (divisions 100.0)
                    (message "Completed")
                    (message-width 10)
                    (bar-character #\*)
