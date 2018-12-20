@@ -45,7 +45,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/symbolTable.h>
 #include <clasp/core/wrappers.h>
 
-#if 0
+#if 1
 #define CI_LOG(x) printf x;
 #else
 #define CI_LOG(x)
@@ -1192,6 +1192,7 @@ bool AtomTest_O::matches(Root_sp root, chem::Atom_sp atom) {
       // We have an atom and we have a tag in this->_IntArg
       ChemInfoMatch_sp match =  gc::As<ChemInfoMatch_sp>(_sym_STARcurrent_matchSTAR->symbolValue());
       match->defineAtomTag(atom,core::make_fixnum(this->_IntArg));
+      goto SUCCESS;
     }
       break;
   case SAPConnectivity: // No implicit H's so Connectivity == Degree
