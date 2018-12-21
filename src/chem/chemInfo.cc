@@ -45,7 +45,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/symbolTable.h>
 #include <clasp/core/wrappers.h>
 
-#if 1
+#if 0
 #define CI_LOG(x) printf x;
 #else
 #define CI_LOG(x)

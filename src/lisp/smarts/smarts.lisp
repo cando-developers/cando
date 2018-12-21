@@ -290,12 +290,13 @@
 (defmethod architecture.builder-protocol:relate ((builder (eql :cando))
                                                  (head (eql :atom))
                                                  (left chem:bond-test)
-                                                 (right chem:atom-test)
+                                                 (right chem:atom-or-bond-match-node)
                                                  &key key)
 ;;  (format t "(:atom bond-test atom-test) relate head: ~s left: ~s right:~s~%" head left right)
   (chem:set-atom-test left right)
   left)
 
+#+(or)
 (defmethod architecture.builder-protocol:relate ((builder (eql :cando))
                                                  (head (eql :atom))
                                                  left
