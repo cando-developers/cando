@@ -2006,11 +2006,12 @@ bool AntechamberRoot_O::matches(Root_sp root, chem::Atom_sp atom) {
   return false;
 }
 
-
-CL_DEFUN SmartsRoot_sp chem__compile_smarts(const string& code) {
+CL_LAMBDA(code &key tests);
+CL_DEFUN SmartsRoot_sp chem__compile_smarts(const string& code, core::List_sp tests) {
   core::SimpleBaseString_sp scode = core::SimpleBaseString_O::make(code);
   ChemInfoNode_sp node = gc::As<ChemInfoNode_sp>(core::eval::funcall(_sym_parse_smarts,scode));
   SmartsRoot_sp root = SmartsRoot_O::make(node);
+  root->setTests(tests);
   return root;
 }
 

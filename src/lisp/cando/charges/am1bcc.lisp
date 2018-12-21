@@ -132,7 +132,7 @@
 
 
 
-(defparameter *carboxyl-nitro-pattern* (smarts:make-chem-info :smarts "[$(C1(=O2)-[O&-;X1]3),$([N;+]1(=O2)-[O&-;X1]3)]"))
+(defparameter *carboxyl-nitro-pattern* (chem:compile-smarts "[$([C:1](=[O:2])-[O&-;X1:3]),$([N;+:1](=[O:2])-[O&-;X1:3])]"))
 
 ;;
 ;; Assign Am1Bcc bond types for all bonds
@@ -214,10 +214,10 @@
 
 
 ;; CSMARTS rules for carbon atom types
-(defvar *cx3=c* (smarts:make-chem-info :smarts "[C&X3]=C"))
-(defvar *cx3=norp* (smarts:make-chem-info :smarts "[C&X3]=[N,P]"))
-(defvar *cx3=oors* (smarts:make-chem-info :smarts "[C&X3]=[O,S]"))
-(defvar *cx3-ox2_cx3-nx2* (smarts:make-chem-info :smarts "[$([C&X3]-[O&X2]),$([C&X3]~[N&X2])]"))
+(defvar *cx3=c* (chem:compile-smarts "[C&X3]=C"))
+(defvar *cx3=norp* (chem:compile-smarts "[C&X3]=[N,P]"))
+(defvar *cx3=oors* (chem:compile-smarts "[C&X3]=[O,S]"))
+(defvar *cx3-ox2_cx3-nx2* (chem:compile-smarts "[$([C&X3]-[O&X2]),$([C&X3]~[N&X2])]"))
 
 #|
 (defun make-chem-info (&key smarts)
@@ -244,9 +244,9 @@
 
 
 
-(defvar *match-lactone-lactam* (smarts:make-chem-info :smarts "[$(O=C1-[O,N]~[*]~[*]~[*]1),$(O=C1-[O,N]~[*]~[*]~[*]~[*]1),$(O=C1-[O,N]~[*]~[*]~[*]~[*]~[*]1),$(O=C1-[O,N]~[*]~[*]~[*]~[*]~[*]~[*]1)]"))
+(defvar *match-lactone-lactam* (chem:compile-smarts "[$(O=[C:1]-[O,N]~[*]~[*]~[*:1]),$(O=[C:1]-[O,N]~[*]~[*]~[*]~[*:1]),$(O=[C:1]-[O,N]~[*]~[*]~[*]~[*]~[*:1]),$(O=[C:1]-[O,N]~[*]~[*]~[*]~[*]~[*]~[*:1])]"))
 
-(defvar *match-ester-acid* (smarts:make-chem-info :smarts "O=C-[O]"))
+(defvar *match-ester-acid* (chem:compile-smarts "O=C-[O]"))
 
 (defun apply-oxygen-atom-types (a)
   (cond
@@ -255,8 +255,8 @@
    ((chem:matches *match-ester-acid* a)     (set-am1-bcc-type a 32))
    (t (set-am1-bcc-type a 31))))
 
-(defvar *n-higly-deloc* (smarts:make-chem-info :smarts "N(-[C]=[C])-[C]=[C]"))
-(defvar *ndeloc* (smarts:make-chem-info :smarts "N-[C]=[C]"))
+(defvar *n-higly-deloc* (chem:compile-smarts "N(-[C]=[C])-[C]=[C]"))
+(defvar *ndeloc* (chem:compile-smarts "N-[C]=[C]"))
 
 
 ;; Figure out what these properties deloc and hdeloc really mean

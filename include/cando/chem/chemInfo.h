@@ -968,6 +968,7 @@ public:
     GC_ALLOCATE_VARIADIC(Root_O, obj, node ); // RP_Create<Root_O>(lisp);
     return obj;
   }
+  void setTests(core::List_sp tests) { this->_Tests = tests; };
   void addTest(core::Symbol_sp testSymbol, core::Function_sp testCode);
   bool evaluateTest(core::Symbol_sp testSym, Atom_sp atom);
   virtual core::Symbol_sp getAssignType() { return _Nil<core::Symbol_O>();};

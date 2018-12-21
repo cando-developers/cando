@@ -117,7 +117,7 @@ This is for looking up parts but if the thing returned is not a part then return
                                          plug2name))
       molecule)))
 
-(defvar *alpha-carbon* (smarts:make-chem-info :smarts "[C&H1](-N)(-C=O)"))
+(defvar *alpha-carbon* (chem:compile-smarts "[C&H1](-N)(-C=O)"))
 
 (defun find-ends (molecule)
   (let (ends)

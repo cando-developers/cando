@@ -28,5 +28,4 @@
 (defpackage #:smarts
   (:use #:common-lisp)
   (:export
-   #:make-chem-info
    ))
