@@ -226,16 +226,12 @@ SYMBOL_EXPORT_SC_(ChemPkg,STARAtomExoToSixMemberedRingSTAR);
 
 void	RestrainedExoCyclicAtom_O::lazyInitializeSmarts()
 {_OF();
+  SIMPLE_ERROR(BF("Fix me - my smarts is wrong"));
     if ( !RestrainedExoCyclicAtom_O::_LazyInitializedSmarts )
     {
 	RestrainedExoCyclicAtom_O::_LazyInitializedSmarts = true;
-        ChemInfo_sp atomExoToSixMemberedRing = ChemInfo_O::create();
-	bool success = atomExoToSixMemberedRing->compileSmarts("[*]9[*]1[*]2[*]3[*]4[*]5[*]6[?9]");
+        SmartsRoot_sp atomExoToSixMemberedRing = chem__compile_smarts("[*]9[*:1][*:2][*:3][*:4][*:5][*:6][*]9");
         chem::_sym_STARAtomExoToSixMemberedRingSTAR->defparameter(atomExoToSixMemberedRing);
-	if ( !success )
-	{
-	    SIMPLE_ERROR(BF("Error compiling SMARTS code for _AtomExoToSixMemberedRing"));
-	}
     }
 }
 
@@ -278,30 +274,26 @@ void	RestrainedExoCyclicAtom_O::archiveBase(core::ArchiveP node)
 
 void RestrainedExoCyclicAtom_O::fillRestraints(Residue_sp residue )
 {_OF();
+  SIMPLE_ERROR(BF("Fix the implementation of %s") % __FUNCTION__);
     this->lazyInitializeSmarts();
     if ( !residue->hasAtomWithName(this->_ExoCyclicAtomName) )
     {
 	SIMPLE_ERROR(BF("Residue(%s) doesn't have atom with name(%s)") % residue->description() % this->_ExoCyclicAtomName );
     }
     Atom_sp exoCyclicAtom = residue->atomWithName(this->_ExoCyclicAtomName);
-    ChemInfo_sp atomExoToSixMemberedRing = gctools::As<ChemInfo_sp>(chem::_sym_STARAtomExoToSixMemberedRingSTAR->symbolValue());
-    ChemInfoMatch_sp match = atomExoToSixMemberedRing->matches_atom(exoCyclicAtom);
-    if ( !match->matches() )
+    Root_sp atomExoToSixMemberedRing = gctools::As<Root_sp>(chem::_sym_STARAtomExoToSixMemberedRingSTAR->symbolValue());
+    core::T_mv match_mv = chem__chem_info_match(atomExoToSixMemberedRing,exoCyclicAtom);
+    if ( match_mv.nilp() )
     {
 	SIMPLE_ERROR(BF("In residue(%s) the atom with name(%s) is not exo-cyclic to a six-membered ring") % residue->description() % _rep_(this->_ExoCyclicAtomName) );
     }
-    SYMBOL_EXPORT_SC_(ChemKwPkg,1);
-    SYMBOL_EXPORT_SC_(ChemKwPkg,2);
-    SYMBOL_EXPORT_SC_(ChemKwPkg,3);
-    SYMBOL_EXPORT_SC_(ChemKwPkg,4);
-    SYMBOL_EXPORT_SC_(ChemKwPkg,5);
-    SYMBOL_EXPORT_SC_(ChemKwPkg,6);
-    Atom_sp a1 = match->tag(chemkw::_sym_1);
-    Atom_sp a2 = match->tag(chemkw::_sym_2);
-    Atom_sp a3 = match->tag(chemkw::_sym_3);
-    Atom_sp a4 = match->tag(chemkw::_sym_4);
-    Atom_sp a5 = match->tag(chemkw::_sym_5);
-    Atom_sp a6 = match->tag(chemkw::_sym_6);
+    ChemInfoMatch_sp match = gc::As<ChemInfoMatch_sp>(match_mv.second());
+    Atom_sp a1 = match->tag(core::make_fixnum(1));
+    Atom_sp a2 = match->tag(core::make_fixnum(2));
+    Atom_sp a3 = match->tag(core::make_fixnum(3));
+    Atom_sp a4 = match->tag(core::make_fixnum(4));
+    Atom_sp a5 = match->tag(core::make_fixnum(5));
+    Atom_sp a6 = match->tag(core::make_fixnum(6));
     FIX_ME(); // is the above correct?
 }
 

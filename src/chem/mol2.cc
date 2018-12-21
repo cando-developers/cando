@@ -65,7 +65,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/chemPackage.fwd.h>
 #include <cando/chem/aggregate.h>
 #include <cando/chem/chemInfo.h>
-#include <cando/chem/typeAssignmentRules.h>
 
 namespace chem {
 
@@ -118,14 +117,6 @@ void	Mol2File::openFileName(core::T_sp pn)
 Mol2File::~Mol2File() {
   cl__close(fIn);
 };
-
-
-
-
-
-//chem::TypeAssignmentRules_sp	sybylRules;
-
-
 
 struct TriposMolecule {
 	string	mMoleculeName;
@@ -808,133 +799,6 @@ core::T_sp mol2Read(Mol2File& fIn)
     SIMPLE_ERROR(BF("You must pass a Molecule or Aggregate"));
   }
 
-
-
-#if 0
-  void	initialize_mol2_type_rules()
-  {
-    printf("%s:%d  In initialize_mol2_type_rules\n",__FILE__, __LINE__);
-    LOG(BF("Initializing sybyl types") );
-    GC_ALLOCATE(chem::WildElementDict_O,wilds);
-	// WILDATOM XX C N O S P
-    SYMBOL_EXPORT_SC_(ChemKwPkg,XX);
-    SYMBOL_EXPORT_SC_(ChemKwPkg,XA);
-    SYMBOL_EXPORT_SC_(ChemKwPkg,XB);
-    SYMBOL_EXPORT_SC_(ChemKwPkg,XC);
-    SYMBOL_EXPORT_SC_(ChemKwPkg,XD);
-
-    wilds->addWildName(chemkw::_sym_XX);
-    wilds->addWildNameMap(chemkw::_sym_XX,chemkw::_sym_C);
-    wilds->addWildNameMap(chemkw::_sym_XX,chemkw::_sym_N);
-    wilds->addWildNameMap(chemkw::_sym_XX,chemkw::_sym_O);
-    wilds->addWildNameMap(chemkw::_sym_XX,chemkw::_sym_S);
-    wilds->addWildNameMap(chemkw::_sym_XX,chemkw::_sym_P);
-	// WILDATOM XA O S
-    wilds->addWildName(chemkw::_sym_XA);
-    wilds->addWildNameMap(chemkw::_sym_XA,chemkw::_sym_O);
-    wilds->addWildNameMap(chemkw::_sym_XA,chemkw::_sym_S);
-	// WILDATOM XB N P
-    wilds->addWildName(chemkw::_sym_XB);
-    wilds->addWildNameMap(chemkw::_sym_XB,chemkw::_sym_N);
-    wilds->addWildNameMap(chemkw::_sym_XB,chemkw::_sym_P);
-	// WILDATOM XC F Cl Br I
-    wilds->addWildName(chemkw::_sym_XC);
-    wilds->addWildNameMap(chemkw::_sym_XC,chemkw::_sym_F);
-    wilds->addWildNameMap(chemkw::_sym_XC,chemkw::_sym_Cl);
-    wilds->addWildNameMap(chemkw::_sym_XC,chemkw::_sym_Br);
-    wilds->addWildNameMap(chemkw::_sym_XC,chemkw::_sym_I);
-	// WILDATOM XD S P
-    wilds->addWildName(chemkw::_sym_XD);
-    wilds->addWildNameMap(chemkw::_sym_XD,chemkw::_sym_S);
-    wilds->addWildNameMap(chemkw::_sym_XD,chemkw::_sym_P);
-    const char*	sybylTypeRules[] = {
-        "ATD  C.3   *   6   4   &",
-        "ATD  C.cat *   6   3   *   *   *  		(N3,N3,N3)  &",
-        "ATD  C.ar  *   6   3   *   *   [AR1]    &",
-        "ATD  C.2   *   6   3   & ",
-        "ATD  C.1   *   6   2   & ",
-        "ATD  C.1   *   6   1   & ",
-        "ATD  H     *   1   &  ",
-        "ATD  F     *   9   &",
-        "ATD  Cl    *   17  &",
-        "ATD  Br    *   35  &      ",
-        "ATD  I     *   53  & ",
-        "ATD  P.3   *   15  & ",
-        "ATD  N.4   *   7   4   & ",
-        "ATD  N.am  *   7   3   *   *   *                (C3(XA1))       &",
-        "ATD  N.pl3 *   7   3   *   *   *       		(O1,O1)		& ",
-        "ATD  N.pl3 *   7   3   *   *   [AR1.AR2.AR3]    &",
-        "ATD  N.3   *   7   3   & ",
-        "ATD  N.ar  *   7   2   *   *   [AR1]    &",
-        "ATD  N.2   *   7   2   & ",
-        "ATD  N.1   *   7   1   & ",
-        "ATD  O.co2 *   8   1   *   *   *       		(C3(O1))	& ",
-        "ATD  O.co2 *   8   1   *   *   *       		(P(O1))		& ",
-        "ATD  O.2   *   8   1   & ",
-        "ATD  O.3   *   8   2   &",
-        "ATD  S.2   *   16  1   & ",
-        "ATD  S.3   *   16  2   & ",
-        "ATD  S.o   *   16  3   *   *   *       		(O1[DB'])  	&     ",
-        "ATD  S.o2  *   16  4   *   *   *       		(O1[DB'],O1[DB'])  	&     ",
-        "ATD  s.3   *   16  &  ",
-        "ATD  Li    *   3   & ",
-        "ATD  Be    *   4   & ",
-        "ATD  B     *   5   & ",
-        "ATD  Na    *   11  & ",
-        "ATD  Mg    *   12  & ",
-        "ATD  Al    *   13  & ",
-        "ATD  Si    *   14  & ",
-        "ATD  K     *   19  & ",
-        "ATD  Ca    *   20  & ",
-        "ATD  Sr    *   38  & ",
-        "ATD  Ba    *   56  & ",
-        "ATD  Sc    *   21  & ",
-        "ATD  Ti    *   22  & ",
-        "ATD  V     *   23  & ",
-        "ATD  Cr    *   24  & ",
-        "ATD  Mn    *   25  & ",
-        "ATD  Fe    *   26  & ",
-        "ATD  Co    *   27  & ",
-        "ATD  Ni    *   28  & ",
-        "ATD  Cu    *   29  & ",
-        "ATD  Zn    *   30  & ",
-        "ATD  Ga    *   31  & ",
-        "ATD  Ge    *   32  & ",
-        "ATD  As    *   33  & ",
-        "ATD  Se    *   34  & ",
-        "ATD  Ru    *   44  & ",
-        "ATD  Rh    *   45  & ",
-        "ATD  Pd    *   46  & ",
-        "ATD  Ag    *   47  & ",
-        "ATD  Cd    *   48  & ",
-        "ATD  Pt    *   78  & ",
-        "ATD  Au    *   79  & ",
-        "ATD  Hg    *   80  & ",
-        "ATD  Tl    *   81  & ",
-        "ATD  Pb    *   82  & ",
-        "ATD  lp    *   0   1   &",
-        "ATD  ANY   & ",
-        ""
-    };
-
-    chem::TypeAssignmentRules_sp sybylRules = chem::TypeAssignmentRules_O::create();
-    sybylRules->setWildElementDict(wilds);
-    _sym_STARparserNodeHolderSTAR->defparameter(adapt::IndexedObjectBag_O::create());
-    for ( uint i=0; strlen(sybylTypeRules[i])>0; i++ )
-    {
-      const char* typeRuleString = sybylTypeRules[i];
-      chem::OneTypeRule_sp rule = chem::OneTypeRule_O::create();
-      chem::ChemInfo_sp match = chem::ChemInfo_O::create();
-      if (match->compileAntechamber(typeRuleString,wilds)) {
-        rule->setAssignTypeName(match->getAssignType());
-        rule->setCode(match);
-        sybylRules->appendRule(rule);
-      }
-    }
-    SYMBOL_EXPORT_SC_(ChemPkg,STARsybyl_type_assignment_rulesSTAR);
-    chem::_sym_STARsybyl_type_assignment_rulesSTAR->defparameter(sybylRules);
-  }
-#endif
 
 
 

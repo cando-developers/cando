@@ -135,16 +135,9 @@ void energyFunction_initializeSmarts()
   if ( energyFunctionInitialized ) return;
   _sym_STARparserNodeHolderSTAR->defparameter(adapt::IndexedObjectBag_O::create());
   energyFunctionInitialized = true;
-  ChemInfo_sp secondaryAmide = ChemInfo_O::create();
-  bool ok = secondaryAmide->compileSmarts("[$(N1(C2)(~[#1]3)~C4(=O5)C6)]");
+  SmartsRoot_sp secondaryAmide = chem__compile_smarts("[$([N:1]([C:2])(~[#1:3])~[C:4](=[O:5])[C:6])]");
   _sym_STARsecondaryAmideSmartsSTAR->defparameter(secondaryAmide);
-  if ( !ok )
-  {
-    SIMPLE_ERROR(BF("Error compiling secondary amide MSMARTS"));
-  }
 }
-
-
 
 CL_LAMBDA(matter force-field-system &key use-excluded-atoms active-atoms show-progress (assign-types t));
 CL_LISPIFY_NAME(make_energy_function);
@@ -1100,16 +1093,16 @@ void EnergyFunction_O::__createSecondaryAmideRestraints(gctools::Vec0<Atom_sp>& 
   double weight = 1.0;
   for ( ni=nitrogens.begin(); ni!=nitrogens.end(); ni++ )
   {
-    ChemInfo_sp secondaryAmide = gctools::As<ChemInfo_sp>(chem::_sym_STARsecondaryAmideSmartsSTAR->symbolValue());
-    ChemInfoMatch_sp match = secondaryAmide->matches_atom(*ni);
-    if ( match->matches() )
-    {
-      Atom_sp ax = match->tag(chemkw::_sym_1);
-      Atom_sp ax1 = match->tag(chemkw::_sym_2);
-      Atom_sp ax2 = match->tag(chemkw::_sym_3);
-      Atom_sp ay = match->tag(chemkw::_sym_4);	// Carbonyl carbon
-      Atom_sp ay1 = match->tag(chemkw::_sym_5);
-      Atom_sp ay2 = match->tag(chemkw::_sym_6);
+    SmartsRoot_sp secondaryAmide = gctools::As<SmartsRoot_sp>(chem::_sym_STARsecondaryAmideSmartsSTAR->symbolValue());
+    core::T_mv match_mv = chem__chem_info_match(secondaryAmide,*ni);
+    if ( match_mv.notnilp() ) {
+      ChemInfoMatch_sp match = gc::As<ChemInfoMatch_sp>(match_mv.second());
+      Atom_sp ax = match->tag(core::make_fixnum(1));
+      Atom_sp ax1 = match->tag(core::make_fixnum(2));
+      Atom_sp ax2 = match->tag(core::make_fixnum(3));
+      Atom_sp ay = match->tag(core::make_fixnum(4));	// Carbonyl carbon
+      Atom_sp ay1 = match->tag(core::make_fixnum(5));
+      Atom_sp ay2 = match->tag(core::make_fixnum(6));
 		    //
 		    // If amide carbonyl carbon is in ring
 		    // then we want a cis amide bond

@@ -39,6 +39,7 @@ namespace chem {
 
 void	OneTypeRule_O::initialize()
 {
+  DEPRECATED();
     this->Base::initialize();
     this->_Match = _Nil<ChemInfo_O>();
 }
@@ -66,6 +67,7 @@ void    OneTypeRule_O::fields(core::Record_sp node)
 
 void	TypeAssignmentRules_O::initialize()
 {
+  DEPRECATED();
     this->Base::initialize();
     this->_WildElementDict = _Nil<WildElementDict_O>();
     this->_Rules = core::MDArrayT_O::make(0,_Nil<T_O>(),core::make_fixnum(0));

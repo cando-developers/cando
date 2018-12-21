@@ -49,6 +49,5 @@ FORWARD(AfterMatchBondTest);
 FORWARD(Root);
 FORWARD(SmartsRoot);
 FORWARD(AntechamberRoot);
-FORWARD(ChemInfo);
 }
 #endif

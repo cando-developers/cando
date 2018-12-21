@@ -29,4 +29,6 @@
   (:use #:common-lisp)
   (:export
    #:make-chem-info
+   #:compile-smarts
+   #:print-smarts
    ))

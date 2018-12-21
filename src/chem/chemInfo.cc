@@ -45,6 +45,11 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/symbolTable.h>
 #include <clasp/core/wrappers.h>
 
+
+SYMBOL_EXPORT_SC_(ChemPkg,parse_smarts);
+SYMBOL_EXPORT_SC_(ChemPkg,compile_antechamber_type_rule);
+
+
 #if 0
 #define CI_LOG(x) printf x;
 #else
@@ -295,6 +300,8 @@ void ResidueList_O::fields(core::Record_sp node) {
   // do nothing
 }
 
+
+#if 0
 void ChemInfo_O::initialize() {
   this->Base::initialize();
   this->_Code = "";
@@ -308,8 +315,6 @@ uint ChemInfo_O::depth() const {
   LOG(BF("Returning depth=%d") % d);
   return d;
 }
-
-SYMBOL_EXPORT_SC_(ChemPkg,parse_smarts);
 
 CL_LISPIFY_NAME("compileSmarts");
 CL_DEFMETHOD bool ChemInfo_O::compileSmarts(const string &code) {
@@ -359,7 +364,6 @@ string ChemInfo_O::descriptionOfContents() const {
 }
 
 
-SYMBOL_EXPORT_SC_(ChemPkg,compile_antechamber_type_rule);
 CL_LISPIFY_NAME("compileAntechamber");
 CL_DEFMETHOD
 /*! This function invokes chem:compile-antechamber-type-rule
@@ -419,6 +423,7 @@ void ChemInfo_O::fields(core::Record_sp node) {
   //  this->Base::fields(node);
   node->field(INTERN_(kw, root), this->_Root);
 }
+#endif
 
 struct ChemInfoTypeToName {
   ChemInfoType type;
@@ -1832,33 +1837,28 @@ void AntechamberBondTest_O::fields(core::Record_sp node) {
 
 uint Root_O::depth() const {
   _OF();
-  uint res = MAX(af_depth(this->_FirstTest), af_depth(this->_Chain) + 1);
+  uint res = af_depth(this->_Node);
   LOG(BF("Returning %d") % res);
   return res;
 }
 
 core::T_sp Root_O::children() {
   ql::list result;
-  if (this->_FirstTest.notnilp()) result << this->_FirstTest;
-  if (this->_Chain.notnilp()) result << this->_Chain;
+  if (this->_Node.notnilp()) result << this->_Node;
   return result.cons();
 };
 
 string Root_O::asSmarts() const {
   stringstream ss;
-  if (this->_FirstTest.notnilp()) {
-    ss << this->_FirstTest->asSmarts();
-  }
-  if (this->_Chain.notnilp()) {
-    ss << "(" << this->_Chain->asSmarts() << ")";
+  if (this->_Node.notnilp()) {
+    ss << this->_Node->asSmarts();
   }
   return ss.str();
 }
 
 void Root_O::initialize() {
   this->Base::initialize();
-  this->_FirstTest = _Nil<core::T_O>();
-  this->_Chain = _Nil<core::T_O>();
+  this->_Node = _Nil<core::T_O>();
   this->_Tests = core::HashTableEq_O::create_default();
 }
 
@@ -1886,12 +1886,8 @@ bool Root_O::evaluateTest(core::Symbol_sp testSym, Atom_sp atom) {
 }
 
 void Root_O::fields(core::Record_sp node) {
-  node->field_if_not_nil( INTERN_(kw,firstTest), this->_FirstTest);
-  node->field_if_not_nil( INTERN_(kw,chain), this->_Chain);
+  node->field_if_not_nil( INTERN_(kw,node), this->_Node);
   node->field_if_not_nil( INTERN_(kw,tests), this->_Tests);
-#ifdef DEBUG_ON
-  LOG(BF("After load chain=%s") % this->_Chain->description().c_str());
-#endif
   this->Base::fields(node);
 }
 
@@ -1905,23 +1901,13 @@ bool Root_O::matches(Root_sp root, chem::Atom_sp atom) {
   chem::BondList_sp nextBonds;
   bool matches;
   matches = false;
-  ANN(this->_FirstTest);
-  if (this->_FirstTest.notnilp()) {
+  if (this->_Node.notnilp()) {
     CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
-    LOG(BF("_FirstTest is notNil - testing"));
-    if (!this->_FirstTest->matches(root, atom)) {
+    LOG(BF("_Node is notNil - testing"));
+    if (!this->_Node->matches(root, atom)) {
       CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
       goto FAIL;
     }
-  }
-  CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
-  ANN(this->_Chain);
-  if (this->_Chain.notnilp()) {
-    LOG(BF("_Chain is not Nil - testing "));
-    //	nextBonds = atom->getHeavyAtomBondList();
-    nextBonds = atom->getBondList();
-    if (!this->_Chain->matches(root, atom, nextBonds))
-      goto FAIL;
   }
   //SUCCESS:
   LOG(BF("SUCCESS!!!"));
@@ -1934,18 +1920,8 @@ bool Root_O::matches(Root_sp root, chem::Atom_sp atom) {
 CL_LISPIFY_NAME("make-smarts-root");
 CL_DEF_CLASS_METHOD SmartsRoot_sp SmartsRoot_O::make(ChemInfoNode_sp cinode)
 {
-  GC_ALLOCATE(SmartsRoot_O,   obj ); // RP_Create<SmartsRoot_O>(lisp);
-  if (gc::IsA<Chain_sp>(cinode)) {
-    Chain_sp chain = gc::As<Chain_sp>(cinode);
-    obj->_FirstTest =  gc::As<AtomOrBondMatchNode_sp>(chain->chain_get_head());
-    obj->_Chain = gc::As<BondListMatchNode_sp>(chain->chain_get_tail());
-    return obj;
-  } else if (gc::IsA<AtomOrBondMatchNode_sp>(cinode)) {
-    obj->_FirstTest = gc::As<AtomOrBondMatchNode_sp>(cinode);
-    obj->_Chain = _Nil<core::T_O>();
-    return obj;
-  }
-  SIMPLE_ERROR(BF("You cannot create a smarts-root with %s") % _rep_(cinode));
+  GC_ALLOCATE_VARIADIC(SmartsRoot_O, obj, cinode ); // RP_Create<SmartsRoot_O>(lisp);
+  return obj;
 };
 
 
@@ -1979,13 +1955,11 @@ bool SmartsRoot_O::matches(Root_sp root, chem::Atom_sp atom) {
 
 void AntechamberRoot_O::initialize() {
   this->Base::initialize();
-  this->_AssignType = _Nil<core::Symbol_O>();
   this->_AfterMatchTests = _Nil<core::T_O>();
   this->_WildElementDictionary = _Nil<core::T_O>();
 }
 
 void AntechamberRoot_O::fields(core::Record_sp node) {
-  node->field( INTERN_(kw,assignType), this->_AssignType);
   node->field_if_not_nil( INTERN_(kw,afterMatchTests), this->_AfterMatchTests);
   node->field_if_not_nil( INTERN_(kw,wildDict), this->_WildElementDictionary);
   this->Base::fields(node);
@@ -2001,7 +1975,6 @@ core::T_sp AntechamberRoot_O::children() {
 
 string AntechamberRoot_O::descriptionOfContents() const {
   stringstream ss;
-  ss << " :assign-type " << _rep_(this->_AssignType);
   return ss.str();
 }
 
@@ -2033,27 +2006,31 @@ bool AntechamberRoot_O::matches(Root_sp root, chem::Atom_sp atom) {
   return false;
 }
 
-#define ARGS_ChemInfo_O_make "(tests smarts)"
-#define DECL_ChemInfo_O_make ""
-#define DOCS_ChemInfo_O_make "make ChemInfo"
-ChemInfo_sp ChemInfo_O::make(core::List_sp tests, const string &smarts) {
-  
-  GC_ALLOCATE(ChemInfo_O, me);
-  me->compileSmarts(smarts);
-  me->defineTests(tests);
-  if (!me->compileSucceeded()) {
-    SIMPLE_ERROR(BF("%s") % me->compilerMessage());
-  }
-  return me;
-};
 
-CL_LISPIFY_NAME("asSmarts");
-CL_DEFMETHOD string ChemInfo_O::asSmarts() const {
-  _OF();
-  return this->_Root->asSmarts();
+CL_DEFUN SmartsRoot_sp chem__compile_smarts(const string& code) {
+  core::SimpleBaseString_sp scode = core::SimpleBaseString_O::make(code);
+  ChemInfoNode_sp node = gc::As<ChemInfoNode_sp>(core::eval::funcall(_sym_parse_smarts,scode));
+  SmartsRoot_sp root = SmartsRoot_O::make(node);
+  return root;
 }
 
 
+CL_DEFUN AntechamberRoot_mv chem__compile_antechamber(const string& code, WildElementDict_sp dict) {
+  if (!chem::_sym_compile_antechamber_type_rule->fboundp()) {
+    SIMPLE_ERROR(BF("chem:compile-antechamber-type-rule is not fbound"));
+  }
+  LOG(BF("Compiling code: %s") % code.c_str());
+  core::SimpleBaseString_sp scode = core::SimpleBaseString_O::make(code);
+  core::T_mv troot_mv = core::eval::funcall(chem::_sym_compile_antechamber_type_rule->symbolFunction(),_Nil<core::T_O>(),scode,dict);
+  if (troot_mv.nilp()) {
+    SIMPLE_ERROR(BF("Error parsing antechamber type rule %s") % code);
+  }
+  AntechamberRoot_sp root = gc::As<AntechamberRoot_sp>(troot_mv);
+  core::T_sp type = troot_mv.second();
+  root->setElementWildCardDictionary(dict);
+  LOG(BF("antechamber compile was successful"));
+  return Values(root,type);
+}
 
 CL_DEFUN core::T_mv chem__chem_info_match(Root_sp testRoot, Atom_sp atom)
 {

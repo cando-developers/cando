@@ -1,17 +1,8 @@
 
 (in-package :cando)
 
-(defun compile-smarts (smarts-str)
-  "* Arguments
-- smarts-str :: A string
-* Description
-Compile the string into smarts code."
-  (let ((ci (core:make-cxx-object 'chem:chem-info)))
-    (chem:compile-smarts ci smarts-str)
-    ci))
-
-(defparameter *amide-smarts* (compile-smarts "N[C&D3]~O"))
-(defparameter *imidazole-n* (compile-smarts "N([C&D3])[C&D3]"))
+(defparameter *amide-smarts* (smarts:compile-smarts "N[C&D3]~O"))
+(defparameter *imidazole-n* (smarts:compile-smarts "N([C&D3])[C&D3]"))
 (defun calculate-hybridization (atom)
   "* Arguments
 - atom : chem:atom

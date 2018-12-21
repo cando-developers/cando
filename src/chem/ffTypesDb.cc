@@ -52,6 +52,11 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace chem {
 
 
+void FFTypeRule_O::fields(core::Record_sp node)
+{
+  node->field(INTERN_(kw,test), this->_Test);
+  node->field(INTERN_(kw,type), this->_Type);
+}
 
 
 
@@ -75,16 +80,15 @@ CL_DEFMETHOD core::Symbol_sp FFTypesDb_O::assignType(chem::Atom_sp atom, bool ve
     for ( auto it=this->_TypeAssignmentRules.begin();
           it!=this->_TypeAssignmentRules.end(); it++ ) 
     {_BLOCK_TRACEF(BF("Testing rule code(%s)") % (*it)->getCode().c_str() );
-//		LOG(BF("as xml: %s") % ((*it)->asXmlString().c_str() ) );
-      ChemInfo_sp cheminfo = gc::As<ChemInfo_sp>(*it);
-      ChemInfoMatch_sp match = cheminfo->matches_atom(atom);
-      if ( match->matches()) {
-        AntechamberRoot_sp antechamberRoot = gc::As<AntechamberRoot_sp>(cheminfo->_Root);
+      Root_sp root = (*it)->_Test;
+      core::T_mv matches_mv = chem::chem__chem_info_match(root,atom);
+      ChemInfoMatch_sp match = gc::As<ChemInfoMatch_sp>(matches_mv.second());
+      if ( matches_mv.notnilp() ) {
         LOG(BF("Rule MATCH!!!") );
-        if (verbose) core::write_bf_stream(BF("Matched %s\n") % _rep_(cheminfo));
-        return antechamberRoot->_AssignType;
+        if (verbose) core::write_bf_stream(BF("Matched %s\n") % _rep_(root));
+        return (*it)->_Type;
       } else {
-        if (verbose) core::write_bf_stream(BF("Did not match %s\n") % _rep_(cheminfo));
+        if (verbose) core::write_bf_stream(BF("Did not match %s\n") % _rep_(root));
       }
       LOG(BF("Rule does not match, keep going") );
     }
@@ -99,7 +103,6 @@ CL_DEFMETHOD void    FFTypesDb_O::assignTypes(chem::Matter_sp matter)
   chem::Loop    				lAtoms;
   chem::Atom_sp  				atom;
   chem::Matter_sp				c;
-  gctools::Vec0<chem::ChemInfo_sp>::iterator  it;
   chem::Molecule_sp                     	mol;
   chem::Residue_sp				res;
   string 		                        name;
@@ -149,7 +152,7 @@ void FFTypesDb_O::fields(core::Record_sp node)
 
 
 CL_LISPIFY_NAME("FFTypes-getRule");
-CL_DEFMETHOD chem::ChemInfo_sp	FFTypesDb_O::getRule(uint index)
+CL_DEFMETHOD chem::FFTypeRule_sp FFTypesDb_O::getRule(uint index)
 {_OF();
   if ( index < this->_TypeAssignmentRules.size() ) {
     return this->_TypeAssignmentRules[index];

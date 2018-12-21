@@ -40,16 +40,11 @@ void	FrameRecognizer_O::initialize()
     this->_GroupName = _Nil<core::Symbol_O>();
 }
 
-CL_LISPIFY_NAME("compileSmarts");
+CL_LISPIFY_NAME("frame-recognizer-compile-smarts");
 CL_DEFMETHOD void	FrameRecognizer_O::compileSmarts(const string& osm)
 {
     this->_Smarts = osm;
-    this->_ChemInfo = chem::ChemInfo_O::create();
-    this->_ChemInfo ->compileSmarts(this->_Smarts);
-    if ( !this->_ChemInfo->compileSucceeded() )
-    {
-	SIMPLE_ERROR(BF("Error compiling ChemInfo: %s") % this->_ChemInfo);
-    }
+    this->_Root = chem__compile_smarts(this->_Smarts);
     LOG(BF("Successfully compiled smarts code for atom O") );
 //    LOG(BF("ChemInfo code = %s") % this->_ChemInfo->asXmlString());
 }
@@ -98,8 +93,8 @@ CL_DEFMETHOD bool	FrameRecognizer_O::recognizes( Atom_sp o )
 {
     ASSERTNOTNULL(this->_ChemInfo);
     ASSERT(this->_ChemInfo->compileSucceeded());
-    ChemInfoMatch_sp match = this->_ChemInfo->matches_atom(o);
-    return match->matches();
+    core::T_mv match_mv = chem__chem_info_match(this->_Root,o);
+    return match_mv.notnilp();
 }
 
 
@@ -118,13 +113,14 @@ CL_DEFMETHOD ChemInfoMatch_sp FrameRecognizer_O::getMatch()
     this->_Name = fn;
 }
 
+#if 0
 CL_LISPIFY_NAME("depth");
 CL_DEFMETHOD uint FrameRecognizer_O::depth()
 {
     ASSERTNOTNULL(this->_ChemInfo);
-    return this->_ChemInfo->depth();
+    return this->_->depth();
 }
-
+#endif
 
 CL_LISPIFY_NAME("getRecognizerName");
 CL_DEFMETHOD     core::Symbol_sp FrameRecognizer_O::getRecognizerName()
@@ -158,8 +154,6 @@ string FrameRecognizer_O::description() const
 }
 
 
-#if INIT_TO_FACTORIES
-
 #define ARGS_FrameRecognizer_O_make "(name smarts group_name)"
 #define DECL_FrameRecognizer_O_make ""
 #define DOCS_FrameRecognizer_O_make "make FrameRecognizer"
@@ -169,32 +163,9 @@ string FrameRecognizer_O::description() const
     me->_Name = name;
     me->_Smarts = smarts;
     me->_GroupName = groupName;
-    me->_ChemInfo = ChemInfo_O::create();
-    me->_ChemInfo->compileSmarts(me->_Smarts);
-    if ( !me->_ChemInfo->compileSucceeded() )
-    {
-	SIMPLE_ERROR(BF("%s") % me->_ChemInfo->compilerMessage());
-    }
+    me->_Root = chem__compile_smarts(me->_Smarts);
     return me;
   };
-
-#else
-
-    core::T_sp	FrameRecognizer_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
-{_OF();
-    this->_Name = translate::from_object<core::Symbol_O>::convert(env->lookup(Pkg(),"name"));
-    this->_Smarts = translate::from_object<core::Str_O>::convert(env->lookup(Pkg(),"smarts"))->get();
-    this->_GroupName = translate::from_object<core::Symbol_O>::convert(env->lookup(Pkg(),"groupName"));
-    this->_ChemInfo = ChemInfo_O::create();
-    this->_ChemInfo->compileSmarts(this->_Smarts);
-    if ( !this->_ChemInfo->compileSucceeded() )
-    {
-	SIMPLE_ERROR(BF(this->_ChemInfo->compilerMessage()));
-    }
-    return _Nil<core::T_O>();
-}
-
-#endif
 
 
 

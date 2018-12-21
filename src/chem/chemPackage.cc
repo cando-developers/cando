@@ -79,7 +79,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/candoScript.h>
 #include <cando/chem/oligomer.h>
 #include <cando/chem/monomer.h>
-#include <cando/chem/typeAssignmentRules.h>
 #include <cando/chem/pdbMonomer.h>
 #include <cando/chem/pdb.h>
 #include <cando/chem/plug.h>

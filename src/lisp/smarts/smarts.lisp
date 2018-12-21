@@ -587,8 +587,18 @@
         (walk-smarts nil result))
     result))
 
+(defun compile-smarts (smarts-str)
+  "* Arguments
+- smarts-str :: A string
+* Description
+Compile the string into smarts code."
+  (let ((ci (core:make-cxx-object 'chem:chem-info)))
+    (chem:compile-smarts ci smarts-str)
+    ci))
 
-(defun print-smarts (x) (let ((*print-readably* t)) (print-object x *standard-output*)))
+(defun print-smarts (x &optional stream)
+  (let ((*print-readably* t))
+    (print-object x stream)))
 
 
 (eval-when (:load-toplevel :execute)

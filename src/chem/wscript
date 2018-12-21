@@ -80,7 +80,7 @@ def build(bld):
             'ringFinder', 
             'iterateMatter', 
             'macroModel', 
-            'typeAssignmentRules', 
+#            'typeAssignmentRules', 
             'alias', 
             'superposableConformationCollection', 
             'zMatrix', 
@@ -105,7 +105,7 @@ def build(bld):
             'monomer', 
             'conformationExplorer', 
             'conformationCollection', 
-            'gaff_Parser',
+ #           'gaff_Parser',
             'octree' ]:
         source(bld,name)
 

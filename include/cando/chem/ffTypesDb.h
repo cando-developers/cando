@@ -58,14 +58,29 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace chem {
 
-inline	string	XmlTag_FFTypesDb()	{ return "FFTypesDb";};
-
+FORWARD(FFTypeRule);
+class FFTypeRule_O : public core::CxxObject_O
+{
+  LISP_CLASS(chem,ChemPkg,FFTypeRule_O,"FFTypeRule",core::CxxObject_O);
+public:
+  bool fieldsp() const { return true; };
+  void fields(core::Record_sp node);
+public:
+  CL_DEF_CLASS_METHOD static FFTypeRule_sp make(Root_sp rule,core::T_sp type) {
+    GC_ALLOCATE_VARIADIC(FFTypeRule_O,fft,rule,type);
+    return fft;
+  }
+public:
+  Root_sp        _Test;
+  core::T_sp     _Type;
+public:
+  FFTypeRule_O(Root_sp test, core::T_sp type) : _Test(test), _Type(type) {};
+};
+  
 
 ///////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////
-class	FFTypesDb_O;
-    typedef	gctools::smart_ptr<FFTypesDb_O>	FFTypesDb_sp;
 SMART(FFTypesDb);
 class FFTypesDb_O : public FFBaseDb_O
 {
@@ -75,13 +90,13 @@ public:
     bool fieldsp() const { return true; };
     void fields(core::Record_sp node);
 public:
-    gctools::Vec0<ChemInfo_sp>	_TypeAssignmentRules;
+    gctools::Vec0<FFTypeRule_sp>	_TypeAssignmentRules;
     /*! New rules take precedence over old rules and the first rule that matches
         is the one that is used, so new rules need to be prepended to the array. */
     void forceFieldMerge(FFBaseDb_sp other) {
       FFTypesDb_sp other_types_db = gc::As<FFTypesDb_sp>(other);
       size_t new_size = other_types_db->_TypeAssignmentRules.size() + this->_TypeAssignmentRules.size();
-      gctools::Vec0<ChemInfo_sp> newRules;
+      gctools::Vec0<FFTypeRule_sp> newRules;
       newRules.reserve(new_size);
       size_t idx;
       for ( auto it : other_types_db->_TypeAssignmentRules ) {
@@ -94,13 +109,13 @@ public:
     }
 
     CL_LISPIFY_NAME("FFTypesDb-add");
-    CL_DEFMETHOD void	add( chem::ChemInfo_sp ci ) {
+    CL_DEFMETHOD void	add( chem::FFTypeRule_sp ci ) {
 	this->_TypeAssignmentRules.push_back(ci);
     }
 
 CL_LISPIFY_NAME("FFTypesDb-numberOfRules");
 CL_DEFMETHOD     int	numberOfRules() { return this->_TypeAssignmentRules.size();};
-    chem::ChemInfo_sp	getRule(uint index);
+    chem::FFTypeRule_sp	getRule(uint index);
 
     core::HashTableEq_sp atomTypes(chem::Matter_sp matter);
     

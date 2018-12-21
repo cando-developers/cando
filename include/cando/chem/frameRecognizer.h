@@ -68,7 +68,7 @@ private: // ---------------------------------------------------------
 	string			_Smarts;
 
 private: // Do not archive
-	ChemInfo_sp		_ChemInfo;
+  Root_sp		_Root;
 public:
 
 public: // Lisp creation

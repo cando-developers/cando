@@ -23,7 +23,7 @@ THE SOFTWARE.
 This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
 */
 /* -^- */
-       
+#if 0       
        
 #ifndef	TypeAssignmentRules_H //[
 #define TypeAssignmentRules_H
@@ -98,3 +98,4 @@ namespace chem {
 TRANSLATE(chem::OneTypeRule_O);
 TRANSLATE(chem::TypeAssignmentRules_O);
 #endif //]
+#endif

@@ -75,8 +75,8 @@ namespace chem {
     bool matches();
     void setMatches(bool b) { this->_Matches = b;};
     void clearAtomTags();
-    bool	recognizesAtomTag(core::T_sp tag);
-    void	defineAtomTag(Atom_sp a, core::T_sp tag );
+    bool recognizesAtomTag(core::T_sp tag);
+    void defineAtomTag(Atom_sp a, core::T_sp tag );
     bool hasAtomWithTag(core::T_sp tag );
     chem::Atom_sp getAtomWithTag(core::T_sp tag);
     core::T_sp getAtomWithTagOrNil(core::T_sp tag);
@@ -952,8 +952,9 @@ public:
   bool fieldsp() const { return true; };
   void	fields(core::Record_sp node);
 protected:
-  gc::Nilable<AtomOrBondMatchNode_sp>	_FirstTest;
-  gc::Nilable<BondListMatchNode_sp>	_Chain;
+//  gc::Nilable<AtomOrBondMatchNode_sp>	_FirstTest;
+//  gc::Nilable<BondListMatchNode_sp>	_Chain;
+  gc::Nilable<ChemInfoNode_sp>          _Node;
 	/*! Store tests described as lambdas that take a single atom argument and return a boolean.
 	 These can be incorporated into the smarts code as <xxxx> where xxxx is the symbol
 	name of the test. */
@@ -962,15 +963,11 @@ protected:
 public:
   virtual uint depth() const;
   virtual string asSmarts() const;
-  static Root_sp create(AtomOrBondMatchNode_sp node, BondListMatchNode_sp chain )
+  static Root_sp create(ChemInfoNode_sp node)
   {
-    GC_ALLOCATE(Root_O, obj ); // RP_Create<Root_O>(lisp);
-    obj->_FirstTest = node;
-    obj->_Chain = chain;
-    ANN(obj->_Chain);
+    GC_ALLOCATE_VARIADIC(Root_O, obj, node ); // RP_Create<Root_O>(lisp);
     return obj;
-  };
-
+  }
   void addTest(core::Symbol_sp testSymbol, core::Function_sp testCode);
   bool evaluateTest(core::Symbol_sp testSym, Atom_sp atom);
   virtual core::Symbol_sp getAssignType() { return _Nil<core::Symbol_O>();};
@@ -979,7 +976,8 @@ public:
   virtual	ChemInfoType	type() { return root; };
   virtual	bool		matches( Root_sp root, chem::Atom_sp atom );
   virtual	bool		matches( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );
-  DEFAULT_CTOR_DTOR(Root_O);
+  Root_O(ChemInfoNode_sp node) : _Node(node) {}
+  Root_O() : _Node(_Nil<core::T_O>()) {};
 };
 
 
@@ -997,24 +995,7 @@ public:
   bool fieldsp() const { return true; };
   void	fields(core::Record_sp node);
 public:
-
-  static SmartsRoot_sp create(AtomOrBondMatchNode_sp node,
-                              gc::Nilable<BondListMatchNode_sp> chain)
-  { _G();
-    GC_ALLOCATE(SmartsRoot_O,   obj ); // RP_Create<SmartsRoot_O>(lisp);
-    obj->_FirstTest = node;
-    obj->_Chain = chain;
-    ANN(obj->_Chain);
-    return obj;
-  };
-
   static SmartsRoot_sp make(ChemInfoNode_sp cinode);
-
-  static SmartsRoot_sp create(AtomOrBondMatchNode_sp node )
-  {
-    return create(node,_Nil<T_O>());
-  };
-      
 public:
 
 
@@ -1028,8 +1009,8 @@ public:
   virtual	bool		matches( Root_sp root, chem::Atom_sp atom );
   virtual	bool		matches( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );
 
-
-  DEFAULT_CTOR_DTOR(SmartsRoot_O);
+  SmartsRoot_O(ChemInfoNode_sp node) : Root_O(node) {};
+  SmartsRoot_O() {};
 };
 
 SMART(AntechamberRoot);
@@ -1043,40 +1024,9 @@ public:
   bool fieldsp() const { return true; };
   void	fields(core::Record_sp node);
 public:
-  core::Symbol_sp          _AssignType;
-  gc::Nilable<RootMatchNode_sp>         _AfterMatchTests;
+   gc::Nilable<RootMatchNode_sp>         _AfterMatchTests;
   gc::Nilable<WildElementDict_sp>       _WildElementDictionary;
 public:
-  static AntechamberRoot_sp create( core::Symbol_sp assignType,
-                                    AtomOrBondMatchNode_sp node,
-                                    BondListMatchNode_sp bl,
-                                    RootMatchNode_sp amt) 
-  {_G();
-    GC_ALLOCATE(AntechamberRoot_O, obj ); // RP_Create<AntechamberRoot_O>(lisp);
-    obj->_FirstTest = node;
-    obj->_Chain = bl;
-    obj->_AssignType = assignType;
-    obj->_AfterMatchTests = amt;
-    obj->_WildElementDictionary = _Nil<core::T_O>();
-    return obj;
-  };
-  static AntechamberRoot_sp create(core::Symbol_sp assignType,
-                                   AtomOrBondMatchNode_sp node,
-                                   BondListMatchNode_sp bl )
-  {_G();
-    return create( assignType, node, bl, _Nil<RootMatchNode_O>() );
-  };
-  static AntechamberRoot_sp create(core::Symbol_sp assignType,
-                                   gc::Nilable<AtomOrBondMatchNode_sp> node )
-  {
-    _G();
-    gc::Nilable<BondListMatchNode_sp> bl = _Nil<core::T_O>();
-    gc::Nilable<RootMatchNode_sp> amt = _Nil<core::T_O>();
-    return create( assignType, node, bl, amt );
-  };
-  CL_DEFMETHOD core::Symbol_sp getAssignType() { return this->_AssignType;};
-public:
-
 
   void    setElementWildCardDictionary(WildElementDict_sp dict) {
     this->_WildElementDictionary = dict; };
@@ -1094,70 +1044,12 @@ public:
   DEFAULT_CTOR_DTOR(AntechamberRoot_O);
 };
 
-SMART(ChemInfo);
-class ChemInfo_O : public core::CxxObject_O
-{
-  LISP_CLASS(chem,ChemPkg,ChemInfo_O,"ChemInfo",core::CxxObject_O);
-public:
-  static ChemInfo_sp make(core::List_sp tests, const string& smarts);
-public:
-  void	initialize();
-public:
-  bool fieldsp() const { return true; };
-  void	fields(core::Record_sp node);
-public:
-  string		_Code;
-  gc::Nilable<Root_sp> _Root;
-  string		_CompilerMessage;
-public:
-
-public: // Factory creation
-//	static core::T_sp prim_ChemInfo(core::Function_sp e, core::List_sp args, core::Environment_sp environ, core: );
-
-public:
-  CL_LISPIFY_NAME(ChemInfo-getRoot);
-  CL_DEFMETHOD Root_sp getRoot() const {return this->_Root;};
-  bool	compileSmarts(const string& code );
-  bool	compileAntechamber(const string& code, WildElementDict_sp dict );
-  CL_LISPIFY_NAME("compilerMessage");
-  CL_DEFMETHOD     string	compilerMessage() { return this->_CompilerMessage;};
-  void defineTests(core::List_sp tests);
-
-  string descriptionOfContents() const;
-    /*! Return NIL or the match */
-  core::T_sp 	matches(chem::Atom_sp atom);
-    /*! Return the match which can be tested to determine if match succeeded */
-  core::T_sp 	matches_atom(chem::Atom_sp atom);
-//    ChemInfoMatch_sp getMatch();
-
-		/*! Return the depth of the longest pattern
-		 */
-  uint	depth() const;
 
 
-	/*! Describe local environment around an atom - for debugging pattern matching
-	 Use this and an XML description of the pattern and check the matching by hand */
-  string localAtomEnvironment(int maxDepth) const;
-	
-
-
-  CL_LISPIFY_NAME("compileSucceeded");
-  CL_DEFMETHOD     bool    compileSucceeded() {_OF(); ASSERTNOTNULL(this->_Root);return this->_Root.notnilp(); };
-
-  string asSmarts() const;
-
-  CL_LISPIFY_NAME("getCode");
-  CL_DEFMETHOD     string          getCode() { return this->_Code; };
-
-  core::Symbol_sp getAssignType() { return this->_Root->getAssignType(); };
-//	ChemInfo_O( const ChemInfo_O& ss ); //!< Copy constructor
-
-
-  DEFAULT_CTOR_DTOR(ChemInfo_O);
-};
 
 core::T_mv chem__chem_info_match(Root_sp testRoot, Atom_sp atom);
-
+SmartsRoot_sp chem__compile_smarts(const string& smarts);
+AntechamberRoot_mv chem__compile_antechamber(const string& smarts,WildElementDict_sp xpdict);
 };
 
 #endif

@@ -158,14 +158,11 @@ FFTypesDb_sp ReadAmberParameters_O::parseTypeRules(core::T_sp fin)
   vector< pair<uint,string> >::iterator ei;
   for ( ei=entries.begin(); ei!=entries.end(); ei++ )
   {
-    ChemInfo_sp typeRule = ChemInfo_O::create();
-    typeRule->compileAntechamber(ei->second,wildCardElementDictionary);
-    if ( typeRule->compileSucceeded() ) {
-//      printf("%s:%d:%s  compileSucceeded for rule: %s\n", __FILE__, __LINE__, __FUNCTION__, ei->second.c_str()); fflush(stdout);
-      ffTypesDb->add(typeRule);
-    } else {
-      SIMPLE_ERROR(BF("Antechamber compile failed on: "+ei->second+"\n"+typeRule->compilerMessage() ));
-    }
+    AntechamberRoot_mv rule_type_mv = chem__compile_antechamber(ei->second,wildCardElementDictionary);
+    AntechamberRoot_sp rule = rule_type_mv;
+    core::T_sp type = rule_type_mv.second();
+    FFTypeRule_sp one = FFTypeRule_O::make(rule,type);
+    ffTypesDb->add(one);
   }
   return ffTypesDb;
 }
