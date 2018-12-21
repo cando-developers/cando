@@ -1049,7 +1049,7 @@ public:
 
 
 core::T_mv chem__chem_info_match(Root_sp testRoot, Atom_sp atom);
-SmartsRoot_sp chem__compile_smarts(const string& smarts);
+SmartsRoot_sp chem__compile_smarts(const string& smarts, core::List_sp tests);
 AntechamberRoot_mv chem__compile_antechamber(const string& smarts,WildElementDict_sp xpdict);
 };
 
