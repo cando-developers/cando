@@ -2044,6 +2044,15 @@ CL_DEFUN core::T_mv chem__chem_info_match(Root_sp testRoot, Atom_sp atom)
   return Values(_lisp->_boolean(matches), current_match);
 }
 
+CL_DEFUN core::T_sp chem__matches(Root_sp testRoot, Atom_sp atom)
+{
+  core::T_mv matches_mv = chem__chem_info_match(testRoot,atom);
+  if (matches_mv.notnilp()) {
+    return matches_mv.second();
+  }
+  return _Nil<core::T_O>();
+}
+
 CL_DEFUN core::T_sp chem__chem_info_node_children(ChemInfoNode_sp node) {
   return node->children();
 }
