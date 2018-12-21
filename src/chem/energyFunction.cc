@@ -135,7 +135,7 @@ void energyFunction_initializeSmarts()
   if ( energyFunctionInitialized ) return;
   _sym_STARparserNodeHolderSTAR->defparameter(adapt::IndexedObjectBag_O::create());
   energyFunctionInitialized = true;
-  SmartsRoot_sp secondaryAmide = chem__compile_smarts("[$([N:1]([C:2])(~[#1:3])~[C:4](=[O:5])[C:6])]");
+  SmartsRoot_sp secondaryAmide = chem__compile_smarts("[$([N:1]([C:2])(~[#1:3])~[C:4](=[O:5])[C:6])]",_Nil<core::T_O>());
   _sym_STARsecondaryAmideSmartsSTAR->defparameter(secondaryAmide);
 }
 
