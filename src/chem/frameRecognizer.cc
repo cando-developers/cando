@@ -44,7 +44,7 @@ CL_LISPIFY_NAME("frame-recognizer-compile-smarts");
 CL_DEFMETHOD void	FrameRecognizer_O::compileSmarts(const string& osm)
 {
     this->_Smarts = osm;
-    this->_Root = chem__compile_smarts(this->_Smarts);
+    this->_Root = chem__compile_smarts(this->_Smarts,_Nil<core::T_O>());
     LOG(BF("Successfully compiled smarts code for atom O") );
 //    LOG(BF("ChemInfo code = %s") % this->_ChemInfo->asXmlString());
 }
@@ -163,7 +163,7 @@ string FrameRecognizer_O::description() const
     me->_Name = name;
     me->_Smarts = smarts;
     me->_GroupName = groupName;
-    me->_Root = chem__compile_smarts(me->_Smarts);
+    me->_Root = chem__compile_smarts(me->_Smarts,_Nil<core:T_O>());
     return me;
   };
 
