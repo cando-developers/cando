@@ -1,4 +1,6 @@
-(load "source-dir:extensions;cando;src;lisp;start-cando.lisp")
+(progn
+  (load "source-dir:extensions;cando;src;lisp;start-cando.lisp")
+  (format t "DONE DONE DONE~%"))
 
 (ext:chdir "~/Development/cando/extensions/cando/src/tests/smarts/" t)
 

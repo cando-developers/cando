@@ -1446,12 +1446,14 @@ bool Chain_O::matches(Root_sp root, chem::Atom_sp from) { _OF();
   if (gc::IsA<AtomTest_sp>(this->_Head)) {
     AtomTest_sp atHead = gc::As_unsafe<AtomTest_sp>(this->_Head);
     if (atHead->matches(root,from)) {
+      LOG(BF("SUCCESS!\n"));
       chem::BondList_sp bonds = from->getBondList();
       return this->matches(root,from,bonds);
     }
-    SIMPLE_ERROR(BF("This chain %s must have an atom-test as head - instead it has") % this->asSmarts() % this->_Head->asSmarts());
+    LOG(BF("FAIL!\n"));
+    return false;
   }
-  return false;
+  SIMPLE_ERROR(BF("This chain %s must have an atom-test as head - instead it has %s") % this->asSmarts() % this->_Head->asSmarts());
 }
 
 bool Chain_O::matches(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond) { _OF();
