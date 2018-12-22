@@ -816,6 +816,7 @@ public:
 public:
   virtual	ChemInfoType	type() { return chain; };
   virtual	bool		matches( Root_sp root, chem::Atom_sp from );
+  virtual	bool		matches( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );
   virtual	bool		matches( Root_sp root, chem::Atom_sp from, chem::BondList_sp neighbors );
   CL_DEFMETHOD void chain_set_head(BondMatchNode_sp head) { this->_Head = head; };
 //    CL_DEFMETHOD void chain_set_tail(BondListMatchNode_sp tail) { this->_Tail = tail; };

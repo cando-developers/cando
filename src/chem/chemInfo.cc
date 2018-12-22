@@ -23,7 +23,7 @@ THE SOFTWARE.
 This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
 */
 /* -^- */
-#define DEBUG_LEVEL_NONE
+#define DEBUG_LEVEL_FULL
 //
 //
 //     	chemInfo.cc
@@ -985,9 +985,8 @@ CL_DEFMETHOD void BondTest_O::setAtomTest(core::T_sp atomTest)
   this->_AtomTest = atomTest;
 }
 
-bool BondTest_O::matches(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond) {
-  
-  LOG(BF("Checking bond: %s") % bond->describeOther(from));
+bool BondTest_O::matches(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond) {_OF();
+  LOG(BF("Checking %s against %s&%s\n") % this->asSmarts() % _rep_(from) % _rep_(bond));
   chem::BondOrder bo;
   bo = bond->getOrder();
   if (!chem::_matchBondTypes(this->_Bond, bo))
@@ -1104,7 +1103,7 @@ bool AtomTest_O::matches(Root_sp root, chem::Atom_sp atom) {
   int cnt;
   Atom_sp ringStartAtom;
   int hc = 0;
-  LOG(BF("AtomTest match for atom: %s") % atom->description().c_str()); //
+  LOG(BF("AtomTest match %s against %s\n") % this->asSmarts() % _rep_(atom));
   switch (this->_Test) {
   case SAPWildCard:
       LOG(BF("SAPWildCard")); //
@@ -1194,6 +1193,7 @@ bool AtomTest_O::matches(Root_sp root, chem::Atom_sp atom) {
       break;
   case SAPAtomMap:
     {
+      LOG(BF("SAPAtomMap[%d]") % this->_IntArg);
       // We have an atom and we have a tag in this->_IntArg
       ChemInfoMatch_sp match =  gc::As<ChemInfoMatch_sp>(_sym_STARcurrent_matchSTAR->symbolValue());
       match->defineAtomTag(atom,core::make_fixnum(this->_IntArg));
@@ -1324,6 +1324,9 @@ string AtomTest_O::asSmarts() const {
   case SAPValence:
       ss << "v" << this->_IntArg;
       break;
+  case SAPAtomMap:
+      ss << ":" << this->_IntArg;
+      break;
   case SAPConnectivity: // No implicit H's so Connectivity == Degree
   case SAPDegree:
       ss << "X" << this->_IntArg;
@@ -1438,44 +1441,47 @@ uint Chain_O::depth() const {
   return (MAX(af_depth(this->_Head), af_depth(this->_Tail) + 1));
 }
 
-bool Chain_O::matches(Root_sp root, chem::Atom_sp from) {
-  _OF();
-  chem::BondList_sp bonds = from->getBondList();
-  return this->matches(root,from,bonds);
+bool Chain_O::matches(Root_sp root, chem::Atom_sp from) { _OF();
+  LOG(BF("Checking if _Head->%s matches %s\n") % this->_Head->asSmarts() % _rep_(from));
+  if (gc::IsA<AtomTest_sp>(this->_Head)) {
+    AtomTest_sp atHead = gc::As_unsafe<AtomTest_sp>(this->_Head);
+    if (atHead->matches(root,from)) {
+      chem::BondList_sp bonds = from->getBondList();
+      return this->matches(root,from,bonds);
+    }
+    SIMPLE_ERROR(BF("This chain %s must have an atom-test as head - instead it has") % this->asSmarts() % this->_Head->asSmarts());
+  }
+  return false;
 }
 
-bool Chain_O::matches(Root_sp root, chem::Atom_sp from, chem::BondList_sp neighbors) {
-  _OF();
+bool Chain_O::matches(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond) { _OF();
+  LOG(BF("Checking if _Head->%s matches %s&%s\n") % this->_Head->asSmarts() % _rep_(from) % _rep_(bond));
+  if (this->_Head->matches(root,from,bond)) {
+    Atom_sp other = bond->getOtherAtom(from);
+    BondList_sp nextBonds = other->getBondList();
+    nextBonds->removeBondBetween(from,nextBonds);
+    if (this->matches(root,from,nextBonds)) {
+      goto SUCCESS;
+    }
+    goto FAIL;
+  }
+ FAIL:
+  LOG(BF("FAIL"));
+  return false;
+ SUCCESS:
+  LOG(BF("SUCCESS"));
+  return true;
+}
+ 
+bool Chain_O::matches(Root_sp root, chem::Atom_sp from, chem::BondList_sp neighbors) {_OF();
   gctools::Vec0<chem::Bond_sp>::iterator bi;
   chem::BondList_sp nextBonds, tempBondList;
   LOG(BF("Chain_O matching pattern: %s") % this->asSmarts());
   LOG(BF("There are %d neighbors bondList: %s") % neighbors->size() % neighbors->describeOthers(from));
   for (bi = neighbors->begin(); bi != neighbors->end(); bi++) {
-    CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
-    _BLOCK_TRACEF(BF("Checking neighbor for bond: %s") % (*bi)->describeOther(from));
-    if (this->_Head->matches(root, from, *bi)) {
-      CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
-      LOG(BF("The head matches"));
-      Atom_sp other = (*bi)->getOtherAtom(from);
-      CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
-      LOG(BF("The other atom: %s") % other->description());
-      nextBonds = other->getBondList(); // handle new bonds
-      CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
-      LOG(BF("The others bond list before removed from: %s") % nextBonds->describeOthers(other));
-      LOG(BF("Removing bond between %s and %s") % from->description() % other->description());
-      nextBonds->removeBondBetween(from, other); // (*bi)->getFrom());
-      CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
-      LOG(BF("The others bond list after removed from: %s") % nextBonds->describeOthers(other));
-      ASSERTNOTNULL(this->_Tail);
-      if (this->_Tail.notnilp()) {
-        CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
-        if (this->_Tail->matches(root, other, nextBonds))
-          goto SUCCESS;
-        LOG(BF("The tail exists but doesn't match"));
-      } else {
-        CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
-        goto SUCCESS;
-      }
+    _BLOCK_TRACEF(BF("Checking if _Tail->%s matches bond: %s") % this->_Tail->asSmarts() % (*bi)->describeOther(from));
+    if (this->_Tail->matches(root, from, *bi)) {
+      goto SUCCESS;
     }
   }
   //FAIL:
@@ -1543,18 +1549,15 @@ bool Branch_O::matches(Root_sp root, chem::Atom_sp from, chem::BondList_sp neigh
     LOG(BF("Constructed left bond list"));
     LOG(BF("Left bond list = %s") % leftBondList->describeOthers(from));
     BondList_sp rightBondList = BondList_O::create();
-    for ( auto bi = (*neighbors).begin(); bi!=(*neighbors).end(); ++bi ) {
-      rightBondList->addBond(*bi);
+    for ( auto ci = (*neighbors).begin(); ci!=(*neighbors).end(); ++ci ) {
+      if (*bi != *ci) rightBondList->addBond(*ci);
     }
 //    GC_COPY(chem::BondList_O, rightBondList, *neighbors); // = RP_Copy<BondList_O>(neighbors);
-    LOG(BF("Right bond list after copy = %s") % rightBondList->describeOthers(from));
-    rightBondList->removeBond(*bi);
+    LOG(BF("Right bond list after copy without left = %s") % rightBondList->describeOthers(from));
     LOG(BF("copied neighbors into right bond list and removed left bond"));
-    LOG(BF("Right bond list after remove left = %s") % rightBondList->describeOthers(from));
     LOG(BF("Checking if left matches"));
     if (this->_Left->matches(root, from, leftBondList)) {
       LOG(BF("Left matches"));
-      ANN(this->_Right);
       if (this->_Right.notnilp()) {
         LOG(BF("Right branch is defined, checking if it matches"));
         if (this->_Right->matches(root, from, rightBondList)) {
@@ -1735,7 +1738,7 @@ bool AntechamberBondTest_O::matchBasic(AntechamberRoot_sp root, chem::Atom_sp at
   ANN(dict);
   if (dict.notnilp()) {
     if (dict->recognizesWildName(this->_Element)) {
-      LOG(BF("Matching wildcard element has(%s) == expecting (%s)") % atom->getElementAsString().c_str() % this->_Element.c_str());
+      LOG(BF("Matching wildcard element has(%s) == expecting (%s)") % atom->getElementAsString().c_str() % _rep_(this->_Element).c_str());
       if (!dict->recognizesWildNameElement(this->_Element, atom->getElementAsSymbol()))
         goto FAIL;
       gotElement = true;
@@ -1858,7 +1861,6 @@ string Root_O::asSmarts() const {
 
 void Root_O::initialize() {
   this->Base::initialize();
-  this->_Node = _Nil<core::T_O>();
   this->_Tests = core::HashTableEq_O::create_default();
 }
 
@@ -1886,7 +1888,7 @@ bool Root_O::evaluateTest(core::Symbol_sp testSym, Atom_sp atom) {
 }
 
 void Root_O::fields(core::Record_sp node) {
-  node->field_if_not_nil( INTERN_(kw,node), this->_Node);
+  node->field( INTERN_(kw,node), this->_Node);
   node->field_if_not_nil( INTERN_(kw,tests), this->_Tests);
   this->Base::fields(node);
 }
@@ -1921,6 +1923,7 @@ CL_LISPIFY_NAME("make-smarts-root");
 CL_DEF_CLASS_METHOD SmartsRoot_sp SmartsRoot_O::make(ChemInfoNode_sp cinode)
 {
   GC_ALLOCATE_VARIADIC(SmartsRoot_O, obj, cinode ); // RP_Create<SmartsRoot_O>(lisp);
+  printf("%s:%d:%s  cinode-> %s\n", __FILE__, __LINE__, __FUNCTION__, _rep_(cinode).c_str());
   return obj;
 };
 
@@ -1997,7 +2000,6 @@ bool AntechamberRoot_O::matches(Root_sp root, chem::Atom_sp atom) {
   }
   // printf("%s:%d This is where I was assigning the type\n", __FILE__, __LINE__ );
 //  atom->setType(this->_AssignType);
-  LOG(BF("Matched and assigned type(%s)") % this->_AssignType.c_str());
   //SUCCESS:
   LOG(BF("SUCCESS!"));
   return true;
@@ -2010,6 +2012,7 @@ CL_LAMBDA(code &key tests);
 CL_DEFUN SmartsRoot_sp chem__compile_smarts(const string& code, core::List_sp tests) {
   core::SimpleBaseString_sp scode = core::SimpleBaseString_O::make(code);
   ChemInfoNode_sp node = gc::As<ChemInfoNode_sp>(core::eval::funcall(_sym_parse_smarts,scode));
+  printf("%s:%d:%s  node-> %s\n", __FILE__, __LINE__, __FUNCTION__, _rep_(node).c_str());
   SmartsRoot_sp root = SmartsRoot_O::make(node);
   root->setTests(tests);
   return root;
