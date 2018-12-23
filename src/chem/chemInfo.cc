@@ -1871,6 +1871,14 @@ void AntechamberBondTest_O::fields(core::Record_sp node) {
 
 // ------- Root
 
+core::HashTableEq_sp Root_O::lazyTests() {
+  if (this->_Tests.nilp()) {
+    this->_Tests = core::HashTableEq_O::create_default();
+  }
+  return gc::As_unsafe<core::HashTableEq_sp>(this->_Tests);
+}
+
+
 uint Root_O::depth() const {
   _OF();
   uint res = af_depth(this->_Node);
@@ -1885,7 +1893,7 @@ void Root_O::setTests(core::List_sp tests) {
     core::Cons_sp pair = gc::As<core::Cons_sp>(CONS_CAR(cur));
     core::T_sp key = oCar(pair);
     core::T_sp value = oCdr(pair);
-    this->_Tests->setf_gethash(key,value);
+    this->lazyTests()->setf_gethash(key,value);
   }
 }
 
@@ -1905,21 +1913,20 @@ string Root_O::asSmarts() const {
 
 void Root_O::initialize() {
   this->Base::initialize();
-  this->_Tests = core::HashTableEq_O::create_default();
 }
 
 void Root_O::addTest(core::Symbol_sp testSym, core::Function_sp testCode) {
   _OF();
   LOG(BF("Adding test<%s> with code: %s") % _rep_(testSym) % _rep_(testCode));
-  this->_Tests->setf_gethash(testSym, testCode);
+  this->lazyTests()->setf_gethash(testSym, testCode);
 }
 
 bool Root_O::evaluateTest(core::Symbol_sp testSym, Atom_sp atom) {
   ASSERTF(testSym.notnilp(), BF("The test symbol was nil! - this should never occur"));
   LOG(BF("Looking up test with symbol<%s>") % _rep_(testSym));
-  core::T_mv find = this->_Tests->gethash(testSym);
-  if (find.second().nilp()) {
-      SIMPLE_ERROR(BF("Could not find named ChemInfo/Smarts test[%s] in Smarts object - available named tests are[%s]") % _rep_(testSym) % this->_Tests->keysAsString());
+  core::T_mv find = this->lazyTests()->gethash(testSym);
+  if (find.second().notnilp()) {
+    SIMPLE_ERROR(BF("Could not find named ChemInfo/Smarts test[%s] in Smarts object - available named tests are[%s]") % _rep_(testSym) % this->lazyTests()->keysAsString());
   }
   core::Function_sp func = core::coerce::functionDesignator(find);
   if (!gctools::IsA<core::Function_sp>(func)) {
@@ -1934,7 +1941,7 @@ bool Root_O::evaluateTest(core::Symbol_sp testSym, Atom_sp atom) {
 
 void Root_O::fields(core::Record_sp node) {
   node->field( INTERN_(kw,node), this->_Node);
-  node->field( INTERN_(kw,tests), this->_Tests);
+  node->field_if_not_nil( INTERN_(kw,tests), this->_Tests);
   this->Base::fields(node);
 }
 

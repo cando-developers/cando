@@ -58,8 +58,9 @@
                   (core:make-cxx-object 'chem:fftype-rule
                                         :test (core:make-cxx-object 'chem:antechamber-root
                                                                     :id (incf *next-chem-info-id*)
-                                                                    :first-test focus
-                                                                    :chain chemical-environment
+                                                                    :node (core:make-cxx-object 'chem:chain
+                                                                                                :head focus
+                                                                                                :tail chemical-environment)
                                                                     :after-match-tests bond-definitions
                                                                     :wild-dict *wild-dict*)
                                         :type (intern type-name :keyword)))))
@@ -78,8 +79,9 @@
                   (core:make-cxx-object 'chem:fftype-rule
                                         :test (core:make-cxx-object 'chem:antechamber-root
                                                                     :id (incf *next-chem-info-id*)
-                                                                    :first-test focus
-                                                                    :chain chemical-environment
+                                                                    :node (core:make-cxx-object 'chem:chain
+                                                                                                :head focus
+                                                                                                :tail chemical-environment)
                                                                     :wild-dict *wild-dict*)
                                         :type (intern type-name :keyword)))))
 
@@ -97,7 +99,7 @@
                   (core:make-cxx-object 'chem:fftype-rule
                                         :test (core:make-cxx-object 'chem:antechamber-root
                                                                     :id (incf *next-chem-info-id*)
-                                                                    :first-test focus
+                                                                    :node focus
                                                                     :wild-dict *wild-dict*)
                                         :type (intern type-name :keyword)))))
 
@@ -114,7 +116,7 @@
                   (core:make-cxx-object 'chem:fftype-rule
                                         :test (core:make-cxx-object 'chem:antechamber-root
                                                                     :id (incf *next-chem-info-id*)
-                                                                    :first-test focus
+                                                                    :node focus
                                                                     :wild-dict *wild-dict*)
                                         :type (intern type-name :keyword)))))
 
@@ -131,7 +133,7 @@
                   (core:make-cxx-object 'chem:fftype-rule
                                         :test (core:make-cxx-object 'chem:antechamber-root
                                                                     :id (incf *next-chem-info-id*)
-                                                                    :first-test focus
+                                                                    :node focus
                                                                     :wild-dict *wild-dict*)
                                         :type (intern type-name :keyword)))))
 
@@ -148,7 +150,7 @@
                   (core:make-cxx-object 'chem:fftype-rule
                                         :test (core:make-cxx-object 'chem:antechamber-root
                                                                     :id (incf *next-chem-info-id*)
-                                                                    :first-test focus
+                                                                    :node focus
                                                                     :wild-dict *wild-dict*)
                                         :type (intern type-name :keyword)))))
 
@@ -165,7 +167,7 @@
                   (core:make-cxx-object 'chem:fftype-rule
                                         :test (core:make-cxx-object 'chem:antechamber-root
                                                                     :id (incf *next-chem-info-id*)
-                                                                    :first-test focus
+                                                                    :node focus
                                                                     :wild-dict *wild-dict*)
                                         :type (intern type-name :keyword)))))
 
@@ -180,7 +182,7 @@
                   (core:make-cxx-object 'chem:fftype-rule
                                         :test (core:make-cxx-object 'chem:antechamber-root
                                                                     :id (incf *next-chem-info-id*)
-                                                                    :first-test focus
+                                                                    :node focus
                                                                     :wild-dict *wild-dict*)
                                         :type (intern type-name :keyword)))))
 
@@ -193,7 +195,7 @@
                   (core:make-cxx-object 'chem:fftype-rule
                                         :test (core:make-cxx-object 'chem:antechamber-root
                                                                     :id (incf *next-chem-info-id*)
-                                                                    :first-test focus
+                                                                    :node focus
                                                                     :wild-dict *wild-dict*)
                                         :type (intern type-name :keyword)))))
 

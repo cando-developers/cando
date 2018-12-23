@@ -959,7 +959,7 @@ protected:
 	/*! Store tests described as lambdas that take a single atom argument and return a boolean.
 	 These can be incorporated into the smarts code as <xxxx> where xxxx is the symbol
 	name of the test. */
-  core::HashTableEq_sp		_Tests;
+  core::T_sp		_Tests;
 //    core::HashTableEql_sp               _RingTags;
 public:
   virtual uint depth() const;
@@ -969,6 +969,7 @@ public:
     GC_ALLOCATE_VARIADIC(Root_O, obj, node ); // RP_Create<Root_O>(lisp);
     return obj;
   }
+  core::HashTableEq_sp lazyTests();
   void setTests(core::List_sp tests);
   void addTest(core::Symbol_sp testSymbol, core::Function_sp testCode);
   bool evaluateTest(core::Symbol_sp testSym, Atom_sp atom);
@@ -978,8 +979,8 @@ public:
   virtual	ChemInfoType	type() { return root; };
   virtual	bool		matches_Atom( Root_sp root, chem::Atom_sp atom );
   virtual	bool		matches_Bond( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );
-  Root_O(ChemInfoNode_sp node) : _Node(node) {}
-  Root_O() : _Node(_Nil<core::T_O>()) {};
+  Root_O(ChemInfoNode_sp node) : _Node(node), _Tests(_Nil<core::T_O>()) {}
+  Root_O() : _Node(_Nil<core::T_O>()), _Tests(_Nil<core::T_O>()) {};
 };
 
 
