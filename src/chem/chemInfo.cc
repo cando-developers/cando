@@ -1977,7 +1977,7 @@ CL_LISPIFY_NAME("make-smarts-root");
 CL_DEF_CLASS_METHOD SmartsRoot_sp SmartsRoot_O::make(ChemInfoNode_sp cinode)
 {
   GC_ALLOCATE_VARIADIC(SmartsRoot_O, obj, cinode ); // RP_Create<SmartsRoot_O>(lisp);
-  printf("%s:%d:%s  cinode-> %s\n", __FILE__, __LINE__, __FUNCTION__, _rep_(cinode).c_str());
+//  printf("%s:%d:%s  cinode-> %s\n", __FILE__, __LINE__, __FUNCTION__, _rep_(cinode).c_str());
   return obj;
 };
 
@@ -2071,7 +2071,7 @@ CL_LAMBDA(code &key tests);
 CL_DEFUN SmartsRoot_sp chem__compile_smarts(const string& code, core::List_sp tests) {
   core::SimpleBaseString_sp scode = core::SimpleBaseString_O::make(code);
   ChemInfoNode_sp node = gc::As<ChemInfoNode_sp>(core::eval::funcall(_sym_parse_smarts,scode));
-  printf("%s:%d:%s  node-> %s\n", __FILE__, __LINE__, __FUNCTION__, _rep_(node).c_str());
+//  printf("%s:%d:%s  node-> %s\n", __FILE__, __LINE__, __FUNCTION__, _rep_(node).c_str());
   SmartsRoot_sp root = SmartsRoot_O::make(node);
   root->setTests(tests);
   return root;

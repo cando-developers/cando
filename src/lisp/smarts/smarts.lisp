@@ -22,6 +22,8 @@
               (chem:setf-bounds (cdr result) bounds)))))
       (chem:chem-info-node
        (chem:setf-bounds result bounds))
+      (labeled nil)
+      (null nil)
       (otherwise (warn "What the heck is this -> ~s and how do we set its bounds" result)))
     result))
 
@@ -210,7 +212,8 @@
                                                     (head (eql :recursive))
                                                     &rest args
                                                     &key pattern)
-  (format t ":recursive make-node head: ~s args: ~s~%" head args)
+  ;;  (format t ":recursive make-node head: ~s args: ~s~%" head args)
+  nil
   )
 
 
@@ -303,8 +306,8 @@
                                                  left
                                                  right
                                                  &key key)
-  (format t ":expression relate head: ~s left: ~s right:~s~%" head left right)
-  (format nil "relate :expression left: ~s right: ~s~%" left right)
+;;;  (format t ":expression relate head: ~s left: ~s right:~s~%" head left right)
+;;;  (format t "relate :expression left: ~s right: ~s~%" left right)
   left)
 
 (defmethod architecture.builder-protocol:relate ((builder (eql :cando))
@@ -347,7 +350,7 @@
                                                  left
                                                  right
                                                  &key key)
-  (format t ":operand relate b head: ~s left: ~s right:~s~%" head left right)
+;;;  (format t ":operand relate b head: ~s left: ~s right:~s~%" head left right)
   left)
 
 (defmethod architecture.builder-protocol:relate ((builder (eql :cando))
@@ -396,7 +399,7 @@
                                                  left
                                                  right
                                                  &key key)
-  (format t ":pattern relate head: ~s left: ~s right:~s~%" head left right)
+;;;  (format t ":pattern relate head: ~s left: ~s right:~s~%" head left right)
   right)
 
 
@@ -441,7 +444,7 @@
 (defmethod architecture.builder-protocol:finish-node ((builder (eql :cando))
                                                       (kind    (eql :chain))
                                                       (node cons))
-  (format t "finish element ~s~%" node)
+;;;  (format t "finish element ~s~%" node)
   (car node))
 
 
@@ -455,25 +458,25 @@
 (defmethod architecture.builder-protocol:finish-node ((builder (eql :cando))
                                                         (head (eql :element))
                                                         node)
-  (format t "finish element ~s~%" node)
+;;  (format t "finish element ~s~%" node)
  node)
 
 (defmethod architecture.builder-protocol:finish-node ((builder (eql :cando))
                                                         (head (eql :atom))
                                                         node)
-  (format t "finish atom ~s~%" node)
+;;;  (format t "finish atom ~s~%" node)
   node)
 
 (defmethod architecture.builder-protocol:finish-node ((builder (eql :cando))
                                                         (head (eql :bond))
                                                         node)
-  (format t "finish bond ~s~%" node)
+;;;  (format t "finish bond ~s~%" node)
   node)
 
 (defmethod architecture.builder-protocol:node-relation ((builder (eql :cando))
                                                       (head   (eql :chain))
                                                       node)
-  (format t "finish element ~s~%" node)
+;;;  (format t "finish element ~s~%" node)
   node)
 
 
@@ -496,7 +499,7 @@
            )))))
 
 (defmethod build ((head (eql :atom)) (tree cons) &rest args)
-     (format t "Tree: ~s~%" (car (car tree)))
+;;;     (format t "Tree: ~s~%" (car (car tree)))
   (apply 'build (car (car tree))))
 
 (defmethod build ((head (eql :atom)) (tree null) &rest args)

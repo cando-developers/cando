@@ -46,7 +46,7 @@
   (:destructure (atom label &bounds start end)
     (if label
         (progn
-          (format t "atom-pattern got label |~s| of type |~s|~%" label (class-of label))
+;;          (format t "atom-pattern got label |~s| of type |~s|~%" label (class-of label))
           (architecture.builder-protocol:node* (:labeled :label label :bounds (cons start end))
                                                (1 :atom atom)))
         atom)))
