@@ -1474,7 +1474,16 @@ bool Chain_O::matches_Atom(Root_sp root, chem::Atom_sp from) {
     }
     LOG(BF("FAIL!\n"));
     return false;
-  }    
+  } else if (gc::IsA<AntechamberFocusAtomMatch_sp>(this->_Head)) {
+    AntechamberFocusAtomMatch_sp focus = gc::As_unsafe<AntechamberFocusAtomMatch_sp>(this->_Head);
+    if (focus->matches_Atom(root,from)) {
+      LOG(BF("SUCCESS!\n"));
+      chem::BondList_sp bonds = from->getBondList();
+      return this->_Tail->matches_BondList(root,from,bonds);
+    }
+    LOG(BF("FAIL!\n"));
+    return false;
+  }
   std::string s1 = this->asSmarts();
   std::string s2 = this->_Head->asSmarts();
   SIMPLE_ERROR(BF("This chain %s must have an atom-test as head - instead it has %s") % s1 % s2 );
