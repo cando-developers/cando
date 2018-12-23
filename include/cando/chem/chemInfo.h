@@ -185,8 +185,8 @@ namespace chem {
     string __repr__() const;
     virtual uint depth() const;
     CL_DEFMETHOD virtual string asSmarts() const {_OF();SUBCLASS_MUST_IMPLEMENT();};
-    virtual bool    matches(Root_sp root, chem::Atom_sp atom) {_OF(); SUBCLASS_MUST_IMPLEMENT(); };
-    virtual bool    matches(Root_sp root, chem::Atom_sp atom, chem::Bond_sp bond) {_OF(); SUBCLASS_MUST_IMPLEMENT(); };
+    virtual bool    matches_Atom(Root_sp root, chem::Atom_sp atom) {_OF(); SUBCLASS_MUST_IMPLEMENT(); };
+    virtual bool    matches_Bond(Root_sp root, chem::Atom_sp atom, chem::Bond_sp bond) {_OF(); SUBCLASS_MUST_IMPLEMENT(); };
     virtual core::T_sp children() = 0;
     
   ChemInfoNode_O() : _Id(next_ChemInfoNodeId()) {};
@@ -232,7 +232,7 @@ namespace chem {
     bool fieldsp() const { return true; };
     void	fields(core::Record_sp node);
   public:
-    virtual	bool	matches(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond ) {_OF();SUBCLASS_MUST_IMPLEMENT(); };
+    virtual	bool	matches_Bond(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond ) {_OF();SUBCLASS_MUST_IMPLEMENT(); };
     virtual core::T_sp children() = 0;
     
     DEFAULT_CTOR_DTOR(BondMatchNode_O);
@@ -263,8 +263,8 @@ public:
   void fields(core::Record_sp node);
 public:
   virtual core::T_sp children() = 0;
-  virtual bool    matches(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );
-  virtual	bool	matches(Root_sp root, chem::Atom_sp atom);
+  virtual bool    matches_Bond(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );
+  virtual	bool	matches_Atom(Root_sp root, chem::Atom_sp atom);
 
   void setRingTest(RingTestEnum test);
   RingTestEnum getRingTest() const;
@@ -287,7 +287,7 @@ public:
 private:
 public:
   virtual core::T_sp children() = 0;
-  virtual	bool	matches(Root_sp root, chem::Atom_sp from, chem::BondList_sp bondList ) {_OF(); SUBCLASS_MUST_IMPLEMENT(); };
+  virtual	bool	matches_BondList(Root_sp root, chem::Atom_sp from, chem::BondList_sp bondList ) {_OF(); SUBCLASS_MUST_IMPLEMENT(); };
   virtual string asSmarts() const;
   DEFAULT_CTOR_DTOR(BondListMatchNode_O);
 };
@@ -351,8 +351,8 @@ public:
   };
 public:
   virtual	ChemInfoType	type() { return logical; };
-  virtual	bool		matches( Root_sp root, chem::Atom_sp atom );
-  virtual	bool		matches( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );
+  virtual	bool		matches_Atom( Root_sp root, chem::Atom_sp atom );
+  virtual	bool		matches_Bond( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );
   CL_DEFMETHOD core::T_sp getLeft() const { return this->_Left; };
   CL_DEFMETHOD core::T_sp getRight() const { return this->_Right; };
   CL_DEFMETHOD void setLeft(ChemInfoNode_sp val) { this->_Left = val; };
@@ -398,7 +398,7 @@ public:
 public:
 
   virtual	ChemInfoType	type() { return ringTest;};
-  virtual	bool		matches(Root_sp root, chem::Atom_sp atom );
+  virtual	bool		matches_Atom(Root_sp root, chem::Atom_sp atom );
   virtual string asSmarts() const;
   virtual core::T_sp children();
   DEFAULT_CTOR_DTOR(ResidueTest_O);
@@ -440,7 +440,7 @@ public:
 public:
   BondEnum	bondType() { return this->_Bond; };
   virtual	ChemInfoType	type() { return bondTest;};
-  virtual	bool	matches( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );
+  virtual	bool	matches_Bond( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );
   virtual string asSmarts() const;
 
   static BondTest_sp create_SABNoBond(core::T_sp nilOrNode);
@@ -497,8 +497,8 @@ public:
 //virtual	void	parseFromXml(adapt::QDomNode_sp node );
   virtual	ChemInfoType	type() { return antechamberBondTest;};
   bool	matchBasic( AntechamberRoot_sp root, chem::Atom_sp atom );
-  virtual	bool	matches( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );
-  virtual bool    matches( Root_sp root, chem::Atom_sp atom );
+  virtual	bool	matches_Bond( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );
+  virtual bool    matches_Atom( Root_sp root, chem::Atom_sp atom );
   virtual string asSmarts() const;
   virtual core::T_sp children();
   DEFAULT_CTOR_DTOR(AntechamberBondTest_O);
@@ -684,8 +684,8 @@ public:
 
   CL_DEFMETHOD void set_test(AtomTestEnum test) { this->_Test = test; };
   virtual ChemInfoType    type() { return atomTest;};
-  virtual	bool	matches( Root_sp root, chem::Atom_sp atom );
-  virtual	bool	matches( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond);
+  virtual	bool	matches_Atom( Root_sp root, chem::Atom_sp atom );
+  virtual	bool	matches_Bond( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond);
   virtual string asSmarts() const;
 
   virtual core::T_sp children() {
@@ -751,7 +751,7 @@ public:
 public:
   string asSmarts() const;
   virtual core::T_sp children();
-  virtual	bool	matches( Root_sp root, chem::Atom_sp atom );
+  virtual	bool	matches_Atom( Root_sp root, chem::Atom_sp atom );
   virtual ChemInfoType    type() { return antechamberFocusAtomMatch; };
   DEFAULT_CTOR_DTOR(AntechamberFocusAtomMatch_O);
 };
@@ -815,9 +815,9 @@ public:
   }
 public:
   virtual	ChemInfoType	type() { return chain; };
-  virtual	bool		matches( Root_sp root, chem::Atom_sp from );
-  virtual	bool		matches( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );
-  virtual	bool		matches( Root_sp root, chem::Atom_sp from, chem::BondList_sp neighbors );
+  virtual	bool		matches_Atom( Root_sp root, chem::Atom_sp from );
+  virtual	bool		matches_Bond( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );
+  virtual	bool		matches_BondList( Root_sp root, chem::Atom_sp from, chem::BondList_sp neighbors );
   CL_DEFMETHOD void chain_set_head(BondMatchNode_sp head) { this->_Head = head; };
 //    CL_DEFMETHOD void chain_set_tail(BondListMatchNode_sp tail) { this->_Tail = tail; };
   CL_DEFMETHOD void chain_set_tail(core::T_sp tail) {
@@ -893,7 +893,7 @@ public:
 
 
   virtual	ChemInfoType	type() { return branch; };
-  virtual	bool		matches( Root_sp root, chem::Atom_sp from, chem::BondList_sp neighbors );  /* CHECK CODE TO SEE IF IT HANDLES RIGHT=NULL */
+  virtual	bool		matches_BondList( Root_sp root, chem::Atom_sp from, chem::BondList_sp neighbors );  /* CHECK CODE TO SEE IF IT HANDLES RIGHT=NULL */
 //virtual	adapt::QDomNode_sp	asXml(string name=XmlTag_Branch());
 //virtual	void	parseFromXml(adapt::QDomNode_sp node);
 
@@ -976,8 +976,8 @@ public:
   virtual core::T_sp children();
 public:
   virtual	ChemInfoType	type() { return root; };
-  virtual	bool		matches( Root_sp root, chem::Atom_sp atom );
-  virtual	bool		matches( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );
+  virtual	bool		matches_Atom( Root_sp root, chem::Atom_sp atom );
+  virtual	bool		matches_Bond( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );
   Root_O(ChemInfoNode_sp node) : _Node(node) {}
   Root_O() : _Node(_Nil<core::T_O>()) {};
 };
@@ -1008,8 +1008,8 @@ public:
 //        void	forgetRingAtomWithId(int id)	{ this->_RingLookup.erase(id); };
 
   virtual	ChemInfoType	type() { return smartsRoot; };
-  virtual	bool		matches( Root_sp root, chem::Atom_sp atom );
-  virtual	bool		matches( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );
+  virtual	bool		matches_Atom( Root_sp root, chem::Atom_sp atom );
+  virtual	bool		matches_Bond( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );
 
   SmartsRoot_O(ChemInfoNode_sp node) : Root_O(node) {};
   SmartsRoot_O() {};
@@ -1038,8 +1038,8 @@ public:
 //virtual	adapt::QDomNode_sp	asXml(string name=XmlTag_AntechamberRoot());
 //virtual	void		parseFromXml(adapt::QDomNode_sp node);
   virtual	ChemInfoType	type() { return antechamberRoot; };
-  virtual	bool		matches( Root_sp root, chem::Atom_sp atom );
-  virtual	bool		matches( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );
+  virtual	bool		matches_Atom( Root_sp root, chem::Atom_sp atom );
+  virtual	bool		matches_Bond( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );
 
   string descriptionOfContents() const;
   virtual core::T_sp children();
