@@ -68,7 +68,7 @@ namespace chem {
 void	RestraintAnchor_O::fields(core::Record_sp node)
 {
 //  this->Base::fields(node); // don't invoke parent fields
-  node->field_if_not_nil( INTERN_(kw,atom), this->_Atom );
+  node->field( INTERN_(kw,atom), this->_Atom );
   node->/*pod_*/field_if_not_default( INTERN_(kw,position), this->_Pos, Vector3());
   node->/*pod_*/field_if_not_default( INTERN_(kw,weight), this->_Weight, 0.0);
 };
@@ -181,8 +181,8 @@ void	RestraintChiral_O::invertStereochemistryOfRestraint()
 void	RestraintDistance_O::fields(core::Record_sp node)
 {
 //  this->Base::fields(node); // don't invoke parent fields
-  node->field_if_not_nil( INTERN_(kw,a), this->_A );
-  node->field_if_not_nil( INTERN_(kw,b), this->_B );
+  node->field( INTERN_(kw,a), this->_A );
+  node->field( INTERN_(kw,b), this->_B );
   node->/*pod_*/field_if_not_default( INTERN_(kw,r0), this->_R0, 0.0);
   node->/*pod_*/field_if_not_default( INTERN_(kw,k), this->_K, 0.0);
 };

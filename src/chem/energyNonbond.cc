@@ -87,8 +87,6 @@ bool	EnergyNonbond::defineFrom(FFNonbondDb_sp	forceField,
                                   EnergyNonbond_sp energyNonbond)
 {_OF();
   LOG(BF("defineFrom"));
-  FFNonbond_sp				ffNonbond1;
-  FFNonbond_sp				ffNonbond2;
   double				epsilonij;
   double				vdwScale;
   double				electrostaticScale;
@@ -100,16 +98,16 @@ bool	EnergyNonbond::defineFrom(FFNonbondDb_sp	forceField,
   LOG(BF("Defining nonbond between types: %s - %s") % _rep_(t1) % _rep_(t2));
   ASSERT(forceField&&forceField.notnilp());
   LOG(BF("forceField @%p   .notnilp()->%d") % forceField.raw_() % forceField.notnilp());
-  ffNonbond1 = forceField->findType(t1);
-  ffNonbond2 = forceField->findType(t2);
-  ANN(ffNonbond1);
-  if ( ffNonbond1.nilp() )
+  core::T_sp tffNonbond1 = forceField->findType(t1);
+  core::T_sp tffNonbond2 = forceField->findType(t2);
+  ANN(tffNonbond1);
+  if ( tffNonbond1.nilp() )
   {
 //     	SIMPLE_ERROR(BF("Unknown force field type(",iea1->_Atom->getType().c_str(),") for non-bonded interaction"));
     return false;
   }
-  ANN(ffNonbond2);
-  if ( ffNonbond2.nilp() )
+  ANN(tffNonbond2);
+  if ( tffNonbond2.nilp() )
   {
 //     	SIMPLE_ERROR(BF("Unknown force field type(",iea2->_Atom->getType().c_str(),") for non-bonded interaction"));
     return false;
@@ -125,6 +123,8 @@ bool	EnergyNonbond::defineFrom(FFNonbondDb_sp	forceField,
   LOG(BF( "vdwScale = %lf")% (double)(vdwScale) );
   LOG(BF( "electrostaticScale = %lf")% (double)(electrostaticScale) );
   LOG(BF( " is14=%d")% is14 );
+  FFNonbond_sp ffNonbond1 = gc::As<FFNonbond_sp>(ffNonbond1);
+  FFNonbond_sp ffNonbond2 = gc::As<FFNonbond_sp>(ffNonbond2);
   {_BLOCK_TRACE("Calculating nonbond parameters");
     this->_RStar = ffNonbond1->getRadius_Angstroms()+ffNonbond2->getRadius_Angstroms();
     epsilonij = sqrt(ffNonbond1->getEpsilon_kCal()*ffNonbond2->getEpsilon_kCal());
@@ -1093,9 +1093,10 @@ void EnergyNonbond_O::constructExcludedAtomListFromAtomTable(AtomTable_sp atomTa
   this->_UsesExcludedAtoms = true;
   this->_AtomTable = atomTable;
   this->_FFNonbondDb = forceField;
-  core::SimpleVector_int32_t_mv mv_number_of_excluded_atoms = this->_AtomTable->calculate_excluded_atom_list();
-  core::SimpleVector_int32_t_sp excluded_atoms_list = mv_number_of_excluded_atoms.second();
-  this->_NumberOfExcludedAtomIndices = mv_number_of_excluded_atoms;
+  core::T_mv values_mv = this->_AtomTable->calculate_excluded_atom_list();
+  core::SimpleVector_int32_t_sp number_of_excluded_atoms = gc::As<core::SimpleVector_int32_t_sp>(values_mv);
+  core::SimpleVector_int32_t_sp excluded_atoms_list = gc::As<core::SimpleVector_int32_t_sp>(values_mv.second());
+  this->_NumberOfExcludedAtomIndices = number_of_excluded_atoms;
   this->_ExcludedAtomIndices = excluded_atoms_list;
 }
 

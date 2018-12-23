@@ -143,7 +143,7 @@ Joint_sp AtomTree_O::newRootBondedAtom(const chem::AtomId& atomId, core::T_sp na
                                        core::Symbol_sp topologyName,
                                        chem::Plug_sp inPlug)
 {_OF();
-  RootBondedJoint_sp atom = this->_newAtom<RootBondedJoint_O>(atomId,name,comment);
+  RootBondedJoint_sp atom = gc::As<RootBondedJoint_sp>(this->_newAtom<RootBondedJoint_O>(atomId,name,comment));
   atom->setup(constitutionName,topologyName,inPlug);
   return atom;
 };

@@ -124,13 +124,13 @@ bool CandoDatabase_O::recognizesEntityOfClass(core::Symbol_sp name, core::Instan
 CL_LISPIFY_NAME("constitutionsAsList");
 CL_DEFMETHOD     core::List_sp	CandoDatabase_O::constitutionsAsList() 
 {_OF();
-  return this->entitiesSubClassOfAsList(core::cl__find_class(Constitution_O::static_classSymbol()));
+  return this->entitiesSubClassOfAsList(gc::As<core::Instance_sp>(core::cl__find_class(Constitution_O::static_classSymbol())));
 };
 
 
 bool CandoDatabase_O::recognizesMonomerName(core::Symbol_sp name)
 {_OF();
-  return this->recognizesEntitySubClassOf(name,core::cl__find_class(Stereoisomer_O::static_classSymbol()));
+  return this->recognizesEntitySubClassOf(name,gc::As<core::Instance_sp>(core::cl__find_class(Stereoisomer_O::static_classSymbol())));
 }
 
 
@@ -152,7 +152,7 @@ CL_DEFMETHOD     Entity_sp CandoDatabase_O::addEntity(Entity_sp entity)
 CL_LISPIFY_NAME("representedEntityNameSetsAsList");
 CL_DEFMETHOD     core::List_sp CandoDatabase_O::representedEntityNameSetsAsList()
 {_OF();
-  return this->entitiesSubClassOfAsList(core::cl__find_class(RepresentedEntityNameSet_O::static_classSymbol()));
+  return this->entitiesSubClassOfAsList(gc::As<core::Instance_sp>(core::cl__find_class(RepresentedEntityNameSet_O::static_classSymbol())));
 }
 
 
@@ -164,7 +164,7 @@ CL_DEFMETHOD     core::List_sp CandoDatabase_O::representedEntityNameSetsAsList(
 CL_LISPIFY_NAME("recognizesRepresentedEntityNameSet");
 CL_DEFMETHOD     bool CandoDatabase_O::recognizesRepresentedEntityNameSet(core::Symbol_sp name)
 {_OF();
-  return this->recognizesEntityOfClass(name,core::cl__find_class(RepresentedEntityNameSet_O::static_classSymbol()));
+  return this->recognizesEntityOfClass(name,gc::As_unsafe<core::Instance_sp>(core::cl__find_class(RepresentedEntityNameSet_O::static_classSymbol())));
 }
 
 
@@ -238,13 +238,13 @@ core::T_sp CandoDatabase_O::oGetReference(core::ObjRef_sp ref)
 
 bool	CandoDatabase_O::recognizesEntityNameSetName(core::Symbol_sp nm)
 {
-  return this->recognizesEntityOfClass(nm,core::cl__find_class(EntityNameSet_O::static_classSymbol()));
+  return this->recognizesEntityOfClass(nm,gc::As_unsafe<core::Instance_sp>(core::cl__find_class(EntityNameSet_O::static_classSymbol())));
 }
 
 CL_LISPIFY_NAME("getEntityNameSet");
 CL_DEFMETHOD     EntityNameSet_sp CandoDatabase_O::getEntityNameSet( core::Symbol_sp nm )
 {
-  return this->getEntityOfClass(nm,core::cl__find_class(EntityNameSet_O::static_classSymbol())).as<EntityNameSet_O>();
+  return gc::As<EntityNameSet_sp>(this->getEntityOfClass(nm,gc::As_unsafe<core::Instance_sp>(core::cl__find_class(EntityNameSet_O::static_classSymbol()))));
 };
 
 
@@ -252,7 +252,7 @@ CL_DEFMETHOD     EntityNameSet_sp CandoDatabase_O::getEntityNameSet( core::Symbo
 CL_LISPIFY_NAME("getRepresentedEntityNameSet");
 CL_DEFMETHOD     RepresentedEntityNameSet_sp CandoDatabase_O::getRepresentedEntityNameSet( core::Symbol_sp nm )
 {
-  return this->getEntityOfClass(nm,core::cl__find_class(RepresentedEntityNameSet_O::static_classSymbol())).as<RepresentedEntityNameSet_O>();
+  return this->getEntityOfClass(nm,gc::As_unsafe<core::Instance_sp>(core::cl__find_class(RepresentedEntityNameSet_O::static_classSymbol()))).as<RepresentedEntityNameSet_O>();
 };
 
 

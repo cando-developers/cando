@@ -84,7 +84,7 @@ CL_DEF_CLASS_METHOD Topology_mv Topology_O::makeTopologyFromResidue(chem::Residu
   int atomIndex = 0;
   StereoisomerAtoms_sp stereoisomerAtoms = StereoisomerAtoms_O::create(stereoisomerName);
   for ( auto ai = residue->begin_atoms(); ai!=residue->end_atoms(); ++ai, ++atomIndex) {
-    Atom_sp atom = *ai;
+    Atom_sp atom = gc::As_unsafe<Atom_sp>(*ai);
     ConstitutionAtomIndex0N constitutionIndex = constitution->getConstitutionAtoms()->index(atom->getName());
     StereoisomerAtom_sp sai = StereoisomerAtom_O::make(atom->getName(),
                                                        atom->getType(),

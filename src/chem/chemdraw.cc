@@ -680,7 +680,7 @@ Atom_sp CDFragment_O::createOneAtom(CDNode_sp n)
   pos3.set(n->_Pos.getX(),n->_Pos.getY(), 0.0 );
   a->setf_needs_build(false);
   a->setPosition(pos3);
-  a->setContainedBy(_Nil<core::T_O>());
+  a->setContainedBy(_Nil<chem::Matter_O>());
   n->setAtom(a);
   string name;
   bool saw_ionization = false;
@@ -1003,9 +1003,10 @@ bool CDText_O::parseFromXml(adapt::QDomNode_sp text, bool verbose)
     return false;
   }
   if (verbose) core::write_bf_stream(BF("CDText parsed: %s") % stext);
-  core::StringInputStream_sp sin = core::cl__make_string_input_stream(core::Str_O::create(stext)
-                                                                      ,core::clasp_make_fixnum(0)
-                                                                      ,_Nil<core::T_O>());
+  core::StringInputStream_sp sin =
+    gc::As<core::StringInputStream_sp>(core::cl__make_string_input_stream(core::Str_O::create(stext)
+                                                                          ,core::clasp_make_fixnum(0)
+                                                                          ,_Nil<core::T_O>()));
   
   core::DynamicScopeManager scope(cl::_sym_STARpackageSTAR,_lisp->findPackage(ChemPkg));
   core::List_sp block = read_lisp_object(sin,true,_Nil<core::T_O>(),false);

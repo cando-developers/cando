@@ -55,8 +55,6 @@ SMART(ConformationExplorerEntry);
 SMART(ConformationExplorerMatch);
 SMART(ConformationExplorer);
 SMART(SuperposeEngine);
-SMART(IntArray);
-
 
 
 #define	ConformationExplorer_AddedEntry	0
@@ -263,7 +261,7 @@ protected:
 	Matter_sp				_Matter;
     gctools::Vec0<ConformationExplorerEntry_sp>	_Entries;
     gctools::SmallOrderedSet<Atom_sp>			_AllAtoms;
-	core::IntArray_sp				_SuperposeAtomIndices;
+	core::MDArray_byte32_t_sp		_SuperposeAtomIndices;
 	core::HashTableEq_sp			_Binder;
 protected:
 	Atom_sp	_getAtomAtIndex(unsigned i);
@@ -273,15 +271,11 @@ public:
 public:
     typedef	gctools::Vec0<ConformationExplorerEntry_sp>::iterator	entryIterator;
     typedef	gctools::SmallOrderedSet<Atom_sp>::iterator			atomIterator;
-	typedef	core::IntArray_O::iterator				superposeAtomIndexIterator;
 
 public:
 	geom::SimpleVectorCoordinate_sp	_SimpleVectorCoordinate(Matter_sp matter);
-	core::IntArray_sp		_getSuperposeAtomIndices() { return this->_SuperposeAtomIndices;};
+	core::MDArray_byte32_t_sp		_getSuperposeAtomIndices() { return this->_SuperposeAtomIndices;};
 public:
-
-	superposeAtomIndexIterator	superposeAtomIndices_begin() { return this->_SuperposeAtomIndices->begin(); };
-	superposeAtomIndexIterator	superposeAtomIndices_end() { return this->_SuperposeAtomIndices->end(); };
 
 		//! Clear the superposition atoms
 	void	clearSuperposeAtoms();

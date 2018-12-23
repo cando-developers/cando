@@ -136,14 +136,14 @@ void ChemInfoMatch_O::initialize() {
   this->Base::initialize();
   this->_Matches = false;
   this->_TagLookup = core::HashTableEql_O::create_default();
-  this->_ClosestMatch = core::HashTableEqual_O::create_default();
+//  this->_ClosestMatch = core::HashTableEqual_O::create_default();
 }
 
 void ChemInfoMatch_O::fields(core::Record_sp node) {
   //this->Base::fields(node); // T_O
   node->field(INTERN_(kw, matches), this->_Matches);
   node->field(INTERN_(kw, tags), this->_TagLookup);
-  node->field(INTERN_(kw, closestMatch), this->_ClosestMatch);
+//  node->field(INTERN_(kw, closestMatch), this->_ClosestMatch);
 }
 
 CL_LISPIFY_NAME("ChemInfoMatch-matches");
@@ -179,22 +179,26 @@ void ChemInfoMatch_O::defineAtomTag(Atom_sp a, core::T_sp tag) {
   CI_LOG(("ringtag %s atom %s \n", _rep_(tag).c_str(), a->description().c_str()));
   this->_TagLookup->setf_gethash(tag, a);
   CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
+#if 0
   if (this->_TagLookup->hashTableCount() > this->_ClosestMatch->hashTableCount()) {
     CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
     this->_ClosestMatch = this->_TagLookup;
   }
+#endif
 }
 
+#if 0
 void ChemInfoMatch_O::throwIfInvalid() {
   _OF();
   gctools::SmallOrderedSet<Atom_sp> satoms;
-  this->_TagLookup->mapHash([this, &satoms](core::Symbol_sp key, Atom_sp atom) {
-      if ( satoms.count(atom) ) {
+  this->_TagLookup->mapHash([this, &satoms](core::T_sp key, core::T_sp atom) {
+      if ( satoms.count(gc::Atomsatom) ) {
         SIMPLE_ERROR(BF("The ChemInfoMatch is invalid - the matching algorithm or the SMARTS pattern match gave tags with the same atoms: %s") % this->__repr__() );
       }
       satoms.insert(atom);
     });
 }
+#endif
 
 bool ChemInfoMatch_O::hasAtomWithTag(core::T_sp tag) {
   
@@ -1472,7 +1476,7 @@ bool Chain_O::matches_Bond(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond)
   if (this->_Head->matches_Bond(root,from,bond)) {
     Atom_sp other = bond->getOtherAtom(from);
     BondList_sp nextBonds = other->getBondList();
-    nextBonds->removeBondBetween(from,nextBonds);
+    nextBonds->removeBondBetween(from,other);
     if (this->matches_BondList(root,from,nextBonds)) {
       goto SUCCESS;
     }
@@ -1858,6 +1862,17 @@ uint Root_O::depth() const {
   return res;
 }
 
+
+/*! Set the tests using an alist of (name . function) */
+void Root_O::setTests(core::List_sp tests) {
+  for ( auto cur : tests ) {
+    core::Cons_sp pair = gc::As<core::Cons_sp>(CONS_CAR(cur));
+    core::T_sp key = oCar(pair);
+    core::T_sp value = oCdr(pair);
+    this->_Tests->setf_gethash(key,value);
+  }
+}
+
 core::T_sp Root_O::children() {
   ql::list result;
   if (this->_Node.notnilp()) result << this->_Node;
@@ -1902,7 +1917,7 @@ bool Root_O::evaluateTest(core::Symbol_sp testSym, Atom_sp atom) {
 
 void Root_O::fields(core::Record_sp node) {
   node->field( INTERN_(kw,node), this->_Node);
-  node->field_if_not_nil( INTERN_(kw,tests), this->_Tests);
+  node->field( INTERN_(kw,tests), this->_Tests);
   this->Base::fields(node);
 }
 

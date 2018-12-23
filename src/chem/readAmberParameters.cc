@@ -183,11 +183,12 @@ FFNonbondDb_sp ReadAmberParameters_O::parseMasses(core::T_sp fin, FFNonbondDb_sp
     if (ol.nilp()) {
       break;
     } else {
-      string line = core::trimWhiteSpace(gc::As<core::String_sp>(ol)->get_std_string());
+      core::String_sp sol = gc::As<core::String_sp>(ol);
+      string line = core::trimWhiteSpace(sol->get_std_string());
       if ( line.size() == 0 ) {
         done = true;
       } else {
-        core::T_sp linestream = core::cl__make_string_input_stream(ol,core::make_fixnum(0),_Nil<core::T_O>());
+        core::T_sp linestream = core::cl__make_string_input_stream(sol,core::make_fixnum(0),_Nil<core::T_O>());
         LOG(BF("Parsing line|%s|") % line.c_str()  );
 //      printf("%s:%d:%s parseMasses line: %s\n", __FILE__, __LINE__, __FUNCTION__, line.c_str());
         core::Symbol_sp typeSymbol = gc::As<core::Symbol_sp>(core::cl__read(linestream,_Nil<core::T_O>()));
@@ -486,7 +487,7 @@ void ReadAmberParameters_O::parseNonbondDb(core::T_sp fin, FFNonbondDb_sp ffNonb
         string type = core::trimWhiteSpace(line.substr(0,4));
         core::Symbol_sp stype = chemkw_intern(type);
         if ( ffNonbondDb->hasType(stype) ) {
-          ffNonbond = ffNonbondDb->findType(stype);
+          ffNonbond = gc::As_unsafe<FFNonbond_sp>(ffNonbondDb->findType(stype));
         } else {
           SIMPLE_ERROR(BF("Could not find type: %s") % type);
         }
@@ -510,7 +511,7 @@ void ReadAmberParameters_O::parseNonbondDb(core::T_sp fin, FFNonbondDb_sp ffNonb
             string sameParmType = core::trimWhiteSpace(*it);
             core::Symbol_sp ssameParmtype = chemkw_intern(sameParmType);
             if ( ffNonbondDb->hasType(ssameParmtype) ) {
-              ffNonbondSameParmType = ffNonbondDb->findType(ssameParmtype);
+              ffNonbondSameParmType = gc::As_unsafe<FFNonbond_sp>(ffNonbondDb->findType(ssameParmtype));
               ffNonbondSameParmType->setRadius_Angstroms(radius);
               ffNonbondSameParmType->setEpsilon_kCal(edep);             
             } else {
@@ -543,7 +544,7 @@ void ReadAmberParameters_O::parseAtomEquivalences(core::T_sp fin, FFNonbondDb_sp
       string type = core::trimWhiteSpace(line.substr(0,4));
       core::Symbol_sp stype = chemkw_intern(type);
       if ( ffNonbondDb->hasType(stype) ) {
-        ffNonbond = ffNonbondDb->findType(stype);
+        ffNonbond = gc::As_unsafe<FFNonbond_sp>(ffNonbondDb->findType(stype));
       } else {
         SIMPLE_ERROR(BF("Could not find type: %s") % type);
       }

@@ -295,7 +295,7 @@ core::Symbol_sp chemkw_intern(const string& symName)
 {
   if ( symName == "" ) return _Nil<core::Symbol_O>();
   const string trimmed = core::trimWhiteSpace(symName);
-  core::Package_sp chemkwPkg = _lisp->findPackage(ChemKwPkg);
+  core::Package_sp chemkwPkg = _lisp->keywordPackage();
   core::SimpleBaseString_sp strimmed = core::SimpleBaseString_O::make(trimmed);
   if (trimmed == ",") {
     printf("%s:%d chemkw_intern of %s @%p\n", __FILE__, __LINE__, trimmed.c_str(), (void*)strimmed.raw_());

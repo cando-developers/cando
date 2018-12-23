@@ -61,7 +61,7 @@ void AtomIdToAtomMap_O::fields(core::Record_sp node)
       core::Cons_sp keyValue = gc::As<core::Cons_sp>(valueVec->rowMajorAref(i));
       core::T_sp key = CONS_CAR(keyValue);
       core::T_sp value = CONS_CDR(keyValue);
-      this->_AtomIdMap[translate::from_object<AtomId>(key)._v] = value;
+      this->_AtomIdMap[translate::from_object<AtomId>(key)._v] = gc::As_unsafe<Atom_sp>(value);
     }
   }
       break;

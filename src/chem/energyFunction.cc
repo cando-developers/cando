@@ -1220,7 +1220,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
 //      t2 = a2->getType();
       ea1 = this->getEnergyAtomPointer(a1);
       ea2 = this->getEnergyAtomPointer(a2);
-      FFStretch_sp ffStretch = forceField->_Stretches->findTerm(a1,a2);
+      FFStretch_sp ffStretch = gc::As<FFStretch_sp>(forceField->_Stretches->findTerm(a1,a2));
       if ( ffStretch->level() != parameterized ) {
         this->_addMissingParameter(ffStretch);
         ++missing_terms;
@@ -1390,7 +1390,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
 		    // We may not get exactly the same improper as AMBER does
 		    //
         if ( a3 != aImproperCenter ) {
-          ffItor = forceField->_Itors->findBestTerm(t1,t2,t3,t4);
+          ffItor = gc::As<FFItor_sp>(forceField->_Itors->findBestTerm(t1,t2,t3,t4));
           for ( int n=1;n<=6; n++ ) {
             if ( ffItor->hasPeriodicity(n) ) {
               energyDihedral.defineFrom(n,ffItor,ea1,ea2,ea3,ea4,this->_Dihedral->getScale());
@@ -1674,7 +1674,7 @@ CL_DEFMETHOD void	EnergyFunction_O::addTermsForListOfRestraints(ForceField_sp fo
 {
   adapt::IterateCons_sp	iterate;
   iterate = adapt::IterateCons_O::create(restraintList);
-  this->_applyRestraints(forceField,iterate,activeAtoms);
+  this->_applyRestraints(forceField->getNonbondDb(),iterate,activeAtoms);
 }
 
 void	EnergyFunction_O::loadCoordinatesIntoVector(NVector_sp pos)

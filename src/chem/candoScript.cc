@@ -570,7 +570,7 @@ CL_DEFUN core::T_sp chem__load_mol2(core::T_sp fileName)
 {
   Mol2File fin;
   fin.openFileName(fileName);
-  Aggregate_sp agg = mol2Read(fin);
+  Aggregate_sp agg = gc::As<Aggregate_sp>(mol2Read(fin));
   return agg;
 }
 

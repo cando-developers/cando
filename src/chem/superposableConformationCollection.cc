@@ -43,7 +43,7 @@ namespace chem {
 void	SuperposableConformationCollection_O::initialize()
 {
   this->Base::initialize();
-  this->_SuperposeAtomIndices = core::MDArray_size_t_O::make_vector(16,0,core::make_fixnum(0),_Nil<core::T_O>(),false,core::make_fixnum(0));
+  this->_SuperposeAtomIndices = core::MDArray_byte32_t_O::make_vector(16,0,core::make_fixnum(0),_Nil<core::T_O>(),false,core::make_fixnum(0));
   this->_RmsCutOff = 0.1;
 }
 
@@ -70,7 +70,7 @@ CL_DEFMETHOD void SuperposableConformationCollection_O::addSuperposeAtom(Atom_sp
   {
     if ( (*ai) == a )
     {
-      this->_SuperposeAtomIndices->vectorPushExtend_size_t(idx);
+      this->_SuperposeAtomIndices->vectorPushExtend(idx);
       return;
     }
   }
@@ -98,7 +98,7 @@ CL_DEFMETHOD void	SuperposableConformationCollection_O::superposeAllHeavyAtoms()
   {
     if ( (*ai)->getElement() != element_H )
     {
-      this->_SuperposeAtomIndices->vectorPushExtend_size_t(idx);
+      this->_SuperposeAtomIndices->vectorPushExtend(idx);
     }
   }
 }

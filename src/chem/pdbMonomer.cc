@@ -37,6 +37,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/residue.h>
 #include <cando/adapt/stringList.h>
 #include <clasp/core/array.h>
+#include <clasp/core/package.h>
 #include <cando/chem/bond.h>
 #include <cando/chem/pdbMonomer.h>
 #include <cando/chem/loop.h>
@@ -90,17 +91,17 @@ struct	ResidueRec
 struct 	ConnectMonomerRec
 {
     core::Symbol_sp	_MainAtom;
-    adapt::StringSet_sp _Bonded;
+    adapt::SymbolSet_sp _Bonded;
 
-    void parse(const string& line, core::Lisp_sp lisp)
+    void parse(const string& line)
     {
 	vector<string>parts;
 	parts = core::split(line," ");
 	this->_MainAtom = chemkw_intern(parts[1]);
-	this->_Bonded = adapt::StringSet_O::create();
+	this->_Bonded = adapt::SymbolSet_O::create();
 	for (uint idx=3; idx<parts.size(); idx++ )
 	{
-	    this->_Bonded->insert(parts[idx]);
+          this->_Bonded->insert(chemkw_intern(parts[idx]));
 	}
     }
 };
@@ -179,7 +180,7 @@ CL_DEFUN PdbMonomerDatabase_sp chem__readPdbMonomerConnectivityDatabase(const st
 			} else if ( recordName == "CONECT")
 			{
 			    ConnectMonomerRec connect;
-			    connect.parse(oneLine,_lisp);
+			    connect.parse(oneLine);
 			    oneMonomer->addConnect(connect._MainAtom,connect._Bonded);
 			} else
 			{

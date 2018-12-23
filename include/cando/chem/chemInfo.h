@@ -69,7 +69,7 @@ namespace chem {
     bool		_Matches;
     core::HashTableEql_sp _RingLookup;
     core::HashTableEql_sp _TagLookup; // core::StringMap<Atom_O>	_TagLookup;
-    core::HashTableEqual_sp _ClosestMatch; // core::StringMap<Atom_O>	_ClosestMatch;
+//    core::HashTableEqual_sp _ClosestMatch; // core::StringMap<Atom_O>	_ClosestMatch;
   public:
     string __repr__() const;
     bool matches();
@@ -88,8 +88,8 @@ CL_DEFMETHOD     chem::Atom_sp tag(core::T_sp tag) { return this->getAtomWithTag
     bool matchesRingTag(Atom_sp a, core::T_sp tag);
     
 	/*! Make sure all the matching atoms are unique - otherwise throw an exception */
-    void throwIfInvalid();
-    void describeClosestMatch();
+//    void throwIfInvalid();
+//    void describeClosestMatch();
 
 	/*! Return a BoundFrame using atoms with tag "1","2","3" as the origin, x axis and xy plane
 	 */
@@ -969,7 +969,7 @@ public:
     GC_ALLOCATE_VARIADIC(Root_O, obj, node ); // RP_Create<Root_O>(lisp);
     return obj;
   }
-  void setTests(core::List_sp tests) { this->_Tests = tests; };
+  void setTests(core::List_sp tests);
   void addTest(core::Symbol_sp testSymbol, core::Function_sp testCode);
   bool evaluateTest(core::Symbol_sp testSym, Atom_sp atom);
   virtual core::Symbol_sp getAssignType() { return _Nil<core::Symbol_O>();};

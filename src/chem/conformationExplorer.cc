@@ -47,6 +47,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/geom/color.h>
 #include <cando/chem/superposeEngine.h>
 #include <clasp/core/sort.h>
+#include <clasp/core/array.h>
 #include <clasp/core/intArray.h>
 #include <cando/chem/atom.h>
 #include <cando/chem/residue.h>
@@ -521,7 +522,7 @@ CL_DEFMETHOD     ConformationExplorerEntryStage_sp	ConformationExplorerEntry_O::
 	this->_AllAtoms.clear();
 	this->_Binder = core::HashTableEq_O::create_default();
 	this->clearEntries();
-	this->_SuperposeAtomIndices = core::IntArray_O::create();
+	this->_SuperposeAtomIndices = core::MDArray_byte32_t_O::make_vector(0,0,core::make_fixnum(0),_Nil<core::T_O>(),false,core::make_fixnum(0));
     }
 
 
@@ -694,7 +695,7 @@ CL_LISPIFY_NAME("clearSuperposeAtoms");
 CL_DEFMETHOD     void	ConformationExplorer_O::clearSuperposeAtoms()
     {
 	ASSERTNOTNULL(this->_SuperposeAtomIndices);
-	this->_SuperposeAtomIndices->clear();
+	this->_SuperposeAtomIndices = core::MDArray_byte32_t_O::make_vector(0,0,core::make_fixnum(0),_Nil<core::T_O>(),false,core::make_fixnum(0));
     }
 
 
@@ -709,7 +710,7 @@ CL_DEFMETHOD     void	ConformationExplorer_O::addSuperposeAtom(Atom_sp a)
 	{
 	    if ( (*ai) == a )
 	    {
-		this->_SuperposeAtomIndices->append(idx);
+              this->_SuperposeAtomIndices->vectorPushExtend(idx);
 		return;
 	    }
 	}
@@ -738,7 +739,7 @@ CL_DEFMETHOD     void	ConformationExplorer_O::superposeAllHeavyAtoms()
 	{
 	    if ( (*ai)->getElement() != element_H )
 	    {
-		this->_SuperposeAtomIndices->append(idx);
+		this->_SuperposeAtomIndices->vectorPushExtend(idx);
 	    }
 	}
     }
@@ -747,13 +748,12 @@ CL_DEFMETHOD     void	ConformationExplorer_O::superposeAllHeavyAtoms()
     gctools::SmallOrderedSet<Atom_sp>	ConformationExplorer_O::getSuperposeAtoms()
     {
         gctools::SmallOrderedSet<Atom_sp>	result;
-	core::IntArray_O::iterator	si;
 	Atom_sp			a;
 	ASSERTNOTNULL(this->_SuperposeAtomIndices);
-	for ( si=this->_SuperposeAtomIndices->begin();si!=this->_SuperposeAtomIndices->end(); si++ )
+	for ( size_t si=0; si<this->_SuperposeAtomIndices->length(); si++ )
 	{
-	    a = this->_AllAtoms[*si];
-	    result.insert(a);
+          a = this->_AllAtoms[(*this->_SuperposeAtomIndices)[si]];
+          result.insert(a);
 	}
 	return result;
     }
@@ -761,7 +761,7 @@ CL_DEFMETHOD     void	ConformationExplorer_O::superposeAllHeavyAtoms()
 
     uint	ConformationExplorer_O::numberOfSuperposeAtoms()
     {
-	return this->_SuperposeAtomIndices->size();
+	return this->_SuperposeAtomIndices->length();
     }
 
 

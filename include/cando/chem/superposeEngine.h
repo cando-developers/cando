@@ -75,16 +75,16 @@ public:
   
 	void	initialize();
 private:
-	core::MDArray_size_t_sp		_FixedIndices;
+	core::MDArray_byte32_t_sp		_FixedIndices;
 	geom::MDArrayCoordinate_sp	_FixedCoordinates;
-	core::MDArray_size_t_sp		_MoveableIndices;
+	core::MDArray_byte32_t_sp		_MoveableIndices;
 	geom::MDArrayCoordinate_sp	_MoveableCoordinates;
 private://do not archive
 	Matrix			_Transform;
 public:
 	string	debugString();
-	void	setFixedPoints(core::MDArray_size_t_sp indices, geom::SimpleVectorCoordinate_sp fp );
-	void	setMoveablePoints(core::MDArray_size_t_sp indices, geom::SimpleVectorCoordinate_sp mp);
+	void	setFixedPoints(core::MDArray_byte32_t_sp indices, geom::SimpleVectorCoordinate_sp fp );
+	void	setMoveablePoints(core::MDArray_byte32_t_sp indices, geom::SimpleVectorCoordinate_sp mp);
 
 	void	setFixedAllPoints(geom::SimpleVectorCoordinate_sp fp );
 	void	setMoveableAllPoints(geom::SimpleVectorCoordinate_sp mp);

@@ -802,7 +802,7 @@ int Octree_O::iBuildInteriorOctant( OctNode_sp PonNode, int iAtoms, gctools::Vec
 		//FREE( PonNode->PonChildren );
     for (i=0; i<8; i++) {
  		//PonNode->PonChildren = NULL;
-      PonNode->PonChildren[i] = _Nil<core::T_O>();
+      PonNode->PonChildren[i] = _Unbound<OctNode_O>();
     }
   } else {
 		//FREE( PonNode->PaAtomList );
@@ -2120,7 +2120,7 @@ VP0(("d= %f \n", d));
 
 
 
-Residue_sp Octree_O::rOctTreeCheckSolvent( /*Octree_sp octTree,*/ Vector3 vPoint )
+core::T_sp Octree_O::rOctTreeCheckSolvent( /*Octree_sp octTree,*/ Vector3 vPoint )
 {
   //Atom_sp	PaAtom;
   if ( this->type != InteriorSolvent ) {
@@ -2150,7 +2150,7 @@ Residue_sp Octree_O::rOctTreeCheckSolvent( /*Octree_sp octTree,*/ Vector3 vPoint
   if (!this->OctNodeCheckSolvent( this->onHead ) ) {
     printf("Completely out of solvent bounding area\n");
 //		return(NULL);
-    return(_Nil<Residue_O>());
+    return(_Nil<core::T_O>());
   }
   
 	/*

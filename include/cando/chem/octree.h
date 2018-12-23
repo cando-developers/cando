@@ -133,7 +133,7 @@ public:
   void OctTreeDeleteSphere(/*Octree_sp octTree, */ Vector3 vPoint, double dRadius);
   core::T_mv OctTreeUpdateCharge(/*Octree_sp octTree,*/ Vector3 vNewPoint, 
                             float fCharge, double dCutDist);
-  Residue_sp rOctTreeCheckSolvent(/*Octree_sp octTree,*/ Vector3 vPoint);
+  core::T_sp rOctTreeCheckSolvent(/*Octree_sp octTree,*/ Vector3 vPoint);
   
 //  void OctTreePrintGrid(Octree_sp octTree, core::T_sp stream, int iColor);
 

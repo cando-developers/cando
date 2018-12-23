@@ -914,10 +914,10 @@ CL_DEFMETHOD void EnergyDihedral_O::fill_from_vectors_in_alist(core::List_sp vec
     entry.term.I3 = (*i3_vec)[i];
     entry.term.I4 = (*i4_vec)[i];
     entry._Proper =  ((*proper_vec)[i]).isTrue();
-    entry._Atom1 = (*atom1_vec)[i];
-    entry._Atom2 = (*atom2_vec)[i];
-    entry._Atom3 = (*atom3_vec)[i];
-    entry._Atom4 = (*atom4_vec)[i];
+    entry._Atom1 = gc::As_unsafe<Atom_sp>((*atom1_vec)[i]);
+    entry._Atom2 = gc::As_unsafe<Atom_sp>((*atom2_vec)[i]);
+    entry._Atom3 = gc::As_unsafe<Atom_sp>((*atom3_vec)[i]);
+    entry._Atom4 = gc::As_unsafe<Atom_sp>((*atom4_vec)[i]);
   }
 }
 };
