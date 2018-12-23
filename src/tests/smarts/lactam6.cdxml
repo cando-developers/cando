@@ -19,6 +19,7 @@
  ShowTerminalCarbonLabels="no"
  ShowNonTerminalCarbonLabels="no"
  HideImplicitHydrogens="no"
+ Magnification="574"
  LabelFont="21"
  LabelSize="10"
  LabelFace="96"

@@ -244,7 +244,7 @@
 
 
 
-(defvar *match-lactone-lactam* (chem:compile-smarts "[$(O=[C:1]-[O,N]~[*]~[*]~[*:1]),$(O=[C:1]-[O,N]~[*]~[*]~[*]~[*:1]),$(O=[C:1]-[O,N]~[*]~[*]~[*]~[*]~[*:1]),$(O=[C:1]-[O,N]~[*]~[*]~[*]~[*]~[*]~[*:1])]"))
+(defvar *match-lactone-lactam* (chem:compile-smarts "[$(O=[C]1-[O,N]~[*]~[*]~[*]1),$(O=[C]1-[O,N]~[*]~[*]~[*]~[*]1),$(O=[C]1-[O,N]~[*]~[*]~[*]~[*]~[*]1),$(O=[C]1-[O,N]~[*]~[*]~[*]~[*]~[*]~[*]1)]"))
 
 (defvar *match-ester-acid* (chem:compile-smarts "O=C-[O]"))
 

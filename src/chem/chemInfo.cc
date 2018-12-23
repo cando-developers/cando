@@ -32,6 +32,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/common.h>
 #include <cando/adapt/stringSet.h>
 #include <clasp/core/hashTableEq.h>
+#include <clasp/core/designators.h>
 #include <cando/chem/chemInfo.h>
 #include <clasp/core/hashTableEqual.h>
 #include <clasp/core/hashTableEql.h>
@@ -400,7 +401,7 @@ CL_DEFMETHOD core::T_sp ChemInfo_O::matches(chem::Atom_sp a) {
   if (this->_Root.nilp()) {
     SIMPLE_ERROR(BF("The ChemInfo root is nil!"));
   }
-  LOG(BF("Starting ChemInfo::matches process with atom: %s") % a->description());
+  LOG(BF("Starting ChemInfo::matches process with\natom: %s") % a->description());
   LOG(BF("The local atom environment(depth=%d) is:\n%s") % this->depth() % a->localEnvironment(4));
   LOG(BF("The pattern to match is smarts[%s]") % this->_Code);
   core::T_mv matches_mv = chem__chem_info_match(this->_Root,a);
@@ -415,7 +416,7 @@ CL_DEFMETHOD core::T_sp ChemInfo_O::matches_atom(chem::Atom_sp a) {
   if (this->_Root.nilp()) {
     SIMPLE_ERROR(BF("The ChemInfo root is nil!"));
   }
-  LOG(BF("Starting ChemInfo::matches process with atom: %s") % a->description());
+  LOG(BF("Starting ChemInfo::matches process with\natom: %s") % a->description());
   LOG(BF("The local atom environment(depth=%d) is:\n%s") % this->depth() % a->localEnvironment(4));
   LOG(BF("The pattern to match is smarts[%s]") % this->_Code);
   core::T_mv matches_mv = chem__chem_info_match(this->_Root,a);
@@ -510,11 +511,15 @@ void AtomOrBondMatchNode_O::fields(core::Record_sp node) {
 }
 
 bool AtomOrBondMatchNode_O::matches_Bond(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond) {
+  _OF();
+  LOG(BF("%s\natom: %s bond: %s") % this->asSmarts() % _rep_(from) % _rep_(bond));
   return (this->matches_Atom(root,from) &&
           this->matches_Atom(root, bond->getOtherAtom(from)));
 };
 
 bool AtomOrBondMatchNode_O::matches_Atom(Root_sp root, chem::Atom_sp atom) {
+  _OF();
+  LOG(BF("%s\natom: %s") % this->asSmarts() % _rep_(atom));
   if (this->_RingTest==SARNone) {
     return true;
   } else if (this->_RingTest==SARRingSet) {
@@ -564,8 +569,10 @@ core::T_sp Logical_O::children() {
 
 string Logical_O::asSmarts() const {
   stringstream ss;
+  ss << "[";
   switch (this->_Operator) {
   case logAlwaysTrue:
+      ss << "<TRUE>";
       break;
   case logIdentity:
       ss << this->_Left->asSmarts();
@@ -583,6 +590,7 @@ string Logical_O::asSmarts() const {
       ss << this->_Left->asSmarts() << "," << this->_Right->asSmarts();
       break;
   };
+  ss << "]";
   return ss.str();
 }
 
@@ -594,8 +602,8 @@ uint Logical_O::depth() const {
 }
 
 bool Logical_O::matches_Atom(Root_sp root, chem::Atom_sp atom) {
-  LOG(BF("Logical pattern: %s") % this->asSmarts());
-  LOG(BF("Logical match for atom: %s") % atom->description());
+  _OF();
+  LOG(BF("%s\natom: %s") % this->asSmarts() % _rep_(atom));
   switch (this->_Operator) {
   case logAlwaysTrue:
       CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
@@ -657,8 +665,8 @@ bool Logical_O::matches_Atom(Root_sp root, chem::Atom_sp atom) {
 }
 
 bool Logical_O::matches_Bond(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond) {
-  
-  LOG(BF("Logical match for bond: %s") % bond->describeOther(from));
+  _OF();
+  LOG(BF("%s\natom: %s bond: %s") % this->asSmarts() % _rep_(from) % _rep_(bond));
   switch (this->_Operator) {
   case logAlwaysTrue:
       goto SUCCESS;
@@ -797,7 +805,8 @@ string ResidueTest_O::asSmarts() const {
 }
 
 bool ResidueTest_O::matches_Atom(Root_sp root, chem::Atom_sp atom) {
-  
+  _OF();
+  LOG(BF("%s\natom: %s") % this->asSmarts() % _rep_(atom) );
   Atom_sp ringAtom;
   SmartsRoot_sp smartsRoot;
   LOG(BF("ResidueTest match for atom: %s") % atom->description().c_str());
@@ -980,7 +989,7 @@ core::T_sp BondTest_O::children() {
 
 string BondTest_O::asSmarts() const {
   stringstream ss;
-  ss << "(" << sabToString(this->_Bond) << this->_AtomTest->asSmarts() << ")";
+  ss << sabToString(this->_Bond) << this->_AtomTest->asSmarts();
   return ss.str();
 }
 
@@ -989,8 +998,9 @@ CL_DEFMETHOD void BondTest_O::setAtomTest(core::T_sp atomTest)
   this->_AtomTest = atomTest;
 }
 
-bool BondTest_O::matches_Bond(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond) {_OF();
-  LOG(BF("Checking %s against %s&%s\n") % this->asSmarts() % _rep_(from) % _rep_(bond));
+bool BondTest_O::matches_Bond(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond) {
+  _OF();
+  LOG(BF("%s\natom: %s bond: %s") % this->asSmarts() % _rep_(from) % _rep_(bond));
   chem::BondOrder bo;
   bo = bond->getOrder();
   if (!chem::_matchBondTypes(this->_Bond, bo))
@@ -1024,8 +1034,8 @@ void AtomTest_O::initialize() {
 CL_DEFMETHOD int AtomTest_O::getIntArg() { return this->_IntArg;};
 
 bool AtomTest_O::matches_Bond(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond) {
-  
-  LOG(BF("AtomTest_O matching pattern: %s") % this->asSmarts());
+  _OF();
+  LOG(BF("%s\natom: %s bond: %s") % this->asSmarts() % _rep_(from) % _rep_(bond));
   switch (this->_Test) {
   case SAPBondedToPrevious:
       if (chem::_matchBondTypes((chem::BondEnum) this->_IntArg, bond->getOrder()))
@@ -1104,10 +1114,10 @@ SYMBOL_EXPORT_SC_(ChemPkg,STARcurrent_matchSTAR);
 
 bool AtomTest_O::matches_Atom(Root_sp root, chem::Atom_sp atom) {
   _OF();
+  LOG(BF("%s\natom: %s") % this->asSmarts() % _rep_(atom) );
   int cnt;
   Atom_sp ringStartAtom;
   int hc = 0;
-  LOG(BF("AtomTest match %s against %s\n") % this->asSmarts() % _rep_(atom));
   switch (this->_Test) {
   case SAPWildCard:
       LOG(BF("SAPWildCard")); //
@@ -1425,9 +1435,9 @@ void Chain_O::initialize() {
 string Chain_O::asSmarts() const {
   stringstream ss;
   if (this->_Head.notnilp())
-    ss << "(" << this->_Head->asSmarts() << ")";
+    ss << this->_Head->asSmarts();
   if (this->_Tail.notnilp())
-    ss << "(" << this->_Tail->asSmarts() << ")";
+    ss << this->_Tail->asSmarts();
   return ss.str();
 }
 
@@ -1443,8 +1453,9 @@ uint Chain_O::depth() const {
   return (MAX(af_depth(this->_Head), af_depth(this->_Tail) + 1));
 }
 
-bool Chain_O::matches_Atom(Root_sp root, chem::Atom_sp from) { _OF();
-  LOG(BF("Checking if _Head->%s matches %s\n") % this->_Head->asSmarts() % _rep_(from));
+bool Chain_O::matches_Atom(Root_sp root, chem::Atom_sp from) {
+  _OF();
+  LOG(BF("%s\natom: %s") % this->asSmarts() % _rep_(from) );
   if (gc::IsA<AtomTest_sp>(this->_Head)) {
     AtomTest_sp atHead = gc::As_unsafe<AtomTest_sp>(this->_Head);
     if (atHead->matches_Atom(root,from)) {
@@ -1469,8 +1480,9 @@ bool Chain_O::matches_Atom(Root_sp root, chem::Atom_sp from) { _OF();
   SIMPLE_ERROR(BF("This chain %s must have an atom-test as head - instead it has %s") % s1 % s2 );
 }
 
-bool Chain_O::matches_Bond(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond) { _OF();
-  LOG(BF("Checking if _Head->%s matches %s&%s\n") % this->_Head->asSmarts() % _rep_(from) % _rep_(bond));
+bool Chain_O::matches_Bond(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond) {
+  _OF();
+  LOG(BF("%s\natom: %s bond: %s") % this->asSmarts() % _rep_(from) % _rep_(bond));
   if (this->_Head->matches_Bond(root,from,bond)) {
     if (this->_Tail.notnilp()) {
       Atom_sp other = bond->getOtherAtom(from);
@@ -1491,7 +1503,9 @@ bool Chain_O::matches_Bond(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond)
   return true;
 }
  
-bool Chain_O::matches_BondList(Root_sp root, chem::Atom_sp from, chem::BondList_sp neighbors) {_OF();
+bool Chain_O::matches_BondList(Root_sp root, chem::Atom_sp from, chem::BondList_sp neighbors) {
+  _OF();
+  LOG(BF("%s\natom: %s bondList: %s") % this->asSmarts() % _rep_(from) % _rep_(neighbors));
   gctools::Vec0<chem::Bond_sp>::iterator bi;
   chem::BondList_sp nextBonds, tempBondList;
   LOG(BF("Chain_O matching pattern: %s") % this->asSmarts());
@@ -1533,7 +1547,7 @@ string Branch_O::asSmarts() const {
   stringstream ss;
 
   if (this->_Left.notnilp())
-    ss << "(" << this->_Left->asSmarts() << ")";
+    ss << this->_Left->asSmarts();
   if (this->_Right.notnilp())
     ss << "(" << this->_Right->asSmarts() << ")";
   return ss.str();
@@ -1554,6 +1568,7 @@ uint Branch_O::depth() const {
 
 bool Branch_O::matches_BondList(Root_sp root, chem::Atom_sp from, chem::BondList_sp neighbors) {
   _OF();
+  LOG(BF("%s\natom: %s bondList: %s") % this->asSmarts() % _rep_(from) % _rep_(neighbors));
   gctools::Vec0<chem::Bond_sp>::iterator bi;
   LOG(BF("Branch_O matching pattern: %s") % this->asSmarts());
   LOG(BF("Neighbors bond list= %s") % neighbors->describeOthers(from));
@@ -1682,7 +1697,8 @@ string AntechamberFocusAtomMatch_O::asSmarts() const {
 }
 
 bool AntechamberFocusAtomMatch_O::matches_Atom(Root_sp root, chem::Atom_sp atom) {
-  
+  _OF();
+  LOG(BF("%s\natom: %s") % this->asSmarts() % _rep_(atom) );
   chem::Atom_sp neighbor, nn;
   if (this->_AtomicNumber >= 0) {
     LOG(BF("Checking if atomic number(%d) == expected(%d)") % atom->getAtomicNumber() % this->_AtomicNumber);
@@ -1782,7 +1798,8 @@ bool AntechamberBondTest_O::matchBasic(AntechamberRoot_sp root, chem::Atom_sp at
 }
 
 bool AntechamberBondTest_O::matches_Atom(Root_sp root, chem::Atom_sp atom) {
-  
+  _OF();
+  LOG(BF("%s\natom: %s") % this->asSmarts() % _rep_(atom) );
   AntechamberRoot_sp acRoot;
   if (root->type() != antechamberRoot) {
     SIMPLE_ERROR(BF("AntechamberBondTest::matches requires an AntechamberRoot"));
@@ -1810,7 +1827,8 @@ string AntechamberBondTest_O::asSmarts() const {
 }
 
 bool AntechamberBondTest_O::matches_Bond(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond) {
-  
+  _OF();
+  LOG(BF("%s\natom: %s bond: %s") % this->asSmarts() % _rep_(from) % _rep_(bond));
   AntechamberRoot_sp antechamberRoot;
   if (root->type() != chem::antechamberRoot) {
     stringstream ss;
@@ -1903,10 +1921,11 @@ bool Root_O::evaluateTest(core::Symbol_sp testSym, Atom_sp atom) {
   if (find.second().nilp()) {
       SIMPLE_ERROR(BF("Could not find named ChemInfo/Smarts test[%s] in Smarts object - available named tests are[%s]") % _rep_(testSym) % this->_Tests->keysAsString());
   }
-  if (!gctools::IsA<core::Function_sp>(find)) {
+  core::Function_sp func = core::coerce::functionDesignator(find);
+  if (!gctools::IsA<core::Function_sp>(func)) {
       SIMPLE_ERROR(BF("The test ChemInfo/Smarts test[%s] must be a function - instead it is a %s") % _rep_(testSym) % _rep_(find));
   }
-  core::Function_sp testCode = gctools::As_unsafe<core::Function_sp>(find);
+  core::Function_sp testCode = gctools::As_unsafe<core::Function_sp>(func);
   ASSERTF(testCode.notnilp(), BF("testCode was nil - it should never be"));
   ASSERTF(atom.notnilp(), BF("The atom arg should never be nil"));
   core::T_sp res = core::eval::funcall(testCode,atom);
@@ -1921,11 +1940,13 @@ void Root_O::fields(core::Record_sp node) {
 
 bool Root_O::matches_Bond(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond) {
   _OF();
-  LOG(BF("Root_O trying to match pattern: %s") % this->asSmarts());
+  LOG(BF("%s\natom: %s bond: %s") % this->asSmarts() % _rep_(from) % _rep_(bond));
   return this->matches_Atom(root, bond->getOtherAtom(from));
 };
 
 bool Root_O::matches_Atom(Root_sp root, chem::Atom_sp atom) {
+  _OF();
+  LOG(BF("%s\natom: %s") % this->asSmarts() % _rep_(atom) );
   chem::BondList_sp nextBonds;
   bool matches;
   matches = false;
@@ -1962,16 +1983,17 @@ void SmartsRoot_O::fields(core::Record_sp node) {
 }
 
 bool SmartsRoot_O::matches_Bond(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond) {
+  _OF();
+  LOG(BF("%s\natom: %s bond: %s") % this->asSmarts() % _rep_(from) % _rep_(bond));
   return this->matches_Atom(root, bond->getOtherAtom(from));
 };
 
 bool SmartsRoot_O::matches_Atom(Root_sp root, chem::Atom_sp atom) {
   _OF();
+  LOG(BF("%s\natom: %s") % this->asSmarts() % _rep_(atom) );
   chem::BondList_sp nextBonds;
   bool matches;
   matches = false;
-  LOG(BF("SmartsRoot matching pattern: %s") % this->asSmarts());
-  LOG(BF("SmartsRoot match for atom: %s") % atom->description());
   if (!this->Root_O::matches_Atom(root, atom))
     goto FAIL;
   //SUCCESS:
@@ -2008,10 +2030,14 @@ string AntechamberRoot_O::descriptionOfContents() const {
 }
 
 bool AntechamberRoot_O::matches_Bond(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond) {
+  _OF();
+  LOG(BF("%s\natom: %s bond: %s") % this->asSmarts() % _rep_(from) % _rep_(bond));
   return this->matches_Atom(root, bond->getOtherAtom(from));
 };
 
 bool AntechamberRoot_O::matches_Atom(Root_sp root, chem::Atom_sp atom) {
+  _OF();
+  LOG(BF("%s\natom: %s") % this->asSmarts() % _rep_(atom) );
   chem::BondList_sp nextBonds;
   bool matches;
   matches = false;
