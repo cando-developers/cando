@@ -67,7 +67,9 @@
        (* (or (esrap:character-ranges (#\a #\z) (#\A #\Z) (#\0 #\9))))
        #\>)
   (:lambda (symbol-parts &bounds start end)
-    (let ((symbol (intern (esrap:text symbol-parts) :keyword)))
+    (let* ((label (string-trim "<>" (esrap:text symbol-parts)))
+           (symbol (let ((*package* (find-package :keyword)))
+                     (read-from-string label))))
       (architecture.builder-protocol:node* (:atom :lisp-function symbol
                                                   :bounds (cons start end))))))
 
