@@ -158,7 +158,7 @@ string ChemInfoMatch_O::__repr__() const {
   ss << "( " << this->className();
   ss << " :TagLookup '(";
   this->_TagLookup->maphash([&ss](core::T_sp key, core::T_sp val) {
-      ss << (BF(":tag \"%s\" :value %s ) ") % _rep_(key) % _rep_(val) );
+      ss << (BF(":tag %s :value %s ) ") % _rep_(key) % _rep_(val) );
     });
   ss << " ))";
   return ss.str();
@@ -233,8 +233,8 @@ void ChemInfoMatch_O::setRingTag(Atom_sp atom, core::T_sp index) {
 }
 
 bool ChemInfoMatch_O::matchesRingTag(Atom_sp atom, core::T_sp tag) {
-  core::T_sp thing = this->_RingLookup->gethash(atom,_Nil<T_O>());
-  return thing.notnilp();
+  Atom_sp other = gc::As<Atom_sp>(this->_RingLookup->gethash(tag,_Nil<T_O>()));
+  return core::cl__eq(other,atom);
 }
 
 // ------- WildElementDict_O
@@ -518,10 +518,12 @@ bool AtomOrBondMatchNode_O::matches_Atom(Root_sp root, chem::Atom_sp atom) {
   if (this->_RingTest==SARNone) {
     return true;
   } else if (this->_RingTest==SARRingSet) {
+  LOG(BF("Setting atom %s matches _RingId %d") % _rep_(atom) % this->_RingId);
     current_match()->setRingTag(atom,core::make_fixnum(this->_RingId));
     return true;
   }
   // It's SARRingTest
+  LOG(BF("Checking if atom %s matches _RingId %d") % _rep_(atom) % this->_RingId);
   return current_match()->matchesRingTag(atom,core::make_fixnum(this->_RingId));
 }
 
@@ -561,7 +563,6 @@ core::T_sp Logical_O::children() {
 }
 
 string Logical_O::asSmarts() const {
-  _OF();
   stringstream ss;
   switch (this->_Operator) {
   case logAlwaysTrue:
@@ -978,7 +979,6 @@ core::T_sp BondTest_O::children() {
 
 
 string BondTest_O::asSmarts() const {
-  _OF();
   stringstream ss;
   ss << "(" << sabToString(this->_Bond) << this->_AtomTest->asSmarts() << ")";
   return ss.str();
@@ -1277,7 +1277,6 @@ bool AtomTest_O::matches_Atom(Root_sp root, chem::Atom_sp atom) {
 }
 
 string AtomTest_O::asSmarts() const {
-  _OF();
   stringstream ss;
   switch (this->_Test) {
   case SAPWildCard:
@@ -1424,7 +1423,6 @@ void Chain_O::initialize() {
 }
 
 string Chain_O::asSmarts() const {
-  _OF();
   stringstream ss;
   if (this->_Head.notnilp())
     ss << "(" << this->_Head->asSmarts() << ")";
@@ -1452,7 +1450,7 @@ bool Chain_O::matches_Atom(Root_sp root, chem::Atom_sp from) { _OF();
     if (atHead->matches_Atom(root,from)) {
       LOG(BF("SUCCESS!\n"));
       chem::BondList_sp bonds = from->getBondList();
-      return this->matches_BondList(root,from,bonds);
+      return this->_Tail->matches_BondList(root,from,bonds);
     }
     LOG(BF("FAIL!\n"));
     return false;
@@ -1461,7 +1459,7 @@ bool Chain_O::matches_Atom(Root_sp root, chem::Atom_sp from) { _OF();
     if (lHead->matches_Atom(root,from)) {
       LOG(BF("SUCCESS!\n"));
       chem::BondList_sp bonds = from->getBondList();
-      return this->matches_BondList(root,from,bonds);
+      return this->_Tail->matches_BondList(root,from,bonds);
     }
     LOG(BF("FAIL!\n"));
     return false;
@@ -1474,13 +1472,16 @@ bool Chain_O::matches_Atom(Root_sp root, chem::Atom_sp from) { _OF();
 bool Chain_O::matches_Bond(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond) { _OF();
   LOG(BF("Checking if _Head->%s matches %s&%s\n") % this->_Head->asSmarts() % _rep_(from) % _rep_(bond));
   if (this->_Head->matches_Bond(root,from,bond)) {
-    Atom_sp other = bond->getOtherAtom(from);
-    BondList_sp nextBonds = other->getBondList();
-    nextBonds->removeBondBetween(from,other);
-    if (this->matches_BondList(root,from,nextBonds)) {
-      goto SUCCESS;
+    if (this->_Tail.notnilp()) {
+      Atom_sp other = bond->getOtherAtom(from);
+      BondList_sp nextBonds = other->getBondList();
+      nextBonds->removeBondBetween(from,other);
+      if (this->_Tail->matches_BondList(root,other,nextBonds)) {
+        goto SUCCESS;
+      }
+      goto FAIL;
     }
-    goto FAIL;
+    goto SUCCESS;
   }
  FAIL:
   LOG(BF("FAIL"));
@@ -1496,8 +1497,7 @@ bool Chain_O::matches_BondList(Root_sp root, chem::Atom_sp from, chem::BondList_
   LOG(BF("Chain_O matching pattern: %s") % this->asSmarts());
   LOG(BF("There are %d neighbors bondList: %s") % neighbors->size() % neighbors->describeOthers(from));
   for (bi = neighbors->begin(); bi != neighbors->end(); bi++) {
-    _BLOCK_TRACEF(BF("Checking if _Tail->%s matches bond: %s") % this->_Tail->asSmarts() % (*bi)->describeOther(from));
-    if (this->_Tail->matches_Bond(root, from, *bi)) {
+    if (this->matches_Bond(root, from, *bi)) {
       goto SUCCESS;
     }
   }
@@ -1555,13 +1555,11 @@ uint Branch_O::depth() const {
 bool Branch_O::matches_BondList(Root_sp root, chem::Atom_sp from, chem::BondList_sp neighbors) {
   _OF();
   gctools::Vec0<chem::Bond_sp>::iterator bi;
-  chem::BondList_sp nextBonds;
-  chem::BondList_sp leftBondList;
   LOG(BF("Branch_O matching pattern: %s") % this->asSmarts());
   LOG(BF("Neighbors bond list= %s") % neighbors->describeOthers(from));
   for (bi = neighbors->begin(); bi != neighbors->end(); bi++) {
     _BLOCK_TRACEF(BF("Checking neighbors focusing on %s") % (*bi)->describeOther(from));
-    leftBondList = BondList_O::create();
+    BondList_sp leftBondList = BondList_O::create();
     leftBondList->addBond(*bi);
     LOG(BF("Constructed left bond list"));
     LOG(BF("Left bond list = %s") % leftBondList->describeOthers(from));

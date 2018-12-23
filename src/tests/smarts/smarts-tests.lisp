@@ -4,20 +4,20 @@
 
 (ext:chdir "~/Development/cando/extensions/cando/src/tests/smarts/" t)
 
-(defparameter *agg* (cando:load-chem-draw-aggregate "lactam6.cdxml"))
+(defparameter *agg1* (cando:load-chem-draw-aggregate "linearAmide.cdxml"))
+(defparameter *agg2* (cando:load-chem-draw-aggregate "lactam6.cdxml"))
+(defparameter *amide1* (chem:compile-smarts "[N:1][C:2](~[O:3])[C:4]"))
+(defparameter *amide2* (chem:compile-smarts "[N:1][C:2]"))
+(defparameter *lactam6* (chem:compile-smarts "[N:1]1[C:2](=[O:3])[C:4][C:5][C:6][C:7][N:8]1"))
 
-(defparameter *amide* (chem:compile-smarts "[N:1][C:2]=[O:3]"))
-
-(defparameter *amide* (chem:compile-smarts "[N:1][C:2]"))
-
-(chem:map-atoms 'nil (lambda (a &aux match)
-                       (when (eq (chem:get-element a) :N)
-                         (smarts:print-smarts *amide*)
-                         (format t "Checking ~s ~s -> ~s~%" *amide* a (chem:matches *amide* a))
-                         (setf match (chem:matches *amide* a))
-                         (when match
-                           (print match))))
-                *agg*)
+(defun smarts-find (smarts agg)
+  (let (the-match)
+    (chem:map-atoms 'nil (lambda (a &aux match)
+                           (setf match (chem:matches smarts a))
+                           (when match
+                             (setf the-match match)))
+                    agg)
+    the-match))
                              
 
 
