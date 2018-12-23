@@ -411,14 +411,6 @@ Examples:
           t)
         nil)))
 
-#|
-(format t "monomer ~s   plug ~s   cap ~s~%" monomer plug other-topology))))))
-
-(let ((out-monomer (chem:make-monomer 
-(chem:couple oligomer
-
-|#
-
 (defun build-superposable-conformation-collection (conformation monomer-id)
   "Return (values superposable-conformation-collection aggregate)."
   (let* ((fold-tree (kin:get-fold-tree conformation))
@@ -432,7 +424,7 @@ Examples:
       (kin:walk-joints monomer-node
                        (lambda (index joint)
                          (when (null (gethash (kin:get-parent joint) joint-ht))
-                           (setf root-node joint))))
+                           (setf root-joint joint))))
       (when (typep root-joint 'kin:root-bonded-atom)
         (let* ((ancestor1 (kin:get-parent root-joint))
                (ancestor2 (kin:get-parent ancestor1))

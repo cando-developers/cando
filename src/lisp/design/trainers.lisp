@@ -171,8 +171,8 @@
              coordinates)
     (let ((sorted (sort context-coords
                         (lambda (x y)
-                          (string< (format nil "~a" (reverse key))
-                                   (format nil "~a" (reverse key)))))))
+                          (string< (format nil "~a" (reverse (car x)))
+                                   (format nil "~a" (reverse (car y))))))))
       (loop for (context . coords ) in sorted
             do (format t "context: ~s~%" context)
                (loop with onec = (first coords)

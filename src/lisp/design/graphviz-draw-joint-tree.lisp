@@ -40,8 +40,8 @@
                      ((let ((color (and *color-joints* (gethash joint *color-joints*))))
                         (if color
                             (format nil "style=filled;color=~a;" color)
-                            nil))
-                      (t "")))))
+                            nil)))
+                      (t ""))))
     (format stream "   ~a [~alabel = \"~a\"];~%" (id joint) highlight (label joint))))
 
 
