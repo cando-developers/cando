@@ -489,7 +489,7 @@ void	BondList_O::removeBondBetween(Atom_sp a,Atom_sp b)
       return;
     }
   }
-  SIMPLE_ERROR(BF("Could not find bond between %s and %s in bondList: %s") % a->description() % b->description() % this->description() );
+  SIMPLE_ERROR(BF("Could not find bond between %s and %s in bondList: %s") % _rep_(a) % _rep_(b) % _rep_(this->asSmartPtr()));
 	// If the bond wasn't found then just return
 }
 
