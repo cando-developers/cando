@@ -10,5 +10,5 @@
   :serial T
   :components ()
   :build-operation asdf:monolithic-compile-bundle-op
-  :build-pathname #.(merge-pathnames #P"cando-jupyter.fasb" (translate-logical-pathname "app-fasl:"))
-  :depends-on (:cffi :cando-user :cl-jupyter :cl-nglview))
+  :build-pathname #.(merge-pathnames #P"cando-user.fasb" (translate-logical-pathname "app-fasl:"))
+  :depends-on (:cando-user))

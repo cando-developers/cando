@@ -237,3 +237,10 @@
 (eval-when (:load-toplevel :execute)
   (when (find-symbol "*READ-CODE-HOOK*" :cl-jupyter)
     (setf cl-jupyter:*read-code-hook* 'parse-lisp-or-leap)))
+
+(defun leap-syntax-enable (on)
+  (let ((sym (find-symbol "*READ-CODE-HOOK*" :cl-jupyter)))
+    (when sym
+      (if on
+          (set sym 'parse-lisp-or-leap)
+          (set sym nil)))))

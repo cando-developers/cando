@@ -28,6 +28,7 @@
 (defpackage #:cando-jupyter
   (:use #:common-lisp)
   (:export
+   #:leap-syntax-enable
    #:pick-history
 ;;; Stuff for nglview demo
    #:build-hydrogens
