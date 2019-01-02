@@ -138,6 +138,33 @@
                            (make-pathname :type "crd" :defaults top-pathname))))
     (leap.topology:save-amber-parm-format aggregate top-pathname crd-pathname (leap.core:merged-force-field force-field-name))))
 
+(defun solvate-box (solute solvent buffer &rest iso-closeness)
+  (when (numberp buffer)
+    (setf buffer (list buffer buffer buffer)))
+  (let ((iso nil)
+        (closeness 1.0))
+    (flet ((error-iso-closeness ()
+             (error "You must provide either :iso or a number for closeness - you provided ~s" iso-closeness)))
+      (cond
+        ((= (length iso-closeness) 0))
+        ((= (length iso-closeness) 1)
+         (cond
+           ((eq (first iso-closeness) :iso)
+            (setf iso t))
+           ((string-equal (first iso-closeness) "iso")
+            (setf iso t))
+           ((numberp (first iso-closeness))
+            (setf closeness (first iso-closeness)))
+           (t (error-iso-closeness))))
+        ((and (= (length iso-closeness) 2)
+              (or (find :iso iso-closeness)
+                  (find "iso" iso-closeness :test #'string-equal))
+              (find-if #'numberp iso-closeness))
+         (setf iso t
+               closeness (find-if #'numberp iso-closeness)))
+        (t (error-iso-closeness))))
+    (leap.solvate:tool-solvate-and-shell solute solvent buffer :closeness closeness :isotropic iso)))
+
 (defun ensure-string (obj)
   (cond
     ((stringp obj) obj)
@@ -175,7 +202,8 @@
       ("addPdbResMap" . leap.pdb:add-pdb-res-map)
       ("addAtomTypes" . add-atom-types)
       ("saveAmberParms" . save-amber-parm)
-      ;;    ("solvateBox" . solvate-box)
+      ("solvateBox" . solvate-box)
+      ("addIons" . leap.add-ions:add-ions)
       ))
   (dolist (command *commands*)
     (if (fboundp (cdr command))
