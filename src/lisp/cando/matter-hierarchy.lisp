@@ -194,10 +194,15 @@ Break up the molecules in the aggregate into a list of molecules using spanning 
 ;;;
 ;;; combine molecules into a new aggregate
 ;;;
-(defun combine (&rest aggregates)
+(defun combine (&rest matters)
   "Combine the contents of the aggregates into a new aggregate and return that"
   (let ((new-agg (chem:make-aggregate)))
-    (loop for agg in aggregates
-          do (do-molecules (mol agg)
-               (chem:add-matter new-agg mol)))
+    (loop for matter in matters
+          do (cond
+               ((typep matter 'chem:molecule)
+                (chem:add-matter new-agg matter))
+               ((typep matter 'chem:aggregate)
+                (do-molecules (mol matter)
+                  (chem:add-matter new-agg mol)))
+               (t (error "You cannot combine a ~s" matter))))
     new-agg))
