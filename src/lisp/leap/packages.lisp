@@ -153,6 +153,7 @@
    #:load-atom-type-rules
    #:assign-atom-types
    #:source
+   #:solvate-box
    #:add-gaff
    #:easy-gaff)
   (:use :common-lisp :chem :geom))
