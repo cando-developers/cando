@@ -28,7 +28,7 @@
   (:use #:common-lisp)
   (:export
    #:calculate-bcc-corrections
-   #:calculate-am1-bcc-charges
+   #:combine-am1-bcc-charges
    #:calculate-mopac-am1-bcc-charges
    #:write-sqm-calculation
    #:write-mopac-calculation
