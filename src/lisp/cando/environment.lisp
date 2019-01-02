@@ -15,6 +15,9 @@
 (defun walk-topologys (func)
   (chem:walk-topologys chem:*cando-database* func))
 
+(defun list-topologys ()
+  (chem:walk-topologys (lambda (topology &rest args) (print topology)) ))
+
 (defun register-entity (name entity)
   (error "Implement register-entity")
   )
