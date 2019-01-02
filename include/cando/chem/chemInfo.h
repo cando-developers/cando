@@ -82,6 +82,7 @@ namespace chem {
     core::T_sp getAtomWithTagOrNil(core::T_sp tag);
 CL_LISPIFY_NAME("tag");
 CL_DEFMETHOD     chem::Atom_sp tag(core::T_sp tag) { return this->getAtomWithTag(tag);};
+    core::HashTable_sp tags_as_hashtable() const;
     void forgetAtomTag(core::T_sp tag);
 
     void setRingTag(Atom_sp a, core::T_sp tag);

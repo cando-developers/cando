@@ -147,6 +147,8 @@ void ChemInfoMatch_O::fields(core::Record_sp node) {
 //  node->field(INTERN_(kw, closestMatch), this->_ClosestMatch);
 }
 
+CL_DEFMETHOD core::HashTable_sp ChemInfoMatch_O::tags_as_hashtable() const { return this->_TagLookup; };
+
 CL_LISPIFY_NAME("ChemInfoMatch-matches");
 CL_DEFMETHOD bool ChemInfoMatch_O::matches() {
   
@@ -1061,7 +1063,7 @@ bool AtomTest_O::matches_Bond(Root_sp root, chem::Atom_sp from, chem::Bond_sp bo
   return this->Base::matches_Bond(root,from,bond);
 }
 
-bool AtomTest_O::matchesAm1BccX(chem::Atom_sp atom) const {
+CL_DEFUN bool am1BccX(chem::Atom_sp atom) {
   _OF();
   Element el = atom->getElement();
   if (el == element_C) {
@@ -1083,7 +1085,7 @@ bool AtomTest_O::matchesAm1BccX(chem::Atom_sp atom) const {
   return false;
 }
 
-bool AtomTest_O::matchesAm1BccY(chem::Atom_sp atom) const {
+CL_DEFUN bool am1BccY(chem::Atom_sp atom) {
   _OF();
   Element el = atom->getElement();
   if (el == element_C) {
@@ -1934,7 +1936,7 @@ bool Root_O::evaluateTest(core::Symbol_sp testSym, Atom_sp atom) {
   ASSERTF(testSym.notnilp(), BF("The test symbol was nil! - this should never occur"));
   LOG(BF("Looking up test with symbol<%s>") % _rep_(testSym));
   core::T_mv find = this->lazyTests()->gethash(testSym);
-  if (find.second().notnilp()) {
+  if (find.second().nilp()) {
     SIMPLE_ERROR(BF("Could not find named ChemInfo/Smarts test[%s] in Smarts object - available named tests are[%s]") % _rep_(testSym) % this->lazyTests()->keysAsString());
   }
   core::Function_sp func = core::coerce::functionDesignator(find);
