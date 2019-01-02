@@ -23,7 +23,7 @@ THE SOFTWARE.
 This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
 */
 /* -^- */
-#define	DEBUG_LEVEL_NONE
+#define	DEBUG_LEVEL_FULL
 //
 // (C) 2004 Christian E. Schafmeister
 //
@@ -1134,15 +1134,19 @@ void EnergyFunction_O::__createSecondaryAmideRestraints(gctools::Vec0<Atom_sp>& 
 
 SYMBOL_EXPORT_SC_(ChemPkg,lookup_force_field_for_molecule);
 SYMBOL_EXPORT_SC_(ChemPkg,lookup_nonbond_force_field_for_aggregate);
+SYMBOL_EXPORT_SC_(ChemPkg,STARparameter_warningsSTAR);
+SYMBOL_EXPORT_SC_(ChemPkg,report_parameter_warnings);
 
 CL_LISPIFY_NAME("defineForMatter");
 CL_LAMBDA((energy-function !) matter system &key use-excluded-atoms active-atoms show-progress (assign-types t));
 CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, core::T_sp system, bool useExcludedAtoms, core::T_sp activeAtoms, bool show_progress, bool assign_types )
-{
+{_OF();
   if ( !(matter.isA<Aggregate_O>() || matter.isA<Molecule_O>() ) )
   {
     SIMPLE_ERROR(BF("You can only define energy functions for Aggregates or Molecules"));
   }
+  core::DynamicScopeManager scope(_sym_STARparameter_warningsSTAR,_Nil<core::T_O>());
+  
 	//
 	// Identify rings
 	//
@@ -1167,6 +1171,7 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, core::T_sp
     this->generateNonbondEnergyFunctionTables(useExcludedAtoms,matter,nonbondForceField,activeAtoms,show_progress);
     this->generateRestraintEnergyFunctionTables(matter,nonbondForceField,activeAtoms,show_progress);
   }
+  core::eval::funcall(_sym_report_parameter_warnings);
 }
 
 
@@ -1256,7 +1261,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
       ea3 = this->getEnergyAtomPointer(a3);
       FFAngle_sp ffAngle = forceField->_Angles->findTerm(forceField->_Stretches,a1,a2,a3);
       if ( ffAngle->level() != parameterized ) {
-        LOG(BF("Missing angle parameter between types: %s-%s-%s") % a1->getType()% a2->getTypeString()% a3->getTypeString() );
+        LOG(BF("Missing angle parameter between types: %s-%s-%s") % _rep_(a1->getType()) % _rep_(a2->getType()) % _rep_(a3->getType()) );
         this->_addMissingParameter(ffAngle);
         LOG(BF("Added to missing parameters") );
         ++missing_terms;
@@ -1330,7 +1335,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
         if (ea1->inBondOrAngle(ea4->atom()) )
         {
 #ifdef	DEBUG_ON
-          if ( t1 < t4 ) {
+          if ( _rep_(t1) < _rep_(t4) ) {
             t141 = t1;
             t144 = t4;
           }else{
@@ -1342,7 +1347,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
 #endif
         } else {
 #ifdef	DEBUG_ON
-          if ( t1 < t4 ) {
+          if ( _rep_(t1) < _rep_(t4) ) {
             t141 = t1;
             t144 = t4;
           }else{
@@ -1411,7 +1416,7 @@ SYMBOL_EXPORT_SC_(ChemPkg,prepare_amber_energy_nonbond);
 
 CL_DOCSTRING("Generate the nonbond energy function tables. The atom types, and CIP priorities need to be precalculated.");
 CL_DEFMETHOD void EnergyFunction_O::generateNonbondEnergyFunctionTables(bool useExcludedAtoms, Matter_sp matter, FFNonbondDb_sp nonbondForceField, core::T_sp activeAtoms, bool show_progress )
-{
+{_OF();
   if (show_progress)
     core::write_bf_stream(BF("Built atom table for %d atoms\n") % this->_AtomTable->getNumberOfAtoms());
 #ifdef	DEBUG_DEFINE_ENERGY
@@ -1432,6 +1437,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateNonbondEnergyFunctionTables(bool use
       
     this->_Nonbond->constructExcludedAtomListFromAtomTable(this->_AtomTable, nonbondForceField, show_progress);
     this->_Nonbond->construct14InteractionTerms(this->_AtomTable,matter,nonbondForceField,activeAtoms,show_progress);
+    LOG(BF("Done construct14InteractionTerms"));
 //    printf("%s:%d:%s    nonbond -> %d\n", __FILE__, __LINE__, __FUNCTION__, _Nonbond->numberOfTerms());
 
   } else {

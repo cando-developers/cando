@@ -164,6 +164,7 @@ void	FFAngle_O::initialize()
 //    this->_Ub_len = 0.0;
 }
 
+SYMBOL_EXPORT_SC_(ChemPkg,warn_estimated_angle_term);
 
 /*! Estimate the angle term according to Wang et al. J. Comput. Chem 25, 1157-1174 (2004) */
 FFAngle_sp	FFAngleDb_O::estimateTerm(FFStretchDb_sp ffstretch, chem::Atom_sp a1, chem::Atom_sp a2, chem::Atom_sp a3 )
@@ -221,7 +222,9 @@ core::Symbol_sp		t1, t2, t3;
       angle->_Type3 = t3;
       angle->_AngRad = angRad;
       angle->setK2_kCalPerRadianSquared(k);
-      SIMPLE_WARN(BF("Estimated angle term %s-%s-%s  T0 -> %f degrees K -> %f kCal/rad^2") % _rep_(t1) % _rep_(t2) % _rep_(t3) % (angle->getAngle_Radian()/0.0174533) % angle->getK2_kCalPerRadianSquared());
+      core::eval::funcall(_sym_warn_estimated_angle_term,t1,t2,t3,
+                          core::clasp_make_double_float(angle->getAngle_Radian()),
+                          core::clasp_make_double_float(angle->getK2_kCalPerRadianSquared()));
       return angle;
     }
 GUESS:
@@ -248,7 +251,7 @@ GUESS:
       } else {
 	angle->_K2__kJPerRadianSquared = kCalPerRadianSquared_to_kJPerRadianSquared(70.0);
       }
-      SIMPLE_WARN(BF("Estimated angle term %s-%s-%s  T0 -> %f degrees K -> %f kCal/rad^2") % _rep_(t1) % _rep_(t2) % _rep_(t3) % (angle->getAngle_Radian()/0.0174533) % angle->getK2_kCalPerRadianSquared());
+      core::eval::funcall(_sym_warn_estimated_angle_term,t1,t2,t3,core::clasp_make_double_float(angle->getAngle_Radian()),core::clasp_make_double_float(angle->getK2_kCalPerRadianSquared()));
       return angle;
     }
 }

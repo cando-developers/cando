@@ -55,3 +55,63 @@
   (make-condition 'minimizer-stuck
                   :minimizer minimizer
                   :coordinates coordinates))
+
+
+
+;;; ------------------------------------------------------------
+;;;
+;;; Parameter warnings
+;;;
+
+(defvar *parameter-warnings*)
+
+(define-condition estimated-angle-term ()
+  ((type1 :initarg :type1 :accessor type1)
+   (type2 :initarg :type2 :accessor type2)
+   (type3 :initarg :type3 :accessor type3)
+   (angle-rad :initarg :angle-rad :accessor angle-rad)
+   (force :initarg :force :accessor force)))
+
+(defun warn-estimated-angle-term (t1 t2 t3 angle-rad force)
+  (when (string> (string t1) (string t2))
+    (let ((temp t1))
+      (setf t1 t2
+            t2 temp)))
+  (let ((term (make-condition 'estimated-angle-term
+                              :type1 t1
+                              :type2 t2
+                              :type3 t3
+                              :angle-rad angle-rad
+                              :force force)))
+    (push term *parameter-warnings*)))
+
+(defun compare-estimated-terms (term1 term2)
+;;; Assume only angles for now
+  (if (eq (class-of term1)
+          (class-of term2))
+      (etypecase term1
+        (estimated-angle-term
+         (or (string< (string (type1 term1)) (string (type1 term2)))
+             (string< (string (type2 term1)) (string (type2 term2)))
+             (string< (string (type3 term1)) (string (type3 term2)))))
+        )
+      (string< (string (class-name (class-of term1)))
+               (string (class-name (class-of term2))))))
+
+(defun estimated-terms-eq (term1 term2)
+  ;;; Assume only angles for now
+  (if (eq (class-of term1)
+          (class-of term2))
+      (etypecase term1
+        (estimated-angle-term
+         (and (eq (type1 term1) (type1 term2))
+              (eq (type2 term1) (type2 term2))
+              (eq (type3 term1) (type3 term2))))
+        )
+      nil))
+
+(defun report-parameter-warnings ()
+  (when *parameter-warnings*
+    (let ((unique (remove-duplicates *parameter-warnings* :test #'estimated-terms-eq)))
+      (loop for warning in unique
+            do (format t "~a~%" warning)))))
