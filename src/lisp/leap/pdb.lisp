@@ -662,6 +662,8 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
                   (format t "Built ~d missing hydrogens~%" built))))
           (cando:maybe-split-molecules-in-aggregate aggregate)
           (classify-molecules aggregate system)
+          (let ((name-only (pathname-name (pathname filename))))
+            (chem:set-name aggregate (intern name-only :keyword)))
           (values aggregate scanner))))))
 
 (defgeneric classify-molecules (aggregate system))
