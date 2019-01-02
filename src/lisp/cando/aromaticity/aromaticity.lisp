@@ -44,17 +44,9 @@
   (values (chem:matter-get-property-or-default a 'aromaticity ())
           (chem:matter-get-property-or-default a 'step-assigned ())))
 
-(defun abx (atom)
-  (warn "Perform the am1-bcc x test on atom ~s (see msmarts_Parser.yy)" atom)
-  nil)
-
-(defun aby (atom)
-  (warn "Perform the am1-bcc y test on atom ~s (see msmarts_Parser.yy)" atom)
-  nil)
-
-(defparameter *artests* (list (cons :|ar6| (lambda (a) (eq (chem:matter-get-property-or-default a 'aromaticity nil) 'ar6)))
-                              (cons :|abx| #'abx)
-                              (cons :|aby| #'aby)))
+(defparameter *artests* (list (cons :ar6 (lambda (a) (eq (chem:matter-get-property-or-default a 'aromaticity nil) 'ar6)))
+                              (cons :abx #'chem:am1bcc-x)
+                              (cons :aby #'chem:am1bcc-y)))
 
 (defparameter *rule1a* (chem:compile-smarts "[<abx>:1]-[<abx>]=[<abx>]-[<abx>]=[<abx>]-[<abx>]=[<abx>:1]" :tests *artests*))
 
@@ -127,7 +119,7 @@
            (set-aromaticity-type a 'ar7 'rule4)
            )))
 
-(defparameter *ar67test* (list* (cons :|ar67| (lambda (a) (or (eq (chem:matter-get-property-or-default a 'aromaticity nil) 'ar6)
+(defparameter *ar67test* (list* (cons :ar67 (lambda (a) (or (eq (chem:matter-get-property-or-default a 'aromaticity nil) 'ar6)
                                                               (eq (chem:matter-get-property-or-default a 'aromaticity nil) 'ar7))))
                                 *artests*))
 
