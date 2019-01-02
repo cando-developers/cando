@@ -23,7 +23,7 @@ THE SOFTWARE.
 This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
 */
 /* -^- */
-//#define	DEBUG_LEVEL_FULL
+#define	DEBUG_LEVEL_FULL
 
 #include <clasp/core/foundation.h>
 #include <clasp/core/bformat.h>
@@ -86,7 +86,6 @@ bool	EnergyNonbond::defineFrom(FFNonbondDb_sp	forceField,
                                   EnergyAtom	*iea2,
                                   EnergyNonbond_sp energyNonbond)
 {_OF();
-  LOG(BF("defineFrom"));
   double				epsilonij;
   double				vdwScale;
   double				electrostaticScale;
@@ -123,8 +122,8 @@ bool	EnergyNonbond::defineFrom(FFNonbondDb_sp	forceField,
   LOG(BF( "vdwScale = %lf")% (double)(vdwScale) );
   LOG(BF( "electrostaticScale = %lf")% (double)(electrostaticScale) );
   LOG(BF( " is14=%d")% is14 );
-  FFNonbond_sp ffNonbond1 = gc::As<FFNonbond_sp>(ffNonbond1);
-  FFNonbond_sp ffNonbond2 = gc::As<FFNonbond_sp>(ffNonbond2);
+  FFNonbond_sp ffNonbond1 = gc::As<FFNonbond_sp>(tffNonbond1);
+  FFNonbond_sp ffNonbond2 = gc::As<FFNonbond_sp>(tffNonbond2);
   {_BLOCK_TRACE("Calculating nonbond parameters");
     this->_RStar = ffNonbond1->getRadius_Angstroms()+ffNonbond2->getRadius_Angstroms();
     epsilonij = sqrt(ffNonbond1->getEpsilon_kCal()*ffNonbond2->getEpsilon_kCal());
@@ -1010,6 +1009,7 @@ string EnergyNonbond_O::beyondThresholdInteractionsAsString()
 
 void EnergyNonbond_O::construct14InteractionTerms(AtomTable_sp atomTable, Matter_sp matter, FFNonbondDb_sp forceField, core::T_sp activeAtoms, bool show_progress)
 {
+  _OF();
   {
     EnergyNonbond energyNonbond;
     Loop loop;
@@ -1024,7 +1024,9 @@ void EnergyNonbond_O::construct14InteractionTerms(AtomTable_sp atomTable, Matter
       auto ea1 = atomTable->getEnergyAtomPointer(a1);
       auto ea4 = atomTable->getEnergyAtomPointer(a4);
       energyNonbond.defineFrom(forceField,true,&*ea1,&*ea4,this->asSmartPtr());
+      LOG(BF("About to addTerm"));
       this->addTerm(energyNonbond);
+      LOG(BF("Returned from addTerm"));
       ++terms;
     }
     if (show_progress) core::write_bf_stream(BF("Built 14 interaction table with %d terms\n") % terms);
