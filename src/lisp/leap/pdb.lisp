@@ -57,6 +57,7 @@ the distribution contains default mappings."
          (destructuring-bind (res-name var-name)
              mapping
            (do-add-map res-name :main var-name)))
+        ((null mapping) #|Do nothing|#)
         (t (error "Illegal argument ~a" mapping))))))
                                              
 (defparameter *pdb-atom-map* (make-hash-table :test #'eq)
