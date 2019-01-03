@@ -33,7 +33,7 @@
     (if (and (= 0 target-charge)
              (= 0 ion1-number))
         (progn
-          (format t "The total charge is ~a and so there are no charges to neutralize." target-charge)
+          (format t "The total charge is ~a and so there are no charges to neutralize.~%" target-charge)
           (return-from add-ions))
         (format t "Total charge ~f~%" target-charge))
     ;;Consider neutralizetion    
