@@ -71,4 +71,6 @@
 
 (defun progress-done (bar)
   (progress-advance bar (progress-bar-total bar))
-  (setf (progress-bar-advance-counter bar) 0))
+  (setf (progress-bar-advance-counter bar) 0)
+  (terpri)
+  (finish-output))
