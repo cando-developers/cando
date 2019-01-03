@@ -154,6 +154,8 @@
    #:assign-atom-types
    #:source
    #:solvate-box
+   #:solvate-oct
+   #:solvate-shell
    #:add-gaff
    #:easy-gaff)
   (:use :common-lisp :chem :geom))
