@@ -97,7 +97,7 @@
 
 (defun list-force-fields ()
   (let ((ffs nil))
-    (maphash (lambda (k v) (push k ffs)) leap.core:*force-fields*)
+    (maphash (lambda (k v) (push (cons k v) ffs)) leap.core:*force-fields*)
     ffs))
 
 (defun load-atom-type-rules (filename &optional (force-field :default))
@@ -141,6 +141,7 @@
 (defun solvate-box (solute solvent buffer &rest iso-closeness)
   (when (numberp buffer)
     (setf buffer (list buffer buffer buffer)))
+  ;;; Process the leap syntax for the two optional parameters "iso" and a closeness value
   (let ((iso nil)
         (closeness 1.0))
     (flet ((error-iso-closeness ()
@@ -151,7 +152,8 @@
          (cond
            ((eq (first iso-closeness) :iso)
             (setf iso t))
-           ((string-equal (first iso-closeness) "iso")
+           ((and (stringp (first iso-closeness))
+                 (string-equal (first iso-closeness) "iso"))
             (setf iso t))
            ((numberp (first iso-closeness))
             (setf closeness (first iso-closeness)))
@@ -254,6 +256,7 @@
       ("source" . source)
       ("loadAmberParams" . load-amber-params)
       ("addPdbResMap" . leap.pdb:add-pdb-res-map)
+      ("addPdbAtomMap" . leap.pdb:add-pdb-atom-map)
       ("addAtomTypes" . add-atom-types)
       ("saveAmberParms" . save-amber-parm)
       ("solvateBox" . solvate-box)
