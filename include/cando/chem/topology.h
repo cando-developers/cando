@@ -207,7 +207,7 @@ public:
   bool	hasPlugNamed(core::Symbol_sp name);
     /// @brief Return the Plug with the name
   Plug_sp	plugNamed(core::Symbol_sp name);
-
+  core::List_sp allOutPlugNamesThatMatchInPlugName(core::Symbol_sp inPlugName);
   void setTemporaryObject(core::T_sp o);
   core::T_sp getTemporaryObject();
 

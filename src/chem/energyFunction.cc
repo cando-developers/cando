@@ -1334,6 +1334,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
         }
         if (ea1->inBondOrAngle(ea4->atom()) )
         {
+#if 0
 #ifdef	DEBUG_ON
           if ( _rep_(t1) < _rep_(t4) ) {
             t141 = t1;
@@ -1343,9 +1344,11 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
             t144 = t1;
           }
 //          LOG(BF("Defining 1-4 interaction %-9s- %-9s   ") % t1 % t4 );
-          core::write_bf_stream(BF("Defining 1-4 interaction %-9s- %-9s   \n") % t1 % t4 );
+//          core::write_bf_stream(BF("Defining 1-4 interaction %-9s- %-9s   \n") % t1 % t4 );
+#endif
 #endif
         } else {
+#if 0          
 #ifdef	DEBUG_ON
           if ( _rep_(t1) < _rep_(t4) ) {
             t141 = t1;
@@ -1355,7 +1358,8 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
             t144 = t1;
           }
 //          LOG(BF("Ignoring 1-4 interaction %-9s- %-9s    ") % t1 % t4 );
-          core::write_bf_stream(BF("Ignoring 1-4 interaction %-9s- %-9s    \n") % t1 % t4 );
+//          core::write_bf_stream(BF("Ignoring 1-4 interaction %-9s- %-9s    \n") % t1 % t4 );
+#endif
 #endif
         }
 //		ea1->_CloserThan15.insert(ea4->_Atom);

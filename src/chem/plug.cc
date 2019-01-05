@@ -122,6 +122,11 @@ string Plug_O::__repr__() const
   return ss.str();
 }
 
+CL_DEFMETHOD bool Plug_O::getIsOut() const
+{
+  return !(this->getIsIn()||this->getIsRingClosing());
+}
+
 CL_LISPIFY_NAME("otherSidePlugName");
 CL_DEFMETHOD     core::Symbol_sp Plug_O::otherSidePlugName()
 {

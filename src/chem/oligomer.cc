@@ -104,7 +104,7 @@ Oligomer_O::Oligomer_O(const Oligomer_O& original)
     Monomer_sp newMonomer2 = gc::As<Monomer_sp>(newMonomersFromOld->gethash(oldMonomer2));
     if ( gc::IsA<DirectionalCoupling_sp>(oldCoupling) ) {
       DirectionalCoupling_sp dc = gc::As_unsafe<DirectionalCoupling_sp>(oldCoupling);
-      DirectionalCoupling_sp newCoupling = DirectionalCoupling_O::make(dc->_Name,newMonomer1,newMonomer2);
+      DirectionalCoupling_sp newCoupling = DirectionalCoupling_O::make(newMonomer1,dc->getSourcePlugName(),dc->getTargetPlugName(),newMonomer2);
       this->_Couplings[ci] = newCoupling;
     } else if (gc::IsA<RingCoupling_sp>(oldCoupling) ) {
       RingCoupling_sp rc = gc::As_unsafe<RingCoupling_sp>(oldCoupling);
@@ -373,14 +373,14 @@ DirectionalCoupling_sp 	coup;
 Monomer_sp	monTo;
 
     coup = DirectionalCoupling_O::create();
-    coup->setName(couplingName);
+    coup->setPlugNames(DirectionalCoupling_O::outPlugName(couplingName),DirectionalCoupling_O::inPlugName(couplingName));
     monTo = Monomer_O::create();
 //    monTo->setGroupName(representedEntityNameSetName);
-    coup->setOutMonomer(monTo);
+    coup->setTargetMonomer(monTo);
     monTo->setInCoupling(coup);
     	// Now attach it
     monFrom->addOutCoupling(coup);
-    coup->setInMonomer(monFrom);
+    coup->setSourceMonomer(monFrom);
     this->addMonomer(monTo);
     this->addCoupling(coup);
     monFrom->throwIfBadConnections();
@@ -451,7 +451,7 @@ CL_DEFMETHOD Monomer_sp	Oligomer_O::rootMonomer() const
         LOG(BF("     But its not a directional") );
         break;
       }
-      sub = gc::As_unsafe<DirectionalCoupling_sp>(coupling)->getInMonomer();
+      sub = gc::As_unsafe<DirectionalCoupling_sp>(coupling)->getSourceMonomer();
     } else break;
   } while (!coupling.unboundp());
   return sub;
@@ -477,21 +477,50 @@ CL_DEFMETHOD void	Oligomer_O::throwIfBadConnections()
 
 
 
+CL_LAMBDA("(oligomer !) source-monomer coupling-or-source-plug-name target-monomer &optional (target-plug-name nil)")
 CL_LISPIFY_NAME("couple");
-CL_DEFMETHOD DirectionalCoupling_sp	Oligomer_O::couple( Monomer_sp inMon, core::Symbol_sp name, Monomer_sp outMon )
+CL_DEFMETHOD DirectionalCoupling_sp	Oligomer_O::couple( Monomer_sp sourceMon, core::T_sp couplingOrSourcePlugName, Monomer_sp targetMon, core::Symbol_sp targetPlugName  )
 {
   DirectionalCoupling_sp	coupling;
   bool		foundIn, foundOut;
   gctools::Vec0<Monomer_sp>::iterator	mi;
-  LOG(BF("Creating a coupling from %s to %s") % _rep_(inMon) % _rep_(outMon));
+  core::Symbol_sp sourcePlugName;
+  if (couplingOrSourcePlugName.consp()) {
+    core::Cons_sp pair = gc::As_unsafe<core::Cons_sp>(couplingOrSourcePlugName);
+    sourcePlugName = gc::As<core::Symbol_sp>(CONS_CAR(pair));
+    if (!targetPlugName.nilp()) {
+      SIMPLE_ERROR(BF("coupling-or-source-plug-name was a pair and so target-plug-name must be NIL - but it is %s") % _rep_(targetPlugName));
+    }
+    targetPlugName = gc::As<core::Symbol_sp>(CONS_CDR(pair));
+  } else if (gc::IsA<core::Symbol_sp>(couplingOrSourcePlugName)) {
+    core::Symbol_sp sym = gc::As_unsafe<core::Symbol_sp>(couplingOrSourcePlugName);
+    if (!DirectionalCoupling_O::isOutPlugName(couplingOrSourcePlugName)&&!targetPlugName.nilp()) {
+      SIMPLE_ERROR(BF("coupling-or-source-plug-name was a coupling name and so target-plug-name must be NIL - but it is %s") % _rep_(targetPlugName));
+    }
+    if (DirectionalCoupling_O::isCouplingName(sym)) {
+      sourcePlugName = DirectionalCoupling_O::outPlugName(sym);
+      targetPlugName = DirectionalCoupling_O::inPlugName(sym);
+    } else {
+      if (!DirectionalCoupling_O::isOutPlugName(sym)) {
+        SIMPLE_ERROR(BF("coupling-or-source-plug-name must be a source-plug-name - instead it is %s") % _rep_(sym));
+      }
+      sourcePlugName = sym;
+      if (!DirectionalCoupling_O::isInPlugName(targetPlugName)) {
+        SIMPLE_ERROR(BF("target-plug-name must be a target-plug-name - instead it is %s") % _rep_(targetPlugName));
+      }
+    }
+  } else {
+    SIMPLE_ERROR(BF("coupling-or-source-plug-name must be a cons or a symbol - it is %s") % _rep_(couplingOrSourcePlugName));
+  }
+  LOG(BF("Creating a coupling from %s to %s") % _rep_(sourceMon) % _rep_(targetMon));
   foundIn = false;
   foundOut = false;
   for ( mi=this->_Monomers.begin(); mi!=this->_Monomers.end(); mi++ ) 
   {
-    if ( *mi == inMon ) {
+    if ( *mi == sourceMon ) {
       foundIn = true;
     }
-    if ( *mi == outMon ) {
+    if ( *mi == targetMon ) {
       foundOut = true;
     }
   }
@@ -501,18 +530,21 @@ CL_DEFMETHOD DirectionalCoupling_sp	Oligomer_O::couple( Monomer_sp inMon, core::
   if ( !foundOut ) {
     SIMPLE_ERROR(BF("Could not find second monomer in oligomer"));
   }
-  core::Symbol_sp outMonPlugName = DirectionalCoupling_O::inPlugName(name);
-  if ( outMon->hasCouplingWithPlugName(outMonPlugName) ) {
+#if 0
+  // Turn this off for now until we know how the new coupling names work
+  core::Symbol_sp targetMonPlugName = DirectionalCoupling_O::inPlugName(name);
+  if ( targetMon->hasCouplingWithPlugName(targetMonPlugName) ) {
     SIMPLE_ERROR(BF("The second monomer already has an in coupling"));
   }
-  core::Symbol_sp inMonPlugName = DirectionalCoupling_O::outPlugName(name);
-  if ( inMon->hasCouplingWithPlugName(inMonPlugName) ) {
-    SIMPLE_ERROR(BF("The first monomer[%s] already has an out coupling with the name: %s") % inMon->currentStereoisomerName() % name );
+  core::Symbol_sp sourceMonPlugName = DirectionalCoupling_O::outPlugName(name);
+  if ( sourceMon->hasCouplingWithPlugName(sourceMonPlugName) ) {
+    SIMPLE_ERROR(BF("The first monomer[%s] already has an out coupling with the name: %s") % sourceMon->currentStereoisomerName() % name );
   }
-  LOG(BF("in/out plug names: %s/%s") % _rep_(inMonPlugName) % _rep_(outMonPlugName));
-  coupling = DirectionalCoupling_O::make(name,inMon,outMon);
-  inMon->addCoupling(inMonPlugName,coupling);
-  outMon->addCoupling(outMonPlugName,coupling);
+#endif
+  LOG(BF("in/out plug names: %s/%s") % _rep_(sourcePlugName) % _rep_(targetPlugName));
+  coupling = DirectionalCoupling_O::make(sourceMon,sourcePlugName,targetPlugName,targetMon);
+  sourceMon->addCoupling(sourcePlugName,coupling);
+  targetMon->addCoupling(targetPlugName,coupling);
   this->addCoupling(coupling);
   LOG(BF("after coupling coupling: %s") % coupling->description()  );
   return coupling;

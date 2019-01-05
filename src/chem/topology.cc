@@ -590,6 +590,19 @@ CL_DEFMETHOD     Plug_sp Topology_O::plugNamed(core::Symbol_sp name)
   return this->_Plugs.get(name);
 };
 
+CL_DEFMETHOD core::List_sp Topology_O::allOutPlugNamesThatMatchInPlugName(core::Symbol_sp inPlugName)
+{
+  ql::list result;
+  for ( Plugs::iterator i=this->_Plugs.begin(); i!= this->_Plugs.end(); i++) {
+    Plug_sp plug = i->second;
+    if ( plug->getIsOut() ) {
+      if (DirectionalCoupling_O::outPlugNameMatchesInPlugName(plug->getName(),inPlugName)) {
+        result << plug->getName();
+      }
+    }
+  }
+  return result.cons();
+}
 
 CL_DEFMETHOD core::Symbol_sp Topology_O::getStereoisomerName(size_t idx) const {
   return this->_StereoisomerAtomProperties[idx]->_StereoisomerName;

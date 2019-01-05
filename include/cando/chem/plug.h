@@ -109,8 +109,10 @@ namespace chem
   public:
     CL_DEFMETHOD     void setName(core::Symbol_sp s) { this->_Name = s; };
     CL_DEFMETHOD     core::Symbol_sp getName() const { return this->_Name; };
-    CL_DEFMETHOD     virtual bool getIsIn() {_OF(); SUBCLASS_MUST_IMPLEMENT();};
-    CL_DEFMETHOD     virtual bool getIsRingClosing() { return false; };
+    CL_DEFMETHOD     virtual bool getIsIn() const {_OF(); SUBCLASS_MUST_IMPLEMENT();};
+    CL_DEFMETHOD virtual bool getIsOrigin() const {return false;};
+    CL_DEFMETHOD     virtual bool getIsRingClosing() const { return false; };
+    bool getIsOut() const;
 
     virtual core::Symbol_sp otherSidePlugName();
     virtual bool hasMates() { return false;};
@@ -160,7 +162,7 @@ namespace chem
     //! RepresentedEntityNameSets that this plug can plug into
     Mates		_Mates;
   public:
-    bool getIsIn() {_OF(); SUBCLASS_MUST_IMPLEMENT();};
+    bool getIsIn() const {_OF(); SUBCLASS_MUST_IMPLEMENT();};
 
     PlugWithMates_sp getPlugWithMates() { return this->sharedThis<PlugWithMates_O>();};
 
@@ -213,7 +215,7 @@ namespace chem
     CL_LISPIFY_NAME("getStubPivotAtom");
     CL_DEFMETHOD 	MatterName getStubPivotAtom() { return this->_StubPivotAtom;};
 
-    bool getIsIn() { return false;};
+    bool getIsIn() const { return false;};
 
   };
 
@@ -240,7 +242,7 @@ namespace chem
     CL_LISPIFY_NAME("rootAtomName");
     CL_DEFMETHOD     virtual MatterName rootAtomName() const {return this->_B0;};
 
-    bool getIsIn() { return true;};
+    bool getIsIn() const { return true;};
   };
 
 
@@ -275,7 +277,7 @@ namespace chem
     CL_DEFMETHOD     virtual MatterName rootAtomName() const { return this->_JumpAtomName;};
 
 		//! JumpPlugs are a kind of InPlugs
-    bool getIsIn() { return true;};
+    bool getIsIn() const { return true;};
 
   };
 
@@ -306,7 +308,8 @@ namespace chem
     CL_DEFMETHOD     virtual MatterName rootAtomName() const { return this->_OriginAtomName;};
 
 		//! OriginPlugs are a kind of InPlugs
-    bool getIsIn() { return true;};
+    bool getIsIn() const { return true;};
+    bool getIsOrigin() const { return true;};
 
   };
 
@@ -332,8 +335,8 @@ namespace chem
     virtual bool fieldsp() const { return true; };
     virtual void fields(core::Record_sp node);
   public:
-    bool getIsIn() { return false;};
-    virtual bool getIsRingClosing() { return true; };
+    bool getIsIn() const { return false;};
+    virtual bool getIsRingClosing() const { return true; };
     bool recognizesRingClosingMate(core::Symbol_sp mateName);
     core::List_sp ringClosingMatesAsList();
   };

@@ -5,7 +5,7 @@
   (if (chem:has-in-coupling monomer)
       (let* ((in-coupling (chem:get-in-coupling monomer))
              (in-coupling-name (chem:get-name in-coupling))
-             (previous-monomer (chem:get-in-monomer in-coupling))
+             (previous-monomer (chem:get-source-monomer in-coupling))
              (previous-monomer-name (chem:current-stereoisomer-name previous-monomer))
              (current-monomer-name (chem:current-stereoisomer-name monomer)))
         (list previous-monomer-name in-coupling-name current-monomer-name))

@@ -149,6 +149,7 @@ The properties can look like:
       (cando:do-atoms (atom residue)
         (when (chem:properties atom)
           (loop for cur = (chem:properties atom) then (cddr cur)
+                for save-cur = cur
                 for property = (first cur)
                 for value = (second cur)
                 until (null cur)
@@ -168,6 +169,11 @@ The properties can look like:
                                                            :in-name (in-plug-name (first value) :-default)
                                                            :out-atom atom
                                                            :out-name (out-plug-name value :+out)))
+                             (:origin
+                              (format t "origin atom: ~s  value -> ~s~%" atom save-cur)
+                              (unless (listp value) (plug-factory-argument-error atom property value 'list))
+                              (make-instance 'plug-factory :origin-atom atom
+                                                           :origin-name (origin-plug-name (first value) :-origin)))
                              (:in/origin/out
                               (unless (listp value) (plug-factory-argument-error atom property value 'list))
                               (make-instance 'plug-factory :in-atom atom
@@ -236,7 +242,7 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
                                                         (string (chem:get-name atom))
                                                         (string config))) chiral-atoms configurations)))
              (new-name (intern new-name-string :keyword)))
-        ;;#+(or)
+        #+(or)
         (progn
           (format t "name -> ~a~%" name)
           (format t "chiral-atoms -> ~a~%" chiral-atoms)
@@ -286,29 +292,32 @@ All other plug-factory objects must be capable of generating out-plugs."
         (loop for plug-factory in plug-factories
               if (origin-plug-factory-p plug-factory)
                 count counter)
-        (when (> counter 1) (error "There can only be one plug factory capable of generating an origin-plug")))
-      (let* ((origin-name (origin-name origin-plug-factory))
-             (origin-atom-name (chem:get-name (origin-atom origin-plug-factory)))
-             (origin-plug (maybe-make-origin-plug origin-plug-factory))
-             (out-plugs (loop for plug-factory in plug-factories
-                              if (out-plug-factory-p plug-factory)
-                                collect (maybe-make-out-plug plug-factory)
-                              else
-                                do (error "In residue ~a you have specified an origin-plug ~a on atom ~a and elsewhere there is atom ~a indicated as an in-plug ~a - it must also be convertable to an out-plug"
-                                          origin-name
-                                          origin-atom-name
-                                          (out-name plug-factory)
-                                          (chem:get-name (out-atom plug-factory)))))
-             (plugs (cons origin-plug out-plugs)))
-        ;; If the topology has an origin-plug then name it XXX.ORIGIN
-        (push (make-instance 'prepare-topology
-                             :name (intern (format nil "~a.ORIGIN" (string name)) :keyword)
-                             :constitution constitution
-                             :constitution-atoms constitution-atoms
-                             :stereo-information stereo-information
-                             :plugs plugs
-                             :residue residue)
-              result)))
+        (when (> counter 1) (error "There can only be one plug factory capable of generating an origin-plug"))))
+      (when origin-plug-factory
+        (let* ((origin-name (origin-name origin-plug-factory))
+               (origin-atom-name (chem:get-name (origin-atom origin-plug-factory)))
+               (origin-plug (maybe-make-origin-plug origin-plug-factory))
+               (out-plugs (loop for plug-factory in plug-factories
+                                if (out-plug-factory-p plug-factory)
+                                  collect (maybe-make-out-plug plug-factory)
+                                else
+                                  do (when (and (in-plug-factory-p plug-factory)
+                                                (null (out-plug-factory-p plug-factory)))
+                                       (error "In residue ~a you have specified an origin-plug ~a on atom ~a and elsewhere there is atom ~a indicated as an in-plug ~a - it must also be convertable to an out-plug"
+                                              origin-name
+                                              origin-atom-name
+                                              (if (slot-boundp plug-factory 'out-name) (out-name plug-factory) :unbound)
+                                              (chem:get-name (out-atom plug-factory))))))
+                (plugs (cons origin-plug out-plugs)))
+           ;; If the topology has an origin-plug then name it XXX.ORIGIN
+           (push (make-instance 'prepare-topology
+                                :name (intern (format nil "~a.ORIGIN" (string name)) :keyword)
+                                :constitution constitution
+                                :constitution-atoms constitution-atoms
+                                :stereo-information stereo-information
+                                :plugs plugs
+                                :residue residue)
+                 result)))
     ;; Get all of the plug-factories that can generate in-plugs
     (let ((in-plug-factories (remove-if (lambda (x) (null (in-plug-factory-p x))) plug-factories)))
       (loop for in-plug-factory in in-plug-factories

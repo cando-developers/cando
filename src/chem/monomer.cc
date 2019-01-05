@@ -400,7 +400,7 @@ bool	Monomer_O::hasOutCouplings()
 
 
 
-Plug_sp	Monomer_O::getPlugNamed(core::Symbol_sp pn)
+CL_DEFMETHOD Plug_sp	Monomer_O::getPlugNamed(core::Symbol_sp pn)
 {
   Topology_sp topology = this->currentTopology();
   if ( !topology->hasPlugNamed(pn) )

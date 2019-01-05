@@ -64,6 +64,11 @@ namespace chem {
 	\brief Coupling_O stores a residue and links to Monomers
 */
 
+#define IN_PLUG_PREFIX '-'
+#define OUT_PLUG_PREFIX '+'
+#define IN_PLUG_WILDCARD '$'
+
+
   SMART(Coupling);
   class Coupling_O : public core::CxxObject_O //public core::Model_O
   {
@@ -102,12 +107,12 @@ namespace chem {
   class DirectionalCoupling_O : public Coupling_O
   {
     LISP_CLASS(chem,ChemPkg,DirectionalCoupling_O,"DirectionalCoupling",Coupling_O);
-
   public:
     bool fieldsp() const { return true; };
     void fields(core::Record_sp node);
   public:
     static char otherDirectionalCouplingSide( char side);
+    static bool isCouplingName(core::Symbol_sp name);
     	//! Return just the coupling name with the prefix removed
     static core::Symbol_sp couplingName(core::Symbol_sp name);
         //! Return the inPlugName
@@ -116,6 +121,7 @@ namespace chem {
     static core::Symbol_sp outPlugName(core::Symbol_sp couplingName);
         //! Return the other PlugName
     static core::Symbol_sp otherPlugName(core::Symbol_sp plugName);
+    static bool outPlugNameMatchesInPlugName(core::Symbol_sp outPlugName, core::Symbol_sp inPlugName);
     static bool isInPlugName(core::Symbol_sp plugName);
     static bool isOutPlugName(core::Symbol_sp plugName) {
       return plugName->symbolName()->rowMajorAref(0).unsafe_character() == OUT_PLUG_PREFIX;
@@ -125,66 +131,65 @@ namespace chem {
     };
 
   public:
-    core::Symbol_sp	_Name;
-    Monomer_sp		_InMonomer;
-    Monomer_sp		_OutMonomer;
+    core::Symbol_sp	_SourcePlugName; // This is the source monomer plug (an outPlug)
+    core::Symbol_sp     _TargetPlugName; // This is the target monomer plug (an inPlug)
+    Monomer_sp		_SourceMonomer; // This is the source monomer
+    Monomer_sp		_TargetMonomer; // This is the target monomer
   public:
-    bool		containsMonomer();
-    Monomer_sp	getInMonomer();
-    Monomer_sp	getInMonomer_const() const;
-    Monomer_sp	getOutMonomer();
-    Monomer_sp	getOutMonomer_const() const;
+    bool	containsMonomer();
+    Monomer_sp	getSourceMonomer();
+    Monomer_sp	getSourceMonomer_const() const;
+    Monomer_sp	getTargetMonomer();
+    Monomer_sp	getTargetMonomer_const() const;
 
-    virtual Monomer_sp	getMonomer1() { return this->getInMonomer();};
-    virtual Monomer_sp	getMonomer1_const() const { return this->getInMonomer_const();};
-    virtual Monomer_sp	getMonomer2() { return this->getOutMonomer();};
-    virtual Monomer_sp	getMonomer2_const() const { return this->getOutMonomer_const();};
+    virtual Monomer_sp	getMonomer1() { return this->getSourceMonomer();};
+    virtual Monomer_sp	getMonomer1_const() const { return this->getSourceMonomer_const();};
+    virtual Monomer_sp	getMonomer2() { return this->getTargetMonomer();};
+    virtual Monomer_sp	getMonomer2_const() const { return this->getTargetMonomer_const();};
 
-    core::T_sp  getInPlugName() const;
-    core::T_sp  getOutPlugName() const;
+    core::T_sp  getSourcePlugName() const;
+    core::T_sp  getTargetPlugName() const;
     bool	isInCouplingToMonomer(Monomer_sp mon);
-    void	setInMonomer_NoSignal(Monomer_sp sin);
-    void	setOutMonomer_NoSignal(Monomer_sp sout);
-    void	setInMonomer(Monomer_sp sin);
-    void	setOutMonomer(Monomer_sp sout);
+    void	setSourceMonomer_NoSignal(Monomer_sp sin);
+    void	setTargetMonomer_NoSignal(Monomer_sp sout);
+    void	setSourceMonomer(Monomer_sp sin);
+    void	setTargetMonomer(Monomer_sp sout);
     DirectionalCouplingSide	couplingSideOfMonomer( Monomer_sp mon);
 
     bool	isRingClosing() { return false; };
 
     string	description() const;
-    void	setName( core::Symbol_sp nm);
-    CL_LISPIFY_NAME("getName");
-    CL_DEFMETHOD 	core::Symbol_sp	getName() const {return this->_Name;};
+    void	setPlugNames( core::Symbol_sp sourcePlugName, core::Symbol_sp targetPlugName);
+    core::Symbol_sp getName() const;
 
     void	couple( Monomer_sp sin, Monomer_sp sout );
 
 	/*! Get the plug name of this Coupling from the point of view of the InMonomer */
-    core::Symbol_sp	getInMonomerPlugName();
+    core::Symbol_sp	getSourceMonomerPlugName();
 	/*! Get the plug name of this Coupling from the point of view of the OutMonomer */
-    core::Symbol_sp	getOutMonomerPlugName();
+    core::Symbol_sp	getTargetMonomerPlugName();
 
-    Plug_sp		getPlugForMonomer(Monomer_sp mon);
-    Plug_sp		getPlugForOtherMonomer(Monomer_sp mon);
+    Plug_sp	getPlugForMonomer(Monomer_sp mon);
+    Plug_sp	getPlugForOtherMonomer(Monomer_sp mon);
 
-    bool		containsMonomer(Monomer_sp mon);
+    bool	containsMonomer(Monomer_sp mon);
     Monomer_sp	getOtherSideMonomer(Monomer_sp mon);
 
     void	doCoupling(Residue_sp inResidue, Residue_sp outResidue );
-
     void	checkForErrors(core::T_sp errorStream);
     void	throwIfBadConnections();
 
-
   public:
-    static DirectionalCoupling_sp make(core::Symbol_sp name, Monomer_sp in, Monomer_sp out) {
-      GC_ALLOCATE_VARIADIC(DirectionalCoupling_O,dc,name,in,out);
+    static DirectionalCoupling_sp make(Monomer_sp source, core::Symbol_sp sourcePlugName, core::Symbol_sp targetPlugName, Monomer_sp target) {
+      GC_ALLOCATE_VARIADIC(DirectionalCoupling_O,dc,source,sourcePlugName,targetPlugName,target);
       return dc;
     }
   public:
-  DirectionalCoupling_O(core::Symbol_sp name, Monomer_sp in, Monomer_sp out) :
-    _Name(name),
-      _InMonomer(in),
-      _OutMonomer(out) {};
+    DirectionalCoupling_O(Monomer_sp source, core::Symbol_sp sourcePlugName, core::Symbol_sp targetPlugName, Monomer_sp target) :
+    _SourcePlugName(sourcePlugName),
+    _TargetPlugName(targetPlugName),
+      _SourceMonomer(source),
+      _TargetMonomer(target) {};
   };
 
   typedef	enum	{ NoRingSide, Monomer1Side, Monomer2Side } RingCouplingSide;

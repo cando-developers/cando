@@ -39,6 +39,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/monomer.h>
 #include <cando/chem/oligomer.h>
 #include <clasp/core/package.h>
+#include <clasp/core/array.h>
 #include <cando/chem/candoDatabase.h>
 #include <cando/chem/plug.h>
 #include <cando/chem/bond.h>
@@ -77,20 +78,21 @@ bool	Coupling_O::containsMonomer(Monomer_sp mon)
 
 void DirectionalCoupling_O::fields(core::Record_sp node)
 {
-  node->field( INTERN_(kw,name), this->_Name);
-  node->field( INTERN_(kw,in), this->_InMonomer);
-  node->field( INTERN_(kw,out), this->_OutMonomer);
+  node->field( INTERN_(kw,source_plug_name), this->_SourcePlugName);
+  node->field( INTERN_(kw,target_plug_name), this->_TargetPlugName);
+  node->field( INTERN_(kw,source), this->_SourceMonomer);
+  node->field( INTERN_(kw,target), this->_TargetMonomer);
 }
 
 
-CL_DEFMETHOD core::T_sp DirectionalCoupling_O::getInPlugName() const
+CL_DEFMETHOD core::T_sp DirectionalCoupling_O::getSourcePlugName() const
 {
-  return DirectionalCoupling_O::inPlugName(this->_Name);
+  return this->_SourcePlugName;
 }
 
-CL_DEFMETHOD core::T_sp DirectionalCoupling_O::getOutPlugName() const
+CL_DEFMETHOD core::T_sp DirectionalCoupling_O::getTargetPlugName() const
 {
-  return DirectionalCoupling_O::outPlugName(this->_Name);
+  return this->_TargetPlugName;
 }
 
     char DirectionalCoupling_O::otherDirectionalCouplingSide(char s)
@@ -101,52 +103,88 @@ CL_DEFMETHOD core::T_sp DirectionalCoupling_O::getOutPlugName() const
     return IN_PLUG_PREFIX;
 }
 
+CL_DEFUN bool DirectionalCoupling_O::isCouplingName(core::Symbol_sp name)
+{
+  core::SimpleString_sp ss = name->symbolName();
+  if (ss->length()<1 || !isalpha(ss->rowMajorAref(0).unsafe_character())) return false;
+  return true;
+}
+
 /*! Strip off the in/out prefix character of a plug name to get a coupling name
+    If name is an out-plug-name with digits - the digits become part of the coupling name
+    If the name is an in-plug-name and contains a hash - then signal an error 
+       - because the coupling name cannot be determined - you will need the coupling to get the coupling name.
  */
 CL_DEFUN core::Symbol_sp  DirectionalCoupling_O::couplingName(core::Symbol_sp name)
-    {
-	string sname = name->symbolNameAsString();
-	LOG(BF("couplingName symbol[%s]  symbolNameAsString[%s]") % _rep_(name) % sname );
-	string	rest;
-	if ( sname[0] == IN_PLUG_PREFIX || sname[0] == OUT_PLUG_PREFIX ) {
-	    rest = sname.substr(1,sname.size());
-            return chemkw_intern(rest);
-	}
-	return name;
+{
+  string sname = name->symbolNameAsString();
+  if (sname[0] == IN_PLUG_PREFIX) {
+    if (sname.find(IN_PLUG_WILDCARD) != std::string::npos) {
+      SIMPLE_ERROR(BF("The coupling name cannot be determined from %s") % _rep_(name));
     }
+  } else if (sname[0] != OUT_PLUG_PREFIX) {
+    SIMPLE_ERROR(BF("The argument %s must be an in-plug-name or out-plug-name") % _rep_(name));
+  }
+  std::string rest = sname.substr(1,sname.size());
+  return chemkw_intern(rest);
+}
 
 
 CL_DEFUN core::Symbol_sp DirectionalCoupling_O::inPlugName(core::Symbol_sp name)
 {
   string sname = name->symbolNameAsString();
-  size_t pos = sname.find('>');
-  string rname;
-  if (pos!=std::string::npos) {
-    rname = sname.substr(pos+1,sname.size());
-  } else {
-    stringstream	ss;
-    ss << IN_PLUG_PREFIX;
-    ss << DirectionalCoupling_O::couplingName(name)->symbolNameAsString();
-    rname = ss.str();
+  if (!isalpha(sname[0])) {
+    SIMPLE_ERROR(BF("You cannot pass a plug name %s to in-plug-name") % _rep_(name));
   }
-  return chemkw_intern(rname);
+  size_t dpos = std::string::npos;
+  for ( size_t i=0; i<sname.size(); ++i ) {
+    if (isdigit(sname[i])) {
+      dpos = i;
+      break;
+    }
+  }
+  stringstream	ss;
+  ss << IN_PLUG_PREFIX;
+  if (dpos==std::string::npos) {
+    ss << sname;
+  } else {
+    ss << sname.substr(0,dpos)<< IN_PLUG_WILDCARD;
+  }
+  return chemkw_intern(ss.str());
 };
 
+CL_DEFUN bool DirectionalCoupling_O::outPlugNameMatchesInPlugName(core::Symbol_sp outPlugName, core::Symbol_sp inPlugName) {
+  core::SimpleString_sp out = outPlugName->symbolName();
+  core::SimpleString_sp in = inPlugName->symbolName();
+  if (out->length()<1 || out->rowMajorAref(0).unsafe_character() != OUT_PLUG_PREFIX) {
+    SIMPLE_ERROR(BF("The name %s must be an out-plug-name") % _rep_(outPlugName));
+  }
+  if (in->length()<1 || in->rowMajorAref(0).unsafe_character() != IN_PLUG_PREFIX) {
+    SIMPLE_ERROR(BF("The name %s must be an out-plug-name") % _rep_(outPlugName));
+  }
+  if (out->length() != in->length()) return false;
+  size_t pos = 1;
+  while (pos<out->length() && pos <in->length()) {
+    if (in->rowMajorAref(pos).unsafe_character()==IN_PLUG_WILDCARD) return true;
+    if (out->rowMajorAref(pos)!=in->rowMajorAref(pos)) return false;
+    pos++;
+  }
+  return true;
+}
 
 CL_DEFUN core::Symbol_sp DirectionalCoupling_O::outPlugName(core::Symbol_sp name)
 {
   string sname = name->symbolNameAsString();
-  size_t pos = sname.find('>');
-  string rname;
-  if (pos!=std::string::npos) {
-    rname = sname.substr(0,pos);
-  } else {
-    stringstream	ss;
-    ss << OUT_PLUG_PREFIX;
-    ss << DirectionalCoupling_O::couplingName(name)->symbolNameAsString();
-    rname = ss.str();
+  if (!isalpha(sname[0])) {
+    SIMPLE_ERROR(BF("You cannot pass a plug name %s to out-plug-name") % _rep_(name));
   }
-  return chemkw_intern(rname);
+  if (sname.find(IN_PLUG_WILDCARD)!=std::string::npos) {
+    SIMPLE_ERROR(BF("You cannot have a wildcard %s in the input to out-plug-name") % _rep_(name));
+  }
+  stringstream	ss;
+  ss << OUT_PLUG_PREFIX;
+  ss << sname;
+  return chemkw_intern(ss.str());
 };
 
 
@@ -162,41 +200,38 @@ CL_DEFUN bool chem__is_in_plug_name(core::Symbol_sp plugName)
 
 
 CL_DEFUN core::Symbol_sp DirectionalCoupling_O::otherPlugName(core::Symbol_sp name)
-    {
-	stringstream	ss;
-	ss.str("");
-	if ( DirectionalCoupling_O::isInPlugName(name) ) {
-	    ss << OUT_PLUG_PREFIX;
-	} else {
-	    ss << IN_PLUG_PREFIX;
-	}
-	ss << DirectionalCoupling_O::couplingName(name)->symbolNameAsString();
-	return chemkw_intern(ss.str());
-    };
-
+{
+  stringstream	ss;
+  ss.str("");
+  if ( DirectionalCoupling_O::isInPlugName(name) ) {
+    ss << OUT_PLUG_PREFIX;
+  } else {
+    ss << IN_PLUG_PREFIX;
+  }
+  ss << DirectionalCoupling_O::couplingName(name)->symbolNameAsString();
+  return chemkw_intern(ss.str());
+};
 
 //
 // Destructor
 //
-
-
 
 void	DirectionalCoupling_O::checkForErrors(core::T_sp statusMessageStream)
 {
   IMPLEMENT_ME();
 #if 0
     this->setHasError(false);
-    ANN(this->_InMonomer);
-    if ( this->_InMonomer.nilp() )
+    ANN(this->_SourceMonomer);
+    if ( this->_SourceMonomer.nilp() )
     {
         this->setHasError(true);
-        core::clasp_write_format(BF("InMonomer is NULL\n"), statusMessageStream);
+        core::clasp_write_format(BF("SourceMonomer is NULL\n"), statusMessageStream);
     }
-    ANN(this->_OutMonomer);
-    if ( this->_OutMonomer.nilp() )
+    ANN(this->_TargetMonomer);
+    if ( this->_TargetMonomer.nilp() )
     {
         this->setHasError(true);
-        core::clasp_write_format(BF("OutMonomer is NULL\n"), statusMessageStream);
+        core::clasp_write_format(BF("TargetMonomer is NULL\n"), statusMessageStream);
     }
 #endif
 }
@@ -206,42 +241,42 @@ CL_DEFMETHOD void	DirectionalCoupling_O::throwIfBadConnections()
 {
   Monomer_sp	mon;
   DirectionalCoupling_sp	coup;
-  ANN(this->_InMonomer);
-  if ( this->_InMonomer.nilp() )
+  ANN(this->_SourceMonomer);
+  if ( this->_SourceMonomer.nilp() )
   {
-    LOG(BF("InMonomer is undefined") );
+    LOG(BF("SourceMonomer is undefined") );
     goto BAD;
   }
-  mon = this->_InMonomer;
-  LOG(BF("InMonomer is: %s") % mon->description().c_str()  );
+  mon = this->_SourceMonomer;
+  LOG(BF("SourceMonomer is: %s") % mon->description().c_str()  );
   if ( !mon->hasCouplingWithPlugName(DirectionalCoupling_O::outPlugName(this->getName())))
   {
-    LOG(BF("InMonomer does not have outPlug with correct name") );
+    LOG(BF("SourceMonomer does not have outPlug with correct name") );
     goto BAD;
   }
   if ( !mon->hasMatchingPlugNameAndCoupling(DirectionalCoupling_O::outPlugName(this->getName()),
                                             this->sharedThis<DirectionalCoupling_O>() ) )
   {
-    LOG(BF("InMonomers does not have an outPlug that points to us") );
+    LOG(BF("SourceMonomers does not have an outPlug that points to us") );
     goto BAD;
   }
-  ASSERTNOTNULL(this->_OutMonomer);
-  if ( this->_OutMonomer.nilp() )
+  ASSERTNOTNULL(this->_TargetMonomer);
+  if ( this->_TargetMonomer.nilp() )
   {
-    LOG(BF("OutMonomer is undefined") );
+    LOG(BF("TargetMonomer is undefined") );
     goto BAD;
   }
-  mon = this->_OutMonomer;
-  LOG(BF("OutMonomer is: %s") % mon->description().c_str()  );
+  mon = this->_TargetMonomer;
+  LOG(BF("TargetMonomer is: %s") % mon->description().c_str()  );
   if ( !mon->hasCouplingWithPlugName(DirectionalCoupling_O::inPlugName(this->getName())))
   {
-    LOG(BF("OutMonomer does not have inPlug with correct name") );
+    LOG(BF("TargetMonomer does not have inPlug with correct name") );
     goto BAD;
   }
   if ( !mon->hasMatchingPlugNameAndCoupling(DirectionalCoupling_O::inPlugName(this->getName()),
                                             this->sharedThis<DirectionalCoupling_O>() ) )
   {
-    LOG(BF("OutMonomers does not have an inPlug that points to us") );
+    LOG(BF("TargetMonomers does not have an inPlug that points to us") );
     goto BAD;
   }
   return;
@@ -253,42 +288,34 @@ CL_DEFMETHOD void	DirectionalCoupling_O::throwIfBadConnections()
 bool	DirectionalCoupling_O::isInCouplingToMonomer(Monomer_sp mon)
 {
 		// Ring closing couplings are never in couplings
-    ASSERTNOTNULL(this->_OutMonomer);
+    ASSERTNOTNULL(this->_TargetMonomer);
     	// If the out Monomer is mon then we are an in coupling to mon
-    return this->_OutMonomer == mon;
+    return this->_TargetMonomer == mon;
 };
 
 
 
-CL_LISPIFY_NAME("getInMonomer");
-CL_DEFMETHOD Monomer_sp	DirectionalCoupling_O::getInMonomer()
+CL_LISPIFY_NAME("getSourceMonomer");
+CL_DEFMETHOD Monomer_sp	DirectionalCoupling_O::getSourceMonomer()
 {_OF();
-    ASSERTNOTNULLP(this->_InMonomer,
-    	"InMonomer is NULL for coupling: "+this->description());
-    return this->_InMonomer;
+    return this->_SourceMonomer;
 };
 
-Monomer_sp	DirectionalCoupling_O::getInMonomer_const() const
+Monomer_sp	DirectionalCoupling_O::getSourceMonomer_const() const
 {_OF();
-    ASSERTNOTNULLP(this->_InMonomer,
-    	"InMonomer is NULL for coupling: "+this->description());
-    return this->_InMonomer;
+    return this->_SourceMonomer;
 };
 
 
-CL_LISPIFY_NAME("getOutMonomer");
-CL_DEFMETHOD Monomer_sp	DirectionalCoupling_O::getOutMonomer()
+CL_LISPIFY_NAME("getTargetMonomer");
+CL_DEFMETHOD Monomer_sp	DirectionalCoupling_O::getTargetMonomer()
 {_OF();
-    ASSERTNOTNULLP(this->_OutMonomer,
-    	"OutMonomer is NULL for coupling: "+this->description());
-    return this->_OutMonomer;
+    return this->_TargetMonomer;
 };
 
-Monomer_sp	DirectionalCoupling_O::getOutMonomer_const() const
+Monomer_sp	DirectionalCoupling_O::getTargetMonomer_const() const
 {_OF();
-    ASSERTNOTNULLP(this->_OutMonomer,
-    	"OutMonomer is NULL for coupling: "+this->description());
-    return this->_OutMonomer;
+    return this->_TargetMonomer;
 };
 
 
@@ -296,20 +323,24 @@ Monomer_sp	DirectionalCoupling_O::getOutMonomer_const() const
 /*!
  * inPlugNames for couplings are the out-plugs for monomers
  */
-CL_LISPIFY_NAME("getInMonomerPlugName");
-CL_DEFMETHOD     core::Symbol_sp	DirectionalCoupling_O::getInMonomerPlugName()
+CL_LISPIFY_NAME("getSourceMonomerPlugName");
+CL_DEFMETHOD     core::Symbol_sp	DirectionalCoupling_O::getSourceMonomerPlugName()
 {
-    return DirectionalCoupling_O::outPlugName(this->_Name);
+  return this->_SourcePlugName;
 }
 
+CL_LISPIFY_NAME("getName");
+CL_DEFMETHOD core::Symbol_sp DirectionalCoupling_O::getName() const {
+  return DirectionalCoupling_O::couplingName(this->_SourcePlugName);
+}
 
 /*!
  * inPlugNames for couplings are the out-plugs for monomers
  */
-CL_LISPIFY_NAME("getOutMonomerPlugName");
-CL_DEFMETHOD     core::Symbol_sp	DirectionalCoupling_O::getOutMonomerPlugName()
+CL_LISPIFY_NAME("getTargetMonomerPlugName");
+CL_DEFMETHOD     core::Symbol_sp	DirectionalCoupling_O::getTargetMonomerPlugName()
 {
-    return DirectionalCoupling_O::inPlugName(this->_Name);
+  return this->_TargetPlugName;
 }
 
 
@@ -321,22 +352,22 @@ stringstream	ss;
     ss << "@";
     ss << std::hex << this << std::dec;
     ss << " ";
-    ANN(this->_InMonomer);
-    if ( this->_InMonomer.nilp())
+    ANN(this->_SourceMonomer);
+    if ( this->_SourceMonomer.nilp())
     {
 	ss << "-NULL_Monomer-";
     } else
     {
-	ss << this->getInMonomer_const()->description();
+	ss << this->getSourceMonomer_const()->description();
     }
     ss << "->";
-    ANN(this->_OutMonomer);
-    if ( this->_OutMonomer.nilp() )
+    ANN(this->_TargetMonomer);
+    if ( this->_TargetMonomer.nilp() )
     {
 	ss << "-NULL_Monomer-";
     } else
     {
-	ss << this->getOutMonomer_const()->description();
+	ss << this->getTargetMonomer_const()->description();
     }
     ss << ")";
     return ss.str();
@@ -344,51 +375,49 @@ stringstream	ss;
 
 
 
-
-CL_LISPIFY_NAME("setName");
-CL_DEFMETHOD     void	DirectionalCoupling_O::setName(core::Symbol_sp nm)
+CL_LISPIFY_NAME("setPlugNames");
+CL_DEFMETHOD     void	DirectionalCoupling_O::setPlugNames(core::Symbol_sp sourcePlugName, core::Symbol_sp targetPlugName)
 {
-    this->_Name = DirectionalCoupling_O::couplingName(nm);
-    ANN(this->_InMonomer);
-    if ( this->_InMonomer.notnilp() )
-    {
-	this->_InMonomer->fixPlugNameForCoupling(this->sharedThis<DirectionalCoupling_O>());
-    }
-    ANN(this->_OutMonomer);
-    if ( this->_OutMonomer.notnilp() )
-    {
-	this->_OutMonomer->fixPlugNameForCoupling(this->sharedThis<DirectionalCoupling_O>());
-    }
+  this->_SourcePlugName = sourcePlugName;
+  this->_TargetPlugName = targetPlugName;
+  if ( this->_SourceMonomer.notnilp() )
+  {
+    this->_SourceMonomer->fixPlugNameForCoupling(this->sharedThis<DirectionalCoupling_O>());
+  }
+  if ( this->_TargetMonomer.notnilp() )
+  {
+    this->_TargetMonomer->fixPlugNameForCoupling(this->sharedThis<DirectionalCoupling_O>());
+  }
 }
 
 
-void	DirectionalCoupling_O::setInMonomer_NoSignal(Monomer_sp m)
+void	DirectionalCoupling_O::setSourceMonomer_NoSignal(Monomer_sp m)
 {
     ASSERTNOTNULLP(m,"above monomer is undefined");
-    this->_InMonomer = m->sharedThis<Monomer_O>();
+    this->_SourceMonomer = m->sharedThis<Monomer_O>();
     LOG(BF("Setting in monomer to (%s)") % m->description().c_str()  );
 }
 
-void	DirectionalCoupling_O::setOutMonomer_NoSignal(Monomer_sp m)
+void	DirectionalCoupling_O::setTargetMonomer_NoSignal(Monomer_sp m)
 {
     ASSERTNOTNULLP(m,"below monomer is undefined");
-    this->_OutMonomer = m->sharedThis<Monomer_O>();
+    this->_TargetMonomer = m->sharedThis<Monomer_O>();
     LOG(BF("Setting out monomer to (%s)") % m->description().c_str()  );
 }
 
 
 
-CL_LISPIFY_NAME("setInMonomer");
-CL_DEFMETHOD void	DirectionalCoupling_O::setInMonomer(Monomer_sp m)
+CL_LISPIFY_NAME("setSourceMonomer");
+CL_DEFMETHOD void	DirectionalCoupling_O::setSourceMonomer(Monomer_sp m)
 {
-    this->setInMonomer_NoSignal(m);
+    this->setSourceMonomer_NoSignal(m);
 //    SIGNAL(this,Coupling_connectionsChanged);
 }
 
-CL_LISPIFY_NAME("setOutMonomer");
-CL_DEFMETHOD void	DirectionalCoupling_O::setOutMonomer(Monomer_sp m)
+CL_LISPIFY_NAME("setTargetMonomer");
+CL_DEFMETHOD void DirectionalCoupling_O::setTargetMonomer(Monomer_sp m)
 {
-    this->setOutMonomer_NoSignal(m);
+    this->setTargetMonomer_NoSignal(m);
 //    SIGNAL(this,Coupling_connectionsChanged);
 }
 
@@ -399,8 +428,8 @@ DirectionalCouplingSide DirectionalCoupling_O::couplingSideOfMonomer( Monomer_sp
 {_OF();
     ASSERTNOTNULL( mon );
     ASSERT(mon.notnilp());
-    if ( mon == this->getInMonomer() ) return InSide;
-    if ( mon == this->getOutMonomer() ) return OutSide;
+    if ( mon == this->getSourceMonomer() ) return InSide;
+    if ( mon == this->getTargetMonomer() ) return OutSide;
     return NoSide;
 }
 
@@ -412,9 +441,9 @@ CL_LISPIFY_NAME("getOtherSideMonomer");
 CL_DEFMETHOD Monomer_sp	DirectionalCoupling_O::getOtherSideMonomer(Monomer_sp mon)
 {
     LOG(BF("About to check in monomer") );
-    if ( mon == this->getInMonomer() ) { return this->getOutMonomer(); };
+    if ( mon == this->getSourceMonomer() ) { return this->getTargetMonomer(); };
     LOG(BF("About to check out monomer") );
-    if ( mon == this->getOutMonomer() ) { return this->getInMonomer(); };
+    if ( mon == this->getTargetMonomer() ) { return this->getSourceMonomer(); };
     LOG(BF("Its neither monomer") );
     SIMPLE_ERROR(BF("Monomer is not in coupling %s") % mon->description());
 }
@@ -431,10 +460,10 @@ PlugWithMates_sp	minPlug, moutPlug;
 Residue_sp	weakInRes, weakOutRes;
 Bond_sp		b;
 Atom_sp		inB0, outB0, inB1, outB1;
-    min = this->getInMonomer();
-    mout = this->getOutMonomer();
-    minPlug = min->getPlugNamed(this->getInMonomerPlugName()).as<PlugWithMates_O>();
-    moutPlug = mout->getPlugNamed(this->getOutMonomerPlugName()).as<PlugWithMates_O>();
+    min = this->getSourceMonomer();
+    mout = this->getTargetMonomer();
+    minPlug = min->getPlugNamed(this->getSourceMonomerPlugName()).as<PlugWithMates_O>();
+    moutPlug = mout->getPlugNamed(this->getTargetMonomerPlugName()).as<PlugWithMates_O>();
     ASSERTNOTNULL(minPlug);
     ASSERTNOTNULL(moutPlug);
     LOG(BF("Everything seems ok with the residues, let's do the coupling") );
@@ -469,26 +498,26 @@ Atom_sp		inB0, outB0, inB1, outB1;
 
 Plug_sp	DirectionalCoupling_O::getPlugForMonomer(Monomer_sp mon)
 {
-    if ( this->_InMonomer == mon ) {
-	core::Symbol_sp plugName = this->getInMonomerPlugName();
-	ASSERT(this->_InMonomer.notnilp());
-	return this->_InMonomer->getPlugNamed(plugName);
+    if ( this->_SourceMonomer == mon ) {
+	core::Symbol_sp plugName = this->getSourceMonomerPlugName();
+	ASSERT(this->_SourceMonomer.notnilp());
+	return this->_SourceMonomer->getPlugNamed(plugName);
     }
-    core::Symbol_sp plugName = this->getOutMonomerPlugName();
-    ASSERT(this->_OutMonomer.notnilp());
-    return this->_OutMonomer->getPlugNamed(plugName);
+    core::Symbol_sp plugName = this->getTargetMonomerPlugName();
+    ASSERT(this->_TargetMonomer.notnilp());
+    return this->_TargetMonomer->getPlugNamed(plugName);
 }
 
 Plug_sp	DirectionalCoupling_O::getPlugForOtherMonomer(Monomer_sp mon)
 {
-    if ( this->_InMonomer == mon ) {
-	core::Symbol_sp plugName = this->getOutMonomerPlugName();
-	ASSERT(this->_OutMonomer.notnilp());
-	return this->_OutMonomer->getPlugNamed(plugName);
+    if ( this->_SourceMonomer == mon ) {
+	core::Symbol_sp plugName = this->getTargetMonomerPlugName();
+	ASSERT(this->_TargetMonomer.notnilp());
+	return this->_TargetMonomer->getPlugNamed(plugName);
     }
-    core::Symbol_sp plugName = this->getInMonomerPlugName();
-    ASSERT(this->_InMonomer.notnilp());
-    return this->_InMonomer->getPlugNamed(plugName);
+    core::Symbol_sp plugName = this->getSourceMonomerPlugName();
+    ASSERT(this->_SourceMonomer.notnilp());
+    return this->_SourceMonomer->getPlugNamed(plugName);
 }
 
 
@@ -501,8 +530,8 @@ void	DirectionalCoupling_O::couple( Monomer_sp sin, Monomer_sp sout )
 {_OF();
 DirectionalCoupling_sp	me;
 SIMPLE_ERROR(BF("I wasn't sure if this was ever called.  Take out this THROW if it is"));
-    this->setInMonomer_NoSignal(sin);
-    this->setOutMonomer_NoSignal(sout);
+    this->setSourceMonomer_NoSignal(sin);
+    this->setTargetMonomer_NoSignal(sout);
     me = this->sharedThis<DirectionalCoupling_O>();
     core::Symbol_sp inMonomerPlugName = DirectionalCoupling_O::outPlugName(this->getName());
     core::Symbol_sp outMonomerPlugName = DirectionalCoupling_O::inPlugName(this->getName());
@@ -548,14 +577,14 @@ CL_LISPIFY_NAME("getMonomer1");
 CL_DEFMETHOD Monomer_sp RingCoupling_O::getMonomer1()
 {_OF();
     ASSERTNOTNULLP(this->_Monomer1,
-    	"InMonomer is NULL for coupling: "+this->description());
+    	"SourceMonomer is NULL for coupling: "+this->description());
     return this->_Monomer1;
 }
 
 Monomer_sp RingCoupling_O::getMonomer1_const() const
 {_OF();
     ASSERTNOTNULLP(this->_Monomer1,
-    	"InMonomer is NULL for coupling: "+this->description());
+    	"SourceMonomer is NULL for coupling: "+this->description());
     return this->_Monomer1;
 }
 

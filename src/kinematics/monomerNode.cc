@@ -91,7 +91,7 @@ void MonomerNode_O::recursivelyBuildChildren(ChainNode_sp chainNode,
   this->_Parent = parent;
   if ( coupling.notnilp() )
   {
-    this->_ParentPlugName = coupling->getOutMonomerPlugName();
+    this->_ParentPlugName = coupling->getTargetMonomerPlugName();
     ASSERTF(chem::DirectionalCoupling_O::isInPlugName(this->_ParentPlugName),
             BF("This has to be an inPlugName[%s] - it isnt")
             % _rep_(this->_ParentPlugName) );
@@ -109,10 +109,10 @@ void MonomerNode_O::recursivelyBuildChildren(ChainNode_sp chainNode,
     if ( coupling->isRingClosing() ) continue;
 	    /*! Skip InPlugs */
     chem::DirectionalCoupling_sp dirCoupling = coupling.as<chem::DirectionalCoupling_O>();
-    if ( dirCoupling->getInMonomer() != monomer ) continue;
-    chem::Monomer_sp otherMonomer = dirCoupling->getOutMonomer();
+    if ( dirCoupling->getSourceMonomer() != monomer ) continue;
+    chem::Monomer_sp otherMonomer = dirCoupling->getTargetMonomer();
     MonomerNode_sp otherMonomerNode = ChainNode_O::monomerNodeFactory(chainNode,ringClosingMonomerMap,otherMonomer);
-    core::Symbol_sp outPlugName = dirCoupling->getInMonomerPlugName();
+    core::Symbol_sp outPlugName = dirCoupling->getSourceMonomerPlugName();
     ASSERTF(chem::DirectionalCoupling_O::isOutPlugName(outPlugName),
             BF("Problem - this[%s] should be an OutPlug name but it isnt")
             %_rep_(outPlugName) );
