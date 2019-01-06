@@ -68,7 +68,6 @@ namespace chem
   SMART(ExtractScaffold);
   SMART(Atom);
   SMART(Residue);
-  SMART(RingClosingPlug);
   SMART(ExtractCoreFragment);
   SMART(RequiredPlug);
   SMART(FrameBase);
@@ -226,7 +225,7 @@ public:
   bool	hasMatchingPlugsWithMates(adapt::SymbolSet_sp plugSet);
 
   bool	matchesMonomerEnvironment( Monomer_sp mon );
-  RingClosingPlug_sp provideMissingRingClosingPlug( Monomer_sp mon );
+  core::T_sp provideMissingRingClosingPlug( Monomer_sp mon );
 
   void mapPlugs(std::function<void(Plug_sp)> );
 

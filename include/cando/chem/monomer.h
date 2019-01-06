@@ -59,6 +59,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/geom/vector2.h>
 #include <cando/geom/vector3.h>
 #include <cando/chem/entity.h>
+#include <cando/chem/plug.fwd.h>
 #include <cando/chem/chemPackage.h>
 #include <cando/adapt/symbolList.fwd.h>
 #include <cando/adapt/symbolSet.fwd.h>
@@ -81,7 +82,6 @@ namespace chem {
   FORWARD(RingCoupling);
   FORWARD(Oligomer);
   FORWARD(Topology);
-  FORWARD(RingClosingPlug);
   FORWARD(StatusTracker);
   FORWARD(Constitution);
   FORWARD(SymbolSet);
@@ -163,7 +163,7 @@ public:
   CL_LISPIFY_NAME("getId");
   CL_DEFMETHOD 	core::Symbol_sp getId() { return this->_Id; };
   Topology_sp	currentTopology();
-  RingClosingPlug_sp getMissingRingClosingPlug(Monomer_sp mate);
+  core::T_sp getMissingRingClosingPlug(Monomer_sp mate);
 public:
   core::List_sp plugNamesAndCouplingsAsList();
 

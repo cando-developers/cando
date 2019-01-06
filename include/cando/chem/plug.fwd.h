@@ -34,6 +34,7 @@ FORWARD(PlugWithMates);
 FORWARD(OutPlug);
 FORWARD(InPlug);
 FORWARD(OriginPlug);
-FORWARD(RingClosingPlug);
+
+ typedef OutPlug_sp RingClosingPlug_sp;
 }
 #endif

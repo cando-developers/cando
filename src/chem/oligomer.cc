@@ -575,13 +575,13 @@ gctools::Vec0<Monomer_sp>::iterator	mi;
     {
 	SIMPLE_ERROR(BF("Could not find monomer2 in oligomer"));
     }
-    RingClosingPlug_sp rcPlug1 = mon1->getMissingRingClosingPlug(mon2);
+    RingClosingPlug_sp rcPlug1 = gc::As<OutPlug_sp>(mon1->getMissingRingClosingPlug(mon2));
     if ( rcPlug1.nilp() )
     {
 	SIMPLE_ERROR(BF("The %s can not make a ring closing coupling")
 					 % mon1->description() );
     }
-    RingClosingPlug_sp rcPlug2 = mon2->getMissingRingClosingPlug(mon1);
+    RingClosingPlug_sp rcPlug2 = gc::As<OutPlug_sp>(mon2->getMissingRingClosingPlug(mon1));
     if ( rcPlug2.nilp() )
     {
 	SIMPLE_ERROR(BF("The %s can not make a ring closing coupling")

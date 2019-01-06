@@ -319,7 +319,7 @@ CL_DEFMETHOD     MonomerContext_sp Monomer_O::getSpecificMonomerContext()
 
 
 
-RingClosingPlug_sp Monomer_O::getMissingRingClosingPlug(Monomer_sp mate)
+core::T_sp Monomer_O::getMissingRingClosingPlug(Monomer_sp mate)
 {
   Constitution_sp	constitution = this->currentTopology()->_Constitution;
   return constitution->getMissingRingClosingPlug(this->sharedThis<Monomer_O>(),mate);

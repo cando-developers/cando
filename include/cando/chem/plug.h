@@ -191,8 +191,8 @@ namespace chem
   {
     LISP_CLASS(chem,ChemPkg,OutPlug_O,"OutPlug",PlugWithMates_O);
   public:
-    OutPlug_O(core::Symbol_sp name, core::List_sp mates, MatterName stubPivotAtom, core::Symbol_sp bond0, BondOrder bondOrder0, core::Symbol_sp bond1, BondOrder bondOrder1) : PlugWithMates_O(name,mates,bond0,bondOrder0,bond1,bondOrder1), _StubPivotAtom(stubPivotAtom) {};
-    OutPlug_O() {};
+    OutPlug_O(core::Symbol_sp name, core::List_sp mates, MatterName stubPivotAtom, core::Symbol_sp bond0, BondOrder bondOrder0, core::Symbol_sp bond1, BondOrder bondOrder1) : PlugWithMates_O(name,mates,bond0,bondOrder0,bond1,bondOrder1), _StubPivotAtom(stubPivotAtom), _IsRingClosing(false){};
+    OutPlug_O() : _IsRingClosing(false) {};
   public:
     CL_LISPIFY_NAME("make-out-plug");
     CL_LAMBDA("name mates stub-pivot-atom bond0 bondorder0 &optional bond1 (bondorder1 :single-bond)");
@@ -208,6 +208,7 @@ namespace chem
 	/*! This contains the name of the atom that we will force to be the third atom
 	  that defines the Stub of the Bond0 atom */
     MatterName	_StubPivotAtom {_Nil<core::Symbol_O>()};
+    bool        _IsRingClosing;
   public:
 
     CL_LISPIFY_NAME("hasStubPivotAtom");
@@ -216,7 +217,9 @@ namespace chem
     CL_DEFMETHOD 	MatterName getStubPivotAtom() { return this->_StubPivotAtom;};
 
     bool getIsIn() const { return false;};
-
+    bool getIsRingClosing() const { return this->_IsRingClosing; };
+    bool recognizesRingClosingMate(core::Symbol_sp mateName);
+    core::List_sp ringClosingMatesAsList();
   };
 
   SMART(InPlug);
@@ -315,7 +318,7 @@ namespace chem
 
 
 
-
+#if 0
   SMART(RingClosingPlug);
   class RingClosingPlug_O : public OutPlug_O
   {
@@ -340,8 +343,9 @@ namespace chem
     bool recognizesRingClosingMate(core::Symbol_sp mateName);
     core::List_sp ringClosingMatesAsList();
   };
+#endif
 
-
+typedef OutPlug_sp RingClosingPlug_sp;
 };
 
 #endif //]

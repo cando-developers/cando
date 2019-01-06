@@ -238,7 +238,24 @@ bool	PlugWithMates_O::recognizesMateNameOrPdb(core::Symbol_sp name)
 void OutPlug_O::fields(core::Record_sp node)
 {
   node->field_if_not_nil(INTERN_(kw,stubPivotAtom),this->_StubPivotAtom);
+  node->field_if_not_default(INTERN_(kw,ringClosing),this->_IsRingClosing,false);
   this->Base::fields(node);
+}
+
+CL_LISPIFY_NAME("ringClosingMatesAsList");
+CL_DEFMETHOD     core::List_sp OutPlug_O::ringClosingMatesAsList()
+{_OF();
+  return core::Cons_O::createFromVec0(this->_Mates);
+}
+
+bool OutPlug_O::recognizesRingClosingMate(core::Symbol_sp mateName)
+{_OF();
+  gctools::Vec0<Mate_sp>::iterator it;
+  for ( it=this->_Mates.begin(); it!=this->_Mates.end(); it++ )
+  {
+    if ( (*it)->recognizesMonomerName(mateName)) return true;
+  }
+  return false;
 }
 
 /*
@@ -292,10 +309,11 @@ void OriginPlug_O::fields(core::Record_sp node) {
   __END_DOC
 */
 
-
+#if 0
 void RingClosingPlug_O::fields(core::Record_sp node) {
   this->Base::fields(node);
 }
+#endif
 
 #if 0
 RingClosingPlug_O::RingClosingPlug_O(const RingClosingPlug_O& p) : RingClosingPlug_O::Base(p)
@@ -312,6 +330,7 @@ RingClosingPlug_O::RingClosingPlug_O(const RingClosingPlug_O& p) : RingClosingPl
 }
 #endif
 
+#if 0
 
 CL_LISPIFY_NAME("ringClosingMatesAsList");
 CL_DEFMETHOD     core::List_sp RingClosingPlug_O::ringClosingMatesAsList()
@@ -330,6 +349,7 @@ bool RingClosingPlug_O::recognizesRingClosingMate(core::Symbol_sp mateName)
   return false;
 }
 
+#endif
 
 
 }; //namespace chem

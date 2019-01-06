@@ -174,37 +174,37 @@ RepresentativeList_sp	Constitution_O::expandedRepresentativeList() const
 
 
 
-    RingClosingPlug_sp Constitution_O::getMissingRingClosingPlug(Monomer_sp mon, Monomer_sp mate)
+core::T_sp Constitution_O::getMissingRingClosingPlug(Monomer_sp mon, Monomer_sp mate)
 {
-    RingClosingPlug_sp plug, missing;
-    missing = _Nil<RingClosingPlug_O>();
-    TopologyMap::iterator	ti;
-    gctools::SmallOrderedSet<Topology_sp>	candidateTopologies;
-    for ( ti=this->_Topologies.begin(); ti!=this->_Topologies.end(); ti++ ) 
+  core::T_sp plug;
+  core::T_sp missing = _Nil<core::T_O>();
+  TopologyMap::iterator	ti;
+  gctools::SmallOrderedSet<Topology_sp>	candidateTopologies;
+  for ( ti=this->_Topologies.begin(); ti!=this->_Topologies.end(); ti++ ) 
+  {
+    plug = (ti->second)->provideMissingRingClosingPlug(mon);
+    if ( plug.notnilp() ) 
     {
-	plug = (ti->second)->provideMissingRingClosingPlug(mon);
-	if ( plug.notnilp() ) 
-	{
-	    if ( plug->recognizesRingClosingMate(mate->currentStereoisomerName()) )
-	    {
-		candidateTopologies.insert(ti->second);
-		missing = plug;
-	    }
-	}
+      if ( gc::As<OutPlug_sp>(plug)->recognizesRingClosingMate(mate->currentStereoisomerName()) )
+      {
+        candidateTopologies.insert(ti->second);
+        missing = plug;
+      }
     }
-    if ( candidateTopologies.size() > 1 )
-    {
-	stringstream ss;
-	ss << "In Constitution(" << this->constitutionName() << ")" << std::endl;
-	ss << "there are more than one topologies that match the current monomer environment: " << mon->description() << std::endl;
-	ss << "that are missing a ring closing plug"<<std::endl;
-	SIMPLE_ERROR(BF("%s") % ss.str() );
-    }
-    if ( candidateTopologies.size() == 0 )
-    {
-	SIMPLE_ERROR(BF("There are no Topologies with missing ring closing plugs"));
-    }
-    return missing;
+  }
+  if ( candidateTopologies.size() > 1 )
+  {
+    stringstream ss;
+    ss << "In Constitution(" << this->constitutionName() << ")" << std::endl;
+    ss << "there are more than one topologies that match the current monomer environment: " << mon->description() << std::endl;
+    ss << "that are missing a ring closing plug"<<std::endl;
+    SIMPLE_ERROR(BF("%s") % ss.str() );
+  }
+  if ( candidateTopologies.size() == 0 )
+  {
+    SIMPLE_ERROR(BF("There are no Topologies with missing ring closing plugs"));
+  }
+  return missing;
 }
 
     core::Symbol_sp Constitution_O::pdbFromNameOrPdb(core::Symbol_sp nm)

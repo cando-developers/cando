@@ -62,6 +62,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/geom/vector2.h>
 #include <cando/geom/vector3.h>
 #include <cando/adapt/quickDom.fwd.h>
+#include <cando/chem/plug.fwd.h>
 #include <cando/chem/entity.h>
 #include <cando/chem/constitution.fwd.h>
 #include <cando/chem/constitutionAtoms.fwd.h>
@@ -84,7 +85,6 @@ namespace chem
   FORWARD(Topology);
   FORWARD(Plug);
 FORWARD(Monomer);
-  FORWARD(RingClosingPlug);
   FORWARD(Stereoisomer);
   FORWARD(StereoInformation);
   FORWARD(Constitution);
@@ -176,7 +176,7 @@ FORWARD(Monomer);
 
     Topology_sp	getTopologyForMonomerEnvironment(Monomer_sp mon );
 
-    RingClosingPlug_sp getMissingRingClosingPlug(Monomer_sp mon, Monomer_sp mate);
+    core::T_sp getMissingRingClosingPlug(Monomer_sp mon, Monomer_sp mate);
 
     RepresentativeList_sp expandedRepresentativeList() const;
 

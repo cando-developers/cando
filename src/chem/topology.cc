@@ -534,23 +534,23 @@ bool	Topology_O::matchesMonomerEnvironment( Monomer_sp mon )
 
 
 
-RingClosingPlug_sp Topology_O::provideMissingRingClosingPlug( Monomer_sp mon )
+core::T_sp Topology_O::provideMissingRingClosingPlug( Monomer_sp mon )
 {
-  RingClosingPlug_sp missingRingClosingPlug = _Nil<RingClosingPlug_O>();
+  core::T_sp missingRingClosingPlug = _Nil<core::T_O>();
   uint numPlugsWithMates = 0;
   for ( Plugs::iterator i=this->_Plugs.begin();
         i!= this->_Plugs.end(); i++)
   {
     if (!i->second.isA<PlugWithMates_O>() ) continue;
-    if ( i->second.isA<RingClosingPlug_O>() )
+    if ( gc::IsA<OutPlug_sp>(i->second) && gc::As_unsafe<OutPlug_sp>(i->second)->getIsRingClosing())
     {
-      missingRingClosingPlug = i->second.as<RingClosingPlug_O>();
+      missingRingClosingPlug = gc::As<OutPlug_sp>(i->second);
       continue;
     }
-    if ( !mon->hasCouplingWithPlugName(i->second->getName()) ) return _Nil<RingClosingPlug_O>();
+    if ( !mon->hasCouplingWithPlugName(i->second->getName()) ) return _Nil<core::T_O>();
     numPlugsWithMates++;
   }
-  if ( numPlugsWithMates != mon->numberOfCouplings() ) return _Nil<RingClosingPlug_O>();
+  if ( numPlugsWithMates != mon->numberOfCouplings() ) return _Nil<core::T_O>();
   return missingRingClosingPlug;
 }
 
