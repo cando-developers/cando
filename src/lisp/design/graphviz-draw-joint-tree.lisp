@@ -45,6 +45,7 @@
     (format stream "   ~a [~alabel = \"~a\"];~%" (id joint) highlight (label joint))))
 
 
+#+(or)
 (defmethod stream-draw-joint ((joint kin:bonded-atom) atom-tree stream)
   (let ((highlight (cond
                      ((let ((color (and *color-joints* (gethash joint *color-joints*))))
@@ -57,6 +58,7 @@
 
 ;;; This version draws joints with internal coordinates
 (defmethod stream-draw-joint ((joint kin:bonded-atom) atom-tree stream)
+  (format t "entered stream-draw-joint~%")
   (let* ((pos (kin:get-position joint))
          (start-pos (kin:get-property-or-default joint :start-pos nil))
          (highlight (cond
