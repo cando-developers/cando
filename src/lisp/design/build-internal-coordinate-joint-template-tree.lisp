@@ -47,7 +47,7 @@
                       (chem:first-atom-with-name residue atom-name))))
          (when atom
            (chem:make-out-plug plug-name nil nil atom-name bond-order atom2-name bond-order2)))))
-    ((eq (car instr) 'chem:ring-closing-plug)
+    ((error "handle (eq (car instr) 'chem:ring-closing-plug)")
      (destructuring-bind (cmd
                           atom-name
                           plug-name
@@ -60,7 +60,8 @@
        (let* ((atom (when (chem:has-atom-with-name residue atom-name)
                       (chem:first-atom-with-name residue atom-name))))
          (when atom
-           (chem:make-ring-closing-plug plug-name nil nil atom-name bond-order atom2-name bond-order2)))))
+           (error "(chem:make-ring-closing-plug plug-name nil nil atom-name bond-order atom2-name bond-order2)")
+           ))))
     (t (error "Unknown instruction ~a" instr))))
 
 (defvar *valid-atom-properties*
