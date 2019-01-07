@@ -50,7 +50,7 @@
 
 (defparameter *rule1a* (chem:compile-smarts "[<abx>]1-[<abx>]=[<abx>]-[<abx>]=[<abx>]-[<abx>]=[<abx>]1" :tests *artests*))
 
-(defun one-atom-aromatic-rule1 (atom)
+(defun one-atom-aromatic-rule1 (a)
 ;        (print (% "test1 on %s" (description a)))
   (when (chem:matches *rule1a* a)
     (set-aromaticity-type a 'ar6 'rule1)))
