@@ -87,8 +87,11 @@
 
 
 (defun topology-for-context (context)
-  (let ((focus-name (third context))
-        (context-coupling-name (second context)))
+  "Find a topology that matches the context"
+  (let* (result
+         (focus-name (third context))
+         (context-coupling-name (second context))
+         (context-out-plug-name (chem:out-plug-name context-coupling-name)))
     (cando:walk-topologys
      (lambda (topology)
        (chem:walk-stereoisomer-atoms topology
@@ -97,14 +100,16 @@
                                                  focus-name)
                                          (if (chem:has-in-plug topology)
                                              (let* ((in-plug (chem:get-in-plug topology))
-                                                    (in-plug-name (chem:get-name in-plug))
-                                                    (coupling-name (chem:coupling-name in-plug-name)))
+                                                    (in-plug-name (chem:get-name in-plug)))
                                                (when (or
-                                                      (eq coupling-name context-coupling-name)
-                                                      (and (eq coupling-name :origin)
+                                                      (chem:out-plug-name-matches-in-plug-name context-out-plug-name in-plug-name)
+                                                      (and (eq in-plug-name :-origin)
                                                            (null context-coupling-name)))
-                                                 (return-from topology-for-context topology))))))))))
-  (error "Could not find topology for ~a" context))
+                                                 (push topology result)))))))))
+    (case (length result)
+      (0 (error "Could not find topology for ~a" context))
+      (1 (first result))
+      (otherwise (error "There were multiple topologys ~s that match the context ~s" result context)))))
 
 (defun equal-order (order1 order2)
   (loop for index from 0 below (length order1)
