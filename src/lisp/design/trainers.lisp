@@ -107,11 +107,18 @@
 
 
 (defun jostle-trainer (trainer &key test)
+  (format t "jostle-trainer ~s~%" (context trainer))
   (let ((aggregate (aggregate trainer))
         (atom-id-map (atom-id-map trainer))
         (superposable-conformation-collection (superposable-conformation-collection trainer)))
     (cando:jostle aggregate)
-    (unless test (energy:minimize aggregate :max-tn-steps 500))
+    (unless test
+      (format t "Restraints off~%")
+      (energy:minimize aggregate :max-tn-steps 0
+                                 :restraints-on nil
+                                 :tn-tolerance 100.0)
+      (format t "Restraints on~%")
+      (energy:minimize aggregate :max-tn-steps 20))
     (chem:create-entry-if-conformation-is-new superposable-conformation-collection aggregate)))
 
 
