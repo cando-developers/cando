@@ -58,7 +58,6 @@
 
 ;;; This version draws joints with internal coordinates
 (defmethod stream-draw-joint ((joint kin:bonded-atom) atom-tree stream)
-  (format t "entered stream-draw-joint~%")
   (let* ((pos (kin:get-position joint))
          (start-pos (kin:get-property-or-default joint :start-pos nil))
          (highlight (cond
@@ -81,7 +80,7 @@
             (kin:get-distance joint)
             (/ (kin:get-theta joint) 0.0174533)
             (/ (kin:get-phi joint) 0.0174533)
-            (kin:get-stub joint)
+            nil #+(or)(kin:get-stub joint)
             (kin:get-position joint)
             (kin:properties joint))))
 
