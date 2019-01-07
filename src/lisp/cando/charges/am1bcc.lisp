@@ -255,12 +255,12 @@
    ((chem:matches *match-ester-acid* a)     (set-am1-bcc-type a 32))
    (t (set-am1-bcc-type a 31))))
 
-(defvar *n-higly-deloc* (chem:compile-smarts "N(-[C]=[C])-[C]=[C]"))
-(defvar *ndeloc* (chem:compile-smarts "N-[C]=[C]"))
+(defvar *n-highly-deloc* (chem:compile-smarts "N1(-[C]=[C])-[C]=[C]-N1"))
+(defvar *ndeloc* (chem:compile-smarts "N-[C]=[O]"))
 
 
 ;; Figure out what these properties deloc and hdeloc really mean
-(defun is-highly-deloc (a) (chem:matches *n-higly-deloc* a))
+(defun is-highly-deloc (a) (chem:matches *n-highly-deloc* a))
 (defun is-deloc (a) (chem:matches *ndeloc* a))
 
 
