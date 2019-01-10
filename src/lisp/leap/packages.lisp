@@ -169,5 +169,6 @@
 (defpackage #:leap.add-ions
   (:use #:common-lisp)
   (:export
-   #:add-ions)
+   #:add-ions
+   #:add-ions-2)
   )
