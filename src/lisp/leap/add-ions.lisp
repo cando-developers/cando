@@ -27,12 +27,12 @@
     (if (and ion2 (= 0 ion2-number))
         (error "'0' is not allowed as the value for the second ion."))
     ;;Make array of solvent residues
-    (chem:map-molecules 
+    (chem:map-residues 
      nil
-     (lambda (m)
-       (when (eq (chem:get-name (chem:get-residue m 0)) :wat)
-         (chem:setf-residue-type (chem:get-residue m 0) :solvent) 
-         (vector-push-extend m solvent-vec)))
+     (lambda (r)
+       (when (eq (chem:get-name r) :wat)
+         (chem:setf-residue-type r :solvent) 
+         (vector-push-extend r solvent-vec)))
      mol)
     ;;Consider target unit's charge
     (chem:map-atoms
@@ -101,7 +101,7 @@
       (format t "About to octree-create~%")
       (chem:oct-oct-tree-create oct-tree mol :shell grid-space ion-min-size shell-extent nonbond-db include-solvent t)
       (format t "Came out of octree-create~%")
-      #+(or)(if (aref solvent-vec 0)
+      (if (aref solvent-vec 0)
           (format t " Solvent present: replacing closest with ion when steric overlaps occur~%")
           (format t "(no solvent present)~%"))
       (multiple-value-bind (min-charge-point max-charge-point)
@@ -308,7 +308,7 @@
         (y 0)
         (z 0))
     (loop for i from 0 below (length solvent-vec)
-          for molecule = (aref solvent-vec i)
+          for residue = (aref solvent-vec i)
           do (chem:map-atoms
               nil
               (lambda (a)
@@ -322,26 +322,35 @@
                       (setf (aref closest-atom-vector 0) (geom:vx (chem:get-position a)))
                       (setf (aref closest-atom-vector 1) (geom:vy (chem:get-position a)))
                       (setf (aref closest-atom-vector 2) (geom:vz (chem:get-position a))))))
-              molecule))
+              residue))
      (if (< dmin2 9)
         (progn 
-          (chem:map-molecules 
+          (chem:map-residues 
            nil
-           (lambda (m)
+           (lambda (r)
              (chem:map-atoms
               nil
               (lambda (a)
                 (when (and (= (geom:vx (chem:get-position a)) (aref closest-atom-vector 0))
                            (= (geom:vy (chem:get-position a)) (aref closest-atom-vector 1))
                            (= (geom:vz (chem:get-position a)) (aref closest-atom-vector 2)))
-                  (chem:set-name m :delete)))
-              m))
+                  (chem:set-name r :delete)))
+              r))
            mol)
+          ;; If molecule has one water residue, delete molecule.
+          ;; If molecule has more than two residues, delete one residue.
           (chem:map-molecules
            nil
            (lambda (m)
-             (when (eq (chem:get-name m) :delete)
-               (format t "Replacing solvent molecule~%")
-               (chem:remove-molecule mol m)))
-           mol)))
-  ))
+             (if (= (chem:residue-count m) 1)
+                   (when (eq (chem:get-name (chem:get-residue m 0)) :delete)
+                     (format t "Replacing solvent molecule~%")
+                     (chem:remove-molecule mol m))
+                   (chem:map-residues
+                    nil
+                    (lambda (r)
+                      (when (eq (chem:get-name r) :delete)
+                        (format t "Replacing solvent molecule~%")
+                        (chem:remove-residue m r)))
+                    m)))
+           mol)))))
