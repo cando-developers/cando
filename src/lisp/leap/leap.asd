@@ -22,6 +22,7 @@
    (:file "topology")
    (:file "solvate")
    (:file "add-ions")
+   (:file "set-box")
    (:file "cando-database")
                                         ;     (:file "commands")     ;;; moved to leap
    (:file "pdb")

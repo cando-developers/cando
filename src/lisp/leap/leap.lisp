@@ -263,6 +263,7 @@
       ("solvateOct" . solvate-oct)
       ("solvateShell" . solvate-shell)
       ("addIons" . leap.add-ions:add-ions)
+      ("setBox" . leap.set-box:set-box)
       ))
   (dolist (command *commands*)
     (if (fboundp (cdr command))

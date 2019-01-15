@@ -172,3 +172,9 @@
    #:add-ions
    #:add-ions-2)
   )
+
+(defpackage #:leap.set-box
+  (:use #:common-lisp)
+  (:export
+   #:set-box)
+  )

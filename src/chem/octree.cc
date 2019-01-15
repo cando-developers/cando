@@ -1268,6 +1268,7 @@ void Octree_O::OctNodeInitCharges( OctNode_sp PonNode, int iDistanceCharge)
         PonNode->_PfCharges.push_back(0.0);
         iCompCharge = 1;
         for (l=0; l< this->vaAtoms.size(); l++){ //iChargeAtoms; l++) {
+          //printf("In the loop i= %d j= %d k= %d l= %d \n", i, j, k, l);
           PaAtom = this->vaAtoms[l] ;//PaChargeAtoms[l];
           double 	dX, dY, dZ;
           
