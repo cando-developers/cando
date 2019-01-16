@@ -45,9 +45,22 @@ Save the object to the file PATHNAME as an s-expression."
   (with-open-file (fout pathname :direction :output)
     (let ((*print-readably* t)
           (*print-pretty* nil)
-          (*print-circle* t))
-      (print obj fout))))
+          (*print-circle* t)
+          (*package* (find-package :keyword)))
+      (cl:print obj fout))))
 
 (defun load-cando (pathname)
   (with-open-file (fin pathname :direction :input)
     (read fin)))
+
+(defun sharp-$-reader (stream subchar arg)
+  (declare (ignore subchar))
+  (when (and arg (null *read-suppress*))
+        (error "~S is an extra argument for the #s readmacro." arg))
+  (let ((l (read stream t nil t)))
+    (when *read-suppress*
+      (return-from sharp-$-reader nil))
+    ;; Do the construction.
+    (apply 'make-instance l)))
+
+(set-dispatch-macro-character #\# #\$ 'sharp-$-reader)

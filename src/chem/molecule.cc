@@ -74,38 +74,10 @@ void Molecule_O::fields(core::Record_sp node)
   Loop lb;
   switch (node->stage()) {
   case core::Record_O::saving: {
-            // Accumulate intraresidue bonds into a vector
-    _BLOCK_TRACE("Xmling inter-residue bonds");
-    BondList_sp bondList = BondList_O::create();
-    { _BLOCK_TRACE("Accumulating inter residue bond copies");
-      LOG(BF("Serializing InterResidueBonds") );
-      lb.loopTopMoleculeGoal( this->sharedThis<Molecule_O>(), BONDS );
-      while ( lb.advanceLoopAndProcess() ) {
-        a1 = lb.getBondA1();
-        a2 = lb.getBondA2();
-		    // LOG(BF("bond with atom1=%s") % a1->description().c_str()  );
-		    // LOG(BF("bond with atom2=%s") % a2->description().c_str()  );
-        o  = lb.getBondOrder();
-        bond = Bond_O::create(a1,a2,o);
-        if ( bond->isInterResidueBond() )
-        {
-          LOG(BF("Adding bond between atom1(%s) and atom2(%s)")
-              % a1->description()
-              % a2->description() );
-          bondList->addBond(bond);
-        }
-      }
-    }
-    node->field( INTERN_(kw,bl),bondList);
   }
       break;
   case core::Record_O::initializing:
   case core::Record_O::loading: {
-    	    // create the intraResidue bonds
-    BondList_sp bondList;
-    node->field( INTERN_(kw,bl),bondList);
-    ASSERTNOTNULL(bondList);
-    bondList->imposeYourself();
   }
       break;
   case core::Record_O::patching: {

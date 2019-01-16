@@ -171,6 +171,7 @@ void	Residue_O::fields( core::Record_sp node )
   switch (node->stage()) {
   case core::Record_O::saving: {
 	    // Accumulate intraresidue bonds into a vector
+#if 0
     _BLOCK_TRACE("Xmling intra-residue bonds");
     contentIterator aPPCur;
     Atom_sp			a;
@@ -185,10 +186,12 @@ void	Residue_O::fields( core::Record_sp node )
     }
     node->field( INTERN_(kw,bl),bondList);
     ASSERTNOTNULL(bondList);
+#endif    
   }
       break;
   case core::Record_O::initializing:
   case core::Record_O::loading: {
+#if 0
     _BLOCK_TRACE("Loading BondList");
     LOG(BF("Creating the intraResidue bonds") );
 	    // create the intraResidue bonds
@@ -198,6 +201,7 @@ void	Residue_O::fields( core::Record_sp node )
     ASSERTNOTNULL(bondList);
     RECORD_LOG(BF("residue bondList = %s") % _rep_(bondList));
     bondList->imposeYourself();
+#endif
   }
   case core::Record_O::patching: {
     // Nothing should need to be done
@@ -397,7 +401,7 @@ contentIterator	aCur;
     }
     for (gctools::Vec0<Atom_sp>::iterator it=atoms.begin(); it!=atoms.end(); it++ )
     {
-	(*it)->fillInImplicitHydrogens();
+      (*it)->fillInImplicitHydrogensWithResidue(this->asSmartPtr());
     }
 }
 

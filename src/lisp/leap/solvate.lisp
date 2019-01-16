@@ -42,7 +42,12 @@
                (first (chem:matter-get-property matter :bounding-box))
                (second (chem:matter-get-property matter :bounding-box))
                (third (chem:matter-get-property matter :bounding-box)))
-        (values x-vec y-vec z-vec (- dxmax dxmin) (- dymax dymin) (- dzmax  dzmin)))))
+        (values (copy-seq x-vec)
+                (copy-seq y-vec)
+                (copy-seq z-vec)
+                (- dxmax dxmin)
+                (- dymax dymin)
+                (- dzmax  dzmin)))))
          
 ;;; xstart,ystart,zstart is the CENTER of the first solvent box that goes at the max XYZ corner.
 ;;; ix,iy,iz is the number of solvent boxes
@@ -90,6 +95,8 @@
          (solvent-y-width (second solvent-box))
          (solvent-z-width (third solvent-box))
          (atom-max-r (+ 1.5 closeness))
+         (2xatom-max-r (* atom-max-r 2.0))
+         (2xatom-max-r-squared (* 2xatom-max-r 2xatom-max-r))
          solute-xvec solute-yvec solute-zvec
          solute-x-width solute-y-width solute-z-width
          xwidth ywidth zwidth
@@ -128,7 +135,7 @@
      ystart (* 0.5 solvent-y-width (- iy 1))
      zstart (* 0.5 solvent-z-width (- iz 1)))
     (let ((test-function (lambda (solvent-molecule)
-                           (and (overlap-solvent solute-xvec solute-yvec solute-zvec solvent-molecule atom-max-r)
+                           (and (overlap-solvent solute-xvec solute-yvec solute-zvec solvent-molecule 2xatom-max-r-squared)
                                 (if oct
                                     (invalid-solvent-octahedron xwidth ywidth zwidth solvent-molecule)
                                     (if shell
@@ -139,34 +146,36 @@
     (unless shell
       (chem:set-property solute :bounding-box (list xwidth ywidth zwidth)))))
 
-(defun overlap-solvent (solute-xvec solute-yvec solute-zvec mol atom-max-r)
-  (let* ((2xatom-max-r (* atom-max-r 2.0))
-         (2xatom-max-r-squared (* 2xatom-max-r 2xatom-max-r)))
+(defun overlap-solvent (solute-xvec solute-yvec solute-zvec mol 2xatom-max-r-squared)
+;;  #+(or)
+  (chem:overlap-solvent solute-xvec solute-yvec solute-zvec mol 2xatom-max-r-squared)
+  #+(or)
+  (progn
     (chem:map-atoms
      nil
      (lambda (a)
        (let ((solvent-pos (chem:get-position a)))
-         (loop for i from 0 below (length solute-xvec)
-            for x-solute = (aref solute-xvec i)
-            for y-solute = (aref solute-yvec i)
-            for z-solute = (aref solute-zvec i)
-            for x-solvent = (geom:vx solvent-pos)
-            for y-solvent = (geom:vy solvent-pos)
-            for z-solvent = (geom:vz solvent-pos)
-            for x-delta = (- x-solute x-solvent)
-            for x-delta-squared = (* x-delta x-delta)
-            for y-delta = (- y-solute y-solvent)
-            for y-delta-squared = (* y-delta y-delta)
-            for z-delta = (- z-solute z-solvent)
-            for z-delta-squared = (* z-delta z-delta)
-            do (when (< x-delta-squared 2xatom-max-r-squared)
-                 (when (< y-delta-squared 2xatom-max-r-squared)
-                   (when (< z-delta-squared 2xatom-max-r-squared)
-                     (let ((delta-squared (+ x-delta-squared y-delta-squared z-delta-squared)))
-                       (when (< delta-squared 2xatom-max-r-squared)
-                         (return-from overlap-solvent nil)))))))))
-     mol))
-  t)
+         (let ((x-solvent (geom:vx solvent-pos))
+               (y-solvent (geom:vy solvent-pos))
+               (z-solvent (geom:vz solvent-pos)))
+           (loop for i from 0 below (length solute-xvec)
+                 do (let* ((x-solute (aref solute-xvec i))
+                           (x-delta (- x-solute x-solvent))
+                           (x-delta-squared (* x-delta x-delta)))
+                      (when (< x-delta-squared 2xatom-max-r-squared)
+                        (let* ((y-solute (aref solute-yvec i))
+                               (y-delta (- y-solute y-solvent))
+                               (y-delta-squared (* y-delta y-delta)))
+                          (when (< y-delta-squared 2xatom-max-r-squared)
+                            (let* ((z-solute (aref solute-zvec i))
+                                   (z-delta (- z-solute z-solvent))
+                                   (z-delta-squared (* z-delta z-delta)))
+                              (when (< z-delta-squared 2xatom-max-r-squared)
+                                (let ((delta-squared (+ x-delta-squared y-delta-squared z-delta-squared)))
+                                  (when (< delta-squared 2xatom-max-r-squared)
+                                    (return-from overlap-solvent nil)))))))))))))
+     mol)
+    t))
 
 (defun invalid-solvent-rectangular (xwidth ywidth zwidth mol)
   (chem:map-atoms

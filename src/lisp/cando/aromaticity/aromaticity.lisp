@@ -52,8 +52,8 @@
 
 (defun one-atom-aromatic-rule1 (a)
 ;        (print (% "test1 on %s" (description a)))
-  (when (chem:matches *rule1a* a)
-    (set-aromaticity-type a 'ar6 'rule1)))
+  (when (chem:matches *rule1a* atom)
+    (set-aromaticity-type atom 'ar6 'rule1)))
 
 ;; Apply aromaticity rule1 of Jakalian, Jack, and Bayly • Vol. 23, No. 16 • Journal of Computational Chemistry
 (defun aromatic-rule1 (atoms-in-rings)

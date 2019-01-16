@@ -959,6 +959,46 @@ CL_DEFUN core::T_sp chem__oligomer(core::List_sp parts)
     return olig;
 }
 
+CL_DEFUN bool chem__overlap_solvent(core::SimpleVectorDouble_sp solute_xvec,
+                                    core::SimpleVectorDouble_sp solute_yvec,
+                                    core::SimpleVectorDouble_sp solute_zvec,
+                                    Molecule_sp solvent,
+                                    double atom_max_diameter_squared)
+{
+  for ( size_t resi=0, endResi(solvent->contentSize()) ; resi<endResi; resi++ ) {
+    Residue_sp solvres = gc::As_unsafe<Residue_sp>(solvent->contentAt(resi));
+    for ( size_t ati=0, endAti(solvres->contentSize()); ati<endAti; ati++) {
+      Atom_sp solvatom = gc::As_unsafe<Atom_sp>(solvres->contentAt(ati));
+      Vector3 solvent_pos = solvatom->getPosition();
+      double x_solvent = solvent_pos.getX();
+      double y_solvent = solvent_pos.getY();
+      double z_solvent = solvent_pos.getZ();
+      for ( size_t idx=0, endIdx(solute_xvec->length()); idx<endIdx; ++idx ) {
+        double x_solute = (*solute_xvec)[idx];
+        double x_delta =  x_solute - x_solvent;
+        double x_delta_squared = x_delta*x_delta;
+        if (x_delta_squared < atom_max_diameter_squared) {
+          double y_solute = (*solute_yvec)[idx];
+          double y_delta =  y_solute - y_solvent;
+          double y_delta_squared = y_delta*y_delta;
+          if (y_delta_squared < atom_max_diameter_squared) {
+            double z_solute = (*solute_zvec)[idx];
+            double z_delta =  z_solute - z_solvent;
+            double z_delta_squared = z_delta*z_delta;
+            if (z_delta_squared < atom_max_diameter_squared) {
+              double delta_squared = x_delta_squared+y_delta_squared+z_delta_squared;
+              if (delta_squared < atom_max_diameter_squared) {
+                return false;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  return true;
+}
+
 #if 0
 extern "C" int gaff_debug;
 CL_DEFUN void chem__set_gaff_debug(bool on) {

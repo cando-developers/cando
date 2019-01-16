@@ -243,7 +243,7 @@ namespace chem {
     Atom_sp	getCopyAtom()			{return this->copyAtom;};
 
 
-    void	_addHydrogenWithName(core::Symbol_sp name);
+    void	_addHydrogenWithName(Residue_sp residueContainedBy, core::Symbol_sp name);
     void _addExistingBond(Bond_sp const& bond);
   public:
 
@@ -505,7 +505,7 @@ namespace chem {
     uint maxTotalBondOrder();
     uint numberOfOpenValence();
     core::List_sp createImplicitHydrogenNames();
-    void fillInImplicitHydrogens();
+    void fillInImplicitHydrogensWithResidue(Residue_sp residue);
 
     void randomizeAtomPosition(double width);
     void perturbAtomPosition(double dist);

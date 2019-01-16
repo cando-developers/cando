@@ -385,14 +385,13 @@ void Atom_O::setHybridizationFromString(const string& h)
 #endif
 }
 
-void Atom_O::_addHydrogenWithName(MatterName name)
+void Atom_O::_addHydrogenWithName(Residue_sp residueContainedBy, MatterName name)
 {
   Atom_sp h = Atom_O::create();
   h->setf_needs_build(true);
   h->setName(name);
   h->setElement(element_H);
-  Residue_sp res = this->getResidueContainedBy();
-  res->addAtom(h);
+  residueContainedBy->addAtom(h);
   this->bondTo(h,singleBond);
 }
 
@@ -511,12 +510,12 @@ CL_DEFMETHOD core::List_sp Atom_O::createImplicitHydrogenNames()
 
 
 
-void Atom_O::fillInImplicitHydrogens()
+void Atom_O::fillInImplicitHydrogensWithResidue(Residue_sp residue)
 {
   core::List_sp names = this->createImplicitHydrogenNames();
   if ( names.nilp() ) return;
   for ( auto cur : names ) {
-    this->_addHydrogenWithName(oCar(cur).as<MatterName::Type>());
+    this->_addHydrogenWithName(residue,oCar(cur).as<MatterName::Type>());
   }
 }
 
@@ -605,6 +604,12 @@ CL_DEFMETHOD     Bond_sp Atom_O::bondTo( Atom_sp to, BondOrder o )
   Bond_sp bn = Bond_O::create(from,to,o);
   this->bonds.push_back(bn);
   to->bonds.push_back(bn);
+  if (this->_Element == element_C && this->bonds.size()>4) {
+    SIMPLE_ERROR(BF("More than four bonds to carbon were made"));
+  }
+  if (to->_Element == element_C && to->bonds.size()>4 ) {
+    SIMPLE_ERROR(BF("More than four bonds to carbon were made"));
+  }
   return bn;
 }
 
