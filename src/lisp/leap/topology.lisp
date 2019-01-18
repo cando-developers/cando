@@ -634,6 +634,7 @@ then don't calculate 1,4 interactions"
 (defun prepare-residue (energy-function)
   (let* ((atom-table (chem:atom-table energy-function))
          (residue-vector (chem:atom-table-residues atom-table))
+         (residue-pointer-prepare-vector (chem:atom-table-residue-pointers atom-table))
          (residue-name-vector (chem:atom-table-residue-names atom-table))
          (molecule-vector (chem:atom-table-atoms-per-molecule atom-table))
          (residue-pointer-vector (make-array 256 :element-type '(signed-byte 32) :fill-pointer 0 :adjustable t))
@@ -643,21 +644,21 @@ then don't calculate 1,4 interactions"
          (nmxrs 0))
     (setf nmolecule (- (length molecule-vector) 1))
     (setf nresidue (length residue-name-vector))
-    (loop for i from 0 below (length residue-vector)
+    (loop for i from 0 below (length residue-pointer-prepare-vector)
        do (if (= i 0)
-              (vector-push-extend (+ (aref residue-vector 0) 1) residue-pointer-vector)
-              (if (/= (aref residue-vector (- i 1)) (aref residue-vector i))
-                  (vector-push-extend (+ (aref residue-vector i) 1) residue-pointer-vector))))
-    ;;      for fresidue = (+ (aref residue-vector i) 1)
-    ;;      do (setf (aref residue-vector i) fresidue))
+              (vector-push-extend (+ (aref residue-pointer-prepare-vector 0) 1) residue-pointer-vector)
+              (if (/= (aref residue-pointer-prepare-vector (- i 1)) (aref residue-pointer-prepare-vector i))
+                  (vector-push-extend (+ (aref residue-pointer-prepare-vector i) 1) residue-pointer-vector))))
+    ;;      for fresidue = (+ (aref residue-pointer-prepare-vector i) 1)
+    ;;      do (setf (aref residue-pointer-prepare-vector i) fresidue))
     (loop for i from 0 below nresidue
-       for inmxrs = (- (aref residue-vector (+ i 1)) (aref residue-vector i))
+       for inmxrs = (- (aref residue-pointer-prepare-vector (+ i 1)) (aref residue-pointer-prepare-vector i))
        do (if (> inmxrs nmxrs)
               (setf nmxrs inmxrs)))
     (loop for i from 0 below nmolecule
        for natom = (- (aref molecule-vector (+ i 1)) (aref molecule-vector i))
-       do (vector-push-extend natom atoms-per-molecule))
-    (values nresidue nmxrs residue-pointer-vector residue-name-vector atoms-per-molecule)))
+          do (vector-push-extend natom atoms-per-molecule))
+    (values nresidue nmxrs residue-pointer-vector residue-name-vector atoms-per-molecule residue-vector)))
 
 ;; for now, hardwire the Bondi radii
 (defun prepare-generalized-born (atomic-number-vector)
@@ -720,7 +721,8 @@ then don't calculate 1,4 interactions"
          (excluded-atom-list (chem:excluded-atom-list nonbonds))
          (topology-pathname (merge-pathnames topology-pathname))
          (coordinate-pathname (merge-pathnames coordinate-pathname))
-         (natom (chem:get-number-of-atoms (chem:atom-table energy-function))))
+         (natom (chem:get-number-of-atoms (chem:atom-table energy-function)))
+         residue-vec)
     ;; Skip assigning MarkMainChainAtoms and MarkSideChain atoms for now
     ;; see (unitio.c:4889).  This won't mean anything for spiroligomers.
     (format t "Writing to ~a~%" topology-pathname)
@@ -747,7 +749,7 @@ then don't calculate 1,4 interactions"
             nbonh mbona ibh jbh icbh ib jb icb kbj-vec r0j-vec #|stretches|#
             ntheth mtheta ith jth kth icth it jt kt1 ict ktj-vec t0j-vec #|angles|#
             nphih mphia iph jph kph lph icph ip jp kp lp icp vj-vec inj-vec phasej-vec properj-vec #|dihedrals|#
-            nhparm nparm  nnb nres residue-vec residue-name-vec atoms-per-molecule
+            nhparm nparm  nnb nres residue-pointer-vec residue-name-vec atoms-per-molecule
             generalized-born-radius generalized-born-screen
             residue-count molecule-count
             nbona    ntheta nphia  NUMBND NUMANG NPTRA
@@ -764,7 +766,7 @@ then don't calculate 1,4 interactions"
           (prepare-amber-energy-dihedral energy-function ib jb it kt1))
                                         ;        (multiple-value-setq (ntypes atom-name charge mass atomic-number ico iac local-typej-vec cn1-vec cn2-vec)
                                         ;          (chem:prepare-amber-energy-nonbond energy-function))
-        (multiple-value-setq (nres nmxrs residue-vec residue-name-vec atoms-per-molecule)
+        (multiple-value-setq (nres nmxrs residue-pointer-vec residue-name-vec atoms-per-molecule residue-vec)
           (prepare-residue energy-function))
         (multiple-value-setq (residue-count molecule-count)
           (solvent-pointers aggregate))
@@ -965,8 +967,8 @@ then don't calculate 1,4 interactions"
         (fortran:fwrite "%FORMAT(10I8)")
         (fortran:debug "-11-")
         (fortran:fformat 10 "%8d")
-        (loop for re from 0 below (- (length residue-vec) 1)
-              do (fortran:fwrite (aref residue-vec re)))
+        (loop for re from 0 below (- (length residue-pointer-vec) 1)
+              do (fortran:fwrite (aref residue-pointer-vec re)))
         (fortran:end-line)
         ;; write the atoms in each residue are listed for atom "1" in IPRES(i) to IPRES(i+1)-1
 
@@ -1431,8 +1433,8 @@ then don't calculate 1,4 interactions"
             (fortran:fwrite "90.0000000") 
             (fortran:fwrite "90.0000000")))
       (fortran:end-line))
-    (cando:progress-done bar))
-  t)
+    (cando:progress-done bar)
+    t residue-vec))
 
 (defvar %flag-title "%FLAG TITLE")
 (defvar %flag-pointers "%FLAG POINTERS")

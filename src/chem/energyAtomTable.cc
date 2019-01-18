@@ -140,13 +140,14 @@ string		EnergyAtom::getResidueAndName()
 void AtomTable_O::initialize()
 {
   this->_AtomTableIndices = core::HashTableEq_O::create_default();
-  core::MDArray_int32_t_sp residues = core::MDArray_int32_t_O::make_vector_with_fill_pointer(32,0,0);
+  core::MDArray_int32_t_sp residue_pointers = core::MDArray_int32_t_O::make_vector_with_fill_pointer(32,0,0);
   core::MDArrayT_sp residue_names = core::MDArrayT_O::make(32,_Nil<core::T_O>(),core::make_fixnum(0));
   core::MDArray_int32_t_sp atoms_per_molecule = core::MDArray_int32_t_O::make_vector_with_fill_pointer(32,0,0);
 //  atoms_per_molecule->vectorPushExtend(0);
-  this->_Residues = residues;
+  this->_ResiduePointers = residue_pointers;
   this->_ResidueNames = residue_names;
   this->_AtomsPerMolecule = atoms_per_molecule;
+  this->_Residues = core::core__make_vector(_lisp->_true(), 16, true, core::make_fixnum(0));
 }
 
 
@@ -228,16 +229,16 @@ CL_DEFMETHOD void	AtomTable_O::dumpTerms()
   }
 }
 
-CL_DEFMETHOD core::MDArray_int32_t_sp AtomTable_O::atom_table_residues() const {
-  printf("%s:%d In :atom_table_residues\n", __FILE__, __LINE__ );
+CL_DEFMETHOD core::T_sp AtomTable_O::atom_table_residue_pointers() const {
+  printf("%s:%d In :atom_table_residue_pointercs\n", __FILE__, __LINE__ );
 
-  if (this->_Residues.unboundp()) {
-    SIMPLE_ERROR(BF("Residues table is not bound"));
+  if (this->_ResiduePointers.unboundp()) {
+    SIMPLE_ERROR(BF("Residue pointers table is not bound"));
   }
-  return core::eval::funcall(cl::_sym_copySeq,this->_Residues);
+  return core::eval::funcall(cl::_sym_copySeq,this->_ResiduePointers);
 }
 
-CL_DEFMETHOD core::MDArrayT_sp AtomTable_O::atom_table_residue_names() const {
+CL_DEFMETHOD core::T_sp AtomTable_O::atom_table_residue_names() const {
   printf("%s:%d In :atom_table_residue_names\n", __FILE__, __LINE__ );
   if (this->_ResidueNames.unboundp()) {
     SIMPLE_ERROR(BF("Residue names table is not bound"));
@@ -245,12 +246,20 @@ CL_DEFMETHOD core::MDArrayT_sp AtomTable_O::atom_table_residue_names() const {
   return core::eval::funcall(cl::_sym_copySeq,this->_ResidueNames);
 }
 
-CL_DEFMETHOD core::MDArray_int32_t_sp AtomTable_O::atom_table_atoms_per_molecule() const {
+CL_DEFMETHOD core::T_sp AtomTable_O::atom_table_atoms_per_molecule() const {
   printf("%s:%d In :atom_table_per_molecule\n", __FILE__, __LINE__ );
   if (this->_AtomsPerMolecule.unboundp()) {
     SIMPLE_ERROR(BF("atoms per molecule table is not bound"));
   }
   return core::eval::funcall(cl::_sym_copySeq,this->_AtomsPerMolecule);
+}
+
+CL_DEFMETHOD core::T_sp AtomTable_O::atom_table_residues() const {
+  printf("%s:%d In :atom_table_residues\n", __FILE__, __LINE__ );
+  if (this->_Residues.unboundp()) {
+    SIMPLE_ERROR(BF("residues table is not bound"));
+  }
+  return core::eval::funcall(cl::_sym_copySeq,this->_Residues);
 }
 
 
@@ -263,8 +272,9 @@ DONT_OPTIMIZE_WHEN_DEBUG_RELEASE void AtomTable_O::constructFromMatter(Matter_sp
   residue_loop.loopTopGoal(mol,RESIDUES);
   while (residue_loop.advanceLoopAndProcess()) {
     Residue_sp res = residue_loop.getResidue();
-    _Residues->vectorPushExtend(idx);
-    _ResidueNames->vectorPushExtend(res->getName());
+    this->_ResiduePointers->vectorPushExtend(idx);
+    this->_ResidueNames->vectorPushExtend(res->getName());
+    this->_Residues->vectorPushExtend(res);
     {_BLOCK_TRACE("Defining ATOMS");
       Loop loop;
       Atom_sp a1;
@@ -318,7 +328,7 @@ DONT_OPTIMIZE_WHEN_DEBUG_RELEASE void AtomTable_O::constructFromMatter(Matter_sp
       }
     }
   }
-  this->_Residues->vectorPushExtend(idx);
+  this->_ResiduePointers->vectorPushExtend(idx);
   this->_AtomsPerMolecule->vectorPushExtend(idx);
 }
 
@@ -378,6 +388,7 @@ SYMBOL_EXPORT_SC_(KeywordPkg,charge_vector);
 SYMBOL_EXPORT_SC_(KeywordPkg,mass_vector);
 SYMBOL_EXPORT_SC_(KeywordPkg,atomic_number_vector);
 SYMBOL_EXPORT_SC_(KeywordPkg,residues);
+SYMBOL_EXPORT_SC_(KeywordPkg,residue_pointers);
 SYMBOL_EXPORT_SC_(KeywordPkg,residue_names);
 SYMBOL_EXPORT_SC_(KeywordPkg,atoms_per_molecule);
 

@@ -107,9 +107,10 @@ class AtomTable_O : public core::CxxObject_O
   typedef core::HashTableEq_sp        AtomTable;
   gctools::Vec0<EnergyAtom>	_Atoms;
   AtomTable        _AtomTableIndices; // m a p<Atom_sp,uint>	_AtomTableIndices;
-  core::MDArray_int32_t_sp     _Residues;
+  core::MDArray_int32_t_sp     _ResiduePointers;
   core::MDArrayT_sp             _ResidueNames;
   core::MDArray_int32_t_sp      _AtomsPerMolecule;
+  core::Vector_sp               _Residues;
  public:
   typedef gctools::Vec0<EnergyAtom>::iterator iterator;
  public:
@@ -152,10 +153,11 @@ class AtomTable_O : public core::CxxObject_O
   CL_DEFMETHOD double elt_mass(int index) { return this->_Atoms[index]._Mass; };
   CL_DEFMETHOD int elt_type_index(int index) { return this->_Atoms[index]._TypeIndex; };
   CL_DEFMETHOD int elt_atomic_number(int index) { return this->_Atoms[index]._AtomicNumber; };
-  core::MDArray_int32_t_sp atom_table_residues() const;
-  core::MDArrayT_sp atom_table_residue_names() const;
-  core::MDArray_int32_t_sp atom_table_atoms_per_molecule() const;
- AtomTable_O() : _Residues(_Unbound<core::MDArray_int32_t_O>()), _ResidueNames(_Unbound<core::MDArrayT_O>()), _AtomsPerMolecule(_Unbound<core::MDArray_int32_t_O>()) {};
+  core::T_sp atom_table_residue_pointers() const;
+  core::T_sp atom_table_residue_names() const;
+  core::T_sp atom_table_atoms_per_molecule() const;
+  core::T_sp atom_table_residues() const;
+ AtomTable_O() : _ResiduePointers(_Unbound<core::MDArray_int32_t_O>()), _ResidueNames(_Unbound<core::MDArrayT_O>()), _AtomsPerMolecule(_Unbound<core::MDArray_int32_t_O>()), _Residues(_Unbound<core::Vector_O>()) {};
 
   virtual void fill_atom_table_from_vectors(core::List_sp values);
 //  int residue_index(int atom_index);
