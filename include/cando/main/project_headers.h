@@ -405,7 +405,7 @@ GC_MANAGED_TYPE(gctools::GCVector_moveable<core::ExceptionEntry>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<core::KeywordArgument>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<core::OptionalArgument>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<core::RequiredArgument>);
-GC_MANAGED_TYPE(gctools::GCVector_moveable<core::SymbolClassPair>);
+GC_MANAGED_TYPE(gctools::GCVector_moveable<core::SymbolClassHolderPair>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<core::SymbolStorage>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<core::T_O *>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<double>);
