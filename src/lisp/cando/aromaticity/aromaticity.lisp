@@ -50,16 +50,16 @@
 
 (defparameter *rule1a* (chem:compile-smarts "[<abx>]1-[<abx>]=[<abx>]-[<abx>]=[<abx>]-[<abx>]=[<abx>]1" :tests *artests*))
 
-(defun one-atom-aromatic-rule1 (a)
+(defun one-atom-aromatic-rule1 (atm)
 ;        (print (% "test1 on %s" (description a)))
-  (when (chem:matches *rule1a* atom)
-    (set-aromaticity-type atom 'ar6 'rule1)))
+  (when (chem:matches *rule1a* atm)
+    (set-aromaticity-type atm 'ar6 'rule1)))
 
 ;; Apply aromaticity rule1 of Jakalian, Jack, and Bayly • Vol. 23, No. 16 • Journal of Computational Chemistry
 (defun aromatic-rule1 (atoms-in-rings)
-  (loop for a in atoms-in-rings
+  (loop for atm in atoms-in-rings
 ;        (print (% "test1 on %s" (description a)))
-        do (one-atom-aromatic-rule1 a)))
+        do (one-atom-aromatic-rule1 atm)))
   
 (defparameter *rule2a* (chem:compile-smarts "[<abx>]1=[<abx>]-[<abx>]=[<abx>]-[<ar6>]-[<ar6>]-[<abx>]1" :tests *artests*))
 (defparameter *rule2b* (chem:compile-smarts "[<abx>]1-[<abx>]=[<abx>]-[<ar6>]-[<ar6>]-[<abx>]=[<abx>]1" :tests *artests*))
