@@ -94,7 +94,7 @@ Matter_O::Matter_O( const Matter_O& c ) : core::CxxObject_O(c)
   this->name = c.name;
 //	this->containerContainedBy = c.containerContainedBy;
   this->_Properties = c._Properties; // You can't call allocators in ctors core::cl__copy_list(c._Properties);
-  this->_Restraints = _Nil<T_O>();
+  this->_RestraintList = _Nil<T_O>();
 }
 
 //
@@ -134,43 +134,35 @@ CL_DEFMETHOD bool	Matter_O::hasContentWithName(MatterName    sName )
 }
 
 
-void Matter_O::accumulateRestraints(core::VectorTNs_sp allRestraints) const
+core::List_sp Matter_O::accumulateRestraints(core::List_sp allRestraints) const
 {_OF();
-  if ( this->_Restraints.notnilp() ) {
-    for ( int i=0,iEnd(this->_Restraints->length()); i<iEnd; ++i ) {
-      allRestraints->vectorPushExtend((*(this->_Restraints))[i]);
-    }
+  for ( auto cur : this->_RestraintList ) {
+    Restraint_sp one = gc::As<Restraint_sp>(CONS_CAR(cur));
+    allRestraints = core::Cons_O::create(one,allRestraints);
   }
   for ( const_contentIterator ci=this->begin_contents(); ci!=this->end_contents(); ci++ ) {
-    (*ci)->accumulateRestraints(allRestraints);
+    allRestraints = (*ci)->accumulateRestraints(allRestraints);
   }
+  return allRestraints;
 }
 
 
 CL_LISPIFY_NAME("allRestraints");
-CL_DEFMETHOD core::VectorTNs_sp Matter_O::allRestraints() const
+CL_DEFMETHOD core::List_sp Matter_O::allRestraints() const
 {
-  core::VectorTNs_sp allRestraints = core::VectorTNs_O::make(8,_Nil<T_O>(),core::clasp_make_fixnum(0));
-  this->accumulateRestraints(allRestraints);
-  return allRestraints;
+  return this->accumulateRestraints(_Nil<core::T_O>());
 }
 
 CL_LISPIFY_NAME("clearRestraints");
 CL_DEFMETHOD void Matter_O::clearRestraints()
 {
-  if ( this->_Restraints.notnilp() ) {
-    this->_Restraints->fillPointerSet(0);
-  }
+  this->_RestraintList = _Nil<core::T_O>();
 }
 
 CL_LISPIFY_NAME("addRestraint");
 CL_DEFMETHOD void Matter_O::addRestraint(Restraint_sp restraint)
 {_OF();
-  if ( this->_Restraints.nilp() )
-  {
-    this->_Restraints = core::VectorTNs_O::make(8,_Nil<T_O>(),core::clasp_make_fixnum(0));
-  }
-  this->_Restraints->vectorPushExtend(restraint);
+  this->_RestraintList = core::Cons_O::create(restraint,this->_RestraintList);
 }
 
 
@@ -656,10 +648,9 @@ CL_DEFMETHOD void	Matter_O::applyTransformToAtoms( const Matrix& m )
 
 void Matter_O::applyTransformToRestraints(const Matrix& m)
 {
-  if ( this->_Restraints.notnilp() ) {
-    for ( int i = 0; i<this->_Restraints->length(); ++i ) {
-      gc::As<Restraint_sp>((*(this->_Restraints))[i])->applyTransform(m);
-    }
+  for ( auto cur : this->_RestraintList ) {
+    Restraint_sp one = gc::As<Restraint_sp>(CONS_CAR(cur));
+    one->applyTransform(m);
   }
 }
 
@@ -680,11 +671,9 @@ void Matter_O::invertStereochemistryOfRestraints()
 {_OF();
 	//
 	//Then flip any restraints
-  if ( this->_Restraints.notnilp() )
-  {
-    for ( int i(0), iEnd(this->_Restraints->length()); i<iEnd; ++i ) {
-      gc::As<Restraint_sp>((*(this->_Restraints))[i])->invertStereochemistryOfRestraint();
-    }
+  for ( auto cur : this->_RestraintList ) {
+    Restraint_sp one = gc::As<Restraint_sp>(CONS_CAR(cur));
+    one->invertStereochemistryOfRestraint();
   }
 }
 
@@ -1006,7 +995,7 @@ void	Matter_O::fields(core::Record_sp node )
 {
   node->field( INTERN_(kw,name), this->name);
   node->/*pod_*/field_if_not_default( INTERN_(kw,id), this->_Id, 0);
-  node->field_if_not_nil( INTERN_(kw,restraints),this->_Restraints);
+  node->field_if_not_nil( INTERN_(kw,restraints),this->_RestraintList);
   node->field_if_not_nil( INTERN_(kw,properties),this->_Properties);
   node->field_if_not_empty( INTERN_(kw,contents), this->_contents);
 //  node->field_if_not_nil( INTERN_(kw,contained_by), this->containerContainedBy);
@@ -1163,25 +1152,20 @@ void Matter_O::redirectAtoms()
 
 void Matter_O::copyRestraintsDontRedirectAtoms(Matter_sp orig)
 {_OF();
-  if ( orig->_Restraints.nilp() ) {
-    this->_Restraints = _Nil<core::T_O>();
-  } else {
-    this->_Restraints = core::VectorTNs_O::make(8,_Nil<T_O>(),core::clasp_make_fixnum(0));
-    for ( int i(0), iEnd(orig->_Restraints->length()); i<iEnd; ++i ) {
-      this->_Restraints->vectorPushExtend(gc::As<Restraint_sp>((*(orig->_Restraints))[i])->copyDontRedirectAtoms());
-//    this->_Restraints = orig->_Restraints->copyDontRedirectAtoms();
-    }
+  this->_RestraintList = _Nil<core::T_O>();
+  for ( auto cur : orig->_RestraintList ) {
+    Restraint_sp restraint = gc::As<Restraint_sp>(CONS_CAR(cur));
+    Restraint_sp copy_restraint = restraint->copyDontRedirectAtoms();
+    this->_RestraintList = core::Cons_O::create(copy_restraint,this->_RestraintList);
   }
 }
 
 
 void Matter_O::redirectRestraintAtoms()
 {
-  if ( this->_Restraints.notnilp() )
-  {
-    for ( int i(0), iEnd(this->_Restraints->length()); i<iEnd; ++i ) {
-      gc::As<Restraint_sp>((*(this->_Restraints))[i])->redirectAtoms();
-    }
+  for ( auto cur : this->_RestraintList ) {
+    Restraint_sp restraint = gc::As<Restraint_sp>(CONS_CAR(cur));
+    restraint->redirectAtoms();
   }
 }
 

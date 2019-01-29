@@ -865,7 +865,7 @@ CL_LISPIFY_NAME("applyTransformToAtoms");
 CL_DEFMETHOD     void	Atom_O::applyTransformToAtoms( const Matrix& m )
 {
   this->position = (m)*this->position;
-  if ( this->_Restraints.notnilp() ) {
+  if ( this->_RestraintList.notnilp() ) {
     this->Base::applyTransformToRestraints(m);
   }
 }

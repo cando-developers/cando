@@ -136,7 +136,7 @@ class Matter_O : public core::CxxObject_O
   core::List_sp   	_Properties;
  private:
 	/*! Maintain a list of restraints that span this Matter_O object */
-  gc::Nilable<core::VectorTNs_sp>	_Restraints;
+  core::List_sp	_RestraintList;
  public:
 	/*! Adjust the size of the contents array */
   void resizeContents(int sz);
@@ -144,7 +144,7 @@ class Matter_O : public core::CxxObject_O
   void putMatter( int index, Matter_sp matter );
 
  private:
-  void accumulateRestraints(core::VectorTNs_sp allRestraints) const;
+  core::List_sp accumulateRestraints(core::List_sp allRestraints) const;
  public:
 
   friend class Aggregate_O;
@@ -163,7 +163,7 @@ class Matter_O : public core::CxxObject_O
   CL_DEFMETHOD   int	getId();
   CL_DEFMETHOD   void setId(int id) { this->_Id = id; };
 	/*! Accumulate all of the restraints in this matter and its contents into a single RestraintVector */
-  core::VectorTNs_sp allRestraints() const;
+  core::List_sp allRestraints() const;
 
 //  void	setTempFileId(int i) {this->_TempFileId = i;};
 //  int	getTempFileId() { return this->_TempFileId; };
@@ -394,7 +394,7 @@ class Matter_O : public core::CxxObject_O
   name(_Nil<core::Symbol_O>()),
     containerContainedBy(_Unbound<Matter_O>()),
     _Properties(_Nil<core::T_O>()),
-    _Restraints(_Nil<core::T_O>()) {};
+    _RestraintList(_Nil<core::T_O>()) {};
 };
 
 };
