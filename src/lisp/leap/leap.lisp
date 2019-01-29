@@ -1,6 +1,14 @@
 (in-package :leap)
 
 
+(defun setup-amber-paths ()
+  (leap.core::clear-path)
+  (leap.core:add-path "amber:dat;leap;prep;")
+  (leap.core:add-path "amber:dat;leap;lib;")
+  (leap.core:add-path "amber:dat;leap;parm;")
+  (leap.core:add-path "amber:dat;leap;cmd;")
+  (leap.core:add-path "amber:dat;antechamber;"))
+
 ;;; ----------------------------------------------------------------------
 ;;;
 ;;; Quick and dirty setup-gaff

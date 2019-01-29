@@ -128,6 +128,7 @@
                 )
   (:export
    #:*amber-system*
+   #:setup-amber-paths
    #:setup-amber
    #:atom
    #:bounding-box
