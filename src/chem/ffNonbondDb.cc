@@ -235,6 +235,7 @@ void FFNonbondDb_O::forceFieldMerge(FFBaseDb_sp bother)
   }
   this->_Parameters->clrhash();
   for ( size_t i(0), iEnd(this->_Terms.size()); i<iEnd; ++i ) {
+//    printf("%s:%d this->_Parameters->_HashTableCount @%p-> %lu\n", __FILE__, __LINE__, (void*)&this->_Parameters->_HashTableCount, this->_Parameters->_HashTableCount );
     this->_Parameters->hash_table_setf_gethash(this->_Terms[i]->getType(),core::make_fixnum(i));
   }
   this->Base::Base::forceFieldMerge(other);
