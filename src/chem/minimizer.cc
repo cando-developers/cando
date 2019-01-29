@@ -1802,7 +1802,7 @@ void	Minimizer_O::_truncatedNewton(
       LOG(BF("[ EPSILONF*(1.0+fabs(energyXk))=%le") % EPSILONF*(1.0+fabs(energyXk)) );
       if ( b1aTest ) {
         if ( this->_PrintIntermediateResults ) {
-          core::clasp_writeln_string((BF( "search complete according to b1aTest" )).str());
+          core::clasp_writeln_string((BF( "search complete according to b1aTest last alphaK = %lf energyXkNext = %lf energyXk = %lf") % alphaK % energyXkNext % energyXk).str());
         }
         break;
       }
