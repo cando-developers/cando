@@ -222,14 +222,18 @@
 ;;;
 
 (defun parse-lisp-or-leap (code)
-  (let ((code (string-trim (list #\space #\tab) code)))
+  (let ((code (string-trim (list #\space #\tab) (copy-seq code))))
     (if (or (char= (char code 0) #\() (char= (char code 0) #\*))
         (let ((sexp (read-from-string (format nil "(progn ~A~%)" code))))
           `(core:call-with-stack-top-hint
             (lambda ()
               ,sexp)))
         (let ((ast (architecture.builder-protocol:with-builder ('list)
-                     (esrap:parse 'leap.parser::leap code))))
+                     (handler-bind ((esrap:esrap-parse-error
+                                      (lambda (c)
+                                        (format t "Encountered error ~s while parsing ~s~%" c code)
+                                        (break "Encountered error ~s while parsing ~s" c code))))
+                       (esrap:parse 'leap.parser::leap code)))))
           `(core:call-with-stack-top-hint
             (lambda ()
               (leap.core:evaluate 'list ',ast leap.core:*leap-env*)))))))
