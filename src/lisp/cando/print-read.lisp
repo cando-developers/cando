@@ -61,6 +61,7 @@ Save the object to the file PATHNAME as an s-expression."
     (when *read-suppress*
       (return-from sharp-$-reader nil))
     ;; Do the construction.
-    (apply 'make-instance l)))
+    (let ((circle-subst-args (mapcar (lambda (arg) (core::circle-subst (make-hash-table :test 'eq) arg)) l)))
+      (apply 'make-instance circle-subst-args))))
 
 (set-dispatch-macro-character #\# #\$ 'sharp-$-reader)
