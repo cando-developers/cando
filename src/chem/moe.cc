@@ -816,7 +816,7 @@ void	MoeReadFile::readNextLine()
 	ParaArrayReal*	target;
 	bool		bGotRestraints, bGotFixed, bGotCharges;
 	bool		bGotForceRSm1, bGotForceRSp1, bGotHintLP;
-        core::VectorTNs_sp	aggRestraints;
+        core::List_sp	aggRestraints = _Nil<core::T_O>();
 	int		aid;
 	int		index_mmTypeId, index_mmTypes;
 	string		str;
@@ -1163,7 +1163,7 @@ void	MoeReadFile::readNextLine()
 		    })
 		    restrainChiral->setAtomA(rsAtom);
 		restrainChiral->setChirality(-1);
-		aggRestraints->vectorPushExtend(restrainChiral);
+		aggRestraints = core::Cons_O::create(restrainChiral,aggRestraints);
 	    }
 	}
 	if ( bGotForceRSp1 ) {
@@ -1181,7 +1181,7 @@ void	MoeReadFile::readNextLine()
 		    })
 		    restrainChiral->setAtomA(rsAtom);
 		restrainChiral->setChirality(1);
-		aggRestraints->vectorPushExtend(restrainChiral);
+		aggRestraints = core::Cons_O::create(restrainChiral,aggRestraints);
 	    }
 	}
 
@@ -1237,7 +1237,7 @@ void	MoeReadFile::readNextLine()
 		    restraint->setAtomC(atoms[(*resAtoms)[2]-1]);
 		    restraint->setAtomD(atoms[(*resAtoms)[3]-1]);
 		    restraint->setParameters( (*target)[0], (*target)[1], weight );
-		    aggRestraints->vectorPushExtend(restraint);
+		    aggRestraints = core::Cons_O::create(restraint,aggRestraints);
 		} else if ( type == "angle" ) 
 		{
 		    RestraintAngle_sp restraint = RestraintAngle_O::create();
@@ -1245,7 +1245,7 @@ void	MoeReadFile::readNextLine()
 		    restraint->setAtomB(atoms[(*resAtoms)[1]-1]);
 		    restraint->setAtomC(atoms[(*resAtoms)[2]-1]);
 		    restraint->setParameters( (*target)[0], (*target)[1], weight );
-		    aggRestraints->vectorPushExtend(restraint);
+		    aggRestraints = core::Cons_O::create(restraint,aggRestraints);
 		} else if ( type == "distance" ) 
 		{
                   SIMPLE_ERROR(BF("Add support for distance restraints"));
@@ -1254,7 +1254,7 @@ void	MoeReadFile::readNextLine()
 		    restraint->setAtomA(atoms[(*resAtoms)[0]-1]);
 		    restraint->setAtomB(atoms[(*resAtoms)[1]-1]);
 		    restraint->setParameters( (*target)[0], (*target)[1], weight );
-		    aggRestraints->vectorPushExtend(restraint);
+		    aggRestraints = core::Cons_O::create(restraint,aggRestraints);
 #endif
 		} else {
                     std::cerr << "Unknown restraint type: "<< type;
