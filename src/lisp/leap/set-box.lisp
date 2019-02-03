@@ -6,10 +6,10 @@
         (dx 0)
         (dy 0)
         (dz 0))
-    (if (and (not (string= "vdw" enclosure))
-             (not (string= "centers" enclosure)))
-        (error "~s: Expected 'vdw' or 'ceneters'for second argument~%" enclosure))
-    (if (string= "vdw" enclosure)
+    (if (and (not (eq :vdw enclosure))
+             (not (eq :centers enclosure)))
+        (error "~s - Expected :vdw or :centersfor second argument~%" enclosure))
+    (if (eq :vdw enclosure)
         (center-unit-by-radii mol)
         (set-unit-box-by-centers mol))
     (when buffer
@@ -63,8 +63,8 @@
            (if (eq (chem:get-element-as-symbol a) :H)
                (setf radius 1.0)
                (progn
-                 (format t "(using default radius ~a for ~a)~%"
-                         atom-default-radius (chem:get-name a))
+                 #+(or)(format t "(using default radius ~a for ~a)~%"
+                               atom-default-radius (chem:get-name a))
                  (setf radius atom-default-radius))))
        (chem:set-vdw-radius a radius)
        (setf x (+ (geom:vx (chem:get-position a)) radius))
