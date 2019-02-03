@@ -151,6 +151,7 @@ CL_DEFMETHOD Residue_sp Topology_O::buildResidueForIsomer(size_t isomer) const
     atom->setElement(ca->_Element);
     atom->setType(ai->_AtomType);
     atom->setCharge(ai->_AtomCharge);
+    atom->setProperties(cl__copy_seq(ca->_Properties));
     atom->turnOnFlags(needsBuild);
 //    printf("%s:%d  Creating atom@%d -> %s\n", __FILE__, __LINE__, ai->_ConstitutionAtomIndex, _rep_(atom).c_str());
     atoms[ai->_ConstitutionAtomIndex] = atom;
