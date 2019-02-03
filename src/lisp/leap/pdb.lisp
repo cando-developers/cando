@@ -528,11 +528,11 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
                    (let ((pdb-residue (pop-sequence-pdb-residue reader nil nil)))
                      (unless pdb-residue
                        (setf (molecule reader) (chem:make-molecule nil))
-                       (format t "Starting a new molecule~%")
+;;;                       (format t "Starting a new molecule~%")
                        (setf (current-residue reader) nil)
                        (setf (current-topology reader) nil)
                        (setf pdb-residue (pop-sequence-pdb-residue reader nil nil))
-                       (format t "popped first residue: ~a~%" pdb-residue)
+;;;                       (format t "popped first residue: ~a~%" pdb-residue)
                        (chem:add-matter (aggregate reader) (molecule reader)))
                      (setf (previous-topology reader) (current-topology reader)
                            (previous-residue reader) (current-residue reader)
