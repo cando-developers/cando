@@ -642,7 +642,7 @@ then don't calculate 1,4 interactions"
          (nmolecule 0)
          (nresidue 0)
          (nmxrs 0))
-    (setf nmolecule (- (length molecule-vector) 1))
+    (setf nmolecule (length molecule-vector))
     (setf nresidue (length residue-name-vector))
     (loop for i from 0 below (length residue-pointer-prepare-vector)
        do (if (= i 0)
@@ -655,9 +655,12 @@ then don't calculate 1,4 interactions"
        for inmxrs = (- (aref residue-pointer-prepare-vector (+ i 1)) (aref residue-pointer-prepare-vector i))
        do (if (> inmxrs nmxrs)
               (setf nmxrs inmxrs)))
-    (loop for i from 0 below nmolecule
-       for natom = (- (aref molecule-vector (+ i 1)) (aref molecule-vector i))
-          do (vector-push-extend natom atoms-per-molecule))
+    (let ((prev-molv 0))
+      (loop for i from 0 below nmolecule
+            for molv = (aref molecule-vector i)
+            for natom = (- molv prev-molv)
+            do (vector-push-extend natom atoms-per-molecule)
+            (setf prev-molv molv)))
     (values nresidue nmxrs residue-pointer-vector residue-name-vector atoms-per-molecule residue-vector)))
 
 ;; for now, hardwire the Bondi radii
@@ -708,12 +711,12 @@ then don't calculate 1,4 interactions"
     (values residue-count molecule-count)
     ))
 
-(defun save-amber-parm-format (aggregate topology-pathname coordinate-pathname &key system assign-types)
+(defun save-amber-parm-format (aggregate topology-pathname coordinate-pathname &key force-field assign-types)
   (format t "Constructing energy function~%")
   (finish-output)
   (let* ((bar (cando:make-progress-bar :style :bar :message "Saving" :total 41 :width 41 :divisions 41))
          (bar-counter 0)
-         (energy-function (chem:make-energy-function aggregate system
+         (energy-function (chem:make-energy-function aggregate force-field
                                                      :use-excluded-atoms t
                                                      :assign-types assign-types))
          (nonbonds (chem:get-nonbond-component energy-function))
@@ -772,7 +775,7 @@ then don't calculate 1,4 interactions"
           (solvent-pointers aggregate))
         (setf atom-vectors (chem:prepare-amber-energy-nonbond
                             energy-function
-                            (chem:lookup-nonbond-force-field-for-aggregate aggregate system)))
+                            (chem:lookup-nonbond-force-field-for-aggregate aggregate force-field)))
         (setf ntypes (cdr (assoc :ntypes atom-vectors)))
         (setf atom-name (cdr (assoc :atom-name-vector atom-vectors)))
         (setf atom-type (cdr (assoc :atom-type-vector atom-vectors)))
@@ -1434,7 +1437,7 @@ then don't calculate 1,4 interactions"
             (fortran:fwrite "90.0000000")))
       (fortran:end-line))
     (cando:progress-done bar)
-    t residue-vec))
+    (values energy-function)))
 
 (defvar %flag-title "%FLAG TITLE")
 (defvar %flag-pointers "%FLAG POINTERS")

@@ -144,7 +144,7 @@
          (crd-pathname (if crd-pathname
                            (merge-pathnames crd-pathname)
                            (make-pathname :type "crd" :defaults top-pathname))))
-    (leap.topology:save-amber-parm-format aggregate top-pathname crd-pathname (leap.core:merged-force-field force-field-name))))
+    (leap.topology:save-amber-parm-format aggregate top-pathname crd-pathname :force-field (leap.core:merged-force-field force-field-name) :assign-types t)))
 
 (defun solvate-box (solute solvent buffer &rest iso-closeness)
   (when (numberp buffer)
