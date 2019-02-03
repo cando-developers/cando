@@ -330,6 +330,11 @@ DONT_OPTIMIZE_WHEN_DEBUG_RELEASE void AtomTable_O::constructFromMatter(Matter_sp
   }
   this->_ResiduePointers->vectorPushExtend(idx);
   this->_AtomsPerMolecule->vectorPushExtend(idx);
+#if 0
+  if (idx<3000) {
+    printf("%s:%d:%s  mol -> %s idx -> %lu\n", __FILE__, __LINE__, __FUNCTION__, _rep_(mol).c_str(), idx);
+  }
+#endif
 }
 
 /*! Fill excludedAtomIndices with the excluded atom list.
