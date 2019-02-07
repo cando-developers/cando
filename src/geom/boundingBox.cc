@@ -25,7 +25,9 @@ This is an open source license for the CANDO software from Temple University, bu
 /* -^- */
 #define	DEBUG_LEVEL_NONE
 
+
 #include <clasp/core/common.h>
+#include <cando/geom/ovector3.h>
 #include <cando/geom/boundingBox.h>
 #include <clasp/core/lisp.h>
 #include <clasp/core/wrappers.h>
@@ -73,34 +75,37 @@ CL_DEFMETHOD     double BoundingBox_O::getMaxZ() const { return this->_MaxCorner
 	this->_MaxCorner.set(0.0,0.0,0.0);
     }
 
-#if defined(XML_ARCHIVE)
-    void	BoundingBox_O::archiveBase(core::ArchiveP node)
-    {
-	this->Base::archiveBase(node);
-	node->attributeIfNotDefault("defined",this->_Defined,true);
-	node->archivePlainObject<Vector3>("minCorner","MinCorner",this->_MinCorner);
-	node->archivePlainObject<Vector3>("maxCorner","MaxCorner",this->_MaxCorner);
-    }
-#endif
+void BoundingBox_O::fields(core::Record_sp node)
+{
+  node->field(INTERN_(kw,defined),this->_Defined);
+  node->field(INTERN_(kw,minCorner),this->_MinCorner);
+  node->field(INTERN_(kw,maxCorner),this->_MaxCorner);
+}
 
-    void	BoundingBox_O::expandToEncompassPoint(const Vector3& p)
-    {
-	if ( !this->_Defined )
-	{
-	    this->_Defined = true;
-	    this->_MinCorner = p;
-	    this->_MaxCorner = p;
-	    return;
-	}
-	double minX = MIN(p.getX(),this->_MinCorner.getX());
-	double minY = MIN(p.getY(),this->_MinCorner.getY());
-	double minZ = MIN(p.getZ(),this->_MinCorner.getZ());
-	double maxX = MAX(p.getX(),this->_MaxCorner.getX());
-	double maxY = MAX(p.getY(),this->_MaxCorner.getY());
-	double maxZ = MAX(p.getZ(),this->_MaxCorner.getZ());
-	this->_MinCorner.set(minX,minY,minZ);
-	this->_MaxCorner.set(maxX,maxY,maxZ);
-    }
+string BoundingBox_O::__repr__() const {
+  stringstream ss;
+  ss << "#<geom:bounding-box :min-corner " << this->_MinCorner.asString() << " :max-corner " << this->_MaxCorner.asString() << ">";
+  return ss.str();
+}
+
+void	BoundingBox_O::expandToEncompassPoint(const Vector3& p)
+{
+  if ( !this->_Defined )
+  {
+    this->_Defined = true;
+    this->_MinCorner = p;
+    this->_MaxCorner = p;
+    return;
+  }
+  double minX = MIN(p.getX(),this->_MinCorner.getX());
+  double minY = MIN(p.getY(),this->_MinCorner.getY());
+  double minZ = MIN(p.getZ(),this->_MinCorner.getZ());
+  double maxX = MAX(p.getX(),this->_MaxCorner.getX());
+  double maxY = MAX(p.getY(),this->_MaxCorner.getY());
+  double maxZ = MAX(p.getZ(),this->_MaxCorner.getZ());
+  this->_MinCorner.set(minX,minY,minZ);
+  this->_MaxCorner.set(maxX,maxY,maxZ);
+}
 
 
     void BoundingBox_O::expandToEncompassPoint(const Matrix& transform, const Vector3& point )

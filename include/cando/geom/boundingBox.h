@@ -52,6 +52,8 @@ namespace geom {
 	Vector3	_MinCorner;
 	Vector3	_MaxCorner;
     public:
+      bool fieldsp() const { return true; }
+      void fields(core::Record_sp node);
     public:
 	bool isDefined() { return this->_Defined;};
 	Vector3& minCorner() { return this->_MinCorner; };
@@ -69,6 +71,8 @@ namespace geom {
 	double getExtentY() const;
 	double getExtentZ() const;
 
+      string __repr__() const;
+      
 	bool encompasses(const Vector3& point );
 	void expandToEncompassPoint(const Vector3& point );
 	void expandToEncompassPoint(const Matrix& transform, const Vector3& point );
