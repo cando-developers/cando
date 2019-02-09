@@ -937,8 +937,7 @@ Identify the Smallest Set of Smallest Rings (SSSR) for the Molecule or Aggregate
 Set the ring membership flags of the atoms that are in rings.
 __END_DOC
 */
-CL_LISPIFY_NAME(identify-rings);
-CL_DEFUN core::List_sp RingFinder_O::identifyRings(Matter_sp matter)
+CL_DEF_CLASS_METHOD core::List_sp RingFinder_O::identifyRings(Matter_sp matter)
 {
     if ( matter.isA<Molecule_O>() )
     {
