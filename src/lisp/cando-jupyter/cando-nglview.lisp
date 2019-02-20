@@ -214,6 +214,56 @@
   (let ((structure (make-instance 'cando-structure :matter aggregate)))
     (apply #'nglv:make-nglwidget :structure structure kwargs)))
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;;; amber-netcdf-trajectory
+;;;
+
+(defclass amber-netcdf-trajectory (nglv:trajectory nglv:structure)
+  ((netcdf :initarg :netcdf :accessor netcdf)
+   (number-of-atoms :initarg :number-of-atoms :accessor number-of-atoms)
+   (matter :initarg :matter :accessor matter)
+   (number-of-frames :initarg :number-of-frames :accessor number-of-frames)
+   (current-coordinates :initform nil :initarg :current-coordinates :accessor current-coordinates)))
+
+(defun make-amber-netcdf-trajectory (&key netcdf matter)
+  (let* ((number-of-atoms (chem:number-of-atoms matter))
+         (coords (static-vectors:make-static-vector (+ 10 (* number-of-atoms 3)) :element-type 'single-float))
+         (number-of-frames (netcdf:get-dimension netcdf "frame")))
+    (make-instance 'amber-netcdf-trajectory
+                   :netcdf netcdf
+                   :number-of-atoms number-of-atoms
+                   :matter matter
+                   :number-of-frames number-of-frames
+                   :current-coordinates coords)))
+
+(defmethod initialize-instance :after ((self cando-trajectory) &key)
+  (setf (gethash "amber-netcdf" nglv:*BACKENDS*) 'amber-netcdf-trajectory)
+  (values))
+
+(defmethod nglv:ext ((self amber-netcdf-trajectory))
+  "mol2")
+
+(defmethod nglv:get-structure-name ((self amber-netcdf-trajectory))
+  (chem:get-name (matter self)))
+
+(defmethod nglv:get-structure-string ((self amber-netcdf-trajectory))
+  (chem:aggregate-as-mol2-string (matter self) t))
+
+(defmethod nglv:get-coordinates ((self amber-netcdf-trajectory) index)
+  (netcdf:get-vara-float (netcdf self) "coordinates"
+                                 (vector index 0 0)
+                                 (vector 1 (number-of-atoms self) 3)
+                                 (current-coordinates self))
+  (current-coordinates self))
+
+(defmethod nglv:n-frames ((self amber-netcdf-trajectory))
+  (number-of-frames self))
+
+(defun show-amber-netcdf-trajectory (trajectory &rest kwargs &key &allow-other-keys)
+  (apply #'nglv:make-nglwidget :structure trajectory kwargs))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Change the way that code cells are evaluated to allow

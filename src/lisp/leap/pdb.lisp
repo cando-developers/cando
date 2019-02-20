@@ -178,6 +178,13 @@ odd atom name maps only to the last standard atom name it was mapped to."
    (serial-to-atom :initarg :serial-to-atom :reader serial-to-atom)
    ))
 
+(defun ensure-molecule (reader chain-id)
+  (unless (molecule reader)
+    (setf (molecule reader) (chem:make-molecule chain-id))
+    (format t "Creating molecule with name: ~a~%" chain-id)
+    (chem:add-matter (aggregate reader) (molecule reader)))
+  (molecule reader))
+
 (defun new-residue-p (residue-number i-code pdb-atom-reader)
   (or (not (eq residue-number (current-residue-number pdb-atom-reader)))
       (not (eq i-code (current-i-code pdb-atom-reader)))))
@@ -527,13 +534,13 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
                          (current-i-code reader) i-code)
                    (let ((pdb-residue (pop-sequence-pdb-residue reader nil nil)))
                      (unless pdb-residue
-                       (setf (molecule reader) (chem:make-molecule nil))
+                       (setf (molecule reader) nil)
 ;;;                       (format t "Starting a new molecule~%")
                        (setf (current-residue reader) nil)
                        (setf (current-topology reader) nil)
                        (setf pdb-residue (pop-sequence-pdb-residue reader nil nil))
 ;;;                       (format t "popped first residue: ~a~%" pdb-residue)
-                       (chem:add-matter (aggregate reader) (molecule reader)))
+                       (ensure-molecule reader chain-id))
                      (setf (previous-topology reader) (current-topology reader)
                            (previous-residue reader) (current-residue reader)
                            (current-topology reader) (topology pdb-residue))
@@ -548,7 +555,8 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
                              (chem:set-id cur-res (calculate-residue-sequence-number res-seq i-code))
                              (setf (current-residue reader) cur-res)
                              (let ((prev-res (previous-residue reader)))
-                               (chem:add-matter (molecule reader) cur-res)
+                               (chem:add-matter (ensure-molecule reader chain-id) cur-res)
+                               (format *debug-io* "Added residue ~a to molecule ~a~%" cur-res (ensure-molecule reader chain-id))
                                (when prev-res
                                  (chem:connect-residues prev-top
                                                         prev-res
@@ -559,7 +567,7 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
                            ;; There is no topology, create an empty residue
                            (let ((cur-res (chem:make-residue residue-name)))
                              (setf (current-residue reader) cur-res)
-                             (chem:add-matter (molecule reader) cur-res) cur-res)))))
+                             (chem:add-matter (ensure molecule reader chain-id) cur-res) cur-res)))))
                  (let ((atom (or (chem:content-with-name-or-nil (current-residue reader) atom-name)
                                  (chem:content-with-name-or-nil (current-residue reader) (gethash atom-name *pdb-atom-map*)))))
                    (cond
@@ -626,8 +634,7 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
               (atom-table (make-hash-table :test #'eql)))
           (restart-case
               (progn
-                (setf (molecule pdb-atom-reader) (chem:make-molecule nil))
-                (chem:add-matter (aggregate pdb-atom-reader) (molecule pdb-atom-reader))
+                (setf (molecule pdb-atom-reader) nil)
                 (loop for x = (read-and-process-line pdb-atom-reader nil :eof (big-z scanner))
                       do (cando:progress-advance bar (file-position fin))
                       until (eq x :eof))
@@ -663,6 +670,7 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
                   (format t "Built ~d missing hydrogens~%" built))))
           (cando:maybe-split-molecules-in-aggregate aggregate)
           (classify-molecules aggregate system)
+          (format *debug-io* "molecule name ~a~%" (chem:content-at aggregate 0))
           (let ((name-only (pathname-name (pathname filename))))
             (chem:set-name aggregate (intern name-only :keyword)))
           (values aggregate scanner))))))

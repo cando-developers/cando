@@ -8,6 +8,8 @@
   :depends-on (:inet
                :cando
                :cl-nglview
+               :netcdf
+               :static-vectors
                )
   :serial t
   :components

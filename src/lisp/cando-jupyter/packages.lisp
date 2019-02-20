@@ -45,4 +45,7 @@
    #:cando-structure
    #:cando-trajectory
    #:show-aggregate
+   #:show-amber-netcdf-trajectory
+   #:make-amber-netcdf-trajectory
+   #:amber-netcdf-trajectory
    ))

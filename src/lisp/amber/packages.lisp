@@ -28,4 +28,19 @@
 (defpackage #:amber.params
   (:use #:common-lisp)
   (:export
-))
+   ))
+
+(defpackage #:amber
+  (:use #:common-lisp)
+  (:export
+   filename
+   jupyter-job
+   simple-jupyter-job
+   minimize
+   heat
+   pressurize
+   dynamics
+   mdcrd
+   generate-all-code
+   ))
+

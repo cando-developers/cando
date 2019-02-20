@@ -96,21 +96,25 @@ Break up the molecules in the aggregate into a list of molecules using spanning 
   (let ((atoms-to-residues (make-hash-table))
         (residues-to-molecules (make-hash-table))
         (atoms-seen (make-hash-table))
-        molecules
-        atoms)
-    (chem:map-residues
+        molecules)
+    (chem:map-molecules
      nil
-     (lambda (residue)
-       (chem:map-atoms
-        nil
-        (lambda (atom)
-          (setf (gethash atom atoms-to-residues) residue)
-          (push atom atoms))
-        residue))
+     (lambda (mol)
+       (let (atoms)
+         (chem:map-residues
+          nil
+          (lambda (residue)
+            (chem:map-atoms
+             nil
+             (lambda (atom)
+               (setf (gethash atom atoms-to-residues) residue)
+               (push atom atoms))
+             residue))
+          mol)
+         (loop for atom in atoms
+               when (not (gethash atom atoms-seen))
+                 do (push (span-across-molecule-from-atom mol atom atoms-seen residues-to-molecules atoms-to-residues) molecules))))
      aggregate)
-    (loop for atom in atoms
-          when (not (gethash atom atoms-seen))
-            do (push (span-across-molecule-from-atom atom atoms-seen residues-to-molecules atoms-to-residues) molecules))
 ;;; Remove the molecules in the aggregate
     (let ((mols (chem:map-molecules 'list #'identity aggregate)))
       (loop for mol in mols
@@ -121,11 +125,12 @@ Break up the molecules in the aggregate into a list of molecules using spanning 
     aggregate))
 
 
-(defun span-across-molecule-from-atom (atom
+(defun span-across-molecule-from-atom (old-molecule
+                                       atom
                                        atoms-seen
                                        residues-to-molecules
                                        atoms-to-residues)
-  (let ((new-molecule (chem:make-molecule))
+  (let ((new-molecule (chem:make-molecule (chem:get-name old-molecule)))
         (spanning-tree (chem:make-spanning-loop atom))
         residues)
     (loop
