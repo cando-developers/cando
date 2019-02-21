@@ -33,6 +33,18 @@
 (defpackage #:amber
   (:use #:common-lisp)
   (:export
+   job
+   node-file
+   node-pathname
+   argument
+   node
+   option
+   definers
+   users
+   inputs
+   outputs
+   script
+   name
    filename
    jupyter-job
    simple-jupyter-job
@@ -44,3 +56,8 @@
    generate-all-code
    ))
 
+(defpackage #:graphviz-amber
+  (:use #:common-lisp)
+  (:export
+   #:draw-graph-stream
+   ))

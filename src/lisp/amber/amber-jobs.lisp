@@ -358,16 +358,16 @@ added to inputs and outputs but not option-inputs or option-outputs"
      (make-instance 'job
                     :script script-file
                     :parameters parameters
-                    :inputs (arguments :-i script-file
-                                       :-c input-coordinate-file
-                                       :-ref input-coordinate-file
-                                       :-p input-topology-file)
-                    :outputs (arguments :-o (make-node-file (merge-pathnames (make-pathname :type "out") pathname-defaults))
-                                        :-inf (make-node-file (merge-pathnames (make-pathname :type "info") pathname-defaults))
-                                        :-e (make-node-file (merge-pathnames (make-pathname :type "en") pathname-defaults))
-                                        :-r (make-node-file (merge-pathnames (make-pathname :type "rst7") pathname-defaults))
-                                        :-x (make-node-file (merge-pathnames (make-pathname :type "nc") pathname-defaults))
-                                        :-l (make-node-file (merge-pathnames (make-pathname :type "log") pathname-defaults)))
+                    :inputs (arguments :|-i| script-file
+                                       :|-c| input-coordinate-file
+                                       :|-ref| input-coordinate-file
+                                       :|-p| input-topology-file)
+                    :outputs (arguments :|-o| (make-node-file (merge-pathnames (make-pathname :type "out") pathname-defaults))
+                                        :|-inf| (make-node-file (merge-pathnames (make-pathname :type "info") pathname-defaults))
+                                        :|-e| (make-node-file (merge-pathnames (make-pathname :type "en") pathname-defaults))
+                                        :|-r| (make-node-file (merge-pathnames (make-pathname :type "rst7") pathname-defaults))
+                                        :|-x| (make-node-file (merge-pathnames (make-pathname :type "nc") pathname-defaults))
+                                        :|-l| (make-node-file (merge-pathnames (make-pathname :type "log") pathname-defaults)))
                     :makefile-clause makefile-clause))))
 
 
@@ -381,12 +381,12 @@ added to inputs and outputs but not option-inputs or option-outputs"
   (connect-graph
    (make-instance 'jupyter-job
                   :inputs nil
-                  :outputs (arguments :-p (make-node-file topology-file)
-                                      :-r (make-node-file coordinate-file)))))
+                  :outputs (arguments :|-p| (make-node-file topology-file)
+                                      :|-r| (make-node-file coordinate-file)))))
   
 (defun minimize (&key previous-job input-topology-file input-coordinate-file (pathname-defaults #P"min" p-d-p) (maxcyc 100))
-  (setup-job :input-topology-file (or input-topology-file (job-file previous-job :-p))
-             :input-coordinate-file (or input-coordinate-file (job-file previous-job :-r))
+  (setup-job :input-topology-file (or input-topology-file (job-file previous-job :|-p|))
+             :input-coordinate-file (or input-coordinate-file (job-file previous-job :|-r|))
              :script *min-in*
              :parameters (list (cons :%maxcyc% maxcyc))
              :pathname-defaults pathname-defaults
@@ -399,8 +399,8 @@ added to inputs and outputs but not option-inputs or option-outputs"
                input-topology-file
                input-coordinate-file
                (pathname-defaults #P"heat" p-d-p))
-  (setup-job :input-topology-file (or input-topology-file (job-file previous-job :-p))
-             :input-coordinate-file (or input-coordinate-file (job-file previous-job :-r))
+  (setup-job :input-topology-file (or input-topology-file (job-file previous-job :|-p|))
+             :input-coordinate-file (or input-coordinate-file (job-file previous-job :|-r|))
              :script *heat-in*
              :pathname-defaults pathname-defaults
              :makefile-clause ":%OUTPUTS% : :%INPUTS%
@@ -412,8 +412,8 @@ added to inputs and outputs but not option-inputs or option-outputs"
                      input-topology-file
                      input-coordinate-file
                      (pathname-defaults #P"pres" p-d-p))
-  (setup-job :input-topology-file (or input-topology-file (job-file previous-job :-p))
-             :input-coordinate-file (or input-coordinate-file (job-file previous-job :-r))
+  (setup-job :input-topology-file (or input-topology-file (job-file previous-job :|-p|))
+             :input-coordinate-file (or input-coordinate-file (job-file previous-job :|-r|))
              :script *press-in*
              :pathname-defaults pathname-defaults
              :makefile-clause ":%OUTPUTS% : :%INPUTS%
@@ -429,8 +429,8 @@ added to inputs and outputs but not option-inputs or option-outputs"
                     (temp0 300.0)
                     )
   (format t "pathname-defaults: ~s~%" pathname-defaults)
-  (setup-job :input-topology-file (or input-topology-file (job-file previous-job :-p))
-             :input-coordinate-file (or input-coordinate-file (job-file previous-job :-r))
+  (setup-job :input-topology-file (or input-topology-file (job-file previous-job :|-p|))
+             :input-coordinate-file (or input-coordinate-file (job-file previous-job :|-r|))
              :script *dynamics-in*
              :parameters (list (cons :%nstlim% nstlim)
                                (cons :%ntwx% ntwx)
@@ -443,4 +443,4 @@ added to inputs and outputs but not option-inputs or option-outputs"
 
 (defun mdcrd (job)
   "Return the mdcrd output for a job"
-  (job-file job :-x))
+  (job-file job :|-x|))

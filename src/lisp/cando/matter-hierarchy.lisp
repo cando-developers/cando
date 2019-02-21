@@ -87,6 +87,19 @@ and if the residue is not in RESIDUES-TO-MOLECULES add it."
 ;;; Walk a spanning tree of the atoms in a molecule and split it
 ;;; into separate molecules and return them in a list.
 
+(defun maybe-join-molecules-in-aggregate (aggregate)
+  "* Arguments
+- aggregate :: An aggregate.
+* Description
+The aggregate may have chem:molecules that have bonds between them.
+If this is the case then merge the residues of the two bonded molecules into one molecule.
+This can happen if there are disulphide-bonds between chains."
+  (format t "Implement maybe-join-molecules-in-aggregate~%"))
+
+
+
+
+
 (defun maybe-split-molecules-in-aggregate (aggregate)
   "* Arguments
 - aggregate :: An aggregate.
@@ -137,6 +150,8 @@ Break up the molecules in the aggregate into a list of molecules using spanning 
       (if (chem:advance-loop-and-process spanning-tree)
           (let* ((atom (chem:get-atom spanning-tree))
                  (residue (gethash atom atoms-to-residues))
+                 (_ (unless residue
+                      (error "Could not find the residue for atom ~s" atom)))
                  (residue-molecule (gethash residue residues-to-molecules)))
             (setf (gethash atom atoms-seen) atom)
             (unless residue-molecule

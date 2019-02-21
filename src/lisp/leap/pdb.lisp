@@ -567,7 +567,7 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
                            ;; There is no topology, create an empty residue
                            (let ((cur-res (chem:make-residue residue-name)))
                              (setf (current-residue reader) cur-res)
-                             (chem:add-matter (ensure molecule reader chain-id) cur-res) cur-res)))))
+                             (chem:add-matter (ensure-molecule reader chain-id) cur-res) cur-res)))))
                  (let ((atom (or (chem:content-with-name-or-nil (current-residue reader) atom-name)
                                  (chem:content-with-name-or-nil (current-residue reader) (gethash atom-name *pdb-atom-map*)))))
                    (cond
@@ -668,6 +668,7 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
                   (format t "Building missing hydrogens~%"))
                 (let ((built (cando:build-unbuilt-hydrogens aggregate)))
                   (format t "Built ~d missing hydrogens~%" built))))
+          #+(or)(cando:maybe-join-molecules-in-aggregate aggregate)
           (cando:maybe-split-molecules-in-aggregate aggregate)
           (classify-molecules aggregate system)
           (format *debug-io* "molecule name ~a~%" (chem:content-at aggregate 0))
