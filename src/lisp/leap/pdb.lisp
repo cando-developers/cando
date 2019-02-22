@@ -668,7 +668,7 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
                   (format t "Building missing hydrogens~%"))
                 (let ((built (cando:build-unbuilt-hydrogens aggregate)))
                   (format t "Built ~d missing hydrogens~%" built))))
-          #+(or)(cando:maybe-join-molecules-in-aggregate aggregate)
+          (cando:maybe-join-molecules-in-aggregate aggregate)
           (cando:maybe-split-molecules-in-aggregate aggregate)
           (classify-molecules aggregate system)
           (format *debug-io* "molecule name ~a~%" (chem:content-at aggregate 0))

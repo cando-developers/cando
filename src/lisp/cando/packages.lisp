@@ -154,6 +154,7 @@
    #:molecule-type
    #:load-chem-draw
    #:load-chem-draw-aggregate
+   #:maybe-join-molecules-in-aggregate
    #:maybe-split-molecules-in-aggregate
    #:from-string
    #:as-string

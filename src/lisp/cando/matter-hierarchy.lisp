@@ -87,6 +87,14 @@ and if the residue is not in RESIDUES-TO-MOLECULES add it."
 ;;; Walk a spanning tree of the atoms in a molecule and split it
 ;;; into separate molecules and return them in a list.
 
+(defun merge-molecules (aggregate mol-dest mol-source)
+  (format t "Merging the molecules ~s ~s~%" mol-dest mol-source)
+  (let ((source-residues (chem:map-residues 'list #'identity mol-source)))
+    (loop for res in source-residues
+          do (chem:add-matter mol-dest res)
+             (chem:remove-residue mol-source res)))
+  (chem:remove-molecule aggregate mol-source))
+
 (defun maybe-join-molecules-in-aggregate (aggregate)
   "* Arguments
 - aggregate :: An aggregate.
@@ -94,11 +102,28 @@ and if the residue is not in RESIDUES-TO-MOLECULES add it."
 The aggregate may have chem:molecules that have bonds between them.
 If this is the case then merge the residues of the two bonded molecules into one molecule.
 This can happen if there are disulphide-bonds between chains."
-  (format t "Implement maybe-join-molecules-in-aggregate~%"))
-
-
-
-
+  (tagbody
+   top
+     (let ((atoms-to-molecules (make-hash-table)))
+       (chem:map-molecules
+        nil
+        (lambda (mol)
+          (chem:map-atoms
+           nil
+           (lambda (atom)
+             (setf (gethash atom atoms-to-molecules) mol))
+           mol))
+        aggregate)
+       (chem:map-bonds
+        nil
+        (lambda (a1 a2 order)
+          (let ((m1 (gethash a1 atoms-to-molecules))
+                (m2 (gethash a2 atoms-to-molecules)))
+            (unless (eq m1 m2)
+              (merge-molecules aggregate m1 m2)
+              (go top))))
+        aggregate)
+       (return-from maybe-join-molecules-in-aggregate nil))))
 
 (defun maybe-split-molecules-in-aggregate (aggregate)
   "* Arguments
