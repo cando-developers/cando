@@ -48,7 +48,7 @@ namespace geom
 {
 
 SYMBOL_EXPORT_SC_(GeomPkg,vectorPushExtend_Vector3);
-size_t MDArrayCoordinate_O::vectorPushExtend_Vector3(const Vector3& newElement, size_t extension) {
+size_t ComplexVectorCoordinate_O::vectorPushExtend_Vector3(const Vector3& newElement, size_t extension) {
   unlikely_if (!this->_Flags.fillPointerP()) noFillPointerError(_sym_vectorPushExtend_Vector3,this->asSmartPtr());
   size_t idx = this->_FillPointerOrLengthOrDummy;
   unlikely_if (idx >= this->_ArrayTotalSize) {

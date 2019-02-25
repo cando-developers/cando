@@ -33,8 +33,8 @@ namespace  chem
 FORWARD(Entity);
 
 
-    typedef core::VectorTNs_sp RepresentativeList_sp;
-    typedef core::VectorTNs_O RepresentativeList_O;
+    typedef core::ComplexVector_T_sp RepresentativeList_sp;
+    typedef core::ComplexVector_T_O RepresentativeList_O;
 
 
 }

@@ -1113,12 +1113,12 @@ SYMBOL_EXPORT_SC_(KeywordPkg,atomname2);
 
 CL_DEFMETHOD core::List_sp EnergyNonbond_O::extract_vectors_as_alist() const{
   size_t size = this->_Terms.size();
-  core::SimpleVectorDouble_sp da_vec = core::SimpleVectorDouble_O::make(size);
-  core::SimpleVectorDouble_sp dc_vec = core::SimpleVectorDouble_O::make(size);
+  core::SimpleVector_double_sp da_vec = core::SimpleVector_double_O::make(size);
+  core::SimpleVector_double_sp dc_vec = core::SimpleVector_double_O::make(size);
   core::SimpleVector_int32_t_sp i1_vec = core::SimpleVector_int32_t_O::make(size);
   core::SimpleVector_int32_t_sp i2_vec = core::SimpleVector_int32_t_O::make(size);
-  core::SimpleVectorDouble_sp charge1_vec = core::SimpleVectorDouble_O::make(size);
-  core::SimpleVectorDouble_sp charge2_vec = core::SimpleVectorDouble_O::make(size);
+  core::SimpleVector_double_sp charge1_vec = core::SimpleVector_double_O::make(size);
+  core::SimpleVector_double_sp charge2_vec = core::SimpleVector_double_O::make(size);
   core::SimpleVector_sp atomname1_vec = core::SimpleVector_O::make(size);
   core::SimpleVector_sp atomname2_vec = core::SimpleVector_O::make(size);
   for (size_t i=0; i<size; ++i){
@@ -1171,14 +1171,14 @@ CL_DEFMETHOD void EnergyNonbond_O::constructNonbondTermsFromAList(core::List_sp 
 //  printf("%s:%d:%s    values -> %s\n", __FILE__, __LINE__, __FUNCTION__, _rep_(values).c_str());
   this->_ntypes =               translate::from_object<size_t>(safe_alist_lookup<core::T_sp>(values,kw::_sym_ntypes))._v;          // ntypes
   this->_atom_name_vector =     safe_alist_lookup<core::SimpleVector_sp>(values,kw::_sym_atom_name_vector);  // atom-name-vector
-  this->_charge_vector =        safe_alist_lookup<core::SimpleVectorDouble_sp>(values,kw::_sym_charge_vector);          // charge-vector
-  this->_mass_vector =          safe_alist_lookup<core::SimpleVectorDouble_sp>(values,kw::_sym_mass_vector);            // masses
+  this->_charge_vector =        safe_alist_lookup<core::SimpleVector_double_sp>(values,kw::_sym_charge_vector);          // charge-vector
+  this->_mass_vector =          safe_alist_lookup<core::SimpleVector_double_sp>(values,kw::_sym_mass_vector);            // masses
   this->_atomic_number_vector = safe_alist_lookup<core::SimpleVector_int32_t_sp>(values,kw::_sym_atomic_number_vector);    // vec
   this->_ico_vec =              safe_alist_lookup<core::SimpleVector_int32_t_sp>(values,kw::_sym_ico_vec);             // ico-vec
   this->_iac_vec =              safe_alist_lookup<core::SimpleVector_int32_t_sp>(values,kw::_sym_iac_vec);             // iac-vec
 //  this->_local_typej_vec =      safe_alist_lookup(values,kw::_sym_local_typej_vec);      // local-typej-vec
-  this->_cn1_vec =              safe_alist_lookup<core::SimpleVectorDouble_sp>(values,kw::_sym_cn1_vec);
-  this->_cn2_vec =              safe_alist_lookup<core::SimpleVectorDouble_sp>(values,kw::_sym_cn2_vec);
+  this->_cn1_vec =              safe_alist_lookup<core::SimpleVector_double_sp>(values,kw::_sym_cn1_vec);
+  this->_cn2_vec =              safe_alist_lookup<core::SimpleVector_double_sp>(values,kw::_sym_cn2_vec);
 }
 
 CL_DEFMETHOD void EnergyNonbond_O::setNonbondExcludedAtomInfo(AtomTable_sp atom_table, core::SimpleVector_int32_t_sp excluded_atoms_list, core::SimpleVector_int32_t_sp number_excluded_atoms) {

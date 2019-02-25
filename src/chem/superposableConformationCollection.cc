@@ -43,7 +43,7 @@ namespace chem {
 void	SuperposableConformationCollection_O::initialize()
 {
   this->Base::initialize();
-  this->_SuperposeAtomIndices = core::MDArray_byte32_t_O::make_vector(16,0,core::make_fixnum(0),_Nil<core::T_O>(),false,core::make_fixnum(0));
+  this->_SuperposeAtomIndices = core::ComplexVector_byte32_t_O::make_vector(16,0,core::make_fixnum(0),_Nil<core::T_O>(),false,core::make_fixnum(0));
   this->_RmsCutOff = 0.1;
 }
 

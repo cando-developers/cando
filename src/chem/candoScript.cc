@@ -959,9 +959,9 @@ CL_DEFUN core::T_sp chem__oligomer(core::List_sp parts)
     return olig;
 }
 
-CL_DEFUN bool chem__overlap_solvent(core::SimpleVectorDouble_sp solute_xvec,
-                                    core::SimpleVectorDouble_sp solute_yvec,
-                                    core::SimpleVectorDouble_sp solute_zvec,
+CL_DEFUN bool chem__overlap_solvent(core::SimpleVector_double_sp solute_xvec,
+                                    core::SimpleVector_double_sp solute_yvec,
+                                    core::SimpleVector_double_sp solute_zvec,
                                     Molecule_sp solvent,
                                     double atom_max_diameter_squared)
 {

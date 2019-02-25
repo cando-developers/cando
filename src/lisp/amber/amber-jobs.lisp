@@ -101,6 +101,41 @@
 ")
 
 
+(defparameter *replica-exchange-equilibration*
+  "Equilibration
+ &cntrl
+   irest=0, ntx=1, 
+   nstlim=:%NSTLIM%, dt=0.002,
+   irest=0, ntt=3, gamma_ln=1.0,
+   temp0=:%TEMP0%, ig=:%IG%,
+   ntc=2, ntf=2, nscm=1000,
+   ntb=0, igb=5,
+   cut=999.0, rgbmax=999.0,
+   ntpr=500, ntwx=:%NTWX%, ntwr=100000,
+   nmropt=1,
+ /
+ &wt TYPE='END'
+ /
+")
+
+
+(defparameter *replica-exchange-run*
+  "Replica exchange
+ &cntrl
+   irest=0, ntx=1, 
+   nstlim=:%NSTLIM%, dt=0.002,
+   irest=0, ntt=3, gamma_ln=1.0,
+   temp0=:%TEMP0%, ig=:%IG%,
+   ntc=2, ntf=2, nscm=1000,
+   ntb=0, igb=5,
+   cut=999.0, rgbmax=999.0,
+   ntpr=100, ntwx=:%NTWX%, ntwr=100000,
+   nmropt=1,
+   numexchg=1000,
+ /
+ &wt TYPE='END'
+ /
+")
 
 ;;; ------------------------------------------------------------
 ;;;
@@ -435,6 +470,48 @@ added to inputs and outputs but not option-inputs or option-outputs"
              :parameters (list (cons :%nstlim% nstlim)
                                (cons :%ntwx% ntwx)
                                (cons :%temp0% temp0))
+             :pathname-defaults pathname-defaults
+             :makefile-clause ":%OUTPUTS% : :%INPUTS%
+	runcmd -- :%DEPENDENCY-INPUTS% -- :%DEPENDENCY-OUTPUTS% -- \\
+	pmemd.cuda -AllowSmallBox :%OPTION-INPUTS% \\
+	  -O :%OPTION-OUTPUTS%"))
+
+(defun equilibrate ( &key previous-job
+                       input-topology-file input-coordinate-file
+                       (pathname-defaults #P"equilibrate" p-d-p)
+                       (nstlim 10000)
+                       (ntwx 100)
+                       (temp0 300.0)
+                       (random (random 32768))
+                       )
+  (setup-job :input-topology-file (or input-topology-file (job-file previous-job :|-p|))
+             :input-coordinate-file (or input-coordinate-file (job-file previous-job :|-r|))
+             :script *dynamics-in*
+             :parameters (list (cons :%nstlim% nstlim)
+                               (cons :%ntwx% ntwx)
+                               (cons :%temp0% temp0)
+                               (cons :%ig% random))
+             :pathname-defaults pathname-defaults
+             :makefile-clause ":%OUTPUTS% : :%INPUTS%
+	runcmd -- :%DEPENDENCY-INPUTS% -- :%DEPENDENCY-OUTPUTS% -- \\
+	pmemd.cuda -AllowSmallBox :%OPTION-INPUTS% \\
+	  -O :%OPTION-OUTPUTS%"))
+
+(defun replica-exchange ( &key previous-job
+                            input-topology-file input-coordinate-file
+                            (pathname-defaults #P"replica-exchange" p-d-p)
+                            (nstlim 10000)
+                            (ntwx 100)
+                            (temp0 300.0)
+                            (random (random 32768))
+                            )
+  (setup-job :input-topology-file (or input-topology-file (job-file previous-job :|-p|))
+             :input-coordinate-file (or input-coordinate-file (job-file previous-job :|-r|))
+             :script *dynamics-in*
+             :parameters (list (cons :%nstlim% nstlim)
+                               (cons :%ntwx% ntwx)
+                               (cons :%temp0% temp0)
+                               (cons :%ig% random))
              :pathname-defaults pathname-defaults
              :makefile-clause ":%OUTPUTS% : :%INPUTS%
 	runcmd -- :%DEPENDENCY-INPUTS% -- :%DEPENDENCY-OUTPUTS% -- \\

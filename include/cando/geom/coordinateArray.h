@@ -61,6 +61,7 @@ namespace geom {
 
 namespace geom {
   FORWARD(SimpleVectorCoordinate);
+  FORWARD(ComplexVectorCoordinate);
 };
 template <>
 struct gctools::GCInfo<geom::SimpleVectorCoordinate_O> {
@@ -191,27 +192,6 @@ namespace geom {
     typedef core::template_Array<MDArrayCoordinate_O,SimpleMDArrayCoordinate_O,SimpleVectorCoordinate_O,core::MDArray_O> TemplatedBase;
     typedef typename TemplatedBase::simple_element_type simple_element_type;
     typedef typename TemplatedBase::simple_type simple_type;
-  public: // make vector
-  MDArrayCoordinate_O(size_t dummy_rank_1,
-                      size_t dimension,
-                      core::T_sp fillPointer,
-                      core::Array_sp data,
-                      bool displacedToP,
-                      core::Fixnum_sp displacedIndexOffset) : TemplatedBase(core::Rank1(),dimension,fillPointer,data,displacedToP,displacedIndexOffset) {};
-    static MDArrayCoordinate_sp make_vector(size_t dimension, simple_element_type initialElement/*=simple_element_type()*/, core::T_sp fillPointer/*=_Nil<T_O>()*/, core::T_sp dataOrDisplacedTo/*=_Nil<T_O>()*/, bool displacedToP/*=false*/, core::Fixnum_sp displacedIndexOffset/*=clasp_make_fixnum(0)*/ ) {
-      LIKELY_if (dataOrDisplacedTo.nilp()) {
-        dataOrDisplacedTo = simple_type::make(dimension,initialElement,true);
-      }
-      MDArrayCoordinate_sp array = gctools::GC<MDArrayCoordinate_O>::allocate_container(false,1,dimension,fillPointer,gc::As_unsafe<core::Array_sp>(dataOrDisplacedTo),displacedToP,displacedIndexOffset);
-      return array;
-    }
-    static MDArrayCoordinate_sp make_vector(size_t dimension, simple_element_type initialElement, core::T_sp fillPointer) {
-      return make_vector(dimension,initialElement,fillPointer,_Nil<T_O>(),false,core::clasp_make_fixnum(0));
-    }
-    /*! Build a MDArrayCoordinate from a SimpleVectorCoordinate */
-    static MDArrayCoordinate_sp make_vector(geom::SimpleVectorCoordinate_sp data) {
-      return make_vector(data->length(),Vector3(),core::make_fixnum(data->length()),data,false,core::make_fixnum(0));
-    }
   public: // make array
   MDArrayCoordinate_O(size_t rank,
                   core::List_sp dimensions,
@@ -227,6 +207,41 @@ namespace geom {
       }
       MDArrayCoordinate_sp array = gctools::GC<MDArrayCoordinate_O>::allocate_container(false,rank,dim_desig,gc::As<core::Array_sp>(dataOrDisplacedTo),displacedToP,displacedIndexOffset);
       return array;
+    }
+    size_t vectorPush_Vector3(const Vector3& newElement);
+    size_t vectorPushExtend_Vector3(const Vector3& newElement, size_t extension = 0);
+  public:
+//    virtual bool equalp(T_sp o) const final;
+  };
+};
+
+namespace geom {
+  class ComplexVectorCoordinate_O : public core::template_Array<ComplexVectorCoordinate_O,ComplexVectorCoordinate_O,SimpleVectorCoordinate_O,core::ComplexVector_O> {
+    LISP_CLASS(geom, GeomPkg, ComplexVectorCoordinate_O, "ComplexVectorCoordinate",core::ComplexVector_O);
+    virtual ~ComplexVectorCoordinate_O() {};
+  public:
+    typedef core::template_Array<ComplexVectorCoordinate_O,ComplexVectorCoordinate_O,SimpleVectorCoordinate_O,core::ComplexVector_O> TemplatedBase;
+    typedef typename TemplatedBase::simple_element_type simple_element_type;
+    typedef typename TemplatedBase::simple_type simple_type;
+  public: // make vector
+  ComplexVectorCoordinate_O(size_t dimension,
+                      core::T_sp fillPointer,
+                      core::Array_sp data,
+                      bool displacedToP,
+                      core::Fixnum_sp displacedIndexOffset) : TemplatedBase(core::Rank1(),dimension,fillPointer,data,displacedToP,displacedIndexOffset) {};
+    static ComplexVectorCoordinate_sp make_vector(size_t dimension, simple_element_type initialElement/*=simple_element_type()*/, core::T_sp fillPointer/*=_Nil<T_O>()*/, core::T_sp dataOrDisplacedTo/*=_Nil<T_O>()*/, bool displacedToP/*=false*/, core::Fixnum_sp displacedIndexOffset/*=clasp_make_fixnum(0)*/ ) {
+      LIKELY_if (dataOrDisplacedTo.nilp()) {
+        dataOrDisplacedTo = simple_type::make(dimension,initialElement,true);
+      }
+      ComplexVectorCoordinate_sp array = gctools::GC<ComplexVectorCoordinate_O>::allocate_container(false,dimension,fillPointer,gc::As_unsafe<core::Array_sp>(dataOrDisplacedTo),displacedToP,displacedIndexOffset);
+      return array;
+    }
+    static ComplexVectorCoordinate_sp make_vector(size_t dimension, simple_element_type initialElement, core::T_sp fillPointer) {
+      return make_vector(dimension,initialElement,fillPointer,_Nil<T_O>(),false,core::clasp_make_fixnum(0));
+    }
+    /*! Build a ComplexVectorCoordinate from a SimpleVectorCoordinate */
+    static ComplexVectorCoordinate_sp make_vector(geom::SimpleVectorCoordinate_sp data) {
+      return make_vector(data->length(),Vector3(),core::make_fixnum(data->length()),data,false,core::make_fixnum(0));
     }
     size_t vectorPush_Vector3(const Vector3& newElement);
     size_t vectorPushExtend_Vector3(const Vector3& newElement, size_t extension = 0);

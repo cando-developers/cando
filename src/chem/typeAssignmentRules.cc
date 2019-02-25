@@ -70,7 +70,7 @@ void	TypeAssignmentRules_O::initialize()
   DEPRECATED();
     this->Base::initialize();
     this->_WildElementDict = _Nil<WildElementDict_O>();
-    this->_Rules = core::MDArrayT_O::make(0,_Nil<T_O>(),core::make_fixnum(0));
+    this->_Rules = core::ComplexVector_T_O::make(0,_Nil<T_O>(),core::make_fixnum(0));
 }
 
 core::Symbol_sp TypeAssignmentRules_O::calculateType(Atom_sp a)

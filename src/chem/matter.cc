@@ -900,7 +900,7 @@ CL_DEFMETHOD core::List_sp Matter_O::contentsAsList()
 CL_LISPIFY_NAME("allAtoms");
 CL_DEFMETHOD core::Vector_sp	Matter_O::allAtoms()
 {
-  core::VectorTNs_sp	atoms = core::VectorTNs_O::make(8,_Nil<T_O>(),core::clasp_make_fixnum(0));
+  core::ComplexVector_T_sp	atoms = core::ComplexVector_T_O::make(8,_Nil<T_O>(),core::clasp_make_fixnum(0));
   Loop		la;
   la.loopTopGoal(this->sharedThis<Matter_O>(),ATOMS);
   while ( la.advanceLoopAndProcess() )
@@ -913,7 +913,7 @@ CL_DEFMETHOD core::Vector_sp	Matter_O::allAtoms()
 
 core::Vector_sp	Matter_O::allAtomsOfElement(Element element)
 {
-  core::VectorTNs_sp atoms = core::VectorTNs_O::make(8,_Nil<T_O>(),core::clasp_make_fixnum(0));
+  core::ComplexVector_T_sp atoms = core::ComplexVector_T_O::make(8,_Nil<T_O>(),core::clasp_make_fixnum(0));
   Loop		la;
   Atom_sp		a;
   la.loopTopGoal(this->sharedThis<Matter_O>(),ATOMS);

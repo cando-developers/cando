@@ -107,9 +107,9 @@ class AtomTable_O : public core::CxxObject_O
   typedef core::HashTableEq_sp        AtomTable;
   gctools::Vec0<EnergyAtom>	_Atoms;
   AtomTable        _AtomTableIndices; // m a p<Atom_sp,uint>	_AtomTableIndices;
-  core::MDArray_int32_t_sp     _ResiduePointers;
-  core::MDArrayT_sp             _ResidueNames;
-  core::MDArray_int32_t_sp      _AtomsPerMolecule;
+  core::ComplexVector_int32_t_sp     _ResiduePointers;
+  core::ComplexVector_T_sp             _ResidueNames;
+  core::ComplexVector_int32_t_sp      _AtomsPerMolecule;
   core::Vector_sp               _Residues;
  public:
   typedef gctools::Vec0<EnergyAtom>::iterator iterator;
@@ -132,7 +132,7 @@ class AtomTable_O : public core::CxxObject_O
   void	dumpTerms();
   void constructFromMatter(Matter_sp mol, ForceField_sp forceField, core::T_sp activeAtoms );
 
-  size_t push_back_excluded_atom_indices_and_sort(core::MDArray_int32_t_sp excludedAtomIndices, size_t atomIndex);
+  size_t push_back_excluded_atom_indices_and_sort(core::ComplexVector_int32_t_sp excludedAtomIndices, size_t atomIndex);
   /*! Calculate the excluded atom list with atom indices starting at 0.
       Atoms with no excluded atoms get a -1 in the excluded_atom_list.
       This is different from AMBER, where it starts counting at 1.
@@ -157,7 +157,7 @@ class AtomTable_O : public core::CxxObject_O
   core::T_sp atom_table_residue_names() const;
   core::T_sp atom_table_atoms_per_molecule() const;
   core::T_sp atom_table_residues() const;
- AtomTable_O() : _ResiduePointers(_Unbound<core::MDArray_int32_t_O>()), _ResidueNames(_Unbound<core::MDArrayT_O>()), _AtomsPerMolecule(_Unbound<core::MDArray_int32_t_O>()), _Residues(_Unbound<core::Vector_O>()) {};
+ AtomTable_O() : _ResiduePointers(_Unbound<core::ComplexVector_int32_t_O>()), _ResidueNames(_Unbound<core::ComplexVector_T_O>()), _AtomsPerMolecule(_Unbound<core::ComplexVector_int32_t_O>()), _Residues(_Unbound<core::Vector_O>()) {};
 
   virtual void fill_atom_table_from_vectors(core::List_sp values);
 //  int residue_index(int atom_index);

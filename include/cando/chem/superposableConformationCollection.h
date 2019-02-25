@@ -96,7 +96,7 @@ public:
   void initialize();
 public:
   double		_RmsCutOff;
-  core::MDArray_byte32_t_sp	_SuperposeAtomIndices;
+  core::ComplexVector_byte32_t_sp	_SuperposeAtomIndices;
 //	string		_SuperposableFileName;
 public:
 

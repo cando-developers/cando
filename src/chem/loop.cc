@@ -667,7 +667,7 @@ CL_DEFUN core::T_sp chem__map_molecules(core::Symbol_sp result_type, core::T_sp 
     return res.cons();
   }
   if ( result_type == cl::_sym_vector ) {
-    core::VectorTNs_sp vo = core::VectorTNs_O::make(16,_Nil<core::T_O>(),core::clasp_make_fixnum(0));
+    core::ComplexVector_T_sp vo = core::ComplexVector_T_O::make(16,_Nil<core::T_O>(),core::clasp_make_fixnum(0));
     while (l.advanceLoopAndProcess()) {
       a = l.getMolecule();
       vo->vectorPushExtend(core::eval::funcall(func,a));
@@ -701,7 +701,7 @@ CL_DEFUN core::T_sp chem__map_residues(core::Symbol_sp result_type, core::T_sp f
     return res.cons();
   }
   if ( result_type == cl::_sym_vector ) {
-    core::VectorTNs_sp vo = core::VectorTNs_O::make(16,_Nil<core::T_O>(),core::clasp_make_fixnum(0));
+    core::ComplexVector_T_sp vo = core::ComplexVector_T_O::make(16,_Nil<core::T_O>(),core::clasp_make_fixnum(0));
     while (l.advanceLoopAndProcess()) {
       a = l.getResidue();
       vo->vectorPushExtend(core::eval::funcall(func,a));
@@ -736,7 +736,7 @@ CL_DEFUN core::T_sp chem__map_atoms(core::Symbol_sp result_type, core::T_sp func
     return res.cons();
   }
   if ( result_type == cl::_sym_vector ) {
-    core::VectorTNs_sp vo = core::VectorTNs_O::make(16,_Nil<core::T_O>(),core::clasp_make_fixnum(0));
+    core::ComplexVector_T_sp vo = core::ComplexVector_T_O::make(16,_Nil<core::T_O>(),core::clasp_make_fixnum(0));
     while (l.advanceLoopAndProcess()) {
       a = l.getAtom();
       vo->vectorPushExtend(core::eval::funcall(func,a));
@@ -773,7 +773,7 @@ CL_DEFUN core::T_sp chem__map_bonds(core::Symbol_sp result_type, core::T_sp func
     return res.cons();
   }
   if ( result_type == cl::_sym_vector ) {
-    core::VectorTNs_sp vo = core::VectorTNs_O::make(16,_Nil<core::T_O>(),core::clasp_make_fixnum(0));
+    core::ComplexVector_T_sp vo = core::ComplexVector_T_O::make(16,_Nil<core::T_O>(),core::clasp_make_fixnum(0));
     while (l.advanceLoopAndProcess()) {
       a1 = l.getBondA1();
       a2 = l.getBondA2();
@@ -801,9 +801,9 @@ CL_DEFUN core::T_sp chem__map_angles(core::Symbol_sp result_type, core::T_sp fun
   Loop l(m,ANGLES);
   Atom_sp a1, a2, a3;
   ql::list list_result;
-  core::VectorTNs_sp vector_result;
+  core::ComplexVector_T_sp vector_result;
   if ( result_type == cl::_sym_vector ) {
-    vector_result = core::VectorTNs_O::make(16,_Nil<core::T_O>(),core::clasp_make_fixnum(0));
+    vector_result = core::ComplexVector_T_O::make(16,_Nil<core::T_O>(),core::clasp_make_fixnum(0));
   }
   while (l.advanceLoopAndProcess()) {
     a1 = l.getAtom1();
@@ -835,9 +835,9 @@ CL_DEFUN core::T_sp chem__map_dihedrals(core::Symbol_sp result_type, core::T_sp 
   Loop l(m,DIHEDRALS);
   Atom_sp a1, a2, a3, a4;
   ql::list list_result;
-  core::VectorTNs_sp vector_result;
+  core::ComplexVector_T_sp vector_result;
   if ( result_type == cl::_sym_vector ) {
-    vector_result = core::VectorTNs_O::make(16,_Nil<core::T_O>(),core::clasp_make_fixnum(0));
+    vector_result = core::ComplexVector_T_O::make(16,_Nil<core::T_O>(),core::clasp_make_fixnum(0));
   }
   while (l.advanceLoopAndProcess()) {
     a1 = l.getAtom1();
@@ -870,9 +870,9 @@ CL_DEFUN core::T_sp chem__map_impropers(core::Symbol_sp result_type, core::T_sp 
   Loop l(m,IMPROPERS);
   Atom_sp a1, a2, a3, a4;
   ql::list list_result;
-  core::VectorTNs_sp vector_result;
+  core::ComplexVector_T_sp vector_result;
   if ( result_type == cl::_sym_vector ) {
-    vector_result = core::VectorTNs_O::make(16,_Nil<core::T_O>(),core::clasp_make_fixnum(0));
+    vector_result = core::ComplexVector_T_O::make(16,_Nil<core::T_O>(),core::clasp_make_fixnum(0));
   }
   while (l.advanceLoopAndProcess()) {
     a1 = l.getAtom1();

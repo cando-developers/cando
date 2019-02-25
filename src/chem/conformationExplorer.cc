@@ -522,7 +522,7 @@ CL_DEFMETHOD     ConformationExplorerEntryStage_sp	ConformationExplorerEntry_O::
 	this->_AllAtoms.clear();
 	this->_Binder = core::HashTableEq_O::create_default();
 	this->clearEntries();
-	this->_SuperposeAtomIndices = core::MDArray_byte32_t_O::make_vector(0,0,core::make_fixnum(0),_Nil<core::T_O>(),false,core::make_fixnum(0));
+	this->_SuperposeAtomIndices = core::ComplexVector_byte32_t_O::make_vector(0,0,core::make_fixnum(0),_Nil<core::T_O>(),false,core::make_fixnum(0));
     }
 
 
@@ -695,7 +695,7 @@ CL_LISPIFY_NAME("clearSuperposeAtoms");
 CL_DEFMETHOD     void	ConformationExplorer_O::clearSuperposeAtoms()
     {
 	ASSERTNOTNULL(this->_SuperposeAtomIndices);
-	this->_SuperposeAtomIndices = core::MDArray_byte32_t_O::make_vector(0,0,core::make_fixnum(0),_Nil<core::T_O>(),false,core::make_fixnum(0));
+	this->_SuperposeAtomIndices = core::ComplexVector_byte32_t_O::make_vector(0,0,core::make_fixnum(0),_Nil<core::T_O>(),false,core::make_fixnum(0));
     }
 
 

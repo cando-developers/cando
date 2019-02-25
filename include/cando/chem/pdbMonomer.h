@@ -56,7 +56,7 @@ public:
     void initialize();
 private:
     core::Symbol_sp           _PdbName;
-    core::VectorTNs_sp     _LongNames;
+    core::ComplexVector_T_sp     _LongNames;
     gctools::Vec0<AtomPair> _BondAtomPairs;
 public:
     typedef gctools::Vec0<AtomPair>::iterator iterator;

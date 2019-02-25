@@ -140,9 +140,9 @@ string		EnergyAtom::getResidueAndName()
 void AtomTable_O::initialize()
 {
   this->_AtomTableIndices = core::HashTableEq_O::create_default();
-  core::MDArray_int32_t_sp residue_pointers = core::MDArray_int32_t_O::make_vector_with_fill_pointer(32,0,0);
-  core::MDArrayT_sp residue_names = core::MDArrayT_O::make(32,_Nil<core::T_O>(),core::make_fixnum(0));
-  core::MDArray_int32_t_sp atoms_per_molecule = core::MDArray_int32_t_O::make_vector_with_fill_pointer(32,0,0);
+  core::ComplexVector_int32_t_sp residue_pointers = core::ComplexVector_int32_t_O::make_vector(32,0,core::make_fixnum(0),_Nil<core::T_O>(),false,core::make_fixnum(0));
+  core::ComplexVector_T_sp residue_names = core::ComplexVector_T_O::make(32,_Nil<core::T_O>(),core::make_fixnum(0));
+  core::ComplexVector_int32_t_sp atoms_per_molecule = core::ComplexVector_int32_t_O::make_vector(32,0,core::make_fixnum(0),_Nil<core::T_O>(),false,core::make_fixnum(0));
 //  atoms_per_molecule->vectorPushExtend(0);
   this->_ResiduePointers = residue_pointers;
   this->_ResidueNames = residue_names;
@@ -340,7 +340,7 @@ DONT_OPTIMIZE_WHEN_DEBUG_RELEASE void AtomTable_O::constructFromMatter(Matter_sp
 /*! Fill excludedAtomIndices with the excluded atom list.
 Amber starts counting atoms at 1 so add 1 to every index.
 The atomIndex passed is index0.*/
-CL_DEFMETHOD size_t AtomTable_O::push_back_excluded_atom_indices_and_sort( core::MDArray_int32_t_sp excludedAtomIndices, size_t atomIndex)
+CL_DEFMETHOD size_t AtomTable_O::push_back_excluded_atom_indices_and_sort( core::ComplexVector_int32_t_sp excludedAtomIndices, size_t atomIndex)
 {
   size_t start_size = excludedAtomIndices->length();
   EnergyAtom* ea = &(this->_Atoms[atomIndex]);
@@ -372,8 +372,8 @@ CL_DEFMETHOD core::T_mv AtomTable_O::calculate_excluded_atom_list()
 {
 //  printf("%s:%d In calculate_excludec_atom_list\n", __FILE__, __LINE__ );
 
-  core::MDArray_int32_t_sp number_excluded_atoms = core::MDArray_int32_t_O::make_vector_with_fill_pointer(32,0,0);
-  core::MDArray_int32_t_sp excluded_atoms_list = core::MDArray_int32_t_O::make_vector_with_fill_pointer(32,0,0);
+  core::ComplexVector_int32_t_sp number_excluded_atoms = core::ComplexVector_int32_t_O::make_vector(32,0,core::make_fixnum(0),_Nil<core::T_O>(),false,core::make_fixnum(0));
+  core::ComplexVector_int32_t_sp excluded_atoms_list = core::ComplexVector_int32_t_O::make_vector(32,0,core::make_fixnum(0),_Nil<core::T_O>(),false,core::make_fixnum(0));
   size_t num_atoms = this->getNumberOfAtoms();
   for ( size_t i1=0; i1<num_atoms; ++i1) {
     size_t num = this->push_back_excluded_atom_indices_and_sort(excluded_atoms_list,i1);

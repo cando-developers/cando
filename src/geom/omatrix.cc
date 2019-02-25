@@ -77,8 +77,8 @@ void	OMatrix_O::setFromStringFast(const string& s)
 
 CL_DEFMETHOD void OMatrix_O::setFromVector(core::Array_sp array)
 {
-  if (gc::IsA<core::SimpleVectorDouble_sp>(array)) {
-    core::SimpleVectorDouble_sp svd = gc::As_unsafe<core::SimpleVectorDouble_sp>(array);
+  if (gc::IsA<core::SimpleVector_double_sp>(array)) {
+    core::SimpleVector_double_sp svd = gc::As_unsafe<core::SimpleVector_double_sp>(array);
     size_t elements = MIN(16,svd->length());
     for ( size_t i=0; i<elements; ++i ) {
       this->_Value[i] = (*svd)[i];

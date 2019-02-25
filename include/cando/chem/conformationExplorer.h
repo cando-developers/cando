@@ -261,7 +261,7 @@ protected:
 	Matter_sp				_Matter;
     gctools::Vec0<ConformationExplorerEntry_sp>	_Entries;
     gctools::SmallOrderedSet<Atom_sp>			_AllAtoms;
-	core::MDArray_byte32_t_sp		_SuperposeAtomIndices;
+	core::ComplexVector_byte32_t_sp		_SuperposeAtomIndices;
 	core::HashTableEq_sp			_Binder;
 protected:
 	Atom_sp	_getAtomAtIndex(unsigned i);
@@ -274,7 +274,7 @@ public:
 
 public:
 	geom::SimpleVectorCoordinate_sp	_SimpleVectorCoordinate(Matter_sp matter);
-	core::MDArray_byte32_t_sp		_getSuperposeAtomIndices() { return this->_SuperposeAtomIndices;};
+	core::ComplexVector_byte32_t_sp		_getSuperposeAtomIndices() { return this->_SuperposeAtomIndices;};
 public:
 
 		//! Clear the superposition atoms

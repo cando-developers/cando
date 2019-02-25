@@ -80,7 +80,7 @@ CL_DEF_CLASS_METHOD Topology_mv Topology_O::makeTopologyFromResidue(chem::Residu
   constitution = gc::As<Constitution_sp>(tconstitution);
   ConstitutionAtoms_sp ca = constitution->getConstitutionAtoms();
   Topology_sp topology = Topology_O::make(topologyName, constitution, _Nil<core::T_O>() );
-  core::VectorTNs_sp vec = core::VectorTNs_O::make(residue->numberOfAtoms(),_Nil<core::T_O>());
+  core::ComplexVector_T_sp vec = core::ComplexVector_T_O::make(residue->numberOfAtoms(),_Nil<core::T_O>());
   int atomIndex = 0;
   StereoisomerAtoms_sp stereoisomerAtoms = StereoisomerAtoms_O::create(stereoisomerName);
   for ( auto ai = residue->begin_atoms(); ai!=residue->end_atoms(); ++ai, ++atomIndex) {

@@ -35,13 +35,13 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace chem {
 #if 0
 CL_LAMBDA(helix-points interactions pos calc-force force-vec &key debug-energy);
-CL_DEFUN double chem__rigid_staple_evaluate( core::SimpleVectorDouble_sp helix_points,  /* xi, yi, zi */
+CL_DEFUN double chem__rigid_staple_evaluate( core::SimpleVector_double_sp helix_points,  /* xi, yi, zi */
                                 /* helixk/pos, pointk/helix_points, helixl/pos, pointl/helix_points */
                                              core::SimpleVector_byte32_t_sp interactions,
                                              /* ai,bi,ci,di,xi,yi,zi */
-                                             core::SimpleVectorDouble_sp pos,
+                                             core::SimpleVector_double_sp pos,
                                              bool 		calcForce,
-                                             gc::Nilable<core::SimpleVectorDouble_sp> 	force,
+                                             gc::Nilable<core::SimpleVector_double_sp> 	force,
                                              bool debugEnergy
                                              )
 /*                            

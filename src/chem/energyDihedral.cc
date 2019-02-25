@@ -841,9 +841,9 @@ SYMBOL_EXPORT_SC_(KeywordPkg,indices);
 
 CL_DEFMETHOD core::List_sp EnergyDihedral_O::extract_vectors_as_alist() const{
   size_t size = this->_Terms.size();
-  core::SimpleVectorDouble_sp v_vec = core::SimpleVectorDouble_O::make(size);
+  core::SimpleVector_double_sp v_vec = core::SimpleVector_double_O::make(size);
   core::SimpleVector_int32_t_sp in_vec = core::SimpleVector_int32_t_O::make(size);
-  core::SimpleVectorDouble_sp phase_vec = core::SimpleVectorDouble_O::make(size);
+  core::SimpleVector_double_sp phase_vec = core::SimpleVector_double_O::make(size);
   core::SimpleVector_int32_t_sp i1_vec = core::SimpleVector_int32_t_O::make(size);
   core::SimpleVector_int32_t_sp i2_vec = core::SimpleVector_int32_t_O::make(size);
   core::SimpleVector_int32_t_sp i3_vec = core::SimpleVector_int32_t_O::make(size);
@@ -887,10 +887,10 @@ CL_DEFMETHOD core::List_sp EnergyDihedral_O::extract_vectors_as_alist() const{
 
 CL_DEFMETHOD void EnergyDihedral_O::fill_from_vectors_in_alist(core::List_sp vectors)
 {
-  core::SimpleVectorDouble_sp v_vec = (safe_alist_lookup<core::SimpleVectorDouble_sp>(vectors,kw::_sym_v));
+  core::SimpleVector_double_sp v_vec = (safe_alist_lookup<core::SimpleVector_double_sp>(vectors,kw::_sym_v));
   core::SimpleVector_int32_t_sp in_vec = (safe_alist_lookup<core::SimpleVector_int32_t_sp>(vectors,kw::_sym_in));
-  core::SimpleVectorDouble_sp dn_vec = (safe_alist_lookup<core::SimpleVectorDouble_sp>(vectors,kw::_sym_dn));
-  core::SimpleVectorDouble_sp phase_vec = (safe_alist_lookup<core::SimpleVectorDouble_sp>(vectors,kw::_sym_phase));
+  core::SimpleVector_double_sp dn_vec = (safe_alist_lookup<core::SimpleVector_double_sp>(vectors,kw::_sym_dn));
+  core::SimpleVector_double_sp phase_vec = (safe_alist_lookup<core::SimpleVector_double_sp>(vectors,kw::_sym_phase));
   core::SimpleVector_int32_t_sp i1_vec = (safe_alist_lookup<core::SimpleVector_int32_t_sp>(vectors,kw::_sym_i1));
   core::SimpleVector_int32_t_sp i2_vec = (safe_alist_lookup<core::SimpleVector_int32_t_sp>(vectors,kw::_sym_i2));
   core::SimpleVector_int32_t_sp i3_vec = (safe_alist_lookup<core::SimpleVector_int32_t_sp>(vectors,kw::_sym_i3));
