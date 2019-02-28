@@ -2309,3 +2309,8 @@ then don't calculate 1,4 interactions"
                        i da2 dc2 charge21 charge22 atomname21 atomname22)))))
                
         
+
+
+(defun generate-aggregate-for-energy-function (energy-function)
+  (error "Implement me"))
+

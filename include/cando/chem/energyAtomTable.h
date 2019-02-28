@@ -60,37 +60,66 @@ SMART(Matter);
  * which stores coordinates in a 1D array (x1,y1,z1,x2,y2,z2,x3,...,xN,yN,zN)
  */
 class EnergyAtom : public IndirectAtomCoordinateReference {
-    typedef IndirectAtomCoordinateReference Base;
+  typedef IndirectAtomCoordinateReference Base;
 public:
 //        Atom_sp  	_Atom;			//!<Atom
 //        uint     	_CoordinateIndex;	//!<index into the coordinate vector (atomNumber)*3
-    MatterName		_AtomName;		//!<Atom name
-    double		_Charge;		//!<Atom charge in electrons
-    double		_Mass;			//!<Atom mass in Daltons
-    uint		_TypeIndex;		//!<Type index
-    uint                _AtomicNumber;           //!<Atomic number
+  MatterName		_AtomName;		//!<Atom name
+  double		_Charge;		//!<Atom charge in electrons
+  double		_Mass;			//!<Atom mass in Daltons
+  uint		_TypeIndex;		//!<Type index
+  uint                _AtomicNumber;           //!<Atomic number
 public:
 	// Temporary variables, not necessary to store
 	/*! Sets of all atoms that are bonded to this one at remove 0(bonded),
 	  1(ends of angle) and 2(ends of dihedral) (indexed at 0, 1, 2 respectively */
-    static const int max_remove = 2;
-    gctools::SmallOrderedSet<Atom_sp> _AtomsAtRemoveBondAngle14[max_remove+1]; // s e t<Atom_sp>	_AtomsAtRemoveBondAngle14[3];
+  static const int max_remove = 2;
+  gctools::SmallOrderedSet<Atom_sp> _AtomsAtRemoveBondAngle14[max_remove+1]; // s e t<Atom_sp>	_AtomsAtRemoveBondAngle14[3];
 public:
 
-	bool inBondOrAngle(Atom_sp a) { return (this->_AtomsAtRemoveBondAngle14[0].contains(a)) || (this->_AtomsAtRemoveBondAngle14[1].count(a)>0);};
-	bool relatedBy14(Atom_sp a) { return (this->_AtomsAtRemoveBondAngle14[2].contains(a)); };
+  bool inBondOrAngle(Atom_sp a) { return (this->_AtomsAtRemoveBondAngle14[0].contains(a)) || (this->_AtomsAtRemoveBondAngle14[1].count(a)>0);};
+  bool relatedBy14(Atom_sp a) { return (this->_AtomsAtRemoveBondAngle14[2].contains(a)); };
 
-    EnergyAtom();
-	EnergyAtom(Atom_sp atom, uint coordinateIndex);
-	EnergyAtom(ForceField_sp forceField, Atom_sp atom, uint coordinateIndex);
+  EnergyAtom();
+  EnergyAtom(Atom_sp atom, uint coordinateIndex);
+  EnergyAtom(ForceField_sp forceField, Atom_sp atom, uint coordinateIndex);
 
 		// methods
-	void		defineForAtom(ForceField_sp forceField, Atom_sp atom, uint coordinateIndex);
-	string		getResidueAndName();
+  core::List_sp encode() const;
+  void		defineForAtom(ForceField_sp forceField, Atom_sp atom, uint coordinateIndex);
+  string		getResidueAndName();
 //	adapt::QDomNode_sp	asXmlRelativeToContainer(chem::Matter_sp parent);
 //	void		parseFromXmlRelativeToContainer( adapt::QDomNode_sp xml, chem::Matter_sp parent );
 };
+};
 
+namespace translate {
+
+template <>
+struct	to_object<chem::EnergyAtom >
+{
+  typedef	core::Cons_sp ExpectedType;
+  typedef	core::Cons_sp DeclareType;
+  static core::T_sp convert(const chem::EnergyAtom& ea)
+  {
+    return ea.encode();
+  }
+};
+
+template <>
+struct	from_object<chem::EnergyAtom>
+{
+  typedef	chem::EnergyAtom	ExpectedType;
+  typedef	ExpectedType 		DeclareType;
+	DeclareType _v;
+	from_object(core::T_sp o)
+	{
+          SIMPLE_ERROR(BF("Implement me"));
+        }
+};
+};
+
+namespace chem {
 
 EnergyAtom*	_findEnergyAtom(gctools::Vec0<EnergyAtom>& atoms, uint	idx3 );
 
@@ -100,7 +129,8 @@ class AtomTable_O : public core::CxxObject_O
   LISP_CLASS(chem,ChemPkg,AtomTable_O,"AtomTable",core::CxxObject_O);
 
  public:
-
+  bool fieldsp() const { return true; }
+  void fields(core::Record_sp node);
  public:
   void initialize();
  private:
@@ -157,6 +187,11 @@ class AtomTable_O : public core::CxxObject_O
   core::T_sp atom_table_residue_names() const;
   core::T_sp atom_table_atoms_per_molecule() const;
   core::T_sp atom_table_residues() const;
+  CL_DEFMETHOD void setf_atom_table_residue_pointers(core::ComplexVector_int32_t_sp val) {this->_ResiduePointers = val; };
+  CL_DEFMETHOD void setf_atom_table_residue_names(core::ComplexVector_T_sp val) {this->_ResidueNames = val; };
+  CL_DEFMETHOD void setf_atom_table_atoms_per_molecule(core::ComplexVector_int32_t_sp val) {this->_AtomsPerMolecule = val; };
+  CL_DEFMETHOD void setf_atom_table_residues(core::Vector_sp val) {this->_Residues = val; };
+  
  AtomTable_O() : _ResiduePointers(_Unbound<core::ComplexVector_int32_t_O>()), _ResidueNames(_Unbound<core::ComplexVector_T_O>()), _AtomsPerMolecule(_Unbound<core::ComplexVector_int32_t_O>()), _Residues(_Unbound<core::Vector_O>()) {};
 
   virtual void fill_atom_table_from_vectors(core::List_sp values);

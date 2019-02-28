@@ -150,6 +150,26 @@ void AtomTable_O::initialize()
   this->_Residues = core::core__make_vector(_lisp->_true(), 16, true, core::make_fixnum(0));
 }
 
+core::List_sp EnergyAtom::encode() const {
+  return core::Cons_O::createList(core::Cons_O::create(INTERN_(kw,atom_name),this->_AtomName),
+                                  core::Cons_O::create(INTERN_(kw,charge),core::clasp_make_double_float(this->_Charge)),
+                                  core::Cons_O::create(INTERN_(kw,mass),core::clasp_make_double_float(this->_Mass)),
+                                  core::Cons_O::create(INTERN_(kw,type_index), core::make_fixnum(this->_TypeIndex)),
+                                  core::Cons_O::create(INTERN_(kw,atomic_number), core::make_fixnum(this->_AtomicNumber)));
+}
+
+
+
+void AtomTable_O::fields(core::Record_sp node) {
+  node->field( INTERN_(kw,atoms), this->_Atoms );
+  node->field( INTERN_(kw,atom_table_indices), this->_AtomTableIndices);
+  node->field( INTERN_(kw,residue_pointers), this->_ResiduePointers);
+  node->field( INTERN_(kw,residue_names), this->_ResidueNames);
+  node->field( INTERN_(kw,atoms_per_molecule),this->_AtomsPerMolecule);
+  node->field( INTERN_(kw,residues),this->_Residues);
+  this->Base::fields(node);
+}
+
 
 EnergyAtom* AtomTable_O::getEnergyAtomPointer(Atom_sp a)
 {_OF();
