@@ -49,15 +49,18 @@
     ;;Consider neutralizetion    
     (if (= ion1-number 0)
         (progn
-          (if (or (and (< (chem:get-charge ion1-atom) 0)
+          (when (or (and (< (chem:get-charge ion1-atom) 0)
                        (< target-charge 0))
                   (and (> (chem:get-charge ion1-atom) 0)
                        (> target-charge 0)))
-              (error "1st ion & target are same charge"))
+            (warn "1st Ion and target aggregate have charges of the same sign - aggregate charge: ~f; ion charge: ~f"
+                  total-charge (chem:get-charge ion1-atom))
+            (return-from add-ions nil))
           ;;Get the nearest integer number of ions that we need to add to get as close as possible to neutral.
           (setf ion1-number (round (/ (abs target-charge) (abs (chem:get-charge ion1-atom)))))
-          (if ion2
-              (error "Neutralization - can't do 2nd ion."))
+          (when ion2
+              (warn "Neutralization - can't do 2nd ion.")
+              (return-from add-ions nil))
           (format t "~d ~a ions required to neutraize. ~%" ion1-number (chem:get-name ion1-atom))))
     ;;Consider ion sizes and postions
     (if ion2
@@ -197,14 +200,16 @@
     ;;Consider neutralizetion    
     (if (= ion1-number 0)
         (progn
-          (if (or (and (< (chem:get-charge ion1-atom) 0)
+          (when (or (and (< (chem:get-charge ion1-atom) 0)
                        (< target-charge 0))
                   (and (> (chem:get-charge ion1-atom) 0)
                        (> target-charge 0)))
-              (error "1st ion & target are same charge"))
+            (warn "1st Ion and target aggregate have charges of the same sign - aggregate charge: ~f; ion charge: ~f"
+                  total-charge (chem:get-charge ion1-atom))
+            (return-from add-ions nil))
           ;;Get the nearest integer number of ions that we need to add to get as close as possible to neutral.
           (setf ion1-number (round (/ (abs target-charge) (abs (chem:get-charge ion1-atom)))))
-          (if ion2
+          (when ion2
               (error "Neutralization - can't do 2nd ion."))
           (format t "~d ~a ions required to neutraize. ~%" ion1-number (chem:get-name ion1-atom))))
     ;;Consider ion sizes and postions
