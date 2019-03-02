@@ -54,7 +54,7 @@
                   (and (> (chem:get-charge ion1-atom) 0)
                        (> target-charge 0)))
             (warn "1st Ion and target aggregate have charges of the same sign - aggregate charge: ~f; ion charge: ~f"
-                  total-charge (chem:get-charge ion1-atom))
+                  target-charge (chem:get-charge ion1-atom))
             (return-from add-ions nil))
           ;;Get the nearest integer number of ions that we need to add to get as close as possible to neutral.
           (setf ion1-number (round (/ (abs target-charge) (abs (chem:get-charge ion1-atom)))))
@@ -205,8 +205,8 @@
                   (and (> (chem:get-charge ion1-atom) 0)
                        (> target-charge 0)))
             (warn "1st Ion and target aggregate have charges of the same sign - aggregate charge: ~f; ion charge: ~f"
-                  total-charge (chem:get-charge ion1-atom))
-            (return-from add-ions nil))
+                  target-charge (chem:get-charge ion1-atom))
+            (return-from add-ions-2 nil))
           ;;Get the nearest integer number of ions that we need to add to get as close as possible to neutral.
           (setf ion1-number (round (/ (abs target-charge) (abs (chem:get-charge ion1-atom)))))
           (when ion2
