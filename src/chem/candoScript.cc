@@ -566,6 +566,14 @@ CL_DEFUN geom::SimpleVectorCoordinate_sp chem__make_simple_vector_coordinate_fro
 }
 
 CL_DOCSTRING(R"doc(Load the only or the first aggregate from the mol2 file.)doc");
+CL_DEFUN core::T_sp chem__read_mol2(core::T_sp stream)
+{
+  Mol2File fin(stream);
+  Aggregate_sp agg = gc::As<Aggregate_sp>(mol2Read(fin));
+  return agg;
+}
+
+CL_DOCSTRING(R"doc(Read the only or the first aggregate from the mol2 file.)doc");
 CL_DEFUN core::T_sp chem__load_mol2(core::T_sp fileName)
 {
   Mol2File fin;

@@ -90,6 +90,7 @@ public:
   bool	hasDataLine();
   void	openFileName(core::T_sp pn);
   Mol2File() : _eof(false) {};
+  Mol2File(core::T_sp stream) : fIn(stream), _eof(false) {};
   ~Mol2File();
 };
 
