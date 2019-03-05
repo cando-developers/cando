@@ -1481,6 +1481,8 @@ then don't calculate 1,4 interactions"
 (defvar %flag-dihedrals-without-hydrogen "%FLAG DIHEDRALS_WITHOUT_HYDROGEN")
 (defvar %flag-excluded-atoms-list "%FLAG EXCLUDED_ATOMS_LIST")
 (defvar %flag-amber-atom-type "%FLAG AMBER_ATOM_TYPE")
+(defvar %flag-solvent-pointers "%FLAG SOLVENT_POINTERS")
+(defvar %flag-atoms-per-molecule "%FLAG ATOMS_PER_MOLECULE")
 
 (defun verify-%flag-line (line)
   (unless (string-equal line "%FLAG" :start1 0 :end1 5)
@@ -1509,7 +1511,8 @@ then don't calculate 1,4 interactions"
           bonds-inc-hydrogen bonds-without-hydrogen
           angles-inc-hydrogen angles-without-hydrogen
           dihedrals-inc-hydrogen dihedrals-without-hydrogen
-          excluded-atoms-list amber-atom-type)
+          excluded-atoms-list amber-atom-type solvent-pointers atoms-per-molecule
+          residues-vec)
       (rlog "Starting read-amber-parm-format~%")
       (fortran:fread-line fif)   ; Skip the version and timestamp line
       (fortran:fread-line fif)   ; read the first %FLAG line
@@ -1570,7 +1573,7 @@ then don't calculate 1,4 interactions"
                     (setf atom-name
                           (map 'vector
                                (lambda (string)
-                                 (intern string "KEYWORD"))
+                                 (intern (string-trim " " string) "KEYWORD"))
                                (fortran:fread-vector fif per-line format-char width)))))
                  ((string-equal %flag-charge line :end2 (length %flag-charge))
                   (fortran:fread-line-or-error fif)  
@@ -1612,11 +1615,11 @@ then don't calculate 1,4 interactions"
                   (fortran:fread-line-or-error fif)  
                   (multiple-value-bind (per-line format-char width decimal)
                       (fortran:parse-fortran-format-line (fortran:fortran-input-file-look-ahead fif))
-                    (fortran:fread-line-or-error fif) 
+                    (fortran:fread-line-or-error fif)
                     (setf residue-label
                           (map 'vector
                                (lambda (string)
-                                 (intern string "KEYWORD"))
+                                 (intern (string-trim " " string) "KEYWORD"))
                                (fortran:fread-vector fif per-line format-char width)))))
                  ((string-equal %flag-residue-pointer line :end2 (length %flag-residue-pointer))
                   (fortran:fread-line-or-error fif)  
@@ -1744,6 +1747,18 @@ then don't calculate 1,4 interactions"
                       (fortran:parse-fortran-format-line (fortran:fortran-input-file-look-ahead fif))
                     (fortran:fread-line-or-error fif) 
                     (setf amber-atom-type (fortran:fread-vector fif per-line format-char width))))
+                 ((string-equal %flag-solvent-pointers line :end2 (length %flag-solvent-pointers))
+                  (fortran:fread-line-or-error fif)  
+                  (multiple-value-bind (per-line format-char width decimal)
+                      (fortran:parse-fortran-format-line (fortran:fortran-input-file-look-ahead fif))
+                    (fortran:fread-line-or-error fif) 
+                    (setf solvent-pointers (fortran:fread-vector fif per-line format-char width))))
+                 ((string-equal %flag-atoms-per-molecule line :end2 (length %flag-atoms-per-molecule))
+                  (fortran:fread-line-or-error fif)  
+                  (multiple-value-bind (per-line format-char width decimal)
+                      (fortran:parse-fortran-format-line (fortran:fortran-input-file-look-ahead fif))
+                    (fortran:fread-line-or-error fif) 
+                    (setf atoms-per-molecule (fortran:fread-vector fif per-line format-char width))))
                  (t
                   (cl:format t "Unknown flag ~a~%" line)
                   (fortran:fread-line-or-error fif)  
@@ -1858,13 +1873,18 @@ then don't calculate 1,4 interactions"
               for atom-element = (chem:element-for-atomic-number (aref atomic-number i))
               do (setf (aref atoms i)  (chem:make-atom name atom-element))
               )
+        (setf (aref residue-pointer (length residue-pointer)) (+ 1 natom))
+        ;;(format t "residue-pointer ~s~%" residue-pointer)
+	(setf residues-vec (make-array (length residue-label) :element-type t :adjustable nil))
         (loop for i from 0 below (length residue-label)
               for name = (aref residue-label i)
               for begin-atom-index = (1- (aref residue-pointer i))
               for end-atom-index = (1- (aref residue-pointer (1+ i)))
               do (let ((residue (chem:make-residue name)))
                    (loop for atomi from begin-atom-index below end-atom-index
-                         do (chem:add-matter residue (aref atoms atomi)))))
+                         ;;do (format t "residue ~a begin ~a end ~a length ~a~%" name begin-atom-index end-atom-index (length residue-label))
+                         do (chem:add-matter residue (aref atoms atomi)))
+		   (setf (aref residues-vec i) residue)))
         ;;(rlog "atoms -> ~s~%" atoms)
         (rlog "Create stretch vectors~%")
         (loop for i from 0 below numbnd
@@ -2051,6 +2071,12 @@ then don't calculate 1,4 interactions"
                                                      :nobond energy-nonbond
                                                      :atom-table atom-table)))
           energy-function #| <-- This was missing before |# )
+	;; fill in atom-table information
+	(chem:setf-atom-table-residue-pointers atom-table residue-pointer)
+        (chem:setf-atom-table-residue-names atom-table (make-array (length residue-label) :adjustable t :initial-contents residue-label))
+	;; (chem:setf-atom-table-atoms-per-molecule atom-table atoms-per-molecule)
+	(chem:setf-atom-table-residues atom-table residues-vec)
+	;; more here
         (let ((alist (list (cons :atom-table atom-table)
                            (cons :stretch energy-stretch)
                            (cons :angle energy-angle)
@@ -2058,9 +2084,11 @@ then don't calculate 1,4 interactions"
                            (cons :nonbond energy-nonbond)))
               (energy-function (core:make-cxx-object 'chem:energy-function)))
           (chem:fill-energy-function-from-alist energy-function alist)
-          energy-function)
+          (if solvent-pointers
+              (generate-aggregate-for-energy-function energy-function :final-residue (aref solvent-pointers 0))
+              (generate-aggregate-for-energy-function energy-function)))       
         ))))
- 
+
 (defun read-amber-coordinate-file (fif)
   (fortran:fread-line fif)       ; Skip the version and timestamp line
   (let* ((line (fortran:fread-line fif))
@@ -2311,6 +2339,25 @@ then don't calculate 1,4 interactions"
         
 
 
-(defun generate-aggregate-for-energy-function (energy-function)
-  (error "Implement me"))
+(defun generate-aggregate-for-energy-function (energy-function &key final-residue)
+  (let* ((atom-table (chem:atom-table energy-function))
+         (residues-vector (chem:atom-table-residues atom-table))
+         (solute-mol (chem:make-molecule))
+         (aggregate (chem:make-aggregate))
+         nresidue nwater)
+    (if final-residue
+        (setf nresidue final-residue)
+        (setf nresidue (length residues-vector)))
+    (loop for i from 0 below nresidue
+          for residue = (aref residues-vector i)
+          do (chem:add-matter solute-mol residue))
+    (chem:add-matter aggregate solute-mol)
+    (if final-residue
+        (loop for i from nresidue below (length residues-vector)
+              for water-residue = (aref residues-vector i)
+              do (let ((water-mol (chem:make-molecule)))
+                   (chem:add-matter water-mol water-residue)
+                   (chem:add-matter aggregate water-mol))))
+
+    aggregate))
 
