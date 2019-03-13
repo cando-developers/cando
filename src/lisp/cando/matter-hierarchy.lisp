@@ -251,3 +251,21 @@ Break up the molecules in the aggregate into a list of molecules using spanning 
                   (chem:add-matter new-agg mol)))
                (t (error "You cannot combine a ~s" matter))))
     new-agg))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;;; Rename atoms in a matter using a smirks string with maps
+;;;
+
+(defun rename-atoms-using-smirks (matter smirks name-map)
+  "Search through the matter for an atom that matches the smirks string and
+   then rename the atoms using the smirks labels.
+   The atom names become <element><smirks#> and attached hydrogens 
+   are named using a scheme that I'll have to come up with."
+  (cando:do-atoms (a matter)
+    (multiple-value-bind (matched match)
+        (smarts:match smirks-root a)
+      (format t "Do something with the match ~s~%" match)
+      )
+  ))

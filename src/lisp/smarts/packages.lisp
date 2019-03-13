@@ -30,4 +30,5 @@
   (:export
    #:compile-smarts
    #:print-smarts
+   #:match
    ))

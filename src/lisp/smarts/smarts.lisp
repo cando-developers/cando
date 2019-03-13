@@ -589,5 +589,10 @@
     (print-object x stream)))
 
 
+(defun match (smarts-root atom)
+  "Wrapper for chem:chem-info-match"
+  (chem:chem-info-match smarts-root atom))
+
+
 (eval-when (:load-toplevel :execute)
   (chem:initialize-smarts-users))

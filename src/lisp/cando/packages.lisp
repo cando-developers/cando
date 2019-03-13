@@ -143,6 +143,7 @@
   (:import-from :ext #:chdir #:getcwd)
   (:export
    #::=
+   #:rename-atoms-using-smirks
    #:register-topology
    #:lookup-topology
    #:register-entity
