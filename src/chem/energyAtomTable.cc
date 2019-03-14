@@ -249,6 +249,46 @@ CL_DEFMETHOD void	AtomTable_O::dumpTerms()
   }
 }
 
+CL_DEFMETHOD core::Fixnum_sp AtomTable_O::firstSolventMoleculeIndex() const {
+  if (this->_FirstSolventMoleculeIndex.unboundp()) {
+    SIMPLE_ERROR(BF("The first-solvent-molecule-index is unbound"));
+  }
+  return this->_FirstSolventMoleculeIndex;
+}
+
+CL_DEFMETHOD bool AtomTable_O::firstSolventMoleculeIndexBoundP() const {
+  return !this->_FirstSolventMoleculeIndex.unboundp();
+}
+
+CL_DEFMETHOD void AtomTable_O::setFirstSolventMoleculeIndex(size_t num) {
+  this->_FirstSolventMoleculeIndex = core::make_fixnum(num);
+}
+
+CL_DEFMETHOD void AtomTable_O::makUnboundFirstSolventMoleculeIndex() {
+  this->_FirstSolventMoleculeIndex = _Unbound<core::Fixnum_I>();
+}
+
+
+CL_DEFMETHOD core::T_sp AtomTable_O::aggregateName() const {
+  if (this->_AggregateName.unboundp()) {
+    SIMPLE_ERROR(BF("The aggregate-name is unbound"));
+  }
+  return this->_AggregateName;
+}
+
+CL_DEFMETHOD bool AtomTable_O::aggregateNameBoundP() const {
+  return !this->_AggregateName.unboundp();
+}
+
+CL_DEFMETHOD void AtomTable_O::setAggregateName(core::T_sp name) {
+  this->_AggregateName = name;
+}
+
+CL_DEFMETHOD void AtomTable_O::makUnboundAggregateName() {
+  this->_AggregateName = _Unbound<core::T_O>();
+}
+
+
 CL_DEFMETHOD core::T_sp AtomTable_O::atom_table_residue_pointers() const {
   printf("%s:%d In :atom_table_residue_pointercs\n", __FILE__, __LINE__ );
 

@@ -135,17 +135,36 @@ class AtomTable_O : public core::CxxObject_O
   void initialize();
  private:
   typedef core::HashTableEq_sp        AtomTable;
-  gctools::Vec0<EnergyAtom>	_Atoms;
-  AtomTable        _AtomTableIndices; // m a p<Atom_sp,uint>	_AtomTableIndices;
-  core::ComplexVector_int32_t_sp     _ResiduePointers;
-  core::ComplexVector_T_sp             _ResidueNames;
+  gctools::Vec0<EnergyAtom>	      _Atoms;
+  AtomTable                           _AtomTableIndices; // m a p<Atom_sp,uint>	_AtomTableIndices;
+  core::ComplexVector_int32_t_sp      _ResiduePointers;
+  core::ComplexVector_T_sp            _ResidueNames;
+  //! Store count of atoms in each molecule. The length of this vector is the number of molecules
   core::ComplexVector_int32_t_sp      _AtomsPerMolecule;
-  core::Vector_sp               _Residues;
+  //! Store the index of the first "solvent" molecule
+  core::Fixnum_sp                     _FirstSolventMoleculeIndex;
+  //! Stores actual residues from aggregate
+  core::Vector_sp                     _Residues;
+  core::T_sp                          _AggregateName;
+  core::T_sp                          _BoundingBox;
+  core::T_sp                          _NonbondForceFieldForAggregate;
  public:
   typedef gctools::Vec0<EnergyAtom>::iterator iterator;
  public:
   gctools::Vec0<EnergyAtom>&	getVectorEnergyAtoms() { return this->_Atoms;};
-  CL_DEFMETHOD uint	getNumberOfAtoms()	{ return this->_Atoms.size();};
+  CL_DEFMETHOD size_t	getNumberOfAtoms()	{ return this->_Atoms.size();};
+  CL_DEFMETHOD size_t   getNumberOfMolecules()  { return this->_AtomsPerMolecule->length();};
+  
+  core::Fixnum_sp   firstSolventMoleculeIndex() const;
+  bool firstSolventMoleculeIndexBoundP() const;
+  void setFirstSolventMoleculeIndex(size_t num);
+  void makUnboundFirstSolventMoleculeIndex();
+
+  core::T_sp   aggregateName() const;
+  bool aggregateNameBoundP() const;
+  void setAggregateName(core::T_sp name);
+  void makUnboundAggregateName();
+
   uint	getNVectorSize()	{ return this->_Atoms.size()*3;};
   EnergyAtom*	getEnergyAtomPointer(Atom_sp a);
   EnergyAtom&	energyAtomEntry(uint i) { return this->_Atoms[i]; };
@@ -192,7 +211,11 @@ class AtomTable_O : public core::CxxObject_O
   CL_DEFMETHOD void setf_atom_table_atoms_per_molecule(core::ComplexVector_int32_t_sp val) {this->_AtomsPerMolecule = val; };
   CL_DEFMETHOD void setf_atom_table_residues(core::Vector_sp val) {this->_Residues = val; };
   
- AtomTable_O() : _ResiduePointers(_Unbound<core::ComplexVector_int32_t_O>()), _ResidueNames(_Unbound<core::ComplexVector_T_O>()), _AtomsPerMolecule(_Unbound<core::ComplexVector_int32_t_O>()), _Residues(_Unbound<core::Vector_O>()) {};
+ AtomTable_O() : _ResiduePointers(_Unbound<core::ComplexVector_int32_t_O>()),
+                 _ResidueNames(_Unbound<core::ComplexVector_T_O>()),
+                 _AtomsPerMolecule(_Unbound<core::ComplexVector_int32_t_O>()),
+                 _FirstSolventMoleculeIndex(_Unbound<core::T_O>()),
+                 _Residues(_Unbound<core::Vector_O>()) {};
 
   virtual void fill_atom_table_from_vectors(core::List_sp values);
 //  int residue_index(int atom_index);

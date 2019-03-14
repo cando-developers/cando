@@ -711,14 +711,9 @@ then don't calculate 1,4 interactions"
     (values residue-count molecule-count)
     ))
 
-(defun save-amber-parm-format (aggregate topology-pathname coordinate-pathname &key force-field assign-types)
-  (format t "Constructing energy function~%")
-  (finish-output)
+(defun save-amber-parm-format-using-energy-function (energy-function topology-pathname coordinate-pathname)
   (let* ((bar (cando:make-progress-bar :style :bar :message "Saving" :total 41 :width 41 :divisions 41))
          (bar-counter 0)
-         (energy-function (chem:make-energy-function aggregate force-field
-                                                     :use-excluded-atoms t
-                                                     :assign-types assign-types))
          (nonbonds (chem:get-nonbond-component energy-function))
          (number-excluded-atoms (chem:number-excluded-atoms nonbonds))
          (excluded-atom-list (chem:excluded-atom-list nonbonds))
@@ -1450,6 +1445,22 @@ then don't calculate 1,4 interactions"
     (cando:progress-done bar)
     (values energy-function)))
 
+(defun save-amber-parm-format (aggregate topology-pathname coordinate-pathname &key force-field assign-types)
+  (format t "Constructing energy function~%")
+  (finish-output)
+  (let* ((energy-function (chem:make-energy-function aggregate force-field
+                                                     :use-excluded-atoms t
+                                                     :assign-types assign-types)))
+    ;;; We need to:
+    ;;;  (1) make sure energy function copies :bounding-box property from aggregate
+    ;;;  (2) Copy the name of the aggregate into the energy function
+    ;;;  (3) Separate the solvent molecules from solute molecules and order them in the energy-function
+    ;;;  (4) Copy the result of (chem:lookup-nonbond-force-field-for-aggregate aggregate force-field) into the energy-function
+    
+    (save-amber-parm-format-energy-function energy-function topology-pathname coordinate-pathname)))
+
+
+
 (defvar %flag-title "%FLAG TITLE")
 (defvar %flag-pointers "%FLAG POINTERS")
 (defvar %flag-atom-name "%FLAG ATOM_NAME")
@@ -1496,6 +1507,7 @@ then don't calculate 1,4 interactions"
 ;(defun read-amber-parm-format (stream)
 ;  (let ((fif (fortran:make-fortran-input-file :stream stream))
 (defun read-amber-parm-format (topology-pathname)
+  "Return (values energy-function aggregate)"
   (fortran:with-fortran-output-file (fif topology-pathname :direction :input)
     (let (natom ntypes nbonh mbona ntheth mtheta nphih mphia nhparm nparm
           nnb nres nbona ntheta nphia numbnd numang nptra
@@ -2061,7 +2073,7 @@ then don't calculate 1,4 interactions"
 
         ;; Now we have energy-stretch, energy-angle, and energy-dihedral
         ;;   we want to put them into an energy-function
-;;        (rlog "atom-table-vectors -> ~s~%" atom-table-vectors)
+        ;;        (rlog "atom-table-vectors -> ~s~%" atom-table-vectors)
         ;;
         #+(or) ;; the old code
         (let ((energy-function (core:make-cxx-object 'chem:energy-function
@@ -2084,10 +2096,10 @@ then don't calculate 1,4 interactions"
                            (cons :nonbond energy-nonbond)))
               (energy-function (core:make-cxx-object 'chem:energy-function)))
           (chem:fill-energy-function-from-alist energy-function alist)
-          (if solvent-pointers
-              (generate-aggregate-for-energy-function energy-function :final-residue (aref solvent-pointers 0))
-              (generate-aggregate-for-energy-function energy-function)))       
-        ))))
+          (let ((aggregate (if solvent-pointers
+                               (generate-aggregate-for-energy-function energy-function :final-residue (aref solvent-pointers 0))
+                               (generate-aggregate-for-energy-function energy-function))))
+            (values energy-function aggregate)))))))
 
 (defun read-amber-coordinate-file (fif)
   (fortran:fread-line fif)       ; Skip the version and timestamp line

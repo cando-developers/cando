@@ -1158,6 +1158,38 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, core::T_sp
 	// 
 	// Assign atom types
 	//
+  // Separate the molecules for solute from the solvent and handle them solute first then solvent
+#if 1
+  ql::list solute_molecules;
+  ql::list solvent_molecules;
+  {
+    Loop moleculeLoop;
+    moleculeLoop.loopTopGoal(matter,MOLECULES);
+    while (moleculeLoop.advanceLoopAndProcess() ) {
+      Molecule_sp molecule = moleculeLoop.getMolecule();
+      if (molecule->molecule_type() == kw::_sym_solvent) {
+        solvent_molecules << molecule;
+      } else {
+        solute_molecules << molecule;
+      }
+    }
+  }
+
+  core::List_sp solute = solute_molecules.cons();
+  for ( auto cur_solute : solute ) {
+    Molecule_sp one = gc::As_unsafe<Molecule_sp>(CONS_CAR(cur_solute));
+    ForceField_sp forceField = gc::As<ForceField_sp>(core::eval::funcall(chem::_sym_lookup_force_field_for_molecule,one,system));
+    if (assign_types) forceField->assignTypes(one);
+    this->generateStandardEnergyFunctionTables(one,forceField,activeAtoms,show_progress);
+  }    
+  core::List_sp solvent = solvent_molecules.cons();
+  for ( auto cur_solvent : solvent ) {
+    Molecule_sp one = gc::As_unsafe<Molecule_sp>(CONS_CAR(cur_solvent));
+    ForceField_sp forceField = gc::As<ForceField_sp>(core::eval::funcall(chem::_sym_lookup_force_field_for_molecule,one,system));
+    if (assign_types) forceField->assignTypes(one);
+    this->generateStandardEnergyFunctionTables(one,forceField,activeAtoms,show_progress);
+  }    
+#else  
   Loop moleculeLoop;
   moleculeLoop.loopTopGoal(matter,MOLECULES);
   while (moleculeLoop.advanceLoopAndProcess() ) {
@@ -1166,6 +1198,7 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, core::T_sp
     if (assign_types) forceField->assignTypes(molecule);
     this->generateStandardEnergyFunctionTables(molecule,forceField,activeAtoms,show_progress);
   }
+#endif
   {
     FFNonbondDb_sp nonbondForceField = gc::As<FFNonbondDb_sp>(core::eval::funcall(chem::_sym_lookup_nonbond_force_field_for_aggregate,matter,system));
     this->generateNonbondEnergyFunctionTables(useExcludedAtoms,matter,nonbondForceField,activeAtoms,show_progress);

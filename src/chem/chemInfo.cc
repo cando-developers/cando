@@ -125,10 +125,36 @@ string sabToString(BondEnum sabType) {
   return "{{unknownSabType}}";
 }
 
-ChemInfoMatch_sp ChemInfoMatch_O::make(bool matches, core::HashTableEql_sp tags, core::HashTableEql_sp ringLookup) {
-  GC_ALLOCATE(ChemInfoMatch_O,match);
-  match->_Matches = matches;
-  match->_TagLookup = tags;
+
+void walk_nodes(ChemInfoNode_sp node, std::function<void(ChemInfoNode_sp)> const &fn) {
+  fn(node);
+  core::List_sp childs = node->children();
+  for ( auto cur : childs ) {
+    walk_nodes(gc::As<ChemInfoNode_sp>(CONS_CAR(cur)),fn);
+  }
+}
+
+size_t calculate_max_tags(ChemInfoNode_sp node) {
+  size_t maxtag = 0;
+  walk_nodes(node, [&maxtag](ChemInfoNode_sp node) {
+                     if (gc::IsA<AtomTest_sp>(node)) {
+                       AtomTest_sp atnode = gc::As_unsafe<AtomTest_sp>(node);
+                       if (atnode->atomTestType() == SAPAtomMap) {
+                         int intarg = atnode->getIntArg();
+                         if (intarg> maxtag) {
+                           maxtag = intarg;
+                         }
+                       }
+                     }
+                   });
+  return maxtag;
+}
+
+
+  
+ChemInfoMatch_sp ChemInfoMatch_O::make(size_t maxTag, core::HashTableEql_sp ringLookup) {
+  GC_ALLOCATE_VARIADIC(ChemInfoMatch_O,match,maxTag+1);
+  match->_TagLookup = core::SimpleVector_O::make(maxTag+1);
   match->_RingLookup = ringLookup;
   return match;
 }
@@ -136,7 +162,7 @@ ChemInfoMatch_sp ChemInfoMatch_O::make(bool matches, core::HashTableEql_sp tags,
 void ChemInfoMatch_O::initialize() {
   this->Base::initialize();
   this->_Matches = false;
-  this->_TagLookup = core::HashTableEql_O::create_default();
+  this->_TagLookup = core::SimpleVector_O::make(this->_MaxTagPlus1);
 //  this->_ClosestMatch = core::HashTableEqual_O::create_default();
 }
 
@@ -144,14 +170,12 @@ void ChemInfoMatch_O::fields(core::Record_sp node) {
   //this->Base::fields(node); // T_O
   node->field(INTERN_(kw, matches), this->_Matches);
   node->field(INTERN_(kw, tags), this->_TagLookup);
+  node->field(INTERN_(kw,tag_history), this->_TagHistory);
 //  node->field(INTERN_(kw, closestMatch), this->_ClosestMatch);
 }
 
-CL_DEFMETHOD core::HashTable_sp ChemInfoMatch_O::tags_as_hashtable() const { return this->_TagLookup; };
-
 CL_LISPIFY_NAME("ChemInfoMatch-matches");
 CL_DEFMETHOD bool ChemInfoMatch_O::matches() {
-  
   return this->_Matches;
 }
 
@@ -160,52 +184,66 @@ string ChemInfoMatch_O::__repr__() const {
   stringstream ss;
   ss << "( " << this->className();
   ss << " :TagLookup '(";
-  this->_TagLookup->maphash([&ss](core::T_sp key, core::T_sp val) {
-      ss << (BF(":tag %s :value %s ) ") % _rep_(key) % _rep_(val) );
-    });
+  for ( size_t ii=0; ii<this->_TagLookup->length(); ++ii) {
+    core::T_sp atom = this->_TagLookup->rowMajorAref(ii);
+    if (atom.notnilp()) {
+      ss << (BF(":tag %d :value %s ) ") % ii % _rep_(atom) );
+    };
+  }
   ss << " ))";
   return ss.str();
 }
 
 void ChemInfoMatch_O::clearAtomTags() {
-  
-  this->_TagLookup->clrhash();
+  for (size_t ii=0; ii<this->_TagLookup->length(); ++ii ) {
+    this->_TagLookup->rowMajorAset(ii,_Nil<core::T_O>());
+  }
+}
+
+void ChemInfoMatch_O::saveTagLookup() {
+  core::SimpleVector_sp copy = core::SimpleVector_O::make(this->_TagLookup->length(),
+                                                          _Nil<core::T_O>(),
+                                                          false,
+                                                          this->_TagLookup->length(),
+                                                          (core::T_sp*)(this->_TagLookup->rowMajorAddressOfElement_(0)));
+  this->_TagHistory = core::Cons_O::create(copy,this->_TagHistory);
 }
 
 bool ChemInfoMatch_O::recognizesAtomTag(core::T_sp tag) {
-  
-  return this->_TagLookup->contains(tag);
+  if (tag.fixnump() && tag.unsafe_fixnum()>=0 && tag.unsafe_fixnum()<this->_TagLookup->length()) {
+    return this->_TagLookup->rowMajorAref(tag.unsafe_fixnum()).notnilp();
+  }
+  SIMPLE_ERROR(BF("Illegal tag %lf") % _rep_(tag));
 }
 
 void ChemInfoMatch_O::defineAtomTag(Atom_sp a, core::T_sp tag) {
   CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
   CI_LOG(("ringtag %s atom %s \n", _rep_(tag).c_str(), a->description().c_str()));
-  this->_TagLookup->setf_gethash(tag, a);
-  CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
-#if 0
-  if (this->_TagLookup->hashTableCount() > this->_ClosestMatch->hashTableCount()) {
-    CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
-    this->_ClosestMatch = this->_TagLookup;
+  if (tag.fixnump() && tag.unsafe_fixnum()>=0 && tag.unsafe_fixnum()<this->_TagLookup->length()) {
+    this->_TagLookup->rowMajorAset(tag.unsafe_fixnum(),a);
+    return;
   }
-#endif
+  SIMPLE_ERROR(BF("The tag %s is an illegal index into the tag vector %s") % _rep_(tag) % _rep_(this->_TagLookup));
 }
 
-#if 0
-void ChemInfoMatch_O::throwIfInvalid() {
-  _OF();
-  gctools::SmallOrderedSet<Atom_sp> satoms;
-  this->_TagLookup->mapHash([this, &satoms](core::T_sp key, core::T_sp atom) {
-      if ( satoms.count(gc::Atomsatom) ) {
-        SIMPLE_ERROR(BF("The ChemInfoMatch is invalid - the matching algorithm or the SMARTS pattern match gave tags with the same atoms: %s") % this->__repr__() );
-      }
-      satoms.insert(atom);
-    });
-}
-#endif
 
 bool ChemInfoMatch_O::hasAtomWithTag(core::T_sp tag) {
-  
-  return this->_TagLookup->gethash(tag).notnilp();
+  if (tag.fixnump() && tag.unsafe_fixnum()>=0 && tag.unsafe_fixnum()<this->_TagLookup->length()) {
+    return this->_TagLookup->rowMajorAref(tag.unsafe_fixnum()).notnilp();
+  }
+  SIMPLE_ERROR(BF("The tag %s is an illegal index into the tag vector %s") % _rep_(tag) % _rep_(this->_TagLookup));
+}
+
+
+CL_LISPIFY_NAME("getAtomWithTag");
+CL_DEFMETHOD Atom_sp ChemInfoMatch_O::getAtomWithTag(core::T_sp tag) {
+  if (oCdr(this->_TagHistory).notnilp()) {
+    SIMPLE_ERROR(BF("The chem-info-match has multiple solutions - get-atom-with-tag only works when there is one"));
+  }
+  if (tag.fixnump() && tag.unsafe_fixnum()>=0 && tag.unsafe_fixnum()<this->_TagLookup->length()) {
+    return gc::As<Atom_sp>(this->_TagLookup->rowMajorAref(tag.unsafe_fixnum()));
+  }
+  SIMPLE_ERROR(BF("The tag %s is an illegal index into the tag vector %s") % _rep_(tag) % _rep_(this->_TagLookup));
 }
 
 CL_LISPIFY_NAME("getAtomWithTagOrNil");
@@ -213,22 +251,6 @@ CL_DEFMETHOD core::T_sp ChemInfoMatch_O::getAtomWithTagOrNil(core::T_sp tag) {
   if (!this->hasAtomWithTag(tag))
     return _Nil<core::T_O>();
   return this->getAtomWithTag(tag);
-}
-
-CL_LISPIFY_NAME("getAtomWithTag");
-CL_DEFMETHOD Atom_sp ChemInfoMatch_O::getAtomWithTag(core::T_sp tag) {
-  
-  core::T_mv tatom = this->_TagLookup->gethash(tag);
-  if (tatom.nilp()) {
-    SIMPLE_ERROR(BF("The ChemInfoMatch doesn't recognize tag[%s]\n"
-                    "Available tags(%s)\n") %
-                 _rep_(tag) % this->_TagLookup->keysAsString());
-  }
-  return tatom.as<Atom_O>();
-}
-
-void ChemInfoMatch_O::forgetAtomTag(core::T_sp tag) {
-  this->_TagLookup->remhash(tag);
 }
 
 void ChemInfoMatch_O::setRingTag(Atom_sp atom, core::T_sp index) {
@@ -326,8 +348,9 @@ uint ChemInfo_O::depth() const {
 CL_LISPIFY_NAME("compileSmarts");
 CL_DEFMETHOD bool ChemInfo_O::compileSmarts(const string &code) {
   core::SimpleBaseString_sp scode = core::SimpleBaseString_O::make(code);
-  ChemInfoNode_sp node = gc::As<ChemInfoNode_sp>(core::eval::funcall(_sym_parse_smarts,scode));
-  SmartsRoot_sp root = SmartsRoot_O::make(node);
+  ChemInfoNode_mv node = gc::As<ChemInfoNode_sp>(core::eval::funcall(_sym_parse_smarts,scode));
+  ASSERT(node.second().fixnump());
+  SmartsRoot_sp root = SmartsRoot_O::make(node,node.second().unsafe_fixnum());
   this->_Root = gc::As<Root_sp>(root);
   this->_Code = code;
 #if 0
@@ -1523,7 +1546,10 @@ bool Chain_O::matches_BondList(Root_sp root, chem::Atom_sp from, chem::BondList_
   LOG(BF("There are %d neighbors bondList: %s") % neighbors->size() % neighbors->describeOthers(from));
   for (bi = neighbors->begin(); bi != neighbors->end(); bi++) {
     if (this->matches_Bond(root, from, *bi)) {
-      goto SUCCESS;
+      // A match success - save it
+      ChemInfoMatch_sp match =  gc::As<ChemInfoMatch_sp>(_sym_STARcurrent_matchSTAR->symbolValue());
+      match->saveTagLookup();
+      // goto SUCCESS;
     }
   }
   //FAIL:
@@ -1603,13 +1629,19 @@ bool Branch_O::matches_BondList(Root_sp root, chem::Atom_sp from, chem::BondList
         LOG(BF("Right branch is defined, checking if it matches"));
         if (this->_Right->matches_BondList(root, from, rightBondList)) {
           LOG(BF("Right matches does"));
-          goto SUCCESS;
+          // A match success - save it
+          ChemInfoMatch_sp match =  gc::As<ChemInfoMatch_sp>(_sym_STARcurrent_matchSTAR->symbolValue());
+          match->saveTagLookup();
+          // goto SUCCESS;
         } else {
           LOG(BF("Right doesn't match, keep trying"));
         }
       } else {
         LOG(BF("Left matches and there is no Right"));
-        goto SUCCESS;
+        // A match success - save it
+        ChemInfoMatch_sp match =  gc::As<ChemInfoMatch_sp>(_sym_STARcurrent_matchSTAR->symbolValue());
+        match->saveTagLookup();
+        // goto SUCCESS;
       }
     }
   }
@@ -1985,9 +2017,9 @@ bool Root_O::matches_Atom(Root_sp root, chem::Atom_sp atom) {
 }
 
 CL_LISPIFY_NAME("make-smarts-root");
-CL_DEF_CLASS_METHOD SmartsRoot_sp SmartsRoot_O::make(ChemInfoNode_sp cinode)
+CL_DEF_CLASS_METHOD SmartsRoot_sp SmartsRoot_O::make(ChemInfoNode_sp cinode, size_t maxTag)
 {
-  GC_ALLOCATE_VARIADIC(SmartsRoot_O, obj, cinode ); // RP_Create<SmartsRoot_O>(lisp);
+  GC_ALLOCATE_VARIADIC(SmartsRoot_O, obj, cinode, maxTag ); // RP_Create<SmartsRoot_O>(lisp);
 //  printf("%s:%d:%s  cinode-> %s\n", __FILE__, __LINE__, __FUNCTION__, _rep_(cinode).c_str());
   return obj;
 };
@@ -2081,9 +2113,11 @@ bool AntechamberRoot_O::matches_Atom(Root_sp root, chem::Atom_sp atom) {
 CL_LAMBDA(code &key tests);
 CL_DEFUN SmartsRoot_sp chem__compile_smarts(const string& code, core::List_sp tests) {
   core::SimpleBaseString_sp scode = core::SimpleBaseString_O::make(code);
-  ChemInfoNode_sp node = gc::As<ChemInfoNode_sp>(core::eval::funcall(_sym_parse_smarts,scode));
+  ChemInfoNode_mv node = gc::As<ChemInfoNode_sp>(core::eval::funcall(_sym_parse_smarts,scode));
+  core::T_sp max_tag = node.second();
+  ASSERT(max_tag.fixnump());
 //  printf("%s:%d:%s  node-> %s\n", __FILE__, __LINE__, __FUNCTION__, _rep_(node).c_str());
-  SmartsRoot_sp root = SmartsRoot_O::make(node);
+  SmartsRoot_sp root = SmartsRoot_O::make(node,max_tag.unsafe_fixnum());
   root->setTests(tests);
   return root;
 }
@@ -2109,8 +2143,7 @@ CL_DEFUN AntechamberRoot_mv chem__compile_antechamber(const string& code, WildEl
 CL_DEFUN core::T_mv chem__chem_info_match(Root_sp testRoot, Atom_sp atom)
 {
   core::HashTableEql_sp ringHashTable = core::HashTableEql_O::create_default();
-  core::HashTableEql_sp colonOperatorHashTable = core::HashTableEql_O::create_default();
-  ChemInfoMatch_sp current_match = ChemInfoMatch_O::make( false, colonOperatorHashTable, ringHashTable);
+  ChemInfoMatch_sp current_match = ChemInfoMatch_O::make( testRoot->_MaxTag, ringHashTable);
   core::DynamicScopeManager scope(_sym_STARcurrent_matchSTAR,current_match);
   bool matches = testRoot->matches_Atom(testRoot,atom);
   CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));

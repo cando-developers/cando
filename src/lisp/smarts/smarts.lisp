@@ -578,10 +578,11 @@
       (call-next-method)))
 
 (defun chem:parse-smarts (code)
+  "Return the parsed smarts code"
   (let ((result (language.smarts.parser:parse code :cando)))
-    (with-top-walk
+    (with-top-walk 
         (walk-smarts nil result))
-    result))
+    (values result)))
 
 
 (defun print-smarts (x &optional stream)

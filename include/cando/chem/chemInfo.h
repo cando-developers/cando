@@ -52,6 +52,9 @@ namespace chem {
   typedef	gctools::smart_ptr<ChemInfoNode_O>	ChemInfoNode_sp;
 
 
+void walk_nodes(ChemInfoNode_sp node, std::function<void(ChemInfoNode_sp)> const &fn);
+size_t calculate_maxtag(ChemInfoNode_sp node);
+
 
   SMART(ChemInfoMatch);
   class ChemInfoMatch_O : public core::CxxObject_O
@@ -64,16 +67,18 @@ namespace chem {
     bool fieldsp() const { return true; };
     void fields(core::Record_sp node);
   public:
-    static ChemInfoMatch_sp make(bool matches, core::HashTableEql_sp tags, core::HashTableEql_sp ring);
+    static ChemInfoMatch_sp make(size_t maxtag, core::HashTableEql_sp ring);
   private:
     bool		_Matches;
+    size_t              _MaxTagPlus1;
     core::HashTableEql_sp _RingLookup;
-    core::HashTableEql_sp _TagLookup; // core::StringMap<Atom_O>	_TagLookup;
-//    core::HashTableEqual_sp _ClosestMatch; // core::StringMap<Atom_O>	_ClosestMatch;
+    core::SimpleVector_sp _TagLookup; // core::StringMap<Atom_O>	_TagLookup;
+    core::List_sp         _TagHistory;
   public:
     string __repr__() const;
     bool matches();
     void setMatches(bool b) { this->_Matches = b;};
+    void saveTagLookup();
     void clearAtomTags();
     bool recognizesAtomTag(core::T_sp tag);
     void defineAtomTag(Atom_sp a, core::T_sp tag );
@@ -82,6 +87,7 @@ namespace chem {
     core::T_sp getAtomWithTagOrNil(core::T_sp tag);
 CL_LISPIFY_NAME("tag");
 CL_DEFMETHOD     chem::Atom_sp tag(core::T_sp tag) { return this->getAtomWithTag(tag);};
+    CL_DEFMETHOD core::List_sp tag_history() const { return this->_TagHistory; };
     core::HashTable_sp tags_as_hashtable() const;
     void forgetAtomTag(core::T_sp tag);
 
@@ -96,11 +102,8 @@ CL_DEFMETHOD     chem::Atom_sp tag(core::T_sp tag) { return this->getAtomWithTag
 	 */
     BoundFrame_sp boundFrame();
 
-    DEFAULT_CTOR_DTOR(ChemInfoMatch_O);
+    ChemInfoMatch_O(size_t maxtagPlus1) : _Matches(false), _MaxTagPlus1(maxtagPlus1), _TagHistory(_Nil<core::T_O>()) {};
   };
-
-
-
 
 
   SMART(WildElementDict);
@@ -677,7 +680,7 @@ public:
     return create( SAPNoRing);
   }
 public:
-  CL_DEFMETHOD AtomTestEnum	myType() { return this->_Test; };
+  CL_DEFMETHOD AtomTestEnum	atomTestType() { return this->_Test; };
   int getIntArg();
   string		testName(AtomTestEnum t) const;
   bool matchesAm1BccX(chem::Atom_sp atom) const;
@@ -953,7 +956,7 @@ public:
 public:
   bool fieldsp() const { return true; };
   void	fields(core::Record_sp node);
-protected:
+public:
 //  gc::Nilable<AtomOrBondMatchNode_sp>	_FirstTest;
 //  gc::Nilable<BondListMatchNode_sp>	_Chain;
   gc::Nilable<ChemInfoNode_sp>          _Node;
@@ -961,13 +964,15 @@ protected:
 	 These can be incorporated into the smarts code as <xxxx> where xxxx is the symbol
 	name of the test. */
   core::T_sp		_Tests;
+  size_t _MaxTag;
 //    core::HashTableEql_sp               _RingTags;
 public:
   virtual uint depth() const;
   virtual string asSmarts() const;
   static Root_sp create(ChemInfoNode_sp node)
   {
-    GC_ALLOCATE_VARIADIC(Root_O, obj, node ); // RP_Create<Root_O>(lisp);
+    size_t maxtag = calculate_maxtag(node);
+    GC_ALLOCATE_VARIADIC(Root_O, obj, node, maxtag ); // RP_Create<Root_O>(lisp);
     return obj;
   }
   core::HashTableEq_sp lazyTests();
@@ -980,8 +985,8 @@ public:
   virtual	ChemInfoType	type() { return root; };
   virtual	bool		matches_Atom( Root_sp root, chem::Atom_sp atom );
   virtual	bool		matches_Bond( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );
-  Root_O(ChemInfoNode_sp node) : _Node(node), _Tests(_Nil<core::T_O>()) {}
-  Root_O() : _Node(_Nil<core::T_O>()), _Tests(_Nil<core::T_O>()) {};
+  Root_O(ChemInfoNode_sp node, size_t maxtag) : _Node(node), _Tests(_Nil<core::T_O>()), _MaxTag(maxtag) {}
+  Root_O() : _Node(_Nil<core::T_O>()), _Tests(_Nil<core::T_O>()), _MaxTag(0) {};
 };
 
 
@@ -999,9 +1004,7 @@ public:
   bool fieldsp() const { return true; };
   void	fields(core::Record_sp node);
 public:
-  static SmartsRoot_sp make(ChemInfoNode_sp cinode);
-public:
-
+  static SmartsRoot_sp make(ChemInfoNode_sp cinode,size_t maxtag);
 
 
 //        bool	recognizesRingId(int id) { return this->_RingLookup.count(id); };
@@ -1013,7 +1016,7 @@ public:
   virtual	bool		matches_Atom( Root_sp root, chem::Atom_sp atom );
   virtual	bool		matches_Bond( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );
 
-  SmartsRoot_O(ChemInfoNode_sp node) : Root_O(node) {};
+  SmartsRoot_O(ChemInfoNode_sp node, size_t maxtag) : Root_O(node,maxtag) {};
   SmartsRoot_O() {};
 };
 
