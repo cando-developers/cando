@@ -1548,16 +1548,13 @@ bool Chain_O::matches_BondList(Root_sp root, chem::Atom_sp from, chem::BondList_
     if (this->matches_Bond(root, from, *bi)) {
       // A match success - save it
       ChemInfoMatch_sp match =  gc::As<ChemInfoMatch_sp>(_sym_STARcurrent_matchSTAR->symbolValue());
+      match->setMatches(true);
       match->saveTagLookup();
       // goto SUCCESS;
     }
   }
-  //FAIL:
-  LOG(BF("FAIL"));
-  return false;
- SUCCESS:
-  LOG(BF("SUCCESS!"));
-  return true;
+  ChemInfoMatch_sp match =  gc::As<ChemInfoMatch_sp>(_sym_STARcurrent_matchSTAR->symbolValue());
+  return match->matches();
 }
 
 void Chain_O::fields(core::Record_sp node) {
@@ -1631,6 +1628,7 @@ bool Branch_O::matches_BondList(Root_sp root, chem::Atom_sp from, chem::BondList
           LOG(BF("Right matches does"));
           // A match success - save it
           ChemInfoMatch_sp match =  gc::As<ChemInfoMatch_sp>(_sym_STARcurrent_matchSTAR->symbolValue());
+          match->setMatches(true);
           match->saveTagLookup();
           // goto SUCCESS;
         } else {
@@ -1640,11 +1638,15 @@ bool Branch_O::matches_BondList(Root_sp root, chem::Atom_sp from, chem::BondList
         LOG(BF("Left matches and there is no Right"));
         // A match success - save it
         ChemInfoMatch_sp match =  gc::As<ChemInfoMatch_sp>(_sym_STARcurrent_matchSTAR->symbolValue());
+        match->setMatches(true);
         match->saveTagLookup();
         // goto SUCCESS;
       }
     }
   }
+  ChemInfoMatch_sp match =  gc::As<ChemInfoMatch_sp>(_sym_STARcurrent_matchSTAR->symbolValue());
+  return match->matches();
+#if 0  
   LOG(BF("No match"));
   //FAIL:
   LOG(BF("FAIL"));
@@ -1652,6 +1654,7 @@ bool Branch_O::matches_BondList(Root_sp root, chem::Atom_sp from, chem::BondList
  SUCCESS:
   LOG(BF("SUCCESS!"));
   return true;
+#endif
 }
 
 void Branch_O::fields(core::Record_sp node) {
@@ -2110,14 +2113,24 @@ bool AntechamberRoot_O::matches_Atom(Root_sp root, chem::Atom_sp atom) {
   return false;
 }
 
+
+CL_DEFMETHOD core::HashTable_sp ChemInfoMatch_O::tags_as_hashtable() const {
+  core::HashTableEql_sp ht = core::HashTableEql_O::create_default();
+  for ( size_t ii=0; ii<this->_TagLookup->length(); ++ii ) {
+    if (this->_TagLookup->rowMajorAref(ii).notnilp()) {
+      ht->setf_gethash(core::make_fixnum(ii),this->_TagLookup->rowMajorAref(ii));
+    }
+  }
+  return ht;
+};
+
 CL_LAMBDA(code &key tests);
 CL_DEFUN SmartsRoot_sp chem__compile_smarts(const string& code, core::List_sp tests) {
   core::SimpleBaseString_sp scode = core::SimpleBaseString_O::make(code);
-  ChemInfoNode_mv node = gc::As<ChemInfoNode_sp>(core::eval::funcall(_sym_parse_smarts,scode));
-  core::T_sp max_tag = node.second();
-  ASSERT(max_tag.fixnump());
+  ChemInfoNode_sp node = gc::As<ChemInfoNode_sp>(core::eval::funcall(_sym_parse_smarts,scode));
+  size_t max_tag = calculate_max_tags(node);
 //  printf("%s:%d:%s  node-> %s\n", __FILE__, __LINE__, __FUNCTION__, _rep_(node).c_str());
-  SmartsRoot_sp root = SmartsRoot_O::make(node,max_tag.unsafe_fixnum());
+  SmartsRoot_sp root = SmartsRoot_O::make(node,max_tag);
   root->setTests(tests);
   return root;
 }
@@ -2146,6 +2159,7 @@ CL_DEFUN core::T_mv chem__chem_info_match(Root_sp testRoot, Atom_sp atom)
   ChemInfoMatch_sp current_match = ChemInfoMatch_O::make( testRoot->_MaxTag, ringHashTable);
   core::DynamicScopeManager scope(_sym_STARcurrent_matchSTAR,current_match);
   bool matches = testRoot->matches_Atom(testRoot,atom);
+//  bool matches = current_match->matches();
   CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
   return Values(_lisp->_boolean(matches), current_match);
 }
