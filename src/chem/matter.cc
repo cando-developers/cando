@@ -856,8 +856,8 @@ CL_DEFMETHOD Vector3	Matter_O::geometricCenter()
 }
 
 
-CL_LISPIFY_NAME("boundingBox");
-CL_DEFMETHOD geom::BoundingBox_sp Matter_O::boundingBox(double pad) 
+CL_LISPIFY_NAME("matterBoundingBox");
+CL_DEFMETHOD geom::BoundingBox_sp Matter_O::matterBoundingBox(double pad) 
 {
   Vector3	sum;
   int	count;

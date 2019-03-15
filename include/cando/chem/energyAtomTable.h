@@ -143,14 +143,14 @@ class AtomTable_O : public core::CxxObject_O
   //! Store count of atoms in each molecule. The length of this vector is the number of molecules
   core::ComplexVector_int32_t_sp      _AtomsPerMolecule;
   //! Store the index of the first "solvent" molecule
-  core::Fixnum_sp                     _firstSolventMoleculeNSPSOL;
-  core::Fixnum_sp                     _finalSoluteResidueIPTRES;
-  core::Fixnum_sp                     _totalNumberOfMoleculesNSPM;
+  core::T_sp                     _firstSolventMoleculeNSPSOL;
+  core::T_sp                     _finalSoluteResidueIPTRES;
+  core::T_sp                     _totalNumberOfMoleculesNSPM;
   //! Stores actual residues from aggregate
   core::Vector_sp                     _Residues;
   core::T_sp                          _AggregateName;
   core::T_sp                          _BoundingBox;
-  core::T_sp                          _NonbondForceFieldForAggregate;
+  FFNonbondDb_sp               _NonbondForceFieldForAggregate;
  public:
   typedef gctools::Vec0<EnergyAtom>::iterator iterator;
  public:
@@ -158,17 +158,17 @@ class AtomTable_O : public core::CxxObject_O
   CL_DEFMETHOD size_t	getNumberOfAtoms()	{ return this->_Atoms.size();};
   CL_DEFMETHOD size_t   getNumberOfMolecules()  { return this->_AtomsPerMolecule->length();};
   
-  core::Fixnum_sp   firstSolventMoleculeNSPSOL() const;
+  core::T_sp   firstSolventMoleculeNSPSOL() const;
   bool firstSolventMoleculeNSPSOLBoundP() const;
   void set_firstSolventMoleculeNSPSOL(size_t num);
   void makUnbound_firstSolventMoleculeNSPSOL();
 
-  core::Fixnum_sp   finalSoluteResidueIPTRES() const;
+  core::T_sp   finalSoluteResidueIPTRES() const;
   bool finalSoluteResidueIPTRESBoundP() const;
   void set_finalSoluteResidueIPTRES(size_t num);
   void makUnbound_finalSoluteResidueIPTRES();
 
-  core::Fixnum_sp   totalNumberOfMoleculesNSPM() const;
+  core::T_sp   totalNumberOfMoleculesNSPM() const;
   bool totalNumberOfMoleculesNSPMBoundP() const;
   void set_totalNumberOfMoleculesNSPM(size_t num);
   void makUnbound_totalNumberOfMoleculesNSPM();
@@ -243,7 +243,7 @@ class AtomTable_O : public core::CxxObject_O
                  _Residues(_Unbound<core::Vector_O>()),
                  _AggregateName(_Unbound<core::T_O>()),
                  _BoundingBox(_Unbound<core::T_O>()),
-                 _NonbondForceFieldForAggregate(_Unbound<core::T_O>()) {};
+                 _NonbondForceFieldForAggregate(_Unbound<FFNonbondDb_O>()) {};
 
   virtual void fill_atom_table_from_vectors(core::List_sp values);
 //  int residue_index(int atom_index);

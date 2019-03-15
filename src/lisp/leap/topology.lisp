@@ -1391,7 +1391,7 @@ then don't calculate 1,4 interactions"
       (let ((ox 0.0)
             (oy 0.0)
             (oz 0.0))
-        (when (chem:bounding-box-boundp atom-table)
+        (when (chem:bounding-box-bound-p atom-table)
           (let ((solvent-box (chem:bounding-box atom-table)))
             (unless (and solvent-box (listp solvent-box) (= (length solvent-box) 3))
               (error "There must be a solvent-box property in the aggregate properties and it must be a list of length three numbers"))

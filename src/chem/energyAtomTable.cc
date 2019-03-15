@@ -249,7 +249,7 @@ CL_DEFMETHOD void	AtomTable_O::dumpTerms()
   }
 }
 
-CL_DEFMETHOD core::Fixnum_sp AtomTable_O::firstSolventMoleculeNSPSOL() const {
+CL_DEFMETHOD core::T_sp AtomTable_O::firstSolventMoleculeNSPSOL() const {
   if (this->_firstSolventMoleculeNSPSOL.unboundp()) SIMPLE_ERROR(BF("The firstSolventMoleculeNSPSOL is unbound"));
   return this->_firstSolventMoleculeNSPSOL;
 }
@@ -264,7 +264,7 @@ CL_DEFMETHOD void AtomTable_O::makUnbound_firstSolventMoleculeNSPSOL() {
 }
 
 
-CL_DEFMETHOD core::Fixnum_sp AtomTable_O::finalSoluteResidueIPTRES() const {
+CL_DEFMETHOD core::T_sp AtomTable_O::finalSoluteResidueIPTRES() const {
   if (this->_finalSoluteResidueIPTRES.unboundp()) SIMPLE_ERROR(BF("The finalSoluteResidueIPTRES is unbound"));
   return this->_finalSoluteResidueIPTRES;
 }
@@ -279,7 +279,7 @@ CL_DEFMETHOD void AtomTable_O::makUnbound_finalSoluteResidueIPTRES() {
 }
 
 
-CL_DEFMETHOD core::Fixnum_sp AtomTable_O::totalNumberOfMoleculesNSPM() const {
+CL_DEFMETHOD core::T_sp AtomTable_O::totalNumberOfMoleculesNSPM() const {
   if (this->_totalNumberOfMoleculesNSPM.unboundp()) SIMPLE_ERROR(BF("The totalNumberOfMoleculesNSPM is unbound"));
   return this->_totalNumberOfMoleculesNSPM;
 }
@@ -352,7 +352,7 @@ CL_DEFMETHOD void AtomTable_O::setNonbondForceFieldForAggregate(FFNonbondDb_sp f
 }
 
 CL_DEFMETHOD void AtomTable_O::makUnboundNonbondForceFieldForAggregate() {
-  this->_NonbondForceFieldForAggregate = _Unbound<core::T_O>();
+  this->_NonbondForceFieldForAggregate = _Unbound<FFNonbondDb_O>();
 }
 
 CL_DEFMETHOD core::T_sp AtomTable_O::atom_table_residue_pointers() const {

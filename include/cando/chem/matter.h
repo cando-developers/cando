@@ -354,7 +354,7 @@ class Matter_O : public core::CxxObject_O
   Vector3		geometricCenter();
 		/*! Return a bounding box for the matter padded with (pad).
 		 */
-  geom::BoundingBox_sp	boundingBox(double pad);
+  geom::BoundingBox_sp	matterBoundingBox(double pad);
 
   void		reparent(Matter_sp c);
 
