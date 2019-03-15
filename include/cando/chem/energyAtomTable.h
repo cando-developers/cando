@@ -55,6 +55,7 @@ namespace chem
 SMART(Atom);
 SMART(ForceField);
 SMART(Matter);
+SMART(FFNonbondDb);
 
 /*! Store a pointer to an Atom and an index into the coordinate vector array
  * which stores coordinates in a 1D array (x1,y1,z1,x2,y2,z2,x3,...,xN,yN,zN)
@@ -142,7 +143,9 @@ class AtomTable_O : public core::CxxObject_O
   //! Store count of atoms in each molecule. The length of this vector is the number of molecules
   core::ComplexVector_int32_t_sp      _AtomsPerMolecule;
   //! Store the index of the first "solvent" molecule
-  core::Fixnum_sp                     _FirstSolventMoleculeIndex;
+  core::Fixnum_sp                     _firstSolventMoleculeNSPSOL;
+  core::Fixnum_sp                     _finalSoluteResidueIPTRES;
+  core::Fixnum_sp                     _totalNumberOfMoleculesNSPM;
   //! Stores actual residues from aggregate
   core::Vector_sp                     _Residues;
   core::T_sp                          _AggregateName;
@@ -155,15 +158,35 @@ class AtomTable_O : public core::CxxObject_O
   CL_DEFMETHOD size_t	getNumberOfAtoms()	{ return this->_Atoms.size();};
   CL_DEFMETHOD size_t   getNumberOfMolecules()  { return this->_AtomsPerMolecule->length();};
   
-  core::Fixnum_sp   firstSolventMoleculeIndex() const;
-  bool firstSolventMoleculeIndexBoundP() const;
-  void setFirstSolventMoleculeIndex(size_t num);
-  void makUnboundFirstSolventMoleculeIndex();
+  core::Fixnum_sp   firstSolventMoleculeNSPSOL() const;
+  bool firstSolventMoleculeNSPSOLBoundP() const;
+  void set_firstSolventMoleculeNSPSOL(size_t num);
+  void makUnbound_firstSolventMoleculeNSPSOL();
+
+  core::Fixnum_sp   finalSoluteResidueIPTRES() const;
+  bool finalSoluteResidueIPTRESBoundP() const;
+  void set_finalSoluteResidueIPTRES(size_t num);
+  void makUnbound_finalSoluteResidueIPTRES();
+
+  core::Fixnum_sp   totalNumberOfMoleculesNSPM() const;
+  bool totalNumberOfMoleculesNSPMBoundP() const;
+  void set_totalNumberOfMoleculesNSPM(size_t num);
+  void makUnbound_totalNumberOfMoleculesNSPM();
 
   core::T_sp   aggregateName() const;
   bool aggregateNameBoundP() const;
   void setAggregateName(core::T_sp name);
   void makUnboundAggregateName();
+
+  core::T_sp   boundingBox() const;
+  bool boundingBoxBoundP() const;
+  void setBoundingBox(core::T_sp name);
+  void makUnboundBoundingBox();
+
+  FFNonbondDb_sp   nonbondForceFieldForAggregate() const;
+  bool nonbondForceFieldForAggregateBoundP() const;
+  void setNonbondForceFieldForAggregate(FFNonbondDb_sp forceField);
+  void makUnboundNonbondForceFieldForAggregate();
 
   uint	getNVectorSize()	{ return this->_Atoms.size()*3;};
   EnergyAtom*	getEnergyAtomPointer(Atom_sp a);
@@ -214,8 +237,13 @@ class AtomTable_O : public core::CxxObject_O
  AtomTable_O() : _ResiduePointers(_Unbound<core::ComplexVector_int32_t_O>()),
                  _ResidueNames(_Unbound<core::ComplexVector_T_O>()),
                  _AtomsPerMolecule(_Unbound<core::ComplexVector_int32_t_O>()),
-                 _FirstSolventMoleculeIndex(_Unbound<core::T_O>()),
-                 _Residues(_Unbound<core::Vector_O>()) {};
+                 _firstSolventMoleculeNSPSOL(_Unbound<core::T_O>()),
+                 _finalSoluteResidueIPTRES(_Unbound<core::T_O>()),
+                 _totalNumberOfMoleculesNSPM(_Unbound<core::T_O>()),
+                 _Residues(_Unbound<core::Vector_O>()),
+                 _AggregateName(_Unbound<core::T_O>()),
+                 _BoundingBox(_Unbound<core::T_O>()),
+                 _NonbondForceFieldForAggregate(_Unbound<core::T_O>()) {};
 
   virtual void fill_atom_table_from_vectors(core::List_sp values);
 //  int residue_index(int atom_index);

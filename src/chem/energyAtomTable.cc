@@ -249,24 +249,53 @@ CL_DEFMETHOD void	AtomTable_O::dumpTerms()
   }
 }
 
-CL_DEFMETHOD core::Fixnum_sp AtomTable_O::firstSolventMoleculeIndex() const {
-  if (this->_FirstSolventMoleculeIndex.unboundp()) {
-    SIMPLE_ERROR(BF("The first-solvent-molecule-index is unbound"));
-  }
-  return this->_FirstSolventMoleculeIndex;
+CL_DEFMETHOD core::Fixnum_sp AtomTable_O::firstSolventMoleculeNSPSOL() const {
+  if (this->_firstSolventMoleculeNSPSOL.unboundp()) SIMPLE_ERROR(BF("The firstSolventMoleculeNSPSOL is unbound"));
+  return this->_firstSolventMoleculeNSPSOL;
+}
+CL_DEFMETHOD bool AtomTable_O::firstSolventMoleculeNSPSOLBoundP() const {
+  return !this->_firstSolventMoleculeNSPSOL.unboundp();
+}
+CL_DEFMETHOD void AtomTable_O::set_firstSolventMoleculeNSPSOL(size_t num) {
+  this->_firstSolventMoleculeNSPSOL = core::make_fixnum(num);
+}
+CL_DEFMETHOD void AtomTable_O::makUnbound_firstSolventMoleculeNSPSOL() {
+  this->_firstSolventMoleculeNSPSOL = _Unbound<core::Fixnum_I>();
 }
 
-CL_DEFMETHOD bool AtomTable_O::firstSolventMoleculeIndexBoundP() const {
-  return !this->_FirstSolventMoleculeIndex.unboundp();
+
+CL_DEFMETHOD core::Fixnum_sp AtomTable_O::finalSoluteResidueIPTRES() const {
+  if (this->_finalSoluteResidueIPTRES.unboundp()) SIMPLE_ERROR(BF("The finalSoluteResidueIPTRES is unbound"));
+  return this->_finalSoluteResidueIPTRES;
+}
+CL_DEFMETHOD bool AtomTable_O::finalSoluteResidueIPTRESBoundP() const {
+  return !this->_finalSoluteResidueIPTRES.unboundp();
+}
+CL_DEFMETHOD void AtomTable_O::set_finalSoluteResidueIPTRES(size_t num) {
+  this->_finalSoluteResidueIPTRES = core::make_fixnum(num);
+}
+CL_DEFMETHOD void AtomTable_O::makUnbound_finalSoluteResidueIPTRES() {
+  this->_finalSoluteResidueIPTRES = _Unbound<core::Fixnum_I>();
 }
 
-CL_DEFMETHOD void AtomTable_O::setFirstSolventMoleculeIndex(size_t num) {
-  this->_FirstSolventMoleculeIndex = core::make_fixnum(num);
+
+CL_DEFMETHOD core::Fixnum_sp AtomTable_O::totalNumberOfMoleculesNSPM() const {
+  if (this->_totalNumberOfMoleculesNSPM.unboundp()) SIMPLE_ERROR(BF("The totalNumberOfMoleculesNSPM is unbound"));
+  return this->_totalNumberOfMoleculesNSPM;
+}
+CL_DEFMETHOD bool AtomTable_O::totalNumberOfMoleculesNSPMBoundP() const {
+  return !this->_totalNumberOfMoleculesNSPM.unboundp();
+}
+CL_DEFMETHOD void AtomTable_O::set_totalNumberOfMoleculesNSPM(size_t num) {
+  this->_totalNumberOfMoleculesNSPM = core::make_fixnum(num);
+}
+CL_DEFMETHOD void AtomTable_O::makUnbound_totalNumberOfMoleculesNSPM() {
+  this->_totalNumberOfMoleculesNSPM = _Unbound<core::Fixnum_I>();
 }
 
-CL_DEFMETHOD void AtomTable_O::makUnboundFirstSolventMoleculeIndex() {
-  this->_FirstSolventMoleculeIndex = _Unbound<core::Fixnum_I>();
-}
+
+
+
 
 
 CL_DEFMETHOD core::T_sp AtomTable_O::aggregateName() const {
@@ -288,6 +317,43 @@ CL_DEFMETHOD void AtomTable_O::makUnboundAggregateName() {
   this->_AggregateName = _Unbound<core::T_O>();
 }
 
+CL_DEFMETHOD core::T_sp AtomTable_O::boundingBox() const {
+  if (this->_BoundingBox.unboundp()) {
+    SIMPLE_ERROR(BF("The bounding-box is unbound"));
+  }
+  return this->_BoundingBox;
+}
+
+CL_DEFMETHOD bool AtomTable_O::boundingBoxBoundP() const {
+  return !this->_BoundingBox.unboundp();
+}
+
+CL_DEFMETHOD void AtomTable_O::setBoundingBox(core::T_sp boundingBox) {
+  this->_BoundingBox = boundingBox;
+}
+
+CL_DEFMETHOD void AtomTable_O::makUnboundBoundingBox() {
+  this->_BoundingBox = _Unbound<core::T_O>();
+}
+
+CL_DEFMETHOD FFNonbondDb_sp AtomTable_O::nonbondForceFieldForAggregate() const {
+  if (this->_NonbondForceFieldForAggregate.unboundp()) {
+    SIMPLE_ERROR(BF("The nonbond-forcefield-for-aggregate is unbound"));
+  }
+  return this->_NonbondForceFieldForAggregate;
+}
+
+CL_DEFMETHOD bool AtomTable_O::nonbondForceFieldForAggregateBoundP() const {
+  return !this->_NonbondForceFieldForAggregate.unboundp();
+}
+
+CL_DEFMETHOD void AtomTable_O::setNonbondForceFieldForAggregate(FFNonbondDb_sp forceField) {
+  this->_NonbondForceFieldForAggregate = forceField;
+}
+
+CL_DEFMETHOD void AtomTable_O::makUnboundNonbondForceFieldForAggregate() {
+  this->_NonbondForceFieldForAggregate = _Unbound<core::T_O>();
+}
 
 CL_DEFMETHOD core::T_sp AtomTable_O::atom_table_residue_pointers() const {
   printf("%s:%d In :atom_table_residue_pointercs\n", __FILE__, __LINE__ );

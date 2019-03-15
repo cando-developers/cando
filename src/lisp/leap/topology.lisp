@@ -694,23 +694,6 @@ then don't calculate 1,4 interactions"
        do (setf (aref generalized-born-screen i) screen))
     (values generalized-born-radius generalized-born-screen)))
 
-(defun solvent-pointers (aggregate)
-  (let ((residue-count 0)
-        (molecule-count 0))
-    (chem:map-residues
-     nil
-     (lambda (r)
-       (unless (string= (chem:get-name r) "WAT")
-                (incf residue-count)))
-     aggregate)
-    (chem:map-molecules
-     nil
-     (lambda (r)
-       (incf molecule-count))
-     aggregate)
-    (values residue-count molecule-count)
-    ))
-
 (defun save-amber-parm-format-using-energy-function (energy-function topology-pathname coordinate-pathname)
   (let* ((bar (cando:make-progress-bar :style :bar :message "Saving" :total 41 :width 41 :divisions 41))
          (bar-counter 0)
@@ -719,7 +702,8 @@ then don't calculate 1,4 interactions"
          (excluded-atom-list (chem:excluded-atom-list nonbonds))
          (topology-pathname (merge-pathnames topology-pathname))
          (coordinate-pathname (merge-pathnames coordinate-pathname))
-         (natom (chem:get-number-of-atoms (chem:atom-table energy-function)))
+         (atom-table (chem:atom-table energy-function))
+         (natom (chem:get-number-of-atoms atom-table))
          residue-vec)
     ;; Skip assigning MarkMainChainAtoms and MarkSideChain atoms for now
     ;; see (unitio.c:4889).  This won't mean anything for spiroligomers.
@@ -738,7 +722,7 @@ then don't calculate 1,4 interactions"
                          month date (- year 2000) hour minute second)))
       (fortran:fwrite "%FLAG TITLE")
       (fortran:fwrite "%FORMAT(20a4)")
-      (fortran:fwrite (string (chem:get-name aggregate)))
+      (fortran:fwrite (string (chem:aggregate-name atom-table)))
       ;; This function will be very, very long (for Common Lisp)
       ;; To avoid lots of nested scopes we will declare one large scope
       ;;   and declare all of the variables in that scope here at the top
@@ -749,7 +733,6 @@ then don't calculate 1,4 interactions"
             nphih mphia iph jph kph lph icph ip jp kp lp icp vj-vec inj-vec phasej-vec properj-vec #|dihedrals|#
             nhparm nparm  nnb nres residue-pointer-vec residue-name-vec atoms-per-molecule
             generalized-born-radius generalized-born-screen
-            residue-count molecule-count
             nbona    ntheta nphia  NUMBND NUMANG NPTRA
             NATYP    NPHB   IFPERT NBPER  NGPER  NDPER
             MBPER    MGPER  MDPER  IFBOX  nmxrs  IFCAP
@@ -766,11 +749,7 @@ then don't calculate 1,4 interactions"
                                         ;          (chem:prepare-amber-energy-nonbond energy-function))
         (multiple-value-setq (nres nmxrs residue-pointer-vec residue-name-vec atoms-per-molecule residue-vec)
           (prepare-residue energy-function))
-        (multiple-value-setq (residue-count molecule-count)
-          (solvent-pointers aggregate))
-        (setf atom-vectors (chem:prepare-amber-energy-nonbond
-                            energy-function
-                            (chem:lookup-nonbond-force-field-for-aggregate aggregate force-field)))
+        (setf atom-vectors (chem:prepare-amber-energy-nonbond energy-function (chem:nonbond-force-field-for-aggregate atom-table)))
         (setf ntypes (cdr (assoc :ntypes atom-vectors)))
         (setf atom-name (cdr (assoc :atom-name-vector atom-vectors)))
         (setf atom-type (cdr (assoc :atom-type-vector atom-vectors)))
@@ -804,9 +783,7 @@ then don't calculate 1,4 interactions"
         (setf mbper 0)     
         (setf mgper 0)    
         (setf mdper 0)
-        (if (chem:has-property aggregate :bounding-box)
-            (setf ifbox 1)
-            (setf ifbox 0))
+        (setf ifbox (chem:bounding-box-bound-p atom-table))
         (setf ifcap 0)     
         (setf numextra 0)  
         (setf ncopy 0)
@@ -1324,19 +1301,21 @@ then don't calculate 1,4 interactions"
         ;;This section is not used and is currently just filled with zeros.
 
         ;;next
-        (if (chem:has-property aggregate :bounding-box)
+        (if (chem:bounding-box-bound-p atom-table)
             (progn
               (fortran:fformat 1 "%-80s")
               (cando:progress-advance bar (incf bar-counter))
-              (fortran:fwrite "%FLAG SOLVENT_POINTERS")
-              (fortran:fwrite "%FORMAT(3I8)")
-              (fortran:debug "-38-")
-              (fortran:fformat 3 "%8d")
-;;;temporary!!!
-              (fortran:fwrite residue-count) 
-              (fortran:fwrite molecule-count) 
-              (fortran:fwrite "2") 
-              (fortran:end-line)
+              (let ((final-solute-residue-iptres (chem:final-solute-residue-iptres atom-table))
+                    (total-number-of-molecules-nspm (chem:total-number-of-molecules-nspm atom-table))
+                    (first-solvent-molecule-nspsol (chem:first-solvent-molecule-nspsol atom-table)))
+                (fortran:fwrite "%FLAG SOLVENT_POINTERS")
+                (fortran:fwrite "%FORMAT(3I8)")
+                (fortran:debug "-38-")
+                (fortran:fformat 3 "%8d")
+                (fortran:fwrite final-solute-residue-iptres)
+                (fortran:fwrite total-number-of-molecules-nspm)
+                (fortran:fwrite first-solvent-molecule-nspsol)
+                (fortran:end-line))
               (fortran:fformat 1 "%-80s")
               (cando:progress-advance bar (incf bar-counter))
               (fortran:fwrite "%FLAG ATOMS_PER_MOLECULE")
@@ -1355,7 +1334,7 @@ then don't calculate 1,4 interactions"
               (fortran:fwrite "%FORMAT(5E16.8)")
               (fortran:debug "-40-")
               (fortran:fformat 5 "%16.8e")
-              (let ((solvent-box (chem:matter-get-property aggregate :bounding-box)))
+              (let ((solvent-box (chem:bounding-box atom-table)))
                 (unless (and solvent-box (listp solvent-box) (= (length solvent-box) 3))
                   (error "There must be a solvent-box property in the aggregate properties and it must be a list of length three numbers"))
                 (fortran:fwrite "90.0000000") ;box angle
@@ -1409,12 +1388,11 @@ then don't calculate 1,4 interactions"
                                         ;      (fortran:fwrite 0.0)
       (fortran:fwrite (format nil  " ~5d~%" natom))
       (fortran:fformat 6 "%12.7lf")
-      (let ((atom-table (chem:atom-table energy-function))
-            (ox 0.0)
+      (let ((ox 0.0)
             (oy 0.0)
             (oz 0.0))
-        (when (chem:has-property aggregate :bounding-box)
-          (let ((solvent-box (chem:matter-get-property aggregate :bounding-box)))
+        (when (chem:bounding-box-boundp atom-table)
+          (let ((solvent-box (chem:bounding-box atom-table)))
             (unless (and solvent-box (listp solvent-box) (= (length solvent-box) 3))
               (error "There must be a solvent-box property in the aggregate properties and it must be a list of length three numbers"))
             (setf ox (/ (float (first solvent-box)) 2.0)
@@ -1431,8 +1409,8 @@ then don't calculate 1,4 interactions"
                    (fortran:fwrite (+ (geom:vz pos) oz))))
         (fortran:end-line))
       ;; write out the solvent box
-      (if (chem:has-property aggregate :bounding-box)
-          (let ((solvent-box (chem:matter-get-property aggregate :bounding-box)))
+      (if (chem:bounding-box-bound-p atom-table)
+          (let ((solvent-box (chem:bounding-box atom-table)))
             (unless (and solvent-box (listp solvent-box) (= (length solvent-box) 3))
               (error "There must be a solvent-box property in the aggregate properties and it must be a list of length three numbers"))
             (fortran:fwrite (float (first solvent-box)))
@@ -1764,7 +1742,13 @@ then don't calculate 1,4 interactions"
                   (multiple-value-bind (per-line format-char width decimal)
                       (fortran:parse-fortran-format-line (fortran:fortran-input-file-look-ahead fif))
                     (fortran:fread-line-or-error fif) 
-                    (setf solvent-pointers (fortran:fread-vector fif per-line format-char width))))
+                    (setf solvent-pointers (fortran:fread-vector fif per-line format-char width))
+                    (let ((iptres (elt solvent-pointers 0))
+                          (nspm (elt solvent-pointers 1))
+                          (nspsol (elt solvent-pointers 2)))
+                      (chem:set-first-solvent-molecule-nspsol atom-table nspsol)
+                      (chem:set-final-solute-residue-iptres atom-table iptres)
+                      (chem:set-total-number-of-molecules-nspm atom-table nspm))))
                  ((string-equal %flag-atoms-per-molecule line :end2 (length %flag-atoms-per-molecule))
                   (fortran:fread-line-or-error fif)  
                   (multiple-value-bind (per-line format-char width decimal)
@@ -2096,10 +2080,19 @@ then don't calculate 1,4 interactions"
                            (cons :nonbond energy-nonbond)))
               (energy-function (core:make-cxx-object 'chem:energy-function)))
           (chem:fill-energy-function-from-alist energy-function alist)
+          energy-function)))))
+
+
+#|
           (let ((aggregate (if solvent-pointers
                                (generate-aggregate-for-energy-function energy-function :final-residue (aref solvent-pointers 0))
                                (generate-aggregate-for-energy-function energy-function))))
             (values energy-function aggregate)))))))
+|#
+
+
+
+
 
 (defun read-amber-coordinate-file (fif)
   (fortran:fread-line fif)       ; Skip the version and timestamp line

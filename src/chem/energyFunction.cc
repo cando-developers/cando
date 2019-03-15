@@ -1136,6 +1136,7 @@ SYMBOL_EXPORT_SC_(ChemPkg,lookup_force_field_for_molecule);
 SYMBOL_EXPORT_SC_(ChemPkg,lookup_nonbond_force_field_for_aggregate);
 SYMBOL_EXPORT_SC_(ChemPkg,STARparameter_warningsSTAR);
 SYMBOL_EXPORT_SC_(ChemPkg,report_parameter_warnings);
+SYMBOL_EXPORT_SC_(KeywordPkg,bounding_box);
 
 CL_LISPIFY_NAME("defineForMatter");
 CL_LAMBDA((energy-function !) matter system &key use-excluded-atoms active-atoms show-progress (assign-types t));
@@ -1154,58 +1155,91 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, core::T_sp
 	//
 	// Assign relative Cahn-Ingold-Preylog priorities
 	//
-  CipPrioritizer_O::assignPriorities(matter); 
+  CipPrioritizer_O::assignPriorities(matter);
+
+  //
+  // Setup the extra information needed by the energy function to generate a topology file
+  //
+  // Get the name to pass that to the atomTable
+  core::T_sp matterName = matter->getName();
+  this->_AtomTable->setAggregateName(matterName);
+  core::T_sp boundingBox = matter->getPropertyOrDefault(kw::_sym_bounding_box,_Unbound<core::T_O>());
+  if (boundingBox.unboundp()) {
+    this->_AtomTable->makUnboundBoundingBox();
+  } else {
+    this->_AtomTable->setBoundingBox(boundingBox);
+  }
+  FFNonbondDb_sp nonbondForceField = gc::As<FFNonbondDb_sp>(core::eval::funcall(chem::_sym_lookup_nonbond_force_field_for_aggregate,matter,system));
+  this->_AtomTable->setNonbondForceFieldForAggregate(nonbondForceField);
+  
 	// 
 	// Assign atom types
 	//
   // Separate the molecules for solute from the solvent and handle them solute first then solvent
 #if 1
-  ql::list solute_molecules;
-  ql::list solvent_molecules;
-  {
+  size_t final_solute_residue_iptres = 0;
+  size_t number_of_molecules_nspm = 0;
+  size_t first_solvent_molecule_nspsol = 0;
+  if (gc::IsA<Aggregate_sp>(matter)) {
+    ql::list solute_molecules;
+    ql::list solvent_molecules;
+    {
+      Loop moleculeLoop;
+      moleculeLoop.loopTopGoal(matter,MOLECULES);
+      while (moleculeLoop.advanceLoopAndProcess() ) {
+        Molecule_sp molecule = moleculeLoop.getMolecule();
+        if (molecule->molecule_type() == kw::_sym_solvent) {
+          solvent_molecules << molecule;
+        } else {
+          solute_molecules << molecule;
+        }
+      }
+    }
+    core::List_sp solute = solute_molecules.cons();
+    for ( auto cur_solute : solute ) {
+      Molecule_sp one = gc::As_unsafe<Molecule_sp>(CONS_CAR(cur_solute));
+      ForceField_sp forceField = gc::As<ForceField_sp>(core::eval::funcall(chem::_sym_lookup_force_field_for_molecule,one,system));
+      if (assign_types) forceField->assignTypes(one);
+      this->generateStandardEnergyFunctionTables(one,forceField,activeAtoms,show_progress);
+      final_solute_residue_iptres += one->contentSize();
+      ++number_of_molecules_nspm;
+    }    
+    core::List_sp solvent = solvent_molecules.cons();
+    first_solvent_molecule_nspsol = number_of_molecules_nspm+1;
+    for ( auto cur_solvent : solvent ) {
+      Molecule_sp one = gc::As_unsafe<Molecule_sp>(CONS_CAR(cur_solvent));
+      ForceField_sp forceField = gc::As<ForceField_sp>(core::eval::funcall(chem::_sym_lookup_force_field_for_molecule,one,system));
+      if (assign_types) forceField->assignTypes(one);
+      this->generateStandardEnergyFunctionTables(one,forceField,activeAtoms,show_progress);
+      ++number_of_molecules_nspm;
+    }
+  } else {
+    Molecule_sp molecule = gc::As<Molecule_sp>(matter);
+    ForceField_sp forceField = gc::As<ForceField_sp>(core::eval::funcall(chem::_sym_lookup_force_field_for_molecule,molecule,system));
+    if (assign_types) forceField->assignTypes(molecule);
+    this->generateStandardEnergyFunctionTables(molecule,forceField,activeAtoms,show_progress);
+    final_solute_residue_iptres = molecule->contentSize();
+    number_of_molecules_nspm = 1;
+    first_solvent_molecule_nspsol = 2;
+  }
+  
+#else  
     Loop moleculeLoop;
     moleculeLoop.loopTopGoal(matter,MOLECULES);
     while (moleculeLoop.advanceLoopAndProcess() ) {
       Molecule_sp molecule = moleculeLoop.getMolecule();
-      if (molecule->molecule_type() == kw::_sym_solvent) {
-        solvent_molecules << molecule;
-      } else {
-        solute_molecules << molecule;
-      }
+      ForceField_sp forceField = gc::As<ForceField_sp>(core::eval::funcall(chem::_sym_lookup_force_field_for_molecule,molecule,system));
+      if (assign_types) forceField->assignTypes(molecule);
+      this->generateStandardEnergyFunctionTables(molecule,forceField,activeAtoms,show_progress);
     }
-  }
-
-  core::List_sp solute = solute_molecules.cons();
-  for ( auto cur_solute : solute ) {
-    Molecule_sp one = gc::As_unsafe<Molecule_sp>(CONS_CAR(cur_solute));
-    ForceField_sp forceField = gc::As<ForceField_sp>(core::eval::funcall(chem::_sym_lookup_force_field_for_molecule,one,system));
-    if (assign_types) forceField->assignTypes(one);
-    this->generateStandardEnergyFunctionTables(one,forceField,activeAtoms,show_progress);
-  }    
-  core::List_sp solvent = solvent_molecules.cons();
-  for ( auto cur_solvent : solvent ) {
-    Molecule_sp one = gc::As_unsafe<Molecule_sp>(CONS_CAR(cur_solvent));
-    ForceField_sp forceField = gc::As<ForceField_sp>(core::eval::funcall(chem::_sym_lookup_force_field_for_molecule,one,system));
-    if (assign_types) forceField->assignTypes(one);
-    this->generateStandardEnergyFunctionTables(one,forceField,activeAtoms,show_progress);
-  }    
-#else  
-  Loop moleculeLoop;
-  moleculeLoop.loopTopGoal(matter,MOLECULES);
-  while (moleculeLoop.advanceLoopAndProcess() ) {
-    Molecule_sp molecule = moleculeLoop.getMolecule();
-    ForceField_sp forceField = gc::As<ForceField_sp>(core::eval::funcall(chem::_sym_lookup_force_field_for_molecule,molecule,system));
-    if (assign_types) forceField->assignTypes(molecule);
-    this->generateStandardEnergyFunctionTables(molecule,forceField,activeAtoms,show_progress);
-  }
 #endif
-  {
-    FFNonbondDb_sp nonbondForceField = gc::As<FFNonbondDb_sp>(core::eval::funcall(chem::_sym_lookup_nonbond_force_field_for_aggregate,matter,system));
-    this->generateNonbondEnergyFunctionTables(useExcludedAtoms,matter,nonbondForceField,activeAtoms,show_progress);
-    this->generateRestraintEnergyFunctionTables(matter,nonbondForceField,activeAtoms,show_progress);
+    {
+      FFNonbondDb_sp nonbondForceField = this->_AtomTable->nonbondForceFieldForAggregate();
+      this->generateNonbondEnergyFunctionTables(useExcludedAtoms,matter,nonbondForceField,activeAtoms,show_progress);
+      this->generateRestraintEnergyFunctionTables(matter,nonbondForceField,activeAtoms,show_progress);
+    }
+    core::eval::funcall(_sym_report_parameter_warnings);
   }
-  core::eval::funcall(_sym_report_parameter_warnings);
-}
 
 
 CL_LAMBDA((energy-function !) molecule force-field &key active-atoms show-progress);
