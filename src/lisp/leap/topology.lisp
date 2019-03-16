@@ -826,7 +826,7 @@ then don't calculate 1,4 interactions"
         (fortran:fwrite mbper) ; number of bonds with atoms completely in perturbed group
         (fortran:fwrite mgper) ; number of angles with atoms completely in perturbed group
         (fortran:fwrite mdper) ; number of dihedrals with atoms completely in perturbed groups
-        (fortran:fwrite ifbox) ; set to 1 if standard periodic box, 2 when truncated octahedral
+        (fortran:fwrite (if ifbox 1 0)) ; set to 1 if standard periodic box, 2 when truncated octahedral
         (fortran:fwrite nmxrs) ; number of atoms in the largest residue
         (fortran:fwrite ifcap) ; set to 1 if the CAP option from edit was specified
         (fortran:fwrite numextra) ; number of extra points found in topology
@@ -1230,6 +1230,7 @@ then don't calculate 1,4 interactions"
         (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-31-")
         (fortran:fformat 5 "%16.8e")
+        (fortran:fwrite 0.0)
         (fortran:end-line)
         ;;This term has been dropped from most modern force fields.
 
@@ -1240,6 +1241,7 @@ then don't calculate 1,4 interactions"
         (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-32-")
         (fortran:fformat 5 "%16.8e")
+        (fortran:fwrite 0.0)
         (fortran:end-line)
         ;;This term has been dropped from most modern force fields.
 
@@ -1250,6 +1252,7 @@ then don't calculate 1,4 interactions"
         (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-33-")
         (fortran:fformat 5 "%16.8e")
+        (fortran:fwrite 0.0)
         (fortran:end-line)
         ;;no longer used for anything.
 
@@ -1305,17 +1308,20 @@ then don't calculate 1,4 interactions"
             (progn
               (fortran:fformat 1 "%-80s")
               (cando:progress-advance bar (incf bar-counter))
-              (let ((final-solute-residue-iptres (chem:final-solute-residue-iptres atom-table))
-                    (total-number-of-molecules-nspm (chem:total-number-of-molecules-nspm atom-table))
-                    (first-solvent-molecule-nspsol (chem:first-solvent-molecule-nspsol atom-table)))
-                (fortran:fwrite "%FLAG SOLVENT_POINTERS")
-                (fortran:fwrite "%FORMAT(3I8)")
-                (fortran:debug "-38-")
-                (fortran:fformat 3 "%8d")
-                (fortran:fwrite final-solute-residue-iptres)
-                (fortran:fwrite total-number-of-molecules-nspm)
-                (fortran:fwrite first-solvent-molecule-nspsol)
-                (fortran:end-line))
+              (when (and (chem:final-solute-residue-iptres-bound-p atom-table)
+                         (chem:total-number-of-molecules-nspm-bound-p atom-table)
+                         (chem:first-solvent-molecule-nspsol-bound-p atom-table))
+                (let ((final-solute-residue-iptres (chem:final-solute-residue-iptres atom-table))
+                      (total-number-of-molecules-nspm (chem:total-number-of-molecules-nspm atom-table))
+                      (first-solvent-molecule-nspsol (chem:first-solvent-molecule-nspsol atom-table)))
+                  (fortran:fwrite "%FLAG SOLVENT_POINTERS")
+                  (fortran:fwrite "%FORMAT(3I8)")
+                  (fortran:debug "-38-")
+                  (fortran:fformat 3 "%8d")
+                  (fortran:fwrite final-solute-residue-iptres)
+                  (fortran:fwrite total-number-of-molecules-nspm)
+                  (fortran:fwrite first-solvent-molecule-nspsol)
+                  (fortran:end-line)))
               (fortran:fformat 1 "%-80s")
               (cando:progress-advance bar (incf bar-counter))
               (fortran:fwrite "%FLAG ATOMS_PER_MOLECULE")
@@ -1379,7 +1385,7 @@ then don't calculate 1,4 interactions"
 ;;;    (format *debug-io* "coordinate-pathname -> ~s~%" coordinate-pathname)
     (fortran:with-fortran-output-file (ftop coordinate-pathname :direction :output :if-exists :supersede)
       (fortran:fformat 20 "%-4s")
-      (fortran:fwrite (string (chem:get-name aggregate)))
+      (fortran:fwrite (string (chem:aggregate-name atom-table)))
       (fortran:end-line)
                                         ;      (fortran:fformat 1 "%5d")
                                         ;      (fortran:fwrite natom)
@@ -1435,7 +1441,7 @@ then don't calculate 1,4 interactions"
     ;;;  (3) Separate the solvent molecules from solute molecules and order them in the energy-function
     ;;;  (4) Copy the result of (chem:lookup-nonbond-force-field-for-aggregate aggregate force-field) into the energy-function
     
-    (save-amber-parm-format-energy-function energy-function topology-pathname coordinate-pathname)))
+    (save-amber-parm-format-using-energy-function energy-function topology-pathname coordinate-pathname)))
 
 
 

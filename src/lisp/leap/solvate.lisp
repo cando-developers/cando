@@ -82,6 +82,7 @@
                                   (cando:progress-advance progress-bar counter)
                                   (when (funcall test-function solvent-mol)
                                     (chem:set-name solvent-mol (intern (format nil "WAT_~a" counter) :keyword))
+                                    (chem:setf-molecule-type solvent-mol :solvent)
                                     (chem:add-matter solute solvent-mol)))
                                 solvent-copy))))
     (cando:progress-done progress-bar)))

@@ -253,7 +253,7 @@ CL_DEFMETHOD core::T_sp AtomTable_O::firstSolventMoleculeNSPSOL() const {
   if (this->_firstSolventMoleculeNSPSOL.unboundp()) SIMPLE_ERROR(BF("The firstSolventMoleculeNSPSOL is unbound"));
   return this->_firstSolventMoleculeNSPSOL;
 }
-CL_DEFMETHOD bool AtomTable_O::firstSolventMoleculeNSPSOLBoundP() const {
+CL_DEFMETHOD bool AtomTable_O::firstSolventMoleculeNSPSOL_boundP() const {
   return !this->_firstSolventMoleculeNSPSOL.unboundp();
 }
 CL_DEFMETHOD void AtomTable_O::set_firstSolventMoleculeNSPSOL(size_t num) {
@@ -268,7 +268,7 @@ CL_DEFMETHOD core::T_sp AtomTable_O::finalSoluteResidueIPTRES() const {
   if (this->_finalSoluteResidueIPTRES.unboundp()) SIMPLE_ERROR(BF("The finalSoluteResidueIPTRES is unbound"));
   return this->_finalSoluteResidueIPTRES;
 }
-CL_DEFMETHOD bool AtomTable_O::finalSoluteResidueIPTRESBoundP() const {
+CL_DEFMETHOD bool AtomTable_O::finalSoluteResidueIPTRES_boundP() const {
   return !this->_finalSoluteResidueIPTRES.unboundp();
 }
 CL_DEFMETHOD void AtomTable_O::set_finalSoluteResidueIPTRES(size_t num) {
@@ -283,7 +283,7 @@ CL_DEFMETHOD core::T_sp AtomTable_O::totalNumberOfMoleculesNSPM() const {
   if (this->_totalNumberOfMoleculesNSPM.unboundp()) SIMPLE_ERROR(BF("The totalNumberOfMoleculesNSPM is unbound"));
   return this->_totalNumberOfMoleculesNSPM;
 }
-CL_DEFMETHOD bool AtomTable_O::totalNumberOfMoleculesNSPMBoundP() const {
+CL_DEFMETHOD bool AtomTable_O::totalNumberOfMoleculesNSPM_boundP() const {
   return !this->_totalNumberOfMoleculesNSPM.unboundp();
 }
 CL_DEFMETHOD void AtomTable_O::set_totalNumberOfMoleculesNSPM(size_t num) {

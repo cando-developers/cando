@@ -1180,6 +1180,7 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, core::T_sp
   size_t final_solute_residue_iptres = 0;
   size_t number_of_molecules_nspm = 0;
   size_t first_solvent_molecule_nspsol = 0;
+  bool solvent_exists = false;
   if (gc::IsA<Aggregate_sp>(matter)) {
     ql::list solute_molecules;
     ql::list solvent_molecules;
@@ -1190,6 +1191,7 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, core::T_sp
         Molecule_sp molecule = moleculeLoop.getMolecule();
         if (molecule->molecule_type() == kw::_sym_solvent) {
           solvent_molecules << molecule;
+          solvent_exists = true;
         } else {
           solute_molecules << molecule;
         }
@@ -1222,7 +1224,11 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, core::T_sp
     number_of_molecules_nspm = 1;
     first_solvent_molecule_nspsol = 2;
   }
-  
+  if (solvent_exists) {
+    this->_AtomTable->set_firstSolventMoleculeNSPSOL(first_solvent_molecule_nspsol);
+    this->_AtomTable->set_finalSoluteResidueIPTRES(final_solute_residue_iptres);
+    this->_AtomTable->set_totalNumberOfMoleculesNSPM(number_of_molecules_nspm);
+  }
 #else  
     Loop moleculeLoop;
     moleculeLoop.loopTopGoal(matter,MOLECULES);

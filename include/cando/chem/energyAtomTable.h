@@ -159,17 +159,17 @@ class AtomTable_O : public core::CxxObject_O
   CL_DEFMETHOD size_t   getNumberOfMolecules()  { return this->_AtomsPerMolecule->length();};
   
   core::T_sp   firstSolventMoleculeNSPSOL() const;
-  bool firstSolventMoleculeNSPSOLBoundP() const;
+  bool firstSolventMoleculeNSPSOL_boundP() const;
   void set_firstSolventMoleculeNSPSOL(size_t num);
   void makUnbound_firstSolventMoleculeNSPSOL();
 
   core::T_sp   finalSoluteResidueIPTRES() const;
-  bool finalSoluteResidueIPTRESBoundP() const;
+  bool finalSoluteResidueIPTRES_boundP() const;
   void set_finalSoluteResidueIPTRES(size_t num);
   void makUnbound_finalSoluteResidueIPTRES();
 
   core::T_sp   totalNumberOfMoleculesNSPM() const;
-  bool totalNumberOfMoleculesNSPMBoundP() const;
+  bool totalNumberOfMoleculesNSPM_boundP() const;
   void set_totalNumberOfMoleculesNSPM(size_t num);
   void makUnbound_totalNumberOfMoleculesNSPM();
 
