@@ -65,8 +65,9 @@ struct AtomInfo {
     core::Symbol_sp 		_Type;
 };
 struct ResidueOut {
-	Residue_sp	res;
-	uint		firstAtom;
+  Molecule_sp  mol;
+  Residue_sp	res;
+  uint		firstAtom;
 };
 
 

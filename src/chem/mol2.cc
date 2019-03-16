@@ -283,6 +283,8 @@ core::T_sp mol2Read(Mol2File& fIn)
   uint				lastmId;
   bool				sawSubStructure = false;
   bool  firstMolecule = true;
+  core::List_sp boundingBox = _Nil<core::T_O>();
+  core::T_sp solventName = _Nil<core::T_O>();
   while ( !fIn.eof() ) {
     line = fIn.line().str();
     if ( fIn.hasDataLine() ) {
@@ -375,6 +377,35 @@ core::T_sp mol2Read(Mol2File& fIn)
         bonds.push_back(oneBond);
         fIn.advanceLine();
       }
+    } else if ( line == "@<TRIPOS>FF_PBC" ) {
+      line = fIn.line().str();
+      fIn.advanceLine();
+      words = fIn.splitLine();
+      words.pop(); // get rid of version
+      int pbc_type = atoi(words.front().c_str());
+      words.pop(); // pop pbc type
+      if (pbc_type == 0) {
+        // Skip the pbc - there is none
+        for ( size_t xx = 0; xx<6; ++xx) words.pop();
+        boundingBox = _Nil<core::T_O>();
+      } else if (pbc_type ==1) {
+        // Rectanglar pbc
+        double values[6];
+        for ( size_t xx = 0; xx<6; ++xx) {
+          values[xx] = atof(words.front().c_str());
+          words.pop();
+        }
+        boundingBox = core::Cons_O::createList(core::clasp_make_double_float(values[3]-values[0]),
+                                               core::clasp_make_double_float(values[4]-values[1]),
+                                               core::clasp_make_double_float(values[5]-values[2]));
+      } else {
+        SIMPLE_ERROR(BF("Unknown solvent box type in FF_PBC: %s") % line);
+      }
+      // Now get the solvent name
+      if (words.size()>0) {
+        solventName = _lisp->intern(words.front(),KeywordPkg);
+        words.pop();
+      }
     } else if ( line == "@<TRIPOS>SUBSTRUCTURE" ) {
       _BLOCK_TRACE("Reading @<TRIPOS>SUBSTRUCTURE");
       sawSubStructure = true;
@@ -451,6 +482,9 @@ core::T_sp mol2Read(Mol2File& fIn)
     //
   auto mi = molecules.begin();
   Aggregate_sp aggregate = Aggregate_O::create();
+  if (boundingBox.notnilp()) {
+    aggregate->setProperty(kw::_sym_bounding_box,boundingBox);
+  }
   aggregate->setName(chemkw_intern(moleculeName));
     
     // Now create all of the atoms and the residues and put the
@@ -555,11 +589,16 @@ core::T_sp mol2Read(Mol2File& fIn)
         m->addMatter(residues[si->mId]);
         LOG(BF("Setting residue name at index: %d") % si->mId  );
         LOG(BF("Setting residue name to: %s") % si->subst_name.c_str()  );
-        residues[si->mId]->setName(chemkw_intern(si->subst_name));
+        core::T_sp sub_name = chemkw_intern(si->subst_name);
+        residues[si->mId]->setName(sub_name);
         LOG(BF("Setting residue PDB name to: %s") % si->sub_type.c_str()  );
-        residues[si->mId]->setPdbName(chemkw_intern(si->sub_type));
-//		printf("%s:%d Setting residue file_sequence_number(%d)", __FILE__, __LINE__, si->file_sequence_number );
-//		residues[si->mId]->setFileSequenceNumber(si->file_sequence_number);
+        core::T_sp sub_type = chemkw_intern(si->sub_type);
+        residues[si->mId]->setPdbName(sub_type);
+        if (solventName.notnilp() && (sub_name==solventName || sub_type==solventName))
+        {
+          printf("%s:%d Setting molecule %s to solvent\n", __FILE__, __LINE__, _rep_(m).c_str());
+          m->setf_molecule_type(kw::_sym_solvent);
+        }
         LOG(BF("Adding residue number: %d name(%s) pdbName(%s) to molecule: %s") % si->mId % residues[si->mId]->getName().c_str() % residues[si->mId]->getPdbName().c_str() % si->chain.c_str()  );
       }
     }
@@ -646,34 +685,92 @@ core::T_sp mol2Read(Mol2File& fIn)
       }
       sybylRules = gc::As<FFTypesDb_sp>(chem::_sym_STARsybyl_type_assignment_rulesSTAR->symbolValue());
     }
-    lRes.loopTopGoal(agg,RESIDUES);
-    while ( lRes.advanceLoopAndProcess() ) {
-      r = lRes.getResidue();
-      ht->setf_gethash(r,core::clasp_make_fixnum(resId));
-      oneResOut.res = r;
-      oneResOut.firstAtom = atomId;
-      residueList.push_back(oneResOut);
-      resId++;
-      loop.loopTopGoal(r,ATOMS);
-      while ( loop.advanceLoopAndProcess() ) {
-        a = loop.getAtom();
-        ht->setf_gethash(a,core::clasp_make_fixnum(atomId));
-        one._Atom = a;
-        if ( useSybylTypes ) {
-          ASSERT(sybylRules);
-          core::Symbol_sp type = sybylRules->assignType(a,false);
-          one._Type = type;
+    Loop lMol;
+    lMol.loopTopGoal(agg,MOLECULES);
+    while (lMol.advanceLoopAndProcess()) {
+      Molecule_sp mol = lMol.getMolecule();
+      oneResOut.mol = mol;
+      lRes.loopTopGoal(mol,RESIDUES);
+      while ( lRes.advanceLoopAndProcess() ) {
+        r = lRes.getResidue();
+        ht->setf_gethash(r,core::clasp_make_fixnum(resId));
+        oneResOut.res = r;
+        oneResOut.firstAtom = atomId;
+        residueList.push_back(oneResOut);
+        resId++;
+        loop.loopTopGoal(r,ATOMS);
+        while ( loop.advanceLoopAndProcess() ) {
+          a = loop.getAtom();
+          ht->setf_gethash(a,core::clasp_make_fixnum(atomId));
+          one._Atom = a;
+          if ( useSybylTypes ) {
+            ASSERT(sybylRules);
+            core::Symbol_sp type = sybylRules->assignType(a,false);
+            one._Type = type;
               //core::write_bf_stream(BF("Assigned sybyl type %s to %s\n") % _rep_(one._Type) % _rep_(a));
-        } else {
-          if ( a->getType() ) {
-            one._Type = a->getType();
           } else {
-            one._Type = _Nil<core::T_O>();
+            if ( a->getType() ) {
+              one._Type = a->getType();
+            } else {
+              one._Type = _Nil<core::T_O>();
+            }
+          }
+          atomList.push_back(one);
+          atomId++;
+        }
+      }
+    }
+
+
+        // Figure out if there is a solvent residue and a bounding box
+
+    core::Symbol_sp solventName = _Nil<core::T_O>();
+    core::List_sp boundingBox = _Nil<core::T_O>();
+    {
+      Loop lMol;
+      loop.loopTopGoal(agg,MOLECULES);
+      while ( loop.advanceLoopAndProcess() ) {
+        m = loop.getMolecule();
+        printf("%s:%d Looking at molecule %s type: %s\n", __FILE__, __LINE__, _rep_(m).c_str(), _rep_(m->molecule_type()).c_str());
+        if (m->molecule_type() == kw::_sym_solvent) {
+          size_t numResidues = m->contentSize();
+          if (numResidues==1) {
+            solventName = m->contentAt(0)->getName();
+            printf("%s:%d  Read solvent name: %s\n", __FILE__, __LINE__, _rep_(solventName).c_str());
+            goto GOT_SOLVENT;
+          } else {
+            printf("%s:%d There is more than one residue in a solvent molecule %s\n", __FILE__, __LINE__, _rep_(m).c_str());
           }
         }
-        atomList.push_back(one);
-        atomId++;
       }
+    GOT_SOLVENT:
+      printf("%s:%d The solvent name is %s\n", __FILE__, __LINE__, _rep_(solventName).c_str());
+      boundingBox = agg->getPropertyOrDefault(kw::_sym_bounding_box,_Nil<core::T_O>());
+      if (boundingBox.notnilp()) {
+        printf("%s:%d The bounding box is %s\n", __FILE__, __LINE__, _rep_(boundingBox).c_str());
+      }
+    }
+
+    if (boundingBox.notnilp()) {
+      out << "@<TRIPOS>FF_PBC" << std::endl;
+      out << "0.1 ";
+      if (boundingBox.nilp()) {
+        out << "0 0.0 0.0 0.0 0.0 0.0 0.0 ";
+      } else {
+        out << "1 0.0 0.0 0.0 ";
+        if (boundingBox.consp() && core::cl__length(boundingBox) == 3) {
+          for ( auto cur : boundingBox ) {
+            out << _rep_(CONS_CAR(boundingBox)) << " ";
+          }
+        } else {
+          SIMPLE_ERROR(BF("The bounding box has an unexpected structure %s - expected list of 3 doubles") % _rep_(boundingBox));
+        }
+      }
+      if (solventName.notnilp()) {
+        out << solventName->symbolNameAsString() << " ";
+      }
+      out << std::endl;
+      out << std::endl;
     }
 
 #if 0
@@ -763,7 +860,7 @@ core::T_sp mol2Read(Mol2File& fIn)
       out << r->getName()->symbolNameAsString() << "_" << r_ti << " ";
       out << ri->firstAtom << " ";
       out << "RESIDUE 1 ";
-      out << (r->containedBy()).as<Molecule_O>()->getName()->symbolNameAsString() << " ";
+      out << (ri->mol->getName()->symbolNameAsString()) << " ";
       out << r->getName()->symbolNameAsString() << " 1";
       out << std::endl;
       id++;
