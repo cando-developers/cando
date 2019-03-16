@@ -108,11 +108,19 @@ Use eof-error-p and eof as in read."
         (values) ; Return nothing if we hit the eof
         ))))
 
+(defvar *residue-types* '(("w" . :solvent)
+                          ("p" . :protein)
+                          ("n" . :nucleic)
+                          ("s" . :saccharide))
+  "Residue types in OFF files - defined in leap residues.h:84 RESTYPExxx")
+
 (defun assemble-residues (read-residues)
   (let ((residues (make-array (length read-residues) :adjustable nil :fill-pointer 0)))
     (dotimes (ri (length read-residues))
       (let* ((read-residue (elt read-residues ri))
              (residue (chem:make-residue (intern (elt read-residue 0) :keyword))))
+        (let ((residue-assoc (assoc (elt read-residue 4) *residue-types* :test #'string-equal)))
+          (when residue-assoc (chem:setf-residue-type residue (cdr residue-assoc))))
         (vector-push residue residues)))
     residues))
 
@@ -191,6 +199,18 @@ Use eof-error-p and eof as in read."
           else
             do (return-from read-entire-off-file result))))
 
+(defun assign-molecule-name-and-type (molecule)
+  (if (= (chem:content-size molecule) 1)
+      (let ((residue (chem:content-at molecule 0)))
+        ;; Single residues molecules get their residue name
+        ;; and their residue type
+        (chem:set-name molecule (chem:get-name residue))
+        (chem:setf-molecule-type molecule (chem:residue-type residue)))
+      (progn
+        ;; Now things get tricky - this is a multi- (or zero-) residue molecule
+        ;; we don't know what to name it or what type to give it
+        ;; Let's bail out for now
+        )))
 
 (defun read-off-unit-with-name (entry-parts expected-name)
   "Read a leap UNIT from an OFF file.
@@ -235,7 +255,9 @@ if the caller wants to do that."
             (let ((sorted-molecule-ids (sort molecule-ids #'<=))
                   (aggregate (chem:make-aggregate)))
               (mapc (lambda (id)
-                      (chem:add-matter aggregate (gethash id molecule-id-map)))
+                      (let ((molecule (gethash id molecule-id-map)))
+                        (assign-molecule-name-and-type molecule)
+                        (chem:add-matter aggregate molecule)))
                     sorted-molecule-ids)
               ;; If there is a bounding box then use it
               (when (> (elt (elt read-bound-box 0) 0) 0)

@@ -1225,9 +1225,13 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, core::T_sp
     first_solvent_molecule_nspsol = 2;
   }
   if (solvent_exists) {
+    printf("%s:%d  solvent_exists NSPSOL %lu  IPTRES %lu   NSM %lu \n", __FILE__, __LINE__,
+           first_solvent_molecule_nspsol, final_solute_residue_iptres, number_of_molecules_nspm);
     this->_AtomTable->set_firstSolventMoleculeNSPSOL(first_solvent_molecule_nspsol);
     this->_AtomTable->set_finalSoluteResidueIPTRES(final_solute_residue_iptres);
     this->_AtomTable->set_totalNumberOfMoleculesNSPM(number_of_molecules_nspm);
+  } else {
+    printf("%s:%d  NO SOLVENT\n", __FILE__, __LINE__);
   }
 #else  
     Loop moleculeLoop;

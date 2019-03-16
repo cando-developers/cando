@@ -1308,9 +1308,14 @@ then don't calculate 1,4 interactions"
             (progn
               (fortran:fformat 1 "%-80s")
               (cando:progress-advance bar (incf bar-counter))
+              (format t "solvent_pointers info: iptres nspm nspsol -> ~a ~a ~a~%"
+                      (chem:final-solute-residue-iptres-bound-p atom-table)
+                      (chem:total-number-of-molecules-nspm-bound-p atom-table)
+                      (chem:first-solvent-molecule-nspsol-bound-p atom-table))
               (when (and (chem:final-solute-residue-iptres-bound-p atom-table)
                          (chem:total-number-of-molecules-nspm-bound-p atom-table)
                          (chem:first-solvent-molecule-nspsol-bound-p atom-table))
+                (format t "Generating SOLVENT_POINTERS~%")
                 (let ((final-solute-residue-iptres (chem:final-solute-residue-iptres atom-table))
                       (total-number-of-molecules-nspm (chem:total-number-of-molecules-nspm atom-table))
                       (first-solvent-molecule-nspsol (chem:first-solvent-molecule-nspsol atom-table)))

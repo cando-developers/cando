@@ -213,6 +213,8 @@
    #:do-atoms
    #:remove-molecules
    #:combine
+   #:assign-solvent-molecules-using-residue-name
+   #:identify-solvent-residue-name
    ))
 
 

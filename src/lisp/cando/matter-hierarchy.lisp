@@ -266,6 +266,27 @@ Break up the molecules in the aggregate into a list of molecules using spanning 
   (cando:do-atoms (a matter)
     (multiple-value-bind (matched match)
         (smarts:match smirks-root a)
-      (format t "Do something with the match ~s~%" match)
-      )
-  ))
+      (format t "Do something with the match ~s~%" match))))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;;; Manipulate solvent in matter
+;;;
+
+(defun assign-solvent-molecules-using-residue-name (matter solvent-residue-name)
+  "Search through the matter for molecules that contain a single residue that has the 
+solvent-residue-name. Set the molecule-type of those molecules to :solvent"
+  (cando:do-molecules (mol matter)
+    (when (and (= (chem:content-size mol) 1)
+               (eq (chem:get-name (chem:content-at mol 0)) solvent-residue-name))
+      (chem:setf-molecule-type mol :solvent))))
+
+(defun identify-solvent-residue-name (matter)
+  "Figure out the residue name of solvent by looking at the name of the single
+residue in any molecules that have the molecule-type :solvent."
+  (cando:do-molecules (mol matter)
+    (when (eq (chem:molecule-type mol) :solvent)
+      (if (= (chem:content-size mol) 1)
+          (chem:get-name (chem:content-at mol 0))
+          (error "A molecule with molecule-type :solvent was found that has ~a residues - it needs to have a single residue" (chem:content-size mol))))))
