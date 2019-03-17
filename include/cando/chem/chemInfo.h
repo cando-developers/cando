@@ -67,10 +67,11 @@ size_t calculate_maxtag(ChemInfoNode_sp node);
     bool fieldsp() const { return true; };
     void fields(core::Record_sp node);
   public:
-    static ChemInfoMatch_sp make(size_t maxtag, core::HashTableEql_sp ring);
+    static ChemInfoMatch_sp make(Root_sp root,size_t maxtag, core::HashTableEql_sp ring);
   private:
     bool		_Matches;
     size_t              _MaxTagPlus1;
+    Root_sp               _Root;
     core::HashTableEql_sp _RingLookup;
     core::SimpleVector_sp _TagLookup; // core::StringMap<Atom_O>	_TagLookup;
     core::List_sp         _TagHistory;
@@ -78,6 +79,7 @@ size_t calculate_maxtag(ChemInfoNode_sp node);
     string __repr__() const;
     bool matches();
     void setMatches(bool b) { this->_Matches = b;};
+    Root_sp matchRoot() const { return this->_Root; };
     void saveTagLookup();
     void clearAtomTags();
     bool recognizesAtomTag(core::T_sp tag);
@@ -102,7 +104,7 @@ CL_DEFMETHOD     chem::Atom_sp tag(core::T_sp tag) { return this->getAtomWithTag
 	 */
     BoundFrame_sp boundFrame();
 
-    ChemInfoMatch_O(size_t maxtagPlus1) : _Matches(false), _MaxTagPlus1(maxtagPlus1), _TagHistory(_Nil<core::T_O>()) {};
+    ChemInfoMatch_O(Root_sp root, size_t maxtagPlus1) : _Root(root), _Matches(false), _MaxTagPlus1(maxtagPlus1), _TagHistory(_Nil<core::T_O>()) {};
   };
 
 
@@ -965,14 +967,16 @@ public:
 	name of the test. */
   core::T_sp		_Tests;
   size_t _MaxTag;
+  std::string _Code;
 //    core::HashTableEql_sp               _RingTags;
 public:
   virtual uint depth() const;
+  virtual string originalCode() const { return this->_Code;};
   virtual string asSmarts() const;
-  static Root_sp create(ChemInfoNode_sp node)
+  static Root_sp create(const std::string& originalCode, ChemInfoNode_sp node)
   {
     size_t maxtag = calculate_maxtag(node);
-    GC_ALLOCATE_VARIADIC(Root_O, obj, node, maxtag ); // RP_Create<Root_O>(lisp);
+    GC_ALLOCATE_VARIADIC(Root_O, obj, originalCode, node, maxtag ); // RP_Create<Root_O>(lisp);
     return obj;
   }
   core::HashTableEq_sp lazyTests();
@@ -985,8 +989,9 @@ public:
   virtual	ChemInfoType	type() { return root; };
   virtual	bool		matches_Atom( Root_sp root, chem::Atom_sp atom );
   virtual	bool		matches_Bond( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );
-  Root_O(ChemInfoNode_sp node, size_t maxtag) : _Node(node), _Tests(_Nil<core::T_O>()), _MaxTag(maxtag) {}
-  Root_O() : _Node(_Nil<core::T_O>()), _Tests(_Nil<core::T_O>()), _MaxTag(0) {};
+  Root_O(const std::string& code, ChemInfoNode_sp node, size_t maxtag) : _Code(code), _Node(node), _Tests(_Nil<core::T_O>()), _MaxTag(maxtag) {}
+  Root_O(const std::string& code) : _Code(code) {};
+  Root_O() : _Code(""), _Node(_Nil<core::T_O>()), _Tests(_Nil<core::T_O>()), _MaxTag(0) {};
 };
 
 
@@ -1004,7 +1009,7 @@ public:
   bool fieldsp() const { return true; };
   void	fields(core::Record_sp node);
 public:
-  static SmartsRoot_sp make(ChemInfoNode_sp cinode,size_t maxtag);
+  static SmartsRoot_sp make(const std::string& code, ChemInfoNode_sp cinode,size_t maxtag);
 
 
 //        bool	recognizesRingId(int id) { return this->_RingLookup.count(id); };
@@ -1016,7 +1021,8 @@ public:
   virtual	bool		matches_Atom( Root_sp root, chem::Atom_sp atom );
   virtual	bool		matches_Bond( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );
 
-  SmartsRoot_O(ChemInfoNode_sp node, size_t maxtag) : Root_O(node,maxtag) {};
+  SmartsRoot_O(const std::string& code, ChemInfoNode_sp node, size_t maxtag) : Root_O(code,node,maxtag) {};
+  SmartsRoot_O(const std::string& code) : Root_O(code) {};
   SmartsRoot_O() {};
 };
 
@@ -1034,7 +1040,7 @@ public:
    gc::Nilable<RootMatchNode_sp>         _AfterMatchTests;
   gc::Nilable<WildElementDict_sp>       _WildElementDictionary;
 public:
-
+  
   void    setElementWildCardDictionary(WildElementDict_sp dict) {
     this->_WildElementDictionary = dict; };
   WildElementDict_sp getElementWildCardDictionary() {
@@ -1048,6 +1054,7 @@ public:
 
   string descriptionOfContents() const;
   virtual core::T_sp children();
+  AntechamberRoot_O(const std::string& code) : Root_O(code) {};
   DEFAULT_CTOR_DTOR(AntechamberRoot_O);
 };
 
