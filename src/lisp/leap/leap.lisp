@@ -127,7 +127,9 @@
    matter))
 
 (defun source (filename)
-  (let* ((path (leap.core:search-path filename))
+  (let* ((path (let ((p (leap.core:search-path filename)))
+                 (unless p (error "Could not find file ~a" filename))
+                 p))
          (entire-file (alexandria:read-file-into-string path))
          (ast (architecture.builder-protocol:with-builder ('list)
                 (esrap:parse 'leap.parser::leap entire-file))))
