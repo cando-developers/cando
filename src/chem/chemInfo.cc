@@ -144,6 +144,14 @@ void walk_nodes(ChemInfoNode_sp node, std::function<void(ChemInfoNode_sp)> const
   }
 }
 
+void walk_nodes_with_parent(core::T_sp parent, ChemInfoNode_sp node, std::function<void(core::T_sp,ChemInfoNode_sp)> const &fn) {
+  fn(parent,node);
+  core::List_sp childs = node->children();
+  for ( auto cur : childs ) {
+    walk_nodes_with_parent(node,gc::As<ChemInfoNode_sp>(CONS_CAR(cur)),fn);
+  }
+}
+
 size_t calculate_max_tags(ChemInfoNode_sp node) {
   size_t maxtag = 0;
   walk_nodes(node, [&maxtag](ChemInfoNode_sp node) {
@@ -159,6 +167,7 @@ size_t calculate_max_tags(ChemInfoNode_sp node) {
                    });
   return maxtag;
 }
+
 
 
   
@@ -2363,21 +2372,77 @@ CL_END_ENUM(_sym_STARAtomTestEnumConverterSTAR);
 
 
 
-struct VertexData {
+struct MoleculeVertexData {
   int _AtomIndex;
-  VertexData(int i) : _AtomIndex(i) {};
-  VertexData(): _AtomIndex(-1) {};
+  MoleculeVertexData(int i) : _AtomIndex(i) {};
+  MoleculeVertexData(): _AtomIndex(-1) {};
 };
 
-struct EdgeData {
+struct MoleculeEdgeData {
   BondOrder _BondOrder;
-  EdgeData(BondOrder bo) : _BondOrder(bo) {};
+  MoleculeEdgeData(BondOrder bo) : _BondOrder(bo) {};
 };
 
 
+struct ChemInfoVertexData {
+  int _NodeIndex;
+  ChemInfoVertexData(int i) : _NodeIndex(i) {};
+  ChemInfoVertexData() : _NodeIndex(-1) {};
+};
 
-CL_DEFUN void chem__test_boost_graph(Matter_sp matter)
+struct ChemInfoEdgeData {
+  int _NodeIndex;
+  ChemInfoEdgeData(int n) : _NodeIndex(n) {};
+};
+
+GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<chem::ChemInfoNode_O>>);
+
+
+CL_DEFUN void chem__test_boost_graph(Matter_sp matter, Root_sp pattern)
 {
+
+  core::HashTableEq_sp nodes_to_index = core::HashTableEq_O::create_default();
+  gctools::Vec0<ChemInfoNode_sp> nodes;
+  walk_nodes(pattern->_Node, [&nodes,&nodes_to_index] (ChemInfoNode_sp node) {
+      nodes_to_index->setf_gethash(node,core::make_fixnum(nodes.size()));
+      nodes.push_back(node);
+    });
+  
+  typedef boost::adjacency_list<boost::vecS, boost::vecS, boost::undirectedS,
+                                ChemInfoVertexData,
+                                ChemInfoEdgeData> ChemInfoGraphType;
+  ChemInfoGraphType chemInfoGraph(nodes.size());
+    //Our set of edges, which basically are just converted into ints (0-4)
+
+  core::HashTableEq_sp branch_parents = core::HashTableEq_O::create_default();
+  walk_nodes_with_parent(_Nil<core::T_O>(),pattern,
+                         [&nodes,&nodes_to_index,&branch_parents,&chemInfoGraph]
+                         (core::T_sp parentOrNil, ChemInfoNode_sp node) {
+                           if (parentOrNil.notnilp()) {
+                             ChemInfoNode_sp parent = gc::As_unsafe<ChemInfoNode_sp>(parentOrNil);
+                             if (gc::IsA<Branch_sp>(node)) {
+                               if (gc::IsA<Branch_sp>(parentOrNil)) {
+                                 parent = gc::As_unsafe<ChemInfoNode_sp>(branch_parents->gethash(parent));
+                                 branch_parents->setf_gethash(node,parent);
+                               }
+                               int parent_index = nodes_to_index->gethash(parent).unsafe_fixnum();
+                               int node_index = nodes_to_index->gethash(node).unsafe_fixnum();
+                               boost::add_edge(parent_index,node_index,ChemInfoEdgeData(node_index),chemInfoGraph);
+                             }
+                           }
+                         });
+
+  {
+    typedef boost::graph_traits<ChemInfoGraphType>::edge_iterator edge_iterator;
+    //Tried to make this section more clear, instead of using tie, keeping all
+    //the original types so it's more clear what is going on
+    std::pair<edge_iterator, edge_iterator> ei = edges(chemInfoGraph);
+    for(edge_iterator edge_iter = ei.first; edge_iter != ei.second; ++edge_iter) {
+      ChemInfoNode_sp a1 = nodes[source(*edge_iter,chemInfoGraph)];
+      ChemInfoNode_sp a2 = nodes[target(*edge_iter,chemInfoGraph)];
+      std::cout << "(" << _rep_(a1) << ", " << _rep_(a2) << " " << ")\n";
+    }
+  }
 
   Loop lMol;
   lMol.loopTopGoal(matter,MOLECULES);
@@ -2396,8 +2461,8 @@ CL_DEFUN void chem__test_boost_graph(Matter_sp matter)
     //create an -undirected- graph type, using vectors as the underlying containers
     //and an adjacency_list as the basic representation
     typedef boost::adjacency_list<boost::vecS, boost::vecS, boost::undirectedS,
-                                  VertexData,
-                                  EdgeData> MoleculeGraphType;
+                                  MoleculeVertexData,
+                                  MoleculeEdgeData> MoleculeGraphType;
     MoleculeGraphType moleculeGraph(atoms.size());
     //Our set of edges, which basically are just converted into ints (0-4)
 
@@ -2411,7 +2476,7 @@ CL_DEFUN void chem__test_boost_graph(Matter_sp matter)
       BondOrder bo = lbonds.getBondOrder();
       int atom1_index = atoms_to_index->gethash(a1).unsafe_fixnum();
       int atom2_index = atoms_to_index->gethash(a2).unsafe_fixnum();
-      boost::add_edge(atom1_index,atom2_index,EdgeData(bo),moleculeGraph);
+      boost::add_edge(atom1_index,atom2_index,MoleculeEdgeData(bo),moleculeGraph);
     }
     std::cout << num_edges(moleculeGraph) << "\n";
 
