@@ -9,6 +9,7 @@ def configure(cfg):
     cfg.check_cxx(stlib='expat', cflags='-Wall', uselib_store='EXPAT')
     cfg.extensions_stlib += cfg.env.STLIB_EXPAT
     cfg.extensions_stlib += cfg.env.STLIB_Z
+    cfg.check_cxx(stlib='boost_graph', cflags='-Wall', uselib_store='BOOST-boost_graph')
     cfg.define("BUILD_EXTENSION",1)   # add this whenever building an extension
 #    cfg.define("DEBUG_ENERGY_FUNCTION",1)
 

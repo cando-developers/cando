@@ -29,10 +29,20 @@ This is an open source license for the CANDO software from Temple University, bu
 //     	chemInfo.cc
 //
 //
+
+#include <iostream>
+#include <utility>
+#include <algorithm>
+#include <vector>
+
+#include "boost/graph/graph_traits.hpp"
+#include "boost/graph/adjacency_list.hpp"
+
 #include <clasp/core/common.h>
 #include <cando/adapt/stringSet.h>
 #include <clasp/core/hashTableEq.h>
 #include <clasp/core/designators.h>
+#include <cando/chem/loop.h>
 #include <cando/chem/chemInfo.h>
 #include <clasp/core/hashTableEqual.h>
 #include <clasp/core/hashTableEql.h>
@@ -560,7 +570,7 @@ bool AtomOrBondMatchNode_O::matches_Atom(Root_sp root, chem::Atom_sp atom) {
   if (this->_RingTest==SARNone) {
     return true;
   } else if (this->_RingTest==SARRingSet) {
-  LOG(BF("Setting atom %s matches _RingId %d") % _rep_(atom) % this->_RingId);
+    LOG(BF("Setting atom %s matches _RingId %d") % _rep_(atom) % this->_RingId);
     current_match()->setRingTag(atom,core::make_fixnum(this->_RingId));
     return true;
   }
@@ -764,12 +774,12 @@ string Logical_O::__repr__() const {
   ss << ":id " << this->_Id;
   ss << " :op ";
   for ( int i=0; logicalEnum[i]._Enum != -1; ++i ) {
-      if (logicalEnum[i]._Enum == this->_Operator) {
-          ss << logicalEnum[i]._Key;
-      }
+    if (logicalEnum[i]._Enum == this->_Operator) {
+      ss << logicalEnum[i]._Key;
+    }
   }
-      ss << ">";
-            return ss.str();
+  ss << ">";
+  return ss.str();
 }
 
 CL_DEF_CLASS_METHOD Logical_sp Logical_O::create_logIdentity(core::T_sp nilOrOp)
@@ -1250,7 +1260,7 @@ bool AtomTest_O::matches_Atom(Root_sp root, chem::Atom_sp atom) {
       match->defineAtomTag(atom,core::make_fixnum(this->_IntArg));
       goto SUCCESS;
     }
-      break;
+    break;
   case SAPConnectivity: // No implicit H's so Connectivity == Degree
   case SAPDegree:
       LOG(BF("SAPDegree testing if atom->numberOfBonds(){%d} == this->_IntArg{%d}") % atom->numberOfBonds() % this->_IntArg);
@@ -1998,7 +2008,7 @@ bool Root_O::evaluateTest(core::Symbol_sp testSym, Atom_sp atom) {
   }
   core::Function_sp func = core::coerce::functionDesignator(find);
   if (!gctools::IsA<core::Function_sp>(func)) {
-      SIMPLE_ERROR(BF("The test ChemInfo/Smarts test[%s] must be a function - instead it is a %s") % _rep_(testSym) % _rep_(find));
+    SIMPLE_ERROR(BF("The test ChemInfo/Smarts test[%s] must be a function - instead it is a %s") % _rep_(testSym) % _rep_(find));
   }
   core::Function_sp testCode = gctools::As_unsafe<core::Function_sp>(func);
   ASSERTF(testCode.notnilp(), BF("testCode was nil - it should never be"));
@@ -2351,6 +2361,74 @@ CL_VALUE_ENUM(kw::_sym_SAPAromatic,SAPAromatic);
 CL_VALUE_ENUM(kw::_sym_SAPAtomMap,SAPAtomMap);
 CL_END_ENUM(_sym_STARAtomTestEnumConverterSTAR);
 
+
+
+struct VertexData {
+  int _AtomIndex;
+  VertexData(int i) : _AtomIndex(i) {};
+  VertexData(): _AtomIndex(-1) {};
+};
+
+struct EdgeData {
+  BondOrder _BondOrder;
+  EdgeData(BondOrder bo) : _BondOrder(bo) {};
+};
+
+
+
+CL_DEFUN void chem__test_boost_graph(Matter_sp matter)
+{
+
+  Loop lMol;
+  lMol.loopTopGoal(matter,MOLECULES);
+  while (lMol.advanceLoopAndProcess()) {
+    Molecule_sp mol = lMol.getMolecule();
+    core::HashTableEq_sp atoms_to_index = core::HashTableEq_O::create_default();
+    gctools::Vec0<Atom_sp> atoms;
+    Loop lAtoms;
+    lAtoms.loopTopGoal(mol,ATOMS);
+    while (lAtoms.advanceLoopAndProcess()) {
+      Atom_sp atom = lAtoms.getAtom();
+      atoms_to_index->setf_gethash(atom,core::make_fixnum(atoms.size()));
+      atoms.push_back(atom);
+    }
+    
+    //create an -undirected- graph type, using vectors as the underlying containers
+    //and an adjacency_list as the basic representation
+    typedef boost::adjacency_list<boost::vecS, boost::vecS, boost::undirectedS,
+                                  VertexData,
+                                  EdgeData> MoleculeGraphType;
+    MoleculeGraphType moleculeGraph(atoms.size());
+    //Our set of edges, which basically are just converted into ints (0-4)
+
+    //Example uses an array, but we can easily use another container type
+    //to hold our edges.
+    Loop lbonds;
+    lbonds.loopTopGoal(mol,BONDS);
+    while (lbonds.advanceLoopAndProcess()) {
+      Atom_sp a1 = lbonds.getAtom1();
+      Atom_sp a2 = lbonds.getAtom2();
+      BondOrder bo = lbonds.getBondOrder();
+      int atom1_index = atoms_to_index->gethash(a1).unsafe_fixnum();
+      int atom2_index = atoms_to_index->gethash(a2).unsafe_fixnum();
+      boost::add_edge(atom1_index,atom2_index,EdgeData(bo),moleculeGraph);
+    }
+    std::cout << num_edges(moleculeGraph) << "\n";
+
+    //Ok, we want to see that all our edges are now contained in the graph
+    typedef boost::graph_traits<MoleculeGraphType>::edge_iterator edge_iterator;
+
+    //Tried to make this section more clear, instead of using tie, keeping all
+    //the original types so it's more clear what is going on
+    std::pair<edge_iterator, edge_iterator> ei = edges(moleculeGraph);
+    for(edge_iterator edge_iter = ei.first; edge_iter != ei.second; ++edge_iter) {
+      Atom_sp a1 = atoms[source(*edge_iter,moleculeGraph)];
+      Atom_sp a2 = atoms[target(*edge_iter,moleculeGraph)];
+      std::cout << "(" << _rep_(a1) << ", " << _rep_(a2) << " " << ")\n";
+    }
+
+  }
+}
 
 
 
