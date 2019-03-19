@@ -1753,13 +1753,7 @@ then don't calculate 1,4 interactions"
                   (multiple-value-bind (per-line format-char width decimal)
                       (fortran:parse-fortran-format-line (fortran:fortran-input-file-look-ahead fif))
                     (fortran:fread-line-or-error fif) 
-                    (setf solvent-pointers (fortran:fread-vector fif per-line format-char width))
-                    (let ((iptres (elt solvent-pointers 0))
-                          (nspm (elt solvent-pointers 1))
-                          (nspsol (elt solvent-pointers 2)))
-                      (chem:set-first-solvent-molecule-nspsol atom-table nspsol)
-                      (chem:set-final-solute-residue-iptres atom-table iptres)
-                      (chem:set-total-number-of-molecules-nspm atom-table nspm))))
+                    (setf solvent-pointers (fortran:fread-vector fif per-line format-char width))))
                  ((string-equal %flag-atoms-per-molecule line :end2 (length %flag-atoms-per-molecule))
                   (fortran:fread-line-or-error fif)  
                   (multiple-value-bind (per-line format-char width decimal)
@@ -2081,7 +2075,11 @@ then don't calculate 1,4 interactions"
 	;; fill in atom-table information
 	(chem:setf-atom-table-residue-pointers atom-table residue-pointer)
         (chem:setf-atom-table-residue-names atom-table (make-array (length residue-label) :adjustable t :initial-contents residue-label))
-	;; (chem:setf-atom-table-atoms-per-molecule atom-table atoms-per-molecule)
+	(chem:setf-atom-table-residue-pointers atom-table residue-pointer)
+        (chem:set-first-solvent-molecule-nspsol atom-table (elt solvent-pointers 2))
+        (chem:set-final-solute-residue-iptres atom-table (elt solvent-pointers 0))
+        (chem:set-total-number-of-molecules-nspm atom-table (elt solvent-pointers 1))
+  	;; (chem:setf-atom-table-atoms-per-molecule atom-table atoms-per-molecule)
 	(chem:setf-atom-table-residues atom-table residues-vec)
 	;; more here
         (let ((alist (list (cons :atom-table atom-table)
@@ -2355,25 +2353,25 @@ then don't calculate 1,4 interactions"
         
 
 
-(defun generate-aggregate-for-energy-function (energy-function &key final-residue)
+(defun generate-aggregate-for-energy-function (energy-function)
   (let* ((atom-table (chem:atom-table energy-function))
          (residues-vector (chem:atom-table-residues atom-table))
          (solute-mol (chem:make-molecule))
          (aggregate (chem:make-aggregate))
          nresidue nwater)
-    (if final-residue
-        (setf nresidue final-residue)
+    (if (chem:final-solute-residue-iptres-bound-p atom-table)
+        (setf nresidue (chem:final-solute-residue-iptres atom-table))
         (setf nresidue (length residues-vector)))
     (loop for i from 0 below nresidue
           for residue = (aref residues-vector i)
           do (chem:add-matter solute-mol residue))
     (chem:add-matter aggregate solute-mol)
-    (if final-residue
+    (if (chem:final-solute-residue-iptres-bound-p atom-table)
         (loop for i from nresidue below (length residues-vector)
               for water-residue = (aref residues-vector i)
               do (let ((water-mol (chem:make-molecule)))
                    (chem:add-matter water-mol water-residue)
                    (chem:add-matter aggregate water-mol))))
-
+    
     aggregate))
 
