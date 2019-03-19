@@ -33,6 +33,7 @@
 (defpackage #:amber
   (:use #:common-lisp)
   (:export
+   convert-to-script
    job
    node-file
    node-pathname

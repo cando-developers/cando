@@ -1,5 +1,9 @@
 (in-package :amber)
 
+(defmacro convert-to-script (&rest code)
+  `(cl:format nil "~{~s~%~}" ',code))
+             
+
 (defparameter *min-in*
 "minimisation
  &cntrl
@@ -10,7 +14,7 @@
    ntr = 1, restraint_wt = 5.00,
    restraintmask='!:WAT & !@H=',
 
-   icfe = 1, ifsc = 1, clambda = 0.5, scalpha = 0.5, scbeta = 12.0,
+   icfe = 1, ifsc = 1, scalpha = 0.5, scbeta = 12.0,
    logdvdl = 0
  /
  &ewald
@@ -348,6 +352,8 @@ added to inputs and outputs but not option-inputs or option-outputs"
   jupyter-job)
 
 
+(defmacro job-let (argument-pairs)
+  
 
 (defun setup-job (&key parameters input-topology-file input-coordinate-file pathname-defaults script makefile-clause)
   (let ((script-file (make-instance 'amber-script-file
