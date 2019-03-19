@@ -30,12 +30,13 @@
 
 (in-package :common-lisp-user)
 
+#+(or)
 (format t "Starting start-cando.lisp script - arguments: ~s~%" core:*command-line-arguments*)
 
 ;;; Load the ASDF package manager
 (progn
-  (format t "Loading asdf~%")
   (require :asdf))
+#+(or)
 (format t "Loaded asdf version ~s~%" (asdf/upgrade:asdf-version))
 
 (defun all-subdirs (dir)
@@ -48,7 +49,6 @@
     dirs))
 
 ;;; Add the cando hostname
-(format t "Setting CANDO hostname~%")
 (progn
   (setf (logical-pathname-translations "cando")
         '(("**;*.*" "source-dir:extensions;cando;src;**;*.*"))))
@@ -58,11 +58,9 @@
        (dirs (all-subdirs topdir)))
   (push topdir asdf:*central-registry*)
   (dolist (dir dirs)
-    (format t "Pushing dir: ~a~%" dir)
     (push dir asdf:*central-registry*)))
 
 (progn
-  (format t "Pushing dir: ~a~%" *default-pathname-defaults*)
   (push *default-pathname-defaults* asdf:*central-registry*))
 
 ;;;(make-package :cando)
@@ -70,23 +68,20 @@
 (let ((amber-home
         (namestring (uiop:ensure-directory-pathname (or (ext:getenv "AMBERHOME") "/amber/")))))
   (setf (logical-pathname-translations "amber")
-        (list (list "**;*.*" (concatenate 'string amber-home "/**/*.*"))))
-  (format t "Setting *amber-home* -> ~a~%" amber-home))
+        (list (list "**;*.*" (concatenate 'string amber-home "/**/*.*")))))
 
 ;;; Setup or startup the Cando system 
 ;;; If :setup-cando is in *features* then don't load the cando system
 (progn
   (format t "Starting Cando~%")
-  (format t "*features* -> ~a~%" *features*))
+  #+(or)(format t "*features* -> ~a~%" *features*))
 
 (progn
-  (format t "Loading quicklisp.~%")
+  ;;  (format t "Loading quicklisp.~%")
   (load "quicklisp:setup.lisp"))
 
 (progn
-  (format t "Loading cando-user system.-------------------------------------~%")
-  (funcall (find-symbol "QUICKLOAD" :ql) "cando-user" :verbose t)
+  (funcall (find-symbol "QUICKLOAD" :ql) "cando-user")
   ;; Ensure that all threads start in the :CANDO-USER package
-  (core:symbol-global-value-set '*package* (find-package :cando-user)))
-
-
+  (core:symbol-global-value-set '*package* (find-package :cando-user))
+  )
