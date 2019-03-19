@@ -14,7 +14,33 @@ def configure(cfg):
 #    cfg.define("DEBUG_ENERGY_FUNCTION",1)
 
 
+class duplicate_executable(waflib.Task.Task):
+    def run(self):
+        return self.exec_command('cp %s %s' % ( self.inputs[0].abspath(),self.outputs[0].abspath()))
+    
 def build(bld):
+    # The following will copy iclasp-<gc> to icando-<gc>
+    cp_1 = duplicate_executable(env=bld.env)
+    cp_1.set_inputs(bld.iclasp_executable)
+    cp_1.set_outputs(bld.path.find_or_declare(bld.iclasp_executable.abspath().replace("clasp","cando")))
+    bld.add_to_group(cp_1)
+    if (bld.stage_val >= 3):
+        # The following will copy cclasp-<gc> to ccando-<gc>
+        cp_2 = duplicate_executable(env=bld.env)
+        cp_2.set_inputs(bld.cclasp_executable)
+        cp_2.set_outputs(bld.path.find_or_declare(bld.cclasp_executable.abspath().replace("clasp","cando")))
+        bld.add_to_group(cp_2)
+    # The following will copy iclasp-<gc> to ileap-<gc>
+    cp_3 = duplicate_executable(env=bld.env)
+    cp_3.set_inputs(bld.iclasp_executable)
+    cp_3.set_outputs(bld.path.find_or_declare(bld.iclasp_executable.abspath().replace("clasp","leap")))
+    bld.add_to_group(cp_3)
+    if (bld.stage_val >= 3):
+        # The following will copy cclasp-<gc> to cleap-<gc>
+        cp_4 = duplicate_executable(env=bld.env)
+        cp_4.set_inputs(bld.cclasp_executable)
+        cp_4.set_outputs(bld.path.find_or_declare(bld.cclasp_executable.abspath().replace("clasp","leap")))
+        bld.add_to_group(cp_4)
     print("In extensions build bld.cclasp_executable = %s" % bld.cclasp_executable)
     print("      bld.stage_val = %s" % bld.stage_val)
     cando_project_headers_name = "include/cando/main/project_headers.h"
