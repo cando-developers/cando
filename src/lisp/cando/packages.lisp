@@ -183,6 +183,7 @@
    #:indexed-pathname
    #:save-mol2
    #:load-mol2
+   #:make-class-save-load
    #:save-cando
    #:load-cando
    #:dump-atoms
