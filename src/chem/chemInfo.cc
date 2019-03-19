@@ -2405,6 +2405,7 @@ CL_DEFUN void chem__test_boost_graph(Matter_sp matter, Root_sp pattern)
   gctools::Vec0<ChemInfoNode_sp> nodes;
   walk_nodes(pattern->_Node, [&nodes,&nodes_to_index] (ChemInfoNode_sp node) {
       nodes_to_index->setf_gethash(node,core::make_fixnum(nodes.size()));
+      printf("%s:%d ChemInfoNode_sp -> %s\n", __FILE__, __LINE__, _rep_(node).c_str());
       nodes.push_back(node);
     });
   
@@ -2427,7 +2428,11 @@ CL_DEFUN void chem__test_boost_graph(Matter_sp matter, Root_sp pattern)
                                }
                                int parent_index = nodes_to_index->gethash(parent).unsafe_fixnum();
                                int node_index = nodes_to_index->gethash(node).unsafe_fixnum();
-                               boost::add_edge(parent_index,node_index,ChemInfoEdgeData(node_index),chemInfoGraph);
+                               printf("%s:%d Branch %s\n", __FILE__, __LINE__, _rep_(node).c_str());
+                             } else if (gc::IsA<Chain_sp>(node)) {
+                               printf("%s:%d Chain %s\n", __FILE__, __LINE__, _rep_(node).c_str());
+                             } else {
+                               printf("%s:%d ChemInfoNode_sp %s\n", __FILE__, __LINE__, _rep_(node).c_str());
                              }
                            }
                          });
