@@ -50,6 +50,15 @@
   (:export
    define-part
    make-oligomer
+   design
+   topologys
+   cap-name-map
+   trainers
+   build-trainers
+   save-design
+   load-design
+   augment-trainer-with-superposable-conformation-collection
+   jostle-trainer
    )
   (:documentation
    "Embryonic joint-tree code"))

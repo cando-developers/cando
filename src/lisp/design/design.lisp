@@ -1,6 +1,24 @@
 
 (in-package :design)
 
+
+(defclass design ()
+  ((topologys :initarg :topologys :accessor topologys)
+   (cap-name-map :initarg :cap-name-map :accessor cap-name-map)
+   (trainers :initarg :trainers :accessor trainers)))
+
+(cando:make-class-save-load design)
+
+(defun save-design (design file-name)
+  (cando:save-cando design file-name))
+
+(defun load-design (file-name)
+  (let ((design (cando:load-cando file-name)))
+    (loop for topology in (topologys design)
+          do (register-topology (chem:get-name topology) topology))
+    design))
+
+
 (defun deftop (residue in-plug-info &rest out-plugs-info)
   (let ((topology (cando:make-simple-topology-from-residue residue)))
     (when in-plug-info
@@ -499,12 +517,14 @@ add cap monomers until no more cap monomers are needed."
               do (error "Too many rounds of extending oligomer")))
     oligomer))
 
-(defun build-training-oligomers (list-of-topologys cap-name-map)
+(defun build-training-oligomers (design)
   "Create oligomers that describe training molecules"
-  (let ((topology-map (let ((ht (make-hash-table)))
-                        (loop for top in list-of-topologys 
-                              do (setf (gethash (chem:get-name top) ht) top))
-                        ht)))
+  (let* ((list-of-topologys (topologys design))
+         (cap-name-map (cap-name-map design))
+         (topology-map (let ((ht (make-hash-table)))
+                         (loop for top in list-of-topologys 
+                               do (setf (gethash (chem:get-name top) ht) top))
+                         ht)))
     (multiple-value-bind (origins body caps)
         (classify-topologys list-of-topologys)
       ;; Build training oligomers for origins
@@ -556,5 +576,10 @@ add cap monomers until no more cap monomers are needed."
                  (kin:set-theta joint theta)
                  (kin:set-phi joint phi))))))
 
+#|
 
-
+(defparameter *build-trainer*
+  (format nil "~{~s~%~}"
+          '((defparameter *design* (load ":%DESIGN-INPUT-FILE%"))
+            (def
+|#

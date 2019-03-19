@@ -20,6 +20,8 @@
    (atom-id-map :initarg :atom-id-map :accessor atom-id-map)
    (superposable-conformation-collection :accessor superposable-conformation-collection)))
 
+(cando:make-class-save-load trainers)
+
 (defun collect-focus-joints (conformation focus-monomer-index)
    (let ((focus-joints (make-hash-table)))
      ;; First put all of the joints in the focus-monomer into the focus-joints hash-table
@@ -84,7 +86,7 @@
           (superposable-conformation-collection trainer) superposable-conformation-collection)))
 
 
-(defun build-trainers (oligomers)
+(defun build-trainers-from-oligomers (oligomers)
   "Given a list of training oligomers expand them into a list of trainers"
   (let ((result (make-hash-table :test #'equalp))
         (all-oligomers (loop for oligomer in oligomers
@@ -94,14 +96,21 @@
                                                     (chem:copy oligomer))))))
     (loop for oligomer in all-oligomers
           do (loop for monomer in (chem:monomers-as-list oligomer)
-                       for monomer-sequence-number = (chem:get-sequence-number monomer)
+                   for monomer-sequence-number = (chem:get-sequence-number monomer)
                    for context = (monomer-context monomer)
                    do (format t "context: ~a~%" context)
                    do (setf (gethash context result) (make-instance 'trainers
                                                                     :oligomer oligomer
                                                                     :focus-monomer-sequence-number monomer-sequence-number
                                                                     :context (monomer-context monomer)))))
-    (alexandria:hash-table-values result)))
+    (let ((trainers (alexandria:hash-table-values result)))
+      trainers)))
+
+(defun build-trainers (design)
+  (let* ((oligomers (build-training-oligomers design))
+         (trainers (build-trainers-from-oligomers oligomers)))
+    (setf (trainers design) trainers))
+  design)
 
     
 
