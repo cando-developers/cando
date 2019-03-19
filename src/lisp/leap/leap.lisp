@@ -255,10 +255,26 @@
     (error "Bad arguments for ~a" (car entry))))
 
 
+(defun quit ()
+  (throw 'repl-done nil))
 
+
+(defvar *commands*)
+(defun leap-help (&optional arg)
+  (if arg
+      (format t "There is no specific help for commands yet~%")
+      (progn
+        (format t "Help will be available on the following subjects: ~%")
+        (loop for cmd in *commands*
+              for col from 1
+              do (format t "~20a" (car cmd))
+              when (and (> col 0) (= (rem col 4) 0))
+                do (terpri)
+              finally (when (/= (rem col 4) 0)
+                        (terpri))))))
 
 (eval-when (:load-toplevel :execute)
-  (defparameter *commands*
+  (setf *commands*
     '(("logFile" . log-file)
       ("desc" . desc)
       ("loadOff" . load-off)
@@ -274,19 +290,59 @@
       ("solvateShell" . solvate-shell)
       ("addIons" . leap.add-ions:add-ions)
       ("setBox" . leap.set-box:set-box)
+      ("help" . leap-help)
+      ("quit" . quit)
       ))
   (dolist (command *commands*)
     (if (fboundp (cdr command))
         (setf (leap.core:function-lookup (car command) leap.core:*leap-env*) (cdr command))
         (error "~a is not a function" (cdr command)))))
 
+  
 
 (defun parse-leap-code (code)
   (let ((ast (architecture.builder-protocol:with-builder ('list)
                (esrap:parse 'leap.parser::leap code))))
     ast))
 
-  
+(defun process-command-line-options ()
+  (let ((includes (core:leap-command-line-includes))
+        (scripts (core:leap-command-line-scripts)))
+    (loop for include-path in includes
+          do (format t "Adding include path: ~s~%" include-path)
+          do (leap.core:add-path include-path))
+    (loop for script in scripts
+          do (format t "Sourcing script: ~s~%" script)
+          do (source script))
+    ))
+    
+(defun leap-repl ()
+  (process-command-line-options)
+  (format t "Welcome to Cando-LEaP!~%")
+  (clear-input)
+  (catch 'repl-done
+    (loop for x below 10
+          for code = (progn
+                       (format t "> ") (finish-output)
+                       (read-line))
+          do (handler-case
+                 (let ((ast (architecture.builder-protocol:with-builder
+                                ('list)
+                              (handler-bind ((esrap:esrap-parse-error
+                                               (lambda (c)
+                                                 (format t "Encountered error ~s while parsing ~s~%" c code)
+                                                 (break "Encountered error ~s while parsing ~s" c code))))
+                                (esrap:parse 'leap.parser::leap code)))))
+                   (core:call-with-stack-top-hint
+                    (lambda ()
+                      (leap.core:evaluate 'list ast leap.core:*leap-env*))))
+               (error (var)
+                 (format t "Error evaluating ~a~%" code))))))
+
+(defun leap-repl-then-exit ()
+  (leap-repl)
+  (core:exit 0))
+
 
 
 ;;(defun solvate-box (solute solvent width-list 

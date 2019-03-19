@@ -127,6 +127,9 @@
                 #:add-pdb-atom-map
                 )
   (:export
+   #:process-command-line-options
+   #:leap-repl
+   #:leap-repl-then-exit
    #:*amber-system*
    #:setup-amber-paths
    #:setup-amber
