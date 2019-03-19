@@ -76,10 +76,71 @@ CL_PRE_GC_STARTUP void cando_initialize_gc()
 }
 
 
+CL_DEFUN core::T_sp core__leap_command_line_scripts()
+{
+  ql::list scripts;
+  int iarg = 1;
+  while (iarg<core::global_options->_RawArguments.size() && core::global_options->_RawArguments[iarg] != "--") {
+    if (core::global_options->_RawArguments[iarg] == "-f") {
+      if (iarg+1 < core::global_options->_RawArguments.size()) {
+        scripts << core::SimpleBaseString_O::make(core::global_options->_RawArguments[iarg+1]);
+        iarg++;
+      } else {
+        SIMPLE_ERROR(BF("Illegal -f argument - missing argument"));
+      }
+    }
+    iarg++;
+  }
+  return scripts.cons();
+}
+
+CL_DEFUN core::T_sp core__leap_command_line_includes()
+{
+  ql::list includes;
+  int iarg = 1;
+  while (iarg<core::global_options->_RawArguments.size() && core::global_options->_RawArguments[iarg] != "--") {
+    if (core::global_options->_RawArguments[iarg] == "-I") {
+      if (iarg+1 < core::global_options->_RawArguments.size()) {
+        includes << core::SimpleBaseString_O::make(core::global_options->_RawArguments[iarg+1]);
+        iarg++;
+      } else {
+        SIMPLE_ERROR(BF("Illegal -f argument - missing argument"));
+      }
+    }
+    iarg++;
+  }
+  return includes.cons();
+}
+
+CL_DEFUN core::T_sp core__leap_command_line_ignore_leaprc()
+{
+  int iarg = 1;
+  while (iarg<core::global_options->_RawArguments.size() && core::global_options->_RawArguments[iarg] != "--") {
+    if (core::global_options->_RawArguments[iarg] == "-s") {
+      return _lisp->_true();
+    }
+  }
+  return _Nil<core::T_O>();
+}
+
+
+void leap_process_arguments(core::CommandLineOptions* options) {
+  printf("%s:%d In leap_process_arguments\n", __FILE__, __LINE__);
+  for ( int iarg = 1; iarg<options->_RawArguments.size(); ++iarg) {
+    std::string arg = options->_RawArguments[iarg];
+    if (arg == "-h" || arg == "--help") {
+      printf("cleap options\n"
+             "-I {dir}  - Add {dir} to the leap search path.\n"
+             "-f {file} - Source the {file} script.\n"
+             "-s        - Ignore the leaprc.\n");
+    }
+  }
+}
+
+
 
 CL_INITIALIZER void cando_initializer()
 {
-//  printf("%s:%d In cando_initializer\n", __FILE__, __LINE__);
   geom::GeomExposer_O* GeomPkg = new geom::GeomExposer_O(_lisp);
   units::UnitsExposer_O* UnitsPkg = new units::UnitsExposer_O(_lisp);
   adapt::AdaptExposer_O* AdaptPkg = new adapt::AdaptExposer_O(_lisp);
@@ -92,8 +153,27 @@ CL_INITIALIZER void cando_initializer()
 #if 0
   core::List_sp loads = core::_sym_STARextension_startup_loadsSTAR->symbolValue();
   loads = core::Cons_O::create(core::Cons_O::createList(cl::_sym_load,core::cl__pathname(core::Str_O::create("source-dir:extensions;cando;src;lisp;start-cando.lisp"))),loads);
-  core::_sym_STARextension_startup_loadsSTAR->defparameter(loads);
+  core::_sym_STARextension_start up_loadsSTAR->defparameter(loads);
 #endif
+  std::string executable_path = core::global_options->_ExecutableName;
+  std::vector<string> parts = core::split(executable_path,"/");
+  std::string exec_name = parts[parts.size()-1];
+  if (exec_name.find("cando")!=std::string::npos) {
+    std::pair<core::LoadEvalEnum,std::string> cmd1(core::cloEval,"(in-package :cando-user)");
+    core::global_options->_LoadEvalList.insert(core::global_options->_LoadEvalList.begin(),cmd1);
+    std::pair<core::LoadEvalEnum,std::string> cmd0(core::cloLoad,"source-dir:extensions;cando;src;lisp;start-cando.lisp");
+    core::global_options->_LoadEvalList.insert(core::global_options->_LoadEvalList.begin(),cmd0);
+  }
+  if (exec_name.find("leap")!=std::string::npos) {
+    core::global_options->_ProcessArguments = leap_process_arguments;
+    std::pair<core::LoadEvalEnum,std::string> cmdN(core::cloEval,"(leap:leap-repl-then-exit)");
+    core::global_options->_LoadEvalList.push_back(cmdN);
+    std::pair<core::LoadEvalEnum,std::string> cmd1(core::cloEval,"(in-package :cando-user)");
+    core::global_options->_LoadEvalList.insert(core::global_options->_LoadEvalList.begin(),cmd1);
+    std::pair<core::LoadEvalEnum,std::string> cmd0(core::cloLoad,"source-dir:extensions;cando;src;lisp;start-cando.lisp");
+    core::global_options->_LoadEvalList.insert(core::global_options->_LoadEvalList.begin(),cmd0);
+    core::global_options->_Features.push_back("leap-syntax");
+  }
 }
 
 
