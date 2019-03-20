@@ -125,7 +125,6 @@ CL_DEFUN core::T_sp core__leap_command_line_ignore_leaprc()
 
 
 void leap_process_arguments(core::CommandLineOptions* options) {
-  printf("%s:%d In leap_process_arguments\n", __FILE__, __LINE__);
   for ( int iarg = 1; iarg<options->_RawArguments.size(); ++iarg) {
     std::string arg = options->_RawArguments[iarg];
     if (arg == "-h" || arg == "--help") {
