@@ -290,7 +290,8 @@ void ChemInfoMatch_O::setRingTag(Atom_sp atom, core::T_sp index) {
 
 bool ChemInfoMatch_O::matchesRingTag(Atom_sp atom, core::T_sp tag) {
   Atom_sp other = gc::As<Atom_sp>(this->_RingLookup->gethash(tag,_Nil<T_O>()));
-  return core::cl__eq(other,atom);
+  return atom->isBondedTo(other);
+//  return core::cl__eq(other,atom);
 }
 
 // ------- WildElementDict_O
@@ -2372,17 +2373,6 @@ CL_END_ENUM(_sym_STARAtomTestEnumConverterSTAR);
 
 
 
-struct MoleculeVertexData {
-  int _AtomIndex;
-  MoleculeVertexData(int i) : _AtomIndex(i) {};
-  MoleculeVertexData(): _AtomIndex(-1) {};
-};
-
-struct MoleculeEdgeData {
-  BondOrder _BondOrder;
-  MoleculeEdgeData(BondOrder bo) : _BondOrder(bo) {};
-};
-
 
 struct ChemInfoVertexData {
   int _NodeIndex;
@@ -2391,11 +2381,79 @@ struct ChemInfoVertexData {
 };
 
 struct ChemInfoEdgeData {
+  BondEnum _BondEnum;
+  ChemInfoEdgeData(BondEnum n) : _BondEnum(n) {};
+};
+
+struct RingBond {
+  BondEnum _Bond;
   int _NodeIndex;
-  ChemInfoEdgeData(int n) : _NodeIndex(n) {};
+  RingBond(BondEnum b, int ni) : _Bond(b), _NodeIndex(ni) {};
+};
+
+struct RingClosers {
+  bool _Active;
+  int _NodeIndex;
+  std::vector<RingBond> _Bonds;
+  RingClosers() : _Active(false) {};
 };
 
 GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<chem::ChemInfoNode_O>>);
+
+MoleculeGraph_O::MoleculeGraph_O(Molecule_sp matter) : _Molecule(matter) {};
+
+MoleculeGraph_O::~MoleculeGraph_O() {
+  delete this->_moleculeGraph;
+  this->_moleculeGraph = nullptr;
+}
+
+
+void MoleculeGraph_O::initialize() {
+  this->_atoms_to_index = core::HashTableEq_O::create_default();
+  this->_moleculeGraph = nullptr;
+}
+
+CL_DEFUN MoleculeGraph_sp chem__make_molecule_graph(Molecule_sp matter) {
+  GC_ALLOCATE_VARIADIC(MoleculeGraph_O,graph,matter);
+  Loop lMol;
+  Loop lAtoms;
+  lAtoms.loopTopGoal(matter,ATOMS);
+  while (lAtoms.advanceLoopAndProcess()) {
+    Atom_sp atom = lAtoms.getAtom();
+    graph->_atoms_to_index->setf_gethash(atom,core::make_fixnum(graph->_atoms.size()));
+    graph->_atoms.push_back(atom);
+  }
+    
+    //create an -undirected- graph type, using vectors as the underlying containers
+    //and an adjacency_list as the basic representation
+  graph->_moleculeGraph = new MoleculeGraphType(graph->_atoms.size());
+    //Example uses an array, but we can easily use another container type
+    //to hold our edges.
+  Loop lbonds;
+  lbonds.loopTopGoal(matter,BONDS);
+  while (lbonds.advanceLoopAndProcess()) {
+    Atom_sp a1 = lbonds.getAtom1();
+    Atom_sp a2 = lbonds.getAtom2();
+    BondOrder bo = lbonds.getBondOrder();
+    int atom1_index = graph->_atoms_to_index->gethash(a1).unsafe_fixnum();
+    int atom2_index = graph->_atoms_to_index->gethash(a2).unsafe_fixnum();
+    boost::add_edge(atom1_index,atom2_index,MoleculeEdgeData(bo),*graph->_moleculeGraph);
+  }
+  std::cout << num_edges(*graph->_moleculeGraph) << "\n";
+
+    //Ok, we want to see that all our edges are now contained in the graph
+  typedef boost::graph_traits<MoleculeGraphType>::edge_iterator edge_iterator;
+
+    //Tried to make this section more clear, instead of using tie, keeping all
+    //the original types so it's more clear what is going on
+  std::pair<edge_iterator, edge_iterator> ei = edges(*graph->_moleculeGraph);
+  for(edge_iterator edge_iter = ei.first; edge_iter != ei.second; ++edge_iter) {
+    Atom_sp a1 = graph->_atoms[source(*edge_iter,*graph->_moleculeGraph)];
+    Atom_sp a2 = graph->_atoms[target(*edge_iter,*graph->_moleculeGraph)];
+    std::cout << "(" << _rep_(a1) << ", " << _rep_(a2) << " " << ")\n";
+  }
+  return graph;
+}
 
 
 CL_DEFUN void chem__test_boost_graph(Matter_sp matter, Root_sp pattern)
@@ -2403,10 +2461,33 @@ CL_DEFUN void chem__test_boost_graph(Matter_sp matter, Root_sp pattern)
 
   core::HashTableEq_sp nodes_to_index = core::HashTableEq_O::create_default();
   gctools::Vec0<ChemInfoNode_sp> nodes;
-  walk_nodes(pattern->_Node, [&nodes,&nodes_to_index] (ChemInfoNode_sp node) {
-      nodes_to_index->setf_gethash(node,core::make_fixnum(nodes.size()));
+  std::vector<RingClosers> closers;
+  walk_nodes(pattern->_Node, [&nodes,&nodes_to_index,&closers] (ChemInfoNode_sp node) {
       printf("%s:%d ChemInfoNode_sp -> %s\n", __FILE__, __LINE__, _rep_(node).c_str());
-      nodes.push_back(node);
+      if (gc::IsA<Chain_sp>(node)) {
+        Chain_sp chain = gc::As_unsafe<Chain_sp>(node);
+        ChemInfoNode_sp head = gc::As<ChemInfoNode_sp>(chain->_Head);
+        if (gc::IsA<BondTest_sp>(head)) {
+          head = gc::As_unsafe<BondTest_sp>(head)->_AtomTest;
+        }
+        nodes_to_index->setf_gethash(head,core::make_fixnum(nodes.size()));
+        AtomOrBondMatchNode_sp ahead = gc::As<AtomOrBondMatchNode_sp>(head);
+          // SARRingTest are not real nodes
+        if (ahead->_RingTest==SARRingSet) {
+          if (ahead->_RingId>=closers.size()) {
+            closers.resize(ahead->_RingId+1);
+          }
+          closers[ahead->_RingId]._Active = true;
+          closers[ahead->_RingId]._NodeIndex = nodes.size();
+        } else if (ahead->_RingTest==SARRingTest) {
+          if (ahead->_RingId>=closers.size()) {
+            closers.resize(ahead->_RingId+1);
+          }
+          closers[ahead->_RingId]._Active = true;
+          closers[ahead->_RingId]._Bonds.push_back(RingBond(SABAnyBond,nodes.size()));
+        }
+        nodes.push_back(head);
+      }
     });
   
   typedef boost::adjacency_list<boost::vecS, boost::vecS, boost::undirectedS,
@@ -2415,28 +2496,61 @@ CL_DEFUN void chem__test_boost_graph(Matter_sp matter, Root_sp pattern)
   ChemInfoGraphType chemInfoGraph(nodes.size());
     //Our set of edges, which basically are just converted into ints (0-4)
 
-  core::HashTableEq_sp branch_parents = core::HashTableEq_O::create_default();
-  walk_nodes_with_parent(_Nil<core::T_O>(),pattern,
-                         [&nodes,&nodes_to_index,&branch_parents,&chemInfoGraph]
+  // This is broken
+  core::HashTableEq_sp parent_nodes = core::HashTableEq_O::create_default();
+  walk_nodes_with_parent(_Nil<core::T_O>(),pattern->_Node,
+                         [&nodes,&nodes_to_index,&parent_nodes,&chemInfoGraph,&closers]
                          (core::T_sp parentOrNil, ChemInfoNode_sp node) {
-                           if (parentOrNil.notnilp()) {
-                             ChemInfoNode_sp parent = gc::As_unsafe<ChemInfoNode_sp>(parentOrNil);
-                             if (gc::IsA<Branch_sp>(node)) {
-                               if (gc::IsA<Branch_sp>(parentOrNil)) {
-                                 parent = gc::As_unsafe<ChemInfoNode_sp>(branch_parents->gethash(parent));
-                                 branch_parents->setf_gethash(node,parent);
-                               }
-                               int parent_index = nodes_to_index->gethash(parent).unsafe_fixnum();
-                               int node_index = nodes_to_index->gethash(node).unsafe_fixnum();
-                               printf("%s:%d Branch %s\n", __FILE__, __LINE__, _rep_(node).c_str());
-                             } else if (gc::IsA<Chain_sp>(node)) {
-                               printf("%s:%d Chain %s\n", __FILE__, __LINE__, _rep_(node).c_str());
-                             } else {
-                               printf("%s:%d ChemInfoNode_sp %s\n", __FILE__, __LINE__, _rep_(node).c_str());
+                           if (gc::IsA<Chain_sp>(node)) {
+                             Chain_sp chain = gc::As_unsafe<Chain_sp>(node);
+                             ChemInfoNode_sp head = gc::As<ChemInfoNode_sp>(chain->_Head);
+                             BondTest_sp bond;
+                             if (gc::IsA<BondTest_sp>(head)) {
+                               bond = gc::As_unsafe<BondTest_sp>(head);
+                               head = gc::As_unsafe<BondTest_sp>(head)->_AtomTest;
                              }
+                             AtomOrBondMatchNode_sp ahead = gc::As<AtomOrBondMatchNode_sp>(head);
+                             printf("%s:%d head -> %s\n", __FILE__, __LINE__, _rep_(ahead).c_str());
+                             parent_nodes->setf_gethash(chain,ahead);
+                             core::T_sp head_index = nodes_to_index->gethash(ahead);
+                             if (!head_index.fixnump()) {
+                               SIMPLE_ERROR(BF("There was no index for %s") % _rep_(ahead));
+                             }
+                             add_vertex(ChemInfoVertexData(head_index.unsafe_fixnum()),chemInfoGraph);
+                             if (parentOrNil.notnilp()) {
+                               ChemInfoNode_sp parent = gc::As_unsafe<ChemInfoNode_sp>(parentOrNil);
+                               printf("%s:%d parent -> %s\n", __FILE__, __LINE__, _rep_(parent).c_str());
+                               ChemInfoNode_sp up = gc::As<ChemInfoNode_sp>(parent_nodes->gethash(parent));
+                               core::T_sp up_index = nodes_to_index->gethash(up);
+                               if (!up_index.fixnump()) {
+                                 SIMPLE_ERROR(BF("There was no index for %s") % _rep_(up));
+                               }
+                                 // The head must be a BondTest_sp
+                               BondTest_sp bondTest = gc::As<BondTest_sp>(chain->_Head);
+                               add_edge(up_index.unsafe_fixnum(),head_index.unsafe_fixnum(),
+                                        ChemInfoEdgeData(bondTest->_Bond), chemInfoGraph);
+                             }
+                           } else if (gc::IsA<Branch_sp>(node)) {
+                             if (parentOrNil.nilp()) {
+                               SIMPLE_ERROR(BF("Branches should always have a parent"));
+                             }
+                             Branch_sp branch = gc::As_unsafe<Branch_sp>(node);
+                             ChemInfoNode_sp parent = gc::As_unsafe<ChemInfoNode_sp>(parentOrNil);
+                             ChemInfoNode_sp up = gc::As<ChemInfoNode_sp>(parent_nodes->gethash(parent));
+                             parent_nodes->setf_gethash(branch,up);
+                           } else {
+                               // nothing
                            }
                          });
-
+  // Close the rings
+  for ( size_t ii=0; ii<closers.size(); ++ii) {
+    if (closers[ii]._Active) {
+      for (size_t jj=0; jj<closers[ii]._Bonds.size(); ++jj ) {
+        add_edge(closers[ii]._NodeIndex,closers[ii]._Bonds[jj]._NodeIndex,
+                 ChemInfoEdgeData(closers[ii]._Bonds[jj]._Bond),chemInfoGraph);
+      }
+    }
+  }
   {
     typedef boost::graph_traits<ChemInfoGraphType>::edge_iterator edge_iterator;
     //Tried to make this section more clear, instead of using tie, keeping all

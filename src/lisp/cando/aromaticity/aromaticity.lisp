@@ -47,7 +47,7 @@
 (defparameter *artests* (list (cons :ar6 (lambda (a) (eq (chem:matter-get-property-or-default a 'aromaticity nil) 'ar6)))
                               (cons :abx #'chem:am1bcc-x)
                               (cons :aby #'chem:am1bcc-y)))
-
+;;; BAD_SMARTS
 (defparameter *rule1a* (chem:compile-smarts "[<abx>]1-[<abx>]=[<abx>]-[<abx>]=[<abx>]-[<abx>]=[<abx>]1" :tests *artests*))
 
 (defun one-atom-aromatic-rule1 (atm)
@@ -61,7 +61,8 @@
 ;        (print (% "test1 on %s" (description a)))
         do (one-atom-aromatic-rule1 atm)))
   
-(defparameter *rule2a* (chem:compile-smarts "[<abx>]1=[<abx>]-[<abx>]=[<abx>]-[<ar6>]-[<ar6>]-[<abx>]1" :tests *artests*))
+(defparameter *rule2a* (chem:compile-smarts "[<abx>]1=[<abx>]-[<abx>]=[<abx>]-[<ar6>]-[<ar6>]1" :tests *artests*))
+;;; BAD_SMARTS
 (defparameter *rule2b* (chem:compile-smarts "[<abx>]1-[<abx>]=[<abx>]-[<ar6>]-[<ar6>]-[<abx>]=[<abx>]1" :tests *artests*))
 
 
@@ -84,7 +85,7 @@
        do (setq rule-pass (+ rule-pass 1)))))
 
 
-(defparameter *rule3a* (chem:compile-smarts "[<abx>]1=[<abx>]-[<ar6>]-[<ar6>]-[<ar6>]-[<ar6>]-[<abx>]1" :tests *artests*))
+(defparameter *rule3a* (chem:compile-smarts "[<abx>]1=[<abx>]-[<ar6>]-[<ar6>]-[<ar6>]-[<ar6>]1" :tests *artests*))
 
 ;; Apply aromaticity rule of Jakalian, Jack, and Bayly • Vol. 23, No. 16 • Journal of Computational Chemistry
 (defun aromatic-rule3 (atoms-in-rings)
@@ -104,10 +105,13 @@
        do (setq atoms-left failed-atoms)
        do (setq rule-pass (+ rule-pass 1)))))
 
+;;; BAD_SMARTS
 (defparameter *rule4a* (chem:compile-smarts "[<abx>]1-[<abx>]=[<abx>]-[C&+]-[<abx>]=[<abx>]-[<abx>]=[<abx>]1" :tests *artests*))
-(defparameter *rule4b* (chem:compile-smarts "[<abx>]1=[<abx>]-[C&+]-[<abx>]=[<abx>]-[<abx>]=[<abx>]-[<abx>]1" :tests *artests*))
+(defparameter *rule4b* (chem:compile-smarts "[<abx>]1=[<abx>]-[C&+]-[<abx>]=[<abx>]-[<abx>]=[<abx>]1" :tests *artests*))
+;;; BAD_SMARTS
 (defparameter *rule4c* (chem:compile-smarts "[<abx>]1-[C&+]-[<abx>]=[<abx>]-[<abx>]=[<abx>]-[<abx>]=[<abx>]1" :tests *artests*))
-(defparameter *rule4d* (chem:compile-smarts "[C&+]1-[<abx>]=[<abx>]-[<abx>]=[<abx>]-[<abx>]=[<abx>]-[C]1" :tests *artests*))
+
+(defparameter *rule4d* (chem:compile-smarts "[C&+]1-[<abx>]=[<abx>]-[<abx>]=[<abx>]-[<abx>]=[<abx>]1" :tests *artests*))
 
 ;; Apply aromaticity rule of Jakalian, Jack, and Bayly • Vol. 23, No. 16 • Journal of Computational Chemistry
 (defun aromatic-rule4 (atoms-in-rings)
@@ -124,9 +128,12 @@
                                                               (eq (chem:matter-get-property-or-default a 'aromaticity nil) 'ar7))))
                                 *artests*))
 
-(defparameter *rule5a* (chem:compile-smarts "[<aby>]1-[<abx>&!<ar67>]=[<abx>&!<ar67>]-[<abx>&!<ar67>]=[<abx>&!<ar67>]-[<aby>]1" :tests *ar67test*))
+(defparameter *rule5a* (chem:compile-smarts "[<aby>]1-[<abx>&!<ar67>]=[<abx>&!<ar67>]-[<abx>&!<ar67>]=[<abx>&!<ar67>]1" :tests *ar67test*))
+;;; BAD_SMARTS
 (defparameter *rule5b* (chem:compile-smarts "[<abx>&!<ar67>]1-[<aby>]-[<abx>&!<ar67>]=[<abx>&!<ar67>]-[<abx>&!<ar67>]=[<abx>]1" :tests *ar67test*))
-(defparameter *rule5c* (chem:compile-smarts "[<abx>&!<ar67>]1=[<abx>&!<ar67>]-[<aby>]-[<abx>&!<ar67>]=[<abx>&!<ar67>]-[<abx>]1" :tests *ar67test*))
+
+;;; BAD_SMARTS
+(defparameter *rule5c* (chem:compile-smarts "[<abx>&!<ar67>]1=[<abx>&!<ar67>]-[<aby>]-[<abx>&!<ar67>]=[<abx>&!<ar67>]1" :tests *ar67test*))
 
 ;; Apply aromaticity rule of Jakalian, Jack, and Bayly • Vol. 23, No. 16 • Journal of Computational Chemistry
 (defun aromatic-rule5 (atoms-in-rings)

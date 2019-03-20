@@ -290,7 +290,6 @@ class BondListMatchNode_O : public ChemInfoNode_O
 public:
   bool fieldsp() const { return true; };
   void	fields(core::Record_sp node);
-private:
 public:
   virtual core::T_sp children() = 0;
   virtual	bool	matches_BondList(Root_sp root, chem::Atom_sp from, chem::BondList_sp bondList ) {_OF(); SUBCLASS_MUST_IMPLEMENT(); };
@@ -427,7 +426,7 @@ public:
   void	initialize();
   bool fieldsp() const { return true; };
   void	fields(core::Record_sp node);
-private:
+public:
   BondEnum		_Bond;
   gc::Nilable<AtomOrBondMatchNode_sp>	_AtomTest;
 
@@ -777,7 +776,7 @@ public:
   bool fieldsp() const { return true; };
   void	fields(core::Record_sp node);
   void	initialize();
-private:
+public:
   gc::Nilable<BondMatchNode_sp>	_Head;
   gc::Nilable<BondListMatchNode_sp>	_Tail;
 public:
@@ -851,7 +850,7 @@ public:
   bool fieldsp() const { return true; };
   void	fields(core::Record_sp node);
   void	initialize();
-private:
+public:
   gc::Nilable<BondListMatchNode_sp>	_Left;
   gc::Nilable<BondListMatchNode_sp>	_Right;
 public:
@@ -1026,6 +1025,9 @@ public:
   SmartsRoot_O() {};
 };
 
+};
+
+namespace chem {
 SMART(AntechamberRoot);
 class AntechamberRoot_O : public Root_O
 {
@@ -1057,7 +1059,54 @@ public:
   AntechamberRoot_O(const std::string& code) : Root_O(code) {};
   DEFAULT_CTOR_DTOR(AntechamberRoot_O);
 };
+};
 
+namespace chem {
+class MoleculeGraph_O;
+};
+
+template <>
+struct gctools::GCInfo<chem::MoleculeGraph_O> {
+  static bool constexpr NeedsInitialization = true;
+  static bool constexpr NeedsFinalization = false;
+  static GCInfo_policy constexpr Policy = collectable_immobile;
+};
+
+
+namespace chem {
+struct MoleculeVertexData {
+  int _AtomIndex;
+  MoleculeVertexData(int i) : _AtomIndex(i) {};
+  MoleculeVertexData(): _AtomIndex(-1) {};
+};
+
+struct MoleculeEdgeData {
+  BondOrder _BondOrder;
+  MoleculeEdgeData(BondOrder bo) : _BondOrder(bo) {};
+};
+
+    //create an -undirected- graph type, using vectors as the underlying containers
+    //and an adjacency_list as the basic representation
+typedef boost::adjacency_list<boost::vecS, boost::vecS, boost::undirectedS,
+                              MoleculeVertexData,
+                              MoleculeEdgeData> MoleculeGraphType;
+
+FORWARD(MoleculeGraph);
+class MoleculeGraph_O : public core::CxxObject_O
+{
+  LISP_CLASS(chem,ChemPkg,MoleculeGraph_O,"MoleculeGraph",core::CxxObject_O);
+public:
+  void initialize();
+public:
+  Molecule_sp          _Molecule;
+  core::HashTableEq_sp _atoms_to_index;
+  gctools::Vec0<Atom_sp> _atoms;
+  MoleculeGraphType*     _moleculeGraph;
+public:
+
+  MoleculeGraph_O(Molecule_sp);
+  ~MoleculeGraph_O();
+};
 
 
 

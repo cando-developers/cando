@@ -230,7 +230,7 @@ void	RestrainedExoCyclicAtom_O::lazyInitializeSmarts()
     if ( !RestrainedExoCyclicAtom_O::_LazyInitializedSmarts )
     {
 	RestrainedExoCyclicAtom_O::_LazyInitializedSmarts = true;
-        SmartsRoot_sp atomExoToSixMemberedRing = chem__compile_smarts("[*]9[*:1][*:2][*:3][*:4][*:5][*:6][*]9",_Nil<core::T_O>());
+        SmartsRoot_sp atomExoToSixMemberedRing = chem__compile_smarts("[*]1[*:1][*:2][*:3][*:4][*:5][*:6]9",_Nil<core::T_O>());
         chem::_sym_STARAtomExoToSixMemberedRingSTAR->defparameter(atomExoToSixMemberedRing);
     }
 }
