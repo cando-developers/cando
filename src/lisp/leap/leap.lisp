@@ -255,7 +255,7 @@
     (error "Bad arguments for ~a" (car entry))))
 
 
-(defun quit ()
+(defun leap-quit ()
   (throw 'repl-done nil))
 
 
@@ -291,7 +291,7 @@
       ("addIons" . leap.add-ions:add-ions)
       ("setBox" . leap.set-box:set-box)
       ("help" . leap-help)
-      ("quit" . quit)
+      ("quit" . leap-quit)
       ))
   (dolist (command *commands*)
     (if (fboundp (cdr command))
