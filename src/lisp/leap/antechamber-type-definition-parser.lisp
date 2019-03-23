@@ -252,7 +252,7 @@
 (parser.common-rules:defrule/s bond-definitions
     (and ap-tag ":" ap-tag ":" ap-bond)
   (:destructure (tag1 tag2 bond)
-                (core:make-cxx-object 'chem:after-match-bond-test
+                (core:make-cxx-object 'chem:after-match-bond-to-atom-test
                                       :id (incf *next-chem-info-id*)
                                       :tag1 (intern tag1 :keyword)
                                       :tag2 (intern tag2 :keyword)
@@ -456,12 +456,12 @@
 (esrap:defrule chemical-environment-atom.element.number.bracketed-atom-property-or-null.tag-name-or-null
     (and ap-element-wild number bracketed-atom-property-or-null tag-name-or-null)
   (:destructure (element number property tag)
-                (chem:make-antechamber-bond-test (intern element :keyword) number property (and nil (intern tag :keyword)))))
+                (chem:make-antechamber-bond-to-atom-test (intern element :keyword) number property (and nil (intern tag :keyword)))))
 
 (esrap:defrule chemical-environment-atom.element.bracketed-atom-property-or-null.tag-name-or-null
     (and ap-element-wild bracketed-atom-property-or-null tag-name-or-null)
   (:destructure (element property tag)
-                (chem:make-antechamber-bond-test (intern element :keyword) -1 property (and nil (intern tag :keyword)))))
+                (chem:make-antechamber-bond-to-atom-test (intern element :keyword) -1 property (and nil (intern tag :keyword)))))
 
 (esrap:defrule element
     (or ap-element-wild

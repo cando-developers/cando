@@ -41,6 +41,8 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/atom.h>
 
 #include <cando/chem/chemPackage.h>
+#include <cando/chem/chemInfo.h>
+
 
 namespace chem {
 
@@ -68,7 +70,7 @@ size_t calculate_maxtag(ChemInfoNode_sp node);
     void fields(core::Record_sp node);
   public:
     static ChemInfoMatch_sp make(Root_sp root,size_t maxtag, core::HashTableEql_sp ring);
-  private:
+  public:
     bool		_Matches;
     size_t              _MaxTagPlus1;
     Root_sp               _Root;
@@ -136,7 +138,7 @@ CL_DEFMETHOD     chem::Atom_sp tag(core::T_sp tag) { return this->getAtomWithTag
 
   typedef	enum { noType, recursiveRoot, root, smartsRoot, antechamberRoot, chain, branch,
 		       logical, tagSet, ringTest,
-		       atomTest, antechamberBondTest, bondTest, afterMatchBondTest,
+		       atomTest, antechamberBondToAtomTest, bondTest, afterMatchBondToAtomTest,
 		       antechamberFocusAtomMatch } ChemInfoType;
 
 
@@ -159,6 +161,7 @@ CL_DEFMETHOD     chem::Atom_sp tag(core::T_sp tag) { return this->getAtomWithTag
       SABDirectionalSingleDownOrUnspecified,
       SABDirectionalSingleUp,
       SABDirectionalSingleDown,
+      SABSameRingBond,
   } BondEnum;
 
   extern core::Symbol_sp& _sym_STARSabBondEnumConverterSTAR;
@@ -318,7 +321,7 @@ public:
   bool fieldsp() const { return true; };
   void	fields(core::Record_sp node);
   void	initialize();
-private:
+public:
   LogicalOperatorType	_Operator;
   gc::Nilable<ChemInfoNode_sp>	_Left;
   gc::Nilable<ChemInfoNode_sp>	_Right;
@@ -414,13 +417,87 @@ public:
 
 bool    _matchBondTypes(BondEnum be, chem::BondOrder bo);
 
+FORWARD(BondMatcher);
 
+class BondMatcher_O : public ChemInfoNode_O {
+  LISP_CLASS(chem,ChemPkg,BondMatcher_O, "BondMatcher", ChemInfoNode_O );
+public:
+};
+
+FORWARD(BondLogical);
+class BondLogical_O : public BondMatcher_O {
+  LISP_CLASS(chem,ChemPkg,BondLogical_O, "BondLogical", BondMatcher_O );
+public:
+  bool fieldsp() const { return true; };
+  void fields(core::Record_sp node);
+public:
+  static BondLogical_sp create(LogicalOperatorType op,
+//                             AtomOrBondMatchNode_sp a1,
+//                             gc::Nilable<AtomOrBondMatchNode_sp> a2 )
+                               BondMatcher_sp a1,
+                               BondMatcher_sp a2)
+  { _G();
+    GC_ALLOCATE(BondLogical_O, obj ); // RP_Create<Logical_O>(lisp);
+    obj->_Operator = op;
+    obj->_Left = a1;
+    obj->_Right = a2;
+    return obj;
+  };
+  static BondLogical_sp create(LogicalOperatorType op,
+//                             AtomOrBondMatchNode_sp a1,
+//                             gc::Nilable<AtomOrBondMatchNode_sp> a2 )
+                               BondMatcher_sp a)
+  { _G();
+    GC_ALLOCATE(BondLogical_O, obj ); // RP_Create<Logical_O>(lisp);
+    obj->_Operator = op;
+    obj->_Left = a;
+    obj->_Right = _Unbound<BondMatcher_O>();
+    return obj;
+  };
+public:
+  LogicalOperatorType _Operator;
+  BondMatcher_sp  _Left;
+  BondMatcher_sp  _Right;
+public:
+  static BondLogical_sp create_bondLogIdentity(core::T_sp nilOrOp);
+  static BondLogical_sp create_bondLogOr(core::T_sp nilOrOp1, core::T_sp nilOrOp2);
+  static BondLogical_sp create_bondLogNot(core::T_sp nilOrOp);
+  static BondLogical_sp create_bondLogLowPrecedenceAnd(core::T_sp nilOrOp1, core::T_sp nilOrOp2);
+  static BondLogical_sp create_bondLogHighPrecedenceAnd(core::T_sp nilOrOp1, core::T_sp nilOrOp2);
+  virtual core::T_sp children();
+public:
+  core::T_sp getLeft() const;
+  core::T_sp getRight() const;
+  void setLeft(core::T_sp val);
+  void setRight(core::T_sp val);
+  virtual	bool	matches_Bond( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond);
+};
+
+FORWARD(BondTest);
+class BondTest_O : public BondMatcher_O {
+  LISP_CLASS(chem,ChemPkg,BondTest_O, "BondTest", BondMatcher_O );
+public:
+  bool fieldsp() const { return true; };
+  void fields(core::Record_sp node);
+public:
+  static BondTest_sp create( BondEnum be )
+  {_G();
+    GC_ALLOCATE(BondTest_O, obj ); // RP_Create<Logical_O>(lisp);
+    obj->_Bond = be;
+    return obj;
+  };
+public:
+  BondEnum        _Bond;
+public:
+    virtual	bool	matches_Bond( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond);
+};
+  
 
 FORWARD(AtomTest);
-SMART(BondTest);
-class BondTest_O : public BondMatchNode_O
+SMART(BondToAtomTest);
+class BondToAtomTest_O : public BondMatchNode_O
 {
-  LISP_CLASS(chem,ChemPkg,BondTest_O,"BondTest",BondMatchNode_O);
+  LISP_CLASS(chem,ChemPkg,BondToAtomTest_O,"BondToAtomTest",BondMatchNode_O);
 
 public:
   void	initialize();
@@ -428,12 +505,13 @@ public:
   void	fields(core::Record_sp node);
 public:
   BondEnum		_Bond;
+  BondMatcher_sp        _BondMatcher;
   gc::Nilable<AtomOrBondMatchNode_sp>	_AtomTest;
 
 public:
-  static BondTest_sp create(BondEnum b, core::T_sp nilOrNode )
+  static BondToAtomTest_sp create(BondEnum b, core::T_sp nilOrNode )
   {_G();
-    GC_ALLOCATE(BondTest_O, obj ); // RP_Create<BondTest_O>(lisp);
+    GC_ALLOCATE(BondToAtomTest_O, obj ); // RP_Create<BondToAtomTest_O>(lisp);
     obj->_Bond = b;
     if (nilOrNode.nilp()) {
       obj->_AtomTest = _Nil<core::T_O>();
@@ -448,31 +526,31 @@ public:
   virtual	bool	matches_Bond( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );
   virtual string asSmarts() const;
 
-  static BondTest_sp create_SABNoBond(core::T_sp nilOrNode);
-  static BondTest_sp create_SABSingleOrAromaticBond(core::T_sp nilOrNode);
-  static BondTest_sp create_SABDoubleOrAromaticBond(core::T_sp nilOrNode);
-  static BondTest_sp create_SABTripleOrAromaticBond(core::T_sp nilOrNode);
-  static BondTest_sp create_SABSingleBond(core::T_sp nilOrNode);
-  static BondTest_sp create_SABDoubleBond(core::T_sp nilOrNode);
-  static BondTest_sp create_SABTripleBond(core::T_sp nilOrNode);
-  static BondTest_sp create_SABAromaticBond(core::T_sp nilOrNode);
-  static BondTest_sp create_SABAnyBond(core::T_sp nilOrNode);
-  static BondTest_sp create_SABDirectionalSingleUpOrUnspecified(core::T_sp nilOrNode);
-  static BondTest_sp create_SABDirectionalSingleDownOrUnspecified(core::T_sp nilOrNode);
-  static BondTest_sp create_SABDirectionalSingleUp(core::T_sp nilOrNode);
-  static BondTest_sp create_SABDirectionalSingleDown(core::T_sp nilOrNode);
+  static BondToAtomTest_sp create_SABNoBond(core::T_sp nilOrNode);
+  static BondToAtomTest_sp create_SABSingleOrAromaticBond(core::T_sp nilOrNode);
+  static BondToAtomTest_sp create_SABDoubleOrAromaticBond(core::T_sp nilOrNode);
+  static BondToAtomTest_sp create_SABTripleOrAromaticBond(core::T_sp nilOrNode);
+  static BondToAtomTest_sp create_SABSingleBond(core::T_sp nilOrNode);
+  static BondToAtomTest_sp create_SABDoubleBond(core::T_sp nilOrNode);
+  static BondToAtomTest_sp create_SABTripleBond(core::T_sp nilOrNode);
+  static BondToAtomTest_sp create_SABAromaticBond(core::T_sp nilOrNode);
+  static BondToAtomTest_sp create_SABAnyBond(core::T_sp nilOrNode);
+  static BondToAtomTest_sp create_SABDirectionalSingleUpOrUnspecified(core::T_sp nilOrNode);
+  static BondToAtomTest_sp create_SABDirectionalSingleDownOrUnspecified(core::T_sp nilOrNode);
+  static BondToAtomTest_sp create_SABDirectionalSingleUp(core::T_sp nilOrNode);
+  static BondToAtomTest_sp create_SABDirectionalSingleDown(core::T_sp nilOrNode);
 
   void setAtomTest(core::T_sp atomTest);
   virtual core::T_sp children();
-  DEFAULT_CTOR_DTOR(BondTest_O);
+  BondToAtomTest_O() : _BondMatcher(_Unbound<BondMatcher_O>()) {};
 };
 
 
 
-SMART(AntechamberBondTest);
-class AntechamberBondTest_O : public BondMatchNode_O
+SMART(AntechamberBondToAtomTest);
+class AntechamberBondToAtomTest_O : public BondMatchNode_O
 {
-  LISP_CLASS(chem,ChemPkg,AntechamberBondTest_O,"AntechamberBondTest",BondMatchNode_O);
+  LISP_CLASS(chem,ChemPkg,AntechamberBondToAtomTest_O,"AntechamberBondToAtomTest",BondMatchNode_O);
 
 public:
   void initialize();
@@ -484,29 +562,19 @@ private:
   gc::Nilable<AtomOrBondMatchNode_sp>	_AtomProperties;
   core::Symbol_sp                   _Tag;
 public:
-  CL_LAMBDA(element neighbors props tag);
-  CL_LISPIFY_NAME("make-antechamber-bond-test");
-  CL_DEF_CLASS_METHOD static AntechamberBondTest_sp create_args( core::Symbol_sp element, int neighbors,
-                                                                 AtomOrBondMatchNode_sp props, core::Symbol_sp tag )
-  {_G();
-    GC_ALLOCATE(AntechamberBondTest_O, obj ); // RP_Create<AntechamberBondTest_O>(lisp);
-    obj->_Element = element;
-    obj->_Neighbors = neighbors;
-    obj->_AtomProperties = props;
-    obj->_Tag = tag;
-    return obj;
-  };
+  static AntechamberBondToAtomTest_sp create_args( core::Symbol_sp element, int neighbors,
+                                                   AtomOrBondMatchNode_sp props, core::Symbol_sp tag );
 public:
 
-//virtual	adapt::QDomNode_sp	asXml(string name=XmlTag_AntechamberBondTest());
+//virtual	adapt::QDomNode_sp	asXml(string name=XmlTag_AntechamberBondToAtomTest());
 //virtual	void	parseFromXml(adapt::QDomNode_sp node );
-  virtual	ChemInfoType	type() { return antechamberBondTest;};
+  virtual	ChemInfoType	type() { return antechamberBondToAtomTest;};
   bool	matchBasic( AntechamberRoot_sp root, chem::Atom_sp atom );
   virtual	bool	matches_Bond( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );
   virtual bool    matches_Atom( Root_sp root, chem::Atom_sp atom );
   virtual string asSmarts() const;
   virtual core::T_sp children();
-  DEFAULT_CTOR_DTOR(AntechamberBondTest_O);
+  DEFAULT_CTOR_DTOR(AntechamberBondToAtomTest_O);
 };
 
 
@@ -909,10 +977,10 @@ public:
   DEFAULT_CTOR_DTOR(Branch_O);
 };
 
-SMART(AfterMatchBondTest);
-class AfterMatchBondTest_O : public RootMatchNode_O
+SMART(AfterMatchBondToAtomTest);
+class AfterMatchBondToAtomTest_O : public RootMatchNode_O
 {
-  LISP_CLASS(chem,ChemPkg,AfterMatchBondTest_O,"AfterMatchBondTest",RootMatchNode_O);
+  LISP_CLASS(chem,ChemPkg,AfterMatchBondToAtomTest_O,"AfterMatchBondToAtomTest",RootMatchNode_O);
 
 public:
   void initialize();
@@ -923,22 +991,22 @@ private:
   core::Symbol_sp _AtomTag2;
   BondEnum	_Bond;
 public:
-  static AfterMatchBondTest_sp create( core::Symbol_sp tag1, core::Symbol_sp tag2, BondEnum b)
+  static AfterMatchBondToAtomTest_sp create( core::Symbol_sp tag1, core::Symbol_sp tag2, BondEnum b)
   {
     _G();
-    GC_ALLOCATE(AfterMatchBondTest_O, obj ); // RP_Create<AfterMatchBondTest_O>(lisp);
+    GC_ALLOCATE(AfterMatchBondToAtomTest_O, obj ); // RP_Create<AfterMatchBondToAtomTest_O>(lisp);
     obj->_AtomTag1 = tag1;
     obj->_AtomTag2 = tag2;
     obj->_Bond = b;
     return obj;
   };
 public:
-// virtual	adapt::QDomNode_sp	        asXml(string name=XmlTag_AfterMatchBondTest());
-  virtual	ChemInfoType            type() { return afterMatchBondTest; };
+// virtual	adapt::QDomNode_sp	        asXml(string name=XmlTag_AfterMatchBondToAtomTest());
+  virtual	ChemInfoType            type() { return afterMatchBondToAtomTest; };
   virtual	bool    		matches( Root_sp root );
 
 
-  DEFAULT_CTOR_DTOR(AfterMatchBondTest_O);
+  DEFAULT_CTOR_DTOR(AfterMatchBondToAtomTest_O);
 };
 
 
@@ -1075,21 +1143,28 @@ struct gctools::GCInfo<chem::MoleculeGraph_O> {
 
 namespace chem {
 struct MoleculeVertexData {
+  MoleculeGraph_O* _moleculeGraph;
   int _AtomIndex;
-  MoleculeVertexData(int i) : _AtomIndex(i) {};
+  MoleculeVertexData(MoleculeGraph_O* g, int i) : _moleculeGraph(g), _AtomIndex(i) {};
   MoleculeVertexData(): _AtomIndex(-1) {};
 };
 
 struct MoleculeEdgeData {
   BondOrder _BondOrder;
   MoleculeEdgeData(BondOrder bo) : _BondOrder(bo) {};
+  bool operator<(const MoleculeEdgeData& other) const {
+    return this->_BondOrder<other._BondOrder;
+  }
+  bool operator==(const MoleculeEdgeData& other) const {
+    return this->_BondOrder==other._BondOrder;
+  }
 };
 
     //create an -undirected- graph type, using vectors as the underlying containers
     //and an adjacency_list as the basic representation
 typedef boost::adjacency_list<boost::vecS, boost::vecS, boost::undirectedS,
                               MoleculeVertexData,
-                              MoleculeEdgeData> MoleculeGraphType;
+                              BondOrder> MoleculeGraphType;
 
 FORWARD(MoleculeGraph);
 class MoleculeGraph_O : public core::CxxObject_O
@@ -1107,6 +1182,92 @@ public:
   MoleculeGraph_O(Molecule_sp);
   ~MoleculeGraph_O();
 };
+
+};
+
+namespace chem {
+class ChemInfoGraph_O;
+};
+
+template <>
+struct gctools::GCInfo<chem::ChemInfoGraph_O> {
+  static bool constexpr NeedsInitialization = true;
+  static bool constexpr NeedsFinalization = false;
+  static GCInfo_policy constexpr Policy = collectable_immobile;
+};
+
+
+namespace chem {
+
+
+
+struct ChemInfoVertexData {
+  ChemInfoGraph_O* _chemInfoGraph;
+  int _NodeIndex;
+  ChemInfoVertexData(ChemInfoGraph_O* g, int i) : _chemInfoGraph(g), _NodeIndex(i) {};
+  ChemInfoVertexData() : _NodeIndex(-1) {};
+};
+
+struct ChemInfoEdgeData {
+  BondEnum _BondEnum;
+  ChemInfoEdgeData(BondEnum n) : _BondEnum(n) {};
+  bool operator<(const ChemInfoEdgeData& other) const {
+    return this->_BondEnum<other._BondEnum;
+  }
+  bool operator==(const ChemInfoEdgeData& other) const {
+    return this->_BondEnum==other._BondEnum;
+  }
+
+};
+
+struct RingBond {
+  BondEnum _Bond;
+  int _NodeIndex;
+  RingBond(BondEnum b, int ni) : _Bond(b), _NodeIndex(ni) {};
+};
+
+struct RingClosers {
+  bool _Active;
+  int _NodeIndex;
+  std::vector<RingBond> _Bonds;
+  RingClosers() : _Active(false) {};
+};
+
+    //create an -undirected- graph type, using vectors as the underlying containers
+    //and an adjacency_list as the basic representation
+typedef boost::adjacency_list<boost::vecS, boost::vecS, boost::undirectedS,
+                              ChemInfoVertexData,
+                              BondEnum> ChemInfoGraphType;
+
+FORWARD(ChemInfoGraph);
+class ChemInfoGraph_O : public core::CxxObject_O
+{
+  LISP_CLASS(chem,ChemPkg,ChemInfoGraph_O,"ChemInfoGraph",core::CxxObject_O);
+public:
+  void initialize();
+public:
+  Root_sp                _Root;
+  core::HashTableEq_sp   _nodes_to_index;
+  std::vector<size_t>               _nodeOrder;
+  gctools::Vec0<ChemInfoNode_sp> _nodes;
+  ChemInfoGraphType*     _chemInfoGraph;
+public:
+
+  ChemInfoGraph_O(Root_sp);
+  ~ChemInfoGraph_O();
+};
+
+};
+
+
+
+
+
+
+
+
+
+namespace chem {
 
 
 
