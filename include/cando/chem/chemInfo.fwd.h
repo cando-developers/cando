@@ -49,5 +49,8 @@ FORWARD(AfterMatchBondTest);
 FORWARD(Root);
 FORWARD(SmartsRoot);
 FORWARD(AntechamberRoot);
+ FORWARD(BondMatcher);
+ FORWARD(BondLogical);
+ FORWARD(BondTest);
 }
 #endif

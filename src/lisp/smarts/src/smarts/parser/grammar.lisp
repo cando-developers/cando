@@ -143,10 +143,49 @@
 
 ;;; SMARTS 4.2 Bonds Primitives
 
+;;; original code without logicals
+#+(or)
 (defrule bond-pattern
     (or bond-pattern/non-literal language.smiles.parser:bond))
 
-;;; Only additions to SMILES 3.2.2.
+;;; New code with logicals
+(defrule bond-pattern
+    (or modified-bond-pattern one-bond-pattern))
+
+(defrule modified-bond-pattern
+  (and weak-and-bond-expression)
+  (:lambda (expression &bounds start end)
+    (architecture.builder-protocol:node* (:logical-bond-expression :bounds (cons start end))
+                                         (1 :bond-expression expression))))
+
+;;; SMARTS 4.3 Logical Operators
+
+(macrolet ((define-operator-rule (name expression
+                                  &optional (value (make-keyword name)))
+             (let ((rule-name (symbolicate '#:operator- name)))
+               `(defrule ,rule-name
+                    ,expression
+                  (:constant ,value)))))
+  (define-operator-rule bond-weak-and     #\;   :weak-and)
+  (define-operator-rule bond-or           #\,)
+  (define-operator-rule bond-strong-and   #\&   :strong-and)
+  (define-operator-rule bond-not          #\!)
+  (define-operator-rule bond-implicit-and (and) :implicit-and))
+
+(parser.common-rules.operators:define-operator-rules
+    (:skippable?-expression nil)
+  (2 weak-and-bond-expression     operator-bond-weak-and)
+  (2 or-bond-expression           operator-bond-or)
+  (2 strong-and-bond-expression   operator-bond-strong-and)
+  (1 not-bond-expression          operator-bond-not)
+  (2 implicit-and-bond-expression operator-bond-implicit-and)
+  one-bond-pattern)
+
+
+(defrule one-bond-pattern
+    (or bond-pattern/non-literal language.smiles.parser:bond))
+
+;;; Only additions to SMILES 3.2.2 and higher.
 (macrolet
     ((define-rules (&body clauses)
        (let ((rules '()))
@@ -164,7 +203,9 @@
   (define-rules
     (wildcard            #\~)
     (up-or-unspecified   "/?")
-    (down-or-unspecified "\\?")))
+    (down-or-unspecified "\\?")
+    (same-ring           #\@) ; added in smarts 4.6
+    ))
 
 ;;; SMARTS 4.3 Logical Operators
 

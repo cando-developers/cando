@@ -28,6 +28,10 @@
     result))
 
 (defmethod architecture.builder-protocol:make-node ((builder (eql :cando))
+                                                    head &rest args)
+  (error "Handle make-node for ~s ~s" head args))
+
+(defmethod architecture.builder-protocol:make-node ((builder (eql :cando))
                                                     (head (eql :atom))
                                                     &rest args
                                                     &key kind symbol
@@ -136,6 +140,15 @@
     (setf result (chem:create-log-identity nil))
     result))
 
+(defmethod architecture.builder-protocol:make-node ((builder (eql :cando))
+                                                    (head (eql :logical-bond-expression))
+                                                    &rest args
+                                                    &key expression)
+;;;  (format t ":bracketed-expression make-node head: ~s args: ~s~%" head args)
+  (let (result)
+    (setf result (chem:create-bond-log-identity nil))
+    result))
+
 
 (defmethod architecture.builder-protocol:make-node ((builder (eql :cando))
                                                     (head (eql :labeled))
@@ -160,7 +173,14 @@
       ((:strong-and :implicit-and)
        (setf result (chem:create-log-high-precedence-and nil nil)))
       (:weak-and
-       (setf result (chem:create-log-low-precedence-and nil nil))))
+       (setf result (chem:create-log-low-precedence-and nil nil)))
+      (:bond-or
+       (setf result (chem:create-bond-log-or nil nil)))
+      ((:bond-strong-and :bond-implicit-and)
+       (setf result (chem:create-bond-log-high-precedence-and nil nil)))
+      (:bond-weak-and
+       (setf result (chem:create-bond-log-low-precedence-and nil nil)))
+      )
 ;;;    (format t "Made ~s~%" result)
     result))
 
@@ -173,7 +193,9 @@
   (let (result)
     (ecase operator
       (:not
-       (setf result (chem:create-log-not nil))))
+       (setf result (chem:create-log-not nil)))
+      (:bond-not
+       (setf result (chem:create-bond-log-not nil))))
 ;;;    (format t "Made ~s~%" result)
     result))
 
@@ -285,10 +307,10 @@
 
 (defmethod architecture.builder-protocol:relate ((builder (eql :cando))
                                                  (head (eql :atom))
-                                                 (left chem:bond-test)
+                                                 (left chem:bond-to-atom-test)
                                                  (right chem:atom-or-bond-match-node)
                                                  &key key)
-;;  (format t "(:atom bond-test atom-test) relate head: ~s left: ~s right:~s~%" head left right)
+;;  (format t "(:atom bond-to-atom-test atom-test) relate head: ~s left: ~s right:~s~%" head left right)
   (chem:set-atom-test left right)
   left)
 
@@ -333,6 +355,21 @@
 (defmethod architecture.builder-protocol:relate ((builder (eql :cando))
                                                  (head (eql :expression))
                                                  (left chem:logical)
+                                                 (right t)
+                                                 &key key)
+;;;  (format t ":expression relate  head: ~s left: ~s right:~s~%" head left right)
+  (if (chem:get-left left)
+      (progn
+;;;        (format t "left ~a~%" (chem:get-left left))
+        (chem:set-right left right))
+      (progn
+;;;        (format t "no left~%")
+        (chem:set-left left right)))
+  left)
+
+(defmethod architecture.builder-protocol:relate ((builder (eql :cando))
+                                                 (head (eql :bond-expression))
+                                                 (left chem:bond-logical)
                                                  (right t)
                                                  &key key)
 ;;;  (format t ":expression relate  head: ~s left: ~s right:~s~%" head left right)
