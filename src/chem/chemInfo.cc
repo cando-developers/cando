@@ -105,6 +105,8 @@ int af_depth(ChemInfoNode_sp n) {
 
 string sabToString(BondEnum sabType) {
   switch (sabType) {
+  case SABUseBondMatcher:
+      return "use-bond-matcher";
   case SABNoBond:
       return "";
   case SABSingleBond:
@@ -973,6 +975,7 @@ bool _matchBondTypes(BondEnum be, chem::BondOrder bo) {
   case SABDirectionalSingleDown:
       SIMPLE_ERROR(BF("Must implement directional bonds"));
   default:
+      printf("%s:%d:%s Fell through to default with be = %s - maybe the BondMatcher should handle it\n", __FILE__, __LINE__, __FUNCTION__, sabToString(be).c_str());
       goto nomatch;
   }
   LOG(BF("THEY MATCH!!"));
@@ -1089,6 +1092,9 @@ CL_DEFMETHOD void BondLogical_O::setRight(core::T_sp b) {
 }
 
 
+CL_DEFMETHOD LogicalOperatorType BondLogical_O::bondLogicalOperator() const {
+  return this->_Operator;
+}
 
 CL_DEF_CLASS_METHOD BondLogical_sp BondLogical_O::create_bondLogIdentity(core::T_sp nilOrOp1)
 {
@@ -1132,8 +1138,16 @@ CL_DEF_CLASS_METHOD BondLogical_sp BondLogical_O::create_bondLogHighPrecedenceAn
 
 
 
+CL_LISPIFY_NAME("make-bond-test");
+CL_DEF_CLASS_METHOD BondTest_sp BondTest_O::make( BondEnum be )
+{_G();
+  GC_ALLOCATE_VARIADIC(BondTest_O, obj, be ); // RP_Create<Logical_O>(lisp);
+  return obj;
+};
 
-
+CL_DEFMETHOD BondEnum BondTest_O::bondTestGetBond() const {
+  return this->_Bond;
+}
 
 void BondTest_O::fields(core::Record_sp node)
 {
@@ -1147,68 +1161,71 @@ bool BondTest_O::matches_Bond(Root_sp root, Atom_sp from, Bond_sp bond) {
   return _matchBondTypesWithAtoms(this->_Bond, bo, from, bond);
 }
 
+core::T_sp BondTest_O::children() {
+  return _Nil<core::T_O>();
+}
+
+
+
 void BondToAtomTest_O::initialize() {
   this->Base::initialize();
-  this->_Bond = SABNoBond;
+  this->_Bond = SABUseBondMatcher;
   this->_AtomTest = _Nil<core::T_O>();
 }
 
-CL_DEF_CLASS_METHOD BondToAtomTest_sp BondToAtomTest_O::create_SABNoBond(core::T_sp nilOrNode) {
-  return create(SABNoBond, nilOrNode);
+CL_LISPIFY_NAME(make-bond-to-atom-test);
+CL_DEF_CLASS_METHOD BondToAtomTest_sp BondToAtomTest_O::makeBondToAtomTest(BondEnum be, core::T_sp nilOrNode) {
+  GC_ALLOCATE_VARIADIC(BondToAtomTest_O,bta,be);
+  bta->_AtomTest = nilOrNode;
+  bta->_BondMatcher = _Unbound<BondMatcher_O>();
+  return bta;
 };
 
-CL_DEF_CLASS_METHOD BondToAtomTest_sp BondToAtomTest_O::create_SABSingleOrAromaticBond(core::T_sp nilOrNode) {
-  return create(SABSingleOrAromaticBond, nilOrNode);
-};
-
-CL_DEF_CLASS_METHOD BondToAtomTest_sp BondToAtomTest_O::create_SABDoubleOrAromaticBond(core::T_sp nilOrNode) {
-  return create(SABDoubleOrAromaticBond, nilOrNode);
-};
-
-CL_DEF_CLASS_METHOD BondToAtomTest_sp BondToAtomTest_O::create_SABTripleOrAromaticBond(core::T_sp nilOrNode) {
-  return create(SABTripleOrAromaticBond, nilOrNode);
-};
-
-CL_DEF_CLASS_METHOD BondToAtomTest_sp BondToAtomTest_O::create_SABSingleBond(core::T_sp nilOrNode) {
-  return create(SABSingleBond, nilOrNode);
-};
-
-CL_DEF_CLASS_METHOD BondToAtomTest_sp BondToAtomTest_O::create_SABDoubleBond(core::T_sp nilOrNode) {
-  return create(SABDoubleBond, nilOrNode);
-};
-
-CL_DEF_CLASS_METHOD BondToAtomTest_sp BondToAtomTest_O::create_SABTripleBond(core::T_sp nilOrNode) {
-  return create(SABTripleBond, nilOrNode);
-};
-
-CL_DEF_CLASS_METHOD BondToAtomTest_sp BondToAtomTest_O::create_SABAromaticBond(core::T_sp nilOrNode) {
-  return create(SABAromaticBond, nilOrNode);
-};
-
-CL_DEF_CLASS_METHOD BondToAtomTest_sp BondToAtomTest_O::create_SABAnyBond(core::T_sp nilOrNode) {
-  return create(SABAnyBond, nilOrNode);
-};
-
-CL_DEF_CLASS_METHOD BondToAtomTest_sp BondToAtomTest_O::create_SABDirectionalSingleUpOrUnspecified(core::T_sp nilOrNode) {
-  return create(SABDirectionalSingleUpOrUnspecified, nilOrNode);
-};
-
-CL_DEF_CLASS_METHOD BondToAtomTest_sp BondToAtomTest_O::create_SABDirectionalSingleDownOrUnspecified(core::T_sp nilOrNode) {
-  return create(SABDirectionalSingleDownOrUnspecified, nilOrNode);
-};
-
-CL_DEF_CLASS_METHOD BondToAtomTest_sp BondToAtomTest_O::create_SABDirectionalSingleUp(core::T_sp nilOrNode) {
-  return create(SABDirectionalSingleUp, nilOrNode);
-};
-
-CL_DEF_CLASS_METHOD BondToAtomTest_sp BondToAtomTest_O::create_SABDirectionalSingleDown(core::T_sp nilOrNode) {
-  return create(SABDirectionalSingleDown, nilOrNode);
+CL_LISPIFY_NAME(make-bond-matcher-to-atom-test);
+CL_DEF_CLASS_METHOD BondToAtomTest_sp BondToAtomTest_O::makeBondMatcherToAtomTest(BondMatcher_sp bm, core::T_sp nilOrNode) {
+  GC_ALLOCATE_VARIADIC(BondToAtomTest_O,bta,SABUseBondMatcher);
+  bta->_BondMatcher = bm;
+  bta->_AtomTest = nilOrNode;
+  return bta;
 };
 
 core::T_sp BondToAtomTest_O::children() {
   ql::list result;
   if (this->_AtomTest.notnilp()) result << this->_AtomTest;
   return result.cons();
+}
+
+CL_DEFMETHOD BondEnum BondToAtomTest_O::bondType() {
+  return this->_Bond;
+}
+
+CL_DEFMETHOD bool BondToAtomTest_O::bondMatcherBoundP() const {
+  return this->_BondMatcher.boundp();
+}
+
+CL_DEFMETHOD BondMatcher_sp BondToAtomTest_O::bondMatcher() const {
+  if (this->_BondMatcher.boundp()) {
+    return this->_BondMatcher;
+  }
+  SIMPLE_ERROR(BF("bond-matcher is unbound"));
+}
+
+//! Set the BondType if it's one that is recognzed by _matchBondTypes
+CL_DEFMETHOD bool BondToAtomTest_O::setfBondTypeIfOptimizable(BondEnum be) {
+  switch (be) {
+  case SABSingleBond:
+  case SABSingleOrAromaticBond:
+  case SABDoubleOrAromaticBond:
+  case SABTripleOrAromaticBond:
+  case SABDoubleBond:
+  case SABTripleBond:
+  case SABAromaticBond:
+  case SABAnyBond:
+  case SABDelocalizedBond:
+      this->_Bond = be;
+      return true;
+  }
+  return false;
 }
 
 
@@ -1226,22 +1243,29 @@ CL_DEFMETHOD void BondToAtomTest_O::setAtomTest(core::T_sp atomTest)
 bool BondToAtomTest_O::matches_Bond(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond) {
   _OF();
   LOG(BF("%s\natom: %s bond: %s") % this->asSmarts() % _rep_(from) % _rep_(bond));
-  chem::BondOrder bo;
-  bo = bond->getOrder();
-  if (!chem::_matchBondTypesWithAtoms(this->_Bond, bo, from, bond ))
-    goto FAIL;
-  if (this->_AtomTest->matches_Atom(root, bond->getOtherAtom(from)))
-    goto SUCCESS;
- FAIL:
-  LOG(BF("FAIL!"));
-  return false;
- SUCCESS:
-  LOG(BF("SUCCESS!"));
-  return true;
-}
+  if (this->_Bond!=SABUseBondMatcher) {
+    chem::BondOrder bo;
+    bo = bond->getOrder();
+    if (!chem::_matchBondTypesWithAtoms(this->_Bond, bo, from, bond ))
+      goto FAIL;
+    if (this->_AtomTest->matches_Atom(root, bond->getOtherAtom(from)))
+      goto SUCCESS;
+  } else {
+    ASSERT(this->_BondMatcher.boundp());
+    if (!this->_BondMatcher->matches_Bond(root,from,bond)) goto FAIL;
+    if (this->_AtomTest->matches_Atom(root,bond->getOtherAtom(from))) goto SUCCESS;
+  }
+  FAIL:
+    LOG(BF("FAIL!"));
+    return false;
+  SUCCESS:
+    LOG(BF("SUCCESS!"));
+    return true;
+  }
 
 void BondToAtomTest_O::fields(core::Record_sp node) {
   node->field( INTERN_(kw,atomTest), this->_AtomTest);
+  node->field_if_not_unbound( INTERN_(kw,bondMatcher), this->_BondMatcher);
   node->/*pod_*/field( INTERN_(kw,bond), this->_Bond);
   this->Base::fields(node);
 }
@@ -2416,6 +2440,7 @@ CL_VALUE_ENUM(kw::_sym_SARRingSet, SARRingSet);
 CL_VALUE_ENUM(kw::_sym_SARRingTest, SARRingTest);
 CL_END_ENUM(_sym_STARSarRingTestEnumConverterSTAR);
 
+SYMBOL_EXPORT_SC_(KeywordPkg,SABUseBondMatcher);
 SYMBOL_EXPORT_SC_(KeywordPkg,SABNoBond);
 SYMBOL_EXPORT_SC_(KeywordPkg,SABSingleBond);
 SYMBOL_EXPORT_SC_(KeywordPkg,SABSingleOrAromaticBond);
@@ -2430,8 +2455,10 @@ SYMBOL_EXPORT_SC_(KeywordPkg,SABDirectionalSingleUpOrUnspecified);
 SYMBOL_EXPORT_SC_(KeywordPkg,SABDirectionalSingleDownOrUnspecified);
 SYMBOL_EXPORT_SC_(KeywordPkg,SABDirectionalSingleUp);
 SYMBOL_EXPORT_SC_(KeywordPkg,SABDirectionalSingleDown);
+SYMBOL_EXPORT_SC_(KeywordPkg,SABSameRingBond);
 SYMBOL_EXPORT_SC_(ChemPkg,STARSabBondEnumConverterSTAR);
 CL_BEGIN_ENUM(BondEnum,_sym_STARSabBondEnumConverterSTAR,"SABBondEnum");
+CL_VALUE_ENUM(kw::_sym_SABUseBondMatcher, SABUseBondMatcher );
 CL_VALUE_ENUM(kw::_sym_SABNoBond, SABNoBond );
 CL_VALUE_ENUM(kw::_sym_SABSingleBond, SABSingleBond);
 CL_VALUE_ENUM(kw::_sym_SABSingleOrAromaticBond, SABSingleOrAromaticBond);
@@ -2446,6 +2473,7 @@ CL_VALUE_ENUM(kw::_sym_SABDirectionalSingleUpOrUnspecified, SABDirectionalSingle
 CL_VALUE_ENUM(kw::_sym_SABDirectionalSingleDownOrUnspecified, SABDirectionalSingleDownOrUnspecified);
 CL_VALUE_ENUM(kw::_sym_SABDirectionalSingleUp, SABDirectionalSingleUp);
 CL_VALUE_ENUM(kw::_sym_SABDirectionalSingleDown, SABDirectionalSingleDown);
+CL_VALUE_ENUM(kw::_sym_SABSameRingBond, SABSameRingBond);
 CL_END_ENUM(_sym_STARSabBondEnumConverterSTAR);
 
 SYMBOL_EXPORT_SC_(KeywordPkg,logAlwaysTrue);

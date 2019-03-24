@@ -147,6 +147,7 @@ CL_DEFMETHOD     chem::Atom_sp tag(core::T_sp tag) { return this->getAtomWithTag
 
 
   typedef enum	{
+      SABUseBondMatcher,
       SABNoBond,
       SABSingleBond,
       SABSingleOrAromaticBond,
@@ -466,6 +467,7 @@ public:
   static BondLogical_sp create_bondLogHighPrecedenceAnd(core::T_sp nilOrOp1, core::T_sp nilOrOp2);
   virtual core::T_sp children();
 public:
+  LogicalOperatorType bondLogicalOperator() const;
   core::T_sp getLeft() const;
   core::T_sp getRight() const;
   void setLeft(core::T_sp val);
@@ -480,16 +482,14 @@ public:
   bool fieldsp() const { return true; };
   void fields(core::Record_sp node);
 public:
-  static BondTest_sp create( BondEnum be )
-  {_G();
-    GC_ALLOCATE(BondTest_O, obj ); // RP_Create<Logical_O>(lisp);
-    obj->_Bond = be;
-    return obj;
-  };
+  static BondTest_sp make( BondEnum be );
 public:
   BondEnum        _Bond;
 public:
     virtual	bool	matches_Bond( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond);
+  virtual core::T_sp children();
+  BondEnum bondTestGetBond() const;
+  BondTest_O(BondEnum be) : _Bond(be) {};
 };
   
 
@@ -509,6 +509,7 @@ public:
   gc::Nilable<AtomOrBondMatchNode_sp>	_AtomTest;
 
 public:
+#if 0
   static BondToAtomTest_sp create(BondEnum b, core::T_sp nilOrNode )
   {_G();
     GC_ALLOCATE(BondToAtomTest_O, obj ); // RP_Create<BondToAtomTest_O>(lisp);
@@ -520,29 +521,23 @@ public:
     }
     return obj;
   }
+#endif
 public:
-  BondEnum	bondType() { return this->_Bond; };
+  BondEnum	bondType();
+  bool setfBondTypeIfOptimizable(BondEnum be);
+  bool  bondMatcherBoundP() const;
+  BondMatcher_sp bondMatcher() const;
   virtual	ChemInfoType	type() { return bondTest;};
   virtual	bool	matches_Bond( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );
   virtual string asSmarts() const;
 
-  static BondToAtomTest_sp create_SABNoBond(core::T_sp nilOrNode);
-  static BondToAtomTest_sp create_SABSingleOrAromaticBond(core::T_sp nilOrNode);
-  static BondToAtomTest_sp create_SABDoubleOrAromaticBond(core::T_sp nilOrNode);
-  static BondToAtomTest_sp create_SABTripleOrAromaticBond(core::T_sp nilOrNode);
-  static BondToAtomTest_sp create_SABSingleBond(core::T_sp nilOrNode);
-  static BondToAtomTest_sp create_SABDoubleBond(core::T_sp nilOrNode);
-  static BondToAtomTest_sp create_SABTripleBond(core::T_sp nilOrNode);
-  static BondToAtomTest_sp create_SABAromaticBond(core::T_sp nilOrNode);
-  static BondToAtomTest_sp create_SABAnyBond(core::T_sp nilOrNode);
-  static BondToAtomTest_sp create_SABDirectionalSingleUpOrUnspecified(core::T_sp nilOrNode);
-  static BondToAtomTest_sp create_SABDirectionalSingleDownOrUnspecified(core::T_sp nilOrNode);
-  static BondToAtomTest_sp create_SABDirectionalSingleUp(core::T_sp nilOrNode);
-  static BondToAtomTest_sp create_SABDirectionalSingleDown(core::T_sp nilOrNode);
+  static BondToAtomTest_sp makeBondToAtomTest(BondEnum be, core::T_sp nilOrNode);
+  static BondToAtomTest_sp makeBondMatcherToAtomTest(BondMatcher_sp bm, core::T_sp nilOrNode);
 
   void setAtomTest(core::T_sp atomTest);
   virtual core::T_sp children();
-  BondToAtomTest_O() : _BondMatcher(_Unbound<BondMatcher_O>()) {};
+  BondToAtomTest_O() : _Bond(SABUseBondMatcher), _BondMatcher(_Unbound<BondMatcher_O>()) {};
+  BondToAtomTest_O(BondEnum be) : _Bond(be), _BondMatcher(_Unbound<BondMatcher_O>()) {};
 };
 
 

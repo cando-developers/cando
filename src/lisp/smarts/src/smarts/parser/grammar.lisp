@@ -38,7 +38,7 @@
 (defrule bond-atom-pattern
     (and (? bond-pattern) atom-pattern)
   (:destructure (bond atom &bounds start end)
-    (architecture.builder-protocol:node* (:bond :kind (or bond :single) :bounds (cons start end))
+    (architecture.builder-protocol:node* (:bond :kind (or bond :single-or-aromatic) :bounds (cons start end))
       (1 :atom atom))))
 
 (defrule atom-pattern ; TODO duplicated form SMILES?
@@ -166,11 +166,11 @@
                `(defrule ,rule-name
                     ,expression
                   (:constant ,value)))))
-  (define-operator-rule bond-weak-and     #\;   :weak-and)
+  (define-operator-rule bond-weak-and     #\;   :bond-weak-and)
   (define-operator-rule bond-or           #\,)
-  (define-operator-rule bond-strong-and   #\&   :strong-and)
+  (define-operator-rule bond-strong-and   #\&   :bond-strong-and)
   (define-operator-rule bond-not          #\!)
-  (define-operator-rule bond-implicit-and (and) :implicit-and))
+  (define-operator-rule bond-implicit-and (and) :bond-implicit-and))
 
 (parser.common-rules.operators:define-operator-rules
     (:skippable?-expression nil)
