@@ -352,9 +352,6 @@ added to inputs and outputs but not option-inputs or option-outputs"
   jupyter-job)
 
 
-(defmacro job-let (argument-pairs)
-  
-
 (defun setup-job (&key parameters input-topology-file input-coordinate-file pathname-defaults script makefile-clause)
   (let ((script-file (make-instance 'amber-script-file
                                     :script script
