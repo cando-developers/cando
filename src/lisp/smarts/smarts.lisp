@@ -5,6 +5,29 @@
   head
   tail)
 
+(defparameter *bond-types*
+  '((:none . :sabno-bond)
+    (:up . :SABDIRECTIONAL-SINGLE-UP)
+    (:wildcard . :SABANY-BOND)
+    (:aromatic . :SABAROMATIC-BOND)
+    (:triple-or-aromatic . :SABTRIPLE-OR-AROMATIC-BOND)
+    (:down . :SABDIRECTIONAL-SINGLE-DOWN)
+    (:double . :SABDOUBLE-BOND)
+    (:none . :SABNO-BOND)
+    (:single . :SABSINGLE-BOND)
+    (:down-or-unspecified . :SABDIRECTIONAL-SINGLE-DOWN-OR-UNSPECIFIED)
+    (:single-or-aromatic . :SABSINGLE-OR-AROMATIC-BOND)
+    (:double-or-aromatic . :SABDOUBLE-OR-AROMATIC-BOND)
+    (:delocalized . :SABDELOCALIZED-BOND)
+    (:triple . :SABTRIPLE-BOND)
+    (:up-or-unspecified . :SABDIRECTIONAL-SINGLE-UP-OR-UNSPECIFIED)
+    (:same-ring . :SABSAME-RING-BOND)))
+
+(defun chem-bond (smarts-bond)
+  (let ((found (assoc smarts-bond *bond-types*)))
+    (unless found (error "Could not find bond ~s" smarts-bond))
+    (cdr found)))
+
 (defstruct labeled value)
 
 (defmethod architecture.builder-protocol:make-node :around ((builder (eql :cando))
@@ -108,27 +131,9 @@
                                                     &rest args
                                                     &key kind bounds)
 ;;;  (format t ":bond make-node head: ~s args: ~s~%" head args)
-  (let (result)
-    (ecase kind
-      (:none
-       (setf result (chem:create-sabno-bond nil)))
-      (:single
-       (setf result (chem:create-sabsingle-or-aromatic-bond nil)))
-      (:double
-       (setf result (chem:create-sabdouble-bond nil)))
-      (:triple
-       (setf result (chem:create-sabtriple-bond nil)))
-      (:wildcard
-       (setf result (chem:create-sabany-bond nil)))
-      (:up-or-unspecified
-       (setf result (chem:create-sabdirectional-single-up-or-unspecified nil)))
-      (:down-or-unspecified
-       (setf result (chem:create-sabdirectional-single-down-or-unspecified nil)))
-      (:up
-       (setf result (chem:create-sabdirectional-single-up nil)))
-      (:down
-       (setf result (chem:create-sabdirectional-single-down nil))))
-;;;    (format t "Made ~s~%" result)
+  (let ((result (if (symbolp kind)
+                    (chem:make-bond-to-atom-test (chem-bond kind) nil)
+                    kind)))
     result))
 
 (defmethod architecture.builder-protocol:make-node ((builder (eql :cando))
@@ -307,6 +312,22 @@
 
 (defmethod architecture.builder-protocol:relate ((builder (eql :cando))
                                                  (head (eql :atom))
+                                                 (left chem:bond-logical)
+                                                 (right chem:logical)
+                                                 &key key)
+  (let ((result (chem:make-bond-matcher-to-atom-test left right)))
+    result))
+
+(defmethod architecture.builder-protocol:relate ((builder (eql :cando))
+                                                 (head (eql :atom))
+                                                 (left chem:bond-logical)
+                                                 (right chem:atom-test)
+                                                 &key key)
+  (let ((result (chem:make-bond-matcher-to-atom-test left right)))
+    result))
+
+(defmethod architecture.builder-protocol:relate ((builder (eql :cando))
+                                                 (head (eql :atom))
                                                  (left chem:bond-to-atom-test)
                                                  (right chem:atom-or-bond-match-node)
                                                  &key key)
@@ -372,7 +393,9 @@
                                                  (left chem:bond-logical)
                                                  (right t)
                                                  &key key)
-;;;  (format t ":expression relate  head: ~s left: ~s right:~s~%" head left right)
+;;;  (format t "left -> ~s~%" (with-output-to-string (sout) (print-smarts left sout)))
+;;;  (format t "right -> ~s~%" (with-output-to-string (sout) (print-smarts right sout)))
+ ;;;  (format t ":expression relate  head: ~s left: ~s right:~s~%" head left right)
   (if (chem:get-left left)
       (progn
 ;;;        (format t "left ~a~%" (chem:get-left left))
@@ -381,6 +404,86 @@
 ;;;        (format t "no left~%")
         (chem:set-left left right)))
   left)
+
+(defmethod architecture.builder-protocol:relate ((builder (eql :cando))
+                                                 (head (eql :operand))
+                                                 (left chem:bond-logical)
+                                                 right
+                                                 &key key)
+  (format t ":operand relate b head: ~s left: ~s right:~s~%" head left right)
+  left)
+
+(defmethod architecture.builder-protocol:relate ((builder (eql :cando))
+                                                 (head (eql :operand))
+                                                 (left chem:bond-logical)
+                                                 (right chem:bond-logical)
+                                                 &key key)
+  (if (chem:get-left left)
+      (progn
+;;;        (format t "left ~a~%" (chem:get-left left))
+        (chem:set-right left right))
+      (progn
+;;;        (format t "no left~%")
+        (chem:set-left left right)))
+  left)
+
+
+(defmethod architecture.builder-protocol:relate ((builder (eql :cando))
+                                                 (head (eql :operand))
+                                                 (left chem:bond-logical)
+                                                 (right symbol)
+                                                 &key key)
+  (let ((right (chem:make-bond-test (chem-bond right))))
+    (if (chem:get-left left)
+        (progn
+;;;        (format t "left ~a~%" (chem:get-left left))
+          (chem:set-right left right))
+        (progn
+;;;        (format t "no left~%")
+          (chem:set-left left right)))
+    left))
+
+(defmethod architecture.builder-protocol:relate ((builder (eql :cando))
+                                                 (head (eql :bond-expression))
+                                                 (left chem:bond-logical)
+                                                 (right symbol)
+                                                 &key key)
+;;;  (format t ":expression relate  head: ~s left: ~s right:~s~%" head left right)
+  (let ((right (chem:make-bond-test (chem-bond right))))
+    (if (chem:get-left left)
+        (progn
+;;;        (format t "left ~a~%" (chem:get-left left))
+          (chem:set-right left right))
+        (progn
+;;;        (format t "no left~%")
+          (chem:set-left left right)))
+    left))
+
+#+(or)
+(defmethod architecture.builder-protocol:relate ((builder (eql :cando))
+                                                 (head (eql :bond-expression))
+                                                 (left chem:bond-logical)
+                                                 (right chem:logical)
+                                                 &key key)
+;;;  (format t ":expression relate  head: ~s left: ~s right:~s~%" head left right)
+  (let ((right (chem:make-bond-test (chem-bond right))))
+    (if (chem:get-left left)
+        (progn
+;;;        (format t "left ~a~%" (chem:get-left left))
+          (chem:set-right left right))
+        (progn
+;;;        (format t "no left~%")
+          (chem:set-left left right)))
+    left))
+
+
+(defmethod architecture.builder-protocol:relate ((builder (eql :cando))
+                                                 (head (eql :bond-expression))
+                                                 (left chem:bond-logical)
+                                                 (right cons)
+                                                 &key key)
+;;;  (format t ":expression relate  head: ~s left: ~s right:~s~%" head left right)
+  (architecture.builder-protocol:relate builder head left (car right)))
 
 (defmethod architecture.builder-protocol:relate ((builder (eql :cando))
                                                  (head (eql :operand))
@@ -566,6 +669,16 @@
     (loop for child in children
           do (walk-smarts parent child))))
 
+(defmethod walk-smarts (parent (child chem:bond-to-atom-test))
+  "Optimize simple bond tests by lifting their bond test up into the bond-to-atom-test"
+  (let (logical bond-test)
+    (when (and (chem:bond-matcher-bound-p child)
+               (typep (setf logical (chem:bond-matcher child)) 'chem:bond-logical)
+               (eq (chem:bond-logical-operator logical) :log-identity)
+               (typep (setf bond-test (chem:get-left logical)) 'chem:bond-test))
+      (format t "walk-smarts bond-to-atom-test changing bond-type~%")
+      (chem:setf-bond-type-if-optimizable child (chem:bond-test-get-bond bond-test)))))
+    
 (defmethod walk-smarts (parent (child chem:atom-test))
   (let ((test-type (chem:get-ring-test child)))
 ;;;    (format t "test-type ~s for ~s~%" test-type child)
