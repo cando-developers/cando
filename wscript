@@ -3,6 +3,10 @@ from subprocess import call
 import waflib.Task
 import os
 
+def options(ctx):
+    ctx.add_option('--enable-jupyter', action = 'store_true', dest = 'enable_jupyter',
+                   help = 'Build jupyter-lab version of cando')
+
 # configure can provide...
 # cfg.extensions_includes  - Append directory names relative to top that will
 def configure(cfg):
@@ -15,7 +19,19 @@ def configure(cfg):
     fetch_git_revision("src/lisp/modules/quicklisp", "https://github.com/quicklisp/quicklisp-client.git", label="master")
     fetch_git_revision("src/lisp/modules/quicklisp/local-projects/cl-netcdf","https://github.com/clasp-developers/cl-netcdf.git",label="master")
     fetch_git_revision("src/lisp/modules/quicklisp/local-projects/static-vectors","https://github.com/clasp-developers/static-vectors.git",label="master")
-
+    if (cfg.options.enable_jupyter):
+        print("Pulling in jupyter-lab code")
+	fetch_git_revision("src/lisp/modules/quicklisp/local-projects/trivial-garbage", "https://github.com/clasp-developers/trivial-garbage.git", label="master")
+	fetch_git_revision("src/lisp/modules/quicklisp/local-projects/bordeaux-threads", "https://github.com/clasp-developers/bordeaux-threads.git", label="master")
+	fetch_git_revision("src/lisp/modules/quicklisp/local-projects/cffi", "https://github.com/clasp-developers/cffi.git", label="master")
+	fetch_git_revision("src/lisp/modules/quicklisp/local-projects/usocket", "https://github.com/clasp-developers/usocket.git", label="master")
+	fetch_git_revision("src/lisp/modules/quicklisp/local-projects/uuid", "https://github.com/clasp-developers/uuid.git", label="master")
+	fetch_git_revision("src/lisp/modules/quicklisp/local-projects/cl-jupyter", "https://github.com/drmeister/cl-jupyter.git", label="master")
+	fetch_git_revision("src/lisp/modules/quicklisp/local-projects/cl-ipykernel", "https://github.com/clasp-developers/cl-ipykernel.git", label="master")
+	fetch_git_revision("src/lisp/modules/quicklisp/local-projects/cl-ipywidgets", "https://github.com/clasp-developers/cl-ipywidgets.git", label="master")
+	fetch_git_revision("src/lisp/modules/quicklisp/local-projects/cl-nglview", "https://github.com/clasp-developers/cl-nglview.git", label="master")
+	fetch_git_revision("src/lisp/modules/quicklisp/local-projects/cl-bqplot", "https://github.com/clasp-developers/cl-bqplot.git", label="master")
+	fetch_git_revision("src/lisp/modules/quicklisp/local-projects/trivial-backtrace", "https://github.com/clasp-developers/trivial-backtrace", label="master")
 
 
 class duplicate_executable(waflib.Task.Task):
@@ -28,6 +44,9 @@ def rename_executable(p,frm,to):
     return "%s/%s" % (parts[0],parts[1].replace(frm,to))
     
 def build(bld):
+    print("bld.options.enable_jupyter -> %s" % bld.options.enable_jupyter)
+    bld.env.options = bld.options
+    print("bld.env.options.enable_jupyter -> %s" % bld.env.options.enable_jupyter)
     # The following will copy iclasp-<gc> to icando-<gc>
     cp_1 = duplicate_executable(env=bld.env)
     cp_1.set_inputs(bld.iclasp_executable)
@@ -66,18 +85,22 @@ def build(bld):
     bld.recurse('include')
     bld.recurse('src')
     if (bld.stage_val>=5):
+        print("bld.path.abspath() -> %s" % bld.path.abspath())
+        extensions_result = bld.path.parent.parent.find_or_declare("%s/src/lisp/cando-user/packages.fasl" % (bld.path.abspath()))
+        print("extensions_result -> %s" % extensions_result.abspath())
         bld_extensions = build_extension(env=bld.env)
-        extensions_result = bld.path.parent.parent.find_or_declare("extensions/cando/src/lisp/cando-user/packages.fasl")
         bld_extensions.set_inputs([bld.ccando_executable,bld.cclasp_fasl,bld.asdf_fasl_cclasp]+bld.extensions_lisp_files)
-        bld_extensions.set_outputs([extensions_result])
+#        bld_extensions.set_outputs([extensions_result])
         bld.add_to_group(bld_extensions)
     print("Leaving extensions build without cclasp_executable")
 
 class build_extension(waflib.Task.Task):
     def run(self):
-        cmd = [ self.inputs[0].abspath(),
-                "-N",
-                "-e", "(core:quit)" ]
+        print("In run self.env.options.enable_jupyter -> %s" % self.env.options.enable_jupyter)
+        cmd = [ self.inputs[0].abspath(), "-N"]
+        if (self.env.options.enable_jupyter):
+            cmd = cmd + [ "-e", "(ql:quickload :cando-jupyter)" ]
+        cmd = cmd + [ "-e", "(core:quit)" ]
         print("build_extension cmd -> %s" % cmd)
         print("build_extension outputs -> %s" % self.outputs)
         return self.exec_command(cmd)
