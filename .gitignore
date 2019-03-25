@@ -1,2 +1,6 @@
 local.config
+**/*.fasl
+**/*.o
+**/*.bc
+**/.bak
 *~
