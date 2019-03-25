@@ -9,6 +9,10 @@
   (leap.core:add-path "amber:dat;leap;cmd;")
   (leap.core:add-path "amber:dat;antechamber;"))
 
+(defun setup-default-paths ()
+  (setup-amber-paths)
+  (leap.core:add-path *default-pathname-defaults*))
+
 ;;; ----------------------------------------------------------------------
 ;;;
 ;;; Quick and dirty setup-gaff

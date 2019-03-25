@@ -132,6 +132,7 @@
    #:leap-repl-then-exit
    #:*amber-system*
    #:setup-amber-paths
+   #:setup-default-paths
    #:setup-amber
    #:save-amber-parm
    #:atom
