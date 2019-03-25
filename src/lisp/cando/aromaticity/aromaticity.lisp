@@ -44,89 +44,57 @@
   (values (chem:matter-get-property-or-default a 'aromaticity ())
           (chem:matter-get-property-or-default a 'step-assigned ())))
 
+(defun one-atom-aromatic-rule (atm rule aromaticity-type rule-name)
+  ;; (print (% "test1 on %s" (description a)))
+  (let ((match (chem:matches rule atm))
+        hits)
+    (when match
+      (loop for match-atom across (chem:tags-as-vector match)
+            when match-atom
+              do (progn
+                   (set-aromaticity-type match-atom aromaticity-type rule-name)
+                   (push match-atom hits))))
+    hits))
+
+(defun remove-hits-from-list (atoms-in-rings hits)
+  (loop for atm in atoms-in-rings
+        unless (member atm hits)
+          collect atm))
+
 (defparameter *artests* (list (cons :ar6 (lambda (a) (eq (chem:matter-get-property-or-default a 'aromaticity nil) 'ar6)))
                               (cons :abx #'chem:am1bcc-x)
                               (cons :aby #'chem:am1bcc-y)))
 
-(defparameter *rule1a* (chem:compile-smarts "[<abx>]1=[<abx>]-[<abx>]=[<abx>]-[<abx>]=[<abx>]1" :tests *artests*))
+(defparameter *rule1* (chem:compile-smarts "[<abx>:1]1=[<abx>:2]-[<abx>:3]=[<abx>:4]-[<abx>:5]=[<abx>:6]1" :tests *artests*))
 
-(defun one-atom-aromatic-rule1 (atm)
-;        (print (% "test1 on %s" (description a)))
-  (when (chem:matches *rule1a* atm)
-    (set-aromaticity-type atm 'ar6 'rule1)))
 
 ;; Apply aromaticity rule1 of Jakalian, Jack, and Bayly • Vol. 23, No. 16 • Journal of Computational Chemistry
-(defun aromatic-rule1 (atoms-in-rings)
-  (loop for atm in atoms-in-rings
-;        (print (% "test1 on %s" (description a)))
-        do (one-atom-aromatic-rule1 atm)))
-  
-(defparameter *rule2a* (chem:compile-smarts "[<abx>]1=[<abx>]-[<abx>]=[<abx>]-[<ar6>]-[<ar6>]1" :tests *artests*))
-
-
-;; Apply aromaticity rule of Jakalian, Jack, and Bayly • Vol. 23, No. 16 • Journal of Computational Chemistry
-(defun aromatic-rule2 (atoms-in-rings)
-  (let ((atoms-left atoms-in-rings)
-        (failed-atoms ())
-        (rule-pass 0)
-        (found-some t))
-    (loop while found-some
-       do (setq found-some nil)
-       do (loop for a in atoms-left
-             do (if (or (chem:matches *rule2a* a))
-                    (progn
-                      (setq found-some t)
-                      (set-aromaticity-type a 'ar6 'rule2))
-                    (setq failed-atoms (cons a failed-atoms))))
-       do (setq atoms-left failed-atoms)
-       do (setq rule-pass (+ rule-pass 1)))))
-
-
-(defparameter *rule3a* (chem:compile-smarts "[<abx>]1=[<abx>]-[<ar6>]-[<ar6>]-[<ar6>]-[<ar6>]1" :tests *artests*))
+(defun aromatic-rule (atoms-in-rings rule aromaticity-type rule-name)
+  (loop
+    (let ((aromatic-rule-hits (loop for atm in atoms-in-rings
+                                     append (one-atom-aromatic-rule atm rule aromaticity-type rule-name))))
+      (unless aromatic-rule-hits
+        (return-from aromatic-rule atoms-in-rings))
+      (setf atoms-in-rings (remove-hits-from-list atoms-in-rings aromatic-rule-hits)))))
 
 ;; Apply aromaticity rule of Jakalian, Jack, and Bayly • Vol. 23, No. 16 • Journal of Computational Chemistry
-(defun aromatic-rule3 (atoms-in-rings)
-  (let ((atoms-left atoms-in-rings)
-	(failed-atoms ())
-	(rule-pass 0)
-	(found-some t))
-    (loop while found-some
-       do (setq found-some nil)
-       do (loop for a in atoms-left
-	     do (if (chem:matches *rule3a* a)
-		    (progn
-		      (setq found-some t)
-		      (set-aromaticity-type a 'ar6 'rule3)
-		      )
-		    (setq failed-atoms (cons a failed-atoms))))
-       do (setq atoms-left failed-atoms)
-       do (setq rule-pass (+ rule-pass 1)))))
+(defparameter *rule2* (chem:compile-smarts "[<abx>:1]1=[<abx>:2]-[<abx>:3]=[<abx>:4]-[<ar6>]-[<ar6>]1" :tests *artests*))
 
-(defparameter *rule4a* (chem:compile-smarts "[<abx>]1=[<abx>]-[C&+]-[<abx>]=[<abx>]-[<abx>]=[<abx>]1" :tests *artests*))
-(defparameter *rule4c* (chem:compile-smarts "[C&+]1-[<abx>]=[<abx>]-[<abx>]=[<abx>]-[<abx>]=[<abx>]1" :tests *artests*))
+(defparameter *rule3* (chem:compile-smarts "[<abx>:1]1=[<abx>:2]-[<ar6>]-[<ar6>]-[<ar6>]-[<ar6>]1" :tests *artests*))
 
 ;; Apply aromaticity rule of Jakalian, Jack, and Bayly • Vol. 23, No. 16 • Journal of Computational Chemistry
-(defun aromatic-rule4 (atoms-in-rings)
-    (loop for a in atoms-in-rings
-         do (when (or (chem:matches *rule4a* a)
-                      (chem:matches *rule4c* a)
-                   )
-           (set-aromaticity-type a 'ar7 'rule4)
-           )))
+
+(defparameter *rule4a* (chem:compile-smarts "[<abx>:1]1=[<abx>:2]-[C&+:3]-[<abx>:4]=[<abx>:5]-[<abx>:6]=[<abx>:7]1" :tests *artests*))
+(defparameter *rule4b* (chem:compile-smarts "[C&+:1]1-[<abx>:2]=[<abx>:3]-[<abx>:4]=[<abx>:5]-[<abx>:6]=[<abx>:7]1" :tests *artests*))
+
 
 (defparameter *ar67test* (list* (cons :ar67 (lambda (a) (or (eq (chem:matter-get-property-or-default a 'aromaticity nil) 'ar6)
-                                                              (eq (chem:matter-get-property-or-default a 'aromaticity nil) 'ar7))))
+                                                            (eq (chem:matter-get-property-or-default a 'aromaticity nil) 'ar7))))
                                 *artests*))
 
-(defparameter *rule5a* (chem:compile-smarts "[<aby>]1-[<abx>&!<ar67>]=[<abx>&!<ar67>]-[<abx>&!<ar67>]=[<abx>&!<ar67>]1" :tests *ar67test*))
+(defparameter *rule5* (chem:compile-smarts "[<aby>:1]1-[<abx>:2&!<ar67>]=[<abx>:3&!<ar67>]-[<abx>:4&!<ar67>]=[<abx>:5&!<ar67>]1" :tests *ar67test*))
 
 ;; Apply aromaticity rule of Jakalian, Jack, and Bayly • Vol. 23, No. 16 • Journal of Computational Chemistry
-(defun aromatic-rule5 (atoms-in-rings)
-    (loop for a in atoms-in-rings
-        do (when (or (chem:matches *rule5a* a))
-           (set-aromaticity-type a 'ar5 'rule5)
-           )))
-
 
 (defun is-ring-aromatic (ring)
   (dolist (atom ring)
@@ -141,7 +109,7 @@
         (setq aromatic-rings (cons ring aromatic-rings))))
     aromatic-rings))
 
-(defun generate-atoms-in-rings-list (mol)
+(defun generate-atoms-in-rings-list (mo)
   (let ((atoms-in-rings nil))
     (chem:map-atoms
      nil
@@ -152,26 +120,25 @@
     atoms-in-rings))
 
 
+(defun all-ring-atoms (matter)
+  (let* ((all-rings (chem:identify-rings matter))
+         (atoms-in-rings (loop for ring in all-rings
+                               append ring)))
+    (values atoms-in-rings all-rings)))
 
 ;;
 ;; Identify all rings, isolate atoms in rings and apply all of the aromaticity rules
 ;; from Jakalian, Jack, and Bayly • Vol. 23, No. 16 • Journal of Computational Chemistry
 ;; Return the rings for bond type assignment
 (defun identify-aromatic-rings (mol)
-  (let ((all-rings (chem:identify-rings mol))
-        #+(or)(atoms-in-rings (mapcar (lambda (x) (isInRing x)) (all-atoms-as-cons mol nil)))
-        (atoms-in-rings (generate-atoms-in-rings-list mol)))
-    (format t "rings ~a~%" atoms-in-rings)
-    (aromatic-rule1 atoms-in-rings)
-    (format t "rings ~a~%" atoms-in-rings)
-    (aromatic-rule2 atoms-in-rings)
-    (format t "rings ~a~%" atoms-in-rings)
-    (aromatic-rule3 atoms-in-rings)
-    (format t "rings ~a~%" atoms-in-rings)
-    (aromatic-rule4 atoms-in-rings)
-    (format t "rings ~a~%" atoms-in-rings)
-    (aromatic-rule5 atoms-in-rings)
-    (format t "rings ~a~%" atoms-in-rings)
+  (multiple-value-bind (atoms-in-rings all-rings)
+      (all-ring-atoms mol)
+    (setf atoms-in-rings (aromatic-rule atoms-in-rings *rule1* 'ar6 'rule1))
+    (setf atoms-in-rings (aromatic-rule atoms-in-rings *rule2* 'ar6 'rule2))
+    (setf atoms-in-rings (aromatic-rule atoms-in-rings *rule3* 'ar6 'rule3))
+    (setf atoms-in-rings (aromatic-rule atoms-in-rings *rule4a* 'ar7 'rule4a))
+    (setf atoms-in-rings (aromatic-rule atoms-in-rings *rule4b* 'ar7 'rule4b))
+    (setf atoms-in-rings (aromatic-rule atoms-in-rings *rule5* 'ar5 'rule5))
     (select-aromatic-rings all-rings)))
 
 
