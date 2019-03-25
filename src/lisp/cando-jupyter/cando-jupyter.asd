@@ -9,10 +9,12 @@
                :cando
                :cl-nglview
                :netcdf
+               :cando-user
                :static-vectors
                )
   :serial t
   :components
   ((:file "packages")
+   (:file "show")
    (:file "cando-nglview")
    ))

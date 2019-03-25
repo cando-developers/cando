@@ -12,6 +12,10 @@ def configure(cfg):
     cfg.check_cxx(stlib='boost_graph', cflags='-Wall', uselib_store='BOOST-boost_graph')
     cfg.define("BUILD_EXTENSION",1)   # add this whenever building an extension
 #    cfg.define("DEBUG_ENERGY_FUNCTION",1)
+    fetch_git_revision("src/lisp/modules/quicklisp", "https://github.com/quicklisp/quicklisp-client.git", label="master")
+    fetch_git_revision("src/lisp/modules/quicklisp/local-projects/cl-netcdf","https://github.com/clasp-developers/cl-netcdf.git",label="master")
+    fetch_git_revision("src/lisp/modules/quicklisp/local-projects/static-vectors","https://github.com/clasp-developers/static-vectors.git",label="master")
+
 
 
 class duplicate_executable(waflib.Task.Task):
@@ -27,13 +31,15 @@ def build(bld):
     # The following will copy iclasp-<gc> to icando-<gc>
     cp_1 = duplicate_executable(env=bld.env)
     cp_1.set_inputs(bld.iclasp_executable)
-    cp_1.set_outputs(bld.path.find_or_declare(rename_executable(bld.iclasp_executable.abspath(),"clasp","cando")))
+    bld.icando_executable = bld.path.find_or_declare(rename_executable(bld.iclasp_executable.abspath(),"clasp","cando"))
+    bld.ccando_executable = bld.path.find_or_declare(rename_executable(bld.cclasp_executable.abspath(),"clasp","cando"))
+    cp_1.set_outputs(bld.icando_executable)
     bld.add_to_group(cp_1)
     if (bld.stage_val >= 3):
         # The following will copy cclasp-<gc> to ccando-<gc>
         cp_2 = duplicate_executable(env=bld.env)
         cp_2.set_inputs(bld.cclasp_executable)
-        cp_2.set_outputs(bld.path.find_or_declare(rename_executable(bld.cclasp_executable.abspath(),"clasp","cando")))
+        cp_2.set_outputs(bld.ccando_executable)
         bld.add_to_group(cp_2)
         print("Going to build cando")        
     # The following will copy iclasp-<gc> to ileap-<gc>
@@ -61,11 +67,9 @@ def build(bld):
     bld.recurse('src')
     if (bld.stage_val>=5):
         bld_extensions = build_extension(env=bld.env)
-        bld_extensions.set_inputs([bld.cclasp_executable,bld.cclasp_fasl,bld.asdf_fasl_cclasp]+bld.extensions_lisp_files)
-        bld_extensions.set_outputs([bld.path.parent.parent.find_or_declare("fasl/cando.fasb"),
-                                    bld.path.parent.parent.find_or_declare("fasl/cando-jupyter.fasb")])
-        bld.install_files('${PREFIX}/lib/clasp/', bld_extensions.outputs, relative_trick = True, cwd = bld.path.parent.parent)   #source
-        
+        extensions_result = bld.path.parent.parent.find_or_declare("extensions/cando/src/lisp/cando-user/packages.fasl")
+        bld_extensions.set_inputs([bld.ccando_executable,bld.cclasp_fasl,bld.asdf_fasl_cclasp]+bld.extensions_lisp_files)
+        bld_extensions.set_outputs([extensions_result])
         bld.add_to_group(bld_extensions)
     print("Leaving extensions build without cclasp_executable")
 
@@ -73,8 +77,6 @@ class build_extension(waflib.Task.Task):
     def run(self):
         cmd = [ self.inputs[0].abspath(),
                 "-N",
-                "-l", "source-dir:extensions;cando;src;lisp;load-cando.lisp",
-                "-l", "source-dir:extensions;cando;src;lisp;load-cando-jupyter.lisp",
                 "-e", "(core:quit)" ]
         print("build_extension cmd -> %s" % cmd)
         print("build_extension outputs -> %s" % self.outputs)
@@ -84,3 +86,10 @@ class build_extension(waflib.Task.Task):
         return super(build_extension, self).exec_command(cmd, **kw)
     def keyword(self):
         return 'build extensions using... '
+
+def fetch_git_revision(path, url, revision = "", label = "master"):
+    print("Git repository %s  url: %s\n     revision: %s  label: %s\n" % (path, url, revision, label))
+    ret = os.system("./tools-for-build/fetch-git-revision.sh '%s' '%s' '%s' '%s'" % (path, url, revision, label))
+    if ( ret != 0 ):
+        raise Exception("Failed to fetch git url %s" % url)
+    
