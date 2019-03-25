@@ -676,8 +676,9 @@
                (typep (setf logical (chem:bond-matcher child)) 'chem:bond-logical)
                (eq (chem:bond-logical-operator logical) :log-identity)
                (typep (setf bond-test (chem:get-left logical)) 'chem:bond-test))
-      (format t "walk-smarts bond-to-atom-test changing bond-type~%")
-      (chem:setf-bond-type-if-optimizable child (chem:bond-test-get-bond bond-test)))))
+      (let ((bond-test-bond (chem:bond-test-get-bond bond-test)))
+        #+(or)(format t "walk-smarts bond-to-atom-test changing bond-type ~s~%" bond-test-bond)
+        (chem:setf-bond-type-if-optimizable child bond-test-bond)))))
     
 (defmethod walk-smarts (parent (child chem:atom-test))
   (let ((test-type (chem:get-ring-test child)))

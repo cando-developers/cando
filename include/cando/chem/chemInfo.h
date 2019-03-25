@@ -93,6 +93,7 @@ CL_LISPIFY_NAME("tag");
 CL_DEFMETHOD     chem::Atom_sp tag(core::T_sp tag) { return this->getAtomWithTag(tag);};
     CL_DEFMETHOD core::List_sp tag_history() const { return this->_TagHistory; };
     core::HashTable_sp tags_as_hashtable() const;
+    core::Vector_sp tags_as_vector() const;
     void forgetAtomTag(core::T_sp tag);
 
     void setRingTag(Atom_sp a, core::T_sp tag);
@@ -1144,6 +1145,7 @@ struct MoleculeVertexData {
   MoleculeVertexData(): _AtomIndex(-1) {};
 };
 
+#if 0
 struct MoleculeEdgeData {
   BondOrder _BondOrder;
   MoleculeEdgeData(BondOrder bo) : _BondOrder(bo) {};
@@ -1154,12 +1156,15 @@ struct MoleculeEdgeData {
     return this->_BondOrder==other._BondOrder;
   }
 };
+#endif
+
+typedef boost::property<boost::edge_weight_t,BondOrder> BondOrderProperty;
 
     //create an -undirected- graph type, using vectors as the underlying containers
     //and an adjacency_list as the basic representation
 typedef boost::adjacency_list<boost::vecS, boost::vecS, boost::undirectedS,
                               MoleculeVertexData,
-                              BondOrder> MoleculeGraphType;
+                              BondOrderProperty> MoleculeGraphType;
 
 FORWARD(MoleculeGraph);
 class MoleculeGraph_O : public core::CxxObject_O
@@ -1203,17 +1208,22 @@ struct ChemInfoVertexData {
   ChemInfoVertexData() : _NodeIndex(-1) {};
 };
 
+#if 0
 struct ChemInfoEdgeData {
+  int _BondMatcherNodeIndex;
   BondEnum _BondEnum;
-  ChemInfoEdgeData(BondEnum n) : _BondEnum(n) {};
+  ChemInfoEdgeData(int ni,BondEnum be) : _BondMatcherNodeIndex(ni), _BondEnum(be) {};
   bool operator<(const ChemInfoEdgeData& other) const {
-    return this->_BondEnum<other._BondEnum;
+    return this->_BondMatcherNodeIndex < other._BondMatcherNodeIndex;
   }
   bool operator==(const ChemInfoEdgeData& other) const {
-    return this->_BondEnum==other._BondEnum;
+    return this->_BondMatcherNodeIndex ==other._BondMatcherNodeIndex;
   }
 
 };
+#endif
+
+
 
 struct RingBond {
   BondEnum _Bond;
@@ -1228,11 +1238,13 @@ struct RingClosers {
   RingClosers() : _Active(false) {};
 };
 
+typedef boost::property<boost::edge_index_t,int> EdgeProperty;
+
     //create an -undirected- graph type, using vectors as the underlying containers
     //and an adjacency_list as the basic representation
 typedef boost::adjacency_list<boost::vecS, boost::vecS, boost::undirectedS,
                               ChemInfoVertexData,
-                              BondEnum> ChemInfoGraphType;
+                              EdgeProperty> ChemInfoGraphType;
 
 FORWARD(ChemInfoGraph);
 class ChemInfoGraph_O : public core::CxxObject_O
@@ -1244,7 +1256,8 @@ public:
   Root_sp                _Root;
   core::HashTableEq_sp   _nodes_to_index;
   std::vector<size_t>               _nodeOrder;
-  gctools::Vec0<ChemInfoNode_sp> _nodes;
+  gctools::Vec0<ChemInfoNode_sp> _atomNodes;
+  gctools::Vec0<BondToAtomTest_sp> _bondNodes;
   ChemInfoGraphType*     _chemInfoGraph;
 public:
 

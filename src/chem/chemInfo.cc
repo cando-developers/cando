@@ -985,9 +985,29 @@ bool _matchBondTypes(BondEnum be, chem::BondOrder bo) {
   return false;
 }
 
+SYMBOL_EXPORT_SC_(ChemPkg,STARcurrent_ringsSTAR);
+
 bool _matchBondTypesWithAtoms(BondEnum be, chem::BondOrder bo, Atom_sp from, Bond_sp bond) {
   if (be==SABSameRingBond) {
-    SIMPLE_ERROR(BF("Handle SABSameRingBond for %s and %s build a spanning tree between the atoms in the bond and return true if they are connected through a chain of bonds not including the bond.  How many atoms? That is not clear.") % _rep_(from) % _rep_(bond));
+    // Expect a list of lists
+    Atom_sp other = bond->getOtherAtom(from);
+    if (chem::_sym_STARcurrent_ringsSTAR->boundP()) {
+      core::List_sp rings = chem::_sym_STARcurrent_ringsSTAR->symbolValue();
+      // If from and other are in the same ring
+      bool found_from = false;
+      bool found_other = false;
+      for ( auto cur : rings ) {
+        core::List_sp ring = CONS_CAR(cur);
+        for ( auto cur2 : ring ) {
+          core::T_sp one = CONS_CAR(cur2);
+          if (one == from) found_from = true;
+          else if (one == other) found_other = true;
+        }
+        if (found_from&&found_other) return true;
+      }
+      return false;
+    }
+    SIMPLE_ERROR(BF("ring-bond detection can only be done if the chem:*current-rings* dynamic variable is bound - it is not"));
   } else {
     return _matchBondTypes(be,bo);
   }
@@ -1169,7 +1189,6 @@ core::T_sp BondTest_O::children() {
 
 void BondToAtomTest_O::initialize() {
   this->Base::initialize();
-  this->_Bond = SABUseBondMatcher;
   this->_AtomTest = _Nil<core::T_O>();
 }
 
@@ -1224,8 +1243,9 @@ CL_DEFMETHOD bool BondToAtomTest_O::setfBondTypeIfOptimizable(BondEnum be) {
   case SABDelocalizedBond:
       this->_Bond = be;
       return true;
+  default:
+      return false;
   }
-  return false;
 }
 
 
@@ -1251,7 +1271,9 @@ bool BondToAtomTest_O::matches_Bond(Root_sp root, chem::Atom_sp from, chem::Bond
     if (this->_AtomTest->matches_Atom(root, bond->getOtherAtom(from)))
       goto SUCCESS;
   } else {
-    ASSERT(this->_BondMatcher.boundp());
+    if (this->_BondMatcher.unboundp()) {
+      SIMPLE_ERROR(BF("The BondToAtomTest BondMatcher is unbound"));
+    }
     if (!this->_BondMatcher->matches_Bond(root,from,bond)) goto FAIL;
     if (this->_AtomTest->matches_Atom(root,bond->getOtherAtom(from))) goto SUCCESS;
   }
@@ -2359,6 +2381,9 @@ bool AntechamberRoot_O::matches_Atom(Root_sp root, chem::Atom_sp atom) {
   return false;
 }
 
+CL_DEFMETHOD core::Vector_sp ChemInfoMatch_O::tags_as_vector() const {
+  return this->_TagLookup;
+}
 
 CL_DEFMETHOD core::HashTable_sp ChemInfoMatch_O::tags_as_hashtable() const {
   core::HashTableEql_sp ht = core::HashTableEql_O::create_default();
@@ -2582,6 +2607,7 @@ CL_END_ENUM(_sym_STARAtomTestEnumConverterSTAR);
 
 
 GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<chem::ChemInfoNode_O>>);
+GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<chem::BondToAtomTest_O>>);
 
 MoleculeGraph_O::MoleculeGraph_O(Molecule_sp matter) : _Molecule(matter) {};
 
@@ -2674,7 +2700,7 @@ CL_DEFUN ChemInfoGraph_sp chem__make_chem_info_graph( Root_sp pattern)
   GC_ALLOCATE_VARIADIC(ChemInfoGraph_O,graph,pattern);
   std::vector<RingClosers> closers;
   walk_nodes(pattern->_Node, [&graph,&closers] (ChemInfoNode_sp node) {
-      printf("%s:%d ChemInfoNode_sp -> %s\n", __FILE__, __LINE__, _rep_(node).c_str());
+//      printf("%s:%d ChemInfoNode_sp -> %s\n", __FILE__, __LINE__, _rep_(node).c_str());
       if (gc::IsA<Chain_sp>(node)) {
         Chain_sp chain = gc::As_unsafe<Chain_sp>(node);
         ChemInfoNode_sp head = gc::As<ChemInfoNode_sp>(chain->_Head);
@@ -2682,23 +2708,23 @@ CL_DEFUN ChemInfoGraph_sp chem__make_chem_info_graph( Root_sp pattern)
           head = gc::As_unsafe<BondToAtomTest_sp>(head)->_AtomTest;
         }
         head = maybe_skip_logIdentity(head);
-        graph->_nodes_to_index->setf_gethash(head,core::make_fixnum(graph->_nodes.size()));
-        graph->_nodeOrder.push_back(graph->_nodes.size());
+        graph->_nodes_to_index->setf_gethash(head,core::make_fixnum(graph->_atomNodes.size()));
+        graph->_nodeOrder.push_back(graph->_atomNodes.size());
         printf("%s:%d    adding node -> %s\n", __FILE__, __LINE__, _rep_(head).c_str());
-        graph->_nodes.push_back(head);
+        graph->_atomNodes.push_back(head);
         AtomOrBondMatchNode_sp ahead = gc::As<AtomOrBondMatchNode_sp>(head);
         if (ahead->_RingTest==SARRingSet) {
           if (ahead->_RingId>=closers.size()) {
             closers.resize(ahead->_RingId+1);
           }
           closers[ahead->_RingId]._Active = true;
-          closers[ahead->_RingId]._NodeIndex = graph->_nodes.size();
+          closers[ahead->_RingId]._NodeIndex = graph->_atomNodes.size();
         } else if (ahead->_RingTest==SARRingTest) {
           if (ahead->_RingId>=closers.size()) {
             closers.resize(ahead->_RingId+1);
           }
           closers[ahead->_RingId]._Active = true;
-          closers[ahead->_RingId]._Bonds.push_back(RingBond(SABSingleOrAromaticBond,graph->_nodes.size()));
+          closers[ahead->_RingId]._Bonds.push_back(RingBond(SABSingleOrAromaticBond,graph->_atomNodes.size()));
         }
       }
     });
@@ -2738,9 +2764,11 @@ CL_DEFUN ChemInfoGraph_sp chem__make_chem_info_graph( Root_sp pattern)
                                  SIMPLE_ERROR(BF("There was no index for %s") % _rep_(up));
                                }
                                  // The head must be a BondToAtomTest_sp
-                               BondToAtomTest_sp bondTest = gc::As<BondToAtomTest_sp>(chain->_Head);
+                               BondToAtomTest_sp bondToAtomTest = gc::As<BondToAtomTest_sp>(chain->_Head);
+                               int edge_index = graph->_bondNodes.size();
+                               graph->_bondNodes.push_back(bondToAtomTest);
                                add_edge(up_index.unsafe_fixnum(),head_index.unsafe_fixnum(),
-                                        bondTest->_Bond, *graph->_chemInfoGraph);
+                                        EdgeProperty(edge_index), *graph->_chemInfoGraph);
                              }
                            } else if (gc::IsA<Branch_sp>(node)) {
                              if (parentOrNil.nilp()) {
@@ -2759,8 +2787,11 @@ CL_DEFUN ChemInfoGraph_sp chem__make_chem_info_graph( Root_sp pattern)
     if (closers[ii]._Active) {
       for (size_t jj=0; jj<closers[ii]._Bonds.size(); ++jj ) {
         printf("%s:%d closing a ring %d - %d\n", __FILE__, __LINE__, closers[ii]._NodeIndex,closers[ii]._Bonds[jj]._NodeIndex );
+        GC_ALLOCATE_VARIADIC(BondToAtomTest_O, dummyRingAtomTest, closers[ii]._Bonds[jj]._Bond);
+        int edge_index = graph->_bondNodes.size();
+        graph->_bondNodes.push_back(dummyRingAtomTest);
         add_edge(closers[ii]._NodeIndex,closers[ii]._Bonds[jj]._NodeIndex,
-                 closers[ii]._Bonds[jj]._Bond,*graph->_chemInfoGraph);
+                 EdgeProperty(edge_index),*graph->_chemInfoGraph);
       }
     }
   }
@@ -2776,8 +2807,8 @@ CL_DEFUN void chem__chem_info_graph_dump(ChemInfoGraph_sp graph) {
     //the original types so it's more clear what is going on
   std::pair<edge_iterator, edge_iterator> ei = edges(*graph->_chemInfoGraph);
   for(edge_iterator edge_iter = ei.first; edge_iter != ei.second; ++edge_iter) {
-    ChemInfoNode_sp a1 = graph->_nodes[source(*edge_iter,*graph->_chemInfoGraph)];
-    ChemInfoNode_sp a2 = graph->_nodes[target(*edge_iter,*graph->_chemInfoGraph)];
+    ChemInfoNode_sp a1 = graph->_atomNodes[source(*edge_iter,*graph->_chemInfoGraph)];
+    ChemInfoNode_sp a2 = graph->_atomNodes[target(*edge_iter,*graph->_chemInfoGraph)];
     core::write_bf_stream(BF("(%s - %s)\n") % _rep_(a1) % _rep_(a2) );
   }
 }
@@ -2805,7 +2836,7 @@ struct VertexComp {
     printf("      this->_chemInfoGraph %p\n", this->_chemInfoGraph.raw_() );
     printf("      this->_moleculeGraph %p\n", this->_moleculeGraph.raw_() );
 #endif
-    ChemInfoNode_sp node = this->_chemInfoGraph->_nodes[v1];
+    ChemInfoNode_sp node = this->_chemInfoGraph->_atomNodes[v1];
     Atom_sp atom = this->_moleculeGraph->_atoms[v2];
 #if 0
     printf("      node -> %s\n", _rep_(node).c_str());
@@ -2821,14 +2852,28 @@ struct EdgeComp {
   ChemInfoGraph_sp _chemInfoGraph;
   MoleculeGraph_sp _moleculeGraph;
   
-  
-  bool operator()(boost::detail::edge_desc_impl<boost::undirected_tag, unsigned long>,
-                  boost::detail::edge_desc_impl<boost::undirected_tag, unsigned long>)
+  bool operator()(const boost::detail::edge_desc_impl<boost::undirected_tag, unsigned long>& eci,
+                  const boost::detail::edge_desc_impl<boost::undirected_tag, unsigned long>& em)
   {
-    return true; //chem::_matchBondTypes(chemInfoEdge._BondEnum,moleculeEdge._BondOrder);
+    boost::property_map<ChemInfoGraphType,boost::edge_index_t>::type chemInfoEdge =
+      boost::get(boost::edge_index_t(),*(this->_chemInfoGraph->_chemInfoGraph));
+    boost::property_map<MoleculeGraphType,boost::edge_weight_t>::type moleculeEdge =
+      boost::get(boost::edge_weight_t(),*(this->_moleculeGraph->_moleculeGraph));
+    BondOrder bo = moleculeEdge[em];
+    int ci = chemInfoEdge[eci];
+    BondToAtomTest_sp bta = this->_chemInfoGraph->_bondNodes[ci];
+    // If the comparison is simple then just match the bond type to the BondEnum
+    if (bta->_Bond!=SABUseBondMatcher) return _matchBondTypes(bta->_Bond,bo);
+    // The comparison is not simple - we need to use the BondMatcher
+    BondMatcher_sp bondMatcher = gc::As<BondMatcher_sp>(bta->_BondMatcher);
+    int msource = boost::source(em,*(this->_moleculeGraph->_moleculeGraph));
+    Atom_sp asource = this->_moleculeGraph->_atoms[msource];
+    int mtarget = boost::target(em,*(this->_moleculeGraph->_moleculeGraph));
+    Atom_sp atarget = this->_moleculeGraph->_atoms[mtarget];
+    Bond_sp bond = asource->getBondTo(atarget);
+    return bondMatcher->matches_Bond(this->_chemInfoGraph->_Root,asource,bond);
   }
   EdgeComp(ChemInfoGraph_sp cig, MoleculeGraph_sp mg) : _chemInfoGraph(cig), _moleculeGraph(mg) {};
-
 };
 
 
