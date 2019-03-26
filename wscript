@@ -19,7 +19,7 @@ def configure(cfg):
 #    cfg.define("DEBUG_ENERGY_FUNCTION",1)
     fetch_git_revision("src/lisp/modules/quicklisp", "https://github.com/quicklisp/quicklisp-client.git", label="master")
     fetch_git_revision("src/lisp/modules/quicklisp/local-projects/cl-netcdf","https://github.com/clasp-developers/cl-netcdf.git",label="master")
-    fetch_git_revision("src/lisp/modules/quicklisp/local-projects/static-vectors","https://github.com/clasp-developers/static-vectors.git",label="master")
+    fetch_git_revision("src/lisp/modules/quicklisp/local-projects/static-vectors","https://github.com/sionescu/static-vectors.git",label="master")
     if (cfg.options.enable_jupyter):
         print("Pulling in jupyter-lab code")
 	fetch_git_revision("src/lisp/modules/quicklisp/local-projects/trivial-garbage", "https://github.com/clasp-developers/trivial-garbage.git", label="master")
