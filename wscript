@@ -54,24 +54,30 @@ def build(bld):
     bld.ccando_executable = bld.path.find_or_declare(rename_executable(bld.cclasp_executable.abspath(),"clasp","cando"))
     cp_1.set_outputs(bld.icando_executable)
     bld.add_to_group(cp_1)
+    install('bin/%s' % bld.icando_executable.name, bld.icando_executable, chmod = Utils.O755)
     if (bld.stage_val >= 3):
         # The following will copy cclasp-<gc> to ccando-<gc>
         cp_2 = duplicate_executable(env=bld.env)
         cp_2.set_inputs(bld.cclasp_executable)
         cp_2.set_outputs(bld.ccando_executable)
         bld.add_to_group(cp_2)
+        install('bin/%s' % bld.ccando_executable.name, bld.ccando_executable, chmod = Utils.O755)
         print("Going to build cando")        
     # The following will copy iclasp-<gc> to ileap-<gc>
+    bld.ileap_executable = bld.path.find_or_declare(rename_executable(bld.iclasp_executable.abspath(),"clasp","leap"))
+    bld.cleap_executable = bld.path.find_or_declare(rename_executable(bld.cclasp_executable.abspath(),"clasp","leap"))
     cp_3 = duplicate_executable(env=bld.env)
     cp_3.set_inputs(bld.iclasp_executable)
     cp_3.set_outputs(bld.path.find_or_declare(rename_executable(bld.iclasp_executable.abspath(),"clasp","leap")))
     bld.add_to_group(cp_3)
+    install('bin/%s' % bld.ileap_executable.name, bld.ileap_executable, chmod = Utils.O755)
     if (bld.stage_val >= 3):
         # The following will copy cclasp-<gc> to cleap-<gc>
         cp_4 = duplicate_executable(env=bld.env)
         cp_4.set_inputs(bld.cclasp_executable)
         cp_4.set_outputs(bld.path.find_or_declare(rename_executable(bld.cclasp_executable.abspath(),"clasp","leap")))
         bld.add_to_group(cp_4)
+        install('bin/%s' % bld.cleap_executable.name, bld.cleap_executable, chmod = Utils.O755)
         print("Going to build leap")
     print("In extensions build bld.cclasp_executable = %s" % bld.cclasp_executable)
     print("      bld.stage_val = %s" % bld.stage_val)
