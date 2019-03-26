@@ -60,10 +60,11 @@
                                                     &key kind symbol
                                                       atomic-number
                                                       ring-bond-count
+                                                      ring-connectivity
                                                       (total-hydrogen-count nil 
                                                                             total-hydrogen-count-supplied-p)
                                                       implicit-hydrogen-count
-                                                      smallest-ring-size
+                                                      (smallest-ring-size nil smallest-ring-size-p)
                                                       valence
                                                       degree
                                                       connectivity
@@ -100,7 +101,11 @@
       (setf result (chem:create-sapimplicit-hcount implicit-hydrogen-count)))
     (when ring-bond-count
       (setf result (chem:create-sapring-membership-count ring-bond-count)))
-    (when smallest-ring-size
+    (when ring-connectivity
+      (setf result (chem:create-sapring-connectivity ring-connectivity)))
+    (when smallest-ring-size-p
+      (unless smallest-ring-size
+        (setf smallest-ring-size 0))
       (setf result (chem:create-sapring-size smallest-ring-size)))
     (when valence
       (setf result (chem:create-sapvalence valence)))

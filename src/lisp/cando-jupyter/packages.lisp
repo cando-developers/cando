@@ -48,4 +48,25 @@
    #:show-amber-netcdf-trajectory
    #:make-amber-netcdf-trajectory
    #:amber-netcdf-trajectory
+   #:show
+   #:repr
+   #:cl-jupyter-kernel-start
    ))
+
+
+(import '(cl-jupyter-user:png-from-file
+          cando-jupyter:show
+          cando-jupyter:repr
+          cando-jupyter:cando-structure
+          cando-jupyter:cando-trajectory
+          cando-jupyter:cl-jupyter-kernel-start
+          ) :cando-user)
+
+(export '(cl-jupyter-user:png-from-file
+          cando-jupyter:show
+          cando-jupyter:repr
+          cando-jupyter:cando-structure
+          cando-jupyter:cando-trajectory
+          cando-jupyter:cl-jupyter-kernel-start
+          ) :cando-user)
+

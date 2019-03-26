@@ -127,6 +127,7 @@
                 #:add-pdb-atom-map
                 )
   (:export
+   #:create-atom
    #:process-command-line-options
    #:leap-repl
    #:leap-repl-then-exit

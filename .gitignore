@@ -1,3 +1,6 @@
 local.config
+**/*.fasl
+**/*.o
+**/*.bc
+**/.bak
 *~
-*/.ipynb_checkpoints/*

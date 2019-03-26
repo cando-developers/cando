@@ -29,14 +29,9 @@
   (:shadowing-import-from :chem "ATOM")
   (:use #:common-lisp
         #:cando
-        #:cando-jupyter
         #:leap
         #:leap.pdb)
-  (:import-from :cl-jupyter-user #:png-from-file)
   (:export #:start-swank)
-  (:export #:cl-jupyter-kernel-start
-           #:show
-           #:repr)
   )
 
 

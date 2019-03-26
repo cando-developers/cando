@@ -79,6 +79,11 @@
   (let ((info (second entry)))
     (add-atom-types info)))
 
+(defun create-atom (name &optional type charge)
+  (let* ((element (chem:element-from-atom-name-string (string name)))
+         (atom (chem:make-atom name element)))
+    (chem:set-atom-type atom type)
+    (chem:set-atom-charge atom charge)))
 
 (defun load-off (filename)
   "Load an OFF file. OFF files that contain libraries of objects will create those objects in the environment."
@@ -294,6 +299,7 @@
       ("solvateShell" . solvate-shell)
       ("addIons" . leap.add-ions:add-ions)
       ("setBox" . leap.set-box:set-box)
+      ("createAtom" . create-atom )
       ("help" . leap-help)
       ("quit" . leap-quit)
       ))
