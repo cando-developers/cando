@@ -52,7 +52,7 @@
         atom)))
 
 (defrule acyclic-atom-pattern
-    (or modified-atom-pattern language.smiles.parser:atom-symbol))
+    (or modified-atom-pattern wildcard-atom-pattern language.smiles.parser:atom-symbol))
 
 (defrule modified-atom-pattern
     (and #\[ weak-and-expression #\])
@@ -97,6 +97,12 @@
 
         recursive))
 
+(defrule wildcard-atom-pattern
+  #\*
+  (:lambda (value &bounds start end)
+    (declare (ignore value))
+    (architecture.builder-protocol:node* (:atom :kind :wildcard :bounds (cons start end)))))
+
 (macrolet
     ((define-rules (&body clauses)
        (let ((rules '()))               ; TODO unused
@@ -135,7 +141,7 @@
     (total-hydrogen-count    #\H :parameter &optional)
     (implicit-hydrogen-count #\h :parameter &optional)
     (ring-bond-count         #\R :parameter &optional)
-    ;; TODO allow x?
+    (ring-connectivity       #\x :parameter &optional) ;; TODO allow x?
     (smallest-ring-size      #\r :parameter &optional)
     (valence                 #\v :parameter t)
     (connectivity            #\X :parameter t)
@@ -170,15 +176,15 @@
   (define-operator-rule bond-or           #\,)
   (define-operator-rule bond-strong-and   #\&   :bond-strong-and)
   (define-operator-rule bond-not          #\!)
-  (define-operator-rule bond-implicit-and (and) :bond-implicit-and))
+  (define-operator-rule bond-implicit-and (and) :bond-implicit-and)) ; same as strong-and
 
 (parser.common-rules.operators:define-operator-rules
     (:skippable?-expression nil)
   (2 weak-and-bond-expression     operator-bond-weak-and)
   (2 or-bond-expression           operator-bond-or)
   (2 strong-and-bond-expression   operator-bond-strong-and)
-  (1 not-bond-expression          operator-bond-not)
   (2 implicit-and-bond-expression operator-bond-implicit-and)
+  (1 not-bond-expression          operator-bond-not)
   one-bond-pattern)
 
 
@@ -226,8 +232,8 @@
   (2 weak-and-expression     operator-weak-and)
   (2 or-expression           operator-or)
   (2 strong-and-expression   operator-strong-and)
-  (1 not-expression          operator-not)
   (2 implicit-and-expression operator-implicit-and)
+  (1 not-expression          operator-not)
   modified-atom-pattern-body)
 
 ;;; SMARTS 4.4 Recursive SMARTS

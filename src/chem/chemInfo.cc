@@ -1457,13 +1457,16 @@ bool AtomTest_O::matches_Atom(Root_sp root, chem::Atom_sp atom) {
       if (this->_IntArg == atom->getIonization())
         goto SUCCESS;
       break;
+  case SAPRingConnectivity:
   case SAPRingMembershipCount:
       LOG(BF("SAPRingMembershipCount")); //
+      SIMPLE_WARN(BF("Use the chem::*current-rings* special variable"));
       if (this->_IntArg == atom->getRingMembershipCount())
         goto SUCCESS;
       break;
   case SAPRingSize:
       LOG(BF("SAPRingMembershipSize")); //
+      SIMPLE_WARN(BF("Use the chem::*current-rings* special variable - if this->_IntArg == 0 it means any ring?????"));
       if (atom->inRingSize(this->_IntArg))
         goto SUCCESS;
       break;
@@ -1614,6 +1617,9 @@ string AtomTest_O::asSmarts() const {
   case SAPConnectivity: // No implicit H's so Connectivity == Degree
   case SAPDegree:
       ss << "X" << this->_IntArg;
+      break;
+  case SAPRingConnectivity:
+      ss << "x" << this->_IntArg;
       break;
   case SAPInBond:
       ss << "{SAPInBond}";
@@ -2528,6 +2534,7 @@ SYMBOL_EXPORT_SC_(KeywordPkg,SAPElement);
 SYMBOL_EXPORT_SC_(KeywordPkg,SAPTotalHCount);
 SYMBOL_EXPORT_SC_(KeywordPkg,SAPImplicitHCount);
 SYMBOL_EXPORT_SC_(KeywordPkg,SAPRingMembershipCount);
+SYMBOL_EXPORT_SC_(KeywordPkg,SAPRingConnectivity);
 SYMBOL_EXPORT_SC_(KeywordPkg,SAPRingTest);
 SYMBOL_EXPORT_SC_(KeywordPkg,SAPRingSize);
 SYMBOL_EXPORT_SC_(KeywordPkg,SAPValence);
@@ -2570,6 +2577,7 @@ CL_VALUE_ENUM(kw::_sym_SAPElement,SAPElement);
 CL_VALUE_ENUM(kw::_sym_SAPTotalHCount,SAPTotalHCount);
 CL_VALUE_ENUM(kw::_sym_SAPImplicitHCount,SAPImplicitHCount);
 CL_VALUE_ENUM(kw::_sym_SAPRingMembershipCount,SAPRingMembershipCount);
+CL_VALUE_ENUM(kw::_sym_SAPRingConnectivity,SAPRingConnectivity);
 CL_VALUE_ENUM(kw::_sym_SAPRingTest,SAPRingTest);
 CL_VALUE_ENUM(kw::_sym_SAPRingSize,SAPRingSize);
 CL_VALUE_ENUM(kw::_sym_SAPValence,SAPValence);

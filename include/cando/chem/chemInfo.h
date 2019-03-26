@@ -584,6 +584,7 @@ typedef	enum	{
     SAPElement		,
     SAPTotalHCount		,
     SAPImplicitHCount	,
+    SAPRingConnectivity,
     SAPRingMembershipCount	,
     SAPRingTest,
     SAPRingSize		,
@@ -683,6 +684,7 @@ public:
   CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPRingMembershipCount(int intVal) { return create(SAPRingMembershipCount,intVal); };
   CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPRingSize(int intVal) { return create(SAPRingSize,intVal); };
   CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPRingTest(int intVal) { return create(SAPRingTest,intVal); };
+  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPRingConnectivity(int intVal) { return create(SAPRingConnectivity,intVal); };
   CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPTotalHCount(int intVal) { return create(SAPTotalHCount,intVal); };
   CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPTransitionMetal(int intVal) { return create(SAPTransitionMetal,intVal); };
   CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPValence(int intVal) { return create(SAPValence,intVal); };
@@ -733,6 +735,11 @@ public:
   CL_DEF_CLASS_METHOD static AtomTest_sp create_ring_size(int size)
   {
     return create( SAPRingSize, size );
+  }
+  CL_LISPIFY_NAME(make-atom-test-ring-connectivity);
+  CL_DEF_CLASS_METHOD static AtomTest_sp create_ring_connectivity(int num)
+  {
+    return create( SAPRingConnectivity, num);
   }
   CL_LISPIFY_NAME(make-atom-test-ring-size2);
   CL_DEF_CLASS_METHOD static AtomTest_sp create_ring_size2(int size, int num)
