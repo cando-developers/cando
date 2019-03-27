@@ -167,7 +167,7 @@ into LEaP.
 
 (defun leap.source (entry)
   (valid-arguments entry 1)
-  (let* ((filename (ensure-path (second entry))))
+  (let* ((filename (leap.core:ensure-path (second entry))))
     (source filename)))
 
 (defun save-amber-parm (aggregate topology-file-name &optional crd-pathname (force-field-name :default))
@@ -268,16 +268,6 @@ into LEaP.
        (if (eq val :not-found)
            (string val)
            val)))))
-
-(defun ensure-path (obj)
-  "Convert obj into a pathname and search the amber path list for the file and return it"
-  (declare (type (or symbol pathname string) obj))
-  (let ((pn (cond
-              ((symbolp obj) (pathname (string obj)))
-              ((pathname obj) obj)
-              ((stringp obj) (pathname obj))
-              (t (pathname (string obj))))))
-    (leap.core:search-path pn)))
 
 (defun valid-arguments (entry num)
   (unless (= (length entry) (1+ num))

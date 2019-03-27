@@ -165,3 +165,14 @@ used to provide parameters.  There is one default force-field called :default.")
   (maphash (lambda (name parts)
              (format t "~a ~a~%" name parts))
            *force-fields*))
+
+(defun ensure-path (obj)
+  "Convert obj into a pathname and search the amber path list for the file and return it"
+  (declare (type (or symbol pathname string) obj))
+  (let ((pn (cond
+              ((symbolp obj) (pathname (string obj)))
+              ((pathname obj) obj)
+              ((stringp obj) (pathname obj))
+              (t (pathname (string obj))))))
+    (leap.core:search-path pn)))
+

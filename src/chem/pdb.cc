@@ -372,7 +372,7 @@ Aggregate_sp PdbReader_O::loadPdbConnectAtoms(core::T_sp fileName)
 
     
     
-CL_DEFUN core::T_sp chem__load_pdb(core::String_sp fileName)
+CL_DEFUN core::T_sp chem__simple_load_pdb(core::String_sp fileName)
 {
   Aggregate_sp agg = PdbReader_O::loadPdbConnectAtoms(fileName);
   return agg;

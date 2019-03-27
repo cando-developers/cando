@@ -70,6 +70,7 @@
 (defpackage #:leap.core
   (:use #:common-lisp)
   (:export
+   #:ensure-path
    #:evaluate
    #:*leap-env*
    #:lookup-variable
@@ -110,7 +111,7 @@
 
 
 (defpackage #:leap
-  (:shadowing-import-from :chem "ATOM" "LOAD-PDB")
+  (:shadowing-import-from :chem "ATOM")
   (:shadowing-import-from :geom "BOUNDING-BOX")
   (:shadowing-import-from :common-lisp "+" "-" "/" "*" ">" "<" ">=" "<=" "SQRT")
   (:shadowing-import-from :energy "MINIMIZE")
@@ -124,6 +125,7 @@
 ;;;  (:import-from :cando-utility #:mkdir #:set-current-directory #:current-directory #:directory-files)
   (:import-from :inet #:download-pdb)
   (:import-from :leap.pdb
+                #:load-pdb
                 #:add-pdb-res-map
                 #:add-pdb-atom-map
                 )

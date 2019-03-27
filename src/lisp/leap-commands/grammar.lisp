@@ -126,7 +126,7 @@
 (defvar *function-names/alist*)
 
 (defun function-name-p (thing)
-  (assoc thing *function-names/alist* :test #'string=))
+  (assoc thing *function-names/alist* :test #'string-equal))
 
 (defrule function-name-string
     (+ (character-ranges (#\a #\z) (#\A #\Z) (#\0 #\9)))
