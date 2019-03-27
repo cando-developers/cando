@@ -117,8 +117,8 @@
     "restrainAngle" "restrainBond" "restrainTorsion" "saveAmberParm"
     "saveAmberParmNetCDF" "saveAmberParmPert" "saveAmberParmPol"
     "saveAmberParmPolPert" "saveAmberPrep" "saveMol2" "saveMol3" "saveOff"
-    "saveOffParm" "savePdb" "scaleCharges" "select" "sequence" "set" "setBox"
-    "showdefault" "solvateBox" "solvateCap" "solvateDontClip" "solvateOct"
+    "saveOffParm" "savePdb" "scaleCharges" "select" "sequence" "set" "setBox" "setupDefaultPaths"
+    "showdefault" "showPaths" "solvateBox" "solvateCap" "solvateDontClip" "solvateOct"
     "solvateShell" "source" "translate" "transform" "update" "verbosity"
     "zMatrix"))
 

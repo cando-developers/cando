@@ -8,10 +8,10 @@
   :depends-on ( :cando
                 :inet
                 :alexandria
-                (:version :esrap "0.15")
-                :parser.common-rules
-                :PARSER.COMMON-RULES.OPERATORS
-                :architecture.builder-protocol)
+                #+(or)(:version :esrap "0.15")
+                #+(or):parser.common-rules
+                #+(or):PARSER.COMMON-RULES.OPERATORS
+                #+(or):architecture.builder-protocol)
   :serial t
   :components
   ((:file "packages")
@@ -24,9 +24,7 @@
    (:file "add-ions")
    (:file "set-box")
    (:file "cando-database")
-                                        ;     (:file "commands")     ;;; moved to leap
    (:file "pdb")
-   (:file "grammar")
    (:file "easy")
    (:file "leap")
                                         ;     (:file "interpreter")

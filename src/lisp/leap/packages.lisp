@@ -25,37 +25,17 @@
 ;; -^-
 (cl:in-package #:common-lisp-user)
 
-(defpackage #:leap.parser
-  (:use #:cl #:alexandria #:esrap #:parser.common-rules #:PARSER.COMMON-RULES.OPERATORS)
-  (:export )
-  (:documentation
-   "Embryonic parser for the leap file format.  Written by Jan Moringen"))
-
-(defpackage #:leap.interpreter
-  (:use #:cl #:alexandria #:esrap #:parser.common-rules)
-  (:export #:evaluate
-           #:*leap-env*)
-  (:documentation
-   "Embryonic parser for the leap file format.  Written by Jan Moringen"))
-
-(defpackage #:leap.topology
-  (:use #:common-lisp)
-  (:export
-   #:write-topology
-   #:save-amber-parm-format))
-
 (defpackage #:leap.antechamber-type-definition-parser
   (:use #:common-lisp #:esrap #:parser.common-rules #:PARSER.COMMON-RULES.OPERATORS)
   (:export
    #:antechamber-line
    #:read-antechamber-type-rules))
 
-(defpackage #:leap.commands
+(defpackage #:leap.topology
   (:use #:common-lisp)
   (:export
-   #:load-script
-   #:load-amber-params
-   ))
+   #:write-topology
+   #:save-amber-parm-format))
 
 (defpackage #:leap.cando-database
   (:use #:common-lisp)
@@ -127,42 +107,20 @@
                 #:add-pdb-atom-map
                 )
   (:export
-   #:create-atom
    #:process-command-line-options
-   #:leap-repl
-   #:leap-repl-then-exit
    #:*amber-system*
-   #:setup-amber-paths
-   #:setup-default-paths
    #:setup-amber
-   #:save-amber-parm
    #:atom
    #:bounding-box
    #:+ #:- #:/ #:* #:< #:> #:>= #:<= #:sqrt
-   #:add-path
    #:minimize
    #:set-element #:get-element #:size
-   #:as-string #:load-mol2 #:save-mol2
+   #:as-string
    #:quit
 ;;;   #:mkdir #:set-current-directory #:current-directory #:directory-files
    #:download-pdb
-;;;   #:load-off
-   #:add-pdb-res-map
-   #:add-pdb-atom-map
-   #:load-amber-params
-   #:load-amber-type-rules
-   #:load-off
-   #:clear-force-field
-   #:list-force-fields
    #:list-objects
-   #:desc
    #:object
-   #:load-atom-type-rules
-   #:assign-atom-types
-   #:source
-   #:solvate-box
-   #:solvate-oct
-   #:solvate-shell
    #:add-gaff
    #:easy-gaff)
   (:use :common-lisp :chem :geom))

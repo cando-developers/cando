@@ -165,7 +165,7 @@ CL_INITIALIZER void cando_initializer()
   }
   if (exec_name.find("leap")!=std::string::npos) {
     core::global_options->_ProcessArguments = leap_process_arguments;
-    std::pair<core::LoadEvalEnum,std::string> cmdN(core::cloEval,"(leap:leap-repl-then-exit)");
+    std::pair<core::LoadEvalEnum,std::string> cmdN(core::cloEval,"(leap.commands:leap-repl-then-exit)");
     core::global_options->_LoadEvalList.push_back(cmdN);
     std::pair<core::LoadEvalEnum,std::string> cmd1(core::cloEval,"(in-package :cando-user)");
     core::global_options->_LoadEvalList.insert(core::global_options->_LoadEvalList.begin(),cmd1);
