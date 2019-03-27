@@ -27,11 +27,17 @@
 
 (defpackage #:cando-user
   (:shadowing-import-from :chem "ATOM")
-  (:use #:common-lisp
-        #:cando
-        #:leap
-        #:leap.pdb)
+  (:use #:common-lisp)
   (:export #:start-swank)
   )
 
+
+(eval-when (:execute :load-toplevel)
+    (do-external-symbols (sym :cando)
+    (import sym :cando-user)
+    (export sym :cando-user))
+  (do-external-symbols (sym :leap)
+    (import sym :cando-user)
+    (export sym :cando-user))
+  )
 

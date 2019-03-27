@@ -47,15 +47,10 @@
    #:setup-amber-paths
    #:setup-default-paths
    #:show-paths
-      #:desc
-   #:add-pdb-res-map
-   #:add-pdb-atom-map
+   #:desc
    #:create-atom
    #:load-off
-   #:load-amber-params
-   #:clear-force-field
    #:list-force-fields
-   #:load-amber-type-rules
    #:assign-atom-types
    #:source
    #:save-amber-parm
@@ -64,6 +59,10 @@
    #:solvate-shell
    #:leap-repl
    #:leap-repl-then-exit
-   #:load-atom-type-rules
    ))
 
+
+(eval-when (:execute :load-toplevel)
+  (do-external-symbols (sym :leap.commands)
+    (import sym :leap)
+    (export sym :leap)))

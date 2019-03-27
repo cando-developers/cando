@@ -1,5 +1,7 @@
 (in-package :cando-user)
 
+(defvar *started-swank* nil)
+
 (defun start-swank-server (&optional (port 4005))
   (let* ((slime-home (and (ext:getenv "SLIME_HOME") (probe-file (pathname (ext:getenv "SLIME_HOME"))))))
     (if slime-home
@@ -18,16 +20,14 @@
               (setf *started-swank* t))))
         (error "Could not determine directory for slime - set SLIME_HOME"))))
 
-(progn
-  (defvar *started-swank* nil)
-  (defun start-swank (&optional (port 4005))
-    ;; Bad!  This is hard-coded to work with docker
-    (if *started-swank*
-        (format t "Swank is already running~%")
-        (if (find-package :cl-ipywidgets)
-            (let ((save-jupyter-cell-state-symbol (find-symbol "SAVE-JUPYTER-CELL-STATE" :cl-ipywidgets)))
-              (if save-jupyter-cell-state-symbol
-                  (funcall save-jupyter-cell-state-symbol)
-                  (error "cl-ipywidgets isn't loaded - can't save cell state"))
-              (start-swank-server port))
-            (start-swank-server port)))))
+(defun start-swank (&optional (port 4005))
+  ;; Bad!  This is hard-coded to work with docker
+  (if *started-swank*
+      (format t "Swank is already running~%")
+      (if (find-package :cl-ipywidgets)
+          (let ((save-jupyter-cell-state-symbol (find-symbol "SAVE-JUPYTER-CELL-STATE" :cl-ipywidgets)))
+            (if save-jupyter-cell-state-symbol
+                (funcall save-jupyter-cell-state-symbol)
+                (error "cl-ipywidgets isn't loaded - can't save cell state"))
+            (start-swank-server port))
+          (start-swank-server port))))

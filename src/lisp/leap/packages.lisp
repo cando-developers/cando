@@ -88,42 +88,6 @@
    #:leap-lookup-variable-reader-macro)
   )
 
-(defpackage #:leap
-  (:shadowing-import-from :chem "ATOM")
-  (:shadowing-import-from :geom "BOUNDING-BOX")
-  (:shadowing-import-from :common-lisp "+" "-" "/" "*" ">" "<" ">=" "<=" "SQRT")
-  (:shadowing-import-from :energy "MINIMIZE")
-  (:shadowing-import-from :chem "SET-ELEMENT" "GET-ELEMENT" "SIZE")
-  (:shadowing-import-from :cando "AS-STRING" "LOAD-MOL2" "SAVE-MOL2")
-  (:import-from :core #:quit)
-  (:import-from :leap.core
-                #:add-path
-                #:force-fields)
-;;;  (:import-from :cando-utility #:mkdir #:set-current-directory #:current-directory #:directory-files)
-  (:import-from :inet #:download-pdb)
-;;  (:import-from :leap.off #:load-off)
-  (:import-from :leap.pdb
-                #:add-pdb-res-map
-                #:add-pdb-atom-map
-                )
-  (:export
-   #:process-command-line-options
-   #:*amber-system*
-   #:setup-amber
-   #:atom
-   #:bounding-box
-   #:+ #:- #:/ #:* #:< #:> #:>= #:<= #:sqrt
-   #:minimize
-   #:set-element #:get-element #:size
-   #:as-string
-   #:quit
-;;;   #:mkdir #:set-current-directory #:current-directory #:directory-files
-   #:download-pdb
-   #:list-objects
-   #:object
-   #:add-gaff
-   #:easy-gaff)
-  (:use :common-lisp :chem :geom))
 
 (defpackage #:leap.solvate
   (:use #:common-lisp)
@@ -143,3 +107,56 @@
   (:export
    #:set-box)
   )
+
+
+(defpackage #:leap
+  (:shadowing-import-from :chem "ATOM" "LOAD-PDB")
+  (:shadowing-import-from :geom "BOUNDING-BOX")
+  (:shadowing-import-from :common-lisp "+" "-" "/" "*" ">" "<" ">=" "<=" "SQRT")
+  (:shadowing-import-from :energy "MINIMIZE")
+  (:shadowing-import-from :chem "SET-ELEMENT" "GET-ELEMENT" "SIZE")
+  (:shadowing-import-from :cando "AS-STRING" "LOAD-MOL2" "SAVE-MOL2")
+  (:import-from :core #:quit)
+  (:import-from :leap.core
+                #:add-path
+                #:clear-force-field
+                #:force-fields)
+;;;  (:import-from :cando-utility #:mkdir #:set-current-directory #:current-directory #:directory-files)
+  (:import-from :inet #:download-pdb)
+  (:import-from :leap.pdb
+                #:add-pdb-res-map
+                #:add-pdb-atom-map
+                )
+  (:export
+   #:process-command-line-options
+   #:*amber-system*
+   #:setup-amber
+   #:clear-force-field
+   #:add-path
+   #:force-fields
+   #:add-pdb-res-map
+   #:add-pdb-atom-map
+   #:atom
+   #:bounding-box
+   #:minimize
+   #:as-string
+   #:quit
+;;;   #:mkdir #:set-current-directory #:current-directory #:directory-files
+   #:download-pdb
+   #:load-pdb
+   #:scan-pdb
+   #:list-objects
+   #:object
+   #:load-amber-params
+   #:load-atom-type-rules
+   #:add-gaff
+   #:easy-gaff)
+  (:use :common-lisp :chem :geom))
+
+(eval-when (:execute :load-toplevel)
+  (loop for lib-name in '(:leap.set-box :leap.add-ions :leap.solvate
+                          :leap.topology)
+        for lib = (find-package lib-name)
+        do (do-external-symbols (sym lib)
+             (import sym :leap)
+             (export sym :leap))))

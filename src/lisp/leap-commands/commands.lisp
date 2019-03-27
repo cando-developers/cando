@@ -86,7 +86,7 @@ not match an atom in the residue.  This enables PDB files to be read
 in without extensive editing of atom names.  The LIST is a LIST of LISTs:
       { {sublist} {sublist} ... }
 where each sublist is of the form
-      { "OddAtomName" "LibAtomName" }
+      { \"OddAtomName\" \"LibAtomName\" }
 Many `odd' atom names can map to one `standard' atom name, but any single
 odd atom name maps only to the last standard atom name it was mapped to.
 "
@@ -133,42 +133,10 @@ that is searched whenever parameters are required.
 "
   (leap.off:load-off filename))
 
-(defun leap.load-off (entry)
-  (valid-arguments entry 1)
-  (let ((filename (ensure-path (second entry))))
-    (load-off filename)))
-
-(defun load-amber-params (filename &optional (force-field :default))
-  (let* ((fn (ensure-path filename))
-         (ff (let ((parmreader (chem:make-read-amber-parameters)))
-              (with-open-file (fin fn :direction :input)
-                (chem:read-parameters parmreader fin leap:*amber-system*)
-                (chem:get-force-field parmreader)))))
-    (chem:set-title ff filename)
-    (format *out* "Adding force field ~a to ~a~%" ff force-field)
-    (leap.core:add-force-field-or-modification ff force-field)))
-
-(defun leap.load-amber-params (entry)
-  (valid-arguments entry 1)
-  (let ((filename (second entry)))
-    (load-amber-params filename)))
-
-(defun clear-force-field (&optional (ff :default))
-  (leap.core:clear-force-field ff))
-
 (defun list-force-fields ()
   (let ((ffs nil))
     (maphash (lambda (k v) (push (cons k v) ffs)) leap.core:*force-fields*)
     ffs))
-
-(defun load-atom-type-rules (filename &optional (force-field :default))
-  (let* ((path (leap.core:search-path filename))
-         (fftypedb (with-open-file (fin path)
-                       (leap.antechamber-type-definition-parser::read-antechamber-type-rules fin)))
-         (ff (core:make-cxx-object 'chem:force-field)))
-    (chem:set-title ff filename)
-    (chem:set-type-db ff fftypedb)
-    (leap.core:add-force-field-or-modification ff force-field)))
 
 (defun assign-atom-types (matter &optional system)
   (chem:map-molecules
@@ -357,7 +325,7 @@ the STRING is not given then a list of legal STRINGs is provided.
       ("loadOff" . load-off)
       ("loadMol2" . cando:load-mol2)
       ("source" . source)
-      ("loadAmberParams" . load-amber-params)
+      ("loadAmberParams" . leap:load-amber-params)
       ("addPdbResMap" . leap.pdb:add-pdb-res-map)
       ("addPdbAtomMap" . leap.pdb:add-pdb-atom-map)
       ("addAtomTypes" . add-atom-types)

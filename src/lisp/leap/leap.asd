@@ -25,7 +25,7 @@
    (:file "set-box")
    (:file "cando-database")
    (:file "pdb")
-   (:file "easy")
    (:file "leap")
+   (:file "easy")
                                         ;     (:file "interpreter")
    ))
