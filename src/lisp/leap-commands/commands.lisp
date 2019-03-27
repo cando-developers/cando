@@ -178,6 +178,58 @@ into LEaP.
     (leap.topology:save-amber-parm-format aggregate top-pathname crd-pathname :force-field (leap.core:merged-force-field force-field-name) :assign-types t)))
 
 (defun solvate-box (solute solvent buffer &rest iso-closeness)
+  "    solvateBox solute solvent buffer [ \"iso\" ] [ closeness ]
+
+      UNIT                         _solute_
+      UNIT                         _solvent_
+      object                       _buffer_
+      NUMBER                       _closeness_
+
+The solvateBox command creates a solvent box around the _solute_ UNIT.
+The _solute_ UNIT is modified by the addition of _solvent_ RESIDUEs.
+
+The user may want to first align long solutes that are not expected
+to tumble using alignAxes, in order to minimize box volume.
+
+The normal choice for a TIP3 _solvent_ UNIT is WATBOX216. Note that
+constant pressure equilibration is required to bring the artificial box
+to reasonable density, since Van der Waals voids remain due to the
+impossibility of natural packing of solvent around the solute and at
+the edges of the box.
+
+The solvent box UNIT is copied and repeated in all three spatial directions
+to create a box containing the entire solute and a buffer zone defined
+by the _buffer_ argument. The _buffer_ argument defines the distance,
+in angstroms, between the wall of the box and the closest ATOM in the
+solute.
+
+If the buffer argument is a single NUMBER, then the buffer distance is
+the same for the x, y, and z directions, unless the \"iso\" option is used
+to make the box isometric, with the shortest box clearance = buffer. If
+\"iso\" is used, the solute is rotated to orient the principal axes,
+otherwise it is just centered on the origin.
+
+If the buffer argument is a LIST of three NUMBERS, then the NUMBERs are
+applied to the x, y, and z axes respectively. As the larger box is created
+and superimposed on the solute, solvent molecules overlapping the solute
+are removed.
+
+The optional _closeness_ parameter can be used to control the extent to
+which _solvent_ ATOMs overlap _solute_ ATOMs.  The default value of
+the _closeness_ argument is 1.0, which allows no overlap.  Smaller
+values allow solvent ATOMs to overlap _solute_ ATOMs by (1 - closeness) *
+R*ij, where R*ij is the sum of the Van der Waals radii of solute and
+solvent atoms.  Values greater than 1 enforce a minimum gap between
+solvent and solute of (closeness - 1) * R*ij.
+
+This command modifies the _solute_ UNIT in several ways.  First, the
+coordinates of the ATOMs are modified to move the center of a box
+enclosing the Van der Waals radii of the atoms to the origin.  Secondly,
+the UNIT is modified by the addition of _solvent_ RESIDUEs copied from
+the _solvent_ UNIT. Finally, the box parameter of the new system (still
+named for the _solute_) is modified to reflect the fact that a periodic,
+rectilinear solvent box has been created around it.
+"
   (when (numberp buffer)
     (setf buffer (list buffer buffer buffer)))
   ;;; Process the leap syntax for the two optional parameters "iso" and a closeness value
