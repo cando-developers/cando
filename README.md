@@ -60,6 +60,6 @@ git pull origin master
 3. Build and install everything.
 
 ```
-./waf build_iboehm
+./waf build_cboehm
 ```
 
