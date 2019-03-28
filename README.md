@@ -4,9 +4,7 @@ CANDO - Computer Aided Nanostructure Design and Optimization
 Cando is a computational chemistry environment for
 building and designing functional molecules and materials.
 
-Cando is an extension of the Clasp Common Lisp programming environment (github.com/clasp-developers/clasp).
-
-# Building
+# Building Cando 
 
 Cando needs [clasp](https://github.com/clasp-developers/clasp.git) and clasp has [dependencies](https://github.com/clasp-developers/clasp/wiki/Build-Instructions) that need to be installed first.
 
