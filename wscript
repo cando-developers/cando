@@ -99,7 +99,26 @@ def build(bld):
         bld_extensions.set_inputs([bld.ccando_executable,bld.cclasp_fasl,bld.asdf_fasl_cclasp]+bld.extensions_lisp_files)
 #        bld_extensions.set_outputs([extensions_result])
         bld.add_to_group(bld_extensions)
+    bld.add_post_fun(post_install)
     print("Leaving extensions build without cclasp_executable")
+
+def post_install(ctx):
+    print('In post_install(ctx)')
+    if ctx.cmd[:len('install_c')] == 'install_c':
+        prefix = ctx.env.PREFIX
+        cando_parts = os.path.split(ctx.ccando_executable.abspath())
+        installed_cando = "%s/bin/%s" % (prefix, cando_parts[1])
+        cmd = '%s -e "(sys:quit)"' % installed_cando
+        print("Executing post-install command %s" % cmd)
+        ctx.exec_command(cmd)
+        cando_symlink = "%s/bin/cando" % prefix
+        leap_parts = os.path.split(ctx.cleap_executable.abspath())
+        installed_cleap = "%s/bin/%s" % (prefix, leap_parts[1])
+        cleap_symlink = "%s/bin/cleap" % prefix
+        os.symlink(installed_cando,cando_symlink)
+        os.symlink(installed_cleap,cleap_symlink)
+
+#            ctx.exec_command('${PREFIX}/bin/icando-boehm')
 
 class build_extension(waflib.Task.Task):
     def run(self):
@@ -116,6 +135,7 @@ class build_extension(waflib.Task.Task):
         return super(build_extension, self).exec_command(cmd, **kw)
     def keyword(self):
         return 'build extensions using... '
+
 
 def fetch_git_revision(path, url, revision = "", label = "master"):
     print("Git repository %s  url: %s\n     revision: %s  label: %s\n" % (path, url, revision, label))
