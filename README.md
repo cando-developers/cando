@@ -6,7 +6,7 @@ building and designing functional molecules and materials.
 
 # Building Cando 
 
-Cando needs [clasp](https://github.com/clasp-developers/clasp.git) and clasp has [dependencies](https://github.com/clasp-developers/clasp/wiki/Build-Instructions) that need to be installed first.
+Cando needs [Clasp](https://github.com/clasp-developers/clasp.git) and Clasp has [dependencies](https://github.com/clasp-developers/clasp/wiki/Build-Instructions) that need to be installed first.
 
 1. Clone Clasp using: 
 
@@ -43,7 +43,7 @@ setenv AMBERHOME=/path/to/amber
 
 ## Updating Cando and Clasp
 
-Both clasp and cando are evolving - if you want the latest versions you need to update them both.
+Both Clasp and Cando are evolving - if you want the latest versions you need to update them both.
 
 1. Change directory into the top Clasp directory and pull Clasp updates.  I'm assuming you are using the master branch.
 
