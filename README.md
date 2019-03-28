@@ -59,7 +59,7 @@ git pull origin master
 (cd extensions/cando && git pull origin master)
 ```
 
-3. Rebuild everything.
+3. Build and install everything.
 
 ```
 ./waf build_iboehm
