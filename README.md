@@ -47,19 +47,19 @@ setenv AMBERHOME=/path/to/amber
 
 Both clasp and cando are evolving - if you want the latest versions you need to update them both.
 
-1. Update clasp
+1. Change directory into the top clasp directory and pull clasp updates.  I'm assuming you are using the master branch.
 
 ```
 git pull origin master
 ```
 
-2. Update cando
+2. Update cando.
 
 ```
 (cd extensions/cando && git pull origin master)
 ```
 
-3. Rebuild everything
+3. Rebuild everything.
 
 ```
 ./waf build_iboehm
