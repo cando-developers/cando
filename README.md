@@ -1,8 +1,6 @@
 # CANDO - 
 ## Computer Aided Nanostructure Design and Optimization
 
----
-
 Cando is a computational chemistry environment for
 building and designing functional molecules and materials.
 
