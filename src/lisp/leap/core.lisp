@@ -60,6 +60,16 @@
                 (error "The variable ~S is not defined" name)
                 error-value)))))
 
+(defun all-variables ()
+  (let (vars)
+    (maphash (lambda (k v) (push k vars)) (%variables *leap-env*))
+    (flet ((accumulate-topologys (top)
+             (push (chem:get-name top) vars)))
+
+      (cando:walk-topologys #'accumulate-topologys))
+    (let ((sorted-vars (sort vars #'string<)))
+      sorted-vars)))
+
 (defun (setf lookup-variable*) (new-value name environment)
   (if (typep new-value 'chem:topology)
       (cando:register-topology name new-value)

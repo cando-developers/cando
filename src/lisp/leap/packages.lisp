@@ -74,6 +74,7 @@
    #:evaluate
    #:*leap-env*
    #:lookup-variable
+   #:all-variables
    #:function-lookup
    #:clear-path
    #:add-path
@@ -145,15 +146,15 @@
    #:quit
 ;;;   #:mkdir #:set-current-directory #:current-directory #:directory-files
    #:download-pdb
-   #:load-pdb
-   #:scan-pdb
+;   #:load-pdb
+;   #:scan-pdb
    #:list-objects
    #:object
    #:load-amber-params
    #:load-atom-type-rules
    #:add-gaff
    #:easy-gaff)
-  (:use :common-lisp :chem :geom))
+  (:use :common-lisp #+(or):chem :geom))
 
 (eval-when (:execute :load-toplevel)
   (loop for lib-name in '(:leap.set-box :leap.add-ions :leap.solvate

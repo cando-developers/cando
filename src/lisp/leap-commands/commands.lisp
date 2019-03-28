@@ -57,15 +57,17 @@
   (let ((filename (pathname (ensure-string (second entry)))))
     (log-file filename)))
 
-(defun desc (name)
+(defun desc (&optional (name nil namep))
   "    desc variable
       object                       _variable_
 
 Print a description of the object.
 "
-  (let ((val (leap.core:lookup-variable name)))
-    (format *out* "~S~%" val)
-    val))
+  (if namep
+      (let ((val (leap.core:lookup-variable name)))
+        (format *out* "~S~%" val)
+        val)
+      (format t "~a" (leap.core:all-variables))))
 
 (defun object (name)
   "Return the object with name."
@@ -329,6 +331,13 @@ rectilinear solvent box has been created around it.
 (defun leap-quit ()
   (throw 'repl-done nil))
 
+(defun leap-cando ()
+  "
+This command brings up a cando command line. 
+Leap can be reentered by evaluating (leap).
+"
+  (throw 'repl-done :cando))
+
 
 (defun leap-start-swank ()
   (funcall (find-symbol "START-SWANK" :cando-user)))
@@ -381,6 +390,7 @@ the STRING is not given then a list of legal STRINGs is provided.
       ("showPaths" . show-paths)
       ("createAtom" . create-atom )
       ("help" . leap-help)
+      ("cando" . leap-cando )
       ("startSwank" . leap-start-swank)
       ("quit" . leap-quit)
       ))
@@ -414,24 +424,36 @@ the STRING is not given then a list of legal STRINGs is provided.
     (loop for x below 10
           for code = (progn
                        (format t "> ") (finish-output)
-                       (read-line))
-          do ;;(handler-case
-                 (let ((ast (architecture.builder-protocol:with-builder
-                                ('list)
-                              (handler-bind ((esrap:esrap-parse-error
-                                               (lambda (c)
-                                                 (format t "Encountered error ~s while parsing ~s~%" c code)
-                                                 (break "Encountered error ~s while parsing ~s" c code))))
-                                (esrap:parse 'leap.parser::leap code)))))
-                   (core:call-with-stack-top-hint
-                    (lambda ()
-                      (leap.core:evaluate 'list ast leap.core:*leap-env*))))
-;;               (error (var) (format t "Error ~a - while evaluating: ~a~%" var code)))
-    )))
+                       (read-line *standard-input* nil :eof))
+          do (handler-case
+                 (if (eq code :eof)
+                     (progn
+                       (clear-input *standard-input*)
+                       (format t "Clearing input~%"))
+                     (let ((ast (architecture.builder-protocol:with-builder
+                                    ('list)
+                                  (handler-bind ((esrap:esrap-parse-error
+                                                   (lambda (c)
+                                                     (format t "Encountered error ~s while parsing ~s~%" c code)
+                                                     (break "Encountered error ~s while parsing ~s" c code))))
+                                    (esrap:parse 'leap.parser::leap code)))))
+                       (core:call-with-stack-top-hint
+                        (lambda ()
+                          (leap.core:evaluate 'list ast leap.core:*leap-env*)))))
+               (error (var) (format t "Error ~a - while evaluating: ~a~%" var code))))))
+
+
+(defun leap ()
+  (leap-repl)
+  (format t "Entering cando repl - use (leap) to re-enter leap.~%"))
 
 (defun leap-repl-then-exit ()
-  (leap-repl)
-  (core:exit 0))
+  (if (leap-repl)
+      (progn
+        (format t "Entering cando repl - use (leap) to re-enter leap.~%"))
+      (progn
+        (format t "Leaving leap~%")
+        (core:exit 0))))
 
 
 

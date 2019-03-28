@@ -57,6 +57,7 @@
    #:solvate-box
    #:solvate-oct
    #:solvate-shell
+   #:leap
    #:leap-repl
    #:leap-repl-then-exit
    ))
