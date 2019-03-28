@@ -40,5 +40,5 @@ setenv AMBERHOME=/path/to/amber
 
 /opt/clasp/bin/ccando-boehm
 
-/opt/clasp/bin/ileap-boehm
+/opt/clasp/bin/cleap-boehm
 ```
