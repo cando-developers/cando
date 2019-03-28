@@ -42,3 +42,26 @@ setenv AMBERHOME=/path/to/amber
 
 /opt/clasp/bin/cleap
 ```
+
+## Updating clasp and cando
+
+Both clasp and cando are evolving - if you want the latest versions you need to update them both.
+
+1. Update clasp
+
+```
+git pull origin master
+```
+
+2. Update cando
+
+```
+(cd extensions/cando && git pull origin master)
+```
+
+3. Rebuild everything
+
+```
+./waf build_iboehm
+```
+
