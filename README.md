@@ -38,7 +38,7 @@ git clone https://github.com/clasp-developers/clasp.git
 ```
 setenv AMBERHOME=/path/to/amber
 
-/opt/clasp/bin/ccando-boehm
+/opt/clasp/bin/cando
 
-/opt/clasp/bin/cleap-boehm
+/opt/clasp/bin/cleap
 ```
