@@ -2,6 +2,17 @@
 
 
 (defun load-amber-params (filename &optional (force-field :default))
+  "    variable = loadAmberParams filename
+      PARMSET                      _variable_
+      STRING                       _filename_
+
+Load an AMBER format parameter set file and place it in _variable_.
+All interactions defined in the parameter set will be contained within
+_variable_.   This command causes the loaded parameter set to be included
+in LEaP's list of parameter sets that are searched when parameters are
+required.  General proper and improper torsion parameters are modified,
+the AMBER general type \"X\" is replaced with the LEaP general type \"?\".
+"
   (let* ((fn (leap.core:ensure-path filename))
          (ff (let ((parmreader (chem:make-read-amber-parameters)))
               (with-open-file (fin fn :direction :input)
