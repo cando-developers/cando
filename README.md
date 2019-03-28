@@ -8,7 +8,7 @@ Cando is an extension of the Clasp Common Lisp programming environment (github.c
 
 # Building
 
-Cando needs to be installed within the clasp/extensions directory using the following steps.
+Cando needs [clasp](https://github.com/clasp-developers/clasp.git) and clasp has [dependencies](https://github.com/clasp-developers/clasp/wiki/Build-Instructions) that need to be installed first.
 
 1. Clone clasp using: 
 
@@ -16,14 +16,29 @@ Cando needs to be installed within the clasp/extensions directory using the foll
 git clone https://github.com/clasp-developers/clasp.git
 ```
 
-2. Clone cando using:
+2. Add cando to clasp:
 
 ```
-cd clasp/extensions
-git clone https://github.com/drmeister/cando.git
+./waf add_cando
 ```
 
-3. Go to the [instructions](https://github.com/clasp-developers/clasp.git) for building Clasp and follow those - Cando will be built within Clasp.
+3. Configure cando with the installation directory. We use ```/opt/clasp``` for example. 
 
-This will result in Cando being installed within the Clasp source tree at clasp/extensions/cando
+```
+./waf configure --prefix=/opt/clasp
+```
 
+4. Build and install cando.
+
+```
+./waf install_cboehm
+```
+
+5. Run cando or run the leap emulator.
+```
+setenv AMBERHOME=/path/to/amber
+
+/opt/clasp/bin/ccando-boehm
+
+/opt/clasp/bin/ileap-boehm
+```
