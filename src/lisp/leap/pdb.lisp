@@ -619,6 +619,27 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
 (defparameter *serial-to-atoms* nil)
 
 (defun load-pdb (filename &key scanner progress system)
+  "    variable = loadPdb filename
+      STRING                       _filename_
+
+Load a Protein Databank format file with the file name _filename_.
+The sequence numbers of the RESIDUEs will be determined from the
+order of residues within the PDB file ATOM records.  For each
+residue in the PDB file, LEaP searches the variables currently
+defined for variable names that match the residue name.  If a
+match is found, then the contents of the variable are copied into
+the UNIT created for the PDB structure.  If no PDB `TER' card
+separates the current residue from the previous one, a bond is
+created between the connect1 ATOM of the previous residue and the
+connect0 atom of the new one.  As atoms are read from the ATOM
+records, their coordinates are written into the correspondingly
+named ATOMs within the residue being built.  If the entire residue
+is read and it is found that ATOM coordinates are missing, then
+external coordinates are built from the internal coordinates that
+were defined in the matching UNIT (residue) variable.  This allows
+LEaP to build coordinates for hydrogens and lone pairs which are not
+specified in PDB files.
+"
   (with-open-file (fin filename :direction :input)
     (let* ((scanner (or scanner
                         (build-sequence (scan-pdb filename :progress progress) system)))

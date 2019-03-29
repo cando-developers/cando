@@ -161,6 +161,12 @@
           str
           (intern (esrap:text chars) :keyword)))))
 
+(defrule/s keyword
+    (and #\: (+ (character-ranges (#\a #\z) (#\A #\Z) (#\0 #\9) #\. #\_)))
+  (:lambda (chars)
+    (let ((str (esrap:text chars)))
+      (intern (esrap:text chars) :keyword))))
+
 ;;; Expression
 
 (defrule expression
@@ -190,6 +196,7 @@
         string-literal/double-quotes
         string-literal/dollar
         variable-name
+        keyword
         dummy)
   (:lambda (value &bounds start end)
     (architecture.builder-protocol:node* (:literal :value  value

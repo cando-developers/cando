@@ -172,12 +172,21 @@ into LEaP.
   (let* ((filename (leap.core:ensure-path (second entry))))
     (source filename)))
 
-(defun save-amber-parm (aggregate topology-file-name &optional crd-pathname (force-field-name :default))
+(defun save-amber-parm (aggregate topology-file-name &optional crd-pathname (force-field-name nil))
   (let* ((top-pathname (merge-pathnames (pathname topology-file-name)))
          (crd-pathname (if crd-pathname
                            (merge-pathnames crd-pathname)
                            (make-pathname :type "crd" :defaults top-pathname))))
-    (leap.topology:save-amber-parm-format aggregate top-pathname crd-pathname :force-field (leap.core:merged-force-field force-field-name) :assign-types t)))
+    (leap.topology:save-amber-parm-format aggregate top-pathname crd-pathname :force-field force-field-name :assign-types t)))
+
+
+(defun leap.save-amber-parm (aggregate-name topology-file-name &optional (crd-pathname nil crd-pathname-p) (force-field-name nil))
+  (let ((aggregate (leap.core:lookup-variable aggregate-name))
+        (crd-pathname (if crd-pathname-p
+                          crd-pathname
+                          (namestring (make-pathname :type "crd" :defaults topology-file-name)))))
+    (funcall 'save-amber-parm aggregate topology-file-name crd-pathname force-field-name)))
+
 
 (defun solvate-box (solute solvent buffer &rest iso-closeness)
   "    solvateBox solute solvent buffer [ \"iso\" ] [ closeness ]
@@ -232,6 +241,7 @@ the _solvent_ UNIT. Finally, the box parameter of the new system (still
 named for the _solute_) is modified to reflect the fact that a periodic,
 rectilinear solvent box has been created around it.
 "
+  (format t "solute -> ~s  solvent -> ~s  buffer -> ~s   iso-closeness -> ~s~%" solute solvent buffer iso-closeness)
   (when (numberp buffer)
     (setf buffer (list buffer buffer buffer)))
   ;;; Process the leap syntax for the two optional parameters "iso" and a closeness value
@@ -259,6 +269,11 @@ rectilinear solvent box has been created around it.
                closeness (find-if #'numberp iso-closeness)))
         (t (error-iso-closeness))))
     (leap.solvate:tool-solvate-and-shell solute solvent buffer :closeness closeness :isotropic iso)))
+
+(defun leap.solvate-box (solute-name solvent-name buffer &rest iso-closeness)
+  (let ((solute (leap.core:lookup-variable solute-name))
+        (solvent (leap.core:lookup-variable solvent-name)))
+    (apply #'solvate-box solute solvent buffer iso-closeness)))
 
 (defun solvate-oct (solute solvent buffer &rest iso-closeness)
   (when (numberp buffer)
@@ -375,13 +390,14 @@ the STRING is not given then a list of legal STRINGs is provided.
       ("desc" . desc)
       ("loadOff" . load-off)
       ("loadMol2" . cando:load-mol2)
+      ("loadPdb" . leap.pdb:load-pdb)
       ("source" . source)
       ("loadAmberParams" . leap:load-amber-params)
       ("addPdbResMap" . leap.pdb:add-pdb-res-map)
       ("addPdbAtomMap" . leap.pdb:add-pdb-atom-map)
       ("addAtomTypes" . add-atom-types)
-      ("saveAmberParms" . save-amber-parm)
-      ("solvateBox" . solvate-box)
+      ("saveAmberParms" . leap.save-amber-parm)
+      ("solvateBox" . leap.solvate-box)
       ("solvateOct" . solvate-oct)
       ("solvateShell" . solvate-shell)
       ("setupDefaultPaths" . setup-default-paths )
