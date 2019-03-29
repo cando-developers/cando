@@ -175,8 +175,8 @@ vector<int>& CipPrioritizer_O::getS(Atom_sp a)
     return part;
 }
     
-
-void CipPrioritizer_O::assignPriorities(Matter_sp matter)
+CL_LISPIFY_NAME(chem:assign-priorities);
+CL_DEFUN void CipPrioritizer_O::assignPriorities(Matter_sp matter)
 {
   CipPrioritizer_sp prior;
   if (gc::IsA<Molecule_sp>(matter)) {

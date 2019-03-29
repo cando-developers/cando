@@ -750,6 +750,14 @@
   "Wrapper for chem:chem-info-match"
   (chem:chem-info-match smarts-root atom))
 
+(defmacro with-rings-do ((ring-var rings-calc) &body body)
+  "Some chem-info functionality needs chem:*current-rings* bound to the
+results of calling chem:identify-rings.  This macro wraps that code."
+  `(let* ((,ring-var ,rings-calc)
+          (chem:*current-rings* ,ring-var))
+     ,@body))
 
 (eval-when (:load-toplevel :execute)
   (chem:initialize-smarts-users))
+
+

@@ -27,8 +27,10 @@
 
 (defpackage #:smarts
   (:use #:common-lisp)
+  (:nicknames #:chem-info)
   (:export
    #:compile-smarts
    #:print-smarts
    #:match
+   #:with-rings-do
    ))
