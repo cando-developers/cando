@@ -23,17 +23,17 @@ def configure(cfg):
     fetch_git_revision("src/lisp/modules/quicklisp/local-projects/static-vectors","https://github.com/sionescu/static-vectors.git",label="master")
     if (cfg.options.enable_jupyter):
         print("Pulling in jupyter-lab code")
-	fetch_git_revision("src/lisp/modules/quicklisp/local-projects/trivial-garbage", "https://github.com/clasp-developers/trivial-garbage.git", label="master")
-	fetch_git_revision("src/lisp/modules/quicklisp/local-projects/bordeaux-threads", "https://github.com/clasp-developers/bordeaux-threads.git", label="master")
-	fetch_git_revision("src/lisp/modules/quicklisp/local-projects/cffi", "https://github.com/clasp-developers/cffi.git", label="master")
-	fetch_git_revision("src/lisp/modules/quicklisp/local-projects/usocket", "https://github.com/clasp-developers/usocket.git", label="master")
-	fetch_git_revision("src/lisp/modules/quicklisp/local-projects/uuid", "https://github.com/clasp-developers/uuid.git", label="master")
-	fetch_git_revision("src/lisp/modules/quicklisp/local-projects/cl-jupyter", "https://github.com/drmeister/cl-jupyter.git", label="master")
-	fetch_git_revision("src/lisp/modules/quicklisp/local-projects/cl-ipykernel", "https://github.com/clasp-developers/cl-ipykernel.git", label="master")
-	fetch_git_revision("src/lisp/modules/quicklisp/local-projects/cl-ipywidgets", "https://github.com/clasp-developers/cl-ipywidgets.git", label="master")
-	fetch_git_revision("src/lisp/modules/quicklisp/local-projects/cl-nglview", "https://github.com/clasp-developers/cl-nglview.git", label="master")
-	fetch_git_revision("src/lisp/modules/quicklisp/local-projects/cl-bqplot", "https://github.com/clasp-developers/cl-bqplot.git", label="master")
-	fetch_git_revision("src/lisp/modules/quicklisp/local-projects/trivial-backtrace", "https://github.com/clasp-developers/trivial-backtrace", label="master")
+        fetch_git_revision("src/lisp/modules/quicklisp/local-projects/trivial-garbage", "https://github.com/clasp-developers/trivial-garbage.git", label="master")
+        fetch_git_revision("src/lisp/modules/quicklisp/local-projects/bordeaux-threads", "https://github.com/clasp-developers/bordeaux-threads.git", label="master")
+        fetch_git_revision("src/lisp/modules/quicklisp/local-projects/cffi", "https://github.com/clasp-developers/cffi.git", label="master")
+        fetch_git_revision("src/lisp/modules/quicklisp/local-projects/usocket", "https://github.com/clasp-developers/usocket.git", label="master")
+        fetch_git_revision("src/lisp/modules/quicklisp/local-projects/uuid", "https://github.com/clasp-developers/uuid.git", label="master")
+        fetch_git_revision("src/lisp/modules/quicklisp/local-projects/cl-jupyter", "https://github.com/drmeister/cl-jupyter.git", label="master")
+        fetch_git_revision("src/lisp/modules/quicklisp/local-projects/cl-ipykernel", "https://github.com/clasp-developers/cl-ipykernel.git", label="master")
+        fetch_git_revision("src/lisp/modules/quicklisp/local-projects/cl-ipywidgets", "https://github.com/clasp-developers/cl-ipywidgets.git", label="master")
+        fetch_git_revision("src/lisp/modules/quicklisp/local-projects/cl-nglview", "https://github.com/clasp-developers/cl-nglview.git", label="master")
+        fetch_git_revision("src/lisp/modules/quicklisp/local-projects/cl-bqplot", "https://github.com/clasp-developers/cl-bqplot.git", label="master")
+        fetch_git_revision("src/lisp/modules/quicklisp/local-projects/trivial-backtrace", "https://github.com/clasp-developers/trivial-backtrace", label="master")
 
 
 class duplicate_executable(waflib.Task.Task):
