@@ -30,7 +30,7 @@ cd clasp
 4. Build and install Cando.
 
 ```
-./waf install_cboehm
+./waf build_cboehm install_cboehm
 ```
 
 5. Run Cando or run the leap emulator.
