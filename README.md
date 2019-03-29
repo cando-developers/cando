@@ -14,13 +14,14 @@ Cando needs [Clasp](https://github.com/clasp-developers/clasp.git) and Clasp has
 git clone https://github.com/clasp-developers/clasp.git
 ```
 
-2. Add Cando to Clasp:
+2. Enter the clasp directory and add Cando to Clasp:
 
 ```
+cd clasp
 ./waf add_cando
 ```
 
-3. Configure Cando with the installation directory. We use ```/opt/clasp``` for example. 
+3. Configure Cando with the installation directory. We use ```/opt/clasp``` for example. (Note 1) 
 
 ```
 ./waf configure --prefix=/opt/clasp
@@ -63,3 +64,4 @@ git pull origin master
 ./waf build_cboehm
 ```
 
+Note 1. Clasp can be configured by copying the wscript.config.template to wscript.config and editing it. The most important option is the LLVM_CONFIG_BINARY - it is the path to the ```llvm-config``` executable for llvm6.  Once clasp has that it can find the rest of llvm.  *On macOS and Linux you must download llvm6 using homebrew or some other package manager. Clasp uses a lot of advanced features of the llvm library.*
