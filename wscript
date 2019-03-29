@@ -1,4 +1,5 @@
 import sys
+import time
 from subprocess import call
 import waflib.Task
 from waflib import Utils, Logs, Task, TaskGen
@@ -110,6 +111,7 @@ def post_install(ctx):
         installed_cando = "%s/bin/%s" % (prefix, cando_parts[1])
         cmd = '%s -e "(sys:quit)"' % installed_cando
         print("Executing post-install command %s" % cmd)
+        print("NOTE: waf suppresses output and this may sit for 10-20 min compiling with no output (fixing ASAP) - start time: %s" % time.asctime())
         ctx.exec_command(cmd)
         cando_symlink = "%s/bin/cando" % prefix
         leap_parts = os.path.split(ctx.cleap_executable.abspath())
