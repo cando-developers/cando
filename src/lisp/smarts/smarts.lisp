@@ -290,7 +290,7 @@
                                                  (left labeled)
                                                  (right chem:atom-test)
                                                  &key key)
-  (format t "(:atom labeled t) relate head: ~s left: ~s right:~s~%" head left right)
+;;  (format t "(:atom labeled t) relate head: ~s left: ~s right:~s~%" head left right)
   (break "left: ~s right: ~s" left right)
   (chem:set-atom-test left right)
   left)
@@ -300,7 +300,7 @@
                                                  (left t)
                                                  (right labeled)
                                                  &key key)
-  (format t "(:atom t labeled) relate head: ~s left: ~s right:~s~%" head left right)
+;;  (format t "(:atom t labeled) relate head: ~s left: ~s right:~s~%" head left right)
   (break "left: ~s right: ~s" left right)
   (chem:set-atom-test left right)
   left)
@@ -670,20 +670,31 @@
 (defgeneric walk-smarts (parent child))
 
 (defmethod walk-smarts (grandparent parent)
+  #+(or)
+  (progn
+    (format t "in default method (length children) -> ~a~%" (length (chem:chem-info-node-children parent)))
+    (loop for idx from 0
+          for child in (chem:chem-info-node-children parent)
+          do (format t "        child ~a -> ~a~%" idx child)))
   (let ((children (chem:chem-info-node-children parent)))
     (loop for child in children
           do (walk-smarts parent child))))
 
 (defmethod walk-smarts (parent (child chem:bond-to-atom-test))
   "Optimize simple bond tests by lifting their bond test up into the bond-to-atom-test"
-  (let (logical bond-test)
+  (let (logical
+        bond-test)
     (when (and (chem:bond-matcher-bound-p child)
                (typep (setf logical (chem:bond-matcher child)) 'chem:bond-logical)
                (eq (chem:bond-logical-operator logical) :log-identity)
                (typep (setf bond-test (chem:get-left logical)) 'chem:bond-test))
       (let ((bond-test-bond (chem:bond-test-get-bond bond-test)))
         #+(or)(format t "walk-smarts bond-to-atom-test changing bond-type ~s~%" bond-test-bond)
-        (chem:setf-bond-type-if-optimizable child bond-test-bond)))))
+        (chem:setf-bond-type-if-optimizable child bond-test-bond)))
+    ;; Walk the children
+;;    (format t "Walking the children of bond-to-atom-test~%")
+    (call-next-method)
+    ))
     
 (defmethod walk-smarts (parent (child chem:atom-test))
   (let ((test-type (chem:get-ring-test child)))

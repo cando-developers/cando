@@ -1,3 +1,4 @@
+
 (in-package :asdf-user)
 
 (defsystem "smarts"
@@ -14,4 +15,8 @@
     :components
     ((:file "packages")
      (:file "smarts")
+     (:file "graphviz")
      ))
+
+(eval-when (:execute :compile-toplevel)
+  (format t "Loading smarts.asd~%"))
