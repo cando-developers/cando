@@ -610,6 +610,17 @@ CL_DEFMETHOD int AtomOrBondMatchNode_O::getRingId() const {
   return this->_RingId;
 }
 
+string AtomOrBondMatchNode_O::__repr__() const {
+  stringstream ss;
+  ss << "#<" << this->className() << " ";
+  ss << ":id " << this->_Id;
+  if (this->_RingTest!=SARNone) {
+    ss << " :ring-id " << this->_RingId;
+  }
+  ss << ">";
+  return ss.str();
+}
+
 
 void BondMatchNode_O::fields(core::Record_sp node) {
   this->Base::fields(node);
@@ -630,6 +641,9 @@ core::T_sp Logical_O::children() {
   return result.cons();
 }
 
+CL_DEFMETHOD LogicalOperatorType Logical_O::logical_operator() const {
+  return this->_Operator;
+}
 string Logical_O::asSmarts() const {
   stringstream ss;
   ss << "[";
@@ -793,6 +807,9 @@ string Logical_O::__repr__() const {
     if (logicalEnum[i]._Enum == this->_Operator) {
       ss << logicalEnum[i]._Key;
     }
+  }
+  if (this->_RingTest!=SARNone) {
+    ss << " :ring-id " << this->_RingId;
   }
   ss << ">";
   return ss.str();
@@ -1210,6 +1227,13 @@ CL_DEF_CLASS_METHOD BondToAtomTest_sp BondToAtomTest_O::makeBondMatcherToAtomTes
 
 core::T_sp BondToAtomTest_O::children() {
   ql::list result;
+  if (this->_Bond == SABUseBondMatcher) {
+    if (this->_BondMatcher.boundp()) {
+      result << this->_BondMatcher;
+    } else {
+      SIMPLE_ERROR(BF("BondToAtomTest _Bond is SABUseBondMatcher but _BondMatcher is unbound"));
+    }
+  }
   if (this->_AtomTest.notnilp()) result << this->_AtomTest;
   return result.cons();
 }
