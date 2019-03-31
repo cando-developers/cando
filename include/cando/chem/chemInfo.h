@@ -191,6 +191,7 @@ namespace chem {
     bool fieldsp() const { return true; };
     void	fields(core::Record_sp node);
   public:
+    CL_DEFMETHOD size_t getId() const { return this->_Id; };
     CL_DEFMETHOD core::T_sp bounds() { return this->_Bounds; };
     CL_DEFMETHOD void setf_bounds(core::T_sp bounds) { this->_Bounds = bounds; }
     string __repr__() const;
@@ -281,6 +282,8 @@ public:
   RingTestEnum getRingTest() const;
   void setRingId(int id);
   int getRingId() const;
+  string __repr__() const;
+
 
   AtomOrBondMatchNode_O() : _RingTest(SARNone), _RingId(-1) {};
 };
@@ -377,6 +380,7 @@ public:
   static Logical_sp create_logLowPrecedenceAnd(core::T_sp nilOrOp1, core::T_sp nilOrOp2);
   static Logical_sp create_logHighPrecedenceAnd(core::T_sp nilOrOp1, core::T_sp nilOrOp2);
   virtual core::T_sp children();
+  LogicalOperatorType logical_operator() const;
   Logical_O() : _Operator(logAlwaysTrue), _Left(_Nil<ChemInfoNode_O>()), _Right(_Nil<ChemInfoNode_O>()) {};
   virtual ~Logical_O() {};
 };
