@@ -15,7 +15,7 @@
 (defun load-design (file-name)
   (let ((design (cando:load-cando file-name)))
     (loop for topology in (topologys design)
-          do (register-topology (chem:get-name topology) topology))
+          do (cando:register-topology (chem:get-name topology) topology))
     design))
 
 

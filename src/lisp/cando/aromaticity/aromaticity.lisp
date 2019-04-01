@@ -109,7 +109,7 @@
         (setq aromatic-rings (cons ring aromatic-rings))))
     aromatic-rings))
 
-(defun generate-atoms-in-rings-list (mo)
+(defun generate-atoms-in-rings-list (mol)
   (let ((atoms-in-rings nil))
     (chem:map-atoms
      nil

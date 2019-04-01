@@ -676,12 +676,8 @@ core::T_sp mol2Read(Mol2File& fIn)
     uint resId = 1;
     chem::FFTypesDb_sp sybylRules;
     if (useSybylTypes) {
-      if (!chem::_sym_STARsybyl_type_assignment_rulesSTAR->boundP()) {
-        if (chem::_sym_initialize_sybyl_type_rules->fboundp()) {
-          core::eval::funcall(chem::_sym_initialize_sybyl_type_rules);
-        } else {
-          SIMPLE_ERROR(BF("chem:initialize-sybyl-type-rules has no function bound to it"));
-        }
+      if (chem::_sym_STARsybyl_type_assignment_rulesSTAR->symbolValue().nilp()) {
+        SIMPLE_ERROR(BF("The chem:*sybyl-type-assignment-rules* dynamic variable needs to be bound to a chem:fftypes-db database for sybyl types"));
       }
       sybylRules = gc::As<FFTypesDb_sp>(chem::_sym_STARsybyl_type_assignment_rulesSTAR->symbolValue());
     }

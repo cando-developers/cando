@@ -107,7 +107,7 @@
       (multiple-value-bind (aromatic step-assigned) (aromaticity:is-aromatic a)
 	(format t "~a type[~a] ~a ~a ~a~%" (chem:get-name a)
 	   (get-am1-bcc-type a)
-	   (ring-membership-as-string a)
+	   (aromaticity:ring-membership-as-string a)
 	   aromatic
 	   step-assigned)
 	)
@@ -288,7 +288,7 @@
   (cond
    ((= (chem:number-of-bonds a) 4) (set-am1-bcc-type a 42))
    ((/= (chem:number-of-bonds a) 3) (set-am1-bcc-type a 41))
-   ((has-bond-of-order a :double-bond) (set-am1-bcc-type a 42))
+   ((chem:has-bond-with-order a :double-bond) (set-am1-bcc-type a 42))
    (t (set-am1-bcc-type a 41))))
 
 

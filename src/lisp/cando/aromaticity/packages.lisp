@@ -29,4 +29,5 @@
   (:export
    #:is-aromatic
    #:identify-aromatic-rings
+   #:ring-membership-as-string
    ))

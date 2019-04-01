@@ -258,7 +258,7 @@ Break up the molecules in the aggregate into a list of molecules using spanning 
 ;;; Rename atoms in a matter using a smirks string with maps
 ;;;
 
-(defun rename-atoms-using-smirks (matter smirks name-map)
+(defun rename-atoms-using-smirks (matter smirks-root name-map)
   "Search through the matter for an atom that matches the smirks string and
    then rename the atoms using the smirks labels.
    The atom names become <element><smirks#> and attached hydrogens 

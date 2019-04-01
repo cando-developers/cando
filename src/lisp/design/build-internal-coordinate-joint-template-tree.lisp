@@ -386,6 +386,8 @@ Return a list of prepare-topology objects - one for each residue that we need to
 
 
 (defun get-all-out-plug-bond0atoms-as-set (plugs)
+  (error "This function is messed up - fix it")
+  #+(or)
   (let ((res nil))
     (loop for p in plugs
           do (let ((atom-name (chem:get-b0 p)))
@@ -407,11 +409,13 @@ Return a list of prepare-topology objects - one for each residue that we need to
     res))
 
 (defun get-all-stub-pivot-atoms-as-set (plugs out-plug-bond0-atoms-set )
+  (error "There is a problem with ObjectSet")
+  #+(or)
   (let ((res (ObjectSet))
         (plug-counter 0))
     (loop for p in plugs
           do (when (chem:has-stub-pivot-atom p)
-               (let ((atom-name (getB1 p)))
+               (let ((atom-name (chem:get-b1 p)))
                  (unless (not (member atom-name res))
                    (error "The atom name[~s] is already in the set[~s]" atom-name res))
                  (unless (not (member atom-name out-plug-bond0-atoms-set))
