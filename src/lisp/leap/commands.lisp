@@ -66,7 +66,7 @@ Print a description of the object.
   (leap:load-smirnoff-params filename))
 
 (defun leap.set-force-field (matter force-field-name)
-  (leap:set-force-field-name matter force-field-name))
+  (leap:set-force-field matter force-field-name))
 
 (defun object (name)
   "Return the object with name."
@@ -74,8 +74,7 @@ Print a description of the object.
 
 (defun leap.desc (entry)
   (valid-arguments entry 1)
-  (let ((var (second entry)))
-    (format *out* "~a~%" var)))
+  (leap:desc entry))
 
 (defun leap.add-pdb-res-map (entry)
   "    addPdbAtomMap list

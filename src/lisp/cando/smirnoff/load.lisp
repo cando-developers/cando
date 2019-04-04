@@ -282,3 +282,5 @@
     *smirnoff*))
 
 
+(defmethod chem:add-shadowing-force-field ((combined-force-field combined-force-field) (smirnoff-force-field smirnoff-force-field) pathname)
+  (push smirnoff-force-field (parts combined-force-field)))
