@@ -67,23 +67,7 @@ string Molecule_O::__repr__() const
 
 void Molecule_O::fields(core::Record_sp node)
 {
-  Bond_sp	bond;
-  Atom_sp		a;
-  Atom_sp	a1, a2;
-  BondOrder	o;
-  Loop lb;
-  switch (node->stage()) {
-  case core::Record_O::saving: {
-  }
-      break;
-  case core::Record_O::initializing:
-  case core::Record_O::loading: {
-  }
-      break;
-  case core::Record_O::patching: {
-  };
-      break;
-  }
+  node->field_if_not_unbound(INTERN_(kw,force_field_name),this->_ForceFieldName);
   node->field_if_not_unbound(INTERN_(kw,type),this->_Type);
   this->Base::fields(node);
 }
@@ -368,6 +352,13 @@ CL_DEFUN Molecule_sp Molecule_O::make(core::Symbol_sp name)
 
 
 
+CL_DEFMETHOD void Molecule_O::setf_force_field_name(core::T_sp name) {
+  this->_ForceFieldName = name;
+}
+
+CL_DEFMETHOD core::T_sp Molecule_O::force_field_name() const {
+  return this->_ForceFieldName;
+}
 
 
 

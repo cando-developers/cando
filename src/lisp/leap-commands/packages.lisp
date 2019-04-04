@@ -25,44 +25,9 @@
 ;; -^-
 (cl:in-package #:common-lisp-user)
 
-(defpackage #:leap.parser
-  (:use #:cl #:alexandria #:esrap #:parser.common-rules #:PARSER.COMMON-RULES.OPERATORS)
-  (:export
-   #:*function-names/alist*)
-  (:documentation
-   "Embryonic parser for the leap file format.  Written by Jan Moringen"))
-
-(defpackage #:leap.interpreter
-  (:use #:cl #:alexandria #:esrap #:parser.common-rules)
-  (:export #:evaluate
-           #:*leap-env*)
-  (:documentation
-   "Embryonic parser for the leap file format.  Written by Jan Moringen"))
 
 
-
-(defpackage #:leap.commands
-  (:use #:common-lisp)
-  (:export
-   #:setup-amber-paths
-   #:setup-default-paths
-   #:show-paths
-   #:desc
-   #:create-atom
-   #:load-off
-   #:list-force-fields
-   #:assign-atom-types
-   #:source
-   #:save-amber-parm
-   #:solvate-box
-   #:solvate-oct
-   #:solvate-shell
-   #:leap
-   #:leap-repl
-   #:leap-repl-then-exit
-   ))
-
-
+#+(or)
 (eval-when (:execute :load-toplevel)
   (do-external-symbols (sym :leap.commands)
     (import sym :leap)

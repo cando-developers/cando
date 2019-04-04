@@ -122,7 +122,7 @@ core::NullTerminatedEnumAssociation vmwEnum[] = {
     { "", -1 }
 };
 
-
+SYMBOL_EXPORT_SC_(ChemPkg,nonbond_force_field_component_merge);
 
 SYMBOL_EXPORT_SC_(ChemPkg,STARDonorAcceptorEnumConverterSTAR);
 SYMBOL_EXPORT_SC_(ChemPkg,STAREleDielectricEnumConverterSTAR);
@@ -165,7 +165,33 @@ CL_VALUE_ENUM( kw::_sym_vmwMmff94, vmwMmff94);
 CL_END_ENUM(_sym_STARVdwMixWellEnumConverterSTAR);
 
 
-
+CL_LAMBDA(type &key (radius_nanometers 0.0) (epsilon_kj 0.0) (apol 0.0) (neff 0.0) (mass 0.0) (polarizability 0.0) (initial_charge 0.0) (fcadj 0.0) (pbci 0.0) (donor_acceptor :da-neither));
+CL_DEF_CLASS_METHOD
+FFNonbond_sp FFNonbond_O::make_FFNonbond(core::Symbol_sp type,
+                                         double radius_nanometers,
+                                         double epsilon_kj,
+                                         double apol,
+                                         double neff,
+                                         double mass,
+                                         double polarizability,
+                                         double initial_charge,
+                                         double fcadj,
+                                         double pbci,
+                                         DonorAcceptorEnum donor_acceptor) {
+  GC_ALLOCATE(FFNonbond_O, res);
+  res->_Type = type;
+  res->_Radius_Nanometers = radius_nanometers;
+  res->_Epsilon_kJ = epsilon_kj;
+  res->_Apol = apol;
+  res->_Neff = neff;
+  res->_Mass = mass;
+  res->_Polarizability = polarizability;
+  res->_InitialCharge = initial_charge;
+  res->_Fcadj = fcadj;
+  res->_Pbci = pbci;
+  res->_DonorAcceptor = donor_acceptor;
+  return res;
+}
 
 void	FFNonbond_O::fields(core::Record_sp node)
 {
@@ -190,9 +216,8 @@ string FFNonbond_O::__repr__() const {
   return ss.str();
 }
 
-void FFNonbondDb_O::forceFieldMerge(FFBaseDb_sp bother)
+void FFNonbondDb_O::forceFieldMergeGlobalParameters(FFNonbondDb_sp other)
 {
-  FFNonbondDb_sp other = gc::As<FFNonbondDb_sp>(bother);
   if (other->EleDielectricValueDefined) {
     this->set_EleDielectricValue(other->EleDielectricValue);
   }
@@ -220,7 +245,12 @@ void FFNonbondDb_O::forceFieldMerge(FFBaseDb_sp bother)
   if (other->VdwMixWellDefined) {
     this->set_VdwMixWell(other->VdwMixWell);
   }
-  
+}
+
+void FFNonbondDb_O::forceFieldMerge(FFBaseDb_sp bother)
+{
+  FFNonbondDb_sp other = gc::As<FFNonbondDb_sp>(bother);
+  this->forceFieldMergeGlobalParameters(other);
   // Merge the terms and overwrite old ones with the same name
   for ( size_t i(0), iEnd(other->_Terms.size()); i<iEnd; ++i ) {
     bool new_type = true;
@@ -241,6 +271,56 @@ void FFNonbondDb_O::forceFieldMerge(FFBaseDb_sp bother)
   this->Base::Base::forceFieldMerge(other);
 }
 
+
+#if 0
+CL_LISPIFY_NAME(FFNonbondDb-concatenate);
+CL_DOCSTRING("Join the other FFNonbondDb_sp to the current one - signal an error if there are any type conflicts");
+CL_DEFMETHOD void FFNonbondDb_O::FFNonbondDb_concatenate(FFNonbondDb_sp other, core::Symbol_sp other_name) {
+  // What do we do with the nonbond parameters?
+  // There needs to be something to control how nonbond interactions work across the whole system
+  core::HashTable_sp terms_ht = core::HashTableEq_O::create_default();
+  for ( size_t myi=0; myi<this->_Terms.size(); ++myi ) {
+    terms_ht->setf_gethash(this->_Terms[myi]->_Type,_lisp->_true());
+  }
+  for ( size_t otheri=0; otheri<other->_Terms.size(); ++otheri ) {
+    FFNonbond_sp term = this->_Terms[otheri];
+    core::T_sp type = term->_Type;
+    core::T_sp found = terms_ht->gethash(type,_Nil<core::T_O>());
+    if (found.notnilp()) {
+      SIMPLE_ERROR(BF("The type %s exists in the force-field %s and another force-field - there can be only one") % _rep_(type) % _rep_(other_name));
+    }
+    this->_Terms.push_back(term);
+  }
+}
+#endif
+
+CL_DOCSTRING("Pass an alist of (nonbond-force-field . force-field-name) and a nonbond-force-field will be returned that combines them all. The global_nonbond defines the global parameters only.");
+CL_DEFUN FFNonbondDb_sp chem__combine_nonbond_force_fields(FFNonbondDb_sp global_nonbond, core::List_sp nonbond_force_fields) {
+  // What do we do with the nonbond parameters?
+  // There needs to be something to control how nonbond interactions work across the whole system
+  FFNonbondDb_sp conc = FFNonbondDb_O::create();
+  conc->forceFieldMergeGlobalParameters(global_nonbond);
+  core::HashTable_sp terms_ht = core::HashTableEq_O::create_default();
+  for ( auto cur : nonbond_force_fields ) {
+    core::Cons_sp pair = gc::As<core::Cons_sp>(CONS_CAR(cur));
+    FFNonbondDb_sp nb = gc::As<FFNonbondDb_sp>(CONS_CAR(pair));
+    core::T_sp nb_name = CONS_CDR(pair);
+    for ( size_t otheri=0; otheri<nb->_Terms.size(); ++otheri ) {
+      FFNonbond_sp term = nb->_Terms[otheri];
+      core::T_sp type = term->_Type;
+      core::T_sp found = terms_ht->gethash(type,_Nil<core::T_O>());
+      if (found.notnilp()) {
+        SIMPLE_ERROR(BF("The type %s exists in the force-field %s and %s - there can be only one") % _rep_(type) % _rep_(nb_name) % _rep_(found));
+      }
+      terms_ht->setf_gethash(type,nb_name);
+      conc->_Terms.push_back(term);
+    }
+  }
+  return conc;
+}
+  
+
+
 void	FFNonbondDb_O::fields(core::Record_sp node)
 {
   node->field_if_not_nil(INTERN_(kw,eleChargeFcn), this->EleChargeFcn);
@@ -257,8 +337,8 @@ void	FFNonbondDb_O::fields(core::Record_sp node)
   this->Base::fields(node);
 }
 
-
-void    FFNonbondDb_O::add(FFNonbond_sp nb)
+CL_LISPIFY_NAME(FFNonbondDb_add);
+CL_DEFMETHOD void    FFNonbondDb_O::add(FFNonbond_sp nb)
 {
   uint index = this->_Terms.size();
   this->_Terms.push_back(nb);
@@ -270,7 +350,7 @@ CL_DEFMETHOD bool    FFNonbondDb_O::hasType(core::Symbol_sp type)
   return this->_Parameters->gethash(type).notnilp();
 }
 
-core::T_sp FFNonbondDb_O::findType(core::Symbol_sp type)
+CL_DEFMETHOD core::T_sp FFNonbondDb_O::FFNonbond_findType(core::Symbol_sp type)
 {
   core::T_sp val = this->_Parameters->gethash(type);
   if ( val.fixnump() ) {
@@ -289,9 +369,9 @@ CL_DEFMETHOD uint FFNonbondDb_O::findTypeIndex(core::Symbol_sp type)
   SIMPLE_ERROR(BF("Could not find FFNonbondDb type index for type %s") % _rep_(type));
 }
 
-uint FFNonbondDb_O::findTypeIndexOrThrow(core::Symbol_sp type)
+CL_DEFMETHOD size_t FFNonbondDb_O::ffnonbond_find_atom_type_position(core::Symbol_sp type)
 {
-  uint ti = this->findTypeIndex(type);
+  size_t ti = this->findTypeIndex(type);
   if ( ti == UndefinedUnsignedInt )
   {
     SIMPLE_ERROR(BF("Unknown type %s") % _rep_(type));
@@ -306,7 +386,7 @@ uint FFNonbondDb_O::findTypeMajorIndex(core::Symbol_sp type)
   return index*this->_Terms.size();
 }
 
-FFNonbond_sp FFNonbondDb_O::getFFNonbondUsingTypeIndex(uint typeIdx)
+CL_DEFMETHOD FFNonbond_sp FFNonbondDb_O::getFFNonbondUsingTypeIndex(uint typeIdx)
 {
   return this->_Terms[typeIdx];
 }

@@ -167,12 +167,4 @@ CL_DEFUN FFTypesDb_sp chem__make_fftypes_db()
 }
 
 
-
-
-
-
-
-
-
-
 };

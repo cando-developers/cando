@@ -40,6 +40,7 @@ This is an open source license for the CANDO software from Temple University, bu
 
 #include <clasp/core/common.h>
 #include <clasp/core/array.h>
+#include <clasp/core/ql.h>
 #include <cando/chem/forceField.h>
 //#include "core/archive.h"
 //#include "core/xmlLoadArchive.h"
@@ -74,23 +75,23 @@ void InfoDb_O::addInfo( core::Symbol_sp key, core::String_sp data )
 
 void	ForceField_O::initialize()
 {
-    this->Base::initialize();
-    LOG(BF("Initializing ForceField") );
-    this->_Info = InfoDb_O::create();
-    LOG(BF("Initializing ForceField") );
-    this->_Types = FFTypesDb_O::create();
-    LOG(BF("Initializing ForceField") );
-    this->_Stretches = FFStretchDb_O::create();
-    LOG(BF("Initializing ForceField angle") );
-    this->_Angles = FFAngleDb_O::create();
-    LOG(BF("Initializing ForceField itor") );
-    this->_Itors = FFItorDb_O::create();
-    LOG(BF("Initializing ForceField ptor") );
-    this->_Ptors = FFPtorDb_O::create();
-    LOG(BF("Initializing ForceField nonbonded") );
-    this->_Nonbonds = FFNonbondDb_O::create();
-    LOG(BF("Initializing ForceField vdw") );
-    this->_Vdws = FFVdwDb_O::create();
+  this->Base::initialize();
+  LOG(BF("Initializing ForceField") );
+  this->_Info = InfoDb_O::create();
+  LOG(BF("Initializing ForceField") );
+  this->_Types = FFTypesDb_O::create();
+  LOG(BF("Initializing ForceField") );
+  this->_Stretches = FFStretchDb_O::create();
+  LOG(BF("Initializing ForceField angle") );
+  this->_Angles = FFAngleDb_O::create();
+  LOG(BF("Initializing ForceField itor") );
+  this->_Itors = FFItorDb_O::create();
+  LOG(BF("Initializing ForceField ptor") );
+  this->_Ptors = FFPtorDb_O::create();
+  LOG(BF("Initializing ForceField nonbonded") );
+  this->_Nonbonds = FFNonbondDb_O::create();
+  LOG(BF("Initializing ForceField vdw") );
+  this->_Vdws = FFVdwDb_O::create();
 };
 
 
@@ -113,10 +114,10 @@ void	ForceField_O::fields(core::Record_sp node)
 #ifdef XML_ARCHIVE
 void	ForceField_O::saveAs(const string& fileName)
 {
-    core::XmlSaveArchive_sp	xml;
-    xml = core::XmlSaveArchive_O::create();
-    xml->put("forceField",this->sharedThis<ForceField_O>());
-    xml->saveAs(fileName);
+  core::XmlSaveArchive_sp	xml;
+  xml = core::XmlSaveArchive_O::create();
+  xml->put("forceField",this->sharedThis<ForceField_O>());
+  xml->saveAs(fileName);
 }
 #endif
 
@@ -153,12 +154,12 @@ string ForceField_O::__repr__() const {
 
 void	ForceField_O::setTitle(const string& title)
 {
-    this->_Title = title;
+  this->_Title = title;
 }
 
 void	ForceField_O::setInfoDb( InfoDb_sp Info )
 {
-    this->_Info = Info;
+  this->_Info = Info;
 }
 
 void	ForceField_O::setFFTypeDb( FFTypesDb_sp Types)
@@ -169,30 +170,77 @@ void	ForceField_O::setFFTypeDb( FFTypesDb_sp Types)
 
 void	ForceField_O::setFFStretchDb( FFStretchDb_sp Stretches)
 {
-    this->_Stretches = Stretches;
+  this->_Stretches = Stretches;
 }
 
 void	ForceField_O::setFFAngleDb( FFAngleDb_sp Angles)
 {
-    this->_Angles = Angles;
+  this->_Angles = Angles;
 }
 void	ForceField_O::setFFItorDb( FFItorDb_sp Itors)
 {
-    this->_Itors = Itors;
+  this->_Itors = Itors;
 }
 void	ForceField_O::setFFPtorDb( FFPtorDb_sp Ptors)
 {
-    this->_Ptors = Ptors;
+  this->_Ptors = Ptors;
 }
 void	ForceField_O::setFFNonbondDb(FFNonbondDb_sp Nonbonds )
 {
-    this->_Nonbonds = Nonbonds;
+  this->_Nonbonds = Nonbonds;
 }
 void	ForceField_O::setFFVdwDb(FFVdwDb_sp Vdws )
 {
-    this->_Vdws = Vdws;
+  this->_Vdws = Vdws;
 }
 
 
+CL_LISPIFY_NAME("make-CombinedForceField");
+CL_DEF_CLASS_METHOD
+CombinedForceField_sp CombinedForceField_O::make() {
+  GC_ALLOCATE(CombinedForceField_O,ff);
+  return ff;
+};
+
+void	CombinedForceField_O::fields(core::Record_sp node)
+{
+  node->field( INTERN_(kw,force_fields),this->_ForceFields);
+}
+
+
+
+CL_LISPIFY_NAME(CombinedForceField_addShadowingForceField);
+CL_DEFMETHOD
+void CombinedForceField_O::addShadowingForceField(ForceField_sp forceField, core::T_sp info)
+{
+  core::Cons_sp pair = core::Cons_O::create(forceField,info);
+  this->_ForceFields = core::Cons_O::create(pair,this->_ForceFields);
+}
+
+
+CL_LISPIFY_NAME(CombinedForceField_forceFieldsAsList);
+CL_DEFMETHOD
+core::List_sp CombinedForceField_O::forceFieldsAsList() const {
+  ql::list result;
+  for ( auto cur : this->_ForceFields) {
+    core::Cons_sp pair = gc::As_unsafe<core::Cons_sp>(CONS_CAR(cur));
+    result << CONS_CAR(pair);
+  }
+  return result.cons();
+}
+
+
+CL_LISPIFY_NAME(CombinedForceField_assignForceFieldTypes);
+CL_DEFMETHOD
+void CombinedForceField_O::assignForceFieldTypes(Matter_sp molecule) {
+  FFTypesDb_sp fftypes = FFTypesDb_O::create();
+  core::List_sp parts = this->forceFieldsAsList();
+  for ( auto cur : parts ) {
+    ForceField_sp other = gc::As<ForceField_sp>(CONS_CAR(cur));
+    FFTypesDb_sp other_fftypes = other->getTypes();
+    fftypes->forceFieldMerge(other_fftypes);
+  }
+  fftypes->assignTypes(molecule);
+}
 
 };

@@ -1,6 +1,7 @@
 (in-package :leap.add-ions)
 
 (defun add-ions (mol ion1 ion1-number &optional ion2 ion2-number)
+  (error "This function is now broken - every molecule must specify what force-field it will use - leap.core::merged-force-field is incorrect - the force-field has to be looked up from the ion-topology since the ion topology will create single residue in a molecule.")
   (let* ((force-field (leap.core::merged-force-field))
          (nonbond-db (chem:get-nonbond-db force-field))
          (ion1-type-index (chem:find-type-index nonbond-db ion1))
@@ -161,6 +162,7 @@
 
 
 (defun add-ions-2 (mol ion1 ion1-number &optional ion2 ion2-number)
+  (error "This function is now broken - every molecule must specify what force-field it will use - leap.core::merged-force-field is incorrect - the force-field has to be looked up from the ion-topology since the ion topology will create single residue in a molecule.")
   (let* ((force-field (leap.core::merged-force-field))
          (nonbond-db (chem:get-nonbond-db force-field))
          (ion1-type-index (chem:find-type-index nonbond-db ion1))

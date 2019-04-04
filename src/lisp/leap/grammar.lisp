@@ -25,10 +25,12 @@
 (defrule end-of-instruction
     (and (? horizontal-whitespace)
          (or token-\; (& comment) newline <end-of-input>))
-  (:constant nil))
+  (:constant nil)
+  (:error-report nil))
 
 (defrule skippable?
-    (? skippable))
+    (? skippable)
+  (:error-report nil))
 
 (defrule skippable
     (+ (or whitespace-character comment))
@@ -36,7 +38,8 @@
 
 (defrule horizontal-whitespace
     (+ spacoid-character)
-  (:constant nil))
+  (:constant nil)
+  (:error-report nil))
 
 (defrule spacoid-character
     (or #\Space #\Tab)
@@ -56,7 +59,8 @@
 
 (defrule newline
     #\Newline
-  (:constant nil))
+  (:constant nil)
+  (:error-report nil))
 
 (defrule comment
     (and shell-style-comment/trimmed
@@ -64,7 +68,8 @@
   (:text t)
   (:lambda (content &bounds start end)
     (architecture.builder-protocol:node* (:comment :content content
-                                                   :bounds  (cons start end)))))
+                                                   :bounds  (cons start end))))
+  (:error-report nil))
 
 (macrolet ((define-tokens (&rest characters)
              (flet ((make-rule (character)
@@ -87,7 +92,7 @@
         (* :instruction instructions)))))
 
 (defrule instruction
-    (and (or assignment function) end-of-instruction)
+    (and (or assignment function s-expr) end-of-instruction)
   (:function first))
 
 ;;; Function Call
@@ -103,6 +108,7 @@
 (defrule/s function-name
     (function-name-p function-name-string))
 
+#+(or)
 (defvar *function-names*
   '("add" "addH" "addIons" "addIons2" "addIonSolv" "addIonsRand" "addPath"
     "addPdbAtomMap" "addPdbResMap" "addAtomTypes" "alias" "alignAxes" "bond"
@@ -122,11 +128,10 @@
     "solvateShell" "source" "translate" "transform" "update" "verbosity"
     "zMatrix"))
 
-(defvar *function-names/hash-table*
-  (alist-hash-table (mapcar (rcurry #'cons t) *function-names*) :test #'equalp))
+(defvar *function-names/alist*)
 
 (defun function-name-p (thing)
-  (gethash thing *function-names/hash-table*))
+  (assoc thing *function-names/alist* :test #'string-equal))
 
 (defrule function-name-string
     (+ (character-ranges (#\a #\z) (#\A #\Z) (#\0 #\9)))
@@ -156,13 +161,19 @@
           str
           (intern (esrap:text chars) :keyword)))))
 
+(defrule/s keyword
+    (and #\: (+ (character-ranges (#\a #\z) (#\A #\Z) (#\0 #\9) #\. #\_)))
+  (:lambda (chars)
+    (let ((str (esrap:text chars)))
+      (intern (esrap:text chars) :keyword))))
+
 ;;; Expression
 
 (defrule expression
     (or raw-expression function))
 
 (defrule/s raw-expression
-    (or list literal))
+    (or s-expr list literal s-expr))
 
 (defun parse-list-elements (text position end)
   (let ((*list-context* t))
@@ -185,6 +196,7 @@
         string-literal/double-quotes
         string-literal/dollar
         variable-name
+        keyword
         dummy)
   (:lambda (value &bounds start end)
     (architecture.builder-protocol:node* (:literal :value  value
@@ -197,3 +209,31 @@
 
 (defrule dummy
     token-*)
+
+(defun parse-with-read (text position end)
+  (handler-case
+      ;; When successful, READ-FROM-STRING returns the read object and
+      ;; the position up to which TEXT has been consumed.
+      (let ((*package* (or (find-package '#:leap-user)
+                           (make-package '#:leap-user :use '(#:common-lisp)))))
+        (read-from-string text t nil :start position :end end))
+    ;; When READ-FROM-STRING fails, indicate the parse failure,
+    ;; including CONDITION as explanation.
+    (stream-error (condition)
+      ;; For STREAM-ERRORs, we can try to determine and return the
+      ;; exact position of the failure.
+      (let ((position (ignore-errors
+                        (file-position (stream-error-stream condition)))))
+        (values nil position condition)))
+    (error (condition)
+      ;; For general ERRORs, we cannot determine the exact position of
+      ;; the failure.
+      (values nil nil condition))))
+
+(defrule s-expr
+    (and (& #\() #'parse-with-read)
+  (:function second)
+  (:lambda (expression &bounds start end)
+    (architecture.builder-protocol:node*
+        (:s-expr :value  expression
+                 :bounds (cons start end)))))

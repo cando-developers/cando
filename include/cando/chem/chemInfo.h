@@ -758,6 +758,8 @@ public:
 public:
   CL_DEFMETHOD AtomTestEnum	atomTestType() { return this->_Test; };
   int getIntArg();
+  core::Symbol_sp getSymbolArg() const;
+  
   string		testName(AtomTestEnum t) const;
   bool matchesAm1BccX(chem::Atom_sp atom) const;
   bool matchesAm1BccY(chem::Atom_sp atom) const;

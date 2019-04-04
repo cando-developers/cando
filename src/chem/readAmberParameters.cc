@@ -200,7 +200,7 @@ FFNonbondDb_sp ReadAmberParameters_O::parseMasses(core::T_sp fin, FFNonbondDb_sp
           polarizability = core::clasp_to_double(maybePolarizability);
         }
         FFNonbond_sp ffNonbond;
-        core::T_sp nonbond = ffNonbondDb->findType(typeSymbol);
+        core::T_sp nonbond = ffNonbondDb->FFNonbond_findType(typeSymbol);
         bool newp = false;
         if (nonbond.nilp()) {
           ffNonbond = gctools::GC<FFNonbond_O>::allocate_with_default_constructor();
@@ -487,7 +487,7 @@ void ReadAmberParameters_O::parseNonbondDb(core::T_sp fin, FFNonbondDb_sp ffNonb
         string type = core::trimWhiteSpace(line.substr(0,4));
         core::Symbol_sp stype = chemkw_intern(type);
         if ( ffNonbondDb->hasType(stype) ) {
-          ffNonbond = gc::As_unsafe<FFNonbond_sp>(ffNonbondDb->findType(stype));
+          ffNonbond = gc::As_unsafe<FFNonbond_sp>(ffNonbondDb->FFNonbond_findType(stype));
         } else {
           SIMPLE_ERROR(BF("Could not find type: %s") % type);
         }
@@ -511,7 +511,7 @@ void ReadAmberParameters_O::parseNonbondDb(core::T_sp fin, FFNonbondDb_sp ffNonb
             string sameParmType = core::trimWhiteSpace(*it);
             core::Symbol_sp ssameParmtype = chemkw_intern(sameParmType);
             if ( ffNonbondDb->hasType(ssameParmtype) ) {
-              ffNonbondSameParmType = gc::As_unsafe<FFNonbond_sp>(ffNonbondDb->findType(ssameParmtype));
+              ffNonbondSameParmType = gc::As_unsafe<FFNonbond_sp>(ffNonbondDb->FFNonbond_findType(ssameParmtype));
               ffNonbondSameParmType->setRadius_Angstroms(radius);
               ffNonbondSameParmType->setEpsilon_kCal(edep);             
             } else {
@@ -544,7 +544,7 @@ void ReadAmberParameters_O::parseAtomEquivalences(core::T_sp fin, FFNonbondDb_sp
       string type = core::trimWhiteSpace(line.substr(0,4));
       core::Symbol_sp stype = chemkw_intern(type);
       if ( ffNonbondDb->hasType(stype) ) {
-        ffNonbond = gc::As_unsafe<FFNonbond_sp>(ffNonbondDb->findType(stype));
+        ffNonbond = gc::As_unsafe<FFNonbond_sp>(ffNonbondDb->FFNonbond_findType(stype));
       } else {
         SIMPLE_ERROR(BF("Could not find type: %s") % type);
       }

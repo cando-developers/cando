@@ -165,7 +165,7 @@ CL_INITIALIZER void cando_initializer()
   }
   if (exec_name.find("leap")!=std::string::npos) {
     core::global_options->_ProcessArguments = leap_process_arguments;
-    std::pair<core::LoadEvalEnum,std::string> cmdNm1(core::cloEval,"(leap.commands:setup-default-paths)");
+    std::pair<core::LoadEvalEnum,std::string> cmdNm1(core::cloEval,"(leap:setup-default-paths)");
     core::global_options->_LoadEvalList.push_back(cmdNm1);
     std::pair<core::LoadEvalEnum,std::string> cmdN(core::cloEval,"(leap.commands:leap-repl-then-exit)");
     core::global_options->_LoadEvalList.push_back(cmdN);

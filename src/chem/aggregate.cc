@@ -59,6 +59,7 @@ namespace chem {
 
 void Aggregate_O::fields(core::Record_sp node)
 {
+  node->field_if_not_unbound(INTERN_(kw,force_field_name),this->_ForceFieldName);
   this->Base::fields(node);
 }
 
@@ -627,6 +628,13 @@ CL_DEFUN Aggregate_sp Aggregate_O::make(core::Symbol_sp name)
     };
 
 
+CL_DEFMETHOD void Aggregate_O::setf_force_field_name(core::T_sp name) {
+  this->_ForceFieldName = name;
+}
+
+CL_DEFMETHOD core::T_sp Aggregate_O::force_field_name() const {
+  return this->_ForceFieldName;
+}
 
 
 

@@ -65,7 +65,6 @@
     (maphash (lambda (k v) (push k vars)) (%variables *leap-env*))
     (flet ((accumulate-topologys (top)
              (push (chem:get-name top) vars)))
-
       (cando:walk-topologys #'accumulate-topologys))
     (let ((sorted-vars (sort vars #'string<)))
       sorted-vars)))
@@ -156,11 +155,22 @@ used to provide parameters.  There is one default force-field called :default.")
 (defun clear-force-field (&optional (force-field-name :default))
   (setf (gethash force-field-name *force-fields*) nil))
 
-(defun add-force-field-or-modification (force-field-or-frcmod &optional (force-field-name :default))
-  (push force-field-or-frcmod (gethash force-field-name *force-fields*)))
+(defun add-combined-force-field (combined-force-field force-field-name)
+  (setf (gethash force-field-name *force-fields*) combined-force-field))
+
+(defun chem:find-force-field (force-field-name &optional (errorp t))
+  (let ((ff (gethash force-field-name *force-fields*)))
+    (when (and errorp (null ff))
+      (error "Could not find force-field with name ~s" force-field-name))
+    ff))
+
+(defun add-force-field-or-modification (force-field-or-frcmod &key (force-field-name :default) force-field-info)
+  (let ((combined-force-field (chem:find-force-field force-field-name)))
+    (chem:add-shadowing-force-field combined-force-field force-field-or-frcmod force-field-info)))
 
 (defun merged-force-field (&optional (force-field-name :default))
   "Merge the force-field-list with _force-field-name_ and return it."
+  (error "Deprecated merged-force-field - use chem:find-force-field and work with the result")
   (let* ((force-field-list (gethash force-field-name *force-fields*))
          (reversed-force-field-list (reverse force-field-list)))
     (if (= (length force-field-list) 1)
@@ -170,6 +180,15 @@ used to provide parameters.  There is one default force-field called :default.")
             (chem:force-field-merge merged-force-field ff))
           merged-force-field))))
 
+
+(defun nonbond-force-field-component (force-field-name)
+  (let* ((combined-force-field (chem:find-force-field force-field-name))
+         (force-field-parts (chem:force-fields-as-list combined-force-field))
+         (nbmerged (chem:make-ffnonbond-db)))
+    (mapc (lambda (force-field-part)
+            (chem:force-field-component-merge nbmerged force-field-part))
+          force-field-parts)
+    nbmerged))
 
 (defun force-fields ()
   (maphash (lambda (name parts)

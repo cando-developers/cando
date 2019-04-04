@@ -18,5 +18,3 @@
      (:file "graphviz")
      ))
 
-(eval-when (:execute :compile-toplevel)
-  (format t "Loading smarts.asd~%"))

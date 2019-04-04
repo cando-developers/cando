@@ -31,6 +31,31 @@
    #:antechamber-line
    #:read-antechamber-type-rules))
 
+(defpackage #:leap.parser
+  (:use #:cl #:alexandria #:esrap #:parser.common-rules #:PARSER.COMMON-RULES.OPERATORS)
+  (:export
+   #:*function-names/alist*
+   #:leap)
+  (:documentation
+   "Embryonic parser for the leap file format.  Written by Jan Moringen"))
+
+(defpackage #:leap.interpreter
+  (:use #:cl #:alexandria #:esrap #:parser.common-rules)
+  (:export #:evaluate
+           #:*leap-env*)
+  (:documentation
+   "Embryonic parser for the leap file format.  Written by Jan Moringen"))
+
+(defpackage #:leap.commands
+  (:use #:common-lisp)
+  (:export
+   #:desc
+   #:create-atom
+   #:leap
+   #:leap-repl
+   #:leap-repl-then-exit
+   ))
+
 (defpackage #:leap.topology
   (:use #:common-lisp)
   (:export
@@ -71,6 +96,7 @@
   (:use #:common-lisp)
   (:export
    #:ensure-path
+   #:nonbond-force-field-component
    #:evaluate
    #:*leap-env*
    #:lookup-variable
@@ -83,9 +109,11 @@
    #:chain-position
    #:merged-force-field
    #:force-fields
+   #:add-combined-force-field
    #:register-variable #:lookup-variable
    #:clear-force-field
    #:add-force-field-or-modification
+   #:find-force-field
    #:*force-fields*
    #:leap-lookup-variable-reader-macro)
   )
@@ -123,6 +151,8 @@
                 #:add-path
                 #:clear-force-field
                 #:force-fields)
+  (:import-from :leap.off
+                #:load-off)
 ;;;  (:import-from :cando-utility #:mkdir #:set-current-directory #:current-directory #:directory-files)
   (:import-from :inet #:download-pdb)
   (:import-from :leap.pdb
@@ -131,10 +161,21 @@
                 #:add-pdb-atom-map
                 )
   (:export
+   #:load-off
    #:process-command-line-options
+   #:setup-amber-paths
+   #:setup-default-paths
+   #:list-force-fields
+   #:load-smirnoff-params
+   #:show-paths
+   #:source
+   #:set-force-field
    #:*amber-system*
    #:setup-amber
+   #:save-amber-parm
+   #:assign-atom-types
    #:clear-force-field
+   #:desc
    #:add-path
    #:force-fields
    #:add-pdb-res-map
@@ -143,6 +184,9 @@
    #:bounding-box
    #:minimize
    #:as-string
+   #:solvate-box
+   #:solvate-oct
+   #:solvate-shell
    #:quit
 ;;;   #:mkdir #:set-current-directory #:current-directory #:directory-files
    #:download-pdb

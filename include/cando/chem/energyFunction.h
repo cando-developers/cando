@@ -73,6 +73,7 @@ namespace       chem
   SMART(Atom);
   SMART(Matter);
   SMART(ForceField);
+  SMART(CombinedForceField);
   SMART(AtomTable);
   SMART(EnergyStretch);
   SMART(EnergyAngle);
@@ -162,7 +163,7 @@ namespace chem {
     void	flagImproperRestraintsAboveThreshold(NVector_sp nvPosition);
 
   private:
-    int _applyRestraints(FFNonbondDb_sp forceField, core::Iterator_sp restraintIterator, core::T_sp activeAtoms );
+    int _applyRestraints(core::T_sp forceField, core::Iterator_sp restraintIterator, core::T_sp activeAtoms );
     void _applyDihedralRestraint(Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, double min, double max, double weight, core::T_sp activeAtoms );
 
   public:
@@ -246,11 +247,12 @@ namespace chem {
     void		writeForceToAtoms(NVector_sp f);
     EnergyAtom*     getEnergyAtomPointer(Atom_sp a);
 
+    void assignAtomTypes(Matter_sp matter, bool show_progress);
     void defineForMatter(Matter_sp agg, core::T_sp forceFieldSystem, bool useExcludedAtoms, core::T_sp activeAtomSet=_Nil<core::T_O>(), bool show_progress=false, bool assign_types=true );
-
-    void generateStandardEnergyFunctionTables(Matter_sp mol, ForceField_sp forceField, core::T_sp activeAtomSet=_Nil<core::T_O>(), bool show_progress=false );
-    void generateNonbondEnergyFunctionTables(bool useExcludedAtoms, Matter_sp agg, FFNonbondDb_sp forceField, core::T_sp activeAtomSet=_Nil<core::T_O>(), bool show_progress=false );
-    void generateRestraintEnergyFunctionTables(Matter_sp agg, FFNonbondDb_sp nonbonds, core::T_sp activeAtomSet=_Nil<core::T_O>(), bool show_progress=false );
+    void defineForMatterWithAtomTypes(Matter_sp matter, core::T_sp system, bool useExcludedAtoms, core::T_sp activeAtoms, bool show_progress);
+    void generateStandardEnergyFunctionTables(Matter_sp mol, CombinedForceField_sp forceField, core::T_sp activeAtomSet=_Nil<core::T_O>(), bool show_progress=false );
+    void generateNonbondEnergyFunctionTables(bool useExcludedAtoms, Matter_sp agg, core::T_sp forceField, core::T_sp activeAtomSet=_Nil<core::T_O>(), bool show_progress=false );
+    void generateRestraintEnergyFunctionTables(Matter_sp agg, core::T_sp nonbonds, core::T_sp activeAtomSet=_Nil<core::T_O>(), bool show_progress=false );
 
 
     /*! Add the restraints to the energy function.

@@ -13,6 +13,4 @@
   :serial t
   :components
   ((:file "packages")
-   (:file "grammar")
-   (:file "commands")
    ))

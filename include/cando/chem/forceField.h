@@ -112,16 +112,16 @@ class ForceField_O : public core::CxxObject_O
 {
   LISP_CLASS(chem,ChemPkg,ForceField_O,"ForceField",core::CxxObject_O);
 
- public:
+public:
   void initialize();
   bool fieldsp() const { return true; };
   void fields(core::Record_sp node);
- public:
+public:
 //		/*! Read the forceField from a file*/
 //	static ForceField_sp	open_ForceField(const string& fn);
   CL_LISPIFY_NAME("make-ForceField");
   CL_DEF_CLASS_METHOD static ForceField_sp make() { GC_ALLOCATE(ForceField_O,ff); return ff;};
- public:
+public:
   string				_Title;
   string				_Ref;
   gctools::Vec0<core::Symbol_sp>		_SingleBondMultiBondDistinctions;
@@ -139,9 +139,9 @@ class ForceField_O : public core::CxxObject_O
   RPFFOutOfPlaneDb		OutOfPlanes;
   FFStretch_spBendDb		StretchBends;
 #endif
- public:
- ForceField_O() :
-  _Info(_Unbound<InfoDb_O>()),
+public:
+  ForceField_O() :
+    _Info(_Unbound<InfoDb_O>()),
     _Types(_Unbound<FFTypesDb_O>()),
     _Stretches(_Unbound<FFStretchDb_O>()),
     _Angles(_Unbound<FFAngleDb_O>()),
@@ -149,7 +149,7 @@ class ForceField_O : public core::CxxObject_O
     _Ptors(_Unbound<FFPtorDb_O>()),
     _Nonbonds(_Unbound<FFNonbondDb_O>()),
     _Vdws(_Unbound<FFVdwDb_O>())
-    {};
+  {};
           
   void	addSingleBondMultiBondDistinctionType(core::Symbol_sp s) {
     this->_SingleBondMultiBondDistinctions.push_back(s);
@@ -206,10 +206,34 @@ class ForceField_O : public core::CxxObject_O
 inline	bool	isUndefined(double x) {return (x)>=UNDEFINED_CUTOFF;}
 
 
+SMART(CombinedForceField);
+class CombinedForceField_O : public core::CxxObject_O
+{
+  LISP_CLASS(chem,ChemPkg,CombinedForceField_O,"CombinedForceField",core::CxxObject_O);
 
+public:
+  bool fieldsp() const { return true; };
+  void fields(core::Record_sp node);
+public:
+//		/*! Read the forceField from a file*/
+  core::List_sp _ForceFields;
+
+public:
+  static CombinedForceField_sp make();
+public:
+  void addShadowingForceField(ForceField_sp forceField, core::T_sp info);
+  core::List_sp forceFieldsAsList() const;
+
+  void assignForceFieldTypes(Matter_sp molecule);
+  void assignMolecularEnergyTables(Matter_sp molecule,core::T_sp activeAtoms,bool show_progress);
+  
+  CombinedForceField_O() : _ForceFields(_Nil<core::T_O>()) {};
 };
 
+};
 
 TRANSLATE(chem::InfoDb_O);
 TRANSLATE(chem::ForceField_O);
 #endif
+
+

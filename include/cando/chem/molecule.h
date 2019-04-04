@@ -57,6 +57,7 @@ namespace chem {
     friend class Aggregate_O;
     LISP_CLASS(chem,ChemPkg,Molecule_O,"Molecule",Matter_O);
   public:
+    core::T_sp      _ForceFieldName;
     core::Symbol_sp _Type;
   public:
     void initialize();
@@ -89,6 +90,9 @@ namespace chem {
     virtual bool equal(core::T_sp obj) const;
     virtual void	transferCoordinates(Matter_sp other);
 
+    core::T_sp force_field_name() const;
+    void setf_force_field_name(core::T_sp name);
+    
     CL_LISPIFY_NAME("firstResidue");
     CL_DEFMETHOD  Residue_sp	firstResidue() {return this->contentAt(0).as<Residue_O>();};
     CL_LISPIFY_NAME("getResidue");
@@ -137,7 +141,7 @@ namespace chem {
 
     virtual Atom_sp atomWithAtomId(const AtomId& atomId) const;
 
-  Molecule_O() : Base(), _Type(_Unbound<core::Symbol_O>()) {};
+    Molecule_O() : Base(), _ForceFieldName(kw::_sym_default), _Type(_Unbound<core::Symbol_O>()) {};
 
   public:
     virtual Matter_sp	copy();

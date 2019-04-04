@@ -6,6 +6,7 @@
   :author "Christian Schafmeister <chris.schaf@verizon.net>"
   :licence "LGPL-3.0"
   :depends-on ( :cando
+                :smirnoff
                 :inet
                 :alexandria
                 #+(or)(:version :esrap "0.15")
@@ -16,8 +17,9 @@
   :components
   ((:file "packages")
    (:file "core")
-   (:file "chem")
    (:file "antechamber-type-definition-parser")
+   (:file "chem")
+   (:file "grammar")
    (:file "off")
    (:file "topology")
    (:file "solvate")
@@ -26,6 +28,7 @@
    (:file "cando-database")
    (:file "pdb")
    (:file "leap")
+   (:file "commands")
    (:file "easy")
                                         ;     (:file "interpreter")
    ))

@@ -133,20 +133,33 @@ namespace chem {
     void initialize();
     bool fieldsp() const { return true; };
     void fields(core::Record_sp node);
-  private:
+  public:
     core::Symbol_sp 	_Type;
     double		_Radius_Nanometers;
     double		_Epsilon_kJ;	// epsilon in AMBER
     double		_Apol;
     double		_Neff;
     double		_Mass;
-    double          _Polarizability;
+    double              _Polarizability;
     double		_InitialCharge;
     double		_Fcadj;	// formal charge sharing scale factor
     double		_Pbci;	// partial bond charge increment
     DonorAcceptorEnum	_DonorAcceptor;
     string	        _SameParms;
 
+  public:
+    static FFNonbond_sp make_FFNonbond(core::Symbol_sp type,
+                                       double radius_nanometers,
+                                       double epsilon_kj,
+                                       double apol,
+                                       double neff,
+                                       double mass,
+                                       double polarizability,
+                                       double initial_charge,
+                                       double fcadj,
+                                       double pbci,
+                                       DonorAcceptorEnum donor_acceptor);
+                                       
   public:
     string __repr__() const;
    
@@ -189,6 +202,7 @@ namespace chem {
     bool fieldsp() const { return true; };
     void fields(core::Record_sp node);
   public:
+    core::T_sp                  _Name;
     core::Symbol_sp		EleChargeFcn;
     double			EleDielectricValue;
     bool                        EleDielectricValueDefined;
@@ -253,14 +267,15 @@ namespace chem {
     }
 
   public:
+    void forceFieldMergeGlobalParameters(FFNonbondDb_sp other);
     void forceFieldMerge(FFBaseDb_sp other);
-    CL_LISPIFY_NAME(ffNonbondDb-add);
-    CL_DEFMETHOD void add( FFNonbond_sp nonbonded );
-    CL_DEFMETHOD bool hasType( core::Symbol_sp type);
-    CL_DEFMETHOD core::T_sp findType( core::Symbol_sp type );
-    CL_DEFMETHOD FFNonbond_sp getFFNonbondUsingTypeIndex( uint typeIdx );
+    
+    void add( FFNonbond_sp nonbonded );
+    bool hasType( core::Symbol_sp type);
+    core::T_sp FFNonbond_findType( core::Symbol_sp type );
+    FFNonbond_sp getFFNonbondUsingTypeIndex( uint typeIdx );
     uint findTypeIndex( core::Symbol_sp type );
-    uint findTypeIndexOrThrow( core::Symbol_sp type );
+    size_t ffnonbond_find_atom_type_position( core::Symbol_sp type );
     /*! Return the type index multiplied by the number
      * of type indices.  Another type index can be added
      * to this number to get an index into a Nonbond crossterm table
@@ -271,16 +286,16 @@ namespace chem {
      */
     size_t  numberOfTypes() const;
 
-  FFNonbondDb_O() : EleDielectricValueDefined(false),
-      EleBufferDefined(false),
-      EleScale14Defined(false),
-      VdwScale14Defined(false),
-      VdwScaleBufferADefined(false),
-      VdwScaleBufferBDefined(false),
-      EleDielectricCodeDefined(false),
-      VdwMixRadiusDefined(false),
-      VdwMixWellDefined(false)
-      {};
+    FFNonbondDb_O() : _Name(_Nil<core::T_O>()),
+                      EleDielectricValueDefined(false),
+                      EleBufferDefined(false),
+                      EleScale14Defined(false),
+                      VdwScale14Defined(false),
+                      VdwScaleBufferADefined(false),
+                      VdwScaleBufferBDefined(false),
+                      EleDielectricCodeDefined(false),
+                      VdwMixRadiusDefined(false),
+                      VdwMixWellDefined(false) {};
   };
 
 

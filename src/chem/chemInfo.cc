@@ -1328,6 +1328,8 @@ void AtomTest_O::initialize() {
 
 CL_DEFMETHOD int AtomTest_O::getIntArg() { return this->_IntArg;};
 
+CL_DEFMETHOD core::Symbol_sp AtomTest_O::getSymbolArg() const { return this->_SymbolArg;};
+
 bool AtomTest_O::matches_Bond(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond) {
   _OF();
   LOG(BF("%s\natom: %s bond: %s") % this->asSmarts() % _rep_(from) % _rep_(bond));
@@ -1490,9 +1492,11 @@ bool AtomTest_O::matches_Atom(Root_sp root, chem::Atom_sp atom) {
       break;
   case SAPRingSize:
       LOG(BF("SAPRingMembershipSize")); //
+      if (this->_IntArg) {
+        if (atom->inRingSize(this->_IntArg))
+          goto SUCCESS;
+      }
       SIMPLE_WARN(BF("Use the chem::*current-rings* special variable - if this->_IntArg == 0 it means any ring?????"));
-      if (atom->inRingSize(this->_IntArg))
-        goto SUCCESS;
       break;
   case SAPValence:
       LOG(BF("SAPRingValence"));

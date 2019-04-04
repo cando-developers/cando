@@ -26,6 +26,8 @@ This is an open source license for the CANDO software from Temple University, bu
        
 #define	DEBUG_LEVEL_NONE
 
+#include <clasp/core/foundation.h>
+#include <clasp/core/evaluator.h>
 #include <cando/chem/energyFixedNonbond.h>
 #include <cando/chem/energyAtomTable.h>
 #include <cando/chem/energyFunction.h>
@@ -191,16 +193,21 @@ double	e;
 }
 
 
+SYMBOL_EXPORT_SC_(ChemPkg,find_atom_type_position)
 
-
-void	EnergyFixedNonbondRestraint_O::addFixedAtom(FFNonbondDb_sp nonbondDb, Atom_sp fa)
+void	EnergyFixedNonbondRestraint_O::addFixedAtom(core::T_sp nonbondDb, Atom_sp fa)
 {
     FixedNonbondRestraint entry;
     entry._FixedAtom = fa;
     entry._FixedCharge = fa->getCharge();
     try
     {
-        entry._FixedType = nonbondDb->findTypeIndexOrThrow(fa->getType());
+      core::T_sp pos = core::eval::funcall(_sym_find_atom_type_position,nonbondDb,fa->getType());
+      if (pos.fixnump()) {
+        entry._FixedType = pos.unsafe_fixnum();
+      } else {
+        TYPE_ERROR(pos,cl::_sym_fixnum);
+      }
     } catch (UnknownType& err)
     {
 	stringstream serr;

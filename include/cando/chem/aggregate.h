@@ -57,7 +57,8 @@ class  Aggregate_O : public  Matter_O
     LISP_CLASS(chem,ChemPkg,Aggregate_O,"Aggregate", Matter_O );
 //    DECLARE_SERIALIZE();
 public:
-
+  core::T_sp _ForceFieldName;
+public:
     void initialize();
     friend	class	Loop;
 public:
@@ -158,12 +159,14 @@ CL_DEFMETHOD     void		saveAs(const string& fileName) { _G(); this->writeToFile(
 public:
     virtual Matter_sp	copy();
     
-protected:
     virtual Matter_sp copyDontRedirectAtoms();
 	virtual void redirectAtoms();
 
+  core::T_sp force_field_name() const;
+  void setf_force_field_name(core::T_sp name);
+    
 
-    DEFAULT_CTOR_DTOR( Aggregate_O);
+  Aggregate_O() : _ForceFieldName(kw::_sym_default) {};
 };
 
 

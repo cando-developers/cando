@@ -93,14 +93,14 @@ public:
 #include <cando/chem/energy_functions/_Nonbond_debugEvalDeclares.cc>
 #endif
 
-        Atom_sp	getAtom1() { return this->_Atom1; };
-        Atom_sp	getAtom2() { return this->_Atom2; };
-	double	getDistance();
-	bool	defineFrom(FFNonbondDb_sp	forceField,
-                           bool		is14,
-                           EnergyAtom	*iea1,
-                           EnergyAtom	*iea2,
-                           EnergyNonbond_sp nb);
+  Atom_sp	getAtom1() { return this->_Atom1; };
+  Atom_sp	getAtom2() { return this->_Atom2; };
+  double	getDistance();
+  bool	defineFrom(core::T_sp	forceField,
+                   bool		is14,
+                   EnergyAtom	*iea1,
+                   EnergyAtom	*iea2,
+                   EnergyNonbond_sp nb);
 
 public:
 public:
@@ -173,7 +173,7 @@ class EnergyNonbond_O : public EnergyComponent_O
   gctools::Vec0<TermType>	_BeyondThresholdTerms;
     // Correct way of defining nonbonds using excluded atom indices
   // FIXME:  Get rid of _FFNonbondDb - and the old code that uses it.
-  FFNonbondDb_sp        _FFNonbondDb;
+  core::T_sp        _FFNonbondDb;
   AtomTable_sp          _AtomTable;
   //  Tables for nonbonded calculation using excluded atoms and the Amber way
   size_t                     _ntypes;          // ntypes
@@ -260,12 +260,12 @@ class EnergyNonbond_O : public EnergyComponent_O
 //    int countBadVdwOverlaps(double scaleSumOfVdwRadii, NVector_sp pos, geom::DisplayList_sp displayIn, core::Lisp_sp );
 
   virtual	double	getEnergy();
-  FFNonbondDb_sp getFFNonbondDb();
+  core::T_sp getFFNonbondDb();
 
-  void constructFromAtomTable(bool useExcludedAtoms, AtomTable_sp atomTable, FFNonbondDb_sp forceField, bool show_progress);
-  void constructNonbondTermsFromAtomTable(bool ignore14s, AtomTable_sp atomTable, FFNonbondDb_sp forceField, bool show_progress);
-  void construct14InteractionTerms(AtomTable_sp atomTable, Matter_sp matter, FFNonbondDb_sp forceField, core::T_sp activeAtoms, bool show_progress);
-  void constructExcludedAtomListFromAtomTable(AtomTable_sp atomTable, FFNonbondDb_sp forceField, bool show_progress);
+  void constructFromAtomTable(bool useExcludedAtoms, AtomTable_sp atomTable, core::T_sp nbforceField, bool show_progress);
+  void constructNonbondTermsFromAtomTable(bool ignore14s, AtomTable_sp atomTable, core::T_sp nbforceField, bool show_progress);
+  void construct14InteractionTerms(AtomTable_sp atomTable, Matter_sp matter, core::T_sp nbforceField, core::T_sp activeAtoms, bool show_progress);
+  void constructExcludedAtomListFromAtomTable(AtomTable_sp atomTable, core::T_sp nbforceField, bool show_progress);
 
   void constructNonbondTermsFromAtomTableUsingExcludedAtoms(EnergyFunction_sp energyFunction,
                                                             core::T_sp prepareAmberEnergyNonbond );
@@ -275,7 +275,7 @@ class EnergyNonbond_O : public EnergyComponent_O
  public:
   EnergyNonbond_O( const EnergyNonbond_O& ss ); //!< Copy constructor
 
- EnergyNonbond_O() : _UsesExcludedAtoms(true) {};
+  EnergyNonbond_O() : _FFNonbondDb(_Unbound<core::T_O>()), _UsesExcludedAtoms(true) {};
 };
 
 };

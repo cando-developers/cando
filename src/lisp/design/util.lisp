@@ -29,13 +29,6 @@
         (vb (apply #'geom:vec b)))
     (geom:vlength (geom:v- va vb))))
 
-(defun measure-distance (a b c)
-  (let ((va (apply #'geom:vec a))
-        (vb (apply #'geom:vec b))
-        (vc (apply #'geom:vec c)))
-    (geom:vlength (geom:v- va vb))))
-
-
 (defun find-joint-using-atom (atom-tree input-atom atom-id-map)
   "Return the joint in the atom-tree that corresponds to input-atom using the atom-id-map"
   (kin:walk atom-tree

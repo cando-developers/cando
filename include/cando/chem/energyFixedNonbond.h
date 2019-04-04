@@ -139,22 +139,22 @@ public:
 public:
     /*! Add a fixed atom to this FixedNonbond component
      */
-    void	addFixedAtom(FFNonbondDb_sp nonbondDb, Atom_sp a);
-    void	setupForEvaluation(AtomTable_sp m, FFNonbondCrossTermTable_sp crossTerms);
+  void	addFixedAtom(core::T_sp nonbondDb, Atom_sp a);
+  void	setupForEvaluation(AtomTable_sp m, FFNonbondCrossTermTable_sp crossTerms);
 
 public:
-    void	setDielectricConstant(double d) { this->_DielectricConstant = d; };
-    double	getDielectricConstant() { return this->_DielectricConstant; };
+  void	setDielectricConstant(double d) { this->_DielectricConstant = d; };
+  double	getDielectricConstant() { return this->_DielectricConstant; };
+  
+  void	setVdwScale(double d) { this->_ScaleVdw = d; };
+  double	getVdwScale()	{return this->_ScaleVdw; };
+  void	setElectrostaticScale(double d) { this->_ScaleElectrostatic = d; };
+  double	getElectrostaticScale()	{return this->_ScaleElectrostatic; };
+  
+  double	getVdwEnergy() { return this->_EnergyVdw; };
+  double	getElectrostaticEnergy() { return this->_EnergyElectrostatic; };
 
-    void	setVdwScale(double d) { this->_ScaleVdw = d; };
-    double	getVdwScale()	{return this->_ScaleVdw; };
-    void	setElectrostaticScale(double d) { this->_ScaleElectrostatic = d; };
-    double	getElectrostaticScale()	{return this->_ScaleElectrostatic; };
-
-    double	getVdwEnergy() { return this->_EnergyVdw; };
-    double	getElectrostaticEnergy() { return this->_EnergyElectrostatic; };
-
-
+  
 public:
 
     void addTerm(const TermType& term);

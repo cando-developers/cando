@@ -94,6 +94,9 @@
 ;;; Initialize sybyl type rules
 ;;;
 
+(defvar chem:*sybyl-type-assignment-rules* nil
+  "This symbol is defined and used in mol2.cc")
+
 (defun chem:initialize-sybyl-type-rules ()
   (setf chem:*sybyl-type-assignment-rules*
         (with-open-file (fin (merge-pathnames "ATOMTYPE_SYBYL.DEF"
@@ -102,27 +105,29 @@
           (leap.antechamber-type-definition-parser:read-antechamber-type-rules fin))))
 
 
+(eval-when (:execute :load-toplevel)
+  ;;; Initialize the sybyl-type-rules
+  (chem:initialize-sybyl-type-rules))
 
+#+(or)
 (defmethod chem:lookup-force-field-for-molecule (molecule (system null))
-  (let ((force-field (chem:matter-get-property-or-default
-                      molecule :force-field :default)))
+  (let ((force-field (chem:force-field-name molecule)))
 ;;    (leap.core::merged-force-field force-field)))
     (leap.core::merged-force-field :default)))
 
-(defmethod chem:lookup-nonbond-force-field-for-aggregate (aggregate (system null))
-  (let* ((force-field-names (chem:map-molecules
+(defmethod chem:compute-merged-nonbond-force-field-for-aggregate (aggregate (system null))
+  (let* ((aggregate-force-field-name (chem:force-field-name aggregate))
+         (aggregate-force-field (leap.core:nonbond-force-field-component aggregate-force-field-name))
+         (force-field-names (chem:map-molecules
                              'list
                              (lambda (molecule)
-                               (chem:matter-get-property-or-default
-                                molecule :force-field :default))
+                               (chem:force-field-name molecule))
                              aggregate))
-         (unique (remove-duplicates force-field-names)))
-    (let ((nbmerged (chem:make-ffnonbond-db)))
-      (mapc (lambda (force-field-name)
-              (let ((force-field (leap.core:merged-force-field force-field-name)))
-                (chem:force-field-merge nbmerged (chem:get-nonbond-db force-field))))
-            force-field-names)
-      nbmerged)))
+         (unique-force-field-names (remove-duplicates force-field-names))
+         (force-fields-and-name-alist (loop for name in unique-force-field-names
+                                            for nonbond-force-field = (leap.core:nonbond-force-field-component name)
+                                            collect (cons nonbond-force-field name))))
+    (chem:combine-nonbond-force-fields aggregate-force-field force-fields-and-name-alist)))
 
 ;;(defmethod chem:lookup-atom-properties-radius (atom &optional (force-field-name :default))
   ;; "Return (values atom-radius radius-is-default-t-nil)"
@@ -137,3 +142,92 @@
         (values atom-radius nil))
       (progn
         (values 1.5 t))))
+
+
+;;; ------------------------------------------------------------
+;;;
+;;; Force field generic functions
+;;;
+;;; Find nonbond atom type position in non-bond force-field
+;;;
+
+(defgeneric chem:find-atom-type-position (nonbond-force-field type))
+
+(defmethod chem:find-atom-type-position ((nonbond-force-field chem:ffnonbond-db) type)
+  (chem:ffnonbond-find-atom-type-position nonbond-force-field type))
+
+(defgeneric chem:find-type (nonbond-force-field-component type)
+  (:documentation "This plays the same role as FFNonbondDb_O::findType"))
+
+(defmethod chem:find-type (nonbond-force-field-component type)
+  (error "Provide a method for chem:find-type ~s ~s" nonbond-force-field-component type))
+
+(defmethod chem:find-type ((nbforce-field chem:ffnonbond-db) type)
+  (chem:ffnonbond-find-type nbforce-field type))
+
+#|
+(defgeneric chem:nonbond-force-field-database (force-field)
+  (:documentation "Return an object that represents the nonbond component of the force-field"))
+
+(defmethod chem:nonbond-force-field-database ((force-field chem:force-field))
+  (chem:force-field-get-nonbond-db force-field))
+|#
+
+
+;;; ------------------------------------------------------------
+;;;
+;;;  add-shadowing-force-field
+;;;
+;;;  Adds a force-field to a combined-force-field
+;;;
+
+(defgeneric chem:add-shadowing-force-field (combined-force-field force-field force-field-info)
+  (:documentation "Add a force-field to a combined-force-field.  combined-force-fields contain
+multiple force-fields and know how a more recently added force-field shadows a later addition."))
+
+(defmethod chem:add-shadowing-force-field ((combined-force-field chem:combined-force-field)
+                                           (force-field chem:force-field)
+                                           force-field-info)
+  (chem:combined-force-field-add-shadowing-force-field combined-force-field force-field force-field-info))
+
+
+(defgeneric chem:force-fields-as-list (combined-force-field)
+  (:documentation "Return the internal force-fields as a list with more recently added ones before older ones.
+ The caller needs to know how they shadow each other."))
+
+(defmethod chem:force-fields-as-list ((combined-force-field chem:combined-force-field))
+  (chem:combined-force-field-force-fields-as-list combined-force-field))
+
+
+
+(defgeneric chem:force-field-component-merge (dest source)
+  (:documentation "Merge two force-field components of the specified kind"))
+
+(defmethod chem:force-field-component-merge ((dest chem:ffbase-db) (source chem:ffbase-db))
+  (chem:force-field-merge dest source))
+
+
+
+(defgeneric chem:assign-force-field-types (combined-force-field molecule)
+  (:documentation  "Assign force-field types"))
+
+(defmethod chem:assign-force-field-types ((combined-force-field chem:combined-force-field) molecule)
+  (chem:combined-force-field-assign-force-field-types combined-force-field molecule))
+
+
+
+#+(or)
+(defgeneric chem:assign-molecular-force-field-parameters (energy-function first-force-field-part all-force-field-parts molecule)
+  (:documentation "Assign the bond, angle and dihedral parameters"))
+#+(or)
+(defmethod chem:assign-molecular-force-field-parameters (energy-function (first-force-field-part chem:force-field) all-force-field-parts molecule)
+  (chem:generate-standard-assign-molecular-force-field-parameters energy-function force-field molecule))
+
+
+(defgeneric chem:generate-molecule-energy-function-tables (energy-function molecule combined-force-field active-atoms show-progress)
+  (:documentation "Generate the molecule energy-function tables"))
+
+(defmethod chem:generate-molecule-energy-function-tables (energy-function molecule (combined-force-field chem:combined-force-field) active-atoms show-progress)
+  (chem:generate-standard-energy-function-tables energy-function molecule combined-force-field active-atoms show-progress))
+
+

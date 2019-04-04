@@ -83,11 +83,11 @@ public:
 
   EnergyAtom();
   EnergyAtom(Atom_sp atom, uint coordinateIndex);
-  EnergyAtom(ForceField_sp forceField, Atom_sp atom, uint coordinateIndex);
+  EnergyAtom(core::T_sp forceField, Atom_sp atom, uint coordinateIndex);
 
 		// methods
   core::List_sp encode() const;
-  void		defineForAtom(ForceField_sp forceField, Atom_sp atom, uint coordinateIndex);
+  void		defineForAtom(core::T_sp forceField, Atom_sp atom, uint coordinateIndex);
   string		getResidueAndName();
 //	adapt::QDomNode_sp	asXmlRelativeToContainer(chem::Matter_sp parent);
 //	void		parseFromXmlRelativeToContainer( adapt::QDomNode_sp xml, chem::Matter_sp parent );
@@ -147,10 +147,10 @@ class AtomTable_O : public core::CxxObject_O
   core::T_sp                     _finalSoluteResidueIPTRES;
   core::T_sp                     _totalNumberOfMoleculesNSPM;
   //! Stores actual residues from aggregate
-  core::Vector_sp                     _Residues;
-  core::T_sp                          _AggregateName;
-  core::T_sp                          _BoundingBox;
-  FFNonbondDb_sp               _NonbondForceFieldForAggregate;
+  core::Vector_sp                _Residues;
+  core::T_sp                     _AggregateName;
+  core::T_sp                     _BoundingBox;
+  core::T_sp                     _NonbondForceFieldForAggregate;
  public:
   typedef gctools::Vec0<EnergyAtom>::iterator iterator;
  public:
@@ -183,9 +183,9 @@ class AtomTable_O : public core::CxxObject_O
   void setBoundingBox(core::T_sp name);
   void makUnboundBoundingBox();
 
-  FFNonbondDb_sp   nonbondForceFieldForAggregate() const;
+  core::T_sp   nonbondForceFieldForAggregate() const;
   bool nonbondForceFieldForAggregateBoundP() const;
-  void setNonbondForceFieldForAggregate(FFNonbondDb_sp forceField);
+  void setNonbondForceFieldForAggregate(core::T_sp forceField);
   void makUnboundNonbondForceFieldForAggregate();
 
   uint	getNVectorSize()	{ return this->_Atoms.size()*3;};
@@ -202,7 +202,7 @@ class AtomTable_O : public core::CxxObject_O
   iterator	end() { return this->_Atoms.end(); };
 
   void	dumpTerms();
-  void constructFromMatter(Matter_sp mol, ForceField_sp forceField, core::T_sp activeAtoms );
+  void constructFromMatter(Matter_sp mol, core::T_sp nonbondForceField, core::T_sp activeAtoms );
 
   size_t push_back_excluded_atom_indices_and_sort(core::ComplexVector_int32_t_sp excludedAtomIndices, size_t atomIndex);
   /*! Calculate the excluded atom list with atom indices starting at 0.
@@ -243,7 +243,7 @@ class AtomTable_O : public core::CxxObject_O
                  _Residues(_Unbound<core::Vector_O>()),
                  _AggregateName(_Unbound<core::T_O>()),
                  _BoundingBox(_Unbound<core::T_O>()),
-                 _NonbondForceFieldForAggregate(_Unbound<FFNonbondDb_O>()) {};
+                 _NonbondForceFieldForAggregate(_Unbound<core::T_O>()) {};
 
   virtual void fill_atom_table_from_vectors(core::List_sp values);
 //  int residue_index(int atom_index);

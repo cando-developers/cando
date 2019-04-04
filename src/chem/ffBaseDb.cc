@@ -88,7 +88,7 @@ void FFBaseDb_O::fields(core::Record_sp node)
   this->Base::fields(node);
 }
 
-CL_DEFMETHOD void FFBaseDb_O::forceFieldMerge(FFBaseDb_sp other) {
+void FFBaseDb_O::forceFieldMerge(FFBaseDb_sp other) {
   // inherited classes may overload this function but they need to call this
   // do nothing
 }

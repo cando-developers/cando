@@ -60,16 +60,20 @@ namespace chem
 {
 EnergyAtom::EnergyAtom() {};
 EnergyAtom::EnergyAtom(Atom_sp atom,uint coordinateIndex) : Base(atom,coordinateIndex) {} ;
-EnergyAtom::EnergyAtom(ForceField_sp forceField, Atom_sp atom, uint coordinateIndex ) : Base(atom,coordinateIndex)
+EnergyAtom::EnergyAtom(core::T_sp forceField, Atom_sp atom, uint coordinateIndex ) : Base(atom,coordinateIndex)
 {
   this->defineForAtom(forceField,atom,coordinateIndex);
 }
 
 
-void EnergyAtom::defineForAtom(ForceField_sp forceField, Atom_sp a1, uint coordinateIndex)
+void EnergyAtom::defineForAtom(core::T_sp forceField, Atom_sp a1, uint coordinateIndex)
 {
   this->setupBase(a1,coordinateIndex);
-  this->_TypeIndex = forceField->getNonbondDb()->findTypeIndex(a1->getType());
+  core::T_sp typeIndex = core::eval::funcall(_sym_find_atom_type_position,forceField,a1->getType());
+  if (!typeIndex.fixnump()) {
+    TYPE_ERROR(typeIndex,cl::_sym_fixnum);
+  }
+  this->_TypeIndex = typeIndex.unsafe_fixnum();
   this->_Charge = a1->getCharge();
   this->_AtomicNumber = a1->getAtomicNumber();
 }
@@ -336,7 +340,7 @@ CL_DEFMETHOD void AtomTable_O::makUnboundBoundingBox() {
   this->_BoundingBox = _Unbound<core::T_O>();
 }
 
-CL_DEFMETHOD FFNonbondDb_sp AtomTable_O::nonbondForceFieldForAggregate() const {
+CL_DEFMETHOD core::T_sp AtomTable_O::nonbondForceFieldForAggregate() const {
   if (this->_NonbondForceFieldForAggregate.unboundp()) {
     SIMPLE_ERROR(BF("The nonbond-forcefield-for-aggregate is unbound"));
   }
@@ -347,7 +351,7 @@ CL_DEFMETHOD bool AtomTable_O::nonbondForceFieldForAggregateBoundP() const {
   return !this->_NonbondForceFieldForAggregate.unboundp();
 }
 
-CL_DEFMETHOD void AtomTable_O::setNonbondForceFieldForAggregate(FFNonbondDb_sp forceField) {
+CL_DEFMETHOD void AtomTable_O::setNonbondForceFieldForAggregate(core::T_sp forceField) {
   this->_NonbondForceFieldForAggregate = forceField;
 }
 
@@ -389,7 +393,7 @@ CL_DEFMETHOD core::T_sp AtomTable_O::atom_table_residues() const {
 }
 
 
-DONT_OPTIMIZE_WHEN_DEBUG_RELEASE void AtomTable_O::constructFromMatter(Matter_sp mol, ForceField_sp forceField, core::T_sp activeAtoms )
+void AtomTable_O::constructFromMatter(Matter_sp mol, core::T_sp nonbondForceField, core::T_sp activeAtoms )
 {
   uint idx = this->_Atoms.size();
   uint coordinateIndex = idx*3;
@@ -416,7 +420,7 @@ DONT_OPTIMIZE_WHEN_DEBUG_RELEASE void AtomTable_O::constructFromMatter(Matter_sp
         }
         LOG(BF("Setting atom[%s] in AtomTable[%d]") % _rep_(a1) % idx );
         this->_AtomTableIndices->setf_gethash(a1,core::clasp_make_fixnum(idx));
-        EnergyAtom ea(forceField,a1,coordinateIndex);
+        EnergyAtom ea(nonbondForceField,a1,coordinateIndex);
         ea._AtomName = a1->getName();
         {_BLOCK_TRACE("Building spanning tree for atom");
           LOG(BF("Spanning tree for atom: %s\n") % _rep_(a1->getName()));
