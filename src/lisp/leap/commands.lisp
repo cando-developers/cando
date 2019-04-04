@@ -134,7 +134,9 @@ that is searched whenever parameters are required.
   (leap.off:load-off filename))
 
 (defun leap.list-force-fields ()
-  (leap:list-force-fields))
+  (let ((ffs (leap:list-force-fields)))
+    (loop for ff in ffs
+          do (format t "~s ~a~%" (car ff) (cdr ff)))))
 
 
 
