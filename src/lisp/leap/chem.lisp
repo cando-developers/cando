@@ -110,12 +110,12 @@
   (chem:initialize-sybyl-type-rules))
 
 #+(or)
-(defmethod chem:lookup-force-field-for-molecule (molecule (system null))
+(defmethod chem:lookup-force-field-for-molecule (molecule)
   (let ((force-field (chem:force-field-name molecule)))
 ;;    (leap.core::merged-force-field force-field)))
     (leap.core::merged-force-field :default)))
 
-(defmethod chem:compute-merged-nonbond-force-field-for-aggregate (aggregate (system null))
+(defmethod chem:compute-merged-nonbond-force-field-for-aggregate (aggregate)
   (let* ((aggregate-force-field-name (chem:force-field-name aggregate))
          (aggregate-force-field (leap.core:nonbond-force-field-component aggregate-force-field-name))
          (force-field-names (chem:map-molecules
@@ -203,8 +203,8 @@ multiple force-fields and know how a more recently added force-field shadows a l
 (defgeneric chem:force-field-component-merge (dest source)
   (:documentation "Merge two force-field components of the specified kind"))
 
-(defmethod chem:force-field-component-merge ((dest chem:ffbase-db) (source chem:ffbase-db))
-  (chem:force-field-merge dest source))
+(defmethod chem:force-field-component-merge ((dest chem:ffnonbond-db) (source chem:ffnonbond-db))
+  (chem:ffnonbond-db-merge dest source))
 
 
 

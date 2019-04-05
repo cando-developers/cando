@@ -139,13 +139,13 @@ void energyFunction_initializeSmarts()
   _sym_STARsecondaryAmideSmartsSTAR->defparameter(secondaryAmide);
 }
 
-CL_LAMBDA(matter force-field-system &key use-excluded-atoms active-atoms show-progress (assign-types t));
+CL_LAMBDA(matter &key use-excluded-atoms active-atoms show-progress (assign-types t));
 CL_LISPIFY_NAME(make_energy_function);
-CL_DEF_CLASS_METHOD EnergyFunction_sp EnergyFunction_O::make(Matter_sp matter, core::T_sp forceFieldSystem, bool useExcludedAtoms, core::T_sp activeAtoms, bool show_progress, bool assign_types)
+CL_DEF_CLASS_METHOD EnergyFunction_sp EnergyFunction_O::make(Matter_sp matter, bool useExcludedAtoms, core::T_sp activeAtoms, bool show_progress, bool assign_types)
 {
   GC_ALLOCATE(EnergyFunction_O, me );
   if ( matter.notnilp() ) {
-    me->defineForMatter(matter,forceFieldSystem,useExcludedAtoms,activeAtoms,show_progress,assign_types);
+    me->defineForMatter(matter,useExcludedAtoms,activeAtoms,show_progress,assign_types);
   }
   return me;
 };
@@ -1149,8 +1149,8 @@ SYMBOL_EXPORT_SC_(ChemPkg,STARparameter_warningsSTAR);
 SYMBOL_EXPORT_SC_(ChemPkg,report_parameter_warnings);
 SYMBOL_EXPORT_SC_(KeywordPkg,bounding_box);
 CL_LISPIFY_NAME("defineForMatter");
-CL_LAMBDA((energy-function !) matter system &key use-excluded-atoms active-atoms show-progress (assign-types t));
-CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, core::T_sp system, bool useExcludedAtoms, core::T_sp activeAtoms, bool show_progress, bool assign_types )
+CL_LAMBDA((energy-function !) matter &key use-excluded-atoms active-atoms show-progress (assign-types t));
+CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, bool useExcludedAtoms, core::T_sp activeAtoms, bool show_progress, bool assign_types )
 {_OF();
 
   if ( !(matter.isA<Aggregate_O>() || matter.isA<Molecule_O>() ) )
@@ -1163,12 +1163,15 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, core::T_sp
 	//
 	// Identify rings
 	//
+  if (show_progress) core::write_bf_stream(BF("Searching for rings.\n"));
+
   core::List_sp rings = RingFinder_O::identifyRings(matter);
   core::DynamicScopeManager ring_scope(_sym_STARcurrent_ringsSTAR, rings );
   
 	//
 	// Assign relative Cahn-Ingold-Preylog priorities
 	//
+  if (show_progress) core::write_bf_stream(BF("Assigning CIP priorities.\n"));
   CipPrioritizer_O::assignPriorities(matter);
   
     //
@@ -1187,6 +1190,7 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, core::T_sp
     }
   }
   
+  if (show_progress) core::write_bf_stream(BF("Assigning atom types.\n"));
   moleculeLoop.loopTopGoal(matter,MOLECULES);
   while (moleculeLoop.advanceLoopAndProcess() ) {
     Molecule_sp molecule = moleculeLoop.getMolecule();
@@ -1194,12 +1198,12 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, core::T_sp
     core::T_sp combined_force_field = force_fields->gethash(force_field_name);
     core::eval::funcall(_sym_assign_force_field_types,combined_force_field,molecule);
   }
-  this->defineForMatterWithAtomTypes(matter,system,useExcludedAtoms,activeAtoms,show_progress);
+  this->defineForMatterWithAtomTypes(matter,useExcludedAtoms,activeAtoms,show_progress);
 }
 
 
-CL_LAMBDA((energy-function !) matter system &key use-excluded-atoms active-atoms show-progress (assign-types t));
-CL_DEFMETHOD void EnergyFunction_O::defineForMatterWithAtomTypes(Matter_sp matter, core::T_sp system, bool useExcludedAtoms, core::T_sp activeAtoms, bool show_progress)
+CL_LAMBDA((energy-function !) matter &key use-excluded-atoms active-atoms show-progress (assign-types t));
+CL_DEFMETHOD void EnergyFunction_O::defineForMatterWithAtomTypes(Matter_sp matter, bool useExcludedAtoms, core::T_sp activeAtoms, bool show_progress)
 {_OF();
 
   if ( !(matter.isA<Aggregate_O>() || matter.isA<Molecule_O>() ) )
@@ -1219,7 +1223,8 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatterWithAtomTypes(Matter_sp matte
   } else {
     this->_AtomTable->setBoundingBox(boundingBox);
   }
-  core::T_sp nonbondForceField = core::eval::funcall(chem::_sym_compute_merged_nonbond_force_field_for_aggregate,matter,system);
+  if (show_progress) core::write_bf_stream(BF("Assembling aggregate nonbond force-field.\n"));
+  core::T_sp nonbondForceField = core::eval::funcall(chem::_sym_compute_merged_nonbond_force_field_for_aggregate,matter);
   this->_AtomTable->setNonbondForceFieldForAggregate(nonbondForceField);
   
 	// 
@@ -1237,6 +1242,7 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatterWithAtomTypes(Matter_sp matte
   size_t first_solvent_molecule_nspsol = 0;
   bool solvent_exists = false;
   if (gc::IsA<Aggregate_sp>(matter)) {
+    if (show_progress) core::write_bf_stream(BF("Classifying solute/solvent.\n"));
     ql::list solute_molecules;
     ql::list solvent_molecules;
     {
@@ -1258,12 +1264,20 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatterWithAtomTypes(Matter_sp matte
       core::T_sp force_field_name = onemol->force_field_name();
       CombinedForceField_sp forceField = gc::As<CombinedForceField_sp>(core::eval::funcall(chem::_sym_find_force_field,force_field_name));
       this->_AtomTable->constructFromMatter(onemol,nonbondForceField,activeAtoms);
+      if (show_progress) core::write_bf_stream(BF("Generating parameters for %s using %s force-field.\n") % _rep_(onemol->getName()) % _rep_(force_field_name) );
       core::eval::funcall(_sym_generate_molecule_energy_function_tables,onemol,forceField,activeAtoms,_lisp->_boolean(show_progress));
       final_solute_residue_iptres += onemol->contentSize();
       ++number_of_molecules_nspm;
     }    
     core::List_sp solvent = solvent_molecules.cons();
     first_solvent_molecule_nspsol = number_of_molecules_nspm+1;
+    if (show_progress) {
+      if (core::cl__length(solvent)>0) {
+        Molecule_sp onemol = gc::As<Molecule_sp>(oCar(oCar(solvent)));
+        core::T_sp force_field_name = onemol->force_field_name();
+        core::write_bf_stream(BF("Generating parameters for solvent %s using %s force-field.\n") % _rep_(onemol->getName()) % _rep_(force_field_name) );
+      }
+    }
     for ( auto cur_solvent : solvent ) {
       Molecule_sp onemol = gc::As_unsafe<Molecule_sp>(CONS_CAR(cur_solvent));
       core::T_sp force_field_name = onemol->force_field_name();
@@ -1277,6 +1291,7 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatterWithAtomTypes(Matter_sp matte
     core::T_sp force_field_name = molecule->force_field_name();
     CombinedForceField_sp forceField = gc::As<CombinedForceField_sp>(core::eval::funcall(chem::_sym_find_force_field,force_field_name));
     this->_AtomTable->constructFromMatter(molecule,nonbondForceField,activeAtoms);
+    if (show_progress) core::write_bf_stream(BF("Generating parameters for %s using %s force-field.\n") % _rep_(molecule->getName()) % _rep_(force_field_name) );
     core::eval::funcall(_sym_generate_molecule_energy_function_tables,molecule,forceField,activeAtoms,_lisp->_boolean(show_progress));
     final_solute_residue_iptres = molecule->contentSize();
     number_of_molecules_nspm = 1;

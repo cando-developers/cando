@@ -118,7 +118,7 @@ namespace chem {
   {
     LISP_CLASS(chem,ChemPkg,EnergyFunction_O,"EnergyFunction",ScoringFunction_O);
   public:
-    static EnergyFunction_sp make(Matter_sp matter, core::T_sp system, bool useExcludedAtoms=false, core::T_sp activeAtoms=_Nil<core::T_O>(), bool progress=false, bool assign_types=false);
+    static EnergyFunction_sp make(Matter_sp matter, bool useExcludedAtoms=false, core::T_sp activeAtoms=_Nil<core::T_O>(), bool progress=false, bool assign_types=false);
   public:
     void initialize();
   public:
@@ -248,8 +248,8 @@ namespace chem {
     EnergyAtom*     getEnergyAtomPointer(Atom_sp a);
 
     void assignAtomTypes(Matter_sp matter, bool show_progress);
-    void defineForMatter(Matter_sp agg, core::T_sp forceFieldSystem, bool useExcludedAtoms, core::T_sp activeAtomSet=_Nil<core::T_O>(), bool show_progress=false, bool assign_types=true );
-    void defineForMatterWithAtomTypes(Matter_sp matter, core::T_sp system, bool useExcludedAtoms, core::T_sp activeAtoms, bool show_progress);
+    void defineForMatter(Matter_sp agg, bool useExcludedAtoms, core::T_sp activeAtomSet=_Nil<core::T_O>(), bool show_progress=false, bool assign_types=true );
+    void defineForMatterWithAtomTypes(Matter_sp matter, bool useExcludedAtoms, core::T_sp activeAtoms, bool show_progress);
     void generateStandardEnergyFunctionTables(Matter_sp mol, CombinedForceField_sp forceField, core::T_sp activeAtomSet=_Nil<core::T_O>(), bool show_progress=false );
     void generateNonbondEnergyFunctionTables(bool useExcludedAtoms, Matter_sp agg, core::T_sp forceField, core::T_sp activeAtomSet=_Nil<core::T_O>(), bool show_progress=false );
     void generateRestraintEnergyFunctionTables(Matter_sp agg, core::T_sp nonbonds, core::T_sp activeAtomSet=_Nil<core::T_O>(), bool show_progress=false );

@@ -164,9 +164,17 @@ used to provide parameters.  There is one default force-field called :default.")
       (error "Could not find force-field with name ~s" force-field-name))
     ff))
 
-(defun add-force-field-or-modification (force-field-or-frcmod &key (force-field-name :default) force-field-info)
+(defun add-force-field-or-modification (force-field-or-frcmod &key (force-field-name :default) force-field-info
+                                                                combined-force-field-class-name)
+  (let ((cff (chem:find-force-field :smirnoff nil)))
+    (unless cff
+      (leap.core:add-combined-force-field (if (eq combined-force-field-class-name 'chem:combined-force-field)
+                                              (sys:make-cxx-object combined-force-field-class-name)
+                                              (make-instance combined-force-field-class-name))
+                                          force-field-name)))
   (let ((combined-force-field (chem:find-force-field force-field-name)))
-    (chem:add-shadowing-force-field combined-force-field force-field-or-frcmod force-field-info)))
+    (chem:add-shadowing-force-field combined-force-field force-field-or-frcmod force-field-info))
+  force-field-or-frcmod)
 
 (defun merged-force-field (&optional (force-field-name :default))
   "Merge the force-field-list with _force-field-name_ and return it."
@@ -186,7 +194,8 @@ used to provide parameters.  There is one default force-field called :default.")
          (force-field-parts (chem:force-fields-as-list combined-force-field))
          (nbmerged (chem:make-ffnonbond-db)))
     (mapc (lambda (force-field-part)
-            (chem:force-field-component-merge nbmerged force-field-part))
+            (let ((nonbond-part (chem:get-nonbond-db force-field-part)))
+              (chem:force-field-component-merge nbmerged nonbond-part)))
           force-field-parts)
     nbmerged))
 

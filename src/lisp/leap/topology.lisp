@@ -1434,18 +1434,18 @@ then don't calculate 1,4 interactions"
     (cando:progress-done bar)
     (values energy-function)))
 
-(defun save-amber-parm-format (aggregate topology-pathname coordinate-pathname &key force-field assign-types)
+(defun save-amber-parm-format (aggregate topology-pathname coordinate-pathname &key assign-types show-progress)
   (format t "Constructing energy function~%")
   (finish-output)
-  (let* ((energy-function (chem:make-energy-function aggregate force-field
+  (let* ((energy-function (chem:make-energy-function aggregate 
                                                      :use-excluded-atoms t
-                                                     :assign-types assign-types)))
+                                                     :assign-types assign-types
+                                                     :show-progress show-progress)))
     ;;; We need to:
     ;;;  (1) make sure energy function copies :bounding-box property from aggregate
     ;;;  (2) Copy the name of the aggregate into the energy function
     ;;;  (3) Separate the solvent molecules from solute molecules and order them in the energy-function
     ;;;  (4) Copy the result of (chem:lookup-nonbond-force-field-for-aggregate aggregate force-field) into the energy-function
-    
     (save-amber-parm-format-using-energy-function energy-function topology-pathname coordinate-pathname)))
 
 

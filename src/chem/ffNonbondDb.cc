@@ -272,6 +272,12 @@ void FFNonbondDb_O::forceFieldMerge(FFBaseDb_sp bother)
 }
 
 
+CL_DEFUN void chem__FFNonbondDb_merge(FFNonbondDb_sp dest, FFNonbondDb_sp source)
+{
+  dest->forceFieldMerge(source);
+}
+
+
 #if 0
 CL_LISPIFY_NAME(FFNonbondDb-concatenate);
 CL_DOCSTRING("Join the other FFNonbondDb_sp to the current one - signal an error if there are any type conflicts");

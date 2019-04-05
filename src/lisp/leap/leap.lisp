@@ -49,12 +49,12 @@ into LEaP.
     (leap.core:evaluate 'list ast leap.core:*leap-env*))
   t)
 
-(defun save-amber-parm (aggregate topology-file-name &optional crd-pathname (force-field-name nil))
+(defun save-amber-parm (aggregate topology-file-name &optional crd-pathname show-progress)
   (let* ((top-pathname (merge-pathnames (pathname topology-file-name)))
          (crd-pathname (if crd-pathname
                            (merge-pathnames crd-pathname)
                            (make-pathname :type "crd" :defaults top-pathname))))
-    (leap.topology:save-amber-parm-format aggregate top-pathname crd-pathname :force-field force-field-name :assign-types t)))
+    (leap.topology:save-amber-parm-format aggregate top-pathname crd-pathname :assign-types t :show-progress show-progress)))
 
 
 (defun load-amber-params (filename &optional (force-field :default))
@@ -78,17 +78,16 @@ the AMBER general type \"X\" is replaced with the LEaP general type \"?\".
     (format t "Adding force field ~a to ~a~%" ff force-field)
     (leap.core:add-force-field-or-modification ff
                                                :force-field-name force-field
-                                               :force-field-info filename)))
+                                               :force-field-info filename
+                                               :combined-force-field-class-name 'chem:combined-force-field)))
 
 (defun load-smirnoff-params (filename)
-  (let ((cff (chem:find-force-field :smirnoff nil)))
-    (unless cff
-      (leap.core:add-combined-force-field (make-instance 'smirnoff:combined-force-field) :smirnoff)))
   (let* ((path (leap.core:ensure-path filename))
          (force-field (smirnoff:load-smirnoff path)))
     (leap.core:add-force-field-or-modification force-field
                                                :force-field-name :smirnoff
-                                               :force-field-info path)))
+                                               :force-field-info path
+                                               :combined-force-field-class-name 'smirnoff:combined-force-field)))
 
 (defun set-force-field (matter force-field-name)
   (chem:find-force-field force-field-name)
@@ -104,7 +103,8 @@ the AMBER general type \"X\" is replaced with the LEaP general type \"?\".
     (chem:set-title ff filename)
     (chem:set-type-db ff fftypedb)
     (leap.core:add-force-field-or-modification ff :force-field-name force-field
-                                               :force-field-info filename)))
+                                                  :force-field-info filename
+                                                  :combined-force-field-class-name 'chem:combined-force-field)))
 
 (defun solvate-box (solute solvent buffer &key isotropic closeness)
   (when (numberp buffer)
