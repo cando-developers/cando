@@ -171,8 +171,9 @@ The chem:force-field-type-rules-merged generic function was used to organize the
                         (a2 (second key))
                         (term (first terms))
                         (k (k term))
+                        (k-amber (/ k 2.0)) ; Amber drops the factor of 2 in Hooke's law
                         (len (len term)))
-                   (chem:add-stretch-term bond-energy atom-table a1 a2 k len)))
+                   (chem:add-stretch-term bond-energy atom-table a1 a2 k-amber len)))
                bonds))
     (when (chem:verbose 2) (format t "Generating angle terms~%"))
     (let ((angle-energy (chem:get-angle-component energy-function)))
@@ -216,8 +217,9 @@ The chem:force-field-type-rules-merged generic function was used to organize the
                         (a3 (third key))
                         (term (first terms))
                         (k (k term))
+                        (k-amber (/ k 2.0)) ; Amber drops the factor of 2 in Hooke's law
                         (angle-rad (angle-rad term)))
-                   (chem:add-angle-term angle-energy atom-table a1 a2 a3 k angle-rad)))
+                   (chem:add-angle-term angle-energy atom-table a1 a2 a3 k-amber angle-rad)))
                angles))
 
 
