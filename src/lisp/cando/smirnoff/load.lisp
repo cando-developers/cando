@@ -38,12 +38,12 @@
   ((k :initarg :k :accessor k)
    (angle-rad :initarg :angle-rad :accessor angle-rad)))
 
-(defclass harmonic-bond-force ()
+(defclass bonds-force ()
   ((k-unit :initarg :k-unit :accessor k-unit)
    (length-unit :initarg :length-unit :accessor length-unit)
    (terms :initform (make-array 16 :fill-pointer 0 :adjustable t) :initarg :terms :accessor terms)))
 
-(defclass harmonic-angle-force ()
+(defclass angles-force ()
   ((k-unit :initarg :k-unit :accessor k-unit)
    (angle-unit :initarg :angle-unit :accessor angle-unit)
    (terms :initform (make-array 16 :fill-pointer 0 :adjustable t) :initarg :terms :accessor terms)))
@@ -60,11 +60,16 @@
 (defclass improper-term (force-term)
   ((parts :initform nil :initarg :parts :accessor parts)))
 
-(defclass periodic-torsion-force ()
+(defclass proper-torsion-force ()
   ((k-unit :initarg :k-unit :accessor k-unit)
    (phase-unit :initarg :phase-unit :accessor phase-unit)
    (terms :initform (make-array 16 :fill-pointer 0 :adjustable t) :initarg :terms :accessor terms)))
-  
+
+(defclass improper-torsion-force ()
+  ((k-unit :initarg :k-unit :accessor k-unit)
+   (phase-unit :initarg :phase-unit :accessor phase-unit)
+   (terms :initform (make-array 16 :fill-pointer 0 :adjustable t) :initarg :terms :accessor terms)))
+
 (defclass atom-term (force-term)
   ((epsilon :initarg :epsilon :accessor epsilon)
    (rmin-half :initarg :rmin-half :accessor rmin-half)))
@@ -74,11 +79,20 @@
    (epsilon :initarg :epsilon :accessor epsilon)
    (rmin-half :initarg :rmin-half :accessor rmin-half)))
   
-(defclass nonbonded-force ()
-  ((coulomb14scale :initarg :coulomb14scale :accessor coulomb14scale)
-   (lj14scale :initarg :lj14scale :accessor lj14scale)
-   (sigma-unit :initarg :sigma-unit :accessor sigma-unit)
+(defclass vdw-force ()
+  ((potential :initarg :potential :accessor potential)
+   (combining-rules :initarg :combining-rules :accessor combining-rules)
+   (scale12 :initarg :scale12 :accessor scale12)
+   (scale13 :initarg :scale13 :accessor scale13)
+   (scale14 :initarg :scale14 :accessor scale14)
+   (scale15 :initarg :scale15 :accessor scale15)
+   (rmin-half-unit :initarg :rmin-half-unit :accessor rmin-half-unit)
    (epsilon-unit :initarg :epsilon-unit :accessor epsilon-unit)
+   (switch-width :initarg :switch-width :accessor switch-width)
+   (switch-width-unit :initarg :switch-width-unit :accessor switch-width-unit)
+   (cutoff :initarg :cutoff :accessor cutoff)
+   (cutoff-unit :initarg :cutoff-unit :accessor cutoff-unit)
+   (method :initarg :method :accessor method)
    (terms :initform (make-array 16 :fill-pointer 0 :adjustable t) :initarg :terms :accessor terms)))
 
 (defmethod print-object ((object nonbond-term) stream)
@@ -88,10 +102,11 @@
     (format stream " ~s ~s" :id (id object))))
 
 (defclass smirnoff-force-field ()
-  ((harmonic-bond-force :initarg :harmonic-bond-force :accessor harmonic-bond-force)
-   (harmonic-angle-force :initarg :harmonic-angle-force :accessor harmonic-angle-force)
-   (periodic-torsion-force :initarg :periodic-torsion-force :accessor periodic-torsion-force)
-   (nonbonded-force :initarg :nonbonded-force :accessor nonbonded-force)))
+  ((bonds-force :initarg :bonds-force :accessor bonds-force)
+   (angles-force :initarg :angles-force :accessor angles-force)
+   (proper-torsion-force :initarg :proper-torsion-force :accessor proper-torsion-force)
+   (improper-torsion-force :initarg :improper-torsion-force :accessor improper-torsion-force)
+   (vdw-force :initarg :vdw-force :accessor vdw-force)))
 
 (defclass combined-force-field ()
   ((parts :initform nil :initarg :parts :accessor parts)))
@@ -111,12 +126,12 @@
                   (when (string= ,tag ,child-tag)
                     ,@body)))))
   
-(defun parse-harmonic-bond-force (root)
+(defun parse-bonds-force (root)
   (let* ((attrs (plump:attributes root))
          (length-unit (gethash "length_unit" attrs))
          (k-unit (gethash "k_unit" attrs)))
-    (setf (harmonic-bond-force *smirnoff*)
-          (make-instance 'harmonic-bond-force
+    (setf (bonds-force *smirnoff*)
+          (make-instance 'bonds-force
                          :length-unit length-unit
                          :k-unit k-unit)))
   (with-force-parser (node root "Bond")
@@ -131,9 +146,9 @@
                                 :id id
                                 :k k
                                 :len len)))
-      (vector-push-extend term (terms (harmonic-bond-force *smirnoff*))))))
+      (vector-push-extend term (terms (bonds-force *smirnoff*))))))
 
-(defun parse-harmonic-angle-force (root)
+(defun parse-angles-force (root)
   (let* ((attrs (plump:attributes root))
          (angle-unit (gethash "angle_unit" attrs))
          (angle-to-rad-multiplier (cond
@@ -141,8 +156,8 @@
                                      0.0174533)
                                     (t (error "Add support for angle-unit ~a" angle-unit))))
          (k-unit (gethash "k_unit" attrs)))
-    (setf (harmonic-angle-force *smirnoff*)
-          (make-instance 'harmonic-angle-force
+    (setf (angles-force *smirnoff*)
+          (make-instance 'angles-force
                          :angle-unit angle-unit
                          :k-unit k-unit))
     (with-force-parser (node root "Angle")
@@ -158,9 +173,9 @@
                                   :id id
                                   :k k
                                   :angle-rad angle-radians)))
-        (vector-push-extend term (terms (harmonic-angle-force *smirnoff*)))))))
+        (vector-push-extend term (terms (angles-force *smirnoff*)))))))
 
-(defun parse-torsion (node torsion-class-name attributes phase-to-rad-multiplier)
+(defun parse-proper-torsion (node torsion-class-name attributes phase-to-rad-multiplier)
   (let* ((smirks (gethash "smirks" attributes))
          (id (gethash "id" attributes))
          (term (make-instance torsion-class-name
@@ -186,7 +201,7 @@
               do (return-from terms)))
     term))
 
-(defun parse-periodic-torsion-force (root)
+(defun parse-torsion-force (root name term-name force-name)
   (let* ((attrs (plump:attributes root))
          (phase-unit (gethash "phase_unit" attrs))
          (phase-to-rad-multiplier (cond
@@ -194,36 +209,60 @@
                                      0.0174533)
                                     (t (error "Add support for phase-unit ~a" phase-unit))))
          (k-unit (gethash "k_unit" attrs)))
-    (setf (periodic-torsion-force *smirnoff*)
-          (make-instance 'periodic-torsion-force
-                         :phase-unit phase-unit
-                         :k-unit k-unit))
-    (loop for node across (plump:children root)
-          when (typep node 'plump:element)
-            do (let ((tag (plump:tag-name node)))
-                 (cond
-                   ((string= tag "Proper")
-                    (vector-push-extend
-                     (parse-torsion node 'proper-term (plump:attributes node) phase-to-rad-multiplier)
-                     (terms (periodic-torsion-force *smirnoff*))))
-                   ((string= tag "Improper")
-                    (vector-push-extend
-                     (parse-torsion node 'improper-term (plump:attributes node) phase-to-rad-multiplier)
-                     (terms (periodic-torsion-force *smirnoff*))))
-                   (t (error "Illegal tag ~a" tag)))))))
+    (let ((force (make-instance force-name
+                                :phase-unit phase-unit
+                                :k-unit k-unit)))
+      (loop for node across (plump:children root)
+            when (typep node 'plump:element)
+              do (let ((tag (plump:tag-name node)))
+                   (cond
+                     ((string= tag name)
+                      (vector-push-extend
+                       (parse-torsion node term-name (plump:attributes node) phase-to-rad-multiplier)
+                       (terms force )))
+                     (t (error "Illegal tag ~a" tag)))))
+      force)))
 
-(defun parse-nonbonded-force (root)
+
+(defun parse-proper-torsion-force (root)
+  (setf (proper-torsion-force *smirnoff*)
+        (parse-torsion-force root "Proper" 'proper-term 'proper-torsion-force)))
+
+(defun parse-improper-torsion-force (root)
+  (setf (improper-torsion-force *smirnoff*)
+        (parse-torsion-force root "Improper" 'improper-term 'improper-torsion-force)))
+  
+(defun parse-vdw-force (root)
   (let* ((attrs (plump:attributes root))
-         (coulomb14scale (fortran:parse-double-float (gethash "coulomb14scale" attrs)))
-         (lj14scale (fortran:parse-double-float (gethash "lj14scale" attrs)))
-         (sigma-unit (gethash "sigma_unit" attrs))
-         (epsilon-unit (gethash "epsilon_unit" attrs)))
-    (setf (nonbonded-force *smirnoff*)
-          (make-instance 'nonbonded-force
-                         :coulomb14scale coulomb14scale
-                         :lj14scale lj14scale
-                         :sigma-unit sigma-unit
-                         :epsilon-unit epsilon-unit))
+         (potential (gethash "potential" attrs))
+         (combining-rules (gethash "combining_rules" attrs))
+         (scale12 (fortran:parse-double-float (gethash "scale12" attrs)))
+         (scale13 (fortran:parse-double-float (gethash "scale13" attrs)))
+         (scale14 (fortran:parse-double-float (gethash "scale14" attrs)))
+         (scale15 (fortran:parse-double-float (gethash "scale15" attrs)))
+         (rmin-half-unit (gethash "rmin_half_unit" attrs))
+         (epsilon-unit (gethash "epsilon_unit" attrs))
+         (switch-width (fortran:parse-double-float (gethash "switch_width" attrs)))
+         (switch-width-unit (gethash "switch_width_unit" attrs))
+         (cutoff (fortran:parse-double-float (gethash "cutoff" attrs)))
+         (cutoff-unit (gethash "cutoff_unit" attrs))
+         (method (gethash "method" attrs))
+         )
+    (setf (vdw-force *smirnoff*)
+          (make-instance 'vdw-force
+                         :potential potential
+                         :combining-rules combining-rules
+                         :scale12 scale12
+                         :scale13 scale13
+                         :scale14 scale14
+                         :scale15 scale15
+                         :rmin-half-unit rmin-half-unit
+                         :epsilon-unit epsilon-unit
+                         :switch-width switch-width
+                         :switch-width-unit switch-width-unit
+                         :cutoff cutoff
+                         :cutoff-unit cutoff-unit
+                         :method method))
     (with-force-parser (node root "Atom")
       (let* ((attrs (plump:attributes node))
              (smirks (gethash "smirks" attrs))
@@ -250,13 +289,14 @@
                                   :id id
                                   :epsilon epsilon
                                   :rmin-half rmin-half)))
-        (vector-push-extend term (terms (nonbonded-force *smirnoff*)))))))
+        (vector-push-extend term (terms (vdw-force *smirnoff*)))))))
 
 (defparameter *smirnoff-handlers*
-  '(("HarmonicBondForce" . parse-harmonic-bond-force)
-    ("PeriodicTorsionForce" . parse-periodic-torsion-force)
-    ("HarmonicAngleForce" . parse-harmonic-angle-force)
-    ("NonbondedForce" . parse-nonbonded-force)
+  '(("Bonds" . parse-bonds-force)
+    ("ProperTorsions" . parse-proper-torsion-force)
+    ("ImproperTorsions" . parse-improper-torsion-force)
+    ("Angles" . parse-angles-force)
+    ("vdW" . parse-vdw-force)
     ("Date" . ignore-handler)
     ("Author" . ignore-handler)
     ("Smirnoff" . parse-dispatcher )))
@@ -285,7 +325,7 @@
     *smirnoff*))
 
 (defmethod chem:nonbond-component ((force-field smirnoff-force-field))
-  (nonbonded-force force-field))
+  (vdw-force force-field))
 
 (defmethod chem:clear-combined-force-field ((combined-force-field combined-force-field))
   (setf (parts combined-force-field) nil))

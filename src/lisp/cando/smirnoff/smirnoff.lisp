@@ -69,8 +69,8 @@
 The first rule that matches is used to assign the type."
   (let ((all-rules (make-array 128 :fill-pointer 0 :adjustable t)))
     (loop for part in force-field-parts
-          for nonbonded-force = (nonbonded-force part)
-          for terms = (terms nonbonded-force)
+          for vdw-force = (vdw-force part)
+          for terms = (terms vdw-force)
           do (loop for index from (1- (length terms)) downto 0
                    for term = (aref terms index)
                    when (vector-push-extend term all-rules)))
@@ -83,8 +83,8 @@ The chem:force-field-type-rules-merged generic function was used to organize the
   (cando:do-atoms (atom molecule)
     (let ((type (loop named assign-type
                       for field in (chem:force-fields-as-list combined-force-field)
-                      for nonbonded-force = (nonbonded-force field)
-                      for terms = (terms nonbonded-force)
+                      for vdw-force = (vdw-force field)
+                      for terms = (terms vdw-force)
                       do (loop for index from (1- (length terms)) downto 0
                                for term = (aref terms index)
                                for compiled-smirks = (compiled-smirks term)
@@ -97,7 +97,7 @@ The chem:force-field-type-rules-merged generic function was used to organize the
           (error "Could not set type of atom ~s in force-field ~s" atom :smirnoff)))))
       
    
-(defmethod chem:force-field-component-merge ((dest chem:ffnonbond-db) (source nonbonded-force))
+(defmethod chem:force-field-component-merge ((dest chem:ffnonbond-db) (source vdw-force))
   (let ((rmin-half-to-nanometers-multiplier (rmin-half-to-nanometers-multiplier source))
         (epsilon-to-kj-multiplier (epsilon-to-kj-multiplier source)))
     (loop with terms = (terms source)
@@ -141,8 +141,8 @@ The chem:force-field-type-rules-merged generic function was used to organize the
           )
       ;; Work through the force-fields backwards so that more recent terms will shadow older ones
       (loop for force-field in (reverse (chem:force-fields-as-list combined-force-field))
-            for harmonic-bond-force = (harmonic-bond-force force-field)
-            do (loop for term across (terms harmonic-bond-force)
+            for bonds-force = (bonds-force force-field)
+            do (loop for term across (terms bonds-force)
                      for compiled-smirks = (compiled-smirks term)
                      for smirks-graph = (chem:make-chem-info-graph compiled-smirks)
                      for hits = (chem:boost-graph-vf2 smirks-graph molecule-graph)
@@ -182,8 +182,8 @@ The chem:force-field-type-rules-merged generic function was used to organize the
                        molecule)
       ;; Work through the force-fields backwards so that more recent terms will shadow older ones
       (loop for force-field in (reverse (chem:force-fields-as-list combined-force-field))
-            for harmonic-angle-force = (harmonic-angle-force force-field)
-            do (loop for term across (terms harmonic-angle-force)
+            for angles-force = (angles-force force-field)
+            do (loop for term across (terms angles-force)
                      for smirks = (progn
                                     (smirks term))
                      for compiled-smirks = (compiled-smirks term)
@@ -238,40 +238,26 @@ The chem:force-field-type-rules-merged generic function was used to organize the
                      for compiled-smirks = (compiled-smirks term)
                      for smirks-graph = (chem:make-chem-info-graph compiled-smirks)
                      for hits = (chem:boost-graph-vf2 smirks-graph molecule-graph)
-                     if (typep term 'proper-term)
-                       do (loop for hit in hits
-                                for a1 = (aref hit 1)
-                                for a2 = (aref hit 2)
-                                for a3 = (aref hit 3)
-                                for a4 = (aref hit 4)
-                                for key1234 = (list a1 a2 a3 a4)
-                                   ;; The vf2 algorithm will find the angle in both directions
-                                   ;; one of them will match - so we won't worry about the other one
-                                do (multiple-value-bind (val found)
-                                       (gethash key1234 ptors)
-                                     (if found
-                                         (progn
-                                           (push term (gethash key1234 bonds)))
-                                         (let ((key4321 (nreverse key1234)))
-                                           (multiple-value-bind (val found)
-                                               (gethash key4321 ptors)
-                                             (if found
-                                                 (progn
-                                                   (push term (gethash key4321 ptors)))
-                                                 (error "Could not find keys ~s or ~s in ptors" key1234 key4321)))))))
-                     else
-                       do (loop for hit in hits
-                                for a1 = (aref hit 1)
-                                for a2 = (aref hit 2)
-                                for a3 = (aref hit 3)
-                                for a4 = (aref hit 4)
-                                for key1234 = (list a1 a2 a3 a4)
-                                   ;; The vf2 algorithm will find the angle in both directions
-                                   ;; one of them will match - so we won't worry about the other one
-                                do (multiple-value-bind (val found)
-                                       (gethash key1234 itors)
-                                     (when found
-                                       (push term (gethash key1234 itors)))))))
+                     do (loop for hit in hits
+                              for a1 = (aref hit 1)
+                              for a2 = (aref hit 2)
+                              for a3 = (aref hit 3)
+                              for a4 = (aref hit 4)
+                              for key1234 = (list a1 a2 a3 a4)
+                              ;; The vf2 algorithm will find the angle in both directions
+                              ;; one of them will match - so we won't worry about the other one
+                              do (multiple-value-bind (val found)
+                                     (gethash key1234 ptors)
+                                   (if found
+                                       (progn
+                                         (push term (gethash key1234 bonds)))
+                                       (let ((key4321 (nreverse key1234)))
+                                         (multiple-value-bind (val found)
+                                             (gethash key4321 ptors)
+                                           (if found
+                                               (progn
+                                                 (push term (gethash key4321 ptors)))
+                                               (error "Could not find keys ~s or ~s in ptors" key1234 key4321)))))))))
       (maphash (lambda (key terms)
                  (let* ((a1 (first key))
                         (a2 (second key))
@@ -288,6 +274,26 @@ The chem:force-field-type-rules-merged generic function was used to organize the
                              do (chem:add-dihedral-term dihedral-energy atom-table a1 a2 a3 a4 phase v periodicity))
                        (warn "Could not find proper torsion parameters for ~s" key))))
                ptors)
+      (loop for force-field in (reverse (chem:force-fields-as-list combined-force-field))
+            for improper-torsion-force = (improper-torsion-force force-field)
+            do (loop for term across (terms improper-torsion-force)
+                     for smirks = (progn
+                                    (smirks term))
+                     for compiled-smirks = (compiled-smirks term)
+                     for smirks-graph = (chem:make-chem-info-graph compiled-smirks)
+                     for hits = (chem:boost-graph-vf2 smirks-graph molecule-graph)
+                     do (loop for hit in hits
+                              for a1 = (aref hit 1)
+                              for a2 = (aref hit 2)
+                              for a3 = (aref hit 3)
+                              for a4 = (aref hit 4)
+                              for key1234 = (list a1 a2 a3 a4)
+                              ;; The vf2 algorithm will find the angle in both directions
+                              ;; one of them will match - so we won't worry about the other one
+                              do (multiple-value-bind (val found)
+                                     (gethash key1234 itors)
+                                   (when found
+                                     (push term (gethash key1234 itors)))))))
       (maphash (lambda (key terms)
                  (let* ((a1 (first key))
                         (a2 (second key))
@@ -302,4 +308,3 @@ The chem:force-field-type-rules-merged generic function was used to organize the
                          for v = (/ k idivf)
                          do (chem:add-dihedral-term dihedral-energy atom-table a1 a2 a3 a4 phase v periodicity))))
                itors))))
-
