@@ -139,7 +139,7 @@ void energyFunction_initializeSmarts()
   _sym_STARsecondaryAmideSmartsSTAR->defparameter(secondaryAmide);
 }
 
-CL_LAMBDA(matter &key use-excluded-atoms active-atoms (assign-types t));
+CL_LAMBDA(matter &key (use-excluded-atoms t) active-atoms (assign-types t));
 CL_LISPIFY_NAME(make_energy_function);
 CL_DEF_CLASS_METHOD EnergyFunction_sp EnergyFunction_O::make(Matter_sp matter, bool useExcludedAtoms, core::T_sp activeAtoms, bool assign_types)
 {
