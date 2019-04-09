@@ -45,11 +45,11 @@
       (t (error "There must be an element, atomic number or atomic weight in the head of the smirks string")))))
 
 (defun rmin-half-to-nanometers-multiplier (source)
-  (let ((sigma-unit (sigma-unit source)))
+  (let ((rmin-half-unit (rmin-half-unit source)))
     (cond
-      ((string-equal sigma-unit "angstroms")
+      ((string-equal rmin-half-unit "angstroms")
        (* 2.0 0.1))
-      (t (error "Unrecognized sigma-unit ~s" sigma-unit)))))
+      (t (error "Unrecognized rmin-half-unit ~s" rmin-half-unit)))))
 
 (defun epsilon-to-kj-multiplier (source)
   (let ((epsilon-unit (epsilon-unit source)))
@@ -231,8 +231,8 @@ The chem:force-field-type-rules-merged generic function was used to organize the
                           molecule)
       ;; Work through the force-fields backwards so that more recent terms will shadow older ones
       (loop for force-field in (reverse (chem:force-fields-as-list combined-force-field))
-            for periodic-torsion-force = (periodic-torsion-force force-field)
-            do (loop for term across (terms periodic-torsion-force)
+            for proper-torsion-force = (proper-torsion-force force-field)
+            do (loop for term across (terms proper-torsion-force)
                      for smirks = (progn
                                     (smirks term))
                      for compiled-smirks = (compiled-smirks term)
