@@ -590,7 +590,7 @@ CL_DEFUN core::T_sp chem__load_mol2_list(core::T_sp fileName, core::T_sp number_
   core::T_sp make_progress;
   core::T_sp progress_advance;
   core::T_sp progress_done;
-  if (chem_verbose(0)) {
+  if (chem__verbose(0)) {
     make_progress = core::eval::funcall(cl::_sym_findSymbol,core::SimpleBaseString_O::make("MAKE-PROGRESS-BAR"),
                                         core::SimpleBaseString_O::make("CANDO"));
     progress_advance = core::eval::funcall(cl::_sym_findSymbol,core::SimpleBaseString_O::make("PROGRESS-ADVANCE"),
@@ -604,7 +604,7 @@ CL_DEFUN core::T_sp chem__load_mol2_list(core::T_sp fileName, core::T_sp number_
   Mol2File fin;
   fin.openFileName(fileName);
   core::T_sp progress_bar = _Nil<core::T_O>();
-  if (chem_verbose(0)) {
+  if (chem__verbose(0)) {
     if (number_to_load.nilp()) {
       progress_bar = core::eval::funcall(make_progress,
                                          INTERN_(kw,total), core::cl__file_length(fin.fIn));
@@ -624,7 +624,7 @@ CL_DEFUN core::T_sp chem__load_mol2_list(core::T_sp fileName, core::T_sp number_
       core::T_sp tagg = mol2Read(fin);
       if (gc::IsA<Aggregate_sp>(tagg)) {
         result << tagg;
-        if (chem_verbose(0)) {
+        if (chem__verbose(0)) {
           if (number_to_load.nilp()) {
             core::eval::funcall(progress_advance, progress_bar, core::cl__file_position(fin.fIn,_Nil<core::T_O>()));
           } else {
@@ -638,7 +638,7 @@ CL_DEFUN core::T_sp chem__load_mol2_list(core::T_sp fileName, core::T_sp number_
     ++num;
     --count;
   }
-  if (chem_verbose(0)) {
+  if (chem__verbose(0)) {
     core::eval::funcall(progress_done,progress_bar);
   }
   return result.cons();

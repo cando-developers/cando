@@ -126,7 +126,9 @@ CL_DEFMETHOD void Molecule_O::removeResidue( Matter_sp a )
   SIMPLE_ERROR(BF("removeResidue: Molecule does not contain residue: %s") % _rep_(a->getName()) );
 }
 
-    bool	Molecule_O::equal(core::T_sp obj) const
+#if 0
+
+bool	Molecule_O::equal(core::T_sp obj) const
     {
       if ( this->eq(obj) ) return true;
       if ( Molecule_sp other = obj.asOrNull<Molecule_O>() ) {
@@ -142,7 +144,9 @@ CL_DEFMETHOD void Molecule_O::removeResidue( Matter_sp a )
       }
       return false;
     }
-    void Molecule_O::transferCoordinates(Matter_sp obj)
+#endif
+
+void Molecule_O::transferCoordinates(Matter_sp obj)
     {
 	if ( !obj.isA<Molecule_O>() ) 
 	{

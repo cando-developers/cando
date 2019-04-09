@@ -92,7 +92,7 @@
                                                             (eq (chem:matter-get-property-or-default a 'aromaticity nil) 'ar7))))
                                 *artests*))
 
-(defparameter *rule5* (chem:compile-smarts "[<aby>:1]1-[<abx>:2&!<ar67>]=[<abx>:3&!<ar67>]-[<abx>:4&!<ar67>]=[<abx>:5&!<ar67>]1" :tests *ar67test*))
+(defparameter *rule5* (chem:compile-smarts "[<aby>:1]1-[<abx>&!<ar67>:2]=[<abx>&!<ar67>:3]-[<abx>&!<ar67>:4]=[<abx>&!<ar67>:5]1" :tests *ar67test*))
 
 ;; Apply aromaticity rule of Jakalian, Jack, and Bayly • Vol. 23, No. 16 • Journal of Computational Chemistry
 

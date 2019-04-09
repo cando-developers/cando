@@ -323,7 +323,7 @@ core::Initializer global_ChemInitializer(chem_initializer);
 
 /*! Return true of the value of chem:*verbose* is not nil and >= level
 */
-bool chem_verbose(size_t level)
+CL_DEFUN bool chem__verbose(size_t level)
 {
   core::T_sp verbose = _sym_STARverboseSTAR->symbolValue();
   if (verbose.notnilp()) {

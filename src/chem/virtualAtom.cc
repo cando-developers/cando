@@ -90,7 +90,8 @@ void	VirtualAtom_O::initialize()
     this->_CalculatePosition = _Nil<CalculatePosition_O>();
 }
 
-    bool VirtualAtom_O::equal(core::T_sp obj) const
+#if 0
+CL_DEFMETHOD bool VirtualAtom_O::VirtualAtom_equal(core::T_sp obj) const
 {
     if ( this->eq(obj) ) return true;
     if ( !obj.isA<VirtualAtom_O>() )
@@ -102,7 +103,7 @@ void	VirtualAtom_O::initialize()
     }
     return false;
 }
-
+#endif
 
 
 

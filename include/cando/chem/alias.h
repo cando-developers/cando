@@ -101,7 +101,7 @@ namespace chem
 #endif
 
 
-	virtual bool equal(core::T_sp obj) const;
+//	virtual bool equal(core::T_sp obj) const;
 
 	string description() const;
 	string __repr__() const { return this->_MonomerAlias->__repr__()+"@"+this->_AtomAlias->__repr__();};

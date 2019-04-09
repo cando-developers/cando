@@ -59,7 +59,7 @@ public:
 
 	void calculatePosition();
 
-	virtual bool	equal(core::T_sp obj) const;
+//	virtual bool	equal(core::T_sp obj) const;
 
 	virtual bool isVirtual() const { return true;};
 

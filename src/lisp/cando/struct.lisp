@@ -50,7 +50,7 @@
   (let ((res (find-residue-that-contains-atom matter atom)))
     (remove-atom res atom)))
 (defmethod remove-atom ((matter chem:molecule) atom)
-  (let ((res (find-residue-that-contains matter atom)))
+  (let ((res (find-residue-that-contains-atom matter atom)))
     (remove-atom res atom)))
 
 (defmethod remove-atom ((residue chem:residue) atom)

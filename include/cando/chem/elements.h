@@ -79,8 +79,11 @@ namespace chem
   core::Symbol_sp hybridizationSymbolFromHybridization(Hybridization hyb);
 
   Element elementForAtomicNumber(int atomicNumber);
+
+Element elementForIntegerAtomicMass(int atomicMass); // this is used in SMARTS
     
   uint	atomicNumberForElement(Element element);
+  uint	integerAtomicMassForElement(Element element);
 
   double	atomicWeightForElement(Element element);
 

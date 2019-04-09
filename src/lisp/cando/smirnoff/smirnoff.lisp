@@ -12,9 +12,10 @@
 
 (defgeneric walk-nodes (node))
 (defmethod walk-nodes (node)
-  (let ((children (chem:chem-info-node-children node)))
-    (loop for child in children
-          do (walk-nodes child))))
+  (when node
+    (let ((children (chem:chem-info-node-children node)))
+      (loop for child in children
+            do (walk-nodes child)))))
 
 (defmethod walk-nodes ((node chem:atom-test))
   (let ((test (chem:atom-test-type node)))
@@ -23,6 +24,7 @@
       (:sapelement (setf (element-info-element *element-info*) (chem:get-symbol-arg node)))
       (:sapatomic-number (setf (element-info-atomic-number *element-info*) (chem:get-int-arg node)))
       (:sapatomic-mass (setf (element-info-atomic-mass *element-info*) (chem:get-int-arg node))))))
+
 
 (defun smirks-head-atomic-mass (node)
   "Figure out the atomic mass for the first atom using a chem-info object"
@@ -75,25 +77,27 @@ The first rule that matches is used to assign the type."
     (make-instance 'smirnoff-type-rules :rules all-rules)))
 
 
-(defmethod chem:assign-force-field-types ((atom-type-rules smirnoff-type-rules) molecule)
+(defmethod chem:assign-force-field-types ((combined-force-field combined-force-field) molecule)
   "The first rule that matches is used to assign the types.
 The chem:force-field-type-rules-merged generic function was used to organize the rules."
   (cando:do-atoms (atom molecule)
     (let ((type (loop named assign-type
-                      for index from 0 below (length atom-type-rules)
-                      for term = (aref atom-type-rules index)
-                      for compiled-smirks = (compiled-smirks term)
-                      for type = (type term)
-                      for match = (chem:matches compiled-smirks atom)
-                      when match
-                        do (return-from assign-type type))))
+                      for field in (chem:force-fields-as-list combined-force-field)
+                      for nonbonded-force = (nonbonded-force field)
+                      for terms = (terms nonbonded-force)
+                      do (loop for index from (1- (length terms)) downto 0
+                               for term = (aref terms index)
+                               for compiled-smirks = (compiled-smirks term)
+                               for type = (type term)
+                               for match = (chem:matches compiled-smirks atom)
+                               when match
+                                 do (return-from assign-type type)))))
       (if type
           (chem:set-type atom type)
           (error "Could not set type of atom ~s in force-field ~s" atom :smirnoff)))))
       
    
 (defmethod chem:force-field-component-merge ((dest chem:ffnonbond-db) (source nonbonded-force))
-  (format t "In chem:nonbond-force-field-component-merge with nonbonded-force: ~s~%" source)
   (let ((rmin-half-to-nanometers-multiplier (rmin-half-to-nanometers-multiplier source))
         (epsilon-to-kj-multiplier (epsilon-to-kj-multiplier source)))
     (loop with terms = (terms source)
@@ -113,6 +117,187 @@ The chem:force-field-type-rules-merged generic function was used to organize the
                  (chem:ffnonbond-db-add dest ffnonbond)))
     dest))
 
+(defun bonds-hash-table (molecule)
+  (let ((bonds (make-hash-table :test #'equal)))
+    (chem:map-bonds
+     nil
+     (lambda (a1 a2 bond-order)
+       (let ((key (list a1 a2)))
+         (setf (gethash key bonds) nil)))
+     molecule)
+    bonds))
+  
 
-(defmethod chem:assign-molecular-force-field-parameters (energy-function (force-field combined-force-field) molecule)
-  (error "Finish implementing chem:assign-molecular-force-field-parameters for smirnoff"))
+(defmethod chem:generate-molecule-energy-function-tables (energy-function molecule (combined-force-field combined-force-field) active-atoms)
+  (let* ((molecule-graph (chem:make-molecule-graph molecule))
+         (atom-table (chem:atom-table energy-function))
+         (bonds (bonds-hash-table molecule))
+         (angles (make-hash-table :test #'equal))
+         (ptors (make-hash-table :test #'equal))
+         (itors (make-hash-table :test #'equal))
+         (*print-pretty* nil))
+    (when (chem:verbose 2) (format t "Generating stretch terms~%"))
+    (let ((bond-energy (chem:get-stretch-component energy-function))
+          )
+      ;; Work through the force-fields backwards so that more recent terms will shadow older ones
+      (loop for force-field in (reverse (chem:force-fields-as-list combined-force-field))
+            for harmonic-bond-force = (harmonic-bond-force force-field)
+            do (loop for term across (terms harmonic-bond-force)
+                     for compiled-smirks = (compiled-smirks term)
+                     for smirks-graph = (chem:make-chem-info-graph compiled-smirks)
+                     for hits = (chem:boost-graph-vf2 smirks-graph molecule-graph)
+                     do (loop for hit in hits
+                              for a1 = (aref hit 1)
+                              for a2 = (aref hit 2)
+                              for key12 = (list a1 a2)
+                                 ;; The vf2 algorithm will find the bond in both directions
+                                 ;; one of them will match - so we won't worry about the other one
+                              do (multiple-value-bind (val found)
+                                     (gethash key12 bonds)
+                                   (if found
+                                       (progn
+                                         (push term (gethash key12 bonds)))
+                                       (let ((key21 (reverse key12)))
+                                         (multiple-value-bind (val found)
+                                             (gethash key21 bonds)
+                                           (if found
+                                               (progn
+                                                 (push term (gethash key21 bonds)))
+                                               (error "Could not find keys ~s or ~s in bonds" key12 key21)))))))))
+      (maphash (lambda (key terms)
+                 (unless terms
+                   (error "Could not find stretch parameter for ~s" key))
+                 (let* ((a1 (first key))
+                        (a2 (second key))
+                        (term (first terms))
+                        (k (k term))
+                        (len (len term)))
+                   (chem:add-stretch-term bond-energy atom-table a1 a2 k len)))
+               bonds))
+    (when (chem:verbose 2) (format t "Generating angle terms~%"))
+    (let ((angle-energy (chem:get-angle-component energy-function)))
+      (chem:map-angles nil (lambda (a1 a2 a3)
+                             (setf (gethash (list a1 a2 a3) angles) nil))
+                       molecule)
+      ;; Work through the force-fields backwards so that more recent terms will shadow older ones
+      (loop for force-field in (reverse (chem:force-fields-as-list combined-force-field))
+            for harmonic-angle-force = (harmonic-angle-force force-field)
+            do (loop for term across (terms harmonic-angle-force)
+                     for smirks = (progn
+                                    (smirks term))
+                     for compiled-smirks = (compiled-smirks term)
+                     for smirks-graph = (chem:make-chem-info-graph compiled-smirks)
+                     for hits = (progn
+                                  (chem:boost-graph-vf2 smirks-graph molecule-graph))
+                     do (loop for hit in hits
+                              for a1 = (aref hit 1)
+                              for a2 = (aref hit 2)
+                              for a3 = (aref hit 3)
+                              for key123 = (list a1 a2 a3)
+                                 ;; The vf2 algorithm will find the angle in both directions
+                                 ;; one of them will match - so we won't worry about the other one
+                              do (multiple-value-bind (val found)
+                                     (gethash key123 angles)
+                                   (if found
+                                       (progn
+                                         (push term (gethash key123 bonds)))
+                                       (let ((key321 (nreverse key123)))
+                                         (multiple-value-bind (val found)
+                                             (gethash key321 angles)
+                                           (if found
+                                               (progn
+                                                 (push term (gethash key321 angles)))
+                                               (error "Could not find keys ~s or ~s in angles" key123 key321)))))))))
+      (maphash (lambda (key terms)
+                 (unless terms
+                   (error "Could not find angle parameter for ~s" key))
+                 (let* ((a1 (first key))
+                        (a2 (second key))
+                        (a3 (third key))
+                        (term (first terms))
+                        (k (k term))
+                        (angle-rad (angle-rad term)))
+                   (chem:add-angle-term angle-energy atom-table a1 a2 a3 k angle-rad)))
+               angles))
+
+
+    
+    (when (chem:verbose 2) (format t "Generating dihedral terms~%"))
+    (let ((dihedral-energy (chem:get-dihedral-component energy-function)))
+      (chem:map-dihedrals nil (lambda (a1 a2 a3 a4)
+                                (setf (gethash (list a1 a2 a3 a4) ptors) nil))
+                          molecule)
+      ;; Work through the force-fields backwards so that more recent terms will shadow older ones
+      (loop for force-field in (reverse (chem:force-fields-as-list combined-force-field))
+            for periodic-torsion-force = (periodic-torsion-force force-field)
+            do (loop for term across (terms periodic-torsion-force)
+                     for smirks = (progn
+                                    (smirks term))
+                     for compiled-smirks = (compiled-smirks term)
+                     for smirks-graph = (chem:make-chem-info-graph compiled-smirks)
+                     for hits = (chem:boost-graph-vf2 smirks-graph molecule-graph)
+                     if (typep term 'proper-term)
+                       do (loop for hit in hits
+                                for a1 = (aref hit 1)
+                                for a2 = (aref hit 2)
+                                for a3 = (aref hit 3)
+                                for a4 = (aref hit 4)
+                                for key1234 = (list a1 a2 a3 a4)
+                                   ;; The vf2 algorithm will find the angle in both directions
+                                   ;; one of them will match - so we won't worry about the other one
+                                do (multiple-value-bind (val found)
+                                       (gethash key1234 ptors)
+                                     (if found
+                                         (progn
+                                           (push term (gethash key1234 bonds)))
+                                         (let ((key4321 (nreverse key1234)))
+                                           (multiple-value-bind (val found)
+                                               (gethash key4321 ptors)
+                                             (if found
+                                                 (progn
+                                                   (push term (gethash key4321 ptors)))
+                                                 (error "Could not find keys ~s or ~s in ptors" key1234 key4321)))))))
+                     else
+                       do (loop for hit in hits
+                                for a1 = (aref hit 1)
+                                for a2 = (aref hit 2)
+                                for a3 = (aref hit 3)
+                                for a4 = (aref hit 4)
+                                for key1234 = (list a1 a2 a3 a4)
+                                   ;; The vf2 algorithm will find the angle in both directions
+                                   ;; one of them will match - so we won't worry about the other one
+                                do (multiple-value-bind (val found)
+                                       (gethash key1234 itors)
+                                     (when found
+                                       (push term (gethash key1234 itors)))))))
+      (maphash (lambda (key terms)
+                 (let* ((a1 (first key))
+                        (a2 (second key))
+                        (a3 (third key))
+                        (a4 (fourth key))
+                        (term (first terms)))
+                   (if term
+                       (loop for part in (parts term)
+                             for phase = (phase-rad part)
+                             for periodicity = (periodicity part)
+                             for k = (k part)
+                             for idivf = (idivf part)
+                             for v = (/ k idivf)
+                             do (chem:add-dihedral-term dihedral-energy atom-table a1 a2 a3 a4 phase v periodicity))
+                       (warn "Could not find proper torsion parameters for ~s" key))))
+               ptors)
+      (maphash (lambda (key terms)
+                 (let* ((a1 (first key))
+                        (a2 (second key))
+                        (a3 (third key))
+                        (a4 (fourth key))
+                        (term (first terms)))
+                   (loop for part in (parts term)
+                         for phase = (phase-rad part)
+                         for periodicity = (periodicity part)
+                         for k = (k part)
+                         for idivf = (idivf part)
+                         for v = (/ k idivf)
+                         do (chem:add-dihedral-term dihedral-energy atom-table a1 a2 a3 a4 phase v periodicity))))
+               itors))))
+

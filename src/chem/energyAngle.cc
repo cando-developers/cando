@@ -705,5 +705,17 @@ CL_DEFMETHOD void EnergyAngle_O::fill_from_vectors_in_alist(core::List_sp vector
        entry._Atom3 = gc::As_unsafe<Atom_sp>((*atom3_vec)[i]);
   }
 }
-       
+
+CL_DEFMETHOD void EnergyAngle_O::addAngleTerm(AtomTable_sp atomTable, Atom_sp a1, Atom_sp a2, Atom_sp a3, double kt, double t0) {
+  EnergyAtom* ea1 = atomTable->getEnergyAtomPointer(a1);
+  EnergyAtom* ea2 = atomTable->getEnergyAtomPointer(a2);
+  EnergyAtom* ea3 = atomTable->getEnergyAtomPointer(a3);
+  EnergyAngle energyAngle(a1,a2,a3,
+                          ea1->coordinateIndexTimes3(),
+                          ea2->coordinateIndexTimes3(),
+                          ea3->coordinateIndexTimes3(),
+                          kt,t0);
+  this->addTerm(energyAngle);
+}
+
 };

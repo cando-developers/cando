@@ -273,8 +273,7 @@ void	Atom_O::initialize()
 }
 #endif
 
-
-bool Atom_O::equal(core::T_sp obj) const
+CL_DEFMETHOD bool Atom_O::Atom_equal(core::T_sp obj) const
 {
   if ( this->eq(obj) ) goto T;
   if ( obj.isA<Atom_O>() )
@@ -303,7 +302,7 @@ bool Atom_O::equal(core::T_sp obj) const
 
 void Atom_O::transferCoordinates(Matter_sp obj)
 {_OF();
-  if ( !this->equal(obj) )
+  if ( !this->Atom_equal(obj) )
   {
     SIMPLE_ERROR(BF("This atom(%s) is not equal to %s so you cannot transfer coordinates")%this->description() % obj->description() );
   }
@@ -1032,7 +1031,7 @@ void Atom_O::writeUniqueBondsToStream(string prefix, std::ostream& out )
 string	Atom_O::__repr__() const
 {
   stringstream ss;
-  ss << "#<" << this->className() << " " << this->name << "/" << _rep_(symbolFromElement(this->_Element)) << ">";
+  ss << "#<" << this->className() << " " << this->name << "/" << _rep_(symbolFromElement(this->_Element)) << " @" << (void*)(this->asSmartPtr().raw_()) << ">";
   return ss.str();
 }
 
@@ -1412,6 +1411,13 @@ CL_LISPIFY_NAME("getAtomicNumber");
 CL_DEFMETHOD     int     Atom_O::getAtomicNumber()
 {
   return atomicNumberForElement(this->getElement());
+
+}
+
+CL_LISPIFY_NAME("getIntegerAtomicMass");
+CL_DEFMETHOD     int     Atom_O::getIntegerAtomicMass()
+{
+  return integerAtomicMassForElement(this->getElement());
 
 }
 

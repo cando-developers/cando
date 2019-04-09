@@ -165,7 +165,7 @@ CL_VALUE_ENUM( kw::_sym_vmwMmff94, vmwMmff94);
 CL_END_ENUM(_sym_STARVdwMixWellEnumConverterSTAR);
 
 
-CL_LAMBDA(type &key (radius_nanometers 0.0) (epsilon_kj 0.0) (apol 0.0) (neff 0.0) (mass 0.0) (polarizability 0.0) (initial_charge 0.0) (fcadj 0.0) (pbci 0.0) (donor_acceptor :da-neither));
+CL_LAMBDA(type &key (radius-nanometers 0.0) (epsilon-kj 0.0) (apol 0.0) (neff 0.0) (mass 0.0) (polarizability 0.0) (initial-charge 0.0) (fcadj 0.0) (pbci 0.0) (donor-acceptor :da-neither));
 CL_DEF_CLASS_METHOD
 FFNonbond_sp FFNonbond_O::make_FFNonbond(core::Symbol_sp type,
                                          double radius_nanometers,
@@ -254,19 +254,12 @@ void FFNonbondDb_O::forceFieldMerge(FFBaseDb_sp bother)
   // Merge the terms and overwrite old ones with the same name
   for ( size_t i(0), iEnd(other->_Terms.size()); i<iEnd; ++i ) {
     bool new_type = true;
-    for (size_t j(0), jEnd(this->_Terms.size()); j<jEnd; ++j ) {
-      if (this->_Terms[j]->getType() == other->_Terms[i]->getType() ) {
-        this->_Terms[j] = other->_Terms[i];
-        new_type = false;
-        break;
-      }
+    core::T_sp found = this->_Parameters->gethash(other->_Terms[i]->getType());
+    if (found.notnilp()) {
+      this->_Terms[found.unsafe_fixnum()] = other->_Terms[i];
+    } else {
+      this->add(other->_Terms[i]);
     }
-    if (new_type) this->_Terms.push_back(other->_Terms[i]);
-  }
-  this->_Parameters->clrhash();
-  for ( size_t i(0), iEnd(this->_Terms.size()); i<iEnd; ++i ) {
-//    printf("%s:%d this->_Parameters->_HashTableCount @%p-> %lu\n", __FILE__, __LINE__, (void*)&this->_Parameters->_HashTableCount, this->_Parameters->_HashTableCount );
-    this->_Parameters->hash_table_setf_gethash(this->_Terms[i]->getType(),core::make_fixnum(i));
   }
   this->Base::Base::forceFieldMerge(other);
 }
@@ -319,7 +312,7 @@ CL_DEFUN FFNonbondDb_sp chem__combine_nonbond_force_fields(FFNonbondDb_sp global
         SIMPLE_ERROR(BF("The type %s exists in the force-field %s and %s - there can be only one") % _rep_(type) % _rep_(nb_name) % _rep_(found));
       }
       terms_ht->setf_gethash(type,nb_name);
-      conc->_Terms.push_back(term);
+      conc->add(term);
     }
   }
   return conc;

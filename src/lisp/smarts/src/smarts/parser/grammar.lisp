@@ -11,22 +11,21 @@
 ;;;;     https://docs.eyesopen.com/toolkits/cpp/oechemtk/SMARTS.html
 ;;;;     http://www.daylight.com/cheminformatics/index.html
 
-;;;(cl:in-package #:language.smarts.parser)
-(in-package :language.smarts.parser)
+(cl:in-package #:language.smarts.parser)
 
 (defrule smarts
     (and atom-pattern (? chain-elements))
   (:destructure (atom elements &bounds start end)
-                (if elements
-                    (architecture.builder-protocol:node* (:chain :bounds (cons start end))
-                                                         (* :element (list* atom elements)))
-                    atom)))
+    (if elements
+        (bp:node* (:chain :bounds (cons start end))
+          (* :element (list* atom elements)))
+        atom)))
 
 (defrule chain-pattern
-  chain-elements
+    chain-elements
   (:lambda (elements &bounds start end)
-    (architecture.builder-protocol:node* (:chain :bounds (cons start end))
-                                         (* :element elements))))
+    (bp:node* (:chain :bounds (cons start end))
+      (* :element elements))))
 
 (defrule chain-elements
     (+ (or bond-atom-pattern branch)))
@@ -38,7 +37,7 @@
 (defrule bond-atom-pattern
     (and (? bond-pattern) atom-pattern)
   (:destructure (bond atom &bounds start end)
-    (architecture.builder-protocol:node* (:bond :kind (or bond :single-or-aromatic) :bounds (cons start end))
+    (bp:node* (:bond :kind (or bond :single-or-aromatic) :bounds (cons start end))
       (1 :atom atom))))
 
 (defrule atom-pattern ; TODO duplicated form SMILES?
@@ -47,19 +46,30 @@
     (if label
         (progn
 ;;          (format t "atom-pattern got label |~s| of type |~s|~%" label (class-of label))
-          (architecture.builder-protocol:node* (:labeled :label label :bounds (cons start end))
+          (bp:node* (:labeled :label label :bounds (cons start end))
                                                (1 :atom atom)))
         atom)))
 
 (defrule acyclic-atom-pattern
-    (or modified-atom-pattern wildcard-atom-pattern language.smiles.parser:atom-symbol))
+    (or modified-atom-pattern wildcard-atom-pattern smiles:atom-symbol))
 
 (defrule modified-atom-pattern
-    (and #\[ weak-and-expression #\])
+    (and #\[ modified-weak-and-expression #\])
   (:function second)
   (:lambda (expression &bounds start end)
-    (architecture.builder-protocol:node* (:bracketed-expression :bounds (cons start end))
+    expression ; returning the expression eliminates useless log-identity nodes
+    #+(or)(bp:node* (:bracketed-expression :bounds (cons start end))
       (1 :expression expression))))
+
+(defrule modified-weak-and-expression
+    (or weak-and-expression-with-map weak-and-expression))
+
+(defrule weak-and-expression-with-map
+    (and weak-and-expression smiles:atom-map-class)
+  (:destructure (expression atom-map &bounds start end)
+                (bp:node* (:binary-operator :operator :weak-and :bounds (cons start end))
+                                                     (* :operand (list expression atom-map)))))
+
 
 
 (defrule lisp-func
@@ -70,7 +80,7 @@
     (let* ((label (string-trim "<>" (esrap:text symbol-parts)))
            (symbol (let ((*package* (find-package :keyword)))
                      (read-from-string label))))
-      (architecture.builder-protocol:node* (:atom :lisp-function symbol
+      (bp:node* (:atom :lisp-function symbol
                                                   :bounds (cons start end))))))
 
 ;;; SMARTS 4.1 Atomic Primitives
@@ -83,17 +93,18 @@
 ;;; logical operator must both be true for the expression (or
 ;;; subexpression) to be true.
 (defrule modified-atom-pattern-body
-    (or language.smiles.parser:atom-weight ; TODO this is just a number
-        language.smiles.parser:atom-symbol
+    (or smiles:atom-weight ; TODO this is just a number, i.e. (node* ) is missing
+        smiles:atom-symbol
         lisp-func
         
-        ; language.smiles.parser:hydrogen-count
-        language.smiles.parser:charge
-        language.smiles.parser:chirality
+        ; smiles:hydrogen-count
+        smiles:charge
+        smiles:chirality
 
         atom-pattern/non-literal
 
-        language.smiles.parser:atom-map-class
+;;; ------ smiles:atom-map-class can't be here it will be strong-and and it needs to be weak-and
+;;;        smiles:atom-map-class
 
         recursive))
 
@@ -101,11 +112,11 @@
   #\*
   (:lambda (value &bounds start end)
     (declare (ignore value))
-    (architecture.builder-protocol:node* (:atom :kind :wildcard :bounds (cons start end)))))
+    (bp:node* (:atom :kind :wildcard :bounds (cons start end)))))
 
 (macrolet
     ((define-rules (&body clauses)
-       (let ((rules '()))               ; TODO unused
+       (let ((rules '()))
          (flet ((process-clause (name expression
                                  &key
                                  parameter
@@ -121,13 +132,13 @@
                                       'parser.common-rules:integer-literal/decimal))
                           (:function second)
                           (:lambda (value &bounds start end)
-                            (architecture.builder-protocol:node* (:atom ',kind value :bounds (cons start end))))))
+                            (bp:node* (:atom ',kind value :bounds (cons start end))))))
                       ((nil)
                        `(defrule ,rule-name
                             ,expression
                           (:lambda (value &bounds start end)
                             (declare (ignore value))
-                            (architecture.builder-protocol:node* (:atom :kind ',kind :bounds (cons start end))))))))))
+                            (bp:node* (:atom :kind ',kind :bounds (cons start end))))))))))
            `(progn
               ,@(map 'list (curry #'apply #'process-clause) clauses)
               (defrule atom-pattern/non-literal (or ,@(nreverse rules))))))))
@@ -152,7 +163,7 @@
 ;;; original code without logicals
 #+(or)
 (defrule bond-pattern
-    (or bond-pattern/non-literal language.smiles.parser:bond))
+    (or bond-pattern/non-literal smiles:bond))
 
 ;;; New code with logicals
 (defrule bond-pattern
@@ -161,7 +172,7 @@
 (defrule modified-bond-pattern
   (and weak-and-bond-expression)
   (:lambda (expression &bounds start end)
-    (architecture.builder-protocol:node* (:logical-bond-expression :bounds (cons start end))
+    (bp:node* (:logical-bond-expression :bounds (cons start end))
                                          (1 :bond-expression expression))))
 
 ;;; SMARTS 4.3 Logical Operators
@@ -189,7 +200,7 @@
 
 
 (defrule one-bond-pattern
-    (or bond-pattern/non-literal language.smiles.parser:bond))
+    (or bond-pattern/non-literal smiles:bond))
 
 ;;; Only additions to SMILES 3.2.2 and higher.
 (macrolet
@@ -242,5 +253,5 @@
     (and #\$ #\( smarts #\))
   (:function third)
   (:lambda (pattern &bounds start end)
-    (architecture.builder-protocol:node* (:recursive :bounds (cons start end))
+    (bp:node* (:recursive :bounds (cons start end))
       (1 :pattern pattern))))

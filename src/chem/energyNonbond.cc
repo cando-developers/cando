@@ -915,8 +915,7 @@ void	EnergyNonbond_O::compareAnalyticalAndNumericalForceAndHessianTermByTerm(
 
 
 
-int	EnergyNonbond_O::checkForBeyondThresholdInteractions(
-                                                             stringstream& info, NVector_sp pos )
+int	EnergyNonbond_O::checkForBeyondThresholdInteractions(stringstream& info, NVector_sp pos )
 {_OF();
   int	fails = 0;
 
@@ -1008,7 +1007,7 @@ string EnergyNonbond_O::beyondThresholdInteractionsAsString()
 }
 
 
-void EnergyNonbond_O::construct14InteractionTerms(AtomTable_sp atomTable, Matter_sp matter, core::T_sp forceField, core::T_sp activeAtoms, bool show_progress)
+void EnergyNonbond_O::construct14InteractionTerms(AtomTable_sp atomTable, Matter_sp matter, core::T_sp forceField, core::T_sp activeAtoms)
 {
   _OF();
   {
@@ -1030,11 +1029,11 @@ void EnergyNonbond_O::construct14InteractionTerms(AtomTable_sp atomTable, Matter
       LOG(BF("Returned from addTerm"));
       ++terms;
     }
-    if (show_progress) core::write_bf_stream(BF("Built 14 interaction table with %d terms\n") % terms);
+    if (chem__verbose(0)) core::write_bf_stream(BF("Built 14 interaction table with %d terms\n") % terms);
   }
 }
 
-void EnergyNonbond_O::constructNonbondTermsFromAtomTable(bool ignore14s, AtomTable_sp atomTable, core::T_sp nbForceField, bool show_progress)
+void EnergyNonbond_O::constructNonbondTermsFromAtomTable(bool ignore14s, AtomTable_sp atomTable, core::T_sp nbForceField)
 {
       printf("%s:%d In :constructNonbondTermsFromAtomTable\n", __FILE__, __LINE__ );
 
@@ -1049,7 +1048,7 @@ void EnergyNonbond_O::constructNonbondTermsFromAtomTable(bool ignore14s, AtomTab
     gctools::Vec0<EnergyAtom>::iterator	iea1;
     gctools::Vec0<EnergyAtom>::iterator	iea2;
     size_t total_comparisons = atomTable->getNumberOfAtoms()*atomTable->getNumberOfAtoms()/2;
-    if (show_progress) {
+    if (chem__verbose(0)) {
       core::write_bf_stream(BF("For nonbonded interactions, about to carry out %zu atom-to-atom comparisons\n") % total_comparisons);
     }
     for ( iea1 = atomTable->begin();
@@ -1086,7 +1085,7 @@ void EnergyNonbond_O::constructNonbondTermsFromAtomTable(bool ignore14s, AtomTab
   }
 }
 
-void EnergyNonbond_O::constructExcludedAtomListFromAtomTable(AtomTable_sp atomTable, core::T_sp nbForceField, bool show_progress)
+void EnergyNonbond_O::constructExcludedAtomListFromAtomTable(AtomTable_sp atomTable, core::T_sp nbForceField)
 {
 //  printf("%s:%d In :constructExcludedATomListFromAtomTable\n", __FILE__, __LINE__ );
     // ------------------------------------------------------------

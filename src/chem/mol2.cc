@@ -701,7 +701,7 @@ core::T_sp mol2Read(Mol2File& fIn)
           one._Atom = a;
           if ( useSybylTypes ) {
             ASSERT(sybylRules);
-            core::Symbol_sp type = sybylRules->assignType(a,false);
+            core::Symbol_sp type = sybylRules->assignType(a);
             one._Type = type;
               //core::write_bf_stream(BF("Assigned sybyl type %s to %s\n") % _rep_(one._Type) % _rep_(a));
           } else {

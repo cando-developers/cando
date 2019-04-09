@@ -181,6 +181,7 @@ CL_DEFMETHOD void SymbolSet_O::clear() {
 
 /*! Check if the SymbolSet contains the same strings as this
  */
+#if 0
 bool SymbolSet_O::equal(T_sp obj) const {
   if (this->eq(obj))
     return true;
@@ -200,7 +201,7 @@ bool SymbolSet_O::equal(T_sp obj) const {
   }
   return false;
 }
-
+#endif
 void SymbolSet_O::remove(Symbol_sp s) {
   _OF();
 #ifdef DEBUG_ON

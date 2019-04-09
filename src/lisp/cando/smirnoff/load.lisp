@@ -96,6 +96,9 @@
 (defclass combined-force-field ()
   ((parts :initform nil :initarg :parts :accessor parts)))
 
+(defmethod chem:force-fields-as-list ((combined-force-field combined-force-field))
+  (parts combined-force-field))
+
 
 (defun ignore-handler (node)
   (declare (ignore node)))
@@ -281,6 +284,11 @@
     (parse-root root)
     *smirnoff*))
 
+(defmethod chem:nonbond-component ((force-field smirnoff-force-field))
+  (nonbonded-force force-field))
+
+(defmethod chem:clear-combined-force-field ((combined-force-field combined-force-field))
+  (setf (parts combined-force-field) nil))
 
 (defmethod chem:add-shadowing-force-field ((combined-force-field combined-force-field) (smirnoff-force-field smirnoff-force-field) pathname)
   (push smirnoff-force-field (parts combined-force-field)))

@@ -241,7 +241,7 @@ leap.core::*path*
 (progn
   (defparameter *ef* (core:make-cxx-object 'chem:energy-function))
   (defparameter *ff* (energy:setup-amber))
-  (chem:generate-standard-energy-function-tables *ef* *1mil* *amber* :show-progress t)
+  (chem:generate-standard-energy-function-tables *ef* *1mil* *amber*)
   (chem:summarize-terms *ef*))
 
 (defparameter *m* (chem:get-missing-parameters *ef*))
@@ -291,7 +291,7 @@ leap.core::*path*
 (apropos "excluded")
 (print (chem:excluded-atom-list (chem:atom-table *ef*) 0))
 
-(chem:generate-restraint-energy-function-tables *ef* *1mil* *ff* :show-progress t)
+(chem:generate-restraint-energy-function-tables *ef* *1mil* *ff*)
 (print "Done")
 
 

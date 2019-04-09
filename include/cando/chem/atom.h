@@ -259,7 +259,7 @@ namespace chem {
 
     CL_LISPIFY_NAME("atomName");
     CL_DEFMETHOD         core::Symbol_sp atomName() const { return this->getName();};
-    virtual bool	equal(core::T_sp obj) const;
+    bool	Atom_equal(core::T_sp obj) const;
     virtual void	transferCoordinates(Matter_sp other);
 
     int	totalNetResidueCharge() { THROW_HARD_ERROR(BF("Atoms can't calculate totalNetResidueCharge"));};
@@ -337,6 +337,7 @@ namespace chem {
     CL_LISPIFY_NAME("SET-ELEMENT");
     CL_DEFMETHOD 	void	setElement(Element o) { this->_Element= o; };
     int     getAtomicNumber();
+    int     getIntegerAtomicMass();
     double	getAtomicWeight();
     int     getValence();
     virtual bool isVirtual() const { return false;};

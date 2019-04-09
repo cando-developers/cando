@@ -40,6 +40,7 @@ This is an open source license for the CANDO software from Temple University, bu
 
 #include <clasp/core/common.h>
 #include <clasp/core/array.h>
+#include <clasp/core/lispStream.h>
 #include <clasp/core/ql.h>
 #include <cando/chem/forceField.h>
 //#include "core/archive.h"
@@ -70,6 +71,7 @@ void InfoDb_O::addInfo( core::Symbol_sp key, core::String_sp data )
   }
 };
 
+SYMBOL_EXPORT_SC_(ChemPkg,nonbond_component);
 
 
 
@@ -230,17 +232,33 @@ core::List_sp CombinedForceField_O::forceFieldsAsList() const {
 }
 
 
+CL_LISPIFY_NAME(CombinedForceField_clear);
+CL_DEFMETHOD
+void CombinedForceField_O::clear()
+{
+  this->_ForceFields = _Nil<core::T_O>();
+}
+
+
 CL_LISPIFY_NAME(CombinedForceField_assignForceFieldTypes);
 CL_DEFMETHOD
-void CombinedForceField_O::assignForceFieldTypes(Matter_sp molecule) {
+core::T_sp CombinedForceField_O::assignForceFieldTypes(Matter_sp molecule) {
   FFTypesDb_sp fftypes = FFTypesDb_O::create();
   core::List_sp parts = this->forceFieldsAsList();
+  if (chem__verbose(1)) {
+    core::write_bf_stream(BF("Merging type rules.\n"));
+  }
   for ( auto cur : parts ) {
     ForceField_sp other = gc::As<ForceField_sp>(CONS_CAR(cur));
     FFTypesDb_sp other_fftypes = other->getTypes();
+    if (chem__verbose(1)) {
+      core::write_bf_stream(BF("Merging %d atom types %s.\n") % other_fftypes->numberOfRules() % _rep_(other_fftypes));
+    }
     fftypes->forceFieldMerge(other_fftypes);
   }
+  if (chem__verbose(0)) core::write_bf_stream(BF("%s:%d Assigning atom types for molecule %s using %s.\n") % __FILE__ % __LINE__ % _rep_(molecule->getName()) % _rep_(fftypes));
   fftypes->assignTypes(molecule);
+  return fftypes;
 }
 
 };

@@ -97,11 +97,12 @@ namespace chem
 #endif
 
 
-    bool AtomReference_O::equal(core::T_sp o) const
+#if 0
+bool AtomReference_O::equal(core::T_sp o) const
     {
 	if ( this->eq(o) ) return true;
 	if ( this->_AtomAlias == o.as<AtomReference_O>()->_AtomAlias ) return true;
 	return false;
     }
-
+#endif
 };

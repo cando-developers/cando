@@ -40,6 +40,7 @@ namespace chem
 	 * element entries like LonePairs, Deuterium, UndefinedElement, Dummy element
 	 */
 
+#define element_mass_MAX 200
 typedef enum { 
 element_Dummy=0,
 element_LP=200,

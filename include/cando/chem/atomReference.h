@@ -74,7 +74,7 @@ namespace chem
     private:
 	string	_AtomAlias;
     public:
-	bool equal(core::T_sp obj) const;
+//	bool equal(core::T_sp obj) const;
 	void	initialize();
 	DEFAULT_CTOR_DTOR(AtomReference_O);
     };

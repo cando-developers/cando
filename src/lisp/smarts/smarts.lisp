@@ -676,9 +676,11 @@
     (loop for idx from 0
           for child in (chem:chem-info-node-children parent)
           do (format t "        child ~a -> ~a~%" idx child)))
-  (let ((children (chem:chem-info-node-children parent)))
-    (loop for child in children
-          do (walk-smarts parent child))))
+  (when parent
+    (let ((children (chem:chem-info-node-children parent)))
+      (loop for child in children
+            when child
+              do (walk-smarts parent child)))))
 
 (defmethod walk-smarts (parent (child chem:bond-to-atom-test))
   "Optimize simple bond tests by lifting their bond test up into the bond-to-atom-test"

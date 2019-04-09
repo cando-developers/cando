@@ -133,7 +133,7 @@ namespace chem {
     virtual	char	getClass()	{return residueId; };
     char	getMatterType() { return RESIDUE_CLASS; };
 
-    virtual bool equal(core::T_sp obj) const;
+//    virtual bool equal(core::T_sp obj) const;
     virtual void	transferCoordinates(Matter_sp other);
 
 

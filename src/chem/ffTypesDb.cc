@@ -71,8 +71,8 @@ void	FFTypesDb_O::initialize()
 SYMBOL_EXPORT_SC_(ChemPkg,assignType);
 
 CL_LISPIFY_NAME("assignType");
-CL_LAMBDA((types-db !) atom &key verbose)
-CL_DEFMETHOD core::Symbol_sp FFTypesDb_O::assignType(chem::Atom_sp atom, bool verbose) {
+CL_LAMBDA((types-db !) atom)
+CL_DEFMETHOD core::Symbol_sp FFTypesDb_O::assignType(chem::Atom_sp atom) {
   LOG(BF("Got atom") );
   LOG(BF("atom name: %s") % atom->getName().c_str() );
   LOG(BF("Assigning type for atom: %s") % atom->description().c_str()  );
@@ -85,10 +85,10 @@ CL_DEFMETHOD core::Symbol_sp FFTypesDb_O::assignType(chem::Atom_sp atom, bool ve
       ChemInfoMatch_sp match = gc::As<ChemInfoMatch_sp>(matches_mv.second());
       if ( matches_mv.notnilp() ) {
         LOG(BF("Rule MATCH!!!") );
-        if (verbose) core::write_bf_stream(BF("Matched %s\n") % _rep_(root));
+        if (chem__verbose(2)) core::write_bf_stream(BF("Matched %s\n") % _rep_(root));
         return (*it)->_Type;
       } else {
-        if (verbose) core::write_bf_stream(BF("Did not match %s\n") % _rep_(root));
+        if (chem__verbose(2)) core::write_bf_stream(BF("Did not match %s\n") % _rep_(root));
       }
       LOG(BF("Rule does not match, keep going") );
     }
@@ -118,7 +118,7 @@ CL_DEFMETHOD void    FFTypesDb_O::assignTypes(chem::Matter_sp matter)
 //        LOG(BF("castGet = %X") % castGet );
 //        LOG(BF("getting first atom in loop") );
     atom = (c).as<chem::Atom_O>();
-    core::Symbol_sp type = this->assignType(atom,false);
+    core::Symbol_sp type = this->assignType(atom);
     atom->setType(type);
   }
 }
@@ -136,7 +136,7 @@ CL_DEFMETHOD core::HashTableEq_sp    FFTypesDb_O::atomTypes(chem::Matter_sp matt
   while ( lAtoms.advanceLoopAndProcess() ) {
     LOG(BF("Getting container") );
     atom = lAtoms.getAtom();
-    core::Symbol_sp type = this->assignType(atom,false);
+    core::Symbol_sp type = this->assignType(atom);
     atomTypes->setf_gethash(atom,type);
   }
   return atomTypes;

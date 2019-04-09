@@ -186,7 +186,8 @@ Matter_sp Aggregate_O::copy()
 
 
 
-    bool	Aggregate_O::equal(core::T_sp obj) const
+#if 0
+bool	Aggregate_O::equal(core::T_sp obj) const
     {
 	if ( this->eq(obj) ) return true;
 	if ( !obj.isA<Aggregate_O>() ) return false;
@@ -201,7 +202,7 @@ Matter_sp Aggregate_O::copy()
 	}
 	return true;
     }
-
+#endif
 
     void Aggregate_O::transferCoordinates(Matter_sp obj)
     {

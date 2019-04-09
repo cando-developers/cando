@@ -63,7 +63,7 @@ away from their bonded neighbor that has coordinates in a random direction."
                                (incf built)
                                (decf cur-remaining)))))
                        (progn
-                         (warning "There is a single atom with no neighbors ~a" atom)
+                         (warn "There is a single atom with no neighbors ~a" atom)
                          (decf cur-remaining) ; remove this from the remaining atoms
                          )))))
              matter)

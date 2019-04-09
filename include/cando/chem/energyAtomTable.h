@@ -233,6 +233,7 @@ class AtomTable_O : public core::CxxObject_O
   CL_DEFMETHOD void setf_atom_table_residue_names(core::ComplexVector_T_sp val) {this->_ResidueNames = val; };
   CL_DEFMETHOD void setf_atom_table_atoms_per_molecule(core::ComplexVector_int32_t_sp val) {this->_AtomsPerMolecule = val; };
   CL_DEFMETHOD void setf_atom_table_residues(core::Vector_sp val) {this->_Residues = val; };
+  size_t getCoordinateIndex(Atom_sp atom);
   
  AtomTable_O() : _ResiduePointers(_Unbound<core::ComplexVector_int32_t_O>()),
                  _ResidueNames(_Unbound<core::ComplexVector_T_O>()),

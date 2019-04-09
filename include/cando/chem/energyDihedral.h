@@ -69,6 +69,14 @@ struct TermDihedral
 	INT		I2;	//!< i*3 index into coordinate array, this must match Mathematica code!
 	INT		I3;	//!< i*3 index into coordinate array, this must match Mathematica code!
 	INT		I4;	//!< i*3 index into coordinate array, this must match Mathematica code!
+  TermDihedral(REAL sinp, REAL cosp, REAL v, REAL dn, INT in, INT i1, INT i2, INT i3, INT i4)
+    : sinPhase(sinp),
+      cosPhase(cosp),
+      V(v),
+      DN(dn),
+      IN(in),
+      I1(i1), I2(i2), I3(i3), I4(i4) {};
+  TermDihedral() {};
 };
 
 /*! Dihedral energy term
@@ -108,6 +116,8 @@ public:
 	double		getCalculatedDihedralDeviation() { return this->_CalculatedDihedralDeviation;};
 
 public:
+  EnergyDihedral(Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, size_t i1, size_t i2, size_t i3, size_t i4, double sinp, double cosp, double v, double dn, int in) : term(sinp,cosp,v,dn,in,i1,i2,i3,i4),_Atom1(a1),_Atom2(a2),_Atom3(a3),_Atom4(a4) {};
+  EnergyDihedral() {};
 public:
 	adapt::QDomNode_sp	asXml();
 	void	parseFromXmlUsingAtomTable(adapt::QDomNode_sp xml, AtomTable_sp atomTable );
@@ -228,6 +238,7 @@ public:
     virtual string	beyondThresholdInteractionsAsString();
 
 
+  void addDihedralTerm(AtomTable_sp at, Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, double phase, double v, int multiplicity);
 
 public:
     EnergyDihedral_O( const EnergyDihedral_O& ss ); //!< Copy constructor

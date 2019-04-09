@@ -16,7 +16,7 @@
 
 (parse "C1=CC=CC=C1" 'list)
 
-#+not-sure-how-this-works (architecture.builder-protocol:with-builder ('list)
+#+not-sure-how-this-works (bp:with-builder ('list)
                             (esrap:parse 'smarts "C:1:C:C:C:C:C1"))
 
 (parse "n1c[nH]cc1" 'list)
@@ -25,10 +25,10 @@
 
 (progn
   (terpri)
-  (architecture.builder-protocol.print-tree:serialize
+  (bp.print-tree:serialize
    'list (parse "[C&!5C@@;BrH3]-C+3/?[3Cl]~C[*]C[R7]" 'list) *standard-output*))
 
 (progn
   (terpri)
-  (architecture.builder-protocol.print-tree:serialize
+  (bp.print-tree:serialize
    'list (parse "[$([OH2][C,S,P]=O),$([10O]1nnnc1)]" 'list) *standard-output*))

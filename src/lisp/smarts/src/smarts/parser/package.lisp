@@ -4,18 +4,18 @@
 ;;;;
 ;;;; Author: Jan Moringen <jmoringe@techfak.uni-bielefeld.de>
 
-(cl:in-package #:common-lisp-user)
-
-;;(cl:defpackage #:language.smarts.parser
-(defpackage #:language.smarts.parser
+(cl:defpackage #:language.smarts.parser
   (:use
-   #:common-lisp
    #:cl
    #:alexandria
    #:esrap)
 
   (:shadow
    #:parse)
+
+  (:local-nicknames
+   (#:bp     #:architecture.builder-protocol)
+   (#:smiles #:language.smiles.parser))
 
   ;; Exported rules
   (:export

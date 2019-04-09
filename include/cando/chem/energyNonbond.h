@@ -262,10 +262,10 @@ class EnergyNonbond_O : public EnergyComponent_O
   virtual	double	getEnergy();
   core::T_sp getFFNonbondDb();
 
-  void constructFromAtomTable(bool useExcludedAtoms, AtomTable_sp atomTable, core::T_sp nbforceField, bool show_progress);
-  void constructNonbondTermsFromAtomTable(bool ignore14s, AtomTable_sp atomTable, core::T_sp nbforceField, bool show_progress);
-  void construct14InteractionTerms(AtomTable_sp atomTable, Matter_sp matter, core::T_sp nbforceField, core::T_sp activeAtoms, bool show_progress);
-  void constructExcludedAtomListFromAtomTable(AtomTable_sp atomTable, core::T_sp nbforceField, bool show_progress);
+  void constructFromAtomTable(bool useExcludedAtoms, AtomTable_sp atomTable, core::T_sp nbforceField);
+  void constructNonbondTermsFromAtomTable(bool ignore14s, AtomTable_sp atomTable, core::T_sp nbforceField);
+  void construct14InteractionTerms(AtomTable_sp atomTable, Matter_sp matter, core::T_sp nbforceField, core::T_sp activeAtoms);
+  void constructExcludedAtomListFromAtomTable(AtomTable_sp atomTable, core::T_sp nbforceField);
 
   void constructNonbondTermsFromAtomTableUsingExcludedAtoms(EnergyFunction_sp energyFunction,
                                                             core::T_sp prepareAmberEnergyNonbond );

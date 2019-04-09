@@ -87,7 +87,7 @@ namespace chem {
     const_contentIterator begin_residues() const { return this->_contents.begin(); };
     const_contentIterator end_residues() const {return this->_contents.end(); };
 
-    virtual bool equal(core::T_sp obj) const;
+//    virtual bool equal(core::T_sp obj) const;
     virtual void	transferCoordinates(Matter_sp other);
 
     core::T_sp force_field_name() const;

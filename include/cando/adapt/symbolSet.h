@@ -96,7 +96,7 @@ CL_DEFMETHOD   void insert(Symbol_sp s) { this->_Symbols->setf_gethash(s, s); };
 
   List_sp asCons();
 
-  bool equal(T_sp ss) const;
+//  bool equal(T_sp ss) const;
 
   // Set theory operations
 

@@ -27,9 +27,9 @@
 
 
 (defun list-force-fields ()
-  (let ((ffs nil))
-    (maphash (lambda (k v) (push (cons k v) ffs)) leap.core:*force-fields*)
-    ffs))
+  (maphash (lambda (k v)
+             (format t "~s ~s~%" k (mapcar #'identity (chem:force-fields-as-list v))))
+           leap.core:*force-fields*))
 
 (defun source (filename)
 "    source filename
@@ -54,7 +54,8 @@ into LEaP.
          (crd-pathname (if crd-pathname
                            (merge-pathnames crd-pathname)
                            (make-pathname :type "crd" :defaults top-pathname))))
-    (leap.topology:save-amber-parm-format aggregate top-pathname crd-pathname :assign-types t :show-progress show-progress)))
+    (let ((chem:*verbose* show-progress))
+      (leap.topology:save-amber-parm-format aggregate top-pathname crd-pathname :assign-types t))))
 
 
 (defun load-amber-params (filename &optional (force-field :default))

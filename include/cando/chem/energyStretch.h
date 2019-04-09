@@ -53,10 +53,12 @@ class EnergyAtom;
 SMART(FFStretch);
 
 struct TermStretch {
-	REAL	kb;	//!< Stretch force constant, this must match Mathematica code!
-	REAL	r0;	//!< Stretch equilibrium distance, this must match Mathematica code!
-	INT	I1;	//!< i*3 index into coordinate vector for atom1, this must match Mathematica code!
-	INT	I2;	//!< i*3 index into coordinate vector for atom2, this must match Mathematica code!
+  REAL	kb;	//!< Stretch force constant, this must match Mathematica code!
+  REAL	r0;	//!< Stretch equilibrium distance, this must match Mathematica code!
+  INT	I1;	//!< i*3 index into coordinate vector for atom1, this must match Mathematica code!
+  INT	I2;	//!< i*3 index into coordinate vector for atom2, this must match Mathematica code!
+  TermStretch(REAL k,REAL r, INT i1, INT i2) : kb(k), r0(r),I1(i1),I2(i2) {};
+  TermStretch() {};
 };
 
 
@@ -83,6 +85,9 @@ public:
   double	getR();
 
 public:
+  EnergyStretch(Atom_sp a1, Atom_sp a2, size_t i1, size_t i2, double kb, double r0) : term(kb,r0,i1,i2),_Atom1(a1),_Atom2(a2) {};
+  EnergyStretch() {};
+  
 public:
   adapt::QDomNode_sp	asXml();
   void	parseFromXmlUsingAtomTable(adapt::QDomNode_sp xml, AtomTable_sp atomTable );
@@ -124,6 +129,8 @@ struct	from_object<chem::EnergyStretch>
         }
 };
 };
+
+
 
 namespace chem {
 
@@ -196,6 +203,7 @@ public:
 
     virtual string	beyondThresholdInteractionsAsString();
 
+  void addStretchTerm(AtomTable_sp at, Atom_sp a1, Atom_sp a2, double kb, double r0);
 
 public:
     EnergyStretch_O( const EnergyStretch_O& ss ); //!< Copy constructor

@@ -223,9 +223,10 @@ public:
 public:
   void addShadowingForceField(ForceField_sp forceField, core::T_sp info);
   core::List_sp forceFieldsAsList() const;
+  void clear();
 
-  void assignForceFieldTypes(Matter_sp molecule);
-  void assignMolecularEnergyTables(Matter_sp molecule,core::T_sp activeAtoms,bool show_progress);
+  core::T_sp assignForceFieldTypes(Matter_sp molecule);
+  void assignMolecularEnergyTables(Matter_sp molecule,core::T_sp activeAtoms);
   
   CombinedForceField_O() : _ForceFields(_Nil<core::T_O>()) {};
 };

@@ -172,6 +172,7 @@ CL_DEFMETHOD void StringSet_O::clear() {
 
 /*! Check if the StringSet contains the same strings as this
  */
+#if 0
 bool StringSet_O::equal(T_sp obj) const {
   if (this->eq(obj))
     return true;
@@ -189,6 +190,7 @@ bool StringSet_O::equal(T_sp obj) const {
   }
   return false;
 }
+#endif
 
 void StringSet_O::remove(const string &s) {
   _OF();

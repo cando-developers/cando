@@ -629,5 +629,12 @@ CL_DEFMETHOD void EnergyStretch_O::fill_from_vectors_in_alist(core::List_sp vect
     entry._Atom2 = gc::As_unsafe<Atom_sp>((*atom2_vec)[i]);
   }
 }
+
+CL_DEFMETHOD void EnergyStretch_O::addStretchTerm(AtomTable_sp atomTable, Atom_sp a1, Atom_sp a2, double kb, double r0) {
+  EnergyAtom* ea1 = atomTable->getEnergyAtomPointer(a1);
+  EnergyAtom* ea2 = atomTable->getEnergyAtomPointer(a2);
+  EnergyStretch energyStretch(a1,a2,ea1->coordinateIndexTimes3(),ea2->coordinateIndexTimes3(),kb,r0);
+  this->addTerm(energyStretch);
+}
  
 };

@@ -1434,13 +1434,12 @@ then don't calculate 1,4 interactions"
     (cando:progress-done bar)
     (values energy-function)))
 
-(defun save-amber-parm-format (aggregate topology-pathname coordinate-pathname &key assign-types show-progress)
+(defun save-amber-parm-format (aggregate topology-pathname coordinate-pathname &key assign-types)
   (format t "Constructing energy function~%")
   (finish-output)
   (let* ((energy-function (chem:make-energy-function aggregate 
                                                      :use-excluded-atoms t
-                                                     :assign-types assign-types
-                                                     :show-progress show-progress)))
+                                                     :assign-types assign-types)))
     ;;; We need to:
     ;;;  (1) make sure energy function copies :bounding-box property from aggregate
     ;;;  (2) Copy the name of the aggregate into the energy function

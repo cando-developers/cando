@@ -140,7 +140,8 @@ CL_DEFUN core::T_sp chem__alias(core::Symbol_sp monAlias, core::Symbol_sp atomAl
 
 
 
-    bool Alias_O::equal(core::T_sp o) const
+#if 0
+bool Alias_O::equal(core::T_sp o) const
     {
 	if (!o.isA<Alias_O>()) return false;
 	Alias_sp a = o.as<Alias_O>();
@@ -148,7 +149,7 @@ CL_DEFUN core::T_sp chem__alias(core::Symbol_sp monAlias, core::Symbol_sp atomAl
 	if ( this->_AtomAlias != a->_AtomAlias ) return false;
 	return true;
     }
-
+#endif
 
 
 

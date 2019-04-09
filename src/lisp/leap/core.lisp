@@ -153,7 +153,10 @@ the list of frcmods and force-field are used to create a merged force-field that
 used to provide parameters.  There is one default force-field called :default.")
 
 (defun clear-force-field (&optional (force-field-name :default))
-  (setf (gethash force-field-name *force-fields*) nil))
+  (chem:clear-combined-force-field (gethash force-field-name *force-fields*))
+  ;;; The default conbined-force-field always has one empty force-field for global nonbond info
+  (when (eq force-field-name :default)
+    (add-force-field-or-modification (chem:make-force-field))))
 
 (defun add-combined-force-field (combined-force-field force-field-name)
   (setf (gethash force-field-name *force-fields*) combined-force-field))
@@ -166,15 +169,19 @@ used to provide parameters.  There is one default force-field called :default.")
 
 (defun add-force-field-or-modification (force-field-or-frcmod &key (force-field-name :default) force-field-info
                                                                 combined-force-field-class-name)
-  (let ((cff (chem:find-force-field :smirnoff nil)))
+  (let ((cff (chem:find-force-field force-field-name nil)))
     (unless cff
-      (leap.core:add-combined-force-field (if (eq combined-force-field-class-name 'chem:combined-force-field)
+      (add-combined-force-field (if (eq combined-force-field-class-name 'chem:combined-force-field)
                                               (sys:make-cxx-object combined-force-field-class-name)
                                               (make-instance combined-force-field-class-name))
                                           force-field-name)))
   (let ((combined-force-field (chem:find-force-field force-field-name)))
     (chem:add-shadowing-force-field combined-force-field force-field-or-frcmod force-field-info))
   force-field-or-frcmod)
+
+(eval-when (:load-toplevel :execute)
+  (add-force-field-or-modification (chem:make-force-field) :force-field-name :default
+                                   :combined-force-field-class-name 'chem:combined-force-field))
 
 (defun merged-force-field (&optional (force-field-name :default))
   "Merge the force-field-list with _force-field-name_ and return it."
@@ -194,7 +201,7 @@ used to provide parameters.  There is one default force-field called :default.")
          (force-field-parts (chem:force-fields-as-list combined-force-field))
          (nbmerged (chem:make-ffnonbond-db)))
     (mapc (lambda (force-field-part)
-            (let ((nonbond-part (chem:get-nonbond-db force-field-part)))
+            (let ((nonbond-part (chem:nonbond-component force-field-part)))
               (chem:force-field-component-merge nbmerged nonbond-part)))
           force-field-parts)
     nbmerged))

@@ -10,6 +10,7 @@
   :components
   ((:file "packages")
    (:file "basic")
+   (:file "chem")
    (:file "environment")
    (:file "print-read")
    (:file "conditions")

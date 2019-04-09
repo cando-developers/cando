@@ -51,10 +51,14 @@
       (let ((ident (setf (gethash node *table*) (gensym))))
         (format stream "  ~a [ ~a; label=\"~a\" ];~%"
                 ident (style node) (label node))
-        (loop for child in (chem:chem-info-node-children node)
-              for child-ident = (draw-node child stream)
-              do (format stream "   ~a -> ~a~%" ident child-ident))
-        ident)
+        (let ((children (chem:chem-info-node-children node)))
+          (loop for child in children
+                for child-index from 0
+                for child-ident = (draw-node child stream)
+                do (format stream "   ~a -> ~a [label=\"~a\"]~%" ident child-ident (if (> (length children) 1)
+                                                                                       child-index
+                                                                                       "")))
+          ident))
       (gethash node *table*)))
 
 
@@ -70,10 +74,18 @@
        ))
     node-label))
       
-(defun draw-graph (node stream)
+(defun draw-graph* (node stream)
   (format stream "digraph G {~%   ordering = out; ~%")
   (let ((*table* (make-hash-table :test #'eq))
         (*rings* (make-hash-table :test #'eql)))
     (draw-node node stream))
   (format stream "}~%"))
+
+
+(defun draw-graph (node output)
+  (etypecase output
+    (stream (draw-graph* output))
+    ((or pathname string)
+     (with-open-file (stream (pathname output) :direction :output)
+       (draw-graph* node stream)))))
 

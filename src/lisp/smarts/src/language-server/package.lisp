@@ -94,11 +94,11 @@
               (format nil "~(~A~) bond" kind*))
              (:chain
               (format nil "a chain consisting of ~D atom~:P"
-                      (length (architecture.builder-protocol:node-relation 'list :element node))))
+                      (length (bp:node-relation 'list :element node))))
              (t
               "a node")))
-         (architecture.builder-protocol:node-kind 'list node)
-         (architecture.builder-protocol:node-initargs 'list node)))
+         (bp:node-kind 'list node)
+         (bp:node-initargs 'list node)))
 
 (defun nodes-at-position (document position)
   (let ((locations (text.source-location.lookup:lookup
@@ -125,10 +125,10 @@
     (log:info node location)
     `#(((:kind  . 3)
         (:range . ,(protocol.language-server.protocol:unparse-range location)))
-       ,@(when (eq (architecture.builder-protocol:node-kind 'list node) :labeled)
-           (let ((label (getf (architecture.builder-protocol:node-initargs 'list node) :label))
+       ,@(when (eq (bp:node-kind 'list node) :labeled)
+           (let ((label (getf (bp:node-initargs 'list node) :label))
                  (result '()))
-             (architecture.builder-protocol:walk-nodes
+             (bp:walk-nodes
               'list
               (lambda (recurse relation relatin-args node* kind relations &rest initargs &key ((:label label*)) &allow-other-keys)
                 (when (and (not (eq node node*))

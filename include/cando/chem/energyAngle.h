@@ -66,6 +66,8 @@ struct TermAngle {
 	INT		I1;	//!< i*3 index into coordinate vector for atom1, this must match Mathematica code!
 	INT		I2;	//!< i*3 index into coordinate vector for atom2, this must match Mathematica code!
 	INT		I3;	//!< i*3 index into coordinate vector for atom3, this must match Mathematica code!
+  TermAngle(REAL k, REAL t, INT i1, INT i2, INT i3) : kt(k), t0(t), I1(i1), I2(i2), I3(i3) {};
+  TermAngle() {};
 };
 
 /*! Store an Angle energy term.
@@ -88,6 +90,9 @@ public:
 	bool		_calcOffDiagonalHessian;
 #include <cando/chem/energy_functions/_Angle_debugEvalDeclares.cc>
 #endif
+public:
+  EnergyAngle(Atom_sp a1, Atom_sp a2, Atom_sp a3, size_t i1, size_t i2, size_t i3, double kt, double t0) : term(kt,t0,i1,i2,i3),_Atom1(a1),_Atom2(a2),_Atom3(a3) {};
+  EnergyAngle() {};
 
 public:
         Atom_sp	getAtom1() { return this->_Atom1; };
@@ -208,6 +213,8 @@ public:
     virtual	int	checkForBeyondThresholdInteractions( stringstream& info, NVector_sp pos );
 
     virtual string	beyondThresholdInteractionsAsString();
+
+  void addAngleTerm(AtomTable_sp at, Atom_sp a1, Atom_sp a2, Atom_sp a3, double kt, double t0);
 
 
 

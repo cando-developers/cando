@@ -89,7 +89,7 @@ public:
 
     Atom_sp		atomWithId(int i);
 
-    virtual bool equal(core::T_sp obj) const;
+//    virtual bool equal(core::T_sp obj) const;
     virtual void	transferCoordinates(Matter_sp other);
 
     virtual void addMatter(Matter_sp matter);

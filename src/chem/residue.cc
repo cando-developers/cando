@@ -66,7 +66,8 @@ bool Residue_O::applyPropertyToSlot(core::Symbol_sp prop, core::T_sp value ) {
 }
 
 
-bool	Residue_O::equal(core::T_sp obj) const
+#if 0
+CL_DEFMETHOD bool	Residue_O::Residue_equal(core::T_sp obj) const
 {
     if ( this->eq(obj) ) return true;
     if ( !obj.isA<Residue_O>() ) return false;
@@ -81,7 +82,7 @@ bool	Residue_O::equal(core::T_sp obj) const
     }
     return true;
 }
-
+#endif
 
 void Residue_O::transferCoordinates(Matter_sp obj)
 {

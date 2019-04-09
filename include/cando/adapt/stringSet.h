@@ -84,7 +84,7 @@ CL_DEFMETHOD   void insert(const string &s) { this->strs.insert(s); };
   core::List_sp asCons() const;
   core::SimpleVector_sp asVector() const;
 
-  bool equal(T_sp ss) const;
+//  bool equal(T_sp ss) const;
 
   // Set theory operations
 

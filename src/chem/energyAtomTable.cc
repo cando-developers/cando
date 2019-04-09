@@ -174,6 +174,11 @@ void AtomTable_O::fields(core::Record_sp node) {
   this->Base::fields(node);
 }
 
+CL_DEFMETHOD size_t AtomTable_O::getCoordinateIndex(Atom_sp a)
+{
+  EnergyAtom* ea = this->getEnergyAtomPointer(a);
+  return ea->coordinateIndexTimes3();
+}
 
 EnergyAtom* AtomTable_O::getEnergyAtomPointer(Atom_sp a)
 {_OF();

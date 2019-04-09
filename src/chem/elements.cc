@@ -67,6 +67,7 @@ struct	AtomicInfo {
   string	_AtomicSymbol;
   string	_ElementName;
   int		_AtomicNumber;
+  int		_IntegerAtomicMass;
   double	_RelativeAtomicWeight;
   double	_VdwRadius;
   double	_CovalentRadius;
@@ -86,9 +87,10 @@ set<string>			twoCharacterElementNames;
 set<string>			oneCharacterElementNames;
 vector<HybridizationInfo>	hybridizationInfo;
 vector<int>                     atomicNumberToAtomicInfoIndex;
+vector<int>                     atomicMassToAtomicInfoIndex;
 
 
-void set_atomic_info(Element element,const string& as, const string& name, int an, double aw) {
+void set_atomic_info(Element element,const string& as, const string& name, int an, double aw,int am=9999 ) {
   AtomicInfo ai;
   ASSERT(element<element_MAX);
   ai._Valid=true;
@@ -96,6 +98,7 @@ void set_atomic_info(Element element,const string& as, const string& name, int a
   ai._ElementEnum=element;
   ai._ElementName=name;
   ai._AtomicNumber=an;
+  ai._IntegerAtomicMass = am;
   ai._RelativeAtomicWeight=aw;
   ai._VdwRadius=1.6 /* Uknown */;
   ai._RealElement = true; 
@@ -103,6 +106,9 @@ void set_atomic_info(Element element,const string& as, const string& name, int a
   // Set an element for each atomic number
   if (atomicNumberToAtomicInfoIndex[an] == -1) {
     atomicNumberToAtomicInfoIndex[an] = element;
+  }
+  if (atomicMassToAtomicInfoIndex[am] == -1) {
+    atomicMassToAtomicInfoIndex[am] = element;
   }
 };
 
@@ -115,27 +121,28 @@ void    _defineAtomicInfoMapIfNotDefined()
   elementFromAtomicSymbol.clear();
   atomicInfo.resize(((int)(element_MAX)),invalid);
   atomicNumberToAtomicInfoIndex.resize((int)element_MAX,-1);
-#define SET_ATOMIC_INFO_FAKE_ELEMENT(element,as,name,an,aw)  set_atomic_info(element,as,name,an,aw); atomicInfo[element]._RealElement = false;
+  atomicMassToAtomicInfoIndex.resize((int)element_mass_MAX,-1);
+#define SET_ATOMIC_INFO_FAKE_ELEMENT(element,as,name,an,aw,am)  set_atomic_info(element,as,name,an,aw,am); atomicInfo[element]._RealElement = false;
 #define	SET_VDW_RADIUS(element,vdw) { atomicInfo[element]._VdwRadius = vdw;};
 #define	SET_COVALENT_RADIUS(element,cr) { atomicInfo[element]._CovalentRadius = cr;};
 
   atomicInfoDefined = true;
   LOG(BF("Defining atomicNumberMaps") );
-  SET_ATOMIC_INFO_FAKE_ELEMENT(element_LP,"LP","LONE-PAIR",0,0.0);
-  SET_ATOMIC_INFO_FAKE_ELEMENT(element_Undefined,"UE","UNDEFINED-ELEMENT",0,0.0000);
-  SET_ATOMIC_INFO_FAKE_ELEMENT(element_None,"NE","NO-ELEMENT",0,0.0000);
-  SET_ATOMIC_INFO_FAKE_ELEMENT(element_Wildcard,"WC","WILDCARD-ELEMENT",0,0.0000);
-  SET_ATOMIC_INFO_FAKE_ELEMENT(element_Dummy,"DU","DUMMY-ELEMENT",0,0.0000);
-  set_atomic_info(element_H,"H","Hydrogen",1,1.00794);
-  set_atomic_info(element_D,"D","Deuterium",1,2.0141017780);
-  set_atomic_info(element_T,"T","Tritium",1,3.0160492675);
-  set_atomic_info(element_He,"He","Helium",2,4.002602);
+  SET_ATOMIC_INFO_FAKE_ELEMENT(element_LP,"LP","LONE-PAIR",0,0.0,0);
+  SET_ATOMIC_INFO_FAKE_ELEMENT(element_Undefined,"UE","UNDEFINED-ELEMENT",0,0.000,0);
+  SET_ATOMIC_INFO_FAKE_ELEMENT(element_None,"NE","NO-ELEMENT",0,0.000,0);
+  SET_ATOMIC_INFO_FAKE_ELEMENT(element_Wildcard,"WC","WILDCARD-ELEMENT",0,0.00,0);
+  SET_ATOMIC_INFO_FAKE_ELEMENT(element_Dummy,"DU","DUMMY-ELEMENT",0,0.000,0);
+  set_atomic_info(element_H,"H","Hydrogen",1,1.00794,1);
+  set_atomic_info(element_D,"D","Deuterium",1,2.0141017780,2);
+  set_atomic_info(element_T,"T","Tritium",1,3.0160492675,3);
+  set_atomic_info(element_He,"He","Helium",2,4.002602,4);
   set_atomic_info(element_Li,"Li","Lithium",3,6.941);
   set_atomic_info(element_Be,"Be","Beryllium",4,9.012182);
-  set_atomic_info(element_B,"B","Boron",5,10.811);
-  set_atomic_info(element_C,"C","Carbon",6,12.0107);
-  set_atomic_info(element_N,"N","Nitrogen",7,14.0067);
-  set_atomic_info(element_O,"O","Oxygen",8,15.9994);
+  set_atomic_info(element_B,"B","Boron",5,10.811,10);
+  set_atomic_info(element_C,"C","Carbon",6,12.0107,12);
+  set_atomic_info(element_N,"N","Nitrogen",7,14.0067,14);
+  set_atomic_info(element_O,"O","Oxygen",8,15.9994,16);
   set_atomic_info(element_F,"F","Fluorine",9,18.9984032);
   set_atomic_info(element_Ne,"Ne","Neon",10,20.1797);
   set_atomic_info(element_Na,"Na","Sodium",11,22.989770);
@@ -602,12 +609,28 @@ CL_DEFUN chem::Element elementForAtomicNumber(int atomicNumber)
   return atomicInfo[atomicNumberToAtomicInfoIndex[atomicNumber]]._ElementEnum;
 }
 
+CL_DEFUN chem::Element elementForIntegerAtomicMass(int atomicMass)
+{
+  if (atomicMass<0 || atomicMass>element_mass_MAX || atomicMassToAtomicInfoIndex[atomicMass] ==-1 ) {
+    SIMPLE_ERROR(BF("Could not determine element for integer atomic mass %d") % atomicMass);
+  }
+  return atomicInfo[atomicMassToAtomicInfoIndex[atomicMass]]._ElementEnum;
+}
+
 CL_DEFUN uint atomicNumberForElement(chem::Element element)
 {
     HARD_ASSERT(element>0 && element<element_MAX);
     AtomicInfo& ai = atomicInfo[element];
     HARD_ASSERT(ai._Valid);
     return ai._AtomicNumber;
+}
+
+CL_DEFUN uint integerAtomicMassForElement(chem::Element element)
+{
+    HARD_ASSERT(element>0 && element<element_MAX);
+    AtomicInfo& ai = atomicInfo[element];
+    HARD_ASSERT(ai._Valid);
+    return ai._IntegerAtomicMass;
 }
 
 CL_DEFUN double atomicWeightForElement(chem::Element element)

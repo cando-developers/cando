@@ -645,7 +645,7 @@ int			residueNetCharge;
       Topology_sp topology = (*mi)->currentTopology();
       Constitution_sp constitution = topology->_Constitution;
       core::Symbol_sp stereoisomerName = (*mi)->currentStereoisomerName(); // Should be stereoisomerName()
-      if (chem_verbose(0)) {
+      if (chem__verbose(0)) {
         core::write_bf_stream(BF("Building residue for monomer name: %s") % _rep_(stereoisomerName));
         core::clasp_finish_output_t();
       }

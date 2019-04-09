@@ -77,10 +77,13 @@
   #+(or)(format t "*features* -> ~a~%" *features*))
 
 (progn
-  ;;  (format t "Loading quicklisp.~%")
-  (load "quicklisp:setup.lisp"))
+  (format t "Loading quicklisp.~%")
+  (format t "class-of  -> ~s~%" (uiop/filesystem:getenv-pathname "TMPDIR" :ensure-directory t) 'vector)
+  (handler-bind ((error (lambda (&rest args) (sys:safe-backtrace))))
+    (load "quicklisp:setup.lisp")))
 
 (progn
+  (format t "Loading cando-user.~%")
   (funcall (find-symbol "QUICKLOAD" :ql) "cando-user")
   ;; Ensure that all threads start in the :CANDO-USER package
   (core:symbol-global-value-set '*package* (find-package :cando-user))
