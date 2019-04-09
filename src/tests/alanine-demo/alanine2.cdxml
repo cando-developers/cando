@@ -19,6 +19,7 @@
  ShowTerminalCarbonLabels="no"
  ShowNonTerminalCarbonLabels="no"
  HideImplicitHydrogens="no"
+ Magnification="250"
  LabelFont="21"
  LabelSize="10"
  LabelFace="96"
@@ -81,7 +82,7 @@
 <font id="20" charset="x-mac-roman" name="Times"/>
 <font id="21" charset="x-mac-roman" name="Helvetica"/>
 </fonttable><page
- id="78"
+ id="79"
  BoundingBox="0 0 540 720"
  HeaderPosition="36"
  FooterPosition="36"
@@ -116,45 +117,45 @@
  AS="N"
  BondOrdering="5 7 9"
 ><fragment
- id="79"
-><n
  id="80"
+><n
+ id="81"
  p="162.98 315"
  NumHydrogens="0"
 /><n
- id="81"
+ id="82"
  p="188.96 300"
  NumHydrogens="0"
 /><n
- id="82"
+ id="83"
  p="137 330"
  NodeType="ExternalConnectionPoint"
 /><n
- id="83"
+ id="84"
  p="177.98 340.98"
  NodeType="ExternalConnectionPoint"
 /><n
- id="84"
+ id="85"
  p="147.98 289.02"
  NodeType="ExternalConnectionPoint"
 /><b
- id="85"
- B="80"
- E="81"
- Order="4"
-/><b
  id="86"
- B="82"
- E="80"
+ B="81"
+ E="82"
+ Order="4"
 /><b
  id="87"
  B="83"
- E="80"
- Display="Dash"
+ E="81"
 /><b
  id="88"
  B="84"
- E="80"
+ E="81"
+ Display="Dash"
+/><b
+ id="89"
+ B="85"
+ E="81"
  Order="2"
  DoublePosition="Right"
 /></fragment><t
@@ -185,30 +186,30 @@
  NeedsClean="yes"
  AS="N"
 ><fragment
- id="90"
-><n
  id="91"
+><n
+ id="92"
  p="162.98 285"
  Element="8"
  NumHydrogens="0"
 /><n
- id="92"
+ id="93"
  p="162.98 255"
  Element="8"
  NumHydrogens="0"
 /><n
- id="93"
+ id="94"
  p="162.98 315"
  NodeType="ExternalConnectionPoint"
 /><b
- id="94"
- B="91"
- E="92"
+ id="95"
+ B="92"
+ E="93"
  Order="2"
 /><b
- id="95"
- B="93"
- E="91"
+ id="96"
+ B="94"
+ E="92"
  Order="2"
  DoublePosition="Right"
 /></fragment><t
@@ -226,64 +227,64 @@
  AS="u"
  BondOrdering="17 19 37 41"
 ><fragment
- id="97"
-><n
  id="98"
+><n
+ id="99"
  p="214.94 315"
  NumHydrogens="0"
 /><n
- id="99"
+ id="100"
  p="292.88 270"
  NumHydrogens="0"
 /><n
- id="100"
+ id="101"
  p="318.86 255"
  NumHydrogens="0"
 /><n
- id="101"
+ id="102"
  p="266.90 285"
  NumHydrogens="0"
 /><n
- id="102"
+ id="103"
  p="188.96 330"
  NodeType="ExternalConnectionPoint"
 /><n
- id="103"
+ id="104"
  p="229.94 340.98"
  NodeType="ExternalConnectionPoint"
 /><n
- id="104"
+ id="105"
  p="240.92 300"
  NodeType="ExternalConnectionPoint"
 /><n
- id="105"
+ id="106"
  p="199.94 289.02"
  NodeType="ExternalConnectionPoint"
 /><b
- id="106"
- B="99"
- E="100"
+ id="107"
+ B="100"
+ E="101"
  Order="3"
 /><b
- id="107"
- B="99"
- E="101"
-/><b
  id="108"
- B="102"
- E="98"
+ B="100"
+ E="102"
 /><b
  id="109"
  B="103"
- E="98"
+ E="99"
 /><b
  id="110"
  B="104"
- E="98"
+ E="99"
 /><b
  id="111"
  B="105"
- E="98"
+ E="99"
+/><b
+ id="112"
+ B="106"
+ E="99"
 /></fragment><t
  p="211.33 318.68"
  BoundingBox="211.77 311.32 222.47 320.98"
@@ -324,65 +325,65 @@
  AS="N"
  BondOrdering="41 50 58"
 ><fragment
- id="113"
-><n
  id="114"
+><n
+ id="115"
  p="238.98 332.95"
  NumHydrogens="0"
 /><n
- id="115"
+ id="116"
  p="288.18 295.48"
  NumHydrogens="0"
 /><n
- id="116"
+ id="117"
  p="300.03 323.04"
  NumHydrogens="0"
 /><n
- id="117"
+ id="118"
  p="276.34 267.92"
  NumHydrogens="0"
 /><n
- id="118"
+ id="119"
  p="311.87 350.61"
  NumHydrogens="0"
 /><n
- id="119"
+ id="120"
  p="214.94 315"
  NodeType="ExternalConnectionPoint"
 /><n
- id="120"
+ id="121"
  p="235.46 362.74"
  NodeType="ExternalConnectionPoint"
 /><n
- id="121"
+ id="122"
  p="266.54 321.11"
  NodeType="ExternalConnectionPoint"
 /><b
- id="122"
+ id="123"
+ B="117"
+ E="119"
+/><b
+ id="124"
+ B="116"
+ E="117"
+ Order="3"
+/><b
+ id="125"
  B="116"
  E="118"
 /><b
- id="123"
- B="115"
- E="116"
- Order="3"
-/><b
- id="124"
- B="115"
- E="117"
-/><b
- id="125"
- B="119"
- E="114"
-/><b
  id="126"
  B="120"
- E="114"
- Display="Dash"
+ E="115"
 /><b
  id="127"
  B="121"
- E="114"
+ E="115"
+ Display="Dash"
+/><b
+ id="128"
+ B="122"
+ E="115"
  Order="2"
 /></fragment><t
  p="235.37 336.63"
@@ -399,78 +400,78 @@
  AS="N"
  BondOrdering="50 70"
 ><fragment
- id="129"
-><n
  id="130"
+><n
+ id="131"
  p="266.54 321.11"
  Element="7"
  NumHydrogens="0"
 /><n
- id="131"
+ id="132"
  p="290.58 339.06"
  Element="7"
  NumHydrogens="0"
 /><n
- id="132"
+ id="133"
  p="287.05 368.85"
  Element="7"
  NumHydrogens="0"
 /><n
- id="133"
+ id="134"
  p="311.09 386.80"
  Element="7"
  NumHydrogens="0"
 /><n
- id="134"
+ id="135"
  p="307.56 416.59"
  Element="7"
  NumHydrogens="0"
 /><n
- id="135"
+ id="136"
  p="331.60 434.54"
  Element="7"
  NumHydrogens="0"
 /><n
- id="136"
+ id="137"
  p="238.98 332.95"
  NodeType="ExternalConnectionPoint"
 /><n
- id="137"
+ id="138"
  p="270.07 291.32"
  NodeType="ExternalConnectionPoint"
 /><b
- id="138"
- B="134"
- E="135"
-/><b
  id="139"
- B="133"
- E="134"
- Order="2"
- Display="Wavy"
+ B="135"
+ E="136"
 /><b
  id="140"
- B="132"
- E="133"
-/><b
- id="141"
- B="131"
- E="132"
+ B="134"
+ E="135"
  Order="2"
  Display="Wavy"
 /><b
+ id="141"
+ B="133"
+ E="134"
+/><b
  id="142"
- B="130"
- E="131"
+ B="132"
+ E="133"
+ Order="2"
+ Display="Wavy"
 /><b
  id="143"
- B="136"
- E="130"
- Display="Dash"
+ B="131"
+ E="132"
 /><b
  id="144"
  B="137"
- E="130"
+ E="131"
+ Display="Dash"
+/><b
+ id="145"
+ B="138"
+ E="131"
 /></fragment><t
  p="262.93 324.70"
  BoundingBox="263.69 317.52 274.03 327.13"
@@ -485,52 +486,52 @@
  NeedsClean="yes"
  AS="N"
 ><fragment
- id="146"
-><n
  id="147"
+><n
+ id="148"
  p="239.41 371.45"
  Element="8"
  NumHydrogens="0"
 /><n
- id="148"
+ id="149"
  p="230.66 259.58"
  Element="8"
  NumHydrogens="0"
 /><n
- id="149"
+ id="150"
  p="245.95 285.39"
  Element="8"
  NumHydrogens="0"
 /><n
- id="150"
+ id="151"
  p="245.37 233.43"
  Element="8"
  NumHydrogens="0"
 /><n
- id="151"
+ id="152"
  p="231.24 311.54"
  Element="8"
  NumHydrogens="0"
 /><n
- id="152"
+ id="153"
  p="239.07 341.45"
  NodeType="ExternalConnectionPoint"
 /><b
- id="153"
- B="149"
- E="151"
-/><b
  id="154"
- B="148"
- E="149"
+ B="150"
+ E="152"
 /><b
  id="155"
- B="148"
+ B="149"
  E="150"
 /><b
  id="156"
- B="152"
- E="147"
+ B="149"
+ E="151"
+/><b
+ id="157"
+ B="153"
+ E="148"
  Order="2"
 /></fragment><t
  p="235.52 375.13"
@@ -546,70 +547,70 @@
  NeedsClean="yes"
  AS="N"
 ><fragment
- id="158"
-><n
  id="159"
+><n
+ id="160"
  p="289.48 340.44"
  NumHydrogens="0"
 /><n
- id="160"
+ id="161"
  p="312.42 359.77"
  NumHydrogens="0"
 /><n
- id="161"
+ id="162"
  p="335.36 379.10"
  NumHydrogens="0"
 /><n
- id="162"
+ id="163"
  p="358.30 398.43"
  NumHydrogens="0"
 /><n
- id="163"
+ id="164"
  p="381.25 417.76"
  NumHydrogens="0"
 /><n
- id="164"
+ id="165"
  p="404.19 437.10"
  NumHydrogens="0"
 /><n
- id="165"
+ id="166"
  p="427.13 456.43"
  NumHydrogens="0"
 /><n
- id="166"
+ id="167"
  p="266.54 321.11"
  NodeType="ExternalConnectionPoint"
 /><b
- id="167"
- B="164"
- E="165"
-/><b
  id="168"
- B="163"
- E="164"
- Order="3"
+ B="165"
+ E="166"
 /><b
  id="169"
- B="162"
- E="163"
+ B="164"
+ E="165"
+ Order="3"
 /><b
  id="170"
- B="161"
- E="162"
- Order="3"
+ B="163"
+ E="164"
 /><b
  id="171"
- B="160"
- E="161"
-/><b
- id="172"
- B="159"
- E="160"
+ B="162"
+ E="163"
  Order="3"
 /><b
+ id="172"
+ B="161"
+ E="162"
+/><b
  id="173"
- B="166"
- E="159"
+ B="160"
+ E="161"
+ Order="3"
+/><b
+ id="174"
+ B="167"
+ E="160"
 /></fragment><t
  p="285.87 344.12"
  BoundingBox="286.31 336.76 297.01 346.42"
@@ -682,4 +683,10 @@
  B="49"
  E="69"
  BS="N"
-/></fragment></page></CDXML>
+/></fragment><t
+ id="77"
+ p="340.75 329"
+ BoundingBox="340.75 329 340.80 329.05"
+ Z="45"
+ LineHeight="auto"
+><s font="20" size="12" color="0"></s></t></page></CDXML>
