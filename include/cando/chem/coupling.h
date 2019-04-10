@@ -185,6 +185,7 @@ namespace chem {
       return dc;
     }
   public:
+    DirectionalCoupling_O() {};
     DirectionalCoupling_O(Monomer_sp source, core::Symbol_sp sourcePlugName, core::Symbol_sp targetPlugName, Monomer_sp target) :
     _SourcePlugName(sourcePlugName),
     _TargetPlugName(targetPlugName),
