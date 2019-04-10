@@ -73,18 +73,13 @@
 ;;; Setup or startup the Cando system 
 ;;; If :setup-cando is in *features* then don't load the cando system
 (progn
-  (format t "Starting Cando~%")
-  #+(or)(format t "*features* -> ~a~%" *features*))
-
-(progn
-  (format t "Loading quicklisp.~%")
-  (format t "class-of  -> ~s~%" (uiop/filesystem:getenv-pathname "TMPDIR" :ensure-directory t) 'vector)
+  #+(or)
   (handler-bind ((error (lambda (&rest args) (sys:safe-backtrace))))
-    (load "quicklisp:setup.lisp")))
+    (load "quicklisp:setup.lisp"))
+  (load "quicklisp:setup.lisp"))
 
 (progn
-  (format t "Loading cando-user.~%")
-  (funcall (find-symbol "QUICKLOAD" :ql) "cando-user")
+  (funcall (find-symbol "QUICKLOAD" :ql) "cando-user" :silent t)
   ;; Ensure that all threads start in the :CANDO-USER package
   (core:symbol-global-value-set '*package* (find-package :cando-user))
   )
