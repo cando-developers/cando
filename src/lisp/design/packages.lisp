@@ -54,6 +54,7 @@
    topologys
    cap-name-map
    trainers
+   oligomer
    build-trainers
    save-design
    load-design
