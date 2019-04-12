@@ -14,7 +14,7 @@
 
 
 (set-force-field *mol* :smirnoff)
-(:= *e-sm*irnoff* (chem:make-energy-function *agg* :use-excluded-atoms t :assign-types t))
+(:= *e-smirnoff* (chem:make-energy-function *agg* :use-excluded-atoms t :assign-types t))
 
 (set-force-field *mol* :default)
 (:= *e-gaff* (chem:make-energy-function *agg* :use-excluded-atoms t :assign-types t))
