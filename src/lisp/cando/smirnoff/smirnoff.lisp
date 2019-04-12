@@ -201,7 +201,8 @@ The chem:force-field-type-rules-merged generic function was used to organize the
                                      (gethash key123 angles)
                                    (if found
                                        (progn
-                                         (push term (gethash key123 bonds)))
+                                        ;; (push term (gethash key123 bonds)))
+                                         (push term (gethash key123 angles)))
                                        (let ((key321 (nreverse key123)))
                                          (multiple-value-bind (val found)
                                              (gethash key321 angles)
@@ -250,7 +251,8 @@ The chem:force-field-type-rules-merged generic function was used to organize the
                                      (gethash key1234 ptors)
                                    (if found
                                        (progn
-                                         (push term (gethash key1234 bonds)))
+                                          ;;(push term (gethash key1234 bonds)))
+                                         (push term (gethash key1234 ptors)))
                                        (let ((key4321 (nreverse key1234)))
                                          (multiple-value-bind (val found)
                                              (gethash key4321 ptors)

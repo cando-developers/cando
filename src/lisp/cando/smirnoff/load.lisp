@@ -175,7 +175,7 @@
                                   :angle-rad angle-radians)))
         (vector-push-extend term (terms (angles-force *smirnoff*)))))))
 
-(defun parse-proper-torsion (node torsion-class-name attributes phase-to-rad-multiplier)
+(defun parse-torsion (node torsion-class-name attributes phase-to-rad-multiplier)
   (let* ((smirks (gethash "smirks" attributes))
          (id (gethash "id" attributes))
          (term (make-instance torsion-class-name

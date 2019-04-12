@@ -6,6 +6,7 @@
 (chem:fill-in-implicit-hydrogens *agg*)
 (set-stereoisomer-func (cando:gather-stereocenters *agg*) (lambda (c) :R))
 (:= *mol* (chem:content-at *agg* 0))
+(:= *ee* (energy:minimize *agg*))
 
 (set-force-field *mol* :smirnoff)
 (save-amber-parm *agg* "/tmp/agg.parm" "/tmp/agg.crd")
@@ -13,7 +14,7 @@
 
 
 (set-force-field *mol* :smirnoff)
-(:= *e-smirnoff* (chem:make-energy-function *agg* :use-excluded-atoms t :assign-types t))
+(:= *e-sm*irnoff* (chem:make-energy-function *agg* :use-excluded-atoms t :assign-types t))
 
 (set-force-field *mol* :default)
 (:= *e-gaff* (chem:make-energy-function *agg* :use-excluded-atoms t :assign-types t))
