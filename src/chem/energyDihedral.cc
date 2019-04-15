@@ -928,7 +928,7 @@ CL_DEFMETHOD void EnergyDihedral_O::addDihedralTerm(AtomTable_sp atomTable, Atom
   EnergyAtom* ea2 = atomTable->getEnergyAtomPointer(a2);
   EnergyAtom* ea3 = atomTable->getEnergyAtomPointer(a3);
   EnergyAtom* ea4 = atomTable->getEnergyAtomPointer(a4);
-  EnergyDihedral energyDihedral(a1,a2,a3,a4,
+  EnergyDihedral energyDihedral(a1,a2,a3,a4,phase,
                                 ea1->coordinateIndexTimes3(),
                                 ea2->coordinateIndexTimes3(),
                                 ea3->coordinateIndexTimes3(),
