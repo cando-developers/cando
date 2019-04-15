@@ -60,6 +60,8 @@
    load-design
    augment-trainer-with-superposable-conformation-collection
    jostle-trainer
+   build-charge-solvate
+   build-all-trainers
    )
   (:documentation
    "Embryonic joint-tree code"))

@@ -470,6 +470,7 @@ void	EnergyImproperRestraint_O::compareAnalyticalAndNumericalForceAndHessianTerm
 
 
 
+#if 0
 int	EnergyImproperRestraint_O::checkForBeyondThresholdInteractions(
 			stringstream& info, chem::NVector_sp pos )
 {
@@ -539,6 +540,7 @@ int	fails = 0;
 
     return fails;
 }
+#endif
 
 
 

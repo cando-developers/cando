@@ -472,6 +472,7 @@ bool	calcOffDiagonalHessian = true;
 
 
 
+#if 0
 int	EnergyChiralRestraint_O::checkForBeyondThresholdInteractions(
 			stringstream& info, chem::NVector_sp pos )
 {
@@ -547,6 +548,8 @@ int	fails = 0;
 
     return fails;
 }
+
+#endif
 
 
 

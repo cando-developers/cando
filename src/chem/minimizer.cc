@@ -1009,7 +1009,7 @@ void	Minimizer_O::_steepestDescent( int numSteps,
   if ( this->_PrintIntermediateResults ) {
     core::clasp_writeln_string("======= Starting Steepest Descent Minimizer");
   }
-  try {
+  {
     while (1) 
     { _BLOCK_TRACEF(BF("Step %d") %localSteps);
       if (this->_StepCallback.notnilp()) core::eval::funcall(this->_StepCallback,x);
@@ -1029,8 +1029,25 @@ void	Minimizer_O::_steepestDescent( int numSteps,
 
       this->_IterationMessages.str("");
       if ( localSteps>=numSteps ) {
-        MinimizerCondition_ExceededNumSteps fail(chem::_sym_steepest_descent,numSteps);
-        throw(fail);
+        if ( this->_DebugOn )
+        {
+          ANN(stepReport);
+          if ( stepReport.notnilp() )
+          {
+            stepReport->prematureTermination("ExceededNumSteps");
+            this->_Log->addReport(stepReport);
+          }
+        }
+	    //
+	    // Lets save the current conformation
+	    // before throwing this higher
+	    //
+        fp = dTotalEnergyForce( x, force );
+        this->_ScoringFunction->saveCoordinatesAndForcesFromVectors(x,force);
+        ERROR(_sym_MinimizerExceededMaxSteps, (ql::list() 
+                                               << kw::_sym_minimizer << this->asSmartPtr()
+                                               << kw::_sym_number_of_steps << core::make_fixnum(localSteps)
+                                               << kw::_sym_coordinates << x).result());
       }
 //
 // Here we need to implement the three Progress tests
@@ -1089,8 +1106,10 @@ void	Minimizer_O::_steepestDescent( int numSteps,
 
 
         if ( prevStep == 0.0 && step == 0.0 ) {
-          MinimizerCondition_Stuck fail("Two successive CG steps went nowhere");
-          throw(fail);
+          ERROR(_sym_MinimizerStuck, (ql::list()
+                                      << kw::_sym_minimizer << this->asSmartPtr()
+                                      << kw::_sym_coordinates << x).result());
+          
         }
 
         inPlaceAddTimesScalar(x, dir, step );
@@ -1146,25 +1165,6 @@ void	Minimizer_O::_steepestDescent( int numSteps,
       // Handle queued interrupts
       gctools::handle_all_queued_interrupts();
     }
-  } catch (MinimizerCondition_ExceededNumSteps fail) {
-    if ( this->_DebugOn )
-    {
-      ANN(stepReport);
-      if ( stepReport.notnilp() )
-      {
-        stepReport->prematureTermination("ExceededNumSteps");
-        this->_Log->addReport(stepReport);
-      }
-    }
-	    //
-	    // Lets save the current conformation
-	    // before throwing this higher
-	    //
-    fp = dTotalEnergyForce( x, force );
-    this->_ScoringFunction->saveCoordinatesAndForcesFromVectors(x,force);
-    MINIMIZER_EXCEEDED_MAX_STEPS_ERROR(fail);
-  } catch (MinimizerCondition_Stuck fail) {
-    MINIMIZER_STUCK_ERROR(fail.message());
   }
 
   if ( this->_PrintIntermediateResults && !printedLatestMessage ) {
@@ -1276,7 +1276,7 @@ void	Minimizer_O::_conjugateGradient(int numSteps,
   if ( this->_PrintIntermediateResults ) {
     core::clasp_writeln_string((BF( "======= Starting Conjugate Gradient Minimizer" )).str());
   }
-  try {
+  {
     while (1) {
       if (this->_StepCallback.notnilp()) core::eval::funcall(this->_StepCallback,x);
 	    //
@@ -1296,17 +1296,44 @@ void	Minimizer_O::_conjugateGradient(int numSteps,
 
       if ( localSteps > 0 ) {
         if ( localSteps>=numSteps ) {
-          if ( this->_PrintIntermediateResults )
+          if ( this->_DebugOn )
           {
-            core::clasp_writeln_string((BF( "Exceeded max number of steps(%d)") % numSteps ).str());
+            if ( stepReport.notnilp() )
+            {
+              stepReport->prematureTermination("ExceededNumSteps");
+              this->_Log->addReport(stepReport);
+            }
           }
-          MinimizerCondition_ExceededNumSteps fail(chem::_sym_conjugate_gradient,numSteps);
-          throw(fail);
+	//
+	// Lets save the current conformation
+	// before throwing this higher
+	//
+          fp = dTotalEnergyForce( x, force );
+          this->_ScoringFunction->saveCoordinatesAndForcesFromVectors(x,force);
+          ERROR(_sym_MinimizerExceededMaxSteps, (ql::list() 
+                                                 << kw::_sym_minimizer << this->asSmartPtr()
+                                                 << kw::_sym_number_of_steps << core::make_fixnum(localSteps)
+                                                 << kw::_sym_coordinates << x).result());
         }
         if ( prevStep == 0.0 && step == 0.0 ) {
+          if ( this->_DebugOn )
+          {
+            if ( stepReport.notnilp() )
+            {
+              stepReport->prematureTermination("Stuck");
+              this->_Log->addReport(stepReport);
+            }
+          }
+	//
+	// Lets save the current conformation
+	// before throwing this higher
+	//
+          fp = dTotalEnergyForce( x, force );
+          this->_ScoringFunction->saveCoordinatesAndForcesFromVectors(x,force);
           MINIMIZER_STUCK_ERROR("Stuck in conjugate gradients");
         }
       }
+       
 
 //
 // Here we need to implement the three Progress tests
@@ -1441,38 +1468,6 @@ void	Minimizer_O::_conjugateGradient(int numSteps,
       // Handle queued interrupts
       gctools::handle_all_queued_interrupts();
     }
-  } catch (MinimizerCondition_ExceededNumSteps fail) {
-    if ( this->_DebugOn )
-    {
-      if ( stepReport.notnilp() )
-      {
-        stepReport->prematureTermination("ExceededNumSteps");
-        this->_Log->addReport(stepReport);
-      }
-    }
-	//
-	// Lets save the current conformation
-	// before throwing this higher
-	//
-    fp = dTotalEnergyForce( x, force );
-    this->_ScoringFunction->saveCoordinatesAndForcesFromVectors(x,force);
-    MINIMIZER_EXCEEDED_MAX_STEPS_ERROR(fail);
-  } catch (MinimizerCondition_Stuck fail) {
-    if ( this->_DebugOn )
-    {
-      if ( stepReport.notnilp() )
-      {
-        stepReport->prematureTermination("Stuck");
-        this->_Log->addReport(stepReport);
-      }
-    }
-	//
-	// Lets save the current conformation
-	// before throwing this higher
-	//
-    fp = dTotalEnergyForce( x, force );
-    this->_ScoringFunction->saveCoordinatesAndForcesFromVectors(x,force);
-    MINIMIZER_STUCK_ERROR(fail.message());
   }
   if ( this->_PrintIntermediateResults && !printedLatestMessage ) {
     this->_displayIntermediateMessage(step,fnew,forceMag,forceRmsMag,cosAngle,steepestDescent);
@@ -1736,7 +1731,7 @@ void	Minimizer_O::_truncatedNewton(
     core::clasp_writeln_string((BF( "======= Starting Truncated Newton Minimizer" )).str());
   }
 
-  try {
+  {
     LOG(BF("Starting loop") );
     while ( 1 ) {
 
@@ -1859,28 +1854,28 @@ void	Minimizer_O::_truncatedNewton(
         this->_Log->addReport(stepReport);
       }
       if ( kk > numSteps ) {
-        MinimizerCondition_ExceededNumSteps fail(chem::_sym_truncated_newton,numSteps);
-        throw(fail);
-      }
-      // Handle queued interrupts
-      gctools::handle_all_queued_interrupts();
-    }
-  } catch (MinimizerCondition_ExceededNumSteps fail) {
-    if ( this->_DebugOn )
-    {
-      if ( stepReport.notnilp() )
-      {
-        stepReport->prematureTermination("ExceededNumSteps");
-        this->_Log->addReport(stepReport);
-      }
-    }
+        if ( this->_DebugOn )
+        {
+          if ( stepReport.notnilp() )
+          {
+            stepReport->prematureTermination("ExceededNumSteps");
+            this->_Log->addReport(stepReport);
+          }
+        }
 	//
 	// Lets save the current conformation
 	// before throwing this higher
 	//
-    dTotalEnergyForce( xK, forceK );
-    this->_ScoringFunction->saveCoordinatesAndForcesFromVectors(xK,forceK);
-    MINIMIZER_EXCEEDED_MAX_STEPS_ERROR(fail);
+        dTotalEnergyForce( xK, forceK );
+        this->_ScoringFunction->saveCoordinatesAndForcesFromVectors(xK,forceK);
+        ERROR(_sym_MinimizerExceededMaxSteps, (ql::list() 
+                                               << kw::_sym_minimizer << this->asSmartPtr()
+                                               << kw::_sym_number_of_steps << core::make_fixnum(kk)
+                                               << kw::_sym_coordinates << xK).result());
+      }
+      // Handle queued interrupts
+      gctools::handle_all_queued_interrupts();
+    }
   }
   copyVector(xK,xKNext);
   dTotalEnergyForce( xK, forceK );
@@ -2056,94 +2051,6 @@ CL_DEFMETHOD     void	Minimizer_O::evaluateEnergyAndForceManyTimes(int numSteps)
 }
 
 
-#if 0
-CL_LISPIFY_NAME("minimizeSteepestDescent");
-CL_DEFMETHOD     void	Minimizer_O::minimizeSteepestDescent()
-{_OF();
-  ASSERT(this->_ScoringFunction);
-  NVector_sp	pos;
-  int		retries;
-  bool		sawProblem;
-#if USE_POSIX_TIME
-  this->_StartTime = core::PosixTime_O::createNow();
-#endif
-  pos = NVector_O::create(this->_ScoringFunction->getNVectorSize());
-  this->_Position = pos;
-  retries = 100;
-  try {
-    do {
-      sawProblem = false;
-      try {
-        this->_ScoringFunction->loadCoordinatesIntoVector(pos);
-        this->_steepestDescent(this->_NumberOfSteepestDescentSteps,pos,
-                               this->_SteepestDescentTolerance );
-      } catch ( RestartMinimizer ic ) {
-        retries--;
-        sawProblem = true;
-      }
-    } while ( sawProblem && retries > 0 );
-  } catch ( MinimizerCondition_ExceededNumSteps fail ) {
-    this->_Message.str("");
-    this->_Message<<"Steepest descent minimizer exceeded max("
-                  << fail._NumberOfSteps<<") number of steps";
-    this->_Status = minimizerError;
-    MINIMIZER_EXCEEDED_MAX_STEPS_ERROR(fail);
-  }
-  if ( sawProblem ) {
-    this->_Status = minimizerError;
-    this->_Message << "There was a persistant interaction problem";
-    MINIMIZER_ERROR(this->_Message.str());
-  }
-}
-#endif
-
-
-#if 0
-
-CL_LISPIFY_NAME("minimizeConjugateGradient");
-CL_DEFMETHOD     void	Minimizer_O::minimizeConjugateGradient()
-{
-  NVector_sp	pos;
-  int		retries;
-  bool		sawProblem;
-#if USE_POSIX_TIME
-  this->_StartTime = core::PosixTime_O::createNow();
-#endif
-  ASSERT(this->_ScoringFunction);
-  pos = NVector_O::create(this->_ScoringFunction->getNVectorSize());
-  this->_Position = pos;
-  retries = 100;
-  try {
-    do {
-      sawProblem = false;
-      try {
-        this->_ScoringFunction->loadCoordinatesIntoVector(pos);
-        this->_conjugateGradient(this->_NumberOfConjugateGradientSteps,pos,
-                                 this->_ConjugateGradientTolerance );
-      } catch ( RestartMinimizer ld ) {
-        retries--;
-        sawProblem = true;
-      }
-    } while ( sawProblem && retries > 0 );
-  } catch ( MinimizerCondition_ExceededNumSteps fail ) {
-    this->_Message.str("");
-    this->_Message<<"Conjugate gradient minimizer exceeded max("
-                  << fail._NumberOfSteps<<") number of steps";
-    this->_Status = minimizerError;
-    MINIMIZER_EXCEEDED_MAX_STEPS_ERROR(fail);
-  } catch ( MinimizerCondition_Stuck fail ) {
-    this->_Message.str("");
-    this->_Message<< fail.message() ;
-    this->_Status = minimizerError;
-    MINIMIZER_STUCK_ERROR(this->_Message.str());
-  }
-  if ( sawProblem ) {
-    this->_Status = minimizerError;
-    this->_Message << "There was a persistant interaction problem";
-    MINIMIZER_ERROR(this->_Message.str());
-  }
-}
-#endif
 
 CL_LISPIFY_NAME("resetAndMinimize");
 CL_DEFMETHOD     void	Minimizer_O::resetAndMinimize()
@@ -2158,7 +2065,6 @@ CL_DEFMETHOD     void	Minimizer_O::minimize()
 {
   NVector_sp	pos;
   int		retries;
-  bool		sawProblem;
 #if USE_POSIX_TIME
   this->_StartTime = core::PosixTime_O::createNow();
 #endif
@@ -2166,45 +2072,31 @@ CL_DEFMETHOD     void	Minimizer_O::minimize()
   pos = NVector_O::create(this->_ScoringFunction->getNVectorSize());
   this->_Position = pos;
   retries = 100;
-  try {
-    do {
-      sawProblem = false;
-      try {
-        this->_ScoringFunction->loadCoordinatesIntoVector(pos);
-        if ( this->_NumberOfSteepestDescentSteps > 0 ) {
-          this->_steepestDescent( this->_NumberOfSteepestDescentSteps,
-                                  pos, this->_SteepestDescentTolerance );
-        }
-        if ( this->_NumberOfConjugateGradientSteps > 0 ) {
-          this->_conjugateGradient( this->_NumberOfConjugateGradientSteps,
-                                    pos, this->_ConjugateGradientTolerance );
-        }
-        if ( this->_NumberOfTruncatedNewtonSteps > 0 ) {
-          this->_truncatedNewton( this->_NumberOfTruncatedNewtonSteps,
-                                  pos, this->_TruncatedNewtonTolerance );
-        }
-      } catch ( RestartMinimizer ld ) {
-        retries--;
-        sawProblem = true;
+  do {
+    try {
+      this->_ScoringFunction->loadCoordinatesIntoVector(pos);
+      if ( this->_NumberOfSteepestDescentSteps > 0 ) {
+        this->_steepestDescent( this->_NumberOfSteepestDescentSteps,
+                                pos, this->_SteepestDescentTolerance );
       }
-    } while ( sawProblem && retries > 0 );
-  } catch ( MinimizerCondition_ExceededNumSteps fail ) {
-    this->_Message.str("");
-    this->_Message<<"Minimizer exceeded max("
-                  << fail._NumberOfSteps<<") number of steps";
-    this->_Status = minimizerError;
-    MINIMIZER_EXCEEDED_MAX_STEPS_ERROR(fail);
-  } catch ( MinimizerCondition_Stuck fail ) {
-    this->_Message.str("");
-    this->_Message<< fail.message();
-    this->_Status = minimizerError;
-    MINIMIZER_STUCK_ERROR(this->_Message.str());
-  }
-  if ( sawProblem ) {
-    this->_Status = minimizerError;
-    this->_Message << "There was a persistant interaction problem";
-    MINIMIZER_ERROR(this->_Message.str());
-  }
+      if ( this->_NumberOfConjugateGradientSteps > 0 ) {
+        this->_conjugateGradient( this->_NumberOfConjugateGradientSteps,
+                                  pos, this->_ConjugateGradientTolerance );
+      }
+      if ( this->_NumberOfTruncatedNewtonSteps > 0 ) {
+        this->_truncatedNewton( this->_NumberOfTruncatedNewtonSteps,
+                                pos, this->_TruncatedNewtonTolerance );
+      }
+      goto DONE;
+    } catch ( RestartMinimizer ld ) {
+      retries--;
+      ERROR(_sym_MinimizerError, (ql::list() 
+                                  << kw::_sym_minimizer << this->asSmartPtr()
+                                  << kw::_sym_coordinates << pos).result());
+    }
+  } while ( retries > 0 );
+  DONE:
+    return;
 }
 
 

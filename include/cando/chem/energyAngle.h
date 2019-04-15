@@ -210,7 +210,7 @@ public:
     virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm(
 	NVector_sp pos );
 
-    virtual	int	checkForBeyondThresholdInteractions( stringstream& info, NVector_sp pos );
+  virtual	core::List_sp checkForBeyondThresholdInteractionsWithPosition(NVector_sp pos, double threshold );
 
     virtual string	beyondThresholdInteractionsAsString();
 

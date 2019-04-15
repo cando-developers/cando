@@ -214,7 +214,7 @@ namespace       chem
 #endif
 
     CL_LISPIFY_NAME("checkForBeyondThresholdInteractions");
-    CL_DEFMETHOD virtual uint	checkForBeyondThresholdInteractions() = 0;
+    CL_DEFMETHOD virtual core::List_sp	checkForBeyondThresholdInteractions(double threshold);
 
     virtual void	dealWithProblem(core::Symbol_sp error_symbol, core::T_sp arguments) = 0;
 

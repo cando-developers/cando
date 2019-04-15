@@ -155,7 +155,8 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
                                   (warn "The minimizer reported: ~a" c)
                                   (invoke-restart 'skip-rest-of-minimization))))
         (with-handle-linear-angles-dihedrals
-            (chem:minimize minimizer)))
+            (chem:minimize minimizer)
+          (format t "Just returned from minimize~%")))
     ;; skip-rest-of-minimization can also be triggered by the user from the debugger
     (skip-rest-of-minimization ()
       :report "Skip the rest of the current minimization - continue processing"

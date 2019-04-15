@@ -35,8 +35,12 @@
   (:export
    convert-to-script
    job
+   job-file
    node-file
+   script-mixin
+   substitutions
    node-pathname
+   make-node-file
    argument
    node
    option
@@ -55,6 +59,8 @@
    dynamics
    mdcrd
    generate-all-code
+   connect-graph
+   arguments
    ))
 
 (defpackage #:graphviz-amber

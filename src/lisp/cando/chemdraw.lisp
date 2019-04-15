@@ -30,7 +30,7 @@
   (with-open-file
       (fin (or (probe-file (merge-pathnames filename))
                (error "Could not find file ~a" filename)) :direction :input)
-    (let ((cd (chem:make-chem-draw fin)))
+    (let ((cd (chem:make-chem-draw fin verbose t)))
       cd)))
 
 (defun load-chem-draw-aggregate (filename &key verbose)

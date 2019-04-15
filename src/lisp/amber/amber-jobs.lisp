@@ -185,7 +185,7 @@
 
 (defgeneric substitutions (job node-file))
 
-(defmethod substitutions (job (node-file node-file))
+(defmethod substitutionso (job (node-file node-file))
   (job-substitutions job))
 
 
@@ -331,7 +331,6 @@ added to inputs and outputs but not option-inputs or option-outputs"
         (when (string= code existing-code)
           (format t "Skipping generation of ~a - it has not changed~%" pathname)
           (return-from write-file-if-it-has-changed nil))))
-    (format t "Generating script ~a~%" pathname)
     (with-open-file (fout (ensure-directories-exist pathname) :direction :output :if-exists :supersede)
       (write-string code fout)))
 

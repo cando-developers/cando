@@ -518,6 +518,11 @@ void Atom_O::fillInImplicitHydrogensWithResidue(Residue_sp residue)
   }
 }
 
+void Atom_O::fillInImplicitHydrogens()
+{
+  SIMPLE_ERROR(BF("You cannot invoke chem:fill-in-implicit with an atom - any new hydrogens must be added to the residue that contains this atom"));
+}
+
 //
 //	randomizeAtomPosition
 //

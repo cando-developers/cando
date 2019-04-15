@@ -674,14 +674,16 @@ int	EnergyFunction_O::compareAnalyticalAndNumericalForceAndHessianTermByTermAtCu
 
 
 
-
+SYMBOL_EXPORT_SC_(KeywordPkg,stretch_deviations);
+SYMBOL_EXPORT_SC_(KeywordPkg,angle_deviations);
 
 /*!
  * Look for bad geometry
  *
  * Extract the coordinates of the atoms
  */
-uint	EnergyFunction_O::checkForBeyondThresholdInteractions( )
+CL_DEFMETHOD
+core::List_sp EnergyFunction_O::checkForBeyondThresholdInteractions(double threshold)
 {
   NVector_sp	pos;
   stringstream	info;
@@ -691,19 +693,11 @@ uint	EnergyFunction_O::checkForBeyondThresholdInteractions( )
   pos = NVector_O::create(this->getNVectorSize());
   this->loadCoordinatesIntoVector(pos);
   fails = 0;
-  fails += this->_Stretch->checkForBeyondThresholdInteractions(info,pos);
-#if USE_ALL_ENERGY_COMPONENTS
-  fails += this->_Angle->checkForBeyondThresholdInteractions(info,pos);
-  fails += this->_Dihedral->checkForBeyondThresholdInteractions(info,pos);
-  fails += this->_Nonbond->checkForBeyondThresholdInteractions(info,pos);
-  fails += this->_ImproperRestraint->checkForBeyondThresholdInteractions(info,pos);
-  fails += this->_ChiralRestraint->checkForBeyondThresholdInteractions(info,pos);
-  fails += this->_AnchorRestraint->checkForBeyondThresholdInteractions(info,pos);
-  fails += this->_FixedNonbondRestraint->checkForBeyondThresholdInteractions(info,pos);
-#endif
-  LOG(BF("Checking Done") );
-  this->_Message = info.str();
-  return fails;
+  ql::list result;
+  result & this->_Stretch->checkForBeyondThresholdInteractionsWithPosition(pos,threshold);
+  result & this->_Angle->checkForBeyondThresholdInteractionsWithPosition(pos,threshold);
+  result & this->_Nonbond->checkForBeyondThresholdInteractionsWithPosition(pos,threshold);
+  return result.cons();
 }
 
 

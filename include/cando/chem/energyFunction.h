@@ -284,7 +284,7 @@ namespace chem {
     void	evaluateNumericalForce(NVector_sp pos, NVector_sp numForce, double delta );
     void	evaluateNumericalHessian(NVector_sp pos, AbstractLargeSquareMatrix_sp numHessian, bool calcOffDiagonalElements, double delta);
 
-    uint	checkForBeyondThresholdInteractions();
+    core::List_sp checkForBeyondThresholdInteractions(double threshold);
 
     string	debugLogAsString();
 

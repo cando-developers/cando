@@ -58,9 +58,9 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace chem 
 {
-EnergyAtom::EnergyAtom() {};
-EnergyAtom::EnergyAtom(Atom_sp atom,uint coordinateIndex) : Base(atom,coordinateIndex) {} ;
-EnergyAtom::EnergyAtom(core::T_sp forceField, Atom_sp atom, uint coordinateIndex ) : Base(atom,coordinateIndex)
+EnergyAtom::EnergyAtom() : _Flag(0) {};
+EnergyAtom::EnergyAtom(Atom_sp atom,uint coordinateIndex) : Base(atom,coordinateIndex), _Flag(0)  {} ;
+EnergyAtom::EnergyAtom(core::T_sp forceField, Atom_sp atom, uint coordinateIndex ) : Base(atom,coordinateIndex), _Flag(0) 
 {
   this->defineForAtom(forceField,atom,coordinateIndex);
 }
@@ -395,6 +395,22 @@ CL_DEFMETHOD core::T_sp AtomTable_O::atom_table_residues() const {
     SIMPLE_ERROR(BF("residues table is not bound"));
   }
   return core::eval::funcall(cl::_sym_copySeq,this->_Residues);
+}
+
+CL_DEFMETHOD
+void AtomTable_O::setAtomFlag(size_t index, size_t flag) {
+  if (index>=this->_Atoms.size()) {
+    SIMPLE_ERROR(BF("Index %lu is out of range - must be less than %lu") % index % this->_Atoms.size());
+  }
+  this->_Atoms[index]._Flag = flag;
+}
+
+CL_DEFMETHOD
+size_t AtomTable_O::getAtomFlag(size_t index) {
+  if (index>=this->_Atoms.size()) {
+    SIMPLE_ERROR(BF("Index %lu is out of range - must be less than %lu") % index % this->_Atoms.size());
+  }
+  return this->_Atoms[index]._Flag;
 }
 
 

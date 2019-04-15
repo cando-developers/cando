@@ -294,9 +294,11 @@ void RigidBodyEnergyFunction_O::dumpTerms()
 }
     
 
+#if 0
 uint RigidBodyEnergyFunction_O::checkForBeyondThresholdInteractions()
 {
   return 0;
 }
+#endif
 
 };

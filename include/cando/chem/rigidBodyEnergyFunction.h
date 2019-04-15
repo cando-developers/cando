@@ -151,7 +151,7 @@ namespace chem {
     CL_LISPIFY_NAME("rigid-body-energy-function-set-position");
     CL_DEFMETHOD void setPosition(size_t index, double a, double b, double c, double d, double x, double y, double z);
 
-    uint checkForBeyondThresholdInteractions();
+    // uint checkForBeyondThresholdInteractions();
     string	energyComponentsAsString();
 
     CL_LISPIFY_NAME("rigid-body-energy-function-get-position");

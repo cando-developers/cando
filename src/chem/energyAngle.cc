@@ -26,6 +26,9 @@ This is an open source license for the CANDO software from Temple University, bu
        
 #define	DEBUG_LEVEL_NONE
 
+#include <clasp/core/foundation.h>
+#include <clasp/core/numerics.h>
+#include <clasp/core/ql.h>
 #include <cando/chem/energyAngle.h>
 #include <cando/chem/energyAtomTable.h>
 #include <cando/chem/energyFunction.h>
@@ -544,18 +547,21 @@ bool	calcOffDiagonalHessian = true;
 
 }
 
+SYMBOL_EXPORT_SC_(KeywordPkg,angle);
+SYMBOL_EXPORT_SC_(KeywordPkg,atoms);
+SYMBOL_EXPORT_SC_(KeywordPkg,t0);
+SYMBOL_EXPORT_SC_(KeywordPkg,angle_deviation);
 
-
-int	EnergyAngle_O::checkForBeyondThresholdInteractions(
-			stringstream& info, chem::NVector_sp pos )
+core::List_sp	EnergyAngle_O::checkForBeyondThresholdInteractionsWithPosition(chem::NVector_sp pos, double threshold)
 {
-int	fails = 0;
+  ql::list result;
+  int	fails = 0;
 #if 0
-bool	calcForce = false;
-bool	calcDiagonalHessian = false;
-bool	calcOffDiagonalHessian = false;
+  bool	calcForce = false;
+  bool	calcDiagonalHessian = false;
+  bool	calcOffDiagonalHessian = false;
 #endif
-    this->_BeyondThresholdTerms.clear();
+  this->_BeyondThresholdTerms.clear();
 
 //
 // Copy from implementAmberFunction::checkForBeyondThresholdInteractions
@@ -577,44 +583,37 @@ bool	calcOffDiagonalHessian = false;
 #undef	ANGLE_OFF_DIAGONAL_HESSIAN_ACCUMULATE
 #define	ANGLE_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
 
-	if ( this->isEnabled() ) {
-		_BLOCK_TRACE("AngleEnergy finiteDifference comparison");
+  if ( this->isEnabled() ) {
+    _BLOCK_TRACE("AngleEnergy finiteDifference comparison");
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_Angle_termDeclares.cc>
 #pragma clang diagnostic pop
-	    fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
-	    fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
-	    fx3 = 0.0; fy3 = 0.0; fz3 = 0.0;
-	    double x1,y1,z1,x2,y2,z2,x3,y3,z3,kt,t0; //,angleScale;
+    fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
+    fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
+    fx3 = 0.0; fy3 = 0.0; fz3 = 0.0;
+    double x1,y1,z1,x2,y2,z2,x3,y3,z3,kt,t0; //,angleScale;
 //	    double DotAbCb;
-	    int I1, I2, I3,i;
-	    gctools::Vec0<EnergyAngle>::iterator ai;
-	    for ( i=0,ai=this->_Terms.begin();
-			ai!=this->_Terms.end(); ai++,i++ ) {
+    int I1, I2, I3,i;
+    gctools::Vec0<EnergyAngle>::iterator ai;
+    for ( i=0,ai=this->_Terms.begin();
+          ai!=this->_Terms.end(); ai++,i++ ) {
 #include	<cando/chem/energy_functions/_Angle_termCode.cc>
-		if ( fabs(AngleDeviation)/t0 > this->_ErrorThreshold ) {
-		    chem::Atom_sp a1, a2, a3;
-		    a1 = (*ai)._Atom1;
-		    a2 = (*ai)._Atom2;
-		    a3 = (*ai)._Atom3;
-		    info<< "AngleDeviation ";
-//		    info<< a1->getAbsoluteIdPath() << " ";
-//		    info<< a2->getAbsoluteIdPath() << " ";
-//		    info<< a3->getAbsoluteIdPath() << " ";
-		    info<< "value " << fabs(AngleDeviation)/t0 << " ";
-		    info<<"threshold " << this->_ErrorThreshold << " Atoms(";
-		    info << a1->getName() << " ";
-		    info << a2->getName() << " ";
-		    info << a3->getName() << ") ";
-		    info << std::endl;
-		    this->_BeyondThresholdTerms.push_back(*ai);
-		    fails++;
-		}
-	    }
-	}
-
-    return fails;
+      if ( fabs(AngleDeviation)/t0 > threshold ) {
+        chem::Atom_sp a1, a2, a3;
+        a1 = (*ai)._Atom1;
+        a2 = (*ai)._Atom2;
+        a3 = (*ai)._Atom3;
+        ql::list one_deviation;
+        one_deviation << kw::_sym_angle
+                      << kw::_sym_atoms << core::Cons_O::createList(a1,a2,a3)
+                      << kw::_sym_r0 << core::clasp_make_double_float(t0)
+                      << kw::_sym_angle_deviation << core::clasp_make_double_float(AngleDeviation);
+        result << one_deviation.result();
+      }
+    }
+  }
+  return result.cons();
 }
 
 

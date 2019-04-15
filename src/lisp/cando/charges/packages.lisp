@@ -29,6 +29,7 @@
   (:export
    #:calculate-bcc-corrections
    #:combine-am1-bcc-charges
+   #:calculate-am1-bcc-charges
    #:calculate-mopac-am1-bcc-charges
    #:write-sqm-calculation
    #:write-mopac-calculation

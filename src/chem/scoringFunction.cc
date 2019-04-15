@@ -181,5 +181,12 @@ CL_DEFMETHOD double ScoringFunction_O::calculateEnergyAndForce( )
 }
 
 
+CL_LISPIFY_NAME("checkForBeyondThresholdInteractions");
+CL_DEFMETHOD core::List_sp	ScoringFunction_O::checkForBeyondThresholdInteractions(double threshold)
+{
+  SUBIMP();
+}
+
+
 
 };

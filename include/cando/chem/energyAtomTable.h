@@ -68,8 +68,9 @@ public:
   MatterName		_AtomName;		//!<Atom name
   double		_Charge;		//!<Atom charge in electrons
   double		_Mass;			//!<Atom mass in Daltons
-  uint		_TypeIndex;		//!<Type index
-  uint                _AtomicNumber;           //!<Atomic number
+  uint		        _TypeIndex;		//!<Type index
+  uint                  _AtomicNumber;           //!<Atomic number
+  size_t                _Flag;
 public:
 	// Temporary variables, not necessary to store
 	/*! Sets of all atoms that are bonded to this one at remove 0(bonded),
@@ -200,6 +201,9 @@ class AtomTable_O : public core::CxxObject_O
 
   iterator	begin() { return this->_Atoms.begin(); };
   iterator	end() { return this->_Atoms.end(); };
+
+  void setAtomFlag(size_t index, size_t flag);
+  size_t getAtomFlag(size_t index);
 
   void	dumpTerms();
   void constructFromMatter(Matter_sp mol, core::T_sp nonbondForceField, core::T_sp activeAtoms );

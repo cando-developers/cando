@@ -410,10 +410,11 @@
 		atoms-to-am1-charges)
     atoms-to-am1-bcc-charges))
 
-(defun calculate-am1-bcc-charges (aggregate)
+(defun calculate-am1-bcc-charges (aggregate &key (maxcyc 9999))
   "Calculate Am1-Bcc charges and add the results to the aggregate."
   (let ((bcc (calculate-bcc-corrections aggregate))
-        (order (charges:write-sqm-calculation (open "/tmp/sqm-input.txt" :direction :output) aggregate))
+        (order (charges:write-sqm-calculation (open "/tmp/sqm-input.txt" :direction :output) aggregate
+                                              :maxcyc maxcyc))
         (output-file-name "/tmp/sqm-output.out"))
     (ext:vfork-execvp (list (namestring (translate-logical-pathname #P"amber:bin;sqm"))
                             "-O"

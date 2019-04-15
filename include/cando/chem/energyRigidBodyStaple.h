@@ -112,7 +112,7 @@ class EnergyRigidBodyStaple_O : public EnergyRigidBodyComponent_O
 
   virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm(NVector_sp pos ) {IMPLEMENT_ME();};
 
-  virtual	int	checkForBeyondThresholdInteractions( stringstream& info, NVector_sp pos ) {IMPLEMENT_ME();};
+//  virtual	int	checkForBeyondThresholdInteractions( stringstream& info, NVector_sp pos ) {IMPLEMENT_ME();};
 
   virtual string	beyondThresholdInteractionsAsString() {IMPLEMENT_ME();};
 

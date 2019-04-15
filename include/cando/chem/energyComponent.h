@@ -317,12 +317,9 @@ class EnergyComponent_O : public core::CxxObject_O
                                     gc::Nilable<NVector_sp>	hdvec,
                                     gc::Nilable<NVector_sp> dvec) = 0;
 
-  virtual	int	checkForBeyondThresholdInteractions( stringstream& info, NVector_sp pos ) {_OF();SUBCLASS_MUST_IMPLEMENT();};
+  virtual core::List_sp checkForBeyondThresholdInteractionsWithPosition(NVector_sp pos, double threshold ) {_OF();SUBCLASS_MUST_IMPLEMENT();};
 
-  virtual string	beyondThresholdInteractionsAsString() {_OF();SUBCLASS_MUST_IMPLEMENT();};
-
-  virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm(
-                                                                               NVector_sp pos ) {_OF();SUBCLASS_MUST_IMPLEMENT();};
+  virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm(NVector_sp pos ) {_OF();SUBCLASS_MUST_IMPLEMENT();};
  public:
   EnergyComponent_O( const EnergyComponent_O& ss ); //!< Copy constructor
 

@@ -79,7 +79,7 @@
   (load "quicklisp:setup.lisp"))
 
 (progn
-  (funcall (find-symbol "QUICKLOAD" :ql) "cando-user" :silent t)
+  (funcall (find-symbol "QUICKLOAD" :ql) "cando-user" :silent (null (core:is-interactive-lisp)))
   ;; Ensure that all threads start in the :CANDO-USER package
   (core:symbol-global-value-set '*package* (find-package :cando-user))
   )

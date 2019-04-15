@@ -45,7 +45,6 @@
 
 
 (defun minimize-minimizer (minimizer &key (restraints-on t)
-                                       system
                                        (max-sd-steps 1000)
                                        (max-cg-steps 50000)
                                        (max-tn-steps 0)
@@ -70,7 +69,6 @@
 
 (defun minimize-energy-function (energy-function &rest args
                                  &key (restraints-on t)
-                                   system
                                    (max-sd-steps 1000)
                                    (max-cg-steps 50000)
                                    (max-tn-steps 0)
@@ -83,7 +81,6 @@
 
 (defun minimize (agg &rest args
                  &key (restraints-on t)
-                   system
                    (max-sd-steps 1000)
                    (max-cg-steps 50000)
                    (max-tn-steps 0)
@@ -94,12 +91,11 @@
                    (assign-types t))
   "Minimize the conformational energy for an aggregate"
   (format t "Entered minimize~%")
-  (let ((energy-func (chem:make-energy-function agg system :use-excluded-atoms use-excluded-atoms :assign-types assign-types)))
+  (let ((energy-func (chem:make-energy-function agg :use-excluded-atoms use-excluded-atoms :assign-types assign-types)))
     (apply #'minimize-energy-function energy-func args)
     energy-func))
 
 (defun minimize-energy-function-from-bad-geometry (energy-function &key (restraints-on t)
-                                                                     system
                                                                      (max-sd-steps 1000)
                                                                      (max-cg-steps 50000)
                                                                      (max-tn-steps 0)
@@ -126,7 +122,6 @@
 
 (defun minimize-from-bad-geometry (agg &rest args
                                    &key (restraints-on t)
-                                     system
                                      (max-sd-steps 1000)
                                      (max-cg-steps 50000)
                                      (max-tn-steps 0)
@@ -136,7 +131,7 @@
                                      (use-excluded-atoms t)
                                      (assign-types t))
   "Minimize the conformational energy for an aggregate"
-  (let ((energy-func (chem:make-energy-function agg system :use-excluded-atoms use-excluded-atoms :assign-types assign-types)))
+  (let ((energy-func (chem:make-energy-function agg :use-excluded-atoms use-excluded-atoms :assign-types assign-types)))
     (apply #'minimize-energy-function energy-func args)
     energy-func))
 

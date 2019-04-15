@@ -599,6 +599,9 @@ bool CDFragment_O::interpret(bool verbose, bool addHydrogens)
   Molecule_sp mol = this->createMolecule();
 // IF YOU COMMENT OUT THE NEXT LINE THEN A TRULY FRIGHTENING BUG WILL HAPPEN
   this->_Molecule = mol;
+#if 1
+  mol->fillInImplicitHydrogens();
+#else
   core::List_sp carbons = mol->allAtomsOfElementAsList(element_C);
   if (addHydrogens) {
     for ( core::List_sp cur = carbons; cur.consp(); cur = oCdr(cur) ) {
@@ -621,6 +624,8 @@ bool CDFragment_O::interpret(bool verbose, bool addHydrogens)
       a->fillInImplicitHydrogens();
     }
   }
+#endif
+
   {_BLOCK_TRACEF(BF("Assigning cipPriorities"));
     CipPrioritizer_sp cip = CipPrioritizer_O::create();
     cip->defineStereochemicalConfigurationsForAllAtoms(mol);
@@ -1173,7 +1178,6 @@ void ChemDraw_O::parseChild( adapt::QDomNode_sp child, bool verbose, bool addHyd
 
 void	ChemDraw_O::parse( core::T_sp strm, bool verbose, bool addHydrogens )
 {
-  if (verbose) core::write_bf_stream(BF("ChemDraw_O::parse starting\n"));
   adapt::QDomNode_sp xml = adapt::QDomNode_O::parse(strm);
   if ( !xml->hasChildrenWithName("page") )
     SIMPLE_ERROR(BF("Not a cdxml file" ));

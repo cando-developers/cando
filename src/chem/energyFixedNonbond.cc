@@ -512,6 +512,7 @@ bool	calcOffDiagonalHessian = true;
 
 
 
+#if 0
 int	EnergyFixedNonbondRestraint_O::checkForBeyondThresholdInteractions(
 			stringstream& info, NVector_sp pos )
 {
@@ -602,6 +603,7 @@ int	fails = 0;
     }
     return fails;
 }
+#endif
 
 
 
