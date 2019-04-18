@@ -837,13 +837,13 @@ CL_DEFMETHOD void EnergyDihedral_O::fill_from_vectors_in_alist(core::List_sp vec
 }
 
 CL_DEFMETHOD void EnergyDihedral_O::addDihedralTerm(AtomTable_sp atomTable, Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4,
-                                       double phase, double v, int multiplicity)
+                                                    double phase, bool proper, double v, int multiplicity)
 {
   EnergyAtom* ea1 = atomTable->getEnergyAtomPointer(a1);
   EnergyAtom* ea2 = atomTable->getEnergyAtomPointer(a2);
   EnergyAtom* ea3 = atomTable->getEnergyAtomPointer(a3);
   EnergyAtom* ea4 = atomTable->getEnergyAtomPointer(a4);
-  EnergyDihedral energyDihedral(a1,a2,a3,a4,phase,
+  EnergyDihedral energyDihedral(a1,a2,a3,a4,phase, proper, 
                                 ea1->coordinateIndexTimes3(),
                                 ea2->coordinateIndexTimes3(),
                                 ea3->coordinateIndexTimes3(),

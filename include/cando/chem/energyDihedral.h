@@ -116,7 +116,7 @@ public:
 	double		getCalculatedDihedralDeviation() { return this->_CalculatedDihedralDeviation;};
 
 public:
- EnergyDihedral(Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, double phase, size_t i1, size_t i2, size_t i3, size_t i4, double sinp, double cosp, double v, double dn, int in) : term(sinp,cosp,v,dn,in,i1,i2,i3,i4),_Atom1(a1),_Atom2(a2),_Atom3(a3),_Atom4(a4), _PhaseRad(phase) {};
+ EnergyDihedral(Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, double phase, bool proper, size_t i1, size_t i2, size_t i3, size_t i4, double sinp, double cosp, double v, double dn, int in) : term(sinp,cosp,v,dn,in,i1,i2,i3,i4),_Atom1(a1),_Atom2(a2),_Atom3(a3),_Atom4(a4), _PhaseRad(phase), _Proper(proper) {};
   EnergyDihedral() {};
 public:
 	adapt::QDomNode_sp	asXml();
@@ -238,7 +238,7 @@ public:
     virtual string	beyondThresholdInteractionsAsString();
 
 
-  void addDihedralTerm(AtomTable_sp at, Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, double phase, double v, int multiplicity);
+    void addDihedralTerm(AtomTable_sp at, Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, double phase, bool proper, double v, int multiplicity);
 
 public:
     EnergyDihedral_O( const EnergyDihedral_O& ss ); //!< Copy constructor

@@ -1,6 +1,7 @@
 (setf *default-pathname-defaults* #P"~/Development/cando/extensions/cando/src/tests/alanine-demo/")
 (setup-default-paths)
 (easy-gaff)
+(clear-force-field :smirnoff)
 (load-smirnoff-params #P"~/Development/openforcefield/openforcefield/data/forcefield/smirnoff99Frosst.offxml")
 (:= *agg* (load-chem-draw-aggregate "alanine2.cdxml"))
 (chem:fill-in-implicit-hydrogens *agg*)
@@ -20,3 +21,4 @@
 (:= *e-gaff* (chem:make-energy-function *agg* :use-excluded-atoms t :assign-types t))
 
 
+leap.core:*force-fields*

@@ -184,11 +184,14 @@
                               :id id)))
     (block terms
       (loop for index from 1
-            for idivf-name = (format nil "idivf~a" index)
-            for idivf-str = (gethash idivf-name attributes)
-            if idivf-str
-              do (let ((idivf (fortran:parse-double-float idivf-str))
-                       (k (fortran:parse-double-float (gethash (format nil "k~a" index) attributes)))
+            for k-name = (format nil "k~a" index)
+            for k-str = (gethash k-name attributes)
+            if k-str
+              do (let ((idivf (let ((idivf-str (gethash (format nil "idivf~a" index) attributes)))
+                                (if idivf-str
+                                    (fortran:parse-double-float idivf-str)
+                                    1.0d0)))
+                       (k (fortran:parse-double-float k-str))
                        (periodicity (parse-integer (gethash (format nil "periodicity~a" index) attributes)))
                        (phase (fortran:parse-double-float (gethash (format nil "phase~a" index) attributes))))
                    (push (make-instance 'torsion-part
