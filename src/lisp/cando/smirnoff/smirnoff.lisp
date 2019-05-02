@@ -103,7 +103,7 @@ The chem:force-field-type-rules-merged generic function was used to organize the
     (loop with terms = (terms source)
           for index below (length terms)
           for term = (aref terms index)
-          for rmin-half = (rmin-half term)
+          for rmin-half = (/ (rmin-half term) 2)
           for radius-nanometers = (* rmin-half rmin-half-to-nanometers-multiplier)
           for epsilon = (epsilon term)
           for epsilon-kj = (* epsilon epsilon-to-kj-multiplier)
