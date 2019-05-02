@@ -2049,6 +2049,7 @@ then don't calculate 1,4 interactions"
         (setf nonbond-vectors (acons :cn1-vec (copy-seq lennard-jones-acoef) nonbond-vectors))
         (setf nonbond-vectors (acons :cn2-vec (copy-seq lennard-jones-bcoef) nonbond-vectors))
         ;;(rlog "nonbond-vectors -> ~s~%" nonbond-vectors)
+        (format t "I'm here 1 ~%")
         (chem:construct-nonbond-terms-from-aList energy-nonbond nonbond-vectors)
         (loop for i from 0 below (length excluded-atoms-list)
               for atom = (- (aref excluded-atoms-list i) 1)
@@ -2056,6 +2057,7 @@ then don't calculate 1,4 interactions"
         (chem:set-nonbond-excluded-atom-info energy-nonbond atom-table (copy-seq excluded-atoms-list) (copy-seq number-excluded-atoms))
 
         ;; for energy nonbond test
+        (format t "I'm here 2 ~%")
         (chem:expand-excluded-atoms-to-terms energy-nonbond)
         ;;
 
@@ -2072,15 +2074,19 @@ then don't calculate 1,4 interactions"
                                                      :atom-table atom-table)))
           energy-function #| <-- This was missing before |# )
 	;; fill in atom-table information
+        (format t "I'm here 3 ~%")
 	(chem:setf-atom-table-residue-pointers atom-table residue-pointer)
         (chem:setf-atom-table-residue-names atom-table (make-array (length residue-label) :adjustable t :initial-contents residue-label))
 	(chem:setf-atom-table-residue-pointers atom-table residue-pointer)
-        (chem:set-first-solvent-molecule-nspsol atom-table (elt solvent-pointers 2))
-        (chem:set-final-solute-residue-iptres atom-table (elt solvent-pointers 0))
-        (chem:set-total-number-of-molecules-nspm atom-table (elt solvent-pointers 1))
+        (if solvent-pointers
+            (progn
+              (chem:set-first-solvent-molecule-nspsol atom-table (elt solvent-pointers 2))
+              (chem:set-final-solute-residue-iptres atom-table (elt solvent-pointers 0))
+              (chem:set-total-number-of-molecules-nspm atom-table (elt solvent-pointers 1))))
   	;; (chem:setf-atom-table-atoms-per-molecule atom-table atoms-per-molecule)
 	(chem:setf-atom-table-residues atom-table residues-vec)
 	;; more here
+        (format t "I'm here 4 ~%")
         (let ((alist (list (cons :atom-table atom-table)
                            (cons :stretch energy-stretch)
                            (cons :angle energy-angle)
