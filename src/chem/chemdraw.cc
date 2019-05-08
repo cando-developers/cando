@@ -600,7 +600,9 @@ bool CDFragment_O::interpret(bool verbose, bool addHydrogens)
 // IF YOU COMMENT OUT THE NEXT LINE THEN A TRULY FRIGHTENING BUG WILL HAPPEN
   this->_Molecule = mol;
 #if 1
-  mol->fillInImplicitHydrogens();
+  if (addHydrogens) {
+    mol->fillInImplicitHydrogens();
+  }
 #else
   core::List_sp carbons = mol->allAtomsOfElementAsList(element_C);
   if (addHydrogens) {
