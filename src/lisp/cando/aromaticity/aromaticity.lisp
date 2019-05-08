@@ -54,6 +54,8 @@
               do (progn
                    (set-aromaticity-type match-atom aromaticity-type rule-name)
                    (push match-atom hits))))
+    ;; At this point if we look at bonds between the atoms in hits we could
+    ;; set the bond types to 'aromatic' if that was the right thing to do.
     hits))
 
 (defun remove-hits-from-list (atoms-in-rings hits)
@@ -126,19 +128,30 @@
                                append ring)))
     (values atoms-in-rings all-rings)))
 
+
+
+(defun chem:identify-aromatic-rings (atoms-in-rings)
+  "Use the atoms-in-rings - found using RingFinder_O::identifyRings(matter) and run all of the
+aromaticity tests on the atoms in the rings.   Assign aromaticity flags of aromatic atoms."
+  (format t "atoms in rings ~a~%" atoms-in-rings)
+  (setf atoms-in-rings (aromatic-rule atoms-in-rings *rule1* 'ar6 'rule1))
+  (setf atoms-in-rings (aromatic-rule atoms-in-rings *rule2* 'ar6 'rule2))
+  (setf atoms-in-rings (aromatic-rule atoms-in-rings *rule3* 'ar6 'rule3))
+  (setf atoms-in-rings (aromatic-rule atoms-in-rings *rule4a* 'ar7 'rule4a))
+  (setf atoms-in-rings (aromatic-rule atoms-in-rings *rule4b* 'ar7 'rule4b))
+  (setf atoms-in-rings (aromatic-rule atoms-in-rings *rule5* 'ar5 'rule5)))
+  
 ;;
 ;; Identify all rings, isolate atoms in rings and apply all of the aromaticity rules
 ;; from Jakalian, Jack, and Bayly • Vol. 23, No. 16 • Journal of Computational Chemistry
 ;; Return the rings for bond type assignment
-(defun identify-aromatic-rings (mol)
-  (multiple-value-bind (atoms-in-rings all-rings)
-      (all-ring-atoms mol)
-    (setf atoms-in-rings (aromatic-rule atoms-in-rings *rule1* 'ar6 'rule1))
-    (setf atoms-in-rings (aromatic-rule atoms-in-rings *rule2* 'ar6 'rule2))
-    (setf atoms-in-rings (aromatic-rule atoms-in-rings *rule3* 'ar6 'rule3))
-    (setf atoms-in-rings (aromatic-rule atoms-in-rings *rule4a* 'ar7 'rule4a))
-    (setf atoms-in-rings (aromatic-rule atoms-in-rings *rule4b* 'ar7 'rule4b))
-    (setf atoms-in-rings (aromatic-rule atoms-in-rings *rule5* 'ar5 'rule5))
-    (select-aromatic-rings all-rings)))
+(defun identify-aromatic-rings (matter)
+  (unless (or (typep matter 'chem:molecule) (typep matter 'chem:aggregate))
+    (error "identify-aromatic-rings only accepts aggregate or molecule - you passed ~s" matter))
+  (cando:do-molecules (molecule matter)
+    (multiple-value-bind (atoms-in-rings all-rings)
+        (all-ring-atoms molecule)
+      (chem:identify-aromatic-rings atoms-in-rings)
+      (select-aromatic-rings all-rings))))
 
 

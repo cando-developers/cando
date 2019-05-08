@@ -1135,6 +1135,9 @@ SYMBOL_EXPORT_SC_(ChemPkg,clear_combined_force_field);
 SYMBOL_EXPORT_SC_(ChemPkg,generate_molecule_energy_function_tables);
 SYMBOL_EXPORT_SC_(ChemPkg,STARparameter_warningsSTAR);
 SYMBOL_EXPORT_SC_(ChemPkg,report_parameter_warnings);
+
+SYMBOL_EXPORT_SC_(ChemPkg,identify_aromatic_rings);
+
 SYMBOL_EXPORT_SC_(KeywordPkg,bounding_box);
 CL_LISPIFY_NAME("defineForMatter");
 CL_LAMBDA((energy-function !) matter &key use-excluded-atoms active-atoms (assign-types t));
@@ -1155,13 +1158,20 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, bool useEx
 
   core::List_sp rings = RingFinder_O::identifyRings(matter);
   core::DynamicScopeManager ring_scope(_sym_STARcurrent_ringsSTAR, rings );
-  
-	//
-	// Assign relative Cahn-Ingold-Preylog priorities
-	//
+
+  //
+  // Calculate aromaticity using the rings we just calculated
+  //
+  for (auto cur : rings){
+    core::eval::funcall(_sym_identify_aromatic_rings, oCar(cur));
+    //core::eval::funcall(_sym_identify_aromatic_rings, rings);
+  }
+  //
+  // Assign relative Cahn-Ingold-Preylog priorities
+  //
   if (chem__verbose(0)) core::write_bf_stream(BF("Assigning CIP priorities.\n"));
   CipPrioritizer_O::assignPriorities(matter);
-  
+
     //
     // Assign atom types for each molecule
     //

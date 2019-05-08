@@ -420,8 +420,8 @@ public:
 
 
 
-
-bool    _matchBondTypes(BondEnum be, chem::BondOrder bo);
+bool    _matchInAromaticBond(Atom_sp a1, Atom_sp a2);
+bool    _matchBondTypes(BondEnum be, chem::BondOrder bo, Atom_sp a1, Atom_sp a2);
 
 FORWARD(BondMatcher);
 

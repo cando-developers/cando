@@ -951,7 +951,31 @@ void ResidueTest_O::fields(core::Record_sp node) {
 
 // ------ BondToAtomTest
 
-bool _matchBondTypes(BondEnum be, chem::BondOrder bo) {
+bool _matchInAromaticBond(Atom_sp a1, Atom_sp a2) {
+  printf("%s:%d:%s  Handle me\n", __FILE__, __LINE__, __FUNCTION__ );
+  if (chem::_sym_STARcurrent_ringsSTAR->boundP()) {
+    core::List_sp rings = chem::_sym_STARcurrent_ringsSTAR->symbolValue();
+      // If a1 and other are in the same ring
+    bool found_a1 = false;
+    bool found_a2 = false;
+    for ( auto cur : rings ) {
+      core::List_sp ring = CONS_CAR(cur);
+      found_a1 = false;
+      found_a2 = false;
+      for ( auto cur2 : ring ) {
+        core::T_sp one = CONS_CAR(cur2);
+        if (one == a1 && a1->isAromatic()) found_a1 = true;
+        else if (one == a2 && a2->isAromatic()) found_a2 = true;
+      }
+      if (found_a1&&found_a2) return true;
+    }
+    return false;
+  }
+  return false;
+}
+ 
+
+bool _matchBondTypes(BondEnum be, chem::BondOrder bo, Atom_sp a1, Atom_sp a2) {
   LOG(BF("bondOrder = %s") % bondOrderToString(bo).c_str());
   switch (be) {
   case SABSingleBond:
@@ -961,17 +985,17 @@ bool _matchBondTypes(BondEnum be, chem::BondOrder bo) {
       break;
   case SABSingleOrAromaticBond:
       LOG(BF("SMARTS BondEnum = SABSingleOrAromaticBond"));
-      if (!(bo == chem::singleBond || bo == chem::aromaticBond))
+      if (!(bo == chem::singleBond || bo == chem::aromaticBond || _matchInAromaticBond(a1,a2)))
         goto nomatch;
       break;
   case SABDoubleOrAromaticBond:
       LOG(BF("SMARTS BondEnum = SABDoubleOrAromaticBond"));
-      if (!(bo == chem::doubleBond || bo == chem::aromaticBond))
+      if (!(bo == chem::doubleBond || bo == chem::aromaticBond || _matchInAromaticBond(a1,a2)))
         goto nomatch;
       break;
   case SABTripleOrAromaticBond:
       LOG(BF("SMARTS BondEnum = SABTripleOrAromaticBond"));
-      if (!(bo == chem::tripleBond || bo == chem::aromaticBond))
+      if (!(bo == chem::tripleBond || bo == chem::aromaticBond || _matchInAromaticBond(a1,a2)))
         goto nomatch;
       break;
   case SABDoubleBond:
@@ -986,7 +1010,7 @@ bool _matchBondTypes(BondEnum be, chem::BondOrder bo) {
       break;
   case SABAromaticBond:
       LOG(BF("SMARTS BondEnum = SABAromaticBond"));
-      if (bo != chem::aromaticBond)
+      if (bo != chem::aromaticBond || _matchInAromaticBond(a1,a2))
         goto nomatch;
       break;
   case SABAnyBond:
@@ -1025,6 +1049,8 @@ bool _matchBondTypesWithAtoms(BondEnum be, chem::BondOrder bo, Atom_sp from, Bon
       bool found_other = false;
       for ( auto cur : rings ) {
         core::List_sp ring = CONS_CAR(cur);
+        found_from = false;
+        found_other = false;
         for ( auto cur2 : ring ) {
           core::T_sp one = CONS_CAR(cur2);
           if (one == from) found_from = true;
@@ -1036,7 +1062,7 @@ bool _matchBondTypesWithAtoms(BondEnum be, chem::BondOrder bo, Atom_sp from, Bon
     }
     SIMPLE_ERROR(BF("ring-bond detection can only be done if the chem:*current-rings* dynamic variable is bound - it is not"));
   } else {
-    return _matchBondTypes(be,bo);
+    return _matchBondTypes(be,bo,from, bond->getOtherAtom(from));
   }
 }
 
@@ -1266,15 +1292,14 @@ CL_DEFMETHOD BondMatcher_sp BondToAtomTest_O::bondMatcher() const {
 //! Set the BondType if it's one that is recognzed by _matchBondTypes
 CL_DEFMETHOD bool BondToAtomTest_O::setfBondTypeIfOptimizable(BondEnum be) {
   switch (be) {
+    // Aromatic bonds are not optimizable because there
+    // is a slow test that checks if the two atoms are in the same
+    // ring and if they are both aromatic.  If both of these are
+    // true - then the bond between them is aromatic
   case SABSingleBond:
-  case SABSingleOrAromaticBond:
-  case SABDoubleOrAromaticBond:
-  case SABTripleOrAromaticBond:
   case SABDoubleBond:
   case SABTripleBond:
-  case SABAromaticBond:
   case SABAnyBond:
-  case SABDelocalizedBond:
       this->_Bond = be;
       return true;
   default:
@@ -1546,7 +1571,7 @@ bool AtomTest_O::matches_Atom(Root_sp root, chem::Atom_sp atom) {
       LOG(BF("SAPInBond"));
       cnt = 0;
       for (int i = 0; i < atom->numberOfBonds(); i++) {
-        if (chem::_matchBondTypes((chem::BondEnum) this->_IntArg, atom->bondedOrder(i)))
+        if (chem::_matchBondTypes((chem::BondEnum) this->_IntArg, atom->bondedOrder(i), atom,atom->bondedNeighbor(i)))
           cnt++;
       }
       if (cnt == this->_NumArg)
@@ -2959,7 +2984,7 @@ CL_DEFUN ChemInfoGraph_sp chem__make_chem_info_graph( Root_sp pattern)
       int ci = chemInfoEdge[eci];
       BondToAtomTest_sp bta = this->_chemInfoGraph->_bondNodes[ci];
     // If the comparison is simple then just match the bond type to the BondEnum
-      if (bta->_Bond!=SABUseBondMatcher) return _matchBondTypes(bta->_Bond,bo);
+      if (bta->_Bond!=SABUseBondMatcher) return _matchBondTypes(bta->_Bond,bo,_Unbound<Atom_O>(),_Unbound<Atom_O>());
     // The comparison is not simple - we need to use the BondMatcher
       BondMatcher_sp bondMatcher = gc::As<BondMatcher_sp>(bta->_BondMatcher);
       int msource = boost::source(em,*(this->_moleculeGraph->_moleculeGraph));
