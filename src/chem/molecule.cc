@@ -73,7 +73,7 @@ void Molecule_O::fields(core::Record_sp node)
 }
 
 Molecule_O::Molecule_O(const Molecule_O& mol)
-  :Matter_O(mol)
+  :Matter_O(mol), _ForceFieldName(mol._ForceFieldName)
 {
   this->_Type = mol._Type;
 }
