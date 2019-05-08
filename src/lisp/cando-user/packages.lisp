@@ -28,7 +28,9 @@
 (defpackage #:cando-user
   (:shadowing-import-from :chem "ATOM")
   (:use #:common-lisp)
-  (:export #:start-swank)
+  (:import-from :leap.pdb #:load-pdb)
+  (:export #:start-swank
+           #:load-pdb)
   )
 
 
