@@ -951,8 +951,16 @@ void ResidueTest_O::fields(core::Record_sp node) {
 
 // ------ BondToAtomTest
 
+bool is_aromatic(Atom_sp a1) {
+  if (chem::_sym_STARcurrent_aromaticity_informationSTAR->boundP()) {
+    core::HashTable_sp aromaticity_info = gc::As<core::HashTable_sp>(chem::_sym_STARcurrent_aromaticity_informationSTAR->symbolValue());
+    core::T_sp info = aromaticity_info->gethash(a1);
+    return info.notnilp();
+  }
+  return false;
+}
+
 bool _matchInAromaticBond(Atom_sp a1, Atom_sp a2) {
-  printf("%s:%d:%s  Handle me\n", __FILE__, __LINE__, __FUNCTION__ );
   if (chem::_sym_STARcurrent_ringsSTAR->boundP()) {
     core::List_sp rings = chem::_sym_STARcurrent_ringsSTAR->symbolValue();
       // If a1 and other are in the same ring
@@ -964,8 +972,8 @@ bool _matchInAromaticBond(Atom_sp a1, Atom_sp a2) {
       found_a2 = false;
       for ( auto cur2 : ring ) {
         core::T_sp one = CONS_CAR(cur2);
-        if (one == a1 && a1->isAromatic()) found_a1 = true;
-        else if (one == a2 && a2->isAromatic()) found_a2 = true;
+        if (one == a1 && is_aromatic(a1)) found_a1 = true;
+        else if (one == a2 && is_aromatic(a2)) found_a2 = true;
       }
       if (found_a1&&found_a2) return true;
     }
@@ -1456,7 +1464,7 @@ bool AtomTest_O::matches_Atom(Root_sp root, chem::Atom_sp atom) {
       goto SUCCESS;
   case SAPAromaticElement:
       LOG(BF("SAPAromaticElement(%s) == expecting(%s)") % _rep_(atom->getElementAsSymbol()) % _rep_(this->_SymbolArg));
-      if (this->_SymbolArg == atom->getElementAsSymbol() && atom->isAromatic())
+      if (this->_SymbolArg == atom->getElementAsSymbol() && is_aromatic(atom))
         goto SUCCESS;
       break;
   case SAPElement:
@@ -1466,12 +1474,12 @@ bool AtomTest_O::matches_Atom(Root_sp root, chem::Atom_sp atom) {
       break;
   case SAPAliphatic:
       LOG(BF("SAPAliphatic"));
-      if (!atom->isAromatic())
+      if (!is_aromatic(atom))
         goto SUCCESS;
       break;
   case SAPAromatic:
       LOG(BF("SAPAromatic"));
-      if (atom->isAromatic())
+      if (is_aromatic(atom))
         goto SUCCESS;
       break;
   case SAPPredicateName:
