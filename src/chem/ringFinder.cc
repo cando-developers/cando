@@ -776,6 +776,8 @@ CL_DEFMETHOD void RingFinder_O::findRings(int numAtoms)
     this->advanceRingSearch(stage);
     LOG(BF("After ring search, number of rings found = %d")
         % this->_finalRings.size()  );
+    // Stop once we find all the rings we expect to find
+    if (this->_finalRings.size()>=numberOfRingsExpected) break;
     stage++;
     trigger--;
     if ( trigger<=0 )

@@ -1163,7 +1163,7 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, bool useEx
   //
   // Calculate aromaticity using the rings we just calculated
   //
-  core::T_sp aromaticity_info = core::eval::funcall(_sym_identify_aromatic_rings,rings);
+  core::T_sp aromaticity_info = core::eval::funcall(_sym_identify_aromatic_rings,matter);
   core::DynamicScopeManager aromaticity_scope(_sym_STARcurrent_aromaticity_informationSTAR,aromaticity_info);
   
   //
