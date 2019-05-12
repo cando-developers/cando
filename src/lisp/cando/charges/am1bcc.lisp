@@ -105,12 +105,12 @@
 (defun describe-atom (a)
   (if a
       (multiple-value-bind (aromatic step-assigned) (aromaticity:is-aromatic a)
-	(format t "~a type[~a] ~a ~a ~a~%" (chem:get-name a)
-	   (get-am1-bcc-type a)
-	   (aromaticity:ring-membership-as-string a)
-	   aromatic
-	   step-assigned)
-	)
+        (format t "~a type[~a] ~a ~a ~a~%" (chem:get-name a)
+           (get-am1-bcc-type a)
+           (aromaticity:aromaticity-information-as-string a)
+           aromatic
+           step-assigned)
+        )
     (debug))
   )
 
@@ -137,37 +137,38 @@
 ;;
 ;; Assign Am1Bcc bond types for all bonds
 ;; For the rules see Jakalian, Jack, and Bayly • Vol. 23, No. 16 • Journal of Computational Chemistry
-(defun assign-am1-bcc-bond-types (mol all-rings)
-					; Identify the aromatic bonds
-					; any pair of atoms in the same ring that has a single or
-					; double bond is an aromatic bond
-  (loop for ring in all-rings
-     do (let ((ring-bonds (chem:ring-bonds ring)))
-	  (loop for bond in ring-bonds
-	     do (let ((a1 (chem:get-atom1 bond))
-		      (a2 (chem:get-atom2 bond)))
-		  (when (and (aromaticity:is-aromatic a1)
-			     (aromaticity:is-aromatic a2))
-		    (cond
-		      ((eq (chem:get-order bond) :single-bond)
-		       (set-bond-type bond 7))
-		      ((eq (chem:get-order bond) :double-bond)
-		       (set-bond-type bond 8))
-		      (t ())))))))
-					; First look for delocalized bonds - carboxyl groups, nitro groups
+(defun assign-am1-bcc-bond-types (mol)
+                                        ; Identify the aromatic bonds
+                                        ; any pair of atoms in the same ring that has a single or
+                                        ; double bond is an aromatic bond
+  (let ((all-rings (chem:identify-rings mol)))
+    (loop for ring in all-rings
+          for ring-bonds = (chem:ring-bonds ring)
+          do (loop for bond in ring-bonds
+                   for a1 = (chem:get-atom1 bond)
+                   for a2 = (chem:get-atom2 bond)
+                   when (and (aromaticity:is-aromatic a1)
+                             (aromaticity:is-aromatic a2))
+                     do (cond
+                          ((eq (chem:get-order bond) :single-bond)
+                           (set-bond-type bond 7))
+                          ((eq (chem:get-order bond) :double-bond)
+                           (set-bond-type bond 8))
+                          (t nil)))))
+                                        ; First look for delocalized bonds - carboxyl groups, nitro groups
   ;;    (loop for a in (all-atoms-as-cons mol nil)
   (chem:map-atoms
    nil
    (lambda (a)
      (let (match)
        (when (setf match (chem:matches *carboxyl-nitro-pattern* a))
-	 (let* ((a1 (chem:tag match "1"))
-		(a2 (chem:tag match "2"))
-		(a3 (chem:tag match "3"))
-		(double-bond (chem:bond-to a1 a2))
-		(single-bond (chem:bond-to a1 a3)))
-	   (set-bond-type double-bond 9)
-	   (set-bond-type single-bond 9)))))
+         (let* ((a1 (chem:tag match "1"))
+                (a2 (chem:tag match "2"))
+                (a3 (chem:tag match "3"))
+                (double-bond (chem:bond-to a1 a2))
+                (single-bond (chem:bond-to a1 a3)))
+           (set-bond-type double-bond 9)
+           (set-bond-type single-bond 9)))))
    mol)
 ;   (loop for bond in (all-bonds-as-cons mol nil)
   (chem:map-bonds
@@ -180,34 +181,34 @@
             (cond
               ((or (and (= (chem:get-ionization a1) -1) (= (chem:get-ionization a2) +1))
                    (and (= (chem:get-ionization a1) 1) (= (chem:get-ionization a2) -1)))
-               (set-bond-type bond 06))	; +- polarized bond
+               (set-bond-type bond 06)) ; +- polarized bond
               ((or (and (= (chem:get-ionization a1) 0) (= (chem:get-ionization a2) -1))
                    (and (= (chem:get-ionization a1) -1) (= (chem:get-ionization a2) 0)))
-               (set-bond-type bond 09))	    ; 0- polarized bond
+               (set-bond-type bond 09))     ; 0- polarized bond
               (t (set-bond-type bond 1)))) ; simple single bond
            ((eq (chem:get-order bond) :double-bond)
-            (set-bond-type bond 02))	      ; simple double bond
-	   (t (set-bond-type bond 03))))))  ; triple bond
+            (set-bond-type bond 02))          ; simple double bond
+           (t (set-bond-type bond 03))))))  ; triple bond
    mol)
  #+(or)  (chem:map-bonds
    nil
    (lambda (a1 a2 order)
      (when (not (has-bond-type bond))
        (let ((a1 (chem:get-atom1 atom1))
-	     (a2 (chem:get-atom2 atom2)))
-	 (cond
-	   ((= (chem:get-order bond) :single-bond)
-	    (cond
-	      ((or (and (= (chem:get-ionization a1) -1) (= (chem:get-ionization a2) +1))
-		   (and (= (chem:get-ionization a1) 1) (= (chem:get-ionization a2) -1)))
-	       (set-bond-type bond 06))	; +- polarized bond
-	      ((or (and (= (chem:get-ionization a1) 0) (= (chem:get-ionization a2) -1))
-		   (and (= (chem:get-ionization a1) -1) (= (chem:get-ionization a2) 0)))
-	       (set-bond-type bond 09))	    ; 0- polarized bond
-	      (t (set-bond-type bond 1)))) ; simple single bond
-	   ((= (chem:get-order bond) :double-bond)
-	    (set-bond-type bond 02))	      ; simple double bond
-	   (t (set-bond-type bond 03))))))  ; triple bond
+             (a2 (chem:get-atom2 atom2)))
+         (cond
+           ((= (chem:get-order bond) :single-bond)
+            (cond
+              ((or (and (= (chem:get-ionization a1) -1) (= (chem:get-ionization a2) +1))
+                   (and (= (chem:get-ionization a1) 1) (= (chem:get-ionization a2) -1)))
+               (set-bond-type bond 06)) ; +- polarized bond
+              ((or (and (= (chem:get-ionization a1) 0) (= (chem:get-ionization a2) -1))
+                   (and (= (chem:get-ionization a1) -1) (= (chem:get-ionization a2) 0)))
+               (set-bond-type bond 09))     ; 0- polarized bond
+              (t (set-bond-type bond 1)))) ; simple single bond
+           ((= (chem:get-order bond) :double-bond)
+            (set-bond-type bond 02))          ; simple double bond
+           (t (set-bond-type bond 03))))))  ; triple bond
    mol)
    )
   
@@ -236,7 +237,7 @@
        ((chem:matches *cx3=norp* a) (set-am1-bcc-type a 13))
        ((chem:matches *cx3=oors* a)  (set-am1-bcc-type a 14))
        (t
-	(error "Could not assign type"))))
+        (error "Could not assign type"))))
      (t
       (cond
        ((chem:matches *cx3-ox2_cx3-nx2* a) (set-am1-bcc-type a 17))
@@ -277,9 +278,9 @@
      (t
       (cond
        ((>= (chem:get-ionization a) 0) ; not anion
-	(if (chem:has-bond-with-order a :double-bond)
-	    (set-am1-bcc-type a 24)
-	  (set-am1-bcc-type a 25)))
+        (if (chem:has-bond-with-order a :double-bond)
+            (set-am1-bcc-type a 24)
+          (set-am1-bcc-type a 25)))
        ((is-deloc a) (set-am1-bcc-type a 22))
        (t (set-am1-bcc-type a 21)))))))
 
@@ -300,34 +301,34 @@
    (lambda (a)
      (let ((ae (chem:get-element a)))
        (cond
-	 ((eq ae :C) (apply-carbon-atom-types a))
-	 ((eq ae :N) (apply-nitrogen-atom-types a))
-	 ((eq ae :O) (apply-oxygen-atom-types a))
-	 ((eq ae :S)
-	  (let ((num-bonds (chem:number-of-bonds a)))
-	    (cond
-	      ((= num-bonds 4) (set-am1-bcc-type a 53))
-	      ((= num-bonds 3) (set-am1-bcc-type a 52))
-	      (t  (set-am1-bcc-type a 51)))))
-	 ((eq ae :P) (apply-phosphorous-atom-types a))
-	 ((eq ae :Si) (set-am1-bcc-type a 61))
-	 ((eq ae :H)  (set-am1-bcc-type a 91))
-	 ((eq ae :F)  (set-am1-bcc-type a 71))
-	 ((eq ae :Cl) (set-am1-bcc-type a 72))
-	 ((eq ae :Br) (set-am1-bcc-type a 73))
-	 ((eq ae :I)  (set-am1-bcc-type a 74))
-	 (t (warn "Unhandled element in am1-bcc charge calculation [~s]" ae)
+         ((eq ae :C) (apply-carbon-atom-types a))
+         ((eq ae :N) (apply-nitrogen-atom-types a))
+         ((eq ae :O) (apply-oxygen-atom-types a))
+         ((eq ae :S)
+          (let ((num-bonds (chem:number-of-bonds a)))
+            (cond
+              ((= num-bonds 4) (set-am1-bcc-type a 53))
+              ((= num-bonds 3) (set-am1-bcc-type a 52))
+              (t  (set-am1-bcc-type a 51)))))
+         ((eq ae :P) (apply-phosphorous-atom-types a))
+         ((eq ae :Si) (set-am1-bcc-type a 61))
+         ((eq ae :H)  (set-am1-bcc-type a 91))
+         ((eq ae :F)  (set-am1-bcc-type a 71))
+         ((eq ae :Cl) (set-am1-bcc-type a 72))
+         ((eq ae :Br) (set-am1-bcc-type a 73))
+         ((eq ae :I)  (set-am1-bcc-type a 74))
+         (t (warn "Unhandled element in am1-bcc charge calculation [~s]" ae)
             (set-am1-bcc-type a nil))
-	 )))
+         )))
    mol))
 
 
 
 (defun lookup-am1-bcc-key (a1 bond a2)
   (let ((type1 (get-am1-bcc-type a1))
-	(type2 (get-am1-bcc-type a2))
-	(bond-type (get-bond-type bond))
-	(sign 1.0))
+        (type2 (get-am1-bcc-type a2))
+        (bond-type (get-bond-type bond))
+        (sign 1.0))
     (if (and type1 type2)
         (list (+ (* 10000 type1) (* 100 bond-type) type2) sign)
         #+(or) (progn
@@ -360,40 +361,39 @@
 ;; atom and bond
 (defun calculate-bcc-corrections (mol)
   "Return an ObjectMap from Atoms to Am1Bcc charge corrections"
-  (let ((all-rings (aromaticity:identify-aromatic-rings mol))
-	(correction-map (make-hash-table)))
-;    (print "assignvv bond types")
-    (assign-am1-bcc-bond-types mol all-rings)
-    (apply-atom-types mol)
-    (chem:map-atoms
-     nil
-     (lambda (a)
-       ;;       (let ((atom-correction 0.0))
-       (loop for b in (chem:bonds-as-list a)
-             do (let* ((previous-atom-correction 0.0)
-                       (previous-atom-correction-other 0.0)
-                       (atom-correction 0.0)
-                       (atom-correction-other 0.0)
-                       (other (chem:get-other-atom b a))
-                       (bond-correction (lookup-am1-bcc-correction a b other)))
-                  (if (gethash a correction-map)
-                      (setf previous-atom-correction (gethash a correction-map)))
-                  (if (gethash other correction-map)
-                      (setf previous-atom-correction-other (gethash other correction-map))) 
-                  (setq atom-correction (+ previous-atom-correction bond-correction))
-                  (setq atom-correction-other (- previous-atom-correction-other bond-correction)) 
-                  (setf (gethash a correction-map) atom-correction)
-                  (setf (gethash other correction-map) atom-correction-other))))
-     mol)
-;;    (loop for a in (all-atoms-as-cons mol nil)
-;;	 do (let ((atom-correction 0.0))
-;;	   (loop for b in (chem:bonds-as-list a)
-;;		do (let* ((other (chem:get-other-atom b a))
-;;			  (bond-correction (lookup-am1-bcc-correction a b other)))
-;;		  (setq atom-correction (+ atom-correction bond-correction))))
-    ;;	   do (extend correction-map a atom-correction)))
-    correction-map
-    ))
+  (aromaticity:with-aromaticity-information (mol)
+    (let ((correction-map (make-hash-table)))
+      (assign-am1-bcc-bond-types mol)
+      (apply-atom-types mol)
+      (chem:map-atoms
+       nil
+       (lambda (a)
+         ;;       (let ((atom-correction 0.0))
+         (loop for b in (chem:bonds-as-list a)
+               do (let* ((previous-atom-correction 0.0)
+                         (previous-atom-correction-other 0.0)
+                         (atom-correction 0.0)
+                         (atom-correction-other 0.0)
+                         (other (chem:get-other-atom b a))
+                         (bond-correction (lookup-am1-bcc-correction a b other)))
+                    (if (gethash a correction-map)
+                        (setf previous-atom-correction (gethash a correction-map)))
+                    (if (gethash other correction-map)
+                        (setf previous-atom-correction-other (gethash other correction-map))) 
+                    (setq atom-correction (+ previous-atom-correction bond-correction))
+                    (setq atom-correction-other (- previous-atom-correction-other bond-correction)) 
+                    (setf (gethash a correction-map) atom-correction)
+                    (setf (gethash other correction-map) atom-correction-other))))
+       mol)
+      ;;    (loop for a in (all-atoms-as-cons mol nil)
+      ;;         do (let ((atom-correction 0.0))
+      ;;           (loop for b in (chem:bonds-as-list a)
+      ;;                do (let* ((other (chem:get-other-atom b a))
+      ;;                          (bond-correction (lookup-am1-bcc-correction a b other)))
+      ;;                  (setq atom-correction (+ atom-correction bond-correction))))
+      ;;           do (extend correction-map a atom-correction)))
+      correction-map
+      )))
 
 
 
@@ -405,9 +405,9 @@
   "Combine Am1 charges with Bcc corrections and return an ObjectMap of atoms to am1bcc charges"
   (let ((atoms-to-am1-bcc-charges (make-hash-table)))
     (maphash (lambda (atom am1charge)
-		(let ((bcc-correction (gethash atom atoms-to-bcc-corrections)))
-		  (setf (gethash atom atoms-to-am1-bcc-charges) (+ am1charge bcc-correction))))
-		atoms-to-am1-charges)
+                (let ((bcc-correction (gethash atom atoms-to-bcc-corrections)))
+                  (setf (gethash atom atoms-to-am1-bcc-charges) (+ am1charge bcc-correction))))
+                atoms-to-am1-charges)
     atoms-to-am1-bcc-charges))
 
 (defun calculate-am1-bcc-charges (aggregate &key (maxcyc 9999))
@@ -442,25 +442,23 @@
                  (chem:set-charge atom charge))
                am1-bcc))))
 
-
-
 #||
 (defun describe-fragment-and-residue (frag res am1-charges bcc-corrections am1bcc-charges)
   (loop for a in (contents-as-cons res)
      do (print (% "        atom: %s" (describe-atom a))))
   (print "Describing bonds")
   (chem:map-atoms nil (lambda (a)
-			
-			(format t "Atom ~a ----~%" (chem:get-name a)) ;(print (% "Atom %s -----" (chem:get-name a)))
-			(loop for b in (chem:bonds-as-list a)
-			   do (let* ((other (chem:get-other-atom b a))
-				     (key-sign (lookup-am1-bcc-key a b other)))
-				(format t " am1-bcc bond key: ~a~%" key-sign))) ; (print (% " am1-bcc bond key: %s" (repr key-sign)))))
-			(let ((am1-charge (lookup am1-charges a))
-			      (bcc-correction (lookup bcc-corrections))
-			      (charge (lookup am1bcc-charges a)))
-			  (print ( % "   am1[%8.3f] bcc-correction[%8.3f] am1bccCharge[%8.3f]" am1-charge bcc-correction charge))))
-		  res))
+                        
+                        (format t "Atom ~a ----~%" (chem:get-name a)) ;(print (% "Atom %s -----" (chem:get-name a)))
+                        (loop for b in (chem:bonds-as-list a)
+                           do (let* ((other (chem:get-other-atom b a))
+                                     (key-sign (lookup-am1-bcc-key a b other)))
+                                (format t " am1-bcc bond key: ~a~%" key-sign))) ; (print (% " am1-bcc bond key: %s" (repr key-sign)))))
+                        (let ((am1-charge (lookup am1-charges a))
+                              (bcc-correction (lookup bcc-corrections))
+                              (charge (lookup am1bcc-charges a)))
+                          (print ( % "   am1[%8.3f] bcc-correction[%8.3f] am1bccCharge[%8.3f]" am1-charge bcc-correction charge))))
+                  res))
 ||#
 
 
@@ -473,17 +471,17 @@
     ;; start classifying the atoms
     ;;
     (loop for frag in (chem:get-fragments cd)
-	do  (let* ((mol (moleule))
-		(res (get-entire-residues frag)))
-	   (let* ((name (chem:matter-get-propterty frag :name)))
-	     (print "-------------------")
-	     (print (% "Fragment: %s" frag))
-	     (print (% "    name: %s" name))
-	     (print (% "    properties====="))
-	     (print (% "%s" (get-propterties frag))))
-	   (chem:add-matter mol res)
-	   (build-molecule mol)
-	   (let ((bcc-corrections (calculate-am1-bcc-corrections mol))))
-	   (describe-fragment-and-residue frag res)
-	   ))))
+        do  (let* ((mol (moleule))
+                (res (get-entire-residues frag)))
+           (let* ((name (chem:matter-get-propterty frag :name)))
+             (print "-------------------")
+             (print (% "Fragment: %s" frag))
+             (print (% "    name: %s" name))
+             (print (% "    properties====="))
+             (print (% "%s" (get-propterties frag))))
+           (chem:add-matter mol res)
+           (build-molecule mol)
+           (let ((bcc-corrections (calculate-am1-bcc-corrections mol))))
+           (describe-fragment-and-residue frag res)
+           ))))
 ||#

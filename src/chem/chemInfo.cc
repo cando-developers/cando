@@ -1532,11 +1532,24 @@ bool AtomTest_O::matches_Atom(Root_sp root, chem::Atom_sp atom) {
         goto SUCCESS;
       break;
   case SAPRingConnectivity:
-  case SAPRingMembershipCount:
-      LOG(BF("SAPRingMembershipCount")); //
-      SIMPLE_WARN(BF("Use the chem::*current-rings* special variable"));
-      if (this->_IntArg == atom->getRingMembershipCount())
-        goto SUCCESS;
+  case SAPRingMembershipCount: {
+    int count = 0;
+    if (!_sym_STARcurrent_ringsSTAR->boundP()) {
+      SIMPLE_WARN(BF("The SAPRingMembershipCount or SAPRingConnectivity test was attempted but chem:*current-rings* is not bound - so it cannot work properly"));
+    } else {
+      core::List_sp rings = _sym_STARcurrent_ringsSTAR->symbolValue();
+      for ( auto ring_cur : rings ) {
+        core::List_sp ring = CONS_CAR(ring_cur);
+        for ( auto ring_atom_cur : ring ) {
+          core::T_sp ring_atom = CONS_CAR(ring_atom_cur);
+          if (ring_atom == atom) count++;
+        }
+      }
+    }
+    if (count == this->_IntArg) {
+      goto SUCCESS;
+    }
+  }
       break;
   case SAPRingSize:
       if (!_sym_STARcurrent_ringsSTAR->boundP()) {
@@ -2803,7 +2816,7 @@ CL_DEFUN ChemInfoGraph_sp chem__make_chem_info_graph( Root_sp pattern)
                                    closers.resize(ahead->_RingId+1);
                                }
                                closers[ahead->_RingId]._Active = true;
-                               closers[ahead->_RingId]._NodeIndex = graph->_atomNodes.size();
+                               closers[ahead->_RingId]._NodeIndex = node_index;
                              } else if (ahead->_RingTest==SARRingTest) {
                                if (chem__verbose(1)) {
                                  core::write_bf_stream(BF("Found SARRingTest _RingId = %d\n") % ahead->_RingId );
