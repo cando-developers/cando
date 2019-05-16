@@ -1,0 +1,8419 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE CDXML SYSTEM "http://www.cambridgesoft.com/xml/cdxml.dtd" >
+<CDXML
+ CreationProgram="ChemDraw 17.1.1.0"
+ Name="polyaromatic.cdxml"
+ BoundingBox="68.66 196.16 329.49 413.99"
+ WindowPosition="0 0"
+ WindowSize="0 0"
+ FractionalWidths="yes"
+ InterpretChemically="yes"
+ ShowAtomQuery="yes"
+ ShowAtomStereo="no"
+ ShowAtomEnhancedStereo="yes"
+ ShowAtomNumber="no"
+ ShowResidueID="no"
+ ShowBondQuery="yes"
+ ShowBondRxn="yes"
+ ShowBondStereo="no"
+ ShowTerminalCarbonLabels="no"
+ ShowNonTerminalCarbonLabels="no"
+ HideImplicitHydrogens="no"
+ Magnification="500"
+ LabelFont="21"
+ LabelSize="5"
+ LabelFace="96"
+ CaptionFont="21"
+ CaptionSize="5"
+ HashSpacing="2.50"
+ MarginWidth="1.60"
+ LineWidth="0.60"
+ BoldWidth="2"
+ BondLength="14.40"
+ BondSpacing="18"
+ ChainAngle="120"
+ LabelJustification="Auto"
+ CaptionJustification="Left"
+ AminoAcidTermini="HOH"
+ ShowSequenceTermini="yes"
+ ShowSequenceBonds="yes"
+ ShowSequenceUnlinkedBranches="no"
+ ResidueWrapCount="40"
+ ResidueBlockCount="10"
+ ResidueZigZag="yes"
+ NumberResidueBlocks="no"
+ PrintMargins="36 36 36 36"
+ MacPrintInfo="0003000000480048000000000300024CFFF4FFF4030C02580367052803FB0002000000480048000000000300024C000100000064000000010001010100000001270F000100010000000000000000000000000002001901900000000000400000000000000000000100000000000000000000000000000000"
+ ChemPropName=""
+ ChemPropFormula="Chemical Formula: "
+ ChemPropExactMass="Exact Mass: "
+ ChemPropMolWt="Molecular Weight: "
+ ChemPropMOverZ="m/z: "
+ ChemPropAnalysis="Elemental Analysis: "
+ ChemPropBoilingPt="Boiling Point: "
+ ChemPropMeltingPt="Melting Point: "
+ ChemPropCritTemp="Critical Temp: "
+ ChemPropCritPres="Critical Pres: "
+ ChemPropCritVol="Critical Vol: "
+ ChemPropGibbs="Gibbs Energy: "
+ ChemPropLogP="Log P: "
+ ChemPropMR="MR: "
+ ChemPropHenry="Henry&apos;s Law: "
+ ChemPropEForm="Heat of Form: "
+ ChemProptPSA="tPSA: "
+ ChemPropID=""
+ ChemPropFragmentLabel=""
+ color="0"
+ bgcolor="1"
+ RxnAutonumberStart="1"
+ RxnAutonumberConditions="no"
+ RxnAutonumberStyle="Roman"
+ RxnAutonumberFormat="(#)"
+><colortable>
+<color r="1" g="1" b="1"/>
+<color r="0" g="0" b="0"/>
+<color r="1" g="0" b="0"/>
+<color r="1" g="1" b="0"/>
+<color r="0" g="1" b="0"/>
+<color r="0" g="1" b="1"/>
+<color r="0" g="0" b="1"/>
+<color r="1" g="0" b="1"/>
+</colortable><fonttable>
+<font id="21" charset="x-mac-roman" name="Helvetica"/>
+</fonttable><page
+ id="1307"
+ BoundingBox="0 0 540 720"
+ HeaderPosition="36"
+ FooterPosition="36"
+ PrintTrimMarks="yes"
+ HeightPages="1"
+ WidthPages="1"
+><fragment
+ id="5"
+ BoundingBox="68.66 196.16 162.18 294.59"
+ Z="82"
+><n
+ id="2"
+ p="133.50 270"
+ Z="80"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="14 19 105"
+><fragment
+ id="1308"
+><n
+ id="1309"
+ p="133.50 270"
+ NumHydrogens="0"
+/><n
+ id="1310"
+ p="119.15 270"
+ NumHydrogens="0"
+/><n
+ id="1311"
+ p="133.50 284.35"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="1312"
+ p="147.85 270"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="1313"
+ p="133.50 255.65"
+ NodeType="ExternalConnectionPoint"
+/><b
+ id="1314"
+ B="1309"
+ E="1310"
+ Order="4"
+/><b
+ id="1315"
+ B="1311"
+ E="1309"
+ Order="2"
+/><b
+ id="1316"
+ B="1312"
+ E="1309"
+/><b
+ id="1317"
+ B="1313"
+ E="1309"
+/></fragment><t
+ p="131.69 271.84"
+ BoundingBox="131.91 268.16 137.24 272.99"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C2</s></t></n><n
+ id="4"
+ p="133.50 284.40"
+ Z="81"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="14 15"
+><fragment
+ id="1319"
+ ConnectionOrder="35 36"
+><n
+ id="32"
+ p="133.50 284.40"
+ Z="13"
+/><n
+ id="33"
+ p="121.07 291.57"
+ Z="14"
+/><n
+ id="34"
+ p="108.65 298.75"
+ Z="15"
+ NumHydrogens="0"
+ NeedsClean="yes"
+><t
+ p="106.84 300.59"
+ BoundingBox="107.06 296.91 110.25 300.68"
+ LabelJustification="Left"
+><s font="21" size="5" color="0" face="96">C</s></t></n><n
+ id="35"
+ p="133.50 270.05"
+ Z="16"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="36"
+ p="145.93 291.57"
+ Z="17"
+ NodeType="ExternalConnectionPoint"
+/><b
+ id="37"
+ Z="18"
+ B="33"
+ E="34"
+ Order="3"
+/><b
+ id="38"
+ Z="19"
+ B="32"
+ E="33"
+/><b
+ id="39"
+ Z="20"
+ B="35"
+ E="32"
+ Order="2"
+/><b
+ id="40"
+ Z="21"
+ B="36"
+ E="32"
+/></fragment><t
+ p="131.69 286.24"
+ BoundingBox="131.91 282.56 137.23 287.46"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C3</s></t></n><n
+ id="6"
+ p="145.97 291.60"
+ Z="83"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="15 16"
+><fragment
+ id="1320"
+ ConnectionOrder="47 48"
+><n
+ id="43"
+ p="145.97 291.60"
+ Z="24"
+/><n
+ id="44"
+ p="158.40 284.42"
+ Z="25"
+/><n
+ id="45"
+ p="170.82 277.25"
+ Z="26"
+/><n
+ id="46"
+ p="183.25 270.07"
+ Z="27"
+ NumHydrogens="0"
+ NeedsClean="yes"
+><t
+ p="181.44 271.91"
+ BoundingBox="181.66 268.23 184.85 272"
+ LabelJustification="Left"
+><s font="21" size="5" color="0" face="96">C</s></t></n><n
+ id="47"
+ p="133.54 284.42"
+ Z="28"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="48"
+ p="145.97 305.95"
+ Z="29"
+ NodeType="ExternalConnectionPoint"
+/><b
+ id="49"
+ Z="30"
+ B="45"
+ E="46"
+/><b
+ id="50"
+ Z="31"
+ B="44"
+ E="45"
+ Order="3"
+/><b
+ id="51"
+ Z="32"
+ B="43"
+ E="44"
+/><b
+ id="52"
+ Z="33"
+ B="47"
+ E="43"
+/><b
+ id="53"
+ Z="34"
+ B="48"
+ E="43"
+ Order="2"
+/></fragment><t
+ p="144.16 293.44"
+ BoundingBox="144.38 289.76 149.74 294.59"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C4</s></t></n><n
+ id="8"
+ p="158.44 284.40"
+ Z="84"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="16 17"
+><fragment
+ id="1321"
+ ConnectionOrder="61 62"
+><n
+ id="56"
+ p="158.44 284.40"
+ Z="37"
+/><n
+ id="57"
+ p="170.87 291.57"
+ Z="38"
+/><n
+ id="58"
+ p="183.29 298.75"
+ Z="39"
+/><n
+ id="59"
+ p="195.72 305.92"
+ Z="40"
+/><n
+ id="60"
+ p="208.15 313.10"
+ Z="41"
+ NumHydrogens="0"
+ NeedsClean="yes"
+><t
+ p="206.34 314.94"
+ BoundingBox="206.56 311.26 209.75 315.03"
+ LabelJustification="Left"
+><s font="21" size="5" color="0" face="96">C</s></t></n><n
+ id="61"
+ p="146.01 291.57"
+ Z="42"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="62"
+ p="158.44 270.05"
+ Z="43"
+ NodeType="ExternalConnectionPoint"
+/><b
+ id="63"
+ Z="44"
+ B="59"
+ E="60"
+ Order="3"
+/><b
+ id="64"
+ Z="45"
+ B="58"
+ E="59"
+/><b
+ id="65"
+ Z="46"
+ B="57"
+ E="58"
+ Order="3"
+/><b
+ id="66"
+ Z="47"
+ B="56"
+ E="57"
+/><b
+ id="67"
+ Z="48"
+ B="61"
+ E="56"
+ Order="2"
+/><b
+ id="68"
+ Z="49"
+ B="62"
+ E="56"
+/></fragment><t
+ p="156.63 286.24"
+ BoundingBox="156.85 282.56 162.17 287.46"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C5</s></t></n><n
+ id="10"
+ p="158.44 270"
+ Z="85"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="17 18"
+><fragment
+ id="1322"
+ ConnectionOrder="77 78"
+><n
+ id="71"
+ p="158.44 270"
+ Z="52"
+/><n
+ id="72"
+ p="146.01 262.82"
+ Z="53"
+/><n
+ id="73"
+ p="133.58 255.65"
+ Z="54"
+/><n
+ id="74"
+ p="121.16 248.47"
+ Z="55"
+/><n
+ id="75"
+ p="108.73 241.30"
+ Z="56"
+/><n
+ id="76"
+ p="96.30 234.12"
+ Z="57"
+ NumHydrogens="0"
+ NeedsClean="yes"
+><t
+ p="94.49 235.96"
+ BoundingBox="94.71 232.28 97.90 236.05"
+ LabelJustification="Left"
+><s font="21" size="5" color="0" face="96">C</s></t></n><n
+ id="77"
+ p="158.44 284.35"
+ Z="58"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="78"
+ p="170.87 262.82"
+ Z="59"
+ NodeType="ExternalConnectionPoint"
+/><b
+ id="79"
+ Z="60"
+ B="75"
+ E="76"
+/><b
+ id="80"
+ Z="61"
+ B="74"
+ E="75"
+ Order="3"
+/><b
+ id="81"
+ Z="62"
+ B="73"
+ E="74"
+/><b
+ id="82"
+ Z="63"
+ B="72"
+ E="73"
+ Order="3"
+/><b
+ id="83"
+ Z="64"
+ B="71"
+ E="72"
+/><b
+ id="84"
+ Z="65"
+ B="77"
+ E="71"
+/><b
+ id="85"
+ Z="66"
+ B="78"
+ E="71"
+ Order="2"
+/></fragment><t
+ p="156.63 271.84"
+ BoundingBox="156.85 268.16 162.18 273.06"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C6</s></t></n><n
+ id="12"
+ p="145.97 262.80"
+ Z="86"
+ NodeType="Fragment"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="18 19 101"
+><fragment
+ id="1323"
+><n
+ id="1324"
+ p="145.97 262.80"
+ NumHydrogens="0"
+/><n
+ id="1325"
+ p="158.40 269.98"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="1326"
+ p="145.97 248.45"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="1327"
+ p="133.54 269.97"
+ NodeType="ExternalConnectionPoint"
+/><b
+ id="1328"
+ B="1325"
+ E="1324"
+ Order="2"
+/><b
+ id="1329"
+ B="1326"
+ E="1324"
+/><b
+ id="1330"
+ B="1327"
+ E="1324"
+/></fragment><t
+ p="144.16 264.64"
+ BoundingBox="144.38 260.96 149.10 265.79"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C1</s></t></n><n
+ id="93"
+ p="145.97 248.40"
+ Z="93"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="101 102"
+><fragment
+ id="1332"
+><n
+ id="1333"
+ p="145.97 248.40"
+ NumHydrogens="0"
+/><n
+ id="1334"
+ p="133.54 241.23"
+ NumHydrogens="0"
+/><n
+ id="1335"
+ p="121.12 234.05"
+ NumHydrogens="0"
+/><n
+ id="1336"
+ p="108.69 226.88"
+ NumHydrogens="0"
+/><n
+ id="1337"
+ p="96.26 219.70"
+ NumHydrogens="0"
+/><n
+ id="1338"
+ p="83.83 212.53"
+ NumHydrogens="0"
+/><n
+ id="1339"
+ p="71.41 205.35"
+ NumHydrogens="0"
+/><n
+ id="1340"
+ p="145.97 262.75"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="1341"
+ p="158.40 241.23"
+ NodeType="ExternalConnectionPoint"
+/><b
+ id="1342"
+ B="1338"
+ E="1339"
+ Order="3"
+/><b
+ id="1343"
+ B="1337"
+ E="1338"
+/><b
+ id="1344"
+ B="1336"
+ E="1337"
+ Order="3"
+/><b
+ id="1345"
+ B="1335"
+ E="1336"
+/><b
+ id="1346"
+ B="1334"
+ E="1335"
+ Order="3"
+/><b
+ id="1347"
+ B="1333"
+ E="1334"
+/><b
+ id="1348"
+ B="1340"
+ E="1333"
+/><b
+ id="1349"
+ B="1341"
+ E="1333"
+ Order="2"
+/></fragment><t
+ p="144.16 250.24"
+ BoundingBox="144.38 246.56 149.74 251.39"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C7</s></t></n><n
+ id="95"
+ p="133.50 241.20"
+ Z="95"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="102 103 114"
+><fragment
+ id="1351"
+><n
+ id="1352"
+ p="133.50 241.20"
+ NumHydrogens="0"
+/><n
+ id="1353"
+ p="171.52 182.52"
+ NumHydrogens="0"
+/><n
+ id="1354"
+ p="178.69 170.09"
+ NumHydrogens="0"
+/><n
+ id="1355"
+ p="164.34 194.95"
+ NumHydrogens="0"
+/><n
+ id="1356"
+ p="185.87 157.67"
+ NumHydrogens="0"
+/><n
+ id="1357"
+ p="157.17 207.38"
+ NumHydrogens="0"
+/><n
+ id="1358"
+ p="193.04 145.24"
+ NumHydrogens="0"
+/><n
+ id="1359"
+ p="150 219.80"
+ NumHydrogens="0"
+/><n
+ id="1360"
+ p="145.93 248.38"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="1361"
+ p="133.50 226.85"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="1362"
+ p="121.07 248.38"
+ NodeType="ExternalConnectionPoint"
+/><b
+ id="1363"
+ B="1357"
+ E="1359"
+/><b
+ id="1364"
+ B="1356"
+ E="1358"
+ Order="3"
+/><b
+ id="1365"
+ B="1355"
+ E="1357"
+ Order="3"
+/><b
+ id="1366"
+ B="1354"
+ E="1356"
+/><b
+ id="1367"
+ B="1353"
+ E="1354"
+ Order="3"
+/><b
+ id="1368"
+ B="1353"
+ E="1355"
+/><b
+ id="1369"
+ B="1360"
+ E="1352"
+ Order="2"
+/><b
+ id="1370"
+ B="1361"
+ E="1352"
+/><b
+ id="1371"
+ B="1362"
+ E="1352"
+/></fragment><t
+ p="131.69 243.04"
+ BoundingBox="131.91 239.36 137.23 244.27"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C8</s></t></n><n
+ id="97"
+ p="121.03 248.40"
+ Z="97"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="103 104 118"
+><fragment
+ id="1373"
+><n
+ id="1374"
+ p="121.03 248.40"
+ NumHydrogens="0"
+/><n
+ id="1375"
+ p="205.21 251.99"
+ NumHydrogens="0"
+/><n
+ id="1376"
+ p="190.86 251.99"
+ NumHydrogens="0"
+/><n
+ id="1377"
+ p="219.56 251.99"
+ NumHydrogens="0"
+/><n
+ id="1378"
+ p="176.51 251.99"
+ NumHydrogens="0"
+/><n
+ id="1379"
+ p="233.91 251.99"
+ NumHydrogens="0"
+/><n
+ id="1380"
+ p="162.16 251.99"
+ NumHydrogens="0"
+/><n
+ id="1381"
+ p="248.26 251.99"
+ NumHydrogens="0"
+/><n
+ id="1382"
+ p="147.81 251.99"
+ NumHydrogens="0"
+/><n
+ id="1383"
+ p="133.46 241.23"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="1384"
+ p="121.03 262.75"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="1385"
+ p="108.60 241.23"
+ NodeType="ExternalConnectionPoint"
+/><b
+ id="1386"
+ B="1380"
+ E="1382"
+/><b
+ id="1387"
+ B="1379"
+ E="1381"
+/><b
+ id="1388"
+ B="1378"
+ E="1380"
+ Order="3"
+/><b
+ id="1389"
+ B="1377"
+ E="1379"
+ Order="3"
+/><b
+ id="1390"
+ B="1376"
+ E="1378"
+/><b
+ id="1391"
+ B="1375"
+ E="1376"
+ Order="3"
+/><b
+ id="1392"
+ B="1375"
+ E="1377"
+/><b
+ id="1393"
+ B="1383"
+ E="1374"
+/><b
+ id="1394"
+ B="1384"
+ E="1374"
+ Order="2"
+/><b
+ id="1395"
+ B="1385"
+ E="1374"
+/></fragment><t
+ p="119.22 250.24"
+ BoundingBox="119.44 246.56 124.74 251.47"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C9</s></t></n><n
+ id="99"
+ p="121.03 262.80"
+ Z="99"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="104 105"
+><fragment
+ id="1397"
+><n
+ id="1398"
+ p="121.03 262.80"
+ NumHydrogens="0"
+/><n
+ id="1399"
+ p="108.60 269.97"
+ NumHydrogens="0"
+/><n
+ id="1400"
+ p="96.18 277.15"
+ NumHydrogens="0"
+/><n
+ id="1401"
+ p="83.75 284.32"
+ NumHydrogens="0"
+/><n
+ id="1402"
+ p="71.32 291.50"
+ NumHydrogens="0"
+/><n
+ id="1403"
+ p="58.89 298.67"
+ NumHydrogens="0"
+/><n
+ id="1404"
+ p="46.47 305.85"
+ NumHydrogens="0"
+/><n
+ id="1405"
+ p="34.04 313.02"
+ NumHydrogens="0"
+/><n
+ id="1406"
+ p="21.61 320.20"
+ NumHydrogens="0"
+/><n
+ id="1407"
+ p="9.18 327.37"
+ NumHydrogens="0"
+/><n
+ id="1408"
+ p="121.03 248.45"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="1409"
+ p="133.46 269.97"
+ NodeType="ExternalConnectionPoint"
+/><b
+ id="1410"
+ B="1406"
+ E="1407"
+/><b
+ id="1411"
+ B="1405"
+ E="1406"
+ Order="3"
+/><b
+ id="1412"
+ B="1404"
+ E="1405"
+/><b
+ id="1413"
+ B="1403"
+ E="1404"
+ Order="3"
+/><b
+ id="1414"
+ B="1402"
+ E="1403"
+/><b
+ id="1415"
+ B="1401"
+ E="1402"
+ Order="3"
+/><b
+ id="1416"
+ B="1400"
+ E="1401"
+/><b
+ id="1417"
+ B="1399"
+ E="1400"
+ Order="3"
+/><b
+ id="1418"
+ B="1398"
+ E="1399"
+/><b
+ id="1419"
+ B="1408"
+ E="1398"
+ Order="2"
+/><b
+ id="1420"
+ B="1409"
+ E="1398"
+/></fragment><t
+ p="119.22 264.64"
+ BoundingBox="119.44 260.96 126.85 265.86"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C10</s></t></n><n
+ id="106"
+ p="133.50 226.80"
+ Z="106"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="114 115"
+><fragment
+ id="1422"
+><n
+ id="1423"
+ p="133.50 226.80"
+ NumHydrogens="0"
+/><n
+ id="1424"
+ p="121.07 219.63"
+ NumHydrogens="0"
+/><n
+ id="1425"
+ p="108.65 212.45"
+ NumHydrogens="0"
+/><n
+ id="1426"
+ p="96.22 205.28"
+ NumHydrogens="0"
+/><n
+ id="1427"
+ p="83.79 198.10"
+ NumHydrogens="0"
+/><n
+ id="1428"
+ p="71.36 190.93"
+ NumHydrogens="0"
+/><n
+ id="1429"
+ p="58.94 183.75"
+ NumHydrogens="0"
+/><n
+ id="1430"
+ p="46.51 176.58"
+ NumHydrogens="0"
+/><n
+ id="1431"
+ p="34.08 169.40"
+ NumHydrogens="0"
+/><n
+ id="1432"
+ p="21.65 162.23"
+ NumHydrogens="0"
+/><n
+ id="1433"
+ p="9.23 155.05"
+ NumHydrogens="0"
+/><n
+ id="1434"
+ p="133.50 241.15"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="1435"
+ p="145.93 219.63"
+ NodeType="ExternalConnectionPoint"
+/><b
+ id="1436"
+ B="1432"
+ E="1433"
+ Order="3"
+/><b
+ id="1437"
+ B="1431"
+ E="1432"
+/><b
+ id="1438"
+ B="1430"
+ E="1431"
+ Order="3"
+/><b
+ id="1439"
+ B="1429"
+ E="1430"
+/><b
+ id="1440"
+ B="1428"
+ E="1429"
+ Order="3"
+/><b
+ id="1441"
+ B="1427"
+ E="1428"
+/><b
+ id="1442"
+ B="1426"
+ E="1427"
+ Order="3"
+/><b
+ id="1443"
+ B="1425"
+ E="1426"
+/><b
+ id="1444"
+ B="1424"
+ E="1425"
+ Order="3"
+/><b
+ id="1445"
+ B="1423"
+ E="1424"
+/><b
+ id="1446"
+ B="1434"
+ E="1423"
+/><b
+ id="1447"
+ B="1435"
+ E="1423"
+ Order="2"
+/></fragment><t
+ p="131.69 228.64"
+ BoundingBox="131.91 224.96 138.44 229.79"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C11</s></t></n><n
+ id="108"
+ p="121.03 219.60"
+ Z="108"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="115 116 127"
+><fragment
+ id="1449"
+><n
+ id="1450"
+ p="121.03 219.60"
+ NumHydrogens="0"
+/><n
+ id="1451"
+ p="173.40 136.07"
+ NumHydrogens="0"
+/><n
+ id="1452"
+ p="180.58 123.64"
+ NumHydrogens="0"
+/><n
+ id="1453"
+ p="166.23 148.50"
+ NumHydrogens="0"
+/><n
+ id="1454"
+ p="187.75 111.21"
+ NumHydrogens="0"
+/><n
+ id="1455"
+ p="159.05 160.92"
+ NumHydrogens="0"
+/><n
+ id="1456"
+ p="194.93 98.79"
+ NumHydrogens="0"
+/><n
+ id="1457"
+ p="151.88 173.35"
+ NumHydrogens="0"
+/><n
+ id="1458"
+ p="202.10 86.36"
+ NumHydrogens="0"
+/><n
+ id="1459"
+ p="144.70 185.78"
+ NumHydrogens="0"
+/><n
+ id="1460"
+ p="209.28 73.93"
+ NumHydrogens="0"
+/><n
+ id="1461"
+ p="137.53 198.21"
+ NumHydrogens="0"
+/><n
+ id="1462"
+ p="133.46 226.78"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="1463"
+ p="121.03 205.25"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="1464"
+ p="108.60 226.78"
+ NodeType="ExternalConnectionPoint"
+/><b
+ id="1465"
+ B="1459"
+ E="1461"
+/><b
+ id="1466"
+ B="1458"
+ E="1460"
+ Order="3"
+/><b
+ id="1467"
+ B="1457"
+ E="1459"
+ Order="3"
+/><b
+ id="1468"
+ B="1456"
+ E="1458"
+/><b
+ id="1469"
+ B="1455"
+ E="1457"
+/><b
+ id="1470"
+ B="1454"
+ E="1456"
+ Order="3"
+/><b
+ id="1471"
+ B="1453"
+ E="1455"
+ Order="3"
+/><b
+ id="1472"
+ B="1452"
+ E="1454"
+/><b
+ id="1473"
+ B="1451"
+ E="1452"
+ Order="3"
+/><b
+ id="1474"
+ B="1451"
+ E="1453"
+/><b
+ id="1475"
+ B="1462"
+ E="1450"
+ Order="2"
+/><b
+ id="1476"
+ B="1463"
+ E="1450"
+/><b
+ id="1477"
+ B="1464"
+ E="1450"
+/></fragment><t
+ p="119.22 221.44"
+ BoundingBox="119.44 217.76 126.85 222.59"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C12</s></t></n><n
+ id="110"
+ p="108.56 226.80"
+ Z="110"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="116 117 131"
+><fragment
+ id="1479"
+><n
+ id="1480"
+ p="108.56 226.80"
+ NumHydrogens="0"
+/><n
+ id="1481"
+ p="221.44 230.39"
+ NumHydrogens="0"
+/><n
+ id="1482"
+ p="207.09 230.39"
+ NumHydrogens="0"
+/><n
+ id="1483"
+ p="235.79 230.39"
+ NumHydrogens="0"
+/><n
+ id="1484"
+ p="192.74 230.39"
+ NumHydrogens="0"
+/><n
+ id="1485"
+ p="250.14 230.39"
+ NumHydrogens="0"
+/><n
+ id="1486"
+ p="178.39 230.39"
+ NumHydrogens="0"
+/><n
+ id="1487"
+ p="264.49 230.39"
+ NumHydrogens="0"
+/><n
+ id="1488"
+ p="164.04 230.39"
+ NumHydrogens="0"
+/><n
+ id="1489"
+ p="278.84 230.39"
+ NumHydrogens="0"
+/><n
+ id="1490"
+ p="149.69 230.39"
+ NumHydrogens="0"
+/><n
+ id="1491"
+ p="293.19 230.39"
+ NumHydrogens="0"
+/><n
+ id="1492"
+ p="135.34 230.39"
+ NumHydrogens="0"
+/><n
+ id="1493"
+ p="120.99 219.63"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="1494"
+ p="108.56 241.15"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="1495"
+ p="96.13 219.63"
+ NodeType="ExternalConnectionPoint"
+/><b
+ id="1496"
+ B="1490"
+ E="1492"
+/><b
+ id="1497"
+ B="1489"
+ E="1491"
+/><b
+ id="1498"
+ B="1488"
+ E="1490"
+ Order="3"
+/><b
+ id="1499"
+ B="1487"
+ E="1489"
+ Order="3"
+/><b
+ id="1500"
+ B="1486"
+ E="1488"
+/><b
+ id="1501"
+ B="1485"
+ E="1487"
+/><b
+ id="1502"
+ B="1484"
+ E="1486"
+ Order="3"
+/><b
+ id="1503"
+ B="1483"
+ E="1485"
+ Order="3"
+/><b
+ id="1504"
+ B="1482"
+ E="1484"
+/><b
+ id="1505"
+ B="1481"
+ E="1482"
+ Order="3"
+/><b
+ id="1506"
+ B="1481"
+ E="1483"
+/><b
+ id="1507"
+ B="1493"
+ E="1480"
+/><b
+ id="1508"
+ B="1494"
+ E="1480"
+ Order="2"
+/><b
+ id="1509"
+ B="1495"
+ E="1480"
+/></fragment><t
+ p="106.75 228.64"
+ BoundingBox="106.97 224.96 114.37 229.87"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C13</s></t></n><n
+ id="112"
+ p="108.56 241.20"
+ Z="112"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="117 118 143"
+><fragment
+ id="1511"
+><n
+ id="1512"
+ p="108.56 241.20"
+ NumHydrogens="0"
+/><n
+ id="1513"
+ p="-4.32 237.61"
+ NumHydrogens="0"
+/><n
+ id="1514"
+ p="-18.67 237.61"
+ NumHydrogens="0"
+/><n
+ id="1515"
+ p="10.03 237.61"
+ NumHydrogens="0"
+/><n
+ id="1516"
+ p="-33.02 237.61"
+ NumHydrogens="0"
+/><n
+ id="1517"
+ p="24.38 237.61"
+ NumHydrogens="0"
+/><n
+ id="1518"
+ p="-47.37 237.61"
+ NumHydrogens="0"
+/><n
+ id="1519"
+ p="38.73 237.61"
+ NumHydrogens="0"
+/><n
+ id="1520"
+ p="-61.72 237.61"
+ NumHydrogens="0"
+/><n
+ id="1521"
+ p="53.08 237.61"
+ NumHydrogens="0"
+/><n
+ id="1522"
+ p="-76.07 237.61"
+ NumHydrogens="0"
+/><n
+ id="1523"
+ p="67.43 237.61"
+ NumHydrogens="0"
+/><n
+ id="1524"
+ p="-90.42 237.61"
+ NumHydrogens="0"
+/><n
+ id="1525"
+ p="81.78 237.61"
+ NumHydrogens="0"
+/><n
+ id="1526"
+ p="108.56 226.85"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="1527"
+ p="96.13 248.38"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="1528"
+ p="120.99 248.38"
+ NodeType="ExternalConnectionPoint"
+/><b
+ id="1529"
+ B="1523"
+ E="1525"
+ Order="3"
+/><b
+ id="1530"
+ B="1522"
+ E="1524"
+/><b
+ id="1531"
+ B="1521"
+ E="1523"
+/><b
+ id="1532"
+ B="1520"
+ E="1522"
+ Order="3"
+/><b
+ id="1533"
+ B="1519"
+ E="1521"
+ Order="3"
+/><b
+ id="1534"
+ B="1518"
+ E="1520"
+/><b
+ id="1535"
+ B="1517"
+ E="1519"
+/><b
+ id="1536"
+ B="1516"
+ E="1518"
+ Order="3"
+/><b
+ id="1537"
+ B="1515"
+ E="1517"
+ Order="3"
+/><b
+ id="1538"
+ B="1514"
+ E="1516"
+/><b
+ id="1539"
+ B="1513"
+ E="1514"
+ Order="3"
+/><b
+ id="1540"
+ B="1513"
+ E="1515"
+/><b
+ id="1541"
+ B="1526"
+ E="1512"
+ Order="2"
+/><b
+ id="1542"
+ B="1527"
+ E="1512"
+/><b
+ id="1543"
+ B="1528"
+ E="1512"
+ Display="Wavy"
+/></fragment><t
+ p="106.75 243.04"
+ BoundingBox="106.97 239.36 114.41 244.19"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C14</s></t></n><n
+ id="119"
+ p="121.03 205.20"
+ Z="119"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="127 128"
+><fragment
+ id="1545"
+><n
+ id="1546"
+ p="121.03 205.20"
+ NumHydrogens="0"
+/><n
+ id="1547"
+ p="108.60 198.03"
+ NumHydrogens="0"
+/><n
+ id="1548"
+ p="96.18 190.85"
+ NumHydrogens="0"
+/><n
+ id="1549"
+ p="83.75 183.68"
+ NumHydrogens="0"
+/><n
+ id="1550"
+ p="71.32 176.50"
+ NumHydrogens="0"
+/><n
+ id="1551"
+ p="58.89 169.33"
+ NumHydrogens="0"
+/><n
+ id="1552"
+ p="46.47 162.15"
+ NumHydrogens="0"
+/><n
+ id="1553"
+ p="34.04 154.98"
+ NumHydrogens="0"
+/><n
+ id="1554"
+ p="21.61 147.80"
+ NumHydrogens="0"
+/><n
+ id="1555"
+ p="9.18 140.63"
+ NumHydrogens="0"
+/><n
+ id="1556"
+ p="-3.24 133.45"
+ NumHydrogens="0"
+/><n
+ id="1557"
+ p="-15.67 126.28"
+ NumHydrogens="0"
+/><n
+ id="1558"
+ p="-28.10 119.10"
+ NumHydrogens="0"
+/><n
+ id="1559"
+ p="-40.53 111.93"
+ NumHydrogens="0"
+/><n
+ id="1560"
+ p="-52.95 104.75"
+ NumHydrogens="0"
+/><n
+ id="1561"
+ p="121.03 219.55"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="1562"
+ p="133.46 198.03"
+ NodeType="ExternalConnectionPoint"
+/><b
+ id="1563"
+ B="1559"
+ E="1560"
+ Order="3"
+/><b
+ id="1564"
+ B="1558"
+ E="1559"
+/><b
+ id="1565"
+ B="1557"
+ E="1558"
+ Order="3"
+/><b
+ id="1566"
+ B="1556"
+ E="1557"
+/><b
+ id="1567"
+ B="1555"
+ E="1556"
+ Order="3"
+/><b
+ id="1568"
+ B="1554"
+ E="1555"
+/><b
+ id="1569"
+ B="1553"
+ E="1554"
+ Order="3"
+/><b
+ id="1570"
+ B="1552"
+ E="1553"
+/><b
+ id="1571"
+ B="1551"
+ E="1552"
+ Order="3"
+/><b
+ id="1572"
+ B="1550"
+ E="1551"
+/><b
+ id="1573"
+ B="1549"
+ E="1550"
+ Order="3"
+/><b
+ id="1574"
+ B="1548"
+ E="1549"
+/><b
+ id="1575"
+ B="1547"
+ E="1548"
+ Order="3"
+/><b
+ id="1576"
+ B="1546"
+ E="1547"
+/><b
+ id="1577"
+ B="1561"
+ E="1546"
+/><b
+ id="1578"
+ B="1562"
+ E="1546"
+ Order="2"
+/></fragment><t
+ p="119.22 207.05"
+ BoundingBox="119.44 203.36 126.85 208.26"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C15</s></t></n><n
+ id="121"
+ p="108.56 198"
+ Z="121"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="128 129"
+><fragment
+ id="1580"
+><n
+ id="1581"
+ p="108.56 198"
+ NumHydrogens="0"
+/><n
+ id="1582"
+ p="108.56 183.65"
+ NumHydrogens="0"
+/><n
+ id="1583"
+ p="108.56 169.30"
+ NumHydrogens="0"
+/><n
+ id="1584"
+ p="108.56 154.95"
+ NumHydrogens="0"
+/><n
+ id="1585"
+ p="108.56 140.60"
+ NumHydrogens="0"
+/><n
+ id="1586"
+ p="108.56 126.25"
+ NumHydrogens="0"
+/><n
+ id="1587"
+ p="108.56 111.90"
+ NumHydrogens="0"
+/><n
+ id="1588"
+ p="108.56 97.55"
+ NumHydrogens="0"
+/><n
+ id="1589"
+ p="108.56 83.20"
+ NumHydrogens="0"
+/><n
+ id="1590"
+ p="108.56 68.85"
+ NumHydrogens="0"
+/><n
+ id="1591"
+ p="108.56 54.50"
+ NumHydrogens="0"
+/><n
+ id="1592"
+ p="108.56 40.15"
+ NumHydrogens="0"
+/><n
+ id="1593"
+ p="108.56 25.80"
+ NumHydrogens="0"
+/><n
+ id="1594"
+ p="108.56 11.45"
+ NumHydrogens="0"
+/><n
+ id="1595"
+ p="108.56 -2.90"
+ NumHydrogens="0"
+/><n
+ id="1596"
+ p="108.56 -17.25"
+ NumHydrogens="0"
+/><n
+ id="1597"
+ p="120.99 205.18"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="1598"
+ p="96.13 205.18"
+ NodeType="ExternalConnectionPoint"
+/><b
+ id="1599"
+ B="1595"
+ E="1596"
+/><b
+ id="1600"
+ B="1594"
+ E="1595"
+ Order="3"
+/><b
+ id="1601"
+ B="1593"
+ E="1594"
+/><b
+ id="1602"
+ B="1592"
+ E="1593"
+ Order="3"
+/><b
+ id="1603"
+ B="1591"
+ E="1592"
+/><b
+ id="1604"
+ B="1590"
+ E="1591"
+ Order="3"
+/><b
+ id="1605"
+ B="1589"
+ E="1590"
+/><b
+ id="1606"
+ B="1588"
+ E="1589"
+ Order="3"
+/><b
+ id="1607"
+ B="1587"
+ E="1588"
+/><b
+ id="1608"
+ B="1586"
+ E="1587"
+ Order="3"
+/><b
+ id="1609"
+ B="1585"
+ E="1586"
+/><b
+ id="1610"
+ B="1584"
+ E="1585"
+ Order="3"
+/><b
+ id="1611"
+ B="1583"
+ E="1584"
+/><b
+ id="1612"
+ B="1582"
+ E="1583"
+ Order="3"
+/><b
+ id="1613"
+ B="1581"
+ E="1582"
+/><b
+ id="1614"
+ B="1597"
+ E="1581"
+ Order="2"
+/><b
+ id="1615"
+ B="1598"
+ E="1581"
+/></fragment><t
+ p="106.75 199.85"
+ BoundingBox="106.97 196.16 114.39 201.06"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C16</s></t></n><n
+ id="123"
+ p="96.09 205.20"
+ Z="123"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="129 130"
+><fragment
+ id="1617"
+><n
+ id="1618"
+ p="96.09 205.20"
+ NumHydrogens="0"
+/><n
+ id="1619"
+ p="96.09 219.55"
+ NumHydrogens="0"
+/><n
+ id="1620"
+ p="96.09 233.90"
+ NumHydrogens="0"
+/><n
+ id="1621"
+ p="96.09 248.25"
+ NumHydrogens="0"
+/><n
+ id="1622"
+ p="96.09 262.60"
+ NumHydrogens="0"
+/><n
+ id="1623"
+ p="96.09 276.95"
+ NumHydrogens="0"
+/><n
+ id="1624"
+ p="96.09 291.30"
+ NumHydrogens="0"
+/><n
+ id="1625"
+ p="96.09 305.65"
+ NumHydrogens="0"
+/><n
+ id="1626"
+ p="96.09 320"
+ NumHydrogens="0"
+/><n
+ id="1627"
+ p="96.09 334.35"
+ NumHydrogens="0"
+/><n
+ id="1628"
+ p="96.09 348.70"
+ NumHydrogens="0"
+/><n
+ id="1629"
+ p="96.09 363.05"
+ NumHydrogens="0"
+/><n
+ id="1630"
+ p="96.09 377.40"
+ NumHydrogens="0"
+/><n
+ id="1631"
+ p="96.09 391.75"
+ NumHydrogens="0"
+/><n
+ id="1632"
+ p="96.09 406.10"
+ NumHydrogens="0"
+/><n
+ id="1633"
+ p="96.09 420.45"
+ NumHydrogens="0"
+/><n
+ id="1634"
+ p="96.09 434.80"
+ NumHydrogens="0"
+/><n
+ id="1635"
+ p="108.52 198.03"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="1636"
+ p="83.66 198.03"
+ NodeType="ExternalConnectionPoint"
+/><b
+ id="1637"
+ B="1633"
+ E="1634"
+ Order="3"
+/><b
+ id="1638"
+ B="1632"
+ E="1633"
+/><b
+ id="1639"
+ B="1631"
+ E="1632"
+ Order="3"
+/><b
+ id="1640"
+ B="1630"
+ E="1631"
+/><b
+ id="1641"
+ B="1629"
+ E="1630"
+ Order="3"
+/><b
+ id="1642"
+ B="1628"
+ E="1629"
+/><b
+ id="1643"
+ B="1627"
+ E="1628"
+ Order="3"
+/><b
+ id="1644"
+ B="1626"
+ E="1627"
+/><b
+ id="1645"
+ B="1625"
+ E="1626"
+ Order="3"
+/><b
+ id="1646"
+ B="1624"
+ E="1625"
+/><b
+ id="1647"
+ B="1623"
+ E="1624"
+ Order="3"
+/><b
+ id="1648"
+ B="1622"
+ E="1623"
+/><b
+ id="1649"
+ B="1621"
+ E="1622"
+ Order="3"
+/><b
+ id="1650"
+ B="1620"
+ E="1621"
+/><b
+ id="1651"
+ B="1619"
+ E="1620"
+ Order="3"
+/><b
+ id="1652"
+ B="1618"
+ E="1619"
+/><b
+ id="1653"
+ B="1635"
+ E="1618"
+/><b
+ id="1654"
+ B="1636"
+ E="1618"
+ Order="2"
+/></fragment><t
+ p="94.28 207.05"
+ BoundingBox="94.50 203.36 101.94 208.20"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C17</s></t></n><n
+ id="125"
+ p="96.09 219.60"
+ Z="125"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="130 131"
+><fragment
+ id="1656"
+><n
+ id="1657"
+ p="96.09 219.60"
+ NumHydrogens="0"
+/><n
+ id="1658"
+ p="83.66 226.78"
+ NumHydrogens="0"
+/><n
+ id="1659"
+ p="71.24 233.95"
+ NumHydrogens="0"
+/><n
+ id="1660"
+ p="58.81 241.13"
+ NumHydrogens="0"
+/><n
+ id="1661"
+ p="46.38 248.30"
+ NumHydrogens="0"
+/><n
+ id="1662"
+ p="33.95 255.48"
+ NumHydrogens="0"
+/><n
+ id="1663"
+ p="21.53 262.65"
+ NumHydrogens="0"
+/><n
+ id="1664"
+ p="9.10 269.83"
+ NumHydrogens="0"
+/><n
+ id="1665"
+ p="-3.33 277"
+ NumHydrogens="0"
+/><n
+ id="1666"
+ p="-15.76 284.18"
+ NumHydrogens="0"
+/><n
+ id="1667"
+ p="-28.18 291.35"
+ NumHydrogens="0"
+/><n
+ id="1668"
+ p="-40.61 298.53"
+ NumHydrogens="0"
+/><n
+ id="1669"
+ p="-53.04 305.70"
+ NumHydrogens="0"
+/><n
+ id="1670"
+ p="-65.47 312.88"
+ NumHydrogens="0"
+/><n
+ id="1671"
+ p="-77.89 320.05"
+ NumHydrogens="0"
+/><n
+ id="1672"
+ p="-90.32 327.23"
+ NumHydrogens="0"
+/><n
+ id="1673"
+ p="-102.75 334.40"
+ NumHydrogens="0"
+/><n
+ id="1674"
+ p="-115.18 341.58"
+ NumHydrogens="0"
+/><n
+ id="1675"
+ p="96.09 205.25"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="1676"
+ p="108.52 226.78"
+ NodeType="ExternalConnectionPoint"
+/><b
+ id="1677"
+ B="1673"
+ E="1674"
+/><b
+ id="1678"
+ B="1672"
+ E="1673"
+ Order="3"
+/><b
+ id="1679"
+ B="1671"
+ E="1672"
+/><b
+ id="1680"
+ B="1670"
+ E="1671"
+ Order="3"
+/><b
+ id="1681"
+ B="1669"
+ E="1670"
+/><b
+ id="1682"
+ B="1668"
+ E="1669"
+ Order="3"
+/><b
+ id="1683"
+ B="1667"
+ E="1668"
+/><b
+ id="1684"
+ B="1666"
+ E="1667"
+ Order="3"
+/><b
+ id="1685"
+ B="1665"
+ E="1666"
+/><b
+ id="1686"
+ B="1664"
+ E="1665"
+ Order="3"
+/><b
+ id="1687"
+ B="1663"
+ E="1664"
+/><b
+ id="1688"
+ B="1662"
+ E="1663"
+ Order="3"
+/><b
+ id="1689"
+ B="1661"
+ E="1662"
+/><b
+ id="1690"
+ B="1660"
+ E="1661"
+ Order="3"
+/><b
+ id="1691"
+ B="1659"
+ E="1660"
+/><b
+ id="1692"
+ B="1658"
+ E="1659"
+ Order="3"
+/><b
+ id="1693"
+ B="1657"
+ E="1658"
+/><b
+ id="1694"
+ B="1675"
+ E="1657"
+ Order="2"
+/><b
+ id="1695"
+ B="1676"
+ E="1657"
+/></fragment><t
+ p="94.28 221.44"
+ BoundingBox="94.50 217.76 101.90 222.67"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C18</s></t></n><n
+ id="142"
+ p="94.16 241.20"
+ Z="142"
+ Warning="This label has conflicting or unassignable charges."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+><t
+ p="95.20 242.99"
+ BoundingBox="68.66 239.41 95.08 244.14"
+ LabelJustification="Right"
+ Justification="Right"
+ LabelAlignment="Right"
+><s font="21" size="5" color="0" face="96">:name :ring4</s></t></n><b
+ id="14"
+ Z="87"
+ B="2"
+ E="4"
+ Order="2"
+ BS="N"
+ BondCircularOrdering="19 105 0 15"
+/><b
+ id="15"
+ Z="88"
+ B="4"
+ E="6"
+ BS="N"
+/><b
+ id="16"
+ Z="89"
+ B="6"
+ E="8"
+ Order="2"
+ BS="N"
+ BondCircularOrdering="15 0 0 17"
+/><b
+ id="17"
+ Z="90"
+ B="8"
+ E="10"
+ BS="N"
+/><b
+ id="18"
+ Z="91"
+ B="10"
+ E="12"
+ Order="2"
+ BS="N"
+ BondCircularOrdering="17 0 101 19"
+/><b
+ id="19"
+ Z="92"
+ B="12"
+ E="2"
+ BS="N"
+/><b
+ id="101"
+ Z="101"
+ B="12"
+ E="93"
+ BS="N"
+ BeginAttach="0"
+/><b
+ id="102"
+ Z="102"
+ B="93"
+ E="95"
+ Order="2"
+ BS="N"
+ BondCircularOrdering="101 0 114 103"
+/><b
+ id="103"
+ Z="103"
+ B="95"
+ E="97"
+ BS="N"
+/><b
+ id="104"
+ Z="104"
+ B="97"
+ E="99"
+ Order="2"
+ BS="N"
+ BondCircularOrdering="103 118 0 105"
+/><b
+ id="105"
+ Z="105"
+ B="99"
+ E="2"
+ BS="N"
+ EndAttach="0"
+/><b
+ id="114"
+ Z="114"
+ B="95"
+ E="106"
+ BS="N"
+/><b
+ id="115"
+ Z="115"
+ B="106"
+ E="108"
+ Order="2"
+ BS="N"
+ BondCircularOrdering="114 0 127 116"
+/><b
+ id="116"
+ Z="116"
+ B="108"
+ E="110"
+ BS="N"
+/><b
+ id="117"
+ Z="117"
+ B="110"
+ E="112"
+ Order="2"
+ BS="N"
+ BondCircularOrdering="116 131 143 118"
+/><b
+ id="118"
+ Z="118"
+ B="112"
+ E="97"
+ BS="N"
+/><b
+ id="127"
+ Z="127"
+ B="108"
+ E="119"
+ BS="N"
+/><b
+ id="128"
+ Z="128"
+ B="119"
+ E="121"
+ Order="2"
+ BS="N"
+ BondCircularOrdering="127 0 0 129"
+/><b
+ id="129"
+ Z="129"
+ B="121"
+ E="123"
+ BS="N"
+/><b
+ id="130"
+ Z="130"
+ B="123"
+ E="125"
+ Order="2"
+ BS="N"
+ BondCircularOrdering="129 0 0 131"
+/><b
+ id="131"
+ Z="131"
+ B="125"
+ E="110"
+ BS="N"
+/><b
+ id="143"
+ Z="143"
+ B="112"
+ E="142"
+ Display="Wavy"
+ BS="N"
+/></fragment><fragment
+ id="144"
+ BoundingBox="162.62 228.11 243.18 283.34"
+ Z="659"
+><n
+ id="145"
+ p="214.50 258.75"
+ Z="657"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="587 592 597"
+><fragment
+ id="1697"
+ ConnectionOrder="149 150 151"
+><n
+ id="147"
+ p="214.50 258.75"
+ Z="147"
+ NumHydrogens="0"
+ NeedsClean="yes"
+><t
+ p="212.69 260.59"
+ BoundingBox="212.91 256.91 216.10 260.68"
+ LabelJustification="Left"
+><s font="21" size="5" color="0" face="96">C</s></t></n><n
+ id="148"
+ p="200.15 258.75"
+ Z="148"
+/><n
+ id="149"
+ p="214.50 273.10"
+ Z="149"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="150"
+ p="228.85 258.75"
+ Z="150"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="151"
+ p="214.50 244.40"
+ Z="151"
+ NodeType="ExternalConnectionPoint"
+/><b
+ id="152"
+ Z="152"
+ B="147"
+ E="148"
+ Order="4"
+/><b
+ id="153"
+ Z="153"
+ B="149"
+ E="147"
+ Order="2"
+/><b
+ id="154"
+ Z="154"
+ B="150"
+ E="147"
+/><b
+ id="155"
+ Z="155"
+ B="151"
+ E="147"
+/></fragment><t
+ p="212.69 260.59"
+ BoundingBox="212.91 256.91 218.24 261.74"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C2</s></t></n><n
+ id="156"
+ p="214.50 273.15"
+ Z="658"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="587 588"
+><fragment
+ id="1698"
+ ConnectionOrder="161 162"
+><n
+ id="158"
+ p="214.50 273.15"
+ Z="609"
+/><n
+ id="159"
+ p="202.07 280.32"
+ Z="610"
+/><n
+ id="160"
+ p="189.65 287.50"
+ Z="611"
+ NumHydrogens="0"
+ NeedsClean="yes"
+><t
+ p="187.84 289.34"
+ BoundingBox="188.06 285.66 191.25 289.43"
+ LabelJustification="Left"
+><s font="21" size="5" color="0" face="96">C</s></t></n><n
+ id="161"
+ p="214.50 258.80"
+ Z="612"
+ NodeType="ExternalConnectionPoint"
+ ExternalConnectionNum="1"
+/><n
+ id="162"
+ p="226.93 280.32"
+ Z="613"
+ NodeType="ExternalConnectionPoint"
+ ExternalConnectionNum="2"
+/><b
+ id="163"
+ Z="614"
+ B="159"
+ E="160"
+ Order="3"
+/><b
+ id="164"
+ Z="615"
+ B="158"
+ E="159"
+/><b
+ id="165"
+ Z="616"
+ B="161"
+ E="158"
+ Order="2"
+/><b
+ id="166"
+ Z="617"
+ B="162"
+ E="158"
+/></fragment><t
+ p="212.69 274.99"
+ BoundingBox="212.91 271.31 218.23 276.21"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C3</s></t></n><n
+ id="167"
+ p="226.97 280.35"
+ Z="660"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="588 589"
+><fragment
+ id="1699"
+ ConnectionOrder="173 174"
+><n
+ id="169"
+ p="226.97 280.35"
+ Z="618"
+/><n
+ id="170"
+ p="239.40 273.17"
+ Z="619"
+/><n
+ id="171"
+ p="251.82 266"
+ Z="620"
+/><n
+ id="172"
+ p="264.25 258.82"
+ Z="621"
+ NumHydrogens="0"
+ NeedsClean="yes"
+><t
+ p="262.44 260.66"
+ BoundingBox="262.66 256.98 265.85 260.75"
+ LabelJustification="Left"
+><s font="21" size="5" color="0" face="96">C</s></t></n><n
+ id="173"
+ p="214.54 273.17"
+ Z="622"
+ NodeType="ExternalConnectionPoint"
+ ExternalConnectionNum="1"
+/><n
+ id="174"
+ p="226.97 294.70"
+ Z="623"
+ NodeType="ExternalConnectionPoint"
+ ExternalConnectionNum="2"
+/><b
+ id="175"
+ Z="624"
+ B="171"
+ E="172"
+/><b
+ id="176"
+ Z="625"
+ B="170"
+ E="171"
+ Order="3"
+/><b
+ id="177"
+ Z="626"
+ B="169"
+ E="170"
+/><b
+ id="178"
+ Z="627"
+ B="173"
+ E="169"
+/><b
+ id="179"
+ Z="628"
+ B="174"
+ E="169"
+ Order="2"
+/></fragment><t
+ p="225.16 282.19"
+ BoundingBox="225.38 278.51 230.74 283.34"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C4</s></t></n><n
+ id="180"
+ p="239.44 273.15"
+ Z="661"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="589 590"
+><fragment
+ id="1700"
+ ConnectionOrder="187 188"
+><n
+ id="182"
+ p="239.44 273.15"
+ Z="629"
+/><n
+ id="183"
+ p="251.87 280.32"
+ Z="630"
+/><n
+ id="184"
+ p="264.29 287.50"
+ Z="631"
+/><n
+ id="185"
+ p="276.72 294.67"
+ Z="632"
+/><n
+ id="186"
+ p="289.15 301.85"
+ Z="633"
+ NumHydrogens="0"
+ NeedsClean="yes"
+><t
+ p="287.34 303.69"
+ BoundingBox="287.56 300.01 290.75 303.78"
+ LabelJustification="Left"
+><s font="21" size="5" color="0" face="96">C</s></t></n><n
+ id="187"
+ p="227.01 280.32"
+ Z="634"
+ NodeType="ExternalConnectionPoint"
+ ExternalConnectionNum="1"
+/><n
+ id="188"
+ p="239.44 258.80"
+ Z="635"
+ NodeType="ExternalConnectionPoint"
+ ExternalConnectionNum="2"
+/><b
+ id="189"
+ Z="636"
+ B="185"
+ E="186"
+ Order="3"
+/><b
+ id="190"
+ Z="637"
+ B="184"
+ E="185"
+/><b
+ id="191"
+ Z="638"
+ B="183"
+ E="184"
+ Order="3"
+/><b
+ id="192"
+ Z="639"
+ B="182"
+ E="183"
+/><b
+ id="193"
+ Z="640"
+ B="187"
+ E="182"
+ Order="2"
+/><b
+ id="194"
+ Z="641"
+ B="188"
+ E="182"
+/></fragment><t
+ p="237.63 274.99"
+ BoundingBox="237.85 271.31 243.17 276.21"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C5</s></t></n><n
+ id="195"
+ p="239.44 258.75"
+ Z="662"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="590 591"
+><fragment
+ id="1701"
+ ConnectionOrder="203 204"
+><n
+ id="197"
+ p="239.44 258.75"
+ Z="642"
+/><n
+ id="198"
+ p="227.01 251.57"
+ Z="643"
+/><n
+ id="199"
+ p="214.58 244.40"
+ Z="644"
+/><n
+ id="200"
+ p="202.16 237.22"
+ Z="645"
+/><n
+ id="201"
+ p="189.73 230.05"
+ Z="646"
+/><n
+ id="202"
+ p="177.30 222.87"
+ Z="647"
+ NumHydrogens="0"
+ NeedsClean="yes"
+><t
+ p="175.49 224.71"
+ BoundingBox="175.71 221.03 178.90 224.80"
+ LabelJustification="Left"
+><s font="21" size="5" color="0" face="96">C</s></t></n><n
+ id="203"
+ p="239.44 273.10"
+ Z="648"
+ NodeType="ExternalConnectionPoint"
+ ExternalConnectionNum="1"
+/><n
+ id="204"
+ p="251.87 251.57"
+ Z="649"
+ NodeType="ExternalConnectionPoint"
+ ExternalConnectionNum="2"
+/><b
+ id="205"
+ Z="650"
+ B="201"
+ E="202"
+/><b
+ id="206"
+ Z="651"
+ B="200"
+ E="201"
+ Order="3"
+/><b
+ id="207"
+ Z="652"
+ B="199"
+ E="200"
+/><b
+ id="208"
+ Z="653"
+ B="198"
+ E="199"
+ Order="3"
+/><b
+ id="209"
+ Z="654"
+ B="197"
+ E="198"
+/><b
+ id="210"
+ Z="655"
+ B="203"
+ E="197"
+/><b
+ id="211"
+ Z="656"
+ B="204"
+ E="197"
+ Order="2"
+/></fragment><t
+ p="237.63 260.59"
+ BoundingBox="237.85 256.91 243.18 261.81"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C6</s></t></n><n
+ id="212"
+ p="226.97 251.55"
+ Z="663"
+ NodeType="Fragment"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="591 592 593"
+><fragment
+ id="1702"
+ ConnectionOrder="215 216 217"
+><n
+ id="214"
+ p="226.97 251.55"
+ Z="214"
+/><n
+ id="215"
+ p="239.40 258.73"
+ Z="215"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="216"
+ p="226.97 237.20"
+ Z="216"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="217"
+ p="214.54 258.72"
+ Z="217"
+ NodeType="ExternalConnectionPoint"
+/><b
+ id="218"
+ Z="218"
+ B="215"
+ E="214"
+ Order="2"
+/><b
+ id="219"
+ Z="219"
+ B="216"
+ E="214"
+/><b
+ id="220"
+ Z="220"
+ B="217"
+ E="214"
+/></fragment><t
+ p="225.16 253.39"
+ BoundingBox="225.38 249.71 230.10 254.54"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C1</s></t></n><n
+ id="221"
+ p="226.97 237.15"
+ Z="670"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="593 594"
+><fragment
+ id="1703"
+ ConnectionOrder="230 231"
+><n
+ id="223"
+ p="226.97 237.15"
+ Z="223"
+/><n
+ id="224"
+ p="214.54 229.98"
+ Z="224"
+/><n
+ id="225"
+ p="202.12 222.80"
+ Z="225"
+/><n
+ id="226"
+ p="189.69 215.63"
+ Z="226"
+/><n
+ id="227"
+ p="177.26 208.45"
+ Z="227"
+/><n
+ id="228"
+ p="164.83 201.28"
+ Z="228"
+/><n
+ id="229"
+ p="152.41 194.10"
+ Z="229"
+ NumHydrogens="0"
+ NeedsClean="yes"
+><t
+ p="150.60 195.94"
+ BoundingBox="150.82 192.26 154 196.04"
+ LabelJustification="Left"
+><s font="21" size="5" color="0" face="96">C</s></t></n><n
+ id="230"
+ p="226.97 251.50"
+ Z="230"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="231"
+ p="239.40 229.98"
+ Z="231"
+ NodeType="ExternalConnectionPoint"
+/><b
+ id="232"
+ Z="232"
+ B="228"
+ E="229"
+ Order="3"
+/><b
+ id="233"
+ Z="233"
+ B="227"
+ E="228"
+/><b
+ id="234"
+ Z="234"
+ B="226"
+ E="227"
+ Order="3"
+/><b
+ id="235"
+ Z="235"
+ B="225"
+ E="226"
+/><b
+ id="236"
+ Z="236"
+ B="224"
+ E="225"
+ Order="3"
+/><b
+ id="237"
+ Z="237"
+ B="223"
+ E="224"
+/><b
+ id="238"
+ Z="238"
+ B="230"
+ E="223"
+/><b
+ id="239"
+ Z="239"
+ B="231"
+ E="223"
+ Order="2"
+/></fragment><t
+ p="225.16 238.99"
+ BoundingBox="225.38 235.31 230.74 240.14"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C7</s></t></n><n
+ id="240"
+ p="214.50 229.95"
+ Z="671"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="594 595"
+><fragment
+ id="1704"
+><n
+ id="1705"
+ p="214.50 229.95"
+ NumHydrogens="0"
+/><n
+ id="1706"
+ p="214.50 215.60"
+ NumHydrogens="0"
+/><n
+ id="1707"
+ p="214.50 201.25"
+ NumHydrogens="0"
+/><n
+ id="1708"
+ p="214.50 186.90"
+ NumHydrogens="0"
+/><n
+ id="1709"
+ p="214.50 172.55"
+ NumHydrogens="0"
+/><n
+ id="1710"
+ p="214.50 158.20"
+ NumHydrogens="0"
+/><n
+ id="1711"
+ p="214.50 143.85"
+ NumHydrogens="0"
+/><n
+ id="1712"
+ p="214.50 129.50"
+ NumHydrogens="0"
+/><n
+ id="1713"
+ p="226.93 237.13"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="1714"
+ p="202.07 237.13"
+ NodeType="ExternalConnectionPoint"
+/><b
+ id="1715"
+ B="1711"
+ E="1712"
+/><b
+ id="1716"
+ B="1710"
+ E="1711"
+ Order="3"
+/><b
+ id="1717"
+ B="1709"
+ E="1710"
+/><b
+ id="1718"
+ B="1708"
+ E="1709"
+ Order="3"
+/><b
+ id="1719"
+ B="1707"
+ E="1708"
+/><b
+ id="1720"
+ B="1706"
+ E="1707"
+ Order="3"
+/><b
+ id="1721"
+ B="1705"
+ E="1706"
+/><b
+ id="1722"
+ B="1713"
+ E="1705"
+ Order="2"
+/><b
+ id="1723"
+ B="1714"
+ E="1705"
+/></fragment><t
+ p="212.69 231.79"
+ BoundingBox="212.91 228.11 218.23 233.02"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C8</s></t></n><n
+ id="262"
+ p="202.03 237.15"
+ Z="672"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="595 596 613"
+><fragment
+ id="1725"
+><n
+ id="1726"
+ p="202.03 237.15"
+ NumHydrogens="0"
+/><n
+ id="1727"
+ p="286.21 240.74"
+ NumHydrogens="0"
+/><n
+ id="1728"
+ p="271.86 240.74"
+ NumHydrogens="0"
+/><n
+ id="1729"
+ p="300.56 240.74"
+ NumHydrogens="0"
+/><n
+ id="1730"
+ p="257.51 240.74"
+ NumHydrogens="0"
+/><n
+ id="1731"
+ p="314.91 240.74"
+ NumHydrogens="0"
+/><n
+ id="1732"
+ p="243.16 240.74"
+ NumHydrogens="0"
+/><n
+ id="1733"
+ p="329.26 240.74"
+ NumHydrogens="0"
+/><n
+ id="1734"
+ p="228.81 240.74"
+ NumHydrogens="0"
+/><n
+ id="1735"
+ p="214.46 229.98"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="1736"
+ p="202.03 251.50"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="1737"
+ p="189.60 229.98"
+ NodeType="ExternalConnectionPoint"
+/><b
+ id="1738"
+ B="1732"
+ E="1734"
+/><b
+ id="1739"
+ B="1731"
+ E="1733"
+/><b
+ id="1740"
+ B="1730"
+ E="1732"
+ Order="3"
+/><b
+ id="1741"
+ B="1729"
+ E="1731"
+ Order="3"
+/><b
+ id="1742"
+ B="1728"
+ E="1730"
+/><b
+ id="1743"
+ B="1727"
+ E="1728"
+ Order="3"
+/><b
+ id="1744"
+ B="1727"
+ E="1729"
+/><b
+ id="1745"
+ B="1735"
+ E="1726"
+/><b
+ id="1746"
+ B="1736"
+ E="1726"
+ Order="2"
+/><b
+ id="1747"
+ B="1737"
+ E="1726"
+ Display="Wavy"
+/></fragment><t
+ p="200.22 238.99"
+ BoundingBox="200.44 235.31 205.74 240.22"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C9</s></t></n><n
+ id="286"
+ p="202.03 251.55"
+ Z="673"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="596 597"
+><fragment
+ id="1749"
+ ConnectionOrder="298 299"
+><n
+ id="288"
+ p="202.03 251.55"
+ Z="288"
+/><n
+ id="289"
+ p="189.60 258.72"
+ Z="289"
+/><n
+ id="290"
+ p="177.18 265.90"
+ Z="290"
+/><n
+ id="291"
+ p="164.75 273.07"
+ Z="291"
+/><n
+ id="292"
+ p="152.32 280.25"
+ Z="292"
+/><n
+ id="293"
+ p="139.89 287.42"
+ Z="293"
+/><n
+ id="294"
+ p="127.47 294.60"
+ Z="294"
+/><n
+ id="295"
+ p="115.04 301.77"
+ Z="295"
+/><n
+ id="296"
+ p="102.61 308.95"
+ Z="296"
+/><n
+ id="297"
+ p="90.18 316.12"
+ Z="297"
+ NumHydrogens="0"
+ NeedsClean="yes"
+><t
+ p="88.38 317.97"
+ BoundingBox="88.60 314.28 91.78 318.06"
+ LabelJustification="Left"
+><s font="21" size="5" color="0" face="96">C</s></t></n><n
+ id="298"
+ p="202.03 237.20"
+ Z="298"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="299"
+ p="214.46 258.72"
+ Z="299"
+ NodeType="ExternalConnectionPoint"
+/><b
+ id="300"
+ Z="300"
+ B="296"
+ E="297"
+/><b
+ id="301"
+ Z="301"
+ B="295"
+ E="296"
+ Order="3"
+/><b
+ id="302"
+ Z="302"
+ B="294"
+ E="295"
+/><b
+ id="303"
+ Z="303"
+ B="293"
+ E="294"
+ Order="3"
+/><b
+ id="304"
+ Z="304"
+ B="292"
+ E="293"
+/><b
+ id="305"
+ Z="305"
+ B="291"
+ E="292"
+ Order="3"
+/><b
+ id="306"
+ Z="306"
+ B="290"
+ E="291"
+/><b
+ id="307"
+ Z="307"
+ B="289"
+ E="290"
+ Order="3"
+/><b
+ id="308"
+ Z="308"
+ B="288"
+ E="289"
+/><b
+ id="309"
+ Z="309"
+ B="298"
+ E="288"
+ Order="2"
+/><b
+ id="310"
+ Z="310"
+ B="299"
+ E="288"
+/></fragment><t
+ p="200.22 253.39"
+ BoundingBox="200.44 249.71 207.85 254.61"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C10</s></t></n><n
+ id="612"
+ p="188.12 233.42"
+ Z="702"
+ Warning="This label has conflicting or unassignable charges."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+><t
+ p="189.16 235.22"
+ BoundingBox="162.62 231.63 189.01 236.37"
+ LabelJustification="Right"
+ Justification="Right"
+ LabelAlignment="Right"
+><s font="21" size="5" color="0" face="96">:name :ring2</s></t></n><b
+ id="587"
+ Z="664"
+ B="145"
+ E="156"
+ Order="2"
+ BS="N"
+ BondCircularOrdering="592 597 0 588"
+/><b
+ id="588"
+ Z="665"
+ B="156"
+ E="167"
+ BS="N"
+/><b
+ id="589"
+ Z="666"
+ B="167"
+ E="180"
+ Order="2"
+ BS="N"
+ BondCircularOrdering="588 0 0 590"
+/><b
+ id="590"
+ Z="667"
+ B="180"
+ E="195"
+ BS="N"
+/><b
+ id="591"
+ Z="668"
+ B="195"
+ E="212"
+ Order="2"
+ BS="N"
+ BondCircularOrdering="590 0 593 592"
+/><b
+ id="592"
+ Z="669"
+ B="212"
+ E="145"
+ BS="N"
+/><b
+ id="593"
+ Z="674"
+ B="212"
+ E="221"
+ BS="N"
+ BeginAttach="0"
+/><b
+ id="594"
+ Z="675"
+ B="221"
+ E="240"
+ Order="2"
+ BS="N"
+ BondCircularOrdering="593 0 0 595"
+/><b
+ id="595"
+ Z="676"
+ B="240"
+ E="262"
+ BS="N"
+/><b
+ id="596"
+ Z="677"
+ B="262"
+ E="286"
+ Order="2"
+ BS="N"
+ BondCircularOrdering="595 613 0 597"
+/><b
+ id="597"
+ Z="678"
+ B="286"
+ E="145"
+ BS="N"
+ EndAttach="0"
+/><b
+ id="613"
+ Z="703"
+ B="262"
+ E="612"
+ Display="Wavy"
+ BS="N"
+/></fragment><fragment
+ id="615"
+ BoundingBox="261.37 241.86 329.49 275.49"
+ Z="990"
+><n
+ id="616"
+ p="313.25 272.50"
+ Z="988"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="787 792"
+><fragment
+ id="1750"
+><n
+ id="1751"
+ p="313.25 272.50"
+ NumHydrogens="0"
+/><n
+ id="1752"
+ p="300.82 265.33"
+ NumHydrogens="0"
+/><n
+ id="1753"
+ p="325.68 265.32"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="1754"
+ p="313.25 286.85"
+ NodeType="ExternalConnectionPoint"
+/><b
+ id="1755"
+ B="1751"
+ E="1752"
+/><b
+ id="1756"
+ B="1753"
+ E="1751"
+ Order="2"
+/><b
+ id="1757"
+ B="1754"
+ E="1751"
+/></fragment><t
+ p="311.44 274.34"
+ BoundingBox="311.66 270.66 316.99 275.49"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C2</s></t></n><n
+ id="683"
+ p="325.72 265.30"
+ Z="994"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="787 788"
+><fragment
+ id="1759"
+><n
+ id="1760"
+ p="325.72 265.30"
+ NumHydrogens="0"
+/><n
+ id="1761"
+ p="313.29 272.48"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="1762"
+ p="325.72 250.95"
+ NodeType="ExternalConnectionPoint"
+/><b
+ id="1763"
+ B="1761"
+ E="1760"
+ Order="2"
+/><b
+ id="1764"
+ B="1762"
+ E="1760"
+/></fragment><t
+ p="323.91 267.14"
+ BoundingBox="324.13 263.46 328.85 268.29"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C1</s></t></n><n
+ id="692"
+ p="325.72 250.90"
+ Z="1001"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="788 789"
+><fragment
+ id="1766"
+ ConnectionOrder="701 702"
+><n
+ id="694"
+ p="325.72 250.90"
+ Z="900"
+/><n
+ id="695"
+ p="313.29 243.73"
+ Z="901"
+/><n
+ id="696"
+ p="300.87 236.55"
+ Z="902"
+/><n
+ id="697"
+ p="288.44 229.38"
+ Z="903"
+/><n
+ id="698"
+ p="276.01 222.20"
+ Z="904"
+/><n
+ id="699"
+ p="263.58 215.03"
+ Z="905"
+/><n
+ id="700"
+ p="251.16 207.85"
+ Z="906"
+ NumHydrogens="0"
+ NeedsClean="yes"
+><t
+ p="249.35 209.69"
+ BoundingBox="249.57 206.01 252.75 209.79"
+ LabelJustification="Left"
+><s font="21" size="5" color="0" face="96">C</s></t></n><n
+ id="701"
+ p="325.72 265.25"
+ Z="907"
+ NodeType="ExternalConnectionPoint"
+ ExternalConnectionNum="1"
+/><n
+ id="702"
+ p="338.15 243.73"
+ Z="908"
+ NodeType="ExternalConnectionPoint"
+ ExternalConnectionNum="2"
+/><b
+ id="703"
+ Z="909"
+ B="699"
+ E="700"
+ Order="3"
+/><b
+ id="704"
+ Z="910"
+ B="698"
+ E="699"
+/><b
+ id="705"
+ Z="911"
+ B="697"
+ E="698"
+ Order="3"
+/><b
+ id="706"
+ Z="912"
+ B="696"
+ E="697"
+/><b
+ id="707"
+ Z="913"
+ B="695"
+ E="696"
+ Order="3"
+/><b
+ id="708"
+ Z="914"
+ B="694"
+ E="695"
+/><b
+ id="709"
+ Z="915"
+ B="701"
+ E="694"
+/><b
+ id="710"
+ Z="916"
+ B="702"
+ E="694"
+ Order="2"
+/></fragment><t
+ p="323.91 252.74"
+ BoundingBox="324.13 249.06 329.49 253.89"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C7</s></t></n><n
+ id="711"
+ p="313.25 243.70"
+ Z="1002"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="789 790"
+><fragment
+ id="1767"
+ ConnectionOrder="721 722"
+><n
+ id="713"
+ p="313.25 243.70"
+ Z="803"
+/><n
+ id="714"
+ p="313.25 229.35"
+ Z="804"
+/><n
+ id="715"
+ p="313.25 215"
+ Z="805"
+/><n
+ id="716"
+ p="313.25 200.65"
+ Z="806"
+/><n
+ id="717"
+ p="313.25 186.30"
+ Z="807"
+/><n
+ id="718"
+ p="313.25 171.95"
+ Z="808"
+/><n
+ id="719"
+ p="313.25 157.60"
+ Z="809"
+/><n
+ id="720"
+ p="313.25 143.25"
+ Z="810"
+ NumHydrogens="0"
+ NeedsClean="yes"
+><t
+ p="311.44 145.09"
+ BoundingBox="311.66 141.41 314.84 145.19"
+ LabelJustification="Left"
+><s font="21" size="5" color="0" face="96">C</s></t></n><n
+ id="721"
+ p="325.68 250.88"
+ Z="811"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="722"
+ p="300.82 250.88"
+ Z="812"
+ NodeType="ExternalConnectionPoint"
+/><b
+ id="723"
+ Z="813"
+ B="719"
+ E="720"
+/><b
+ id="724"
+ Z="814"
+ B="718"
+ E="719"
+ Order="3"
+/><b
+ id="725"
+ Z="815"
+ B="717"
+ E="718"
+/><b
+ id="726"
+ Z="816"
+ B="716"
+ E="717"
+ Order="3"
+/><b
+ id="727"
+ Z="817"
+ B="715"
+ E="716"
+/><b
+ id="728"
+ Z="818"
+ B="714"
+ E="715"
+ Order="3"
+/><b
+ id="729"
+ Z="819"
+ B="713"
+ E="714"
+/><b
+ id="730"
+ Z="820"
+ B="721"
+ E="713"
+ Order="2"
+/><b
+ id="731"
+ Z="821"
+ B="722"
+ E="713"
+/></fragment><t
+ p="311.44 245.54"
+ BoundingBox="311.66 241.86 316.98 246.77"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C8</s></t></n><n
+ id="732"
+ p="300.78 250.90"
+ Z="1003"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="790 791 793"
+><fragment
+ id="1768"
+ ConnectionOrder="743 744 745"
+><n
+ id="734"
+ p="300.78 250.90"
+ Z="824"
+/><n
+ id="735"
+ p="384.96 254.49"
+ Z="825"
+/><n
+ id="736"
+ p="370.61 254.49"
+ Z="826"
+/><n
+ id="737"
+ p="399.31 254.49"
+ Z="827"
+/><n
+ id="738"
+ p="356.26 254.49"
+ Z="828"
+/><n
+ id="739"
+ p="413.66 254.49"
+ Z="829"
+/><n
+ id="740"
+ p="341.91 254.49"
+ Z="830"
+/><n
+ id="741"
+ p="428.01 254.49"
+ Z="831"
+ NumHydrogens="0"
+ NeedsClean="yes"
+><t
+ p="426.20 256.33"
+ BoundingBox="426.42 252.65 429.60 256.42"
+ LabelJustification="Left"
+><s font="21" size="5" color="0" face="96">C</s></t></n><n
+ id="742"
+ p="327.56 254.49"
+ Z="832"
+ NumHydrogens="0"
+ NeedsClean="yes"
+><t
+ p="325.75 256.33"
+ BoundingBox="325.97 252.65 329.15 256.42"
+ LabelJustification="Left"
+><s font="21" size="5" color="0" face="96">C</s></t></n><n
+ id="743"
+ p="313.21 243.73"
+ Z="833"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="744"
+ p="300.78 265.25"
+ Z="834"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="745"
+ p="288.35 243.73"
+ Z="835"
+ NodeType="ExternalConnectionPoint"
+/><b
+ id="746"
+ Z="836"
+ B="740"
+ E="742"
+/><b
+ id="747"
+ Z="837"
+ B="739"
+ E="741"
+/><b
+ id="748"
+ Z="838"
+ B="738"
+ E="740"
+ Order="3"
+/><b
+ id="749"
+ Z="839"
+ B="737"
+ E="739"
+ Order="3"
+/><b
+ id="750"
+ Z="840"
+ B="736"
+ E="738"
+/><b
+ id="751"
+ Z="841"
+ B="735"
+ E="736"
+ Order="3"
+/><b
+ id="752"
+ Z="842"
+ B="735"
+ E="737"
+/><b
+ id="753"
+ Z="843"
+ B="743"
+ E="734"
+/><b
+ id="754"
+ Z="844"
+ B="744"
+ E="734"
+ Order="2"
+/><b
+ id="755"
+ Z="845"
+ B="745"
+ E="734"
+ Display="Wavy"
+/></fragment><t
+ p="298.97 252.74"
+ BoundingBox="299.19 249.06 304.49 253.97"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C9</s></t></n><n
+ id="756"
+ p="300.78 265.30"
+ Z="1004"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="791 792"
+><fragment
+ id="1769"
+ ConnectionOrder="768 769"
+><n
+ id="758"
+ p="300.78 265.30"
+ Z="917"
+/><n
+ id="759"
+ p="288.35 272.47"
+ Z="918"
+/><n
+ id="760"
+ p="275.93 279.65"
+ Z="919"
+/><n
+ id="761"
+ p="263.50 286.82"
+ Z="920"
+/><n
+ id="762"
+ p="251.07 294"
+ Z="921"
+/><n
+ id="763"
+ p="238.64 301.17"
+ Z="922"
+/><n
+ id="764"
+ p="226.22 308.35"
+ Z="923"
+/><n
+ id="765"
+ p="213.79 315.52"
+ Z="924"
+/><n
+ id="766"
+ p="201.36 322.70"
+ Z="925"
+/><n
+ id="767"
+ p="188.93 329.87"
+ Z="926"
+ NumHydrogens="0"
+ NeedsClean="yes"
+><t
+ p="187.13 331.72"
+ BoundingBox="187.35 328.03 190.53 331.81"
+ LabelJustification="Left"
+><s font="21" size="5" color="0" face="96">C</s></t></n><n
+ id="768"
+ p="300.78 250.95"
+ Z="927"
+ NodeType="ExternalConnectionPoint"
+ ExternalConnectionNum="1"
+/><n
+ id="769"
+ p="313.21 272.47"
+ Z="928"
+ NodeType="ExternalConnectionPoint"
+ ExternalConnectionNum="2"
+/><b
+ id="770"
+ Z="929"
+ B="766"
+ E="767"
+/><b
+ id="771"
+ Z="930"
+ B="765"
+ E="766"
+ Order="3"
+/><b
+ id="772"
+ Z="931"
+ B="764"
+ E="765"
+/><b
+ id="773"
+ Z="932"
+ B="763"
+ E="764"
+ Order="3"
+/><b
+ id="774"
+ Z="933"
+ B="762"
+ E="763"
+/><b
+ id="775"
+ Z="934"
+ B="761"
+ E="762"
+ Order="3"
+/><b
+ id="776"
+ Z="935"
+ B="760"
+ E="761"
+/><b
+ id="777"
+ Z="936"
+ B="759"
+ E="760"
+ Order="3"
+/><b
+ id="778"
+ Z="937"
+ B="758"
+ E="759"
+/><b
+ id="779"
+ Z="938"
+ B="768"
+ E="758"
+ Order="2"
+/><b
+ id="780"
+ Z="939"
+ B="769"
+ E="758"
+/></fragment><t
+ p="298.97 267.14"
+ BoundingBox="299.19 263.46 306.60 268.36"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C10</s></t></n><n
+ id="781"
+ p="286.87 247.17"
+ Z="1010"
+ Warning="This label has conflicting or unassignable charges."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+><t
+ p="287.91 248.97"
+ BoundingBox="261.37 245.38 287.16 250.12"
+ LabelJustification="Right"
+ Justification="Right"
+ LabelAlignment="Right"
+><s font="21" size="5" color="0" face="96">:name :ring1</s></t></n><b
+ id="787"
+ Z="1000"
+ B="683"
+ E="616"
+ Order="2"
+ BS="N"
+ BondCircularOrdering="0 788 792 0"
+/><b
+ id="788"
+ Z="1005"
+ B="683"
+ E="692"
+ BS="N"
+ BeginAttach="0"
+/><b
+ id="789"
+ Z="1006"
+ B="692"
+ E="711"
+ Order="2"
+ BS="N"
+ BondCircularOrdering="788 0 0 790"
+/><b
+ id="790"
+ Z="1007"
+ B="711"
+ E="732"
+ BS="N"
+/><b
+ id="791"
+ Z="1008"
+ B="732"
+ E="756"
+ Order="2"
+ BS="N"
+ BondCircularOrdering="790 793 0 792"
+/><b
+ id="792"
+ Z="1009"
+ B="756"
+ E="616"
+ BS="N"
+ EndAttach="0"
+/><b
+ id="793"
+ Z="1011"
+ B="732"
+ E="781"
+ Display="Wavy"
+ BS="N"
+/></fragment><fragment
+ id="794"
+ BoundingBox="107.15 315.56 218.14 413.99"
+ Z="1527"
+><n
+ id="795"
+ p="177.06 389.40"
+ Z="1525"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="1237 1242 1247"
+><fragment
+ id="1770"
+ ConnectionOrder="799 800 801"
+><n
+ id="797"
+ p="177.06 389.40"
+ Z="1015"
+ NumHydrogens="0"
+ NeedsClean="yes"
+><t
+ p="175.25 391.24"
+ BoundingBox="175.47 387.55 178.65 391.33"
+ LabelJustification="Left"
+><s font="21" size="5" color="0" face="96">C</s></t></n><n
+ id="798"
+ p="162.71 389.40"
+ Z="1016"
+/><n
+ id="799"
+ p="177.06 403.75"
+ Z="1017"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="800"
+ p="191.41 389.40"
+ Z="1018"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="801"
+ p="177.06 375.05"
+ Z="1019"
+ NodeType="ExternalConnectionPoint"
+/><b
+ id="802"
+ Z="1020"
+ B="797"
+ E="798"
+ Order="4"
+/><b
+ id="803"
+ Z="1021"
+ B="799"
+ E="797"
+ Order="2"
+/><b
+ id="804"
+ Z="1022"
+ B="800"
+ E="797"
+/><b
+ id="805"
+ Z="1023"
+ B="801"
+ E="797"
+/></fragment><t
+ p="175.25 391.24"
+ BoundingBox="175.47 387.55 180.79 392.39"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C2</s></t></n><n
+ id="806"
+ p="177.06 403.80"
+ Z="1526"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="1237 1238"
+><fragment
+ id="1771"
+ ConnectionOrder="811 812"
+><n
+ id="808"
+ p="177.06 403.80"
+ Z="1477"
+/><n
+ id="809"
+ p="164.63 410.97"
+ Z="1478"
+/><n
+ id="810"
+ p="152.21 418.15"
+ Z="1479"
+ NumHydrogens="0"
+ NeedsClean="yes"
+><t
+ p="150.40 419.99"
+ BoundingBox="150.62 416.30 153.80 420.08"
+ LabelJustification="Left"
+><s font="21" size="5" color="0" face="96">C</s></t></n><n
+ id="811"
+ p="177.06 389.45"
+ Z="1480"
+ NodeType="ExternalConnectionPoint"
+ ExternalConnectionNum="1"
+/><n
+ id="812"
+ p="189.49 410.97"
+ Z="1481"
+ NodeType="ExternalConnectionPoint"
+ ExternalConnectionNum="2"
+/><b
+ id="813"
+ Z="1482"
+ B="809"
+ E="810"
+ Order="3"
+/><b
+ id="814"
+ Z="1483"
+ B="808"
+ E="809"
+/><b
+ id="815"
+ Z="1484"
+ B="811"
+ E="808"
+ Order="2"
+/><b
+ id="816"
+ Z="1485"
+ B="812"
+ E="808"
+/></fragment><t
+ p="175.25 405.64"
+ BoundingBox="175.47 401.95 180.79 406.86"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C3</s></t></n><n
+ id="817"
+ p="189.53 411"
+ Z="1528"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="1238 1239"
+><fragment
+ id="1772"
+ ConnectionOrder="823 824"
+><n
+ id="819"
+ p="189.53 411"
+ Z="1486"
+/><n
+ id="820"
+ p="201.96 403.82"
+ Z="1487"
+/><n
+ id="821"
+ p="214.38 396.65"
+ Z="1488"
+/><n
+ id="822"
+ p="226.81 389.47"
+ Z="1489"
+ NumHydrogens="0"
+ NeedsClean="yes"
+><t
+ p="225 391.31"
+ BoundingBox="225.22 387.62 228.40 391.40"
+ LabelJustification="Left"
+><s font="21" size="5" color="0" face="96">C</s></t></n><n
+ id="823"
+ p="177.10 403.82"
+ Z="1490"
+ NodeType="ExternalConnectionPoint"
+ ExternalConnectionNum="1"
+/><n
+ id="824"
+ p="189.53 425.35"
+ Z="1491"
+ NodeType="ExternalConnectionPoint"
+ ExternalConnectionNum="2"
+/><b
+ id="825"
+ Z="1492"
+ B="821"
+ E="822"
+/><b
+ id="826"
+ Z="1493"
+ B="820"
+ E="821"
+ Order="3"
+/><b
+ id="827"
+ Z="1494"
+ B="819"
+ E="820"
+/><b
+ id="828"
+ Z="1495"
+ B="823"
+ E="819"
+/><b
+ id="829"
+ Z="1496"
+ B="824"
+ E="819"
+ Order="2"
+/></fragment><t
+ p="187.72 412.84"
+ BoundingBox="187.94 409.15 193.30 413.99"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C4</s></t></n><n
+ id="830"
+ p="202 403.80"
+ Z="1529"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="1239 1240"
+><fragment
+ id="1773"
+ ConnectionOrder="837 838"
+><n
+ id="832"
+ p="202 403.80"
+ Z="1497"
+/><n
+ id="833"
+ p="214.43 410.97"
+ Z="1498"
+/><n
+ id="834"
+ p="226.85 418.15"
+ Z="1499"
+/><n
+ id="835"
+ p="239.28 425.32"
+ Z="1500"
+/><n
+ id="836"
+ p="251.71 432.50"
+ Z="1501"
+ NumHydrogens="0"
+ NeedsClean="yes"
+><t
+ p="249.90 434.34"
+ BoundingBox="250.12 430.65 253.30 434.43"
+ LabelJustification="Left"
+><s font="21" size="5" color="0" face="96">C</s></t></n><n
+ id="837"
+ p="189.57 410.97"
+ Z="1502"
+ NodeType="ExternalConnectionPoint"
+ ExternalConnectionNum="1"
+/><n
+ id="838"
+ p="202 389.45"
+ Z="1503"
+ NodeType="ExternalConnectionPoint"
+ ExternalConnectionNum="2"
+/><b
+ id="839"
+ Z="1504"
+ B="835"
+ E="836"
+ Order="3"
+/><b
+ id="840"
+ Z="1505"
+ B="834"
+ E="835"
+/><b
+ id="841"
+ Z="1506"
+ B="833"
+ E="834"
+ Order="3"
+/><b
+ id="842"
+ Z="1507"
+ B="832"
+ E="833"
+/><b
+ id="843"
+ Z="1508"
+ B="837"
+ E="832"
+ Order="2"
+/><b
+ id="844"
+ Z="1509"
+ B="838"
+ E="832"
+/></fragment><t
+ p="200.19 405.64"
+ BoundingBox="200.41 401.95 205.73 406.85"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C5</s></t></n><n
+ id="845"
+ p="202 389.40"
+ Z="1530"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="1240 1241"
+><fragment
+ id="1774"
+ ConnectionOrder="853 854"
+><n
+ id="847"
+ p="202 389.40"
+ Z="1510"
+/><n
+ id="848"
+ p="189.57 382.22"
+ Z="1511"
+/><n
+ id="849"
+ p="177.14 375.05"
+ Z="1512"
+/><n
+ id="850"
+ p="164.72 367.87"
+ Z="1513"
+/><n
+ id="851"
+ p="152.29 360.70"
+ Z="1514"
+/><n
+ id="852"
+ p="139.86 353.52"
+ Z="1515"
+ NumHydrogens="0"
+ NeedsClean="yes"
+><t
+ p="138.05 355.36"
+ BoundingBox="138.27 351.67 141.45 355.45"
+ LabelJustification="Left"
+><s font="21" size="5" color="0" face="96">C</s></t></n><n
+ id="853"
+ p="202 403.75"
+ Z="1516"
+ NodeType="ExternalConnectionPoint"
+ ExternalConnectionNum="1"
+/><n
+ id="854"
+ p="214.43 382.22"
+ Z="1517"
+ NodeType="ExternalConnectionPoint"
+ ExternalConnectionNum="2"
+/><b
+ id="855"
+ Z="1518"
+ B="851"
+ E="852"
+/><b
+ id="856"
+ Z="1519"
+ B="850"
+ E="851"
+ Order="3"
+/><b
+ id="857"
+ Z="1520"
+ B="849"
+ E="850"
+/><b
+ id="858"
+ Z="1521"
+ B="848"
+ E="849"
+ Order="3"
+/><b
+ id="859"
+ Z="1522"
+ B="847"
+ E="848"
+/><b
+ id="860"
+ Z="1523"
+ B="853"
+ E="847"
+/><b
+ id="861"
+ Z="1524"
+ B="854"
+ E="847"
+ Order="2"
+/></fragment><t
+ p="200.19 391.24"
+ BoundingBox="200.41 387.55 205.74 392.46"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C6</s></t></n><n
+ id="862"
+ p="189.53 382.20"
+ Z="1531"
+ NodeType="Fragment"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="1241 1242 1243"
+><fragment
+ id="1775"
+ ConnectionOrder="865 866 867"
+><n
+ id="864"
+ p="189.53 382.20"
+ Z="1082"
+/><n
+ id="865"
+ p="201.96 389.37"
+ Z="1083"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="866"
+ p="189.53 367.85"
+ Z="1084"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="867"
+ p="177.10 389.37"
+ Z="1085"
+ NodeType="ExternalConnectionPoint"
+/><b
+ id="868"
+ Z="1086"
+ B="865"
+ E="864"
+ Order="2"
+/><b
+ id="869"
+ Z="1087"
+ B="866"
+ E="864"
+/><b
+ id="870"
+ Z="1088"
+ B="867"
+ E="864"
+/></fragment><t
+ p="187.72 384.04"
+ BoundingBox="187.94 380.35 192.66 385.19"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C1</s></t></n><n
+ id="871"
+ p="189.53 367.80"
+ Z="1538"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="1243 1244"
+><fragment
+ id="1776"
+ ConnectionOrder="880 881"
+><n
+ id="873"
+ p="189.53 367.80"
+ Z="1091"
+/><n
+ id="874"
+ p="177.10 360.62"
+ Z="1092"
+/><n
+ id="875"
+ p="164.67 353.45"
+ Z="1093"
+/><n
+ id="876"
+ p="152.25 346.27"
+ Z="1094"
+/><n
+ id="877"
+ p="139.82 339.10"
+ Z="1095"
+/><n
+ id="878"
+ p="127.39 331.92"
+ Z="1096"
+/><n
+ id="879"
+ p="114.96 324.75"
+ Z="1097"
+ NumHydrogens="0"
+ NeedsClean="yes"
+><t
+ p="113.16 326.59"
+ BoundingBox="113.38 322.91 116.56 326.68"
+ LabelJustification="Left"
+><s font="21" size="5" color="0" face="96">C</s></t></n><n
+ id="880"
+ p="189.53 382.15"
+ Z="1098"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="881"
+ p="201.96 360.62"
+ Z="1099"
+ NodeType="ExternalConnectionPoint"
+/><b
+ id="882"
+ Z="1100"
+ B="878"
+ E="879"
+ Order="3"
+/><b
+ id="883"
+ Z="1101"
+ B="877"
+ E="878"
+/><b
+ id="884"
+ Z="1102"
+ B="876"
+ E="877"
+ Order="3"
+/><b
+ id="885"
+ Z="1103"
+ B="875"
+ E="876"
+/><b
+ id="886"
+ Z="1104"
+ B="874"
+ E="875"
+ Order="3"
+/><b
+ id="887"
+ Z="1105"
+ B="873"
+ E="874"
+/><b
+ id="888"
+ Z="1106"
+ B="880"
+ E="873"
+/><b
+ id="889"
+ Z="1107"
+ B="881"
+ E="873"
+ Order="2"
+/></fragment><t
+ p="187.72 369.64"
+ BoundingBox="187.94 365.96 193.30 370.79"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C7</s></t></n><n
+ id="890"
+ p="177.06 360.60"
+ Z="1539"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="1244 1245 1248"
+><fragment
+ id="1777"
+ ConnectionOrder="900 901 902"
+><n
+ id="892"
+ p="177.06 360.60"
+ Z="1110"
+/><n
+ id="893"
+ p="215.08 301.92"
+ Z="1111"
+/><n
+ id="894"
+ p="222.25 289.49"
+ Z="1112"
+/><n
+ id="895"
+ p="207.90 314.35"
+ Z="1113"
+/><n
+ id="896"
+ p="229.43 277.06"
+ Z="1114"
+/><n
+ id="897"
+ p="200.73 326.77"
+ Z="1115"
+/><n
+ id="898"
+ p="236.60 264.64"
+ Z="1116"
+ NumHydrogens="0"
+ NeedsClean="yes"
+><t
+ p="234.80 266.48"
+ BoundingBox="235.02 262.79 238.20 266.57"
+ LabelJustification="Left"
+><s font="21" size="5" color="0" face="96">C</s></t></n><n
+ id="899"
+ p="193.55 339.20"
+ Z="1117"
+ NumHydrogens="0"
+ NeedsClean="yes"
+><t
+ p="191.75 341.04"
+ BoundingBox="191.97 337.36 195.15 341.14"
+ LabelJustification="Left"
+><s font="21" size="5" color="0" face="96">C</s></t></n><n
+ id="900"
+ p="189.49 367.77"
+ Z="1118"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="901"
+ p="177.06 346.25"
+ Z="1119"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="902"
+ p="164.63 367.77"
+ Z="1120"
+ NodeType="ExternalConnectionPoint"
+/><b
+ id="903"
+ Z="1121"
+ B="897"
+ E="899"
+/><b
+ id="904"
+ Z="1122"
+ B="896"
+ E="898"
+ Order="3"
+/><b
+ id="905"
+ Z="1123"
+ B="895"
+ E="897"
+ Order="3"
+/><b
+ id="906"
+ Z="1124"
+ B="894"
+ E="896"
+/><b
+ id="907"
+ Z="1125"
+ B="893"
+ E="894"
+ Order="3"
+/><b
+ id="908"
+ Z="1126"
+ B="893"
+ E="895"
+/><b
+ id="909"
+ Z="1127"
+ B="900"
+ E="892"
+ Order="2"
+/><b
+ id="910"
+ Z="1128"
+ B="901"
+ E="892"
+/><b
+ id="911"
+ Z="1129"
+ B="902"
+ E="892"
+/></fragment><t
+ p="175.25 362.44"
+ BoundingBox="175.47 358.76 180.79 363.67"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C8</s></t></n><n
+ id="912"
+ p="164.59 367.80"
+ Z="1540"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="1245 1246 1252"
+><fragment
+ id="1778"
+ ConnectionOrder="923 924 925"
+><n
+ id="914"
+ p="164.59 367.80"
+ Z="1132"
+/><n
+ id="915"
+ p="248.77 371.39"
+ Z="1133"
+/><n
+ id="916"
+ p="234.42 371.39"
+ Z="1134"
+/><n
+ id="917"
+ p="263.12 371.39"
+ Z="1135"
+/><n
+ id="918"
+ p="220.07 371.39"
+ Z="1136"
+/><n
+ id="919"
+ p="277.47 371.39"
+ Z="1137"
+/><n
+ id="920"
+ p="205.72 371.39"
+ Z="1138"
+/><n
+ id="921"
+ p="291.82 371.39"
+ Z="1139"
+ NumHydrogens="0"
+ NeedsClean="yes"
+><t
+ p="290.01 373.23"
+ BoundingBox="290.23 369.54 293.41 373.32"
+ LabelJustification="Left"
+><s font="21" size="5" color="0" face="96">C</s></t></n><n
+ id="922"
+ p="191.37 371.39"
+ Z="1140"
+ NumHydrogens="0"
+ NeedsClean="yes"
+><t
+ p="189.56 373.23"
+ BoundingBox="189.78 369.54 192.96 373.32"
+ LabelJustification="Left"
+><s font="21" size="5" color="0" face="96">C</s></t></n><n
+ id="923"
+ p="177.02 360.62"
+ Z="1141"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="924"
+ p="164.59 382.15"
+ Z="1142"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="925"
+ p="152.16 360.62"
+ Z="1143"
+ NodeType="ExternalConnectionPoint"
+/><b
+ id="926"
+ Z="1144"
+ B="920"
+ E="922"
+/><b
+ id="927"
+ Z="1145"
+ B="919"
+ E="921"
+/><b
+ id="928"
+ Z="1146"
+ B="918"
+ E="920"
+ Order="3"
+/><b
+ id="929"
+ Z="1147"
+ B="917"
+ E="919"
+ Order="3"
+/><b
+ id="930"
+ Z="1148"
+ B="916"
+ E="918"
+/><b
+ id="931"
+ Z="1149"
+ B="915"
+ E="916"
+ Order="3"
+/><b
+ id="932"
+ Z="1150"
+ B="915"
+ E="917"
+/><b
+ id="933"
+ Z="1151"
+ B="923"
+ E="914"
+/><b
+ id="934"
+ Z="1152"
+ B="924"
+ E="914"
+ Order="2"
+/><b
+ id="935"
+ Z="1153"
+ B="925"
+ E="914"
+/></fragment><t
+ p="162.78 369.64"
+ BoundingBox="163 365.96 168.30 370.86"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C9</s></t></n><n
+ id="936"
+ p="164.59 382.20"
+ Z="1541"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="1246 1247"
+><fragment
+ id="1779"
+ ConnectionOrder="948 949"
+><n
+ id="938"
+ p="164.59 382.20"
+ Z="1156"
+/><n
+ id="939"
+ p="152.16 389.37"
+ Z="1157"
+/><n
+ id="940"
+ p="139.73 396.55"
+ Z="1158"
+/><n
+ id="941"
+ p="127.31 403.72"
+ Z="1159"
+/><n
+ id="942"
+ p="114.88 410.90"
+ Z="1160"
+/><n
+ id="943"
+ p="102.45 418.07"
+ Z="1161"
+/><n
+ id="944"
+ p="90.02 425.25"
+ Z="1162"
+/><n
+ id="945"
+ p="77.60 432.42"
+ Z="1163"
+/><n
+ id="946"
+ p="65.17 439.60"
+ Z="1164"
+/><n
+ id="947"
+ p="52.74 446.77"
+ Z="1165"
+ NumHydrogens="0"
+ NeedsClean="yes"
+><t
+ p="50.94 448.61"
+ BoundingBox="51.16 444.93 54.34 448.71"
+ LabelJustification="Left"
+><s font="21" size="5" color="0" face="96">C</s></t></n><n
+ id="948"
+ p="164.59 367.85"
+ Z="1166"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="949"
+ p="177.02 389.37"
+ Z="1167"
+ NodeType="ExternalConnectionPoint"
+/><b
+ id="950"
+ Z="1168"
+ B="946"
+ E="947"
+/><b
+ id="951"
+ Z="1169"
+ B="945"
+ E="946"
+ Order="3"
+/><b
+ id="952"
+ Z="1170"
+ B="944"
+ E="945"
+/><b
+ id="953"
+ Z="1171"
+ B="943"
+ E="944"
+ Order="3"
+/><b
+ id="954"
+ Z="1172"
+ B="942"
+ E="943"
+/><b
+ id="955"
+ Z="1173"
+ B="941"
+ E="942"
+ Order="3"
+/><b
+ id="956"
+ Z="1174"
+ B="940"
+ E="941"
+/><b
+ id="957"
+ Z="1175"
+ B="939"
+ E="940"
+ Order="3"
+/><b
+ id="958"
+ Z="1176"
+ B="938"
+ E="939"
+/><b
+ id="959"
+ Z="1177"
+ B="948"
+ E="938"
+ Order="2"
+/><b
+ id="960"
+ Z="1178"
+ B="949"
+ E="938"
+/></fragment><t
+ p="162.78 384.04"
+ BoundingBox="163 380.35 170.41 385.26"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C10</s></t></n><n
+ id="961"
+ p="177.06 346.20"
+ Z="1547"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="1248 1249 1260"
+><fragment
+ id="1780"
+><n
+ id="1781"
+ p="177.06 346.20"
+ NumHydrogens="0"
+/><n
+ id="1782"
+ p="124.69 429.73"
+ NumHydrogens="0"
+/><n
+ id="1783"
+ p="131.86 417.31"
+ NumHydrogens="0"
+/><n
+ id="1784"
+ p="117.51 442.16"
+ NumHydrogens="0"
+/><n
+ id="1785"
+ p="139.04 404.88"
+ NumHydrogens="0"
+/><n
+ id="1786"
+ p="110.34 454.59"
+ NumHydrogens="0"
+/><n
+ id="1787"
+ p="146.21 392.45"
+ NumHydrogens="0"
+/><n
+ id="1788"
+ p="103.16 467.02"
+ NumHydrogens="0"
+/><n
+ id="1789"
+ p="153.39 380.02"
+ NumHydrogens="0"
+/><n
+ id="1790"
+ p="95.99 479.44"
+ NumHydrogens="0"
+/><n
+ id="1791"
+ p="160.56 367.60"
+ NumHydrogens="0"
+/><n
+ id="1792"
+ p="177.06 360.55"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="1793"
+ p="164.63 339.02"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="1794"
+ p="189.49 339.02"
+ NodeType="ExternalConnectionPoint"
+/><b
+ id="1795"
+ B="1789"
+ E="1791"
+ Order="3"
+/><b
+ id="1796"
+ B="1788"
+ E="1790"
+ Order="3"
+/><b
+ id="1797"
+ B="1787"
+ E="1789"
+/><b
+ id="1798"
+ B="1786"
+ E="1788"
+/><b
+ id="1799"
+ B="1785"
+ E="1787"
+ Order="3"
+/><b
+ id="1800"
+ B="1784"
+ E="1786"
+ Order="3"
+/><b
+ id="1801"
+ B="1783"
+ E="1785"
+/><b
+ id="1802"
+ B="1782"
+ E="1783"
+ Order="3"
+/><b
+ id="1803"
+ B="1782"
+ E="1784"
+/><b
+ id="1804"
+ B="1792"
+ E="1781"
+/><b
+ id="1805"
+ B="1793"
+ E="1781"
+ Order="2"
+/><b
+ id="1806"
+ B="1794"
+ E="1781"
+/></fragment><t
+ p="175.25 348.04"
+ BoundingBox="175.47 344.36 182 349.19"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C11</s></t></n><n
+ id="988"
+ p="164.59 339"
+ Z="1548"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="1249 1250 1253"
+><fragment
+ id="1808"
+ ConnectionOrder="1002 1003 1004"
+><n
+ id="990"
+ p="164.59 339"
+ Z="1208"
+/><n
+ id="991"
+ p="216.96 255.47"
+ Z="1209"
+/><n
+ id="992"
+ p="224.14 243.04"
+ Z="1210"
+/><n
+ id="993"
+ p="209.79 267.89"
+ Z="1211"
+/><n
+ id="994"
+ p="231.31 230.61"
+ Z="1212"
+/><n
+ id="995"
+ p="202.61 280.32"
+ Z="1213"
+/><n
+ id="996"
+ p="238.49 218.18"
+ Z="1214"
+/><n
+ id="997"
+ p="195.44 292.75"
+ Z="1215"
+/><n
+ id="998"
+ p="245.66 205.76"
+ Z="1216"
+/><n
+ id="999"
+ p="188.26 305.18"
+ Z="1217"
+/><n
+ id="1000"
+ p="252.84 193.33"
+ Z="1218"
+ NumHydrogens="0"
+ NeedsClean="yes"
+><t
+ p="251.03 195.17"
+ BoundingBox="251.25 191.49 254.43 195.26"
+ LabelJustification="Left"
+><s font="21" size="5" color="0" face="96">C</s></t></n><n
+ id="1001"
+ p="181.09 317.60"
+ Z="1219"
+ NumHydrogens="0"
+ NeedsClean="yes"
+><t
+ p="179.28 319.45"
+ BoundingBox="179.50 315.76 182.68 319.54"
+ LabelJustification="Left"
+><s font="21" size="5" color="0" face="96">C</s></t></n><n
+ id="1002"
+ p="177.02 346.17"
+ Z="1220"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="1003"
+ p="164.59 324.65"
+ Z="1221"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="1004"
+ p="152.16 346.17"
+ Z="1222"
+ NodeType="ExternalConnectionPoint"
+/><b
+ id="1005"
+ Z="1223"
+ B="999"
+ E="1001"
+/><b
+ id="1006"
+ Z="1224"
+ B="998"
+ E="1000"
+ Order="3"
+/><b
+ id="1007"
+ Z="1225"
+ B="997"
+ E="999"
+ Order="3"
+/><b
+ id="1008"
+ Z="1226"
+ B="996"
+ E="998"
+/><b
+ id="1009"
+ Z="1227"
+ B="995"
+ E="997"
+/><b
+ id="1010"
+ Z="1228"
+ B="994"
+ E="996"
+ Order="3"
+/><b
+ id="1011"
+ Z="1229"
+ B="993"
+ E="995"
+ Order="3"
+/><b
+ id="1012"
+ Z="1230"
+ B="992"
+ E="994"
+/><b
+ id="1013"
+ Z="1231"
+ B="991"
+ E="992"
+ Order="3"
+/><b
+ id="1014"
+ Z="1232"
+ B="991"
+ E="993"
+/><b
+ id="1015"
+ Z="1233"
+ B="1002"
+ E="990"
+ Order="2"
+/><b
+ id="1016"
+ Z="1234"
+ B="1003"
+ E="990"
+/><b
+ id="1017"
+ Z="1235"
+ B="1004"
+ E="990"
+/></fragment><t
+ p="162.78 340.84"
+ BoundingBox="163 337.16 170.41 341.99"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C12</s></t></n><n
+ id="1018"
+ p="152.12 346.20"
+ Z="1549"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="1250 1251 1257"
+><fragment
+ id="1809"
+ ConnectionOrder="1033 1034 1035"
+><n
+ id="1020"
+ p="152.12 346.20"
+ Z="1238"
+/><n
+ id="1021"
+ p="265 349.79"
+ Z="1239"
+/><n
+ id="1022"
+ p="250.65 349.79"
+ Z="1240"
+/><n
+ id="1023"
+ p="279.35 349.79"
+ Z="1241"
+/><n
+ id="1024"
+ p="236.30 349.79"
+ Z="1242"
+/><n
+ id="1025"
+ p="293.70 349.79"
+ Z="1243"
+/><n
+ id="1026"
+ p="221.95 349.79"
+ Z="1244"
+/><n
+ id="1027"
+ p="308.05 349.79"
+ Z="1245"
+/><n
+ id="1028"
+ p="207.60 349.79"
+ Z="1246"
+/><n
+ id="1029"
+ p="322.40 349.79"
+ Z="1247"
+/><n
+ id="1030"
+ p="193.25 349.79"
+ Z="1248"
+/><n
+ id="1031"
+ p="336.75 349.79"
+ Z="1249"
+ NumHydrogens="0"
+ NeedsClean="yes"
+><t
+ p="334.94 351.63"
+ BoundingBox="335.16 347.94 338.34 351.72"
+ LabelJustification="Left"
+><s font="21" size="5" color="0" face="96">C</s></t></n><n
+ id="1032"
+ p="178.90 349.79"
+ Z="1250"
+ NumHydrogens="0"
+ NeedsClean="yes"
+><t
+ p="177.09 351.63"
+ BoundingBox="177.31 347.94 180.49 351.72"
+ LabelJustification="Left"
+><s font="21" size="5" color="0" face="96">C</s></t></n><n
+ id="1033"
+ p="164.55 339.02"
+ Z="1251"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="1034"
+ p="152.12 360.55"
+ Z="1252"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="1035"
+ p="139.69 339.02"
+ Z="1253"
+ NodeType="ExternalConnectionPoint"
+/><b
+ id="1036"
+ Z="1254"
+ B="1030"
+ E="1032"
+/><b
+ id="1037"
+ Z="1255"
+ B="1029"
+ E="1031"
+/><b
+ id="1038"
+ Z="1256"
+ B="1028"
+ E="1030"
+ Order="3"
+/><b
+ id="1039"
+ Z="1257"
+ B="1027"
+ E="1029"
+ Order="3"
+/><b
+ id="1040"
+ Z="1258"
+ B="1026"
+ E="1028"
+/><b
+ id="1041"
+ Z="1259"
+ B="1025"
+ E="1027"
+/><b
+ id="1042"
+ Z="1260"
+ B="1024"
+ E="1026"
+ Order="3"
+/><b
+ id="1043"
+ Z="1261"
+ B="1023"
+ E="1025"
+ Order="3"
+/><b
+ id="1044"
+ Z="1262"
+ B="1022"
+ E="1024"
+/><b
+ id="1045"
+ Z="1263"
+ B="1021"
+ E="1022"
+ Order="3"
+/><b
+ id="1046"
+ Z="1264"
+ B="1021"
+ E="1023"
+/><b
+ id="1047"
+ Z="1265"
+ B="1033"
+ E="1020"
+/><b
+ id="1048"
+ Z="1266"
+ B="1034"
+ E="1020"
+ Order="2"
+/><b
+ id="1049"
+ Z="1267"
+ B="1035"
+ E="1020"
+/></fragment><t
+ p="150.31 348.04"
+ BoundingBox="150.53 344.36 157.93 349.26"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C13</s></t></n><n
+ id="1050"
+ p="152.12 360.60"
+ Z="1550"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="1251 1252 1258"
+><fragment
+ id="1810"
+ ConnectionOrder="1066 1067 1068"
+><n
+ id="1052"
+ p="152.12 360.60"
+ Z="1270"
+/><n
+ id="1053"
+ p="39.24 357.01"
+ Z="1271"
+/><n
+ id="1054"
+ p="24.89 357.01"
+ Z="1272"
+/><n
+ id="1055"
+ p="53.59 357.01"
+ Z="1273"
+/><n
+ id="1056"
+ p="10.54 357.01"
+ Z="1274"
+/><n
+ id="1057"
+ p="67.94 357.01"
+ Z="1275"
+/><n
+ id="1058"
+ p="-3.81 357.01"
+ Z="1276"
+/><n
+ id="1059"
+ p="82.29 357.01"
+ Z="1277"
+/><n
+ id="1060"
+ p="-18.16 357.01"
+ Z="1278"
+/><n
+ id="1061"
+ p="96.64 357.01"
+ Z="1279"
+/><n
+ id="1062"
+ p="-32.51 357.01"
+ Z="1280"
+/><n
+ id="1063"
+ p="110.99 357.01"
+ Z="1281"
+/><n
+ id="1064"
+ p="-46.86 357.01"
+ Z="1282"
+ NumHydrogens="0"
+ NeedsClean="yes"
+><t
+ p="-48.66 358.85"
+ BoundingBox="-48.44 355.17 -45.26 358.95"
+ LabelJustification="Left"
+><s font="21" size="5" color="0" face="96">C</s></t></n><n
+ id="1065"
+ p="125.34 357.01"
+ Z="1283"
+ NumHydrogens="0"
+ NeedsClean="yes"
+><t
+ p="123.54 358.85"
+ BoundingBox="123.76 355.17 126.94 358.95"
+ LabelJustification="Left"
+><s font="21" size="5" color="0" face="96">C</s></t></n><n
+ id="1066"
+ p="152.12 346.25"
+ Z="1284"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="1067"
+ p="139.69 367.77"
+ Z="1285"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="1068"
+ p="164.55 367.77"
+ Z="1286"
+ NodeType="ExternalConnectionPoint"
+/><b
+ id="1069"
+ Z="1287"
+ B="1063"
+ E="1065"
+ Order="3"
+/><b
+ id="1070"
+ Z="1288"
+ B="1062"
+ E="1064"
+/><b
+ id="1071"
+ Z="1289"
+ B="1061"
+ E="1063"
+/><b
+ id="1072"
+ Z="1290"
+ B="1060"
+ E="1062"
+ Order="3"
+/><b
+ id="1073"
+ Z="1291"
+ B="1059"
+ E="1061"
+ Order="3"
+/><b
+ id="1074"
+ Z="1292"
+ B="1058"
+ E="1060"
+/><b
+ id="1075"
+ Z="1293"
+ B="1057"
+ E="1059"
+/><b
+ id="1076"
+ Z="1294"
+ B="1056"
+ E="1058"
+ Order="3"
+/><b
+ id="1077"
+ Z="1295"
+ B="1055"
+ E="1057"
+ Order="3"
+/><b
+ id="1078"
+ Z="1296"
+ B="1054"
+ E="1056"
+/><b
+ id="1079"
+ Z="1297"
+ B="1053"
+ E="1054"
+ Order="3"
+/><b
+ id="1080"
+ Z="1298"
+ B="1053"
+ E="1055"
+/><b
+ id="1081"
+ Z="1299"
+ B="1066"
+ E="1052"
+ Order="2"
+/><b
+ id="1082"
+ Z="1300"
+ B="1067"
+ E="1052"
+/><b
+ id="1083"
+ Z="1301"
+ B="1068"
+ E="1052"
+ Display="Wavy"
+/></fragment><t
+ p="150.31 362.44"
+ BoundingBox="150.53 358.76 157.97 363.59"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C14</s></t></n><n
+ id="1084"
+ p="164.59 324.60"
+ Z="1556"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="1253 1254"
+><fragment
+ id="1811"
+ ConnectionOrder="1101 1102"
+><n
+ id="1086"
+ p="164.59 324.60"
+ Z="1304"
+/><n
+ id="1087"
+ p="152.16 317.43"
+ Z="1305"
+/><n
+ id="1088"
+ p="139.73 310.25"
+ Z="1306"
+/><n
+ id="1089"
+ p="127.31 303.08"
+ Z="1307"
+/><n
+ id="1090"
+ p="114.88 295.90"
+ Z="1308"
+/><n
+ id="1091"
+ p="102.45 288.73"
+ Z="1309"
+/><n
+ id="1092"
+ p="90.02 281.55"
+ Z="1310"
+/><n
+ id="1093"
+ p="77.60 274.38"
+ Z="1311"
+/><n
+ id="1094"
+ p="65.17 267.20"
+ Z="1312"
+/><n
+ id="1095"
+ p="52.74 260.03"
+ Z="1313"
+/><n
+ id="1096"
+ p="40.31 252.85"
+ Z="1314"
+/><n
+ id="1097"
+ p="27.89 245.68"
+ Z="1315"
+/><n
+ id="1098"
+ p="15.46 238.50"
+ Z="1316"
+/><n
+ id="1099"
+ p="3.03 231.33"
+ Z="1317"
+/><n
+ id="1100"
+ p="-9.40 224.15"
+ Z="1318"
+ NumHydrogens="0"
+ NeedsClean="yes"
+><t
+ p="-11.20 225.99"
+ BoundingBox="-10.98 222.31 -7.80 226.09"
+ LabelJustification="Left"
+><s font="21" size="5" color="0" face="96">C</s></t></n><n
+ id="1101"
+ p="164.59 338.95"
+ Z="1319"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="1102"
+ p="177.02 317.43"
+ Z="1320"
+ NodeType="ExternalConnectionPoint"
+/><b
+ id="1103"
+ Z="1321"
+ B="1099"
+ E="1100"
+ Order="3"
+/><b
+ id="1104"
+ Z="1322"
+ B="1098"
+ E="1099"
+/><b
+ id="1105"
+ Z="1323"
+ B="1097"
+ E="1098"
+ Order="3"
+/><b
+ id="1106"
+ Z="1324"
+ B="1096"
+ E="1097"
+/><b
+ id="1107"
+ Z="1325"
+ B="1095"
+ E="1096"
+ Order="3"
+/><b
+ id="1108"
+ Z="1326"
+ B="1094"
+ E="1095"
+/><b
+ id="1109"
+ Z="1327"
+ B="1093"
+ E="1094"
+ Order="3"
+/><b
+ id="1110"
+ Z="1328"
+ B="1092"
+ E="1093"
+/><b
+ id="1111"
+ Z="1329"
+ B="1091"
+ E="1092"
+ Order="3"
+/><b
+ id="1112"
+ Z="1330"
+ B="1090"
+ E="1091"
+/><b
+ id="1113"
+ Z="1331"
+ B="1089"
+ E="1090"
+ Order="3"
+/><b
+ id="1114"
+ Z="1332"
+ B="1088"
+ E="1089"
+/><b
+ id="1115"
+ Z="1333"
+ B="1087"
+ E="1088"
+ Order="3"
+/><b
+ id="1116"
+ Z="1334"
+ B="1086"
+ E="1087"
+/><b
+ id="1117"
+ Z="1335"
+ B="1101"
+ E="1086"
+/><b
+ id="1118"
+ Z="1336"
+ B="1102"
+ E="1086"
+ Order="2"
+/></fragment><t
+ p="162.78 326.44"
+ BoundingBox="163 322.76 170.41 327.66"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C15</s></t></n><n
+ id="1119"
+ p="152.12 317.40"
+ Z="1557"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="1254 1255"
+><fragment
+ id="1812"
+ ConnectionOrder="1137 1138"
+><n
+ id="1121"
+ p="152.12 317.40"
+ Z="1339"
+/><n
+ id="1122"
+ p="152.12 303.05"
+ Z="1340"
+/><n
+ id="1123"
+ p="152.12 288.70"
+ Z="1341"
+/><n
+ id="1124"
+ p="152.12 274.35"
+ Z="1342"
+/><n
+ id="1125"
+ p="152.12 260"
+ Z="1343"
+/><n
+ id="1126"
+ p="152.12 245.65"
+ Z="1344"
+/><n
+ id="1127"
+ p="152.12 231.30"
+ Z="1345"
+/><n
+ id="1128"
+ p="152.12 216.95"
+ Z="1346"
+/><n
+ id="1129"
+ p="152.12 202.60"
+ Z="1347"
+/><n
+ id="1130"
+ p="152.12 188.25"
+ Z="1348"
+/><n
+ id="1131"
+ p="152.12 173.90"
+ Z="1349"
+/><n
+ id="1132"
+ p="152.12 159.55"
+ Z="1350"
+/><n
+ id="1133"
+ p="152.12 145.20"
+ Z="1351"
+/><n
+ id="1134"
+ p="152.12 130.85"
+ Z="1352"
+/><n
+ id="1135"
+ p="152.12 116.50"
+ Z="1353"
+/><n
+ id="1136"
+ p="152.12 102.15"
+ Z="1354"
+ NumHydrogens="0"
+ NeedsClean="yes"
+><t
+ p="150.31 103.99"
+ BoundingBox="150.53 100.31 153.71 104.09"
+ LabelJustification="Left"
+><s font="21" size="5" color="0" face="96">C</s></t></n><n
+ id="1137"
+ p="164.55 324.58"
+ Z="1355"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="1138"
+ p="139.69 324.58"
+ Z="1356"
+ NodeType="ExternalConnectionPoint"
+/><b
+ id="1139"
+ Z="1357"
+ B="1135"
+ E="1136"
+/><b
+ id="1140"
+ Z="1358"
+ B="1134"
+ E="1135"
+ Order="3"
+/><b
+ id="1141"
+ Z="1359"
+ B="1133"
+ E="1134"
+/><b
+ id="1142"
+ Z="1360"
+ B="1132"
+ E="1133"
+ Order="3"
+/><b
+ id="1143"
+ Z="1361"
+ B="1131"
+ E="1132"
+/><b
+ id="1144"
+ Z="1362"
+ B="1130"
+ E="1131"
+ Order="3"
+/><b
+ id="1145"
+ Z="1363"
+ B="1129"
+ E="1130"
+/><b
+ id="1146"
+ Z="1364"
+ B="1128"
+ E="1129"
+ Order="3"
+/><b
+ id="1147"
+ Z="1365"
+ B="1127"
+ E="1128"
+/><b
+ id="1148"
+ Z="1366"
+ B="1126"
+ E="1127"
+ Order="3"
+/><b
+ id="1149"
+ Z="1367"
+ B="1125"
+ E="1126"
+/><b
+ id="1150"
+ Z="1368"
+ B="1124"
+ E="1125"
+ Order="3"
+/><b
+ id="1151"
+ Z="1369"
+ B="1123"
+ E="1124"
+/><b
+ id="1152"
+ Z="1370"
+ B="1122"
+ E="1123"
+ Order="3"
+/><b
+ id="1153"
+ Z="1371"
+ B="1121"
+ E="1122"
+/><b
+ id="1154"
+ Z="1372"
+ B="1137"
+ E="1121"
+ Order="2"
+/><b
+ id="1155"
+ Z="1373"
+ B="1138"
+ E="1121"
+/></fragment><t
+ p="150.31 319.24"
+ BoundingBox="150.53 315.56 157.95 320.46"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C16</s></t></n><n
+ id="1156"
+ p="139.65 324.60"
+ Z="1558"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="1255 1256"
+><fragment
+ id="1813"
+ ConnectionOrder="1175 1176"
+><n
+ id="1158"
+ p="139.65 324.60"
+ Z="1376"
+/><n
+ id="1159"
+ p="139.65 338.95"
+ Z="1377"
+/><n
+ id="1160"
+ p="139.65 353.30"
+ Z="1378"
+/><n
+ id="1161"
+ p="139.65 367.65"
+ Z="1379"
+/><n
+ id="1162"
+ p="139.65 382"
+ Z="1380"
+/><n
+ id="1163"
+ p="139.65 396.35"
+ Z="1381"
+/><n
+ id="1164"
+ p="139.65 410.70"
+ Z="1382"
+/><n
+ id="1165"
+ p="139.65 425.05"
+ Z="1383"
+/><n
+ id="1166"
+ p="139.65 439.40"
+ Z="1384"
+/><n
+ id="1167"
+ p="139.65 453.75"
+ Z="1385"
+/><n
+ id="1168"
+ p="139.65 468.10"
+ Z="1386"
+/><n
+ id="1169"
+ p="139.65 482.45"
+ Z="1387"
+/><n
+ id="1170"
+ p="139.65 496.80"
+ Z="1388"
+/><n
+ id="1171"
+ p="139.65 511.15"
+ Z="1389"
+/><n
+ id="1172"
+ p="139.65 525.50"
+ Z="1390"
+/><n
+ id="1173"
+ p="139.65 539.85"
+ Z="1391"
+/><n
+ id="1174"
+ p="139.65 554.20"
+ Z="1392"
+ NumHydrogens="0"
+ NeedsClean="yes"
+><t
+ p="137.84 556.04"
+ BoundingBox="138.06 552.36 141.24 556.14"
+ LabelJustification="Left"
+><s font="21" size="5" color="0" face="96">C</s></t></n><n
+ id="1175"
+ p="152.08 317.43"
+ Z="1393"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="1176"
+ p="127.22 317.43"
+ Z="1394"
+ NodeType="ExternalConnectionPoint"
+/><b
+ id="1177"
+ Z="1395"
+ B="1173"
+ E="1174"
+ Order="3"
+/><b
+ id="1178"
+ Z="1396"
+ B="1172"
+ E="1173"
+/><b
+ id="1179"
+ Z="1397"
+ B="1171"
+ E="1172"
+ Order="3"
+/><b
+ id="1180"
+ Z="1398"
+ B="1170"
+ E="1171"
+/><b
+ id="1181"
+ Z="1399"
+ B="1169"
+ E="1170"
+ Order="3"
+/><b
+ id="1182"
+ Z="1400"
+ B="1168"
+ E="1169"
+/><b
+ id="1183"
+ Z="1401"
+ B="1167"
+ E="1168"
+ Order="3"
+/><b
+ id="1184"
+ Z="1402"
+ B="1166"
+ E="1167"
+/><b
+ id="1185"
+ Z="1403"
+ B="1165"
+ E="1166"
+ Order="3"
+/><b
+ id="1186"
+ Z="1404"
+ B="1164"
+ E="1165"
+/><b
+ id="1187"
+ Z="1405"
+ B="1163"
+ E="1164"
+ Order="3"
+/><b
+ id="1188"
+ Z="1406"
+ B="1162"
+ E="1163"
+/><b
+ id="1189"
+ Z="1407"
+ B="1161"
+ E="1162"
+ Order="3"
+/><b
+ id="1190"
+ Z="1408"
+ B="1160"
+ E="1161"
+/><b
+ id="1191"
+ Z="1409"
+ B="1159"
+ E="1160"
+ Order="3"
+/><b
+ id="1192"
+ Z="1410"
+ B="1158"
+ E="1159"
+/><b
+ id="1193"
+ Z="1411"
+ B="1175"
+ E="1158"
+/><b
+ id="1194"
+ Z="1412"
+ B="1176"
+ E="1158"
+ Order="2"
+/></fragment><t
+ p="137.84 326.44"
+ BoundingBox="138.06 322.76 145.50 327.59"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C17</s></t></n><n
+ id="1195"
+ p="139.65 339"
+ Z="1559"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="1256 1257"
+><fragment
+ id="1814"
+ ConnectionOrder="1215 1216"
+><n
+ id="1197"
+ p="139.65 339"
+ Z="1415"
+/><n
+ id="1198"
+ p="127.22 346.17"
+ Z="1416"
+/><n
+ id="1199"
+ p="114.79 353.35"
+ Z="1417"
+/><n
+ id="1200"
+ p="102.37 360.52"
+ Z="1418"
+/><n
+ id="1201"
+ p="89.94 367.70"
+ Z="1419"
+/><n
+ id="1202"
+ p="77.51 374.87"
+ Z="1420"
+/><n
+ id="1203"
+ p="65.08 382.05"
+ Z="1421"
+/><n
+ id="1204"
+ p="52.66 389.22"
+ Z="1422"
+/><n
+ id="1205"
+ p="40.23 396.40"
+ Z="1423"
+/><n
+ id="1206"
+ p="27.80 403.57"
+ Z="1424"
+/><n
+ id="1207"
+ p="15.37 410.75"
+ Z="1425"
+/><n
+ id="1208"
+ p="2.95 417.92"
+ Z="1426"
+/><n
+ id="1209"
+ p="-9.48 425.10"
+ Z="1427"
+/><n
+ id="1210"
+ p="-21.91 432.27"
+ Z="1428"
+/><n
+ id="1211"
+ p="-34.34 439.45"
+ Z="1429"
+/><n
+ id="1212"
+ p="-46.76 446.62"
+ Z="1430"
+/><n
+ id="1213"
+ p="-59.19 453.80"
+ Z="1431"
+/><n
+ id="1214"
+ p="-71.62 460.97"
+ Z="1432"
+ NumHydrogens="0"
+ NeedsClean="yes"
+><t
+ p="-73.42 462.82"
+ BoundingBox="-73.20 459.13 -70.02 462.91"
+ LabelJustification="Left"
+><s font="21" size="5" color="0" face="96">C</s></t></n><n
+ id="1215"
+ p="139.65 324.65"
+ Z="1433"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="1216"
+ p="152.08 346.17"
+ Z="1434"
+ NodeType="ExternalConnectionPoint"
+/><b
+ id="1217"
+ Z="1435"
+ B="1213"
+ E="1214"
+/><b
+ id="1218"
+ Z="1436"
+ B="1212"
+ E="1213"
+ Order="3"
+/><b
+ id="1219"
+ Z="1437"
+ B="1211"
+ E="1212"
+/><b
+ id="1220"
+ Z="1438"
+ B="1210"
+ E="1211"
+ Order="3"
+/><b
+ id="1221"
+ Z="1439"
+ B="1209"
+ E="1210"
+/><b
+ id="1222"
+ Z="1440"
+ B="1208"
+ E="1209"
+ Order="3"
+/><b
+ id="1223"
+ Z="1441"
+ B="1207"
+ E="1208"
+/><b
+ id="1224"
+ Z="1442"
+ B="1206"
+ E="1207"
+ Order="3"
+/><b
+ id="1225"
+ Z="1443"
+ B="1205"
+ E="1206"
+/><b
+ id="1226"
+ Z="1444"
+ B="1204"
+ E="1205"
+ Order="3"
+/><b
+ id="1227"
+ Z="1445"
+ B="1203"
+ E="1204"
+/><b
+ id="1228"
+ Z="1446"
+ B="1202"
+ E="1203"
+ Order="3"
+/><b
+ id="1229"
+ Z="1447"
+ B="1201"
+ E="1202"
+/><b
+ id="1230"
+ Z="1448"
+ B="1200"
+ E="1201"
+ Order="3"
+/><b
+ id="1231"
+ Z="1449"
+ B="1199"
+ E="1200"
+/><b
+ id="1232"
+ Z="1450"
+ B="1198"
+ E="1199"
+ Order="3"
+/><b
+ id="1233"
+ Z="1451"
+ B="1197"
+ E="1198"
+/><b
+ id="1234"
+ Z="1452"
+ B="1215"
+ E="1197"
+ Order="2"
+/><b
+ id="1235"
+ Z="1453"
+ B="1216"
+ E="1197"
+/></fragment><t
+ p="137.84 340.84"
+ BoundingBox="138.06 337.16 145.46 342.07"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C18</s></t></n><n
+ id="1236"
+ p="137.72 360.60"
+ Z="1565"
+ Warning="This label has conflicting or unassignable charges."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+><t
+ p="138.27 362.39"
+ BoundingBox="107.15 358.81 137.94 363.50"
+ LabelJustification="Right"
+ Justification="Right"
+ LabelAlignment="Right"
+><s font="21" size="5" color="0" face="96">:name :ring-all</s></t></n><n
+ id="1259"
+ p="189.53 339"
+ Z="1567"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="1260 1269 1273"
+><fragment
+ id="1815"
+><n
+ id="1816"
+ p="189.53 339"
+ NumHydrogens="0"
+/><n
+ id="1817"
+ p="33.60 335.41"
+ NumHydrogens="0"
+/><n
+ id="1818"
+ p="47.95 335.41"
+ NumHydrogens="0"
+/><n
+ id="1819"
+ p="19.25 335.41"
+ NumHydrogens="0"
+/><n
+ id="1820"
+ p="62.30 335.41"
+ NumHydrogens="0"
+/><n
+ id="1821"
+ p="4.90 335.41"
+ NumHydrogens="0"
+/><n
+ id="1822"
+ p="76.65 335.41"
+ NumHydrogens="0"
+/><n
+ id="1823"
+ p="-9.45 335.41"
+ NumHydrogens="0"
+/><n
+ id="1824"
+ p="91 335.41"
+ NumHydrogens="0"
+/><n
+ id="1825"
+ p="-23.80 335.41"
+ NumHydrogens="0"
+/><n
+ id="1826"
+ p="105.35 335.41"
+ NumHydrogens="0"
+/><n
+ id="1827"
+ p="-38.15 335.41"
+ NumHydrogens="0"
+/><n
+ id="1828"
+ p="119.70 335.41"
+ NumHydrogens="0"
+/><n
+ id="1829"
+ p="-52.50 335.41"
+ NumHydrogens="0"
+/><n
+ id="1830"
+ p="134.05 335.41"
+ NumHydrogens="0"
+/><n
+ id="1831"
+ p="-66.85 335.41"
+ NumHydrogens="0"
+/><n
+ id="1832"
+ p="148.40 335.41"
+ NumHydrogens="0"
+/><n
+ id="1833"
+ p="-81.20 335.41"
+ NumHydrogens="0"
+/><n
+ id="1834"
+ p="162.75 335.41"
+ NumHydrogens="0"
+/><n
+ id="1835"
+ p="177.10 346.17"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="1836"
+ p="189.53 324.65"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="1837"
+ p="201.96 346.17"
+ NodeType="ExternalConnectionPoint"
+/><b
+ id="1838"
+ B="1832"
+ E="1834"
+ Order="3"
+/><b
+ id="1839"
+ B="1831"
+ E="1833"
+ Order="3"
+/><b
+ id="1840"
+ B="1830"
+ E="1832"
+/><b
+ id="1841"
+ B="1829"
+ E="1831"
+/><b
+ id="1842"
+ B="1828"
+ E="1830"
+ Order="3"
+/><b
+ id="1843"
+ B="1827"
+ E="1829"
+ Order="3"
+/><b
+ id="1844"
+ B="1826"
+ E="1828"
+/><b
+ id="1845"
+ B="1825"
+ E="1827"
+/><b
+ id="1846"
+ B="1824"
+ E="1826"
+ Order="3"
+/><b
+ id="1847"
+ B="1823"
+ E="1825"
+ Order="3"
+/><b
+ id="1848"
+ B="1822"
+ E="1824"
+/><b
+ id="1849"
+ B="1821"
+ E="1823"
+/><b
+ id="1850"
+ B="1820"
+ E="1822"
+ Order="3"
+/><b
+ id="1851"
+ B="1819"
+ E="1821"
+ Order="3"
+/><b
+ id="1852"
+ B="1818"
+ E="1820"
+/><b
+ id="1853"
+ B="1817"
+ E="1819"
+/><b
+ id="1854"
+ B="1817"
+ E="1818"
+ Order="3"
+/><b
+ id="1855"
+ B="1835"
+ E="1816"
+/><b
+ id="1856"
+ B="1836"
+ E="1816"
+ Order="2"
+/><b
+ id="1857"
+ B="1837"
+ E="1816"
+/></fragment><t
+ p="187.72 340.84"
+ BoundingBox="187.94 337.16 195.33 342.06"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C19</s></t></n><n
+ id="1261"
+ p="202.69 344.86"
+ Z="1569"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="1269 1270"
+><fragment
+ id="1859"
+><n
+ id="1860"
+ p="202.69 344.86"
+ NumHydrogens="0"
+/><n
+ id="1861"
+ p="204.19 359.13"
+ NumHydrogens="0"
+/><n
+ id="1862"
+ p="205.69 373.40"
+ NumHydrogens="0"
+/><n
+ id="1863"
+ p="207.19 387.67"
+ NumHydrogens="0"
+/><n
+ id="1864"
+ p="208.68 401.94"
+ NumHydrogens="0"
+/><n
+ id="1865"
+ p="210.18 416.21"
+ NumHydrogens="0"
+/><n
+ id="1866"
+ p="211.68 430.48"
+ NumHydrogens="0"
+/><n
+ id="1867"
+ p="213.18 444.76"
+ NumHydrogens="0"
+/><n
+ id="1868"
+ p="214.68 459.03"
+ NumHydrogens="0"
+/><n
+ id="1869"
+ p="216.18 473.30"
+ NumHydrogens="0"
+/><n
+ id="1870"
+ p="217.68 487.57"
+ NumHydrogens="0"
+/><n
+ id="1871"
+ p="219.18 501.84"
+ NumHydrogens="0"
+/><n
+ id="1872"
+ p="220.68 516.11"
+ NumHydrogens="0"
+/><n
+ id="1873"
+ p="222.18 530.38"
+ NumHydrogens="0"
+/><n
+ id="1874"
+ p="223.68 544.66"
+ NumHydrogens="0"
+/><n
+ id="1875"
+ p="225.18 558.93"
+ NumHydrogens="0"
+/><n
+ id="1876"
+ p="226.68 573.20"
+ NumHydrogens="0"
+/><n
+ id="1877"
+ p="228.18 587.47"
+ NumHydrogens="0"
+/><n
+ id="1878"
+ p="229.68 601.74"
+ NumHydrogens="0"
+/><n
+ id="1879"
+ p="231.18 616.01"
+ NumHydrogens="0"
+/><n
+ id="1880"
+ p="232.68 630.28"
+ NumHydrogens="0"
+/><n
+ id="1881"
+ p="189.58 339.02"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="1882"
+ p="214.29 336.42"
+ NodeType="ExternalConnectionPoint"
+/><b
+ id="1883"
+ B="1879"
+ E="1880"
+ Order="3"
+/><b
+ id="1884"
+ B="1878"
+ E="1879"
+/><b
+ id="1885"
+ B="1877"
+ E="1878"
+ Order="3"
+/><b
+ id="1886"
+ B="1876"
+ E="1877"
+/><b
+ id="1887"
+ B="1875"
+ E="1876"
+ Order="3"
+/><b
+ id="1888"
+ B="1874"
+ E="1875"
+/><b
+ id="1889"
+ B="1873"
+ E="1874"
+ Order="3"
+/><b
+ id="1890"
+ B="1872"
+ E="1873"
+/><b
+ id="1891"
+ B="1871"
+ E="1872"
+ Order="3"
+/><b
+ id="1892"
+ B="1870"
+ E="1871"
+/><b
+ id="1893"
+ B="1869"
+ E="1870"
+ Order="3"
+/><b
+ id="1894"
+ B="1868"
+ E="1869"
+/><b
+ id="1895"
+ B="1867"
+ E="1868"
+ Order="3"
+/><b
+ id="1896"
+ B="1866"
+ E="1867"
+/><b
+ id="1897"
+ B="1865"
+ E="1866"
+ Order="3"
+/><b
+ id="1898"
+ B="1864"
+ E="1865"
+/><b
+ id="1899"
+ B="1863"
+ E="1864"
+ Order="3"
+/><b
+ id="1900"
+ B="1862"
+ E="1863"
+/><b
+ id="1901"
+ B="1861"
+ E="1862"
+ Order="3"
+/><b
+ id="1902"
+ B="1860"
+ E="1861"
+/><b
+ id="1903"
+ B="1881"
+ E="1860"
+ Order="2"
+/><b
+ id="1904"
+ B="1882"
+ E="1860"
+/></fragment><t
+ p="200.88 346.70"
+ BoundingBox="201.10 343.01 207.90 347.85"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C21</s></t></n><n
+ id="1263"
+ p="212.32 334.16"
+ Z="1571"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="1270 1271"
+><fragment
+ id="1906"
+><n
+ id="1907"
+ p="212.32 334.16"
+ Element="7"
+ NumHydrogens="0"
+/><n
+ id="1908"
+ p="70.88 387.66"
+ Element="7"
+ NumHydrogens="0"
+/><n
+ id="1909"
+ p="56.84 384.67"
+ Element="7"
+ NumHydrogens="0"
+/><n
+ id="1910"
+ p="80.48 376.99"
+ Element="7"
+ NumHydrogens="0"
+/><n
+ id="1911"
+ p="47.24 395.34"
+ Element="7"
+ NumHydrogens="0"
+/><n
+ id="1912"
+ p="94.52 379.98"
+ Element="7"
+ NumHydrogens="0"
+/><n
+ id="1913"
+ p="33.20 392.35"
+ Element="7"
+ NumHydrogens="0"
+/><n
+ id="1914"
+ p="104.12 369.31"
+ Element="7"
+ NumHydrogens="0"
+/><n
+ id="1915"
+ p="23.60 403.02"
+ Element="7"
+ NumHydrogens="0"
+/><n
+ id="1916"
+ p="118.16 372.30"
+ Element="7"
+ NumHydrogens="0"
+/><n
+ id="1917"
+ p="9.57 400.03"
+ Element="7"
+ NumHydrogens="0"
+/><n
+ id="1918"
+ p="127.76 361.63"
+ Element="7"
+ NumHydrogens="0"
+/><n
+ id="1919"
+ p="-0.04 410.70"
+ Element="7"
+ NumHydrogens="0"
+/><n
+ id="1920"
+ p="141.79 364.61"
+ Element="7"
+ NumHydrogens="0"
+/><n
+ id="1921"
+ p="-14.07 407.71"
+ Element="7"
+ NumHydrogens="0"
+/><n
+ id="1922"
+ p="151.40 353.95"
+ Element="7"
+ NumHydrogens="0"
+/><n
+ id="1923"
+ p="-23.68 418.38"
+ Element="7"
+ NumHydrogens="0"
+/><n
+ id="1924"
+ p="165.43 356.93"
+ Element="7"
+ NumHydrogens="0"
+/><n
+ id="1925"
+ p="-37.71 415.39"
+ Element="7"
+ NumHydrogens="0"
+/><n
+ id="1926"
+ p="175.03 346.27"
+ Element="7"
+ NumHydrogens="0"
+/><n
+ id="1927"
+ p="-47.31 426.06"
+ Element="7"
+ NumHydrogens="0"
+/><n
+ id="1928"
+ p="189.07 349.25"
+ Element="7"
+ NumHydrogens="0"
+/><n
+ id="1929"
+ p="202.72 344.82"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="1930"
+ p="226.36 337.14"
+ NodeType="ExternalConnectionPoint"
+/><b
+ id="1931"
+ B="1926"
+ E="1928"
+ Order="2"
+/><b
+ id="1932"
+ B="1925"
+ E="1927"
+/><b
+ id="1933"
+ B="1924"
+ E="1926"
+/><b
+ id="1934"
+ B="1923"
+ E="1925"
+ Order="2"
+ Display="Wavy"
+/><b
+ id="1935"
+ B="1922"
+ E="1924"
+ Order="2"
+ Display="Wavy"
+/><b
+ id="1936"
+ B="1921"
+ E="1923"
+/><b
+ id="1937"
+ B="1920"
+ E="1922"
+/><b
+ id="1938"
+ B="1919"
+ E="1921"
+ Order="2"
+ Display="Wavy"
+/><b
+ id="1939"
+ B="1918"
+ E="1920"
+ Order="2"
+ Display="Wavy"
+/><b
+ id="1940"
+ B="1917"
+ E="1919"
+/><b
+ id="1941"
+ B="1916"
+ E="1918"
+/><b
+ id="1942"
+ B="1915"
+ E="1917"
+ Order="2"
+ Display="Wavy"
+/><b
+ id="1943"
+ B="1914"
+ E="1916"
+ Order="2"
+ Display="Wavy"
+/><b
+ id="1944"
+ B="1913"
+ E="1915"
+/><b
+ id="1945"
+ B="1912"
+ E="1914"
+/><b
+ id="1946"
+ B="1911"
+ E="1913"
+ Order="2"
+ Display="Wavy"
+/><b
+ id="1947"
+ B="1910"
+ E="1912"
+ Order="2"
+ Display="Wavy"
+/><b
+ id="1948"
+ B="1909"
+ E="1911"
+/><b
+ id="1949"
+ B="1908"
+ E="1910"
+/><b
+ id="1950"
+ B="1908"
+ E="1909"
+ Order="2"
+ Display="Wavy"
+/><b
+ id="1951"
+ B="1929"
+ E="1907"
+/><b
+ id="1952"
+ B="1930"
+ E="1907"
+ Order="2"
+/></fragment><t
+ p="210.52 335.95"
+ BoundingBox="210.90 332.36 218.14 337.10"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">N22</s></t></n><n
+ id="1265"
+ p="205.12 321.68"
+ Z="1573"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="1271 1272"
+><fragment
+ id="1954"
+><n
+ id="1955"
+ p="205.12 321.68"
+ NumHydrogens="0"
+/><n
+ id="1956"
+ p="212.30 309.26"
+ NumHydrogens="0"
+/><n
+ id="1957"
+ p="219.47 296.83"
+ NumHydrogens="0"
+/><n
+ id="1958"
+ p="226.65 284.40"
+ NumHydrogens="0"
+/><n
+ id="1959"
+ p="233.82 271.97"
+ NumHydrogens="0"
+/><n
+ id="1960"
+ p="241 259.55"
+ NumHydrogens="0"
+/><n
+ id="1961"
+ p="248.17 247.12"
+ NumHydrogens="0"
+/><n
+ id="1962"
+ p="255.35 234.69"
+ NumHydrogens="0"
+/><n
+ id="1963"
+ p="262.52 222.26"
+ NumHydrogens="0"
+/><n
+ id="1964"
+ p="269.70 209.84"
+ NumHydrogens="0"
+/><n
+ id="1965"
+ p="276.87 197.41"
+ NumHydrogens="0"
+/><n
+ id="1966"
+ p="284.05 184.98"
+ NumHydrogens="0"
+/><n
+ id="1967"
+ p="291.22 172.56"
+ NumHydrogens="0"
+/><n
+ id="1968"
+ p="298.40 160.13"
+ NumHydrogens="0"
+/><n
+ id="1969"
+ p="305.57 147.70"
+ NumHydrogens="0"
+/><n
+ id="1970"
+ p="312.75 135.27"
+ NumHydrogens="0"
+/><n
+ id="1971"
+ p="319.92 122.85"
+ NumHydrogens="0"
+/><n
+ id="1972"
+ p="327.10 110.42"
+ NumHydrogens="0"
+/><n
+ id="1973"
+ p="334.27 97.99"
+ NumHydrogens="0"
+/><n
+ id="1974"
+ p="341.45 85.56"
+ NumHydrogens="0"
+/><n
+ id="1975"
+ p="348.62 73.14"
+ NumHydrogens="0"
+/><n
+ id="1976"
+ p="355.80 60.71"
+ NumHydrogens="0"
+/><n
+ id="1977"
+ p="362.97 48.28"
+ NumHydrogens="0"
+/><n
+ id="1978"
+ p="212.30 334.11"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="1979"
+ p="190.77 321.68"
+ NodeType="ExternalConnectionPoint"
+/><b
+ id="1980"
+ B="1976"
+ E="1977"
+ Order="3"
+/><b
+ id="1981"
+ B="1975"
+ E="1976"
+/><b
+ id="1982"
+ B="1974"
+ E="1975"
+ Order="3"
+/><b
+ id="1983"
+ B="1973"
+ E="1974"
+/><b
+ id="1984"
+ B="1972"
+ E="1973"
+ Order="3"
+/><b
+ id="1985"
+ B="1971"
+ E="1972"
+/><b
+ id="1986"
+ B="1970"
+ E="1971"
+ Order="3"
+/><b
+ id="1987"
+ B="1969"
+ E="1970"
+/><b
+ id="1988"
+ B="1968"
+ E="1969"
+ Order="3"
+/><b
+ id="1989"
+ B="1967"
+ E="1968"
+/><b
+ id="1990"
+ B="1966"
+ E="1967"
+ Order="3"
+/><b
+ id="1991"
+ B="1965"
+ E="1966"
+/><b
+ id="1992"
+ B="1964"
+ E="1965"
+ Order="3"
+/><b
+ id="1993"
+ B="1963"
+ E="1964"
+/><b
+ id="1994"
+ B="1962"
+ E="1963"
+ Order="3"
+/><b
+ id="1995"
+ B="1961"
+ E="1962"
+/><b
+ id="1996"
+ B="1960"
+ E="1961"
+ Order="3"
+/><b
+ id="1997"
+ B="1959"
+ E="1960"
+/><b
+ id="1998"
+ B="1958"
+ E="1959"
+ Order="3"
+/><b
+ id="1999"
+ B="1957"
+ E="1958"
+/><b
+ id="2000"
+ B="1956"
+ E="1957"
+ Order="3"
+/><b
+ id="2001"
+ B="1955"
+ E="1956"
+/><b
+ id="2002"
+ B="1978"
+ E="1955"
+ Order="2"
+/><b
+ id="2003"
+ B="1979"
+ E="1955"
+/></fragment><t
+ p="203.32 323.53"
+ BoundingBox="203.54 319.84 210.93 324.75"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C23</s></t></n><n
+ id="1267"
+ p="191.04 324.68"
+ Z="1575"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="1272 1273"
+><fragment
+ id="2005"
+><n
+ id="2006"
+ p="191.04 324.68"
+ Element="7"
+ NumHydrogens="0"
+/><n
+ id="2007"
+ p="181.43 314.01"
+ Element="7"
+ NumHydrogens="0"
+/><n
+ id="2008"
+ p="185.87 300.37"
+ Element="7"
+ NumHydrogens="0"
+/><n
+ id="2009"
+ p="176.27 289.70"
+ Element="7"
+ NumHydrogens="0"
+/><n
+ id="2010"
+ p="180.70 276.05"
+ Element="7"
+ NumHydrogens="0"
+/><n
+ id="2011"
+ p="171.10 265.39"
+ Element="7"
+ NumHydrogens="0"
+/><n
+ id="2012"
+ p="175.53 251.74"
+ Element="7"
+ NumHydrogens="0"
+/><n
+ id="2013"
+ p="165.93 241.08"
+ Element="7"
+ NumHydrogens="0"
+/><n
+ id="2014"
+ p="170.37 227.43"
+ Element="7"
+ NumHydrogens="0"
+/><n
+ id="2015"
+ p="160.76 216.77"
+ Element="7"
+ NumHydrogens="0"
+/><n
+ id="2016"
+ p="165.20 203.12"
+ Element="7"
+ NumHydrogens="0"
+/><n
+ id="2017"
+ p="155.60 192.46"
+ Element="7"
+ NumHydrogens="0"
+/><n
+ id="2018"
+ p="160.03 178.81"
+ Element="7"
+ NumHydrogens="0"
+/><n
+ id="2019"
+ p="150.43 168.14"
+ Element="7"
+ NumHydrogens="0"
+/><n
+ id="2020"
+ p="154.86 154.50"
+ Element="7"
+ NumHydrogens="0"
+/><n
+ id="2021"
+ p="145.26 143.83"
+ Element="7"
+ NumHydrogens="0"
+/><n
+ id="2022"
+ p="149.70 130.18"
+ Element="7"
+ NumHydrogens="0"
+/><n
+ id="2023"
+ p="140.09 119.52"
+ Element="7"
+ NumHydrogens="0"
+/><n
+ id="2024"
+ p="144.53 105.87"
+ Element="7"
+ NumHydrogens="0"
+/><n
+ id="2025"
+ p="134.93 95.21"
+ Element="7"
+ NumHydrogens="0"
+/><n
+ id="2026"
+ p="139.36 81.56"
+ Element="7"
+ NumHydrogens="0"
+/><n
+ id="2027"
+ p="129.76 70.90"
+ Element="7"
+ NumHydrogens="0"
+/><n
+ id="2028"
+ p="134.19 57.25"
+ Element="7"
+ NumHydrogens="0"
+/><n
+ id="2029"
+ p="124.59 46.58"
+ Element="7"
+ NumHydrogens="1"
+/><n
+ id="2030"
+ p="205.07 321.69"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="2031"
+ p="186.60 338.33"
+ NodeType="ExternalConnectionPoint"
+/><b
+ id="2032"
+ B="2028"
+ E="2029"
+/><b
+ id="2033"
+ B="2027"
+ E="2028"
+ Order="2"
+ Display="Wavy"
+/><b
+ id="2034"
+ B="2026"
+ E="2027"
+/><b
+ id="2035"
+ B="2025"
+ E="2026"
+ Order="2"
+ Display="Wavy"
+/><b
+ id="2036"
+ B="2024"
+ E="2025"
+/><b
+ id="2037"
+ B="2023"
+ E="2024"
+ Order="2"
+ Display="Wavy"
+/><b
+ id="2038"
+ B="2022"
+ E="2023"
+/><b
+ id="2039"
+ B="2021"
+ E="2022"
+ Order="2"
+ Display="Wavy"
+/><b
+ id="2040"
+ B="2020"
+ E="2021"
+/><b
+ id="2041"
+ B="2019"
+ E="2020"
+ Order="2"
+ Display="Wavy"
+/><b
+ id="2042"
+ B="2018"
+ E="2019"
+/><b
+ id="2043"
+ B="2017"
+ E="2018"
+ Order="2"
+ Display="Wavy"
+/><b
+ id="2044"
+ B="2016"
+ E="2017"
+/><b
+ id="2045"
+ B="2015"
+ E="2016"
+ Order="2"
+ Display="Wavy"
+/><b
+ id="2046"
+ B="2014"
+ E="2015"
+/><b
+ id="2047"
+ B="2013"
+ E="2014"
+ Order="2"
+ Display="Wavy"
+/><b
+ id="2048"
+ B="2012"
+ E="2013"
+/><b
+ id="2049"
+ B="2011"
+ E="2012"
+ Order="2"
+ Display="Wavy"
+/><b
+ id="2050"
+ B="2010"
+ E="2011"
+/><b
+ id="2051"
+ B="2009"
+ E="2010"
+ Order="2"
+ Display="Wavy"
+/><b
+ id="2052"
+ B="2008"
+ E="2009"
+/><b
+ id="2053"
+ B="2007"
+ E="2008"
+ Order="2"
+ Display="Wavy"
+/><b
+ id="2054"
+ B="2006"
+ E="2007"
+/><b
+ id="2055"
+ B="2030"
+ E="2006"
+/><b
+ id="2056"
+ B="2031"
+ E="2006"
+/></fragment><t
+ p="197.01 326.47"
+ BoundingBox="186.01 322.88 196.89 327.62"
+ LabelJustification="Right"
+ Justification="Right"
+ LabelAlignment="Right"
+><s font="21" size="5" color="0" face="96">N24H</s></t></n><b
+ id="1237"
+ Z="1532"
+ B="795"
+ E="806"
+ Order="2"
+ BS="N"
+ BondCircularOrdering="1242 1247 0 1238"
+/><b
+ id="1238"
+ Z="1533"
+ B="806"
+ E="817"
+ BS="N"
+/><b
+ id="1239"
+ Z="1534"
+ B="817"
+ E="830"
+ Order="2"
+ BS="N"
+ BondCircularOrdering="1238 0 0 1240"
+/><b
+ id="1240"
+ Z="1535"
+ B="830"
+ E="845"
+ BS="N"
+/><b
+ id="1241"
+ Z="1536"
+ B="845"
+ E="862"
+ Order="2"
+ BS="N"
+ BondCircularOrdering="1240 0 1243 1242"
+/><b
+ id="1242"
+ Z="1537"
+ B="862"
+ E="795"
+ BS="N"
+/><b
+ id="1243"
+ Z="1542"
+ B="862"
+ E="871"
+ BS="N"
+ BeginAttach="0"
+/><b
+ id="1244"
+ Z="1543"
+ B="871"
+ E="890"
+ Order="2"
+ BS="N"
+ BondCircularOrdering="1243 0 1248 1245"
+/><b
+ id="1245"
+ Z="1544"
+ B="890"
+ E="912"
+ BS="N"
+/><b
+ id="1246"
+ Z="1545"
+ B="912"
+ E="936"
+ Order="2"
+ BS="N"
+ BondCircularOrdering="1245 1252 0 1247"
+/><b
+ id="1247"
+ Z="1546"
+ B="936"
+ E="795"
+ BS="N"
+ EndAttach="0"
+/><b
+ id="1248"
+ Z="1551"
+ B="890"
+ E="961"
+ BS="N"
+/><b
+ id="1249"
+ Z="1552"
+ B="961"
+ E="988"
+ Order="2"
+ BS="N"
+ BondCircularOrdering="1248 1260 1253 1250"
+/><b
+ id="1250"
+ Z="1553"
+ B="988"
+ E="1018"
+ BS="N"
+/><b
+ id="1251"
+ Z="1554"
+ B="1018"
+ E="1050"
+ Order="2"
+ BS="N"
+ BondCircularOrdering="1250 1257 1258 1252"
+/><b
+ id="1252"
+ Z="1555"
+ B="1050"
+ E="912"
+ BS="N"
+/><b
+ id="1253"
+ Z="1560"
+ B="988"
+ E="1084"
+ BS="N"
+/><b
+ id="1254"
+ Z="1561"
+ B="1084"
+ E="1119"
+ Order="2"
+ BS="N"
+ BondCircularOrdering="1253 0 0 1255"
+/><b
+ id="1255"
+ Z="1562"
+ B="1119"
+ E="1156"
+ BS="N"
+/><b
+ id="1256"
+ Z="1563"
+ B="1156"
+ E="1195"
+ Order="2"
+ BS="N"
+ BondCircularOrdering="1255 0 0 1257"
+/><b
+ id="1257"
+ Z="1564"
+ B="1195"
+ E="1018"
+ BS="N"
+/><b
+ id="1258"
+ Z="1566"
+ B="1050"
+ E="1236"
+ Display="Wavy"
+ BS="N"
+/><b
+ id="1260"
+ Z="1568"
+ B="961"
+ E="1259"
+ BS="N"
+/><b
+ id="1269"
+ Z="1577"
+ B="1259"
+ E="1261"
+ Order="2"
+ BS="N"
+ BondCircularOrdering="1273 1260 0 1270"
+/><b
+ id="1270"
+ Z="1578"
+ B="1261"
+ E="1263"
+ BS="N"
+/><b
+ id="1271"
+ Z="1579"
+ B="1263"
+ E="1265"
+ Order="2"
+ BS="N"
+ BondCircularOrdering="1270 0 0 1272"
+/><b
+ id="1272"
+ Z="1580"
+ B="1265"
+ E="1267"
+ BS="N"
+/><b
+ id="1273"
+ Z="1581"
+ B="1267"
+ E="1259"
+ BS="N"
+/></fragment><fragment
+ id="1277"
+ BoundingBox="245.53 344.97 319.74 389.80"
+ Z="1585"
+><n
+ id="1274"
+ p="291.03 365.13"
+ Z="1582"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="1286 1291 1298"
+><fragment
+ id="2058"
+><n
+ id="2059"
+ p="291.03 365.13"
+ NumHydrogens="0"
+/><n
+ id="2060"
+ p="332.16 368.72"
+ NumHydrogens="0"
+/><n
+ id="2061"
+ p="346.51 368.72"
+ NumHydrogens="0"
+/><n
+ id="2062"
+ p="317.81 368.72"
+ NumHydrogens="0"
+/><n
+ id="2063"
+ p="291.03 379.48"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="2064"
+ p="303.46 357.96"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="2065"
+ p="278.60 357.96"
+ NodeType="ExternalConnectionPoint"
+/><b
+ id="2066"
+ B="2060"
+ E="2061"
+ Order="3"
+/><b
+ id="2067"
+ B="2060"
+ E="2062"
+/><b
+ id="2068"
+ B="2063"
+ E="2059"
+ Order="2"
+/><b
+ id="2069"
+ B="2064"
+ E="2059"
+/><b
+ id="2070"
+ B="2065"
+ E="2059"
+/></fragment><t
+ p="289.22 366.98"
+ BoundingBox="289.44 363.29 294.80 368.13"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C4</s></t></n><n
+ id="1276"
+ p="291.03 379.53"
+ Z="1584"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="1286 1287 1301"
+><fragment
+ id="2072"
+><n
+ id="2073"
+ p="291.03 379.53"
+ NumHydrogens="0"
+/><n
+ id="2074"
+ p="206.85 375.95"
+ NumHydrogens="0"
+/><n
+ id="2075"
+ p="221.20 375.95"
+ NumHydrogens="0"
+/><n
+ id="2076"
+ p="192.50 375.95"
+ NumHydrogens="0"
+/><n
+ id="2077"
+ p="235.55 375.95"
+ NumHydrogens="0"
+/><n
+ id="2078"
+ p="178.15 375.95"
+ NumHydrogens="0"
+/><n
+ id="2079"
+ p="249.90 375.95"
+ NumHydrogens="0"
+/><n
+ id="2080"
+ p="163.80 375.95"
+ NumHydrogens="0"
+/><n
+ id="2081"
+ p="264.25 375.95"
+ NumHydrogens="0"
+/><n
+ id="2082"
+ p="291.03 365.18"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="2083"
+ p="278.60 386.71"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="2084"
+ p="303.46 386.71"
+ NodeType="ExternalConnectionPoint"
+/><b
+ id="2085"
+ B="2079"
+ E="2081"
+/><b
+ id="2086"
+ B="2078"
+ E="2080"
+/><b
+ id="2087"
+ B="2077"
+ E="2079"
+ Order="3"
+/><b
+ id="2088"
+ B="2076"
+ E="2078"
+ Order="3"
+/><b
+ id="2089"
+ B="2075"
+ E="2077"
+/><b
+ id="2090"
+ B="2074"
+ E="2075"
+ Order="3"
+/><b
+ id="2091"
+ B="2074"
+ E="2076"
+/><b
+ id="2092"
+ B="2082"
+ E="2073"
+ Order="2"
+/><b
+ id="2093"
+ B="2083"
+ E="2073"
+/><b
+ id="2094"
+ B="2084"
+ E="2073"
+/></fragment><t
+ p="289.22 381.38"
+ BoundingBox="289.44 377.69 294.74 382.60"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C9</s></t></n><n
+ id="1278"
+ p="303.50 386.73"
+ Z="1586"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="1287 1288"
+><fragment
+ id="2096"
+><n
+ id="2097"
+ p="303.50 386.73"
+ NumHydrogens="0"
+/><n
+ id="2098"
+ p="315.93 379.56"
+ NumHydrogens="0"
+/><n
+ id="2099"
+ p="328.35 372.38"
+ NumHydrogens="0"
+/><n
+ id="2100"
+ p="340.78 365.21"
+ NumHydrogens="0"
+/><n
+ id="2101"
+ p="353.21 358.03"
+ NumHydrogens="0"
+/><n
+ id="2102"
+ p="365.64 350.86"
+ NumHydrogens="0"
+/><n
+ id="2103"
+ p="378.06 343.68"
+ NumHydrogens="0"
+/><n
+ id="2104"
+ p="390.49 336.51"
+ NumHydrogens="0"
+/><n
+ id="2105"
+ p="291.07 379.56"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="2106"
+ p="303.50 401.08"
+ NodeType="ExternalConnectionPoint"
+/><b
+ id="2107"
+ B="2103"
+ E="2104"
+/><b
+ id="2108"
+ B="2102"
+ E="2103"
+ Order="3"
+/><b
+ id="2109"
+ B="2101"
+ E="2102"
+/><b
+ id="2110"
+ B="2100"
+ E="2101"
+ Order="3"
+/><b
+ id="2111"
+ B="2099"
+ E="2100"
+/><b
+ id="2112"
+ B="2098"
+ E="2099"
+ Order="3"
+/><b
+ id="2113"
+ B="2097"
+ E="2098"
+/><b
+ id="2114"
+ B="2105"
+ E="2097"
+/><b
+ id="2115"
+ B="2106"
+ E="2097"
+ Order="2"
+/></fragment><t
+ p="301.69 388.58"
+ BoundingBox="301.91 384.89 307.23 389.80"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C8</s></t></n><n
+ id="1280"
+ p="315.97 379.53"
+ Z="1588"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="1288 1289"
+><fragment
+ id="2117"
+><n
+ id="2118"
+ p="315.97 379.53"
+ NumHydrogens="0"
+/><n
+ id="2119"
+ p="328.40 386.71"
+ NumHydrogens="0"
+/><n
+ id="2120"
+ p="340.83 393.88"
+ NumHydrogens="0"
+/><n
+ id="2121"
+ p="353.25 401.06"
+ NumHydrogens="0"
+/><n
+ id="2122"
+ p="365.68 408.23"
+ NumHydrogens="0"
+/><n
+ id="2123"
+ p="378.11 415.41"
+ NumHydrogens="0"
+/><n
+ id="2124"
+ p="390.54 422.58"
+ NumHydrogens="0"
+/><n
+ id="2125"
+ p="303.54 386.71"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="2126"
+ p="315.97 365.18"
+ NodeType="ExternalConnectionPoint"
+/><b
+ id="2127"
+ B="2123"
+ E="2124"
+ Order="3"
+/><b
+ id="2128"
+ B="2122"
+ E="2123"
+/><b
+ id="2129"
+ B="2121"
+ E="2122"
+ Order="3"
+/><b
+ id="2130"
+ B="2120"
+ E="2121"
+/><b
+ id="2131"
+ B="2119"
+ E="2120"
+ Order="3"
+/><b
+ id="2132"
+ B="2118"
+ E="2119"
+/><b
+ id="2133"
+ B="2125"
+ E="2118"
+ Order="2"
+/><b
+ id="2134"
+ B="2126"
+ E="2118"
+/></fragment><t
+ p="314.17 381.38"
+ BoundingBox="314.39 377.69 319.74 382.53"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C7</s></t></n><n
+ id="1282"
+ p="315.97 365.13"
+ Z="1590"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="1289 1290"
+><fragment
+ id="2136"
+><n
+ id="2137"
+ p="315.97 365.13"
+ NumHydrogens="0"
+/><n
+ id="2138"
+ p="303.54 357.96"
+ NumHydrogens="0"
+/><n
+ id="2139"
+ p="291.12 350.78"
+ NumHydrogens="0"
+/><n
+ id="2140"
+ p="278.69 343.61"
+ NumHydrogens="0"
+/><n
+ id="2141"
+ p="266.26 336.43"
+ NumHydrogens="0"
+/><n
+ id="2142"
+ p="253.83 329.26"
+ NumHydrogens="0"
+/><n
+ id="2143"
+ p="315.97 379.48"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="2144"
+ p="328.40 357.96"
+ NodeType="ExternalConnectionPoint"
+/><b
+ id="2145"
+ B="2141"
+ E="2142"
+/><b
+ id="2146"
+ B="2140"
+ E="2141"
+ Order="3"
+/><b
+ id="2147"
+ B="2139"
+ E="2140"
+/><b
+ id="2148"
+ B="2138"
+ E="2139"
+ Order="3"
+/><b
+ id="2149"
+ B="2137"
+ E="2138"
+/><b
+ id="2150"
+ B="2143"
+ E="2137"
+/><b
+ id="2151"
+ B="2144"
+ E="2137"
+ Order="2"
+/></fragment><t
+ p="314.17 366.98"
+ BoundingBox="314.39 363.29 319.72 368.19"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C6</s></t></n><n
+ id="1284"
+ p="303.50 357.93"
+ Z="1592"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="1290 1291"
+><fragment
+ id="2153"
+><n
+ id="2154"
+ p="303.50 357.93"
+ NumHydrogens="0"
+/><n
+ id="2155"
+ p="303.50 343.58"
+ NumHydrogens="0"
+/><n
+ id="2156"
+ p="303.50 329.23"
+ NumHydrogens="0"
+/><n
+ id="2157"
+ p="303.50 314.88"
+ NumHydrogens="0"
+/><n
+ id="2158"
+ p="303.50 300.53"
+ NumHydrogens="0"
+/><n
+ id="2159"
+ p="315.93 365.11"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="2160"
+ p="291.07 365.11"
+ NodeType="ExternalConnectionPoint"
+/><b
+ id="2161"
+ B="2157"
+ E="2158"
+ Order="3"
+/><b
+ id="2162"
+ B="2156"
+ E="2157"
+/><b
+ id="2163"
+ B="2155"
+ E="2156"
+ Order="3"
+/><b
+ id="2164"
+ B="2154"
+ E="2155"
+/><b
+ id="2165"
+ B="2159"
+ E="2154"
+ Order="2"
+/><b
+ id="2166"
+ B="2160"
+ E="2154"
+/></fragment><t
+ p="301.69 359.78"
+ BoundingBox="301.91 356.09 307.23 360.99"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C5</s></t></n><n
+ id="1292"
+ p="277.33 360.68"
+ Z="1600"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="1298 1299 1304"
+><fragment
+ id="2168"
+><n
+ id="2169"
+ p="277.33 360.68"
+ NumHydrogens="0"
+/><n
+ id="2170"
+ p="266.67 370.29"
+ NumHydrogens="0"
+/><n
+ id="2171"
+ p="256.01 379.89"
+ NumHydrogens="0"
+/><n
+ id="2172"
+ p="290.98 365.12"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="2173"
+ p="274.35 346.65"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="2174"
+ p="280.32 374.72"
+ NodeType="ExternalConnectionPoint"
+/><b
+ id="2175"
+ B="2170"
+ E="2171"
+ Order="3"
+/><b
+ id="2176"
+ B="2169"
+ E="2170"
+/><b
+ id="2177"
+ B="2172"
+ E="2169"
+/><b
+ id="2178"
+ B="2173"
+ E="2169"
+ Order="2"
+/><b
+ id="2179"
+ B="2174"
+ E="2169"
+ Display="Wavy"
+/></fragment><t
+ p="275.53 362.53"
+ BoundingBox="275.75 358.84 281.06 363.75"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C3</s></t></n><n
+ id="1294"
+ p="268.87 372.33"
+ Z="1602"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="1299 1300"
+><fragment
+ id="2181"
+><n
+ id="2182"
+ p="268.87 372.33"
+ NumHydrogens="0"
+/><n
+ id="2183"
+ p="254.60 370.83"
+ NumHydrogens="0"
+/><n
+ id="2184"
+ p="277.30 360.72"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="2185"
+ p="274.71 385.44"
+ NodeType="ExternalConnectionPoint"
+/><b
+ id="2186"
+ B="2182"
+ E="2183"
+/><b
+ id="2187"
+ B="2184"
+ E="2182"
+ Order="2"
+/><b
+ id="2188"
+ B="2185"
+ E="2182"
+/></fragment><t
+ p="267.06 374.18"
+ BoundingBox="267.28 370.49 272.61 375.33"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">C2</s></t></n><n
+ id="1296"
+ p="277.33 383.98"
+ Z="1604"
+ Warning="An atom in this label has an invalid valence."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+ BondOrdering="1300 1301"
+><fragment
+ id="2190"
+><n
+ id="2191"
+ p="277.33 383.98"
+ Element="7"
+ NumHydrogens="0"
+/><n
+ id="2192"
+ p="268.90 372.37"
+ NodeType="ExternalConnectionPoint"
+/><n
+ id="2193"
+ p="271.50 397.09"
+ NodeType="ExternalConnectionPoint"
+/><b
+ id="2194"
+ B="2192"
+ E="2191"
+/><b
+ id="2195"
+ B="2193"
+ E="2191"
+/></fragment><t
+ p="275.53 385.78"
+ BoundingBox="275.91 382.19 280.47 386.93"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="5" color="0" face="96">N1</s></t></n><n
+ id="1303"
+ p="273.61 346.77"
+ Z="1611"
+ Warning="This label has conflicting or unassignable charges."
+ NodeType="Unspecified"
+ NeedsClean="yes"
+ AS="N"
+><t
+ p="275 348.57"
+ BoundingBox="245.53 344.97 274.78 348.67"
+ LabelJustification="Right"
+ Justification="Right"
+ LabelAlignment="Right"
+><s font="21" size="5" color="0" face="96">:name :indole</s></t></n><b
+ id="1286"
+ Z="1594"
+ B="1274"
+ E="1276"
+ Order="2"
+ BS="N"
+ BondCircularOrdering="1291 1298 1301 1287"
+/><b
+ id="1287"
+ Z="1595"
+ B="1276"
+ E="1278"
+ BS="N"
+/><b
+ id="1288"
+ Z="1596"
+ B="1278"
+ E="1280"
+ Order="2"
+ BS="N"
+ BondCircularOrdering="1287 0 0 1289"
+/><b
+ id="1289"
+ Z="1597"
+ B="1280"
+ E="1282"
+ BS="N"
+/><b
+ id="1290"
+ Z="1598"
+ B="1282"
+ E="1284"
+ Order="2"
+ BS="N"
+ BondCircularOrdering="1289 0 0 1291"
+/><b
+ id="1291"
+ Z="1599"
+ B="1284"
+ E="1274"
+ BS="N"
+/><b
+ id="1298"
+ Z="1606"
+ B="1274"
+ E="1292"
+ BS="N"
+/><b
+ id="1299"
+ Z="1607"
+ B="1292"
+ E="1294"
+ Order="2"
+ BS="N"
+ BondCircularOrdering="1298 1304 0 1300"
+/><b
+ id="1300"
+ Z="1608"
+ B="1294"
+ E="1296"
+ BS="N"
+/><b
+ id="1301"
+ Z="1609"
+ B="1296"
+ E="1276"
+ BS="N"
+/><b
+ id="1304"
+ Z="1612"
+ B="1292"
+ E="1303"
+ Display="Wavy"
+ BS="N"
+/></fragment></page></CDXML>
