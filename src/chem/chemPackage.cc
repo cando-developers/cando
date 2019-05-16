@@ -232,6 +232,7 @@ namespace chem
           _sym_STARverboseSTAR->defparameter(_Nil<core::T_O>());
           _sym_STARcurrent_matchSTAR->defparameter(_Nil<core::T_O>());
           _sym_STARcurrent_aromaticity_informationSTAR->defparameter(_Nil<core::T_O>());
+          _sym_STARcurrent_ringsSTAR->defparameter(_Nil<core::T_O>());
 	}
 	break;
 	case candoFunctions:

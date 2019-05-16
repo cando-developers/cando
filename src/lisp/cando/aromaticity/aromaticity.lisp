@@ -32,18 +32,35 @@
     (if (/= member "") (format t "ring~a~%" member) "")))
 
 
-(defstruct aromatic-info aromaticity-type step-assigned)
+(defstruct aromatic-info aromaticity-type rule-name)
 
-;; Set the aromatic type of an atom
-(defun set-aromaticity-type (aromaticity-info atom arom rule)
-  ;;  (set-is-aromatic a t)
-  (pushnew (make-aromatic-info :aromaticity-type arom :step-assigned rule)
-           (gethash atom aromaticity-info)
-           :test #'equalp))
 
-;; Return the aromaticity type of the atom followed by the step-assigned or (values nil nil)
+;; Return the aromaticity type of the atom followed by the rule-name or (values nil nil)
 (defun is-aromatic (atom &optional (aromaticity-info chem:*current-aromaticity-information*))
   (gethash atom aromaticity-info))
+
+(defun is-aromatic-type (atom aromatic-type &optional (aromaticity-info chem:*current-aromaticity-information*))
+  (loop named test
+        for info in (gethash atom aromaticity-info)
+        when (eq (aromatic-info-aromaticity-type info) aromatic-type)
+          do (return-from is-aromatic-type t))
+  (null aromatic-type))
+
+(defun is-aromatic-rule (atom aromatic-rule &optional (aromaticity-info chem:*current-aromaticity-information*))
+  (loop named test
+        for info in (gethash atom aromaticity-info)
+        when (eq (aromatic-info-rule-name info) aromatic-rule)
+          do (return-from is-aromatic-rule t))
+  (null aromatic-rule))
+
+;; Set the aromatic type of an atom
+(defun set-aromaticity-type (aromaticity-info atom arom rule aromatic-atoms)
+  (unless (is-aromatic-type atom arom)
+    (pushnew (make-aromatic-info :aromaticity-type arom :rule-name rule)
+             (gethash atom aromaticity-info)
+             :test #'equalp))
+  (pushnew atom aromatic-atoms)
+  aromatic-atoms)
 
 (defun aromaticity-information-as-string (atom &optional (aromaticity-info chem:*current-aromaticity-information*))
   (format nil "~a" (gethash atom aromaticity-info)))
@@ -55,11 +72,8 @@
 
 (progn
   (defparameter *artests* (list (cons :ar6 (lambda (atom)
-                                             (loop named test
-                                                   for info in (gethash atom chem:*current-aromaticity-information*)
-                                                   when (eq (aromatic-info-aromaticity-type info) :ar6)
-                                                     do (return-from test t))
-                                             nil))
+                                             (let ((is-aromatic-type (is-aromatic-type atom :ar6)))
+                                               is-aromatic-type)))
                                 (cons :abx #'chem:am1bcc-x)
                                 (cons :aby #'chem:am1bcc-y)))
 
@@ -68,17 +82,26 @@
 
 
 (defun exhaustively-apply-aromatic-rule (aromaticity-info molecule-graph rule aromaticity-type rule-name)
-  (let ((hits (chem:boost-graph-vf2 rule molecule-graph)))
-    (loop for hit-vector in hits
-          do (loop for index from 0 below (length hit-vector)
-                   for atom = (elt hit-vector index)
-                   when atom
-                     do (set-aromaticity-type aromaticity-info atom aromaticity-type rule-name)))))
+  (when (chem:verbose 1)
+    (format t "Applying aromatic rule ~a~%" rule-name))
+  (let ((aromatic-atoms nil))
+    (loop
+      ;; Keep applying the rule until we don't find any new atoms
+      (let ((hits (chem:boost-graph-vf2 rule molecule-graph))
+            (new-aromatic-atoms aromatic-atoms))
+        (loop for hit-vector in hits
+              do (loop for index from 0 below (length hit-vector)
+                       for atom = (elt hit-vector index)
+                       when atom
+                         do (setf new-aromatic-atoms (set-aromaticity-type aromaticity-info atom aromaticity-type rule-name new-aromatic-atoms))))
+        (when (eq new-aromatic-atoms aromatic-atoms)
+          (return-from exhaustively-apply-aromatic-rule nil))
+        (setf aromatic-atoms new-aromatic-atoms)))))
 
 ;; Apply aromaticity rule of Jakalian, Jack, and Bayly • Vol. 23, No. 16 • Journal of Computational Chemistry
-(defparameter *rule2* (chem:make-chem-info-graph (chem:compile-smarts "[<abx>:1]1=[<abx>:2]-[<abx>:3]=[<abx>:4]-[<ar6>]-[<ar6>]1" :tests *artests*)))
+(defparameter *rule2* (chem:make-chem-info-graph (chem:compile-smarts "[<abx>:1]1=[<abx>:2]-[<abx>:3]=[<abx>:4]-[<ar6>]:[<ar6>]1" :tests *artests*)))
 
-(defparameter *rule3* (chem:make-chem-info-graph (chem:compile-smarts "[<abx>:1]1=[<abx>:2]-[<ar6>]-[<ar6>]-[<ar6>]-[<ar6>]1" :tests *artests*)))
+(defparameter *rule3* (chem:make-chem-info-graph (chem:compile-smarts "[<abx>:1]1=[<abx>:2]-[<ar6>]:[<ar6>]-[<ar6>]:[<ar6>]1" :tests *artests*)))
 
 ;; Apply aromaticity rule of Jakalian, Jack, and Bayly • Vol. 23, No. 16 • Journal of Computational Chemistry
 
@@ -88,12 +111,8 @@
 (defparameter *ar67test*
   (list* (cons :ar67
                (lambda (atom)
-                 (loop named test
-                       for info in (gethash atom chem:*current-aromaticity-information*)
-                       when (or (eq (aromatic-info-aromaticity-type info) :ar6)
-                                (eq (aromatic-info-aromaticity-type info) :ar7))
-                         do (return-from test t))
-                 nil))
+                 (or (is-aromatic-type atom :ar6)
+                     (is-aromatic-type atom :ar7))))
          *artests*))
 
 (defparameter *rule5* (chem:make-chem-info-graph (chem:compile-smarts "[<aby>:1]1-[<abx>&!<ar67>:2]=[<abx>&!<ar67>:3]-[<abx>&!<ar67>:4]=[<abx>&!<ar67>:5]1" :tests *ar67test*)))
@@ -127,15 +146,17 @@
   "Use the atoms-in-rings - found using RingFinder_O::identifyRings(matter) and run all of the
 aromaticity tests on the atoms in the rings.   Assign aromaticity flags of aromatic atoms by
 associating the atom with its aromaticity info in a hash-table and return the hash-table."
+  (unless (and (boundp 'chem:*current-rings*) chem:*current-rings*)
+    (error "chem:*current-rings* must be bound to a list of rings in the molecule identified using chem:identify-rings"))
   (let* ((aromaticity-info (make-hash-table))
          (chem:*current-aromaticity-information* aromaticity-info))
     (cando:do-molecules (molecule matter)
       (let ((molecule-graph (chem:make-molecule-graph molecule)))
-        (exhaustively-apply-aromatic-rule aromaticity-info molecule-graph *rule1* :ar6 'rule1)
-        (exhaustively-apply-aromatic-rule aromaticity-info molecule-graph *rule2* :ar6 'rule2)
-        (exhaustively-apply-aromatic-rule aromaticity-info molecule-graph *rule3* :ar6 'rule3)
-        (exhaustively-apply-aromatic-rule aromaticity-info molecule-graph *rule4* :ar7 'rule4)
-        (exhaustively-apply-aromatic-rule aromaticity-info molecule-graph *rule5* :ar5 'rule5)))
+        (exhaustively-apply-aromatic-rule aromaticity-info molecule-graph *rule1* :ar6 :rule1)
+        (exhaustively-apply-aromatic-rule aromaticity-info molecule-graph *rule2* :ar6 :rule2)
+        (exhaustively-apply-aromatic-rule aromaticity-info molecule-graph *rule3* :ar6 :rule3)
+        (exhaustively-apply-aromatic-rule aromaticity-info molecule-graph *rule4* :ar7 :rule4)
+        (exhaustively-apply-aromatic-rule aromaticity-info molecule-graph *rule5* :ar5 :rule5)))
     (setf *save-aromatic-info* aromaticity-info)
     aromaticity-info))
 

@@ -955,6 +955,9 @@ bool is_aromatic(Atom_sp a1) {
   if (chem::_sym_STARcurrent_aromaticity_informationSTAR->boundP()) {
     core::HashTable_sp aromaticity_info = gc::As<core::HashTable_sp>(chem::_sym_STARcurrent_aromaticity_informationSTAR->symbolValue());
     core::T_sp info = aromaticity_info->gethash(a1);
+    if (chem__verbose(1)) {
+      core::write_bf_stream(BF("is_aromatic %s -> %d\n") % _rep_(a1) % _rep_(info));
+    }
     return info.notnilp();
   }
   return false;
@@ -964,10 +967,16 @@ bool _matchInAromaticBond(Atom_sp a1, Atom_sp a2) {
   if (chem::_sym_STARcurrent_ringsSTAR->boundP()) {
     core::List_sp rings = chem::_sym_STARcurrent_ringsSTAR->symbolValue();
       // If a1 and other are in the same ring
+    if (chem__verbose(1)) {
+      core::write_bf_stream(BF("_matchInAromaticBond a1=%s a2=%s\n") % _rep_(a1) % _rep_(a2));
+    }
     bool found_a1 = false;
     bool found_a2 = false;
     for ( auto cur : rings ) {
       core::List_sp ring = CONS_CAR(cur);
+      if (chem__verbose(1)) {
+        core::write_bf_stream(BF("Looking at ring: %s\n") % _rep_(ring));
+      }
       found_a1 = false;
       found_a2 = false;
       for ( auto cur2 : ring ) {
@@ -975,13 +984,22 @@ bool _matchInAromaticBond(Atom_sp a1, Atom_sp a2) {
         if (one == a1 && is_aromatic(a1)) found_a1 = true;
         else if (one == a2 && is_aromatic(a2)) found_a2 = true;
       }
+      if (chem__verbose(1)) {
+        core::write_bf_stream(BF("found_a1 = %d found_a2 = %d\n") % found_a1 % found_a2 );
+      }      
       if (found_a1&&found_a2) return true;
     }
     return false;
   }
   return false;
 }
- 
+
+CL_DEFUN bool chem__in_aromatic_bond(Atom_sp a1, Atom_sp a2)
+{
+  core::write_bf_stream(BF("chem__in_aromatic_bond a1=%s a2=%s\n") % _rep_(a1) % _rep_(a2));
+  return _matchInAromaticBond(a1,a2);
+}
+
 
 bool _matchBondTypes(BondEnum be, chem::BondOrder bo, Atom_sp a1, Atom_sp a2) {
   LOG(BF("bondOrder = %s") % bondOrderToString(bo).c_str());
@@ -1018,7 +1036,7 @@ bool _matchBondTypes(BondEnum be, chem::BondOrder bo, Atom_sp a1, Atom_sp a2) {
       break;
   case SABAromaticBond:
       LOG(BF("SMARTS BondEnum = SABAromaticBond"));
-      if (bo != chem::aromaticBond || _matchInAromaticBond(a1,a2))
+      if (!(bo == chem::aromaticBond || _matchInAromaticBond(a1,a2)))
         goto nomatch;
       break;
   case SABAnyBond:
@@ -2973,19 +2991,17 @@ CL_DEFUN ChemInfoGraph_sp chem__make_chem_info_graph( Root_sp pattern)
     bool operator()(int v1,
                     int v2)
     {
-#if 0
-      printf("%s:%d   In VertexComp matching...  v1 %d to v2 %d\n", __FILE__, __LINE__, v1, v2 );
-      printf("      this->_chemInfoGraph %p\n", this->_chemInfoGraph.raw_() );
-      printf("      this->_moleculeGraph %p\n", this->_moleculeGraph.raw_() );
-#endif
       ChemInfoNode_sp node = this->_chemInfoGraph->_atomNodes[this->_chemInfoGraph->_nodeOrder[v1]];
       Atom_sp atom = this->_moleculeGraph->_atoms[v2];
-#if 0
-      printf("      node -> %s\n", _rep_(node).c_str());
-      printf("      atom -> %s\n", _rep_(atom).c_str());
-      printf("       root -> %s\n", _rep_(this->_chemInfoGraph->_Root).c_str());
-#endif
-      return node->matches_Atom(this->_chemInfoGraph->_Root,atom);
+      bool match = node->matches_Atom(this->_chemInfoGraph->_Root,atom);
+      if (chem__verbose(1)) {
+        core::write_bf_stream(BF("In VertexComp matching...  v1 %d to v2 %d\n") % v1 % v2 );
+        core::write_bf_stream(BF(" node -> %s\n") % _rep_(node));
+        core::write_bf_stream(BF(" atom -> %s\n") % _rep_(atom));
+        core::write_bf_stream(BF(" root -> %s\n") % _rep_(this->_chemInfoGraph->_Root));
+        core::write_bf_stream(BF("  match -> %d\n") % match);
+      }
+      return match;
     }
     VertexComp(ChemInfoGraph_sp cig, MoleculeGraph_sp mg) : _chemInfoGraph(cig), _moleculeGraph(mg) {};
   };
@@ -3005,7 +3021,16 @@ CL_DEFUN ChemInfoGraph_sp chem__make_chem_info_graph( Root_sp pattern)
       int ci = chemInfoEdge[eci];
       BondToAtomTest_sp bta = this->_chemInfoGraph->_bondNodes[ci];
     // If the comparison is simple then just match the bond type to the BondEnum
-      if (bta->_Bond!=SABUseBondMatcher) return _matchBondTypes(bta->_Bond,bo,_Unbound<Atom_O>(),_Unbound<Atom_O>());
+      if (bta->_Bond!=SABUseBondMatcher) {
+        bool match = _matchBondTypes(bta->_Bond,bo,_Unbound<Atom_O>(),_Unbound<Atom_O>());
+        if (chem__verbose(1)) {
+          core::write_bf_stream(BF("In EdgeComp matching with _matchBondTypes...\n"));
+          core::write_bf_stream(BF(" bta->_Bond -> %d\n") % bta->_Bond );
+          core::write_bf_stream(BF(" bo -> %s\n") % bo );
+          core::write_bf_stream(BF("  match -> %d\n") % match);
+        }
+      return match;
+      }
     // The comparison is not simple - we need to use the BondMatcher
       BondMatcher_sp bondMatcher = gc::As<BondMatcher_sp>(bta->_BondMatcher);
       int msource = boost::source(em,*(this->_moleculeGraph->_moleculeGraph));
@@ -3013,7 +3038,15 @@ CL_DEFUN ChemInfoGraph_sp chem__make_chem_info_graph( Root_sp pattern)
       int mtarget = boost::target(em,*(this->_moleculeGraph->_moleculeGraph));
       Atom_sp atarget = this->_moleculeGraph->_atoms[mtarget];
       Bond_sp bond = asource->getBondTo(atarget);
-      return bondMatcher->matches_Bond(this->_chemInfoGraph->_Root,asource,bond);
+      bool match = bondMatcher->matches_Bond(this->_chemInfoGraph->_Root,asource,bond);
+      if (chem__verbose(1)) {
+        core::write_bf_stream(BF("In EdgeComp matching with matches_Bond...\n"));
+        core::write_bf_stream(BF(" asource -> %s\n") % _rep_(asource));
+        core::write_bf_stream(BF(" bond -> %s\n") % _rep_(bond));
+        core::write_bf_stream(BF(" root -> %s\n") % _rep_(this->_chemInfoGraph->_Root));
+        core::write_bf_stream(BF("  match -> %d\n") % match);
+      }
+      return match;
     }
     EdgeComp(ChemInfoGraph_sp cig, MoleculeGraph_sp mg) : _chemInfoGraph(cig), _moleculeGraph(mg) {};
   };

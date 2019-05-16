@@ -648,6 +648,9 @@ void	Loop::advanceLoop()
 #define DOCS_map_molecules "Loop over molecules, invoke function for each molecule"
 CL_DEFUN core::T_sp chem__map_molecules(core::Symbol_sp result_type, core::T_sp funcDesig, Matter_sp m )
 {
+  if (!gc::IsA<Aggregate_sp>(m)) {
+    TYPE_ERROR(m,_sym_Aggregate_O);
+  }
   core::Function_sp func = core::coerce::functionDesignator(funcDesig);
   Loop l(m,MOLECULES);
   Molecule_sp a;
@@ -682,6 +685,9 @@ CL_DEFUN core::T_sp chem__map_molecules(core::Symbol_sp result_type, core::T_sp 
 #define DOCS_map_residues "Loop over residues, invoke function for each residue"
 CL_DEFUN core::T_sp chem__map_residues(core::Symbol_sp result_type, core::T_sp funcDesig, Matter_sp m)
 {
+  if (!(gc::IsA<Aggregate_sp>(m)||gc::IsA<Molecule_sp>(m))) {
+    TYPE_ERROR(m,core::Cons_O::createList(cl::_sym_or,_sym_Aggregate_O,_sym_Molecule_O));
+  }
   core::Function_sp func = core::coerce::functionDesignator(funcDesig);
   Loop l(m,RESIDUES);
   Residue_sp a;
@@ -717,6 +723,9 @@ CL_DEFUN core::T_sp chem__map_residues(core::Symbol_sp result_type, core::T_sp f
 #define DOCS_map_atoms "Loop over atoms, invoke function for each atom"
 CL_DEFUN core::T_sp chem__map_atoms(core::Symbol_sp result_type, core::T_sp funcDesig, Matter_sp m)
 {
+  if (!(gc::IsA<Aggregate_sp>(m)||gc::IsA<Molecule_sp>(m)||gc::IsA<Residue_sp>(m))) {
+    TYPE_ERROR(m,core::Cons_O::createList(cl::_sym_or,_sym_Aggregate_O,_sym_Molecule_O,_sym_Residue_O));
+  }
   core::Function_sp func = core::coerce::functionDesignator(funcDesig);
   Loop l(m,ATOMS);
   Atom_sp a;

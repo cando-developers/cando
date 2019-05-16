@@ -28,6 +28,8 @@
   (:use #:common-lisp)
   (:export
    #:is-aromatic
+   #:is-aromatic-type
+   #:is-aromatic-rule
    #:identify-aromatic-rings
    #:aromaticity-information-as-string
    #:with-aromaticity-information
