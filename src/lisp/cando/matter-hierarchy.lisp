@@ -199,27 +199,34 @@ Break up the molecules in the aggregate into a list of molecules using spanning 
 
 
 (defmacro do-molecules ((molecule-var matter) &body body)
-  `(chem:map-molecules
-    nil
-    (lambda (,molecule-var)
-      ,@body)
-    ,matter))
+  `(flet ((do-one-molecule (,molecule-var)
+            ,@body))
+     (if (typep ,matter 'chem:molecule)
+         (funcall #'do-one-molecule ,matter) 
+         (chem:map-molecules
+          nil
+          #'do-one-molecule
+          ,matter))))
 
 (defmacro do-residues ((residue-var matter) &body body)
-  `(chem:map-residues
-    nil
-    (lambda (,residue-var)
-      ,@body)
-    ,matter))
+  `(flet ((do-one-residue (,residue-var)
+            ,@body))
+     (if (typep ,matter 'chem:residue)
+         (funcall #'do-one-residue ,matter) 
+         (chem:map-residues
+          nil
+          #'do-one-residue
+          ,matter))))
 
 (defmacro do-atoms ((atom-var matter) &body body)
-  `(chem:map-atoms
-    nil
-    (lambda (,atom-var)
-      ,@body)
-    ,matter))
-
-
+  `(flet ((do-one-atom (,atom-var)
+            ,@body))
+     (if (typep ,matter 'chem:atom)
+         (funcall #'do-one-atom ,matter) 
+         (chem:map-atoms
+          nil
+          #'do-one-atom
+          ,matter))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
