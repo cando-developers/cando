@@ -54,7 +54,7 @@
 
 
 (defun quickload-parallel (systems level &key (parallel-jobs *number-of-jobs*))
-  #+dbg-print(bformat t "DBG-PRINT compile-system files: %s\n" files)
+  #+dbg-print(bformat t "DBG-PRINT compile-system files: %s%N" files)
   (let ((total (length systems))
         (counter 0)
         (job-counter 0)
@@ -92,7 +92,7 @@
                (tagbody
                 top
                   (multiple-value-setq (wpid status) (core:wait))
-                  (core:bformat t "wpid -> %s  status -> %s\n" wpid status)
+                  (core:bformat t "wpid -> %s  status -> %s%N" wpid status)
                   (when (core:wifexited status) (go done))
                   (when (core:wifsignaled status)
                     (let ((signal (core:wtermsig status)))
