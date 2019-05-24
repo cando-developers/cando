@@ -40,11 +40,18 @@ with those atoms with that aromaticity-information."
 
 ;;; Try a compilicated example
 (defparameter *agg* (load-chem-draw-aggregate "ligand8a.cdxml"))
+(defparameter *agg* (load-chem-draw-aggregate "~/Downloads/test.cdxml"))
+(defparameter *agg* (load-chem-draw-aggregate "~/Downloads/example.cdxml"))
+(defparameter *agg* (load-chem-draw-aggregate "~/Downloads/ar5example.cdxml"))
+(defparameter *agg* (load-chem-draw-aggregate "~/Downloads/ar6example.cdxml"))
+(defparameter *agg* (load-chem-draw-aggregate "~/Downloads/ar7example.cdxml"))
+
 (chem:fill-in-implicit-hydrogens *agg*)
 (set-stereoisomer-func (cando:gather-stereocenters *agg*) (lambda (c) :R))
 (defparameter *mol* (chem:content-at *agg* 0))
 (set-force-field *mol* :smirnoff)
-(save-amber-parm *agg* "/tmp/test.parm" "/tmp/test.crd")
+(let ((chem:*verbose* nil))
+  (save-amber-parm *agg* "/tmp/test.parm" "/tmp/test.crd"))
 
 
 
@@ -114,6 +121,7 @@ chem:*verbose*
 (aromaticity:is-aromatic-type (chem:first-atom-with-name *fm* :c2) :ar6 *fake-ai-c1-c2-ar6*)
 
 (trace aromaticity::is-aromatic-type )
+
 
                             
                             

@@ -82,9 +82,11 @@
 
 
 (defun exhaustively-apply-aromatic-rule (aromaticity-info molecule-graph rule aromaticity-type rule-name)
+  (format t "Applying aromatic rule ~a~%" rule)
   (when (chem:verbose 1)
     (format t "Applying aromatic rule ~a~%" rule-name))
   (let ((aromatic-atoms nil))
+    (format t "Applying aromatic rule ~a~%" rule-name)
     (loop
       ;; Keep applying the rule until we don't find any new atoms
       (let ((hits (chem:boost-graph-vf2 rule molecule-graph))
@@ -101,7 +103,7 @@
 ;; Apply aromaticity rule of Jakalian, Jack, and Bayly • Vol. 23, No. 16 • Journal of Computational Chemistry
 (defparameter *rule2* (chem:make-chem-info-graph (chem:compile-smarts "[<abx>:1]1=[<abx>:2]-[<abx>:3]=[<abx>:4]-[<ar6>]:[<ar6>]1" :tests *artests*)))
 
-(defparameter *rule3* (chem:make-chem-info-graph (chem:compile-smarts "[<abx>:1]1=[<abx>:2]-[<ar6>]:[<ar6>]-[<ar6>]:[<ar6>]1" :tests *artests*)))
+(defparameter *rule3* (chem:make-chem-info-graph (chem:compile-smarts "[<abx>:1]1=[<abx>:2]-[<ar6>]:[<ar6>]:[<ar6>]:[<ar6>]1" :tests *artests*)))
 
 ;; Apply aromaticity rule of Jakalian, Jack, and Bayly • Vol. 23, No. 16 • Journal of Computational Chemistry
 
