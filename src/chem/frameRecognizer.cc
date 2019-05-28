@@ -92,7 +92,7 @@ CL_LISPIFY_NAME("recognizes");
 CL_DEFMETHOD bool	FrameRecognizer_O::recognizes( Atom_sp o )
 {
     ASSERTNOTNULL(this->_ChemInfo);
-    ASSERT(this->_ChemInfo->compileSucceeded());
+//    ASSERT(this->_ChemInfo->compileSucceeded());
     core::T_mv match_mv = chem__chem_info_match(this->_Root,o);
     return match_mv.notnilp();
 }

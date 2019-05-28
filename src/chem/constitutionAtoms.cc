@@ -148,7 +148,7 @@ ConstitutionAtom_sp& ConstitutionAtoms_O::operator[](ConstitutionAtomIndex0N idx
 {_OF();
   ASSERTF(idx>=0&&idx<(int)(this->_Atoms.size()),BF("index[%d] out of range") % idx );
   ConstitutionAtom_sp& ca = this->_Atoms[(uint)idx];
-  ASSERTF(idx==ca->_AtomIndex,BF("A mismatch has occured between the index[%d] in the ConstitutionAtoms array and the ConstitutionAtom index[%d] - these have to match or we can't quickly look up atoms by their index") % idx % ca->_AtomIndex );
+//  ASSERTF(idx==ca->_AtomIndex,BF("A mismatch has occured between the index[%d] in the ConstitutionAtoms array and the ConstitutionAtom index[%d] - these have to match or we can't quickly look up atoms by their index") % idx % ca->_AtomIndex );
   return ca;
 }
 

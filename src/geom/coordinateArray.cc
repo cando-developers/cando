@@ -129,7 +129,7 @@ void SimpleVectorCoordinate_O::zeroAllCoordinates()
 void SimpleVectorCoordinate_O::addPoints(SimpleVectorCoordinate_sp y)
 {_OF();
   int  sz;
-  ASSERT_eq(this->_Points.size(),y->size());
+//  ASSERT_eq(this->_Points.size(),y->size());
   sz = this->length();
   for ( size_t i=0; i<sz; i++ ) {
     (*this)[i] = (*this)[i].add((*y)[i]);

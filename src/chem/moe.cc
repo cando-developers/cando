@@ -1078,17 +1078,21 @@ void	MoeReadFile::readNextLine()
 		    {
 			bo = doubleBond;
 			atoms[from]->bondTo( atoms[to], bo );
+#if 0
 			ASSERTP(!atoms[from]->invalid(),
 				      "Bond I just formed is invalid atom:"+atoms[from]->getName());
 			ASSERTP(!atoms[to]->invalid(),
 				      "Bond I just formed is invalid atom:"+atoms[to]->getName());
+#endif
 		    } else {
 			bo = singleBond;
 			atoms[from]->bondTo( atoms[to], bo );
+#if 0
 			ASSERTP(!atoms[from]->invalid(),
 				      "Bond I just formed is invalid atom:"+atoms[from]->getName());
 			ASSERTP(!atoms[to]->invalid(),
 				      "Bond I just formed is invalid atom:"+atoms[to]->getName());
+#endif
 		    }
 		    LOG(BF("Installed bond between atoms: %s - %s") % atoms[from]->description().c_str() % atoms[to]->description().c_str()  );
 		}

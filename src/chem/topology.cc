@@ -136,7 +136,7 @@ CL_DEFMETHOD Residue_sp Topology_O::buildResidueForIsomer(size_t isomer) const
   }
   Residue_sp res = Residue_O::make(residueName);
   LOG(BF("created residue\n"));
-  ASSERT(atomInfo.notnilp());
+//  ASSERT(atomInfo.notnilp());
   ConstitutionAtoms_sp constitutionAtoms = this->_Constitution->getConstitutionAtoms();
   size_t numAtoms = constitutionAtoms->numberOfAtoms();
   gctools::Vec0<Atom_sp> atoms;
