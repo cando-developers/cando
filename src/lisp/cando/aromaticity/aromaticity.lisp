@@ -144,7 +144,12 @@
 
 (defparameter *save-aromatic-info* nil)
 
-(defun chem:identify-aromatic-rings (matter)
+(defgeneric chem:identify-aromatic-rings (matter force-field-name))
+
+(defmethod chem:identify-aromatic-rings (matter (force-field-name t))
+  (make-hash-table))
+
+(defmethod chem:identify-aromatic-rings (matter (eql force-field-name :am1bcc))
   "Use the atoms-in-rings - found using RingFinder_O::identifyRings(matter) and run all of the
 aromaticity tests on the atoms in the rings.   Assign aromaticity flags of aromatic atoms by
 associating the atom with its aromaticity info in a hash-table and return the hash-table."
@@ -162,27 +167,40 @@ associating the atom with its aromaticity info in a hash-table and return the ha
     (setf *save-aromatic-info* aromaticity-info)
     aromaticity-info))
 
+
+(defmethod chem:identify-aromatic-rings (matter (eql force-field-name :mdl))
+  "Use the atoms-in-rings - found using RingFinder_O::identifyRings(matter) and run all of the
+aromaticity tests on the atoms in the rings.   Assign aromaticity flags of aromatic atoms by
+associating the atom with its aromaticity info in a hash-table and return the hash-table."
+  (unless (and (boundp 'chem:*current-rings*) chem:*current-rings*)
+    (error "chem:*current-rings* must be bound to a list of rings in the molecule identified using chem:identify-rings"))
+  (let* ((aromaticity-info (make-hash-table))
+         (chem:*current-aromaticity-information* aromaticity-info))
+    (cando:do-molecules (molecule matter)
+      (let ((molecule-graph (chem:make-molecule-graph molecule)))
+        (exhaustively-apply-aromatic-rule aromaticity-info molecule-graph *rule1* :ar6 :rule1)
+        (exhaustively-apply-aromatic-rule aromaticity-info molecule-graph *rule2* :ar6 :rule2)
+        (exhaustively-apply-aromatic-rule aromaticity-info molecule-graph *rule3* :ar6 :rule3)))
+    (setf *save-aromatic-info* aromaticity-info)
+    aromaticity-info))
+
+(defmethod chem:identify-aromatic-rings (matter (eql force-field-name :smirnoff))
+  (chem:identify-aromatic-rings matter :mdl))
+
+
+
 ;;
 ;; Identify all rings, isolate atoms in rings and apply all of the aromaticity rules
 ;; from Jakalian, Jack, and Bayly • Vol. 23, No. 16 • Journal of Computational Chemistry
 ;; Return the rings for bond type assignment
 ;; Make this work using the hash-table returned by chem:identify-aromatic-rings
-#+(or)
-(defun identify-aromatic-rings (matter)
-  (unless (or (typep matter 'chem:molecule) (typep matter 'chem:aggregate))
-    (error "identify-aromatic-rings only accepts aggregate or molecule - you passed ~s" matter))
-  (cando:do-molecules (molecule matter)
-    (multiple-value-bind (atoms-in-rings all-rings)
-        (all-ring-atoms molecule)
-      (chem:identify-aromatic-rings atoms-in-rings)
-      (select-aromatic-rings all-rings))))
 
 
-(defmacro with-aromaticity-information ((matter) &body body)
+(defmacro with-aromaticity-information ((matter force-field-name) &body body)
   "Provide a dynamic environment where the aromaticity:is-aromatic function works.
 This macro first calculates the aromaticity information of the matter and then
 evaluates the body in that dynamic environment."
-  `(let ((chem:*current-aromaticity-information* (chem:identify-aromatic-rings ,matter)))
+  `(let ((chem:*current-aromaticity-information* (chem:identify-aromatic-rings ,matter ,force-field-name)))
      ,@body))
 
 

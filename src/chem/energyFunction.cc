@@ -1160,11 +1160,6 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, bool useEx
   core::List_sp rings = RingFinder_O::identifyRings(matter);
   core::DynamicScopeManager ring_scope(_sym_STARcurrent_ringsSTAR, rings );
 
-  //
-  // Calculate aromaticity using the rings we just calculated
-  //
-  core::T_sp aromaticity_info = core::eval::funcall(_sym_identify_aromatic_rings,matter);
-  core::DynamicScopeManager aromaticity_scope(_sym_STARcurrent_aromaticity_informationSTAR,aromaticity_info);
   
   //
   // Assign relative Cahn-Ingold-Preylog priorities
@@ -1195,6 +1190,11 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, bool useEx
     core::T_sp force_field_name = molecule->force_field_name();
     core::T_sp combined_force_field = force_fields->gethash(force_field_name);
     if (chem__verbose(0)) core::write_bf_stream(BF("Assigning atom types for molecule %s using %s.\n") % _rep_(molecule->getName()) % _rep_(force_field_name));
+  //
+  // Calculate aromaticity using the rings we just calculated
+  //
+    core::T_sp aromaticity_info = core::eval::funcall(_sym_identify_aromatic_rings,matter,force_field_name);
+    core::DynamicScopeManager aromaticity_scope(_sym_STARcurrent_aromaticity_informationSTAR,aromaticity_info);
     core::eval::funcall(_sym_assign_force_field_types,combined_force_field,molecule);
   }
   this->defineForMatterWithAtomTypes(matter,useExcludedAtoms,activeAtoms);
@@ -1262,6 +1262,11 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatterWithAtomTypes(Matter_sp matte
       Molecule_sp onemol = gc::As_unsafe<Molecule_sp>(CONS_CAR(cur_solute));
       core::T_sp force_field_name = onemol->force_field_name();
       core::T_sp forceField = core::eval::funcall(chem::_sym_find_force_field,force_field_name);
+  //
+  // Calculate aromaticity using the rings we just calculated
+  //
+      core::T_sp aromaticity_info = core::eval::funcall(_sym_identify_aromatic_rings,matter,force_field_name);
+      core::DynamicScopeManager aromaticity_scope(_sym_STARcurrent_aromaticity_informationSTAR,aromaticity_info);
       this->_AtomTable->constructFromMatter(onemol,nonbondForceField,activeAtoms);
       if (chem__verbose(0)) core::write_bf_stream(BF("Generating parameters for %s using %s force-field.\n") % _rep_(onemol->getName()) % _rep_(force_field_name) );
       core::eval::funcall(_sym_generate_molecule_energy_function_tables,this->asSmartPtr(),onemol,forceField,activeAtoms);
@@ -1289,6 +1294,11 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatterWithAtomTypes(Matter_sp matte
     Molecule_sp molecule = gc::As<Molecule_sp>(matter);
     core::T_sp force_field_name = molecule->force_field_name();
     core::T_sp forceField = core::eval::funcall(chem::_sym_find_force_field,force_field_name);
+  //
+  // Calculate aromaticity using the rings we just calculated
+  //
+      core::T_sp aromaticity_info = core::eval::funcall(_sym_identify_aromatic_rings,matter,force_field_name);
+      core::DynamicScopeManager aromaticity_scope(_sym_STARcurrent_aromaticity_informationSTAR,aromaticity_info);
     this->_AtomTable->constructFromMatter(molecule,nonbondForceField,activeAtoms);
     if (chem__verbose(0)) core::write_bf_stream(BF("Generating parameters for %s using %s force-field.\n") % _rep_(molecule->getName()) % _rep_(force_field_name) );
     core::eval::funcall(_sym_generate_molecule_energy_function_tables,this->asSmartPtr(),molecule,forceField,activeAtoms);
