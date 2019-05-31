@@ -149,7 +149,7 @@
 (defmethod chem:identify-aromatic-rings (matter (force-field-name t))
   (make-hash-table))
 
-(defmethod chem:identify-aromatic-rings (matter (eql force-field-name :am1bcc))
+(defmethod chem:identify-aromatic-rings (matter (force-field-name (eql :am1bcc))
   "Use the atoms-in-rings - found using RingFinder_O::identifyRings(matter) and run all of the
 aromaticity tests on the atoms in the rings.   Assign aromaticity flags of aromatic atoms by
 associating the atom with its aromaticity info in a hash-table and return the hash-table."
@@ -168,7 +168,7 @@ associating the atom with its aromaticity info in a hash-table and return the ha
     aromaticity-info))
 
 
-(defmethod chem:identify-aromatic-rings (matter (eql force-field-name :mdl))
+(defmethod chem:identify-aromatic-rings (matter (force-field-name (eql :mdl))
   "Use the atoms-in-rings - found using RingFinder_O::identifyRings(matter) and run all of the
 aromaticity tests on the atoms in the rings.   Assign aromaticity flags of aromatic atoms by
 associating the atom with its aromaticity info in a hash-table and return the hash-table."
@@ -184,7 +184,7 @@ associating the atom with its aromaticity info in a hash-table and return the ha
     (setf *save-aromatic-info* aromaticity-info)
     aromaticity-info))
 
-(defmethod chem:identify-aromatic-rings (matter (eql force-field-name :smirnoff))
+(defmethod chem:identify-aromatic-rings (matter (force-field-name (eql :smirnoff))
   (chem:identify-aromatic-rings matter :mdl))
 
 
