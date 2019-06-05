@@ -952,7 +952,14 @@ void ResidueTest_O::fields(core::Record_sp node) {
 // ------ BondToAtomTest
 
 bool unsafe_is_aromatic(Atom_sp a1) {
-  core::HashTable_sp aromaticity_info = gc::As<core::HashTable_sp>(chem::_sym_STARcurrent_aromaticity_informationSTAR->symbolValue());
+  core::T_sp taromaticity_info = chem::_sym_STARcurrent_aromaticity_informationSTAR->symbolValue();
+  if (taromaticity_info.unboundp()) {
+    SIMPLE_ERROR(BF("In unsafe_is_aromatic and the chem:*current-aromaticity-information* is UNBOUND and it should not be"));
+  }
+  if (taromaticity_info.nilp()) {
+    SIMPLE_ERROR(BF("In unsafe_is_aromatic and the chem:*current-aromaticity-information* is NIL and it should not be"));
+  }
+  core::HashTable_sp aromaticity_info = gc::As<core::HashTable_sp>(taromaticity_info);
   core::T_sp info = aromaticity_info->gethash(a1);
   if (chem__verbose(1)) {
     core::write_bf_stream(BF("is_aromatic %s -> %d\n") % _rep_(a1) % _rep_(info));
