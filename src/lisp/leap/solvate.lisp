@@ -148,6 +148,36 @@
     (unless shell
       (chem:set-property solute :bounding-box (list xwidth ywidth zwidth)))))
 
+(defun tool-solvate-in-sphare (solute solvent center radius &key (closeness 0.0) (verbose t))
+  (let* ((solvent-box (chem:matter-get-property solvent :bounding-box))
+         (solvent-x-width (first solvent-box))
+         (solvent-y-width (second solvent-box))
+         (solvent-z-width (third solvent-box))
+         (diam (* radius 2.0))
+         (buffer 0.0)
+         (atom-max-r (+ 1.5 closeness))
+         (2xatom-max-r (* atom-max-r 2.0))
+         (2xatom-max-r-squared (* 2xatom-max-r 2xatom-max-r))
+         solute-xvec solute-yvec solute-zvec
+         solute-x-width solute-y-width solute-z-width
+         ;;xwidth ywidth zwidth
+         ix iy iz
+         xstart ystart zstart)
+    (multiple-value-setq (solute-xvec solute-yvec solute-zvec solute-x-width solute-y-width solute-z-width)
+      (tool-build-solute-array solute))   
+    (setf 
+     ix (+ (truncate (/ diam solvent-x-width)) 1)
+     iy (+ (truncate (/ diam solvent-y-width)) 1)
+     iz (+ (truncate (/ diam solvent-z-width)) 1)
+     xstart (+ (* 0.5 solvent-x-width (- ix 1)) (geom:vx center))
+     ystart (+ (* 0.5 solvent-y-width (- iy 1)) (geom:vy center))
+     zstart (+ (* 0.5 solvent-z-width (- iz 1)) (geom:vz center)))
+    (let ((test-function (lambda (solvent-molecule)
+                           (and (overlap-solvent solute-xvec solute-yvec solute-zvec solvent-molecule 2xatom-max-r-squared)
+                                (invalid-solvent-sphere radius center solvent-molecule)))))
+      (tool-add-all-boxes solute test-function solvent ix iy iz xstart ystart zstart solvent-x-width solvent-y-width solvent-z-width :verbose verbose)
+      solute)))
+
 (defun overlap-solvent (solute-xvec solute-yvec solute-zvec mol 2xatom-max-r-squared)
 ;;  #+(or)
   (chem:overlap-solvent solute-xvec solute-yvec solute-zvec mol 2xatom-max-r-squared)
@@ -268,4 +298,18 @@
      mol))
   nil)
 
-
+(defun invalid-solvent-sphere (radius center mol)
+  (chem:map-atoms
+   nil
+   (lambda (a)
+     (let* ((solvent-pos (chem:get-position a))
+            (center-to-pos (+ (* (- (geom:vx center) (geom:vx solvent-pos))
+                                 (- (geom:vx center) (geom:vx solvent-pos)))
+                              (* (- (geom:vy center) (geom:vy solvent-pos))
+                                 (- (geom:vy center) (geom:vy solvent-pos)))
+                              (* (- (geom:vz center) (geom:vz solvent-pos))
+                                 (- (geom:vz center) (geom:vz solvent-pos))))))
+       (unless (> (* radius radius) center-to-pos)
+         (return-from invalid-solvent-sphere nil))))
+   mol)
+  t)

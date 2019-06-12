@@ -309,6 +309,50 @@ command for more details on the _closeness_ parameter.
         (iso-closeness-args (process-iso-closeness iso-closeness)))
     (apply #'leap:solvate-shell solute solvent buffer :farness farness :shell t iso-closeness-args)))
 
+(defun leap.solvate-cap (solute-name solvent-name position radius &rest iso-closeness)
+  "    solvateCap solute solvent position radius [ closeness ]
+
+      UNIT                         _solute_
+      UNIT                         _solvent_
+      object                       _position_
+      NUMBER                       _radius_
+      NUMBER                       _closeness_
+
+The solvateCap command creates a solvent cap around the _solute_ UNIT
+or a part thereof.  The _solute_ UNIT is modified by the addition of
+_solvent_ RESIDUEs.
+The normal choice for a TIP3 _solvent_ UNIT is WATBOX216. The _solvent_
+box is repeated in all three spatial directions and _solvent_ RESIDUEs
+selected to create a solvent sphere with a radius of _radius_ Angstroms.
+
+The _position_ argument defines where the center of the solvent cap
+is to be placed.   If _position_ is a UNIT, RESIDUE, ATOM, or a LIST
+of UNITs, RESIDUEs, or ATOMs, then the geometric center of the ATOMs
+within the object will be used as the center of the solvent cap sphere.
+If _position_ is a LIST containing three NUMBERs then the _position_
+argument will be treated as a vector that defines the position of
+the solvent cap sphere center.
+
+The optional _closeness_ parameter can be used to control the extent to
+which _solvent_ ATOMs overlap _solute_ ATOMs.  The default value of
+the _closeness_ argument is 1.0, which allows no overlap.  Smaller
+values allow solvent ATOMs to overlap _solute_ ATOMs by (1 - closeness) *
+R*ij, where R*ij is the sum of the Van der Waals radii of solute and
+solvent atoms.  Values greater than 1 enforce a minimum gap between
+solvent and solute of (closeness - 1) * R*ij.
+
+This command modifies the _solute_ UNIT in several ways.  First,
+the UNIT is modified by the addition of _solvent_ RESIDUEs copied
+from the _solvent_ UNIT. Secondly, the cap parameter of the UNIT
+_solute_ is modified to reflect the fact that a solvent cap has been
+created around the solute.
+"
+  (let ((solute (leap.core:lookup-variable solute-name))
+        (solvent (leap.core:lookup-variable solvent-name))
+        (iso-closeness-args (process-iso-closeness iso-closeness)))
+    (apply #'leap:solvate-cap solute solvent position radius iso-closeness-args)))
+
+
 (defun leap-quit ()
   (throw 'repl-done nil))
 
@@ -440,7 +484,104 @@ the STRING is not given then a list of legal STRINGs is provided.
         (format t "Leaving leap~%")
         (core:exit 0))))
 
+(defun leap-add (object-a object-b)
+ "    add a b
 
+      UNIT/RESIDUE/ATOM          _a_
+      UNIT/RESIDUE/ATOM          _b_
+
+Add the object _b_ to the object _a_.   This command is used to place
+ATOMs within RESIDUEs, and RESIDUEs within UNITs.
+"
+  (chem:add-matter object-a object-b))
+
+(defun leap-bond (atom1 atom2 &rest order)
+"    bond atom1 atom2 [ order ]
+
+      ATOM                         _atom1_
+      ATOM                         _atom2_
+      STRING                       _order_
+
+Create a bond between _atom1_ and _atom2_.  Both of these ATOMs must
+be contained by the same UNIT. By default, the bond will be a single
+bond.  By specifying \"S\", \"D\", \"T\", or \"A\" as the optional argument
+_order_ the user can specify a single, double, triple, or aromatic
+bond.
+"
+  (case order
+    (:s (chem:bond-to atom1 atom2 :single-bond))
+    (:d (chem:bond-to atom1 atom2 :double-bond))
+    (:t (chem:bond-to atom1 atom2 :triple-bond))
+    (:a (chem:bond-to atom1 atom2 :aromatic-bond))
+    (otherwise (chem:bond-to atom1 atom2 :single-bond))))
+
+(defun leap-add-h (object)
+"    addH obj
+
+      UNIT                       _obj_
+
+Add missing hydrogens and build external coordinates for _obj_.
+"
+  (cando:build-unbuilt-hydrogens object))
+
+(defun leap-create-atom (name type charge)
+"    variable = createAtom name type charge
+
+      ATOM                         _variable_
+      STRING                       _name_
+      STRING                       _type_
+      NUMBER                       _charge_
+
+Return a new ATOM with _name_, _type_, and _charge_.
+"
+  (let ((atom (chem:make-atom name type)))
+    (chem:set-charge atom charge)
+    atom))
+
+(defun leap-create-residue (name)
+"    variable = createResidue name
+      RESIDUE                      _variable_
+      STRING                       _name_
+
+Return a new and empty RESIDUE with the name _name_.
+"
+  (let ((residue (chem:make-residue name)))
+    residue))
+
+(defun leap-create-unit (name)
+"    variable = createUnit name
+      UNIT                         _variable_
+      STRING                       _name_
+
+Return a new and empty UNIT with the name _name_.
+"
+  (let ((aggregate (chem:make-aggregate name)))
+    aggregate))
+
+(defun leap-translate (aggregate direction)
+"      translate atoms direction
+
+      UNIT/RESIDUE/ATOM            _atoms_
+      LIST                         _direction_
+
+Translate all of the ATOMs within _atoms_ by the vector defined by
+the three NUMBERs in the LIST _ direction_.
+"
+  (check-type direction list)
+  (chem:map-atoms
+   'nil
+   (lambda (atom)
+     (let* ((pos (chem:get-position atom))
+            (x-position (geom:vx pos))
+            (y-position (geom:vy pos))
+            (z-position (geom:vz pos)))
+       (geom:set-all3 pos 
+                      (+ x-position (first direction))
+                      (+ y-position (second direction))
+                      (+ z-position (third direction)))
+       (chem:set-position atom pos)))
+       aggregate))
+            
 
 ;;(defun solvate-box (solute solvent width-list 
 ;;
@@ -503,3 +644,6 @@ Nothing is returned."
        until (eq entry eof)))
 
   )
+
+
+

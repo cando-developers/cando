@@ -122,6 +122,43 @@ the AMBER general type \"X\" is replaced with the LEaP general type \"?\".
   (let ((buffer (list farness farness farness)))
     (leap.solvate:tool-solvate-and-shell solute solvent buffer :closeness closeness :farness farness :shell t :isotropic isotropic)))
 
+(defun solvate-cap (solute solvent position radius &key closeness)
+  (let ((count 0)
+        (x-center 0.0)
+        (y-center 0.0)
+        (z-center 0.0)
+        center)
+    (if (listp position)
+        (cond ((or (chem:is-aggregate (first position))
+                   (chem:is-molecule (first position))
+                   (chem:is-residue (first position))
+                   (chem:is-atom (first position)))
+               (loop for i from 0 below (list-length position) 
+                     for x = (geom:vx (chem:geometric-center (nth i position)))
+                     for y = (geom:vy (chem:geometric-center (nth i position)))
+                     for z = (geom:vz (chem:geometric-center (nth i position)))
+                     do (progn
+                          (setf x-center (+ x-center x)
+                                y-center (+ y-center y)
+                                z-center (+ z-center z))
+                          (incf count)))
+               (setf x-center (/ x-center count)
+                     y-center (/ y-center count)
+                     z-center (/ z-center count))
+               (setf (first center) x-center
+                     (second center) y-center
+                     (third center) z-center))
+              ((numberp (first position))
+               (geom:set-all3 center (first position) (second position) (third position)))
+              (t (error "Position must be AGGREGATE, RESIDUE, MOLECULE, ATOM, LIST of atoms, or LIST of 3 double.")))
+        (if (or (chem:is-aggregate position)
+                (chem:is-molecule position)
+                (chem:is-residue position)
+                (chem:is-atom position))
+            (setf center (chem:geometric-center position))
+            (error "Position must be AGGREGATE, RESIDUE, MOLECULE, ATOM, LIST of atoms, or LIST of 3 double.")))
+    (leap.solvate:tool-solvate-in-sphare solute solvent center radius :closeness closeness)))
+
 (defstruct molecule-info name type force-field-name count)
 
 (defun desc (matter)
@@ -161,6 +198,4 @@ the AMBER general type \"X\" is replaced with the LEaP general type \"?\".
                                               :force-field-name (chem:force-field-name matter)
                                               :count 1)))
       (t (format t "~s~%" matter)))))
-
-
 

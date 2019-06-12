@@ -122,7 +122,8 @@
 (defpackage #:leap.solvate
   (:use #:common-lisp)
   (:export
-   #:tool-solvate-and-shell)
+   #:tool-solvate-and-shell
+   #:tool-solvate-in-sphare)
   )
 
 (defpackage #:leap.add-ions
@@ -187,6 +188,7 @@
    #:solvate-box
    #:solvate-oct
    #:solvate-shell
+   #:solvate-cap
    #:quit
 ;;;   #:mkdir #:set-current-directory #:current-directory #:directory-files
    #:download-pdb
