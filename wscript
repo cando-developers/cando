@@ -18,23 +18,6 @@ def configure(cfg):
     cfg.check_cxx(stlib='boost_graph', cflags='-Wall', uselib_store='BOOST-boost_graph')
     cfg.define("BUILD_EXTENSION",1)   # add this whenever building an extension
 #    cfg.define("DEBUG_ENERGY_FUNCTION",1)
-    fetch_git_revision("src/lisp/modules/quicklisp", "https://github.com/quicklisp/quicklisp-client.git", label="master")
-    fetch_git_revision("src/lisp/modules/quicklisp/local-projects/cl-netcdf","https://github.com/clasp-developers/cl-netcdf.git",label="master")
-    fetch_git_revision("src/lisp/modules/quicklisp/local-projects/static-vectors","https://github.com/sionescu/static-vectors.git",label="master")
-    if (cfg.options.enable_jupyter):
-        print("Pulling in jupyter-lab code")
-        fetch_git_revision("src/lisp/modules/quicklisp/local-projects/trivial-garbage", "https://github.com/clasp-developers/trivial-garbage.git", label="master")
-        fetch_git_revision("src/lisp/modules/quicklisp/local-projects/bordeaux-threads", "https://github.com/clasp-developers/bordeaux-threads.git", label="master")
-        fetch_git_revision("src/lisp/modules/quicklisp/local-projects/cffi", "https://github.com/clasp-developers/cffi.git", label="master")
-        fetch_git_revision("src/lisp/modules/quicklisp/local-projects/usocket", "https://github.com/clasp-developers/usocket.git", label="master")
-        fetch_git_revision("src/lisp/modules/quicklisp/local-projects/uuid", "https://github.com/clasp-developers/uuid.git", label="master")
-        fetch_git_revision("src/lisp/modules/quicklisp/local-projects/cl-jupyter", "https://github.com/drmeister/cl-jupyter.git", label="master")
-        fetch_git_revision("src/lisp/modules/quicklisp/local-projects/cl-ipykernel", "https://github.com/clasp-developers/cl-ipykernel.git", label="master")
-        fetch_git_revision("src/lisp/modules/quicklisp/local-projects/cl-ipywidgets", "https://github.com/clasp-developers/cl-ipywidgets.git", label="master")
-        fetch_git_revision("src/lisp/modules/quicklisp/local-projects/cl-nglview", "https://github.com/clasp-developers/cl-nglview.git", label="master")
-        fetch_git_revision("src/lisp/modules/quicklisp/local-projects/cl-bqplot", "https://github.com/clasp-developers/cl-bqplot.git", label="master")
-        fetch_git_revision("src/lisp/modules/quicklisp/local-projects/trivial-backtrace", "https://github.com/clasp-developers/trivial-backtrace", label="master")
-
 
 class duplicate_executable(waflib.Task.Task):
     def run(self):
@@ -109,7 +92,8 @@ def post_install(ctx):
         prefix = ctx.env.PREFIX
         cando_parts = os.path.split(ctx.ccando_executable.abspath())
         installed_cando = "%s/bin/%s" % (prefix, cando_parts[1])
-        cmd = '%s -e "(sys:quit)"' % installed_cando
+        # cmd = '%s -e "(sys:quit)" 2>&1 | (test -c /dev/fd/3 && tee /dev/fd/3 || cat)' % installed_cando
+        cmd = '%s -e "(sys:quit)" 2>&1 | tee /dev/fd/3' % installed_cando
         print("Executing post-install command %s" % cmd)
         print("NOTE: waf suppresses output and this may sit for 10-20 min compiling with no output (fixing ASAP) - start time: %s" % time.asctime())
         ctx.exec_command(cmd)
@@ -117,7 +101,11 @@ def post_install(ctx):
         leap_parts = os.path.split(ctx.cleap_executable.abspath())
         installed_cleap = "%s/bin/%s" % (prefix, leap_parts[1])
         cleap_symlink = "%s/bin/cleap" % prefix
+        if (os.stat(cando_symlink)):
+            os.unlink(cando_symlink)
         os.symlink(installed_cando,cando_symlink)
+        if (os.stat(cleap_symlink)):
+            os.unlink(cleap_symlink)
         os.symlink(installed_cleap,cleap_symlink)
 
 #            ctx.exec_command('${PREFIX}/bin/icando-boehm')
