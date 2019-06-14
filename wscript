@@ -100,11 +100,17 @@ def post_install(ctx):
         leap_parts = os.path.split(ctx.cleap_executable.abspath())
         installed_cleap = "%s/bin/%s" % (prefix, leap_parts[1])
         cleap_symlink = "%s/bin/cleap" % prefix
-        if (os.stat(cando_symlink)):
-            os.unlink(cando_symlink)
+        try:
+            if (os.stat(cando_symlink)):
+                os.unlink(cando_symlink)
+        except OSError as e:
+            pass
         os.symlink(installed_cando,cando_symlink)
-        if (os.stat(cleap_symlink)):
-            os.unlink(cleap_symlink)
+        try:
+            if (os.stat(cleap_symlink)):
+                os.unlink(cleap_symlink)
+        except OSError as e:
+            pass
         os.symlink(installed_cleap,cleap_symlink)
 
 #            ctx.exec_command('${PREFIX}/bin/icando-boehm')
