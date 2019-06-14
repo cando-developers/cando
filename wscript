@@ -92,8 +92,7 @@ def post_install(ctx):
         prefix = ctx.env.PREFIX
         cando_parts = os.path.split(ctx.ccando_executable.abspath())
         installed_cando = "%s/bin/%s" % (prefix, cando_parts[1])
-        # cmd = '%s -e "(sys:quit)" 2>&1 | (test -c /dev/fd/3 && tee /dev/fd/3 || cat)' % installed_cando
-        cmd = '%s -e "(sys:quit)" 2>&1 | tee /dev/fd/3' % installed_cando
+        cmd = '%s -e "(sys:quit)" 2>&1 | (test -e /dev/fd/3 && tee /dev/fd/3 || cat)' % installed_cando
         print("Executing post-install command %s" % cmd)
         print("NOTE: waf suppresses output and this may sit for 10-20 min compiling with no output (fixing ASAP) - start time: %s" % time.asctime())
         ctx.exec_command(cmd)
@@ -125,11 +124,3 @@ class build_extension(waflib.Task.Task):
         return super(build_extension, self).exec_command(cmd, **kw)
     def keyword(self):
         return 'build extensions using... '
-
-
-def fetch_git_revision(path, url, revision = "", label = "master"):
-    print("Git repository %s  url: %s\n     revision: %s  label: %s\n" % (path, url, revision, label))
-    ret = os.system("./tools-for-build/fetch-git-revision.sh '%s' '%s' '%s' '%s'" % (path, url, revision, label))
-    if ( ret != 0 ):
-        raise Exception("Failed to fetch git url %s" % url)
-    
