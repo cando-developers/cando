@@ -353,6 +353,21 @@ created around the solute.
     (apply #'leap:solvate-cap solute solvent position radius iso-closeness-args)))
 
 
+(defun leap.dir (&optional (path *default-pathname-defaults*))
+  (let* ((name (or (pathname-name path) "*"))
+         (dirpath (make-pathname :name name :defaults path)))
+    (format t "~a~%" (directory dirpath))))
+
+(defun leap.load-sketch (filename)
+  (let ((pathname (leap.core:search-path filename)))
+    (with-open-file (fin (open pathname :direction :input))
+      (chem:make-chem-draw fin :add-hydrogens nil))))
+
+(defun leap.compile-smarts (smarts-string &optional tests)
+  (unless (stringp smarts-string)
+    (error "You must provide a smarts string"))
+  (chem:compile-smarts smarts-string :tests tests))
+    
 (defun leap-quit ()
   (throw 'repl-done nil))
 
@@ -401,8 +416,12 @@ the STRING is not given then a list of legal STRINGs is provided.
       ("listForceFields" . leap.list-force-fields)
       ("loadOff" . load-off)
       ("loadMol2" . cando:load-mol2)
+      ("dir" . leap.dir )
+      ("ls" . leap.dir)
       ("loadPdb" . leap.pdb:load-pdb)
       ("source" . leap.source)
+      ("loadSketch" . leap.load-sketch)
+      ("compileSmarts" . leap.compile-smarts)
       ("setForceField" . leap.set-force-field)
       ("loadSmirnoffParams" . leap.load-smirnoff-params)
       ("loadAmberParams" . leap:load-amber-params)
@@ -469,8 +488,8 @@ the STRING is not given then a list of legal STRINGs is provided.
                        (core:call-with-stack-top-hint
                         (lambda ()
                           (leap.core:evaluate 'list ast leap.core:*leap-env*)))))
-               (error (var) (format t "Error ~a - while evaluating: ~a~%" var code))))))
-
+               (error (var)
+                 (format t "Error ~a - while evaluating: ~a~%" var code))))))
 
 (defun leap ()
   (leap-repl)
