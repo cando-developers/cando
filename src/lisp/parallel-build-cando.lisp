@@ -1,5 +1,8 @@
 (load "~/quicklisp/setup.lisp")
 
+(defparameter *number-of-jobs* 8)
+
+
 (defun optimize-tree (levels)
   (labels ((earlier-p (system level)
              (loop for index from level below (length levels)
@@ -184,21 +187,40 @@
 ;;;
 
 
-(defparameter *number-of-jobs* 8)
-
 (defparameter *load-systems*
-  #(("cando-user")
-    ("cando-jupyter" "charges" "design")
-    ("aromaticity" "cl-nglview" "leap")
-    ("cando" "cl-ipywidgets" "smarts")
-    ("cl-ipykernel" "inet" "language.smarts" "utility")
-    ("cl-jupyter" "closer-mop" "language.smiles" "parser.common-rules.operators"
-     "trivial-http")
-    ("architecture.builder-protocol" "bordeaux-threads" "cl-base64"
-     "parser.common-rules" "pzmq" "trivial-arguments" "trivial-backtrace"
-     "trivial-gray-streams" "usocket" "uuid")
-    ("cffi" "esrap" "let-plus" "split-sequence" "trivial-utf-8")
-    ("anaphora" "babel" "uiop") ("alexandria" "trivial-features")))
+  (("cando-user") ("leap-commands" "leap" "design" "charges" "cando")
+   ("architecture.builder-protocol" "parser.common-rules.operators"
+                                    "parser.common-rules" "esrap" "alexandria" "smirnoff" "amber" "charges"
+                                    "leap" "cando" "aromaticity" "smarts" "inet" "utility")
+   ("let-plus" "split-sequence" "plump" "cl-ppcre" "aromaticity" "alexandria"
+               "smirnoff" "cando" "inet" "utility" "smarts" "architecture.builder-protocol"
+               "parser.common-rules.operators" "parser.common-rules" "language.smarts"
+               "esrap" "trivial-http")
+   ("anaphora" "documentation-utils" "array-utils" "plump" "cando" "aromaticity"
+               "smarts" "inet" "utility" "trivial-http" "language.smarts" "let-plus"
+               "split-sequence" "language.smiles" "architecture.builder-protocol"
+               "parser.common-rules.operators" "parser.common-rules" "esrap" "alexandria"
+               "usocket")
+   ("trivial-indent" "documentation-utils" "array-utils" "inet" "utility"
+                     "smarts" "language.smarts" "trivial-http" "usocket" "language.smiles"
+                     "parser.common-rules.operators" "anaphora" "parser.common-rules"
+                     "architecture.builder-protocol" "esrap" "let-plus" "alexandria"
+                     "split-sequence")
+   ("trivial-indent" "trivial-http" "language.smarts" "language.smiles"
+                     "parser.common-rules.operators" "usocket" "parser.common-rules"
+                     "architecture.builder-protocol" "esrap" "let-plus" "split-sequence"
+                     "anaphora" "alexandria")
+   ("usocket" "language.smiles" "parser.common-rules.operators"
+              "parser.common-rules" "architecture.builder-protocol" "esrap" "let-plus"
+              "split-sequence" "anaphora" "alexandria")
+   ("parser.common-rules" "architecture.builder-protocol" "esrap" "let-plus"
+                          "split-sequence" "anaphora" "alexandria")
+   ("esrap" "let-plus" "split-sequence" "anaphora" "alexandria")
+   ("anaphora" "alexandria")))
+
+(defun quickload-calculate-order ()
+  "Calculate the order of systems to build"
+  (walk-tree "cando-user"))
 
 
 (defun quickload-all () 
