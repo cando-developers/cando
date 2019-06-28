@@ -28,7 +28,7 @@
    (:file "cando-database")
    (:file "pdb")
    (:file "leap")
-   (:file "commands")
+   (:file "commands" :depends-on ("topology" "core"))
    (:file "easy")
                                         ;     (:file "interpreter")
    ))
