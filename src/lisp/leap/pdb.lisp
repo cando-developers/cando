@@ -640,7 +640,7 @@ were defined in the matching UNIT (residue) variable.  This allows
 LEaP to build coordinates for hydrogens and lone pairs which are not
 specified in PDB files.
 "
-  (with-open-file (fin filename :direction :input)
+  (with-open-file (fin (leap.core:search-path filename) :direction :input)
     (let* ((scanner (or scanner
                         (build-sequence (scan-pdb filename :progress progress) system)))
            (serial-to-atoms (connect-atoms-hash-table scanner)))
