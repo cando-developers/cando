@@ -79,12 +79,17 @@
    builder
    (lambda (recurse relation relation-args node kind relations
             &key name value &allow-other-keys)
-     (declare (ignore relation relation-args node relations))
+     (declare (ignore relation relation-args relations))
      (case kind
        (:literal
         value)
        (:list
         (first (funcall recurse :relations '(:element))))
+       (:s-expr
+        (destructuring-bind (&key s-expr value bounds)
+            node
+          (format t "Evaluating ~s~%" value)
+          (eval value)))
        (:function
         (apply (function-lookup name environment)
                (first (funcall recurse :relations '(:argument)))))
