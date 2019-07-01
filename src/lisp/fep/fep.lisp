@@ -7,6 +7,9 @@
 (defun make-fep ()
   (make-instance 'fep:fep-calculation))
 
+(defun add-receptor(fep receptor)
+  (pushnew receptor (receptors fep)))
+
 (defun version ()
   *version*)
 

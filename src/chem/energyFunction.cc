@@ -1315,8 +1315,6 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatterWithAtomTypes(Matter_sp matte
     this->_AtomTable->set_firstSolventMoleculeNSPSOL(first_solvent_molecule_nspsol);
     this->_AtomTable->set_finalSoluteResidueIPTRES(final_solute_residue_iptres);
     this->_AtomTable->set_totalNumberOfMoleculesNSPM(number_of_molecules_nspm);
-  } else {
-    printf("%s:%d  NO SOLVENT\n", __FILE__, __LINE__);
   }
   {
     core::T_sp nonbondForceField = this->_AtomTable->nonbondForceFieldForAggregate();

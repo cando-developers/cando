@@ -727,7 +727,6 @@ core::T_sp mol2Read(Mol2File& fIn)
       loop.loopTopGoal(agg,MOLECULES);
       while ( loop.advanceLoopAndProcess() ) {
         m = loop.getMolecule();
-        printf("%s:%d Looking at molecule %s type: %s\n", __FILE__, __LINE__, _rep_(m).c_str(), _rep_(m->molecule_type()).c_str());
         if (m->molecule_type() == kw::_sym_solvent) {
           size_t numResidues = m->contentSize();
           if (numResidues==1) {
@@ -740,11 +739,7 @@ core::T_sp mol2Read(Mol2File& fIn)
         }
       }
     GOT_SOLVENT:
-      printf("%s:%d The solvent name is %s\n", __FILE__, __LINE__, _rep_(solventName).c_str());
       boundingBox = agg->getPropertyOrDefault(kw::_sym_bounding_box,_Nil<core::T_O>());
-      if (boundingBox.notnilp()) {
-        printf("%s:%d The bounding box is %s\n", __FILE__, __LINE__, _rep_(boundingBox).c_str());
-      }
     }
 
     if (boundingBox.notnilp()) {

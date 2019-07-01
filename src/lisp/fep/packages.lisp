@@ -35,6 +35,7 @@
   (:shadowing-import-from :chem "ATOM")
   (:export
    #:make-fep
+   #:add-receptor
    #:fep-calculation
    #:job
    #:load-chem-draw-fep

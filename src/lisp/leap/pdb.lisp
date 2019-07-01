@@ -556,7 +556,6 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
                              (setf (current-residue reader) cur-res)
                              (let ((prev-res (previous-residue reader)))
                                (chem:add-matter (ensure-molecule reader chain-id) cur-res)
-                               (format *debug-io* "Added residue ~a to molecule ~a~%" cur-res (ensure-molecule reader chain-id))
                                (when prev-res
                                  (chem:connect-residues prev-top
                                                         prev-res
@@ -692,7 +691,6 @@ specified in PDB files.
           (cando:maybe-join-molecules-in-aggregate aggregate)
           (cando:maybe-split-molecules-in-aggregate aggregate)
           (classify-molecules aggregate system)
-          (format *debug-io* "molecule name ~a~%" (chem:content-at aggregate 0))
           (let ((name-only (pathname-name (pathname filename))))
             (chem:set-name aggregate (intern name-only *package*)))
           (values aggregate scanner))))))
