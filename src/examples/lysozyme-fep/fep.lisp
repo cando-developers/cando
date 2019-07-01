@@ -10,7 +10,7 @@
 lysozyme = loadPdb "181L_mod.pdb"
 (cando:build-unbuilt-hydrogens |lysozyme|)
 (simple-build-unbuilt-atoms |lysozyme|)
-(pushnew |lysozyme| (fep:receptors |feps|))
+(fep:add-receptor |feps| |lysozyme|)
 loadOff phen.lib
 loadOff benz.lib
 ligs = loadPdb bnz_phn.pdb

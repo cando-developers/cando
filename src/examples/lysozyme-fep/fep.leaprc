@@ -1,3 +1,4 @@
+(setf *standard-output* (open "/tmp/out.txt" :direction :output :if-exists :supersede))
 (setup-default-paths)
 (load-atom-type-rules "ATOMTYPE_GFF.DEF")
 source leaprc.ff14SB.redq
@@ -24,4 +25,5 @@ worklist = (fep:generate-jobs |feps|)
 (with-open-file (sout "/tmp/graph.dot" :direction :output) (fepdot:draw-graph-stream (list |worklist|) sout))
 (ext:system "dot -Tpdf -O /tmp/graph.dot")
 (ext:system "open -n /tmp/graph.dot.pdf")
+(close *standard-output*)
 quit
