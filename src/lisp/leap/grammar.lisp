@@ -158,8 +158,8 @@
   (:lambda (chars)
     (let ((str (esrap:text chars)))
       (if (position #\. str)
-          str
-          (intern (esrap:text chars) :keyword)))))
+          str ; This is for filenames with no double quotes
+          (intern str *package*)))))
 
 (defrule/s keyword
     (and #\: (+ (character-ranges (#\a #\z) (#\A #\Z) (#\0 #\9) #\. #\_)))
@@ -214,8 +214,7 @@
   (handler-case
       ;; When successful, READ-FROM-STRING returns the read object and
       ;; the position up to which TEXT has been consumed.
-      (let ((*package* (or (find-package '#:leap-user)
-                           (make-package '#:leap-user :use '(#:common-lisp)))))
+      (let ((*package* (find-package :cando-user)))
         (read-from-string text t nil :start position :end end))
     ;; When READ-FROM-STRING fails, indicate the parse failure,
     ;; including CONDITION as explanation.

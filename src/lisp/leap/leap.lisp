@@ -21,7 +21,8 @@
    nil
    (lambda (molecule)
      (let* ((force-field-name (chem:force-field-name molecule))
-            (combined-force-field (chem:find-force-field force-field-name)))
+            (combined-force-field (chem:find-force-field force-field-name))
+            (chem:*current-rings* (chem:identify-rings molecule)))
        (chem:assign-force-field-types combined-force-field molecule)))
    matter))
 
@@ -76,7 +77,7 @@ the AMBER general type \"X\" is replaced with the LEaP general type \"?\".
                  (chem:read-parameters parmreader fin leap:*amber-system*)
                  (chem:get-force-field parmreader)))))
     (chem:set-title ff filename)
-    (format t "Adding force field ~a to ~a~%" ff force-field)
+    (format *standard-output* "Adding force field ~a to ~a~%" filename force-field)
     (leap.core:add-force-field-or-modification ff
                                                :force-field-name force-field
                                                :force-field-info filename

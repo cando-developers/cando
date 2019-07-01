@@ -54,6 +54,7 @@
    #:leap
    #:leap-repl
    #:leap-repl-then-exit
+   #:load-sketch
    ))
 
 (defpackage #:leap.topology
@@ -161,7 +162,10 @@
                 #:add-pdb-res-map
                 #:add-pdb-atom-map
                 )
+  (:import-from :leap.commands
+                #:load-sketch)
   (:export
+   #:load-sketch
    #:load-off
    #:process-command-line-options
    #:setup-amber-paths

@@ -643,41 +643,58 @@ void	Loop::advanceLoop()
 }
 
 
+
+
 #define ARGS_map_molecules "(result-type func matter)"
 #define DECL_map_molecules ""
 #define DOCS_map_molecules "Loop over molecules, invoke function for each molecule"
 CL_DEFUN core::T_sp chem__map_molecules(core::Symbol_sp result_type, core::T_sp funcDesig, Matter_sp m )
 {
-  if (!gc::IsA<Aggregate_sp>(m)) {
-    TYPE_ERROR(m,_sym_Aggregate_O);
-  }
-  core::Function_sp func = core::coerce::functionDesignator(funcDesig);
-  Loop l(m,MOLECULES);
-  Molecule_sp a;
-  if ( result_type.nilp() ) {
-    while (l.advanceLoopAndProcess()) {
-      a = l.getMolecule();
-      core::eval::funcall(func,a);
+  if (gc::IsA<Molecule_sp>(m)) {
+    core::Function_sp func = core::coerce::functionDesignator(funcDesig);
+    if ( result_type.nilp() ) {
+      core::eval::funcall(func,m);
+      return _Nil<core::T_O>(); 
+    } else if ( result_type == cl::_sym_list ) {
+      ql::list res;
+      res << core::eval::funcall(func,m);
+      return res.cons();
+    } else if ( result_type == cl::_sym_vector ) {
+      core::ComplexVector_T_sp vo = core::ComplexVector_T_O::make(16,_Nil<core::T_O>(),core::clasp_make_fixnum(0));
+      vo->vectorPushExtend(core::eval::funcall(func,m));
+      return vo;
     }
-    return _Nil<core::T_O>(); 
-  }
-  if ( result_type == cl::_sym_list ) {
-    ql::list res;
-    while (l.advanceLoopAndProcess()) {
-      a = l.getMolecule();
-      res << core::eval::funcall(func,a);
+    SIMPLE_ERROR(BF("Illegal return type: %s") % _rep_(result_type));
+  } else if (gc::IsA<Aggregate_sp>(m)) {
+    core::Function_sp func = core::coerce::functionDesignator(funcDesig);
+    Loop l(m,MOLECULES);
+    Molecule_sp a;
+    if ( result_type.nilp() ) {
+      while (l.advanceLoopAndProcess()) {
+        a = l.getMolecule();
+        core::eval::funcall(func,a);
+      }
+      return _Nil<core::T_O>(); 
     }
-    return res.cons();
-  }
-  if ( result_type == cl::_sym_vector ) {
-    core::ComplexVector_T_sp vo = core::ComplexVector_T_O::make(16,_Nil<core::T_O>(),core::clasp_make_fixnum(0));
-    while (l.advanceLoopAndProcess()) {
-      a = l.getMolecule();
-      vo->vectorPushExtend(core::eval::funcall(func,a));
+    if ( result_type == cl::_sym_list ) {
+      ql::list res;
+      while (l.advanceLoopAndProcess()) {
+        a = l.getMolecule();
+        res << core::eval::funcall(func,a);
+      }
+      return res.cons();
     }
-    return vo;
+    if ( result_type == cl::_sym_vector ) {
+      core::ComplexVector_T_sp vo = core::ComplexVector_T_O::make(16,_Nil<core::T_O>(),core::clasp_make_fixnum(0));
+      while (l.advanceLoopAndProcess()) {
+        a = l.getMolecule();
+        vo->vectorPushExtend(core::eval::funcall(func,a));
+      }
+      return vo;
+    }
+    SIMPLE_ERROR(BF("Illegal return type: %s") % _rep_(result_type));
   }
-  SIMPLE_ERROR(BF("Illegal return type: %s") % _rep_(result_type));
+  TYPE_ERROR(m,_sym_Aggregate_O);
 };
 
 #define ARGS_map_residues "(result-type func matter)"
@@ -685,36 +702,51 @@ CL_DEFUN core::T_sp chem__map_molecules(core::Symbol_sp result_type, core::T_sp 
 #define DOCS_map_residues "Loop over residues, invoke function for each residue"
 CL_DEFUN core::T_sp chem__map_residues(core::Symbol_sp result_type, core::T_sp funcDesig, Matter_sp m)
 {
-  if (!(gc::IsA<Aggregate_sp>(m)||gc::IsA<Molecule_sp>(m))) {
-    TYPE_ERROR(m,core::Cons_O::createList(cl::_sym_or,_sym_Aggregate_O,_sym_Molecule_O));
-  }
-  core::Function_sp func = core::coerce::functionDesignator(funcDesig);
-  Loop l(m,RESIDUES);
-  Residue_sp a;
-  if ( result_type.nilp() ) {
-    while (l.advanceLoopAndProcess()) {
-      a = l.getResidue();
-      core::eval::funcall(func,a);
+  if (gc::IsA<Residue_sp>(m)) {
+    core::Function_sp func = core::coerce::functionDesignator(funcDesig);
+    if ( result_type.nilp() ) {
+      core::eval::funcall(func,m);
+      return _Nil<core::T_O>(); 
+    } else if ( result_type == cl::_sym_list ) {
+      ql::list res;
+      res << core::eval::funcall(func,m);
+      return res.cons();
+    } else if ( result_type == cl::_sym_vector ) {
+      core::ComplexVector_T_sp vo = core::ComplexVector_T_O::make(16,_Nil<core::T_O>(),core::clasp_make_fixnum(0));
+      vo->vectorPushExtend(core::eval::funcall(func,m));
+      return vo;
     }
-    return _Nil<core::T_O>(); 
-  }
-  if ( result_type == cl::_sym_list ) {
-    ql::list res;
-    while (l.advanceLoopAndProcess()) {
-      a = l.getResidue();
-      res << core::eval::funcall(func,a);
+    SIMPLE_ERROR(BF("Illegal return type: %s") % _rep_(result_type));
+  } else if (gc::IsA<Aggregate_sp>(m)||gc::IsA<Molecule_sp>(m)) {
+    core::Function_sp func = core::coerce::functionDesignator(funcDesig);
+    Loop l(m,RESIDUES);
+    Residue_sp a;
+    if ( result_type.nilp() ) {
+      while (l.advanceLoopAndProcess()) {
+        a = l.getResidue();
+        core::eval::funcall(func,a);
+      }
+      return _Nil<core::T_O>(); 
     }
-    return res.cons();
-  }
-  if ( result_type == cl::_sym_vector ) {
-    core::ComplexVector_T_sp vo = core::ComplexVector_T_O::make(16,_Nil<core::T_O>(),core::clasp_make_fixnum(0));
-    while (l.advanceLoopAndProcess()) {
-      a = l.getResidue();
-      vo->vectorPushExtend(core::eval::funcall(func,a));
+    if ( result_type == cl::_sym_list ) {
+      ql::list res;
+      while (l.advanceLoopAndProcess()) {
+        a = l.getResidue();
+        res << core::eval::funcall(func,a);
+      }
+      return res.cons();
     }
-    return vo;
+    if ( result_type == cl::_sym_vector ) {
+      core::ComplexVector_T_sp vo = core::ComplexVector_T_O::make(16,_Nil<core::T_O>(),core::clasp_make_fixnum(0));
+      while (l.advanceLoopAndProcess()) {
+        a = l.getResidue();
+        vo->vectorPushExtend(core::eval::funcall(func,a));
+      }
+      return vo;
+    }
+    SIMPLE_ERROR(BF("Illegal return type: %s") % _rep_(result_type));
   }
-  SIMPLE_ERROR(BF("Illegal return type: %s") % _rep_(result_type));
+  TYPE_ERROR(m,core::Cons_O::createList(cl::_sym_or,_sym_Aggregate_O,_sym_Molecule_O));
 };
 
 
@@ -723,37 +755,51 @@ CL_DEFUN core::T_sp chem__map_residues(core::Symbol_sp result_type, core::T_sp f
 #define DOCS_map_atoms "Loop over atoms, invoke function for each atom"
 CL_DEFUN core::T_sp chem__map_atoms(core::Symbol_sp result_type, core::T_sp funcDesig, Matter_sp m)
 {
-  if (!(gc::IsA<Aggregate_sp>(m)||gc::IsA<Molecule_sp>(m)||gc::IsA<Residue_sp>(m))) {
-    TYPE_ERROR(m,core::Cons_O::createList(cl::_sym_or,_sym_Aggregate_O,_sym_Molecule_O,_sym_Residue_O));
-  }
   core::Function_sp func = core::coerce::functionDesignator(funcDesig);
-  Loop l(m,ATOMS);
-  Atom_sp a;
-  if ( result_type.nilp() ) {
-    while (l.advanceLoopAndProcess()) {
-      a = l.getAtom();
-      core::eval::funcall(func,a);
+  if (gc::IsA<Atom_sp>(m)) {
+    if ( result_type.nilp() ) {
+      core::eval::funcall(func,m);
+      return _Nil<core::T_O>(); 
+    } else if ( result_type == cl::_sym_list ) {
+      ql::list res;
+      res << core::eval::funcall(func,m);
+      return res.cons();
+    } else if ( result_type == cl::_sym_vector ) {
+      core::ComplexVector_T_sp vo = core::ComplexVector_T_O::make(16,_Nil<core::T_O>(),core::clasp_make_fixnum(0));
+      vo->vectorPushExtend(core::eval::funcall(func,m));
+      return vo;
     }
-    return _Nil<core::T_O>(); 
-  }
-  if ( result_type == cl::_sym_list ) {
-    ql::list res;
-    while (l.advanceLoopAndProcess()) {
-      a = l.getAtom();
-      res << core::eval::funcall(func,a);
+    SIMPLE_ERROR(BF("Illegal return type: %s") % _rep_(result_type));
+  } else if ((gc::IsA<Aggregate_sp>(m)||gc::IsA<Molecule_sp>(m)||gc::IsA<Residue_sp>(m))) {
+    Loop l(m,ATOMS);
+    Atom_sp a;
+    if ( result_type.nilp() ) {
+      while (l.advanceLoopAndProcess()) {
+        a = l.getAtom();
+        core::eval::funcall(func,a);
+      }
+      return _Nil<core::T_O>(); 
     }
-    return res.cons();
-  }
-  if ( result_type == cl::_sym_vector ) {
-    core::ComplexVector_T_sp vo = core::ComplexVector_T_O::make(16,_Nil<core::T_O>(),core::clasp_make_fixnum(0));
-    while (l.advanceLoopAndProcess()) {
-      a = l.getAtom();
-      vo->vectorPushExtend(core::eval::funcall(func,a));
+    if ( result_type == cl::_sym_list ) {
+      ql::list res;
+      while (l.advanceLoopAndProcess()) {
+        a = l.getAtom();
+        res << core::eval::funcall(func,a);
+      }
+      return res.cons();
     }
-    return vo;
-  }
-  SIMPLE_ERROR(BF("Illegal return type: %s") % _rep_(result_type));
-};
+    if ( result_type == cl::_sym_vector ) {
+      core::ComplexVector_T_sp vo = core::ComplexVector_T_O::make(16,_Nil<core::T_O>(),core::clasp_make_fixnum(0));
+      while (l.advanceLoopAndProcess()) {
+        a = l.getAtom();
+        vo->vectorPushExtend(core::eval::funcall(func,a));
+      }
+      return vo;
+    }
+    SIMPLE_ERROR(BF("Illegal return type: %s") % _rep_(result_type));
+  };
+  TYPE_ERROR(m,core::Cons_O::createList(cl::_sym_or,_sym_Aggregate_O,_sym_Molecule_O,_sym_Residue_O));
+}
 
 #define DOCS_map_atoms "Loop over bonds, invoke function for each bond passing the two atoms and the bond order"
 CL_DEFUN core::T_sp chem__map_bonds(core::Symbol_sp result_type, core::T_sp funcDesig, Matter_sp m)

@@ -9,7 +9,7 @@
       (gethash (cons name context) *map-pdb-names-to-topology-names*)
     (if foundp
         (cando:lookup-topology topology-name t)
-        (let ((topology (cando:lookup-topology name nil)))
+        (let ((topology (cando:lookup-topology (intern (string name)) nil)))
           topology))))
 
 (defun add-pdb-res-map (mappings)
@@ -30,11 +30,11 @@ for the appropriate terminal residue.  The `leaprc' file included with
 the distribution contains default mappings."
   (unless (core:proper-list-p mappings)
     (error "You must provide a list of lists of mappings"))
-  (labels ((ensure-symbol (name)
-             (if (symbolp name) name (intern name :keyword)))
+  (labels ((ensure-symbol (name &optional (package :keyword))
+             (if (symbolp name) name (intern name package)))
            (do-add-map (res-name term-sym var-name)
              (let* ((res-sym (ensure-symbol res-name))
-                    (var-sym (ensure-symbol var-name))
+                    (var-sym (ensure-symbol var-name *package*))
                     (key (cons res-sym term-sym))
                     (var-old (gethash key *map-pdb-names-to-topology-names*)))
                (when (and var-old (not (eq var-old var-sym)))
@@ -694,7 +694,7 @@ specified in PDB files.
           (classify-molecules aggregate system)
           (format *debug-io* "molecule name ~a~%" (chem:content-at aggregate 0))
           (let ((name-only (pathname-name (pathname filename))))
-            (chem:set-name aggregate (intern name-only :keyword)))
+            (chem:set-name aggregate (intern name-only *package*)))
           (values aggregate scanner))))))
 
 (defgeneric classify-molecules (aggregate system))

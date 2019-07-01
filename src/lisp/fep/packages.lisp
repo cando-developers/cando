@@ -34,12 +34,15 @@
   (:use #:common-lisp)
   (:shadowing-import-from :chem "ATOM")
   (:export
+   #:make-fep
+   #:fep-calculation
    #:job
    #:load-chem-draw-fep
    #:calculation
    #:jobs
    #:top-directory
    #:generate-files
+   #:generate-jobs
    #:stage
    #:receptors
    #:version
@@ -86,6 +89,7 @@
    #:check-am1-calculations
    #:read-am1-charges
    #:calculate-am1-bcc-charges
+   #:build-initial-jobs
    #:complex
    #:sqm-job-mixin
    #:amber-job-mixin

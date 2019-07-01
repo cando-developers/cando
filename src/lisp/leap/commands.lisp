@@ -41,8 +41,9 @@
 
 
 (defun log-file (filename)
+  #+(or)(format t "log-file doesn't do anything at the moment - to work with cl4py~%")
   (let* ((log-stream (open filename :direction :output :if-exists :supersede))
-         (broadcast (make-broadcast-stream ext:+process-standard-output+ log-stream)))
+         (broadcast (make-broadcast-stream cl:*standard-output* #+(or)ext:+process-standard-output+ log-stream)))
     (setf cl:*standard-output* broadcast)))
   
 (defun leap.log-file (entry)
@@ -73,7 +74,6 @@ Print a description of the object.
   (leap.core:lookup-variable name))
 
 (defun leap.desc (entry)
-  (valid-arguments entry 1)
   (leap:desc entry))
 
 (defun leap.add-pdb-res-map (entry)
@@ -138,11 +138,8 @@ that is searched whenever parameters are required.
     (loop for ff in ffs
           do (format t "~s ~a~%" (car ff) (cdr ff)))))
 
-
-
 (defun leap.source (entry)
-  (valid-arguments entry 1)
-  (let* ((filename (leap.core:ensure-path (second entry))))
+  (let* ((filename (leap.core:ensure-path entry)))
     (leap:source filename)))
 
 
@@ -358,10 +355,14 @@ created around the solute.
          (dirpath (make-pathname :name name :defaults path)))
     (format t "~a~%" (directory dirpath))))
 
+(defun load-sketch (filename)
+  (handler-bind ((warning #'muffle-warning))
+    (let ((pathname (leap.core:search-path filename)))
+      (with-open-file (fin (open pathname :direction :input))
+        (chem:make-chem-draw fin :add-hydrogens nil)))))
+
 (defun leap.load-sketch (filename)
-  (let ((pathname (leap.core:search-path filename)))
-    (with-open-file (fin (open pathname :direction :input))
-      (chem:make-chem-draw fin :add-hydrogens nil))))
+  (load-sketch filename))
 
 (defun leap.compile-smarts (smarts-string &optional tests)
   (unless (stringp smarts-string)
@@ -469,21 +470,19 @@ the STRING is not given then a list of legal STRINGs is provided.
   (format t "Welcome to Cando-LEaP!~%")
   (clear-input)
   (catch 'repl-done
-    (loop for x below 10
-          for code = (progn
+    (loop for code = (progn
                        (format t "> ") (finish-output)
-                       (read-line *standard-input* nil :eof))
+                       (let ((line (read-line *standard-input* nil :eof)))
+                         line))
           do (handler-case
                  (if (eq code :eof)
                      (progn
-                       (clear-input *standard-input*)
-                       (format t "Clearing input~%"))
+                       (clear-input *standard-input*))
                      (let ((ast (architecture.builder-protocol:with-builder
                                     ('list)
                                   (handler-bind ((esrap:esrap-parse-error
                                                    (lambda (c)
-                                                     (format t "Encountered error ~s while parsing ~s~%" c code)
-                                                     (break "Encountered error ~s while parsing ~s" c code))))
+                                                     (format t "Encountered error ~s while parsing ~s~%" c code))))
                                     (esrap:parse 'leap.parser:leap code)))))
                        (core:call-with-stack-top-hint
                         (lambda ()

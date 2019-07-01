@@ -16,12 +16,12 @@
   :serial t
   :components
   ((:file "packages")
-   (:file "core")
    (:file "antechamber-type-definition-parser")
    (:file "chem")
+   (:file "topology")
    (:file "grammar")
    (:file "off")
-   (:file "topology")
+   (:file "core")
    (:file "solvate")
    (:file "add-ions")
    (:file "set-box")

@@ -50,31 +50,32 @@
 (defun (setf function-lookup) (new-value name environment)
   (setf (gethash name (%functions environment)) new-value))
 
-(defun lookup-variable* (name environment &optional errorp error-value)
-  "Lookup a variable in the given environment"
-  (let ((topology (cando:lookup-topology name nil)))
-    (if topology
-        topology
-        (or (gethash name (%variables environment))
-            (if errorp
-                (error "The variable ~S is not defined" name)
-                error-value)))))
 
 (defun all-variables ()
   (let (vars)
-    (maphash (lambda (k v) (push k vars)) (%variables *leap-env*))
-    (flet ((accumulate-topologys (top)
-             (push (chem:get-name top) vars)))
-      (cando:walk-topologys #'accumulate-topologys))
+    (do-symbols (sym *package*)
+      (when (eq (symbol-package sym) *package*)
+        (push sym vars)))
     (let ((sorted-vars (sort vars #'string<)))
       sorted-vars)))
 
+(defun lookup-variable* (name environment &optional errorp error-value)
+  "Lookup a variable in the given environment"
+  (or (if (ext:specialp name)
+          (symbol-value name)
+          nil)
+      (if errorp
+          (error "The variable ~S is not defined" name)
+          error-value)))
+
 (defun (setf lookup-variable*) (new-value name environment)
-  (if (typep new-value 'chem:topology)
-      (cando:register-topology name new-value)
-      (setf (gethash name (%variables environment)) new-value)))
+  (when (typep new-value 'chem:topology)
+    (cando:register-topology name new-value))
+  (core:*make-special name)
+  (set name new-value))
 
 (defun evaluate (builder ast environment)
+  ;;  (format t "evaluating: ~s~%" ast)
   (architecture.builder-protocol:walk-nodes
    builder
    (lambda (recurse relation relation-args node kind relations
@@ -88,7 +89,6 @@
        (:s-expr
         (destructuring-bind (&key s-expr value bounds)
             node
-          (format t "Evaluating ~s~%" value)
           (eval value)))
        (:function
         (apply (function-lookup name environment)

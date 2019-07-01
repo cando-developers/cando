@@ -4,6 +4,9 @@
 
 (in-package :fep)
 
+(defun make-fep ()
+  (make-instance 'fep:fep-calculation))
+
 (defun version ()
   *version*)
 

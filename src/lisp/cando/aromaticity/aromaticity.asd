@@ -5,7 +5,7 @@
     :version "0.0.1"
     :author "Shiho Nagai <>"
     :licence "LGPL-2.0"
-    :depends-on (:smarts)
+    :depends-on (:smarts :cando)
     :serial t
     :components
     ((:file "packages")

@@ -454,7 +454,7 @@ CL_DEFMETHOD uint Atom_O::numberOfOpenValence()
       maxHydrogens = 2+this->getIonization();
       break;
   default:
-      printf("%s:%d createImplicitHydrogenNames skipping atom: %s element: %s\n", __FILE__, __LINE__, _rep_(this->getName()).c_str(), this->getElementAsString().c_str());
+      //printf("%s:%d createImplicitHydrogenNames skipping atom: %s element: %s\n", __FILE__, __LINE__, _rep_(this->getName()).c_str(), this->getElementAsString().c_str());
       return 0;
   }
   uint totalBondOrder = this->totalBondOrder();
