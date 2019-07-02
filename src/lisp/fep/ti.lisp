@@ -7,17 +7,18 @@
 ;;; What is this for????
 (defparameter *vdw-bonded* "ifsc=1, scmask1=':1@H6', scmask2=':2@O1,H6'")
 
+(defun fep-charge (feps-pathname output-pathname)
+  (defparameter *feps* (fep:load-feps feps-pathname))
+  (read-am1-charges *feps*)
+  (calculate-am1-bcc-charges *feps*)
+  (fep:save-feps *feps* output-pathname))
+
 (defparameter *cando-charge-script*
   (let ((*package* (find-package :keyword)))
     (cl:format nil "~{~s~%~}"
                '((ql:quickload :fep)
-                 (in-package :cando-user)
-                 (defparameter *feps* (fep:load-feps ":%FEPS%"))
-                 (read-am1-charges *feps*)
-                 (calculate-am1-bcc-charges *feps*)
-                 (fep:save-feps *feps* ":%OUTPUT%")
-                 (core:exit)
-                 ))))
+                 (fep::fep-charge ":%FEPS%" ":%OUTPUT%")
+                 (core:exit)))))
 
 
 (defparameter *solvate-addion-morph-side-script*
