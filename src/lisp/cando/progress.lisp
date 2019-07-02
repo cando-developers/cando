@@ -43,7 +43,7 @@
               (stars (make-string (max 0 star-width) :initial-element (progress-bar-bar-character bar)))
               (lines (make-string (max 0 (- (progress-bar-width bar) star-width)) :initial-element #\.)))
          (format t "~C~va [~a~a] ETC: ~a"
-                 (if (member :interactive *features) #\return #\space)
+                 (if (member :interactive *features*) #\return #\space)
                  (progress-bar-message-width bar)
                  (progress-bar-message bar)
                  stars
