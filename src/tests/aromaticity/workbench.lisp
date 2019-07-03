@@ -49,6 +49,7 @@ with those atoms with that aromaticity-information."
 (chem:fill-in-implicit-hydrogens *agg*)
 (set-stereoisomer-func (cando:gather-stereocenters *agg*) (lambda (c) :R))
 (defparameter *mol* (chem:content-at *agg* 0))
+(set-force-field *mol* :default)
 (set-force-field *mol* :smirnoff)
 (let ((chem:*verbose* nil))
   (save-amber-parm *agg* "/tmp/test.parm" "/tmp/test.crd"))

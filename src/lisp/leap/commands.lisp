@@ -598,8 +598,55 @@ the three NUMBERs in the LIST _ direction_.
                       (+ y-position (second direction))
                       (+ z-position (third direction)))
        (chem:set-position atom pos)))
-       aggregate))
-            
+   aggregate))
+
+(defun leap-copy (object)
+"    newvariable = copy variable
+
+      object                       _newvariable_
+      object                       _variable_
+
+Create an exact duplicate of the object _variable_. Changing the object
+_variable_ will not affect the object _newvariable_.
+This is in contrast to the situation created by \"newvariable = variable\"
+in which both names reference the same object.
+"
+  (let ((new-object (chem:matter-copy object)))
+    new-object))
+
+(defun leap-center (container)
+"    center container
+      UNIT/RESIDUE/ATOM          _container_
+
+Display the coordinates of the geometric center of the ATOMs within
+_container_.
+"
+  (let ((position (chem:geometric-center container)))
+    (format t "The center is at: ~,2f, ~,2f, ~,2f~%" (geom:vx position) (geom:vy position) (geom:vz position))))
+
+(defun leap-measure-geom (atom1 atom2 &optional atom3 atom4)
+"    measureGeom atom1 atom2 [ atom3 [ atom4 ] ]
+      ATOM                _atom1_ _atom2_ _atom3_ _atom4_
+
+Measure the distance, angle, or torsion between two, three, or four ATOMs,
+respectively.
+"
+  (let ((atom1-position (chem:get-position atom1))
+        (atom2-position (chem:get-position atom2)))
+    (if atom3
+        (let ((atom3-position (chem:get-position atom3)))
+          (if atom4
+              (let ((atom4-position (chem:get-position atom4)))
+                (format t "Torsion angle: ~,2f degrees~%"
+                        (* 57.2958
+                           (geom:calculate-dihedral atom1-position atom2-position atom3-position atom4-position))))
+              (format t  "Angle: ~,2f degrees~%"
+                      (* 57.2958 (geom:calculate-angle atom1-position atom2-position atom3-position)))))
+        (format t "Distance: ~,2f angstroms~%"
+                (geom:calculate-distance
+                 atom1-position atom2-position)))))
+
+
 
 ;;(defun solvate-box (solute solvent width-list 
 ;;
