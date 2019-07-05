@@ -56,3 +56,8 @@ git pull origin master
 3. Rebuild and reinstall as above.
 
 Note 1. Clasp can be configured by copying the wscript.config.template to wscript.config and editing it. The most important option is the LLVM_CONFIG_BINARY - it is the path to the ```llvm-config``` executable for llvm6.  Once clasp has that it can find the rest of llvm.  *On macOS and Linux you must download llvm6 using homebrew or some other package manager. Clasp uses a lot of advanced features of the llvm library.*
+
+Example wscript.config
+```
+LLVM_CONFIG_BINARY="/usr/local/opt/llvm/bin/llvm-config"
+```
