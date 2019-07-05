@@ -14,28 +14,23 @@ Cando needs [Clasp](https://github.com/clasp-developers/clasp.git) and Clasp has
 git clone https://github.com/clasp-developers/clasp.git
 ```
 
-2. Enter the clasp directory and add Cando to Clasp:
+2. Come up with a wscript.config as described below.
 
+3. Maybe read 
 ```
-cd clasp
-./waf add_cando
+cat ./build-more-systems.README
 ```
-
-3. Configure Cando with the installation directory. We use ```/opt/clasp``` for example. (Note 1) 
-
-```
-./waf configure --prefix=/opt/clasp
-```
+which allows you to control some build parameters.  The default is probably what you want, which is to build Cando and install everything into /opt/clasp, in which case you do nothing.
 
 4. Build and install Cando.
 
 ```
-./waf build_cboehm install_cboehm
+./build-more-systems.sh configure build_cboehm install_cboehm
 ```
 
 5. Run Cando or run the leap emulator.
 ```
-setenv AMBERHOME=/path/to/amber
+setenv AMBERHOME=/opt/amber # adjust as neede
 
 /opt/clasp/bin/cando
 
@@ -58,10 +53,6 @@ git pull origin master
 (cd extensions/cando && git pull origin master)
 ```
 
-3. Build and install everything.
-
-```
-./waf build_cboehm
-```
+3. Rebuild and reinstall as above.
 
 Note 1. Clasp can be configured by copying the wscript.config.template to wscript.config and editing it. The most important option is the LLVM_CONFIG_BINARY - it is the path to the ```llvm-config``` executable for llvm6.  Once clasp has that it can find the rest of llvm.  *On macOS and Linux you must download llvm6 using homebrew or some other package manager. Clasp uses a lot of advanced features of the llvm library.*
