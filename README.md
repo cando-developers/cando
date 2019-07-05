@@ -14,7 +14,7 @@ Cando needs [Clasp](https://github.com/clasp-developers/clasp.git) and Clasp has
 git clone https://github.com/clasp-developers/clasp.git
 ```
 
-2. Come up with a wscript.config as described below.
+2. Come up with a wscript.config as described below. (See Note 1)
 
 3. Maybe read 
 ```
