@@ -219,10 +219,12 @@ used to provide parameters.  There is one default force-field called :default.")
 (defun ensure-path (obj)
   "Convert obj into a pathname and search the amber path list for the file and return it"
   (declare (type (or symbol pathname string) obj))
-  (let ((pn (cond
+  (let* ((pn (cond
               ((symbolp obj) (pathname (string obj)))
               ((pathname obj) obj)
               ((stringp obj) (pathname obj))
-              (t (pathname (string obj))))))
-    (leap.core:search-path pn)))
-
+              (t (pathname (string obj)))))
+         (search-path (leap.core:search-path pn)))
+    (unless search-path
+      (error "Could not find ~a in directories ~a" pn *path*))
+    search-path))
