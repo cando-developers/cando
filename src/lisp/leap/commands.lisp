@@ -464,7 +464,18 @@ the STRING is not given then a list of legal STRINGs is provided.
           do (format t "Sourcing script: ~s~%" script)
           do (leap:source script))
     ))
-    
+
+(defun parse-evaluate-leap-command (code)
+  (let ((ast (architecture.builder-protocol:with-builder
+                 ('list)
+               (handler-bind ((esrap:esrap-parse-error
+                                (lambda (c)
+                                  (format t "Encountered error ~s while parsing ~s~%" c code))))
+                 (esrap:parse 'leap.parser:leap code)))))
+    (core:call-with-stack-top-hint
+     (lambda ()
+       (leap.core:evaluate 'list ast leap.core:*leap-env*)))))
+
 (defun leap-repl ()
   (process-command-line-options)
   (format t "Welcome to Cando-LEaP!~%")
@@ -478,15 +489,7 @@ the STRING is not given then a list of legal STRINGs is provided.
                  (if (eq code :eof)
                      (progn
                        (clear-input *standard-input*))
-                     (let ((ast (architecture.builder-protocol:with-builder
-                                    ('list)
-                                  (handler-bind ((esrap:esrap-parse-error
-                                                   (lambda (c)
-                                                     (format t "Encountered error ~s while parsing ~s~%" c code))))
-                                    (esrap:parse 'leap.parser:leap code)))))
-                       (core:call-with-stack-top-hint
-                        (lambda ()
-                          (leap.core:evaluate 'list ast leap.core:*leap-env*)))))
+                     (parse-evaluate-leap-command code))
                (error (var)
                  (format t "Error ~a - while evaluating: ~a~%" var code))))))
 
