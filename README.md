@@ -33,7 +33,6 @@ PREFIX="/opt/clasp"
 export AMBERHOME=/opt/amber # adjust as needed
 export ASDF_EXPORT_TRANSLATIONS=/:
 export CLASP_QUICKLISP_DIRECTORY=/opt/clasp/lib/clasp/src/lisp/modules/quicklisp/
-```
 
 /opt/clasp/bin/cleap
 
