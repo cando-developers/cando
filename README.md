@@ -16,25 +16,29 @@ git clone https://github.com/clasp-developers/clasp.git
 
 2. Come up with a wscript.config as described below. (See Note 1)
 
-3. Maybe read 
+An example wscript.config looks like:
 ```
-cat ./build-more-systems.README
+LLVM_CONFIG_BINARY="/usr/local/opt/llvm@6/bin/llvm-config"
+PREFIX="/opt/clasp"
 ```
-which allows you to control some build parameters.  The default is probably what you want, which is to build Cando and install everything into /opt/clasp, in which case you do nothing.
 
-4. Build and install Cando.
+3. Build and install Cando.
 
 ```
 ./build-more-systems.sh configure build_cboehm install_cboehm
 ```
 
-5. Run Cando or run the leap emulator.
+3. Run Cando or run the leap emulator. (We will simplify these instructions)
 ```
-setenv AMBERHOME=/opt/amber # adjust as neede
+export AMBERHOME=/opt/amber # adjust as needed
+export ASDF_EXPORT_TRANSLATIONS=/:
+export CLASP_QUICKLISP_DIRECTORY=/opt/clasp/lib/clasp/src/lisp/modules/quicklisp/
+```
+
+/opt/clasp/bin/cleap
 
 /opt/clasp/bin/cando
 
-/opt/clasp/bin/cleap
 ```
 
 ## Updating Cando and Clasp
