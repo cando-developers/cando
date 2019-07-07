@@ -480,18 +480,20 @@ the STRING is not given then a list of legal STRINGs is provided.
   (process-command-line-options)
   (format t "Welcome to Cando-LEaP!~%")
   (clear-input)
-  (catch 'repl-done
-    (loop for code = (progn
-                       (format t "> ") (finish-output)
-                       (let ((line (read-line *standard-input* nil :eof)))
-                         line))
-          do (handler-case
-                 (if (eq code :eof)
-                     (progn
-                       (clear-input *standard-input*))
-                     (parse-evaluate-leap-command code))
-               (error (var)
-                 (format t "Error ~a - while evaluating: ~a~%" var code))))))
+  (unwind-protect
+       (loop for code = (progn
+                          (format t "> ") (finish-output)
+                          (let ((line (read-line *standard-input* nil :eof)))
+                            line))
+             do (handler-case
+                    (if (eq code :eof)
+                        (progn
+                          (clear-input *standard-input*))
+                        (parse-evaluate-leap-command code))
+                  (error (var)
+                    (format t "Error ~a - while evaluating: ~a~%" var code))))
+    (progn
+      (format t "Goodbye~%"))))
 
 (defun leap ()
   (leap-repl)
