@@ -370,7 +370,7 @@ created around the solute.
   (chem:compile-smarts smarts-string :tests tests))
     
 (defun leap-quit ()
-  (throw 'repl-done nil))
+  (core:quit))
 
 (defun leap-cando ()
   "

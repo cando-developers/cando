@@ -1,4 +1,3 @@
-(setf *standard-output* (open "/tmp/out.txt" :direction :output :if-exists :supersede))
 (setup-default-paths)
 (load-atom-type-rules "ATOMTYPE_GFF.DEF")
 source leaprc.ff14SB.redq
@@ -23,7 +22,8 @@ ligs = loadPdb bnz_phn.pdb
 (fep:jobs |feps|)
 worklist = (fep:generate-jobs |feps|)
 (with-open-file (sout "/tmp/graph.dot" :direction :output) (fepdot:draw-graph-stream (list |worklist|) sout))
-(ext:system "dot -Tpdf -O /tmp/graph.dot")
-(ext:system "open -n /tmp/graph.dot.pdf")
-(close *standard-output*)
+#;(ext:system "dot -Tpdf -O /tmp/graph.dot")
+#;(ext:system "open -n /tmp/graph.dot.pdf")
+#;(close *standard-output*)
+(format t "Done with FEP demo - check the jobs directory~%")
 quit
