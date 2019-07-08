@@ -1,9 +1,9 @@
 (in-package :leap.add-ions)
 
 (defun add-ions (mol ion1 ion1-number &optional ion2 ion2-number)
-  (error "This function is now broken - every molecule must specify what force-field it will use - leap.core::merged-force-field is incorrect - the force-field has to be looked up from the ion-topology since the ion topology will create single residue in a molecule.")
-  (let* ((force-field (leap.core::merged-force-field))
-         (nonbond-db (chem:get-nonbond-db force-field))
+  (warn "This function is a bit broken - every molecule must specify what force-field it will use - leap.core::merged-force-field is incorrect - the force-field has to be looked up from the ion-topology since the ion topology will create single residue in a molecule.  Using :default for now")
+  (let* ((force-field-name :default)
+         (nonbond-db (leap.core:nonbond-force-field-component force-field-name))
          (ion1-type-index (chem:find-type-index nonbond-db ion1))
          (ion1-ffnonbond (chem:get-ffnonbond-using-type-index nonbond-db ion1-type-index))
          (ion1-size (chem:get-radius-angstroms ion1-ffnonbond))
@@ -23,6 +23,7 @@
          (ion2-size 0.0) 
          (ion2-type-index 0)
          ion2-ffnonbond)
+    (chem:setf-force-field-name ion1-mol force-field-name)
     (chem:add-matter ion1-mol ion1-residue)
     (chem:add-matter ion1-agg ion1-mol)
     (if (and ion2 (= 0 ion2-number))
@@ -162,9 +163,9 @@
 
 
 (defun add-ions-2 (mol ion1 ion1-number &optional ion2 ion2-number)
-  (error "This function is now broken - every molecule must specify what force-field it will use - leap.core::merged-force-field is incorrect - the force-field has to be looked up from the ion-topology since the ion topology will create single residue in a molecule.")
-  (let* ((force-field (leap.core::merged-force-field))
-         (nonbond-db (chem:get-nonbond-db force-field))
+  (warn "This function is now broken - every molecule must specify what force-field it will use - leap.core::merged-force-field is incorrect - the force-field has to be looked up from the ion-topology since the ion topology will create single residue in a molecule. Using :default")
+  (let* ((force-field-name :default)
+         (nonbond-db (leap.core:nonbond-force-field-component force-field-name))
          (ion1-type-index (chem:find-type-index nonbond-db ion1))
          (ion1-ffnonbond (chem:get-ffnonbond-using-type-index nonbond-db ion1-type-index))
          (ion1-size (chem:get-radius-angstroms ion1-ffnonbond))
