@@ -87,4 +87,5 @@ Note 1. Clasp can be configured by copying the wscript.config.template to wscrip
 Example wscript.config
 ```
 LLVM_CONFIG_BINARY="/usr/local/opt/llvm/bin/llvm-config"
+PREFIX="/opt/clasp"                                          # installs everything in /opt/clasp]
 ```
