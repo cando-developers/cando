@@ -62,7 +62,7 @@ cd jobs
 make -j<number-of-cores>    
 ```
 
-This will take many hours. We have a 'distributor' that distributes the work to AWS spot instances or a heterogeneous cluster and can carry out the calculation in about 15 min.
+This will take many hours. We have a 'distributor' that distributes the work to GPU accelerated AWS spot instances or a heterogeneous cluster of GPU machines and can carry out the calculation in about 15 min.
 
 ## Updating Cando and Clasp
 
