@@ -96,6 +96,7 @@
 (defpackage #:leap.core
   (:use #:common-lisp)
   (:export
+   #:with-path
    #:ensure-path
    #:nonbond-force-field-component
    #:evaluate

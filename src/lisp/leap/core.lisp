@@ -11,6 +11,10 @@
 (defun clear-path ()
   (setf *path* nil))
 
+(defmacro with-path (path &body body)
+  `(let ((*path* (cons ,path *path*)))
+     ,@body))
+
 (defun add-path (path)
   "Add a path to the *path* dynamic variable"
   (declare (pathname path))
