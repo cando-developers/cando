@@ -1182,21 +1182,23 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, bool useEx
       force_fields->setf_gethash(force_field_name,combined_force_field);
     }
   }
-  
-  if (chem__verbose(0)) core::write_bf_stream(BF("Assigning atom types.\n"));
-  moleculeLoop.loopTopGoal(matter,MOLECULES);
-  while (moleculeLoop.advanceLoopAndProcess() ) {
-    Molecule_sp molecule = moleculeLoop.getMolecule();
-    core::T_sp force_field_name = molecule->force_field_name();
-    core::T_sp combined_force_field = force_fields->gethash(force_field_name);
-    if (chem__verbose(0)) core::write_bf_stream(BF("Assigning atom types for molecule %s using %s.\n") % _rep_(molecule->getName()) % _rep_(force_field_name));
+
+  if (assign_types) {
+    if (chem__verbose(0)) core::write_bf_stream(BF("Assigning atom types.\n"));
+    moleculeLoop.loopTopGoal(matter,MOLECULES);
+    while (moleculeLoop.advanceLoopAndProcess() ) {
+      Molecule_sp molecule = moleculeLoop.getMolecule();
+      core::T_sp force_field_name = molecule->force_field_name();
+      core::T_sp combined_force_field = force_fields->gethash(force_field_name);
+      if (chem__verbose(0)) core::write_bf_stream(BF("Assigning atom types for molecule %s using %s.\n") % _rep_(molecule->getName()) % _rep_(force_field_name));
   //
   // Calculate aromaticity using the rings we just calculated
   //
-    core::T_sp aromaticity_info = core::eval::funcall(_sym_identify_aromatic_rings,matter,force_field_name);
-    if (aromaticity_info.nilp()) SIMPLE_ERROR(BF("The aromaticity-info was NIL when about to assign force field types - it should not be"));
-    core::DynamicScopeManager aromaticity_scope(_sym_STARcurrent_aromaticity_informationSTAR,aromaticity_info);
-    core::eval::funcall(_sym_assign_force_field_types,combined_force_field,molecule);
+      core::T_sp aromaticity_info = core::eval::funcall(_sym_identify_aromatic_rings,matter,force_field_name);
+      if (aromaticity_info.nilp()) SIMPLE_ERROR(BF("The aromaticity-info was NIL when about to assign force field types - it should not be"));
+      core::DynamicScopeManager aromaticity_scope(_sym_STARcurrent_aromaticity_informationSTAR,aromaticity_info);
+      core::eval::funcall(_sym_assign_force_field_types,combined_force_field,molecule);
+    }
   }
   this->defineForMatterWithAtomTypes(matter,useExcludedAtoms,activeAtoms);
 }
