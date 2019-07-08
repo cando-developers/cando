@@ -39,15 +39,17 @@
 This command executes LEaP commands within a text file.  To display the
 commands as they are read, see the verbosity command.  The text within
 the source file must be formatted exactly like the text the user types
-into LEaP.
+into LEaP. This command temporarily adds the path of _filename_ to the 
+leap path list so that files local to the script can be loaded.
 "
-  (let* ((path (let ((p (leap.core:search-path filename)))
+  (let* ((path (let ((p (leap.core:ensure-path filename)))
                  (unless p (error "Could not find file ~a" filename))
                  p))
          (entire-file (alexandria:read-file-into-string path))
          (ast (architecture.builder-protocol:with-builder ('list)
                 (esrap:parse 'leap.parser:leap entire-file))))
-    (leap.core:evaluate 'list ast leap.core:*leap-env*))
+    (leap.core:with-path (namestring (make-pathname :directory (pathname-directory path)))
+      (leap.core:evaluate 'list ast leap.core:*leap-env*)))
   t)
 
 (defun save-amber-parm (aggregate topology-file-name &optional crd-pathname show-progress)
@@ -98,7 +100,7 @@ the AMBER general type \"X\" is replaced with the LEaP general type \"?\".
   (chem:setf-force-field-name matter force-field-name))
   
 (defun load-atom-type-rules (filename &optional (force-field :default))
-  (let* ((path (leap.core:search-path filename))
+  (let* ((path (leap.core:ensure-path filename))
          (fftypedb (with-open-file (fin path)
                        (leap.antechamber-type-definition-parser:read-antechamber-type-rules fin)))
          (ff (core:make-cxx-object 'chem:force-field)))

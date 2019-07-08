@@ -317,7 +317,7 @@ Return the hash-table."
 - filename : Pathname
 * Description
 Load the OFF file containing forms into new-leap."
-  (let ((absolute-filename (leap.core:search-path filename)))
+  (let ((absolute-filename (leap.core:ensure-path filename)))
     (with-open-file (fin absolute-filename :direction :input)
       (let ((ht (leap.off:read-off-lib fin))
             names)

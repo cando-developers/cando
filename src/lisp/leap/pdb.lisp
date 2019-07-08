@@ -639,61 +639,62 @@ were defined in the matching UNIT (residue) variable.  This allows
 LEaP to build coordinates for hydrogens and lone pairs which are not
 specified in PDB files.
 "
-  (with-open-file (fin (leap.core:search-path filename) :direction :input)
-    (let* ((scanner (or scanner
-                        (build-sequence (scan-pdb filename :progress progress) system)))
-           (serial-to-atoms (connect-atoms-hash-table scanner)))
-      (setq *serial-to-atoms* serial-to-atoms)
-      (let ((pdb-atom-reader (make-instance 'pdb-atom-reader :stream fin
-                                                             :sequences (mapcar (lambda (seq)
-                                                                                  (copy-list seq))
-                                                                                (sequences scanner))
-                                                             :connect-atoms (connects scanner)
-                                                             :serial-to-atom serial-to-atoms)))
-        (let ((bar (cando:make-progress-bar :message "Load pdb" :total (file-length fin) :divisions 100 :on progress))
-              (atom-table (make-hash-table :test #'eql)))
-          (restart-case
-              (progn
-                (setf (molecule pdb-atom-reader) nil)
-                (loop for x = (read-and-process-line pdb-atom-reader nil :eof (big-z scanner))
-                      do (cando:progress-advance bar (file-position fin))
-                      until (eq x :eof))
-                (when progress (format t "Loaded pdb~%")))
-            (ran-out-of-sequence ()
-              :report "Ran out of sequence while filling residues"
-              (format t "Continuing with partial sequence~%")))
-          (cando:progress-done bar))
-        (loop for connect in (connects scanner)
-              for from-atom = (gethash (from connect) serial-to-atoms)
-              for to-atoms = (mapcar (lambda (c) (gethash c serial-to-atoms)) (to connect))
-              do (mapc (lambda (to-atom)
-                         (when (and (typep from-atom 'chem:atom)
-                                    (typep to-atom 'chem:atom)
-                                    (not (chem:is-bonded-to from-atom to-atom)))
-                           (chem:bond-to from-atom to-atom :single-bond)) to-atoms)
-                       to-atoms))
-        (let ((unbuilt-heavy-atoms 0)
-              (aggregate (aggregate pdb-atom-reader)))
-          (chem:map-atoms
-           nil
-           (lambda (a)
-             (when (and (not (eq (chem:get-element a) :H))
-                        (chem:needs-build a))
-               (incf unbuilt-heavy-atoms)))
-           aggregate)
-          (if (> unbuilt-heavy-atoms 0)
-              (warn "There are ~a unbuilt heavy atoms - not building hydrogens" unbuilt-heavy-atoms)
-              (progn
-                (when progress
-                  (format t "Building missing hydrogens~%"))
-                (let ((built (cando:build-unbuilt-hydrogens aggregate)))
-                  (format t "Built ~d missing hydrogens~%" built))))
-          (cando:maybe-join-molecules-in-aggregate aggregate)
-          (cando:maybe-split-molecules-in-aggregate aggregate)
-          (classify-molecules aggregate system)
-          (let ((name-only (pathname-name (pathname filename))))
-            (chem:set-name aggregate (intern name-only *package*)))
-          (values aggregate scanner))))))
+  (let ((filename (leap.core:ensure-path filename)))
+    (with-open-file (fin filename :direction :input)
+      (let* ((scanner (or scanner
+                          (build-sequence (scan-pdb filename :progress progress) system)))
+             (serial-to-atoms (connect-atoms-hash-table scanner)))
+        (setq *serial-to-atoms* serial-to-atoms)
+        (let ((pdb-atom-reader (make-instance 'pdb-atom-reader :stream fin
+                                                               :sequences (mapcar (lambda (seq)
+                                                                                    (copy-list seq))
+                                                                                  (sequences scanner))
+                                                               :connect-atoms (connects scanner)
+                                                               :serial-to-atom serial-to-atoms)))
+          (let ((bar (cando:make-progress-bar :message "Load pdb" :total (file-length fin) :divisions 100 :on progress))
+                (atom-table (make-hash-table :test #'eql)))
+            (restart-case
+                (progn
+                  (setf (molecule pdb-atom-reader) nil)
+                  (loop for x = (read-and-process-line pdb-atom-reader nil :eof (big-z scanner))
+                        do (cando:progress-advance bar (file-position fin))
+                        until (eq x :eof))
+                  (when progress (format t "Loaded pdb~%")))
+              (ran-out-of-sequence ()
+                :report "Ran out of sequence while filling residues"
+                (format t "Continuing with partial sequence~%")))
+            (cando:progress-done bar))
+          (loop for connect in (connects scanner)
+                for from-atom = (gethash (from connect) serial-to-atoms)
+                for to-atoms = (mapcar (lambda (c) (gethash c serial-to-atoms)) (to connect))
+                do (mapc (lambda (to-atom)
+                           (when (and (typep from-atom 'chem:atom)
+                                      (typep to-atom 'chem:atom)
+                                      (not (chem:is-bonded-to from-atom to-atom)))
+                             (chem:bond-to from-atom to-atom :single-bond)) to-atoms)
+                         to-atoms))
+          (let ((unbuilt-heavy-atoms 0)
+                (aggregate (aggregate pdb-atom-reader)))
+            (chem:map-atoms
+             nil
+             (lambda (a)
+               (when (and (not (eq (chem:get-element a) :H))
+                          (chem:needs-build a))
+                 (incf unbuilt-heavy-atoms)))
+             aggregate)
+            (if (> unbuilt-heavy-atoms 0)
+                (warn "There are ~a unbuilt heavy atoms - not building hydrogens" unbuilt-heavy-atoms)
+                (progn
+                  (when progress
+                    (format t "Building missing hydrogens~%"))
+                  (let ((built (cando:build-unbuilt-hydrogens aggregate)))
+                    (format t "Built ~d missing hydrogens~%" built))))
+            (cando:maybe-join-molecules-in-aggregate aggregate)
+            (cando:maybe-split-molecules-in-aggregate aggregate)
+            (classify-molecules aggregate system)
+            (let ((name-only (pathname-name (pathname filename))))
+              (chem:set-name aggregate (intern name-only *package*)))
+            (values aggregate scanner)))))))
 
 (defgeneric classify-molecules (aggregate system))
 

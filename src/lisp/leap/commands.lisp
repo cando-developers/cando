@@ -357,7 +357,7 @@ created around the solute.
 
 (defun load-sketch (filename)
   (handler-bind ((warning #'muffle-warning))
-    (let ((pathname (leap.core:search-path filename)))
+    (let ((pathname (leap.core:ensure-path filename)))
       (with-open-file (fin (open pathname :direction :input))
         (chem:make-chem-draw fin :add-hydrogens nil)))))
 
