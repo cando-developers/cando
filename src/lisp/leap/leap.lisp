@@ -22,7 +22,8 @@
    (lambda (molecule)
      (let* ((force-field-name (chem:force-field-name molecule))
             (combined-force-field (chem:find-force-field force-field-name))
-            (chem:*current-rings* (chem:identify-rings molecule)))
+            (chem:*current-rings* (chem:identify-rings molecule))
+            (chem:*current-aromaticity-information* (chem:identify-aromatic-rings molecule (chem:force-field-name molecule))))
        (chem:assign-force-field-types combined-force-field molecule)))
    matter))
 
