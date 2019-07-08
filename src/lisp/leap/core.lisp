@@ -59,14 +59,28 @@
     (let ((sorted-vars (sort vars #'string<)))
       sorted-vars)))
 
-(defun lookup-variable* (name environment &optional errorp error-value)
+(defun lookup-variable* (name package &optional errorp error-value)
   "Lookup a variable in the given environment"
-  (or (if (ext:specialp name)
-          (symbol-value name)
-          nil)
-      (if errorp
-          (error "The variable ~S is not defined" name)
-          error-value)))
+  (cond
+    ((keywordp name)
+     (let ((topology (cando:lookup-topology name)))
+       (if topology
+           topology
+           (multiple-value-bind (sym status)
+               (find-symbol (string name) package)
+             (if status
+                 (symbol-value sym)
+                 (if errorp
+                     (error "The variable ~S is not defined" name)
+                     error-value))))))
+    ((ext:specialp name)
+     (let ((topology (cando:lookup-topology name)))
+       (if topology
+           topology
+           (symbol-value name))))
+    (errorp
+     (error "The variable ~S is not defined" name))
+    (t error-value)))
 
 (defun (setf lookup-variable*) (new-value name environment)
   (when (typep new-value 'chem:topology)
@@ -96,10 +110,10 @@
        (:assignment
         (let ((value (first (first (funcall recurse :relations '(:value))))))
           (if (symbolp value)
-              (setf (lookup-variable* name environment) (lookup-variable value))
-              (setf (lookup-variable* name environment) (if (typep value 'number)
-                                                            (float value 1d0)
-                                                            value)))))
+              (setf (lookup-variable* name *package*) (lookup-variable value))
+              (setf (lookup-variable* name *package*) (if (typep value 'number)
+                                                         (float value 1d0)
+                                                         value)))))
        (t
         (funcall recurse))))
    ast))
@@ -123,20 +137,15 @@
 - object :: an object
 * Description
 Associate the name with the object"
-  (setf (lookup-variable* name *leap-env*) object))
+  (setf (lookup-variable* name *package*) object))
 
 (defun lookup-variable (name &optional (errorp t) error-value)
   "* Arguments
 - name : Symbol
 * Description
 Lookup the object in the variable space."
-  (lookup-variable* name *leap-env* errorp error-value))
+  (lookup-variable* name *package* errorp error-value))
 
-
-(defun leap-lookup-variable-reader-macro (stream char)
-  (let* ((*package* (find-package :keyword))
-         (var-name (read stream t nil t)))
-    `(lookup-variable ',var-name)))
 
 
 ;;; ------------------------------------------------------------

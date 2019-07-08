@@ -5,9 +5,13 @@
   "This is where topology's are stored")
 
 (defun register-topology (name topology)
+  (unless (keywordp name)
+    (setf name (intern (string name) :keyword)))
   (chem:setf-find-topology chem:*cando-database* name topology))
 
 (defun lookup-topology (name &optional errorp)
+  (unless (keywordp name)
+    (setf name (intern (string name) :keyword)))
   (multiple-value-bind (topology foundp)
       (chem:find-topology name errorp)
     topology))

@@ -30,7 +30,6 @@
           (list (list "**;*.*" (concatenate 'string amber-home "/**/*.*"))))
     (format t "Setting amber host pathname translation -> ~a~%" amber-home))
   (let ((*readtable* (copy-readtable)))
-    (set-macro-character #\~ #'leap.core:leap-lookup-variable-reader-macro)
     (let ((cl-jup (find-symbol "KERNEL-START" "CL-JUPYTER")))
       (if cl-jup
           (if connection-file-name

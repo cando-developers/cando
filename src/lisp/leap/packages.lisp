@@ -115,8 +115,7 @@
    #:clear-force-field
    #:add-force-field-or-modification
    #:find-force-field
-   #:*force-fields*
-   #:leap-lookup-variable-reader-macro)
+   #:*force-fields*)
   )
 
 
