@@ -377,7 +377,7 @@ created around the solute.
 This command brings up a cando command line. 
 Leap can be reentered by evaluating (leap).
 "
-  (throw 'repl-done :cando))
+  (core:top-level nil nil))
 
 
 (defun leap-start-swank ()
