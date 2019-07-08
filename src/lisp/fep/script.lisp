@@ -5,7 +5,7 @@
 (in-package :fep)
 
 (defclass fep-calculation (calculation)
-  ((solvent-box :initform :tip3pbox :initarg :solvent-box :accessor solvent-box)
+  ((solvent-box :initform ':tip3pbox :initarg :solvent-box :accessor solvent-box)
    (solvent-buffer :initform 12.0 :initarg :solvent-buffer :accessor solvent-buffer)
    (solvent-closeness :initform 0.75 :initarg :solvent-closeness :accessor solvent-closeness)
    (solvent-residue-name :initform :WAT :initarg :solvent-residue-name :accessor solvent-residue-name)

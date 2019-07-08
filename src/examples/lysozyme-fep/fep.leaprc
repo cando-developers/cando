@@ -1,4 +1,3 @@
-(setup-default-paths)
 (load-atom-type-rules "ATOMTYPE_GFF.DEF")
 source leaprc.ff14SB.redq
 source leaprc.gaff

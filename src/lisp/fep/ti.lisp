@@ -27,12 +27,11 @@
                '((ql:quickload :fep)
                  (in-package :cando-user)
                  (leap:setup-amber-paths)
+                 (leap:source "leaprc.ff14SB.redq")
+                 (leap:source "leaprc.gaff")
                  (leap:source "leaprc.water.tip3p")
                  (leap:load-off "solvents.lib")
                  (leap:load-off "atomic_ions.lib")
-                 (leap:load-atom-type-rules "ATOMTYPE_GFF.DEF")
-                 (leap:source "leaprc.ff14SB.redq")
-                 (leap:source "leaprc.gaff")
                  (defparameter *feps* (fep:load-feps ":%INPUT%"))
                  (defparameter *receptor* (first (fep:receptors *feps*)))
                  (defparameter *side-name* :%SIDE-NAME%)
@@ -40,6 +39,8 @@
                  (defparameter *source* (fep:source *morph*))
                  (defparameter *target* (fep:target *morph*))
                  (fep:average-core-atom-positions *source* *target*)
+                 (leap:assign-atom-types (fep:molecule *source*))
+                 (leap:assign-atom-types (fep:molecule *target*))
                  (defparameter *ligands* (cando:combine (fep:molecule *source*)
                                                         (fep:molecule *target*)))
                  (format t "*side-name* --> ~a~%" *side-name*)
@@ -55,9 +56,9 @@
                  (leap:solvate-box *system*
                   (leap.core:lookup-variable (solvent-box *feps*))
                   (solvent-buffer *feps*)
-                  (solvent-closeness *feps*))
+                  :closeness (solvent-closeness *feps*))
                  (leap.add-ions:add-ions *system* :|Cl-| 0)
-                 (cando:save-mol2 *system* (ensure-directories-exist ":%MOL2%"))
+              ;   (cando:save-mol2 *system* (ensure-directories-exist ":%MOL2%"))
                  (ensure-directories-exist (pathname ":%TOPOLOGY%"))
                  (ensure-directories-exist (pathname ":%COORDINATES%"))
                  (leap.topology:save-amber-parm-format *system* ":%TOPOLOGY%" ":%COORDINATES%")
@@ -954,7 +955,7 @@ its for and then create a new class for it."))
 
 (defun standard-makefile-clause (command)
   (format nil ":%OUTPUTS% : :%DEPENDENCY-INPUTS%
-	runcmd -- :%DEPENDENCY-INPUTS% -- :%DEPENDENCY-OUTPUTS% -- \\
+	$(RUNCMD) -- :%DEPENDENCY-INPUTS% -- :%DEPENDENCY-OUTPUTS% -- \\
 	~a~%" command))
 
 (defun standard-cando-makefile-clause (script &key add-inputs)
@@ -1089,7 +1090,7 @@ its for and then create a new class for it."))
                                         :-l (make-instance 'morph-side-stage-lambda-unknown-file :morph morph :side side :stage stage :lambda% lam :name "heat" :extension "log")
                                         )
                     :makefile-clause ":%OUTPUTS% : :%INPUTS%
-	runcmd -- :%DEPENDENCY-INPUTS% -- :%DEPENDENCY-OUTPUTS% -- \\
+	$(RUNCMD) -- :%DEPENDENCY-INPUTS% -- :%DEPENDENCY-OUTPUTS% -- \\
 	pmemd.cuda -AllowSmallBox :%OPTION-INPUTS% \\
 	  -O :%OPTION-OUTPUTS%"))))
 
@@ -1122,7 +1123,7 @@ its for and then create a new class for it."))
                                         :-l (make-instance 'morph-side-stage-lambda-unknown-file :morph morph :side side :stage stage :lambda% lam :name "ti001" :extension "log")
                                         )
                     :makefile-clause ":%OUTPUTS% : :%INPUTS%
-	runcmd -- :%DEPENDENCY-INPUTS% -- :%DEPENDENCY-OUTPUTS% -- \\
+	$(RUNCMD) -- :%DEPENDENCY-INPUTS% -- :%DEPENDENCY-OUTPUTS% -- \\
 	pmemd.cuda -AllowSmallBox :%OPTION-INPUTS% \\
 	  -O :%OPTION-OUTPUTS%"))))
 
@@ -1237,12 +1238,33 @@ added to inputs and outputs but not option-inputs or option-outputs"
                      do (setf (gethash child visited-nodes) t)
                         (generate-code calculation child makefile visited-nodes)))))
 
+
+(defun generate-runcmd ()
+  (with-open-file (fout "runcmd" :direction :output :if-exists :supersede)
+    (format fout "#! /bin/bash
+
+shift
+while [[ $1 != \"--\" ]]; do
+    shift
+done
+shift
+while [[ $1 != \"--\" ]]; do
+    shift
+done
+shift
+echo Command: $*
+eval $*
+"))
+  (core:chmod "runcmd" #o777))
+
+
 (defun generate-all-code (calculation work-list final-outputs)
   (with-top-directory (calculation)
     (let ((visited-nodes (make-hash-table))
           (makefile-pathname (ensure-directories-exist (merge-pathnames "makefile"))))
       (format t "Writing makefile to ~a~%" (translate-logical-pathname makefile-pathname))
       (let ((body (with-output-to-string (makefile)
+                    (format makefile "export RUNCMD=./runcmd~%")
                     (loop for job in work-list
                           do (generate-code calculation job  makefile visited-nodes)))))
         (write-file-if-it-has-changed
@@ -1254,7 +1276,9 @@ added to inputs and outputs but not option-inputs or option-outputs"
            (format makefile "~aecho DONE~%" #\tab)
            (format makefile "~%")
            (write-string body makefile)
-           (terpri makefile)))))))
+           (terpri makefile))))
+      (format t "Writing runcmd~%")
+      (generate-runcmd))))
 
 #|
 (defparameter *morphs*
