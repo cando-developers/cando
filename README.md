@@ -14,12 +14,12 @@ Cando needs [Clasp](https://github.com/clasp-developers/clasp.git) and Clasp has
 git clone https://github.com/clasp-developers/clasp.git
 ```
 
-2. Come up with a wscript.config as described below. (See Note 1)
+2. Create a wscript.conf file in the top level clasp directory as described below. (See Note 1)
 
-An example wscript.config looks like:
+An example clasp/wscript.config looks like:
 ```
-LLVM_CONFIG_BINARY="/usr/local/opt/llvm@6/bin/llvm-config"
-PREFIX="/opt/clasp"
+LLVM_CONFIG_BINARY="/usr/local/opt/llvm@6/bin/llvm-config"   # path to find llvm6 llvm-config executable
+PREFIX="/opt/clasp"                                          # installs everything in /opt/clasp
 ```
 
 3. Build and install Cando.
@@ -39,6 +39,30 @@ export CLASP_QUICKLISP_DIRECTORY=/opt/clasp/lib/clasp/src/lisp/modules/quicklisp
 /opt/clasp/bin/cando
 
 ```
+
+## Free energy perturbation demo (You need AmberTools and Amber pmemd.cuda)
+
+1. Create an empty directory and ```cd``` into it.
+
+2. Set up the following environment variables.
+```
+export AMBERHOME=/opt/amber # adjust as needed
+export ASDF_EXPORT_TRANSLATIONS=/:
+export CLASP_QUICKLISP_DIRECTORY=/opt/clasp/lib/clasp/src/lisp/modules/quicklisp/
+export PATH=$AMBERHOME/bin:$PATH
+```
+
+2. Evaluate:
+
+```
+/opt/clasp/bin/cleap -f /opt/clasp/lib/clasp/extensions/cando/src/examples/lysozyme-fep/fep.leaprc
+
+cd jobs
+
+make -j<number-of-cores>    
+```
+
+This will take many hours. We have a 'distributor' that distributes the work to AWS spot instances or a heterogeneous cluster and can carry out the calculation in about 15 min.
 
 ## Updating Cando and Clasp
 
