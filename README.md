@@ -28,18 +28,6 @@ PREFIX="/opt/clasp"                                          # installs everythi
 ./build-more-systems.sh configure build_cboehm install_cboehm
 ```
 
-3. Run Cando or run the leap emulator. (We will simplify these instructions)
-```
-export AMBERHOME=/opt/amber # adjust as needed
-export ASDF_EXPORT_TRANSLATIONS=/:
-export CLASP_QUICKLISP_DIRECTORY=/opt/clasp/lib/clasp/src/lisp/modules/quicklisp/
-
-/opt/clasp/bin/cleap
-
-/opt/clasp/bin/cando
-
-```
-
 ## Free energy perturbation demo (You need AmberTools and Amber pmemd.cuda)
 
 1. Create an empty directory and ```cd``` into it.
