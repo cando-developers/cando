@@ -131,7 +131,8 @@
   (:use #:common-lisp)
   (:export
    #:add-ions
-   #:add-ions-2)
+   #:add-ions-2
+   #:add-ions-rand)
   )
 
 (defpackage #:leap.set-box

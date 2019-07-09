@@ -410,103 +410,6 @@ the STRING is not given then a list of legal STRINGs is provided.
                 finally (when (/= (rem col 4) 0)
                           (terpri)))))))
 
-(eval-when (:load-toplevel :execute)
-  (setf leap.parser:*function-names/alist*
-    '(("logFile" . log-file)
-      ("desc" . desc)
-      ("listForceFields" . leap.list-force-fields)
-      ("loadOff" . load-off)
-      ("loadMol2" . cando:load-mol2)
-      ("dir" . leap.dir )
-      ("ls" . leap.dir)
-      ("loadPdb" . leap.pdb:load-pdb)
-      ("source" . leap.source)
-      ("loadSketch" . leap.load-sketch)
-      ("compileSmarts" . leap.compile-smarts)
-      ("setForceField" . leap.set-force-field)
-      ("loadSmirnoffParams" . leap.load-smirnoff-params)
-      ("loadAmberParams" . leap:load-amber-params)
-      ("addPdbResMap" . leap.pdb:add-pdb-res-map)
-      ("addPdbAtomMap" . leap.pdb:add-pdb-atom-map)
-      ("addAtomTypes" . add-atom-types)
-      ("saveAmberParms" . leap.save-amber-parm)
-      ("solvateBox" . leap.solvate-box)
-      ("solvateOct" . leap.solvate-oct)
-      ("solvateShell" . leap.solvate-shell)
-      ("setupDefaultPaths" . leap.setup-default-paths )
-      ("addIons" . leap.add-ions:add-ions)
-      ("setBox" . leap.set-box:set-box)
-      ("showPaths" . leap.show-paths)
-      ("createAtom" . create-atom )
-      ("help" . leap-help)
-      ("cando" . leap-cando )
-      ("startSwank" . leap-start-swank)
-      ("quit" . leap-quit)
-      ))
-  (dolist (command leap.parser:*function-names/alist*)
-    (if (fboundp (cdr command))
-        (setf (leap.core:function-lookup (car command) leap.core:*leap-env*) (cdr command))
-        (error "~a is not a function" (cdr command)))))
-
-
-(defun parse-leap-code (code)
-  (let ((ast (architecture.builder-protocol:with-builder ('list)
-               (esrap:parse 'leap.parser:leap code))))
-    ast))
-
-(defun process-command-line-options ()
-  (let ((includes (core:leap-command-line-includes))
-        (scripts (core:leap-command-line-scripts)))
-    (loop for include-path in includes
-          do (format t "Adding include path: ~s~%" include-path)
-          do (leap.core:add-path include-path))
-    (loop for script in scripts
-          do (format t "Sourcing script: ~s~%" script)
-          do (leap:source script))
-    ))
-
-(defun parse-evaluate-leap-command (code)
-  (let ((ast (architecture.builder-protocol:with-builder
-                 ('list)
-               (handler-bind ((esrap:esrap-parse-error
-                                (lambda (c)
-                                  (format t "Encountered error ~s while parsing ~s~%" c code))))
-                 (esrap:parse 'leap.parser:leap code)))))
-    (core:call-with-stack-top-hint
-     (lambda ()
-       (leap.core:evaluate 'list ast leap.core:*leap-env*)))))
-
-(defun leap-repl ()
-  (process-command-line-options)
-  (format t "Welcome to Cando-LEaP!~%")
-  (clear-input)
-  (unwind-protect
-       (loop for code = (progn
-                          (format t "> ") (finish-output)
-                          (let ((line (read-line *standard-input* nil :eof)))
-                            line))
-             do (handler-case
-                    (if (eq code :eof)
-                        (progn
-                          (clear-input *standard-input*))
-                        (parse-evaluate-leap-command code))
-                  (error (var)
-                    (format t "Error ~a - while evaluating: ~a~%" var code))))
-    (progn
-      (format t "Goodbye~%"))))
-
-(defun leap ()
-  (leap-repl)
-  (format t "Entering cando repl - use (leap) to re-enter leap.~%"))
-
-(defun leap-repl-then-exit ()
-  (if (leap-repl)
-      (progn
-        (format t "Entering cando repl - use (leap) to re-enter leap.~%"))
-      (progn
-        (format t "Leaving leap~%")
-        (core:exit 0))))
-
 (defun leap-add (object-a object-b)
  "    add a b
 
@@ -650,6 +553,120 @@ respectively.
         (format t "Distance: ~,2f angstroms~%"
                 (geom:calculate-distance
                  atom1-position atom2-position)))))
+
+
+(eval-when (:load-toplevel :execute)
+  (setf leap.parser:*function-names/alist*
+    '(("logFile" . log-file)
+      ("desc" . desc)
+      ("listForceFields" . leap.list-force-fields)
+      ("loadOff" . load-off)
+      ("loadMol2" . cando:load-mol2)
+      ("dir" . leap.dir )
+      ("ls" . leap.dir)
+      ("loadPdb" . leap.pdb:load-pdb)
+      ("source" . leap.source)
+      ("loadSketch" . leap.load-sketch)
+      ("compileSmarts" . leap.compile-smarts)
+      ("setForceField" . leap.set-force-field)
+      ("loadSmirnoffParams" . leap.load-smirnoff-params)
+      ("loadAmberParams" . leap:load-amber-params)
+      ("addPdbResMap" . leap.pdb:add-pdb-res-map)
+      ("addPdbAtomMap" . leap.pdb:add-pdb-atom-map)
+      ("addAtomTypes" . add-atom-types)
+      ("saveAmberParms" . leap.save-amber-parm)
+      ("solvateBox" . leap.solvate-box)
+      ("solvateOct" . leap.solvate-oct)
+      ("solvateShell" . leap.solvate-shell)
+      ("solvateCap" . leap.solvate-cap)
+      ("setupDefaultPaths" . leap.setup-default-paths )
+      ("addIons" . leap.add-ions:add-ions)
+      ("addIons2" . leap.add-ions:add-ions-2)
+      ("addIonsRand" . leap.add-ions:add-ions-rand)
+      ("setBox" . leap.set-box:set-box)
+      ("showPaths" . leap.show-paths)
+      ("createAtom" . create-atom )
+      ("help" . leap-help)
+      ("cando" . leap-cando )
+      ("startSwank" . leap-start-swank)
+      ("quit" . leap-quit)
+      ("add" . leap-add)
+      ("bond" . leap-bond)
+      ("addH" . leap-add-h)
+      ("createAtom" . leap-create-atom)
+      ("createResidue" . leap-create-residue)
+      ("createUnit" . leap-create-unit)
+      ("translate" . leap-translate)
+      ("copy" . leap-copy)
+      ("center" . leap-center)
+      ("measureGeom" . leap-measure-geom)
+      ))
+  (dolist (command leap.parser:*function-names/alist*)
+    (if (fboundp (cdr command))
+        (setf (leap.core:function-lookup (car command) leap.core:*leap-env*) (cdr command))
+        (error "~a is not a function" (cdr command)))))
+
+
+(defun parse-leap-code (code)
+  (let ((ast (architecture.builder-protocol:with-builder ('list)
+               (esrap:parse 'leap.parser:leap code))))
+    ast))
+
+(defun process-command-line-options ()
+  (let ((includes (core:leap-command-line-includes))
+        (scripts (core:leap-command-line-scripts)))
+    (loop for include-path in includes
+          do (format t "Adding include path: ~s~%" include-path)
+          do (leap.core:add-path include-path))
+    (loop for script in scripts
+          do (format t "Sourcing script: ~s~%" script)
+          do (leap:source script))
+    ))
+
+(defun parse-evaluate-leap-command (code)
+  (let ((ast (architecture.builder-protocol:with-builder
+                 ('list)
+               (handler-bind ((esrap:esrap-parse-error
+                                (lambda (c)
+                                  (format t "Encountered error ~s while parsing ~s~%" c code))))
+                 (esrap:parse 'leap.parser:leap code)))))
+    (core:call-with-stack-top-hint
+     (lambda ()
+       (leap.core:evaluate 'list ast leap.core:*leap-env*)))))
+
+(defun leap-repl ()
+  (process-command-line-options)
+  (format t "Welcome to Cando-LEaP!~%")
+  (clear-input)
+  (unwind-protect
+       (loop for code = (progn
+                          (format t "> ") (finish-output)
+                          (let ((line (read-line *standard-input* nil :eof)))
+                            line))
+             do (handler-case
+                    (if (eq code :eof)
+                        (progn
+                          (clear-input *standard-input*))
+                        (parse-evaluate-leap-command code))
+                  (error (var)
+                    (format t "Error ~a - while evaluating: ~a~%" var code))))
+    (progn
+      (format t "Goodbye~%"))))
+
+(defun leap ()
+  (leap-repl)
+  (format t "Entering cando repl - use (leap) to re-enter leap.~%"))
+
+(defun leap-repl-then-exit ()
+  (if (leap-repl)
+      (progn
+        (format t "Entering cando repl - use (leap) to re-enter leap.~%"))
+      (progn
+        (format t "Leaving leap~%")
+        (core:exit 0))))
+
+
+
 
 
 
