@@ -554,6 +554,15 @@ respectively.
                 (geom:calculate-distance
                  atom1-position atom2-position)))))
 
+(defun leap-add-path (path)
+"    addPath path
+
+      STRING                       _path_
+
+Add the directory in _path_ to the list of directories that are searched
+for files specified by other commands.
+"
+  (setf *default-pathname-defaults* path))
 
 (eval-when (:load-toplevel :execute)
   (setf leap.parser:*function-names/alist*
@@ -600,6 +609,7 @@ respectively.
       ("copy" . leap-copy)
       ("center" . leap-center)
       ("measureGeom" . leap-measure-geom)
+      ("addPath" . leap-add-path)
       ))
   (dolist (command leap.parser:*function-names/alist*)
     (if (fboundp (cdr command))
