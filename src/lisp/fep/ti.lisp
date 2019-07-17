@@ -1240,22 +1240,29 @@ added to inputs and outputs but not option-inputs or option-outputs"
 
 
 (defun generate-runcmd ()
-  (with-open-file (fout "runcmd" :direction :output :if-exists :supersede)
-    (format fout "#! /bin/bash
+  (with-open-file (fout "runcmd_simple" :direction :output :if-exists :supersede)
+    (format fout "#! /bin/sh
 
-shift
-while [[ $1 != \"--\" ]]; do
-    shift
-done
-shift
-while [[ $1 != \"--\" ]]; do
-    shift
-done
-shift
-echo Command: $*
-eval $*
+try_special ()
+{
+    local arg
+    local count=0
+    for arg in \"$@\" ; do
+        [ \"$arg\" = -- ] && count=\"$(($count + 1))\"
+        shift
+        [ \"$count\" = 3 ] && break # more than 3 are allowed
+    done
+    if [ \"$count\" = 3 ] ; then
+        exec \"$@\"
+        # exit # not reachable
+    fi
+}
+
+try_special \"$@\"
+# if try_special didn't like it execute directly
+exec \"$@\"
 "))
-  (core:chmod "runcmd" #o777))
+  (core:chmod "runcmd_simple" #o755))
 
 
 (defun generate-all-code (calculation work-list final-outputs)
@@ -1264,7 +1271,7 @@ eval $*
           (makefile-pathname (ensure-directories-exist (merge-pathnames "makefile"))))
       (format t "Writing makefile to ~a~%" (translate-logical-pathname makefile-pathname))
       (let ((body (with-output-to-string (makefile)
-                    (format makefile "export RUNCMD=./runcmd~%")
+                    (format makefile "RUNCMD ?= ./runcmd_simple~%~%")
                     (loop for job in work-list
                           do (generate-code calculation job  makefile visited-nodes)))))
         (write-file-if-it-has-changed
