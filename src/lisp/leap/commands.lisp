@@ -563,6 +563,7 @@ Add the directory in _path_ to the list of directories that are searched
 for files specified by other commands.
 "
   (setf *default-pathname-defaults* path))
+     
 
 (eval-when (:load-toplevel :execute)
   (setf leap.parser:*function-names/alist*

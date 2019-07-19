@@ -30,5 +30,6 @@
    (:file "leap")
    (:file "commands" :depends-on ("topology" "core"))
    (:file "easy")
+   (:file "align-axes")
                                         ;     (:file "interpreter")
    ))
