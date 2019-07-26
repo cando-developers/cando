@@ -76,6 +76,10 @@ CL_DEFMETHOD core::Symbol_sp FFTypesDb_O::assignType(chem::Atom_sp atom) {
   LOG(BF("Got atom") );
   LOG(BF("atom name: %s") % atom->getName().c_str() );
   LOG(BF("Assigning type for atom: %s") % atom->description().c_str()  );
+  if (chem__verbose(0)) {
+    core::write_bf_stream(BF("Assigning type for atom: %s\n") % _rep_(atom));
+  }
+
   {_BLOCK_TRACE("Testing every type rule");
     for ( auto it=this->_TypeAssignmentRules.begin();
           it!=this->_TypeAssignmentRules.end(); it++ ) 
@@ -85,10 +89,10 @@ CL_DEFMETHOD core::Symbol_sp FFTypesDb_O::assignType(chem::Atom_sp atom) {
       ChemInfoMatch_sp match = gc::As<ChemInfoMatch_sp>(matches_mv.second());
       if ( matches_mv.notnilp() ) {
         LOG(BF("Rule MATCH!!!") );
-        if (chem__verbose(2)) core::write_bf_stream(BF("Matched %s\n") % _rep_(root));
+        if (chem__verbose(2)) core::write_bf_stream(BF("Matched %s type-> %s\n") % _rep_(root) % _rep_((*it)->_Type));
         return (*it)->_Type;
       } else {
-        if (chem__verbose(2)) core::write_bf_stream(BF("Did not match %s\n") % _rep_(root));
+        if (chem__verbose(2)) core::write_bf_stream(BF("Did not match %s type-> %s\n") % _rep_(root) % _rep_((*it)->_Type));
       }
       LOG(BF("Rule does not match, keep going") );
     }
@@ -123,6 +127,12 @@ CL_DEFMETHOD void    FFTypesDb_O::assignTypes(chem::Matter_sp matter)
   }
 }
 
+
+string FFTypeRule_O::__repr__() const {
+  stringstream ss;
+  ss << "#<FFTypeRule :type " << _rep_(this->_Type) << " :test " << _rep_(this->_Test);
+  return ss.str();
+}
 
 CL_DOCSTRING("Return the atom types as a hash-table with the atoms as keys and types as values");
 CL_DEFMETHOD core::HashTableEq_sp    FFTypesDb_O::atomTypes(chem::Matter_sp matter)
