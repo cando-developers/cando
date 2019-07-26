@@ -313,19 +313,21 @@
         (target-name (name (target fep-morph))))
     (format nil "~a-~a" source-name target-name)))
 
-(defclass fep-structure ()
+(defclass simple-fep-structure ()
   ((name :initarg :name :accessor name)
    (drawing :initarg :drawing :accessor drawing)
    (core-residue :initarg :core-residue :accessor core-residue)
    (core-residue-name :initarg :core-residue-name :accessor core-residue-name)
-   (side-chain-residue-names :initarg :side-chain-residue-names :accessor side-chain-residue-names)
    (core-atoms :initarg :core-atoms :accessor core-atoms)
-   (side-chain-atoms :initarg :side-chain-atoms :accessor side-chain-atoms)
    (molecule :initarg :molecule :accessor molecule)
    (atom-order :initarg :atom-order :accessor atom-order)
    (net-charge :initform 0.0  :initarg :net-charge :accessor net-charge)
    (am1-charges :initarg :am1-charges :accessor am1-charges)
    (am1-bcc-charges :initarg :am1-bcc-charges :accessor am1-bcc-charges)))
+  
+(defclass fep-structure (simple-fep-structure)
+  ((side-chain-residue-names :initarg :side-chain-residue-names :accessor side-chain-residue-names)
+   (side-chain-atoms :initarg :side-chain-atoms :accessor side-chain-atoms)))
 
 
 (defmethod print-object ((obj fep-structure) stream)

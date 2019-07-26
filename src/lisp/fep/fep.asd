@@ -30,6 +30,7 @@
    (:file "graph2")
    (:file "fep-version")
    (:file "fep")
+   (:file "fep-from-structures")
    (:file "script")
    (:file "ti")
    (:file "graphviz")

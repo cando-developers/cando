@@ -17,7 +17,8 @@
                                                      :molecule molecule
                                                      :net-charge 0.0 #|Not always!|#)))
          (calc (make-instance 'fep:fep-calculation
-                              :ligands fep-structures
+                              :ligands fep-structures)))
+    calc))
                               
                               
                               

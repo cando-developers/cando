@@ -96,7 +96,8 @@
    #:amber-job-mixin
    #:cpptraj-job-mixin
    #:pattern-atoms
-   #:average-core-atom-positions))
+   #:average-core-atom-positions
+   #:make-fep-calculation-from-ligands ))
 
 
 (defpackage #:fepdot
