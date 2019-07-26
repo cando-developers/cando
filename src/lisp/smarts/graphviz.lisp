@@ -20,6 +20,14 @@
 (defmethod label ((node chem:bond-to-atom-test))
   (format nil "(bond-to-atom-test ~a)~%" (chem:bond-type node)))
 
+(defmethod label ((node chem:antechamber-focus-atom-match))
+  (format nil "~a~%~a" (call-next-method)
+          (core:encode node)))
+
+(defmethod label ((node chem:antechamber-bond-to-atom-test))
+  (format nil "antichamber-bond-to-atom-test ~a~%~a" (call-next-method)
+          (core:encode node)))
+
 (defmethod style ((node chem:chem-info-node))
   (format nil "shape=box"))
 
