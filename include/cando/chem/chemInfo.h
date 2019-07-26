@@ -1142,6 +1142,8 @@ namespace chem {
 class MoleculeGraph_O;
 };
 
+// MoleculeGraph_O objects cannot move in memory
+// we pass pointers to them to boost graph C++ code.
 template <>
 struct gctools::GCInfo<chem::MoleculeGraph_O> {
   static bool constexpr NeedsInitialization = true;
@@ -1186,13 +1188,23 @@ class MoleculeGraph_O : public core::CxxObject_O
 public:
   void initialize();
 public:
-  Molecule_sp          _Molecule;
-  core::HashTableEq_sp _atoms_to_index;
-  gctools::Vec0<Atom_sp> _atoms;
-  MoleculeGraphType*     _moleculeGraph;
+  core::HashTableEq_sp     _nodes_to_index;
+  core::ComplexVector_T_sp _nodes;
+  MoleculeGraphType*       _moleculeGraph;
 public:
 
+  size_t add_vertex(core::T_sp vertex);
+  size_t vertex_index(core::T_sp vertex);
+  core::T_sp get_vertex(size_t index);
+  
+  void add_edge(size_t v1, size_t v2, BondOrder bo);
+
+  /*! Callback takes vertex */
+  void walk_vertices(core::T_sp callback);
+  /*! Callback takes vertex1, vertex2 and bond_order */
+  void walk_edges(core::T_sp callback);
   MoleculeGraph_O(Molecule_sp);
+  MoleculeGraph_O();
   ~MoleculeGraph_O();
 };
 
