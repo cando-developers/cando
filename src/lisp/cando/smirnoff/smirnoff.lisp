@@ -129,7 +129,7 @@ The chem:force-field-type-rules-merged generic function was used to organize the
   
 
 (defmethod chem:generate-molecule-energy-function-tables (energy-function molecule (combined-force-field combined-force-field) active-atoms)
-  (let* ((molecule-graph (chem:make-molecule-graph molecule))
+  (let* ((molecule-graph (chem:make-molecule-graph-from-molecule molecule))
          (atom-table (chem:atom-table energy-function))
          (bonds (bonds-hash-table molecule))
          (angles (make-hash-table :test #'equal))

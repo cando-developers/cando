@@ -38,6 +38,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include "boost/graph/graph_traits.hpp"
 #include "boost/graph/adjacency_list.hpp"
 #include "boost/graph/vf2_sub_graph_iso.hpp"
+#include "boost/graph/mcgregor_common_subgraphs.hpp"
 
 #include <clasp/core/common.h>
 #include <cando/adapt/stringSet.h>
@@ -586,8 +587,9 @@ void AtomOrBondMatchNode_O::fields(core::Record_sp node) {
 bool AtomOrBondMatchNode_O::matches_Bond(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond) {
   _OF();
   LOG(BF("%s\natom: %s bond: %s") % this->asSmarts() % _rep_(from) % _rep_(bond));
-  return (this->matches_Atom(root,from) &&
-          this->matches_Atom(root, bond->getOtherAtom(from)));
+  bool matches_from = this->matches_Atom(root,from);
+  bool matches_other = this->matches_Atom(root,bond->getOtherAtom(from));
+  return matches_from && matches_other;
 };
 
 bool AtomOrBondMatchNode_O::matches_Atom(Root_sp root, chem::Atom_sp atom) {
@@ -789,7 +791,7 @@ bool Logical_O::matches_Bond(Root_sp root, chem::Atom_sp from, chem::Bond_sp bon
   return false;
  SUCCESS:
   LOG(BF("SUCCESS!!!"));
-  return this->Base::matches_Bond(root,from,bond);
+  return true; // this->Base::matches_Bond(root,from,bond);
 }
 
 core::NullTerminatedEnumAssociation logicalEnum[] = {
@@ -1380,13 +1382,13 @@ bool BondToAtomTest_O::matches_Bond(Root_sp root, chem::Atom_sp from, chem::Bond
     if (!this->_BondMatcher->matches_Bond(root,from,bond)) goto FAIL;
     if (this->_AtomTest->matches_Atom(root,bond->getOtherAtom(from))) goto SUCCESS;
   }
-  FAIL:
-    LOG(BF("FAIL!"));
-    return false;
-  SUCCESS:
-    LOG(BF("SUCCESS!"));
-    return true;
-  }
+ FAIL:
+  LOG(BF("FAIL!"));
+  return false;
+ SUCCESS:
+  LOG(BF("SUCCESS!"));
+  return true;
+}
 
 void BondToAtomTest_O::fields(core::Record_sp node) {
   node->field( INTERN_(kw,atomTest), this->_AtomTest);
@@ -1434,7 +1436,7 @@ bool AtomTest_O::matches_Bond(Root_sp root, chem::Atom_sp from, chem::Bond_sp bo
   return false;
  SUCCESS:
   LOG(BF("SUCCESS!"));
-  return this->Base::matches_Bond(root,from,bond);
+  return true; // this->Base::matches_Bond(root,from,bond);
 }
 
 CL_DEFUN bool am1BccX(chem::Atom_sp atom) {
@@ -2194,15 +2196,15 @@ bool AntechamberFocusAtomMatch_O::matches_Atom(Root_sp root, chem::Atom_sp atom)
 CL_LISPIFY_NAME("make-antechamber-bond-to-atom-test");
 CL_LAMBDA(element neighbors props tag);
 CL_DEF_CLASS_METHOD AntechamberBondToAtomTest_sp AntechamberBondToAtomTest_O::create_args( core::Symbol_sp element, int neighbors,
-                                                                                                  AtomOrBondMatchNode_sp props, core::Symbol_sp tag )
+                                                                                           AtomOrBondMatchNode_sp props, core::Symbol_sp tag )
 {_G();
   GC_ALLOCATE(AntechamberBondToAtomTest_O, obj ); // RP_Create<AntechamberBondToAtomTest_O>(lisp);
-    obj->_Element = element;
-    obj->_Neighbors = neighbors;
-    obj->_AtomProperties = props;
-    obj->_Tag = tag;
-    return obj;
-  };
+  obj->_Element = element;
+  obj->_Neighbors = neighbors;
+  obj->_AtomProperties = props;
+  obj->_Tag = tag;
+  return obj;
+};
 
 core::T_sp AntechamberBondToAtomTest_O::children() {
   ql::list result;
@@ -2479,7 +2481,6 @@ core::T_sp AntechamberRoot_O::children() {
   if (this->_AfterMatchTests.notnilp()) result << this->_AfterMatchTests;
   return result.cons();
 };
-    
 
 string AntechamberRoot_O::descriptionOfContents() const {
   stringstream ss;
@@ -2747,34 +2748,105 @@ CL_END_ENUM(_sym_STARAtomTestEnumConverterSTAR);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<chem::ChemInfoNode_O>>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<chem::BondToAtomTest_O>>);
 
-MoleculeGraph_O::MoleculeGraph_O(Molecule_sp matter) : _Molecule(matter) {};
+MoleculeGraph_O::MoleculeGraph_O(Molecule_sp matter) {};
+
+MoleculeGraph_O::MoleculeGraph_O() {};
 
 MoleculeGraph_O::~MoleculeGraph_O() {
   delete this->_moleculeGraph;
   this->_moleculeGraph = nullptr;
 }
 
-
-void MoleculeGraph_O::initialize() {
-  this->_atoms_to_index = core::HashTableEq_O::create_default();
-  this->_moleculeGraph = nullptr;
+CL_DEFMETHOD size_t MoleculeGraph_O::add_vertex(core::T_sp vertex)
+{
+  size_t index = this->_nodes->length();
+  this->_nodes_to_index->setf_gethash(vertex,core::make_fixnum(index));
+  this->_nodes->vectorPushExtend(vertex);
+  boost::add_vertex(MoleculeVertexData(this,index),*this->_moleculeGraph);
+  return index;
 }
 
-CL_DEFUN MoleculeGraph_sp chem__make_molecule_graph(Molecule_sp matter) {
+CL_DEFMETHOD size_t MoleculeGraph_O::vertex_index(core::T_sp vertex)
+{
+  core::T_sp tindex = this->_nodes_to_index->gethash(vertex);
+  if (tindex.nilp()) {
+    SIMPLE_ERROR(BF("Could not find vertex %s") % _rep_(vertex));
+  }
+  return tindex.unsafe_fixnum();
+}
+
+CL_DEFMETHOD core::T_sp MoleculeGraph_O::get_vertex(size_t index)
+{
+  if (index>=this->_nodes->length()) {
+    SIMPLE_ERROR(BF("index %d must be less than %d") % index % this->_nodes->length());
+  }
+  return this->_nodes->rowMajorAref(index);
+}
+
+CL_DEFMETHOD void MoleculeGraph_O::add_edge(size_t v1, size_t v2, BondOrder bo)
+{
+  int iv1 = v1;
+  int iv2 = v2;
+  boost::add_edge(iv1,iv2,bo,*(this->_moleculeGraph));
+}
+
+
+CL_DEFMETHOD void MoleculeGraph_O::walk_vertices(core::T_sp callback)
+{
+  for ( size_t ii=0; ii<this->_nodes->length(); ++ii) {
+    core::eval::funcall(callback,this->_nodes->rowMajorAref(ii));
+  }
+}
+
+CL_DEFMETHOD void MoleculeGraph_O::walk_edges(core::T_sp callback)
+{
+      //Ok, we want to see that all our edges are now contained in the graph
+  typedef boost::graph_traits<MoleculeGraphType>::edge_iterator edge_iterator;
+
+    //Tried to make this section more clear, instead of using tie, keeping all
+    //the original types so it's more clear what is going on
+  boost::property_map<MoleculeGraphType,boost::edge_weight_t>::type moleculeEdge =
+    boost::get(boost::edge_weight_t(),*(this->_moleculeGraph));
+  std::pair<edge_iterator, edge_iterator> ei = edges(*this->_moleculeGraph);
+  for(edge_iterator edge_iter = ei.first; edge_iter != ei.second; ++edge_iter) {
+    core::T_sp a1 = this->_nodes->rowMajorAref(source(*edge_iter,*this->_moleculeGraph));
+    core::T_sp a2 = this->_nodes->rowMajorAref(target(*edge_iter,*this->_moleculeGraph));
+    BondOrder bo = moleculeEdge[*edge_iter];
+    core::eval::funcall(callback,a1,a2,translate::to_object<BondOrder>::convert(bo));
+  }
+}
+
+
+void MoleculeGraph_O::initialize() {
+  this->_nodes_to_index = core::HashTableEq_O::create_default();
+  this->_moleculeGraph = nullptr;
+  this->_nodes = core::ComplexVector_T_O::make(64,_Nil<core::T_O>(),core::make_fixnum(0));
+}
+
+CL_DEFUN MoleculeGraph_sp chem__make_molecule_graph() {
+  GC_ALLOCATE_VARIADIC(MoleculeGraph_O,graph);
+  graph->_moleculeGraph = new MoleculeGraphType();
+  return graph;
+}
+
+CL_LAMBDA(matter &optional (exclude_hydrogens nil));
+CL_DEFUN MoleculeGraph_sp chem__make_molecule_graph_from_molecule(Molecule_sp matter, bool exclude_hydrogens) {
   GC_ALLOCATE_VARIADIC(MoleculeGraph_O,graph,matter);
   Loop lMol;
   Loop lAtoms;
   lAtoms.loopTopGoal(matter,ATOMS);
   while (lAtoms.advanceLoopAndProcess()) {
     Atom_sp atom = lAtoms.getAtom();
-    graph->_atoms_to_index->setf_gethash(atom,core::make_fixnum(graph->_atoms.size()));
-    graph->_atoms.push_back(atom);
+    if (!exclude_hydrogens || (exclude_hydrogens && atom->getAtomicNumber()!=1)) {
+      graph->_nodes_to_index->setf_gethash(atom,core::make_fixnum(graph->_nodes->length()));
+      graph->_nodes->vectorPushExtend(atom);
+    }
   }
     
     //create an -undirected- graph type, using vectors as the underlying containers
     //and an adjacency_list as the basic representation
   graph->_moleculeGraph = new MoleculeGraphType();
-  for ( size_t iii=0; iii<graph->_atoms.size(); iii++ ) {
+  for ( size_t iii=0; iii<graph->_nodes->length(); iii++ ) {
     add_vertex(MoleculeVertexData(&*graph,iii),*graph->_moleculeGraph);
   }
   
@@ -2785,10 +2857,12 @@ CL_DEFUN MoleculeGraph_sp chem__make_molecule_graph(Molecule_sp matter) {
   while (lbonds.advanceLoopAndProcess()) {
     Atom_sp a1 = lbonds.getAtom1();
     Atom_sp a2 = lbonds.getAtom2();
-    BondOrder bo = lbonds.getBondOrder();
-    int atom1_index = graph->_atoms_to_index->gethash(a1).unsafe_fixnum();
-    int atom2_index = graph->_atoms_to_index->gethash(a2).unsafe_fixnum();
-    boost::add_edge(atom1_index,atom2_index,bo,*graph->_moleculeGraph);
+    if (!exclude_hydrogens||(exclude_hydrogens && (a1->getAtomicNumber()!=1) && (a2->getAtomicNumber()!=1))) {
+      BondOrder bo = lbonds.getBondOrder();
+      int atom1_index = graph->_nodes_to_index->gethash(a1).unsafe_fixnum();
+      int atom2_index = graph->_nodes_to_index->gethash(a2).unsafe_fixnum();
+      boost::add_edge(atom1_index,atom2_index,bo,*graph->_moleculeGraph);
+    }
   }
   return graph;
 }
@@ -2804,8 +2878,8 @@ CL_DEFUN void chem__molecule_graph_dump(MoleculeGraph_sp graph) {
     //the original types so it's more clear what is going on
   std::pair<edge_iterator, edge_iterator> ei = edges(*graph->_moleculeGraph);
   for(edge_iterator edge_iter = ei.first; edge_iter != ei.second; ++edge_iter) {
-    Atom_sp a1 = graph->_atoms[source(*edge_iter,*graph->_moleculeGraph)];
-    Atom_sp a2 = graph->_atoms[target(*edge_iter,*graph->_moleculeGraph)];
+    core::T_sp a1 = graph->_nodes->rowMajorAref(source(*edge_iter,*graph->_moleculeGraph));
+    core::T_sp a2 = graph->_nodes->rowMajorAref(target(*edge_iter,*graph->_moleculeGraph));
     core::write_bf_stream(BF("(%s - %s)\n") % _rep_(a1) % _rep_(a2) );
   }
 }
@@ -2972,26 +3046,26 @@ CL_DEFUN ChemInfoGraph_sp chem__make_chem_info_graph( Root_sp pattern)
   return graph;
 }
 
-    CL_DEFUN void chem__chem_info_graph_dump(ChemInfoGraph_sp graph) {
-      core::write_bf_stream(BF("Number of vertices: %d\n") % num_vertices(*graph->_chemInfoGraph) );
-      core::write_bf_stream(BF("Number of edges: %d\n") % num_edges(*graph->_chemInfoGraph) );
-      core::write_bf_stream(BF("Length of _nodeOrder -> %lu\n") % graph->_nodeOrder.size());
-      typedef boost::graph_traits<ChemInfoGraphType>::edge_iterator edge_iterator;
+CL_DEFUN void chem__chem_info_graph_dump(ChemInfoGraph_sp graph) {
+  core::write_bf_stream(BF("Number of vertices: %d\n") % num_vertices(*graph->_chemInfoGraph) );
+  core::write_bf_stream(BF("Number of edges: %d\n") % num_edges(*graph->_chemInfoGraph) );
+  core::write_bf_stream(BF("Length of _nodeOrder -> %lu\n") % graph->_nodeOrder.size());
+  typedef boost::graph_traits<ChemInfoGraphType>::edge_iterator edge_iterator;
     //Tried to make this section more clear, instead of using tie, keeping all
     //the original types so it's more clear what is going on
-      std::pair<edge_iterator, edge_iterator> ei = edges(*graph->_chemInfoGraph);
-      for (size_t idx=0; idx<graph->_nodeOrder.size(); ++idx) {
-        ChemInfoNode_sp a1 = graph->_atomNodes[graph->_nodeOrder[idx]];
-        core::write_bf_stream(BF("Vertex: %s\n") % _rep_(a1));
-      }
-      for(edge_iterator edge_iter = ei.first; edge_iter != ei.second; ++edge_iter) {
-        ChemInfoNode_sp a1 = graph->_atomNodes[source(*edge_iter,*graph->_chemInfoGraph)];
-        ChemInfoNode_sp a2 = graph->_atomNodes[target(*edge_iter,*graph->_chemInfoGraph)];
-        core::write_bf_stream(BF("(%s - %s)\n") % _rep_(a1) % _rep_(a2) );
-      }
-    }
+  std::pair<edge_iterator, edge_iterator> ei = edges(*graph->_chemInfoGraph);
+  for (size_t idx=0; idx<graph->_nodeOrder.size(); ++idx) {
+    ChemInfoNode_sp a1 = graph->_atomNodes[graph->_nodeOrder[idx]];
+    core::write_bf_stream(BF("Vertex: %s\n") % _rep_(a1));
+  }
+  for(edge_iterator edge_iter = ei.first; edge_iter != ei.second; ++edge_iter) {
+    ChemInfoNode_sp a1 = graph->_atomNodes[source(*edge_iter,*graph->_chemInfoGraph)];
+    ChemInfoNode_sp a2 = graph->_atomNodes[target(*edge_iter,*graph->_chemInfoGraph)];
+    core::write_bf_stream(BF("(%s - %s)\n") % _rep_(a1) % _rep_(a2) );
+  }
+}
 
-
+#if 0
   int vertex_index_Molecule(const MoleculeVertexData& data)
   {
     return data._AtomIndex;
@@ -3001,7 +3075,7 @@ CL_DEFUN ChemInfoGraph_sp chem__make_chem_info_graph( Root_sp pattern)
   {
     return data._NodeIndex;
   }
-
+#endif
   struct VertexComp {
     ChemInfoGraph_sp _chemInfoGraph;
     MoleculeGraph_sp _moleculeGraph;
@@ -3010,7 +3084,7 @@ CL_DEFUN ChemInfoGraph_sp chem__make_chem_info_graph( Root_sp pattern)
                     int v2)
     {
       ChemInfoNode_sp node = this->_chemInfoGraph->_atomNodes[this->_chemInfoGraph->_nodeOrder[v1]];
-      Atom_sp atom = this->_moleculeGraph->_atoms[v2];
+      Atom_sp atom = gc::As<Atom_sp>(this->_moleculeGraph->_nodes->rowMajorAref(v2));
       bool match = node->matches_Atom(this->_chemInfoGraph->_Root,atom);
       if (chem__verbose(1)) {
         core::write_bf_stream(BF("In VertexComp matching...  v1 %d to v2 %d\n") % v1 % v2 );
@@ -3051,9 +3125,9 @@ CL_DEFUN ChemInfoGraph_sp chem__make_chem_info_graph( Root_sp pattern)
           return match;
         } else {
           int msource = boost::source(em,*(this->_moleculeGraph->_moleculeGraph));
-          Atom_sp asource = this->_moleculeGraph->_atoms[msource];
+          Atom_sp asource = gc::As<Atom_sp>(this->_moleculeGraph->_nodes->rowMajorAref(msource));
           int mtarget = boost::target(em,*(this->_moleculeGraph->_moleculeGraph));
-          Atom_sp atarget = this->_moleculeGraph->_atoms[mtarget];
+          Atom_sp atarget = gc::As<Atom_sp>(this->_moleculeGraph->_nodes->rowMajorAref(mtarget));
           bool match = _matchBondTypes(bta->_Bond,bo,asource,atarget);
           if (chem__verbose(1)) {
             core::write_bf_stream(BF("In EdgeComp matching with _matchBondTypes using aromaticity info...\n"));
@@ -3066,9 +3140,9 @@ CL_DEFUN ChemInfoGraph_sp chem__make_chem_info_graph( Root_sp pattern)
       }
     // The comparison is not simple - we need to use the BondMatcher
       int msource = boost::source(em,*(this->_moleculeGraph->_moleculeGraph));
-      Atom_sp asource = this->_moleculeGraph->_atoms[msource];
+      Atom_sp asource = gc::As<Atom_sp>(this->_moleculeGraph->_nodes->rowMajorAref(msource));
       int mtarget = boost::target(em,*(this->_moleculeGraph->_moleculeGraph));
-      Atom_sp atarget = this->_moleculeGraph->_atoms[mtarget];
+      Atom_sp atarget = gc::As<Atom_sp>(this->_moleculeGraph->_nodes->rowMajorAref(mtarget));
       Bond_sp bond = asource->getBondTo(atarget);
       BondMatcher_sp bondMatcher = gc::As<BondMatcher_sp>(bta->_BondMatcher);
       bool match = bondMatcher->matches_Bond(this->_chemInfoGraph->_Root,asource,bond);
@@ -3140,6 +3214,139 @@ CL_DEFUN ChemInfoGraph_sp chem__make_chem_info_graph( Root_sp pattern)
     return current_match->_TagHistory;
   }
 //#endif
+
+
+
+
+
+  struct CommonVertexComp {
+    MoleculeGraph_sp _moleculeGraph1;
+    MoleculeGraph_sp _moleculeGraph2;
+    core::T_sp       _matcher;
+    bool operator()(int v1,
+                    int v2)
+    {
+      core::T_sp node1 = this->_moleculeGraph1->_nodes->rowMajorAref(v1);
+      core::T_sp node2 = this->_moleculeGraph2->_nodes->rowMajorAref(v2);
+      core::T_sp matched = core::eval::funcall(this->_matcher,node1,node2);
+      bool match = matched.notnilp();
+      return match;
+    }
+    CommonVertexComp(MoleculeGraph_sp mg1, MoleculeGraph_sp mg2,core::T_sp matcher) : _moleculeGraph1(mg1),_moleculeGraph2(mg2), _matcher(matcher) {};
+  };
+
+  struct CommonEdgeComp {
+    MoleculeGraph_sp _moleculeGraph1;
+    MoleculeGraph_sp _moleculeGraph2;
+  
+    bool operator()(const boost::detail::edge_desc_impl<boost::undirected_tag, unsigned long>& em1,
+                    const boost::detail::edge_desc_impl<boost::undirected_tag, unsigned long>& em2)
+    {
+      boost::property_map<MoleculeGraphType,boost::edge_weight_t>::type moleculeEdge1 =
+        boost::get(boost::edge_weight_t(),*(this->_moleculeGraph1->_moleculeGraph));
+      boost::property_map<MoleculeGraphType,boost::edge_weight_t>::type moleculeEdge2 =
+        boost::get(boost::edge_weight_t(),*(this->_moleculeGraph2->_moleculeGraph));
+      BondOrder bo1 = moleculeEdge1[em1];
+      BondOrder bo2 = moleculeEdge2[em2];
+      bool match = (bo1==bo2);
+      if (chem__verbose(1)) {
+        core::write_bf_stream(BF("In EdgeComp matching with _matchBondTypes with no aromaticity info...\n"));
+        core::write_bf_stream(BF(" bo1 -> %s\n") % bo1 );
+        core::write_bf_stream(BF(" bo2 -> %s\n") % bo2 );
+        core::write_bf_stream(BF("  match -> %d\n") % match);
+      }
+      return match;
+    }
+    CommonEdgeComp(MoleculeGraph_sp mg1, MoleculeGraph_sp mg2) : _moleculeGraph1(mg1), _moleculeGraph2(mg2) {};
+  };
+
+
+struct print_callback {
+private:
+  const MoleculeGraph_sp m_graph1;
+  const MoleculeGraph_sp m_graph2;
+  core::T_sp m_callback;
+  core::ComplexVector_T_sp _results;
+
+public:
+  print_callback(MoleculeGraph_sp graph1,
+                 MoleculeGraph_sp graph2,
+                 core::T_sp callback ) :
+    m_graph1(graph1), m_graph2(graph2), m_callback(callback) {
+    this->_results = core::ComplexVector_T_O::make(32,_Nil<core::T_O>(),core::make_fixnum(0));
+  }
+
+  template <typename CorrespondenceMapFirstToSecond,
+            typename CorrespondenceMapSecondToFirst>
+  bool operator()(CorrespondenceMapFirstToSecond correspondence_map_1_to_2,
+                  CorrespondenceMapSecondToFirst correspondence_map_2_to_1,
+                  typename boost::graph_traits<MoleculeGraphType>::vertices_size_type subgraph_size) {
+
+    this->_results->fillPointerSet(0);
+    // Print out correspondences between vertices
+    BGL_FORALL_VERTICES_T(vertex1, *m_graph1->_moleculeGraph, MoleculeGraphType) {
+      // Skip unmapped vertices
+      if (get(correspondence_map_1_to_2, vertex1) != boost::graph_traits<MoleculeGraphType>::null_vertex()) {
+        this->_results->vectorPushExtend(core::make_fixnum(vertex1));
+        this->_results->vectorPushExtend(core::make_fixnum(get(correspondence_map_1_to_2, vertex1)));
+      }
+    }
+    core::T_sp bres = core::eval::funcall(this->m_callback,this->_results,this->m_graph1,this->m_graph2);
+    return bres.notnilp();
+  }
+};
+
+
+
+CL_DEFUN core::List_sp chem__boost_graph_mcgregor_common_subgraphs(MoleculeGraph_sp moleculeGraph1, MoleculeGraph_sp moleculeGraph2,
+                                                                   bool only_connected_subgraphs,
+                                                                   core::T_sp vertex_matcher,
+                                                                   core::T_sp match_callback ) {
+  CommonEdgeComp edge_comp(moleculeGraph1,moleculeGraph2);
+  CommonVertexComp vertex_comp(moleculeGraph1,moleculeGraph2,vertex_matcher);
+  print_callback my_callback(moleculeGraph1,moleculeGraph2,match_callback);
+  boost::mcgregor_common_subgraphs(
+                          *moleculeGraph1->_moleculeGraph,
+                          *moleculeGraph2->_moleculeGraph,
+                          only_connected_subgraphs,
+                          my_callback,
+                          boost::edges_equivalent(edge_comp).vertices_equivalent(vertex_comp));
+  return _Nil<core::T_O>();
+}
+
+#if 0
+CL_DEFUN core::List_sp chem__boost_graph_mcgregor_common_subgraphs_maximum(MoleculeGraph_sp moleculeGraph1, MoleculeGraph_sp moleculeGraph2,
+                                                                   bool only_connected_subgraphs) {
+  CommonEdgeComp edge_comp(moleculeGraph1,moleculeGraph2);
+  CommonVertexComp vertex_comp(moleculeGraph1,moleculeGraph2);
+  print_callback<MoleculeGraphType,MoleculeGraphType> my_callback(*moleculeGraph1->_moleculeGraph,*moleculeGraph2->_moleculeGraph);
+  boost::mcgregor_common_subgraphs_maximum(
+                          *moleculeGraph1->_moleculeGraph,
+                          *moleculeGraph2->_moleculeGraph,
+                          only_connected_subgraphs,
+                          my_callback,
+                          boost::edges_equivalent(edge_comp).vertices_equivalent(vertex_comp));
+  return _Nil<core::T_O>();
+}
+
+CL_DEFUN core::List_sp chem__boost_graph_mcgregor_common_subgraphs_maximum_unique(MoleculeGraph_sp moleculeGraph1, MoleculeGraph_sp moleculeGraph2,
+                                                                   bool only_connected_subgraphs) {
+  CommonEdgeComp edge_comp(moleculeGraph1,moleculeGraph2);
+  CommonVertexComp vertex_comp(moleculeGraph1,moleculeGraph2);
+  print_callback<MoleculeGraphType,MoleculeGraphType> my_callback(*moleculeGraph1->_moleculeGraph,*moleculeGraph2->_moleculeGraph);
+  boost::mcgregor_common_subgraphs_maximum_unique(
+                          *moleculeGraph1->_moleculeGraph,
+                          *moleculeGraph2->_moleculeGraph,
+                          only_connected_subgraphs,
+                          my_callback,
+                          boost::edges_equivalent(edge_comp).vertices_equivalent(vertex_comp));
+  return _Nil<core::T_O>();
+}e
+#endif
+
+//#endif
+
+
 
 
 }; // namespace chem
