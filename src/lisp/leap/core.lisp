@@ -24,10 +24,12 @@
   "Search the *path* list for a directory that contains filename and return it.
   Otherwise return NIL."
   (declare (pathname filename))
-  (loop for path in (reverse *path*)
-     for full-path = (merge-pathnames filename path)
-     when (probe-file full-path)
-     return it))
+  (if (probe-file filename)
+      (probe-file filename)
+      (loop for path in (reverse *path*)
+            for full-path = (merge-pathnames filename path)
+            when (probe-file full-path)
+              return it)))
 
 ;;; --
 ;;;
