@@ -360,7 +360,7 @@
    (top-directory :initform (make-pathname :directory (list :relative "jobs"))
                   :initarg :top-directory :accessor top-directory )
    (stage :initform 0 :initarg :stage :accessor stage)
-   (residue-name-to-pdb :initform (make-hash-table) :initarg :residue-name-to-pdb :accessor residue-name-to-pdb)
+   (residue-name-to-pdb-alist :initform nil :initarg :residue-name-to-pdb-alist :accessor residue-name-to-pdb-alist)
    ))
 
 (defmethod print-object ((obj calculation) stream)
@@ -979,6 +979,23 @@ METHOD controls how the masks are calculated"
             for mol = (drawing ligand)
             do (cando:do-atoms (atm mol)
                  (chem:set-position atm (geom:v* (chem:get-position atm) scale)))))))
+
+(defun validate-atom-types (matter)
+  (cando:do-atoms (atom matter)
+    (let ((type (chem:get-type atom)))
+      (when (or (null type) (eq :du type))
+        (error "Illegal type ~a for ~a in ~a" type atom matter)))))
+
+(defun check-calculation-atom-types (calculation)
+  (loop for ligand in (ligands calculation)
+        for molecule = (molecule ligand)
+        do (leap:assign-atom-types molecule)
+        do (validate-atom-types molecule)
+           (format t "ligand ~a has valid atom types~%" molecule))
+  (loop for receptor in (receptors calculation)
+        do (validate-atom-types receptor)
+           (format t "Receptor ~a has valid atom types~%" receptor)))
+
 
 (defun ensure-jobs-directories-exist (pathname)
   (ensure-directories-exist pathname))

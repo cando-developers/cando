@@ -631,7 +631,7 @@ then don't calculate 1,4 interactions"
             (cons :cn2-vec (copy-seq cn2-vec))))))
 
 
-(defun prepare-residue (energy-function)
+(defun prepare-residue (energy-function residue-name-to-pdb-alist)
   (let* ((atom-table (chem:atom-table energy-function))
          (residue-vector (chem:atom-table-residues atom-table))
          (residue-pointer-prepare-vector (chem:atom-table-residue-pointers atom-table))
@@ -642,6 +642,14 @@ then don't calculate 1,4 interactions"
          (nmolecule 0)
          (nresidue 0)
          (nmxrs 0))
+    ;; Fix residue names that are too long
+    (loop for index from 0 below (length residue-name-vector)
+          for residue-name = (aref residue-name-vector index)
+          when (> (length (string residue-name)) 3)
+            do (let ((short-residue-name-pair (assoc residue-name residue-name-to-pdb-alist)))
+                 (unless short-residue-name-pair
+                   (error "There is must be a short residue name for ~a" residue-name))
+                 (setf (aref residue-name-vector index) (cdr short-residue-name-pair))))
     (setf nmolecule (length molecule-vector))
     (setf nresidue (length residue-name-vector))
     (loop for i from 0 below (length residue-pointer-prepare-vector)
@@ -701,7 +709,7 @@ then don't calculate 1,4 interactions"
       ,@body)))
 
      
-(defun save-amber-parm-format-using-energy-function (energy-function topology-pathname coordinate-pathname)
+(defun save-amber-parm-format-using-energy-function (energy-function topology-pathname coordinate-pathname residue-name-to-pdb-alist)
   (let* ((bar (cando:make-progress-bar :style :bar :message "Saving" :total 41 :width 41 :divisions 41))
          (bar-counter 0)
          (nonbonds (chem:get-nonbond-component energy-function))
@@ -755,7 +763,7 @@ then don't calculate 1,4 interactions"
                                         ;        (multiple-value-setq (ntypes atom-name charge mass atomic-number ico iac local-typej-vec cn1-vec cn2-vec)
                                         ;          (chem:prepare-amber-energy-nonbond energy-function))
         (multiple-value-setq (nres nmxrs residue-pointer-vec residue-name-vec atoms-per-molecule residue-vec)
-          (prepare-residue energy-function))
+          (prepare-residue energy-function residue-name-to-pdb-alist))
         (setf atom-vectors (chem:prepare-amber-energy-nonbond energy-function (chem:nonbond-force-field-for-aggregate atom-table)))
         (setf ntypes (cdr (assoc :ntypes atom-vectors)))
         (setf atom-name (cdr (assoc :atom-name-vector atom-vectors)))
@@ -1479,7 +1487,7 @@ then don't calculate 1,4 interactions"
     (cando:progress-done bar)
     (values energy-function)))
 
-(defun save-amber-parm-format (aggregate topology-pathname coordinate-pathname &key assign-types)
+(defun save-amber-parm-format (aggregate topology-pathname coordinate-pathname &key assign-types residue-name-to-pdb-alist)
   (format t "Constructing energy function~%")
   (finish-output)
   (let* ((energy-function (chem:make-energy-function aggregate 
@@ -1490,7 +1498,7 @@ then don't calculate 1,4 interactions"
     ;;;  (2) Copy the name of the aggregate into the energy function
     ;;;  (3) Separate the solvent molecules from solute molecules and order them in the energy-function
     ;;;  (4) Copy the result of (chem:lookup-nonbond-force-field-for-aggregate aggregate force-field) into the energy-function
-    (save-amber-parm-format-using-energy-function energy-function topology-pathname coordinate-pathname)))
+    (save-amber-parm-format-using-energy-function energy-function topology-pathname coordinate-pathname residue-name-to-pdb-alist)))
 
 
 

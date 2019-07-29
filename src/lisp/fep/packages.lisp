@@ -106,6 +106,9 @@
    #:pattern-atoms
    #:average-core-atom-positions
    #:fep-calculation-from-ligands
+   #:check-calculation-atom-types
+   #:validate-atom-types
+   #:residue-name-to-pdb-alist
    #:add-job-edge))
 
 

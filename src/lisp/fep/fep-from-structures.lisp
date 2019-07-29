@@ -6,19 +6,27 @@
   (chem:content-at molecule 0))
 
 (defun fep-calculation-from-ligands (ligands)
-  (let* ((fep-structures (loop for molecule in ligands
-                              for residue = (only-residue molecule)
-                              collect (make-instance 'simple-fep-structure
-                                                     :name (chem:get-name molecule)
-                                                     :drawing molecule
-                                                     :core-residue residue
-                                                     :core-residue-name (chem:get-name residue)
-                                                     :core-atoms (chem:all-atoms-as-list molecule nil)
-                                                     :molecule molecule
-                                                     :net-charge 0.0 #|Not always!|#)))
+  (let* ((residue-name-to-pdb-alist nil)
+         (fep-structures (loop for molecule in ligands
+                               for residue = (only-residue molecule)
+                               for residue-index from 0
+                               for residue-name = (chem:get-name residue)
+                               when (> (length (string residue-name)) 3)
+                                 do (push (cons residue-name (let ((*print-base* 36))
+                                                               (intern (format nil "$~2,'0d" residue-index) :keyword)))
+                                          residue-name-to-pdb-alist)
+                               collect (make-instance 'simple-fep-structure
+                                                      :name (chem:get-name molecule)
+                                                      :drawing molecule
+                                                      :core-residue residue
+                                                      :core-residue-name (chem:get-name residue)
+                                                      :core-atoms (chem:all-atoms-as-list molecule nil)
+                                                      :molecule molecule
+                                                      :net-charge 0.0 #|Not always!|#)))
          (calc (make-instance 'fep:fep-calculation
                               :ligands fep-structures
-                              :mask-method :closest)))
+                              :mask-method :closest
+                              :residue-name-to-pdb-alist residue-name-to-pdb-alist)))
     calc))
                               
 (defmethod calculate-masks (source target (method (eql :closest)))

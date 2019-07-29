@@ -36,9 +36,11 @@
                  (defparameter *morph* (find-morph-with-name :%MORPH-NAME% *feps*))
                  (defparameter *source* (fep:source *morph*))
                  (defparameter *target* (fep:target *morph*))
-                 (fep:average-core-atom-positions *source* *target* (fep:equivalent-atom-names (fep:morph-mask *morph)))
+                 (fep:average-core-atom-positions *source* *target* (fep:equivalent-atom-names (fep:morph-mask *morph*)))
                  (leap:assign-atom-types (fep:molecule *source*))
+                 (fep:validate-atom-types (fep:molecule *source*))
                  (leap:assign-atom-types (fep:molecule *target*))
+                 (fep:validate-atom-types (fep:molecule *target*))
                  (defparameter *ligands* (cando:combine (fep:molecule *source*)
                                                         (fep:molecule *target*)))
                  (format t "*side-name* --> ~a~%" *side-name*)
@@ -59,7 +61,8 @@
               ;   (cando:save-mol2 *system* (ensure-directories-exist ":%MOL2%"))
                  (ensure-jobs-directories-exist (pathname ":%TOPOLOGY%"))
                  (ensure-jobs-directories-exist (pathname ":%COORDINATES%"))
-                 (leap.topology:save-amber-parm-format *system* ":%TOPOLOGY%" ":%COORDINATES%")
+                 (leap.topology:save-amber-parm-format *system* ":%TOPOLOGY%" ":%COORDINATES%"
+                  :residue-name-to-pdb-alist (fep:residue-name-to-pdb-alist *feps*))
                  (core:exit)))))
 
 (defparameter *prepare-min-in*
@@ -181,7 +184,8 @@ outtraj :%TARGET% onlyframes 1
                                                        (chem:matter-copy lsolv)))
                  (leap.set-box:set-box decharge :vdw)
                  (cando:save-mol2 decharge ":%DECHARGE-MOL2%")
-                 (leap.topology:save-amber-parm-format decharge ":%DECHARGE-TOPOLOGY%" ":%DECHARGE-COORDINATES%")
+                 (leap.topology:save-amber-parm-format decharge ":%DECHARGE-TOPOLOGY%" ":%DECHARGE-COORDINATES%"
+                                                       :residue-name-to-pdb-alist (fep:residue-name-to-pdb-alist *feps*))
                  (core:exit)
                  ))))
 
@@ -204,7 +208,8 @@ outtraj :%TARGET% onlyframes 1
                                                        (chem:matter-copy lsolv)))
                  (leap.set-box:set-box recharge :vdw)
                  (cando:save-mol2 recharge ":%RECHARGE-MOL2%")
-                 (leap.topology:save-amber-parm-format recharge ":%RECHARGE-TOPOLOGY%" ":%RECHARGE-COORDINATES%")
+                 (leap.topology:save-amber-parm-format recharge ":%RECHARGE-TOPOLOGY%" ":%RECHARGE-COORDINATES%"
+                                                       :residue-name-to-pdb-alist (fep:residue-name-to-pdb-alist *feps*))
                  (core:exit)
                  ))))
 

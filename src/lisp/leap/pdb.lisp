@@ -184,8 +184,8 @@ odd atom name maps only to the last standard atom name it was mapped to."
 
 (defun ensure-molecule (reader chain-id)
   (unless (molecule reader)
+    (format t "Getting molecule at ~a~%" (sequences-index reader))
     (setf (molecule reader) (elt (molecules reader) (sequences-index reader)))
-    (chem:add-matter (aggregate reader) (molecule reader))
     #+(or)(format *debug-io* "Added molecule ~a to aggregate~%" (molecule reader)))
   (molecule reader))
 
@@ -745,6 +745,8 @@ specified in PDB files.
                          to-atoms))
           (let ((unbuilt-heavy-atoms 0)
                 (aggregate (aggregate pdb-atom-reader)))
+            (loop for molecule in (molecules pdb-atom-reader)
+                  do (chem:add-matter aggregate molecule))
             (chem:map-atoms
              nil
              (lambda (a)
@@ -761,7 +763,7 @@ specified in PDB files.
                     (format t "Built ~d missing hydrogens~%" built))))
             (cando:maybe-join-molecules-in-aggregate aggregate)
             (cando:maybe-split-molecules-in-aggregate aggregate)
-            (classify-molecules aggregate system)
+            (setf aggregate (classify-molecules aggregate system))
             (let ((name-only (pathname-name (pathname filename))))
               (chem:set-name aggregate (intern name-only *package*)))
             (values aggregate scanner pdb-atom-reader)))))))
@@ -771,8 +773,9 @@ specified in PDB files.
 (defmethod classify-molecules (aggregate system)
   (cando:do-molecules (molecule aggregate)
     (cond
-      ((eq (chem:get-name molecule) :hoh)
-       (chem:setf-molecule-type molecule 'cando:solvent)))))
+      ((member (chem:get-name molecule) (list :hoh))
+       (chem:setf-molecule-type molecule :solvent))))
+  aggregate)
 
 #|
 (defun read-line (pdb-atom-reader)

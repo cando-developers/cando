@@ -150,20 +150,24 @@ Break up the molecules in the aggregate into a list of molecules using spanning 
              residue))
           mol)
          (loop for atom in atoms
+               for iteration from 0
                when (not (gethash atom atoms-seen))
-                 do (let ((new-molecule (span-across-molecule-from-atom mol
-                                                                        atom
-                                                                        atoms-seen
-                                                                        residues-to-molecules
-                                                                        atoms-to-residues)))
-                      (push new-molecule molecules)))))
+                 do (multiple-value-bind (new-molecule atoms-spanned)
+                        (span-across-molecule-from-atom mol
+                                                        atom
+                                                        atoms-seen
+                                                        residues-to-molecules
+                                                        atoms-to-residues)
+                      (if (= atoms-spanned (length atoms))
+                          (push mol molecules) ; the new-molecule has all the atoms of the old molecule - so keep the oldq
+                          (push new-molecule molecules))))))
      aggregate)
 ;;; Remove the molecules in the aggregate
     (let ((mols (chem:map-molecules 'list #'identity aggregate)))
       (loop for mol in mols
             do (chem:remove-molecule aggregate mol)))
     ;; Add the new molecules
-    (loop for mol in molecules
+    (loop for mol in (nreverse molecules)
           do (chem:add-matter aggregate mol))
     aggregate))
 
@@ -176,6 +180,7 @@ Break up the molecules in the aggregate into a list of molecules using spanning 
   #+(or)(format *debug-io* "span-across-molecule-from-atom old-molecule ~a atom ~a~%" old-molecule atom)
   (let ((new-molecule (chem:make-molecule (chem:get-name old-molecule)))
         (spanning-tree (chem:make-spanning-loop atom))
+        (atoms-spanned 0)
         residues)
     (loop
       (if (chem:advance-loop-and-process spanning-tree)
@@ -186,6 +191,7 @@ Break up the molecules in the aggregate into a list of molecules using spanning 
                    (_ (unless residue
                         (error "Could not find the residue for atom ~s" atom)))
                    (residue-molecule (gethash residue residues-to-molecules)))
+              (incf atoms-spanned)
               #+(or)(format *debug-io* "Atom ~a is in residue ~a in molecule ~a~%" atom residue residue-molecule)
               (setf (gethash atom atoms-seen) atom)
               (unless residue-molecule
@@ -200,7 +206,7 @@ Break up the molecules in the aggregate into a list of molecules using spanning 
       (chem:set-name new-molecule (chem:get-name (chem:content-at new-molecule 0))))
     (when (= (chem:content-size new-molecule) 0)
       (error "I am about to return an empty molecule!!!!"))
-    new-molecule))
+    (values new-molecule atoms-spanned)))
 
 
 

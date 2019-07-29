@@ -111,14 +111,12 @@
 (defstruct m-line-state charges)
 
 (defun parse-m-line (line m-line-state)
-  (format *debug-io* "m-line: ~a~%" line)
   (let ((m-line (esrap:parse 'm-line line)))
     (cond
       ((eq (car m-line) :chg)
        (loop for pair in (caddr m-line)
              for atom-index = (car pair)
              for charge = (cadr pair)
-             do (format *debug-io* "atom-index: ~a  charge: ~a~%" atom-index charge)
              do (push (cons atom-index charge) (m-line-state-charges m-line-state)))
        :chg)
       ((eq (car m-line) :end)
