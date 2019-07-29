@@ -349,6 +349,7 @@ namespace chem {
 #endif
     CL_LISPIFY_NAME("getPosition");
     CL_DEFMETHOD 	Vector3 getPosition() { return this->position; };
+    CL_DEFMETHOD bool atomWithinAngstroms(Atom_sp other, float angstroms) const;
     CL_LISPIFY_NAME("getPositionInNanometers");
     CL_DEFMETHOD 	Vector3 getPositionInNanometers() { return this->position.inNanometers(); };
     Vector3& getPositionRef() { return this->position; };

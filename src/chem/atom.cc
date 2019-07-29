@@ -310,6 +310,16 @@ void Atom_O::transferCoordinates(Matter_sp obj)
   this->setPosition(other->getPosition());
 }
 
+bool Atom_O::atomWithinAngstroms(Atom_sp other, float angstroms) const
+{
+  Vector3 delta = this->position-other->position;
+  if (fabs(delta.getX())<angstroms &&
+      fabs(delta.getY())<angstroms &&
+      fabs(delta.getZ())<angstroms) {
+    if (delta.length()<angstroms) return true;
+  }
+  return false;
+}
 
 //
 // Copy constructor
