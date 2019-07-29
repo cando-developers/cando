@@ -20,7 +20,8 @@
                 :parser.common-rules
                 :PARSER.COMMON-RULES.OPERATORS
                 :architecture.builder-protocol
-                :cl-ppcre)
+                :cl-ppcre
+                :molecule-graph)
   :serial t
 ;;;  :build-operation asdf:monolithic-compile-bundle-op
 ;;;  :build-pathname #P"/tmp/fep.fasb"

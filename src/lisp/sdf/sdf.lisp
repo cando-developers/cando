@@ -49,6 +49,26 @@
   (:lambda (x)
     x))
 
+(esrap:defrule m-chg-line
+  (and "M" parser.common-rules:whitespace/not-newline
+       "CHG" parser.common-rules:whitespace/not-newline
+       number parser.common-rules:whitespace/not-newline (* (and number/s number/?s)))
+  (:destructure (m s1 chg s2 num s3 pairs)
+                (declare (ignore m s1 chg s2 s3))
+                (list :chg num pairs)))
+
+(esrap:defrule m-end-line
+  (and "M" parser.common-rules:whitespace/not-newline
+       "END")
+  (:destructure (m s1 end)
+                (declare (ignore m s1 end))
+                (list :end)))
+
+(esrap:defrule m-line
+    (or m-chg-line m-end-line)
+  (:lambda (data)
+    data))
+
 (esrap:defrule header-line
     (and number/s number/s number/s number/s number/s number/s "999 V2000"))
 
@@ -88,13 +108,31 @@
           do (chem:bond-to atom1 atom2 order))
     atom-vector))
 
+(defstruct m-line-state charges)
+
+(defun parse-m-line (line m-line-state)
+  (format *debug-io* "m-line: ~a~%" line)
+  (let ((m-line (esrap:parse 'm-line line)))
+    (cond
+      ((eq (car m-line) :chg)
+       (loop for pair in (caddr m-line)
+             for atom-index = (car pair)
+             for charge = (cadr pair)
+             do (format *debug-io* "atom-index: ~a  charge: ~a~%" atom-index charge)
+             do (push (cons atom-index charge) (m-line-state-charges m-line-state)))
+       :chg)
+      ((eq (car m-line) :end)
+       :end)
+      (t (error "Unknown m-line ~a" line)))))
+
 (defun parse-groups (sin eof-error-p eof)
   (flet ((terminating-read-line (sin)
            (let ((line (read-line sin eof-error-p eof)))
              (when (eq line eof)
                (return-from parse-groups eof))
              line)))
-    (let* ((name (terminating-read-line sin))
+    (let* ((m-line-state (make-m-line-state))
+           (name (terminating-read-line sin))
            (blank1 (terminating-read-line sin))
            (blank2 (terminating-read-line sin))
            (header-line (string-trim '(#\space) (terminating-read-line sin)))
@@ -106,8 +144,16 @@
                         collect (esrap:parse 'atom-line line)))
            (bonds (loop for bond-index below num-bonds
                         for line = (string-trim '(#\space) (terminating-read-line sin))
-                        collect (esrap:parse 'bond-line line))) 
+                        collect (esrap:parse 'bond-line line)))
            (atom-vector (build-atom-vector atoms bonds)))
+      ;; parse the M lines
+      (loop for line = (string-trim '(#\space) (terminating-read-line sin))
+            for result = (parse-m-line line m-line-state)
+            until (eq result :end))
+      (loop for index-charge in (m-line-state-charges m-line-state)
+            for index = (1- (car index-charge))
+            for charge = (cdr index-charge)
+            do (chem:set-charge (elt atom-vector index) charge))
       (let ((atom-to-index (make-hash-table))
             groups)
         (loop for index below (length atom-vector)

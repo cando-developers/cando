@@ -299,6 +299,7 @@
 (defclass fep-morph ()
   ((source :initarg :source :accessor source)
    (target :initarg :target :accessor target)
+   (morph-mask :initarg :morph-mask :accessor morph-mask)
    (stages :initarg :stages :initform 1 :accessor stages)
    (windows :initarg :windows :initform 11 :accessor windows)))
 
@@ -324,13 +325,17 @@
    (net-charge :initform 0.0  :initarg :net-charge :accessor net-charge)
    (am1-charges :initarg :am1-charges :accessor am1-charges)
    (am1-bcc-charges :initarg :am1-bcc-charges :accessor am1-bcc-charges)))
-  
+
+(defmethod print-object ((object simple-fep-structure) stream)
+  (print-unreadable-object (object stream)
+    (format stream "~a ~a" (class-name (class-of object)) (name object))))
+
 (defclass fep-structure (simple-fep-structure)
   ((side-chain-residue-names :initarg :side-chain-residue-names :accessor side-chain-residue-names)
    (side-chain-atoms :initarg :side-chain-atoms :accessor side-chain-atoms)))
 
 
-(defmethod print-object ((obj fep-structure) stream)
+(defmethod print-object ((obj simple-fep-structure) stream)
   (if *print-readably*
       (print-object-readably-with-slots obj stream)
       (print-unreadable-object (obj stream)
@@ -342,13 +347,15 @@
 (defun mol2-safe-atom-name (calculation name)
   name)
 
+
 (defclass calculation ()
   ((receptors :initform nil :initarg :receptors :accessor receptors)
    (ligands :initarg :ligands :accessor ligands)
    (mask-method :initform :default :initarg :mask-method :accessor mask-method)
-   (core-topology :initarg :core-topology :accessor core-topology)
-   (side-topologys :initarg :side-topologys :accessor side-topologys)
+   (core-topology :initform nil :initarg :core-topology :accessor core-topology)
+   (side-topologys :initform nil :initarg :side-topologys :accessor side-topologys)
    (jobs :initarg :jobs :accessor jobs)
+   (ti-stages :initarg :ti-stages :initform 3 :accessor ti-stages)
    (ti-lambdas :initarg :ti-lambdas :initform 11 :accessor ti-lambdas)
    (top-directory :initform (make-pathname :directory (list :relative "jobs"))
                   :initarg :top-directory :accessor top-directory )
@@ -377,9 +384,10 @@
 
 (defparameter *top-guard* nil)
 
-    
+
+(defparameter *write-files* nil)
 (defmacro with-top-directory ((calculation) &body body)
-  `(progn
+  `(let ((*write-files* t))
      ,@body))
 
 (defmethod make-load-form ((object calculation) &optional env)
@@ -626,27 +634,42 @@
 
 
 
-(defun build-initial-jobs (calculation &key (connections 3) stages windows)
+(defun build-job-nodes (calculation)
   (let ((jobs (make-instance 'job-graph)))
     (let* ((unsorted-feps (copy-list (ligands calculation)))
            (sorted-feps (sort unsorted-feps #'< :key (lambda (x) (chem:number-of-atoms (drawing x))))))
       (loop for fep in sorted-feps
             for added = (nodes jobs)
-            do (push fep (nodes jobs))
-            do (loop for other in (subseq added 0 (min (length added) connections))
-                     for stages-lambda = (append (when stages
-                                                   (list :stages stages))
-                                                 (when windows
-                                                   (list :windows windows)))
-                     ;; Force a direction for the calculation AA->AB and not AB->AA
-                     do (if (string< (string (name fep)) (string (name other)))
-                            (progn
-                              (format t "Morph from source: ~s to target: ~s~%" fep other)
-                              (push (apply #'make-instance 'fep-morph :source fep :target other stages-lambda) (morphs jobs)))
-                            (progn
-                              (format t "Morph from source: ~s to target: ~s~%" other fep)
-                              (push (apply #'make-instance 'fep-morph :source other :target fep stages-lambda) (morphs jobs)))))))
+            do (push fep (nodes jobs))))
     (setf (jobs calculation) jobs)))
+
+(defgeneric connect-job-nodes (calculation type &key &allow-other-keys))
+
+(defun add-job-edge (source-node target-node calculation)
+  (let ((stages-lambda (append (when (ti-stages calculation)
+                                 (list :stages (ti-stages calculation)))
+                               (when (ti-lambdas calculation)
+                                 (list :windows (ti-lambdas calculation))))))
+    (push (apply #'make-instance
+                 'fep-morph
+                 :source source-node
+                 :target target-node
+                 :morph-mask (calculate-masks source-node
+                                              target-node
+                                              (mask-method calculation))
+                 stages-lambda)
+          (morphs (jobs calculation)))))
+  
+(defmethod connect-job-nodes (calculation (type (eql :simple))  &key (connections 3) stages windows)
+  (let* ((jobs (jobs calculation))
+         (nodes (nodes jobs))
+         (unsorted-feps (copy-list nodes))
+         (sorted-feps (sort unsorted-feps #'< :key (lambda (x) (chem:number-of-atoms (drawing x)))))
+         added)
+    (loop for fep in sorted-feps
+          do (push fep added)
+          do (loop for other in (subseq (cdr added) 0 (min (length (cdr added)) connections))
+                   do (add-job-edge fep other calculation)))))
 
 #+(or)
 (defun am1-file-name (fep type)
@@ -667,17 +690,21 @@ Otherwise return NIL."
 (defun setup-am1-calculations (jupyter-job calculation &key (maxcyc 9999))
   (with-top-directory (calculation)
     (let ((ligands (ligands calculation)))
-      (ensure-directories-exist *default-pathname-defaults*)
+      (ensure-jobs-directories-exist *default-pathname-defaults*)
       (format t "Creating am1 scripts in ~a~%" (truename *default-pathname-defaults*))
       (let* (outputs
              (result (loop for ligand in ligands
                            for in-file = (make-instance 'sqm-input-file :name (name ligand))
                            for order-file = (make-instance 'sqm-atom-order-file :name (name ligand))
+                           for molecule-charge = (let ((charge 0.0))
+                                                   (cando:do-atoms (atom (molecule ligand))
+                                                     (incf charge (chem:get-charge atom)))
+                                                   charge)
                            for atom-order = (let (atom-order)
                                               (write-file-if-it-has-changed
                                                (node-pathname in-file)
                                                (with-output-to-string (sout) 
-                                                 (setf atom-order (charges:write-sqm-calculation sout (molecule ligand) :maxcyc maxcyc))))
+                                                 (setf atom-order (charges:write-sqm-calculation sout (molecule ligand) :maxcyc maxcyc :qm-charge molecule-charge))))
                                               atom-order)
                            for job = (make-ligand-sqm-step ligand :sqm-input-file in-file)
                            do (setf (atom-order ligand) atom-order)
@@ -796,7 +823,8 @@ Otherwise return NIL."
         (return-from pattern-atoms (chem:tags-as-hashtable match))))))
 
 (defclass ti-mask ()
-  ((source :initarg :source :accessor source)
+  ((equivalent-atom-names :initarg :equivalent-atom-names :accessor equivalent-atom-names)
+   (source :initarg :source :accessor source)
    (source-timask-residue-index :initarg :source-timask-residue-index :accessor source-timask-residue-index)
    (source-scmask-atom-names :initarg :source-scmask-atom-names :accessor source-scmask-atom-names)
    ;;   (source-timask :initarg :source-timask :accessor source-timask)
@@ -808,8 +836,16 @@ Otherwise return NIL."
    ;;   (target-scmask :initarg :target-scmask :accessor target-scmask)
    ))
 
+(defmethod print-object ((obj ti-mask) stream)
+  (if *print-readably*
+      (progn
+        (format t "Printing job-graph~%")
+        (print-object-readably-with-slots obj stream))
+      (print-unreadable-object (obj stream)
+        (format stream "~a" (class-name (class-of obj))))))
 
-(defgeneric calculate-masks (morph kind)
+
+(defgeneric calculate-masks (source-structure target-structure kind)
   (:documentation "Use the source and target to calculate the masks. The kind argument allows the 
 user to define new ways to calculate masks"))
 
@@ -824,35 +860,48 @@ user to define new ways to calculate masks"))
         (error "Only one residue in ~s can have the name ~s - found ~s" molecule name residues))))
     
 
-(defmethod calculate-masks (morph (method (eql ':default)))
+(defmethod calculate-masks (source target (method (eql ':default)))
   "Really simple mask - the core and mutated residues are timask and the mutated residues are the scmask.
 METHOD controls how the masks are calculated"
-  (let ((source (source morph))
-        (target (target morph)))
-    (let ((source-core-residue (unique-residue-with-name (molecule source) (core-residue-name source)))
-          (target-core-residue (unique-residue-with-name (molecule target) (core-residue-name target)))
-          (source-softcore-atoms (side-chain-atoms source))
-          (target-softcore-atoms (side-chain-atoms target))
-          (combined-aggregate (cando:combine (molecule source) (molecule target))))
-      (let ((sequenced-residues (chem:map-residues 'vector #'identity combined-aggregate))) ; vector of residues in order they will appear in topology file
-        (let ((source-timask-residue-index (1+ (position source-core-residue sequenced-residues)))
-              (source-scmask-atom-names (loop for atom in source-softcore-atoms
-                                              collect (chem:get-name atom)))
-              (target-timask-residue-index (1+ (position target-core-residue sequenced-residues)))
-              (target-scmask-atom-names (loop for atom in target-softcore-atoms
-                                              collect (chem:get-name atom))))
-          (make-instance 'ti-mask
-                         :source source
-			 :source-timask-residue-index source-timask-residue-index
-			 :source-scmask-atom-names source-scmask-atom-names
-                         ;; :source-timask (format nil ":~d" source-timask-residue-index)
-                         ;; :source-scmask (format nil ":~d@~{~d~^,~}" source-timask-residue-index source-scmask-atom-names)
-                         :target target
-			 :target-timask-residue-index target-timask-residue-index
-			 :target-scmask-atom-names target-scmask-atom-names
-                         ;; :target-timask (format nil ":~d" target-timask-residue-index)
-                         ;; :target-scmask (format nil ":~d@~{~d~^,~}" target-timask-residue-index target-scmask-atom-names)
-			 ))))))
+  (let ((source-core-residue (unique-residue-with-name (molecule source) (core-residue-name source)))
+        (target-core-residue (unique-residue-with-name (molecule target) (core-residue-name target)))
+        (source-softcore-atoms (side-chain-atoms source))
+        (target-softcore-atoms (side-chain-atoms target))
+        (combined-aggregate (cando:combine (molecule source) (molecule target))))
+    (let ((sequenced-residues (chem:map-residues 'vector #'identity combined-aggregate))) ; vector of residues in order they will appear in topology file
+      (let ((source-timask-residue-index (1+ (position source-core-residue sequenced-residues)))
+            (source-scmask-atom-names (loop for atom in source-softcore-atoms
+                                            collect (chem:get-name atom)))
+            (target-timask-residue-index (1+ (position target-core-residue sequenced-residues)))
+            (target-scmask-atom-names (loop for atom in target-softcore-atoms
+                                            collect (chem:get-name atom)))
+            (source-core-atom-names (chem:map-atoms 'list (lambda (atom)
+                                                            (chem:get-name atom))
+                                                    source-core-residue))
+            (target-core-atom-names (chem:map-atoms 'list (lambda (atom)
+                                                            (chem:get-name atom))
+                                                    target-core-residue)))
+        (unless (and (= (length source-core-atom-names)
+                        (length target-core-atom-names))
+                     (every (lambda (name)
+                              (member name target-core-atom-names))
+                            source-core-atom-names))
+          (error "The source-core-atom-names ~s must match the target-core-atom-names - or you need to define equivalent pairs"))
+        (make-instance 'ti-mask
+                       ;; core atoms by the default method must have the same names in
+                       ;; source and target
+                       :equivalent-atom-names (mapcar 'cons source-core-atom-names source-core-atom-names)
+                       :source source
+		       :source-timask-residue-index source-timask-residue-index
+		       :source-scmask-atom-names source-scmask-atom-names
+                       ;; :source-timask (format nil ":~d" source-timask-residue-index)
+                       ;; :source-scmask (format nil ":~d@~{~d~^,~}" source-timask-residue-index source-scmask-atom-names)
+                       :target target
+		       :target-timask-residue-index target-timask-residue-index
+		       :target-scmask-atom-names target-scmask-atom-names
+                       ;; :target-timask (format nil ":~d" target-timask-residue-index)
+                       ;; :target-scmask (format nil ":~d@~{~d~^,~}" target-timask-residue-index target-scmask-atom-names)
+		       )))))
 
 (defun mask-substitutions (mask &optional stage)
   (unless (typep stage '(member nil :vdw-bonded :decharge :recharge))
@@ -882,13 +931,18 @@ METHOD controls how the masks are calculated"
 
 
 
-(defun average-core-atom-positions (source target)
-  (loop for source-atom in (core-atoms source)
-        for target-atom = (or (find (chem:get-name source-atom)
-                                    (core-atoms target)
-                                    :test (lambda (src-atom-name tgt-atom) (eq src-atom-name
-                                                                               (chem:get-name tgt-atom))))
-                              (error "Could not find a matching target atom with the name ~s" (chem:get-name source-atom)))
+(defun average-core-atom-positions (source target equivalent-atom-names)
+  (loop for equiv-pair in equivalent-atom-names
+        for source-atom-name = (car equiv-pair)
+        for target-atom-name = (cdr equiv-pair)
+        for source-atom = (or (find source-atom-name (core-atoms source) :test (lambda (src-atom-name src-atom)
+                                                                                 (eq src-atom-name
+                                                                                     (chem:get-name src-atom))))
+                              (error "Could not find source atom ~a in ~a" source-atom-name (core-atoms source)))
+        for target-atom = (or (find target-atom-name (core-atoms target) :test (lambda (tgt-atom-name tgt-atom)
+                                                                                 (eq tgt-atom-name
+                                                                                     (chem:get-name tgt-atom))))
+                              (error "Could not find target atom ~a in ~a" target-atom-name (core-atoms target)))
         for average-pos = (geom:v* (geom:v+ (chem:get-position source-atom)
                                             (chem:get-position target-atom))
                                    0.5)
@@ -925,3 +979,6 @@ METHOD controls how the masks are calculated"
             for mol = (drawing ligand)
             do (cando:do-atoms (atm mol)
                  (chem:set-position atm (geom:v* (chem:get-position atm) scale)))))))
+
+(defun ensure-jobs-directories-exist (pathname)
+  (ensure-directories-exist pathname))

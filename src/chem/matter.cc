@@ -81,7 +81,9 @@ CL_DEFMETHOD Matter_sp Matter_O::contentAt(size_t i) const
 string Matter_O::__repr__() const
 {
   stringstream ss;
-  ss << "#<" << this->className() << " " << _rep_(this->getName()) << ">";
+  ss << "#<" << this->className() << " " << _rep_(this->getName());
+  ss << " @" << (void*)this;
+  ss << ">";
   return ss.str();
 }
 //

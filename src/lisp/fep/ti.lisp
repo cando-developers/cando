@@ -16,16 +16,14 @@
 (defparameter *cando-charge-script*
   (let ((*package* (find-package :keyword)))
     (cl:format nil "~{~s~%~}"
-               '((ql:quickload :fep)
-                 (fep::fep-charge ":%FEPS%" ":%OUTPUT%")
+               '((fep::fep-charge ":%FEPS%" ":%OUTPUT%")
                  (core:exit)))))
 
 
 (defparameter *solvate-addion-morph-side-script*
   (let ((*package* (find-package :keyword)))
     (cl:format nil "~{~s~%~}"
-               '((ql:quickload :fep)
-                 (in-package :cando-user)
+               '((in-package :cando-user)
                  (leap:setup-amber-paths)
                  (leap:source "leaprc.ff14SB.redq")
                  (leap:source "leaprc.gaff")
@@ -38,7 +36,7 @@
                  (defparameter *morph* (find-morph-with-name :%MORPH-NAME% *feps*))
                  (defparameter *source* (fep:source *morph*))
                  (defparameter *target* (fep:target *morph*))
-                 (fep:average-core-atom-positions *source* *target*)
+                 (fep:average-core-atom-positions *source* *target* (fep:equivalent-atom-names (fep:morph-mask *morph)))
                  (leap:assign-atom-types (fep:molecule *source*))
                  (leap:assign-atom-types (fep:molecule *target*))
                  (defparameter *ligands* (cando:combine (fep:molecule *source*)
@@ -59,8 +57,8 @@
                   :closeness (solvent-closeness *feps*))
                  (leap.add-ions:add-ions *system* :|Cl-| 0)
               ;   (cando:save-mol2 *system* (ensure-directories-exist ":%MOL2%"))
-                 (ensure-directories-exist (pathname ":%TOPOLOGY%"))
-                 (ensure-directories-exist (pathname ":%COORDINATES%"))
+                 (ensure-jobs-directories-exist (pathname ":%TOPOLOGY%"))
+                 (ensure-jobs-directories-exist (pathname ":%COORDINATES%"))
                  (leap.topology:save-amber-parm-format *system* ":%TOPOLOGY%" ":%COORDINATES%")
                  (core:exit)))))
 
@@ -166,8 +164,7 @@ outtraj :%TARGET% onlyframes 1
 (defparameter *decharge*
   (let ((*package* (find-package :keyword)))
     (cl:format nil "~{~s~%~}"
-               `((ql:quickload :fep)
-                 (leap:setup-amber-paths)
+               `((leap:setup-amber-paths)
                  (leap:source "leaprc.ff14SB.redq")
                  (leap:source "leaprc.gaff")
                  (leap:load-amber-params "frcmod.ionsjc_tip3p")
@@ -191,8 +188,7 @@ outtraj :%TARGET% onlyframes 1
 (defparameter *recharge*
   (let ((*package* (find-package :keyword)))
     (cl:format nil "~{~s~%~}"
-               `((ql:quickload :fep)
-                 (leap:setup-amber-paths)
+               `((leap:setup-amber-paths)
                  (leap:source "leaprc.ff14SB.redq")
                  (leap:source "leaprc.gaff")
                  (leap:load-Amber-Params "frcmod.ionsjc_tip3p")
@@ -466,8 +462,7 @@ if __name__ == '__main__':
 (defparameter *combine-stages*
   (let ((*package* (find-package :keyword)))
     (cl:format nil "~{~s~%~}"
-               '((ql:quickload :fep)
-                 (in-package :cando-user)
+               '((in-package :cando-user)
                  (let ((total 0.0)
 		       parts)
                    (loop for filename in :%.parts%
@@ -485,8 +480,7 @@ if __name__ == '__main__':
 (defparameter *combine-sides*
   (let ((*package* (find-package :keyword)))
     (cl:format nil "~{~s~%~}"
-               '((ql:quickload :fep)
-                 (in-package :cando-user)
+               '((in-package :cando-user)
 		 (let* ((parts
 			 (loop for filename in :%.parts%
                                for pathname = (pathname filename)
@@ -683,7 +677,9 @@ its for and then create a new class for it."))
 (defgeneric node-pathname (node))
 
 (defmethod node-pathname :around ((node node-file))
-  (ensure-directories-exist (call-next-method)))
+  (if *write-files*
+      (ensure-jobs-directories-exist (call-next-method))
+      (call-next-method)))
 
 (defmethod node-pathname ((node feps-file))
   (make-pathname :name (string-downcase (name node))
@@ -859,7 +855,7 @@ its for and then create a new class for it."))
 (defmethod substitutions (calculation job (node-file morph-file))
   (append
    (let* ((morph (morph node-file))
-          (morph-mask (calculate-masks morph (mask-method calculation))))
+          (morph-mask (morph-mask morph) #+(or)(calculate-masks morph (mask-method calculation))))
      (list* (cons :%MORPH-NAME% (format nil "~s" (morph-string morph)))
             (mask-substitutions morph-mask)))
    (call-next-method)))
@@ -870,7 +866,7 @@ its for and then create a new class for it."))
 
 (defmethod substitutions (calculation job (node-file morph-side-stage-file))
   (let* ((morph (morph node-file))
-         (morph-mask (calculate-masks morph (mask-method calculation))))
+          (morph-mask (morph-mask morph) #+(or)(calculate-masks morph (mask-method calculation))))
     (append (list (cons "%STAGE-NAME%" (format nil "~s" (stage node-file))))
             (crgmask-substitutions morph-mask (stage node-file))
             (call-next-method))))
@@ -1213,7 +1209,7 @@ added to inputs and outputs but not option-inputs or option-outputs"
           (format t "Skipping generation of ~a - it has not changed~%" pathname)
           (return-from write-file-if-it-has-changed nil))))
     (format t "Generating script ~a~%" pathname)
-    (with-open-file (fout (ensure-directories-exist pathname) :direction :output :if-exists :supersede)
+    (with-open-file (fout (ensure-jobs-directories-exist pathname) :direction :output :if-exists :supersede)
       (write-string code fout)))
 
 (defmethod generate-code (calculation (job job) makefile visited-nodes)
@@ -1266,9 +1262,11 @@ exec \"$@\"
 
 
 (defun generate-all-code (calculation work-list final-outputs)
+  (unless (receptors calculation)
+    (error "There must be at least one receptor"))
   (with-top-directory (calculation)
     (let ((visited-nodes (make-hash-table))
-          (makefile-pathname (ensure-directories-exist (merge-pathnames "makefile"))))
+          (makefile-pathname (ensure-jobs-directories-exist (merge-pathnames "makefile"))))
       (format t "Writing makefile to ~a~%" (translate-logical-pathname makefile-pathname))
       (let ((body (with-output-to-string (makefile)
                     (format makefile "RUNCMD ?= ./runcmd_simple~%~%")

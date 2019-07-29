@@ -9,7 +9,7 @@ qm-charge : The overall charge of the molecule"
   (format fout "~a~%" header)
   (format fout " &qmmm~%")
   (format fout "    qm_theory='~a',~%" (string qm-theory))
-  (format fout "    qmcharge=~d,~%" qm-charge)
+  (format fout "    qmcharge=~d,~%" (round qm-charge))
   (format fout "    maxcyc=~d,~%" maxcyc)
   (format fout " /~%"))
 

@@ -1531,7 +1531,7 @@ bool AtomTest_O::matches_Atom(Root_sp root, chem::Atom_sp atom) {
         goto SUCCESS;
       break;
   case SAPAtomicMass:
-      LOG(BF("SAPAtomicMass(%d) == expecting(%d)") % atom->getAtomicMass() % this->_IntArg);
+      LOG(BF("SAPAtomicMass(%d) == expecting(%d)") % atom->getIntegerAtomicMass() % this->_IntArg);
       if (this->_IntArg == atom->getIntegerAtomicMass())
         goto SUCCESS;
       break;

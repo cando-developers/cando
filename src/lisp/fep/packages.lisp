@@ -34,6 +34,7 @@
   (:use #:common-lisp)
   (:shadowing-import-from :chem "ATOM")
   (:export
+   #:ensure-jobs-directories-exist
    #:make-fep
    #:add-receptor
    #:fep-calculation
@@ -75,8 +76,14 @@
    #:solvent-buffer
    #:solvent-closeness
    #:solvent-residue-name
+   #:equivalent-atom-names
    #:source
+   #:source-timask-residue-index
+   #:source-scmask-atom-names
    #:target
+   #:target-timask-residue-index
+   #:target-scmask-atom-names
+   #:morph-mask
    #:morphs
    #:nodes
    #:setup-feps
@@ -90,14 +97,16 @@
    #:check-am1-calculations
    #:read-am1-charges
    #:calculate-am1-bcc-charges
-   #:build-initial-jobs
+   #:build-job-nodes
+   #:connect-job-nodes
    #:complex
    #:sqm-job-mixin
    #:amber-job-mixin
    #:cpptraj-job-mixin
    #:pattern-atoms
    #:average-core-atom-positions
-   #:make-fep-calculation-from-ligands ))
+   #:fep-calculation-from-ligands
+   #:add-job-edge))
 
 
 (defpackage #:fepdot
