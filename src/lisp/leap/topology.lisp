@@ -649,7 +649,11 @@ then don't calculate 1,4 interactions"
             do (let ((short-residue-name-pair (assoc residue-name residue-name-to-pdb-alist)))
                  (unless short-residue-name-pair
                    (error "There is must be a short residue name for ~a" residue-name))
-                 (setf (aref residue-name-vector index) (cdr short-residue-name-pair))))
+                 (let ((short-name (cdr short-residue-name-pair)))
+                   (format t "Using short name ~s in place of ~s~%" short-name residue-name)
+                   (when (< (length (string short-name)) 3)
+                     (error "The short name ~s must be at least three characters long - residue-name-to-pdb-alist -> ~s" short-name residue-name-to-pdb-alist))
+                   (setf (elt residue-name-vector index) short-name))))
     (setf nmolecule (length molecule-vector))
     (setf nresidue (length residue-name-vector))
     (loop for i from 0 below (length residue-pointer-prepare-vector)
@@ -2089,8 +2093,6 @@ then don't calculate 1,4 interactions"
                                         ;     (setf atom-table-vectors (acons :residue-names residue-labels atom-table-vectors))
           
         ;;(rlog "atom-table-vectors -> ~s~%" atom-table-vectors)
-        (dolist (entry atom-table-vectors)
-          (format *debug-io* "entry -> ~s  (type-of (cdr entry)) -> ~s~%" entry (type-of (cdr entry))))
         (chem::fill-atom-table-from-vectors atom-table atom-table-vectors)
 
         ;;nonbond

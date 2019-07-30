@@ -680,8 +680,8 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
         for index from 0
         for sequence-name = (cond
                               ((= (length sequence) 1)
-                               (name (first sequence)))
-                              (t (intern (concatenate 'string "mol" (format nil "~d" index)) :keyword)))
+                               (intern (format nil "~a_~d" (string (name (first sequence))) index) :keyword))
+                              (t (intern (concatenate 'string "mol" (format nil "_~d" index)) :keyword)))
         collect (let ((mol (chem:make-molecule sequence-name)))
                   #+(or)(format *debug-io* "Creating molecule ~a for sequence ~a~%" mol sequence)
                   mol)))

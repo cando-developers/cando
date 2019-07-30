@@ -5,6 +5,10 @@
     (error "The molecule ~a must have only one residue" molecule))
   (chem:content-at molecule 0))
 
+(defun short-residue-name (index)
+  (let ((label (format nil "!~36,2,'0r" index)))
+    (intern label :keyword)))
+
 (defun fep-calculation-from-ligands (ligands)
   (let* ((residue-name-to-pdb-alist nil)
          (fep-structures (loop for molecule in ligands
@@ -12,8 +16,7 @@
                                for residue-index from 0
                                for residue-name = (chem:get-name residue)
                                when (> (length (string residue-name)) 3)
-                                 do (push (cons residue-name (let ((*print-base* 36))
-                                                               (intern (format nil "$~2,'0d" residue-index) :keyword)))
+                                 do (push (cons residue-name (short-residue-name residue-index))
                                           residue-name-to-pdb-alist)
                                collect (make-instance 'simple-fep-structure
                                                       :name (chem:get-name molecule)
