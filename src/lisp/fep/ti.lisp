@@ -87,13 +87,13 @@
 (defparameter *prepare-heat-in*
   "heating
  &cntrl
-   imin = 0, nstlim = 10000, irest = 0, ntx = 1, dt = 0.002,
+   imin = 0, nstlim = :%PREPARE-HEAT-IN.NSTLIM%, irest = 0, ntx = 1, dt = :%DT%,
    nmropt = 1,
-   ntt = 3, temp0 = 300.0, gamma_ln = 2.0, ig = -1,
+   ntt = 3, temp0 = :%TEMP0%, gamma_ln = 2.0, ig = -1,
    tempi = 5.0, tautp = 1.0,
    vlimit = 20,
    ntb = 1,
-   ntc = 2, ntf = 1,
+   ntc = :%NTC%, ntf = :%NTF%,
    ioutfm = 1, iwrap = 1,
    ntwe = 1000, ntwx = 1000, ntpr = 1000, ntwr = 5000,
 
@@ -122,13 +122,13 @@
 (defparameter *prepare-press-in*
   "pressurising
  &cntrl
-   imin = 0, nstlim = 10000, irest = 1, ntx = 5, dt = 0.002,
-   ntt = 3, temp0 = 300.0, gamma_ln = 2.0, ig = -1,
+   imin = 0, nstlim = :%PREPARE-PRESS-IN.NSTLIM%, irest = 1, ntx = 5, dt = :%DT%,
+   ntt = 3, temp0 = :%TEMP0%, gamma_ln = 2.0, ig = -1,
    tautp = 1.0,
    vlimit = 20,
    ntp = 1, pres0 = 1.0, taup = 2.0,
    ntb = 2,
-   ntc = 2, ntf = 1,
+   ntc = :%NTC%, ntf = :%NTF%,
    ioutfm = 1, iwrap = 1,
    ntwe = 1000, ntwx = 1000, ntpr = 1000, ntwr = 5000,
 
@@ -184,6 +184,8 @@ outtraj :%TARGET% onlyframes 1
                                                        (chem:matter-copy lsolv)))
                  (leap.set-box:set-box decharge :vdw)
                  (cando:save-mol2 decharge ":%DECHARGE-MOL2%")
+
+                 (format t "residue-name-to-pdb-list -> ~s~%" (fep:residue-name-to-pdb-alist *feps*))
                  (leap.topology:save-amber-parm-format decharge ":%DECHARGE-TOPOLOGY%" ":%DECHARGE-COORDINATES%"
                                                        :residue-name-to-pdb-alist (fep:residue-name-to-pdb-alist *feps*))
                  (core:exit)
@@ -216,11 +218,11 @@ outtraj :%TARGET% onlyframes 1
 (defparameter *decharge-recharge-heat-in* 
   "heating
  &cntrl
-   imin = 0, nstlim = 10000, irest = 0, ntx = 1, dt = 0.002,
-   ntt = 3, temp0 = 300.0, gamma_ln = 2.0, ig = -1,
+   imin = 0, nstlim = :%DECHARGE-RECHARGE-HEAT-IN.NSTLIM%, irest = 0, ntx = 1, dt = :%DT%,
+   ntt = 3, temp0 = :%TEMP0%, gamma_ln = 2.0, ig = -1,
    tempi = 50.0, tautp = 1.0,
    vlimit = 20,
-   ntc = 2, ntf = 1,
+   ntc = :%NTC%, ntf = :%NTF%,
    ntb = 1,
    ioutfm = 1, iwrap = 1,
    ntwe = 1000, ntwx = 1000, ntpr = 1000, ntwr = 5000,
@@ -251,11 +253,11 @@ outtraj :%TARGET% onlyframes 1
 (defparameter *vdw-heat-in* 
   "heating
  &cntrl
-   imin = 0, nstlim = 10000, irest = 0, ntx = 1, dt = 0.002,
-   ntt = 3, temp0 = 300.0, gamma_ln = 2.0, ig = -1,
+   imin = 0, nstlim = :%VDW-HEAT-IN.NSTLIM%, irest = 0, ntx = 1, dt = :%DT%,
+   ntt = 3, temp0 = :%TEMP0%, gamma_ln = 2.0, ig = -1,
    tempi = 50.0, tautp = 1.0,
    vlimit = 20,
-   ntc = 2, ntf = 1,
+   ntc = :%NTC%, ntf = :%NTF%,
    ntb = 1,
    ioutfm = 1, iwrap = 1,
    ntwe = 1000, ntwx = 1000, ntpr = 1000, ntwr = 5000,
@@ -286,10 +288,10 @@ outtraj :%TARGET% onlyframes 1
 (defparameter *decharge-recharge-ti-in*
   "TI simulation
  &cntrl
-   imin = 0, nstlim = 100000, irest = 1, ntx = 5, dt = 0.002,
+   imin = 0, nstlim = :%DECHARGE-RECHARGE-TI-IN.NSTLIM%, irest = 1, ntx = 5, dt = :%DT%,
    ntt = 3, temp0 = 300.0, gamma_ln = 2.0, ig = -1,
    vlimit = 20,
-   ntc = 2, ntf = 1,
+   ntc = :%NTC%, ntf = :%NTF%,
    ntb = 2,
    ntp = 1, pres0 = 1.0, taup = 2.0,
    ioutfm = 1, iwrap = 1,
@@ -311,10 +313,10 @@ outtraj :%TARGET% onlyframes 1
 (defparameter *vdw-ti-in*
   "TI simulation
  &cntrl
-   imin = 0, nstlim = 100000, irest = 1, ntx = 5, dt = 0.002,
-   ntt = 3, temp0 = 300.0, gamma_ln = 2.0, ig = -1,
+   imin = 0, nstlim = :%VDW-TI-IN.NSTLIM%, irest = 1, ntx = 5, dt = :%DT%,
+   ntt = 3, temp0 = :%TEMP0%, gamma_ln = 2.0, ig = -1,
    vlimit = 20,
-   ntc = 2, ntf = 1,
+   ntc = :%NTC%, ntf = :%NTF%,
    ntb = 2,
    ntp = 1, pres0 = 1.0, taup = 2.0,
    ioutfm = 1, iwrap = 1,
@@ -857,8 +859,28 @@ its for and then create a new class for it."))
 (defmethod substitutions (calculation job (node-file node-file))
   (job-substitutions job))
 
+(defun setting-substitutions (calculation)
+  (let ((settings (settings calculation)))
+    (loop for setting in settings
+          for setting-key = (car setting)
+          for setting-value = (if (listp (cdr setting))
+                                  (if *testing*
+                                      (second (cdr setting))
+                                      (first (cdr setting)))
+                                  (cdr setting))
+          for value-string = (cond
+                               ((stringp setting-value)
+                                setting-value)
+                               ((floatp setting-value)
+                                (format nil "~g" setting-value))
+                               ((integerp setting-value)
+                                (format nil "~d" setting-value))
+                               (t (error "Add support to stringify setting value ~s:" setting-value)))
+          collect (cons setting-key value-string))))
+
 (defmethod substitutions (calculation job (node-file morph-file))
   (append
+   (setting-substitutions calculation)
    (let* ((morph (morph node-file))
           (morph-mask (morph-mask morph) #+(or)(calculate-masks morph (mask-method calculation))))
      (list* (cons :%MORPH-NAME% (format nil "~s" (morph-string morph)))
@@ -880,11 +902,14 @@ its for and then create a new class for it."))
 (defmethod substitutions (calculation (job t) (node-file morph-side-stage-lambda-file))
   (error "substitutions called with job ~s and node-file ~s" job node-file))
 
+
+
 (defmethod substitutions (calculation (job morph-side-stage-lambda-amber-job) (node-file morph-side-stage-lambda-file))
-  (append (list (cons :%LAMBDA% (format nil "~f" (lambda% node-file)))
-                (cons :%LAMBDA-WINDOWS% (format nil "~{~f,~}" (lambda-values job)))
-                (cons :%LAMBDA-WINDOWS-COUNT% (format nil "~a" (length (lambda-values job)))))
-         (call-next-method)))
+  (let ((substitutions (append (list (cons :%LAMBDA% (format nil "~f" (lambda% node-file)))
+                                     (cons :%LAMBDA-WINDOWS% (format nil "~{~f,~}" (lambda-values job)))
+                                     (cons :%LAMBDA-WINDOWS-COUNT% (format nil "~a" (length (lambda-values job)))))
+                               (call-next-method))))
+    substitutions))
 
 (defun output-file (amber-job option)
   (loop for output-arg in (outputs amber-job)
@@ -1128,21 +1153,6 @@ its for and then create a new class for it."))
 	pmemd.cuda -AllowSmallBox :%OPTION-INPUTS% \\
 	  -O :%OPTION-OUTPUTS%"))))
 
-(defclass ti-path ()
-  ((lambdas :initform 11 :initarg :lambdas :accessor lambdas)
-   (steps :initform nil :initarg :steps :accessor steps)
-   (source-compound :initarg :source-compound :accessor source-compound)
-   (target-compound :initarg :target-compound :accessor target-compound)))
-
-(defparameter *identical-lambda-delta* 0.001)
-(defmethod maybe-add-step (ti-path step)
-  (prog1
-      (pushnew step (steps ti-path) :test (lambda (x y)
-                                            (and (eq (class-of x) (class-of y))
-                                                 (let ((delta (abs (- (lam x) (lam y)))))
-                                                   (< delta *identical-lambda-delta*)))))
-    (format t "Number of steps ~a~%" (length (steps ti-path)))))
-
 (defun replace-all (dict in-script)
   (let (script-result)
     (loop for script = in-script then script-result
@@ -1289,35 +1299,6 @@ exec \"$@\"
            (terpri makefile))))
       (format t "Writing runcmd~%")
       (generate-runcmd))))
-
-#|
-(defparameter *morphs*
-  (let* ((x1 (make-ti-compound "x1"))
-         (x2 (make-ti-compound "x2"))
-         (x3 (make-ti-compound "x3"))
-         (path1 (make-ti-path 11 x1 x2))
-         (_ (generate-steps path1))
-         (path2 (make-ti-path 11 x2 x3))
-         (_ (generate-steps path2))
-         (calc (make-instance 'ti-calculation :compounds (list x1 x2 x3) :paths (list path1 path2))))
-    calc))
-
-*morphs*
-
-(defparameter *morphs* (make-instance 'ti-calculation))
-(cando:save-cando *morphs* "/tmp/calc")
-
-(cando:save-cando (make-instance 'foo) "/tmp/test")
-
-
-(defclass bar () ()) (let ((*print-readably* t)) (print (make-instance 'bar)))
-
-(defmethod print-object ((x foo) stream)
-  (format stream "#S(foo)"))
-
-(generate-all-scripts *morphs*)
-
-|#
 
 (defmethod print-object ((object chem:aggregate) stream)
   "Aggregates can have atom graphs that are way too wide and deep to print the 

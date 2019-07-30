@@ -300,7 +300,7 @@
   ((source :initarg :source :accessor source)
    (target :initarg :target :accessor target)
    (morph-mask :initarg :morph-mask :accessor morph-mask)
-   (stages :initarg :stages :initform 1 :accessor stages)
+   (stages :initarg :stages :initform 3 :accessor stages)
    (windows :initarg :windows :initform 11 :accessor windows)))
 
 (defmethod print-object ((obj fep-morph) stream)
@@ -347,6 +347,20 @@
 (defun mol2-safe-atom-name (calculation name)
   name)
 
+(defun default-calculation-settings ()
+  '((:%DECHARGE-RECHARGE-TI-IN.NSTLIM% 100000 3000) ; if *testing* must be >= 3000
+    (:%VDW-TI-IN.NSTLIM% 100000 3000)               ; if *testing* must be >= 3000
+    (:%PREPARE-HEAT-IN.NSTLIM% 10000 10000)
+    (:%PREPARE-PRESS-IN.NSTLIM% 10000 10000)
+    (:%DECHARGE-RECHARGE-HEAT-IN.NSTLIM% 10000 1000)
+    (:%VDW-HEAT-IN.NSTLIM% 10000 1000)
+    (:%DT% . "0.002")
+    (:%NTC% . 2)
+    (:%NTF% . 1)
+    (:%TEMP0% . "300.0" )
+    ))
+
+(defconstant +testing-lambdas+ 5)
 
 (defclass calculation ()
   ((receptors :initform nil :initarg :receptors :accessor receptors)
@@ -357,6 +371,7 @@
    (jobs :initarg :jobs :accessor jobs)
    (ti-stages :initarg :ti-stages :initform 3 :accessor ti-stages)
    (ti-lambdas :initarg :ti-lambdas :initform 11 :accessor ti-lambdas)
+   (settings :initform (default-calculation-settings) :initarg :settings :accessor settings)a
    (top-directory :initform (make-pathname :directory (list :relative "jobs"))
                   :initarg :top-directory :accessor top-directory )
    (stage :initform 0 :initarg :stage :accessor stage)
@@ -649,7 +664,10 @@
   (let ((stages-lambda (append (when (ti-stages calculation)
                                  (list :stages (ti-stages calculation)))
                                (when (ti-lambdas calculation)
-                                 (list :windows (ti-lambdas calculation))))))
+                                 (list :windows
+                                       (if *testing*
+                                           +testing-lambdas+
+                                           (ti-lambdas calculation)))))))
     (push (apply #'make-instance
                  'fep-morph
                  :source source-node
@@ -760,17 +778,13 @@ Otherwise return NIL."
                (incf charge-sum charge)
                (incf num-charges))
              atom-charge-hash-table)
-    (format t "Total charge: ~f  number of charges: ~d  expected net-charge: ~f~%" charge-sum num-charges net-charge)
     (let ((charge-part (/ (- charge-sum net-charge) num-charges))
           (new-charge-total 0.0))
-      (format t "Charge correction: ~f~%" charge-part)
       (maphash (lambda (atm charge)
                  (let ((new-charge (- charge charge-part)))
-                   (format t "Updating charge for atom ~s from ~f to ~f~%" atm charge new-charge)
                    (setf (gethash atm atom-charge-hash-table) new-charge)
                    (incf new-charge-total new-charge)))
                atom-charge-hash-table)
-      (format t "After adding net-charge the total charge is ~f~%" new-charge-total)
       (when (> (abs new-charge-total) 1.0e-5)
         (warn "After balance-charges the new-charge-total of the molecule is ~g~%" new-charge-total)))))
 
