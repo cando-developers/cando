@@ -97,6 +97,9 @@ void	Mol2File::advanceLine() {
 };
 std::queue<string>	Mol2File::splitLine() {
     std::queue<string>	qWords;
+    if (chem__verbose(1)) {
+      core::write_bf_stream(BF("Splitting read line: %s\n") % this->mLine.str());
+    }
     core::queueSplitString(this->mLine.str(), qWords, " \t" );
     return qWords;
   };
@@ -168,26 +171,17 @@ struct TriposSubstructure {
 
 void	splitStringIntoNameAndNumber(const string& nameNum, string& name, uint& seqNum )
 {
-size_t pos = nameNum.find_last_not_of("0123456789");
-size_t seqPos, nameLen;
-    if ( pos == string::npos )
-    {
-        seqNum = -1;
-	name = nameNum;
-    }
-    else
-    {
-    	seqPos = pos + 1;
-        if ( nameNum[pos] == '_' )
-	{
-	    nameLen = pos;
-	} else
-	{
-	    nameLen = pos + 1;
-	}
-	name = nameNum.substr(0,nameLen);
-	seqNum = atoi(nameNum.substr(seqPos,9999).c_str());
-    }
+  size_t pos = nameNum.find("_");
+  size_t seqPos, nameLen;
+  if ( pos == string::npos ) {
+    seqNum = -1;
+    name = nameNum;
+  } else {
+    seqPos = pos + 1;
+    nameLen = pos;
+    name = nameNum.substr(0,nameLen);
+    seqNum = atoi(nameNum.substr(seqPos,9999).c_str());
+  }
 }
 
 
@@ -346,6 +340,9 @@ core::T_sp mol2Read(Mol2File& fIn)
           words.pop();
           if ( !words.empty() ) {
             oneAtom.mSubstName = words.front();
+            if (chem__verbose(1)) {
+              core::write_bf_stream(BF("Read atom mSubstName: %s\n") % oneAtom.mSubstName);
+            }
             LOG(BF("Read mSubstName=%s") % oneAtom.mSubstName.c_str() );
             words.pop();
             if ( !words.empty() ) {
@@ -426,7 +423,6 @@ core::T_sp mol2Read(Mol2File& fIn)
         lastmId = oneSubst.mId;
         nameNum = words.front(); words.pop();
         splitStringIntoNameAndNumber( nameNum, oneSubst.subst_name,oneSubst.file_sequence_number);
-//		oneSubst.subst_name = words.front(); words.pop();
         LOG(BF("oneSubst.root_atom str(%s)") % words.front().c_str()  );
         oneSubst.root_atom = atoi(words.front().c_str()); words.pop();
         oneSubst.dict_type = 0;
@@ -516,6 +512,9 @@ core::T_sp mol2Read(Mol2File& fIn)
 	    //
 	    // But I'll set them here incase there isn't 
 	    // a substructure entry
+      if (chem__verbose(1)) {
+        core::write_bf_stream(BF("Setting residue name: %s\n") % ai->second.mSubstName);
+      }
       res->setName(chemkw_intern(ai->second.mSubstName));
       res->setPdbName(chemkw_intern(ai->second.mSubstName));
 //            printf("%s:%d setFileSequenceNumber --> %d\n", __FILE__, __LINE__, ai->second.mSubstId);
@@ -590,6 +589,9 @@ core::T_sp mol2Read(Mol2File& fIn)
         LOG(BF("Setting residue name at index: %d") % si->mId  );
         LOG(BF("Setting residue name to: %s") % si->subst_name.c_str()  );
         core::T_sp sub_name = chemkw_intern(si->subst_name);
+        if (chem__verbose(1)) {
+          core::write_bf_stream(BF("Setting substructure residue name: %s\n") % _rep_(sub_name));
+        }
         residues[si->mId]->setName(sub_name);
         LOG(BF("Setting residue PDB name to: %s") % si->sub_type.c_str()  );
         core::T_sp sub_type = chemkw_intern(si->sub_type);
