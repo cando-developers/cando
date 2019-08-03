@@ -1552,7 +1552,7 @@ then don't calculate 1,4 interactions"
 ;(defun read-amber-parm-format (stream)
 ;  (let ((fif (fortran:make-fortran-input-file :stream stream))
 (defun read-amber-parm-format (topology-pathname)
-  "Return (values energy-function aggregate)"
+  "Return (values energy-function) - use generate-aggregate-from-energy-function to get an aggregate"
   (fortran:with-fortran-output-file (fif topology-pathname :direction :input)
     (let (natom ntypes nbonh mbona ntheth mtheta nphih mphia nhparm nparm
           nnb nres nbona ntheta nphia numbnd numang nptra
@@ -2160,8 +2160,6 @@ then don't calculate 1,4 interactions"
 
 
 
-
-
 (defun read-amber-coordinate-file (fif)
   (fortran:fread-line fif)       ; Skip the version and timestamp line
   (let* ((line (fortran:fread-line fif))
@@ -2434,3 +2432,52 @@ then don't calculate 1,4 interactions"
     
     aggregate))
 
+
+
+
+(defun read-amber-restart-file (filename)
+  ;;  (let ((file (netcdf::nc-open (merge-pathnames filename)#P"heat.rst7" :mode netcdf-cffi:+nowrite+))
+  )
+
+(defclass amber-topology-coordinate-pair ()
+  ((topology-filename :initarg :topology-filename :accessor topology-filename)
+   (coordinate-filename :initarg :coordinate-filename :accessor coordinate-filename)
+   (coordinate-netcdf :initarg :coordinate-netcdf :accessor coordinate-netcdf)
+   (energy-function :initarg :energy-function :accessor energy-function)
+   (aggregate :initarg :aggregate :accessor aggregate)
+   ))
+
+(defun make-amber-topology-coordinate-pair (&key topology-filename coordinate-filename)
+  (let* ((energy-function (read-amber-parm-format topology-filename))
+         (aggregate (generate-aggregate-for-energy-function energy-function))
+         (crd (netcdf:nc-open coordinate-filename :mode netcdf-cffi:+nowrite+))
+         (pair (make-instance 'amber-topology-coordinate-pair
+                              :topology-filename topology-filename
+                              :coordinate-filename coordinate-filename
+                              :coordinate-netcdf crd
+                              :energy-function energy-function
+                              :aggregate aggregate)))
+    (gctools:finalize pair (lambda () (format t "Closing netcdf file~%") (netcdf:nc-close (coordinate-netcdf pair))))
+    pair))
+
+(defun change-coordinate-file (amber-topology-pair coordinate-filename)
+  "Switch to another coordinate file"
+  (when (coordinate-netcdf amber-topology-pair)
+    (netcdf:nc-close (coordinate-netcdf amber-topology-pair)))
+  (let ((crd (netcdf:nc-open coordinate-filename :mode netcdf-cffi:+nowrite+)))
+    (setf (coordinate-netcdf amber-topology-pair) crd
+          (coordinate-filename amber-topology-pair) coordinate-filename)))
+  
+
+(defun box-dimensions (amber-topology-pair)
+  (let ((sv (static-vectors:make-static-vector 3 :element-type 'double-float)))
+    (netcdf:get-vara-double (coordinate-netcdf amber-topology-pair) "cell_lengths" (vector 0) (vector 3) sv)
+    (copy-seq sv)))
+
+(defun number-of-frames (amber-topology-pair)
+  "Return the number of frames in the coordinate file.
+If it's a restart file then return 1"
+  (let ((dim (gethash "frame" (netcdf:dimensions (coordinate-netcdf amber-topology-pair)))))
+    (if dim
+        dim
+        1)))

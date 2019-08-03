@@ -61,7 +61,17 @@
   (:use #:common-lisp)
   (:export
    #:write-topology
-   #:save-amber-parm-format))
+   #:save-amber-parm-format
+   #:generate-aggregate-for-energy-function
+   #:amber-topology-coordinate-pair
+   #:make-amber-topology-coordinate-pair
+   #:change-coordinate-file
+   #:box-dimensions
+   #:topology-filename
+   #:coordinate-filename
+   #:coordinate-netcdf
+   #:energy-function
+   #:aggregate))
 
 (defpackage #:leap.cando-database
   (:use #:common-lisp)
