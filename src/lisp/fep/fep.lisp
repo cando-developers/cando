@@ -354,7 +354,7 @@
     (:%PREPARE-PRESS-IN.NSTLIM% 10000 10000)
     (:%DECHARGE-RECHARGE-HEAT-IN.NSTLIM% 10000 1000)
     (:%VDW-HEAT-IN.NSTLIM% 10000 1000)
-    (:%DT% . "0.002")
+    (:%DT% . "0.001")
     (:%NTC% . 2)
     (:%NTF% . 1)
     (:%TEMP0% . "300.0" )
