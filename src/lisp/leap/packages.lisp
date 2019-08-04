@@ -66,12 +66,16 @@
    #:amber-topology-coordinate-pair
    #:make-amber-topology-coordinate-pair
    #:change-coordinate-file
-   #:box-dimensions
+   #:cell-lengths
+   #:number-of-frames
    #:topology-filename
    #:coordinate-filename
    #:coordinate-netcdf
    #:energy-function
-   #:aggregate))
+   #:aggregate
+   #:number-of-atoms
+   #:read-frame-into-atoms
+   ))
 
 (defpackage #:leap.cando-database
   (:use #:common-lisp)

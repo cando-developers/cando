@@ -145,75 +145,77 @@
 
 ")
 
+(defun load-topology-restart-pair (topology coordinate)
+  (let* ((top-crd (leap.topology:make-amber-topology-coordinate-pair
+                   :topology-filename topology
+                   :coordinate-filename coordinate)))
+    (let ((number-of-frames (leap.topology:number-of-frames top-crd)))
+      (if number-of-frames
+          (leap.topology:read-frame-into-atoms top-crd (1- number-of-frames))
+          (leap.topology:read-frame-into-atoms top-crd))
+    top-crd)))
 
-(defparameter *cpptraj-strip*
-"trajin :%COORDINATES%
+(defun build-decharge-recharge-aggregate (top-crd keep-index)
+  (let ((aggregate (leap.topology:aggregate top-crd))
+        (new-agg (chem:make-aggregate)))
+    (format t "About to add-matter~%")
+    (chem:add-matter new-agg (chem:matter-copy (chem:content-at aggregate keep-index)))
+    (chem:add-matter new-agg (chem:matter-copy (chem:content-at aggregate keep-index)))
+    (format t "About to loop~%")x
+    (loop for index from 2 below (chem:content-size aggregate)
+          for mol = (chem:matter-copy (chem:content-at aggregate index))
+          do (chem:add-matter new-agg mol))
+    (format t "About to set bounding-box~%")
+    (let ((bounding-box (coerce (leap.topology:cell-lengths top-crd) 'list)))
+      (chem:set-property new-agg :bounding-box bounding-box))
+    new-agg))
 
-# remove the two ligands and keep the rest
-strip \":1,2\"
-outtraj :%SOLVATED% onlyframes 1
+(defun build-decharge-aggregate (top-crd)
+  (build-decharge-recharge-aggregate top-crd 0))
 
-# extract the first ligand
-unstrip
-strip \":2-999999\"
-outtraj :%SOURCE% onlyframes 1
+(defun build-recharge-aggregate (top-crd)
+  (build-decharge-recharge-aggregate top-crd 1))
 
-# extract the second ligand
-unstrip
-strip \":1,3-999999\"
-outtraj :%TARGET% onlyframes 1
-")
-
+(defun do-decharge-recharge (charge-function
+                             feps-fn
+                             topology-fn coordinates-fn
+                             mol2-fn
+                             output-topology-fn output-coordinate-fn)
+  (leap:setup-amber-paths)
+  (leap:source "leaprc.ff14SB.redq")
+  (leap:source "leaprc.gaff")
+  (leap:load-amber-params "frcmod.ionsjc_tip3p")
+  ;; load the fep-calculation
+  (let* ((feps (fep:load-feps feps-fn))
+         (top-crd (fep:load-topology-restart-pair topology-fn coordinates-fn))
+         (decharge (funcall charge-function top-crd)))
+    (cando:save-mol2 decharge mol2-fn)
+    (format t "residue-name-to-pdb-list -> ~s~%" (fep:residue-name-to-pdb-alist feps))
+    (leap.topology:save-amber-parm-format
+     decharge output-topology-fn output-coordinate-fn
+     :residue-name-to-pdb-alist (fep:residue-name-to-pdb-alist feps))))
+  
 (defparameter *decharge*
   (let ((*package* (find-package :keyword)))
     (cl:format nil "~{~s~%~}"
-               `((leap:setup-amber-paths)
-                 (leap:source "leaprc.ff14SB.redq")
-                 (leap:source "leaprc.gaff")
-                 (leap:load-amber-params "frcmod.ionsjc_tip3p")
-                 ;; load the fep-calculation
-                 (defparameter *feps* (fep:load-feps ":%FEPS%"))
-                 (defparameter lsolv (cando:load-mol2 ":%SOLVATED%"))
-                 ;; after cpptraj molecules are merged and it drops solvent information - so we need to add it back
-                 (cando:maybe-split-molecules-in-aggregate lsolv)
-                 (cando:assign-solvent-molecules-using-residue-name lsolv (fep:solvent-residue-name *feps*))
-                 (defparameter lsource (cando:load-mol2 ":%SOURCE%"))
-                 ;;decharge transformation
-                 (defparameter decharge (cando:combine (chem:matter-copy lsource)
-                                                       (chem:matter-copy lsource)
-                                                       (chem:matter-copy lsolv)))
-                 (leap.set-box:set-box decharge :vdw)
-                 (cando:save-mol2 decharge ":%DECHARGE-MOL2%")
-
-                 (format t "residue-name-to-pdb-list -> ~s~%" (fep:residue-name-to-pdb-alist *feps*))
-                 (leap.topology:save-amber-parm-format decharge ":%DECHARGE-TOPOLOGY%" ":%DECHARGE-COORDINATES%"
-                                                       :residue-name-to-pdb-alist (fep:residue-name-to-pdb-alist *feps*))
-                 (core:exit)
-                 ))))
+               `((fep:do-decharge-recharge
+                   'fep:build-decharge-aggregate
+                   ":%FEPS%"
+                   ":%TOPOLOGY%" ":%COORDINATES%"
+                   ":%DECHARGE-MOL2%"
+                   ":%DECHARGE-TOPOLOGY%" ":%DECHARGE-COORDINATES%")
+                 (core:exit)))))
 
 (defparameter *recharge*
   (let ((*package* (find-package :keyword)))
     (cl:format nil "~{~s~%~}"
-               `((leap:setup-amber-paths)
-                 (leap:source "leaprc.ff14SB.redq")
-                 (leap:source "leaprc.gaff")
-                 (leap:load-Amber-Params "frcmod.ionsjc_tip3p")
-                 ;; load the fep-calculation
-                 (defparameter *feps* (fep:load-feps ":%FEPS%"))
-                 (defparameter lsolv (cando:load-mol2 ":%SOLVATED%"))
-                 ;; after cpptraj molecules are merged and it drops solvent information - so we need to add it back
-                 (cando:maybe-split-molecules-in-aggregate lsolv)
-                 (cando:assign-solvent-molecules-using-residue-name lsolv (fep:solvent-residue-name *feps*))
-                 (defparameter ltarget (cando:load-mol2 ":%TARGET%"))
-                 (defparameter recharge (cando:combine (chem:matter-copy ltarget)
-                                                       (chem:matter-copy ltarget)
-                                                       (chem:matter-copy lsolv)))
-                 (leap.set-box:set-box recharge :vdw)
-                 (cando:save-mol2 recharge ":%RECHARGE-MOL2%")
-                 (leap.topology:save-amber-parm-format recharge ":%RECHARGE-TOPOLOGY%" ":%RECHARGE-COORDINATES%"
-                                                       :residue-name-to-pdb-alist (fep:residue-name-to-pdb-alist *feps*))
-                 (core:exit)
-                 ))))
+               `((fep:do-decharge-recharge
+                   'fep:build-recharge-aggregate
+                   ":%FEPS%"
+                   ":%TOPOLOGY%" ":%COORDINATES%"
+                   ":%RECHARGE-MOL2%"
+                   ":%RECHARGE-TOPOLOGY%" ":%RECHARGE-COORDINATES%")
+                 (core:exit)))))
 
 (defparameter *decharge-recharge-heat-in* 
   "heating
@@ -786,9 +788,6 @@ its for and then create a new class for it."))
 (defclass amber-job-mixin ()
   ())
 
-(defclass cpptraj-job-mixin ()
-  ())
-
 (defclass morph-cando-job (morph-job cando-job-mixin)
   ())
 
@@ -803,9 +802,6 @@ its for and then create a new class for it."))
   ())
 
 (defclass morph-side-amber-job (morph-side-job amber-job-mixin)
-  ())
-
-(defclass morph-side-cpptraj-job (morph-side-job cpptraj-job-mixin)
   ())
 
 (defclass morph-side-stage-job (morph-side-job)
@@ -1055,32 +1051,6 @@ its for and then create a new class for it."))
                                                  :input-coordinate-file heat.rst
                                                  :input-topology-file input-topology-file)))
     press-job))
-
-
-(defun make-morph-side-strip (morph side &key input-coordinate-file input-topology-file)
-  (let ((script-file (make-instance 'morph-side-script :morph morph :side side :name "strip" :script *cpptraj-strip*)))
-    (connect-graph
-     (make-instance 'morph-side-cpptraj-job
-                    :morph morph
-                    :side side
-                    :script script-file
-                    :inputs (arguments :-i script-file :-p input-topology-file :%COORDINATES% input-coordinate-file)
-                    :outputs (arguments :%SOLVATED% (make-instance 'morph-side-mol2-file
-                                                                 :morph morph
-                                                                 :side side
-                                                                 :name "solvated"
-                                                                 :extension "mol2")
-                                        :%SOURCE% (make-instance 'morph-side-mol2-file
-                                                               :morph morph
-                                                               :side side
-                                                               :name "source"
-                                                               :extension "mol2")
-                                        :%TARGET% (make-instance 'morph-side-mol2-file
-                                                               :morph morph
-                                                               :side side
-                                                               :name "target"
-                                                               :extension "mol2"))
-                    :makefile-clause (standard-makefile-clause "cpptraj :%OPTION-INPUTS% :%OPTION-OUTPUTS%")))))
 
 (defun make-heat-ti-step (morph side stage lam lambda-values &key input-coordinate-file input-topology-file)
   (let ((script (make-instance 'morph-side-stage-lambda-amber-script

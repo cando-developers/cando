@@ -102,14 +102,17 @@
    #:complex
    #:sqm-job-mixin
    #:amber-job-mixin
-   #:cpptraj-job-mixin
    #:pattern-atoms
    #:average-core-atom-positions
    #:fep-calculation-from-ligands
+   #:do-decharge-recharge
    #:check-calculation-atom-types
    #:validate-atom-types
    #:residue-name-to-pdb-alist
-   #:add-job-edge))
+   #:add-job-edge
+   #:load-topology-restart-pair
+   #:build-decharge-aggregate
+   #:build-recharge-aggregate))
 
 
 (defpackage #:fepdot

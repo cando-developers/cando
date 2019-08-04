@@ -73,17 +73,11 @@
            for morph-side-prepare-job = (make-morph-side-prepare morph side
                                                                  :input-topology-file input-topology-file
                                                                  :input-coordinate-file coord-node)
-           for strip-job = (make-morph-side-strip morph side
-                                                  :input-topology-file input-topology-file
-                                                  :input-coordinate-file (output-file morph-side-prepare-job :-r))
            do (let (stage-jobs)
                 (loop for stage in (case (stages morph)
                                      (1 '(:vdw-bonded))
                                      (3 '(:decharge :vdw-bonded :recharge))
                                      (otherwise (error "Illegal number of stages ~a - only 1 or 3 are allowed for morph ~s" (stages morph) morph)))
-                      with source = (output-file strip-job :%SOURCE%)
-                      with target = (output-file strip-job :%TARGET%)
-                      with solvated = (output-file strip-job :%SOLVATED%)
                       for script-source = (ecase stage
                                             (:decharge *decharge*)
                                             (:vdw-bonded nil)
@@ -94,12 +88,12 @@
                                                                                   :extension "lisp"))
                       for inputs = (ecase stage
                                      (:decharge (arguments :%FEPS% input-feps-file
-                                                           :%SOLVATED% solvated
-                                                           :%SOURCE% source))
+                                                           :%TOPOLOGY% input-topology-file
+                                                           :%COORDINATES% (output-file morph-side-prepare-job :-r)))
                                      (:vdw-bonded nil)
                                      (:recharge (arguments :%FEPS% input-feps-file
-                                                           :%SOLVATED% solvated
-                                                           :%TARGET% target)))
+                                                           :%TOPOLOGY% input-topology-file
+                                                           :%COORDINATES% (output-file morph-side-prepare-job :-r))))
                       for outputs = (ecase stage
                                       (:decharge
                                        (arguments
