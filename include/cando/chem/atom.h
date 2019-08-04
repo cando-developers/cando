@@ -355,6 +355,11 @@ namespace chem {
     Vector3& getPositionRef() { return this->position; };
     CL_LISPIFY_NAME("setPosition");
     CL_DEFMETHOD 	void	setPosition(const Vector3& o) { this->position= o; };
+    CL_DEFMETHOD 	void	setPositionXYZ(double x, double y, double z) {
+      this->position.getX() = x;
+      this->position.getY() = y;
+      this->position.getZ() = z;
+    }
     void	setPositionInNanometers(Vector3 o);
 #if 0
     Vector3 getForce() { return this->_Force; };
