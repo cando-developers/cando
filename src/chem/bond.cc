@@ -585,6 +585,7 @@ void	BondList_O::archiveBase(core::ArchiveP node)
   SYMBOL_EXPORT_SC_(ChemKwPkg,virtualBond);
   SYMBOL_EXPORT_SC_(ChemKwPkg,dashedSingleBond);
   SYMBOL_EXPORT_SC_(ChemKwPkg,dashedDoubleBond);
+  SYMBOL_EXPORT_SC_(ChemKwPkg,unknownOrderBond);
   CL_BEGIN_ENUM(BondOrder,_sym__PLUS_bondOrderToSymbolConverter_PLUS_,"BondOrder");
   CL_VALUE_ENUM(chemkw::_sym_noBond, noBond );
   CL_VALUE_ENUM(chemkw::_sym_singleBond, singleBond );

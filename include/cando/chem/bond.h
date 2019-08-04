@@ -94,7 +94,7 @@ CL_DEFMETHOD   Atom_sp getAtom2() const { return this->_Atom2; };
 
 CL_LISPIFY_NAME("getOrder");
 CL_DEFMETHOD   BondOrder getOrder()	{ return this->order; };
-  int getOrderAsInt()	{ return this->order; };
+CL_DEFMETHOD int getOrderAsInt()	{ return this->order; };
   string	getOrderAsString();
   void	setOrder(BondOrder o)	{ this->order=o; };
 CL_LISPIFY_NAME("setOrder");

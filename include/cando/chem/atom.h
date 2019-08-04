@@ -480,10 +480,7 @@ namespace chem {
     Bond_sp	basicBondTo(  Atom_sp a, BondOrder o );
     Bond_sp	bondTo(  Atom_sp a, BondOrder o );
     Bond_sp	bondToSingle(  Atom_sp a );
-    Bond_sp	bondToBondOrderInt(  Atom_sp a, int o )
-    {
-      return this->bondTo(a,(BondOrder)(o));
-    };
+    Bond_sp	bondToOrderInt(  Atom_sp a, int o );
     Bond_sp	getBondTo(Atom_sp a);
     bool 	hasBondWithOrder(BondOrder o) const;
     bool	isBondedToAtomNamed( MatterName name );

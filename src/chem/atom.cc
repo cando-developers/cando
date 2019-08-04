@@ -624,6 +624,12 @@ CL_DEFMETHOD     Bond_sp Atom_O::bondTo( Atom_sp to, BondOrder o )
   return bn;
 }
 
+CL_LISPIFY_NAME("bondToOrderInt");
+CL_DEFMETHOD     Bond_sp Atom_O::bondToOrderInt( Atom_sp to, int o )
+{
+  return this->bondTo(to,(BondOrder)(o));
+};
+
 
 
 

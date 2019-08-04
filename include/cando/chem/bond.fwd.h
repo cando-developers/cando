@@ -47,7 +47,8 @@ typedef	enum 	BondOrderEnum
     hydrogenBond,
     virtualBond,
     dashedSingleBond,
-    dashedDoubleBond
+    dashedDoubleBond,
+    unknownOrderBond
 } BondOrder;
 
 
