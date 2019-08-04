@@ -40,10 +40,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/bond.h>
 #include <cando/chem/molecule.h>
 #include <cando/chem/restraint.h>
-//#include "core/serialize.h"
 #include <clasp/core/numerics.h>
-//#include "core/archive.h"
-//#include "core/archiveNode.h"
 #include <cando/geom/ovector3.h>
 #include <clasp/core/sort.h>
 #include <cando/geom/omatrix.h>
