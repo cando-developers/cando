@@ -46,6 +46,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/nativeVector.fwd.h>
 #include <cando/units/quantity.fwd.h>
 #include <cando/chem/indirectAtomCoordinateReference.h>
+#include <cando/chem/molecule.h>
 #include <cando/geom/vector3.h>
 
 
@@ -149,6 +150,7 @@ class AtomTable_O : public core::CxxObject_O
   core::T_sp                     _totalNumberOfMoleculesNSPM;
   //! Stores actual residues from aggregate
   core::Vector_sp                _Residues;
+  core::Vector_sp                _Molecules;
   core::T_sp                     _AggregateName;
   core::T_sp                     _BoundingBox;
   core::T_sp                     _NonbondForceFieldForAggregate;
@@ -206,7 +208,7 @@ class AtomTable_O : public core::CxxObject_O
   size_t getAtomFlag(size_t index);
 
   void	dumpTerms();
-  void constructFromMatter(Matter_sp mol, core::T_sp nonbondForceField, core::T_sp activeAtoms );
+  void constructFromMolecule(Molecule_sp mol, core::T_sp nonbondForceField, core::T_sp activeAtoms );
 
   size_t push_back_excluded_atom_indices_and_sort(core::ComplexVector_int32_t_sp excludedAtomIndices, size_t atomIndex);
   /*! Calculate the excluded atom list with atom indices starting at 0.
@@ -233,10 +235,12 @@ class AtomTable_O : public core::CxxObject_O
   core::T_sp atom_table_residue_names() const;
   core::T_sp atom_table_atoms_per_molecule() const;
   core::T_sp atom_table_residues() const;
+  core::T_sp atom_table_molecules() const;
   CL_DEFMETHOD void setf_atom_table_residue_pointers(core::ComplexVector_int32_t_sp val) {this->_ResiduePointers = val; };
   CL_DEFMETHOD void setf_atom_table_residue_names(core::ComplexVector_T_sp val) {this->_ResidueNames = val; };
   CL_DEFMETHOD void setf_atom_table_atoms_per_molecule(core::ComplexVector_int32_t_sp val) {this->_AtomsPerMolecule = val; };
   CL_DEFMETHOD void setf_atom_table_residues(core::Vector_sp val) {this->_Residues = val; };
+  CL_DEFMETHOD void setf_atom_table_molecules(core::Vector_sp val) {this->_Molecules = val; };
   size_t getCoordinateIndex(Atom_sp atom);
   
  AtomTable_O() : _ResiduePointers(_Unbound<core::ComplexVector_int32_t_O>()),
@@ -246,6 +250,7 @@ class AtomTable_O : public core::CxxObject_O
                  _finalSoluteResidueIPTRES(_Unbound<core::T_O>()),
                  _totalNumberOfMoleculesNSPM(_Unbound<core::T_O>()),
                  _Residues(_Unbound<core::Vector_O>()),
+                 _Molecules(_Unbound<core::Vector_O>()),
                  _AggregateName(_Unbound<core::T_O>()),
                  _BoundingBox(_Unbound<core::T_O>()),
                  _NonbondForceFieldForAggregate(_Unbound<core::T_O>()) {};

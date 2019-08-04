@@ -155,6 +155,7 @@ void AtomTable_O::initialize()
   this->_ResidueNames = residue_names;
   this->_AtomsPerMolecule = atoms_per_molecule;
   this->_Residues = core::core__make_vector(_lisp->_true(), 16, true, core::make_fixnum(0));
+  this->_Molecules = core::core__make_vector(_lisp->_true(), 16, true, core::make_fixnum(0));
 }
 
 core::List_sp EnergyAtom::encode() const {
@@ -174,6 +175,7 @@ void AtomTable_O::fields(core::Record_sp node) {
   node->field( INTERN_(kw,residue_names), this->_ResidueNames);
   node->field( INTERN_(kw,atoms_per_molecule),this->_AtomsPerMolecule);
   node->field( INTERN_(kw,residues),this->_Residues);
+  node->field( INTERN_(kw,molecules),this->_Molecules);
   this->Base::fields(node);
 }
 
@@ -393,11 +395,19 @@ CL_DEFMETHOD core::T_sp AtomTable_O::atom_table_atoms_per_molecule() const {
 }
 
 CL_DEFMETHOD core::T_sp AtomTable_O::atom_table_residues() const {
-  printf("%s:%d In :atom_table_residues\n", __FILE__, __LINE__ );
+//o  printf("%s:%d In :atom_table_residues\n", __FILE__, __LINE__ );
   if (this->_Residues.unboundp()) {
     SIMPLE_ERROR(BF("residues table is not bound"));
   }
   return core::eval::funcall(cl::_sym_copySeq,this->_Residues);
+}
+
+CL_DEFMETHOD core::T_sp AtomTable_O::atom_table_molecules() const {
+//o  printf("%s:%d In :atom_table_residues\n", __FILE__, __LINE__ );
+  if (this->_Molecules.unboundp()) {
+    SIMPLE_ERROR(BF("molecules table is not bound"));
+  }
+  return core::eval::funcall(cl::_sym_copySeq,this->_Molecules);
 }
 
 CL_DEFMETHOD
@@ -417,11 +427,12 @@ size_t AtomTable_O::getAtomFlag(size_t index) {
 }
 
 
-void AtomTable_O::constructFromMatter(Matter_sp mol, core::T_sp nonbondForceField, core::T_sp activeAtoms )
+void AtomTable_O::constructFromMolecule(Molecule_sp mol, core::T_sp nonbondForceField, core::T_sp activeAtoms )
 {
   uint idx = this->_Atoms.size();
   uint coordinateIndex = idx*3;
-  
+  // Push to the molecules
+  this->_Molecules->vectorPushExtend(mol);
   Loop residue_loop;
   residue_loop.loopTopGoal(mol,RESIDUES);
   while (residue_loop.advanceLoopAndProcess()) {
@@ -541,6 +552,7 @@ CL_DEFMETHOD core::T_mv AtomTable_O::calculate_excluded_atom_list()
 CL_DEFMETHOD core::Symbol_sp AtomTable_O::elt_atom_type(int index) {
   return this->_Atoms[index]._SharedAtom->getType();
 };
+SYMBOL_EXPORT_SC_(KeywordPkg,atom_vector);
 SYMBOL_EXPORT_SC_(KeywordPkg,atom_name_vector);
 SYMBOL_EXPORT_SC_(KeywordPkg,atom_type_vector);
 SYMBOL_EXPORT_SC_(KeywordPkg,charge_vector);
@@ -553,6 +565,7 @@ SYMBOL_EXPORT_SC_(KeywordPkg,atoms_per_molecule);
 
 CL_DEFMETHOD void  AtomTable_O::fill_atom_table_from_vectors(core::List_sp vectors)
 {
+  core::Array_sp atoms_vec = (safe_alist_lookup<core::Array_sp>(vectors,kw::_sym_atom_vector));
   core::Array_sp atom_name_vec = (safe_alist_lookup<core::Array_sp>(vectors,kw::_sym_atom_name_vector));
   core::Array_sp atom_type_vec = (safe_alist_lookup<core::Array_sp>(vectors,kw::_sym_atom_type_vector));
   core::Array_sp charge_vec = (safe_alist_lookup<core::Array_sp>(vectors,kw::_sym_charge_vector));
@@ -564,13 +577,20 @@ CL_DEFMETHOD void  AtomTable_O::fill_atom_table_from_vectors(core::List_sp vecto
 
   for (size_t i = 0, iEnd(atom_name_vec->length()); i<iEnd ;++i)
   {
-    printf("%s:%d About to set _AtomName with %s\n", __FILE__, __LINE__, _rep_(atom_name_vec->rowMajorAref(i)).c_str());
+//    printf("%s:%d About to set _AtomName with %s\n", __FILE__, __LINE__, _rep_(atom_name_vec->rowMajorAref(i)).c_str());
+    Atom_sp atom = gc::As<Atom_sp>(atoms_vec->rowMajorAref(i));
+    core::T_sp type = atom_type_vec->rowMajorAref(i);
+//    printf("%s:%d  type -> %s\n", __FILE__, __LINE__, _rep_(type).c_str());
+    atom->setType(atom_type_vec->rowMajorAref(i));
+    double charge  =  translate::from_object<double>(charge_vec->rowMajorAref(i))._v;   // charge-vector
+    this->_Atoms[i]._Charge       =  charge;
+    atom->setCharge(charge);
+    this->_Atoms[i]._SharedAtom     =  atom;
     this->_Atoms[i]._AtomName     =  gc::As<core::Symbol_sp>(atom_name_vec->rowMajorAref(i));  // atom-name-vector
     //    The _TypeIndex is going to go away once we have ensured that the new Common Lisp code
     // that calculates nonbond terms works.
 //    this->_Atoms[i]._TypeIndex    =  forceField->getNonbondDb()->findTypeIndex((*atom_type_vec)[i]);
     this->_Atoms[i]._TypeIndex = UNDEF_UINT;
-    this->_Atoms[i]._Charge       =  translate::from_object<double>(charge_vec->rowMajorAref(i))._v;   // charge-vector
     this->_Atoms[i]._Mass         =  translate::from_object<double>(mass_vec->rowMajorAref(i))._v;                // masses
     this->_Atoms[i]._AtomicNumber =  translate::from_object<int>(atomic_number_vec->rowMajorAref(i))._v;       // vec
   }

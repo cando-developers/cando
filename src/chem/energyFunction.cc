@@ -1271,7 +1271,7 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatterWithAtomTypes(Matter_sp matte
       core::T_sp aromaticity_info = core::eval::funcall(_sym_identify_aromatic_rings,matter,force_field_name);
       if (aromaticity_info.nilp()) SIMPLE_ERROR(BF("The aromaticity-info was NIL when about to call generate-molecule-energy-function-tables - it should not be"));
       core::DynamicScopeManager aromaticity_scope(_sym_STARcurrent_aromaticity_informationSTAR,aromaticity_info);
-      this->_AtomTable->constructFromMatter(onemol,nonbondForceField,activeAtoms);
+      this->_AtomTable->constructFromMolecule(onemol,nonbondForceField,activeAtoms);
       if (chem__verbose(0)) core::write_bf_stream(BF("Generating parameters for %s using %s force-field.\n") % _rep_(onemol->getName()) % _rep_(force_field_name) );
       core::eval::funcall(_sym_generate_molecule_energy_function_tables,this->asSmartPtr(),onemol,forceField,activeAtoms);
       final_solute_residue_iptres += onemol->contentSize();
@@ -1290,7 +1290,7 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatterWithAtomTypes(Matter_sp matte
       Molecule_sp onemol = gc::As_unsafe<Molecule_sp>(CONS_CAR(cur_solvent));
       core::T_sp force_field_name = onemol->force_field_name();
       core::T_sp forceField = core::eval::funcall(chem::_sym_find_force_field,force_field_name);
-      this->_AtomTable->constructFromMatter(onemol,nonbondForceField,activeAtoms);
+      this->_AtomTable->constructFromMolecule(onemol,nonbondForceField,activeAtoms);
       core::eval::funcall(_sym_generate_molecule_energy_function_tables,this->asSmartPtr(),onemol,forceField,activeAtoms);
       ++number_of_molecules_nspm;
     }
@@ -1304,7 +1304,7 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatterWithAtomTypes(Matter_sp matte
       core::T_sp aromaticity_info = core::eval::funcall(_sym_identify_aromatic_rings,matter,force_field_name);
       if (aromaticity_info.nilp()) SIMPLE_ERROR(BF("The aromaticity-info was NIL when we were about to call generate-molecule-energy-function-tables for a single molecule - it should not be"));
       core::DynamicScopeManager aromaticity_scope(_sym_STARcurrent_aromaticity_informationSTAR,aromaticity_info);
-    this->_AtomTable->constructFromMatter(molecule,nonbondForceField,activeAtoms);
+    this->_AtomTable->constructFromMolecule(molecule,nonbondForceField,activeAtoms);
     if (chem__verbose(0)) core::write_bf_stream(BF("Generating parameters for %s using %s force-field.\n") % _rep_(molecule->getName()) % _rep_(force_field_name) );
     core::eval::funcall(_sym_generate_molecule_energy_function_tables,this->asSmartPtr(),molecule,forceField,activeAtoms);
     final_solute_residue_iptres = molecule->contentSize();
