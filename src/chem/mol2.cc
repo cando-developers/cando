@@ -707,10 +707,11 @@ core::T_sp mol2Read(Mol2File& fIn)
             one._Type = type;
               //core::write_bf_stream(BF("Assigned sybyl type %s to %s\n") % _rep_(one._Type) % _rep_(a));
           } else {
-            if ( a->getType() ) {
-              one._Type = a->getType();
+            if ( a->getType().notnilp() ) {
+              core::Symbol_sp type = gc::As<core::Symbol_sp>(a->getType());
+              one._Type = type;
             } else {
-              one._Type = _Nil<core::T_O>();
+              one._Type = _Nil<core::Symbol_O>();
             }
           }
           atomList.push_back(one);
