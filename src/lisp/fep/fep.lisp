@@ -354,10 +354,10 @@
     (:%PREPARE-PRESS-IN.NSTLIM% 100000 3000)
     (:%DECHARGE-RECHARGE-HEAT-IN.NSTLIM% 100000 3000)
     (:%VDW-HEAT-IN.NSTLIM% 100000 3000)
-    (:%DT% . "0.001")
+    (:%DT% . 0.001)
     (:%NTC% . 2)
     (:%NTF% . 1)
-    (:%TEMP0% . "300.0" )
+    (:%TEMP0% . 300.0 )
     ))
 
 (defconstant +testing-lambdas+ 5)
@@ -371,12 +371,13 @@
    (jobs :initarg :jobs :accessor jobs)
    (ti-stages :initarg :ti-stages :initform 3 :accessor ti-stages)
    (ti-lambdas :initarg :ti-lambdas :initform 11 :accessor ti-lambdas)
-   (settings :initform (default-calculation-settings) :initarg :settings :accessor settings)a
+   (settings :initform (default-calculation-settings) :initarg :settings :accessor settings)
    (top-directory :initform (make-pathname :directory (list :relative "jobs"))
                   :initarg :top-directory :accessor top-directory )
    (stage :initform 0 :initarg :stage :accessor stage)
    (residue-name-to-pdb-alist :initform nil :initarg :residue-name-to-pdb-alist :accessor residue-name-to-pdb-alist)
    ))
+
 
 (defmethod print-object ((obj calculation) stream)
   (if *print-readably*
