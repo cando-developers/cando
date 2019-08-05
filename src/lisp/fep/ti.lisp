@@ -58,7 +58,7 @@
                   (solvent-buffer *feps*)
                   :closeness (solvent-closeness *feps*))
                  (leap.add-ions:add-ions *system* :|Cl-| 0)
-              ;   (cando:save-mol2 *system* (ensure-directories-exist ":%MOL2%"))
+                 (cando:save-mol2 *system* (ensure-directories-exist ":%MOL2%"))
                  (ensure-jobs-directories-exist (pathname ":%TOPOLOGY%"))
                  (ensure-jobs-directories-exist (pathname ":%COORDINATES%"))
                  (leap.topology:save-amber-parm-format *system* ":%TOPOLOGY%" ":%COORDINATES%"
