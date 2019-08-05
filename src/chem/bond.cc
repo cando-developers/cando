@@ -596,6 +596,7 @@ void	BondList_O::archiveBase(core::ArchiveP node)
   CL_VALUE_ENUM(chemkw::_sym_virtualBond, virtualBond);
   CL_VALUE_ENUM(chemkw::_sym_dashedSingleBond,dashedSingleBond);
   CL_VALUE_ENUM(chemkw::_sym_dashedDoubleBond,dashedDoubleBond);
+  CL_VALUE_ENUM(chemkw::_sym_unknownOrderbond,unknownOrderBond);
   CL_END_ENUM(_sym__PLUS_bondOrderToSymbolConverter_PLUS_);
 
 
