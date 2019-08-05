@@ -640,6 +640,29 @@ then don't calculate 1,4 interactions"
             (cons :cn1-vec (copy-seq cn1-vec))
             (cons :cn2-vec (copy-seq cn2-vec))))))
 
+(defun prepare-molecules (energy-function)
+  "For each molecule assign an integer index for the force-field and return (values molecule-ff-index-vec ff-name-vec."
+  (let* ((atom-table (chem:atom-table energy-function))
+         (molecules (chem:atom-table-molecules atom-table))
+         (force-field-names (make-hash-table))
+         (force-field-name-index 0))
+    (loop for molecule across molecules
+          for force-field-name = (chem:force-field-name molecule)
+          unless (gethash force-field-name force-field-names)
+            do (setf (gethash force-field-name force-field-names)
+                     (prog1 force-field-name-index
+                       (incf force-field-name-index))))
+    (let ((force-field-names-vec (make-array (hash-table-count force-field-names))))
+      (maphash (lambda (ff-name ff-index)
+                 (setf (elt force-field-names-vec ff-index) ff-name))
+               force-field-names)
+      (let ((molecule-force-field-names-index-vec (make-array (length molecules))))
+        (loop for mol across molecules
+              for index from 0
+              for ff-name = (chem:force-field-name mol)
+              for ff-index = (gethash ff-name force-field-names)
+              do (setf (elt molecule-force-field-names-index-vec index) ff-index))
+        (values molecule-force-field-names-index-vec force-field-names-vec)))))
 
 (defun prepare-residue (energy-function residue-name-to-pdb-alist)
   (let* ((atom-table (chem:atom-table energy-function))
@@ -723,14 +746,14 @@ then don't calculate 1,4 interactions"
       ,@body)))
 
      
-(defun save-amber-parm-format-using-energy-function (energy-function topology-pathname coordinate-pathname residue-name-to-pdb-alist &key (bond-orders t))
+(defun save-amber-parm-format-using-energy-function (energy-function topology-pathname coordinate-pathname residue-name-to-pdb-alist &key (cando-extensions t))
   "Generate an AMBER topology/coordinate file pair using the energy function. 
 Arguments:
 energy-function : The energy-function to generate the topology from.
 topology-pathname : Where to write the topology file.
 coordinate-pathname : Where to write the coordinate file (ascii).
 residue-name-to-pdb-alist : An alist of long residue names to short PDB residue names.
-bond-orders               : T if you want bond-orders written to the topology file."
+cando-extensions               : T if you want cando-extensions written to the topology file."
   (let* ((bar (cando:make-progress-bar :style :bar :message "Saving" :total 41 :width 41 :divisions 41))
          (bar-counter 0)
          (nonbonds (chem:get-nonbond-component energy-function))
@@ -763,6 +786,7 @@ bond-orders               : T if you want bond-orders written to the topology fi
       ;; To avoid lots of nested scopes we will declare one large scope
       ;;   and declare all of the variables in that scope here at the top
       (let (atom-vectors
+            molecule-force-field-name-indices force-field-names-vec
             ntypes atom-name atom-type charge mass atomic-number atom-radius ico iac local-typej-vec cn1-vec cn2-vec #|nonbonds|#
             nbonh mbona ibh jbh icbh ib jb icb kbj-vec r0j-vec #|stretches|#
             ntheth mtheta ith jth kth icth it jt kt1 ict ktj-vec t0j-vec #|angles|#
@@ -785,6 +809,8 @@ bond-orders               : T if you want bond-orders written to the topology fi
                                         ;          (chem:prepare-amber-energy-nonbond energy-function))
         (multiple-value-setq (nres nmxrs residue-pointer-vec residue-name-vec atoms-per-molecule residue-vec)
           (prepare-residue energy-function residue-name-to-pdb-alist))
+        (multiple-value-setq (molecule-force-field-name-indices force-field-names-vec)
+          (prepare-molecules energy-function))
         (setf atom-vectors (chem:prepare-amber-energy-nonbond energy-function (chem:nonbond-force-field-for-aggregate atom-table)))
         (setf ntypes (cdr (assoc :ntypes atom-vectors)))
         (setf atom-name (cdr (assoc :atom-name-vector atom-vectors)))
@@ -887,7 +913,7 @@ bond-orders               : T if you want bond-orders written to the topology fi
          (fortran:end-line))
         ;; write the atom names
 
-         ;; Next
+        ;; Next
         (outline-progn
          (fortran:fformat 1 "%-80s")
          (cando:progress-advance bar (incf bar-counter))
@@ -900,17 +926,17 @@ bond-orders               : T if you want bond-orders written to the topology fi
          (fortran:end-line))
         ;; write the atom charges
 
-         ;; Next
-         (outline-progn
-          (fortran:fformat 1 "%-80s")
-          (cando:progress-advance bar (incf bar-counter))
-          (fortran:fwrite "%FLAG ATOMIC_NUMBER")
-          (fortran:fwrite "%FORMAT(10I8)")
-          (fortran:debug "-5-")
-          (fortran:fformat 10 "%8d")
-          (loop for number across atomic-number
-                do (fortran:fwrite number))
-          (fortran:end-line))
+        ;; Next
+        (outline-progn
+         (fortran:fformat 1 "%-80s")
+         (cando:progress-advance bar (incf bar-counter))
+         (fortran:fwrite "%FLAG ATOMIC_NUMBER")
+         (fortran:fwrite "%FORMAT(10I8)")
+         (fortran:debug "-5-")
+         (fortran:fformat 10 "%8d")
+         (loop for number across atomic-number
+               do (fortran:fwrite number))
+         (fortran:end-line))
         ;; write the atomic number of each atom
 
         ;; Next
@@ -1460,19 +1486,44 @@ bond-orders               : T if you want bond-orders written to the topology fi
          (loop for screen across generalized-born-screen
                do (fortran:fwrite screen))
          (fortran:end-line))
-        (when bond-orders
-          (fortran:fformat 1 "%-80s")
-          (cando:progress-advance bar (incf bar-counter))
-          (fortran:fwrite "%FLAG BOND_ORDERS")
-          (fortran:fwrite "%FORMAT(40I2)")
-          (fortran:debug "-44-")
-          (fortran:fformat 40 "%2d")
-          (loop for orderi across non-h-bond-orders
-                do (fortran:fwrite orderi))
-          (fortran:end-line))
+        (when cando-extensions
+          (outline-progn
+           (fortran:fformat 1 "%-80s")
+           (cando:progress-advance bar (incf bar-counter))
+           (fortran:fwrite "%FLAG BOND_ORDERS")
+           (fortran:fwrite "%FORMAT(40I2)")
+           (fortran:debug "-44-")
+           (fortran:fformat 40 "%2d")
+           (loop for orderi across non-h-bond-orders
+                 do (fortran:fwrite orderi))
+           (fortran:end-line))
+          (outline-progn
+           (let ((max-force-field-name-len 0))
+             (loop for name across force-field-names-vec
+                   do (setf max-force-field-name-len (max max-force-field-name-len
+                                                          (length (string name)))))
+             (fortran:fformat 1 (format nil "%-80s"))
+             (cando:progress-advance bar (incf bar-counter))
+             (fortran:fwrite "%FLAG FORCE_FIELD_NAMES")
+             (fortran:fwrite (format nil "%FORMAT(1a~d)" (1+ max-force-field-name-len)))
+             (fortran:debug "-45-")
+             (fortran:fformat 1 (format nil "%-~ds" (1+ max-force-field-name-len)))
+             (loop for name across force-field-names-vec
+                   do (fortran:fwrite (string name)))
+             (fortran:end-line)))
+          (outline-progn
+           (fortran:fformat 1 "%-80s")
+           (cando:progress-advance bar (incf bar-counter))
+           (fortran:fwrite "%FLAG MOLECULE_FORCE_FIELD_INDEX")
+           (fortran:fwrite (format nil "%FORMAT(20I3)"))
+           (fortran:debug "-46-")
+           (fortran:fformat 20 "%3d")
+           (loop for index across molecule-force-field-name-indices
+                 do (fortran:fwrite (1+ index)))
+           (fortran:end-line)))
         ))
 ;;;    (format *debug-io* "coordinate-pathname -> ~s~%" coordinate-pathname)
-    (fortran:with-fortran-output-file (ftop coordinate-pathname :direction :output :if-exists :supersede)
+      (fortran:with-fortran-output-file (ftop coordinate-pathname :direction :output :if-exists :supersede)
       (fortran:fformat 20 "%-4s")
       (fortran:fwrite (string (chem:aggregate-name atom-table)))
       (fortran:end-line)
@@ -1518,7 +1569,7 @@ bond-orders               : T if you want bond-orders written to the topology fi
     (cando:progress-done bar)
     (values energy-function)))
 
-(defun save-amber-parm-format (aggregate topology-pathname coordinate-pathname &key assign-types residue-name-to-pdb-alist (bond-orders t))
+(defun save-amber-parm-format (aggregate topology-pathname coordinate-pathname &key assign-types residue-name-to-pdb-alist (cando-extensions t))
   (format t "Constructing energy function~%")
   (finish-output)
   (let* ((energy-function (chem:make-energy-function aggregate 
@@ -1533,7 +1584,7 @@ bond-orders               : T if you want bond-orders written to the topology fi
                                                   topology-pathname
                                                   coordinate-pathname
                                                   residue-name-to-pdb-alist
-                                                  :bond-orders bond-orders)))
+                                                  :cando-extensions cando-extensions)))
 
 (defvar %flag-title "%FLAG TITLE")
 (defvar %flag-pointers "%FLAG POINTERS")
@@ -1569,6 +1620,8 @@ bond-orders               : T if you want bond-orders written to the topology fi
 (defvar %flag-solvent-pointers "%FLAG SOLVENT_POINTERS")
 (defvar %flag-atoms-per-molecule "%FLAG ATOMS_PER_MOLECULE")
 (defvar %flag-bond-orders "%FLAG BOND_ORDERS")
+(defvar %flag-force-field-names "%FLAG FORCE_FIELD_NAMES")
+(defvar %flag-molecule-force-field-index "%FLAG MOLECULE_FORCE_FIELD_INDEX")
 
 (defun verify-%flag-line (line)
   (unless (string-equal line "%FLAG" :start1 0 :end1 5)
@@ -1612,7 +1665,9 @@ bond-orders               : T if you want bond-orders written to the topology fi
           dihedrals-inc-hydrogen dihedrals-without-hydrogen
           excluded-atoms-list amber-atom-type solvent-pointers atoms-per-molecule
           non-h-bond-orders
-          molecules-vec residues-vec)
+          molecules-vec residues-vec
+          force-field-names molecule-force-field-index
+          )
       (rlog "Starting read-amber-parm-format~%")
       (fortran:fread-line fif)   ; Skip the version and timestamp line
       (fortran:fread-line fif)   ; read the first %FLAG line
@@ -1872,6 +1927,21 @@ bond-orders               : T if you want bond-orders written to the topology fi
                        (fortran:parse-fortran-format-line (fortran:fortran-input-file-look-ahead fif))
                      (fortran:fread-line-or-error fif) 
                      (setf non-h-bond-orders (fortran:fread-vector fif per-line format-char width))))
+                  ((string-equal %flag-force-field-names line :end2 (length %flag-force-field-names))
+                   (fortran:fread-line-or-error fif)  
+                   (multiple-value-bind (per-line format-char width decimal)
+                       (fortran:parse-fortran-format-line (fortran:fortran-input-file-look-ahead fif))
+                     (fortran:fread-line-or-error fif) 
+                     (setf force-field-names (fortran:fread-vector fif per-line format-char width))
+                     (loop for index from 0
+                           for ffname across force-field-names
+                           do (setf (elt force-field-names index) (intern (string-trim " " ffname) :keyword)))))
+                  ((string-equal %flag-molecule-force-field-index line :end2 (length %flag-molecule-force-field-index))
+                   (fortran:fread-line-or-error fif)  
+                   (multiple-value-bind (per-line format-char width decimal)
+                       (fortran:parse-fortran-format-line (fortran:fortran-input-file-look-ahead fif))
+                     (fortran:fread-line-or-error fif) 
+                     (setf molecule-force-field-index (fortran:fread-vector fif per-line format-char width))))
                   (t
                    (cl:format t "Unknown flag ~a~%" line)
                    (fortran:fread-line-or-error fif)  
@@ -2016,6 +2086,12 @@ bond-orders               : T if you want bond-orders written to the topology fi
                          (setf atoms-in-molecule 0)
                          (setf residue-accumulate nil)
                          (incf molecule-index))))))
+        (when molecule-force-field-index
+          (loop for moli from 0 below (length molecules-vec)
+                for molecule = (elt molecules-vec moli)
+                for force-field-index = (1- (elt molecule-force-field-index moli))
+                for force-field-name = (elt force-field-names force-field-index)
+                do (chem:setf-force-field-name molecule force-field-name)))
         ;; Identify the force-field types
         (warn "This is where I set the force-field name for each molecule")
         #+(or)(let ((force-field-index 0))
@@ -2216,7 +2292,7 @@ bond-orders               : T if you want bond-orders written to the topology fi
         (chem:set-nonbond-excluded-atom-info energy-nonbond atom-table (copy-seq excluded-atoms-list) (copy-seq number-excluded-atoms))
 
         ;; for energy nonbond test
-        (chem:expand-excluded-atoms-to-terms energy-nonbond)
+        #+(or)(chem:expand-excluded-atoms-to-terms energy-nonbond)
         ;;
 
         ;; Now we have energy-stretch, energy-angle, and energy-dihedral
