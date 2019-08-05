@@ -1497,30 +1497,34 @@ cando-extensions               : T if you want cando-extensions written to the t
            (loop for orderi across non-h-bond-orders
                  do (fortran:fwrite orderi))
            (fortran:end-line))
-          (outline-progn
-           (let ((max-force-field-name-len 0))
-             (loop for name across force-field-names-vec
-                   do (setf max-force-field-name-len (max max-force-field-name-len
-                                                          (length (string name)))))
-             (fortran:fformat 1 (format nil "%-80s"))
+          ;; If there is more than one force field or the only force-field is not
+          ;; :DEFAULT - then write out the per-molecule force-field name
+          (when (or (> (length force-field-names-vec) 1)
+                    (not (eq (elt force-field-names-vec 0) :default)))
+            (outline-progn
+             (let ((max-force-field-name-len 0))
+               (loop for name across force-field-names-vec
+                     do (setf max-force-field-name-len (max max-force-field-name-len
+                                                            (length (string name)))))
+               (fortran:fformat 1 (format nil "%-80s"))
+               (cando:progress-advance bar (incf bar-counter))
+               (fortran:fwrite "%FLAG FORCE_FIELD_NAMES")
+               (fortran:fwrite (format nil "%FORMAT(1a~d)" (1+ max-force-field-name-len)))
+               (fortran:debug "-45-")
+               (fortran:fformat 1 (format nil "%-~ds" (1+ max-force-field-name-len)))
+               (loop for name across force-field-names-vec
+                     do (fortran:fwrite (string name)))
+               (fortran:end-line)))
+            (outline-progn
+             (fortran:fformat 1 "%-80s")
              (cando:progress-advance bar (incf bar-counter))
-             (fortran:fwrite "%FLAG FORCE_FIELD_NAMES")
-             (fortran:fwrite (format nil "%FORMAT(1a~d)" (1+ max-force-field-name-len)))
-             (fortran:debug "-45-")
-             (fortran:fformat 1 (format nil "%-~ds" (1+ max-force-field-name-len)))
-             (loop for name across force-field-names-vec
-                   do (fortran:fwrite (string name)))
-             (fortran:end-line)))
-          (outline-progn
-           (fortran:fformat 1 "%-80s")
-           (cando:progress-advance bar (incf bar-counter))
-           (fortran:fwrite "%FLAG MOLECULE_FORCE_FIELD_INDEX")
-           (fortran:fwrite (format nil "%FORMAT(20I3)"))
-           (fortran:debug "-46-")
-           (fortran:fformat 20 "%3d")
-           (loop for index across molecule-force-field-name-indices
-                 do (fortran:fwrite (1+ index)))
-           (fortran:end-line)))
+             (fortran:fwrite "%FLAG MOLECULE_FORCE_FIELD_INDEX")
+             (fortran:fwrite (format nil "%FORMAT(20I3)"))
+             (fortran:debug "-46-")
+             (fortran:fformat 20 "%3d")
+             (loop for index across molecule-force-field-name-indices
+                   do (fortran:fwrite (1+ index)))
+             (fortran:end-line))))
         ))
 ;;;    (format *debug-io* "coordinate-pathname -> ~s~%" coordinate-pathname)
       (fortran:with-fortran-output-file (ftop coordinate-pathname :direction :output :if-exists :supersede)
