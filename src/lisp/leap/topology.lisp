@@ -797,6 +797,7 @@ cando-extensions               : T if you want cando-extensions written to the t
             NATYP    NPHB   IFPERT NBPER  NGPER  NDPER
             MBPER    MGPER  MDPER  IFBOX  nmxrs  IFCAP
             NUMEXTRA NCOPY
+            non-h-bond-orders
             )
         ;; Here we need to calculate all of the values for %FLAG POINTERS
         (multiple-value-setq (nbonh mbona ibh jbh icbh ib jb icb kbj-vec r0j-vec non-h-bond-orders)
