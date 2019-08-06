@@ -3195,7 +3195,6 @@ CL_DEFUN void chem__chem_info_graph_dump(ChemInfoGraph_sp graph) {
 
 
   CL_DEFUN core::List_sp chem__boost_graph_vf2(ChemInfoGraph_sp chemInfoGraph, MoleculeGraph_sp moleculeGraph ) {
-  printf("%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
   if (boost::num_vertices(*chemInfoGraph->_chemInfoGraph)>boost::num_vertices(*moleculeGraph->_moleculeGraph)) {
       return _Nil<core::T_O>();
     }

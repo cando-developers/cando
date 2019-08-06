@@ -82,11 +82,9 @@
 
 
 (defun exhaustively-apply-aromatic-rule (aromaticity-info molecule-graph rule aromaticity-type rule-name)
-  (format t "Applying aromatic rule ~a~%" rule)
   (when (chem:verbose 1)
     (format t "Applying aromatic rule ~a~%" rule-name))
   (let ((aromatic-atoms nil))
-    (format t "Applying aromatic rule ~a~%" rule-name)
     (loop
       ;; Keep applying the rule until we don't find any new atoms
       (let ((hits (chem:boost-graph-vf2 rule molecule-graph))

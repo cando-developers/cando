@@ -370,8 +370,6 @@ CL_DEFMETHOD void AtomTable_O::makUnboundNonbondForceFieldForAggregate() {
 }
 
 CL_DEFMETHOD core::T_sp AtomTable_O::atom_table_residue_pointers() const {
-  printf("%s:%d In :atom_table_residue_pointercs\n", __FILE__, __LINE__ );
-
   if (this->_ResiduePointers.unboundp()) {
     SIMPLE_ERROR(BF("Residue pointers table is not bound"));
   }
@@ -379,7 +377,6 @@ CL_DEFMETHOD core::T_sp AtomTable_O::atom_table_residue_pointers() const {
 }
 
 CL_DEFMETHOD core::T_sp AtomTable_O::atom_table_residue_names() const {
-  printf("%s:%d In :atom_table_residue_names\n", __FILE__, __LINE__ );
   if (this->_ResidueNames.unboundp()) {
     SIMPLE_ERROR(BF("Residue names table is not bound"));
   }
@@ -387,7 +384,6 @@ CL_DEFMETHOD core::T_sp AtomTable_O::atom_table_residue_names() const {
 }
 
 CL_DEFMETHOD core::T_sp AtomTable_O::atom_table_atoms_per_molecule() const {
-  printf("%s:%d In :atom_table_per_molecule\n", __FILE__, __LINE__ );
   if (this->_AtomsPerMolecule.unboundp()) {
     SIMPLE_ERROR(BF("atoms per molecule table is not bound"));
   }
@@ -395,7 +391,7 @@ CL_DEFMETHOD core::T_sp AtomTable_O::atom_table_atoms_per_molecule() const {
 }
 
 CL_DEFMETHOD core::T_sp AtomTable_O::atom_table_residues() const {
-//o  printf("%s:%d In :atom_table_residues\n", __FILE__, __LINE__ );
+//  printf("%s:%d In :atom_table_residues\n", __FILE__, __LINE__ );
   if (this->_Residues.unboundp()) {
     SIMPLE_ERROR(BF("residues table is not bound"));
   }
@@ -403,7 +399,7 @@ CL_DEFMETHOD core::T_sp AtomTable_O::atom_table_residues() const {
 }
 
 CL_DEFMETHOD core::T_sp AtomTable_O::atom_table_molecules() const {
-//o  printf("%s:%d In :atom_table_residues\n", __FILE__, __LINE__ );
+//  printf("%s:%d In :atom_table_residues\n", __FILE__, __LINE__ );
   if (this->_Molecules.unboundp()) {
     SIMPLE_ERROR(BF("molecules table is not bound"));
   }

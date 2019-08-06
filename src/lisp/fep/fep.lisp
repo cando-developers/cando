@@ -775,7 +775,6 @@ Otherwise return NIL."
   (let ((charge-sum 0.0)
         (num-charges 0))
     (maphash (lambda (atm charge)
-               (format t "Charge: ~s ~f~%" atm charge)
                (incf charge-sum charge)
                (incf num-charges))
              atom-charge-hash-table)
