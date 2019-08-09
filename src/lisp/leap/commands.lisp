@@ -563,7 +563,22 @@ Add the directory in _path_ to the list of directories that are searched
 for files specified by other commands.
 "
   (setf *default-pathname-defaults* path))
-     
+
+(defun leap-align-axes (unit)
+"     alignAxes unit
+
+      UNIT                         _unit_
+
+Translate the geometric center of _unit_ to the origin and align
+the principle axes of the ATOMs within _unit_ along the coordinate
+axes.  This is done by calculating the moment of inertia of the UNIT
+using unit mass for each ATOM, and then diagonalizing the resulting
+matrix and aligning the eigenvectors along the coordinate axes.
+This command modifies the coordinates of the UNIT. It may be
+especially useful for preparing long solutes such as nucleic acids
+for solvation.
+"
+     (leap.align-axes:tool-orient-principle-axis-along-coordinate-axis unit))
 
 (eval-when (:load-toplevel :execute)
   (setf leap.parser:*function-names/alist*
@@ -611,6 +626,7 @@ for files specified by other commands.
       ("center" . leap-center)
       ("measureGeom" . leap-measure-geom)
       ("addPath" . leap-add-path)
+      ("alignAxes" . leap-align-axes)
       ))
   (dolist (command leap.parser:*function-names/alist*)
     (if (fboundp (cdr command))
