@@ -414,7 +414,7 @@ char bondOrderToChar(BondOrder bo)
 {
   switch (bo) {
   case noBond:
-      return '?';
+      return '|';
       break;
   case singleBond:
       return '-';
@@ -426,15 +426,26 @@ char bondOrderToChar(BondOrder bo)
       return '#';
       break;
   case aromaticBond:
-      return '@';
+      return '~';
+      break;
+  case hydrogenBond:
+      return '&';
+      break;
+  case virtualBond:
+      return '^';
       break;
   case dashedSingleBond:
       return '!';
+      break;
   case dashedDoubleBond:
       return '%';
       break;
+  case unknownOrderBond:
+      return '?';
+      break;
   default:
-      THROW_HARD_ERROR(BF("No char available for bond"));
+      return '/';
+      break;
   }
   printf( "Illegal bond order: %d\n", (int)(bo));
   exit(1);

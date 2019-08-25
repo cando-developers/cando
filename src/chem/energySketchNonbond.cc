@@ -61,8 +61,22 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace chem
 {
 
-CL_DEFMETHOD void EnergySketchNonbond_O::setScaleSketchNonbond(double d) { this->_Scale = d; };
+core::List_sp EnergySketchNonbond::encode() const {
+  return core::Cons_O::createList(core::Cons_O::create(INTERN_(kw,constant),core::clasp_make_double_float(this->_Constant)),
+                                  core::Cons_O::create(INTERN_(kw,i1), core::make_fixnum(this->I1)),
+                                  core::Cons_O::create(INTERN_(kw,i2), core::make_fixnum(this->I2)),
+                                  core::Cons_O::create(INTERN_(kw,atom1), this->_Atom1),
+                                  core::Cons_O::create(INTERN_(kw,atom2), this->_Atom2));
+}
+
+void EnergySketchNonbond::decode(core::List_sp alist) {
+  SIMPLE_ERROR(BF("Implement decode of EnergySketchNonbond"));
+}
+
+CL_DEFMETHOD void EnergySketchNonbond_O::setScaleSketchNonbond(double d) { this->_ScaleSketchNonbond = d; };
 CL_DEFMETHOD double	EnergySketchNonbond_O::getScaleSketchNonbond()	{return this->_ScaleSketchNonbond; };
+
+CL_DEFMETHOD void EnergySketchNonbond_O::setIgnoreHydrogensAndLps(bool b) { this->_IgnoreHydrogensAndLps = b; };
 
 CL_DEFMETHOD
 void EnergySketchNonbond_O::addSketchNonbondTerm(AtomTable_sp atomTable,
@@ -134,44 +148,88 @@ void	EnergySketchNonbond_O::evaluateTerms(NVector_sp 	pos,
 #undef	EREP_SET_PARAMETER
 #define	EREP_SET_PARAMETER(x)
 #undef	EREP_SET_POSITION
-#define	EREP_SET_POSITION(x,ii,of)	{x=pos->element(ii+of);}
+#define	EREP_SET_POSITION(x,ii,of)	{x=coordinates_ptr[ii+of];};
 #undef	EREP_ENERGY_ACCUMULATE
 #define	EREP_ENERGY_ACCUMULATE(e) {this->_Energy+=(e);}
 #undef	EREP_FORCE_ACCUMULATE
 #undef	EREP_DIAGONAL_HESSIAN_ACCUMULATE
 #undef	EREP_OFF_DIAGONAL_HESSIAN_ACCUMULATE
-#define	EREP_FORCE_ACCUMULATE 		ForceAcc
+#define	EREP_FORCE_ACCUMULATE(II,IO,val) 		{force_ptr[II+IO] += val;};
 #define	EREP_DIAGONAL_HESSIAN_ACCUMULATE 	DiagHessAcc
 #define	EREP_OFF_DIAGONAL_HESSIAN_ACCUMULATE OffDiagHessAcc
 #define MAYBE_BAIL(val) {} if (val <=0.1 ) goto TOO_CLOSE; if ( val >= this->_LongDistanceCutoff) goto TOO_FAR;
   
 #include <cando/chem/energy_functions/_Erep_termDeclares.cc>
-  
+
   if ( this->isEnabled() ) 
   {
+    double* coordinates_ptr = (double*)(pos->rowMajorAddressOfElement_(0));
+    double* force_ptr = (double*)(force->rowMajorAddressOfElement_(0));
     double x1,y1,z1,x2,y2,z2,crep;
+    double dx, dy, dz;
+    double dsq, ERepDistance;
+    double crep_over_dsq;
+    double cutoff_sq = this->_LongDistanceCutoff*this->_LongDistanceCutoff;
     for ( size_t index = 0; index<this->_Terms.size(); ++index ) {
       EnergySketchNonbond& ea = this->_Terms[index];
+      if (this->_IgnoreHydrogensAndLps) {
+        Element e1 = ea._Atom1->getElement();
+        Element e2 = ea._Atom2->getElement();
+        if (ea._Atom1->getAtomicNumber() == 1 ||
+            ea._Atom2->getAtomicNumber() == 1 ||
+            ea._Atom1->getElement() == element_LP ||
+            ea._Atom2->getElement() == element_LP ) continue;
+      }
       int I1 = ea.I1;
       int I2 = ea.I2;
       crep = ea._Constant*this->_ScaleSketchNonbond;
-#include <cando/chem/energy_functions/_Erep_termCode.cc>
+      EREP_SET_POSITION(x1,I1,0);
+      EREP_SET_POSITION(y1,I1,1);
+      EREP_SET_POSITION(z1,I1,2);
+      EREP_SET_POSITION(x2,I2,0);
+      EREP_SET_POSITION(y2,I2,1);
+      EREP_SET_POSITION(z2,I2,2);
+      dx = (x2-x1);
+      dy = (y2-y1);
+      dz = (z2-z1);
+      if (fabs(dx)>this->_LongDistanceCutoff) goto TOO_FAR;
+      if (fabs(dy)>this->_LongDistanceCutoff) goto TOO_FAR;
+      if (fabs(dz)>this->_LongDistanceCutoff) goto TOO_FAR;
+      dsq = dx*dx+dy*dy+dz*dz;
+      ErepDistance = sqrt(dsq);
+      if (ErepDistance <= (0.1)) goto TOO_CLOSE;
+      if (ErepDistance > this->_LongDistanceCutoff) goto TOO_FAR;
+      crep_over_dsq = crep/dsq;
+      fx1 = -dx*crep_over_dsq;
+      fy1 = -dy*crep_over_dsq;
+      fz1 = -dz*crep_over_dsq;
+      fx2 = -fx1;
+      fy2 = -fy1;
+      fz2 = -fz1;
+      EREP_FORCE_ACCUMULATE(I1,0,fx1);
+      EREP_FORCE_ACCUMULATE(I1,1,fy1);
+      EREP_FORCE_ACCUMULATE(I1,2,fz1);
+      EREP_FORCE_ACCUMULATE(I2,0,fx2);
+      EREP_FORCE_ACCUMULATE(I2,1,fy2);
+      EREP_FORCE_ACCUMULATE(I2,2,fz2);
+//#include <cando/chem/energy_functions/_Erep_termCode.cc>
 #if 0
         if (chem__verbose(2)) {
-          core::write_bf_stream(BF("x1,y1,z1 = %f, %f, %f\n") % x1 % y1 % z1 );
-          core::write_bf_stream(BF("x2,y2,z2 = %f, %f, %f\n") % x2 % y2 % z2 );
+          core::write_bf_stream(BF("(defparameter v1 (geom:vec %f %f %f))\n") % x1 % y1 % z1 );
+          core::write_bf_stream(BF("(defparameter v2 (geom:vec %f %f %f))\n") % x2 % y2 % z2 );
+          core::write_bf_stream(BF("crep = %f\n") % crep );
           core::write_bf_stream(BF("ErepDistance = %f\n") % ErepDistance );
           core::write_bf_stream(BF("Erep = %f\n") % Erep );
-          core::write_bf_stream(BF("fx1,fy1,fz1 = %f, %f, %f\n") % fx1 % fy1 % fz1 );
-          core::write_bf_stream(BF("fx2,fy2,fz2 = %f, %f, %f\n") % fx2 % fy2 % fz2 );
+          core::write_bf_stream(BF("fx1 fy1 fz1 = %f %f %f\n") % fx1 % fy1 % fz1 );
+          core::write_bf_stream(BF("fx2 fy2 fz2 = %f %f %f\n") % fx2 % fy2 % fz2 );
         }
 #endif
         goto CONTINUE;
       TOO_FAR:
 #if 0
         if (chem__verbose(2)) {
-          core::write_bf_stream(BF("x1,y1,z1 = %f, %f, %f\n") % x1 % y1 % z1 );
-          core::write_bf_stream(BF("x2,y2,z2 = %f, %f, %f\n") % x2 % y2 % z2 );
+          core::write_bf_stream(BF("x1 y1 z1 = %f %f %f\n") % x1 % y1 % z1 );
+          core::write_bf_stream(BF("x2 y2 z2 = %f %f %f\n") % x2 % y2 % z2 );
           core::write_bf_stream(BF("Too far ErepDistance = %f\n") % ErepDistance );
         }
 #endif
@@ -180,8 +238,8 @@ void	EnergySketchNonbond_O::evaluateTerms(NVector_sp 	pos,
       TOO_CLOSE:
 #if 0
         if (chem__verbose(2)) {
-          core::write_bf_stream(BF("x1,y1,z1 = %f, %f, %f\n") % x1 % y1 % z1 );
-          core::write_bf_stream(BF("x2,y2,z2 = %f, %f, %f\n") % x2 % y2 % z2 );
+          core::write_bf_stream(BF("x1 y1 z1 = %f %f %f\n") % x1 % y1 % z1 );
+          core::write_bf_stream(BF("x2 y2 z2 = %f %f %f\n") % x2 % y2 % z2 );
           core::write_bf_stream(BF("Too close ErepDistance = %f\n") % ErepDistance );
         }
 #endif
@@ -202,6 +260,7 @@ void EnergySketchNonbond_O::fields(core::Record_sp node)
 {
   node->field( INTERN_(kw,LongDistanceCutoff), this->_LongDistanceCutoff );
   node->field( INTERN_(kw,ScaleSketchNonbond), this->_ScaleSketchNonbond );
+  node->field( INTERN_(kw,terms), this->_Terms);
   this->Base::fields(node);
 }
 
@@ -241,6 +300,12 @@ CL_DEFMETHOD void EnergySketchNonbond_O::modifySketchNonbondTermConstant(size_t 
   }
   SIMPLE_ERROR(BF("index %d is out of bounds as a energy-sketch-nonbond term index (#entries %d)") % index % this->_Terms.size() );
 }
+
+void EnergySketchNonbond_O::reset()
+{
+  this->_Terms.clear();
+}
+
 
 };
 

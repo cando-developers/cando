@@ -244,40 +244,6 @@ void EnergyFunction_O::fields(core::Record_sp node)
 
 
 
-#ifdef XML_ARCHIVE
-void	EnergyFunction_O::archive(core::ArchiveP node)
-{
-  node->attribute("_Name",this->_Name);
-  node->attribute("_Matter",this->_Matter);
-  node->attribute("_AtomTable",this->_AtomTable );
-//    node->archiveSharedObject<Dumb_StretchComponent>("_Stretch","StretchTerms",this->_Stretch);
-//    node->archiveSharedObject<Dumb_AngleComponent>("_Angle","AngleTerms",this->_Angle);
-//    node->archiveSharedObject<Dumb_DihedralComponent>("_Dihedral","DihedralTerms",this->_Dihedral);
-//    node->archiveSharedObject<Dumb_ImproperRestraintComponent>("_ImproperRestraint","ImproperRestraintTerms",this->_ImproperRestraint);
-//    node->archiveSharedObject<Dumb_ChiralRestraintComponent>("_ChiralRestraint","ChiralRestraintTerms",this->_ChiralRestraint);
-//    node->archiveSharedObject<Dumb_AnchorRestraintComponent>("_AnchorRestraint","AnchorRestraintTerms",this->_AnchorRestraint);
-//    node->archiveSharedObject<Dumb_NonbondComponent>("_Nonbond","NonbondTerms",this->_Nonbond);
-  node->attribute("_Stretch",this->_Stretch);
-#if USE_ALL_ENERGY_COMPONENTS
-  node->attribute("_Angle",this->_Angle);
-  node->attribute("_Dihedral",this->_Dihedral);
-  node->attribute("_Nonbond",this->_Nonbond);
-  node->attribute("_ImproperRestraint",this->_ImproperRestraint);
-  node->attribute("_ChiralRestraint",this->_ChiralRestraint);
-  node->attribute("_AnchorRestraint",this->_AnchorRestraint);
-  node->attribute("_FixedNonbondRestraint",this->_FixedNonbondRestraint);
-#endif
-  node->attribute("_ChiralRestraintWeight",this->_ChiralRestraintWeight);
-  node->attribute("_ChiralRestraintOffset",this->_ChiralRestraintOffset);
-  node->attribute("_AnchorRestraintWeight",this->_AnchorRestraintWeight);
-  node->attribute("_TotalEnergy",this->_TotalEnergy);
-  node->archiveString("_Message",this->_Message);
-  node->attribute("_DielectricConstant",this->_DielectricConstant);
-
-}
-#endif
-
-
 
 size_t EnergyFunction_O::getNVectorSize() 
 { 
@@ -590,8 +556,7 @@ double	EnergyFunction_O::evaluateAll(
 ////	_lisp->profiler().timer(core::timerChiralRestraint).stop();
 
 //	_lisp->profiler().timer(core::timerAnchorRestraint).start();
-    this->_AnchorRestraint->evaluateAll( pos, calcForce, force,
-                                         calcDiagonalHessian, calcOffDiagonalHessian, hessian, hdvec, dvec );
+    this->_AnchorRestraint->evaluateAll( pos, calcForce, force, calcDiagonalHessian, calcOffDiagonalHessian, hessian, hdvec, dvec );
 ////	_lisp->profiler().timer(core::timerAnchorRestraint).stop();
 
 ////	_lisp->profiler().timer(core::timerFixedNonbondRestraint).start();
@@ -1691,6 +1656,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter
 			// the stereochemistry that we want to impose
 			// default R-stereochemistry (1-center)x(2-center).(3-center) is POSITIVE
 			//
+        side = 1.0;
         if ( a1->getConfiguration() != undefinedConfiguration )
         {
           if ( a1->getConfiguration() == R_Configuration )
@@ -1707,7 +1673,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter
             side = 1.0;
           } else
           {
-            SIMPLE_ERROR(BF("Chiral center (%s) with configuration settings[%s] doesn't have its configuration set")
+            SIMPLE_WARN(BF("Chiral center (%s) with configuration settings[%s] doesn't have its configuration set")
                          % a1->description()
                          % a1->getConfigurationAsString() );
           }

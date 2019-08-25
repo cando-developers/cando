@@ -189,4 +189,31 @@ CL_DEFMETHOD core::List_sp	ScoringFunction_O::checkForBeyondThresholdInteraction
 
 
 
+CL_LISPIFY_NAME("velocity-verlet-step");
+CL_DEFUN void chem__velocity_verlet_step(ScoringFunction_sp scoringFunc, NVector_sp position, NVector_sp velocity, NVector_sp force, NVector_sp force_dt, NVector_sp delta_t_over_mass, double delta_t, double velocity_scale)
+{
+  double delta_tsquared = delta_t*delta_t;
+  double delta_tsquared_div2 = delta_tsquared/2.0;
+  NVector_sp position_dt = NVector_O::create(position->size());
+  size_t atom_idx = 0;
+  for ( size_t idx = 0; idx<position->size(); idx += 3) {
+    (*position)[idx+0] = (*position)[idx+0] + delta_t*(*velocity)[idx+0] + delta_t*(*delta_t_over_mass)[atom_idx]*(*force)[idx+0];
+    (*position)[idx+1] = (*position)[idx+1] + delta_t*(*velocity)[idx+1] + delta_t*(*delta_t_over_mass)[atom_idx]*(*force)[idx+1];
+    (*position)[idx+2] = (*position)[idx+2] + delta_t*(*velocity)[idx+2] + delta_t*(*delta_t_over_mass)[atom_idx]*(*force)[idx+2];
+    atom_idx++;
+  }
+  scoringFunc->evaluateEnergyForce(position,true,force_dt);
+  atom_idx = 0;
+  for ( size_t idx = 0; idx<position->size(); idx+=3 ) {
+    (*velocity)[idx+0] = ((*velocity)[idx+0] + (*delta_t_over_mass)[atom_idx]/2.0*((*force)[idx+0]-(*force_dt)[idx+0]))*velocity_scale;
+    (*velocity)[idx+1] = ((*velocity)[idx+1] + (*delta_t_over_mass)[atom_idx]/2.0*((*force)[idx+1]-(*force_dt)[idx+1]))*velocity_scale;
+    (*velocity)[idx+2] = ((*velocity)[idx+2] + (*delta_t_over_mass)[atom_idx]/2.0*((*force)[idx+2]-(*force_dt)[idx+2]))*velocity_scale;
+    (*force)[idx+0] = (*force_dt)[idx+0];
+    (*force)[idx+1] = (*force_dt)[idx+1];
+    (*force)[idx+2] = (*force_dt)[idx+2];
+    atom_idx++;
+  }
+}
+
+
 };

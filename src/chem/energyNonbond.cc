@@ -389,14 +389,14 @@ double	EnergyNonbond_O::evaluateAll(NVector_sp 	pos,
     
     
 
-__attribute__((optnone)) void	EnergyNonbond_O::evaluateTerms(NVector_sp 	pos,
-                                     bool 		calcForce,
-                                     gc::Nilable<NVector_sp> 	force,
-                                     bool		calcDiagonalHessian,
-                                     bool		calcOffDiagonalHessian,
-                                     gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                                     gc::Nilable<NVector_sp>	hdvec, 
-                                     gc::Nilable<NVector_sp> 	dvec )
+void	EnergyNonbond_O::evaluateTerms(NVector_sp 	pos,
+                                       bool 		calcForce,
+                                       gc::Nilable<NVector_sp> 	force,
+                                       bool		calcDiagonalHessian,
+                                       bool		calcOffDiagonalHessian,
+                                       gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                       gc::Nilable<NVector_sp>	hdvec, 
+                                       gc::Nilable<NVector_sp> 	dvec )
 {
 //  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
   ANN(force);

@@ -59,7 +59,7 @@
    #:node-pathname
    #:morph
    #:stages
-   #:windows
+   #:lambda-values
    #:inputs
    #:outputs
    #:users
@@ -110,7 +110,6 @@
    #:validate-atom-types
    #:residue-name-to-pdb-alist
    #:add-job-edge
-   #:load-topology-restart-pair
    #:build-decharge-aggregate
    #:build-recharge-aggregate))
 

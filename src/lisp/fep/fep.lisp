@@ -4,6 +4,9 @@
 
 (in-package :fep)
 
+(defparameter *system* nil "The default system is NIL")
+
+
 (defun make-fep ()
   (make-instance 'fep:fep-calculation))
 
@@ -296,12 +299,21 @@
       (print-unreadable-object (obj stream)
         (format stream "~a" (class-name (class-of obj))))))
 
+(defgeneric generate-lambda-values (system &key divisions))
+
+(defmethod generate-lambda-values ((system null) &key (divisions 10))
+  "The default method for generate-lambda-values - 0.0 ... 1.0 with equal sized divisions"
+  (loop for lambda-int from 0 to divisions
+        for lambda-val = (/ (float lambda-int) (float divisions))
+        collect lambda-val))
+
+        
 (defclass fep-morph ()
   ((source :initarg :source :accessor source)
    (target :initarg :target :accessor target)
    (morph-mask :initarg :morph-mask :accessor morph-mask)
    (stages :initarg :stages :initform 3 :accessor stages)
-   (windows :initarg :windows :initform 11 :accessor windows)))
+   (lambda-values :type list :initarg :lambda-values :initform (generate-lambda-values *system*) :accessor lambda-values)))
 
 (defmethod print-object ((obj fep-morph) stream)
   (if *print-readably*
@@ -360,7 +372,7 @@
     (:%TEMP0% . 300.0 )
     ))
 
-(defconstant +testing-lambdas+ 5)
+(defparameter *testing-lambdas* (loop for idx from 0 to 5 collect (/ (float idx) 5.0)))
 
 (defclass calculation ()
   ((receptors :initform nil :initarg :receptors :accessor receptors)
@@ -370,7 +382,7 @@
    (side-topologys :initform nil :initarg :side-topologys :accessor side-topologys)
    (jobs :initarg :jobs :accessor jobs)
    (ti-stages :initarg :ti-stages :initform 3 :accessor ti-stages)
-   (ti-lambdas :initarg :ti-lambdas :initform 11 :accessor ti-lambdas)
+   (ti-lambdas :initarg :ti-lambdas :initform 'generate-lambda-values :accessor ti-lambdas)
    (settings :initform (default-calculation-settings) :initarg :settings :accessor settings)
    (top-directory :initform (make-pathname :directory (list :relative "jobs"))
                   :initarg :top-directory :accessor top-directory )
@@ -665,10 +677,10 @@
   (let ((stages-lambda (append (when (ti-stages calculation)
                                  (list :stages (ti-stages calculation)))
                                (when (ti-lambdas calculation)
-                                 (list :windows
+                                 (list :lambda-values
                                        (if *testing*
-                                           +testing-lambdas+
-                                           (ti-lambdas calculation)))))))
+                                           *testing-lambdas*
+                                           (funcall (ti-lambdas calculation) *system*)))))))
     (push (apply #'make-instance
                  'fep-morph
                  :source source-node

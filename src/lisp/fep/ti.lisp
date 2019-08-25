@@ -95,7 +95,7 @@
    ntb = 1,
    ntc = :%NTC%, ntf = :%NTF%,
    ioutfm = 1, iwrap = 1,
-   ntwe = 1000, ntwx = 1000, ntpr = 1000, ntwr = 5000,
+   ntwe = 1000, ntwx = 1000, ntpr = 1000, ntwr = 50000,
 
    ntr = 1, restraint_wt = 5.00,
    restraintmask='!:WAT & !@H=',
@@ -130,7 +130,7 @@
    ntb = 2,
    ntc = :%NTC%, ntf = :%NTF%,
    ioutfm = 1, iwrap = 1,
-   ntwe = 1000, ntwx = 1000, ntpr = 1000, ntwr = 5000,
+   ntwe = 1000, ntwx = 1000, ntpr = 1000, ntwr = 50000,
 
    ntr = 1, restraint_wt = 5.00,
    restraintmask='!:WAT & !@H=',
@@ -145,15 +145,6 @@
 
 ")
 
-(defun load-topology-restart-pair (topology coordinate)
-  (let* ((top-crd (leap.topology:make-amber-topology-coordinate-pair
-                   :topology-filename topology
-                   :coordinate-filename coordinate)))
-    (let ((number-of-frames (leap.topology:number-of-frames top-crd)))
-      (if number-of-frames
-          (leap.topology:read-frame-into-atoms top-crd (1- number-of-frames))
-          (leap.topology:read-frame-into-atoms top-crd))
-    top-crd)))
 
 (defun build-decharge-recharge-aggregate (top-crd keep-index)
   (let ((aggregate (leap.topology:aggregate top-crd))
@@ -187,7 +178,8 @@
   (leap:load-amber-params "frcmod.ionsjc_tip3p")
   ;; load the fep-calculation
   (let* ((feps (fep:load-feps feps-fn))
-         (top-crd (fep:load-topology-restart-pair topology-fn coordinates-fn))
+         (top-crd (leap.topology:load-amber-topology-restart-pair :topology-filename topology-fn
+                                                                  :coordinate-filename coordinates-fn))
          (decharge (funcall charge-function top-crd)))
     (cando:save-mol2 decharge mol2-fn)
     (format t "residue-name-to-pdb-list -> ~s~%" (fep:residue-name-to-pdb-alist feps))
@@ -227,7 +219,7 @@
    ntc = :%NTC%, ntf = :%NTF%,
    ntb = 1,
    ioutfm = 1, iwrap = 1,
-   ntwe = 1000, ntwx = 1000, ntpr = 1000, ntwr = 5000,
+   ntwe = 1000, ntwx = 1000, ntpr = 1000, ntwr = 50000,
 
    nmropt = 1,
    ntr = 1, restraint_wt = 5.00,
@@ -262,7 +254,7 @@
    ntc = :%NTC%, ntf = :%NTF%,
    ntb = 1,
    ioutfm = 1, iwrap = 1,
-   ntwe = 1000, ntwx = 1000, ntpr = 1000, ntwr = 5000,
+   ntwe = 1000, ntwx = 1000, ntpr = 1000, ntwr = 50000,
 
    nmropt = 1,
    ntr = 1, restraint_wt = 5.00,

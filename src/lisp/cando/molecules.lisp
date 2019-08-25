@@ -450,3 +450,5 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
             (format t "anchoring ~a to ~a~%" a p)
             (anchor-atom a p))
           (coerce centers 'list) points)))
+
+

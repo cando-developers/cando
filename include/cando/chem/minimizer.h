@@ -236,7 +236,6 @@ struct RestartMinimizer {};
 
     bool _displayIntermediateMessage( double		step,
                                       double		fnew,
-                                      double		forceMag,
                                       double		forceRmsMag,
                                       double		cosAngle,
                                       bool		steepestDescent );

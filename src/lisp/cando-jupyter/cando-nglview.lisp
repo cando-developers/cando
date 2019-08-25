@@ -194,9 +194,28 @@
 (defmethod nglv:get-structure-string ((self cando-trajectory))
   (chem:aggregate-as-mol2-string (matter self) t))
 
-(defun make-cando-trajectory (structure)
+(defgeneric make-cando-trajectory (structure))
+
+(defmethod make-cando-trajectory ((structure chem:matter))
   (make-instance 'cando-trajectory :matter structure
-                 :number-of-atoms (chem:number-of-atoms structure)))
+                                   :number-of-atoms (chem:number-of-atoms structure)))
+
+(defmethod make-cando-trajectory ((dynamics dynamics:simulation))
+  (let* ((scoring-function (dynamics:scoring-function dynamics))
+         (matter (chem:get-matter scoring-function))
+         (trajectory (dynamics:accumulated-coordinates dynamics)))
+    (unless (> (length trajectory) 1)
+      (error "The trajectory must have more than one coordinate set"))
+    (cond
+      ((typep matter 'chem:aggregate) nil)
+      ((typep matter 'chem:molecule)
+       (let ((agg (chem:make-aggregate)))
+         (chem:add-matter agg matter)
+         (setf matter agg)))
+      (t (error "matter must be aggregate or molecule")))
+    (make-instance 'cando-trajectory :matter matter
+                                     :number-of-atoms (chem:number-of-atoms matter)
+                                     :trajectory trajectory)))
 
 (defmethod nglv:append-coordinates ((self cando-trajectory) coordinates)
   (vector-push-extend coordinates (trajectory self)))
@@ -207,13 +226,14 @@
 (defmethod nglv:n-frames ((self cando-trajectory))
   (length (trajectory self)))
 
-(defun show-cando-trajectory (trajectory &rest kwargs &key &allow-other-keys)
+
+(defmethod show ((trajectory cando-trajectory) &rest kwargs &key &allow-other-keys)
   (apply #'nglv:make-nglwidget :structure trajectory kwargs))
 
-(defun show-aggregate (aggregate &rest kwargs &key &allow-other-keys)
-  (let ((structure (make-instance 'cando-structure :matter aggregate)))
-    (apply #'nglv:make-nglwidget :structure structure kwargs)))
 
+(defmethod show ((dynamics dynamics:simulation) &rest kwargs &key &allow-other-keys)
+  (let ((cando-trajectory (make-cando-trajectory dynamics)))
+    (apply 'show cando-trajectory kwargs)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -261,7 +281,7 @@
 (defmethod nglv:n-frames ((self amber-netcdf-trajectory))
   (number-of-frames self))
 
-(defun show-amber-netcdf-trajectory (trajectory &rest kwargs &key &allow-other-keys)
+(defmethod show ((trajectory amber-netcdf-trajectory) &rest kwargs &key &allow-other-keys)
   (apply #'nglv:make-nglwidget :structure trajectory kwargs))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

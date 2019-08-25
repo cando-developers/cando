@@ -136,7 +136,7 @@ class AtomTable_O : public core::CxxObject_O
   void fields(core::Record_sp node);
  public:
   void initialize();
- private:
+public:
   typedef core::HashTableEq_sp        AtomTable;
   gctools::Vec0<EnergyAtom>	      _Atoms;
   AtomTable                           _AtomTableIndices; // m a p<Atom_sp,uint>	_AtomTableIndices;

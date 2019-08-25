@@ -59,8 +59,42 @@ struct EnergySketchNonbond
   int		I1; //!< i*3 index into coordinate vector, must match Mathematica code!
   int		I2; //!< i*3 index into coordinate vector, must match Mathematica code!
   EnergySketchNonbond(Atom_sp a1, Atom_sp a2, double constant, int i1, int i2) : _Atom1(a1), _Atom2(a2), _Constant(constant), I1(i1), I2(i2) {};
+  EnergySketchNonbond() {};
+    core::List_sp encode() const;
+  void decode(core::List_sp alist);
+
 };
 
+
+};
+
+namespace translate {
+
+template <>
+struct	to_object<chem::EnergySketchNonbond >
+{
+  typedef	core::Cons_sp ExpectedType;
+  typedef	core::Cons_sp DeclareType;
+  static core::T_sp convert(const chem::EnergySketchNonbond& sketchnb)
+  {
+    return sketchnb.encode();
+  }
+};
+
+template <>
+struct	from_object<chem::EnergySketchNonbond>
+{
+  typedef	chem::EnergySketchNonbond	ExpectedType;
+  typedef	ExpectedType 		DeclareType;
+	DeclareType _v;
+  from_object(core::T_sp o)
+	{
+          SIMPLE_ERROR(BF("Implement me"));
+        }
+};
+};
+
+namespace chem {
 
 double	_evaluateEnergyOnly_Nonbond(
 		double x1, double y1, double z1,
@@ -77,6 +111,7 @@ class EnergySketchNonbond_O : public EnergyComponent_O
   void fields(core::Record_sp node);
   double _ScaleSketchNonbond;
   double _LongDistanceCutoff;
+  bool   _IgnoreHydrogensAndLps;
   double _Energy;
   gctools::Vec0<EnergySketchNonbond> _Terms;
  public: // virtual functions inherited from Object
@@ -88,6 +123,8 @@ class EnergySketchNonbond_O : public EnergyComponent_O
   void setScaleSketchNonbond(double d);
   double	getScaleSketchNonbond();
 
+  void setIgnoreHydrogensAndLps(bool b);
+  
   void addSketchNonbondTerm(AtomTable_sp atomTable, Atom_sp a1, Atom_sp a2, double constant);
   
   virtual void setupHessianPreconditioner(NVector_sp nvPosition,
@@ -124,7 +161,8 @@ class EnergySketchNonbond_O : public EnergyComponent_O
   void modifySketchNonbondTermConstant(size_t index, float constant);
 
  public:
-  EnergySketchNonbond_O() : _LongDistanceCutoff(80.0), _ScaleSketchNonbond(1.0) {};
+  EnergySketchNonbond_O() : _LongDistanceCutoff(80.0), _ScaleSketchNonbond(1.0), _IgnoreHydrogensAndLps(false) {};
+  void reset();
 };
 
 };

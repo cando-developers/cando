@@ -139,6 +139,9 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/elements.h>
 #include <cando/chem/energyAnchorRestraint.fwd.h>
 #include <cando/chem/energyAnchorRestraint.h>
+#include <cando/chem/energyPointToLineRestraint.h>
+#include <cando/chem/energyOutOfZPlane.fwd.h>
+#include <cando/chem/energyOutOfZPlane.h>
 #include <cando/chem/energyAngle.fwd.h>
 #include <cando/chem/energyAngle.h>
 #include <cando/chem/energyAtomTable.fwd.h>
@@ -154,10 +157,12 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/energyFunction.fwd.h>
 #include <cando/chem/scoringFunction.h>
 #include <cando/chem/energyFunction.h>
+#include <cando/chem/sketchFunction.h>
 #include <cando/chem/energyImproperRestraint.fwd.h>
 #include <cando/chem/energyImproperRestraint.h>
 #include <cando/chem/energyNonbond.fwd.h>
 #include <cando/chem/energyNonbond.h>
+#include <cando/chem/energySketchNonbond.h>
 #include <cando/chem/energyStretch.fwd.h>
 #include <cando/chem/energyStretch.h>
 #include <cando/chem/rigidBodyEnergyFunction.h>
@@ -386,12 +391,14 @@ GC_MANAGED_TYPE(gctools::GCVector_moveable<chem::AtomInfo>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<chem::AtomPdbRec>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<chem::BeyondThresholdFixedNonbondRestraint>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<chem::EnergyAnchorRestraint>);
+GC_MANAGED_TYPE(gctools::GCVector_moveable<chem::EnergyOutOfZPlane>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<chem::EnergyAngle>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<chem::EnergyAtom>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<chem::EnergyChiralRestraint>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<chem::EnergyDihedral>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<chem::EnergyImproperRestraint>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<chem::EnergyNonbond>);
+GC_MANAGED_TYPE(gctools::GCVector_moveable<chem::EnergySketchNonbond>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<chem::EnergyRigidBodyStaple>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<chem::EnergyStretch>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<chem::FixedNonbondRestraint>);
@@ -592,6 +599,7 @@ class Vector3;
     class WildElementDict_O;
     class PlugWithMates_O;
     class EnergyAnchorRestraint;
+    class EnergyOutOfZPlane;
     class EnergyAngle_O;
     class ResidueTest_O;
     class SpecificContext_O;
@@ -730,6 +738,7 @@ class Vector3;
     class Constitution_O;
     class FFParameter_O;
     class EnergyStretch;
+    class EnergySketchNonbond;
     class RestraintDistance_O;
     class SpecificContextSet_O;
     class ConformationExplorerEntryStage_O;

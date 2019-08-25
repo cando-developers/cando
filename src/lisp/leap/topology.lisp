@@ -1653,7 +1653,7 @@ cando-extensions               : T if you want cando-extensions written to the t
 ;  (let ((fif (fortran:make-fortran-input-file :stream stream))
 (defun read-amber-parm-format (topology-pathname)
   "Return (values energy-function) - use generate-aggregate-for-energy-function to get an aggregate"
-  (fortran:with-fortran-output-file (fif topology-pathname :direction :input)
+  (fortran:with-fortran-input-file (fif topology-pathname :direction :input)
     (let (natom ntypes nbonh mbona ntheth mtheta nphih mphia nhparm nparm
           nnb nres nbona ntheta nphia numbnd numang nptra
           natyp nphb ifpert nbper ngper ndper
@@ -1948,7 +1948,7 @@ cando-extensions               : T if you want cando-extensions written to the t
                      (fortran:fread-line-or-error fif) 
                      (setf molecule-force-field-index (fortran:fread-vector fif per-line format-char width))))
                   (t
-                   (cl:format t "Unknown flag ~a~%" line)
+                   (if chem:*verbose* (cl:format t "Unknown flag ~a~%" line))
                    (fortran:fread-line-or-error fif)  
                    (multiple-value-bind (per-line format-char width decimal)
                        (fortran:parse-fortran-format-line (fortran:fortran-input-file-look-ahead fif))
@@ -2075,8 +2075,8 @@ cando-extensions               : T if you want cando-extensions written to the t
                 for end-atom-index = (1- (aref residue-pointer (1+ i)))
                 do (let ((residue (chem:make-residue name)))
                      (loop for atomi from begin-atom-index below end-atom-index
-                           ;;do (format t "residue ~a begin ~a end ~a length ~a~%" name begin-atom-index end-atom-index (length residue-label))
-                           do (chem:add-matter residue (aref atoms atomi)))
+                           for atom = (aref atoms atomi)
+                           do (chem:add-matter residue atom))
 		     (setf (aref residues-vec i) residue)
                      (push residue residue-accumulate)
                      (incf atoms-in-molecule (- end-atom-index begin-atom-index))
@@ -2098,7 +2098,7 @@ cando-extensions               : T if you want cando-extensions written to the t
                 for force-field-name = (elt force-field-names force-field-index)
                 do (chem:setf-force-field-name molecule force-field-name)))
         ;; Identify the force-field types
-        (warn "This is where I set the force-field name for each molecule")
+        ;; (warn "This is where I set the force-field name for each molecule")
         #+(or)(let ((force-field-index 0))
           (setf force-field-names (make-hash-table))
           (loop for molecule across molecules-vec
@@ -2132,7 +2132,7 @@ cando-extensions               : T if you want cando-extensions written to the t
                                   (aref atom2s-vec counts) (aref atoms (/ (aref bonds-without-hydrogen (+ (* j 3) 1)) 3)))
                             (incf counts))))
         ;; Now form the bonds with the correct bond orders
-        (format t "read-amber-parm about to create bonds~%")
+        ; (format t "read-amber-parm about to create bonds~%")
         (loop for bondi from 0 below nbonh
               for atom1-index = (/ (aref bonds-inc-hydrogen (* bondi 3)) 3)
               for atom2-index = (/ (aref bonds-inc-hydrogen (+ (* bondi 3) 1)) 3)
@@ -2150,8 +2150,8 @@ cando-extensions               : T if you want cando-extensions written to the t
             (loop for bondi from 0 below mbona
               for atom1 = (aref atoms (/ (aref bonds-without-hydrogen (* bondi 3)) 3))
               for atom2 = (aref atoms (/ (aref bonds-without-hydrogen (+ (* bondi 3) 1)) 3))
-                  do (chem:bond-to atom1 atom2 :unknown-bond-order)))
-        (format t "read-amber-parm done creating bonds~%")
+                  do (chem:bond-to atom1 atom2 :unknown-order-bond)))
+        ;; (format t "read-amber-parm done creating bonds~%")
         (setf stretch-vectors (acons :kb kbs-vec stretch-vectors))
         (setf stretch-vectors (acons :r0 r0s-vec stretch-vectors))
         (setf stretch-vectors (acons :i1 i1s-vec stretch-vectors))
@@ -2335,21 +2335,27 @@ cando-extensions               : T if you want cando-extensions written to the t
           (values energy-function (generate-aggregate-for-energy-function energy-function )))))))
 
 
-(defun read-amber-coordinate-file (fif)
-  (fortran:fread-line fif)       ; Skip the version and timestamp line
-  (let* ((line (fortran:fread-line fif))
-         (results (make-array 3 :element-type 't :adjustable t :fill-pointer 0))
-         ;; Read format FORMAT(I5,5E15.7) NATOM,TIME,TEMP
-         (natoms (parse-integer line :start 0 :end 5))
-         (time (if (>= (length line) 15)
-                   (fortran::parse-double-float (subseq line 5 nil) :start 0 :end 15)
-                   nil))
-         (temp (if (>= (length line) 35)
-                   (fortran::parse-double-float (subseq line (+ 5 15) nil) :start 0 :end 15)
-                   nil)))
-    (fortran:fread-line fif) 
-    (copy-seq (fortran:fread-vector fif 6 #\F 12))))
-
+(defun read-amber-ascii-restart-file (coordinate-filename &key read-velocities (read-bounding-box t))
+  "Return (values number-of-atoms coordinates bounding-box-or-nil velocities-or-nil)"
+  (fortran:with-fortran-input-file (fif coordinate-filename :direction :input)
+    (fortran:fread-line fif)     ; Skip the version and timestamp line
+    (let* ((line (fortran:fread-line fif))
+           (results (make-array 3 :element-type 't :adjustable t :fill-pointer 0))
+           ;; Read format FORMAT(I5,5E15.7) NATOM,TIME,TEMP
+           (natoms (parse-integer line :start 0 :end 5))
+           (time (if (>= (length line) 15)
+                     (fortran::parse-double-float (subseq line 5 nil) :start 0 :end 15)
+                     nil))
+           (temp (if (>= (length line) 35)
+                     (fortran::parse-double-float (subseq line (+ 5 15) nil) :start 0 :end 15)
+                     nil)))
+      (fortran:fread-line fif)
+      (let* ((coordinates (copy-seq (fortran:fread-double-float-vector fif 6 12 (* natoms 3))))
+             (velocities (when read-velocities
+                           (copy-seq (fortran:fread-double-float-vector fif 6 12 (* natoms 3)))))
+             (bounding-box (when read-bounding-box
+                             (copy-seq (fortran:fread-double-float-vector fif 6 12 6)))))
+        (values natoms coordinates (coerce bounding-box 'list) velocities)))))
 
 ;;; The following code is to generate a human readable representation of an energy-function
 ;;; with everything sorted so that the terms can be compared side-by-side using something like
@@ -2582,27 +2588,100 @@ cando-extensions               : T if you want cando-extensions written to the t
                (format t "line ~a da2: ~a dc2: ~a charge21: ~a charge22: ~a atomname21: ~a atomname22: ~a~%"
                        i da2 dc2 charge21 charge22 atomname21 atomname22)))))
 
-(defun read-amber-restart-file (filename)
-  ;;  (let ((file (netcdf::nc-open (merge-pathnames filename)#P"heat.rst7" :mode netcdf-cffi:+nowrite+))
-  )
 
-(defclass amber-topology-coordinate-pair ()
-  ((topology-filename :initarg :topology-filename :accessor topology-filename)
+(defclass amber-topology-coord-pair ()
+ ((topology-filename :initarg :topology-filename :accessor topology-filename)
    (coordinate-filename :initarg :coordinate-filename :accessor coordinate-filename)
-   (netcdf :initarg :netcdf :accessor netcdf)
    (energy-function :initarg :energy-function :accessor energy-function)
    (aggregate :initarg :aggregate :accessor aggregate)
    (number-of-atoms :initarg :number-of-atoms :accessor number-of-atoms)
-   (current-coordinates :initarg :current-coordinates :accessor current-coordinates)
-   ))
+   (current-coordinates :initarg :current-coordinates :accessor current-coordinates)))
+  
+(defclass amber-topology-restart-pair (amber-topology-coord-pair) ())
 
-(defun make-amber-topology-coordinate-pair (&key topology-filename coordinate-filename)
+(defclass amber-topology-trajectory-pair (amber-topology-coord-pair)
+  ((netcdf :initarg :netcdf :accessor netcdf)))
+
+(defun write-coordinates-into-energy-function-atom-table (energy-function coordinates)
+  (let ((atom-table (chem:atom-table energy-function)))
+    (loop for index from 0 below (/ (length coordinates) 3)
+          for coord-index = 0 then (+ coord-index 3)
+          for xpos = (elt coordinates coord-index)
+          for ypos = (elt coordinates (+ 1 coord-index))
+          for zpos = (elt coordinates (+ 2 coord-index))
+          for atom = (chem:elt-atom atom-table index)
+          do (chem:set-position-xyz atom xpos ypos zpos))))
+
+
+(defun cell-lengths (netcdf)
+  (let ((sv (static-vectors:make-static-vector 3 :element-type 'double-float)))
+    (netcdf:get-vara-double netcdf "cell_lengths" (vector 0) (vector 3) sv)
+    (copy-seq sv)))
+
+(defun cell-angles (netcdf)
+  (let ((sv (static-vectors:make-static-vector 3 :element-type 'double-float)))
+    (netcdf:get-vara-double netcdf "cell_angles" (vector 0) (vector 3) sv)
+    (copy-seq sv)))
+
+
+(defun read-bounding-box (netcdf)
+  (let* ((lengths (cell-lengths netcdf))
+         (angles (cell-angles netcdf))
+         (bounding-box (append (coerce lengths 'list) (coerce angles 'list))))
+    bounding-box))
+
+(defun read-amber-restart-file (coordinate-filename)
+  (unless (probe-file coordinate-filename)
+    (error "Could not open restart file ~a" coordinate-filename))
+  (let ((fin (open coordinate-filename :direction :input)))
+    (let* ((c1 (read-char fin))
+           (c2 (read-char fin))
+           (c3 (read-char fin))
+           (c4 (read-char fin))
+           (is-netcdf (and (char= c1 #\C)
+                           (char= c2 #\D)
+                           (char= c3 #\F)
+                           (char< c4 10))))
+      (close fin)
+      (if is-netcdf
+          (let* ((netcdf (netcdf:nc-open coordinate-filename :mode netcdf-cffi:+nowrite+))
+                 (number-of-atoms (netcdf:len (gethash "atom" (netcdf:dimensions netcdf))))
+                 (coords (static-vectors:make-static-vector (* number-of-atoms 3) :element-type 'single-float))
+                 (bounding-box (read-bounding-box netcdf))
+                 (result (netcdf:get-vara-float netcdf
+                                                "coordinates"
+                                                (vector 0 0)
+                                                (vector number-of-atoms 3)
+                                                coords)))
+            (unless (= result 0)
+              (error "Could not read coordinates result -> ~a" result))
+            (netcdf:nc-close netcdf)
+            (values number-of-atoms coords bounding-box))
+          (read-amber-ascii-restart-file coordinate-filename)))))
+
+(defun load-amber-topology-restart-pair (&key topology-filename coordinate-filename)
+  (multiple-value-bind (energy-function aggregate)
+      (read-amber-parm-format topology-filename)
+    (multiple-value-bind (number-of-atoms coordinates bounding-box)
+        (read-amber-restart-file coordinate-filename)
+      (write-coordinates-into-energy-function-atom-table energy-function coordinates)
+      (when bounding-box
+        (chem:set-property aggregate :bounding-box bounding-box))
+      (make-instance 'amber-topology-restart-pair
+                     :topology-filename topology-filename
+                     :coordinate-filename coordinate-filename
+                     :energy-function energy-function
+                     :aggregate aggregate
+                     :number-of-atoms number-of-atoms
+                     :current-coordinates coordinates))))
+
+(defun load-amber-topology-trajectory-pair (&key topology-filename coordinate-filename)
   (multiple-value-bind (energy-function aggregate)
       (read-amber-parm-format topology-filename)
     (let* ((crd (netcdf:nc-open coordinate-filename :mode netcdf-cffi:+nowrite+))
            (number-of-atoms (netcdf:len (gethash "atom" (netcdf:dimensions crd))))
            (coords (static-vectors:make-static-vector (* number-of-atoms 3) :element-type 'single-float))
-           (pair (make-instance 'amber-topology-coordinate-pair
+           (pair (make-instance 'amber-topology-trajectory-pair
                                 :topology-filename topology-filename
                                 :coordinate-filename coordinate-filename
                                 :netcdf crd
@@ -2623,11 +2702,6 @@ cando-extensions               : T if you want cando-extensions written to the t
     (setf (netcdf amber-topology-pair) crd
           (coordinate-filename amber-topology-pair) coordinate-filename)))
   
-(defun cell-lengths (amber-topology-pair)
-  (let ((sv (static-vectors:make-static-vector 3 :element-type 'double-float)))
-    (netcdf:get-vara-double (netcdf amber-topology-pair) "cell_lengths" (vector 0) (vector 3) sv)
-    (copy-seq sv)))
-
 (defun number-of-frames (amber-topology-pair)
   "Return the number of frames in the coordinate file.
 If it's a restart file then return NIL"
@@ -2644,24 +2718,9 @@ If it's a restart file then return NIL"
         (error "Tried to load a frame beyond the end of the netcdf file - only ~a frames available" number-of-frames)))
     (let ((result (netcdf:get-vara-float (netcdf amber-topology-pair)
                                          "coordinates"
-                                         (if number-of-frames
-                                             (vector frame-index 0 0)
-                                             (vector 0 0))
-                                         (if number-of-frames
-                                             (vector 1 (number-of-atoms amber-topology-pair) 3)
-                                             (vector (number-of-atoms amber-topology-pair) 3))
-                                         #+(or)(vector 1 (number-of-atoms amber-topology-pair) 3)
-                                         (current-coordinates amber-topology-pair)))
-          (atom-table (chem:atom-table (energy-function amber-topology-pair))))
-      (unless (= result 0)
-        (error "Could not read coordinates result -> ~a" result))
-      (loop for index from 0 below (number-of-atoms amber-topology-pair)
-            for coord-index = 0 then (+ coord-index 3)
-            for xpos = (elt (current-coordinates amber-topology-pair) coord-index)
-            for ypos = (elt (current-coordinates amber-topology-pair) (+ 1 coord-index))
-            for zpos = (elt (current-coordinates amber-topology-pair) (+ 2 coord-index))
-            for atom = (chem:elt-atom atom-table index)
-            do (chem:set-position-xyz atom xpos ypos zpos)
-            )
+                                         (vector frame-index 0 0)
+                                         (vector 1 (number-of-atoms amber-topology-pair) 3)
+                                         (current-coordinates amber-topology-pair))))
+      (write-coordinates-into-energy-function-atom-table (energy-function amber-topology-pair) (current-coordinates amber-topology-pair))
       (aggregate amber-topology-pair))))
 

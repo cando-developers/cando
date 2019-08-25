@@ -160,7 +160,6 @@ I'll use an angle term instead of a bond term.
       )))
 
 (defun system-preparation (molecule)
-  (format t "Entered system-preparation~%")
   (labels ((find-groups (chem-info-graph molecule-graph)
              (loop for match in (chem:boost-graph-vf2 chem-info-graph molecule-graph)
                    collect (elt match 0)))
@@ -185,7 +184,6 @@ I'll use an angle term instead of a bond term.
                      for lp-name = (intern (format nil "lp~a" lp-idx) :keyword)
                      for lp = (chem:make-atom lp-name :lp)
                      do (incf idx)
-                        (format t "Creating a lp on ~a with name ~a id ~a~%" atom lp-name lp-idx)
                         (chem:add-matter res lp)
                         (chem:bond-to atom lp :single-bond)
                      ))
@@ -204,7 +202,6 @@ I'll use an angle term instead of a bond term.
         (setf idx (add-lone-pair mol-copy (find-groups *lp-nitrogen* mol-graph) idx))
         (setf idx (add-lone-pair mol-copy (find-groups *lp-sulfur* mol-graph) idx)))
       (chem:setf-force-field-name mol-copy :.hidden.sketch2d-1)
-      (format t "Doing jostle~%")
       (cando:jostle mol-copy 20.0 t)
       mol-copy)))
 
@@ -214,7 +211,6 @@ I'll use an angle term instead of a bond term.
   (flet ((jostle-atom (atom)
            (when from-zero
              (chem:set-position atom (geom:vec 0.0 0.0 0.0)))
-           (format t "Jostling atom ~a~%" atom)
            (let* ((cp (chem:get-position atom))
                   (pos (geom:vec
                         (+ (- (random width) half-width) (geom:vx cp))
@@ -230,7 +226,6 @@ I'll use an angle term instead of a bond term.
 
 (defparameter *edited-mol* nil)
 (defun setup-simulation (molecule &key accumulate-coordinates frozen)
-  (format t "Entered setup-simulation~%")
   (let ((edited-mol (system-preparation molecule)))
     (setf *edited-mol* edited-mol)
     (cando:do-atoms (atom edited-mol)
@@ -298,9 +293,9 @@ to check if two line segments (bonds) overlap/intersect
         (y3 (geom:vy p2))
         (x4 (geom:vx q2))
         (y4 (geom:vy q2)))
-    (let* ((tat (cando:nfx ((y3 - y4)*(x1 - x3)+(x4 - x3)*(y1 - y3))))
-           (tab (cando:nfx ((x4 - x3)*(y1 - y2)-(x1 - x2)*(y4 - y3))))
-           (ta (cando:nfx tat / tab)))
+    (let* ((tat (infix:infix ((y3 - y4)*(x1 - x3)+(x4 - x3)*(y1 - y3))))
+           (tab (infix:infix ((x4 - x3)*(y1 - y2)-(x1 - x2)*(y4 - y3))))
+           (ta (infix:infix tat / tab)))
       (geom:v+ (geom:v* (geom:v- q1 p1) ta) p1))))
 
 (defun test-intersect ()
@@ -358,10 +353,6 @@ to check if two line segments (bonds) overlap/intersect
                                (eq atomq1 atomp2)
                                (eq atomq1 atomq2)))
                           ((bonds-intersect p1 q1 p2 q2)
-                           (format t "Intersection of ~a-~a / ~a-~a~%"
-                                   (chem:get-name atomp1) (chem:get-name atomq1)
-                                   (chem:get-name atomp2) (chem:get-name atomq2))
-                           (format t "~a - ~a / ~a - ~a~%" p1 q1 p2 q2)
                            (push (cons str1 str2) intersecting))))))
     intersecting))
 
@@ -415,7 +406,6 @@ to check if two line segments (bonds) overlap/intersect
               (loop for unfrozen in worst-problem-area
                     for index = (distance-atom-index unfrozen)
                     for atom = (distance-atom-atom unfrozen)
-                    do (format t "Unfreezing ~a~%" (chem:get-name atom))
                     do (setf (elt frozen index) 0))
               (values (length intersections) frozen))
             (values 0 nil)))
@@ -445,10 +435,8 @@ to check if two line segments (bonds) overlap/intersect
                      do (when (= (elt frozen neighbor-index) 1)
                           (progn
                             (setf (elt new-frozen neighbor-index) 0)
-                            (format t "Unfreezing ~a neighbor ~a~%" (chem:get-name atom) (chem:get-name neighbor))
                             (randomize-neighbor-near-unfrozen-atom coordinates neighbor-index*3 (* index 3))
                             (return-from inner nil))))))
-    (format t "New frozen: ~a~%" new-frozen)
     new-frozen))
                           
 (defun geometric-center-of-unfrozen-atoms (atom-table coordinates frozen)
@@ -531,24 +519,59 @@ to check if two line segments (bonds) overlap/intersect
     dynamics
     ))
 
-
 (defun sketch2d-molecule (molecule &key accumulate-coordinates)
-  (format t "Entered sketch2d-molecule~%")
   (let* ((dynamics (setup-simulation molecule :accumulate-coordinates accumulate-coordinates))
          (scoring-function (dynamics:scoring-function dynamics)))
     (sketch2d-dynamics dynamics :accumulate-coordinates accumulate-coordinates)
     dynamics))
 
-(defun sketch2d (molecule &key accumulate-coordinates)
+(defun organize-moment-of-inertia-eigen-system (eigen-vector-matrix eigen-values)
+  "Reorganize the eigenvalues and eigen-vector-matrix so that the eigen-values
+are in the order (low, middle, high) and the column eigen-vectors are in the same order."
+  (let* ((values (list (cons (first eigen-values) 0)
+                      (cons (second eigen-values) 1)
+                      (cons (third eigen-values) 2)))
+         (sorted-values (sort values #'< :key #'car))
+         (new-eigen-vectors (geom:make-matrix t))
+         (col0 (cdr (first sorted-values)))
+         (col1 (cdr (second sorted-values)))
+         (col2 (cdr (third sorted-values))))
+      (geom:at-row-col-put new-eigen-vectors 0 col0 (geom:at-row-col-get eigen-vector-matrix 0 0))
+      (geom:at-row-col-put new-eigen-vectors 1 col0 (geom:at-row-col-get eigen-vector-matrix 1 0))
+      (geom:at-row-col-put new-eigen-vectors 2 col0 (geom:at-row-col-get eigen-vector-matrix 2 0))
+      (geom:at-row-col-put new-eigen-vectors 0 col1 (geom:at-row-col-get eigen-vector-matrix 0 1))
+      (geom:at-row-col-put new-eigen-vectors 1 col1 (geom:at-row-col-get eigen-vector-matrix 1 1))
+      (geom:at-row-col-put new-eigen-vectors 2 col1 (geom:at-row-col-get eigen-vector-matrix 2 1))
+      (geom:at-row-col-put new-eigen-vectors 0 col2 (geom:at-row-col-get eigen-vector-matrix 0 2))
+      (geom:at-row-col-put new-eigen-vectors 1 col2 (geom:at-row-col-get eigen-vector-matrix 1 2))
+    (geom:at-row-col-put new-eigen-vectors 2 col2 (geom:at-row-col-get eigen-vector-matrix 2 2))
+    (values new-eigen-vectors (mapcar #'car sorted-values))))
+
+(defun align-molecule-horizontal (molecule)
+  "Transform the molecule so that it lies with its long axis horizontal."
+  (multiple-value-bind (moment-of-inertia center-of-geometry)
+      (chem:moment-of-inertia-tensor molecule)
+    (chem:translate-all-atoms molecule (geom:v* center-of-geometry -1.0))
+    (multiple-value-bind (eigen-vector-matrix eigen-values)
+        (geom:eigen-system moment-of-inertia)
+      (unless (< (first eigen-values) (second eigen-values) (third eigen-values))
+        (multiple-value-setq (eigen-vector-matrix eigen-values)
+          (organize-moment-of-inertia-eigen-system eigen-vector-matrix eigen-values)))
+      (let ((transposed-transform (geom:transposed3x3 eigen-vector-matrix)))
+        (chem:apply-transform-to-atoms molecule transposed-transform)))))
+
+(defgeneric sketch2d (matter &key accumulate-coordinates)
+  (:documentation "Return an edited molecule that looks like a chemdraw sketch of the molecule. 
+The coordinates are all pressed into the X-Y plane and some hydrogens are added and lone-pairs removed."))
+
+(defmethod sketch2d ((molecule chem:molecule) &key accumulate-coordinates)
   (let* ((dynamics (sketch2d-molecule molecule :accumulate-coordinates accumulate-coordinates))
          (scoring-function (dynamics:scoring-function dynamics)))
     ;; Check for problems
     (let* ((temp-coordinates (copy-seq (dynamics:coordinates dynamics)))
            (edited-molecule (chem:get-matter (dynamics:scoring-function dynamics))))
-      (format t "About to check number-of-problem-areas~%")
       (multiple-value-bind (number-of-problem-areas frozen)
           (identify-problem-areas dynamics)
-        (format t "Number of problem areas: ~a~%" number-of-problem-areas)
         (if (> number-of-problem-areas 0)
             (let ((atom-table (chem:atom-table scoring-function)))
               ;; From here we use the coordinates in the atoms
@@ -556,7 +579,6 @@ to check if two line segments (bonds) overlap/intersect
               ;; Save the coordinates in the atoms
               (chem:load-coordinates-into-vector scoring-function temp-coordinates)
               (chem:reset-sketch-function scoring-function)
-              (format t "Starting dynamics again frozen: ~a~%" frozen)
               ;; Jostle the non-frozen atoms
               (randomize-atoms atom-table :frozen frozen :width 5.0)
               (chem:load-coordinates-into-vector scoring-function (dynamics:coordinates dynamics))
@@ -572,8 +594,15 @@ to check if two line segments (bonds) overlap/intersect
                     ((> new-number-of-problem-areas number-of-problem-areas)
                      (chem:save-coordinates-from-vector scoring-function temp-coordinates))
                     (t))
-                  (format t "About to return~%")
                   (values (chem:get-matter (dynamics:scoring-function dynamics)) dynamics)))))))
-    (values (chem:get-matter (dynamics:scoring-function dynamics)) dynamics)))
+    (let ((result-molecule (chem:get-matter (dynamics:scoring-function dynamics))))
+      (align-molecule-horizontal result-molecule)
+      (values result-molecule dynamics))))
 
-  
+
+(defmethod sketch2d ((aggregate chem:aggregate) &key accumulate-coordinates)
+  (if (= (chem:content-size aggregate) 1)
+      (sketch2d (chem:content-at aggregate 0) :accumulate-coordinates accumulate-coordinates)
+      (error "sketch2d only accepts a molecule or an aggregate with a single molecule")))
+
+

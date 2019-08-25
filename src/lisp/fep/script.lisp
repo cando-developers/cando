@@ -138,8 +138,8 @@
                                                         :outputs outputs
                                                         :makefile-clause (standard-cando-makefile-clause script))))
                       do (let ((windows (if *testing*
-                                            +testing-lambdas+
-                                            (windows morph))))
+                                            *testing-lambdas*
+                                            (lambda-values morph))))
                            (let (decharge-jobs
                                  vdw-jobs
                                  recharge-jobs
@@ -149,34 +149,34 @@
                                    for lambda-label = (format nil "~5,3f" lambda-value)
                                    do (case stage
                                         (:decharge (let* ((input-topology-file (output-file stage-job :%DECHARGE-TOPOLOGY%))
-                                                          (input-coordinate-file (output-file stage-job :%DECHARGE-COORDINATES%))
+                                                          (heat-input-coordinate-file (output-file stage-job :%DECHARGE-COORDINATES%))
                                                           (heat-job (make-heat-ti-step morph side stage lambda-label lambda-values
                                                                                        :input-topology-file input-topology-file
-                                                                                       :input-coordinate-file input-coordinate-file))
-                                                          (input-coordinate-file (output-file heat-job :-r)))
+                                                                                       :input-coordinate-file heat-input-coordinate-file))
+                                                          (ti-input-coordinate-file (output-file heat-job :-r)))
                                                      (push (make-ti-step morph side stage lambda-label lambda-values
                                                                          :input-topology-file input-topology-file
-                                                                         :input-coordinate-file input-coordinate-file)
+                                                                         :input-coordinate-file ti-input-coordinate-file)
                                                            decharge-jobs)))
                                         (:vdw-bonded (let* ((input-topology-file input-topology-file)
-                                                            (input-coordinate-file (output-file morph-side-prepare-job :-r))
+                                                            (heat-input-coordinate-file (output-file morph-side-prepare-job :-r))
                                                             (heat-job (make-heat-ti-step morph side stage lambda-label lambda-values
                                                                                          :input-topology-file input-topology-file
-                                                                                         :input-coordinate-file input-coordinate-file))
-                                                            (input-coordinate-file (output-file heat-job :-r)))
+                                                                                         :input-coordinate-file heat-input-coordinate-file))
+                                                            (ti-input-coordinate-file (output-file heat-job :-r)))
                                                        (push (make-ti-step morph side stage lambda-label lambda-values
                                                                            :input-topology-file input-topology-file
-                                                                           :input-coordinate-file input-coordinate-file)
+                                                                           :input-coordinate-file ti-input-coordinate-file)
                                                              vdw-jobs)))
                                         (:recharge (let* ((input-topology-file (output-file stage-job :%RECHARGE-TOPOLOGY%))
-                                                          (input-coordinate-file (output-file stage-job :%RECHARGE-COORDINATES%))
+                                                          (heat-input-coordinate-file (output-file stage-job :%RECHARGE-COORDINATES%))
                                                           (heat-job (make-heat-ti-step morph side stage lambda-label lambda-values
                                                                                        :input-topology-file input-topology-file
-                                                                                       :input-coordinate-file input-coordinate-file))
-                                                          (input-coordinate-file (output-file heat-job :-r)))
+                                                                                       :input-coordinate-file heat-input-coordinate-file))
+                                                          (ti-input-coordinate-file (output-file heat-job :-r)))
                                                      (push (make-ti-step morph side stage lambda-label lambda-values
                                                                          :input-topology-file input-topology-file
-                                                                         :input-coordinate-file input-coordinate-file)
+                                                                         :input-coordinate-file ti-input-coordinate-file)
                                                            recharge-jobs)))))
                              (let ((script (make-instance 'python-script-file
                                                           :script *python-getdvdl*

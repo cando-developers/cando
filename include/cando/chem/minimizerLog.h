@@ -127,6 +127,8 @@ public:
 	NumericalFunction_sp _ImproperEnergyFn;
 	NumericalFunction_sp _ChiralRestraintEnergyFn;
 	NumericalFunction_sp _AnchorRestraintEnergyFn;
+	NumericalFunction_sp _PointToLineRestraintEnergyFn;
+	NumericalFunction_sp _OutOfZPlaneEnergyFn;
 	NumericalFunction_sp _ImproperRestraintEnergyFn;
 	NumericalFunction_sp _FixedNonbondRestraintEnergyFn;
 		// Final line search report stuff

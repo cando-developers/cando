@@ -1496,6 +1496,9 @@ bool AtomTest_O::matches_Atom(Root_sp root, chem::Atom_sp atom) {
   int cnt;
   Atom_sp ringStartAtom;
   int hc = 0;
+  if (chem__verbose(2)) {
+    core::write_bf_stream(BF("AtomTest_O::matches_Atom test: %s\n") % this->testName(this->_Test));
+  }
   switch (this->_Test) {
   case SAPWildCard:
       LOG(BF("SAPWildCard")); //
@@ -2900,9 +2903,13 @@ void ChemInfoGraph_O::initialize()
 }
 
 
-CL_DEFUN ChemInfoGraph_sp chem__make_chem_info_graph( Root_sp pattern)
+CL_DOCSTRING(R"doc(Make a chem:chem-info-graph from a chem:root object)doc");
+CL_DEFUN ChemInfoGraph_sp chem__make_chem_info_graph(Root_sp pattern)
 {
   GC_ALLOCATE_VARIADIC(ChemInfoGraph_O,graph,pattern);
+  if (chem__verbose(1)) {
+    core::write_bf_stream(BF("Starting make-chem-info-graph\n"));
+  }
   std::vector<RingClosers> closers;
   walk_nodes_with_parent(_Nil<core::T_O>(),pattern->_Node,
                          [&graph,&closers]
@@ -2911,6 +2918,9 @@ CL_DEFUN ChemInfoGraph_sp chem__make_chem_info_graph( Root_sp pattern)
                            if (gc::IsA<Chain_sp>(node)) {
                              Chain_sp chain = gc::As_unsafe<Chain_sp>(node);
                              ChemInfoNode_sp head = gc::As<ChemInfoNode_sp>(chain->_Head);
+                             if (chem__verbose(1)) {
+                               core::write_bf_stream(BF("Converting chain to chem-info-graph nodes head: %s\n") % _rep_(head));
+                             }
                              if (gc::IsA<BondToAtomTest_sp>(head)) {
                                head = gc::As_unsafe<BondToAtomTest_sp>(head)->_AtomTest;
                              }
@@ -2942,6 +2952,24 @@ CL_DEFUN ChemInfoGraph_sp chem__make_chem_info_graph( Root_sp pattern)
                              return true;
                            } else if (gc::IsA<Branch_sp>(node)) {
                              return true;
+                           } else if (parentOrNil.nilp() && gc::IsA<AtomTest_sp>(node)) {
+                             AtomTest_sp atomTest = gc::As_unsafe<AtomTest_sp>(node);
+                             if (chem__verbose(1)) {
+                               core::write_bf_stream(BF("Converting AtomTest to chem-info-graph nodes head: %s\n") % _rep_(atomTest));
+                             }
+                             graph->_nodes_to_index->setf_gethash(atomTest,core::make_fixnum(graph->_atomNodes.size()));
+                             size_t node_index = graph->_atomNodes.size();
+                             graph->_atomNodes.push_back(atomTest);
+                             return true;
+                           } else if (parentOrNil.nilp() && gc::IsA<Logical_sp>(node)) {
+                             Logical_sp logical = gc::As_unsafe<Logical_sp>(node);
+                             if (chem__verbose(1)) {
+                               core::write_bf_stream(BF("Converting logical to chem-info-graph nodes head: %s\n") % _rep_(logical));
+                             }
+                             graph->_nodes_to_index->setf_gethash(logical,core::make_fixnum(graph->_atomNodes.size()));
+                             size_t node_index = graph->_atomNodes.size();
+                             graph->_atomNodes.push_back(logical);
+                             return true;
                            } else {
                              return false;
                            }
@@ -2955,7 +2983,52 @@ CL_DEFUN ChemInfoGraph_sp chem__make_chem_info_graph( Root_sp pattern)
   walk_nodes_with_parent(_Nil<core::T_O>(),pattern->_Node,
                          [&graph,&parent_nodes,&closers]
                          (core::T_sp parentOrNil, ChemInfoNode_sp node) {
-                           if (gc::IsA<Chain_sp>(node)) {
+                           if (chem__verbose(2)) {
+                             core::write_bf_stream(BF("Walking pattern parent: %s node: %s\n") % _rep_(parentOrNil) % _rep_(node));
+                           }
+                           if (parentOrNil.nilp() && gc::IsA<AtomTest_sp>(node)) {
+                             AtomTest_sp atomTest = gc::As_unsafe<AtomTest_sp>(node);
+                             if (chem__verbose(1)) {
+                               core::write_bf_stream(BF("AtomTest node id(%d)\n") % atomTest->_Id );
+                             }
+                             core::T_sp thead = atomTest;
+                             if (thead.nilp()) SIMPLE_ERROR(BF("The head of a chain is NIL"));
+                             ChemInfoNode_sp head = gc::As<ChemInfoNode_sp>(thead);
+                             AtomOrBondMatchNode_sp ahead = gc::As<AtomOrBondMatchNode_sp>(head);
+                             core::T_sp head_index = graph->_nodes_to_index->gethash(ahead);
+                             if (!head_index.fixnump()) SIMPLE_ERROR(BF("There was no index for %s") % _rep_(ahead));
+                             if (parentOrNil.nilp()) {
+                               // The parent is NIL - we are at the top, create a vertex
+                               size_t index = head_index.unsafe_fixnum();
+                               if (chem__verbose(1)) core::write_bf_stream(BF("Adding vertex: %d\n") % index );
+                               add_vertex(ChemInfoVertexData(&*graph,index),*graph->_chemInfoGraph);
+                               graph->_nodeOrder.push_back(index);
+                             } else {
+                               SIMPLE_ERROR(BF("Hit an AtomTest but it wasn't the only thing in the tree - parent should be NIL but is: %s") % _rep_(parentOrNil));
+                             }
+                             return true;
+                           } else if (parentOrNil.nilp() && gc::IsA<Logical_sp>(node)) {
+                             Logical_sp logical = gc::As_unsafe<Logical_sp>(node);
+                             if (chem__verbose(1)) {
+                               core::write_bf_stream(BF("Logical node id(%d)\n") % logical->_Id );
+                             }
+                             core::T_sp thead = logical;
+                             if (thead.nilp()) SIMPLE_ERROR(BF("The head of a chain is NIL"));
+                             ChemInfoNode_sp head = gc::As<ChemInfoNode_sp>(thead);
+                             AtomOrBondMatchNode_sp ahead = gc::As<AtomOrBondMatchNode_sp>(head);
+                             core::T_sp head_index = graph->_nodes_to_index->gethash(ahead);
+                             if (!head_index.fixnump()) SIMPLE_ERROR(BF("There was no index for %s") % _rep_(ahead));
+                             if (parentOrNil.nilp()) {
+                               // The parent is NIL - we are at the top, create a vertex
+                               size_t index = head_index.unsafe_fixnum();
+                               if (chem__verbose(1)) core::write_bf_stream(BF("Adding vertex: %d\n") % index );
+                               add_vertex(ChemInfoVertexData(&*graph,index),*graph->_chemInfoGraph);
+                               graph->_nodeOrder.push_back(index);
+                             } else {
+                               SIMPLE_ERROR(BF("Hit an Logical but it wasn't the only thing in the tree - parent should be NIL but is: %s") % _rep_(parentOrNil));
+                             }
+                             return true;
+                           } else if (gc::IsA<Chain_sp>(node)) {
                              Chain_sp chain = gc::As_unsafe<Chain_sp>(node);
                              if (chem__verbose(1)) {
                                core::write_bf_stream(BF("Chain node id(%d)\n") % chain->_Id );
@@ -3166,6 +3239,10 @@ CL_DEFUN void chem__chem_info_graph_dump(ChemInfoGraph_sp graph) {
     template <typename CorrespondenceMap1To2,
               typename CorrespondenceMap2To1>
     bool operator()(CorrespondenceMap1To2 f, CorrespondenceMap2To1 g) const {
+      
+      if (chem__verbose(2)) {
+        core::write_bf_stream(BF("vf2 found a match\n"));
+      }
       core::SimpleVector_sp copy = core::SimpleVector_O::make(this->_currentMatch->_TagLookup->length(),
                                                               _Nil<core::T_O>(),
                                                               false,
@@ -3205,6 +3282,9 @@ CL_DEFUN void chem__chem_info_graph_dump(ChemInfoGraph_sp graph) {
     VertexComp vertex_comp(chemInfoGraph,moleculeGraph);
     boost::vf2_print_callback<ChemInfoGraphType,MoleculeGraphType> callback(*chemInfoGraph->_chemInfoGraph,*moleculeGraph->_moleculeGraph);
     MatchCallback matchCallback(chemInfoGraph,moleculeGraph,current_match);
+    if (chem__verbose(1)) {
+      core::write_bf_stream(BF("About to run boost::vf2_subgraph_iso\n"));
+    }
     boost::vf2_subgraph_iso(*chemInfoGraph->_chemInfoGraph,
                             *moleculeGraph->_moleculeGraph,
                             matchCallback,

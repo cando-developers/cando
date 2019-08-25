@@ -92,7 +92,7 @@ the AMBER general type \"X\" is replaced with the LEaP general type \"?\".
     (leap.core:add-force-field-or-modification force-field
                                                :force-field-name :smirnoff
                                                :force-field-info path
-                                               :combined-force-field-class-name 'smirnoff:combined-force-field)))
+                                               :combined-force-field-class-name 'smirnoff:combined-smirnoff-force-field)))
 
 (defun set-force-field (matter force-field-name)
   (chem:find-force-field force-field-name)

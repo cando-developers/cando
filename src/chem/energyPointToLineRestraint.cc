@@ -34,6 +34,8 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/matter.h>
 #include <cando/chem/atom.h>
 #include <cando/chem/residue.h>
+#include <cando/chem/energyStretch.h>
+#include <cando/chem/energyAtomTable.h>
 #include <cando/chem/aggregate.h>
 #include <cando/chem/nVector.h>
 #include <cando/chem/ffBaseDb.h>
@@ -42,129 +44,11 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace chem {
 
-    EnergyPointToLineRestraint::EnergyPointToLineRestraint()
-{
-  this->_Atom1 = _Nil<Atom_O>();
+
+EnergyPointToLineRestraint_sp EnergyPointToLineRestraint_O::create(EnergyStretch_sp stretch, AtomTable_sp atomTable) {
+  GC_ALLOCATE_VARIADIC(EnergyPointToLineRestraint_O,obj,stretch,atomTable);
+  return obj;
 }
-
-EnergyPointToLineRestraint::~EnergyPointToLineRestraint()
-{
-}
-
-
-//
-// Copy this from implementAmberFunction.cc
-//
-double	_evaluateEnergyOnly_PointToLineRestraint(
-		double x1, double y1, double z1,
-		double xa, double ya, double za,
-		double xb, double yb, double zb,
-		double ka, double ra)
-{
-#undef	ANCHOR_RESTRAINT_SET_PARAMETER
-#define	ANCHOR_RESTRAINT_SET_PARAMETER(x)	{}
-#undef	ANCHOR_RESTRAINT_SET_POSITION
-#define	ANCHOR_RESTRAINT_SET_POSITION(x,ii,of)	{}
-#undef	ANCHOR_RESTRAINT_ENERGY_ACCUMULATE
-#define	ANCHOR_RESTRAINT_ENERGY_ACCUMULATE(e) {}
-#undef	ANCHOR_RESTRAINT_FORCE_ACCUMULATE
-#define	ANCHOR_RESTRAINT_FORCE_ACCUMULATE(i,o,v) {}
-#undef	ANCHOR_RESTRAINT_DIAGONAL_HESSIAN_ACCUMULATE
-#define	ANCHOR_RESTRAINT_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
-#undef	ANCHOR_RESTRAINT_OFF_DIAGONAL_HESSIAN_ACCUMULATE
-#define	ANCHOR_RESTRAINT_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
-#undef	ANCHOR_RESTRAINT_CALC_FORCE	// Don't calculate FORCE or HESSIAN
-
-
-#pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
-#include <cando/chem/energy_functions/_PointToLineRestraint_termDeclares.cc>
-#pragma clang diagnostic pop
-#include <cando/chem/energy_functions/_PointToLineRestraint_termCode.cc>
-
-    return Energy;
-}
-
-
-void	EnergyPointToLineRestraint_O::addTerm(const EnergyPointToLineRestraint& r)
-{
-    this->_Terms.push_back(r);
-}
-
-void	EnergyPointToLineRestraint_O::dumpTerms()
-{
-}
-
-
-
-string EnergyPointToLineRestraint_O::beyondThresholdInteractionsAsString()
-{
-    return component_beyondThresholdInteractionsAsString<EnergyPointToLineRestraint_O,EnergyPointToLineRestraint>(*this);
-}
-
-
-
-
-
-
-
-void	EnergyPointToLineRestraint_O::setupHessianPreconditioner(
-					NVector_sp nvPosition,
-					AbstractLargeSquareMatrix_sp m )
-{
-bool		calcForce = true;
-bool		calcDiagonalHessian = true;
-bool		calcOffDiagonalHessian = true;
-
-//
-// Copy from implementAmberFunction::setupHessianPreconditioner
-//
-// -----------------------
-
-#undef	ANCHOR_RESTRAINT_SET_PARAMETER
-#define	ANCHOR_RESTRAINT_SET_PARAMETER(x)	{x=cri->term.x;}
-#undef	ANCHOR_RESTRAINT_SET_POSITION
-#define	ANCHOR_RESTRAINT_SET_POSITION(x,ii,of) {x=nvPosition->element(ii+of);}
-#undef	ANCHOR_RESTRAINT_PHI_SET
-#define	ANCHOR_RESTRAINT_PHI_SET(x) {}
-#undef	ANCHOR_RESTRAINT_ENERGY_ACCUMULATE
-#define	ANCHOR_RESTRAINT_ENERGY_ACCUMULATE(e) {}
-#undef	ANCHOR_RESTRAINT_FORCE_ACCUMULATE
-#define	ANCHOR_RESTRAINT_FORCE_ACCUMULATE(i,o,v) {}
-#undef	ANCHOR_RESTRAINT_DIAGONAL_HESSIAN_ACCUMULATE
-#define	ANCHOR_RESTRAINT_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {\
-	  m->addToElement((i1)+(o1),(i2)+(o2),v);\
-}
-#undef	ANCHOR_RESTRAINT_OFF_DIAGONAL_HESSIAN_ACCUMULATE
-#define	ANCHOR_RESTRAINT_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {\
-	  m->addToElement((i1)+(o1),(i2)+(o2),v);\
-}
-#define ANCHOR_RESTRAINT_CALC_FORCE
-#define ANCHOR_RESTRAINT_CALC_DIAGONAL_HESSIAN
-#define ANCHOR_RESTRAINT_CALC_OFF_DIAGONAL_HESSIAN
-
-    if ( this->isEnabled() ) {
-#pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
-#include <cando/chem/energy_functions/_PointToLineRestraint_termDeclares.cc>
-#pragma clang diagnostic pop
-	;
-	double x1,y1,z1,xa,ya,za,xb,yb,zb,ka,ra;
-	int	I1;
-	for ( gctools::Vec0<EnergyPointToLineRestraint>::iterator cri=this->_Terms.begin();
-		    cri!=this->_Terms.end(); cri++ ) {
-#include <cando/chem/energy_functions/_PointToLineRestraint_termCode.cc>
-	}
-    }
-
-
-
-
-
-}
-
-
-
 
 
 double EnergyPointToLineRestraint_O::evaluateAll( NVector_sp 	pos,
@@ -184,222 +68,71 @@ double EnergyPointToLineRestraint_O::evaluateAll( NVector_sp 	pos,
 //
 // -----------------------
 
-#define ANCHOR_RESTRAINT_CALC_FORCE
-#define ANCHOR_RESTRAINT_CALC_DIAGONAL_HESSIAN
-#define ANCHOR_RESTRAINT_CALC_OFF_DIAGONAL_HESSIAN
-#undef	ANCHOR_RESTRAINT_SET_PARAMETER
-#define	ANCHOR_RESTRAINT_SET_PARAMETER(x)	{x = cri->term.x;}
-#undef	ANCHOR_RESTRAINT_SET_POSITION
-#define	ANCHOR_RESTRAINT_SET_POSITION(x,ii,of)	{x = pos->element(ii+of);}
-#undef	ANCHOR_RESTRAINT_PHI_SET
-#define	ANCHOR_RESTRAINT_PHI_SET(x) {}
-#undef	ANCHOR_RESTRAINT_ENERGY_ACCUMULATE
-#define	ANCHOR_RESTRAINT_ENERGY_ACCUMULATE(e) this->_TotalEnergy += (e);
-#undef	ANCHOR_RESTRAINT_FORCE_ACCUMULATE
-#undef	ANCHOR_RESTRAINT_DIAGONAL_HESSIAN_ACCUMULATE
-#undef	ANCHOR_RESTRAINT_OFF_DIAGONAL_HESSIAN_ACCUMULATE
-#define	ANCHOR_RESTRAINT_FORCE_ACCUMULATE 		ForceAcc
-#define	ANCHOR_RESTRAINT_DIAGONAL_HESSIAN_ACCUMULATE 	DiagHessAcc
-#define	ANCHOR_RESTRAINT_OFF_DIAGONAL_HESSIAN_ACCUMULATE OffDiagHessAcc
+#define POINT_TO_LINE_RESTRAINT_CALC_FORCE
+#define POINT_TO_LINE_RESTRAINT_CALC_DIAGONAL_HESSIAN
+#define POINT_TO_LINE_RESTRAINT_CALC_OFF_DIAGONAL_HESSIAN
+#undef	POINT_TO_LINE_RESTRAINT_SET_PARAMETER
+#define	POINT_TO_LINE_RESTRAINT_SET_PARAMETER(x)	{x = cri->term.x;}
+#undef	POINT_TO_LINE_RESTRAINT_SET_POSITION
+#define	POINT_TO_LINE_RESTRAINT_SET_POSITION(x,ii,of)	{x = pos->element(ii+of);}
+#undef	POINT_TO_LINE_RESTRAINT_PHI_SET
+#define	POINT_TO_LINE_RESTRAINT_PHI_SET(x) {}
+#undef	POINT_TO_LINE_RESTRAINT_ENERGY_ACCUMULATE
+#define	POINT_TO_LINE_RESTRAINT_ENERGY_ACCUMULATE(e) this->_TotalEnergy += (e);
+#undef	POINT_TO_LINE_RESTRAINT_FORCE_ACCUMULATE
+#undef	POINT_TO_LINE_RESTRAINT_DIAGONAL_HESSIAN_ACCUMULATE
+#undef	POINT_TO_LINE_RESTRAINT_OFF_DIAGONAL_HESSIAN_ACCUMULATE
+#define	POINT_TO_LINE_RESTRAINT_FORCE_ACCUMULATE 		ForceAcc
+#define	POINT_TO_LINE_RESTRAINT_DIAGONAL_HESSIAN_ACCUMULATE 	DiagHessAcc
+#define	POINT_TO_LINE_RESTRAINT_OFF_DIAGONAL_HESSIAN_ACCUMULATE OffDiagHessAcc
 
 
   if ( this->isEnabled() ) {
-#pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
-#include <cando/chem/energy_functions/_PointToLineRestraint_termDeclares.cc>
-#pragma clang diagnostic pop
-    double x1,y1,z1,xa,ya,za,xb,yb,zb,ka,ra;
-    int	I1, i;
-    gctools::Vec0<EnergyPointToLineRestraint>::iterator cri;
-    for ( i=0,cri=this->_Terms.begin();
-          cri!=this->_Terms.end(); cri++,i++ ) {
-#ifdef	DEBUG_CONTROL_THE_NUMBER_OF_TERMS_EVALAUTED
-      if ( this->_Debug_NumberOfPointToLineRestraintTermsToCalculate > 0 ) {
-        if ( i>= this->_Debug_NumberOfPointToLineRestraintTermsToCalculate ) {
-          break;
+    double bond_length = this->_Bond_div_2*2.0;
+    for (size_t stretch_idx= 0; stretch_idx<this->_Stretch->_Terms.size(); stretch_idx++ ) {
+      EnergyStretch& estretch = this->_Stretch->_Terms[stretch_idx];
+      int IA = estretch.term.I1;
+      int IB = estretch.term.I2;
+      Vector3 vA((*pos)[IA+0],(*pos)[IA+1],(*pos)[IA+2]);
+      Vector3 vB((*pos)[IB+0],(*pos)[IB+1],(*pos)[IB+2]);
+      Vector3 dx21 = vB-vA;
+      double x2mx1sq = dx21.dotProduct(dx21);
+      for ( size_t atom_idx = 0; atom_idx<this->_AtomTable->_Atoms.size(); atom_idx++ ) {
+        EnergyAtom& eatom = this->_AtomTable->_Atoms[atom_idx];
+        if (eatom._SharedAtom != estretch._Atom1 && eatom._SharedAtom != estretch._Atom2) {
+          int I1 = atom_idx*3;
+          Vector3 v1((*pos)[I1+0],(*pos)[I1+1],(*pos)[I1+2]);
+          if (fabs(v1.getX()-vA.getX()) > bond_length) continue;
+          if (fabs(v1.getY()-vA.getY()) > bond_length) continue;
+          if (fabs(v1.getZ()-vA.getZ()) > bond_length) continue;
+          if (fabs(v1.getX()-vB.getX()) > bond_length) continue;
+          if (fabs(v1.getY()-vB.getY()) > bond_length) continue;
+          if (fabs(v1.getZ()-vB.getZ()) > bond_length) continue;
+          Vector3 dx10 = vA-v1;
+          double dot = dx10.dotProduct(dx21);
+          double t = dot/x2mx1sq;
+          if (t<0.0 || t>1.0) continue;
+          Vector3 close = (dx21*t)+vA;
+          Vector3 d = v1-close;
+          double dist = d.length();
+          if (dist < this->_Bond_div_2) {
+            if (dist > 0.01) {
+              Vector3 fv = d*(0.5/dist);
+              POINT_TO_LINE_RESTRAINT_FORCE_ACCUMULATE(I1,0,fv.getX());
+              POINT_TO_LINE_RESTRAINT_FORCE_ACCUMULATE(I1,1,fv.getY());
+              POINT_TO_LINE_RESTRAINT_FORCE_ACCUMULATE(I1,2,fv.getZ());
+            } else {
+              POINT_TO_LINE_RESTRAINT_FORCE_ACCUMULATE(I1,0,0.5*core::randomNumber01());
+              POINT_TO_LINE_RESTRAINT_FORCE_ACCUMULATE(I1,1,0.5*core::randomNumber01());
+              POINT_TO_LINE_RESTRAINT_FORCE_ACCUMULATE(I1,2,0.5*core::randomNumber01());
+            }
+          }
         }
-      }
-#endif
-
-			    /* Obtain all the parameters necessary to calculate */
-			    /* the amber and forces */
-#include <cando/chem/energy_functions/_PointToLineRestraint_termCode.cc>
-
-#if TURN_ENERGY_FUNCTION_DEBUG_ON //[
-      cri->_calcForce = calcForce;
-      cri->_calcDiagonalHessian = calcDiagonalHessian;
-      cri ->_calcOffDiagonalHessian = calcOffDiagonalHessian;
-			// Now write all of the calculated values into the eval structure
-#undef EVAL_SET
-#define	EVAL_SET(var,val)	{ cri->eval.var=val;};
-#include <cando/chem/energy_functions/_PointToLineRestraint_debugEvalSet.cc>
-#endif //]
-
-			    /* Add the forces */
-
-      if ( calcForce ) {
-#if !USE_EXPLICIT_DECLARES
-        double fx1 = 0.0;
-        double fy1 = 0.0;
-        double fz1 = 0.0;
-#endif
-//		    _lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fx1>10000.0);
-//		    _lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fy1>10000.0);
-//		    _lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fz1>10000.0);
       }
     }
   }
   return this->_TotalEnergy;
 }
-
-
-
-
-
-
-
-void	EnergyPointToLineRestraint_O::compareAnalyticalAndNumericalForceAndHessianTermByTerm(
-		NVector_sp 	pos)
-{
-int	fails = 0;
-bool	calcForce = true;
-bool	calcDiagonalHessian = true;
-bool	calcOffDiagonalHessian = true;
-
-
-//
-// copy from implementAmberFunction::compareAnalyticalAndNumericalForceAndHessianTermByTerm(
-//
-//------------------
-
-#define ANCHOR_RESTRAINT_CALC_FORCE
-#define ANCHOR_RESTRAINT_CALC_DIAGONAL_HESSIAN
-#define ANCHOR_RESTRAINT_CALC_OFF_DIAGONAL_HESSIAN
-#undef	ANCHOR_RESTRAINT_SET_PARAMETER
-#define	ANCHOR_RESTRAINT_SET_PARAMETER(x)	{x = cri->term.x;}
-#undef	ANCHOR_RESTRAINT_SET_POSITION
-#define	ANCHOR_RESTRAINT_SET_POSITION(x,ii,of)	{x = pos->element(ii+of);}
-#undef	ANCHOR_RESTRAINT_PHI_SET
-#define	ANCHOR_RESTRAINT_PHI_SET(x) {}
-#undef	ANCHOR_RESTRAINT_ENERGY_ACCUMULATE
-#define	ANCHOR_RESTRAINT_ENERGY_ACCUMULATE(e) {}
-#undef	ANCHOR_RESTRAINT_FORCE_ACCUMULATE
-#define	ANCHOR_RESTRAINT_FORCE_ACCUMULATE(i,o,v) {}
-#undef	ANCHOR_RESTRAINT_DIAGONAL_HESSIAN_ACCUMULATE
-#define	ANCHOR_RESTRAINT_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
-#undef	ANCHOR_RESTRAINT_OFF_DIAGONAL_HESSIAN_ACCUMULATE
-#define	ANCHOR_RESTRAINT_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
-
-
-	if ( this->isEnabled() ) {
-		_BLOCK_TRACE("PointToLineRestraintEnergy finiteDifference comparison");
-#pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
-#include <cando/chem/energy_functions/_PointToLineRestraint_termDeclares.cc>
-#pragma clang diagnostic pop
-                double x1,y1,z1,xa,ya,za,xb,yb,zb,ka,ra;
-
-	    int	I1, i;
-	    gctools::Vec0<EnergyPointToLineRestraint>::iterator cri;
-	    for ( i=0,cri=this->_Terms.begin();
-			cri!=this->_Terms.end(); cri++,i++ ) {
-			  /* Obtain all the parameters necessary to calculate */
-			  /* the amber and forces */
-#include <cando/chem/energy_functions/_PointToLineRestraint_termCode.cc>
-		LOG(BF("fx1 = %le") % fx1 );
-		LOG(BF("fy1 = %le") % fy1 );
-		LOG(BF("fz1 = %le") % fz1 );
-		int index = i;
-#if !USE_EXPLICIT_DECLARES
-		double fx1 = 0.0;
-		double fy1 = 0.0;
-		double fz1 = 0.0;
-		double dhx1x1 = 0.0;
-		double ohx1y1 = 0.0;
-		double dhy1y1 = 0.0;
-		double ohy1z1 = 0.0;
-		double dhz1z1 = 0.0;
-		double ohx1z1 = 0.0;
-#endif
-#include <cando/chem/energy_functions/_PointToLineRestraint_debugFiniteDifference.cc>
-
-	    }
-	}
-    IMPLEMENT_ME(); // must return some sort of integer value
-}
-
-
-#if 0
-int	EnergyPointToLineRestraint_O::checkForBeyondThresholdInteractions(
-			stringstream& info, NVector_sp pos )
-{
-int	fails = 0;
-
-    this->_BeyondThresholdTerms.clear();
-
-//
-// Copy from implementAmberFunction::checkForBeyondThresholdInteractions
-//
-//------------------
-
-#undef ANCHOR_RESTRAINT_CALC_FORCE
-#undef ANCHOR_RESTRAINT_CALC_DIAGONAL_HESSIAN
-#undef ANCHOR_RESTRAINT_CALC_OFF_DIAGONAL_HESSIAN
-#undef	ANCHOR_RESTRAINT_SET_PARAMETER
-#define	ANCHOR_RESTRAINT_SET_PARAMETER(x)	{x = cri->term.x;}
-#undef	ANCHOR_RESTRAINT_SET_POSITION
-#define	ANCHOR_RESTRAINT_SET_POSITION(x,ii,of)	{x = pos->element(ii+of);}
-#undef	ANCHOR_RESTRAINT_PHI_SET
-#define	ANCHOR_RESTRAINT_PHI_SET(x) {}
-#undef	ANCHOR_RESTRAINT_ENERGY_ACCUMULATE
-#define	ANCHOR_RESTRAINT_ENERGY_ACCUMULATE(e) {}
-#undef	ANCHOR_RESTRAINT_FORCE_ACCUMULATE
-#define	ANCHOR_RESTRAINT_FORCE_ACCUMULATE(i,o,v) {}
-#undef	ANCHOR_RESTRAINT_DIAGONAL_HESSIAN_ACCUMULATE
-#define	ANCHOR_RESTRAINT_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
-#undef	ANCHOR_RESTRAINT_OFF_DIAGONAL_HESSIAN_ACCUMULATE
-#define	ANCHOR_RESTRAINT_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
-
-
-	if ( this->isEnabled() ) {
-		_BLOCK_TRACE("PointToLineRestraintEnergy finiteDifference comparison");
-#pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
-#include <cando/chem/energy_functions/_PointToLineRestraint_termDeclares.cc>
-#pragma clang diagnostic pop
-double x1,y1,z1,xa,ya,za,xb,yb,zb,ka,ra;
-	    int	I1, i;
-	    gctools::Vec0<EnergyPointToLineRestraint>::iterator cri;
-	    for ( i=0,cri=this->_Terms.begin();
-			cri!=this->_Terms.end(); cri++,i++ ) {
-			  /* Obtain all the parameters necessary to calculate */
-			  /* the amber and forces */
-#include <cando/chem/energy_functions/_PointToLineRestraint_termCode.cc>
-		if ( PointToLineDeviation>this->_ErrorThreshold ) {
-		    Atom_sp a1, a2, a3, a4;
-		    a1 = (*cri)._Atom1;
-		    info<< "PointToLineRestraintDeviation ";
-//		    info<< a1->getAbsoluteIdPath() << " ";
-		    info<< "value " << PointToLineDeviation << " ";
-		    info << a1->getName() << " ";
-		    info << std::endl;
-		    this->_BeyondThresholdTerms.push_back(*cri);
-		    fails++;
-		}
-	    }
-	}
-
-    return fails;
-}
-#endif
-
-
-
-
-
-
-
-
 
 
 void EnergyPointToLineRestraint_O::initialize()
@@ -408,14 +141,9 @@ void EnergyPointToLineRestraint_O::initialize()
     this->setErrorThreshold(0.2);
 }
 
-
-#ifdef XML_ARCHIVE
-void EnergyPointToLineRestraint_O::archiveBase(core::ArchiveP node)
+void EnergyPointToLineRestraint_O::reset()
 {
-    this->Base::archiveBase(node);
-    IMPLEMENT_ME();
 }
-#endif
 
 
 };

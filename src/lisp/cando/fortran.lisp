@@ -2,32 +2,44 @@
 
 (defconstant +fortran-debug-comment-char+ #\=)
 
-(defstruct (fortran-output-file (:conc-name fof-))
+(defstruct (fortran-file (:conc-name fof-))
   stream format per-line number-on-line wrote-nothing
   (debug nil))
 
-(defvar *fortran-output-file* nil)
+(defvar *fortran-file* nil)
 
 (defmacro with-fortran-output-file ((ff &rest open-args) &body body)
-  `(let* ((*fortran-output-file* (make-fortran-output-file
+  `(let* ((*fortran-file* (make-fortran-file
                                   :stream (apply #'cl:open (list ,@open-args))
                                   :format nil
                                   :per-line nil
                                   :number-on-line nil
                                   :wrote-nothing nil))
-          (,ff *fortran-output-file*))
+          (,ff *fortran-file*))
      (unwind-protect
           (progn ,@body)
-       (close (fof-stream *fortran-output-file*)))))
+       (close (fof-stream *fortran-file*)))))
 
-(defun fformat (per-line fmt &optional (ff *fortran-output-file*))
+(defmacro with-fortran-input-file ((ff &rest open-args) &body body)
+  `(let* ((*fortran-file* (make-fortran-file
+                                  :stream (apply #'cl:open (list ,@open-args))
+                                  :format nil
+                                  :per-line nil
+                                  :number-on-line nil
+                                  :wrote-nothing nil))
+          (,ff *fortran-file*))
+     (unwind-protect
+          (progn ,@body)
+       (close (fof-stream *fortran-file*)))))
+
+(defun fformat (per-line fmt &optional (ff *fortran-file*))
   "Define the format for write commands that will follow"
   (setf (fof-format ff) fmt
         (fof-per-line ff) per-line
         (fof-number-on-line ff) 0
         (fof-wrote-nothing ff) t))
 
-(defun fwrite (val &optional (ff *fortran-output-file*))
+(defun fwrite (val &optional (ff *fortran-file*))
   "Write _val_ using the current format"
   (core:bformat (fof-stream ff) (fof-format ff) val)
   (incf (fof-number-on-line ff))
@@ -36,19 +48,19 @@
     (core:bformat (fof-stream ff) "%N")
     (setf (fof-number-on-line ff) 0)))
 
-(defun end-line (&optional (ff *fortran-output-file*))
+(defun end-line (&optional (ff *fortran-file*))
   (when (or (fof-wrote-nothing ff) (/= (fof-number-on-line ff) 0))
     (core:bformat (fof-stream ff) "%N"))
   (setf (fof-wrote-nothing ff) t
         (fof-number-on-line ff) 0))
 
-(defun debug-on (&optional (ff *fortran-output-file*))
+(defun debug-on (&optional (ff *fortran-file*))
   (setf (fof-debug ff) t))
 
-(defun debug-off (&optional (ff *fortran-output-file*))
+(defun debug-off (&optional (ff *fortran-file*))
   (setf (fof-debug ff) nil))
 
-(defun debug (msg &optional (ff *fortran-output-file*))
+(defun debug (msg &optional (ff *fortran-file*))
   (when (fof-debug ff)
     (core:bformat (fof-stream ff) "%c%s%N" +fortran-debug-comment-char+ msg)))
 
@@ -169,12 +181,15 @@
                (val (parse-double-float line :start start :end end)))
           (vector-push-extend val result))))
 
-(defun fread-double-float-vector (fif per-line width &optional eof-error-p eof-value)
+(defun fread-double-float-vector (fif per-line width &optional max-entries)
   (let ((result (make-array 32 :element-type 'double-float :fill-pointer 0 :adjustable t)))
     (loop for line = (fortran-input-file-look-ahead fif)
-       until (or (eq line eof-value) (eql (aref line 0) #\%))
-       do (parse-double-float-line line result width)
-       do (fread-line fif eof-error-p eof-value))
+          until (or (eq line nil) (eql (aref line 0) #\%))
+          if (and max-entries (>= (fill-pointer result) max-entries))
+            do (return-from fread-double-float-vector result)
+          do (parse-double-float-line line result width)
+          do (fread-line fif nil nil))
+    
     result))
     
 (defun fread-vector (fif per-line format-char width)

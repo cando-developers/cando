@@ -36,8 +36,8 @@
 
 
 (define-condition minimizer-error (error)
-  ((minimizer :initarg :minimizer
-              :reader minimizer)
+  ((message :initarg :message :reader message)
+   (minimizer :initarg :minimizer :reader minimizer)
    (coordinates :initarg :coordinates :reader coordinates)))
 
 (define-condition minimizer-exceeded-max-steps (minimizer-error)

@@ -204,7 +204,12 @@ public:
     virtual string	beyondThresholdInteractionsAsString();
 
   void addStretchTerm(AtomTable_sp at, Atom_sp a1, Atom_sp a2, double kb, double r0);
-
+  
+  void walkStretchTerms(core::T_sp callback);
+  void modifyStretchTermKb(size_t index, float kb);
+  void modifyStretchTermR0(size_t index, float r0);
+    
+  void reset();
 public:
     EnergyStretch_O( const EnergyStretch_O& ss ); //!< Copy constructor
 

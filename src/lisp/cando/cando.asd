@@ -10,6 +10,7 @@
   :components
   ((:file "packages")
    (:file "basic")
+   (:file "infix")
    (:file "chem")
    (:file "environment")
    (:file "print-read")
@@ -23,6 +24,7 @@
    (:file "struct")
    (:file "fortran")
    (:file "monomers")
+   (:file "dynamics")
    (:file "modelling")
    (:file "constitution")
    (:file "molecules")

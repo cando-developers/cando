@@ -30,5 +30,5 @@
    #:load-smirnoff
    #:build-energy-function
    #:load-smirnoff
-   #:combined-force-field
+   #:combined-smirnoff-force-field
    ))

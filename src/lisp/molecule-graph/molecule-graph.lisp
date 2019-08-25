@@ -1,20 +1,22 @@
 (in-package :molecule-graph)
 
-(defun atoms-match-p (v1 v2)
+(defun default-atom-match-callback (v1 v2)
   (and (eq (chem:get-element v1)
            (chem:get-element v2))
        (chem:atom-within-angstroms v1 v2 0.2)))
+
+
+(defparameter *atom-match-callback* #'default-atom-match-callback)
 
 (defun vertex-match-callback (v1 v2)
   (cond
     ((and (typep v1 'chem:atom)
           (typep v2 'chem:atom))
-     (atoms-match-p v1 v2))
+     (funcall *atom-match-callback* v1 v2))
     ((and (atom-cluster-p v1)
           (atom-cluster-p v2))
      (eq (atom-cluster-equivalent v1) v2))
     (t nil)))
-
 
 (defparameter *equivalent* nil)
 
@@ -157,12 +159,23 @@
 
 
 
-(defun compare-molecules (molecule1 molecule2)
+
+(defun compare-molecules (molecule1 molecule2 &key (atom-match-callback #'default-atom-match-callback))
   "Compare the two molecules.
 Return: (values equivalences diff1 diff2)
 equivalences - a hash table of cons cells. Each cons cell is a pair of equivalent atoms in molecule1 and molecule2.
 diff1 - The atoms of molecule1 that do not have equivalences to anything in molecule 2.
-diff2 - The atoms of molecule2 that do not have equivalences to anything in molecule 1."
+diff2 - The atoms of molecule2 that do not have equivalences to anything in molecule 1.
+The caller can provide their own atom match callback function that takes two atoms and returns
+T if they are equivalent and NIL if they are not.  This callback should at least compare the elements."
   (let ((graph1 (chem:make-molecule-graph-from-molecule molecule1))
-        (graph2 (chem:make-molecule-graph-from-molecule molecule2)))
-    (compare-graphs graph1 graph2)))
+        (graph2 (chem:make-molecule-graph-from-molecule molecule2))
+        (*atom-match-callback* atom-match-callback))
+    (multiple-value-bind (equivs diff1 diff2 graph1 graph2)
+        (compare-graphs graph1 graph2)
+        (let (equivs-as-list)
+          (maphash (lambda (pair dummy)
+                     (declare (ignore dummy))
+                     (push pair equivs-as-list))
+                   equivs)
+         (values equivs-as-list diff1 diff2)))))

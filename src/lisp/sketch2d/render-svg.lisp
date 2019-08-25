@@ -1,7 +1,5 @@
 (in-package :sketch2d)
 
-(defparameter *xscale* 600)
-(defparameter *yscale* 600)
 (defparameter *perpendicular-fraction* 0.15)
 (defparameter *parallel-fraction* 0.1)
 
@@ -60,12 +58,15 @@ This will place the calculated bond on one or the other side of the x1,y1-x2,y2 
          (d1-2 (geom:v- p2 p1)) ; bond direction vector
          (dz (geom:vec 0.0 0.0 1.0)) ; z-axis
          (dcross (geom:vnormalized (geom:vcross dz d1-2))) ; perpendicular to bond
+         (magnitude-towards (if (numberp towards)
+                                (abs towards)
+                                1.0))
          (dtowards (if (numberp towards)
                        (geom:v* dcross towards)
                        (geom:v- towards center))) ; if no towards then use pcross
          (dot (float-sign (geom:vdot dcross dtowards) 1.0))
          (len1-2 (geom:vlength d1-2))
-         (offset-perpendicular (geom:v* dcross (* *perpendicular-fraction* len1-2 dot)))
+         (offset-perpendicular (geom:v* (geom:v* dcross (* *perpendicular-fraction* len1-2 dot)) magnitude-towards))
          (offset-parallel (geom:v* d1-2 *parallel-fraction*))
          (p1o (geom:v+ (geom:v+ p1 offset-parallel) offset-perpendicular))
          (p2o (geom:v+ (geom:v- p2 offset-parallel) offset-perpendicular)))
@@ -73,32 +74,50 @@ This will place the calculated bond on one or the other side of the x1,y1-x2,y2 
   
 
 (defun draw-bond (scene x1 y1 x2 y2)
-  (cl-svg:draw scene (:line :x1 x1 :y1 y1 :x2 x2 :y2 y2
-                            :fill "none" :stroke "white" :stroke-width 4))
-  (cl-svg:draw scene (:line :x1 x1 :y1 y1 :x2 x2 :y2 y2
-                            :fill "none" :stroke "black" :stroke-width 2)))
+  (let* ((p1 (geom:vec x1 y1 0.0))
+         (p2 (geom:vec x2 y2 0.0))
+         (delta (geom:v- p2 p1))
+         (p1bg (geom:v+ p1 (geom:v* delta 0.1)))
+         (p2bg (geom:v+ p1 (geom:v* delta 0.9))))
+    (cl-svg:draw scene (:line :x1 (geom:vx p1bg) :y1 (geom:vy p1bg)
+                              :x2 (geom:vx p2bg) :y2 (geom:vy p2bg)
+                              :fill "none" :stroke "white" :stroke-width 4))
+    (cl-svg:draw scene (:line :x1 x1 :y1 y1 :x2 x2 :y2 y2
+                              :fill "none" :stroke "black" :stroke-width 2
+                              :stroke-linecap "round"))))
 
 (defun calculate-towards (a1 a2 aromatic-rings rings)
   1.0)
 
-(defun generate-svg (molecule &key (width 600))
+(defun draw-atom-text (scene xs1 ys1 label)
+  (cl-svg:text scene (:x xs1 :y ys1 :style "stroke:white; stroke-width:0.4em"
+                      :text-anchor "middle" :alignment-baseline "middle") label)
+  (cl-svg:text scene (:x xs1 :y ys1 :text-anchor "middle" :alignment-baseline "middle") label))
+
+
+(defun svg (molecule &key (width 1000) (xbuffer 0.1) (ybuffer 0.1) )
   (let* ((rings (chem:identify-rings molecule))
          (chem:*current-rings* rings)
          (aromatic-rings (chem:identify-aromatic-rings molecule :mdl))
          (bbox (chem:matter-bounding-box molecule 0.0))
-         (xwidth (* (- (geom:get-max-x bbox) (geom:get-min-x bbox)) 1.1))
-         (xscale (/ width xwidth))
-         (ywidth (* (- (geom:get-max-y bbox) (geom:get-min-y bbox)) 1.1))
-         (yscale (* (/ ywidth xwidth) xscale))
+         (xscale 20.0)
+         (yscale 20.0)
+         (xviewport (* (- (geom:get-max-x bbox) (geom:get-min-x bbox)) (+ 1.0 (* 2.0 xbuffer)) xscale))
+         (yviewport (* (- (geom:get-max-y bbox) (geom:get-min-y bbox)) (+ 1.0 (* 2.0 ybuffer)) yscale))
          (x-mol-center (/ (+ (geom:get-max-x bbox) (geom:get-min-x bbox)) 2.0))
          (y-mol-center (/ (+ (geom:get-max-y bbox) (geom:get-min-y bbox)) 2.0))
-         (x-scene-center (/ xwidth 2.0))
-         (y-scene-center (/ ywidth 2.0))
-         (scene (cl-svg:make-svg-toplevel 'cl-svg:svg-1.2-toplevel :width (* xwidth xscale) :height (* ywidth yscale))))
+         (x-viewport-center (/ xviewport 2.0))
+         (y-viewport-center (/ yviewport 2.0))
+         (height (* width (/ yviewport xviewport)))
+         ;; It looks like for jupyter we need to specify width and height
+         ;; Here it says to ignore them?  https://css-tricks.com/scale-svg/
+         (scene (cl-svg:make-svg-toplevel 'cl-svg:svg-1.2-toplevel :width (round xviewport) :height (round yviewport) ; :width "1000" :height "auto" ; :width width :height height
+                                          :viewport (format nil "0 0 ~d ~d" (round xviewport) (round yviewport)))))
     (flet ((transform-point (x y)
-             (let ((x1 (* (+ (- x x-mol-center) x-scene-center) xscale))
-                   (y1 (* (+ (- y y-mol-center) y-scene-center) yscale)))
+             (let ((x1 (+ (* xscale (- x x-mol-center)) x-viewport-center))
+                   (y1 (+ (* yscale (- y y-mol-center)) y-viewport-center)))
                (values x1 y1))))
+      #+(or)(cl-svg:draw scene (:rect :x 0 :y 0 :width xviewport :height yviewport :stroke "green" :fill "green"))
       (multiple-value-bind (bonds atoms)
           (gather-bonds-and-atoms molecule)
         (loop for bond in bonds
@@ -134,9 +153,10 @@ This will place the calculated bond on one or the other side of the x1,y1-x2,y2 
                                 (x (geom:vx pos))
                                 (y (geom:vy pos)))
                            (transform-point x y))
-                       (cl-svg:draw scene (:circle :cx xs1 :cy ys1 :r 11 :fill "white"))
-                       (cl-svg:text scene (:x xs1 :y (+ ys1 00.5) :text-anchor "middle" :alignment-baseline "middle")
+                       (draw-atom-text scene xs1 ys1 (string (chem:get-element atom)))
+                       #+(or)(cl-svg:text scene (:x xs1 :y (+ ys1 00.5) :text-anchor "middle" :alignment-baseline "middle")
                                     (string (chem:get-element atom))))))
                  atoms)))
     (with-output-to-string (sout) (cl-svg:stream-out sout scene))))
     
+

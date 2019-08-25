@@ -64,7 +64,8 @@
    #:save-amber-parm-format
    #:generate-aggregate-for-energy-function
    #:amber-topology-coordinate-pair
-   #:make-amber-topology-coordinate-pair
+   #:load-amber-topology-restart-pair
+   #:load-amber-topology-trajectory-pair
    #:change-coordinate-file
    #:cell-lengths
    #:number-of-frames
@@ -167,7 +168,8 @@
   (:import-from :leap.core
                 #:add-path
                 #:clear-force-field
-                #:force-fields)
+                #:force-fields
+                #:*force-fields*)
   (:import-from :leap.off
                 #:load-off)
 ;;;  (:import-from :cando-utility #:mkdir #:set-current-directory #:current-directory #:directory-files)

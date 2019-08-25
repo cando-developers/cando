@@ -1,3 +1,4 @@
+(in-package :infix)
 ;; infix.lisp
 ;; by AmkG
 
@@ -241,8 +242,11 @@
                  (t
                   (err oL)))))))))
 
-  
+
 (defmacro nfx (&rest s)
+  (nfx-impl s))
+
+(defmacro infix (&rest s)
   (nfx-impl s))
 
 

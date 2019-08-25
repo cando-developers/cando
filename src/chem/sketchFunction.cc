@@ -103,7 +103,6 @@ SketchFunction_sp SketchFunction_O::make(Molecule_sp molecule, core::T_sp sketch
 {
   GC_ALLOCATE_VARIADIC(SketchFunction_O,sf,molecule);
   sf->_AtomTable->constructFromMolecule(molecule,sketchNonbondForceField,_Nil<core::T_O>());
-  sf->_Frozen.resize(sf->_AtomTable->getNumberOfAtoms(),false);
   return sf;
 }
 
@@ -113,7 +112,7 @@ void	SketchFunction_O::initialize()
   this->_AtomTable = AtomTable_O::create();
   this->_Nonbond = EnergySketchNonbond_O::create();
   this->_Stretch = EnergyStretch_O::create();
-  this->_PointToLineRestraint = EnergyPointToLineRestraint_O::create();
+  this->_PointToLineRestraint = EnergyPointToLineRestraint_O::create(this->_Stretch,this->_AtomTable);
   this->_OutOfZPlane = EnergyOutOfZPlane_O::create();
   this->useDefaultSettings();
 }
@@ -126,6 +125,7 @@ void	SketchFunction_O::useDefaultSettings()
   this->_OutOfZPlane->initialize();
   this->_PointToLineRestraintWeight = DefaultPointToLineRestraintWeight;
   this->_OutOfZPlaneWeight = DefaultOutOfZPlaneWeight;
+  this->_VelocityScale.set(1.0, 1.0, 1.0);
 }
 
 
@@ -137,8 +137,13 @@ void SketchFunction_O::fields(core::Record_sp node)
   node->field_if_not_unbound(INTERN_(kw,Stretch),this->_Stretch);
   node->field_if_not_unbound(INTERN_(kw,PointToLineRestraint),this->_PointToLineRestraint);
   node->field_if_not_unbound(INTERN_(kw,OutOfZPlane),this->_OutOfZPlane);
+  node->field_if_not_default(INTERN_(kw,VelocityScale),this->_VelocityScale,Vector3());
 }
 
+
+CL_DEFMETHOD void SketchFunction_O::setf_velocity_scale(double xscale, double yscale, double zscale) {
+  this->_VelocityScale.set(xscale,yscale,zscale);
+}
 
 
 
@@ -244,7 +249,6 @@ void SketchFunction_O::setupHessianPreconditioner(NVector_sp nvPosition,
 {
   m->fill(0.0);
   this->_Stretch->setupHessianPreconditioner(nvPosition, m );
-  this->_PointToLineRestraint->setupHessianPreconditioner(nvPosition, m );
   this->_OutOfZPlane->setupHessianPreconditioner(nvPosition, m );
 }
 
@@ -728,41 +732,63 @@ void	SketchFunction_O::dealWithProblem(core::Symbol_sp error_symbol, core::T_sp 
 }
 
 
+CL_LAMBDA(scoring-function position velocity force force-dt delta-t-over-mass delta-t &optional frozen)
 CL_LISPIFY_NAME("sketch-function-velocity-verlet-step");
-CL_DEFUN void chem__SketchFunction_velocity_verlet_step(ScoringFunction_sp scoringFunc, NVector_sp position, NVector_sp velocity, NVector_sp force, NVector_sp force_dt, NVector_sp delta_t_over_mass, double delta_t, double velocity_scale)
+CL_DEFUN void chem__SketchFunction_velocity_verlet_step(SketchFunction_sp sketchFunc, NVector_sp position, NVector_sp velocity, NVector_sp force, NVector_sp force_dt, NVector_sp delta_t_over_mass, double delta_t, core::T_sp tfrozen )
 {
+  core::SimpleBitVector_sp frozen;
+  if (gc::IsA<core::SimpleBitVector_sp>(tfrozen)) {
+    frozen = gc::As_unsafe<core::SimpleBitVector_sp>(tfrozen);
+    if (frozen->length() != (position->length()/3)) {
+      SIMPLE_ERROR(BF("frozen must be a simple-bit-vector of length %d or NIL") % (position->length()/3));
+    }
+  } else if (tfrozen.notnilp()) {
+    SIMPLE_ERROR(BF("frozen must be a simple-bit-vector or NIL"));
+  }
+    
   double delta_tsquared = delta_t*delta_t;
   double delta_tsquared_div2 = delta_tsquared/2.0;
-  NVector_sp position_dt = NVector_O::create(position->size());
   size_t atom_idx = 0;
   for ( size_t idx = 0; idx<position->size(); idx += 3) {
-    double offsetx = delta_t*(*velocity)[idx+0] + delta_t*(*delta_t_over_mass)[atom_idx]*(*force)[idx+0];
-    double offsety = delta_t*(*velocity)[idx+1] + delta_t*(*delta_t_over_mass)[atom_idx]*(*force)[idx+1];
-    double offsetz = delta_t*(*velocity)[idx+2] + delta_t*(*delta_t_over_mass)[atom_idx]*(*force)[idx+2];
-    if (offsetx>1.5) offsetx = 1.5;
-    if (offsety>1.5) offsety = 1.5;
-    if (offsetz>1.5) offsetz = 1.5;
-    if (offsetx<-1.5) offsetx = -1.5;
-    if (offsety<-1.5) offsety = -1.5;
-    if (offsetz<-1.5) offsetz = -1.5;
-    (*position)[idx+0] = (*position)[idx+0] + offsetx;
-    (*position)[idx+1] = (*position)[idx+1] + offsety;
-    (*position)[idx+2] = (*position)[idx+2] + offsetz;
+    if (!frozen || frozen->testBit(atom_idx)==0) {
+      double offsetx = delta_t*(*velocity)[idx+0] + delta_t*(*delta_t_over_mass)[atom_idx]*(*force)[idx+0];
+      double offsety = delta_t*(*velocity)[idx+1] + delta_t*(*delta_t_over_mass)[atom_idx]*(*force)[idx+1];
+      double offsetz = delta_t*(*velocity)[idx+2] + delta_t*(*delta_t_over_mass)[atom_idx]*(*force)[idx+2];
+      if (offsetx>1.5) offsetx = 1.5;
+      if (offsety>1.5) offsety = 1.5;
+      if (offsetz>1.5) offsetz = 1.5;
+      if (offsetx<-1.5) offsetx = -1.5;
+      if (offsety<-1.5) offsety = -1.5;
+      if (offsetz<-1.5) offsetz = -1.5;
+      (*position)[idx+0] = (*position)[idx+0] + offsetx;
+      (*position)[idx+1] = (*position)[idx+1] + offsety;
+      (*position)[idx+2] = (*position)[idx+2] + offsetz;
+    }
     atom_idx++;
   }
-  scoringFunc->evaluateEnergyForce(position,true,force_dt);
+  sketchFunc->evaluateEnergyForce(position,true,force_dt);
   atom_idx = 0;
   for ( size_t idx = 0; idx<position->size(); idx+=3 ) {
-    (*velocity)[idx+0] = ((*velocity)[idx+0] + (*delta_t_over_mass)[atom_idx]/2.0*((*force)[idx+0]-(*force_dt)[idx+0]))*velocity_scale;
-    (*velocity)[idx+1] = ((*velocity)[idx+1] + (*delta_t_over_mass)[atom_idx]/2.0*((*force)[idx+1]-(*force_dt)[idx+1]))*velocity_scale;
-    (*velocity)[idx+2] = ((*velocity)[idx+2] + (*delta_t_over_mass)[atom_idx]/2.0*((*force)[idx+2]-(*force_dt)[idx+2]))*velocity_scale;
-    (*force)[idx+0] = (*force_dt)[idx+0];
-    (*force)[idx+1] = (*force_dt)[idx+1];
-    (*force)[idx+2] = (*force_dt)[idx+2];
+    if (!frozen || frozen->testBit(atom_idx)==0) {
+      (*velocity)[idx+0] = ((*velocity)[idx+0] + (*delta_t_over_mass)[atom_idx]/2.0*((*force)[idx+0]-(*force_dt)[idx+0]))*sketchFunc->_VelocityScale.getX();
+      (*velocity)[idx+1] = ((*velocity)[idx+1] + (*delta_t_over_mass)[atom_idx]/2.0*((*force)[idx+1]-(*force_dt)[idx+1]))*sketchFunc->_VelocityScale.getY();
+      (*velocity)[idx+2] = ((*velocity)[idx+2] + (*delta_t_over_mass)[atom_idx]/2.0*((*force)[idx+2]-(*force_dt)[idx+2]))*sketchFunc->_VelocityScale.getZ();
+      (*force)[idx+0] = (*force_dt)[idx+0];
+      (*force)[idx+1] = (*force_dt)[idx+1];
+      (*force)[idx+2] = (*force_dt)[idx+2];
+    }
     atom_idx++;
   }
 }
 
+
+CL_DEFMETHOD void SketchFunction_O::resetSketchFunction()
+{
+  this->_Stretch->reset();
+  this->_OutOfZPlane->reset();
+  this->_PointToLineRestraint->reset();
+  this->_Nonbond->reset();
+}
 
 
 

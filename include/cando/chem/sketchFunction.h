@@ -122,7 +122,6 @@ namespace chem {
     EnergyOutOfZPlane_sp                _OutOfZPlane;
     EnergyPointToLineRestraint_sp       _PointToLineRestraint;
     EnergySketchNonbond_sp              _Nonbond;
-    std::vector<bool>                   _Frozen;
     /*! If true then secondary amides are
      * automatically restrainted to be trans
      */
@@ -130,12 +129,14 @@ namespace chem {
     double					_OutOfZPlaneWeight;
     double					_TotalEnergy;
     string					_Message;
+    Vector3                                     _VelocityScale;
   public:
     SketchFunction_O(Molecule_sp molecule) : _Molecule(molecule) {};
   public:
     CL_LISPIFY_NAME("atomTable");
     CL_DEFMETHOD     AtomTable_sp atomTable() const { return this->_AtomTable;};
-
+    void setf_velocity_scale(double xscale, double yscale, double zscale);
+    
     string	energyTermsEnabled() ;
     void	loadCoordinatesIntoVector(NVector_sp pos);
     void	saveCoordinatesFromVector(NVector_sp pos);
@@ -165,7 +166,7 @@ namespace chem {
     CL_DEFMETHOD     EnergySketchNonbond_sp	getSketchNonbondComponent() { return this->_Nonbond; };
     CL_LISPIFY_NAME("getStretchComponent");
     CL_DEFMETHOD     EnergyStretch_sp	getStretchComponent() { return this->_Stretch; };
-    CL_LISPIFY_NAME("getAnchorRestraintComponent");
+    CL_LISPIFY_NAME("getPointToLineRestraintComponent");
     CL_DEFMETHOD     EnergyPointToLineRestraint_sp	getPointToLineRestraintComponent() { return this->_PointToLineRestraint; };
     CL_LISPIFY_NAME("getOutOfZPlaneComponent");
     CL_DEFMETHOD     EnergyOutOfZPlane_sp	getOutOfZPlaneComponent() { return this->_OutOfZPlane; };
@@ -217,12 +218,16 @@ namespace chem {
     string	debugLogAsString();
 
     virtual void	dealWithProblem(core::Symbol_sp error_symbol, core::T_sp arguments);
+    void resetSketchFunction();
+
+
   };
 
 
   bool inAtomSet(core::T_sp atomSet, Atom_sp atom);
 
   void energyFunction_initializeSmarts();
+
 };
 
 #endif

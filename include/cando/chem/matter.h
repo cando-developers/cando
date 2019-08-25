@@ -352,6 +352,8 @@ class Matter_O : public core::CxxObject_O
 
   virtual	string	description() const { stringstream ss; ss << "container("<<_rep_(this->name)<<")@"<<std::hex<<this<<std::dec; return ss.str();}
   Vector3		geometricCenter();
+  core::T_mv momentOfInertiaTensor();
+  core::T_mv momentOfGeometry();
 		/*! Return a bounding box for the matter padded with (pad).
 		 */
   geom::BoundingBox_sp	matterBoundingBox(double pad);

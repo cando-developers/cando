@@ -50,95 +50,99 @@ namespace chem
 {
 
 
-    struct TermOutOfZPlane {
-	double		ka;
-	int		I1;
-	double		za;
-    };
+struct TermOutOfZPlane {
+  double		kb;
+  int		I1;
+  double		za;
+  TermOutOfZPlane(double k,int i, double z) : kb(k), I1(i), za(z) {};
+};
 
 /*! Store a OutOfZPlane energy term
  */
 class	EnergyOutOfZPlane : public EnergyTerm {
 public:
-	string	className()	{ return "EnergyOutOfZPlane"; };
+  string	className()	{ return "EnergyOutOfZPlane"; };
 public:
-	TermOutOfZPlane	term;
+  TermOutOfZPlane	term;
 		// Variables
-        Atom_sp      _Atom1;
+  Atom_sp      _Atom1;
 		// Threshold
 #if TURN_ENERGY_FUNCTION_DEBUG_ON
-	bool		_calcForce;
-	bool		_calcDiagonalHessian;
-	bool		_calcOffDiagonalHessian;
+  bool		_calcForce;
+  bool		_calcDiagonalHessian;
+  bool		_calcOffDiagonalHessian;
 #include <cando/chem/energy_functions/_OutOfZPlane_debugEvalDeclares.cc>
 #endif
-        Atom_sp	getAtom() { return this->_Atom1; };
-	double		getZa() { return this->term.za; };
+  Atom_sp	getAtom() { return this->_Atom1; };
+  double		getZa() { return this->term.za; };
 public:
-	adapt::QDomNode_sp	asXml();
-	void	parseFromXmlUsingAtomTable(adapt::QDomNode_sp xml, AtomTable_sp atomTable );
+  adapt::QDomNode_sp	asXml();
+  void	parseFromXmlUsingAtomTable(adapt::QDomNode_sp xml, AtomTable_sp atomTable );
 
-    EnergyOutOfZPlane();
-	virtual ~EnergyOutOfZPlane();
+  EnergyOutOfZPlane(Atom_sp a1, double kb, int i1, double r0) : _Atom1(a1), term(kb,i1,r0) {};
+    
+  virtual ~EnergyOutOfZPlane();
 
 };
 
 
 
-double	_evaluateEnergyOnly_OutOfZPlane(
-		double x1, double y1, double z1,
-		double za,
-		double kb );
+double	_evaluateEnergyOnly_Oozp(
+                                 double x1, double y1, double z1,
+                                 double za,
+                                 double kb );
 
 class EnergyOutOfZPlane_O : public EnergyComponent_O
 {
-    LISP_CLASS(chem,ChemPkg,EnergyOutOfZPlane_O,"EnergyOutOfZPlane",EnergyComponent_O);
+  LISP_CLASS(chem,ChemPkg,EnergyOutOfZPlane_O,"EnergyOutOfZPlane",EnergyComponent_O);
 public:
 public: // virtual functions inherited from Object
-    void	initialize();
+  void	initialize();
 public:
-    typedef EnergyOutOfZPlane	TermType;
+  typedef EnergyOutOfZPlane	TermType;
 public: // instance variables
-    gctools::Vec0<TermType>		_Terms;
-    gctools::Vec0<TermType>		_BeyondThresholdTerms;
+  gctools::Vec0<TermType>		_Terms;
+  gctools::Vec0<TermType>		_BeyondThresholdTerms;
 
 public:	// Creation class functions
 public:	
-    typedef gctools::Vec0<TermType>::iterator iterator;
-    iterator begin() { return this->_Terms.begin(); };
-    iterator end() { return this->_Terms.end(); };
+  typedef gctools::Vec0<TermType>::iterator iterator;
+  iterator begin() { return this->_Terms.begin(); };
+  iterator end() { return this->_Terms.end(); };
 //added by G 7.19.2011
 public:
-    virtual size_t numberOfTerms() { return this->_Terms.size();};
+  virtual size_t numberOfTerms() { return this->_Terms.size();};
 
 
 public:
-    void addTerm(const TermType& term);
-    virtual void dumpTerms();
+  void addTerm(const TermType& term);
+  void addOutOfZPlaneTerm(AtomTable_sp atomTable, Atom_sp, double kb, double r0);
+  virtual void dumpTerms();
 
-    virtual void setupHessianPreconditioner(NVector_sp nvPosition,
-					    AbstractLargeSquareMatrix_sp m );
-    virtual double evaluateAll( NVector_sp 	pos,
-                                bool 		calcForce,
-                                gc::Nilable<NVector_sp> 	force,
-                                bool		calcDiagonalHessian,
-                                bool		calcOffDiagonalHessian,
-                                gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                                gc::Nilable<NVector_sp>	hdvec,
-                                gc::Nilable<NVector_sp> dvec);
+  virtual void setupHessianPreconditioner(NVector_sp nvPosition,
+                                          AbstractLargeSquareMatrix_sp m );
+  virtual double evaluateAll( NVector_sp 	pos,
+                              bool 		calcForce,
+                              gc::Nilable<NVector_sp> 	force,
+                              bool		calcDiagonalHessian,
+                              bool		calcOffDiagonalHessian,
+                              gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                              gc::Nilable<NVector_sp>	hdvec,
+                              gc::Nilable<NVector_sp> dvec);
 
-    virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm(
-	NVector_sp pos );
+  virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm(
+                                                                               NVector_sp pos );
 
     // virtual	int	checkForBeyondThresholdInteractions( stringstream& info, NVector_sp pos );
 
-    virtual string	beyondThresholdInteractionsAsString();
+  virtual string	beyondThresholdInteractionsAsString();
 
-
+  void reset();
+  
 public:
-    EnergyOutOfZPlane_O( const EnergyOutOfZPlane_O& ss ); //!< Copy constructor
+  EnergyOutOfZPlane_O( const EnergyOutOfZPlane_O& ss ); //!< Copy constructor
 
-    DEFAULT_CTOR_DTOR(EnergyOutOfZPlane_O);
+  DEFAULT_CTOR_DTOR(EnergyOutOfZPlane_O);
 };
 
 

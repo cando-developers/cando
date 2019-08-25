@@ -27,4 +27,6 @@
 (defpackage #:sketch2d
   (:use #:common-lisp)
   (:export
+   #:sketch2d
+   #:svg
    ))
