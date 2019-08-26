@@ -1172,7 +1172,7 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, bool useEx
 CL_LAMBDA((energy-function !) matter &key use-excluded-atoms active-atoms (assign-types t));
 CL_DEFMETHOD void EnergyFunction_O::defineForMatterWithAtomTypes(Matter_sp matter, bool useExcludedAtoms, core::T_sp activeAtoms)
 {_OF();
-
+  this->_Matter= matter;
   if ( !(matter.isA<Aggregate_O>() || matter.isA<Molecule_O>() ) )
   {
     SIMPLE_ERROR(BF("You can only define energy functions for Aggregates or Molecules"));
@@ -1327,7 +1327,6 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
 	// Initialize the energy components
 	//
   ALL_ENERGY_COMPONENTS(initialize());
-//  this->_Matter= matter;
   this->_eraseMissingParameters();
   coordinateIndex = 0;
   ASSERTNOTNULL(forceField);
