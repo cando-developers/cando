@@ -6,7 +6,7 @@
 
 (defvar *here* #.(make-pathname :name NIL :type NIL :defaults (or *compile-file-truename* *load-truename*)))
 (defvar *default-output-directory* (merge-pathnames "../../docs/" *here*))
-(defvar *default-packages* '(:ext))
+(defvar *default-packages* '(#+(or):ext))
 
 (defclass main-page (staple:templated-page)
   ((staple:document-package :initarg :document-package :initform NIL :accessor staple:document-package)
@@ -44,16 +44,28 @@
                                           :type "html" :defaults (staple:output project))
                    :packages (list package))))
 
+(eval-when (:compile-toplevel :execute :load-toplevel)
+  (format t "About to add method for clasp-docs~%"))
+
 (defmethod staple:find-project ((project (eql (asdf:find-system :clasp-docs))) &rest args)
-  (apply #'staple:find-project :clasp args))
+  (unwind-protect
+       (progn
+         (format t "staple:find-project (asdf:find-system :clasp-docs)~%")
+         (apply #'staple:find-project :clasp args))
+    (format t "Leaving staple:find-project (asdf:find-system :clasp-docs)~%")))
 
 (defmethod staple:find-project ((project (eql :clasp)) &key (output-directory *default-output-directory*)
-                                                            (packages *default-packages*))
-  (let ((project (make-instance 'staple:simple-project :output output-directory)))
-    (push (make-main-page project) (staple:pages project))
-    (loop for package in packages
-          do (push (make-package-page package project) (staple:pages project)))
-    project))
+                                                         (packages *default-packages*))
+  (unwind-protect
+       (progn
+         (format t "staple:find-project :clasp~%")
+         (let ((project (make-instance 'staple:simple-project :output output-directory)))
+           (push (make-main-page project) (staple:pages project))
+           (loop for package in packages
+                 do (push (make-package-page package project) (staple:pages project)))
+           project))
+    (format t "Leaving staple:find-project :clasp~%")))
+
 
 ;; (asdf:load-system :clasp-docs)
 ;; (staple:generate :clasp :if-exists :supersede)
