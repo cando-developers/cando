@@ -286,14 +286,6 @@ string	Minimizer_O::statusAsShortString()
 
 
 
-#if 0
-void	Minimizer_O::setStepCallback(core::LispCallback_sp cb)
-{
-  this->_StepCallback = cb;
-}
-#endif
-
-
 #ifdef XML_ARCHIVE
 void	Minimizer_O::debugStart()
 {
