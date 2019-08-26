@@ -188,22 +188,22 @@ I'll use an angle term instead of a bond term.
                         (chem:bond-to atom lp :single-bond)
                      ))
              idx))
-    (let* ((mol-copy (chem:matter-copy molecule))
-           (mol-graph (chem:make-molecule-graph-from-molecule mol-copy)))
-      (remove-connected-hydrogens mol-copy (find-groups *methyl* mol-graph))
-      (remove-connected-hydrogens mol-copy (find-groups *hydroxyl* mol-graph))
-      (remove-connected-hydrogens mol-copy (find-groups *thiol* mol-graph))
-      (remove-connected-hydrogens mol-copy (find-groups *primary-ammonium* mol-graph))
-      (remove-connected-hydrogens mol-copy (find-groups *primary-amine* mol-graph))
-      (remove-connected-hydrogens mol-copy (find-groups *secondary-carbon* mol-graph) 1)
-      (remove-connected-hydrogens mol-copy (find-groups *tertiary-carbon* mol-graph) 1)
-      (let ((idx 0))
-        (setf idx (add-lone-pair mol-copy (find-groups *lp-oxygen* mol-graph) idx))
-        (setf idx (add-lone-pair mol-copy (find-groups *lp-nitrogen* mol-graph) idx))
-        (setf idx (add-lone-pair mol-copy (find-groups *lp-sulfur* mol-graph) idx)))
-      (chem:setf-force-field-name mol-copy :.hidden.sketch2d-1)
-      (cando:jostle mol-copy 20.0 t)
-      mol-copy)))
+    (let ((mol-copy (chem:matter-copy molecule)))
+      (let ((mol-graph (chem:make-molecule-graph-from-molecule mol-copy)))
+        (remove-connected-hydrogens mol-copy (find-groups *methyl* mol-graph))
+        (remove-connected-hydrogens mol-copy (find-groups *hydroxyl* mol-graph))
+        (remove-connected-hydrogens mol-copy (find-groups *thiol* mol-graph))
+        (remove-connected-hydrogens mol-copy (find-groups *primary-ammonium* mol-graph))
+        (remove-connected-hydrogens mol-copy (find-groups *primary-amine* mol-graph))
+        (remove-connected-hydrogens mol-copy (find-groups *secondary-carbon* mol-graph) 1)
+        (remove-connected-hydrogens mol-copy (find-groups *tertiary-carbon* mol-graph) 1)
+        (let ((idx 0))
+          (setf idx (add-lone-pair mol-copy (find-groups *lp-oxygen* mol-graph) idx))
+          (setf idx (add-lone-pair mol-copy (find-groups *lp-nitrogen* mol-graph) idx))
+          (setf idx (add-lone-pair mol-copy (find-groups *lp-sulfur* mol-graph) idx)))
+        (chem:setf-force-field-name mol-copy :.hidden.sketch2d-1)
+        (cando:jostle mol-copy 20.0 t)
+        mol-copy))))
 
 
 (defun randomize-atoms (atom-table &key frozen from-zero (width 40.0) &aux (half-width (/ width 2.0)))
@@ -560,11 +560,17 @@ are in the order (low, middle, high) and the column eigen-vectors are in the sam
       (let ((transposed-transform (geom:transposed3x3 eigen-vector-matrix)))
         (chem:apply-transform-to-atoms molecule transposed-transform)))))
 
-(defgeneric sketch2d (matter &key accumulate-coordinates)
+
+(defclass sketch2d ()
+  ((molecule :initarg :molecule :accessor molecule)
+   (dynamics :initarg :dynamics :accessor dynamics)))
+
+
+(defgeneric do-sketch2d (matter &key accumulate-coordinates)
   (:documentation "Return an edited molecule that looks like a chemdraw sketch of the molecule. 
 The coordinates are all pressed into the X-Y plane and some hydrogens are added and lone-pairs removed."))
 
-(defmethod sketch2d ((molecule chem:molecule) &key accumulate-coordinates)
+(defmethod do-sketch2d ((molecule chem:molecule) &key accumulate-coordinates)
   (let* ((dynamics (sketch2d-molecule molecule :accumulate-coordinates accumulate-coordinates))
          (scoring-function (dynamics:scoring-function dynamics)))
     ;; Check for problems
@@ -599,10 +605,16 @@ The coordinates are all pressed into the X-Y plane and some hydrogens are added 
       (align-molecule-horizontal result-molecule)
       (values result-molecule dynamics))))
 
-
-(defmethod sketch2d ((aggregate chem:aggregate) &key accumulate-coordinates)
+(defmethod do-sketch2d ((aggregate chem:aggregate) &key accumulate-coordinates)
   (if (= (chem:content-size aggregate) 1)
-      (sketch2d (chem:content-at aggregate 0) :accumulate-coordinates accumulate-coordinates)
+      (do-sketch2d (chem:content-at aggregate 0) :accumulate-coordinates accumulate-coordinates)
       (error "sketch2d only accepts a molecule or an aggregate with a single molecule")))
+
+(defun sketch2d (matter &key accumulate-coordinates)
+  (multiple-value-bind (edited-mol dynamics)
+      (do-sketch2d matter :accumulate-coordinates accumulate-coordinates)
+    (make-instance 'sketch2d :molecule edited-mol
+                             :dynamics dynamics)))
+
 
 

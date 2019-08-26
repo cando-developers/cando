@@ -1,5 +1,14 @@
 (in-package :dynamics)
 
+
+(defclass trajectory ()
+  ((coordinates :initform (make-array 16 :adjustable t :fill-pointer 0) :initarg :coordinates :accessor coordinates)
+   (matter :initarg :matter :accessor matter)
+   (number-of-atoms :initarg :number-of-atoms :accessor number-of-atoms))
+  (:documentation "Maintain a vector of coordinates for a matter. 
+This is to store a molecular dynamics trajectory or a trajectory from energy minimization.
+Methods are specialized on this class in cando-nglview.lisp."))
+
 (defclass simulation ()
   ((scoring-function :initarg :scoring-function :accessor scoring-function)
    (coordinates :initarg :coordinates :accessor coordinates)
@@ -11,6 +20,39 @@
    (current-time :initform 0.0 :accessor current-time)
    (accumulate-coordinates :initform nil :initarg :accumulate-coordinates :accessor accumulate-coordinates)
    (accumulated-coordinates :initform (make-array 16 :adjustable t :fill-pointer 0) :accessor accumulated-coordinates)))
+
+
+(defgeneric make-trajectory (structure))
+
+(defmethod make-trajectory ((structure chem:matter))
+  (make-instance 'trajectory :matter structure
+                                   :number-of-atoms (chem:number-of-atoms structure)))
+
+(defmethod make-trajectory ((dynamics dynamics:simulation))
+  (let* ((scoring-function (dynamics:scoring-function dynamics))
+         (matter (chem:get-matter scoring-function))
+         (trajectory (dynamics:accumulated-coordinates dynamics)))
+    (unless (> (length trajectory) 1)
+      (error "The trajectory must have more than one coordinate set"))
+    (cond
+      ((typep matter 'chem:aggregate) nil)
+      ((typep matter 'chem:molecule)
+       (let ((agg (chem:make-aggregate)))
+         (chem:add-matter agg matter)
+         (setf matter agg)))
+      (t (error "matter must be aggregate or molecule")))
+    (make-instance 'trajectory :matter matter
+                                     :number-of-atoms (chem:number-of-atoms matter)
+                                     :trajectory trajectory)))
+
+(defmethod make-trajectory ((trajectory trajectory))
+  (let ((matter (dynamics:matter trajectory))
+        (coordinates (dynamics:coordinates trajectory)))
+    (unless (> (length trajectory) 1)
+      (error "The trajectory must have more than one coordinate set"))
+    (make-instance 'trajectory :matter matter
+                                     :number-of-atoms (chem:number-of-atoms matter)
+                                     :trajectory coordinates)))
 
 (defun do-accumulate-coordinates (simulation coordinates)
   "Convert coordinates into a vector of single-floats and append it to accumulated-coordinates"

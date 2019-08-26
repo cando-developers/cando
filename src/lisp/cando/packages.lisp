@@ -225,6 +225,10 @@
 (defpackage #:dynamics
   (:use #:common-lisp)
   (:export
+   #:trajectory
+   #:make-trajectory
+   #:matter
+   #:number-of-atoms
    #:simulation
    #:make-atomic-simulation
    #:scoring-function

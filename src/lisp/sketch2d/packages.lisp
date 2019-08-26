@@ -29,4 +29,6 @@
   (:export
    #:sketch2d
    #:svg
+   #:molecule
+   #:dynamics
    ))

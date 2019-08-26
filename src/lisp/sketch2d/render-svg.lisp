@@ -95,8 +95,9 @@ This will place the calculated bond on one or the other side of the x1,y1-x2,y2 
   (cl-svg:text scene (:x xs1 :y ys1 :text-anchor "middle" :alignment-baseline "middle") label))
 
 
-(defun svg (molecule &key (width 1000) (xbuffer 0.1) (ybuffer 0.1) )
-  (let* ((rings (chem:identify-rings molecule))
+(defun svg (sketch2d &key (width 1000) (xbuffer 0.1) (ybuffer 0.1) )
+  (let* ((molecule (molecule sketch2d))
+         (rings (chem:identify-rings molecule))
          (chem:*current-rings* rings)
          (aromatic-rings (chem:identify-aromatic-rings molecule :mdl))
          (bbox (chem:matter-bounding-box molecule 0.0))

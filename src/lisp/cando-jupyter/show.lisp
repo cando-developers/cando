@@ -41,3 +41,6 @@
           (error "cl-jupyter is not installed")))))
 
 
+
+(defmethod show ((sketch sketch2d:sketch2d) &rest kwargs &key &allow-other-keys)
+  (cl-jupyter-user:svg (sketch2d:svg sketch)))
