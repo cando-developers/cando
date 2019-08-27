@@ -678,6 +678,7 @@ translations along the appropriate axes (0 for no translation).
       ("createResidue" . leap-create-residue)
       ("createUnit" . leap-create-unit)
       ("translate" . leap-translate)
+      ("transform" . leap-transform)
       ("copy" . leap-copy)
       ("center" . leap-center)
       ("measureGeom" . leap-measure-geom)
