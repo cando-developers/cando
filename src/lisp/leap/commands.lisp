@@ -578,7 +578,63 @@ This command modifies the coordinates of the UNIT. It may be
 especially useful for preparing long solutes such as nucleic acids
 for solvation.
 "
-     (leap.align-axes:tool-orient-principle-axis-along-coordinate-axis unit))
+  (leap.align-axes:tool-orient-principle-axis-along-coordinate-axis unit))
+
+(defun leap-transform (atoms matrix)
+"    transform atoms matrix
+
+      CONTAINER/LIST               _atoms_
+      LIST                         _matrix_
+
+Translate all of the ATOMs within _atoms_ by the (3X3) or (4X4) matrix
+defined by the 9 or 16 NUMBERs in the LIST of LISTs _matrix_.
+    { { r11  r12  r13  -tx }
+      { r21  r22  r23  -ty }
+      { r31  r32  r33  -tz }
+      { 0    0    0     1  } }
+The diagonal upper left elements, rII can be used for symmetry operations,
+e.g. a reflection in the XY plane can be produced with r11=1, r22=1, r33=-1
+where the other rIJ elements are 0. The -t column is used to specify
+translations along the appropriate axes (0 for no translation).
+"
+  (let ((transform (geom:make-matrix-identity))
+        (ix 0)
+        (iy 0))
+    (check-type matrix list)
+    (dolist (elements-y matrix)
+      (format t "elements-y ~s~%" elements-y)
+      (check-type elements-y list)
+      (if (< iy 4)
+          (dolist (elements-x elements-y)
+            (if (< ix 4)
+                (progn
+                  (geom:at-row-col-put transform ix iy elements-x)
+                  (incf ix)))))
+          (setf ix 0)
+          (incf iy))
+    (chem:map-atoms
+     'nil
+     (lambda (atom)
+       (let* ((atom-position (chem:get-position atom))
+              (x-position (geom:vx atom-position))
+              (y-position (geom:vy atom-position))
+              (z-position (geom:vz atom-position)))
+         (geom:set-all3 atom-position
+                        (+ (* (geom:at-row-col-get transform 0 0) (geom:vx atom-position))
+                           (* (geom:at-row-col-get transform 1 0) (geom:vy atom-position))
+                           (* (geom:at-row-col-get transform 2 0) (geom:vz atom-position)))
+                        (+ (* (geom:at-row-col-get transform 0 1) (geom:vx atom-position))
+                           (* (geom:at-row-col-get transform 1 1) (geom:vy atom-position))
+                           (* (geom:at-row-col-get transform 2 1) (geom:vz atom-position)))
+                        (+ (* (geom:at-row-col-get transform 0 2) (geom:vx atom-position))
+                           (* (geom:at-row-col-get transform 1 2) (geom:vy atom-position))
+                           (* (geom:at-row-col-get transform 2 2) (geom:vz atom-position))))
+         #+(or)(geom:set-all3 atom-position 
+                        (geom:vx (geom:m*v transform atom-position))
+                        (geom:vy (geom:m*v transform atom-position))
+                        (geom:vz (geom:m*v transform atom-position)))
+         (chem:set-position atom atom-position)))
+       atoms)))
 
 (eval-when (:load-toplevel :execute)
   (setf leap.parser:*function-names/alist*
