@@ -108,11 +108,11 @@
    (improper-torsion-force :initarg :improper-torsion-force :accessor improper-torsion-force)
    (vdw-force :initarg :vdw-force :accessor vdw-force)))
 
-(defclass combined-force-field ()
+(defclass combined-smirnoff-force-field ()
   ((parts :initform nil :initarg :parts :accessor parts)))
 
-(defmethod chem:force-fields-as-list ((combined-force-field combined-force-field))
-  (parts combined-force-field))
+(defmethod chem:force-fields-as-list ((combined-smirnoff-force-field combined-smirnoff-force-field))
+  (parts combined-smirnoff-force-field))
 
 
 (defun ignore-handler (node)
@@ -236,63 +236,67 @@
         (parse-torsion-force root "Improper" 'improper-term 'improper-torsion-force)))
   
 (defun parse-vdw-force (root)
-  (let* ((attrs (plump:attributes root))
-         (potential (gethash "potential" attrs))
-         (combining-rules (gethash "combining_rules" attrs))
-         (scale12 (fortran:parse-double-float (gethash "scale12" attrs)))
-         (scale13 (fortran:parse-double-float (gethash "scale13" attrs)))
-         (scale14 (fortran:parse-double-float (gethash "scale14" attrs)))
-         (scale15 (fortran:parse-double-float (gethash "scale15" attrs)))
-         (rmin-half-unit (gethash "rmin_half_unit" attrs))
-         (epsilon-unit (gethash "epsilon_unit" attrs))
-         (switch-width (fortran:parse-double-float (gethash "switch_width" attrs)))
-         (switch-width-unit (gethash "switch_width_unit" attrs))
-         (cutoff (fortran:parse-double-float (gethash "cutoff" attrs)))
-         (cutoff-unit (gethash "cutoff_unit" attrs))
-         (method (gethash "method" attrs))
-         )
-    (setf (vdw-force *smirnoff*)
-          (make-instance 'vdw-force
-                         :potential potential
-                         :combining-rules combining-rules
-                         :scale12 scale12
-                         :scale13 scale13
-                         :scale14 scale14
-                         :scale15 scale15
-                         :rmin-half-unit rmin-half-unit
-                         :epsilon-unit epsilon-unit
-                         :switch-width switch-width
-                         :switch-width-unit switch-width-unit
-                         :cutoff cutoff
-                         :cutoff-unit cutoff-unit
-                         :method method))
-    (with-force-parser (node root "Atom")
-      (let* ((attrs (plump:attributes node))
-             (smirks (gethash "smirks" attrs))
-             (id (gethash "id" attrs))
-             (epsilon (fortran:parse-double-float (gethash "epsilon" attrs)))
-             (rmin-half (fortran:parse-double-float (let (num)
-                                                  (cond
-                                                    ((setf num (gethash "rmin_half" attrs))
-                                                     num)
-                                                    ((setf num (gethash "sigma" attrs))
-                                                     ;; handle sigma
-                                                     (error "Handle sigma"))
-                                                    (t (error "Neither rmin_half or sigma were provided"))))))
-             (type (let ((exists (gethash smirks *smirnoff-types*)))
-                     (if exists
-                         exists
-                         (let ((type (next-smirnoff-type-symbol)))
-                           (setf (gethash smirks *smirnoff-types*) type)
-                           type))))
-             (term (make-instance 'nonbond-term
-                                  :type type
-                                  :smirks smirks
-                                  :compiled-smirks (chem:compile-smarts smirks)
-                                  :id id
-                                  :epsilon epsilon
-                                  :rmin-half rmin-half)))
-        (vector-push-extend term (terms (vdw-force *smirnoff*)))))))
+  (flet ((safe-gethash (key ht)
+           (let ((val (gethash key ht)))
+             (unless val (error "The offxml file is missing ~a in ~a" key root))
+             val)))
+    (let* ((attrs (plump:attributes root))
+           (potential (safe-gethash "potential" attrs))
+           (combining-rules (safe-gethash "combining_rules" attrs))
+           (scale12 (fortran:parse-double-float (safe-gethash "scale12" attrs)))
+           (scale13 (fortran:parse-double-float (safe-gethash "scale13" attrs)))
+           (scale14 (fortran:parse-double-float (safe-gethash "scale14" attrs)))
+           (scale15 (fortran:parse-double-float (safe-gethash "scale15" attrs)))
+           (rmin-half-unit (safe-gethash "rmin_half_unit" attrs))
+           (epsilon-unit (safe-gethash "epsilon_unit" attrs))
+           (switch-width (fortran:parse-double-float (safe-gethash "switch_width" attrs)))
+           (switch-width-unit (safe-gethash "switch_width_unit" attrs))
+           (cutoff (fortran:parse-double-float (safe-gethash "cutoff" attrs)))
+           (cutoff-unit (safe-gethash "cutoff_unit" attrs))
+           (method (safe-gethash "method" attrs))
+           )
+      (setf (vdw-force *smirnoff*)
+            (make-instance 'vdw-force
+                           :potential potential
+                           :combining-rules combining-rules
+                           :scale12 scale12
+                           :scale13 scale13
+                           :scale14 scale14
+                           :scale15 scale15
+                           :rmin-half-unit rmin-half-unit
+                           :epsilon-unit epsilon-unit
+                           :switch-width switch-width
+                           :switch-width-unit switch-width-unit
+                           :cutoff cutoff
+                           :cutoff-unit cutoff-unit
+                           :method method))
+      (with-force-parser (node root "Atom")
+        (let* ((attrs (plump:attributes node))
+               (smirks (safe-gethash "smirks" attrs))
+               (id (safe-gethash "id" attrs))
+               (epsilon (fortran:parse-double-float (safe-gethash "epsilon" attrs)))
+               (rmin-half (fortran:parse-double-float (let (num)
+                                                        (cond
+                                                          ((setf num (gethash "rmin_half" attrs))
+                                                           num)
+                                                          ((setf num (gethash "sigma" attrs))
+                                                           ;; handle sigma
+                                                           (error "Handle sigma"))
+                                                          (t (error "Neither rmin_half or sigma were provided"))))))
+               (type (let ((exists (gethash smirks *smirnoff-types*)))
+                       (if exists
+                           exists
+                           (let ((type (next-smirnoff-type-symbol)))
+                             (setf (gethash smirks *smirnoff-types*) type)
+                             type))))
+               (term (make-instance 'nonbond-term
+                                    :type type
+                                    :smirks smirks
+                                    :compiled-smirks (chem:compile-smarts smirks)
+                                    :id id
+                                    :epsilon epsilon
+                                    :rmin-half rmin-half)))
+          (vector-push-extend term (terms (vdw-force *smirnoff*))))))))
 
 (defparameter *smirnoff-handlers*
   '(("Bonds" . parse-bonds-force)
@@ -300,6 +304,8 @@
     ("ImproperTorsions" . parse-improper-torsion-force)
     ("Angles" . parse-angles-force)
     ("vdW" . parse-vdw-force)
+    ("Electrostatics" . ignore-handler)
+    ("ToolkitAM1BCC" . ignore-handler)
     ("Date" . ignore-handler)
     ("Author" . ignore-handler)
     ("Smirnoff" . parse-dispatcher )))
@@ -309,9 +315,10 @@
         when (typep node 'plump:element)
           do (let* ((tag (plump:tag-name node))
                     (found (assoc tag *smirnoff-handlers* :test #'string=)))
-               (when found
+               (if found
                  (let ((handler (cdr found)))
-                   (funcall handler node))))))
+                   (funcall handler node))
+                 (warn "Ignoring tag: ~a~%" tag)))))
 
 (defun parse-root (root)
   (loop for node across (plump:children root)
@@ -330,8 +337,8 @@
 (defmethod chem:nonbond-component ((force-field smirnoff-force-field))
   (vdw-force force-field))
 
-(defmethod chem:clear-combined-force-field ((combined-force-field combined-force-field))
-  (setf (parts combined-force-field) nil))
+(defmethod chem:clear-combined-force-field ((combined-smirnoff-force-field combined-smirnoff-force-field))
+  (setf (parts combined-smirnoff-force-field) nil))
 
-(defmethod chem:add-shadowing-force-field ((combined-force-field combined-force-field) (smirnoff-force-field smirnoff-force-field) pathname)
-  (push smirnoff-force-field (parts combined-force-field)))
+(defmethod chem:add-shadowing-force-field ((combined-smirnoff-force-field combined-smirnoff-force-field) (smirnoff-force-field smirnoff-force-field) pathname)
+  (push smirnoff-force-field (parts combined-smirnoff-force-field)))

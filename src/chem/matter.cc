@@ -81,7 +81,9 @@ CL_DEFMETHOD Matter_sp Matter_O::contentAt(size_t i) const
 string Matter_O::__repr__() const
 {
   stringstream ss;
-  ss << "#<" << this->className() << " " << _rep_(this->getName()) << ">";
+  ss << "#<" << this->className() << " " << _rep_(this->getName());
+  ss << " @" << (void*)this;
+  ss << ">";
   return ss.str();
 }
 //
@@ -578,7 +580,7 @@ CL_DEFMETHOD void	Matter_O::addMatter(Matter_sp cp )
   ASSERTNOTNULL(cp);
   LOG(BF("Adding: %s of type: %c") % cp->getName().c_str() % cp->getMatterType()  );
   ctemp = this->sharedThis<Matter_O>();
-  cp->setContainedBy(ctemp);
+//  cp->setContainedBy(ctemp);
   LOG(BF("Adding %c:0x%08x to parent %c:0x%08x") % (cp->getMatterType()) % (cp.get()) % (this->getMatterType()) % (this ) );
     	// Always add the content to the end of the vector
 	// A lot depends on Residues maintaining the order of Atoms
@@ -608,7 +610,7 @@ void	Matter_O::addMatterRetainId(Matter_sp cp )
       % this->description()
       % cp->description() );
   ctemp = this->sharedThis<Matter_O>();
-  cp->setContainedBy(ctemp);
+//  cp->setContainedBy(ctemp);
   LOG(BF("Adding %c:0x%08x to parent %c:0x%08x") % (cp->getMatterType()) % (cp.get()) % (this->getMatterType()) % (this ) );
     	// Always add the content to the end of the vector
 	// A lot depends on Residues maintaining the order of Atoms
@@ -853,6 +855,118 @@ CL_DEFMETHOD Vector3	Matter_O::geometricCenter()
   }
   LOG(BF("Geometric center = %f, %f, %f") % sum.getX() % sum.getY() % sum.getZ()  );
   return sum;
+}
+
+
+CL_DOCSTRING(R"doc(Return the moment of inertia tensor where the masses of atoms are all identical. Return (values moment-of-inertia-matrix center-of-geometry))doc");
+CL_LISPIFY_NAME("momentOfInertiaTensor");
+CL_DEFMETHOD core::T_mv	Matter_O::momentOfInertiaTensor()
+{_OF();
+  Vector3	sum;
+  int	count;
+  Atom_sp	a;
+  Loop	l;
+  Matter_sp	c;
+  double ixx = 0.0;
+  double iyy = 0.0;
+  double izz = 0.0;
+  double ixy = 0.0;
+  double iyz = 0.0;
+  double ixz = 0.0;
+  Vector3 center = this->geometricCenter();
+  c = this->asSmartPtr();
+  sum.set(0,0,0);
+  count = 0;
+  l.loopTopGoal( c, ATOMS );
+  while ((l.advanceLoopAndProcess())) {
+    a = l.getAtom();
+    Vector3 pos = a->getPosition();
+    double xpos = pos.getX()-center.getX();
+    double ypos = pos.getY()-center.getY();
+    double zpos = pos.getZ()-center.getZ();
+    double xpossq = xpos*xpos;
+    double ypossq = ypos*ypos;
+    double zpossq = zpos*zpos;
+    ixx += ypossq+zpossq;
+    iyy += xpossq+zpossq;
+    izz += xpossq+ypossq;
+    ixy += - xpos*ypos;
+    iyz += - ypos*zpos;
+    ixz += - xpos*zpos;
+    count++;
+  }
+  Matrix mres;
+  mres.atRowColPut(0,0,ixx);
+  mres.atRowColPut(0,1,ixy);
+  mres.atRowColPut(0,2,ixz);
+  mres.atRowColPut(1,0,ixy);
+  mres.atRowColPut(1,1,iyy);
+  mres.atRowColPut(1,2,iyz);
+  mres.atRowColPut(2,0,ixz);
+  mres.atRowColPut(2,1,iyz);
+  mres.atRowColPut(2,2,izz);
+  geom::OMatrix_sp mm = geom::OMatrix_O::create();
+  mm->setAll(mres);
+  return Values(mm,geom::OVector3_O::createFromVector3(center));
+}
+
+CL_DOCSTRING(R"doc(Return the principle moments of inertia tensor where the masses of atoms are all identical. Return (values eigen-values eigen-vector-matrix center-of-geometry))doc");
+CL_LISPIFY_NAME("momentOfGeometry");
+CL_DEFMETHOD core::T_mv	Matter_O::momentOfGeometry()
+{_OF();
+  Vector3	sum;
+  int	count;
+  Atom_sp	a;
+  Loop	l;
+  Matter_sp	c;
+  double ixx = 0.0;
+  double iyy = 0.0;
+  double izz = 0.0;
+  double ixy = 0.0;
+  double iyz = 0.0;
+  double ixz = 0.0;
+  Vector3 center = this->geometricCenter();
+  c = this->asSmartPtr();
+  sum.set(0,0,0);
+  count = 0;
+  l.loopTopGoal( c, ATOMS );
+  while ((l.advanceLoopAndProcess())) {
+    a = l.getAtom();
+    Vector3 pos = a->getPosition();
+    double xpos = pos.getX()-center.getX();
+    double ypos = pos.getY()-center.getY();
+    double zpos = pos.getZ()-center.getZ();
+    double xpossq = xpos*xpos;
+    double ypossq = ypos*ypos;
+    double zpossq = zpos*zpos;
+    ixx += ypossq+zpossq;
+    iyy += xpossq+zpossq;
+    izz += xpossq+ypossq;
+    ixy += - xpos*ypos;
+    iyz += - ypos*zpos;
+    ixz += - xpos*zpos;
+    count++;
+  }
+  Matrix mres;
+  mres.atRowColPut(0,0,ixx);
+  mres.atRowColPut(0,1,ixy);
+  mres.atRowColPut(0,2,ixz);
+  mres.atRowColPut(1,0,ixy);
+  mres.atRowColPut(1,1,iyy);
+  mres.atRowColPut(1,2,iyz);
+  mres.atRowColPut(2,0,ixz);
+  mres.atRowColPut(2,1,iyz);
+  mres.atRowColPut(2,2,izz);
+  Vector4 evals;
+  Matrix evecs;
+  mres.eigenSystem(evals,evecs);
+  core::List_sp lvals = core::Cons_O::createList(core::clasp_make_double_float(evals.getW()),
+                                                 core::clasp_make_double_float(evals.getX()),
+                                                 core::clasp_make_double_float(evals.getY()),
+                                                 core::clasp_make_double_float(evals.getZ()));
+  geom::OMatrix_sp mm = geom::OMatrix_O::create();
+  mm->setAll(evecs);
+  return Values(lvals,mm,geom::OVector3_O::createFromVector3(center));
 }
 
 

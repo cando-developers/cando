@@ -34,6 +34,7 @@
   (:use #:common-lisp)
   (:shadowing-import-from :chem "ATOM")
   (:export
+   #:ensure-jobs-directories-exist
    #:make-fep
    #:add-receptor
    #:fep-calculation
@@ -58,7 +59,7 @@
    #:node-pathname
    #:morph
    #:stages
-   #:windows
+   #:lambda-values
    #:inputs
    #:outputs
    #:users
@@ -75,8 +76,14 @@
    #:solvent-buffer
    #:solvent-closeness
    #:solvent-residue-name
+   #:equivalent-atom-names
    #:source
+   #:source-timask-residue-index
+   #:source-scmask-atom-names
    #:target
+   #:target-timask-residue-index
+   #:target-scmask-atom-names
+   #:morph-mask
    #:morphs
    #:nodes
    #:setup-feps
@@ -90,13 +97,21 @@
    #:check-am1-calculations
    #:read-am1-charges
    #:calculate-am1-bcc-charges
-   #:build-initial-jobs
+   #:build-job-nodes
+   #:connect-job-nodes
    #:complex
    #:sqm-job-mixin
    #:amber-job-mixin
-   #:cpptraj-job-mixin
    #:pattern-atoms
-   #:average-core-atom-positions))
+   #:average-core-atom-positions
+   #:fep-calculation-from-ligands
+   #:do-decharge-recharge
+   #:check-calculation-atom-types
+   #:validate-atom-types
+   #:residue-name-to-pdb-alist
+   #:add-job-edge
+   #:build-decharge-aggregate
+   #:build-recharge-aggregate))
 
 
 (defpackage #:fepdot

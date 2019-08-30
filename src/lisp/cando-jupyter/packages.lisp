@@ -44,6 +44,7 @@
    #:picked-atoms
    #:cando-structure
    #:cando-trajectory
+   #:trajectory
    #:show-aggregate
    #:show-amber-netcdf-trajectory
    #:make-amber-netcdf-trajectory

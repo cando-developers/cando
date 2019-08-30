@@ -61,7 +61,22 @@
   (:use #:common-lisp)
   (:export
    #:write-topology
-   #:save-amber-parm-format))
+   #:save-amber-parm-format
+   #:generate-aggregate-for-energy-function
+   #:amber-topology-coordinate-pair
+   #:load-amber-topology-restart-pair
+   #:load-amber-topology-trajectory-pair
+   #:change-coordinate-file
+   #:cell-lengths
+   #:number-of-frames
+   #:topology-filename
+   #:coordinate-filename
+   #:coordinate-netcdf
+   #:energy-function
+   #:aggregate
+   #:number-of-atoms
+   #:read-frame-into-atoms
+   ))
 
 (defpackage #:leap.cando-database
   (:use #:common-lisp)
@@ -159,7 +174,8 @@
   (:import-from :leap.core
                 #:add-path
                 #:clear-force-field
-                #:force-fields)
+                #:force-fields
+                #:*force-fields*)
   (:import-from :leap.off
                 #:load-off)
 ;;;  (:import-from :cando-utility #:mkdir #:set-current-directory #:current-directory #:directory-files)

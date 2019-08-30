@@ -95,7 +95,11 @@ public:
 							this->coords[2]=z;};
 	void	setVector( double x, double y, double z) {this->set(x,y,z);};
 	Vector3 crossProduct( const Vector3& v ) const;
-	double	dotProduct( const Vector3& v );
+  double dotProduct( const Vector3& v ) {
+    return(this->getX()*v.getX()
+           +this->getY()*v.getY()
+           +this->getZ()*v.getZ());
+  }
 	double	length() const;
 
 		//! If the Vector3 is not defined then set all coordinates to 0.0

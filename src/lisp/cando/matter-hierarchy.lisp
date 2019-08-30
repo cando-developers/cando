@@ -88,7 +88,7 @@ and if the residue is not in RESIDUES-TO-MOLECULES add it."
 ;;; into separate molecules and return them in a list.
 
 (defun merge-molecules (aggregate mol-dest mol-source)
-  (format t "Merging the molecules ~s ~s~%" mol-dest mol-source)
+  #+(or)(format *debug-io* "Merging the molecules ~s ~s~%" mol-dest mol-source)
   (let ((source-residues (chem:map-residues 'list #'identity mol-source)))
     (loop for res in source-residues
           do (chem:add-matter mol-dest res)
@@ -150,15 +150,24 @@ Break up the molecules in the aggregate into a list of molecules using spanning 
              residue))
           mol)
          (loop for atom in atoms
+               for iteration from 0
                when (not (gethash atom atoms-seen))
-                 do (push (span-across-molecule-from-atom mol atom atoms-seen residues-to-molecules atoms-to-residues) molecules))))
+                 do (multiple-value-bind (new-molecule atoms-spanned)
+                        (span-across-molecule-from-atom mol
+                                                        atom
+                                                        atoms-seen
+                                                        residues-to-molecules
+                                                        atoms-to-residues)
+                      (if (= atoms-spanned (length atoms))
+                          (push mol molecules) ; the new-molecule has all the atoms of the old molecule - so keep the oldq
+                          (push new-molecule molecules))))))
      aggregate)
 ;;; Remove the molecules in the aggregate
     (let ((mols (chem:map-molecules 'list #'identity aggregate)))
       (loop for mol in mols
             do (chem:remove-molecule aggregate mol)))
     ;; Add the new molecules
-    (loop for mol in molecules
+    (loop for mol in (nreverse molecules)
           do (chem:add-matter aggregate mol))
     aggregate))
 
@@ -168,27 +177,36 @@ Break up the molecules in the aggregate into a list of molecules using spanning 
                                        atoms-seen
                                        residues-to-molecules
                                        atoms-to-residues)
+  #+(or)(format *debug-io* "span-across-molecule-from-atom old-molecule ~a atom ~a~%" old-molecule atom)
   (let ((new-molecule (chem:make-molecule (chem:get-name old-molecule)))
         (spanning-tree (chem:make-spanning-loop atom))
+        (atoms-spanned 0)
         residues)
     (loop
       (if (chem:advance-loop-and-process spanning-tree)
-          (let* ((atom (chem:get-atom spanning-tree))
-                 (residue (gethash atom atoms-to-residues))
-                 (_ (unless residue
-                      (error "Could not find the residue for atom ~s" atom)))
-                 (residue-molecule (gethash residue residues-to-molecules)))
-            (setf (gethash atom atoms-seen) atom)
-            (unless residue-molecule
-              (push residue residues)
-              (setf (gethash residue residues-to-molecules) new-molecule)))
-          (return nil)))
+          (progn
+            #+(or)(format *debug-io* "Advancing loop with atom: ~a~%" (chem:get-atom spanning-tree))
+            (let* ((atom (chem:get-atom spanning-tree))
+                   (residue (gethash atom atoms-to-residues))
+                   (_ (unless residue
+                        (error "Could not find the residue for atom ~s" atom)))
+                   (residue-molecule (gethash residue residues-to-molecules)))
+              (incf atoms-spanned)
+              #+(or)(format *debug-io* "Atom ~a is in residue ~a in molecule ~a~%" atom residue residue-molecule)
+              (setf (gethash atom atoms-seen) atom)
+              (unless residue-molecule
+                (push residue residues)
+                (setf (gethash residue residues-to-molecules) new-molecule))))
+          (progn
+            (return nil))))
     (let ((residue-list (sort residues #'< :key #'chem:get-id)))
       (loop for res in residue-list
             do (chem:add-matter new-molecule res)))
     (when (= (chem:content-size new-molecule) 1)
       (chem:set-name new-molecule (chem:get-name (chem:content-at new-molecule 0))))
-    new-molecule))
+    (when (= (chem:content-size new-molecule) 0)
+      (error "I am about to return an empty molecule!!!!"))
+    (values new-molecule atoms-spanned)))
 
 
 

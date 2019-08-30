@@ -1,0 +1,27 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" 
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg height="700" width="700" version="1.1" id="toplevel"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+  <rect x="30" y="30" width="400" height="150" fill="rgb(230,230,230)"
+        stroke="black"/>
+  <foreignObject x="31" y="50" width="398" height="148">
+    <body xmlns="http://www.w3.org/1999/xhtml" align="justify">
+    <p>Here is a small bit of text which requires word
+wrap.  The use of a <tt>foreignObject</tt> (with the appropriate XHTML
+namespace) makes that possible. </p>
+    <p>Nifty, eh?</p>
+    </body>
+  </foreignObject>
+  <rect transform="rotate(30, 215, 375) translate(100)" x="30" y="300"
+        width="400" height="150" fill="rgb(230,230,230)" stroke="black"/>
+  <foreignObject transform="rotate(30, 215, 375) translate(100)" x="31" y="320"
+                width="398" height="148">
+    <body xmlns="http://www.w3.org/1999/xhtml" align="justify">
+    <p>The usual SVG transformations can be inflicted
+on <tt>foreignObject</tt>s, too.</p>
+    <p>This is <em>niftier</em>!</p>
+    </body>
+  </foreignObject>
+</svg>

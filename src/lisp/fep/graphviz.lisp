@@ -12,9 +12,6 @@
 (defmethod draw-node (id (node fep:amber-job-mixin) stream)
   (format stream "~a [label = \"~a\" ];~%" id (fep:name (fep:script node))))
 
-(defmethod draw-node (id (node fep:cpptraj-job-mixin) stream)
-  (format stream "~a [label = \"~a\" ];~%" id (fep:name (fep:script node))))
-
 (defgeneric label (node))
 
 (defmethod label ((node fep:node-file))

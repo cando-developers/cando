@@ -84,6 +84,8 @@ void	StepReport_O::initialize()
     this->_ImproperEnergyFn = _Nil<NumericalFunction_O>();
     this->_ChiralRestraintEnergyFn = _Nil<NumericalFunction_O>();
     this->_AnchorRestraintEnergyFn = _Nil<NumericalFunction_O>();
+    this->_PointToLineRestraintEnergyFn = _Nil<NumericalFunction_O>();
+    this->_OutOfZPlaneEnergyFn = _Nil<NumericalFunction_O>();
     this->_ImproperRestraintEnergyFn = _Nil<NumericalFunction_O>();
 }
 
@@ -151,6 +153,10 @@ void	StepReport_O::initialize()
     LOG(BF("Status") );
     ASSERTNOTNULL(this->_AnchorRestraintEnergyFn);
     node->attributeIfNotNil("_AnchorRestraintEnergyFn",  this->_AnchorRestraintEnergyFn);
+    ASSERTNOTNULL(this->_PointToLineRestraintEnergyFn);
+    node->attributeIfNotNil("_PointToLineRestraintEnergyFn",  this->_PointToLineRestraintEnergyFn);
+    ASSERTNOTNULL(this->_OutOfZPlaneEnergyFn);
+    node->attributeIfNotNil("_OutOfZPlaneEnergyFn",  this->_OutOfZPlane!EnergyFn);
     ASSERTNOTNULL(this->_ImproperRestraintEnergyFn);
     node->attributeIfNotNil("_ImproperRestraintEnergyFn",  this->_ImproperRestraintEnergyFn);
     LOG(BF("Finished NumFunctions A") );

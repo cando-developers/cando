@@ -202,6 +202,9 @@ void	EnergyFixedNonbondRestraint_O::addFixedAtom(core::T_sp nonbondDb, Atom_sp f
     entry._FixedCharge = fa->getCharge();
     try
     {
+      if (fa->getType().nilp()) {
+        SIMPLE_ERROR(BF("The atom type of %s is NIL!") % _rep_(fa));
+      }
       core::T_sp pos = core::eval::funcall(_sym_find_atom_type_position,nonbondDb,fa->getType());
       if (pos.fixnump()) {
         entry._FixedType = pos.unsafe_fixnum();

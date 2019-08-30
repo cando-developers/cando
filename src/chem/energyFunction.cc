@@ -244,40 +244,6 @@ void EnergyFunction_O::fields(core::Record_sp node)
 
 
 
-#ifdef XML_ARCHIVE
-void	EnergyFunction_O::archive(core::ArchiveP node)
-{
-  node->attribute("_Name",this->_Name);
-  node->attribute("_Matter",this->_Matter);
-  node->attribute("_AtomTable",this->_AtomTable );
-//    node->archiveSharedObject<Dumb_StretchComponent>("_Stretch","StretchTerms",this->_Stretch);
-//    node->archiveSharedObject<Dumb_AngleComponent>("_Angle","AngleTerms",this->_Angle);
-//    node->archiveSharedObject<Dumb_DihedralComponent>("_Dihedral","DihedralTerms",this->_Dihedral);
-//    node->archiveSharedObject<Dumb_ImproperRestraintComponent>("_ImproperRestraint","ImproperRestraintTerms",this->_ImproperRestraint);
-//    node->archiveSharedObject<Dumb_ChiralRestraintComponent>("_ChiralRestraint","ChiralRestraintTerms",this->_ChiralRestraint);
-//    node->archiveSharedObject<Dumb_AnchorRestraintComponent>("_AnchorRestraint","AnchorRestraintTerms",this->_AnchorRestraint);
-//    node->archiveSharedObject<Dumb_NonbondComponent>("_Nonbond","NonbondTerms",this->_Nonbond);
-  node->attribute("_Stretch",this->_Stretch);
-#if USE_ALL_ENERGY_COMPONENTS
-  node->attribute("_Angle",this->_Angle);
-  node->attribute("_Dihedral",this->_Dihedral);
-  node->attribute("_Nonbond",this->_Nonbond);
-  node->attribute("_ImproperRestraint",this->_ImproperRestraint);
-  node->attribute("_ChiralRestraint",this->_ChiralRestraint);
-  node->attribute("_AnchorRestraint",this->_AnchorRestraint);
-  node->attribute("_FixedNonbondRestraint",this->_FixedNonbondRestraint);
-#endif
-  node->attribute("_ChiralRestraintWeight",this->_ChiralRestraintWeight);
-  node->attribute("_ChiralRestraintOffset",this->_ChiralRestraintOffset);
-  node->attribute("_AnchorRestraintWeight",this->_AnchorRestraintWeight);
-  node->attribute("_TotalEnergy",this->_TotalEnergy);
-  node->archiveString("_Message",this->_Message);
-  node->attribute("_DielectricConstant",this->_DielectricConstant);
-
-}
-#endif
-
-
 
 size_t EnergyFunction_O::getNVectorSize() 
 { 
@@ -590,8 +556,7 @@ double	EnergyFunction_O::evaluateAll(
 ////	_lisp->profiler().timer(core::timerChiralRestraint).stop();
 
 //	_lisp->profiler().timer(core::timerAnchorRestraint).start();
-    this->_AnchorRestraint->evaluateAll( pos, calcForce, force,
-                                         calcDiagonalHessian, calcOffDiagonalHessian, hessian, hdvec, dvec );
+    this->_AnchorRestraint->evaluateAll( pos, calcForce, force, calcDiagonalHessian, calcOffDiagonalHessian, hessian, hdvec, dvec );
 ////	_lisp->profiler().timer(core::timerAnchorRestraint).stop();
 
 ////	_lisp->profiler().timer(core::timerFixedNonbondRestraint).start();
@@ -1207,7 +1172,7 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, bool useEx
 CL_LAMBDA((energy-function !) matter &key use-excluded-atoms active-atoms (assign-types t));
 CL_DEFMETHOD void EnergyFunction_O::defineForMatterWithAtomTypes(Matter_sp matter, bool useExcludedAtoms, core::T_sp activeAtoms)
 {_OF();
-
+  this->_Matter= matter;
   if ( !(matter.isA<Aggregate_O>() || matter.isA<Molecule_O>() ) )
   {
     SIMPLE_ERROR(BF("You can only define energy functions for Aggregates or Molecules"));
@@ -1271,7 +1236,7 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatterWithAtomTypes(Matter_sp matte
       core::T_sp aromaticity_info = core::eval::funcall(_sym_identify_aromatic_rings,matter,force_field_name);
       if (aromaticity_info.nilp()) SIMPLE_ERROR(BF("The aromaticity-info was NIL when about to call generate-molecule-energy-function-tables - it should not be"));
       core::DynamicScopeManager aromaticity_scope(_sym_STARcurrent_aromaticity_informationSTAR,aromaticity_info);
-      this->_AtomTable->constructFromMatter(onemol,nonbondForceField,activeAtoms);
+      this->_AtomTable->constructFromMolecule(onemol,nonbondForceField,activeAtoms);
       if (chem__verbose(0)) core::write_bf_stream(BF("Generating parameters for %s using %s force-field.\n") % _rep_(onemol->getName()) % _rep_(force_field_name) );
       core::eval::funcall(_sym_generate_molecule_energy_function_tables,this->asSmartPtr(),onemol,forceField,activeAtoms);
       final_solute_residue_iptres += onemol->contentSize();
@@ -1290,7 +1255,7 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatterWithAtomTypes(Matter_sp matte
       Molecule_sp onemol = gc::As_unsafe<Molecule_sp>(CONS_CAR(cur_solvent));
       core::T_sp force_field_name = onemol->force_field_name();
       core::T_sp forceField = core::eval::funcall(chem::_sym_find_force_field,force_field_name);
-      this->_AtomTable->constructFromMatter(onemol,nonbondForceField,activeAtoms);
+      this->_AtomTable->constructFromMolecule(onemol,nonbondForceField,activeAtoms);
       core::eval::funcall(_sym_generate_molecule_energy_function_tables,this->asSmartPtr(),onemol,forceField,activeAtoms);
       ++number_of_molecules_nspm;
     }
@@ -1304,7 +1269,7 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatterWithAtomTypes(Matter_sp matte
       core::T_sp aromaticity_info = core::eval::funcall(_sym_identify_aromatic_rings,matter,force_field_name);
       if (aromaticity_info.nilp()) SIMPLE_ERROR(BF("The aromaticity-info was NIL when we were about to call generate-molecule-energy-function-tables for a single molecule - it should not be"));
       core::DynamicScopeManager aromaticity_scope(_sym_STARcurrent_aromaticity_informationSTAR,aromaticity_info);
-    this->_AtomTable->constructFromMatter(molecule,nonbondForceField,activeAtoms);
+    this->_AtomTable->constructFromMolecule(molecule,nonbondForceField,activeAtoms);
     if (chem__verbose(0)) core::write_bf_stream(BF("Generating parameters for %s using %s force-field.\n") % _rep_(molecule->getName()) % _rep_(force_field_name) );
     core::eval::funcall(_sym_generate_molecule_energy_function_tables,this->asSmartPtr(),molecule,forceField,activeAtoms);
     final_solute_residue_iptres = molecule->contentSize();
@@ -1362,7 +1327,6 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
 	// Initialize the energy components
 	//
   ALL_ENERGY_COMPONENTS(initialize());
-//  this->_Matter= matter;
   this->_eraseMissingParameters();
   coordinateIndex = 0;
   ASSERTNOTNULL(forceField);
@@ -1691,6 +1655,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter
 			// the stereochemistry that we want to impose
 			// default R-stereochemistry (1-center)x(2-center).(3-center) is POSITIVE
 			//
+        side = 1.0;
         if ( a1->getConfiguration() != undefinedConfiguration )
         {
           if ( a1->getConfiguration() == R_Configuration )
@@ -1707,7 +1672,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter
             side = 1.0;
           } else
           {
-            SIMPLE_ERROR(BF("Chiral center (%s) with configuration settings[%s] doesn't have its configuration set")
+            SIMPLE_WARN(BF("Chiral center (%s) with configuration settings[%s] doesn't have its configuration set")
                          % a1->description()
                          % a1->getConfigurationAsString() );
           }

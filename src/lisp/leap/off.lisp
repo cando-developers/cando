@@ -41,6 +41,78 @@
                    :type type
                    :fields fields)))
 
+(defun next-character (string pos eoln-result eof-result)
+  (if (>= pos (length string))
+      (return-from next-character (values pos eof-result eof-result))
+      (let ((chr (elt string pos)))
+        (incf pos)
+        (cond
+          ((= (char-code chr) #x0a)
+           (return-from next-character (values pos eoln-result eoln-result)))
+          ((= (char-code chr) #x0d)
+           (if (and (< pos (length string))
+                    (= (char-code (elt string pos)) #x0a))
+               (incf pos))
+           (return-from next-character (values pos eoln-result eoln-result)))
+          ((or (char= chr #\space)
+               (char= chr #\tab))
+           (return-from next-character (values pos chr :white-space)))
+          (t (values pos chr :character))))))
+
+(defun skip-white-space (string pos eoln-result eof-result)
+  (loop for cur from pos
+        do (multiple-value-bind (new-pos chr kind)
+               (next-character string cur eoln-result eof-result)
+             (unless (eq kind :white-space)
+               (return-from skip-white-space new-pos)))))
+
+(defun read-double-quote-string (stream)
+  (let ((open-double-quote (read-char stream))
+        (output (make-array 256 :element-type 'base-char :fill-pointer 0 :adjustable t)))
+    (loop for chr = (read-char stream)
+          do (cond
+               ((char= chr #\\)
+                (vector-push-extend (read-char stream) output))
+               ((char= chr #\")
+                (let ((result (copy-seq output)))
+                  (return-from read-double-quote-string result)))
+               (t (vector-push-extend chr output))))))
+
+(defun read-to-whitespace-or-eof (stream)
+  (let ((output (make-array 256 :element-type 'base-char :fill-pointer 0 :adjustable t)))
+    (loop for chr = (read-char stream nil :eof)
+          do (cond
+               ((or (char= chr #\space)
+                    (char= chr #\tab))
+                (unread-char chr stream)
+                (return-from read-to-whitespace-or-eof (copy-seq output)))
+               ((eq chr :eof)
+                (return-from read-to-whitespace-or-eof (copy-seq output)))
+               (t (vector-push-extend chr output))))))
+
+;;; This allocates too much
+#+(or)
+(defun parse-off-data-line (line header)
+  (let* ((data (make-array (length (fields header)) :element-type t)))
+    (with-input-from-string (sin line)
+      (loop for (type . name ) in (fields header)
+            for x from 0
+            for value = (progn
+                          (skip-white-space sin)
+                          (cond
+                            ((eq type :dbl)
+                             (let ((str (read-to-whitespace-or-eof sin)))
+                               (fortran:parse-double-float str)))
+                            ((eq type :int)
+                             (let ((str (read-to-whitespace-or-eof sin)))
+                               (parse-integer str)))
+                            ((eq type :str)
+                             (read-double-quote-string sin))
+                            (t (error "Unknown off type ~a" type))))
+            do (setf (elt data x) value)))
+    data))
+
+;;; This uses READ - and it's faster than the one above...
 (defun parse-off-data-line (line header)
   (let* ((data (make-array (length (fields header)) :element-type t)))
     (with-input-from-string (sin line)

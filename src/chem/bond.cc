@@ -414,7 +414,7 @@ char bondOrderToChar(BondOrder bo)
 {
   switch (bo) {
   case noBond:
-      return '?';
+      return '|';
       break;
   case singleBond:
       return '-';
@@ -426,15 +426,26 @@ char bondOrderToChar(BondOrder bo)
       return '#';
       break;
   case aromaticBond:
-      return '@';
+      return '~';
+      break;
+  case hydrogenBond:
+      return '&';
+      break;
+  case virtualBond:
+      return '^';
       break;
   case dashedSingleBond:
       return '!';
+      break;
   case dashedDoubleBond:
       return '%';
       break;
+  case unknownOrderBond:
+      return '?';
+      break;
   default:
-      THROW_HARD_ERROR(BF("No char available for bond"));
+      return '/';
+      break;
   }
   printf( "Illegal bond order: %d\n", (int)(bo));
   exit(1);
@@ -585,6 +596,7 @@ void	BondList_O::archiveBase(core::ArchiveP node)
   SYMBOL_EXPORT_SC_(ChemKwPkg,virtualBond);
   SYMBOL_EXPORT_SC_(ChemKwPkg,dashedSingleBond);
   SYMBOL_EXPORT_SC_(ChemKwPkg,dashedDoubleBond);
+  SYMBOL_EXPORT_SC_(ChemKwPkg,unknownOrderBond);
   CL_BEGIN_ENUM(BondOrder,_sym__PLUS_bondOrderToSymbolConverter_PLUS_,"BondOrder");
   CL_VALUE_ENUM(chemkw::_sym_noBond, noBond );
   CL_VALUE_ENUM(chemkw::_sym_singleBond, singleBond );
@@ -595,6 +607,7 @@ void	BondList_O::archiveBase(core::ArchiveP node)
   CL_VALUE_ENUM(chemkw::_sym_virtualBond, virtualBond);
   CL_VALUE_ENUM(chemkw::_sym_dashedSingleBond,dashedSingleBond);
   CL_VALUE_ENUM(chemkw::_sym_dashedDoubleBond,dashedDoubleBond);
+  CL_VALUE_ENUM(chemkw::_sym_unknownOrderBond,unknownOrderBond);
   CL_END_ENUM(_sym__PLUS_bondOrderToSymbolConverter_PLUS_);
 
 

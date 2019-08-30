@@ -159,10 +159,10 @@
 
 (defmethod nglv:get-structure-string ((self cando-structure))
   (check-type self cando-structure)
-  (check-type (matter self) chem:aggregate)
+  (check-type (dynamics:matter self) chem:aggregate)
   (progn
     (cl-jupyter:logg 2 "Generating mol2 as string~%")
-    (chem:aggregate-as-mol2-string (matter self) t))
+    (chem:aggregate-as-mol2-string (dynamics:matter self) t))
   #++(progn
        (cl-jupyter:logg 2 "Saving structure to /tmp/structure.mol2~%")
        (cando:save-mol2 (matter self) "/tmp/structure.mol2" :use-sybyl-types t)
@@ -173,13 +173,8 @@
 	   (close stream)
 	   entire-file))))
 
-
-
-(defclass cando-trajectory (nglv:trajectory nglv:structure)
-  ((trajectory :initarg :trajectory :accessor trajectory
-               :initform (make-array 16 :fill-pointer 0 :adjustable t))
-   (number-of-atoms :initarg :number-of-atoms :accessor number-of-atoms)
-   (matter :initarg :matter :accessor matter)))
+(defclass cando-trajectory (nglv:trajectory nglv:structure dynamics:trajectory)
+  ())
 
 (defmethod initialize-instance :after ((self cando-trajectory) &key)
   (setf (gethash "cando" nglv:*BACKENDS*) 'cando-trajectory)
@@ -189,31 +184,32 @@
   "mol2")
 
 (defmethod nglv:get-structure-name ((self cando-trajectory))
-  (chem:get-name (matter self)))
+  (chem:get-name (dynamics:matter self)))
 
 (defmethod nglv:get-structure-string ((self cando-trajectory))
-  (chem:aggregate-as-mol2-string (matter self) t))
+  (chem:aggregate-as-mol2-string (dynamics:matter self) t))
 
-(defun make-cando-trajectory (structure)
-  (make-instance 'cando-trajectory :matter structure
-                 :number-of-atoms (chem:number-of-atoms structure)))
 
 (defmethod nglv:append-coordinates ((self cando-trajectory) coordinates)
-  (vector-push-extend coordinates (trajectory self)))
+  (vector-push-extend coordinates (dynamics:coordinates self)))
 
 (defmethod nglv:get-coordinates ((self cando-trajectory) index)
-  (aref (trajectory self) index))
+  (aref (dynamics:coordinates self) index))
 
 (defmethod nglv:n-frames ((self cando-trajectory))
-  (length (trajectory self)))
+  (length (dynamics:coordinates self)))
 
-(defun show-cando-trajectory (trajectory &rest kwargs &key &allow-other-keys)
+(defmethod show ((trajectory cando-trajectory) &rest kwargs &key &allow-other-keys)
   (apply #'nglv:make-nglwidget :structure trajectory kwargs))
 
-(defun show-aggregate (aggregate &rest kwargs &key &allow-other-keys)
-  (let ((structure (make-instance 'cando-structure :matter aggregate)))
-    (apply #'nglv:make-nglwidget :structure structure kwargs)))
+(defmethod show ((trajectory dynamics:trajectory) &rest kwargs &key &allow-other-keys)
+  (change-class trajectory 'cando-trajectory)
+  (apply #'nglv:make-nglwidget :structure trajectory kwargs))
 
+(defmethod show ((dynamics dynamics:simulation) &rest kwargs &key &allow-other-keys)
+  (let ((trajectory (dynamics:make-trajectory dynamics)))
+    (change-class trajectory 'cando-trajectory)
+    (apply 'show trajectory kwargs)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -261,7 +257,7 @@
 (defmethod nglv:n-frames ((self amber-netcdf-trajectory))
   (number-of-frames self))
 
-(defun show-amber-netcdf-trajectory (trajectory &rest kwargs &key &allow-other-keys)
+(defmethod show ((trajectory amber-netcdf-trajectory) &rest kwargs &key &allow-other-keys)
   (apply #'nglv:make-nglwidget :structure trajectory kwargs))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

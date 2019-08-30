@@ -62,6 +62,7 @@ namespace chem {
 
 struct AtomInfo {
   Atom_sp		_Atom;
+  Residue_sp            _Residue;
     core::Symbol_sp 		_Type;
 };
 struct ResidueOut {

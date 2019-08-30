@@ -82,11 +82,9 @@
 
 
 (defun exhaustively-apply-aromatic-rule (aromaticity-info molecule-graph rule aromaticity-type rule-name)
-  (format t "Applying aromatic rule ~a~%" rule)
   (when (chem:verbose 1)
     (format t "Applying aromatic rule ~a~%" rule-name))
   (let ((aromatic-atoms nil))
-    (format t "Applying aromatic rule ~a~%" rule-name)
     (loop
       ;; Keep applying the rule until we don't find any new atoms
       (let ((hits (chem:boost-graph-vf2 rule molecule-graph))
@@ -158,7 +156,7 @@ associating the atom with its aromaticity info in a hash-table and return the ha
   (let* ((aromaticity-info (make-hash-table))
          (chem:*current-aromaticity-information* aromaticity-info))
     (cando:do-molecules (molecule matter)
-      (let ((molecule-graph (chem:make-molecule-graph molecule)))
+      (let ((molecule-graph (chem:make-molecule-graph-from-molecule molecule)))
         (exhaustively-apply-aromatic-rule aromaticity-info molecule-graph *rule1* :ar6 :rule1)
         (exhaustively-apply-aromatic-rule aromaticity-info molecule-graph *rule2* :ar6 :rule2)
         (exhaustively-apply-aromatic-rule aromaticity-info molecule-graph *rule3* :ar6 :rule3)
@@ -177,7 +175,7 @@ associating the atom with its aromaticity info in a hash-table and return the ha
   (let* ((aromaticity-info (make-hash-table))
          (chem:*current-aromaticity-information* aromaticity-info))
     (cando:do-molecules (molecule matter)
-      (let ((molecule-graph (chem:make-molecule-graph molecule)))
+      (let ((molecule-graph (chem:make-molecule-graph-from-molecule molecule)))
         (exhaustively-apply-aromatic-rule aromaticity-info molecule-graph *rule1* :ar6 :rule1)
         (exhaustively-apply-aromatic-rule aromaticity-info molecule-graph *rule2* :ar6 :rule2)
         (exhaustively-apply-aromatic-rule aromaticity-info molecule-graph *rule3* :ar6 :rule3)))

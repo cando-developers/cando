@@ -8,6 +8,8 @@
   :depends-on ( :cando
                 :smirnoff
                 :inet
+                :netcdf
+                :static-vectors
                 :alexandria
                 #+(or)(:version :esrap "0.15")
                 #+(or):parser.common-rules

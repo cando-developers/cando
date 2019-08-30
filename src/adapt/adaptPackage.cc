@@ -165,6 +165,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/atom.h>
 #include <cando/chem/constitution.h>
 #include <cando/chem/energyAnchorRestraint.h>
+#include <cando/chem/energyOutOfZPlane.h>
 #include <cando/chem/energyAngle.h>
 #include <cando/chem/energyChiralRestraint.h>
 #include <cando/chem/energyDihedral.h>

@@ -28,6 +28,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/energyStretch.h>
 #include <clasp/core/numerics.h>
 #include <clasp/core/ql.h>
+#include <clasp/core/evaluator.h>
 #include <cando/chem/energyAtomTable.h>
 #include <cando/chem/energyFunction.h>
 #include <clasp/core/array.h>
@@ -646,5 +647,46 @@ CL_DEFMETHOD void EnergyStretch_O::addStretchTerm(AtomTable_sp atomTable, Atom_s
   EnergyStretch energyStretch(a1,a2,ea1->coordinateIndexTimes3(),ea2->coordinateIndexTimes3(),kb,r0);
   this->addTerm(energyStretch);
 }
- 
+
+CL_DOCSTRING(R"doc(Invoke a callback for every term in the energy-stretch.
+The callback takes the lambda-list (index atom1 atom2 atom1-index*3 atom2-index*3 kb r0).
+Both kb and r0 are single-floats to avoid consing.
+Use the modify-stretch-term-kb and modify-stretch-term-r0 to modify the parameters.)doc");
+CL_DEFMETHOD void EnergyStretch_O::walkStretchTerms(core::T_sp callback)
+{
+  for (size_t i=0;i<this->_Terms.size();++i) {
+    const EnergyStretch& entry = this->_Terms[i];
+    core::eval::funcall(callback,core::make_fixnum(i),
+                        entry._Atom1,
+                        entry._Atom2,
+                        core::make_fixnum(entry.term.I1),
+                        core::make_fixnum(entry.term.I2),
+                        core::make_single_float(entry.term.kb),
+                        core::make_single_float(entry.term.r0));
+  };
 };
+
+CL_DEFMETHOD void EnergyStretch_O::modifyStretchTermKb(size_t index, float kb) {
+  if (index<this->_Terms.size()) {
+    EnergyStretch& entry = this->_Terms[index];
+    entry.term.kb = kb;
+    return;
+  }
+  SIMPLE_ERROR(BF("index %d is out of bounds as a energy-stretch term index (#entries %d)") % index % this->_Terms.size() );
+}
+
+CL_DEFMETHOD void EnergyStretch_O::modifyStretchTermR0(size_t index, float r0) {
+  if (index<this->_Terms.size()) {
+    EnergyStretch& entry = this->_Terms[index];
+    entry.term.r0 = r0;
+    return;
+  }
+  SIMPLE_ERROR(BF("index %d is out of bounds as a energy-stretch term index (#entries %d)") % index % this->_Terms.size() );
+}
+
+void EnergyStretch_O::reset()
+{
+  this->_Terms.clear();
+}
+
+}

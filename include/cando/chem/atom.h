@@ -349,11 +349,17 @@ namespace chem {
 #endif
     CL_LISPIFY_NAME("getPosition");
     CL_DEFMETHOD 	Vector3 getPosition() { return this->position; };
+    CL_DEFMETHOD bool atomWithinAngstroms(Atom_sp other, float angstroms) const;
     CL_LISPIFY_NAME("getPositionInNanometers");
     CL_DEFMETHOD 	Vector3 getPositionInNanometers() { return this->position.inNanometers(); };
     Vector3& getPositionRef() { return this->position; };
     CL_LISPIFY_NAME("setPosition");
     CL_DEFMETHOD 	void	setPosition(const Vector3& o) { this->position= o; };
+    CL_DEFMETHOD 	void	setPositionXYZ(double x, double y, double z) {
+      this->position.getX() = x;
+      this->position.getY() = y;
+      this->position.getZ() = z;
+    }
     void	setPositionInNanometers(Vector3 o);
 #if 0
     Vector3 getForce() { return this->_Force; };
@@ -479,10 +485,7 @@ namespace chem {
     Bond_sp	basicBondTo(  Atom_sp a, BondOrder o );
     Bond_sp	bondTo(  Atom_sp a, BondOrder o );
     Bond_sp	bondToSingle(  Atom_sp a );
-    Bond_sp	bondToBondOrderInt(  Atom_sp a, int o )
-    {
-      return this->bondTo(a,(BondOrder)(o));
-    };
+    Bond_sp	bondToOrderInt(  Atom_sp a, int o );
     Bond_sp	getBondTo(Atom_sp a);
     bool 	hasBondWithOrder(BondOrder o) const;
     bool	isBondedToAtomNamed( MatterName name );

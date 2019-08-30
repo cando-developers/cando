@@ -106,6 +106,8 @@ odd atom name maps only to the last standard atom name it was mapped to."
    (i-code :initarg :i-code :accessor i-code)
    (topology :initform nil :accessor topology)
    (name :initarg :name :accessor name)
+   (residue-name :initarg :residue-name :accessor residue-name)
+   (atom-names :initarg :atom-names :accessor atom-names)
    (context :initform nil :initarg :context :accessor context)
    (atom-serial-first :initform nil :initarg :atom-serial-first :accessor atom-serial-first)
    (atom-serial-last :initform nil :accessor atom-serial-last))
@@ -115,7 +117,7 @@ odd atom name maps only to the last standard atom name it was mapped to."
   
 (defmethod print-object ((obj pdb-residue) stream)
   (print-unreadable-object (obj stream :type t)
-    (format stream "~a" (name obj))))
+    (format stream "~a -> ~a :atoms ~a" (name obj) (residue-name obj) (atom-names obj))))
 
 (defclass disulphide ()
   ((chain-id1 :initarg :chain-id1 :reader chain-id1)
@@ -126,7 +128,6 @@ odd atom name maps only to the last standard atom name it was mapped to."
 (defclass connect ()
   ((from :initarg :from :reader from)
    (to :initarg :to :reader to)))
-
 
 (defun find-pdb-residue (scanner res-seq chain-id)
   (declare (optimize (debug 3)))
@@ -140,8 +141,8 @@ odd atom name maps only to the last standard atom name it was mapped to."
 (defclass pdb-reader ()
   ((stream :initarg :stream :reader stream)
    (current-residue-number :initform nil :initarg :current-residue-number :accessor current-residue-number)
+   (current-residue :initform nil :initarg :current-residue :accessor current-residue)
    (current-i-code :initform nil :initarg :current-i-code :accessor current-i-code)))
-
 
 (defclass scanner ()
   ((big-z :accessor big-z) ; If the pdb file has an extra big z coordinate
@@ -166,10 +167,13 @@ odd atom name maps only to the last standard atom name it was mapped to."
   (:documentation " Keep track of sequence and matrix info while scanning a PDB file"))
 
 (defclass pdb-atom-reader (pdb-reader)
-  ((sequences :initarg :sequences :accessor sequences)
+  ((sequences-index :initform 0 :accessor sequences-index)
+   (sequence-index :initform 0 :accessor sequence-index)
+   (sequences :initarg :sequences :accessor sequences)
    (previous-residue :initarg :previous-residue :accessor previous-residue)
    (previous-topology :initarg :previous-topology :accessor previous-topology)
    (aggregate :initform (chem:make-aggregate) :reader aggregate)
+   (molecules :initform nil :initarg :molecules :accessor molecules)
    (finish-molecule :initform nil :accessor finish-molecule)
    (molecule :initform nil :initarg :molecule :accessor molecule)
    (current-residue :initform nil :initarg :current-residue :accessor current-residue)
@@ -180,9 +184,9 @@ odd atom name maps only to the last standard atom name it was mapped to."
 
 (defun ensure-molecule (reader chain-id)
   (unless (molecule reader)
-    (setf (molecule reader) (chem:make-molecule chain-id))
-    (format t "Creating molecule with name: ~a~%" chain-id)
-    (chem:add-matter (aggregate reader) (molecule reader)))
+    (format t "Getting molecule at ~a~%" (sequences-index reader))
+    (setf (molecule reader) (elt (molecules reader) (sequences-index reader)))
+    #+(or)(format *debug-io* "Added molecule ~a to aggregate~%" (molecule reader)))
   (molecule reader))
 
 (defun new-residue-p (residue-number i-code pdb-atom-reader)
@@ -203,6 +207,10 @@ odd atom name maps only to the last standard atom name it was mapped to."
         (let ((div (float (expt 10 (- frac-end (1+ whole-end))))))
       (let ((positive (+ (float whole) (/ frac div))))
         (if neg (- positive) positive)))))))
+
+(defun parse-atom-name (line)
+  (let ((name-string (string-trim '(#\space) (subseq line 12 16))))
+    (intern name-string :keyword)))
 
 (defun parse-line (line pdb-atom-reader read-atom-pos &optional big-z check-big-z)
   "* Arguments
@@ -235,7 +243,7 @@ If you want to check if it's a big-z file then pass check-big-z = T."
           (list* (if (string= head "ATOM") :atom :hetatm)
                  (parse-integer line :start 6 :end 12) ; atom-serial
                  (let ((*readtable* *quote-readtable*))
-                   (intern (string-trim '(#\space) (subseq line 12 16)) :keyword)) ; atom-name
+                   (parse-atom-name line))
                  (read-one-char line 16)  ; alt-loc
                  (intern (string-trim '(#\space) (subseq line 17 20)) :keyword) ; residue-name
                  (read-one-char line 21)                ; chainid
@@ -287,10 +295,15 @@ If you want to check if it's a big-z file then pass check-big-z = T."
 Pop and return the next residue in the sequence.
 If we run out of residues and errorp is NIL then return error-val
 otherwise signal an error."
-  (unless (car (sequences pdb-atom-reader))
-    (pop (sequences pdb-atom-reader))
+  (unless (< (sequence-index pdb-atom-reader) (length (elt (sequences pdb-atom-reader)
+                                                           (sequences-index pdb-atom-reader))))
+    (incf (sequences-index pdb-atom-reader))
+    (setf (sequence-index pdb-atom-reader) 0)
     (return-from pop-sequence-pdb-residue error-val))
-  (pop (car (sequences pdb-atom-reader))))
+  (prog1
+      (elt (elt (sequences pdb-atom-reader) (sequences-index pdb-atom-reader))
+           (sequence-index pdb-atom-reader))
+    (incf (sequence-index pdb-atom-reader))))
 
 (defun finish-previous-sequence (pdb &optional (assign-tail t))
   "* Arguments
@@ -311,7 +324,7 @@ create more problems."
     (setf (current-reverse-sequence pdb) nil)))
 
 (defun try-to-assign-topology (res scanner)
-  (let* ((topology (lookup-topology-using-pdb-name-and-context (name res) (context res))))
+  (let* ((topology (lookup-topology-using-pdb-name-and-context (residue-name res) (context res))))
     (if topology
         (progn
           (assert (not (symbolp topology)))
@@ -353,7 +366,6 @@ MTRIX- Used to build a list of matrices."
                    (when big-z (warn "This is a BIG-Z PDB file (The Z-coordinate contains an extra digit)"))))
              (destructuring-bind (head atom-serial atom-name alt-loc residue-name chain-id res-seq i-code)
                  line-data
-               (declare (ignore i-code))
                ;; Deal with the current line of data
                (when (new-residue-p res-seq i-code pdb)
                  #+(or)(progn
@@ -370,12 +382,15 @@ MTRIX- Used to build a list of matrices."
                                                     :res-seq res-seq
                                                     :i-code i-code
                                                     :name residue-name
+                                                    :residue-name residue-name
+                                                    :atom-names nil
                                                     :context context-guess
                                                     :atom-serial-first atom-serial)))
+                   (setf (current-residue pdb) new-residue)
                    (unless (gethash residue-name (seen-residues (scanner pdb)))
                      ;;(format t "Creating hash-table for ~a~%" residue-name)
                      (setf (gethash residue-name (seen-residues (scanner pdb))) (make-hash-table)))
-                   (try-to-assign-topology new-residue (scanner pdb))
+                   #+(or)(try-to-assign-topology new-residue (scanner pdb))
                    (when (previous-residue pdb)
                      (setf (atom-serial-last (previous-residue pdb)) (previous-atom-serial pdb)))
                    (push new-residue (current-reverse-sequence pdb))
@@ -384,6 +399,7 @@ MTRIX- Used to build a list of matrices."
                (let ((ht (gethash residue-name (seen-residues (scanner pdb)))))
                  (unless ht (error "Could not find ht for ~a" residue-name))
                  (setf (gethash atom-name ht) t))
+               (push atom-name (atom-names (current-residue pdb)))
                ;; Now set things up for the next atom record
                (setf (previous-atom-serial pdb) atom-serial)))
             (:ter
@@ -431,7 +447,45 @@ MTRIX- Used to build a list of matrices."
                  (geom:at-row-col-put matrix 2 3 t))))
             (otherwise nil)))))
     line))
-  
+
+(defgeneric adjust-residue-name (residue-name pdb-residue scanner system))
+
+(defmethod adjust-residue-name (residue-name pdb-residue scanner system)
+  )
+
+(defmethod adjust-residue-name ((residue-name (eql :HIS)) pdb-residue scanner system)
+  (let ((has-hd1 (member :hd1 (atom-names pdb-residue)))
+        (has-he2 (member :he2 (atom-names pdb-residue))))
+    (cond
+      ((and has-hd1 has-he2)
+       (setf (residue-name pdb-residue) :HIP))
+      (has-hd1
+       (setf (residue-name pdb-residue) :HID))
+      (has-he2
+       (setf (residue-name pdb-residue) :HIE)))))
+
+(defun adjust-residue-names (scanner system)
+  (loop for residues in (sequences scanner)
+        do (loop for residue in residues
+                 do (adjust-residue-name (residue-name residue) residue scanner system))))
+
+(defun split-solvent (scanner)
+  (let (solvents solutes)
+    (loop for group in (sequences scanner)
+          if (every (lambda (residue) (eq (name residue) :HOH)) group)
+            do (setf solvents group)
+          else do (push group solutes))
+    (when solvents
+      (loop for solvent in solvents
+            do (setf (context solvent) :main)
+            do (push (list solvent) solutes)))
+    (setf (sequences scanner) (nreverse solutes))))
+
+(defun assign-topologys (scanner)
+  (loop for group in (sequences scanner)
+        do (loop for residue in group
+                 do (try-to-assign-topology residue scanner))))
+
 (defun scan-pdb (filename &key progress system)
   "* Arguments
 - filename : A pathname
@@ -462,6 +516,9 @@ values residue-sequences matrices"
              (scanner (scanner pdb-scanner)))
         (setf (sequences scanner) sequences)
         (finish-scanner scanner)
+        (adjust-residue-names scanner system)
+        (assign-topologys scanner)
+        (split-solvent scanner)
         (build-sequence scanner system)))))
 
 (defun warn-of-unknown-topology (res scanner)
@@ -552,6 +609,7 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
                        (if cur-top
                            ;; There is a topology - use it
                            (let ((cur-res (chem:build-residue-single-name cur-top)))
+                             #+(or)(format *debug-io* "built residue with name ~a using topology ~a~%" cur-res cur-top)
                              (chem:set-id cur-res (calculate-residue-sequence-number res-seq i-code))
                              (setf (current-residue reader) cur-res)
                              (let ((prev-res (previous-residue reader)))
@@ -579,7 +637,7 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
                             (setf (gethash atom-serial (serial-to-atom reader)) atom))))
                       (chem:set-position atom (geom:vec x y z))
                       (chem:setf-needs-build atom nil))
-                     ((current-topology reader) ; there is a topology
+                     #+(or)((current-topology reader) ; there is a topology
                       (warn "Loaded atom ~a but amber form ~a does not recognize it"
                             (list atom-serial atom-name residue-name chain-id res-seq i-code)
                             (current-topology reader)))
@@ -617,6 +675,17 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
 
 (defparameter *serial-to-atoms* nil)
 
+(defun molecules-from-sequences (sequences)
+  (loop for sequence in sequences
+        for index from 0
+        for sequence-name = (cond
+                              ((= (length sequence) 1)
+                               (intern (format nil "~a_~d" (string (name (first sequence))) index) :keyword))
+                              (t (intern (concatenate 'string "mol" (format nil "_~d" index)) :keyword)))
+        collect (let ((mol (chem:make-molecule sequence-name)))
+                  #+(or)(format *debug-io* "Creating molecule ~a for sequence ~a~%" mol sequence)
+                  mol)))
+
 (defun load-pdb (filename &key scanner progress system)
   "    variable = loadPdb filename
       STRING                       _filename_
@@ -649,6 +718,7 @@ specified in PDB files.
                                                                :sequences (mapcar (lambda (seq)
                                                                                     (copy-list seq))
                                                                                   (sequences scanner))
+                                                               :molecules (molecules-from-sequences (sequences scanner))
                                                                :connect-atoms (connects scanner)
                                                                :serial-to-atom serial-to-atoms)))
           (let ((bar (cando:make-progress-bar :message "Load pdb" :total (file-length fin) :divisions 100 :on progress))
@@ -671,10 +741,12 @@ specified in PDB files.
                            (when (and (typep from-atom 'chem:atom)
                                       (typep to-atom 'chem:atom)
                                       (not (chem:is-bonded-to from-atom to-atom)))
-                             (chem:bond-to from-atom to-atom :single-bond)) to-atoms)
+                             (chem:bond-to from-atom to-atom :single-bond)))
                          to-atoms))
           (let ((unbuilt-heavy-atoms 0)
                 (aggregate (aggregate pdb-atom-reader)))
+            (loop for molecule in (molecules pdb-atom-reader)
+                  do (chem:add-matter aggregate molecule))
             (chem:map-atoms
              nil
              (lambda (a)
@@ -691,18 +763,19 @@ specified in PDB files.
                     (format t "Built ~d missing hydrogens~%" built))))
             (cando:maybe-join-molecules-in-aggregate aggregate)
             (cando:maybe-split-molecules-in-aggregate aggregate)
-            (classify-molecules aggregate system)
+            (setf aggregate (classify-molecules aggregate system))
             (let ((name-only (pathname-name (pathname filename))))
               (chem:set-name aggregate (intern name-only *package*)))
-            (values aggregate scanner)))))))
+            (values aggregate scanner pdb-atom-reader)))))))
 
 (defgeneric classify-molecules (aggregate system))
 
 (defmethod classify-molecules (aggregate system)
   (cando:do-molecules (molecule aggregate)
     (cond
-      ((eq (chem:get-name molecule) :hoh)
-       (chem:setf-molecule-type molecule 'cando:solvent)))))
+      ((member (chem:get-name molecule) (list :hoh))
+       (chem:setf-molecule-type molecule :solvent))))
+  aggregate)
 
 #|
 (defun read-line (pdb-atom-reader)

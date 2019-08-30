@@ -84,17 +84,18 @@
   (:shadow #:format #:write)
   (:export
    #:with-fortran-output-file
+   #:with-fortran-input-file
    #:fformat
    #:fwrite
    #:end-line
    #:debug-on
    #:debug
-   #:make-fortran-input-file
    #:fortran-input-file-look-ahead
    #:fread-line
    #:fread-line-or-error
    #:parse-fortran-format-line
    #:parse-double-float
+   #:fread-double-float-vector
    #:fread-vector
    ))
 
@@ -144,6 +145,7 @@
   (:export
    #:|:=|
    #:<-
+   #:nfx
    #:rename-atoms-using-smirks
    #:register-topology
    #:lookup-topology
@@ -220,3 +222,30 @@
    ))
 
 
+(defpackage #:dynamics
+  (:use #:common-lisp)
+  (:export
+   #:trajectory
+   #:make-trajectory
+   #:matter
+   #:number-of-atoms
+   #:simulation
+   #:make-atomic-simulation
+   #:scoring-function
+   #:coordinates
+   #:velocity
+   #:forces
+   #:temp-forces
+   #:delta-t
+   #:velocity-scale
+   #:delta-t-over-mass
+   #:current-time
+   #:write-coordinates-back-to-matter
+   #:accumulate-coordinates
+   #:accumulated-coordinates
+   #:velocity-verlet-step))
+
+(defpackage #:infix
+  (:use #:common-lisp)
+  (:export #:infix
+           #:definfix))

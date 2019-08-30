@@ -389,14 +389,14 @@ double	EnergyNonbond_O::evaluateAll(NVector_sp 	pos,
     
     
 
-__attribute__((optnone)) void	EnergyNonbond_O::evaluateTerms(NVector_sp 	pos,
-                                     bool 		calcForce,
-                                     gc::Nilable<NVector_sp> 	force,
-                                     bool		calcDiagonalHessian,
-                                     bool		calcOffDiagonalHessian,
-                                     gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                                     gc::Nilable<NVector_sp>	hdvec, 
-                                     gc::Nilable<NVector_sp> 	dvec )
+void	EnergyNonbond_O::evaluateTerms(NVector_sp 	pos,
+                                       bool 		calcForce,
+                                       gc::Nilable<NVector_sp> 	force,
+                                       bool		calcDiagonalHessian,
+                                       bool		calcOffDiagonalHessian,
+                                       gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                       gc::Nilable<NVector_sp>	hdvec, 
+                                       gc::Nilable<NVector_sp> 	dvec )
 {
 //  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
   ANN(force);
@@ -720,7 +720,7 @@ CL_DEFMETHOD void EnergyNonbond_O::expandExcludedAtomsToTerms()
   int i = 0;
 //  int maxIndex = pos->length()/3;
   int maxIndex = this->_AtomTable->getNumberOfAtoms();
-  printf( "maxindex %d\n", maxIndex);
+//  printf( "%s:%d maxindex %d\n", __FILE__, __LINE__, maxIndex);
   int nlocaltype = 0;
   // Find the max local type
   for (i=0; i<this->_iac_vec->length(); ++i){
@@ -728,7 +728,7 @@ CL_DEFMETHOD void EnergyNonbond_O::expandExcludedAtomsToTerms()
       nlocaltype = (*this->_iac_vec)[i];
     }
   }
-  printf("%s:%d:%s    values -> %lu\n", __FILE__, __LINE__, __FUNCTION__, this->_Terms.size());
+//  printf("%s:%d:%s    values -> %lu\n", __FILE__, __LINE__, __FUNCTION__, this->_Terms.size());
 
   // Count the number of nonbond cross terms that we are going to generate
   size_t excludedAtomIndex = 0;
@@ -741,7 +741,7 @@ CL_DEFMETHOD void EnergyNonbond_O::expandExcludedAtomsToTerms()
           // Skip 0 in excluded atom list that amber requires
     int maybe_excluded_atom = (*excludedAtomIndices)[excludedAtomIndex];
     if (maybe_excluded_atom<0) {
-      printf("%s:%d:%s SKIPPING numberOfExcludedAtomsRemaining<0\n", __FILE__, __LINE__, __FUNCTION__);
+//      printf("%s:%d:%s SKIPPING numberOfExcludedAtomsRemaining<0\n", __FILE__, __LINE__, __FUNCTION__);
       ++excludedAtomIndex;
     } else {
       int number_excluded = 0;
@@ -753,7 +753,7 @@ CL_DEFMETHOD void EnergyNonbond_O::expandExcludedAtomsToTerms()
           ++excludedAtomIndex;
           --numberOfExcludedAtomsRemaining;
           number_excluded++;
-          printf("%s:%d:%s Excluding atom %d\n", __FILE__, __LINE__, __FUNCTION__, index2);
+//          printf("%s:%d:%s Excluding atom %d\n", __FILE__, __LINE__, __FUNCTION__, index2);
           continue;
         }
         ++count;
@@ -761,7 +761,7 @@ CL_DEFMETHOD void EnergyNonbond_O::expandExcludedAtomsToTerms()
     }
   }
   this->_Terms.resize(count);
-  printf("%s:%d:%s    values -> %lu\n", __FILE__, __LINE__, __FUNCTION__, this->_Terms.size());
+//  printf("%s:%d:%s    values -> %lu\n", __FILE__, __LINE__, __FUNCTION__, this->_Terms.size());
 
   // Now fill in the terms
   excludedAtomIndex = 0;
@@ -776,7 +776,7 @@ CL_DEFMETHOD void EnergyNonbond_O::expandExcludedAtomsToTerms()
           // Skip 0 in excluded atom list that amber requires
     int maybe_excluded_atom = (*excludedAtomIndices)[excludedAtomIndex];
     if (maybe_excluded_atom<0) {
-      printf("%s:%d:%s SKIPPING numberOfExcludedAtomsRemaining<0\n", __FILE__, __LINE__, __FUNCTION__);
+//      printf("%s:%d:%s SKIPPING numberOfExcludedAtomsRemaining<0\n", __FILE__, __LINE__, __FUNCTION__);
       ++excludedAtomIndex;
     } else {
       double charge11 = (*this->_charge_vector)[index1];
@@ -860,7 +860,7 @@ CL_DEFMETHOD void EnergyNonbond_O::expandExcludedAtomsToTerms()
       }
     }
   }
-  printf("%s:%d:%s    values -> %lu\n", __FILE__, __LINE__, __FUNCTION__, this->_Terms.size());
+//  printf("%s:%d:%s    values -> %lu\n", __FILE__, __LINE__, __FUNCTION__, this->_Terms.size());
 
 //  printf( "Nonbond energy vdw(%lf) electrostatic(%lf)\n", (double)this->_EnergyVdw,  this->_EnergyElectrostatic );
   LOG(BF( "Nonbond energy vdw(%lf) electrostatic(%lf)\n")% (double)this->_EnergyVdw % this->_EnergyElectrostatic );
@@ -1293,7 +1293,7 @@ CL_DEFMETHOD void EnergyNonbond_O::setNonbondExcludedAtomInfo(AtomTable_sp atom_
   this->_AtomTable = atom_table;
   this->_ExcludedAtomIndices = excluded_atoms_list;
   this->_NumberOfExcludedAtomIndices = number_excluded_atoms;
-    printf("%s:%d:%s   Exiting\n", __FILE__, __LINE__, __FUNCTION__ );
+  // printf("%s:%d:%s   Exiting\n", __FILE__, __LINE__, __FUNCTION__ );
 
 }
 

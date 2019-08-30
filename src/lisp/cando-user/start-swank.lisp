@@ -3,6 +3,7 @@
 (defvar *started-swank* nil)
 
 (defun start-swank-server (&optional (port 4005))
+  (format t "Checking SLIME_HOME~%")
   (let* ((slime-home (and (ext:getenv "SLIME_HOME") (probe-file (pathname (ext:getenv "SLIME_HOME"))))))
     (if slime-home
         (let ((swank-loader (probe-file (merge-pathnames "swank-loader.lisp" slime-home))))
@@ -13,10 +14,15 @@
             (let ((swank-loader-init (find-symbol "INIT" "SWANK-LOADER")))
               (funcall swank-loader-init :delete nil :reload nil :load-contribs nil))
             (let ((swank-create-server (find-symbol "CREATE-SERVER" "SWANK")))
+              (format t "About to start swank server~%")
               (mp:process-run-function 'swank-main
-                                       (lambda () (funcall swank-create-server
-                                                           :port port
-                                                           :interface "0.0.0.0")))
+                                       (lambda ()
+                                         (format *debug-io* "Starting server thread~%")
+                                         (funcall swank-create-server
+                                                  :port port
+                                                  :interface "0.0.0.0")
+                                         (format *debug-io* "Leaving server thread~%")))
+              (format t "Started swank server~%")
               (setf *started-swank* t))))
         (error "Could not determine directory for slime - set SLIME_HOME"))))
 

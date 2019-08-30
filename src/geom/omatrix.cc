@@ -194,4 +194,19 @@ void OMatrix_O::decode(core::List_sp c) {
   }
 }
 
+CL_DOCSTRING("Return the (values EIGEN-VALUES EIGEN-VECTOR-MATRIX) of the MATRIX.");
+CL_DEFUN core::T_mv geom__eigen_system(OMatrix_sp matrix)
+{
+  Vector4 evals;
+  Matrix evecs;
+  matrix->_Value.eigenSystem(evals,evecs);
+  core::List_sp lvals = core::Cons_O::createList(core::clasp_make_double_float(evals.getW()),
+                                                 core::clasp_make_double_float(evals.getX()),
+                                                 core::clasp_make_double_float(evals.getY()),
+                                                 core::clasp_make_double_float(evals.getZ()));
+  geom::OMatrix_sp mm = geom::OMatrix_O::create();
+  mm->setAll(evecs);
+  return Values(mm,lvals);
+};
+
 };

@@ -39,6 +39,9 @@
 #+(or)
 (format t "Loaded asdf version ~s~%" (asdf/upgrade:asdf-version))
 
+;;; Register eclector with asdf so we don't try and load it again
+(asdf:register-immutable-system :eclector)
+
 (defun all-subdirs (dir)
   (let (dirs)
     (labels ((trav (d)

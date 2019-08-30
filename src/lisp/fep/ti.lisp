@@ -16,16 +16,14 @@
 (defparameter *cando-charge-script*
   (let ((*package* (find-package :keyword)))
     (cl:format nil "~{~s~%~}"
-               '((ql:quickload :fep)
-                 (fep::fep-charge ":%FEPS%" ":%OUTPUT%")
+               '((fep::fep-charge ":%FEPS%" ":%OUTPUT%")
                  (core:exit)))))
 
 
 (defparameter *solvate-addion-morph-side-script*
   (let ((*package* (find-package :keyword)))
     (cl:format nil "~{~s~%~}"
-               '((ql:quickload :fep)
-                 (in-package :cando-user)
+               '((in-package :cando-user)
                  (leap:setup-amber-paths)
                  (leap:source "leaprc.ff14SB.redq")
                  (leap:source "leaprc.gaff")
@@ -38,9 +36,11 @@
                  (defparameter *morph* (find-morph-with-name :%MORPH-NAME% *feps*))
                  (defparameter *source* (fep:source *morph*))
                  (defparameter *target* (fep:target *morph*))
-                 (fep:average-core-atom-positions *source* *target*)
+                 (fep:average-core-atom-positions *source* *target* (fep:equivalent-atom-names (fep:morph-mask *morph*)))
                  (leap:assign-atom-types (fep:molecule *source*))
+                 (fep:validate-atom-types (fep:molecule *source*))
                  (leap:assign-atom-types (fep:molecule *target*))
+                 (fep:validate-atom-types (fep:molecule *target*))
                  (defparameter *ligands* (cando:combine (fep:molecule *source*)
                                                         (fep:molecule *target*)))
                  (format t "*side-name* --> ~a~%" *side-name*)
@@ -58,10 +58,11 @@
                   (solvent-buffer *feps*)
                   :closeness (solvent-closeness *feps*))
                  (leap.add-ions:add-ions *system* :|Cl-| 0)
-              ;   (cando:save-mol2 *system* (ensure-directories-exist ":%MOL2%"))
-                 (ensure-directories-exist (pathname ":%TOPOLOGY%"))
-                 (ensure-directories-exist (pathname ":%COORDINATES%"))
-                 (leap.topology:save-amber-parm-format *system* ":%TOPOLOGY%" ":%COORDINATES%")
+                 (cando:save-mol2 *system* (ensure-directories-exist ":%MOL2%"))
+                 (ensure-jobs-directories-exist (pathname ":%TOPOLOGY%"))
+                 (ensure-jobs-directories-exist (pathname ":%COORDINATES%"))
+                 (leap.topology:save-amber-parm-format *system* ":%TOPOLOGY%" ":%COORDINATES%"
+                  :residue-name-to-pdb-alist (fep:residue-name-to-pdb-alist *feps*))
                  (core:exit)))))
 
 (defparameter *prepare-min-in*
@@ -86,15 +87,15 @@
 (defparameter *prepare-heat-in*
   "heating
  &cntrl
-   imin = 0, nstlim = 10000, irest = 0, ntx = 1, dt = 0.002,
+   imin = 0, nstlim = :%PREPARE-HEAT-IN.NSTLIM%, irest = 0, ntx = 1, dt = :%DT%,
    nmropt = 1,
-   ntt = 3, temp0 = 300.0, gamma_ln = 2.0, ig = -1,
+   ntt = 3, temp0 = :%TEMP0%, gamma_ln = 2.0, ig = -1,
    tempi = 5.0, tautp = 1.0,
    vlimit = 20,
    ntb = 1,
-   ntc = 2, ntf = 1,
+   ntc = :%NTC%, ntf = :%NTF%,
    ioutfm = 1, iwrap = 1,
-   ntwe = 1000, ntwx = 1000, ntpr = 1000, ntwr = 5000,
+   ntwe = 1000, ntwx = 1000, ntpr = 1000, ntwr = 50000,
 
    ntr = 1, restraint_wt = 5.00,
    restraintmask='!:WAT & !@H=',
@@ -121,15 +122,15 @@
 (defparameter *prepare-press-in*
   "pressurising
  &cntrl
-   imin = 0, nstlim = 10000, irest = 1, ntx = 5, dt = 0.002,
-   ntt = 3, temp0 = 300.0, gamma_ln = 2.0, ig = -1,
+   imin = 0, nstlim = :%PREPARE-PRESS-IN.NSTLIM%, irest = 1, ntx = 5, dt = :%DT%,
+   ntt = 3, temp0 = :%TEMP0%, gamma_ln = 2.0, ig = -1,
    tautp = 1.0,
    vlimit = 20,
    ntp = 1, pres0 = 1.0, taup = 2.0,
    ntb = 2,
-   ntc = 2, ntf = 1,
+   ntc = :%NTC%, ntf = :%NTF%,
    ioutfm = 1, iwrap = 1,
-   ntwe = 1000, ntwx = 1000, ntpr = 1000, ntwr = 5000,
+   ntwe = 1000, ntwx = 1000, ntpr = 1000, ntwr = 50000,
 
    ntr = 1, restraint_wt = 5.00,
    restraintmask='!:WAT & !@H=',
@@ -145,84 +146,80 @@
 ")
 
 
-(defparameter *cpptraj-strip*
-"trajin :%COORDINATES%
+(defun build-decharge-recharge-aggregate (top-crd keep-index)
+  (let ((aggregate (leap.topology:aggregate top-crd))
+        (new-agg (chem:make-aggregate)))
+    (format t "About to add-matter~%")
+    (chem:add-matter new-agg (chem:matter-copy (chem:content-at aggregate keep-index)))
+    (chem:add-matter new-agg (chem:matter-copy (chem:content-at aggregate keep-index)))
+    (format t "About to loop~%")x
+    (loop for index from 2 below (chem:content-size aggregate)
+          for mol = (chem:matter-copy (chem:content-at aggregate index))
+          do (chem:add-matter new-agg mol))
+    (format t "About to set bounding-box~%")
+    (let ((bounding-box (coerce (leap.topology:cell-lengths top-crd) 'list)))
+      (chem:set-property new-agg :bounding-box bounding-box))
+    new-agg))
 
-# remove the two ligands and keep the rest
-strip \":1,2\"
-outtraj :%SOLVATED% onlyframes 1
+(defun build-decharge-aggregate (top-crd)
+  (build-decharge-recharge-aggregate top-crd 0))
 
-# extract the first ligand
-unstrip
-strip \":2-999999\"
-outtraj :%SOURCE% onlyframes 1
+(defun build-recharge-aggregate (top-crd)
+  (build-decharge-recharge-aggregate top-crd 1))
 
-# extract the second ligand
-unstrip
-strip \":1,3-999999\"
-outtraj :%TARGET% onlyframes 1
-")
-
+(defun do-decharge-recharge (charge-function
+                             feps-fn
+                             topology-fn coordinates-fn
+                             mol2-fn
+                             output-topology-fn output-coordinate-fn)
+  (leap:setup-amber-paths)
+  (leap:source "leaprc.ff14SB.redq")
+  (leap:source "leaprc.gaff")
+  (leap:load-amber-params "frcmod.ionsjc_tip3p")
+  ;; load the fep-calculation
+  (let* ((feps (fep:load-feps feps-fn))
+         (top-crd (leap.topology:load-amber-topology-restart-pair :topology-filename topology-fn
+                                                                  :coordinate-filename coordinates-fn))
+         (decharge (funcall charge-function top-crd)))
+    (cando:save-mol2 decharge mol2-fn)
+    (format t "residue-name-to-pdb-list -> ~s~%" (fep:residue-name-to-pdb-alist feps))
+    (leap.topology:save-amber-parm-format
+     decharge output-topology-fn output-coordinate-fn
+     :residue-name-to-pdb-alist (fep:residue-name-to-pdb-alist feps))))
+  
 (defparameter *decharge*
   (let ((*package* (find-package :keyword)))
     (cl:format nil "~{~s~%~}"
-               `((ql:quickload :fep)
-                 (leap:setup-amber-paths)
-                 (leap:source "leaprc.ff14SB.redq")
-                 (leap:source "leaprc.gaff")
-                 (leap:load-amber-params "frcmod.ionsjc_tip3p")
-                 ;; load the fep-calculation
-                 (defparameter *feps* (fep:load-feps ":%FEPS%"))
-                 (defparameter lsolv (cando:load-mol2 ":%SOLVATED%"))
-                 ;; after cpptraj molecules are merged and it drops solvent information - so we need to add it back
-                 (cando:maybe-split-molecules-in-aggregate lsolv)
-                 (cando:assign-solvent-molecules-using-residue-name lsolv (fep:solvent-residue-name *feps*))
-                 (defparameter lsource (cando:load-mol2 ":%SOURCE%"))
-                 ;;decharge transformation
-                 (defparameter decharge (cando:combine (chem:matter-copy lsource)
-                                                       (chem:matter-copy lsource)
-                                                       (chem:matter-copy lsolv)))
-                 (leap.set-box:set-box decharge :vdw)
-                 (cando:save-mol2 decharge ":%DECHARGE-MOL2%")
-                 (leap.topology:save-amber-parm-format decharge ":%DECHARGE-TOPOLOGY%" ":%DECHARGE-COORDINATES%")
-                 (core:exit)
-                 ))))
+               `((fep:do-decharge-recharge
+                   'fep:build-decharge-aggregate
+                   ":%FEPS%"
+                   ":%TOPOLOGY%" ":%COORDINATES%"
+                   ":%DECHARGE-MOL2%"
+                   ":%DECHARGE-TOPOLOGY%" ":%DECHARGE-COORDINATES%")
+                 (core:exit)))))
 
 (defparameter *recharge*
   (let ((*package* (find-package :keyword)))
     (cl:format nil "~{~s~%~}"
-               `((ql:quickload :fep)
-                 (leap:setup-amber-paths)
-                 (leap:source "leaprc.ff14SB.redq")
-                 (leap:source "leaprc.gaff")
-                 (leap:load-Amber-Params "frcmod.ionsjc_tip3p")
-                 ;; load the fep-calculation
-                 (defparameter *feps* (fep:load-feps ":%FEPS%"))
-                 (defparameter lsolv (cando:load-mol2 ":%SOLVATED%"))
-                 ;; after cpptraj molecules are merged and it drops solvent information - so we need to add it back
-                 (cando:maybe-split-molecules-in-aggregate lsolv)
-                 (cando:assign-solvent-molecules-using-residue-name lsolv (fep:solvent-residue-name *feps*))
-                 (defparameter ltarget (cando:load-mol2 ":%TARGET%"))
-                 (defparameter recharge (cando:combine (chem:matter-copy ltarget)
-                                                       (chem:matter-copy ltarget)
-                                                       (chem:matter-copy lsolv)))
-                 (leap.set-box:set-box recharge :vdw)
-                 (cando:save-mol2 recharge ":%RECHARGE-MOL2%")
-                 (leap.topology:save-amber-parm-format recharge ":%RECHARGE-TOPOLOGY%" ":%RECHARGE-COORDINATES%")
-                 (core:exit)
-                 ))))
+               `((fep:do-decharge-recharge
+                   'fep:build-recharge-aggregate
+                   ":%FEPS%"
+                   ":%TOPOLOGY%" ":%COORDINATES%"
+                   ":%RECHARGE-MOL2%"
+                   ":%RECHARGE-TOPOLOGY%" ":%RECHARGE-COORDINATES%")
+                 (core:exit)))))
 
 (defparameter *decharge-recharge-heat-in* 
   "heating
  &cntrl
-   imin = 0, nstlim = 10000, irest = 0, ntx = 1, dt = 0.002,
-   ntt = 3, temp0 = 300.0, gamma_ln = 2.0, ig = -1,
+   imin = 0, nstlim = :%DECHARGE-RECHARGE-HEAT-IN.NSTLIM%, irest = 0, ntx = 1, dt = :%DT%,
+   ntt = 3, temp0 = :%TEMP0%, gamma_ln = 2.0, ig = -1,
    tempi = 50.0, tautp = 1.0,
    vlimit = 20,
-   ntc = 2, ntf = 1,
+   ntc = :%NTC%, ntf = :%NTF%,
    ntb = 1,
    ioutfm = 1, iwrap = 1,
-   ntwe = 1000, ntwx = 1000, ntpr = 1000, ntwr = 5000,
+   ntwe = 1000, ntwx = 1000, ntpr = 1000, ntwr = 50000,
 
    nmropt = 1,
    ntr = 1, restraint_wt = 5.00,
@@ -250,14 +247,14 @@ outtraj :%TARGET% onlyframes 1
 (defparameter *vdw-heat-in* 
   "heating
  &cntrl
-   imin = 0, nstlim = 10000, irest = 0, ntx = 1, dt = 0.002,
-   ntt = 3, temp0 = 300.0, gamma_ln = 2.0, ig = -1,
+   imin = 0, nstlim = :%VDW-HEAT-IN.NSTLIM%, irest = 0, ntx = 1, dt = :%DT%,
+   ntt = 3, temp0 = :%TEMP0%, gamma_ln = 2.0, ig = -1,
    tempi = 50.0, tautp = 1.0,
    vlimit = 20,
-   ntc = 2, ntf = 1,
+   ntc = :%NTC%, ntf = :%NTF%,
    ntb = 1,
    ioutfm = 1, iwrap = 1,
-   ntwe = 1000, ntwx = 1000, ntpr = 1000, ntwr = 5000,
+   ntwe = 1000, ntwx = 1000, ntpr = 1000, ntwr = 50000,
 
    nmropt = 1,
    ntr = 1, restraint_wt = 5.00,
@@ -285,10 +282,10 @@ outtraj :%TARGET% onlyframes 1
 (defparameter *decharge-recharge-ti-in*
   "TI simulation
  &cntrl
-   imin = 0, nstlim = 100000, irest = 1, ntx = 5, dt = 0.002,
+   imin = 0, nstlim = :%DECHARGE-RECHARGE-TI-IN.NSTLIM%, irest = 1, ntx = 5, dt = :%DT%,
    ntt = 3, temp0 = 300.0, gamma_ln = 2.0, ig = -1,
    vlimit = 20,
-   ntc = 2, ntf = 1,
+   ntc = :%NTC%, ntf = :%NTF%,
    ntb = 2,
    ntp = 1, pres0 = 1.0, taup = 2.0,
    ioutfm = 1, iwrap = 1,
@@ -310,10 +307,10 @@ outtraj :%TARGET% onlyframes 1
 (defparameter *vdw-ti-in*
   "TI simulation
  &cntrl
-   imin = 0, nstlim = 100000, irest = 1, ntx = 5, dt = 0.002,
-   ntt = 3, temp0 = 300.0, gamma_ln = 2.0, ig = -1,
+   imin = 0, nstlim = :%VDW-TI-IN.NSTLIM%, irest = 1, ntx = 5, dt = :%DT%,
+   ntt = 3, temp0 = :%TEMP0%, gamma_ln = 2.0, ig = -1,
    vlimit = 20,
-   ntc = 2, ntf = 1,
+   ntc = :%NTC%, ntf = :%NTF%,
    ntb = 2,
    ntp = 1, pres0 = 1.0, taup = 2.0,
    ioutfm = 1, iwrap = 1,
@@ -466,8 +463,7 @@ if __name__ == '__main__':
 (defparameter *combine-stages*
   (let ((*package* (find-package :keyword)))
     (cl:format nil "~{~s~%~}"
-               '((ql:quickload :fep)
-                 (in-package :cando-user)
+               '((in-package :cando-user)
                  (let ((total 0.0)
 		       parts)
                    (loop for filename in :%.parts%
@@ -485,8 +481,7 @@ if __name__ == '__main__':
 (defparameter *combine-sides*
   (let ((*package* (find-package :keyword)))
     (cl:format nil "~{~s~%~}"
-               '((ql:quickload :fep)
-                 (in-package :cando-user)
+               '((in-package :cando-user)
 		 (let* ((parts
 			 (loop for filename in :%.parts%
                                for pathname = (pathname filename)
@@ -683,7 +678,9 @@ its for and then create a new class for it."))
 (defgeneric node-pathname (node))
 
 (defmethod node-pathname :around ((node node-file))
-  (ensure-directories-exist (call-next-method)))
+  (if *write-files*
+      (ensure-jobs-directories-exist (call-next-method))
+      (call-next-method)))
 
 (defmethod node-pathname ((node feps-file))
   (make-pathname :name (string-downcase (name node))
@@ -783,9 +780,6 @@ its for and then create a new class for it."))
 (defclass amber-job-mixin ()
   ())
 
-(defclass cpptraj-job-mixin ()
-  ())
-
 (defclass morph-cando-job (morph-job cando-job-mixin)
   ())
 
@@ -800,9 +794,6 @@ its for and then create a new class for it."))
   ())
 
 (defclass morph-side-amber-job (morph-side-job amber-job-mixin)
-  ())
-
-(defclass morph-side-cpptraj-job (morph-side-job cpptraj-job-mixin)
   ())
 
 (defclass morph-side-stage-job (morph-side-job)
@@ -856,10 +847,30 @@ its for and then create a new class for it."))
 (defmethod substitutions (calculation job (node-file node-file))
   (job-substitutions job))
 
+(defun setting-substitutions (calculation)
+  (let ((settings (settings calculation)))
+    (loop for setting in settings
+          for setting-key = (car setting)
+          for setting-value = (if (listp (cdr setting))
+                                  (if *testing*
+                                      (second (cdr setting))
+                                      (first (cdr setting)))
+                                  (cdr setting))
+          for value-string = (cond
+                               ((stringp setting-value)
+                                setting-value)
+                               ((floatp setting-value)
+                                (format nil "~f" setting-value))
+                               ((integerp setting-value)
+                                (format nil "~d" setting-value))
+                               (t (error "Add support to stringify setting value ~s:" setting-value)))
+          collect (cons setting-key value-string))))
+
 (defmethod substitutions (calculation job (node-file morph-file))
   (append
+   (setting-substitutions calculation)
    (let* ((morph (morph node-file))
-          (morph-mask (calculate-masks morph (mask-method calculation))))
+          (morph-mask (morph-mask morph) #+(or)(calculate-masks morph (mask-method calculation))))
      (list* (cons :%MORPH-NAME% (format nil "~s" (morph-string morph)))
             (mask-substitutions morph-mask)))
    (call-next-method)))
@@ -870,7 +881,7 @@ its for and then create a new class for it."))
 
 (defmethod substitutions (calculation job (node-file morph-side-stage-file))
   (let* ((morph (morph node-file))
-         (morph-mask (calculate-masks morph (mask-method calculation))))
+          (morph-mask (morph-mask morph) #+(or)(calculate-masks morph (mask-method calculation))))
     (append (list (cons "%STAGE-NAME%" (format nil "~s" (stage node-file))))
             (crgmask-substitutions morph-mask (stage node-file))
             (call-next-method))))
@@ -879,11 +890,14 @@ its for and then create a new class for it."))
 (defmethod substitutions (calculation (job t) (node-file morph-side-stage-lambda-file))
   (error "substitutions called with job ~s and node-file ~s" job node-file))
 
+
+
 (defmethod substitutions (calculation (job morph-side-stage-lambda-amber-job) (node-file morph-side-stage-lambda-file))
-  (append (list (cons :%LAMBDA% (format nil "~f" (lambda% node-file)))
-                (cons :%LAMBDA-WINDOWS% (format nil "~{~f,~}" (lambda-values job)))
-                (cons :%LAMBDA-WINDOWS-COUNT% (format nil "~a" (length (lambda-values job)))))
-         (call-next-method)))
+  (let ((substitutions (append (list (cons :%LAMBDA% (format nil "~f" (lambda% node-file)))
+                                     (cons :%LAMBDA-WINDOWS% (format nil "~{~f,~}" (lambda-values job)))
+                                     (cons :%LAMBDA-WINDOWS-COUNT% (format nil "~a" (length (lambda-values job)))))
+                               (call-next-method))))
+    substitutions))
 
 (defun output-file (amber-job option)
   (loop for output-arg in (outputs amber-job)
@@ -1030,32 +1044,6 @@ its for and then create a new class for it."))
                                                  :input-topology-file input-topology-file)))
     press-job))
 
-
-(defun make-morph-side-strip (morph side &key input-coordinate-file input-topology-file)
-  (let ((script-file (make-instance 'morph-side-script :morph morph :side side :name "strip" :script *cpptraj-strip*)))
-    (connect-graph
-     (make-instance 'morph-side-cpptraj-job
-                    :morph morph
-                    :side side
-                    :script script-file
-                    :inputs (arguments :-i script-file :-p input-topology-file :%COORDINATES% input-coordinate-file)
-                    :outputs (arguments :%SOLVATED% (make-instance 'morph-side-mol2-file
-                                                                 :morph morph
-                                                                 :side side
-                                                                 :name "solvated"
-                                                                 :extension "mol2")
-                                        :%SOURCE% (make-instance 'morph-side-mol2-file
-                                                               :morph morph
-                                                               :side side
-                                                               :name "source"
-                                                               :extension "mol2")
-                                        :%TARGET% (make-instance 'morph-side-mol2-file
-                                                               :morph morph
-                                                               :side side
-                                                               :name "target"
-                                                               :extension "mol2"))
-                    :makefile-clause (standard-makefile-clause "cpptraj :%OPTION-INPUTS% :%OPTION-OUTPUTS%")))))
-
 (defun make-heat-ti-step (morph side stage lam lambda-values &key input-coordinate-file input-topology-file)
   (let ((script (make-instance 'morph-side-stage-lambda-amber-script
                                :morph morph
@@ -1126,21 +1114,6 @@ its for and then create a new class for it."))
 	$(RUNCMD) -- :%DEPENDENCY-INPUTS% -- :%DEPENDENCY-OUTPUTS% -- \\
 	pmemd.cuda -AllowSmallBox :%OPTION-INPUTS% \\
 	  -O :%OPTION-OUTPUTS%"))))
-
-(defclass ti-path ()
-  ((lambdas :initform 11 :initarg :lambdas :accessor lambdas)
-   (steps :initform nil :initarg :steps :accessor steps)
-   (source-compound :initarg :source-compound :accessor source-compound)
-   (target-compound :initarg :target-compound :accessor target-compound)))
-
-(defparameter *identical-lambda-delta* 0.001)
-(defmethod maybe-add-step (ti-path step)
-  (prog1
-      (pushnew step (steps ti-path) :test (lambda (x y)
-                                            (and (eq (class-of x) (class-of y))
-                                                 (let ((delta (abs (- (lam x) (lam y)))))
-                                                   (< delta *identical-lambda-delta*)))))
-    (format t "Number of steps ~a~%" (length (steps ti-path)))))
 
 (defun replace-all (dict in-script)
   (let (script-result)
@@ -1213,7 +1186,7 @@ added to inputs and outputs but not option-inputs or option-outputs"
           (format t "Skipping generation of ~a - it has not changed~%" pathname)
           (return-from write-file-if-it-has-changed nil))))
     (format t "Generating script ~a~%" pathname)
-    (with-open-file (fout (ensure-directories-exist pathname) :direction :output :if-exists :supersede)
+    (with-open-file (fout (ensure-jobs-directories-exist pathname) :direction :output :if-exists :supersede)
       (write-string code fout)))
 
 (defmethod generate-code (calculation (job job) makefile visited-nodes)
@@ -1240,31 +1213,40 @@ added to inputs and outputs but not option-inputs or option-outputs"
 
 
 (defun generate-runcmd ()
-  (with-open-file (fout "runcmd" :direction :output :if-exists :supersede)
-    (format fout "#! /bin/bash
+  (with-open-file (fout "runcmd_simple" :direction :output :if-exists :supersede)
+    (format fout "#! /bin/sh
 
-shift
-while [[ $1 != \"--\" ]]; do
-    shift
-done
-shift
-while [[ $1 != \"--\" ]]; do
-    shift
-done
-shift
-echo Command: $*
-eval $*
+try_special ()
+{
+    local arg
+    local count=0
+    for arg in \"$@\" ; do
+        [ \"$arg\" = -- ] && count=\"$(($count + 1))\"
+        shift
+        [ \"$count\" = 3 ] && break # more than 3 are allowed
+    done
+    if [ \"$count\" = 3 ] ; then
+        exec \"$@\"
+        # exit # not reachable
+    fi
+}
+
+try_special \"$@\"
+# if try_special didn't like it execute directly
+exec \"$@\"
 "))
-  (core:chmod "runcmd" #o777))
+  (core:chmod "runcmd_simple" #o755))
 
 
 (defun generate-all-code (calculation work-list final-outputs)
+  (unless (receptors calculation)
+    (error "There must be at least one receptor"))
   (with-top-directory (calculation)
     (let ((visited-nodes (make-hash-table))
-          (makefile-pathname (ensure-directories-exist (merge-pathnames "makefile"))))
+          (makefile-pathname (ensure-jobs-directories-exist (merge-pathnames "makefile"))))
       (format t "Writing makefile to ~a~%" (translate-logical-pathname makefile-pathname))
       (let ((body (with-output-to-string (makefile)
-                    (format makefile "export RUNCMD=./runcmd~%")
+                    (format makefile "RUNCMD ?= ./runcmd_simple~%~%")
                     (loop for job in work-list
                           do (generate-code calculation job  makefile visited-nodes)))))
         (write-file-if-it-has-changed
@@ -1279,35 +1261,6 @@ eval $*
            (terpri makefile))))
       (format t "Writing runcmd~%")
       (generate-runcmd))))
-
-#|
-(defparameter *morphs*
-  (let* ((x1 (make-ti-compound "x1"))
-         (x2 (make-ti-compound "x2"))
-         (x3 (make-ti-compound "x3"))
-         (path1 (make-ti-path 11 x1 x2))
-         (_ (generate-steps path1))
-         (path2 (make-ti-path 11 x2 x3))
-         (_ (generate-steps path2))
-         (calc (make-instance 'ti-calculation :compounds (list x1 x2 x3) :paths (list path1 path2))))
-    calc))
-
-*morphs*
-
-(defparameter *morphs* (make-instance 'ti-calculation))
-(cando:save-cando *morphs* "/tmp/calc")
-
-(cando:save-cando (make-instance 'foo) "/tmp/test")
-
-
-(defclass bar () ()) (let ((*print-readably* t)) (print (make-instance 'bar)))
-
-(defmethod print-object ((x foo) stream)
-  (format stream "#S(foo)"))
-
-(generate-all-scripts *morphs*)
-
-|#
 
 (defmethod print-object ((object chem:aggregate) stream)
   "Aggregates can have atom graphs that are way too wide and deep to print the 

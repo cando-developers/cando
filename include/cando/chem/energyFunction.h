@@ -83,7 +83,6 @@ namespace       chem
   SMART(EnergyChiralRestraint);
   SMART(EnergyAnchorRestraint);
   SMART(EnergyFixedNonbondRestraint);
-//SMART(DisplayList);
   SMART(Iterator);
   SMART(ForceMatchReport);
 
@@ -144,8 +143,6 @@ namespace chem {
      * automatically restrainted to be trans
      */
     bool					_RestrainSecondaryAmides;
-
-
     double					_ChiralRestraintWeight;
     double					_ChiralRestraintOffset;
     double					_AnchorRestraintWeight;

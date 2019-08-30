@@ -112,9 +112,10 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
 ;;;  The least significant bit is the first stereocenter and the most significant bit is the last.
 (defun set-stereoisomer-using-number (list-of-centers num)
   (loop for atom across list-of-centers
-     for tnum = num then (ash tnum -1)
-     for config = (if (= (logand 1 tnum) 0) :s :r)
-     do (format t "~a -> ~a   num: ~a~%" atom config tnum)))
+        for tnum = num then (ash tnum -1)
+        for config = (if (= (logand 1 tnum) 0) :s :r)
+        do (chem:set-configuration atom config)
+        do (format t "~a -> ~a   num: ~a~%" atom config tnum)))
 
 ;;; Set all of the stereocenters to config (:S or :R)
 (defun set-all-stereocenters-to (list-of-centers config &key show)
@@ -282,9 +283,8 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
     (format t "Saving matter to ~a~%" npn)
     (chem:save-mol2 matter npn use-sybyl-types)))
 
-(defun load-mol2 (pathname &key verbose)
-  (let ((npn (merge-pathnames pathname *default-pathname-defaults*))
-        (chem:*verbose* verbose))
+(defun load-mol2 (pathname)
+  (let ((npn (merge-pathnames pathname *default-pathname-defaults*)))
     (chem:load-mol2 npn)))
 
 
@@ -451,3 +451,5 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
             (format t "anchoring ~a to ~a~%" a p)
             (anchor-atom a p))
           (coerce centers 'list) points)))
+
+

@@ -40,10 +40,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/bond.h>
 #include <cando/chem/molecule.h>
 #include <cando/chem/restraint.h>
-//#include "core/serialize.h"
 #include <clasp/core/numerics.h>
-//#include "core/archive.h"
-//#include "core/archiveNode.h"
 #include <cando/geom/ovector3.h>
 #include <clasp/core/sort.h>
 #include <cando/geom/omatrix.h>
@@ -310,6 +307,16 @@ void Atom_O::transferCoordinates(Matter_sp obj)
   this->setPosition(other->getPosition());
 }
 
+bool Atom_O::atomWithinAngstroms(Atom_sp other, float angstroms) const
+{
+  Vector3 delta = this->position-other->position;
+  if (fabs(delta.getX())<angstroms &&
+      fabs(delta.getY())<angstroms &&
+      fabs(delta.getZ())<angstroms) {
+    if (delta.length()<angstroms) return true;
+  }
+  return false;
+}
 
 //
 // Copy constructor
@@ -609,13 +616,19 @@ CL_DEFMETHOD     Bond_sp Atom_O::bondTo( Atom_sp to, BondOrder o )
   this->bonds.push_back(bn);
   to->bonds.push_back(bn);
   if (this->_Element == element_C && this->bonds.size()>4) {
-    SIMPLE_ERROR(BF("More than four bonds to carbon were made"));
+    SIMPLE_WARN(BF("More than four bonds to carbon will be made to %s") % _rep_(this->asSmartPtr()));
   }
   if (to->_Element == element_C && to->bonds.size()>4 ) {
-    SIMPLE_ERROR(BF("More than four bonds to carbon were made"));
+    SIMPLE_WARN(BF("More than four bonds to carbon will be made to %s") % _rep_(to));
   }
   return bn;
 }
+
+CL_LISPIFY_NAME("bondToOrderInt");
+CL_DEFMETHOD     Bond_sp Atom_O::bondToOrderInt( Atom_sp to, int o )
+{
+  return this->bondTo(to,(BondOrder)(o));
+};
 
 
 

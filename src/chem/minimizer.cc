@@ -77,6 +77,8 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/energyNonbond.h>
 #include <cando/chem/energyChiralRestraint.h>
 #include <cando/chem/energyAnchorRestraint.h>
+#include <cando/chem/energyPointToLineRestraint.h>
+#include <cando/chem/energyOutOfZPlane.h>
 #include <cando/chem/energyImproperRestraint.h>
 #include <cando/chem/energyFixedNonbond.h>
 #endif
@@ -284,14 +286,6 @@ string	Minimizer_O::statusAsShortString()
 
 
 
-#if 0
-void	Minimizer_O::setStepCallback(core::LispCallback_sp cb)
-{
-  this->_StepCallback = cb;
-}
-#endif
-
-
 #ifdef XML_ARCHIVE
 void	Minimizer_O::debugStart()
 {
@@ -431,7 +425,7 @@ void	Minimizer_O::minBracket(
 {
   double		xa,xb,xc,fa,fb,fc, temp;
   double		r,q,u,ulim,fu;
-
+  size_t numSteps = 0;
   this->_MinBracketSteps = 0;
   xa = *dPxa;
   xb = *dPxb;
@@ -446,6 +440,11 @@ void	Minimizer_O::minBracket(
   fc = this->d1DTotalEnergy(xc);
   LOG(BF("Start: xa(%lf) xb(%lf) xc(%lf) | fa(%lf) fb(%lf) fc(%lf)") % xa % xb % xc % fa % fb % fc );
   while ( fb > fc ) {
+    numSteps++;
+    if (numSteps%1000==0) {
+      printf("%s:%d The minBracket function is failing with %lu steps xa=%f xb=%f  xc=%f fa=%f fb=%f fc=%f\n",
+             __FILE__, __LINE__, numSteps, xa, xb, xc, fa, fb, fc );
+    }
     this->_MinBracketSteps++;
     LOG(BF("Loop:  xa(%lf) xb(%lf) xc(%lf) | fa(%lf) fb(%lf) fc(%lf)")%xa%xb%xc%fa%fb%fc);
     r = (xb-xa)*(fb-fc);
@@ -696,6 +695,8 @@ void Minimizer_O::lineSearchInitialReport( StepReport_sp report,
   report->_ImproperEnergyFn = NumericalFunction_O::create("Alpha","Improper",xmin,xinc);
   report->_ChiralRestraintEnergyFn = NumericalFunction_O::create("Alpha","ChiralRestraint",xmin,xinc);
   report->_AnchorRestraintEnergyFn = NumericalFunction_O::create("Alpha","AnchorRestraint",xmin,xinc);
+  report->_PointToLineRestraintEnergyFn = NumericalFunction_O::create("Alpha","PointToLineRestraint",xmin,xinc);
+  report->_OutOfZPlaneEnergyFn = NumericalFunction_O::create("Alpha","OutOfZPlane",xmin,xinc);
   report->_FixedNonbondRestraintEnergyFn = NumericalFunction_O::create("Alpha","FixedNonbondRestraint",xmin,xinc);
 
   for ( zx=dxa;zx<=dxc;zx+=(dxc-dxa)/100.0 ) {
@@ -706,20 +707,15 @@ void Minimizer_O::lineSearchInitialReport( StepReport_sp report,
     report->_StretchEnergyFn->appendValue(
                                           this->_EnergyFunction->getStretchComponent()->getEnergy());
 #if USE_ALL_ENERGY_COMPONENTS
-    report->_AngleEnergyFn->appendValue(
-                                        this->_EnergyFunction->getAngleComponent()->getEnergy());
-    report->_DihedralEnergyFn->appendValue(
-                                           this->_EnergyFunction->getDihedralComponent()->getEnergy());
-    report->_NonbondEnergyFn->appendValue(
-                                          this->_EnergyFunction->getNonbondComponent()->getEnergy());
-    report->_ImproperEnergyFn->appendValue(
-                                           this->_EnergyFunction->getImproperRestraintComponent()->getEnergy());
-    report->_ChiralRestraintEnergyFn->appendValue(
-                                                  this->_EnergyFunction->getChiralRestraintComponent()->getEnergy());
-    report->_AnchorRestraintEnergyFn->appendValue(
-                                                  this->_EnergyFunction->getAnchorRestraintComponent()->getEnergy());
-    report->_FixedNonbondRestraintEnergyFn->appendValue(
-                                                        this->_EnergyFunction->getFixedNonbondRestraintComponent()->getEnergy());
+    report->_AngleEnergyFn->appendValue(this->_EnergyFunction->getAngleComponent()->getEnergy());
+    report->_DihedralEnergyFn->appendValue(this->_EnergyFunction->getDihedralComponent()->getEnergy());
+    report->_NonbondEnergyFn->appendValue(this->_EnergyFunction->getNonbondComponent()->getEnergy());
+    report->_ImproperEnergyFn->appendValue(this->_EnergyFunction->getImproperRestraintComponent()->getEnergy());
+    report->_ChiralRestraintEnergyFn->appendValue(this->_EnergyFunction->getChiralRestraintComponent()->getEnergy());
+    report->_AnchorRestraintEnergyFn->appendValue(this->_EnergyFunction->getAnchorRestraintComponent()->getEnergy());
+    report->_PointToLineRestraintEnergyFn->appendValue(this->_EnergyFunction->getPointToLineRestraintComponent()->getEnergy());
+    report->_OutOfZPlaneEnergyFn->appendValue(this->_EnergyFunction->getOutOfZPlaneComponent()->getEnergy());
+    report->_FixedNonbondRestraintEnergyFn->appendValue(this->_EnergyFunction->getFixedNonbondRestraintComponent()->getEnergy());
 #endif
 #endif
   }
@@ -848,8 +844,7 @@ void	Minimizer_O::lineSearch(	double	*dPstep,
 
 bool	Minimizer_O::_displayIntermediateMessage(
                                                  double			step,
-                                                 double			fnew,
-                                                 double			forceMag,
+                                                 double			fenergy,
                                                  double			forceRMSMag,
                                                  double			cosAngle,
                                                  bool			steepestDescent )
@@ -866,7 +861,7 @@ bool	Minimizer_O::_displayIntermediateMessage(
       {
         sout << "Seconds--";
       }
-      sout << "Step-log(Alpha)--Dir-------------Energy-----------RMSforce";
+      sout << "Step-log(Alpha)--Prev.dir--------Energy-----------RMSforce";
       if ( this->_ScoringFunction->scoringFunctionName() != "" ) 
       {
         sout << "-------Name";
@@ -897,7 +892,7 @@ bool	Minimizer_O::_displayIntermediateMessage(
       }
       sout << (BF(" %5.1lf") % angle);
     }
-    sout << (BF(" %18.3lf") % fnew );
+    sout << (BF(" %18.3lf") % fenergy );
     sout << (BF(" %18.3lf") % forceRMSMag);
     if ( this->_ScoringFunction->scoringFunctionName() != "" ) 
     {
@@ -1012,6 +1007,7 @@ void	Minimizer_O::_steepestDescent( int numSteps,
   {
     while (1) 
     { _BLOCK_TRACEF(BF("Step %d") %localSteps);
+      
       if (this->_StepCallback.notnilp()) core::eval::funcall(this->_StepCallback,x);
       
 		//
@@ -1020,13 +1016,23 @@ void	Minimizer_O::_steepestDescent( int numSteps,
       forceMag = magnitude(force);
       forceRmsMag = rmsMagnitude(force);
       this->_RMSForce = forceRmsMag;
+
+      		    //
+		    // Print intermediate status
+		    //
+      prevStep = step;
+      printedLatestMessage = false;
+      if ( this->_PrintIntermediateResults ) {
+        printedLatestMessage = this->_displayIntermediateMessage(step,fp,forceRmsMag,cosAngle,steepestDescent);
+      }
+     
       if ( forceRmsMag < forceTolerance ) {
         if ( this->_PrintIntermediateResults ) {
-          core::clasp_writeln_string((BF("DONE absolute force test:\nforceRmsMag(%lf).LT.forceTolerance(%lf)") % forceRmsMag % forceTolerance).str() );
+          core::clasp_writeln_string((BF(" ! DONE absolute force test:\n ! forceRmsMag(%lf) < forceTolerance(%lf)") % forceRmsMag % forceTolerance).str() );
         }
         break;
       }
-
+      
       this->_IterationMessages.str("");
       if ( localSteps>=numSteps ) {
         if ( this->_DebugOn )
@@ -1091,15 +1097,7 @@ void	Minimizer_O::_steepestDescent( int numSteps,
           LOG(BF("something was zero length Using force") );
           copyVector(dir,force);
           steepestDescent = true;
-        }
-
-		    //
-		    // Print intermediate status
-		    //
-        prevStep = step;
-        printedLatestMessage = false;
-        if ( this->_PrintIntermediateResults ) {
-          printedLatestMessage = this->_displayIntermediateMessage(step,fnew,forceMag,forceRmsMag,cosAngle,steepestDescent);
+          cosAngle = 0.0;
         }
 
         this->lineSearch( &step, &fnew, x, dir, force, tv1, tv2, localSteps, stepReport );
@@ -1168,7 +1166,7 @@ void	Minimizer_O::_steepestDescent( int numSteps,
   }
 
   if ( this->_PrintIntermediateResults && !printedLatestMessage ) {
-    this->_displayIntermediateMessage(step,fnew,forceMag,forceRmsMag,cosAngle,steepestDescent);
+    this->_displayIntermediateMessage(step,fnew,forceRmsMag,cosAngle,steepestDescent);
   }
   fp = dTotalEnergyForce( x, force );
   this->_ScoringFunction->saveCoordinatesAndForcesFromVectors(x,force);
@@ -1285,9 +1283,14 @@ void	Minimizer_O::_conjugateGradient(int numSteps,
       forceMag = magnitude(force);
       forceRmsMag = rmsMagnitude(force);
       this->_RMSForce = forceRmsMag;
+      prevStep = step;
+      printedLatestMessage = false;
+      if ( this->_PrintIntermediateResults ) {
+        printedLatestMessage = this->_displayIntermediateMessage(prevStep,fp,forceRmsMag,cosAngle,steepestDescent);
+      }
       if ( forceRmsMag < forceTolerance ) {
         if ( this->_PrintIntermediateResults ) {
-          core::clasp_writeln_string((BF("DONE absolute force test:\nforceRmsMag(%lf).LT.forceTolerance(%lf)")% forceRmsMag % forceTolerance ).str());
+          core::clasp_writeln_string((BF(" ! DONE absolute force test:\n ! forceRmsMag(%lf)<forceTolerance(%lf)")% forceRmsMag % forceTolerance ).str());
         }
         break;
       }
@@ -1389,12 +1392,6 @@ void	Minimizer_O::_conjugateGradient(int numSteps,
           steepestDescent = true;
         }
 
-        prevStep = step;
-        printedLatestMessage = false;
-        if ( this->_PrintIntermediateResults ) {
-          printedLatestMessage = this->_displayIntermediateMessage(prevStep,fnew,forceMag,forceRmsMag,cosAngle,steepestDescent);
-        }
-
         this->lineSearch( &step, &fnew, x, d, force,
                           tv1, tv2, localSteps,
                           stepReport);
@@ -1470,7 +1467,7 @@ void	Minimizer_O::_conjugateGradient(int numSteps,
     }
   }
   if ( this->_PrintIntermediateResults && !printedLatestMessage ) {
-    this->_displayIntermediateMessage(step,fnew,forceMag,forceRmsMag,cosAngle,steepestDescent);
+    this->_displayIntermediateMessage(step,fnew,forceRmsMag,cosAngle,steepestDescent);
   }
   fp = dTotalEnergyForce( x, force );
   this->_ScoringFunction->saveCoordinatesAndForcesFromVectors(x,force);
@@ -1718,6 +1715,10 @@ void	Minimizer_O::_truncatedNewton(
   LOG(BF("Evaluating initial energy and force") );
   energyXkNext = dTotalEnergyForce( xK, forceK );
   rmsForceMag = rmsMagnitude(forceK);
+  if ( this->_PrintIntermediateResults )
+  {
+    this->_displayIntermediateMessage(prevAlphaK,energyXkNext,rmsForceMag,cosAngle,false);
+  }
 
     //
     // Setup the preconditioner and carry out UMC
@@ -1766,10 +1767,6 @@ void	Minimizer_O::_truncatedNewton(
           cosAngle = dotProduct(forceK,pK)/(forceMag*dirMag);
         } else {
           cosAngle = 0.0;
-        }
-        if ( this->_PrintIntermediateResults )
-        {
-          this->_displayIntermediateMessage(prevAlphaK,energyXkNext,forceMag,rmsForceMag,cosAngle,false);
         }
       }
 
@@ -2078,14 +2075,29 @@ CL_DEFMETHOD     void	Minimizer_O::minimize()
       if ( this->_NumberOfSteepestDescentSteps > 0 ) {
         this->_steepestDescent( this->_NumberOfSteepestDescentSteps,
                                 pos, this->_SteepestDescentTolerance );
+      } else {
+        if ( this->_PrintIntermediateResults ) {
+          core::clasp_writeln_string("======= Skipping Steepest Descent #steps = 0");
+        }
       }
       if ( this->_NumberOfConjugateGradientSteps > 0 ) {
         this->_conjugateGradient( this->_NumberOfConjugateGradientSteps,
                                   pos, this->_ConjugateGradientTolerance );
+      } else {
+        if ( this->_PrintIntermediateResults ) {
+          core::clasp_writeln_string("======= Skipping Conjugate Gradients #steps = 0");
+        }
       }
       if ( this->_NumberOfTruncatedNewtonSteps > 0 ) {
         this->_truncatedNewton( this->_NumberOfTruncatedNewtonSteps,
                                 pos, this->_TruncatedNewtonTolerance );
+      } else {
+        if ( this->_PrintIntermediateResults ) {
+          core::clasp_writeln_string("======= Skipping Truncated Newton #steps = 0");
+        }
+      }
+      if ( this->_PrintIntermediateResults ) {
+        core::clasp_writeln_string("======= All three minimizers have completed or passed on minimization.");
       }
       goto DONE;
     } catch ( RestartMinimizer ld ) {

@@ -24,10 +24,12 @@
   "Search the *path* list for a directory that contains filename and return it.
   Otherwise return NIL."
   (declare (pathname filename))
-  (loop for path in (reverse *path*)
-     for full-path = (merge-pathnames filename path)
-     when (probe-file full-path)
-     return it))
+  (if (probe-file filename)
+      (probe-file filename)
+      (loop for path in (reverse *path*)
+            for full-path = (merge-pathnames filename path)
+            when (probe-file full-path)
+              return it)))
 
 ;;; --
 ;;;
@@ -185,10 +187,17 @@ used to provide parameters.  There is one default force-field called :default.")
       (error "Could not find force-field with name ~s" force-field-name))
     ff))
 
-(defun add-force-field-or-modification (force-field-or-frcmod &key (force-field-name :default) force-field-info
-                                                                combined-force-field-class-name)
+(defun add-force-field-or-modification (force-field-or-frcmod
+                                        &key (force-field-name :default)
+                                          force-field-info
+                                          combined-force-field-class-name)
+  "Add the 'force-field-or-frcmod' to the combined-force-field with the name 'force-field-name'.
+If a combined-force-field doesn't exist with that name - then create one using the class name
+given in 'combined-force-field-class-name'.  I'm not sure what 'force-field-info' is right now - check chem:add-shadowing-force-field."
   (let ((cff (chem:find-force-field force-field-name nil)))
     (unless cff
+      (unless combined-force-field-class-name
+        (error "You must provide a combined-force-field-class-name - you passed nil"))
       (add-combined-force-field (if (eq combined-force-field-class-name 'chem:combined-force-field)
                                               (sys:make-cxx-object combined-force-field-class-name)
                                               (make-instance combined-force-field-class-name))

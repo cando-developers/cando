@@ -127,16 +127,6 @@ Vector3	v;
     return v;
 }
 
-
-
-double Vector3::dotProduct( const Vector3& v )
-{
-	return(this->getX()*v.getX()
-		+this->getY()*v.getY()
-		+this->getZ()*v.getZ());
-}
-
-
 double Vector3::length() const
 {
 	return(sqrt(this->getX()*this->getX()

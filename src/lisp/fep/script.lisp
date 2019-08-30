@@ -73,17 +73,11 @@
            for morph-side-prepare-job = (make-morph-side-prepare morph side
                                                                  :input-topology-file input-topology-file
                                                                  :input-coordinate-file coord-node)
-           for strip-job = (make-morph-side-strip morph side
-                                                  :input-topology-file input-topology-file
-                                                  :input-coordinate-file (output-file morph-side-prepare-job :-r))
            do (let (stage-jobs)
                 (loop for stage in (case (stages morph)
                                      (1 '(:vdw-bonded))
                                      (3 '(:decharge :vdw-bonded :recharge))
                                      (otherwise (error "Illegal number of stages ~a - only 1 or 3 are allowed for morph ~s" (stages morph) morph)))
-                      with source = (output-file strip-job :%SOURCE%)
-                      with target = (output-file strip-job :%TARGET%)
-                      with solvated = (output-file strip-job :%SOLVATED%)
                       for script-source = (ecase stage
                                             (:decharge *decharge*)
                                             (:vdw-bonded nil)
@@ -94,12 +88,12 @@
                                                                                   :extension "lisp"))
                       for inputs = (ecase stage
                                      (:decharge (arguments :%FEPS% input-feps-file
-                                                           :%SOLVATED% solvated
-                                                           :%SOURCE% source))
+                                                           :%TOPOLOGY% input-topology-file
+                                                           :%COORDINATES% (output-file morph-side-prepare-job :-r)))
                                      (:vdw-bonded nil)
                                      (:recharge (arguments :%FEPS% input-feps-file
-                                                           :%SOLVATED% solvated
-                                                           :%TARGET% target)))
+                                                           :%TOPOLOGY% input-topology-file
+                                                           :%COORDINATES% (output-file morph-side-prepare-job :-r))))
                       for outputs = (ecase stage
                                       (:decharge
                                        (arguments
@@ -143,60 +137,63 @@
                                                         :inputs inputs
                                                         :outputs outputs
                                                         :makefile-clause (standard-cando-makefile-clause script))))
-                      do (let (decharge-jobs
-                               vdw-jobs
-                               recharge-jobs
-                               (lambda-values (loop for window-index from 0 below (windows morph)
-                                                    collect (/ (float window-index) (1- (windows morph))))))
-                           (loop for lambda-value in lambda-values
-                                 for lambda-label = (format nil "~5,3f" lambda-value)
-                                 do (case stage
-                                      (:decharge (let* ((input-topology-file (output-file stage-job :%DECHARGE-TOPOLOGY%))
-                                                        (input-coordinate-file (output-file stage-job :%DECHARGE-COORDINATES%))
-                                                        (heat-job (make-heat-ti-step morph side stage lambda-label lambda-values
-                                                                                     :input-topology-file input-topology-file
-                                                                                     :input-coordinate-file input-coordinate-file))
-                                                        (input-coordinate-file (output-file heat-job :-r)))
-                                                   (push (make-ti-step morph side stage lambda-label lambda-values
-                                                                       :input-topology-file input-topology-file
-                                                                       :input-coordinate-file input-coordinate-file)
-                                                         decharge-jobs)))
-                                      (:vdw-bonded (let* ((input-topology-file input-topology-file)
-                                                          (input-coordinate-file (output-file morph-side-prepare-job :-r))
+                      do (let ((windows (if *testing*
+                                            *testing-lambdas*
+                                            (lambda-values morph))))
+                           (let (decharge-jobs
+                                 vdw-jobs
+                                 recharge-jobs
+                                 (lambda-values (loop for window-index from 0 below windows
+                                                      collect (/ (float window-index) (1- windows)))))
+                             (loop for lambda-value in lambda-values
+                                   for lambda-label = (format nil "~5,3f" lambda-value)
+                                   do (case stage
+                                        (:decharge (let* ((input-topology-file (output-file stage-job :%DECHARGE-TOPOLOGY%))
+                                                          (heat-input-coordinate-file (output-file stage-job :%DECHARGE-COORDINATES%))
                                                           (heat-job (make-heat-ti-step morph side stage lambda-label lambda-values
                                                                                        :input-topology-file input-topology-file
-                                                                                       :input-coordinate-file input-coordinate-file))
-                                                          (input-coordinate-file (output-file heat-job :-r)))
+                                                                                       :input-coordinate-file heat-input-coordinate-file))
+                                                          (ti-input-coordinate-file (output-file heat-job :-r)))
                                                      (push (make-ti-step morph side stage lambda-label lambda-values
                                                                          :input-topology-file input-topology-file
-                                                                         :input-coordinate-file input-coordinate-file)
-                                                           vdw-jobs)))
-                                      (:recharge (let* ((input-topology-file (output-file stage-job :%RECHARGE-TOPOLOGY%))
-                                                        (input-coordinate-file (output-file stage-job :%RECHARGE-COORDINATES%))
-                                                        (heat-job (make-heat-ti-step morph side stage lambda-label lambda-values
-                                                                                     :input-topology-file input-topology-file
-                                                                                     :input-coordinate-file input-coordinate-file))
-                                                        (input-coordinate-file (output-file heat-job :-r)))
-                                                   (push (make-ti-step morph side stage lambda-label lambda-values
-                                                                       :input-topology-file input-topology-file
-                                                                       :input-coordinate-file input-coordinate-file)
-                                                         recharge-jobs)))))
-                           (let ((script (make-instance 'python-script-file
-                                                        :script *python-getdvdl*
-                                                        :name "getdvdl"
-                                                        :extension "py")))
-                             (push (connect-graph
-                                    (make-instance 'morph-side-stage-python-job
-                                                   :morph morph :side side :stage stage :script script
-                                                   :inputs (case stage
-                                                              (:decharge (arguments :. (mapcar (lambda (job) (output-file job :-e)) decharge-jobs)))
-                                                              (:vdw-bonded (arguments :. (mapcar (lambda (job) (output-file job :-e)) vdw-jobs)))
-                                                              (:recharge (arguments :. (mapcar (lambda (job) (output-file job :-e)) recharge-jobs))))
-                                                   :outputs (arguments :%STAGE-ANALYSIS% (make-instance 'morph-side-stage-file
-                                                                                                      :morph morph :side side :stage stage
-                                                                                                      :name "dvdl" :extension "dat"))
-                                                   :makefile-clause (standard-makefile-clause "python2 getdvdl.py :%STAGE-ANALYSIS% :%INPUTS%")))
-                                    stage-jobs))))
+                                                                         :input-coordinate-file ti-input-coordinate-file)
+                                                           decharge-jobs)))
+                                        (:vdw-bonded (let* ((input-topology-file input-topology-file)
+                                                            (heat-input-coordinate-file (output-file morph-side-prepare-job :-r))
+                                                            (heat-job (make-heat-ti-step morph side stage lambda-label lambda-values
+                                                                                         :input-topology-file input-topology-file
+                                                                                         :input-coordinate-file heat-input-coordinate-file))
+                                                            (ti-input-coordinate-file (output-file heat-job :-r)))
+                                                       (push (make-ti-step morph side stage lambda-label lambda-values
+                                                                           :input-topology-file input-topology-file
+                                                                           :input-coordinate-file ti-input-coordinate-file)
+                                                             vdw-jobs)))
+                                        (:recharge (let* ((input-topology-file (output-file stage-job :%RECHARGE-TOPOLOGY%))
+                                                          (heat-input-coordinate-file (output-file stage-job :%RECHARGE-COORDINATES%))
+                                                          (heat-job (make-heat-ti-step morph side stage lambda-label lambda-values
+                                                                                       :input-topology-file input-topology-file
+                                                                                       :input-coordinate-file heat-input-coordinate-file))
+                                                          (ti-input-coordinate-file (output-file heat-job :-r)))
+                                                     (push (make-ti-step morph side stage lambda-label lambda-values
+                                                                         :input-topology-file input-topology-file
+                                                                         :input-coordinate-file ti-input-coordinate-file)
+                                                           recharge-jobs)))))
+                             (let ((script (make-instance 'python-script-file
+                                                          :script *python-getdvdl*
+                                                          :name "getdvdl"
+                                                          :extension "py")))
+                               (push (connect-graph
+                                      (make-instance 'morph-side-stage-python-job
+                                                     :morph morph :side side :stage stage :script script
+                                                     :inputs (case stage
+                                                               (:decharge (arguments :. (mapcar (lambda (job) (output-file job :-e)) decharge-jobs)))
+                                                               (:vdw-bonded (arguments :. (mapcar (lambda (job) (output-file job :-e)) vdw-jobs)))
+                                                               (:recharge (arguments :. (mapcar (lambda (job) (output-file job :-e)) recharge-jobs))))
+                                                     :outputs (arguments :%STAGE-ANALYSIS% (make-instance 'morph-side-stage-file
+                                                                                                          :morph morph :side side :stage stage
+                                                                                                          :name "dvdl" :extension "dat"))
+                                                     :makefile-clause (standard-makefile-clause "python2 getdvdl.py :%STAGE-ANALYSIS% :%INPUTS%")))
+                                     stage-jobs)))))
                 ;; combine stage-jobs
                 (let ((side-script (make-instance 'morph-side-script
                                                   :morph morph :side side
@@ -231,10 +228,11 @@
                  morph-jobs))))
       morph-jobs)))
 
+(defparameter *testing* nil "Set to T when testing things")
 (defmethod generate-jobs (calculation)
   (let ((*default-pathname-defaults* (merge-pathnames (top-directory calculation) *default-pathname-defaults*)))
     (let* ((jupyter-job (make-instance 'jupyter-job))
-           (am1-jobs (setup-am1-calculations jupyter-job calculation))
+           (am1-jobs (setup-am1-calculations jupyter-job calculation :maxcyc (if *testing* 2 9999)))
            (feps-precharge (make-instance 'feps-file :name "precharge")))
       (fep:save-feps calculation (node-pathname feps-precharge))
       (push (make-instance 'argument :option :feps-precharge :node feps-precharge) (outputs jupyter-job))

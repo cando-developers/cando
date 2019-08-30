@@ -1,5 +1,8 @@
 (in-package :leap.topology)
 
+
+(defconstant +amber-charge-conversion-18.2223+ 18.2223)
+
 (defclass amber-topology ()
   ((aggregate :initarg :aggregate :accessor aggregate)
    ))
@@ -49,7 +52,12 @@ Return (values compressed-atom-name-map max-atom-name-length). "
                    (setf (gethash prefix name-index-map) new-name-index))
                  (setf (gethash name name-map) (string name))))
     (values name-map max-name-length)))
-    
+
+(defun bond-order-int (atom1 atom2)
+  "Return the bond order as an integer"
+  (let* ((bond (chem:get-bond-to atom1 atom2)))
+    (chem:get-order-as-int bond)))
+               
 (defun collapse-stretch-parameters (kb-vec r0-vec atom1-vec atom2-vec)
   (let ((j-vec (make-array 256 :fill-pointer 0 :adjustable t))
         (jnext 0)
@@ -108,6 +116,7 @@ Return (values compressed-atom-name-map max-atom-name-length). "
               (ib (make-array without-h :element-type (array-element-type i1-vector)))
               (jb (make-array without-h :element-type (array-element-type i2-vector)))
               (icb (make-array without-h :element-type '(signed-byte 32)))
+              (bond-orders (make-array without-h :element-type '(signed-byte 8)))
               (curh 0)
               (cur 0))
           (loop for i from 0 below (length kb-vector)
@@ -129,8 +138,9 @@ Return (values compressed-atom-name-map max-atom-name-length). "
                       (setf (aref ib cur) i1)
                       (setf (aref jb cur) i2)
                       (setf (aref icb cur) (+ (aref j-vec i) 1))
+                      (setf (aref bond-orders cur) (bond-order-int atom1 atom2))
                       (incf cur))))
-          (values with-h without-h ibh jbh icbh ib jb icb kbj-vec r0j-vec))))))
+          (values with-h without-h ibh jbh icbh ib jb icb kbj-vec r0j-vec bond-orders))))))
 
 (defun canonical-angle-key (type1 type2 type3)
   (declare (symbol type1 type2 type3))
@@ -630,8 +640,31 @@ then don't calculate 1,4 interactions"
             (cons :cn1-vec (copy-seq cn1-vec))
             (cons :cn2-vec (copy-seq cn2-vec))))))
 
+(defun prepare-molecules (energy-function)
+  "For each molecule assign an integer index for the force-field and return (values molecule-ff-index-vec ff-name-vec."
+  (let* ((atom-table (chem:atom-table energy-function))
+         (molecules (chem:atom-table-molecules atom-table))
+         (force-field-names (make-hash-table))
+         (force-field-name-index 0))
+    (loop for molecule across molecules
+          for force-field-name = (chem:force-field-name molecule)
+          unless (gethash force-field-name force-field-names)
+            do (setf (gethash force-field-name force-field-names)
+                     (prog1 force-field-name-index
+                       (incf force-field-name-index))))
+    (let ((force-field-names-vec (make-array (hash-table-count force-field-names))))
+      (maphash (lambda (ff-name ff-index)
+                 (setf (elt force-field-names-vec ff-index) ff-name))
+               force-field-names)
+      (let ((molecule-force-field-names-index-vec (make-array (length molecules))))
+        (loop for mol across molecules
+              for index from 0
+              for ff-name = (chem:force-field-name mol)
+              for ff-index = (gethash ff-name force-field-names)
+              do (setf (elt molecule-force-field-names-index-vec index) ff-index))
+        (values molecule-force-field-names-index-vec force-field-names-vec)))))
 
-(defun prepare-residue (energy-function)
+(defun prepare-residue (energy-function residue-name-to-pdb-alist)
   (let* ((atom-table (chem:atom-table energy-function))
          (residue-vector (chem:atom-table-residues atom-table))
          (residue-pointer-prepare-vector (chem:atom-table-residue-pointers atom-table))
@@ -642,6 +675,18 @@ then don't calculate 1,4 interactions"
          (nmolecule 0)
          (nresidue 0)
          (nmxrs 0))
+    ;; Fix residue names that are too long
+    (loop for index from 0 below (length residue-name-vector)
+          for residue-name = (aref residue-name-vector index)
+          when (> (length (string residue-name)) 3)
+            do (let ((short-residue-name-pair (assoc residue-name residue-name-to-pdb-alist)))
+                 (unless short-residue-name-pair
+                   (error "There is must be a short residue name for ~a" residue-name))
+                 (let ((short-name (cdr short-residue-name-pair)))
+                   (format t "Using short name ~s in place of ~s~%" short-name residue-name)
+                   (when (< (length (string short-name)) 3)
+                     (error "The short name ~s must be at least three characters long - residue-name-to-pdb-alist -> ~s" short-name residue-name-to-pdb-alist))
+                   (setf (elt residue-name-vector index) short-name))))
     (setf nmolecule (length molecule-vector))
     (setf nresidue (length residue-name-vector))
     (loop for i from 0 below (length residue-pointer-prepare-vector)
@@ -701,7 +746,14 @@ then don't calculate 1,4 interactions"
       ,@body)))
 
      
-(defun save-amber-parm-format-using-energy-function (energy-function topology-pathname coordinate-pathname)
+(defun save-amber-parm-format-using-energy-function (energy-function topology-pathname coordinate-pathname residue-name-to-pdb-alist &key (cando-extensions t))
+  "Generate an AMBER topology/coordinate file pair using the energy function. 
+Arguments:
+energy-function : The energy-function to generate the topology from.
+topology-pathname : Where to write the topology file.
+coordinate-pathname : Where to write the coordinate file (ascii).
+residue-name-to-pdb-alist : An alist of long residue names to short PDB residue names.
+cando-extensions               : T if you want cando-extensions written to the topology file."
   (let* ((bar (cando:make-progress-bar :style :bar :message "Saving" :total 41 :width 41 :divisions 41))
          (bar-counter 0)
          (nonbonds (chem:get-nonbond-component energy-function))
@@ -734,6 +786,7 @@ then don't calculate 1,4 interactions"
       ;; To avoid lots of nested scopes we will declare one large scope
       ;;   and declare all of the variables in that scope here at the top
       (let (atom-vectors
+            molecule-force-field-name-indices force-field-names-vec
             ntypes atom-name atom-type charge mass atomic-number atom-radius ico iac local-typej-vec cn1-vec cn2-vec #|nonbonds|#
             nbonh mbona ibh jbh icbh ib jb icb kbj-vec r0j-vec #|stretches|#
             ntheth mtheta ith jth kth icth it jt kt1 ict ktj-vec t0j-vec #|angles|#
@@ -744,9 +797,10 @@ then don't calculate 1,4 interactions"
             NATYP    NPHB   IFPERT NBPER  NGPER  NDPER
             MBPER    MGPER  MDPER  IFBOX  nmxrs  IFCAP
             NUMEXTRA NCOPY
+            non-h-bond-orders
             )
         ;; Here we need to calculate all of the values for %FLAG POINTERS
-        (multiple-value-setq (nbonh mbona ibh jbh icbh ib jb icb kbj-vec r0j-vec)
+        (multiple-value-setq (nbonh mbona ibh jbh icbh ib jb icb kbj-vec r0j-vec non-h-bond-orders)
           (prepare-amber-energy-stretch energy-function))
         (multiple-value-setq (ntheth mtheta ith jth kth icth it jt kt1 ict ktj-vec t0j-vec)
           (prepare-amber-energy-angle energy-function))
@@ -755,7 +809,9 @@ then don't calculate 1,4 interactions"
                                         ;        (multiple-value-setq (ntypes atom-name charge mass atomic-number ico iac local-typej-vec cn1-vec cn2-vec)
                                         ;          (chem:prepare-amber-energy-nonbond energy-function))
         (multiple-value-setq (nres nmxrs residue-pointer-vec residue-name-vec atoms-per-molecule residue-vec)
-          (prepare-residue energy-function))
+          (prepare-residue energy-function residue-name-to-pdb-alist))
+        (multiple-value-setq (molecule-force-field-name-indices force-field-names-vec)
+          (prepare-molecules energy-function))
         (setf atom-vectors (chem:prepare-amber-energy-nonbond energy-function (chem:nonbond-force-field-for-aggregate atom-table)))
         (setf ntypes (cdr (assoc :ntypes atom-vectors)))
         (setf atom-name (cdr (assoc :atom-name-vector atom-vectors)))
@@ -858,7 +914,7 @@ then don't calculate 1,4 interactions"
          (fortran:end-line))
         ;; write the atom names
 
-         ;; Next
+        ;; Next
         (outline-progn
          (fortran:fformat 1 "%-80s")
          (cando:progress-advance bar (incf bar-counter))
@@ -867,21 +923,21 @@ then don't calculate 1,4 interactions"
          (fortran:debug "-4-")
          (fortran:fformat 5 "%16.8e")
          (loop for ch across charge
-               do (fortran:fwrite (* ch 18.2223)))
+               do (fortran:fwrite (* ch +amber-charge-conversion-18.2223+)))
          (fortran:end-line))
         ;; write the atom charges
 
-         ;; Next
-         (outline-progn
-          (fortran:fformat 1 "%-80s")
-          (cando:progress-advance bar (incf bar-counter))
-          (fortran:fwrite "%FLAG ATOMIC_NUMBER")
-          (fortran:fwrite "%FORMAT(10I8)")
-          (fortran:debug "-5-")
-          (fortran:fformat 10 "%8d")
-          (loop for number across atomic-number
-                do (fortran:fwrite number))
-          (fortran:end-line))
+        ;; Next
+        (outline-progn
+         (fortran:fformat 1 "%-80s")
+         (cando:progress-advance bar (incf bar-counter))
+         (fortran:fwrite "%FLAG ATOMIC_NUMBER")
+         (fortran:fwrite "%FORMAT(10I8)")
+         (fortran:debug "-5-")
+         (fortran:fformat 10 "%8d")
+         (loop for number across atomic-number
+               do (fortran:fwrite number))
+         (fortran:end-line))
         ;; write the atomic number of each atom
 
         ;; Next
@@ -1431,9 +1487,48 @@ then don't calculate 1,4 interactions"
          (loop for screen across generalized-born-screen
                do (fortran:fwrite screen))
          (fortran:end-line))
+        (when cando-extensions
+          (outline-progn
+           (fortran:fformat 1 "%-80s")
+           (cando:progress-advance bar (incf bar-counter))
+           (fortran:fwrite "%FLAG BOND_ORDERS")
+           (fortran:fwrite "%FORMAT(40I2)")
+           (fortran:debug "-44-")
+           (fortran:fformat 40 "%2d")
+           (loop for orderi across non-h-bond-orders
+                 do (fortran:fwrite orderi))
+           (fortran:end-line))
+          ;; If there is more than one force field or the only force-field is not
+          ;; :DEFAULT - then write out the per-molecule force-field name
+          (when (or (> (length force-field-names-vec) 1)
+                    (not (eq (elt force-field-names-vec 0) :default)))
+            (outline-progn
+             (let ((max-force-field-name-len 0))
+               (loop for name across force-field-names-vec
+                     do (setf max-force-field-name-len (max max-force-field-name-len
+                                                            (length (string name)))))
+               (fortran:fformat 1 (format nil "%-80s"))
+               (cando:progress-advance bar (incf bar-counter))
+               (fortran:fwrite "%FLAG FORCE_FIELD_NAMES")
+               (fortran:fwrite (format nil "%FORMAT(1a~d)" (1+ max-force-field-name-len)))
+               (fortran:debug "-45-")
+               (fortran:fformat 1 (format nil "%-~ds" (1+ max-force-field-name-len)))
+               (loop for name across force-field-names-vec
+                     do (fortran:fwrite (string name)))
+               (fortran:end-line)))
+            (outline-progn
+             (fortran:fformat 1 "%-80s")
+             (cando:progress-advance bar (incf bar-counter))
+             (fortran:fwrite "%FLAG MOLECULE_FORCE_FIELD_INDEX")
+             (fortran:fwrite (format nil "%FORMAT(20I3)"))
+             (fortran:debug "-46-")
+             (fortran:fformat 20 "%3d")
+             (loop for index across molecule-force-field-name-indices
+                   do (fortran:fwrite (1+ index)))
+             (fortran:end-line))))
         ))
 ;;;    (format *debug-io* "coordinate-pathname -> ~s~%" coordinate-pathname)
-    (fortran:with-fortran-output-file (ftop coordinate-pathname :direction :output :if-exists :supersede)
+      (fortran:with-fortran-output-file (ftop coordinate-pathname :direction :output :if-exists :supersede)
       (fortran:fformat 20 "%-4s")
       (fortran:fwrite (string (chem:aggregate-name atom-table)))
       (fortran:end-line)
@@ -1479,7 +1574,7 @@ then don't calculate 1,4 interactions"
     (cando:progress-done bar)
     (values energy-function)))
 
-(defun save-amber-parm-format (aggregate topology-pathname coordinate-pathname &key assign-types)
+(defun save-amber-parm-format (aggregate topology-pathname coordinate-pathname &key assign-types residue-name-to-pdb-alist (cando-extensions t))
   (format t "Constructing energy function~%")
   (finish-output)
   (let* ((energy-function (chem:make-energy-function aggregate 
@@ -1490,9 +1585,11 @@ then don't calculate 1,4 interactions"
     ;;;  (2) Copy the name of the aggregate into the energy function
     ;;;  (3) Separate the solvent molecules from solute molecules and order them in the energy-function
     ;;;  (4) Copy the result of (chem:lookup-nonbond-force-field-for-aggregate aggregate force-field) into the energy-function
-    (save-amber-parm-format-using-energy-function energy-function topology-pathname coordinate-pathname)))
-
-
+    (save-amber-parm-format-using-energy-function energy-function
+                                                  topology-pathname
+                                                  coordinate-pathname
+                                                  residue-name-to-pdb-alist
+                                                  :cando-extensions cando-extensions)))
 
 (defvar %flag-title "%FLAG TITLE")
 (defvar %flag-pointers "%FLAG POINTERS")
@@ -1527,21 +1624,36 @@ then don't calculate 1,4 interactions"
 (defvar %flag-amber-atom-type "%FLAG AMBER_ATOM_TYPE")
 (defvar %flag-solvent-pointers "%FLAG SOLVENT_POINTERS")
 (defvar %flag-atoms-per-molecule "%FLAG ATOMS_PER_MOLECULE")
+(defvar %flag-bond-orders "%FLAG BOND_ORDERS")
+(defvar %flag-force-field-names "%FLAG FORCE_FIELD_NAMES")
+(defvar %flag-molecule-force-field-index "%FLAG MOLECULE_FORCE_FIELD_INDEX")
 
 (defun verify-%flag-line (line)
   (unless (string-equal line "%FLAG" :start1 0 :end1 5)
     (error "Expected %FLAG at the start of the line - got: ~s" line)))
 
+#+(or)
 (defmacro rlog (fmt &rest args)
   `(progn
-     (cl:format *debug-io* ,fmt ,@args)
-     (finish-output *debug-io*)))
+           (cl:format *debug-io* ,fmt ,@args)
+           (finish-output *debug-io*)))
+(defmacro rlog (fmt &rest args)
+  nil)
+
+(defun generate-aggregate-for-energy-function (energy-function)
+  (let* ((aggregate (chem:make-aggregate))
+         (atom-table (chem:atom-table energy-function))
+         (molecules (chem:atom-table-molecules atom-table))
+         (aggregate (chem:make-aggregate)))
+    (loop for mol across molecules
+          do (chem:add-matter aggregate mol))
+    aggregate))
 
 ;(defun read-amber-parm-format (stream)
 ;  (let ((fif (fortran:make-fortran-input-file :stream stream))
 (defun read-amber-parm-format (topology-pathname)
-  "Return (values energy-function aggregate)"
-  (fortran:with-fortran-output-file (fif topology-pathname :direction :input)
+  "Return (values energy-function) - use generate-aggregate-for-energy-function to get an aggregate"
+  (fortran:with-fortran-input-file (fif topology-pathname :direction :input)
     (let (natom ntypes nbonh mbona ntheth mtheta nphih mphia nhparm nparm
           nnb nres nbona ntheta nphia numbnd numang nptra
           natyp nphb ifpert nbper ngper ndper
@@ -1557,7 +1669,10 @@ then don't calculate 1,4 interactions"
           angles-inc-hydrogen angles-without-hydrogen
           dihedrals-inc-hydrogen dihedrals-without-hydrogen
           excluded-atoms-list amber-atom-type solvent-pointers atoms-per-molecule
-          residues-vec)
+          non-h-bond-orders
+          molecules-vec residues-vec
+          force-field-names molecule-force-field-index
+          )
       (rlog "Starting read-amber-parm-format~%")
       (fortran:fread-line fif)   ; Skip the version and timestamp line
       (fortran:fread-line fif)   ; read the first %FLAG line
@@ -1626,7 +1741,9 @@ then don't calculate 1,4 interactions"
                    (multiple-value-bind (per-line format-char width decimal)
                        (fortran:parse-fortran-format-line (fortran:fortran-input-file-look-ahead fif))
                      (fortran:fread-line-or-error fif) 
-                     (setf charge (fortran:fread-vector fif per-line format-char width))))
+                     (setf charge (fortran:fread-vector fif per-line format-char width))
+                     (loop for chargei from 0 below (length charge)
+                           do (setf (aref charge chargei) (/ (aref charge chargei) +amber-charge-conversion-18.2223+)))))
                   ((string-equal %flag-atomic-number line :end2 (length %flag-atomic-number))
                    (fortran:fread-line-or-error fif)  
                    (multiple-value-bind (per-line format-char width decimal)
@@ -1791,8 +1908,12 @@ then don't calculate 1,4 interactions"
                    (fortran:fread-line-or-error fif)  
                    (multiple-value-bind (per-line format-char width decimal)
                        (fortran:parse-fortran-format-line (fortran:fortran-input-file-look-ahead fif))
-                     (fortran:fread-line-or-error fif) 
-                     (setf amber-atom-type (fortran:fread-vector fif per-line format-char width))))
+                     (fortran:fread-line-or-error fif)
+                     (let ((type-strings (fortran:fread-vector fif per-line format-char width)))
+                       (setf amber-atom-type (make-array (length type-strings) :adjustable nil))
+                       (loop for index from 0 below (length type-strings)
+                             for type-string = (string-trim " " (elt type-strings index))
+                             do (setf (elt amber-atom-type index) (intern type-string :keyword))))))
                   ((string-equal %flag-solvent-pointers line :end2 (length %flag-solvent-pointers))
                    (fortran:fread-line-or-error fif)  
                    (multiple-value-bind (per-line format-char width decimal)
@@ -1805,8 +1926,29 @@ then don't calculate 1,4 interactions"
                        (fortran:parse-fortran-format-line (fortran:fortran-input-file-look-ahead fif))
                      (fortran:fread-line-or-error fif) 
                      (setf atoms-per-molecule (fortran:fread-vector fif per-line format-char width))))
+                  ((string-equal %flag-bond-orders line :end2 (length %flag-bond-orders))
+                   (fortran:fread-line-or-error fif)  
+                   (multiple-value-bind (per-line format-char width decimal)
+                       (fortran:parse-fortran-format-line (fortran:fortran-input-file-look-ahead fif))
+                     (fortran:fread-line-or-error fif) 
+                     (setf non-h-bond-orders (fortran:fread-vector fif per-line format-char width))))
+                  ((string-equal %flag-force-field-names line :end2 (length %flag-force-field-names))
+                   (fortran:fread-line-or-error fif)  
+                   (multiple-value-bind (per-line format-char width decimal)
+                       (fortran:parse-fortran-format-line (fortran:fortran-input-file-look-ahead fif))
+                     (fortran:fread-line-or-error fif) 
+                     (setf force-field-names (fortran:fread-vector fif per-line format-char width))
+                     (loop for index from 0
+                           for ffname across force-field-names
+                           do (setf (elt force-field-names index) (intern (string-trim " " ffname) :keyword)))))
+                  ((string-equal %flag-molecule-force-field-index line :end2 (length %flag-molecule-force-field-index))
+                   (fortran:fread-line-or-error fif)  
+                   (multiple-value-bind (per-line format-char width decimal)
+                       (fortran:parse-fortran-format-line (fortran:fortran-input-file-look-ahead fif))
+                     (fortran:fread-line-or-error fif) 
+                     (setf molecule-force-field-index (fortran:fread-vector fif per-line format-char width))))
                   (t
-                   (cl:format t "Unknown flag ~a~%" line)
+                   (if chem:*verbose* (cl:format t "Unknown flag ~a~%" line))
                    (fortran:fread-line-or-error fif)  
                    (multiple-value-bind (per-line format-char width decimal)
                        (fortran:parse-fortran-format-line (fortran:fortran-input-file-look-ahead fif))
@@ -1911,8 +2053,7 @@ then don't calculate 1,4 interactions"
             (counta 0)
             (countd 0)                               
             stretch-vectors angle-vectors dihedral-vectors nonbond-vectors atom-table-vectors
-            (atoms (make-array natom))
-            )
+            (atoms (make-array natom)))
         ;; Create a vector of atoms to pass to the atom-table and to set the atoms for stretch, angle, dihedral etc.
         (rlog "Create atoms vector~%")
         (loop for i from 0 below natom
@@ -1923,15 +2064,49 @@ then don't calculate 1,4 interactions"
         (setf (aref residue-pointer (length residue-pointer)) (+ 1 natom))
         ;;(format t "residue-pointer ~s~%" residue-pointer)
 	(setf residues-vec (make-array (length residue-label) :element-type t :adjustable nil))
-        (loop for i from 0 below (length residue-label)
-              for name = (aref residue-label i)
-              for begin-atom-index = (1- (aref residue-pointer i))
-              for end-atom-index = (1- (aref residue-pointer (1+ i)))
-              do (let ((residue (chem:make-residue name)))
-                   (loop for atomi from begin-atom-index below end-atom-index
-                         ;;do (format t "residue ~a begin ~a end ~a length ~a~%" name begin-atom-index end-atom-index (length residue-label))
-                         do (chem:add-matter residue (aref atoms atomi)))
-		   (setf (aref residues-vec i) residue)))
+        (setf molecules-vec (make-array 256 :element-type t :fill-pointer 0 :adjustable t))
+        (let (residue-accumulate
+              (atoms-in-molecule 0)
+              (molecule-index 0))
+          ;; Figure out the residues and molecules for the resulting aggregate
+          (loop for i from 0 below (length residue-label)
+                for name = (aref residue-label i)
+                for begin-atom-index = (1- (aref residue-pointer i))
+                for end-atom-index = (1- (aref residue-pointer (1+ i)))
+                do (let ((residue (chem:make-residue name)))
+                     (loop for atomi from begin-atom-index below end-atom-index
+                           for atom = (aref atoms atomi)
+                           do (chem:add-matter residue atom))
+		     (setf (aref residues-vec i) residue)
+                     (push residue residue-accumulate)
+                     (incf atoms-in-molecule (- end-atom-index begin-atom-index))
+                     (when (= atoms-in-molecule (elt atoms-per-molecule molecule-index))
+                       (let ((molecule (chem:make-molecule)))
+                         (when solvent-pointers
+                           (if (>= (1+ molecule-index) (elt solvent-pointers 2))
+                               (chem:setf-molecule-type molecule :solvent)
+                               (chem:setf-molecule-type molecule :solute)))
+                         (mapc (lambda (res) (chem:add-matter molecule res)) (nreverse residue-accumulate))
+                         (vector-push-extend molecule molecules-vec)
+                         (setf atoms-in-molecule 0)
+                         (setf residue-accumulate nil)
+                         (incf molecule-index))))))
+        (when molecule-force-field-index
+          (loop for moli from 0 below (length molecules-vec)
+                for molecule = (elt molecules-vec moli)
+                for force-field-index = (1- (elt molecule-force-field-index moli))
+                for force-field-name = (elt force-field-names force-field-index)
+                do (chem:setf-force-field-name molecule force-field-name)))
+        ;; Identify the force-field types
+        ;; (warn "This is where I set the force-field name for each molecule")
+        #+(or)(let ((force-field-index 0))
+          (setf force-field-names (make-hash-table))
+          (loop for molecule across molecules-vec
+                for force-field-name = (chem:get-force-field molecule)
+                do (if (gethash force-field-name force-field-names)
+                       nil
+                       (setf (gethash force-field-name force-field-names) (prog1 force-field-index
+                                                                            (incf force-field-index))))))
         ;;(rlog "atoms -> ~s~%" atoms)
         (rlog "Create stretch vectors~%")
         (loop for i from 0 below numbnd
@@ -1955,8 +2130,28 @@ then don't calculate 1,4 interactions"
                                   (aref i2s-vec counts) (aref bonds-without-hydrogen (+ (* j 3) 1))
                                   (aref atom1s-vec counts) (aref atoms (/ (aref bonds-without-hydrogen (* j 3)) 3))
                                   (aref atom2s-vec counts) (aref atoms (/ (aref bonds-without-hydrogen (+ (* j 3) 1)) 3)))
-                            (incf counts))) 
-              )
+                            (incf counts))))
+        ;; Now form the bonds with the correct bond orders
+        ; (format t "read-amber-parm about to create bonds~%")
+        (loop for bondi from 0 below nbonh
+              for atom1-index = (/ (aref bonds-inc-hydrogen (* bondi 3)) 3)
+              for atom2-index = (/ (aref bonds-inc-hydrogen (+ (* bondi 3) 1)) 3)
+              for atom1 = (aref atoms atom1-index)
+              for atom2 = (aref atoms atom2-index)
+              do (chem:bond-to atom1 atom2 :single-bond)) ; All bonds to hydrogen are single bonds
+        (if non-h-bond-orders
+            (loop for bondi from 0 below mbona
+              for atom1-index = (/ (aref bonds-without-hydrogen (* bondi 3)) 3)
+              for atom2-index = (/ (aref bonds-without-hydrogen (+ (* bondi 3) 1)) 3)
+              for atom1 = (aref atoms atom1-index)
+              for atom2 = (aref atoms atom2-index)
+              for bond-order-int = (aref non-h-bond-orders bondi)
+                  do (chem:bond-to-order-int atom1 atom2 bond-order-int))
+            (loop for bondi from 0 below mbona
+              for atom1 = (aref atoms (/ (aref bonds-without-hydrogen (* bondi 3)) 3))
+              for atom2 = (aref atoms (/ (aref bonds-without-hydrogen (+ (* bondi 3) 1)) 3))
+                  do (chem:bond-to atom1 atom2 :unknown-order-bond)))
+        ;; (format t "read-amber-parm done creating bonds~%")
         (setf stretch-vectors (acons :kb kbs-vec stretch-vectors))
         (setf stretch-vectors (acons :r0 r0s-vec stretch-vectors))
         (setf stretch-vectors (acons :i1 i1s-vec stretch-vectors))
@@ -1965,7 +2160,6 @@ then don't calculate 1,4 interactions"
         (setf stretch-vectors (acons :atom2 atom2s-vec stretch-vectors))
         ;;(rlog "stretch-vectors -> ~s~%" stretch-vectors)
         (chem:fill-from-vectors-in-alist energy-stretch stretch-vectors)
-
         (rlog "Create angle vectors~%")
         (loop for i from 0 below numang
               do (loop for j from 0 below ntheth
@@ -2072,6 +2266,7 @@ then don't calculate 1,4 interactions"
         (chem::fill-from-vectors-in-alist energy-dihedral dihedral-vectors)
         ;;atom-table
         (rlog "Create atom-table vectors~%")
+        (setf atom-table-vectors (acons :atom-vector atoms atom-table-vectors))
         (setf atom-table-vectors (acons :atom-name-vector atom-name atom-table-vectors))
         (setf atom-table-vectors (acons :atom-type-vector amber-atom-type atom-table-vectors))
         (setf atom-table-vectors (acons :charge-vector charge atom-table-vectors))
@@ -2081,8 +2276,6 @@ then don't calculate 1,4 interactions"
                                         ;     (setf atom-table-vectors (acons :residue-names residue-labels atom-table-vectors))
           
         ;;(rlog "atom-table-vectors -> ~s~%" atom-table-vectors)
-        (dolist (entry atom-table-vectors)
-          (format *debug-io* "entry -> ~s  (type-of (cdr entry)) -> ~s~%" entry (type-of (cdr entry))))
         (chem::fill-atom-table-from-vectors atom-table atom-table-vectors)
 
         ;;nonbond
@@ -2104,7 +2297,7 @@ then don't calculate 1,4 interactions"
         (chem:set-nonbond-excluded-atom-info energy-nonbond atom-table (copy-seq excluded-atoms-list) (copy-seq number-excluded-atoms))
 
         ;; for energy nonbond test
-        (chem:expand-excluded-atoms-to-terms energy-nonbond)
+        #+(or)(chem:expand-excluded-atoms-to-terms energy-nonbond)
         ;;
 
         ;; Now we have energy-stretch, energy-angle, and energy-dihedral
@@ -2128,8 +2321,9 @@ then don't calculate 1,4 interactions"
               (chem:set-first-solvent-molecule-nspsol atom-table (elt solvent-pointers 2))
               (chem:set-final-solute-residue-iptres atom-table (elt solvent-pointers 0))
               (chem:set-total-number-of-molecules-nspm atom-table (elt solvent-pointers 1))))
-  	;; (chem:setf-atom-table-atoms-per-molecule atom-table atoms-per-molecule)
+  	(chem:setf-atom-table-atoms-per-molecule atom-table atoms-per-molecule)
 	(chem:setf-atom-table-residues atom-table residues-vec)
+        (chem:setf-atom-table-molecules atom-table (copy-seq molecules-vec))
 	;; more here
         (let ((alist (list (cons :atom-table atom-table)
                            (cons :stretch energy-stretch)
@@ -2138,35 +2332,30 @@ then don't calculate 1,4 interactions"
                            (cons :nonbond energy-nonbond)))
               (energy-function (core:make-cxx-object 'chem:energy-function)))
           (chem:fill-energy-function-from-alist energy-function alist)
-          energy-function)))))
+          (values energy-function (generate-aggregate-for-energy-function energy-function )))))))
 
 
-#|
-          (let ((aggregate (if solvent-pointers
-                               (generate-aggregate-for-energy-function energy-function :final-residue (aref solvent-pointers 0))
-                               (generate-aggregate-for-energy-function energy-function))))
-            (values energy-function aggregate)))))))
-|#
-
-
-
-
-
-(defun read-amber-coordinate-file (fif)
-  (fortran:fread-line fif)       ; Skip the version and timestamp line
-  (let* ((line (fortran:fread-line fif))
-         (results (make-array 3 :element-type 't :adjustable t :fill-pointer 0))
-         ;; Read format FORMAT(I5,5E15.7) NATOM,TIME,TEMP
-         (natoms (parse-integer line :start 0 :end 5))
-         (time (if (>= (length line) 15)
-                   (fortran::parse-double-float (subseq line 5 nil) :start 0 :end 15)
-                   nil))
-         (temp (if (>= (length line) 35)
-                   (fortran::parse-double-float (subseq line (+ 5 15) nil) :start 0 :end 15)
-                   nil)))
-    (fortran:fread-line fif) 
-    (copy-seq (fortran:fread-vector fif 6 #\F 12))))
-
+(defun read-amber-ascii-restart-file (coordinate-filename &key read-velocities (read-bounding-box t))
+  "Return (values number-of-atoms coordinates bounding-box-or-nil velocities-or-nil)"
+  (fortran:with-fortran-input-file (fif coordinate-filename :direction :input)
+    (fortran:fread-line fif)     ; Skip the version and timestamp line
+    (let* ((line (fortran:fread-line fif))
+           (results (make-array 3 :element-type 't :adjustable t :fill-pointer 0))
+           ;; Read format FORMAT(I5,5E15.7) NATOM,TIME,TEMP
+           (natoms (parse-integer line :start 0 :end 5))
+           (time (if (>= (length line) 15)
+                     (fortran::parse-double-float (subseq line 5 nil) :start 0 :end 15)
+                     nil))
+           (temp (if (>= (length line) 35)
+                     (fortran::parse-double-float (subseq line (+ 5 15) nil) :start 0 :end 15)
+                     nil)))
+      (fortran:fread-line fif)
+      (let* ((coordinates (copy-seq (fortran:fread-double-float-vector fif 6 12 (* natoms 3))))
+             (velocities (when read-velocities
+                           (copy-seq (fortran:fread-double-float-vector fif 6 12 (* natoms 3)))))
+             (bounding-box (when read-bounding-box
+                             (copy-seq (fortran:fread-double-float-vector fif 6 12 6)))))
+        (values natoms coordinates (coerce bounding-box 'list) velocities)))))
 
 ;;; The following code is to generate a human readable representation of an energy-function
 ;;; with everything sorted so that the terms can be compared side-by-side using something like
@@ -2398,29 +2587,140 @@ then don't calculate 1,4 interactions"
                        i da1 dc1 charge11 charge12 atomname11 atomname12)
                (format t "line ~a da2: ~a dc2: ~a charge21: ~a charge22: ~a atomname21: ~a atomname22: ~a~%"
                        i da2 dc2 charge21 charge22 atomname21 atomname22)))))
-               
-        
 
 
-(defun generate-aggregate-for-energy-function (energy-function)
-  (let* ((atom-table (chem:atom-table energy-function))
-         (residues-vector (chem:atom-table-residues atom-table))
-         (solute-mol (chem:make-molecule))
-         (aggregate (chem:make-aggregate))
-         nresidue nwater)
-    (if (chem:final-solute-residue-iptres-bound-p atom-table)
-        (setf nresidue (chem:final-solute-residue-iptres atom-table))
-        (setf nresidue (length residues-vector)))
-    (loop for i from 0 below nresidue
-          for residue = (aref residues-vector i)
-          do (chem:add-matter solute-mol residue))
-    (chem:add-matter aggregate solute-mol)
-    (if (chem:final-solute-residue-iptres-bound-p atom-table)
-        (loop for i from nresidue below (length residues-vector)
-              for water-residue = (aref residues-vector i)
-              do (let ((water-mol (chem:make-molecule)))
-                   (chem:add-matter water-mol water-residue)
-                   (chem:add-matter aggregate water-mol))))
-    
-    aggregate))
+(defclass amber-topology-coord-pair ()
+ ((topology-filename :initarg :topology-filename :accessor topology-filename)
+   (coordinate-filename :initarg :coordinate-filename :accessor coordinate-filename)
+   (energy-function :initarg :energy-function :accessor energy-function)
+   (aggregate :initarg :aggregate :accessor aggregate)
+   (number-of-atoms :initarg :number-of-atoms :accessor number-of-atoms)
+   (current-coordinates :initarg :current-coordinates :accessor current-coordinates)))
+  
+(defclass amber-topology-restart-pair (amber-topology-coord-pair) ())
+
+(defclass amber-topology-trajectory-pair (amber-topology-coord-pair)
+  ((netcdf :initarg :netcdf :accessor netcdf)))
+
+(defun write-coordinates-into-energy-function-atom-table (energy-function coordinates)
+  (let ((atom-table (chem:atom-table energy-function)))
+    (loop for index from 0 below (/ (length coordinates) 3)
+          for coord-index = 0 then (+ coord-index 3)
+          for xpos = (elt coordinates coord-index)
+          for ypos = (elt coordinates (+ 1 coord-index))
+          for zpos = (elt coordinates (+ 2 coord-index))
+          for atom = (chem:elt-atom atom-table index)
+          do (chem:set-position-xyz atom xpos ypos zpos))))
+
+
+(defun cell-lengths (netcdf)
+  (let ((sv (static-vectors:make-static-vector 3 :element-type 'double-float)))
+    (netcdf:get-vara-double netcdf "cell_lengths" (vector 0) (vector 3) sv)
+    (copy-seq sv)))
+
+(defun cell-angles (netcdf)
+  (let ((sv (static-vectors:make-static-vector 3 :element-type 'double-float)))
+    (netcdf:get-vara-double netcdf "cell_angles" (vector 0) (vector 3) sv)
+    (copy-seq sv)))
+
+
+(defun read-bounding-box (netcdf)
+  (let* ((lengths (cell-lengths netcdf))
+         (angles (cell-angles netcdf))
+         (bounding-box (append (coerce lengths 'list) (coerce angles 'list))))
+    bounding-box))
+
+(defun read-amber-restart-file (coordinate-filename)
+  (unless (probe-file coordinate-filename)
+    (error "Could not open restart file ~a" coordinate-filename))
+  (let ((fin (open coordinate-filename :direction :input)))
+    (let* ((c1 (read-char fin))
+           (c2 (read-char fin))
+           (c3 (read-char fin))
+           (c4 (read-char fin))
+           (is-netcdf (and (char= c1 #\C)
+                           (char= c2 #\D)
+                           (char= c3 #\F)
+                           (char< c4 10))))
+      (close fin)
+      (if is-netcdf
+          (let* ((netcdf (netcdf:nc-open coordinate-filename :mode netcdf-cffi:+nowrite+))
+                 (number-of-atoms (netcdf:len (gethash "atom" (netcdf:dimensions netcdf))))
+                 (coords (static-vectors:make-static-vector (* number-of-atoms 3) :element-type 'single-float))
+                 (bounding-box (read-bounding-box netcdf))
+                 (result (netcdf:get-vara-float netcdf
+                                                "coordinates"
+                                                (vector 0 0)
+                                                (vector number-of-atoms 3)
+                                                coords)))
+            (unless (= result 0)
+              (error "Could not read coordinates result -> ~a" result))
+            (netcdf:nc-close netcdf)
+            (values number-of-atoms coords bounding-box))
+          (read-amber-ascii-restart-file coordinate-filename)))))
+
+(defun load-amber-topology-restart-pair (&key topology-filename coordinate-filename)
+  (multiple-value-bind (energy-function aggregate)
+      (read-amber-parm-format topology-filename)
+    (multiple-value-bind (number-of-atoms coordinates bounding-box)
+        (read-amber-restart-file coordinate-filename)
+      (write-coordinates-into-energy-function-atom-table energy-function coordinates)
+      (when bounding-box
+        (chem:set-property aggregate :bounding-box bounding-box))
+      (make-instance 'amber-topology-restart-pair
+                     :topology-filename topology-filename
+                     :coordinate-filename coordinate-filename
+                     :energy-function energy-function
+                     :aggregate aggregate
+                     :number-of-atoms number-of-atoms
+                     :current-coordinates coordinates))))
+
+(defun load-amber-topology-trajectory-pair (&key topology-filename coordinate-filename)
+  (multiple-value-bind (energy-function aggregate)
+      (read-amber-parm-format topology-filename)
+    (let* ((crd (netcdf:nc-open coordinate-filename :mode netcdf-cffi:+nowrite+))
+           (number-of-atoms (netcdf:len (gethash "atom" (netcdf:dimensions crd))))
+           (coords (static-vectors:make-static-vector (* number-of-atoms 3) :element-type 'single-float))
+           (pair (make-instance 'amber-topology-trajectory-pair
+                                :topology-filename topology-filename
+                                :coordinate-filename coordinate-filename
+                                :netcdf crd
+                                :energy-function energy-function
+                                :aggregate aggregate
+                                :number-of-atoms number-of-atoms
+                                :current-coordinates coords)))
+      (gctools:finalize pair (lambda ()
+                               (format t "Closing netcdf file~%")
+                               (netcdf:nc-close (netcdf pair))))
+      pair)))
+
+(defun change-coordinate-file (amber-topology-pair coordinate-filename)
+  "Switch to another coordinate file"
+  (when (netcdf amber-topology-pair)
+    (netcdf:nc-close (netcdf amber-topology-pair)))
+  (let ((crd (netcdf:nc-open coordinate-filename :mode netcdf-cffi:+nowrite+)))
+    (setf (netcdf amber-topology-pair) crd
+          (coordinate-filename amber-topology-pair) coordinate-filename)))
+  
+(defun number-of-frames (amber-topology-pair)
+  "Return the number of frames in the coordinate file.
+If it's a restart file then return NIL"
+  (let ((dim (gethash "frame" (netcdf:dimensions (netcdf amber-topology-pair)))))
+    (if dim
+        (netcdf:len dim)
+        nil)))
+
+(defun read-frame-into-atoms (amber-topology-pair &optional frame-index)
+  "Read a frame of coordinates into the atom positions and return the aggregate with the new atom positions. DO NOT MODIFY THIS AGGREGATE"
+  (let ((number-of-frames (number-of-frames amber-topology-pair)))
+    (when number-of-frames
+      (when (>= frame-index number-of-frames)
+        (error "Tried to load a frame beyond the end of the netcdf file - only ~a frames available" number-of-frames)))
+    (let ((result (netcdf:get-vara-float (netcdf amber-topology-pair)
+                                         "coordinates"
+                                         (vector frame-index 0 0)
+                                         (vector 1 (number-of-atoms amber-topology-pair) 3)
+                                         (current-coordinates amber-topology-pair))))
+      (write-coordinates-into-energy-function-atom-table (energy-function amber-topology-pair) (current-coordinates amber-topology-pair))
+      (aggregate amber-topology-pair))))
 

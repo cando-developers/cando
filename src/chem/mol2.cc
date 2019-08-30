@@ -96,10 +96,13 @@ void	Mol2File::advanceLine() {
   }
 };
 std::queue<string>	Mol2File::splitLine() {
-    std::queue<string>	qWords;
-    core::queueSplitString(this->mLine.str(), qWords, " \t" );
-    return qWords;
-  };
+  std::queue<string>	qWords;
+  if (chem__verbose(1)) {
+    core::write_bf_stream(BF("Splitting read line: %s\n") % this->mLine.str());
+  }
+  core::queueSplitString(this->mLine.str(), qWords, " \t" );
+  return qWords;
+};
 bool	Mol2File::hasDataLine() {
   if ( this->eof() ) return false;
   if ( this->mLine.str().size() == 0 ) return false;
@@ -119,75 +122,66 @@ Mol2File::~Mol2File() {
 };
 
 struct TriposMolecule {
-	string	mMoleculeName;
-	uint	mAtoms;
-	uint	mBonds;
-	uint	mResidues;
-	uint	m_Unknown1;
-	uint	m_Unknown2;
-	string	m_Comment1_Unknown;
-	string	m_Comment2_Unknown;
+  string	mMoleculeName;
+  uint	mAtoms;
+  uint	mBonds;
+  uint	mResidues;
+  uint	m_Unknown1;
+  uint	m_Unknown2;
+  string	m_Comment1_Unknown;
+  string	m_Comment2_Unknown;
 };
 
 struct TriposAtom {
-	uint	mIndex;
-	string	atom_name;
-	double	mX;
-	double	mY;
-	double	mZ;
-	string	mType;
-	uint	mSubstId;
-	string	mSubstName;
-	double	mCharge;
-	Atom_sp	mAtom;
+  uint	mIndex;
+  string	atom_name;
+  double	mX;
+  double	mY;
+  double	mZ;
+  string	mType;
+  uint	mSubstId;
+  string	mSubstName;
+  double	mCharge;
+  Atom_sp	mAtom;
 };
 
 struct TriposBond {
-	uint	mId;
-	uint	mAtom1Id;
-	uint	mAtom2Id;
-	string	mOrder;
+  uint	mId;
+  uint	mAtom1Id;
+  uint	mAtom2Id;
+  string	mOrder;
 };
 
 
 struct TriposSubstructure {
-	uint	mId;
-	string	subst_name;
-	uint	root_atom;
-	string	subst_type;
-	uint	dict_type;
-	string	chain;
-	string	sub_type;
-	uint	mInterBonds;
-	string	mStatus;
-	string	mComment;
-	uint	file_sequence_number;
+  uint	mId;
+  string	subst_name;
+  uint	root_atom;
+  string	subst_type;
+  uint	dict_type;
+  string	chain;
+  string	sub_type;
+  uint	mInterBonds;
+  string	mStatus;
+  string	mComment;
+  uint	file_sequence_number;
 };
 
 
 
 void	splitStringIntoNameAndNumber(const string& nameNum, string& name, uint& seqNum )
 {
-size_t pos = nameNum.find_last_not_of("0123456789");
-size_t seqPos, nameLen;
-    if ( pos == string::npos )
-    {
-        seqNum = -1;
-	name = nameNum;
-    }
-    else
-    {
-    	seqPos = pos + 1;
-        if ( nameNum[pos] == '_' )
-	{
-	    nameLen = pos;
-	} else
-	{
-	    nameLen = pos + 1;
-	}
-	name = nameNum.substr(0,nameLen);
-	seqNum = atoi(nameNum.substr(seqPos,9999).c_str());
-    }
+  size_t pos = nameNum.find("_");
+  size_t seqPos, nameLen;
+  if ( pos == string::npos ) {
+    seqNum = -1;
+    name = nameNum;
+  } else {
+    seqPos = pos + 1;
+    nameLen = pos;
+    name = nameNum.substr(0,nameLen);
+    seqNum = atoi(nameNum.substr(seqPos,9999).c_str());
+  }
 }
 
 
@@ -196,65 +190,65 @@ size_t seqPos, nameLen;
 
 void	_calculateElementAndHybridization(Atom_sp a)
 {
-    MatterName	mnm;
-    Element el;
-    Hybridization geom;
-    uint	neighbors;
-    mnm = a->getName();
-    string nm = mnm->symbolName()->get();
+  MatterName	mnm;
+  Element el;
+  Hybridization geom;
+  uint	neighbors;
+  mnm = a->getName();
+  string nm = mnm->symbolName()->get();
     
     // Set the element from the name HACK HACK HACK
-    if ( nm.substr(0,2) == "CU" || nm.substr(0,2) == "Cu" ) {
-        el = element_Cu;
-    } else if ( nm.substr(0,2) == "CL" || nm.substr(0,2) == "Cl" ) {
-        el = element_Cl;
-    } else if ( nm.substr(0,2) == "BR" || nm.substr(0,2) == "Br" ) {
-        el = element_Br;
-    } else if ( nm.substr(0,2) == "RU" || nm.substr(0,2) == "Ru" ) {
-        el = element_Ru;
-    } else if ( nm.substr(0,1) == "C" ) {
-        el = element_C;
-    } else if ( nm.substr(0,1) == "N" ) {
-        el = element_N;
-    } else if ( nm.substr(0,1) == "O" ) {
-        el = element_O;
-    } else if ( nm.substr(0,1) == "H" ) {
-        el = element_H;
-    } else if ( nm.substr(0,1) == "S" ) {
-        el = element_S;
-    } else if ( nm.substr(0,1) == "P" ) {
-        el = element_P;
-    } else if ( nm.substr(0,1) == "B" ) {
-        el = element_B;
-    } else if ( nm.substr(0,1) == "F" ) {
-        el = element_F;
-    } else if ( nm.substr(0,1) == "I" ) {
-        el = element_I;
-    } else {
-        el = element_Undefined;
+  if ( nm.substr(0,2) == "CU" || nm.substr(0,2) == "Cu" ) {
+    el = element_Cu;
+  } else if ( nm.substr(0,2) == "CL" || nm.substr(0,2) == "Cl" ) {
+    el = element_Cl;
+  } else if ( nm.substr(0,2) == "BR" || nm.substr(0,2) == "Br" ) {
+    el = element_Br;
+  } else if ( nm.substr(0,2) == "RU" || nm.substr(0,2) == "Ru" ) {
+    el = element_Ru;
+  } else if ( nm.substr(0,1) == "C" ) {
+    el = element_C;
+  } else if ( nm.substr(0,1) == "N" ) {
+    el = element_N;
+  } else if ( nm.substr(0,1) == "O" ) {
+    el = element_O;
+  } else if ( nm.substr(0,1) == "H" ) {
+    el = element_H;
+  } else if ( nm.substr(0,1) == "S" ) {
+    el = element_S;
+  } else if ( nm.substr(0,1) == "P" ) {
+    el = element_P;
+  } else if ( nm.substr(0,1) == "B" ) {
+    el = element_B;
+  } else if ( nm.substr(0,1) == "F" ) {
+    el = element_F;
+  } else if ( nm.substr(0,1) == "I" ) {
+    el = element_I;
+  } else {
+    el = element_Undefined;
+  }
+  geom = hybridization_sp3;
+  neighbors = a->numberOfBonds();
+  if ( el == element_C ) {
+    switch (neighbors) {
+    case 2:
+        geom = hybridization_sp;
+        break;
+    case 3:
+        geom = hybridization_sp2;
+        break;
     }
-    geom = hybridization_sp3;
-    neighbors = a->numberOfBonds();
-    if ( el == element_C ) {
-	switch (neighbors) {
-        case 2:
-            geom = hybridization_sp;
-            break;
-        case 3:
-            geom = hybridization_sp2;
-            break;
-	}
-    } else if ( el == element_N ) {
-	if ( neighbors == 2 ) {
-	    geom = hybridization_sp2;
-	}
-    } else if ( el == element_O || el == element_S ) {
-	if ( neighbors == 1 ) {
-	    geom = hybridization_sp2;
-	}
+  } else if ( el == element_N ) {
+    if ( neighbors == 2 ) {
+      geom = hybridization_sp2;
     }
-    a->setElement(el);
-    a->setHybridization(geom);
+  } else if ( el == element_O || el == element_S ) {
+    if ( neighbors == 1 ) {
+      geom = hybridization_sp2;
+    }
+  }
+  a->setElement(el);
+  a->setHybridization(geom);
 }
 
 
@@ -289,6 +283,9 @@ core::T_sp mol2Read(Mol2File& fIn)
     line = fIn.line().str();
     if ( fIn.hasDataLine() ) {
       SIMPLE_ERROR(BF("Mol2 file encountered data line when expecting command line in top level: %s") % fIn.line().str() );
+    }
+    if (chem__verbose(1)) {
+      core::write_bf_stream(BF("Read mol2 line: %s\n") % line);
     }
     if ( line == "@<TRIPOS>MOLECULE" ) {
       if (!firstMolecule) break; // Read only one @<TRIPOS>MOLECULE
@@ -346,6 +343,9 @@ core::T_sp mol2Read(Mol2File& fIn)
           words.pop();
           if ( !words.empty() ) {
             oneAtom.mSubstName = words.front();
+            if (chem__verbose(1)) {
+              core::write_bf_stream(BF("Read atom mSubstName: %s\n") % oneAtom.mSubstName);
+            }
             LOG(BF("Read mSubstName=%s") % oneAtom.mSubstName.c_str() );
             words.pop();
             if ( !words.empty() ) {
@@ -426,7 +426,6 @@ core::T_sp mol2Read(Mol2File& fIn)
         lastmId = oneSubst.mId;
         nameNum = words.front(); words.pop();
         splitStringIntoNameAndNumber( nameNum, oneSubst.subst_name,oneSubst.file_sequence_number);
-//		oneSubst.subst_name = words.front(); words.pop();
         LOG(BF("oneSubst.root_atom str(%s)") % words.front().c_str()  );
         oneSubst.root_atom = atoi(words.front().c_str()); words.pop();
         oneSubst.dict_type = 0;
@@ -516,6 +515,9 @@ core::T_sp mol2Read(Mol2File& fIn)
 	    //
 	    // But I'll set them here incase there isn't 
 	    // a substructure entry
+      if (chem__verbose(1)) {
+        core::write_bf_stream(BF("Setting residue name: %s with id %d\n") % ai->second.mSubstName % ai->second.mSubstId );
+      }
       res->setName(chemkw_intern(ai->second.mSubstName));
       res->setPdbName(chemkw_intern(ai->second.mSubstName));
 //            printf("%s:%d setFileSequenceNumber --> %d\n", __FILE__, __LINE__, ai->second.mSubstId);
@@ -577,29 +579,45 @@ core::T_sp mol2Read(Mol2File& fIn)
           SIMPLE_ERROR(BF("Could not find molecule with chain=%s") % _rep_(schain));
         }
         LOG(BF("Looking up residue with mId=%d") % si->mId );
-        res = residues[si->mId];
-        if ( res.nilp() )
-        {
-          stringstream serr;
-          serr << "Could not find residue with si->mId=";
-          serr << si->mId;
-          serr << std::endl;
-          SIMPLE_ERROR(BF(serr.str()));
+        if (!residues.contains(si->mId)) {
+          if (residues.size()==1) {
+            // If there is only one residue - then use that.
+            gctools::SmallMap<uint,Residue_sp>::iterator it = residues.begin();
+            res = it->second;
+          } else {
+            stringstream ss;
+            for (auto it = residues.begin(); it<residues.end(); ++it ) {
+              if (it!=residues.begin()) {
+                ss << ", ";
+              }
+              ss << it->first;
+            }
+            SIMPLE_ERROR(BF("Could not find residue with subst_id %d - there are %d total residues with subst_ids %s") % si->mId % residues.size() % ss.str());
+          }
+        } else {
+          res = residues[si->mId];
         }
-        m->addMatter(residues[si->mId]);
+        if (chem__verbose(1)) {
+          core::write_bf_stream(BF("About to add residue id %d to molecule - number of residues %d\n") % si->mId % residues.size());
+          core::write_bf_stream(BF("About to add residue %s to molecule\n") % _rep_(res));
+        }
+        m->addMatter(res);
         LOG(BF("Setting residue name at index: %d") % si->mId  );
         LOG(BF("Setting residue name to: %s") % si->subst_name.c_str()  );
         core::T_sp sub_name = chemkw_intern(si->subst_name);
-        residues[si->mId]->setName(sub_name);
+        if (chem__verbose(1)) {
+          core::write_bf_stream(BF("Setting substructure residue name: %s\n") % _rep_(sub_name));
+        }
+        res->setName(sub_name);
         LOG(BF("Setting residue PDB name to: %s") % si->sub_type.c_str()  );
         core::T_sp sub_type = chemkw_intern(si->sub_type);
-        residues[si->mId]->setPdbName(sub_type);
+        res->setPdbName(sub_type);
         if (solventName.notnilp() && (sub_name==solventName || sub_type==solventName))
         {
           printf("%s:%d Setting molecule %s to solvent\n", __FILE__, __LINE__, _rep_(m).c_str());
           m->setf_molecule_type(kw::_sym_solvent);
         }
-        LOG(BF("Adding residue number: %d name(%s) pdbName(%s) to molecule: %s") % si->mId % residues[si->mId]->getName().c_str() % residues[si->mId]->getPdbName().c_str() % si->chain.c_str()  );
+        LOG(BF("Adding residue number: %d name(%s) pdbName(%s) to molecule: %s") % si->mId % res->getName().c_str() % res->getPdbName().c_str() % si->chain.c_str()  );
       }
     }
   } else
@@ -624,145 +642,147 @@ core::T_sp mol2Read(Mol2File& fIn)
   return aggregate;
 }
 
-  SYMBOL_EXPORT_SC_(ChemPkg,initialize_sybyl_type_rules);
-  SYMBOL_EXPORT_SC_(ChemPkg,STARsybyl_type_assignment_rulesSTAR);
+SYMBOL_EXPORT_SC_(ChemPkg,initialize_sybyl_type_rules);
+SYMBOL_EXPORT_SC_(ChemPkg,STARsybyl_type_assignment_rulesSTAR);
 
-  void	mol2WriteAggregateStream( Aggregate_sp agg, std::ostream &out, bool useSybylTypes )
-  {
-    Loop		loop, lRes;
-    uint		atomCount, bondCount, residueCount;
-    Atom_sp		a1, a2, a;
-    Residue_sp	r;
-    Molecule_sp	m;
-    gctools::Vec0<AtomInfo> atomList;
-    gctools::Vec0<ResidueOut> residueList;
-    ResidueOut	oneResOut;
-    AtomInfo	one;
-    core::HashTableEq_sp ht = core::HashTableEq_O::create_default();
+void	mol2WriteAggregateStream( Aggregate_sp agg, std::ostream &out, bool useSybylTypes )
+{
+  Loop		loop, lRes;
+  uint		atomCount, bondCount, residueCount;
+  Atom_sp		a1, a2, a;
+  Residue_sp	r;
+  Molecule_sp	m;
+  gctools::Vec0<AtomInfo> atomList;
+  gctools::Vec0<ResidueOut> residueList;
+  ResidueOut	oneResOut;
+  AtomInfo	one;
+  core::HashTableEq_sp ht = core::HashTableEq_O::create_default();
  
  	//
 	// Count the atoms
 	//
-    atomCount = agg->numberOfAtoms();
+  atomCount = agg->numberOfAtoms();
  	//
 	// Count the bonds
 	//
-    bondCount = 0;
-    loop.loopTopGoal(agg,BONDS);
-    while ( loop.advanceLoopAndProcess() ) bondCount++;
+  bondCount = 0;
+  loop.loopTopGoal(agg,BONDS);
+  while ( loop.advanceLoopAndProcess() ) bondCount++;
 
  	//
 	// Count the residues
 	//
-    residueCount = 0;
-    loop.loopTopGoal(agg,RESIDUES);
-    while ( loop.advanceLoopAndProcess() ) residueCount++;
+  residueCount = 0;
+  loop.loopTopGoal(agg,RESIDUES);
+  while ( loop.advanceLoopAndProcess() ) residueCount++;
 
-    out << "@<TRIPOS>MOLECULE" << std::endl;
-    out << agg->getName()->symbolNameAsString() << std::endl;
-    out << atomCount << " "
-	<< bondCount << " "
-	<< residueCount << " 0 0" << std::endl;
-    out << "POLYMER" << std::endl;
-    out << "CHARGES" << std::endl;
-    out << "" << std::endl;
-    out << "" << std::endl;
+  out << "@<TRIPOS>MOLECULE" << std::endl;
+  out << agg->getName()->symbolNameAsString() << std::endl;
+  out << atomCount << " "
+      << bondCount << " "
+      << residueCount << " 0 0" << std::endl;
+  out << "POLYMER" << std::endl;
+  out << "CHARGES" << std::endl;
+  out << "" << std::endl;
+  out << "" << std::endl;
 
 	//
 	// Assign an ID to every atom
 	//
-    LOG(BF("Assigning ID to every atom") );
-    uint atomId = 1;
-    uint resId = 1;
-    chem::FFTypesDb_sp sybylRules;
-    if (useSybylTypes) {
-      if (chem::_sym_STARsybyl_type_assignment_rulesSTAR->symbolValue().nilp()) {
-        SIMPLE_ERROR(BF("The chem:*sybyl-type-assignment-rules* dynamic variable needs to be bound to a chem:fftypes-db database for sybyl types"));
-      }
-      sybylRules = gc::As<FFTypesDb_sp>(chem::_sym_STARsybyl_type_assignment_rulesSTAR->symbolValue());
+  LOG(BF("Assigning ID to every atom") );
+  uint atomId = 1;
+  uint resId = 1;
+  chem::FFTypesDb_sp sybylRules;
+  if (useSybylTypes) {
+    if (chem::_sym_STARsybyl_type_assignment_rulesSTAR->symbolValue().nilp()) {
+      SIMPLE_ERROR(BF("The chem:*sybyl-type-assignment-rules* dynamic variable needs to be bound to a chem:fftypes-db database for sybyl types"));
     }
-    Loop lMol;
-    lMol.loopTopGoal(agg,MOLECULES);
-    while (lMol.advanceLoopAndProcess()) {
-      Molecule_sp mol = lMol.getMolecule();
-      oneResOut.mol = mol;
-      lRes.loopTopGoal(mol,RESIDUES);
-      while ( lRes.advanceLoopAndProcess() ) {
-        r = lRes.getResidue();
-        ht->setf_gethash(r,core::clasp_make_fixnum(resId));
-        oneResOut.res = r;
-        oneResOut.firstAtom = atomId;
-        residueList.push_back(oneResOut);
-        resId++;
-        loop.loopTopGoal(r,ATOMS);
-        while ( loop.advanceLoopAndProcess() ) {
-          a = loop.getAtom();
-          ht->setf_gethash(a,core::clasp_make_fixnum(atomId));
-          one._Atom = a;
-          if ( useSybylTypes ) {
-            ASSERT(sybylRules);
-            core::Symbol_sp type = sybylRules->assignType(a);
-            one._Type = type;
+    sybylRules = gc::As<FFTypesDb_sp>(chem::_sym_STARsybyl_type_assignment_rulesSTAR->symbolValue());
+  }
+  Loop lMol;
+  lMol.loopTopGoal(agg,MOLECULES);
+  while (lMol.advanceLoopAndProcess()) {
+    Molecule_sp mol = lMol.getMolecule();
+    oneResOut.mol = mol;
+    lRes.loopTopGoal(mol,RESIDUES);
+    while ( lRes.advanceLoopAndProcess() ) {
+      r = lRes.getResidue();
+      ht->setf_gethash(r,core::clasp_make_fixnum(resId));
+      oneResOut.res = r;
+      oneResOut.firstAtom = atomId;
+      residueList.push_back(oneResOut);
+      resId++;
+      loop.loopTopGoal(r,ATOMS);
+      while ( loop.advanceLoopAndProcess() ) {
+        a = loop.getAtom();
+        ht->setf_gethash(a,core::clasp_make_fixnum(atomId));
+        one._Atom = a;
+        if ( useSybylTypes ) {
+          ASSERT(sybylRules);
+          core::Symbol_sp type = sybylRules->assignType(a);
+          one._Type = type;
               //core::write_bf_stream(BF("Assigned sybyl type %s to %s\n") % _rep_(one._Type) % _rep_(a));
+        } else {
+          if ( a->getType().notnilp() ) {
+            core::Symbol_sp type = gc::As<core::Symbol_sp>(a->getType());
+            one._Type = type;
           } else {
-            if ( a->getType() ) {
-              one._Type = a->getType();
-            } else {
-              one._Type = _Nil<core::T_O>();
-            }
+            one._Type = _Nil<core::Symbol_O>();
           }
-          atomList.push_back(one);
-          atomId++;
         }
+        one._Residue = r;
+        atomList.push_back(one);
+        atomId++;
       }
     }
+  }
 
 
         // Figure out if there is a solvent residue and a bounding box
 
-    core::Symbol_sp solventName = _Nil<core::T_O>();
-    core::List_sp boundingBox = _Nil<core::T_O>();
-    {
-      Loop lMol;
-      loop.loopTopGoal(agg,MOLECULES);
-      while ( loop.advanceLoopAndProcess() ) {
-        m = loop.getMolecule();
-        if (m->molecule_type() == kw::_sym_solvent) {
-          size_t numResidues = m->contentSize();
-          if (numResidues==1) {
-            solventName = m->contentAt(0)->getName();
-            printf("%s:%d  Read solvent name: %s\n", __FILE__, __LINE__, _rep_(solventName).c_str());
-            goto GOT_SOLVENT;
-          } else {
-            printf("%s:%d There is more than one residue in a solvent molecule %s\n", __FILE__, __LINE__, _rep_(m).c_str());
-          }
-        }
-      }
-    GOT_SOLVENT:
-      boundingBox = agg->getPropertyOrDefault(kw::_sym_bounding_box,_Nil<core::T_O>());
-    }
-
-    if (boundingBox.notnilp()) {
-      out << "@<TRIPOS>FF_PBC" << std::endl;
-      out << "0.1 ";
-      if (boundingBox.nilp()) {
-        out << "0 0.0 0.0 0.0 0.0 0.0 0.0 ";
-      } else {
-        out << "1 0.0 0.0 0.0 ";
-        if (boundingBox.consp() && core::cl__length(boundingBox) == 3) {
-          for ( auto cur : boundingBox ) {
-            out << _rep_(CONS_CAR(boundingBox)) << " ";
-          }
+  core::Symbol_sp solventName = _Nil<core::T_O>();
+  core::List_sp boundingBox = _Nil<core::T_O>();
+  {
+    Loop lMol;
+    loop.loopTopGoal(agg,MOLECULES);
+    while ( loop.advanceLoopAndProcess() ) {
+      m = loop.getMolecule();
+      if (m->molecule_type() == kw::_sym_solvent) {
+        size_t numResidues = m->contentSize();
+        if (numResidues==1) {
+          solventName = m->contentAt(0)->getName();
+          printf("%s:%d  Read solvent name: %s\n", __FILE__, __LINE__, _rep_(solventName).c_str());
+          goto GOT_SOLVENT;
         } else {
-          SIMPLE_ERROR(BF("The bounding box has an unexpected structure %s - expected list of 3 doubles") % _rep_(boundingBox));
+          printf("%s:%d There is more than one residue in a solvent molecule %s\n", __FILE__, __LINE__, _rep_(m).c_str());
         }
       }
-      if (solventName.notnilp()) {
-        out << solventName->symbolNameAsString() << " ";
-      }
-      out << std::endl;
-      out << std::endl;
     }
+  GOT_SOLVENT:
+    boundingBox = agg->getPropertyOrDefault(kw::_sym_bounding_box,_Nil<core::T_O>());
+  }
+
+  if (boundingBox.notnilp()) {
+    out << "@<TRIPOS>FF_PBC" << std::endl;
+    out << "0.1 ";
+    if (boundingBox.nilp()) {
+      out << "0 0.0 0.0 0.0 0.0 0.0 0.0 ";
+    } else {
+      out << "1 0.0 0.0 0.0 ";
+      if (boundingBox.consp() && core::cl__length(boundingBox) == 3) {
+        for ( auto cur : boundingBox ) {
+          out << _rep_(CONS_CAR(boundingBox)) << " ";
+        }
+      } else {
+        SIMPLE_ERROR(BF("The bounding box has an unexpected structure %s - expected list of 3 doubles") % _rep_(boundingBox));
+      }
+    }
+    if (solventName.notnilp()) {
+      out << solventName->symbolNameAsString() << " ";
+    }
+    out << std::endl;
+    out << std::endl;
+  }
 
 #if 0
     // Don't change the names of molecules
@@ -770,122 +790,122 @@ core::T_sp mol2Read(Mol2File& fIn)
 	//
 	// Set the name of every molecule to the chainID.
 	//
-    LOG(BF("Setting molecule chainID") );
-    loop.loopTopGoal(agg,MOLECULES);
-    char chainId = 'A';
-    string nameId;
-    while ( loop.advanceLoopAndProcess() ) {
-      m = loop.getMolecule();
-      nameId = chainId;
-      m->setName(chemkw_intern(nameId));
-      chainId++;
-      if ( chainId > 'Z' ) chainId = 'A'; // recycle chain ids
-    }
+  LOG(BF("Setting molecule chainID") );
+  loop.loopTopGoal(agg,MOLECULES);
+  char chainId = 'A';
+  string nameId;
+  while ( loop.advanceLoopAndProcess() ) {
+    m = loop.getMolecule();
+    nameId = chainId;
+    m->setName(chemkw_intern(nameId));
+    chainId++;
+    if ( chainId > 'Z' ) chainId = 'A'; // recycle chain ids
+  }
 #endif
 	//
 	// Write out the atoms
 	//
-    LOG(BF("Writing ATOMs") );
-    out << "@<TRIPOS>ATOM" << std::endl;
-    Vector3 pos;
-    gctools::Vec0<AtomInfo>::iterator	ai;
-    for ( ai=atomList.begin(); ai!= atomList.end(); ai++ ) {
-      a = ai->_Atom;
-      int atom_temp_int = ht->gethash(a).unsafe_fixnum();
-      out << atom_temp_int << " ";
-      out << a->getName()->symbolNameAsString() << " ";
-      pos = a->getPosition();
-      out << pos.getX() << " ";
-      out << pos.getY() << " ";
-      out << pos.getZ() << " ";
-      LOG(BF("Writing mol2 atom(%s) pos(%s)") % a->description() % a->getPosition().asString() );
-      out << ai->_Type->symbolNameAsString() << " ";
-      int residue_temp_int = ht->gethash(a->containedBy()).unsafe_fixnum();
-      out << residue_temp_int << " ";
-      out << a->containedBy()->getName()->symbolNameAsString() << "_"
-          << residue_temp_int << " ";
-      out << std::setiosflags(std::ios::scientific)
-          << std::setw(8)
-          << std::setprecision(4);
-      out << a->getCharge() << std::endl;
-    }
+  LOG(BF("Writing ATOMs") );
+  out << "@<TRIPOS>ATOM" << std::endl;
+  Vector3 pos;
+  gctools::Vec0<AtomInfo>::iterator	ai;
+  for ( ai=atomList.begin(); ai!= atomList.end(); ai++ ) {
+    a = ai->_Atom;
+    int atom_temp_int = ht->gethash(a).unsafe_fixnum();
+    out << atom_temp_int << " ";
+    out << a->getName()->symbolNameAsString() << " ";
+    pos = a->getPosition();
+    out << pos.getX() << " ";
+    out << pos.getY() << " ";
+    out << pos.getZ() << " ";
+    LOG(BF("Writing mol2 atom(%s) pos(%s)") % a->description() % a->getPosition().asString() );
+    out << ai->_Type->symbolNameAsString() << " ";
+    int residue_temp_int = ht->gethash(ai->_Residue).unsafe_fixnum();
+    out << residue_temp_int << " ";
+    out << ai->_Residue->getName()->symbolNameAsString() << "_"
+        << residue_temp_int << " ";
+    out << std::setiosflags(std::ios::scientific)
+        << std::setw(8)
+        << std::setprecision(4);
+    out << a->getCharge() << std::endl;
+  }
 	//
 	// Write out the bonds
 	//
-    LOG(BF("Writing BOND") );
-    out << "@<TRIPOS>BOND" << std::endl;
-    loop.loopTopGoal(agg,BONDS);
-    uint id = 1;
-    BondOrder		o;
-    string		orderName;
-    while ( loop.advanceLoopAndProcess() ) {
-      a1 = loop.getBondA1();
-      a2 = loop.getBondA2();
-      o = loop.getBondOrder();
-      orderName = "1";
-      if ( o == singleBond ) orderName = "1";
-      else if ( o == doubleBond ) orderName = "2";
-      else if ( o == tripleBond ) orderName = "3";
-      else if ( o == aromaticBond ) orderName = "ar";
-      out << id << " ";
-      int a1_ti = ht->gethash(a1).unsafe_fixnum();
-      int a2_ti = ht->gethash(a2).unsafe_fixnum();
-      out << a1_ti << " ";
-      out << a2_ti << " ";
-      out << orderName << " ";
-      out << std::endl;
-      id++;
-    }
+  LOG(BF("Writing BOND") );
+  out << "@<TRIPOS>BOND" << std::endl;
+  loop.loopTopGoal(agg,BONDS);
+  uint id = 1;
+  BondOrder		o;
+  string		orderName;
+  while ( loop.advanceLoopAndProcess() ) {
+    a1 = loop.getBondA1();
+    a2 = loop.getBondA2();
+    o = loop.getBondOrder();
+    orderName = "1";
+    if ( o == singleBond ) orderName = "1";
+    else if ( o == doubleBond ) orderName = "2";
+    else if ( o == tripleBond ) orderName = "3";
+    else if ( o == aromaticBond ) orderName = "ar";
+    out << id << " ";
+    int a1_ti = ht->gethash(a1).unsafe_fixnum();
+    int a2_ti = ht->gethash(a2).unsafe_fixnum();
+    out << a1_ti << " ";
+    out << a2_ti << " ";
+    out << orderName << " ";
+    out << std::endl;
+    id++;
+  }
 	//
 	// Write out the substructures
 	//
-    LOG(BF("Writing SUBSTRUCTURE") );
-    out << "@<TRIPOS>SUBSTRUCTURE" << std::endl;
-    gctools::Vec0<ResidueOut>::iterator	ri;
-    id = 1;
-    for ( ri=residueList.begin(); ri!=residueList.end(); ri++ ) {
-      r = ri->res;
+  LOG(BF("Writing SUBSTRUCTURE") );
+  out << "@<TRIPOS>SUBSTRUCTURE" << std::endl;
+  gctools::Vec0<ResidueOut>::iterator	ri;
+  id = 1;
+  for ( ri=residueList.begin(); ri!=residueList.end(); ri++ ) {
+    r = ri->res;
 //	out << id << " ";
-      int r_ti = ht->gethash(r).unsafe_fixnum();
-      out << r_ti << " ";
-      out << r->getName()->symbolNameAsString() << "_" << r_ti << " ";
-      out << ri->firstAtom << " ";
-      out << "RESIDUE 1 ";
-      out << (ri->mol->getName()->symbolNameAsString()) << " ";
-      out << r->getName()->symbolNameAsString() << " 1";
-      out << std::endl;
-      id++;
-    }
-    LOG(BF("Returning") );
+    int r_ti = ht->gethash(r).unsafe_fixnum();
+    out << r_ti << " ";
+    out << r->getName()->symbolNameAsString() << "_" << r_ti << " ";
+    out << ri->firstAtom << " ";
+    out << "RESIDUE 1 ";
+    out << (ri->mol->getName()->symbolNameAsString()) << " ";
+    out << r->getName()->symbolNameAsString() << " 1";
+    out << std::endl;
+    id++;
   }
+  LOG(BF("Returning") );
+}
 
 
 
-  void	mol2WriteAggregateToFileName( Aggregate_sp agg, core::T_sp fname, bool useSybylTypes )
-  {
-    std::string sname = gc::As<core::String_sp>(core::cl__namestring(fname))->get_std_string();
-    std::ofstream	fout;
-    fout.open(sname.c_str(),std::ios::out);
-    mol2WriteAggregateStream( agg, fout, useSybylTypes );
-    fout.close();
+void	mol2WriteAggregateToFileName( Aggregate_sp agg, core::T_sp fname, bool useSybylTypes )
+{
+  std::string sname = gc::As<core::String_sp>(core::cl__namestring(fname))->get_std_string();
+  std::ofstream	fout;
+  fout.open(sname.c_str(),std::ios::out);
+  mol2WriteAggregateStream( agg, fout, useSybylTypes );
+  fout.close();
+}
+
+
+
+void	mol2WriteMatterToFileName(Matter_sp matter, core::T_sp fileName, bool useSybylTypes )
+{
+  if ( Aggregate_sp agg = matter.asOrNull<Aggregate_O>() ) {
+    mol2WriteAggregateToFileName(agg,fileName,useSybylTypes);
+    return;
   }
-
-
-
-  void	mol2WriteMatterToFileName(Matter_sp matter, core::T_sp fileName, bool useSybylTypes )
-  {
-    if ( Aggregate_sp agg = matter.asOrNull<Aggregate_O>() ) {
-      mol2WriteAggregateToFileName(agg,fileName,useSybylTypes);
-      return;
-    }
-    if ( Molecule_sp mol = matter.asOrNull<Molecule_O>() ) {
-      Aggregate_sp agg = Aggregate_O::create();
-      agg->addMolecule(mol);
-      mol2WriteAggregateToFileName(agg,fileName,useSybylTypes);
-      return;
-    }
-    SIMPLE_ERROR(BF("You must pass a Molecule or Aggregate"));
+  if ( Molecule_sp mol = matter.asOrNull<Molecule_O>() ) {
+    Aggregate_sp agg = Aggregate_O::create();
+    agg->addMolecule(mol);
+    mol2WriteAggregateToFileName(agg,fileName,useSybylTypes);
+    return;
   }
+  SIMPLE_ERROR(BF("You must pass a Molecule or Aggregate"));
+}
 
 
 
