@@ -214,7 +214,7 @@ public:
      */
     SpecificContextSet_sp	allSpecificMonomerContexts();
 
-  virtual core::T_sp copy() const;
+  virtual core::T_sp copyOligomer() const;
   
   Oligomer_O(const Oligomer_O& original);
   DEFAULT_CTOR_DTOR(Oligomer_O);

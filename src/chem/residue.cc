@@ -263,20 +263,28 @@ void	Residue_O::duplicateFrom( const Residue_O* r )
 
 
 
-Matter_sp	Residue_O::copyDontRedirectAtoms()
+Matter_sp	Residue_O::copyDontRedirectAtoms(core::T_sp new_to_old)
 {
     contentIterator	a;
     Atom_sp				acopy;
     Atom_sp				aorig;
 
     GC_COPY(Residue_O, rPNew, *this ); // = RP_Copy<Residue_O>(this); // _copy_Residue_sp(this);
+    if (gc::IsA<core::HashTable_sp>(new_to_old)) {
+      core::HashTable_sp new_to_old_ht = gc::As_unsafe<core::HashTable_sp>(new_to_old);
+      new_to_old_ht->setf_gethash(rPNew,this->asSmartPtr());
+    }
 //    rPNew = Residue_sp(n_ew Residue_O(*this));
 //    rPNew->duplicateFrom(this); //    *rPNew = *this;
     rPNew->eraseContents();
     for ( a=this->getContents().begin(); a!=this->getContents().end(); a++ ) 
     {
 	aorig = (*a).as<Atom_O>();
-	acopy = aorig->copyDontRedirectAtoms().as<Atom_O>();
+	acopy = aorig->copyDontRedirectAtoms(new_to_old).as<Atom_O>();
+        if (gc::IsA<core::HashTable_sp>(new_to_old)) {
+          core::HashTable_sp new_to_old_ht = gc::As_unsafe<core::HashTable_sp>(new_to_old);
+          new_to_old_ht->setf_gethash(acopy,aorig);
+        }
 	LOG(BF("Copying atom(%s) with %d bonds") % aorig->getName().c_str() % aorig->numberOfBonds()  );
 	rPNew->addMatter((Matter_sp)(acopy));
 	LOG(BF("Completed copy for new %s") % acopy->description().c_str()  );
@@ -301,9 +309,9 @@ void Residue_O::redirectAtoms()
 
 
 CL_LISPIFY_NAME("copy");
-CL_DEFMETHOD Matter_sp Residue_O::copy()
+CL_DEFMETHOD Matter_sp Residue_O::copy(core::T_sp new_to_old)
 { 
-    Residue_sp newRes = this->copyDontRedirectAtoms().as<Residue_O>();
+    Residue_sp newRes = this->copyDontRedirectAtoms(new_to_old).as<Residue_O>();
     newRes->redirectAtoms();
     return newRes;
 }

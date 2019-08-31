@@ -544,8 +544,8 @@ void SuperposeSelectedAtoms_O::updateSuperposeAtoms()
 CL_LISPIFY_NAME("setSuperposeMatter");
 CL_DEFMETHOD void SuperposeSelectedAtoms_O::setMatter(Matter_sp matter)
 {
-    this->_Matter = matter->copy();
-    this->_SuperposeAtoms.clear();
+  this->_Matter = matter->copy(_Nil<core::T_O>());
+  this->_SuperposeAtoms.clear();
 }
 
 CL_LISPIFY_NAME("setMatterWithSelectedAtoms");

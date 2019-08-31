@@ -81,7 +81,7 @@ public:
 	string asString();
     core::Symbol_sp asSymbol();
 
-	SpecificContext_sp copy();
+	SpecificContext_sp copySpecificContext();
 
 	SpecificContext_O( const SpecificContext_O& ss ); //!< Copy constructor
 

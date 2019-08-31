@@ -125,7 +125,7 @@ CL_DEFMETHOD 	Vector3		getZ()		{ return (this->z); };
 	void	dump();
 	bool		sameAs(CoordinateSystem_sp coord);
 
-	CoordinateSystem_sp	copy();
+	CoordinateSystem_sp	copyCoordinateSystem();
 
 	void	transformWithMatrixPointer( Matrix*	mp );
 	void	transformWithMatrix( const Matrix&	m );

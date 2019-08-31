@@ -126,7 +126,28 @@ The chem:force-field-type-rules-merged generic function was used to organize the
          (setf (gethash key bonds) nil)))
      molecule)
     bonds))
-  
+
+(defun missing-dihedral-message (a1 a2 a3 a4)
+  (let ((a1-name (chem:get-name a1))
+        (a2-name (chem:get-name a2))
+        (a3-name (chem:get-name a3))
+        (a4-name (chem:get-name a4))
+        (a1-element (chem:get-element a1))
+        (a2-element (chem:get-element a2))
+        (a3-element (chem:get-element a3))
+        (a4-element (chem:get-element a4))
+        (a1-a2 (chem:bond-order-to a1 a2))
+        (a2-a3 (chem:bond-order-to a2 a3))
+        (a3-a4 (chem:bond-order-to a3 a4)))
+    (format nil "~a/~a-~a-~a/~a-~a-~a/~a-~a-~a/~a"
+            a1-name a1-element
+            a1-a2
+            a2-name a2-element
+            a2-a3
+            a3-name a3-element
+            a3-a4
+            a4-name a4-element)))
+        
 
 (defmethod chem:generate-molecule-energy-function-tables (energy-function molecule (combined-smirnoff-force-field combined-smirnoff-force-field) active-atoms)
   (let* ((molecule-graph (chem:make-molecule-graph-from-molecule molecule))
@@ -236,8 +257,7 @@ The chem:force-field-type-rules-merged generic function was used to organize the
                                            nil)
             do (when proper-torsion-force
                  (loop for term across (terms proper-torsion-force)
-                       for smirks = (progn
-                                      (smirks term))
+                       for smirks = (smirks term)
                        for compiled-smirks = (compiled-smirks term)
                        for smirks-graph = (chem:make-chem-info-graph compiled-smirks)
                        for hits = (chem:boost-graph-vf2 smirks-graph molecule-graph)
@@ -247,7 +267,7 @@ The chem:force-field-type-rules-merged generic function was used to organize the
                                 for a3 = (aref hit 3)
                                 for a4 = (aref hit 4)
                                 for key1234 = (list a1 a2 a3 a4)
-                                ;; The vf2 algorithm will find the angle in both directions
+                                ;; The vf2 algorithm will find the dihedral in both directions
                                 ;; one of them will match - so we won't worry about the other one
                                 do (multiple-value-bind (val found)
                                        (gethash key1234 ptors)
@@ -275,7 +295,7 @@ The chem:force-field-type-rules-merged generic function was used to organize the
                              for idivf = (idivf part)
                              for v = (/ k idivf)
                              do (chem:add-dihedral-term dihedral-energy atom-table a1 a2 a3 a4 phase t v periodicity))
-                       (warn "Could not find proper torsion parameters for ~s" key))))
+                       (warn "Could not find proper torsion parameters for ~s" (missing-dihedral-message a1 a2 a3 a4)))))
                ptors)
       (loop for force-field in (reverse (chem:force-fields-as-list combined-smirnoff-force-field))
             for improper-torsion-force = (if (slot-boundp force-field 'improper-torsion-force)

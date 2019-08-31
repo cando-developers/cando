@@ -39,6 +39,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <fstream>
 #include <iomanip>
 #include <clasp/core/array.h>
+#include <clasp/core/hashTable.h>
 #include <cando/chem/loop.h>
 #include <cando/chem/moe.h>
 #include <cando/chem/mol2.h>
@@ -142,12 +143,16 @@ Atom_sp Aggregate_O::atomWithAtomId(const AtomId& atomId) const
 
 
 
-Matter_sp Aggregate_O::copy()
+Matter_sp Aggregate_O::copy(core::T_sp new_to_old)
 {
   GC_COPY(Aggregate_O, newAgg, *this ); // = RP_Copy<Aggregate_O>(this);
+  if (gc::IsA<core::HashTable_sp>(new_to_old)) {
+    core::HashTable_sp new_to_old_ht = gc::As_unsafe<core::HashTable_sp>(new_to_old);
+    new_to_old_ht->setf_gethash(newAgg,this->asSmartPtr());
+  }
   for ( contentIterator a=this->begin_contents(); a!=this->end_contents(); a++ ) {
     Molecule_sp mol = gc::As<Molecule_sp>(*a);
-    Molecule_sp mol_copy = gc::As<Molecule_sp>(mol->copy());
+    Molecule_sp mol_copy = gc::As<Molecule_sp>(mol->copy(new_to_old));
     newAgg->addMolecule(mol_copy);
   }
   newAgg->copyRestraintsDontRedirectAtoms(this->asSmartPtr());
@@ -159,18 +164,22 @@ Matter_sp Aggregate_O::copy()
 
 
 
-    Matter_sp Aggregate_O::copyDontRedirectAtoms()
-    {_OF();
-	GC_COPY(Aggregate_O, newAgg , *this); // = RP_Copy<Aggregate_O>(this);
+Matter_sp Aggregate_O::copyDontRedirectAtoms(core::T_sp new_to_old)
+{_OF();
+  GC_COPY(Aggregate_O, newAgg , *this); // = RP_Copy<Aggregate_O>(this);
+  if (gc::IsA<core::HashTable_sp>(new_to_old)) {
+    core::HashTable_sp new_to_old_ht = gc::As_unsafe<core::HashTable_sp>(new_to_old);
+    new_to_old_ht->setf_gethash(newAgg,this->asSmartPtr());
+  }
 //    newAgg->duplicate(this);	// *newAgg = *this;
-	for ( const_contentIterator a=this->begin_contents(); a!=this->end_contents(); a++ )
-	{
-	    Molecule_sp mol = (*a).as<Molecule_O>();
-	    newAgg->addMatter(mol->copyDontRedirectAtoms());
-	}
-	newAgg->copyRestraintsDontRedirectAtoms(this->asSmartPtr());
-	return newAgg;
-    }
+  for ( const_contentIterator a=this->begin_contents(); a!=this->end_contents(); a++ )
+  {
+    Molecule_sp mol = (*a).as<Molecule_O>();
+    newAgg->addMatter(mol->copyDontRedirectAtoms(new_to_old));
+  }
+  newAgg->copyRestraintsDontRedirectAtoms(this->asSmartPtr());
+  return newAgg;
+}
 
 
 

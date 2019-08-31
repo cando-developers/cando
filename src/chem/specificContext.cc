@@ -143,8 +143,7 @@ stringstream ss;
     }
 
 
-CL_LISPIFY_NAME("copy");
-CL_DEFMETHOD SpecificContext_sp SpecificContext_O::copy()
+CL_DEFMETHOD SpecificContext_sp SpecificContext_O::copySpecificContext()
 {
     GC_COPY(SpecificContext_O, cpy , *this); // = RP_Copy<SpecificContext_O>(this);
     return cpy;

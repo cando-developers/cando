@@ -159,10 +159,9 @@
 
 (defmethod nglv:get-structure-string ((self cando-structure))
   (check-type self cando-structure)
-  (check-type (dynamics:matter self) chem:aggregate)
   (progn
     (cl-jupyter:logg 2 "Generating mol2 as string~%")
-    (chem:aggregate-as-mol2-string (dynamics:matter self) t))
+    (chem:aggregate-as-mol2-string (matter self) t))
   #++(progn
        (cl-jupyter:logg 2 "Saving structure to /tmp/structure.mol2~%")
        (cando:save-mol2 (matter self) "/tmp/structure.mol2" :use-sybyl-types t)
@@ -194,6 +193,7 @@
   (vector-push-extend coordinates (dynamics:coordinates self)))
 
 (defmethod nglv:get-coordinates ((self cando-trajectory) index)
+  (format t "Getting coords at ~a~%" index)
   (aref (dynamics:coordinates self) index))
 
 (defmethod nglv:n-frames ((self cando-trajectory))

@@ -42,6 +42,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/restraint.h>
 #include <cando/chem/bond.h>
 #include <clasp/core/translators.h>
+#include <clasp/core/hashTable.h>
 #include <cando/chem/atomIdMap.h>
 #include <clasp/core/symbolTable.h>
 #include <clasp/core/wrappers.h>
@@ -191,13 +192,17 @@ CL_DEFMETHOD     void	Molecule_O::moveAllAtomsIntoFirstResidue()
     }
 
 
-Matter_sp	Molecule_O::copyDontRedirectAtoms()
+Matter_sp	Molecule_O::copyDontRedirectAtoms(core::T_sp new_to_old)
 {
   Residue_sp			res;
   GC_COPY(Molecule_O, newMol , *this); // = RP_Copy<Molecule_O>(this);
+  if (gc::IsA<core::HashTable_sp>(new_to_old)) {
+    core::HashTable_sp new_to_old_ht = gc::As_unsafe<core::HashTable_sp>(new_to_old);
+    new_to_old_ht->setf_gethash(newMol,this->asSmartPtr());
+  }
   for ( const_contentIterator a=this->begin_contents(); a!=this->end_contents(); a++ ) {
     res = (*a).as<Residue_O>();
-    newMol->addMatter(res->copyDontRedirectAtoms());
+    newMol->addMatter(res->copyDontRedirectAtoms(new_to_old));
   }
   newMol->copyRestraintsDontRedirectAtoms(this->asSmartPtr());
   return newMol;
@@ -218,10 +223,10 @@ void	Molecule_O::redirectAtoms()
 
 
 CL_LISPIFY_NAME("copy");
-CL_DEFMETHOD     Matter_sp Molecule_O::copy()
+CL_DEFMETHOD     Matter_sp Molecule_O::copy(core::T_sp new_to_old)
     {
 	Molecule_sp	newMol;
-	newMol = this->copyDontRedirectAtoms().as<Molecule_O>();
+	newMol = this->copyDontRedirectAtoms(new_to_old).as<Molecule_O>();
         Loop lbonds(this->asSmartPtr(),BONDS);
         while (lbonds.advanceLoopAndProcess()) {
           Bond_sp b = lbonds.getBond();

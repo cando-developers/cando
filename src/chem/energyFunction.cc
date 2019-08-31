@@ -1122,7 +1122,7 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, bool useEx
 	//
   if (chem__verbose(0)) core::write_bf_stream(BF("Searching for rings.\n"));
 
-  core::List_sp rings = RingFinder_O::identifyRings(matter);
+  core::T_sp rings = RingFinder_O::identifyRings(matter);
   core::DynamicScopeManager ring_scope(_sym_STARcurrent_ringsSTAR, rings );
 
   

@@ -956,8 +956,7 @@ void	CoordinateSystem_O::archive(core::ArchiveP node)
 #endif
 
 
-CL_LISPIFY_NAME("copy");
-CL_DEFMETHOD CoordinateSystem_sp	CoordinateSystem_O::copy()
+CL_DEFMETHOD CoordinateSystem_sp	CoordinateSystem_O::copyCoordinateSystem()
 {
     GC_COPY(CoordinateSystem_O, n , *this); // = RP_Copy<CoordinateSystem_O>(this);
     return n;
