@@ -144,10 +144,10 @@ namespace chem {
     Molecule_O() : Base(), _ForceFieldName(kw::_sym_default), _Type(_Unbound<core::Symbol_O>()) {};
 
   public:
-    virtual Matter_sp	copy();
+    virtual Matter_sp	copy(core::T_sp new_to_old);
     
   protected:
-    virtual Matter_sp copyDontRedirectAtoms();
+    virtual Matter_sp copyDontRedirectAtoms(core::T_sp new_to_old);
     virtual void redirectAtoms();
 
 

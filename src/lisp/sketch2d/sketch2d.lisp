@@ -13,9 +13,18 @@ I'll use SMARTS to identify features.
 I'll use an angle term instead of a bond term.
 |#
 
+
+(defclass sketch2d ()
+  ((molecule :initarg :molecule :accessor molecule)
+   (dynamics :initarg :dynamics :accessor dynamics)
+   (new-to-old :initarg :new-to-old :accessor new-to-old)
+   (original-molecule :initarg original-molecule :accessor original-molecule)))
+
+
 (defconstant +oozp-scale+ 1.0)
+(defconstant +150-degrees-rad+ (* 150.0 0.0174533))
 (defparameter *stage1-flatten-force-components* (list 0.85 0.85 0.85))
-(defparameter *stage3-flatten-force-components* (list 0.85 0.85 0.65))
+(defparameter *stage3-flatten-force-components* (list 0.85 0.85 0.25))
 (defconstant +stage1-nonbond-constant+ 0.04)
 (defconstant +stage2-nonbond-constant+ 1.0)
 (defconstant +first-bond-force+ 0.1)
@@ -40,6 +49,7 @@ I'll use an angle term instead of a bond term.
 (defparameter *lp-oxygen* (chem:make-chem-info-graph (chem:compile-smarts "[#8X2:0]")))
 (defparameter *lp-nitrogen* (chem:make-chem-info-graph (chem:compile-smarts "[#7X2:0]")))
 (defparameter *lp-sulfur* (chem:make-chem-info-graph (chem:compile-smarts "[#16X2:0]")))
+(defparameter *bad-angle* (chem:make-chem-info-graph (chem:compile-smarts "[*X3:0](~[*X1:1])(~[*:2])~[*:3]")))
 
 (defclass sketch-nonbond-force-field () ())
 
@@ -159,6 +169,19 @@ I'll use an angle term instead of a bond term.
       (chem:add-out-of-zplane-term oozp-component atom-table atom scale 0.0)
       )))
 
+(defun add-atom-annotations (molecule)
+  (cando:do-atoms (atom molecule)
+    (let ((hydrogens 0)
+          (charge 0))
+    (cond
+      ((/= (chem:get-atomic-number atom) 1)
+       (let ((bonds (chem:bonds-as-list atom)))
+         (loop for bond in bonds
+               for other-atom = (chem:get-other-atom bond atom)
+               when (= (chem:get-atomic-number other-atom) 1)
+                 do (incf hydrogens))
+         (chem:set-property atom :hydrogens hydrogens)))))))
+
 (defun system-preparation (molecule)
   (labels ((find-groups (chem-info-graph molecule-graph)
              (loop for match in (chem:boost-graph-vf2 chem-info-graph molecule-graph)
@@ -188,7 +211,9 @@ I'll use an angle term instead of a bond term.
                         (chem:bond-to atom lp :single-bond)
                      ))
              idx))
-    (let ((mol-copy (chem:matter-copy molecule)))
+    (let* ((new-to-old (make-hash-table))
+           (mol-copy (chem:matter-copy molecule new-to-old)))
+      (add-atom-annotations mol-copy)
       (let ((mol-graph (chem:make-molecule-graph-from-molecule mol-copy)))
         (remove-connected-hydrogens mol-copy (find-groups *methyl* mol-graph))
         (remove-connected-hydrogens mol-copy (find-groups *hydroxyl* mol-graph))
@@ -203,7 +228,10 @@ I'll use an angle term instead of a bond term.
           (setf idx (add-lone-pair mol-copy (find-groups *lp-sulfur* mol-graph) idx)))
         (chem:setf-force-field-name mol-copy :.hidden.sketch2d-1)
         (cando:jostle mol-copy 20.0 t)
-        mol-copy))))
+        (make-instance 'sketch2d
+                       :molecule mol-copy
+                       :original-molecule molecule
+                       :new-to-old new-to-old)))))
 
 
 (defun randomize-atoms (atom-table &key frozen from-zero (width 40.0) &aux (half-width (/ width 2.0)))
@@ -226,7 +254,8 @@ I'll use an angle term instead of a bond term.
 
 (defparameter *edited-mol* nil)
 (defun setup-simulation (molecule &key accumulate-coordinates frozen)
-  (let ((edited-mol (system-preparation molecule)))
+  (let* ((sketch (system-preparation molecule))
+         (edited-mol (molecule sketch)))
     (setf *edited-mol* edited-mol)
     (cando:do-atoms (atom edited-mol)
       (chem:set-type atom :sketch))
@@ -236,7 +265,8 @@ I'll use an angle term instead of a bond term.
            (dynamics (dynamics:make-atomic-simulation sketch-function
                                                       :accumulate-coordinates accumulate-coordinates)))
       (randomize-atoms atom-table :frozen frozen)
-      dynamics)))
+      (setf (dynamics sketch) dynamics)
+      sketch)))
 
 (defun advance-simulation (dynamics &key frozen)
   (dynamics:velocity-verlet-step
@@ -469,6 +499,239 @@ to check if two line segments (bonds) overlap/intersect
                        (elt coordinates (+ coord-index 1)) ypos
                        (elt coordinates (+ coord-index 2)) zpos))))))
 
+
+(defstruct bad-angle center bisected in-small-ring mono left right)
+
+(defun has-bisected-angle (center mono left right)
+  (let ((vcenter (chem:get-position center))
+        (vmono (chem:get-position mono))
+        (vleft (chem:get-position left))
+        (vright (chem:get-position right)))
+    (let ((vleft-right (geom:v+ (geom:v- vleft vcenter) (geom:v- vright vcenter)))
+          (vdelta-mono (geom:v- vmono vcenter)))
+      (> (geom:vdot vleft-right vdelta-mono) 0.0)))) ; mono pointed into V formed by left-center-right
+
+(defun has-wide-angle (center mono left right)
+  (let ((vcenter (chem:get-position center))
+        (vmono (chem:get-position mono))
+        (vleft (chem:get-position left))
+        (vright (chem:get-position right)))
+    (let ((angle-rad (geom:vangle vleft vcenter vright)))
+      (> angle-rad +150-degrees-rad+))))
+
+
+(defun connected (ba1 ba2)
+  (or (eq (bad-angle-center ba1) (bad-angle-left ba2))
+      (eq (bad-angle-center ba1) (bad-angle-right ba2))))
+
+
+(defun add-bad-angle-to-groups (bad-angle bonded-groups)
+  (loop for ia1 from 0 below (length bonded-groups)
+        for group = (elt bonded-groups ia1)
+        when (position bad-angle group :test #'connected)
+          do (progn
+               (vector-push-extend bad-angle group)
+               (return-from add-bad-angle-to-groups nil)))
+  (let ((new-group (make-array 16 :fill-pointer 0 :adjustable t)))
+    (vector-push-extend bad-angle new-group)
+    (vector-push-extend new-group bonded-groups)))
+
+(defun bad-angle-swap (bad-angle)
+  (let ((temp-left (bad-angle-left bad-angle)))
+    (setf (bad-angle-left bad-angle) (bad-angle-right bad-angle)
+          (bad-angle-right bad-angle) temp-left)))
+
+(defun has-two-neighbors (bad-angle bad-angle-vector)
+  (let ((left-pos (position (bad-angle-left bad-angle) bad-angle-vector :key #'bad-angle-center))
+        (right-pos (position (bad-angle-right bad-angle) bad-angle-vector :key #'bad-angle-center)))
+    (cond
+      ((and left-pos right-pos)) ; we found neighbors on both sides, keep going
+      (left-pos                 ; we found a neighbor on our left side
+       (bad-angle-swap bad-angle) ; swap neighbor so that its on right
+       nil)                       ; return nil to return
+      (right-pos ; we found a neighbor on our right side - and none on our left - return nil to return
+       nil)
+      (t (error "either we find a neighbor on left or right or both - but not this")))))
+
+(defun find-leftmost-position (bad-angle-vector)
+  (if (= (length bad-angle-vector) 1)
+      0            ; If there is only one bad angle then it's leftmost
+      (progn
+        (loop for ia from 0 below (length bad-angle-vector)
+              for bad-angle = (elt bad-angle-vector ia)
+              for has-two-neighbors = (has-two-neighbors bad-angle bad-angle-vector)
+              unless has-two-neighbors ; if pos is nil then we found a leftmost and we return
+                do (progn
+                     (return-from find-leftmost-position ia)))
+        0                       ; default index 0 since we have a ring
+        )))
+
+(defun is-neighbor-with-atom (center-atom right-atom bad-angle-or-nil)
+  (if bad-angle-or-nil
+      (if (eq (bad-angle-center bad-angle-or-nil) right-atom)
+        (cond
+          ((eq center-atom (bad-angle-left bad-angle-or-nil)))
+          ((eq center-atom (bad-angle-right bad-angle-or-nil))
+           (bad-angle-swap bad-angle-or-nil)
+           t)
+          (nil)))
+      nil))
+
+(defun find-neighbor-to-right (bad-angle bad-angle-vector)
+  (let ((right-atom (bad-angle-right bad-angle))
+        (center-atom (bad-angle-center bad-angle)))
+    (let ((found (position-if (lambda (ba) (is-neighbor-with-atom center-atom right-atom ba)) bad-angle-vector)))
+      found)))
+
+(defun order-group (bad-angle-vector)
+  ;; Find the left most bad angle -
+  (let ((new-bad-angle-vector (make-array (length bad-angle-vector) :fill-pointer 0 :adjustable t))
+        (leftmost (find-leftmost-position bad-angle-vector)))
+    (vector-push (elt bad-angle-vector leftmost) new-bad-angle-vector)
+    (let ((temp-index nil)
+          (left (elt bad-angle-vector leftmost)))
+      (setf (elt bad-angle-vector leftmost) nil)
+      (loop for ia from 1 below (length bad-angle-vector)
+            for next-left = left then next-left
+            for right-idx = (find-neighbor-to-right next-left bad-angle-vector)
+            when right-idx
+              do (let ((right (elt bad-angle-vector right-idx)))
+                   (vector-push right new-bad-angle-vector)
+                   (setf (elt bad-angle-vector right-idx) nil)
+                   (setf next-left right))))
+    new-bad-angle-vector))
+
+
+(defun is-in-small-ring (atom rings)
+  (loop for ring in rings
+        when (and (< (length ring) 7) (position atom ring))
+          do (return-from is-in-small-ring t))
+  nil)
+             
+(defun find-bad-angle-groups (molecule)
+  ;; Find the bad angles
+  (let* ((mol-graph (chem:make-molecule-graph-from-molecule molecule))
+         (matches (chem:boost-graph-vf2 *bad-angle* mol-graph))
+         (bad-angles-ht (make-hash-table :test #'equalp)))
+    (let ((rings (chem:identify-rings molecule)))
+      (loop for match in matches
+            for center = (elt match 0)
+            for mono = (elt match 1)
+            for left = (elt match 2)
+            for right = (elt match 3)
+            for in-small-ring = (is-in-small-ring center rings)
+            do (let ((bisected (has-bisected-angle center mono left right))
+                     (wide-angle (has-wide-angle center mono left right)))
+                 (when (or bisected wide-angle)
+                   (let ((ba23 (make-bad-angle :center (elt match 0)
+                                               :in-small-ring in-small-ring
+                                               :bisected bisected
+                                               :mono (elt match 1)
+                                               :left (elt match 2) :right (elt match 3)))
+                         (ba32 (make-bad-angle :center (elt match 0)
+                                               :in-small-ring in-small-ring
+                                               :bisected bisected
+                                               :mono (elt match 1)
+                                               :left (elt match 3) :right (elt match 2))))
+                     (unless (or (gethash ba23 bad-angles-ht)
+                                 (gethash ba32 bad-angles-ht))
+                       (setf (gethash ba23 bad-angles-ht) t)))))))
+    ;; group together the bad angles that connect to each other
+    (let (bad-angles)
+      (maphash (lambda (ba dummy)
+                 (declare (ignore dummy))
+                 (push ba bad-angles))
+               bad-angles-ht)
+      (let ((bonded-groups (make-array (length bad-angles) :fill-pointer 0)))
+        (loop for bad-angle in bad-angles
+              do (add-bad-angle-to-groups bad-angle bonded-groups))
+        (let ((merged t))
+          (loop while merged
+                do (setf merged nil)
+                do (loop named maybe-merge
+                         for ia from 0 below (1- (length bonded-groups))
+                         for groupa = (elt bonded-groups ia)
+                         do (loop for ib from (1+ ia) below (length bonded-groups)
+                                  for groupb = (elt bonded-groups ib)
+                                  when (and groupa groupb
+                                            (some (lambda (bad-angle)
+                                                    (position bad-angle groupa :test #'connected))
+                                                  groupb))
+                                    do (progn
+                                         (setf merged t)
+                                         (setf (elt bonded-groups ia) (concatenate 'vector groupa groupb))
+                                         (setf (elt bonded-groups ib) nil))))))
+        ;; Gather up the groups and order them center -> right
+        (let ((groups (loop for ia from 0 below (length bonded-groups)
+                            for group = (elt bonded-groups ia)
+                            when group
+                              collect group)))
+          (loop for group in groups
+                collect (order-group group)))))))
+
+(defun is-ring (group)
+  (when (> (length group) 1)
+    (let ((last-bad-angle (elt group (1- (length group))))
+          (first-bad-angle (elt group 0)))
+      (eq (bad-angle-right last-bad-angle)
+          (bad-angle-center first-bad-angle)))))
+
+(defun maybe-bring-heteroatom-to-front (group)
+  (let ((hetero-idx (position-if (lambda (a) (not (eq :c (chem:get-element a)))) group)))
+    (if (and hetero-idx (> hetero-idx 0))
+        (concatenate 'vector (subseq group hetero-idx (length group)) (subseq group 0 (1- hetero-idx)))
+        group)))
+
+(defun fix-one-bad-angle (bad-angle force)
+  (let* ((center (chem:get-position (bad-angle-center bad-angle)))
+         (mono (chem:get-position (bad-angle-mono bad-angle)))
+         (left (chem:get-position (bad-angle-left bad-angle)))
+         (right (chem:get-position (bad-angle-right bad-angle)))
+         (in-small-ring (bad-angle-in-small-ring bad-angle))
+         (bisected (bad-angle-bisected bad-angle))
+         (delta (geom:v- mono center))
+         (between-left-right (geom:v+ (geom:v- left center) (geom:v- right center)))
+         (delta-dot-between-left-right (geom:vdot between-left-right delta))
+         (would-flip-in (< delta-dot-between-left-right 0.0)))
+    (flet ((flip-mono (why)
+             (let ((flipped-mono (geom:v+ center (geom:v* delta -1.0))))
+               (chem:set-position (bad-angle-mono bad-angle) flipped-mono))))
+      (cond
+        ((and in-small-ring bisected)
+         (flip-mono :in-small-ring-bisected))
+        ((and would-flip-in in-small-ring)
+         nil)
+        (force
+         (flip-mono :force))))))
+
+(defun fix-bad-angle-group (group)
+  ;; Handle double bonds
+  (cond
+    ((= (length group) 1)
+     (fix-one-bad-angle (elt group 0) t))
+    ((= (length group) 2)
+     (fix-one-bad-angle (elt group 0) t)
+     (fix-one-bad-angle (elt group 1) nil))
+    ((= (length group) 3)
+     (fix-one-bad-angle (elt group 0) nil)
+     (fix-one-bad-angle (elt group 1) t)
+     (fix-one-bad-angle (elt group 2) nil))
+    (t
+     (fix-one-bad-angle (elt group 0) t)
+     (fix-one-bad-angle (elt group 1) nil)
+     (fix-one-bad-angle (elt group 2) nil)
+     (fix-bad-angle-group (subseq group 3 (length group))))))
+
+
+(defun fix-bad-angles (molecule)
+  (let ((groups (find-bad-angle-groups molecule)))
+    (loop for group in groups
+          do (progn
+               (when (is-ring group)
+                 (setf group (maybe-bring-heteroatom-to-front group)))
+               (fix-bad-angle-group group)))
+    groups))
+
 (defun sketch2d-dynamics (dynamics &key accumulate-coordinates frozen (bond-length +stage1-bond-length+))
   (let* ((sketch-function (dynamics:scoring-function dynamics))
          (atom-table (chem:atom-table sketch-function))
@@ -520,10 +783,11 @@ to check if two line segments (bonds) overlap/intersect
     ))
 
 (defun sketch2d-molecule (molecule &key accumulate-coordinates)
-  (let* ((dynamics (setup-simulation molecule :accumulate-coordinates accumulate-coordinates))
+  (let* ((sketch (setup-simulation molecule :accumulate-coordinates accumulate-coordinates))
+         (dynamics (dynamics sketch))
          (scoring-function (dynamics:scoring-function dynamics)))
     (sketch2d-dynamics dynamics :accumulate-coordinates accumulate-coordinates)
-    dynamics))
+    sketch))
 
 (defun organize-moment-of-inertia-eigen-system (eigen-vector-matrix eigen-values)
   "Reorganize the eigenvalues and eigen-vector-matrix so that the eigen-values
@@ -561,19 +825,17 @@ are in the order (low, middle, high) and the column eigen-vectors are in the sam
         (chem:apply-transform-to-atoms molecule transposed-transform)))))
 
 
-(defclass sketch2d ()
-  ((molecule :initarg :molecule :accessor molecule)
-   (dynamics :initarg :dynamics :accessor dynamics)))
-
 
 (defgeneric do-sketch2d (matter &key accumulate-coordinates)
   (:documentation "Return an edited molecule that looks like a chemdraw sketch of the molecule. 
 The coordinates are all pressed into the X-Y plane and some hydrogens are added and lone-pairs removed."))
 
 (defmethod do-sketch2d ((molecule chem:molecule) &key accumulate-coordinates)
-  (let* ((dynamics (sketch2d-molecule molecule :accumulate-coordinates accumulate-coordinates))
+  (let* ((sketch (sketch2d-molecule molecule :accumulate-coordinates accumulate-coordinates))
+         (dynamics (dynamics sketch))
          (scoring-function (dynamics:scoring-function dynamics)))
     ;; Check for problems
+    #+(or)
     (let* ((temp-coordinates (copy-seq (dynamics:coordinates dynamics)))
            (edited-molecule (chem:get-matter (dynamics:scoring-function dynamics))))
       (multiple-value-bind (number-of-problem-areas frozen)
@@ -601,9 +863,18 @@ The coordinates are all pressed into the X-Y plane and some hydrogens are added 
                      (chem:save-coordinates-from-vector scoring-function temp-coordinates))
                     (t))
                   (values (chem:get-matter (dynamics:scoring-function dynamics)) dynamics)))))))
+    ;; Look for bad angles
+    (let* ((energy-function (dynamics:scoring-function dynamics))
+           (molecule (chem:get-matter energy-function))
+           (fixed (fix-bad-angles molecule)))
+      (when fixed
+        (chem:load-coordinates-into-vector energy-function (dynamics:coordinates dynamics))
+        (loop for i from 0 below 5000
+              do (advance-simulation dynamics))
+        (dynamics:write-coordinates-back-to-matter dynamics)))
     (let ((result-molecule (chem:get-matter (dynamics:scoring-function dynamics))))
       (align-molecule-horizontal result-molecule)
-      (values result-molecule dynamics))))
+      sketch)))
 
 (defmethod do-sketch2d ((aggregate chem:aggregate) &key accumulate-coordinates)
   (if (= (chem:content-size aggregate) 1)
@@ -611,10 +882,7 @@ The coordinates are all pressed into the X-Y plane and some hydrogens are added 
       (error "sketch2d only accepts a molecule or an aggregate with a single molecule")))
 
 (defun sketch2d (matter &key accumulate-coordinates)
-  (multiple-value-bind (edited-mol dynamics)
-      (do-sketch2d matter :accumulate-coordinates accumulate-coordinates)
-    (make-instance 'sketch2d :molecule edited-mol
-                             :dynamics dynamics)))
+  (do-sketch2d matter :accumulate-coordinates accumulate-coordinates))
 
 
 

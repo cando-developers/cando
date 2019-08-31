@@ -1177,7 +1177,9 @@ CL_DEFMETHOD     bool	Atom_O::isBondedTo( Atom_sp aTarget)
 //
 // Return the bond order by which we are bonded to the atom.
 // Return noBond if there is no bond.
-BondOrder	Atom_O::bondOrderTo( Atom_sp aTarget )
+CL_DOCSTRING("Return the bond-order to the OTHER atom.");
+CL_DEFMETHOD
+BondOrder	Atom_O::bondOrderTo( Atom_sp other )
 {
   VectorBond::iterator	b;
   Atom_sp				a2;
@@ -1185,7 +1187,7 @@ BondOrder	Atom_O::bondOrderTo( Atom_sp aTarget )
   for ( b=this->bonds.begin();b!=this->bonds.end() ; b++ )
   {
     a2 = (*b)->getOtherAtom(me);
-    if ( a2 == aTarget )
+    if ( a2 == other )
     {
       return (*b)->getOrder();
     }
@@ -1219,7 +1221,7 @@ CL_DEFMETHOD     bool Atom_O::testConsistancy(Matter_sp parentShouldBe)
 
 
 
-Matter_sp Atom_O::copy()
+Matter_sp Atom_O::copy(core::T_sp new_to_old)
 {_OF();
   SIMPLE_ERROR(BF("Don't copy single atoms - bonds will be messed up"));
 }
@@ -1233,7 +1235,7 @@ Matter_sp Atom_O::copy()
 //	Allocate a copy of this atom and return it.
 //	Keep track of the new atom so that we can redirect pointers to the copy.
 //
-Matter_sp Atom_O::copyDontRedirectAtoms()
+Matter_sp Atom_O::copyDontRedirectAtoms(core::T_sp new_to_old)
 {_OF();
   LOG(BF("Copying atom @%p") % this );
   Atom_sp myself = this->sharedThis<Atom_O>();

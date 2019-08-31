@@ -1083,6 +1083,8 @@ bool _matchBondTypes(BondEnum be, chem::BondOrder bo, Atom_sp a1, Atom_sp a2) {
 }
 
 SYMBOL_EXPORT_SC_(ChemPkg,STARcurrent_ringsSTAR);
+SYMBOL_EXPORT_SC_(ChemPkg,make_rings);
+SYMBOL_EXPORT_SC_(ChemPkg,rings_rings);
 
 bool _matchBondTypesWithAtoms(BondEnum be, chem::BondOrder bo, Atom_sp from, Bond_sp bond) {
   if (be==SABSameRingBond) {

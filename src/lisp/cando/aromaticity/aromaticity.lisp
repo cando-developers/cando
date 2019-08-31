@@ -170,16 +170,17 @@ associating the atom with its aromaticity info in a hash-table and return the ha
   "Use the atoms-in-rings - found using RingFinder_O::identifyRings(matter) and run all of the
 aromaticity tests on the atoms in the rings.   Assign aromaticity flags of aromatic atoms by
 associating the atom with its aromaticity info in a hash-table and return the hash-table."
-  (unless (and (boundp 'chem:*current-rings*) chem:*current-rings*)
+  (unless (boundp 'chem:*current-rings*)
     (error "chem:*current-rings* must be bound to a list of rings in the molecule identified using chem:identify-rings"))
   (let* ((aromaticity-info (make-hash-table))
          (chem:*current-aromaticity-information* aromaticity-info))
-    (cando:do-molecules (molecule matter)
-      (let ((molecule-graph (chem:make-molecule-graph-from-molecule molecule)))
-        (exhaustively-apply-aromatic-rule aromaticity-info molecule-graph *rule1* :ar6 :rule1)
-        (exhaustively-apply-aromatic-rule aromaticity-info molecule-graph *rule2* :ar6 :rule2)
-        (exhaustively-apply-aromatic-rule aromaticity-info molecule-graph *rule3* :ar6 :rule3)))
-    (setf *save-aromatic-info* aromaticity-info)
+    (unless chem:*current-rings*
+      (cando:do-molecules (molecule matter)
+        (let ((molecule-graph (chem:make-molecule-graph-from-molecule molecule)))
+          (exhaustively-apply-aromatic-rule aromaticity-info molecule-graph *rule1* :ar6 :rule1)
+          (exhaustively-apply-aromatic-rule aromaticity-info molecule-graph *rule2* :ar6 :rule2)
+          (exhaustively-apply-aromatic-rule aromaticity-info molecule-graph *rule3* :ar6 :rule3)))
+      (setf *save-aromatic-info* aromaticity-info))
     aromaticity-info))
 
 (defmethod chem:identify-aromatic-rings (matter (force-field-name (eql :smirnoff)))

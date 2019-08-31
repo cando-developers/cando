@@ -29,9 +29,11 @@ Methods are specialized on this class in cando-nglview.lisp."))
                                    :number-of-atoms (chem:number-of-atoms structure)))
 
 (defmethod make-trajectory ((dynamics dynamics:simulation))
+  (format t "make-trajectory dynamics~%")
   (let* ((scoring-function (dynamics:scoring-function dynamics))
          (matter (chem:get-matter scoring-function))
          (trajectory (dynamics:accumulated-coordinates dynamics)))
+    (format t "checking trajectory length~%")
     (unless (> (length trajectory) 1)
       (error "The trajectory must have more than one coordinate set"))
     (cond
@@ -43,7 +45,7 @@ Methods are specialized on this class in cando-nglview.lisp."))
       (t (error "matter must be aggregate or molecule")))
     (make-instance 'trajectory :matter matter
                                      :number-of-atoms (chem:number-of-atoms matter)
-                                     :trajectory trajectory)))
+                                     :coordinates trajectory)))
 
 (defmethod make-trajectory ((trajectory trajectory))
   (let ((matter (dynamics:matter trajectory))

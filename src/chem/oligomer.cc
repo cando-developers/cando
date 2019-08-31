@@ -1027,7 +1027,7 @@ void	Oligomer_O::_assembleFromParts(core::List_sp parts, CandoDatabase_sp bdb)
   }
 }
 
-CL_DEFMETHOD core::T_sp Oligomer_O::copy() const
+CL_DEFMETHOD core::T_sp Oligomer_O::copyOligomer() const
 {
   GC_COPY(Oligomer_O,newOligomer,*this);
   return newOligomer;

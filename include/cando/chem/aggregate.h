@@ -157,9 +157,9 @@ CL_DEFMETHOD     void		saveAs(const string& fileName) { _G(); this->writeToFile(
 
 
 public:
-    virtual Matter_sp	copy();
+    virtual Matter_sp	copy(core::T_sp new_to_old);
     
-    virtual Matter_sp copyDontRedirectAtoms();
+    virtual Matter_sp copyDontRedirectAtoms(core::T_sp new_to_old);
 	virtual void redirectAtoms();
 
   core::T_sp force_field_name() const;

@@ -1253,7 +1253,7 @@ CL_DEFMETHOD core::List_sp Matter_O::allProperTorsionsAsList(bool allowVirtualAt
 
 
 
-Matter_sp Matter_O::copyDontRedirectAtoms()
+Matter_sp Matter_O::copyDontRedirectAtoms(core::T_sp new_to_old)
 {_OF();
   SUBCLASS_MUST_IMPLEMENT();
 }

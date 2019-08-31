@@ -607,9 +607,9 @@ namespace chem {
 
 
   public:
-    virtual Matter_sp	copy();
+    virtual Matter_sp	copy(core::T_sp new_to_old);
   protected:
-    virtual Matter_sp copyDontRedirectAtoms();
+    virtual Matter_sp copyDontRedirectAtoms(core::T_sp new_to_old);
     virtual void redirectAtoms();
 
 	/*! Used by Bond to connect a copied atom to a bond */
