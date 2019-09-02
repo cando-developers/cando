@@ -43,4 +43,7 @@
 
 
 (defmethod show ((sketch sketch2d:sketch2d) &rest kwargs &key &allow-other-keys)
-  (cl-jupyter-user:svg (sketch2d:svg sketch)))
+  (show (sketch2d:svg sketch)))
+
+(defmethod show ((sketch sketch2d:sketch-svg) &rest kwargs &key &allow-other-keys)
+  (cl-jupyter-user:svg (sketch2d:render-svg sketch)))

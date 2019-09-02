@@ -19,6 +19,9 @@
    #:atom-cluster-p
    #:atom-cluster-atoms
    #:compare-molecules
+   #:element-match-with-frontier
+   #:element-match
+   #:element-and-name-match
    ))
 
 (defpackage #:graphviz-molecule-graph
@@ -28,4 +31,5 @@
    #:draw-graph-to-file
    #:draw-graph-to-stream
    ))
+
 

@@ -7,7 +7,7 @@
     :licence "LGPL-3.0"
     :depends-on (:cando :charges :design :leap :leap-commands #+(or):cando-jupyter :sdf :fep :sketch2d)
     :serial t
-    :components ((:file "packages")
+  :components ((:file "packages")
                  (:file "start-swank")
                  (:file "graphviz")
                  #+(or)(:file "cl-jupyter")))

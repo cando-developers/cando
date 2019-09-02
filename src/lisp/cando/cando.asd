@@ -17,6 +17,7 @@
    (:file "conditions")
    (:file "chemistry")
    (:file "select")
+   (:file "convenience")
    (:file "geom")
    (:file "build")
    (:file "progress")

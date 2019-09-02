@@ -33,4 +33,5 @@
    #:identify-aromatic-rings
    #:aromaticity-information-as-string
    #:with-aromaticity-information
+   #:aromatic-info
    ))

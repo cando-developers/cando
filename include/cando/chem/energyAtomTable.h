@@ -137,9 +137,8 @@ class AtomTable_O : public core::CxxObject_O
  public:
   void initialize();
 public:
-  typedef core::HashTableEq_sp        AtomTable;
   gctools::Vec0<EnergyAtom>	      _Atoms;
-  AtomTable                           _AtomTableIndices; // m a p<Atom_sp,uint>	_AtomTableIndices;
+  core::HashTableEq_sp                _AtomTableIndices; // m a p<Atom_sp,uint>	_AtomTableIndices;
   core::ComplexVector_int32_t_sp      _ResiduePointers;
   core::ComplexVector_T_sp            _ResidueNames;
   //! Store count of atoms in each molecule. The length of this vector is the number of molecules
@@ -160,6 +159,7 @@ public:
   gctools::Vec0<EnergyAtom>&	getVectorEnergyAtoms() { return this->_Atoms;};
   CL_DEFMETHOD size_t	getNumberOfAtoms()	{ return this->_Atoms.size();};
   CL_DEFMETHOD size_t   getNumberOfMolecules()  { return this->_AtomsPerMolecule->length();};
+  core::T_mv getAtomIndexOrNil(Atom_sp atom);
   
   core::T_sp   firstSolventMoleculeNSPSOL() const;
   bool firstSolventMoleculeNSPSOL_boundP() const;
@@ -223,6 +223,7 @@ public:
   //
   // Access fields in AtomTable elements directly
   //
+  core::HashTableEq_sp getAtomTableIndices();
   CL_DEFMETHOD MatterName elt_atom_name(int index) { return this->_Atoms[index]._AtomName; };
   CL_DEFMETHOD core::Symbol_sp elt_atom_type(int index);
   CL_DEFMETHOD Atom_sp elt_atom(int index) { return this->_Atoms[index].atom(); };

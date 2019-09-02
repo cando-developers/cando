@@ -146,6 +146,10 @@
    #:|:=|
    #:<-
    #:nfx
+   #:agg
+   #:mol
+   #:res
+   #:atm
    #:rename-atoms-using-smirks
    #:register-topology
    #:lookup-topology

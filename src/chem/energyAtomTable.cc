@@ -185,6 +185,24 @@ CL_DEFMETHOD size_t AtomTable_O::getCoordinateIndex(Atom_sp a)
   return ea->coordinateIndexTimes3();
 }
 
+CL_DEFMETHOD core::HashTableEq_sp AtomTable_O::getAtomTableIndices() {
+  return this->_AtomTableIndices;
+}
+CL_DOCSTRING("Return the index of ATOM or NIL if it is not found.  The second return value is T if found and NIL if not.");
+CL_DEFMETHOD core::T_mv AtomTable_O::getAtomIndexOrNil(Atom_sp atom)
+{
+  core::T_mv res= this->_AtomTableIndices->gethash(atom);
+#if 0
+  core::write_bf_stream(BF("Number of results %d\n") % res.number_of_values());
+  core::write_bf_stream(BF("res -> %s\n") % _rep_(res));
+  core::write_bf_stream(BF("res.second() -> %s \n") % _rep_(res.second()));
+#endif
+  if (res.second().nilp()) {
+    return Values(_Nil<core::T_O>(),_Nil<core::T_O>());
+  }
+  return Values(res,_lisp->_true());
+}
+
 EnergyAtom* AtomTable_O::getEnergyAtomPointer(Atom_sp a)
 {_OF();
   core::T_mv it = this->_AtomTableIndices->gethash(a);
@@ -570,11 +588,12 @@ CL_DEFMETHOD void  AtomTable_O::fill_atom_table_from_vectors(core::List_sp vecto
 //  this->_Residues = (safe_alist_lookup<core::SimpleVector_int32_t_sp>(vectors,kw::_sym_residues));
 //  this->_ResidueNames = (safe_alist_lookup<core::SimpleVector_sp>(vectors,kw::_sym_residue_names));
   this->_Atoms.resize(atom_name_vec->length());
-
+  this->_AtomTableIndices->clrhash();
   for (size_t i = 0, iEnd(atom_name_vec->length()); i<iEnd ;++i)
   {
 //    printf("%s:%d About to set _AtomName with %s\n", __FILE__, __LINE__, _rep_(atom_name_vec->rowMajorAref(i)).c_str());
     Atom_sp atom = gc::As<Atom_sp>(atoms_vec->rowMajorAref(i));
+    this->_AtomTableIndices->setf_gethash(atom,core::clasp_make_fixnum(i));
     core::T_sp type = atom_type_vec->rowMajorAref(i);
 //    printf("%s:%d  type -> %s\n", __FILE__, __LINE__, _rep_(type).c_str());
     atom->setType(atom_type_vec->rowMajorAref(i));

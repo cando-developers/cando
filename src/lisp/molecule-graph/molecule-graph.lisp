@@ -1,5 +1,56 @@
 (in-package :molecule-graph)
 
+(defparameter *equivs* nil)
+(defparameter *clustered1* nil)
+(defparameter *clustered2* nil)
+
+
+(defun match-frontier (v1 v2)
+  (let* ((v1-frontier (loop for bi from 0 below (chem:number-of-bonds v1)
+                            for bonded-neighbor = (chem:bonded-neighbor v1 bi)
+                            when (gethash bonded-neighbor *clustered1*)
+                              collect bonded-neighbor))
+         (v2-frontier (loop for bi from 0 below (chem:number-of-bonds v2)
+                            for bonded-neighbor = (chem:bonded-neighbor v2 bi)
+                            when (gethash bonded-neighbor *clustered2*)
+                              collect bonded-neighbor))
+         (lenv1 (length v1-frontier))
+         (lenv2 (length v2-frontier)))
+    (unless (= lenv1 lenv2)
+      (cond
+        ((= lenv1 0)
+         (format t "lenv1 0~%")
+         t)
+        ((= lenv1 1)
+         (format t "lenv1 1 v1-frontier: ~a~%" v1-frontier)
+         (format t "        v2-frontier: ~a~%" v2-frontier)
+         (eq (gethash (first v1-frontier) *clustered1*)
+             (first v2-frontier)))
+        ((>= lenv1 2)
+         (format t "lenv1 >= 2 v1-frontier: ~a~%" v1-frontier)
+         (format t "           v2-frontier: ~a~%" v2-frontier)
+         (loop for v1 in v1-frontier
+              for eq1 = (gethash v1 *clustered1*)
+              unless (member eq1 v2-frontier)
+              do (return-from match-frontier nil)))))))
+
+(defun element-match-with-frontier (v1 v2)
+  (and (eq (chem:get-element v1)
+           (chem:get-element v2))
+       (match-frontier v1 v2)))
+
+
+(defun element-match (v1 v2)
+  (and (eq (chem:get-element v1)
+           (chem:get-element v2))))
+
+(defun element-and-name-match (v1 v2)
+  (and (eq (chem:get-element v1)
+           (chem:get-element v2))
+       (eq (chem:get-name v1)
+           (chem:get-name v2))))
+  
+
 (defun default-atom-match-callback (v1 v2)
   (and (eq (chem:get-element v1)
            (chem:get-element v2))
@@ -35,7 +86,8 @@
                 (declare (ignore dummy))
                 (setf (gethash atom (atom-cluster-atoms target-cluster)) atom))
               (atom-cluster-atoms source-node)))
-    (t (setf (gethash source-node (atom-cluster-atoms target-cluster)) source-node))))
+    (t
+     (setf (gethash source-node (atom-cluster-atoms target-cluster)) source-node))))
 
 (defun make-atom-cluster-from-matches (matches graph1 graph2 equivalences)
   (let ((cluster1 (make-atom-cluster :atoms (make-hash-table)))
@@ -49,6 +101,8 @@
           do (merge-clusters cluster1 node1)
              (merge-clusters cluster2 node2)
              (when (and (typep node1 'chem:atom) (typep node2 'chem:atom))
+               (setf (gethash node1 *clustered1*) node2)
+               (setf (gethash node2 *clustered2*) node1)
                (setf (gethash (cons node1 node2) equivalences) t)))
     (setf (atom-cluster-equivalent cluster1) cluster2)
     (setf (atom-cluster-equivalent cluster2) cluster1)
@@ -123,10 +177,13 @@
 
 (defun compare-graphs (original-graph1 original-graph2)
   "Repeatedly collapse equivalent parts of the graph until nothing is left to collapse"
-  (let ((equivs (make-hash-table :test #'equal))
-        (graph1 original-graph1)
-        (graph2 original-graph2)
-        done)
+  (let* ((equivs (make-hash-table :test #'equal))
+         (*equivs* equivs)
+         (*clustered1* (make-hash-table))
+         (*clustered2* (make-hash-table))
+         (graph1 original-graph1)
+         (graph2 original-graph2)
+         done)
     (loop repeat 100
           for iteration from 0
           do (multiple-value-setq (graph1 graph2 done)

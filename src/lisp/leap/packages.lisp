@@ -63,7 +63,7 @@
    #:write-topology
    #:save-amber-parm-format
    #:generate-aggregate-for-energy-function
-   #:amber-topology-coordinate-pair
+   #:amber-topology-coord-pair
    #:load-amber-topology-restart-pair
    #:load-amber-topology-trajectory-pair
    #:change-coordinate-file

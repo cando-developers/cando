@@ -2596,7 +2596,10 @@ cando-extensions               : T if you want cando-extensions written to the t
    (aggregate :initarg :aggregate :accessor aggregate)
    (number-of-atoms :initarg :number-of-atoms :accessor number-of-atoms)
    (current-coordinates :initarg :current-coordinates :accessor current-coordinates)))
-  
+
+(defmethod cando:agg ((object amber-topology-coord-pair))
+  (aggregate object))
+
 (defclass amber-topology-restart-pair (amber-topology-coord-pair) ())
 
 (defclass amber-topology-trajectory-pair (amber-topology-coord-pair)

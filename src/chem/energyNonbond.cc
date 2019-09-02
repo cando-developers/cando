@@ -1289,6 +1289,26 @@ CL_DEFMETHOD void EnergyNonbond_O::constructNonbondTermsFromAList(core::List_sp 
   this->_cn2_vec =              safe_alist_lookup<core::SimpleVector_double_sp>(values,kw::_sym_cn2_vec);
 }
 
+
+CL_DOCSTRING(R"doc(These are the nonbond terms as they are read from the topology file.
+The AMBER charge conversion of 18.2223 has been divided out of the charge values.
+The results of this call should be able to be passed to EnergyNonbond_O::constructNonbondTermsFromAList.)doc");
+CL_DEFMETHOD core::List_sp EnergyNonbond_O::nonbondTermsAsAList()
+{
+  ql::list result;
+  result << core::Cons_O::create(kw::_sym_ntypes,core::make_fixnum(this->_ntypes)); // ntypes
+  result << core::Cons_O::create(kw::_sym_atom_name_vector,this->_atom_name_vector); // atom-name-vector
+  result << core::Cons_O::create(kw::_sym_charge_vector,this->_charge_vector); // charge-vector
+  result << core::Cons_O::create(kw::_sym_mass_vector,this->_mass_vector); // masses
+  result << core::Cons_O::create(kw::_sym_atomic_number_vector,this->_atomic_number_vector); // vec
+  result << core::Cons_O::create(kw::_sym_ico_vec,this->_ico_vec); // ico-vec
+  result << core::Cons_O::create(kw::_sym_iac_vec,this->_iac_vec); // iac-vec
+//  this->_local_typej_vec =      safe_alist_lookup(values,kw::_sym_local_typej_vec);      // local-typej-vec
+  result << core::Cons_O::create(kw::_sym_cn1_vec,this->_cn1_vec); // cn1
+  result << core::Cons_O::create(kw::_sym_cn2_vec,this->_cn2_vec); // cn2
+  return result.cons();
+}
+
 CL_DEFMETHOD void EnergyNonbond_O::setNonbondExcludedAtomInfo(AtomTable_sp atom_table, core::SimpleVector_int32_t_sp excluded_atoms_list, core::SimpleVector_int32_t_sp number_excluded_atoms) {
   this->_AtomTable = atom_table;
   this->_ExcludedAtomIndices = excluded_atoms_list;

@@ -193,7 +193,6 @@
   (vector-push-extend coordinates (dynamics:coordinates self)))
 
 (defmethod nglv:get-coordinates ((self cando-trajectory) index)
-  (format t "Getting coords at ~a~%" index)
   (aref (dynamics:coordinates self) index))
 
 (defmethod nglv:n-frames ((self cando-trajectory))
