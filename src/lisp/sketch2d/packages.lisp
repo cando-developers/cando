@@ -25,10 +25,19 @@
 ;; -^-
 
 (defpackage #:sketch2d
+  (:shadow #:atom)
   (:use #:common-lisp)
   (:export
    #:sketch2d
    #:svg
+   #:sketch-svg
+   #:original-to-sketch-atoms
    #:molecule
    #:dynamics
+   #:atom-nodes
+   #:atom-node
+   #:renderp
+   #:atom
+   #:pos
+   #:render-svg
    ))
