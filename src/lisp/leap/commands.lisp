@@ -410,7 +410,7 @@ the STRING is not given then a list of legal STRINGs is provided.
                 finally (when (/= (rem col 4) 0)
                           (terpri)))))))
 
-(defun leap-add (object-a object-b)
+(defun leap-add (object-a-name  object-b-name)
  "    add a b
 
       UNIT/RESIDUE/ATOM          _a_
@@ -419,7 +419,9 @@ the STRING is not given then a list of legal STRINGs is provided.
 Add the object _b_ to the object _a_.   This command is used to place
 ATOMs within RESIDUEs, and RESIDUEs within UNITs.
 "
-  (chem:add-matter object-a object-b))
+  (let ((object-a (leap.core:lookup-variable object-a-name))
+        (object-b (leap.core:lookup-variable object-b-name)))
+  (chem:add-matter object-a object-b)))
 
 (defun leap-bond (atom1 atom2 &rest order)
 "    bond atom1 atom2 [ order ]
@@ -441,28 +443,15 @@ bond.
     (:a (chem:bond-to atom1 atom2 :aromatic-bond))
     (otherwise (chem:bond-to atom1 atom2 :single-bond))))
 
-(defun leap-add-h (object)
+(defun leap-add-h (object-name)
 "    addH obj
 
       UNIT                       _obj_
 
 Add missing hydrogens and build external coordinates for _obj_.
 "
-  (cando:build-unbuilt-hydrogens object))
-
-(defun leap-create-atom (name type charge)
-"    variable = createAtom name type charge
-
-      ATOM                         _variable_
-      STRING                       _name_
-      STRING                       _type_
-      NUMBER                       _charge_
-
-Return a new ATOM with _name_, _type_, and _charge_.
-"
-  (let ((atom (chem:make-atom name type)))
-    (chem:set-charge atom charge)
-    atom))
+  (let ((object (leap.core:lookup-variable object-name)))
+    (cando:build-unbuilt-hydrogens object)))
 
 (defun leap-create-residue (name)
 "    variable = createResidue name
@@ -484,7 +473,7 @@ Return a new and empty UNIT with the name _name_.
   (let ((aggregate (chem:make-aggregate name)))
     aggregate))
 
-(defun leap-translate (aggregate direction)
+(defun leap-translate (aggregate-name direction)
 "      translate atoms direction
 
       UNIT/RESIDUE/ATOM            _atoms_
@@ -494,21 +483,22 @@ Translate all of the ATOMs within _atoms_ by the vector defined by
 the three NUMBERs in the LIST _ direction_.
 "
   (check-type direction list)
-  (chem:map-atoms
-   'nil
-   (lambda (atom)
-     (let* ((pos (chem:get-position atom))
-            (x-position (geom:vx pos))
-            (y-position (geom:vy pos))
-            (z-position (geom:vz pos)))
-       (geom:set-all3 pos 
-                      (+ x-position (first direction))
-                      (+ y-position (second direction))
-                      (+ z-position (third direction)))
-       (chem:set-position atom pos)))
-   aggregate))
+  (let ((aggregate (leap.core:lookup-variable aggregate-name)))
+    (chem:map-atoms
+     'nil
+     (lambda (atom)
+       (let* ((pos (chem:get-position atom))
+              (x-position (geom:vx pos))
+              (y-position (geom:vy pos))
+              (z-position (geom:vz pos)))
+         (geom:set-all3 pos 
+                        (+ x-position (first direction))
+                        (+ y-position (second direction))
+                        (+ z-position (third direction)))
+         (chem:set-position atom pos)))
+   aggregate)))
 
-(defun leap-copy (object)
+(defun leap-copy (object-name)
 "    newvariable = copy variable
 
       object                       _newvariable_
@@ -519,17 +509,19 @@ _variable_ will not affect the object _newvariable_.
 This is in contrast to the situation created by \"newvariable = variable\"
 in which both names reference the same object.
 "
-  (let ((new-object (chem:matter-copy object)))
+  (let* ((object (leap.core:lookup-variable object-name))
+         (new-object (chem:matter-copy object)))
     new-object))
 
-(defun leap-center (container)
+(defun leap-center (container-name)
 "    center container
       UNIT/RESIDUE/ATOM          _container_
 
 Display the coordinates of the geometric center of the ATOMs within
 _container_.
 "
-  (let ((position (chem:geometric-center container)))
+  (let* ((container (leap.core:lookup-variable container-name))
+         (position (chem:geometric-center container)))
     (format t "The center is at: ~,2f, ~,2f, ~,2f~%" (geom:vx position) (geom:vy position) (geom:vz position))))
 
 (defun leap-measure-geom (atom1 atom2 &optional atom3 atom4)
@@ -564,7 +556,7 @@ for files specified by other commands.
 "
   (setf *default-pathname-defaults* path))
 
-(defun leap-align-axes (unit)
+(defun leap-align-axes (unit-name)
 "     alignAxes unit
 
       UNIT                         _unit_
@@ -578,9 +570,10 @@ This command modifies the coordinates of the UNIT. It may be
 especially useful for preparing long solutes such as nucleic acids
 for solvation.
 "
-  (leap.align-axes:tool-orient-principle-axis-along-coordinate-axis unit))
+  (let ((unit (leap.core:lookup-variable unit-name)))
+  (leap.align-axes:tool-orient-principle-axis-along-coordinate-axis unit)))
 
-(defun leap-transform (atoms matrix)
+(defun leap-transform (atoms-name matrix)
 "    transform atoms matrix
 
       CONTAINER/LIST               _atoms_
@@ -597,7 +590,8 @@ e.g. a reflection in the XY plane can be produced with r11=1, r22=1, r33=-1
 where the other rIJ elements are 0. The -t column is used to specify
 translations along the appropriate axes (0 for no translation).
 "
-  (let ((transform (geom:make-matrix-identity))
+  (let ((atoms (leap.core:lookup-variable atoms-name))
+        (transform (geom:make-matrix-identity))
         (ix 0)
         (iy 0))
     (check-type matrix list)
@@ -610,8 +604,8 @@ translations along the appropriate axes (0 for no translation).
                 (progn
                   (geom:at-row-col-put transform ix iy elements-x)
                   (incf ix)))))
-          (setf ix 0)
-          (incf iy))
+      (setf ix 0)
+      (incf iy))
     (chem:map-atoms
      'nil
      (lambda (atom)
@@ -630,11 +624,11 @@ translations along the appropriate axes (0 for no translation).
                            (* (geom:at-row-col-get transform 1 2) (geom:vy atom-position))
                            (* (geom:at-row-col-get transform 2 2) (geom:vz atom-position))))
          #+(or)(geom:set-all3 atom-position 
-                        (geom:vx (geom:m*v transform atom-position))
-                        (geom:vy (geom:m*v transform atom-position))
-                        (geom:vz (geom:m*v transform atom-position)))
+                              (geom:vx (geom:m*v transform atom-position))
+                              (geom:vy (geom:m*v transform atom-position))
+                              (geom:vz (geom:m*v transform atom-position)))
          (chem:set-position atom atom-position)))
-       atoms)))
+     atoms)))
 
 (eval-when (:load-toplevel :execute)
   (setf leap.parser:*function-names/alist*
@@ -674,7 +668,6 @@ translations along the appropriate axes (0 for no translation).
       ("add" . leap-add)
       ("bond" . leap-bond)
       ("addH" . leap-add-h)
-      ("createAtom" . leap-create-atom)
       ("createResidue" . leap-create-residue)
       ("createUnit" . leap-create-unit)
       ("translate" . leap-translate)
