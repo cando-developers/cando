@@ -630,6 +630,20 @@ translations along the appropriate axes (0 for no translation).
          (chem:set-position atom atom-position)))
      atoms)))
 
+(defun leap-charge (container-name)
+"    charge container
+
+      UNIT/RESIDUE/ATOM          _container_
+
+This command calculates the total charge of the ATOMs within _container_.
+The unperturbed and perturbed total charge are displayed.
+"
+   (let ((container (leap.core:lookup-variable container-name)))
+  (format t "Total unperturbed charge:    ~,6f~%" (chem:get-charge container))
+  (format t "Total perturbed charge:      ~,6f~%" (chem:get-charge container))))
+
+  
+
 (eval-when (:load-toplevel :execute)
   (setf leap.parser:*function-names/alist*
     '(("logFile" . log-file)
@@ -677,6 +691,7 @@ translations along the appropriate axes (0 for no translation).
       ("measureGeom" . leap-measure-geom)
       ("addPath" . leap-add-path)
       ("alignAxes" . leap-align-axes)
+      ("charge" . leap-charge)
       ))
   (dolist (command leap.parser:*function-names/alist*)
     (if (fboundp (cdr command))
