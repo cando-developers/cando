@@ -185,6 +185,15 @@ CL_DEFMETHOD size_t AtomTable_O::getCoordinateIndex(Atom_sp a)
   return ea->coordinateIndexTimes3();
 }
 
+CL_DEFMETHOD size_t AtomTable_O::getCoordinateIndexForAtomAtIndex(size_t index)
+{
+  if (index<this->_Atoms.size()) {
+    EnergyAtom& ea = this->_Atoms[index];
+    return this->getCoordinateIndex(ea._SharedAtom);
+  }
+  SIMPLE_ERROR(BF("Atom index %d is out of range (0...%d)") % this->_Atoms.size());
+}
+
 CL_DEFMETHOD core::HashTableEq_sp AtomTable_O::getAtomTableIndices() {
   return this->_AtomTableIndices;
 }
@@ -440,7 +449,7 @@ size_t AtomTable_O::getAtomFlag(size_t index) {
   return this->_Atoms[index]._Flag;
 }
 
-
+CL_DEFMETHOD
 void AtomTable_O::constructFromMolecule(Molecule_sp mol, core::T_sp nonbondForceField, core::T_sp activeAtoms )
 {
   uint idx = this->_Atoms.size();

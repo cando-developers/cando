@@ -19,7 +19,7 @@ I'll use an angle term instead of a bond term.
    (rings :initarg :rings :accessor rings)
    (aromaticity-info :initarg :aromaticity-info :accessor aromaticity-info)
    (dynamics :initarg :dynamics :accessor dynamics)
-   (sketch-to-original :initarg :sketch-to-original :accessor sketch-to-original)
+   (sketch-atoms-to-original :initarg :sketch-atoms-to-original :accessor sketch-atoms-to-original)
    (original-molecule :initarg :original-molecule :accessor original-molecule)))
 
 
@@ -63,39 +63,50 @@ I'll use an angle term instead of a bond term.
 (defparameter *linear-bond-center* (chem:make-chem-info-graph (chem:compile-smarts "[*X2:0](#[*:1])-[*:2]")))
 (defparameter *cumulated-double-bond-center* (chem:make-chem-info-graph (chem:compile-smarts "[*X2:0](=[*:1])=[*:2]")))
 
-
-(defun original-to-sketch-atoms (sketch)
-  "Return a hash-table of original atoms to sketch atoms"
-  (let ((orig-to-sketch (make-hash-table)))
-    (maphash (lambda (key value)
-               (setf (gethash value orig-to-sketch) key))
-             (sketch-to-original sketch))
-    orig-to-sketch))
-
 (defmethod prepare-stage1-sketch-function (sketch-function &key (bond-length +stage1-bond-length+))
   "Generate bond and angle energy terms for a 2D sketch."
-  (let* ((molecule (chem:get-matter sketch-function))
-         (atom-table (chem:atom-table sketch-function))
+  (let* ((molecule (chem:get-graph sketch-function))
+         (atom-table (chem:node-table sketch-function))
          (nonbond-energy (chem:get-sketch-nonbond-component sketch-function))
          (bond-energy (chem:get-stretch-component sketch-function)))
     (chem:set-scale-sketch-nonbond nonbond-energy +stage1-scale-sketch-nonbond+)
     (loop for ia1 from 0 below (1- (chem:get-number-of-atoms atom-table))
           for atom1 = (chem:elt-atom atom-table ia1)
+          for atom1-coordinate-index = (chem:get-coordinate-index atom-table atom1)
+          for freeze1 = (or (= (chem:get-atomic-number atom1) 1)
+                            (eq (chem:get-element atom1) :lp))
           do (loop for ia2 from (1+ ia1) below (chem:get-number-of-atoms atom-table)
                    for atom2 = (chem:elt-atom atom-table ia2)
-                   do (chem:add-sketch-nonbond-term nonbond-energy atom-table atom1 atom2 +stage1-sketch-nonbond-force+)))
+                   for atom2-coordinate-index = (chem:get-coordinate-index atom-table atom2)
+                   for freeze2 = (or (= (chem:get-atomic-number atom2) 1)
+                                     (eq (chem:get-element atom2) :lp))
+                   for freeze-flag = (if (or freeze1 freeze2) 1 0)
+                   do (chem:add-sketch-nonbond-term nonbond-energy
+                                                    atom1-coordinate-index
+                                                    atom2-coordinate-index
+                                                    freeze-flag
+                                                    +stage1-sketch-nonbond-force+)))
     (chem:map-bonds 'nil
                     (lambda (a1 a2 bond-order)
-                      (chem:add-stretch-term bond-energy atom-table a1 a2 +first-bond-force+ bond-length))
+                      (let ((atom1-coord-index (chem:get-coordinate-index atom-table a1))
+                            (atom2-coord-index (chem:get-coordinate-index atom-table a2)))
+                        (chem:add-sketch-stretch-term bond-energy
+                                                      atom1-coord-index
+                                                      atom2-coord-index
+                                                      +first-bond-force+ bond-length)))
                     molecule)
     sketch-function))
 
+(defun ordered-key (ia1 ia2)
+  (if (< ia1 ia2)
+      (cons ia1 ia2)
+      (cons ia2 ia1)))
 
 (defun add-angle-terms (sketch-function bond-force bond-length)
-  (let* ((molecule (chem:get-matter sketch-function))
+  (let* ((molecule (chem:get-graph sketch-function))
          (angle120-bond-length (* (sqrt 3.0) bond-length))
          (angle-quat-bond-length (* (sqrt 2.0) bond-length))
-         (atom-table (chem:atom-table sketch-function))
+         (atom-table (chem:node-table sketch-function))
          (bond-energy (chem:get-stretch-component sketch-function))
          (sketch-nonbond-component (chem:get-sketch-nonbond-component sketch-function))
          (mol-graph (chem:make-molecule-graph-from-molecule molecule))
@@ -122,9 +133,12 @@ I'll use an angle term instead of a bond term.
           for atom1 = (elt tbc 1)
           for atom2 = (elt tbc 2)
           for atom3 = (elt tbc 3)
-          do (chem:add-stretch-term bond-energy atom-table atom1 atom2 bond-force angle120-bond-length)
-             (chem:add-stretch-term bond-energy atom-table atom2 atom3 bond-force angle120-bond-length)
-             (chem:add-stretch-term bond-energy atom-table atom3 atom1 bond-force angle120-bond-length))
+          for atom1-coord-index = (chem:get-coordinate-index atom-table atom1)
+          for atom2-coord-index = (chem:get-coordinate-index atom-table atom2)
+          for atom3-coord-index = (chem:get-coordinate-index atom-table atom3)
+          do (chem:add-sketch-stretch-term bond-energy atom1-coord-index atom2-coord-index bond-force angle120-bond-length)
+             (chem:add-sketch-stretch-term bond-energy atom2-coord-index atom3-coord-index bond-force angle120-bond-length)
+             (chem:add-sketch-stretch-term bond-energy atom3-coord-index atom1-coord-index bond-force angle120-bond-length))
     ;; Gather up all the unique quat-centers
     (loop for tbc in quat-centers
           for center = (elt tbc 0)
@@ -146,20 +160,23 @@ I'll use an angle term instead of a bond term.
           for atom2 = (elt fbc 2)
           for atom3 = (elt fbc 3)
           for atom4 = (elt fbc 4)
-          do (push (cons atom1 atom2) double-nonbond-pairs)
-             (push (cons atom1 atom3) double-nonbond-pairs)
-             (push (cons atom1 atom4) double-nonbond-pairs)
-             (push (cons atom2 atom3) double-nonbond-pairs)
-             (push (cons atom2 atom4) double-nonbond-pairs)
-             (push (cons atom3 atom4) double-nonbond-pairs))
+          for atom1-index = (chem:get-coordinate-index atom-table atom1)
+          for atom2-index = (chem:get-coordinate-index atom-table atom2)
+          for atom3-index = (chem:get-coordinate-index atom-table atom3)
+          for atom4-index = (chem:get-coordinate-index atom-table atom4)
+          do (push (ordered-key atom1-index atom2-index) double-nonbond-pairs)
+             (push (ordered-key atom1-index atom3-index) double-nonbond-pairs)
+             (push (ordered-key atom1-index atom4-index) double-nonbond-pairs)
+             (push (ordered-key atom2-index atom3-index) double-nonbond-pairs)
+             (push (ordered-key atom2-index atom4-index) double-nonbond-pairs)
+             (push (ordered-key atom3-index atom4-index) double-nonbond-pairs))
     ;; Double the nonbond constant for quat center angle outer atom pairs
     (chem:walk-sketch-nonbond-terms
      sketch-nonbond-component
-     (lambda (index atom1 atom2 ia1 ia2 constant)
-       (let ((key1 (cons atom1 atom2))
-             (key2 (cons atom2 atom1)))
-         (when (or (member key1 double-nonbond-pairs :test #'equal)
-                   (member key2 double-nonbond-pairs :test #'equal))
+     (lambda (index freeze-flags ia1 ia2 constant)
+       (declare (ignore freeze-flags))
+       (let ((key (ordered-key ia1 ia2)))
+         (when (member key double-nonbond-pairs :test #'equal)
            (chem:modify-sketch-nonbond-term-constant sketch-nonbond-component index (* 2.0 constant))))))
     #+(or)(loop for lbc in linear-bond-centers
                 for center = (elt lbc 0)
@@ -174,10 +191,11 @@ I'll use an angle term instead of a bond term.
   sketch-function)
 
 (defun add-flatten-function (sketch-function molecule &optional (scale +oozp-scale+))
-  (let ((atom-table (chem:atom-table sketch-function))
+  (let ((atom-table (chem:node-table sketch-function))
         (oozp-component (chem:get-out-of-zplane-component sketch-function)))
     (cando:do-atoms (atom molecule)
-      (chem:add-out-of-zplane-term oozp-component atom-table atom scale 0.0)
+      (let ((atom-coord-index (chem:get-coordinate-index atom-table atom)))
+      (chem:add-out-of-zplane-term oozp-component atom-coord-index scale 0.0))
       )))
 
 (defun add-atom-annotations (molecule)
@@ -222,8 +240,8 @@ I'll use an angle term instead of a bond term.
                         (chem:bond-to atom lp :single-bond)
                      ))
              idx))
-    (let* ((sketch-to-original (make-hash-table))
-           (mol-copy (chem:matter-copy molecule sketch-to-original))
+    (let* ((sketch-atoms-to-original (make-hash-table))
+           (mol-copy (chem:matter-copy molecule sketch-atoms-to-original))
            (rings (chem:identify-rings mol-copy))
            (chem:*current-rings* rings)
            (aromaticity-info (chem:identify-aromatic-rings mol-copy :mdl)))
@@ -247,7 +265,7 @@ I'll use an angle term instead of a bond term.
                        :rings rings
                        :aromaticity-info aromaticity-info
                        :original-molecule molecule
-                       :sketch-to-original sketch-to-original)))))
+                       :sketch-atoms-to-original sketch-atoms-to-original)))))
 
 
 (defun randomize-atoms (atom-table &key frozen from-zero (width 40.0) &aux (half-width (/ width 2.0)))
@@ -277,7 +295,7 @@ I'll use an angle term instead of a bond term.
       (chem:set-type atom :sketch))
     (let* ((dummy-sketch-nonbond-ff (make-instance 'sketch-nonbond-force-field))
            (sketch-function (chem:make-sketch-function edited-mol dummy-sketch-nonbond-ff))
-           (atom-table (chem:atom-table sketch-function))
+           (atom-table (chem:node-table sketch-function))
            (dynamics (dynamics:make-atomic-simulation sketch-function
                                                       :accumulate-coordinates accumulate-coordinates)))
       (setf (dynamics sketch) dynamics)
@@ -420,7 +438,7 @@ to check if two line segments (bonds) overlap/intersect
 
 (defun identify-problem-areas (dynamics &optional (cutoff (* 2.4 +stage4-bond-length+)))
   (let* ((energy-function (dynamics:scoring-function dynamics))
-         (molecule (chem:get-matter energy-function))
+         (molecule (chem:get-graph energy-function))
          (atom-table (chem:atom-table energy-function))
          (energy-stretch (chem:get-stretch-component energy-function))
          (intersections (detect-intersecting-bonds molecule)))
@@ -750,7 +768,7 @@ to check if two line segments (bonds) overlap/intersect
 
 (defun sketch2d-dynamics (dynamics &key accumulate-coordinates (unfreeze t) frozen (bond-length +stage1-bond-length+))
   (let* ((sketch-function (dynamics:scoring-function dynamics))
-         (atom-table (chem:atom-table sketch-function))
+         (atom-table (chem:node-table sketch-function))
          (energy-stretch (chem:get-stretch-component sketch-function))
          (energy-sketch-nonbond (chem:get-sketch-nonbond-component sketch-function)))
     (randomize-atoms atom-table :frozen frozen)
@@ -766,7 +784,7 @@ to check if two line segments (bonds) overlap/intersect
     ;; stage 3
     ;; Add the flattening force
     (apply #'chem:setf-velocity-scale sketch-function *stage3-flatten-force-components*)
-    (add-flatten-function sketch-function (chem:get-matter sketch-function) *stage3-flatten-force*)
+    (add-flatten-function sketch-function (chem:get-graph sketch-function) *stage3-flatten-force*)
     (if (and frozen unfreeze)
         (let ((center (geometric-center-of-unfrozen-atoms atom-table (dynamics:coordinates dynamics) frozen)))
           (loop for stage from 0 below 4
@@ -780,11 +798,11 @@ to check if two line segments (bonds) overlap/intersect
     ;; Drop the bond lengths to 1.5
     ;; Add the angle terms
     ;; Progressively reduce the nonbond scale
-    (chem:walk-stretch-terms 
+    (chem:walk-sketch-stretch-terms 
      energy-stretch
-     (lambda (index atom1 atom2 atom1-I1 atom2-I2 kb r0)
-       (chem:modify-stretch-term-kb energy-stretch index +stage4-bond-force+)
-       (chem:modify-stretch-term-r0 energy-stretch index +stage4-bond-length+)))
+     (lambda (index atom1-I1 atom2-I2 kb r0)
+       (chem:modify-sketch-stretch-term-kb energy-stretch index +stage4-bond-force+)
+       (chem:modify-sketch-stretch-term-r0 energy-stretch index +stage4-bond-length+)))
     (add-angle-terms sketch-function +stage4-bond-force+ +stage4-bond-length+)
     (loop for i from 0 below 5000
           for cutoff from 80.0 downto 1.0 by (/ 79.0 5000.0)
@@ -792,7 +810,7 @@ to check if two line segments (bonds) overlap/intersect
              (advance-simulation dynamics :frozen (unless unfreeze frozen)))
     ;; stage 5
     (chem:enable (chem:get-point-to-line-restraint-component sketch-function))
-    (chem:set-ignore-hydrogens-and-lps energy-sketch-nonbond t)
+    (chem:set-freeze-flags energy-sketch-nonbond 1)
     (loop for i from 0 below 5000
           do (advance-simulation dynamics :frozen (unless unfreeze frozen)))
     (dynamics:write-coordinates-back-to-matter dynamics)
@@ -854,7 +872,7 @@ The coordinates are all pressed into the X-Y plane and some hydrogens are added 
     ;; Check for problems
     #+(or)
     (let* ((temp-coordinates (copy-seq (dynamics:coordinates dynamics)))
-           (edited-molecule (chem:get-matter (dynamics:scoring-function dynamics))))
+           (edited-molecule (chem:get-graph (dynamics:scoring-function dynamics))))
       (multiple-value-bind (number-of-problem-areas frozen)
           (identify-problem-areas dynamics)
         (if (> number-of-problem-areas 0)
@@ -879,17 +897,17 @@ The coordinates are all pressed into the X-Y plane and some hydrogens are added 
                     ((> new-number-of-problem-areas number-of-problem-areas)
                      (chem:save-coordinates-from-vector scoring-function temp-coordinates))
                     (t))
-                  (values (chem:get-matter (dynamics:scoring-function dynamics)) dynamics)))))))
+                  (values (chem:get-graph (dynamics:scoring-function dynamics)) dynamics)))))))
     ;; Look for bad angles
     (let* ((energy-function (dynamics:scoring-function dynamics))
-           (molecule (chem:get-matter energy-function))
+           (molecule (chem:get-graph energy-function))
            (fixed (fix-bad-angles sketch)))
       (when fixed
         (chem:load-coordinates-into-vector energy-function (dynamics:coordinates dynamics))
         (loop for i from 0 below 5000
               do (advance-simulation dynamics))
         (dynamics:write-coordinates-back-to-matter dynamics)))
-    (let ((result-molecule (chem:get-matter (dynamics:scoring-function dynamics))))
+    (let ((result-molecule (chem:get-graph (dynamics:scoring-function dynamics))))
       (align-molecule-horizontal result-molecule)
       (when transform
         (check-type transform geom:m4)
@@ -918,10 +936,10 @@ and aligns the new sketch the same way.  Matches atoms using element and name."
               (new-original-to-sketch (make-hash-table)))
           (maphash (lambda (key value)
                      (setf (gethash value new-original-to-sketch) key))
-                   (sketch-to-original new-sketch))
+                   (sketch-atoms-to-original new-sketch))
           (maphash (lambda (key value)
                      (setf (gethash value other-original-to-sketch) key))
-                   (sketch-to-original other-sketch2d))
+                   (sketch-atoms-to-original other-sketch2d))
           (let* ((dynamics (dynamics new-sketch))
                  (energy-function (dynamics:scoring-function dynamics))
                  (atom-table (chem:atom-table energy-function))

@@ -1296,12 +1296,11 @@ CL_DEFMETHOD Atom_sp Matter_O::atomWithAtomId(const AtomId& atomId) const
   SUBCLASS_MUST_IMPLEMENT();
 }
 
-#if 0
 CL_LISPIFY_NAME("CHEM:MATTER-COPY");
-CL_DEFUN Matter_sp chem__matter_copy(Matter_sp orig) {
-  Matter_sp copy = orig->copy();
+CL_LAMBDA(original &optional new-to-old-map);
+CL_DEFUN Matter_sp chem__matter_copy(Matter_sp orig, core::T_sp new_to_old) {
+  Matter_sp copy = orig->copy(new_to_old);
   return copy;
 }
-#endif
 
 };  // namespace chem

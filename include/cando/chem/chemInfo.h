@@ -1191,6 +1191,7 @@ public:
   core::HashTableEq_sp     _nodes_to_index;
   core::ComplexVector_T_sp _nodes;
   MoleculeGraphType*       _moleculeGraph;
+  size_t                   _num_edges;
 public:
 
   size_t add_vertex(core::T_sp vertex);
@@ -1203,6 +1204,9 @@ public:
   void walk_vertices(core::T_sp callback);
   /*! Callback takes vertex1, vertex2 and bond_order */
   void walk_edges(core::T_sp callback);
+  size_t num_vertices();
+  size_t num_edges();
+  
   MoleculeGraph_O(Molecule_sp);
   MoleculeGraph_O();
   ~MoleculeGraph_O();

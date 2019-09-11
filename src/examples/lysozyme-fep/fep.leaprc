@@ -3,7 +3,7 @@ source leaprc.ff14SB.redq
 source leaprc.gaff
 feps = (make-instance 'fep:fep-calculation)
 desc feps
-sk = loadSketch "ligands.cdxml"
+sk = loadChemDraw "ligands.cdxml"
 (fep:setup-ligands |feps| |sk|)
 tests = (list (cons :c1 (lambda (a) (eq (chem:get-name a) :c1))) (cons :c3 (lambda (a) (eq (chem:get-name a) :c3))) (cons :c5 (lambda (a) (eq (chem:get-name a) :c5))))
 pick = (chem:compile-smarts "[C:6]1~[C<c1>:1]~[C:2]~[C<c3>:3]~[C:4]~[C<c5>:5]1" :tests |tests|)

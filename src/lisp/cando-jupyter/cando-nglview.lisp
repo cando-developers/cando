@@ -276,8 +276,7 @@
         (let ((ast (architecture.builder-protocol:with-builder ('list)
                      (handler-bind ((esrap:esrap-parse-error
                                       (lambda (c)
-                                        (format t "Encountered error ~s while parsing ~s~%" c code)
-                                        (break "Encountered error ~s while parsing ~s" c code))))
+                                        (format t "cando-nglview: Encountered error ~s while parsing ~s~%" c code))))
                        (esrap:parse 'leap.parser::leap code)))))
           `(core:call-with-stack-top-hint
             (lambda ()

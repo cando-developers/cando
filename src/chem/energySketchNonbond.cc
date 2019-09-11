@@ -28,7 +28,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/foundation.h>
 #include <clasp/core/bformat.h>
 #include <cando/chem/energySketchNonbond.h>
-#include <cando/chem/energyAtomTable.h>
 #include <cando/chem/energyFunction.h>
 #include <clasp/core/lispStream.h>
 #include <clasp/core/array.h>
@@ -65,8 +64,7 @@ core::List_sp EnergySketchNonbond::encode() const {
   return core::Cons_O::createList(core::Cons_O::create(INTERN_(kw,constant),core::clasp_make_double_float(this->_Constant)),
                                   core::Cons_O::create(INTERN_(kw,i1), core::make_fixnum(this->I1)),
                                   core::Cons_O::create(INTERN_(kw,i2), core::make_fixnum(this->I2)),
-                                  core::Cons_O::create(INTERN_(kw,atom1), this->_Atom1),
-                                  core::Cons_O::create(INTERN_(kw,atom2), this->_Atom2));
+                                  core::Cons_O::create(INTERN_(kw,flags), core::make_fixnum(this->_FreezeFlags)));
 }
 
 void EnergySketchNonbond::decode(core::List_sp alist) {
@@ -76,17 +74,15 @@ void EnergySketchNonbond::decode(core::List_sp alist) {
 CL_DEFMETHOD void EnergySketchNonbond_O::setScaleSketchNonbond(double d) { this->_ScaleSketchNonbond = d; };
 CL_DEFMETHOD double	EnergySketchNonbond_O::getScaleSketchNonbond()	{return this->_ScaleSketchNonbond; };
 
-CL_DEFMETHOD void EnergySketchNonbond_O::setIgnoreHydrogensAndLps(bool b) { this->_IgnoreHydrogensAndLps = b; };
+CL_DEFMETHOD void EnergySketchNonbond_O::setFreezeFlags(size_t flags) { this->_FreezeFlags = flags; };
 
 CL_DEFMETHOD
-void EnergySketchNonbond_O::addSketchNonbondTerm(AtomTable_sp atomTable,
-                                                 Atom_sp atom1,
-                                                 Atom_sp atom2,
+void EnergySketchNonbond_O::addSketchNonbondTerm(size_t coordinate1IndexTimes3,
+                                                 size_t coordinate2IndexTimes3,
+                                                 size_t freezeFlags,
                                                  double constant)
 {
-  EnergyAtom* ea1 = atomTable->getEnergyAtomPointer(atom1);
-  EnergyAtom* ea2 = atomTable->getEnergyAtomPointer(atom2);
-  EnergySketchNonbond term(atom1,atom2,constant,ea1->coordinateIndexTimes3(),ea2->coordinateIndexTimes3());
+  EnergySketchNonbond term(freezeFlags,constant,coordinate1IndexTimes3,coordinate2IndexTimes3);
   this->_Terms.push_back(term);
 }
 
@@ -172,14 +168,7 @@ void	EnergySketchNonbond_O::evaluateTerms(NVector_sp 	pos,
     double cutoff_sq = this->_LongDistanceCutoff*this->_LongDistanceCutoff;
     for ( size_t index = 0; index<this->_Terms.size(); ++index ) {
       EnergySketchNonbond& ea = this->_Terms[index];
-      if (this->_IgnoreHydrogensAndLps) {
-        Element e1 = ea._Atom1->getElement();
-        Element e2 = ea._Atom2->getElement();
-        if (ea._Atom1->getAtomicNumber() == 1 ||
-            ea._Atom2->getAtomicNumber() == 1 ||
-            ea._Atom1->getElement() == element_LP ||
-            ea._Atom2->getElement() == element_LP ) continue;
-      }
+      if (this->_FreezeFlags&ea._FreezeFlags) continue;
       int I1 = ea.I1;
       int I2 = ea.I2;
       crep = ea._Constant*this->_ScaleSketchNonbond;
@@ -284,8 +273,7 @@ CL_DEFMETHOD void EnergySketchNonbond_O::walkSketchNonbondTerms(core::T_sp callb
   for (size_t i=0;i<this->_Terms.size();++i) {
     const EnergySketchNonbond& entry = this->_Terms[i];
     core::eval::funcall(callback,core::make_fixnum(i),
-                        entry._Atom1,
-                        entry._Atom2,
+                        core::make_fixnum(entry._FreezeFlags),
                         core::make_fixnum(entry.I1),
                         core::make_fixnum(entry.I2),
                         core::make_single_float(entry._Constant));

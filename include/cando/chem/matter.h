@@ -170,8 +170,7 @@ class Matter_O : public core::CxxObject_O
 
  public:
 	/*! Return a deep copy of this Matter */
-  CL_LISPIFY_NAME("matter-copy");
-  CL_DEFMETHOD   virtual Matter_sp copy(core::T_sp new_to_old) {_OF(); SUBCLASS_MUST_IMPLEMENT(); };
+  virtual Matter_sp copy(core::T_sp new_to_old) {_OF(); SUBCLASS_MUST_IMPLEMENT(); };
  protected:
 	/*! Internally used to create a copy of this Matter but not redirect Atoms to their copies.
 	 Use copy->redirectAtoms() to direct the new matter to its copied atoms 

@@ -116,3 +116,53 @@ multiple force-fields and know how a more recently added force-field shadows a l
 
 (defmethod chem:generate-molecule-energy-function-tables (energy-function molecule (combined-force-field chem:combined-force-field) active-atoms)
   (chem:generate-standard-energy-function-tables energy-function molecule combined-force-field active-atoms))
+
+
+;;; ------------------------------------------------------------
+;;;
+;;; node-table protocol
+;;;
+;;;
+
+
+(defgeneric chem:make-node-table-from-graph (graph nonbond-force-field)
+  (:documentation "Make a node-table from the graph. Return the node-table object."))
+
+(defgeneric chem:node-table-size (node-table)
+  (:documentation "Return the number of nodes in the node-table"))
+
+(defgeneric chem:node-table-coordinate-index-times3 (node-table index)
+  (:documentation "Return a coordinate index (an index into a coordinate vector, a multiple of 3) 
+for the node in the table."))
+
+(defgeneric chem:node-table-node-at-index (node-table index)
+  (:documentation "Return the node in the node-table at the index."))
+
+(defgeneric chem:node-get-position (node)
+  (:documentation "Return the vector position of the node."))
+
+(defgeneric chem:node-set-position (node vector3)
+  (:documentation "Set the vector position of the node."))
+
+
+(defmethod chem:make-node-table-from-graph ((molecule chem:molecule) nonbond-force-field)
+  "Construct a chem:atom-table from a molecule."
+  (let ((atom-table (core:make-cxx-object 'chem:atom-table)))
+    (chem:construct-from-molecule atom-table molecule nonbond-force-field nil)
+    atom-table))
+
+(defmethod chem:node-table-size ((atom-table chem:atom-table))
+  (chem:get-number-of-atoms atom-table))
+
+(defmethod chem:node-table-coordinate-index-times3 ((atom-table chem:atom-table) index)
+  (chem:get-coordinate-index-for-atom-at-index atom-table index))
+
+(defmethod chem:node-table-node-at-index ((atom-table chem:atom-table) index)
+  (chem:elt-atom atom-table index))
+
+(defmethod chem:node-get-position ((atom chem:atom))
+  (chem:get-position atom))
+
+(defmethod chem:node-set-position ((atom chem:atom) vector3)
+  (chem:set-position atom vector3))
+

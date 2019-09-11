@@ -235,6 +235,7 @@
    #:number-of-atoms
    #:simulation
    #:make-atomic-simulation
+   #:make-sketch-simulation
    #:scoring-function
    #:coordinates
    #:velocity

@@ -1260,6 +1260,7 @@ CL_DEFMETHOD core::T_sp EnergyNonbond_O::getFFNonbondDb() {
 
 SYMBOL_EXPORT_SC_(KeywordPkg,ntypes);
 SYMBOL_EXPORT_SC_(KeywordPkg,atom_name_vector);
+SYMBOL_EXPORT_SC_(KeywordPkg,atom_type_vector);
 SYMBOL_EXPORT_SC_(KeywordPkg,charge_vector);
 SYMBOL_EXPORT_SC_(KeywordPkg,mass_vector);
 SYMBOL_EXPORT_SC_(KeywordPkg,atomic_number_vector);
@@ -1279,6 +1280,7 @@ CL_DEFMETHOD void EnergyNonbond_O::constructNonbondTermsFromAList(core::List_sp 
 //  printf("%s:%d:%s    values -> %s\n", __FILE__, __LINE__, __FUNCTION__, _rep_(values).c_str());
   this->_ntypes =               translate::from_object<size_t>(safe_alist_lookup<core::T_sp>(values,kw::_sym_ntypes))._v;          // ntypes
   this->_atom_name_vector =     safe_alist_lookup<core::SimpleVector_sp>(values,kw::_sym_atom_name_vector);  // atom-name-vector
+  this->_atom_type_vector =     safe_alist_lookup<core::SimpleVector_sp>(values,kw::_sym_atom_type_vector);  // atom-type-vector
   this->_charge_vector =        safe_alist_lookup<core::SimpleVector_double_sp>(values,kw::_sym_charge_vector);          // charge-vector
   this->_mass_vector =          safe_alist_lookup<core::SimpleVector_double_sp>(values,kw::_sym_mass_vector);            // masses
   this->_atomic_number_vector = safe_alist_lookup<core::SimpleVector_int32_t_sp>(values,kw::_sym_atomic_number_vector);    // vec
@@ -1298,6 +1300,7 @@ CL_DEFMETHOD core::List_sp EnergyNonbond_O::nonbondTermsAsAList()
   ql::list result;
   result << core::Cons_O::create(kw::_sym_ntypes,core::make_fixnum(this->_ntypes)); // ntypes
   result << core::Cons_O::create(kw::_sym_atom_name_vector,this->_atom_name_vector); // atom-name-vector
+  result << core::Cons_O::create(kw::_sym_atom_type_vector,this->_atom_type_vector); // atom-name-vector
   result << core::Cons_O::create(kw::_sym_charge_vector,this->_charge_vector); // charge-vector
   result << core::Cons_O::create(kw::_sym_mass_vector,this->_mass_vector); // masses
   result << core::Cons_O::create(kw::_sym_atomic_number_vector,this->_atomic_number_vector); // vec

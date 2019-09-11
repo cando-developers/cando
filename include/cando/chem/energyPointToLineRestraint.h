@@ -43,13 +43,13 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/common.h>
 #include <cando/geom/vector3.h>
 #include <cando/chem/energyComponent.h>
+#include <cando/chem/energySketchStretch.h>
 
 
 
 namespace chem
 {
 
-FORWARD(EnergyStretch);
 
 /*! Store a PointToLineRestraint energy term
  */
@@ -67,11 +67,10 @@ public: // virtual functions inherited from Object
     void	initialize();
 public: // instance variables
   double _Bond_div_2;
-  EnergyStretch_sp  _Stretch;
-  AtomTable_sp _AtomTable;
+  EnergySketchStretch_sp  _Stretch;
 
 public:
-  static EnergyPointToLineRestraint_sp create(EnergyStretch_sp stretch, AtomTable_sp atomTable);
+  static EnergyPointToLineRestraint_sp create(EnergySketchStretch_sp stretch);
 public:
     virtual double evaluateAll( NVector_sp 	pos,
                                 bool 		calcForce,
@@ -83,7 +82,7 @@ public:
                                 gc::Nilable<NVector_sp> dvec);
 
 public:
-  EnergyPointToLineRestraint_O(EnergyStretch_sp stretch, AtomTable_sp atomTable) : _Stretch(stretch), _AtomTable(atomTable) {};
+  EnergyPointToLineRestraint_O(EnergySketchStretch_sp stretch) : _Stretch(stretch) {};
   void reset();
 
 

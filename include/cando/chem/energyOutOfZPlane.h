@@ -65,7 +65,6 @@ public:
 public:
   TermOutOfZPlane	term;
 		// Variables
-  Atom_sp      _Atom1;
 		// Threshold
 #if TURN_ENERGY_FUNCTION_DEBUG_ON
   bool		_calcForce;
@@ -73,13 +72,11 @@ public:
   bool		_calcOffDiagonalHessian;
 #include <cando/chem/energy_functions/_OutOfZPlane_debugEvalDeclares.cc>
 #endif
-  Atom_sp	getAtom() { return this->_Atom1; };
   double		getZa() { return this->term.za; };
 public:
   adapt::QDomNode_sp	asXml();
-  void	parseFromXmlUsingAtomTable(adapt::QDomNode_sp xml, AtomTable_sp atomTable );
 
-  EnergyOutOfZPlane(Atom_sp a1, double kb, int i1, double r0) : _Atom1(a1), term(kb,i1,r0) {};
+  EnergyOutOfZPlane(double kb, int i1, double r0) :term(kb,i1,r0) {};
     
   virtual ~EnergyOutOfZPlane();
 
@@ -116,7 +113,7 @@ public:
 
 public:
   void addTerm(const TermType& term);
-  void addOutOfZPlaneTerm(AtomTable_sp atomTable, Atom_sp, double kb, double r0);
+  void addOutOfZPlaneTerm(size_t index, double kb, double r0);
   virtual void dumpTerms();
 
   virtual void setupHessianPreconditioner(NVector_sp nvPosition,

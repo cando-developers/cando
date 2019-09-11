@@ -579,12 +579,17 @@ then don't calculate 1,4 interactions"
                do (when (<= i j)
 ;;;                    (format *debug-io* "In generate-nonbond-parameters i->~a j->~a type1->~a type2->~a~%" i j type1 type2)
                     (let ((ffnonbond1 (chem:get-ffnonbond-using-type-index ffnonbond-db type1))
-                          (ffnonbond2 (chem:get-ffnonbond-using-type-index ffnonbond-db type2)))
+                          (ffnonbond2 (chem:get-ffnonbond-using-type-index ffnonbond-db type2))
+                          ;; The index is calculated with the same equation in leap
+                          ;; iIndex = iY * (iY + 1) / 2 + iX + 1;        /* +1 because they are FORTRAN */
+                          ;; See unitio.c line 3639
+                          (index (- (+ (/ (* (+ j 1) j) 2) (+ i 1)) 1)) ; (((((j + 1) * j) / 2) + (i + 1)) - 1)
+                          (ico-index (+ (* ntypes i) j)))
                       (setf rstar (+ (chem:get-radius-angstroms ffnonbond1) (chem:get-radius-angstroms ffnonbond2))
                             epsilonij (sqrt (* (chem:get-epsilon-k-cal ffnonbond1) (chem:get-epsilon-k-cal ffnonbond2)))
-                            (aref cn1-vec (- (+ (/ (* (+ j 1) j) 2) (+ i 1)) 1)) (* epsilonij (expt rstar 12.0))
-                            (aref cn2-vec (- (+ (/ (* (+ j 1) j) 2) (+ i 1)) 1)) (* 2.0 epsilonij (expt rstar 6.0))
-                            (aref ico-vec (+ (* ntypes i) j)) (+ (/ (* (+ j 1) j) 2) (+ i 1)))
+                            (aref cn1-vec index) (* epsilonij (expt rstar 12.0))
+                            (aref cn2-vec index) (* 2.0 epsilonij (expt rstar 6.0))
+                            (aref ico-vec ico-index) (+ (/ (* (+ j 1) j) 2) (+ i 1)))
                       (if (< i j)
                           (setf (aref ico-vec (+ (* ntypes j) i)) (+ (/ (* (+ j 1) j) 2) (+ i 1))))))))
 ;;;                      (format t "type1 ~a type2 ~a~%" type1 type2)    
@@ -2282,6 +2287,7 @@ cando-extensions               : T if you want cando-extensions written to the t
         (rlog "Create nonbond vectors~%")
         (setf nonbond-vectors (acons :ntypes ntypes nonbond-vectors))
         (setf nonbond-vectors (acons :atom-name-vector (copy-seq atom-name) nonbond-vectors))
+        (setf nonbond-vectors (acons :atom-type-vector amber-atom-type nonbond-vectors))
         (setf nonbond-vectors (acons :charge-vector (copy-seq charge) nonbond-vectors))
         (setf nonbond-vectors (acons :mass-vector (copy-seq mass) nonbond-vectors))
         (setf nonbond-vectors (acons :atomic-number-vector (copy-seq atomic-number) nonbond-vectors))
@@ -2289,6 +2295,7 @@ cando-extensions               : T if you want cando-extensions written to the t
         (setf nonbond-vectors (acons :iac-vec (copy-seq atom-type-index) nonbond-vectors))
         (setf nonbond-vectors (acons :cn1-vec (copy-seq lennard-jones-acoef) nonbond-vectors))
         (setf nonbond-vectors (acons :cn2-vec (copy-seq lennard-jones-bcoef) nonbond-vectors))
+        
         ;;(rlog "nonbond-vectors -> ~s~%" nonbond-vectors)
         (chem:construct-nonbond-terms-from-aList energy-nonbond nonbond-vectors)
         (loop for i from 0 below (length excluded-atoms-list)
@@ -2601,6 +2608,9 @@ cando-extensions               : T if you want cando-extensions written to the t
   (aggregate object))
 
 (defclass amber-topology-restart-pair (amber-topology-coord-pair) ())
+
+(defmethod cando:agg ((object amber-topology-restart-pair))
+  (aggregate object))
 
 (defclass amber-topology-trajectory-pair (amber-topology-coord-pair)
   ((netcdf :initarg :netcdf :accessor netcdf)))

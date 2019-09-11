@@ -29,9 +29,10 @@
   (:use #:common-lisp)
   (:export
    #:sketch2d
+   #:similar-sketch2d
    #:svg
    #:sketch-svg
-   #:original-to-sketch-atoms
+   #:sketch-atoms-to-original
    #:molecule
    #:dynamics
    #:atom-nodes
@@ -39,5 +40,10 @@
    #:renderp
    #:atom
    #:pos
-   #:render-svg
+   #:render-svg-scene
+   #:render-svg-to-string
+   #:height
+   #:width
+   #:sketch2d*
+   #:scene
    ))

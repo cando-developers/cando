@@ -46,4 +46,4 @@
   (show (sketch2d:svg sketch)))
 
 (defmethod show ((sketch sketch2d:sketch-svg) &rest kwargs &key &allow-other-keys)
-  (cl-jupyter-user:svg (sketch2d:render-svg sketch)))
+  (cl-jupyter-user:svg (sketch2d:render-svg-to-string sketch)))

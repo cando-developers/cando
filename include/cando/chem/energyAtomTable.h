@@ -243,6 +243,7 @@ public:
   CL_DEFMETHOD void setf_atom_table_residues(core::Vector_sp val) {this->_Residues = val; };
   CL_DEFMETHOD void setf_atom_table_molecules(core::Vector_sp val) {this->_Molecules = val; };
   size_t getCoordinateIndex(Atom_sp atom);
+  size_t getCoordinateIndexForAtomAtIndex(size_t index);
   
  AtomTable_O() : _ResiduePointers(_Unbound<core::ComplexVector_int32_t_O>()),
                  _ResidueNames(_Unbound<core::ComplexVector_T_O>()),

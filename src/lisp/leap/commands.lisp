@@ -10,6 +10,8 @@
 (defun leap.show-paths ()
   (leap:show-paths))
 
+(defun leap.show (arg)
+  (funcall (find-symbol "SHOW" :cando-user) arg))
 
 
 ;;; ----------------------------------------------------------------------
@@ -355,14 +357,20 @@ created around the solute.
          (dirpath (make-pathname :name name :defaults path)))
     (format t "~a~%" (directory dirpath))))
 
-(defun load-sketch (filename)
+(defun load-chem-draw (filename)
   (handler-bind ((warning #'muffle-warning))
     (let ((pathname (leap.core:ensure-path filename)))
       (with-open-file (fin (open pathname :direction :input))
         (chem:make-chem-draw fin :add-hydrogens nil)))))
 
-(defun leap.load-sketch (filename)
-  (load-sketch filename))
+(defun leap.load-chem-draw (filename)
+  (load-chem-draw filename))
+
+(defun leap.load-chem-draw-aggregate (filename)
+  (handler-bind ((warning #'muffle-warning))
+    (let ((pathname (leap.core:ensure-path filename)))
+      (with-open-file (fin (open pathname :direction :input))
+        (cando:load-chem-draw-aggregate pathname)))))
 
 (defun leap.compile-smarts (smarts-string &optional tests)
   (unless (stringp smarts-string)
@@ -647,7 +655,8 @@ translations along the appropriate axes (0 for no translation).
       ("ls" . leap.dir)
       ("loadPdb" . leap.pdb:load-pdb)
       ("source" . leap.source)
-      ("loadSketch" . leap.load-sketch)
+      ("loadChemDraw" . leap.load-chem-draw)
+      ("loadChemDrawAggregate" . leap.load-chem-draw-aggregate)
       ("compileSmarts" . leap.compile-smarts)
       ("setForceField" . leap.set-force-field)
       ("loadSmirnoffParams" . leap.load-smirnoff-params)
@@ -666,6 +675,7 @@ translations along the appropriate axes (0 for no translation).
       ("addIonsRand" . leap.add-ions:add-ions-rand)
       ("setBox" . leap.set-box:set-box)
       ("showPaths" . leap.show-paths)
+      ("show" . leap.show )
       ("createAtom" . create-atom )
       ("help" . leap-help)
       ("cando" . leap-cando )
@@ -708,12 +718,15 @@ translations along the appropriate axes (0 for no translation).
     ))
 
 (defun parse-evaluate-leap-command (code)
-  (let ((ast (architecture.builder-protocol:with-builder
-                 ('list)
-               (handler-bind ((esrap:esrap-parse-error
-                                (lambda (c)
-                                  (format t "Encountered error ~s while parsing ~s~%" c code))))
-                 (esrap:parse 'leap.parser:leap code)))))
+  (let* ((*debugger-hook*
+           #'(lambda (condition &rest argss)
+               (format t "*debugger-hook* Encountered error ~s while parsing ~s~%" condition code)))
+         (ast (architecture.builder-protocol:with-builder
+                  ('list)
+                (handler-bind ((esrap:esrap-parse-error
+                                 (lambda (c)
+                                   (format t "hander-bind Encountered error ~s while parsing ~s~%" c code))))
+                  (esrap:parse 'leap.parser:leap code)))))
     (core:call-with-stack-top-hint
      (lambda ()
        (leap.core:evaluate 'list ast leap.core:*leap-env*)))))

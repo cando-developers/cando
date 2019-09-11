@@ -285,6 +285,8 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
 
 (defun load-mol2 (pathname)
   (let ((npn (merge-pathnames pathname *default-pathname-defaults*)))
+    (unless (probe-file npn)
+      (error "Could not open ~a" npn))
     (chem:load-mol2 npn)))
 
 

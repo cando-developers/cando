@@ -80,6 +80,8 @@ def build(bld):
             'energyNonbond.h',
             'energyStretch.fwd.h',
             'energyStretch.h',
+            'energySketchStretch.fwd.h',
+            'energySketchStretch.h',
             'entity.fwd.h',
             'entity.h',
             'entityNameSet.fwd.h',

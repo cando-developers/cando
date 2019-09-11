@@ -27,7 +27,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #define	DEBUG_LEVEL_NONE
 
 #include <cando/chem/energyPointToLineRestraint.h>
-#include <cando/chem/energyAtomTable.h>
 #include <cando/chem/energyFunction.h>
 #include <cando/chem/largeSquareMatrix.h>
 #include <cando/chem/bond.h>
@@ -35,7 +34,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/atom.h>
 #include <cando/chem/residue.h>
 #include <cando/chem/energyStretch.h>
-#include <cando/chem/energyAtomTable.h>
 #include <cando/chem/aggregate.h>
 #include <cando/chem/nVector.h>
 #include <cando/chem/ffBaseDb.h>
@@ -45,8 +43,8 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace chem {
 
 
-EnergyPointToLineRestraint_sp EnergyPointToLineRestraint_O::create(EnergyStretch_sp stretch, AtomTable_sp atomTable) {
-  GC_ALLOCATE_VARIADIC(EnergyPointToLineRestraint_O,obj,stretch,atomTable);
+EnergyPointToLineRestraint_sp EnergyPointToLineRestraint_O::create(EnergySketchStretch_sp stretch) {
+  GC_ALLOCATE_VARIADIC(EnergyPointToLineRestraint_O,obj,stretch);
   return obj;
 }
 
@@ -90,17 +88,15 @@ double EnergyPointToLineRestraint_O::evaluateAll( NVector_sp 	pos,
   if ( this->isEnabled() ) {
     double bond_length = this->_Bond_div_2*2.0;
     for (size_t stretch_idx= 0; stretch_idx<this->_Stretch->_Terms.size(); stretch_idx++ ) {
-      EnergyStretch& estretch = this->_Stretch->_Terms[stretch_idx];
+      EnergySketchStretch& estretch = this->_Stretch->_Terms[stretch_idx];
       int IA = estretch.term.I1;
       int IB = estretch.term.I2;
       Vector3 vA((*pos)[IA+0],(*pos)[IA+1],(*pos)[IA+2]);
       Vector3 vB((*pos)[IB+0],(*pos)[IB+1],(*pos)[IB+2]);
       Vector3 dx21 = vB-vA;
       double x2mx1sq = dx21.dotProduct(dx21);
-      for ( size_t atom_idx = 0; atom_idx<this->_AtomTable->_Atoms.size(); atom_idx++ ) {
-        EnergyAtom& eatom = this->_AtomTable->_Atoms[atom_idx];
-        if (eatom._SharedAtom != estretch._Atom1 && eatom._SharedAtom != estretch._Atom2) {
-          int I1 = atom_idx*3;
+      for ( size_t I1 = 0; I1 < pos->length(); I1+=3 ) {
+        if (I1!=IA && I1!=IB) {
           Vector3 v1((*pos)[I1+0],(*pos)[I1+1],(*pos)[I1+2]);
           if (fabs(v1.getX()-vA.getX()) > bond_length) continue;
           if (fabs(v1.getY()-vA.getY()) > bond_length) continue;

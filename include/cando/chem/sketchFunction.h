@@ -75,8 +75,7 @@ namespace       chem
   SMART(Matter);
   SMART(ForceField);
   SMART(CombinedForceField);
-  SMART(AtomTable);
-  SMART(EnergyStretch);
+  SMART(EnergySketchStretch);
   SMART(EnergyPointToLineRestraint);
   SMART(EnergyOutOfZPlane);
   SMART(ForceMatchReport);
@@ -107,18 +106,18 @@ namespace chem {
   {
     LISP_CLASS(chem,ChemPkg,SketchFunction_O,"SketchFunction",ScoringFunction_O);
   public:
-    static SketchFunction_sp make(Molecule_sp molecule,core::T_sp sketchNonbondForceField);
+    static SketchFunction_sp make(core::T_sp graph, core::T_sp sketchNonbondForceField);
   public:
     void initialize();
   public:
     bool fieldsp() const { return true; };
     void fields(core::Record_sp node);
   public:
-    Molecule_sp				_Molecule;	// Aggregate or Molecule
+    core::T_sp				_Graph;	// Graph object
     /*! Stores cross terms for evaluating nonbond interactions
      */
-    AtomTable_sp			_AtomTable;
-    EnergyStretch_sp			_Stretch;
+    core::T_sp			        _NodeTable;
+    EnergySketchStretch_sp		_Stretch;
     EnergyOutOfZPlane_sp                _OutOfZPlane;
     EnergyPointToLineRestraint_sp       _PointToLineRestraint;
     EnergySketchNonbond_sp              _Nonbond;
@@ -131,10 +130,11 @@ namespace chem {
     string					_Message;
     Vector3                                     _VelocityScale;
   public:
-    SketchFunction_O(Molecule_sp molecule) : _Molecule(molecule) {};
+    SketchFunction_O(core::T_sp graph) : _Graph(graph) {};
   public:
-    CL_LISPIFY_NAME("atomTable");
-    CL_DEFMETHOD     AtomTable_sp atomTable() const { return this->_AtomTable;};
+    CL_LISPIFY_NAME("nodeTable");
+    CL_DEFMETHOD     core::T_sp nodeTable() const { return this->_NodeTable;};
+    AtomTable_sp atomTable() const;
     void setf_velocity_scale(double xscale, double yscale, double zscale);
     
     string	energyTermsEnabled() ;
@@ -149,8 +149,8 @@ namespace chem {
 
     ForceMatchReport_sp checkIfAnalyticalForceMatchesNumericalForce( NVector_sp pos, NVector_sp force );
 
-    CL_LISPIFY_NAME("getMatter");
-    CL_DEFMETHOD     Matter_sp	getMatter() { return this->_Molecule;};
+    CL_LISPIFY_NAME("getGraph");
+    CL_DEFMETHOD     core::T_sp	getGraph() { return this->_Graph;};
 
     void	useDefaultSettings();
 
@@ -165,7 +165,7 @@ namespace chem {
     CL_LISPIFY_NAME("getSketchNonbondComponent");
     CL_DEFMETHOD     EnergySketchNonbond_sp	getSketchNonbondComponent() { return this->_Nonbond; };
     CL_LISPIFY_NAME("getStretchComponent");
-    CL_DEFMETHOD     EnergyStretch_sp	getStretchComponent() { return this->_Stretch; };
+    CL_DEFMETHOD     EnergySketchStretch_sp	getSketchStretchComponent() { return this->_Stretch; };
     CL_LISPIFY_NAME("getPointToLineRestraintComponent");
     CL_DEFMETHOD     EnergyPointToLineRestraint_sp	getPointToLineRestraintComponent() { return this->_PointToLineRestraint; };
     CL_LISPIFY_NAME("getOutOfZPlaneComponent");
@@ -190,8 +190,8 @@ namespace chem {
      */
     string	energyComponentsAsString();
 
-    void		writeForceToAtoms(NVector_sp f);
-    EnergyAtom*     getEnergyAtomPointer(Atom_sp a);
+//    void		writeForceToAtoms(NVector_sp f);
+//    EnergyAtom*     getEnergyAtomPointer(Atom_sp a);
 
     double	calculateNumericalDerivative(NVector_sp pos, double delta, uint i );
     double	calculateNumericalSecondDerivative(NVector_sp pos, double delta, uint i, uint j );
