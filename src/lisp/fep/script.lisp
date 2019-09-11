@@ -143,8 +143,13 @@
                            (let (decharge-jobs
                                  vdw-jobs
                                  recharge-jobs
-                                 (lambda-values (loop for window-index from 0 below windows
-                                                      collect (/ (float window-index) (1- windows)))))
+                                 (lambda-values (cond
+                                                  ((numberp windows)
+                                                   (loop for window-index from 0 below windows
+                                                         collect (/ (float window-index) (1- windows))))
+                                                  ((listp windows)
+                                                   windows)
+                                                  (t (error "Illegal value for lambda-values ~a expected number or list of numbers" windows)))))
                              (loop for lambda-value in lambda-values
                                    for lambda-label = (format nil "~5,3f" lambda-value)
                                    do (case stage
