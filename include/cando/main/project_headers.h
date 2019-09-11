@@ -375,18 +375,6 @@ This is an open source license for the CANDO software from Temple University, bu
 
 #ifdef GC_INTERFACE_GC_MANAGED_TYPES
 GC_MANAGED_TYPE(gctools::GCArray_moveable<Vector3>);
-GC_MANAGED_TYPE(gctools::GCArray_moveable<double>);
-GC_MANAGED_TYPE(gctools::GCArray_moveable<float>);
-GC_MANAGED_TYPE(gctools::GCArray_moveable<gctools::smart_ptr<core::T_O>>);
-GC_MANAGED_TYPE(gctools::GCArray_moveable<int>);
-GC_MANAGED_TYPE(gctools::GCArray_moveable<long>);
-GC_MANAGED_TYPE(gctools::GCArray_moveable<short>);
-GC_MANAGED_TYPE(gctools::GCArray_moveable<signed char>);
-GC_MANAGED_TYPE(gctools::GCArray_moveable<unsigned char>);
-GC_MANAGED_TYPE(gctools::GCArray_moveable<unsigned int>);
-GC_MANAGED_TYPE(gctools::GCArray_moveable<unsigned long>);
-GC_MANAGED_TYPE(gctools::GCArray_moveable<unsigned short>);
-GC_MANAGED_TYPE(gctools::GCBitUnitArray_moveable<1,unsigned int,int>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<chem::AtomInfo>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<chem::AtomPdbRec>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<chem::BeyondThresholdFixedNonbondRestraint>);
@@ -406,18 +394,6 @@ GC_MANAGED_TYPE(gctools::GCVector_moveable<chem::FixedNonbondRestraint>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<chem::KeyEntry>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<chem::ResidueOut>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<chem::RigidBodyAtomInfo>);
-GC_MANAGED_TYPE(gctools::GCVector_moveable<core::AuxArgument>);
-GC_MANAGED_TYPE(gctools::GCVector_moveable<core::CacheRecord>);
-GC_MANAGED_TYPE(gctools::GCVector_moveable<core::DynamicBinding>);
-GC_MANAGED_TYPE(gctools::GCVector_moveable<core::ExceptionEntry>);
-GC_MANAGED_TYPE(gctools::GCVector_moveable<core::KeywordArgument>);
-GC_MANAGED_TYPE(gctools::GCVector_moveable<core::OptionalArgument>);
-GC_MANAGED_TYPE(gctools::GCVector_moveable<core::RequiredArgument>);
-GC_MANAGED_TYPE(gctools::GCVector_moveable<core::SymbolClassHolderPair>);
-GC_MANAGED_TYPE(gctools::GCVector_moveable<core::SymbolStorage>);
-GC_MANAGED_TYPE(gctools::GCVector_moveable<core::T_O *>);
-GC_MANAGED_TYPE(gctools::GCVector_moveable<double>);
-GC_MANAGED_TYPE(gctools::GCVector_moveable<float>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::SmallOrderedSet<gctools::smart_ptr<chem::Atom_O>>>);
 
 #ifdef USE_KINEMATICS
@@ -472,17 +448,7 @@ GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<chem::Twister_O>>)
 GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<chem::ZMatrixEntry_O>>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<chem::ZMatrixInternal_O>>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<chem::OctNode_O>>);
-GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<clbind::ClassRep_O>>);
-GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<core::Cons_O>>);
-GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<core::List_V>>);
-GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<core::Package_O>>);
-GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<core::SequenceStepper_O>>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<core::SimpleBitVector_O>>);
-GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<core::SingleDispatchMethod_O>>);
-GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<core::FileScope_O>>);
-GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<core::Symbol_O>>);
-GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<core::T_O>>);
-GC_MANAGED_TYPE(gctools::GCVector_moveable<int>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<std::pair<gctools::smart_ptr<chem::Atom_O>,gctools::smart_ptr<chem::CDNode_O>>>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<std::pair<gctools::smart_ptr<chem::Atom_O>,int>>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<std::pair<gctools::smart_ptr<chem::Atom_O>,unsigned int>>);
@@ -504,8 +470,6 @@ GC_MANAGED_TYPE(gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Sy
 GC_MANAGED_TYPE(gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::Array_O>>>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::DoubleFloat_O>>>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::Symbol_O>>>);
-GC_MANAGED_TYPE(gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::T_O>>>);
-GC_MANAGED_TYPE(gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::T_O>,gctools::smart_ptr<core::T_O>>>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<std::pair<int,gctools::smart_ptr<chem::CDNode_O>>>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<std::pair<int,gctools::smart_ptr<chem::Residue_O>>>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<std::pair<unsigned int,gctools::smart_ptr<chem::Residue_O>>>);
