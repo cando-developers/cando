@@ -156,8 +156,8 @@
     (loop for index from 2 below (chem:content-size aggregate)
           for mol = (chem:matter-copy (chem:content-at aggregate index))
           do (chem:add-matter new-agg mol))
-    (format t "About to set bounding-box~%")
-    (let ((bounding-box (coerce (leap.topology:cell-lengths top-crd) 'list)))
+    (let ((bounding-box (chem:get-property aggregate :bounding-box)))
+      (format t "About to set bounding-box for new-agg to ~a~%" bounding-box)
       (chem:set-property new-agg :bounding-box bounding-box))
     new-agg))
 

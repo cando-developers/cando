@@ -2607,7 +2607,8 @@ cando-extensions               : T if you want cando-extensions written to the t
 (defmethod cando:agg ((object amber-topology-coord-pair))
   (aggregate object))
 
-(defclass amber-topology-restart-pair (amber-topology-coord-pair) ())
+(defclass amber-topology-restart-pair (amber-topology-coord-pair)
+  ())
 
 (defmethod cando:agg ((object amber-topology-restart-pair))
   (aggregate object))
