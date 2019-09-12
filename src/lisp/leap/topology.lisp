@@ -2654,7 +2654,7 @@ cando-extensions               : T if you want cando-extensions written to the t
            (is-netcdf (and (char= c1 #\C)
                            (char= c2 #\D)
                            (char= c3 #\F)
-                           (char< c4 10))))
+                           (<= (char-int c4) 10))))
       (close fin)
       (if is-netcdf
           (let* ((netcdf (netcdf:nc-open coordinate-filename :mode netcdf-cffi:+nowrite+))
