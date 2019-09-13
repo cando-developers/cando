@@ -1,5 +1,6 @@
 (in-package :sketch2d)
 
+(defparameter *show-all* nil)
 (defparameter *perpendicular-fraction* 0.15)
 (defparameter *parallel-fraction* 0.1)
 (defparameter *dirz* (geom:vec 0.0 0.0 1.0))
@@ -28,6 +29,7 @@
 (defclass atom-node ()
   ((atom :initarg :atom :accessor atom)
    (renderp :initform nil :accessor renderp)
+   (heavyp :initform nil :accessor heavyp)
    (labelp :initform nil :accessor labelp)
    (bond-nodes :initform nil :initarg :bond-nodes :accessor bond-nodes)
    (rings :initform nil :accessor rings)
@@ -36,7 +38,7 @@
    (terminal :initform nil :accessor terminal)
    (element-label :initarg :element-label :accessor element-label)
    (pos :initarg :pos :accessor pos)
-   (hydrogens :initarg :hydrogens :accessor hydrogens)
+   (hydrogens :initform 0 :initarg :hydrogens :accessor hydrogens)
    (hydrogens-dir :initarg :hydrogens-dir :accessor hydrogens-dir)
    (charge :initarg :charge :accessor charge)))
 
@@ -116,7 +118,7 @@ This will place the calculated bond on one or the other side of the x1,y1-x2,y2 
          (ys1 (geom:vy pos))
          (label (string (chem:get-element (atom atom-node)))))
     (cl-svg:text scene (:x xs1 :y (+ ys1 *lower-text*) :text-anchor "middle" :alignment-baseline "middle") label)
-    (when (> (hydrogens atom-node) 0)
+    (when (and (hydrogens atom-node) (> (hydrogens atom-node) 0))
       (multiple-value-bind (hdx hdy hsubdx hsubdy)
           (cond
             ((= 1 (hydrogens atom-node))
@@ -292,8 +294,9 @@ This will place the calculated bond on one or the other side of the x1,y1-x2,y2 
 (defun calculate-bond (bond-node sketch)
   (Let ((atom-node1 (atom-node1 bond-node))
         (atom-node2 (atom-node2 bond-node)))
-    (when (and (renderp atom-node1)
-               (renderp atom-node2))
+    (when (or *show-all*
+              (and (renderp atom-node1)
+                   (renderp atom-node2)))
       (let* ((bond-order (bond-order bond-node))
              (pos1 (pos atom-node1))
              (pos2 (pos atom-node2))
@@ -353,7 +356,8 @@ This will place the calculated bond on one or the other side of the x1,y1-x2,y2 
         for atom = (atom atom-node)
         unless (or (eq :lp (chem:get-element atom))
                    (= 1 (chem:get-atomic-number atom)))
-          do (setf (renderp atom-node) t)
+          do (setf (renderp atom-node) t
+                   (heavyp atom-node) t)
         when (not (eq (chem:get-element atom) :c))
           do (setf (labelp atom-node) t))
   ;; Calculate a direction vector for each atom that
@@ -367,7 +371,7 @@ This will place the calculated bond on one or the other side of the x1,y1-x2,y2 
                         (count 0))
                     (loop for bond-node in bond-nodes
                           for other-atom-node = (other-atom-node bond-node atom-node)
-                          when (renderp other-atom-node)
+                          when (heavyp other-atom-node)
                             do (setf dir (geom:v+ dir (geom:v- (pos other-atom-node) (pos atom-node)))
                                      count (1+ count)))
                     (if (> count 0)
@@ -381,7 +385,7 @@ This will place the calculated bond on one or the other side of the x1,y1-x2,y2 
         for other-bonds-count = 0
         do (loop for bond-node in bond-nodes
                  for other-atom-node = (other-atom-node bond-node atom-node)
-                 when (renderp other-atom-node)
+                 when (heavyp other-atom-node)
                    do (incf other-bonds-count))
         do (when (= 1 other-bonds-count)
              (setf (terminal atom-node) t)))
@@ -401,7 +405,7 @@ This will place the calculated bond on one or the other side of the x1,y1-x2,y2 
 (defgeneric render-node (scene node))
 
 (defmethod render-node (scene (node atom-node))
-  (when (and (renderp node) (labelp node))
+  (when (and (or *show-all* (renderp node)) (labelp node))
     (draw-atom-text scene node)))
 
 (defmethod render-node (scene (node bond-node))
