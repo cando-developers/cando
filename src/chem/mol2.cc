@@ -769,9 +769,12 @@ void	mol2WriteAggregateStream( Aggregate_sp agg, std::ostream &out, bool useSyby
       out << "0 0.0 0.0 0.0 0.0 0.0 0.0 ";
     } else {
       out << "1 0.0 0.0 0.0 ";
-      if (boundingBox.consp() && core::cl__length(boundingBox) == 3) {
+      if (boundingBox.consp() && core::cl__length(boundingBox) >= 3) {
+        size_t count = 0;
         for ( auto cur : boundingBox ) {
           out << _rep_(CONS_CAR(boundingBox)) << " ";
+          count++;
+          if (count >= 3) break; // mol2 only handles xyz coordinates
         }
       } else {
         SIMPLE_ERROR(BF("The bounding box has an unexpected structure %s - expected list of 3 doubles") % _rep_(boundingBox));
