@@ -1450,9 +1450,14 @@ cando-extensions               : T if you want cando-extensions written to the t
                (fortran:debug "-40-")
                (fortran:fformat 5 "%16.8e")
                (let ((solvent-box (chem:bounding-box atom-table)))
-                 (unless (and solvent-box (listp solvent-box) (= (length solvent-box) 3))
-                   (error "There must be a solvent-box property in the aggregate properties and it must be a list of length three numbers"))
-                 (fortran:fwrite "90.0000000") ;box angle
+                 (unless (and solvent-box (listp solvent-box)
+                              (or (= (length solvent-box) 3)
+                                  (= (length solvent-box) 6)))
+                   (error "There must be a solvent-box property in the aggregate properties and it must be a list of length three (x,y,z) or six (x,y,z,angle1,angle2,angle3) numbers"))
+                 (if (> (length solvent-box) 3)
+                     (fortran:fwrite (float (fourth solvent-box)))
+                     (fortran:fwrite "90.0000000") ;box angle
+                     )
                  (fortran:fwrite (float (first solvent-box)))
                  (fortran:fwrite (float (second solvent-box)))
                  (fortran:fwrite (float (third solvent-box)))) 
