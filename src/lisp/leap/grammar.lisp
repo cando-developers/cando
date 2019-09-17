@@ -154,7 +154,7 @@
       (architecture.builder-protocol:? :value value))))
 
 (defrule/s variable-name
-    (+ (character-ranges (#\a #\z) (#\A #\Z) (#\0 #\9) #\/ #\~ #\. #\_))
+    (+ (character-ranges (#\a #\z) (#\A #\Z) (#\0 #\9) #\/ #\~ #+(or)#\. #\_))
   (:lambda (chars)
     (let ((str (esrap:text chars)))
       ;;; This is where we do something really bad to deal with leap syntax like:
@@ -162,14 +162,14 @@
       ;;; Someone allowed file paths not in double quotes or prefixed with $ !!!!!
       ;;; So if a token is recognized as a variable and it contains ~ or / or .
       ;;;   then we will treat it here as a string
-      (if (or (position #\. str) ; This may be a problem - I thought leap had a dot x.y.z syntax
+      (if (or #+(or)(position #\. str) ; This may be a problem - I thought leap had a dot x.y.z syntax
               (and (position #\~ str) (position #\/ str))
               (position #\/ str))
           str ; This is for filenames with no double quotes
           (intern str *package*)))))
 
 (defrule/s keyword
-    (and #\: (+ (character-ranges (#\a #\z) (#\A #\Z) (#\0 #\9) #\. #\_)))
+    (and #\: (+ (character-ranges (#\a #\z) (#\A #\Z) (#\0 #\9) #+(or)#\. #\_)))
   (:lambda (chars)
     (let ((str (esrap:text chars)))
       (intern (esrap:text chars) :keyword))))
@@ -199,7 +199,8 @@
       (* :element (remove nil elements)))))
 
 (defrule literal
-    (or integer-literal/decimal
+    (or float-literal
+        integer-literal/decimal
         string-literal/double-quotes
         string-literal/dollar
         variable-name
