@@ -162,7 +162,7 @@
       ;;; Someone allowed file paths not in double quotes or prefixed with $ !!!!!
       ;;; So if a token is recognized as a variable and it contains ~ or / or .
       ;;;   then we will treat it here as a string
-      (if (or #+(or)(position #\. str) ; This may be a problem - I thought leap had a dot x.y.z syntax
+      (if (or (position #\. str) ; This may be a problem - I thought leap had a dot x.y.z syntax
               (and (position #\~ str) (position #\/ str))
               (position #\/ str))
           str ; This is for filenames with no double quotes
