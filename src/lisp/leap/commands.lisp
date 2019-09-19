@@ -647,7 +647,7 @@ This command calculates the total charge of the ATOMs within _container_.
 The unperturbed and perturbed total charge are displayed.
 "
    (let ((container (leap.core:lookup-variable container-name)))
-  (format t "Total unperturbed charge:    ~,6f~%" (chem:get-charge container))
+     (format t "Total unperturbed charge:    ~,6f~%" (chem:get-charge container))
      (format t "Total perturbed charge:      ~,6f~%" (chem:get-charge container))))
 
 
@@ -702,7 +702,6 @@ The unperturbed and perturbed total charge are displayed.
       ("addPath" . leap-add-path)
       ("alignAxes" . leap-align-axes)
       ("charge" . leap-charge)
-      ("set" . leap-set)
       ))
   (dolist (command leap.parser:*function-names/alist*)
     (if (fboundp (cdr command))
