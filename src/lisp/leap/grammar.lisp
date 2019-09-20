@@ -154,7 +154,7 @@
       (architecture.builder-protocol:? :value value))))
 
 (defrule/s variable-name
-    (+ (character-ranges (#\a #\z) (#\A #\Z) (#\0 #\9) #\/ #\~ #\. #\_))
+    (+ (character-ranges (#\a #\z) (#\A #\Z) (#\0 #\9) #\/ #\~ #\. #\_  #\+ #\-))
   (:lambda (chars)
     (let ((str (esrap:text chars)))
       ;;; This is where we do something really bad to deal with leap syntax like:
@@ -169,7 +169,7 @@
           (intern str *package*)))))
 
 (defrule/s keyword
-    (and #\: (+ (character-ranges (#\a #\z) (#\A #\Z) (#\0 #\9) #\. #\_)))
+    (and #\: (+ (character-ranges (#\a #\z) (#\A #\Z) (#\0 #\9) #\. #\_ #\+ #\-)))
   (:lambda (chars)
     (let ((str (esrap:text chars)))
       (intern (esrap:text chars) :keyword))))

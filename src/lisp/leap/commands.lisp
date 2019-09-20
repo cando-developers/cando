@@ -650,8 +650,54 @@ The unperturbed and perturbed total charge are displayed.
      (format t "Total unperturbed charge:    ~,6f~%" (chem:get-charge container))
      (format t "Total perturbed charge:      ~,6f~%" (chem:get-charge container))))
 
+(defun leap-add-ions (mol-name ion1-name ion1-number &optional ion2-name ion2-number)
+"
+    addIons unit ion1 #ion1 [ion2 #ion2]
+      UNIT                      _unit_
+      UNIT                      _ion1_
+      NUMBER                    _#ion1_
+      UNIT                      _ion2_
+      NUMBER                    _#ion2_
+Adds counterions in a shell around _unit_ using a Coulombic potential
+on a grid. If _#ion1_ is 0, the _unit_ is neutralized (_ion1_ must be
+opposite in charge to _unit_, and _ion2_ cannot be specified). Otherwise,
+the specified numbers of _ion1_ [_ion2_] are added [in alternating order].
+If solvent is present, it is ignored in the charge and steric calculations,
+and if an ion has a steric conflict with a solvent molecule, the ion is
+moved to the center of said molecule, and the latter is deleted. (To
+avoid this behavior, either solvate _after_ addIons, or use addIons2.)
+Ions must be monoatomic. Note that the one-at-a-time procedure is not
+guaranteed to globally minimize the electrostatic energy. When neutralizing
+regular-backbone nucleic acids, the first cations will generally be added
+between phosphates, leaving the final two ions to be placed somewhere around
+the middle of the molecule.
+The default grid resolution is 1 Angstrom, extending from an inner radius
+of (max ion size + max solute atom size) to an outer radius 4 Angstroms
+beyond. A distance-dependent dielectric is used for speed.
+"
+  (let ((mol (leap.core:lookup-variable mol-name))
+        (ion1 (intern (string ion1-name) :keyword)))
+        (if (and ion2-name ion2-number)
+            (let ((ion2 (intern (string ion2-name) :keyword)))
+              (leap.add-ions:add-ions mol ion1 ion1-number ion2 ion2-number))
+            (leap.add-ions:add-ions mol ion1 ion1-number))))
 
-
+(defun leap-add-ions-2 (mol-name ion1-name ion1-number &optional ion2-name ion2-number)
+"    addIons2 unit ion1 #ion1 [ion2 #ion2]
+        UNIT                    _unit_
+        UNIT                    _ion1_
+        NUMBER                  _#ion1_
+        UNIT                    _ion2_
+        NUMBER                  _#ion2_
+Same as addIons, except solvent and solute are treated the same.
+"
+  (let ((mol (leap.core:lookup-variable mol-name))
+        (ion1 (intern (string ion1-name) :keyword)))
+        (if (and ion2-name ion2-number)
+            (let ((ion2 (intern (string ion2-name) :keyword)))
+              (leap.add-ions:add-ions mol ion1 ion1-number ion2 ion2-number))
+            (leap.add-ions:add-ions mol ion1 ion1-number))))
+ 
 (eval-when (:load-toplevel :execute)
   (setf leap.parser:*function-names/alist*
     '(("logFile" . log-file)
@@ -678,8 +724,8 @@ The unperturbed and perturbed total charge are displayed.
       ("solvateShell" . leap.solvate-shell)
       ("solvateCap" . leap.solvate-cap)
       ("setupDefaultPaths" . leap.setup-default-paths )
-      ("addIons" . leap.add-ions:add-ions)
-      ("addIons2" . leap.add-ions:add-ions-2)
+      ("addIons" . leap-add-ions)
+      ("addIons2" . leap-add-ions-2)
       ("addIonsRand" . leap.add-ions:add-ions-rand)
       ("setBox" . leap.set-box:set-box)
       ("showPaths" . leap.show-paths)
