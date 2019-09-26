@@ -5,16 +5,19 @@ This web page is excellent: https://www.redblobgames.com/grids/hexagons
 
 This code uses Offset coordinates odd-r
 |#
-(defparameter *x-expand* 60.0)
-(defparameter *y-expand* 60.0)
+(defparameter *x-expand* 40.0)
+(defparameter *y-expand* 40.0)
 (defparameter *z-expand* 10.0)
 
+(defparameter *select-fraction* 0.1)
+(defparameter *fraction-collisions-randomize* 0.4)
 (defparameter *z-space* 1.5)
 (defparameter *mutate-lipid-fraction* 0.08)
 (defparameter *mutate-position-fraction* 0.3)
+(defparameter *population-size* 200)
 (defparameter *lipid-density* 0.0098)
 (defparameter *random-tip-angle-degrees* 10.0)
-(defparameter *close-distance* 1.2)
+(defparameter *close-distance* 1.4)
 
 
 (defparameter *oddr-directions* #( #( #( -1 -1)
@@ -72,9 +75,6 @@ all layed out in a linear vector.")
                       :initarg :inverse-transform :accessor inverse-transform)
    (adjacent-to-solute :initform nil :initarg :adjacent-to-solute :accessor adjacent-to-solute)))
 
-(defclass ga-solute (ga-thing)
-  ((solute :initarg :solute :accessor solute)
-   (octree :initarg :octree :accessor octree)))
 
 (defclass ga-lipid (ga-thing)
   ((array-indices :initarg :array-indices :accessor array-indices)
@@ -82,6 +82,22 @@ all layed out in a linear vector.")
    (lipid-index :initarg :lipid-index :accessor lipid-index)
    (lipid-id :initarg :lipid-id :accessor lipid-id)
    ))
+
+;;; Dummy values for cells that contain solute
+(defclass ga-solute (ga-thing)
+  ((octree :initarg :octree :accessor octree)
+   (solute :initarg :solute :accessor solute)
+   (array-indices :initform nil :initarg :array-indices :accessor array-indices)
+   (lipid-info :initform nil :initarg :lipid-info :accessor lipid-info)
+   (lipid-index :initform nil :initarg :lipid-index :accessor lipid-index)
+   (lipid-id :initform nil :initarg :lipid-id :accessor lipid-id)
+   ))
+
+
+(defclass scored-membrane ()
+  ((score :initarg :score :accessor score)
+   (membrane :initarg :membrane :accessor membrane)
+   (collisions :initarg :collisions :accessor collisions)))
 
 (defmethod print-object ((obj ga-lipid) stream)
   (print-unreadable-object (obj stream :type t)
@@ -552,7 +568,7 @@ allocate enough space for the coordinates for the largest lipid in each cell of 
                (lipid-id 0)
                (array (make-array (list xnum ynum 2)))
                (node-array (make-array (list xnum ynum 2)))
-               (ga-solute (make-instance 'ga-solute :solute solute :octree solute-octree))
+               (ga-solute (make-instance 'ga-solute :solute solute :octree solute-octree)) ;;  :solute solute :octree solute-octree))
                (bounding-box (chem:make-bounding-box (list x-width y-width z-width)
                                                      :angles-degrees (chem:get-bounding-box-angles-degrees input-bounding-box)
                                                      :center (chem:get-bounding-box-center input-bounding-box))))
@@ -768,7 +784,8 @@ allocate enough space for the coordinates for the largest lipid in each cell of 
           for source-zi = (elt lipid-cell 2)
           for sc-cur = (aref array source-xi source-yi source-zi)
           do (score-cell bounding-box sc-cur (ga-solute membrane) collisions))
-    (values (/ (length (indices collisions)) 2) collisions)))
+    (values (/ (length (indices collisions)) 2)
+            collisions)))
 
 (defun score-work-list-atom-vectors (work-list atom-vectors &key debug no-result)
   (let ((close-contact-vec (make-array 1024 :adjustable t :fill-pointer 0))
@@ -948,6 +965,27 @@ allocate enough space for the coordinates for the largest lipid in each cell of 
                  (and (eq ga-thing1 (target-ga-thing range))
                       (eq ga-thing2 (source-ga-thing range))))
           do (return-from find-collision-range range)))
+
+(defun dump-scores (scored-membranes)
+  (let ((step 0))
+    (mapc (lambda (m) (format t "~4d " (score m))
+            (when (= (mod (incf step) 30) 0)
+              (terpri) (finish-output)))
+          scored-membranes))
+  nil)
+
+(defun compare-two-membranes (membrane1 membrane2)
+  (loop for index from 1 below (array-total-size (array membrane1))
+        for ga-thing1 = (row-major-aref (array membrane1) index)
+        for ga-thing2 = (row-major-aref (array membrane2) index)
+        for lipid-index1 = (if (typep ga-thing1 'ga-lipid) (lipid-index ga-thing1) 0)
+        for lipid-index2 = (if (typep ga-thing2 'ga-lipid) (lipid-index ga-thing2) 0)
+        do (if (/= lipid-index1 lipid-index2)
+               (format t "*")
+               (format t "."))
+        do (when (= (mod index 40) 0)
+             (terpri)
+             (finish-output))))
 
 (defclass atom-vectors ()
   ((array :initarg :array :accessor array)
@@ -1191,7 +1229,7 @@ The atom-res-mol is a list of the atom,residue and molecule."
 
 
 (defun mutate-lipids (orig-membrane &optional (fraction-mutations 0.03))
-  (let ((membrane orig-membrane)
+  (let ((membrane (copy-ga-membrane orig-membrane))
         (num-mutations (floor (* fraction-mutations (array-total-size (array orig-membrane))))))
     (loop for num from 0 below num-mutations
           for row-major-index = (random (array-total-size (array orig-membrane)))
@@ -1205,7 +1243,7 @@ The atom-res-mol is a list of the atom,residue and molecule."
     membrane))
 
 (defun mutate-position (orig-membrane &key (delta-x 0.1) (delta-y 0.1) (fraction-mutations 0.1))
-  (let ((membrane orig-membrane)
+  (let ((membrane (copy-ga-membrane orig-membrane))
         (num-mutations (floor (* fraction-mutations (array-total-size (array orig-membrane))))))
     (loop for num from 0 below num-mutations
           for row-major-index = (random (array-total-size (array orig-membrane)))
@@ -1333,6 +1371,98 @@ The atom-res-mol is a list of the atom,residue and molecule."
                                 (generic-octree-as-shape ot transform shape)))
     shape))
 
+(defun score-membranes (work-list membranes &key (parallel t) sort)
+  (check-type membranes list)
+  (check-type work-list work-list)
+  (let ((unsorted-scored-membranes
+          (if parallel
+              (lparallel:pmap 'list
+                              (lambda (memb)
+                                (multiple-value-bind (num-collisions collisions)
+                                    (score-work-list work-list memb)
+                                  (make-instance 'scored-membrane
+                                                 :score num-collisions
+                                                 :membrane memb
+                                                 :collisions collisions)))
+                              membranes)
+              (map 'list
+                   (lambda (memb)
+                     (multiple-value-bind (num-collisions collisions)
+                         (score-work-list work-list memb)
+                       (make-instance 'scored-membrane
+                                      :score num-collisions
+                                      :membrane memb
+                                      :collisions collisions)))
+                   membranes))))
+    (if sort
+        (sort unsorted-scored-membranes #'< :key #'score)
+        unsorted-scored-membranes)))
+
+(defun mutate-collisions-one-membrane (original-membrane
+                                       membrane-collisions
+                                       &optional
+                                         (fraction-collisions-randomize
+                                          *fraction-collisions-randomize*))
+  (let ((new-membrane (copy-ga-membrane original-membrane)))
+    (loop for range across (ranges membrane-collisions) 
+          for source = (source-ga-thing range)
+          for target = (target-ga-thing range)
+          for start = (start range)
+          for end = (end range)
+          when (and (/= start end) (< (random 1.0) *fraction-collisions-randomize*))
+            do (progn
+                 (when (typep source 'ga-lipid)
+                   (let* ((source-lipid source)
+                          (address (array-indices source-lipid))
+                          (lipid-info (lipid-info source-lipid))
+                          (new-lipid (aref (array new-membrane) (elt address 0) (elt address 1) (elt address 2))))
+                     (setf (lipid-index new-lipid) (random (length (coordinates lipid-info))))))
+                 (when (typep target 'ga-lipid)
+                   (let* ((target-lipid source)
+                          (address (array-indices target-lipid))
+                          (lipid-info (lipid-info target-lipid))
+                          (new-lipid (aref (array new-membrane) (elt address 0) (elt address 1) (elt address 2))))
+                     (setf (lipid-index new-lipid) (random (length (coordinates lipid-info))))))))
+    new-membrane))
+  
+(defun mutate-collisions (membranes collisions &key (fraction-collisions-randomize *fraction-collisions-randomize*))
+  (loop for index below (length membranes)
+        for membrane in membranes
+        for membrane-collisions in collisions
+        collect (mutate-collisions-one-membrane membrane membrane-collisions fraction-collisions-randomize)))
+
+(defun cross-membranes (membranes &optional (select-fraction *select-fraction*))
+  (loop with population-size = (length membranes)
+        for index below population-size
+        for parent1-index = (random (floor (* population-size select-fraction))) 
+        for parent2-index = (random (floor (* population-size select-fraction))) 
+        for parent1 = (elt membranes parent1-index)
+        for parent2 = (elt membranes parent2-index)
+        for mutant = (recombine-slice parent1 parent2) 
+        collect mutant))
+
+
+(defun randomly-mutate-membranes (membranes mutate-lipid-fraction)
+  (loop for membrane in membranes
+        for mutate-p = (< (random 1.0) mutate-lipid-fraction)
+        collect (if mutate-p
+                    (mutate-lipids membrane)
+                    membrane)))
+
+(defun randomly-shift-lipids-in-membranes (membranes mutate-position-fraction)
+  (loop for membrane in membranes
+        for mutate-p = (< (random 1.0) mutate-position-fraction)
+        collect (if mutate-p
+                    (mutate-position membrane)
+                    membrane)))
+
+(defun build-population (template-membrane &key (population-size *population-size*))
+  (loop for index below population-size
+        for membrane = (let ((copy-membrane (copy-ga-membrane template-membrane)))
+                         (mutate-all-lipids copy-membrane)
+                         copy-membrane)
+        collect membrane))
+
 (defun evolve (solute &rest args &key input-bounding-box
                                    (lipid-selector (list (cons 1.0 *popc*)))
                                    (population-size 200)
@@ -1342,74 +1472,36 @@ The atom-res-mol is a list of the atom,residue and molecule."
   (let* ((template-membrane (build-ga-membrane solute :input-bounding-box input-bounding-box :lipid-selector lipid-selector))
          (generation 0))
     ;; Fill the population at start
-    (let ((membranes (loop for index below population-size
-                           for membrane = (let ((copy-membrane (copy-ga-membrane template-membrane)))
-                                            (mutate-all-lipids copy-membrane)
-                                            copy-membrane)
-                           collect membrane)))
-      (let (scored-membranes
-            (work-list (build-ga-membrane-work-list (first membranes))))
-        (loop named evolution
-              for unsorted-scored-membranes = (if parallel
-                                                  (lparallel:pmap 'vector
-                                                                  (lambda (memb)
-                                                                    (multiple-value-bind (num-collisions collisions)
-                                                                        (score-work-list work-list memb)
-                                                                      (list num-collisions memb collisions)))
-                                                                  membranes)
-                                                  (map 'vector
-                                                       (lambda (memb)
-                                                         (multiple-value-bind (num-collisions collisions)
-                                                             (score-work-list work-list memb)
-                                                           (list num-collisions memb collisions)))
-                                                       membranes))
-              for sorted-scored-membranes = (sort unsorted-scored-membranes #'< :key #'first)
-              for best-score = (car (elt sorted-scored-membranes 0))
-              do (setf scored-membranes sorted-scored-membranes)
-              do (format t "Generation ~3a ... least collisions -> ~3a~%" generation (loop for index from 0 below 20
-                                                                                           collect (car (elt scored-membranes index))))
-              do (finish-output)
-              do (when (= (first (elt scored-membranes 0)) 0) (return-from evolution t))
-              do (incf generation)
-              do (when (> generation number-of-generations) (return-from evolution nil))
-                 ;; Scramble the bad lipids
-#|              do (loop for mutant-index below (length scored-membranes)
-                       for score-memb-collisions = (elt scored-membranes mutant-index)
-                       for score = (first score-memb-collisions) 
-                       for membrane = (second score-memb-collisions) 
-                       for collisions = (third score-memb-collisions) 
-                       do (loop for range across (ranges collisions) 
-                                for source = (source-ga-thing range)   
-                                for target = (target-ga-thing range)   
-                                when (typep source 'ga-lipid) 
-                                  do (let ((lipid-info (lipid-info source))) 
-                                       (setf (lipid-index source) (random (length (coordinates lipid-info)))))
-                                when (typep target 'ga-lipid) 
-                                  do (let ((lipid-info (lipid-info target))) 
-                                       (setf (lipid-index target) (random (length (coordinates lipid-info)))))) 
-                       )
-|#
-                 ;; generate recombined membranes
-              do (loop for mutant-index below (length membranes) 
-                             for parent1-index = (random (floor (* population-size select-fraction))) 
-                             for parent2-index = (random (floor (* population-size select-fraction))) 
-                             for parent1 = (second (elt scored-membranes parent1-index)) 
-                             for parent2 = (second (elt scored-membranes parent2-index)) 
-                             for mutant = (recombine-slice parent1 parent2) 
-                             do (setf (elt membranes mutant-index) mutant)) 
-                 ;; Do some random mutations of *mutate-lipid-fraction* 
-              do (loop for mutant-index below (length membranes) 
-                       for mutate-p = (< (random 1.0) *mutate-lipid-fraction*) 
-                       for membrane = (elt membranes mutant-index) 
-                       when mutate-p                               
-                         do (mutate-lipids membrane))              
-                 ;; Do some random shifting of *mutate-position-fraction* 
-              do (loop for mutant-index below (length membranes) 
-                       for mutate-p = (< (random 1.0) *mutate-position-fraction*) 
-                       for membrane = (elt membranes mutant-index) 
-                       when mutate-p                               
-                         do (mutate-position membrane)))
-        scored-membranes))))
+    (let* ((membranes (build-population template-membrane :population-size population-size))
+           scored-membranes
+           (work-list (build-ga-membrane-work-list (first membranes))))
+      (loop named evolution
+            for sorted-scored-membranes = (score-membranes work-list membranes :sort t)
+            for best-score = (score (first sorted-scored-membranes))
+            do (setf scored-membranes sorted-scored-membranes)
+            do (progn
+                 (format t "Generation ~3a size ~a~%" generation (length scored-membranes))
+                 (format t "  ... least collisions -> ~3a~%" (loop for index from 0 below 10
+                                                                   collect (score (elt scored-membranes index))))
+                 (finish-output))
+            do (when (= (score (first scored-membranes)) 0) (return-from evolution t))
+            do (incf generation)
+            do (when (> generation number-of-generations) (return-from evolution scored-membranes))
+               ;; Copy the scored membranes into membranes
+            do (setf membranes (mapcar #'membrane scored-membranes))
+               ;; Mutate lipid pairs that have bad contacts.
+            do (let ((collisions (mapcar #'collisions scored-membranes)))
+                 (setf membranes (mutate-collisions membranes collisions)))
+               ;; generate recombined membranes by mixing parts of one top membrane with another
+            do (let ((new-membranes (cross-membranes membranes select-fraction)))
+                 (setf membranes new-membranes))
+               ;; Do some random mutations of *mutate-lipid-fraction* 
+            do (let ((new-membranes (randomly-mutate-membranes membranes *mutate-lipid-fraction*)))
+                 (setf membranes new-membranes))
+               ;; Do some random shifting of *mutate-position-fraction* 
+            do (let ((new-membranes (randomly-shift-lipids-in-membranes membranes *mutate-position-fraction*)))
+                 (setf membranes new-membranes)))
+      scored-membranes)))
 
 
 (defun pack (solute &rest args &key input-bounding-box
