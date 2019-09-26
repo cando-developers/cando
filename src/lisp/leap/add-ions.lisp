@@ -130,11 +130,11 @@
                             (geom:vx new-point)
                             (geom:vy new-point)
                             (geom:vz new-point))
-                    (chem:oct-tree-delete-sphere oct-tree new-point (if ion2
+                    (chem:octree-delete-sphere octree new-point (if ion2
                                                                   (+ ion1-size ion2-size)
                                                                   (+ ion1-size ion1-size)))
                     (multiple-value-bind (min-new-charge-point max-new-charge-point)
-                        (chem:oct-tree-update-charge oct-tree new-point (chem:get-charge ion1-atom)
+                        (chem:octree-update-charge octree new-point (chem:get-charge ion1-atom)
                                                      (if ion2 ion2-size ion1-size))
                       (setf min-charge-point min-new-charge-point)
                       (setf max-charge-point max-new-charge-point))
@@ -278,11 +278,11 @@
                             (geom:vx new-point)
                             (geom:vy new-point)
                             (geom:vz new-point))
-                    (chem:oct-tree-delete-sphere oct-tree new-point (if ion2
+                    (chem:octree-delete-sphere octree new-point (if ion2
                                                                         (+ ion1-size ion2-size)
                                                                         (+ ion1-size ion1-size)))
                     (multiple-value-bind (min-new-charge-point max-new-charge-point)
-                        (chem:oct-tree-update-charge oct-tree new-point (chem:get-charge ion1-atom)
+                        (chem:octree-update-charge octree new-point (chem:get-charge ion1-atom)
                                                      (if ion2 ion2-size ion1-size))
                       (setf min-charge-point min-new-charge-point)
                       (setf max-charge-point max-new-charge-point))
