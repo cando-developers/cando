@@ -150,11 +150,15 @@ public:
   //! Stores actual residues from aggregate
   core::Vector_sp                _Residues;
   core::Vector_sp                _Molecules;
+  core::T_sp                     _Matter;
   core::T_sp                     _AggregateName;
   core::T_sp                     _BoundingBox;
   core::T_sp                     _NonbondForceFieldForAggregate;
  public:
   typedef gctools::Vec0<EnergyAtom>::iterator iterator;
+public:
+  static AtomTable_sp make();
+  
  public:
   gctools::Vec0<EnergyAtom>&	getVectorEnergyAtoms() { return this->_Atoms;};
   CL_DEFMETHOD size_t	getNumberOfAtoms()	{ return this->_Atoms.size();};

@@ -14,7 +14,8 @@
                 :charges
                 :leap
                 :amber
-)
+                :lparallel
+                )
   :serial t
 ;;;  :build-operation asdf:monolithic-compile-bundle-op
 ;;;  :build-pathname #P"/tmp/fep.fasb"

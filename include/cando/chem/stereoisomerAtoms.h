@@ -134,7 +134,7 @@ is a list of stereoisomer-atoms.)");
     StereoisomerAtom_sp& operator[](ConstitutionAtomIndex0N idx);
 
 	//! Return the StereoisomerAtom that has the give name
-    StereoisomerAtom_sp atomWithName(MatterName name);
+    core::T_mv atomWithName(MatterName name,bool errorp=true);
 
 	/*! Return the StereoisomerAtom at the given index */
     StereoisomerAtom_sp atomWithId(ConstitutionAtomIndex0N idx) const;

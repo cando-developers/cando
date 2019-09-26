@@ -1453,17 +1453,10 @@ cando-extensions               : T if you want cando-extensions written to the t
                (fortran:debug "-40-")
                (fortran:fformat 5 "%16.8e")
                (let ((solvent-box (chem:bounding-box atom-table)))
-                 (unless (and solvent-box (listp solvent-box)
-                              (or (= (length solvent-box) 3)
-                                  (= (length solvent-box) 6)))
-                   (error "There must be a solvent-box property in the aggregate properties and it must be a list of length three (x,y,z) or six (x,y,z,angle1,angle2,angle3) numbers - instead got ~a" solvent-box))
-                 (if (> (length solvent-box) 3)
-                     (fortran:fwrite (float (fourth solvent-box)))
-                     (fortran:fwrite "90.0000000") ;box angle
-                     )
-                 (fortran:fwrite (float (first solvent-box)))
-                 (fortran:fwrite (float (second solvent-box)))
-                 (fortran:fwrite (float (third solvent-box)))) 
+                 (fortran:fwrite (float (chem:get-x-angle-degrees solvent-box)))
+                 (fortran:fwrite (float (chem:get-x-width solvent-box)))
+                 (fortran:fwrite (float (chem:get-y-width solvent-box)))
+                 (fortran:fwrite (float (chem:get-z-width solvent-box)))) 
                (fortran:end-line))))
 
         ;;next
@@ -1542,7 +1535,7 @@ cando-extensions               : T if you want cando-extensions written to the t
              (fortran:end-line))))
         ))
 ;;;    (format *debug-io* "coordinate-pathname -> ~s~%" coordinate-pathname)
-      (fortran:with-fortran-output-file (ftop coordinate-pathname :direction :output :if-exists :supersede)
+    (fortran:with-fortran-output-file (ftop coordinate-pathname :direction :output :if-exists :supersede)
       (fortran:fformat 20 "%-4s")
       (fortran:fwrite (string (chem:aggregate-name atom-table)))
       (fortran:end-line)
@@ -1558,11 +1551,9 @@ cando-extensions               : T if you want cando-extensions written to the t
             (oz 0.0))
         (when (chem:bounding-box-bound-p atom-table)
           (let ((solvent-box (chem:bounding-box atom-table)))
-            (unless (and solvent-box (listp solvent-box) (>= (length solvent-box) 3))
-              (error "There must be a solvent-box property in the aggregate properties and it must be a list of length at least three numbers - it is ~a" solvent-box))
-            (setf ox (/ (float (first solvent-box)) 2.0)
-                  oy (/ (float (second solvent-box)) 2.0)
-                  oz (/ (float (third solvent-box)) 2.0))))
+            (setf ox (/ (float (chem:get-x-width solvent-box)) 2.0)
+                  oy (/ (float (chem:get-y-width solvent-box)) 2.0)
+                  oz (/ (float (chem:get-z-width solvent-box)) 2.0))))
         (loop for i from 0 below natom
               for atom = (chem:elt-atom atom-table i)
               for atom-coordinate-index-times3 = (chem:elt-atom-coordinate-index-times3 atom-table i)
@@ -1576,22 +1567,12 @@ cando-extensions               : T if you want cando-extensions written to the t
       ;; write out the solvent box
       (if (chem:bounding-box-bound-p atom-table)
           (let ((solvent-box (chem:bounding-box atom-table)))
-            (unless (and solvent-box (listp solvent-box)
-                         (or (= (length solvent-box) 3)
-                             (= (length solvent-box) 6)))
-              (error "There must be a solvent-box property in the aggregate properties and it must be a list of length three numbers or 6 numbers (x,y,z,angles) - it is ~a" solvent-box))
-            (fortran:fwrite (float (first solvent-box)))
-            (fortran:fwrite (float (second solvent-box)))
-            (fortran:fwrite (float (third solvent-box)))
-            (if (fourth solvent-box)
-                (fortran:fwrite (float (fourth solvent-box)))
-                (fortran:fwrite "90.0000000"))
-            (if (fifth solvent-box)
-                (fortran:fwrite (float (fifth solvent-box)))
-                (fortran:fwrite "90.0000000"))
-            (if (sixth solvent-box)
-                (fortran:fwrite (float (sixth solvent-box)))
-                (fortran:fwrite "90.0000000"))))
+            (fortran:fwrite (float (chem:get-x-width solvent-box)))
+            (fortran:fwrite (float (chem:get-y-width solvent-box)))
+            (fortran:fwrite (float (chem:get-z-width solvent-box)))
+            (fortran:fwrite (float (chem:get-x-angle-degrees solvent-box)))
+            (fortran:fwrite (float (chem:get-y-angle-degrees solvent-box)))
+            (fortran:fwrite (float (chem:get-z-angle-degrees solvent-box)))))
       (fortran:end-line))
     (cando:progress-done bar)
     (values energy-function)))
@@ -1603,7 +1584,7 @@ cando-extensions               : T if you want cando-extensions written to the t
                                                      :use-excluded-atoms t
                                                      :assign-types assign-types)))
     ;;; We need to:
-    ;;;  (1) make sure energy function copies :bounding-box property from aggregate
+    ;;;  (1) make sure energy function copies bounding-box property from aggregate
     ;;;  (2) Copy the name of the aggregate into the energy function
     ;;;  (3) Separate the solvent molecules from solute molecules and order them in the energy-function
     ;;;  (4) Copy the result of (chem:lookup-nonbond-force-field-for-aggregate aggregate force-field) into the energy-function
@@ -2658,7 +2639,7 @@ cando-extensions               : T if you want cando-extensions written to the t
 (defun read-bounding-box (netcdf)
   (let* ((lengths (cell-lengths netcdf))
          (angles (cell-angles netcdf))
-         (bounding-box (append (coerce lengths 'list) (coerce angles 'list))))
+         (bounding-box (chem:make-bounding-box lengths angles)))
     bounding-box))
 
 (defun read-amber-restart-file (coordinate-filename)
@@ -2697,7 +2678,7 @@ cando-extensions               : T if you want cando-extensions written to the t
         (read-amber-restart-file coordinate-filename)
       (write-coordinates-into-energy-function-atom-table energy-function coordinates)
       (when bounding-box
-        (chem:set-property aggregate :bounding-box bounding-box))
+        (chem:set-bounding-box aggregate bounding-box))
       (make-instance 'amber-topology-restart-pair
                      :topology-filename topology-filename
                      :coordinate-filename coordinate-filename

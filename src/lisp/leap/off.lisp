@@ -247,9 +247,13 @@ Use eof-error-p and eof as in read."
            (bo (elt connect 2))
            (a1 (elt atoms (1- b1))) ; For some reason I started counting at 1
            (a2 (elt atoms (1- b2))))
-      (unless (= bo 1)
-        (error "There is a bond order that is not 1"))
-      (chem:bond-to a1 a2 :single-bond))))
+      (cond
+        ((= bo 1)
+         (chem:bond-to a1 a2 :single-bond))
+        ((= bo 2)
+         (chem:bond-to a1 a2 :double-bond))
+        (t 
+         (error "Handle bond-order of ~a" bo))))))
 
 (defun set-positions (read-positions atoms)
   (loop for atom across atoms
@@ -314,11 +318,11 @@ if the caller wants to do that."
         (let ((atom-id-map (make-hash-table :test #'eql))
               (residue-id-map (make-hash-table :test #'eql)))
           (loop for atom across atoms
-             for index from 0
-             do (setf (gethash index atom-id-map) atom))
+                for index from 0
+                do (setf (gethash index atom-id-map) atom))
           (loop for residue across residues
-             for index from 0
-             do (setf (gethash index residue-id-map) residue))
+                for index from 0
+                do (setf (gethash index residue-id-map) residue))
           (let ((molecule-id-map (cando:build-molecules-from-atom-connectivity atom-id-map residue-id-map))
                 molecule-ids)
             (maphash (lambda (id molecule)
@@ -333,10 +337,14 @@ if the caller wants to do that."
                     sorted-molecule-ids)
               ;; If there is a bounding box then use it
               (when (> (elt (elt read-bound-box 0) 0) 0)
-                (let ((xbox (elt (elt read-bound-box 2) 0))
+                (let ((angle-rad (elt (elt read-bound-box 1) 0))
+                      (xbox (elt (elt read-bound-box 2) 0))
                       (ybox (elt (elt read-bound-box 3) 0))
                       (zbox (elt (elt read-bound-box 4) 0)))
-                  (chem:set-property aggregate :bounding-box (list xbox ybox zbox))))
+                  (chem:set-bounding-box aggregate (chem:make-bounding-box (list xbox ybox zbox)
+                                                                           :angles-degrees (list (/ angle-rad 0.0174533)
+                                                                                                (/ angle-rad 0.0174533)
+                                                                                                (/ angle-rad 0.0174533))))))
               (values aggregate read-connect read-residues))))))))
 
 (defun translate-off-object (unit-name unit connect residues)

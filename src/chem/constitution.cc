@@ -132,7 +132,7 @@ void	Constitution_O::makeResidueConsistentWithStereoisomerNamed(Residue_sp res,
   si = this->_StereoInformation->getStereoisomer(stereoisomerName);
   gctools::Vec0<StereoConfiguration_sp>::iterator	sci;
   for (sci=si->_Configurations_begin();sci!=si->_Configurations_end();sci++){
-    aa = res->atomWithName((*sci)->getAtomName());
+    aa = gc::As_unsafe<Atom_sp>(res->atomWithName((*sci)->getAtomName()));
     LOG(BF("Setting the configuration of atom(%s) to(%s)") % aa->description().c_str() % _rep_((*sci)->getConfiguration())  ); //
     if ( (*sci)->getConfiguration() == chemkw::_sym_S ) {
       aa->setConfiguration( S_Configuration );

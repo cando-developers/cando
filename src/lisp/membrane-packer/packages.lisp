@@ -12,7 +12,18 @@
 ;; -^-
 (cl:in-package #:common-lisp-user)
 
-(defpackage #:membrane-pack
+(defpackage #:membrane-packer
   (:use #:common-lisp)
   (:export
+   #:pack
+   #:prepare-lipids
+
+   #:load-test-molecule
+   #:build-ga-membrane
+   #:build-aggregate-from-ga-membrane
+   #:add-collisions-as-shape
+   #:score-ga-membrane
+   #:add-close-contacts-as-shape
+   #:close-contacts
+   #:find-collision-range
    ))

@@ -1,5 +1,18 @@
 (in-package :cando)
 
+(defun move-geometric-center-to-origin (matter)
+  "Move the geometric center of the matter to the origin"
+  (let* ((geometric-center (chem:geometric-center matter))
+         (delta (geom:v* geometric-center -1.0)))
+    (chem:apply-transform-to-atoms matter (geom:make-m4-translate delta))))
+
+(defun move-geometric-center-to-point (matter point)
+  "Move the geometric center of the matter to the point"
+  (let* ((geometric-center (chem:geometric-center matter))
+         (delta (geom:v* geometric-center -1.0)))
+    (chem:apply-transform-to-atoms matter (geom:make-m4-translate delta))
+    (chem:apply-transform-to-atoms matter (geom:make-m4-translate point))))
+
 (defun unbuilt-vec3-p (v)
   (= (geom:vx v) (geom:vy v) (geom:vz v) 0.0))
 

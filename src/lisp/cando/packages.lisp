@@ -150,6 +150,8 @@
    #:mol
    #:res
    #:atm
+   #:move-geometric-center-to-origin
+   #:move-geometric-center-to-point
    #:rename-atoms-using-smirks
    #:register-topology
    #:lookup-topology
@@ -248,7 +250,13 @@
    #:write-coordinates-back-to-matter
    #:accumulate-coordinates
    #:accumulated-coordinates
-   #:velocity-verlet-step))
+   #:velocity-verlet-step
+   #:velocity-verlet-step-limit-displacement
+   #:describe-missing-types
+   #:dynamics-start
+   #:dynamics-end
+   #:with-dynamics
+   ))
 
 (defpackage #:infix
   (:use #:common-lisp)

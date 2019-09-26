@@ -36,6 +36,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <vector>
 #include <clasp/core/foundation.h>
 #include <clasp/core/lispStream.fwd.h>
+#include <cando/chem/nVector.fwd.h>
 //#include "core/archive.fwd.h"
 //#include "core/serialize.h"
 
@@ -235,5 +236,9 @@ namespace serialize
 };
 #endif // defined(OLD_SERIALIZE)
 
+namespace geom {
+void geom__vec_extract(Vector3& vec, chem::NVector_sp coordinates, size_t index0);
+
+};
 
 #endif

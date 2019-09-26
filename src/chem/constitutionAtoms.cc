@@ -55,6 +55,7 @@ void ConstitutionAtom_O::fields(core::Record_sp node)
   node->field(INTERN_(kw,name),this->_AtomName);
   node->field(INTERN_(kw,index),this->_Index);
   node->field(INTERN_(kw,element),this->_Element);
+  node->field(INTERN_(kw,type),this->_AtomType);
   node->field_if_not_default(INTERN_(kw,stereochemType), this->_StereochemistryType, undefinedCenter);
   node->field(INTERN_(kw,bonds),this->_Bonds);
   node->field_if_not_nil(INTERN_(kw,properties),this->_Properties);
@@ -171,13 +172,19 @@ void ConstitutionAtoms_O::fields(core::Record_sp node)
 }  
 
 
+CL_DOCSTRING(R"doc(Return (values constitution-atom T) if the atom with NAME is found.
+If it is not found and ERRORP is NIL then return (values NIL NIL), otherwise signal an error.)doc");
 CL_LISPIFY_NAME("atomWithName");
-CL_DEFMETHOD     ConstitutionAtom_sp ConstitutionAtoms_O::atomWithName(MatterName nm)
+CL_LAMBDA(atom-name &optional (errorp t))
+CL_DEFMETHOD     core::T_mv ConstitutionAtoms_O::atomWithName(MatterName nm, bool errorp )
 {_OF();
   for ( gctools::Vec0<ConstitutionAtom_sp>::const_iterator ci=this->_Atoms.begin();
         ci!=this->_Atoms.end(); ci++ )
   {
-    if ( (*ci)->_AtomName == nm ) return *ci;
+    if ( (*ci)->_AtomName == nm ) return Values(*ci,_lisp->_true());
+  }
+  if (!errorp) {
+    return Values(_Nil<core::T_O>(),_Nil<core::T_O>());
   }
   SIMPLE_ERROR(BF("Could not find ConstitutionAtom with name[%s]") % nm );
 }

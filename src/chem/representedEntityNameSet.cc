@@ -130,11 +130,9 @@ CL_DEFMETHOD     bool	RepresentedEntityNameSet_O::hasRepresentative()
 	    LOG(BF("this->_Representative.nilp -- expanding my EntryNames"));
 	    return this->Base::expandedRepresentativeList();
 	}
-	ASSERTP(bdb->recognizesEntityName(this->_Representative),
-		"candoDatabase does not recognize entity name("+_rep_(this->_Representative)+")");
+	ASSERT(bdb->recognizesEntityName(this->_Representative)); // "candoDatabase does not recognize entity name("+_rep_(this->_Representative)+")");
 	obj = bdb->getEntity(this->_Representative);
-	ASSERTF(obj->isTerminalName(),
-		BF("Representatives must always be terminal names, this representative(%s) is NOT")% obj->getName() );
+	ASSERT(obj->isTerminalName()); // BF("Representatives must always be terminal names, this representative(%s) is NOT")% obj->getName() );
 	objList = RepresentativeList_O::create();
 	GC_COPY(RepresentedEntityNameSet_O, expanded , *this); // = RP_Copy<RepresentedEntityNameSet_O>(this);
 	expanded->expandToTerminalEntityNames();

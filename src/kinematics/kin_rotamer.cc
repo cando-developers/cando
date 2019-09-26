@@ -47,9 +47,6 @@ Rotamer_sp Rotamer_O::make(core::List_sp dihedrals, core::List_sp sigmas, core::
     {
 	GC_ALLOCATE(Rotamer_O, me );
       me->_Count = count;
-      ASSERTF(core::cl__length(dihedrals)==core::cl__length(sigmas),
-	      BF("Mismatch between #dihedrals[%d] and #sigmas[%d]")
-	      % dihedrals->length() % sigmas->length() );
       me->_Probability = probability;
       for ( ; dihedrals.notnilp(); dihedrals = oCdr(dihedrals),
 	      sigmas = oCdr(sigmas),

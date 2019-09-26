@@ -66,8 +66,9 @@ class EnergyPointToLineRestraint_O : public EnergyComponent_O
 public: // virtual functions inherited from Object
     void	initialize();
 public: // instance variables
-  double _Bond_div_2;
+  double                  _Bond_div_2;  // cutoff - if _ForceConstant is negative then less than this force is off
   EnergySketchStretch_sp  _Stretch;
+  double                  _ForceConstant; // positive repels, negative attracts
 
 public:
   static EnergyPointToLineRestraint_sp create(EnergySketchStretch_sp stretch);
@@ -82,7 +83,7 @@ public:
                                 gc::Nilable<NVector_sp> dvec);
 
 public:
-  EnergyPointToLineRestraint_O(EnergySketchStretch_sp stretch) : _Stretch(stretch) {};
+  EnergyPointToLineRestraint_O(EnergySketchStretch_sp stretch) : _Stretch(stretch), _ForceConstant(0.5) {};
   void reset();
 
 

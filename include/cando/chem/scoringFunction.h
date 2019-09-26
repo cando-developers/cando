@@ -96,7 +96,12 @@ namespace       chem
   public:
     string	    _Name;
     bool        _Debug;
+    Vector3                                     _VelocityScale;
   public:
+    bool fieldsp() const { return true; };
+    void fields(core::Record_sp node);
+  public:
+    void setf_velocity_scale(double xscale, double yscale, double zscale);
     CL_DEFMETHOD     void	setScoringFunctionName(const string& nm) { this->_Name = nm; };
     CL_DEFMETHOD     string	scoringFunctionName() { return this->_Name; };
 //    void		writeForceToAtoms(NVector_sp f);
@@ -218,7 +223,7 @@ namespace       chem
 
     virtual void	dealWithProblem(core::Symbol_sp error_symbol, core::T_sp arguments) = 0;
 
-    DEFAULT_CTOR_DTOR(ScoringFunction_O);
+    ScoringFunction_O();
   };
 
 };

@@ -355,7 +355,7 @@ class Matter_O : public core::CxxObject_O
   core::T_mv momentOfGeometry();
 		/*! Return a bounding box for the matter padded with (pad).
 		 */
-  geom::BoundingBox_sp	matterBoundingBox(double pad);
+  geom::BoundingCuboid_sp	matterCalculateBoundingCuboid(double pad);
 
   void		reparent(Matter_sp c);
 

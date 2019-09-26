@@ -92,7 +92,7 @@
                                       1.0)))))
     
     ;;Build grid and calc potential on it
-    (let ((oct-tree (core:make-cxx-object 'chem:octree))
+    (let ((octree (core:make-cxx-object 'chem:add-ion-octree))
           (ion2-mol (chem:make-molecule))
           (ion2-agg (chem:make-aggregate))
           ion2-topology ion2-residue ion2-atom)
@@ -104,13 +104,13 @@
             (chem:add-matter ion2-mol ion2-residue)
             (chem:add-matter ion2-agg ion2-mol)))
       (format t "About to octree-create~%")
-      (chem:oct-oct-tree-create oct-tree mol :shell grid-space ion-min-size shell-extent nonbond-db include-solvent t)
+      (chem:octree-create octree mol :shell grid-space ion-min-size shell-extent nonbond-db include-solvent t)
       (format t "Came out of octree-create~%")
       (if (aref solvent-vec 0)
           (format t " Solvent present: replacing closest with ion when steric overlaps occur~%")
           (format t "(no solvent present)~%"))
       (multiple-value-bind (min-charge-point max-charge-point)
-          (chem:oct-tree-init-charges oct-tree at-octree dielectric ion1-size)
+          (chem:octree-init-charges octree at-octree dielectric ion1-size)
         (loop 
            for new-point = (if (< (chem:get-charge ion1-atom) 0) max-charge-point min-charge-point)
            for ion1-copy = (chem:matter-copy ion1-agg)
@@ -153,11 +153,11 @@
                               (geom:vx new-point)
                               (geom:vy new-point)
                               (geom:vz new-point))
-                      (chem:oct-tree-delete-sphere oct-tree new-point (if ion1
+                      (chem:octree-delete-sphere octree new-point (if ion1
                                                                           (+ ion2-size ion1-size)
                                                                           (+ ion2-size ion2-size)))
                       (multiple-value-bind (min-new-charge-point max-new-charge-point)
-                          (chem:oct-tree-update-charge oct-tree new-point (chem:get-charge ion2-atom)
+                          (chem:octree-update-charge octree new-point (chem:get-charge ion2-atom)
                                                        (if ion1 ion1-size ion2-size))
                         (setf min-charge-point min-new-charge-point)
                         (setf max-charge-point max-new-charge-point)))
@@ -245,7 +245,7 @@
                                       1.0)))))
     
     ;;Build grid and calc potential on it
-    (let ((oct-tree (core:make-cxx-object 'chem:octree))
+    (let ((octree (core:make-cxx-object 'chem:add-ion-octree))
           (ion2-mol (chem:make-molecule))
           (ion2-agg (chem:make-aggregate))
           ion2-topology ion2-residue ion2-atom)
@@ -257,10 +257,10 @@
             (chem:add-matter ion2-mol ion2-residue)
             (chem:add-matter ion2-agg ion2-mol)))
       (format t "About to octree-create~%")
-      (chem:oct-oct-tree-create oct-tree mol :shell grid-space ion-min-size shell-extent nonbond-db include-solvent t)
+      (chem:octree-create octree mol :shell grid-space ion-min-size shell-extent nonbond-db include-solvent t)
       (format t "Came out of octree-create~%")
       (multiple-value-bind (min-charge-point max-charge-point)
-          (chem:oct-tree-init-charges oct-tree at-octree dielectric ion1-size)
+          (chem:octree-init-charges octree at-octree dielectric ion1-size)
         (loop 
            for new-point = (if (< (chem:get-charge ion1-atom) 0) max-charge-point min-charge-point)
            for ion1-copy = (chem:matter-copy ion1-agg)
@@ -301,11 +301,11 @@
                               (geom:vx new-point)
                               (geom:vy new-point)
                               (geom:vz new-point))
-                      (chem:oct-tree-delete-sphere oct-tree new-point (if ion1
+                      (chem:octree-delete-sphere octree new-point (if ion1
                                                                           (+ ion2-size ion1-size)
                                                                           (+ ion2-size ion2-size)))
                       (multiple-value-bind (min-new-charge-point max-new-charge-point)
-                          (chem:oct-tree-update-charge oct-tree new-point (chem:get-charge ion2-atom)
+                          (chem:octree-update-charge octree new-point (chem:get-charge ion2-atom)
                                                        (if ion1 ion1-size ion2-size))
                         (setf min-charge-point min-new-charge-point)
                         (setf max-charge-point max-new-charge-point)))

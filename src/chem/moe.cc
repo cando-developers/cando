@@ -965,7 +965,6 @@ void	MoeReadFile::readNextLine()
 		tir++;
 		for ( it=0; it<numAtoms; it++ ) {
 		    GC_ALLOCATE(Atom_O, a );
-		    IMPLEMENT_MEF("setMoeIndex");
                     //a->setMoeIndex( dynamic_cast<ParaInteger*>(ptAtoms.getVector(index_ID)[ia])->getValue() );
 		    a->setName( chemkw_intern(dynamic_cast<ParaToken*>(ptAtoms .getVector(index_aName)[ia])->getValue() ));
 		    a->setElementFromString( dynamic_cast<ParaToken*>(ptAtoms .getVector(index_aElement)[ia])->getValue() );
@@ -1107,10 +1106,8 @@ void	MoeReadFile::readNextLine()
 		    LOG(BF("Read bond between atom indices %d-%d") % from+1 % to+1  );
 		    bo = singleBond;
 		    atoms[from]->bondTo( atoms[to], bo );
-		    ASSERTP(!atoms[from]->invalid(),
-				  "Bond I just formed is invalid atom:"+atoms[from]->getName());
-		    ASSERTP(!atoms[to]->invalid(),
-				  "Bond I just formed is invalid atom:"+atoms[to]->getName());
+		    ASSERT(!atoms[from]->invalid()); // "Bond I just formed is invalid atom:"+atoms[from]->getName());
+		    ASSERT(!atoms[to]->invalid()); // "Bond I just formed is invalid atom:"+atoms[to]->getName());
 		    LOG(BF("Installed bond between atoms: %s - %s") % atoms[from]->description().c_str() % atoms[to]->description().c_str()  );
 		}
 	    }
@@ -1124,10 +1121,8 @@ void	MoeReadFile::readNextLine()
 		    LOG(BF("Read bond between atom indices %d-%d") % from+1 % to+1  );
 		    bo = doubleBond;
 		    atoms[from]->bondTo( atoms[to], bo );
-		    ASSERTP(!atoms[from]->invalid(),
-				  "Bond I just formed is invalid atom:"+atoms[from]->getName());
-		    ASSERTP(!atoms[to]->invalid(),
-				  "Bond I just formed is invalid atom:"+atoms[to]->getName());
+		    ASSERT(!atoms[from]->invalid()); // "Bond I just formed is invalid atom:"+atoms[from]->getName());
+		    ASSERT(!atoms[to]->invalid()); // "Bond I just formed is invalid atom:"+atoms[to]->getName());
 		    LOG(BF("Installed bond between atoms: %s - %s") % atoms[from]->description().c_str() % atoms[to]->description().c_str()  );
 		}
 	    }
@@ -1141,10 +1136,8 @@ void	MoeReadFile::readNextLine()
 		    LOG(BF("Read bond between atom indices %d-%d") % from+1 % to+1  );
 		    bo = tripleBond;
 		    atoms[from]->bondTo( atoms[to], bo );
-		    ASSERTP(!atoms[from]->invalid(),
-				  "Bond I just formed is invalid atom:"+atoms[from]->getName());
-		    ASSERTP(!atoms[to]->invalid(),
-				  "Bond I just formed is invalid atom:"+atoms[to]->getName());
+		    ASSERT(!atoms[from]->invalid()); // "Bond I just formed is invalid atom:"+atoms[from]->getName());
+		    ASSERT(!atoms[to]->invalid()); // "Bond I just formed is invalid atom:"+atoms[to]->getName());
 		    LOG(BF("Installed bond between atoms: %s - %s") % atoms[from]->description().c_str() % atoms[to]->description().c_str()  );
 		}
 	    }
@@ -1153,7 +1146,6 @@ void	MoeReadFile::readNextLine()
 	LOG(BF("Setting RS force constants") );
 
 	if ( bGotForceRSm1 ) {
-	    IF_DEBUG_ON({cerr << "building ForceRSm1 restraints" << std::endl;} );
 	    aggRestraints = agg->allRestraints();
 	    IMPLEMENT_ME(); // Handle new restraints
 	    index_ID = ptForceRSm1.getFieldIndex("ID");
@@ -1161,17 +1153,12 @@ void	MoeReadFile::readNextLine()
 		aid = ( dynamic_cast<ParaInteger*>(ptForceRSm1.getVector(index_ID)[i])->getValue()-1 );
 		rsAtom = atoms[aid];
 		RestraintChiral_sp restrainChiral = RestraintChiral_O::create();
-		IF_DEBUG_ON( {
-			cerr << "Reading Chiral restraint" << std::endl;
-			cerr << "Atom RS-1: " << rsAtom << "  moe ID: " << rsAtom->getMoeIndex()<< std::endl;
-		    })
-		    restrainChiral->setAtomA(rsAtom);
+                restrainChiral->setAtomA(rsAtom);
 		restrainChiral->setChirality(-1);
 		aggRestraints = core::Cons_O::create(restrainChiral,aggRestraints);
 	    }
 	}
 	if ( bGotForceRSp1 ) {
-	    IF_DEBUG_ON({cerr << "building ForceRSp1 restraints" << std::endl;} );
 	    aggRestraints = agg->allRestraints();
 	    IMPLEMENT_ME(); // handle new restraints
 	    index_ID = ptForceRSp1.getFieldIndex("ID");
@@ -1179,11 +1166,7 @@ void	MoeReadFile::readNextLine()
 		aid = ( dynamic_cast<ParaInteger*>(ptForceRSp1.getVector(index_ID)[i])->getValue()-1 );
 		rsAtom = atoms[aid];
 		RestraintChiral_sp restrainChiral = RestraintChiral_O::create();
-		IF_DEBUG_ON( {
-			cerr << "Reading chiral restraint" << std::endl;
-			cerr << "Atom RS+1: " << rsAtom << "moe ID: " << rsAtom->getMoeIndex()<< std::endl;
-		    })
-		    restrainChiral->setAtomA(rsAtom);
+                restrainChiral->setAtomA(rsAtom);
 		restrainChiral->setChirality(1);
 		aggRestraints = core::Cons_O::create(restrainChiral,aggRestraints);
 	    }
@@ -1202,7 +1185,6 @@ void	MoeReadFile::readNextLine()
 
 
 	if ( bGotRestraints ) {
-	    IF_DEBUG_ON({cerr << "building the restraints" << std::endl;});
 	    aggRestraints = agg->allRestraints();
 	    IMPLEMENT_ME(); // handle new restraints
 	    index_type = ptRestraints.getFieldIndex("type");
@@ -1223,20 +1205,7 @@ void	MoeReadFile::readNextLine()
 		if ( type == "dihedral" ) 
 		{
 		    RestraintDihedral_sp restraint = RestraintDihedral_O::create();
-		    IF_DEBUG_ON( {
-			    cerr << "Reading dihedral restraint" << std::endl;
-			    cerr << "Atoms: "
-				 << (*resAtoms)[0] << " "
-				 << (*resAtoms)[1] << " "
-				 << (*resAtoms)[2] << " "
-				 << (*resAtoms)[3] << " " << std::endl;
-			    cerr << "Cooresponding MOE atom IDs: "
-				 << atoms[(*resAtoms)[0]-1]->getMoeIndex() << " "
-				 << atoms[(*resAtoms)[1]-1]->getMoeIndex() << " "
-				 << atoms[(*resAtoms)[2]-1]->getMoeIndex() << " "
-				 << atoms[(*resAtoms)[3]-1]->getMoeIndex() << " " << std::endl;
-			})
-			restraint->setAtomA(atoms[(*resAtoms)[0]-1]);
+                    restraint->setAtomA(atoms[(*resAtoms)[0]-1]);
 		    restraint->setAtomB(atoms[(*resAtoms)[1]-1]);
 		    restraint->setAtomC(atoms[(*resAtoms)[2]-1]);
 		    restraint->setAtomD(atoms[(*resAtoms)[3]-1]);
@@ -1334,7 +1303,7 @@ void	MoeReadFile::readNextLine()
 //	moeReadAggregate
 //
 //	Read the Aggregate from the MOE file.
-    Aggregate_sp	moeReadAggregate(const string& name )
+CL_DEFUN  Aggregate_sp chem__moeReadAggregate(const string& name )
 {
     MoeReadFile	f;
 	bool		gotMMTypes;

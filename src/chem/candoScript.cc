@@ -813,7 +813,7 @@ CL_DEFUN core::T_sp chem__atom_pos(core::List_sp args)
     {
       if ( foundResidue->hasAtomWithName(atomName)) {
           LOG(BF("Found atom with name: %s") % _rep_(atomName)  );
-	    Vector3 pos = foundResidue->atomWithName(atomName)->getPosition();
+          Vector3 pos = gc::As_unsafe<Atom_sp>(foundResidue->atomWithName(atomName))->getPosition();
 	    geom::OVector3_sp v = geom::OVector3_O::create();
 	    v->setAll3(pos.getX(),pos.getY(),pos.getZ());
 	    return v;

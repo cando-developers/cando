@@ -128,7 +128,6 @@ namespace chem {
     double					_OutOfZPlaneWeight;
     double					_TotalEnergy;
     string					_Message;
-    Vector3                                     _VelocityScale;
   public:
     SketchFunction_O(core::T_sp graph) : _Graph(graph) {};
   public:

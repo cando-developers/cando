@@ -339,7 +339,7 @@ void AGVertex_O::receive(uint stage)
   LOG(BF("Stage(%d) Vertex(%s) distributing receiveBuffer, there are %d messages") % stage % this->_atom->description().c_str() % this->_receiveBuffer->length() );
   uint addedMessages = 0;
     		// isolated atoms will have empty receive buffers
-  ASSERTP(this->_receiveBuffer.notnilp(),"The receive buffer is empty for atom("+this->_atom->description()+")!");
+  ASSERT(this->_receiveBuffer.notnilp()); //,"The receive buffer is empty for atom("+this->_atom->description()+")!");
   for ( auto msgCur : this->_receiveBuffer ) {
     PathMessage_sp msg = msgCur->car<PathMessage_O>();
     _BLOCK_TRACEF(BF("Stage(%d) Vertex(%s) received bitVector: %s") % stage % this->_atom->getName() % _rep_(msg->beep()) );

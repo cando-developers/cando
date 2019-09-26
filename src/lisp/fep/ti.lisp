@@ -156,9 +156,9 @@
     (loop for index from 2 below (chem:content-size aggregate)
           for mol = (chem:matter-copy (chem:content-at aggregate index))
           do (chem:add-matter new-agg mol))
-    (let ((bounding-box (chem:matter-get-property aggregate :bounding-box)))
-      (format t "About to set bounding-box for new-agg to ~a~%" bounding-box)
-      (chem:set-property new-agg :bounding-box bounding-box))
+    (if (chem:bounding-box-bound-p aggregate)
+        (chem:set-bounding-box new-agg (chem:bounding-box aggregate))
+        (chem:mak-unbound-bounding-box new-agg))
     new-agg))
 
 (defun build-decharge-aggregate (top-crd)

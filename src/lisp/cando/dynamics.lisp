@@ -62,7 +62,7 @@ Methods are specialized on this class in cando-nglview.lisp."))
           do (setf (elt single-float-coordinates index) sf-val))
     (vector-push-extend single-float-coordinates (accumulated-coordinates simulation))))
 
-(defun make-atomic-simulation (scoring-function &key (delta-t 1.0) accumulate-coordinates)
+(defun make-atomic-simulation (scoring-function &key (delta-t 1.0e-15) accumulate-coordinates)
   (let* ((vector-size (chem:get-nvector-size scoring-function))
          (coordinates (make-array vector-size :element-type 'double-float))
          (velocity (make-array vector-size :initial-element 0.0 :element-type 'double-float))
@@ -126,19 +126,54 @@ Methods are specialized on this class in cando-nglview.lisp."))
       sim)))
 
 
-(defun velocity-verlet-step (simulation &key velocity-verlet-function frozen)
+(defun dynamics-start (dynamics)
+  (chem:load-coordinates-into-vector (scoring-function dynamics)
+                                     (coordinates dynamics)))
+
+(defun dynamics-end (dynamics)
+  (chem:save-coordinates-from-vector (scoring-function dynamics)
+                                     (coordinates dynamics)))
+
+
+(defmacro with-dynamics ((dynamics) &body body)
+  `(progn
+     (dynamics-start ,dynamics)
+     ,@body
+     (dynamics-end ,dynamics)
+     ,dynamics))
+
+(defun velocity-verlet-step (dynamics &key (velocity-verlet-function #'chem:velocity-verlet-step) frozen)
   (funcall velocity-verlet-function
-           (scoring-function simulation)
-           (coordinates simulation)
-           (velocity simulation)
-           (forces simulation)
-           (temp-forces simulation)
-           (delta-t-over-mass simulation)
-           (delta-t simulation)
+           (scoring-function dynamics)
+           (coordinates dynamics)
+           (velocity dynamics)
+           (forces dynamics)
+           (temp-forces dynamics)
+           (delta-t-over-mass dynamics)
+           (delta-t dynamics)
            frozen)
-  (when (accumulate-coordinates simulation)
-    (do-accumulate-coordinates simulation (coordinates simulation)))
-  (incf (current-time simulation) (delta-t simulation)))
+  (when (accumulate-coordinates dynamics)
+    (do-accumulate-coordinates dynamics (coordinates dynamics)))
+  (incf (current-time dynamics) (delta-t dynamics)))
+
+
+(defun velocity-verlet-step-limit-displacement (dynamics
+                                                &key (velocity-verlet-function #'chem:velocity-verlet-step-limit-displacement)
+                                                  (limit-displacement (geom:vec 0.5 0.5 0.5))
+                                                  frozen)
+  (funcall velocity-verlet-function
+           (scoring-function dynamics)
+           (coordinates dynamics)
+           (velocity dynamics)
+           (forces dynamics)
+           (temp-forces dynamics)
+           (delta-t-over-mass dynamics)
+           (delta-t dynamics)
+           frozen
+           limit-displacement)
+  (when (accumulate-coordinates dynamics)
+    (do-accumulate-coordinates dynamics (coordinates dynamics)))
+  (incf (current-time dynamics) (delta-t dynamics)))
 
 (defun write-coordinates-back-to-matter (simulation)
   (let ((scoring-function (scoring-function simulation))

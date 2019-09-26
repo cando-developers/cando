@@ -240,6 +240,8 @@ void EnergyFunction_O::fields(core::Record_sp node)
   node->field_if_not_unbound(INTERN_(kw,AnchorRestraint),this->_AnchorRestraint);
   node->field_if_not_unbound(INTERN_(kw,FixedNonbondRestraint),this->_FixedNonbondRestraint);
 #endif
+  node->field(INTERN_(kw,OtherEnergyComponents),this->_OtherEnergyComponents);
+  this->Base::fields(node);
 }
 
 
@@ -564,6 +566,12 @@ double	EnergyFunction_O::evaluateAll(
                                                calcDiagonalHessian, calcOffDiagonalHessian, hessian, hdvec, dvec );
 ////	_lisp->profiler().timer(core::timerFixedNonbondRestraint).stop();
 #endif
+    for ( auto cur : this->_OtherEnergyComponents ) {
+      core::Cons_sp pair = gc::As<core::Cons_sp>(CONS_CAR(cur));
+      EnergyComponent_sp component = gc::As<EnergyComponent_sp>(oCdr(pair));
+      component->evaluateAll(pos,calcForce,force,calcDiagonalHessian,calcOffDiagonalHessian,hessian,hdvec,dvec);
+    }
+    
     this->_TotalEnergy = this->_Stretch->getEnergy();
 #if USE_ALL_ENERGY_COMPONENTS
     this->_TotalEnergy += this->_Angle->getEnergy();
@@ -574,6 +582,11 @@ double	EnergyFunction_O::evaluateAll(
     this->_TotalEnergy += this->_AnchorRestraint->getEnergy();
     this->_TotalEnergy += this->_FixedNonbondRestraint->getEnergy();
 #endif
+    for ( auto cur : this->_OtherEnergyComponents ) {
+      core::Cons_sp pair = gc::As<core::Cons_sp>(CONS_CAR(cur));
+      EnergyComponent_sp component = gc::As<EnergyComponent_sp>(oCdr(pair));
+      this->_TotalEnergy += component->getEnergy();
+    }
 
 ////	_lisp->profiler().timer(core::timerEnergy).stop();
 
@@ -595,6 +608,11 @@ string EnergyFunction_O::energyComponentsAsString()
   ss << boost::format("AnchorRestraint(%lf)") % this->_AnchorRestraint->getEnergy() << std::endl;
   ss << boost::format("FixedNonbondRestraint(%lf)") % this->_FixedNonbondRestraint->getEnergy() << std::endl;
 #endif
+  for ( auto cur : this->_OtherEnergyComponents ) {
+    core::Cons_sp pair = gc::As<core::Cons_sp>(CONS_CAR(cur));
+    EnergyComponent_sp component = gc::As<EnergyComponent_sp>(oCdr(pair));
+    ss << boost::format("%s(%lf)") % _rep_(oCar(pair)) % component->getEnergy()<<std::endl;
+  }
   return ss.str();
 }
 
@@ -619,6 +637,11 @@ int	EnergyFunction_O::compareAnalyticalAndNumericalForceAndHessianTermByTerm( NV
     this->_AnchorRestraint->compareAnalyticalAndNumericalForceAndHessianTermByTerm(pos);
     this->_FixedNonbondRestraint->compareAnalyticalAndNumericalForceAndHessianTermByTerm(pos);
 #endif
+    for ( auto cur : this->_OtherEnergyComponents ) {
+      core::Cons_sp pair = gc::As<core::Cons_sp>(CONS_CAR(cur));
+      EnergyComponent_sp component = gc::As<EnergyComponent_sp>(oCdr(pair));
+      component->compareAnalyticalAndNumericalForceAndHessianTermByTerm(pos);
+    }
   }
   return fails;
 }
@@ -691,6 +714,11 @@ string	EnergyFunction_O::energyTermsEnabled()
   ss << this->_AnchorRestraint->enabledAsString();
   ss << this->_FixedNonbondRestraint->enabledAsString();
 #endif
+  for ( auto cur : this->_OtherEnergyComponents ) {
+    core::Cons_sp pair = gc::As<core::Cons_sp>(CONS_CAR(cur));
+    EnergyComponent_sp component = gc::As<EnergyComponent_sp>(oCdr(pair));
+    ss << _rep_(oCar(pair)) << "-" << component->enabledAsString();
+  }
   return ss.str();
 }
 
@@ -920,6 +948,11 @@ void	EnergyFunction_O::dumpTerms()
   this->_AnchorRestraint->dumpTerms();
   this->_FixedNonbondRestraint->dumpTerms();
 #endif
+  for ( auto cur : this->_OtherEnergyComponents ) {
+    core::Cons_sp pair = gc::As<core::Cons_sp>(CONS_CAR(cur));
+    EnergyComponent_sp component = gc::As<EnergyComponent_sp>(oCdr(pair));
+    component->dumpTerms();
+  }
 }
 
 
@@ -1104,7 +1137,6 @@ SYMBOL_EXPORT_SC_(ChemPkg,report_parameter_warnings);
 SYMBOL_EXPORT_SC_(ChemPkg,identify_aromatic_rings);
 SYMBOL_EXPORT_SC_(ChemPkg,STARcurrent_aromaticity_informationSTAR);
 
-SYMBOL_EXPORT_SC_(KeywordPkg,bounding_box);
 CL_LISPIFY_NAME("defineForMatter");
 CL_LAMBDA((energy-function !) matter &key use-excluded-atoms active-atoms (assign-types t));
 CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, bool useExcludedAtoms, core::T_sp activeAtoms, bool assign_types )
@@ -1184,7 +1216,13 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatterWithAtomTypes(Matter_sp matte
   // Get the name to pass that to the atomTable
   core::T_sp matterName = matter->getName();
   this->_AtomTable->setAggregateName(matterName);
-  core::T_sp boundingBox = matter->getPropertyOrDefault(kw::_sym_bounding_box,_Unbound<core::T_O>());
+  core::T_sp boundingBox = _Unbound<core::T_O>();
+  if (gc::IsA<Aggregate_sp>(matter)) {
+    Aggregate_sp agg = gc::As_unsafe<Aggregate_sp>(matter);
+    if (agg->boundingBoxBoundP()) {
+      boundingBox = agg->boundingBox();
+    }
+  }
   if (boundingBox.unboundp()) {
     this->_AtomTable->makUnboundBoundingBox();
   } else {
@@ -1948,6 +1986,13 @@ CL_DEFMETHOD string EnergyFunction_O::summarizeBeyondThresholdInteractionsAsStri
   ss << this->_AnchorRestraint->beyondThresholdInteractionsAsString();
   ss << this->_FixedNonbondRestraint->beyondThresholdInteractionsAsString();
 #endif
+#if 0
+  for ( auto cur : this->_OtherEnergyComponents ) {
+    core::Cons_sp pair = gc::As<core::Cons_sp>(CONS_CAR(cur));
+    EnergyComponent_sp component = gc::As<EnergyComponent_sp>(oCdr(pair));
+    ss << component->beyondThreshholdInteractionsAsString();
+  }
+#endif
   return ss.str();
 }
 
@@ -1967,6 +2012,11 @@ CL_DEFMETHOD string	EnergyFunction_O::summarizeEnergyAsString()
   ss << this->_AnchorRestraint->summarizeEnergyAsString();
   ss << this->_FixedNonbondRestraint->summarizeEnergyAsString();
 #endif
+  for ( auto cur : this->_OtherEnergyComponents ) {
+    core::Cons_sp pair = gc::As<core::Cons_sp>(CONS_CAR(cur));
+    EnergyComponent_sp component = gc::As<EnergyComponent_sp>(oCdr(pair));
+    ss << component->summarizeEnergyAsString();
+  }
   ss<< "             Total energy: " << this->_TotalEnergy << std::endl;
   return ss.str();
 }
@@ -2000,6 +2050,11 @@ CL_DEFMETHOD string	EnergyFunction_O::debugLogAsString()
   ss << this->_AnchorRestraint->debugLogAsString() << std::endl;
   ss << this->_FixedNonbondRestraint->debugLogAsString() << std::endl;
 #endif
+  for ( auto cur : this->_OtherEnergyComponents ) {
+    core::Cons_sp pair = gc::As<core::Cons_sp>(CONS_CAR(cur));
+    EnergyComponent_sp component = gc::As<EnergyComponent_sp>(oCdr(pair));
+    ss << component->debugLogAsString();
+  }
   return ss.str();
 }
 

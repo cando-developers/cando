@@ -425,7 +425,6 @@ CL_LISPIFY_NAME("recognizesNameOrPdb");
 CL_DEFMETHOD     bool	EntityNameSetBase_O::recognizesNameOrPdb(core::Symbol_sp nm)
 {
   core::T_sp bdb = getCandoDatabase();
-  ASSERT(bdb->recognizesNameOrPdb(nm));
   core::Symbol_sp name = gc::As<core::Symbol_sp>(core::eval::funcall(_sym_monomerNameForNameOrPdb,bdb,nm));
   adapt::SymbolSet_sp names = this->expandedNameSet();
   return names->contains(name);

@@ -48,6 +48,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/common.h>
 #include <cando/geom/vector3.h>
 #include <cando/chem/scoringFunction.h>
+#include <cando/chem/energyComponent.fwd.h>
 #include <cando/chem/atom.h>
 
 
@@ -139,6 +140,7 @@ namespace chem {
     EnergyAnchorRestraint_sp		_AnchorRestraint;
     EnergyFixedNonbondRestraint_sp	_FixedNonbondRestraint;
 #endif
+    core::List_sp                       _OtherEnergyComponents; // alist of additional (name . energy-function) pairs
     /*! If true then secondary amides are
      * automatically restrainted to be trans
      */
@@ -212,6 +214,9 @@ namespace chem {
     CL_DEFMETHOD     EnergyFixedNonbondRestraint_sp	getFixedNonbondRestraintComponent() { return this->_FixedNonbondRestraint; };
 #endif
 
+    core::List_sp otherEnergyComponents() const;
+    void          pushOtherEnergyComponent(EnergyComponent_sp component);
+
     double getDihedralComponentEnergy(); // { return this->_Dihedral->getEnergy(); };
     double getImproperRestraintComponentEnergy(); // { return this->_ImproperRestraint->getEnergy(); };
 
@@ -283,6 +288,7 @@ namespace chem {
 
     core::List_sp checkForBeyondThresholdInteractions(double threshold);
 
+    
     string	debugLogAsString();
 
     void	dealWithProblem(core::Symbol_sp error_symbol, core::T_sp arguments);
@@ -301,6 +307,7 @@ namespace chem {
       , _AnchorRestraint(_Unbound<EnergyAnchorRestraint_O>())
       , _FixedNonbondRestraint(_Unbound<EnergyFixedNonbondRestraint_O>())
 #endif
+    ,_OtherEnergyComponents(_Nil<core::T_O>())
 //      , _MissingParameters(_Unbound<core::List_O>())
     {};
   };

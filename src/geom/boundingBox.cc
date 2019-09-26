@@ -38,57 +38,65 @@ namespace geom
 {
 
 
-    Vector3 BoundingBox_O::getCenter() const
-    {
-	Vector3 acc = this->_MinCorner;
-	acc = acc + this->_MaxCorner;
-	acc = acc * 0.5;
-	return acc;
-    }
+CL_DEFMETHOD
+Vector3 BoundingCuboid_O::getCenter() const
+{
+  Vector3 acc = this->_MinCorner;
+  acc = acc + this->_MaxCorner;
+  acc = acc * 0.5;
+  return acc;
+}
 
-    double BoundingBox_O::getExtentX() const { return this->_MaxCorner.getX()-this->_MinCorner.getX();};
-    double BoundingBox_O::getExtentY() const { return this->_MaxCorner.getY()-this->_MinCorner.getY();};
-    double BoundingBox_O::getExtentZ() const { return this->_MaxCorner.getZ()-this->_MinCorner.getZ();};
+CL_DEFMETHOD
+Vector3 BoundingCuboid_O::getHalfWidth() const
+{
+  Vector3 acc = (this->_MaxCorner - this->_MinCorner)*0.5;
+  return acc;
+}
+
+double BoundingCuboid_O::getExtentX() const { return this->_MaxCorner.getX()-this->_MinCorner.getX();};
+double BoundingCuboid_O::getExtentY() const { return this->_MaxCorner.getY()-this->_MinCorner.getY();};
+double BoundingCuboid_O::getExtentZ() const { return this->_MaxCorner.getZ()-this->_MinCorner.getZ();};
 
 
 
 CL_LISPIFY_NAME("getMinX");
-CL_DEFMETHOD     double BoundingBox_O::getMinX() const { return this->_MinCorner.getX(); };
+CL_DEFMETHOD     double BoundingCuboid_O::getMinX() const { return this->_MinCorner.getX(); };
 CL_LISPIFY_NAME("getMaxX");
-CL_DEFMETHOD     double BoundingBox_O::getMaxX() const { return this->_MaxCorner.getX(); };
+CL_DEFMETHOD     double BoundingCuboid_O::getMaxX() const { return this->_MaxCorner.getX(); };
 CL_LISPIFY_NAME("getMinY");
-CL_DEFMETHOD     double BoundingBox_O::getMinY() const { return this->_MinCorner.getY(); };
+CL_DEFMETHOD     double BoundingCuboid_O::getMinY() const { return this->_MinCorner.getY(); };
 CL_LISPIFY_NAME("getMaxY");
-CL_DEFMETHOD     double BoundingBox_O::getMaxY() const { return this->_MaxCorner.getY(); };
+CL_DEFMETHOD     double BoundingCuboid_O::getMaxY() const { return this->_MaxCorner.getY(); };
 CL_LISPIFY_NAME("getMinZ");
-CL_DEFMETHOD     double BoundingBox_O::getMinZ() const { return this->_MinCorner.getZ(); };
+CL_DEFMETHOD     double BoundingCuboid_O::getMinZ() const { return this->_MinCorner.getZ(); };
 CL_LISPIFY_NAME("getMaxZ");
-CL_DEFMETHOD     double BoundingBox_O::getMaxZ() const { return this->_MaxCorner.getZ(); };
+CL_DEFMETHOD     double BoundingCuboid_O::getMaxZ() const { return this->_MaxCorner.getZ(); };
 
 
 
-    void	BoundingBox_O::initialize()
-    {
-	this->Base::initialize();
-	this->_Defined = false;
-	this->_MinCorner.set(0.0,0.0,0.0);
-	this->_MaxCorner.set(0.0,0.0,0.0);
-    }
+void	BoundingCuboid_O::initialize()
+{
+  this->Base::initialize();
+  this->_Defined = false;
+  this->_MinCorner.set(0.0,0.0,0.0);
+  this->_MaxCorner.set(0.0,0.0,0.0);
+}
 
-void BoundingBox_O::fields(core::Record_sp node)
+void BoundingCuboid_O::fields(core::Record_sp node)
 {
   node->field(INTERN_(kw,defined),this->_Defined);
   node->field(INTERN_(kw,minCorner),this->_MinCorner);
   node->field(INTERN_(kw,maxCorner),this->_MaxCorner);
 }
 
-string BoundingBox_O::__repr__() const {
+string BoundingCuboid_O::__repr__() const {
   stringstream ss;
-  ss << "#<geom:bounding-box :min-corner " << this->_MinCorner.asString() << " :max-corner " << this->_MaxCorner.asString() << ">";
+  ss << "#<geom:bounding-cuboid :min-corner " << this->_MinCorner.asString() << " :max-corner " << this->_MaxCorner.asString() << ">";
   return ss.str();
 }
 
-void	BoundingBox_O::expandToEncompassPoint(const Vector3& p)
+void	BoundingCuboid_O::expandToEncompassPoint(const Vector3& p)
 {
   if ( !this->_Defined )
   {
@@ -108,32 +116,32 @@ void	BoundingBox_O::expandToEncompassPoint(const Vector3& p)
 }
 
 
-    void BoundingBox_O::expandToEncompassPoint(const Matrix& transform, const Vector3& point )
-    {
-	Vector3 tpnt = transform*point;
-	this->expandToEncompassPoint(tpnt);
-    }
+void BoundingCuboid_O::expandToEncompassPoint(const Matrix& transform, const Vector3& point )
+{
+  Vector3 tpnt = transform*point;
+  this->expandToEncompassPoint(tpnt);
+}
 
 
-    bool	BoundingBox_O::encompasses(const Vector3& p)
-    {_OF();
-	ASSERT(this->_Defined);
-	if ( !(this->_MinCorner.getX() <= p.getX() && p.getX() <= this->_MaxCorner.getX() ) ) return false;
-	if ( !(this->_MinCorner.getY() <= p.getY() && p.getY() <= this->_MaxCorner.getY() ) ) return false;
-	if ( !(this->_MinCorner.getZ() <= p.getZ() && p.getZ() <= this->_MaxCorner.getZ() ) ) return false;
-	return true;
-    }
+bool	BoundingCuboid_O::encompasses(const Vector3& p)
+{_OF();
+  ASSERT(this->_Defined);
+  if ( !(this->_MinCorner.getX() <= p.getX() && p.getX() <= this->_MaxCorner.getX() ) ) return false;
+  if ( !(this->_MinCorner.getY() <= p.getY() && p.getY() <= this->_MaxCorner.getY() ) ) return false;
+  if ( !(this->_MinCorner.getZ() <= p.getZ() && p.getZ() <= this->_MaxCorner.getZ() ) ) return false;
+  return true;
+}
 
 
 CL_LISPIFY_NAME("pad");
-CL_DEFMETHOD     void BoundingBox_O::pad(double add)
-    {_OF();
-	ASSERT(this->_Defined);
-	Vector3 vadd;
-	vadd.set(add,add,add);
-	this->_MinCorner = this->_MinCorner.sub(vadd);
-	this->_MaxCorner = this->_MaxCorner.add(vadd);
-    }
+CL_DEFMETHOD     void BoundingCuboid_O::pad(double add)
+{_OF();
+  ASSERT(this->_Defined);
+  Vector3 vadd;
+  vadd.set(add,add,add);
+  this->_MinCorner = this->_MinCorner.sub(vadd);
+  this->_MaxCorner = this->_MaxCorner.add(vadd);
+}
 
 
 

@@ -144,6 +144,14 @@ string		EnergyAtom::getResidueAndName()
 }
 
 
+CL_LISPIFY_NAME(make-atom-table);
+CL_DEF_CLASS_METHOD
+AtomTable_sp AtomTable_O::make()
+{
+  GC_ALLOCATE(AtomTable_O,eat);
+  return eat;
+}
+
 void AtomTable_O::initialize()
 {
   this->_AtomTableIndices = core::HashTableEq_O::create_default();
@@ -358,6 +366,13 @@ CL_DEFMETHOD void AtomTable_O::makUnboundAggregateName() {
   this->_AggregateName = _Unbound<core::T_O>();
 }
 
+SYMBOL_EXPORT_SC_(ChemPkg,bounding_box);
+SYMBOL_EXPORT_SC_(ChemPkg,bounding_box_bound_p);
+SYMBOL_EXPORT_SC_(ChemPkg,set_bounding_box);
+SYMBOL_EXPORT_SC_(ChemPkg,mak_unbound_bounding_box);
+
+CL_DOCSTRING(R"doc(Return the bounding-box for the atom-table.)doc");
+CL_LISPIFY_NAME(atom-table-bounding-box);
 CL_DEFMETHOD core::T_sp AtomTable_O::boundingBox() const {
   if (this->_BoundingBox.unboundp()) {
     SIMPLE_ERROR(BF("The bounding-box is unbound"));
@@ -365,14 +380,20 @@ CL_DEFMETHOD core::T_sp AtomTable_O::boundingBox() const {
   return this->_BoundingBox;
 }
 
+CL_DOCSTRING(R"doc(Return T if the bounding-box is bound)doc");
+CL_LISPIFY_NAME(atom-table-bounding-box-bound-p);
 CL_DEFMETHOD bool AtomTable_O::boundingBoxBoundP() const {
   return !this->_BoundingBox.unboundp();
 }
 
+CL_DOCSTRING(R"doc(Set the bounding-box)doc");
+CL_LISPIFY_NAME(atom-table-set-bounding-box);
 CL_DEFMETHOD void AtomTable_O::setBoundingBox(core::T_sp boundingBox) {
   this->_BoundingBox = boundingBox;
 }
 
+CL_DOCSTRING(R"doc(Make the bounding-box unbound)doc");
+CL_LISPIFY_NAME(atom-table-mak-unbound-bounding-box);
 CL_DEFMETHOD void AtomTable_O::makUnboundBoundingBox() {
   this->_BoundingBox = _Unbound<core::T_O>();
 }

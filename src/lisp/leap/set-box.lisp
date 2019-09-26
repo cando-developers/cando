@@ -1,7 +1,8 @@
 (in-package :leap.set-box)
 
-(defun set-box (mol enclosure &optional buffer)
+(defun set-box (aggregate enclosure &optional buffer)
   "The set-box command creates a bounding-box around the solute."
+  (check-type aggregate chem:aggregate)
   (let ((buffer-vec (make-array 3))
         (dx 0)
         (dy 0)
@@ -10,8 +11,8 @@
              (not (eq :centers enclosure)))
         (error "~s - Expected :vdw or :centersfor second argument~%" enclosure))
     (if (eq :vdw enclosure)
-        (center-unit-by-radii mol)
-        (set-unit-box-by-centers mol))
+        (center-unit-by-radii aggregate)
+        (set-unit-box-by-centers aggregate))
     (when buffer
       (if (listp buffer)
           (progn
@@ -32,17 +33,19 @@
                 (error "Expected 3 non-negative floating point numbers {x y z} for third argument~%"))
             (setf (aref buffer-vec 1) (aref buffer-vec 0))
             (setf (aref buffer-vec 2) (aref buffer-vec 0))))
-      (let ((bounding-box (chem:matter-get-property mol :bounding-box)))
-        (setf dx (+ (first bounding-box) (aref buffer-vec 0)))
-        (setf dy (+ (second bounding-box) (aref buffer-vec 1)))
-        (setf dz (+ (third bounding-box) (aref buffer-vec 2))))
-      (chem:set-property mol :bounding-box (list dx dy dz)))
-    (format t "Box dimensions ~a ~a ~a~%"
-            (first (chem:matter-get-property mol :bounding-box))
-            (second (chem:matter-get-property mol :bounding-box))
-            (third (chem:matter-get-property mol :bounding-box)))))
+      (let ((bounding-box (chem:bounding-box aggregate)))
+        (setf dx (+ (chem:get-x-width bounding-box) (aref buffer-vec 0)))
+        (setf dy (+ (chem:get-y-width bounding-box) (aref buffer-vec 1)))
+        (setf dz (+ (chem:get-z-width bounding-box) (aref buffer-vec 2))))
+      (chem:set-bounding-box aggregate (chem:make-bounding-box (list dx dy dz))))
+    (let ((bounding-box (chem:bounding-box aggregate)))
+      (format t "Box dimensions ~a ~a ~a~%"
+              (chem:get-x-width bounding-box)
+              (chem:get-y-width bounding-box)
+              (chem:get-z-width bounding-box)))))
 
-(defun center-unit-by-radii (mol)
+(defun center-unit-by-radii (aggregate)
+  (check-type aggregate chem:aggregate)
   (let ((atom-default-radius 1.5)
         (ifirst 1)
         (x 0.0)
@@ -97,7 +100,7 @@
                  (setf y-min y))
              (if (< z z-min)
                  (setf z-min z)))))
-     mol)
+     aggregate)
 
     ;;Define center of bounding box
     (setf x (+ x-min (* (- x-max x-min) 0.5)))
@@ -107,11 +110,10 @@
     ;;Translate center to origin
     (let* ((translate-mol (geom:vec x y z))
            (mol-transform (geom:make-m4-translate translate-mol)))
-      (chem:apply-transform-to-atoms mol mol-transform)
-      (chem:set-property mol :bounding-box (list (- x-max x-min) (- y-max y-min) (- z-max z-min)))) 
-      ))
+      (chem:apply-transform-to-atoms aggregate mol-transform)
+      (chem:set-bounding-box aggregate (chem:make-bounding-box (list (- x-max x-min) (- y-max y-min) (- z-max z-min)))))))
 
-(defun set-unit-box-by-centers (mol)
+(defun set-unit-box-by-centers (aggregate)
   (let ((atom-default-radius 1.5)
         (ifirst 1)
         (x 0.0)
@@ -142,13 +144,14 @@
            (setf x-max x)
            (if (< x x-min)
                (setf x-min x)))
-        (if (> y y-max)
+       (if (> y y-max)
            (setf y-max y)
            (if (< y y-min)
                (setf y-min y)))
-        (if (> z z-max)
+       (if (> z z-max)
            (setf z-max z)
            (if (< z z-min)
                (setf z-min z))))
-     mol)
-    (chem:set-property mol :bounding-box (list (- x-max x-min) (- y-max y-min) (- z-max z-min)))))
+     aggregate)
+    (chem:set-bounding-box aggregate
+                           (chem:make-bounding-box (list (- x-max x-min) (- y-max y-min) (- z-max z-min))))))

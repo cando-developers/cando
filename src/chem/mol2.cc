@@ -482,7 +482,8 @@ core::T_sp mol2Read(Mol2File& fIn)
   auto mi = molecules.begin();
   Aggregate_sp aggregate = Aggregate_O::create();
   if (boundingBox.notnilp()) {
-    aggregate->setProperty(kw::_sym_bounding_box,boundingBox);
+    BoundingBox_sp bb = BoundingBox_O::make(boundingBox,_Nil<core::T_O>(),_Nil<core::T_O>());
+    aggregate->setBoundingBox(bb);
   }
   aggregate->setName(chemkw_intern(moleculeName));
     
@@ -741,7 +742,7 @@ void	mol2WriteAggregateStream( Aggregate_sp agg, std::ostream &out, bool useSyby
         // Figure out if there is a solvent residue and a bounding box
 
   core::Symbol_sp solventName = _Nil<core::T_O>();
-  core::List_sp boundingBox = _Nil<core::T_O>();
+  core::T_sp boundingBox = _Nil<core::T_O>();
   {
     Loop lMol;
     loop.loopTopGoal(agg,MOLECULES);
@@ -759,7 +760,9 @@ void	mol2WriteAggregateStream( Aggregate_sp agg, std::ostream &out, bool useSyby
       }
     }
   GOT_SOLVENT:
-    boundingBox = agg->getPropertyOrDefault(kw::_sym_bounding_box,_Nil<core::T_O>());
+    if (agg->boundingBoxBoundP()) {
+      boundingBox = agg->boundingBox();
+    }
   }
 
   if (boundingBox.notnilp()) {
@@ -768,16 +771,14 @@ void	mol2WriteAggregateStream( Aggregate_sp agg, std::ostream &out, bool useSyby
     if (boundingBox.nilp()) {
       out << "0 0.0 0.0 0.0 0.0 0.0 0.0 ";
     } else {
+      BoundingBox_sp bb = gc::As<BoundingBox_sp>(boundingBox);
       out << "1 0.0 0.0 0.0 ";
-      if (boundingBox.consp() && core::cl__length(boundingBox) >= 3) {
-        size_t count = 0;
-        for ( auto cur : boundingBox ) {
-          out << _rep_(CONS_CAR(boundingBox)) << " ";
-          count++;
-          if (count >= 3) break; // mol2 only handles xyz coordinates
-        }
+      if (bb->cuboidp()) {
+        out << bb->get_x_width() << " ";
+        out << bb->get_y_width() << " ";
+        out << bb->get_z_width() << " ";
       } else {
-        SIMPLE_ERROR(BF("The bounding box has an unexpected structure %s - expected list of 3 doubles") % _rep_(boundingBox));
+        SIMPLE_WARN(BF("Mol2 only supports cuboid bounding-box - you have %s") % _rep_(bb));
       }
     }
     if (solventName.notnilp()) {

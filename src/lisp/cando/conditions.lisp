@@ -25,10 +25,21 @@
 ;; -^-
 (in-package :chem)
 
-(define-condition chem::linear-atoms-error ()
+(defun linear-atoms-reporter (condition stream)
+  (let ((indices (chem::indices condition))
+        (coordinates (coordinates condition)))
+    (let ((positions (loop for index in indices
+                           for xpos = (elt coordinates index)
+                           for ypos = (elt coordinates (+ 1 index))
+                           for zpos = (elt coordinates (+ 2 index))
+                           collect (geom:vec xpos ypos zpos)))) 
+      (format stream "A ~a occurred~%Atoms ~a~%Coordinates: ~a~%" (class-name (class-of condition)) (chem:atoms condition) positions))))
+  
+(define-condition chem::linear-atoms-error (error)
   ((atoms :initarg :atoms :reader chem:atoms)
    (coordinates :initarg :coordinates :reader coordinates)
-   (indices :initarg :indices :reader chem::indices)))
+   (indices :initarg :indices :reader chem::indices))
+  (:report linear-atoms-reporter))
 
 (define-condition chem:linear-angle-error (linear-atoms-error) ())
 (define-condition chem:linear-dihedral-error (linear-atoms-error) ())
@@ -65,7 +76,7 @@
 
 (defvar *parameter-warnings*)
 
-(define-condition estimated-angle-term ()
+(define-condition estimated-angle-term (error)
   ((type1 :initarg :type1 :accessor type1)
    (type2 :initarg :type2 :accessor type2)
    (type3 :initarg :type3 :accessor type3)

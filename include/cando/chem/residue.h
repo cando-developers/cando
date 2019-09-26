@@ -198,8 +198,7 @@ namespace chem {
     virtual string	subMatter() { return Atom_O::static_className(); };
     virtual string 	description() const { stringstream ss; ss << "residue("<<_rep_(this->getName())<<")@"<<std::hex<<this<<std::dec; return ss.str();};
 
-    CL_LISPIFY_NAME("atomWithName");
-    CL_DEFMETHOD 	Atom_sp		atomWithName(MatterName sName ) { return this->contentWithName(sName).as<Atom_O>(); };
+    core::T_mv		atomWithName(MatterName sName,bool errorp=true );
     CL_LISPIFY_NAME("hasAtomWithName");
     CL_DEFMETHOD 	bool		hasAtomWithName(MatterName sName ) { return (this->hasContentWithName(sName)); };
 

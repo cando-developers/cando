@@ -165,7 +165,6 @@
 
 (defpackage #:leap
   (:shadowing-import-from :chem "ATOM")
-  (:shadowing-import-from :geom "BOUNDING-BOX")
   (:shadowing-import-from :common-lisp "+" "-" "/" "*" ">" "<" ">=" "<=" "SQRT")
   (:shadowing-import-from :energy "MINIMIZE")
   (:shadowing-import-from :chem "SET-ELEMENT" "GET-ELEMENT" "SIZE")

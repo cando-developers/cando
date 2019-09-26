@@ -426,7 +426,7 @@ This will place the calculated bond on one or the other side of the x1,y1-x2,y2 
 Each of these functions take two arguments, the svg-scene and the sketch-svg. 
 The caller provided functions should use cl-svg to render additional graphics."
   (let* ((molecule (molecule sketch2d))
-         (bbox (chem:matter-bounding-box molecule 0.0))
+         (bbox (chem:matter-calculate-bounding-cuboid molecule 0.0))
          (xscale 20.0) ; scale from angstroms to pts?
          (yscale 20.0) ; scale from angstroms to pts
          (bbox-width (- (geom:get-max-x bbox) (geom:get-min-x bbox)))

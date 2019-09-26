@@ -70,6 +70,18 @@ __END_DOC
 namespace chem
 {
 
+ScoringFunction_O::ScoringFunction_O() : _VelocityScale(Vector3(1.0,1.0,1.0)) {};
+
+CL_DEFMETHOD void ScoringFunction_O::setf_velocity_scale(double xscale, double yscale, double zscale) {
+  this->_VelocityScale.set(xscale,yscale,zscale);
+}
+
+void ScoringFunction_O::fields(core::Record_sp node)
+{
+  node->field(INTERN_(kw,Debug),this->_Debug);
+  node->field_if_not_default(INTERN_(kw,VelocityScale),this->_VelocityScale,Vector3());
+}
+
 CL_LISPIFY_NAME("evaluateEnergy");
 CL_DEFMETHOD double	ScoringFunction_O::evaluateEnergy( NVector_sp pos )
 {
@@ -189,30 +201,124 @@ CL_DEFMETHOD core::List_sp	ScoringFunction_O::checkForBeyondThresholdInteraction
 
 
 
+CL_DOCSTRING(R"doc(Velocity-verlet-step moves the atoms one velocity-verlet-step.  
+If tfrozen is a simple-bit-vector then it is used to determine frozen atoms.)doc");
 CL_LISPIFY_NAME("velocity-verlet-step");
-CL_DEFUN void chem__velocity_verlet_step(ScoringFunction_sp scoringFunc, NVector_sp position, NVector_sp velocity, NVector_sp force, NVector_sp force_dt, NVector_sp delta_t_over_mass, double delta_t, double velocity_scale)
+CL_DEFUN void chem__velocity_verlet_step(ScoringFunction_sp scoringFunc,
+                                         NVector_sp position,
+                                         NVector_sp velocity,
+                                         NVector_sp force,
+                                         NVector_sp force_dt,
+                                         NVector_sp delta_t_over_mass,
+                                         double delta_t,
+                                         core::T_sp tfrozen)
 {
+  core::SimpleBitVector_sp frozen;
+  if (gc::IsA<core::SimpleBitVector_sp>(tfrozen)) {
+    frozen = gc::As_unsafe<core::SimpleBitVector_sp>(tfrozen);
+    if (frozen->length() != (position->length()/3)) {
+      SIMPLE_ERROR(BF("frozen must be a simple-bit-vector of length %d or NIL") % (position->length()/3));
+    }
+  } else if (tfrozen.notnilp()) {
+    SIMPLE_ERROR(BF("frozen must be a simple-bit-vector or NIL"));
+  }
   double delta_tsquared = delta_t*delta_t;
   double delta_tsquared_div2 = delta_tsquared/2.0;
   NVector_sp position_dt = NVector_O::create(position->size());
   size_t atom_idx = 0;
   for ( size_t idx = 0; idx<position->size(); idx += 3) {
-    (*position)[idx+0] = (*position)[idx+0] + delta_t*(*velocity)[idx+0] + delta_t*(*delta_t_over_mass)[atom_idx]*(*force)[idx+0];
-    (*position)[idx+1] = (*position)[idx+1] + delta_t*(*velocity)[idx+1] + delta_t*(*delta_t_over_mass)[atom_idx]*(*force)[idx+1];
-    (*position)[idx+2] = (*position)[idx+2] + delta_t*(*velocity)[idx+2] + delta_t*(*delta_t_over_mass)[atom_idx]*(*force)[idx+2];
+    if (!frozen || frozen->testBit(atom_idx)==0) {
+      double offsetx = delta_t*(*velocity)[idx+0] + delta_t*(*delta_t_over_mass)[atom_idx]*(*force)[idx+0];
+      double offsety = delta_t*(*velocity)[idx+1] + delta_t*(*delta_t_over_mass)[atom_idx]*(*force)[idx+1];
+      double offsetz = delta_t*(*velocity)[idx+2] + delta_t*(*delta_t_over_mass)[atom_idx]*(*force)[idx+2];
+      (*position)[idx+0] = (*position)[idx+0] + offsetx;
+      (*position)[idx+1] = (*position)[idx+1] + offsety;
+      (*position)[idx+2] = (*position)[idx+2] + offsetz;
+    }
     atom_idx++;
   }
   scoringFunc->evaluateEnergyForce(position,true,force_dt);
   atom_idx = 0;
   for ( size_t idx = 0; idx<position->size(); idx+=3 ) {
-    (*velocity)[idx+0] = ((*velocity)[idx+0] + (*delta_t_over_mass)[atom_idx]/2.0*((*force)[idx+0]-(*force_dt)[idx+0]))*velocity_scale;
-    (*velocity)[idx+1] = ((*velocity)[idx+1] + (*delta_t_over_mass)[atom_idx]/2.0*((*force)[idx+1]-(*force_dt)[idx+1]))*velocity_scale;
-    (*velocity)[idx+2] = ((*velocity)[idx+2] + (*delta_t_over_mass)[atom_idx]/2.0*((*force)[idx+2]-(*force_dt)[idx+2]))*velocity_scale;
-    (*force)[idx+0] = (*force_dt)[idx+0];
-    (*force)[idx+1] = (*force_dt)[idx+1];
-    (*force)[idx+2] = (*force_dt)[idx+2];
+    if (!frozen || frozen->testBit(atom_idx)==0) {
+      (*velocity)[idx+0] = ((*velocity)[idx+0] + (*delta_t_over_mass)[atom_idx]/2.0*((*force)[idx+0]-(*force_dt)[idx+0]))*scoringFunc->_VelocityScale.getX();
+      (*velocity)[idx+1] = ((*velocity)[idx+1] + (*delta_t_over_mass)[atom_idx]/2.0*((*force)[idx+1]-(*force_dt)[idx+1]))*scoringFunc->_VelocityScale.getY();
+      (*velocity)[idx+2] = ((*velocity)[idx+2] + (*delta_t_over_mass)[atom_idx]/2.0*((*force)[idx+2]-(*force_dt)[idx+2]))*scoringFunc->_VelocityScale.getZ();
+      (*force)[idx+0] = (*force_dt)[idx+0];
+      (*force)[idx+1] = (*force_dt)[idx+1];
+      (*force)[idx+2] = (*force_dt)[idx+2];
+    }
     atom_idx++;
   }
+}
+
+
+CL_DOCSTRING(R"doc(Like velocity-verlet-step but limits displacement of atoms in the x,y,z directions using the limit_displacement vector.
+Return the number of atoms whose displacement was limited.)doc");
+CL_LISPIFY_NAME("velocity-verlet-step-limit-displacement");
+CL_DEFUN size_t chem__velocity_verlet_step_limit_displacement(ScoringFunction_sp scoringFunc,
+                                                              NVector_sp position,
+                                                              NVector_sp velocity,
+                                                              NVector_sp force,
+                                                              NVector_sp force_dt,
+                                                              NVector_sp delta_t_over_mass,
+                                                              double delta_t,
+                                                              core::T_sp tfrozen,
+                                                              const Vector3& limit_displacement)
+{
+  core::SimpleBitVector_sp frozen;
+  if (gc::IsA<core::SimpleBitVector_sp>(tfrozen)) {
+    frozen = gc::As_unsafe<core::SimpleBitVector_sp>(tfrozen);
+    if (frozen->length() != (position->length()/3)) {
+      SIMPLE_ERROR(BF("frozen must be a simple-bit-vector of length %d or NIL") % (position->length()/3));
+    }
+  } else if (tfrozen.notnilp()) {
+    SIMPLE_ERROR(BF("frozen must be a simple-bit-vector or NIL"));
+  }
+  double delta_tsquared = delta_t*delta_t;
+  double delta_tsquared_div2 = delta_tsquared/2.0;
+  NVector_sp position_dt = NVector_O::create(position->size());
+  size_t atom_idx = 0;
+  size_t atoms_limited = 0;
+  for ( size_t idx = 0; idx<position->size(); idx += 3) {
+    if (!frozen || frozen->testBit(atom_idx)==0) {
+      double offsetx = delta_t*(*velocity)[idx+0] + delta_t*(*delta_t_over_mass)[atom_idx]*(*force)[idx+0];
+      double offsety = delta_t*(*velocity)[idx+1] + delta_t*(*delta_t_over_mass)[atom_idx]*(*force)[idx+1];
+      double offsetz = delta_t*(*velocity)[idx+2] + delta_t*(*delta_t_over_mass)[atom_idx]*(*force)[idx+2];
+      if ((offsetx>limit_displacement.getX()) ||
+          (offsety>limit_displacement.getY()) ||
+          (offsetz>limit_displacement.getZ()) ||
+          (offsetx<-limit_displacement.getX()) ||
+          (offsety<-limit_displacement.getY()) ||
+          (offsetz<-limit_displacement.getZ())) {
+        atoms_limited++;
+        if (offsetx>limit_displacement.getX()) offsetx = limit_displacement.getX();
+        if (offsety>limit_displacement.getY()) offsety = limit_displacement.getY();
+        if (offsetz>limit_displacement.getZ()) offsetz = limit_displacement.getZ();
+        if (offsetx<-limit_displacement.getX()) offsetx = -limit_displacement.getX();
+        if (offsety<-limit_displacement.getY()) offsety = -limit_displacement.getY();
+        if (offsetz<-limit_displacement.getZ()) offsetz = -limit_displacement.getZ();
+      }
+      (*position)[idx+0] = (*position)[idx+0] + offsetx;
+      (*position)[idx+1] = (*position)[idx+1] + offsety;
+      (*position)[idx+2] = (*position)[idx+2] + offsetz;
+    }
+    atom_idx++;
+  }
+  scoringFunc->evaluateEnergyForce(position,true,force_dt);
+  atom_idx = 0;
+  for ( size_t idx = 0; idx<position->size(); idx+=3 ) {
+    if (!frozen || frozen->testBit(atom_idx)==0) {
+      (*velocity)[idx+0] = ((*velocity)[idx+0] + (*delta_t_over_mass)[atom_idx]/2.0*((*force)[idx+0]-(*force_dt)[idx+0]))*scoringFunc->_VelocityScale.getX();
+      (*velocity)[idx+1] = ((*velocity)[idx+1] + (*delta_t_over_mass)[atom_idx]/2.0*((*force)[idx+1]-(*force_dt)[idx+1]))*scoringFunc->_VelocityScale.getY();
+      (*velocity)[idx+2] = ((*velocity)[idx+2] + (*delta_t_over_mass)[atom_idx]/2.0*((*force)[idx+2]-(*force_dt)[idx+2]))*scoringFunc->_VelocityScale.getZ();
+      (*force)[idx+0] = (*force_dt)[idx+0];
+      (*force)[idx+1] = (*force_dt)[idx+1];
+      (*force)[idx+2] = (*force_dt)[idx+2];
+    }
+    atom_idx++;
+  }
+  return atoms_limited;
 }
 
 

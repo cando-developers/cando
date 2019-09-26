@@ -134,7 +134,7 @@ CL_DEFMETHOD core::T_sp	SuperposableConformationCollection_O::createEntryIfConfo
   ConformationCollectionEntry_sp		entry;
   ASSERT(matter==this->_Matter);
   LOG(BF("Number of superpose atoms = %d") % this->_SuperposeAtomIndices->size()  );
-  ASSERT(this->_SuperposeAtomIndices->size() >= 4 );
+  ASSERT(this->_SuperposeAtomIndices->length() >= 4 );
 
 
 	//

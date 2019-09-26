@@ -970,8 +970,8 @@ CL_DEFMETHOD core::T_mv	Matter_O::momentOfGeometry()
 }
 
 
-CL_LISPIFY_NAME("matterBoundingBox");
-CL_DEFMETHOD geom::BoundingBox_sp Matter_O::matterBoundingBox(double pad) 
+CL_LISPIFY_NAME("matter-calculate-bounding-cuboid");
+CL_DEFMETHOD geom::BoundingCuboid_sp Matter_O::matterCalculateBoundingCuboid(double pad) 
 {
   Vector3	sum;
   int	count;
@@ -982,7 +982,7 @@ CL_DEFMETHOD geom::BoundingBox_sp Matter_O::matterBoundingBox(double pad)
   c = this->sharedThis<Matter_O>();
   sum.set(0,0,0);
   count = 0;
-  geom::BoundingBox_sp bbox = geom::BoundingBox_O::create();
+  geom::BoundingCuboid_sp bbox = geom::BoundingCuboid_O::create();
   l.loopTopGoal( c, ATOMS );
   while ((l.advanceLoopAndProcess())) {
     a = l.getAtom();

@@ -145,13 +145,9 @@ void SketchFunction_O::fields(core::Record_sp node)
   node->field_if_not_unbound(INTERN_(kw,Stretch),this->_Stretch);
   node->field_if_not_unbound(INTERN_(kw,PointToLineRestraint),this->_PointToLineRestraint);
   node->field_if_not_unbound(INTERN_(kw,OutOfZPlane),this->_OutOfZPlane);
-  node->field_if_not_default(INTERN_(kw,VelocityScale),this->_VelocityScale,Vector3());
+  this->Base::fields(node);
 }
 
-
-CL_DEFMETHOD void SketchFunction_O::setf_velocity_scale(double xscale, double yscale, double zscale) {
-  this->_VelocityScale.set(xscale,yscale,zscale);
-}
 
 
 
@@ -794,7 +790,14 @@ void	SketchFunction_O::dealWithProblem(core::Symbol_sp error_symbol, core::T_sp 
 
 CL_LAMBDA(scoring-function position velocity force force-dt delta-t-over-mass delta-t &optional frozen)
 CL_LISPIFY_NAME("sketch-function-velocity-verlet-step");
-CL_DEFUN void chem__SketchFunction_velocity_verlet_step(SketchFunction_sp sketchFunc, NVector_sp position, NVector_sp velocity, NVector_sp force, NVector_sp force_dt, NVector_sp delta_t_over_mass, double delta_t, core::T_sp tfrozen )
+CL_DEFUN void chem__SketchFunction_velocity_verlet_step(SketchFunction_sp sketchFunc,
+                                                        NVector_sp position,
+                                                        NVector_sp velocity,
+                                                        NVector_sp force,
+                                                        NVector_sp force_dt,
+                                                        NVector_sp delta_t_over_mass,
+                                                        double delta_t,
+                                                        core::T_sp tfrozen )
 {
   core::SimpleBitVector_sp frozen;
   if (gc::IsA<core::SimpleBitVector_sp>(tfrozen)) {

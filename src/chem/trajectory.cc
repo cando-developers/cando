@@ -97,13 +97,13 @@ void	TrajectoryFrame_O::initialize()
 
     void	TrajectoryFrame_O::applyToMatter(gctools::Vec0<Atom_sp>& atomList )
 {_OF();
-  ASSERT_eq((*this->_Coordinates)->size(),atomList.size());
-    geom::SimpleVectorCoordinate_O::iterator ci;
-    gctools::Vec0<Atom_sp>::iterator ai;
-    for ( ai=atomList.begin(), ci = this->_Coordinates->begin(); ai!=atomList.end(); ai++, ci++ )
-    {
-	(*ai)->setPosition(*ci);
-    }
+  ASSERT_eq((*this->_Coordinates).length(),atomList.size());
+  geom::SimpleVectorCoordinate_O::iterator ci;
+  gctools::Vec0<Atom_sp>::iterator ai;
+  for ( ai=atomList.begin(), ci = this->_Coordinates->begin(); ai!=atomList.end(); ai++, ci++ )
+  {
+    (*ai)->setPosition(*ci);
+  }
 }
 
 

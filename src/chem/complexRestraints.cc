@@ -152,8 +152,8 @@ void	RestrainedPiBond_O::fillOneDihedralRestraint(Residue_sp residue,
 void	RestrainedPiBond_O::fillRestraints(Residue_sp residue)
 {_OF();
     core::Symbol_sp config = this->_Configuration;
-    Atom_sp pX  = residue->atomWithName(this->getPiAtomX());
-    Atom_sp pY  = residue->atomWithName(this->getPiAtomY());
+    Atom_sp pX  = gc::As_unsafe<Atom_sp>(residue->atomWithName(this->getPiAtomX()));
+    Atom_sp pY  = gc::As_unsafe<Atom_sp>(residue->atomWithName(this->getPiAtomY()));
 
     Atom_sp p1X = pX->highestPriorityNeighborThatIsnt(pY);
     Atom_sp p2X = pX->lowestPriorityNeighborThatIsnt(pY);
@@ -280,7 +280,7 @@ void RestrainedExoCyclicAtom_O::fillRestraints(Residue_sp residue )
     {
 	SIMPLE_ERROR(BF("Residue(%s) doesn't have atom with name(%s)") % residue->description() % this->_ExoCyclicAtomName );
     }
-    Atom_sp exoCyclicAtom = residue->atomWithName(this->_ExoCyclicAtomName);
+    Atom_sp exoCyclicAtom = gc::As_unsafe<Atom_sp>(residue->atomWithName(this->_ExoCyclicAtomName));
     Root_sp atomExoToSixMemberedRing = gctools::As<Root_sp>(chem::_sym_STARAtomExoToSixMemberedRingSTAR->symbolValue());
     core::T_mv match_mv = chem__chem_info_match(atomExoToSixMemberedRing,exoCyclicAtom);
     if ( match_mv.nilp() )

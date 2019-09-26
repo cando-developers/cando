@@ -163,13 +163,17 @@ CL_DEFMETHOD     adapt::SymbolSet_sp StereoisomerAtoms_O::atomNamesAsSymbolSet()
 };
 
 
+CL_LAMBDA(name &optional (errorp t));
 CL_LISPIFY_NAME("atomWithName");
-CL_DEFMETHOD     StereoisomerAtom_sp StereoisomerAtoms_O::atomWithName(MatterName nm)
+CL_DEFMETHOD     core::T_mv StereoisomerAtoms_O::atomWithName(MatterName nm,bool errorp)
 {_OF();
   for ( gctools::Vec0<StereoisomerAtom_sp>::const_iterator ci=this->_Atoms.begin();
         ci!=this->_Atoms.end(); ci++ )
   {
-    if ( (*ci)->_AtomName == nm ) return *ci;
+    if ( (*ci)->_AtomName == nm ) return Values(*ci,_lisp->_true());
+  }
+  if (!errorp) {
+    return Values(_Nil<core::T_O>(),_Nil<core::T_O>());
   }
   SIMPLE_ERROR(BF("Could not find StereoisomerAtom with name[%s]") % nm );
 }

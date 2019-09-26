@@ -166,3 +166,50 @@ for the node in the table."))
 (defmethod chem:node-set-position ((atom chem:atom) vector3)
   (chem:set-position atom vector3))
 
+
+
+;;; ------------------------------------------------------------
+;;;
+;;; Generic functions for bounding-box for aggregates and atom-tables
+;;;
+
+(defgeneric chem:bounding-box (object)
+  (:documentation "Return the bounding-box for the object"))
+
+(defgeneric chem:bounding-box-bound-p (object)
+  (:documentation "Return T if the bounding-box is bound to a value."))
+
+(defgeneric chem:set-bounding-box (object bounding-box)
+  (:documentation "Set the bounding box to the value."))
+
+(defgeneric chem:mak-unbound-bounding-box (object)
+  (:documentation "Make the bounding-box unbound."))
+
+(defmethod chem:bounding-box ((atom-table chem:atom-table))
+  (chem:atom-table-bounding-box atom-table))
+
+(defmethod chem:bounding-box-bound-p ((atom-table chem:atom-table))
+  (chem:atom-table-bounding-box-bound-p atom-table))
+
+(defmethod chem:set-bounding-box ((atom-table chem:atom-table) bounding-box)
+  (chem:atom-table-set-bounding-box atom-table bounding-box))
+
+(defmethod chem:mak-unbound-bounding-box ((atom-table chem:atom-table))
+  (chem:atom-table-mak-unbound-bounding-box atom-table))
+
+(defmethod chem:bounding-box ((aggregate chem:aggregate))
+  (chem:aggregate-bounding-box aggregate))
+
+(defmethod chem:bounding-box-bound-p ((aggregate chem:aggregate))
+  (chem:aggregate-bounding-box-bound-p aggregate))
+
+(defmethod chem:set-bounding-box ((aggregate chem:aggregate) bounding-box)
+  (chem:aggregate-set-bounding-box aggregate bounding-box))
+
+(defmethod chem:mak-unbound-bounding-box ((aggregate chem:aggregate))
+  (chem:aggregate-mak-unbound-bounding-box aggregate))
+
+
+(defmethod chem:set-bounding-box ((octtree chem:add-ion-octree) bounding-box)
+  (chem:aggregate-set-bounding-box octtree bounding-box))
+
