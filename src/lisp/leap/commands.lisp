@@ -697,6 +697,45 @@ Same as addIons, except solvent and solute are treated the same.
             (let ((ion2 (intern (string ion2-name) :keyword)))
               (leap.add-ions:add-ions mol ion1 ion1-number ion2 ion2-number))
             (leap.add-ions:add-ions mol ion1 ion1-number))))
+
+(defun leap-add-ions-rand (mol-name ion1-name ion1-number &rest ion2-separation)
+"    addIonsRand unit ion1 #ion1 [ion2 #ion2] [separation]
+
+        UNIT      _unit_
+        UNIT      _ion1_
+        NUMBER    _#ion1_
+        UNIT      _ion2_
+        NUMBER    _#ion2_
+        NUMBER    _separation_
+
+Adds counterions in a shell around _unit_ by replacing random solvent
+molecules. If _#ion1_ is 0, the _unit_ is neutralized (_ion1_ must be
+opposite in charge to _unit_, and _ion2_ cannot be specified). Otherwise,
+the specified numbers of _ion1_ [_ion2_] are added [in alternating order].
+If _separation_ is specified, ions will be guaranteed to be more than that
+distance apart in Angstroms.
+
+Ions must be monoatomic. This procedure is much faster than addIons, as
+it does not calculate charges. Solvent must be present. It must be possible
+to position the requested number of ions with the given separation in the
+solvent.
+"
+    (let ((mol (leap.core:lookup-variable mol-name))
+          (ion1 (intern (string ion1-name) :keyword)))
+      (cond
+        ((= (length ion2-separation) 0)
+         (leap.add-ions:add-ions-rand mol ion1 ion1-number))
+        ((= (length ion2-separation) 1)
+         (leap.add-ions:add-ions-rand mol ion1 ion1-number :separation (first ion2-separation)))
+        ((= (length ion2-separation) 2)
+         (let ((ion2 (intern (string (first ion2-separation)) :keyword))
+               (ion2-number (second ion2-separation)))
+           (leap.add-ions:add-ions-rand mol ion1 ion1-number :ion2 ion2 :ion2-number ion2-number)))
+        ((= (length ion2-separation) 3)
+         (let ((ion2 (intern (string (first ion2-separation)) :keyword))
+               (ion2-number (second ion2-separation))
+               (separation (third ion2-separation)))
+           (leap.add-ions:add-ions-rand mol ion1 ion1-number :ion2 ion2 :ion2-number ion2-number :separation separation))))))
  
 (eval-when (:load-toplevel :execute)
   (setf leap.parser:*function-names/alist*
@@ -726,7 +765,7 @@ Same as addIons, except solvent and solute are treated the same.
       ("setupDefaultPaths" . leap.setup-default-paths )
       ("addIons" . leap-add-ions)
       ("addIons2" . leap-add-ions-2)
-      ("addIonsRand" . leap.add-ions:add-ions-rand)
+      ("addIonsRand" . leap-add-ions-rand)
       ("setBox" . leap.set-box:set-box)
       ("showPaths" . leap.show-paths)
       ("show" . leap.show )

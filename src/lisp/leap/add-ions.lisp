@@ -367,13 +367,13 @@
                     m)))
            mol)))))
 
-(defun add-ions-rand (aggregate ion1 ion1-number &optional ion2 ion2-number separation &key assign-types)
+(defun add-ions-rand (aggregate ion1 ion1-number &key ion2 ion2-number (separation 0.0))
   (let* ((energy-function (chem:make-energy-function aggregate
                                                      :use-excluded-atoms t
-                                                     :assign-types assign-types))
+                                                     :assign-types t))
          (atom-table (chem:atom-table energy-function))
          (nonbond-db (chem:nonbond-force-field-for-aggregate atom-table))
-         (ion1-type-index (chem:find-type-index nonbond-db (intern (string ion1) "KEYWORD")))
+         (ion1-type-index (chem:find-type-index nonbond-db ion1))
          (ion1-ffnonbond (chem:get-ffnonbond-using-type-index nonbond-db ion1-type-index))
          (ion1-size (chem:get-radius-angstroms ion1-ffnonbond))
          (ion1-topology (cando:lookup-topology ion1))
@@ -383,7 +383,6 @@
          (ion1-agg (chem:make-aggregate))
          (ion-vector (make-array (if ion2 (+ ion1-number ion2-number) ion1-number)))
          (ion-count 0)
-         (min-separation (if separation separation 0.0))
          (ion-fail-counter 0)
          (target-charge 0.0)
          (ion2-size 0.0) 
@@ -413,7 +412,7 @@
           (return-from add-ions-rand)))
     (if ion2
         (progn
-          (setf ion2-type-index (chem:find-type-index nonbond-db (intern (string ion2) "KEYWORD")))
+          (setf ion2-type-index (chem:find-type-index nonbond-db ion2))
           (setf ion2-ffnonbond (chem:get-ffnonbond-using-type-index nonbond-db ion2-type-index))
           (setf ion2-size (chem:get-radius-angstroms ion2-ffnonbond))
           (setf ion2-topology (cando:lookup-topology ion2))
@@ -485,7 +484,7 @@
                  (loop for i below ion-count
                        for point = (chem:get-position (chem:content-at (chem:content-at (chem:content-at (aref ion-vector i) 0) 0) 0))
                        for ion-distance = (geom:calculate-distance point position)
-                       do (if (< ion-distance min-separation)
+                       do (if (< ion-distance separation)
                               (progn
                                 (setf place-ion nil)
                                 (incf fail-counter))))
@@ -508,8 +507,8 @@
                        (decf ion1-number)))
                  (if (> fail-counter 100)
                      (error "Impossible to place ~a ions with minumum separation of ~a~%"
-                            (+ ion1-number ion2-number) min-separation))))
-        do (if ion2
+                            (+ ion1-number ion2-number) separation))))
+        do (if (and ion2 (> ion2-number 0))
                ;;Pick random solvent molecule to replace
                ;;Get position of solvent residue atom
                (let* ((ion2-copy (chem:matter-copy ion2-agg))
@@ -532,7 +531,7 @@
                  (loop for i below ion-count
                        for point = (chem:get-position (chem:content-at (chem:content-at (chem:content-at (aref ion-vector i) 0) 0) 0))
                        for ion-distance = (geom:calculate-distance point position)
-                       do (if (< ion-distance min-separation)
+                       do (if (< ion-distance separation)
                               (progn
                                 (setf place-ion nil)
                                 (incf fail-count))))
@@ -555,6 +554,6 @@
                        (decf ion2-number)))
                  (if (> fail-count 100)
                      (error "Impossible to place ~a ions with minumum separation of ~a~%"
-                            (+ ion1-number ion2-number) min-separation)))))
+                            (+ ion1-number ion2-number) separation)))))
              
         )))
