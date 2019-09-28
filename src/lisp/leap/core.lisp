@@ -96,33 +96,34 @@
 
 (defun evaluate (builder ast environment)
   ;;  (format t "evaluating: ~s~%" ast)
-  (architecture.builder-protocol:walk-nodes
-   builder
-   (lambda (recurse relation relation-args node kind relations
-            &key name value &allow-other-keys)
-     (declare (ignore relation relation-args relations))
-     (case kind
-       (:literal
-        value)
-       (:list
-        (first (funcall recurse :relations '(:element))))
-       (:s-expr
-        (destructuring-bind (&key s-expr value bounds)
-            node
-          (eval value)))
-       (:function
-        (apply (function-lookup name environment)
-               (first (funcall recurse :relations '(:argument)))))
-       (:assignment
-        (let ((value (first (first (funcall recurse :relations '(:value))))))
-          (if (symbolp value)
-              (setf (lookup-variable* name *package*) (lookup-variable value))
-              (setf (lookup-variable* name *package*) (if (typep value 'number)
-                                                         (float value 1d0)
-                                                         value)))))
-       (t
-        (funcall recurse))))
-   ast))
+  (let ((result (architecture.builder-protocol:walk-nodes
+                 builder
+                 (lambda (recurse relation relation-args node kind relations
+                          &key name value &allow-other-keys)
+                   (declare (ignore relation relation-args relations))
+                   (case kind
+                     (:literal
+                      value)
+                     (:list
+                      (first (funcall recurse :relations '(:element))))
+                     (:s-expr
+                      (destructuring-bind (&key s-expr value bounds)
+                          node
+                        (eval value)))
+                     (:function
+                      (apply (function-lookup name environment)
+                             (first (funcall recurse :relations '(:argument)))))
+                     (:assignment
+                      (let ((value (first (first (funcall recurse :relations '(:value))))))
+                        (if (symbolp value)
+                            (setf (lookup-variable* name *package*) (lookup-variable value))
+                            (setf (lookup-variable* name *package*) (if (typep value 'number)
+                                                                        (float value 1d0)
+                                                                        value)))))
+                     (t
+                      (funcall recurse))))
+                 ast)))
+    (first (first result))))
 
 
 
