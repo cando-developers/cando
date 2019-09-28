@@ -123,7 +123,7 @@
 
 
 (defun file-path-unquoted-p (thing)
-  ((position #\/ thing))
+  (position #\/ thing))
 
 (defrule file-path-string
     (+ (character-ranges (#\a #\z) (#\A #\Z) (#\0 #\9) #\- #\_ #\/ #\.))
