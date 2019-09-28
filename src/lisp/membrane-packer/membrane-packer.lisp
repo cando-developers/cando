@@ -661,9 +661,10 @@ allocate enough space for the coordinates for the largest lipid in each cell of 
                   (+ *close-distance* 0.003)
                   coord-index
                   source-pos
-                  bounding-box
-                  from-target-transform
-                  (indices collisions)))))
+                  (indices collisions)
+                  :bounding-box bounding-box
+                  :octree-transform from-target-transform
+                  ))))
     (let ((range-end (length (indices collisions))))
       ;; (when (> range-end range-start)
       (vector-push-extend (make-instance 'range

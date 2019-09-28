@@ -373,6 +373,7 @@ public:
 		// within a distance of the querypoint inside of a periodic box
 		// All results are pushed into 'results'
   void getPointsWithinCutoff(double cutoff_squared, double cutoff, core::T_sp query_data, const Vector3& querypoint, double x_size, double y_size, double z_size, double x_rsize, double y_rsize, double z_rsize, const Matrix& from_target_transform, core::ComplexVector_sp results );
+  void getPointsWithinCutoffNoTransform(double cutoff_squared, double cutoff, core::T_sp query_data, const Vector3& querypoint, double x_size, double y_size, double z_size, double x_rsize, double y_rsize, double z_rsize, core::ComplexVector_sp results );
   void walkGenericOctree(core::Function_sp callback);
 
 };

@@ -48,6 +48,7 @@
 #include <cando/chem/loop.h>
 #include <cando/chem/octree.h>
 #include <cando/geom/ovector3.h>
+#include <cando/geom/omatrix.h>
 #include <clasp/core/bformat.h>
 #include <clasp/core/hashTableEq.h>
 #include <clasp/core/evaluator.h>
@@ -2337,47 +2338,23 @@ bool GenericOctree_O::isLeafNode() const {
 
 SYMBOL_EXPORT_SC_(ChemPkg,STARdebug_octreeSTAR);
 
-
-CL_LISPIFY_NAME(generic-octree-get-points-within-cutoff);
-CL_DEFUN void chem__generic_octree_get_points_within_cutoff(GenericOctree_sp octree, double cutoff, core::T_sp query_data, const Vector3& querypoint, BoundingBox_sp bounding_box, const Matrix& from_target_transform, core::ComplexVector_sp results ) {
-  double x_size,  y_size,  z_size,  x_rsize,  y_rsize,  z_rsize;
-  x_size = bounding_box->get_x_width();
-  x_rsize = 1.0/x_size;
-  y_size = bounding_box->get_y_width();
-  y_rsize = 1.0/y_size;
-  z_size = bounding_box->get_z_width();
-  z_rsize = 1.0/z_size;
-  octree->getPointsWithinCutoff(cutoff*cutoff,cutoff,query_data,querypoint,x_size,y_size,z_size,x_rsize,y_rsize,z_rsize,from_target_transform,results);
-}
-
-
-
+#ifdef DEBUG_OCTREE
+#define DEBUG_OCTREE_WRITE(msg) if(_sym_STARdebug_octreeSTAR->symbolValue().notnilp() {core::write_bf_stream(msg);}
+#else
+#define DEBUG_OCTREE_WRITE(msg)
+#endif
 
 		// This is a really simple routine for querying the tree for points
 		// within a distance of the querypoint inside of a periodic box
 		// All results are pushed into 'results'
-void GenericOctree_O::getPointsWithinCutoff(double cutoff_squared, double cutoff, core::T_sp source_data, const Vector3& querypoint, double x_size, double y_size, double z_size, double x_rsize, double y_rsize, double z_rsize, const Matrix& from_target_transform, core::ComplexVector_sp results ) {
+void GenericOctree_O::getPointsWithinCutoff(double cutoff_squared, double cutoff, core::T_sp source_data, const Vector3& querypoint, double x_size, double y_size, double z_size, double x_rsize, double y_rsize, double z_rsize, const Matrix& octree_transform, core::ComplexVector_sp results ) {
 			// If we're at a leaf node, just see if the current data point is near the query point
-//#define DEBUG_OCTREE 1
-#ifdef DEBUG_OCTREE
-  if (_sym_STARdebug_octreeSTAR->symbolValue().notnilp()) {
-    if (gc::IsA<core::Function_sp>(_sym_STARdebug_octreeSTAR->symbolValue())) {
-      core::eval::funcall(_sym_STARdebug_octreeSTAR->symbolValue(),this->asSmartPtr());
-    }
-    core::write_bf_stream(BF("-------- %s  depth %lu    isLeafNode -> %d     this->_data.boundp() -> %d\n") % __FUNCTION__ % this->_depth % this->isLeafNode() % this->_data.boundp() );
-    core::write_bf_stream(BF(" x_size, y_size, z_size: %lf, %lf, %lf | x_rsize, y_rsize, z_rsize: %lf, %lf, %lf\n")
-                          % x_size % y_size % z_size % x_rsize % y_rsize % z_rsize );
-                            
-  }
-#endif
+  DEBUG_OCTREE_WRITE(BF("-------- %s  depth %lu    isLeafNode -> %d     this->_data.boundp() -> %d\n") % __FUNCTION__ % this->_depth % this->isLeafNode() % this->_data.boundp() );
+  DEBUG_OCTREE_WRITE(BF(" x_size, y_size, z_size: %lf, %lf, %lf | x_rsize, y_rsize, z_rsize: %lf, %lf, %lf\n") % x_size % y_size % z_size % x_rsize % y_rsize % z_rsize );
   if(this->isLeafNode()) {
     if(this->_data.boundp()) {
-      const Vector3 p = from_target_transform*this->_position;
-#ifdef DEBUG_OCTREE
-      if (_sym_STARdebug_octreeSTAR->symbolValue().notnilp()) {
-        core::write_bf_stream(BF("transform.this->_position -> %lf %lf %lf\n") %  p.getX() % p.getY() % p.getZ());
-      }
-#endif
+      const Vector3 p = octree_transform*this->_position;
+      DEBUG_OCTREE_WRITE(BF("transform.this->_position -> %lf %lf %lf\n") %  p.getX() % p.getY() % p.getZ());
       double dx = fabs(querypoint.getX()-p.getX());
       dx -= static_cast<int>(dx*x_rsize+0.5)*x_size;
       double dy = fabs(querypoint.getY()-p.getY());
@@ -2385,11 +2362,7 @@ void GenericOctree_O::getPointsWithinCutoff(double cutoff_squared, double cutoff
       double dz = fabs(querypoint.getZ()-p.getZ());
       dz -= static_cast<int>(dz*z_rsize+0.5)*z_size;
       double distsquared = dx*dx+dy*dy+dz*dz;
-#ifdef DEBUG_OCTREE
-      if (_sym_STARdebug_octreeSTAR->symbolValue().notnilp()) {
-        core::write_bf_stream(BF("dx,dy,dz %lf,%lf,%lf distsquared->%lf\n") % dx % dy % dz % distsquared );
-      }
-#endif
+      DEBUG_OCTREE_WRITE(BF("dx,dy,dz %lf,%lf,%lf distsquared->%lf\n") % dx % dy % dz % distsquared );
       if (distsquared<cutoff_squared) {
         results->vectorPushExtend(source_data);
         results->vectorPushExtend(this->_data);
@@ -2399,54 +2372,123 @@ void GenericOctree_O::getPointsWithinCutoff(double cutoff_squared, double cutoff
 				// We're at an interior node of the tree. We will check to see if
 				// the query bounding box lies outside the octants of this node.
 					// Compute the min/max corners of this child octant
-#ifdef DEBUG_OCTREE
-    if (_sym_STARdebug_octreeSTAR->symbolValue().notnilp()) {
-      core::write_bf_stream(BF("querypoint -> %lf %lf %lf\n") % querypoint.getX() % querypoint.getY() % querypoint.getZ());
-    }
-#endif
+    DEBUG_OCTREE_WRITE(BF("querypoint -> %lf %lf %lf\n") % querypoint.getX() % querypoint.getY() % querypoint.getZ());
     for(int i=0; i<8; ++i) {
-      const Vector3 p = from_target_transform*this->_children[i]->_origin;
-#ifdef DEBUG_OCTREE
-      if (_sym_STARdebug_octreeSTAR->symbolValue().notnilp()) {
-        core::write_bf_stream(BF("transform.this->_children[%d]->_origin -> %lf %lf %lf\n") % i % p.getX() % p.getY() % p.getZ());
-        core::write_bf_stream(BF("this->_children[%d]->_halfDimension -> %lf %lf %lf\n") % i % this->_children[i]->_halfDimension.getX() % this->_children[i]->_halfDimension.getY() % this->_children[i]->_halfDimension.getZ());
-      }
-#endif
+      const Vector3 p = octree_transform*this->_children[i]->_origin;
+      DEBUG_OCTREE_WRITE(BF("transform.this->_children[%d]->_origin -> %lf %lf %lf\n") % i % p.getX() % p.getY() % p.getZ());
+      DEBUG_OCTREE_WRITE(BF("this->_children[%d]->_halfDimension -> %lf %lf %lf\n") % i % this->_children[i]->_halfDimension.getX() % this->_children[i]->_halfDimension.getY() % this->_children[i]->_halfDimension.getZ());
       double dx = fabs(querypoint.getX()-p.getX());
       dx -= static_cast<int>(dx*x_rsize+0.5)*x_size;
       if (dx > this->_children[i]->_halfDimension.getX()+cutoff) {
-#ifdef DEBUG_OCTREE
-        if (_sym_STARdebug_octreeSTAR->symbolValue().notnilp()) {
-          core::write_bf_stream(BF("skipping child dx->%lf > this->_children[%d]->_halfDimension.getX()+cutoff->%lf \n") % dx % i % (this->_children[i]->_halfDimension.getX()+cutoff));
-        }
-#endif
+        DEBUG_OCTREE_WRITE(BF("skipping child dx->%lf > this->_children[%d]->_halfDimension.getX()+cutoff->%lf \n") % dx % i % (this->_children[i]->_halfDimension.getX()+cutoff));
         continue;
       }
       double dy = fabs(querypoint.getY()-p.getY());
       dy -= static_cast<int>(dy*y_rsize+0.5)*y_size;
       if (dy > this->_children[i]->_halfDimension.getY()+cutoff) {
-#ifdef DEBUG_OCTREE
-        if (_sym_STARdebug_octreeSTAR->symbolValue().notnilp()) {
-          core::write_bf_stream(BF("skipping child dy->%lf > this->_children[%d]->_halfDimension.getY()+cutoff->%lf \n") % dy % i % (this->_children[i]->_halfDimension.getY()+cutoff));
-        }
-#endif
+        DEBUG_OCTREE_WRITE(BF("skipping child dy->%lf > this->_children[%d]->_halfDimension.getY()+cutoff->%lf \n") % dy % i % (this->_children[i]->_halfDimension.getY()+cutoff));
         continue;
       }
       double dz = fabs(querypoint.getZ()-p.getZ());
       dz -= static_cast<int>(dz*z_rsize+0.5)*z_size;
       if (dz > this->_children[i]->_halfDimension.getZ()+cutoff) {
-#ifdef DEBUG_OCTREE
-        if (_sym_STARdebug_octreeSTAR->symbolValue().notnilp()) {
-          core::write_bf_stream(BF("skipping child dz->%lf > this->_children[%d]->_halfDimension.getZ()+cutoff -> %lf \n") % dz % i % (this->_children[i]->_halfDimension.getZ()+cutoff));
-        }
-#endif
+        DEBUG_OCTREE_WRITE(BF("skipping child dz->%lf > this->_children[%d]->_halfDimension.getZ()+cutoff -> %lf \n") % dz % i % (this->_children[i]->_halfDimension.getZ()+cutoff));
         continue;
       }
 					// At this point, we've determined that this child may be close to the node
-      this->_children[i]->getPointsWithinCutoff(cutoff_squared,cutoff,source_data,querypoint,x_size,y_size,z_size,x_rsize,y_rsize,z_rsize,from_target_transform,results);
+      this->_children[i]->getPointsWithinCutoff(cutoff_squared,cutoff,source_data,querypoint,x_size,y_size,z_size,x_rsize,y_rsize,z_rsize,octree_transform,results);
     } 
   }
 };
+
+
+void GenericOctree_O::getPointsWithinCutoffNoTransform(double cutoff_squared, double cutoff, core::T_sp source_data, const Vector3& querypoint, double x_size, double y_size, double z_size, double x_rsize, double y_rsize, double z_rsize, core::ComplexVector_sp results ) {
+			// If we're at a leaf node, just see if the current data point is near the query point
+  DEBUG_OCTREE_WRITE(BF("-------- %s  depth %lu    isLeafNode -> %d     this->_data.boundp() -> %d\n") % __FUNCTION__ % this->_depth % this->isLeafNode() % this->_data.boundp() );
+  DEBUG_OCTREE_WRITE(BF(" x_size, y_size, z_size: %lf, %lf, %lf | x_rsize, y_rsize, z_rsize: %lf, %lf, %lf\n") % x_size % y_size % z_size % x_rsize % y_rsize % z_rsize );
+  if(this->isLeafNode()) {
+    if(this->_data.boundp()) {
+      const Vector3& p = this->_position;
+      DEBUG_OCTREE_WRITE(BF("transform.this->_position -> %lf %lf %lf\n") %  p.getX() % p.getY() % p.getZ());
+      double dx = fabs(querypoint.getX()-p.getX());
+      dx -= static_cast<int>(dx*x_rsize+0.5)*x_size;
+      double dy = fabs(querypoint.getY()-p.getY());
+      dy -= static_cast<int>(dy*y_rsize+0.5)*y_size;
+      double dz = fabs(querypoint.getZ()-p.getZ());
+      dz -= static_cast<int>(dz*z_rsize+0.5)*z_size;
+      double distsquared = dx*dx+dy*dy+dz*dz;
+      DEBUG_OCTREE_WRITE(BF("dx,dy,dz %lf,%lf,%lf distsquared->%lf\n") % dx % dy % dz % distsquared );
+      if (distsquared<cutoff_squared) {
+        results->vectorPushExtend(source_data);
+        results->vectorPushExtend(this->_data);
+      }
+    }
+  } else {
+				// We're at an interior node of the tree. We will check to see if
+				// the query bounding box lies outside the octants of this node.
+					// Compute the min/max corners of this child octant
+    DEBUG_OCTREE_WRITE(BF("querypoint -> %lf %lf %lf\n") % querypoint.getX() % querypoint.getY() % querypoint.getZ());
+    for(int i=0; i<8; ++i) {
+      const Vector3& p = this->_children[i]->_origin;
+      DEBUG_OCTREE_WRITE(BF("transform.this->_children[%d]->_origin -> %lf %lf %lf\n") % i % p.getX() % p.getY() % p.getZ());
+      DEBUG_OCTREE_WRITE(BF("this->_children[%d]->_halfDimension -> %lf %lf %lf\n") % i % this->_children[i]->_halfDimension.getX() % this->_children[i]->_halfDimension.getY() % this->_children[i]->_halfDimension.getZ());
+      double dx = fabs(querypoint.getX()-p.getX());
+      dx -= static_cast<int>(dx*x_rsize+0.5)*x_size;
+      if (dx > this->_children[i]->_halfDimension.getX()+cutoff) {
+        DEBUG_OCTREE_WRITE(BF("skipping child dx->%lf > this->_children[%d]->_halfDimension.getX()+cutoff->%lf \n") % dx % i % (this->_children[i]->_halfDimension.getX()+cutoff));
+        continue;
+      }
+      double dy = fabs(querypoint.getY()-p.getY());
+      dy -= static_cast<int>(dy*y_rsize+0.5)*y_size;
+      if (dy > this->_children[i]->_halfDimension.getY()+cutoff) {
+        DEBUG_OCTREE_WRITE(BF("skipping child dy->%lf > this->_children[%d]->_halfDimension.getY()+cutoff->%lf \n") % dy % i % (this->_children[i]->_halfDimension.getY()+cutoff));
+        continue;
+      }
+      double dz = fabs(querypoint.getZ()-p.getZ());
+      dz -= static_cast<int>(dz*z_rsize+0.5)*z_size;
+      if (dz > this->_children[i]->_halfDimension.getZ()+cutoff) {
+        DEBUG_OCTREE_WRITE(BF("skipping child dz->%lf > this->_children[%d]->_halfDimension.getZ()+cutoff -> %lf \n") % dz % i % (this->_children[i]->_halfDimension.getZ()+cutoff));
+        continue;
+      }
+					// At this point, we've determined that this child may be close to the node
+      this->_children[i]->getPointsWithinCutoffNoTransform(cutoff_squared,cutoff,source_data,querypoint,x_size,y_size,z_size,x_rsize,y_rsize,z_rsize,results);
+    } 
+  }
+};
+
+
+
+
+CL_LISPIFY_NAME(generic-octree-get-points-within-cutoff);
+CL_LAMBDA(octree cutoff query-data query-point results &key (bounding-box nil bounding-box-p) (octree-transform nil octree-transform-p));
+CL_DEFUN void chem__generic_octree_get_points_within_cutoff(GenericOctree_sp octree, double cutoff, core::T_sp query_data, const Vector3& querypoint, core::ComplexVector_sp results, core::T_sp bounding_box, bool bounding_box_p, core::T_sp octree_transform, bool octree_transform_p) {
+  if (bounding_box_p) {
+    if (!gc::IsA<BoundingBox_sp>(bounding_box)) {
+      SIMPLE_ERROR(BF("bounding-box must be a valid bounding box or nil"));
+    }
+    BoundingBox_sp rbounding_box = gc::As_unsafe<BoundingBox_sp>(bounding_box);
+    double x_size,  y_size,  z_size,  x_rsize,  y_rsize,  z_rsize;
+    x_size = rbounding_box->get_x_width();
+    x_rsize = 1.0/x_size;
+    y_size = rbounding_box->get_y_width();
+    y_rsize = 1.0/y_size;
+    z_size = rbounding_box->get_z_width();
+    z_rsize = 1.0/z_size;
+    if (octree_transform_p) {
+      if (!gc::IsA<geom::OMatrix_sp>(octree_transform)) {
+        SIMPLE_ERROR(BF("octree-transform must be a valid geom:matrix"));
+      }
+      octree->getPointsWithinCutoff(cutoff*cutoff,cutoff,query_data,querypoint,x_size,y_size,z_size,x_rsize,y_rsize,z_rsize,gc::As_unsafe<geom::OMatrix_sp>(octree_transform)->_Value,results);
+    } else {
+      octree->getPointsWithinCutoffNoTransform(cutoff*cutoff,cutoff,query_data,querypoint,x_size,y_size,z_size,x_rsize,y_rsize,z_rsize,results);
+    }
+  } else {
+    SIMPLE_ERROR(BF("Add support for getPointsWithinCutoff with no bounding-box with and without an octree-transform"));
+  }
+}
+
+
+
 
 
 
