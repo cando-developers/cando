@@ -44,7 +44,11 @@
    (%variables :initarg  :variables
                :type     hash-table
                :reader   %variables
-               :initform (make-hash-table :test #'equalp))))
+               :initform (make-hash-table :test #'equal)
+               :documentation "This is not the definitive list - accessible variable
+names are actually topology names and any symbol in CANDO-USER.
+But that is a superset of what we want to display if the user asks
+for a list of symbols.  When they ask for a list of symbols we use this list.")))
 
 
 (defparameter *leap-env* (make-instance 'leap-environment))
@@ -93,6 +97,9 @@
     (t error-value)))
 
 (defun (setf lookup-variable*) (new-value name environment)
+  ;; Save the name of the variable in a hash-table of variable names
+  (setf (gethash (string name) (%variables *leap-env*)) (string name))
+  ;;
   (when (typep new-value 'chem:topology)
     (cando:register-topology name new-value))
   (core:*make-special name)
@@ -150,12 +157,14 @@
 Associate the name with the object"
   (setf (lookup-variable* name *package*) object))
 
-(defun lookup-variable (name &optional (errorp t) error-value)
+(defun lookup-variable (name-or-object &optional (errorp t) error-value)
   "* Arguments
-- name : Symbol
+- name-or-object : Symbol or object
 * Description
 Lookup the object in the variable space."
-  (lookup-variable* name *package* errorp error-value))
+  (if (symbolp name-or-object)
+      (lookup-variable* name-or-object *package* errorp error-value)
+      name-or-object))
 
 
 

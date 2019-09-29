@@ -178,6 +178,50 @@
     (let ((str (esrap:text chars)))
       (intern (esrap:text chars) :keyword))))
 
+;;; matter expressions
+
+(defun aggregate-name-p (thing)
+  (when (member thing (leap.core:all-variable-names) :test #'string=)
+    (let ((symbol (find-symbol thing :cando-user)))
+      (when symbol
+        (typep (symbol-value symbol) 'chem:aggregate)))))
+
+(defrule aggregate-name-string
+    (+ (character-ranges (#\a #\z) (#\A #\Z) #\_ #\-))
+  (:text t))
+
+(defrule aggregate
+    (aggregate-name-p aggregate-name-string)
+  (:lambda (name)
+    (leap.core:lookup-variable (intern name))))
+
+(defrule/s aggregate.pdb-sequence-number
+    (and aggregate #\. integer-literal/decimal)
+  (:destructure (aggregate dot pdb-sequence-number)
+                (declare (ignore dot))
+                (block residue
+                  (cando:do-molecules (mol aggregate)
+                    (cando:do-residues (res mol)
+                      (when (= (chem:get-id res) pdb-sequence-number)
+                        (return-from residue res)))))))
+
+(defrule/s aggregate^molecule-number
+    (and aggregate #\^ integer-literal/decimal)
+  (:destructure (aggregate dot molecule-number)
+                (declare (ignore dot))
+                (block molecule
+                  (cando:do-molecules (mol aggregate)
+                    (format t "molecule: ~a  get-id: ~a~%" mol (chem:get-id mol))
+                    (when (= (chem:get-id mol) molecule-number)
+                        (return-from molecule mol))))))
+
+
+(defrule matter
+    (or aggregate.pdb-sequence-number
+        aggregate^molecule-number
+        aggregate
+        ))
+
 ;;; Expression
 
 (defrule expression
@@ -204,6 +248,7 @@
 
 (defrule literal
     (or
+     matter
      file-path-unquoted
      float-literal
      integer-literal/decimal
