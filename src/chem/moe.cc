@@ -798,6 +798,7 @@ void	MoeReadFile::readNextLine()
 	int		index_a;
 	int		index_b;
 	int		index_rName;
+        int             index_rUID;
 	int		index_rAtomCount, index_cResidueCount, numAtoms, numResidues;
 	int		index_type;
 	int		index_atoms;
@@ -935,6 +936,7 @@ void	MoeReadFile::readNextLine()
 	index_aPosZ = ptAtoms.getFieldIndex("aPosZ");
 	index_rAtomCount = ptResidues.getFieldIndex("rAtomCount");
 	index_rName = ptResidues.getFieldIndex("rName");
+        index_rUID = ptResidues.getFieldIndex("rUID");
 	index_cResidueCount = ptMolecules.getFieldIndex("cResidueCount");
 
 
@@ -946,6 +948,7 @@ void	MoeReadFile::readNextLine()
 	    LOG(BF("Creating molecule #%d") % im  );
 	    GC_ALLOCATE(Molecule_O, mol );
 	    LOG(BF(" created") );
+            mol->setId(agg->contentSize());
 	    agg->addMolecule(mol);
 	    LOG(BF(" added to aggregate") );
 	    numResidues = dynamic_cast<ParaInteger*>(ptMolecules.getVector(index_cResidueCount)[im])->getValue();
@@ -960,6 +963,9 @@ void	MoeReadFile::readNextLine()
 		LOG(BF("     Got numAtoms") );
 		str = dynamic_cast<ParaToken*>(ptResidues.getVector(index_rName)[tir])->getValue();
 		res->setName( chemkw_intern(str) );
+                int uid = dynamic_cast<ParaInteger*>(ptResidues.getVector(index_rUID)[tir])->getValue();
+                res->setId(uid);
+                res->setFileSequenceNumber(uid);
 		LOG(BF("     Set residue name: %s") % str.c_str()  );
 		LOG(BF("        it has %d atoms") % numAtoms  );
 		tir++;
