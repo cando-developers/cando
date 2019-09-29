@@ -785,11 +785,13 @@ specified in PDB files.
 (defgeneric classify-molecules (aggregate system))
 
 (defmethod classify-molecules (aggregate system)
-  (cando:do-molecules (molecule aggregate)
-    (cond
-      ((member (chem:get-name molecule) (list :hoh))
-       (chem:setf-molecule-type molecule :solvent))))
-  aggregate)
+  (let ((mol-id 0))
+    (cando:do-molecules (molecule aggregate)
+      (chem:set-id molecule (incf mol-id))
+      (cond
+        ((member (chem:get-name molecule) (list :hoh))
+         (chem:setf-molecule-type molecule :solvent))))
+    aggregate))
 
 #|
 (defun read-line (pdb-atom-reader)
