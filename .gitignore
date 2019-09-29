@@ -3,4 +3,7 @@ local.config
 **/*.o
 **/*.bc
 **/.bak
+*.fasl
+*.dwarf
+*.info
 *~
