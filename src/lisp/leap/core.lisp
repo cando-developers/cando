@@ -57,13 +57,17 @@
   (setf (gethash name (%functions environment)) new-value))
 
 
-(defun all-variables ()
-  (let (vars)
-    (do-symbols (sym *package*)
-      (when (eq (symbol-package sym) *package*)
-        (push sym vars)))
-    (let ((sorted-vars (sort vars #'string<)))
-      sorted-vars)))
+(defun all-variable-names ()
+  (let ((names (alexandria:hash-table-keys (%variables *leap-env*))))
+    names)
+  #+(or)
+  (progn
+    (let (vars)
+      (do-symbols (sym *package*)
+        (when (eq (symbol-package sym) *package*)
+          (push sym vars)))
+      (let ((sorted-vars (sort vars #'string<)))
+        sorted-vars))))
 
 (defun lookup-variable* (name package &optional errorp error-value)
   "Lookup a variable in the given environment"

@@ -67,16 +67,31 @@
                    key
                  (format stream "~a cop~:@P of molecule ~a with ~a atoms - force-field ~a~%" (length value) name number-of-atoms force-field-name))))))
 
-(defun desc (&optional (name nil namep))
+
+
+
+(defun leap-set (object property value)
+  (format t "object: ~a  property: ~s  value: ~s~%")
+  (leap-set-property object property value))
+
+(defun desc (name)
   "    desc variable
       object                       _variable_
 
 Print a description of the object.
 "
-  (if namep
-      (let ((val (leap.core:lookup-variable name)))
-        (describe val))
-      (format t "~a" (leap.core:all-variables))))
+  (let ((val (leap.core:lookup-variable name)))
+    (describe val))
+  nil)
+
+(defun leap-list ()
+  "    list 
+
+List the variables currently defined."
+  (format t "~a" (leap.core:all-variable-names))
+  nil)
+
+  
 
 (defun leap.assign-atom-types (var-name)
   "    assignAtomTypes variable

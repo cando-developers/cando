@@ -117,7 +117,7 @@
    #:evaluate
    #:*leap-env*
    #:lookup-variable
-   #:all-variables
+   #:all-variable-names
    #:function-lookup
    #:clear-path
    #:add-path
