@@ -82,7 +82,7 @@ string Matter_O::__repr__() const
 {
   stringstream ss;
   ss << "#<" << this->className() << " " << _rep_(this->getName());
-  ss << " @" << (void*)this;
+  ss << " " << this->getId();
   ss << ">";
   return ss.str();
 }

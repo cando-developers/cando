@@ -1063,7 +1063,7 @@ void Atom_O::writeUniqueBondsToStream(string prefix, std::ostream& out )
 string	Atom_O::__repr__() const
 {
   stringstream ss;
-  ss << "#<" << this->className() << " " << this->name << "/" << _rep_(symbolFromElement(this->_Element)) << " @" << (void*)(this->asSmartPtr().raw_()) << ">";
+  ss << "#<" << this->className() << " " << this->name << "/" << _rep_(symbolFromElement(this->_Element)) << " " << this->getId() << ">";
   return ss.str();
 }
 
