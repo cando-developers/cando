@@ -160,7 +160,7 @@ class Matter_O : public core::CxxObject_O
   virtual char getMatterType() { return MATTER_CLASS; };
 
   CL_LISPIFY_NAME("getId");
-  CL_DEFMETHOD   int	getId();
+  CL_DEFMETHOD   int	getId() const;
   CL_DEFMETHOD   void setId(int id) { this->_Id = id; };
 	/*! Accumulate all of the restraints in this matter and its contents into a single RestraintVector */
   core::List_sp allRestraints() const;

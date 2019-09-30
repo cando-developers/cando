@@ -627,7 +627,7 @@ void	Matter_O::addMatterRetainId(Matter_sp cp )
 
 
 // getId
-int Matter_O::getId() {
+int Matter_O::getId() const {
   return this->_Id;
 }
 
