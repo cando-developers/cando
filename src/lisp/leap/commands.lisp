@@ -43,6 +43,9 @@
     (leap.core:register-variable variable value)))
 
 
+(defun leap-quickload (system)
+  (ql:quickload system))
+
 (defun log-file (filename)
   #+(or)(format t "log-file doesn't do anything at the moment - to work with cl4py~%")
   (let* ((log-stream (open filename :direction :output :if-exists :supersede))
@@ -54,42 +57,57 @@
   (let ((filename (pathname (ensure-string (second entry)))))
     (log-file filename)))
 
+(defmethod describe-object ((object chem:residue) stream)
+  (cando:do-atoms (atom object)
+    (format stream "~s~%" atom)))
+
+(defmethod describe-object ((object chem:molecule) stream)
+  (cando:do-residues (res object)
+    (format stream "~s~%" res)))
+
 (defmethod describe-object ((object chem:aggregate) stream)
-  (format stream "Aggregate name: ~a~%" (chem:get-name object))
-  (let ((ht (make-hash-table :test #'equalp)))
-    (cando:do-molecules (mol object)
-      (let ((key (list (chem:get-name mol) (chem:number-of-atoms mol) (chem:force-field-name mol))))
-        (push mol (gethash key ht))))
-    (let* ((alist (alexandria:hash-table-alist ht))
-           (sorted (sort alist #'> :key (lambda (entry) (second (first entry))))))
-      (loop for (key . value) in sorted
-            do (destructuring-bind (name number-of-atoms force-field-name)
-                   key
-                 (format stream "~a cop~:@P of molecule ~a with ~a atoms - force-field ~a~%" (length value) name number-of-atoms force-field-name))))))
+  (cando:do-molecules (mol object)
+    (format stream "~s ~a atoms~%" mol (chem:number-of-atoms mol))))
 
 
+(defgeneric set-property (object property value))
 
+(defmethod set-property (object property value)
+  (error "Provide a specialized version of this function for ~s ~s ~s" object property value))
 
-(defun leap-set (object property value)
+(defun leap-set-property (object property value)
   (format t "object: ~a  property: ~s  value: ~s~%")
-  (leap-set-property object property value))
+  (set-property object property value))
 
-(defun desc (name)
+(defun leap-desc (name)
   "    desc variable
       object                       _variable_
 
 Print a description of the object.
 "
   (let ((val (leap.core:lookup-variable name)))
-    (describe val))
-  nil)
+    (format t "Describing ~a~%" val)
+    (cond
+      ((null val)
+       (format t "~a~%" val))
+      (t (describe val)))
+    nil))
 
-(defun leap-list ()
+(defun leap-list-variables ()
   "    list 
 
 List the variables currently defined."
-  (format t "~a" (leap.core:all-variable-names))
-  nil)
+  (let* ((names (leap.core:all-variable-names))
+         (sorted-names (sort names #'string<))
+         (longest-name (loop for name in sorted-names
+                             maximize (length name))))
+    (loop for name in sorted-names
+          for count from 1 by (+ 2 longest-name)
+          do (format t "~va" (+ 2 longest-name) name)
+          do (when (> count 60)
+               (terpri)
+               (setf count 0)))
+    nil))
 
   
 
@@ -126,9 +144,6 @@ Cando internally defined types that correspond to unique SMIRKS patterns."
   "Return the object with name."
   (leap.core:lookup-variable name))
 
-(defun leap.desc (entry)
-  (leap:desc entry))
-
 (defun leap.add-pdb-res-map (entry)
   "    addPdbAtomMap list
       LIST                         _list_
@@ -147,14 +162,6 @@ odd atom name maps only to the last standard atom name it was mapped to.
   (let ((map (second entry)))
     (leap.pdb:add-pdb-res-map map)))
 
-(defun add-atom-types (info)
-  (warn "add-atom-types doesn't do anything"))
-
-(defun leap.add-atom-types (entry)
-  (valid-arguments entry 1)
-  (let ((info (second entry)))
-    (add-atom-types info)))
-
 (defun create-atom (name &optional type (charge 0.0))
   "    variable = createAtom name type charge
 
@@ -172,6 +179,19 @@ Return a new ATOM with _name_, _type_, and _charge_.
     (chem:set-charge atom charge)
     atom))
 
+
+(defun leap-add-atom-types (info)
+  (check-type info list)
+  (loop for one in info
+        for atom-type-string = (first one)
+        for element-string = (second one)
+        for hybridization-string = (third one)
+        do (let ((atom-type (intern (string atom-type-string) :keyword))
+                 (element (intern (string element-string) :keyword))
+                 (hybridization (intern (string-upcase (string hybridization-string)) :keyword)))
+             (leap.atom-types:add-one-atom-type atom-type element hybridization))))
+
+                            
 (defun load-off (filename)
 "    loadOff filename
       STRING                       _filename_
@@ -459,8 +479,8 @@ Leap can be reentered by evaluating (leap).
   (core:top-level nil nil))
 
 
-(defun leap-start-swank ()
-  (funcall (find-symbol "START-SWANK" :cando-user)))
+(defun leap-start-swank (&optional (port 4005))
+  (funcall (find-symbol "START-SWANK" :cando-user) port))
 
 (defun leap-help (&optional arg)
   "    help [string]
@@ -813,23 +833,29 @@ solvent.
     (unless pathname
       (error "Could not file file ~a" filename))
     (chem:moe-read-aggregate (namestring pathname))))
-    
+
+(defvar *error-on-bad-alias* t)
 
 (eval-when (:load-toplevel :execute)
+  ;; Define a list of names that do not get exported as lisp aliases
+  (defvar *ignore-lisp-aliases* '( "list" "set"))
   (setf leap.parser:*function-names/alist*
         '(("logFile" . log-file)
+          ("quickload" . leap-quickload)
           ("setupAmberPaths" . leap.setup-amber-paths)
-          ("desc" . desc)
+          ("desc" . leap-desc)
           ("listForceFields" . leap.list-force-fields)
           ("loadOff" . load-off)
           ("loadMol2" . cando:load-mol2)
           ("loadMoe" . leap-load-moe )
           ("dir" . leap.dir )
           ("ls" . leap.dir)
-          ("list" . leap-list)
+          ("list" . leap-list-variables)
+          ("listVariables" . leap-list-variables) ; alternative to "list"
           ("loadPdb" . leap.pdb:load-pdb)
           ("source" . leap.source)
-          ("set" . leap-set )
+          ("set" . leap-set-property )
+          ("setProperty" . leap-set-property ) ; alternative to "set"
           ("loadChemDraw" . leap.load-chem-draw)
           ("loadChemDrawAggregate" . leap.load-chem-draw-aggregate)
           ("compileSmarts" . leap.compile-smarts)
@@ -839,7 +865,7 @@ solvent.
           ("assignAtomTypes" . leap.assign-atom-types)
           ("addPdbResMap" . leap.pdb:add-pdb-res-map)
           ("addPdbAtomMap" . leap.pdb:add-pdb-atom-map)
-          ("addAtomTypes" . add-atom-types)
+          ("addAtomTypes" . leap-add-atom-types)
           ("saveAmberParm" . leap.save-amber-parm)
           ("solvateBox" . leap.solvate-box)
           ("solvateOct" . leap.solvate-oct)
@@ -871,11 +897,24 @@ solvent.
           ("alignAxes" . leap-align-axes)
           ("charge" . leap-charge)
           ))
-  (dolist (command leap.parser:*function-names/alist*)
-    (if (fboundp (cdr command))
-        (setf (leap.core:function-lookup (car command) leap.core:*leap-env*) (cdr command))
-        (error "~a is not a function" (cdr command)))))
-
+  ;; register all of the leap command and export them from the leap package
+  (loop for command-pair in leap.parser:*function-names/alist*
+        for command-name = (car command-pair)
+        for command-symbol = (cdr command-pair)
+        unless (fboundp command-symbol)
+          do (error "~a must be fbound to a function" command-symbol)
+        do (progn
+             (setf (leap.core:function-lookup command-name leap.core:*leap-env*) command-symbol)
+             ;; Bind the leap name to an alias in the LEAP package.
+             (when (not (member command-name *ignore-lisp-aliases* :test #'string=))
+               (let ((leap-sym (intern (string-upcase command-name) :leap.commands)))
+                 (if (not (fboundp leap-sym))
+                   (progn
+                     (setf (fdefinition leap-sym) (fdefinition command-symbol))
+                     (export leap-sym))
+                   (when *error-on-bad-alias*
+                     (error "Cannot create a lisp alias for function name ~s because it already defines a function ~s~%" leap-sym (fdefinition leap-sym))))))))
+  (setf *error-on-bad-alias* nil))
 
 (defun parse-leap-code (code)
   "Parse the CODE and return the result of the parse. This is for debugging the parser."
@@ -904,7 +943,6 @@ solvent.
                                  (lambda (c)
                                    (format t "hander-bind Encountered error ~s while parsing ~s~%" c code))))
                   (esrap:parse 'leap.parser:leap code)))))
-    (format t "ast -> ~a~%" ast)
     (core:call-with-stack-top-hint
      (lambda ()
        (leap.core:evaluate 'list ast leap.core:*leap-env*)))))

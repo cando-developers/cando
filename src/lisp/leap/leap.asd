@@ -20,6 +20,7 @@
   ((:file "packages")
    (:file "antechamber-type-definition-parser")
    (:file "chem")
+   (:file "atom-types")
    (:file "topology")
    (:file "grammar")
    (:file "off")

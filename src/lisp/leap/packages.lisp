@@ -46,6 +46,12 @@
   (:documentation
    "Embryonic parser for the leap file format.  Written by Jan Moringen"))
 
+(defpackage #:leap.atom-types
+  (:use #:common-lisp)
+  (:export
+   #:add-one-atom-type
+   ))
+
 (defpackage #:leap.commands
   (:use #:common-lisp)
   (:export
