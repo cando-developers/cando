@@ -18,6 +18,7 @@ This code uses Offset coordinates odd-r
 (defparameter *lipid-density* 0.0098)
 (defparameter *random-tip-angle-degrees* 10.0)
 (defparameter *close-distance* 1.4)
+(defparameter *max-close-distance* 3.0)
 
 
 (defparameter *oddr-directions* #( #( #( -1 -1)
@@ -52,7 +53,7 @@ This code uses Offset coordinates odd-r
   ((lipid-molecule :initarg :lipid-molecule :accessor lipid-molecule :type vector
                    :documentation "A single lipid-molecule")
    (order-info :initarg :order-info :accessor order-info :type order-info
-          :documentation "The ordering of the atoms. This is a vector order-info objects.
+               :documentation "The ordering of the atoms. This is a vector order-info objects.
 It matches the order of the coordinates.")
    (coordinates :initarg :coordinates :accessor coordinates :type vector
                 :documentation "A vector of the coordinates. A vector of vectors of doubles.
@@ -71,8 +72,6 @@ all layed out in a linear vector.")
 (defclass ga-thing ()
   ((transform :initform (geom:make-m4-translate (geom:vec 0.0 0.0 0.0))
               :initarg :transform :accessor transform)
-   (inverse-transform :initform (geom:make-m4-translate (geom:vec 0.0 0.0 0.0))
-                      :initarg :inverse-transform :accessor inverse-transform)
    (adjacent-to-solute :initform nil :initarg :adjacent-to-solute :accessor adjacent-to-solute)))
 
 
@@ -117,7 +116,6 @@ all layed out in a linear vector.")
                  :lipid-info (lipid-info original)
                  :lipid-index (lipid-index original)
                  :transform (transform original)
-                 :inverse-transform (inverse-transform original)
                  :adjacent-to-solute (adjacent-to-solute original)
                  ))
 
@@ -149,7 +147,7 @@ all layed out in a linear vector.")
                                (geom:get-center bounding-cuboid)
                                ;; Pad each octree by enough space so that points that match outermost points in octree will
                                ;; be within the octree boundaries
-                               (geom:v+ (geom:v* (geom:vec 1.0 1.0 1.0) *close-distance*)
+                               (geom:v+ (geom:v* (geom:vec 1.0 1.0 1.0) *max-close-distance*)
                                         (geom:get-half-width bounding-cuboid)))
                  do (loop for index below (length coordinates) by 3
                           with pos = (geom:vec 0.0 0.0 0.0)
@@ -385,8 +383,7 @@ will select lipid foo with 20% chance, lipid bar with 30% chance and lipid baz w
                    :lipid-info lipid-info
                    :lipid-index lipid-index
                    :lipid-id lipid-id
-                   :transform transform
-                   :inverse-transform (geom:invert-transform transform))))
+                   :transform transform)))
 
 (defun make-molecule-from-ga-lipid (ga-lipid &key debug)
   "Build a molecule from the ga-lipid.  If DEBUG is T then change the molecule name and residue names so we can pick out the lipid-index"
@@ -422,55 +419,6 @@ will select lipid foo with 20% chance, lipid bar with 30% chance and lipid baz w
     (chem:apply-transform-to-atoms lipid-mol transform)
     lipid-mol))
 
-(defclass scoring-cell ()
-  ((ga-thing :initform nil :initarg :ga-thing :accessor ga-thing)
-   (inverse-transform :initarg :inverse-transform :accessor inverse-transform)
-   (close-contact-indices :initform (make-array 16 :element-type 'cons :adjustable t :fill-pointer 0)
-                          :accessor close-contact-indices)))
-
-(defclass scoring-membrane ()
-  ((solute :initarg :solute :accessor solute)
-   (solute-scoring-cell :initarg :solute-scoring-cell :accessor solute-scoring-cell)
-   (array :initarg :array :accessor array)))
-
-#+(or)(defun coordinates-from-ga-lipid (ga-lipid scoring-cell)
-  "Generate the x,y,z coordinates for the ga-lipid into the coordinates of the scoring-cell.
-We don't want to do any consing, so we write the coordinates into the coordinate nvector
-in the scoring cell."
-  (let* ((lipid-info (lipid-info ga-lipid))
-         (lipid-index (lipid-index ga-lipid))
-         (transform (transform ga-lipid))
-         (coordinates (elt (coordinates lipid-info) lipid-index)))
-    (setf (ga-thing scoring-cell) ga-lipid)
-    (chem:apply-transform-to-coordinates (coordinates scoring-cell) coordinates transform)
-    (let* ((bounding-cuboid (chem:nvector-bounding-cuboid (coordinates scoring-cell) (length coordinates)))
-           (octree (chem:make-generic-octree (geom:get-center bounding-cuboid) (geom:get-half-width bounding-cuboid))))
-      ;; Fill the octree
-      (loop for index below (length coordinates) by 3
-            with pos = (geom:vec)
-            do (progn
-                 (geom:vec-extract pos (coordinates scoring-cell) index)
-                 (chem:generic-octree-insert octree pos index)))
-      (setf (octree scoring-cell) octree))))
-
-(defun build-scoring-membrane (ga-membrane)
-  "Build an object that will be used to quickly score a ga-membrane.
-We don't want to do ANY consing when running the genetic algorithm. So we 
-allocate enough space for the coordinates for the largest lipid in each cell of the membrane."
-  (let* ((dimensions (array-dimensions (array ga-membrane)))
-         (scoring-array (make-array dimensions))
-         (lipid-selector (lipid-selector ga-membrane))
-         (largest-coordinate-size (loop for prob-lipid in lipid-selector
-                                              for lipid-info = (cdr prob-lipid)
-                                              maximize (length (elt (coordinates lipid-info) 0)))))
-    (loop for index from 0 below (array-total-size scoring-array)
-          for scoring-cell = (make-instance 'scoring-cell
-                                            :coordinates (chem:make-nvector largest-coordinate-size))
-          do (setf (row-major-aref scoring-array index) scoring-cell))    (make-instance 'scoring-membrane
-                   :array scoring-array
-                   :solute-scoring-cell
-                   )))
-
 (defun calculate-center-and-half-width (bounding-cuboid)
   (let ((center (geom:vec (* (+ (geom:get-min-x bounding-cuboid) (geom:get-max-x bounding-cuboid)) 0.5)
                           (* (+ (geom:get-min-y bounding-cuboid) (geom:get-max-y bounding-cuboid)) 0.5)
@@ -481,9 +429,9 @@ allocate enough space for the coordinates for the largest lipid in each cell of 
     (values center half-width)))
 
 
-(defun lipid-protein-overlaps-p (bounding-box ga-lipid ga-solute &optional (cutoff-squared 1.0))
+(defun lipid-protein-overlaps-p (bounding-box ga-lipid ga-solute &optional (close-distance *close-distance*))
   (let ((collisions (make-collisions)))
-    (do-score-cell bounding-box ga-lipid ga-solute collisions)
+    (do-score-cell bounding-box ga-lipid ga-solute collisions close-distance)
     (> (length (indices collisions)) 0)))
 
 (defun wrapped-array-indices (xi yi xdim ydim)
@@ -625,7 +573,7 @@ allocate enough space for the coordinates for the largest lipid in each cell of 
                          :lipid-selector lipid-selector
                          :ga-solute ga-solute))))))
 
-(defun do-score-cell (bounding-box source target collisions)
+(defun do-score-cell (bounding-box source target collisions close-distance)
   (let ((range-start (length (indices collisions)))
         (from-source-transform (transform source))
         (from-target-transform (transform target))
@@ -658,7 +606,7 @@ allocate enough space for the coordinates for the largest lipid in each cell of 
                            (format t "target octree min-point: ~a     max-point: ~a~%" min-point max-point))))))
                  (chem:generic-octree-get-points-within-cutoff
                   target-octree
-                  (+ *close-distance* 0.003)
+                  close-distance
                   coord-index
                   source-pos
                   (indices collisions)
@@ -674,18 +622,18 @@ allocate enough space for the coordinates for the largest lipid in each cell of 
                                          :end range-end)
                           (ranges collisions)))))
 
-(defgeneric score-cell (bounding-box cur other collisions))
+(defgeneric score-cell (bounding-box cur other collisions close-distance))
 
-(defmethod score-cell (bounding-box (cur ga-solute) (other ga-solute) collisions) #| Do nothing |#)
+(defmethod score-cell (bounding-box (cur ga-solute) (other ga-solute) collisions close-distance) #| Do nothing |#)
 
-(defmethod score-cell (bounding-box (source ga-lipid) (target ga-lipid) collisions)
-  (do-score-cell bounding-box source target collisions))
+(defmethod score-cell (bounding-box (source ga-lipid) (target ga-lipid) collisions close-distance)
+  (do-score-cell bounding-box source target collisions close-distance))
 
-(defmethod score-cell (bounding-box (source ga-solute) (target ga-lipid) collisions) #| Do nothing |#)
+(defmethod score-cell (bounding-box (source ga-solute) (target ga-lipid) collisions close-distance) #| Do nothing |#)
 
-(defmethod score-cell (bounding-box source (target null) collisions) #| Do nothing |# )
+(defmethod score-cell (bounding-box source (target null) collisions close-distance) #| Do nothing |# )
 
-(defmethod score-cell (bounding-box (source ga-lipid) (target ga-solute) collisions) #| Do nothing |# )
+(defmethod score-cell (bounding-box (source ga-lipid) (target ga-solute) collisions close-distance) #| Do nothing |# )
 
 (defun make-collisions (&optional (xdim 16) (ydim 16) (zdim 2))
   (let* ((ranges (make-array (+ 1024 (* xdim ydim zdim)) :adjustable t :fill-pointer 0))
@@ -759,7 +707,7 @@ allocate enough space for the coordinates for the largest lipid in each cell of 
                                      (vector-push-extend (array-indices sc-cur) (solute-tests work-list)))))))
     work-list))
 
-(defun score-work-list (work-list membrane &key debug)
+(defun score-work-list (work-list membrane &key debug (close-distance *close-distance*))
   (let* ((array (array membrane))
          (dims (array-dimensions array))
          (xnum (elt dims 0))
@@ -778,19 +726,20 @@ allocate enough space for the coordinates for the largest lipid in each cell of 
           for target-zi = (elt target-cell 2)
           for sc-cur = (aref array source-xi source-yi source-zi)
           for sc-other = (aref array target-xi target-yi target-zi)
-          do (score-cell bounding-box sc-cur sc-other collisions))
+          do (score-cell bounding-box sc-cur sc-other collisions close-distance))
     (loop for lipid-cell across (solute-tests work-list)
           for source-xi = (elt lipid-cell 0)
           for source-yi = (elt lipid-cell 1)
           for source-zi = (elt lipid-cell 2)
           for sc-cur = (aref array source-xi source-yi source-zi)
-          do (score-cell bounding-box sc-cur (ga-solute membrane) collisions))
+          do (let ((*close-distance* close-distance))
+               (score-cell bounding-box sc-cur (ga-solute membrane) collisions close-distance)))
     (values (/ (length (indices collisions)) 2)
             collisions)))
 
-(defun score-work-list-atom-vectors (work-list atom-vectors &key debug no-result)
+(defun score-work-list-atom-vectors (work-list atom-vectors &key debug no-result (close-distance *close-distance*))
   (let ((close-contact-vec (make-array 1024 :adjustable t :fill-pointer 0))
-        (cutoff-squared (* *close-distance* *close-distance*)))
+        (cutoff-squared (* close-distance close-distance)))
     (let* ((array (array atom-vectors))
            (dims (array-dimensions array))
            (xnum (elt dims 0))
@@ -831,15 +780,15 @@ allocate enough space for the coordinates for the largest lipid in each cell of 
       (if no-result
           nil close-contact-vec))))
 
-(defun maybe-score-cell (bounding-box sc-cur entry collisions &key debug)
+(defun maybe-score-cell (bounding-box sc-cur entry collisions close-distance &key debug)
   "Only score the cell if lipid-ids are in ascending order"
   (let ((id1 (lipid-id sc-cur))
         (id2 (lipid-id entry)))
     (when (< id1 id2)
       (when debug (format t "~a/" (array-indices entry)))
-      (score-cell bounding-box sc-cur entry collisions))))
+      (score-cell bounding-box sc-cur entry collisions close-distance))))
 
-(defun score-ga-membrane (ga-membrane &key debug)
+(defun score-ga-membrane (ga-membrane &key debug (close-distance *close-distance*))
   (let* ((array (array ga-membrane))
          (dims (array-dimensions array))
          (xnum (elt dims 0))
@@ -871,17 +820,29 @@ allocate enough space for the coordinates for the largest lipid in each cell of 
                                                   (wrapped-array-indices (+ xi xdir) (+ yi ydir) xnum ynum)
                                                 (when debug (format t "~a,~a[~a,~a]{~a,~a}" xdir ydir xd yd xp yp))
                                                 (let ((entry (aref array xp yp zi)))
-                                                  (when (typep entry 'ga-lipid) (maybe-score-cell bounding-box sc-cur entry collisions)))
+                                                  (when (typep entry 'ga-lipid) (maybe-score-cell bounding-box sc-cur entry collisions close-distance)))
                                                 (let ((entry (aref array xp yp zother)))
-                                                  (when (typep entry 'ga-lipid) (maybe-score-cell bounding-box sc-cur entry collisions)))))
+                                                  (when (typep entry 'ga-lipid) (maybe-score-cell bounding-box sc-cur entry collisions close-distance)))))
                                      (let ((entry (aref array xi yi zother)))
-                                       (when (typep entry 'ga-lipid) (maybe-score-cell bounding-box sc-cur entry collisions))))
+                                       (when (typep entry 'ga-lipid) (maybe-score-cell bounding-box sc-cur entry collisions close-distance))))
                                    (when debug (format t "~%") (finish-output))
                                    (when (adjacent-to-solute sc-cur)
-                                     (do-score-cell bounding-box sc-cur (ga-solute ga-membrane) collisions))))))
+                                     (do-score-cell bounding-box sc-cur (ga-solute ga-membrane) collisions close-distance))))))
     (values (/ (length (indices collisions)) 2) collisions)))
 
 (defun mutate-all-lipids (ga-membrane)
+  "Mutate the lipid in every position in the membrane"
+  (loop for row-major-index from 0 below (array-total-size (array ga-membrane))
+        for new-lipid-info-index = (select-lipid (lipid-selector ga-membrane))
+        for new-lipid-info = (car new-lipid-info-index)
+        for new-lipid-index = (cdr new-lipid-info-index)
+        for lipid-or-solute = (row-major-aref (array ga-membrane) row-major-index)
+        do (unless (typep lipid-or-solute 'ga-solute)
+             (setf (lipid-info lipid-or-solute) new-lipid-info
+                   (lipid-index lipid-or-solute) new-lipid-index))))
+
+
+(defun mutate-all-lipid-orientations (ga-membrane)
   "Mutate the lipid in every position in the membrane"
   (loop for row-major-index from 0 below (array-total-size (array ga-membrane))
         for new-lipid-info-index = (select-lipid (lipid-selector ga-membrane))
@@ -1052,12 +1013,16 @@ testing the scoring."
         (setf (atom-vectors atom-vectors) molecule-atoms)
         (values aggregate atom-vectors)))))
 
-(defun simulate-membrane (aggregate)
+(defun simulate-membrane (aggregate num)
   (let* ((energy-function (chem:make-energy-function aggregate))
          (dyn (dynamics:make-atomic-simulation energy-function
-                                               :delta-t 1.0e-3
+                                               :delta-t 0.01
                                                :accumulate-coordinates t)))
     (chem:setf-velocity-scale energy-function 0.1 0.1 0.1)
+    (dynamics:with-dynamics (dyn)
+      (loop for x from 0 below num
+            do (format t "Dynamics step ~a~%" x)
+            do (dynamics:velocity-verlet-step-limit-displacement dyn))))))
     dyn))
          
 
@@ -1091,6 +1056,7 @@ testing the scoring."
 (defun test-everything2 (aggregate)
   (simulate-membrane aggregate))
 
+#+(or)
 (defun test-everything (&optional (num 10))
   (test-everything0)
   (let ((a (test-everything1)))
@@ -1243,7 +1209,7 @@ The atom-res-mol is a list of the atom,residue and molecule."
                        (lipid-index lipid-or-solute) new-lipid-index)))
     membrane))
 
-(defun mutate-position (orig-membrane &key (delta-x 0.1) (delta-y 0.1) (fraction-mutations 0.1))
+(defun mutate-position (orig-membrane &key (delta-x 0.04) (delta-y 0.04) (fraction-mutations 0.1))
   (let ((membrane (copy-ga-membrane orig-membrane))
         (num-mutations (floor (* fraction-mutations (array-total-size (array orig-membrane))))))
     (loop for num from 0 below num-mutations
@@ -1257,24 +1223,6 @@ The atom-res-mol is a list of the atom,residue and molecule."
                       (transform (geom:m*m extra-transform (transform ga-thing))))
                  (setf (transform ga-thing) transform)))
     membrane))
-
-(defun score-all (membs scoring-membrane)
-  (format t "In score-all~%")
-  (let ((scores (loop for index below (length membs)
-                      for memb = (elt membs index)
-                      collect (cons (score-ga-membrane memb scoring-membrane) memb))))
-    (sort scores #'> :key #'car)))
-       
-
-
-(defun try-times (memb num)
-  (let ((min-collisions 9999))
-    (loop for index below num
-          for score = (progn
-                        (mutate-all-lipids memb)
-                        (score-ga-membrane memb))
-          do (setf min-collisions (min min-collisions score))
-          do (format t "num = ~a   best-score ~a~%" index min-collisions))))
 
 
 (defun generic-octree-as-shape (octree transform shape)
@@ -1372,24 +1320,26 @@ The atom-res-mol is a list of the atom,residue and molecule."
                                 (generic-octree-as-shape ot transform shape)))
     shape))
 
-(defun score-membranes (work-list membranes &key (parallel t) sort)
+(defun score-membranes (work-list membranes &key (parallel t) sort (close-distance *close-distance*))
   (check-type membranes list)
   (check-type work-list work-list)
   (let ((unsorted-scored-membranes
           (if parallel
-              (lparallel:pmap 'list
-                              (lambda (memb)
-                                (multiple-value-bind (num-collisions collisions)
-                                    (score-work-list work-list memb)
-                                  (make-instance 'scored-membrane
-                                                 :score num-collisions
-                                                 :membrane memb
-                                                 :collisions collisions)))
-                              membranes)
+              (progn
+                (cando:lazy-setup-lparallel)
+                (lparallel:pmap 'list
+                                (lambda (memb)
+                                  (multiple-value-bind (num-collisions collisions)
+                                      (score-work-list work-list memb :close-distance close-distance)
+                                    (make-instance 'scored-membrane
+                                                   :score num-collisions
+                                                   :membrane memb
+                                                   :collisions collisions)))
+                                membranes))
               (map 'list
                    (lambda (memb)
                      (multiple-value-bind (num-collisions collisions)
-                         (score-work-list work-list memb)
+                         (score-work-list work-list memb :close-distance close-distance)
                        (make-instance 'scored-membrane
                                       :score num-collisions
                                       :membrane memb
@@ -1464,6 +1414,13 @@ The atom-res-mol is a list of the atom,residue and molecule."
                          copy-membrane)
         collect membrane))
 
+(defun build-population-orientation-only (template-membrane &key (population-size *population-size*))
+  (loop for index below population-size
+        for membrane = (let ((copy-membrane (copy-ga-membrane template-membrane)))
+                         (mutate-position copy-membrane)
+                         copy-membrane)
+        collect membrane))
+
 (defun evolve (solute &rest args &key input-bounding-box
                                    (lipid-selector (list (cons 1.0 *popc*)))
                                    (population-size 200)
@@ -1499,6 +1456,40 @@ The atom-res-mol is a list of the atom,residue and molecule."
                ;; Do some random mutations of *mutate-lipid-fraction* 
             do (let ((new-membranes (randomly-mutate-membranes membranes *mutate-lipid-fraction*)))
                  (setf membranes new-membranes))
+               ;; Do some random shifting of *mutate-position-fraction* 
+            do (let ((new-membranes (randomly-shift-lipids-in-membranes membranes *mutate-position-fraction*)))
+                 (setf membranes new-membranes)))
+      scored-membranes)))
+
+
+
+(defun evolve2 (template-membrane &rest args &key input-bounding-box
+                                               (lipid-selector (list (cons 1.0 *popc*)))
+                                               (population-size 200)
+                                               (select-fraction 0.1)
+                                               (number-of-generations 100)
+                                               (parallel nil)
+                                               (close-distance *close-distance*))
+  (let* ((generation 0))
+    ;; Fill the population at start
+    (let* ((membranes (build-population-orientation-only template-membrane :population-size population-size))
+           scored-membranes
+           (work-list (build-ga-membrane-work-list (first membranes))))
+      (loop named evolution
+            for sorted-scored-membranes = (score-membranes work-list membranes :sort t :close-distance close-distance)
+            for best-score = (score (first sorted-scored-membranes))
+            do (setf scored-membranes sorted-scored-membranes)
+            do (progn
+                 (format t "Generation ~3a size ~a~%" generation (length scored-membranes))
+                 (format t "  ... least collisions -> ~3a~%" (loop for index from 0 below 10
+                                                                   collect (score (elt scored-membranes index))))
+                 (finish-output))
+            do (when (= (score (first scored-membranes)) 0) (return-from evolution t))
+            do (incf generation)
+            do (when (> generation number-of-generations) (return-from evolution scored-membranes))
+               ;; Copy the scored membranes into membranes
+            do (setf membranes (mapcar #'membrane scored-membranes))
+               ;; Mutate lipid pairs that have bad contacts.
                ;; Do some random shifting of *mutate-position-fraction* 
             do (let ((new-membranes (randomly-shift-lipids-in-membranes membranes *mutate-position-fraction*)))
                  (setf membranes new-membranes)))
