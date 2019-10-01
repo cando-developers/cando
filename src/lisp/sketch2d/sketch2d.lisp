@@ -305,6 +305,29 @@ I'll use an angle term instead of a bond term.
                    (jostle-atom atom))
                  (jostle-atom atom)))))
 
+(defun randomize-coordinates (coordinates &key frozen from-zero (width 40.0) &aux (half-width (/ width 2.0)))
+  "Randomly jostle atoms from their current positions"
+  (flet ((jostle-atom (index)
+           (when from-zero
+             (setf (elt coordinates (+ index 0)) 0.0
+                   (elt coordinates (+ index 1)) 0.0
+                   (elt coordinates (+ index 2)) 0.0))
+           (let* ((xp (elt coordinates (+ index 0)))
+                  (yp (elt coordinates (+ index 1)))
+                  (zp (elt coordinates (+ index 2)))
+                  (xn (+ (- (random width) half-width) xp))
+                  (yn (+ (- (random width) half-width) yp))
+                  (zn (+ (- (random width) half-width) zp)))
+             (setf (elt coordinates (+ index 0)) xn
+                   (elt coordinates (+ index 1)) yn
+                   (elt coordinates (+ index 2)) zn))))
+    (loop for coord-index below (length coordinates) by 3
+          for index from 0
+          do (if frozen
+                 (when (= (aref frozen index) 0)
+                   (jostle-atom coord-index))
+                 (jostle-atom coord-index)))))
+
 (defparameter *edited-mol* nil)
 (defun setup-simulation (molecule &key accumulate-coordinates)
   (let* ((sketch (sketch-preparation molecule))
@@ -790,7 +813,7 @@ to check if two line segments (bonds) overlap/intersect
          (atom-table (chem:node-table sketch-function))
          (energy-stretch (chem:get-stretch-component sketch-function))
          (energy-sketch-nonbond (chem:get-sketch-nonbond-component sketch-function)))
-    (randomize-atoms atom-table :frozen frozen)
+    (randomize-coordinates (dynamics:coordinates dynamics) :from-zero t :frozen frozen)
     (chem:disable (chem:get-point-to-line-restraint-component sketch-function))
     (apply #'chem:setf-velocity-scale sketch-function *stage1-flatten-force-components*)
     ;; stage 1
