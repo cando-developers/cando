@@ -948,8 +948,8 @@ void	MoeReadFile::readNextLine()
 	    LOG(BF("Creating molecule #%d") % im  );
 	    GC_ALLOCATE(Molecule_O, mol );
 	    LOG(BF(" created") );
-            mol->setId(agg->contentSize());
 	    agg->addMolecule(mol);
+            mol->setId(agg->contentSize());
 	    LOG(BF(" added to aggregate") );
 	    numResidues = dynamic_cast<ParaInteger*>(ptMolecules.getVector(index_cResidueCount)[im])->getValue();
 	    LOG(BF("  It has %d residues") % numResidues  );
@@ -984,6 +984,7 @@ void	MoeReadFile::readNextLine()
 		    atoms.push_back(a);
 		    LOG(BF("Created atom: %s") % a->getName().c_str()  );
 		    res->addAtom(a);
+                    a->setId(res->contentSize());
 		    ia++;
 		}
 	    }
