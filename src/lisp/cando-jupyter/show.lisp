@@ -62,29 +62,6 @@
     (chem:add-matter agg molecule)
     (apply 'show agg kwargs)))
 
-(defun fooo () (format t "Fuck~%"))
-(defun isolate-residue (residue)
-  (let ((agg (chem:make-aggregate nil))
-        (mol (chem:make-molecule nil))
-        (res (chem:residue
-    (let (break-bonds)
-      (chem:map-bonds
-       'nil
-       (lambda (a1 a2 order)
-         (format t "Looking at ~a ~a~%" a1 a2)
-         (unless (and (chem:contains-atom res a1) (chem:contains-atom res a2))
-           (format t "Break bond ~a ~a~%" a1 a2)
-           (push (list a1 a2) break-bonds)))
-       res)
-      (loop for bond in break-bonds
-            for a1 = (first bond)
-            for a2 = (second bond)
-            do (chem:remove-bond-to a1 a2)))
-    (chem:add-matter agg mol)
-    (chem:add-matter mol res)
-    agg
-    ))
-
 (defmethod show ((residue chem:residue)  &rest kwargs &key &allow-other-keys)
   (let ((agg (isolate-residue residue)))
     (apply 'show agg kwargs)))
