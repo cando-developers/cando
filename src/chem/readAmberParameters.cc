@@ -532,7 +532,7 @@ void ReadAmberParameters_O::parseNonbondDb(core::T_sp fin, FFNonbondDb_sp ffNonb
 
 void ReadAmberParameters_O::parseAtomEquivalences(core::T_sp fin, FFNonbondDb_sp ffNonbondDb)
 {
-  SIMPLE_WARN(BF("Warning!  Skipping force field atom equivalences in %s\n") % _rep_(fin));
+  core::write_bf_stream(BF("Warning!  Skipping force field atom equivalences in %s\n") % _rep_(fin));
   while (1) {
     core::T_sp tline = core::cl__read_line(fin,_Nil<T_O>(),_Nil<T_O>());
     if (tline.nilp()) break;
@@ -568,7 +568,7 @@ ForceField_sp ReadAmberParameters_O::parseAmberFormattedForceField(core::T_sp fi
     FFAngleDb_sp ffAnglesDb = this->parseAngleDb(fin);
     FFPtorDb_sp ffPtorsDb = this->parsePtorDb(fin,system); //gc::As<FFPtorDb_sp>(core::eval::funcall(chem::_sym_parse_ptor_db,fin,system));
     FFItorDb_sp ffItorsDb = this->parseItorDb(fin);
-    SIMPLE_WARN(BF("Warning!  Skipping 10-12 hbond in %s\n") % _rep_(fin));
+    core::write_bf_stream(BF("Warning!  Skipping 10-12 hbond in %s\n") % _rep_(fin));
     core::cl__read_line(fin); // skp 10-12 hbond
     core::cl__read_line(fin); // blank
     this->parseAtomEquivalences(fin,ffNonbondsDb);
