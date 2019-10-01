@@ -1330,9 +1330,23 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatterWithAtomTypes(Matter_sp matte
 }
 
 
-
-
-
+core::HashTable_sp createAtomToResidueHashTable(Matter_sp molecule)
+{
+  Loop lRes;
+  Loop lAtoms;
+  core::HashTableEq_sp ht = core::HashTableEq_O::create_default();
+  lRes.loopTopGoal(molecule,RESIDUES);
+  while (lRes.advanceLoopAndProcess()) {
+    Residue_sp res = lRes.getResidue();
+    lAtoms.loopTopGoal(res,ATOMS);
+    while (lAtoms.advanceLoopAndProcess()) {
+      Atom_sp atom = lAtoms.getAtom();
+      ht->setf_gethash(atom,res);
+    }
+  }
+  return ht;
+}
+      
 
 
 CL_LAMBDA((energy-function !) molecule force-field &key active-atoms);
@@ -1348,7 +1362,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
   FFNonbond_sp	ffNonbond1, ffNonbond2;
   int             coordinateIndex;
   
-  
+
   //
   // Define a Nonbond cross term table
   //
@@ -1360,7 +1374,8 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
   this->_NonbondCrossTermTable = temp;
   this->_NonbondCrossTermTable->fillUsingFFNonbondDb(forceField->getNonbondDb());
 #endif
-  
+
+  core::HashTable_sp atomToRes = createAtomToResidueHashTable(molecule);
     	//
 	// Initialize the energy components
 	//
@@ -1402,7 +1417,9 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
         this->_Stretch->addTerm(energyStretch);
         ++terms;
       } else {
-        SIMPLE_WARN(BF("Could not find stretch parameter between %s and %s") % _rep_(a1) % _rep_(a2));
+        Residue_sp res1 = gc::As<Residue_sp>(atomToRes->gethash(a1));
+        Residue_sp res2 = gc::As<Residue_sp>(atomToRes->gethash(a2));
+        SIMPLE_WARN(BF("Could not find stretch parameter in molecule %s between %s/%s (atom type %s) and %s/%s (atom type %s)") % _rep_(molecule) % _rep_(res1) % _rep_(a1) % _rep_(a1->getType()) % _rep_(res2) % _rep_(a2) % _rep_(a2->getType()));
       }
     }
     if (chem__verbose(0)) core::write_bf_stream(BF("Built stretch table with %d terms added and %d missing terms\n") % terms % missing_terms);
