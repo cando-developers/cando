@@ -150,7 +150,8 @@ namespace chem {
 
     CL_LISPIFY_NAME("getGraph");
     CL_DEFMETHOD     core::T_sp	getGraph() { return this->_Graph;};
-
+    virtual Matter_sp getMatter();
+    
     void	useDefaultSettings();
 
 

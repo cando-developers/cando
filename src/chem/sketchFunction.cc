@@ -159,7 +159,13 @@ CL_DEFMETHOD AtomTable_sp SketchFunction_O::atomTable() const
   SIMPLE_ERROR(BF("An attempt was made to get the atom-table of a sketch-function but one hasn't been set - instead we have a node-table: ~a~%") % _rep_(this->_NodeTable));
 }
 
-
+CL_DOCSTRING(R"doc(Return the instance graph slot if it is a Matter object. 
+If it isn't then signal an error. 
+This is used in situations where the graph slot contains a matter object.)doc");
+CL_DEFMETHOD
+Matter_sp SketchFunction_O::getMatter() {
+  return gc::As<Matter_sp>(this->_Graph);
+}
 
 size_t SketchFunction_O::getNVectorSize() 
 {
