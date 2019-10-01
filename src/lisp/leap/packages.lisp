@@ -35,6 +35,7 @@
   (:use #:cl #:alexandria #:esrap #:parser.common-rules #:PARSER.COMMON-RULES.OPERATORS)
   (:export
    #:*function-names/alist*
+   #:parse-sub-matter
    #:leap)
   (:documentation
    "Embryonic parser for the leap file format.  Written by Jan Moringen"))

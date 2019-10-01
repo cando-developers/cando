@@ -162,9 +162,15 @@ Associate the name with the object"
 - name-or-object : Symbol or object
 * Description
 Lookup the object in the variable space."
-  (if (symbolp name-or-object)
-      (lookup-variable* name-or-object *package* errorp error-value)
-      name-or-object))
+  (cond
+    ((symbolp name-or-object)
+     (lookup-variable* name-or-object *package* errorp error-value))
+    ((stringp name-or-object)
+     (let ((obj (leap.parser:parse-sub-matter name-or-object)))
+       (if obj
+           obj
+           name-or-object)))
+    (t name-or-object)))
 
 
 
