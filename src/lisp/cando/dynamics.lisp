@@ -62,7 +62,7 @@ Methods are specialized on this class in cando-nglview.lisp."))
           do (setf (elt single-float-coordinates index) sf-val))
     (vector-push-extend single-float-coordinates (accumulated-coordinates simulation))))
 
-(defun make-atomic-simulation (scoring-function &key (delta-t 1.0e-15) accumulate-coordinates)
+(defun make-atomic-simulation (scoring-function &key (delta-t 1.0) accumulate-coordinates)
   (let* ((vector-size (chem:get-nvector-size scoring-function))
          (coordinates (make-array vector-size :element-type 'double-float))
          (velocity (make-array vector-size :initial-element 0.0 :element-type 'double-float))
