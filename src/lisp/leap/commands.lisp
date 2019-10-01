@@ -15,21 +15,6 @@
     (funcall (find-symbol "SHOW" :cando-user) val)))
 
 
-;;; ----------------------------------------------------------------------
-;;;
-;;; Quick and dirty setup-gaff
-;;;
-
-(defun setup-gaff ()
-  (let ((*default-pathname-defaults*
-          (translate-logical-pathname #P"source-dir:extensions;cando;src;data;force-field;"))
-        (parms (chem:make-read-amber-parameters)))
-    (with-open-file (fin "ATOMTYPE_GFF.DEF" :direction :input)
-      (chem:read-types parms fin))
-    (with-open-file (fin "gaff.dat" :direction :input)
-      (chem:read-parameters parms fin (symbol-value (find-symbol "*AMBER-SYSTEM*" :leap))))
-    (setf energy:*ff* (chem:get-force-field parms))
-    energy:*ff*))
 
 ;;; ----------------------------------------------------------------------
 ;;;
@@ -42,7 +27,7 @@
   " easyGaff
 
 Setup the gaff-1 force-field."
-  (setup-gaff))
+  (leap:easy-gaff))
 
 (defun set-variable (entry)
   (let ((variable (first entry))
@@ -64,8 +49,7 @@ Download a Cando package from the internet, compile it and make it available for
 This command opens the file with the file name _filename_ as a log
 file.  User input and ALL output is written to the log file.  Output
 is written to the log file as if the verbosity level were set to 2."
-  (valid-arguments entry 1)
-  (let ((filename (pathname (ensure-string (second entry)))))
+  (let ((filename (pathname (ensure-string entry))))
     (let* ((log-stream (open filename :direction :output :if-exists :supersede))
            (broadcast (make-broadcast-stream cl:*standard-output* #+(or)ext:+process-standard-output+ log-stream)))
       (setf cl:*standard-output* broadcast))))
@@ -73,6 +57,13 @@ is written to the log file as if the verbosity level were set to 2."
 (defmethod describe-object ((object chem:residue) stream)
   (cando:do-atoms (atom object)
     (format stream "~20s type: ~a~%" atom (chem:get-type atom))))
+
+(defmethod describe-object ((object chem:topology) stream)
+  (let* ((constitution (chem:get-constitution object))
+         (constitution-atoms (chem:get-constitution-atoms constitution)))
+    (loop for index from 0 below (chem:number-of-atoms constitution-atoms)
+          for atom = (chem:atom-with-id constitution-atoms index)
+          do (format t "~a~%" (core:encode atom)))))
 
 (defmethod describe-object ((object chem:molecule) stream)
   (format stream "Force-field-name: ~a~%" (chem:force-field-name object))
@@ -106,10 +97,7 @@ is written to the log file as if the verbosity level were set to 2."
 (defun leap-set-property (object property value)
   (let ((object-fixed (leap.core:lookup-variable object))
         (property-fixed (keyword-upcase property))
-        (value-fixed (cond
-                       ((symbolp value)
-                        (keyword-upcase value))
-                       (t value))))
+        (value-fixed value))
     (format t "setting ~a  property: ~s  value: ~s~%" object-fixed property-fixed value-fixed)
     (set-property object-fixed property-fixed value-fixed)))
 
@@ -127,6 +115,49 @@ Print a description of the object.
       (t (describe val)))
     nil))
 
+
+
+(defgeneric do-remove (a b))
+
+(defmethod do-remove ((a chem:matter) (b chem:matter))
+  (error "~a does not directly contain ~a" a b))
+
+(defmethod do-remove ((a chem:aggregate) (b chem:molecule))
+  (cando:do-molecules (mol a)
+    (when (eq mol b)
+      (chem:remove-molecule a b)
+      (return-from do-remove b)))
+  (call-next-method))
+
+(defmethod do-remove ((a chem:molecule) (b chem:residue))
+  (cando:do-residues (res a)
+    (when (eq res b)
+      (chem:remove-residue a b)
+      (return-from do-remove b)))
+  (call-next-method))
+
+(defmethod do-remove ((a chem:residue) (b chem:atom))
+  (cando:do-atoms (atm a)
+    (when (eq atm b)
+      (chem:remove-atom-delete-bonds a b)
+      (return-from do-remove b)))
+  (call-next-method))
+
+(defun leap-remove-matter (matter-a matter-b)
+  "       remove a b
+
+      UNIT/RESIDUE/ATOM          _a_
+      UNIT/RESIDUE/ATOM          _b_
+
+Remove the object _b_ from the object _a_.   If _b_ is not contained
+by _a_ then an error message will be displayed.  This command is
+used to remove ATOMs from RESIDUEs, and RESIDUEs from UNITs.   If
+the object represented by _b_ is not referenced by some variable
+name then it will be destroyed."
+  (let ((matter-a (leap.core:lookup-variable matter-a))
+        (matter-b (leap.core:lookup-variable matter-b)))
+    (do-remove matter-a matter-b)))
+        
 (defun leap-list-variables ()
   "    list 
 
@@ -165,13 +196,27 @@ Cando internally defined types that correspond to unique SMIRKS patterns."
         (incf total-atoms)
         (when (chem:get-type atm) (incf total-atoms-with-types)))
       (unless (= total-atoms total-atoms-with-types)
-        (warn "There were ~a atoms that could not be assigned types" (- total-atoms total-atoms-with-types)))
+        (warn "There were ~a atoms that could not be assigned types" (- total-atoms total-atoms-with-types))
+        (format t "Missing types for atoms in ~a...~%" object)
+        (cond
+          ((typep object 'chem:aggregate)
+           (format t "Aggregate~%")
+           (cando:do-molecules (mol object)
+             (cando:do-residues (res mol)
+               (cando:do-atoms (atm res)
+                 (unless (chem:get-type atm)
+                   (format t "~a ~a ~a~%" mol res atm))))))
+          ((typep object 'chem:molecule)
+           (cando:do-residues (res object)
+             (cando:do-atoms (atm res)
+               (unless (chem:get-type atm)
+                 (format t "~a ~a~%" res atm)))))))
       (format t "Assigned ~a types of a total of ~a atoms.~%" total-atoms-with-types total-atoms))))
     
 (defun leap.load-smirnoff-params (filename)
   (leap:load-smirnoff-params filename))
 
-(defun leap.set-force-field (matter force-field-name)
+(defun leap-set-force-field (matter force-field-name)
   (leap:set-force-field matter force-field-name))
 
 (defun object (name)
@@ -245,7 +290,16 @@ that is searched whenever parameters are required.
     (loop for ff in ffs
           do (format t "~s ~a~%" (car ff) (cdr ff)))))
 
-(defun leap.source (entry)
+(defun leap-source (entry)
+"    source filename
+      STRING                       _filename_
+
+This command executes LEaP commands within a text file.  To display the
+commands as they are read, see the verbosity command.  The text within
+the source file must be formatted exactly like the text the user types
+into LEaP. This command temporarily adds the path of _filename_ to the 
+leap path list so that files local to the script can be loaded.
+"
   (let* ((filename (leap.core:ensure-path entry)))
     (leap:source filename)))
 
@@ -488,8 +542,8 @@ created around the solute.
       (with-open-file (fin (open pathname :direction :input))
         (chem:make-chem-draw fin :add-hydrogens nil)))))
 
-(defun leap-jostle (matter)
-  "     jostle matter
+(defun leap-jostle-atoms (matter)
+  "     jostleAtoms matter
 
 Add a random displacement to every atom in the matter."
   (let ((matter (leap.core:lookup-variable matter)))
@@ -953,7 +1007,7 @@ Provide a list of commands that cleap has available to mimic tleap."
 
 (eval-when (:load-toplevel :execute)
   ;; Define a list of names that do not get exported as lisp aliases
-  (defvar *ignore-lisp-aliases* '( "list" "set"))
+  (defvar *ignore-lisp-aliases* '( "list" "set" "remove" "source" "quit" "desc" "minimize" "show"))
   (setf leap.parser:*function-names/alist*
         '(("logFile" . leap-log-file)
           ("quickload" . leap-quickload)
@@ -961,7 +1015,7 @@ Provide a list of commands that cleap has available to mimic tleap."
           ("leapCommandsAvailable" . leap-commands-available)
           ("setupAmberPaths" . leap-setup-amber-paths)
           ("easyGaff" . leap-easy-gaff)
-          ("jostle" . leap-jostle)
+          ("jostleAtoms" . leap-jostle-atoms)
           ("desc" . leap-desc)
           ("listForceFields" . leap-list-force-fields)
           ("loadOff" . load-off)
@@ -973,19 +1027,21 @@ Provide a list of commands that cleap has available to mimic tleap."
           ("list" . leap-list-variables)
           ("listVariables" . leap-list-variables) ; alternative to "list"
           ("loadPdb" . leap.pdb:load-pdb)
-          ("source" . leap.source)
+          ("source" . leap-source)
           ("set" . leap-set-property )
           ("setProperty" . leap-set-property ) ; alternative to "set"
           ("loadChemDraw" . leap.load-chem-draw)
           ("loadChemDrawAggregate" . leap.load-chem-draw-aggregate)
           ("compileSmarts" . leap.compile-smarts)
-          ("setForceField" . leap.set-force-field)
+          ("setForceField" . leap-set-force-field)
           ("loadSmirnoffParams" . leap.load-smirnoff-params)
           ("loadAmberParams" . leap:load-amber-params)
           ("assignAtomTypes" . leap.assign-atom-types)
           ("addPdbResMap" . leap.pdb:add-pdb-res-map)
           ("addPdbAtomMap" . leap.pdb:add-pdb-atom-map)
           ("addAtomTypes" . leap-add-atom-types)
+          ("remove" . leap-remove-matter)
+          ("removeMatter" . leap-remove-matter)
           ("saveAmberParm" . leap.save-amber-parm)
           ("solvateBox" . leap.solvate-box)
           ("solvateOct" . leap.solvate-oct)
