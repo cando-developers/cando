@@ -56,7 +56,6 @@
 (defpackage #:leap.commands
   (:use #:common-lisp)
   (:export
-   #:desc
    #:create-atom
    #:leap
    #:leap-repl
