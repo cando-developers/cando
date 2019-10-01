@@ -68,13 +68,12 @@
     (chem:set-option energy-function 'chem:nonbond-term t)
     (cando:minimize-no-fail minimizer)))
 
-(defparameter *minimizer-trajectory* nil)
-(defun save-minimizer-coordinates (coordinates)
+(defun save-minimizer-coordinates (coordinates minimizer-trajectory)
   (let ((single-float-coordinates (make-array (length coordinates) :element-type 'single-float :adjustable nil)))
     (loop for index from 0 below (length coordinates)
           for sf-val = (float (elt coordinates index) 1.0s0)
           do (setf (elt single-float-coordinates index) sf-val))
-    (vector-push-extend single-float-coordinates *minimizer-trajectory*)))
+    (vector-push-extend single-float-coordinates minimizer-trajectory)))
 
 
 (defun minimize-energy-function (energy-function &rest args
@@ -89,17 +88,17 @@
   "Minimize the conformational energy for an energy-function"
   (let ((minimizer (chem:make-minimizer energy-function)))
     (if save-trajectory
-        (let ((*minimizer-trajectory* (make-array 16 :adjustable t :fill-pointer 0)))
-          (chem:set-step-callback minimizer 'save-minimizer-coordinates)
+        (let ((minimizer-trajectory (make-array 16 :adjustable t :fill-pointer 0)))
+          (chem:set-step-callback minimizer (lambda (coords) (save-minimizer-coordinates coords minimizer-trajectory)))
           (apply #'minimize-minimizer minimizer args)
           (let ((matter (chem:get-matter energy-function)))
             (format t "matter ~a~%" matter)
             (unless matter (error "There is no matter defined for energy-function ~a" energy-function))
             (values energy-function
                     (make-instance 'dynamics:trajectory
-                           :matter matter
-                           :number-of-atoms (chem:number-of-atoms matter)
-                           :coordinates *minimizer-trajectory*))))
+                                   :matter matter
+                                   :number-of-atoms (chem:number-of-atoms matter)
+                                   :coordinates minimizer-trajectory))))
         (progn
           (apply #'minimize-minimizer minimizer args)
           energy-function))))
