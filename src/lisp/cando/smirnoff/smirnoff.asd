@@ -8,10 +8,13 @@
   :depends-on (:aromaticity
                :smarts
                :cando
-               :plump)
+               :plump
+               :esrap
+               :parser.common-rules)
   :serial t
   :components
   ((:file "packages")
+   (:file "units")
    (:file "load")
    (:file "smirnoff")
    ))

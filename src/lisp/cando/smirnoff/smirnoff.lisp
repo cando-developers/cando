@@ -44,21 +44,6 @@
        (element-info-atomic-mass *element-info*))
       (t (error "There must be an element, atomic number or atomic weight in the head of the smirks string")))))
 
-(defun rmin-half-to-nanometers-multiplier (source)
-  (let ((rmin-half-unit (rmin-half-unit source)))
-    (cond
-      ((string-equal rmin-half-unit "angstroms")
-       (* 2.0 0.1))
-      (t (error "Unrecognized rmin-half-unit ~s" rmin-half-unit)))))
-
-(defun epsilon-to-kj-multiplier (source)
-  (let ((epsilon-unit (epsilon-unit source)))
-    (cond
-      ((string-equal epsilon-unit "kilocalories_per_mole")
-       4.184)
-      (t (error "Unrecognized epsilon-unit ~s" epsilon-unit)))))
-
-
 (defclass smirnoff-type-rules ()
   ((rules :initarg :rules :accessor rules)))
 
@@ -96,26 +81,20 @@ The chem:force-field-type-rules-merged generic function was used to organize the
           (chem:set-type atom type)
           (error "Could not set type of atom ~s in force-field ~s" atom :smirnoff)))))
       
-   
+
 (defmethod chem:force-field-component-merge ((dest chem:ffnonbond-db) (source vdw-force))
-  (let ((rmin-half-to-nanometers-multiplier (rmin-half-to-nanometers-multiplier source))
-        (epsilon-to-kj-multiplier (epsilon-to-kj-multiplier source)))
-    (loop with terms = (terms source)
-          for index below (length terms)
-          for term = (aref terms index)
-          for rmin-half = (/ (rmin-half term) 2)
-          for radius-nanometers = (* rmin-half rmin-half-to-nanometers-multiplier)
-          for epsilon = (epsilon term)
-          for epsilon-kj = (* epsilon epsilon-to-kj-multiplier)
-          for type = (type term)
-          when (not (chem:has-type dest type))
-            do (let* ((atomic-mass (smirks-head-atomic-mass (compiled-smirks term)))
-                      (ffnonbond (chem:make-ffnonbond type
-                                                      :mass atomic-mass
-                                                      :radius-nanometers radius-nanometers
-                                                      :epsilon-kj epsilon-kj)))
-                 (chem:ffnonbond-db-add dest ffnonbond)))
-    dest))
+  (loop with terms = (terms source)
+        for index below (length terms)
+        for term = (aref terms index)
+        for type = (type term)
+        when (not (chem:has-type dest type))
+          do (let* ((atomic-mass (smirks-head-atomic-mass (compiled-smirks term)))
+                    (ffnonbond (chem:make-ffnonbond type
+                                 :mass atomic-mass
+                                 :radius-nanometers (rmin-half term)
+                                 :epsilon-kj (epsilon term))))
+               (chem:ffnonbond-db-add dest ffnonbond)))
+  dest)
 
 (defun bonds-hash-table (molecule)
   (let ((bonds (make-hash-table :test #'equal)))
@@ -239,8 +218,8 @@ The chem:force-field-type-rules-merged generic function was used to organize the
                         (term (first terms))
                         (k (k term))
                         (k-amber (/ k 2.0)) ; Amber drops the factor of 2 in Hooke's law
-                        (angle-rad (angle-rad term)))
-                   (chem:add-angle-term angle-energy atom-table a1 a2 a3 k-amber angle-rad)))
+                        (angle (angle term)))
+                   (chem:add-angle-term angle-energy atom-table a1 a2 a3 k-amber angle)))
                angles))
 
 
@@ -289,7 +268,7 @@ The chem:force-field-type-rules-merged generic function was used to organize the
                         (term (first terms)))
                    (if term
                        (loop for part in (parts term)
-                             for phase = (phase-rad part)
+                             for phase = (phase-angle part)
                              for periodicity = (periodicity part)
                              for k = (k part)
                              for idivf = (idivf part)
@@ -324,7 +303,7 @@ The chem:force-field-type-rules-merged generic function was used to organize the
                         (a4 (fourth key))
                         (term (first terms)))
                     (loop for part in (parts term)
-                         for phase = (phase-rad part)
+                         for phase = (phase-angle part)
                          for periodicity = (periodicity part)
                          for k = (k part)
                          for idivf = (idivf part)

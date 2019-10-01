@@ -24,8 +24,12 @@
 
 ;; -^-
 
+(defpackage #:smirnoff.units
+  (:use #:common-lisp #:esrap #:parser.common-rules)
+  (:export #:parse-quantity))
+
 (defpackage #:smirnoff
-  (:use #:common-lisp)
+  (:use #:common-lisp #:smirnoff.units)
   (:export
    #:load-smirnoff
    #:build-energy-function

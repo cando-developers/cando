@@ -31,28 +31,32 @@
     (format stream " ~s ~s" :id (id object))))
 
 (defclass bond-term (force-term)
-  ((k :initarg :k :accessor k)
+  (;; Force constant, in kilocalories/(mole*angstrom*angstrom)
+   (k :initarg :k :accessor k)
+   ;; Equilibrium bond length, in angstroms
    (len :initarg :len :accessor len)))
 
 (defclass angle-term (force-term)
-  ((k :initarg :k :accessor k)
-   (angle-rad :initarg :angle-rad :accessor angle-rad)))
+  (;; Force constant in kilocalories/(mole*radian*radian)
+   (k :initarg :k :accessor k)
+   ;; Equilibrium angle in radians
+   (angle :initarg :angle :accessor angle)))
 
 (defclass bonds-force ()
-  ((k-unit :initarg :k-unit :accessor k-unit)
-   (length-unit :initarg :length-unit :accessor length-unit)
-   (terms :initform (make-array 16 :fill-pointer 0 :adjustable t) :initarg :terms :accessor terms)))
+  ((terms :initform (make-array 16 :fill-pointer 0 :adjustable t) :initarg :terms :accessor terms)))
 
 (defclass angles-force ()
-  ((k-unit :initarg :k-unit :accessor k-unit)
-   (angle-unit :initarg :angle-unit :accessor angle-unit)
-   (terms :initform (make-array 16 :fill-pointer 0 :adjustable t) :initarg :terms :accessor terms)))
+  ((terms :initform (make-array 16 :fill-pointer 0 :adjustable t) :initarg :terms :accessor terms)))
 
 (defclass torsion-part ()
   ((idivf :initarg :idivf :accessor idivf)
+   ;; Force constant in kilocalories/mol
    (k :initarg :k :accessor k)
+   ;; Natural number
    (periodicity :initarg :periodicity :accessor periodicity)
-   (phase-rad :initarg :phase-rad :accessor phase-rad)))
+   ;; In radians
+   ;; NOTE: PHASE is a CL function, so we can't use that name
+   (phase :initarg :phase :accessor phase-angle)))
 
 (defclass proper-term (force-term)
   ((parts :initform nil :initarg :parts :accessor parts)))
@@ -61,22 +65,16 @@
   ((parts :initform nil :initarg :parts :accessor parts)))
 
 (defclass proper-torsion-force ()
-  ((k-unit :initarg :k-unit :accessor k-unit)
-   (phase-unit :initarg :phase-unit :accessor phase-unit)
-   (terms :initform (make-array 16 :fill-pointer 0 :adjustable t) :initarg :terms :accessor terms)))
+  ((terms :initform (make-array 16 :fill-pointer 0 :adjustable t) :initarg :terms :accessor terms)))
 
 (defclass improper-torsion-force ()
-  ((k-unit :initarg :k-unit :accessor k-unit)
-   (phase-unit :initarg :phase-unit :accessor phase-unit)
-   (terms :initform (make-array 16 :fill-pointer 0 :adjustable t) :initarg :terms :accessor terms)))
-
-(defclass atom-term (force-term)
-  ((epsilon :initarg :epsilon :accessor epsilon)
-   (rmin-half :initarg :rmin-half :accessor rmin-half)))
+  ((terms :initform (make-array 16 :fill-pointer 0 :adjustable t) :initarg :terms :accessor terms)))
 
 (defclass nonbond-term (force-term)
   ((type :initarg :type :accessor type)
+   ;; in kJ/mol
    (epsilon :initarg :epsilon :accessor epsilon)
+   ;; in angstroms
    (rmin-half :initarg :rmin-half :accessor rmin-half)))
   
 (defclass vdw-force ()
@@ -86,12 +84,10 @@
    (scale13 :initarg :scale13 :accessor scale13)
    (scale14 :initarg :scale14 :accessor scale14)
    (scale15 :initarg :scale15 :accessor scale15)
-   (rmin-half-unit :initarg :rmin-half-unit :accessor rmin-half-unit)
-   (epsilon-unit :initarg :epsilon-unit :accessor epsilon-unit)
+   ;; in angstroms
    (switch-width :initarg :switch-width :accessor switch-width)
-   (switch-width-unit :initarg :switch-width-unit :accessor switch-width-unit)
+   ;; in radians
    (cutoff :initarg :cutoff :accessor cutoff)
-   (cutoff-unit :initarg :cutoff-unit :accessor cutoff-unit)
    (method :initarg :method :accessor method)
    (terms :initform (make-array 16 :fill-pointer 0 :adjustable t) :initarg :terms :accessor terms)))
 
@@ -115,73 +111,89 @@
   (parts combined-smirnoff-force-field))
 
 
+;; Given a units:quantity, return a number in canonical units
+;; (kcal/(mol*angstrom*angstrom))
+(defun canonical-force (quantity)
+  (units:value-in-unit quantity
+                       (load-time-value
+                        (units:/ units:kilocalories-per-mole
+                                 (units:* units:angstroms units:angstroms)))
+                       1))
+
+;; Ditto for lengths
+(defun canonical-length (quantity)
+  (units:value-in-unit quantity units:angstroms 1))
+
+;; For rmin-half
+(defun nanometer-length (quantity)
+  (units:value-in-unit quantity units:nanometers 1))
+
+(defun canonical-angle (quantity)
+  (units:value-in-unit quantity units:radians 1))
+
+(defun canonical-angle-force (quantity)
+  (units:value-in-unit quantity
+                       (load-time-value
+                        (units:/ units:kilocalories-per-mole
+                                 (units:* units:radians units:radians)))
+                       1))
+
+(defun canonical-kJ/mol (quantity)
+  (units:value-in-unit quantity units:kilojoules-per-mole 1))
+
+(defun canonical-kcal/mol (quantity)
+  (units:value-in-unit quantity units:kilocalories-per-mole 1))
+
 (defun ignore-handler (node)
   (declare (ignore node)))
 
 (defmacro with-force-parser ((node root child-tag) &body body )
-  (let ((tag (gensym)))
-    `(loop for ,node across (plump:children ,root)
-           when (typep ,node 'plump:element)
-             do (let ((,tag (plump:tag-name node)))
-                  (when (string= ,tag ,child-tag)
-                    ,@body)))))
-  
+  `(loop for ,node across (plump:children ,root)
+         when (and (typep ,node 'plump:element)
+                   (string= (plump:tag-name ,node) ,child-tag))
+           do (progn ,@body)))
+
 (defun parse-bonds-force (root)
-  (let* ((attrs (plump:attributes root))
-         (length-unit (gethash "length_unit" attrs))
-         (k-unit (gethash "k_unit" attrs)))
+  (let* (#+(or)(attrs (plump:attributes root))
+           ;; We'll use the attrs later.
+           )
     (setf (bonds-force *smirnoff*)
-          (make-instance 'bonds-force
-                         :length-unit length-unit
-                         :k-unit k-unit)))
+          (make-instance 'bonds-force)))
   (with-force-parser (node root "Bond")
     (let* ((attrs (plump:attributes node))
            (smirks (gethash "smirks" attrs))
            (id (gethash "id" attrs))
-           (k (fortran:parse-double-float (gethash "k" attrs)))
-           (len (fortran:parse-double-float (gethash "length" attrs)))
+           (k (canonical-force (parse-quantity (gethash "k" attrs))))
+           (len (canonical-length (parse-quantity (gethash "length" attrs))))
            (term (make-instance 'bond-term
                                 :smirks smirks
                                 :compiled-smirks (chem:compile-smarts smirks)
-                                :id id
-                                :k k
-                                :len len)))
+                                :id id :k k :len len)))
       (vector-push-extend term (terms (bonds-force *smirnoff*))))))
 
 (defun parse-angles-force (root)
-  (let* ((attrs (plump:attributes root))
-         (angle-unit (gethash "angle_unit" attrs))
-         (angle-to-rad-multiplier (cond
-                                    ((string= "degrees" angle-unit)
-                                     0.0174533)
-                                    (t (error "Add support for angle-unit ~a" angle-unit))))
-         (k-unit (gethash "k_unit" attrs)))
-    (setf (angles-force *smirnoff*)
-          (make-instance 'angles-force
-                         :angle-unit angle-unit
-                         :k-unit k-unit))
+  (let* (#+(or)(attrs (plump:attributes root)))
+    (setf (angles-force *smirnoff*) (make-instance 'angles-force))
     (with-force-parser (node root "Angle")
       (let* ((attrs (plump:attributes node))
              (smirks (gethash "smirks" attrs))
              (id (gethash "id" attrs))
-             (k (fortran:parse-double-float (gethash "k" attrs)))
-             (angle (fortran:parse-double-float (gethash "angle" attrs)))
-             (angle-radians (* angle angle-to-rad-multiplier))
+             (k (canonical-angle-force (parse-quantity (gethash "k" attrs))))
+             (angle (canonical-angle (parse-quantity (gethash "angle" attrs))))
              (term (make-instance 'angle-term
                                   :smirks smirks
                                   :compiled-smirks (chem:compile-smarts smirks)
                                   :id id
                                   :k k
-                                  :angle-rad angle-radians)))
+                                  :angle angle)))
         (vector-push-extend term (terms (angles-force *smirnoff*)))))))
 
-(defun parse-torsion (node torsion-class-name attributes phase-to-rad-multiplier)
+(defun parse-torsion (node torsion-class-name attributes)
   (let* ((smirks (gethash "smirks" attributes))
          (id (gethash "id" attributes))
          (term (make-instance torsion-class-name
-                              :smirks smirks
-                              :compiled-smirks (chem:compile-smarts smirks)
-                              :id id)))
+                              :smirks smirks :id id
+                              :compiled-smirks (chem:compile-smarts smirks))))
     (block terms
       (loop for index from 1
             for k-name = (format nil "k~a" index)
@@ -191,40 +203,35 @@
                                 (if idivf-str
                                     (fortran:parse-double-float idivf-str)
                                     1.0d0)))
-                       (k (fortran:parse-double-float k-str))
-                       (periodicity (parse-integer (gethash (format nil "periodicity~a" index) attributes)))
-                       (phase (fortran:parse-double-float (gethash (format nil "phase~a" index) attributes))))
+                       (k (canonical-kcal/mol (parse-quantity k-str)))
+                       (periodicity
+                         (parse-integer (gethash (format nil "periodicity~a" index) attributes)))
+                       (phase
+                         (canonical-angle (parse-quantity
+                                           (gethash (format nil "phase~a" index) attributes)))))
                    (push (make-instance 'torsion-part
                                         :idivf idivf
                                         :k k
                                         :periodicity periodicity
-                                        :phase-rad (* phase phase-to-rad-multiplier))
+                                        :phase phase)
                          (parts term)))
             else
               do (return-from terms)))
     term))
 
 (defun parse-torsion-force (root name term-name force-name)
-  (let* ((attrs (plump:attributes root))
-         (phase-unit (gethash "phase_unit" attrs))
-         (phase-to-rad-multiplier (cond
-                                    ((string= "degrees" phase-unit)
-                                     0.0174533)
-                                    (t (error "Add support for phase-unit ~a" phase-unit))))
-         (k-unit (gethash "k_unit" attrs)))
-    (let ((force (make-instance force-name
-                                :phase-unit phase-unit
-                                :k-unit k-unit)))
+  (let* (#+(or)(attrs (plump:attributes root))
+           (force (make-instance force-name)))
       (loop for node across (plump:children root)
             when (typep node 'plump:element)
               do (let ((tag (plump:tag-name node)))
                    (cond
                      ((string= tag name)
                       (vector-push-extend
-                       (parse-torsion node term-name (plump:attributes node) phase-to-rad-multiplier)
-                       (terms force )))
+                       (parse-torsion node term-name (plump:attributes node))
+                       (terms force)))
                      (t (error "Illegal tag ~a" tag)))))
-      force)))
+      force))
 
 
 (defun parse-proper-torsion-force (root)
@@ -247,12 +254,8 @@
            (scale13 (fortran:parse-double-float (safe-gethash "scale13" attrs)))
            (scale14 (fortran:parse-double-float (safe-gethash "scale14" attrs)))
            (scale15 (fortran:parse-double-float (safe-gethash "scale15" attrs)))
-           (rmin-half-unit (safe-gethash "rmin_half_unit" attrs))
-           (epsilon-unit (safe-gethash "epsilon_unit" attrs))
-           (switch-width (fortran:parse-double-float (safe-gethash "switch_width" attrs)))
-           (switch-width-unit (safe-gethash "switch_width_unit" attrs))
-           (cutoff (fortran:parse-double-float (safe-gethash "cutoff" attrs)))
-           (cutoff-unit (safe-gethash "cutoff_unit" attrs))
+           (switch-width (canonical-length (parse-quantity (safe-gethash "switch_width" attrs))))
+           (cutoff (canonical-length (parse-quantity (safe-gethash "cutoff" attrs))))
            (method (safe-gethash "method" attrs))
            )
       (setf (vdw-force *smirnoff*)
@@ -263,32 +266,26 @@
                            :scale13 scale13
                            :scale14 scale14
                            :scale15 scale15
-                           :rmin-half-unit rmin-half-unit
-                           :epsilon-unit epsilon-unit
                            :switch-width switch-width
-                           :switch-width-unit switch-width-unit
                            :cutoff cutoff
-                           :cutoff-unit cutoff-unit
                            :method method))
       (with-force-parser (node root "Atom")
         (let* ((attrs (plump:attributes node))
                (smirks (safe-gethash "smirks" attrs))
                (id (safe-gethash "id" attrs))
-               (epsilon (fortran:parse-double-float (safe-gethash "epsilon" attrs)))
-               (rmin-half (fortran:parse-double-float (let (num)
-                                                        (cond
-                                                          ((setf num (gethash "rmin_half" attrs))
-                                                           num)
-                                                          ((setf num (gethash "sigma" attrs))
-                                                           ;; handle sigma
-                                                           (error "Handle sigma"))
-                                                          (t (error "Neither rmin_half or sigma were provided"))))))
-               (type (let ((exists (gethash smirks *smirnoff-types*)))
-                       (if exists
-                           exists
-                           (let ((type (next-smirnoff-type-symbol)))
-                             (setf (gethash smirks *smirnoff-types*) type)
-                             type))))
+               (epsilon (canonical-kJ/mol (parse-quantity (safe-gethash "epsilon" attrs))))
+               (rmin-half
+                 (nanometer-length
+                  (parse-quantity
+                   (cond ((gethash "rmin_half" attrs))
+                         ((gethash "sigma" attrs)
+                          ;; FIXME: handle sigma
+                          (error "Handle sigma"))
+                         (t (error "Neither rmin_half or sigma was provided"))))))
+               (type (or (gethash smirks *smirnoff-types*)
+                         (let ((type (next-smirnoff-type-symbol)))
+                           (setf (gethash smirks *smirnoff-types*) type)
+                           type)))
                (term (make-instance 'nonbond-term
                                     :type type
                                     :smirks smirks
