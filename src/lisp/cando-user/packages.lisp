@@ -36,7 +36,10 @@
 
 
 (eval-when (:execute :load-toplevel)
-    (do-external-symbols (sym :cando)
+  (do-external-symbols (sym :cando)
+    (import sym :cando-user)
+    (export sym :cando-user))
+  (do-external-symbols (sym :leap.commands)
     (import sym :cando-user)
     (export sym :cando-user))
   (do-external-symbols (sym :leap)
