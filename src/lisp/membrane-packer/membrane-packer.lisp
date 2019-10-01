@@ -1060,7 +1060,7 @@ testing the scoring."
 
 (defun build-rigid-body-energy-function (membrane)
   (multiple-value-bind (aggregate atom-vectors)
-      (build-aggregate-from-ga-membrane membrane :debug t)
+      (build-aggregate-from-ga-membrane membrane :debug nil)
     (let ((end-atom-vec (make-array (length (atom-vectors atom-vectors)) :element-type 'ext:byte32))
           (centers (make-array (length (atom-vectors atom-vectors)))))
       (loop for index from 0 below (length (atom-vectors atom-vectors))
