@@ -1,7 +1,7 @@
 (in-package :leap.commands)
 
 
-(defun leap.setup-amber-paths ()
+(defun leap-setup-amber-paths ()
   (leap:setup-amber-paths))
 
 (defun leap.setup-default-paths ()
@@ -37,6 +37,13 @@
 ;;;
 (defvar *out* t)
 
+
+(defun leap-easy-gaff ()
+  " easyGaff
+
+Setup the gaff-1 force-field."
+  (setup-gaff))
+
 (defun set-variable (entry)
   (let ((variable (first entry))
         (value (third entry)))
@@ -44,24 +51,32 @@
 
 
 (defun leap-quickload (system)
+  "quickload   system
+
+Download a Cando package from the internet, compile it and make it available for use."
   (ql:quickload system))
 
-(defun log-file (filename)
-  #+(or)(format t "log-file doesn't do anything at the moment - to work with cl4py~%")
-  (let* ((log-stream (open filename :direction :output :if-exists :supersede))
-         (broadcast (make-broadcast-stream cl:*standard-output* #+(or)ext:+process-standard-output+ log-stream)))
-    (setf cl:*standard-output* broadcast)))
-  
-(defun leap.log-file (entry)
+(defun leap-log-file (entry)
+  "    logFile filename
+
+      STRING                       _filename_
+
+This command opens the file with the file name _filename_ as a log
+file.  User input and ALL output is written to the log file.  Output
+is written to the log file as if the verbosity level were set to 2."
   (valid-arguments entry 1)
   (let ((filename (pathname (ensure-string (second entry)))))
-    (log-file filename)))
+    (let* ((log-stream (open filename :direction :output :if-exists :supersede))
+           (broadcast (make-broadcast-stream cl:*standard-output* #+(or)ext:+process-standard-output+ log-stream)))
+      (setf cl:*standard-output* broadcast))))
 
 (defmethod describe-object ((object chem:residue) stream)
   (cando:do-atoms (atom object)
-    (format stream "~s~%" atom)))
+    (format stream "~20s type: ~a~%" atom (chem:get-type atom))))
 
 (defmethod describe-object ((object chem:molecule) stream)
+  (format stream "Force-field-name: ~a~%" (chem:force-field-name object))
+  (format stream "   Molecule-type: ~a~%" (chem:molecule-type object))
   (cando:do-residues (res object)
     (format stream "~s~%" res)))
 
@@ -75,9 +90,28 @@
 (defmethod set-property (object property value)
   (error "Provide a specialized version of this function for ~s ~s ~s" object property value))
 
+(defun keyword-upcase (name)
+  (intern (string-upcase (string name)) :keyword))
+
+(defmethod set-property ((object chem:matter) (property (eql :name)) value)
+  (chem:set-name object value))
+
+(defmethod set-property ((object chem:molecule) (property (eql :force-field-name)) value)
+  (let ((force-field (chem:find-force-field value)))
+    (chem:setf-force-field-name object value)))
+
+(defmethod set-property ((object chem:molecule) (property (eql :molecule-type)) value)
+  (chem:setf-molecule-type object value))
+
 (defun leap-set-property (object property value)
-  (format t "object: ~a  property: ~s  value: ~s~%")
-  (set-property object property value))
+  (let ((object-fixed (leap.core:lookup-variable object))
+        (property-fixed (keyword-upcase property))
+        (value-fixed (cond
+                       ((symbolp value)
+                        (keyword-upcase value))
+                       (t value))))
+    (format t "setting ~a  property: ~s  value: ~s~%" object-fixed property-fixed value-fixed)
+    (set-property object-fixed property-fixed value-fixed)))
 
 (defun leap-desc (name)
   "    desc variable
@@ -206,7 +240,7 @@ that is searched whenever parameters are required.
 "
   (leap.off:load-off filename))
 
-(defun leap.list-force-fields ()
+(defun leap-list-force-fields ()
   (let ((ffs (leap:list-force-fields)))
     (loop for ff in ffs
           do (format t "~s ~a~%" (car ff) (cdr ff)))))
@@ -454,10 +488,52 @@ created around the solute.
       (with-open-file (fin (open pathname :direction :input))
         (chem:make-chem-draw fin :add-hydrogens nil)))))
 
+(defun leap-jostle (matter)
+  "     jostle matter
+
+Add a random displacement to every atom in the matter."
+  (let ((matter (leap.core:lookup-variable matter)))
+    (cando:jostle matter)))
+
+(defun leap-minimize (matter
+                      &rest args
+                      &key (restraints-on t)
+                        (max-sd-steps 1000)
+                        (max-cg-steps 50000)
+                        (max-tn-steps 0)
+                        (sd-tolerance 5000.0)
+                        (cg-tolerance 0.5)
+                        (tn-tolerance 0.00001)
+                        (use-excluded-atoms t)
+                        (assign-types t)
+                        (save-trajectory nil)
+                        )
+  "     minimize matter &key (restraints-on t)
+                          (max-sd-steps 1000)
+                          (max-cg-steps 50000)
+                          (max-tn-steps 0)
+                          (sd-tolerance 5000.0)
+                          (cg-tolerance 0.5)
+                          (tn-tolerance 0.00001)
+                          (use-excluded-atoms t)
+                          (assign-types t)
+                          (save-trajectory nil))
+
+      AGGREGATE/MOLECULE     _matter_
+Minimize the energy of the given matter. If _assign-types_ is passed with T
+then the atom types are assigned using the rules defined by the force-field
+of each molecule. "
+  (let ((matter (leap.core:lookup-variable matter)))
+    (format t "args -> ~s~%" args)
+    (apply 'energy:minimize matter args)))
+
 (defun leap.load-chem-draw (filename)
   (load-chem-draw filename))
 
 (defun leap.load-chem-draw-aggregate (filename)
+  "   loadChemDrawAggregate filename
+
+Load an aggregate from a ChemDraw cdxml file and return it."
   (handler-bind ((warning #'muffle-warning))
     (let ((pathname (leap.core:ensure-path filename)))
       (with-open-file (fin (open pathname :direction :input))
@@ -480,6 +556,9 @@ Leap can be reentered by evaluating (leap).
 
 
 (defun leap-start-swank (&optional (port 4005))
+  " startSwank &optional (port 4005)
+
+Start a swank server for debugging cando."
   (funcall (find-symbol "START-SWANK" :cando-user) port))
 
 (defun leap-help (&optional arg)
@@ -828,6 +907,42 @@ solvent.
                (separation (third ion2-separation)))
            (leap.add-ions:add-ions-rand mol ion1 ion1-number :ion2 ion2 :ion2-number ion2-number :separation separation))))))
 
+(defparameter *leap-commands* (list       "add" "addAtomTypes"
+    "addH" "addIons" "addIons2" "addIonsRand" "addPath" "addPdbAtomMap" "addPdbResMap" "alias" "alignAxes"
+    "bond" "bondByDistance" "center" "charge" "check" "clearPdbAtomMap" "clearPdbResMap" "clearVariables" "combine"
+    "copy" "createAtom" "createParmset" "createResidue" "createUnit" "crossLink" "debugOff" "debugOn" "debugStatus"
+    "deleteBond" "deleteOffLibEntry" "deleteRestraint" "desc" "deSelect" "displayPdbAtomMap" "displayPdbResMap" "edit"
+    "flip" "groupSelectedAtoms" "help" "impose" "list" "listOff" "loadAmberParams" "loadAmberPrep" "loadMol2"
+    "loadMol3" "loadOff" "loadPdb" "loadPdbUsingSeq" "logFile" "matchVariables" "measureGeom" "quit" "relax"
+    "remove" "restrainAngle" "restrainBond" "restrainTorsion" "saveAmberParm" "saveAmberParmNetcdf"
+    "saveAmberParmPert" "saveAmberParmPol" "saveAmberParmPolPertsaveAmberPrep" "saveMol2" "saveMol3" "saveOff" "saveOffParm"
+    "savePdb" "scaleCharges" "select" "sequence" "set" "set_default" "setBox" "showdefault" "solvateBox"
+    "solvateCap" "solvateDontClip" "solvateOct" "solvateShell" "source" "transform" "translate" "verbosity" "zMatrix"
+    ))
+
+(defun leap-commands-missing ()
+  "   leapCommandsMissing
+
+Provide a list of commands that cleap is missing when compared to tleap."
+  (loop for cmd-name in *leap-commands*
+        unless (member cmd-name leap.parser:*function-names/alist* :key #'car :test #'string=)
+          do (format t "~a~%" cmd-name)))
+
+
+(defun leap-commands-available ()
+  "   leapCommandsAvailable
+
+Provide a list of commands that cleap has available to mimic tleap."
+  (loop for cmd-name in *leap-commands*
+        when (member cmd-name leap.parser:*function-names/alist* :key #'car :test #'string=)
+          do (format t "~a~%" cmd-name)))
+
+  
+
+
+
+
+    
 (defun leap-load-moe (filename)
   (let ((pathname (leap.core:ensure-path filename)))
     (unless pathname
@@ -840,14 +955,19 @@ solvent.
   ;; Define a list of names that do not get exported as lisp aliases
   (defvar *ignore-lisp-aliases* '( "list" "set"))
   (setf leap.parser:*function-names/alist*
-        '(("logFile" . log-file)
+        '(("logFile" . leap-log-file)
           ("quickload" . leap-quickload)
-          ("setupAmberPaths" . leap.setup-amber-paths)
+          ("leapCommandsMissing" . leap-commands-missing)
+          ("leapCommandsAvailable" . leap-commands-available)
+          ("setupAmberPaths" . leap-setup-amber-paths)
+          ("easyGaff" . leap-easy-gaff)
+          ("jostle" . leap-jostle)
           ("desc" . leap-desc)
-          ("listForceFields" . leap.list-force-fields)
+          ("listForceFields" . leap-list-force-fields)
           ("loadOff" . load-off)
           ("loadMol2" . cando:load-mol2)
           ("loadMoe" . leap-load-moe )
+          ("minimize" . leap-minimize)
           ("dir" . leap.dir )
           ("ls" . leap.dir)
           ("list" . leap-list-variables)
