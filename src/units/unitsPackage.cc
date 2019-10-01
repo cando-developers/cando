@@ -83,6 +83,9 @@ SYMBOL_EXPORT_SC_(UnitsPkg,femtoseconds);
 
 SYMBOL_EXPORT_SC_(UnitsPkg,per_picosecond);
 
+SYMBOL_EXPORT_SC_(UnitsPkg,degrees);
+SYMBOL_EXPORT_SC_(UnitsPkg,radians);
+
 SYMBOL_EXPORT_SC_(UnitsPkg,amperes);
 SYMBOL_EXPORT_SC_(UnitsPkg,coulomb);
 SYMBOL_EXPORT_SC_(UnitsPkg,elementaryCharge);
@@ -151,6 +154,9 @@ SYMBOL_EXPORT_SC_(UnitsPkg,nm_per_ps);
           DEFDIM(femtoseconds,1.0e-15, "fs",timeSecond,1);
 
           DEFDIM(per_picosecond,1.0e+12, "per_ps",timeSecond,-1);
+
+          DEFDIM(radians, 1.0, "deg", radianAngle, 1);
+          DEFDIM(degrees, 0.017453292519943295, "rad", radianAngle, 1); // 0.017... = pi/180
 
           DEFDIM(amperes,1.0,"A",currentAmpere,1);
           NamedUnit_sp unit_coulomb = NamedUnit_O::create(_sym_coulomb,"coulomb","C");
