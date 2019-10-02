@@ -976,6 +976,28 @@ solvent.
                (separation (third ion2-separation)))
            (leap.add-ions:add-ions-rand mol ion1 ion1-number :ion2 ion2 :ion2-number ion2-number :separation separation))))))
 
+(defun leap-save-mol2 (aggregate-name path-name option)
+"    saveMol2 unit filename option
+
+      UNIT                         _unit_
+      STRING                       _filename_
+      NUMBER                       _option_
+
+Write UNIT to the file _filename_ as a Mol2 format file.
+option = 0 for Default atom types
+option = 1 for AMBER atom types
+
+More information:
+http://q4md-forcefieldtools.org/Tutorial/leap.php
+"
+  (let ((aggregate (leap.core:lookup-variable aggregate-name)))
+    (cond
+      ((= option 0)
+       (cando:save-mol2 aggregate path-name :use-sybyl-types t))
+      ((= option 1)
+       (cando:save-mol2 aggregate path-name :use-sybyl-types nil))
+      (t (error "Option must be 0 or 1")))))
+
 (defparameter *leap-commands* (list       "add" "addAtomTypes"
     "addH" "addIons" "addIons2" "addIonsRand" "addPath" "addPdbAtomMap" "addPdbResMap" "alias" "alignAxes"
     "bond" "bondByDistance" "center" "charge" "check" "clearPdbAtomMap" "clearPdbResMap" "clearVariables" "combine"
@@ -1087,6 +1109,7 @@ Provide a list of commands that cleap has available to mimic tleap."
           ("addPath" . leap-add-path)
           ("alignAxes" . leap-align-axes)
           ("charge" . leap-charge)
+          ("saveMol2" . leap-save-mol2)
           ))
   ;; register all of the leap command and export them from the leap package
   (loop for command-pair in leap.parser:*function-names/alist*
