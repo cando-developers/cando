@@ -87,6 +87,19 @@ is written to the log file as if the verbosity level were set to 2."
 (defmethod set-property ((object chem:matter) (property (eql :name)) value)
   (chem:set-name object value))
 
+(defmethod set-property ((object chem:matter) (property (eql :element)) value)
+  (chem:set-element object (intern (string value) :keyword)))
+
+(defmethod set-property ((object chem:matter) (property (eql :charge)) value)
+  (chem:set-charge object value))
+
+(defmethod set-property ((object chem:matter) (property (eql :position)) value)
+  (check-type value list)
+  (let ((position (chem:get-position object)))
+    (geom:set-all3 position (first value)
+                   (second value)
+                   (third value))))
+
 (defmethod set-property ((object chem:molecule) (property (eql :force-field-name)) value)
   (let ((force-field (chem:find-force-field value)))
     (chem:setf-force-field-name object value)))
@@ -656,7 +669,7 @@ ATOMs within RESIDUEs, and RESIDUEs within UNITs.
         (object-b (leap.core:lookup-variable object-b-name)))
   (chem:add-matter object-a object-b)))
 
-(defun leap-bond (atom1 atom2 &rest order)
+(defun leap-bond (atom1-name atom2-name &rest order)
 "    bond atom1 atom2 [ order ]
 
       ATOM                         _atom1_
@@ -669,12 +682,14 @@ bond.  By specifying \"S\", \"D\", \"T\", or \"A\" as the optional argument
 _order_ the user can specify a single, double, triple, or aromatic
 bond.
 "
-  (case order
-    (:s (chem:bond-to atom1 atom2 :single-bond))
-    (:d (chem:bond-to atom1 atom2 :double-bond))
-    (:t (chem:bond-to atom1 atom2 :triple-bond))
-    (:a (chem:bond-to atom1 atom2 :aromatic-bond))
-    (otherwise (chem:bond-to atom1 atom2 :single-bond))))
+  (let ((atom1 (leap.core:lookup-variable atom1-name))
+        (atom2 (leap.core:lookup-variable atom2-name)))
+    (case order
+      (:s (chem:bond-to atom1 atom2 :single-bond))
+      (:d (chem:bond-to atom1 atom2 :double-bond))
+      (:t (chem:bond-to atom1 atom2 :triple-bond))
+      (:a (chem:bond-to atom1 atom2 :aromatic-bond))
+      (otherwise (chem:bond-to atom1 atom2 :single-bond)))))
 
 (defun leap-add-h (object-name)
 "    addH obj
