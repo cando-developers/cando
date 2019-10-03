@@ -998,6 +998,21 @@ http://q4md-forcefieldtools.org/Tutorial/leap.php
        (cando:save-mol2 aggregate path-name :use-sybyl-types nil))
       (t (error "Option must be 0 or 1")))))
 
+(defun leap-delete-bond (atom1-name atom2-name)
+"    deleteBond atom1 atom2
+
+      ATOM                         _atom1_
+      ATOM                         _atom2_
+
+Remove the bond between the ATOMs _atom1_ and _atom2_.   If no bond
+exists, an error will be displayed.
+"
+  (let ((atom1 (leap.core:lookup-variable atom1-name))
+        (atom2 (leap.core:lookup-variable atom2-name)))
+    (if (chem:is-bonded-to atom1 atom2)
+        (chem:remove-bond-to atom1 atom2)
+        (error "Atoms are not bonded."))))
+
 (defparameter *leap-commands* (list       "add" "addAtomTypes"
     "addH" "addIons" "addIons2" "addIonsRand" "addPath" "addPdbAtomMap" "addPdbResMap" "alias" "alignAxes"
     "bond" "bondByDistance" "center" "charge" "check" "clearPdbAtomMap" "clearPdbResMap" "clearVariables" "combine"
@@ -1110,6 +1125,7 @@ Provide a list of commands that cleap has available to mimic tleap."
           ("alignAxes" . leap-align-axes)
           ("charge" . leap-charge)
           ("saveMol2" . leap-save-mol2)
+          ("deleteBond" . leap-delete-bond)
           ))
   ;; register all of the leap command and export them from the leap package
   (loop for command-pair in leap.parser:*function-names/alist*
