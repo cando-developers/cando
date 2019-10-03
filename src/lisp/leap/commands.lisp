@@ -998,6 +998,18 @@ http://q4md-forcefieldtools.org/Tutorial/leap.php
        (cando:save-mol2 aggregate path-name :use-sybyl-types nil))
       (t (error "Option must be 0 or 1")))))
 
+(defun leap-save-pdb (aggregate-name path-name)
+"    savePdb unit filename
+
+      UNIT                         _unit_
+      STRING                       _filename_
+
+Write UNIT to the file _filename_ as a PDB format file.
+"
+  (let ((aggregate (leap.core:lookup-variable aggregate-name)))
+    (format t "Writing pdb file: ~a~%" path-name)
+    (chem:save-pdb aggregate path-name)))
+
 (defun leap-delete-bond (atom1-name atom2-name)
 "    deleteBond atom1 atom2
 
@@ -1125,6 +1137,7 @@ Provide a list of commands that cleap has available to mimic tleap."
           ("alignAxes" . leap-align-axes)
           ("charge" . leap-charge)
           ("saveMol2" . leap-save-mol2)
+          ("savePdb" . leap-save-pdb)
           ("deleteBond" . leap-delete-bond)
           ))
   ;; register all of the leap command and export them from the leap package
