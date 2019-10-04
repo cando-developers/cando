@@ -46,6 +46,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/common.h>
 #include <cando/geom/vector3.h>
 #include <cando/chem/energyComponent.h>
+#include <cando/chem/scoringFunction.fwd.h>
 #include <cando/chem/energySketchStretch.fwd.h>
 
 namespace       chem {
@@ -162,14 +163,15 @@ public:
     
     virtual void setupHessianPreconditioner(NVector_sp nvPosition,
 					    AbstractLargeSquareMatrix_sp m );
-    virtual double evaluateAll( NVector_sp 	pos,
-                                bool 		calcForce,
-                                gc::Nilable<NVector_sp> 	force,
-                                bool		calcDiagonalHessian,
-                                bool		calcOffDiagonalHessian,
-                                gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                                gc::Nilable<NVector_sp>	hdvec,
-                                gc::Nilable<NVector_sp> dvec);
+  virtual double evaluateAll( ScoringFunction_sp scorer,
+                              NVector_sp 	pos,
+                              bool 		calcForce,
+                              gc::Nilable<NVector_sp> 	force,
+                              bool		calcDiagonalHessian,
+                              bool		calcOffDiagonalHessian,
+                              gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                              gc::Nilable<NVector_sp>	hdvec,
+                              gc::Nilable<NVector_sp> dvec);
 
   void addSketchStretchTerm(size_t i1, size_t i2, double kb, double r0);
   

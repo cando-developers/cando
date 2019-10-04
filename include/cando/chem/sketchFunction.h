@@ -195,14 +195,14 @@ namespace chem {
 
     double	calculateNumericalDerivative(NVector_sp pos, double delta, uint i );
     double	calculateNumericalSecondDerivative(NVector_sp pos, double delta, uint i, uint j );
-    double	evaluateAll( 	NVector_sp pos,
-				bool calcForce,
-				gc::Nilable<NVector_sp> force,
-       				bool calcDiagonalHessian,
-				bool calcOffDiagonalHessian,
-				gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-				gc::Nilable<NVector_sp> hdvec,
-                                gc::Nilable<NVector_sp> dvec	);
+    double	evaluateAll(NVector_sp pos,
+                            bool calcForce,
+                            gc::Nilable<NVector_sp> force,
+                            bool calcDiagonalHessian,
+                            bool calcOffDiagonalHessian,
+                            gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                            gc::Nilable<NVector_sp> hdvec,
+                            gc::Nilable<NVector_sp> dvec	);
 
     string	summarizeBeyondThresholdInteractionsAsString();
     string	summarizeEnergyAsString();

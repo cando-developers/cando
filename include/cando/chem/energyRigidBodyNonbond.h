@@ -127,7 +127,8 @@ class EnergyRigidBodyNonbond_O : public EnergyRigidBodyComponent_O
   virtual void setupHessianPreconditioner(NVector_sp nvPosition,
                                           AbstractLargeSquareMatrix_sp m );
     
-  virtual double evaluateAll( NVector_sp 	pos,
+  virtual double evaluateAll( ScoringFunction_sp scorer,
+                              NVector_sp 	pos,
                               bool 		calcForce,
                               gc::Nilable<NVector_sp> 	force,
                               bool		calcDiagonalHessian,
@@ -145,6 +146,7 @@ class EnergyRigidBodyNonbond_O : public EnergyRigidBodyComponent_O
   virtual	double	getEnergy();
   virtual void dumpTerms();
   core::List_sp parts_as_list(NVector_sp pos);
+  core::ComplexVector_float_sp write_nonbond_atom_coordinates_to_complex_vector_float(NVector_sp pos, core::ComplexVector_float_sp parts);
  public:
  EnergyRigidBodyNonbond_O(core::SimpleVector_byte32_t_sp end_atoms) : _RigidBodyEndAtom(end_atoms) {
     this->resizeNonbondAtomInfoTable((*end_atoms)[end_atoms->length()-1]);

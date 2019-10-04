@@ -85,17 +85,28 @@ struct gctools::GCInfo<chem::RigidBodyEnergyFunction_O> {
 };
 
 namespace chem {
-  SMART(RigidBodyEnergyFunction);
+FORWARD(BoundingBox);
+FORWARD(RigidBodyEnergyFunction);
   class RigidBodyEnergyFunction_O : public ScoringFunction_O
   {
     LISP_CLASS(chem,ChemPkg,RigidBodyEnergyFunction_O,"RigidBodyEnergyFunction",ScoringFunction_O);
   public:
-    static RigidBodyEnergyFunction_sp make(size_t number_of_rigid_bodies );
+    static RigidBodyEnergyFunction_sp make(size_t number_of_rigid_bodies, BoundingBox_sp boundingBox );
   public:
     size_t              _RigidBodies;
     NVector_sp          _SavedCoordinates;
     core::List_sp       _Terms;
+    BoundingBox_sp      _BoundingBox;
   public:
+    bool fieldsp() const { return true; };
+    void fields(core::Record_sp node);
+  public:
+    BoundingBox_sp boundingBox() const;
+    bool boundingBoxBoundP() const;
+    void setBoundingBox(BoundingBox_sp bounding_box);
+    void makUnboundBoundingBox();
+
+    
     CL_LISPIFY_NAME("rigid-body-energy-function-add-term");
     CL_DEFMETHOD void addTerm(EnergyRigidBodyComponent_sp comp) { this->_Terms = core::Cons_O::create(comp,this->_Terms);};
     
@@ -138,14 +149,14 @@ namespace chem {
     /*! Set the energy function options. List the options as a flat list of keyword/value pairs */
     void	setOptions( core::List_sp options );
 
-    double	evaluateAll( 	NVector_sp pos,
-				bool calcForce,
-				gc::Nilable<NVector_sp> force,
-       				bool calcDiagonalHessian,
-				bool calcOffDiagonalHessian,
-				gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-				gc::Nilable<NVector_sp> hdvec,
-                                gc::Nilable<NVector_sp> dvec	);
+    double	evaluateAll(NVector_sp pos,
+                            bool calcForce,
+                            gc::Nilable<NVector_sp> force,
+                            bool calcDiagonalHessian,
+                            bool calcOffDiagonalHessian,
+                            gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                            gc::Nilable<NVector_sp> hdvec,
+                            gc::Nilable<NVector_sp> dvec	);
 
     void	dealWithProblem(core::Symbol_sp error_symbol, core::T_sp arguments);
     CL_LISPIFY_NAME("rigid-body-energy-function-set-position");
@@ -161,9 +172,10 @@ CL_LISPIFY_NAME("rigid-body-energy-function-normalize-position");
 
     void dumpTerms();
     
-  RigidBodyEnergyFunction_O(size_t number_of_rigid_bodies)
+    RigidBodyEnergyFunction_O(size_t number_of_rigid_bodies, BoundingBox_sp boundingBox)
     : _RigidBodies(number_of_rigid_bodies),
-      _Terms(_Nil<core::T_O>()) {};
+      _Terms(_Nil<core::T_O>()),
+      _BoundingBox(boundingBox){};
   };
 
 };

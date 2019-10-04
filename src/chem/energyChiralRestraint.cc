@@ -258,14 +258,15 @@ bool		calcOffDiagonalHessian = true;
 
 
 
-double	EnergyChiralRestraint_O::evaluateAll(chem::NVector_sp 	pos,
-                                             bool 		calcForce,
-                                             gc::Nilable<chem::NVector_sp> 	force,
-                                             bool		calcDiagonalHessian,
-                                             bool		calcOffDiagonalHessian,
-                                             gc::Nilable<chem::AbstractLargeSquareMatrix_sp>	hessian,
-                                             gc::Nilable<chem::NVector_sp>	hdvec,
-                                             gc::Nilable<chem::NVector_sp> dvec)
+double	EnergyChiralRestraint_O::evaluateAll( ScoringFunction_sp score,
+                                              chem::NVector_sp 	pos,
+                                              bool 		calcForce,
+                                              gc::Nilable<chem::NVector_sp> 	force,
+                                              bool		calcDiagonalHessian,
+                                              bool		calcOffDiagonalHessian,
+                                              gc::Nilable<chem::AbstractLargeSquareMatrix_sp>	hessian,
+                                              gc::Nilable<chem::NVector_sp>	hdvec,
+                                              gc::Nilable<chem::NVector_sp> dvec)
 {
   if ( this->_DebugEnergy ) 
   {

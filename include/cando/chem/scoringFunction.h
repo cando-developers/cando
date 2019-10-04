@@ -49,7 +49,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/geom/vector3.h>
 #include <cando/chem/atom.h>
 #include <cando/chem/nVector.h>
-
+#include <cando/chem/scoringFunction.fwd.h>
 
 
 

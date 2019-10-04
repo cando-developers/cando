@@ -158,14 +158,15 @@ void	EnergySketchStretch_O::setupHessianPreconditioner(
 }
 
 
-double EnergySketchStretch_O::evaluateAll(NVector_sp 	pos,
-                                    bool 		calcForce,
-                                    gc::Nilable<NVector_sp> 	force,
-                                    bool		calcDiagonalHessian,
-                                    bool		calcOffDiagonalHessian,
-                                    gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                                    gc::Nilable<NVector_sp>	hdvec,
-                                    gc::Nilable<NVector_sp> dvec)
+double EnergySketchStretch_O::evaluateAll( ScoringFunction_sp score,
+                                           NVector_sp 	pos,
+                                           bool 		calcForce,
+                                           gc::Nilable<NVector_sp> 	force,
+                                           bool		calcDiagonalHessian,
+                                           bool		calcOffDiagonalHessian,
+                                           gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                           gc::Nilable<NVector_sp>	hdvec,
+                                           gc::Nilable<NVector_sp> dvec)
 { 
   if ( this->_DebugEnergy ) 
   {

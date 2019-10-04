@@ -101,7 +101,8 @@ class EnergyRigidBodyStaple_O : public EnergyRigidBodyComponent_O
 
   virtual void setupHessianPreconditioner(NVector_sp nvPosition,
                                           AbstractLargeSquareMatrix_sp m );
-  virtual double evaluateAll( NVector_sp 	pos,
+  virtual double evaluateAll( ScoringFunction_sp scorer,
+                              NVector_sp 	pos,
                               bool 		calcForce,
                               gc::Nilable<NVector_sp> 	force,
                               bool		calcDiagonalHessian,

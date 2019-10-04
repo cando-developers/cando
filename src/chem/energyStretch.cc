@@ -275,14 +275,15 @@ CL_DEFMETHOD core::T_sp EnergyStretch_O::stretchTermBetweenAtoms(Atom_sp x, Atom
   return _Nil<core::T_O>();
 }
   
-double EnergyStretch_O::evaluateAll(NVector_sp 	pos,
-                                    bool 		calcForce,
-                                    gc::Nilable<NVector_sp> 	force,
-                                    bool		calcDiagonalHessian,
-                                    bool		calcOffDiagonalHessian,
-                                    gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                                    gc::Nilable<NVector_sp>	hdvec,
-                                    gc::Nilable<NVector_sp> dvec)
+double EnergyStretch_O::evaluateAll( ScoringFunction_sp score,
+                                     NVector_sp 	pos,
+                                     bool 		calcForce,
+                                     gc::Nilable<NVector_sp> 	force,
+                                     bool		calcDiagonalHessian,
+                                     bool		calcOffDiagonalHessian,
+                                     gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                     gc::Nilable<NVector_sp>	hdvec,
+                                     gc::Nilable<NVector_sp> dvec)
 { 
   if ( this->_DebugEnergy ) 
   {

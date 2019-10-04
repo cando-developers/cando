@@ -429,15 +429,14 @@ uint	EnergyFunction_O::countTermsBeyondThreshold()
 
 //
 
-double	EnergyFunction_O::evaluateAll(
-                                      NVector_sp 	pos,
-                                      bool 		calcForce,
-                                      gc::Nilable<NVector_sp> 	force,
-                                      bool		calcDiagonalHessian,
-                                      bool		calcOffDiagonalHessian,
-                                      gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                                      gc::Nilable<NVector_sp>	hdvec,
-                                      gc::Nilable<NVector_sp> dvec)
+double	EnergyFunction_O::evaluateAll( NVector_sp 	pos,
+                                       bool 		calcForce,
+                                       gc::Nilable<NVector_sp> 	force,
+                                       bool		calcDiagonalHessian,
+                                       bool		calcOffDiagonalHessian,
+                                       gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                       gc::Nilable<NVector_sp>	hdvec,
+                                       gc::Nilable<NVector_sp> dvec)
 {_G()
 #ifdef DEBUG_ENERGY_FUNCTION
     printf("%s:%d:%s Entered\n", __FILE__, __LINE__, __FUNCTION__ );
@@ -521,21 +520,24 @@ double	EnergyFunction_O::evaluateAll(
 	// Evaluate the stretch term
 	//
 ////	_lisp->profiler().timer(core::timerBond).start();
-    this->_Stretch->evaluateAll( pos, calcForce, force,
+    this->_Stretch->evaluateAll( this->asSmartPtr(),
+                                 pos, calcForce, force,
                                  calcDiagonalHessian,
                                  calcOffDiagonalHessian,
                                  hessian, hdvec, dvec );
 ////	_lisp->profiler().timer(core::timerBond).stop();
 #if USE_ALL_ENERGY_COMPONENTS
 ////	_lisp->profiler().timer(core::timerAngle).start();
-    this->_Angle->evaluateAll( pos, calcForce, force,
+    this->_Angle->evaluateAll( this->asSmartPtr(),
+                               pos, calcForce, force,
                                calcDiagonalHessian,
                                calcOffDiagonalHessian,
                                hessian, hdvec, dvec );
 ////	_lisp->profiler().timer(core::timerAngle).stop();
 
 ////	_lisp->profiler().timer(core::timerDihedral).start();
-    this->_Dihedral->evaluateAll( pos, calcForce, force,
+    this->_Dihedral->evaluateAll( this->asSmartPtr(),
+                                  pos, calcForce, force,
                                   calcDiagonalHessian,
                                   calcOffDiagonalHessian,
                                   hessian, hdvec, dvec );
@@ -543,33 +545,38 @@ double	EnergyFunction_O::evaluateAll(
 ////	_lisp->profiler().timer(core::timerBondAngleDihedral).stop();
 
 ////	_lisp->profiler().timer(core::timerNonbond).start();
-    this->_Nonbond->evaluateAll( pos, calcForce, force,
+    this->_Nonbond->evaluateAll( this->asSmartPtr(),
+                                 pos, calcForce, force,
                                  calcDiagonalHessian, calcOffDiagonalHessian, hessian, hdvec, dvec );
 ////	_lisp->profiler().timer(core::timerNonbond).stop();
 
 ////	_lisp->profiler().timer(core::timerImproperRestraint).start();
-    this->_ImproperRestraint->evaluateAll( pos, calcForce, force,
+    this->_ImproperRestraint->evaluateAll( this->asSmartPtr(),
+                                           pos, calcForce, force,
                                            calcDiagonalHessian, calcOffDiagonalHessian, hessian, hdvec, dvec );
 ////	_lisp->profiler().timer(core::timerImproperRestraint).stop();
 
 ////	_lisp->profiler().timer(core::timerChiralRestraint).start();
-    this->_ChiralRestraint->evaluateAll( pos, calcForce, force,
+    this->_ChiralRestraint->evaluateAll( this->asSmartPtr(),
+                                         pos, calcForce, force,
                                          calcDiagonalHessian, calcOffDiagonalHessian, hessian, hdvec, dvec );
 ////	_lisp->profiler().timer(core::timerChiralRestraint).stop();
 
 //	_lisp->profiler().timer(core::timerAnchorRestraint).start();
-    this->_AnchorRestraint->evaluateAll( pos, calcForce, force, calcDiagonalHessian, calcOffDiagonalHessian, hessian, hdvec, dvec );
+    this->_AnchorRestraint->evaluateAll( this->asSmartPtr(),
+                                         pos, calcForce, force, calcDiagonalHessian, calcOffDiagonalHessian, hessian, hdvec, dvec );
 ////	_lisp->profiler().timer(core::timerAnchorRestraint).stop();
 
 ////	_lisp->profiler().timer(core::timerFixedNonbondRestraint).start();
-    this->_FixedNonbondRestraint->evaluateAll( pos, calcForce, force,
+    this->_FixedNonbondRestraint->evaluateAll( this->asSmartPtr(),
+                                               pos, calcForce, force,
                                                calcDiagonalHessian, calcOffDiagonalHessian, hessian, hdvec, dvec );
 ////	_lisp->profiler().timer(core::timerFixedNonbondRestraint).stop();
 #endif
     for ( auto cur : this->_OtherEnergyComponents ) {
       core::Cons_sp pair = gc::As<core::Cons_sp>(CONS_CAR(cur));
       EnergyComponent_sp component = gc::As<EnergyComponent_sp>(oCdr(pair));
-      component->evaluateAll(pos,calcForce,force,calcDiagonalHessian,calcOffDiagonalHessian,hessian,hdvec,dvec);
+      component->evaluateAll(this->asSmartPtr(),pos,calcForce,force,calcDiagonalHessian,calcOffDiagonalHessian,hessian,hdvec,dvec);
     }
     
     this->_TotalEnergy = this->_Stretch->getEnergy();

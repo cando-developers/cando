@@ -44,16 +44,10 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <set>
 #include <clasp/core/common.h>
 #include <cando/geom/vector3.h>
-//#include "atom.h"
-//#include "bond.h"
-//#include "largeSquareMatrix.h"
-//#include "ffBaseDb.h"
-//#include "ffTypesDb.h"
-//#include "ffStretchDb.h"
-//#include "ffAngleDb.h"
 #include <cando/adapt/quickDom.h>
 #include <cando/chem/energyAtomTable.h>
 #include <cando/chem/nVector.h>
+#include <cando/chem/scoringFunction.fwd.h>
 #include <cando/chem/residue.h>
 
 		//
@@ -308,7 +302,8 @@ class EnergyComponent_O : public core::CxxObject_O
   virtual void zeroEnergy();
   CL_DEFMETHOD virtual void dumpTerms() {_OF();SUBCLASS_MUST_IMPLEMENT();};
 
-  virtual	double evaluateAll( NVector_sp 	pos,
+  virtual	double evaluateAll( ScoringFunction_sp scorer,
+                                    NVector_sp 	pos,
                                     bool 		calcForce,
                                     gc::Nilable<NVector_sp> 	force,
                                     bool		calcDiagonalHessian,

@@ -307,15 +307,14 @@ void maybe_dump_force(const string& msg, NVector_sp force)
 
 //
 
-double	SketchFunction_O::evaluateAll(
-                                      NVector_sp 	pos,
-                                      bool 		calcForce,
-                                      gc::Nilable<NVector_sp> 	force,
-                                      bool		calcDiagonalHessian,
-                                      bool		calcOffDiagonalHessian,
-                                      gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                                      gc::Nilable<NVector_sp>	hdvec,
-                                      gc::Nilable<NVector_sp> dvec)
+double	SketchFunction_O::evaluateAll( NVector_sp 	pos,
+                                       bool 		calcForce,
+                                       gc::Nilable<NVector_sp> 	force,
+                                       bool		calcDiagonalHessian,
+                                       bool		calcOffDiagonalHessian,
+                                       gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                       gc::Nilable<NVector_sp>	hdvec,
+                                       gc::Nilable<NVector_sp> dvec)
 {_G()
 #ifdef DEBUG_ENERGY_FUNCTION
     printf("%s:%d:%s Entered\n", __FILE__, __LINE__, __FUNCTION__ );
@@ -407,7 +406,8 @@ double	SketchFunction_O::evaluateAll(
 #ifdef DUMP_FORCE
   maybe_dump_force("start",force);
 #endif
-  this->_Stretch->evaluateAll( pos, calcForce, force,
+  this->_Stretch->evaluateAll( this->asSmartPtr(),
+                               pos, calcForce, force,
                                calcDiagonalHessian,
                                calcOffDiagonalHessian,
                                hessian, hdvec, dvec );
@@ -416,7 +416,8 @@ double	SketchFunction_O::evaluateAll(
 #ifdef DUMP_FORCE
   maybe_dump_force("stretch",force);
 #endif
-  this->_Nonbond->evaluateAll( pos, calcForce, force,
+  this->_Nonbond->evaluateAll( this->asSmartPtr(),
+                               pos, calcForce, force,
                                calcDiagonalHessian, calcOffDiagonalHessian, hessian, hdvec, dvec );
 ////	_lisp->profiler().timer(core::timerNonbond).stop();
 
@@ -424,11 +425,13 @@ double	SketchFunction_O::evaluateAll(
 #ifdef DUMP_FORCE
   maybe_dump_force("nonbond",force);
 #endif
-  this->_PointToLineRestraint->evaluateAll( pos, calcForce, force, calcDiagonalHessian, calcOffDiagonalHessian, hessian, hdvec, dvec );
+  this->_PointToLineRestraint->evaluateAll( this->asSmartPtr(),
+                                            pos, calcForce, force, calcDiagonalHessian, calcOffDiagonalHessian, hessian, hdvec, dvec );
 #ifdef DUMP_FORCE
   maybe_dump_force("pointToLineRestraint",force);
 #endif
-  this->_OutOfZPlane->evaluateAll( pos, calcForce, force, calcDiagonalHessian, calcOffDiagonalHessian, hessian, hdvec, dvec );
+  this->_OutOfZPlane->evaluateAll( this->asSmartPtr(),
+                                   pos, calcForce, force, calcDiagonalHessian, calcOffDiagonalHessian, hessian, hdvec, dvec );
 #ifdef DUMP_FORCE
   maybe_dump_force("oozp",force);
 #endif
