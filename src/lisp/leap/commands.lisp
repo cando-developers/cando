@@ -937,6 +937,7 @@ Same as addIons, except solvent and solute are treated the same.
             (let ((ion2 (intern (string ion2-name) :keyword)))
               (leap.add-ions:add-ions mol ion1 ion1-number ion2 ion2-number))
             (leap.add-ions:add-ions mol ion1 ion1-number))))
+
 (defun leap-add-ions-rand (mol-name ion1-name ion1-number &rest ion2-separation)
 "    addIonsRand unit ion1 #ion1 [ion2 #ion2] [separation]
 
@@ -1024,6 +1025,35 @@ exists, an error will be displayed.
     (if (chem:is-bonded-to atom1 atom2)
         (chem:remove-bond-to atom1 atom2)
         (error "Atoms are not bonded."))))
+
+(defun leap-select (matter-name)
+"    select obj
+
+      UNIT/RESIDUE/ATOM          _obj_
+
+Sets the SELECT flag on all ATOMs within _obj_.  See the deSelect command.
+"
+  (let ((matter (leap.core:lookup-variable matter-name)))
+    (chem:map-atoms
+     'nil
+     (lambda (atom)
+       (chem:set-property atom :select t))
+     matter)))
+
+(defun leap-de-select (matter-name)
+"    deSelect obj
+
+      UNIT/RESIDUE/ATOM          _obj_
+
+Clears the SELECT flag on all ATOMs within _obj_.  See the select command.
+"
+  (let ((matter (leap.core:lookup-variable matter-name)))
+    (chem:map-atoms
+     'nil
+     (lambda (atom)
+       (if (chem:has-property atom :select)
+           (chem:clear-property atom :select)))
+     matter)))
 
 (defparameter *leap-commands* (list       "add" "addAtomTypes"
     "addH" "addIons" "addIons2" "addIonsRand" "addPath" "addPdbAtomMap" "addPdbResMap" "alias" "alignAxes"
@@ -1139,6 +1169,8 @@ Provide a list of commands that cleap has available to mimic tleap."
           ("saveMol2" . leap-save-mol2)
           ("savePdb" . leap-save-pdb)
           ("deleteBond" . leap-delete-bond)
+          ("select" . leap-select)
+          ("deSelect" . leap-select)
           ))
   ;; register all of the leap command and export them from the leap package
   (loop for command-pair in leap.parser:*function-names/alist*
