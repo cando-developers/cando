@@ -380,7 +380,7 @@
    (mask-method :initform :default :initarg :mask-method :accessor mask-method)
    (core-topology :initform nil :initarg :core-topology :accessor core-topology)
    (side-topologys :initform nil :initarg :side-topologys :accessor side-topologys)
-   (jobs :initarg :jobs :accessor jobs)
+   (jobs :initform (make-instance 'job-graph) :initarg :jobs :accessor jobs)
    (ti-stages :initarg :ti-stages :initform 3 :accessor ti-stages)
    (ti-lambdas :initarg :ti-lambdas :initform 'generate-lambda-values :accessor ti-lambdas)
    (settings :initform (default-calculation-settings) :initarg :settings :accessor settings)
@@ -895,24 +895,32 @@ METHOD controls how the masks are calculated"
         (target-softcore-atoms (side-chain-atoms target))
         (combined-aggregate (cando:combine (molecule source) (molecule target))))
     (let ((sequenced-residues (chem:map-residues 'vector #'identity combined-aggregate))) ; vector of residues in order they will appear in topology file
-      (let ((source-timask-residue-index (1+ (position source-core-residue sequenced-residues)))
+      (let* ((source-timask-residue-index (1+ (position source-core-residue sequenced-residues)))
             (source-scmask-atom-names (loop for atom in source-softcore-atoms
                                             collect (chem:get-name atom)))
             (target-timask-residue-index (1+ (position target-core-residue sequenced-residues)))
             (target-scmask-atom-names (loop for atom in target-softcore-atoms
                                             collect (chem:get-name atom)))
-            (source-core-atom-names (chem:map-atoms 'list (lambda (atom)
-                                                            (chem:get-name atom))
-                                                    source-core-residue))
-            (target-core-atom-names (chem:map-atoms 'list (lambda (atom)
-                                                            (chem:get-name atom))
-                                                    target-core-residue)))
+            (source-core-atom-names (let (names)
+                                      (cando:do-atoms (atom source-core-residue)
+                                        (unless (member (chem:get-name atom) source-scmask-atom-names)
+                                          (push (chem:get-name atom) names)))
+                                      names))
+            (target-core-atom-names (let (names)
+                                      (cando:do-atoms (atom target-core-residue)
+                                        (unless (member (chem:get-name atom) target-scmask-atom-names)
+                                          (push (chem:get-name atom) names)))
+                                      names)))
         (unless (and (= (length source-core-atom-names)
                         (length target-core-atom-names))
                      (every (lambda (name)
                               (member name target-core-atom-names))
                             source-core-atom-names))
-          (error "The source-core-atom-names ~s must match the target-core-atom-names - or you need to define equivalent pairs"))
+          (error "The source-core-atom-names ~s must match the target-core-atom-names ~s - or you need to define equivalent pairs.  source-softcore-atoms ~a   target-softcore-atoms ~a"
+                 source-core-atom-names
+                 target-core-atom-names
+                 source-softcore-atoms
+                 target-softcore-atoms))
         (make-instance 'ti-mask
                        ;; core atoms by the default method must have the same names in
                        ;; source and target

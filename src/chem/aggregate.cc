@@ -57,12 +57,192 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace chem {
 
+CL_DOCSTRING(R"doc(Create a chem:bounding-box using three lengths in angstroms and zero to three angles (in degrees).
+When angles are missing they are assumed to be 90.0 degrees.)doc");
+CL_LAMBDA(widths &key angles-degrees center);
+CL_LISPIFY_NAME(make-bounding-box);
+__attribute__((optnone))
+CL_DEF_CLASS_METHOD
+BoundingBox_sp BoundingBox_O::make(core::List_sp widths, core::T_sp angles_degrees, core::T_sp center)
+{
+  Vector3 vwidths(0.0,0.0,0.0);
+  if (core::cl__length(widths)!=3) {
+    SIMPLE_ERROR(BF("Three widths are required to define bounding-box - you supplied %s") % _rep_(widths));
+  }
+  core::Number_sp num;
+  num = gc::As<core::Number_sp>(core::oFirst(widths));
+  double xwidth = core::clasp_to_double(num);
+  num = gc::As<core::Number_sp>(core::oSecond(widths));
+  double ywidth = core::clasp_to_double(num);
+  num = gc::As<core::Number_sp>(core::oThird(widths));
+  double zwidth = core::clasp_to_double(num);
+  double xangle = 90.0;
+  double yangle = 90.0;
+  double zangle = 90.0;
+  double xcenter = 0.0;
+  double ycenter = 0.0;
+  double zcenter = 0.0;
+  if (angles_degrees.consp()) {
+    if (core::cl__length(angles_degrees)>=1) xangle = core::clasp_to_double(gc::As<core::Number_sp>(core::oFirst(angles_degrees)));
+    if (core::cl__length(angles_degrees)>=2) yangle = core::clasp_to_double(gc::As<core::Number_sp>(core::oSecond(angles_degrees)));
+    if (core::cl__length(angles_degrees)>=3) zangle = core::clasp_to_double(gc::As<core::Number_sp>(core::oThird(angles_degrees)));
+  }
+  if (center.consp()) {
+    if (core::cl__length(center)>=1) xcenter = core::clasp_to_double(gc::As<core::Number_sp>(core::oFirst(center)));
+    if (core::cl__length(center)>=2) ycenter = core::clasp_to_double(gc::As<core::Number_sp>(core::oSecond(center)));
+    if (core::cl__length(center)>=3) zcenter = core::clasp_to_double(gc::As<core::Number_sp>(core::oThird(center)));
+  }
+  Vector3 width(xwidth,ywidth,zwidth);
+  Vector3 angle(xangle,yangle,zangle);
+  Vector3 vcenter(xcenter,ycenter,zcenter);
+  GC_ALLOCATE_VARIADIC(BoundingBox_O,bb,width,angle,vcenter);
+  return bb;
+}
+
+BoundingBox_O::BoundingBox_O(const Vector3& widths, const Vector3& angles_degrees, const Vector3& center)
+  : _Center(center),
+    _Widths(widths),
+    _AnglesDegrees(angles_degrees),
+    _x_rwidth(1.0/widths.getX()),
+    _y_rwidth(1.0/widths.getY()),
+    _z_rwidth(1.0/widths.getZ()) {};
+
+double BoundingBox_O::distance_squared_between_two_points(const Vector3& v1, const Vector3& v2)
+{
+  double dx = fabs(v1.getX()-v2.getX());
+  dx -= static_cast<int>(dx*this->_x_rwidth+0.5)*this->_Widths.getX();
+  double dy = fabs(v1.getY()-v2.getY());
+  dy -= static_cast<int>(dy*this->_y_rwidth+0.5)*this->_Widths.getY();
+  double dz = fabs(v1.getZ()-v2.getZ());
+  dz -= static_cast<int>(dz*this->_z_rwidth+0.5)*this->_Widths.getZ();
+  return dx*dx+dy*dy+dz*dz;
+}
+
+CL_DEFUN double chem__bounding_box_distance_squared_between_two_points(BoundingBox_sp bounding_box, const Vector3& v1, const Vector3& v2)
+{
+  return bounding_box->distance_squared_between_two_points(v1,v2);
+}
+
+
+
+double BoundingBox_O::distance_squared_between_two_atoms(Atom_sp a1, Atom_sp a2) {
+  Vector3& pos1 = a1->getPositionRef();
+  Vector3& pos2 = a2->getPositionRef();
+  return this->distance_squared_between_two_points(pos1,pos2);
+}
+
+CL_DEFUN double chem__bounding_box_distance_squared_between_two_atoms(BoundingBox_sp bounding_box, Atom_sp a1, Atom_sp a2)
+{
+  return bounding_box->distance_squared_between_two_atoms(a1,a2);
+}
+
+CL_DEFMETHOD Vector3 BoundingBox_O::get_bounding_box_widths() const {
+  return this->_Widths;
+}
+
+CL_DEFMETHOD Vector3 BoundingBox_O::get_bounding_box_rwidths() const {
+  Vector3 vec(this->_x_rwidth,this->_y_rwidth,this->_z_rwidth);
+  return vec;
+}
+
+CL_DEFMETHOD Vector3 BoundingBox_O::get_bounding_box_angles_degrees() const {
+  return this->_AnglesDegrees;
+}
+
+CL_DEFMETHOD Vector3 BoundingBox_O::get_bounding_box_center() const
+{
+  return this->_Center;
+}
+
+
+CL_DEFMETHOD double BoundingBox_O::get_x_width() const
+{
+  return this->_Widths.getX();
+}
+CL_DEFMETHOD double BoundingBox_O::get_y_width() const
+{
+  return this->_Widths.getY();
+}
+CL_DEFMETHOD double BoundingBox_O::get_z_width() const
+{
+  return this->_Widths.getZ();
+}
+
+CL_DEFMETHOD double BoundingBox_O::get_x_angle_degrees() const
+{
+  return this->_AnglesDegrees.getX();
+}
+CL_DEFMETHOD double BoundingBox_O::get_y_angle_degrees() const
+{
+  return this->_AnglesDegrees.getY();
+}
+CL_DEFMETHOD double BoundingBox_O::get_z_angle_degrees() const
+{
+  return this->_AnglesDegrees.getZ();
+}
+
+bool BoundingBox_O::cuboidp() const
+{
+  return (this->_AnglesDegrees.getX()>=89.9 && this->_AnglesDegrees.getX()<=90.1);
+}
+
+void BoundingBox_O::fields(core::Record_sp node)
+{
+  node->field(INTERN_(kw,Center),this->_Center);
+  node->field(INTERN_(kw,Widths),this->_Widths);
+  node->field(INTERN_(kw,AnglesDegrees),this->_AnglesDegrees);
+}
+
+CL_DEFMETHOD
+core::T_mv BoundingBox_O::get_cuboid_rsize() const
+{
+  if (this->cuboidp()) {
+    return Values(core::clasp_make_double_float(1.0/this->_Widths.getX()),
+                  core::clasp_make_double_float(1.0/this->_Widths.getY()),
+                  core::clasp_make_double_float(1.0/this->_Widths.getZ()));
+  }
+  SIMPLE_ERROR(BF("The bounding-box is not cuboid"));
+}
+
 
 void Aggregate_O::fields(core::Record_sp node)
 {
   node->field_if_not_unbound(INTERN_(kw,force_field_name),this->_ForceFieldName);
+  node->field_if_not_unbound(INTERN_(kw,boundingBox),this->_BoundingBox);
   this->Base::fields(node);
 }
+
+
+CL_DOCSTRING(R"doc(Return the bounding-box for the atom-table.)doc");
+CL_LISPIFY_NAME(aggregate-bounding-box);
+CL_DEFMETHOD BoundingBox_sp Aggregate_O::boundingBox() const
+{
+  if (this->_BoundingBox.boundp()) {
+    return this->_BoundingBox;
+  }
+  SIMPLE_ERROR(BF("The bounding-box slot is unbound"));
+}
+
+CL_DOCSTRING(R"doc(Return T if the bounding-box is bound)doc");
+CL_LISPIFY_NAME(aggregate-bounding-box-bound-p);
+CL_DEFMETHOD bool Aggregate_O::boundingBoxBoundP() const
+{
+  return this->_BoundingBox.boundp();
+}
+
+CL_DOCSTRING(R"doc(Set the bounding-box)doc");
+CL_LISPIFY_NAME(aggregate-set-bounding-box);
+CL_DEFMETHOD void Aggregate_O::setBoundingBox(BoundingBox_sp boundingBox) {
+  this->_BoundingBox = boundingBox;
+}
+
+CL_DOCSTRING(R"doc(Make the bounding-box unbound)doc");
+CL_LISPIFY_NAME(aggregate-mak-unbound-bounding-box);
+CL_DEFMETHOD void Aggregate_O::makUnboundBoundingBox() {
+  this->_BoundingBox = _Unbound<BoundingBox_O>();
+}
+
+
 
 
     AtomIdToAtomMap_sp Aggregate_O::buildAtomIdMap() const
@@ -326,7 +506,8 @@ CL_DEFMETHOD core::List_sp	Aggregate_O::atomsWithChimeraSpecifications(const str
             foundResidue = true;
 //            printf("%s:%d res->hasAtomWithName(%s) = %d\n",  __FILE__, __LINE__, _rep_(atomSym).c_str(), res->hasAtomWithName(atomSym));
             if ( res->hasAtomWithName(atomSym) ) {
-              atom = res->atomWithName(atomSym);
+              core::T_mv atom_mv = res->atomWithName(atomSym);
+              atom = gc::As<Atom_sp>(atom_mv);
               result = core::Cons_O::create(atom,result);
 //              printf("%s:%d  Adding atom to list: %s\n", __FILE__, __LINE__, _rep_(atom).c_str());
               foundAtom = true;
@@ -339,7 +520,7 @@ CL_DEFMETHOD core::List_sp	Aggregate_O::atomsWithChimeraSpecifications(const str
         if ( (fileSequenceNumber-1) < residues.size() ) {
           res = gc::As<Residue_sp>(residues[fileSequenceNumber-1]);
           if ( res->hasAtomWithName(atomSym) ) {
-            atom = res->atomWithName(atomSym);
+            atom = gc::As_unsafe<Atom_sp>(res->atomWithName(atomSym));
             result = core::Cons_O::create(atom,result);
 //            printf("%s:%d  Adding atom from residue in content to list: %s\n", __FILE__, __LINE__, _rep_(atom).c_str());
             foundAtom = true;
@@ -645,6 +826,7 @@ CL_DEFMETHOD void Aggregate_O::setf_force_field_name(core::T_sp name) {
 CL_DEFMETHOD core::T_sp Aggregate_O::force_field_name() const {
   return this->_ForceFieldName;
 }
+
 
 
 

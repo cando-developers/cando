@@ -229,25 +229,6 @@ void OVector3_O::fields(core::Record_sp node)
   node->field(INTERN_(kw,z),this->_Value[2]);
 }
 
-#if 0
-core::List_sp OVector3_O::encode() {
-  core::Vector_sp v = core::core__make_vector(cl::_sym_DoubleFloat_O,3);
-  (*v)[0] = core::clasp_make_double_float(this->_Value[0]);
-  (*v)[1] = core::clasp_make_double_float(this->_Value[1]);
-  (*v)[2] = core::clasp_make_double_float(this->_Value[2]);
-  printf("%s:%d encoded: %s\n", __FILE__, __LINE__, _rep_(v).c_str());
-  return core::Cons_O::create(core::Cons_O::create(INTERN_(kw,v),v));
-}
-
-void OVector3_O::decode(core::List_sp alist) {
-  core::List_sp r = oCar(alist);
-  core::Vector_sp v = gc::As<core::Vector_sp>(oCdr(r));
-  this->_Value[0] = core::clasp_to_double((*v)[0]);
-  this->_Value[1] = core::clasp_to_double((*v)[1]);
-  this->_Value[2] = core::clasp_to_double((*v)[2]);
-}
-#endif
-
 
 
 };

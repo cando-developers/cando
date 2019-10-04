@@ -88,7 +88,7 @@ Sort the atoms by name in increasing alphabetical order."
                                                                (chem:get-position n2)))
                        (other-improper (- (* used-improper *rad-to-deg*))))
                   (build-hydrogen (car unbuilt-hydrogens) central n1 n2 1.0 109.5 other-improper)))))
-           (otherwise (error "Handle building hydrogens on sp3 centers with ~a built neighbors" num-built))))
+           (otherwise (error "Handle building hydrogens on sp3 centers with ~a built neighbors - unbuilt hydrogens: ~a" num-built unbuilt-hydrogens))))
         (:sp2
          (case num-built
            (1 (let* ((angle-atom (car built-atoms))

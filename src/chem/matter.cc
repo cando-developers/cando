@@ -82,7 +82,7 @@ string Matter_O::__repr__() const
 {
   stringstream ss;
   ss << "#<" << this->className() << " " << _rep_(this->getName());
-  ss << " @" << (void*)this;
+  ss << " " << this->getId();
   ss << ">";
   return ss.str();
 }
@@ -627,7 +627,7 @@ void	Matter_O::addMatterRetainId(Matter_sp cp )
 
 
 // getId
-int Matter_O::getId() {
+int Matter_O::getId() const {
   return this->_Id;
 }
 
@@ -970,8 +970,8 @@ CL_DEFMETHOD core::T_mv	Matter_O::momentOfGeometry()
 }
 
 
-CL_LISPIFY_NAME("matterBoundingBox");
-CL_DEFMETHOD geom::BoundingBox_sp Matter_O::matterBoundingBox(double pad) 
+CL_LISPIFY_NAME("matter-calculate-bounding-cuboid");
+CL_DEFMETHOD geom::BoundingCuboid_sp Matter_O::matterCalculateBoundingCuboid(double pad) 
 {
   Vector3	sum;
   int	count;
@@ -982,7 +982,7 @@ CL_DEFMETHOD geom::BoundingBox_sp Matter_O::matterBoundingBox(double pad)
   c = this->sharedThis<Matter_O>();
   sum.set(0,0,0);
   count = 0;
-  geom::BoundingBox_sp bbox = geom::BoundingBox_O::create();
+  geom::BoundingCuboid_sp bbox = geom::BoundingCuboid_O::create();
   l.loopTopGoal( c, ATOMS );
   while ((l.advanceLoopAndProcess())) {
     a = l.getAtom();
@@ -1296,12 +1296,11 @@ CL_DEFMETHOD Atom_sp Matter_O::atomWithAtomId(const AtomId& atomId) const
   SUBCLASS_MUST_IMPLEMENT();
 }
 
-#if 0
 CL_LISPIFY_NAME("CHEM:MATTER-COPY");
-CL_DEFUN Matter_sp chem__matter_copy(Matter_sp orig) {
-  Matter_sp copy = orig->copy();
+CL_LAMBDA(original &optional new-to-old-map);
+CL_DEFUN Matter_sp chem__matter_copy(Matter_sp orig, core::T_sp new_to_old) {
+  Matter_sp copy = orig->copy(new_to_old);
   return copy;
 }
-#endif
 
 };  // namespace chem

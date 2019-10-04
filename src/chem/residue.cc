@@ -323,7 +323,7 @@ CL_DEFMETHOD void Residue_O::removeAtomsWithNames(core::List_sp args)
 {
   for ( auto c : args ) {
     MatterName atomName = oCar(c).as<MatterName::Type>();
-    Atom_sp a = this->atomWithName(atomName);
+    Atom_sp a = gc::As_unsafe<Atom_sp>(this->atomWithName(atomName));
     this->removeAtomDeleteBonds(a);
   }
 }
@@ -552,7 +552,7 @@ void Residue_O::setAliasesForAtoms(core::List_sp aliasAtoms, core::List_sp atomA
     {
 	MatterName aliasAtom = oCar(aliasAtoms).as<MatterName::Type>();
 	MatterName atomAlias = oCar(atomAliases).as<MatterName::Type>();
-	Atom_sp a = this->atomWithName(aliasAtom);
+	Atom_sp a = gc::As_unsafe<Atom_sp>(this->atomWithName(aliasAtom));
 	a->setAlias(atomAlias);
 	aliasAtoms = oCdr(aliasAtoms);
 	atomAliases = oCdr(atomAliases);
@@ -691,9 +691,28 @@ Atom_sp				a;
     return false;
 }
 
+CL_LAMBDA(atom-name &optional (errorp t));
+CL_DEFMETHOD
+core::T_mv Residue_O::atomWithName(MatterName name, bool errorp)
+{
+  contentIterator	aCur;
+  for ( aCur=this->_contents.begin();aCur!=this->_contents.end(); aCur++ ) {
+    LOG(BF("Looking at(%s) for(%s)") % (*aCur)->getName().c_str() % sName.c_str()  );
+    if ( (*aCur)->getName() == name ) {
+      return Values(*aCur,_lisp->_true());
+    }
+  }
+  if (!errorp) {
+    return Values(_Nil<core::T_O>(),_Nil<core::T_O>());
+  }
+  stringstream ss;
+  ss << this->className() << " (" << _rep_(this->name) << ") does not contain name(" << _rep_(name) << ")";
+  SIMPLE_ERROR(BF(ss.str()));
+}
+
 Vector3 Residue_O::positionOfAtomWithName(MatterName name)
 {
-    Atom_sp a = this->atomWithName(name);
+  Atom_sp a = gc::As_unsafe<Atom_sp>(this->atomWithName(name));
     return a->getPosition();
 }
 void	Residue_O::failIfInvalid()

@@ -1,5 +1,6 @@
 (in-package :sketch2d)
 
+(defparameter *show-all* nil)
 (defparameter *perpendicular-fraction* 0.15)
 (defparameter *parallel-fraction* 0.1)
 (defparameter *dirz* (geom:vec 0.0 0.0 1.0))
@@ -22,11 +23,13 @@
 (defclass line ()
   ((p1 :initarg :p1 :accessor p1)
    (p2 :initarg :p2 :accessor p2)
+   (dash :initform nil :initarg :dash :accessor dash)
    (color :initform "black" :initarg :color :accessor color)))
 
 (defclass atom-node ()
   ((atom :initarg :atom :accessor atom)
    (renderp :initform nil :accessor renderp)
+   (heavyp :initform nil :accessor heavyp)
    (labelp :initform nil :accessor labelp)
    (bond-nodes :initform nil :initarg :bond-nodes :accessor bond-nodes)
    (rings :initform nil :accessor rings)
@@ -35,7 +38,7 @@
    (terminal :initform nil :accessor terminal)
    (element-label :initarg :element-label :accessor element-label)
    (pos :initarg :pos :accessor pos)
-   (hydrogens :initarg :hydrogens :accessor hydrogens)
+   (hydrogens :initform 0 :initarg :hydrogens :accessor hydrogens)
    (hydrogens-dir :initarg :hydrogens-dir :accessor hydrogens-dir)
    (charge :initarg :charge :accessor charge)))
 
@@ -47,6 +50,10 @@
 
 (defclass sketch-svg ()
   ((molecule :initarg :molecule :accessor molecule)
+   (sketch2d* :initarg :sketch2d* :accessor sketch2d*)
+   (height :initarg :height :accessor height)
+   (width :initarg :width :accessor width)
+   (sketch-atoms-to-original :initarg :sketch-atoms-to-original :accessor sketch-atoms-to-original)
    (rings :initarg :rings :accessor rings)
    (aromaticity-info :initarg :aromaticity-info :accessor aromaticity-info)
    (atoms-to-nodes :initarg :atoms-to-nodes :accessor atoms-to-nodes)
@@ -56,26 +63,6 @@
    (after-render :initarg :after-render :accessor after-render)
    (scene :initarg :scene :accessor scene)
    (character-pts :initform *character-pts* :reader character-pts)))
-
-
-(defun sketch-bonds (molecule)
-  (let* ((scene (cl-svg:make-svg-toplevel 'cl-svg:svg-1.2-toplevel :height 100 :width 100)))
-    (chem:map-bonds
-     nil
-     (lambda (a1 a2 order)
-       (unless (or (= (chem:get-atomic-number a1) 1)
-                   (= (chem:get-atomic-number a2) 1)
-                   (eq (chem:get-element a1) :lp)
-                   (eq (chem:get-element a2) :lp))
-         (let* ((p1 (chem:get-position a1))
-                (p2 (chem:get-position a2))
-                (df (geom:v* (geom:vnormalized (geom:v- p1 p2)) 40.0)))
-           (cl-svg:draw scene (:path :d (cl-svg:path
-                                         (cl-svg:move-to 50 50)
-                                         (cl-svg:line-to-r (geom:vx df) (geom:vy df)))
-                                     :fill "none" :stroke "blue" :stroke-width 1)))))
-     molecule)
-    (with-output-to-string (sout) (cl-svg:stream-out sout scene))))
 
 
 (defun calculate-side-bond (p1 p2 offset1 offset2 &key (towards 1.0))
@@ -101,15 +88,29 @@ This will place the calculated bond on one or the other side of the x1,y1-x2,y2 
          (p2o (geom:v+ (geom:v- p2 offset-parallel) offset-perpendicular)))
     (values p1o p2o)))
 
-(defun draw-bond (scene x1 y1 x2 y2 color)
-  #+(or)(cl-svg:draw scene (:line :x1 x1 :y1 y1
-                            :x2 x2 :y2 y2
-                                  :fill "none" :stroke "white" :stroke-width 4))
-  (render-dbg "Line ~a ~a -> ~a ~a  ~a~%" x1 y1 x2 y2 color)
-  (cl-svg:draw scene (:line :x1 x1 :y1 y1
-                            :x2 x2 :y2 y2
-                            :fill "none" :stroke color :stroke-width 2
-                            :stroke-linecap "round")))
+(defun draw-bond (scene line)
+  (let* ((p1 (p1 line))
+         (p2 (p2 line))
+         (color (color line))
+         (x1 (geom:vx p1))
+         (y1 (geom:vy p1))
+         (x2 (geom:vx p2))
+         (y2 (geom:vy p2))
+         (dash (dash line)))
+    (render-dbg "Line ~a ~a -> ~a ~a  ~a~%" x1 y1 x2 y2 color)
+    #+(or)(cl-svg:draw scene (:line :x1 x1 :y1 y1
+                                    :x2 x2 :y2 y2
+                                    :fill "none" :stroke "white" :stroke-width 4))
+    (if dash
+        (cl-svg:draw scene (:line :x1 x1 :y1 y1
+                                  :x2 x2 :y2 y2
+                                  :stroke-dasharray "5, 5"
+                                  :fill "none" :stroke color :stroke-width 2
+                                  :stroke-linecap "round"))
+        (cl-svg:draw scene (:line :x1 x1 :y1 y1
+                                  :x2 x2 :y2 y2
+                                  :fill "none" :stroke color :stroke-width 2
+                                  :stroke-linecap "round")))))
 
 (defun draw-atom-text (scene atom-node)
   (let* ((pos (pos atom-node))
@@ -117,7 +118,7 @@ This will place the calculated bond on one or the other side of the x1,y1-x2,y2 
          (ys1 (geom:vy pos))
          (label (string (chem:get-element (atom atom-node)))))
     (cl-svg:text scene (:x xs1 :y (+ ys1 *lower-text*) :text-anchor "middle" :alignment-baseline "middle") label)
-    (when (> (hydrogens atom-node) 0)
+    (when (and (hydrogens atom-node) (> (hydrogens atom-node) 0))
       (multiple-value-bind (hdx hdy hsubdx hsubdy)
           (cond
             ((= 1 (hydrogens atom-node))
@@ -150,7 +151,7 @@ This will place the calculated bond on one or the other side of the x1,y1-x2,y2 
           (setf (gethash atom atom-ht) new-atom-node)
           new-atom-node))))
 
-(defun generate-sketch (sketch2d)
+(defun generate-sketch (sketch2d width height)
   "Return the bonds and atoms that we need to render"
   (let ((molecule (molecule sketch2d))
         bonds
@@ -181,6 +182,10 @@ This will place the calculated bond on one or the other side of the x1,y1-x2,y2 
                        do (push ring (rings atom-node))))
         (make-instance 'sketch-svg
                        :molecule molecule
+                       :sketch2d* sketch2d
+                       :width width
+                       :height height
+                       :sketch-atoms-to-original (sketch-atoms-to-original sketch2d)
                        :rings rings
                        :atoms-to-nodes atoms
                        :aromaticity-info aromaticity-info
@@ -211,7 +216,7 @@ This will place the calculated bond on one or the other side of the x1,y1-x2,y2 
         (geom:v* pos (/ 1.0 count))
         (error "There was no ring"))))
 
-(defun draw-double-bond (atoms-to-nodes pos dir left start stop atom-node1 atom-node2 rings)
+(defun draw-double-bond (atoms-to-nodes pos dir left start stop atom-node1 atom-node2 rings &optional aromaticp)
   (let ((in-rings (loop for ring in rings
                         when (and (member (atom atom-node1) ring)
                                   (member (atom atom-node2) ring))
@@ -236,14 +241,14 @@ This will place the calculated bond on one or the other side of the x1,y1-x2,y2 
                 )
                ((< (* atom1-side atom2-side) 0.0)
                 (render-dbg "pi-side 2~%")
-                :left            ; bond-weight-dir are conflicting
+                :left                ; bond-weight-dir are conflicting
                 )
                ((= 0.0 atom1-side atom2-side)
                 (render-dbg "pi-side 3~%")
                 (if (or (terminal atom-node1)
                         (terminal atom-node2))
                     :centered
-                    :left ; pick one - it looks better
+                    :left               ; pick one - it looks better
                     )
                 )
                ((> (abs atom1-side) 20.0)
@@ -271,21 +276,27 @@ This will place the calculated bond on one or the other side of the x1,y1-x2,y2 
                             (if (labelp atom-node2) 0.0 *shorten-pi-bond*))))
         (list
          #+(or)(make-instance 'line
-                        :p1 pos
-                        :p2 (geom:v+ pos (geom:v* left 10.0))
-                        :color "blue")
+                              :p1 pos
+                              :p2 (geom:v+ pos (geom:v* left 10.0))
+                              :color "blue")
          (make-instance 'line
                         :p1 (geom:v+ (geom:v* left pi1) (geom:v+ pos (geom:v* dir start)))
                         :p2 (geom:v+ (geom:v* left pi1) (geom:v+ pos (geom:v* dir stop))))
-         (make-instance 'line
-                        :p1 (geom:v+ (geom:v* left pi2) (geom:v+ pos (geom:v* dir (+ start shorten1))))
-                        :p2 (geom:v+ (geom:v* left pi2) (geom:v+ pos (geom:v* dir (- stop shorten2))))))))))
+         (if aromaticp
+             (make-instance 'line
+                            :dash t
+                            :p1 (geom:v+ (geom:v* left pi2) (geom:v+ pos (geom:v* dir (+ start shorten1))))
+                            :p2 (geom:v+ (geom:v* left pi2) (geom:v+ pos (geom:v* dir (- stop shorten2)))))
+             (make-instance 'line
+                            :p1 (geom:v+ (geom:v* left pi2) (geom:v+ pos (geom:v* dir (+ start shorten1))))
+                            :p2 (geom:v+ (geom:v* left pi2) (geom:v+ pos (geom:v* dir (- stop shorten2)))))))))))
   
 (defun calculate-bond (bond-node sketch)
   (Let ((atom-node1 (atom-node1 bond-node))
         (atom-node2 (atom-node2 bond-node)))
-    (when (and (renderp atom-node1)
-               (renderp atom-node2))
+    (when (or *show-all*
+              (and (renderp atom-node1)
+                   (renderp atom-node2)))
       (let* ((bond-order (bond-order bond-node))
              (pos1 (pos atom-node1))
              (pos2 (pos atom-node2))
@@ -316,6 +327,14 @@ This will place the calculated bond on one or the other side of the x1,y1-x2,y2 
                                start stop
                                atom-node1 atom-node2
                                (rings sketch)))
+            ((eq :aromatic-bond bond-order)
+             (draw-double-bond (atoms-to-nodes sketch)
+                               pos1 dir12
+                               left
+                               start stop
+                               atom-node1 atom-node2
+                               (rings sketch)
+                               t))
             ((eq :triple-bond bond-order)
              (let ((p1 (calc-pos pos1 dir12 start))
                    (p2 (calc-pos pos1 dir12 stop)))
@@ -337,7 +356,8 @@ This will place the calculated bond on one or the other side of the x1,y1-x2,y2 
         for atom = (atom atom-node)
         unless (or (eq :lp (chem:get-element atom))
                    (= 1 (chem:get-atomic-number atom)))
-          do (setf (renderp atom-node) t)
+          do (setf (renderp atom-node) t
+                   (heavyp atom-node) t)
         when (not (eq (chem:get-element atom) :c))
           do (setf (labelp atom-node) t))
   ;; Calculate a direction vector for each atom that
@@ -351,7 +371,7 @@ This will place the calculated bond on one or the other side of the x1,y1-x2,y2 
                         (count 0))
                     (loop for bond-node in bond-nodes
                           for other-atom-node = (other-atom-node bond-node atom-node)
-                          when (renderp other-atom-node)
+                          when (heavyp other-atom-node)
                             do (setf dir (geom:v+ dir (geom:v- (pos other-atom-node) (pos atom-node)))
                                      count (1+ count)))
                     (if (> count 0)
@@ -365,7 +385,7 @@ This will place the calculated bond on one or the other side of the x1,y1-x2,y2 
         for other-bonds-count = 0
         do (loop for bond-node in bond-nodes
                  for other-atom-node = (other-atom-node bond-node atom-node)
-                 when (renderp other-atom-node)
+                 when (heavyp other-atom-node)
                    do (incf other-bonds-count))
         do (when (= 1 other-bonds-count)
              (setf (terminal atom-node) t)))
@@ -385,19 +405,12 @@ This will place the calculated bond on one or the other side of the x1,y1-x2,y2 
 (defgeneric render-node (scene node))
 
 (defmethod render-node (scene (node atom-node))
-  (when (and (renderp node) (labelp node))
+  (when (and (or *show-all* (renderp node)) (labelp node))
     (draw-atom-text scene node)))
 
 (defmethod render-node (scene (node bond-node))
   (loop for line in (lines node)
-        for p1 = (p1 line)
-        for p2 = (p2 line)
-        for color = (color line)
-        for x1 = (geom:vx p1)
-        for y1 = (geom:vy p1)
-        for x2 = (geom:vx p2)
-        for y2 = (geom:vy p2)
-        do (draw-bond scene x1 y1 x2 y2 color)))
+        do (draw-bond scene line)))
 
 (defun render-sketch (scene sketch)
   (loop for bond-node in (bond-nodes sketch)
@@ -408,18 +421,20 @@ This will place the calculated bond on one or the other side of the x1,y1-x2,y2 
         do (render-node scene atom-node)))
 
 
-(defun svg (sketch2d &key (width 1000) (xbuffer 0.1) (ybuffer 0.1) before-render after-render)
+(defun svg (sketch2d &key (toplevel t) (width 1000) (xbuffer 0.1) (ybuffer 0.1) before-render after-render (id ""))
   "Generate SVG to render the molecule.  Pass a BEFORE-RENDER function or AFTER-RENDER function to add info to the structure.
 Each of these functions take two arguments, the svg-scene and the sketch-svg. 
 The caller provided functions should use cl-svg to render additional graphics."
   (let* ((molecule (molecule sketch2d))
-         (bbox (chem:matter-bounding-box molecule 0.0))
-         (xscale 20.0)
-         (yscale 20.0)
-         (xviewport (* (- (geom:get-max-x bbox) (geom:get-min-x bbox)) (+ 1.0 (* 2.0 xbuffer)) xscale))
-         (yviewport (* (- (geom:get-max-y bbox) (geom:get-min-y bbox)) (+ 1.0 (* 2.0 ybuffer)) yscale))
+         (bbox (chem:matter-calculate-bounding-cuboid molecule 0.0))
+         (xscale 20.0) ; scale from angstroms to pts?
+         (yscale 20.0) ; scale from angstroms to pts
+         (bbox-width (- (geom:get-max-x bbox) (geom:get-min-x bbox)))
+         (bbox-height (- (geom:get-max-y bbox) (geom:get-min-y bbox)))
          (x-mol-center (/ (+ (geom:get-max-x bbox) (geom:get-min-x bbox)) 2.0))
          (y-mol-center (/ (+ (geom:get-max-y bbox) (geom:get-min-y bbox)) 2.0))
+         (xviewport (* bbox-width (+ 1.0 (* 2.0 xbuffer)) xscale))
+         (yviewport (* bbox-height (+ 1.0 (* 2.0 ybuffer)) yscale))
          (x-viewport-center (/ xviewport 2.0))
          (y-viewport-center (/ yviewport 2.0))
          (height (* width (/ yviewport xviewport)))
@@ -433,28 +448,40 @@ The caller provided functions should use cl-svg to render additional graphics."
                      (y1 (+ (* yscale (- y y-mol-center)) y-viewport-center)))
                  (geom:vec x1 y1 0.0)))))
       #+(or)(cl-svg:draw scene (:rect :x 0 :y 0 :width xviewport :height yviewport :stroke "green" :fill "green"))
-      (let ((sketch (generate-sketch sketch2d)))
+      (let ((sketch (generate-sketch sketch2d xviewport yviewport)))
         (layout-sketch sketch #'transform-point)
         (optimize-sketch sketch)
         (render-dbg "About to render-sketch  bond-nodes ~a~%" (length (bond-nodes sketch)))
-        (let ((scene (cl-svg:make-svg-toplevel
-                      'cl-svg:svg-1.2-toplevel
-                      :width (round xviewport)
-                      :height (round yviewport) ; :width "1000" :height "auto" ; :width width :height height
-                      :viewport (format nil "0 0 ~d ~d" (round xviewport) (round yviewport)))))
+        (let ((scene (if toplevel
+                         (cl-svg:make-svg-toplevel
+                          'cl-svg:svg-1.2-toplevel
+                          :id id
+                          :width (round xviewport)
+                          :height (round yviewport) 
+                          :viewport (format nil "0 0 ~d ~d" (round xviewport) (round yviewport)))
+                         (make-instance 'cl-svg::svg-element
+                                        :name "svg"
+                                        :attributes
+                                        (list :width (round xviewport)
+                                              :height (round yviewport) ; :width "1000" :height "auto" ; :width width :height height
+                                              :id id
+                                              :viewport (format nil "0 0 ~d ~d" (round xviewport) (round yviewport))))
+                         )))
           (setf (scene sketch) scene)
           (setf (before-render sketch) before-render)
           (setf (after-render sketch) after-render)
           sketch)))))
 
-(defun render-svg (sketch)
-  (let ((scene (scene sketch)))
-;;    (format t "In render-svg after-render -> ~a  cando-user::*dammit* -> ~a~%" (after-render sketch) (find-symbol "*DAMMIT*" :cando-user))
-;;    (format t "(boundp *dammit*) -> ~a~%" (boundp 'cando-user::*dammit*))
-;;    (format t "(symbol-value *dammit*) -> ~a~%" (symbol-value 'cando-user::*dammit*))
-    (when (before-render sketch)
-      (funcall (before-render sketch) scene sketch))
-    (render-sketch scene sketch)
-    (when (after-render sketch)
-      (funcall (after-render sketch) scene sketch))
+(defun render-svg-scene (sketch-svg)
+  (let ((scene (scene sketch-svg)))
+    (when (before-render sketch-svg)
+      (funcall (before-render sketch-svg) scene sketch-svg))
+    (render-sketch scene sketch-svg)
+    (when (after-render sketch-svg)
+      (funcall (after-render sketch-svg) scene sketch-svg))
+    scene))
+
+(defun render-svg-to-string (sketch-svg)
+  (let ((scene (render-svg-scene sketch-svg)))
     (with-output-to-string (sout) (cl-svg:stream-out sout scene))))
+

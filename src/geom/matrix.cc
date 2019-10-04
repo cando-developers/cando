@@ -44,6 +44,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/object.h>
 #include <clasp/core/lispStream.h>
 #include <clasp/core/lisp.h>
+#include <cando/chem/nVector.h>
 //#include "core/archiveNode.h"
 
 
@@ -275,6 +276,35 @@ void	Matrix::setAll(const Matrix& m)
     this->elements = m.elements;
 }
 
+void Matrix::transform_nvector_point(double& xdest, double& ydest, double& zdest, chem::NVector_sp source, size_t source_index) const {
+  double acc;
+  acc  = this->atRowCol(0,0)*(*source)[source_index];
+  acc += this->atRowCol(0,1)*(*source)[source_index+1];
+  acc += this->atRowCol(0,2)*(*source)[source_index+2];
+  acc += this->atRowCol(0,3);
+  xdest = acc;
+
+  acc  = this->atRowCol(1,0)*(*source)[source_index];
+  acc += this->atRowCol(1,1)*(*source)[source_index+1];
+  acc += this->atRowCol(1,2)*(*source)[source_index+2];
+  acc += this->atRowCol(1,3);
+  ydest = acc;
+
+  acc  = this->atRowCol(2,0)*(*source)[source_index];
+  acc += this->atRowCol(2,1)*(*source)[source_index+1];
+  acc += this->atRowCol(2,2)*(*source)[source_index+2];
+  acc += this->atRowCol(2,3);
+  zdest = acc;
+ }
+
+
+namespace geom {
+CL_DOCSTRING("Transform a point in an nvector by the matrix and put the result in the destination");
+CL_DEFUN
+void geom__inplace_transform_nvector_point(Vector3& destination, const Matrix& transform, chem::NVector_sp source, size_t source_index) {
+  transform.transform_nvector_point(destination.getX(),destination.getY(),destination.getZ(),source,source_index);
+}
+};
 
 Matrix Matrix::operator*( const Matrix& m) const
 {
@@ -388,7 +418,15 @@ Matrix Matrix::invertTransform() const
     return invertTransform;
 }
 
+namespace geom {
+CL_DOCSTRING("Return a matrix that will invert the transform of the argument");
+CL_DEFUN
+Matrix geom__invertTransform(const Matrix& matrix)
+{
+  return matrix.invertTransform();
+}
 
+};
 
 Matrix Matrix::transpose() const
 {

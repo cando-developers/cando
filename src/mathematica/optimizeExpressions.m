@@ -1191,6 +1191,21 @@ AppendGradientForceIfCalcForce[macroPrefix_,be_,outputs_,rawEnergyFn_,rawVarName
 SetAttributes[AppendGradientForceIfCalcForce,HoldAll];
 
 
+(* For rigid body calculations *)
+AppendGradientForceIfCalcForceExtraRule[macroPrefix_,be_,outputs_,rawEnergyFn_,rawVarNames_,extraRule_]:= Module[
+	{energyFn,varNames},
+	energyFn = Evaluate[rawEnergyFn];
+	varNames = Evaluate[rawVarNames];
+	AppendTo[be,CCode["#ifdef "<>macroPrefix<>"_CALC_FORCE //["]];
+	AppendTo[be,CCode["if ( calcForce ) {"] ];
+    AppendTo[be,extraRule];
+	AppendGradientAndForce[macroPrefix,be,outputs,energyFn,varNames];
+	AppendTo[be,CCode["} /*calcForce */"]];
+	AppendTo[be, CCode["#endif /* "<>macroPrefix<>"_CALC_FORCE ]*/"]];
+];
+SetAttributes[AppendGradientForceIfCalcForce,HoldAll];
+
+
 EndPackage[]
 
 

@@ -53,12 +53,11 @@ namespace chem {
 
 struct EnergySketchNonbond
 {
-  Atom_sp      	_Atom1;
-  Atom_sp      	_Atom2;
+  size_t        _FreezeFlags;
   double       _Constant;
   int		I1; //!< i*3 index into coordinate vector, must match Mathematica code!
   int		I2; //!< i*3 index into coordinate vector, must match Mathematica code!
-  EnergySketchNonbond(Atom_sp a1, Atom_sp a2, double constant, int i1, int i2) : _Atom1(a1), _Atom2(a2), _Constant(constant), I1(i1), I2(i2) {};
+  EnergySketchNonbond(size_t flags, double constant, int i1, int i2) : _FreezeFlags(flags), _Constant(constant), I1(i1), I2(i2) {};
   EnergySketchNonbond() {};
     core::List_sp encode() const;
   void decode(core::List_sp alist);
@@ -113,6 +112,7 @@ class EnergySketchNonbond_O : public EnergyComponent_O
   double _LongDistanceCutoff;
   bool   _IgnoreHydrogensAndLps;
   double _Energy;
+  size_t _FreezeFlags;
   gctools::Vec0<EnergySketchNonbond> _Terms;
  public: // virtual functions inherited from Object
   void	initialize();
@@ -123,14 +123,15 @@ class EnergySketchNonbond_O : public EnergyComponent_O
   void setScaleSketchNonbond(double d);
   double	getScaleSketchNonbond();
 
-  void setIgnoreHydrogensAndLps(bool b);
+  void setFreezeFlags(size_t freezeFlags);
   
-  void addSketchNonbondTerm(AtomTable_sp atomTable, Atom_sp a1, Atom_sp a2, double constant);
+  void addSketchNonbondTerm(size_t coordinate1IndexTimes3, size_t coordinate2IndexTimes3, size_t freezeFlags, double constant);
   
   virtual void setupHessianPreconditioner(NVector_sp nvPosition,
                                           AbstractLargeSquareMatrix_sp m );
     
-  virtual double evaluateAll( NVector_sp 	pos,
+  virtual double evaluateAll( ScoringFunction_sp scorer,
+                              NVector_sp 	pos,
                               bool 		calcForce,
                               gc::Nilable<NVector_sp> 	force,
                               bool		calcDiagonalHessian,
@@ -139,14 +140,6 @@ class EnergySketchNonbond_O : public EnergyComponent_O
                               gc::Nilable<NVector_sp>	hdvec,
                               gc::Nilable<NVector_sp> dvec);
 
-  void evaluateUsingExcludedAtoms( NVector_sp 	pos,
-                                   bool 		calcForce,
-                                   gc::Nilable<NVector_sp> 	force,
-                                   bool		calcDiagonalHessian,
-                                   bool		calcOffDiagonalHessian,
-                                   gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                                   gc::Nilable<NVector_sp>	hdvec,
-                                   gc::Nilable<NVector_sp> dvec);
   void evaluateTerms( NVector_sp 	pos,
                       bool 		calcForce,
                       gc::Nilable<NVector_sp> 	force,
@@ -161,7 +154,7 @@ class EnergySketchNonbond_O : public EnergyComponent_O
   void modifySketchNonbondTermConstant(size_t index, float constant);
 
  public:
-  EnergySketchNonbond_O() : _LongDistanceCutoff(80.0), _ScaleSketchNonbond(1.0), _IgnoreHydrogensAndLps(false) {};
+  EnergySketchNonbond_O() : _LongDistanceCutoff(80.0), _ScaleSketchNonbond(1.0), _IgnoreHydrogensAndLps(false), _FreezeFlags() {};
   void reset();
 };
 

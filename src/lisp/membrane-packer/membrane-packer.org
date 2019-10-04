@@ -1,0 +1,4 @@
+* Membrane-packer
+
+A facility for creating membranes. The membranes are created in the X,Y plane centered on the origin.
+The facility uses a database of lipid monomers of different kinds.

@@ -47,7 +47,7 @@
         (progn
           (format t "The total charge is ~a and so there are no charges to neutralize.~%" target-charge)
           (return-from add-ions))
-        (format t "Total charge ~f~%" target-charge))
+        (format t "Total charge ~,2f~%" target-charge))
     ;;Consider neutralizetion    
     (if (= ion1-number 0)
         (progn
@@ -92,7 +92,7 @@
                                       1.0)))))
     
     ;;Build grid and calc potential on it
-    (let ((oct-tree (core:make-cxx-object 'chem:octree))
+    (let ((octree (core:make-cxx-object 'chem:add-ion-octree))
           (ion2-mol (chem:make-molecule))
           (ion2-agg (chem:make-aggregate))
           ion2-topology ion2-residue ion2-atom)
@@ -104,41 +104,43 @@
             (chem:add-matter ion2-mol ion2-residue)
             (chem:add-matter ion2-agg ion2-mol)))
       (format t "About to octree-create~%")
-      (chem:oct-oct-tree-create oct-tree mol :shell grid-space ion-min-size shell-extent nonbond-db include-solvent t)
+      (chem:octree-create octree mol :shell grid-space ion-min-size shell-extent nonbond-db include-solvent t)
       (format t "Came out of octree-create~%")
       (if (aref solvent-vec 0)
           (format t " Solvent present: replacing closest with ion when steric overlaps occur~%")
           (format t "(no solvent present)~%"))
       (multiple-value-bind (min-charge-point max-charge-point)
-          (chem:oct-tree-init-charges oct-tree at-octree dielectric ion1-size)
+          (chem:octree-init-charges octree at-octree dielectric ion1-size)
         (loop 
            for new-point = (if (< (chem:get-charge ion1-atom) 0) max-charge-point min-charge-point)
            for ion1-copy = (chem:matter-copy ion1-agg)
            for ion1-transform = (geom:make-m4-translate new-point)
            while (if ion2
                      (or (> ion1-number 0)
-                            (> ion2-number 0))
+                         (> ion2-number 0))
                      (> ion1-number 0))
-           do (if (aref solvent-vec 0)
-                  (check-solvent mol solvent-vec ion1-copy new-point))  
-           do (chem:apply-transform-to-atoms ion1-copy ion1-transform)
-           do (chem:add-matter mol ion1-copy)
-           do (format t "Placed ~a in ~a at ~a ~a ~a~%" (chem:get-name ion1-atom) 
-                      (chem:get-name mol)
-                      (geom:vx new-point)
-                      (geom:vy new-point)
-                      (geom:vz new-point))
-           do (chem:oct-tree-delete-sphere oct-tree new-point (if ion2
+           do (if (> ion1-number 0)
+                  (progn
+                    (if (aref solvent-vec 0)
+                        (check-solvent mol solvent-vec ion1-copy new-point))  
+                    (chem:apply-transform-to-atoms ion1-copy ion1-transform)
+                    (chem:add-matter mol ion1-copy)
+                    (format t "Placed ~a in ~a at (~,2f, ~,2f, ~,2f).~%" (chem:get-name ion1-atom) 
+                            (chem:get-name mol)
+                            (geom:vx new-point)
+                            (geom:vy new-point)
+                            (geom:vz new-point))
+                    (chem:octree-delete-sphere octree new-point (if ion2
                                                                   (+ ion1-size ion2-size)
                                                                   (+ ion1-size ion1-size)))
-           do (multiple-value-bind (min-new-charge-point max-new-charge-point)
-                  (chem:oct-tree-update-charge oct-tree new-point (chem:get-charge ion1-atom)
-                                               (if ion2 ion2-size ion1-size))
-                (setf min-charge-point min-new-charge-point)
-                (setf max-charge-point max-new-charge-point))
-           do (decf ion1-number)
+                    (multiple-value-bind (min-new-charge-point max-new-charge-point)
+                        (chem:octree-update-charge octree new-point (chem:get-charge ion1-atom)
+                                                     (if ion2 ion2-size ion1-size))
+                      (setf min-charge-point min-new-charge-point)
+                      (setf max-charge-point max-new-charge-point))
+                    (decf ion1-number)))
            do (if (and ion2 (> ion2-number 0))
-                   (progn 
+                  (progn 
                     (if (< (chem:get-charge ion2-atom) 0)
                         (setf new-point max-charge-point)
                         (setf new-point min-charge-point))
@@ -146,16 +148,16 @@
                           (ion2-transform (geom:make-m4-translate new-point)))
                       (chem:apply-transform-to-atoms ion2-copy ion2-transform)
                       (chem:add-matter mol ion2-copy)
-                      (format t "Placed ~a in ~a at ~a ~a ~a~%" (chem:get-name ion2-atom) 
+                      (format t "Placed ~a in ~a at (~,2f, ~,2f, ~,2f).~%" (chem:get-name ion2-atom) 
                               (chem:get-name mol)
                               (geom:vx new-point)
                               (geom:vy new-point)
                               (geom:vz new-point))
-                      (chem:oct-tree-delete-sphere oct-tree new-point (if ion1
+                      (chem:octree-delete-sphere octree new-point (if ion1
                                                                           (+ ion2-size ion1-size)
                                                                           (+ ion2-size ion2-size)))
                       (multiple-value-bind (min-new-charge-point max-new-charge-point)
-                          (chem:oct-tree-update-charge oct-tree new-point (chem:get-charge ion2-atom)
+                          (chem:octree-update-charge octree new-point (chem:get-charge ion2-atom)
                                                        (if ion1 ion1-size ion2-size))
                         (setf min-charge-point min-new-charge-point)
                         (setf max-charge-point max-new-charge-point)))
@@ -243,7 +245,7 @@
                                       1.0)))))
     
     ;;Build grid and calc potential on it
-    (let ((oct-tree (core:make-cxx-object 'chem:octree))
+    (let ((octree (core:make-cxx-object 'chem:add-ion-octree))
           (ion2-mol (chem:make-molecule))
           (ion2-agg (chem:make-aggregate))
           ion2-topology ion2-residue ion2-atom)
@@ -255,10 +257,10 @@
             (chem:add-matter ion2-mol ion2-residue)
             (chem:add-matter ion2-agg ion2-mol)))
       (format t "About to octree-create~%")
-      (chem:oct-oct-tree-create oct-tree mol :shell grid-space ion-min-size shell-extent nonbond-db include-solvent t)
+      (chem:octree-create octree mol :shell grid-space ion-min-size shell-extent nonbond-db include-solvent t)
       (format t "Came out of octree-create~%")
       (multiple-value-bind (min-charge-point max-charge-point)
-          (chem:oct-tree-init-charges oct-tree at-octree dielectric ion1-size)
+          (chem:octree-init-charges octree at-octree dielectric ion1-size)
         (loop 
            for new-point = (if (< (chem:get-charge ion1-atom) 0) max-charge-point min-charge-point)
            for ion1-copy = (chem:matter-copy ion1-agg)
@@ -267,24 +269,26 @@
                      (or (> ion1-number 0)
                             (> ion2-number 0))
                      (> ion1-number 0))
-           do (chem:apply-transform-to-atoms ion1-copy ion1-transform)
-           do (chem:add-matter mol ion1-copy)
-           do (format t "Placed ~a in ~a at ~a ~a ~a~%" (chem:get-name ion1-atom) 
-                      (chem:get-name mol)
-                      (geom:vx new-point)
-                      (geom:vy new-point)
-                      (geom:vz new-point))
-           do (chem:oct-tree-delete-sphere oct-tree new-point (if ion2
-                                                                  (+ ion1-size ion2-size)
-                                                                  (+ ion1-size ion1-size)))
-           do (multiple-value-bind (min-new-charge-point max-new-charge-point)
-                  (chem:oct-tree-update-charge oct-tree new-point (chem:get-charge ion1-atom)
-                                               (if ion2 ion2-size ion1-size))
-                (setf min-charge-point min-new-charge-point)
-                (setf max-charge-point max-new-charge-point))
-           do (decf ion1-number)
+           do (if (> ion1-number 0)
+                  (progn
+                    (chem:apply-transform-to-atoms ion1-copy ion1-transform)
+                    (chem:add-matter mol ion1-copy)
+                    (format t "Placed ~a in ~a at (~,2f, ~,2f, ~,2f).~%" (chem:get-name ion1-atom) 
+                            (chem:get-name mol)
+                            (geom:vx new-point)
+                            (geom:vy new-point)
+                            (geom:vz new-point))
+                    (chem:octree-delete-sphere octree new-point (if ion2
+                                                                        (+ ion1-size ion2-size)
+                                                                        (+ ion1-size ion1-size)))
+                    (multiple-value-bind (min-new-charge-point max-new-charge-point)
+                        (chem:octree-update-charge octree new-point (chem:get-charge ion1-atom)
+                                                     (if ion2 ion2-size ion1-size))
+                      (setf min-charge-point min-new-charge-point)
+                      (setf max-charge-point max-new-charge-point))
+                    (decf ion1-number)))
            do (if (and ion2 (> ion2-number 0))
-                   (progn 
+                  (progn 
                     (if (< (chem:get-charge ion2-atom) 0)
                         (setf new-point max-charge-point)
                         (setf new-point min-charge-point))
@@ -292,16 +296,16 @@
                           (ion2-transform (geom:make-m4-translate new-point)))
                       (chem:apply-transform-to-atoms ion2-copy ion2-transform)
                       (chem:add-matter mol ion2-copy)
-                      (format t "Placed ~a in ~a at ~a ~a ~a~%" (chem:get-name ion2-atom) 
+                      (format t "Placed ~a in ~a at (~,2f, ~,2f, ~,2f).~%" (chem:get-name ion2-atom) 
                               (chem:get-name mol)
                               (geom:vx new-point)
                               (geom:vy new-point)
                               (geom:vz new-point))
-                      (chem:oct-tree-delete-sphere oct-tree new-point (if ion1
+                      (chem:octree-delete-sphere octree new-point (if ion1
                                                                           (+ ion2-size ion1-size)
                                                                           (+ ion2-size ion2-size)))
                       (multiple-value-bind (min-new-charge-point max-new-charge-point)
-                          (chem:oct-tree-update-charge oct-tree new-point (chem:get-charge ion2-atom)
+                          (chem:octree-update-charge octree new-point (chem:get-charge ion2-atom)
                                                        (if ion1 ion1-size ion2-size))
                         (setf min-charge-point min-new-charge-point)
                         (setf max-charge-point max-new-charge-point)))
@@ -363,13 +367,13 @@
                     m)))
            mol)))))
 
-(defun add-ions-rand (aggregate ion1 ion1-number &optional ion2 ion2-number separation &key assign-types)
+(defun add-ions-rand (aggregate ion1 ion1-number &key ion2 ion2-number (separation 0.0))
   (let* ((energy-function (chem:make-energy-function aggregate
                                                      :use-excluded-atoms t
-                                                     :assign-types assign-types))
+                                                     :assign-types t))
          (atom-table (chem:atom-table energy-function))
          (nonbond-db (chem:nonbond-force-field-for-aggregate atom-table))
-         (ion1-type-index (chem:find-type-index nonbond-db (intern (string ion1) "KEYWORD")))
+         (ion1-type-index (chem:find-type-index nonbond-db ion1))
          (ion1-ffnonbond (chem:get-ffnonbond-using-type-index nonbond-db ion1-type-index))
          (ion1-size (chem:get-radius-angstroms ion1-ffnonbond))
          (ion1-topology (cando:lookup-topology ion1))
@@ -379,7 +383,6 @@
          (ion1-agg (chem:make-aggregate))
          (ion-vector (make-array (if ion2 (+ ion1-number ion2-number) ion1-number)))
          (ion-count 0)
-         (min-separation (if separation separation 0.0))
          (ion-fail-counter 0)
          (target-charge 0.0)
          (ion2-size 0.0) 
@@ -409,7 +412,7 @@
           (return-from add-ions-rand)))
     (if ion2
         (progn
-          (setf ion2-type-index (chem:find-type-index nonbond-db (intern (string ion2) "KEYWORD")))
+          (setf ion2-type-index (chem:find-type-index nonbond-db ion2))
           (setf ion2-ffnonbond (chem:get-ffnonbond-using-type-index nonbond-db ion2-type-index))
           (setf ion2-size (chem:get-radius-angstroms ion2-ffnonbond))
           (setf ion2-topology (cando:lookup-topology ion2))
@@ -481,7 +484,7 @@
                  (loop for i below ion-count
                        for point = (chem:get-position (chem:content-at (chem:content-at (chem:content-at (aref ion-vector i) 0) 0) 0))
                        for ion-distance = (geom:calculate-distance point position)
-                       do (if (< ion-distance min-separation)
+                       do (if (< ion-distance separation)
                               (progn
                                 (setf place-ion nil)
                                 (incf fail-counter))))
@@ -504,8 +507,8 @@
                        (decf ion1-number)))
                  (if (> fail-counter 100)
                      (error "Impossible to place ~a ions with minumum separation of ~a~%"
-                            (+ ion1-number ion2-number) min-separation))))
-        do (if ion2
+                            (+ ion1-number ion2-number) separation))))
+        do (if (and ion2 (> ion2-number 0))
                ;;Pick random solvent molecule to replace
                ;;Get position of solvent residue atom
                (let* ((ion2-copy (chem:matter-copy ion2-agg))
@@ -528,7 +531,7 @@
                  (loop for i below ion-count
                        for point = (chem:get-position (chem:content-at (chem:content-at (chem:content-at (aref ion-vector i) 0) 0) 0))
                        for ion-distance = (geom:calculate-distance point position)
-                       do (if (< ion-distance min-separation)
+                       do (if (< ion-distance separation)
                               (progn
                                 (setf place-ion nil)
                                 (incf fail-count))))
@@ -551,6 +554,6 @@
                        (decf ion2-number)))
                  (if (> fail-count 100)
                      (error "Impossible to place ~a ions with minumum separation of ~a~%"
-                            (+ ion1-number ion2-number) min-separation)))))
+                            (+ ion1-number ion2-number) separation)))))
              
         )))

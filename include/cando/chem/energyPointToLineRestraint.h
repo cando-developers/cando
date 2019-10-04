@@ -43,13 +43,13 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/common.h>
 #include <cando/geom/vector3.h>
 #include <cando/chem/energyComponent.h>
+#include <cando/chem/energySketchStretch.h>
 
 
 
 namespace chem
 {
 
-FORWARD(EnergyStretch);
 
 /*! Store a PointToLineRestraint energy term
  */
@@ -66,24 +66,25 @@ class EnergyPointToLineRestraint_O : public EnergyComponent_O
 public: // virtual functions inherited from Object
     void	initialize();
 public: // instance variables
-  double _Bond_div_2;
-  EnergyStretch_sp  _Stretch;
-  AtomTable_sp _AtomTable;
+  double                  _Bond_div_2;  // cutoff - if _ForceConstant is negative then less than this force is off
+  EnergySketchStretch_sp  _Stretch;
+  double                  _ForceConstant; // positive repels, negative attracts
 
 public:
-  static EnergyPointToLineRestraint_sp create(EnergyStretch_sp stretch, AtomTable_sp atomTable);
+  static EnergyPointToLineRestraint_sp create(EnergySketchStretch_sp stretch);
 public:
-    virtual double evaluateAll( NVector_sp 	pos,
-                                bool 		calcForce,
-                                gc::Nilable<NVector_sp> 	force,
-                                bool		calcDiagonalHessian,
-                                bool		calcOffDiagonalHessian,
-                                gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                                gc::Nilable<NVector_sp>	hdvec,
-                                gc::Nilable<NVector_sp> dvec);
+  virtual double evaluateAll( ScoringFunction_sp scorer,
+                              NVector_sp 	pos,
+                              bool 		calcForce,
+                              gc::Nilable<NVector_sp> 	force,
+                              bool		calcDiagonalHessian,
+                              bool		calcOffDiagonalHessian,
+                              gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                              gc::Nilable<NVector_sp>	hdvec,
+                              gc::Nilable<NVector_sp> dvec);
 
 public:
-  EnergyPointToLineRestraint_O(EnergyStretch_sp stretch, AtomTable_sp atomTable) : _Stretch(stretch), _AtomTable(atomTable) {};
+  EnergyPointToLineRestraint_O(EnergySketchStretch_sp stretch) : _Stretch(stretch), _ForceConstant(0.5) {};
   void reset();
 
 

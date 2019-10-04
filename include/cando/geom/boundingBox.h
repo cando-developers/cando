@@ -23,8 +23,8 @@ THE SOFTWARE.
 This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
 */
 /* -^- */
-#ifndef	BoundingBox_H //[
-#define BoundingBox_H
+#ifndef	BoundingCuboid_H //[
+#define BoundingCuboid_H
 
 
 
@@ -40,10 +40,10 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace geom {
 
-    FORWARD(BoundingBox);
-    class BoundingBox_O : public core::CxxObject_O
+    FORWARD(BoundingCuboid);
+    class BoundingCuboid_O : public core::CxxObject_O
     {
-	LISP_CLASS(geom,GeomPkg,BoundingBox_O,"BoundingBox",core::CxxObject_O);
+	LISP_CLASS(geom,GeomPkg,BoundingCuboid_O,"BoundingCuboid",core::CxxObject_O);
     public:
 	void	initialize();
     private:
@@ -70,6 +70,7 @@ namespace geom {
 	double getExtentX() const;
 	double getExtentY() const;
 	double getExtentZ() const;
+      Vector3 getHalfWidth() const;
 
       string __repr__() const;
       
@@ -78,12 +79,12 @@ namespace geom {
 	void expandToEncompassPoint(const Matrix& transform, const Vector3& point );
 	void pad(double add);
 
-	BoundingBox_O( const BoundingBox_O& ss ); //!< Copy constructor
+	BoundingCuboid_O( const BoundingCuboid_O& ss ); //!< Copy constructor
 
-	DEFAULT_CTOR_DTOR(BoundingBox_O);
+	DEFAULT_CTOR_DTOR(BoundingCuboid_O);
     };
 
 
 };
-TRANSLATE(geom::BoundingBox_O);
+TRANSLATE(geom::BoundingCuboid_O);
 #endif //]

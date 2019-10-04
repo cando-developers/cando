@@ -372,6 +372,7 @@ namespace chem {
     Vector3 getAnchorPos() { return this->_AnchorRestraint._AnchorPos; };
     void	setAnchorPos(Vector3 o) { this->_AnchorRestraint._AnchorPos = o; };
 #endif
+    float distanceSquaredToAtom(Atom_sp other);
 	//! Atoms should throw an exception
     void	makeAllAtomNamesInEachResidueUnique();
 #if 0

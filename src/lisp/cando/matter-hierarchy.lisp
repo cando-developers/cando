@@ -177,7 +177,7 @@ Break up the molecules in the aggregate into a list of molecules using spanning 
                                        atoms-seen
                                        residues-to-molecules
                                        atoms-to-residues)
-  #+(or)(format *debug-io* "span-across-molecule-from-atom old-molecule ~a atom ~a~%" old-molecule atom)
+  (format *debug-io* "span-across-molecule-from-atom old-molecule ~a atom ~a~%" old-molecule atom)
   (let ((new-molecule (chem:make-molecule (chem:get-name old-molecule)))
         (spanning-tree (chem:make-spanning-loop atom))
         (atoms-spanned 0)
@@ -185,14 +185,14 @@ Break up the molecules in the aggregate into a list of molecules using spanning 
     (loop
       (if (chem:advance-loop-and-process spanning-tree)
           (progn
-            #+(or)(format *debug-io* "Advancing loop with atom: ~a~%" (chem:get-atom spanning-tree))
+            (format *debug-io* "Advancing loop with atom: ~a~%" (chem:get-atom spanning-tree))
             (let* ((atom (chem:get-atom spanning-tree))
                    (residue (gethash atom atoms-to-residues))
                    (_ (unless residue
                         (error "Could not find the residue for atom ~s" atom)))
                    (residue-molecule (gethash residue residues-to-molecules)))
               (incf atoms-spanned)
-              #+(or)(format *debug-io* "Atom ~a is in residue ~a in molecule ~a~%" atom residue residue-molecule)
+              (format *debug-io* "Atom ~a is in residue ~a in molecule ~a~%" atom residue residue-molecule)
               (setf (gethash atom atoms-seen) atom)
               (unless residue-molecule
                 (push residue residues)

@@ -240,6 +240,8 @@ void EnergyFunction_O::fields(core::Record_sp node)
   node->field_if_not_unbound(INTERN_(kw,AnchorRestraint),this->_AnchorRestraint);
   node->field_if_not_unbound(INTERN_(kw,FixedNonbondRestraint),this->_FixedNonbondRestraint);
 #endif
+  node->field(INTERN_(kw,OtherEnergyComponents),this->_OtherEnergyComponents);
+  this->Base::fields(node);
 }
 
 
@@ -427,15 +429,14 @@ uint	EnergyFunction_O::countTermsBeyondThreshold()
 
 //
 
-double	EnergyFunction_O::evaluateAll(
-                                      NVector_sp 	pos,
-                                      bool 		calcForce,
-                                      gc::Nilable<NVector_sp> 	force,
-                                      bool		calcDiagonalHessian,
-                                      bool		calcOffDiagonalHessian,
-                                      gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                                      gc::Nilable<NVector_sp>	hdvec,
-                                      gc::Nilable<NVector_sp> dvec)
+double	EnergyFunction_O::evaluateAll( NVector_sp 	pos,
+                                       bool 		calcForce,
+                                       gc::Nilable<NVector_sp> 	force,
+                                       bool		calcDiagonalHessian,
+                                       bool		calcOffDiagonalHessian,
+                                       gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                       gc::Nilable<NVector_sp>	hdvec,
+                                       gc::Nilable<NVector_sp> dvec)
 {_G()
 #ifdef DEBUG_ENERGY_FUNCTION
     printf("%s:%d:%s Entered\n", __FILE__, __LINE__, __FUNCTION__ );
@@ -519,21 +520,24 @@ double	EnergyFunction_O::evaluateAll(
 	// Evaluate the stretch term
 	//
 ////	_lisp->profiler().timer(core::timerBond).start();
-    this->_Stretch->evaluateAll( pos, calcForce, force,
+    this->_Stretch->evaluateAll( this->asSmartPtr(),
+                                 pos, calcForce, force,
                                  calcDiagonalHessian,
                                  calcOffDiagonalHessian,
                                  hessian, hdvec, dvec );
 ////	_lisp->profiler().timer(core::timerBond).stop();
 #if USE_ALL_ENERGY_COMPONENTS
 ////	_lisp->profiler().timer(core::timerAngle).start();
-    this->_Angle->evaluateAll( pos, calcForce, force,
+    this->_Angle->evaluateAll( this->asSmartPtr(),
+                               pos, calcForce, force,
                                calcDiagonalHessian,
                                calcOffDiagonalHessian,
                                hessian, hdvec, dvec );
 ////	_lisp->profiler().timer(core::timerAngle).stop();
 
 ////	_lisp->profiler().timer(core::timerDihedral).start();
-    this->_Dihedral->evaluateAll( pos, calcForce, force,
+    this->_Dihedral->evaluateAll( this->asSmartPtr(),
+                                  pos, calcForce, force,
                                   calcDiagonalHessian,
                                   calcOffDiagonalHessian,
                                   hessian, hdvec, dvec );
@@ -541,29 +545,40 @@ double	EnergyFunction_O::evaluateAll(
 ////	_lisp->profiler().timer(core::timerBondAngleDihedral).stop();
 
 ////	_lisp->profiler().timer(core::timerNonbond).start();
-    this->_Nonbond->evaluateAll( pos, calcForce, force,
+    this->_Nonbond->evaluateAll( this->asSmartPtr(),
+                                 pos, calcForce, force,
                                  calcDiagonalHessian, calcOffDiagonalHessian, hessian, hdvec, dvec );
 ////	_lisp->profiler().timer(core::timerNonbond).stop();
 
 ////	_lisp->profiler().timer(core::timerImproperRestraint).start();
-    this->_ImproperRestraint->evaluateAll( pos, calcForce, force,
+    this->_ImproperRestraint->evaluateAll( this->asSmartPtr(),
+                                           pos, calcForce, force,
                                            calcDiagonalHessian, calcOffDiagonalHessian, hessian, hdvec, dvec );
 ////	_lisp->profiler().timer(core::timerImproperRestraint).stop();
 
 ////	_lisp->profiler().timer(core::timerChiralRestraint).start();
-    this->_ChiralRestraint->evaluateAll( pos, calcForce, force,
+    this->_ChiralRestraint->evaluateAll( this->asSmartPtr(),
+                                         pos, calcForce, force,
                                          calcDiagonalHessian, calcOffDiagonalHessian, hessian, hdvec, dvec );
 ////	_lisp->profiler().timer(core::timerChiralRestraint).stop();
 
 //	_lisp->profiler().timer(core::timerAnchorRestraint).start();
-    this->_AnchorRestraint->evaluateAll( pos, calcForce, force, calcDiagonalHessian, calcOffDiagonalHessian, hessian, hdvec, dvec );
+    this->_AnchorRestraint->evaluateAll( this->asSmartPtr(),
+                                         pos, calcForce, force, calcDiagonalHessian, calcOffDiagonalHessian, hessian, hdvec, dvec );
 ////	_lisp->profiler().timer(core::timerAnchorRestraint).stop();
 
 ////	_lisp->profiler().timer(core::timerFixedNonbondRestraint).start();
-    this->_FixedNonbondRestraint->evaluateAll( pos, calcForce, force,
+    this->_FixedNonbondRestraint->evaluateAll( this->asSmartPtr(),
+                                               pos, calcForce, force,
                                                calcDiagonalHessian, calcOffDiagonalHessian, hessian, hdvec, dvec );
 ////	_lisp->profiler().timer(core::timerFixedNonbondRestraint).stop();
 #endif
+    for ( auto cur : this->_OtherEnergyComponents ) {
+      core::Cons_sp pair = gc::As<core::Cons_sp>(CONS_CAR(cur));
+      EnergyComponent_sp component = gc::As<EnergyComponent_sp>(oCdr(pair));
+      component->evaluateAll(this->asSmartPtr(),pos,calcForce,force,calcDiagonalHessian,calcOffDiagonalHessian,hessian,hdvec,dvec);
+    }
+    
     this->_TotalEnergy = this->_Stretch->getEnergy();
 #if USE_ALL_ENERGY_COMPONENTS
     this->_TotalEnergy += this->_Angle->getEnergy();
@@ -574,6 +589,11 @@ double	EnergyFunction_O::evaluateAll(
     this->_TotalEnergy += this->_AnchorRestraint->getEnergy();
     this->_TotalEnergy += this->_FixedNonbondRestraint->getEnergy();
 #endif
+    for ( auto cur : this->_OtherEnergyComponents ) {
+      core::Cons_sp pair = gc::As<core::Cons_sp>(CONS_CAR(cur));
+      EnergyComponent_sp component = gc::As<EnergyComponent_sp>(oCdr(pair));
+      this->_TotalEnergy += component->getEnergy();
+    }
 
 ////	_lisp->profiler().timer(core::timerEnergy).stop();
 
@@ -595,6 +615,11 @@ string EnergyFunction_O::energyComponentsAsString()
   ss << boost::format("AnchorRestraint(%lf)") % this->_AnchorRestraint->getEnergy() << std::endl;
   ss << boost::format("FixedNonbondRestraint(%lf)") % this->_FixedNonbondRestraint->getEnergy() << std::endl;
 #endif
+  for ( auto cur : this->_OtherEnergyComponents ) {
+    core::Cons_sp pair = gc::As<core::Cons_sp>(CONS_CAR(cur));
+    EnergyComponent_sp component = gc::As<EnergyComponent_sp>(oCdr(pair));
+    ss << boost::format("%s(%lf)") % _rep_(oCar(pair)) % component->getEnergy()<<std::endl;
+  }
   return ss.str();
 }
 
@@ -619,6 +644,11 @@ int	EnergyFunction_O::compareAnalyticalAndNumericalForceAndHessianTermByTerm( NV
     this->_AnchorRestraint->compareAnalyticalAndNumericalForceAndHessianTermByTerm(pos);
     this->_FixedNonbondRestraint->compareAnalyticalAndNumericalForceAndHessianTermByTerm(pos);
 #endif
+    for ( auto cur : this->_OtherEnergyComponents ) {
+      core::Cons_sp pair = gc::As<core::Cons_sp>(CONS_CAR(cur));
+      EnergyComponent_sp component = gc::As<EnergyComponent_sp>(oCdr(pair));
+      component->compareAnalyticalAndNumericalForceAndHessianTermByTerm(pos);
+    }
   }
   return fails;
 }
@@ -691,6 +721,11 @@ string	EnergyFunction_O::energyTermsEnabled()
   ss << this->_AnchorRestraint->enabledAsString();
   ss << this->_FixedNonbondRestraint->enabledAsString();
 #endif
+  for ( auto cur : this->_OtherEnergyComponents ) {
+    core::Cons_sp pair = gc::As<core::Cons_sp>(CONS_CAR(cur));
+    EnergyComponent_sp component = gc::As<EnergyComponent_sp>(oCdr(pair));
+    ss << _rep_(oCar(pair)) << "-" << component->enabledAsString();
+  }
   return ss.str();
 }
 
@@ -920,6 +955,11 @@ void	EnergyFunction_O::dumpTerms()
   this->_AnchorRestraint->dumpTerms();
   this->_FixedNonbondRestraint->dumpTerms();
 #endif
+  for ( auto cur : this->_OtherEnergyComponents ) {
+    core::Cons_sp pair = gc::As<core::Cons_sp>(CONS_CAR(cur));
+    EnergyComponent_sp component = gc::As<EnergyComponent_sp>(oCdr(pair));
+    component->dumpTerms();
+  }
 }
 
 
@@ -1104,7 +1144,6 @@ SYMBOL_EXPORT_SC_(ChemPkg,report_parameter_warnings);
 SYMBOL_EXPORT_SC_(ChemPkg,identify_aromatic_rings);
 SYMBOL_EXPORT_SC_(ChemPkg,STARcurrent_aromaticity_informationSTAR);
 
-SYMBOL_EXPORT_SC_(KeywordPkg,bounding_box);
 CL_LISPIFY_NAME("defineForMatter");
 CL_LAMBDA((energy-function !) matter &key use-excluded-atoms active-atoms (assign-types t));
 CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, bool useExcludedAtoms, core::T_sp activeAtoms, bool assign_types )
@@ -1184,7 +1223,13 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatterWithAtomTypes(Matter_sp matte
   // Get the name to pass that to the atomTable
   core::T_sp matterName = matter->getName();
   this->_AtomTable->setAggregateName(matterName);
-  core::T_sp boundingBox = matter->getPropertyOrDefault(kw::_sym_bounding_box,_Unbound<core::T_O>());
+  core::T_sp boundingBox = _Unbound<core::T_O>();
+  if (gc::IsA<Aggregate_sp>(matter)) {
+    Aggregate_sp agg = gc::As_unsafe<Aggregate_sp>(matter);
+    if (agg->boundingBoxBoundP()) {
+      boundingBox = agg->boundingBox();
+    }
+  }
   if (boundingBox.unboundp()) {
     this->_AtomTable->makUnboundBoundingBox();
   } else {
@@ -1292,9 +1337,23 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatterWithAtomTypes(Matter_sp matte
 }
 
 
-
-
-
+core::HashTable_sp createAtomToResidueHashTable(Matter_sp molecule)
+{
+  Loop lRes;
+  Loop lAtoms;
+  core::HashTableEq_sp ht = core::HashTableEq_O::create_default();
+  lRes.loopTopGoal(molecule,RESIDUES);
+  while (lRes.advanceLoopAndProcess()) {
+    Residue_sp res = lRes.getResidue();
+    lAtoms.loopTopGoal(res,ATOMS);
+    while (lAtoms.advanceLoopAndProcess()) {
+      Atom_sp atom = lAtoms.getAtom();
+      ht->setf_gethash(atom,res);
+    }
+  }
+  return ht;
+}
+      
 
 
 CL_LAMBDA((energy-function !) molecule force-field &key active-atoms);
@@ -1310,7 +1369,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
   FFNonbond_sp	ffNonbond1, ffNonbond2;
   int             coordinateIndex;
   
-  
+
   //
   // Define a Nonbond cross term table
   //
@@ -1322,7 +1381,8 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
   this->_NonbondCrossTermTable = temp;
   this->_NonbondCrossTermTable->fillUsingFFNonbondDb(forceField->getNonbondDb());
 #endif
-  
+
+  core::HashTable_sp atomToRes = createAtomToResidueHashTable(molecule);
     	//
 	// Initialize the energy components
 	//
@@ -1364,7 +1424,9 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
         this->_Stretch->addTerm(energyStretch);
         ++terms;
       } else {
-        SIMPLE_WARN(BF("Could not find stretch parameter between %s and %s") % _rep_(a1) % _rep_(a2));
+        Residue_sp res1 = gc::As<Residue_sp>(atomToRes->gethash(a1));
+        Residue_sp res2 = gc::As<Residue_sp>(atomToRes->gethash(a2));
+        SIMPLE_WARN(BF("Could not find stretch parameter in molecule %s between %s/%s (atom type %s) and %s/%s (atom type %s)") % _rep_(molecule) % _rep_(res1) % _rep_(a1) % _rep_(a1->getType()) % _rep_(res2) % _rep_(a2) % _rep_(a2->getType()));
       }
     }
     if (chem__verbose(0)) core::write_bf_stream(BF("Built stretch table with %d terms added and %d missing terms\n") % terms % missing_terms);
@@ -1948,6 +2010,13 @@ CL_DEFMETHOD string EnergyFunction_O::summarizeBeyondThresholdInteractionsAsStri
   ss << this->_AnchorRestraint->beyondThresholdInteractionsAsString();
   ss << this->_FixedNonbondRestraint->beyondThresholdInteractionsAsString();
 #endif
+#if 0
+  for ( auto cur : this->_OtherEnergyComponents ) {
+    core::Cons_sp pair = gc::As<core::Cons_sp>(CONS_CAR(cur));
+    EnergyComponent_sp component = gc::As<EnergyComponent_sp>(oCdr(pair));
+    ss << component->beyondThreshholdInteractionsAsString();
+  }
+#endif
   return ss.str();
 }
 
@@ -1967,6 +2036,11 @@ CL_DEFMETHOD string	EnergyFunction_O::summarizeEnergyAsString()
   ss << this->_AnchorRestraint->summarizeEnergyAsString();
   ss << this->_FixedNonbondRestraint->summarizeEnergyAsString();
 #endif
+  for ( auto cur : this->_OtherEnergyComponents ) {
+    core::Cons_sp pair = gc::As<core::Cons_sp>(CONS_CAR(cur));
+    EnergyComponent_sp component = gc::As<EnergyComponent_sp>(oCdr(pair));
+    ss << component->summarizeEnergyAsString();
+  }
   ss<< "             Total energy: " << this->_TotalEnergy << std::endl;
   return ss.str();
 }
@@ -2000,6 +2074,11 @@ CL_DEFMETHOD string	EnergyFunction_O::debugLogAsString()
   ss << this->_AnchorRestraint->debugLogAsString() << std::endl;
   ss << this->_FixedNonbondRestraint->debugLogAsString() << std::endl;
 #endif
+  for ( auto cur : this->_OtherEnergyComponents ) {
+    core::Cons_sp pair = gc::As<core::Cons_sp>(CONS_CAR(cur));
+    EnergyComponent_sp component = gc::As<EnergyComponent_sp>(oCdr(pair));
+    ss << component->debugLogAsString();
+  }
   return ss.str();
 }
 

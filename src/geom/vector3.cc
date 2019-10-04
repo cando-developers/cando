@@ -243,26 +243,6 @@ double	Vector3::angleToVectorAboutNormal(const Vector3& toVector, const Vector3&
     }
 
 
-#if 0
-void	Vector3::archive(core::ArchiveP node)
-{
-    node->attribute("x",this->coords[0]);
-    node->attribute("y",this->coords[1]);
-    node->attribute("z",this->coords[2]);
-    LOG(BF("Serialized vector@%X = %lf, %lf, %lf") % this % this->coords[0] % this->coords[1] % this->coords[2]  );
-};
-#endif
-
-#if 0
-void Vector3::serialize(core::SerializerNode node)
-{
-    node
-	->orderedPOD(this->coords[0])
-	->orderedPOD(this->coords[1])
-	->orderedPOD(this->coords[2])
-	;
-}
-#endif
 void Vector3::fillFromCons(core::Cons_sp vals)
 {
   double x = core::clasp_to_double(core::oFirst(vals).as<core::Number_O>());
@@ -410,6 +390,32 @@ CL_DEFUN double geom__planeVectorAngle(double dx, double dy)
   }
 }
 
+
+CL_DOCSTRING(R"doc(Extract a geom:vec from a nvector at the particular index.)doc");
+CL_LISPIFY_NAME("vec-extract");
+CL_DEFUN void geom__vec_extract(Vector3& vec, chem::NVector_sp coordinates, size_t index0)
+{
+  if ((index0+2)<coordinates->length()) {
+  vec.set((*coordinates)[index0],
+         (*coordinates)[index0+1],
+         (*coordinates)[index0+2]);
+  return;
+  }
+  SIMPLE_ERROR(BF("Out of bounds extraction of geom:vec from nvector. Trying to extract starting at %lu and the nvector length is %lu") % index0 % coordinates->length());
+}
+
+
+CL_DOCSTRING(R"doc(Extract a geom:vec from a nvector at the particular index.)doc");
+CL_LISPIFY_NAME("vec-extract-transformed");
+CL_DEFUN void geom__vec_extract_transformed(Vector3& vec, chem::NVector_sp coordinates, size_t index0, const Matrix& transform)
+{
+  if ((index0+2)<coordinates->length()) {
+    double xp, yp, zp;
+    transform.transform_nvector_point(vec.getX(),vec.getY(),vec.getZ(),coordinates,index0);
+    return;
+  }
+  SIMPLE_ERROR(BF("Out of bounds extraction of geom:vec from nvector. Trying to extract starting at %lu and the nvector length is %lu") % index0 % coordinates->length());
+}
 
 
 };

@@ -92,7 +92,7 @@
         (* :instruction instructions)))))
 
 (defrule instruction
-    (and (or assignment function s-expr) end-of-instruction)
+    (and (or assignment function s-expr variable-s-expr) end-of-instruction)
   (:function first))
 
 ;;; Function Call
@@ -108,27 +108,10 @@
 (defrule/s function-name
     (function-name-p function-name-string))
 
-#+(or)
-(defvar *function-names*
-  '("add" "addH" "addIons" "addIons2" "addIonSolv" "addIonsRand" "addPath"
-    "addPdbAtomMap" "addPdbResMap" "addAtomTypes" "alias" "alignAxes" "bond"
-    "bondByDistance" "center" "charge" "check" "clearPdbAtomMap"
-    "clearPdbResMap" "clearVariables" "combine" "copy" "createAtom"
-    "createParmset" "createResidue" "createUnit" "crossLink" "debugOff"
-    "debugOn" "debugStatus" "deleteBond" "deleteOffLibEntry" "deleteRestraint"
-    "desc" "deSelect" "displayPdbAtomMap" "displayPdbResMap" "edit" "flip"
-    "groupSelectedAtoms" "help" "impose" "list" "listOff" "loadAmberParams"
-    "loadAmberPrep" "loadOff" "loadMol2" "loadMol3" "loadPdb" "loadPdbUsingSeq"
-    "logFile" "matchVariables" "measureGeom" "memDebug" "quit" "relax" "remove"
-    "restrainAngle" "restrainBond" "restrainTorsion" "saveAmberParm"
-    "saveAmberParmNetCDF" "saveAmberParmPert" "saveAmberParmPol"
-    "saveAmberParmPolPert" "saveAmberPrep" "saveMol2" "saveMol3" "saveOff"
-    "saveOffParm" "savePdb" "scaleCharges" "select" "sequence" "set" "setBox" "setupDefaultPaths"
-    "showdefault" "showPaths" "solvateBox" "solvateCap" "solvateDontClip" "solvateOct"
-    "solvateShell" "source" "translate" "transform" "update" "verbosity"
-    "zMatrix"))
+;;; leap.parser::*function-names*
 
-(defvar *function-names/alist*)
+(defvar *function-names/alist* nil
+  "This is defined in commands.lisp")
 
 (defun function-name-p (thing)
   (assoc thing *function-names/alist* :test #'string-equal))
@@ -136,6 +119,29 @@
 (defrule function-name-string
     (+ (character-ranges (#\a #\z) (#\A #\Z) (#\0 #\9)))
   (:text t))
+
+
+(defrule matter-name-string
+    (+ (character-ranges (#\a #\z) (#\A #\Z) (#\0 #\9)))
+  (:text t))
+
+
+
+(defun file-path-unquoted-p (thing)
+  (and (loop for chr across thing
+             when (alpha-char-p chr)
+               return t)
+       (or (position #\/ thing)
+           (position #\. thing))))
+
+(defrule file-path-string
+    (+ (character-ranges (#\a #\z) (#\A #\Z) (#\0 #\9) #\~ #\- #\_ #\/ #\. ))
+  (:text t))
+
+(defrule/s file-path-unquoted
+    (file-path-unquoted-p file-path-string))
+
+
 
 (defrule arguments
     (and raw-expression (* (and skippable? raw-expression)))
@@ -153,26 +159,53 @@
                                                       :bounds (cons start end))
       (architecture.builder-protocol:? :value value))))
 
-(defrule/s variable-name
-    (+ (character-ranges (#\a #\z) (#\A #\Z) (#\0 #\9) #\/ #\~ #\. #\_))
+(defrule package-name
+    (+ (character-ranges (#\a #\z) (#\A #\Z) (#\0 #\9) #\_ #\+ #\-))
   (:lambda (chars)
-    (let ((str (esrap:text chars)))
-      ;;; This is where we do something really bad to deal with leap syntax like:
-      ;;;   loadAmberParams ~/Foo/bar.lst
-      ;;; Someone allowed file paths not in double quotes or prefixed with $ !!!!!
-      ;;; So if a token is recognized as a variable and it contains ~ or / or .
-      ;;;   then we will treat it here as a string
-      (if (or (position #\. str) ; This may be a problem - I thought leap had a dot x.y.z syntax
-              (and (position #\~ str) (position #\/ str))
-              (position #\/ str))
-          str ; This is for filenames with no double quotes
-          (intern str *package*)))))
+    (let ((str (string-upcase (esrap:text chars))))
+      (let ((pkg (find-package str)))
+        (if pkg
+            pkg
+            (error "Could not find package ~a" str))))))
 
-(defrule/s keyword
-    (and #\: (+ (character-ranges (#\a #\z) (#\A #\Z) (#\0 #\9) #\. #\_)))
+(defrule variable-name-string
+    (+ (character-ranges (#\a #\z) (#\A #\Z) (#\0 #\9) #\_  #\+ #\- #\*))
   (:lambda (chars)
     (let ((str (esrap:text chars)))
-      (intern (esrap:text chars) :keyword))))
+      str)))
+
+(defrule package-colon-variable-name
+    (and package-name #\: variable-name-string)
+  (:destructure (package colon variable-name-string)
+                (declare (ignore colon))
+                (let ((sym (find-symbol variable-name-string package)))
+                  (if sym
+                      sym
+                      (error "Could not find symbol ~a in package ~a" variable-name-string package)))))
+
+(defrule current-package-variable-name
+    (and variable-name-string)
+  (:destructure (variable-name-string)
+                (intern variable-name-string *package*)))
+
+
+(defrule/s variable-name
+    (or package-colon-variable-name
+        current-package-variable-name
+        ))
+
+#|
+    (or package-colon-variable-name
+        current-package-variable-name))
+|#
+  
+(defrule/s keyword
+    (and #\: (+ (character-ranges (#\a #\z) (#\A #\Z) (#\0 #\9) #\. #\_ #\+ #\-)))
+  (:lambda (chars)
+    (let ((str (string-upcase (esrap:text (cdr chars)))))
+      (format t "keyword str -> ~s~%" str)
+      (intern str :keyword))))
+
 
 ;;; Expression
 
@@ -199,12 +232,16 @@
       (* :element (remove nil elements)))))
 
 (defrule literal
-    (or integer-literal/decimal
-        string-literal/double-quotes
-        string-literal/dollar
-        variable-name
-        keyword
-        dummy)
+    (or
+;;     matter
+     file-path-unquoted
+     float-literal
+     integer-literal/decimal
+     string-literal/double-quotes
+     string-literal/dollar
+     keyword
+     variable-name
+     dummy)
   (:lambda (value &bounds start end)
     (architecture.builder-protocol:node* (:literal :value  value
                                                    :bounds (cons start end)))))
@@ -243,3 +280,148 @@
     (architecture.builder-protocol:node*
         (:s-expr :value  expression
                  :bounds (cons start end)))))
+
+
+(defrule variable-s-expr
+    variable-name/?s
+  (:lambda (expression &bounds start end)
+    (architecture.builder-protocol:node*
+        (:s-expr :value  expression
+                 :bounds (cons start end)))))
+
+
+
+;;; matter expressions
+
+(defun aggregate-name-p (thing)
+  (let ((symbol (find-symbol thing :cando-user)))
+    (when symbol
+      (let ((aggp (typep (symbol-value symbol) 'chem:aggregate)))
+        aggp))))
+
+(defrule aggregate-name-string
+    (and variable-name-string)
+  (:destructure (arg)
+                arg))
+
+(defrule aggregate
+    (aggregate-name-p aggregate-name-string)
+  (:lambda (name)
+    (leap.core:lookup-variable (intern name))))
+
+(defrule/s aggregate.pdb-sequence-number
+    (and aggregate #\. integer-literal/decimal)
+  (:destructure (aggregate dot pdb-sequence-number)
+                (declare (ignore dot))
+                (block residue
+                  (cando:do-molecules (mol aggregate)
+                    (cando:do-residues (res mol)
+                      (when (= (chem:get-id res) pdb-sequence-number)
+                        (return-from residue res)))))))
+
+(defrule/s aggregate.residue-name
+    (and aggregate #\. matter-name-string)
+  (:destructure (aggregate dot residue-name)
+                (declare (ignore dot))
+                (let ((residue-name (intern residue-name :keyword)))
+                  (block residue
+                    (cando:do-molecules (mol aggregate)
+                      (cando:do-residues (res mol)
+                        (when (eq (chem:get-name res) residue-name)
+                          (return-from residue res))))))))
+
+(defrule/s aggregate/molecule-number
+    (and aggregate #\/ integer-literal/decimal)
+  (:destructure (aggregate dot molecule-number)
+                (declare (ignore dot))
+                (chem:content-with-id aggregate molecule-number)
+                #+(or)(block molecule
+                  (cando:do-molecules (mol aggregate)
+                    (when (= (chem:get-id mol) molecule-number)
+                        (return-from molecule mol))))))
+
+
+(defrule/s aggregate.residue-number.atom-number
+    (and aggregate #\. integer-literal/decimal #\. integer-literal/decimal)
+  (:destructure (aggregate dot1 residue-number dot2 atom-number)
+                (declare (ignore dot1 dot2))
+                (block atom
+                  (cando:do-molecules (mol aggregate)
+                    (cando:do-residues (res mol)
+                      (when (= (chem:get-id res) residue-number)
+                        (cando:do-atoms (atm res)
+                          (when (eq (chem:get-id atm) atom-number)
+                            (return-from atom atm)))))))))
+
+(defrule/s aggregate.residue-number.atom-name
+    (and aggregate #\. integer-literal/decimal #\. matter-name-string)
+  (:destructure (aggregate dot1 residue-number dot2 atom-name)
+                (declare (ignore dot1 dot2))
+                (let ((atom-name (intern atom-name :keyword)))
+                  (block atom
+                    (cando:do-molecules (mol aggregate)
+                      (cando:do-residues (res mol)
+                        (when (= (chem:get-id res) residue-number)
+                          (cando:do-atoms (atm res)
+                            (when (eq (chem:get-name atm) atom-name)
+                              (return-from atom atm))))))))))
+
+(defrule/s aggregate/molecule-number.residue-number.atom-name
+    (and aggregate #\/ integer-literal/decimal #\. integer-literal/decimal #\. matter-name-string)
+  (:destructure (aggregate at molecule-number dot1 residue-number dot2 atom-name)
+                (declare (ignore at dot1 dot2))
+                (let ((atom-name (intern atom-name :keyword)))
+                  (block atom
+                    (cando:do-molecules (mol aggregate)
+                      (when (= (chem:get-id mol) molecule-number)
+                        (cando:do-residues (res mol)
+                          (when (= (chem:get-id res) residue-number)
+                            (cando:do-atoms (atm res)
+                              (when (eq (chem:get-name atm) atom-name)
+                                (return-from atom atm)))))))))))
+
+(defrule/s aggregate/molecule-number.residue-number.atom-number
+    (and aggregate #\/ integer-literal/decimal #\. integer-literal/decimal #\. integer-literal/decimal)
+  (:destructure (aggregate at molecule-number dot1 residue-number dot2 atom-number)
+                (declare (ignore at dot1 dot2))
+                (block atom
+                  (cando:do-molecules (mol aggregate)
+                    (when (= (chem:get-id mol) molecule-number)
+                        (cando:do-residues (res mol)
+                          (when (= (chem:get-id res) residue-number)
+                            (cando:do-atoms (atm res)
+                              (when (eq (chem:get-id atm) atom-number)
+                                (return-from atom atm))))))))))
+
+(defrule aggregate/molecule-number.residue-number
+    (and aggregate #\/ integer-literal/decimal #\. integer-literal/decimal)
+  (:destructure (aggregate at molecule-number dot1 residue-number)
+                (declare (ignore at dot1 dot2))
+                (block residue
+                  (cando:do-molecules (mol aggregate)
+                    (when (= (chem:get-id mol) molecule-number)
+                      (cando:do-residues (res mol)
+                        (when (= (chem:get-id res) residue-number)
+                          (return-from residue res))))))))
+
+(defrule matter
+    (or aggregate/molecule-number.residue-number.atom-number
+        aggregate/molecule-number.residue-number.atom-name
+        aggregate/molecule-number.residue-number
+        aggregate/molecule-number
+        aggregate.residue-number.atom-number
+        aggregate.residue-number.atom-name
+        aggregate.pdb-sequence-number
+        aggregate.residue-name
+        aggregate
+;;;        molecule
+;;;        residue
+;;;        atom
+        ))
+
+                
+
+
+(defun parse-sub-matter (matter-string)
+  (let ((result (esrap:parse 'matter matter-string :junk-allowed t)))
+    result))

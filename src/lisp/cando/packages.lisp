@@ -143,13 +143,18 @@
   (:shadowing-import-from :chem "ATOM")
   (:import-from :ext #:chdir #:getcwd)
   (:export
-   #:|:=|
    #:<-
+   #:lazy-setup-lparallel
    #:nfx
    #:agg
    #:mol
    #:res
    #:atm
+   #:molid
+   #:resid
+   #:atmid
+   #:move-geometric-center-to-origin
+   #:move-geometric-center-to-point
    #:rename-atoms-using-smirks
    #:register-topology
    #:lookup-topology
@@ -235,6 +240,7 @@
    #:number-of-atoms
    #:simulation
    #:make-atomic-simulation
+   #:make-sketch-simulation
    #:scoring-function
    #:coordinates
    #:velocity
@@ -247,7 +253,13 @@
    #:write-coordinates-back-to-matter
    #:accumulate-coordinates
    #:accumulated-coordinates
-   #:velocity-verlet-step))
+   #:velocity-verlet-step
+   #:velocity-verlet-step-limit-displacement
+   #:describe-missing-types
+   #:dynamics-start
+   #:dynamics-end
+   #:with-dynamics
+   ))
 
 (defpackage #:infix
   (:use #:common-lisp)

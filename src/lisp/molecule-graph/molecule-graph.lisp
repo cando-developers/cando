@@ -70,11 +70,15 @@
     (t nil)))
 
 (defparameter *equivalent* nil)
+(defparameter *counts* nil)
 
 (defun match-callback (results graph1 graph2)
   (setq *equivalent* results)
   (< (length results) 6))
 
+(defun complete-match-callback (results count graph1 graph2)
+  (setq *equivalent* (copy-seq results)
+        *counts* count))
 
 (defstruct atom-cluster equivalent atoms)
 
@@ -115,6 +119,18 @@
    #'vertex-match-callback
    #'match-callback)
   *equivalent*)
+
+(defun find-complete-equivalent (graph1 graph2 &key (mcgregor-steps 200))
+  (let ((*times-called* 0)
+        (*equivalent* nil)
+        (*counts* 0))
+    (chem:boost-graph-mcgregor-common-subgraphs
+     graph1 graph2
+     t
+     #'element-match
+     #'complete-match-callback
+     mcgregor-steps)
+    (values *equivalent* *counts*)))
 
 
 (defun add-remaining-vertices (new-graph graph cluster atoms-to-node-indices)
@@ -217,6 +233,7 @@
 
 
 
+#+(or)
 (defun compare-molecules (molecule1 molecule2 &key (atom-match-callback #'default-atom-match-callback))
   "Compare the two molecules.
 Return: (values equivalences diff1 diff2)
@@ -228,7 +245,7 @@ T if they are equivalent and NIL if they are not.  This callback should at least
   (let ((graph1 (chem:make-molecule-graph-from-molecule molecule1))
         (graph2 (chem:make-molecule-graph-from-molecule molecule2))
         (*atom-match-callback* atom-match-callback))
-    (multiple-value-bind (equivs diff1 diff2 graph1 graph2)
+    (multiple-value-bind (equivs diff1 diff2)
         (compare-graphs graph1 graph2)
         (let (equivs-as-list)
           (maphash (lambda (pair dummy)
@@ -236,3 +253,39 @@ T if they are equivalent and NIL if they are not.  This callback should at least
                      (push pair equivs-as-list))
                    equivs)
          (values equivs-as-list diff1 diff2)))))
+
+(defun compare-molecules (molecule1 molecule2 &key (atom-match-callback #'default-atom-match-callback))
+  "Compare the two molecules.
+Return: (values equivalences diff1 diff2)
+equivalences - a hash table of cons cells. Each cons cell is a pair of equivalent atoms in molecule1 and molecule2.
+diff1 - The atoms of molecule1 that do not have equivalences to anything in molecule 2.
+diff2 - The atoms of molecule2 that do not have equivalences to anything in molecule 1.
+The caller can provide their own atom match callback function that takes two atoms and returns
+T if they are equivalent and NIL if they are not.  This callback should at least compare the elements."
+  (let ((graph1 (chem:make-molecule-graph-from-molecule molecule1))
+        (graph2 (chem:make-molecule-graph-from-molecule molecule2))
+        (*atom-match-callback* atom-match-callback))
+    (multiple-value-bind (matches counts)
+        (find-complete-equivalent graph1 graph2)
+      (let ((equivs12 (make-hash-table))
+            (equivs21 (make-hash-table)))
+        (loop for count from 0 below (/ (length matches) 2)
+              for index = 0 then (+ index 2)
+              for v1 = (aref matches index)
+              for v2 = (aref matches (1+ index))
+              for node1 = (chem:get-vertex graph1 v1)
+              for node2 = (chem:get-vertex graph2 v2)
+              do (setf (gethash node1 equivs12) node2)
+              do (setf (gethash node2 equivs21) node1))
+        (let (diff1 diff2)
+          (cando:do-atoms (atom molecule1)
+            (unless (gethash atom equivs12)
+              (push atom diff1)))
+          (cando:do-atoms (atom molecule2)
+            (unless (gethash atom equivs21)
+              (push atom diff2)))
+          (let (equivs-as-list)
+            (maphash (lambda (node1 node2)
+                       (push (cons node1 node2) equivs-as-list))
+                     equivs12)
+            (values equivs-as-list diff1 diff2 counts)))))))

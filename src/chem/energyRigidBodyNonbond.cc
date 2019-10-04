@@ -182,7 +182,7 @@ CL_DEFMETHOD core::List_sp EnergyRigidBodyNonbond_O::parts_as_list(NVector_sp po
 #define	NONBOND_POSITION_RB_SET_POINT(x,ii,of)	{x=ii._Position.of;}
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
-#include <cando/energy-functions/_NONBOND_POSITIONS_termDeclares.cc>
+#include <cando/chem/energy_functions/_NONBONDRBPB_POSITIONS_termDeclares.cc>
 #pragma clang diagnostic pop
   double am, bm, cm, dm, xm, ym, zm;
   double pxm, pym, pzm;
@@ -194,7 +194,7 @@ CL_DEFMETHOD core::List_sp EnergyRigidBodyNonbond_O::parts_as_list(NVector_sp po
     for ( size_t I1cur = I1start; I1cur<I1end; ++I1cur ) {
       RigidBodyAtomInfo& ea1 = this->_AtomInfoTable[I1cur];
       I1 = iI1*7;
-#include <cando/energy-functions/_NONBOND_POSITIONS_termCode.cc>
+#include <cando/chem/energy_functions/_NONBONDRBPB_POSITIONS_termCode.cc>
       helix << core::Cons_O::createList(core::DoubleFloat_O::create(plabmx),
                                         core::DoubleFloat_O::create(plabmy),
                                         core::DoubleFloat_O::create(plabmz),
@@ -206,6 +206,40 @@ CL_DEFMETHOD core::List_sp EnergyRigidBodyNonbond_O::parts_as_list(NVector_sp po
   return result.cons();
 }
 
+CL_DEFMETHOD core::ComplexVector_float_sp EnergyRigidBodyNonbond_O::write_nonbond_atom_coordinates_to_complex_vector_float(NVector_sp pos, core::ComplexVector_float_sp parts)
+{
+  ql::list result;
+  size_t istart = 0;
+#undef	NONBOND_POSITION_RB_SET_PARAMETER
+#define	NONBOND_POSITION_RB_SET_PARAMETER(x)	{}
+#undef	NONBOND_POSITION_RB_SET_POSITION
+#define	NONBOND_POSITION_RB_SET_POSITION(x,ii,of)	{x=pos->element(ii+of);}
+#undef	NONBOND_POSITION_RB_SET_POINT
+#define	NONBOND_POSITION_RB_SET_POINT(x,ii,of)	{x=ii._Position.of;}
+#pragma clang diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-variable"
+#include <cando/chem/energy_functions/_NONBONDRBPB_POSITIONS_termDeclares.cc>
+#pragma clang diagnostic pop
+  double am, bm, cm, dm, xm, ym, zm;
+  double pxm, pym, pzm;
+  int	I1;
+  size_t I1start = 0;
+  for ( size_t iI1 = 0; iI1<this->_RigidBodyEndAtom->length(); ++iI1 ) {
+    ql::list helix;
+    size_t I1end = (*this->_RigidBodyEndAtom)[iI1];
+    for ( size_t I1cur = I1start; I1cur<I1end; ++I1cur ) {
+      RigidBodyAtomInfo& ea1 = this->_AtomInfoTable[I1cur];
+      I1 = iI1*7;
+#include <cando/chem/energy_functions/_NONBONDRBPB_POSITIONS_termCode.cc>
+      parts->vectorPushExtend(plabmx);
+      parts->vectorPushExtend(plabmy);
+      parts->vectorPushExtend(plabmz);
+    }
+    I1start = I1end;
+  }
+  return parts;
+}
+
 
 void	EnergyRigidBodyNonbond_O::setupHessianPreconditioner(
                                                     NVector_sp nvPosition,
@@ -214,14 +248,23 @@ void	EnergyRigidBodyNonbond_O::setupHessianPreconditioner(
   SIMPLE_ERROR(BF("Nonbond term isn't used when calculating setupHessianPreconditioner but it was called!!!"));
 }
 
-double	EnergyRigidBodyNonbond_O::evaluateAll(NVector_sp 	pos,
-                                     bool 		calcForce,
-                                     gc::Nilable<NVector_sp> 	force,
-                                     bool		calcDiagonalHessian,
-                                     bool		calcOffDiagonalHessian,
-                                     gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                                     gc::Nilable<NVector_sp>	hdvec, 
-                                     gc::Nilable<NVector_sp> 	dvec )
+
+inline double periodic_boundary_adjust(const double& delta, const double& rsize, const double& size)
+{
+  double fdelta = fabs(delta);
+  fdelta -= static_cast<int>(fdelta*rsize + 0.5)*size;
+  return fdelta;
+}
+
+double	EnergyRigidBodyNonbond_O::evaluateAll( ScoringFunction_sp score,
+                                               NVector_sp 	pos,
+                                               bool 		calcForce,
+                                               gc::Nilable<NVector_sp> 	force,
+                                               bool		calcDiagonalHessian,
+                                               bool		calcOffDiagonalHessian,
+                                               gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                               gc::Nilable<NVector_sp>	hdvec, 
+                                               gc::Nilable<NVector_sp> 	dvec )
 {
   if (this->_CrossTerms.size() == 0 ) this->initializeCrossTerms(false);
   double vdwScale = this->getVdwScale();
@@ -231,6 +274,24 @@ double	EnergyRigidBodyNonbond_O::evaluateAll(NVector_sp 	pos,
   bool	hasForce = force.notnilp();
   bool	hasHessian = hessian.notnilp();
   bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
+
+  RigidBodyEnergyFunction_sp rigidBodyEnergyFunction = gc::As<RigidBodyEnergyFunction_sp>(score);
+  BoundingBox_sp boundingBox = rigidBodyEnergyFunction->boundingBox();
+  if (boundingBox.unboundp()) {
+    SIMPLE_ERROR(BF("The rigid-body-energy-function bounding-box is unbound - it must be defined"));
+  }
+  Vector3 rwidths = boundingBox->get_bounding_box_rwidths();
+  double x_rsize = rwidths.getX();
+  double y_rsize = rwidths.getY();
+  double z_rsize = rwidths.getZ();
+  Vector3 widths = boundingBox->get_bounding_box_widths();
+  double x_size = widths.getX();
+  double y_size = widths.getY();
+  double z_size = widths.getZ();
+  double half_x_size = x_size/2.0;
+  double half_y_size = y_size/2.0;
+  double half_z_size = z_size/2.0;
+  
 #define NONBONDRB_CALC_FORCE
 #define NONBONDRB_CALC_DIAGONAL_HESSIAN
 #define NONBONDRB_CALC_OFF_DIAGONAL_HESSIAN
@@ -252,13 +313,21 @@ double	EnergyRigidBodyNonbond_O::evaluateAll(NVector_sp 	pos,
 #define	NONBONDRB_FORCE_ACCUMULATE 		ForceAcc
 #define	NONBONDRB_DIAGONAL_HESSIAN_ACCUMULATE 	DiagHessAcc
 #define	NONBONDRB_OFF_DIAGONAL_HESSIAN_ACCUMULATE OffDiagHessAcc
+#define PBX(_delta_) periodic_boundary_adjust(_delta_,x_rsize,x_size)
+#define PBY(_delta_) periodic_boundary_adjust(_delta_,y_rsize,y_size)
+#define PBZ(_delta_) periodic_boundary_adjust(_delta_,z_rsize,z_size)
+#define BAIL_OUT_IF_CUTOFF(deltax,deltay,deltaz) \
+  if (fabs(deltax)<half_x_size) continue; \
+  if (fabs(deltay)<half_y_size) continue; \
+  if (fabs(deltaz)<half_z_size) continue;
+  
   if ( !this->isEnabled() ) return 0.0;
 	    // If you are going to use openmp here, you need to control access to the force and hessian
 	    // arrays so that only one thread updates each element at a time.
   LOG(BF("Nonbond component is enabled") );
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
-#include <cando/energy-functions/_NONBONDRB_termDeclares.cc>
+#include <cando/chem/energy_functions/_NONBONDRBPB_termDeclares.cc>
 #pragma clang diagnostic pop
   double dA,dC,dQ1Q2;
   double am, bm, cm, dm, xm, ym, zm;
@@ -296,7 +365,7 @@ double	EnergyRigidBodyNonbond_O::evaluateAll(NVector_sp 	pos,
           dQ1Q2 = electrostatic_scaled_charge1*charge2;
           I1 = iHelix1*7;
           I2 = iHelix2*7;
-#include <cando/energy-functions/_NONBONDRB_termCode.cc>
+#include <cando/chem/energy_functions/_NONBONDRBPB_termCode.cc>
 #if 0
           printf("    %s:%d coordinate offsets %d - %d\n", __FILE__, __LINE__, I1, I2 );
           printf("      dA -> %lf   dC -> %lf  dQ1Q2 -> %lf  Energy -> %lf\n", dA, dC, dQ1Q2, Energy );
@@ -307,7 +376,7 @@ double	EnergyRigidBodyNonbond_O::evaluateAll(NVector_sp 	pos,
           nbi->_calcOffDiagonalHessian = calcOffDiagonalHessian;
 #undef EVAL_SET
 #define	EVAL_SET(var,val)	{ nbi->eval.var=val;};
-#include <cando/energy-functions/_NONBONDRB_debugEvalSet.cc>
+#include <cando/chem/energy_functions/_NONBONDRBPB_debugEvalSet.cc>
 #endif //]
 #ifdef DEBUG_NONBOND_TERM
           if ( this->_DebugEnergy ) {
@@ -413,16 +482,16 @@ void	EnergyRigidBodyNonbond_O::compareAnalyticalAndNumericalForceAndHessianTermB
     _BLOCK_TRACE("NonbondEnergy finiteDifference comparison");
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
-#include <cando/energy-functions/_NONBONDRB_termDeclares.cc>
+#include <cando/chem/energy_functions/_NONBONDRBPB_termDeclares.cc>
 #pragma clang diagnostic pop
     double x1,y1,z1,x2,y2,z2,dA,dC,dQ1Q2;
     int	I1, I2,i;
     gctools::Vec0<EnergyRigidBodyNonbond>::iterator nbi;
     for ( i=0,nbi=this->_Terms.begin();
           nbi!=this->_Terms.end(); nbi++,i++ ) {
-#include <cando/energy-functions/_NONBONDRB_termCode.cc>
+#include <cando/chem/energy_functions/_NONBONDRBPB_termCode.cc>
       int index = i;
-#include <cando/energy-functions/_NONBONDRB_debugFiniteDifference.cc>
+#include <cando/chem/energy_functions/_NONBONDRBPB_debugFiniteDifference.cc>
 
     }
   }

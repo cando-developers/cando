@@ -116,3 +116,115 @@ multiple force-fields and know how a more recently added force-field shadows a l
 
 (defmethod chem:generate-molecule-energy-function-tables (energy-function molecule (combined-force-field chem:combined-force-field) active-atoms)
   (chem:generate-standard-energy-function-tables energy-function molecule combined-force-field active-atoms))
+
+
+;;; ------------------------------------------------------------
+;;;
+;;; node-table protocol
+;;;
+;;;
+
+
+(defgeneric chem:make-node-table-from-graph (graph nonbond-force-field)
+  (:documentation "Make a node-table from the graph. Return the node-table object."))
+
+(defgeneric chem:node-table-size (node-table)
+  (:documentation "Return the number of nodes in the node-table"))
+
+(defgeneric chem:node-table-coordinate-index-times3 (node-table index)
+  (:documentation "Return a coordinate index (an index into a coordinate vector, a multiple of 3) 
+for the node in the table."))
+
+(defgeneric chem:node-table-node-at-index (node-table index)
+  (:documentation "Return the node in the node-table at the index."))
+
+(defgeneric chem:node-get-position (node)
+  (:documentation "Return the vector position of the node."))
+
+(defgeneric chem:node-set-position (node vector3)
+  (:documentation "Set the vector position of the node."))
+
+
+(defmethod chem:make-node-table-from-graph ((molecule chem:molecule) nonbond-force-field)
+  "Construct a chem:atom-table from a molecule."
+  (let ((atom-table (core:make-cxx-object 'chem:atom-table)))
+    (chem:construct-from-molecule atom-table molecule nonbond-force-field nil)
+    atom-table))
+
+(defmethod chem:node-table-size ((atom-table chem:atom-table))
+  (chem:get-number-of-atoms atom-table))
+
+(defmethod chem:node-table-coordinate-index-times3 ((atom-table chem:atom-table) index)
+  (chem:get-coordinate-index-for-atom-at-index atom-table index))
+
+(defmethod chem:node-table-node-at-index ((atom-table chem:atom-table) index)
+  (chem:elt-atom atom-table index))
+
+(defmethod chem:node-get-position ((atom chem:atom))
+  (chem:get-position atom))
+
+(defmethod chem:node-set-position ((atom chem:atom) vector3)
+  (chem:set-position atom vector3))
+
+
+
+;;; ------------------------------------------------------------
+;;;
+;;; Generic functions for bounding-box for aggregates and atom-tables
+;;;
+
+(defgeneric chem:bounding-box (object)
+  (:documentation "Return the bounding-box for the object"))
+
+(defgeneric chem:bounding-box-bound-p (object)
+  (:documentation "Return T if the bounding-box is bound to a value."))
+
+(defgeneric chem:set-bounding-box (object bounding-box)
+  (:documentation "Set the bounding box to the value."))
+
+(defgeneric chem:mak-unbound-bounding-box (object)
+  (:documentation "Make the bounding-box unbound."))
+
+(defmethod chem:bounding-box ((atom-table chem:atom-table))
+  (chem:atom-table-bounding-box atom-table))
+
+(defmethod chem:bounding-box-bound-p ((atom-table chem:atom-table))
+  (chem:atom-table-bounding-box-bound-p atom-table))
+
+(defmethod chem:set-bounding-box ((atom-table chem:atom-table) bounding-box)
+  (chem:atom-table-set-bounding-box atom-table bounding-box))
+
+(defmethod chem:mak-unbound-bounding-box ((atom-table chem:atom-table))
+  (chem:atom-table-mak-unbound-bounding-box atom-table))
+
+
+
+(defmethod chem:bounding-box ((aggregate chem:aggregate))
+  (chem:aggregate-bounding-box aggregate))
+
+(defmethod chem:bounding-box-bound-p ((aggregate chem:aggregate))
+  (chem:aggregate-bounding-box-bound-p aggregate))
+
+(defmethod chem:set-bounding-box ((aggregate chem:aggregate) bounding-box)
+  (chem:aggregate-set-bounding-box aggregate bounding-box))
+
+(defmethod chem:mak-unbound-bounding-box ((aggregate chem:aggregate))
+  (chem:aggregate-mak-unbound-bounding-box aggregate))
+
+
+(defmethod chem:set-bounding-box ((octtree chem:add-ion-octree) bounding-box)
+  (chem:aggregate-set-bounding-box octtree bounding-box))
+
+
+(defmethod chem:bounding-box ((rigid-body-energy-function chem:rigid-body-energy-function))
+  (chem:rigid-body-energy-function-bounding-box rigid-body-energy-function))
+
+(defmethod chem:bounding-box-bound-p ((rigid-body-energy-function chem:rigid-body-energy-function))
+  (chem:rigid-body-energy-function-bounding-box-bound-p rigid-body-energy-function))
+
+(defmethod chem:set-bounding-box ((rigid-body-energy-function chem:rigid-body-energy-function) bounding-box)
+  (chem:rigid-body-energy-function-set-bounding-box rigid-body-energy-function bounding-box))
+
+(defmethod chem:mak-unbound-bounding-box ((rigid-body-energy-function chem:rigid-body-energy-function))
+  (chem:rigid-body-energy-function-mak-unbound-bounding-box rigid-body-energy-function))
+

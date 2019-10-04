@@ -160,7 +160,7 @@ class Matter_O : public core::CxxObject_O
   virtual char getMatterType() { return MATTER_CLASS; };
 
   CL_LISPIFY_NAME("getId");
-  CL_DEFMETHOD   int	getId();
+  CL_DEFMETHOD   int	getId() const;
   CL_DEFMETHOD   void setId(int id) { this->_Id = id; };
 	/*! Accumulate all of the restraints in this matter and its contents into a single RestraintVector */
   core::List_sp allRestraints() const;
@@ -170,8 +170,7 @@ class Matter_O : public core::CxxObject_O
 
  public:
 	/*! Return a deep copy of this Matter */
-  CL_LISPIFY_NAME("matter-copy");
-  CL_DEFMETHOD   virtual Matter_sp copy(core::T_sp new_to_old) {_OF(); SUBCLASS_MUST_IMPLEMENT(); };
+  virtual Matter_sp copy(core::T_sp new_to_old) {_OF(); SUBCLASS_MUST_IMPLEMENT(); };
  protected:
 	/*! Internally used to create a copy of this Matter but not redirect Atoms to their copies.
 	 Use copy->redirectAtoms() to direct the new matter to its copied atoms 
@@ -356,7 +355,7 @@ class Matter_O : public core::CxxObject_O
   core::T_mv momentOfGeometry();
 		/*! Return a bounding box for the matter padded with (pad).
 		 */
-  geom::BoundingBox_sp	matterBoundingBox(double pad);
+  geom::BoundingCuboid_sp	matterCalculateBoundingCuboid(double pad);
 
   void		reparent(Matter_sp c);
 

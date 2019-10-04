@@ -159,6 +159,7 @@ odd atom name maps only to the last standard atom name it was mapped to."
 (defclass pdb-scanner (pdb-reader)
   ((previous-atom-serial :initform nil :accessor previous-atom-serial)
    (previous-residue :initform nil :accessor previous-residue)
+   (current-residue-name :initform nil :accessor current-residue-name)
    (current-reverse-sequence :initform nil :accessor current-reverse-sequence
                              :documentation "Accumulate the current sequence in reverse order")
    (reversed-sequences :initform nil :accessor reversed-sequences
@@ -179,19 +180,29 @@ odd atom name maps only to the last standard atom name it was mapped to."
    (current-residue :initform nil :initarg :current-residue :accessor current-residue)
    (current-topology :initform nil :initarg :current-topology :accessor current-topology)
    (connect-atoms :initarg :connect-atoms :reader connect-atoms)
+   (current-residue-name :initform nil :initarg :current-residue-name :accessor current-residue-name)
    (serial-to-atom :initarg :serial-to-atom :reader serial-to-atom)
    ))
 
 (defun ensure-molecule (reader chain-id)
   (unless (molecule reader)
-    (format t "Getting molecule at ~a~%" (sequences-index reader))
+;;;    (format t "Getting molecule at ~a~%" (sequences-index reader))
     (setf (molecule reader) (elt (molecules reader) (sequences-index reader)))
     #+(or)(format *debug-io* "Added molecule ~a to aggregate~%" (molecule reader)))
   (molecule reader))
 
-(defun new-residue-p (residue-number i-code pdb-atom-reader)
-  (or (not (eq residue-number (current-residue-number pdb-atom-reader)))
-      (not (eq i-code (current-i-code pdb-atom-reader)))))
+(defun new-residue-p (residue-name residue-number i-code pdb-atom-reader)
+  (if (or (not (eq residue-number (current-residue-number pdb-atom-reader)))
+          (not (eq i-code (current-i-code pdb-atom-reader))))
+      t
+      (if (not (eq residue-name (current-residue-name pdb-atom-reader)))
+          (progn
+            #+(or)(warn "The residue name changed from ~a to ~a but the residue number ~a didnt change"
+                  (current-residue-name pdb-atom-reader)
+                  residue-name
+                  residue-number)
+            t)
+          nil)))
 
 ;;; Create a special readtable that treats quote #\' as a normal char
 (defparameter *quote-readtable* (copy-readtable))
@@ -367,12 +378,13 @@ MTRIX- Used to build a list of matrices."
              (destructuring-bind (head atom-serial atom-name alt-loc residue-name chain-id res-seq i-code)
                  line-data
                ;; Deal with the current line of data
-               (when (new-residue-p res-seq i-code pdb)
+               (when (new-residue-p residue-name res-seq i-code pdb)
                  #+(or)(progn
-                         (format t "Starting new residue~%")
+                         (format t "Starting new residue residue-name: ~a name-of-current-residue: ~a info: ~a~%" residue-name (current-residue-name pdb) (list res-seq i-code pdb))
                          (when (null (current-reverse-sequence pdb))
                            (format t "Starting new molecule~%")))
                  (setf (current-residue-number pdb) res-seq
+                       (current-residue-name pdb) residue-name
                        (current-i-code pdb) i-code)
                  (let* ((context-guess (if (null (current-reverse-sequence pdb))
                                            :head
@@ -397,7 +409,7 @@ MTRIX- Used to build a list of matrices."
                    ;; Set things up for the next new residue
                    (setf (previous-residue pdb) new-residue)))
                (let ((ht (gethash residue-name (seen-residues (scanner pdb)))))
-                 (unless ht (error "Could not find ht for ~a" residue-name))
+                 (unless ht (error "Could not find residue-name ~a in the seen-residues: ~a" residue-name (alexandria:hash-table-keys (seen-residues (scanner pdb)))))
                  (setf (gethash atom-name ht) t))
                (push atom-name (atom-names (current-residue pdb)))
                ;; Now set things up for the next atom record
@@ -586,7 +598,7 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
               ((:atom :hetatm)
                (destructuring-bind (head atom-serial atom-name alt-loc residue-name chain-id res-seq i-code x y z)
                    line-data
-                 (when (new-residue-p res-seq i-code reader)
+                 (when (new-residue-p residue-name res-seq i-code reader)
                    (setf (current-residue-number reader) res-seq
                          (current-i-code reader) i-code)
                    (let ((pdb-residue (pop-sequence-pdb-residue reader nil nil)))
@@ -600,6 +612,7 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
                        (ensure-molecule reader chain-id))
                      (setf (previous-topology reader) (current-topology reader)
                            (previous-residue reader) (current-residue reader)
+                           (current-residue-name reader) residue-name
                            (current-topology reader) (topology pdb-residue))
                      (unless (eq (name pdb-residue) residue-name)
                        (error "There is a mismatch between the pdb-residue ~a and the expected residue ~a for ~a"
@@ -647,7 +660,8 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
                         (chem:add-matter (current-residue reader) atom)
                         (chem:set-position atom (geom:vec x y z))
                         (chem:setf-needs-build atom nil)
-                        (setf (gethash atom-serial (serial-to-atom reader)) atom)))))))
+                        (when (serial-to-atom reader)
+                          (setf (gethash atom-serial (serial-to-atom reader)) atom))))))))
               (:ter nil)
               (otherwise nil)))
           #+(or)(when (finish-molecule reader)
@@ -761,8 +775,8 @@ specified in PDB files.
                     (format t "Building missing hydrogens~%"))
                   (let ((built (cando:build-unbuilt-hydrogens aggregate)))
                     (format t "Built ~d missing hydrogens~%" built))))
-            (cando:maybe-join-molecules-in-aggregate aggregate)
-            (cando:maybe-split-molecules-in-aggregate aggregate)
+;;;            (cando:maybe-join-molecules-in-aggregate aggregate)
+;;;            (cando:maybe-split-molecules-in-aggregate aggregate)
             (setf aggregate (classify-molecules aggregate system))
             (let ((name-only (pathname-name (pathname filename))))
               (chem:set-name aggregate (intern name-only *package*)))
@@ -771,11 +785,13 @@ specified in PDB files.
 (defgeneric classify-molecules (aggregate system))
 
 (defmethod classify-molecules (aggregate system)
-  (cando:do-molecules (molecule aggregate)
-    (cond
-      ((member (chem:get-name molecule) (list :hoh))
-       (chem:setf-molecule-type molecule :solvent))))
-  aggregate)
+  (let ((mol-id 0))
+    (cando:do-molecules (molecule aggregate)
+      (chem:set-id molecule (incf mol-id))
+      (cond
+        ((member (chem:get-name molecule) (list :hoh))
+         (chem:setf-molecule-type molecule :solvent))))
+    aggregate))
 
 #|
 (defun read-line (pdb-atom-reader)

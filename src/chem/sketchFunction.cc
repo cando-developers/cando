@@ -1,3 +1,4 @@
+
 /*
     File: sketchFunction.cc
 */
@@ -55,8 +56,7 @@ __END_DOC
 #include <cando/chem/ringFinder.h>
 #include <cando/chem/cipPrioritizer.h>
 #include <cando/chem/atom.h>
-#include <cando/chem/energyAtomTable.h>
-#include <cando/chem/energyStretch.h>
+#include <cando/chem/energySketchStretch.h>
 #include <cando/chem/energyPointToLineRestraint.h>
 #include <cando/chem/energyOutOfZPlane.h>
 #include <clasp/core/symbolTable.h>
@@ -94,25 +94,33 @@ SYMBOL_EXPORT_SC_(ChemPkg,LinearImproperRestraintError);
 SYMBOL_EXPORT_SC_(ChemPkg,OverlappingNonbondError);
 SYMBOL_EXPORT_SC_(KeywordPkg,atoms);
 
+
+SYMBOL_EXPORT_SC_(ChemPkg,make_node_table_from_graph);
+SYMBOL_EXPORT_SC_(ChemPkg,node_table_size);
+SYMBOL_EXPORT_SC_(ChemPkg,node_table_node_at_index);
+SYMBOL_EXPORT_SC_(ChemPkg,node_table_coordinate_index_times3);
+SYMBOL_EXPORT_SC_(ChemPkg,node_get_position);
+SYMBOL_EXPORT_SC_(ChemPkg,node_set_position);
+
 bool sketchFunctionInitialized = false;
+
 
 CL_DOCSTRING("Create a sketch-function from a molecule. Pass an instance of a dummy sketch-nonbond-force-field passed to chem:find-atom-type-position.");
 CL_LISPIFY_NAME(make-sketch-function);
 CL_DEF_CLASS_METHOD
-SketchFunction_sp SketchFunction_O::make(Molecule_sp molecule, core::T_sp sketchNonbondForceField)
+SketchFunction_sp SketchFunction_O::make(core::T_sp graph, core::T_sp sketchNonbondForceField)
 {
-  GC_ALLOCATE_VARIADIC(SketchFunction_O,sf,molecule);
-  sf->_AtomTable->constructFromMolecule(molecule,sketchNonbondForceField,_Nil<core::T_O>());
+  GC_ALLOCATE_VARIADIC(SketchFunction_O,sf,graph);
+  sf->_NodeTable = core::eval::funcall(chem::_sym_make_node_table_from_graph,graph,sketchNonbondForceField);
   return sf;
 }
 
 void	SketchFunction_O::initialize()
 {
   this->Base::initialize();
-  this->_AtomTable = AtomTable_O::create();
   this->_Nonbond = EnergySketchNonbond_O::create();
-  this->_Stretch = EnergyStretch_O::create();
-  this->_PointToLineRestraint = EnergyPointToLineRestraint_O::create(this->_Stretch,this->_AtomTable);
+  this->_Stretch = EnergySketchStretch_O::create();
+  this->_PointToLineRestraint = EnergyPointToLineRestraint_O::create(this->_Stretch);
   this->_OutOfZPlane = EnergyOutOfZPlane_O::create();
   this->useDefaultSettings();
 }
@@ -132,24 +140,40 @@ void	SketchFunction_O::useDefaultSettings()
 
 void SketchFunction_O::fields(core::Record_sp node)
 {
-  node->field_if_not_unbound(INTERN_(kw,AtomTable),this->_AtomTable);
+  node->field_if_not_unbound(INTERN_(kw,NodeTable),this->_NodeTable);
   node->field_if_not_unbound(INTERN_(kw,Nonbond),this->_Nonbond);
   node->field_if_not_unbound(INTERN_(kw,Stretch),this->_Stretch);
   node->field_if_not_unbound(INTERN_(kw,PointToLineRestraint),this->_PointToLineRestraint);
   node->field_if_not_unbound(INTERN_(kw,OutOfZPlane),this->_OutOfZPlane);
-  node->field_if_not_default(INTERN_(kw,VelocityScale),this->_VelocityScale,Vector3());
+  this->Base::fields(node);
 }
 
 
-CL_DEFMETHOD void SketchFunction_O::setf_velocity_scale(double xscale, double yscale, double zscale) {
-  this->_VelocityScale.set(xscale,yscale,zscale);
+
+
+CL_DEFMETHOD AtomTable_sp SketchFunction_O::atomTable() const
+{
+  if (gc::IsA<AtomTable_sp>(this->_NodeTable)) {
+    return gc::As_unsafe<AtomTable_sp>(this->_NodeTable);
+  }
+  SIMPLE_ERROR(BF("An attempt was made to get the atom-table of a sketch-function but one hasn't been set - instead we have a node-table: ~a~%") % _rep_(this->_NodeTable));
 }
 
-
+CL_DOCSTRING(R"doc(Return the instance graph slot if it is a Matter object. 
+If it isn't then signal an error. 
+This is used in situations where the graph slot contains a matter object.)doc");
+CL_DEFMETHOD
+Matter_sp SketchFunction_O::getMatter() {
+  return gc::As<Matter_sp>(this->_Graph);
+}
 
 size_t SketchFunction_O::getNVectorSize() 
-{ 
-  return this->_AtomTable->getNVectorSize();
+{
+  core::T_sp tsize = core::eval::funcall(_sym_node_table_size,this->_NodeTable);
+  if (tsize.fixnump()) {
+    return tsize.unsafe_fixnum()*3;
+  }
+  SIMPLE_ERROR(BF("chem:get-nvector-size must return a fixnum"));
 };
 
 
@@ -269,20 +293,28 @@ uint	SketchFunction_O::countTermsBeyondThreshold()
 
 
 
+void maybe_dump_force(const string& msg, NVector_sp force)
+{
+  if (chem__verbose(2)) {
+    core::write_bf_stream(BF("Name: %s\n") % msg);
+    for ( size_t idx=0; idx<force->length(); idx++ ) {
+      core::write_bf_stream(BF("force[%d] -> %f\n") % idx % (*force)[idx]);
+    }
+  }
+}
 
 
 
 //
 
-double	SketchFunction_O::evaluateAll(
-                                      NVector_sp 	pos,
-                                      bool 		calcForce,
-                                      gc::Nilable<NVector_sp> 	force,
-                                      bool		calcDiagonalHessian,
-                                      bool		calcOffDiagonalHessian,
-                                      gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                                      gc::Nilable<NVector_sp>	hdvec,
-                                      gc::Nilable<NVector_sp> dvec)
+double	SketchFunction_O::evaluateAll( NVector_sp 	pos,
+                                       bool 		calcForce,
+                                       gc::Nilable<NVector_sp> 	force,
+                                       bool		calcDiagonalHessian,
+                                       bool		calcOffDiagonalHessian,
+                                       gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                       gc::Nilable<NVector_sp>	hdvec,
+                                       gc::Nilable<NVector_sp> dvec)
 {_G()
 #ifdef DEBUG_ENERGY_FUNCTION
     printf("%s:%d:%s Entered\n", __FILE__, __LINE__, __FUNCTION__ );
@@ -370,19 +402,39 @@ double	SketchFunction_O::evaluateAll(
 	// Evaluate the stretch term
 	//
 ////	_lisp->profiler().timer(core::timerBond).start();
-  this->_Stretch->evaluateAll( pos, calcForce, force,
+#define DUMP_FORCE 123
+#ifdef DUMP_FORCE
+  maybe_dump_force("start",force);
+#endif
+  this->_Stretch->evaluateAll( this->asSmartPtr(),
+                               pos, calcForce, force,
                                calcDiagonalHessian,
                                calcOffDiagonalHessian,
                                hessian, hdvec, dvec );
 ////	_lisp->profiler().timer(core::timerBond).stop();
 ////	_lisp->profiler().timer(core::timerNonbond).start();
-  this->_Nonbond->evaluateAll( pos, calcForce, force,
+#ifdef DUMP_FORCE
+  maybe_dump_force("stretch",force);
+#endif
+  this->_Nonbond->evaluateAll( this->asSmartPtr(),
+                               pos, calcForce, force,
                                calcDiagonalHessian, calcOffDiagonalHessian, hessian, hdvec, dvec );
 ////	_lisp->profiler().timer(core::timerNonbond).stop();
 
 //	_lisp->profiler().timer(core::timerAnchorRestraint).start();
-  this->_PointToLineRestraint->evaluateAll( pos, calcForce, force, calcDiagonalHessian, calcOffDiagonalHessian, hessian, hdvec, dvec );
-  this->_OutOfZPlane->evaluateAll( pos, calcForce, force, calcDiagonalHessian, calcOffDiagonalHessian, hessian, hdvec, dvec );
+#ifdef DUMP_FORCE
+  maybe_dump_force("nonbond",force);
+#endif
+  this->_PointToLineRestraint->evaluateAll( this->asSmartPtr(),
+                                            pos, calcForce, force, calcDiagonalHessian, calcOffDiagonalHessian, hessian, hdvec, dvec );
+#ifdef DUMP_FORCE
+  maybe_dump_force("pointToLineRestraint",force);
+#endif
+  this->_OutOfZPlane->evaluateAll( this->asSmartPtr(),
+                                   pos, calcForce, force, calcDiagonalHessian, calcOffDiagonalHessian, hessian, hdvec, dvec );
+#ifdef DUMP_FORCE
+  maybe_dump_force("oozp",force);
+#endif
 ////	_lisp->profiler().timer(core::timerAnchorRestraint).stop();
 
   this->_TotalEnergy = this->_Nonbond->getEnergy();
@@ -641,7 +693,6 @@ ForceMatchReport_sp SketchFunction_O::checkIfAnalyticalForceMatchesNumericalForc
 
 void	SketchFunction_O::dumpTerms()
 {
-  this->_AtomTable->dumpTerms();
   this->_Stretch->dumpTerms();
   this->_PointToLineRestraint->dumpTerms();
   this->_OutOfZPlane->dumpTerms();
@@ -650,16 +701,21 @@ void	SketchFunction_O::dumpTerms()
 
 void	SketchFunction_O::loadCoordinatesIntoVector(NVector_sp pos)
 {
-  int                             ci;
-  gctools::Vec0<EnergyAtom>::iterator    ai;
   if ( pos->size() != this->getNVectorSize()) {
     SIMPLE_ERROR(BF("NVector is the incorrect length"));
   }
-  for ( ai=this->_AtomTable->begin(); ai!=this->_AtomTable->end(); ai++ ) {
-    ci = ai->coordinateIndexTimes3();
-    pos->setElement(ci,ai->atom()->getPosition().getX());
-    pos->setElement(ci+1, ai->atom()->getPosition().getY());
-    pos->setElement(ci+2, ai->atom()->getPosition().getZ());
+  core::T_sp tsize = core::eval::funcall(_sym_node_table_size,this->_NodeTable);
+  ASSERT(tsize.fixnump());
+  for ( size_t ai=0; ai<tsize.unsafe_fixnum(); ai++ ) {
+    core::T_sp node = core::eval::funcall(_sym_node_table_node_at_index,this->_NodeTable,core::make_fixnum(ai));
+    core::T_sp tcoordinate_index_times3 = core::eval::funcall(_sym_node_table_coordinate_index_times3,this->_NodeTable,core::make_fixnum(ai));
+    ASSERT(tcoordinate_index_times3.fixnump());
+    size_t ci = tcoordinate_index_times3.unsafe_fixnum();
+    core::T_sp tnode_pos = core::eval::funcall(_sym_node_get_position,node);
+    geom::OVector3_sp node_pos = gc::As<geom::OVector3_sp>(tnode_pos);
+    pos->setElement(ci,node_pos->getX());
+    pos->setElement(ci+1, node_pos->getY());
+    pos->setElement(ci+2, node_pos->getZ());
   }
 }
 
@@ -671,17 +727,22 @@ void    SketchFunction_O::saveCoordinatesFromVector(NVector_sp pos)
   double                          x,y,z;
   gctools::Vec0<EnergyAtom>::iterator    ai;
   Vector3                         v;
-  for ( ai=this->_AtomTable->begin(); ai!=this->_AtomTable->end(); ai++ ) {
-    ci = ai->coordinateIndexTimes3();
+  core::T_sp tsize = core::eval::funcall(_sym_node_table_size,this->_NodeTable);
+  ASSERT(tsize.fixnump());
+  for ( size_t ai = 0; ai<tsize.unsafe_fixnum(); ai++ ) {
+    core::T_sp node = core::eval::funcall(_sym_node_table_node_at_index,this->_NodeTable,core::make_fixnum(ai));
+    core::T_sp tcoordinate_index_times3 = core::eval::funcall(_sym_node_table_coordinate_index_times3,this->_NodeTable,core::make_fixnum(ai));
+    ASSERT(tcoordinate_index_times3.fixnump());
+    size_t ci = tcoordinate_index_times3.unsafe_fixnum();
     x = pos->getElement(ci+0);
     y = pos->getElement(ci+1);
     z = pos->getElement(ci+2);
     LOG(BF("Set atom(%d) position (%lf,%lf,%lf)") % ci % x % y % z  );
-    v.set(x,y,z);
-    ai->atom()->setPosition(v);
+    core::eval::funcall(_sym_node_set_position,node,geom::OVector3_O::make(x,y,z));
   }
 }
 
+#if 0
 CL_LISPIFY_NAME("writeForceToAtoms");
 CL_DEFMETHOD void    SketchFunction_O::writeForceToAtoms(NVector_sp force)
 {
@@ -699,6 +760,7 @@ CL_DEFMETHOD void    SketchFunction_O::writeForceToAtoms(NVector_sp force)
 //    ai->atom()->setForce(v);
   }
 }
+#endif
 
 
 void    SketchFunction_O::saveCoordinatesAndForcesFromVectors(NVector_sp pos, NVector_sp force)
@@ -707,10 +769,13 @@ void    SketchFunction_O::saveCoordinatesAndForcesFromVectors(NVector_sp pos, NV
 //  this->writeForceToAtoms(force);
 }
 
+#if 0
 EnergyAtom*	SketchFunction_O::getEnergyAtomPointer(Atom_sp a)
 { 
   return this->_AtomTable->getEnergyAtomPointer(a);
 };
+#endif
+
 
 void SketchFunction_O::enableDebug()
 {
@@ -734,7 +799,14 @@ void	SketchFunction_O::dealWithProblem(core::Symbol_sp error_symbol, core::T_sp 
 
 CL_LAMBDA(scoring-function position velocity force force-dt delta-t-over-mass delta-t &optional frozen)
 CL_LISPIFY_NAME("sketch-function-velocity-verlet-step");
-CL_DEFUN void chem__SketchFunction_velocity_verlet_step(SketchFunction_sp sketchFunc, NVector_sp position, NVector_sp velocity, NVector_sp force, NVector_sp force_dt, NVector_sp delta_t_over_mass, double delta_t, core::T_sp tfrozen )
+CL_DEFUN void chem__SketchFunction_velocity_verlet_step(SketchFunction_sp sketchFunc,
+                                                        NVector_sp position,
+                                                        NVector_sp velocity,
+                                                        NVector_sp force,
+                                                        NVector_sp force_dt,
+                                                        NVector_sp delta_t_over_mass,
+                                                        double delta_t,
+                                                        core::T_sp tfrozen )
 {
   core::SimpleBitVector_sp frozen;
   if (gc::IsA<core::SimpleBitVector_sp>(tfrozen)) {

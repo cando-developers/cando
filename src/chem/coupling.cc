@@ -468,13 +468,13 @@ Atom_sp		inB0, outB0, inB1, outB1;
     ASSERTNOTNULL(moutPlug);
     LOG(BF("Everything seems ok with the residues, let's do the coupling") );
     	// connect the atoms in min/mout according to minPlug/moutPlug
-    inB0 = inResidue->atomWithName(minPlug->getB0());
-    outB0 = outResidue->atomWithName(moutPlug->getB0());
+    inB0 = gc::As_unsafe<Atom_sp>(inResidue->atomWithName(minPlug->getB0()));
+    outB0 = gc::As_unsafe<Atom_sp>(outResidue->atomWithName(moutPlug->getB0()));
     b = inB0->bondTo(outB0,singleBond);
     if ( moutPlug->getB1().notnilp() ) {
-	outB1 = outResidue->atomWithName(moutPlug->getB1());
+      outB1 = gc::As_unsafe<Atom_sp>(outResidue->atomWithName(moutPlug->getB1()));
 	if ( minPlug->getB1().notnilp() ) {
-	    inB1 = inResidue->atomWithName(minPlug->getB1());
+          inB1 = gc::As_unsafe<Atom_sp>(inResidue->atomWithName(minPlug->getB1()));
 	 	//
 		// Create the second bond
 		//
@@ -756,13 +756,13 @@ Atom_sp		inB0, outB0, inB1, outB1;
     ASSERTNOTNULL(mon2Plug);
     LOG(BF("Everything seems ok with the residues, let's do the coupling") );
     	// connect the atoms in mon1/mon2 according to mon1Plug/mon2Plug
-    inB0 = inResidue->atomWithName(mon1Plug->getB0());
-    outB0 = outResidue->atomWithName(mon2Plug->getB0());
+    inB0 = gc::As_unsafe<Atom_sp>(inResidue->atomWithName(mon1Plug->getB0()));
+    outB0 = gc::As_unsafe<Atom_sp>(outResidue->atomWithName(mon2Plug->getB0()));
     b = inB0->bondTo(outB0,singleBond);
     if ( mon2Plug->getB1().notnilp() ) {
-	outB1 = outResidue->atomWithName(mon2Plug->getB1());
+      outB1 = gc::As_unsafe<Atom_sp>(outResidue->atomWithName(mon2Plug->getB1()));
 	if ( mon1Plug->getB1().notnilp() ) {
-	    inB1 = inResidue->atomWithName(mon1Plug->getB1());
+          inB1 = gc::As_unsafe<Atom_sp>(inResidue->atomWithName(mon1Plug->getB1()));
 	 	//
 		// Create the second bond
 		//

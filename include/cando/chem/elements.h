@@ -58,6 +58,7 @@ namespace chem
 
   core::Symbol_sp keywordSymbolForHybridization(Hybridization hyb);
 
+chem::Hybridization hybridizationForString(const string& sym);
   Hybridization hybridizationForSymbol(core::Symbol_sp sym);
 
   double vdwRadiusForElement(Element element);

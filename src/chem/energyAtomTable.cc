@@ -144,6 +144,14 @@ string		EnergyAtom::getResidueAndName()
 }
 
 
+CL_LISPIFY_NAME(make-atom-table);
+CL_DEF_CLASS_METHOD
+AtomTable_sp AtomTable_O::make()
+{
+  GC_ALLOCATE(AtomTable_O,eat);
+  return eat;
+}
+
 void AtomTable_O::initialize()
 {
   this->_AtomTableIndices = core::HashTableEq_O::create_default();
@@ -183,6 +191,15 @@ CL_DEFMETHOD size_t AtomTable_O::getCoordinateIndex(Atom_sp a)
 {
   EnergyAtom* ea = this->getEnergyAtomPointer(a);
   return ea->coordinateIndexTimes3();
+}
+
+CL_DEFMETHOD size_t AtomTable_O::getCoordinateIndexForAtomAtIndex(size_t index)
+{
+  if (index<this->_Atoms.size()) {
+    EnergyAtom& ea = this->_Atoms[index];
+    return this->getCoordinateIndex(ea._SharedAtom);
+  }
+  SIMPLE_ERROR(BF("Atom index %d is out of range (0...%d)") % this->_Atoms.size());
 }
 
 CL_DEFMETHOD core::HashTableEq_sp AtomTable_O::getAtomTableIndices() {
@@ -349,6 +366,13 @@ CL_DEFMETHOD void AtomTable_O::makUnboundAggregateName() {
   this->_AggregateName = _Unbound<core::T_O>();
 }
 
+SYMBOL_EXPORT_SC_(ChemPkg,bounding_box);
+SYMBOL_EXPORT_SC_(ChemPkg,bounding_box_bound_p);
+SYMBOL_EXPORT_SC_(ChemPkg,set_bounding_box);
+SYMBOL_EXPORT_SC_(ChemPkg,mak_unbound_bounding_box);
+
+CL_DOCSTRING(R"doc(Return the bounding-box for the atom-table.)doc");
+CL_LISPIFY_NAME(atom-table-bounding-box);
 CL_DEFMETHOD core::T_sp AtomTable_O::boundingBox() const {
   if (this->_BoundingBox.unboundp()) {
     SIMPLE_ERROR(BF("The bounding-box is unbound"));
@@ -356,14 +380,20 @@ CL_DEFMETHOD core::T_sp AtomTable_O::boundingBox() const {
   return this->_BoundingBox;
 }
 
+CL_DOCSTRING(R"doc(Return T if the bounding-box is bound)doc");
+CL_LISPIFY_NAME(atom-table-bounding-box-bound-p);
 CL_DEFMETHOD bool AtomTable_O::boundingBoxBoundP() const {
   return !this->_BoundingBox.unboundp();
 }
 
+CL_DOCSTRING(R"doc(Set the bounding-box)doc");
+CL_LISPIFY_NAME(atom-table-set-bounding-box);
 CL_DEFMETHOD void AtomTable_O::setBoundingBox(core::T_sp boundingBox) {
   this->_BoundingBox = boundingBox;
 }
 
+CL_DOCSTRING(R"doc(Make the bounding-box unbound)doc");
+CL_LISPIFY_NAME(atom-table-mak-unbound-bounding-box);
 CL_DEFMETHOD void AtomTable_O::makUnboundBoundingBox() {
   this->_BoundingBox = _Unbound<core::T_O>();
 }
@@ -440,7 +470,7 @@ size_t AtomTable_O::getAtomFlag(size_t index) {
   return this->_Atoms[index]._Flag;
 }
 
-
+CL_DEFMETHOD
 void AtomTable_O::constructFromMolecule(Molecule_sp mol, core::T_sp nonbondForceField, core::T_sp activeAtoms )
 {
   uint idx = this->_Atoms.size();

@@ -47,14 +47,12 @@
             (target-atom-names (mapcar 'chem:get-name diff2)))
         (make-instance 'ti-mask
                        :equivalent-atom-names (let (pairs)
-                                                (maphash (lambda (pair dummy)
-                                                           (declare (ignore dummy))
-                                                           (let ((source-atom (car pair))
-                                                                 (target-atom (cdr pair)))
-                                                             (let ((source-name (chem:get-name source-atom))
-                                                                   (target-name (chem:get-name target-atom)))
-                                                               (push (cons source-name target-name) pairs))))
-                                                         equivs)
+                                                (loop for pair in equivs
+                                                      do (let ((source-atom (car pair))
+                                                               (target-atom (cdr pair)))
+                                                           (let ((source-name (chem:get-name source-atom))
+                                                                 (target-name (chem:get-name target-atom)))
+                                                             (push (cons source-name target-name) pairs))))
                                                 pairs)
                        :source source
                        :source-timask-residue-index 1

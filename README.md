@@ -35,7 +35,7 @@ PREFIX="/opt/clasp"                                          # installs everythi
 2. Set up the following environment variables.
 ```
 export AMBERHOME=/opt/amber # adjust as needed
-export ASDF_EXPORT_TRANSLATIONS=/:
+export ASDF_OUTPUT_TRANSLATIONS=/:
 export CLASP_QUICKLISP_DIRECTORY=/opt/clasp/lib/clasp/src/lisp/modules/quicklisp/
 export PATH=$AMBERHOME/bin:$PATH
 ```

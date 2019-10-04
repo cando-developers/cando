@@ -150,11 +150,15 @@ public:
   //! Stores actual residues from aggregate
   core::Vector_sp                _Residues;
   core::Vector_sp                _Molecules;
+  core::T_sp                     _Matter;
   core::T_sp                     _AggregateName;
   core::T_sp                     _BoundingBox;
   core::T_sp                     _NonbondForceFieldForAggregate;
  public:
   typedef gctools::Vec0<EnergyAtom>::iterator iterator;
+public:
+  static AtomTable_sp make();
+  
  public:
   gctools::Vec0<EnergyAtom>&	getVectorEnergyAtoms() { return this->_Atoms;};
   CL_DEFMETHOD size_t	getNumberOfAtoms()	{ return this->_Atoms.size();};
@@ -243,6 +247,7 @@ public:
   CL_DEFMETHOD void setf_atom_table_residues(core::Vector_sp val) {this->_Residues = val; };
   CL_DEFMETHOD void setf_atom_table_molecules(core::Vector_sp val) {this->_Molecules = val; };
   size_t getCoordinateIndex(Atom_sp atom);
+  size_t getCoordinateIndexForAtomAtIndex(size_t index);
   
  AtomTable_O() : _ResiduePointers(_Unbound<core::ComplexVector_int32_t_O>()),
                  _ResidueNames(_Unbound<core::ComplexVector_T_O>()),

@@ -143,6 +143,14 @@ namespace translate
 	}
     };
     template <>
+    struct	from_object<Vector3&>
+    {
+      typedef	Vector3		ExpectedType;
+      typedef	Vector3&	DeclareType;
+      DeclareType _v;
+      from_object(core::T_sp o) : _v(gc::As<geom::OVector3_sp>(o)->_Value) {};
+    };
+    template <>
     struct	from_object<const Vector3&>
     {
 	typedef	Vector3		ExpectedType;
@@ -206,6 +214,7 @@ namespace translate
 	    return (ov);
 	}
     };
+
 
 
 };

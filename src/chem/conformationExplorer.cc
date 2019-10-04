@@ -258,7 +258,7 @@ CL_DEFMETHOD     void	ConformationExplorerEntryStage_O::setFinalCoordinatesAsMov
 	explorer = this->getConformationExplorer();
 	idx = explorer->indexOfAtom(atom);
 	ASSERTNOTNULL(this->_FinalCoordinates);
-	ASSERT((*this->_FinalCoordinates).size() == explorer->numberOfAllAtoms());
+	ASSERT((*this->_FinalCoordinates).length() == explorer->numberOfAllAtoms());
 	(*this->_FinalCoordinates)[idx] = pos;
     }
 

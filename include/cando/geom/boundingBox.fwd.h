@@ -27,6 +27,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #define boundingBox_fwd_H
 namespace geom
 {
-FORWARD(BoundingBox);
+FORWARD(BoundingCuboid);
 }
 #endif

@@ -35,6 +35,7 @@
   (:use #:cl #:alexandria #:esrap #:parser.common-rules #:PARSER.COMMON-RULES.OPERATORS)
   (:export
    #:*function-names/alist*
+   #:parse-sub-matter
    #:leap)
   (:documentation
    "Embryonic parser for the leap file format.  Written by Jan Moringen"))
@@ -46,10 +47,15 @@
   (:documentation
    "Embryonic parser for the leap file format.  Written by Jan Moringen"))
 
+(defpackage #:leap.atom-types
+  (:use #:common-lisp)
+  (:export
+   #:add-one-atom-type
+   ))
+
 (defpackage #:leap.commands
   (:use #:common-lisp)
   (:export
-   #:desc
    #:create-atom
    #:leap
    #:leap-repl
@@ -117,7 +123,7 @@
    #:evaluate
    #:*leap-env*
    #:lookup-variable
-   #:all-variables
+   #:all-variable-names
    #:function-lookup
    #:clear-path
    #:add-path
@@ -165,7 +171,6 @@
 
 (defpackage #:leap
   (:shadowing-import-from :chem "ATOM")
-  (:shadowing-import-from :geom "BOUNDING-BOX")
   (:shadowing-import-from :common-lisp "+" "-" "/" "*" ">" "<" ">=" "<=" "SQRT")
   (:shadowing-import-from :energy "MINIMIZE")
   (:shadowing-import-from :chem "SET-ELEMENT" "GET-ELEMENT" "SIZE")

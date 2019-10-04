@@ -385,10 +385,10 @@ void Atom_O::setElementFromString(const string& str)
 
 void Atom_O::setHybridizationFromString(const string& h)
 {
-  FIX_ME();
-#if 0
-  this->_Hybridization = hybridizationForString(h);
-#endif
+  core::SimpleBaseString_sp sbs = core::SimpleBaseString_O::make(h);
+  core::SimpleString_sp usbs = core::cl__string_upcase(sbs);
+  core::Symbol_sp sym = _lisp->internKeyword(usbs->get());
+  this->_Hybridization = hybridizationForSymbol(sym);
 }
 
 void Atom_O::_addHydrogenWithName(Residue_sp residueContainedBy, MatterName name)
@@ -821,6 +821,20 @@ CL_DEFMETHOD     bool	Atom_O::isBondedToElementHybridizationElementHybridization
 #endif
 }
 
+float Atom_O::distanceSquaredToAtom(Atom_sp other)
+{
+  Vector3 delta = this->position-other->position;
+  return delta.getX()*delta.getX()+delta.getY()*delta.getY()+delta.getZ()*delta.getZ();
+}
+
+CL_DOCSTRING(R"doc(Return the distance squared between twoatoms. This provides a way to compare atom positions without allocating memory.)doc");
+CL_DEFUN
+float chem__distance_squared_between_two_atoms(Atom_sp atom1, Atom_sp atom2)
+{
+  return atom1->distanceSquaredToAtom(atom2);
+}
+
+
 void Atom_O::makeAllAtomNamesInEachResidueUnique()
 {
   SIMPLE_ERROR(BF("This should never be called for an Atom_sp"));
@@ -1049,7 +1063,7 @@ void Atom_O::writeUniqueBondsToStream(string prefix, std::ostream& out )
 string	Atom_O::__repr__() const
 {
   stringstream ss;
-  ss << "#<" << this->className() << " " << this->name << "/" << _rep_(symbolFromElement(this->_Element)) << " @" << (void*)(this->asSmartPtr().raw_()) << ">";
+  ss << "#<" << this->className() << " " << this->name << "/" << _rep_(symbolFromElement(this->_Element)) << " " << this->getId() << ">";
   return ss.str();
 }
 
@@ -1827,7 +1841,7 @@ CL_END_ENUM(_sym__PLUS_atomFlagSymbolConverter_PLUS_);
 
 ConstitutionAtom_sp Atom_O::asConstitutionAtom(ConstitutionAtomIndex0N index)
 {_OF();
-  ConstitutionAtom_sp ca = makeConstitutionAtom(this->getName(),this->_Element,index,this->_StereochemistryType, this->_Properties);
+  ConstitutionAtom_sp ca = makeConstitutionAtom(this->getName(),this->_Element,this->type, index,this->_StereochemistryType, this->_Properties);
   return ca;
 }
 

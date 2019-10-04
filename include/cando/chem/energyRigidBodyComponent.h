@@ -55,7 +55,8 @@ class EnergyRigidBodyComponent_O : public EnergyComponent_O
     LISP_CLASS(chem,ChemPkg,EnergyRigidBodyComponent_O,"EnergyRigidBodyComponent",EnergyComponent_O);
     DEFAULT_CTOR_DTOR(EnergyRigidBodyComponent_O);
 
-    virtual	double evaluateAll( NVector_sp 	pos,
+  virtual	double evaluateAll( ScoringFunction_sp scorer,
+                                    NVector_sp 	pos,
                                     bool 		calcForce,
                                     gc::Nilable<NVector_sp> 	force,
                                     bool		calcDiagonalHessian,

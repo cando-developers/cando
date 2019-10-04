@@ -41,6 +41,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <stdio.h>
 #include <clasp/core/common.h>
 #include <clasp/core/array.h>
+#include <clasp/core/package.h>
 #include <cando/adapt/adapters.h>
 #include <clasp/core/evaluator.h>
 #include <cando/adapt/stringSet.h>
@@ -825,7 +826,10 @@ CL_DEFMETHOD void CandoDatabase_O::setf_findTopology(core::T_sp name, Topology_s
 }
 
 core::T_mv CandoDatabase_O::findTopology(core::T_sp name, bool errorp) const {
-  core::T_mv result_mv = this->_Topologys->gethash(name);
+  core::Symbol_sp sym_name = gc::As<core::Symbol_sp>(name);
+  core::SimpleString_sp sname = gc::As<core::SimpleString_sp>(sym_name->_Name);
+  core::T_sp keyword_name = _lisp->_Roots._KeywordPackage->intern(sname);
+  core::T_mv result_mv = this->_Topologys->gethash(keyword_name);
   if (result_mv.second().nilp()) {
     if (!errorp) return Values(_Nil<core::T_O>(),_Nil<core::T_O>());
     SIMPLE_ERROR(BF("Could not find topology with name %s") % core::_rep_(name));

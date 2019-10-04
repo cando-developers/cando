@@ -220,7 +220,8 @@ bool		calcOffDiagonalHessian = true;
 
 
 
-double EnergyAnchorRestraint_O::evaluateAll( NVector_sp 	pos,
+double EnergyAnchorRestraint_O::evaluateAll( ScoringFunction_sp score,
+                                             NVector_sp 	pos,
                                              bool 		calcForce,
                                              gc::Nilable<NVector_sp> 	force,
                                              bool		calcDiagonalHessian,

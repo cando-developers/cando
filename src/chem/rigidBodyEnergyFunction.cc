@@ -70,8 +70,8 @@ __END_DOC
 namespace chem {
 
 CL_LISPIFY_NAME("CHEM:MAKE-RIGID-BODY-ENERGY-FUNCTION");
-CL_DEFUN RigidBodyEnergyFunction_sp RigidBodyEnergyFunction_O::make(size_t number_of_rigid_bodies) {
-  GC_ALLOCATE_VARIADIC(RigidBodyEnergyFunction_O, energy, number_of_rigid_bodies);
+CL_DEFUN RigidBodyEnergyFunction_sp RigidBodyEnergyFunction_O::make(size_t number_of_rigid_bodies, BoundingBox_sp boundingBox) {
+  GC_ALLOCATE_VARIADIC(RigidBodyEnergyFunction_O, energy, number_of_rigid_bodies, boundingBox);
   energy->_SavedCoordinates = NVector_O::create(number_of_rigid_bodies*7);
   return energy;
 }
@@ -87,6 +87,45 @@ string RigidBodyEnergyFunction_O::energyTermsEnabled() {
   return ss.str();
 }
 
+void RigidBodyEnergyFunction_O::fields(core::Record_sp node)
+{
+  node->field(INTERN_(kw,RigidBodies),this->_RigidBodies);
+  node->field_if_not_unbound(INTERN_(kw,SavedCoordinates),this->_SavedCoordinates);
+  node->field(INTERN_(kw,Terms),this->_Terms);
+  node->field(INTERN_(kw,BoundingBox),this->_BoundingBox);
+  this->Base::fields(node);
+}
+
+
+CL_DOCSTRING(R"doc(Return the bounding-box for the atom-table.)doc");
+CL_LISPIFY_NAME(rigidBodyEnergyFunction-bounding-box);
+CL_DEFMETHOD BoundingBox_sp RigidBodyEnergyFunction_O::boundingBox() const
+{
+  if (this->_BoundingBox.boundp()) {
+    return this->_BoundingBox;
+  }
+  SIMPLE_ERROR(BF("The bounding-box slot is unbound"));
+}
+
+CL_DOCSTRING(R"doc(Return T if the bounding-box is bound)doc");
+CL_LISPIFY_NAME(rigidBodyEnergyFunction-bounding-box-bound-p);
+CL_DEFMETHOD bool RigidBodyEnergyFunction_O::boundingBoxBoundP() const
+{
+  return this->_BoundingBox.boundp();
+}
+
+CL_DOCSTRING(R"doc(Set the bounding-box)doc");
+CL_LISPIFY_NAME(rigidBodyEnergyFunction-set-bounding-box);
+CL_DEFMETHOD void RigidBodyEnergyFunction_O::setBoundingBox(BoundingBox_sp boundingBox) {
+  this->_BoundingBox = boundingBox;
+}
+
+CL_DOCSTRING(R"doc(Make the bounding-box unbound)doc");
+CL_LISPIFY_NAME(rigidBodyEnergyFunction-mak-unbound-bounding-box);
+CL_DEFMETHOD void RigidBodyEnergyFunction_O::makUnboundBoundingBox() {
+  this->_BoundingBox = _Unbound<BoundingBox_O>();
+}
+
 CL_DEFMETHOD void RigidBodyEnergyFunction_O::set_coordinates(NVector_sp pos) {
   if (pos->length() != this->_RigidBodies*7) {
     SIMPLE_ERROR(BF("The coordinates you pass do not have enough components - there are %d rigid bodies with 7 (a,b,c,d,x,y,z) coordinates each - total %d are needed") % this->_RigidBodies % (this->_RigidBodies*7));
@@ -97,7 +136,7 @@ CL_DEFMETHOD void RigidBodyEnergyFunction_O::set_coordinates(NVector_sp pos) {
 
 void RigidBodyEnergyFunction_O::enableDebug() {
   for ( auto cur : this->_Terms ) {
-    EnergyRigidBodyComponent_sp term = gc::As<EnergyRigidBodyComponent_sp>(CONS_CAR(cur));
+     EnergyRigidBodyComponent_sp term = gc::As<EnergyRigidBodyComponent_sp>(CONS_CAR(cur));
     term->enableDebug();
   }
 }
@@ -166,14 +205,14 @@ void	RigidBodyEnergyFunction_O::setOptions( core::List_sp options )
 }
 
 
-double	RigidBodyEnergyFunction_O::evaluateAll( 	NVector_sp pos,
-                                                        bool calcForce,
-                                                        gc::Nilable<NVector_sp> force,
-                                                        bool calcDiagonalHessian,
-                                                        bool calcOffDiagonalHessian,
-                                                        gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                                                        gc::Nilable<NVector_sp> hdvec,
-                                                        gc::Nilable<NVector_sp> dvec	)
+double	RigidBodyEnergyFunction_O::evaluateAll( NVector_sp pos,
+                                                bool calcForce,
+                                                gc::Nilable<NVector_sp> force,
+                                                bool calcDiagonalHessian,
+                                                bool calcOffDiagonalHessian,
+                                                gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                                gc::Nilable<NVector_sp> hdvec,
+                                                gc::Nilable<NVector_sp> dvec	)
 {_G()
   bool	hasForce = force.notnilp();
   bool  hasHessian = hessian.notnilp();
@@ -210,10 +249,15 @@ double	RigidBodyEnergyFunction_O::evaluateAll( 	NVector_sp pos,
     double totalEnergy = 0.0;
     for ( auto cur : this->_Terms ) {
       EnergyRigidBodyComponent_sp term = gc::As<EnergyRigidBodyComponent_sp>(CONS_CAR(cur));
-      totalEnergy += term->evaluateAll(pos,calcForce,force,
+      totalEnergy += term->evaluateAll(this->asSmartPtr(),
+                                       pos,
+                                       calcForce,
+                                       force,
                                        calcDiagonalHessian,
                                        calcOffDiagonalHessian,
-                                       hessian, hdvec, dvec);
+                                       hessian,
+                                       hdvec,
+                                       dvec);
     }
     return totalEnergy;
 }
@@ -292,7 +336,104 @@ void RigidBodyEnergyFunction_O::dumpTerms()
     term->dumpTerms();
   }
 }
-    
+
+
+CL_DOCSTRING(R"doc(Like velocity-verlet-step but limits displacement of atoms in the x,y,z directions using the limit_displacement vector.
+Return the number of atoms whose displacement was limited.  The limit_displacement nvector contains seven double precision values, 
+the a,b,c,d quaternion and x,y,z displacements.  The quaternion displacement idea is experimental.  I'm not sure how it will
+effect the dynamics.)doc");
+CL_LISPIFY_NAME("velocity-verlet-step-limit-displacement");
+CL_DEFUN size_t chem__rigid_body_velocity_verlet_step_limit_displacement(ScoringFunction_sp scoringFunc,
+                                                                         NVector_sp position,
+                                                                         NVector_sp velocity,
+                                                                         NVector_sp force,
+                                                                         NVector_sp force_dt,
+                                                                         NVector_sp delta_t_over_mass,
+                                                                         double delta_t,
+                                                                         core::T_sp tfrozen,
+                                                                         NVector_sp velocity_scale,
+                                                                         NVector_sp limit_displacement)
+{
+  core::SimpleBitVector_sp frozen;
+  if (gc::IsA<core::SimpleBitVector_sp>(tfrozen)) {
+    frozen = gc::As_unsafe<core::SimpleBitVector_sp>(tfrozen);
+    if (frozen->length() != (position->length()/3)) {
+      SIMPLE_ERROR(BF("frozen must be a simple-bit-vector of length %d or NIL") % (position->length()/3));
+    }
+  } else if (tfrozen.notnilp()) {
+    SIMPLE_ERROR(BF("frozen must be a simple-bit-vector or NIL"));
+  }
+  double delta_tsquared = delta_t*delta_t;
+  double delta_tsquared_div2 = delta_tsquared/2.0;
+  NVector_sp position_dt = NVector_O::create(position->size());
+  size_t body_idx = 0;
+  size_t body_limited = 0;
+  for ( size_t idx = 0; idx<position->size(); idx += 7) {
+    if (!frozen || frozen->testBit(body_idx)==0) {
+      double offseta = delta_t*(*velocity)[idx+0] + delta_t*(*delta_t_over_mass)[body_idx]*(*force)[idx+0];
+      double offsetb = delta_t*(*velocity)[idx+1] + delta_t*(*delta_t_over_mass)[body_idx]*(*force)[idx+1];
+      double offsetc = delta_t*(*velocity)[idx+2] + delta_t*(*delta_t_over_mass)[body_idx]*(*force)[idx+2];
+      double offsetd = delta_t*(*velocity)[idx+3] + delta_t*(*delta_t_over_mass)[body_idx]*(*force)[idx+3];
+      double offsetx = delta_t*(*velocity)[idx+4] + delta_t*(*delta_t_over_mass)[body_idx]*(*force)[idx+4];
+      double offsety = delta_t*(*velocity)[idx+5] + delta_t*(*delta_t_over_mass)[body_idx]*(*force)[idx+5];
+      double offsetz = delta_t*(*velocity)[idx+6] + delta_t*(*delta_t_over_mass)[body_idx]*(*force)[idx+6];
+      if ((offseta>(*limit_displacement)[0]) ||
+          (offsetb>(*limit_displacement)[1]) ||
+          (offsetc>(*limit_displacement)[2]) ||
+          (offsetd>(*limit_displacement)[3]) ||
+          (offsetx>(*limit_displacement)[4]) ||
+          (offsety>(*limit_displacement)[5]) ||
+          (offsetz>(*limit_displacement)[6])) {
+        body_limited++;
+        if (offseta>(*limit_displacement)[0]) offseta = (*limit_displacement)[0];
+        if (offsetb>(*limit_displacement)[1]) offsetb = (*limit_displacement)[1];
+        if (offsetc>(*limit_displacement)[2]) offsetc = (*limit_displacement)[2];
+        if (offsetd>(*limit_displacement)[3]) offsetd = (*limit_displacement)[3];
+        if (offsetx>(*limit_displacement)[4]) offsetx = (*limit_displacement)[4];
+        if (offsety>(*limit_displacement)[5]) offsety = (*limit_displacement)[5];
+        if (offsetz>(*limit_displacement)[6]) offsetz = (*limit_displacement)[6];
+        if (offseta<(*limit_displacement)[0]) offseta = -(*limit_displacement)[0];
+        if (offsetb<(*limit_displacement)[1]) offsetb = -(*limit_displacement)[1];
+        if (offsetc<(*limit_displacement)[2]) offsetc = -(*limit_displacement)[2];
+        if (offsetd<(*limit_displacement)[3]) offsetd = -(*limit_displacement)[3];
+        if (offsetx<(*limit_displacement)[4]) offsetx = -(*limit_displacement)[4];
+        if (offsety<(*limit_displacement)[5]) offsety = -(*limit_displacement)[5];
+        if (offsetz<(*limit_displacement)[6]) offsetz = -(*limit_displacement)[6];
+      }
+      (*position)[idx+0] = (*position)[idx+0] + offseta;
+      (*position)[idx+1] = (*position)[idx+1] + offsetb;
+      (*position)[idx+2] = (*position)[idx+2] + offsetc;
+      (*position)[idx+3] = (*position)[idx+3] + offsetd;
+      (*position)[idx+4] = (*position)[idx+4] + offsetx;
+      (*position)[idx+5] = (*position)[idx+5] + offsety;
+      (*position)[idx+6] = (*position)[idx+6] + offsetz;
+    }
+    body_idx++;
+  }
+  scoringFunc->evaluateEnergyForce(position,true,force_dt);
+  body_idx = 0;
+  for ( size_t idx = 0; idx<position->size(); idx+=7 ) {
+    if (!frozen || frozen->testBit(body_idx)==0) {
+      (*velocity)[idx+0] = ((*velocity)[idx+0] + (*delta_t_over_mass)[body_idx]/2.0*((*force)[idx+0]-(*force_dt)[idx+0]))*(*velocity_scale)[0];
+      (*velocity)[idx+1] = ((*velocity)[idx+1] + (*delta_t_over_mass)[body_idx]/2.0*((*force)[idx+1]-(*force_dt)[idx+1]))*(*velocity_scale)[1];
+      (*velocity)[idx+2] = ((*velocity)[idx+2] + (*delta_t_over_mass)[body_idx]/2.0*((*force)[idx+2]-(*force_dt)[idx+2]))*(*velocity_scale)[2];
+      (*velocity)[idx+3] = ((*velocity)[idx+3] + (*delta_t_over_mass)[body_idx]/2.0*((*force)[idx+3]-(*force_dt)[idx+3]))*(*velocity_scale)[3];
+      (*velocity)[idx+4] = ((*velocity)[idx+4] + (*delta_t_over_mass)[body_idx]/2.0*((*force)[idx+4]-(*force_dt)[idx+4]))*(*velocity_scale)[4];
+      (*velocity)[idx+5] = ((*velocity)[idx+5] + (*delta_t_over_mass)[body_idx]/2.0*((*force)[idx+5]-(*force_dt)[idx+5]))*(*velocity_scale)[5];
+      (*velocity)[idx+6] = ((*velocity)[idx+6] + (*delta_t_over_mass)[body_idx]/2.0*((*force)[idx+6]-(*force_dt)[idx+6]))*(*velocity_scale)[6];
+      (*force)[idx+0] = (*force_dt)[idx+0];
+      (*force)[idx+1] = (*force_dt)[idx+1];
+      (*force)[idx+2] = (*force_dt)[idx+2];
+      (*force)[idx+3] = (*force_dt)[idx+3];
+      (*force)[idx+4] = (*force_dt)[idx+4];
+      (*force)[idx+5] = (*force_dt)[idx+5];
+      (*force)[idx+6] = (*force_dt)[idx+6];
+    }
+    body_idx++;
+  }
+  return body_limited;
+}
+
 
 #if 0
 uint RigidBodyEnergyFunction_O::checkForBeyondThresholdInteractions()

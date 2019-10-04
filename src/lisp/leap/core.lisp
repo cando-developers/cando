@@ -44,7 +44,11 @@
    (%variables :initarg  :variables
                :type     hash-table
                :reader   %variables
-               :initform (make-hash-table :test #'equalp))))
+               :initform (make-hash-table :test #'equal)
+               :documentation "This is not the definitive list - accessible variable
+names are actually topology names and any symbol in CANDO-USER.
+But that is a superset of what we want to display if the user asks
+for a list of symbols.  When they ask for a list of symbols we use this list.")))
 
 
 (defparameter *leap-env* (make-instance 'leap-environment))
@@ -57,13 +61,17 @@
   (setf (gethash name (%functions environment)) new-value))
 
 
-(defun all-variables ()
-  (let (vars)
-    (do-symbols (sym *package*)
-      (when (eq (symbol-package sym) *package*)
-        (push sym vars)))
-    (let ((sorted-vars (sort vars #'string<)))
-      sorted-vars)))
+(defun all-variable-names ()
+  (let ((names (alexandria:hash-table-keys (%variables *leap-env*))))
+    names)
+  #+(or)
+  (progn
+    (let (vars)
+      (do-symbols (sym *package*)
+        (when (eq (symbol-package sym) *package*)
+          (push sym vars)))
+      (let ((sorted-vars (sort vars #'string<)))
+        sorted-vars))))
 
 (defun lookup-variable* (name package &optional errorp error-value)
   "Lookup a variable in the given environment"
@@ -89,6 +97,9 @@
     (t error-value)))
 
 (defun (setf lookup-variable*) (new-value name environment)
+  ;; Save the name of the variable in a hash-table of variable names
+  (setf (gethash (string name) (%variables *leap-env*)) (string name))
+  ;;
   (when (typep new-value 'chem:topology)
     (cando:register-topology name new-value))
   (core:*make-special name)
@@ -96,33 +107,33 @@
 
 (defun evaluate (builder ast environment)
   ;;  (format t "evaluating: ~s~%" ast)
-  (architecture.builder-protocol:walk-nodes
-   builder
-   (lambda (recurse relation relation-args node kind relations
-            &key name value &allow-other-keys)
-     (declare (ignore relation relation-args relations))
-     (case kind
-       (:literal
-        value)
-       (:list
-        (first (funcall recurse :relations '(:element))))
-       (:s-expr
-        (destructuring-bind (&key s-expr value bounds)
-            node
-          (eval value)))
-       (:function
-        (apply (function-lookup name environment)
-               (first (funcall recurse :relations '(:argument)))))
-       (:assignment
-        (let ((value (first (first (funcall recurse :relations '(:value))))))
-          (if (symbolp value)
-              (setf (lookup-variable* name *package*) (lookup-variable value))
-              (setf (lookup-variable* name *package*) (if (typep value 'number)
-                                                         (float value 1d0)
-                                                         value)))))
-       (t
-        (funcall recurse))))
-   ast))
+  (let ((result (architecture.builder-protocol:walk-nodes
+                 builder
+                 (lambda (recurse relation relation-args node kind relations
+                          &key name value &allow-other-keys)
+                   (declare (ignore relation relation-args relations))
+                   (case kind
+                     (:literal
+                      value)
+                     (:list
+                      (first (funcall recurse :relations '(:element))))
+                     (:s-expr
+                      (destructuring-bind (&key s-expr value bounds)
+                          node
+                        (eval value)))
+                     (:function
+                      (apply (function-lookup name environment)
+                             (first (funcall recurse :relations '(:argument)))))
+                     (:assignment
+                      (let ((value (first (first (funcall recurse :relations '(:value))))))
+                        (setf (lookup-variable* name *package*) (lookup-variable value))
+                        #+(or)(setf (lookup-variable* name *package*) (if (typep value 'number)
+                                                                          (float value 1d0)
+                                                                          value))))
+                     (t
+                      (funcall recurse))))
+                 ast)))
+    (first (first result))))
 
 
 
@@ -145,12 +156,20 @@
 Associate the name with the object"
   (setf (lookup-variable* name *package*) object))
 
-(defun lookup-variable (name &optional (errorp t) error-value)
+(defun lookup-variable (name-or-object &optional (errorp t) error-value)
   "* Arguments
-- name : Symbol
+- name-or-object : Symbol or object
 * Description
 Lookup the object in the variable space."
-  (lookup-variable* name *package* errorp error-value))
+  (cond
+    ((symbolp name-or-object)
+     (lookup-variable* name-or-object *package* errorp error-value))
+    ((stringp name-or-object)
+     (let ((obj (leap.parser:parse-sub-matter name-or-object)))
+       (if obj
+           obj
+           name-or-object)))
+    (t name-or-object)))
 
 
 

@@ -103,10 +103,8 @@ void	EnergyOutOfZPlane_O::addTerm(const EnergyOutOfZPlane& r)
 }
 
 CL_DEFMETHOD
-void EnergyOutOfZPlane_O::addOutOfZPlaneTerm(AtomTable_sp atomTable, Atom_sp atom, double kb, double r0) {
-  EnergyAtom* ea = atomTable->getEnergyAtomPointer(atom);
-  int I1 = ea->coordinateIndexTimes3();
-  EnergyOutOfZPlane term(atom,kb,I1,r0);
+void EnergyOutOfZPlane_O::addOutOfZPlaneTerm(size_t index, double kb, double r0) {
+  EnergyOutOfZPlane term(kb,index,r0);
   this->addTerm(term);
 }
 
@@ -186,14 +184,15 @@ bool		calcOffDiagonalHessian = true;
 
 
 
-double EnergyOutOfZPlane_O::evaluateAll( NVector_sp 	pos,
-                                             bool 		calcForce,
-                                             gc::Nilable<NVector_sp> 	force,
-                                             bool		calcDiagonalHessian,
-                                             bool		calcOffDiagonalHessian,
-                                             gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                                             gc::Nilable<NVector_sp>	hdvec,
-                                             gc::Nilable<NVector_sp> dvec)
+double EnergyOutOfZPlane_O::evaluateAll( ScoringFunction_sp score,
+                                         NVector_sp 	pos,
+                                         bool 		calcForce,
+                                         gc::Nilable<NVector_sp> 	force,
+                                         bool		calcDiagonalHessian,
+                                         bool		calcOffDiagonalHessian,
+                                         gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                         gc::Nilable<NVector_sp>	hdvec,
+                                         gc::Nilable<NVector_sp> dvec)
 {
   bool	hasForce = force.notnilp();
   bool	hasHessian = hessian.notnilp();
@@ -238,30 +237,29 @@ double EnergyOutOfZPlane_O::evaluateAll( NVector_sp 	pos,
           cri!=this->_Terms.end(); cri++,i++ ) {
 			    /* Obtain all the parameters necessary to calculate */
 			    /* the amber and forces */
-	OOZP_SET_PARAMETER(kb);
-      	OOZP_SET_PARAMETER(I1);
-	OOZP_SET_POSITION(x1,I1,0);
-	OOZP_SET_POSITION(y1,I1,1);
-	OOZP_SET_POSITION(z1,I1,2);
-        if (z1 > 0.0) {
-          OOZP_FORCE_ACCUMULATE(I1,2,-kb);
-        } else {
-          OOZP_FORCE_ACCUMULATE(I1,2,kb);
-        }
+      OOZP_SET_PARAMETER(kb);
+      OOZP_SET_PARAMETER(I1);
+      OOZP_SET_POSITION(x1,I1,0);
+      OOZP_SET_POSITION(y1,I1,1);
+      OOZP_SET_POSITION(z1,I1,2);
+      if (z1 > 0.0) {
+        OOZP_FORCE_ACCUMULATE(I1,2,-kb);
+      } else {
+        OOZP_FORCE_ACCUMULATE(I1,2,kb);
+      }
 //#include <cando/chem/energy_functions/_Oozp_termCode.cc>
-#if 0
-        if (chem__verbose(2)) {
+#if 1
+      if (chem__verbose(2)) {
         core::write_bf_stream(BF("I1,kb,za -> %d, %f, %f\n") % I1 % kb % za );
         core::write_bf_stream(BF("x1,y1,z1 = %f, %f, %f\n") % x1 % y1 % z1 );
         core::write_bf_stream(BF("Oopz Energy = %f\n") % Energy );
-        core::write_bf_stream(BF("fx1,fy1,fz1 = %f, %f, %f\n") % fx1 % fy1 % fz1 );
+        core::write_bf_stream(BF("fx1,fy1,fz1 = %f, %f, %f\n") % force->getElement(I1+0) % force->getElement(I1+1) % force->getElement(I1+2));
       }
 #endif
     }
   }
   if (chem__verbose(1)) {
     core::write_bf_stream(BF("Oopz Total Energy = %f\n") % this->_TotalEnergy );
-    core::write_bf_stream(BF("fx1,fy1,fz1 = %f, %f, %f\n") % fx1 % fy1 % fz1 );
   }
   return this->_TotalEnergy;
 }

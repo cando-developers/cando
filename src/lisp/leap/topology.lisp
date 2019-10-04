@@ -579,12 +579,17 @@ then don't calculate 1,4 interactions"
                do (when (<= i j)
 ;;;                    (format *debug-io* "In generate-nonbond-parameters i->~a j->~a type1->~a type2->~a~%" i j type1 type2)
                     (let ((ffnonbond1 (chem:get-ffnonbond-using-type-index ffnonbond-db type1))
-                          (ffnonbond2 (chem:get-ffnonbond-using-type-index ffnonbond-db type2)))
+                          (ffnonbond2 (chem:get-ffnonbond-using-type-index ffnonbond-db type2))
+                          ;; The index is calculated with the same equation in leap
+                          ;; iIndex = iY * (iY + 1) / 2 + iX + 1;        /* +1 because they are FORTRAN */
+                          ;; See unitio.c line 3639
+                          (index (- (+ (/ (* (+ j 1) j) 2) (+ i 1)) 1)) ; (((((j + 1) * j) / 2) + (i + 1)) - 1)
+                          (ico-index (+ (* ntypes i) j)))
                       (setf rstar (+ (chem:get-radius-angstroms ffnonbond1) (chem:get-radius-angstroms ffnonbond2))
                             epsilonij (sqrt (* (chem:get-epsilon-k-cal ffnonbond1) (chem:get-epsilon-k-cal ffnonbond2)))
-                            (aref cn1-vec (- (+ (/ (* (+ j 1) j) 2) (+ i 1)) 1)) (* epsilonij (expt rstar 12.0))
-                            (aref cn2-vec (- (+ (/ (* (+ j 1) j) 2) (+ i 1)) 1)) (* 2.0 epsilonij (expt rstar 6.0))
-                            (aref ico-vec (+ (* ntypes i) j)) (+ (/ (* (+ j 1) j) 2) (+ i 1)))
+                            (aref cn1-vec index) (* epsilonij (expt rstar 12.0))
+                            (aref cn2-vec index) (* 2.0 epsilonij (expt rstar 6.0))
+                            (aref ico-vec ico-index) (+ (/ (* (+ j 1) j) 2) (+ i 1)))
                       (if (< i j)
                           (setf (aref ico-vec (+ (* ntypes j) i)) (+ (/ (* (+ j 1) j) 2) (+ i 1))))))))
 ;;;                      (format t "type1 ~a type2 ~a~%" type1 type2)    
@@ -680,13 +685,17 @@ then don't calculate 1,4 interactions"
           for residue-name = (aref residue-name-vector index)
           when (> (length (string residue-name)) 3)
             do (let ((short-residue-name-pair (assoc residue-name residue-name-to-pdb-alist)))
-                 (unless short-residue-name-pair
-                   (error "There is must be a short residue name for ~a" residue-name))
-                 (let ((short-name (cdr short-residue-name-pair)))
-                   (format t "Using short name ~s in place of ~s~%" short-name residue-name)
-                   (when (< (length (string short-name)) 3)
-                     (error "The short name ~s must be at least three characters long - residue-name-to-pdb-alist -> ~s" short-name residue-name-to-pdb-alist))
-                   (setf (elt residue-name-vector index) short-name))))
+                 (cond
+                   (short-residue-name-pair
+                    (let ((short-name (cdr short-residue-name-pair)))
+                      (format t "Using short name ~s in place of ~s~%" short-name residue-name)
+                      (when (> (length (string short-name)) 3)
+                        (warn "The short name ~s for ~s should be no more than three characters long - residue-name-to-pdb-alist -> ~s" short-name residue-name residue-name-to-pdb-alist)
+                        (setf short-name (intern (subseq (string short-name) 0 3) :keyword)))
+                      (setf (elt residue-name-vector index) short-name)))
+                   (t (warn "There should be a short residue name for ~a - truncating" residue-name)
+                      (setf short-name (intern (subseq (string residue-name) 0 3) :keyword))
+                      (setf (elt residue-name-vector index) short-name)))))
     (setf nmolecule (length molecule-vector))
     (setf nresidue (length residue-name-vector))
     (loop for i from 0 below (length residue-pointer-prepare-vector)
@@ -1444,12 +1453,10 @@ cando-extensions               : T if you want cando-extensions written to the t
                (fortran:debug "-40-")
                (fortran:fformat 5 "%16.8e")
                (let ((solvent-box (chem:bounding-box atom-table)))
-                 (unless (and solvent-box (listp solvent-box) (= (length solvent-box) 3))
-                   (error "There must be a solvent-box property in the aggregate properties and it must be a list of length three numbers"))
-                 (fortran:fwrite "90.0000000") ;box angle
-                 (fortran:fwrite (float (first solvent-box)))
-                 (fortran:fwrite (float (second solvent-box)))
-                 (fortran:fwrite (float (third solvent-box)))) 
+                 (fortran:fwrite (float (chem:get-x-angle-degrees solvent-box)))
+                 (fortran:fwrite (float (chem:get-x-width solvent-box)))
+                 (fortran:fwrite (float (chem:get-y-width solvent-box)))
+                 (fortran:fwrite (float (chem:get-z-width solvent-box)))) 
                (fortran:end-line))))
 
         ;;next
@@ -1528,7 +1535,7 @@ cando-extensions               : T if you want cando-extensions written to the t
              (fortran:end-line))))
         ))
 ;;;    (format *debug-io* "coordinate-pathname -> ~s~%" coordinate-pathname)
-      (fortran:with-fortran-output-file (ftop coordinate-pathname :direction :output :if-exists :supersede)
+    (fortran:with-fortran-output-file (ftop coordinate-pathname :direction :output :if-exists :supersede)
       (fortran:fformat 20 "%-4s")
       (fortran:fwrite (string (chem:aggregate-name atom-table)))
       (fortran:end-line)
@@ -1544,11 +1551,9 @@ cando-extensions               : T if you want cando-extensions written to the t
             (oz 0.0))
         (when (chem:bounding-box-bound-p atom-table)
           (let ((solvent-box (chem:bounding-box atom-table)))
-            (unless (and solvent-box (listp solvent-box) (= (length solvent-box) 3))
-              (error "There must be a solvent-box property in the aggregate properties and it must be a list of length three numbers"))
-            (setf ox (/ (float (first solvent-box)) 2.0)
-                  oy (/ (float (second solvent-box)) 2.0)
-                  oz (/ (float (third solvent-box)) 2.0))))
+            (setf ox (/ (float (chem:get-x-width solvent-box)) 2.0)
+                  oy (/ (float (chem:get-y-width solvent-box)) 2.0)
+                  oz (/ (float (chem:get-z-width solvent-box)) 2.0))))
         (loop for i from 0 below natom
               for atom = (chem:elt-atom atom-table i)
               for atom-coordinate-index-times3 = (chem:elt-atom-coordinate-index-times3 atom-table i)
@@ -1562,14 +1567,12 @@ cando-extensions               : T if you want cando-extensions written to the t
       ;; write out the solvent box
       (if (chem:bounding-box-bound-p atom-table)
           (let ((solvent-box (chem:bounding-box atom-table)))
-            (unless (and solvent-box (listp solvent-box) (= (length solvent-box) 3))
-              (error "There must be a solvent-box property in the aggregate properties and it must be a list of length three numbers"))
-            (fortran:fwrite (float (first solvent-box)))
-            (fortran:fwrite (float (second solvent-box)))
-            (fortran:fwrite (float (third solvent-box)))
-            (fortran:fwrite "90.0000000") ;box angle
-            (fortran:fwrite "90.0000000") 
-            (fortran:fwrite "90.0000000")))
+            (fortran:fwrite (float (chem:get-x-width solvent-box)))
+            (fortran:fwrite (float (chem:get-y-width solvent-box)))
+            (fortran:fwrite (float (chem:get-z-width solvent-box)))
+            (fortran:fwrite (float (chem:get-x-angle-degrees solvent-box)))
+            (fortran:fwrite (float (chem:get-y-angle-degrees solvent-box)))
+            (fortran:fwrite (float (chem:get-z-angle-degrees solvent-box)))))
       (fortran:end-line))
     (cando:progress-done bar)
     (values energy-function)))
@@ -1581,7 +1584,7 @@ cando-extensions               : T if you want cando-extensions written to the t
                                                      :use-excluded-atoms t
                                                      :assign-types assign-types)))
     ;;; We need to:
-    ;;;  (1) make sure energy function copies :bounding-box property from aggregate
+    ;;;  (1) make sure energy function copies bounding-box property from aggregate
     ;;;  (2) Copy the name of the aggregate into the energy function
     ;;;  (3) Separate the solvent molecules from solute molecules and order them in the energy-function
     ;;;  (4) Copy the result of (chem:lookup-nonbond-force-field-for-aggregate aggregate force-field) into the energy-function
@@ -2282,6 +2285,7 @@ cando-extensions               : T if you want cando-extensions written to the t
         (rlog "Create nonbond vectors~%")
         (setf nonbond-vectors (acons :ntypes ntypes nonbond-vectors))
         (setf nonbond-vectors (acons :atom-name-vector (copy-seq atom-name) nonbond-vectors))
+        (setf nonbond-vectors (acons :atom-type-vector amber-atom-type nonbond-vectors))
         (setf nonbond-vectors (acons :charge-vector (copy-seq charge) nonbond-vectors))
         (setf nonbond-vectors (acons :mass-vector (copy-seq mass) nonbond-vectors))
         (setf nonbond-vectors (acons :atomic-number-vector (copy-seq atomic-number) nonbond-vectors))
@@ -2289,6 +2293,7 @@ cando-extensions               : T if you want cando-extensions written to the t
         (setf nonbond-vectors (acons :iac-vec (copy-seq atom-type-index) nonbond-vectors))
         (setf nonbond-vectors (acons :cn1-vec (copy-seq lennard-jones-acoef) nonbond-vectors))
         (setf nonbond-vectors (acons :cn2-vec (copy-seq lennard-jones-bcoef) nonbond-vectors))
+        
         ;;(rlog "nonbond-vectors -> ~s~%" nonbond-vectors)
         (chem:construct-nonbond-terms-from-aList energy-nonbond nonbond-vectors)
         (loop for i from 0 below (length excluded-atoms-list)
@@ -2600,7 +2605,11 @@ cando-extensions               : T if you want cando-extensions written to the t
 (defmethod cando:agg ((object amber-topology-coord-pair))
   (aggregate object))
 
-(defclass amber-topology-restart-pair (amber-topology-coord-pair) ())
+(defclass amber-topology-restart-pair (amber-topology-coord-pair)
+  ())
+
+(defmethod cando:agg ((object amber-topology-restart-pair))
+  (aggregate object))
 
 (defclass amber-topology-trajectory-pair (amber-topology-coord-pair)
   ((netcdf :initarg :netcdf :accessor netcdf)))
@@ -2630,7 +2639,7 @@ cando-extensions               : T if you want cando-extensions written to the t
 (defun read-bounding-box (netcdf)
   (let* ((lengths (cell-lengths netcdf))
          (angles (cell-angles netcdf))
-         (bounding-box (append (coerce lengths 'list) (coerce angles 'list))))
+         (bounding-box (chem:make-bounding-box lengths angles)))
     bounding-box))
 
 (defun read-amber-restart-file (coordinate-filename)
@@ -2644,7 +2653,7 @@ cando-extensions               : T if you want cando-extensions written to the t
            (is-netcdf (and (char= c1 #\C)
                            (char= c2 #\D)
                            (char= c3 #\F)
-                           (char< c4 10))))
+                           (<= (char-int c4) 10))))
       (close fin)
       (if is-netcdf
           (let* ((netcdf (netcdf:nc-open coordinate-filename :mode netcdf-cffi:+nowrite+))
@@ -2669,7 +2678,7 @@ cando-extensions               : T if you want cando-extensions written to the t
         (read-amber-restart-file coordinate-filename)
       (write-coordinates-into-energy-function-atom-table energy-function coordinates)
       (when bounding-box
-        (chem:set-property aggregate :bounding-box bounding-box))
+        (chem:set-bounding-box aggregate bounding-box))
       (make-instance 'amber-topology-restart-pair
                      :topology-filename topology-filename
                      :coordinate-filename coordinate-filename

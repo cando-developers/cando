@@ -39,7 +39,12 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/lispStream.h>
 #include <clasp/core/hashTableEq.h>
 #include <clasp/core/record.h>
+#include <clasp/core/evaluator.h>
 #include <cando/chem/ffTypesDb.h>
+#include <cando/chem/topology.h>
+#include <cando/chem/constitution.h>
+#include <cando/chem/constitutionAtoms.h>
+#include <cando/chem/candoDatabase.h>
 #include <cando/chem/loop.h>
 #include <clasp/core/symbolTable.h>
 #include <clasp/core/wrappers.h>
@@ -110,20 +115,82 @@ CL_DEFMETHOD void    FFTypesDb_O::assignTypes(chem::Matter_sp matter)
   chem::Molecule_sp                     	mol;
   chem::Residue_sp				res;
   string 		                        name;
-  if (this->_TypeAssignmentRules.size()==0) return;
+  size_t missing_types = 0;
+  size_t total_atoms = 0;
+  // first clear out old atom types
   lAtoms.loopTopGoal(matter,ATOMS);
-  LOG(BF("defined loop") );
-  while ( lAtoms.advanceLoopAndProcess() ) {
-    LOG(BF("Getting container") );
-    c = lAtoms.getMatter();
-//        rawGet = c.get();
-//        castGet = dynamic_cast<chem::Atom_O*>(c.get());
-//        LOG(BF("rawGet = %X") % rawGet );
-//        LOG(BF("castGet = %X") % castGet );
-//        LOG(BF("getting first atom in loop") );
-    atom = (c).as<chem::Atom_O>();
-    core::Symbol_sp type = this->assignType(atom);
-    atom->setType(type);
+  while (lAtoms.advanceLoopAndProcess()) {
+    atom = lAtoms.getAtom();
+    atom->setType(_Nil<core::T_O>());
+    total_atoms++;
+  }
+  // Now assign the types first checking for residues and then
+  // applying atom type rules for missing types.
+  if (chem__verbose(2)) {
+    core::write_bf_stream(BF("Assigning atom types to %s\n") % _rep_(matter));
+  }
+  Loop lRes;
+  lRes.loopTopGoal(matter,RESIDUES);
+  while (lRes.advanceLoopAndProcess()) {
+    Residue_sp res = lRes.getResidue();
+    core::T_sp name = res->getName();
+    if (chem__verbose(2)) {
+      core::write_bf_stream(BF("Looking for residue: %s\n") % _rep_(name));
+    }
+    if (name.notnilp()) {
+      core::T_mv result_mv = chem__findTopology(name,false);
+      if (chem__verbose(2)) {
+        core::write_bf_stream(BF("chem__findTopology -> %s %s\n") % _rep_(result_mv) % _rep_(result_mv.second()));
+      }
+      if (result_mv.second().notnilp()) {
+        if (chem__verbose(2)) {
+          core::write_bf_stream(BF("Found topology for residue name: %s\n") % _rep_(name));
+        }
+        Topology_sp topology = gc::As<Topology_sp>(result_mv);
+        Constitution_sp constitution = topology->getConstitution();
+        ConstitutionAtoms_sp constitution_atoms = constitution->getConstitutionAtoms();
+        // Use the Topology to assign atom types
+        lAtoms.loopTopGoal(res,ATOMS);
+        while (lAtoms.advanceLoopAndProcess()) {
+          atom = lAtoms.getAtom();
+          core::T_sp atom_name = atom->getName();
+          if (chem__verbose(2)) {
+            core::write_bf_stream(BF("Looking for atom with name: %s\n") % _rep_(atom_name));
+          }
+          core::T_mv constitution_atom_mv = constitution_atoms->atomWithName(atom_name,false);
+          if (constitution_atom_mv.second().notnilp()) {
+            core::T_sp single = constitution_atom_mv;
+            ConstitutionAtom_sp constitution_atom = gc::As_unsafe<ConstitutionAtom_sp>(single);
+            core::T_sp type = constitution_atom->_AtomType;
+            atom->setType(type);
+            if (chem__verbose(2)) {
+              core::write_bf_stream(BF("Assigned atom type %s using topology %s\n") % _rep_(type) % _rep_(name));
+            }
+          } else {
+            if (chem__verbose(2)) {
+              core::write_bf_stream(BF("   Not found\n"));
+            }
+          }
+        }
+      }
+    }
+    lAtoms.loopTopGoal(res,ATOMS);
+    while (lAtoms.advanceLoopAndProcess()) {
+      atom = lAtoms.getAtom();
+      if (atom->getType().nilp()) {
+        if (this->_TypeAssignmentRules.size()!=0) {
+          core::T_sp type = this->assignType(atom);
+          if (chem__verbose(2)) {
+            core::write_bf_stream(BF("Assigned atom type %s using type rules\n") % _rep_(type));
+          }
+          atom->setType(type);
+        }
+      }
+      if (atom->getType().nilp()) missing_types++;
+    }
+  }
+  if (missing_types>0) {
+    SIMPLE_WARN(BF("There were %lu missing types of %lu atoms") % missing_types % total_atoms);
   }
 }
 

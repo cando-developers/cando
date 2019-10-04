@@ -183,7 +183,8 @@ CL_DEFMETHOD Residue_sp Topology_O::buildResidueForIsomer(size_t isomer) const
   gctools::Vec0<StereoConfiguration_sp>::iterator	sci;
   for (sci=si->_Configurations_begin();sci!=si->_Configurations_end();sci++){
     core::T_sp name = (*sci)->getAtomName();
-    Atom_sp aa = res->atomWithName(name);
+    core::T_mv aa_mv = res->atomWithName(name);
+    Atom_sp aa = gc::As<Atom_sp>(aa_mv);
     LOG(BF("Setting the configuration of atom(%s) to(%s)") % aa->description().c_str() % _rep_((*sci)->getConfiguration())  ); //
     if ( (*sci)->getConfiguration() == chemkw::_sym_S ) {
       aa->setConfiguration( S_Configuration );
@@ -341,14 +342,14 @@ CL_DEFUN void connect_residues(Topology_sp prev_topology,
     SIMPLE_ERROR(BF("Could not find b0 in plug %s for topology %s") % _rep_(in_plug) % _rep_(next_topology));
   }
 //  printf("%s:%d  out_plug_atom_name = %s  in_plug_atom_name = %s\n", __FILE__, __LINE__, _rep_(out_plug_atom_name).c_str(), _rep_(in_plug_atom_name).c_str());
-  Atom_sp out_atom = prev_residue->atomWithName(out_plug_atom_name);
-  Atom_sp in_atom = next_residue->atomWithName(in_plug_atom_name);
+  Atom_sp out_atom = gc::As_unsafe<Atom_sp>(prev_residue->atomWithName(out_plug_atom_name));
+  Atom_sp in_atom = gc::As_unsafe<Atom_sp>(next_residue->atomWithName(in_plug_atom_name));
 //  printf("%s:%d  out_atom = %s  in_atom = %s\n", __FILE__, __LINE__, _rep_(out_atom).c_str(), _rep_(in_atom).c_str());
   BondOrder bo = in_plug->getBondOrder0();
   in_atom->bondTo(out_atom, bo);
   if (in_plug->getB1().notnilp()) {
-    Atom_sp out_atom = prev_residue->atomWithName(out_plug->getB1());
-    Atom_sp in_atom = next_residue->atomWithName(in_plug->getB1());
+    Atom_sp out_atom = gc::As_unsafe<Atom_sp>(prev_residue->atomWithName(out_plug->getB1()));
+    Atom_sp in_atom = gc::As_unsafe<Atom_sp>(next_residue->atomWithName(in_plug->getB1()));
     BondOrder bo = in_plug->getBondOrder1();
     in_atom->bondTo(out_atom, bo);
   }

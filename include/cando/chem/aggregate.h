@@ -52,6 +52,46 @@ namespace chem {
 SMART(Restraint);
 SMART(Lisp);
 
+FORWARD(BoundingBox);
+class  BoundingBox_O : public  core::CxxObject_O 
+{
+  LISP_CLASS(chem,ChemPkg,BoundingBox_O,"BoundingBox", core::CxxObject_O );
+//    DECLARE_SERIALIZE();
+public:
+  Vector3 _Center;
+  Vector3 _Widths;
+  Vector3 _AnglesDegrees;
+  // for optimization
+  double  _x_rwidth;
+  double  _y_rwidth;
+  double  _z_rwidth;
+public:
+  bool fieldsp() const { return true; };
+    void fields(core::Record_sp node);
+public:
+  static BoundingBox_sp make(core::List_sp widths, core::T_sp angles_degrees, core::T_sp center);
+public:
+  Vector3 get_bounding_box_widths() const;
+  Vector3 get_bounding_box_rwidths() const;
+  Vector3 get_bounding_box_angles_degrees() const;
+  Vector3 get_bounding_box_center() const;
+  bool cuboidp() const;
+  double get_x_width() const;
+  double get_y_width() const;
+  double get_z_width() const;
+  double get_x_angle_degrees() const;
+  double get_y_angle_degrees() const;
+  double get_z_angle_degrees() const;
+  core::T_mv get_cuboid_rsize() const;
+
+
+  double distance_squared_between_two_points(const Vector3& v1, const Vector3& v2);
+  double distance_squared_between_two_atoms(Atom_sp a1, Atom_sp a2);
+
+  
+  BoundingBox_O(const Vector3& widths, const Vector3& angles_degrees, const Vector3& center);
+};
+
 class  Aggregate_O : public  Matter_O 
 {
     LISP_CLASS(chem,ChemPkg,Aggregate_O,"Aggregate", Matter_O );
@@ -61,7 +101,9 @@ public:
 public:
     void initialize();
     friend	class	Loop;
+  BoundingBox_sp _BoundingBox;
 public:
+  bool fieldsp() const { return true; };
     void fields(core::Record_sp node);
 public:
     static Aggregate_sp make(MatterName name);
@@ -78,6 +120,11 @@ public:
 
     virtual Atom_sp atomWithAtomId(const AtomId& atomId) const;
 
+  BoundingBox_sp boundingBox() const;
+  bool boundingBoxBoundP() const;
+  void setBoundingBox(BoundingBox_sp bounding_box);
+  void makUnboundBoundingBox();
+  
     /*! Lookup an Atom using the atomId */
 //    Atom_sp lookupAtom(const AtomId& atomId) const;
 
@@ -166,7 +213,7 @@ public:
   void setf_force_field_name(core::T_sp name);
     
 
-  Aggregate_O() : _ForceFieldName(kw::_sym_default) {};
+  Aggregate_O() : _ForceFieldName(kw::_sym_default), _BoundingBox(_Unbound<BoundingBox_O>()) {};
 };
 
 

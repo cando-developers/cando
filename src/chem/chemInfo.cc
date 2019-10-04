@@ -2755,12 +2755,23 @@ GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<chem::BondToAtomTe
 
 MoleculeGraph_O::MoleculeGraph_O(Molecule_sp matter) {};
 
-MoleculeGraph_O::MoleculeGraph_O() {};
+MoleculeGraph_O::MoleculeGraph_O() : _num_edges(0) {};
 
 MoleculeGraph_O::~MoleculeGraph_O() {
   delete this->_moleculeGraph;
   this->_moleculeGraph = nullptr;
 }
+
+CL_DEFMETHOD size_t MoleculeGraph_O::num_vertices()
+{
+  return this->_nodes->length();
+}
+
+CL_DEFMETHOD size_t MoleculeGraph_O::num_edges()
+{
+  return this->_num_edges;
+}
+
 
 CL_DEFMETHOD size_t MoleculeGraph_O::add_vertex(core::T_sp vertex)
 {
@@ -2793,6 +2804,7 @@ CL_DEFMETHOD void MoleculeGraph_O::add_edge(size_t v1, size_t v2, BondOrder bo)
   int iv1 = v1;
   int iv2 = v2;
   boost::add_edge(iv1,iv2,bo,*(this->_moleculeGraph));
+  ++this->_num_edges;
 }
 
 
@@ -3241,7 +3253,6 @@ CL_DEFUN void chem__chem_info_graph_dump(ChemInfoGraph_sp graph) {
     template <typename CorrespondenceMap1To2,
               typename CorrespondenceMap2To1>
     bool operator()(CorrespondenceMap1To2 f, CorrespondenceMap2To1 g) const {
-      
       if (chem__verbose(2)) {
         core::write_bf_stream(BF("vf2 found a match\n"));
       }
@@ -3343,17 +3354,19 @@ CL_DEFUN void chem__chem_info_graph_dump(ChemInfoGraph_sp graph) {
 
 
 struct print_callback {
-private:
+public:
   const MoleculeGraph_sp m_graph1;
   const MoleculeGraph_sp m_graph2;
   core::T_sp m_callback;
   core::ComplexVector_T_sp _results;
-
+  size_t  _max_callbacks;
+  size_t*  _count_callbacks;
 public:
   print_callback(MoleculeGraph_sp graph1,
                  MoleculeGraph_sp graph2,
-                 core::T_sp callback ) :
-    m_graph1(graph1), m_graph2(graph2), m_callback(callback) {
+                 core::T_sp callback,
+                 size_t max_callbacks) :
+    m_graph1(graph1), m_graph2(graph2), m_callback(callback), _max_callbacks(max_callbacks), _count_callbacks(NULL) {
     this->_results = core::ComplexVector_T_O::make(32,_Nil<core::T_O>(),core::make_fixnum(0));
   }
 
@@ -3363,35 +3376,51 @@ public:
                   CorrespondenceMapSecondToFirst correspondence_map_2_to_1,
                   typename boost::graph_traits<MoleculeGraphType>::vertices_size_type subgraph_size) {
 
-    this->_results->fillPointerSet(0);
+    if (subgraph_size>this->_results->fillPointer()) {
+      // Only ever pass the longest solution found so far.
+      this->_results->fillPointerSet(0);
     // Print out correspondences between vertices
-    BGL_FORALL_VERTICES_T(vertex1, *m_graph1->_moleculeGraph, MoleculeGraphType) {
+      BGL_FORALL_VERTICES_T(vertex1, *m_graph1->_moleculeGraph, MoleculeGraphType) {
       // Skip unmapped vertices
-      if (get(correspondence_map_1_to_2, vertex1) != boost::graph_traits<MoleculeGraphType>::null_vertex()) {
-        this->_results->vectorPushExtend(core::make_fixnum(vertex1));
-        this->_results->vectorPushExtend(core::make_fixnum(get(correspondence_map_1_to_2, vertex1)));
+        if (get(correspondence_map_1_to_2, vertex1) != boost::graph_traits<MoleculeGraphType>::null_vertex()) {
+          this->_results->vectorPushExtend(core::make_fixnum(vertex1));
+          this->_results->vectorPushExtend(core::make_fixnum(get(correspondence_map_1_to_2, vertex1)));
+        }
       }
+      core::T_sp bres = core::eval::funcall(this->m_callback,this->_results,core::make_fixnum((*this->_count_callbacks)),this->m_graph1,this->m_graph2);
     }
-    core::T_sp bres = core::eval::funcall(this->m_callback,this->_results,this->m_graph1,this->m_graph2);
-    return bres.notnilp();
+    if (this->_count_callbacks!=NULL) {
+      (*this->_count_callbacks)++;
+      return ((*this->_count_callbacks)<this->_max_callbacks);
+    }
+    return true;
   }
 };
 
 
-
+CL_DOCSTRING(R"doc(boost::graph::mcgregor_common_subgraphs wrapper. The MAXIMUM-CALLBACKS argument sets the maximum number
+of times the mcgregor algorithm can call its internal match callback function (which calls MATCH-CALLBACK) before this function returns.
+The MATCH-CALLBACK will only be invoked if the match is longer than any previous result.
+VERTEX-MATCHER is a lambda that takes two atoms and returns T if they are considered equivalent.
+MATCH-CALLBACK is a lambda that takes three arguments (RESULTS GRAPH1 GRAPH2) its return value is ignored.
+Edges are matched using bond orders.)doc");
+CL_LAMBDA(molecule_graph1 molecule_graph2 only_connected_subgraphs vertex_matcher match_callback &optional (maximum_callbacks 1000));
 CL_DEFUN core::List_sp chem__boost_graph_mcgregor_common_subgraphs(MoleculeGraph_sp moleculeGraph1, MoleculeGraph_sp moleculeGraph2,
                                                                    bool only_connected_subgraphs,
                                                                    core::T_sp vertex_matcher,
-                                                                   core::T_sp match_callback ) {
+                                                                   core::T_sp match_callback,
+                                                                   size_t maximum_callbacks) {
   CommonEdgeComp edge_comp(moleculeGraph1,moleculeGraph2);
   CommonVertexComp vertex_comp(moleculeGraph1,moleculeGraph2,vertex_matcher);
-  print_callback my_callback(moleculeGraph1,moleculeGraph2,match_callback);
+  print_callback my_callback(moleculeGraph1,moleculeGraph2,match_callback,maximum_callbacks);
+  my_callback._count_callbacks = new size_t(0);
   boost::mcgregor_common_subgraphs(
                           *moleculeGraph1->_moleculeGraph,
                           *moleculeGraph2->_moleculeGraph,
                           only_connected_subgraphs,
                           my_callback,
                           boost::edges_equivalent(edge_comp).vertices_equivalent(vertex_comp));
+  delete my_callback._count_callbacks;
   return _Nil<core::T_O>();
 }
 

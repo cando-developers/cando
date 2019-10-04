@@ -158,6 +158,14 @@ CL_DEFUN OMatrix_sp make_m4_rotate_z(double radians)
   return res;
 }
 
+CL_LISPIFY_NAME("make-m4-rotate-axis");
+CL_DEFUN OMatrix_sp make_m4_rotate_axis(double radians,Vector3 axis)
+{
+  OMatrix_sp res = OMatrix_O::create();
+  res->_Value.rotationAxis(radians,&axis);
+  return res;
+}
+
 OMatrix_sp OMatrix_O::clone() const
 {
   GC_COPY(OMatrix_O,clone,*this);

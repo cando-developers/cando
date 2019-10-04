@@ -232,6 +232,7 @@ namespace chem
           core::core__pathname_translations(core::Str_O::create("CANDO"),_lisp->_true(),ptsList);
 #endif
           _sym_STARverboseSTAR->defparameter(_Nil<core::T_O>());
+          _sym_STARdebug_octreeSTAR->defparameter(_Nil<core::T_O>());
           _sym_STARcurrent_matchSTAR->defparameter(_Nil<core::T_O>());
           _sym_STARcurrent_aromaticity_informationSTAR->defparameter(_Unbound<core::T_O>());
           _sym_STARcurrent_ringsSTAR->defparameter(_Unbound<core::T_O>());

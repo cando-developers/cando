@@ -26,7 +26,7 @@
  *	Notes
  *
  *	What is a an octree? Take a cube, divide it into 8 cubes, divide
- *	these into 8, down to the desired limit of resolution. Octrees 
+ *	these into 8, down to the desired limit of resolution. AddIonOctrees 
  *	are a simple way to deal with space using minimal resources to 
  *	achieve the desired resolution - the subdivision of a given cube 
  *	can be avoided if the cube can be shown to be homogenous.
@@ -48,7 +48,9 @@
 #include <cando/chem/loop.h>
 #include <cando/chem/octree.h>
 #include <cando/geom/ovector3.h>
+#include <cando/geom/omatrix.h>
 #include <clasp/core/bformat.h>
+#include <clasp/core/hashTableEq.h>
 #include <clasp/core/evaluator.h>
 #include <cando/chem/aggregate.h>
 
@@ -71,10 +73,10 @@ SYMBOL_EXPORT_SC_(KeywordPkg,interior_solute);
 SYMBOL_EXPORT_SC_(KeywordPkg,interior_solvent);
 SYMBOL_EXPORT_SC_(ChemPkg,STARoctree_typeSTAR);
 
-CL_BEGIN_ENUM(chem::Octree_O::OctreeEnum, chem::_sym_STARoctree_typeSTAR, "octree_type");
-CL_VALUE_ENUM(kw::_sym_shell,chem::Octree_O::Shell);
-CL_VALUE_ENUM(kw::_sym_interior_solute,chem::Octree_O::InteriorSolute);
-CL_VALUE_ENUM(kw::_sym_interior_solvent,chem::Octree_O::InteriorSolvent);
+CL_BEGIN_ENUM(chem::AddIonOctree_O::AddIonOctreeEnum, chem::_sym_STARoctree_typeSTAR, "octree_type");
+CL_VALUE_ENUM(kw::_sym_shell,chem::AddIonOctree_O::Shell);
+CL_VALUE_ENUM(kw::_sym_interior_solute,chem::AddIonOctree_O::InteriorSolute);
+CL_VALUE_ENUM(kw::_sym_interior_solvent,chem::AddIonOctree_O::InteriorSolvent);
 CL_END_ENUM(chem::_sym_STARoctree_typeSTAR);
 
 
@@ -113,6 +115,25 @@ namespace chem{
 //core::T_sp              stream;
 
 
+CL_DOCSTRING(R"doc("Make an oct-tree using the aggregate.
+TYPE - Can be one of (:shell, :interior-solute, :interior-solvent).
+GRID-SPACE - Is the size of each smallest node.
+ADD-EXTENT - Not sure what this does.
+SHELL-EXTENT - I'm not sure what this does.
+NONBOND-DB - A nonbond database for the aggregate - use chem:compute-merged-nonbond-force-field-for-aggregate to get this.
+INCLUDE-SOLVENT - 0 if don't include solvent and 1 if you do.
+VERBOSE - T if verbosity is desired and NIL if not.)doc");
+CL_LISPIFY_NAME("make-oct-tree");
+CL_LAMBDA(aggregate type grid-space add-extent shell-extent nonbond-db include-solvent &optional verbose);
+CL_DEF_CLASS_METHOD
+AddIonOctree_sp AddIonOctree_O::make(Aggregate_sp aggregate, AddIonOctreeEnum iType, double dGridSpace, 
+                         double dAddExtent, double dShellExtent, FFNonbondDb_sp nonbondDb, int iIncludeSolvent, bool bVerbose)
+{
+  GC_ALLOCATE(AddIonOctree_O,octtree);
+  octtree->OctreeCreate(aggregate,iType,dGridSpace,dAddExtent,dShellExtent,nonbondDb,iIncludeSolvent,bVerbose);
+  return octtree;
+}
+
 
 void OctNode_O::fields(core::Record_sp node)
 {
@@ -146,7 +167,7 @@ string OctNode_O::__repr__() const {
 
 
 
-void Octree_O::fields(core::Record_sp node)
+void AddIonOctree_O::fields(core::Record_sp node)
 {
   node->field( INTERN_(kw,type), this->type);
   node->field( INTERN_(kw,maxdepth), this->_iMaxDepth);
@@ -162,39 +183,84 @@ void Octree_O::fields(core::Record_sp node)
 }
 
 
-double Octree_O::dDistanceSq( Vector3 Pv1, Vector3 Pv2 )
+CL_DOCSTRING(R"doc(Set the bounding-box of the oct-tree - all distance calculations will use the bounding box)doc");
+CL_LISPIFY_NAME("octree_set_bounding_box");
+CL_DEFMETHOD
+void AddIonOctree_O::setBoundingBox(BoundingBox_sp bounding_box)
 {
-  double  x, y, z;
-  x = Pv1.getX() - Pv2.getX();
-  x = x * x;
-  
-  y = Pv1.getY() - Pv2.getY();
-  y = y * y;
-  
-  z = Pv1.getZ() - Pv2.getZ();
-  z = z * z;
-  
-  return(x + y + z);
+  this->_BoundingBox = bounding_box;
+  this->_BoundingBox_x_rsize = (1.0 / bounding_box->get_x_width());
+  this->_BoundingBox_y_rsize = (1.0 / bounding_box->get_y_width());
+  this->_BoundingBox_z_rsize = (1.0 / bounding_box->get_z_width());
 }
 
-double Octree_O::dDistance( Vector3 Pv1, Vector3 Pv2 )
+double AddIonOctree_O::dDistanceSq( Vector3 Pv1, Vector3 Pv2 )
 {
-double  x, y, z;
- 
- x = Pv1.getX() - Pv2.getX();
- x = x * x;
- 
- y = Pv1.getY() - Pv2.getY();
- y = y * y;
- 
- z = Pv1.getZ() - Pv2.getZ();
- z = z * z;
- 
- return(sqrt(x + y + z));
+  if (this->_BoundingBox.unboundp()) {
+    double  x, y, z;
+    x = Pv1.getX() - Pv2.getX();
+    x = x * x;
+  
+    y = Pv1.getY() - Pv2.getY();
+    y = y * y;
+  
+    z = Pv1.getZ() - Pv2.getZ();
+    z = z * z;
+  
+    return(x + y + z);
+  } else {
+    double  x, y, z;
+    x = fabs(Pv1.getX() - Pv2.getX());
+    x -= static_cast<int>(x*this->_BoundingBox_x_rsize + 0.5) * this->_BoundingBox->get_x_width();
+    x = x * x;
+  
+    y = fabs(Pv1.getY() - Pv2.getY());
+    y -= static_cast<int>(y*this->_BoundingBox_y_rsize + 0.5) * this->_BoundingBox->get_y_width();
+    y = y * y;
+  
+    z = fabs(Pv1.getZ() - Pv2.getZ());
+    z -= static_cast<int>(z*this->_BoundingBox_z_rsize + 0.5) * this->_BoundingBox->get_z_width();
+    z = z * z;
+  
+    return(x + y + z);
+  }    
+  
 }
 
-//static void Octree_O::dumpNode( OctNode_sp PonNode )
-void Octree_O::dumpNode( OctNode_sp PonNode)
+double AddIonOctree_O::dDistance( Vector3 Pv1, Vector3 Pv2 )
+{
+  if (this->_BoundingBox.unboundp()) {
+    double  x, y, z;
+    x = Pv1.getX() - Pv2.getX();
+    x = x * x;
+  
+    y = Pv1.getY() - Pv2.getY();
+    y = y * y;
+  
+    z = Pv1.getZ() - Pv2.getZ();
+    z = z * z;
+  
+    return(sqrt(x + y + z));
+  } else {
+    double  x, y, z;
+    x = fabs(Pv1.getX() - Pv2.getX());
+    x -= static_cast<int>(x*this->_BoundingBox_x_rsize + 0.5) * this->_BoundingBox->get_x_width();
+    x = x * x;
+    
+    y = fabs(Pv1.getY() - Pv2.getY());
+    y -= static_cast<int>(y*this->_BoundingBox_y_rsize + 0.5) * this->_BoundingBox->get_y_width();
+    y = y * y;
+    
+    z = fabs(Pv1.getZ() - Pv2.getZ());
+    z -= static_cast<int>(z*this->_BoundingBox_z_rsize + 0.5) * this->_BoundingBox->get_z_width();
+    z = z * z;
+    
+    return(sqrt(x + y + z));
+  }    
+}
+
+//static void AddIonOctree_O::dumpNode( OctNode_sp PonNode )
+void AddIonOctree_O::dumpNode( OctNode_sp PonNode)
 {
   int	i;
   fprintf(stderr, "@");
@@ -231,7 +297,7 @@ void Octree_O::dumpNode( OctNode_sp PonNode)
   }
 }
 
-void Octree_O::dumpOctree()// Octree_sp octTree )
+void AddIonOctree_O::dumpOctree()// AddIonOctree_sp octTree )
 {
   dumpNode( this->onHead);
 }
@@ -239,8 +305,8 @@ void Octree_O::dumpOctree()// Octree_sp octTree )
 /*************************************************************************
  *************************************************************************/
 
-//static OctNode_sp Octree_O::PonMakeChildren( PonNode_sp ponNode, int iDepth, int iStatus )
-void Octree_O::PonMakeChildren(OctNode_sp ponNode, int iDepth, int iStatus, size_t& iNodeCount )
+//static OctNode_sp AddIonOctree_O::PonMakeChildren( PonNode_sp ponNode, int iDepth, int iStatus )
+void AddIonOctree_O::PonMakeChildren(OctNode_sp ponNode, int iDepth, int iStatus, size_t& iNodeCount )
 {
 //OctNode_sp      PonChildren[8];
   int	       	i;
@@ -345,8 +411,8 @@ void Octree_O::PonMakeChildren(OctNode_sp ponNode, int iDepth, int iStatus, size
 //	return( PonChildren );
 }
 
-//static int Octree_O::dFinalCheck( OctNode_sp PonNode, int iAtoms, Atom_sp PaAtomList )
-int Octree_O::dFinalCheck( OctNode_sp PonNode, int iAtoms, gctools::Vec0<Atom_sp> PaAtomList, double dShellRadius )
+//static int AddIonOctree_O::dFinalCheck( OctNode_sp PonNode, int iAtoms, Atom_sp PaAtomList )
+int AddIonOctree_O::dFinalCheck( OctNode_sp PonNode, int iAtoms, gctools::Vec0<Atom_sp> PaAtomList, double dShellRadius )
 {
   int	i;
   Atom_sp PaAtom;
@@ -386,8 +452,8 @@ int Octree_O::dFinalCheck( OctNode_sp PonNode, int iAtoms, gctools::Vec0<Atom_sp
 /*
  *  DestroyOctant() - destroys any type of octree
  */
-//static void Octree_O::DestroyOctant( OctNode_sp PonNode, int iStatus )
-void Octree_O::DestroyOctant( OctNode_sp PonNode, int iStatus )
+//static void AddIonOctree_O::DestroyOctant( OctNode_sp PonNode, int iStatus )
+void AddIonOctree_O::DestroyOctant( OctNode_sp PonNode, int iStatus )
 {
      printf("%s:%d:%s vPoint -> %d, %d, %d\n", __FILE__, __LINE__, __FUNCTION__, PonNode->iStatus, PonNode->iNodeNum, PonNode->iDepth);
 
@@ -428,8 +494,8 @@ void Octree_O::DestroyOctant( OctNode_sp PonNode, int iStatus )
   PonNode->iStatus = iStatus;
   
 }
-//static int Octree_O::iBuildShellOctant( OctNode_sp PonNode, int iAtoms, Atom_sp *PaAtomList )
-int Octree_O::iBuildShellOctant( OctNode_sp PonNode, int iAtoms, gctools::Vec0<Atom_sp> PaAtomList, double dShellRadius )
+//static int AddIonOctree_O::iBuildShellOctant( OctNode_sp PonNode, int iAtoms, Atom_sp *PaAtomList )
+int AddIonOctree_O::iBuildShellOctant( OctNode_sp PonNode, int iAtoms, gctools::Vec0<Atom_sp> PaAtomList, double dShellRadius )
 {
   int	         	i, iPartialIn, iPartialOut, iIncluded, iExcluded, iNewAtoms;
   Atom_sp	        PaAtom;
@@ -678,8 +744,8 @@ int Octree_O::iBuildShellOctant( OctNode_sp PonNode, int iAtoms, gctools::Vec0<A
  *  For an interior octant, the point is to keep atom lists at
  *	the bottom nodes of the tree.
  */
-//static int Octree_O::iBuildInteriorOctant( OctNode_sp PonNode, int iAtoms, Atom_sp *PaAtomList )
-int Octree_O::iBuildInteriorOctant( OctNode_sp PonNode, int iAtoms, gctools::Vec0<Atom_sp> PaAtomList)
+//static int AddIonOctree_O::iBuildInteriorOctant( OctNode_sp PonNode, int iAtoms, Atom_sp *PaAtomList )
+int AddIonOctree_O::iBuildInteriorOctant( OctNode_sp PonNode, int iAtoms, gctools::Vec0<Atom_sp> PaAtomList)
 {
   int		         i, iIncluded, iExcluded; 
   Atom_sp		 PaAtom;
@@ -687,8 +753,10 @@ int Octree_O::iBuildInteriorOctant( OctNode_sp PonNode, int iAtoms, gctools::Vec
   int		         iNewAtoms;
   double		 d, dCenterRadiusSq, dHalfEdge;
   Vector3                vCenter;
-  OctNode_sp	         PonChildren[8];
-    
+//  OctNode_sp	         PonChildren[8];
+
+  if (chem__verbose(2)) core::write_bf_stream(BF("iBuildInteriorOctant PonNode->iDepth -> %d   iAtoms -> %d\n") % PonNode->iDepth % iAtoms);
+
 #ifdef OCTDEBUG
   depth[PonNode->iDepth]++;
 #endif
@@ -727,7 +795,7 @@ int Octree_O::iBuildInteriorOctant( OctNode_sp PonNode, int iAtoms, gctools::Vec
   for (i=0; i<iAtoms; i++) {
     PaAtom = PaAtomList[i];
 		//d = dDistance( &vCenter, &vAtomPosition( *PaAtom ) );
-                //d = dDistance( vCenter, PaAtom->getPosition() );
+    d = dDistance(vCenter,PaAtom->getPosition());
     if ( d < dCenterRadiusSq ) {
 			/* 
 			 *  It's w/in larger sphere
@@ -740,6 +808,7 @@ int Octree_O::iBuildInteriorOctant( OctNode_sp PonNode, int iAtoms, gctools::Vec
     }
   }
   if (!iNewAtoms) {
+    if (chem__verbose(2)) core::write_bf_stream(BF("There were no new atoms added - OCT_EXCLUDED - returning\n"));
 		/*
 		 *  No atoms w/in box-enclosing sphere
 		 */
@@ -761,6 +830,7 @@ int Octree_O::iBuildInteriorOctant( OctNode_sp PonNode, int iAtoms, gctools::Vec
 	 *	linear search.
 	 */
   if ( PonNode->iDepth == this->_iMaxDepth || ( iNewAtoms && iNewAtoms < 10 )) {
+    if (chem__verbose(2)) core::write_bf_stream(BF("PonNode->iDepth == this->_iMaxDepth || (iNewAtoms && iNewAtoms<10) | PonNode->iDepth -> %d  iNewAtoms->%d\n") % PonNode->iDepth % iNewAtoms );
 //    iTreeGridPoints += PiDensities[PonNode->iDepth]; 
     this->iTreePoints += this->PiDensities[PonNode->iDepth]; 
     PonNode->iStatus = OCT_INCLUDED;
@@ -779,7 +849,7 @@ int Octree_O::iBuildInteriorOctant( OctNode_sp PonNode, int iAtoms, gctools::Vec
   iIncluded = 0;
   iExcluded = 0;
   for (i=0; i<8; i++) {
-    switch (iBuildInteriorOctant( PonChildren[i], 
+    switch (iBuildInteriorOctant( PonNode->PonChildren[i], 
                                   iNewAtoms, PaNewAtoms ) ) {
       
     case OCT_INCLUDED:
@@ -812,22 +882,20 @@ int Octree_O::iBuildInteriorOctant( OctNode_sp PonNode, int iAtoms, gctools::Vec
 		//PonNode->PaAtomList = NULL;
    // PonNode->PaAtomList = _Nil<core::T_O>();
   }
-  
+  if (chem__verbose(2)) core::write_bf_stream(BF("Dropped out of bottom\n"));  
   PonNode->iStatus = OCT_INCLUDED;
   return(OCT_INCLUDED);
 }
 
 SYMBOL_EXPORT_SC_(KeywordPkg,solvent);
 SYMBOL_EXPORT_SC_(ChemPkg,lookup_atom_properties_radius);
-//CL_DEFMETHOD Octree_sp Octree_O::octOctTreeCreate(Aggregate_sp uUnit, int iType, double dGridSpace, double dAddExtent, double dShellExtent,
-CL_DEFMETHOD void Octree_O::octOctTreeCreate(Aggregate_sp uUnit, OctreeEnum type, double dGridSpace, double dAddExtent, double dShellExtent, FFNonbondDb_sp nonbondDb,  int iIncludeSolvent, bool bVerbose)
+CL_DEFMETHOD void AddIonOctree_O::OctreeCreate(Aggregate_sp uUnit, AddIonOctreeEnum type, double dGridSpace, double dAddExtent, double dShellExtent, FFNonbondDb_sp nonbondDb,  int iIncludeSolvent, bool bVerbose)
 {
- // Octree_sp		  octTree;
+ // AddIonOctree_sp		  octTree;
   Vector3                 vMinCorner, vMaxCorner, vAtom;
   gctools::Vec0<Atom_sp>  vaAtoms;
   Atom_sp		  aAtom;
   //gctools::Vec0<Atom_sp>  PaAtoms;
-  Loop		          lAtoms, lRes;
   Residue_sp		  rRes;
   size_t                   imd;
   int	          	i, j, iAtoms, iDefaultedRadius, iBuild;
@@ -845,7 +913,7 @@ CL_DEFMETHOD void Octree_O::octOctTreeCreate(Aggregate_sp uUnit, OctreeEnum type
 	/*
 	 *  Create the octree "object" and initialize
 	 */
-  //GC_ALLOCATE(Octree_O, octTree); // MALLOC( octTree, OCTREE, sizeof(OCTREEt) );
+  //GC_ALLOCATE(AddIonOctree_O, octTree); // MALLOC( octTree, OCTREE, sizeof(OCTREEt) );
  // octTree->iType = iType;
   //octTree->dGridSize = dGridSpace;
   this->type = type;
@@ -864,25 +932,37 @@ CL_DEFMETHOD void Octree_O::octOctTreeCreate(Aggregate_sp uUnit, OctreeEnum type
 	 *	the atoms' temporary floating-point values w/ their sizes.
 	 */
 
+  this->atomsToResidues = core::HashTableEq_O::create_default();
+  this->residuesToMolecules = core::HashTableEq_O::create_default();
   iDefaultedRadius = 0;
-  lRes.loopTopAggregateGoal(uUnit, RESIDUES); // lRes = lLoop( uUnit, RESIDUES );
+  Loop lMol;
+  lMol.loopTopAggregateGoal(uUnit,MOLECULES);
   switch ( type ) {
   case Shell:
   case InteriorSolute:
       // while ((rRes = (RESIDUE) oNext(&lRes))) {
-      while (lRes.advance()) {
-        rRes = lRes.getResidue();
-        if ( iIncludeSolvent  ||  
-             rRes->_Type != kw::_sym_solvent){// cResidueType( rRes ) != RESTYPESOLVENT ) {
-          lAtoms.loopTopGoal(rRes,ATOMS); // lAtoms = lLoop( (OBJEKT)rRes, ATOMS );
-          while (lAtoms.advance()) { // while ((aAtom = (ATOM) oNext(&lAtoms))) {
-            aAtom = lAtoms.getAtom();
-            vaAtoms.push_back(aAtom); // VarArrayAdd( vaAtoms, (GENP)&aAtom );
+      while (lMol.advance()) {
+        Molecule_sp mMol = lMol.getMolecule();
+        if ( iIncludeSolvent  || mMol->_Type != kw::_sym_solvent){// cResidueType( rRes ) != RESTYPESOLVENT ) {
+          Loop lRes;
+          lRes.loopTopMoleculeGoal(mMol, RESIDUES); // lRes = lLoop( uUnit, RESIDUES );
+          while (lRes.advance()) {
+            rRes = lRes.getResidue();
+            this->residuesToMolecules->setf_gethash(rRes,mMol);
+            if ( iIncludeSolvent  || rRes->_Type != kw::_sym_solvent){// cResidueType( rRes ) != RESTYPESOLVENT ) {
+              Loop lAtoms;
+              lAtoms.loopTopGoal(rRes,ATOMS); // lAtoms = lLoop( (OBJEKT)rRes, ATOMS );
+              while (lAtoms.advance()) { // while ((aAtom = (ATOM) oNext(&lAtoms))) {
+                aAtom = lAtoms.getAtom();
+                vaAtoms.push_back(aAtom); // VarArrayAdd( vaAtoms, (GENP)&aAtom );
+                this->atomsToResidues->setf_gethash(aAtom,rRes);
             // iDefaultedRadius += iAtomSetTmpRadius( aAtom );
-            core::T_mv result = core::eval::funcall(chem::_sym_lookup_atom_properties_radius,aAtom, nonbondDb);
-            aAtom->dAtomTemp = core::clasp_to_double(result);
-            core::T_sp defaulted = result.second();
-            iDefaultedRadius += defaulted.isTrue() ? 1 : 0;
+                core::T_mv result = core::eval::funcall(chem::_sym_lookup_atom_properties_radius,aAtom, nonbondDb);
+                aAtom->dAtomTemp = core::clasp_to_double(result);
+                core::T_sp defaulted = result.second();
+                iDefaultedRadius += defaulted.isTrue() ? 1 : 0;
+              }
+            }
           }
         }
       }
@@ -891,32 +971,42 @@ CL_DEFMETHOD void Octree_O::octOctTreeCreate(Aggregate_sp uUnit, OctreeEnum type
   case InteriorSolvent: {
     int nowarning = 1;
     //while ((rRes = (RESIDUE) oNext(&lRes))) {
-    while (lRes.advance()){
-      rRes = lRes.getResidue();
-      if ( rRes->_Type == kw::_sym_solvent ) {
-        i = 0;
-        lAtoms.loopTopGoal(rRes,ATOMS); //lAtoms = lLoop( (OBJEKT)rRes, ATOMS );
-        while (lAtoms.advance()) { //while ((aAtom = (ATOM) oNext(&lAtoms))) {
-          if (!i)
-            vaAtoms.push_back(aAtom); // VarArrayAdd( vaAtoms, (GENP)&aAtom );
+    while (lMol.advance()) {
+      Molecule_sp mMol = lMol.getMolecule();
+      if ( mMol->_Type == kw::_sym_solvent ) {
+        Loop lRes;
+        lRes.loopTopMoleculeGoal(mMol,RESIDUES);
+        while (lRes.advance()){
+          rRes = lRes.getResidue();
+          this->residuesToMolecules->setf_gethash(rRes,mMol);
+          if ( rRes->_Type == kw::_sym_solvent ) {
+            i = 0;
+            Loop lAtoms;
+            lAtoms.loopTopGoal(rRes,ATOMS); //lAtoms = lLoop( (OBJEKT)rRes, ATOMS );
+            while (lAtoms.advance()) { //while ((aAtom = (ATOM) oNext(&lAtoms))) {
+              aAtom = lAtoms.getAtom();
+              this->atomsToResidues->setf_gethash(aAtom,rRes);
+              if (!i) vaAtoms.push_back(aAtom); // VarArrayAdd( vaAtoms, (GENP)&aAtom );
           //iDefaultedRadius += iAtomSetTmpRadius( aAtom );
-          core::T_mv result = core::eval::funcall(chem::_sym_lookup_atom_properties_radius,aAtom);
-          aAtom->dAtomTemp = core::clasp_to_double(result);
-          core::T_sp defaulted = result.second();
-          iDefaultedRadius += defaulted.isTrue() ? 1 : 0;
-          i++;
-        }
-        if ( i > 3  &&  nowarning ) {
-          printf( "Warning: non-water solvent may lead to steric problems");
-          nowarning = 0;
+              core::T_mv result = core::eval::funcall(chem::_sym_lookup_atom_properties_radius,aAtom);
+              aAtom->dAtomTemp = core::clasp_to_double(result);
+              core::T_sp defaulted = result.second();
+              iDefaultedRadius += defaulted.isTrue() ? 1 : 0;
+              i++;
+            }
+            if ( i > 3  &&  nowarning ) {
+              printf( "Warning: non-water solvent may lead to steric problems");
+              nowarning = 0;
+            }
+          }
         }
       }
     }
   }
       break;
   default:
-      SIMPLE_ERROR(BF("Octree type not implemented\n"));
-//      printf("Octree type not implemented\n");
+      SIMPLE_ERROR(BF("AddIonOctree type not implemented\n"));
+//      printf("AddIonOctree type not implemented\n");
 //      exit(1);
   }
 
@@ -964,7 +1054,7 @@ return(octTree);
   //vMinCorner = vMaxCorner = vAtomPosition( vaAtoms[0] ); // *PaAtoms );
   vMinCorner = vMaxCorner = vaAtoms[0]->getPosition(); // *PaAtoms );
   vaAtoms[0]->dAtomTemp += dAddExtent; // AtomTempDoubleIncrement( *PaAtoms, dAddExtent );
-
+  // We initialized with the zeroth atom above - so start from 1 below
   for (i=1; i<iAtoms; i++ ) { // ++PaAtoms ) {
     dCharge += vaAtoms[i]->charge; // dAtomCharge( *PaAtoms );
     dMaxRadius = MAX( dMaxRadius, vaAtoms[i]->dAtomTemp); // MAX( dMaxRadius, dAtomTemp( *PaAtoms ) );
@@ -1133,6 +1223,9 @@ return(octTree);
       break;
   case InteriorSolute:
   case InteriorSolvent:
+      if (bVerbose) {
+        core::write_bf_stream(BF( "About to build interior octant iAtoms -> %lu\n") % iAtoms );
+      }
       iBuild = iBuildInteriorOctant( this->onHead, iAtoms, vaAtoms ); //PaAtoms );
       break;
   default:
@@ -1194,7 +1287,7 @@ BuildShellOctant: Build octree for shell around a list of atoms.
 /*************************************************************************
  *************************************************************************/
 
-void Octree_O::OctTreeDestroy()// Octree_sp PoctTree )
+void AddIonOctree_O::OctreeDestroy()// AddIonOctree_sp PoctTree )
 {
 	/*
 	 *  Free top-level things.
@@ -1226,8 +1319,8 @@ void Octree_O::OctTreeDestroy()// Octree_sp PoctTree )
 /*************************************************************************
  *************************************************************************/
 
-//static void Octree_O::OctNodeInitCharges( OctNode_sp PonNode )
-void Octree_O::OctNodeInitCharges( OctNode_sp PonNode, int iDistanceCharge)
+//static void AddIonOctree_O::OctNodeInitCharges( OctNode_sp PonNode )
+void AddIonOctree_O::OctNodeInitCharges( OctNode_sp PonNode, int iDistanceCharge)
 {
   int	i, j, k, l, pfccount;
   int 	ct = this->_iMaxDepth - PonNode->iDepth + 1;
@@ -1316,9 +1409,9 @@ void Octree_O::OctNodeInitCharges( OctNode_sp PonNode, int iDistanceCharge)
   
   return;
 }
-//CL_DEFMETHOD void Octree_O::OctTreeInitCharges( Octree_sp octTree, int iAtomOption, int iDielectric, double dCutDist,
+//CL_DEFMETHOD void AddIonOctree_O::AddIonOctreeInitCharges( AddIonOctree_sp octTree, int iAtomOption, int iDielectric, double dCutDist,
 //                         Vector3& vMin, Vector3& vMax )
-CL_DEFMETHOD core::T_mv Octree_O::OctTreeInitCharges( /*Octree_sp octTree,*/ int iAtomOption, int iDielectric, double dCutDist)
+CL_DEFMETHOD core::T_mv AddIonOctree_O::OctreeInitCharges( /*AddIonOctree_sp octTree,*/ int iAtomOption, int iDielectric, double dCutDist)
 {
   int	i, iDistanceCharge, iChargeAtoms;
   Atom_sp	PaAtom;
@@ -1411,8 +1504,8 @@ CL_DEFMETHOD core::T_mv Octree_O::OctTreeInitCharges( /*Octree_sp octTree,*/ int
 /*************************************************************************
  *************************************************************************/
 
-//static void Octree_O::OctNodePrintGrid( OctNode_sp *PonNode )
-CL_DEFMETHOD void Octree_O::OctNodePrintGrid( OctNode_sp PonNode, int iColor)
+//static void AddIonOctree_O::OctNodePrintGrid( OctNode_sp *PonNode )
+CL_DEFMETHOD void AddIonOctree_O::OctNodePrintGrid( OctNode_sp PonNode, int iColor)
 {
   Vector3	vPoint;
   int	i, j, k, ct, ccharge;
@@ -1518,7 +1611,7 @@ CL_DEFMETHOD void Octree_O::OctNodePrintGrid( OctNode_sp PonNode, int iColor)
   }
 }
 
-//void Octree_O::OctTreePrintGrid( Octree_sp octTree, core::T_sp stream, int iColor ) //char *sFileName, int iColor )
+//void AddIonOctree_O::AddIonOctreePrintGrid( AddIonOctree_sp octTree, core::T_sp stream, int iColor ) //char *sFileName, int iColor )
 //{
 //  BFORMAT(stream,BF("x = %d y = %d\n") % x % y );
 //  core::write_bf_stream(BF("x = %d y = %d\n") % x % y );
@@ -1561,8 +1654,8 @@ CL_DEFMETHOD void Octree_O::OctNodePrintGrid( OctNode_sp PonNode, int iColor)
 /* global for speed */
 
 
-//static void Octree_O::SplitIncludedNode( OctNode_sp PonNode )
-void Octree_O::SplitIncludedNode( OctNode_sp PonNode)
+//static void AddIonOctree_O::SplitIncludedNode( OctNode_sp PonNode )
+void AddIonOctree_O::SplitIncludedNode( OctNode_sp PonNode)
 {
   int		          i, j, k, nchild, ct, ct2, ccharge, cnode;
   gctools::Vec0<float>    PfTmpCharges;
@@ -1681,8 +1774,8 @@ void Octree_O::SplitIncludedNode( OctNode_sp PonNode)
 
 	//FREE( PfTmpCharges );
 }
-//static int Octree_O::OctNodeDeleteSphere( OctNode_sp PonNode )
-int Octree_O::OctNodeDeleteSphere( OctNode_sp PonNode,  double dDeleteRadius )
+//static int AddIonOctree_O::OctNodeDeleteSphere( OctNode_sp PonNode )
+int AddIonOctree_O::OctNodeDeleteSphere( OctNode_sp PonNode,  double dDeleteRadius )
 {
   int		i, iIncluded, iExcluded;
   double	d, dHalfEdge, dHalfDiagonal;
@@ -1820,7 +1913,7 @@ int Octree_O::OctNodeDeleteSphere( OctNode_sp PonNode,  double dDeleteRadius )
   PonNode->iStatus = OCT_PARTIAL;
   return(OCT_PARTIAL);
 }
-CL_DEFMETHOD void Octree_O::OctTreeDeleteSphere( /*Octree_sp octTree,*/ Vector3 vPoint, double dRadius )
+CL_DEFMETHOD void AddIonOctree_O::OctreeDeleteSphere( /*AddIonOctree_sp octTree,*/ Vector3 vPoint, double dRadius )
 {
   
 	/*
@@ -1846,8 +1939,8 @@ CL_DEFMETHOD void Octree_O::OctTreeDeleteSphere( /*Octree_sp octTree,*/ Vector3 
 /*************************************************************************
  *************************************************************************/
 
-//static void Octree_O::OctNodeUpdateCharge( OctNode_sp *PonNode, int iParentAtoms, Atom_sp *PaParentAtoms )
-CL_DEFMETHOD void Octree_O::OctNodeUpdateCharge( OctNode_sp PonNode, int iParentAtoms, gctools::Vec0<Atom_sp> PaParentAtoms,  int iDistanceCharge )
+//static void AddIonOctree_O::OctNodeUpdateCharge( OctNode_sp *PonNode, int iParentAtoms, Atom_sp *PaParentAtoms )
+CL_DEFMETHOD void AddIonOctree_O::OctNodeUpdateCharge( OctNode_sp PonNode, int iParentAtoms, gctools::Vec0<Atom_sp> PaParentAtoms,  int iDistanceCharge )
 {
   Vector3         	vPoint;
   double          	d;
@@ -1968,9 +2061,9 @@ CL_DEFMETHOD void Octree_O::OctNodeUpdateCharge( OctNode_sp PonNode, int iParent
   }
 
 }
-//CL_DEFMETHOD void Octree_O::OctTreeUpdateCharge( Octree_sp octTree, Vector3 vNewPoint, float fCharge, double dCutDist,
+//CL_DEFMETHOD void AddIonOctree_O::AddIonOctreeUpdateCharge( AddIonOctree_sp octTree, Vector3 vNewPoint, float fCharge, double dCutDist,
 //                          Vector3 vMax, Vector3 vMin )
-CL_DEFMETHOD core::T_mv Octree_O::OctTreeUpdateCharge( /*Octree_sp octTree,*/ Vector3 vNewPoint, float fCharge, double dCutDist)
+CL_DEFMETHOD core::T_mv AddIonOctree_O::OctreeUpdateCharge( /*AddIonOctree_sp octTree,*/ Vector3 vNewPoint, float fCharge, double dCutDist)
 {
   Atom_sp	PaAtom;
   int	i, iDistanceCharge;
@@ -2041,8 +2134,8 @@ CL_DEFMETHOD core::T_mv Octree_O::OctTreeUpdateCharge( /*Octree_sp octTree,*/ Ve
  *	for adaptation in finding vdw pairs.
  */
 
-//static int Octree_O::OctNodeCheckSolvent( OctNode_sp PonNode )
-int Octree_O::OctNodeCheckSolvent( OctNode_sp PonNode )
+//static int AddIonOctree_O::OctNodeCheckSolvent( OctNode_sp PonNode )
+int AddIonOctree_O::OctNodeCheckSolvent( OctNode_sp PonNode )
 {
   int	i;
   Atom_sp	PaAtom;
@@ -2121,7 +2214,7 @@ VP0(("d= %f \n", d));
 
 
 
-core::T_sp Octree_O::rOctTreeCheckSolvent( /*Octree_sp octTree,*/ Vector3 vPoint )
+core::T_sp AddIonOctree_O::rOctreeCheckSolvent( /*AddIonOctree_sp octTree,*/ Vector3 vPoint )
 {
   //Atom_sp	PaAtom;
   if ( this->type != InteriorSolvent ) {
@@ -2159,13 +2252,340 @@ core::T_sp Octree_O::rOctTreeCheckSolvent( /*Octree_sp octTree,*/ Vector3 vPoint
 	 */
   if ( this->dClosestDistance < 9.0 ) {	/* HACK - approx ion+wat */
     vPoint = this->vNewPoint;
-    return gc::As<Residue_sp>(this->aClosestAtom->containedBy());
+    Residue_sp rRes = gc::As<Residue_sp>(this->atomsToResidues->gethash(this->aClosestAtom));
+    Molecule_sp mMol = gc::As<Molecule_sp>(this->residuesToMolecules->gethash(rRes));
+    return mMol;
     //return gc::As_unsafe<Residue_sp>(aClosestAtom->containedBy());
     // return( (Residue_sp) cContainerWithin( aClosestAtom ) );
   }
   printf("No overlap w/ solvent\n");
 //	return(NULL);
   return(_Nil<core::T_O>());
+}
+
+
+
+CL_DOCSTRING(R"doc(Find the closest atom in the oct-tree. Return the (values atom residue molecule) of the closest atom.)doc");
+CL_DEFUN
+core::T_mv chem__oct_tree_find_closest_atom(AddIonOctree_sp oct_tree, const Vector3& point )
+{
+  //Atom_sp	PaAtom;
+  if ( oct_tree->type != AddIonOctree_O::InteriorSolute) {
+    SIMPLE_ERROR(BF("CheckSolvent: wrong octree type - expected :interior-solute\n"));
+  }
+	/*
+	 *  Set up globals for octree.
+	 */
+  oct_tree->vNewPoint = point;
+//  dGridSize = octTree->dGridSize;
+  
+	/*
+	 *  Initialize closest atom for comparison.
+	 */
+  
+	//PaAtom = PVAI( octTree->vaAtoms, ATOM, 0 ); 
+  //PaAtom = octTree->vaAtoms[0]; 
+  oct_tree->aClosestAtom = oct_tree->vaAtoms[0]; //*PaAtom;
+  oct_tree->dClosestDistance = oct_tree->dDistanceSq( oct_tree->vNewPoint,
+                                  oct_tree->aClosestAtom->getPosition());
+  
+	/*
+	 *  Descend octree.
+	 */
+  if (!oct_tree->OctNodeCheckSolvent( oct_tree->onHead ) ) {
+//    printf("Completely out of solvent bounding area\n");
+//		return(NULL);
+    return(_Nil<core::T_O>());
+  }
+  
+	/*
+	 *  Check if closest atom overlaps at all.
+	 */
+  if ( oct_tree->dClosestDistance < 9.0 ) {	/* HACK - approx ion+wat */
+    Residue_sp rRes = gc::As<Residue_sp>(oct_tree->atomsToResidues->gethash(oct_tree->aClosestAtom));
+    Molecule_sp mMol = gc::As<Molecule_sp>(oct_tree->residuesToMolecules->gethash(rRes));
+    return Values(oct_tree->aClosestAtom,rRes,mMol);
+    //return gc::As_unsafe<Residue_sp>(aClosestAtom->containedBy());
+    // return( (Residue_sp) cContainerWithin( aClosestAtom ) );
+  }
+  // printf("No overlap w/ solvent\n");
+//	return(NULL);
+  return(_Nil<core::T_O>());
+}
+
+GenericOctree_sp GenericOctree_O::make(const Vector3& origin, const Vector3& halfDimension)
+{
+  GC_ALLOCATE_VARIADIC(GenericOctree_O,ot,origin,halfDimension);
+  return ot;
+}
+
+
+CL_DEFMETHOD
+bool GenericOctree_O::isLeafNode() const {
+  
+			// This is correct, but overkill. See below.
+			/*
+				 for(int i=0; i<8; ++i)
+				 if(children[i] != NULL) 
+				 return false;
+				 return true;
+			 */
+  
+			// We are a leaf iff we have no children. Since we either have none, or 
+			// all eight, it is sufficient to just check the first.
+  return this->_children[0].unboundp();
+}
+
+SYMBOL_EXPORT_SC_(ChemPkg,STARdebug_octreeSTAR);
+
+#ifdef DEBUG_OCTREE
+#define DEBUG_OCTREE_WRITE(msg) if(_sym_STARdebug_octreeSTAR->symbolValue().notnilp() {core::write_bf_stream(msg);}
+#else
+#define DEBUG_OCTREE_WRITE(msg)
+#endif
+
+		// This is a really simple routine for querying the tree for points
+		// within a distance of the querypoint inside of a periodic box
+		// All results are pushed into 'results'
+void GenericOctree_O::getPointsWithinCutoff(double cutoff_squared, double cutoff, core::T_sp source_data, const Vector3& querypoint, double x_size, double y_size, double z_size, double x_rsize, double y_rsize, double z_rsize, const Matrix& octree_transform, core::ComplexVector_sp results ) {
+			// If we're at a leaf node, just see if the current data point is near the query point
+  DEBUG_OCTREE_WRITE(BF("-------- %s  depth %lu    isLeafNode -> %d     this->_data.boundp() -> %d\n") % __FUNCTION__ % this->_depth % this->isLeafNode() % this->_data.boundp() );
+  DEBUG_OCTREE_WRITE(BF(" x_size, y_size, z_size: %lf, %lf, %lf | x_rsize, y_rsize, z_rsize: %lf, %lf, %lf\n") % x_size % y_size % z_size % x_rsize % y_rsize % z_rsize );
+  if(this->isLeafNode()) {
+    if(this->_data.boundp()) {
+      const Vector3 p = octree_transform*this->_position;
+      DEBUG_OCTREE_WRITE(BF("transform.this->_position -> %lf %lf %lf\n") %  p.getX() % p.getY() % p.getZ());
+      double dx = fabs(querypoint.getX()-p.getX());
+      dx -= static_cast<int>(dx*x_rsize+0.5)*x_size;
+      double dy = fabs(querypoint.getY()-p.getY());
+      dy -= static_cast<int>(dy*y_rsize+0.5)*y_size;
+      double dz = fabs(querypoint.getZ()-p.getZ());
+      dz -= static_cast<int>(dz*z_rsize+0.5)*z_size;
+      double distsquared = dx*dx+dy*dy+dz*dz;
+      DEBUG_OCTREE_WRITE(BF("dx,dy,dz %lf,%lf,%lf distsquared->%lf\n") % dx % dy % dz % distsquared );
+      if (distsquared<cutoff_squared) {
+        results->vectorPushExtend(source_data);
+        results->vectorPushExtend(this->_data);
+      }
+    }
+  } else {
+				// We're at an interior node of the tree. We will check to see if
+				// the query bounding box lies outside the octants of this node.
+					// Compute the min/max corners of this child octant
+    DEBUG_OCTREE_WRITE(BF("querypoint -> %lf %lf %lf\n") % querypoint.getX() % querypoint.getY() % querypoint.getZ());
+    for(int i=0; i<8; ++i) {
+      const Vector3 p = octree_transform*this->_children[i]->_origin;
+      DEBUG_OCTREE_WRITE(BF("transform.this->_children[%d]->_origin -> %lf %lf %lf\n") % i % p.getX() % p.getY() % p.getZ());
+      DEBUG_OCTREE_WRITE(BF("this->_children[%d]->_halfDimension -> %lf %lf %lf\n") % i % this->_children[i]->_halfDimension.getX() % this->_children[i]->_halfDimension.getY() % this->_children[i]->_halfDimension.getZ());
+      double dx = fabs(querypoint.getX()-p.getX());
+      dx -= static_cast<int>(dx*x_rsize+0.5)*x_size;
+      if (dx > this->_children[i]->_halfDimension.getX()+cutoff) {
+        DEBUG_OCTREE_WRITE(BF("skipping child dx->%lf > this->_children[%d]->_halfDimension.getX()+cutoff->%lf \n") % dx % i % (this->_children[i]->_halfDimension.getX()+cutoff));
+        continue;
+      }
+      double dy = fabs(querypoint.getY()-p.getY());
+      dy -= static_cast<int>(dy*y_rsize+0.5)*y_size;
+      if (dy > this->_children[i]->_halfDimension.getY()+cutoff) {
+        DEBUG_OCTREE_WRITE(BF("skipping child dy->%lf > this->_children[%d]->_halfDimension.getY()+cutoff->%lf \n") % dy % i % (this->_children[i]->_halfDimension.getY()+cutoff));
+        continue;
+      }
+      double dz = fabs(querypoint.getZ()-p.getZ());
+      dz -= static_cast<int>(dz*z_rsize+0.5)*z_size;
+      if (dz > this->_children[i]->_halfDimension.getZ()+cutoff) {
+        DEBUG_OCTREE_WRITE(BF("skipping child dz->%lf > this->_children[%d]->_halfDimension.getZ()+cutoff -> %lf \n") % dz % i % (this->_children[i]->_halfDimension.getZ()+cutoff));
+        continue;
+      }
+					// At this point, we've determined that this child may be close to the node
+      this->_children[i]->getPointsWithinCutoff(cutoff_squared,cutoff,source_data,querypoint,x_size,y_size,z_size,x_rsize,y_rsize,z_rsize,octree_transform,results);
+    } 
+  }
+};
+
+
+void GenericOctree_O::getPointsWithinCutoffNoTransform(double cutoff_squared, double cutoff, core::T_sp source_data, const Vector3& querypoint, double x_size, double y_size, double z_size, double x_rsize, double y_rsize, double z_rsize, core::ComplexVector_sp results ) {
+			// If we're at a leaf node, just see if the current data point is near the query point
+  DEBUG_OCTREE_WRITE(BF("-------- %s  depth %lu    isLeafNode -> %d     this->_data.boundp() -> %d\n") % __FUNCTION__ % this->_depth % this->isLeafNode() % this->_data.boundp() );
+  DEBUG_OCTREE_WRITE(BF(" x_size, y_size, z_size: %lf, %lf, %lf | x_rsize, y_rsize, z_rsize: %lf, %lf, %lf\n") % x_size % y_size % z_size % x_rsize % y_rsize % z_rsize );
+  if(this->isLeafNode()) {
+    if(this->_data.boundp()) {
+      const Vector3& p = this->_position;
+      DEBUG_OCTREE_WRITE(BF("transform.this->_position -> %lf %lf %lf\n") %  p.getX() % p.getY() % p.getZ());
+      double dx = fabs(querypoint.getX()-p.getX());
+      dx -= static_cast<int>(dx*x_rsize+0.5)*x_size;
+      double dy = fabs(querypoint.getY()-p.getY());
+      dy -= static_cast<int>(dy*y_rsize+0.5)*y_size;
+      double dz = fabs(querypoint.getZ()-p.getZ());
+      dz -= static_cast<int>(dz*z_rsize+0.5)*z_size;
+      double distsquared = dx*dx+dy*dy+dz*dz;
+      DEBUG_OCTREE_WRITE(BF("dx,dy,dz %lf,%lf,%lf distsquared->%lf\n") % dx % dy % dz % distsquared );
+      if (distsquared<cutoff_squared) {
+        results->vectorPushExtend(source_data);
+        results->vectorPushExtend(this->_data);
+      }
+    }
+  } else {
+				// We're at an interior node of the tree. We will check to see if
+				// the query bounding box lies outside the octants of this node.
+					// Compute the min/max corners of this child octant
+    DEBUG_OCTREE_WRITE(BF("querypoint -> %lf %lf %lf\n") % querypoint.getX() % querypoint.getY() % querypoint.getZ());
+    for(int i=0; i<8; ++i) {
+      const Vector3& p = this->_children[i]->_origin;
+      DEBUG_OCTREE_WRITE(BF("transform.this->_children[%d]->_origin -> %lf %lf %lf\n") % i % p.getX() % p.getY() % p.getZ());
+      DEBUG_OCTREE_WRITE(BF("this->_children[%d]->_halfDimension -> %lf %lf %lf\n") % i % this->_children[i]->_halfDimension.getX() % this->_children[i]->_halfDimension.getY() % this->_children[i]->_halfDimension.getZ());
+      double dx = fabs(querypoint.getX()-p.getX());
+      dx -= static_cast<int>(dx*x_rsize+0.5)*x_size;
+      if (dx > this->_children[i]->_halfDimension.getX()+cutoff) {
+        DEBUG_OCTREE_WRITE(BF("skipping child dx->%lf > this->_children[%d]->_halfDimension.getX()+cutoff->%lf \n") % dx % i % (this->_children[i]->_halfDimension.getX()+cutoff));
+        continue;
+      }
+      double dy = fabs(querypoint.getY()-p.getY());
+      dy -= static_cast<int>(dy*y_rsize+0.5)*y_size;
+      if (dy > this->_children[i]->_halfDimension.getY()+cutoff) {
+        DEBUG_OCTREE_WRITE(BF("skipping child dy->%lf > this->_children[%d]->_halfDimension.getY()+cutoff->%lf \n") % dy % i % (this->_children[i]->_halfDimension.getY()+cutoff));
+        continue;
+      }
+      double dz = fabs(querypoint.getZ()-p.getZ());
+      dz -= static_cast<int>(dz*z_rsize+0.5)*z_size;
+      if (dz > this->_children[i]->_halfDimension.getZ()+cutoff) {
+        DEBUG_OCTREE_WRITE(BF("skipping child dz->%lf > this->_children[%d]->_halfDimension.getZ()+cutoff -> %lf \n") % dz % i % (this->_children[i]->_halfDimension.getZ()+cutoff));
+        continue;
+      }
+					// At this point, we've determined that this child may be close to the node
+      this->_children[i]->getPointsWithinCutoffNoTransform(cutoff_squared,cutoff,source_data,querypoint,x_size,y_size,z_size,x_rsize,y_rsize,z_rsize,results);
+    } 
+  }
+};
+
+
+
+
+CL_LISPIFY_NAME(generic-octree-get-points-within-cutoff);
+CL_LAMBDA(octree cutoff query-data query-point results &key (bounding-box nil bounding-box-p) (octree-transform nil octree-transform-p));
+CL_DEFUN void chem__generic_octree_get_points_within_cutoff(GenericOctree_sp octree, double cutoff, core::T_sp query_data, const Vector3& querypoint, core::ComplexVector_sp results, core::T_sp bounding_box, bool bounding_box_p, core::T_sp octree_transform, bool octree_transform_p) {
+  if (bounding_box_p) {
+    if (!gc::IsA<BoundingBox_sp>(bounding_box)) {
+      SIMPLE_ERROR(BF("bounding-box must be a valid bounding box or nil"));
+    }
+    BoundingBox_sp rbounding_box = gc::As_unsafe<BoundingBox_sp>(bounding_box);
+    double x_size,  y_size,  z_size,  x_rsize,  y_rsize,  z_rsize;
+    x_size = rbounding_box->get_x_width();
+    x_rsize = 1.0/x_size;
+    y_size = rbounding_box->get_y_width();
+    y_rsize = 1.0/y_size;
+    z_size = rbounding_box->get_z_width();
+    z_rsize = 1.0/z_size;
+    if (octree_transform_p) {
+      if (!gc::IsA<geom::OMatrix_sp>(octree_transform)) {
+        SIMPLE_ERROR(BF("octree-transform must be a valid geom:matrix"));
+      }
+      octree->getPointsWithinCutoff(cutoff*cutoff,cutoff,query_data,querypoint,x_size,y_size,z_size,x_rsize,y_rsize,z_rsize,gc::As_unsafe<geom::OMatrix_sp>(octree_transform)->_Value,results);
+    } else {
+      octree->getPointsWithinCutoffNoTransform(cutoff*cutoff,cutoff,query_data,querypoint,x_size,y_size,z_size,x_rsize,y_rsize,z_rsize,results);
+    }
+  } else {
+    SIMPLE_ERROR(BF("Add support for getPointsWithinCutoff with no bounding-box with and without an octree-transform"));
+  }
+}
+
+
+
+
+
+
+
+CL_DOCSTRING(R"doc(Walk the octree and call the CALLBACK with each node.  The CALLBACK must take a single argument and that is the generic-octree node.)doc");
+CL_DEFMETHOD
+void GenericOctree_O::walkGenericOctree(core::Function_sp callback)
+{
+  core::eval::funcall(callback,this->asSmartPtr());
+  if (!this->isLeafNode()) {
+    for ( size_t index=0; index<8; ++index ) {
+      this->_children[index]->walkGenericOctree(callback);
+    }
+  }
+};
+
+CL_LISPIFY_NAME(generic-octree-depth);
+CL_DEFMETHOD size_t GenericOctree_O::depth() const
+{
+  return this->_depth;
+}
+
+CL_LISPIFY_NAME(generic-octree-origin);
+CL_DEFMETHOD Vector3 GenericOctree_O::origin() const
+{
+  return this->_origin;
+}
+
+CL_LISPIFY_NAME(generic-octree-halfDimension);
+CL_DEFMETHOD
+Vector3 GenericOctree_O::halfDimension() const
+{
+  return this->_halfDimension;
+}
+CL_LISPIFY_NAME(generic-octree-containing_radius);
+CL_DEFMETHOD
+float GenericOctree_O::containing_radius() const
+{
+  return this->_containing_radius;
+}
+CL_LISPIFY_NAME(generic-octree-children);
+CL_DEFMETHOD
+GenericOctree_mv GenericOctree_O::children() const
+{
+  if (!this->isLeafNode()) {
+    return Values(this->_children[0],
+                  this->_children[1],
+                  this->_children[2],
+                  this->_children[3],
+                  this->_children[4],
+                  this->_children[5],
+                  this->_children[6],
+                  this->_children[7]);
+  }
+  return Values0<GenericOctree_O>();
+}
+
+CL_LISPIFY_NAME(generic-octree-data-boundp);
+CL_DEFMETHOD
+bool GenericOctree_O::dataBoundP() const
+{
+  return this->_data.boundp();
+}
+
+CL_LISPIFY_NAME(generic-octree-data);
+CL_DEFMETHOD
+core::T_sp GenericOctree_O::data() const
+{
+  if (this->_data.boundp()) {
+    return this->_data;
+  }
+  SIMPLE_ERROR(BF("The generic-octree data is unbound"));
+}
+
+CL_LISPIFY_NAME(generic-octree-position);
+CL_DEFMETHOD
+Vector3 GenericOctree_O::position() const
+{
+  return this->_position;
+}
+
+void GenericOctree_O::fields(core::Record_sp node)
+{
+  node->field( INTERN_(kw,containing_radius), this->_containing_radius);
+  node->field_if_not_unbound(INTERN_(kw,child7),this->_children[7]);
+  node->field_if_not_unbound(INTERN_(kw,child6),this->_children[6]);
+  node->field_if_not_unbound(INTERN_(kw,child5),this->_children[5]);
+  node->field_if_not_unbound(INTERN_(kw,child4),this->_children[4]);
+  node->field_if_not_unbound(INTERN_(kw,child3),this->_children[3]);
+  node->field_if_not_unbound(INTERN_(kw,child2),this->_children[2]);
+  node->field_if_not_unbound(INTERN_(kw,child1),this->_children[1]);
+  node->field_if_not_unbound(INTERN_(kw,child0),this->_children[0]);
+  node->field_if_not_unbound(INTERN_(kw,data),this->_data);
+  node->field_if_not_default(INTERN_(kw,position),this->_position,Vector3());
+  node->field( INTERN_(kw,halfDimension), this->_halfDimension);
+  node->field( INTERN_(kw,origin), this->_origin);
+  node->field( INTERN_(kw,depth), this->_depth);
 }
 
 };

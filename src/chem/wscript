@@ -41,6 +41,7 @@ def build(bld):
             'indirectAtomCoordinateReference',
             'energyComponent',
             'energyStretch',
+            'energySketchStretch',
             'energyAngle',
             'energyDihedral',
             'energyNonbond',
