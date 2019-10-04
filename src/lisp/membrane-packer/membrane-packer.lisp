@@ -17,7 +17,7 @@ This code uses Offset coordinates odd-r
 (defparameter *population-size* 200)
 (defparameter *lipid-density* 0.0090) ; 0.0098)
 (defparameter *random-tip-angle-degrees* 10.0)
-(defparameter *close-distance* 1.8)
+(defparameter *close-distance* 1.8) ; 1.8)
 (defparameter *max-close-distance* 3.0)
 
 
@@ -1062,6 +1062,7 @@ testing the scoring."
   (multiple-value-bind (aggregate atom-vectors)
       (build-aggregate-from-ga-membrane membrane :debug nil)
     (let ((end-atom-vec (make-array (length (atom-vectors atom-vectors)) :element-type 'ext:byte32))
+          (nonbond-db (chem:compute-merged-nonbond-force-field-for-aggregate aggregate))
           (centers (make-array (length (atom-vectors atom-vectors)))))
       (loop for index from 0 below (length (atom-vectors atom-vectors))
             for atom-vector = (elt (atom-vectors atom-vectors) index)
@@ -1086,7 +1087,7 @@ testing the scoring."
                            0.1094
                            0.0
                            pos)))
-        (let ((energy (chem:make-rigid-body-energy-function (length (atom-vectors atom-vectors)))))
+        (let ((energy (chem:make-rigid-body-energy-function (length (atom-vectors atom-vectors)) (bounding-box membrane))))
           (chem:rigid-body-energy-function-add-term energy nonbond-component)
           (let ((start-pos (make-array (chem:get-nvector-size energy) :element-type 'double-float)))
             (loop for index from 0 below (chem:get-nvector-size energy) by 7
