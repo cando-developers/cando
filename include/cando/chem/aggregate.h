@@ -72,6 +72,7 @@ public:
   static BoundingBox_sp make(core::List_sp widths, core::T_sp angles_degrees, core::T_sp center);
 public:
   Vector3 get_bounding_box_widths() const;
+  Vector3 get_bounding_box_rwidths() const;
   Vector3 get_bounding_box_angles_degrees() const;
   Vector3 get_bounding_box_center() const;
   bool cuboidp() const;

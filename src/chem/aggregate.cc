@@ -140,6 +140,11 @@ CL_DEFMETHOD Vector3 BoundingBox_O::get_bounding_box_widths() const {
   return this->_Widths;
 }
 
+CL_DEFMETHOD Vector3 BoundingBox_O::get_bounding_box_rwidths() const {
+  Vector3 vec(this->_x_rwidth,this->_y_rwidth,this->_z_rwidth);
+  return vec;
+}
+
 CL_DEFMETHOD Vector3 BoundingBox_O::get_bounding_box_angles_degrees() const {
   return this->_AnglesDegrees;
 }
