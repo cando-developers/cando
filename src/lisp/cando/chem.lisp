@@ -197,6 +197,8 @@ for the node in the table."))
 (defmethod chem:mak-unbound-bounding-box ((atom-table chem:atom-table))
   (chem:atom-table-mak-unbound-bounding-box atom-table))
 
+
+
 (defmethod chem:bounding-box ((aggregate chem:aggregate))
   (chem:aggregate-bounding-box aggregate))
 
@@ -212,4 +214,17 @@ for the node in the table."))
 
 (defmethod chem:set-bounding-box ((octtree chem:add-ion-octree) bounding-box)
   (chem:aggregate-set-bounding-box octtree bounding-box))
+
+
+(defmethod chem:bounding-box ((rigid-body-energy-function chem:rigid-body-energy-function))
+  (chem:rigid-body-energy-function-bounding-box rigid-body-energy-function))
+
+(defmethod chem:bounding-box-bound-p ((rigid-body-energy-function chem:rigid-body-energy-function))
+  (chem:rigid-body-energy-function-bounding-box-bound-p rigid-body-energy-function))
+
+(defmethod chem:set-bounding-box ((rigid-body-energy-function chem:rigid-body-energy-function) bounding-box)
+  (chem:rigid-body-energy-function-set-bounding-box rigid-body-energy-function bounding-box))
+
+(defmethod chem:mak-unbound-bounding-box ((rigid-body-energy-function chem:rigid-body-energy-function))
+  (chem:rigid-body-energy-function-mak-unbound-bounding-box rigid-body-energy-function))
 
