@@ -106,6 +106,7 @@ SYMBOL_EXPORT_SC_(UnitsPkg,kilojoules);
 SYMBOL_EXPORT_SC_(UnitsPkg,kiloJoules_per_mole);
 SYMBOL_EXPORT_SC_(UnitsPkg,kilojoules_per_mole);
 SYMBOL_EXPORT_SC_(UnitsPkg,kiloCalories_per_mole);
+SYMBOL_EXPORT_SC_(UnitsPkg,kilocalorie);
 SYMBOL_EXPORT_SC_(UnitsPkg,kilocalories_per_mole);
 SYMBOL_EXPORT_SC_(UnitsPkg,nm_per_ps);
 
@@ -184,6 +185,11 @@ SYMBOL_EXPORT_SC_(UnitsPkg,nm_per_ps);
                                                                       "kiloJoules_per_mole","kJ/mole");
           unit_kilojoules_per_mole->incorporateUnit(unit_moles,1.0,-1);
           _sym_kilojoules_per_mole->exportYourself()->defparameter(unit_kilojoules_per_mole);
+
+          NamedUnit_sp unit_kilocalorie = NamedUnit_O::create(_sym_kilocalorie,
+                                                               4.184,unit_kilojoules,
+                                                               "kilocalorie","kcal");
+          _sym_kilocalorie->defparameter(unit_kilocalorie);
 
           NamedUnit_sp unit_kilocalories_per_mole = NamedUnit_O::create(_sym_kilocalories_per_mole,
                                                                         4.184,unit_kilojoules_per_mole,

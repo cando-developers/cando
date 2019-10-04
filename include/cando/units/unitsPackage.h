@@ -30,6 +30,16 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/lisp.h>
 
 
+/*
+A unit:unit stores  a scale factor (double) and a vector of powers for the base SI units/dimensions.
+A unit:quantity stores a value and a unit:unit.   The value can be a double-float, a vector of doubles, or other unitless values.
+Then there is unit:named-unit - it inherits from unit:unit and it has some extra slots to store the long and short form of the name of the unit.
+Cando's unit package works on the principle that every unit can be written in terms of some base units.
+Base units are called unit:dimension - they have an implicit scale factor of 1.0 and an implicit power of 1 for their dimension.
+The unit:dimension's correspond to the SI units for each kind of physical quantity.
+Conversion of unit:quantity to different unit:units is done with respect to the base units/dimensions.
+  */
+
 PACKAGE_NICKNAME("U");
 PACKAGE_USE("COMMON-LISP");
 PACKAGE_SHADOW("*");
