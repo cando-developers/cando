@@ -135,7 +135,7 @@
            (position #\. thing))))
 
 (defrule file-path-string
-    (+ (character-ranges (#\a #\z) (#\A #\Z) (#\0 #\9) #\- #\_ #\/ #\. ))
+    (+ (character-ranges (#\a #\z) (#\A #\Z) (#\0 #\9) #\~ #\- #\_ #\/ #\. ))
   (:text t))
 
 (defrule/s file-path-unquoted
