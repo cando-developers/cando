@@ -1,0 +1,35 @@
+// XML_EVAL
+	node->attributeIfNotDefault("evalak", this->eval.ak, 0.0 );
+ 	node->attributeIfNotDefault("evalbk", this->eval.bk, 0.0 );
+ 	node->attributeIfNotDefault("evalck", this->eval.ck, 0.0 );
+ 	node->attributeIfNotDefault("evaldk", this->eval.dk, 0.0 );
+ 	node->attributeIfNotDefault("evalxk", this->eval.xk, 0.0 );
+ 	node->attributeIfNotDefault("evalyk", this->eval.yk, 0.0 );
+ 	node->attributeIfNotDefault("evalzk", this->eval.zk, 0.0 );
+ 	node->attributeIfNotDefault("evalal", this->eval.al, 0.0 );
+ 	node->attributeIfNotDefault("evalbl", this->eval.bl, 0.0 );
+ 	node->attributeIfNotDefault("evalcl", this->eval.cl, 0.0 );
+ 	node->attributeIfNotDefault("evaldl", this->eval.dl, 0.0 );
+ 	node->attributeIfNotDefault("evalxl", this->eval.xl, 0.0 );
+ 	node->attributeIfNotDefault("evalyl", this->eval.yl, 0.0 );
+ 	node->attributeIfNotDefault("evalzl", this->eval.zl, 0.0 );
+ 	node->attributeIfNotDefault("evalEnergy", this->eval.Energy, 0.0 );
+ 	node->attributeIfNotDefault("evalDeltaX", this->eval.DeltaX, 0.0 );
+ 	node->attributeIfNotDefault("evalDeltaY", this->eval.DeltaY, 0.0 );
+ 	node->attributeIfNotDefault("evalDeltaZ", this->eval.DeltaZ, 0.0 );
+ 	node->attributeIfNotDefault("evalfam", this->eval.fam, 0.0 );
+ 	node->attributeIfNotDefault("evalfbm", this->eval.fbm, 0.0 );
+ 	node->attributeIfNotDefault("evalfcm", this->eval.fcm, 0.0 );
+ 	node->attributeIfNotDefault("evalfdm", this->eval.fdm, 0.0 );
+ 	node->attributeIfNotDefault("evalfxm", this->eval.fxm, 0.0 );
+ 	node->attributeIfNotDefault("evalfym", this->eval.fym, 0.0 );
+ 	node->attributeIfNotDefault("evalfzm", this->eval.fzm, 0.0 );
+ 	node->attributeIfNotDefault("evalfan", this->eval.fan, 0.0 );
+ 	node->attributeIfNotDefault("evalfbn", this->eval.fbn, 0.0 );
+ 	node->attributeIfNotDefault("evalfcn", this->eval.fcn, 0.0 );
+ 	node->attributeIfNotDefault("evalfdn", this->eval.fdn, 0.0 );
+ 	node->attributeIfNotDefault("evalfxn", this->eval.fxn, 0.0 );
+ 	node->attributeIfNotDefault("evalfyn", this->eval.fyn, 0.0 );
+ 	node->attributeIfNotDefault("evalfzn", this->eval.fzn, 0.0 );
+ 	node->attributeIfNotDefault("evalnonbondRBDeviation", this->eval.nonbondRBDeviation, 0.0 );
+ 

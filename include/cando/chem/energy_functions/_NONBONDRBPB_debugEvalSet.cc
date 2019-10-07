@@ -1,0 +1,35 @@
+// SET_EVAL 
+ 	EVAL_SET(ak, ak);
+ 	EVAL_SET(bk, bk);
+ 	EVAL_SET(ck, ck);
+ 	EVAL_SET(dk, dk);
+ 	EVAL_SET(xk, xk);
+ 	EVAL_SET(yk, yk);
+ 	EVAL_SET(zk, zk);
+ 	EVAL_SET(al, al);
+ 	EVAL_SET(bl, bl);
+ 	EVAL_SET(cl, cl);
+ 	EVAL_SET(dl, dl);
+ 	EVAL_SET(xl, xl);
+ 	EVAL_SET(yl, yl);
+ 	EVAL_SET(zl, zl);
+ 	EVAL_SET(Energy, Energy);
+ 	EVAL_SET(DeltaX, DeltaX);
+ 	EVAL_SET(DeltaY, DeltaY);
+ 	EVAL_SET(DeltaZ, DeltaZ);
+ 	EVAL_SET(fam, fam);
+ 	EVAL_SET(fbm, fbm);
+ 	EVAL_SET(fcm, fcm);
+ 	EVAL_SET(fdm, fdm);
+ 	EVAL_SET(fxm, fxm);
+ 	EVAL_SET(fym, fym);
+ 	EVAL_SET(fzm, fzm);
+ 	EVAL_SET(fan, fan);
+ 	EVAL_SET(fbn, fbn);
+ 	EVAL_SET(fcn, fcn);
+ 	EVAL_SET(fdn, fdn);
+ 	EVAL_SET(fxn, fxn);
+ 	EVAL_SET(fyn, fyn);
+ 	EVAL_SET(fzn, fzn);
+ 	EVAL_SET(nonbondRBDeviation, nonbondRBDeviation);
+ 
