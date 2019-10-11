@@ -165,7 +165,7 @@ int     i;
     }
 }
 
-#define keyString(t1,t2,t3,t4) chemkw_intern(t1->symbolName()->get()+"-"+t2->symbolName()->get()+"-"+t3->symbolName()->get()+"-"+t4->symbolName()->get())
+#define keyString(t1,t2,t3,t4) chemkw_intern(t1->symbolName()->get_std_string()+"-"+t2->symbolName()->get_std_string()+"-"+t3->symbolName()->get_std_string()+"-"+t4->symbolName()->get_std_string())
 
 
 

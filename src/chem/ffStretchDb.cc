@@ -79,8 +79,8 @@ void	EstimateStretch::parseFromXml(adapt::QDomNode_sp node)
     core::Symbol_sp stretchKey(core::Symbol_sp t1
                                , core::Symbol_sp t2 )
     {
-        return chemkw_intern(t1->symbolName()->get()+"-"
-                           + t2->symbolName()->get());
+        return chemkw_intern(t1->symbolName()->get_std_string()+"-"
+                           + t2->symbolName()->get_std_string());
     }
 
 CL_NAME(CHEM:FFSTRETCH-DB-ADD);

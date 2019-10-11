@@ -314,7 +314,7 @@ core::Symbol_sp chemkw_intern(const string& symName)
 core::Symbol_sp chemkw_intern(core::String_sp symName)
 {
   ASSERT(cl__stringp(symName));
-  string s = symName->get();
+  string s = symName->get_std_string();
   if ( s == "" ) return _Nil<core::Symbol_O>();
   return chemkw_intern(s);
 }

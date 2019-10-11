@@ -369,7 +369,7 @@ CL_DEFMETHOD     void Atom_O::setConfiguration(ConfigurationEnum conf)
 
 void Atom_O::setElementFromAtomName()
 {
-  string nameStr = this->getName()->symbolName()->get();
+  string nameStr = this->getName()->symbolName()->get_std_string();
   Element element = elementFromAtomNameString(nameStr);
   LOG(BF(" Resulting element= |%d|") %element );
   this->setElement(element);
@@ -490,7 +490,7 @@ CL_LISPIFY_NAME("createImplicitHydrogenNames");
 CL_DEFMETHOD core::List_sp Atom_O::createImplicitHydrogenNames()
 {
   uint addHydrogens = this->numberOfOpenValence();
-  string nameSuffix = this->getName()->symbolName()->get().substr(1,9999);
+  string nameSuffix = this->getName()->symbolName()->get_std_string().substr(1,9999);
   core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
   core::Cons_sp cons = first;
   if ( addHydrogens == 1 )
@@ -907,13 +907,13 @@ CL_DEFMETHOD     void	Atom_O::applyTransformToAtoms( const Matrix& m )
 
 string Atom_O::getHybridizationAsString()
 {
-  return hybridizationSymbolFromHybridization(this->getHybridization())->symbolName()->get();
+  return hybridizationSymbolFromHybridization(this->getHybridization())->symbolName()->get_std_string();
 }
 
 CL_LISPIFY_NAME("getElementAsString");
 CL_DEFMETHOD     string Atom_O::getElementAsString()
 {
-  return atomicSymbolFromElement(this->getElement())->symbolName()->get();
+  return atomicSymbolFromElement(this->getElement())->symbolName()->get_std_string();
 }
 
 CL_DEFMETHOD core::Symbol_sp Atom_O::getElementAsSymbol() const

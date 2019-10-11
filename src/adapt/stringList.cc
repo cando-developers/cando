@@ -109,7 +109,7 @@ void StringList_O::appendStringList(StringList_sp s) {
 void StringList_O::appendConsOfStrings(List_sp s) {
   
   for (auto cur : s) {
-    this->_Contents.push_back(gc::As<Str_sp>(oCar(cur))->get());
+    this->_Contents.push_back(gc::As<Str_sp>(oCar(cur))->get_std_string());
   }
 }
 

@@ -170,7 +170,9 @@ void PathMessage_O::dump()
 	a2 = edge->getVertex2()->getAtom();
 	uint r2 = a2->getResidueContainedBy()->getId();
 	core::Symbol_sp s2 = a2->getName();
-	_lisp->print(BF("    %d:%s - %d:%s") % r1% s1->symbolName()->get() % r2% s2->symbolName()->get() );
+	_lisp->print(BF("    %d:%s - %d:%s")
+                     % r1 % s1->symbolName()->get_std_string()
+                     % r2 % s2->symbolName()->get_std_string() );
     }
 }
 

@@ -117,11 +117,11 @@ void AtomPdbRec::write(core::T_sp fout)
   string name;
   if ( this->_name->symbolName()->length() > 3 )
   {
-    string sname = this->_name->symbolName()->get();
+    string sname = this->_name->symbolName()->get_std_string();
     name = sname.substr(3,1)+sname.substr(0,3);
   } else
   {
-    name = " " + this->_name->symbolName()->get();
+    name = " " + this->_name->symbolName()->get_std_string();
   }
   core::clasp_write_string((boost::format( "ATOM%7d %-4s %3s %1s%4d    %8.3f%8.3f%8.3f %5.2f %5.2f           %2s\n" ) % this->_serial % name % this->_resName % this->_chainId % this->_resSeq % this->_x % this->_y % this->_z % this->_occupancy % this->_tempFactor % this->_element).str(), fout);
 }
@@ -177,7 +177,7 @@ Atom_sp AtomPdbRec::createAtom()
     atom->setElementFromString(this->_element);
   } else
   {
-    atom->setElement(elementFromAtomNameStringCaseInsensitive(this->_name->symbolName()->get()));
+    atom->setElement(elementFromAtomNameStringCaseInsensitive(this->_name->symbolName()->get_std_string()));
   }
   return atom;
 }

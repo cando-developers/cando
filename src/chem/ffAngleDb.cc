@@ -114,9 +114,9 @@ double FFAngle_O::getK2_kJPerRadianSquared() const
                              , core::Symbol_sp t2
                              , core::Symbol_sp t3)
     {
-        return chemkw_intern(t1->symbolName()->get()+"-"
-                           + t2->symbolName()->get()+"-"
-                           + t3->symbolName()->get());
+        return chemkw_intern(t1->symbolName()->get_std_string()+"-"
+                           + t2->symbolName()->get_std_string()+"-"
+                           + t3->symbolName()->get_std_string());
     }
 
 

@@ -96,7 +96,7 @@ void SymbolList_O::appendConsOfStrings(List_sp s) {
   
 
   for (auto cur : s) {
-    Symbol_sp sym = _lisp->intern(gc::As<Str_sp>(oCar(cur))->get());
+    Symbol_sp sym = _lisp->intern(gc::As<Str_sp>(oCar(cur))->get_std_string());
     this->_Contents.push_back(sym);
   }
 }

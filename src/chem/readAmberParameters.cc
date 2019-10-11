@@ -95,7 +95,7 @@ core::T_mv ReadAmberParameters_O::determineParmSetFrcModType(core::T_sp fin)
   while ( true ) {
     core::T_mv mv_line = core::cl__read_line(fin,_Nil<T_O>(),_Nil<T_O>());
     if ( mv_line.nilp() ) break;
-    string line = gc::As<core::String_sp>(mv_line)->get();
+    string line = gc::As<core::String_sp>(mv_line)->get_std_string();
     LOG(BF("Read line(%s)") % line  );
     if ( line.size()>=4 && line.substr(0,4) == "MASS") {
       bNew = true;
@@ -128,7 +128,7 @@ FFTypesDb_sp ReadAmberParameters_O::parseTypeRules(core::T_sp fin)
   while ( true ) {
     core::T_mv mv_line = core::cl__read_line(fin,_Nil<T_O>(),_Nil<T_O>());
     if ( mv_line.nilp() ) break;
-    string line = gc::As<core::String_sp>(mv_line)->get();
+    string line = gc::As<core::String_sp>(mv_line)->get_std_string();
     if (line.size() == 0) continue;
 //    printf("%s:%d:%s Read line: %s\n", __FILE__, __LINE__, __FUNCTION__, line.c_str()); fflush(stdout);
     LOG(BF("Read line(%s)") % line  );
@@ -230,7 +230,7 @@ FFStretchDb_sp ReadAmberParameters_O::parseStretchDb(core::T_sp fin)
   {
     core::T_sp tline = core::cl__read_line(fin,_Nil<core::T_O>(),_Nil<core::T_O>());
     if (tline.nilp()) break;
-    string line = gc::As<core::String_sp>(tline)->get();
+    string line = gc::As<core::String_sp>(tline)->get_std_string();
     line = core::trimWhiteSpace(line);
     if ( line.size() == 0 )
     {
@@ -276,7 +276,7 @@ FFAngleDb_sp ReadAmberParameters_O::parseAngleDb(core::T_sp fin)
   {
     core::T_sp tline = core::cl__read_line(fin,_Nil<T_O>(),_Nil<T_O>());
     if (tline.nilp()) break;
-    string line = tline.as<core::String_O>()->get();
+    string line = tline.as<core::String_O>()->get_std_string();
     line = core::trimWhiteSpace(line);
     if (line.size()== 0)
     {
@@ -328,7 +328,7 @@ FFPtorDb_sp ReadAmberParameters_O::parsePtorDb(core::T_sp fin, core::T_sp system
   {
     core::T_sp tline = core::cl__read_line(fin,_Nil<T_O>(),_Nil<T_O>());
     if (tline.nilp()) break;
-    string line = tline.as<core::String_O>()->get();
+    string line = tline.as<core::String_O>()->get_std_string();
     if (line.size()== 0)
     {
       done = true;
@@ -394,7 +394,7 @@ FFItorDb_sp ReadAmberParameters_O::parseItorDb(core::T_sp fin)
   {
     core::T_sp tline = core::cl__read_line(fin,_Nil<T_O>(),_Nil<T_O>());
     if (tline.nilp()) break;
-    string line = tline.as<core::String_O>()->get();
+    string line = tline.as<core::String_O>()->get_std_string();
     line = core::trimWhiteSpace(line);
 //      printf("%s:%d line: %s\n", __FILE__, __LINE__, line.c_str());
     if (line.size()== 0)
@@ -455,7 +455,7 @@ FFItorDb_sp ReadAmberParameters_O::parseItorDb(core::T_sp fin)
 
 string ReadAmberParameters_O::parseNonbondLabelKindNB(core::T_sp fin)
 {
-  string line = core::cl__read_line(fin).as<core::String_O>()->get();
+  string line = core::cl__read_line(fin).as<core::String_O>()->get_std_string();
   vector<string>parts = core::split(line);
   if (line.size()<2) {
     SIMPLE_ERROR(BF("Could not interpret %s as a label kindnb") % line);
@@ -478,7 +478,7 @@ void ReadAmberParameters_O::parseNonbondDb(core::T_sp fin, FFNonbondDb_sp ffNonb
     while ( 1 ) {
       core::T_sp tline = core::cl__read_line(fin,_Nil<T_O>(),_Nil<T_O>());
       if (tline.nilp()) break;
-      string line = tline.as<core::String_O>()->get();
+      string line = tline.as<core::String_O>()->get_std_string();
       line = core::trimWhiteSpace(line);
       if ( line.size() == 0 ) break;
       else {
@@ -536,7 +536,7 @@ void ReadAmberParameters_O::parseAtomEquivalences(core::T_sp fin, FFNonbondDb_sp
   while (1) {
     core::T_sp tline = core::cl__read_line(fin,_Nil<T_O>(),_Nil<T_O>());
     if (tline.nilp()) break;
-    string line = tline.as<core::String_O>()->get();
+    string line = tline.as<core::String_O>()->get_std_string();
     line = core::trimWhiteSpace(line);
     if ( line.size() == 0 ) break;
     else {
@@ -560,7 +560,7 @@ SYMBOL_EXPORT_SC_(ChemPkg,parse_ptor_db);
 
 ForceField_sp ReadAmberParameters_O::parseAmberFormattedForceField(core::T_sp fin, core::T_sp system)
 {_OF();
-    string line = core::cl__read_line(fin).as<core::String_O>()->get();
+    string line = core::cl__read_line(fin).as<core::String_O>()->get_std_string();
     GC_ALLOCATE(FFNonbondDb_O, ffNonbondsDb );
     ffNonbondsDb = this->parseMasses(fin,ffNonbondsDb);
     core::cl__read_line(fin); // skp hydrophilic entries
@@ -669,12 +669,12 @@ ForceField_sp ReadAmberParameters_O::parseFrcModFile(core::T_sp fin, core::T_sp 
   bool readNonbond = false;
   core::T_mv mv_title = core::cl__read_line(fin,_Nil<core::T_O>());
   if (mv_title.notnilp()) {
-    ff->setTitle(mv_title.as<core::String_O>()->get());
+    ff->setTitle(mv_title.as<core::String_O>()->get_std_string());
   }
   while ( true ) {
     core::T_mv mv_line = core::cl__read_line(fin,_Nil<T_O>());
     if ( mv_line.nilp() ) break;
-    string line = mv_line.as<core::String_O>()->get();
+    string line = mv_line.as<core::String_O>()->get_std_string();
     LOG(BF("Read line(%s)") % line  );
     if ( line.size()>=4 && line.substr(0,4) == "MASS") {
       nonbondDb = this->parseMasses(fin,nonbondDb);

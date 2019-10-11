@@ -56,7 +56,7 @@ CL_LISPIFY_NAME("insertConsStrings");
 CL_DEFMETHOD StringSet_sp StringSet_O::insertConsStrings(List_sp vals) {
   for (auto p : vals) {
     Str_sp t = gc::As<Str_sp>(oCar(p));
-    this->insert(t->get());
+    this->insert(t->get_std_string());
   }
   return this->sharedThis<StringSet_O>();
 }

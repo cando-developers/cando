@@ -195,7 +195,7 @@ void	_calculateElementAndHybridization(Atom_sp a)
   Hybridization geom;
   uint	neighbors;
   mnm = a->getName();
-  string nm = mnm->symbolName()->get();
+  string nm = mnm->symbolName()->get_std_string();
     
     // Set the element from the name HACK HACK HACK
   if ( nm.substr(0,2) == "CU" || nm.substr(0,2) == "Cu" ) {
