@@ -387,7 +387,7 @@ void Atom_O::setHybridizationFromString(const string& h)
 {
   core::SimpleBaseString_sp sbs = core::SimpleBaseString_O::make(h);
   core::SimpleString_sp usbs = core::cl__string_upcase(sbs);
-  core::Symbol_sp sym = _lisp->internKeyword(usbs->get());
+  core::Symbol_sp sym = _lisp->internKeyword(usbs->get_std_string());
   this->_Hybridization = hybridizationForSymbol(sym);
 }
 
