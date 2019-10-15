@@ -85,12 +85,7 @@ namespace geom {
     typedef typename TemplatedBase::const_iterator const_iterator;
     typedef value_type container_value_type;
   public:
-    static value_type initial_element_from_object(core::T_sp obj, bool supplied) {
-      if (supplied) {
-        return translate::from_object<Vector3>(obj)._v;
-      }
-      return Vector3(0.0,0.0,0.0);
-    }
+    static value_type default_initial_element(void) { return Vector3(0.0,0.0,0.0); }
     static value_type from_object(core::T_sp obj) { return translate::from_object<Vector3>(obj)._v; };
     static core::T_sp to_object(const value_type& v) { return OVector3_O::create(v);};
   public:
@@ -127,8 +122,6 @@ namespace geom {
   public:
     virtual core::T_sp array_type() const final { return cl::_sym_simple_array; };
     virtual core::T_sp element_type() const override { return geom::_sym_OVector3_O;};
-    virtual core::T_sp arrayElementType() const override { return geom::_sym_OVector3_O; };
-    virtual core::clasp_elttype elttype() const { return core::clasp_aet_non_standard; };
   public:
     Vector3& getElement(size_t i) { return (*this)[i];};
     const Vector3& getElement(size_t i) const { return (*this)[i];};
