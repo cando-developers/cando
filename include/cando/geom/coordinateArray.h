@@ -120,7 +120,6 @@ namespace geom {
     // Specific to SimpleVectorCoordinate_O
 //    virtual void __write__(T_sp stream) const final;
   public:
-    virtual core::T_sp array_type() const final { return cl::_sym_simple_array; };
     virtual core::T_sp element_type() const override { return geom::_sym_OVector3_O;};
   public:
     Vector3& getElement(size_t i) { return (*this)[i];};
