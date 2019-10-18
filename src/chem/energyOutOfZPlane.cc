@@ -184,7 +184,7 @@ bool		calcOffDiagonalHessian = true;
 
 
 
-double EnergyOutOfZPlane_O::evaluateAll( ScoringFunction_sp score,
+double EnergyOutOfZPlane_O::evaluateAllComponent( ScoringFunction_sp score,
                                          NVector_sp 	pos,
                                          bool 		calcForce,
                                          gc::Nilable<NVector_sp> 	force,

@@ -35,8 +35,8 @@ This is an open source license for the CANDO software from Temple University, bu
  *	Maintains a database of stretch types
  */
 
-#ifndef EnergyNonbond_H  //[
-#define	EnergyNonbond_H
+#ifndef EnergyPeriodicBoundaryConditionNonbond_H  //[
+#define	EnergyPeriodicBoundaryConditionNonbond_H
 #include <stdio.h>
 #include <string>
 #include <vector>
@@ -45,9 +45,9 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/array.h>
 #include <cando/geom/vector3.h>
 #include <cando/chem/energyComponent.h>
+#include <cando/chem/energyNonbond.h>
 //#include "geom/render.fwd.h"// energyNonbond.h wants DisplayList needs render.fwd.h
 
-namespace       chem {
 namespace chem {
 
 double	_evaluateEnergyOnly_PeriodicBoundaryConditionNonbond(double x1, double y1, double z1,
@@ -62,16 +62,6 @@ class EnergyPeriodicBoundaryConditionsNonbond_O : public EnergyNonbond_O
   virtual void setupHessianPreconditioner(NVector_sp nvPosition,
                                           AbstractLargeSquareMatrix_sp m );
     
-  virtual double evaluateAllComponent( ScoringFunction_sp scorer,
-                                       NVector_sp 	pos,
-                                       bool 		calcForce,
-                                       gc::Nilable<NVector_sp> 	force,
-                                       bool		calcDiagonalHessian,
-                                       bool		calcOffDiagonalHessian,
-                                       gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                                       gc::Nilable<NVector_sp>	hdvec,
-                                       gc::Nilable<NVector_sp> dvec);
-
   virtual void evaluateUsingExcludedAtoms( NVector_sp 	pos,
                                            bool 		calcForce,
                                            gc::Nilable<NVector_sp> 	force,

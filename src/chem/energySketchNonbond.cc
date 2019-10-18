@@ -107,7 +107,7 @@ void	EnergySketchNonbond_O::setupHessianPreconditioner(
   SIMPLE_ERROR(BF("Nonbond term isn't used when calculating setupHessianPreconditioner but it was called!!!"));
 }
 
-double	EnergySketchNonbond_O::evaluateAll( ScoringFunction_sp score,
+double	EnergySketchNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
                                             NVector_sp 	pos,
                                             bool 		calcForce,
                                             gc::Nilable<NVector_sp> 	force,

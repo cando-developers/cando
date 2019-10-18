@@ -305,7 +305,7 @@ Vector3				v1,v2;
 
 
 
-double EnergyFixedNonbondRestraint_O::evaluateAll( ScoringFunction_sp score,
+double EnergyFixedNonbondRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
                                                    NVector_sp 	pos,
                                                    bool 		calcForce,
                                                    gc::Nilable<NVector_sp> 	force,

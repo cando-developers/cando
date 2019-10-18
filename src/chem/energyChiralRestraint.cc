@@ -258,7 +258,7 @@ bool		calcOffDiagonalHessian = true;
 
 
 
-double	EnergyChiralRestraint_O::evaluateAll( ScoringFunction_sp score,
+double	EnergyChiralRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
                                               chem::NVector_sp 	pos,
                                               bool 		calcForce,
                                               gc::Nilable<chem::NVector_sp> 	force,

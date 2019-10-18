@@ -162,6 +162,8 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/energyImproperRestraint.h>
 #include <cando/chem/energyNonbond.fwd.h>
 #include <cando/chem/energyNonbond.h>
+#include <cando/chem/energyPeriodicBoundaryConditionsNonbond.fwd.h>
+#include <cando/chem/energyPeriodicBoundaryConditionsNonbond.h>
 #include <cando/chem/energySketchNonbond.h>
 #include <cando/chem/energyStretch.fwd.h>
 #include <cando/chem/energyStretch.h>

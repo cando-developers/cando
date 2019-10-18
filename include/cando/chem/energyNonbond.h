@@ -142,10 +142,9 @@ struct	to_object<chem::EnergyNonbond>
 
 namespace chem {
 
-double	_evaluateEnergyOnly_Nonbond(
-		double x1, double y1, double z1,
-		double x2, double y2, double z2,
-		double dA, double dC, double dQ1Q2 );
+double	_evaluateEnergyOnly_Nonbond(double x1, double y1, double z1,
+                                    double x2, double y2, double z2,
+                                    double dA, double dC, double dQ1Q2 );
 
 
 class EnergyNonbond_O : public EnergyComponent_O
@@ -222,7 +221,7 @@ class EnergyNonbond_O : public EnergyComponent_O
   virtual void setupHessianPreconditioner(NVector_sp nvPosition,
                                           AbstractLargeSquareMatrix_sp m );
     
-  virtual double evaluateAll( ScoringFunction_sp scorer,
+  virtual double evaluateAllComponent( ScoringFunction_sp scorer,
                               NVector_sp 	pos,
                               bool 		calcForce,
                               gc::Nilable<NVector_sp> 	force,
@@ -231,16 +230,7 @@ class EnergyNonbond_O : public EnergyComponent_O
                               gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
                               gc::Nilable<NVector_sp>	hdvec,
                               gc::Nilable<NVector_sp> dvec);
-
-  void evaluateUsingExcludedAtoms( NVector_sp 	pos,
-                                   bool 		calcForce,
-                                   gc::Nilable<NVector_sp> 	force,
-                                   bool		calcDiagonalHessian,
-                                   bool		calcOffDiagonalHessian,
-                                   gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                                   gc::Nilable<NVector_sp>	hdvec,
-                                   gc::Nilable<NVector_sp> dvec);
-  void evaluateTerms( NVector_sp 	pos,
+  virtual void evaluateTerms( NVector_sp 	pos,
                       bool 		calcForce,
                       gc::Nilable<NVector_sp> 	force,
                       bool		calcDiagonalHessian,
@@ -249,13 +239,21 @@ class EnergyNonbond_O : public EnergyComponent_O
                       gc::Nilable<NVector_sp>	hdvec,
                       gc::Nilable<NVector_sp> dvec);
   
-  void expandExcludedAtomsToTerms();
-
+  virtual void evaluateUsingExcludedAtoms( NVector_sp 	pos,
+                                   bool 		calcForce,
+                                   gc::Nilable<NVector_sp> 	force,
+                                   bool		calcDiagonalHessian,
+                                   bool		calcOffDiagonalHessian,
+                                   gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                   gc::Nilable<NVector_sp>	hdvec,
+                                   gc::Nilable<NVector_sp> dvec);
   virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm(
                                                                                NVector_sp pos );
 
+  void expandExcludedAtomsToTerms();
+
   // virtual	int	checkForBeyondThresholdInteractions( stringstream& info, NVector_sp pos );
-  core::List_sp	checkForBeyondThresholdInteractionsWithPosition(NVector_sp pos, double threshold );
+  virtual core::List_sp	checkForBeyondThresholdInteractionsWithPosition(NVector_sp pos, double threshold );
 
   virtual string	beyondThresholdInteractionsAsString();
 

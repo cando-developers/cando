@@ -201,15 +201,6 @@
 (defmethod show ((trajectory cando-trajectory) &rest kwargs &key &allow-other-keys)
   (apply #'nglv:make-nglwidget :structure trajectory kwargs))
 
-(defmethod show ((trajectory dynamics:trajectory) &rest kwargs &key &allow-other-keys)
-  (change-class trajectory 'cando-trajectory)
-  (apply #'nglv:make-nglwidget :structure trajectory kwargs))
-
-(defmethod show ((dynamics dynamics:simulation) &rest kwargs &key &allow-other-keys)
-  (let ((trajectory (dynamics:make-trajectory dynamics)))
-    (change-class trajectory 'cando-trajectory)
-    (apply 'show trajectory kwargs)))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; amber-netcdf-trajectory

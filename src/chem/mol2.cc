@@ -819,19 +819,14 @@ void	mol2WriteAggregateStream( Aggregate_sp agg, std::ostream &out, bool useSyby
     out << atom_temp_int << " ";
     out << a->getName()->symbolNameAsString() << " ";
     pos = a->getPosition();
-    out << pos.getX() << " ";
-    out << pos.getY() << " ";
-    out << pos.getZ() << " ";
+    out << BF("%5.3lf %5.3lf %5.3lf ") % pos.getX() % pos.getY() % pos.getZ();
     LOG(BF("Writing mol2 atom(%s) pos(%s)") % a->description() % a->getPosition().asString() );
     out << ai->_Type->symbolNameAsString() << " ";
     int residue_temp_int = ht->gethash(ai->_Residue).unsafe_fixnum();
     out << residue_temp_int << " ";
     out << ai->_Residue->getName()->symbolNameAsString() << "_"
         << residue_temp_int << " ";
-    out << std::setiosflags(std::ios::scientific)
-        << std::setw(8)
-        << std::setprecision(4);
-    out << a->getCharge() << std::endl;
+    out << BF("%5.4lf") % a->getCharge() << std::endl;
   }
 	//
 	// Write out the bonds

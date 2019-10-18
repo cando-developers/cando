@@ -73,7 +73,7 @@ public: // instance variables
 public:
   static EnergyPointToLineRestraint_sp create(EnergySketchStretch_sp stretch);
 public:
-  virtual double evaluateAll( ScoringFunction_sp scorer,
+  virtual double evaluateAllComponent( ScoringFunction_sp scorer,
                               NVector_sp 	pos,
                               bool 		calcForce,
                               gc::Nilable<NVector_sp> 	force,

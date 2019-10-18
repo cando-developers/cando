@@ -164,7 +164,7 @@ void	EnergyRigidBodyStaple_O::setupHessianPreconditioner(
 
 
   
-double EnergyRigidBodyStaple_O::evaluateAll( ScoringFunction_sp score,
+double EnergyRigidBodyStaple_O::evaluateAllComponent( ScoringFunction_sp score,
                                              NVector_sp 	pos,
                                              bool 		calcForce,
                                              gc::Nilable<NVector_sp> 	force,

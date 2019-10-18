@@ -105,19 +105,43 @@ double	angleWithVector(NVector_sp me, NVector_sp other)
   return 0.0;
 }
 
-void XPlusYTimesScalar( NVector_sp o, NVector_sp x, NVector_sp y, double s )
+/* Multiply each element of NVector Y by s and add to x and write into o IF frozen[index] == 0 */
+void XPlusYTimesScalar( NVector_sp output, NVector_sp x, NVector_sp y, double s, core::T_sp frozen )
 {
   LOG(BF("this->_Values.size() = %d") % o->length() );
   LOG(BF("x->size() = %d") % x->length() );
   LOG(BF("y->size() = %d") % y->length() );
-  ASSERTP( o->length() == x->length(),"NVector_O::addTimesScalar>>mismatched length");
-  ASSERT( o->length() == y->length());
-  double* po = &(*o)[0];
+  if (output->length()!=x->length()
+      || output->length()!=y->length()) {
+    SIMPLE_ERROR(BF("Mismatch in lengths of nvectors - they are output, x, y -> %d, %d, %d") % output->length() % x->length() % y->length());
+  }
+  core::SimpleBitVector_sp frozen_bitvector;
+  if (gc::IsA<core::SimpleBitVector_sp>(frozen)) {
+    frozen_bitvector = gc::As_unsafe<core::SimpleBitVector_sp>(frozen);
+    if (frozen_bitvector->length()!=output->length()) {
+      SIMPLE_ERROR(BF("frozen is defined but is not the correct length - it is %d and expected %d") % frozen_bitvector->length() % output->length());
+    }
+  } else if (frozen.notnilp()) {
+    SIMPLE_ERROR(BF("Expected frozen to be a simple-bit-vector - but it is %s") % _rep_(frozen));
+  }
+  double* poutput = &(*output)[0];
   double* px = &(*x)[0];
   double* py = &(*y)[0];
-  for ( int i(0),iEnd(o->length()); i<iEnd; ++i ) {
-    po[i] = px[i]+py[i]*s;
-  }
+  if (frozen_bitvector) {
+    // Some things may be frozen
+    for ( int i(0),iEnd(output->length()); i<iEnd; ++i ) {
+      if ((*frozen_bitvector).testBit(i)==0) {
+        poutput[i] = px[i]+py[i]*s;
+      } else {
+        poutput[i] = px[i];
+      }
+    }
+  } else {
+    // Nothing is frozen
+    for ( int i(0),iEnd(output->length()); i<iEnd; ++i ) {
+      poutput[i] = px[i]+py[i]*s;
+    }
+  }    
 }
 
 /*

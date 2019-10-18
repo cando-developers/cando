@@ -5,17 +5,18 @@ This web page is excellent: https://www.redblobgames.com/grids/hexagons
 
 This code uses Offset coordinates odd-r
 |#
-(defparameter *x-expand* 40.0)
-(defparameter *y-expand* 40.0)
+(defparameter *x-expand* 15.0) ; 40.0)
+(defparameter *y-expand* 15.0) ; 40.0)
 (defparameter *z-expand* 10.0)
 
 (defparameter *select-fraction* 0.1)
 (defparameter *fraction-collisions-randomize* 0.4)
 (defparameter *z-space* 1.5)
+(defparameter *z-height* 10.0)
 (defparameter *mutate-lipid-fraction* 0.08)
 (defparameter *mutate-position-fraction* 0.3)
 (defparameter *population-size* 200)
-(defparameter *lipid-density* 0.0090) ; 0.0098)
+(defparameter *lipid-density* 0.0098) ; 0.0098)
 (defparameter *random-tip-angle-degrees* 10.0)
 (defparameter *close-distance* 1.8) ; 1.8)
 (defparameter *max-close-distance* 3.0)
@@ -80,6 +81,7 @@ all layed out in a linear vector.")
    (lipid-info :initarg :lipid-info :accessor lipid-info)
    (lipid-index :initarg :lipid-index :accessor lipid-index)
    (lipid-id :initarg :lipid-id :accessor lipid-id)
+   (top-bottom :initarg :top-bottom :accessor top-bottom)
    ))
 
 ;;; Dummy values for cells that contain solute
@@ -97,6 +99,15 @@ all layed out in a linear vector.")
    (membrane :initarg :membrane :accessor membrane)
    (collisions :initarg :collisions :accessor collisions)))
 
+
+(defclass atm-res-mol ()
+  ((atm :initarg :atm :accessor atm)
+   (res :initarg :res :accessor res)
+   (mol :initarg :mol :accessor mol)))
+
+(defmethod print-object ((obj atm-res-mol) stream)
+  (print-unreadable-object (obj stream :type t)
+    (format stream "~a ~a ~a" (chem:get-name (atm obj)) (chem:get-name (res obj)) (chem:get-name (mol obj)))))
 
 (defclass atom-vectors ()
   ((array :initarg :array :accessor array)
@@ -390,10 +401,12 @@ will select lipid foo with 20% chance, lipid bar with 30% chance and lipid baz w
                    :lipid-info lipid-info
                    :lipid-index lipid-index
                    :lipid-id lipid-id
-                   :transform transform)))
+                   :transform transform
+                   :top-bottom top-bottom)))
 
 (defun make-molecule-from-ga-lipid (ga-lipid &key debug)
-  "Build a molecule from the ga-lipid.  If DEBUG is T then change the molecule name and residue names so we can pick out the lipid-index"
+  "Build a molecule from the ga-lipid.  If DEBUG is T then change the molecule name and residue names so we can pick out the lipid-index.
+   Return the molecule and the vector of atoms that correspond to the molecule order."
   (let* ((lipid-info (lipid-info ga-lipid))
          (lipid-index (lipid-index ga-lipid))
          (lipid-id (lipid-id ga-lipid))
@@ -402,29 +415,32 @@ will select lipid foo with 20% chance, lipid bar with 30% chance and lipid baz w
          (new-to-old-map (make-hash-table))
          (lipid-mol (chem:matter-copy (lipid-molecule lipid-info) new-to-old-map))
          (order-info (order-info lipid-info))
-         (old-to-new-map (make-hash-table)))
+         (old-atom-to-order-index (make-hash-table)))
+    (chem:set-name lipid-mol (intern (format nil "mol-~a" lipid-id) :keyword))
+    ;; Build a map from old-atoms to index in order-info
+    (loop for index from 0 below (length order-info)
+          for residue-atom = (elt order-info index)
+          for old-atom = (order-atom residue-atom)
+          do (setf (gethash old-atom old-atom-to-order-index) index))
+    ;; If we are debugging - then rename the lipids
     (when debug
       (let ((lipid-name (format nil "L~a" lipid-id)))
         (chem:set-name lipid-mol (intern lipid-name :keyword))
         (cando:do-residues (res lipid-mol)
           (chem:set-name res (intern (format nil "~a-~a" lipid-name (chem:get-name res)) :keyword)))))
-    ;; Flip the atom map so we can take the order of old atoms and find the new atom
-    (maphash (lambda (new-atom old-atom)
-               (setf (gethash old-atom old-to-new-map) new-atom))
-             new-to-old-map)
-    (loop for index from 0 below (length order-info)
-          for coord-index = (* 3 index)
-          for residue-atom = (elt order-info index)
-          for residue = (order-residue residue-atom)
-          for old-atom = (order-atom residue-atom)
-          for new-atom = (gethash old-atom old-to-new-map)
-          for xpos = (elt coordinates coord-index)
-          for ypos = (elt coordinates (+ 1 coord-index))
-          for zpos = (elt coordinates (+ 2 coord-index))
-          for pos = (geom:vec xpos ypos zpos)
-          do (chem:set-position new-atom pos))
-    (chem:apply-transform-to-atoms lipid-mol transform)
-    lipid-mol))
+    ;; Build a new atom order
+    (let ((index 0)
+          (atom-vec (make-array (chem:number-of-atoms lipid-mol))))
+      (cando:do-residues (new-res lipid-mol)
+        (cando:do-atoms (new-atom new-res)
+          (let* ((old-atom (gethash new-atom new-to-old-map))
+                 (old-index (gethash old-atom old-atom-to-order-index))
+                 (old-coord-index (* 3 old-index))
+                 (pos (geom:vec 0.0 0.0 0.0)))
+            (geom:vec-extract-transformed pos coordinates old-coord-index transform)
+            (chem:set-position new-atom pos)
+            (setf (elt atom-vec (prog1 index (incf index))) (make-instance 'atm-res-mol :atm new-atom :res new-res :mol lipid-mol)))))
+      (values lipid-mol atom-vec))))
 
 (defun calculate-center-and-half-width (bounding-cuboid)
   (let ((center (geom:vec (* (+ (geom:get-min-x bounding-cuboid) (geom:get-max-x bounding-cuboid)) 0.5)
@@ -492,110 +508,97 @@ will select lipid foo with 20% chance, lipid bar with 30% chance and lipid baz w
       solute-collisions)))
 
 
+(defun fill-in-lipids (lipids solute-colliders solute top-bottom z-height)
+  (warn "We should fill in a few more lipids from solute-colliders to fill in the membrane")
+  #+(or)(let ((sorted-solute-colliders (sort solute-colliders #'< :key #'car)))
+          (loop for solute-collider in sorted-solute-colliders
+                for collisions = (car solute-collider)
+                for ga-lipid = (cdr solute-collider)
+                for array-indices = (array-indices ga-lipid)
+                for xi = (first array-indices)
+                for yi = (second array-indices)
+                for zi = (third array-indices)
+                when (< collisions 100)
+                  do (progn
+                       (format t "Adding ")
+                       (setf (aref array xi yi zi) ga-lipid))
+                do (format t "#collisions ~a  for solute at ~a~%" collisions array-indices))))
+
 (defun build-ga-membrane (solute &key input-bounding-box
-                                   (lipid-selector (list (cons 1.0 *popc*))))
-  (multiple-value-bind (solute-copy suggested-bounding-box)
-      (prepare-solute solute input-bounding-box)
-    (unless input-bounding-box
-      (setf input-bounding-box suggested-bounding-box))
-    (let* ((lipid-selector (make-optimized-lipid-selector lipid-selector))
-           (nonbond-db (chem:compute-merged-nonbond-force-field-for-aggregate solute))
-           (x-width (chem:get-x-width input-bounding-box))
-           (y-width (chem:get-y-width input-bounding-box))
-           (z-width (chem:get-z-width input-bounding-box))
-           (z-offset *z-space*)
-           (half-x-width (/ x-width 2.0))
-           (half-y-width (/ y-width 2.0))
-           (lipid-id 0)
-           (bounding-cuboid (chem:matter-calculate-bounding-cuboid solute 1.0)))
-      (multiple-value-bind (center half-width)
-          (calculate-center-and-half-width bounding-cuboid)
-        (let* ((solute-octree (chem:make-generic-octree center half-width))
-               (hex-angle (* 0.0174533 60.0)) ; 60 degrees in radians
-               (xstep (sqrt (/ 1.0 *lipid-density*)))
-               (xdir (geom:v* (geom:vec 1.0 0.0 0.0) xstep))
-               (ypdir (geom:v* (geom:vec (cos hex-angle) (sin hex-angle) 0.0) xstep))
-               (ymdir (geom:v* (geom:vec (- (cos hex-angle)) (sin hex-angle) 0.0) xstep))
-               (ystep (* (sin hex-angle) xstep))
-               (xnum (floor (/ x-width xstep)))
-               (ynum (let ((simple-ynum (floor (/ y-width ystep))))
-                       (if (evenp simple-ynum) simple-ynum (1+ simple-ynum)))) ; need even number of cells in y dir
-               (x-width (* xnum xstep))
-               (y-width (* ynum ystep))
-               (xstart (- (* x-width 0.5)))
-               (ystart (- (* y-width 0.5)))
-               (lipid-id 0)
-               (array (make-array (list xnum ynum 2)))
-               (node-array (make-array (list xnum ynum 2)))
-               (ga-solute (make-instance 'ga-solute :solute solute :octree solute-octree)) ;;  :solute solute :octree solute-octree))
-               (bounding-box (chem:make-bounding-box (list x-width y-width z-width)
-                                                     :angles-degrees (chem:get-bounding-box-angles-degrees input-bounding-box)
-                                                     :center (chem:get-bounding-box-center input-bounding-box))))
-          ;; Adjust the xwidth and ywidth of the bounding box
-          ;; Populate the solute-octree
-          (cando:do-molecules (mol solute)
-            (let ((mol-list (list mol)))
-              (cando:do-residues (res mol)
-                (let ((res-list (list* res mol-list)))
-                  (cando:do-atoms (atm res)
-                    (let ((atm-list (list* atm res-list)))
-                      (chem:generic-octree-insert solute-octree (chem:get-position atm) atm-list)
-                      ))))))
-          (let ((solute-colliders nil))
-            (loop for yindex from 0 below ynum
-                  do (loop for xindex from 0 below xnum
-                           for wrapped-xypos = (wrapped-xypos array xindex yindex xstart ystart xdir ypdir ymdir)
-                           for top-ga-lipid = (make-random-ga-lipid (list xindex yindex 0) wrapped-xypos z-offset lipid-selector (incf lipid-id) :top)
-                           for bottom-ga-lipid = (make-random-ga-lipid (list xindex yindex 1) wrapped-xypos z-offset lipid-selector (incf lipid-id) :bottom)
-                           do (let* ((top-solute-collides-p (lipid-protein-overlaps-p bounding-box top-ga-lipid ga-solute))
-                                     (top-thing (if top-solute-collides-p
-                                                    (progn
-                                                      (push (cons top-solute-collides-p top-ga-lipid) solute-colliders)
-                                                      ga-solute)
-                                                    top-ga-lipid)))
-                                (setf (aref array xindex yindex 0) top-thing))
-                           do (let* ((bottom-solute-collides-p (lipid-protein-overlaps-p bounding-box bottom-ga-lipid ga-solute))
-                                     (bottom-thing (if bottom-solute-collides-p
-                                                       (progn
-                                                         (push (cons bottom-solute-collides-p bottom-ga-lipid) solute-colliders)
-                                                         ga-solute)
-                                                       bottom-ga-lipid)))
-                                (setf (aref array xindex yindex 1) bottom-thing))))
-            (let ((sorted-solute-colliders (sort solute-colliders #'< :key #'car)))
-              (loop for solute-collider in sorted-solute-colliders
-                    for collisions = (car solute-collider)
-                    for ga-lipid = (cdr solute-collider)
-                    for array-indices = (array-indices ga-lipid)
-                    for xi = (first array-indices)
-                    for yi = (second array-indices)
-                    for zi = (third array-indices)
-                    when (< collisions 100)
-                      do (progn
-                           (format t "Adding ")
-                           (setf (aref array xi yi zi) ga-lipid))
-                    do (format t "#collisions ~a  for solute at ~a~%" collisions array-indices))))
-          ;; Figure out what lipids are adjacent to the solute
-          (flet ((adjacent-to-solute-p (membrane xi yi zi)
-                   (let* ((yparity (mod yi 2))
-                          (zother (mod (1+ zi) 2))
-                          (dirs (elt *oddr-directions* yparity)))
-                     (loop for dir across dirs
-                           for xdir = (elt dir 0)
-                           for ydir = (elt dir 1)
-                           do (multiple-value-bind (xp yp)
-                                  (wrapped-array-indices (+ xi xdir) (+ yi ydir) xnum ynum)
-                                (let ((entry (aref array xp yp zi)))
-                                  (when (typep entry 'ga-solute) (return-from adjacent-to-solute-p t)))
-                                (let ((entry (aref array xp yp zother)))
-                                  (when (typep entry 'ga-solute) (return-from adjacent-to-solute-p t)))))
-                     (let ((entry (aref array xi yi zother)))
-                       (when (typep entry 'ga-solute) (return-from adjacent-to-solute-p t))))))
-            (loop for zindex from 0 below 2
-                  do (loop for yindex from 0 below ynum
-                           do (loop for xindex from 0 below xnum
-                                    for entry = (aref array xindex yindex zindex)
-                                    for adjacent-to-solute = (adjacent-to-solute-p array xindex yindex zindex)
-                                    do (setf (adjacent-to-solute entry) adjacent-to-solute)))))
+                                   (lipid-selector (list (cons 1.0 *popc*)))
+                                   (z-height *z-height*))
+  (let ((top-lipids (make-array 128 :adjustable t :fill-pointer 0))
+        (bottom-lipids (make-array 128 :adjustable t :fill-pointer 0)))
+    (multiple-value-bind (solute-copy suggested-bounding-box)
+        (prepare-solute solute input-bounding-box)
+      (unless input-bounding-box
+        (setf input-bounding-box suggested-bounding-box))
+      (let* ((lipid-selector (make-optimized-lipid-selector lipid-selector))
+             (nonbond-db (chem:compute-merged-nonbond-force-field-for-aggregate solute))
+             (x-width (chem:get-x-width input-bounding-box))
+             (y-width (chem:get-y-width input-bounding-box))
+             (z-width (chem:get-z-width input-bounding-box))
+             (z-offset *z-space*)
+             (half-x-width (/ x-width 2.0))
+             (half-y-width (/ y-width 2.0))
+             (lipid-id 0)
+             (bounding-cuboid (chem:matter-calculate-bounding-cuboid solute 1.0)))
+        (multiple-value-bind (center half-width)
+            (calculate-center-and-half-width bounding-cuboid)
+          (let* ((solute-octree (chem:make-generic-octree center half-width))
+                 (hex-angle (* 0.0174533 60.0)) ; 60 degrees in radians
+                 (xstep (sqrt (/ 1.0 *lipid-density*)))
+                 (xdir (geom:v* (geom:vec 1.0 0.0 0.0) xstep))
+                 (ypdir (geom:v* (geom:vec (cos hex-angle) (sin hex-angle) 0.0) xstep))
+                 (ymdir (geom:v* (geom:vec (- (cos hex-angle)) (sin hex-angle) 0.0) xstep))
+                 (ystep (* (sin hex-angle) xstep))
+                 (xnum (floor (/ x-width xstep)))
+                 (ynum (let ((simple-ynum (floor (/ y-width ystep))))
+                         (if (evenp simple-ynum) simple-ynum (1+ simple-ynum)))) ; need even number of cells in y dir
+                 (x-width (* xnum xstep))
+                 (y-width (* ynum ystep))
+                 (xstart (- (* x-width 0.5)))
+                 (ystart (- (* y-width 0.5)))
+                 (lipid-id 0)
+                 (array (make-array (list xnum ynum 2)))
+                 (node-array (make-array (list xnum ynum 2)))
+                 (ga-solute (make-instance 'ga-solute :solute solute :octree solute-octree)) ;;  :solute solute :octree solute-octree))
+                 (bounding-box (chem:make-bounding-box (list x-width y-width z-width)
+                                                       :angles-degrees (chem:get-bounding-box-angles-degrees input-bounding-box)
+                                                       :center (chem:get-bounding-box-center input-bounding-box))))
+            ;; Adjust the xwidth and ywidth of the bounding box
+            ;; Populate the solute-octree
+            (cando:do-molecules (mol solute)
+              (let ((mol-list (list mol)))
+                (cando:do-residues (res mol)
+                  (let ((res-list (list* res mol-list)))
+                    (cando:do-atoms (atm res)
+                      (let ((atm-list (list* atm res-list)))
+                        (chem:generic-octree-insert solute-octree (chem:get-position atm) atm-list)
+                        ))))))
+            (let (top-solute-colliders
+                  bottom-solute-colliders)
+              (loop for yindex from 0 below ynum
+                    do (loop for xindex from 0 below xnum
+                             for wrapped-xypos = (wrapped-xypos array xindex yindex xstart ystart xdir ypdir ymdir)
+                             for top-ga-lipid = (make-random-ga-lipid (list xindex yindex 0) wrapped-xypos z-offset lipid-selector (incf lipid-id) :top)
+                             for bottom-ga-lipid = (make-random-ga-lipid (list xindex yindex 1) wrapped-xypos z-offset lipid-selector (incf lipid-id) :bottom)
+                             do (let ((top-solute-collides-p (lipid-protein-overlaps-p bounding-box top-ga-lipid ga-solute)))
+                                  (if top-solute-collides-p
+                                      (progn
+                                        (push (cons top-solute-collides-p top-ga-lipid) top-solute-colliders)
+                                        )
+                                      (vector-push-extend top-ga-lipid top-lipids)))
+                             do (let ((bottom-solute-collides-p (lipid-protein-overlaps-p bounding-box bottom-ga-lipid ga-solute)))
+                                  (if bottom-solute-collides-p
+                                      (progn
+                                        (push (cons bottom-solute-collides-p bottom-ga-lipid) bottom-solute-colliders)
+                                        )
+                                      (vector-push-extend bottom-ga-lipid bottom-lipids)))))
+              (fill-in-lipids top-lipids top-solute-colliders solute :top :z-height z-height)
+              (fill-in-lipids bottom-lipids bottom-solute-colliders solute :bottom :z-height z-height)
+              (simulate-crude-lipids top-lipids solute :top :z-height z-height)
+              (simulate-crude-lipids bottom-lipids solute :bottom :z-height z-height))
           (make-instance 'ga-membrane
                          :bounding-box bounding-box
                          :array array
@@ -648,20 +651,8 @@ will select lipid foo with 20% chance, lipid bar with 30% chance and lipid baz w
                                          :target-ga-thing target
                                          :start range-start
                                          :end range-end)
-                          (ranges collisions)))))
-
-(defgeneric score-cell (bounding-box cur other collisions close-distance))
-
-(defmethod score-cell (bounding-box (cur ga-solute) (other ga-solute) collisions close-distance) #| Do nothing |#)
-
-(defmethod score-cell (bounding-box (source ga-lipid) (target ga-lipid) collisions close-distance)
-  (do-score-cell bounding-box source target collisions close-distance))
-
-(defmethod score-cell (bounding-box (source ga-solute) (target ga-lipid) collisions close-distance) #| Do nothing |#)
-
-(defmethod score-cell (bounding-box source (target null) collisions close-distance) #| Do nothing |# )
-
-(defmethod score-cell (bounding-box (source ga-lipid) (target ga-solute) collisions close-distance) #| Do nothing |# )
+                          (ranges collisions))
+      (/ (- range-end range-start) 2))))
 
 (defun make-collisions (&optional (xdim 16) (ydim 16) (zdim 2))
   (let* ((ranges (make-array (+ 1024 (* xdim ydim zdim)) :adjustable t :fill-pointer 0))
@@ -681,181 +672,21 @@ will select lipid foo with 20% chance, lipid bar with 30% chance and lipid baz w
   ((lipid-pairs :initarg :lipid-pairs :accessor lipid-pairs)
    (solute-tests :initarg :solute-tests :accessor solute-tests)))
   
-(defun maybe-score-cell-work-list (sc-cur entry work-list &key debug)
-  "Only score the cell if lipid-ids are in ascending order"
-  (let ((id1 (lipid-id sc-cur))
-        (id2 (lipid-id entry)))
-    (when (< id1 id2)
-      (when debug (format t "~a/" (array-indices entry)))
-      (vector-push-extend (make-instance 'lipid-pair
-                                         :source-cell (array-indices sc-cur)
-                                         :target-cell (array-indices entry))
-                          (lipid-pairs work-list)))))
-
-(defun build-ga-membrane-work-list (ga-membrane &key debug)
-  (let* ((array (array ga-membrane))
-         (dims (array-dimensions array))
-         (xnum (elt dims 0))
-         (ynum (elt dims 1))
-         (znum (elt dims 2))
-         (work-list (make-instance 'work-list
-                                   :lipid-pairs (make-array 1024 :adjustable t :fill-pointer 0)
-                                   :solute-tests (make-array 256 :adjustable t :fill-pointer 0))))
-    (flet ((aref-wrapped (xi yi zi xd yd)
-             (multiple-value-bind (xp yp)
-                 (wrapped-array-indices (+ xi xd) (+ yi yd) xnum ynum)
-               (when debug (format t " ~a ~a ~a, " xp yp zi))
-               (aref (array ga-membrane) xp yp zi))))
-      (loop for zi below znum
-            for zother = (mod (1+ zi) 2)
-            do (loop for yi below ynum
-                     for yparity = (mod yi 2)
-                     for dirs = (elt *oddr-directions* yparity)
-                     do (loop for xi below xnum
-                              for sc-cur = (aref (array ga-membrane) xi yi zi)
-                              when (typep sc-cur 'ga-lipid)
-                                do (progn
-                                     (when debug (format t "~a ~a ~a | dirs: ~a  xnum: ~a  ynum: ~a~%" xi yi zi dirs xnum ynum))
-                                     (loop for dir across dirs
-                                           for xdir = (elt dir 0)
-                                           for ydir = (elt dir 1)
-                                           for xd = (+ xi xdir)
-                                           for yd = (+ yi ydir)
-                                           do (multiple-value-bind (xp yp)
-                                                  (wrapped-array-indices (+ xi xdir) (+ yi ydir) xnum ynum)
-                                                (when debug (format t "~a,~a[~a,~a]{~a,~a}" xdir ydir xd yd xp yp))
-                                                (let ((entry (aref array xp yp zi)))
-                                                  (when (typep entry 'ga-lipid) (maybe-score-cell-work-list sc-cur entry work-list)))
-                                                (let ((entry (aref array xp yp zother)))
-                                                  (when (typep entry 'ga-lipid) (maybe-score-cell-work-list sc-cur entry work-list)))))
-                                     (let ((entry (aref array xi yi zother)))
-                                       (when (typep entry 'ga-lipid) (maybe-score-cell-work-list sc-cur entry work-list))))
-                                   (when debug (format t "~%") (finish-output))
-                                   (when (adjacent-to-solute sc-cur)
-                                     (vector-push-extend (array-indices sc-cur) (solute-tests work-list)))))))
-    work-list))
-
-(defun score-work-list (work-list membrane &key debug (close-distance *close-distance*))
-  (let* ((array (array membrane))
-         (dims (array-dimensions array))
-         (xnum (elt dims 0))
-         (ynum (elt dims 1))
-         (znum (elt dims 2))
-         (bounding-box (bounding-box membrane))
-         (collisions (make-collisions xnum ynum znum)))
-    (loop for lipid-pair across (lipid-pairs work-list)
-          for source-cell = (source-cell lipid-pair)
-          for target-cell = (target-cell lipid-pair)
-          for source-xi = (elt source-cell 0)
-          for source-yi = (elt source-cell 1)
-          for source-zi = (elt source-cell 2)
-          for target-xi = (elt target-cell 0)
-          for target-yi = (elt target-cell 1)
-          for target-zi = (elt target-cell 2)
-          for sc-cur = (aref array source-xi source-yi source-zi)
-          for sc-other = (aref array target-xi target-yi target-zi)
-          do (score-cell bounding-box sc-cur sc-other collisions close-distance))
-    (loop for lipid-cell across (solute-tests work-list)
-          for source-xi = (elt lipid-cell 0)
-          for source-yi = (elt lipid-cell 1)
-          for source-zi = (elt lipid-cell 2)
-          for sc-cur = (aref array source-xi source-yi source-zi)
-          do (let ((*close-distance* close-distance))
-               (score-cell bounding-box sc-cur (ga-solute membrane) collisions close-distance)))
-    (values (/ (length (indices collisions)) 2)
-            collisions)))
-
-(defun score-work-list-atom-vectors (work-list atom-vectors &key debug no-result (close-distance *close-distance*))
-  (let ((close-contact-vec (make-array 1024 :adjustable t :fill-pointer 0))
-        (cutoff-squared (* close-distance close-distance)))
-    (let* ((array (array atom-vectors))
-           (dims (array-dimensions array))
-           (xnum (elt dims 0))
-           (ynum (elt dims 1))
-           (znum (elt dims 2))
-           (bounding-box (bounding-box atom-vectors))
-           (num 0)
-           (close-contacts 0))
-      (loop for lipid-pair across (lipid-pairs work-list)
-            for source-cell = (source-cell lipid-pair)
-            for target-cell = (target-cell lipid-pair)
-            for source-xi = (elt source-cell 0)
-            for source-yi = (elt source-cell 1)
-            for source-zi = (elt source-cell 2)
-            for target-xi = (elt target-cell 0)
-            for target-yi = (elt target-cell 1)
-            for target-zi = (elt target-cell 2)
-            for sc-cur = (aref array source-xi source-yi source-zi)
-            for sc-other = (aref array target-xi target-yi target-zi)
-            for m1-atoms = (elt (atom-vectors atom-vectors) sc-cur)
-            for m2-atoms = (elt (atom-vectors atom-vectors) sc-other)
-            do (multiple-value-bind (one-num one-close-contacts)
-                   (close-contacts-between-atom-vectors m1-atoms m2-atoms bounding-box close-contact-vec cutoff-squared num)
-                 (setf num one-num)
-                 (incf close-contacts one-close-contacts)))
-      (loop for lipid-cell across (solute-tests work-list)
-            for source-xi = (elt lipid-cell 0)
-            for source-yi = (elt lipid-cell 1)
-            for source-zi = (elt lipid-cell 2)
-            for sc-cur = (aref array source-xi source-yi source-zi)
-            for m1-atoms = (elt (atom-vectors atom-vectors) sc-cur)
-            with solute-atoms = (elt (atom-vectors atom-vectors) (solute-atom-vector-index atom-vectors))
-            do (multiple-value-bind (one-num one-close-contacts)
-                   (close-contacts-between-atom-vectors m1-atoms solute-atoms bounding-box close-contact-vec cutoff-squared num)
-                 (setf num one-num)
-                 (incf close-contacts one-close-contacts)))
-      (format t "There are ~d close-contacts of a possible ~a~%" close-contacts num)
-      (if no-result
-          nil close-contact-vec))))
-
-(defun maybe-score-cell (bounding-box sc-cur entry collisions close-distance &key debug)
-  "Only score the cell if lipid-ids are in ascending order"
-  (let ((id1 (lipid-id sc-cur))
-        (id2 (lipid-id entry)))
-    (when (< id1 id2)
-      (when debug (format t "~a/" (array-indices entry)))
-      (score-cell bounding-box sc-cur entry collisions close-distance))))
 
 (defun score-ga-membrane (ga-membrane &key debug (close-distance *close-distance*))
   (let* ((array (array ga-membrane))
-         (dims (array-dimensions array))
-         (xnum (elt dims 0))
-         (ynum (elt dims 1))
-         (znum (elt dims 2))
          (bounding-box (bounding-box ga-membrane))
-         (collisions (make-collisions xnum ynum znum)))
-    (flet ((aref-wrapped (xi yi zi xd yd)
-             (multiple-value-bind (xp yp)
-                 (wrapped-array-indices (+ xi xd) (+ yi yd) xnum ynum)
-               (when debug (format t " ~a ~a ~a, " xp yp zi))
-               (aref (array ga-membrane) xp yp zi))))
-      (loop for zi below znum
-            for zother = (mod (1+ zi) 2)
-            do (loop for yi below ynum
-                     for yparity = (mod yi 2)
-                     for dirs = (elt *oddr-directions* yparity)
-                     do (loop for xi below xnum
-                              for sc-cur = (aref (array ga-membrane) xi yi zi)
-                              when (typep sc-cur 'ga-lipid)
-                                do (progn
-                                     (when debug (format t "~a ~a ~a | dirs: ~a  xnum: ~a  ynum: ~a~%" xi yi zi dirs xnum ynum))
-                                     (loop for dir across dirs
-                                           for xdir = (elt dir 0)
-                                           for ydir = (elt dir 1)
-                                           for xd = (+ xi xdir)
-                                           for yd = (+ yi ydir)
-                                           do (multiple-value-bind (xp yp)
-                                                  (wrapped-array-indices (+ xi xdir) (+ yi ydir) xnum ynum)
-                                                (when debug (format t "~a,~a[~a,~a]{~a,~a}" xdir ydir xd yd xp yp))
-                                                (let ((entry (aref array xp yp zi)))
-                                                  (when (typep entry 'ga-lipid) (maybe-score-cell bounding-box sc-cur entry collisions close-distance)))
-                                                (let ((entry (aref array xp yp zother)))
-                                                  (when (typep entry 'ga-lipid) (maybe-score-cell bounding-box sc-cur entry collisions close-distance)))))
-                                     (let ((entry (aref array xi yi zother)))
-                                       (when (typep entry 'ga-lipid) (maybe-score-cell bounding-box sc-cur entry collisions close-distance))))
-                                   (when debug (format t "~%") (finish-output))
-                                   (when (adjacent-to-solute sc-cur)
-                                     (do-score-cell bounding-box sc-cur (ga-solute ga-membrane) collisions close-distance))))))
+         (collisions (make-collisions)))
+    (loop for ai below (1- (array-total-size array))
+          for sc-ai = (row-major-aref array ai)
+          for transform-ai = (transform sc-ai)
+          do (loop for bi from (1+ ai) below (array-total-size array)
+                   for sc-bi = (row-major-aref array bi)
+                   for transform-bi = (transform sc-bi)
+                   do (when (chem:octree-transformed-intersects-in-bounding-box sc-ai transform-ai sc-bi transform-bi bounding-box)
+                        (do-score-cell bounding-box sc-ai sc-bi collisions close-distance :debug debug))
+                   do (when (chem:octree-transformed-intersects-in-bounding-box sc-ai transform-ai (ga-solute ga-membrane) (transform (ga-solute ga-membrane)) bounding-box)
+                        (let ((num (do-score-cell bounding-box sc-ai (ga-solute ga-membrane) collisions close-distance)))))))
     (values (/ (length (indices collisions)) 2) collisions)))
 
 (defun mutate-all-lipids (ga-membrane)
@@ -911,7 +742,7 @@ will select lipid foo with 20% chance, lipid bar with 30% chance and lipid baz w
                  do (loop for index from start below end by 2
                           for source-coord-index = (elt (indices collisions) index)
                           for atom-res-mol = (elt (indices collisions) (1+ index))
-                          for atom = (first atom-res-mol)
+                          for atom = (atm atom-res-mol)
                           for solute-pos = (chem:get-position atom)
                           for source-pos = (geom:vec 0.0 0.0 0.0)
                           do (let ((point-pair (list source-pos solute-pos)))
@@ -977,13 +808,42 @@ will select lipid foo with 20% chance, lipid bar with 30% chance and lipid baz w
              (terpri)
              (finish-output))))
 
+(defun check-aggregate-atom-vector-atom-order (aggregate atom-vectors)
+  (let ((aggregate-atoms (make-array 1024 :fill-pointer 0 :adjustable t)))
+    (cando:do-molecules (mol aggregate)
+      (cando:do-residues (res mol)
+        (cando:do-atoms (atm res)
+          (vector-push-extend atm aggregate-atoms))))
+    (let ((atom-vector-atoms (make-array 1024 :fill-pointer 0 :adjustable t)))
+      (loop for atom-vector across (atom-vectors atom-vectors)
+            do (loop for atm-res-mol across atom-vector
+                     do (vector-push-extend (atm atm-res-mol) atom-vector-atoms)))
+      (format t "Checking atom order~%")
+      (let ((checked (loop named check
+                           for agg-index below (length aggregate-atoms)
+                           for av-index below (length atom-vector-atoms)
+                           for agg-atom = (elt aggregate-atoms agg-index)
+                           for av-atom = (elt atom-vector-atoms av-index)
+                           unless (eq agg-atom av-atom)
+                             do (progn
+                                  (format t "Mismatch in atoms at index ~a~%" agg-index)
+                                  (return-from check nil))
+                           finally (return-from check t))))
+        (format t "aggregate-atoms length -> ~a~%" (length aggregate-atoms))
+        (format t "atom-vector-atoms length -> ~a~%" (length atom-vector-atoms))
+        (when (/= (length aggregate-atoms) (length atom-vector-atoms))
+          (format t "There is a mismatch in the number of atoms~%"))
+        (format t "Done~%")))))
+
+
 (defun build-aggregate-from-ga-membrane (ga-membrane &key debug)
   "Build an aggregate for the membrane and return it as well as a vector of vectors of atoms for
 testing the scoring."
   (let ((solute (chem:matter-copy (solute (ga-solute ga-membrane)))))
     (chem:apply-transform-to-atoms solute (transform (ga-solute ga-membrane)))
-    (let* ((aggregate (cando-user:combine solute))
+    (let* ((aggregate (chem:make-aggregate)) ; make an empty aggregate
            (dimensions (array-dimensions (array ga-membrane)))
+           (index -1)
            (xnum (elt dimensions 0))
            (ynum (elt dimensions 1))
            (znum (elt dimensions 2))
@@ -993,46 +853,37 @@ testing the scoring."
                                         :array (make-array (list xnum ynum znum) :element-type t)
                                         :bounding-box bounding-box)))
       (chem:set-bounding-box aggregate (bounding-box ga-membrane))
-      (loop for xindex from 0 below (elt dimensions 0)
-            do (loop for yindex from 0 below (elt dimensions 1)
-                     do (loop for zindex from 0 to 1
-                              for ga-thing = (aref (array ga-membrane) xindex yindex zindex)
-                              unless (typep ga-thing 'ga-solute)
-                                do (let* ((ga-lipid ga-thing)
-                                          (transform (transform ga-lipid))
-                                          (lipid-info (lipid-info ga-lipid))
-                                          (lipid-index (lipid-index ga-lipid)))
-                                     (let ((lipid-mol (make-molecule-from-ga-lipid ga-lipid :debug debug)))
-                                       (chem:add-molecule aggregate lipid-mol)
-                                       (let ((lipid-mol-index (vector-push-extend lipid-mol lipid-molecules)))
-                                         (setf (aref (array atom-vectors) xindex yindex zindex) lipid-mol-index)))))))
-      ;; Build a vector of atom vectors
-      (let ((molecule-atoms (make-array (1+ (length lipid-molecules))))
-            (total-pairs 0))
-        (loop for index below (length lipid-molecules)
-              for lipid-molecule = (elt lipid-molecules index)
-              for mol-list = (list lipid-molecule)
-              for atoms = (make-array (chem:number-of-atoms lipid-molecule))
-              for ai = -1
-              do (cando:do-residues (res lipid-molecule)
-                   (let ((res-list (list* res mol-list)))
-                     (cando:do-atoms (atm res)
-                       (let ((atm-list (list* atm res-list)))
-                         (setf (elt atoms (incf ai)) atm-list)))))
-              do (setf (elt molecule-atoms index) atoms))
+      (let ((molecule-atoms (make-array 256 :fill-pointer 0 :adjustable t)))
+        (loop for xindex from 0 below (elt dimensions 0)
+              do (loop for yindex from 0 below (elt dimensions 1)
+                       do (loop for zindex from 0 to 1
+                                for ga-thing = (aref (array ga-membrane) xindex yindex zindex)
+                                unless (typep ga-thing 'ga-solute)
+                                  do (let* ((ga-lipid ga-thing)
+                                            (transform (transform ga-lipid))
+                                            (lipid-info (lipid-info ga-lipid))
+                                            (lipid-index (lipid-index ga-lipid)))
+                                       (multiple-value-bind (lipid-mol lipid-atom-vector)
+                                           (make-molecule-from-ga-lipid ga-lipid :debug debug)
+                                         (chem:add-molecule aggregate lipid-mol)
+                                         (let ((lipid-mol-index (vector-push-extend lipid-mol lipid-molecules)))
+                                           (setf (aref (array atom-vectors) xindex yindex zindex) lipid-mol-index))
+                                         (vector-push-extend lipid-atom-vector molecule-atoms))))))
         ;; add in the solute atoms at the end
         (let ((solute-atoms (make-array (chem:number-of-atoms solute)))
               (si -1))
           (cando:do-molecules (mol solute)
             (let ((mol-list (list mol)))
+              (chem:add-molecule aggregate mol)
               (cando:do-residues (res mol)
                 (let ((res-list (list* res mol-list)))
                   (cando:do-atoms (atm res)
                     (let ((atm-list (list* atm res-list)))
-                      (setf (elt solute-atoms (incf si)) atm-list)))))))
-          (setf (elt molecule-atoms (1- (length molecule-atoms))) solute-atoms))
-        (setf (solute-atom-vector-index atom-vectors) (1- (length molecule-atoms)))
+                      (setf (elt solute-atoms (incf si)) (make-instance 'atm-res-mol :atm atm :res res :mol mol))))))))
+          (setf (solute-atom-vector-index atom-vectors) (length molecule-atoms))
+          (vector-push-extend solute-atoms molecule-atoms))
         (setf (atom-vectors atom-vectors) molecule-atoms)
+        ;; (check-aggregate-atom-vector-atom-order aggregate atom-vectors)
         (values aggregate atom-vectors)))))
 
 (defun simulate-membrane (aggregate num)
@@ -1052,15 +903,29 @@ testing the scoring."
     (error "Empty atom vector"))
   (let ((sum (geom:vec 0.0 0.0 0.0)))
     (loop for atom-res-mol across atom-vector
-          for atom = (first atom-res-mol)
+          for atom = (atm atom-res-mol)
           for pos = (chem:get-position atom)
           do (setf sum (geom:v+ sum pos)))
     (geom:v* sum (/ 1.0 (length atom-vector)))))
 
+(defclass rigid-body-dynamics ()
+  ((membrane :initarg :membrane :accessor membrane)
+   (trajectory :initarg :trajectory :accessor trajectory)
+   (atom-vectors :initarg :atom-vectors :accessor atom-vectors)
+   (energy-function :initarg :energy-function :accessor energy-function)
+   (velocity-scale :initarg :velocity-scale :accessor velocity-scale)
+   (limit-displacement :initarg :limit-displacement :accessor limit-displacement)
+   (coordinates :initarg :coordinates :accessor coordinates)
+   (velocity :initarg :velocity :accessor velocity)
+   (force :initarg :force :accessor force)
+   (force-dt :initarg :force-dt :accessor force-dt)
+   (delta-t-over-mass :initarg :delta-t-over-mass :reader delta-t-over-mass)
+   (frozen :initarg :frozen :accessor frozen)))
 
-(defun build-rigid-body-energy-function (membrane)
+
+(defun build-rigid-body-energy-function (membrane &key debug)
   (multiple-value-bind (aggregate atom-vectors)
-      (build-aggregate-from-ga-membrane membrane :debug nil)
+      (build-aggregate-from-ga-membrane membrane :debug debug)
     (let ((end-atom-vec (make-array (length (atom-vectors atom-vectors)) :element-type 'ext:byte32))
           (nonbond-db (chem:compute-merged-nonbond-force-field-for-aggregate aggregate))
           (centers (make-array (length (atom-vectors atom-vectors)))))
@@ -1070,23 +935,30 @@ testing the scoring."
             do (setf (elt end-atom-vec index) end-atom-index)
             do (setf (elt centers index) (geometric-center-atom-vector atom-vector)))
       (let ((nonbond-component (chem:make-energy-rigid-body-nonbond end-atom-vec))
-            (index 0))
+            (nb-index 0))
         (loop for index below (length (atom-vectors atom-vectors))
               for atom-vector = (elt (atom-vectors atom-vectors) index)
               for center = (elt centers index)
+              for sum = (geom:vec 0.0 0.0 0.0)
               do (loop for ai from 0 below (length atom-vector)
                        for atom-res-mol = (elt atom-vector ai)
-                       for atom = (first atom-res-mol)
+                       for atom = (atm atom-res-mol)
                        for pos = (geom:v- (chem:get-position atom) center)
                        for type = (chem:get-type atom)
+                       for type-index = (chem:find-type-index nonbond-db type)
+                       for ffnonbond = (chem:get-ffnonbond-using-type-index nonbond-db type-index)
+                       for atom-radius = (chem:get-radius-angstroms ffnonbond)
+                       for epsilon = (chem:get-epsilon-k-cal ffnonbond)
+                       do (setf sum (geom:v+ sum pos))
                        do (chem:energy-rigid-body-nonbond-set-term
                            nonbond-component
-                           (prog1 ai (incf ai))
+                           (prog1 nb-index (incf nb-index))
                            atom
-                           1.908
-                           0.1094
-                           0.0
-                           pos)))
+                           atom-radius  ; atom-radius
+                           epsilon      ; epsilon
+                           0.0          ; charge
+                           pos))
+              )
         (let ((energy (chem:make-rigid-body-energy-function (length (atom-vectors atom-vectors)) (bounding-box membrane))))
           (chem:rigid-body-energy-function-add-term energy nonbond-component)
           (let ((start-pos (make-array (chem:get-nvector-size energy) :element-type 'double-float)))
@@ -1101,7 +973,220 @@ testing the scoring."
                        (setf (elt start-pos (+ index 4)) (geom:vx center))
                        (setf (elt start-pos (+ index 5)) (geom:vy center))
                        (setf (elt start-pos (+ index 6)) (geom:vz center))))
-            (values energy start-pos)))))))
+            (chem:save-coordinates-from-vector energy start-pos)
+            (values energy aggregate atom-vectors start-pos)))))))
+
+(defun build-rigid-body-minimizer (membrane &key debug)
+  (multiple-value-bind (energy aggregate atom-vectors start-pos)
+      (build-rigid-body-energy-function membrane :debug debug)
+    (let* ((frozen (make-array (* 7 (length (atom-vectors atom-vectors))) :element-type 'bit :initial-element 0))
+           (minimizer (chem:make-minimizer energy))
+           (solute-atom-vector-index (solute-atom-vector-index atom-vectors)))
+      (chem:enable-print-intermediate-results minimizer 1 2)
+      (chem:set-maximum-number-of-steepest-descent-steps minimizer 100)
+      (chem:set-steepest-descent-tolerance minimizer 1.0)
+      (chem:set-maximum-number-of-conjugate-gradient-steps minimizer 0)
+      (chem:set-maximum-number-of-truncated-newton-steps minimizer 0)
+      #+(or)
+      (progn
+        (loop for index from (* 7 solute-atom-vector-index)
+                below (* 7 (1+ solute-atom-vector-index))
+              do (setf (elt frozen index) 1)) ; freeze the solute
+        (loop for index from 0 below (length frozen) by 7
+              do (setf (elt frozen (+ 0 index)) 1 ; quaternion a
+                       (elt frozen (+ 1 index)) 1 ; quaternion b
+                       (elt frozen (+ 2 index)) 1 ; quaternion c
+                       (elt frozen (+ 3 index)) 1 ; quaternion d
+                       (elt frozen (+ 6 index)) 1 ; dir z
+                       ))
+        (chem:minimizer-set-frozen minimizer frozen))
+      minimizer)))
+
+(defun build-rigid-body-dynamics (membrane &key debug)
+  (multiple-value-bind (energy aggregate atom-vectors start-pos)
+      (build-rigid-body-energy-function membrane :debug debug)
+    (let ((frozen (make-array (length (atom-vectors atom-vectors)) :element-type 'bit :initial-element 0))
+          (trajectory (dynamics:make-trajectory aggregate)))
+      (setf (elt frozen (solute-atom-vector-index atom-vectors)) 1)
+      (make-instance 'rigid-body-dynamics
+                     :membrane membrane
+                     :atom-vectors atom-vectors
+                     :trajectory trajectory
+                     :energy-function energy
+                     :velocity-scale (make-array 7 :element-type 'double-float :initial-contents '(0.00 0.00 0.00 0.00 0.1 0.1 0.0))
+                     :limit-displacement (make-array 7 :element-type 'double-float :initial-contents '(0.05 0.05 0.05 0.05 0.1 0.1 0.0))
+                     :coordinates start-pos
+                     :velocity (make-array (chem:get-nvector-size energy) :element-type 'double-float :initial-element 0.0d0)
+                     :force (make-array (chem:get-nvector-size energy) :element-type 'double-float :initial-element 0.0d0)
+                     :force-dt (make-array (chem:get-nvector-size energy) :element-type 'double-float :initial-element 0.0d0)
+                     :delta-t-over-mass (make-array (chem:get-nvector-size energy) :element-type 'double-float :initial-element 1.0d0)
+                     :frozen frozen
+                     ))))
+
+(defun advance-rigid-body-dynamics (dynamics)
+  (let* ((energy-function (energy-function dynamics))
+         (rbcoords (coordinates dynamics)))
+    (chem:rigid-body-velocity-verlet-step-limit-displacement
+     energy-function                      ; scoring-func
+     (coordinates dynamics)               ; position
+     (velocity dynamics)                  ; velocity
+     (force dynamics)                     ; force
+     (force-dt dynamics)                  ; force-dt
+     (delta-t-over-mass dynamics)         ; delta-t-over-mass
+     1.0                                  ; delta-t
+     (frozen dynamics)                    ; frozen
+     (velocity-scale dynamics)            ; velocity-scale
+     (limit-displacement dynamics))       ; limit-displacement
+    (chem:rigid-body-energy-function-normalize-position energy-function rbcoords)
+    (let* ((terms (chem:rigid-body-energy-function-terms energy-function))
+           (nonbond-term (find-if (lambda (term)
+                                    (let ((result (typep term 'chem:energy-rigid-body-nonbond)))
+                                      result)) terms))
+           (coords (make-array (* 3 (chem:energy-rigid-body-nonbond-number-of-nonbond-atoms nonbond-term))
+                               :element-type 'single-float :adjustable t :fill-pointer 0)))
+      (chem:write-nonbond-atom-coordinates-to-complex-vector-float nonbond-term rbcoords coords)
+      (let ((copy-coords (copy-seq coords)))
+        (vector-push-extend copy-coords (dynamics:coordinates (trajectory dynamics)))))))
+
+
+(defun rigid-body-origins (num)
+  (let ((coordinates (make-array (* 3 num) :initial-element 0.0 :element-type 'double-float))
+        (indices (make-array num)))
+    (loop for index from 0 below num
+          for coord-index = (* 3 index)
+          for coord-end = (* 3 (1+ index))
+          do (setf (elt indices index) coord-end))
+    (values coordinates indices)))
+
+(defun rigid-body-origins-as-shape (coordinates)
+  (let ((shapes (make-array 256 :fill-pointer 0 :adjustable t)))
+    (loop for index3 from 0 below (length coordinates) by 3
+          for xpos = (elt coordinates index3)
+          for ypos = (elt coordinates (+ 1 index3))
+          for zpos = (elt coordinates (+ 2 index3))
+          for part = (vector "sphere"
+                             (vector xpos ypos zpos)
+                             (vector 1 0 0)
+                             4.0)
+          do (vector-push-extend part shapes))
+    shapes))
+
+(defun rigid-body-axes (num)
+  (let ((coordinates (make-array (* 4 3 num) :initial-element 0.0 :element-type 'double-float))
+        (indices (make-array num))
+        (line-len 10.0))
+    (loop for index from 0 below num
+          for coord-index = (* 4 3 index)
+          for coord-end = (* 4 3 (1+ index))
+          do (setf (elt indices index) coord-end)
+          do (setf (elt coordinates (+ 0 0 coord-index)) 0.0
+                   (elt coordinates (+ 1 0 coord-index)) 0.0
+                   (elt coordinates (+ 2 0 coord-index)) 0.0
+                   (elt coordinates (+ 0 3 coord-index)) line-len
+                   (elt coordinates (+ 1 3 coord-index)) 0.0
+                   (elt coordinates (+ 2 3 coord-index)) 0.0
+                   (elt coordinates (+ 0 6 coord-index)) 0.0
+                   (elt coordinates (+ 1 6 coord-index)) line-len
+                   (elt coordinates (+ 2 6 coord-index)) 0.0
+                   (elt coordinates (+ 0 9 coord-index)) 0.0
+                   (elt coordinates (+ 1 9 coord-index)) 0.0
+                   (elt coordinates (+ 2 9 coord-index)) line-len))
+    (values coordinates indices)))
+
+(defun rigid-body-axes-as-shape (coordinates)
+  (let ((shapes (make-array 256 :fill-pointer 0 :adjustable t))
+        (arrow-radius 0.3))
+    (loop for index3 from 0 below (length coordinates) by 12
+          for xpos-origin = (elt coordinates (+ 0 0 index3))
+          for ypos-origin = (elt coordinates (+ 1 0 index3))
+          for zpos-origin = (elt coordinates (+ 2 0 index3))
+          for xpos-xaxis = (elt coordinates (+ 0 3 index3))
+          for ypos-xaxis = (elt coordinates (+ 1 3 index3))
+          for zpos-xaxis = (elt coordinates (+ 2 3 index3))
+          for xpos-yaxis = (elt coordinates (+ 0 6 index3))
+          for ypos-yaxis = (elt coordinates (+ 1 6 index3))
+          for zpos-yaxis = (elt coordinates (+ 2 6 index3))
+          for xpos-zaxis = (elt coordinates (+ 0 9 index3))
+          for ypos-zaxis = (elt coordinates (+ 1 9 index3))
+          for zpos-zaxis = (elt coordinates (+ 2 9 index3))
+          for part1 = (vector "arrow"
+                              (vector xpos-origin ypos-origin zpos-origin)
+                              (vector xpos-xaxis ypos-xaxis zpos-xaxis)
+                              (vector 1 0 0)
+                              arrow-radius)
+          for part2 = (vector "arrow"
+                              (vector xpos-origin ypos-origin zpos-origin)
+                              (vector xpos-yaxis ypos-yaxis zpos-yaxis)
+                              (vector 0 1 0)
+                              arrow-radius)
+          for part3 = (vector "arrow"
+                              (vector xpos-origin ypos-origin zpos-origin)
+                              (vector xpos-zaxis ypos-zaxis zpos-zaxis)
+                              (vector 0 0 1)
+                              arrow-radius)
+          do (vector-push-extend part1 shapes)
+          do (vector-push-extend part2 shapes)
+          do (vector-push-extend part3 shapes))
+    shapes))
+
+(defun rigid-body-coordinates-as-shape (dynamics)
+  (let* ((energy-function (energy-function dynamics))
+         (rbcoords (coordinates dynamics))
+         (shapes (make-array 256 :adjustable t :fill-pointer 0)))
+    (loop for index from 0 below (length rbcoords) by 7
+          for xpos = (elt rbcoords (+ index 4))
+          for ypos = (elt rbcoords (+ index 5))
+          for zpos = (elt rbcoords (+ index 6))
+          for pos = (geom:vec xpos ypos zpos)
+          for shape = (vector "sphere"
+                              (vector xpos ypos zpos)
+                              (vector 1 0 0)
+                              3.0)
+          do (vector-push-extend shape shapes))
+    shapes))
+
+(defun rigid-body-dynamics-origins (dynamics)
+  (let* ((energy-function (energy-function dynamics))
+         (rbcoords (coordinates dynamics))
+         (origins (rigid-body-origins (/ (length rbcoords) 7)))
+         (shapes (make-array 256 :adjustable t :fill-pointer 0)))
+    (loop for index from 0 below (length rbcoords) by 7
+          for xpos = (elt rbcoords (+ index 4))
+          for ypos = (elt rbcoords (+ index 5))
+          for zpos = (elt rbcoords (+ index 6))
+          for pos = (geom:vec xpos ypos zpos)
+          for shape = (vector "sphere"
+                              (vector xpos ypos zpos)
+                              (vector 1 0 0)
+                              3.0)
+          do (vector-push-extend shape shapes))
+    shapes))
+
+(defun rigid-body-dynamics-origins-as-shape-using-nonbond-code (dynamics)
+  (let* ((energy-function (energy-function dynamics))
+         (terms (chem:rigid-body-energy-function-terms energy-function))
+         (nonbond-term (find-if (lambda (term)
+                                  (let ((result (typep term 'chem:energy-rigid-body-nonbond)))
+                                    result)) terms))
+         (rbcoords (coordinates dynamics)))
+    (multiple-value-bind (coordinates end-indices)
+        (rigid-body-origins (/ (length rbcoords) 7))
+      (let ((transformed-origins (make-array (length coordinates) :element-type 'single-float :fill-pointer 0 :adjustable t)))
+        (chem:write-rigid-body-coordinates-to-complex-vector-float nonbond-term rbcoords end-indices coordinates transformed-origins)
+        (rigid-body-origins-as-shape transformed-origins)))))
+
+(defun rigid-body-dynamics-axes-as-shape-using-nonbond-code (dynamics)
+  (let* ((energy-function (energy-function dynamics))
+         (terms (chem:rigid-body-energy-function-terms energy-function))
+         (nonbond-term (find-if (lambda (term)
+                                  (let ((result (typep term 'chem:energy-rigid-body-nonbond)))
+                                    result)) terms))
+         (rbcoords (coordinates dynamics)))
+    (multiple-value-bind (coordinates end-indices)
+        (rigid-body-axes (/ (length rbcoords) 7))
+      (let ((transformed-axes (make-array (length coordinates) :element-type 'single-float :fill-pointer 0 :adjustable t)))
+        (chem:write-rigid-body-coordinates-to-complex-vector-float nonbond-term rbcoords end-indices coordinates transformed-axes)
+        (rigid-body-axes-as-shape transformed-axes)))))
 
 (defun load-test-molecule ()
   (cando-user:setup-amber-paths)
@@ -1163,10 +1248,10 @@ testing the scoring."
   (let ((close-contacts 0))
     (loop for i1 below (length m1-atoms)
           for atom1-res-mol = (elt m1-atoms i1)
-          for atom1 = (first atom1-res-mol)
+          for atom1 = (atm atom1-res-mol)
           do (loop for i2 below (length m2-atoms)
                    for atom2-res-mol = (elt m2-atoms i2)
-                   for atom2 = (first atom2-res-mol)
+                   for atom2 = (atm atom2-res-mol)
                    for dist-squared = (chem:bounding-box-distance-squared-between-two-atoms bounding-box atom1 atom2)
                    do (incf num)
                    when (< dist-squared cutoff-squared)

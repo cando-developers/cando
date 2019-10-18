@@ -63,30 +63,31 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace       chem
 {
-  SMART(FFNonbondDb);
+  FORWARD(FFNonbondDb);
   
   class EnergyAtom;
 
-  SMART(FFParameter);
-  SMART(AbstractLargeSquareMatrix);
-  SMART(FFNonbondCrossTermTable);
-  SMART(QDomNode);
-  SMART(Atom);
-  SMART(Matter);
-  SMART(ForceField);
-  SMART(CombinedForceField);
-  SMART(AtomTable);
-  SMART(EnergyStretch);
-  SMART(EnergyAngle);
-  SMART(EnergyDihedral);
-  SMART(EnergyNonbond);
-  SMART(EnergyImproperRestraint);
-  SMART(EnergyChiralRestraint);
-  SMART(EnergyAnchorRestraint);
-  SMART(EnergyFixedNonbondRestraint);
-  SMART(Iterator);
-  SMART(ForceMatchReport);
-
+  FORWARD(FFParameter);
+  FORWARD(AbstractLargeSquareMatrix);
+  FORWARD(FFNonbondCrossTermTable);
+  FORWARD(QDomNode);
+  FORWARD(Atom);
+  FORWARD(Matter);
+  FORWARD(ForceField);
+  FORWARD(CombinedForceField);
+  FORWARD(AtomTable);
+  FORWARD(EnergyStretch);
+  FORWARD(EnergyAngle);
+  FORWARD(EnergyDihedral);
+  FORWARD(EnergyNonbond);
+  FORWARD(EnergyPeriodicBoundaryConditionNonbond);
+  FORWARD(EnergyImproperRestraint);
+  FORWARD(EnergyChiralRestraint);
+  FORWARD(EnergyAnchorRestraint);
+  FORWARD(EnergyFixedNonbondRestraint);
+  FORWARD(Iterator);
+  FORWARD(ForceMatchReport);
+FORWARD(BoundingBox);
 
 
 #define	DefaultChiralRestraintOffset	0.2
@@ -113,7 +114,7 @@ struct gctools::GCInfo<chem::EnergyFunction_O> {
 };
 
 namespace chem {
-  SMART(EnergyFunction);
+  FORWARD(EnergyFunction);
   class EnergyFunction_O : public ScoringFunction_O
   {
     LISP_CLASS(chem,ChemPkg,EnergyFunction_O,"EnergyFunction",ScoringFunction_O);
@@ -141,6 +142,7 @@ namespace chem {
     EnergyFixedNonbondRestraint_sp	_FixedNonbondRestraint;
 #endif
     core::List_sp                       _OtherEnergyComponents; // alist of additional (name . energy-function) pairs
+    BoundingBox_sp                      _BoundingBox;
     /*! If true then secondary amides are
      * automatically restrainted to be trans
      */
@@ -180,6 +182,11 @@ namespace chem {
     adapt::QDomNode_sp	identifyTermsBeyondThreshold();
 //    uint	countBadVdwInteractions(double scaleSumOfVdwRadii, geom::DisplayList_sp displayIn);
 
+    BoundingBox_sp boundingBox() const;
+    bool boundingBoxBoundP() const;
+    void setBoundingBox(BoundingBox_sp bounding_box);
+    void makUnboundBoundingBox();
+    
     ForceMatchReport_sp checkIfAnalyticalForceMatchesNumericalForce( NVector_sp pos, NVector_sp force );
 
     CL_LISPIFY_NAME("getMatter");

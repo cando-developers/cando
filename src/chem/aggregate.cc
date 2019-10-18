@@ -181,6 +181,39 @@ CL_DEFMETHOD double BoundingBox_O::get_z_angle_degrees() const
   return this->_AnglesDegrees.getZ();
 }
 
+CL_LISPIFY_NAME(BoundingBox_intersects);
+CL_DEFMETHOD
+bool BoundingBox_O::intersects(BoundingBox_sp other)
+{
+  if (this->cuboidp()||!other->cuboidp()) {
+    double aHalfWidthZ = this->_Widths.getZ()/2.0;
+    double bHalfWidthZ = other->_Widths.getZ()/2.0;
+    double aminZ = this->_Center.getZ()-aHalfWidthZ;
+    double bmaxZ = other->_Center.getZ()+bHalfWidthZ;
+    if (!(aminZ<=bmaxZ)) return false;
+    double amaxZ = this->_Center.getZ()+aHalfWidthZ;
+    double bminZ = other->_Center.getZ()-bHalfWidthZ;
+    if (!(amaxZ >= bminZ)) return false;
+    double aHalfWidthY = this->_Widths.getY()/2.0;
+    double bHalfWidthY = other->_Widths.getY()/2.0;
+    double aminY = this->_Center.getY()-aHalfWidthY;
+    double bmaxY = other->_Center.getY()+bHalfWidthY;
+    if (!(aminY <= bmaxY)) return false;
+    double amaxY = this->_Center.getY()+aHalfWidthY;
+    double bminY = other->_Center.getY()-bHalfWidthY;
+    if (!(amaxY >= bminY)) return false;
+    double aHalfWidthX = this->_Widths.getX()/2.0;
+    double bHalfWidthX = other->_Widths.getX()/2.0;
+    double aminX = this->_Center.getX()-aHalfWidthX;
+    double bmaxX = other->_Center.getX()+bHalfWidthX;
+    if (!(aminX <= bmaxX)) return false;
+    double amaxX = this->_Center.getX()+aHalfWidthX;
+    double bminX = other->_Center.getX()-bHalfWidthX;
+    return (amaxX >= bminX);
+  }
+  SIMPLE_ERROR(BF("Handle non-cuboid bounding-box"));
+}
+
 bool BoundingBox_O::cuboidp() const
 {
   return (this->_AnglesDegrees.getX()>=89.9 && this->_AnglesDegrees.getX()<=90.1);
@@ -307,10 +340,10 @@ Atom_sp Aggregate_O::atomWithAtomId(const AtomId& atomId) const
 
 
 
-    void	Aggregate_O::initialize()
-    {
-	this->Base::initialize();
-    }
+void	Aggregate_O::initialize()
+{
+  this->Base::initialize();
+}
 
 
 

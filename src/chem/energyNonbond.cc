@@ -61,6 +61,15 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace chem
 {
 
+/* No periodic boundary conditons/bounding-box is used in this code.
+   So make these macros do nothing.
+   See energyPeriodicBoundaryConditionsNonbond.cc for counter-example.
+*/
+#define PBX(_delta_) 
+#define PBY(_delta_) 
+#define PBZ(_delta_) 
+
+
 core::List_sp EnergyNonbond::encode() const {
   return core::Cons_O::createList(core::Cons_O::create(INTERN_(kw,da),core::clasp_make_double_float(this->term.dA)),
                                   core::Cons_O::create(INTERN_(kw,dc),core::clasp_make_double_float(this->term.dC)),
@@ -361,7 +370,7 @@ void	EnergyNonbond_O::setupHessianPreconditioner(
   SIMPLE_ERROR(BF("Nonbond term isn't used when calculating setupHessianPreconditioner but it was called!!!"));
 }
 
-double	EnergyNonbond_O::evaluateAll( ScoringFunction_sp score,
+double	EnergyNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
                                       NVector_sp 	pos,
                                       bool 		calcForce,
                                       gc::Nilable<NVector_sp> 	force,

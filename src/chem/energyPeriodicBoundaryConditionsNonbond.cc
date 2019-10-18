@@ -27,7 +27,7 @@ This is an open source license for the CANDO software from Temple University, bu
 
 #include <clasp/core/foundation.h>
 #include <clasp/core/bformat.h>
-#include <cando/chem/energyNonbond.h>
+#include <cando/chem/energyPeriodicBoundaryConditionsNonbond.h>
 #include <cando/chem/energyAtomTable.h>
 #include <cando/chem/energyFunction.h>
 #include <clasp/core/lispStream.h>
@@ -60,6 +60,25 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace chem
 {
+
+inline double periodic_boundary_adjust(const double& delta, const double& rsize, const double& size)
+{
+  double fdelta = fabs(delta);
+  fdelta -= static_cast<int>(fdelta*rsize + 0.5)*size;
+  return fdelta;
+}
+
+/* Periodic boundary conditons/bounding-box are used in this code.
+   So make these macros take care of that.
+   See energyNonbond.cc for counter-example.
+*/
+
+#define PBX(_delta_) periodic_boundary_adjust(_delta_,x_rsize,x_size)
+#define PBY(_delta_) periodic_boundary_adjust(_delta_,y_rsize,y_size)
+#define PBZ(_delta_) periodic_boundary_adjust(_delta_,z_rsize,z_size)
+
+
+
 
 double	_evaluateEnergyOnly_PeriodicBoundaryConditionsNonbond(double x1, double y1, double z1,
                                                               double x2, double y2, double z2,
@@ -94,7 +113,15 @@ double	_evaluateEnergyOnly_PeriodicBoundaryConditionsNonbond(double x1, double y
 }
 
 
-void	EnergyNonbond_O::evaluateTerms(NVector_sp 	pos,
+
+void	EnergyPeriodicBoundaryConditionsNonbond_O::setupHessianPreconditioner(NVector_sp nvPosition,
+                                                                              AbstractLargeSquareMatrix_sp m )
+{
+  SIMPLE_ERROR(BF("Nonbond term isn't used when calculating setupHessianPreconditioner but it was called!!!"));
+}
+
+
+void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateTerms(NVector_sp 	pos,
                                        bool 		calcForce,
                                        gc::Nilable<NVector_sp> 	force,
                                        bool		calcDiagonalHessian,
@@ -225,7 +252,7 @@ void	EnergyNonbond_O::evaluateTerms(NVector_sp 	pos,
 
 
 
-void	EnergyNonbond_O::evaluateUsingExcludedAtoms(NVector_sp 	pos,
+void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateUsingExcludedAtoms(NVector_sp 	pos,
                                                     bool 		calcForce,
                                                     gc::Nilable<NVector_sp> 	force,
                                                     bool		calcDiagonalHessian,
@@ -406,7 +433,7 @@ void	EnergyNonbond_O::evaluateUsingExcludedAtoms(NVector_sp 	pos,
 }
 
 
-void	EnergyNonbond_O::compareAnalyticalAndNumericalForceAndHessianTermByTerm(NVector_sp 	pos)
+void	EnergyPeriodicBoundaryConditionsNonbond_O::compareAnalyticalAndNumericalForceAndHessianTermByTerm(NVector_sp 	pos)
 {_OF();
   int	fails = 0;
   bool	calcForce = true;
@@ -464,7 +491,7 @@ SYMBOL_EXPORT_SC_(KeywordPkg,vdwRadii);
 SYMBOL_EXPORT_SC_(KeywordPkg,distance);
 SYMBOL_EXPORT_SC_(KeywordPkg,force);
 
-core::List_sp	EnergyNonbond_O::checkForBeyondThresholdInteractionsWithPosition(NVector_sp pos, double threshold )
+core::List_sp	EnergyPeriodicBoundaryConditionsNonbond_O::checkForBeyondThresholdInteractionsWithPosition(NVector_sp pos, double threshold )
 {
   ql::list result;
   bool calcForce = true;

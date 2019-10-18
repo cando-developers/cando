@@ -79,6 +79,9 @@ public:
   double get_x_width() const;
   double get_y_width() const;
   double get_z_width() const;
+  double get_x_rwidth() const { return this->_x_rwidth; }
+  double get_y_rwidth() const { return this->_y_rwidth; }
+  double get_z_rwidth() const { return this->_z_rwidth; }
   double get_x_angle_degrees() const;
   double get_y_angle_degrees() const;
   double get_z_angle_degrees() const;
@@ -88,6 +91,7 @@ public:
   double distance_squared_between_two_points(const Vector3& v1, const Vector3& v2);
   double distance_squared_between_two_atoms(Atom_sp a1, Atom_sp a2);
 
+  bool intersects(BoundingBox_sp other);
   
   BoundingBox_O(const Vector3& widths, const Vector3& angles_degrees, const Vector3& center);
 };

@@ -243,7 +243,6 @@ CL_DEFMETHOD     string	Minimizer_O::statusAsString()
   return status;
 }
 
-#if 0
 void Minimizer_O::fields(core::Record_sp node)
 {
   node->field(INTERN_(kw,InitialLineSearchStep),this->_InitialLineSearchStep);
@@ -254,9 +253,10 @@ void Minimizer_O::fields(core::Record_sp node)
   node->field(INTERN_(kw,ConjugateGradientTolerance),this->_ConjugateGradientTolerance);
   node->field(INTERN_(kw,NumberOfTruncatedNewtonSteps),this->_NumberOfTruncatedNewtonSteps);
   node->field(INTERN_(kw,TruncatedNewtonTolerance),this->_TruncatedNewtonTolerance);
-  node->field(INTERN_(kw,EnergyFunction),this->_EnergyFunction );
+  node->field(INTERN_(kw,ScoringFunction),this->_ScoringFunction );
+  node->field(INTERN_(kw,PrintIntermediateResults),this->_PrintIntermediateResults);
+  node->field_if_not_nil(INTERN_(kw,Frozen),this->_Frozen);
 }
-#endif
 
 string	Minimizer_O::statusAsShortString()
 {
@@ -284,35 +284,23 @@ string	Minimizer_O::statusAsShortString()
   return status;
 }
 
-
-
-#ifdef XML_ARCHIVE
-void	Minimizer_O::debugStart()
+CL_LISPIFY_NAME(minimizer-set-initial-line-search-step)
+CL_DEFMETHOD
+void Minimizer_O::set_initial_line_search_step(double step)
 {
-  this->_DebugOn = true;
-  LOG(BF("Status") );
-  this->_Log = MinimizerLog_O::create();
-  LOG(BF("Status") );
-  this->_Log->_Minimizer = this->sharedThis<Minimizer_O>();
-  LOG(BF("Status") );
+  this->_InitialLineSearchStep = step;
 }
 
-
-void	Minimizer_O::debugStop(const string& fileName)
-{
-  LOG(BF("writing minimizer log to (%s)") % fileName.c_str()  );
-  if ( !this->_DebugOn ) return;
-  ASSERTNOTNULL(this->_Log);
-  core::XmlSaveArchive_sp arc;
-  LOG(BF("Creating archive") );
-  arc = core::XmlSaveArchive_O::create();
-  LOG(BF("putting minimizerLog") );
-  arc->put("minimizerLog",this->_Log);
-  LOG(BF("Calling saveAs") );
-  arc->saveAs(fileName);
-  LOG(BF("Done saveAs") );
+CL_LISPIFY_NAME(minimizer-set-frozen);
+CL_DEFMETHOD
+void Minimizer_O::set_frozen(core::T_sp frozen) {
+  if (frozen.notnilp()) {
+    if (!gc::IsA<core::SimpleBitVector_sp>(frozen)) {
+      SIMPLE_ERROR(BF("You can set frozen to NIL or simple-bit-vector"));
+    }
+  }
+  this->_Frozen = frozen;
 }
-#endif
 
 
 /*
@@ -325,7 +313,7 @@ void	Minimizer_O::getPosition( NVector_sp 	nvResult,
                                   NVector_sp	nvDirection,
                                   double		x )
 {
-  XPlusYTimesScalar(nvResult,nvOrigin,nvDirection,x);
+  XPlusYTimesScalar(nvResult,nvOrigin,nvDirection,x,this->_Frozen);
 }
 
 
@@ -514,6 +502,7 @@ void	Minimizer_O::minBracket(
  *	Return the function value at the new point and the
  *	new minimum in (xmin)
  */
+__attribute__((optnone))
 double 	Minimizer_O::dbrent(	double ax, double bx, double cx,
                                 double tol,
                                 double& lineStep,
@@ -531,7 +520,10 @@ double 	Minimizer_O::dbrent(	double ax, double bx, double cx,
   energyEvals = 0;
   forceEvals = 0;
   dbrentSteps = 0;
-  LOG(BF("Incoming ax bx cx= %lf %lf %lf") % ax % bx % cx );
+  LOG(BF("Incoming ax bx cx= %e %e %e") % ax % bx % cx );
+  if (this->_PrintIntermediateResults>1) {
+    core::write_bf_stream(BF("Incoming ax bx cx -> %lf %lf %lf\n") % ax % bx % cx);
+  }
   _a = (ax<cx?ax:cx);
   _b = (ax>cx?ax:cx);
   LOG(BF("Initial _a _b= %lf %lf") % _a % _b );
@@ -547,13 +539,19 @@ double 	Minimizer_O::dbrent(	double ax, double bx, double cx,
   for (iter=1;iter<=DBRENTITMAX;iter++ ) {
     dbrentSteps++;
 //	LOG(BF("dbrent: iter=%3d  _a, _b= %10.15lf %10.15lf") % iter % _a % _b  );
+    if (this->_PrintIntermediateResults>1) {
+      core::write_bf_stream(BF("dbrent: iter = %3d  _a, _b -> %e %e\n") % iter % _a % _b );
+    }
     xm=0.5*(_a+_b);
     tol1=tol*fabs(x)+ZEPS;
     tol2=2.0*tol1;
     if (fabs(x-xm) <=(tol2-0.5*(_b-_a))) {	// Stopping criterion
       lineStep=x;
       retval = fx;
-      LOG(BF("done due to (fabs(x-xm).LE.(tol2-0.5*(_b-_a)))") );
+      LOG(BF("done due to (fabs(x-xm)<=(tol2-0.5*(_b-_a)))") );
+      if (this->_PrintIntermediateResults>1) {
+        core::write_bf_stream(BF("dbrent: done due to (fabs(x-xm) <= (tol2-0.5*(_b-_a))) -> %e <= %e\n") % fabs(x-xm) % (tol2-0.5*(_b-_a)));
+      }
       goto DONE;
     }
     if (fabs(_e)>tol1){
@@ -609,6 +607,9 @@ double 	Minimizer_O::dbrent(	double ax, double bx, double cx,
         lineStep=x;
         retval = fx;
         LOG(BF("done due to fu>fx") );
+        if (this->_PrintIntermediateResults>1) {
+          core::write_bf_stream(BF("dbrent: done due to fu>fx -> %lf > %lf\n") % fu % fx );
+        }
         goto DONE;
       }
     }
@@ -634,6 +635,9 @@ double 	Minimizer_O::dbrent(	double ax, double bx, double cx,
     }
   }
   LOG(BF("dbrent: ERROR Exceeded max iterations") );
+  if (this->_PrintIntermediateResults>1) {
+    core::write_bf_stream(BF("dbrent: exceeded max number of iterations %d\n") % DBRENTITMAX);
+  }
   retval = -1.0;
  DONE:
   LOG(BF("dbrent evaluated energy(%d) and force(%d) times") % energyEvals % forceEvals  );
@@ -805,12 +809,20 @@ void	Minimizer_O::lineSearch(	double	*dPstep,
     //
     // Bracket the minimum
     //
+  if ( this->_PrintIntermediateResults>1 ) {
+    core::write_bf_stream(BF("Trying to bracket min this->_InitialLineSearchStep,directionMag,xb -> %e,%e,%e\n") % this->_InitialLineSearchStep % directionMag % xb);
+  }
 
   this->minBracket( nvOrigin, nvDirection,
                     &xa, &xb, &xc, &fa, &fb, &fc );
   LOG(BF("Bracketed minimum") );
   LOG(BF("xa,xb,xc = %lf %lf %lf ") % xa % xb % xc  );
   LOG(BF("fa,fb,fc = %lf %lf %lf ") % fa % fb % fc  );
+  if ( this->_PrintIntermediateResults>1 ) {
+    core::write_bf_stream(BF("Bracketed min xa,xb,xc -> %e,%e,%e\n") % xa % xb % xc );
+    core::write_bf_stream(BF("              fa,fb,fc -> %e,%e,%e\n") % fa % fb % fc );
+  }
+
   if ( this->_DebugOn )
   {
     this->lineSearchInitialReport(report,nvOrigin,nvDirection,nvForce,
@@ -1452,7 +1464,7 @@ void	Minimizer_O::_conjugateGradient(int numSteps,
           k = 0;
           prevStep = 0.0;
         } else {
-          XPlusYTimesScalar(d,s,d,beta);
+          XPlusYTimesScalar(d,s,d,beta,this->_Frozen);
         }
         if ( this->_DebugOn )
         {
@@ -1591,7 +1603,7 @@ void	Minimizer_O::_truncatedNewtonInnerLoop(
     //      I'm pretty sure that I need to invert the inequality test.
     //
     alphaj = rjDotzj/djDotqj;
-    XPlusYTimesScalar(pjNext,pj,dj,alphaj);
+    XPlusYTimesScalar(pjNext,pj,dj,alphaj,this->_Frozen);
     LOG(BF("pjNext angle with force=%lf(deg)") % pjNext->angleWithVector(force)/0.0174533 );
     forceDotpjNext = dotProduct(force,pjNext);
     if ( forceDotpjNext <= (forceDotpj + delta) ) {
@@ -1646,7 +1658,7 @@ void	Minimizer_O::_truncatedNewtonInnerLoop(
     rjDotzjNext = dotProduct(rj,zj);
     betaj = rjDotzjNext/rjDotzj;
     rjDotzj = rjDotzjNext;
-    XPlusYTimesScalar(dj, zj,dj,betaj);
+    XPlusYTimesScalar(dj, zj,dj,betaj,this->_Frozen);
     j = j + 1;
     copyVector(pj,pjNext);
   }
@@ -1772,7 +1784,7 @@ void	Minimizer_O::_truncatedNewton(
 
       energyXk = energyXkNext;
       this->lineSearch( &alphaK, &energyXkNext, xK, pK, forceK, zj, qj, kk, stepReport );
-      XPlusYTimesScalar(xKNext, xK,pK,alphaK);
+      XPlusYTimesScalar(xKNext, xK,pK,alphaK,this->_Frozen);
 	    //
 	    // Evaluate the force at the new position
 	    //
@@ -1987,7 +1999,7 @@ CL_DEFMETHOD     void	Minimizer_O::useDefaultSettings()
   this->_NumberOfTruncatedNewtonSteps = MAXTRUNCATEDNEWTONSTEPS;
   this->_TruncatedNewtonTolerance = 0.00000001;
   this->_TruncatedNewtonPreconditioner = hessianPreconditioner;
-  this->_PrintIntermediateResults = false;
+  this->_PrintIntermediateResults = 0;
   LOG(BF("_PrintIntermediateResults = %d") % this->_PrintIntermediateResults  );
   this->_ReportEverySteps = 1;
   this->_Status = minimizerIdle;
@@ -2003,18 +2015,25 @@ CL_DEFMETHOD     void	Minimizer_O::useDefaultSettings()
 
 
 
+CL_LISPIFY_NAME(minimizer-set-debug-on);
+CL_DEFMETHOD void Minimizer_O::setDebugOn(bool debugOn) {
+  this->_DebugOn = debugOn;
+  if (debugOn) {
+    this->_Log = MinimizerLog_O::create();
+  }
+}
 
 
 CL_LISPIFY_NAME("enablePrintIntermediateResults");
-CL_LAMBDA((chem:minimizer chem:minimizer) cl:&optional (steps 1));
-CL_DEFMETHOD     void	Minimizer_O::enablePrintIntermediateResults(size_t steps)
+CL_LAMBDA((chem:minimizer chem:minimizer) cl:&optional (steps 1) (level 1));
+CL_DEFMETHOD     void	Minimizer_O::enablePrintIntermediateResults(size_t steps, size_t level)
 {
   if (steps < 1 ) {
     this->_ReportEverySteps = 1;
   } else {
     this->_ReportEverySteps = steps;
   }
-  this->_PrintIntermediateResults = true;
+  this->_PrintIntermediateResults = level;
 }
 
 
@@ -2023,7 +2042,7 @@ CL_DEFMETHOD     void	Minimizer_O::enablePrintIntermediateResults(size_t steps)
 CL_LISPIFY_NAME("disablePrintIntermediateResults");
 CL_DEFMETHOD     void	Minimizer_O::disablePrintIntermediateResults()
 {
-  this->_PrintIntermediateResults = false;
+  this->_PrintIntermediateResults = 0;
 }
 
 
@@ -2072,6 +2091,11 @@ CL_DEFMETHOD     void	Minimizer_O::minimize()
   do {
     try {
       this->_ScoringFunction->loadCoordinatesIntoVector(pos);
+      if (this->_PrintIntermediateResults>1) {
+        for (size_t idx=0; idx<pos->length(); idx++ ) {
+          core::write_bf_stream(BF("Starting pos[%d] -> %lf\n") % idx % (*pos)[idx]);
+        }
+      }
       if ( this->_NumberOfSteepestDescentSteps > 0 ) {
         this->_steepestDescent( this->_NumberOfSteepestDescentSteps,
                                 pos, this->_SteepestDescentTolerance );
@@ -2159,7 +2183,6 @@ CL_LISPIFY_NAME("restart");
 CL_DEFMETHOD     void	Minimizer_O::restart()
 {
   this->_Status = minimizerIdle;
-  this->_Message.str("");
   this->_Iteration = 1;
 }
 

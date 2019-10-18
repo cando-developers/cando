@@ -66,7 +66,7 @@ namespace       chem {
     double         _Epsilon;
     double         _Charge;
     Vector3        _Position;
-    RigidBodyAtomInfo() {};
+    RigidBodyAtomInfo() : _Object(_Unbound<core::T_O>()) {};
   RigidBodyAtomInfo(core::T_sp a, double r, double e, double c, const Vector3& p) :
     _Object(a),
       _Radius(r),
@@ -121,13 +121,13 @@ class EnergyRigidBodyNonbond_O : public EnergyRigidBodyComponent_O
 
  public:
   void zeroEnergy();
-
+  Vector3 getPosition(size_t index);
   CL_DEFMETHOD void energyRigidBodyNonbondSetTerm(gc::Fixnum index, core::T_sp object, double radius, double epsilon, double charge, const Vector3& position);
   
   virtual void setupHessianPreconditioner(NVector_sp nvPosition,
                                           AbstractLargeSquareMatrix_sp m );
     
-  virtual double evaluateAll( ScoringFunction_sp scorer,
+  virtual double evaluateAllComponent( ScoringFunction_sp scorer,
                               NVector_sp 	pos,
                               bool 		calcForce,
                               gc::Nilable<NVector_sp> 	force,
@@ -147,6 +147,9 @@ class EnergyRigidBodyNonbond_O : public EnergyRigidBodyComponent_O
   virtual void dumpTerms();
   core::List_sp parts_as_list(NVector_sp pos);
   core::ComplexVector_float_sp write_nonbond_atom_coordinates_to_complex_vector_float(NVector_sp pos, core::ComplexVector_float_sp parts);
+  core::ComplexVector_float_sp write_rigid_body_coordinates_to_complex_vector_float(NVector_sp rigid_body_pos, core::Array_sp end_indicesx3, NVector_sp coordinates, core::ComplexVector_float_sp output);
+  core::ComplexVector_sp write_nonbond_atoms_to_complex_vector(core::ComplexVector_sp parts);
+  size_t number_of_nonbond_atoms() const;
  public:
  EnergyRigidBodyNonbond_O(core::SimpleVector_byte32_t_sp end_atoms) : _RigidBodyEndAtom(end_atoms) {
     this->resizeNonbondAtomInfoTable((*end_atoms)[end_atoms->length()-1]);

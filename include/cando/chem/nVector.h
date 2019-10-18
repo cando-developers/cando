@@ -48,11 +48,11 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace chem {
   double	dotProduct( NVector_sp x, NVector_sp y );
   double	squared(NVector_sp me);
-  double magnitude(NVector_sp me);
+  double        magnitude(NVector_sp me);
   double	rmsMagnitude(NVector_sp me);
   double	angleWithVector(NVector_sp me, NVector_sp other);
-  void	XPlusYTimesScalar( NVector_sp nvResult, NVector_sp nvX, NVector_sp nvD, double sigma);
-  void	copyVector(NVector_sp dest, NVector_sp orig);
+  void          XPlusYTimesScalar( NVector_sp nvResult, NVector_sp nvX, NVector_sp nvD, double sigma, core::T_sp frozen);
+  void	        copyVector(NVector_sp dest, NVector_sp orig);
   void	inPlaceAddTimesScalar( NVector_sp nvResult, NVector_sp nvY, double x);	// NVectorAdd(a,x,y)
   double	rmsDistanceFrom(NVector_sp u, NVector_sp v);
   NVector_sp  copy_nvector(NVector_sp original);

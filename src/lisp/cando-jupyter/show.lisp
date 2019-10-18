@@ -115,3 +115,13 @@
 
 (defmethod show ((sketch sketch2d:sketch-svg) &rest kwargs &key &allow-other-keys)
   (cl-jupyter-user:svg (sketch2d:render-svg-to-string sketch)))
+
+(defmethod show ((trajectory dynamics:trajectory) &rest kwargs &key &allow-other-keys)
+  (change-class trajectory 'cando-trajectory)
+  (apply #'nglv:make-nglwidget :structure trajectory kwargs))
+
+(defmethod show ((dynamics dynamics:simulation) &rest kwargs &key &allow-other-keys)
+  (let ((trajectory (dynamics:make-trajectory dynamics)))
+    (change-class trajectory 'cando-trajectory)
+    (apply 'show trajectory kwargs)))
+

@@ -126,41 +126,42 @@ struct RestartMinimizer {};
     void fields(core::Record_sp node);
 #endif
   public:
-
+    bool fieldsp() const { return true; };
+    void fields(core::Record_sp node);
   private:
 	// behavior
-    double			_InitialLineSearchStep;
+    double		_InitialLineSearchStep;
 
-    double			_SteepestDescentTolerance;
+    double		_SteepestDescentTolerance;
     int			_NumberOfSteepestDescentSteps;
 
     int			_NumberOfConjugateGradientSteps;
-    double			_ConjugateGradientTolerance;
+    double		_ConjugateGradientTolerance;
 
     int			_NumberOfTruncatedNewtonSteps;
-    double			_TruncatedNewtonTolerance;
+    double		_TruncatedNewtonTolerance;
     PreconditionerType	_TruncatedNewtonPreconditioner;
 
 	// status
-    bool			_DebugOn;
-    MinimizerLog_sp		_Log;
-    MinimizerStatus		_Status;
+    bool		_DebugOn;
+    MinimizerLog_sp	_Log;
+    MinimizerStatus	_Status;
     PreconditionerType	_CurrentPreconditioner;
-    stringstream		_Message;
     int			_MinBracketSteps;
-    stringstream		_IterationMessages;
-    bool			_PrintIntermediateResults;
+    stringstream	_IterationMessages;
+    size_t		_PrintIntermediateResults;
     int			_ReportEverySteps;
     ScoringFunction_sp	_ScoringFunction;
     int			_Iteration;
-    core::PosixTime_sp		_StartTime;
-    bool			_ShowElapsedTime;
-    double			_MinGradientMean;
-    double			_RMSForce;
+    core::PosixTime_sp	_StartTime;
+    bool		_ShowElapsedTime;
+    double		_MinGradientMean;
+    double		_RMSForce;
     NVector_sp		nvP1DSearchTemp1;
     NVector_sp		nvP1DSearchTemp2;
     NVector_sp		nvP1DSearchOrigin;
     NVector_sp		nvP1DSearchDirection;
+    core::T_sp          _Frozen;
         // Save coordinates and forces so that if we interrupt the minimization we can recover them
     gc::Nilable<NVector_sp> _Position;
     gc::Nilable<NVector_sp> _Force;
@@ -169,6 +170,9 @@ struct RestartMinimizer {};
     core::T_sp          _StepCallback;
 
   public:
+    void set_frozen(core::T_sp frozen);
+    void set_initial_line_search_step(double step);
+    
     void lineSearchInitialReport( StepReport_sp report,
                                   NVector_sp nvPos, NVector_sp nvDir,
                                   NVector_sp nvForce,
@@ -274,8 +278,6 @@ struct RestartMinimizer {};
     MinimizerStatus status()	{return this->_Status;};
     CL_LISPIFY_NAME("status");
     CL_DEFMETHOD 	int statusAsInt()	{return (int)(this->_Status);};
-    CL_LISPIFY_NAME("statusMessage");
-    CL_DEFMETHOD 	string		statusMessage() { return this->_Message.str();};
 
     CL_LISPIFY_NAME("getIteration");
     CL_DEFMETHOD 	int	getIteration()	{ return this->_Iteration; };
@@ -305,8 +307,9 @@ takes a single argument, the NVECTOR position of the atoms.)doc");
 
 
     void	setEnergyFunction(ScoringFunction_sp ef);
-    void	enablePrintIntermediateResults(size_t steps);
+    void	enablePrintIntermediateResults(size_t steps, size_t level);
     void	disablePrintIntermediateResults();
+    void        setDebugOn(bool debugOn);
     void        setReportEveryNSteps(size_t steps);
     
     string	configurationAsString();
@@ -322,7 +325,7 @@ takes a single argument, the NVECTOR position of the atoms.)doc");
 
     adapt::QDomNode_sp	asXml();
 
-  Minimizer_O() : _StepCallback(_Nil<core::T_O>()) {};
+    Minimizer_O() : _PrintIntermediateResults(1), _StepCallback(_Nil<core::T_O>()), _Frozen(_Nil<core::T_O>()) {};
   };
 
   extern core::Symbol_sp& _sym__PLUS_minimizerStatusConverter_PLUS_;

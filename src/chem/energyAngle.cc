@@ -333,7 +333,7 @@ bool		calcOffDiagonalHessian = true;
 
 
 
-double EnergyAngle_O::evaluateAll( ScoringFunction_sp score,
+double EnergyAngle_O::evaluateAllComponent( ScoringFunction_sp score,
                                    chem::NVector_sp 	pos,
                                    bool 		calcForce,
                                    gc::Nilable<chem::NVector_sp> 	force,

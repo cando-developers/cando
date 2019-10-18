@@ -62,6 +62,7 @@ __END_DOC
 #include <cando/chem/energyAngle.h>
 #include <cando/chem/energyDihedral.h>
 #include <cando/chem/energyNonbond.h>
+#include <cando/chem/energyPeriodicBoundaryConditionsNonbond.h>
 #include <cando/chem/energyImproperRestraint.h>
 #include <cando/chem/energyChiralRestraint.h>
 #include <cando/chem/energyAnchorRestraint.h>
@@ -179,7 +180,11 @@ void	EnergyFunction_O::initialize()
 #if USE_ALL_ENERGY_COMPONENTS
   this->_Angle = EnergyAngle_O::create();
   this->_Dihedral = EnergyDihedral_O::create();
-  this->_Nonbond = EnergyNonbond_O::create();
+  if (this->_BoundingBox.boundp()) {
+    this->_Nonbond = EnergyPeriodicBoundaryConditionsNonbond_O::create();
+  } else {
+    this->_Nonbond = EnergyNonbond_O::create();
+  }
   this->_ChiralRestraint = EnergyChiralRestraint_O::create();
   this->_AnchorRestraint = EnergyAnchorRestraint_O::create();
   this->_ImproperRestraint = EnergyImproperRestraint_O::create();
@@ -240,8 +245,38 @@ void EnergyFunction_O::fields(core::Record_sp node)
   node->field_if_not_unbound(INTERN_(kw,AnchorRestraint),this->_AnchorRestraint);
   node->field_if_not_unbound(INTERN_(kw,FixedNonbondRestraint),this->_FixedNonbondRestraint);
 #endif
+  node->field_if_not_unbound(INTERN_(kw,BoundingBox),this->_BoundingBox);
   node->field(INTERN_(kw,OtherEnergyComponents),this->_OtherEnergyComponents);
   this->Base::fields(node);
+}
+
+CL_DOCSTRING(R"doc(Return the bounding-box for the atom-table.)doc");
+CL_LISPIFY_NAME(energyFunction-bounding-box);
+CL_DEFMETHOD BoundingBox_sp EnergyFunction_O::boundingBox() const
+{
+  if (this->_BoundingBox.boundp()) {
+    return this->_BoundingBox;
+  }
+  SIMPLE_ERROR(BF("The bounding-box slot is unbound"));
+}
+
+CL_DOCSTRING(R"doc(Return T if the bounding-box is bound)doc");
+CL_LISPIFY_NAME(energyFunction-bounding-box-bound-p);
+CL_DEFMETHOD bool EnergyFunction_O::boundingBoxBoundP() const
+{
+  return this->_BoundingBox.boundp();
+}
+
+CL_DOCSTRING(R"doc(Set the bounding-box)doc");
+CL_LISPIFY_NAME(energyFunction-set-bounding-box);
+CL_DEFMETHOD void EnergyFunction_O::setBoundingBox(BoundingBox_sp boundingBox) {
+  this->_BoundingBox = boundingBox;
+}
+
+CL_DOCSTRING(R"doc(Make the bounding-box unbound)doc");
+CL_LISPIFY_NAME(energyFunction-mak-unbound-bounding-box);
+CL_DEFMETHOD void EnergyFunction_O::makUnboundBoundingBox() {
+  this->_BoundingBox = _Unbound<BoundingBox_O>();
 }
 
 
@@ -520,7 +555,7 @@ double	EnergyFunction_O::evaluateAll( NVector_sp 	pos,
 	// Evaluate the stretch term
 	//
 ////	_lisp->profiler().timer(core::timerBond).start();
-    this->_Stretch->evaluateAll( this->asSmartPtr(),
+    this->_Stretch->evaluateAllComponent( this->asSmartPtr(),
                                  pos, calcForce, force,
                                  calcDiagonalHessian,
                                  calcOffDiagonalHessian,
@@ -528,7 +563,7 @@ double	EnergyFunction_O::evaluateAll( NVector_sp 	pos,
 ////	_lisp->profiler().timer(core::timerBond).stop();
 #if USE_ALL_ENERGY_COMPONENTS
 ////	_lisp->profiler().timer(core::timerAngle).start();
-    this->_Angle->evaluateAll( this->asSmartPtr(),
+    this->_Angle->evaluateAllComponent( this->asSmartPtr(),
                                pos, calcForce, force,
                                calcDiagonalHessian,
                                calcOffDiagonalHessian,
@@ -536,7 +571,7 @@ double	EnergyFunction_O::evaluateAll( NVector_sp 	pos,
 ////	_lisp->profiler().timer(core::timerAngle).stop();
 
 ////	_lisp->profiler().timer(core::timerDihedral).start();
-    this->_Dihedral->evaluateAll( this->asSmartPtr(),
+    this->_Dihedral->evaluateAllComponent( this->asSmartPtr(),
                                   pos, calcForce, force,
                                   calcDiagonalHessian,
                                   calcOffDiagonalHessian,
@@ -545,30 +580,30 @@ double	EnergyFunction_O::evaluateAll( NVector_sp 	pos,
 ////	_lisp->profiler().timer(core::timerBondAngleDihedral).stop();
 
 ////	_lisp->profiler().timer(core::timerNonbond).start();
-    this->_Nonbond->evaluateAll( this->asSmartPtr(),
+    this->_Nonbond->evaluateAllComponent( this->asSmartPtr(),
                                  pos, calcForce, force,
                                  calcDiagonalHessian, calcOffDiagonalHessian, hessian, hdvec, dvec );
 ////	_lisp->profiler().timer(core::timerNonbond).stop();
 
 ////	_lisp->profiler().timer(core::timerImproperRestraint).start();
-    this->_ImproperRestraint->evaluateAll( this->asSmartPtr(),
+    this->_ImproperRestraint->evaluateAllComponent( this->asSmartPtr(),
                                            pos, calcForce, force,
                                            calcDiagonalHessian, calcOffDiagonalHessian, hessian, hdvec, dvec );
 ////	_lisp->profiler().timer(core::timerImproperRestraint).stop();
 
 ////	_lisp->profiler().timer(core::timerChiralRestraint).start();
-    this->_ChiralRestraint->evaluateAll( this->asSmartPtr(),
+    this->_ChiralRestraint->evaluateAllComponent( this->asSmartPtr(),
                                          pos, calcForce, force,
                                          calcDiagonalHessian, calcOffDiagonalHessian, hessian, hdvec, dvec );
 ////	_lisp->profiler().timer(core::timerChiralRestraint).stop();
 
 //	_lisp->profiler().timer(core::timerAnchorRestraint).start();
-    this->_AnchorRestraint->evaluateAll( this->asSmartPtr(),
+    this->_AnchorRestraint->evaluateAllComponent( this->asSmartPtr(),
                                          pos, calcForce, force, calcDiagonalHessian, calcOffDiagonalHessian, hessian, hdvec, dvec );
 ////	_lisp->profiler().timer(core::timerAnchorRestraint).stop();
 
 ////	_lisp->profiler().timer(core::timerFixedNonbondRestraint).start();
-    this->_FixedNonbondRestraint->evaluateAll( this->asSmartPtr(),
+    this->_FixedNonbondRestraint->evaluateAllComponent( this->asSmartPtr(),
                                                pos, calcForce, force,
                                                calcDiagonalHessian, calcOffDiagonalHessian, hessian, hdvec, dvec );
 ////	_lisp->profiler().timer(core::timerFixedNonbondRestraint).stop();
@@ -576,7 +611,7 @@ double	EnergyFunction_O::evaluateAll( NVector_sp 	pos,
     for ( auto cur : this->_OtherEnergyComponents ) {
       core::Cons_sp pair = gc::As<core::Cons_sp>(CONS_CAR(cur));
       EnergyComponent_sp component = gc::As<EnergyComponent_sp>(oCdr(pair));
-      component->evaluateAll(this->asSmartPtr(),pos,calcForce,force,calcDiagonalHessian,calcOffDiagonalHessian,hessian,hdvec,dvec);
+      component->evaluateAllComponent(this->asSmartPtr(),pos,calcForce,force,calcDiagonalHessian,calcOffDiagonalHessian,hessian,hdvec,dvec);
     }
     
     this->_TotalEnergy = this->_Stretch->getEnergy();

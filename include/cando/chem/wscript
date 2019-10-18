@@ -78,6 +78,8 @@ def build(bld):
             'energyImproperRestraint.h',
             'energyNonbond.fwd.h',
             'energyNonbond.h',
+            'energyPeriodicBoundaryConditions.fwd.h',
+            'energyPeriodicBoundaryConditions.h',
             'energyStretch.fwd.h',
             'energyStretch.h',
             'energySketchStretch.fwd.h',

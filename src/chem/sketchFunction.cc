@@ -406,7 +406,7 @@ double	SketchFunction_O::evaluateAll( NVector_sp 	pos,
 #ifdef DUMP_FORCE
   maybe_dump_force("start",force);
 #endif
-  this->_Stretch->evaluateAll( this->asSmartPtr(),
+  this->_Stretch->evaluateAllComponent( this->asSmartPtr(),
                                pos, calcForce, force,
                                calcDiagonalHessian,
                                calcOffDiagonalHessian,
@@ -416,7 +416,7 @@ double	SketchFunction_O::evaluateAll( NVector_sp 	pos,
 #ifdef DUMP_FORCE
   maybe_dump_force("stretch",force);
 #endif
-  this->_Nonbond->evaluateAll( this->asSmartPtr(),
+  this->_Nonbond->evaluateAllComponent( this->asSmartPtr(),
                                pos, calcForce, force,
                                calcDiagonalHessian, calcOffDiagonalHessian, hessian, hdvec, dvec );
 ////	_lisp->profiler().timer(core::timerNonbond).stop();
@@ -425,12 +425,12 @@ double	SketchFunction_O::evaluateAll( NVector_sp 	pos,
 #ifdef DUMP_FORCE
   maybe_dump_force("nonbond",force);
 #endif
-  this->_PointToLineRestraint->evaluateAll( this->asSmartPtr(),
+  this->_PointToLineRestraint->evaluateAllComponent( this->asSmartPtr(),
                                             pos, calcForce, force, calcDiagonalHessian, calcOffDiagonalHessian, hessian, hdvec, dvec );
 #ifdef DUMP_FORCE
   maybe_dump_force("pointToLineRestraint",force);
 #endif
-  this->_OutOfZPlane->evaluateAll( this->asSmartPtr(),
+  this->_OutOfZPlane->evaluateAllComponent( this->asSmartPtr(),
                                    pos, calcForce, force, calcDiagonalHessian, calcOffDiagonalHessian, hessian, hdvec, dvec );
 #ifdef DUMP_FORCE
   maybe_dump_force("oozp",force);

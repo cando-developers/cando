@@ -49,7 +49,7 @@ EnergyPointToLineRestraint_sp EnergyPointToLineRestraint_O::create(EnergySketchS
 }
 
 
-double EnergyPointToLineRestraint_O::evaluateAll( ScoringFunction_sp score,
+double EnergyPointToLineRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
                                                   NVector_sp 	pos,
                                                   bool 		calcForce,
                                                   gc::Nilable<NVector_sp> 	force,

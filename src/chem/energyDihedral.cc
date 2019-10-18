@@ -431,7 +431,7 @@ void	EnergyDihedral_O::setupHessianPreconditioner(
 
 
 
-double	EnergyDihedral_O::evaluateAll( ScoringFunction_sp score,
+double	EnergyDihedral_O::evaluateAllComponent( ScoringFunction_sp score,
                                        NVector_sp 	pos,
                                        bool 		calcForce,
                                        gc::Nilable<NVector_sp> 	force,

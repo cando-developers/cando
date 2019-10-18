@@ -92,7 +92,7 @@ void RigidBodyEnergyFunction_O::fields(core::Record_sp node)
   node->field(INTERN_(kw,RigidBodies),this->_RigidBodies);
   node->field_if_not_unbound(INTERN_(kw,SavedCoordinates),this->_SavedCoordinates);
   node->field(INTERN_(kw,Terms),this->_Terms);
-  node->field(INTERN_(kw,BoundingBox),this->_BoundingBox);
+  node->field_if_not_unbound(INTERN_(kw,BoundingBox),this->_BoundingBox);
   this->Base::fields(node);
 }
 
@@ -238,7 +238,9 @@ double	RigidBodyEnergyFunction_O::evaluateAll( NVector_sp pos,
   }
 
 ////    _lisp->profiler().pushTimerStates();
-  if ( hasForce ) force->zero();
+  if ( hasForce ) {
+    force->zero();
+  }
   if ( hasHessian ) hessian->zero();
   if ( hasHdAndD ) {
     LOG(BF("Zeroing hdvec") );
@@ -249,15 +251,15 @@ double	RigidBodyEnergyFunction_O::evaluateAll( NVector_sp pos,
     double totalEnergy = 0.0;
     for ( auto cur : this->_Terms ) {
       EnergyRigidBodyComponent_sp term = gc::As<EnergyRigidBodyComponent_sp>(CONS_CAR(cur));
-      totalEnergy += term->evaluateAll(this->asSmartPtr(),
-                                       pos,
-                                       calcForce,
-                                       force,
-                                       calcDiagonalHessian,
-                                       calcOffDiagonalHessian,
-                                       hessian,
-                                       hdvec,
-                                       dvec);
+      totalEnergy += term->evaluateAllComponent(this->asSmartPtr(),
+                                                pos,
+                                                calcForce,
+                                                force,
+                                                calcDiagonalHessian,
+                                                calcOffDiagonalHessian,
+                                                hessian,
+                                                hdvec,
+                                                dvec);
     }
     return totalEnergy;
 }
@@ -268,6 +270,11 @@ void	RigidBodyEnergyFunction_O::dealWithProblem(core::Symbol_sp error_symbol, co
 {
   IMPLEMENT_ME();
 };
+
+CL_DEFMETHOD
+size_t RigidBodyEnergyFunction_O::numberOfRigidBodies() const {
+  return this->_RigidBodies;
+}
 
 void RigidBodyEnergyFunction_O::setPosition(size_t index, double a, double b, double c, double d, double x, double y, double z) {
   if (index>= this->_RigidBodies) {
@@ -338,11 +345,11 @@ void RigidBodyEnergyFunction_O::dumpTerms()
 }
 
 
-CL_DOCSTRING(R"doc(Like velocity-verlet-step but limits displacement of atoms in the x,y,z directions using the limit_displacement vector.
-Return the number of atoms whose displacement was limited.  The limit_displacement nvector contains seven double precision values, 
+CL_DOCSTRING(R"doc(Like velocity-verlet-step but limits displacement of rigid body quaternions and centers using the limit_displacement vector.
+Return the number of rigid bodies whose displacement was limited.  The limit_displacement nvector contains seven double precision values, 
 the a,b,c,d quaternion and x,y,z displacements.  The quaternion displacement idea is experimental.  I'm not sure how it will
 effect the dynamics.)doc");
-CL_LISPIFY_NAME("velocity-verlet-step-limit-displacement");
+CL_LISPIFY_NAME("rigid-body-velocity-verlet-step-limit-displacement");
 CL_DEFUN size_t chem__rigid_body_velocity_verlet_step_limit_displacement(ScoringFunction_sp scoringFunc,
                                                                          NVector_sp position,
                                                                          NVector_sp velocity,
@@ -357,8 +364,8 @@ CL_DEFUN size_t chem__rigid_body_velocity_verlet_step_limit_displacement(Scoring
   core::SimpleBitVector_sp frozen;
   if (gc::IsA<core::SimpleBitVector_sp>(tfrozen)) {
     frozen = gc::As_unsafe<core::SimpleBitVector_sp>(tfrozen);
-    if (frozen->length() != (position->length()/3)) {
-      SIMPLE_ERROR(BF("frozen must be a simple-bit-vector of length %d or NIL") % (position->length()/3));
+    if (frozen->length() != (position->length()/7)) {
+      SIMPLE_ERROR(BF("frozen must be a simple-bit-vector of length %d or NIL - it is %s") % (position->length()/7) % _rep_(position));
     }
   } else if (tfrozen.notnilp()) {
     SIMPLE_ERROR(BF("frozen must be a simple-bit-vector or NIL"));

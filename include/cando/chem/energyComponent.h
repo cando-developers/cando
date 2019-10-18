@@ -302,7 +302,7 @@ class EnergyComponent_O : public core::CxxObject_O
   virtual void zeroEnergy();
   CL_DEFMETHOD virtual void dumpTerms() {_OF();SUBCLASS_MUST_IMPLEMENT();};
 
-  virtual	double evaluateAll( ScoringFunction_sp scorer,
+  virtual	double evaluateAllComponent( ScoringFunction_sp scorer,
                                     NVector_sp 	pos,
                                     bool 		calcForce,
                                     gc::Nilable<NVector_sp> 	force,

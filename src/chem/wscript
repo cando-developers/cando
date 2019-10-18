@@ -45,6 +45,7 @@ def build(bld):
             'energyAngle',
             'energyDihedral',
             'energyNonbond',
+            'energyPeriodicBoundaryConditionsNonbond',
             'energyChiralRestraint',
             'energyAnchorRestraint',
             'energyPointToLineRestraint',
