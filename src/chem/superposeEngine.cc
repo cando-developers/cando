@@ -425,7 +425,7 @@ CL_DEFMETHOD void	SuperposeEngine_O::setFixedPoints( core::ComplexVector_byte32_
     SIMPLE_ERROR(BF(ss.str()));
   }
   this->_FixedIndices = gc::As<core::ComplexVector_byte32_t_sp>(fi);
-  geom::SimpleVectorCoordinate_sp data = geom::SimpleVectorCoordinate_O::copy(fc);
+  geom::SimpleVectorCoordinate_sp data = fc->copy();
   this->_FixedCoordinates = geom::ComplexVectorCoordinate_O::make_vector(data);
 }
 
@@ -456,7 +456,7 @@ CL_DEFMETHOD void	SuperposeEngine_O::setMoveablePoints( core::ComplexVector_byte
     ASSERTP( (mi->length()>=3), "There must be at least three indices" );
     ASSERTP( mi->length()<=mc->length(), "There must be at least as many coordinates as indices");
     this->_MoveableIndices = gc::As<core::ComplexVector_byte32_t_sp>(mi);
-    geom::SimpleVectorCoordinate_sp data = geom::SimpleVectorCoordinate_O::copy(mc);
+    geom::SimpleVectorCoordinate_sp data = mc->copy();
     this->_MoveableCoordinates = geom::ComplexVectorCoordinate_O::make_vector(data);
 }
 

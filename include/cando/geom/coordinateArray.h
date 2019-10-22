@@ -103,8 +103,12 @@ namespace geom {
       auto bs = gctools::GC<SimpleVectorCoordinate_O>::allocate_container(static_vector_p,length,initialElement,initialElementSupplied,initialContentsSize,initialContents);
       return bs;
     }
-    static SimpleVectorCoordinate_sp copy(SimpleVectorCoordinate_sp original) {
-      return make(original->length(),Vector3(),false,original->length(),&(*original)[0]);
+    smart_ptr_type copy(size_t length, value_type initialElement, bool initialElementSupplied) {
+      return make(length, initialElement, initialElementSupplied,
+                  MIN(length, this->length()), this->begin());
+    }
+    smart_ptr_type copy() {
+      return copy(this->length(), default_initial_element(), false);
     }
     static SimpleVectorCoordinate_sp create(core::List_sp elements) {
       size_t sz = core::cl__length(elements);
