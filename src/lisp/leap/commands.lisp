@@ -1055,6 +1055,33 @@ Clears the SELECT flag on all ATOMs within _obj_.  See the select command.
            (chem:clear-property atom :select)))
      matter)))
 
+(defun leap-bond-by-distance (matter &optional (max-bond 2.0))
+"    bondByDistance container [ maxBond ]
+
+      UNIT/RESIDUE/ATOM         _container_
+      NUMBER                    _maxBond_
+
+Create single bonds between all ATOMs in _container_ that are within
+_maxBond_ angstroms of each other.   If _maxBond_ is not specified,
+a default distance of 2 angstroms used.
+"
+  (let ((atom-vec (make-array 256 :fill-pointer 0 :adjustable t))
+        (count 0))
+    (chem:map-atoms
+     'nil
+     (lambda (atom)
+       (vector-push-extend atom atom-vec)
+       (incf count))
+     matter)
+    (loop for i from 0 below count
+          do (loop for j from (+ i 1) below count
+                   for atom1 = (aref atom-vec i)
+                   for atom2 = (aref atom-vec j)
+                   do (if (and (not (chem:is-bonded-to atom1 atom2))
+                               (> (* max-bond max-bond) (chem:distance-squared-between-two-atoms atom1 atom2)))
+                          (chem:bond-to atom1 atom2 :single-bond))))))
+                               
+
 (defparameter *leap-commands* (list       "add" "addAtomTypes"
     "addH" "addIons" "addIons2" "addIonsRand" "addPath" "addPdbAtomMap" "addPdbResMap" "alias" "alignAxes"
     "bond" "bondByDistance" "center" "charge" "check" "clearPdbAtomMap" "clearPdbResMap" "clearVariables" "combine"
@@ -1171,6 +1198,7 @@ Provide a list of commands that cleap has available to mimic tleap."
           ("deleteBond" . leap-delete-bond)
           ("select" . leap-select)
           ("deSelect" . leap-select)
+          ("bondByDistance" . leap-bond-by-distance)
           ))
   ;; register all of the leap command and export them from the leap package
   (loop for command-pair in leap.parser:*function-names/alist*
