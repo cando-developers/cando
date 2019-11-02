@@ -53,8 +53,10 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/largeSquareMatrix.h>
 #include <clasp/core/wrappers.h>
 
+#define BAIL_OUT_IF_CUTOFF(deltasquared) \
+  if ((deltasquared)>this->_NonbondCutoffSquared) goto DONE;
 
-#define DEBUG_NONBOND_TERM 1
+//#define DEBUG_NONBOND_TERM 1
 #define LOG_ENERGY(x)
 //#define LOG_ENERGY core::write_bf_stream
 
@@ -63,9 +65,9 @@ namespace chem
 
 inline double periodic_boundary_adjust(const double& delta, const double& rsize, const double& size)
 {
-  double fdelta = fabs(delta);
-  fdelta -= static_cast<int>(fdelta*rsize + 0.5)*size;
-  return fdelta;
+  double result = delta;
+  result -= size*std::nearbyint(delta*rsize);
+  return result;
 }
 
 /* Periodic boundary conditons/bounding-box are used in this code.
@@ -73,17 +75,20 @@ inline double periodic_boundary_adjust(const double& delta, const double& rsize,
    See energyNonbond.cc for counter-example.
 */
 
-#define PBX(_delta_) periodic_boundary_adjust(_delta_,x_rsize,x_size)
-#define PBY(_delta_) periodic_boundary_adjust(_delta_,y_rsize,y_size)
-#define PBZ(_delta_) periodic_boundary_adjust(_delta_,z_rsize,z_size)
+#define PBX(_delta_) periodic_boundary_adjust(_delta_,x_rwidth,x_width)
+#define PBY(_delta_) periodic_boundary_adjust(_delta_,y_rwidth,y_width)
+#define PBZ(_delta_) periodic_boundary_adjust(_delta_,z_rwidth,z_width)
 
 
 
 
-double	_evaluateEnergyOnly_PeriodicBoundaryConditionsNonbond(double x1, double y1, double z1,
+double	_evaluateEnergyOnly_PeriodicBoundaryConditionsNonbond(ScoringFunction_sp score,
+                                                              double x1, double y1, double z1,
                                                               double x2, double y2, double z2,
                                                               double dA, double dC, double dQ1Q2)
 {
+  SIMPLE_ERROR(BF("Support %s") % __FUNCTION__);
+#if 0
 #undef	NONBOND_SET_PARAMETER
 #define	NONBOND_SET_PARAMETER(x)	{}
 #undef	NONBOND_SET_POSITION
@@ -101,6 +106,16 @@ double	_evaluateEnergyOnly_PeriodicBoundaryConditionsNonbond(double x1, double y
 #undef	NONBOND_EEEL_ENERGY_ACCUMULATE
 #define	NONBOND_EEEL_ENERGY_ACCUMULATE(x) {}
 
+  EnergyFunction_sp energyFunction = gc::As<EnergyFunction_sp>(score);
+  double x_rwidth = energyFunction->boundingBox()->get_x_rwidth();
+  double y_rwidth = energyFunction->boundingBox()->get_y_rwidth();
+  double z_rwidth = energyFunction->boundingBox()->get_z_rwidth();
+  double x_width = energyFunction->boundingBox()->get_x_width();
+  double y_width = energyFunction->boundingBox()->get_y_width();
+  double z_width = energyFunction->boundingBox()->get_z_width();
+  double half_x_size = x_width*0.5;
+  double half_y_size = y_width*0.5;
+  double half_z_size = z_width*0.5;
 #undef	NONBOND_CALC_FORCE	// Don't calculate FORCE or HESSIAN
 
 #pragma clang diagnostic push
@@ -108,10 +123,11 @@ double	_evaluateEnergyOnly_PeriodicBoundaryConditionsNonbond(double x1, double y
 #include <cando/chem/energy_functions/_Nonbond_termDeclares.cc>
 #pragma clang diagnostic pop
 #include <cando/chem/energy_functions/_Nonbond_termCode.cc>
-
+ DONE:
   return Energy;
-}
+#endif
 
+}
 
 
 void	EnergyPeriodicBoundaryConditionsNonbond_O::setupHessianPreconditioner(NVector_sp nvPosition,
@@ -121,14 +137,15 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::setupHessianPreconditioner(NVect
 }
 
 
-void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateTerms(NVector_sp 	pos,
-                                       bool 		calcForce,
-                                       gc::Nilable<NVector_sp> 	force,
-                                       bool		calcDiagonalHessian,
-                                       bool		calcOffDiagonalHessian,
-                                       gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                                       gc::Nilable<NVector_sp>	hdvec, 
-                                       gc::Nilable<NVector_sp> 	dvec )
+void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateTerms(ScoringFunction_sp score,
+                                                                 NVector_sp 	pos,
+                                                                 bool 		calcForce,
+                                                                 gc::Nilable<NVector_sp> 	force,
+                                                                 bool		calcDiagonalHessian,
+                                                                 bool		calcOffDiagonalHessian,
+                                                                 gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                                                 gc::Nilable<NVector_sp>	hdvec, 
+                                                                 gc::Nilable<NVector_sp> 	dvec )
 {
 //  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
   ANN(force);
@@ -138,6 +155,17 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateTerms(NVector_sp 	pos,
   bool	hasForce = force.notnilp();
   bool	hasHessian = hessian.notnilp();
   bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
+  EnergyFunction_sp energyFunction = gc::As<EnergyFunction_sp>(score);
+  double x_rwidth = energyFunction->boundingBox()->get_x_rwidth();
+  double y_rwidth = energyFunction->boundingBox()->get_y_rwidth();
+  double z_rwidth = energyFunction->boundingBox()->get_z_rwidth();
+  double x_width = energyFunction->boundingBox()->get_x_width();
+  double y_width = energyFunction->boundingBox()->get_y_width();
+  double z_width = energyFunction->boundingBox()->get_z_width();
+    double half_x_size = x_width*0.5;
+  double half_y_size = y_width*0.5;
+  double half_z_size = z_width*0.5;
+
 #define NONBOND_CALC_FORCE
 #define NONBOND_CALC_DIAGONAL_HESSIAN
 #define NONBOND_CALC_OFF_DIAGONAL_HESSIAN
@@ -148,7 +176,7 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateTerms(NVector_sp 	pos,
 #undef	NONBOND_EEEL_ENERGY_ACCUMULATE
 #define	NONBOND_EEEL_ENERGY_ACCUMULATE(e) {this->_EnergyElectrostatic +=(e);}
 #undef	NONBOND_EVDW_ENERGY_ACCUMULATE
-#define	NONBOND_EVDW_ENERGY_ACCUMULATE(e) {this->_EnergyVdw+=(e);}
+#define	NONBOND_EVDW_ENERGY_ACCUMULATE(e) {this->_EnergyVdw+=(e)-vljrc;}
 
 #undef	NONBOND_ENERGY_ACCUMULATE
 #define	NONBOND_ENERGY_ACCUMULATE(e) {};
@@ -189,7 +217,9 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateTerms(NVector_sp 	pos,
           }
         }
 #endif
+        double vljrc = nbi->term.dA*this->_NonbondCutoffReciprocal12-nbi->term.dC*this->_NonbondCutoffReciprocal6;
 #include <cando/chem/energy_functions/_Nonbond_termCode.cc>
+      DONE:
 
 #if TURN_ENERGY_FUNCTION_DEBUG_ON //[
         nbi->_calcForce = calcForce;
@@ -240,6 +270,7 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateTerms(NVector_sp 	pos,
           LOG_ENERGY(BF( "MEISTER nonbond %s stop\n")% key );
         }
 #endif
+        (void)0;
       }
     }
   } else {
@@ -252,14 +283,15 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateTerms(NVector_sp 	pos,
 
 
 
-void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateUsingExcludedAtoms(NVector_sp 	pos,
-                                                    bool 		calcForce,
-                                                    gc::Nilable<NVector_sp> 	force,
-                                                    bool		calcDiagonalHessian,
-                                                    bool		calcOffDiagonalHessian,
-                                                    gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                                                    gc::Nilable<NVector_sp>	hdvec, 
-                                                    gc::Nilable<NVector_sp> 	dvec )
+void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateUsingExcludedAtoms(ScoringFunction_sp score,
+                                                                              NVector_sp 	pos,
+                                                                              bool 		calcForce,
+                                                                              gc::Nilable<NVector_sp> 	force,
+                                                                              bool		calcDiagonalHessian,
+                                                                              bool		calcOffDiagonalHessian,
+                                                                              gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                                                              gc::Nilable<NVector_sp>	hdvec, 
+                                                                              gc::Nilable<NVector_sp> 	dvec )
 {
 //  printf("%s:%d In evaluateUsingExcludedAtoms starting this->_DebugEnergy -> %d\n", __FILE__, __LINE__, this->_DebugEnergy );
   if (!this->_iac_vec) {
@@ -273,6 +305,17 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateUsingExcludedAtoms(NVect
   bool	hasForce = force.notnilp();
   bool	hasHessian = hessian.notnilp();
   bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
+  EnergyFunction_sp energyFunction = gc::As<EnergyFunction_sp>(score);
+  double x_rwidth = energyFunction->boundingBox()->get_x_rwidth();
+  double y_rwidth = energyFunction->boundingBox()->get_y_rwidth();
+  double z_rwidth = energyFunction->boundingBox()->get_z_rwidth();
+  double x_width = energyFunction->boundingBox()->get_x_width();
+  double y_width = energyFunction->boundingBox()->get_y_width();
+  double z_width = energyFunction->boundingBox()->get_z_width();
+  double half_x_size = x_width*0.5;
+  double half_y_size = y_width*0.5;
+  double half_z_size = z_width*0.5;
+  
 #define NONBOND_CALC_FORCE
 #define NONBOND_CALC_DIAGONAL_HESSIAN
 #define NONBOND_CALC_OFF_DIAGONAL_HESSIAN
@@ -283,7 +326,7 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateUsingExcludedAtoms(NVect
 #undef	NONBOND_EEEL_ENERGY_ACCUMULATE
 #define	NONBOND_EEEL_ENERGY_ACCUMULATE(e) {this->_EnergyElectrostatic +=(e);}
 #undef	NONBOND_EVDW_ENERGY_ACCUMULATE
-#define	NONBOND_EVDW_ENERGY_ACCUMULATE(e) {this->_EnergyVdw+=(e);}
+#define	NONBOND_EVDW_ENERGY_ACCUMULATE(e) {this->_EnergyVdw+=(e)-vljrc;}
 #undef	NONBOND_ENERGY_ACCUMULATE
 #define	NONBOND_ENERGY_ACCUMULATE(e) {};
 #undef	NONBOND_FORCE_ACCUMULATE
@@ -315,7 +358,7 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateUsingExcludedAtoms(NVect
       nlocaltype = (*this->_iac_vec)[i];
     }
   }
-
+//  printf("%s:%d About to do nonbond calc maxIndex -> %d\n", __FILE__, __LINE__, maxIndex );
   int index1_end = maxIndex-1;
   for ( int index1 = 0; index1 <index1_end; ++index1 ) {
     LOG(BF("%s ====== top of outer loop - index1 = %d\n") % __FUNCTION__ % index1 );
@@ -323,9 +366,7 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateUsingExcludedAtoms(NVect
     LOG(BF("Read numberOfExcludedAtomsRemaining from numberOfExcludedAtoms[%d]= %d\n") % index1 % numberOfExcludedAtomsRemaining);
           // Skip 0 in excluded atom list that amber requires
     int maybe_excluded_atom = (*excludedAtomIndices)[excludedAtomIndex];
-    if (maybe_excluded_atom<0) {
-      ++excludedAtomIndex;
-    } else {
+    {
       double charge11 = (*this->_charge_vector)[index1];
       double electrostatic_scaled_charge11 = charge11*electrostaticScale;
       int number_excluded = 0;
@@ -344,13 +385,17 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateUsingExcludedAtoms(NVect
         int localindex2 = (*this->_iac_vec)[index2];
         dA = (*this->_cn1_vec)[(*this->_ico_vec)[nlocaltype*(localindex1-1)+localindex2-1]-1];
         dC = (*this->_cn2_vec)[(*this->_ico_vec)[nlocaltype*(localindex1-1)+localindex2-1]-1];
-//      printf("%s:%d localindex1 %d and localindex2 %d\n", __FILE__, __LINE__, localindex1, localindex2);
-//      printf("%s:%d dA     %lf and dC     %lf\n", __FILE__, __LINE__, dA, dC);
+        double vljrc = dA*this->_NonbondCutoffReciprocal12-dC*this->_NonbondCutoffReciprocal6;
+//        printf("%s:%d localindex1 %d and localindex2 %d\n", __FILE__, __LINE__, localindex1, localindex2);
+//        printf("%s:%d dA     %lf and dC     %lf\n", __FILE__, __LINE__, dA, dC);
         double charge22 = (*this->_charge_vector)[index2];
-//      dQ1Q2 = electrostatic_scaled_charge11*charge22;
+        dQ1Q2 = electrostatic_scaled_charge11*charge22;
         dQ1Q2 = charge11*charge22;
-//      printf("%s:%d charge1     %lf and charge2     %lf\n", __FILE__, __LINE__, charge11, charge22);
-//      printf("%s:%d electrostaticScale     %lf and dQ1Q2     %lf\n", __FILE__, __LINE__, electrostaticScale, dQ1Q2);
+#if 0
+        core::write_bf_stream(BF("%s:%d  dA -> %f   dC -> %f  dQ1Q2 -> %f\n") % __FILE__ % __LINE__ % dA % dC % dQ1Q2);
+#endif
+//        printf("%s:%d charge1     %lf and charge2     %lf\n", __FILE__, __LINE__, charge11, charge22);
+//        printf("%s:%d electrostaticScale     %lf and dQ1Q2     %lf\n", __FILE__, __LINE__, electrostaticScale, dQ1Q2);
 #ifdef DEBUG_NONBOND_TERM
         if ( this->_DebugEnergy ) {
           LOG_ENERGY(BF( "nonbond localindex1 %d\n")% localindex1 );
@@ -381,6 +426,14 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateUsingExcludedAtoms(NVect
         }
 #endif
 #include <cando/chem/energy_functions/_Nonbond_termCode.cc>
+      DONE:
+#if 0
+        core::write_bf_stream(BF("%s:%d  DistanceSquared -> %f   Evdw -> %f  Evdw_rc -> %f   Eeel -> %f\n") % __FILE__ % __LINE__ % DistanceSquared % Evdw % vljrc % Eeel);
+        core::write_bf_stream(BF("%s:%d  x1, y1, z1 -> %f, %f, %f\n") % __FILE__ % __LINE__ % x1 % y1 % z1 );
+        core::write_bf_stream(BF("%s:%d  x2, y2, z2 -> %f, %f, %f\n") % __FILE__ % __LINE__ % x2 % y2 % z2 );
+        core::write_bf_stream(BF("%s:%d  fx1, fy1, fz1 -> %f, %f, %f\n") % __FILE__ % __LINE__ % fx1 % fy1 % fz1 );
+        core::write_bf_stream(BF("%s:%d  fx2, fy2, fz2 -> %f, %f, %f\n") % __FILE__ % __LINE__ % fx2 % fy2 % fz2 );
+#endif
 #if TURN_ENERGY_FUNCTION_DEBUG_ON //[
         nbi->_calcForce = calcForce;
         nbi->_calcDiagonalHessian = calcDiagonalHessian;
@@ -424,7 +477,12 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateUsingExcludedAtoms(NVect
           LOG_ENERGY(BF( "MEISTER nonbond %s stop\n")% key );
         }
 #endif
+        (void)0;
       }
+    }
+    if (maybe_excluded_atom<0) {
+      // No excluded atoms see Swails document http://ambermd.org/prmtop.pdf
+      ++excludedAtomIndex;
     }
   }
 //  printf( "Nonbond energy vdw(%lf) electrostatic(%lf)\n", (double)this->_EnergyVdw,  this->_EnergyElectrostatic );
@@ -433,13 +491,24 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateUsingExcludedAtoms(NVect
 }
 
 
-void	EnergyPeriodicBoundaryConditionsNonbond_O::compareAnalyticalAndNumericalForceAndHessianTermByTerm(NVector_sp 	pos)
+void	EnergyPeriodicBoundaryConditionsNonbond_O::compareAnalyticalAndNumericalForceAndHessianTermByTerm(ScoringFunction_sp score, NVector_sp 	pos)
 {_OF();
   int	fails = 0;
   bool	calcForce = true;
   bool	calcDiagonalHessian = true;
   bool	calcOffDiagonalHessian = true;
 
+  EnergyFunction_sp energyFunction = gc::As<EnergyFunction_sp>(score);
+  double x_rwidth = energyFunction->boundingBox()->get_x_rwidth();
+  double y_rwidth = energyFunction->boundingBox()->get_y_rwidth();
+  double z_rwidth = energyFunction->boundingBox()->get_z_rwidth();
+  double x_width = energyFunction->boundingBox()->get_x_width();
+  double y_width = energyFunction->boundingBox()->get_y_width();
+  double z_width = energyFunction->boundingBox()->get_z_width();
+  double half_x_size = x_width*0.5;
+  double half_y_size = y_width*0.5;
+  double half_z_size = z_width*0.5;
+  
 
 //
 // copy from implementAmberFunction::compareAnalyticalAndNumericalForceAndHessianTermByTerm(
@@ -479,8 +548,11 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::compareAnalyticalAndNumericalFor
     for ( i=0,nbi=this->_Terms.begin();
           nbi!=this->_Terms.end(); nbi++,i++ ) {
 #include <cando/chem/energy_functions/_Nonbond_termCode.cc>
+    DONE:
       int index = i;
+#define ENERGY_FUNCTION score
 #include <cando/chem/energy_functions/_Nonbond_debugFiniteDifference.cc>
+#undef ENERGY_FUNCTION
 
     }
   }
@@ -491,11 +563,21 @@ SYMBOL_EXPORT_SC_(KeywordPkg,vdwRadii);
 SYMBOL_EXPORT_SC_(KeywordPkg,distance);
 SYMBOL_EXPORT_SC_(KeywordPkg,force);
 
-core::List_sp	EnergyPeriodicBoundaryConditionsNonbond_O::checkForBeyondThresholdInteractionsWithPosition(NVector_sp pos, double threshold )
+core::List_sp	EnergyPeriodicBoundaryConditionsNonbond_O::checkForBeyondThresholdInteractionsWithPosition(ScoringFunction_sp score, NVector_sp pos, double threshold )
 {
+  EnergyFunction_sp energyFunction = gc::As<EnergyFunction_sp>(score);
+  double x_rwidth = energyFunction->boundingBox()->get_x_rwidth();
+  double y_rwidth = energyFunction->boundingBox()->get_y_rwidth();
+  double z_rwidth = energyFunction->boundingBox()->get_z_rwidth();
+  double x_width = energyFunction->boundingBox()->get_x_width();
+  double y_width = energyFunction->boundingBox()->get_y_width();
+  double z_width = energyFunction->boundingBox()->get_z_width();
+  double half_x_size = x_width*0.5;
+  double half_y_size = y_width*0.5;
+  double half_z_size = z_width*0.5;
   ql::list result;
   bool calcForce = true;
-  printf("%s:%d:%s   number of entries pos -> %lu\n", __FILE__, __LINE__, __FUNCTION__, pos->length()/3);
+//  printf("%s:%d:%s   number of entries pos -> %lu\n", __FILE__, __LINE__, __FUNCTION__, pos->length()/3);
   
 //  printf("%s:%d In evaluateUsingExcludedAtoms starting this->_DebugEnergy -> %d\n", __FILE__, __LINE__, this->_DebugEnergy );
   if (!this->_iac_vec) {
@@ -516,7 +598,7 @@ core::List_sp	EnergyPeriodicBoundaryConditionsNonbond_O::checkForBeyondThreshold
 #undef	NONBOND_EEEL_ENERGY_ACCUMULATE
 #define	NONBOND_EEEL_ENERGY_ACCUMULATE(e) {this->_EnergyElectrostatic +=(e);}
 #undef	NONBOND_EVDW_ENERGY_ACCUMULATE
-#define	NONBOND_EVDW_ENERGY_ACCUMULATE(e) {this->_EnergyVdw+=(e);}
+#define	NONBOND_EVDW_ENERGY_ACCUMULATE(e) {this->_EnergyVdw+=(e)-vljrc;}
 #undef	NONBOND_ENERGY_ACCUMULATE
 #define	NONBOND_ENERGY_ACCUMULATE(e) {};
 #undef	NONBOND_FORCE_ACCUMULATE
@@ -555,10 +637,7 @@ core::List_sp	EnergyPeriodicBoundaryConditionsNonbond_O::checkForBeyondThreshold
     LOG(BF("Read numberOfExcludedAtomsRemaining from numberOfExcludedAtoms[%d]= %d\n") % index1 % numberOfExcludedAtomsRemaining);
           // Skip 0 in excluded atom list that amber requires
     int maybe_excluded_atom = (*excludedAtomIndices)[excludedAtomIndex];
-    if (maybe_excluded_atom<0) {
-//      printf("%s:%d:%s SKIPPING numberOfExcludedAtomsRemaining<0\n", __FILE__, __LINE__, __FUNCTION__);
-      ++excludedAtomIndex;
-    } else {
+    {
       double charge11 = (*this->_charge_vector)[index1];
       double electrostatic_scaled_charge11 = charge11*electrostaticScale;
       int number_excluded = 0;
@@ -579,6 +658,7 @@ core::List_sp	EnergyPeriodicBoundaryConditionsNonbond_O::checkForBeyondThreshold
         int localindex2 = (*this->_iac_vec)[index2];
         dA = (*this->_cn1_vec)[(*this->_ico_vec)[nlocaltype*(localindex1-1)+localindex2-1]-1];
         dC = (*this->_cn2_vec)[(*this->_ico_vec)[nlocaltype*(localindex1-1)+localindex2-1]-1];
+        double vljrc = dA*this->_NonbondCutoffReciprocal12-dC*this->_NonbondCutoffReciprocal6;
 //      printf("%s:%d localindex1 %d and localindex2 %d\n", __FILE__, __LINE__, localindex1, localindex2);
 //      printf("%s:%d dA     %lf and dC     %lf\n", __FILE__, __LINE__, dA, dC);
         double charge22 = (*this->_charge_vector)[index2];
@@ -616,6 +696,7 @@ core::List_sp	EnergyPeriodicBoundaryConditionsNonbond_O::checkForBeyondThreshold
         }
 #endif
 #include <cando/chem/energy_functions/_Nonbond_termCode.cc>
+      DONE:
         EnergyAtom& ea1 = this->_AtomTable->energyAtomEntry(index1);
         EnergyAtom& ea2 = this->_AtomTable->energyAtomEntry(index2);
         if ( NonbondDistance < this->_ErrorThreshold ||
@@ -637,6 +718,11 @@ core::List_sp	EnergyPeriodicBoundaryConditionsNonbond_O::checkForBeyondThreshold
         printf("%s:%d:%s ERROR the number of excluded atoms should be %d but we excluded %d\n", __FILE__, __LINE__, __FUNCTION__, numberOfExcludedAtoms->operator[](index1), number_excluded);
       }
     }
+    if (maybe_excluded_atom<0) {
+      // No excluded atoms see Swails document http://ambermd.org/prmtop.pdf
+      ++excludedAtomIndex;
+    }
+
   }
   return result.result();
 }

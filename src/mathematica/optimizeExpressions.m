@@ -164,8 +164,9 @@ equations = Rules/.packet;
 nt = {};
 changes = False;
 For[i=1,i<=Length[equations],i++,
-If[ Head[equations[[i]]]===Rule, (*If this is a rule then collect the sub-expressions, if not then just add it to the list of equations *)
-(*PrintTemporary["Collecting terms for rule: ",i, " ", equations[[i]][[2]]];*)
+  If[ Head[equations[[i]]]===Rule, (*If this is a rule then collect the sub-expressions, if not then just add it to the list of equations *)
+    PrintTemporary["Collecting terms for rule: ",i, " ", equations[[i]][[2]];
+  ];
 newnt = collectTermsForOneExpression[equations[[i]][[2]],equations[[i]][[1]],nt];
 numberOfNewTerms = Length[newnt]-Length[nt]-1; (* One term is always added from the equations list *)
 If[numberOfNewTerms!=0,
@@ -891,7 +892,7 @@ energyFunctionName[pack_]:=Block[{},
 
 writeFiniteDifferenceForce[sout_,pack_] := Block[
 	{inputs,derivs,i,vars1,vars2,svars1,svars2,d,str},
-	inputs = Input/.pack;
+	inputs = Prepend[Input/.pack,ENERGY_FUNCTION];
 	derivs = DerivativeVariables/.pack;
 	For[i=1,i<=Length[derivs],i++,
 		d = derivs[[i]];
@@ -918,7 +919,7 @@ writeFiniteDifferenceForce[sout_,pack_] := Block[
 
 assembleFiniteDifferenceDiagonalHessian[pack_,d_] := Block[
 	{res,inputs,derivs,vars1,vars2,vars3,svars1,svars2,svars3},
-	inputs = Input/.pack;
+	inputs = Prepend[Input/.pack,ENERGY_FUNCTION];
 	derivs = DerivativeVariables/.pack;
 	vars1 = inputs/.{d->d-delta2};
 	vars2 = inputs;
@@ -941,7 +942,7 @@ assembleFiniteDifferenceDiagonalHessian[pack_,d_] := Block[
 
 assembleFiniteDifferenceOffDiagonalHessian[pack_,d1_,d2_] := Block[
 	{res,inputs,derivs,vmm,vmp,vpm,vpp,smm,smp,spm,spp},
-	inputs = Input/.pack;
+	inputs = Prepend[Input/.pack,ENERGY_FUNCTION];
 	derivs = DerivativeVariables/.pack;
 	vmm = inputs/.{d1->d1-delta2,d2->d2-delta2};
 	vmp = inputs/.{d1->d1-delta2,d2->d2+delta2};
@@ -1175,6 +1176,31 @@ AppendGradientForceAndHessian[macroPrefix_,be_,outputs_,hessianStructure_,rawEne
 	AppendTo[be, CCode["#endif /* "<>macroPrefix<>"_CALC_FORCE ]*/"]];
 ];
 SetAttributes[AppendGradientForceAndHessian,HoldAll];
+
+
+(* Now do everything *)
+AppendGradientForceAndHessianExtraRule[macroPrefix_,be_,outputs_,hessianStructure_,rawEnergyFn_,rawVarNames_,extraRule_]:= Module[
+	{energyFn,varNames},
+	energyFn = Evaluate[rawEnergyFn];
+	varNames = Evaluate[rawVarNames];
+	AppendTo[be,CCode["#ifdef "<>macroPrefix<>"_CALC_FORCE //["]];
+	AppendTo[be,CCode["if ( calcForce ) {"] ];
+    AppendTo[be,extraRule];
+	AppendGradientAndForce[macroPrefix,be,outputs,energyFn,varNames];
+	AppendTo[be,CCode["#ifdef "<>macroPrefix<>"_CALC_DIAGONAL_HESSIAN //["]];
+	AppendTo[be,CCode["if ( calcDiagonalHessian ) {"]];
+	AppendHessianDiagonalElements[macroPrefix,be,outputs,hessianStructure,energyFn,varNames];
+	AppendTo[be,CCode["#ifdef "<>macroPrefix<>"_CALC_OFF_DIAGONAL_HESSIAN //["]];
+	AppendTo[be, CCode["if ( calcOffDiagonalHessian ) {" ]];
+	AppendHessianOffDiagonalElements[macroPrefix, be, outputs,hessianStructure, energyFn, varNames];
+	AppendTo[be, CCode["} /*if calcOffDiagonalHessian */ "]];
+	AppendTo[be, CCode["#endif /* "<>macroPrefix<>"_CALC_OFF_DIAGONAL_HESSIAN ]*/"]];
+	AppendTo[be,CCode["} /*calcDiagonalHessian */"]];
+	AppendTo[be, CCode["#endif /* "<>macroPrefix<>"_CALC_DIAGONAL_HESSIAN ]*/"]];
+	AppendTo[be,CCode["} /*calcForce */"]];
+	AppendTo[be, CCode["#endif /* "<>macroPrefix<>"_CALC_FORCE ]*/"]];
+];
+SetAttributes[AppendGradientForceAndHessianExtraRule,HoldAll];
 
 
 (* For rigid body calculations *)

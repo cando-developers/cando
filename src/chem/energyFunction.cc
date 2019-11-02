@@ -140,16 +140,25 @@ void energyFunction_initializeSmarts()
   _sym_STARsecondaryAmideSmartsSTAR->defparameter(secondaryAmide);
 }
 
-CL_LAMBDA(matter &key (use-excluded-atoms t) active-atoms (assign-types t));
+CL_LAMBDA(&key matter (use-excluded-atoms t) active-atoms (assign-types t) bounding-box);
 CL_LISPIFY_NAME(make_energy_function);
-CL_DEF_CLASS_METHOD EnergyFunction_sp EnergyFunction_O::make(Matter_sp matter, bool useExcludedAtoms, core::T_sp activeAtoms, bool assign_types)
+CL_DEF_CLASS_METHOD EnergyFunction_sp EnergyFunction_O::make(core::T_sp matter, bool useExcludedAtoms, core::T_sp activeAtoms, bool assign_types, core::T_sp bounding_box)
 {
-  GC_ALLOCATE(EnergyFunction_O, me );
-  if ( matter.notnilp() ) {
-    me->defineForMatter(matter,useExcludedAtoms,activeAtoms,assign_types);
+  if (bounding_box.nilp()) {
+    GC_ALLOCATE(EnergyFunction_O, me );
+    if ( matter.notnilp() ) {
+      me->defineForMatter(gc::As<Matter_sp>(matter),useExcludedAtoms,activeAtoms,assign_types);
+    }
+    return me;
+  } else {
+    GC_ALLOCATE_VARIADIC(EnergyFunction_O, me, gc::As<BoundingBox_sp>(bounding_box));
+    if ( matter.notnilp() ) {
+      me->defineForMatter(gc::As<Matter_sp>(matter),useExcludedAtoms,activeAtoms,assign_types);
+    }
+    return me;
   }
-  return me;
 };
+
 
 bool inAtomSet(core::T_sp activeSet, Atom_sp a)
 {
@@ -673,7 +682,7 @@ int	EnergyFunction_O::compareAnalyticalAndNumericalForceAndHessianTermByTerm( NV
 #if USE_ALL_ENERGY_COMPONENTS
     this->_Angle->compareAnalyticalAndNumericalForceAndHessianTermByTerm(pos);
     this->_Dihedral->compareAnalyticalAndNumericalForceAndHessianTermByTerm(pos);
-    this->_Nonbond->compareAnalyticalAndNumericalForceAndHessianTermByTerm(pos);
+    this->_Nonbond->compareAnalyticalAndNumericalForceAndHessianTermByTerm(this->asSmartPtr(),pos);
     this->_ImproperRestraint->compareAnalyticalAndNumericalForceAndHessianTermByTerm(pos);
     this->_ChiralRestraint->compareAnalyticalAndNumericalForceAndHessianTermByTerm(pos);
     this->_AnchorRestraint->compareAnalyticalAndNumericalForceAndHessianTermByTerm(pos);
@@ -907,9 +916,9 @@ ForceMatchReport_sp EnergyFunction_O::checkIfAnalyticalForceMatchesNumericalForc
 
   numForce = NVector_O::create(pos->size());
   this->evaluateNumericalForce(pos,numForce,DELTA);
-  dot = dotProduct(numForce,analyticalForce);
-  numericalMag = magnitude(numForce);
-  analyticalMag = magnitude(analyticalForce);
+  dot = dotProduct(numForce,analyticalForce,_Nil<core::T_O>());
+  numericalMag = magnitude(numForce,_Nil<core::T_O>());
+  analyticalMag = magnitude(analyticalForce,_Nil<core::T_O>());
   tempForce = NVector_O::create(pos->size());
     	// Evaluate the force at pos again
   this->evaluateEnergyForce(pos,true,tempForce);

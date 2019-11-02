@@ -76,6 +76,9 @@ public:
   Vector3 get_bounding_box_angles_degrees() const;
   Vector3 get_bounding_box_center() const;
   bool cuboidp() const;
+  Vector3 min_corner() const;
+  Vector3 max_corner() const;
+  Vector3 normalize_position(const Vector3& pos) const;
   double get_x_width() const;
   double get_y_width() const;
   double get_z_width() const;

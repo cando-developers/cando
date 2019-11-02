@@ -114,6 +114,7 @@ CL_DEFMETHOD void    FFTypesDb_O::assignTypes(chem::Matter_sp matter)
   chem::Matter_sp				c;
   chem::Molecule_sp                     	mol;
   chem::Residue_sp				res;
+  core::List_sp                                 atoms_with_no_types = _Nil<core::T_O>();
   string 		                        name;
   size_t missing_types = 0;
   size_t total_atoms = 0;
@@ -186,11 +187,14 @@ CL_DEFMETHOD void    FFTypesDb_O::assignTypes(chem::Matter_sp matter)
           atom->setType(type);
         }
       }
-      if (atom->getType().nilp()) missing_types++;
+      if (atom->getType().nilp()) {
+        atoms_with_no_types = core::Cons_O::create(atom,atoms_with_no_types);
+        missing_types++;
+      }
     }
   }
   if (missing_types>0) {
-    SIMPLE_WARN(BF("There were %lu missing types of %lu atoms") % missing_types % total_atoms);
+    SIMPLE_WARN(BF("There were %lu missing types of %lu atoms - %s") % missing_types % total_atoms % _rep_(atoms_with_no_types));
   }
 }
 

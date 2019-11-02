@@ -2379,20 +2379,20 @@ void GenericOctree_O::getPointsWithinCutoff(double cutoff_squared, double cutoff
       DEBUG_OCTREE_WRITE(BF("this->_children[%d]->_halfDimension -> %lf %lf %lf\n") % i % this->_children[i]->_halfDimension.getX() % this->_children[i]->_halfDimension.getY() % this->_children[i]->_halfDimension.getZ());
       double dx = fabs(querypoint.getX()-p.getX());
       dx -= static_cast<int>(dx*x_rsize+0.5)*x_size;
-      if (dx > this->_children[i]->_halfDimension.getX()+cutoff) {
-        DEBUG_OCTREE_WRITE(BF("skipping child dx->%lf > this->_children[%d]->_halfDimension.getX()+cutoff->%lf \n") % dx % i % (this->_children[i]->_halfDimension.getX()+cutoff));
+      if (fabs(dx) > this->_children[i]->_halfDimension.getX()+cutoff) {
+        DEBUG_OCTREE_WRITE(BF("skipping child dx->%lf > this->_children[%d]->_halfDimension.getX()+cutoff->%lf \n") % fabs(dx) % i % (this->_children[i]->_halfDimension.getX()+cutoff));
         continue;
       }
       double dy = fabs(querypoint.getY()-p.getY());
       dy -= static_cast<int>(dy*y_rsize+0.5)*y_size;
-      if (dy > this->_children[i]->_halfDimension.getY()+cutoff) {
-        DEBUG_OCTREE_WRITE(BF("skipping child dy->%lf > this->_children[%d]->_halfDimension.getY()+cutoff->%lf \n") % dy % i % (this->_children[i]->_halfDimension.getY()+cutoff));
+      if (fabs(dy) > this->_children[i]->_halfDimension.getY()+cutoff) {
+        DEBUG_OCTREE_WRITE(BF("skipping child dy->%lf > this->_children[%d]->_halfDimension.getY()+cutoff->%lf \n") % fabs(dy) % i % (this->_children[i]->_halfDimension.getY()+cutoff));
         continue;
       }
       double dz = fabs(querypoint.getZ()-p.getZ());
       dz -= static_cast<int>(dz*z_rsize+0.5)*z_size;
-      if (dz > this->_children[i]->_halfDimension.getZ()+cutoff) {
-        DEBUG_OCTREE_WRITE(BF("skipping child dz->%lf > this->_children[%d]->_halfDimension.getZ()+cutoff -> %lf \n") % dz % i % (this->_children[i]->_halfDimension.getZ()+cutoff));
+      if (fabs(dz) > this->_children[i]->_halfDimension.getZ()+cutoff) {
+        DEBUG_OCTREE_WRITE(BF("skipping child dz->%lf > this->_children[%d]->_halfDimension.getZ()+cutoff -> %lf \n") % fabs(dz) % i % (this->_children[i]->_halfDimension.getZ()+cutoff));
         continue;
       }
 					// At this point, we've determined that this child may be close to the node
@@ -2434,20 +2434,20 @@ void GenericOctree_O::getPointsWithinCutoffNoTransform(double cutoff_squared, do
       DEBUG_OCTREE_WRITE(BF("this->_children[%d]->_halfDimension -> %lf %lf %lf\n") % i % this->_children[i]->_halfDimension.getX() % this->_children[i]->_halfDimension.getY() % this->_children[i]->_halfDimension.getZ());
       double dx = fabs(querypoint.getX()-p.getX());
       dx -= static_cast<int>(dx*x_rsize+0.5)*x_size;
-      if (dx > this->_children[i]->_halfDimension.getX()+cutoff) {
-        DEBUG_OCTREE_WRITE(BF("skipping child dx->%lf > this->_children[%d]->_halfDimension.getX()+cutoff->%lf \n") % dx % i % (this->_children[i]->_halfDimension.getX()+cutoff));
+      if (fabs(dx) > this->_children[i]->_halfDimension.getX()+cutoff) {
+        DEBUG_OCTREE_WRITE(BF("skipping child dx->%lf > this->_children[%d]->_halfDimension.getX()+cutoff->%lf \n") % fabs(dx) % i % (this->_children[i]->_halfDimension.getX()+cutoff));
         continue;
       }
       double dy = fabs(querypoint.getY()-p.getY());
       dy -= static_cast<int>(dy*y_rsize+0.5)*y_size;
-      if (dy > this->_children[i]->_halfDimension.getY()+cutoff) {
-        DEBUG_OCTREE_WRITE(BF("skipping child dy->%lf > this->_children[%d]->_halfDimension.getY()+cutoff->%lf \n") % dy % i % (this->_children[i]->_halfDimension.getY()+cutoff));
+      if (fabs(dy) > this->_children[i]->_halfDimension.getY()+cutoff) {
+        DEBUG_OCTREE_WRITE(BF("skipping child dy->%lf > this->_children[%d]->_halfDimension.getY()+cutoff->%lf \n") % fabs(dy) % i % (this->_children[i]->_halfDimension.getY()+cutoff));
         continue;
       }
       double dz = fabs(querypoint.getZ()-p.getZ());
       dz -= static_cast<int>(dz*z_rsize+0.5)*z_size;
-      if (dz > this->_children[i]->_halfDimension.getZ()+cutoff) {
-        DEBUG_OCTREE_WRITE(BF("skipping child dz->%lf > this->_children[%d]->_halfDimension.getZ()+cutoff -> %lf \n") % dz % i % (this->_children[i]->_halfDimension.getZ()+cutoff));
+      if (fabs(dz) > this->_children[i]->_halfDimension.getZ()+cutoff) {
+        DEBUG_OCTREE_WRITE(BF("skipping child dz->%lf > this->_children[%d]->_halfDimension.getZ()+cutoff -> %lf \n") % fabs(dz) % i % (this->_children[i]->_halfDimension.getZ()+cutoff));
         continue;
       }
 					// At this point, we've determined that this child may be close to the node
@@ -2596,13 +2596,13 @@ bool GenericOctree_O::octreeTransformedIntersectsInBoundingBox(const Matrix& myT
   Vector3 otherCenter = otherTransform*other->_origin;
   double dz = fabs(myCenter.getZ()-otherCenter.getZ());
   dz -= static_cast<int>(dz*boundingBox->get_z_rwidth()+0.5)*boundingBox->get_z_width();
-  if (dz>(this->_halfDimension.getZ()+other->_halfDimension.getZ())) return false;
+  if (fabs(dz)>(this->_halfDimension.getZ()+other->_halfDimension.getZ())) return false;
   double dy = fabs(myCenter.getY()-otherCenter.getY());
   dy -= static_cast<int>(dy*boundingBox->get_y_rwidth()+0.5)*boundingBox->get_y_width();
-  if (dy>(this->_halfDimension.getY()+other->_halfDimension.getY())) return false;
+  if (fabs(dy)>(this->_halfDimension.getY()+other->_halfDimension.getY())) return false;
   double dx = fabs(myCenter.getX()-otherCenter.getX());
   dx -= static_cast<int>(dx*boundingBox->get_x_rwidth()+0.5)*boundingBox->get_x_width();
-  if (dx>(this->_halfDimension.getX()+other->_halfDimension.getX())) return false;
+  if (fabs(dx)>(this->_halfDimension.getX()+other->_halfDimension.getX())) return false;
   return true;
 }
 

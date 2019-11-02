@@ -119,7 +119,7 @@ namespace chem {
   {
     LISP_CLASS(chem,ChemPkg,EnergyFunction_O,"EnergyFunction",ScoringFunction_O);
   public:
-    static EnergyFunction_sp make(Matter_sp matter, bool useExcludedAtoms=false, core::T_sp activeAtoms=_Nil<core::T_O>(), bool assign_types=false);
+    static EnergyFunction_sp make(core::T_sp matter, bool useExcludedAtoms=false, core::T_sp activeAtoms=_Nil<core::T_O>(), bool assign_types=false, core::T_sp bounding_box=_Nil<core::T_sp>());
   public:
     void initialize();
   public:
@@ -299,6 +299,25 @@ namespace chem {
     string	debugLogAsString();
 
     void	dealWithProblem(core::Symbol_sp error_symbol, core::T_sp arguments);
+
+    EnergyFunction_O(BoundingBox_sp bounding_box) :
+      _Matter(_Unbound<Matter_O>())
+      , _NonbondCrossTermTable(_Unbound<FFNonbondCrossTermTable_O>())
+      , _AtomTable(_Unbound<AtomTable_O>())
+      , _Stretch(_Unbound<EnergyStretch_O>())
+#if USE_ALL_ENERGY_COMPONENTS
+      , _Angle(_Unbound<EnergyAngle_O>())
+      , _Dihedral(_Unbound<EnergyDihedral_O>())
+      , _Nonbond(_Unbound<EnergyNonbond_O>())
+      , _ImproperRestraint(_Unbound<EnergyImproperRestraint_O>())
+      , _ChiralRestraint(_Unbound<EnergyChiralRestraint_O>())
+      , _AnchorRestraint(_Unbound<EnergyAnchorRestraint_O>())
+      , _FixedNonbondRestraint(_Unbound<EnergyFixedNonbondRestraint_O>())
+#endif
+      ,_OtherEnergyComponents(_Nil<core::T_O>())
+      ,_BoundingBox(bounding_box)
+//      , _MissingParameters(_Unbound<core::List_O>())
+    {};
     
   EnergyFunction_O() :
     _Matter(_Unbound<Matter_O>())
@@ -315,6 +334,7 @@ namespace chem {
       , _FixedNonbondRestraint(_Unbound<EnergyFixedNonbondRestraint_O>())
 #endif
     ,_OtherEnergyComponents(_Nil<core::T_O>())
+    ,_BoundingBox(_Unbound<BoundingBox_O>())
 //      , _MissingParameters(_Unbound<core::List_O>())
     {};
   };

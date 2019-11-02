@@ -564,8 +564,10 @@ CL_DEFMETHOD size_t AtomTable_O::push_back_excluded_atom_indices_and_sort( core:
   size_t end_size = excludedAtomIndices->length();
   if (end_size == start_size ) {
     // Amber rules are that if there are no excluded atoms then put -1 in the
-    // excluded atom list
-    excludedAtomIndices->vectorPushExtend(-1);
+    // excluded atom list - this will be incremented to zero (0) when written out.
+    // Oct 2019 - 
+    //     This is in the Swails description http://ambermd.org/prmtop.pdf
+    excludedAtomIndices->vectorPushExtend(-1); // Use -1 here because it will be incremented by one when writing out and will be written as 0
     ++end_size;
   }
   // sort the indices in increasing order

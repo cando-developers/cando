@@ -37,6 +37,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/geom/vector3.h>
 #include <cando/geom/boundingBox.h>
 #include <cando/chem/nVector.h>
+#include <clasp/core/lispStream.h>
 #include <cando/chem/aggregate.h>
 
 namespace chem {
@@ -48,54 +49,111 @@ namespace chem {
  *      Return the DOT product of two vectors.
  *      return:  (this) . x
  */
-double	dotProduct( NVector_sp x, NVector_sp y )
+double	dotProduct( NVector_sp x, NVector_sp y, core::T_sp frozen )
 {
-  double          dDot;
   ASSERT(x->length()==y->length());
-  dDot = 0.0;
-  double* px = &(*x)[0];
-  double* py = &(*y)[0];
-  for ( size_t i(0), iEnd(x->length()); i<iEnd; ++i ) dDot += px[i]*py[i];
-  return dDot;
-}
-
-
-double	squared(NVector_sp x)
-{
-  double          dDot;
-  dDot = 0.0;
-  double* dp = &(*x)[0];
-  for ( size_t i(0), iEnd(x->length()); i<iEnd; ++i ) {
-    dDot += dp[i]*dp[i];
+  if (gc::IsA<core::SimpleBitVector_sp>(frozen)) {
+    core::SimpleBitVector_sp frozen_ = gc::As_unsafe<core::SimpleBitVector_sp>(frozen);
+    double          dDot;
+    dDot = 0.0;
+    double* px = &(*x)[0];
+    double* py = &(*y)[0];
+    for ( size_t i(0), iEnd(x->length()); i<iEnd; ++i ) {
+      dDot += (px[i]*py[i])*(1-frozen_->testBit(i));
+    }
+    return dDot;
+  } else if (frozen.nilp()) {
+    double          dDot;
+    dDot = 0.0;
+    double* px = &(*x)[0];
+    double* py = &(*y)[0];
+    for ( size_t i(0), iEnd(x->length()); i<iEnd; ++i ) dDot += px[i]*py[i];
+    return dDot;
   }
-  return(dDot);
+  SIMPLE_ERROR(BF("frozen must be a simple-bit-vector or NIL"));
 }
 
-double magnitude(NVector_sp me)
+
+double	squared(NVector_sp x, core::T_sp frozen)
+{
+  if (gc::IsA<core::SimpleBitVector_sp>(frozen)) {
+    core::SimpleBitVector_sp frozen_ = gc::As_unsafe<core::SimpleBitVector_sp>(frozen);
+    double          dDot;
+    dDot = 0.0;
+    double* dp = &(*x)[0];
+    for ( size_t i(0), iEnd(x->length()); i<iEnd; ++i ) {
+      dDot += (dp[i]*dp[i])*(1-frozen_->testBit(i));
+    }
+    return(dDot);
+  } else if (frozen.nilp()) {
+    double          dDot;
+    dDot = 0.0;
+    double* dp = &(*x)[0];
+    for ( size_t i(0), iEnd(x->length()); i<iEnd; ++i ) {
+      dDot += dp[i]*dp[i];
+    }
+    return(dDot);
+  }
+  SIMPLE_ERROR(BF("frozen must be a simple-bit-vector or NIL"));
+}
+
+double magnitude(NVector_sp me, core::T_sp frozen)
 {
   double  dDot;
-  dDot = squared(me);
+  dDot = squared(me,frozen);
   return(sqrt(dDot));
 }
 
 
-double	rmsMagnitude(NVector_sp me)
+double	rmsMagnitude(NVector_sp me, core::T_sp frozen)
 {
   ASSERT(me->length()>0);
-  double  dDot;
-  dDot = squared(me);
-  dDot /= (double)me->length();
-  return(sqrt(dDot));
+  if (gc::IsA<core::SimpleBitVector_sp>(frozen)) {
+    core::SimpleBitVector_sp frozen_ = gc::As_unsafe<core::SimpleBitVector_sp>(frozen);
+    size_t num = 0;
+    double dDot = 0.0;
+    double* dp = &(*me)[0];
+    for ( size_t i(0), iEnd(me->length()); i<iEnd; ++i ) {
+      int moveable = (1-frozen_->testBit(i));
+      num += moveable;
+      dDot += (dp[i]*dp[i])*moveable;
+    }
+    if (chem__verbose(4)) {
+      core::write_bf_stream(BF("%s w/frozen dDot -> %e  num -> %s\n") % __FUNCTION__ % dDot % num );
+      if (chem__verbose(5)) {
+        for ( int zz=0; zz<me->length(); zz++ ) {
+          core::write_bf_stream(BF("    frozen[%d] -> %d  nvector[%d] -> %e\n") % zz % frozen_->testBit(zz) % zz % (*me)[zz]);
+        }
+      }
+    }
+    return(dDot/num);
+  } else if (frozen.nilp()) {
+    double dDot = 0.0;
+    double* dp = &(*me)[0];
+    for ( size_t i(0), iEnd(me->length()); i<iEnd; ++i ) {
+      dDot += dp[i]*dp[i];
+    }
+    if (chem__verbose(4)) {
+      core::write_bf_stream(BF("%s w/o frozen dDot -> %e  me->length() -> %s\n") % __FUNCTION__ % dDot % me->length());
+    }
+    if (chem__verbose(5)) {
+      for ( int zz=0; zz<me->length(); zz++ ) {
+        core::write_bf_stream(BF("    nvector[%d] -> %e\n") % zz % (*me)[zz]);
+      }
+    }
+    return(dDot/me->length());
+  }
+  SIMPLE_ERROR(BF("frozen must be a simple-bit-vector or NIL"));
 }
 
 
-double	angleWithVector(NVector_sp me, NVector_sp other)
+double	angleWithVector(NVector_sp me, NVector_sp other, core::T_sp frozen)
 {
 #define	VERY_SMALL 1.0e-6
   double	lenThis, lenOther, dot;
-  lenThis = magnitude(me);
-  lenOther = magnitude(other);
-  dot = dotProduct(me->asSmartPtr(),other);
+  lenThis = magnitude(me,frozen);
+  lenOther = magnitude(other,frozen);
+  dot = dotProduct(me->asSmartPtr(),other,frozen);
   if ( fabs(lenThis) > VERY_SMALL && fabs(lenOther)>VERY_SMALL) {
     dot /= (lenThis*lenOther);
     if ( dot > 1.0 ) dot = 1.0;
@@ -130,11 +188,7 @@ void XPlusYTimesScalar( NVector_sp output, NVector_sp x, NVector_sp y, double s,
   if (frozen_bitvector) {
     // Some things may be frozen
     for ( int i(0),iEnd(output->length()); i<iEnd; ++i ) {
-      if ((*frozen_bitvector).testBit(i)==0) {
-        poutput[i] = px[i]+py[i]*s;
-      } else {
-        poutput[i] = px[i];
-      }
+      poutput[i] = px[i]+py[i]*s*(1-frozen_bitvector->testBit(i));
     }
   } else {
     // Nothing is frozen
@@ -161,30 +215,60 @@ void	copyVector(NVector_sp dest, NVector_sp orig)
   }
 }
 
-void inPlaceAddTimesScalar( NVector_sp result, NVector_sp dir, double s )
+void inPlaceAddTimesScalar( NVector_sp result, NVector_sp dir, double s, core::T_sp frozen )
 {_OF();
   ASSERT( result->length() == dir->length());
-  double* presult = &(*result)[0];
-  double* pdir = &(*dir)[0];
-  for ( size_t i(0), iEnd(result->length()); i<iEnd; ++i ) {
-    presult[i] += pdir[i]*s;
+  if (gc::IsA<core::SimpleBitVector_sp>(frozen)) {
+    core::SimpleBitVector_sp frozen_ = gc::As_unsafe<core::SimpleBitVector_sp>(frozen);
+    double* presult = &(*result)[0];
+    double* pdir = &(*dir)[0];
+    for ( size_t i(0), iEnd(result->length()); i<iEnd; ++i ) {
+      presult[i] += pdir[i]*s*(1-frozen_->testBit(i));
+    }
+    return;
+  } else if (frozen.nilp()) {
+    double* presult = &(*result)[0];
+    double* pdir = &(*dir)[0];
+    for ( size_t i(0), iEnd(result->length()); i<iEnd; ++i ) {
+      presult[i] += pdir[i]*s;
+    }
+    return;
   }
+  SIMPLE_ERROR(BF("frozen must be a simple-bit-vector or NIL"));
 }
 
 
-double	rmsDistanceFrom(NVector_sp u, NVector_sp v)
+double	rmsDistanceFrom(NVector_sp u, NVector_sp v, core::T_sp frozen)
 {_OF();
   ASSERT(u->length() == v->length());
-  double	e, sum;
-  sum = 0.0;
-  double* du = &(*u)[0];
-  double* dv = &(*v)[0];
-  for ( size_t i(0), iEnd(u->length()); i<iEnd; ++i ) {
-    e = du[i]-dv[i];
-    sum += e*e;
+  if (gc::IsA<core::SimpleBitVector_sp>(frozen)) {
+    core::SimpleBitVector_sp frozen_ = gc::As_unsafe<core::SimpleBitVector_sp>(frozen);
+    size_t num = 0;
+    double	e, sum;
+    sum = 0.0;
+    double* du = &(*u)[0];
+    double* dv = &(*v)[0];
+    for ( size_t i(0), iEnd(u->length()); i<iEnd; ++i ) {
+      int moveable = (1-frozen_->testBit(i));
+      e = du[i]-dv[i];
+      sum += e*e*moveable;
+      num += moveable;
+    }
+    sum /= (float)(num);
+    return sqrt(sum);
+  } else if (frozen.nilp()) {
+    double	e, sum;
+    sum = 0.0;
+    double* du = &(*u)[0];
+    double* dv = &(*v)[0];
+    for ( size_t i(0), iEnd(u->length()); i<iEnd; ++i ) {
+      e = du[i]-dv[i];
+      sum += e*e;
+    }
+    sum /= (float)(u->length());
+    return sqrt(sum);
   }
-  sum /= (float)(u->length());
-  return sqrt(sum);
+  SIMPLE_ERROR(BF("frozen must be a simple-bit-vector or NIL"));
 }
 
 
@@ -212,7 +296,7 @@ NVector_sp chem__copy_nvector(NVector_sp source)
 
 CL_DOCSTRING("Apply the transform matrix to the coordinates.");
 CL_DEFUN
-NVector_sp chem__apply_transform_to_coordinates(NVector_sp destination, NVector_sp coordinates, const Matrix& transform ) __attribute__((optnone))
+NVector_sp chem__apply_transform_to_coordinates(NVector_sp destination, NVector_sp coordinates, const Matrix& transform )
 {
   Vector3* pos;
   Vector3* dest;

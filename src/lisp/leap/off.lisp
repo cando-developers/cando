@@ -382,7 +382,7 @@ Return the hash-table."
         (entire-file (read-entire-off-file fin))
         (object-ht (make-hash-table)))
     (maphash (lambda (entry-name-string entry-parts)
-               (let ((entry-name (intern entry-name-string *package*)))
+               (let ((entry-name (intern (leap.core:convert-leap-case entry-name-string) *package*)))
                  (multiple-value-bind (unit residue-connect residues)
                      (read-off-unit-with-name entry-parts entry-name)
                    (let ((object (translate-off-object entry-name unit residue-connect residues)))

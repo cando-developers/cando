@@ -65,10 +65,10 @@ namespace chem
    So make these macros do nothing.
    See energyPeriodicBoundaryConditionsNonbond.cc for counter-example.
 */
-#define PBX(_delta_) 
-#define PBY(_delta_) 
-#define PBZ(_delta_) 
-
+#define PBX(_delta_) (_delta_)
+#define PBY(_delta_) (_delta_)
+#define PBZ(_delta_) (_delta_)
+#define BAIL_OUT_IF_CUTOFF(delta)
 
 core::List_sp EnergyNonbond::encode() const {
   return core::Cons_O::createList(core::Cons_O::create(INTERN_(kw,da),core::clasp_make_double_float(this->term.dA)),
@@ -225,7 +225,8 @@ void	EnergyNonbond::parseFromXmlUsingAtomTable(adapt::QDomNode_sp	xml,
 
 
 
-double	_evaluateEnergyOnly_Nonbond(double x1, double y1, double z1,
+double	_evaluateEnergyOnly_Nonbond(ScoringFunction_sp score,
+                                    double x1, double y1, double z1,
                                     double x2, double y2, double z2,
                                     double dA, double dC, double dQ1Q2)
 {
@@ -265,6 +266,14 @@ void	EnergyNonbond_O::zeroEnergy()
   this->_EnergyVdw = 0.0;
 }
 
+CL_DEFMETHOD
+void EnergyNonbond_O::setNonbondCutoff(double cutoff) {
+  this->_NonbondCutoff = cutoff;
+  this->_NonbondCutoffSquared = cutoff*cutoff;
+  this->_NonbondCutoffReciprocal6 = 1.0/(cutoff*cutoff*cutoff*cutoff*cutoff*cutoff);
+  this->_NonbondCutoffReciprocal12 = this->_NonbondCutoffReciprocal6*this->_NonbondCutoffReciprocal6;
+}
+  
 double	EnergyNonbond_O::getEnergy()
 {
   double	e;
@@ -383,14 +392,14 @@ double	EnergyNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
 //  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
   if (this->_UsesExcludedAtoms) {
     // Evaluate the nonbonds using the excluded atom list
-    this->evaluateUsingExcludedAtoms(pos,calcForce,force,calcDiagonalHessian,
+    this->evaluateUsingExcludedAtoms(score,pos,calcForce,force,calcDiagonalHessian,
                                      calcOffDiagonalHessian,hessian,hdvec,dvec);
     // Evaluate the 1-4 terms
-    this->evaluateTerms(pos,calcForce,force,calcDiagonalHessian,
+    this->evaluateTerms(score,pos,calcForce,force,calcDiagonalHessian,
                              calcOffDiagonalHessian,hessian,hdvec,dvec);
   } else {
     // Evaluate everything using terms
-    this->evaluateTerms(pos,calcForce,force,calcDiagonalHessian,
+    this->evaluateTerms(score,pos,calcForce,force,calcDiagonalHessian,
                              calcOffDiagonalHessian,hessian,hdvec,dvec);
   }
   this->_TotalEnergy = this->_EnergyVdw+this->_EnergyElectrostatic;
@@ -399,7 +408,8 @@ double	EnergyNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
     
     
 
-void	EnergyNonbond_O::evaluateTerms(NVector_sp 	pos,
+void	EnergyNonbond_O::evaluateTerms(ScoringFunction_sp score,
+                                       NVector_sp 	pos,
                                        bool 		calcForce,
                                        gc::Nilable<NVector_sp> 	force,
                                        bool		calcDiagonalHessian,
@@ -530,7 +540,8 @@ void	EnergyNonbond_O::evaluateTerms(NVector_sp 	pos,
 
 
 
-void	EnergyNonbond_O::evaluateUsingExcludedAtoms(NVector_sp 	pos,
+void	EnergyNonbond_O::evaluateUsingExcludedAtoms(ScoringFunction_sp score,
+                                                    NVector_sp 	pos,
                                                     bool 		calcForce,
                                                     gc::Nilable<NVector_sp> 	force,
                                                     bool		calcDiagonalHessian,
@@ -601,9 +612,7 @@ void	EnergyNonbond_O::evaluateUsingExcludedAtoms(NVector_sp 	pos,
     LOG(BF("Read numberOfExcludedAtomsRemaining from numberOfExcludedAtoms[%d]= %d\n") % index1 % numberOfExcludedAtomsRemaining);
           // Skip 0 in excluded atom list that amber requires
     int maybe_excluded_atom = (*excludedAtomIndices)[excludedAtomIndex];
-    if (maybe_excluded_atom<0) {
-      ++excludedAtomIndex;
-    } else {
+    {
       double charge11 = (*this->_charge_vector)[index1];
       double electrostatic_scaled_charge11 = charge11*electrostaticScale;
       int number_excluded = 0;
@@ -704,6 +713,10 @@ void	EnergyNonbond_O::evaluateUsingExcludedAtoms(NVector_sp 	pos,
 #endif
       }
     }
+    if (maybe_excluded_atom<0) {
+      // No excluded atoms see Swails document http://ambermd.org/prmtop.pdf
+      ++excludedAtomIndex;
+    }
   }
 //  printf( "Nonbond energy vdw(%lf) electrostatic(%lf)\n", (double)this->_EnergyVdw,  this->_EnergyElectrostatic );
   LOG(BF( "Nonbond energy vdw(%lf) electrostatic(%lf)\n")% (double)this->_EnergyVdw % this->_EnergyElectrostatic );
@@ -750,10 +763,7 @@ CL_DEFMETHOD void EnergyNonbond_O::expandExcludedAtomsToTerms()
     LOG(BF("Read numberOfExcludedAtomsRemaining from numberOfExcludedAtoms[%d]= %d\n") % index1 % numberOfExcludedAtomsRemaining);
           // Skip 0 in excluded atom list that amber requires
     int maybe_excluded_atom = (*excludedAtomIndices)[excludedAtomIndex];
-    if (maybe_excluded_atom<0) {
-//      printf("%s:%d:%s SKIPPING numberOfExcludedAtomsRemaining<0\n", __FILE__, __LINE__, __FUNCTION__);
-      ++excludedAtomIndex;
-    } else {
+    {
       int number_excluded = 0;
       for ( int index2 = index1+1, index2_end(maxIndex); index2 < index2_end; ++index2 ) {
         LOG(BF("    --- top of inner loop   numberOfExcludedAtomsRemaining -> %d    index2 -> %d\n") % numberOfExcludedAtomsRemaining % index2 );
@@ -768,6 +778,11 @@ CL_DEFMETHOD void EnergyNonbond_O::expandExcludedAtomsToTerms()
         }
         ++count;
       }
+    }
+    if (maybe_excluded_atom<0) {
+      // No excluded atoms see Swails document http://ambermd.org/prmtop.pdf
+//      printf("%s:%d:%s SKIPPING numberOfExcludedAtomsRemaining<0\n", __FILE__, __LINE__, __FUNCTION__);
+      ++excludedAtomIndex;
     }
   }
   this->_Terms.resize(count);
@@ -785,10 +800,7 @@ CL_DEFMETHOD void EnergyNonbond_O::expandExcludedAtomsToTerms()
     LOG(BF("Read numberOfExcludedAtomsRemaining from numberOfExcludedAtoms[%d]= %d\n") % index1 % numberOfExcludedAtomsRemaining);
           // Skip 0 in excluded atom list that amber requires
     int maybe_excluded_atom = (*excludedAtomIndices)[excludedAtomIndex];
-    if (maybe_excluded_atom<0) {
-//      printf("%s:%d:%s SKIPPING numberOfExcludedAtomsRemaining<0\n", __FILE__, __LINE__, __FUNCTION__);
-      ++excludedAtomIndex;
-    } else {
+    {
       double charge11 = (*this->_charge_vector)[index1];
       double electrostatic_scaled_charge11 = charge11*electrostaticScale;
       int number_excluded = 0;
@@ -869,6 +881,11 @@ CL_DEFMETHOD void EnergyNonbond_O::expandExcludedAtomsToTerms()
 #endif
       }
     }
+    if (maybe_excluded_atom<0) {
+      // No excluded atoms see Swails document http://ambermd.org/prmtop.pdf
+//      printf("%s:%d:%s SKIPPING numberOfExcludedAtomsRemaining<0\n", __FILE__, __LINE__, __FUNCTION__);
+      ++excludedAtomIndex;
+    }
   }
 //  printf("%s:%d:%s    values -> %lu\n", __FILE__, __LINE__, __FUNCTION__, this->_Terms.size());
 
@@ -886,7 +903,7 @@ CL_DEFMETHOD void EnergyNonbond_O::expandExcludedAtomsToTerms()
 
 
 
-void	EnergyNonbond_O::compareAnalyticalAndNumericalForceAndHessianTermByTerm(
+void	EnergyNonbond_O::compareAnalyticalAndNumericalForceAndHessianTermByTerm(ScoringFunction_sp score,
                                                                                 NVector_sp 	pos)
 {_OF();
   int	fails = 0;
@@ -934,7 +951,9 @@ void	EnergyNonbond_O::compareAnalyticalAndNumericalForceAndHessianTermByTerm(
           nbi!=this->_Terms.end(); nbi++,i++ ) {
 #include <cando/chem/energy_functions/_Nonbond_termCode.cc>
       int index = i;
+#define ENERGY_FUNCTION score
 #include <cando/chem/energy_functions/_Nonbond_debugFiniteDifference.cc>
+#undef ENERGY_FUNCTION
 
     }
   }
@@ -1009,10 +1028,7 @@ core::List_sp	EnergyNonbond_O::checkForBeyondThresholdInteractionsWithPosition(N
     LOG(BF("Read numberOfExcludedAtomsRemaining from numberOfExcludedAtoms[%d]= %d\n") % index1 % numberOfExcludedAtomsRemaining);
           // Skip 0 in excluded atom list that amber requires
     int maybe_excluded_atom = (*excludedAtomIndices)[excludedAtomIndex];
-    if (maybe_excluded_atom<0) {
-//      printf("%s:%d:%s SKIPPING numberOfExcludedAtomsRemaining<0\n", __FILE__, __LINE__, __FUNCTION__);
-      ++excludedAtomIndex;
-    } else {
+    {
       double charge11 = (*this->_charge_vector)[index1];
       double electrostatic_scaled_charge11 = charge11*electrostaticScale;
       int number_excluded = 0;
@@ -1091,6 +1107,11 @@ core::List_sp	EnergyNonbond_O::checkForBeyondThresholdInteractionsWithPosition(N
         printf("%s:%d:%s ERROR the number of excluded atoms should be %d but we excluded %d\n", __FILE__, __LINE__, __FUNCTION__, numberOfExcludedAtoms->operator[](index1), number_excluded);
       }
     }
+    if (maybe_excluded_atom<0) {
+      // No excluded atoms see Swails document http://ambermd.org/prmtop.pdf
+//      printf("%s:%d:%s SKIPPING numberOfExcludedAtomsRemaining<0\n", __FILE__, __LINE__, __FUNCTION__);
+      ++excludedAtomIndex;
+    }
   }
   return result.result();
 }
@@ -1104,6 +1125,7 @@ void EnergyNonbond_O::initialize()
   this->setDielectricConstant(80.0);
   this->setVdwScale(1.0);
   this->setElectrostaticScale(1.0);
+  this->setNonbondCutoff(8.0);
 }
 
 
@@ -1115,7 +1137,24 @@ void EnergyNonbond_O::addTerm(const EnergyNonbond& term)
 
 void EnergyNonbond_O::fields(core::Record_sp node)
 {
-node->field( INTERN_(kw,terms), this->_Terms );
+  node->field( INTERN_(kw,terms), this->_Terms );
+
+  node->field( INTERN_(kw,FFNonbondDb), this->_FFNonbondDb );
+  node->field( INTERN_(kw,AtomTable), this->_AtomTable );
+  node->field( INTERN_(kw,ntypes), this->_ntypes);
+  node->field( INTERN_(kw,atom_name_vector), this->_atom_name_vector);  // atom-name-vector
+  node->field( INTERN_(kw,charge_vector), this->_charge_vector);          // charge-vector
+  node->field( INTERN_(kw,mass_vector), this->_mass_vector);            // masses
+  node->field( INTERN_(kw,atomic_number_vector), this->_atomic_number_vector);    // vec
+  node->field( INTERN_(kw,ico_vec), this->_ico_vec);             // ico-vec
+  node->field( INTERN_(kw,iac_vec), this->_iac_vec);             // iac-vec
+  node->field( INTERN_(kw,atom_type_vector), this->_atom_type_vector);    // Amber atom type names
+  node->field( INTERN_(kw,local_typej_vec), this->_local_typej_vec);      // local-typej-vec
+  node->field( INTERN_(kw,cn1_vec), this->_cn1_vec);
+  node->field( INTERN_(kw,cn2_vec), this->_cn2_vec);
+  node->field( INTERN_(kw,NumberOfExcludedAtomIndices), this->_NumberOfExcludedAtomIndices);
+  node->field( INTERN_(kw,ExcludedAtomIndices), this->_ExcludedAtomIndices);
+  node->field( INTERN_(kw,UsesExcludedAtoms),this->_UsesExcludedAtoms);
   this->Base::fields(node);
 }
 

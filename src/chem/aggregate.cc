@@ -154,6 +154,31 @@ CL_DEFMETHOD Vector3 BoundingBox_O::get_bounding_box_center() const
   return this->_Center;
 }
 
+CL_DEFMETHOD Vector3 BoundingBox_O::min_corner() const
+{
+  Vector3 halfWidth(this->_Widths.getX()*0.5,this->_Widths.getY()*0.5,this->_Widths.getZ()*0.5);
+  Vector3 min_corner = this->_Center-halfWidth;
+  return min_corner;
+}
+
+CL_DEFMETHOD Vector3 BoundingBox_O::max_corner() const
+{
+  Vector3 halfWidth(this->_Widths.getX()*0.5,this->_Widths.getY()*0.5,this->_Widths.getZ()*0.5);
+  Vector3 max_corner = this->_Center+halfWidth;
+  return max_corner;
+}
+
+
+CL_DEFMETHOD Vector3 BoundingBox_O::normalize_position(const Vector3& pos) const {
+  Vector3 min_corner = this->min_corner();
+  Vector3 temp_pos = pos - min_corner;
+  double xi = temp_pos.getX() - floor(temp_pos.getX()*this->_x_rwidth)*this->_Widths.getX();
+  double yi = temp_pos.getY() - floor(temp_pos.getY()*this->_y_rwidth)*this->_Widths.getY();
+  double zi = temp_pos.getZ() - floor(temp_pos.getZ()*this->_z_rwidth)*this->_Widths.getZ();
+  Vector3 pbc_pos(xi,yi,zi);
+  return pbc_pos+min_corner;
+}
+  
 
 CL_DEFMETHOD double BoundingBox_O::get_x_width() const
 {

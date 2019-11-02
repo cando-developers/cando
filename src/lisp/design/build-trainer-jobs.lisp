@@ -26,7 +26,7 @@
       (let ((sequence-filename (make-pathname :type "mol2" :name tname :defaults pathname-template)))
         (ensure-directories-exist sequence-filename)
         (format t "Minimizing ~a~%" tname)
-        (let ((energy-fn (chem:make-energy-function aggregate :assign-types t)))
+        (let ((energy-fn (chem:make-energy-function :matter aggregate :assign-types t)))
           (loop named min
                 for iteration below 10
                 do (format t "Trying build ~s~%" iteration)

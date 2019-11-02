@@ -84,9 +84,11 @@
                                    (sd-tolerance 5000.0)
                                    (cg-tolerance 0.5)
                                    (tn-tolerance 0.00001)
+                                   (frozen nil)
                                    (save-trajectory nil))
   "Minimize the conformational energy for an energy-function"
   (let ((minimizer (chem:make-minimizer energy-function)))
+    (chem:minimizer-set-frozen minimizer frozen)
     (if save-trajectory
         (let ((minimizer-trajectory (make-array 16 :adjustable t :fill-pointer 0)))
           (chem:set-step-callback minimizer (lambda (coords) (save-minimizer-coordinates coords minimizer-trajectory)))
@@ -116,7 +118,7 @@
                    (save-trajectory nil))
   "Minimize the conformational energy for an aggregate"
   (format t "Entered minimize~%")
-  (let ((energy-func (chem:make-energy-function agg :use-excluded-atoms use-excluded-atoms :assign-types assign-types)))
+  (let ((energy-func (chem:make-energy-function :matter agg :use-excluded-atoms use-excluded-atoms :assign-types assign-types)))
     (apply #'minimize-energy-function energy-func args)))
 
 (defun minimize-energy-function-from-bad-geometry (energy-function &key (restraints-on t)
@@ -155,7 +157,7 @@
                                      (use-excluded-atoms t)
                                      (assign-types t))
   "Minimize the conformational energy for an aggregate"
-  (let ((energy-func (chem:make-energy-function agg :use-excluded-atoms use-excluded-atoms :assign-types assign-types)))
+  (let ((energy-func (chem:make-energy-function :matter agg :use-excluded-atoms use-excluded-atoms :assign-types assign-types)))
     (apply #'minimize-energy-function energy-func args)
     energy-func))
 

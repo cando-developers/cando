@@ -1,36 +1,15 @@
-/*
-    File: _Nonbond_termDeclares.cc
-*/
-/*
-Open Source License
-Copyright (c) 2016, Christian E. Schafmeister
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
- 
-This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
-*/
-/* -^- */
 #if USE_EXPLICIT_DECLARES
 // declare variables
+DECLARE_FLOAT(DeltaX);
+DECLARE_FLOAT(DeltaY);
+DECLARE_FLOAT(DeltaZ);
 DECLARE_FLOAT(dhx1x1);
 DECLARE_FLOAT(dhx2x2);
 DECLARE_FLOAT(dhy1y1);
 DECLARE_FLOAT(dhy2y2);
 DECLARE_FLOAT(dhz1z1);
 DECLARE_FLOAT(dhz2z2);
+DECLARE_FLOAT(DistanceSquared);
 DECLARE_FLOAT(Eeel);
 DECLARE_FLOAT(Energy);
 DECLARE_FLOAT(Evdw);
@@ -135,8 +114,8 @@ DECLARE_FLOAT(tx169);
 DECLARE_FLOAT(tx170);
 DECLARE_FLOAT(tx171);
 DECLARE_FLOAT(tx172);
-DECLARE_FLOAT(tx173);
-DECLARE_FLOAT(tx194);
+DECLARE_FLOAT(tx192);
+DECLARE_FLOAT(tx81);
 DECLARE_FLOAT(tx82);
 DECLARE_FLOAT(tx83);
 DECLARE_FLOAT(tx84);
@@ -155,6 +134,7 @@ DECLARE_FLOAT(tx96);
 DECLARE_FLOAT(tx97);
 DECLARE_FLOAT(tx98);
 DECLARE_FLOAT(tx99);
+DECLARE_FLOAT(tzz173);
 DECLARE_FLOAT(tzz174);
 DECLARE_FLOAT(tzz175);
 DECLARE_FLOAT(tzz176);
@@ -173,12 +153,10 @@ DECLARE_FLOAT(tzz188);
 DECLARE_FLOAT(tzz189);
 DECLARE_FLOAT(tzz190);
 DECLARE_FLOAT(tzz191);
-DECLARE_FLOAT(tzz192);
 DECLARE_FLOAT(tzz193);
+DECLARE_FLOAT(tzz194);
 DECLARE_FLOAT(tzz195);
 DECLARE_FLOAT(tzz196);
-DECLARE_FLOAT(tzz197);
-DECLARE_FLOAT(tzz198);
 
 
 #endif

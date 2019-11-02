@@ -50,7 +50,8 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace chem {
 
-double	_evaluateEnergyOnly_PeriodicBoundaryConditionNonbond(double x1, double y1, double z1,
+double	_evaluateEnergyOnly_PeriodicBoundaryConditionNonbond(ScoringFunction_sp score,
+                                                             double x1, double y1, double z1,
                                                              double x2, double y2, double z2,
                                                              double dA, double dC, double dQ1Q2 );
 
@@ -62,7 +63,8 @@ class EnergyPeriodicBoundaryConditionsNonbond_O : public EnergyNonbond_O
   virtual void setupHessianPreconditioner(NVector_sp nvPosition,
                                           AbstractLargeSquareMatrix_sp m );
     
-  virtual void evaluateUsingExcludedAtoms( NVector_sp 	pos,
+  virtual void evaluateUsingExcludedAtoms( ScoringFunction_sp score,
+                                           NVector_sp 	pos,
                                            bool 		calcForce,
                                            gc::Nilable<NVector_sp> 	force,
                                            bool		calcDiagonalHessian,
@@ -70,7 +72,8 @@ class EnergyPeriodicBoundaryConditionsNonbond_O : public EnergyNonbond_O
                                            gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
                                            gc::Nilable<NVector_sp>	hdvec,
                                            gc::Nilable<NVector_sp> dvec);
-  virtual void evaluateTerms( NVector_sp 	pos,
+  virtual void evaluateTerms( ScoringFunction_sp score,
+                              NVector_sp 	pos,
                               bool 		calcForce,
                               gc::Nilable<NVector_sp> 	force,
                               bool		calcDiagonalHessian,
@@ -79,10 +82,10 @@ class EnergyPeriodicBoundaryConditionsNonbond_O : public EnergyNonbond_O
                               gc::Nilable<NVector_sp>	hdvec,
                               gc::Nilable<NVector_sp> dvec);
   
-  virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm(NVector_sp pos );
+  virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm(ScoringFunction_sp score, NVector_sp pos );
 
   // virtual	int	checkForBeyondThresholdInteractions( stringstream& info, NVector_sp pos );
-  virtual core::List_sp	checkForBeyondThresholdInteractionsWithPosition(NVector_sp pos, double threshold );
+  virtual core::List_sp	checkForBeyondThresholdInteractionsWithPosition(ScoringFunction_sp score, NVector_sp pos, double threshold );
 
 };
 

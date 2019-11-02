@@ -404,6 +404,18 @@ CL_DEFUN void geom__vec_extract(Vector3& vec, chem::NVector_sp coordinates, size
   SIMPLE_ERROR(BF("Out of bounds extraction of geom:vec from nvector. Trying to extract starting at %lu and the nvector length is %lu") % index0 % coordinates->length());
 }
 
+CL_DOCSTRING(R"doc(Put a geom:vec into a nvector at the particular index.)doc");
+CL_LISPIFY_NAME("vec-put");
+CL_DEFUN void geom__vec_put(chem::NVector_sp coordinates, const Vector3& pos, size_t index0)
+{
+  if ((index0+2)<coordinates->length()) {
+    (*coordinates)[index0]   = pos.getX();
+    (*coordinates)[index0+1] = pos.getY();
+    (*coordinates)[index0+2] = pos.getZ();
+  return;
+  }
+  SIMPLE_ERROR(BF("Out of bounds extraction of geom:vec from nvector. Trying to put starting at %lu and the nvector length is %lu") % index0 % coordinates->length());
+}
 
 CL_DOCSTRING(R"doc(Extract a geom:vec from a nvector at the particular index.)doc");
 CL_LISPIFY_NAME("vec-extract-transformed");

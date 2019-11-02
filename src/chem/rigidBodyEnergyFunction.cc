@@ -421,13 +421,13 @@ CL_DEFUN size_t chem__rigid_body_velocity_verlet_step_limit_displacement(Scoring
   body_idx = 0;
   for ( size_t idx = 0; idx<position->size(); idx+=7 ) {
     if (!frozen || frozen->testBit(body_idx)==0) {
-      (*velocity)[idx+0] = ((*velocity)[idx+0] + (*delta_t_over_mass)[body_idx]/2.0*((*force)[idx+0]-(*force_dt)[idx+0]))*(*velocity_scale)[0];
-      (*velocity)[idx+1] = ((*velocity)[idx+1] + (*delta_t_over_mass)[body_idx]/2.0*((*force)[idx+1]-(*force_dt)[idx+1]))*(*velocity_scale)[1];
-      (*velocity)[idx+2] = ((*velocity)[idx+2] + (*delta_t_over_mass)[body_idx]/2.0*((*force)[idx+2]-(*force_dt)[idx+2]))*(*velocity_scale)[2];
-      (*velocity)[idx+3] = ((*velocity)[idx+3] + (*delta_t_over_mass)[body_idx]/2.0*((*force)[idx+3]-(*force_dt)[idx+3]))*(*velocity_scale)[3];
-      (*velocity)[idx+4] = ((*velocity)[idx+4] + (*delta_t_over_mass)[body_idx]/2.0*((*force)[idx+4]-(*force_dt)[idx+4]))*(*velocity_scale)[4];
-      (*velocity)[idx+5] = ((*velocity)[idx+5] + (*delta_t_over_mass)[body_idx]/2.0*((*force)[idx+5]-(*force_dt)[idx+5]))*(*velocity_scale)[5];
-      (*velocity)[idx+6] = ((*velocity)[idx+6] + (*delta_t_over_mass)[body_idx]/2.0*((*force)[idx+6]-(*force_dt)[idx+6]))*(*velocity_scale)[6];
+      (*velocity)[idx+0] = ((*velocity)[idx+0] + (*delta_t_over_mass)[body_idx]*0.5*((*force)[idx+0]+(*force_dt)[idx+0]))*(*velocity_scale)[0];
+      (*velocity)[idx+1] = ((*velocity)[idx+1] + (*delta_t_over_mass)[body_idx]*0.5*((*force)[idx+1]+(*force_dt)[idx+1]))*(*velocity_scale)[1];
+      (*velocity)[idx+2] = ((*velocity)[idx+2] + (*delta_t_over_mass)[body_idx]*0.5*((*force)[idx+2]+(*force_dt)[idx+2]))*(*velocity_scale)[2];
+      (*velocity)[idx+3] = ((*velocity)[idx+3] + (*delta_t_over_mass)[body_idx]*0.5*((*force)[idx+3]+(*force_dt)[idx+3]))*(*velocity_scale)[3];
+      (*velocity)[idx+4] = ((*velocity)[idx+4] + (*delta_t_over_mass)[body_idx]*0.5*((*force)[idx+4]+(*force_dt)[idx+4]))*(*velocity_scale)[4];
+      (*velocity)[idx+5] = ((*velocity)[idx+5] + (*delta_t_over_mass)[body_idx]*0.5*((*force)[idx+5]+(*force_dt)[idx+5]))*(*velocity_scale)[5];
+      (*velocity)[idx+6] = ((*velocity)[idx+6] + (*delta_t_over_mass)[body_idx]*0.5*((*force)[idx+6]+(*force_dt)[idx+6]))*(*velocity_scale)[6];
       (*force)[idx+0] = (*force_dt)[idx+0];
       (*force)[idx+1] = (*force_dt)[idx+1];
       (*force)[idx+2] = (*force_dt)[idx+2];

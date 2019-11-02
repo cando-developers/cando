@@ -107,7 +107,7 @@ is written to the log file as if the verbosity level were set to 2."
 (defmethod set-property ((object chem:molecule) (property (eql :molecule-type)) value)
   (chem:setf-molecule-type object value))
 
-(defun leap-set-property (object property value)
+(defun leap-set (object property value)
   (let ((object-fixed (leap.core:lookup-variable object))
         (property-fixed (keyword-upcase property))
         (value-fixed value))
@@ -1149,8 +1149,7 @@ Provide a list of commands that cleap has available to mimic tleap."
           ("listVariables" . leap-list-variables) ; alternative to "list"
           ("loadPdb" . leap.pdb:load-pdb)
           ("source" . leap-source)
-          ("set" . leap-set-property )
-          ("setProperty" . leap-set-property ) ; alternative to "set"
+          ("set" . leap-set )
           ("loadChemDraw" . leap.load-chem-draw)
           ("loadChemDrawAggregate" . leap.load-chem-draw-aggregate)
           ("compileSmarts" . leap.compile-smarts)

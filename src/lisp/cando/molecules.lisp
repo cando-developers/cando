@@ -190,7 +190,7 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
   (chem:set-conjugate-gradient-tolerance minimizer cg-tolerance)
   (chem:set-truncated-newton-tolerance minimizer tn-tolerance))
   
-                              
+#+(or)
 (defun optimize-structure (matter &optional active-atoms system)
   (error "This function is broken because make-energy-function uses keywords")
   (let* ((energy-function (chem:make-energy-function matter system active-atoms))
@@ -259,15 +259,6 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
       (ext:system cmd))))
 
     
-(defun bad-geometry-p (agg &optional system)
-  "Return true if there are any beyond-threshold force field interactions"
-  (error "This function is broken because make-energy-function uses keywords")
-  (let ((energy-function (chem:make-energy-function agg system)))
-    (let ((fails (chem:check-for-beyond-threshold-interactions system)))
-      (if (> fails 0)
-          fails
-          nil))))
-
 (defun build-good-geometry-from-random (agg force-field)
   (dotimes (i 20)
     (format t "Attempt ~a to build good geometry from a random starting point~%" i)

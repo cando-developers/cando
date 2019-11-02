@@ -58,6 +58,7 @@
   (:export
    #:create-atom
    #:leap
+   #:leap-set
    #:leap-repl
    #:leap-repl-then-exit
    #:load-sketch
@@ -134,6 +135,7 @@
    #:force-fields
    #:add-combined-force-field
    #:register-variable #:lookup-variable
+   #:convert-leap-case
    #:clear-force-field
    #:add-force-field-or-modification
    #:find-force-field
@@ -191,7 +193,8 @@
                 #:add-pdb-atom-map
                 )
   (:import-from :leap.commands
-                #:load-sketch)
+                #:load-sketch
+                #:leap-set)
   (:export
    #:load-sketch
    #:load-off

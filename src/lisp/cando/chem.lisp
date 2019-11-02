@@ -228,3 +228,16 @@ for the node in the table."))
 (defmethod chem:mak-unbound-bounding-box ((rigid-body-energy-function chem:rigid-body-energy-function))
   (chem:rigid-body-energy-function-mak-unbound-bounding-box rigid-body-energy-function))
 
+
+(defmethod chem:bounding-box ((energy-function chem:energy-function))
+  (chem:energy-function-bounding-box energy-function))
+
+(defmethod chem:bounding-box-bound-p ((energy-function chem:energy-function))
+  (chem:energy-function-bounding-box-bound-p energy-function))
+
+(defmethod chem:set-bounding-box ((energy-function chem:energy-function) bounding-box)
+  (chem:energy-function-set-bounding-box energy-function bounding-box))
+
+(defmethod chem:mak-unbound-bounding-box ((energy-function chem:energy-function))
+  (chem:energy-function-mak-unbound-bounding-box energy-function))
+

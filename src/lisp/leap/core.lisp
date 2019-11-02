@@ -53,6 +53,18 @@ for a list of symbols.  When they ask for a list of symbols we use this list."))
 
 (defparameter *leap-env* (make-instance 'leap-environment))
 
+(defparameter *leap-variable-case* :upcase)
+
+(defun convert-leap-case (name)
+  "Convert the case of the string according to leap-variable-case"
+  (case *leap-variable-case*
+    (:upcase
+     (string-upcase name))
+    (:preserve
+     name)
+    (otherwise (error "Handle *leap-variable-case* ~a" *leap-variable-case*))))
+
+
 (defun function-lookup (name environment)
   (or (gethash name (%functions environment))
       (error "The function ~S is not defined" name)))
@@ -126,10 +138,7 @@ for a list of symbols.  When they ask for a list of symbols we use this list."))
                              (first (funcall recurse :relations '(:argument)))))
                      (:assignment
                       (let ((value (first (first (funcall recurse :relations '(:value))))))
-                        (setf (lookup-variable* name *package*) (lookup-variable value))
-                        #+(or)(setf (lookup-variable* name *package*) (if (typep value 'number)
-                                                                          (float value 1d0)
-                                                                          value))))
+                        (register-variable name (lookup-variable value))))
                      (t
                       (funcall recurse))))
                  ast)))

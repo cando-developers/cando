@@ -384,7 +384,7 @@ double	Minimizer_O::d1DTotalEnergyForce( double x, double* fx, double * dfx )
                     this->nvP1DSearchDirection, x );
   *fx = this->_ScoringFunction->evaluateEnergyForce( this->nvP1DSearchTemp1,
                                                      true, this->nvP1DSearchTemp2 );
-  *dfx = -dotProduct(this->nvP1DSearchTemp2,this->nvP1DSearchDirection);
+  *dfx = -dotProduct(this->nvP1DSearchTemp2,this->nvP1DSearchDirection,this->_Frozen);
   return *fx;
 }
 
@@ -521,7 +521,7 @@ double 	Minimizer_O::dbrent(	double ax, double bx, double cx,
   forceEvals = 0;
   dbrentSteps = 0;
   LOG(BF("Incoming ax bx cx= %e %e %e") % ax % bx % cx );
-  if (this->_PrintIntermediateResults>1) {
+  if (chem__verbose(4) ) {
     core::write_bf_stream(BF("Incoming ax bx cx -> %lf %lf %lf\n") % ax % bx % cx);
   }
   _a = (ax<cx?ax:cx);
@@ -539,7 +539,7 @@ double 	Minimizer_O::dbrent(	double ax, double bx, double cx,
   for (iter=1;iter<=DBRENTITMAX;iter++ ) {
     dbrentSteps++;
 //	LOG(BF("dbrent: iter=%3d  _a, _b= %10.15lf %10.15lf") % iter % _a % _b  );
-    if (this->_PrintIntermediateResults>1) {
+    if (chem__verbose(4) ) {
       core::write_bf_stream(BF("dbrent: iter = %3d  _a, _b -> %e %e\n") % iter % _a % _b );
     }
     xm=0.5*(_a+_b);
@@ -549,7 +549,7 @@ double 	Minimizer_O::dbrent(	double ax, double bx, double cx,
       lineStep=x;
       retval = fx;
       LOG(BF("done due to (fabs(x-xm)<=(tol2-0.5*(_b-_a)))") );
-      if (this->_PrintIntermediateResults>1) {
+      if (chem__verbose(4) ) {
         core::write_bf_stream(BF("dbrent: done due to (fabs(x-xm) <= (tol2-0.5*(_b-_a))) -> %e <= %e\n") % fabs(x-xm) % (tol2-0.5*(_b-_a)));
       }
       goto DONE;
@@ -607,7 +607,7 @@ double 	Minimizer_O::dbrent(	double ax, double bx, double cx,
         lineStep=x;
         retval = fx;
         LOG(BF("done due to fu>fx") );
-        if (this->_PrintIntermediateResults>1) {
+        if (chem__verbose(4) ) {
           core::write_bf_stream(BF("dbrent: done due to fu>fx -> %lf > %lf\n") % fu % fx );
         }
         goto DONE;
@@ -635,7 +635,7 @@ double 	Minimizer_O::dbrent(	double ax, double bx, double cx,
     }
   }
   LOG(BF("dbrent: ERROR Exceeded max iterations") );
-  if (this->_PrintIntermediateResults>1) {
+  if (chem__verbose(4) ) {
     core::write_bf_stream(BF("dbrent: exceeded max number of iterations %d\n") % DBRENTITMAX);
   }
   retval = -1.0;
@@ -653,12 +653,12 @@ void Minimizer_O::lineSearchInitialReport( StepReport_sp report,
                                            double fa, double fb, double fc )
 {
   double lenForce, lenDir, angle, cosAngle;
-  lenForce = magnitude(nvForce);
-  lenDir = magnitude(nvDir);
+  lenForce = magnitude(nvForce,this->_Frozen);
+  lenDir = magnitude(nvDir,this->_Frozen);
   if ( lenForce == 0.0 || lenDir == 0.0 ) {
     angle = 200.0;
   } else {
-    cosAngle = dotProduct(nvDir,nvForce)/(lenForce*lenDir);
+    cosAngle = dotProduct(nvDir,nvForce,this->_Frozen)/(lenForce*lenDir);
     if ( cosAngle > 1.0 ) cosAngle = 1.0;
     if ( cosAngle < -1.0 ) cosAngle = -1.0;
     angle = acos(cosAngle);
@@ -673,8 +673,8 @@ void Minimizer_O::lineSearchInitialReport( StepReport_sp report,
   report->_MinBracketSteps = this->_MinBracketSteps;
   report->_EnergyTermsEnabled = this->_ScoringFunction->energyTermsEnabled();
   report->_TotalEnergy = this->d1DTotalEnergy(0.0);
-  report->_DirectionMagnitude = magnitude(nvDir);
-  report->_ForceMagnitude = magnitude(nvForce);
+  report->_DirectionMagnitude = magnitude(nvDir,this->_Frozen);
+  report->_ForceMagnitude = magnitude(nvForce,this->_Frozen);
   report->_MinimizerStatus = this->statusAsString();
   double dxa,dxc;
   if ( xa < xc ) {
@@ -764,7 +764,7 @@ void Minimizer_O::lineSearchFinalReport( StepReport_sp report, double step, doub
 void	Minimizer_O::stepReport( StepReport_sp report, double energy, NVector_sp force )
 {_OF();
   ASSERT(report->_Iteration == this->_Iteration);
-  report->_ForceMagnitude = magnitude(force);
+  report->_ForceMagnitude = magnitude(force,this->_Frozen);
   report->_TotalEnergy = energy;
   report->_IterationMessages = this->_IterationMessages.str();
 }
@@ -798,7 +798,7 @@ void	Minimizer_O::lineSearch(	double	*dPstep,
     //
 
   this->define1DSearch(nvOrigin,nvDirection,nvTemp1,nvTemp2);
-  double directionMag = magnitude(nvDirection);
+  double directionMag = magnitude(nvDirection,this->_Frozen);
   if ( directionMag < VERYSMALLSQUARED ) {
     xb = this->_InitialLineSearchStep;
   } else {
@@ -809,7 +809,7 @@ void	Minimizer_O::lineSearch(	double	*dPstep,
     //
     // Bracket the minimum
     //
-  if ( this->_PrintIntermediateResults>1 ) {
+  if ( chem__verbose(4) ) {
     core::write_bf_stream(BF("Trying to bracket min this->_InitialLineSearchStep,directionMag,xb -> %e,%e,%e\n") % this->_InitialLineSearchStep % directionMag % xb);
   }
 
@@ -818,7 +818,7 @@ void	Minimizer_O::lineSearch(	double	*dPstep,
   LOG(BF("Bracketed minimum") );
   LOG(BF("xa,xb,xc = %lf %lf %lf ") % xa % xb % xc  );
   LOG(BF("fa,fb,fc = %lf %lf %lf ") % fa % fb % fc  );
-  if ( this->_PrintIntermediateResults>1 ) {
+  if ( chem__verbose(4) ) {
     core::write_bf_stream(BF("Bracketed min xa,xb,xc -> %e,%e,%e\n") % xa % xb % xc );
     core::write_bf_stream(BF("              fa,fb,fc -> %e,%e,%e\n") % fa % fb % fc );
   }
@@ -859,14 +859,15 @@ bool	Minimizer_O::_displayIntermediateMessage(
                                                  double			fenergy,
                                                  double			forceRMSMag,
                                                  double			cosAngle,
-                                                 bool			steepestDescent )
+                                                 bool			steepestDescent,
+                                                 bool                   forcePrint)
 {
 #define	MAX_DISPLAY	1024
   double		angle;
   char		buffer[MAX_DISPLAY];
   stringstream	sout;
-  if ( this->_Iteration % this->_ReportEverySteps == 0 ) {
-    if ( this->_Iteration%(10*this->_ReportEverySteps) == 1 || this->_DebugOn ) 
+  if ( forcePrint || this->_Iteration % this->_ReportEverySteps == 0 ) {
+    if ( forcePrint || (this->_Iteration%(10*this->_ReportEverySteps) == 1 || this->_DebugOn ))
     {
       sout << "---Stage-";
       if ( this->_ShowElapsedTime )
@@ -1006,7 +1007,7 @@ void	Minimizer_O::_steepestDescent( int numSteps,
   }
 #endif //]
   copyVector(dir,s);
-  deltaNew = dotProduct(force,dir);
+  deltaNew = dotProduct(force,dir,this->_Frozen);
   delta0 = deltaNew;
   eSquaredDelta0 = forceTolerance*delta0;
   LOG(BF("eSquaredDelta0 = %lf") % (eSquaredDelta0 ) );
@@ -1025,8 +1026,8 @@ void	Minimizer_O::_steepestDescent( int numSteps,
 		//
 		// Absolute gradient test
 		//
-      forceMag = magnitude(force);
-      forceRmsMag = rmsMagnitude(force);
+      forceMag = magnitude(force,this->_Frozen);
+      forceRmsMag = rmsMagnitude(force,this->_Frozen);
       this->_RMSForce = forceRmsMag;
 
       		    //
@@ -1040,7 +1041,10 @@ void	Minimizer_O::_steepestDescent( int numSteps,
      
       if ( forceRmsMag < forceTolerance ) {
         if ( this->_PrintIntermediateResults ) {
-          core::clasp_writeln_string((BF(" ! DONE absolute force test:\n ! forceRmsMag(%lf) < forceTolerance(%lf)") % forceRmsMag % forceTolerance).str() );
+          if (!printedLatestMessage) {
+            printedLatestMessage = this->_displayIntermediateMessage(step,fp,forceRmsMag,cosAngle,steepestDescent,true);
+          }
+          core::clasp_writeln_string((BF(" ! DONE absolute force test:\n ! forceRmsMag(%e) < forceTolerance(%e)") % forceRmsMag % forceTolerance).str() );
         }
         break;
       }
@@ -1100,11 +1104,11 @@ void	Minimizer_O::_steepestDescent( int numSteps,
 		    // the force (steepest descent dir)
 		    // is less than _xxxDescentTest then copy the force into the search dir
 		    //
-        dirMag = magnitude(dir);
+        dirMag = magnitude(dir,this->_Frozen);
         steepestDescent = false;
         LOG(BF("Starting descent test") );
         if ( forceMag != 0.0 && dirMag != 0.0 ) {
-          cosAngle = dotProduct(force,dir)/(forceMag*dirMag);
+          cosAngle = dotProduct(force,dir,this->_Frozen)/(forceMag*dirMag);
         } else {
           LOG(BF("something was zero length Using force") );
           copyVector(dir,force);
@@ -1113,7 +1117,9 @@ void	Minimizer_O::_steepestDescent( int numSteps,
         }
 
         this->lineSearch( &step, &fnew, x, dir, force, tv1, tv2, localSteps, stepReport );
-
+        if (chem__verbose(5)) {
+          core::write_bf_stream(BF(" %s  lineSearch step-> %e\n") % __FUNCTION__ % step );
+        }
 
         if ( prevStep == 0.0 && step == 0.0 ) {
           ERROR(_sym_MinimizerStuck, (ql::list()
@@ -1122,7 +1128,7 @@ void	Minimizer_O::_steepestDescent( int numSteps,
           
         }
 
-        inPlaceAddTimesScalar(x, dir, step );
+        inPlaceAddTimesScalar(x, dir, step, this->_Frozen );
 
 		    // r = -f'(x)   r == force!!!!
         fp = dTotalEnergyForce( x, force );
@@ -1275,7 +1281,7 @@ void	Minimizer_O::_conjugateGradient(int numSteps,
   }
 #endif //]
   copyVector(d,s);
-  deltaNew = dotProduct(force,d);
+  deltaNew = dotProduct(force,d,this->_Frozen);
   delta0 = deltaNew;
   eSquaredDelta0 = forceTolerance*delta0;
   LOG(BF("eSquaredDelta0 = %lf") % (eSquaredDelta0 ) );
@@ -1292,8 +1298,8 @@ void	Minimizer_O::_conjugateGradient(int numSteps,
 	    //
 	    // Absolute gradient test
 	    //
-      forceMag = magnitude(force);
-      forceRmsMag = rmsMagnitude(force);
+      forceMag = magnitude(force,this->_Frozen);
+      forceRmsMag = rmsMagnitude(force,this->_Frozen);
       this->_RMSForce = forceRmsMag;
       prevStep = step;
       printedLatestMessage = false;
@@ -1302,6 +1308,9 @@ void	Minimizer_O::_conjugateGradient(int numSteps,
       }
       if ( forceRmsMag < forceTolerance ) {
         if ( this->_PrintIntermediateResults ) {
+          if (!printedLatestMessage) {
+            printedLatestMessage = this->_displayIntermediateMessage(step,fp,forceRmsMag,cosAngle,steepestDescent,true);
+          }
           core::clasp_writeln_string((BF(" ! DONE absolute force test:\n ! forceRmsMag(%lf)<forceTolerance(%lf)")% forceRmsMag % forceTolerance ).str());
         }
         break;
@@ -1390,14 +1399,14 @@ void	Minimizer_O::_conjugateGradient(int numSteps,
 		// the force (steepest descent dir)
 		// is less than _xxxDescentTest then copy the force into the search dir
 		//
-        dirMag = magnitude(d);
+        dirMag = magnitude(d,this->_Frozen);
         steepestDescent = false;
         LOG(BF("Starting descent test") );
         cosAngle = 0.0;
         if ( forceMag != 0.0 && dirMag != 0.0 ) {
           LOG(BF("forceMag = %lf") % forceMag  );
           LOG(BF("dirMag = %lf") % dirMag  );
-          cosAngle = dotProduct(force,d)/(forceMag*dirMag);
+          cosAngle = dotProduct(force,d,this->_Frozen)/(forceMag*dirMag);
         } else {
           LOG(BF("some magnitude was zero Using force") );
           copyVector(d,force);
@@ -1411,7 +1420,7 @@ void	Minimizer_O::_conjugateGradient(int numSteps,
 
 		// x = x + (step)d
 		// r = -f'(x)   r == force!!!!
-        inPlaceAddTimesScalar(x, d, step );
+        inPlaceAddTimesScalar(x, d, step ,this->_Frozen);
         fp = dTotalEnergyForce( x, force );
 
 
@@ -1425,7 +1434,7 @@ void	Minimizer_O::_conjugateGradient(int numSteps,
         this->validateForce(x,force);
 #endif
         deltaOld = deltaNew;
-        deltaMid = dotProduct(force,s);
+        deltaMid = dotProduct(force,s,this->_Frozen);
 
 		// No preconditioning
         copyVector(s,force);
@@ -1456,7 +1465,7 @@ void	Minimizer_O::_conjugateGradient(int numSteps,
             SIMPLE_ERROR(BF("Unknown preconditioner option"));
         }
 #endif //]
-        deltaNew = dotProduct(force,s);		// deltaNew = r.r
+        deltaNew = dotProduct(force,s,this->_Frozen);		// deltaNew = r.r
         beta = (deltaNew-deltaMid)/deltaOld;
         k = k + 1;
         if ( k == iRestartSteps || beta <= 0.0 ) {
@@ -1559,7 +1568,7 @@ void	Minimizer_O::_truncatedNewtonInnerLoop(
     //
   copyVector(dj,zj);
 
-  rjDotzj = dotProduct(rj,zj);
+  rjDotzj = dotProduct(rj,zj,this->_Frozen);
   while ( 1 ) 
   { _BLOCK_TRACEF(BF("_truncatedNewtonInnerLoop j=%d") % j );
     // 3. Singularity test
@@ -1575,7 +1584,7 @@ void	Minimizer_O::_truncatedNewtonInnerLoop(
     // MOVE rjDotzj calculation above this loop because
     // 	its calculated in step 6
     // rjDotzj = rj->dotProduct(zj);
-    djDotqj = dotProduct(dj,qj);
+    djDotqj = dotProduct(dj,qj,this->_Frozen);
     if ( fabs(rjDotzj) <= delta || fabs(djDotqj) <= delta ) {
       if ( j==1 ) {
         copyVector(pj,force);
@@ -1605,7 +1614,7 @@ void	Minimizer_O::_truncatedNewtonInnerLoop(
     alphaj = rjDotzj/djDotqj;
     XPlusYTimesScalar(pjNext,pj,dj,alphaj,this->_Frozen);
     LOG(BF("pjNext angle with force=%lf(deg)") % pjNext->angleWithVector(force)/0.0174533 );
-    forceDotpjNext = dotProduct(force,pjNext);
+    forceDotpjNext = dotProduct(force,pjNext,this->_Frozen);
     if ( forceDotpjNext <= (forceDotpj + delta) ) {
       if ( j == 1 ) {
         copyVector(pj,force);
@@ -1626,8 +1635,8 @@ void	Minimizer_O::_truncatedNewtonInnerLoop(
     // 	exit inner loop with search direction pk = pjNext
     // }
     //
-    inPlaceAddTimesScalar(rj,qj,-alphaj);
-    rmsRjMag = rmsMagnitude(rj);
+    inPlaceAddTimesScalar(rj,qj,-alphaj,this->_Frozen);
+    rmsRjMag = rmsMagnitude(rj,this->_Frozen);
     if ( rmsRjMag < nkTimesRmsForceMag || (j+1)>ITpcg ) {
       LOG(BF("rmsRjMag(%lf) < nkTimesRmsForceMag(%lf)") % rmsRjMag % nkTimesRmsForceMag );
       copyVector(pj,pjNext);
@@ -1655,7 +1664,7 @@ void	Minimizer_O::_truncatedNewtonInnerLoop(
     // j = j + 1 goto step 3
     //
     backSubstituteLDLt(ldlt,zj,rj);
-    rjDotzjNext = dotProduct(rj,zj);
+    rjDotzjNext = dotProduct(rj,zj,this->_Frozen);
     betaj = rjDotzjNext/rjDotzj;
     rjDotzj = rjDotzjNext;
     XPlusYTimesScalar(dj, zj,dj,betaj,this->_Frozen);
@@ -1726,7 +1735,7 @@ void	Minimizer_O::_truncatedNewton(
     //
   LOG(BF("Evaluating initial energy and force") );
   energyXkNext = dTotalEnergyForce( xK, forceK );
-  rmsForceMag = rmsMagnitude(forceK);
+  rmsForceMag = rmsMagnitude(forceK,this->_Frozen);
   if ( this->_PrintIntermediateResults )
   {
     this->_displayIntermediateMessage(prevAlphaK,energyXkNext,rmsForceMag,cosAngle,false);
@@ -1770,13 +1779,13 @@ void	Minimizer_O::_truncatedNewton(
 
       prevAlphaK = alphaK;
       if ( this->_PrintIntermediateResults ) {
-        dirMag = magnitude(pK);
-        forceMag = magnitude(forceK);
+        dirMag = magnitude(pK,this->_Frozen);
+        forceMag = magnitude(forceK,this->_Frozen);
         LOG(BF("Starting descent test") );
         if ( forceMag != 0.0 && dirMag != 0.0 ) {
           LOG(BF("forceMag = %lf") % forceMag  );
           LOG(BF("dirMag = %lf") % dirMag  );
-          cosAngle = dotProduct(forceK,pK)/(forceMag*dirMag);
+          cosAngle = dotProduct(forceK,pK,this->_Frozen)/(forceMag*dirMag);
         } else {
           cosAngle = 0.0;
         }
@@ -1810,8 +1819,8 @@ void	Minimizer_O::_truncatedNewton(
         }
         break;
       }
-      delta = rmsDistanceFrom(xKNext,xK);
-      rmsMagXKNext = rmsMagnitude(xKNext);
+      delta = rmsDistanceFrom(xKNext,xK,this->_Frozen);
+      rmsMagXKNext = rmsMagnitude(xKNext,this->_Frozen);
       b1bTest=(delta<SQRT_EPSILONF*(1.0+rmsMagXKNext)/100.0);
       if ( b1bTest ) {
         if ( this->_PrintIntermediateResults ) {
@@ -1820,7 +1829,7 @@ void	Minimizer_O::_truncatedNewton(
         break;
       }
 
-      rmsForceMag = rmsMagnitude(forceK);
+      rmsForceMag = rmsMagnitude(forceK,this->_Frozen);
       if ( rmsForceMag < forceTolerance ) {
         if ( this->_PrintIntermediateResults ) {
           core::clasp_writeln_string((BF( "search complete according to absolute force test" )).str());
@@ -2091,7 +2100,7 @@ CL_DEFMETHOD     void	Minimizer_O::minimize()
   do {
     try {
       this->_ScoringFunction->loadCoordinatesIntoVector(pos);
-      if (this->_PrintIntermediateResults>1) {
+      if (chem__verbose(4)) {
         for (size_t idx=0; idx<pos->length(); idx++ ) {
           core::write_bf_stream(BF("Starting pos[%d] -> %lf\n") % idx % (*pos)[idx]);
         }

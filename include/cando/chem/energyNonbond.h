@@ -142,7 +142,8 @@ struct	to_object<chem::EnergyNonbond>
 
 namespace chem {
 
-double	_evaluateEnergyOnly_Nonbond(double x1, double y1, double z1,
+double	_evaluateEnergyOnly_Nonbond(ScoringFunction_sp score,
+                                    double x1, double y1, double z1,
                                     double x2, double y2, double z2,
                                     double dA, double dC, double dQ1Q2 );
 
@@ -166,6 +167,10 @@ class EnergyNonbond_O : public EnergyComponent_O
   double		_ScaleElectrostatic;
   double		_EnergyVdw;
   double		_EnergyElectrostatic;
+  double                _NonbondCutoff;
+  double                _NonbondCutoffSquared;
+  double                _NonbondCutoffReciprocal12;
+  double                _NonbondCutoffReciprocal6;
   bool                _UsesExcludedAtoms;
     // Original way of defining nonbonds with list of nonbond terms
   gctools::Vec0<TermType>	_Terms;
@@ -216,12 +221,22 @@ class EnergyNonbond_O : public EnergyComponent_O
   virtual void dumpTerms();
   virtual	void	zeroEnergy();
 
+  void setNonbondCutoff(double cutoff);
   virtual core::List_sp extract_vectors_as_alist() const;
   
   virtual void setupHessianPreconditioner(NVector_sp nvPosition,
                                           AbstractLargeSquareMatrix_sp m );
     
   virtual double evaluateAllComponent( ScoringFunction_sp scorer,
+                                       NVector_sp 	pos,
+                                       bool 		calcForce,
+                                       gc::Nilable<NVector_sp> 	force,
+                                       bool		calcDiagonalHessian,
+                                       bool		calcOffDiagonalHessian,
+                                       gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                       gc::Nilable<NVector_sp>	hdvec,
+                                       gc::Nilable<NVector_sp> dvec);
+  virtual void evaluateTerms( ScoringFunction_sp score,
                               NVector_sp 	pos,
                               bool 		calcForce,
                               gc::Nilable<NVector_sp> 	force,
@@ -230,25 +245,18 @@ class EnergyNonbond_O : public EnergyComponent_O
                               gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
                               gc::Nilable<NVector_sp>	hdvec,
                               gc::Nilable<NVector_sp> dvec);
-  virtual void evaluateTerms( NVector_sp 	pos,
-                      bool 		calcForce,
-                      gc::Nilable<NVector_sp> 	force,
-                      bool		calcDiagonalHessian,
-                      bool		calcOffDiagonalHessian,
-                      gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                      gc::Nilable<NVector_sp>	hdvec,
-                      gc::Nilable<NVector_sp> dvec);
   
-  virtual void evaluateUsingExcludedAtoms( NVector_sp 	pos,
-                                   bool 		calcForce,
-                                   gc::Nilable<NVector_sp> 	force,
-                                   bool		calcDiagonalHessian,
-                                   bool		calcOffDiagonalHessian,
-                                   gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                                   gc::Nilable<NVector_sp>	hdvec,
-                                   gc::Nilable<NVector_sp> dvec);
-  virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm(
-                                                                               NVector_sp pos );
+  virtual void evaluateUsingExcludedAtoms( ScoringFunction_sp score,
+                                           NVector_sp 	pos,
+                                           bool 		calcForce,
+                                           gc::Nilable<NVector_sp> 	force,
+                                           bool		calcDiagonalHessian,
+                                           bool		calcOffDiagonalHessian,
+                                           gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                           gc::Nilable<NVector_sp>	hdvec,
+                                           gc::Nilable<NVector_sp> dvec);
+  virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm( ScoringFunction_sp score,
+                                                                                NVector_sp pos );
 
   void expandExcludedAtomsToTerms();
 

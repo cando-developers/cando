@@ -242,7 +242,8 @@ struct RestartMinimizer {};
                                       double		fnew,
                                       double		forceRmsMag,
                                       double		cosAngle,
-                                      bool		steepestDescent );
+                                      bool		steepestDescent,
+                                      bool              forcePrint = false);
 
   public:	// should be private
     void _truncatedNewtonInnerLoop(

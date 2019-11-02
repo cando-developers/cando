@@ -1580,7 +1580,7 @@ cando-extensions               : T if you want cando-extensions written to the t
 (defun save-amber-parm-format (aggregate topology-pathname coordinate-pathname &key assign-types residue-name-to-pdb-alist (cando-extensions t))
   (format t "Constructing energy function~%")
   (finish-output)
-  (let* ((energy-function (chem:make-energy-function aggregate 
+  (let* ((energy-function (chem:make-energy-function :matter aggregate 
                                                      :use-excluded-atoms t
                                                      :assign-types assign-types)))
     ;;; We need to:

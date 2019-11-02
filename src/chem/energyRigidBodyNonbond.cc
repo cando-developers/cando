@@ -387,9 +387,9 @@ void	EnergyRigidBodyNonbond_O::setupHessianPreconditioner(
 
 inline double periodic_boundary_adjust(const double& delta, const double& rsize, const double& size)
 {
-  double fdelta = fabs(delta);
-  fdelta -= static_cast<int>(fdelta*rsize + 0.5)*size;
-  return fdelta;
+  double result = delta;
+  result -= size*std::nearbyint(delta*rsize);
+  return result;
 }
 
 double	EnergyRigidBodyNonbond_O::evaluateAllComponent( ScoringFunction_sp score,

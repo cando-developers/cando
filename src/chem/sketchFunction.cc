@@ -632,9 +632,9 @@ ForceMatchReport_sp SketchFunction_O::checkIfAnalyticalForceMatchesNumericalForc
 
   numForce = NVector_O::create(pos->size());
   this->evaluateNumericalForce(pos,numForce,DELTA);
-  dot = dotProduct(numForce,analyticalForce);
-  numericalMag = magnitude(numForce);
-  analyticalMag = magnitude(analyticalForce);
+  dot = dotProduct(numForce,analyticalForce,this->_Frozen);
+  numericalMag = magnitude(numForce,this->_Frozen);
+  analyticalMag = magnitude(analyticalForce,this->_Frozen);
   tempForce = NVector_O::create(pos->size());
     	// Evaluate the force at pos again
   this->evaluateEnergyForce(pos,true,tempForce);
@@ -842,9 +842,9 @@ CL_DEFUN void chem__SketchFunction_velocity_verlet_step(SketchFunction_sp sketch
   atom_idx = 0;
   for ( size_t idx = 0; idx<position->size(); idx+=3 ) {
     if (!frozen || frozen->testBit(atom_idx)==0) {
-      (*velocity)[idx+0] = ((*velocity)[idx+0] + (*delta_t_over_mass)[atom_idx]/2.0*((*force)[idx+0]-(*force_dt)[idx+0]))*sketchFunc->_VelocityScale.getX();
-      (*velocity)[idx+1] = ((*velocity)[idx+1] + (*delta_t_over_mass)[atom_idx]/2.0*((*force)[idx+1]-(*force_dt)[idx+1]))*sketchFunc->_VelocityScale.getY();
-      (*velocity)[idx+2] = ((*velocity)[idx+2] + (*delta_t_over_mass)[atom_idx]/2.0*((*force)[idx+2]-(*force_dt)[idx+2]))*sketchFunc->_VelocityScale.getZ();
+      (*velocity)[idx+0] = ((*velocity)[idx+0] + (*delta_t_over_mass)[atom_idx]*0.5*((*force)[idx+0]+(*force_dt)[idx+0]))*sketchFunc->_VelocityScale.getX();
+      (*velocity)[idx+1] = ((*velocity)[idx+1] + (*delta_t_over_mass)[atom_idx]*0.5*((*force)[idx+1]+(*force_dt)[idx+1]))*sketchFunc->_VelocityScale.getY();
+      (*velocity)[idx+2] = ((*velocity)[idx+2] + (*delta_t_over_mass)[atom_idx]*0.5*((*force)[idx+2]+(*force_dt)[idx+2]))*sketchFunc->_VelocityScale.getZ();
       (*force)[idx+0] = (*force_dt)[idx+0];
       (*force)[idx+1] = (*force_dt)[idx+1];
       (*force)[idx+2] = (*force_dt)[idx+2];

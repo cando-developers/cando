@@ -172,7 +172,7 @@
     (+ (character-ranges (#\a #\z) (#\A #\Z) (#\0 #\9) #\_  #\+ #\- #\*))
   (:lambda (chars)
     (let ((str (esrap:text chars)))
-      str)))
+      (leap.core:convert-leap-case str))))
 
 (defrule package-colon-variable-name
     (and package-name #\: variable-name-string)

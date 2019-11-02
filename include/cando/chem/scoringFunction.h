@@ -178,7 +178,7 @@ namespace       chem
 
     double calculateEnergy();
 
-    double calculateEnergyAndForce();
+    core::T_mv calculateEnergyAndForce();
 
  
     CL_LISPIFY_NAME("evaluateAll");

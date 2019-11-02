@@ -986,7 +986,7 @@ and aligns the new sketch the same way.  Matches atoms using element and name."
                  (energy-function (dynamics:scoring-function dynamics))
                  (atom-table (chem:atom-table energy-function))
                  (number-of-atoms (chem:get-number-of-atoms atom-table))
-                 (frozen (make-array number-of-atoms :element-type 'bit :initial-element 0)))
+                 (frozen (make-array (* 3 number-of-atoms) :element-type 'bit :initial-element 0)))
             (format t "There are ~a atoms in atom-table~%" number-of-atoms)
             (loop for equiv-pair in equiv
                   for new-atom = (car equiv-pair)
@@ -1001,7 +1001,10 @@ and aligns the new sketch the same way.  Matches atoms using element and name."
                          ;; so if it's missing - then ignore it.
                          (when new-sketch-atom-index 
                            (chem:set-position new-sketch-atom other-pos)
-                           (setf (aref frozen new-sketch-atom-index) 1)))))
+                           (setf (aref frozen new-sketch-atom-index) 1
+                                 (aref frozen (+ 1 new-sketch-atom-index)) 1
+                                 (aref frozen (+ 2 new-sketch-atom-index)) 1
+                                 )))))
             (format t "Using frozen: ~a~%" frozen)
             (chem:load-coordinates-into-vector energy-function (dynamics:coordinates dynamics))
             (sketch2d-dynamics dynamics :frozen frozen :unfreeze nil

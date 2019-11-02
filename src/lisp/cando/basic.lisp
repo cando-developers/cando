@@ -4,6 +4,6 @@
   (unless lparallel:*kernel*
     (setf lparallel:*kernel* (lparallel:make-kernel (core:num-logical-processors)))))
 
-(defmacro |<-| (a b)
+(defmacro |.=| (a b)
   `(defparameter ,a ,b))
 
