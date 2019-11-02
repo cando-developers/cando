@@ -70,7 +70,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/symbol.h>
 #include <clasp/core/lispList.h>
 #include <clasp/core/weakHashTable.h>
-#include <clasp/core/weakKeyMapping.h>
 #include <clasp/core/weakPointer.h>
 #include <clasp/core/wrappedPointer.h>
 #include <clasp/llvmo/llvmoExpose.h>
