@@ -1,6 +1,7 @@
 (load "source-dir:extensions;cando;src;lisp;start-cando.lisp")
 (in-package :cando-user)
 *default-pathname-defaults*
+
 (require :asdf)
 (asdf:load-asd (merge-pathnames "~/Development/fep/src/fep.asd"))
 (ql:quickload :fep)

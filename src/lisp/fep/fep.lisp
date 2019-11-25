@@ -1030,6 +1030,5 @@ METHOD controls how the masks are calculated"
         do (validate-atom-types receptor)
            (format t "Receptor ~a has valid atom types~%" receptor)))
 
-
 (defun ensure-jobs-directories-exist (pathname)
   (ensure-directories-exist pathname))
