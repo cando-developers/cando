@@ -1055,7 +1055,7 @@ Clears the SELECT flag on all ATOMs within _obj_.  See the select command.
            (chem:clear-property atom :select)))
      matter)))
 
-(defun leap-bond-by-distance (matter &optional (max-bond 2.0))
+(defun leap-bond-by-distance (matter-name &optional (max-bond 2.0))
 "    bondByDistance container [ maxBond ]
 
       UNIT/RESIDUE/ATOM         _container_
@@ -1065,7 +1065,8 @@ Create single bonds between all ATOMs in _container_ that are within
 _maxBond_ angstroms of each other.   If _maxBond_ is not specified,
 a default distance of 2 angstroms used.
 "
-  (let ((atom-vec (make-array 256 :fill-pointer 0 :adjustable t))
+  (let ((matter (leap.core:lookup-variable matter-name))
+        (atom-vec (make-array 256 :fill-pointer 0 :adjustable t))
         (count 0))
     (chem:map-atoms
      'nil
@@ -1080,6 +1081,174 @@ a default distance of 2 angstroms used.
                    do (if (and (not (chem:is-bonded-to atom1 atom2))
                                (> (* max-bond max-bond) (chem:distance-squared-between-two-atoms atom1 atom2)))
                           (chem:bond-to atom1 atom2 :single-bond))))))
+
+(defun distance-search (matter closeness absolute-distance)
+  (let ((atom-vec (make-array 256 :fill-pointer 0 :adjustable t))
+        (distance 0.0)
+        (dx 0.0)
+        (dy 0.0)
+        (dz 0.0)
+        (radius 0.0))
+    (chem:map-atoms
+     'nil
+     (lambda (atom)
+       (vector-push-extend atom atom-vec))
+     matter)
+    (loop for i from 0 below (length atom-vec)
+          for atom1 = (aref atom-vec i)
+          for atom1-pos = (chem:get-position atom1)
+          for atom1-rad = (chem:get-vdw-radius atom1)
+          for atom1-element = (chem:get-element atom1)
+          do  (if (< atom1-rad 0.1)
+                  (if (eq atom1-element :H)
+                      (setf atom1-rad 1.0)
+                      (setf atom1-rad 1.5)))
+          do (setf atom1-rad (* atom1-rad closeness))
+          do (loop for j from (+ i 1) below (length atom-vec)
+                   for atom2 = (aref atom-vec j)
+                   for atom2-pos = (chem:get-position atom2)
+                   for atom2-rad = (chem:get-vdw-radius atom2)
+                   do (if (chem:is-bonded-to atom1 atom2)
+                          (progn
+                            (if absolute-distance
+                                (setf radius closeness)
+                                (setf radius (* 0.5 (+ atom1-rad atom2-rad))))
+                            (if (or (> (geom:vx atom1-pos) (+ (geom:vx atom2-pos) radius))
+                                    (> (geom:vy atom1-pos) (+ (geom:vy atom2-pos) radius))
+                                    (> (geom:vz atom1-pos) (+ (geom:vz atom2-pos) radius))
+                                    (< (geom:vx atom1-pos) (- (geom:vx atom2-pos) radius))
+                                    (< (geom:vy atom1-pos) (- (geom:vy atom2-pos) radius))
+                                    (< (geom:vz atom1-pos) (- (geom:vz atom2-pos) radius)))
+                                (progn
+                                  (setf dx (- (geom:vx atom1-pos) (geom:vx atom2-pos))
+                                        dy (- (geom:vy atom1-pos) (geom:vy atom2-pos))
+                                        dz (- (geom:vz atom1-pos) (geom:vz atom2-pos)))
+                                  (setf radius (* radius radius))
+                                  (setf distance (+ (* dx dx) (* dy dy) (* dz dz)))
+                                  (if (< distance radius)
+                                      (warn "Close contact of ~a angstroms between ~a and ~a~%"
+                                             (sqrt distance) (chem:get-name (aref atom-vec i))
+                                             (chem:get-name (aref atom-vec j)))))))))                   
+                   )))
+                              
+                                               
+
+(defun leap-check (matter-name)
+"    check unit [ parmset ]
+      UNIT                      _unit_
+      PARMSET/STRING            _parmset_
+
+This command can be used to check the UNIT for internal inconsistencies
+that could cause problems when performing calculations.  This is
+a very useful command that should be used before a UNIT is saved
+with saveAmberParm or its variations.
+With the optional parmset, all missing parameters are placed in the
+PARMSET to allow for easy editing of those parameters.  If a string is
+passed, a PARMSET will be created with that name.
+Currently it checks for the following possible problems:
+
+   - Long bonds.
+
+   - Short bonds.
+
+   - Non-integral total charge of the UNIT.
+
+   - Missing types.
+
+   - Close contacts between non-bonded ATOMs.  A close contact is
+     less than 1.5 angstroms.
+"
+  (let ((matter (leap.core:lookup-variable matter-name)))
+    (distance-search matter 1.5 t)
+    (format t "Checking parameters for unit ~a~%" (chem:get-name matter))
+    (let* ((energy-function (chem:make-energy-function :matter matter
+                                                       :use-excluded-atoms t
+                                                       :assign-types t))
+           (atom-table (chem:atom-table energy-function))
+           (energy-stretch (chem:get-stretch-component energy-function))
+           (energy-angle (chem:get-angle-component energy-function))
+           (energy-dihedral (chem:get-dihedral-component energy-function)))
+      (format t "Checking for stretch parameters. ~%")
+      (let* ((stretch-vectors (chem:extract-vectors-as-alist energy-stretch))
+             (kb-vector (cdr (assoc :kb stretch-vectors)))
+             (r0-vector (cdr (assoc :r0 stretch-vectors)))
+             (i1-vector (cdr (assoc :i1 stretch-vectors)))
+             (i2-vector (cdr (assoc :i2 stretch-vectors)))
+             (atom1-vector (cdr (assoc :atom1 stretch-vectors)))
+             (atom2-vector (cdr (assoc :atom2 stretch-vectors))))
+        (loop for i from 0 below (length kb-vector)
+              for kb = (aref kb-vector i)
+              for r0 = (aref r0-vector i)
+              for i1 = (aref i1-vector i)
+              for i2 = (aref i2-vector i)
+              for atom1 = (aref atom1-vector i)
+              for atom2 = (aref atom2-vector i)
+              do (if (or (not kb)
+                         (not r0)
+                         (not i1)
+                         (not i2))
+                     (warn "Could not find stretch parameter: ~a - ~a~%" atom1 atom2))))
+      (format t "Checking for angle parameters. ~%")
+      (let* ((angle-vectors (chem:extract-vectors-as-alist energy-angle))
+             (kt-vector (cdr (assoc :kt angle-vectors)))
+             (t0-vector (cdr (assoc :t0 angle-vectors)))
+             (i1-vector (cdr (assoc :i1 angle-vectors)))
+             (i2-vector (cdr (assoc :i2 angle-vectors)))
+             (i3-vector ( cdr (assoc :i3 angle-vectors)))
+             (atom1-vector (cdr (assoc :atom1 angle-vectors)))
+             (atom2-vector (cdr (assoc :atom2 angle-vectors)))
+             (atom3-vector (cdr (assoc :atom3 angle-vectors))))
+        (loop for i from 0 below (length kt-vector)
+              for kt = (aref kt-vector i)
+              for t0 = (aref t0-vector i)
+              for i1 = (aref i1-vector i)
+              for i2 = (aref i2-vector i)
+              for i3 = (aref i3-vector i)
+              for atom1 = (aref atom1-vector i)
+              for atom2 = (aref atom2-vector i)
+              for atom3 = (aref atom3-vector i)
+              do (if (or (not kt)
+                         (not t0)
+                         (not i1)
+                         (not i2)
+                         (not i3))
+                     (warn "Could not find angle parameter: ~a - ~a - ~a~%" atom1 atom2 atom3))))
+      (format t "Checking for dihedral parameters. ~%")
+      (let* ((energy-dihedral (chem:get-dihedral-component energy-function))
+             (dihedral-vectors (chem:extract-vectors-as-alist energy-dihedral))
+             (v-vector (cdr (assoc :v dihedral-vectors)))
+             (in-vector (cdr (assoc :in dihedral-vectors)))
+             (phase-vector (cdr (assoc :phase dihedral-vectors)))
+             (i1-vector (cdr (assoc :i1 dihedral-vectors)))
+             (i2-vector (cdr (assoc :i2 dihedral-vectors)))
+             (i3-vector (cdr (assoc :i3 dihedral-vectors)))
+             (i4-vector (cdr (assoc :i4 dihedral-vectors)))
+             (proper-vector (cdr (assoc :proper dihedral-vectors)))         
+             (atom1-vector (cdr (assoc :atom1 dihedral-vectors)))
+             (atom2-vector (cdr (assoc :atom2 dihedral-vectors)))
+             (atom3-vector (cdr (assoc :atom3 dihedral-vectors)))
+             (atom4-vector (cdr (assoc :atom4 dihedral-vectors))))
+        (loop for i from 0 below (length v-vector)
+              for v = (aref v-vector i)
+              for in = (aref in-vector i)
+              for phase = (aref phase-vector i)
+              for i1 = (aref i1-vector i)
+              for i2 = (aref i2-vector i)
+              for i3 = (aref i3-vector i)
+              for i4 = (aref i4-vector i)
+              for atom1 = (aref atom1-vector i)
+              for atom2 = (aref atom2-vector i)
+              for atom3 = (aref atom3-vector i)
+              for atom4 = (aref atom4-vector i)
+              do (if (or (not v)
+                         (not in)
+                         (not phase)
+                         (not i1)
+                         (not i2)
+                         (not i3)
+                         (not i4))
+                         (warn "Could not find dihedral parameter: ~a - ~a - ~a - ~a~%" atom1 atom2 atom3 atom4)))))))
+    
                                
 
 (defparameter *leap-commands* (list       "add" "addAtomTypes"
@@ -1198,6 +1367,7 @@ Provide a list of commands that cleap has available to mimic tleap."
           ("select" . leap-select)
           ("deSelect" . leap-select)
           ("bondByDistance" . leap-bond-by-distance)
+          ("check" . leap-check)
           ))
   ;; register all of the leap command and export them from the leap package
   (loop for command-pair in leap.parser:*function-names/alist*
