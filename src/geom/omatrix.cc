@@ -75,6 +75,20 @@ void	OMatrix_O::setFromStringFast(const string& s)
 }
 #endif
 
+CL_DEFMETHOD void OMatrix_O::setTranslation(const Vector3& pos)
+{
+  this->_Value[3] = pos.getX();
+  this->_Value[7] = pos.getY();
+  this->_Value[11] = pos.getZ();
+}
+
+CL_DEFMETHOD Vector3 OMatrix_O::getTranslation()
+{
+  Vector3 pos;
+  pos.set( this->_Value[3], this->_Value[7], this->_Value[11]);
+  return pos;
+}
+
 CL_DEFMETHOD void OMatrix_O::setFromVector(core::Array_sp array)
 {
   if (gc::IsA<core::SimpleVector_double_sp>(array)) {

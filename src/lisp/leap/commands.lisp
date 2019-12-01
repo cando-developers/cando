@@ -170,7 +170,22 @@ name then it will be destroyed."
   (let ((matter-a (leap.core:lookup-variable matter-a))
         (matter-b (leap.core:lookup-variable matter-b)))
     (do-remove matter-a matter-b)))
-        
+
+
+(defun leap-combine (list)
+  "
+    variable = combine list
+      object                       _variable_
+      LIST                         _list_
+
+Combine the contents of the UNITs within _list_ into a single UNIT.
+The new UNIT is placed in _variable_.   This command is similar to
+the sequence command except it does not link the ATOMs of the UNITs
+together.
+
+"
+  (apply 'cando:combine list))
+  
 (defun leap-list-variables ()
   "    list 
 
@@ -1297,10 +1312,11 @@ Provide a list of commands that cleap has available to mimic tleap."
 
 (eval-when (:load-toplevel :execute)
   ;; Define a list of names that do not get exported as lisp aliases
-  (defvar *ignore-lisp-aliases* '( "list" "set" "remove" "source" "quit" "desc" "minimize" "show"))
+  (defvar *ignore-lisp-aliases* '( "list" "set" "remove" "source" "quit" "desc" "minimize" "show" "combine"))
   (setf leap.parser:*function-names/alist*
         '(("logFile" . leap-log-file)
           ("quickload" . leap-quickload)
+          ("combine" . leap-combine)
           ("leapCommandsMissing" . leap-commands-missing)
           ("leapCommandsAvailable" . leap-commands-available)
           ("setupAmberPaths" . leap-setup-amber-paths)

@@ -62,6 +62,8 @@ namespace geom {
     void setFromStringFast(const string& s);
     string asString();
     string asStringFast();
+    void setTranslation(const Vector3& pos);
+    Vector3 getTranslation();
 
     CL_DEFMETHOD void set_from_quaternion(double qw, double qx, double qy, double qz, double tx, double ty, double tz) {
       quaternion_to_matrix(this->_Value,qw,qx,qy,qz,tx,ty,tz);

@@ -25,6 +25,7 @@
    (:file "grammar")
    (:file "off")
    (:file "core")
+   (:file "sequence")
    (:file "solvate")
    (:file "add-ions")
    (:file "set-box")

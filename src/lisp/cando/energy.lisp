@@ -51,6 +51,7 @@
                                        (sd-tolerance 5000.0)
                                        (cg-tolerance 0.5)
                                        (tn-tolerance 0.00001)
+                                       (print-intermediate-results t)
                                        &allow-other-keys)
   "Minimize the conformational energy for an energy-function"
   (let ((energy-function (chem:get-energy-function minimizer)))
@@ -64,7 +65,9 @@
                                :sd-tolerance sd-tolerance
                                :cg-tolerance cg-tolerance
                                :tn-tolerance tn-tolerance)
-    (chem:enable-print-intermediate-results minimizer 10)
+    (if print-intermediate-results
+        (chem:enable-print-intermediate-results minimizer 10)
+        (chem:disable-print-intermediate-results minimizer))
     (chem:set-option energy-function 'chem:nonbond-term t)
     (cando:minimize-no-fail minimizer)))
 
@@ -85,7 +88,8 @@
                                    (cg-tolerance 0.5)
                                    (tn-tolerance 0.00001)
                                    (frozen nil)
-                                   (save-trajectory nil))
+                                   (save-trajectory nil)
+                                   (print-intermediate-results t))
   "Minimize the conformational energy for an energy-function"
   (let ((minimizer (chem:make-minimizer energy-function)))
     (chem:minimizer-set-frozen minimizer frozen)

@@ -53,6 +53,13 @@
    #:add-one-atom-type
    ))
 
+
+(defpackage #:leap.sequence
+  (:use #:common-lisp)
+  (:export
+   #:sequence
+   ))
+
 (defpackage #:leap.commands
   (:use #:common-lisp)
   (:export
