@@ -231,4 +231,41 @@ CL_DEFUN core::T_mv geom__eigen_system(OMatrix_sp matrix)
   return Values(mm,lvals);
 };
 
+
+CL_DOCSTRING("Convert a homogeneous matrix into a quaternion/translation. This takes the matrix and returns seven numbers, the w,x,y,z,tx,ty,tz where w,x,y,z are the quaternion and the tx,ty,tz is the translation.");
+CL_DEFUN core::T_mv geom__matrix_to_quaternion_translation(OMatrix_sp om)
+{
+  Matrix& m = om->_Value;
+  double tx = m.elements[0+3];
+  double ty = m.elements[4+3];
+  double tz = m.elements[8+3];
+  double qw,qx,qy,qz;
+  rotation_matrix_to_quaternion(qw,qx,qy,qz,m);
+  return Values(core::clasp_make_double_float(qw),
+                core::clasp_make_double_float(qx),
+                core::clasp_make_double_float(qy),
+                core::clasp_make_double_float(qz),
+                core::clasp_make_double_float(tx),
+                core::clasp_make_double_float(ty),
+                core::clasp_make_double_float(tz));
+};
+
+
+CL_DOCSTRING("Set the matrix from a quaternion/translation - a set of seven numbers qw,qx,qy,qz,tx,ty,tz");
+CL_DEFMETHOD void OMatrix_O::set_from_quaternion(double qw, double qx, double qy, double qz, double tx, double ty, double tz) {
+  quaternion_to_matrix(this->_Value,qw,qx,qy,qz,tx,ty,tz);
+}
+
+CL_DEFMETHOD void OMatrix_O::set_from_normalized_quaternion(double qw, double qx, double qy, double qz, double tx, double ty, double tz) {
+  normalized_quaternion_to_matrix(this->_Value,qw,qx,qy,qz,tx,ty,tz);
+}
+
+CL_DEFMETHOD core::T_mv OMatrix_O::rotation_to_quaternion() const {
+  double qw, qx, qy, qz;
+  rotation_matrix_to_quaternion(qw,qx,qy,qz,this->_Value);
+  return Values(core::DoubleFloat_O::create(qw),
+                core::DoubleFloat_O::create(qx),
+                core::DoubleFloat_O::create(qy),
+                core::DoubleFloat_O::create(qz));
+};
 };
