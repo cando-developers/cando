@@ -3,7 +3,7 @@
 <CDXML
  CreationProgram="ChemDraw 17.1.1.0"
  Name="ligand2.cdxml"
- BoundingBox="11.78 12.44 785.50 423.50"
+ BoundingBox="12.28 12.94 785 423"
  WindowPosition="0 0"
  WindowSize="0 0"
  FractionalWidths="yes"
@@ -19,6 +19,7 @@
  ShowTerminalCarbonLabels="no"
  ShowNonTerminalCarbonLabels="no"
  HideImplicitHydrogens="no"
+ Magnification="500"
  LabelFont="21"
  LabelSize="10"
  LabelFace="96"
@@ -42,7 +43,7 @@
  ResidueZigZag="yes"
  NumberResidueBlocks="no"
  PrintMargins="36 36 36 36"
- MacPrintInfo="00030000004800480000000002F30243FFEDFFEF030502530367052803FC00020000004800480000000002F30243000100000064000000010001010100000001270F000100010000000000000000000000000002001901900000000000400000000000000000000100000000000000000000000000000000"
+ MacPrintInfo="0003000000480048000000000300024CFFF4FFF4030C02580367052803FB0002000000480048000000000300024C000100000064000000010001010100000001270F000100010000000000000000000000000002001901900000000000400000000000000000000100000000000000000000000000000000"
  ChemPropName=""
  ChemPropFormula="Chemical Formula: "
  ChemPropExactMass="Exact Mass: "
@@ -81,7 +82,7 @@
 <font id="20" charset="x-mac-roman" name="Times"/>
 <font id="21" charset="x-mac-roman" name="Helvetica"/>
 </fonttable><page
- id="505"
+ id="507"
  BoundingBox="0 0 1080 720"
  HeaderPosition="36"
  FooterPosition="36"
@@ -102,7 +103,7 @@
  AS="N"
  BondOrdering="72 76"
 ><fragment
- id="506"
+ id="508"
  ConnectionOrder="201 202"
 ><n
  id="196"
@@ -209,7 +210,7 @@
  AS="R"
  BondOrdering="74 75 89 188"
 ><fragment
- id="507"
+ id="509"
  ConnectionOrder="218 219 220 221"
 ><n
  id="211"
@@ -360,7 +361,7 @@
  AS="N"
  BondOrdering="77 78 79"
 ><fragment
- id="508"
+ id="510"
  ConnectionOrder="236 237 238"
 ><n
  id="233"
@@ -446,7 +447,7 @@
  AS="N"
  BondOrdering="78 80 81 192"
 ><fragment
- id="509"
+ id="511"
  ConnectionOrder="248 249 250 251"
 ><n
  id="246"
@@ -542,7 +543,7 @@
  NeedsClean="yes"
  AS="N"
 ><fragment
- id="510"
+ id="512"
 ><n
  id="259"
  p="332.92 211.20"
@@ -581,7 +582,7 @@
  AS="N"
  BondOrdering="81 82"
 ><fragment
- id="511"
+ id="513"
  ConnectionOrder="265 266"
 ><n
  id="264"
@@ -640,7 +641,7 @@
  AS="N"
  BondOrdering="83 84"
 ><fragment
- id="512"
+ id="514"
  ConnectionOrder="289 290"
 ><n
  id="271"
@@ -856,7 +857,7 @@
  AS="N"
  BondOrdering="85 86"
 ><fragment
- id="513"
+ id="515"
  ConnectionOrder="332 333"
 ><n
  id="312"
@@ -1091,7 +1092,7 @@
  AS="N"
  BondOrdering="89 90 91"
 ><fragment
- id="514"
+ id="516"
  ConnectionOrder="365 366 367"
 ><n
  id="357"
@@ -1219,7 +1220,7 @@
  NeedsClean="yes"
  AS="N"
 ><fragment
- id="515"
+ id="517"
 ><n
  id="379"
  p="228.28 204.30"
@@ -1289,7 +1290,7 @@
  AS="N"
  BondOrdering="92 93"
 ><fragment
- id="516"
+ id="518"
  ConnectionOrder="395 396"
 ><n
  id="386"
@@ -1423,7 +1424,7 @@
  AS="N"
  BondOrdering="94 99"
 ><fragment
- id="517"
+ id="519"
  ConnectionOrder="424 425"
 ><n
  id="409"
@@ -1614,7 +1615,7 @@
  AS="N"
  BondOrdering="95 96"
 ><fragment
- id="518"
+ id="520"
  ConnectionOrder="457 458"
 ><n
  id="444"
@@ -1778,7 +1779,7 @@
  AS="N"
  BondOrdering="96 97"
 ><fragment
- id="519"
+ id="521"
  ConnectionOrder="487 488"
 ><n
  id="475"
