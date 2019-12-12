@@ -193,7 +193,11 @@ void	RigidBodyEnergyFunction_O::useDefaultSettings()
     /*! Set a single options */
 void	RigidBodyEnergyFunction_O::setOption( core::Symbol_sp option, core::T_sp val)
 {
-  IMPLEMENT_ME();
+  if ( option == _sym_nonbondTerm)
+  {
+    return;
+  }
+  SIMPLE_ERROR(BF("Unknown option"));
 }
 
 
