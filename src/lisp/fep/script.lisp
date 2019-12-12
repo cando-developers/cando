@@ -16,7 +16,7 @@
   (if *print-readably*
       (progn
         (format stream "#$(fep::fep-calculation ")
-        (loop for slot in (clos:class-slots (find-class 'fep::fep-calculation))
+        (loop for slot in (clos:class-slots (find-class 'fep-calculation))
               for slot-name = (clos:slot-definition-name slot)
               for initargs = (clos:slot-definition-initargs slot)
               if (and (car initargs) (slot-boundp obj slot-name))

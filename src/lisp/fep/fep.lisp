@@ -691,7 +691,7 @@
                  stages-lambda)
           (morphs (jobs calculation)))))
   
-(defmethod connect-job-nodes (calculation (type (eql :simple))  &key (connections 3) stages windows)
+(defmethod connect-job-nodes (calculation (type (eql :simple)) &key (connections 3) stages windows)
   (let* ((jobs (jobs calculation))
          (nodes (nodes jobs))
          (unsorted-feps (copy-list nodes))
