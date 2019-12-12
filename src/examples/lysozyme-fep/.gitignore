@@ -1,3 +1,2 @@
-./ipynb_checkpoints
-./.DS_Store
-./.ipynb-checkpoints
+.ipynb_checkpoints
+.DS_Store

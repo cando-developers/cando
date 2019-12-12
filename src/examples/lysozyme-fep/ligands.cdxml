@@ -19,6 +19,7 @@
  ShowTerminalCarbonLabels="no"
  ShowNonTerminalCarbonLabels="no"
  HideImplicitHydrogens="no"
+ Magnification="250"
  LabelFont="21"
  LabelSize="10"
  LabelFace="96"
@@ -81,7 +82,7 @@
 <font id="20" charset="x-mac-roman" name="Times"/>
 <font id="21" charset="x-mac-roman" name="Helvetica"/>
 </fonttable><page
- id="368"
+ id="402"
  BoundingBox="0 0 540 720"
  HeaderPosition="36"
  FooterPosition="36"
@@ -91,42 +92,53 @@
 ><fragment
  id="340"
  BoundingBox="41.23 146.37 189.44 246.13"
- Z="271"
+ Z="58"
 ><n
  id="337"
  p="156 180"
- Z="268"
+ Z="56"
  AS="N"
 /><n
  id="339"
  p="130.02 195"
- Z="270"
+ Z="57"
  Warning="An atom in this label has an invalid valence."
  NodeType="Unspecified"
  NeedsClean="yes"
  AS="N"
  BondOrdering="349 350"
 ><fragment
- id="369"
+ id="403"
+ ConnectionOrder="371 372"
 ><n
  id="370"
  p="130.02 195"
+ Z="5"
  NumHydrogens="0"
-/><n
+ NeedsClean="yes"
+><t
+ p="126.41 198.68"
+ BoundingBox="126.85 191.32 133.21 198.87"
+ LabelJustification="Left"
+><s font="21" size="10" color="0" face="96">C</s></t></n><n
  id="371"
  p="156 180"
+ Z="6"
  NodeType="ExternalConnectionPoint"
 /><n
  id="372"
  p="130.02 225"
+ Z="7"
  NodeType="ExternalConnectionPoint"
 /><b
  id="373"
+ Z="8"
  B="371"
  E="370"
  Order="2"
 /><b
  id="374"
+ Z="9"
  B="372"
  E="370"
 /></fragment><t
@@ -137,55 +149,68 @@
 ><s font="21" size="10" color="0" face="96">C1</s></t></n><n
  id="341"
  p="130.02 225"
- Z="272"
+ Z="59"
  AS="N"
 /><n
  id="343"
  p="156 240"
- Z="274"
+ Z="60"
  Warning="An atom in this label has an invalid valence."
  NodeType="Unspecified"
  NeedsClean="yes"
  AS="N"
  BondOrdering="351 352"
 ><fragment
- id="376"
+ id="404"
+ ConnectionOrder="380 381"
 ><n
  id="377"
  p="156 240"
- NumHydrogens="0"
+ Z="13"
 /><n
  id="378"
  p="156 270"
- NumHydrogens="0"
+ Z="14"
 /><n
  id="379"
  p="156 300"
+ Z="15"
  NumHydrogens="0"
-/><n
+ NeedsClean="yes"
+><t
+ p="152.39 303.68"
+ BoundingBox="152.83 296.32 159.19 303.87"
+ Justification="Auto"
+><s font="21" size="10" color="0" face="96">C</s></t></n><n
  id="380"
  p="130.02 225"
+ Z="16"
  NodeType="ExternalConnectionPoint"
 /><n
  id="381"
  p="181.98 225"
+ Z="17"
  NodeType="ExternalConnectionPoint"
 /><b
  id="382"
+ Z="18"
  B="378"
  E="379"
  Order="3"
 /><b
  id="383"
+ Z="19"
  B="377"
  E="378"
 /><b
  id="384"
+ Z="20"
  B="380"
  E="377"
  Order="2"
 /><b
  id="385"
+ Z="21"
  B="381"
  E="377"
 /></fragment><t
@@ -196,72 +221,87 @@
 ><s font="21" size="10" color="0" face="96">C3</s></t></n><n
  id="345"
  p="181.98 225"
- Z="276"
+ Z="61"
  AS="N"
 /><n
  id="347"
  p="181.98 195"
- Z="278"
+ Z="62"
  Warning="An atom in this label has an invalid valence."
  NodeType="Unspecified"
  NeedsClean="yes"
  AS="N"
  BondOrdering="353 354"
 ><fragment
- id="387"
+ id="405"
+ ConnectionOrder="393 394"
 ><n
  id="388"
  p="181.98 195"
- NumHydrogens="0"
+ Z="25"
 /><n
  id="389"
  p="207.96 180"
- NumHydrogens="0"
+ Z="26"
 /><n
  id="390"
  p="233.94 165"
- NumHydrogens="0"
+ Z="27"
 /><n
  id="391"
  p="259.92 150"
- NumHydrogens="0"
+ Z="28"
 /><n
  id="392"
  p="285.90 135"
+ Z="29"
  NumHydrogens="0"
-/><n
+ NeedsClean="yes"
+><t
+ p="282.29 138.68"
+ BoundingBox="282.73 131.32 289.09 138.87"
+ Justification="Auto"
+><s font="21" size="10" color="0" face="96">C</s></t></n><n
  id="393"
  p="181.98 225"
+ Z="30"
  NodeType="ExternalConnectionPoint"
 /><n
  id="394"
  p="156 180"
+ Z="31"
  NodeType="ExternalConnectionPoint"
 /><b
  id="395"
+ Z="32"
  B="391"
  E="392"
  Order="3"
 /><b
  id="396"
+ Z="33"
  B="390"
  E="391"
 /><b
  id="397"
+ Z="34"
  B="389"
  E="390"
  Order="3"
 /><b
  id="398"
+ Z="35"
  B="388"
  E="389"
 /><b
  id="399"
+ Z="36"
  B="393"
  E="388"
  Order="2"
 /><b
  id="400"
+ Z="37"
  B="394"
  E="388"
 /></fragment><t
@@ -272,7 +312,7 @@
 ><s font="21" size="10" color="0" face="96">C5</s></t></n><n
  id="363"
  p="156 150"
- Z="294"
+ Z="77"
  Warning="ChemDraw can’t interpret this label."
  NodeType="Unspecified"
  NeedsClean="yes"
@@ -285,7 +325,7 @@
 ><s font="21" size="10" color="0" face="96">ZA?</s></t></n><n
  id="365"
  p="104.04 240"
- Z="296"
+ Z="79"
  Warning="ChemDraw can’t interpret this label."
  NodeType="Fragment"
  NeedsClean="yes"
@@ -299,7 +339,7 @@
  LabelAlignment="Right"
 ><s font="21" size="10" color="0" face="96">:topology :CRA</s></t></n><b
  id="349"
- Z="280"
+ Z="63"
  B="337"
  E="339"
  Order="2"
@@ -307,13 +347,13 @@
  BondCircularOrdering="354 364 0 350"
 /><b
  id="350"
- Z="281"
+ Z="64"
  B="339"
  E="341"
  BS="N"
 /><b
  id="351"
- Z="282"
+ Z="65"
  B="341"
  E="343"
  Order="2"
@@ -321,13 +361,13 @@
  BondCircularOrdering="350 366 0 352"
 /><b
  id="352"
- Z="283"
+ Z="66"
  B="343"
  E="345"
  BS="N"
 /><b
  id="353"
- Z="284"
+ Z="67"
  B="345"
  E="347"
  Order="2"
@@ -335,19 +375,19 @@
  BondCircularOrdering="352 0 0 354"
 /><b
  id="354"
- Z="285"
+ Z="68"
  B="347"
  E="337"
  BS="N"
 /><b
  id="364"
- Z="295"
+ Z="78"
  B="337"
  E="363"
  BS="N"
 /><b
  id="366"
- Z="297"
+ Z="80"
  B="341"
  E="365"
  Display="Wavy"
@@ -355,11 +395,11 @@
 /></fragment><fragment
  id="356"
  BoundingBox="118.18 108.41 137.27 145.59"
- Z="287"
+ Z="70"
 ><n
  id="355"
  p="121 112"
- Z="286"
+ Z="69"
  Element="1"
  NumHydrogens="0"
  NeedsClean="yes"
@@ -371,7 +411,7 @@
 ><s font="21" size="10" color="0" face="96">H</s></t></n><n
  id="357"
  p="121 142"
- Z="288"
+ Z="71"
  Warning="ChemDraw can’t interpret this label."
  NodeType="Unspecified"
  NeedsClean="yes"
@@ -383,18 +423,18 @@
  LabelAlignment="Left"
 ><s font="21" size="10" color="0" face="96">ZAA</s></t></n><b
  id="358"
- Z="289"
+ Z="72"
  B="355"
  E="357"
  BS="N"
 /></fragment><fragment
  id="360"
  BoundingBox="184.50 106.32 203.99 143.59"
- Z="291"
+ Z="74"
 ><n
  id="359"
  p="188 110"
- Z="290"
+ Z="73"
  Element="8"
  NumHydrogens="1"
  NeedsClean="yes"
@@ -407,7 +447,7 @@
 ><s font="21" size="10" color="0" face="96">OH</s></t></n><n
  id="361"
  p="188 140"
- Z="292"
+ Z="75"
  Warning="ChemDraw can’t interpret this label."
  NodeType="Unspecified"
  NeedsClean="yes"
@@ -419,7 +459,7 @@
  LabelAlignment="Left"
 ><s font="21" size="10" color="0" face="96">ZAB</s></t></n><b
  id="362"
- Z="293"
+ Z="76"
  B="359"
  E="361"
  BS="N"
