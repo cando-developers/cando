@@ -455,7 +455,7 @@ rectilinear solvent box has been created around it.
   (let ((solute (leap.core:lookup-variable solute-name))
         (solvent (leap.core:lookup-variable solvent-name))
         (iso-closeness-args (process-iso-closeness iso-closeness)))
-    (apply #'leap:solvate-box solute solvent buffer iso-closeness-args)))
+     (apply #'leap:solvate-box solute solvent buffer iso-closeness-args)))
 
 (defun leap.solvate-oct (solute solvent farness &rest iso-closeness)
   "    solvateOct solute solvent buffer [ \"iso\" ] [ closeness ]
@@ -513,9 +513,9 @@ command for more details on the _closeness_ parameter.
 "
   (let ((buffer (list farness farness farness))
         (iso-closeness-args (process-iso-closeness iso-closeness)))
-    (apply #'leap:solvate-shell solute solvent buffer :farness farness :shell t iso-closeness-args)))
+    (apply #'leap:solvate-shell solute solvent buffer iso-closeness-args)))
 
-(defun leap.solvate-cap (solute-name solvent-name position radius &rest iso-closeness)
+(defun leap.solvate-cap (solute-name solvent-name position radius &optional closeness)
   "    solvateCap solute solvent position radius [ closeness ]
 
       UNIT                         _solute_
@@ -555,8 +555,8 @@ created around the solute.
 "
   (let ((solute (leap.core:lookup-variable solute-name))
         (solvent (leap.core:lookup-variable solvent-name))
-        (iso-closeness-args (process-iso-closeness iso-closeness)))
-    (apply #'leap:solvate-cap solute solvent position radius iso-closeness-args)))
+        (list-closeness (list :closeness closeness)))
+    (apply #'leap:solvate-cap solute solvent position radius list-closeness)))
 
 
 (defun leap.dir (&optional (path *default-pathname-defaults*))
