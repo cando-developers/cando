@@ -254,7 +254,8 @@ T if they are equivalent and NIL if they are not.  This callback should at least
                    equivs)
          (values equivs-as-list diff1 diff2)))))
 
-(defun compare-molecules (molecule1 molecule2 &key (atom-match-callback #'default-atom-match-callback))
+(defun compare-molecules (molecule1 molecule2 &key (atom-match-callback #'default-atom-match-callback)
+                                                (exclude-hydrogens t))
   "Compare the two molecules.
 Return: (values equivalences diff1 diff2)
 equivalences - a hash table of cons cells. Each cons cell is a pair of equivalent atoms in molecule1 and molecule2.
@@ -262,8 +263,8 @@ diff1 - The atoms of molecule1 that do not have equivalences to anything in mole
 diff2 - The atoms of molecule2 that do not have equivalences to anything in molecule 1.
 The caller can provide their own atom match callback function that takes two atoms and returns
 T if they are equivalent and NIL if they are not.  This callback should at least compare the elements."
-  (let ((graph1 (chem:make-molecule-graph-from-molecule molecule1))
-        (graph2 (chem:make-molecule-graph-from-molecule molecule2))
+  (let ((graph1 (chem:make-molecule-graph-from-molecule molecule1 exclude-hydrogens))
+        (graph2 (chem:make-molecule-graph-from-molecule molecule2 exclude-hydrogens))
         (*atom-match-callback* atom-match-callback))
     (multiple-value-bind (matches counts)
         (find-complete-equivalent graph1 graph2)
@@ -279,11 +280,15 @@ T if they are equivalent and NIL if they are not.  This callback should at least
               do (setf (gethash node2 equivs21) node1))
         (let (diff1 diff2)
           (cando:do-atoms (atom molecule1)
-            (unless (gethash atom equivs12)
-              (push atom diff1)))
+            (unless (and exclude-hydrogens
+                         (= (chem:get-atomic-number atom) 1))
+              (unless (gethash atom equivs12)
+                (push atom diff1))))
           (cando:do-atoms (atom molecule2)
-            (unless (gethash atom equivs21)
-              (push atom diff2)))
+            (unless (and exclude-hydrogens
+                         (= (chem:get-atomic-number atom) 1))
+              (unless (gethash atom equivs21)
+                (push atom diff2))))
           (let (equivs-as-list)
             (maphash (lambda (node1 node2)
                        (push (cons node1 node2) equivs-as-list))

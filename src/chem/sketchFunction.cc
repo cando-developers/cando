@@ -811,8 +811,8 @@ CL_DEFUN void chem__SketchFunction_velocity_verlet_step(SketchFunction_sp sketch
   core::SimpleBitVector_sp frozen;
   if (gc::IsA<core::SimpleBitVector_sp>(tfrozen)) {
     frozen = gc::As_unsafe<core::SimpleBitVector_sp>(tfrozen);
-    if (frozen->length() != (position->length()/3)) {
-      SIMPLE_ERROR(BF("frozen must be a simple-bit-vector of length %d or NIL") % (position->length()/3));
+    if (frozen->length() != (position->length())) {
+      SIMPLE_ERROR(BF("frozen must be a simple-bit-vector of length %d or NIL") % (position->length()));
     }
   } else if (tfrozen.notnilp()) {
     SIMPLE_ERROR(BF("frozen must be a simple-bit-vector or NIL"));
@@ -822,18 +822,22 @@ CL_DEFUN void chem__SketchFunction_velocity_verlet_step(SketchFunction_sp sketch
   double delta_tsquared_div2 = delta_tsquared/2.0;
   size_t atom_idx = 0;
   for ( size_t idx = 0; idx<position->size(); idx += 3) {
-    if (!frozen || frozen->testBit(atom_idx)==0) {
+    if (!frozen || frozen->testBit(idx+0)==0) {
       double offsetx = delta_t*(*velocity)[idx+0] + delta_t*(*delta_t_over_mass)[atom_idx]*(*force)[idx+0];
-      double offsety = delta_t*(*velocity)[idx+1] + delta_t*(*delta_t_over_mass)[atom_idx]*(*force)[idx+1];
-      double offsetz = delta_t*(*velocity)[idx+2] + delta_t*(*delta_t_over_mass)[atom_idx]*(*force)[idx+2];
       if (offsetx>1.5) offsetx = 1.5;
-      if (offsety>1.5) offsety = 1.5;
-      if (offsetz>1.5) offsetz = 1.5;
       if (offsetx<-1.5) offsetx = -1.5;
-      if (offsety<-1.5) offsety = -1.5;
-      if (offsetz<-1.5) offsetz = -1.5;
       (*position)[idx+0] = (*position)[idx+0] + offsetx;
+    }
+    if (!frozen || frozen->testBit(idx+1)==0) {
+      double offsety = delta_t*(*velocity)[idx+1] + delta_t*(*delta_t_over_mass)[atom_idx]*(*force)[idx+1];
+      if (offsety>1.5) offsety = 1.5;
+      if (offsety<-1.5) offsety = -1.5;
       (*position)[idx+1] = (*position)[idx+1] + offsety;
+    }
+    if (!frozen || frozen->testBit(idx+2)==0) {
+      double offsetz = delta_t*(*velocity)[idx+2] + delta_t*(*delta_t_over_mass)[atom_idx]*(*force)[idx+2];
+      if (offsetz>1.5) offsetz = 1.5;
+      if (offsetz<-1.5) offsetz = -1.5;
       (*position)[idx+2] = (*position)[idx+2] + offsetz;
     }
     atom_idx++;
@@ -841,12 +845,16 @@ CL_DEFUN void chem__SketchFunction_velocity_verlet_step(SketchFunction_sp sketch
   sketchFunc->evaluateEnergyForce(position,true,force_dt);
   atom_idx = 0;
   for ( size_t idx = 0; idx<position->size(); idx+=3 ) {
-    if (!frozen || frozen->testBit(atom_idx)==0) {
+    if (!frozen || frozen->testBit(idx+0)==0) {
       (*velocity)[idx+0] = ((*velocity)[idx+0] + (*delta_t_over_mass)[atom_idx]*0.5*((*force)[idx+0]+(*force_dt)[idx+0]))*sketchFunc->_VelocityScale.getX();
-      (*velocity)[idx+1] = ((*velocity)[idx+1] + (*delta_t_over_mass)[atom_idx]*0.5*((*force)[idx+1]+(*force_dt)[idx+1]))*sketchFunc->_VelocityScale.getY();
-      (*velocity)[idx+2] = ((*velocity)[idx+2] + (*delta_t_over_mass)[atom_idx]*0.5*((*force)[idx+2]+(*force_dt)[idx+2]))*sketchFunc->_VelocityScale.getZ();
       (*force)[idx+0] = (*force_dt)[idx+0];
+    }
+    if (!frozen || frozen->testBit(idx+1)==0) {
+      (*velocity)[idx+1] = ((*velocity)[idx+1] + (*delta_t_over_mass)[atom_idx]*0.5*((*force)[idx+1]+(*force_dt)[idx+1]))*sketchFunc->_VelocityScale.getY();
       (*force)[idx+1] = (*force_dt)[idx+1];
+    }
+    if (!frozen || frozen->testBit(idx+2)==0) {
+      (*velocity)[idx+2] = ((*velocity)[idx+2] + (*delta_t_over_mass)[atom_idx]*0.5*((*force)[idx+2]+(*force_dt)[idx+2]))*sketchFunc->_VelocityScale.getZ();
       (*force)[idx+2] = (*force_dt)[idx+2];
     }
     atom_idx++;

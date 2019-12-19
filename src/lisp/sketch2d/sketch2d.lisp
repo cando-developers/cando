@@ -301,7 +301,7 @@ I'll use an angle term instead of a bond term.
     (loop for index from 0 below (chem:get-number-of-atoms atom-table)
           for atom = (chem:elt-atom atom-table index)
           do (if frozen
-                 (when (= (aref frozen index) 0)
+                 (when (= (elt frozen (* 3 index)) 0)
                    (jostle-atom atom))
                  (jostle-atom atom)))))
 
@@ -324,7 +324,7 @@ I'll use an angle term instead of a bond term.
     (loop for coord-index below (length coordinates) by 3
           for index from 0
           do (if frozen
-                 (when (= (aref frozen index) 0)
+                 (when (= (elt frozen (* 3 index)) 0)
                    (jostle-atom coord-index))
                  (jostle-atom coord-index)))))
 
@@ -485,36 +485,39 @@ to check if two line segments (bonds) overlap/intersect
          (energy-stretch (chem:get-stretch-component energy-function))
          (intersections (detect-intersecting-bonds molecule)))
     (if intersections
-      (let (worst-problem-area)
-        (loop for intersect in intersections
-              for str1 = (car intersect)
-              for str2 = (cdr intersect)
-              for atomp1 = (stretch-term-atom1 str1)
-              for atomq1 = (stretch-term-atom2 str1)
-              for atomp2 = (stretch-term-atom1 str2)
-              for atomq2 = (stretch-term-atom2 str2)
-              for p1 = (chem:get-position atomp1)
-              for q1 = (chem:get-position atomq1)
-              for p2 = (chem:get-position atomp2)
-              for q2 = (chem:get-position atomq2)
-              for intersect-point = (intersection-point p1 q1 p2 q2)
-              for problem-area = (generate-problem-area intersect-point cutoff atom-table)
-              do (cond
-                   ((null worst-problem-area)
-                    (setf worst-problem-area problem-area))
-                   ((> (length problem-area)
-                       (length worst-problem-area))
-                    (setf worst-problem-area problem-area))))
-        (if worst-problem-area
-            (let* ((number-of-atoms (chem:get-number-of-atoms atom-table))
-                   (frozen (make-array number-of-atoms :element-type 'bit :initial-element 1)))
-              (loop for unfrozen in worst-problem-area
-                    for index = (distance-atom-index unfrozen)
-                    for atom = (distance-atom-atom unfrozen)
-                    do (setf (elt frozen index) 0))
-              (values (length intersections) frozen))
-            (values 0 nil)))
-      (values 0 nil))))
+        (let (worst-problem-area)
+          (loop for intersect in intersections
+                for str1 = (car intersect)
+                for str2 = (cdr intersect)
+                for atomp1 = (stretch-term-atom1 str1)
+                for atomq1 = (stretch-term-atom2 str1)
+                for atomp2 = (stretch-term-atom1 str2)
+                for atomq2 = (stretch-term-atom2 str2)
+                for p1 = (chem:get-position atomp1)
+                for q1 = (chem:get-position atomq1)
+                for p2 = (chem:get-position atomp2)
+                for q2 = (chem:get-position atomq2)
+                for intersect-point = (intersection-point p1 q1 p2 q2)
+                for problem-area = (generate-problem-area intersect-point cutoff atom-table)
+                do (cond
+                     ((null worst-problem-area)
+                      (setf worst-problem-area problem-area))
+                     ((> (length problem-area)
+                         (length worst-problem-area))
+                      (setf worst-problem-area problem-area))))
+          (if worst-problem-area
+              (let* ((number-of-atoms (chem:get-number-of-atoms atom-table))
+                     (frozen (make-array (* 3 number-of-atoms) :element-type 'bit :initial-element 1)))
+                (loop for unfrozen in worst-problem-area
+                      for index = (distance-atom-index unfrozen)
+                      for atom = (distance-atom-atom unfrozen)
+                      do (setf (elt frozen (+ (* 3 index) 0)) 0
+                               (elt frozen (+ (* 3 index) 1)) 0
+                               (elt frozen (+ (* 3 index) 2)) 0
+                               ))
+                (values (length intersections) frozen))
+              (values 0 nil)))
+        (values 0 nil))))
 
 (defun randomize-neighbor-near-unfrozen-atom (coordinates neighbor-index*3 index*3 &optional (bond-length +stage4-bond-length+))
   (let ((xpos (elt coordinates index*3))
@@ -531,15 +534,18 @@ to check if two line segments (bonds) overlap/intersect
   (let ((new-frozen (copy-seq frozen)))
     (loop for index from 0 below (length frozen)
           for atom = (chem:elt-atom atom-table index)
-          do (when (= (elt frozen index) 0)
+          do (when (= (elt frozen (* 3 index)) 0)
                (loop named inner
                      for bondi from 0 below (chem:number-of-bonds atom)
                      for neighbor = (chem:bonded-neighbor atom bondi)
                      for neighbor-index*3 = (chem:get-coordinate-index atom-table neighbor)
                      for neighbor-index = (/ neighbor-index*3 3)
-                     do (when (= (elt frozen neighbor-index) 1)
+                     do (when (= (elt frozen (* 3 neighbor-index)) 1)
                           (progn
-                            (setf (elt new-frozen neighbor-index) 0)
+                            (setf (elt new-frozen (+ neighbor-index*3 0)) 0
+                                  (elt new-frozen (+ neighbor-index*3 1)) 0
+                                  (elt new-frozen (+ neighbor-index*3 2)) 0
+                                  )
                             (randomize-neighbor-near-unfrozen-atom coordinates neighbor-index*3 (* index 3))
                             (return-from inner nil))))))
     new-frozen))
@@ -549,9 +555,8 @@ to check if two line segments (bonds) overlap/intersect
         (ypos 0.0)
         (zpos 0.0)
         (count 0))
-    (loop for index from 0 below (length frozen)
-          for coord-index = (* 3 index)
-          do (when (not (elt frozen index))
+    (loop for coord-index from 0 below (length frozen) by 3
+          do (when (not (elt frozen coord-index))
                (setf xpos (+ (elt coordinates coord-index) xpos)
                      ypos (+ (elt coordinates (+ coord-index 1)) ypos)
                      zpos (+ (elt coordinates (+ coord-index 2)) zpos))
@@ -564,9 +569,8 @@ to check if two line segments (bonds) overlap/intersect
   (let* ((from-center (geometric-center-of-unfrozen-atoms atom-table coordinates frozen))
          (offset (geom:v- to-center from-center)))
     (loop with count = 0
-          for index from 0 below (length frozen)
-          for coord-index = (* 3 index)
-          do (when (not (elt frozen index))
+          for coord-index from 0 below (length frozen) by 3
+          do (when (not (elt frozen coord-index))
                (let ((xpos (+ (geom:vx offset) (elt coordinates coord-index)))
                      (ypos (+ (geom:vy offset) (elt coordinates (+ 1 coord-index))))
                      (zpos (+ (geom:vz offset) (elt coordinates (+ 2 coord-index)))))
@@ -964,14 +968,14 @@ The coordinates are all pressed into the X-Y plane and some hydrogens are added 
 (defun sketch2d (matter &key accumulate-coordinates transform)
   (do-sketch2d matter :accumulate-coordinates accumulate-coordinates :transform transform))
 
-(defun similar-sketch2d (molecule other-sketch2d &key accumulate-coordinates)
+(defun similar-sketch2d (molecule other-sketch2d &key accumulate-coordinates (atom-match-callback #'molecule-graph:element-and-name-match))
   "Generates a sketch of MOLECULE that determines a common subgraph with the molecule in OTHER-SKETCH2D 
 and aligns the new sketch the same way.  Matches atoms using element and name."
   (check-type molecule chem:molecule)
   (check-type other-sketch2d sketch2d)
   (let ((other-molecule (original-molecule other-sketch2d)))
     (multiple-value-bind (equiv diff1 diff2)
-        (molecule-graph:compare-molecules molecule other-molecule :atom-match-callback #'molecule-graph:element-and-name-match)
+        (molecule-graph:compare-molecules molecule other-molecule :atom-match-callback atom-match-callback)
       (let ((new-sketch (setup-simulation molecule :accumulate-coordinates accumulate-coordinates)))
         ;; We need hash-tables for the original atoms to the sketch atoms
         (let ((other-original-to-sketch (make-hash-table))
@@ -1001,11 +1005,11 @@ and aligns the new sketch the same way.  Matches atoms using element and name."
                          ;; so if it's missing - then ignore it.
                          (when new-sketch-atom-index 
                            (chem:set-position new-sketch-atom other-pos)
-                           (setf (aref frozen new-sketch-atom-index) 1
-                                 (aref frozen (+ 1 new-sketch-atom-index)) 1
-                                 (aref frozen (+ 2 new-sketch-atom-index)) 1
+                           (setf (aref frozen (* 3 new-sketch-atom-index)) 1
+                                 (aref frozen (+ 1 (* 3 new-sketch-atom-index))) 1
+                                 (aref frozen (+ 2 (* 3 new-sketch-atom-index))) 1
                                  )))))
-            (format t "Using frozen: ~a~%" frozen)
+            (format t "Using frozen: ~a  length: ~a~%" frozen (length frozen))
             (chem:load-coordinates-into-vector energy-function (dynamics:coordinates dynamics))
             (sketch2d-dynamics dynamics :frozen frozen :unfreeze nil
                                         :accumulate-coordinates accumulate-coordinates)
