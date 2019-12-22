@@ -173,9 +173,9 @@ FFTypesDb_sp ReadAmberParameters_O::parseTypeRules(core::T_sp fin)
 FFNonbondDb_sp ReadAmberParameters_O::parseMasses(core::T_sp fin, FFNonbondDb_sp ffNonbondDb )
 {
   core::DynamicScopeManager scope(cl::_sym_STARpackageSTAR, _lisp->keywordPackage());
-  core::ReadTable_sp readtable = gctools::As<core::ReadTable_sp>(cl::_sym_STARreadtableSTAR->symbolValue());
-  core::ReadTable_sp copy_readtable = readtable->copyReadTable(_Nil<core::T_O>());
-  copy_readtable->setf_readtable_case(kw::_sym_preserve);
+  core::T_sp readtable = cl::_sym_STARreadtableSTAR->symbolValue();
+  core::T_sp copy_readtable = cl__copy_readtable(readtable,_Nil<core::T_O>());
+  core::core__readtable_case_set(kw::_sym_preserve,copy_readtable);
   scope.bind(cl::_sym_STARreadtableSTAR,copy_readtable);
   bool done = false;
   while ( not done ) {
