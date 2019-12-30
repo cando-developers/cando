@@ -45,19 +45,22 @@
            (chem:get-element v2))))
 
 (defun element-and-name-match (v1 v2)
-  (and (eq (chem:get-element v1)
-           (chem:get-element v2))
-       (eq (chem:get-name v1)
-           (chem:get-name v2))))
+  (let ((match (and (eq (chem:get-element v1)
+                        (chem:get-element v2))
+                    (eq (chem:get-name v1)
+                        (chem:get-name v2)))))
+    (format t "In element-and-name-match ~s ~s -> ~s~%" v1 v2 match)
+    match))
   
 
 (defun default-atom-match-callback (v1 v2)
-  (and (eq (chem:get-element v1)
-           (chem:get-element v2))
-       (chem:atom-within-angstroms v1 v2 0.2)))
+  (let ((match (and (eq (chem:get-element v1)
+                        (chem:get-element v2))
+                    (chem:atom-within-angstroms v1 v2 0.2))))
+    match))
 
 
-(defparameter *atom-match-callback* #'default-atom-match-callback)
+(defparameter *atom-match-callback* 'default-atom-match-callback)
 
 (defun vertex-match-callback (v1 v2)
   (cond
@@ -113,22 +116,24 @@
     (values cluster1 cluster2)))
 
 (defun find-equivalent (graph1 graph2)
+  (format t "find-equivalent~%")
   (chem:boost-graph-mcgregor-common-subgraphs
    graph1 graph2
    t
-   #'vertex-match-callback
-   #'match-callback)
+   'vertex-match-callback
+   'match-callback)
   *equivalent*)
 
-(defun find-complete-equivalent (graph1 graph2 &key (mcgregor-steps 200))
+(defun find-complete-equivalent (graph1 graph2 &key (mcgregor-steps 20000))
+  (format t "In find-complete-equivalent mcgregor-steps -> ~a~%" mcgregor-steps)
   (let ((*times-called* 0)
         (*equivalent* nil)
         (*counts* 0))
     (chem:boost-graph-mcgregor-common-subgraphs
      graph1 graph2
      t
-     #'element-match
-     #'complete-match-callback
+     'vertex-match-callback
+     'complete-match-callback
      mcgregor-steps)
     (values *equivalent* *counts*)))
 
@@ -254,7 +259,7 @@ T if they are equivalent and NIL if they are not.  This callback should at least
                    equivs)
          (values equivs-as-list diff1 diff2)))))
 
-(defun compare-molecules (molecule1 molecule2 &key (atom-match-callback #'default-atom-match-callback)
+(defun compare-molecules (molecule1 molecule2 &key (atom-match-callback 'default-atom-match-callback)
                                                 (exclude-hydrogens t))
   "Compare the two molecules.
 Return: (values equivalences diff1 diff2)
@@ -263,6 +268,7 @@ diff1 - The atoms of molecule1 that do not have equivalences to anything in mole
 diff2 - The atoms of molecule2 that do not have equivalences to anything in molecule 1.
 The caller can provide their own atom match callback function that takes two atoms and returns
 T if they are equivalent and NIL if they are not.  This callback should at least compare the elements."
+  (format t "In compare-molecules again~%")
   (let ((graph1 (chem:make-molecule-graph-from-molecule molecule1 exclude-hydrogens))
         (graph2 (chem:make-molecule-graph-from-molecule molecule2 exclude-hydrogens))
         (*atom-match-callback* atom-match-callback))

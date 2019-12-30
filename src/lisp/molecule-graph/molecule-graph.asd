@@ -16,6 +16,7 @@
   :components
   ((:file "packages")
    (:file "molecule-graph")
+   (:file "max-clique")
    (:file "graphviz")
    ))
 

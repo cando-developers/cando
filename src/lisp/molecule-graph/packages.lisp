@@ -24,6 +24,12 @@
    #:element-and-name-match
    ))
 
+(defpackage #:molecule-graph.max-clique
+  (:use #:common-lisp)
+  (:export
+   #:compare-molecules-max-clique
+   ))
+
 (defpackage #:graphviz-molecule-graph
   (:use #:common-lisp)
   (:local-nicknames (#:mg #:molecule-graph))

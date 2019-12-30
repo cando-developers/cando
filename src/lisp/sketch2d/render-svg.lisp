@@ -1,6 +1,7 @@
 (in-package :sketch2d)
 
 (defparameter *show-all* nil)
+(defparameter *show-names* nil)
 (defparameter *perpendicular-fraction* 0.15)
 (defparameter *parallel-fraction* 0.1)
 (defparameter *dirz* (geom:vec 0.0 0.0 1.0))
@@ -111,6 +112,13 @@ This will place the calculated bond on one or the other side of the x1,y1-x2,y2 
                                   :x2 x2 :y2 y2
                                   :fill "none" :stroke color :stroke-width 2
                                   :stroke-linecap "round")))))
+
+(defun draw-atom-name (scene atom-node)
+  (let* ((pos (pos atom-node))
+         (xs1 (geom:vx pos))
+         (ys1 (geom:vy pos))
+         (label (string (chem:get-name (atom atom-node)))))
+    (cl-svg:text scene (:x xs1 :y (- ys1 *lower-text*) :text-anchor "left" :alignment-baseline "left") label)))
 
 (defun draw-atom-text (scene atom-node)
   (let* ((pos (pos atom-node))
@@ -405,6 +413,8 @@ This will place the calculated bond on one or the other side of the x1,y1-x2,y2 
 (defgeneric render-node (scene node))
 
 (defmethod render-node (scene (node atom-node))
+  (when *show-names*
+    (draw-atom-name scene node))
   (when (and (or *show-all* (renderp node)) (labelp node))
     (draw-atom-text scene node)))
 
