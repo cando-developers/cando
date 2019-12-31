@@ -27,7 +27,7 @@
 (defpackage #:molecule-graph.max-clique
   (:use #:common-lisp)
   (:export
-   #:compare-molecules-max-clique
+   #:compare-molecules
    ))
 
 (defpackage #:graphviz-molecule-graph

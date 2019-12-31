@@ -212,6 +212,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/macroModel.h>
 #include <cando/chem/matter.fwd.h>
 #include <cando/chem/matter.h>
+#include <cando/chem/maxcliqueseq.h>
 #include <cando/chem/mbbCoreTools.h>
 #include <cando/chem/minimizer.fwd.h>
 #include <cando/chem/minimizer.h>

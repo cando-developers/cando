@@ -968,15 +968,16 @@ The coordinates are all pressed into the X-Y plane and some hydrogens are added 
 (defun sketch2d (matter &key accumulate-coordinates transform)
   (do-sketch2d matter :accumulate-coordinates accumulate-coordinates :transform transform))
 
-(defun similar-sketch2d (molecule other-sketch2d &key accumulate-coordinates (atom-match-callback 'molecule-graph:element-match))
+(defun similar-sketch2d (molecule other-sketch2d &key accumulate-coordinates atom-match-callback)
   "Generates a sketch of MOLECULE that determines a common subgraph with the molecule in OTHER-SKETCH2D 
-and aligns the new sketch the same way.  Matches atoms using element and name."
+and aligns the new sketch the same way.  If atom-match-callback is NIL then all atoms can match each other.
+Otherwise pass a function that takes two atoms and returns T if they are matchable."
   (check-type molecule chem:molecule)
   (check-type other-sketch2d sketch2d)
   (let ((other-molecule (original-molecule other-sketch2d)))
     (format t "About to compare molecules~%")
     (multiple-value-bind (equiv diff1 diff2)
-        (molecule-graph:compare-molecules molecule other-molecule :atom-match-callback atom-match-callback)
+        (molecule-graph.max-clique:compare-molecules molecule other-molecule :atom-match-callback atom-match-callback)
       (format t "mol1: ~s~%" molecule)
       (format t "mol2: ~s~%" other-molecule)
       (format t "similar-sketch2d equiv atoms: ~a~%" equiv)

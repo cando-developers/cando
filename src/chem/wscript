@@ -39,6 +39,7 @@ def build(bld):
             'loop',
             'trajectory',
             'indirectAtomCoordinateReference',
+            'maxcliqueseq',
             'energyComponent',
             'energyStretch',
             'energySketchStretch',

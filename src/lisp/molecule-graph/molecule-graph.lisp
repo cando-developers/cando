@@ -260,7 +260,7 @@ T if they are equivalent and NIL if they are not.  This callback should at least
          (values equivs-as-list diff1 diff2)))))
 
 (defun compare-molecules (molecule1 molecule2 &key (atom-match-callback 'default-atom-match-callback)
-                                                (exclude-hydrogens t))
+                                                (exclude-hydrogens t) (mcgregor-steps 20000))
   "Compare the two molecules.
 Return: (values equivalences diff1 diff2)
 equivalences - a hash table of cons cells. Each cons cell is a pair of equivalent atoms in molecule1 and molecule2.
@@ -273,7 +273,7 @@ T if they are equivalent and NIL if they are not.  This callback should at least
         (graph2 (chem:make-molecule-graph-from-molecule molecule2 exclude-hydrogens))
         (*atom-match-callback* atom-match-callback))
     (multiple-value-bind (matches counts)
-        (find-complete-equivalent graph1 graph2)
+        (find-complete-equivalent graph1 graph2 :mcgregor-steps mcgregor-steps)
       (let ((equivs12 (make-hash-table))
             (equivs21 (make-hash-table)))
         (loop for count from 0 below (/ (length matches) 2)
