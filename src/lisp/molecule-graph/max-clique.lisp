@@ -56,7 +56,6 @@ If atom-match-callback is NIL then all atoms are considered equivalent."
                               (format t "v(~a) vp(~a) v-vp -> ~a~%" v vp v-vp)
                               (format t "xii(~a) yii(~a)  adjacent -> ~a~%" xii yii adjacent))
                             (setf (aref edges xii yii) adjacent)))))
-      (format t "Ending~%")
       (make-cross-product :graph1 graph1 :graph2 graph2 :nodes pairs :edges edges))))
 
 (defun molecular-modular-cross-product (molecule1 molecule2 &key (exclude-hydrogens t) atom-match-callback)
