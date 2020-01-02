@@ -147,7 +147,7 @@
       (tool-add-all-boxes solute test-function solvent ix iy iz xstart ystart zstart solvent-x-width solvent-y-width solvent-z-width :verbose verbose)
       solute)
     (unless shell
-      (chem:set-property solute :bounding-box (list xwidth ywidth zwidth)))))
+      (chem:set-bounding-box solute (chem:make-bounding-box (list xwidth ywidth zwidth))))))
 
 (defun tool-solvate-in-sphare (solute solvent center radius &key (closeness 0.0) (verbose t))
   (let* ((solvent-box (chem:bounding-box solvent))
