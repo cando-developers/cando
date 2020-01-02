@@ -1,13 +1,23 @@
 (in-package :leap.add-ions)
 
+(defun ion-topology-atom-type (ion-topology)
+  (let* ((constitution (chem:get-constitution ion-topology))
+         (constitution-atoms (chem:get-constitution-atoms constitution))
+         (number-of-atoms (chem:number-of-atoms constitution-atoms)))
+    (if (= number-of-atoms 1)
+        (let ((constitution-atom (chem:atom-with-id constitution-atoms 0)))
+          (chem:atom-type constitution-atom))
+        (error "The topology ~s must have only one atom" ion-topology))))
+
 (defun add-ions (mol ion1 ion1-number &optional ion2 ion2-number)
   (warn "This function is a bit broken - every molecule must specify what force-field it will use - leap.core::merged-force-field is incorrect - the force-field has to be looked up from the ion-topology since the ion topology will create single residue in a molecule.  Using :default for now")
   (let* ((force-field-name :default)
          (nonbond-db (leap.core:nonbond-force-field-component force-field-name))
-         (ion1-type-index (chem:find-type-index nonbond-db ion1))
+         (ion1-topology (cando:lookup-topology ion1))
+         (ion1-type (ion-topology-atom-type ion1-topology))
+         (ion1-type-index (chem:find-type-index nonbond-db ion1-type))
          (ion1-ffnonbond (chem:get-ffnonbond-using-type-index nonbond-db ion1-type-index))
          (ion1-size (chem:get-radius-angstroms ion1-ffnonbond))
-         (ion1-topology (cando:lookup-topology ion1))
          (ion1-residue (chem:build-residue-single-name ion1-topology))
          (ion1-atom (chem:content-at ion1-residue 0))
          (ion1-mol (chem:make-molecule))
@@ -66,8 +76,9 @@
           (format t "~d ~a ions required to neutraize. ~%" ion1-number (chem:get-name ion1-atom))))
     ;;Consider ion sizes and postions
     (if ion2
-        (progn
-          (setf ion2-type-index (chem:find-type-index nonbond-db ion2))
+        (let* ((ion2-topology (cando:lookup-topology ion2))
+               (ion2-type (ion-topology-atom-type ion2-topology)))
+          (setf ion2-type-index (chem:find-type-index nonbond-db ion2-type))
           (setf ion2-ffnonbond (chem:get-ffnonbond-using-type-index nonbond-db ion2-type-index))
           (setf ion2-size (chem:get-radius-angstroms ion2-ffnonbond))
           (setf ion-min-size (min ion1-size ion2-size)))
@@ -168,10 +179,11 @@
   (warn "This function is now broken - every molecule must specify what force-field it will use - leap.core::merged-force-field is incorrect - the force-field has to be looked up from the ion-topology since the ion topology will create single residue in a molecule. Using :default")
   (let* ((force-field-name :default)
          (nonbond-db (leap.core:nonbond-force-field-component force-field-name))
-         (ion1-type-index (chem:find-type-index nonbond-db ion1))
+         (ion1-topology (cando:lookup-topology ion1))
+         (ion1-type (ion-topology-atom-type ion1-topology))
+         (ion1-type-index (chem:find-type-index nonbond-db ion1-type))
          (ion1-ffnonbond (chem:get-ffnonbond-using-type-index nonbond-db ion1-type-index))
          (ion1-size (chem:get-radius-angstroms ion1-ffnonbond))
-         (ion1-topology (cando:lookup-topology ion1))
          (ion1-residue (chem:build-residue-single-name ion1-topology))
          (ion1-atom (chem:content-at ion1-residue 0))
          (ion1-mol (chem:make-molecule))
@@ -219,8 +231,9 @@
           (format t "~d ~a ions required to neutraize. ~%" ion1-number (chem:get-name ion1-atom))))
     ;;Consider ion sizes and postions
     (if ion2
-        (progn
-          (setf ion2-type-index (chem:find-type-index nonbond-db ion2))
+        (let* ((ion2-topology (cando:lookup-topology ion2))
+               (ion2-type (ion-topology-atom-type ion2-topology)))
+          (setf ion2-type-index (chem:find-type-index nonbond-db ion2-type))
           (setf ion2-ffnonbond (chem:get-ffnonbond-using-type-index nonbond-db ion2-type-index))
           (setf ion2-size (chem:get-radius-angstroms ion2-ffnonbond))
           (setf ion-min-size (min ion1-size ion2-size)))
@@ -373,10 +386,11 @@
                                                      :assign-types t))
          (atom-table (chem:atom-table energy-function))
          (nonbond-db (chem:nonbond-force-field-for-aggregate atom-table))
-         (ion1-type-index (chem:find-type-index nonbond-db ion1))
+         (ion1-topology (cando:lookup-topology ion1))
+         (ion1-type (ion-topology-atom-type ion1-topology))
+         (ion1-type-index (chem:find-type-index nonbond-db ion1-type))
          (ion1-ffnonbond (chem:get-ffnonbond-using-type-index nonbond-db ion1-type-index))
          (ion1-size (chem:get-radius-angstroms ion1-ffnonbond))
-         (ion1-topology (cando:lookup-topology ion1))
          (ion1-residue (chem:build-residue-single-name ion1-topology))
          (ion1-atom (chem:content-at ion1-residue 0))
          (ion1-mol (chem:make-molecule))
@@ -411,8 +425,9 @@
           (format t "~a is not an ion and is not appropriate for placement. ~%" ion1)
           (return-from add-ions-rand)))
     (if ion2
-        (progn
-          (setf ion2-type-index (chem:find-type-index nonbond-db ion2))
+        (let* ((ion2-topology (cando:lookup-topology ion2))
+               (ion2-type (ion-topology-atom-type ion2-topology)))
+          (setf ion2-type-index (chem:find-type-index nonbond-db ion2-type))
           (setf ion2-ffnonbond (chem:get-ffnonbond-using-type-index nonbond-db ion2-type-index))
           (setf ion2-size (chem:get-radius-angstroms ion2-ffnonbond))
           (setf ion2-topology (cando:lookup-topology ion2))
@@ -423,7 +438,7 @@
           (chem:add-matter ion2-mol ion2-residue)
           (chem:add-matter ion2-agg ion2-mol)
           (if (= 0 (chem:get-charge ion2-atom))
-                (error "~a is not an ion and is not appropriate for placement. ~%" ion2))))
+              (error "~a is not an ion and is not appropriate for placement. ~%" ion2))))
     ;;Check validity of neutralization
     (if (= ion1-number 0)
         (progn

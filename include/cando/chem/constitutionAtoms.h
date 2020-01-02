@@ -98,8 +98,8 @@ It stores the atom name, element, properties and a vector of bonds in the form o
     void fields(core::Record_sp node);
   public:
     string __repr__() const;
-    CL_LISPIFY_NAME("atomName");
-    CL_DEFMETHOD 	MatterName atomName() { return this->_AtomName;};
+    MatterName atomName() const;
+    core::T_sp atomType() const;
     virtual bool isVirtualAtom() { return false;};
 	/*! Append a ConstitutionBond_sp to our list of bonds */
     void addConstitutionBond(ConstitutionBond_sp cb) {this->_Bonds.push_back(cb);};

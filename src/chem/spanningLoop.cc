@@ -50,9 +50,6 @@ namespace chem
 {
     static		int	SiNextSeenId = 0;
 
-#define ARGS_SpanningLoop_O_make "(file_name)"
-#define DECL_SpanningLoop_O_make ""
-#define DOCS_SpanningLoop_O_make "make SpanningLoop"
 CL_NAME(CHEM:MAKE-SPANNING-LOOP);
 CL_DEFUN SpanningLoop_sp SpanningLoop_O::make(Atom_sp root)
   {

@@ -73,6 +73,17 @@ CL_DEFMETHOD Atom_sp ConstitutionAtom_O::buildAtom() const
   return atom;
 }
 
+CL_LISPIFY_NAME("atomName");
+CL_DEFMETHOD 	MatterName ConstitutionAtom_O::atomName() const {
+  return this->_AtomName;
+};
+
+CL_LISPIFY_NAME("atomType");
+CL_DEFMETHOD 	core::T_sp ConstitutionAtom_O::atomType() const
+{
+  return this->_AtomType;
+};
+
 
 string ConstitutionAtom_O::__repr__() const
 {

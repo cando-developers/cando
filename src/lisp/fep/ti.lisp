@@ -30,6 +30,7 @@
                  (leap:source "leaprc.water.tip3p")
                  (leap:load-off "solvents.lib")
                  (leap:load-off "atomic_ions.lib")
+                 (leap:load-atom-type-rules "ATOMTYPE_GFF.DEF")
                  (defparameter *feps* (fep:load-feps ":%INPUT%"))
                  (defparameter *receptor* (first (fep:receptors *feps*)))
                  (defparameter *side-name* :%SIDE-NAME%)

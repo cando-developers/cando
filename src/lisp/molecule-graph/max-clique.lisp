@@ -19,6 +19,32 @@
                               (setf (aref edges xi yi) 1)))))
       (make-molecule-graph :atoms (copy-seq atoms) :edges edges))))
 
+(defun topological-distance-matrix (graph)
+  "Return the topological distance matrix for a molecule graph and a hashtable of
+atoms to indices into the matrix."
+  ;; Save the index of each atom
+  (let ((atom-indices (make-hash-table)))
+    (loop for xi below (length (molecule-graph-atoms graph))
+          for xatom = (elt (molecule-graph-atoms graph) xi)
+          do (setf (gethash xatom atom-indices) xi))
+    ;; Run a spanning loop from every atom and build a matrix of distances back
+    ;; to the root atom.
+    (let ((topological-distance-matrix (make-array (list (hash-table-count atom-indices) (hash-table-count atom-indices)) :initial-element 0)))
+      (loop for xi below (hash-table-count atom-indices)
+            for xatom = (elt (molecule-graph-atoms graph) xi)
+            do (let ((spanning-loop (chem:make-spanning-loop xatom)))
+                 (loop for next-atom = (chem:advance-loop-and-process spanning-loop)
+                       if next-atom
+                         do (let* ((atm (chem:get-atom spanning-loop))
+                                   (atm-index (gethash atm atom-indices)))
+                              (when atm-index
+                                (let ((back-count (chem:get-back-count atm)))
+                                  (setf (aref topological-distance-matrix xi atm-index) (chem:get-back-count atm)))))
+                       else
+                         do (progn
+                              (return)))))
+      (values topological-distance-matrix atom-indices))))
+
 (defstruct cross-product graph1 graph2 nodes edges)
 
 (defun modular-cross-product (graph1 graph2 &key atom-match-callback)
@@ -58,6 +84,71 @@ If atom-match-callback is NIL then all atoms are considered equivalent."
                             (setf (aref edges xii yii) adjacent)))))
       (make-cross-product :graph1 graph1 :graph2 graph2 :nodes pairs :edges edges))))
 
+(defun modular-cross-product-with-topological-constraint (graph1 graph2 theta &key atom-match-callback)
+  "Return a modular-cross-product for the two graphs with a topological constraint.
+The topological constraint is best described here: dx.doi.org/10.1021/ci2001023 J. Chem. Inf. Model.2011, 51, 1775–1787.
+You have two graphs graph1 and graph2.
+The modular-cross-product is a new graph with vertices (v1,v2) where (v1 element of graph1) and (v2 element-of graph2).
+A constraint to created vertices can be defined using atom-match-callback.
+If atom-match-callback is NIL then all atoms are considered equivalent and all (v1,v2) vertices are created.
+The edges ((v1,v2) - (v1',v2')) in the new graph are created in two situations.
+1. Connected edges: If bond(v1,v1') and bond(v2,v2') then create the edge.
+2. Disconnected edges: if !bond(v1,v1') and !bond(v2,v2') and abs(T(v1,v1')-T(v2,v2'))<=theta.
+The last constraint abs(T(v1,v1')-T(v2,v2'))<=theta is the topological constraint. 
+"
+  (let ((pairs (make-array 1024 :adjustable t :fill-pointer 0)))
+    (if atom-match-callback
+              (loop for xi below (length (molecule-graph-atoms graph1))
+                    for xatom = (elt (molecule-graph-atoms graph1) xi)
+                    do (loop for yi below (length (molecule-graph-atoms graph2))
+                             for yatom = (elt (molecule-graph-atoms graph2) yi)
+                             do (when (funcall atom-match-callback xatom yatom)
+                                  (vector-push-extend (cons xi yi) pairs))))
+              (loop for xi below (length (molecule-graph-atoms graph1))
+                    do (loop for yi below (length (molecule-graph-atoms graph2))
+                             do (vector-push-extend (cons xi yi) pairs))))
+    (let* ((pairs-length (length pairs))
+           (edges (make-array (list pairs-length pairs-length)
+                              :element-type 'ext:byte8 :initial-element 0)))
+      (loop for xii below pairs-length
+            do (let* ((xpair (elt pairs xii))
+                      (u (car xpair))
+                      (v (cdr xpair)))
+                 (loop for yii below pairs-length
+                       do (let* ((ypair (elt pairs yii))
+                                 (up (car ypair))
+                                 (vp (cdr ypair))
+                                 (u-up (aref (molecule-graph-edges graph1) u up))
+                                 (v-vp (aref (molecule-graph-edges graph2) v vp))
+                                 (connected-edge (and (/= u up) (/= v vp) (= 1 u-up v-vp))))
+                            (when connected-edge
+                              (setf (aref edges xii yii) 1))))))
+      ;; Created Disconnected edges with topological constraint
+      (multiple-value-bind (topological-matrix-graph1 atom-index-map-graph1)
+          (topological-distance-matrix graph1)
+        (multiple-value-bind (topological-matrix-graph2 atom-index-map-graph2)
+            (topological-distance-matrix graph2)
+          (loop for xii below pairs-length
+                do (let* ((xpair (elt pairs xii))
+                          (u (car xpair))
+                          (v (cdr xpair)))
+                     (loop for yii below pairs-length
+                           do (let* ((ypair (elt pairs yii))
+                                     (up (car ypair))
+                                     (vp (cdr ypair))
+                                     (u-up (aref (molecule-graph-edges graph1) u up))
+                                     (v-vp (aref (molecule-graph-edges graph2) v vp))
+                                     (disconnected-edge (and (/= u up) (/= v vp) (= 0 u-up v-vp))))
+                                (when disconnected-edge
+                                  (let* ((top-dist1 (aref topological-matrix-graph1 u up))
+                                         (top-dist2 (aref topological-matrix-graph2 v vp))
+                                         (top-dist-delta (abs (- top-dist1 top-dist2)))
+                                         (satisfy-top-dist (<= top-dist-delta theta)))
+                                    #+(or)(format t "u,v (~a,~a)  up,vp (~a,~a) top-dist1(~a) top-dist2(~a) top-dist-delta(~a) satisfy-top-dist(~a)~%" u v up vp top-dist1 top-dist2 top-dist-delta satisfy-top-dist)
+                                    (when satisfy-top-dist
+                                      (setf (aref edges xii yii) 1))))))))))
+      (make-cross-product :graph1 graph1 :graph2 graph2 :nodes pairs :edges edges))))
+
 (defun molecular-modular-cross-product (molecule1 molecule2 &key (exclude-hydrogens t) atom-match-callback)
   "Return a cross-product for the two molecules"
   (let ((graph1 (build-molecule-graph molecule1 :exclude-hydrogens exclude-hydrogens))
@@ -66,8 +157,11 @@ If atom-match-callback is NIL then all atoms are considered equivalent."
 
 
 (defun test-cross-product ()
-  (flet ((make-bonds (edges pairs)
+  (flet ((make-bonds (atoms edges pairs)
            (loop for pair in pairs
+                 for a1 = (elt atoms (first pair))
+                 for a2 = (elt atoms (second pair))
+                 do (chem:bond-to a1 a2 :single-bond)
                  do (setf (aref edges (first pair) (second pair)) 1
                           (aref edges (second pair) (first pair)) 1))))
     (let ((g1-atoms (make-array 3 :initial-contents (list (chem:make-atom :ac1 :c)
@@ -78,11 +172,11 @@ If atom-match-callback is NIL then all atoms are considered equivalent."
                                                           (chem:make-atom :bc3 :c))))
           (g1-edges (make-array (list 3 3) :element-type 'ext:byte8 :initial-element 0))
           (g2-edges (make-array (list 3 3) :element-type 'ext:byte8 :initial-element 0)))
-      (make-bonds g1-edges '((0 1) (1 2)))
-      (make-bonds g2-edges '((0 1) (1 2)))
+      (make-bonds g1-atoms g1-edges '((0 1) (1 2)))
+      (make-bonds g2-atoms g2-edges '((0 1) (1 2)))
       (let ((g1 (make-molecule-graph :atoms g1-atoms :edges g1-edges))
             (g2 (make-molecule-graph :atoms g2-atoms :edges g2-edges)))
-        (modular-cross-product g1 g2)))))
+        (values (modular-cross-product g1 g2) g1 g2)))))
 
 (defun build-dimacs (cross-product)
   (let* ((dims (array-dimensions (cross-product-edges cross-product)))
@@ -140,7 +234,7 @@ If atom-match-callback is NIL then all atoms are considered equivalent."
   (chem:find-maximum-clique-search dimacs (core:num-logical-processors) 1))
 
 
-(defun compare-molecules (molecule1 molecule2 &key (exclude-hydrogens t) atom-match-callback)
+(defun compare-molecules (molecule1 molecule2 &key topological-constraint-theta (exclude-hydrogens t) atom-match-callback)
   "Return three values:
 a list of pairs of matching atoms 
 a list of mismatching atoms from molecule1
@@ -149,7 +243,9 @@ If atom-match-callback is NIL then all atoms are considered equivalent.
 Otherwise pass a function that takes two atoms and returns T if they are matchable."
   (let* ((graph1 (build-molecule-graph molecule1 :exclude-hydrogens exclude-hydrogens))
          (graph2 (build-molecule-graph molecule2 :exclude-hydrogens exclude-hydrogens))
-         (cross-product (modular-cross-product graph1 graph2 :atom-match-callback atom-match-callback))
+         (cross-product (if topological-constraint-theta
+                            (modular-cross-product-with-topological-constraint graph1 graph2 topological-constraint-theta :atom-match-callback atom-match-callback)
+                            (modular-cross-product graph1 graph2 :atom-match-callback atom-match-callback)))
          (dimacs (build-dimacs cross-product))
          (maximum-clique (chem:find-maximum-clique-search dimacs (core:num-logical-processors) 1))
          (matches (extract-atom-pairs cross-product maximum-clique))

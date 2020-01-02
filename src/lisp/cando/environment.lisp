@@ -6,12 +6,12 @@
 
 (defun register-topology (name topology)
   (unless (keywordp name)
-    (setf name (intern (string name) :keyword)))
+    (setf name (intern (string-upcase (string name)) :keyword)))
   (chem:setf-find-topology chem:*cando-database* name topology))
 
 (defun lookup-topology (name &optional errorp)
   (multiple-value-bind (topology foundp)
-      (chem:find-topology name errorp)
+      (chem:find-topology (intern (string-upcase (string name)) :keyword) errorp)
     topology))
 
 (defun walk-topologys (func)

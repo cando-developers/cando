@@ -272,7 +272,7 @@ I'll use an angle term instead of a bond term.
         (remove-connected-hydrogens mol-copy (find-groups *tertiary-amine-with-h* mol-graph) 1)
         (let ((idx 0))
           (let ((missing-h (unique-secondary-carbon-missing-h mol-graph)))
-            (format t "Missing-h ~a~%" missing-h)
+            #+(or)(format t "Missing-h ~a~%" missing-h)
             (setf idx (add-lone-pair mol-copy missing-h idx))
             (setf idx (add-lone-pair mol-copy (find-groups *lp-oxygen* mol-graph) idx))
             (setf idx (add-lone-pair mol-copy (find-groups *lp-nitrogen* mol-graph) idx))
@@ -975,14 +975,16 @@ Otherwise pass a function that takes two atoms and returns T if they are matchab
   (check-type molecule chem:molecule)
   (check-type other-sketch2d sketch2d)
   (let ((other-molecule (original-molecule other-sketch2d)))
-    (format t "About to compare molecules~%")
+    #+(or)(format t "About to compare molecules~%")
     (multiple-value-bind (equiv diff1 diff2)
-        (molecule-graph.max-clique:compare-molecules molecule other-molecule :atom-match-callback atom-match-callback)
-      (format t "mol1: ~s~%" molecule)
-      (format t "mol2: ~s~%" other-molecule)
-      (format t "similar-sketch2d equiv atoms: ~a~%" equiv)
-      (format t "diff1: ~s~%" diff1)
-      (format t "diff2: ~s~%" diff2)
+        (molecule-graph.max-clique:compare-molecules molecule other-molecule :atom-match-callback atom-match-callback :topological-constraint-theta 2)
+      #+(or)
+      (progn
+        (format t "mol1: ~s~%" molecule)
+        (format t "mol2: ~s~%" other-molecule)
+        (format t "similar-sketch2d equiv atoms: ~a~%" equiv)
+        (format t "diff1: ~s~%" diff1)
+        (format t "diff2: ~s~%" diff2))
       (let ((new-sketch (setup-simulation molecule :accumulate-coordinates accumulate-coordinates)))
         ;; We need hash-tables for the original atoms to the sketch atoms
         (let ((other-original-to-sketch (make-hash-table))
@@ -998,7 +1000,7 @@ Otherwise pass a function that takes two atoms and returns T if they are matchab
                  (atom-table (chem:atom-table energy-function))
                  (number-of-atoms (chem:get-number-of-atoms atom-table))
                  (frozen (make-array (* 3 number-of-atoms) :element-type 'bit :initial-element 0)))
-            (format t "There are ~a atoms in atom-table~%" number-of-atoms)
+            #+(or)(format t "There are ~a atoms in atom-table~%" number-of-atoms)
             (loop for equiv-pair in equiv
                   for new-atom = (car equiv-pair)
                   for other-atom = (cdr equiv-pair)
@@ -1016,7 +1018,7 @@ Otherwise pass a function that takes two atoms and returns T if they are matchab
                                  (aref frozen (+ 1 (* 3 new-sketch-atom-index))) 1
                                  (aref frozen (+ 2 (* 3 new-sketch-atom-index))) 1
                                  )))))
-            (format t "Using frozen: ~a  length: ~a~%" frozen (length frozen))
+            #+(or)(format t "Using frozen: ~a  length: ~a~%" frozen (length frozen))
             (chem:load-coordinates-into-vector energy-function (dynamics:coordinates dynamics))
             (sketch2d-dynamics dynamics :frozen frozen :unfreeze nil
                                         :accumulate-coordinates accumulate-coordinates)
