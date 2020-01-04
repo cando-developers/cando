@@ -2643,7 +2643,8 @@ cando-extensions               : T if you want cando-extensions written to the t
 (defun read-bounding-box (netcdf)
   (let* ((lengths (cell-lengths netcdf))
          (angles (cell-angles netcdf))
-         (bounding-box (chem:make-bounding-box lengths angles)))
+         (bounding-box (chem:make-bounding-box (coerce lengths 'list)
+                                               :angles-degrees (coerce angles 'list))))
     bounding-box))
 
 (defun read-amber-restart-file (coordinate-filename)
