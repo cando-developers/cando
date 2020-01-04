@@ -21,16 +21,12 @@
        (close (fof-stream *fortran-file*)))))
 
 (defmacro with-fortran-input-file ((ff &rest open-args) &body body)
-  `(let* ((*fortran-file* (make-fortran-file
-                                  :stream (apply #'cl:open (list ,@open-args))
-                                  :format nil
-                                  :per-line nil
-                                  :number-on-line nil
-                                  :wrote-nothing nil))
+  `(let* ((*fortran-file* (make-fortran-input-file
+                                  :stream (apply #'cl:open (list ,@open-args))))
           (,ff *fortran-file*))
      (unwind-protect
           (progn ,@body)
-       (close (fof-stream *fortran-file*)))))
+       (close (fortran-input-file-stream *fortran-file*)))))
 
 (defun fformat (per-line fmt &optional (ff *fortran-file*))
   "Define the format for write commands that will follow"

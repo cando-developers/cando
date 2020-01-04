@@ -694,8 +694,8 @@ then don't calculate 1,4 interactions"
                         (setf short-name (intern (subseq (string short-name) 0 3) :keyword)))
                       (setf (elt residue-name-vector index) short-name)))
                    (t (warn "There should be a short residue name for ~a - truncating" residue-name)
-                      (setf short-name (intern (subseq (string residue-name) 0 3) :keyword))
-                      (setf (elt residue-name-vector index) short-name)))))
+                      (let ((short-name (intern (subseq (string residue-name) 0 3) :keyword)))
+                        (setf (elt residue-name-vector index) short-name))))))
     (setf nmolecule (length molecule-vector))
     (setf nresidue (length residue-name-vector))
     (loop for i from 0 below (length residue-pointer-prepare-vector)
@@ -1635,11 +1635,12 @@ cando-extensions               : T if you want cando-extensions written to the t
   (unless (string-equal line "%FLAG" :start1 0 :end1 5)
     (error "Expected %FLAG at the start of the line - got: ~s" line)))
 
-#+(or)
+;;#+(or)
 (defmacro rlog (fmt &rest args)
   `(progn
            (cl:format *debug-io* ,fmt ,@args)
            (finish-output *debug-io*)))
+#+(or)
 (defmacro rlog (fmt &rest args)
   nil)
 
@@ -1676,14 +1677,14 @@ cando-extensions               : T if you want cando-extensions written to the t
           molecules-vec residues-vec
           force-field-names molecule-force-field-index
           )
-      (rlog "Starting read-amber-parm-format~%")
+      (rlog "Starting read-amber-parm-format fif: ~s~%" fif)
       (fortran:fread-line fif)   ; Skip the version and timestamp line
       (fortran:fread-line fif)   ; read the first %FLAG line
       ;; From here on down - read the input file
       (outline-progn
        (loop for line = (fortran:fortran-input-file-look-ahead fif)
              while line
-             ;;do (rlog "line ~a~%" line)
+             do (rlog "line ~a~%" line)
              do (verify-%flag-line line)
              do (cond
                   ((string-equal %flag-title line :end2 (length %flag-title))
@@ -2294,7 +2295,7 @@ cando-extensions               : T if you want cando-extensions written to the t
         (setf nonbond-vectors (acons :cn1-vec (copy-seq lennard-jones-acoef) nonbond-vectors))
         (setf nonbond-vectors (acons :cn2-vec (copy-seq lennard-jones-bcoef) nonbond-vectors))
         
-        ;;(rlog "nonbond-vectors -> ~s~%" nonbond-vectors)
+        (rlog "nonbond-vectors calculated~%")
         (chem:construct-nonbond-terms-from-aList energy-nonbond nonbond-vectors)
         (loop for i from 0 below (length excluded-atoms-list)
               for atom = (- (aref excluded-atoms-list i) 1)
@@ -2318,6 +2319,7 @@ cando-extensions               : T if you want cando-extensions written to the t
                                                      :atom-table atom-table)))
           energy-function #| <-- This was missing before |# )
 	;; fill in atom-table information
+        (rlog "Setting up atom-table~%")
 	(chem:setf-atom-table-residue-pointers atom-table residue-pointer)
         (chem:setf-atom-table-residue-names atom-table (make-array (length residue-label) :adjustable t :initial-contents residue-label))
 	(chem:setf-atom-table-residue-pointers atom-table residue-pointer)
@@ -2330,6 +2332,7 @@ cando-extensions               : T if you want cando-extensions written to the t
 	(chem:setf-atom-table-residues atom-table residues-vec)
         (chem:setf-atom-table-molecules atom-table (copy-seq molecules-vec))
 	;; more here
+        (rlog "Setting up alist~%")
         (let ((alist (list (cons :atom-table atom-table)
                            (cons :stretch energy-stretch)
                            (cons :angle energy-angle)
@@ -2337,6 +2340,7 @@ cando-extensions               : T if you want cando-extensions written to the t
                            (cons :nonbond energy-nonbond)))
               (energy-function (core:make-cxx-object 'chem:energy-function)))
           (chem:fill-energy-function-from-alist energy-function alist)
+          (rlog "Returning results~%")
           (values energy-function (generate-aggregate-for-energy-function energy-function )))))))
 
 
