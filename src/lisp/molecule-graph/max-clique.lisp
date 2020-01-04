@@ -39,7 +39,7 @@ atoms to indices into the matrix."
                                    (atm-index (gethash atm atom-indices)))
                               (when atm-index
                                 (let ((back-count (chem:get-back-count atm)))
-                                  (setf (aref topological-distance-matrix xi atm-index) (chem:get-back-count atm)))))
+                                  (setf (aref topological-distance-matrix xi atm-index) back-count))))
                        else
                          do (progn
                               (return)))))
