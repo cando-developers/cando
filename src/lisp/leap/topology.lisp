@@ -1635,12 +1635,12 @@ cando-extensions               : T if you want cando-extensions written to the t
   (unless (string-equal line "%FLAG" :start1 0 :end1 5)
     (error "Expected %FLAG at the start of the line - got: ~s" line)))
 
-;;#+(or)
+#+(or)
 (defmacro rlog (fmt &rest args)
   `(progn
            (cl:format *debug-io* ,fmt ,@args)
            (finish-output *debug-io*)))
-#+(or)
+;;#+(or)
 (defmacro rlog (fmt &rest args)
   nil)
 
