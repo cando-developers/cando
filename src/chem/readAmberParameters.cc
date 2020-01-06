@@ -176,7 +176,7 @@ FFNonbondDb_sp ReadAmberParameters_O::parseMasses(core::T_sp fin, FFNonbondDb_sp
   core::T_sp readtable = cl::_sym_STARreadtableSTAR->symbolValue();
   core::T_sp copy_readtable = cl__copy_readtable(readtable,_Nil<core::T_O>());
   core::core__readtable_case_set(kw::_sym_preserve,copy_readtable);
-  scope.bind(cl::_sym_STARreadtableSTAR,copy_readtable);
+  core::DynamicScopeManager scope2(cl::_sym_STARreadtableSTAR,copy_readtable);
   bool done = false;
   while ( not done ) {
     core::T_mv ol = core::cl__read_line(fin,_Nil<T_O>(),_Nil<T_O>());
