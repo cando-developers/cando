@@ -796,7 +796,7 @@ void RingFinder_O::addRing(PathMessage_sp ring, uint stage)
     LOG(BF("Adding ring with beep=%s") % _rep_(beep) );
     core::HashGenerator hg;
     clasp_sxhash(beep,hg);
-    core::Fixnum_sp hash = core::clasp_make_fixnum(hg.hash());
+    core::Fixnum_sp hash = core::clasp_make_fixnum(hg.rawhash());
     core::List_sp ringList = this->_rings->gethash(hash,_Nil<core::T_O>());
     	// If this new ring is identical to an existing ring then
 	// just return
