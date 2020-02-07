@@ -59,6 +59,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/symbolTable.h>
 #include <clasp/core/translators.h>
 #include <clasp/core/wrappers.h>
+#include <clasp/core/ql.h>
 
 namespace chem
 {
@@ -997,16 +998,11 @@ CL_DEFMETHOD geom::BoundingCuboid_sp Matter_O::matterCalculateBoundingCuboid(dou
 CL_LISPIFY_NAME("contentsAsList");
 CL_DEFMETHOD core::List_sp Matter_O::contentsAsList()
 {
-  core::List_sp first = _Nil<core::T_O>();
-  core::List_sp* cur = &first;
+  ql::list result;
   contentIterator	it;
   for ( it=this->_contents.begin(); it!=this->_contents.end(); ++it )
-  {
-    core::Cons_sp one = core::Cons_O::create(*it,_Nil<core::T_O>());
-    *cur = one;
-    cur = reinterpret_cast<core::List_sp*>(&(one->_Cdr));
-  }
-  return first;
+    result << *it;
+  return result.result();
 }
 
 
