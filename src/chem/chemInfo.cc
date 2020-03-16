@@ -661,7 +661,7 @@ string Logical_O::asSmarts() const {
   ss << "[";
   switch (this->_Operator) {
   case logAlwaysTrue:
-      ss << "<TRUE>";
+      ss << "";
       break;
   case logIdentity:
       ss << this->_Left->asSmarts();
@@ -1759,19 +1759,22 @@ string AtomTest_O::asSmarts() const {
       ss << "x" << this->_IntArg;
       break;
   case SAPInBond:
-      ss << "{SAPInBond}";
+      ss << "<SAPInBond/" << this->_NumArg << ">";
       break;
   case SAPArLevel:
-      ss << "{SAPArLevel}";
+      ss << "<SAPArLevel/" << this->_IntArg << ">";
       break;
   case SAPNoRing:
-      ss << "{SAPNoRing}";
+      ss << "<SAPNoRing>";
       break;
   case SAPElectronegativeElement: // ( O, N, F, Cl, Br )
-      ss << "{SAPElectronegativeElement}";
+      ss << "<SAPElectronegativeElement>";
+      break;
+  case SAPBondedToPrevious:
+      ss << "<SAPBondedToPrevious/" << this->_IntArg <<">";
       break;
   default:
-      ss << "{UnknownTest-" << this->testName(this->_Test) << "}";
+      ss << "<UnknownTest-" << this->testName(this->_Test) << "}";
       break;
   }
   return ss.str();
@@ -2129,15 +2132,23 @@ core::T_sp AntechamberFocusAtomMatch_O::children() {
 
 string AntechamberFocusAtomMatch_O::asSmarts() const {
   stringstream ss;
-  ss << "{AntechamberFocusAtomMatch ";
-  ss << _rep_(this->_ResidueNames) << "|";
-  if (this->_AtomicProperty.notnilp()) {
-    ss << this->_AtomicProperty->asSmarts() << "|";
+  ss << "[<antechamber>";
+  // ss << _rep_(this->_ResidueNames) << "|";
+  ss << "#" << this->_AtomicNumber ;
+  if (this->_NumberOfAttachedAtoms>=0) {
+    ss << "v" << this->_NumberOfAttachedAtoms;
   }
-  ss << this->_AtomicNumber << "|";
-  ss << this->_NumberOfAttachedAtoms << "|";
-  ss << this->_NumberOfAttachedHydrogens << "|";
-  ss << this->_NumberOfElectronWithdrawingGroups << "}";
+  if (this->_NumberOfAttachedHydrogens>=0) {
+    ss << "H" << this->_NumberOfAttachedHydrogens;
+  }
+  if (this->_NumberOfElectronWithdrawingGroups>=0) {
+    ss << "E" << this->_NumberOfElectronWithdrawingGroups;
+  }
+  ss << "]";
+  if (this->_AtomicProperty.notnilp()) {
+    ss << this->_AtomicProperty->asSmarts();
+  }
+
   return ss.str();
 }
 
@@ -2276,9 +2287,9 @@ bool AntechamberBondToAtomTest_O::matches_Atom(Root_sp root, chem::Atom_sp atom)
 
 string AntechamberBondToAtomTest_O::asSmarts() const {
   stringstream ss;
-  ss << "{AntechamberBondToAtomTest";
-  ss << _rep_(this->_Element) << "|";
-  ss << (this->_Neighbors) <<"|";
+  ss << "[<AntechamberBondToAtomTest>";
+  ss << "<element" << _rep_(this->_Element) << ">";
+  ss << "v" << (this->_Neighbors);
   ss << this->_AtomProperties->asSmarts() << "}";
   return ss.str();
 }

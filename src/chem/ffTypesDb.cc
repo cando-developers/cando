@@ -73,6 +73,21 @@ void	FFTypesDb_O::initialize()
 }
 
 
+CL_LISPIFY_NAME(fftype-rule-type);
+CL_DEFMETHOD
+core::T_sp FFTypeRule_O::getType() const
+{
+  return this->_Type;
+}
+
+CL_LISPIFY_NAME(fftype-rule-test);
+CL_DEFMETHOD
+Root_sp FFTypeRule_O::getTest() const
+{
+  return this->_Test;
+}
+
+
 SYMBOL_EXPORT_SC_(ChemPkg,assignType);
 
 CL_LISPIFY_NAME("assignType");

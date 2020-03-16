@@ -437,8 +437,8 @@ Each of these functions take two arguments, the svg-scene and the sketch-svg.
 The caller provided functions should use cl-svg to render additional graphics."
   (let* ((molecule (molecule sketch2d))
          (bbox (chem:matter-calculate-bounding-cuboid molecule 0.0))
-         (xscale 20.0) ; scale from angstroms to pts?
-         (yscale 20.0) ; scale from angstroms to pts
+         (xscale 20.0)                  ; scale from angstroms to pts?
+         (yscale 20.0)                  ; scale from angstroms to pts
          (bbox-width (- (geom:get-max-x bbox) (geom:get-min-x bbox)))
          (bbox-height (- (geom:get-max-y bbox) (geom:get-min-y bbox)))
          (x-mol-center (/ (+ (geom:get-max-x bbox) (geom:get-min-x bbox)) 2.0))
@@ -462,25 +462,27 @@ The caller provided functions should use cl-svg to render additional graphics."
         (layout-sketch sketch #'transform-point)
         (optimize-sketch sketch)
         (render-dbg "About to render-sketch  bond-nodes ~a~%" (length (bond-nodes sketch)))
-        (let ((scene (if toplevel
-                         (cl-svg:make-svg-toplevel
-                          'cl-svg:svg-1.2-toplevel
-                          :id id
-                          :width (round xviewport)
-                          :height (round yviewport) 
-                          :viewport (format nil "0 0 ~d ~d" (round xviewport) (round yviewport)))
-                         (make-instance 'cl-svg::svg-element
-                                        :name "svg"
-                                        :attributes
-                                        (list :width (round xviewport)
-                                              :height (round yviewport) ; :width "1000" :height "auto" ; :width width :height height
-                                              :id id
-                                              :viewport (format nil "0 0 ~d ~d" (round xviewport) (round yviewport))))
-                         )))
+        (let* ((rxviewport (round xviewport))
+               (ryviewport (round yviewport))
+               (scene (if toplevel
+                          (cl-svg:make-svg-toplevel
+                           'cl-svg:svg-1.2-toplevel
+                           :id id
+                           :width (round xviewport)
+                           :height (round yviewport) 
+                           :viewport (format nil "0 0 ~d ~d" (round xviewport) (round yviewport)))
+                          (make-instance 'cl-svg::svg-element
+                                         :name "svg"
+                                         :attributes
+                                         (list :width (round xviewport)
+                                               :height (round yviewport) ; :width "1000" :height "auto" ; :width width :height height
+                                               :id id
+                                               :viewport (format nil "0 0 ~d ~d" (round xviewport) (round yviewport))))
+                          )))
           (setf (scene sketch) scene)
           (setf (before-render sketch) before-render)
           (setf (after-render sketch) after-render)
-          sketch)))))
+          (values sketch ))))))
 
 (defun render-svg-scene (sketch-svg)
   (let ((scene (scene sketch-svg)))

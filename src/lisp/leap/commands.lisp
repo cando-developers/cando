@@ -653,11 +653,11 @@ the STRING is not given then a list of legal STRINGs is provided.
 "
   (if arg
       (progn
-        (let ((found (assoc arg leap.parser:*function-names/alist* :test #'string=)))
+        (let ((found (assoc (string arg) leap.parser:*function-names/alist* :test #'string-equal)))
           (if found
               (let ((cmd (cdr found)))
                 (format t "~%~a~%" (documentation cmd 'function)))
-              (format t "No help available for ~a~%" arg))))
+              (format t "No help available for ~s package: ~s~%" arg (symbol-package arg)))))
       (progn
         (format t "Help is available on the following subjects: ~%")
         (let* ((commands (copy-seq leap.parser:*function-names/alist*))
@@ -1312,7 +1312,8 @@ Provide a list of commands that cleap has available to mimic tleap."
 
 (eval-when (:load-toplevel :execute)
   ;; Define a list of names that do not get exported as lisp aliases
-  (defvar *ignore-lisp-aliases* '( "list" "set" "remove" "source" "quit" "desc" "minimize" "show" "combine"))
+  (defvar *ignore-lisp-aliases* '( "list" "set" "remove"
+                                  "source" "quit" "desc" "minimize" "show" "combine"))
   (setf leap.parser:*function-names/alist*
         '(("logFile" . leap-log-file)
           ("quickload" . leap-quickload)

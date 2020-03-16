@@ -10,9 +10,9 @@
                :parser.common-rules
                :parser.common-rules.operators
                :architecture.builder-protocol)
-    :serial t
     :components
     ((:file "packages")
-     (:file "sdf")
+     (:file "sdf" :depends-on ("packages"))
+     (:file "sdf-writer" :depends-on ("packages"))
      ))
 

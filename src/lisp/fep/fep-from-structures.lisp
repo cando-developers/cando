@@ -38,7 +38,7 @@
   (let ((source-molecule (molecule source))
         (target-molecule (molecule target)))
     (multiple-value-bind (equivs diff1 diff2)
-        (molecule-graph:compare-molecules source-molecule target-molecule)
+        (molecule-graph.max-clique:compare-molecules source-molecule target-molecule)
       (unless (= (chem:content-size source-molecule) 1)
         (error "The source molecule ~a has more than one residue"))
       (unless (= (chem:content-size target-molecule) 1)

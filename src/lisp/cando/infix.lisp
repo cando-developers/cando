@@ -1,4 +1,7 @@
 (in-package :infix)
+(export 'nfx)
+(export 'infix)
+
 ;; infix.lisp
 ;; by AmkG
 
@@ -331,3 +334,4 @@
 
 ;; (nfx 55 - 3 * 4 + 2000000) used to give -1999957
 ;; instead of the correct result 2000043. This is now corrected. -- Bruno Daniel
+

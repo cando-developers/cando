@@ -234,7 +234,7 @@ The last constraint abs(T(v1,v1')-T(v2,v2'))<=theta is the topological constrain
   (chem:find-maximum-clique-search dimacs (core:num-logical-processors) 1))
 
 
-(defun compare-molecules (molecule1 molecule2 &key topological-constraint-theta (exclude-hydrogens t) atom-match-callback)
+(defun compare-molecules (molecule1 molecule2 &key (topological-constraint-theta 2) (exclude-hydrogens t) atom-match-callback)
   "Return three values:
 a list of pairs of matching atoms 
 a list of mismatching atoms from molecule1

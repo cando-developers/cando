@@ -60,6 +60,13 @@
    #:sequence
    ))
 
+(defpackage #:leap.cmap
+  (:use #:common-lisp)
+  (:shadow #:count)
+  (:export
+   #:cmap
+   ))
+
 (defpackage #:leap.commands
   (:use #:common-lisp)
   (:export
