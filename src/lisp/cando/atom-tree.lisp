@@ -89,11 +89,11 @@
            (tree (make-instance 'atom-tree)))
       (format t "spanning-atoms: ~a~%" spanning-atoms)
       (let ((tree-nodes (loop for a in spanning-atoms
-                           for bond-atom = (chem:get-back-span a)
+                           for bond-atom = (chem:get-back-span spanning-loop a)
                            for bond-node = (and bond-atom (gethash bond-atom (atoms-to-nodes tree)))
-                           for angle-atom = (and bond-atom (chem:get-back-span bond-atom))
+                           for angle-atom = (and bond-atom (chem:get-back-span spanning-loop bond-atom))
                            for angle-node = (and angle-atom (gethash angle-atom (atoms-to-nodes tree)))
-                           for dihedral-atom = (and angle-atom (chem:get-back-span angle-atom))
+                           for dihedral-atom = (and angle-atom (chem:get-back-span spanning-loop angle-atom))
                            for dihedral-node = (and dihedral-atom (gethash dihedral-atom (atoms-to-nodes tree)))
                            for atom-node = (make-instance 'atom-node
                                                         :bond-node bond-node

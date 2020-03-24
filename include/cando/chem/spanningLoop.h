@@ -41,6 +41,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #define	SPANNINGLOOP_H
 
 #include <clasp/core/common.h>
+#include <clasp/core/hashTable.fwd.h>
 #include <cando/chem/matter.h>
 #include <cando/chem/atom.h>
 #include <cando/chem/residue.h>
@@ -54,6 +55,17 @@ This is an open source license for the CANDO software from Temple University, bu
 
 
 namespace chem {
+
+    SMART(SpanningInfo );
+    class SpanningInfo_O : public core::CxxObject_O
+    {
+	LISP_CLASS(chem,ChemPkg,SpanningInfo_O,"SpanningInfo",core::CxxObject_O);
+    public:
+        int        _Distance;
+        core::T_sp _ToRoot;
+        core::T_sp _Next;
+        SpanningInfo_O(int dist=0, core::T_sp toRoot=_Nil<core::T_O>(), core::T_sp toNext=_Nil<core::T_O>() ) : _Distance(dist), _ToRoot(toRoot), _Next(toNext) {};
+    };
 
 
     SMART(SpanningLoop );
@@ -78,8 +90,9 @@ private:
 	Atom_sp				currentObject;
 
 			// Spanning tree stuff
-	Atom_sp				aCurSpan;
-	Atom_sp				aLastSpan;
+	Atom_sp			aCurSpan;
+        Atom_sp  		aLastSpan;
+        SpanningInfo_sp         siLastSpan;
 	int				iSeenId;
 	int				iMaxDistanceFromRoot;
 	int				iInvisibleCollisions;
@@ -89,7 +102,7 @@ private:
 	AtomFlags			fVisibleFlagsOn;
 	AtomFlags			fVisibleFlagsOff;
 	int				iTempInt;
-
+        core::HashTableEq_sp            _BackSpan;
 
 	void	clearAtomIndices();
         core::T_sp next(core::T_sp funcDesig);
@@ -97,6 +110,16 @@ private:
 	bool		bLoopAtomVisible(Atom_sp a);
 	bool		bSpanAtomVisible(Atom_sp a, BondOrder order, bool* b);
 	Atom_sp		nextSpanningAtom(std::function<bool (Atom_sp fromAtom, Bond_sp b)> bondTester);
+
+    public:
+        bool isBackSpanValid(Atom_sp a);
+        core::T_sp getBackSpan(Atom_sp a);
+        bool isNextSpanValid(Atom_sp a);
+        core::T_sp getNextSpan(Atom_sp a);
+        int getBackCount(Atom_sp a);
+        bool lookupSpanningInfo(Atom_sp a, SpanningInfo_sp& info);
+        SpanningInfo_sp getSpanningInfo(Atom_sp a);
+        SpanningInfo_sp storeSpanningInfo(Atom_sp key, int distance, core::T_sp toRoot=_Nil<core::T_O>(), core::T_sp next=_Nil<core::T_O>());
 
 public:
 	static SpanningLoop_sp create(Atom_sp t) {

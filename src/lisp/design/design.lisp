@@ -152,7 +152,7 @@ This is for looking up parts but if the thing returned is not a part then return
     (loop for ok = (chem:advance-loop-and-process spanning-tree)
           for atom = (chem:get-atom spanning-tree)
           until (eq atom end))
-    (chem:get-back-count end)))
+    (chem:get-back-count spanning-tree end)))
 
 (defun add-guidance-restraints (molecule)
   (chem:clear-restraints molecule)

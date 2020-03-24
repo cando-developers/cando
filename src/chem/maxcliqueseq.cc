@@ -2501,12 +2501,14 @@ namespace chem {
 
     CL_DEFUN
     core::T_sp chem__find_maximum_clique_search(Dimacs_sp dimacsGraph, int numThreads, int numJobs) {
-   
+        if (numThreads>0) {
+            printf("%s:%d Parallel maximum-clique-search is broken - it calls back() with empty vectors\n", __FILE__, __LINE__ );
+            numThreads = 0;
+        }
         bool coloredOut = false;
 #ifdef __linux
         coloredOut = true;
 #endif
-
         Graph<BitstringSet> graphB;
         graphB.init(dimacsGraph->getAdjacencyMatrix(), dimacsGraph->getDegrees());
 #if 0
@@ -2522,7 +2524,7 @@ namespace chem {
                 BBMcrSort<BBGreedyColorSort<Graph<BitstringSet>>>        // initial & color sort
                 > problem(graphB);
             problem.search();
-            problem.outputStatistics(clique,coloredOut); std::cout << "\n\n"; 
+            problem.outputStatistics(clique,coloredOut);
         } else {
             ParallelMaximumCliqueProblem<
                 int,                        // vertex ID
@@ -2533,7 +2535,7 @@ namespace chem {
                 > problemP1(graphB);
             std::vector<int> affinities;
             problemP1.search(numThreads, numJobs, affinities);
-            problemP1.outputStatistics(clique,coloredOut); std::cout << "\n"; 
+            problemP1.outputStatistics(clique,coloredOut);
             // std::cout << "Thread efficiency = " << std::setprecision(3) << problemP1.workerEfficiency() << "\n\n";
         }
         return clique;

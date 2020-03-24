@@ -348,8 +348,6 @@ Atom_O::Atom_O(const Atom_O& ss) :Matter_O(ss)
   this->_RelativePriority = ss._RelativePriority;
   this->_Configuration = ss._Configuration;
   this->_StereochemistryType = ss._StereochemistryType;
-  this->_BackSpan = _Nil<Atom_O>();		// Is this a bad idea to access env in copy?
-  this->_NextSpan = _Nil<Atom_O>();		// Is this a bad idea to access env in copy?
 }
 
 //
@@ -1576,21 +1574,6 @@ CL_DEFMETHOD     int     Atom_O::getValence()
 }
 
 
-
-CL_LISPIFY_NAME("getBackSpan");
-CL_DEFMETHOD     Atom_sp Atom_O::getBackSpan()
-{
-  ASSERT(this->_BackSpan);
-  return this->_BackSpan;
-}
-
-
-CL_LISPIFY_NAME("getNextSpan");
-CL_DEFMETHOD     Atom_sp Atom_O::getNextSpan()
-{
-  ASSERT(this->_NextSpan);
-  return this->_NextSpan;
-}
 
 
 core::List_sp Atom_O::_expandLocalSpanningTree(Atom_sp avoidAtom, Bond_sp incomingBond, uint depth)

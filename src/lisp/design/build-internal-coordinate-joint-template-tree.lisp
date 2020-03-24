@@ -592,7 +592,7 @@ Return a list of prepare-topology objects - one for each residue that we need to
       ;; Now iterate over the atoms from farthest to the nearest to the root
       ;; and add yourself to your backSpanning atoms :children
       (dolist (atom all-spanning-atoms)
-        (let ((parent-atom (chem:get-back-span atom)))
+        (let ((parent-atom (chem:get-back-span spanning-loop atom)))
           (when parent-atom
             (let ((parent-children (chem:matter-get-property parent-atom :children)))
               (setf parent-children (cons atom parent-children))

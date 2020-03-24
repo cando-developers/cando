@@ -203,11 +203,6 @@ namespace chem {
     double		charge;
 	// copy atoms
     Atom_sp		copyAtom;
-	// Gaff aromaticity flags
-	// Spanning tree stuff
-    gc::Nilable<Atom_sp>		_BackSpan;
-    gc::Nilable<Atom_sp>		_NextSpan;
-
 	// Specific to MOE
 //    MoeType 	moeType;	// type string as read from MOE
 //    int		moeIndex;
@@ -438,35 +433,6 @@ namespace chem {
 	  @param atomMap   A map of Atoms to ConstitutionAtomIndex0N values */
     void defineConstitutionAtomBonding(ConstitutionAtom_sp consAtom, MapAtomsToConstitutionAtomIndex0N atomMap);
 
-
-	// Spanning tree stuff
-
-	/*! When a spanning tree has crawled over this atom assign the atom a unique value (seenId) to indicate this */
-    CL_LISPIFY_NAME("setSeenId");
-    CL_DEFMETHOD 	void	setSeenId(int i) {this->seenId=i;};
-    CL_LISPIFY_NAME("getSeenId");
-    CL_DEFMETHOD 	int	getSeenId() {return this->seenId;};
-    CL_LISPIFY_NAME("setBackCount");
-    CL_DEFMETHOD 	void	setBackCount(int i) {this->backCount=i;};
-    CL_LISPIFY_NAME("getBackCount");
-    CL_DEFMETHOD 	int	getBackCount() {return this->backCount;};
-    void	invalidateBackSpan() {this->_BackSpan = _Nil<Atom_O>(); };// = false;
-    bool	isBackSpanValid() {_OF();ANN(this->_BackSpan);return this->_BackSpan.notnilp(); };
-    CL_LISPIFY_NAME("setBackSpan");
-    CL_DEFMETHOD 	void	setBackSpan(Atom_sp a) {this->_BackSpan=a;}//this->validBackSpan=true;
-    Atom_sp	getBackSpan();
-    void	invalidateNextSpan() {this->_NextSpan = _Nil<Atom_O>(); };
-    bool	isNextSpanValid() { return this->_NextSpan.notnilp(); };
-    CL_LISPIFY_NAME("setNextSpan");
-    CL_DEFMETHOD 	void	setNextSpan(Atom_sp a) {this->_NextSpan=a;};//;this->validNextSpan=true;
-    Atom_sp	getNextSpan();
-
-	/*! Return a local spanning tree as a list of lists of atoms
-	 * It will have the form ( rootAtom ( neighbor1 (neighbor1-1) ... ) (neighbor2 (neighbor2-1)...) )
-	 * The depth describes how deep to go 
-	 *   - 0 means return yourself
-	 *   - 1 means return yourself and immediatly attached neighbors
-	 */
   private:
     core::List_sp 	_expandLocalSpanningTree(Atom_sp avoid, Bond_sp bond, uint depth);
   public:
@@ -639,10 +605,6 @@ namespace chem {
       _Mask(0),
       copyAtom(_Unbound<chem::Atom_O>()),
       _RingMembershipCount(0),
-      seenId(0),
-      _BackSpan(_Nil<core::T_O>()),
-      _NextSpan(_Nil<core::T_O>()),
-      backCount(0),
       tempInt(0)
 //      moeIndex(0),
 //      moeType(_Nil<core::Symbol_O>())

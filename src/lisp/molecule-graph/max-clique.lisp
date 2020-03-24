@@ -38,7 +38,7 @@ atoms to indices into the matrix."
                          do (let* ((atm (chem:get-atom spanning-loop))
                                    (atm-index (gethash atm atom-indices)))
                               (when atm-index
-                                (let ((back-count (chem:get-back-count atm)))
+                                (let ((back-count (chem:get-back-count spanning-loop atm)))
                                   (setf (aref topological-distance-matrix xi atm-index) back-count))))
                        else
                          do (progn
@@ -230,8 +230,10 @@ The last constraint abs(T(v1,v1')-T(v2,v2'))<=theta is the topological constrain
                     (chem:set-name atm new-name))))
 
 
+(defparameter *clique-search-threads* 0 ) ;; use serial - parallel is broken  (core:num-logical-processors))
+
 (defun dothing (dimacs)
-  (chem:find-maximum-clique-search dimacs (core:num-logical-processors) 1))
+  (chem:find-maximum-clique-search dimacs *clique-search-threads* 1))
 
 
 (defun compare-molecules (molecule1 molecule2 &key (topological-constraint-theta 2) (exclude-hydrogens t) atom-match-callback)
@@ -247,7 +249,7 @@ Otherwise pass a function that takes two atoms and returns T if they are matchab
                             (modular-cross-product-with-topological-constraint graph1 graph2 topological-constraint-theta :atom-match-callback atom-match-callback)
                             (modular-cross-product graph1 graph2 :atom-match-callback atom-match-callback)))
          (dimacs (build-dimacs cross-product))
-         (maximum-clique (chem:find-maximum-clique-search dimacs (core:num-logical-processors) 1))
+         (maximum-clique (chem:find-maximum-clique-search dimacs *clique-search-threads* 1))
          (matches (extract-atom-pairs cross-product maximum-clique))
          (mol1-matches (make-hash-table))
          (mol2-matches (make-hash-table)))

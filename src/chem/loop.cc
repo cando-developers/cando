@@ -146,6 +146,8 @@ bool	Loop:: bLoopAtomVisible(Atom_sp aAtom )
  */
 bool	Loop::bSpanAtomVisible( Atom_sp aAtom, bool *bPSeenBefore )
 {
+    SIMPLE_ERROR(BF("THis code won't work with new way to handle atoms"));
+#if 0
   *bPSeenBefore = false;
   if ( aAtom->getSeenId() == this->iSeenId ) {
     *bPSeenBefore = true;
@@ -162,6 +164,7 @@ bool	Loop::bSpanAtomVisible( Atom_sp aAtom, bool *bPSeenBefore )
     }
   }
   return(this->bLoopAtomVisible( aAtom ));
+#endif
 }
 
 

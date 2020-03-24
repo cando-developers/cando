@@ -171,6 +171,7 @@
 (defun parse-mdl-molecule (fin eof-error-p eof)
   (multiple-value-bind (atom-groups name)
       (parse-groups fin eof-error-p eof)
+    (format t "length atom-groups: ~a atom-groups: ~s~%" (length atom-groups) atom-groups)
     (cond
       ((eq atom-groups eof)
        (if eof-error-p

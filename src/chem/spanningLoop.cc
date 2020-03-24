@@ -35,6 +35,8 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <stdio.h>
 #include <clasp/core/designators.h>
 #include <clasp/core/evaluator.h>
+#include <clasp/core/hashTable.h>
+#include <clasp/core/hashTableEq.h>
 #include <cando/chem/loop.h>
 #include <cando/chem/spanningLoop.h>
 #include <cando/chem/matter.h>
@@ -142,7 +144,8 @@ CL_DEFUN SpanningLoop_sp SpanningLoop_O::make(Atom_sp root)
 		 && order != tripleBond 
 		) return false;
 	}
-	if ( aAtom->getSeenId() == this->iSeenId ) {
+        core::T_mv seen = this->_BackSpan->gethash(aAtom);
+	if ( seen.second().notnilp() ) {
 	    *bPSeenBefore = true;
 	    return(false);
 	}
@@ -152,7 +155,7 @@ CL_DEFUN SpanningLoop_sp SpanningLoop_O::make(Atom_sp root)
 
 	if ( this->iMaxDistanceFromRoot >=0 ) {
 	    if ( this->iMaxDistanceFromRoot <
-		 this->aCurSpan->getBackCount()+1 ) {
+		 this->getBackCount(aCurSpan)+1 ) {
 		return(false);
 	    }
 	}
@@ -224,8 +227,86 @@ CL_DEFMETHOD     bool	SpanningLoop_O::advanceLoopAndProcess()
 	this->Base::initialize();
 	this->initialized = false;
 	this->_OnlyFollowRealBonds = false;
+        this->_BackSpan = core::HashTableEq_O::create_default();
     }
 
+
+    bool SpanningLoop_O::lookupSpanningInfo(Atom_sp a, SpanningInfo_sp& info) {
+        core::T_mv tinfo = this->_BackSpan->gethash(a);
+        if (tinfo.second().notnilp()) {
+            core::T_sp tfirst = tinfo;
+            info = gc::As_unsafe<SpanningInfo_sp>(tfirst);
+            return true;
+        }
+        return false;
+    }
+
+    SpanningInfo_sp SpanningLoop_O::getSpanningInfo(Atom_sp a) {
+        core::T_mv tinfo = this->_BackSpan->gethash(a);
+        if (tinfo.second().notnilp()) {
+            core::T_sp tfirst = tinfo;
+            return gc::As_unsafe<SpanningInfo_sp>(tfirst);
+        }
+        SIMPLE_ERROR(BF("Could not get spanning-info for %s") % _rep_(a));
+    }
+
+    SpanningInfo_sp SpanningLoop_O::storeSpanningInfo(Atom_sp key, int distance, core::T_sp toRoot, core::T_sp next) {
+        GC_ALLOCATE_VARIADIC(SpanningInfo_O,si,distance,toRoot,next);
+        this->_BackSpan->setf_gethash(key,si);
+        return si;
+    }
+    
+    CL_DEFMETHOD bool SpanningLoop_O::isBackSpanValid(Atom_sp a) {
+        core::T_mv tinfo = this->_BackSpan->gethash(a);
+        if (tinfo.second().notnilp()) {
+            core::T_sp tfirst = tinfo;
+            SpanningInfo_sp si = gc::As_unsafe<SpanningInfo_sp>(tfirst);
+            return si->_ToRoot.notnilp();
+        }
+        SIMPLE_ERROR(BF("Could not get spanning-info for %s") % _rep_(a));
+    }        
+
+    CL_DEFMETHOD bool SpanningLoop_O::isNextSpanValid(Atom_sp a) {
+        core::T_mv tinfo = this->_BackSpan->gethash(a);
+        if (tinfo.second().notnilp()) {
+            core::T_sp tfirst = tinfo;
+            SpanningInfo_sp si = gc::As_unsafe<SpanningInfo_sp>(tfirst);
+            return si->_Next.notnilp();
+        }
+        SIMPLE_ERROR(BF("Could not get spanning-info for %s") % _rep_(a));
+    }        
+
+    CL_DEFMETHOD core::T_sp SpanningLoop_O::getBackSpan(Atom_sp a) {
+        core::T_mv tinfo = this->_BackSpan->gethash(a);
+        if (tinfo.second().notnilp()) {
+            core::T_sp tfirst = tinfo;
+            SpanningInfo_sp si = gc::As_unsafe<SpanningInfo_sp>(tfirst);
+            return si->_ToRoot;
+        }
+        return _Nil<core::T_O>();
+    }        
+
+    CL_DEFMETHOD core::T_sp SpanningLoop_O::getNextSpan(Atom_sp a) {
+        core::T_mv tinfo = this->_BackSpan->gethash(a);
+        if (tinfo.second().notnilp()) {
+            core::T_sp tfirst = tinfo;
+            SpanningInfo_sp si = gc::As_unsafe<SpanningInfo_sp>(tfirst);
+            return si->_Next;
+        }
+        return _Nil<core::T_O>();
+    }        
+
+    CL_DEFMETHOD int SpanningLoop_O::getBackCount(Atom_sp a) {
+        core::T_mv tinfo = this->_BackSpan->gethash(a);
+        if (tinfo.second().notnilp()) {
+            core::T_sp tfirst = tinfo;
+            SpanningInfo_sp si = gc::As_unsafe<SpanningInfo_sp>(tfirst);
+            return si->_Distance;
+        }
+        SIMPLE_ERROR(BF("Could not get spanning-info for %s") % _rep_(a));
+    }
+
+    
 
 //
 //	nextSpanningAtom
@@ -236,7 +317,6 @@ Atom_sp	SpanningLoop_O::nextSpanningAtom(std::function<bool (Atom_sp fromAtom, B
     {
 	Atom_sp		oObject;
 	Atom_sp		aBond;
-	Atom_sp		aPrev;
 	int		i;
 	bool		bSeenBefore;
 
@@ -244,11 +324,9 @@ Atom_sp	SpanningLoop_O::nextSpanningAtom(std::function<bool (Atom_sp fromAtom, B
 	/* some stuff on the first ATOM_CLASS */
 
 	if ( !this->initialized ) {
-          ASSERT(this->top);
-          gc::As<Atom_sp>(this->top)->invalidateBackSpan();
-          gc::As<Atom_sp>(this->top)->setBackCount(0);
-          gc::As<Atom_sp>(this->top)->setSeenId(this->iSeenId);
-          this->initialized = true;
+            SpanningInfo_sp sitop = this->storeSpanningInfo(this->top,0,_Nil<core::T_O>());
+            printf("%s:%d initialize sitop -> %s\n", __FILE__, __LINE__, _rep_(sitop).c_str());
+            this->initialized = true;
 	}
 
 	LOG(BF("--- Entered nextSpanningAtom aCurSpan = %d; nextSpan valid?=%d") 
@@ -264,11 +342,13 @@ Atom_sp	SpanningLoop_O::nextSpanningAtom(std::function<bool (Atom_sp fromAtom, B
 	/* Connect all visible atoms bonded to the current atom */
 	/* into the spanning tree */
 
-	aPrev = this->aLastSpan;
-	aPrev->invalidateNextSpan();
+	Atom_sp aPrev = this->aLastSpan;
+        printf("%s:%d Looking up spanning info for %s\n", __FILE__, __LINE__, _rep_(aPrev).c_str());
+        SpanningInfo_sp siPrev = this->getSpanningInfo(aPrev);
+	//aPrev->invalidateNextSpan();
 	LOG(BF("--- Invalidated nextSpan for atom: %d") % (aPrev->getMoeIndex() ) );
 	LOG(BF("--- Currently on atom: %d") % (this->aCurSpan->getMoeIndex() ) );
-//        printf("%s:%d nextSpanningAtom: %s coordination: %d\n", __FILE__, __LINE__, _rep_(this->aCurSpan).c_str(), this->aCurSpan->coordination());
+        printf("%s:%d nextSpanningAtom: %s coordination: %d\n", __FILE__, __LINE__, _rep_(this->aCurSpan).c_str(), this->aCurSpan->coordination());
 	for ( i=0; i<this->aCurSpan->coordination(); i++ ) {
           Bond_sp bond = this->aCurSpan->bondAtIndex(i);
           aBond = bond->getOtherAtom(this->aCurSpan);
@@ -277,15 +357,11 @@ Atom_sp	SpanningLoop_O::nextSpanningAtom(std::function<bool (Atom_sp fromAtom, B
 	    /* If the atom is visible then add it */
           if ( followBond && this->bSpanAtomVisible( aBond, order, &bSeenBefore ) ) {
             LOG(BF("--- looking at bonded atom: %d") % (aBond->getMoeIndex() ) );
-            aBond->setSeenId( this->iSeenId );
-            aBond->setBackCount( this->aCurSpan->getBackCount()+1 );
-            aBond->setBackSpan( this->aCurSpan );
-            aPrev->setNextSpan( aBond );
+            SpanningInfo_sp siBond = this->storeSpanningInfo(aBond,this->getBackCount(aCurSpan)+1,this->aCurSpan);
+            siPrev->_Next = aBond; // aPrev->setNextSpan( aBond );
             LOG(BF("--- Setting atom: %d nextSpan to: %d") % (aPrev->getMoeIndex()) % (aBond->getMoeIndex() ) );
-
-            aBond->invalidateNextSpan();
             LOG(BF("--- Is atom: %d nextSpan valid? ==> %d") % (aPrev->getMoeIndex()) % (aPrev->isNextSpanValid() ) );
-            aPrev = aBond;
+            siPrev = siBond;
           } else {
 		LOG(BF("--- NOT Visible") );
 
@@ -305,8 +381,8 @@ Atom_sp	SpanningLoop_O::nextSpanningAtom(std::function<bool (Atom_sp fromAtom, B
 	LOG(BF("Advancing spanning tree") );
 	this->aLastSpan = aPrev;
 	oObject = this->aCurSpan;
-	if ( this->aCurSpan->isNextSpanValid() ) {
-	    this->aCurSpan = this->aCurSpan->getNextSpan();
+	if ( this->isNextSpanValid(aCurSpan) ) {
+	    this->aCurSpan = gc::As_unsafe<Atom_sp>(this->getNextSpan(aCurSpan));
 	    LOG(BF("--- Setting this->aCurSpan to: %d") % (this->aCurSpan->getMoeIndex() ) );
 	    LOG(BF("--- Is atom: %d nextSpan valid? ==> %d") % (this->aCurSpan->getMoeIndex()) % (this->aCurSpan->isNextSpanValid() ) );
 	} else {

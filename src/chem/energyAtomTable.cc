@@ -508,7 +508,7 @@ void AtomTable_O::constructFromMolecule(Molecule_sp mol, core::T_sp nonbondForce
           while ( span->advance() ) {
             bonded = span->getAtom();
             if ( bonded == a1 ) continue;
-            int backCount = bonded->getBackCount();
+            int backCount = span->getBackCount(bonded); // ->getBackCount();
             LOG(BF("Looking at atom[%s] at remove[%d]") % _rep_(bonded) % backCount );
 			// Once we crawl out 4 bonds we have gone as far as we need
             if ( backCount >= 4 ) {
