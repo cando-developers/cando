@@ -52,6 +52,19 @@ namespace chem
 {
     static		int	SiNextSeenId = 0;
 
+
+    std::string SpanningInfo_O::__repr__() const {
+        stringstream ss;
+        ss << "#<spanning-info :distance ";
+        ss << this->_Distance;
+        ss << " :to-root ";
+        ss << _rep_(this->_ToRoot);
+        ss << " :next ";
+        ss << _rep_(this->_Next);
+        ss << ">";
+        return ss.str();
+    }
+    
 CL_NAME(CHEM:MAKE-SPANNING-LOOP);
 CL_DEFUN SpanningLoop_sp SpanningLoop_O::make(Atom_sp root)
   {
@@ -325,7 +338,7 @@ Atom_sp	SpanningLoop_O::nextSpanningAtom(std::function<bool (Atom_sp fromAtom, B
 
 	if ( !this->initialized ) {
             SpanningInfo_sp sitop = this->storeSpanningInfo(this->top,0,_Nil<core::T_O>());
-            printf("%s:%d initialize sitop -> %s\n", __FILE__, __LINE__, _rep_(sitop).c_str());
+            //printf("%s:%d initialize sitop -> %s\n", __FILE__, __LINE__, _rep_(sitop).c_str());
             this->initialized = true;
 	}
 
@@ -343,12 +356,12 @@ Atom_sp	SpanningLoop_O::nextSpanningAtom(std::function<bool (Atom_sp fromAtom, B
 	/* into the spanning tree */
 
 	Atom_sp aPrev = this->aLastSpan;
-        printf("%s:%d Looking up spanning info for %s\n", __FILE__, __LINE__, _rep_(aPrev).c_str());
+        //        printf("%s:%d Looking up spanning info for %s\n", __FILE__, __LINE__, _rep_(aPrev).c_str());
         SpanningInfo_sp siPrev = this->getSpanningInfo(aPrev);
 	//aPrev->invalidateNextSpan();
 	LOG(BF("--- Invalidated nextSpan for atom: %d") % (aPrev->getMoeIndex() ) );
 	LOG(BF("--- Currently on atom: %d") % (this->aCurSpan->getMoeIndex() ) );
-        printf("%s:%d nextSpanningAtom: %s coordination: %d\n", __FILE__, __LINE__, _rep_(this->aCurSpan).c_str(), this->aCurSpan->coordination());
+        //        printf("%s:%d nextSpanningAtom: %s coordination: %d\n", __FILE__, __LINE__, _rep_(this->aCurSpan).c_str(), this->aCurSpan->coordination());
 	for ( i=0; i<this->aCurSpan->coordination(); i++ ) {
           Bond_sp bond = this->aCurSpan->bondAtIndex(i);
           aBond = bond->getOtherAtom(this->aCurSpan);
@@ -359,9 +372,11 @@ Atom_sp	SpanningLoop_O::nextSpanningAtom(std::function<bool (Atom_sp fromAtom, B
             LOG(BF("--- looking at bonded atom: %d") % (aBond->getMoeIndex() ) );
             SpanningInfo_sp siBond = this->storeSpanningInfo(aBond,this->getBackCount(aCurSpan)+1,this->aCurSpan);
             siPrev->_Next = aBond; // aPrev->setNextSpan( aBond );
+            //            printf("%s:%d  aBond -> %s  siBond -> %s\n", __FILE__, __LINE__, _rep_(aBond).c_str(), _rep_(siBond).c_str());
             LOG(BF("--- Setting atom: %d nextSpan to: %d") % (aPrev->getMoeIndex()) % (aBond->getMoeIndex() ) );
             LOG(BF("--- Is atom: %d nextSpan valid? ==> %d") % (aPrev->getMoeIndex()) % (aPrev->isNextSpanValid() ) );
             siPrev = siBond;
+            aPrev = aBond;
           } else {
 		LOG(BF("--- NOT Visible") );
 

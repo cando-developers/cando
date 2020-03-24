@@ -65,6 +65,7 @@ namespace chem {
         core::T_sp _ToRoot;
         core::T_sp _Next;
         SpanningInfo_O(int dist=0, core::T_sp toRoot=_Nil<core::T_O>(), core::T_sp toNext=_Nil<core::T_O>() ) : _Distance(dist), _ToRoot(toRoot), _Next(toNext) {};
+        std::string __repr__() const;
     };
 
 
