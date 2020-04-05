@@ -6,6 +6,7 @@
   (leap.core:add-path "amber:dat;leap;lib;")
   (leap.core:add-path "amber:dat;leap;parm;")
   (leap.core:add-path "amber:dat;leap;cmd;")
+  (leap.core:add-path "amber:dat;leap;cmd;oldff;")
   (leap.core:add-path "amber:dat;antechamber;"))
 
 (defun setup-default-paths ()
