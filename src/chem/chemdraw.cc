@@ -630,7 +630,7 @@ bool CDFragment_O::interpret(bool verbose, bool addHydrogens)
 
   {_BLOCK_TRACEF(BF("Assigning cipPriorities"));
     CipPrioritizer_sp cip = CipPrioritizer_O::create();
-    cip->defineStereochemicalConfigurationsForAllAtoms(mol);
+    cip->setStereochemicalTypeForAllAtoms(mol);
   }
 
   this->_Molecule->makeAllAtomNamesInEachResidueUnique();
@@ -663,7 +663,7 @@ bool CDFragment_O::interpret(bool verbose, bool addHydrogens)
 	//
   {_BLOCK_TRACEF(BF("Assigning cipPriorities"));
     CipPrioritizer_sp cip = CipPrioritizer_O::create();
-    cip->defineStereochemicalConfigurationsForAllAtoms(everything);
+    cip->setStereochemicalTypeForAllAtoms(everything);
   }
 
 	//

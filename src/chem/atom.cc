@@ -182,6 +182,8 @@ int Atom_O::priorityOrder(Atom_sp a, Atom_sp b)
   return 0;
 }
 
+CL_DOCSTRING(R"doc(Calculate the stereochemical configuration of the atom.
+This requires that relative cip priorities are defined using CipPrioritizer_O::assignCahnIngoldPrelogPriorityToAtomsRelativePriority.)doc");
 CL_LISPIFY_NAME("calculateStereochemicalConfiguration");
 CL_DEFMETHOD     ConfigurationEnum Atom_O::calculateStereochemicalConfiguration()
 {
@@ -196,22 +198,15 @@ CL_DEFMETHOD     ConfigurationEnum Atom_O::calculateStereochemicalConfiguration(
   Vector3 v3 = a3->getPosition().sub(vme);
   Vector3 v2 = a2->getPosition().sub(vme);
   Vector3 v1 = a1->getPosition().sub(vme);
-  double dir2 = v2.dotProduct(v4.crossProduct(v3)); // For R this should be <0
-  double dir1 = v1.dotProduct(v4.crossProduct(v3)); // For R this should be >0
-  if ( dir1 > 0.0 ) // R_Configuration
-  {
-    if ( dir2 < 0.0 )
-    {
-	    	// Everything is consistent and (R)
-      return R_Configuration;
-    }
-
-  } else if ( dir1 < 0.0 )
-  {
-    if ( dir2 > 0.0 )
-    {
-		// Everything is consistent and (S)
+  double dir2 = v2.dotProduct(v4.crossProduct(v3)); // For R this should be >0
+  double dir1 = v1.dotProduct(v4.crossProduct(v3)); // For R this should be <0
+  if ( dir1 > 0.0 ) {
+    if ( dir2 < 0.0 ) {
       return S_Configuration;
+    }
+  } else if ( dir1 < 0.0 ) {
+    if ( dir2 > 0.0 ) {
+      return R_Configuration;
     }
   }
   return undefinedConfiguration;

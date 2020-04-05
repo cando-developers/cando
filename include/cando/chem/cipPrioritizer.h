@@ -61,7 +61,7 @@ public:
      void assignCahnIngoldPrelogPriorityToAtomsRelativePriority(Matter_sp molOrAgg);
 public:
 
-	void defineStereochemicalConfigurationsForAllAtoms(Matter_sp molOrAgg);
+	void setStereochemicalTypeForAllAtoms(Matter_sp molOrAgg);
 	CipPrioritizer_O( const CipPrioritizer_O& ss ); //!< Copy constructor
 
 	DEFAULT_CTOR_DTOR(CipPrioritizer_O);

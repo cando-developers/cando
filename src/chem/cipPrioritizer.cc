@@ -174,7 +174,8 @@ vector<int>& CipPrioritizer_O::getS(Atom_sp a)
     }
     return part;
 }
-    
+
+
 CL_LISPIFY_NAME(chem:assign-priorities);
 CL_DEFUN void CipPrioritizer_O::assignPriorities(Matter_sp matter)
 {
@@ -199,6 +200,29 @@ CL_DEFUN void CipPrioritizer_O::assignPriorities(Matter_sp matter)
 
 //
 // ! Assign the CIP priority to the RelativePriority of each Atom in the molecule
+CL_DOCSTRING(R"doc(
+Assign the topological RS chirality
+see: http://www.chemcomp.com/journal/chiral.htm
+The objective of the algorithm is to assign a priority, p(i) to every 
+atom i in the molecule so that if p(i)<p(j) then atom i has strictly 
+lower CIP priority than atom j with equality only occurring when the 
+atoms are indistinguishable (topologically). In essence, the algorithm 
+maintains an ordered list of equivalence classes of atoms. Each atom 
+in an equivalence class is assigned the priority of the -1 of the 
+class in the sorted list. The algorithm repeatedly splits classes 
+(maintaining the ordering) until no changes occur. The final priority 
+assignments are then output as the CIP priorities.
+
+The algorithm proceeds as follows:
+
+1. 	For each atom i, set p(i) equal to the atomic number of atom i. 
+Set the initial partition to be an ordered list of classes (C1,...,Ck) 
+such that for each atom i in class Cr and each atom j in class Cs we 
+have (i) p(i)<p(j) iff r<s; and (ii) p(i)=p(j) iff r=s.
+Use the RelativePriority value of each atom to store its position in the 
+p and s arrays.
+Write the relative cip priority in the _RelativePriority slot of each atom.
+)doc");
 CL_LISPIFY_NAME("assignCahnIngoldPrelogPriorityToAtomsRelativePriority");
 CL_DEFMETHOD void CipPrioritizer_O::assignCahnIngoldPrelogPriorityToAtomsRelativePriority(Matter_sp molOrAgg)
 {
@@ -522,8 +546,8 @@ bool orderByName( Atom_sp p1, Atom_sp p2 )
   return core::SymbolComparer::order(p1->getName(),p2->getName())<=0;
 }
 
-CL_LISPIFY_NAME("defineStereochemicalConfigurationsForAllAtoms");
-CL_DEFMETHOD void CipPrioritizer_O::defineStereochemicalConfigurationsForAllAtoms(Matter_sp molOrAgg)
+CL_LISPIFY_NAME("setStereochemicalTypeForAllAtoms");
+CL_DEFMETHOD void CipPrioritizer_O::setStereochemicalTypeForAllAtoms(Matter_sp molOrAgg)
 {
     this->assignCahnIngoldPrelogPriorityToAtomsRelativePriority(molOrAgg);
     Loop l;
@@ -577,6 +601,38 @@ CL_DEFMETHOD void CipPrioritizer_O::defineStereochemicalConfigurationsForAllAtom
 	}
     }
 }
+
+CL_DOCSTRING(R"doc(Calculate the stereochemistry for each atom in the aggregate or molecule
+from the three-dimensional structure.)doc");
+CL_DEFUN void chem__calculateStereochemistryFromStructure(Matter_sp matter)
+{
+  CipPrioritizer_sp prior;
+  if (gc::IsA<Molecule_sp>(matter)) {
+    prior = CipPrioritizer_O::create();
+    prior->setStereochemicalTypeForAllAtoms(matter);
+    Loop la;
+    la.loopTopGoal(matter,ATOMS);
+    while (la.advanceLoopAndProcess() ) {
+      Atom_sp atm = la.getAtom();
+      if (atm->getStereochemistryType()==chiralCenter) {
+        ConfigurationEnum ce = atm->calculateStereochemicalConfiguration();
+        atm->setConfiguration(ce);
+      }
+    }
+  } else if (gc::IsA<Aggregate_sp>(matter)) {
+    Loop l;
+    l.loopTopGoal(matter,MOLECULES);
+    while ( l.advanceLoopAndProcess() ) {
+      Molecule_sp mol = l.getMolecule();
+      chem__calculateStereochemistryFromStructure(mol);
+    }
+  } else {
+    TYPE_ERROR(matter,core::Cons_O::createList(_sym_Aggregate_O,_sym_Molecule_O));
+  }
+}
+  
+
+
 
 
 
