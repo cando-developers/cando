@@ -70,15 +70,15 @@
 
 (defun generate-graph (jobs)
   (let ((nodes (make-hash-table)))
-    (loop for node in (ti-run:nodes jobs)
-          do (setf (gethash node nodes) (ti-run:name node)))
+    (loop for node in (tirun:nodes jobs)
+          do (setf (gethash node nodes) (tirun:name node)))
     (let ((node-string (with-output-to-string (sout)
                          (maphash (lambda (node name)
                                     (format sout "{data: { id: '~a', label: '~a' }},~%" (string name) (string name)))
                                   nodes)))
           (morph-string (with-output-to-string (sout)
-                         (loop for (from to) in (ti-run:morphs jobs)
-                               do (format sout "{data: { source: '~a', target: '~a' }},~%" (string (ti-run:name from)) (string (ti-run:name to)))))))
+                         (loop for (from to) in (tirun:morphs jobs)
+                               do (format sout "{data: { source: '~a', target: '~a' }},~%" (string (tirun:name from)) (string (tirun:name to)))))))
       (values node-string morph-string))))
 
     
@@ -215,7 +215,7 @@
 
 
 #+(or)
-(defun ti-run-graph (pairs)
+(defun tirun-graph (pairs)
   (multiple-value-bind (node-string morph-string)
     (generate-graph pairs)
     (let ((html-string
@@ -232,15 +232,15 @@
     (format fout "  \"elements\" : {~%")
     (format fout "    \"nodes\" : [~%")
     (loop for index from 0
-          for last-node = (= index (1- (length (ti-run:nodes (ti-run:jobs graph)))))
-          for node in (ti-run:nodes (ti-run:jobs graph))
-          do (render-node-json fout (ti-run:name node) (ti-run:name node) :shape "circle" :last-node last-node))
+          for last-node = (= index (1- (length (tirun:nodes (tirun:jobs graph)))))
+          for node in (tirun:nodes (tirun:jobs graph))
+          do (render-node-json fout (tirun:name node) (tirun:name node) :shape "circle" :last-node last-node))
     (format fout "  ],~%")
     (format fout "  \"edges\" : [~%")
     (loop for index from 0
-          for last-morph = (= index (1- (length (ti-run:morphs (ti-run:jobs graph)))))
-          for morph in (ti-run:morphs (ti-run:jobs graph))
-          do (render-morph-json fout (ti-run:name (ti-run:source morph)) (ti-run:name (ti-run:target morph)) "dummy" :last-morph last-morph))
+          for last-morph = (= index (1- (length (tirun:morphs (tirun:jobs graph)))))
+          for morph in (tirun:morphs (tirun:jobs graph))
+          do (render-morph-json fout (tirun:name (tirun:source morph)) (tirun:name (tirun:target morph)) "dummy" :last-morph last-morph))
     (format fout "]~%")
     (format fout "}~%")
     (format fout "}~%")
@@ -251,7 +251,7 @@
 ;Test with
 
 (defparameter *pairs* '((:aaba :aabb) (:aabb :aabc) (:abbc :aabc) (:abbc :abba) (:abba :aabc))) 
-(ti-run-graph *pairs*)
+(tirun-graph *pairs*)
 
 ||#
 

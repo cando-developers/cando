@@ -1,4 +1,4 @@
-(in-package :ti-run)
+(in-package :tirun)
 
 (defun only-residue (molecule)
   (unless (= (chem:content-size molecule) 1)
@@ -9,16 +9,16 @@
   (let ((label (format nil "!~36,2,'0r" index)))
     (intern label :keyword)))
 
-(defun ti-run-calculation-from-ligands (ligands)
+(defun tirun-calculation-from-ligands (ligands)
   (let* ((residue-name-to-pdb-alist nil)
-         (ti-run-structures (loop for molecule in ligands
+         (tirun-structures (loop for molecule in ligands
                                for residue = (only-residue molecule)
                                for residue-index from 0
                                for residue-name = (chem:get-name residue)
                                when (> (length (string residue-name)) 3)
                                  do (push (cons residue-name (short-residue-name residue-index))
                                           residue-name-to-pdb-alist)
-                               collect (make-instance 'simple-ti-run-structure
+                               collect (make-instance 'simple-tirun-structure
                                                       :name (chem:get-name molecule)
                                                       :drawing molecule
                                                       :core-residue residue
@@ -26,8 +26,8 @@
                                                       :core-atoms (chem:all-atoms-as-list molecule nil)
                                                       :molecule molecule
                                                       :net-charge 0.0 #|Not always!|#)))
-         (calc (make-instance 'ti-run:ti-run-calculation
-                              :ligands ti-run-structures
+         (calc (make-instance 'tirun:tirun-calculation
+                              :ligands tirun-structures
                               :mask-method :closest
                               :residue-name-to-pdb-alist residue-name-to-pdb-alist)))
     calc))

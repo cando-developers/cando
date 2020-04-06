@@ -2,5 +2,5 @@
 ;;; Published under the GPL 2.0.  See COPYING
 ;;;
 
-(in-package :ti-run)
+(in-package :tirun)
 (defparameter *version* "b4da22a456bb6f2797215049181201be92897ccc")

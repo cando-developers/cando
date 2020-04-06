@@ -30,16 +30,16 @@
    #:*graph-form*
    ))
 
-(defpackage #:ti-run
+(defpackage #:tirun
   (:use #:common-lisp)
   (:shadowing-import-from :chem "ATOM")
   (:export
    #:ensure-jobs-directories-exist
-   #:make-ti-run
+   #:make-tirun
    #:add-receptor
-   #:ti-run-calculation
+   #:tirun-calculation
    #:job
-   #:load-chem-draw-ti-run
+   #:load-chem-draw-tirun
    #:calculation
    #:jobs
    #:top-directory
@@ -67,11 +67,11 @@
    #:script
    #:drawing
    #:molecule
-   #:ti-run-morph
+   #:tirun-morph
    #:node-file
    #:morph-side-file
-   #:load-ti-runs
-   #:save-ti-runs
+   #:load-tiruns
+   #:save-tiruns
    #:solvent-box
    #:solvent-buffer
    #:solvent-closeness
@@ -86,8 +86,8 @@
    #:morph-mask
    #:morphs
    #:nodes
-   #:setup-ti-runs
-   #:build-ti-runs
+   #:setup-tiruns
+   #:build-tiruns
    #:layout-ligands
    #:layout-2
    #:build-ligands
@@ -104,7 +104,7 @@
    #:amber-job-mixin
    #:pattern-atoms
    #:average-core-atom-positions
-   #:ti-run-calculation-from-ligands
+   #:tirun-calculation-from-ligands
    #:do-decharge-recharge
    #:check-calculation-atom-types
    #:validate-atom-types
@@ -114,7 +114,7 @@
    #:build-recharge-aggregate))
 
 
-(defpackage #:ti-rundot
+(defpackage #:tirundot
   (:use #:common-lisp)
   (:export
    #:draw-graph-stream))

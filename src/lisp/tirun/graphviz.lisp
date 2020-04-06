@@ -2,23 +2,23 @@
 ;;; Published under the GPL 2.0.  See COPYING
 ;;;
 
-(in-package :ti-rundot)
+(in-package :tirundot)
 
-(defmethod draw-node (id (node ti-run:job) stream)
-  (if (ti-run:script node)
-      (format stream "~a [label = \"~a.~a\", style=\"filled,solid\",fillcolor=\"yellow\" ];~%" id (ti-run:name (ti-run:script node)) (ti-run:extension (ti-run:script node)))
+(defmethod draw-node (id (node tirun:job) stream)
+  (if (tirun:script node)
+      (format stream "~a [label = \"~a.~a\", style=\"filled,solid\",fillcolor=\"yellow\" ];~%" id (tirun:name (tirun:script node)) (tirun:extension (tirun:script node)))
       (format stream "~a [label = \"~a\", style=\"filled,solid\",fillcolor=\"#FFE0E0\" ];~%" id (class-name (class-of node)))))
 
-(defmethod draw-node (id (node ti-run:amber-job-mixin) stream)
-  (format stream "~a [label = \"~a\" ];~%" id (ti-run:name (ti-run:script node))))
+(defmethod draw-node (id (node tirun:amber-job-mixin) stream)
+  (format stream "~a [label = \"~a\" ];~%" id (tirun:name (tirun:script node))))
 
 (defgeneric label (node))
 
-(defmethod label ((node ti-run:node-file))
-  (format nil "~{~a~%~}" (core:split (namestring (ti-run:node-pathname node)) "/")))
+(defmethod label ((node tirun:node-file))
+  (format nil "~{~a~%~}" (core:split (namestring (tirun:node-pathname node)) "/")))
 
-(defmethod draw-node (id (node ti-run:argument) stream)
-  (format stream "~a [label = \"~a\",shape=rectangle];~%" id (label (ti-run:node node))))
+(defmethod draw-node (id (node tirun:argument) stream)
+  (format stream "~a [label = \"~a\",shape=rectangle];~%" id (label (tirun:node node))))
 
 (defmethod draw-edge (source-id target-id label stream)
   (format stream "~a -> ~a [label = \"~a\"];~%" source-id target-id label))
@@ -35,33 +35,33 @@
           tid))))
 
 (defun safe-definers (argument)
-  (if (eq (ti-run:option argument) :.)
+  (if (eq (tirun:option argument) :.)
       (let (definers)
         (mapc (lambda (one)
-                (loop for definer in (ti-run:definers one)
+                (loop for definer in (tirun:definers one)
                       do (pushnew definer definers :test #'eq)))
-              (ti-run:node argument))
+              (tirun:node argument))
         definers)
-      (ti-run:definers (ti-run:node argument))))
+      (tirun:definers (tirun:node argument))))
 
 (defun safe-users (argument)
-  (if (eq (ti-run:option argument) :.)
+  (if (eq (tirun:option argument) :.)
       (let (users)
         (mapc (lambda (one)
-                (loop for definer in (ti-run:users one)
+                (loop for definer in (tirun:users one)
                       do (pushnew definer users :test #'eq)))
-              (ti-run:node argument))
+              (tirun:node argument))
         users)
-      (ti-run:users (ti-run:node argument))))
+      (tirun:users (tirun:node argument))))
 
 (defun safe-inputs (job)
-  (loop for argument in (ti-run:inputs job)
-        if (consp (ti-run:node argument))
+  (loop for argument in (tirun:inputs job)
+        if (consp (tirun:node argument))
           append (mapcar
-                  (lambda (node-file) (make-instance 'ti-run::argument
+                  (lambda (node-file) (make-instance 'tirun::argument
                                                     :option :.part
                                                     :node node-file))
-                  (ti-run:node argument))
+                  (tirun:node argument))
         else
           append (list argument)))
 
@@ -82,17 +82,17 @@
 (defun draw-one-job (job stream id-map all-files)
   (let ((job-id (maybe-draw-node job job stream id-map)))
     (loop for input in (safe-inputs job)
-          for drawn-input = (maybe-draw-file (ti-run:node input) input stream id-map all-files)
-          do (when drawn-input (draw-edge drawn-input job-id (ti-run:option input) stream)))
-    (loop for output in (ti-run:outputs job)
-          for drawn-output = (maybe-draw-file (ti-run:node output) output stream id-map all-files)
-          do (when drawn-output (draw-edge job-id drawn-output (ti-run:option output) stream)))))
+          for drawn-input = (maybe-draw-file (tirun:node input) input stream id-map all-files)
+          do (when drawn-input (draw-edge drawn-input job-id (tirun:option input) stream)))
+    (loop for output in (tirun:outputs job)
+          for drawn-output = (maybe-draw-file (tirun:node output) output stream id-map all-files)
+          do (when drawn-output (draw-edge job-id drawn-output (tirun:option output) stream)))))
 
 (defun gather-jobs (job seen-jobs)
   (unless (gethash job seen-jobs)
     (setf (gethash job seen-jobs) t)
-    (loop for output in (ti-run:outputs job)
-          do (loop for user in (ti-run:users output)
+    (loop for output in (tirun:outputs job)
+          do (loop for user in (tirun:users output)
                    do (gather-jobs user seen-jobs)))))
 
 (defun draw-graph-stream (jobs stream &optional all-files)

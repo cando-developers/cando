@@ -2,16 +2,16 @@
 ;;; Published under the GPL 2.0.  See COPYING
 ;;;
 
-(in-package :ti-run)
+(in-package :tirun)
 
 (defparameter *system* nil "The default system is NIL")
 
 
-(defun make-ti-run ()
-  (make-instance 'ti-run:ti-run-calculation))
+(defun make-tirun ()
+  (make-instance 'tirun:tirun-calculation))
 
-(defun add-receptor(ti-run receptor)
-  (pushnew receptor (receptors ti-run)))
+(defun add-receptor(tirun receptor)
+  (pushnew receptor (receptors tirun)))
 
 (defun version ()
   *version*)
@@ -273,10 +273,10 @@
         (t (mapcan #'(lambda (x) (mapcar #'(lambda (y) (cons y x)) (car l))) 
                    (cartesian (cdr l))))))
 
-(defvar *ti-run-time* 0)
+(defvar *tirun-time* 0)
 
-(defun incf-ti-run-time ()
-  (incf *ti-run-time*))
+(defun incf-tirun-time ()
+  (incf *tirun-time*))
 
 (defun print-object-readably-with-slots (obj stream)
   (format stream "#$(~s " (class-name (class-of obj)))
@@ -308,25 +308,25 @@
         collect lambda-val))
 
         
-(defclass ti-run-morph ()
+(defclass tirun-morph ()
   ((source :initarg :source :accessor source)
    (target :initarg :target :accessor target)
    (morph-mask :initarg :morph-mask :accessor morph-mask)
    (stages :initarg :stages :initform 3 :accessor stages)
    (lambda-values :type list :initarg :lambda-values :initform (generate-lambda-values *system*) :accessor lambda-values)))
 
-(defmethod print-object ((obj ti-run-morph) stream)
+(defmethod print-object ((obj tirun-morph) stream)
   (if *print-readably*
       (print-object-readably-with-slots obj stream)
       (print-unreadable-object (obj stream)
         (format stream "~a" (class-name (class-of obj))))))
 
-(defun morph-string (ti-run-morph)
-  (let ((source-name (name (source ti-run-morph)))
-        (target-name (name (target ti-run-morph))))
+(defun morph-string (tirun-morph)
+  (let ((source-name (name (source tirun-morph)))
+        (target-name (name (target tirun-morph))))
     (format nil "~a-~a" source-name target-name)))
 
-(defclass simple-ti-run-structure ()
+(defclass simple-tirun-structure ()
   ((name :initarg :name :accessor name)
    (drawing :initarg :drawing :accessor drawing)
    (core-residue :initarg :core-residue :accessor core-residue)
@@ -338,16 +338,16 @@
    (am1-charges :initarg :am1-charges :accessor am1-charges)
    (am1-bcc-charges :initarg :am1-bcc-charges :accessor am1-bcc-charges)))
 
-(defmethod print-object ((object simple-ti-run-structure) stream)
+(defmethod print-object ((object simple-tirun-structure) stream)
   (print-unreadable-object (object stream)
     (format stream "~a ~a" (class-name (class-of object)) (name object))))
 
-(defclass ti-run-structure (simple-ti-run-structure)
+(defclass tirun-structure (simple-tirun-structure)
   ((side-chain-residue-names :initarg :side-chain-residue-names :accessor side-chain-residue-names)
    (side-chain-atoms :initarg :side-chain-atoms :accessor side-chain-atoms)))
 
 
-(defmethod print-object ((obj simple-ti-run-structure) stream)
+(defmethod print-object ((obj simple-tirun-structure) stream)
   (if *print-readably*
       (print-object-readably-with-slots obj stream)
       (print-unreadable-object (obj stream)
@@ -394,7 +394,7 @@
 (defmethod print-object ((obj calculation) stream)
   (if *print-readably*
       (progn
-        (format stream "#.(make-instance 'ti-run::calculation ")
+        (format stream "#.(make-instance 'tirun::calculation ")
         (loop for slot in (clos:class-slots (find-class 'calculation))
               for slot-name = (clos:slot-definition-name slot)
               for initargs = (clos:slot-definition-initargs slot)
@@ -402,7 +402,7 @@
                 do (format stream "~s ~s " (car initargs) (slot-value obj slot-name)))
         (format stream ") "))
       (print-unreadable-object (obj stream)
-        (format stream "ti-runs"))))
+        (format stream "tiruns"))))
 
 (defun find-morph-with-name (name calculation)
   (loop for morph in (morphs (jobs calculation))
@@ -478,7 +478,7 @@
           (sort (cando:gather-stereocenters mol) #'string< :key #'chem:get-name)))
     (cando:set-stereoisomer-func stereocenters (constantly :S))))
 
-(defun build-ti-runs (core-topology side-topologys topology-to-residue map-names-numbers)
+(defun build-tiruns (core-topology side-topologys topology-to-residue map-names-numbers)
   (let ((top-groups nil))
     (maphash (lambda (name tops)
                (push tops top-groups))
@@ -515,17 +515,17 @@
                                                         side-residue
                                                         in-plug-name)))
                       (set-stereocenters molecule)
-                      (make-instance 'ti-run-structure :name name :drawing molecule
+                      (make-instance 'tirun-structure :name name :drawing molecule
                                                     :core-residue core-residue
                                                     :core-residue-name (chem:get-name core-residue)
                                                     :side-chain-residue-names side-chain-residue-names))))))
 
-(defun setup-ligands (ti-runs sketch &key verbose)
+(defun setup-ligands (tiruns sketch &key verbose)
   (let ((ligands (multiple-value-bind (core-topology side-chains topology-to-residue map-names-numbers)
                      (build-topologys sketch :verbose verbose)
-                   (setf (core-topology ti-runs) core-topology)
-                   (setf (side-topologys ti-runs) side-chains)
-                   (build-ti-runs core-topology side-chains topology-to-residue map-names-numbers))))
+                   (setf (core-topology tiruns) core-topology)
+                   (setf (side-topologys tiruns) side-chains)
+                   (build-tiruns core-topology side-chains topology-to-residue map-names-numbers))))
     (loop for ligand in ligands
           for mol = (chem:matter-copy (drawing ligand))
           for side-chain-atoms = nil
@@ -542,7 +542,7 @@
                         (push a side-chain-atoms)))
              (setf (side-chain-atoms ligand) side-chain-atoms)
              (combine-into-single-residue mol (core-residue-name ligand)))
-    (setf (ligands ti-runs) ligands)))
+    (setf (ligands tiruns) ligands)))
 
 
 (defun layout-ligands (calculation &key (xdelta 15.0) (ydelta 15.0) (accessor 'drawing))
@@ -555,16 +555,16 @@
           do (loop for iy from 0 below numy
                    for y = (* (- iy (floor (/ numy 2))) ydelta)
                    for transform = (geom:make-m4-translate (geom:vec x y 0.0))
-                   do (let ((ti-run (pop ligands)))
-                        (when ti-run
-                          (let ((molecule (chem:matter-copy (funcall accessor ti-run))))
+                   do (let ((tirun (pop ligands)))
+                        (when tirun
+                          (let ((molecule (chem:matter-copy (funcall accessor tirun))))
                             (chem:apply-transform-to-atoms molecule transform)
                             (chem:add-matter agg molecule))))))
     agg))
 
-(defun layout-2 (name1 name2 ti-runs &key (accessor 'drawing))
-  (let ((mol1 (chem:matter-copy (funcall accessor (find name1 ti-runs :key 'name))))
-        (mol2 (chem:matter-copy (funcall accessor (find name2 ti-runs :key 'name))))
+(defun layout-2 (name1 name2 tiruns &key (accessor 'drawing))
+  (let ((mol1 (chem:matter-copy (funcall accessor (find name1 tiruns :key 'name))))
+        (mol2 (chem:matter-copy (funcall accessor (find name2 tiruns :key 'name))))
         (agg (chem:make-aggregate 'two))
         (translate (geom:make-m4-translate (geom:vec 20.0 0.0 0.0))))
     (chem:add-matter agg mol2)
@@ -580,25 +580,25 @@
           (chem:set-name atom1 hydrogen-name))))))
 
 (defun build-ligands (calculations)
-  (let ((ti-runs (ligands calculations)))
-    (loop for ti-run in ti-runs
-          for mol = (molecule ti-run)
-          do (format t "Building ~a~%" (name ti-run))
+  (let ((tiruns (ligands calculations)))
+    (loop for tirun in tiruns
+          for mol = (molecule tirun)
+          do (format t "Building ~a~%" (name tirun))
              (funcall (find-symbol "ASSIGN-ATOM-TYPES" :leap) mol)
-             (setf (molecule ti-run) mol)
-          do (format t "build-structures ti-run: ~a   map-atoms: ~a~%" ti-run (sorted-map-atoms ti-run)))))
+             (setf (molecule tirun) mol)
+          do (format t "build-structures tirun: ~a   map-atoms: ~a~%" tirun (sorted-map-atoms tirun)))))
 
 (defun minimize-ligands (calculation)
-  (let ((ti-runs (ligands calculation)))
-    (loop for ti-run in ti-runs
-          for mol = (molecule ti-run)
+  (let ((tiruns (ligands calculation)))
+    (loop for tirun in tiruns
+          for mol = (molecule tirun)
           for agg = (chem:make-aggregate nil)
           do (chem:add-matter agg mol)
           do (funcall (find-symbol "ASSIGN-ATOM-TYPES" :leap) agg)
           do (energy:minimize agg :cg-tolerance 0.0001 :max-tn-steps 100 :tn-tolerance 0.00001))))
 
-(defun sorted-map-atoms (ti-run)
-  (let ((molecule (molecule ti-run))
+(defun sorted-map-atoms (tirun)
+  (let ((molecule (molecule tirun))
         (map-atoms nil))
     (chem:map-atoms nil (lambda (a)
                           (when (chem:matter-get-property-or-default a :map nil)
@@ -636,13 +636,13 @@
                                  fixed-atoms-map)
                         fo))
          (fixed-atoms (mapcar (lambda (index) (gethash index fixed-atoms-map)) fixed-order))
-         (ti-runs (ligands calculation)))
-    (loop for ti-run in ti-runs
-          for molecule = (molecule ti-run)
+         (tiruns (ligands calculation)))
+    (loop for tirun in tiruns
+          for molecule = (molecule tirun)
           for moveable-atoms-map = (pattern-atoms pattern molecule)
           for moveable-atoms = (mapcar (lambda (index) (gethash index moveable-atoms-map)) fixed-order)
-          do (format t "ti-run ~a~%" ti-run)
-             (format t " moveable-atoms -> ~a~%" ti-run moveable-atoms)
+          do (format t "tirun ~a~%" tirun)
+             (format t " moveable-atoms -> ~a~%" tirun moveable-atoms)
              (format t "    fixed-atoms -> ~a~%" fixed-atoms)
           do (chem:superpose-one molecule moveable-atoms fixed-atoms)
           do (anchor-to-pose moveable-atoms fixed-atoms :stereochemical-restraints stereochemical-restraints)))
@@ -651,11 +651,11 @@
 
 
 (defun pose-ligands (calculation fixed-atoms &key stereochemical-restraints)
-  (let ((ti-runs (ligands calculation)))
-    (loop for ti-run in ti-runs
-          for molecule = (molecule ti-run)
-          for moveable-atoms = (mapcar #'cdr (sorted-map-atoms ti-run))
-          do (format t "ti-run ~a   moveable-atoms -> ~a~%" ti-run moveable-atoms)
+  (let ((tiruns (ligands calculation)))
+    (loop for tirun in tiruns
+          for molecule = (molecule tirun)
+          for moveable-atoms = (mapcar #'cdr (sorted-map-atoms tirun))
+          do (format t "tirun ~a   moveable-atoms -> ~a~%" tirun moveable-atoms)
           do (chem:superpose-one molecule moveable-atoms fixed-atoms)
           do (anchor-to-pose moveable-atoms fixed-atoms :stereochemical-restraints stereochemical-restraints)))
   (minimize-ligands calculation))
@@ -664,11 +664,11 @@
 
 (defun build-job-nodes (calculation)
   (let ((jobs (make-instance 'job-graph)))
-    (let* ((unsorted-ti-runs (copy-list (ligands calculation)))
-           (sorted-ti-runs (sort unsorted-ti-runs #'< :key (lambda (x) (chem:number-of-atoms (drawing x))))))
-      (loop for ti-run in sorted-ti-runs
+    (let* ((unsorted-tiruns (copy-list (ligands calculation)))
+           (sorted-tiruns (sort unsorted-tiruns #'< :key (lambda (x) (chem:number-of-atoms (drawing x))))))
+      (loop for tirun in sorted-tiruns
             for added = (nodes jobs)
-            do (push ti-run (nodes jobs))))
+            do (push tirun (nodes jobs))))
     (setf (jobs calculation) jobs)))
 
 (defgeneric connect-job-nodes (calculation type &key &allow-other-keys))
@@ -682,7 +682,7 @@
                                            *testing-lambdas*
                                            (funcall (ti-lambdas calculation) *system*)))))))
     (push (apply #'make-instance
-                 'ti-run-morph
+                 'tirun-morph
                  :source source-node
                  :target target-node
                  :morph-mask (calculate-masks source-node
@@ -694,24 +694,24 @@
 (defmethod connect-job-nodes (calculation (type (eql :simple)) &key (connections 3) stages windows)
   (let* ((jobs (jobs calculation))
          (nodes (nodes jobs))
-         (unsorted-ti-runs (copy-list nodes))
-         (sorted-ti-runs (sort unsorted-ti-runs #'< :key (lambda (x) (chem:number-of-atoms (drawing x)))))
+         (unsorted-tiruns (copy-list nodes))
+         (sorted-tiruns (sort unsorted-tiruns #'< :key (lambda (x) (chem:number-of-atoms (drawing x)))))
          added)
-    (loop for ti-run in sorted-ti-runs
-          do (push ti-run added)
+    (loop for tirun in sorted-tiruns
+          do (push tirun added)
           do (loop for other in (subseq (cdr added) 0 (min (length (cdr added)) connections))
-                   do (add-job-edge ti-run other calculation)))))
+                   do (add-job-edge tirun other calculation)))))
 
 #+(or)
-(defun am1-file-name (ti-run type)
-  (make-pathname :directory '(:relative "am1bcc") :name (format nil "am1-~a" (string (name ti-run))) :type type :defaults *default-pathname-defaults*))
+(defun am1-file-name (tirun type)
+  (make-pathname :directory '(:relative "am1bcc") :name (format nil "am1-~a" (string (name tirun))) :type type :defaults *default-pathname-defaults*))
 
-(defun am1-calculation-complete (ti-run)
-  "Return T if the AM1 charges for this TI-RUN exist, are up to date and are available.
+(defun am1-calculation-complete (tirun)
+  "Return T if the AM1 charges for this TIRUN exist, are up to date and are available.
 Otherwise return NIL."
-  (let ((in-filename (am1-file-name ti-run "in"))
-        (out-filename (am1-file-name ti-run "out"))
-        (atom-order (atom-order ti-run)))
+  (let ((in-filename (am1-file-name tirun "in"))
+        (out-filename (am1-file-name tirun "out"))
+        (atom-order (atom-order tirun)))
     (cond
       ((and (probe-file out-filename)
             (< (file-write-date in-filename) (file-write-date out-filename))
@@ -750,9 +750,9 @@ Otherwise return NIL."
 (defun check-am1-calculations (calculation)
   (warn "This doesn't work right now - we need source tracking to identify the form that is the problem")
   #+(or)
-  (let* ((status-entries (loop for ti-run in (ligands calculation)
-                               for name = (string (name ti-run))
-                               for status = (am1-calculation-complete ti-run)
+  (let* ((status-entries (loop for tirun in (ligands calculation)
+                               for name = (string (name tirun))
+                               for status = (am1-calculation-complete tirun)
                                collect (list name status)))
          (sorted-entries (sort status-entries #'string< :key #'car)))
     (error "Fix checking the am1-calculations")
@@ -778,7 +778,7 @@ Otherwise return NIL."
     (let ((count 0))
       (loop for ligand in (ligands calculation)
             for sqm-out = (make-instance 'sqm-output-file :name (name ligand))
-            do (let ((am1-charge (charges::read-am1-charges (node-pathname sqm-out) (ti-run::atom-order ligand))))
+            do (let ((am1-charge (charges::read-am1-charges (node-pathname sqm-out) (tirun::atom-order ligand))))
                  (setf (am1-charges ligand) am1-charge))
             do (format t "file ~a done~%" (name ligand))
             do (incf count)))))
@@ -801,12 +801,12 @@ Otherwise return NIL."
         (warn "After balance-charges the new-charge-total of the molecule is ~g~%" new-charge-total)))))
 
 (defun calculate-am1-bcc-charges (calculation)
-  (loop for ti-run in (ligands calculation)
-        for am1-charges = (am1-charges ti-run)
-        for bcc-corrections = (charges::calculate-bcc-corrections (ti-run::molecule ti-run))
-        for am1-bcc-charges = (charges::combine-am1-bcc-charges (am1-charges ti-run) bcc-corrections)
-        do (balance-charges am1-bcc-charges (net-charge ti-run))
-           (setf (am1-bcc-charges ti-run) am1-bcc-charges)
+  (loop for tirun in (ligands calculation)
+        for am1-charges = (am1-charges tirun)
+        for bcc-corrections = (charges::calculate-bcc-corrections (tirun::molecule tirun))
+        for am1-bcc-charges = (charges::combine-am1-bcc-charges (am1-charges tirun) bcc-corrections)
+        do (balance-charges am1-bcc-charges (net-charge tirun))
+           (setf (am1-bcc-charges tirun) am1-bcc-charges)
            (maphash (lambda (atm charge)
                       (chem:set-charge atm charge))
                     am1-bcc-charges)))
@@ -817,7 +817,7 @@ Otherwise return NIL."
         (ligand (find ligand-name (ligands calculation) :test #'eq :key #'name)))
     (let ((agg (chem:matter-copy receptor)))
       (cando:remove-molecules agg 'cando:ligand)
-      (chem:add-molecule agg (ti-run:molecule ligand))
+      (chem:add-molecule agg (tirun:molecule ligand))
       agg)))
 
 
@@ -990,7 +990,7 @@ METHOD controls how the masks are calculated"
            (chem:set-position target-atom average-pos)))
 
 
-(defun load-chem-draw-ti-run (filename)
+(defun load-chem-draw-tirun (filename)
   (handler-bind ((warning #'muffle-warning))
     (with-open-file (fin (open filename :direction :input))
       (chem:make-chem-draw fin nil nil))))

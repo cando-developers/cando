@@ -2,9 +2,9 @@
 ;;; Published under the GPL 2.0.  See COPYING
 ;;;
 
-(in-package :ti-run)
+(in-package :tirun)
 
-(defclass ti-run-calculation (calculation)
+(defclass tirun-calculation (calculation)
   ((solvent-box :initform ':tip3pbox :initarg :solvent-box :accessor solvent-box)
    (solvent-buffer :initform 12.0 :initarg :solvent-buffer :accessor solvent-buffer)
    (solvent-closeness :initform 0.75 :initarg :solvent-closeness :accessor solvent-closeness)
@@ -12,25 +12,25 @@
    (script-0-setup :initform 'default-script-0-setup :accessor script-0-setup)
    (script-1-leap :initform 'default-script-1-leap :accessor script-1-leap)))
 
-(defmethod print-object ((obj ti-run-calculation) stream)
+(defmethod print-object ((obj tirun-calculation) stream)
   (if *print-readably*
       (progn
-        (format stream "#$(ti-run::ti-run-calculation ")
-        (loop for slot in (clos:class-slots (find-class 'ti-run-calculation))
+        (format stream "#$(tirun::tirun-calculation ")
+        (loop for slot in (clos:class-slots (find-class 'tirun-calculation))
               for slot-name = (clos:slot-definition-name slot)
               for initargs = (clos:slot-definition-initargs slot)
               if (and (car initargs) (slot-boundp obj slot-name))
                 do (format stream "~s ~s " (car initargs) (slot-value obj slot-name)))
         (format stream ") "))
       (print-unreadable-object (obj stream)
-        (format stream "ti-run-calculation"))))
+        (format stream "tirun-calculation"))))
 
 (defmacro powerloop ((&rest clauses) &rest final)
   (if (null clauses)
       `(progn ,@final)
     `(loop ,@(first clauses) do (powerloop (,@(rest clauses)) ,@final))))
  
-(defun make-script-1-leap (calculation &key input-ti-runs-file)
+(defun make-script-1-leap (calculation &key input-tiruns-file)
   (with-top-directory (calculation)
     (let (work-list morph-jobs)
       (powerloop
@@ -65,7 +65,7 @@
                                                     :morph morph
                                                     :side side
                                                     :script script
-                                                    :inputs (arguments :%INPUT% input-ti-runs-file)
+                                                    :inputs (arguments :%INPUT% input-tiruns-file)
                                                     :outputs (arguments :%COORDINATES% coord-node
                                                                         :%TOPOLOGY% input-topology-file
                                                                         :%MOL2% mol2-node)
@@ -87,11 +87,11 @@
                                                                                   :name (string-downcase stage)
                                                                                   :extension "lisp"))
                       for inputs = (ecase stage
-                                     (:decharge (arguments :%TI-RUNS% input-ti-runs-file
+                                     (:decharge (arguments :%TIRUNS% input-tiruns-file
                                                            :%TOPOLOGY% input-topology-file
                                                            :%COORDINATES% (output-file morph-side-prepare-job :-r)))
                                      (:vdw-bonded nil)
-                                     (:recharge (arguments :%TI-RUNS% input-ti-runs-file
+                                     (:recharge (arguments :%TIRUNS% input-tiruns-file
                                                            :%TOPOLOGY% input-topology-file
                                                            :%COORDINATES% (output-file morph-side-prepare-job :-r))))
                       for outputs = (ecase stage
@@ -238,24 +238,24 @@
   (let ((*default-pathname-defaults* (merge-pathnames (top-directory calculation) *default-pathname-defaults*)))
     (let* ((jupyter-job (make-instance 'jupyter-job))
            (am1-jobs (setup-am1-calculations jupyter-job calculation :maxcyc (if *testing* 2 9999)))
-           (ti-runs-precharge (make-instance 'ti-runs-file :name "precharge")))
-      (ti-run:save-ti-runs calculation (node-pathname ti-runs-precharge))
-      (push (make-instance 'argument :option :ti-runs-precharge :node ti-runs-precharge) (outputs jupyter-job))
+           (tiruns-precharge (make-instance 'tiruns-file :name "precharge")))
+      (tirun:save-tiruns calculation (node-pathname tiruns-precharge))
+      (push (make-instance 'argument :option :tiruns-precharge :node tiruns-precharge) (outputs jupyter-job))
       (let* ((script (make-instance 'cando-script-file
                                     :name "charge"
                                     :script *cando-charge-script*))
-             (ti-runs-out (make-instance 'ti-runs-file :name "postcharge")))
+             (tiruns-out (make-instance 'tiruns-file :name "postcharge")))
         (connect-graph
          (make-instance 'cando-job
                         :inputs (apply #'arguments
-                                       :%TI-RUNS% ti-runs-precharge
+                                       :%TIRUNS% tiruns-precharge
                                        (loop for am1-job in am1-jobs
                                              for output = (output-file am1-job :-o)
                                              append (list :%INPUT% output)))
-                        :outputs (arguments :%OUTPUT% ti-runs-out)
+                        :outputs (arguments :%OUTPUT% tiruns-out)
                         :script script
                         :makefile-clause (standard-cando-makefile-clause script)))
-        (let ((morph-jobs (make-script-1-leap calculation :input-ti-runs-file ti-runs-out)))
+        (let ((morph-jobs (make-script-1-leap calculation :input-tiruns-file tiruns-out)))
           ;; Do more preparation
           (generate-all-code calculation (list jupyter-job) (mapcar (lambda (job) (output-file job :%MORPH-ANALYSIS%)) morph-jobs)))
         jupyter-job))))

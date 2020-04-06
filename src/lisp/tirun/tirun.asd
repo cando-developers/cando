@@ -4,8 +4,8 @@
 
 (in-package :asdf-user)
 
-(defsystem "ti-run"
-  :description "TI-RUN setup code"
+(defsystem "tirun"
+  :description "TIRUN setup code"
   :version "0.0.1"
   :author "Christian Schafmeister <chris.schaf@verizon.net>, Nagai Shiho"
   :licence "Private"
@@ -24,26 +24,26 @@
                 :molecule-graph)
   :serial t
 ;;;  :build-operation asdf:monolithic-compile-bundle-op
-;;;  :build-pathname #P"/tmp/ti-run.fasb"
+;;;  :build-pathname #P"/tmp/tirun.fasb"
   :components
   ((:file "packages")
    (:file "jsme")
    (:file "graph2")
-   (:file "ti-run-version")
-   (:file "ti-run")
-   (:file "ti-run-from-structures")
+   (:file "tirun-version")
+   (:file "tirun")
+   (:file "tirun-from-structures")
    (:file "script")
    (:file "ti")
    (:file "graphviz")
    ))
 
 #+(or)
-(defsystem "ti-run/build"
-  :description "TI-RUN build code"
+(defsystem "tirun/build"
+  :description "TIRUN build code"
   :version "0.0.1"
   :author "Christian Schafmeister <chris.schaf@verizon.net>, Nagai Shiho"
   :licence "Private"
-  :depends-on (:ti-run)
+  :depends-on (:tirun)
   :serial t
   :build-operation asdf:monolithic-compile-bundle-op
-  :build-pathname #P"/tmp/ti-run.fasb")
+  :build-pathname #P"/tmp/tirun.fasb")
