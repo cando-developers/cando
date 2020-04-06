@@ -1,28 +1,28 @@
 (load-atom-type-rules "ATOMTYPE_GFF.DEF")
 source leaprc.ff14SB.redq
 source leaprc.gaff
-feps = (make-instance 'fep:fep-calculation)
-desc feps
+tiruns = (make-instance 'ti-run:ti-run-calculation)
+desc tiruns
 sk = loadChemDraw "ligands.cdxml"
-(fep:setup-ligands |feps| |sk|)
+(ti-run:setup-ligands |tiruns| |sk|)
 tests = (list (cons :c1 (lambda (a) (eq (chem:get-name a) :c1))) (cons :c3 (lambda (a) (eq (chem:get-name a) :c3))) (cons :c5 (lambda (a) (eq (chem:get-name a) :c5))))
 pick = (chem:compile-smarts "[C:6]1~[C<c1>:1]~[C:2]~[C<c3>:3]~[C:4]~[C<c5>:5]1" :tests |tests|)
 lysozyme = loadPdb "181L_mod.pdb"
 (cando:build-unbuilt-hydrogens |lysozyme|)
 (simple-build-unbuilt-atoms |lysozyme|)
-(pushnew |lysozyme| (fep:receptors |feps|))
+(pushnew |lysozyme| (ti-run:receptors |tiruns|))
 loadOff phen.lib
 loadOff benz.lib
 ligs = loadPdb bnz_phn.pdb
 (simple-build-unbuilt-atoms |ligs|)
 (build-unbuilt-hydrogens |ligs|)
-(fep:pose-ligands-using-pattern |feps| |pick| |ligs|)
-(fep:build-job-nodes |feps|)
-(fep:connect-job-nodes |feps| :simple :connections 2 :stages 3 :windows 11)
-worklist = (fep:generate-jobs |feps|)
-(with-open-file (sout "/tmp/graph.dot" :direction :output) (fepdot:draw-graph-stream (list |worklist|) sout))
+(ti-run:pose-ligands-using-pattern |tiruns| |pick| |ligs|)
+(ti-run:build-job-nodes |tiruns|)
+(ti-run:connect-job-nodes |tiruns| :simple :connections 2 :stages 3 :windows 11)
+worklist = (ti-run:generate-jobs |tiruns|)
+(with-open-file (sout "/tmp/graph.dot" :direction :output) (ti-rundot:draw-graph-stream (list |worklist|) sout))
 #;(ext:system "dot -Tpdf -O /tmp/graph.dot")
 #;(ext:system "open -n /tmp/graph.dot.pdf")
 #;(close *standard-output*)
-(format t "Done with FEP demo - check the jobs directory~%")
+(format t "Done with TI-RUN demo - check the jobs directory~%")
 quit
