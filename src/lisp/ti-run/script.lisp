@@ -2,9 +2,9 @@
 ;;; Published under the GPL 2.0.  See COPYING
 ;;;
 
-(in-package :fep)
+(in-package :ti-run)
 
-(defclass fep-calculation (calculation)
+(defclass ti-run-calculation (calculation)
   ((solvent-box :initform ':tip3pbox :initarg :solvent-box :accessor solvent-box)
    (solvent-buffer :initform 12.0 :initarg :solvent-buffer :accessor solvent-buffer)
    (solvent-closeness :initform 0.75 :initarg :solvent-closeness :accessor solvent-closeness)
@@ -12,25 +12,25 @@
    (script-0-setup :initform 'default-script-0-setup :accessor script-0-setup)
    (script-1-leap :initform 'default-script-1-leap :accessor script-1-leap)))
 
-(defmethod print-object ((obj fep-calculation) stream)
+(defmethod print-object ((obj ti-run-calculation) stream)
   (if *print-readably*
       (progn
-        (format stream "#$(fep::fep-calculation ")
-        (loop for slot in (clos:class-slots (find-class 'fep-calculation))
+        (format stream "#$(ti-run::ti-run-calculation ")
+        (loop for slot in (clos:class-slots (find-class 'ti-run-calculation))
               for slot-name = (clos:slot-definition-name slot)
               for initargs = (clos:slot-definition-initargs slot)
               if (and (car initargs) (slot-boundp obj slot-name))
                 do (format stream "~s ~s " (car initargs) (slot-value obj slot-name)))
         (format stream ") "))
       (print-unreadable-object (obj stream)
-        (format stream "fep-calculation"))))
+        (format stream "ti-run-calculation"))))
 
 (defmacro powerloop ((&rest clauses) &rest final)
   (if (null clauses)
       `(progn ,@final)
     `(loop ,@(first clauses) do (powerloop (,@(rest clauses)) ,@final))))
  
-(defun make-script-1-leap (calculation &key input-feps-file)
+(defun make-script-1-leap (calculation &key input-ti-runs-file)
   (with-top-directory (calculation)
     (let (work-list morph-jobs)
       (powerloop
@@ -65,7 +65,7 @@
                                                     :morph morph
                                                     :side side
                                                     :script script
-                                                    :inputs (arguments :%INPUT% input-feps-file)
+                                                    :inputs (arguments :%INPUT% input-ti-runs-file)
                                                     :outputs (arguments :%COORDINATES% coord-node
                                                                         :%TOPOLOGY% input-topology-file
                                                                         :%MOL2% mol2-node)
@@ -87,11 +87,11 @@
                                                                                   :name (string-downcase stage)
                                                                                   :extension "lisp"))
                       for inputs = (ecase stage
-                                     (:decharge (arguments :%FEPS% input-feps-file
+                                     (:decharge (arguments :%TI-RUNS% input-ti-runs-file
                                                            :%TOPOLOGY% input-topology-file
                                                            :%COORDINATES% (output-file morph-side-prepare-job :-r)))
                                      (:vdw-bonded nil)
-                                     (:recharge (arguments :%FEPS% input-feps-file
+                                     (:recharge (arguments :%TI-RUNS% input-ti-runs-file
                                                            :%TOPOLOGY% input-topology-file
                                                            :%COORDINATES% (output-file morph-side-prepare-job :-r))))
                       for outputs = (ecase stage
@@ -238,24 +238,24 @@
   (let ((*default-pathname-defaults* (merge-pathnames (top-directory calculation) *default-pathname-defaults*)))
     (let* ((jupyter-job (make-instance 'jupyter-job))
            (am1-jobs (setup-am1-calculations jupyter-job calculation :maxcyc (if *testing* 2 9999)))
-           (feps-precharge (make-instance 'feps-file :name "precharge")))
-      (fep:save-feps calculation (node-pathname feps-precharge))
-      (push (make-instance 'argument :option :feps-precharge :node feps-precharge) (outputs jupyter-job))
+           (ti-runs-precharge (make-instance 'ti-runs-file :name "precharge")))
+      (ti-run:save-ti-runs calculation (node-pathname ti-runs-precharge))
+      (push (make-instance 'argument :option :ti-runs-precharge :node ti-runs-precharge) (outputs jupyter-job))
       (let* ((script (make-instance 'cando-script-file
                                     :name "charge"
                                     :script *cando-charge-script*))
-             (feps-out (make-instance 'feps-file :name "postcharge")))
+             (ti-runs-out (make-instance 'ti-runs-file :name "postcharge")))
         (connect-graph
          (make-instance 'cando-job
                         :inputs (apply #'arguments
-                                       :%FEPS% feps-precharge
+                                       :%TI-RUNS% ti-runs-precharge
                                        (loop for am1-job in am1-jobs
                                              for output = (output-file am1-job :-o)
                                              append (list :%INPUT% output)))
-                        :outputs (arguments :%OUTPUT% feps-out)
+                        :outputs (arguments :%OUTPUT% ti-runs-out)
                         :script script
                         :makefile-clause (standard-cando-makefile-clause script)))
-        (let ((morph-jobs (make-script-1-leap calculation :input-feps-file feps-out)))
+        (let ((morph-jobs (make-script-1-leap calculation :input-ti-runs-file ti-runs-out)))
           ;; Do more preparation
           (generate-all-code calculation (list jupyter-job) (mapcar (lambda (job) (output-file job :%MORPH-ANALYSIS%)) morph-jobs)))
         jupyter-job))))

@@ -2,7 +2,7 @@
 ;;; Published under the GPL 2.0.  See COPYING
 ;;;
 
-(in-package #:fep-gml)
+(in-package #:ti-run-gml)
 
 (defun render-node (stream id name &key (color "white") (shape "rectangle"))
   (format stream "  node~%")

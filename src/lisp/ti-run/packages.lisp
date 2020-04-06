@@ -30,16 +30,16 @@
    #:*graph-form*
    ))
 
-(defpackage #:fep
+(defpackage #:ti-run
   (:use #:common-lisp)
   (:shadowing-import-from :chem "ATOM")
   (:export
    #:ensure-jobs-directories-exist
-   #:make-fep
+   #:make-ti-run
    #:add-receptor
-   #:fep-calculation
+   #:ti-run-calculation
    #:job
-   #:load-chem-draw-fep
+   #:load-chem-draw-ti-run
    #:calculation
    #:jobs
    #:top-directory
@@ -67,11 +67,11 @@
    #:script
    #:drawing
    #:molecule
-   #:fep-morph
+   #:ti-run-morph
    #:node-file
    #:morph-side-file
-   #:load-feps
-   #:save-feps
+   #:load-ti-runs
+   #:save-ti-runs
    #:solvent-box
    #:solvent-buffer
    #:solvent-closeness
@@ -86,8 +86,8 @@
    #:morph-mask
    #:morphs
    #:nodes
-   #:setup-feps
-   #:build-feps
+   #:setup-ti-runs
+   #:build-ti-runs
    #:layout-ligands
    #:layout-2
    #:build-ligands
@@ -104,7 +104,7 @@
    #:amber-job-mixin
    #:pattern-atoms
    #:average-core-atom-positions
-   #:fep-calculation-from-ligands
+   #:ti-run-calculation-from-ligands
    #:do-decharge-recharge
    #:check-calculation-atom-types
    #:validate-atom-types
@@ -114,7 +114,7 @@
    #:build-recharge-aggregate))
 
 
-(defpackage #:fepdot
+(defpackage #:ti-rundot
   (:use #:common-lisp)
   (:export
    #:draw-graph-stream))

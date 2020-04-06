@@ -4,8 +4,8 @@
 
 (in-package :asdf-user)
 
-(defsystem "fep"
-  :description "FEP setup code"
+(defsystem "ti-run"
+  :description "TI-RUN setup code"
   :version "0.0.1"
   :author "Christian Schafmeister <chris.schaf@verizon.net>, Nagai Shiho"
   :licence "Private"
@@ -24,26 +24,26 @@
                 :molecule-graph)
   :serial t
 ;;;  :build-operation asdf:monolithic-compile-bundle-op
-;;;  :build-pathname #P"/tmp/fep.fasb"
+;;;  :build-pathname #P"/tmp/ti-run.fasb"
   :components
   ((:file "packages")
    (:file "jsme")
    (:file "graph2")
-   (:file "fep-version")
-   (:file "fep")
-   (:file "fep-from-structures")
+   (:file "ti-run-version")
+   (:file "ti-run")
+   (:file "ti-run-from-structures")
    (:file "script")
    (:file "ti")
    (:file "graphviz")
    ))
 
 #+(or)
-(defsystem "fep/build"
-  :description "FEP build code"
+(defsystem "ti-run/build"
+  :description "TI-RUN build code"
   :version "0.0.1"
   :author "Christian Schafmeister <chris.schaf@verizon.net>, Nagai Shiho"
   :licence "Private"
-  :depends-on (:fep)
+  :depends-on (:ti-run)
   :serial t
   :build-operation asdf:monolithic-compile-bundle-op
-  :build-pathname #P"/tmp/fep.fasb")
+  :build-pathname #P"/tmp/ti-run.fasb")

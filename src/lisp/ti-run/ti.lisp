@@ -2,21 +2,21 @@
 ;;; Published under the GPL 2.0.  See COPYING
 ;;;
 
-(in-package :fep)
+(in-package :ti-run)
 
 ;;; What is this for????
 (defparameter *vdw-bonded* "ifsc=1, scmask1=':1@H6', scmask2=':2@O1,H6'")
 
-(defun fep-charge (feps-pathname output-pathname)
-  (defparameter *feps* (fep:load-feps feps-pathname))
-  (read-am1-charges *feps*)
-  (calculate-am1-bcc-charges *feps*)
-  (fep:save-feps *feps* output-pathname))
+(defun ti-run-charge (ti-runs-pathname output-pathname)
+  (defparameter *ti-runs* (ti-run:load-ti-runs ti-runs-pathname))
+  (read-am1-charges *ti-runs*)
+  (calculate-am1-bcc-charges *ti-runs*)
+  (ti-run:save-ti-runs *ti-runs* output-pathname))
 
 (defparameter *cando-charge-script*
   (let ((*package* (find-package :keyword)))
     (cl:format nil "~{~s~%~}"
-               '((fep::fep-charge ":%FEPS%" ":%OUTPUT%")
+               '((ti-run::ti-run-charge ":%TI-RUNS%" ":%OUTPUT%")
                  (core:exit)))))
 
 
@@ -31,19 +31,19 @@
                  (leap:load-off "solvents.lib")
                  (leap:load-off "atomic_ions.lib")
                  (leap:load-atom-type-rules "ATOMTYPE_GFF.DEF")
-                 (defparameter *feps* (fep:load-feps ":%INPUT%"))
-                 (defparameter *receptor* (first (fep:receptors *feps*)))
+                 (defparameter *ti-runs* (ti-run:load-ti-runs ":%INPUT%"))
+                 (defparameter *receptor* (first (ti-run:receptors *ti-runs*)))
                  (defparameter *side-name* :%SIDE-NAME%)
-                 (defparameter *morph* (find-morph-with-name :%MORPH-NAME% *feps*))
-                 (defparameter *source* (fep:source *morph*))
-                 (defparameter *target* (fep:target *morph*))
-                 (fep:average-core-atom-positions *source* *target* (fep:equivalent-atom-names (fep:morph-mask *morph*)))
-                 (leap:assign-atom-types (fep:molecule *source*))
-                 (fep:validate-atom-types (fep:molecule *source*))
-                 (leap:assign-atom-types (fep:molecule *target*))
-                 (fep:validate-atom-types (fep:molecule *target*))
-                 (defparameter *ligands* (cando:combine (fep:molecule *source*)
-                                                        (fep:molecule *target*)))
+                 (defparameter *morph* (find-morph-with-name :%MORPH-NAME% *ti-runs*))
+                 (defparameter *source* (ti-run:source *morph*))
+                 (defparameter *target* (ti-run:target *morph*))
+                 (ti-run:average-core-atom-positions *source* *target* (ti-run:equivalent-atom-names (ti-run:morph-mask *morph*)))
+                 (leap:assign-atom-types (ti-run:molecule *source*))
+                 (ti-run:validate-atom-types (ti-run:molecule *source*))
+                 (leap:assign-atom-types (ti-run:molecule *target*))
+                 (ti-run:validate-atom-types (ti-run:molecule *target*))
+                 (defparameter *ligands* (cando:combine (ti-run:molecule *source*)
+                                                        (ti-run:molecule *target*)))
                  (format t "*side-name* --> ~a~%" *side-name*)
                  (cond
                    ((eq *side-name* :ligand)
@@ -55,15 +55,15 @@
                                                           (chem:matter-copy *receptor*))))
                    (t (error "Unknown *side-name* ~s - must be one of :ligand or :complex" *side-name*)))
                  (leap:solvate-box *system*
-                  (leap.core:lookup-variable (solvent-box *feps*))
-                  (solvent-buffer *feps*)
-                  :closeness (solvent-closeness *feps*))
+                  (leap.core:lookup-variable (solvent-box *ti-runs*))
+                  (solvent-buffer *ti-runs*)
+                  :closeness (solvent-closeness *ti-runs*))
                  (leap.add-ions:add-ions *system* :|Cl-| 0)
                  (cando:save-mol2 *system* (ensure-directories-exist ":%MOL2%"))
                  (ensure-jobs-directories-exist (pathname ":%TOPOLOGY%"))
                  (ensure-jobs-directories-exist (pathname ":%COORDINATES%"))
                  (leap.topology:save-amber-parm-format *system* ":%TOPOLOGY%" ":%COORDINATES%"
-                  :residue-name-to-pdb-alist (fep:residue-name-to-pdb-alist *feps*))
+                  :residue-name-to-pdb-alist (ti-run:residue-name-to-pdb-alist *ti-runs*))
                  (core:exit)))))
 
 (defparameter *prepare-min-in*
@@ -169,7 +169,7 @@
   (build-decharge-recharge-aggregate top-crd 1))
 
 (defun do-decharge-recharge (charge-function
-                             feps-fn
+                             ti-runs-fn
                              topology-fn coordinates-fn
                              mol2-fn
                              output-topology-fn output-coordinate-fn)
@@ -177,23 +177,23 @@
   (leap:source "leaprc.ff14SB.redq")
   (leap:source "leaprc.gaff")
   (leap:load-amber-params "frcmod.ionsjc_tip3p")
-  ;; load the fep-calculation
-  (let* ((feps (fep:load-feps feps-fn))
+  ;; load the ti-run-calculation
+  (let* ((ti-runs (ti-run:load-ti-runs ti-runs-fn))
          (top-crd (leap.topology:load-amber-topology-restart-pair :topology-filename topology-fn
                                                                   :coordinate-filename coordinates-fn))
          (decharge (funcall charge-function top-crd)))
     (cando:save-mol2 decharge mol2-fn)
-    (format t "residue-name-to-pdb-list -> ~s~%" (fep:residue-name-to-pdb-alist feps))
+    (format t "residue-name-to-pdb-list -> ~s~%" (ti-run:residue-name-to-pdb-alist ti-runs))
     (leap.topology:save-amber-parm-format
      decharge output-topology-fn output-coordinate-fn
-     :residue-name-to-pdb-alist (fep:residue-name-to-pdb-alist feps))))
+     :residue-name-to-pdb-alist (ti-run:residue-name-to-pdb-alist ti-runs))))
   
 (defparameter *decharge*
   (let ((*package* (find-package :keyword)))
     (cl:format nil "~{~s~%~}"
-               `((fep:do-decharge-recharge
-                   'fep:build-decharge-aggregate
-                   ":%FEPS%"
+               `((ti-run:do-decharge-recharge
+                   'ti-run:build-decharge-aggregate
+                   ":%TI-RUNS%"
                    ":%TOPOLOGY%" ":%COORDINATES%"
                    ":%DECHARGE-MOL2%"
                    ":%DECHARGE-TOPOLOGY%" ":%DECHARGE-COORDINATES%")
@@ -202,9 +202,9 @@
 (defparameter *recharge*
   (let ((*package* (find-package :keyword)))
     (cl:format nil "~{~s~%~}"
-               `((fep:do-decharge-recharge
-                   'fep:build-recharge-aggregate
-                   ":%FEPS%"
+               `((ti-run:do-decharge-recharge
+                   'ti-run:build-recharge-aggregate
+                   ":%TI-RUNS%"
                    ":%TOPOLOGY%" ":%COORDINATES%"
                    ":%RECHARGE-MOL2%"
                    ":%RECHARGE-TOPOLOGY%" ":%RECHARGE-COORDINATES%")
@@ -527,12 +527,12 @@ if __name__ == '__main__':
    (name :initarg :name :accessor name)
    (extension :initarg :extension :accessor extension)))
 
-(defclass feps-mixin () ())
+(defclass ti-runs-mixin () ())
 
-(defclass feps-file (node-file feps-mixin)
+(defclass ti-runs-file (node-file ti-runs-mixin)
   ()
   (:default-initargs
-   :name "feps"
+   :name "ti-runs"
    :extension "cando"))
 
 (defclass python-script-file (node-file)
@@ -683,7 +683,7 @@ its for and then create a new class for it."))
       (ensure-jobs-directories-exist (call-next-method))
       (call-next-method)))
 
-(defmethod node-pathname ((node feps-file))
+(defmethod node-pathname ((node ti-runs-file))
   (make-pathname :name (string-downcase (name node))
                  :type (extension node)))
 
@@ -1254,7 +1254,7 @@ exec \"$@\"
          makefile-pathname
          (with-output-to-string (makefile)
            (format makefile "# cando version ~a~%" (lisp-implementation-version))
-           (format makefile "# fep version ~a~%" (fep:version))
+           (format makefile "# ti-run version ~a~%" (ti-run:version))
            (format makefile "all : ~{~a ~}~%" (mapcar (lambda (file) (node-pathname file)) final-outputs))
            (format makefile "~aecho DONE~%" #\tab)
            (format makefile "~%")
@@ -1270,40 +1270,40 @@ normal way - so we short circuit it here using a mol2 file"
     (format stream "#.(with-input-from-string (sin ~s) (chem:read-mol2 sin)) " agg-string)))
 
 
-(defun save-feps (feps feps-file)
-  (cando:save-cando feps feps-file))
+(defun save-ti-runs (ti-runs ti-runs-file)
+  (cando:save-cando ti-runs ti-runs-file))
 
-(defun load-feps (feps-file)
-  (cando:load-cando feps-file))
+(defun load-ti-runs (ti-runs-file)
+  (cando:load-cando ti-runs-file))
 
 #+(or)
-(defun save-feps (feps feps-file)
-  (setf (receptor-strings feps) nil)
-  (let* ((receptors (receptors feps))
+(defun save-ti-runs (ti-runs ti-runs-file)
+  (setf (receptor-strings ti-runs) nil)
+  (let* ((receptors (receptors ti-runs))
          reversed-receptor-strings)
     (loop for receptor in receptors
           for receptor-string = (chem:aggregate-as-mol2-string receptor)
           do (push receptor-string reversed-receptor-strings))
-    (setf (receptor-strings feps) (nreverse reversed-receptor-strings)))
-  (cando:save-cando feps feps-file))
+    (setf (receptor-strings ti-runs) (nreverse reversed-receptor-strings)))
+  (cando:save-cando ti-runs ti-runs-file))
 
 
 #+(or)
-(defun load-feps (feps-file)
-  "Load a feps database and register the topologys"
-  (let ((feps (cando:load-cando feps-file))
+(defun load-ti-runs (ti-runs-file)
+  "Load a ti-runs database and register the topologys"
+  (let ((ti-runs (cando:load-cando ti-runs-file))
         reversed-receptors)
-    (loop for receptor-string in (receptor-strings feps)
+    (loop for receptor-string in (receptor-strings ti-runs)
           for receptor = (with-input-from-string (sin receptor-string)
                            (chem:read-mol2 sin))
           do (push receptor reversed-receptors))
-    (setf (receptors feps) (nreverse reversed-receptors))
-    (cando:register-topology (chem:get-name (core-topology feps)) (core-topology feps))
+    (setf (receptors ti-runs) (nreverse reversed-receptors))
+    (cando:register-topology (chem:get-name (core-topology ti-runs)) (core-topology ti-runs))
     (maphash (lambda (part-name name-topologys)
                (format t "name-topologys = ~s~%" name-topologys)
                (loop for (name . topology) in name-topologys
                      do (format t "Registering ~a ~a~%" name topology)
                      do (cando:register-topology name topology)))
-             (side-topologys feps))
-    feps))
+             (side-topologys ti-runs))
+    ti-runs))
 
