@@ -720,11 +720,18 @@ Otherwise return NIL."
 
 (defun setup-am1-calculations (jupyter-job calculation &key (maxcyc 9999))
   (with-top-directory (calculation)
-    (let ((ligands (ligands calculation)))
+    (let* ((ligands (ligands calculation))
+           (jobs (jobs calculation))
+           (morphs (morphs jobs))
+           (only-ligands-in-morphs (let (ligs)
+                                     (loop for morph in morphs
+                                           do (pushnew (source morph) ligs)
+                                           do (pushnew (target morph) ligs))
+                                     ligs)))
       (ensure-jobs-directories-exist *default-pathname-defaults*)
       (format t "Creating am1 scripts in ~a~%" (truename *default-pathname-defaults*))
       (let* (outputs
-             (result (loop for ligand in ligands
+             (result (loop for ligand in only-ligands-in-morphs
                            for in-file = (make-instance 'sqm-input-file :name (name ligand))
                            for order-file = (make-instance 'sqm-atom-order-file :name (name ligand))
                            for molecule-charge = (let ((charge 0.0))
