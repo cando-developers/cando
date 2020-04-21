@@ -82,7 +82,7 @@
                                             (:decharge *decharge*)
                                             (:vdw-bonded nil)
                                             (:recharge *recharge*))
-                      for script = (unless (eq stage :vdw)
+                      for script = (unless (eq stage :vdw-bonded)
                                      (make-instance 'morph-side-stage-script-file :morph morph :side side :stage stage :script script-source
                                                                                   :name (string-downcase stage)
                                                                                   :extension "lisp"))
