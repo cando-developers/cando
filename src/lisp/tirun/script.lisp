@@ -52,8 +52,8 @@
                                            :name side-name
                                            :extension "rst7")
            for mol2-node = (make-instance 'morph-side-mol2-file
-                                         :morph morph :side side
-                                         :name side-name)
+                                          :morph morph :side side
+                                          :name side-name)
            for script = (make-instance 'morph-side-script
                                        :morph morph
                                        :side side
@@ -98,38 +98,38 @@
                                       (:decharge
                                        (arguments
                                         :%DECHARGE-MOL2% (make-instance 'morph-side-stage-mol2-file
-                                                                     :morph morph
-                                                                     :side side
-                                                                     :stage stage
-                                                                     :name "decharge")
+                                                                        :morph morph
+                                                                        :side side
+                                                                        :stage stage
+                                                                        :name "decharge")
                                         :%DECHARGE-TOPOLOGY% (make-instance 'morph-side-stage-topology-file
-                                                                          :morph morph
-                                                                          :side side
-                                                                          :stage stage
-                                                                          :name "decharge")
+                                                                            :morph morph
+                                                                            :side side
+                                                                            :stage stage
+                                                                            :name "decharge")
                                         :%DECHARGE-COORDINATES% (make-instance 'morph-side-stage-coordinates-file
-                                                                             :morph morph
-                                                                             :side side
-                                                                             :stage stage
-                                                                             :name "decharge")))
+                                                                               :morph morph
+                                                                               :side side
+                                                                               :stage stage
+                                                                               :name "decharge")))
                                       (:vdw-bonded nil)
                                       (:recharge
                                        (arguments
                                         :%RECHARGE-MOL2% (make-instance 'morph-side-stage-mol2-file
-                                                                     :morph morph
-                                                                     :side side
-                                                                     :stage stage
-                                                                     :name "recharge")
+                                                                        :morph morph
+                                                                        :side side
+                                                                        :stage stage
+                                                                        :name "recharge")
                                         :%RECHARGE-TOPOLOGY% (make-instance 'morph-side-stage-topology-file
-                                                                          :morph morph
-                                                                          :side side
-                                                                          :stage stage
-                                                                          :name "recharge")
+                                                                            :morph morph
+                                                                            :side side
+                                                                            :stage stage
+                                                                            :name "recharge")
                                         :%RECHARGE-COORDINATES% (make-instance 'morph-side-stage-coordinates-file
-                                                                             :morph morph
-                                                                             :side side
-                                                                             :stage stage
-                                                                             :name "recharge"))))
+                                                                               :morph morph
+                                                                               :side side
+                                                                               :stage stage
+                                                                               :name "recharge"))))
                       for stage-job = (unless (eq stage :vdw-bonded)
                                         (connect-graph
                                          (make-instance 'morph-side-stage-cando-job
@@ -211,8 +211,8 @@
                                         :script side-script
                                         :inputs (arguments :. (mapcar (lambda (job) (output-file job :%STAGE-ANALYSIS%)) stage-jobs))
                                         :outputs (arguments :%SIDE-ANALYSIS% (make-instance 'morph-side-file
-                                                                                          :morph morph :side side
-                                                                                          :name "side-analysis" :extension "dat"))
+                                                                                            :morph morph :side side
+                                                                                            :name "side-analysis" :extension "dat"))
                                         :makefile-clause (standard-cando-makefile-clause side-script :add-inputs t)))
                         analysis-jobs))))
          ;; combine analysis-jobs
