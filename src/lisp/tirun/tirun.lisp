@@ -312,7 +312,7 @@
   ((source :initarg :source :accessor source)
    (target :initarg :target :accessor target)
    (morph-mask :initarg :morph-mask :accessor morph-mask)
-   (stages :initarg :stages :initform 3 :accessor stages)
+   (stages :initarg :stages :initform 1 :accessor stages)
    (lambda-values :type list :initarg :lambda-values :initform (generate-lambda-values *system*) :accessor lambda-values)))
 
 (defmethod print-object ((obj tirun-morph) stream)
@@ -381,7 +381,7 @@
    (core-topology :initform nil :initarg :core-topology :accessor core-topology)
    (side-topologys :initform nil :initarg :side-topologys :accessor side-topologys)
    (jobs :initform (make-instance 'job-graph) :initarg :jobs :accessor jobs)
-   (ti-stages :initarg :ti-stages :initform 3 :accessor ti-stages)
+   (ti-stages :initarg :ti-stages :initform 1 :accessor ti-stages)
    (ti-lambdas :initarg :ti-lambdas :initform 'generate-lambda-values :accessor ti-lambdas)
    (settings :initform (default-calculation-settings) :initarg :settings :accessor settings)
    (top-directory :initform (make-pathname :directory (list :relative "jobs"))
