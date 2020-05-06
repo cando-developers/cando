@@ -38,7 +38,12 @@
   (let ((source-molecule (molecule source))
         (target-molecule (molecule target)))
     (multiple-value-bind (equivs diff1 diff2)
-        (molecule-graph.max-clique:compare-molecules source-molecule target-molecule)
+        (molecule-graph.max-clique:compare-molecules
+         source-molecule
+         target-molecule
+         :exclude-hydrogens nil
+         :atom-match-callback (lambda (atom1 atom2)
+                                (chem:atom-within-angstroms atom1 atom2 0.42)))
       (unless (= (chem:content-size source-molecule) 1)
         (error "The source molecule ~a has more than one residue"))
       (unless (= (chem:content-size target-molecule) 1)
@@ -60,7 +65,6 @@
                        :target target
                        :target-timask-residue-index 2
                        :target-scmask-atom-names target-atom-names)))))
-
 
 
 (defmethod connect-job-nodes (calculation (pairs list) &key)

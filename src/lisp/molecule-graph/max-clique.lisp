@@ -248,6 +248,9 @@ Otherwise pass a function that takes two atoms and returns T if they are matchab
          (cross-product (if topological-constraint-theta
                             (modular-cross-product-with-topological-constraint graph1 graph2 topological-constraint-theta :atom-match-callback atom-match-callback)
                             (modular-cross-product graph1 graph2 :atom-match-callback atom-match-callback)))
+         (_ (when (> (length (cross-product-nodes cross-product)) 1000)
+              (Warn "There are more than 500 nodes in the compare-molecule cross-product (actual number ~a) - it may take a very long time to calculate the maximum clique"
+                    (length (cross-product-nodes cross-product)))))
          (dimacs (build-dimacs cross-product))
          (maximum-clique (chem:find-maximum-clique-search dimacs *clique-search-threads* 1))
          (matches (extract-atom-pairs cross-product maximum-clique))
