@@ -24,6 +24,7 @@ This is an open source license for the CANDO software from Temple University, bu
 */
 /* -^- */
 #define	DEBUG_LEVEL_NONE
+#include <iomanip>
 #include <clasp/core/common.h>
 #include <clasp/core/array.h>
 #include <cando/chem/pdb.h>
