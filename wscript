@@ -11,10 +11,15 @@ def options(ctx):
 
 # configure can provide...
 # cfg.extensions_includes  - Append directory names relative to top that will
+
+def analyze_clasp(cfg):
+    cfg.extensions_clasp_gc_names += [ "cando" ]
+
 def configure(cfg):
     cfg.check_cxx(stlib='expat', cflags='-Wall', uselib_store='EXPAT')
     cfg.extensions_stlib += cfg.env.STLIB_EXPAT
     cfg.extensions_stlib += cfg.env.STLIB_Z
+    cfg.extensions_clasp_gc_names += "cando"
     cfg.check_cxx(stlib='boost_graph', cflags='-Wall', uselib_store='BOOST-boost_graph')
     cfg.define("BUILD_EXTENSION",1)   # add this whenever building an extension
 #    cfg.define("DEBUG_ENERGY_FUNCTION",1)
