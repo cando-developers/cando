@@ -782,8 +782,15 @@ Otherwise return NIL."
 
 (defun read-am1-charges (calculation)
   (with-top-directory (calculation)
-    (let ((count 0))
-      (loop for ligand in (ligands calculation)
+	(let* ((count 0)
+           (jobs (jobs calculation))
+           (morphs (morphs jobs))
+           (only-ligands-in-morphs (let (ligs)
+                                     (loop for morph in morphs
+                                           do (pushnew (source morph) ligs)
+                                           do (pushnew (target morph) ligs))
+                                     ligs)))
+      (loop for ligand in only-ligands-in-morphs
             for sqm-out = (make-instance 'sqm-output-file :name (name ligand))
             do (let ((am1-charge (charges::read-am1-charges (node-pathname sqm-out) (tirun::atom-order ligand))))
                  (setf (am1-charges ligand) am1-charge))
@@ -808,15 +815,22 @@ Otherwise return NIL."
         (warn "After balance-charges the new-charge-total of the molecule is ~g~%" new-charge-total)))))
 
 (defun calculate-am1-bcc-charges (calculation)
-  (loop for tirun in (ligands calculation)
-        for am1-charges = (am1-charges tirun)
+   (let* ((jobs (jobs calculation))
+	 (morphs (morphs jobs))
+	 (only-ligands-in-morphs (let (ligs)
+				   (loop for morph in morphs
+					 do (pushnew (source morph) ligs)
+					 do (pushnew (target morph) ligs))
+			           ligs)))
+  (loop for tirun in only-ligands-in-morphs
+  	for am1-charges = (am1-charges tirun)
         for bcc-corrections = (charges::calculate-bcc-corrections (tirun::molecule tirun))
         for am1-bcc-charges = (charges::combine-am1-bcc-charges (am1-charges tirun) bcc-corrections)
         do (balance-charges am1-bcc-charges (net-charge tirun))
            (setf (am1-bcc-charges tirun) am1-bcc-charges)
            (maphash (lambda (atm charge)
                       (chem:set-charge atm charge))
-                    am1-bcc-charges)))
+                    am1-bcc-charges))))
 
 
 (defun complex (calculation ligand-name &optional (receptor-index 0))
