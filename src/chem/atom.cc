@@ -124,9 +124,6 @@ CL_DEFUN Atom_sp Atom_O::make(core::Symbol_sp name, chem::Element element)
   return atom;
 };
 
-#define ARGS_randomizeAtomPosition "((core::a chem:atom) &optional (width 10.0))"
-#define DECL_randomizeAtomPosition ""
-#define DOCS_randomizeAtomPosition "make Atom args: &key (name \"\") (element :C)"
 CL_LISPIFY_NAME("randomizeAtomPosition");
 CL_LAMBDA((core::a chem:atom) &optional (width 10.0));
 CL_DEFMETHOD void Atom_O::randomizeAtomPosition(double width)
