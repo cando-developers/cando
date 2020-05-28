@@ -36,6 +36,11 @@
 ;;; Load the ASDF package manager
 (progn
   (require :asdf))
+
+(progn
+  (format t "Registering sb-bsd-sockets~%")
+  (asdf:register-immutable-system :sb-bsd-sockets)  ; already provided by the system
+  )
 #+(or)
 (format t "Loaded asdf version ~s~%" (asdf/upgrade:asdf-version))
 
