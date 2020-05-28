@@ -70,7 +70,7 @@
 "minimisation
  &cntrl
    imin = 1, ntmin = 2,
-   maxcyc = 100,
+   maxcyc = 10000,
    ntpr = 20, ntwe = 20,
    ntb = 1,
    ntr = 1, restraint_wt = 5.00,
@@ -292,9 +292,9 @@
    ioutfm = 1, iwrap = 1,
    ntwe = 1000, ntwx = 10000, ntpr = 10000, ntwr = 20000,
 
-   icfe = 1, clambda = :%LAMBDA%, scalpha = 0.5, scbeta = 12.0,
-   logdvdl = 1,
-   ifmbar = 1, bar_intervall = 1000, mbar_states = :%LAMBDA-WINDOWS-COUNT%,
+   icfe = 1, clambda = :%LAMBDA%, scalpha = 2.0, scbeta = 50.0,
+   logdvdl = 1, gti_lam_sch=1, gti_output=1,
+   ifmbar = 1, mbar_states = :%LAMBDA-WINDOWS-COUNT%,
    mbar_lambda = :%LAMBDA-WINDOWS%
    timask1 = ':%TIMASK1%', timask2 = ':%TIMASK2%',
    ifsc = :%IFSC%, crgmask = ':%CRGMASK%'
@@ -317,9 +317,9 @@
    ioutfm = 1, iwrap = 1,
    ntwe = 1000, ntwx = 10000, ntpr = 10000, ntwr = 20000,
 
-   icfe = 1, clambda = :%LAMBDA%, scalpha = 0.5, scbeta = 12.0,
-   logdvdl = 1,
-   ifmbar = 1, bar_intervall = 1000, mbar_states = :%LAMBDA-WINDOWS-COUNT%,
+   icfe = 1, clambda = :%LAMBDA%, scalpha = 2.0, scbeta = 50.0,
+   logdvdl = 1, gti_lam_sch=1, gti_output=1,
+   ifmbar = 1, mbar_states = :%LAMBDA-WINDOWS-COUNT%,
    mbar_lambda = :%LAMBDA-WINDOWS%
    timask1 = ':%TIMASK1%', timask2 = ':%TIMASK2%',
    ifsc = :%IFSC%, scmask1=':%SCMASK1%', scmask2=':%SCMASK2%', crgmask = ':%CRGMASK%'
@@ -329,6 +329,12 @@
  / 
 ")
 
+(defparameter *lambda-sch*
+  "
+TypeEleCC, smooth_step2, complementary, 0.0, 1.0
+TypeEleSC, smooth_step2, complementary, 0.0, 1.0
+TypeVDW, smooth_step2, complementary, 0.0, 1.0
+")
 
 (defparameter *python-getdvdl*
   "import math
