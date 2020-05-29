@@ -160,10 +160,10 @@
 (defmethod nglv:get-structure-string ((self cando-structure))
   (check-type self cando-structure)
   (progn
-    (cl-jupyter:logg 2 "Generating mol2 as string~%")
+    (jupyter:inform :info nil "Generating mol2 as string~%")
     (chem:aggregate-as-mol2-string (matter self) t))
   #++(progn
-       (cl-jupyter:logg 2 "Saving structure to /tmp/structure.mol2~%")
+       (jupyter:inform :info nil "Saving structure to /tmp/structure.mol2~%")
        (cando:save-mol2 (matter self) "/tmp/structure.mol2" :use-sybyl-types t)
        (with-open-file (stream "/tmp/structure.mol2" :direction :input)
 	 (let* ((entire-file (make-string (+ (file-length stream) 2)
@@ -250,36 +250,4 @@
 (defmethod show ((trajectory amber-netcdf-trajectory) &rest kwargs &key &allow-other-keys)
   (apply #'nglv:make-nglwidget :structure trajectory kwargs))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;
-;;; Change the way that code cells are evaluated to allow
-;;; leap syntax to be used.
-;;;
-;;;
 
-(defun parse-lisp-or-leap (code)
-  (let ((code (string-trim (list #\space #\tab) (copy-seq code))))
-    (if (or (char= (char code 0) #\() (char= (char code 0) #\*))
-        (let ((sexp (read-from-string (format nil "(progn ~A~%)" code))))
-          `(core:call-with-stack-top-hint
-            (lambda ()
-              ,sexp)))
-        (let ((ast (architecture.builder-protocol:with-builder ('list)
-                     (handler-bind ((esrap:esrap-parse-error
-                                      (lambda (c)
-                                        (format t "cando-nglview: Encountered error ~s while parsing ~s~%" c code))))
-                       (esrap:parse 'leap.parser::leap code)))))
-          `(core:call-with-stack-top-hint
-            (lambda ()
-              (leap.core:evaluate 'list ',ast leap.core:*leap-env*)))))))
-
-(eval-when (:load-toplevel :execute)
-  (when (find-symbol "*READ-CODE-HOOK*" :cl-jupyter)
-    (setf cl-jupyter:*read-code-hook* 'parse-lisp-or-leap)))
-
-(defun leap-syntax-enable (on)
-  (let ((sym (find-symbol "*READ-CODE-HOOK*" :cl-jupyter)))
-    (when sym
-      (if on
-          (set sym 'parse-lisp-or-leap)
-          (set sym nil)))))

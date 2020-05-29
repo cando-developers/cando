@@ -51,11 +51,12 @@
    #:amber-netcdf-trajectory
    #:show
    #:repr
-   #:cl-jupyter-kernel-start
+   #:kernel
+   #:install
    ))
 
 
-(import '(cl-jupyter-user:png-from-file
+(import '(;cl-jupyter-user:png-from-file
           cando-jupyter:show
           cando-jupyter:repr
           cando-jupyter:cando-structure
@@ -63,7 +64,7 @@
           cando-jupyter:cl-jupyter-kernel-start
           ) :cando-user)
 
-(export '(cl-jupyter-user:png-from-file
+(export '(;cl-jupyter-user:png-from-file
           cando-jupyter:show
           cando-jupyter:repr
           cando-jupyter:cando-structure

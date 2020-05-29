@@ -90,31 +90,12 @@
 (defun repr (widget representation &optional (selection "all"))
   (funcall (find-symbol "ADD-REPRESENTATION" :nglv) widget representation :selection selection))
 
-(defun cl-jupyter-kernel-start (&optional connection-file-name)
-  (let ((amber-home
-          (namestring (or (if (ext:getenv "AMBERHOME")
-                              (probe-file (ext:getenv "AMBERHOME"))
-                              "/usr/local/amber/")
-                          (probe-file "/home/app/amber16-data/")
-                          "/dev/null"))))
-    (setf (logical-pathname-translations "amber")
-          (list (list "**;*.*" (concatenate 'string amber-home "/**/*.*"))))
-    (format t "Setting amber host pathname translation -> ~a~%" amber-home))
-  (let ((*readtable* (copy-readtable)))
-    (let ((cl-jup (find-symbol "KERNEL-START" "CL-JUPYTER")))
-      (if cl-jup
-          (if connection-file-name
-              (funcall cl-jup connection-file-name)
-              (funcall cl-jup))
-          (error "cl-jupyter is not installed")))))
-
-
 
 (defmethod show ((sketch sketch2d:sketch2d) &rest kwargs &key &allow-other-keys)
   (show (sketch2d:svg sketch)))
 
 (defmethod show ((sketch sketch2d:sketch-svg) &rest kwargs &key &allow-other-keys)
-  (cl-jupyter-user:svg (sketch2d:render-svg-to-string sketch)))
+  (jupyter:svg (sketch2d:render-svg-to-string sketch)))
 
 (defmethod show ((trajectory dynamics:trajectory) &rest kwargs &key &allow-other-keys)
   (change-class trajectory 'cando-trajectory)
