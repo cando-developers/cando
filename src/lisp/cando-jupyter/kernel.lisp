@@ -102,7 +102,7 @@
       "--eval" "(jupyter:run-kernel 'cando-jupyter:kernel #\"{connection_file}\")")))
 
 (defun install (&key bin-path system local prefix)
-  "Install Common Lisp kernel based on the current implementation.
+  "Install Cando kernel.
 - `bin-path` specifies path to LISP binary.
 - `system` toggles system versus user installation.
 - `local` toggles `/usr/local/share versus` `/usr/share` for system installations.
@@ -118,7 +118,7 @@
       :prefix prefix)))
 
 (defun install-image (&key prefix)
-  "Install Common Lisp kernel based on image of current implementation.
+  "Install Cando kernel based on image.
 - `prefix` key specifies directory prefix for packaging."
   (jupyter:install
     (make-instance 'user-image-installer

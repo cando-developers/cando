@@ -61,7 +61,6 @@
           cando-jupyter:repr
           cando-jupyter:cando-structure
           cando-jupyter:cando-trajectory
-          cando-jupyter:cl-jupyter-kernel-start
           ) :cando-user)
 
 (export '(;cl-jupyter-user:png-from-file
@@ -69,6 +68,5 @@
           cando-jupyter:repr
           cando-jupyter:cando-structure
           cando-jupyter:cando-trajectory
-          cando-jupyter:cl-jupyter-kernel-start
           ) :cando-user)
 
