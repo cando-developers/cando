@@ -56,7 +56,7 @@
     (let ((ast (leap-read code)))
       (if (typep ast 'jupyter:result)
         ast
-        (leap-eval ast)))))
+        (list (leap-eval ast))))))
 
 
 (defclass cando-installer (jupyter:installer)
