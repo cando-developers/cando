@@ -104,7 +104,9 @@ def post_install(ctx):
         sys.stdout.flush()
         print("NOTE: waf suppresses output and this may sit for 10-20 min compiling with no output (fixing ASAP) - start time: %s" % time.asctime())
         sys.stdout.flush()
-        ctx.exec_command(cmd)
+        # Try subprocess.call instead of exec_command that eats output
+        subprocess.call(cmd)
+        #ctx.exec_command(cmd)
         cando_symlink = "%s/bin/cando" % prefix
         leap_parts = os.path.split(ctx.cleap_executable.abspath())
         installed_cleap = "%s/bin/%s" % (prefix, leap_parts[1])
