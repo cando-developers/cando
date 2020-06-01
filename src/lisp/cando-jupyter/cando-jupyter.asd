@@ -8,6 +8,7 @@
   :depends-on (:inet
                :cando
                :cl-nglview
+               :common-lisp-jupyter
                :netcdf
                :cando-user
                :static-vectors
@@ -15,6 +16,7 @@
   :serial t
   :components
   ((:file "packages")
+   (:file "kernel")
    (:file "show")
    (:file "cando-nglview")
    ))

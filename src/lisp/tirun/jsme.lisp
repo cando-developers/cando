@@ -92,7 +92,7 @@ function onSubmit() {
 (defun sketch (&optional (mol *sketch*))
   (unless mol
     (setf mol ""))
-  (funcall (find-symbol "HTML" :cl-jupyter-user) (format nil *jsme-form* mol)))
+  (funcall (find-symbol "HTML" :jupyter) (format nil *jsme-form* mol)))
 
 (defun load-sketch (filename)
   (with-open-file (fin filename :direction :input)

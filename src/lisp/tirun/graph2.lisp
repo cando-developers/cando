@@ -222,7 +222,7 @@
             (with-output-to-string (sout)
               (format sout *graph-form* node-string morph-string))))
       ;;;(format t "~a~%" html-string)
-      (cl-jupyter-user:html html-string))))
+      (jupyter:html html-string))))
 
 
 
