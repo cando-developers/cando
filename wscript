@@ -1,6 +1,6 @@
 import sys
 import time
-from subprocess import call
+import subprocess
 import waflib.Task
 from waflib import Utils, Logs, Task, TaskGen
 import os
