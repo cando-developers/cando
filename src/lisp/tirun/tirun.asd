@@ -15,7 +15,7 @@
                 :leap
                 :amber
                 :alexandria
-                #+(or):cl-jupyter
+                #+(or):common-lisp-jupyter
                 (:version :esrap "0.15")
                 :parser.common-rules
                 :PARSER.COMMON-RULES.OPERATORS

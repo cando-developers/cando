@@ -763,7 +763,7 @@ Otherwise return NIL."
                                collect (list name status)))
          (sorted-entries (sort status-entries #'string< :key #'car)))
     (error "Fix checking the am1-calculations")
-    #+(or)(cl-jupyter-user:html (cl-markup:markup
+    #+(or)(jupyter:html (cl-markup:markup
                            (:table :border 3
                                    :cellpadding 4
                                    (loop for i below (length sorted-entries) by 5

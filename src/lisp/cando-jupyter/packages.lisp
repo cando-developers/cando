@@ -56,15 +56,13 @@
    ))
 
 
-(import '(;cl-jupyter-user:png-from-file
-          cando-jupyter:show
+(import '(cando-jupyter:show
           cando-jupyter:repr
           cando-jupyter:cando-structure
           cando-jupyter:cando-trajectory
           ) :cando-user)
 
-(export '(;cl-jupyter-user:png-from-file
-          cando-jupyter:show
+(export '(cando-jupyter:show
           cando-jupyter:repr
           cando-jupyter:cando-structure
           cando-jupyter:cando-trajectory
