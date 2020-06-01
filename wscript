@@ -93,19 +93,19 @@ def build(bld):
 
 def post_install(ctx):
     print('In post_install(ctx)')
-    if ctx.cmd[:len('install_c')] == 'install_c':
+    if (ctx.cmd[:len('install_c')] == 'install_c'):
         prefix = ctx.env.PREFIX
         cando_parts = os.path.split(ctx.ccando_executable.abspath())
         installed_cando = "%s/bin/%s" % (prefix, cando_parts[1])
         # this trick with test -e /dev/fd/3 doesn't work on FreeBSD - cracauer fixme
         # cmd = '%s -e "(sys:quit)" 2>&1 | (ls -l /dev/fd > cboehm_install.log 2>&1 ; tee -a cboehm_install.log) | (echo foo 1>&3 && tee 1>&3 || cat)' % installed_cando
-        cmd = '%s -N -D -e "(sys:quit)" 2>&1 | tee /dev/tty' % installed_cando
+        cmd = '%s -N -D -e "(sys:quit)"' % installed_cando
         print("Executing post-install command %s" % cmd)
         sys.stdout.flush()
-        print("NOTE: waf suppresses output and this may sit for 10-20 min compiling with no output (fixing ASAP) - start time: %s" % time.asctime())
+        print("Start time: %s" % time.asctime())
         sys.stdout.flush()
         # Try subprocess.call instead of exec_command that eats output
-        subprocess.call(cmd)
+        subprocess.call(["/bin/sh","-c",cmd])
         #ctx.exec_command(cmd)
         cando_symlink = "%s/bin/cando" % prefix
         leap_parts = os.path.split(ctx.cleap_executable.abspath())
