@@ -7,8 +7,9 @@
 ;;; What is this for????
 (defparameter *vdw-bonded* "ifsc=1, scmask1=':1@H6', scmask2=':2@O1,H6'")
 
+(defparameter *tiruns* nil)
 (defun tirun-charge (tiruns-pathname output-pathname)
-  (defparameter *tiruns* (tirun:load-tiruns tiruns-pathname))
+  (setq *tiruns* (tirun:load-tiruns tiruns-pathname))
   (read-am1-charges *tiruns*)
   (calculate-am1-bcc-charges *tiruns*)
   (tirun:save-tiruns *tiruns* output-pathname))
@@ -153,7 +154,7 @@
     (format t "About to add-matter~%")
     (chem:add-matter new-agg (chem:matter-copy (chem:content-at aggregate keep-index)))
     (chem:add-matter new-agg (chem:matter-copy (chem:content-at aggregate keep-index)))
-    (format t "About to loop~%")x
+    (format t "About to loop~%")
     (loop for index from 2 below (chem:content-size aggregate)
           for mol = (chem:matter-copy (chem:content-at aggregate index))
           do (chem:add-matter new-agg mol))
@@ -330,8 +331,7 @@
 ")
 
 (defparameter *lambda-sch*
-  "
-TypeEleCC, smooth_step2, complementary, 0.0, 1.0
+  "TypeEleCC, smooth_step2, complementary, 0.0, 1.0
 TypeEleSC, smooth_step2, complementary, 0.0, 1.0
 TypeVDW, smooth_step2, complementary, 0.0, 1.0
 ")
@@ -665,6 +665,12 @@ its for and then create a new class for it."))
    :extension "in")
   (:documentation "This is the input AMBER script file"))
 
+(defclass morph-side-stage-lambda-amber-schedule (morph-side-stage-lambda-file)
+  ((script :initarg :script :accessor script))
+  (:default-initargs
+   :extension "sch")
+  (:documentation "This is the input AMBER ti schedule file"))
+
 (defclass morph-side-stage-lambda-trajectory-file (morph-side-stage-lambda-file)
   ()
   (:default-initargs
@@ -682,7 +688,8 @@ its for and then create a new class for it."))
   (:documentation "This is an unknown type file"))
 
 
-(defgeneric node-pathname (node))
+(defgeneric node-pathname (node)
+  (:documentation "Return the pathname for the node"))
 
 (defmethod node-pathname :around ((node node-file))
   (if *write-files*
@@ -752,7 +759,7 @@ its for and then create a new class for it."))
 ;;;
 
 (defclass job ()
-  ((script :initform nil :initarg :script :accessor script)
+  ((scripts :initform nil :initarg :scripts :accessor scripts)
    (inputs :initform nil :initarg :inputs :accessor inputs)
    (outputs :initform nil :initarg :outputs :accessor outputs)
    (parameters :initform nil :initarg :parameters :accessor parameters)
@@ -822,13 +829,16 @@ its for and then create a new class for it."))
   ())
 
 (defclass morph-side-stage-lambda-amber-job (morph-side-stage-lambda-job amber-job-mixin)
-  ())
+  ((schedule-file :initarg :schedule-file :accessor schedule-file)))
 
 
 
 (defun job-substitutions (job)
   (let (substitutions)
-    (push (cons (format nil "-i")
+    ;; I am removing this because only some jobs
+    ;; may have -i <script> as an argument but not all of them
+    ;; meister May 2020
+    #+(or)(push (cons (format nil "-i")
                 (namestring (node-pathname (script job))))
           substitutions)
     (loop for input in (inputs job)
@@ -849,7 +859,8 @@ its for and then create a new class for it."))
                    substitutions))
     substitutions))
 
-(defgeneric substitutions (calculation job node-file))
+(defgeneric substitutions (calculation job node-file)
+  (:documentation "Do the node-file (script?) substitutions for the job"))
 
 (defmethod substitutions (calculation job (node-file node-file))
   (job-substitutions job))
@@ -933,14 +944,12 @@ its for and then create a new class for it."))
   "This name is used to construct the directory for the step"
   (format nil "s-~,3f-~a" (lam step) (unique-step-name step)))
 
-(defun make-morph-side-lambda-file (name extension)
-  (make-ti-file :pathname (make-pathname :name (string name) :type (string extension))))
-
 (defun connect-graph (amber-job)
-  (let ((script (script amber-job))
+  (let ((scripts (scripts amber-job))
         (inputs (inputs amber-job))
         (outputs (outputs amber-job)))
-    (when script (push amber-job (users script)))
+    (loop for script in scripts
+          do (pushnew amber-job (users script)))
     (loop for input in inputs
           for node-input = (node input)
           if (consp node-input)
@@ -1001,7 +1010,7 @@ its for and then create a new class for it."))
      (make-instance 'morph-side-amber-job
                     :morph morph
                     :side side
-                    :script script-file
+                    :scripts (list script-file)
                     :inputs (arguments :-i script-file
                                        :-c input-coordinate-file ; min.rst7
                                        :-ref input-coordinate-file ; ../ligands_vdw_bonded.rst7
@@ -1072,7 +1081,7 @@ its for and then create a new class for it."))
      (make-instance 'morph-side-stage-lambda-amber-job
                     :lambda% lam
                     :lambda-values lambda-values
-                    :script script
+                    :scripts (list script)
                     :inputs (arguments :-i script
                                        :-c input-coordinate-file
                                        :-ref input-coordinate-file
@@ -1090,7 +1099,15 @@ its for and then create a new class for it."))
 	  -O :%OPTION-OUTPUTS%"))))
 
 (defun make-ti-step (morph side stage lam lambda-values &key input-coordinate-file input-topology-file)
-  (let ((script (make-instance 'morph-side-stage-lambda-amber-script
+  (let ((schedule-file (make-instance 'morph-side-stage-lambda-amber-schedule
+                                      :morph morph
+                                      :side side
+                                      :stage stage
+                                      :lambda% lam
+                                      :name "lambda"
+                                      :extension "sch"
+                                      :script *lambda-sch*))
+        (script (make-instance 'morph-side-stage-lambda-amber-script
                                :morph morph
                                :side side
                                :stage stage
@@ -1106,8 +1123,9 @@ its for and then create a new class for it."))
      (make-instance 'morph-side-stage-lambda-amber-job
                     :lambda% lam
                     :lambda-values lambda-values
-                    :script script
+                    :scripts (list script schedule-file)
                     :inputs (arguments :-i script
+                                       :%LAMBDA-SCH% schedule-file
                                        :-c input-coordinate-file
                                        :-p input-topology-file)
                     :outputs (arguments :-o (make-instance 'morph-side-stage-lambda-unknown-file :morph morph :side side :stage stage :lambda% lam :name "ti001" :extension "out")
@@ -1148,9 +1166,9 @@ added to inputs and outputs but not option-inputs or option-outputs"
          (dot-option-arg (find-if (lambda (arg) (eq :. (option arg))) inputs-job)) ; Find argument with :. option
          (argument-inputs-job (remove-if (lambda (arg) (eq :. (option arg))) inputs-job)) ; Remove argument with :. option
          extra-substitutions)
-    ;; Add the script as an input
-    (when (script job)
-      (push (namestring (node-pathname (script job))) dependency-inputs))
+    ;; Add all the scripts as an input
+    (loop for script in (scripts job)
+          do (push (namestring (node-pathname script)) dependency-inputs))
     ;; Add all inputs
     (loop for input in argument-inputs-job
           for node-input = (node input)
@@ -1198,13 +1216,13 @@ added to inputs and outputs but not option-inputs or option-outputs"
 
 (defmethod generate-code (calculation (job job) makefile visited-nodes)
   ;; Generate script
-  (let ((script (script job))
+  (let ((scripts (scripts job))
         script-code)
-    (when script
-      (let* ((raw-script (script script))
-             (substituted-script (replace-all (substitutions calculation job script) raw-script)))
-        (setf script-code substituted-script)
-        (write-file-if-it-has-changed (node-pathname script) substituted-script)))
+    (loop for script in scripts
+          do (let* ((raw-script (script script))
+                    (substituted-script (replace-all (substitutions calculation job script) raw-script)))
+               (setf script-code substituted-script)
+               (write-file-if-it-has-changed (node-pathname script) substituted-script)))
     (let ((raw-makefile-clause (makefile-clause job)))
       (when raw-makefile-clause
         (let* ((makefile-substitutions (makefile-substitutions calculation job script-code))

@@ -64,7 +64,7 @@
                                      (make-instance 'morph-side-cando-job
                                                     :morph morph
                                                     :side side
-                                                    :script script
+                                                    :scripts (list script)
                                                     :inputs (arguments :%INPUT% input-tiruns-file)
                                                     :outputs (arguments :%COORDINATES% coord-node
                                                                         :%TOPOLOGY% input-topology-file
@@ -133,7 +133,8 @@
                       for stage-job = (unless (eq stage :vdw-bonded)
                                         (connect-graph
                                          (make-instance 'morph-side-stage-cando-job
-                                                        :morph morph :side side :stage stage :script script
+                                                        :morph morph :side side :stage stage
+                                                        :scripts (list script)
                                                         :inputs inputs
                                                         :outputs outputs
                                                         :makefile-clause (standard-cando-makefile-clause script))))
@@ -189,7 +190,8 @@
                                                           :extension "py")))
                                (push (connect-graph
                                       (make-instance 'morph-side-stage-python-job
-                                                     :morph morph :side side :stage stage :script script
+                                                     :morph morph :side side :stage stage
+                                                     :scripts (list script)
                                                      :inputs (case stage
                                                                (:decharge (arguments :. (mapcar (lambda (job) (output-file job :-e)) decharge-jobs)))
                                                                (:vdw-bonded (arguments :. (mapcar (lambda (job) (output-file job :-e)) vdw-jobs)))
@@ -208,7 +210,7 @@
                   (push (connect-graph
                          (make-instance 'morph-side-cando-job
                                         :morph morph :side side
-                                        :script side-script
+                                        :scripts (list side-script)
                                         :inputs (arguments :. (mapcar (lambda (job) (output-file job :%STAGE-ANALYSIS%)) stage-jobs))
                                         :outputs (arguments :%SIDE-ANALYSIS% (make-instance 'morph-side-file
                                                                                             :morph morph :side side
@@ -224,7 +226,7 @@
            (push (connect-graph
                   (make-instance 'morph-cando-job
                                  :morph morph
-                                 :script morph-script
+                                 :scripts (list morph-script)
                                  :inputs (arguments :. (mapcar (lambda (job) (output-file job :%SIDE-ANALYSIS%)) analysis-jobs))
                                  :outputs (arguments :%MORPH-ANALYSIS% (make-instance 'morph-file
                                                                                     :morph morph
@@ -253,7 +255,7 @@
                                              for output = (output-file am1-job :-o)
                                              append (list :%INPUT% output)))
                         :outputs (arguments :%OUTPUT% tiruns-out)
-                        :script script
+                        :scripts (list script)
                         :makefile-clause (standard-cando-makefile-clause script)))
         (let ((morph-jobs (make-script-1-leap calculation :input-tiruns-file tiruns-out)))
           ;; Do more preparation
