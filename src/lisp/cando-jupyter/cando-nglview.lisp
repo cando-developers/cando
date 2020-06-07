@@ -175,6 +175,7 @@
 (defclass cando-trajectory (nglv:trajectory nglv:structure dynamics:trajectory)
   ())
 
+#+(or)
 (defmethod initialize-instance :after ((self cando-trajectory) &key)
   (warn "What do I do with nglv:*backends*")
   #+(or)(setf (gethash "cando" nglv:*BACKENDS*) 'cando-trajectory)
@@ -225,6 +226,7 @@
                    :number-of-frames number-of-frames
                    :current-coordinates coords)))
 
+#+(or)
 (defmethod initialize-instance :after ((self cando-trajectory) &key)
   (warn "What do I do with nglv:*backends*")
   #+(or)(setf (gethash "amber-netcdf" nglv:*BACKENDS*) 'amber-netcdf-trajectory)
