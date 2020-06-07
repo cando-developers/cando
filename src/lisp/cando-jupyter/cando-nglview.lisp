@@ -176,7 +176,8 @@
   ())
 
 (defmethod initialize-instance :after ((self cando-trajectory) &key)
-  (setf (gethash "cando" nglv:*BACKENDS*) 'cando-trajectory)
+  (warn "What do I do with nglv:*backends*")
+  #+(or)(setf (gethash "cando" nglv:*BACKENDS*) 'cando-trajectory)
   (values))
 
 (defmethod nglv:ext ((self cando-trajectory))
@@ -225,7 +226,8 @@
                    :current-coordinates coords)))
 
 (defmethod initialize-instance :after ((self cando-trajectory) &key)
-  (setf (gethash "amber-netcdf" nglv:*BACKENDS*) 'amber-netcdf-trajectory)
+  (warn "What do I do with nglv:*backends*")
+  #+(or)(setf (gethash "amber-netcdf" nglv:*BACKENDS*) 'amber-netcdf-trajectory)
   (values))
 
 (defmethod nglv:ext ((self amber-netcdf-trajectory))
