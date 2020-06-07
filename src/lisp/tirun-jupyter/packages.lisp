@@ -18,5 +18,7 @@
                     (:w :jupyter-widgets))
   (:export
    #:setup-receptor
+   #:setup-ligands
+   #:view-complex
    ))
 
