@@ -65,7 +65,9 @@
 (let* ((topdir (translate-logical-pathname #P"cando:lisp;"))
        (dirs (all-subdirs topdir)))
   (push topdir asdf:*central-registry*)
+  (format t "Registering directories with asdf~%")
   (dolist (dir dirs)
+    (format t "Registering ~a~%" dir)
     (push dir asdf:*central-registry*)))
 
 (progn
@@ -85,6 +87,11 @@
   (handler-bind ((error (lambda (&rest args) (sys:safe-backtrace))))
     (load "quicklisp:setup.lisp"))
   (load "quicklisp:setup.lisp"))
+
+;;; If quickclasp isn't installed then install it
+;;; It provides extra systems for cando
+(unless (ql-dist:find-dist "quickclasp")
+  (ql-dist:install-dist "http://thirdlaw.tech/quickclasp/quickclasp.txt")))
 
 (progn
   (funcall (find-symbol "QUICKLOAD" :ql) "cando-user" :silent (null (core:is-interactive-lisp)))
