@@ -91,7 +91,7 @@
 ;;; If quickclasp isn't installed then install it
 ;;; It provides extra systems for cando
 (unless (ql-dist:find-dist "quickclasp")
-  (ql-dist:install-dist "http://thirdlaw.tech/quickclasp/quickclasp.txt")))
+  (ql-dist:install-dist "http://thirdlaw.tech/quickclasp/quickclasp.txt" :prompt nil))
 
 (progn
   (funcall (find-symbol "QUICKLOAD" :ql) "cando-user" :silent (null (core:is-interactive-lisp)))
