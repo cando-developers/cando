@@ -161,7 +161,6 @@
           for yindex = (yindex simcalc)
           do (setf (aref matrix xindex yindex) similarity)
           do (setf (aref matrix yindex xindex) similarity))
-    (format t "similarity-matrix ->~%~a~%" matrix)
     matrix))
 
 (defun similarity-graph (molecules matrix)

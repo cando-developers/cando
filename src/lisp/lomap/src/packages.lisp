@@ -28,4 +28,5 @@
    #:back-vertex
    #:draw-graph-to-file
    #:draw-graph-to-stream
+   #:lomap-multigraph
    ))

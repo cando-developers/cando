@@ -5,7 +5,32 @@
 
 (defvar *receptor-string* nil)
 
-(defun setup-receptor ()
+(defun new-tirun ()
+  (with-output-to-string (sout)
+    (let ((*standard-output* sout))
+      (cando-user:setup-default-paths)
+      (cando-user:load-atom-type-rules "ATOMTYPE_GFF.DEF")
+      (cando-user:source "leaprc.ff14SB.redq")
+      (cando-user:source "leaprc.gaff")
+      (leap:add-pdb-res-map '((1 :NMA :NME)))))
+  (make-instance 'tirun:tirun-calculation))
+
+(defun setup-receptor* (nglview calc new-value)
+    (let* ((last-pdb (car (last new-value)))
+           (octets (make-array (length last-pdb) :element-type 'ext:byte8
+                                                 :initial-contents last-pdb)))
+      (let ((as-text (babel:octets-to-string octets)))
+        (setf *receptor-string* as-text)
+        (nglview:remove-all-components nglview)
+        (nglview:add-structure nglview (make-instance 'nglview:text-structure :text as-text))
+        (let ((agg (handler-case
+                       (with-input-from-string (sin as-text)
+                         (leap.pdb:load-pdb-stream sin))
+                     (simple-error (err)
+                       (signal err)))))
+          (setf (tirun:receptors calc) (list agg))))))
+
+(defun setup-receptor (calc)
   (let* ((box-layout (make-instance 'w:layout :width "auto" :flex-flow "row wrap"))
          (desc-width "12em")
          (desc-style (make-instance 'w:description-style :description-width desc-width))
@@ -17,13 +42,7 @@
                              (lambda (instance type name old-value new-value source)
                                (declare (ignore instance type name old-value source))
                                (when new-value
-                                 (let* ((last-pdb (car (last new-value)))
-                                        (octets (make-array (length last-pdb) :element-type 'ext:byte8
-                                                                              :initial-contents last-pdb)))
-                                   (let ((as-text (babel:octets-to-string octets)))
-                                     (setf *receptor-string* as-text)
-                                     (nglview:remove-all-components nglview)
-                                     (nglview:add-structure nglview (make-instance 'nglview:text-structure :text as-text)))))))
+                                 (setup-receptor* nglview calc new-value))))
     (make-instance 'w:v-box
                    :children (list
                               (make-instance 'w:h-box
@@ -31,13 +50,14 @@
                                              :children (list fu))
                               (make-instance 'w:h-box
                                              :layout box-layout
-                                             :children (list nglview))))))
+                                             :children (list nglview)))))
+  )
 
 
 (defvar *ligands-string* nil)
 (defvar *ligands* nil)
 (defvar *current-component* nil)
-(defun observe-ligand-selector (nglview ligand-name new-value)
+(defun observe-ligand-selector (nglview calc ligand-name new-value)
   (let ((mol (elt *ligands* new-value)))
     (let* ((agg (chem:make-aggregate)))
       (chem:add-matter agg mol)
@@ -50,7 +70,7 @@
         ))))
 
 (defvar *lv* nil)
-(defun setup-ligands (&optional show-receptor)
+(defun setup-ligands (calc &optional (show-receptor t))
   (let* ((box-layout (make-instance 'w:layout :width "auto" :flex-flow "row wrap"))
          (desc-width "12em")
          (desc-style (make-instance 'w:description-style :description-width desc-width))
@@ -75,11 +95,12 @@
                                      (setf (jupyter-widgets:widget-value ligand-selector) 0
                                            (jupyter-widgets:widget-max ligand-selector) (1- (length *ligands*))
                                            (jupyter-widgets:widget-min ligand-selector) 0)
-                                     (observe-ligand-selector nglview ligand-name 0))))))
+                                     (observe-ligand-selector nglview calc ligand-name 0)
+                                     (tirun:tirun-calculation-from-ligands calc *ligands*))))))
     (jupyter-widgets:observe ligand-selector :value (lambda (instance type name old-value new-value source)
                                                         (declare (ignore instance type name old-value source))
                                                       (when new-value
-                                                        (observe-ligand-selector nglview ligand-name new-value))))
+                                                        (observe-ligand-selector nglview calc ligand-name new-value))))
     (make-instance 'w:v-box
                    :children (list
                               (make-instance 'w:h-box
@@ -93,61 +114,72 @@
                                              :children (list nglview))))))
 
 
-(defun cyto-graph (graph)
-  (let ((nodes (loop for vertex in (lomap::vertices graph)
-                     for mol = (lomap:molecule vertex)
-                     for name = (string (chem:get-name mol))
-                     collect (make-instance 'cytoscape:node :data (list (cons "id" name) (cons "label" name)))))
-        (edges (loop for edge in (lomap::edges graph)
-                     for vertex1 = (lomap:vertex1 edge)
-                     for vertex2 = (lomap:vertex2 edge)
-                     for score = (lomap:sim-score edge)
-                     for name1 = (string (chem:get-name (lomap:molecule vertex1)))
-                     for name2 = (string (chem:get-name (lomap:molecule vertex2)))
-                     collect (make-instance 'cytoscape:edge
-                                            :data (list (cons "source" name1)
-                                                        (cons "target" name2)
-                                                        (cons "label" (format nil "~f" score)))))))
-    (let ((graph (make-instance 'cytoscape:graph
-                                :nodes nodes
-                                :edges edges)))
-      (make-instance 'cytoscape:cytoscape-widget
-                     :graph graph))))
-  
-(defun layout-calculation (mols)
-  (let* ((calc (tirun::tirun-calculation-from-ligands mols))
-         (mat (lomap::similarity-matrix mols))
-         (graph (lomap::similarity-graph mols mat)))
-    ;;;(lomap::lomap-graph graph :debug nil)
-    (cyto-graph graph)))
-
-#|
-        
-    (defparameter +options+ '("fu" "bar" "wibble" "quux" "baz" "gronk" "kilroy"))
-    (defparameter +desc-width+ "12em")
-    (defparameter +desc-style+ (make-instance 'w:description-style :description-width +desc-width+))
-    (defparameter +box-layout+ (make-instance 'w:layout :width "auto" :flex-flow "row wrap"))
-    (defparameter +slider-style+ (make-instance 'w:slider-style :description-width +desc-width+))
-    (defparameter +widget-layout+ (make-instance 'w:layout :width "28em"))
-    
-    (make-instance 'w:accordion
-                   :children (list (make-instance 'w:h-box
-                                                  :layout +box-layout+
-                                                  :children (list (make-instance 'w:color-picker :description "color-picker" :style +desc-style+)
-                                                                  (make-instance 'w:date-picker :description "date-picker" :style +desc-style+)))
-                                   (make-instance 'w:h-box
-                                                  :layout +box-layout+
-                                                  :children (list (make-instance 'w:dropdown :description "dropdown" :style +desc-style+ :layout +widget-layout+ :%options-labels +options+)
-                                                                  (make-instance 'w:radio-buttons :description "radio-button" :style +desc-style+ :layout +widget-layout+ :%options-labels +options+)
-                                                                  (make-instance 'w:select :description "select" :style +desc-style+ :layout +widget-layout+  :%options-labels +options+)
-                                                                  (make-instance 'w:selection-slider :description "selection-slider" :style +slider-style+ :layout +widget-layout+ :%options-labels +options+)
-                                                                  (make-instance 'w:selection-range-slider :description "selection-range-slider" :style +slider-style+ :layout +widget-layout+  :%options-labels +options+)
-                                                                  (make-instance 'w:select-multiple :description "select-multiple" :style +desc-style+ :layout +widget-layout+  :%options-labels +options+)))
-                                   (make-instance 'w:h-box
-                                                  :layout +box-layout+
-                                                  :children (list (make-instance 'w:button :description "button" :style +desc-style+)
-                                                                  (make-instance 'w:toggle-button :description "toggle-button" :style +desc-style+))))
-                   :%titles '("Picker Widgets" "Selection Widgets" "Buttons")))
+(defun generate-nodes-and-edges (multigraph)
+  (let (all-nodes all-edges)
+    (loop for subgraph in (lomap::subgraphs multigraph)
+          do (let ((nodes (loop for vertex in (lomap::vertices subgraph)
+                                for mol = (lomap:molecule vertex)
+                                for name = (chem:get-name mol)
+                                collect name))
+                   (edges (loop for edge in (lomap::edges subgraph)
+                                for vertex1 = (lomap:vertex1 edge)
+                                for vertex2 = (lomap:vertex2 edge)
+                                for score = (lomap:sim-score edge)
+                                for name1 = (chem:get-name (lomap:molecule vertex1))
+                                for name2 = (chem:get-name (lomap:molecule vertex2))
+                                collect (list name1 name2 score))))
+               (setf all-nodes (append all-nodes nodes)
+                     all-edges (append all-edges edges))))
+    (values all-nodes all-edges)))
 
 
-|#
+
+(defun cyto-graph (all-nodes all-edges)
+    (let* ((all-nodes (loop for name in all-nodes
+                            collect (make-instance 'cytoscape:node :data (list (cons "id" (string name)) (cons "label" (string name))))))
+           (all-edges (loop for edge in all-edges
+                            collect (destructuring-bind (name1 name2 score)
+                                        edge
+                                      (make-instance 'cytoscape:edge
+                                                     :data (list (cons "source" (string name1))
+                                                                 (cons "target" (string name2))
+                                                                 (cons "label" (format nil "~f" score))))))))
+      (let ((graph (make-instance 'cytoscape:graph
+                                  :nodes all-nodes
+                                  :edges all-edges)))
+        (make-instance 'cytoscape:cytoscape-widget
+                       :graph graph))))
+
+(defvar *all-nodes*)
+(defvar *all-edges*)
+(defvar *cyto-graph*)
+
+(defun lomap (tirun &optional (mols *ligands*))
+  (let* ((mat (lomap::similarity-matrix mols))
+         (multigraph (lomap::similarity-multigraph mols mat)))
+    (setf multigraph (lomap::lomap-multigraph multigraph :debug nil))
+    (multiple-value-setq (*all-nodes* *all-edges*) (generate-nodes-and-edges multigraph))
+    (setq *cyto-graph* (cyto-graph *all-nodes* *all-edges*))))
+
+
+(defun write-jobs (tirun &optional (name "full"))
+  (tirun:build-job-nodes tirun)
+  (tirun:connect-job-nodes tirun *all-edges*)
+  (let* ((*default-pathname-defaults* (merge-pathnames (pathname (format nil "~a/" name))))
+         (_ (ensure-directories-exist *default-pathname-defaults*))
+         (worklist
+           (progn
+             (format t "generate-jobs to *default-pathname-defaults* -> ~s~%" *default-pathname-defaults*)
+             (tirun:generate-jobs tirun))))
+    (with-open-file (fout #P"jobs/conf.sh" :direction :output :if-exists :supersede)
+      (format fout "pmemd_cuda=pmemd.cuda
+execute_cpu_local=0
+execute_gpu_local=0
+execute_lisp_local=0
+worker=schando
+distributor=s103.thirdlaw.tech
+lisp_jobs_only_on=172.234.2.1
+"))
+    (with-open-file (sout #P"eg5_singlestep.dot" :direction :output)
+      (tirundot:draw-graph-stream (list worklist) sout))
+    ))

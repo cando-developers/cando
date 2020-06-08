@@ -17,6 +17,7 @@
   (:local-nicknames (:j :jupyter)
                     (:w :jupyter-widgets))
   (:export
+   #:new-tirun
    #:setup-receptor
    #:setup-ligands
    #:view-complex
