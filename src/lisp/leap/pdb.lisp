@@ -768,7 +768,9 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
 ;;;            (cando:maybe-join-molecules-in-aggregate aggregate)
 ;;;            (cando:maybe-split-molecules-in-aggregate aggregate)
         (setf aggregate (classify-molecules aggregate system))
-        (let ((name-only (pathname-name (pathname filename))))
+        (let ((name-only (if filename
+                             (pathname-name (pathname filename))
+                             "unknown")))
           (chem:set-name aggregate (intern name-only *package*)))
         (values aggregate scanner pdb-atom-reader)))))
 
