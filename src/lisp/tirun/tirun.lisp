@@ -294,7 +294,6 @@
 (defmethod print-object ((obj job-graph) stream)
   (if *print-readably*
       (progn
-        (format t "Printing job-graph~%")
         (print-object-readably-with-slots obj stream))
       (print-unreadable-object (obj stream)
         (format stream "~a" (class-name (class-of obj))))))
@@ -729,7 +728,6 @@ Otherwise return NIL."
                                            do (pushnew (target morph) ligs))
                                      ligs)))
       (ensure-jobs-directories-exist *default-pathname-defaults*)
-      (format t "Creating am1 scripts in ~a~%" (truename *default-pathname-defaults*))
       (let* (outputs
              (result (loop for ligand in only-ligands-in-morphs
                            for in-file = (make-instance 'sqm-input-file :name (name ligand))
@@ -748,7 +746,6 @@ Otherwise return NIL."
                            do (setf (atom-order ligand) atom-order)
                            do (push (make-instance 'argument :option :output :node in-file) outputs)
                            collect job)))
-        (format t "About to set outputs result -> ~s~%" result)
         (setf (outputs jupyter-job) outputs)
         (connect-graph jupyter-job)
         (mapc #'connect-graph result)
@@ -886,7 +883,6 @@ Otherwise return NIL."
 (defmethod print-object ((obj ti-mask) stream)
   (if *print-readably*
       (progn
-        (format t "Printing job-graph~%")
         (print-object-readably-with-slots obj stream))
       (print-unreadable-object (obj stream)
         (format stream "~a" (class-name (class-of obj))))))

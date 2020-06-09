@@ -1184,9 +1184,7 @@ added to inputs and outputs but not option-inputs or option-outputs"
                                       (read-sequence data fin)
                                       data))))
         (when (string= code existing-code)
-          (format t "Skipping generation of ~a - it has not changed~%" pathname)
           (return-from write-file-if-it-has-changed nil))))
-    (format t "Generating script ~a~%" pathname)
     (with-open-file (fout (ensure-jobs-directories-exist pathname) :direction :output :if-exists :supersede)
       (write-string code fout)))
 
