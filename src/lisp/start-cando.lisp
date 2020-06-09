@@ -64,9 +64,7 @@
 (let* ((topdir (translate-logical-pathname #P"cando:lisp;"))
        (dirs (all-subdirs topdir)))
   (push topdir asdf:*central-registry*)
-  (format t "Registering directories with asdf~%")
   (dolist (dir dirs)
-    (format t "Registering ~a~%" dir)
     (push dir asdf:*central-registry*)))
 
 (progn
