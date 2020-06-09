@@ -21,5 +21,7 @@
    #:setup-receptor
    #:setup-ligands
    #:view-complex
+   #:lomap
+   #:write-jobs
    ))
 

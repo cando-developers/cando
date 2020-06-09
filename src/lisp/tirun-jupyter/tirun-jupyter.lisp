@@ -6,6 +6,12 @@
 (defvar *receptor-string* nil)
 
 (defun new-tirun ()
+  (let ((dest-dir (let ((dd (ext:getenv "CANDO_JOBS_DIRECTORY")))
+                    (if dd
+                        dd
+                        (pathname "~/jobs/")))))
+    (format t "Jobs will be saved to ~a~%setenv CANDO_JOBS_DIRECTORY if you want it to go elsewhere~%" (namestring dest-dir))
+    (ensure-directories-exist dest-dir))
   (with-output-to-string (sout)
     (let ((*standard-output* sout))
       (cando-user:setup-default-paths)
@@ -133,22 +139,44 @@
     (values all-nodes all-edges)))
 
 
+(defun cyto-label ()
+  (let ((widget *cyto-widget*))
+    (setf (cytoscape:cytoscape-style widget)
+          (append (cytoscape:cytoscape-style widget) (list (jupyter:json-new-obj
+                                                            ("selector" "node[label]")
+                                                            ("style" (jupyter:json-new-obj
+                                                                      ("label" "data(label)"))))
+                                                           (jupyter:json-new-obj
+                                                            ("selector" "edge[label]")
+                                                            ("style" (jupyter:json-new-obj
+                                                                      ("label" "data(label)"))))))))
+  nil)
 
-(defun cyto-graph (all-nodes all-edges)
-    (let* ((all-nodes (loop for name in all-nodes
-                            collect (make-instance 'cytoscape:node :data (list (cons "id" (string name)) (cons "label" (string name))))))
-           (all-edges (loop for edge in all-edges
-                            collect (destructuring-bind (name1 name2 score)
-                                        edge
-                                      (make-instance 'cytoscape:edge
-                                                     :data (list (cons "source" (string name1))
-                                                                 (cons "target" (string name2))
-                                                                 (cons "label" (format nil "~f" score))))))))
-      (let ((graph (make-instance 'cytoscape:graph
-                                  :nodes all-nodes
-                                  :edges all-edges)))
-        (make-instance 'cytoscape:cytoscape-widget
-                       :graph graph))))
+
+(defvar *cyto-widget*)
+(defun cyto-graph (&optional (all-nodes *all-nodes*) (all-edges *all-edges*))
+  (let* ((all-nodes (loop for name in all-nodes
+                          collect (make-instance 'cytoscape:node :data (list (cons "id" (string name)) (cons "label" (string name))))))
+         (all-edges (loop for edge in all-edges
+                          collect (destructuring-bind (name1 name2 score)
+                                      edge
+                                    (make-instance 'cytoscape:edge
+                                                   :data (list (cons "source" (string name1))
+                                                               (cons "target" (string name2))
+                                                               (cons "label" (format nil "~3,2f" score))))))))
+    (let* ((graph (make-instance 'cytoscape:graph
+                                 :nodes all-nodes
+                                 :edges all-edges))
+           (widget (make-instance 'cytoscape:cytoscape-widget
+                                  :graph graph
+                                  :cytoscape-layout (list (cons "name" "cose")
+                                                          (cons "quality" "default")
+                                  ))))
+      (setf *cyto-widget* widget)
+      (cyto-label)
+      widget)))
+
+    
 
 (defvar *all-nodes*)
 (defvar *all-edges*)
