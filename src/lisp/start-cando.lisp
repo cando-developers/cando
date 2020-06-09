@@ -38,7 +38,6 @@
   (require :asdf))
 
 (progn
-  (format t "Registering sb-bsd-sockets~%")
   (asdf:register-immutable-system :sb-bsd-sockets)  ; already provided by the system
   )
 #+(or)
