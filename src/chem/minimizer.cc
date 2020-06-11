@@ -2188,7 +2188,7 @@ CL_DEFMETHOD     string	Minimizer_O::configurationAsString()
   return ss.str();
 }
 
-CL_LISPIFY_NAME("restart");
+CL_LISPIFY_NAME("minimizer-restart");
 CL_DEFMETHOD     void	Minimizer_O::restart()
 {
   this->_Status = minimizerIdle;
