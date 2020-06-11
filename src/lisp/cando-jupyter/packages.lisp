@@ -49,6 +49,7 @@
    #:show-amber-netcdf-trajectory
    #:make-amber-netcdf-trajectory
    #:amber-netcdf-trajectory
+   #:run-kernel-from-slime
    #:show
    #:repr
    #:kernel

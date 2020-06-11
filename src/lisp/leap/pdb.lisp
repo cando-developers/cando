@@ -498,7 +498,57 @@ MTRIX- Used to build a list of matrices."
         do (loop for residue in group
                  do (try-to-assign-topology residue scanner))))
 
-(defun scan-pdb-stream (fin &key progress system)
+
+(defun atom-names-match-topology (atom-names topology)
+  (let* ((constitution (chem:get-constitution topology))
+         (constitution-atoms (chem:get-constitution-atoms constitution))
+         (constitution-atoms-as-list (chem:constitution-atoms-as-list constitution-atoms)))
+    (let ((topology-atom-names (loop for ca in constitution-atoms-as-list
+                                     collect (chem:atom-name ca))))
+      (if (= (length atom-names) (length topology-atom-names))
+          (loop for nm in topology-atom-names
+                unless (member nm atom-names)
+                  do (return-from atom-names-match-topology
+                       (values nil topology-atom-names)))
+          (values nil topology-atom-names))
+      (values t topology-atom-names))))
+
+
+(define-condition pdb-read-error (error)
+  ((messages :initarg :messages :initform nil :reader messages))
+  (:report
+   (lambda (condition stream)
+     (format stream "~a" (messages condition)))))
+
+(defun validate-scanner (scanner)
+  (let* (saw-problems
+         (*print-pretty* nil)
+         (messages 
+           (with-output-to-string (sout)
+             (loop for sequence in (sequences scanner)
+                   do (loop for pdb-res in sequence
+                            for res-name = (residue-name pdb-res)
+                            for res-seq = (res-seq pdb-res)
+                            for chain-id = (chain-id pdb-res)
+                            for atom-names = (atom-names pdb-res)
+                            for topology = (topology pdb-res)
+                            do (if topology
+                                   (multiple-value-bind (match-p topology-atom-names)
+                                       (atom-names-match-topology atom-names topology)
+                                     (unless match-p
+                                       (format sout "Residue ~a ~a ~a - atom names mismatch~%PDB file has ~a and AMBER residue ~a has ~a~%" res-name chain-id res-seq atom-names (chem:get-name topology) topology-atom-names)
+                                       (setf saw-problems t)))
+                                   (progn
+                                     (format sout "Residue ~a ~a ~a - is unknown~%" res-name chain-id res-seq)
+                                     (setf saw-problems t))))))))
+    (when saw-problems
+      (error 'pdb-read-error :messages messages))
+    ))
+                                  
+
+
+                                  
+                                  (defun scan-pdb-stream (fin &key progress system)
   (let ((pdb-scanner (make-instance 'pdb-scanner
                                     :stream fin
                                     :scanner (make-instance 'scanner)))
@@ -526,7 +576,9 @@ MTRIX- Used to build a list of matrices."
       (adjust-residue-names scanner system)
       (assign-topologys scanner)
       (split-solvent scanner)
-      (build-sequence scanner system))))
+      (let ((result-scanner (build-sequence scanner system)))
+        (validate-scanner result-scanner)
+        result-scanner))))
 
 
 (defun scan-pdb (filename &key progress system)

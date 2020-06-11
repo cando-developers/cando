@@ -115,6 +115,8 @@
    #:build-sequence
    #:add-pdb-atom-map
    #:add-pdb-res-map
+   #:pdb-read-error
+   #:messages
   ))
 
 

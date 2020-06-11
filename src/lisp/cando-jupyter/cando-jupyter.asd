@@ -7,7 +7,7 @@
   :licence "LGPL-3.0"
   :depends-on (:inet
                :cando
-               :cl-nglview
+               :nglview-cl
                :common-lisp-jupyter
                :netcdf
                :cando-user

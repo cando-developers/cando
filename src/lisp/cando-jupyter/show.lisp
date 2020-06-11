@@ -49,7 +49,7 @@
     (let ((widget (apply #'nglv:make-nglwidget :structure structure kwargs)))
       (when (chem:bounding-box-bound-p aggregate)
         (add-bounding-box widget aggregate))
-      (when axes (nglv:add-axes widget))
+      #+(or)(when axes (nglv:add-axes widget))
       (when shapes
         (loop for index below (length shapes) by 2
               for name = (string (elt shapes index))

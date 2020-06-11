@@ -124,3 +124,11 @@
     (make-instance 'user-image-installer
       :prefix prefix)))
 
+
+(defun run-kernel-from-slime ()
+  (bordeaux-threads:make-thread
+   (lambda ()
+     (loop for time from 1 below 100
+           do (format t "Starting kernel for the ~a time~%" time)           
+           do (jupyter:run-kernel 'cando-jupyter:kernel (core:argv (1- (core:argc))))))
+   :name :jupyter))

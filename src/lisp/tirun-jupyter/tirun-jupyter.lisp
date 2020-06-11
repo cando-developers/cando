@@ -21,39 +21,53 @@
       (leap:add-pdb-res-map '((1 :NMA :NME)))))
   (make-instance 'tirun:tirun-calculation))
 
-(defun setup-receptor* (nglview calc new-value)
-    (let* ((last-pdb (car (last new-value)))
-           (octets (make-array (length last-pdb) :element-type 'ext:byte8
-                                                 :initial-contents last-pdb)))
-      (let ((as-text (babel:octets-to-string octets)))
-        (setf *receptor-string* as-text)
-        (nglview:remove-all-components nglview)
+(defun setup-receptor* (nglview messages calc new-value)
+  (let* ((last-pdb (car (last new-value)))
+         (octets (make-array (length last-pdb) :element-type 'ext:byte8
+                                               :initial-contents last-pdb)))
+    (let ((as-text (babel:octets-to-string octets)))
+      (setf *receptor-string* nil)
+      (nglview:remove-all-components nglview)
+      (let ((agg (handler-case
+                     (with-input-from-string (sin as-text)
+                       (leap.pdb:load-pdb-stream sin))
+                   (leap.pdb:pdb-read-error (condition)
+                     (setf (jupyter-widgets:widget-value messages) (leap.pdb:messages condition))
+                     (setf (jupyter-widgets:widget-display (jupyter-widgets:widget-layout messages)) "") 
+                     (setf (jupyter-widgets:widget-display (jupyter-widgets:widget-layout nglview)) "none") 
+                     (return-from setup-receptor* nil)))))
         (nglview:add-structure nglview (make-instance 'nglview:text-structure :text as-text))
-        (let ((agg (handler-case
-                       (with-input-from-string (sin as-text)
-                         (leap.pdb:load-pdb-stream sin))
-                     (simple-error (err)
-                       (signal err)))))
-          (setf (tirun:receptors calc) (list agg))))))
+        (setf (jupyter-widgets:widget-value messages) "Loaded successfully")
+        (setf (jupyter-widgets:widget-display (jupyter-widgets:widget-layout messages)) "none") 
+        (setf (jupyter-widgets:widget-display (jupyter-widgets:widget-layout nglview)) "") 
+        (setf *receptor-string* as-text)
+        (setf (tirun:receptors calc) (list agg))))))
 
 (defun setup-receptor (calc)
   (let* ((box-layout (make-instance 'w:layout :width "auto" :flex-flow "row wrap"))
          (desc-width "12em")
          (desc-style (make-instance 'w:description-style :description-width desc-width))
          (fu (make-instance 'jupyter-widgets:file-upload :description "Upload PDB file"))
+         (messages (make-instance 'jupyter-widgets:text-area :description "Messages"
+                                  :layout (make-instance 'jupyter-widgets:layout :width "60em")))
          (nglview (make-instance 'nglv:nglwidget)))
+    (setf (jupyter-widgets:widget-display (jupyter-widgets:widget-layout messages)) "") 
+    (setf (jupyter-widgets:widget-display (jupyter-widgets:widget-layout nglview)) "none") 
     (setf *fu* fu
           *nglv* nglview)
     (jupyter-widgets:observe fu :data
                              (lambda (instance type name old-value new-value source)
                                (declare (ignore instance type name old-value source))
                                (when new-value
-                                 (setup-receptor* nglview calc new-value))))
+                                 (setup-receptor* nglview messages calc new-value))))
     (make-instance 'w:v-box
                    :children (list
                               (make-instance 'w:h-box
                                              :layout box-layout
                                              :children (list fu))
+                              (make-instance 'w:h-box
+                                             :layout box-layout
+                                             :children (list messages))
                               (make-instance 'w:h-box
                                              :layout box-layout
                                              :children (list nglview)))))
@@ -85,6 +99,9 @@
          (ligand-name (make-instance 'jupyter-widgets:label :value "Molecule"))
          (nglview (make-instance 'nglv:nglwidget :gui-style "ngl")))
     (setf *lv* nglview)
+    (setf (jupyter-widgets:widget-display (jupyter-widgets:widget-layout ligand-selector)) "none") 
+    (setf (jupyter-widgets:widget-display (jupyter-widgets:widget-layout ligand-name)) "none") 
+    (setf (jupyter-widgets:widget-display (jupyter-widgets:widget-layout nglview)) "none") 
     (when show-receptor
       (nglview:add-structure nglview (make-instance 'nglview:text-structure :text *receptor-string*)))
     (jupyter-widgets:observe fu :data
@@ -101,6 +118,9 @@
                                      (setf (jupyter-widgets:widget-value ligand-selector) 0
                                            (jupyter-widgets:widget-max ligand-selector) (1- (length *ligands*))
                                            (jupyter-widgets:widget-min ligand-selector) 0)
+                                     (setf (jupyter-widgets:widget-display (jupyter-widgets:widget-layout ligand-selector)) "") 
+                                     (setf (jupyter-widgets:widget-display (jupyter-widgets:widget-layout ligand-name)) "") 
+                                     (setf (jupyter-widgets:widget-display (jupyter-widgets:widget-layout nglview)) "") 
                                      (observe-ligand-selector nglview calc ligand-name 0)
                                      (tirun:tirun-calculation-from-ligands calc *ligands*))))))
     (jupyter-widgets:observe ligand-selector :value (lambda (instance type name old-value new-value source)
