@@ -5,8 +5,10 @@
 (in-package :tirundot)
 
 (defmethod draw-node (id (node tirun:job) stream)
-  (if (tirun:script node)
-      (format stream "~a [label = \"~a.~a\", style=\"filled,solid\",fillcolor=\"yellow\" ];~%" id (tirun:name (tirun:script node)) (tirun:extension (tirun:script node)))
+  (if (tirun:scripts node)
+      (format stream "~a [label = \"~{~s~^,~}\", style=\"filled,solid\",fillcolor=\"yellow\" ];~%" id
+              (mapc (lambda (scr) (format nil "~a.~a" (tirun:name scr) (tirun:extension scr)))
+                    (tirun:scripts node)))
       (format stream "~a [label = \"~a\", style=\"filled,solid\",fillcolor=\"#FFE0E0\" ];~%" id (class-name (class-of node)))))
 
 (defmethod draw-node (id (node tirun:amber-job-mixin) stream)

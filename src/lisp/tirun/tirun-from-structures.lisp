@@ -151,7 +151,6 @@
                        :target-scmask-atom-names target-atom-names)))))
 
 
-
 (defmethod connect-job-nodes (calculation (pairs list) &key)
   (loop for pair in pairs
         for source-name = (first pair)

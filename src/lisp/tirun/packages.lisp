@@ -65,6 +65,7 @@
    #:users
    #:definers
    #:script
+   #:scripts
    #:drawing
    #:molecule
    #:tirun-morph
