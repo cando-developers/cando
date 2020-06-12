@@ -49,25 +49,23 @@
    #:show-amber-netcdf-trajectory
    #:make-amber-netcdf-trajectory
    #:amber-netcdf-trajectory
+   #:run-kernel-from-slime
    #:show
    #:repr
-   #:cl-jupyter-kernel-start
+   #:kernel
+   #:install
    ))
 
 
-(import '(cl-jupyter-user:png-from-file
-          cando-jupyter:show
+(import '(cando-jupyter:show
           cando-jupyter:repr
           cando-jupyter:cando-structure
           cando-jupyter:cando-trajectory
-          cando-jupyter:cl-jupyter-kernel-start
           ) :cando-user)
 
-(export '(cl-jupyter-user:png-from-file
-          cando-jupyter:show
+(export '(cando-jupyter:show
           cando-jupyter:repr
           cando-jupyter:cando-structure
           cando-jupyter:cando-trajectory
-          cando-jupyter:cl-jupyter-kernel-start
           ) :cando-user)
 

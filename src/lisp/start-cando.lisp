@@ -36,6 +36,10 @@
 ;;; Load the ASDF package manager
 (progn
   (require :asdf))
+
+(progn
+  (asdf:register-immutable-system :sb-bsd-sockets)  ; already provided by the system
+  )
 #+(or)
 (format t "Loaded asdf version ~s~%" (asdf/upgrade:asdf-version))
 
@@ -80,6 +84,11 @@
   (handler-bind ((error (lambda (&rest args) (sys:safe-backtrace))))
     (load "quicklisp:setup.lisp"))
   (load "quicklisp:setup.lisp"))
+
+;;; If quickclasp isn't installed then install it
+;;; It provides extra systems for cando
+(unless (ql-dist:find-dist "quickclasp")
+  (ql-dist:install-dist "http://thirdlaw.tech/quickclasp/quickclasp.txt" :prompt nil))
 
 (progn
   (funcall (find-symbol "QUICKLOAD" :ql) "cando-user" :silent (null (core:is-interactive-lisp)))

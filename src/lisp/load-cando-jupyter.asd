@@ -9,4 +9,4 @@
   :homepage ""
   :serial T
   :components ()
-  :depends-on (:cffi :cando-user :cl-jupyter :cl-nglview))
+  :depends-on (:cffi :cando-user :common-lisp-jupyter :nglview-cl))

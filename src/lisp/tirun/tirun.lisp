@@ -294,7 +294,6 @@
 (defmethod print-object ((obj job-graph) stream)
   (if *print-readably*
       (progn
-        (format t "Printing job-graph~%")
         (print-object-readably-with-slots obj stream))
       (print-unreadable-object (obj stream)
         (format stream "~a" (class-name (class-of obj))))))
@@ -729,7 +728,6 @@ Otherwise return NIL."
                                            do (pushnew (target morph) ligs))
                                      ligs)))
       (ensure-jobs-directories-exist *default-pathname-defaults*)
-      (format t "Creating am1 scripts in ~a~%" (truename *default-pathname-defaults*))
       (let* (outputs
              (result (loop for ligand in only-ligands-in-morphs
                            for in-file = (make-instance 'sqm-input-file :name (name ligand))
@@ -748,7 +746,6 @@ Otherwise return NIL."
                            do (setf (atom-order ligand) atom-order)
                            do (push (make-instance 'argument :option :output :node in-file) outputs)
                            collect job)))
-        (format t "About to set outputs result -> ~s~%" result)
         (setf (outputs jupyter-job) outputs)
         (connect-graph jupyter-job)
         (mapc #'connect-graph result)
@@ -763,7 +760,7 @@ Otherwise return NIL."
                                collect (list name status)))
          (sorted-entries (sort status-entries #'string< :key #'car)))
     (error "Fix checking the am1-calculations")
-    #+(or)(cl-jupyter-user:html (cl-markup:markup
+    #+(or)(jupyter:html (cl-markup:markup
                            (:table :border 3
                                    :cellpadding 4
                                    (loop for i below (length sorted-entries) by 5
@@ -782,7 +779,7 @@ Otherwise return NIL."
 
 (defun read-am1-charges (calculation)
   (with-top-directory (calculation)
-    (let* ((count 0)
+	(let* ((count 0)
            (jobs (jobs calculation))
            (morphs (morphs jobs))
            (only-ligands-in-morphs (let (ligs)
@@ -815,7 +812,7 @@ Otherwise return NIL."
         (warn "After balance-charges the new-charge-total of the molecule is ~g~%" new-charge-total)))))
 
 (defun calculate-am1-bcc-charges (calculation)
-  (let* ((jobs (jobs calculation))
+   (let* ((jobs (jobs calculation))
 	 (morphs (morphs jobs))
 	 (only-ligands-in-morphs (let (ligs)
 				   (loop for morph in morphs
@@ -823,7 +820,7 @@ Otherwise return NIL."
 					 do (pushnew (target morph) ligs))
 			           ligs)))
   (loop for tirun in only-ligands-in-morphs
-        for am1-charges = (am1-charges tirun)
+  	for am1-charges = (am1-charges tirun)
         for bcc-corrections = (charges::calculate-bcc-corrections (tirun::molecule tirun))
         for am1-bcc-charges = (charges::combine-am1-bcc-charges (am1-charges tirun) bcc-corrections)
         do (balance-charges am1-bcc-charges (net-charge tirun))
@@ -886,7 +883,6 @@ Otherwise return NIL."
 (defmethod print-object ((obj ti-mask) stream)
   (if *print-readably*
       (progn
-        (format t "Printing job-graph~%")
         (print-object-readably-with-slots obj stream))
       (print-unreadable-object (obj stream)
         (format stream "~a" (class-name (class-of obj))))))

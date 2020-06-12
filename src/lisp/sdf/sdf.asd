@@ -13,6 +13,6 @@
     :components
     ((:file "packages")
      (:file "sdf" :depends-on ("packages"))
-     #+(or)(:file "sdf-writer" :depends-on ("packages"))
+     (:file "sdf-writer" :depends-on ("packages"))
      ))
 

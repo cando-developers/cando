@@ -27,5 +27,6 @@
 (defpackage #:sdf
   (:use #:common-lisp)
   (:export
+   #:parse-sdf-file
    #:load-sdf-as-list-of-molecules
    #:load-sdf-as-aggregate))

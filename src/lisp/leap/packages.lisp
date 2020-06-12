@@ -108,11 +108,15 @@
   (:use #:common-lisp)
   (:export
    #:scan-pdb
+   #:scan-pdb-stream
    #:load-pdb
+   #:load-pdb-stream
    #:sequences
    #:build-sequence
    #:add-pdb-atom-map
    #:add-pdb-res-map
+   #:pdb-read-error
+   #:messages
   ))
 
 

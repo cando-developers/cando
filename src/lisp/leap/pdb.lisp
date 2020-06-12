@@ -498,6 +498,89 @@ MTRIX- Used to build a list of matrices."
         do (loop for residue in group
                  do (try-to-assign-topology residue scanner))))
 
+
+(defun atom-names-match-topology (atom-names topology)
+  (let* ((constitution (chem:get-constitution topology))
+         (constitution-atoms (chem:get-constitution-atoms constitution))
+         (constitution-atoms-as-list (chem:constitution-atoms-as-list constitution-atoms)))
+    (let ((topology-atom-names (loop for ca in constitution-atoms-as-list
+                                     collect (chem:atom-name ca))))
+      (if (= (length atom-names) (length topology-atom-names))
+          (loop for nm in topology-atom-names
+                unless (member nm atom-names)
+                  do (return-from atom-names-match-topology
+                       (values nil topology-atom-names)))
+          (values nil topology-atom-names))
+      (values t topology-atom-names))))
+
+
+(define-condition pdb-read-error (error)
+  ((messages :initarg :messages :initform nil :reader messages))
+  (:report
+   (lambda (condition stream)
+     (format stream "~a" (messages condition)))))
+
+(defun validate-scanner (scanner)
+  (let* (saw-problems
+         (*print-pretty* nil)
+         (messages 
+           (with-output-to-string (sout)
+             (loop for sequence in (sequences scanner)
+                   do (loop for pdb-res in sequence
+                            for res-name = (residue-name pdb-res)
+                            for res-seq = (res-seq pdb-res)
+                            for chain-id = (chain-id pdb-res)
+                            for atom-names = (atom-names pdb-res)
+                            for topology = (topology pdb-res)
+                            do (if topology
+                                   (multiple-value-bind (match-p topology-atom-names)
+                                       (atom-names-match-topology atom-names topology)
+                                     (unless match-p
+                                       (format sout "Residue ~a ~a ~a - atom names mismatch~%PDB file has ~a and AMBER residue ~a has ~a~%" res-name chain-id res-seq atom-names (chem:get-name topology) topology-atom-names)
+                                       (setf saw-problems t)))
+                                   (progn
+                                     (format sout "Residue ~a ~a ~a - is unknown~%" res-name chain-id res-seq)
+                                     (setf saw-problems t))))))))
+    (when saw-problems
+      (error 'pdb-read-error :messages messages))
+    ))
+                                  
+
+
+                                  
+                                  (defun scan-pdb-stream (fin &key progress system)
+  (let ((pdb-scanner (make-instance 'pdb-scanner
+                                    :stream fin
+                                    :scanner (make-instance 'scanner)))
+        (bar (if progress
+                 (cando:make-progress-bar :message "Scanned" :total (file-length fin) :divisions 100 :on progress)
+                 nil)))
+    (restart-case
+        (progn
+          (loop for x = (pdb-scanner-read-line pdb-scanner nil :eof)
+                do (when progress (cando:progress-advance bar (file-position fin)))
+                until (eq x :eof))
+          (finish-previous-sequence pdb-scanner)
+          (when progress (cando:progress-done bar)))
+      (read-partial-sequence ()
+        :report "Construct a partial structure"
+        ;; Drop the current residue and proceed
+        (format t "Terminating sequence read")
+        (when (current-reverse-sequence pdb-scanner)
+          (pop (current-reverse-sequence pdb-scanner)))
+        (finish-previous-sequence pdb-scanner nil)))
+    (let* ((sequences (nreverse (reversed-sequences pdb-scanner)))
+           (scanner (scanner pdb-scanner)))
+      (setf (sequences scanner) sequences)
+      (finish-scanner scanner)
+      (adjust-residue-names scanner system)
+      (assign-topologys scanner)
+      (split-solvent scanner)
+      (let ((result-scanner (build-sequence scanner system)))
+        (validate-scanner result-scanner)
+        result-scanner))))
+
+
 (defun scan-pdb (filename &key progress system)
   "* Arguments
 - filename : A pathname
@@ -505,33 +588,9 @@ MTRIX- Used to build a list of matrices."
 Scan the PDB file and use the ATOM records to build a list of residue sequences and matrices.
 * Return
 values residue-sequences matrices"
-  (with-open-file (fin filename :direction :input)
-    (let ((pdb-scanner (make-instance 'pdb-scanner
-                                      :stream fin
-                                      :scanner (make-instance 'scanner)))
-          (bar (cando:make-progress-bar :message "Scanned" :total (file-length fin) :divisions 100 :on progress)))
-      (restart-case
-          (progn
-            (loop for x = (pdb-scanner-read-line pdb-scanner nil :eof)
-               do (cando:progress-advance bar (file-position fin))
-               until (eq x :eof))
-            (finish-previous-sequence pdb-scanner)
-            (cando:progress-done bar))
-        (read-partial-sequence ()
-          :report "Construct a partial structure"
-          ;; Drop the current residue and proceed
-          (format t "Terminating sequence read")
-          (when (current-reverse-sequence pdb-scanner)
-            (pop (current-reverse-sequence pdb-scanner)))
-          (finish-previous-sequence pdb-scanner nil)))
-      (let* ((sequences (nreverse (reversed-sequences pdb-scanner)))
-             (scanner (scanner pdb-scanner)))
-        (setf (sequences scanner) sequences)
-        (finish-scanner scanner)
-        (adjust-residue-names scanner system)
-        (assign-topologys scanner)
-        (split-solvent scanner)
-        (build-sequence scanner system)))))
+  (with-open-file (fin filename :direction :input)]
+    (scan-pdb-stream fin :progress progress :system system)
+    ))
 
 (defun warn-of-unknown-topology (res scanner)
   (let* ((name (name res))
@@ -700,6 +759,74 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
                   #+(or)(format *debug-io* "Creating molecule ~a for sequence ~a~%" mol sequence)
                   mol)))
 
+
+(defun load-pdb-stream (fin &key filename scanner progress system)
+  (let* ((scanner (if scanner
+                      scanner
+                      (let ((new-scanner (build-sequence (scan-pdb-stream fin :progress progress) system)))
+                        (file-position fin 0)
+                        new-scanner)))
+         (serial-to-atoms (connect-atoms-hash-table scanner)))
+    (setq *serial-to-atoms* serial-to-atoms)
+    (let ((pdb-atom-reader (make-instance 'pdb-atom-reader :stream fin
+                                                           :sequences (mapcar (lambda (seq)
+                                                                                (copy-list seq))
+                                                                              (sequences scanner))
+                                                           :molecules (molecules-from-sequences (sequences scanner))
+                                                           :connect-atoms (connects scanner)
+                                                           :serial-to-atom serial-to-atoms)))
+      (let ((bar (if progress
+                     (cando:make-progress-bar :message "Load pdb" :total (file-length fin) :divisions 100 :on progress)
+                     nil))
+            (atom-table (make-hash-table :test #'eql)))
+        (restart-case
+            (progn
+              (setf (molecule pdb-atom-reader) nil)
+              (loop for x = (read-and-process-line pdb-atom-reader nil :eof (big-z scanner))
+                    do (when bar (cando:progress-advance bar (file-position fin)))
+                    until (eq x :eof))
+              (when progress (format t "Loaded pdb~%")))
+          (ran-out-of-sequence ()
+            :report "Ran out of sequence while filling residues"
+            (format t "Continuing with partial sequence~%")))
+        (when bar (cando:progress-done bar)))
+      (loop for connect in (connects scanner)
+            for from-atom = (gethash (from connect) serial-to-atoms)
+            for to-atoms = (mapcar (lambda (c) (gethash c serial-to-atoms)) (to connect))
+            do (mapc (lambda (to-atom)
+                       (when (and (typep from-atom 'chem:atom)
+                                  (typep to-atom 'chem:atom)
+                                  (not (chem:is-bonded-to from-atom to-atom)))
+                         (chem:bond-to from-atom to-atom :single-bond)))
+                     to-atoms))
+      (let ((unbuilt-heavy-atoms 0)
+            (aggregate (aggregate pdb-atom-reader)))
+        (loop for molecule in (molecules pdb-atom-reader)
+              do (chem:add-matter aggregate molecule))
+        (chem:map-atoms
+         nil
+         (lambda (a)
+           (when (and (not (eq (chem:get-element a) :H))
+                      (chem:needs-build a))
+             (incf unbuilt-heavy-atoms)))
+         aggregate)
+        (if (> unbuilt-heavy-atoms 0)
+            (warn "There are ~a unbuilt heavy atoms - not building hydrogens" unbuilt-heavy-atoms)
+            (progn
+              (when progress
+                (format t "Building missing hydrogens~%"))
+              (let ((built (cando:build-unbuilt-hydrogens aggregate)))
+                (format t "Built ~d missing hydrogens~%" built))))
+;;;            (cando:maybe-join-molecules-in-aggregate aggregate)
+;;;            (cando:maybe-split-molecules-in-aggregate aggregate)
+        (setf aggregate (classify-molecules aggregate system))
+        (let ((name-only (if filename
+                             (pathname-name (pathname filename))
+                             "unknown")))
+          (chem:set-name aggregate (intern name-only *package*)))
+        (values aggregate scanner pdb-atom-reader)))))
+
+
 (defun load-pdb (filename &key scanner progress system)
   "    variable = loadPdb filename
       STRING                       _filename_
@@ -724,63 +851,11 @@ specified in PDB files.
 "
   (let ((filename (leap.core:ensure-path filename)))
     (with-open-file (fin filename :direction :input)
-      (let* ((scanner (or scanner
-                          (build-sequence (scan-pdb filename :progress progress) system)))
-             (serial-to-atoms (connect-atoms-hash-table scanner)))
-        (setq *serial-to-atoms* serial-to-atoms)
-        (let ((pdb-atom-reader (make-instance 'pdb-atom-reader :stream fin
-                                                               :sequences (mapcar (lambda (seq)
-                                                                                    (copy-list seq))
-                                                                                  (sequences scanner))
-                                                               :molecules (molecules-from-sequences (sequences scanner))
-                                                               :connect-atoms (connects scanner)
-                                                               :serial-to-atom serial-to-atoms)))
-          (let ((bar (cando:make-progress-bar :message "Load pdb" :total (file-length fin) :divisions 100 :on progress))
-                (atom-table (make-hash-table :test #'eql)))
-            (restart-case
-                (progn
-                  (setf (molecule pdb-atom-reader) nil)
-                  (loop for x = (read-and-process-line pdb-atom-reader nil :eof (big-z scanner))
-                        do (cando:progress-advance bar (file-position fin))
-                        until (eq x :eof))
-                  (when progress (format t "Loaded pdb~%")))
-              (ran-out-of-sequence ()
-                :report "Ran out of sequence while filling residues"
-                (format t "Continuing with partial sequence~%")))
-            (cando:progress-done bar))
-          (loop for connect in (connects scanner)
-                for from-atom = (gethash (from connect) serial-to-atoms)
-                for to-atoms = (mapcar (lambda (c) (gethash c serial-to-atoms)) (to connect))
-                do (mapc (lambda (to-atom)
-                           (when (and (typep from-atom 'chem:atom)
-                                      (typep to-atom 'chem:atom)
-                                      (not (chem:is-bonded-to from-atom to-atom)))
-                             (chem:bond-to from-atom to-atom :single-bond)))
-                         to-atoms))
-          (let ((unbuilt-heavy-atoms 0)
-                (aggregate (aggregate pdb-atom-reader)))
-            (loop for molecule in (molecules pdb-atom-reader)
-                  do (chem:add-matter aggregate molecule))
-            (chem:map-atoms
-             nil
-             (lambda (a)
-               (when (and (not (eq (chem:get-element a) :H))
-                          (chem:needs-build a))
-                 (incf unbuilt-heavy-atoms)))
-             aggregate)
-            (if (> unbuilt-heavy-atoms 0)
-                (warn "There are ~a unbuilt heavy atoms - not building hydrogens" unbuilt-heavy-atoms)
-                (progn
-                  (when progress
-                    (format t "Building missing hydrogens~%"))
-                  (let ((built (cando:build-unbuilt-hydrogens aggregate)))
-                    (format t "Built ~d missing hydrogens~%" built))))
-;;;            (cando:maybe-join-molecules-in-aggregate aggregate)
-;;;            (cando:maybe-split-molecules-in-aggregate aggregate)
-            (setf aggregate (classify-molecules aggregate system))
-            (let ((name-only (pathname-name (pathname filename))))
-              (chem:set-name aggregate (intern name-only *package*)))
-            (values aggregate scanner pdb-atom-reader)))))))
+      (load-pdb-stream fin :filename filename
+                           :scanner scanner
+                           :progress progress
+                           :system system)
+      )))
 
 (defgeneric classify-molecules (aggregate system))
 

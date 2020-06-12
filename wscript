@@ -1,6 +1,6 @@
 import sys
 import time
-from subprocess import call
+import subprocess
 import waflib.Task
 from waflib import Utils, Logs, Task, TaskGen
 import os
@@ -11,10 +11,15 @@ def options(ctx):
 
 # configure can provide...
 # cfg.extensions_includes  - Append directory names relative to top that will
+
+def analyze_clasp(cfg):
+    cfg.extensions_clasp_gc_names += [ "cando" ]
+
 def configure(cfg):
     cfg.check_cxx(stlib='expat', cflags='-Wall', uselib_store='EXPAT')
     cfg.extensions_stlib += cfg.env.STLIB_EXPAT
     cfg.extensions_stlib += cfg.env.STLIB_Z
+    cfg.extensions_clasp_gc_names += "cando"
     cfg.check_cxx(stlib='boost_graph', cflags='-Wall', uselib_store='BOOST-boost_graph')
     cfg.define("BUILD_EXTENSION",1)   # add this whenever building an extension
 #    cfg.define("DEBUG_ENERGY_FUNCTION",1)
@@ -88,17 +93,20 @@ def build(bld):
 
 def post_install(ctx):
     print('In post_install(ctx)')
-    if ctx.cmd[:len('install_c')] == 'install_c':
+    if (ctx.cmd[:len('install_c')] == 'install_c'):
         prefix = ctx.env.PREFIX
         cando_parts = os.path.split(ctx.ccando_executable.abspath())
         installed_cando = "%s/bin/%s" % (prefix, cando_parts[1])
         # this trick with test -e /dev/fd/3 doesn't work on FreeBSD - cracauer fixme
-        cmd = '%s -e "(sys:quit)" 2>&1 | (ls -l /dev/fd > cboehm_install.log 2>&1 ; tee -a cboehm_install.log) | (echo foo 1>&3 && tee 1>&3 || cat)' % installed_cando
+        # cmd = '%s -e "(sys:quit)" 2>&1 | (ls -l /dev/fd > cboehm_install.log 2>&1 ; tee -a cboehm_install.log) | (echo foo 1>&3 && tee 1>&3 || cat)' % installed_cando
+        cmd = '%s -N -D -e "(sys:quit)"' % installed_cando
         print("Executing post-install command %s" % cmd)
         sys.stdout.flush()
-        print("NOTE: waf suppresses output and this may sit for 10-20 min compiling with no output (fixing ASAP) - start time: %s" % time.asctime())
+        print("Start time: %s" % time.asctime())
         sys.stdout.flush()
-        ctx.exec_command(cmd)
+        # Try subprocess.call instead of exec_command that eats output
+        subprocess.call(["/bin/sh","-c",cmd])
+        #ctx.exec_command(cmd)
         cando_symlink = "%s/bin/cando" % prefix
         leap_parts = os.path.split(ctx.cleap_executable.abspath())
         installed_cleap = "%s/bin/%s" % (prefix, leap_parts[1])

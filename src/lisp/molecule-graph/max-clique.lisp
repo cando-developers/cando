@@ -236,7 +236,10 @@ The last constraint abs(T(v1,v1')-T(v2,v2'))<=theta is the topological constrain
   (chem:find-maximum-clique-search dimacs *clique-search-threads* 1))
 
 
-(defun compare-molecules (molecule1 molecule2 &key (topological-constraint-theta 2) (exclude-hydrogens t) atom-match-callback)
+(defun compare-molecules (molecule1 molecule2 &key
+                                                (topological-constraint-theta 2)
+                                                (exclude-hydrogens t)
+                                                atom-match-callback)
   "Return three values:
 a list of pairs of matching atoms 
 a list of mismatching atoms from molecule1
@@ -246,7 +249,11 @@ Otherwise pass a function that takes two atoms and returns T if they are matchab
   (let* ((graph1 (build-molecule-graph molecule1 :exclude-hydrogens exclude-hydrogens))
          (graph2 (build-molecule-graph molecule2 :exclude-hydrogens exclude-hydrogens))
          (cross-product (if topological-constraint-theta
-                            (modular-cross-product-with-topological-constraint graph1 graph2 topological-constraint-theta :atom-match-callback atom-match-callback)
+                            (modular-cross-product-with-topological-constraint
+                             graph1
+                             graph2
+                             topological-constraint-theta
+                             :atom-match-callback atom-match-callback)
                             (modular-cross-product graph1 graph2 :atom-match-callback atom-match-callback)))
          (_ (when (> (length (cross-product-nodes cross-product)) 1000)
               (Warn "There are more than 500 nodes in the compare-molecule cross-product (actual number ~a) - it may take a very long time to calculate the maximum clique"
