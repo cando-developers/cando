@@ -139,7 +139,7 @@
           do (setf (aref matrix yindex xindex) similarity))
     matrix))
    
-(defun similarity-matrix (molecules)
+(defun similarity-matrix (molecules &key advance-progress-callback)
   "Parallel implementation of similarity-matrix"
   (let ((matrix (make-array (list (length molecules) (length molecules)) :element-type 't))
         simcalcs)
@@ -150,11 +150,14 @@
                    for simcalc = (make-instance 'simcalc :mol-a mol-a :mol-b mol-b :xindex xindex :yindex yindex)
                    do (push simcalc simcalcs)))
     ;; Run simcalcs in parallel (mcsr-similarity-score mol-a mol-b)
-    (lparallel:pmapc
-     (lambda (simcalc)
-       (let ((similarity (mcsr-similarity-score (mol-a simcalc) (mol-b simcalc))))
-         (setf (similarity simcalc) similarity)))
-     simcalcs)
+    (let ((max-calcs (length simcalcs)))
+      (lparallel:pmapc
+       (lambda (simcalc)
+         (let ((similarity (mcsr-similarity-score (mol-a simcalc) (mol-b simcalc))))
+           (setf (similarity simcalc) similarity))
+         (when advance-progress-callback
+           (funcall advance-progress-callback max-calcs)))
+       simcalcs))
     (loop for simcalc in simcalcs
           for similarity = (similarity simcalc)
           for xindex = (xindex simcalc)

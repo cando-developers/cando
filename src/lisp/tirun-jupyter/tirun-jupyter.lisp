@@ -21,123 +21,157 @@
       (leap:add-pdb-res-map '((1 :NMA :NME)))))
   (make-instance 'tirun:tirun-calculation))
 
-(defun setup-receptor* (nglview messages calc new-value)
-  (let* ((last-pdb (car (last new-value)))
-         (octets (make-array (length last-pdb) :element-type 'ext:byte8
-                                               :initial-contents last-pdb)))
-    (let ((as-text (babel:octets-to-string octets)))
-      (setf *receptor-string* nil)
-      (nglview:remove-all-components nglview)
-      (let ((agg (handler-case
-                     (with-input-from-string (sin as-text)
-                       (leap.pdb:load-pdb-stream sin))
-                   (leap.pdb:pdb-read-error (condition)
-                     (setf (jupyter-widgets:widget-value messages) (leap.pdb:messages condition))
-                     (setf (jupyter-widgets:widget-display (jupyter-widgets:widget-layout messages)) "") 
-                     (setf (jupyter-widgets:widget-display (jupyter-widgets:widget-layout nglview)) "none") 
-                     (return-from setup-receptor* nil)))))
-        (nglview:add-structure nglview (make-instance 'nglview:text-structure :text as-text))
-        (setf (jupyter-widgets:widget-value messages) "Loaded successfully")
-        (setf (jupyter-widgets:widget-display (jupyter-widgets:widget-layout messages)) "none") 
-        (setf (jupyter-widgets:widget-display (jupyter-widgets:widget-layout nglview)) "") 
-        (setf *receptor-string* as-text)
-        (setf (tirun:receptors calc) (list agg))))))
+
+(defun widget-visibility (widget visibility)
+  (setf (w:widget-display (w:widget-layout widget)) visibility))
+(defun widget-hide (widget)
+  (widget-visibility widget "none"))
+(defun widget-show (widget)
+  (widget-visibility widget ""))
 
 (defun setup-receptor (calc)
   (let* ((box-layout (make-instance 'w:layout :width "auto" :flex-flow "row wrap"))
          (desc-width "12em")
          (desc-style (make-instance 'w:description-style :description-width desc-width))
-         (fu (make-instance 'jupyter-widgets:file-upload :description "Upload PDB file"))
-         (messages (make-instance 'jupyter-widgets:text-area :description "Messages"
-                                  :layout (make-instance 'jupyter-widgets:layout :width "60em")))
+         (file-upload-msg (make-instance 'w:label :value "Receptor structure: "))
+         (file-upload (make-instance 'w:file-upload :description "PDB file for receptor"
+                                                    :width "auto"
+                                                    :layout (make-instance 'w:layout :width "auto")))
+         (file-upload-vbox (make-instance 'w:h-box
+                                          :layout box-layout
+                                          :children (list file-upload-msg file-upload)))
+         (messages (make-instance 'w:text-area :description "Messages"
+                                               :layout (make-instance 'w:layout :width "60em")))
          (nglview (make-instance 'nglv:nglwidget)))
-    (setf (jupyter-widgets:widget-display (jupyter-widgets:widget-layout messages)) "") 
-    (setf (jupyter-widgets:widget-display (jupyter-widgets:widget-layout nglview)) "none") 
-    (setf *fu* fu
-          *nglv* nglview)
-    (jupyter-widgets:observe fu :data
-                             (lambda (instance type name old-value new-value source)
-                               (declare (ignore instance type name old-value source))
-                               (when new-value
-                                 (setup-receptor* nglview messages calc new-value))))
-    (make-instance 'w:v-box
-                   :children (list
-                              (make-instance 'w:h-box
-                                             :layout box-layout
-                                             :children (list fu))
-                              (make-instance 'w:h-box
-                                             :layout box-layout
-                                             :children (list messages))
-                              (make-instance 'w:h-box
-                                             :layout box-layout
-                                             :children (list nglview)))))
-  )
+    (setf (w:widget-value messages) "Start message")
+    (labels ((setup-receptor* (new-value)
+               (let* ((last-pdb (car (last new-value)))
+                      (octets (make-array (length last-pdb) :element-type 'ext:byte8
+                                                            :initial-contents last-pdb)))
+                 (let ((as-text (babel:octets-to-string octets)))
+                   (setf *receptor-string* nil)
+                   (nglview:remove-all-components nglview)
+                   (let ((agg (handler-case
+                                  (with-input-from-string (sin as-text)
+                                    (leap.pdb:load-pdb-stream sin))
+                                (leap.pdb:pdb-read-error (condition)
+                                  (setf (w:widget-value messages) (leap.pdb:messages condition))
+                                  (widget-show messages)
+                                  (widget-hide nglview)
+                                  (return-from setup-receptor* nil)))))
+                     (nglview:add-structure nglview (make-instance 'nglview:text-structure :text as-text))
+                     (setf (w:widget-value messages) "Loaded successfully")
+                     (widget-hide messages)
+                     (widget-show nglview)
+                     (setf *receptor-string* as-text)
+                     (setf (tirun:receptors calc) (list agg)))))))
+      (widget-show messages)
+      (widget-hide nglview)
+      (w:observe file-upload :data
+                 (lambda (instance type name old-value new-value source)
+                   (declare (ignore instance type name old-value source))
+                   (when new-value
+                     (setup-receptor* new-value))))
+      (make-instance 'w:v-box
+                     :children (list
+                                (make-instance 'w:h-box
+                                               :layout box-layout
+                                               :children (list file-upload-vbox))
+                                (make-instance 'w:h-box
+                                               :layout box-layout
+                                               :children (list messages))
+                                (make-instance 'w:h-box
+                                               :layout box-layout
+                                               :children (list nglview)))))))
 
 
 (defvar *ligands-string* nil)
 (defvar *ligands* nil)
 (defvar *current-component* nil)
-(defun observe-ligand-selector (nglview calc ligand-name new-value)
+(defvar *smallest-ligand-sketch*)
+(defun observe-ligand-selector (nglview structure-view calc ligand-name new-value)
   (let ((mol (elt *ligands* new-value)))
     (let* ((agg (chem:make-aggregate)))
       (chem:add-matter agg mol)
-      (setf (jupyter-widgets:widget-value ligand-name) (string (chem:get-name mol)))
+      (setf (w:widget-value ligand-name) (string (chem:get-name mol)))
       (let* ((mol2 (chem:aggregate-as-mol2-string agg t))
              (new-component (nglview:add-structure nglview (make-instance 'nglview:text-structure :text mol2 :ext "mol2"))))
         (when *current-component*
           (nglview:remove-components nglview *current-component*))
+        (setf (w:widget-value structure-view)
+              (sketch2d:render-svg-to-string (sketch2d:svg (sketch2d:similar-sketch2d mol *smallest-ligand-sketch*))))
         (setf *current-component* new-component)
         ))))
 
 (defvar *lv* nil)
 (defun setup-ligands (calc &optional (show-receptor t))
   (let* ((box-layout (make-instance 'w:layout :width "auto" :flex-flow "row wrap"))
-         (desc-width "12em")
-         (desc-style (make-instance 'w:description-style :description-width desc-width))
-         (fu (make-instance 'jupyter-widgets:file-upload :description "Upload SDF file"))
-         (ligand-selector (make-instance 'jupyter-widgets:bounded-int-text :description "Ligand"))
-         (ligand-name (make-instance 'jupyter-widgets:label :value "Molecule"))
-         (nglview (make-instance 'nglv:nglwidget :gui-style "ngl")))
+         (fu (make-instance 'w:file-upload :description "Upload SDF file"))
+         (ligand-selector (make-instance 'w:bounded-int-text :description "Ligand"))
+         (ligand-total (make-instance 'w:label :value ""))
+         (ligand-name (make-instance 'w:label :value "Molecule"))
+         (ligand-h-box (make-instance 'w:h-box :children (list ligand-selector ligand-total ligand-name)))
+         (control-box (make-instance 'w:v-box :children (list fu ligand-h-box)
+                                              :layout (make-instance 'w:layout :flex "1 1 0%" :width "auto" :height "auto")))
+         (structure-view (make-instance 'w:html
+                                        :layout (make-instance 'w:layout :flex "1 1 0%" :width "auto" :height "auto")))
+         (nglview (make-instance 'nglv:nglwidget
+                                 :layout (make-instance 'w:layout :width "auto" :height "auto")))
+         )
     (setf *lv* nglview)
-    (setf (jupyter-widgets:widget-display (jupyter-widgets:widget-layout ligand-selector)) "none") 
-    (setf (jupyter-widgets:widget-display (jupyter-widgets:widget-layout ligand-name)) "none") 
-    (setf (jupyter-widgets:widget-display (jupyter-widgets:widget-layout nglview)) "none") 
+    (widget-hide ligand-h-box)
+    (widget-hide nglview)
     (when show-receptor
       (nglview:add-structure nglview (make-instance 'nglview:text-structure :text *receptor-string*)))
-    (jupyter-widgets:observe fu :data
-                             (lambda (instance type name old-value new-value source)
-                               (declare (ignore instance type name old-value source))
-                               (when new-value
-                                 (let* ((last-pdb (car (last new-value)))
-                                        (octets (make-array (length last-pdb) :element-type 'ext:byte8
-                                                                              :initial-contents last-pdb)))
-                                   (let ((as-text (babel:octets-to-string octets)))
-                                     (setf *ligands-string* as-text)
-                                     (setf *ligands* (with-input-from-string (sin as-text)
-                                                       (sdf:parse-sdf-file sin)))
-                                     (setf (jupyter-widgets:widget-value ligand-selector) 0
-                                           (jupyter-widgets:widget-max ligand-selector) (1- (length *ligands*))
-                                           (jupyter-widgets:widget-min ligand-selector) 0)
-                                     (setf (jupyter-widgets:widget-display (jupyter-widgets:widget-layout ligand-selector)) "") 
-                                     (setf (jupyter-widgets:widget-display (jupyter-widgets:widget-layout ligand-name)) "") 
-                                     (setf (jupyter-widgets:widget-display (jupyter-widgets:widget-layout nglview)) "") 
-                                     (observe-ligand-selector nglview calc ligand-name 0)
-                                     (tirun:tirun-calculation-from-ligands calc *ligands*))))))
-    (jupyter-widgets:observe ligand-selector :value (lambda (instance type name old-value new-value source)
-                                                        (declare (ignore instance type name old-value source))
-                                                      (when new-value
-                                                        (observe-ligand-selector nglview calc ligand-name new-value))))
+    (w:observe fu :data
+               (lambda (instance type name old-value new-value source)
+                 (declare (ignore instance type name old-value source))
+                 (when new-value
+                   (let* ((last-pdb (car (last new-value)))
+                          (octets (make-array (length last-pdb) :element-type 'ext:byte8
+                                                                :initial-contents last-pdb)))
+                     (let ((as-text (babel:octets-to-string octets)))
+                       (setf *ligands-string* as-text)
+                       (setf *ligands* (with-input-from-string (sin as-text)
+                                         (sdf:parse-sdf-file sin)))
+                       (flet ((build-prototype-sketch (ligands)
+                                (let ((min-atoms (chem:number-of-atoms (car ligands)))
+                                      (min-mol (car ligands)))
+                                  (loop for mol in (cdr ligands)
+                                        for num-atoms = (chem:number-of-atoms mol)
+                                        when (< num-atoms min-atoms)
+                                          do (setf min-atoms num-atoms
+                                                   min-mol mol))
+                                  (sketch2d:sketch2d min-mol))))
+                         (setf *smallest-ligand-sketch* (build-prototype-sketch *ligands*)))
+                       (setf (w:widget-value ligand-selector) 0
+                             (w:widget-value ligand-total) (format nil "~a" (length *ligands*))
+                             (w:widget-max ligand-selector) (1- (length *ligands*))
+                             (w:widget-min ligand-selector) 0)
+                       (widget-show ligand-h-box)
+                       (widget-show nglview)
+                       (observe-ligand-selector nglview structure-view calc ligand-name 0)
+                       (tirun:tirun-calculation-from-ligands calc *ligands*))))))
+    (w:observe ligand-selector :value (lambda (instance type name old-value new-value source)
+                                        (declare (ignore instance type name old-value source))
+                                        (when new-value
+                                          (observe-ligand-selector nglview structure-view calc ligand-name new-value))))
     (make-instance 'w:v-box
                    :children (list
                               (make-instance 'w:h-box
                                              :layout box-layout
-                                             :children (list fu))
+                                             :children (list control-box structure-view))
+                              #+(or)(make-instance 'w:h-box
+                                                   ;;                                             :layout box-layout
+                                                   :children (list ligand-h-box))
                               (make-instance 'w:h-box
-;;                                             :layout box-layout
-                                             :children (list ligand-selector ligand-name))
-                              (make-instance 'w:h-box
-                                             :layout box-layout
-                                             :children (list nglview))))))
+;;;                                             :layout box-layout
+                                            #+(or):layout #+(or)(make-instance 'w:layout
+                                                                          :width "100em"
+                                                                          :flex-flow "row"
+                                                                          :align-items "stretch")
+                                             :children (list nglview))
+                              ))))
 
 
 (defun generate-nodes-and-edges (multigraph)
@@ -158,9 +192,12 @@
                      all-edges (append all-edges edges))))
     (values all-nodes all-edges)))
 
+(defvar *all-nodes*)
+(defvar *all-edges*)
+(defvar *cyto-graph*)
 
 (defun cyto-label ()
-  (let ((widget *cyto-widget*))
+  (let ((widget *cyto-graph*))
     (setf (cytoscape:cytoscape-style widget)
           (append (cytoscape:cytoscape-style widget) (list (jupyter:json-new-obj
                                                             ("selector" "node[label]")
@@ -173,8 +210,7 @@
   nil)
 
 
-(defvar *cyto-widget*)
-(defun cyto-graph (&optional (all-nodes *all-nodes*) (all-edges *all-edges*))
+(defun lomap-graph (&optional (all-nodes *all-nodes*) (all-edges *all-edges*))
   (let* ((all-nodes (loop for name in all-nodes
                           collect (make-instance 'cytoscape:node :data (list (cons "id" (string name)) (cons "label" (string name))))))
          (all-edges (loop for edge in all-edges
@@ -192,22 +228,115 @@
                                   :cytoscape-layout (list (cons "name" "cose")
                                                           (cons "quality" "default")
                                   ))))
-      (setf *cyto-widget* widget)
+      (setf *cyto-graph* widget)
       (cyto-label)
       widget)))
 
     
 
-(defvar *all-nodes*)
-(defvar *all-edges*)
-(defvar *cyto-graph*)
-
-(defun lomap (tirun &optional (mols *ligands*))
-  (let* ((mat (lomap::similarity-matrix mols))
-         (multigraph (lomap::similarity-multigraph mols mat)))
+(defun lomap-progress (tirun &key (molecules *ligands*) advance-progress-callback)
+  (let* ((mat (lomap::similarity-matrix molecules :advance-progress-callback advance-progress-callback))
+         (multigraph (lomap::similarity-multigraph molecules mat)))
     (setf multigraph (lomap::lomap-multigraph multigraph :debug nil))
-    (multiple-value-setq (*all-nodes* *all-edges*) (generate-nodes-and-edges multigraph))
-    (setq *cyto-graph* (cyto-graph *all-nodes* *all-edges*))))
+    (generate-nodes-and-edges multigraph)))
+
+
+#|
+(defun lomap-display (tirun)
+  (let* ((all-nodes (loop for name in *all-nodes*
+                          collect (make-instance 'cytoscape:node :data (list (cons "id" (string name)) (cons "label" (string name))))))
+         (all-edges (loop for edge in *all-edges*
+                          collect (destructuring-bind (name1 name2 score)
+                                      edge
+                                    (make-instance 'cytoscape:edge
+                                                   :data (list (cons "source" (string name1))
+                                                               (cons "target" (string name2))
+                                                               (cons "label" (format nil "~3,2f" score)))))))
+                                                         (graph (make-instance 'cytoscape:graph
+                                                                               :nodes all-nodes
+                                                                               :edges all-edges))
+         (widget (make-instance 'cytoscape:cytoscape-widget
+                                :cytoscape-layout (list (cons "name" "cose")
+                                                        (cons "quality" "default")
+                                                        )))
+                  
+    (setf (cytoscape:graph widget) graph)
+                                                    (w:display widget)
+                                                    (setf *all-nodes* all-nodes
+                                                          *all-edges* all-edges
+                                                          *cyto-graph* widget)
+
+(make-instance 'w:h-box
+                                             :layout box-layout
+                                             :children (list widget))
+|#
+
+
+(defun lomap (tirun &key (molecules *ligands*))
+  (let* ((box-layout (make-instance 'w:layout :width "auto" :flex-flow "row wrap"))
+         (progress (make-instance 'w:int-progress :description "Progress")) 
+         (messages (make-instance 'w:text-area :description "Messages"
+                                               :layout (make-instance 'w:layout :width "60em")))
+         (callback (let ((index 0))
+                     (lambda (max-progress)
+                       (setf (w:widget-value progress) index
+                             (w:widget-max progress) max-progress)
+                       (incf index))))
+         (go-button (make-instance 'jupyter-widgets:button
+                                   :description "Calculate molecular similarities"
+                                   :layout (make-instance 'w:layout :width "30em")
+                                   :tooltip "Click me"
+                                   :on-click (list
+                                              (lambda (&rest args)
+                                                (setf (w:widget-value messages) "Calculating lomap")
+                                                (multiple-value-bind (nodes edges)
+                                                    (lomap-progress tirun
+                                                                    :molecules molecules
+                                                                    :advance-progress-callback callback)
+                                                  (setf (w:widget-value messages) "Done lomap")
+                                                  (setf *all-nodes* nodes
+                                                        *all-edges* edges)))))))
+    (make-instance 'w:v-box
+                   :children (list
+                              (make-instance 'w:h-box
+                                             :layout box-layout
+                                             :children (list go-button))
+                              (make-instance 'w:h-box
+                                             :layout box-layout
+                                             :children (list progress))
+                              (make-instance 'w:h-box
+                                             :layout box-layout
+                                             :children (list messages))))))
+
+(defun configure-jobs (calc)
+  (let* ((box-layout (make-instance 'w:layout :width "auto" :flex-flow "row wrap"))
+         (desc-width "12em")
+         (desc-style (make-instance 'w:description-style :description-width desc-width))
+         (simulation-length (make-instance 'jupyter-widgets:text :description "Simulation length"))
+         (lambda-windows (make-instance 'jupyter-widgets:text :description "Lambda windows"))
+         (settings (make-instance 'jupyter-widgets:v-box ;;; :layout box-layout
+                                                         :children (list simulation-length
+                                                                         lambda-windows)))
+         (messages (make-instance 'w:text-area :description "Messages"
+                                               :layout (make-instance 'w:layout :width "60em")))
+         (go-button (make-instance 'jupyter-widgets:button :description "Configure"
+                                                           :tooltip "Click me"
+                                                           :on-click (list
+                                                                      (lambda (&rest args)
+                                                                        (setf (w:widget-value messages)
+                                                                              (format nil "Configure: ~a~%" args)))))))
+    (setf *job-messages* messages)
+    (make-instance 'w:v-box
+                   :children (list
+                              (make-instance 'w:h-box
+                                             :layout box-layout
+                                             :children (list settings))
+                              (make-instance 'w:h-box
+                                             :layout box-layout
+                                             :children (list go-button))
+                              (make-instance 'w:h-box
+                                             :layout box-layout
+                                             :children (list messages))))))
 
 
 (defun write-jobs (tirun &optional (name "full"))
@@ -231,3 +360,35 @@ lisp_jobs_only_on=172.234.2.1
     (with-open-file (sout #P"eg5_singlestep.dot" :direction :output)
       (tirundot:draw-graph-stream (list worklist) sout))
     ))
+
+
+
+(defvar *job-messages*)
+(defun submit-jobs (calc)
+  (let* ((box-layout (make-instance 'w:layout :width "auto" :flex-flow "row wrap"))
+         (desc-width "12em")
+         (desc-style (make-instance 'w:description-style :description-width desc-width))
+         (login-label (make-instance 'w:label :value "ssh key password"))
+         (login (make-instance 'jupyter-widgets:password :layout (make-instance 'w:layout :width "40em")))
+         (login-h-box (make-instance 'w:h-box :layout box-layout
+                                     :children (list login-label login)))
+         (messages (make-instance 'w:text-area :description "Messages"
+                                               :layout (make-instance 'w:layout :width "60em")))
+         (go-button (make-instance 'jupyter-widgets:button :description "Submit jobs"
+                                                           :tooltip "Click me"
+                                                           :on-click (list
+                                                                      (lambda (&rest args)
+                                                                        (setf (w:widget-value messages)
+                                                                              (format nil "Submitting job args: ~a~%" args)))))))
+    (setf *job-messages* messages)
+    (make-instance 'w:v-box
+                   :children (list
+                              (make-instance 'w:h-box
+                                             :layout box-layout
+                                             :children (list login-h-box))
+                              (make-instance 'w:h-box
+                                             :layout box-layout
+                                             :children (list go-button))
+                              (make-instance 'w:h-box
+                                             :layout box-layout
+                                             :children (list messages))))))

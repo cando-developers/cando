@@ -4,9 +4,18 @@
 
 (in-package :tirun)
 
+
+(defclass makefile-entry ()
+  ((entry-job :initarg :entry-job :accessor entry-job)
+   (jobid :initarg :jobid :accessor jobid)
+   (entry-substitutions :initarg :entry-substitutions :accessor entry-substitutions)
+   (template :initarg :template :accessor template)
+   (output-files :initform nil :initarg :output-files :accessor output-files)))
+
 ;;; What is this for????
 (defparameter *vdw-bonded* "ifsc=1, scmask1=':1@H6', scmask2=':2@O1,H6'")
 
+(defvar *tiruns*)
 (defun tirun-charge (tiruns-pathname output-pathname)
   (defparameter *tiruns* (tirun:load-tiruns tiruns-pathname))
   (read-am1-charges *tiruns*)
@@ -153,7 +162,7 @@
     (format t "About to add-matter~%")
     (chem:add-matter new-agg (chem:matter-copy (chem:content-at aggregate keep-index)))
     (chem:add-matter new-agg (chem:matter-copy (chem:content-at aggregate keep-index)))
-    (format t "About to loop~%")x
+    (format t "About to loop~%")
     (loop for index from 2 below (chem:content-size aggregate)
           for mol = (chem:matter-copy (chem:content-at aggregate index))
           do (chem:add-matter new-agg mol))
@@ -970,7 +979,7 @@ its for and then create a new class for it."))
 
 (defun standard-makefile-clause (command)
   (format nil ":%OUTPUTS% : :%DEPENDENCY-INPUTS%
-	$(RUNCMD) -- :%DEPENDENCY-INPUTS% -- :%DEPENDENCY-OUTPUTS% -- \\
+	$(RUNCMD) -c :%JOBID% -- :%DEPENDENCY-INPUTS% -- :%DEPENDENCY-OUTPUTS% -- \\
 	~a~%" command))
 
 (defun standard-cando-makefile-clause (script &key add-inputs)
@@ -1079,7 +1088,7 @@ its for and then create a new class for it."))
                                         :-l (make-instance 'morph-side-stage-lambda-unknown-file :morph morph :side side :stage stage :lambda% lam :name "heat" :extension "log")
                                         )
                     :makefile-clause ":%OUTPUTS% : :%INPUTS%
-	$(RUNCMD) -- :%DEPENDENCY-INPUTS% -- :%DEPENDENCY-OUTPUTS% -- \\
+	$(RUNCMD) -c :%JOBID% -- :%DEPENDENCY-INPUTS% -- :%DEPENDENCY-OUTPUTS% -- \\
 	pmemd.cuda -AllowSmallBox :%OPTION-INPUTS% \\
 	  -O :%OPTION-OUTPUTS%"))))
 
@@ -1112,7 +1121,7 @@ its for and then create a new class for it."))
                                         :-l (make-instance 'morph-side-stage-lambda-unknown-file :morph morph :side side :stage stage :lambda% lam :name "ti001" :extension "log")
                                         )
                     :makefile-clause ":%OUTPUTS% : :%INPUTS%
-	$(RUNCMD) -- :%DEPENDENCY-INPUTS% -- :%DEPENDENCY-OUTPUTS% -- \\
+	$(RUNCMD) -c :%JOBID% -- :%DEPENDENCY-INPUTS% -- :%DEPENDENCY-OUTPUTS% -- \\
 	pmemd.cuda -AllowSmallBox :%OPTION-INPUTS% \\
 	  -O :%OPTION-OUTPUTS%"))))
 
@@ -1127,7 +1136,7 @@ its for and then create a new class for it."))
           do (setf script-result (cl-ppcre:regex-replace-all match-string script substitution))
           finally (return-from replace-all script-result))))
 
-(defun makefile-substitutions (calculation job script-code)
+(defun get-makefile-substitutions (calculation job script-code)
   "This returns an alist of label/string substitutions.
 The fancy part is the inputs - inputs that have the form :-xxx are added as option-inputs
 If there is one (and only one) input with the argument :. - that is appended to the option-inputs with the
@@ -1188,7 +1197,7 @@ added to inputs and outputs but not option-inputs or option-outputs"
     (with-open-file (fout (ensure-jobs-directories-exist pathname) :direction :output :if-exists :supersede)
       (write-string code fout)))
 
-(defmethod generate-code (calculation (job job) makefile visited-nodes)
+(defmethod generate-code (calculation (job job) makefile-entries visited-nodes)
   ;; Generate script
   (let ((script (script job))
         script-code)
@@ -1197,18 +1206,22 @@ added to inputs and outputs but not option-inputs or option-outputs"
              (substituted-script (replace-all (substitutions calculation job script) raw-script)))
         (setf script-code substituted-script)
         (write-file-if-it-has-changed (node-pathname script) substituted-script)))
-    (let ((raw-makefile-clause (makefile-clause job)))
-      (when raw-makefile-clause
-        (let* ((makefile-substitutions (makefile-substitutions calculation job script-code))
-               (substituted-makefile-clause (replace-all makefile-substitutions raw-makefile-clause)))
-          (write-string substituted-makefile-clause makefile))
-        (terpri makefile)
-        (terpri makefile)))
-    (loop for output in (outputs job)
-          do (loop for child in (users output)
-                   unless (gethash child visited-nodes)
-                     do (setf (gethash child visited-nodes) t)
-                        (generate-code calculation child makefile visited-nodes)))))
+    (let (makefile-entry
+          (raw-makefile-clause (makefile-clause job)))
+      (if raw-makefile-clause
+          (let* ((makefile-substitutions (get-makefile-substitutions calculation job script-code)))
+            (setf makefile-entry (make-instance 'makefile-entry
+                                                :entry-job job
+                                                :entry-substitutions makefile-substitutions
+                                                :template raw-makefile-clause))
+            (vector-push-extend makefile-entry makefile-entries))
+          (warn "There was no makefile-clause for job: ~a" job))
+      (loop for output in (outputs job)
+            do (when makefile-entry (push output (output-files makefile-entry)))
+            do (loop for child in (users output)
+                     unless (gethash child visited-nodes)
+                       do (setf (gethash child visited-nodes) t)
+                          (generate-code calculation child makefile-entries visited-nodes))))))
 
 
 (defun generate-runcmd ()
@@ -1242,12 +1255,22 @@ exec \"$@\"
     (error "There must be at least one receptor"))
   (with-top-directory (calculation)
     (let ((visited-nodes (make-hash-table))
-          (makefile-pathname (ensure-jobs-directories-exist (merge-pathnames "makefile"))))
+          (makefile-entries (make-array 256 :adjustable t :fill-pointer 0))
+          (makefile-pathname (ensure-jobs-directories-exist (merge-pathnames "makefile")))
+          (status-pathname (ensure-jobs-directories-exist (merge-pathnames "status"))))
+      (loop for job in work-list
+            do (generate-code calculation job makefile-entries visited-nodes))
       (format t "Writing makefile to ~a~%" (translate-logical-pathname makefile-pathname))
       (let ((body (with-output-to-string (makefile)
                     (format makefile "RUNCMD ?= ./runcmd_simple~%~%")
-                    (loop for job in work-list
-                          do (generate-code calculation job  makefile visited-nodes)))))
+                    (loop for entry across makefile-entries
+                          for jobid from 0
+                          for substituted-makefile-clause = (replace-all (list* (cons :%JOBID% (format nil "~a" jobid))
+                                                                                (entry-substitutions entry)) (template entry))
+                          do (setf (jobid entry) jobid)
+                          do (write-string substituted-makefile-clause makefile)
+                          do (terpri makefile)
+                          do (terpri makefile)))))
         (write-file-if-it-has-changed
          makefile-pathname
          (with-output-to-string (makefile)
@@ -1258,6 +1281,12 @@ exec \"$@\"
            (format makefile "~%")
            (write-string body makefile)
            (terpri makefile))))
+      (write-file-if-it-has-changed
+       status-pathname
+       (with-output-to-string (status)
+         (loop for entry across makefile-entries
+               do (loop for output in (output-files entry)
+                        do (format status "check-status ~a ~a~%" (jobid entry) (node-pathname (node output)))))))
       (format t "Writing runcmd~%")
       (generate-runcmd))))
 
