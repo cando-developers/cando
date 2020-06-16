@@ -18,6 +18,7 @@ I'll use an angle term instead of a bond term.
   ((molecule :initarg :molecule :accessor molecule)
    (rings :initarg :rings :accessor rings)
    (aromaticity-info :initarg :aromaticity-info :accessor aromaticity-info)
+   (chiral-infos :initform nil :initarg :chiral-infos :accessor chiral-infos)
    (dynamics :initarg :dynamics :accessor dynamics)
    (sketch-atoms-to-original :initarg :sketch-atoms-to-original :accessor sketch-atoms-to-original)
    (original-molecule :initarg :original-molecule :accessor original-molecule)))
@@ -844,7 +845,8 @@ to check if two line segments (bonds) overlap/intersect
     ;; Drop the bond lengths to 1.5
     ;; Add the angle terms
     ;; Progressively reduce the nonbond scale
-    (chem:walk-sketch-stretch-terms 
+    (chem:walk-sketch-stretch-terms
+     
      energy-stretch
      (lambda (index atom1-I1 atom2-I2 kb r0)
        (chem:modify-sketch-stretch-term-kb energy-stretch index +stage4-bond-force+)
@@ -960,13 +962,113 @@ The coordinates are all pressed into the X-Y plane and some hydrogens are added 
         (chem:apply-transform-to-atoms (molecule sketch) transform))
       sketch)))
 
+(defun insert (item lst compare key)
+  (let ((item-key (funcall key item)))
+    (if (null lst)
+        (list item)
+        (if (funcall compare item-key (funcall key (car lst)))
+            (cons item lst) 
+            (cons (car lst) (insert item (cdr lst) compare key))))))
+
+(defun insertion-sort (lst compare key)
+  (if (null lst)
+    lst
+    (insert (car lst) (insertion-sort (cdr lst) compare key) compare key)))
+
+
 (defmethod do-sketch2d ((aggregate chem:aggregate) &key accumulate-coordinates transform)
   (if (= (chem:content-size aggregate) 1)
       (do-sketch2d (chem:content-at aggregate 0) :accumulate-coordinates accumulate-coordinates :transform transform)
       (error "sketch2d only accepts a molecule or an aggregate with a single molecule")))
 
+(defclass chiral-bond-info ()
+  ((bond-type :initarg :bond-type :accessor bond-type)
+   (bond-atom :initarg :bond-atom :accessor bond-atom)))
+
+(defclass chiral-info ()
+  ((chiral-sketch-atom :initarg :chiral-sketch-atom :accessor chiral-sketch-atom)
+   (neighbors :initarg :neighbors :accessor neighbors)
+   (chiral-bonds :initarg :chiral-bonds :accessor chiral-bonds)))
+
+(defmethod print-object ((obj chiral-info) stream)
+  (print-unreadable-object (obj stream :type t)
+    (format stream "~a -> ~a" (chiral-sketch-atom obj) (chiral-bonds obj))))
+
+(defclass atom-priority ()
+  ((original-atom :initarg :original-atom :accessor original-atom)
+   (sketch-atom :initarg :sketch-atom :accessor sketch-atom)
+   (priority :initarg :priority :accessor priority)))
+
+(defmethod print-object ((obj atom-priority) stream)
+  (print-unreadable-object (obj stream :type t)
+    (format stream "~a :priority ~a" (original-atom obj) (priority obj))))
+
+
+(defun select-best-chiral-neighbor (sketch-neighbors chiral-atoms)
+  (loop for neighbor in (reverse sketch-neighbors)
+        for atm = (sketch-atom neighbor)
+        for orig-atm = (original-atom neighbor)
+        when (not (member orig-atm chiral-atoms))
+          do (return-from select-best-chiral-neighbor atm))
+  (sketch-atom (car sketch-neighbors)))
+  
+(defun augment-sketch-with-stereochemistry (sketch2d)
+  (let ((chiral-atoms (let (chirals)
+                        (cando:do-atoms (atm (original-molecule sketch2d))
+                          (when (eq (chem:get-stereochemistry-type atm) :chiral)
+                            (push atm chirals)))
+                        chirals))
+        (original-to-sketch (make-hash-table)))
+    (cando:do-atoms (atm (molecule sketch2d))
+      (let ((original-atm (gethash atm (sketch-atoms-to-original sketch2d))))
+        (setf (gethash original-atm original-to-sketch) atm)))
+    (loop for chiral-atom in chiral-atoms
+          do (let ((neighbors (loop for bond in (chem:bonds-as-list chiral-atom)
+                                    for other-atom = (chem:get-other-atom bond chiral-atom)
+                                    collect other-atom))
+                   (config (chem:get-configuration chiral-atom)))
+               (let ((sketch-chiral (gethash chiral-atom original-to-sketch))
+                     sketch-neighbors)
+                 (loop for neighbor in neighbors
+                       for sketch-neighbor = (gethash neighbor original-to-sketch)
+                       for priority = (chem:get-relative-priority neighbor)
+                       when sketch-neighbor
+                         do (let ((atom-priority (make-instance 'atom-priority
+                                                                :original-atom neighbor
+                                                                :sketch-atom sketch-neighbor
+                                                                :priority priority)))
+                              (push atom-priority sketch-neighbors)))
+                 (setf sketch-neighbors (sort sketch-neighbors #'> :key #'priority))
+                 (let ((chiral-info (make-instance 'chiral-info
+                                                   :chiral-sketch-atom sketch-chiral
+                                                   :neighbors sketch-neighbors)))
+;;; svg is a left handed coordinate system
+                   (case (length (neighbors chiral-info))
+                     (3 (let* ((atm-1 (sketch-atom (car sketch-neighbors)))
+                               (atm-ch sketch-chiral)
+                               (atm-2 (sketch-atom (cadr sketch-neighbors)))
+                               (vec1 (geom:v- (chem:get-position atm-1)
+                                              (chem:get-position atm-ch)))
+                               (vec2 (geom:v- (chem:get-position atm-2)
+                                              (chem:get-position atm-ch)))
+                               (cross (geom:vcross vec1 vec2))
+                               (draw-config (if (> (geom:vz cross) 0.0) :r :s))
+                               (bond-type (if (eq draw-config config)
+                                              :wedge-forward
+                                              :hash-forward)))
+                          (setf (chiral-bonds chiral-info)
+                                (list (make-instance 'chiral-bond-info
+                                                     :bond-type bond-type
+                                                     :bond-atom (select-best-chiral-neighbor sketch-neighbors chiral-atoms))))))
+                     (4 (warn "Deal with quaternary chiral centers")))
+                   (push chiral-info (chiral-infos sketch2d))))))))
+
+
 (defun sketch2d (matter &key accumulate-coordinates transform)
-  (do-sketch2d matter :accumulate-coordinates accumulate-coordinates :transform transform))
+  (chem:calculate-stereochemistry-from-structure matter)
+  (let ((sketch2d (do-sketch2d matter :accumulate-coordinates accumulate-coordinates :transform transform)))
+    (augment-sketch-with-stereochemistry sketch2d)
+    sketch2d))
 
 (defun similar-sketch2d (molecule other-sketch2d &key accumulate-coordinates atom-match-callback)
   "Generates a sketch of MOLECULE that determines a common subgraph with the molecule in OTHER-SKETCH2D 
@@ -974,6 +1076,7 @@ and aligns the new sketch the same way.  If atom-match-callback is NIL then all 
 Otherwise pass a function that takes two atoms and returns T if they are matchable."
   (check-type molecule chem:molecule)
   (check-type other-sketch2d sketch2d)
+  (chem:calculate-stereochemistry-from-structure molecule)
   (let ((other-molecule (original-molecule other-sketch2d)))
     #+(or)(format t "About to compare molecules~%")
     (multiple-value-bind (equiv diff1 diff2)
@@ -1022,6 +1125,7 @@ Otherwise pass a function that takes two atoms and returns T if they are matchab
             (chem:load-coordinates-into-vector energy-function (dynamics:coordinates dynamics))
             (sketch2d-dynamics dynamics :frozen frozen :unfreeze nil
                                         :accumulate-coordinates accumulate-coordinates)
+            (augment-sketch-with-stereochemistry new-sketch)
             new-sketch
             ))))))
                    

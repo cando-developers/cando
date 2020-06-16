@@ -1,5 +1,6 @@
 (in-package :sketch2d)
 
+(defparameter *number-of-hashes-in-hashed-bond* 5)
 (defparameter *show-all* nil)
 (defparameter *show-names* nil)
 (defparameter *perpendicular-fraction* 0.15)
@@ -24,7 +25,11 @@
 (defclass line ()
   ((p1 :initarg :p1 :accessor p1)
    (p2 :initarg :p2 :accessor p2)
-   (dash :initform nil :initarg :dash :accessor dash)
+   (style :initform nil :initarg :style :accessor style :type (member nil :dash :wedge-forward :hash-forward))
+   (color :initform "black" :initarg :color :accessor color)))
+
+(defclass polygon ()
+  ((points :initarg :points :accessor points)
    (color :initform "black" :initarg :color :accessor color)))
 
 (defclass atom-node ()
@@ -61,9 +66,26 @@
    (atom-nodes :initarg :atom-nodes :accessor atom-nodes)
    (bond-nodes :initarg :bond-nodes :accessor bond-nodes)
    (before-render :initarg :before-render :accessor before-render)
+   (show-names :initarg :show-names :accessor show-names)
    (after-render :initarg :after-render :accessor after-render)
    (scene :initarg :scene :accessor scene)
    (character-pts :initform *character-pts* :reader character-pts)))
+
+
+(defun calculate-bond-geometry (atom-node1 atom-node2)
+  (let* ((pos1 (pos atom-node1))
+         (pos2 (pos atom-node2))
+         (delta12 (geom:v- pos2 pos1))
+         (len12 (geom:vlength delta12))
+         (dir12 (geom:v* delta12 (/ 1.0 len12)))
+         (left (geom:v* (geom:vnormalized (geom:vcross dir12 *dirz*)) *pi-bond-width*))
+         (start (if (labelp atom-node1)
+                    *label-offset*
+                    0.0))
+         (stop (if (labelp atom-node2)
+                   (- len12 *label-offset*)
+                   len12)))
+    (values pos1 pos2 delta12 len12 dir12 left start stop)))
 
 
 (defun calculate-side-bond (p1 p2 offset1 offset2 &key (towards 1.0))
@@ -89,7 +111,9 @@ This will place the calculated bond on one or the other side of the x1,y1-x2,y2 
          (p2o (geom:v+ (geom:v- p2 offset-parallel) offset-perpendicular)))
     (values p1o p2o)))
 
-(defun draw-bond (scene line)
+(defgeneric draw-bond (scene shape))
+
+(defmethod draw-bond (scene (line line))
   (let* ((p1 (p1 line))
          (p2 (p2 line))
          (color (color line))
@@ -97,21 +121,35 @@ This will place the calculated bond on one or the other side of the x1,y1-x2,y2 
          (y1 (geom:vy p1))
          (x2 (geom:vx p2))
          (y2 (geom:vy p2))
-         (dash (dash line)))
+         (style (style line)))
     (render-dbg "Line ~a ~a -> ~a ~a  ~a~%" x1 y1 x2 y2 color)
     #+(or)(cl-svg:draw scene (:line :x1 x1 :y1 y1
                                     :x2 x2 :y2 y2
                                     :fill "none" :stroke "white" :stroke-width 4))
-    (if dash
-        (cl-svg:draw scene (:line :x1 x1 :y1 y1
-                                  :x2 x2 :y2 y2
-                                  :stroke-dasharray "5, 5"
-                                  :fill "none" :stroke color :stroke-width 2
-                                  :stroke-linecap "round"))
-        (cl-svg:draw scene (:line :x1 x1 :y1 y1
-                                  :x2 x2 :y2 y2
-                                  :fill "none" :stroke color :stroke-width 2
-                                  :stroke-linecap "round")))))
+    (case style
+      (:dash
+       (cl-svg:draw scene (:line :x1 x1 :y1 y1
+                                 :x2 x2 :y2 y2
+                                 :stroke-dasharray "5, 5"
+                                 :fill "none" :stroke color :stroke-width 2
+                                 :stroke-linecap "round")))
+      (otherwise
+       (cl-svg:draw scene (:line :x1 x1 :y1 y1
+                                 :x2 x2 :y2 y2
+                                 :fill "none" :stroke color :stroke-width 2
+                                 :stroke-linecap "round"))))))
+
+
+
+(defmethod draw-bond (scene (obj polygon))
+  (let ((pnts (format nil "~{~a~^ ~}" (mapcar (lambda (vec)
+                                                (format nil "~5f,~5f"
+                                                        (geom:vx vec)
+                                                        (geom:vy vec)))
+                                              (points obj)))))
+    (cl-svg:draw scene (:polygon
+                        :points pnts
+                        :style (format nil "fill:~a;stroke:~a;stroke-width:1" (color obj) (color obj))))))
 
 (defun draw-atom-name (scene atom-node)
   (let* ((pos (pos atom-node))
@@ -292,65 +330,104 @@ This will place the calculated bond on one or the other side of the x1,y1-x2,y2 
                         :p2 (geom:v+ (geom:v* left pi1) (geom:v+ pos (geom:v* dir stop))))
          (if aromaticp
              (make-instance 'line
-                            :dash t
+                            :style :dash
                             :p1 (geom:v+ (geom:v* left pi2) (geom:v+ pos (geom:v* dir (+ start shorten1))))
                             :p2 (geom:v+ (geom:v* left pi2) (geom:v+ pos (geom:v* dir (- stop shorten2)))))
              (make-instance 'line
                             :p1 (geom:v+ (geom:v* left pi2) (geom:v+ pos (geom:v* dir (+ start shorten1))))
                             :p2 (geom:v+ (geom:v* left pi2) (geom:v+ pos (geom:v* dir (- stop shorten2)))))))))))
-  
+
+(defun lookup-chiral-info (sketch atom-node1 atom-node2)
+  (let ((atom1 (atom atom-node1))
+        (atom2 (atom atom-node2)))
+    (loop for ci in (chiral-infos (sketch2d* sketch))
+          for chiral-sketch-atom = (chiral-sketch-atom ci)
+          for bond-atoms = (chiral-bonds ci)
+          do (loop for ba in bond-atoms
+                   for bond-atom = (bond-atom ba)
+                   when (and (eq chiral-sketch-atom atom1)
+                             (eq bond-atom atom2))
+                     do (return-from lookup-chiral-info
+                          (values ci atom-node1 atom-node2 (bond-type ba)))
+                   when (and (eq chiral-sketch-atom atom2)
+                             (eq bond-atom atom1))
+                     do (return-from lookup-chiral-info
+                          (values ci atom-node2 atom-node1 (bond-type ba)))))
+    (values nil)))
+
 (defun calculate-bond (bond-node sketch)
   (Let ((atom-node1 (atom-node1 bond-node))
         (atom-node2 (atom-node2 bond-node)))
     (when (or *show-all*
               (and (renderp atom-node1)
                    (renderp atom-node2)))
-      (let* ((bond-order (bond-order bond-node))
-             (pos1 (pos atom-node1))
-             (pos2 (pos atom-node2))
-             (delta12 (geom:v- pos2 pos1))
-             (len12 (geom:vlength delta12))
-             (dir12 (geom:v* delta12 (/ 1.0 len12)))
-             (left (geom:v* (geom:vnormalized (geom:vcross dir12 *dirz*)) *pi-bond-width*))
-             (start (if (labelp atom-node1)
-                        *label-offset*
-                        0.0))
-             (stop (if (labelp atom-node2)
-                       (- len12 *label-offset*)
-                       len12)))
+      (let ((bond-order (bond-order bond-node)))
         (labels ((calc-pos (pos dir dist)
-                   (geom:v+ pos (geom:v* dir dist)))
-                 )
-          (cond
-            ((eq :single-bond bond-order)
-             (list (make-instance 'line :p1 (calc-pos pos1 dir12 start)
-                                        :p2 (calc-pos pos1 dir12 stop))))
-            ((eq :unknown-order-bond bond-order)
-             (list (make-instance 'line :p1 (calc-pos pos1 dir12 start)
-                                        :p2 (calc-pos pos1 dir12 stop))))
-            ((eq :double-bond bond-order)
-             (draw-double-bond (atoms-to-nodes sketch)
-                               pos1 dir12
-                               left
-                               start stop
-                               atom-node1 atom-node2
-                               (rings sketch)))
-            ((eq :aromatic-bond bond-order)
-             (draw-double-bond (atoms-to-nodes sketch)
-                               pos1 dir12
-                               left
-                               start stop
-                               atom-node1 atom-node2
-                               (rings sketch)
-                               t))
-            ((eq :triple-bond bond-order)
-             (let ((p1 (calc-pos pos1 dir12 start))
-                   (p2 (calc-pos pos1 dir12 stop)))
-               (list
-                (make-instance 'line :p1 p1 :p2 p2)
-                (make-instance 'line :p1 (geom:v+ p1 left) :p2 (geom:v+ p2 left))
-                (make-instance 'line :p1 (geom:v- p1 left) :p2 (geom:v- p2 left)))))
-            (t (warn "Handle bond ~a" bond-order))))))))
+                   (geom:v+ pos (geom:v* dir dist))))
+          (if (eq :single-bond bond-order)
+              (multiple-value-bind (chiral-info from-atom-node to-atom-node bond-type)
+                  (lookup-chiral-info sketch atom-node1 atom-node2)
+                (if chiral-info
+                    (multiple-value-bind (pos1 pos2 delta12 len12 dir12 left start stop)
+                        (calculate-bond-geometry from-atom-node to-atom-node)
+                      (let* ((p1 pos1)
+                             (p2 (calc-pos pos1 dir12 stop))
+                             (c2 (geom:v+ p2 left))
+                             (c3 (geom:v+ p2 (geom:v* left -1.0))))
+                        (case bond-type
+                          (:wedge-forward
+                           (when (/= 0.0 start)
+                             (warn "The start of a wedge bond is not zero - that means we need a more complex polygon than a triangle start: ~a" start))
+                           (list (make-instance 'polygon :points (list p1 c2 c3))))
+                          (:hash-forward
+                           (when (/= 0.0 start)
+                             (warn "The start of a wedge bond is not zero - that means we need a more complex polygon than a triangle start: ~a" start))
+                           (let ((hashes (loop for index from 1 below *number-of-hashes-in-hashed-bond*
+                                               for frac-offset = (/ (float index) *number-of-hashes-in-hashed-bond*)
+                                               for abs-offset = (* len12 frac-offset)
+                                               for plus-left = (geom:v* left frac-offset)
+                                               for minus-left = (geom:v* left (- frac-offset))
+                                               for offset = (calc-pos pos1 dir12 abs-offset)
+                                               for cc2 = (geom:v+ plus-left offset)
+                                               for cc3 = (geom:v+ minus-left offset)
+                                               collect (make-instance 'line :p1 cc2 :p2 cc3))))
+                             hashes))
+                          (otherwise (warn "Handle bond type: ~a~%" (bond-type chiral-info))
+                           (list (make-instance 'polygon :points (list p1 c2 c3)))))))
+                    (multiple-value-bind (pos1 pos2 delta12 len12 dir12 left start stop)
+                        (calculate-bond-geometry atom-node1 atom-node2)
+                      (list (make-instance 'line :p1 (calc-pos pos1 dir12 start) ; A simple single-line bond
+                                                 :p2 (calc-pos pos1 dir12 stop)
+                                                 :color "black")))))
+              (multiple-value-bind (pos1 pos2 delta12 len12 dir12 left start stop)
+                  (calculate-bond-geometry atom-node1 atom-node2)
+                (cond
+                  ((eq :unknown-order-bond bond-order)
+                   (list (make-instance 'line :p1 (calc-pos pos1 dir12 start)
+                                              :p2 (calc-pos pos1 dir12 stop))))
+                  ((eq :double-bond bond-order)
+                   (draw-double-bond (atoms-to-nodes sketch)
+                                     pos1 dir12
+                                     left
+                                     start stop
+                                     atom-node1 atom-node2
+                                     (rings sketch)))
+                  ((eq :aromatic-bond bond-order)
+                   (draw-double-bond (atoms-to-nodes sketch)
+                                     pos1 dir12
+                                     left
+                                     start stop
+                                     atom-node1 atom-node2
+                                     (rings sketch)
+                                     t))
+                  ((eq :triple-bond bond-order)
+                   (let ((p1 (calc-pos pos1 dir12 start))
+                         (p2 (calc-pos pos1 dir12 stop)))
+                     (list
+                      (make-instance 'line :p1 p1 :p2 p2)
+                      (make-instance 'line :p1 (geom:v+ p1 left) :p2 (geom:v+ p2 left))
+                      (make-instance 'line :p1 (geom:v- p1 left) :p2 (geom:v- p2 left)))))
+                  (t (warn "Handle bond ~a" bond-order))))))))))
 
 (defun calculate-bonds (sketch)
   (let ((lines nil))
@@ -431,7 +508,7 @@ This will place the calculated bond on one or the other side of the x1,y1-x2,y2 
         do (render-node scene atom-node)))
 
 
-(defun svg (sketch2d &key (toplevel t) (width 1000) (xbuffer 0.1) (ybuffer 0.1) before-render after-render (id ""))
+(defun svg (sketch2d &key (toplevel t) (width 1000) (xbuffer 0.1) (ybuffer 0.1) before-render after-render (id "") show-names)
   "Generate SVG to render the molecule.  Pass a BEFORE-RENDER function or AFTER-RENDER function to add info to the structure.
 Each of these functions take two arguments, the svg-scene and the sketch-svg. 
 The caller provided functions should use cl-svg to render additional graphics."
@@ -480,15 +557,17 @@ The caller provided functions should use cl-svg to render additional graphics."
                                                :viewport (format nil "0 0 ~d ~d" (round xviewport) (round yviewport))))
                           )))
           (setf (scene sketch) scene)
-          (setf (before-render sketch) before-render)
-          (setf (after-render sketch) after-render)
+          (setf (before-render sketch) before-render
+                (show-names sketch) show-names
+                (after-render sketch) after-render)
           (values sketch ))))))
 
 (defun render-svg-scene (sketch-svg)
   (let ((scene (scene sketch-svg)))
     (when (before-render sketch-svg)
       (funcall (before-render sketch-svg) scene sketch-svg))
-    (render-sketch scene sketch-svg)
+    (let ((*show-names* (show-names sketch-svg)))
+      (render-sketch scene sketch-svg))
     (when (after-render sketch-svg)
       (funcall (after-render sketch-svg) scene sketch-svg))
     scene))
@@ -496,4 +575,6 @@ The caller provided functions should use cl-svg to render additional graphics."
 (defun render-svg-to-string (sketch-svg)
   (let ((scene (render-svg-scene sketch-svg)))
     (with-output-to-string (sout) (cl-svg:stream-out sout scene))))
+
+
 
