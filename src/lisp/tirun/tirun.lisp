@@ -1001,8 +1001,8 @@ METHOD controls how the masks are calculated"
                                                   average-pos))
         for target-delta = (geom:vlength (geom:v- (chem:get-position target-atom)
                                                   average-pos))
-        do (when (or (> source-delta 0.2) (> target-delta 0.2))
-             (warn "The source atom ~s and target atom ~s are more than 0.2 A away from the average ~s~%" source-atom target-atom average-pos))
+        do (when (or (> source-delta 0.1) (> target-delta 0.1))
+             (warn "The source atom ~s and target atom ~s are more than 0.1 A away from the average ~s~%" source-atom target-atom average-pos))
            (chem:set-position source-atom average-pos)
            (chem:set-position target-atom average-pos)))
 
