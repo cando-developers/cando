@@ -359,12 +359,14 @@
   name)
 
 (defun default-calculation-settings ()
-  '((:%DECHARGE-RECHARGE-TI-IN.NSTLIM% 100000 3000) ; if *testing* must be >= 3000
-    (:%VDW-TI-IN.NSTLIM% 100000 3000)               ; if *testing* must be >= 3000
+  '((:%DECHARGE-RECHARGE-TI-IN.NSTLIM% 3000000 3000) ; if *testing* must be >= 3000
+    (:%VDW-TI-IN.NSTLIM% 3000000 3000)               ; if *testing* must be >= 3000
     (:%PREPARE-HEAT-IN.NSTLIM% 100000 3000)
-    (:%PREPARE-PRESS-IN.NSTLIM% 100000 3000)
+    (:%PREPARE-PRESS-IN.NSTLIM% 2500000 3000)
     (:%DECHARGE-RECHARGE-HEAT-IN.NSTLIM% 100000 3000)
     (:%VDW-HEAT-IN.NSTLIM% 100000 3000)
+    (:%PREPARE-PRESS-IN-DT% . 0.002)
+    (:%PREPARE-REST-WT% . 5.00)
     (:%DT% . 0.001)
     (:%NTC% . 2)
     (:%NTF% . 1)

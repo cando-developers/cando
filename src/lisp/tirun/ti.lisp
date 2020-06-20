@@ -71,13 +71,13 @@
 "minimisation
  &cntrl
    imin = 1, ntmin = 2,
-   maxcyc = 10000,
+   maxcyc = 50000,
    ntpr = 20, ntwe = 20,
    ntb = 1,
    ntr = 1, restraint_wt = 5.00,
    restraintmask='!:WAT & !@H=',
 
-   icfe = 1, ifsc = 1, clambda = 0.5, scalpha = 0.5, scbeta = 12.0,
+   icfe = 1, ifsc = 1, clambda = 0.5, scalpha = 0.2, scbeta = 50.0,
    logdvdl = 0,
    timask1 = ':%TIMASK1%', timask2 = ':%TIMASK2%',
    scmask1 = ':%SCMASK1%', scmask2 = ':%SCMASK2%'
@@ -102,7 +102,7 @@
    ntr = 1, restraint_wt = 5.00,
    restraintmask='!:WAT & !@H=',
 
-   icfe = 1, ifsc = 1, clambda = 0.5, scalpha = 0.5, scbeta = 12.0,
+   icfe = 1, ifsc = 1, clambda = 0.5, scalpha = 0.2, scbeta = 50.0,
    logdvdl = 0,
    timask1 = ':%TIMASK1%', timask2 = ':%TIMASK2%',
    scmask1 = ':%SCMASK1%', scmask2 = ':%SCMASK2%'
@@ -124,7 +124,7 @@
 (defparameter *prepare-press-in*
   "pressurising
  &cntrl
-   imin = 0, nstlim = :%PREPARE-PRESS-IN.NSTLIM%, irest = 1, ntx = 5, dt = :%DT%,
+   imin = 0, nstlim = :%PREPARE-PRESS-IN.NSTLIM%, irest = 1, ntx = 5, dt = :%PREPARE-PRESS-IN-DT%,
    ntt = 3, temp0 = :%TEMP0%, gamma_ln = 2.0, ig = -1,
    tautp = 1.0,
    vlimit = 20,
@@ -134,10 +134,10 @@
    ioutfm = 1, iwrap = 1,
    ntwe = 1000, ntwx = 1000, ntpr = 1000, ntwr = 50000,
 
-   ntr = 1, restraint_wt = 5.00,
+   ntr = 1, restraint_wt = :%PREPARE-REST-WT%,
    restraintmask='!:WAT & !@H=',
 
-   icfe = 1, ifsc = 1, clambda = 0.5, scalpha = 0.5, scbeta = 12.0,
+   icfe = 1, ifsc = 1, clambda = 0.5, scalpha = 0.2, scbeta = 50.0,
    logdvdl = 0,
    timask1 = ':%TIMASK1%', timask2 = ':%TIMASK2%',
    scmask1 = ':%SCMASK1%', scmask2 = ':%SCMASK2%'
@@ -227,7 +227,7 @@
    ntr = 1, restraint_wt = 5.00,
    restraintmask='!:WAT & !@H=',
 
-   icfe = 1, clambda = :%LAMBDA%, scalpha = 0.5, scbeta = 12.0,
+   icfe = 1, clambda = :%LAMBDA%, scalpha = 0.2, scbeta = 50.0,
    logdvdl = 0,
    timask1 = ':%TIMASK1%', timask2 = ':%TIMASK2%',
    ifsc = :%IFSC%, CRGMASK = ':%CRGMASK%'
@@ -285,15 +285,15 @@
   "TI simulation
  &cntrl
    imin = 0, nstlim = :%DECHARGE-RECHARGE-TI-IN.NSTLIM%, irest = 1, ntx = 5, dt = :%DT%,
-   ntt = 3, temp0 = 300.0, gamma_ln = 2.0, ig = -1,
+   ntt = 3, temp0 = 298.0, gamma_ln = 2.0, ig = -1,
    vlimit = 20,
-   ntc = :%NTC%, ntf = :%NTF%,
+   ntc = 1, ntf = :%NTF%,
    ntb = 2,
-   ntp = 1, pres0 = 1.0, taup = 2.0,
-   ioutfm = 1, iwrap = 1,
+   ntp = 1, barostat = 2, mcbarint = 100, pres0 = 1.01325, taup = 2.0,
+   ioutfm = 1, iwrap = 0,
    ntwe = 1000, ntwx = 10000, ntpr = 10000, ntwr = 20000,
 
-   icfe = 1, clambda = :%LAMBDA%, scalpha = 2.0, scbeta = 50.0,
+   icfe = 1, clambda = :%LAMBDA%, scalpha = 0.2, scbeta = 50.0,
    logdvdl = 1, gti_lam_sch=1, gti_output=1,
    ifmbar = 1, mbar_states = :%LAMBDA-WINDOWS-COUNT%,
    mbar_lambda = :%LAMBDA-WINDOWS%
@@ -310,15 +310,15 @@
   "TI simulation
  &cntrl
    imin = 0, nstlim = :%VDW-TI-IN.NSTLIM%, irest = 1, ntx = 5, dt = :%DT%,
-   ntt = 3, temp0 = :%TEMP0%, gamma_ln = 2.0, ig = -1,
+   ntt = 3, temp0 = 298, gamma_ln = 2.0, ig = -1,
    vlimit = 20,
-   ntc = :%NTC%, ntf = :%NTF%,
+   ntc = 1, ntf = :%NTF%,
    ntb = 2,
-   ntp = 1, pres0 = 1.0, taup = 2.0,
-   ioutfm = 1, iwrap = 1,
+   ntp = 1, barostat = 2, mcbarint = 100, pres0 = 1.01325, taup = 2.0,
+   ioutfm = 1, iwrap = 0,
    ntwe = 1000, ntwx = 10000, ntpr = 10000, ntwr = 20000,
 
-   icfe = 1, clambda = :%LAMBDA%, scalpha = 2.0, scbeta = 50.0,
+   icfe = 1, clambda = :%LAMBDA%, scalpha = 0.2, scbeta = 50.0,
    logdvdl = 1, gti_lam_sch=1, gti_output=1,
    ifmbar = 1, mbar_states = :%LAMBDA-WINDOWS-COUNT%,
    mbar_lambda = :%LAMBDA-WINDOWS%
