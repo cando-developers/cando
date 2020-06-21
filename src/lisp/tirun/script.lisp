@@ -237,7 +237,7 @@
 
 (defparameter *testing* nil "Set to T when testing things")
 (defmethod generate-jobs (calculation)
-  (let ((*default-pathname-defaults* (merge-pathnames (top-directory calculation) *default-pathname-defaults*)))
+  (let ((*created-directories* (make-hash-table :test #'equal)))
     (let* ((jupyter-job (make-instance 'jupyter-job))
            (am1-jobs (setup-am1-calculations jupyter-job calculation :maxcyc (if *testing* 2 9999)))
            (tiruns-precharge (make-instance 'tiruns-file :name "precharge")))

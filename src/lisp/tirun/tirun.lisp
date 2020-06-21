@@ -1047,5 +1047,11 @@ METHOD controls how the masks are calculated"
         do (validate-atom-types receptor)
            (format t "Receptor ~a has valid atom types~%" receptor)))
 
+(defvar *created-directories* nil
+  "Keep track of what directories have been created")
 (defun ensure-jobs-directories-exist (pathname)
-  (ensure-directories-exist pathname))
+  (if (gethash pathname *created-directories*)
+      pathname
+      (progn
+        (setf (gethash pathname *created-directories*) t)
+        (ensure-directories-exist pathname))))

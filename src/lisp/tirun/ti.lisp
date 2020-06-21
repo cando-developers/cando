@@ -713,10 +713,13 @@ its for and then create a new class for it."))
                  :type (extension node)))
 
 (defmethod node-pathname ((node sqm-file))
-  (merge-pathnames (call-next-method)
-                   (make-pathname :directory (list
-                                              :relative
-                                              "am1bcc"))))
+  (let* ((next-path (make-pathname :name (string-downcase (name node))
+                                   :type (extension node)))
+         (am1bcc (make-pathname :directory (list
+                                            :relative
+                                            "am1bcc")))
+         (full (merge-pathnames next-path am1bcc)))
+  full))
 
 (defmethod node-pathname ((node morph-file))
   (merge-pathnames (make-pathname :name (string-downcase (name node)) :type (extension node))
@@ -1310,7 +1313,9 @@ exec \"$@\"
        (with-output-to-string (status)
          (loop for entry across makefile-entries
                do (loop for output in (output-files entry)
-                        do (format status "check-status ~a ~a~%" (jobid entry) (node-pathname (node output)))))))
+                        for check-pathname = (node-pathname (node output))
+                        for enough-name = (enough-namestring check-pathname *default-pathname-defaults*)
+                        do (format status "check-status ~a ~a~%" (jobid entry) enough-name)))))
       (format t "Writing runcmd~%")
       (generate-runcmd))))
 

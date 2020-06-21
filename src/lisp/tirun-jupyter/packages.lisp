@@ -18,10 +18,12 @@
                     (:w :jupyter-widgets))
   (:export
    #:new-tirun
-   #:setup-receptor
-   #:setup-ligands
+   #:load-receptor
+   #:load-ligands
+   #:select-ligands
    #:view-complex
    #:lomap
+   #:configure-jobs
    #:write-jobs
    ))
 
