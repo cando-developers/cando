@@ -27,8 +27,14 @@
     :accessor all-edges
     :initform nil
     :trait :list)
-
-
+   (distributor
+    :accessor distributor
+    :initform "s103.thirdlaw.tech"
+    :trait :string)
+   (job-name
+    :accessor job-name
+    :initform "default"
+    :trait :string)
    (cyto-observe
     :accessor cyto-observe
     :initform nil
@@ -90,15 +96,22 @@
   (widget-visibility widget ""))
 
 
-(defun simple-input (label &key (default ""))
-  (let* ((label-widget (make-instance 'w:label :value label
-                                               :layout (make-instance 'w:layout :width "20em")))
-         (input-widget (make-instance 'w:text
-                                      :value default
-                                      :layout (make-instance 'w:layout :width "20em")))
-         (hbox (make-instance 'w:h-box
-                              :children (list label-widget input-widget))))
-    (values input-widget hbox)))
+(defclass simple-input ()
+  ((label-widget :initarg :label-widget :accessor label-widget)
+   (input-widget :initarg :input-widget :accessor input-widget)
+   (hbox :initarg :hbox :accessor hbox)))
+
+(defun make-simple-input (label &key (default ""))
+  (let ((label-widget (make-instance 'w:label :value label
+                                              :layout (make-instance 'w:layout :width "20em")))
+        (input-widget (make-instance 'w:text
+                                     :value default
+                                     :layout (make-instance 'w:layout :width "20em"))))
+    (make-instance 'simple-input
+                   :label-widget label-widget
+                   :input-widget input-widget
+                   :hbox (make-instance 'w:h-box
+                                        :children (list label-widget input-widget)))))
 
 (defun load-receptor (&optional (calc *tirun*))
   (let* ((desc-width "12em")
@@ -495,49 +508,48 @@ lisp_jobs_only_on=172.234.2.1
   (let* ((jobs-dir (pathname (if (ext:getenv "TIRUN_DIRECTORY")
                                  (uiop:ensure-directory-pathname (ext:getenv "TIRUN_DIRECTORY"))
                                  (merge-pathnames (make-pathname :directory (list :relative "jobs"))
-                                                  (uiop:ensure-directory-pathname (ext:getenv "HOME")))))))
-    (multiple-value-bind (job-name job-box)
-        (simple-input "Job name" :default "default")
-      (let* ((messages (make-instance 'w:text-area :description "Messages"
-                                                   :layout (make-instance 'w:layout :width "60em")))
-             (progress (make-instance 'w:int-progress :description "Progress"))
-             (go-button (make-instance 'w:button :description "Write jobs"
-                                                 :style *button-style*
-                                                 :on-click (list
-                                                            (lambda (&rest args)
-                                                              (let* ((name (w:widget-value job-name))
-                                                                     (dir (merge-pathnames (make-pathname :directory (list
-                                                                                                                      :relative
-                                                                                                                      name))
-                                                                                           jobs-dir)))
-                                                                (setf (w:widget-value messages) (format nil "Starting to write jobs dir-> ~a" dir))
-                                                                (if (probe-file dir)
-                                                                    (progn
-                                                                      (setf (w:widget-value messages) (format nil "The directory ~a already exists - aborting writing jobs" dir)))
-                                                                    (progn
-                                                                      (ensure-directories-exist dir)
-                                                                      (ensure-write-jobs tirun dir (let ((index 0)
-                                                                                                         (lock (bordeaux-threads:make-recursive-lock "progress")))
-                                                                                                     (lambda (max-progress)
-                                                                                                       (bordeaux-threads:with-recursive-lock-held (lock)
-                                                                                                         (setf (w:widget-value progress) index
-                                                                                                               (w:widget-max progress) max-progress)
-                                                                                                         (incf index)))))
-                                                                      (setf (w:widget-value messages) "Done writing jobs"))))))))
-             )
-        (make-instance 'w:v-box
-                       :children (list
-                                  (make-instance 'w:h-box
-                                                 :layout *box-layout*
-                                                 :children (list job-box))
-                                  (make-instance 'w:h-box
-                                                 :layout *box-layout*
-                                                 :children (list go-button))
-                                  (make-instance 'w:h-box
-                                                 :children (list progress))
-                                  (make-instance 'w:h-box
-                                                 :layout *box-layout*
-                                                 :children (list messages))))))))
+                                                  (uiop:ensure-directory-pathname (ext:getenv "HOME"))))))
+         (job-name (make-simple-input "Job name" :default (job-name *app*)))
+         (messages (make-instance 'w:text-area :description "Messages"
+                                               :layout (make-instance 'w:layout :width "60em")))
+         (progress (make-instance 'w:int-progress :description "Progress"))
+         (go-button (make-instance 'w:button :description "Write jobs"
+                                             :style *button-style*
+                                             :on-click (list
+                                                        (lambda (&rest args)
+                                                          (let* ((name (w:widget-value (input-widget job-name)))
+                                                                 (dir (merge-pathnames (make-pathname :directory (list
+                                                                                                                  :relative
+                                                                                                                  name))
+                                                                                       jobs-dir)))
+                                                            (setf (w:widget-value messages) (format nil "Starting to write jobs dir-> ~a" dir))
+                                                            (if (probe-file dir)
+                                                                (progn
+                                                                  (setf (w:widget-value messages) (format nil "The directory ~a already exists - aborting writing jobs" dir)))
+                                                                (progn
+                                                                  (ensure-directories-exist dir)
+                                                                  (ensure-write-jobs tirun dir (let ((index 0)
+                                                                                                     (lock (bordeaux-threads:make-recursive-lock "progress")))
+                                                                                                 (lambda (max-progress)
+                                                                                                   (bordeaux-threads:with-recursive-lock-held (lock)
+                                                                                                     (setf (w:widget-value progress) index
+                                                                                                           (w:widget-max progress) max-progress)
+                                                                                                     (incf index)))))
+                                                                  (setf (w:widget-value messages) "Done writing jobs"))))))))
+         )
+    (w:observe (input-widget job-name) :value (lambda (instance type name old-value new-value source)
+                                                (setf (job-name *app*) new-value)))
+    (make-instance 'w:v-box
+                   :children (list
+                              (hbox job-name)
+                              (make-instance 'w:h-box
+                                             :layout *box-layout*
+                                             :children (list go-button))
+                              (make-instance 'w:h-box
+                                             :children (list progress))
+                              (make-instance 'w:h-box
+                                             :layout *box-layout*
+                                             :children (list messages))))))
                               
                                              
     
@@ -548,10 +560,10 @@ lisp_jobs_only_on=172.234.2.1
 (defun submit-calc (&key (calc *tirun*))
   (let* ((desc-width "12em")
          (desc-style (make-instance 'w:description-style :description-width desc-width))
-         (login-label (make-instance 'w:label :value "ssh key password"))
-         (login (make-instance 'jupyter-widgets:password :layout (make-instance 'w:layout :width "40em")))
-         (login-h-box (make-instance 'w:h-box :layout *box-layout*
-                                     :children (list login-label login)))
+         (distributor (make-simple-input "Distributor" :default (distributor *app*)))
+         (job-name (make-simple-input "Job name" :default "default"))
+         (ssh-key-file (make-instance 'jupyter-widgets:file-upload :description "SSH key file"
+                                                                   :style *button-style*))
          (messages (make-instance 'w:text-area :description "Messages"
                                                :layout (make-instance 'w:layout :width "60em")))
          (go-button (make-instance 'jupyter-widgets:button :description "Submit jobs"
@@ -560,13 +572,40 @@ lisp_jobs_only_on=172.234.2.1
                                                            :on-click (list
                                                                       (lambda (&rest args)
                                                                         (setf (w:widget-value messages)
-                                                                              (format nil "Submitting job args: ~a~%" args)))))))
-    (setf *job-messages* messages)
+                                                                              (format nil "Submitting job ~a on ~a~%"
+                                                                                      (w:widget-value (input-widget job-name))
+                                                                                      (w:widget-value (input-widget distributor)))))))))
+    (jupyter-widgets:observe *app* :job-name (lambda (instance type name old-value new-value source)
+                                               (setf (w:widget-value (input-widget job-name)) new-value)))
+    (make-instance 'w:v-box
+                   :children (append (list (hbox distributor) (hbox job-name) ssh-key-file)
+                                     (list (make-instance 'w:h-box
+                                                          :layout *box-layout*
+                                                          :children (list go-button))
+                                           (make-instance 'w:h-box
+                                                          :layout *box-layout*
+                                                          :children (list messages)))))))
+
+
+(defun check-calc (&key (tirun *tirun*))
+  (let* ((job-name (make-simple-input "Job name" :default (job-name *app*)))
+         (distributor (make-simple-input "Distributor" :default (distributor *app*)))
+         (messages (make-instance 'w:text-area :description "Messages"
+                                               :layout (make-instance 'w:layout :width "60em")))
+         (go-button (make-instance 'w:button :description "Check calculation"
+                                             :style *button-style*
+                                             :on-click (list
+                                                        (lambda (&rest args)
+                                                          (setf (w:widget-value messages)
+                                                                (format nil "Checking job ~a on ~a~%"
+                                                                        (w:widget-value (input-widget job-name))
+                                                                        (w:widget-value (input-widget distributor)))))))))
+    (jupyter-widgets:observe *app* :job-name (lambda (instance type name old-value new-value source)
+                                               (setf (w:widget-value (input-widget job-name)) new-value)))
     (make-instance 'w:v-box
                    :children (list
-                              (make-instance 'w:h-box
-                                             :layout *box-layout*
-                                             :children (list login-h-box))
+                              (hbox distributor)
+                              (hbox job-name)
                               (make-instance 'w:h-box
                                              :layout *box-layout*
                                              :children (list go-button))

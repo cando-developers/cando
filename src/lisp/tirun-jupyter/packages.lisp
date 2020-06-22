@@ -26,5 +26,6 @@
    #:configure-jobs
    #:write-jobs
    #:submit-calc
+   #:check-calc
    ))
 
