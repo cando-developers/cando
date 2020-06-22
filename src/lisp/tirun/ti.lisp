@@ -1332,7 +1332,7 @@ exec \"$@\"
       (let ((body (with-output-to-string (makefile)
                     (format makefile "RUNCMD ?= ./runcmd_simple~%~%")
                     (loop for entry across makefile-joblets
-                          for jobid from 0
+                          for jobid from 100001
                           for entry-substitutions = (get-makefile-substitutions calculation (%job entry))
                           for substituted-makefile-clause = (replace-all (list* (cons :%JOBID% (format nil "~a" jobid))
                                                                                 entry-substitutions)
