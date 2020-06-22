@@ -1052,7 +1052,7 @@ The coordinates are all pressed into the X-Y plane and some hydrogens are added 
                                (vec2 (geom:v- (chem:get-position atm-2)
                                               (chem:get-position atm-ch)))
                                (cross (geom:vcross vec1 vec2))
-                               (draw-config (if (> (geom:vz cross) 0.0) :r :s))
+                               (draw-config (if (< (geom:vz cross) 0.0) :r :s))
                                (bond-type (if (eq draw-config config)
                                               :wedge-forward
                                               :hash-forward)))

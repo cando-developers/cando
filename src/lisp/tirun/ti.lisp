@@ -5,13 +5,28 @@
 (in-package :tirun)
 
 
-(defclass makefile-entry ()
-  ((entry-job :initarg :entry-job :accessor entry-job)
+(defclass makefile-joblet ()
+  ((%job :initarg :%job :accessor %job)
    (jobid :initarg :jobid :accessor jobid)
-   (entry-substitutions :initarg :entry-substitutions :accessor entry-substitutions)
    (template :initarg :template :accessor template)
    (output-files :initform nil :initarg :output-files :accessor output-files)))
 
+(defclass script-joblet ()
+  ((%job :initarg :%job :accessor %job)
+   (script :initarg :script :accessor script)
+   (target-pathname :initarg :target-pathname :accessor target-pathname)))
+
+
+(defun do-joblet (calculation joblet)
+  (let* ((script (script joblet))
+         (raw-script (script script))
+         (substitutions (substitutions calculation (%job joblet) script))
+         (substituted-script (replace-all substitutions raw-script))
+         (pn (target-pathname joblet)))
+    (ensure-jobs-directories-exist pn)
+    (write-file-if-it-has-changed pn substituted-script)))
+*
+   
 ;;; What is this for????
 (defparameter *vdw-bonded* "ifsc=1, scmask1=':1@H6', scmask2=':2@O1,H6'")
 
@@ -1162,7 +1177,7 @@ its for and then create a new class for it."))
           do (setf script-result (cl-ppcre:regex-replace-all match-string script substitution))
           finally (return-from replace-all script-result))))
 
-(defun get-makefile-substitutions (calculation job script-code)
+(defun get-makefile-substitutions (calculation job)
   "This returns an alist of label/string substitutions.
 The fancy part is the inputs - inputs that have the form :-xxx are added as option-inputs
 If there is one (and only one) input with the argument :. - that is appended to the option-inputs with the
@@ -1201,16 +1216,13 @@ added to inputs and outputs but not option-inputs or option-outputs"
                    (push (namestring (node-pathname (node output))) option-outputs))
                  (push (cons (intern (string-upcase (option output)) :keyword) (namestring (node-pathname (node output)))) extra-substitutions)))
     (append
-     (list* (cons :%DEPENDENCY-INPUTS% (format nil "~{~a ~}" (append dependency-inputs (reverse inputs))))
-            (cons :%INPUTS% (format nil "~{~a ~}" (reverse inputs)))
-            (cons :%DEPENDENCY-OUTPUTS% (format nil "~{~a ~}" (reverse outputs)))
-            (cons :%OUTPUTS% (format nil "~{~a ~}" (reverse outputs)))
-            (cons :%OPTION-INPUTS% (format nil "~{~a ~}" (reverse option-inputs)))
-            (cons :%OPTION-OUTPUTS% (format nil "~{~a ~}" (reverse option-outputs)))
-            (if script-code
-                (list (cons :%SCRIPT-CODE% (format nil "~a" script-code)))
-                nil))
-     extra-substitutions)))
+     (list (cons :%DEPENDENCY-INPUTS% (format nil "~{~a ~}" (append dependency-inputs (reverse inputs))))
+           (cons :%INPUTS% (format nil "~{~a ~}" (reverse inputs)))
+           (cons :%DEPENDENCY-OUTPUTS% (format nil "~{~a ~}" (reverse outputs)))
+           (cons :%OUTPUTS% (format nil "~{~a ~}" (reverse outputs)))
+           (cons :%OPTION-INPUTS% (format nil "~{~a ~}" (reverse option-inputs)))
+           (cons :%OPTION-OUTPUTS% (format nil "~{~a ~}" (reverse option-outputs)))))
+    extra-substitutions))
 
 (defun write-file-if-it-has-changed (pathname code)
     (when (probe-file pathname)
@@ -1223,25 +1235,45 @@ added to inputs and outputs but not option-inputs or option-outputs"
     (with-open-file (fout (ensure-jobs-directories-exist pathname) :direction :output :if-exists :supersede)
       (write-string code fout)))
 
+(defmethod generate-code (calculation (job job) script-joblets makefile-joblets visited-nodes)
+  ;; Generate script
+  (let ((scripts (scripts job)))
+    (loop for script in scripts
+          for script-joblet = (make-instance 'script-joblet :script script :%job job :target-pathname (node-pathname script))
+          do (vector-push-extend script-joblet script-joblets))
+    (let (makefile-entry
+          (raw-makefile-clause (makefile-clause job)))
+      (when raw-makefile-clause
+        (setf makefile-entry (make-instance 'makefile-joblet
+                                            :%job job
+                                            :template raw-makefile-clause))
+        (vector-push-extend makefile-entry makefile-joblets))
+      (loop for output in (outputs job)
+            do (when makefile-entry (push output (output-files makefile-entry)))
+            do (loop for child in (users output)
+                     unless (gethash child visited-nodes)
+                       do (setf (gethash child visited-nodes) t)
+                          (generate-code calculation child script-joblets makefile-joblets visited-nodes))))))
+
+
+#+(or)
 (defmethod generate-code (calculation (job job) makefile-entries visited-nodes)
   ;; Generate script
-  (let ((scripts (scripts job))
-        script-code)
+  (let ((scripts (scripts job)))
     (loop for script in scripts
           do (let* ((raw-script (script script))
                     (substituted-script (replace-all (substitutions calculation job script) raw-script)))
-               (setf script-code substituted-script)
                (write-file-if-it-has-changed (node-pathname script) substituted-script)))
     (let (makefile-entry
           (raw-makefile-clause (makefile-clause job)))
       (if raw-makefile-clause
-          (let* ((makefile-substitutions (get-makefile-substitutions calculation job script-code)))
+          (let* ((makefile-substitutions (get-makefile-substitutions calculation job)))
             (setf makefile-entry (make-instance 'makefile-entry
                                                 :entry-job job
                                                 :entry-substitutions makefile-substitutions
                                                 :template raw-makefile-clause))
             (vector-push-extend makefile-entry makefile-entries))
-          (warn "There was no makefile-clause for job: ~a" job))
+          #|No makefile clause|#)
       (loop for output in (outputs job)
             do (when makefile-entry (push output (output-files makefile-entry)))
             do (loop for child in (users output)
@@ -1277,23 +1309,34 @@ exec \"$@\"
   (core:chmod "runcmd_simple" #o755))
 
 
-(defun generate-all-code (calculation work-list final-outputs)
+(defun generate-all-code (calculation work-list final-outputs &key progress-callback)
   (unless (receptors calculation)
     (error "There must be at least one receptor"))
   (with-top-directory (calculation)
     (let ((visited-nodes (make-hash-table))
-          (makefile-entries (make-array 256 :adjustable t :fill-pointer 0))
+          (script-joblets (make-array 256 :adjustable t :fill-pointer 0))
+          (makefile-joblets (make-array 256 :adjustable t :fill-pointer 0))
           (makefile-pathname (ensure-jobs-directories-exist (merge-pathnames "makefile")))
           (status-pathname (ensure-jobs-directories-exist (merge-pathnames "status"))))
       (loop for job in work-list
-            do (generate-code calculation job makefile-entries visited-nodes))
+            with number-of-jobs = (length work-list)
+            do (generate-code calculation job script-joblets makefile-joblets visited-nodes))
+      ;;; do (when progress-callback (funcall progress-callback number-of-jobs))
+      (let ((number-of-joblets (length script-joblets)))
+        (map nil (lambda (joblet)
+                   (do-joblet calculation joblet)
+                   (when progress-callback
+                     (funcall progress-callback number-of-joblets)))
+             script-joblets))
       (format t "Writing makefile to ~a~%" (translate-logical-pathname makefile-pathname))
       (let ((body (with-output-to-string (makefile)
                     (format makefile "RUNCMD ?= ./runcmd_simple~%~%")
-                    (loop for entry across makefile-entries
+                    (loop for entry across makefile-joblets
                           for jobid from 0
+                          for entry-substitutions = (get-makefile-substitutions calculation (%job entry))
                           for substituted-makefile-clause = (replace-all (list* (cons :%JOBID% (format nil "~a" jobid))
-                                                                                (entry-substitutions entry)) (template entry))
+                                                                                entry-substitutions)
+                                                                         (template entry))
                           do (setf (jobid entry) jobid)
                           do (write-string substituted-makefile-clause makefile)
                           do (terpri makefile)
@@ -1311,7 +1354,7 @@ exec \"$@\"
       (write-file-if-it-has-changed
        status-pathname
        (with-output-to-string (status)
-         (loop for entry across makefile-entries
+         (loop for entry across makefile-joblets
                do (loop for output in (output-files entry)
                         for check-pathname = (node-pathname (node output))
                         for enough-name = (enough-namestring check-pathname *default-pathname-defaults*)

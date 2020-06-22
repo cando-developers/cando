@@ -521,6 +521,24 @@ MTRIX- Used to build a list of matrices."
    (lambda (condition stream)
      (format stream "~a" (messages condition)))))
 
+(defun sorted-mismatch (names-a names-b)
+  (let ((names-in-both nil)
+        unique-a
+        unique-b)
+    (loop for name in names-a
+          when (member name names-b)
+            do (push name names-in-both))
+    (loop for name in names-a
+          when (not (member name names-in-both))
+            do (push name unique-a))
+    (loop for name in names-b
+          when (not (member name names-in-both))
+            do (push name unique-b))
+    (let ((sorted-unique-a (sort unique-a #'string< :key #'string))
+          (sorted-unique-b (sort unique-b #'string< :key #'string)))
+      (values sorted-unique-a sorted-unique-b))))
+          
+        
 (defun validate-scanner (scanner)
   (let* (saw-problems
          (*print-pretty* nil)
@@ -537,7 +555,9 @@ MTRIX- Used to build a list of matrices."
                                    (multiple-value-bind (match-p topology-atom-names)
                                        (atom-names-match-topology atom-names topology)
                                      (unless match-p
-                                       (format sout "Residue ~a ~a ~a - atom names mismatch~%   PDB: ~a and AMBER residue ~a: ~a~%" res-name chain-id res-seq atom-names (chem:get-name topology) topology-atom-names)
+                                       (multiple-value-bind (unique-pdb unique-amber)
+                                           (sorted-mismatch atom-names topology-atom-names)
+                                       (format sout "Residue ~a ~a ~a - atom names mismatch~%   PDB: ~a and ~a in AMBER residue ~a~%" res-name chain-id res-seq unique-pdb unique-amber (chem:get-name topology) ))
                                        (setf saw-problems t)))
                                    (progn
                                      (format sout "Residue ~a ~a ~a - is unknown~%" res-name chain-id res-seq)

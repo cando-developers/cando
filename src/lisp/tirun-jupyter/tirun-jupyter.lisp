@@ -1,5 +1,6 @@
 (in-package :tirun-jupyter)
 
+(defvar *button-style* (make-instance 'w:button-style :button-color "aquamarine"))
 
 (defclass app (jupyter-widgets:has-traits)
   ((receptor-string
@@ -103,9 +104,10 @@
   (let* ((desc-width "12em")
          (desc-style (make-instance 'w:description-style :description-width desc-width))
          (file-upload-msg (make-instance 'w:label :value "Receptor structure: "))
-         (file-upload (make-instance 'w:file-upload :description "PDB file for receptor"
-                                                    :width "auto"
-                                                    :layout (make-instance 'w:layout :width "auto")))
+         (file-upload (make-instance 'jupyter-widgets:file-upload :description "PDB file for receptor"
+                                                                  :style *button-style*
+                                                                  :width "auto"
+                                                                  :layout (make-instance 'w:layout :width "auto")))
          (file-upload-vbox (make-instance 'w:h-box
                                           :layout *box-layout*
                                           :children (list file-upload-msg file-upload)))
@@ -173,8 +175,9 @@
 
 (defvar *lv* nil)
 (defun load-ligands (&key (calc *tirun*) (show-receptor t))
-  (let* ((fu (make-instance 'w:file-upload :description "Upload SDF file"))
-         (ligand-selector (make-instance 'w:bounded-int-text :description "Ligand"))
+  (let* ((fu (make-instance 'w:file-upload :description "Upload SDF file"
+                            :style *button-style*))
+         (Ligand-selector (make-instance 'w:bounded-int-text :description "Ligand"))
          (ligand-total (make-instance 'w:label :value ""))
          (ligand-name (make-instance 'w:label :value "Molecule"))
          (ligand-h-box (make-instance 'w:h-box :children (list ligand-selector ligand-total ligand-name)))
@@ -190,6 +193,7 @@
     (w:observe fu :data
                (lambda (instance type name old-value new-value source)
                  (declare (ignore instance type name old-value source))
+                 (format t "observe fu~%")
                  (when new-value
                    (let* ((last-pdb (car (last new-value)))
                           (octets (make-array (length last-pdb) :element-type 'ext:byte8
@@ -219,7 +223,8 @@
                        (when show-receptor
                          (nglview:add-structure nglview (make-instance 'nglview:text-structure :text (receptor-string *app*))))
                        (observe-ligand-selector nglview structure-view calc ligand-name 0)
-                       (tirun:tirun-calculation-from-ligands calc (ligands *app*)))))))
+                       (tirun:tirun-calculation-from-ligands calc (ligands *app*))
+                       (format t "Done observe fu~%"))))))
     (w:observe ligand-selector :value (lambda (instance type name old-value new-value source)
                                         (declare (ignore instance type name old-value source))
                                         (when new-value
@@ -266,7 +271,7 @@
                                                        (loaded-ligands *app*))))
                                          (setf (ligands *app*) mols)
                                          (setf (w:widget-value messages)
-                                               (format nil "mols: ~a~%" mols)))))
+                                               (format nil "Molecules:~% ~a~%" (if mols (mapcar #'chem:get-name mols) "all"))))))
       vbox)))
 
 (defun generate-nodes-and-edges (multigraph)
@@ -287,13 +292,13 @@
                      all-edges (append all-edges edges))))
     (values all-nodes all-edges)))
 
-(defun on-selection (observe instance name type old-value new-value source)
+(defun on-selection (instance name type old-value new-value source)
   (cond
     ((string= "nodes" (cytoscape:group instance))
      (let* ((name-str (cdr (assoc "id" (cytoscape:data instance) :test #'string=)))
             (name-sym (intern name-str :keyword))
             (mol (find name-sym (ligands *app*) :key #'chem:get-name)))
-       (setf (jupyter-widgets:widget-value observe)
+       (setf (jupyter-widgets:widget-value (cyto-observe *app*))
              (format nil "~a~%~a"
                      name-str
                      (sketch2d:render-svg-to-string (sketch2d:svg (sketch2d:similar-sketch2d mol *smallest-ligand-sketch*)))))))
@@ -304,7 +309,7 @@
             (target-sym (intern target-str :keyword))
             (source-mol (find source-sym (ligands *app*) :key #'chem:get-name))
             (target-mol (find target-sym (ligands *app*) :key #'chem:get-name)))
-       (setf (jupyter-widgets:widget-value observe)
+       (setf (jupyter-widgets:widget-value (cyto-observe *app*))
              (format nil "~a~%~a~%~a~%~a"
                      source-str
                      (sketch2d:render-svg-to-string (sketch2d:svg (sketch2d:similar-sketch2d source-mol *smallest-ligand-sketch*)))
@@ -324,19 +329,21 @@
                                                   :data (list (cons "source" (string name1))
                                                               (cons "target" (string name2))
                                                               (cons "label" (format nil "~3,2f" score))))))))
-    (setf (cytoscape:elements (cyto-widget *app*) (append all-nodes all-edges)
-          (cytoscape:graph-style widget)
+    (setf (cytoscape:elements (cyto-widget *app*)) nil)
+    (setf (cytoscape:elements (cyto-widget *app*)) (append all-nodes all-edges)
+          (cytoscape:graph-style (cyto-widget *app*))
           (append (cytoscape:graph-style (cyto-widget *app*))
                   (list (jupyter:json-new-obj
                          ("selector" "node[label]")
                          ("style" (jupyter:json-new-obj
-                                   ("label" "data(label)"))))
+                                   ("label" "data(label)")
+                                   ("font-size" "10"))))
                         (jupyter:json-new-obj
                          ("selector" "edge[label]")
                          ("style" (jupyter:json-new-obj
                                    ("label" "data(label)")))))))
     (let ((closure (lambda (&rest args)
-                     (apply #'on-selection observe args))))
+                     (apply 'on-selection args))))
       (dolist (instance (cytoscape:elements (cyto-widget *app*)))
         (jupyter-widgets:observe instance :selected closure)))))
 
@@ -383,79 +390,11 @@
           (cyto-widget *app*) cyto-widget)
     boxen))
 
-
-#|
-(defparameter o (make-instance 'jupyter-widgets:text-area :rows 16))
-
-(defun on-selection (instance name type old-value new-value source)
-    (setf (jupyter-widgets:widget-value o)
-        (format nil 
-                "~A~&~:[Edge~;Node~] ~A ~:[deselected~;selected~]." 
-                (jupyter-widgets:widget-value o)
-                (string= "nodes" (cytoscape:group instance))
-                (cdr (assoc "id" (cytoscape:data instance) :test #'string=))
-                new-value)))
-
-(defparameter c (make-instance 'cytoscape:cytoscape-widget :cytoscape-layout '(("name" . "cola"))
-                               :elements (list (make-instance 'cytoscape:element :group "nodes" :data '(("id" . "a")))                                         
-                                               (make-instance 'cytoscape:element :group "nodes" :data '(("id" . "b")))                                         
-                                               (make-instance 'cytoscape:element :group "edges" :data '(("id" . "ab") ("source" . "a") ("target" . "b"))))
-                               :context-menus (list (make-instance 'cytoscape:context-menu 
-                                                                   :commands (list (make-instance 'cytoscape:menu-command 
-:content "fu" :on-select (list (lambda (instance id) (setf (jupyter-widgets:widget-value o) (format nil "~A~&fu on ~A" (jupyter-widgets:widget-value o) id)))))
-                                                                                   (make-instance 'cytoscape:menu-command :content "bar" :on-select (list (lambda (instance id) (setf (jupyter-widgets:widget-value o) (format nil "~A~&bar on ~A" (jupyter-widgets:widget-value o) id)))))
-                                                                                   (make-instance 'cytoscape:menu-command :content "<span class='fa fa-star fa-2x'></span>" :on-select (list (lambda (instance id) (setf (jupyter-widgets:widget-value o) (format nil "~A~&star on ~A" (jupyter-widgets:widget-value o) id)))))))
-                                                    (make-instance 'cytoscape:context-menu 
-                                                                   :selector "edge"
-                                                                   :commands (list (make-instance 'cytoscape:menu-command :content "quux" :on-select (list (lambda (instance id) (setf (jupyter-widgets:widget-value o) (format nil "~A~&quux on ~A" (jupyter-widgets:widget-value o) id)))))
-                                                                                   (make-instance 'cytoscape:menu-command :content "<span class='fa fa-flash fa-2x'></span>" :on-select (list (lambda (instance id) (setf (jupyter-widgets:widget-value o) (format nil "~A~&flash on ~A" (jupyter-widgets:widget-value o) id))))))))))
-
-(dolist (instance (cytoscape:elements c))
-    (jupyter-widgets:observe instance :selected #'on-selection))
-
-c
-o
-
-|#
-    
-
 (defun lomap-progress (tirun &key (molecules (ligands *app*)) advance-progress-callback )
   (let* ((mat (lomap::similarity-matrix molecules :advance-progress-callback advance-progress-callback))
          (multigraph (lomap::similarity-multigraph molecules mat)))
     (setf multigraph (lomap::lomap-multigraph multigraph :debug nil))
     (generate-nodes-and-edges multigraph)))
-
-
-#|
-(defun lomap-display (tirun)
-  (let* ((all-nodes (loop for name in (all-nodes *app*)
-                          collect (make-instance 'cytoscape:node :data (list (cons "id" (string name)) (cons "label" (string name))))))
-         (all-edges (loop for edge in (all-edges *app*)
-                          collect (destructuring-bind (name1 name2 score)
-                                      edge
-                                    (make-instance 'cytoscape:edge
-                                                   :data (list (cons "source" (string name1))
-                                                               (cons "target" (string name2))
-                                                               (cons "label" (format nil "~3,2f" score)))))))
-                                                         (graph (make-instance 'cytoscape:graph
-                                                                               :nodes all-nodes
-                                                                               :edges all-edges))
-         (widget (make-instance 'cytoscape:cytoscape-widget
-                                :cytoscape-layout (list (cons "name" "cose")
-                                                        (cons "quality" "default")
-                                                        )))
-                  
-    (setf (cytoscape:graph widget) graph)
-                                                    (w:display widget)
-                                                    (setf *all-nodes* all-nodes
-                                                          (all-edges *app*) all-edges
-                                                          *cyto-graph* widget)
-
-(make-instance 'w:h-box
-                                             :layout *box-layout*
-                                             :children (list widget))
-|#
-
 
 (defun lomap (&key (tirun *tirun*))
   (let* ((progress (make-instance 'w:int-progress :description "Progress")) 
@@ -464,6 +403,7 @@ o
          (boxen (cyto-layout-graph))
          (go-button (make-instance 'jupyter-widgets:button
                                    :description "Calculate molecular similarities"
+                                   :style *button-style*
                                    :layout (make-instance 'w:layout :width "30em")
                                    :tooltip "Click me"
                                    :on-click (list
@@ -474,19 +414,21 @@ o
                                                   (setf (w:widget-value messages) (format nil "Calculating lomap on ~a" mols))
                                                   (multiple-value-bind (nodes edges)
                                                       (lomap-progress tirun
-                                                                      :molecules (ligands *app*)
+                                                                      :molecules mols
                                                                       :advance-progress-callback (let ((index 0))
                                                                                                    (lambda (max-progress)
                                                                                                      (setf (w:widget-value progress) index
-                                                                                                           (w:widget-max progress) max-progress)
+                                                                                                           (w:widget-max progress) (1- max-progress))
                                                                                                      (incf index))))
-                                                    (setf (all-nodes *app*) nodes
-                                                          (all-edges *app*) edges)
-                                                    (setf (w:widget-value messages) "Done lomap")
+                                                    (setf (w:widget-value messages) (format nil "Done lomap on ~a" mols))
                                                     (widget-show boxen)
+                                                    (loop for element in (cytoscape:elements (cyto-widget *app*))
+                                                          do (setf (cytoscape:removed element) t))
                                                     (setf (all-nodes *app*) nodes
                                                           (all-edges *app*) edges)
-                                                    (cyto-fill-graph))))))))
+                                                    (cyto-fill-graph)
+                                                    (loop for element in (cytoscape:elements (cyto-widget *app*))
+                                                          do (setf (cytoscape:removed element) nil)))))))))
     (widget-hide boxen)
     (make-instance 'w:v-box
                    :children (list
@@ -512,6 +454,7 @@ o
          (messages (make-instance 'w:text-area :description "Messages"
                                                :layout (make-instance 'w:layout :width "60em")))
          (go-button (make-instance 'jupyter-widgets:button :description "Configure"
+                                                           :style *button-style*
                                                            :tooltip "Click me"
                                                            :on-click (list
                                                                       (lambda (&rest args)
@@ -530,25 +473,14 @@ o
                                              :layout *box-layout*
                                              :children (list messages))))))
 
-(defun ensure-write-jobs (tirun jobs-dir)
+(defun ensure-write-jobs (tirun jobs-dir progress-callback)
   (let ((*default-pathname-defaults* (pathname jobs-dir)))
     (ext:chdir *default-pathname-defaults*)
     (tirun:build-job-nodes tirun)
     (tirun:connect-job-nodes tirun (all-edges *app*))
-    (tirun:generate-jobs tirun)))
-
-(defun write-jobs (&key (tirun *tirun*) (name "full"))
-  (let* ((jobs-dir (pathname (if (ext:getenv "TIRUN_DIRECTORY")
-                                 (uiop:ensure-directory-pathname (ext:getenv "TIRUN_DIRECTORY"))
-                                 (merge-pathnames (make-pathname :directory (list :relative "jobs"))
-                                                  (uiop:ensure-directory-pathname (ext:getenv "HOME")))))))
-    (format t "jobs-dir -> ~a~%" jobs-dir)
-    (format t "*default-pathname-defaults -> ~a~%" *default-pathname-defaults*)
-    (flet ((do-write-jobs (tirun)
-             (ensure-directories-exist jobs-dir)
-             (let ((worklist (ensure-write-jobs tirun)))
-               (with-open-file (fout #P"conf.sh" :direction :output :if-exists :supersede)
-                 (format fout "pmemd_cuda=pmemd.cuda
+    (let ((worklist (tirun:generate-jobs tirun :progress-callback progress-callback)))
+      (with-open-file (fout #P"conf.sh" :direction :output :if-exists :supersede)
+        (format fout "pmemd_cuda=pmemd.cuda
 execute_cpu_local=0
 execute_gpu_local=0
 execute_lisp_local=0
@@ -556,35 +488,56 @@ worker=schando
 distributor=s103.thirdlaw.tech
 lisp_jobs_only_on=172.234.2.1
 "))
-               (with-open-file (sout #P"eg5_singlestep.dot" :direction :output)
-                 (tirundot:draw-graph-stream (list worklist) sout))
-               )))
-      (multiple-value-bind (job-name job-box)
-          (simple-input "Job name" :default "default")
-        (let* ((messages (make-instance 'w:text-area :description "Messages"
-                                                     :layout (make-instance 'w:layout :width "60em")))
-               (go-button (make-instance 'w:button :description "Write jobs"
-                                                   :on-click (list
-                                                              (lambda (&rest args)
-                                                                (let* ((name (w:widget-value job-name))
-                                                                       (*default-pathname-defaults* (merge-pathnames (make-pathname :directory (list
-                                                                                                                                                :relative
-                                                                                                                                                name))
-                                                                                                                     jobs-dir)))
-                                                                  (setf (w:widget-value messages) (format nil "Starting to write jobs to: ~a  jobs-dir-> ~a" *default-pathname-defaults* jobs-dir))
-                                                                  (do-write-jobs tirun)
-                                                                  (setf (w:widget-value messages) "Done writing jobs")))))))
-          (make-instance 'w:v-box
-                         :children (list
-                                    (make-instance 'w:h-box
-                                                   :layout *box-layout*
-                                                   :children (list job-box))
-                                    (make-instance 'w:h-box
-                                                   :layout *box-layout*
-                                                   :children (list go-button))
-                                    (make-instance 'w:h-box
-                                                   :layout *box-layout*
-                                                   :children (list messages)))))))))
+      (with-open-file (sout #P"eg5_singlestep.dot" :direction :output)
+        (tirundot:draw-graph-stream (list worklist) sout)))))
+
+(defun write-jobs (&key (tirun *tirun*))
+  (let* ((jobs-dir (pathname (if (ext:getenv "TIRUN_DIRECTORY")
+                                 (uiop:ensure-directory-pathname (ext:getenv "TIRUN_DIRECTORY"))
+                                 (merge-pathnames (make-pathname :directory (list :relative "jobs"))
+                                                  (uiop:ensure-directory-pathname (ext:getenv "HOME")))))))
+    (multiple-value-bind (job-name job-box)
+        (simple-input "Job name" :default "default")
+      (let* ((messages (make-instance 'w:text-area :description "Messages"
+                                                   :layout (make-instance 'w:layout :width "60em")))
+             (progress (make-instance 'w:int-progress :description "Progress"))
+             (go-button (make-instance 'w:button :description "Write jobs"
+                                                 :style *button-style*
+                                                 :on-click (list
+                                                            (lambda (&rest args)
+                                                              (let* ((name (w:widget-value job-name))
+                                                                     (dir (merge-pathnames (make-pathname :directory (list
+                                                                                                                      :relative
+                                                                                                                      name))
+                                                                                           jobs-dir)))
+                                                                (setf (w:widget-value messages) (format nil "Starting to write jobs dir-> ~a" dir))
+                                                                (if (probe-file dir)
+                                                                    (progn
+                                                                      (setf (w:widget-value messages) (format nil "The directory ~a already exists - aborting writing jobs" dir)))
+                                                                    (progn
+                                                                      (ensure-directories-exist dir)
+                                                                      (ensure-write-jobs tirun dir (let ((index 0)
+                                                                                                         (lock (bordeaux-threads:make-recursive-lock "progress")))
+                                                                                                     (lambda (max-progress)
+                                                                                                       (bordeaux-threads:with-recursive-lock-held (lock)
+                                                                                                         (setf (w:widget-value progress) index
+                                                                                                               (w:widget-max progress) max-progress)
+                                                                                                         (incf index)))))
+                                                                      (setf (w:widget-value messages) "Done writing jobs"))))))))
+             )
+        (make-instance 'w:v-box
+                       :children (list
+                                  (make-instance 'w:h-box
+                                                 :layout *box-layout*
+                                                 :children (list job-box))
+                                  (make-instance 'w:h-box
+                                                 :layout *box-layout*
+                                                 :children (list go-button))
+                                  (make-instance 'w:h-box
+                                                 :children (list progress))
+                                  (make-instance 'w:h-box
+                                                 :layout *box-layout*
+                                                 :children (list messages))))))))
                               
                                              
     
@@ -592,7 +545,7 @@ lisp_jobs_only_on=172.234.2.1
 
 
 (defvar *job-messages*)
-(defun submit-jobs (&key (calc *tirun*))
+(defun submit-calc (&key (calc *tirun*))
   (let* ((desc-width "12em")
          (desc-style (make-instance 'w:description-style :description-width desc-width))
          (login-label (make-instance 'w:label :value "ssh key password"))
@@ -602,6 +555,7 @@ lisp_jobs_only_on=172.234.2.1
          (messages (make-instance 'w:text-area :description "Messages"
                                                :layout (make-instance 'w:layout :width "60em")))
          (go-button (make-instance 'jupyter-widgets:button :description "Submit jobs"
+                                                           :style *button-style*
                                                            :tooltip "Click me"
                                                            :on-click (list
                                                                       (lambda (&rest args)

@@ -25,5 +25,6 @@
    #:lomap
    #:configure-jobs
    #:write-jobs
+   #:submit-calc
    ))
 

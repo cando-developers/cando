@@ -236,7 +236,7 @@
       morph-jobs)))
 
 (defparameter *testing* nil "Set to T when testing things")
-(defmethod generate-jobs (calculation)
+(defun generate-jobs (calculation &key progress-callback)
   (let ((*created-directories* (make-hash-table :test #'equal)))
     (let* ((jupyter-job (make-instance 'jupyter-job))
            (am1-jobs (setup-am1-calculations jupyter-job calculation :maxcyc (if *testing* 2 9999)))
@@ -259,5 +259,7 @@
                         :makefile-clause (standard-cando-makefile-clause script)))
         (let ((morph-jobs (make-script-1-leap calculation :input-tiruns-file tiruns-out)))
           ;; Do more preparation
-          (generate-all-code calculation (list jupyter-job) (mapcar (lambda (job) (output-file job :%MORPH-ANALYSIS%)) morph-jobs)))
+          (generate-all-code calculation (list jupyter-job)
+                             (mapcar (lambda (job) (output-file job :%MORPH-ANALYSIS%)) morph-jobs)
+                             :progress-callback progress-callback))
         jupyter-job))))

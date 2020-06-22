@@ -125,6 +125,10 @@
       :prefix prefix)))
 
 
+(defun do-run-kernel-from-slime ()
+  (jupyter:run-kernel 'cando-jupyter:kernel (core:argv (1- (core:argc)))))
+
+
 (defun run-kernel-from-slime ()
   (bordeaux-threads:make-thread
    (lambda ()
