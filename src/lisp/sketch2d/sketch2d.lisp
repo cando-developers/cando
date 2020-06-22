@@ -1060,7 +1060,33 @@ The coordinates are all pressed into the X-Y plane and some hydrogens are added 
                                 (list (make-instance 'chiral-bond-info
                                                      :bond-type bond-type
                                                      :bond-atom (select-best-chiral-neighbor sketch-neighbors chiral-atoms))))))
-                     (4 (warn "Deal with quaternary chiral centers")))
+                     (4 (let* ((atm-1 (sketch-atom (first sketch-neighbors)))
+                               (atm-ch sketch-chiral)
+                               (atm-2 (sketch-atom (second sketch-neighbors)))
+                               (vec1 (geom:v- (chem:get-position atm-1)
+                                              (chem:get-position atm-ch)))
+                               (vec2 (geom:v- (chem:get-position atm-2)
+                                              (chem:get-position atm-ch)))
+                               (cross12 (geom:vcross vec1 vec2))
+                               (atm-3 (sketch-atom (third sketch-neighbors)))
+                               (atm-4 (sketch-atom (fourth sketch-neighbors)))
+                               (vec3 (geom:v- (chem:get-position atm-3)
+                                              (chem:get-position atm-ch)))
+                               (vec4 (geom:v- (chem:get-position atm-4)
+                                              (chem:get-position atm-ch)))
+                               (cross34 (geom:vcross vec3 vec4))
+                               (draw-config (if (< (* (geom:vz cross12) (geom:vz cross34)) 0.0) :r :s))) ; Change this to flip the rendered config of the center
+                          (multiple-value-bind (bond-type1 bond-type2)
+                              (if (eq draw-config config)
+                                  (values :wedge-forward :hash-forward)
+                                  (values :hash-forward :wedge-forward))
+                            (setf (chiral-bonds chiral-info)
+                                  (list (make-instance 'chiral-bond-info
+                                                       :bond-type bond-type1
+                                                       :bond-atom (sketch-atom (first sketch-neighbors)))
+                                        (make-instance 'chiral-bond-info
+                                                       :bond-type bond-type2
+                                                       :bond-atom (sketch-atom (second sketch-neighbors)))))))))
                    (push chiral-info (chiral-infos sketch2d))))))))
 
 
