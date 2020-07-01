@@ -9,7 +9,7 @@
   :version "0.0.1"
   :author "Christian Schafmeister <chris.schaf@verizon.net>, Nagai Shiho"
   :licence "Private"
-  :depends-on (:tirun :lomap :cl-cytoscape)
+  :depends-on (:tirun :lomap :cytoscape-clj)
   :serial t
 ;;;  :build-operation asdf:monolithic-compile-bundle-op
 ;;;  :build-pathname #P"/tmp/tirun.fasb"

@@ -343,18 +343,7 @@
                                                               (cons "target" (string name2))
                                                               (cons "label" (format nil "~3,2f" score))))))))
     (setf (cytoscape:elements (cyto-widget *app*)) nil)
-    (setf (cytoscape:elements (cyto-widget *app*)) (append all-nodes all-edges)
-          (cytoscape:graph-style (cyto-widget *app*))
-          (append (cytoscape:graph-style (cyto-widget *app*))
-                  (list (jupyter:json-new-obj
-                         ("selector" "node[label]")
-                         ("style" (jupyter:json-new-obj
-                                   ("label" "data(label)")
-                                   ("font-size" "10"))))
-                        (jupyter:json-new-obj
-                         ("selector" "edge[label]")
-                         ("style" (jupyter:json-new-obj
-                                   ("label" "data(label)")))))))
+    (setf (cytoscape:elements (cyto-widget *app*)) (append all-nodes all-edges))
     (let ((closure (lambda (&rest args)
                      (apply 'on-selection args))))
       (dolist (instance (cytoscape:elements (cyto-widget *app*)))
@@ -367,8 +356,8 @@
                                                         :border "solid"
                                                         :height "auto")))
          (cyto-widget (make-instance 'cytoscape:cytoscape-widget
-                                     :graph-layout (list (cons "name" "cose")
-                                                         (cons "quality" "default"))
+                                     :graph-layouts (list (make-instance 'cytoscape:cose-layout))
+                                     :graph-style "* { label: data(label); font-size: 10; }"
                                      :context-menus
                                      (list
                                       (make-instance
