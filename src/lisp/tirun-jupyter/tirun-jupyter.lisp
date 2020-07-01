@@ -362,18 +362,7 @@
                                                               (cons "target" (string name2))
                                                               (cons "label" (format nil "~3,2f" score))))))))
     (setf (cytoscape:elements (cyto-widget *app*)) nil)
-    (setf (cytoscape:elements (cyto-widget *app*)) (append all-nodes all-edges)
-          (cytoscape:graph-style (cyto-widget *app*))
-          (append (cytoscape:graph-style (cyto-widget *app*))
-                  (list (jupyter:json-new-obj
-                         ("selector" "node[label]")
-                         ("style" (jupyter:json-new-obj
-                                   ("label" "data(label)")
-                                   ("font-size" "10"))))
-                        (jupyter:json-new-obj
-                         ("selector" "edge[label]")
-                         ("style" (jupyter:json-new-obj
-                                   ("label" "data(label)")))))))
+    (setf (cytoscape:elements (cyto-widget *app*)) (append all-nodes all-edges))
     (let ((closure (lambda (&rest args)
                      (apply 'on-selection args))))
       (dolist (instance (cytoscape:elements (cyto-widget *app*)))
@@ -385,35 +374,16 @@
                                  :layout (make-instance 'w:layout
                                                         :border "solid"
                                                         :height "auto")))
-         (cyto-widget (make-instance
-                       'cytoscape:cytoscape-widget
-                       :graph-layout (list (cons "name" "cose")
-                                           (cons "quality" "default"))
-                       :context-menus
-                       (list
-                        (make-instance
-                         'cytoscape:context-menu 
-                         :commands (list (make-instance
-                                          'cytoscape:menu-command 
-                                          :content "add edge"
-                                          :on-select (list
-                                                      (lambda (instance id)
-                                                        (jupyter-widgets:widget-value
-                                                         (setf (jupyter-widgets:widget-value observe)
-                                                               (format nil "~A~&fu on ~A" (jupyter-widgets:widget-value observe) id)))))
-                                          )))
-                        (make-instance
-                         'cytoscape:context-menu 
-                         :selector "edge"
-                         :commands (list (make-instance
-                                          'cytoscape:menu-command
-                                          :content "remove"
-                                          :on-select (list
-                                                      (lambda (instance id)
-                                                        (setf (jupyter-widgets:widget-value observe)
-                                                              (format nil "~A~&remove on ~A" (jupyter-widgets:widget-value observe) id)))))
-                                         (make-instance 'cytoscape:menu-command
-                                                        :content "examine"
+         (cyto-widget (make-instance 'cytoscape:cytoscape-widget
+                                     :graph-layouts (list (make-instance 'cytoscape:cose-layout))
+                                     :graph-style "* { label: data(label); font-size: 10; }"
+                                     :context-menus
+                                     (list
+                                      (make-instance
+                                       'cytoscape:context-menu 
+                                       :commands (list (make-instance
+                                                        'cytoscape:menu-command 
+                                                        :content "add edge"
                                                         :on-select (list
                                                                     (lambda (instance id)
                                                                       (setf (jupyter-widgets:widget-value observe)
