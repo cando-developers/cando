@@ -532,16 +532,6 @@ if __name__ == '__main__':
 		   (format t "~s~%" result))
                  (core:exit 0)))))
 
-(defclass ti-calculation ()
-  ((compounds :initarg :compounds :accessor compounds)
-   (paths :initarg :paths :accessor paths)))
-
-(defclass ti-compound ()
-  ((name :initarg :name :accessor name)))
-
-(defun make-ti-compound (name)
-  (make-instance 'ti-compound :name name))
-
 ;;; ------------------------------------------------------------
 ;;;
 ;;; File node types
@@ -889,7 +879,8 @@ its for and then create a new class for it."))
   (:documentation "Do the node-file (script?) substitutions for the job"))
 
 (defmethod substitutions (calculation job (node-file node-file))
-  (job-substitutions job))
+  (append (job-substitutions job)
+          (setting-substitutions calculation)))
 
 (defun setting-substitutions (calculation)
   (let ((settings (settings calculation)))
@@ -912,7 +903,6 @@ its for and then create a new class for it."))
 
 (defmethod substitutions (calculation job (node-file morph-file))
   (append
-   (setting-substitutions calculation)
    (let* ((morph (morph node-file))
           (morph-mask (morph-mask morph) #+(or)(calculate-masks morph (mask-method calculation))))
      (list* (cons :%MORPH-NAME% (format nil "~s" (morph-string morph)))
@@ -1215,14 +1205,13 @@ added to inputs and outputs but not option-inputs or option-outputs"
                    (push (string-downcase (option output)) option-outputs)
                    (push (namestring (node-pathname (node output))) option-outputs))
                  (push (cons (intern (string-upcase (option output)) :keyword) (namestring (node-pathname (node output)))) extra-substitutions)))
-    (append
-     (list (cons :%DEPENDENCY-INPUTS% (format nil "~{~a ~}" (append dependency-inputs (reverse inputs))))
+    (list* (cons :%DEPENDENCY-INPUTS% (format nil "~{~a ~}" (append dependency-inputs (reverse inputs))))
            (cons :%INPUTS% (format nil "~{~a ~}" (reverse inputs)))
            (cons :%DEPENDENCY-OUTPUTS% (format nil "~{~a ~}" (reverse outputs)))
            (cons :%OUTPUTS% (format nil "~{~a ~}" (reverse outputs)))
            (cons :%OPTION-INPUTS% (format nil "~{~a ~}" (reverse option-inputs)))
-           (cons :%OPTION-OUTPUTS% (format nil "~{~a ~}" (reverse option-outputs)))))
-    extra-substitutions))
+           (cons :%OPTION-OUTPUTS% (format nil "~{~a ~}" (reverse option-outputs)))
+           extra-substitutions)))
 
 (defun write-file-if-it-has-changed (pathname code)
     (when (probe-file pathname)

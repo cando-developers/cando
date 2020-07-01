@@ -376,11 +376,11 @@ This will place the calculated bond on one or the other side of the x1,y1-x2,y2 
                              (c3 (geom:v+ p2 (geom:v* left -1.0))))
                         (case bond-type
                           (:wedge-forward
-                           (when (/= 0.0 start)
+                           #+(or)(when (/= 0.0 start)
                              (warn "The start of a wedge bond is not zero - that means we need a more complex polygon than a triangle start: ~a" start))
                            (list (make-instance 'polygon :points (list p1 c2 c3))))
                           (:hash-forward
-                           (when (/= 0.0 start)
+                           #+(or)(when (/= 0.0 start)
                              (warn "The start of a wedge bond is not zero - that means we need a more complex polygon than a triangle start: ~a" start))
                            (let ((hashes (loop for index from 1 below *number-of-hashes-in-hashed-bond*
                                                for frac-offset = (/ (float index) *number-of-hashes-in-hashed-bond*)

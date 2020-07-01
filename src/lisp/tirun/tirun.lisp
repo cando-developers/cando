@@ -358,20 +358,39 @@
 (defun mol2-safe-atom-name (calculation name)
   name)
 
-(defun default-calculation-settings ()
-  '((:%DECHARGE-RECHARGE-TI-IN.NSTLIM% 3000000 3000) ; if *testing* must be >= 3000
-    (:%VDW-TI-IN.NSTLIM% 3000000 3000)               ; if *testing* must be >= 3000
-    (:%PREPARE-HEAT-IN.NSTLIM% 100000 3000)
-    (:%PREPARE-PRESS-IN.NSTLIM% 2500000 3000)
-    (:%DECHARGE-RECHARGE-HEAT-IN.NSTLIM% 100000 3000)
-    (:%VDW-HEAT-IN.NSTLIM% 100000 3000)
-    (:%PREPARE-PRESS-IN-DT% . 0.002)
-    (:%PREPARE-REST-WT% . 5.00)
-    (:%DT% . 0.001)
-    (:%NTC% . 2)
-    (:%NTF% . 1)
-    (:%TEMP0% . 300.0 )
-    ))
+(defvar *default-calculation-settings*
+  '(("Simulation Input Parameters"
+     ((:%DECHARGE-RECHARGE-TI-IN.NSTLIM% "Decharge/recharge nstlim" (3000000 3000)) ; if *testing* must be >= 3000
+      (:%VDW-TI-IN.NSTLIM% "Vdw nstlim" (3000000 3000)) ; if *testing* must be >= 3000
+      (:%PREPARE-HEAT-IN.NSTLIM% "PREPARE-HEAT-IN.NSTLIM" (100000 3000))
+      (:%PREPARE-PRESS-IN.NSTLIM% "PREPARE-PRESS-IN.NSTLIM" (2500000 3000))
+      (:%DECHARGE-RECHARGE-HEAT-IN.NSTLIM% "DECHARGE-RECHARGE-HEAT-IN.NSTLIM" (100000 3000))
+      (:%VDW-HEAT-IN.NSTLIM% "VDW-HEAT-IN.NSTLIM" (100000 3000))
+      (:%PREPARE-PRESS-IN-DT% "NPT with SHAKE timestep (fs)" 0.002)
+      (:%PREPARE-REST-WT% "Equilibration harmonic restraint weight (kcal/mol/A^2)" 5.00)
+      (:%DT% "TI without SHAKE timestep (fs) [DT]" 0.001)
+      (:%NTC% "SHAKE-on (2) SHAKE-off (1) [NTC]" 2)
+      (:%NTF% "Force calculation-on (1) -off (2) [NTF]" 1)
+      (:%TEMP0% "Constant temperature" 300.0 )
+      ))))
+
+(defun default-calculation-settings (&key (default-settings *default-calculation-settings*) testing)
+  (let (all-settings)
+    (loop for batch in default-settings
+          for name = (first batch)
+          for settings = (second batch)
+          do (loop for setting in settings
+                   for setting-key = (first setting)
+                   for setting-name = (second setting)
+                   for setting-value = (third setting)
+                   do (push (cons setting-key (if (consp setting-value)
+                                                  (if testing
+                                                      (second setting-value)
+                                                      (first setting-value))
+                                                  setting-value))
+                            all-settings)))
+    all-settings))
+
 
 (defparameter *testing-lambdas* (loop for idx from 0 to 5 collect (/ (float idx) 5.0)))
 

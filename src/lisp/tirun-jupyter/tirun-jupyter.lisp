@@ -19,6 +19,9 @@
     :accessor ligand-names
     :initform nil
     :trait :list)
+   (ligand-widget
+    :accessor ligand-widget
+    :initform nil)
    (all-nodes
     :accessor all-nodes
     :initform nil
@@ -35,6 +38,10 @@
     :accessor job-name
     :initform "default"
     :trait :string)
+   (submit-stream
+    :accessor submit-stream
+    :initform nil
+    :trait :stream)
    (cyto-observe
     :accessor cyto-observe
     :initform nil
@@ -97,17 +104,19 @@
 
 
 (defclass simple-input ()
-  ((label-widget :initarg :label-widget :accessor label-widget)
+  ((name :initarg :name :accessor name)
+   (label-widget :initarg :label-widget :accessor label-widget)
    (input-widget :initarg :input-widget :accessor input-widget)
    (hbox :initarg :hbox :accessor hbox)))
 
-(defun make-simple-input (label &key (default ""))
+(defun make-simple-input (label &key (default "") name)
   (let ((label-widget (make-instance 'w:label :value label
-                                              :layout (make-instance 'w:layout :width "20em")))
+                                              :layout (make-instance 'w:layout :width "25em")))
         (input-widget (make-instance 'w:text
                                      :value default
                                      :layout (make-instance 'w:layout :width "20em"))))
     (make-instance 'simple-input
+                   :name name
                    :label-widget label-widget
                    :input-widget input-widget
                    :hbox (make-instance 'w:h-box
@@ -172,29 +181,37 @@
 (defvar *ligands-string* nil)
 (defvar *current-component* nil)
 (defvar *smallest-ligand-sketch*)
-(defun observe-ligand-selector (nglview structure-view calc ligand-name new-value)
+(defun observe-ligand-selector (nglview structure-view messages calc ligand-name new-value)
   (let ((mol (elt (ligands *app*) new-value)))
     (let* ((agg (chem:make-aggregate)))
       (chem:add-matter agg mol)
       (setf (w:widget-value ligand-name) (string (chem:get-name mol)))
-      (let* ((mol2 (chem:aggregate-as-mol2-string agg t))
-             (new-component (nglview:add-structure nglview (make-instance 'nglview:text-structure :text mol2 :ext "mol2"))))
+      (let* ((mol2 (chem:aggregate-as-mol2-string agg t)))
         (when *current-component*
-          (nglview:remove-components nglview *current-component*))
-        (setf (w:widget-value structure-view)
-              (sketch2d:render-svg-to-string (sketch2d:svg (sketch2d:similar-sketch2d mol *smallest-ligand-sketch*))))
-        (setf *current-component* new-component)
-        ))))
+          (nglview:remove-components nglview 1)) ;; *current-component*)) ;; *current-component* fails sometimes
+        (let ((new-component (nglview:add-structure nglview (make-instance 'nglview:text-structure :text mol2 :ext "mol2"))))
+          (setf (w:widget-value messages)
+                (format nil "~a~%---------~%Components:~%~a~%new-component: ~a~%Removed component: ~a  added component: ~a~%" (w:widget-value messages)
+                        (mapcar #'nglview::id (nglview::components nglview))
+                        new-component
+                        *current-component*
+                        new-value))
+          (setf (w:widget-value structure-view)
+                (sketch2d:render-svg-to-string (sketch2d:svg (sketch2d:similar-sketch2d mol *smallest-ligand-sketch*))))
+          (setf *current-component* new-component)
+          )))))
 
 (defvar *lv* nil)
 (defun load-ligands (&key (calc *tirun*) (show-receptor t))
+  (setf *current-component* nil)
   (let* ((fu (make-instance 'w:file-upload :description "Upload SDF file"
                             :style *button-style*))
          (Ligand-selector (make-instance 'w:bounded-int-text :description "Ligand"))
          (ligand-total (make-instance 'w:label :value ""))
          (ligand-name (make-instance 'w:label :value "Molecule"))
          (ligand-h-box (make-instance 'w:h-box :children (list ligand-selector ligand-total ligand-name)))
-         (control-box (make-instance 'w:v-box :children (list fu ligand-h-box)
+         (messages (make-instance 'w:text-area))
+         (control-box (make-instance 'w:v-box :children (list fu ligand-h-box messages)
                                               :layout (make-instance 'w:layout :flex "1 1 0%" :width "auto" :height "auto")))
          (structure-view (make-instance 'w:html
                                         :layout (make-instance 'w:layout :flex "1 1 0%" :width "auto" :height "auto")))
@@ -202,6 +219,7 @@
                                  :layout (make-instance 'w:layout :width "auto" :height "auto"))))
     (setf *lv* nglview)
     (widget-hide ligand-h-box)
+    (widget-hide messages)
     (widget-hide nglview)
     (w:observe fu :data
                (lambda (instance type name old-value new-value source)
@@ -233,15 +251,16 @@
                              (w:widget-min ligand-selector) 0)
                        (widget-show ligand-h-box)
                        (widget-show nglview)
+                       (setf (w:widget-value ligand-selector) 0)
                        (when show-receptor
                          (nglview:add-structure nglview (make-instance 'nglview:text-structure :text (receptor-string *app*))))
-                       (observe-ligand-selector nglview structure-view calc ligand-name 0)
+                       (observe-ligand-selector nglview structure-view messages calc ligand-name 0)
                        (tirun:tirun-calculation-from-ligands calc (ligands *app*))
                        (format t "Done observe fu~%"))))))
     (w:observe ligand-selector :value (lambda (instance type name old-value new-value source)
                                         (declare (ignore instance type name old-value source))
                                         (when new-value
-                                          (observe-ligand-selector nglview structure-view calc ligand-name new-value))))
+                                          (observe-ligand-selector nglview structure-view messages calc ligand-name new-value))))
     (make-instance 'w:v-box
                    :children (list
                               (make-instance 'w:h-box
@@ -366,37 +385,39 @@
                                  :layout (make-instance 'w:layout
                                                         :border "solid"
                                                         :height "auto")))
-         (cyto-widget (make-instance 'cytoscape:cytoscape-widget
-                                     :graph-layout (list (cons "name" "cose")
-                                                         (cons "quality" "default"))
-                                     :context-menus
-                                     (list
-                                      (make-instance
-                                       'cytoscape:context-menu 
-                                       :commands (list (make-instance
-                                                        'cytoscape:menu-command 
-                                                        :content "add edge"
+         (cyto-widget (make-instance
+                       'cytoscape:cytoscape-widget
+                       :graph-layout (list (cons "name" "cose")
+                                           (cons "quality" "default"))
+                       :context-menus
+                       (list
+                        (make-instance
+                         'cytoscape:context-menu 
+                         :commands (list (make-instance
+                                          'cytoscape:menu-command 
+                                          :content "add edge"
+                                          :on-select (list
+                                                      (lambda (instance id)
+                                                        (jupyter-widgets:widget-value
+                                                         (setf (jupyter-widgets:widget-value observe)
+                                                               (format nil "~A~&fu on ~A" (jupyter-widgets:widget-value observe) id)))))
+                                          )))
+                        (make-instance
+                         'cytoscape:context-menu 
+                         :selector "edge"
+                         :commands (list (make-instance
+                                          'cytoscape:menu-command
+                                          :content "remove"
+                                          :on-select (list
+                                                      (lambda (instance id)
+                                                        (setf (jupyter-widgets:widget-value observe)
+                                                              (format nil "~A~&remove on ~A" (jupyter-widgets:widget-value observe) id)))))
+                                         (make-instance 'cytoscape:menu-command
+                                                        :content "examine"
                                                         :on-select (list
                                                                     (lambda (instance id)
-                                                                      (jupyter-widgets:widget-value
-                                                                       (setf (jupyter-widgets:widget-value observe)
-                                                                             (format nil "~A~&fu on ~A" (jupyter-widgets:widget-value observe) id)))))
-                                                        )))
-                                      (make-instance 'cytoscape:context-menu 
-                                                     :selector "edge"
-                                                     :commands (list (make-instance
-                                                                      'cytoscape:menu-command
-                                                                      :content "remove"
-                                                                      :on-select (list
-                                                                                  (lambda (instance id)
-                                                                                    (setf (jupyter-widgets:widget-value observe)
-                                                                                          (format nil "~A~&remove on ~A" (jupyter-widgets:widget-value observe) id)))))
-                                                                     (make-instance 'cytoscape:menu-command
-                                                                                    :content "examine"
-                                                                                    :on-select (list
-                                                                                                (lambda (instance id)
-                                                                                                  (setf (jupyter-widgets:widget-value observe)
-                                                                                                        (format nil "~A~&examine ~A" (jupyter-widgets:widget-value observe) id))))))))))
+                                                                      (setf (jupyter-widgets:widget-value observe)
+                                                                            (format nil "~A~&examine ~A" (jupyter-widgets:widget-value observe) id))))))))))
          (boxen (make-instance 'w:v-box
                                :children (list cyto-widget observe))))
     (setf (cyto-observe *app*) observe
@@ -456,35 +477,65 @@
                                              :children (list messages))
                               boxen))))
 
+
+(defun configure-layout (default-settings &key testing)
+  (let (all-inputs)
+    (multiple-value-bind (titles vboxes)
+        (loop for batch in default-settings
+              for title = (first batch)
+              for settings = (second batch)
+              collect (make-instance 'w:v-box
+                                     :children
+                                     (loop for setting in settings
+                                           for setting-key = (first setting)
+                                           for setting-name = (second setting)
+                                           for setting-value = (third setting)
+                                           for input = (make-simple-input setting-name
+                                                                          :default (if (consp setting-value)
+                                                                                       (if testing
+                                                                                           (second setting-value)
+                                                                                           (first setting-value))
+                                                                                       setting-value)
+                                                                          :name setting-key)
+                                           do (push input all-inputs)
+                                           collect (hbox input)))
+                into vboxes
+              collect title into titles
+              finally (return (values titles vboxes)))
+      (values (make-instance 'jupyter-widgets:accordion
+                             :%titles titles
+                             :selected-index nil
+                             :children vboxes)
+              all-inputs))))
+
 (defun configure-jobs (&key (calc *tirun*))
   (let* ((desc-width "12em")
-         (desc-style (make-instance 'w:description-style :description-width desc-width))
-         (simulation-length (make-instance 'jupyter-widgets:text :description "Simulation length"))
-         (lambda-windows (make-instance 'jupyter-widgets:text :description "Lambda windows"))
-         (settings (make-instance 'jupyter-widgets:v-box ;;; :layout *box-layout*
-                                                         :children (list simulation-length
-                                                                         lambda-windows)))
-         (messages (make-instance 'w:text-area :description "Messages"
-                                               :layout (make-instance 'w:layout :width "60em")))
-         (go-button (make-instance 'jupyter-widgets:button :description "Configure"
-                                                           :style *button-style*
-                                                           :tooltip "Click me"
-                                                           :on-click (list
-                                                                      (lambda (&rest args)
-                                                                        (setf (w:widget-value messages)
-                                                                              (format nil "Configure: ~a~%" args)))))))
-    (setf *job-messages* messages)
-    (make-instance 'w:v-box
-                   :children (list
-                              (make-instance 'w:h-box
-                                             :layout *box-layout*
-                                             :children (list settings))
-                              (make-instance 'w:h-box
-                                             :layout *box-layout*
-                                             :children (list go-button))
-                              (make-instance 'w:h-box
-                                             :layout *box-layout*
-                                             :children (list messages))))))
+         (steps (make-instance 'jupyter-widgets:dropdown :%options-labels (list "single" "3-step")
+                                                         :options (list "single" "3-step")
+                                                         :index 0
+                                                         :description "Steps:")))
+    (multiple-value-bind (accordion all-inputs)
+        (configure-layout tirun::*default-calculation-settings*)
+      (let* ((desc-style (make-instance 'w:description-style :description-width desc-width))
+             (messages (make-instance 'w:text-area :description "Messages"
+                                                   :layout (make-instance 'w:layout :width "60em")))
+             (go-button (make-instance 'jupyter-widgets:button :description "Configure"
+                                                               :style *button-style*
+                                                               :tooltip "Click me"
+                                                               :on-click (list
+                                                                          (lambda (&rest args)
+                                                                            (setf (w:widget-value messages)
+                                                                                  (format nil "Configure~%")))))))
+        (make-instance 'w:v-box
+                       :children (append (list steps
+                                               accordion)
+                                         (list 
+                                          (make-instance 'w:h-box
+                                                         :layout *box-layout*
+                                                         :children (list go-button))
+                                          (make-instance 'w:h-box
+                                                         :layout *box-layout*
+                                                         :children (list messages)))))))))
 
 (defun ensure-write-jobs (tirun jobs-dir progress-callback)
   (let ((*default-pathname-defaults* (pathname jobs-dir)))
@@ -504,38 +555,43 @@ lisp_jobs_only_on=172.234.2.1
       (with-open-file (sout #P"eg5_singlestep.dot" :direction :output)
         (tirundot:draw-graph-stream (list worklist) sout)))))
 
-(defun write-jobs (&key (tirun *tirun*))
+(defun calculate-jobs-dir (name)
   (let* ((jobs-dir (pathname (if (ext:getenv "TIRUN_DIRECTORY")
                                  (uiop:ensure-directory-pathname (ext:getenv "TIRUN_DIRECTORY"))
                                  (merge-pathnames (make-pathname :directory (list :relative "jobs"))
                                                   (uiop:ensure-directory-pathname (ext:getenv "HOME"))))))
-         (job-name (make-simple-input "Job name" :default (job-name *app*)))
+         (dir (merge-pathnames (make-pathname :directory (list
+                                                          :relative
+                                                          name))
+                               jobs-dir)))
+    dir))
+         
+(defun write-jobs (&key (tirun *tirun*))
+  (let* ((job-name (make-simple-input "Job name" :default (job-name *app*)))
          (messages (make-instance 'w:text-area :description "Messages"
                                                :layout (make-instance 'w:layout :width "60em")))
          (progress (make-instance 'w:int-progress :description "Progress"))
-         (go-button (make-instance 'w:button :description "Write jobs"
-                                             :style *button-style*
-                                             :on-click (list
-                                                        (lambda (&rest args)
-                                                          (let* ((name (w:widget-value (input-widget job-name)))
-                                                                 (dir (merge-pathnames (make-pathname :directory (list
-                                                                                                                  :relative
-                                                                                                                  name))
-                                                                                       jobs-dir)))
-                                                            (setf (w:widget-value messages) (format nil "Starting to write jobs dir-> ~a" dir))
-                                                            (if (probe-file dir)
-                                                                (progn
-                                                                  (setf (w:widget-value messages) (format nil "The directory ~a already exists - aborting writing jobs" dir)))
-                                                                (progn
-                                                                  (ensure-directories-exist dir)
-                                                                  (ensure-write-jobs tirun dir (let ((index 0)
-                                                                                                     (lock (bordeaux-threads:make-recursive-lock "progress")))
-                                                                                                 (lambda (max-progress)
-                                                                                                   (bordeaux-threads:with-recursive-lock-held (lock)
-                                                                                                     (setf (w:widget-value progress) index
-                                                                                                           (w:widget-max progress) max-progress)
-                                                                                                     (incf index)))))
-                                                                  (setf (w:widget-value messages) "Done writing jobs"))))))))
+         (go-button (make-instance
+                     'w:button :description "Write jobs"
+                     :style *button-style*
+                     :on-click (list
+                                (lambda (&rest args)
+                                  (let* ((name (w:widget-value (input-widget job-name)))
+                                         (dir (calculate-jobs-dir name)))
+                                    (setf (w:widget-value messages) (format nil "Starting to write jobs dir-> ~a" dir))
+                                    (if (probe-file dir)
+                                        (progn
+                                          (setf (w:widget-value messages) (format nil "The directory ~a already exists - aborting writing jobs" dir)))
+                                        (progn
+                                          (ensure-directories-exist dir)
+                                          (ensure-write-jobs tirun dir (let ((index 0)
+                                                                             (lock (bordeaux-threads:make-recursive-lock "progress")))
+                                                                         (lambda (max-progress)
+                                                                           (bordeaux-threads:with-recursive-lock-held (lock)
+                                                                             (setf (w:widget-value progress) index
+                                                                                   (w:widget-max progress) max-progress)
+                                                                             (incf index)))))
+                                          (setf (w:widget-value messages) "Done writing jobs"))))))))
          )
     (w:observe (input-widget job-name) :value (lambda (instance type name old-value new-value source)
                                                 (setf (job-name *app*) new-value)))
@@ -550,13 +606,18 @@ lisp_jobs_only_on=172.234.2.1
                               (make-instance 'w:h-box
                                              :layout *box-layout*
                                              :children (list messages))))))
-                              
-                                             
-    
 
+(defun read-submit-stream (num)
+  (let ((buffer (make-array 15 :adjustable t :fill-pointer 0)))
+    (flet ((grab ()
+             (loop for line = (read-line (tirun-jupyter::submit-stream tirun-jupyter::*app*) nil :eof)
+                   for index below num
+                   do (vector-push-extend line buffer)
+                   until (eq line :eof))))
+      (grab)
+      buffer)))
 
-
-(defvar *job-messages*)
+(defvar *submit-thread* nil)
 (defun submit-calc (&key (calc *tirun*))
   (let* ((desc-width "12em")
          (desc-style (make-instance 'w:description-style :description-width desc-width))
@@ -566,15 +627,41 @@ lisp_jobs_only_on=172.234.2.1
                                                                    :style *button-style*))
          (messages (make-instance 'w:text-area :description "Messages"
                                                :layout (make-instance 'w:layout :width "60em")))
-         (go-button (make-instance 'jupyter-widgets:button :description "Submit jobs"
-                                                           :style *button-style*
-                                                           :tooltip "Click me"
-                                                           :on-click (list
-                                                                      (lambda (&rest args)
-                                                                        (setf (w:widget-value messages)
-                                                                              (format nil "Submitting job ~a on ~a~%"
-                                                                                      (w:widget-value (input-widget job-name))
-                                                                                      (w:widget-value (input-widget distributor)))))))))
+         (go-button (make-instance
+                     'jupyter-widgets:button
+                     :description "Submit jobs"
+                     :style *button-style*
+                     :tooltip "Click me"
+                     :on-click (list
+                                (lambda (&rest args)
+                                  (let* ((schando-dir (UIOP/PATHNAME:ENSURE-DIRECTORY-PATHNAME
+                                                       (or (ext:getenv "CLASP_SCANDO_PATH")
+                                                           "/Users/meister/Development/schando/src/")))
+                                         (submit-cmd (merge-pathnames (make-pathname :name "submit-to-distributor")
+                                                                      schando-dir))
+                                         (name (w:widget-value (input-widget job-name)))
+                                         (cmd (list (namestring submit-cmd)
+                                                    (namestring (calculate-jobs-dir name))
+                                                    name)))
+                                    (setf (w:widget-value messages)
+                                          (format nil "About to evaluate: ~a" cmd))
+                                    (setf *submit-thread*
+                                          (bordeaux-threads:make-thread
+                                           (lambda ()
+                                             (multiple-value-bind (ret child-pid stream)
+                                                 (ext:vfork-execvp cmd t)
+                                               #+(or)(if (= 0 ret)
+                                                         (setf (w:widget-value messages)
+                                                               (format nil "Successfully submitted job ~s~%" cmd)
+                                                               (submit-stream *app*) stream)
+                                                         (setf (w:widget-value messages)
+                                                               (format nil "Failed to submit job errno: ~a" ret)))
+                                               (sleep 1000000)))
+                                           :name "submit"))
+                                    (progn
+                                      (setf (w:widget-value messages)
+                                            (format nil "Successfully submitted job child-pid ~a~%cmd: ~s~%" pid cmd)
+                                            (submit-stream *app*) stream))))))))
     (jupyter-widgets:observe *app* :job-name (lambda (instance type name old-value new-value source)
                                                (setf (w:widget-value (input-widget job-name)) new-value)))
     (make-instance 'w:v-box
@@ -596,12 +683,33 @@ lisp_jobs_only_on=172.234.2.1
                                              :style *button-style*
                                              :on-click (list
                                                         (lambda (&rest args)
-                                                          (setf (w:widget-value messages)
-                                                                (format nil "Checking job ~a on ~a~%"
-                                                                        (w:widget-value (input-widget job-name))
-                                                                        (w:widget-value (input-widget distributor)))))))))
-    (jupyter-widgets:observe *app* :job-name (lambda (instance type name old-value new-value source)
-                                               (setf (w:widget-value (input-widget job-name)) new-value)))
+                                                          (let* ((schando-dir (UIOP/PATHNAME:ENSURE-DIRECTORY-PATHNAME
+                                                                               (or (ext:getenv "CLASP_SCANDO_PATH")
+                                                                                   "/Users/meister/Development/schando/src/")))
+;;; execute-in-jobdir jobdir default ls \*.SUCCESS \| wc -l
+                                                                 (submit-cmd (merge-pathnames (make-pathname :name "execute-in-jobdir")
+                                                                                              schando-dir))
+                                                                 (name (w:widget-value (input-widget job-name))))
+                                                            (multiple-value-bind (ret child-pid stream)
+                                                                (ext:vfork-execvp (list (namestring submit-cmd)
+                                                                                        (namestring (calculate-jobs-dir name))
+                                                                                        name
+                                                                                        "ls" "-l"
+                                                                                        ) t)
+                                                              (if (= 0 ret)
+                                                                  (let ((buffer (make-string-output-stream)))
+                                                                    (sleep 2)
+                                                                    (tagbody
+                                                                     top
+                                                                       (let ((line (read-line stream nil :eof)))
+                                                                         (unless (eq line :eof)
+                                                                           (format buffer "~a" line)
+                                                                           (go top)))
+                                                                       )
+                                                                    (setf (w:widget-value messages)
+                                                                          (get-output-stream-string buffer)))
+                                                                  (setf (w:widget-value messages)
+                                                                        (format nil "Failed to submit job errno: ~a" ret))))))))))
     (make-instance 'w:v-box
                    :children (list
                               (hbox distributor)
