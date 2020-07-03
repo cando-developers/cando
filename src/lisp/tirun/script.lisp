@@ -12,6 +12,9 @@
    (script-0-setup :initform 'default-script-0-setup :accessor script-0-setup)
    (script-1-leap :initform 'default-script-1-leap :accessor script-1-leap)))
 
+(defun use-smooth-step (morph)
+  (>= (amber-version morph) 20))
+
 (defmethod print-object ((obj tirun-calculation) stream)
   (if *print-readably*
       (progn

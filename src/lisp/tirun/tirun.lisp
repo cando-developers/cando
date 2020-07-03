@@ -308,7 +308,8 @@
 
         
 (defclass tirun-morph ()
-  ((source :initarg :source :accessor source)
+  ((amber-version :initform 18 :initarg :amber-version :accessor amber-version)
+   (source :initarg :source :accessor source)
    (target :initarg :target :accessor target)
    (morph-mask :initarg :morph-mask :accessor morph-mask)
    (stages :initarg :stages :initform 1 :accessor stages)

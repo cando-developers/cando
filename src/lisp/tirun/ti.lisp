@@ -304,8 +304,8 @@
  /
 ")
 
-(defparameter *decharge-recharge-ti-in*
-  "TI simulation
+(defun decharge-recharge-ti-in-script (morph)
+  (format nil "TI simulation
  &cntrl
    imin = 0, nstlim = :%DECHARGE-RECHARGE-TI-IN.NSTLIM%, irest = 1, ntx = 5, dt = :%DT%,
    ntt = 3, temp0 = 298.0, gamma_ln = 2.0, ig = -1,
@@ -317,7 +317,7 @@
    ntwe = 1000, ntwx = 10000, ntpr = 10000, ntwr = 20000,
 
    icfe = 1, clambda = :%LAMBDA%, scalpha = 0.2, scbeta = 50.0,
-   logdvdl = 1, gti_lam_sch=1, gti_output=1,
+   logdvdl = 1, ~a
    ifmbar = 1, mbar_states = :%LAMBDA-WINDOWS-COUNT%,
    mbar_lambda = :%LAMBDA-WINDOWS%
    timask1 = ':%TIMASK1%', timask2 = ':%TIMASK2%',
@@ -326,11 +326,13 @@
 
  &ewald
  / 
-")
+" (if (use-smooth-step morph)
+      "gti_lam_sch=1, gti_output=1,"
+      "")))
 
 
-(defparameter *vdw-ti-in*
-  "TI simulation
+(defun vdw-ti-in (morph)
+  (format nil "TI simulation
  &cntrl
    imin = 0, nstlim = :%VDW-TI-IN.NSTLIM%, irest = 1, ntx = 5, dt = :%DT%,
    ntt = 3, temp0 = 298, gamma_ln = 2.0, ig = -1,
@@ -342,7 +344,7 @@
    ntwe = 1000, ntwx = 10000, ntpr = 10000, ntwr = 20000,
 
    icfe = 1, clambda = :%LAMBDA%, scalpha = 0.2, scbeta = 50.0,
-   logdvdl = 1, gti_lam_sch=1, gti_output=1,
+   logdvdl = 1, ~a
    ifmbar = 1, mbar_states = :%LAMBDA-WINDOWS-COUNT%,
    mbar_lambda = :%LAMBDA-WINDOWS%
    timask1 = ':%TIMASK1%', timask2 = ':%TIMASK2%',
@@ -351,7 +353,9 @@
 
  &ewald
  / 
-")
+" (if (use-smooth-step morph)
+      "gti_lam_sch=1, gti_output=1,"
+      "")))
 
 (defparameter *lambda-sch*
   "TypeEleCC, smooth_step2, complementary, 0.0, 1.0
@@ -1115,14 +1119,16 @@ its for and then create a new class for it."))
 	  -O :%OPTION-OUTPUTS%"))))
 
 (defun make-ti-step (morph side stage lam lambda-values &key input-coordinate-file input-topology-file)
-  (let ((schedule-file (make-instance 'morph-side-stage-lambda-amber-schedule
-                                      :morph morph
-                                      :side side
-                                      :stage stage
-                                      :lambda% lam
-                                      :name "lambda"
-                                      :extension "sch"
-                                      :script *lambda-sch*))
+  (let ((schedule-file (if (use-smooth-step morph)
+                           (make-instance 'morph-side-stage-lambda-amber-schedule
+                                          :morph morph
+                                          :side side
+                                          :stage stage
+                                          :lambda% lam
+                                          :name "lambda"
+                                          :extension "sch"
+                                          :script *lambda-sch*)
+                           nil))
         (script (make-instance 'morph-side-stage-lambda-amber-script
                                :morph morph
                                :side side
@@ -1130,20 +1136,26 @@ its for and then create a new class for it."))
                                :lambda% lam
                                :name "ti"
                                :script (cond
-                                         ((eq stage :decharge) *decharge-recharge-ti-in*)
-                                         ((eq stage :recharge) *decharge-recharge-ti-in*)
-                                         ((eq stage :vdw-bonded) *vdw-ti-in*)
-                                         ((null stage) *vdw-ti-in*)
+                                         ((eq stage :decharge) (decharge-recharge-ti-in morph))
+                                         ((eq stage :recharge) (decharge-recharge-ti-in morph))
+                                         ((eq stage :vdw-bonded) (vdw-ti-in morph))
+                                         ((null stage) (vdw-ti-in morph))
                                          (t (error "Illegal stage ~a for make-ti-step script - what do I do with this?" stage))))))
     (connect-graph
      (make-instance 'morph-side-stage-lambda-amber-job
                     :lambda% lam
                     :lambda-values lambda-values
-                    :scripts (list script schedule-file)
-                    :inputs (arguments :-i script
-                                       :%LAMBDA-SCH% schedule-file
-                                       :-c input-coordinate-file
-                                       :-p input-topology-file)
+                    :scripts (list* script
+                                    (if (use-smooth-step morph)
+                                        (list schedule-file)
+                                        nil))
+                    :inputs (apply 'arguments
+                                   (list* :-i script
+                                          :-c input-coordinate-file
+                                          :-p input-topology-file
+                                          (if (use-smooth-step morph)
+                                              (list :%LAMBDA-SCH% schedule-file)
+                                              nil)))
                     :outputs (arguments :-o (make-instance 'morph-side-stage-lambda-unknown-file :morph morph :side side :stage stage :lambda% lam :name "ti001" :extension "out")
                                         :-inf (make-instance 'morph-side-stage-lambda-unknown-file :morph morph :side side :stage stage :lambda% lam :name "ti001" :extension "info")
                                         :-e (make-instance 'morph-side-stage-lambda-unknown-file :morph morph :side side :stage stage :lambda% lam :name "ti001" :extension "en")

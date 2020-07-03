@@ -507,7 +507,8 @@
                                                          :layout *box-layout*
                                                          :children (list messages)))))))))
 
-(defun ensure-write-jobs (tirun jobs-dir progress-callback)
+(defun ensure-write-jobs (tirun jobs-dir &optional progress-callback)
+  (ensure-directories-exist jobs-dir)
   (let ((*default-pathname-defaults* (pathname jobs-dir)))
     (ext:chdir *default-pathname-defaults*)
     (tirun:build-job-nodes tirun)
@@ -535,7 +536,7 @@ lisp_jobs_only_on=172.234.2.1
                                                           name))
                                jobs-dir)))
     dir))
-         
+
 (defun write-jobs (&key (tirun *tirun*))
   (let* ((job-name (make-simple-input "Job name" :default (job-name *app*)))
          (messages (make-instance 'w:text-area :description "Messages"
@@ -553,7 +554,6 @@ lisp_jobs_only_on=172.234.2.1
                                         (progn
                                           (setf (w:widget-value messages) (format nil "The directory ~a already exists - aborting writing jobs" dir)))
                                         (progn
-                                          (ensure-directories-exist dir)
                                           (ensure-write-jobs tirun dir (let ((index 0)
                                                                              (lock (bordeaux-threads:make-recursive-lock "progress")))
                                                                          (lambda (max-progress)
