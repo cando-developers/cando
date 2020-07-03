@@ -94,13 +94,13 @@
 "minimisation
  &cntrl
    imin = 1, ntmin = 2,
-   maxcyc = 50000,
+   maxcyc = :%PREPARE-MIN-IN.MAXCYC%,
    ntpr = 20, ntwe = 20,
    ntb = 1,
    ntr = 1, restraint_wt = 5.00,
    restraintmask='!:WAT & !@H=',
 
-   icfe = 1, ifsc = 1, clambda = 0.5, scalpha = 0.2, scbeta = 50.0,
+   icfe = 1, ifsc = 1, clambda = 0.5, scalpha = :%SCALPHA%, scbeta = :%SCBETA%,
    logdvdl = 0,
    timask1 = ':%TIMASK1%', timask2 = ':%TIMASK2%',
    scmask1 = ':%SCMASK1%', scmask2 = ':%SCMASK2%'
@@ -125,7 +125,7 @@
    ntr = 1, restraint_wt = 5.00,
    restraintmask='!:WAT & !@H=',
 
-   icfe = 1, ifsc = 1, clambda = 0.5, scalpha = 0.2, scbeta = 50.0,
+   icfe = 1, ifsc = 1, clambda = 0.5, scalpha = :%SCALPHA%, scbeta = :%SCBETA%,
    logdvdl = 0,
    timask1 = ':%TIMASK1%', timask2 = ':%TIMASK2%',
    scmask1 = ':%SCMASK1%', scmask2 = ':%SCMASK2%'
@@ -160,7 +160,7 @@
    ntr = 1, restraint_wt = :%PREPARE-REST-WT%,
    restraintmask='!:WAT & !@H=',
 
-   icfe = 1, ifsc = 1, clambda = 0.5, scalpha = 0.2, scbeta = 50.0,
+   icfe = 1, ifsc = 1, clambda = 0.5, scalpha = :%SCALPHA%, scbeta = :%SCBETA%,
    logdvdl = 0,
    timask1 = ':%TIMASK1%', timask2 = ':%TIMASK2%',
    scmask1 = ':%SCMASK1%', scmask2 = ':%SCMASK2%'
@@ -250,7 +250,7 @@
    ntr = 1, restraint_wt = 5.00,
    restraintmask='!:WAT & !@H=',
 
-   icfe = 1, clambda = :%LAMBDA%, scalpha = 0.2, scbeta = 50.0,
+   icfe = 1, clambda = :%LAMBDA%, scalpha = :%SCALPHA%, scbeta = :%SCBETA%,
    logdvdl = 0,
    timask1 = ':%TIMASK1%', timask2 = ':%TIMASK2%',
    ifsc = :%IFSC%, CRGMASK = ':%CRGMASK%'
@@ -285,7 +285,7 @@
    ntr = 1, restraint_wt = 5.00,
    restraintmask='!:WAT & !@H=',
 
-   icfe = 1, clambda = :%LAMBDA%, scalpha = 0.5, scbeta = 12.0,
+   icfe = 1, clambda = :%LAMBDA%, scalpha = :%SCALPHA%, scbeta = :%SCBETA%,
    logdvdl = 0,
    timask1 = ':%TIMASK1%', timask2 = ':%TIMASK2%',
    ifsc = :%IFSC%, scmask1=':%SCMASK1%', scmask2=':%SCMASK2%', crgmask = ':%CRGMASK%'
@@ -316,7 +316,7 @@
    ioutfm = 1, iwrap = 0,
    ntwe = 1000, ntwx = 10000, ntpr = 10000, ntwr = 20000,
 
-   icfe = 1, clambda = :%LAMBDA%, scalpha = 0.2, scbeta = 50.0,
+   icfe = 1, clambda = :%LAMBDA%, scalpha = :%SCALPHA%, scbeta = :%SCBETA%,
    logdvdl = 1, ~a
    ifmbar = 1, mbar_states = :%LAMBDA-WINDOWS-COUNT%,
    mbar_lambda = :%LAMBDA-WINDOWS%
@@ -343,7 +343,7 @@
    ioutfm = 1, iwrap = 0,
    ntwe = 1000, ntwx = 10000, ntpr = 10000, ntwr = 20000,
 
-   icfe = 1, clambda = :%LAMBDA%, scalpha = 0.2, scbeta = 50.0,
+   icfe = 1, clambda = :%LAMBDA%, scalpha = :%SCALPHA%, scbeta = :%SCBETA%,
    logdvdl = 1, ~a
    ifmbar = 1, mbar_states = :%LAMBDA-WINDOWS-COUNT%,
    mbar_lambda = :%LAMBDA-WINDOWS%

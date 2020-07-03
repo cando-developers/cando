@@ -362,6 +362,7 @@
 (defvar *default-calculation-settings*
   '(("Simulation Input Parameters"
      ((:%DECHARGE-RECHARGE-TI-IN.NSTLIM% "Decharge/recharge nstlim" (3000000 3000)) ; if *testing* must be >= 3000
+      (:%PREPARE-MIN-IN.MAXCYC% "Number of steepest decent minimization steps" (50000))
       (:%VDW-TI-IN.NSTLIM% "Vdw nstlim" (3000000 3000)) ; if *testing* must be >= 3000
       (:%PREPARE-HEAT-IN.NSTLIM% "PREPARE-HEAT-IN.NSTLIM" (100000 3000))
       (:%PREPARE-PRESS-IN.NSTLIM% "PREPARE-PRESS-IN.NSTLIM" (2500000 3000))
@@ -373,6 +374,8 @@
       (:%NTC% "SHAKE-on (2) SHAKE-off (1) [NTC]" 2)
       (:%NTF% "Force calculation-on (1) -off (2) [NTF]" 1)
       (:%TEMP0% "Constant temperature" 300.0 )
+      (:%SCALPHA% "Softcore alpha in potential for 1 and 3 step TI" 0.5)
+      (:%SCBETA% "Softcore beta in Coulomb eq. for 1 step TI" 12.0) 
       ))))
 
 (defun default-calculation-settings (&key (default-settings *default-calculation-settings*) testing)
