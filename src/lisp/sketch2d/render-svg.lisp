@@ -156,7 +156,7 @@ This will place the calculated bond on one or the other side of the x1,y1-x2,y2 
          (xs1 (geom:vx pos))
          (ys1 (geom:vy pos))
          (label (string (chem:get-name (atom atom-node)))))
-    (cl-svg:text scene (:x xs1 :y (- ys1 *lower-text*) :text-anchor "left" :alignment-baseline "left") label)))
+    (cl-svg:text scene (:x xs1 :y (- ys1 *lower-text*) :class "small" :text-anchor "left" :alignment-baseline "left") label)))
 
 (defun draw-atom-text (scene atom-node)
   (let* ((pos (pos atom-node))
@@ -500,6 +500,7 @@ This will place the calculated bond on one or the other side of the x1,y1-x2,y2 
         do (draw-bond scene line)))
 
 (defun render-sketch (scene sketch)
+  (cl-svg:style scene ".small { font: italic 9px sans-serif; fill: red;}")
   (loop for bond-node in (bond-nodes sketch)
         for count from 0
         do (render-dbg "bond-node #~a~%" count)
