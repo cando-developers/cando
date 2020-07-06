@@ -12,6 +12,7 @@
                :netcdf
                :cando-user
                :static-vectors
+               :smarts-jupyter
                )
   :serial t
   :components
