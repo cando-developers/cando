@@ -14,3 +14,10 @@
   (let ((smiles:*atom-maps?* t))
     (bp:with-builder (builder)
       (esrap:parse 'smarts input))))
+
+
+(defun parse-smirks (input builder)
+  (let ((smiles:*atom-maps?* t))
+    (bp:with-builder (builder)
+      (let ((cons-result (esrap:parse 'smirks input)))
+        (values (car cons-result) (cdr cons-result))))))

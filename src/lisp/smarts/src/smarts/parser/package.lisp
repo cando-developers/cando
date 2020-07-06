@@ -24,4 +24,8 @@
 
   ;; Parser protocol
   (:export
-   #:parse))
+   #:parse)
+  ;; Smirks
+  (:export
+   #:parse-smirks
+))

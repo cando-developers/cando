@@ -61,6 +61,7 @@ This is an open source license for the CANDO software from Temple University, bu
 
 
 SYMBOL_EXPORT_SC_(ChemPkg,parse_smarts);
+SYMBOL_EXPORT_SC_(ChemPkg,parse_smirks);
 SYMBOL_EXPORT_SC_(ChemPkg,compile_antechamber_type_rule);
 
 
@@ -143,6 +144,7 @@ string sabToString(BondEnum sabType) {
 }
 
 
+
 void walk_nodes(ChemInfoNode_sp node, std::function<void(ChemInfoNode_sp)> const &fn) {
   fn(node);
   core::List_sp childs = node->children();
@@ -186,6 +188,17 @@ size_t calculate_max_tags(ChemInfoNode_sp node) {
 }
 
 
+
+CL_DEFUN void chem__walk_chem_info_with_parent(ChemInfoNode_sp top, core::T_sp callback)
+{
+  walk_nodes_with_parent(_Nil<core::T_O>(),top,
+                         [&callback]
+                         (core::T_sp parentOrNil, ChemInfoNode_sp node) {
+                           core::eval::funcall(callback,parentOrNil,node);
+                           return true;
+                         }
+                         );
+};
 
   
 ChemInfoMatch_sp ChemInfoMatch_O::make( Root_sp root, size_t maxTag, core::HashTableEql_sp ringLookup) {
@@ -2560,6 +2573,27 @@ CL_DEFUN SmartsRoot_sp chem__compile_smarts(const string& code, core::List_sp te
 }
 
 
+
+CL_LAMBDA(code &key tests);
+CL_DEFUN Smirks_sp chem__compile_smirks(const string& code, core::List_sp tests) {
+  core::SimpleBaseString_sp scode = core::SimpleBaseString_O::make(code);
+  core::T_mv nodes = core::eval::funcall(_sym_parse_smirks,scode);
+  ChemInfoNode_sp reactant = gc::As<ChemInfoNode_sp>(nodes);
+  ChemInfoNode_sp product = gc::As<ChemInfoNode_sp>(nodes.second());
+  size_t max_reactant_tag = calculate_max_tags(reactant);
+  size_t max_product_tag = calculate_max_tags(product);
+  if (max_reactant_tag<max_product_tag) {
+    SIMPLE_ERROR(BF("The largest tag in the product must be equal to or less than the largest tag in the reactant"));
+  }
+//  printf("%s:%d:%s  node-> %s\n", __FILE__, __LINE__, __FUNCTION__, _rep_(node).c_str());
+  SmartsRoot_sp reactant_root = SmartsRoot_O::make(code,reactant,max_reactant_tag);
+  SmartsRoot_sp product_root = SmartsRoot_O::make(code,product,max_product_tag);
+  reactant_root->setTests(tests);
+  product_root->setTests(tests);
+  return Smirks_O::make(reactant_root,product_root);
+}
+
+
 CL_DEFUN AntechamberRoot_mv chem__compile_antechamber(const string& code, WildElementDict_sp dict) {
   if (!chem::_sym_compile_antechamber_type_rule->fboundp()) {
     SIMPLE_ERROR(BF("chem:compile-antechamber-type-rule is not fbound"));
@@ -3435,6 +3469,12 @@ CL_DEFUN core::List_sp chem__boost_graph_mcgregor_common_subgraphs(MoleculeGraph
   return _Nil<core::T_O>();
 }
 
+
+void Smirks_O::fields(core::Record_sp node) {
+  node->field(INTERN_(kw, reactant), this->_reactant);
+  node->field(INTERN_(kw, product), this->_product);
+}
+
 #if 0
 CL_DEFUN core::List_sp chem__boost_graph_mcgregor_common_subgraphs_maximum(MoleculeGraph_sp moleculeGraph1, MoleculeGraph_sp moleculeGraph2,
                                                                    bool only_connected_subgraphs) {
@@ -3462,7 +3502,7 @@ CL_DEFUN core::List_sp chem__boost_graph_mcgregor_common_subgraphs_maximum_uniqu
                           my_callback,
                           boost::edges_equivalent(edge_comp).vertices_equivalent(vertex_comp));
   return _Nil<core::T_O>();
-}e
+}
 #endif
 
 //#endif

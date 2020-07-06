@@ -33,6 +33,8 @@
    #:print-smarts
    #:match
    #:with-rings-do
+   #:compile-smirks
+   #:smirks
    ))
 
 

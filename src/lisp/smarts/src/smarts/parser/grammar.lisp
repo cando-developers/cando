@@ -13,6 +13,11 @@
 
 (cl:in-package #:language.smarts.parser)
 
+(defrule smirks (and smarts ">>" smarts)
+  (:destructure (reagent dummy product &bounds start end)
+                (declare (ignore dummy))
+                (cons reagent product)))
+
 (defrule smarts
     (and atom-pattern (? chain-elements))
   (:destructure (atom elements &bounds start end)

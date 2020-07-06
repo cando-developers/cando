@@ -1102,6 +1102,30 @@ public:
   SmartsRoot_O() {};
 };
 
+FORWARD(Smirks);
+class Smirks_O : public core::CxxObject_O
+{
+  LISP_CLASS(chem,ChemPkg,Smirks_O,"Smirks",core::CxxObject_O);
+public:
+  bool fieldsp() const { return true; };
+  void	fields(core::Record_sp node);
+public:
+  CL_LISPIFY_NAME("make-smirks");
+  CL_DEF_CLASS_METHOD static Smirks_sp make(SmartsRoot_sp r, SmartsRoot_sp p) {
+    GC_ALLOCATE_VARIADIC(Smirks_O,smirks,r,p);
+    return smirks;
+  }
+
+  CL_DEFMETHOD SmartsRoot_sp reactant() { return this->_reactant; };
+  CL_DEFMETHOD SmartsRoot_sp product() { return this->_product; };
+
+  Smirks_O(SmartsRoot_sp r, SmartsRoot_sp p) : _reactant(r), _product(p) {};
+
+  SmartsRoot_sp _reactant;
+  SmartsRoot_sp _product;
+  
+};
+
 };
 
 namespace chem {

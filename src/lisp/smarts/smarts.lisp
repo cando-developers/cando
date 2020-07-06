@@ -774,3 +774,15 @@ results of calling chem:identify-rings.  This macro wraps that code."
   (chem:initialize-smarts-users))
 
 
+(defun chem:parse-smirks (code)
+  (multiple-value-bind (reactant product)
+      (language.smarts.parser:parse-smirks code :cando)
+    (with-top-walk
+        (walk-smarts nil reactant))
+    (with-top-walk
+        (walk-smarts nil product))
+    (values reactant product)))
+
+
+                     
+
