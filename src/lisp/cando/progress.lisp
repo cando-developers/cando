@@ -43,7 +43,7 @@
               (stars (make-string (max 0 star-width) :initial-element (progress-bar-bar-character bar)))
               (lines (make-string (max 0 (- (progress-bar-width bar) star-width)) :initial-element #\.)))
          (format t "~C~va [~a~a] ETC: ~a"
-                 (if (member :interactive *features*) #\return #\space)
+                 (if (core:is-interactive-lisp) #\return #\space)
                  (progress-bar-message-width bar)
                  (progress-bar-message bar)
                  stars
@@ -51,7 +51,7 @@
                  (progress-convenient-time remaining-time))))
       (otherwise
        (format t "~C~va ~5,1f%~@[ elapsed: ~a~]~@[ ETC: ~a~]   "
-               (if (member :interactive *features*) #\return #\space)
+               (if (core:is-interactive-lisp) #\return #\space)
                (progress-bar-message-width bar)
                (progress-bar-message bar)
                (floor (* fraction 100.0))
