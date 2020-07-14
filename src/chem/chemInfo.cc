@@ -2551,7 +2551,7 @@ CL_DEFMETHOD core::Vector_sp ChemInfoMatch_O::tags_as_vector() const {
   return this->_TagLookup;
 }
 
-CL_DEFMETHOD core::HashTable_sp ChemInfoMatch_O::tags_as_hashtable() const {
+CL_DEFMETHOD core::HashTableEql_sp ChemInfoMatch_O::tags_as_hashtable() const {
   core::HashTableEql_sp ht = core::HashTableEql_O::create_default();
   for ( size_t ii=0; ii<this->_TagLookup->length(); ++ii ) {
     if (this->_TagLookup->rowMajorAref(ii).notnilp()) {

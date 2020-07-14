@@ -92,7 +92,7 @@ size_t calculate_maxtag(ChemInfoNode_sp node);
 CL_LISPIFY_NAME("tag");
 CL_DEFMETHOD     chem::Atom_sp tag(core::T_sp tag) { return this->getAtomWithTag(tag);};
     CL_DEFMETHOD core::List_sp tag_history() const { return this->_TagHistory; };
-    core::HashTable_sp tags_as_hashtable() const;
+    core::HashTableEql_sp tags_as_hashtable() const;
     core::Vector_sp tags_as_vector() const;
     void forgetAtomTag(core::T_sp tag);
 
