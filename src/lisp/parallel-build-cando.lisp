@@ -201,8 +201,7 @@
                      (let ((pid pid-or-error))
                        (if (= pid 0)
                            (progn
-                             ;; Turn off interactive mode so that errors cause clasp to die with backtrace
-                             (core:set-interactive-lisp nil)
+                             (ext:disable-debugger)
                              (let ((new-sigset (core:make-cxx-object 'core:sigset))
                                    (old-sigset (core:make-cxx-object 'core:sigset)))
                                (core:sigset-sigaddset new-sigset 'core:signal-sigint)
