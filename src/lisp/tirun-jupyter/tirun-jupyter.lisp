@@ -627,11 +627,7 @@ lisp_jobs_only_on=172.234.2.1
                                                          (setf (w:widget-value messages)
                                                                (format nil "Failed to submit job errno: ~a" ret)))
                                                (sleep 1000000)))
-                                           :name "submit"))
-                                    (progn
-                                      (setf (w:widget-value messages)
-                                            (format nil "Successfully submitted job child-pid ~a~%cmd: ~s~%" pid cmd)
-                                            (submit-stream *app*) stream))))))))
+                                           :name "submit"))))))))
     (jupyter-widgets:observe *app* :job-name (lambda (instance type name old-value new-value source)
                                                (setf (w:widget-value (input-widget job-name)) new-value)))
     (make-instance 'w:v-box
