@@ -151,7 +151,7 @@
    ntt = 3, temp0 = :%TEMP0%, gamma_ln = 2.0, ig = -1,
    tautp = 1.0,
    vlimit = 20,
-   ntp = 1, pres0 = 1.0, taup = 2.0,
+   ntp = 1, pres0 = 1.01325, taup = 2.0,
    ntb = 2,
    ntc = :%NTC%, ntf = :%NTF%,
    ioutfm = 1, iwrap = 1,
@@ -170,6 +170,30 @@
 
 ")
 
+(defparameter *prepare-ti-in*
+  "TI simulation for cpu run
+ &cntrl
+   imin = 0, nstlim = :%VDW-TI-IN.NSTLIM%, irest = 1, ntx = 5, dt = :%DT%,
+   ntt = 3, temp0 = 298, gamma_ln = 2.0, ig = -1,
+   vlimit = 20,
+   ntc = 1, ntf = :%NTF%,
+   ntb = 2,
+   ntp = 1, pres0 = 1.01325, taup = 2.0,
+   ioutfm = 1, iwrap = 0,
+   ntwe = 1000, ntwx = 10000, ntpr = 10000, ntwr = 20000,
+
+   icfe = 1, clambda = 0.5, scalpha = :%SCALPHA%, scbeta = :%SCBETA%,
+   logdvdl = 1,
+   ifmbar = 1, mbar_states = 11,
+   mbar_lambda = 0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0,
+   timask1 = ':%TIMASK1%', timask2 = ':%TIMASK2%',
+   ifsc = 1, scmask1=':%SCMASK1%', scmask2=':%SCMASK2%', crgmask = ':%SCMASK1%|:%SCMASK2%'
+ /
+
+ &ewald
+ /
+ 
+")
 
 (defun build-decharge-recharge-aggregate (top-crd keep-index)
   (let ((aggregate (leap.topology:aggregate top-crd))
@@ -1067,18 +1091,25 @@ its for and then create a new class for it."))
          (min.rst (output-file min-job :-r))
          (heat-job (make-morph-side-prepare-job morph side
                                                 :name "heat"
-                                                :executable "pmemd.cuda"
+                                                :executable "pmemd"
                                                 :script *prepare-heat-in*
                                                 :input-coordinate-file min.rst
                                                 :input-topology-file input-topology-file))
          (heat.rst (output-file heat-job :-r))
          (press-job (make-morph-side-prepare-job morph side
                                                  :name "press"
-                                                 :executable "pmemd.cuda"
+                                                 :executable "pmemd"
                                                  :script *prepare-press-in*
                                                  :input-coordinate-file heat.rst
+                                                 :input-topology-file input-topology-file))
+         (press.rst (output-file press-job :-r))
+         (ti-job (make-morph-side-prepare-job morph side
+                                                 :name "ti-cpu"
+                                                 :executable "pmemd"
+                                                 :script *prepare-ti-in*
+                                                 :input-coordinate-file press.rst
                                                  :input-topology-file input-topology-file)))
-    press-job))
+    ti-job))
 
 (defun make-heat-ti-step (morph side stage lam lambda-values &key input-coordinate-file input-topology-file)
   (let ((script (make-instance 'morph-side-stage-lambda-amber-script
@@ -1134,7 +1165,7 @@ its for and then create a new class for it."))
                                :side side
                                :stage stage
                                :lambda% lam
-                               :name "ti"
+                               :name "ti-gpu"
                                :script (cond
                                          ((eq stage :decharge) (decharge-recharge-ti-in morph))
                                          ((eq stage :recharge) (decharge-recharge-ti-in morph))
