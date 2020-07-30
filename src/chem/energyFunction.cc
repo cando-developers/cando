@@ -1333,9 +1333,10 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatterWithAtomTypes(Matter_sp matte
     }    
     core::List_sp solvent = solvent_molecules.cons();
     first_solvent_molecule_nspsol = number_of_molecules_nspm+1;
-    if (chem__verbose(0)) {
+    if (chem__verbose(1)) {
       if (core::cl__length(solvent)>0) {
-        Molecule_sp onemol = gc::As<Molecule_sp>(oCar(oCar(solvent)));
+        
+        Molecule_sp onemol = gc::As<Molecule_sp>(oCar(solvent));
         core::T_sp force_field_name = onemol->force_field_name();
         core::write_bf_stream(BF("Generating parameters for solvent %s using %s force-field.\n") % _rep_(onemol->getName()) % _rep_(force_field_name) );
       }
@@ -1786,6 +1787,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter
         core::List_sp priority = a1->getNeighborsByRelativePriority();
         ASSERTP(core::cl__length(priority) == 4, "There must be 4 neighbors to assign stereochemistry");
         core::List_sp cur = priority;
+        if (chem__verbose(2)) core::write_bf_stream(BF("Assigning stereochemistry for central atom %s neighbors: %s\n") % _rep_(a1) % _rep_(cur));
         n1 = cur.asCons()->car<Atom_O>();
         cur = cur.asCons()->cdr();
         n2 = cur.asCons()->car<Atom_O>();
