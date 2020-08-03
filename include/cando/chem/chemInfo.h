@@ -1172,15 +1172,18 @@ template <>
 struct gctools::GCInfo<chem::MoleculeGraph_O> {
   static bool constexpr NeedsInitialization = true;
   static bool constexpr NeedsFinalization = false;
-  static GCInfo_policy constexpr Policy = collectable_immobile;
+  static GCInfo_policy constexpr Policy = normal;
 };
 
+namespace core {
+FORWARD(ImmobileObject);
+};
 
 namespace chem {
 struct MoleculeVertexData {
-  MoleculeGraph_O* _moleculeGraph;
+  core::ImmobileObject_sp _moleculeGraphIndirect;
   int _AtomIndex;
-  MoleculeVertexData(MoleculeGraph_O* g, int i) : _moleculeGraph(g), _AtomIndex(i) {};
+  MoleculeVertexData(core::ImmobileObject_sp g, int i) : _moleculeGraphIndirect(g), _AtomIndex(i) {};
   MoleculeVertexData(): _AtomIndex(-1) {};
 };
 
@@ -1215,6 +1218,7 @@ public:
   core::HashTableEq_sp     _nodes_to_index;
   core::ComplexVector_T_sp _nodes;
   MoleculeGraphType*       _moleculeGraph;
+  core::ImmobileObject_sp  _immobileSelfIndirect;
   size_t                   _num_edges;
 public:
 
@@ -1246,7 +1250,7 @@ template <>
 struct gctools::GCInfo<chem::ChemInfoGraph_O> {
   static bool constexpr NeedsInitialization = true;
   static bool constexpr NeedsFinalization = false;
-  static GCInfo_policy constexpr Policy = collectable_immobile;
+  static GCInfo_policy constexpr Policy = normal;
 };
 
 
@@ -1255,9 +1259,9 @@ namespace chem {
 
 
 struct ChemInfoVertexData {
-  ChemInfoGraph_O* _chemInfoGraph;
+  core::ImmobileObject_sp _chemInfoGraphIndirect;
   int _NodeIndex;
-  ChemInfoVertexData(ChemInfoGraph_O* g, int i) : _chemInfoGraph(g), _NodeIndex(i) {};
+  ChemInfoVertexData(core::ImmobileObject_sp g, int i) : _chemInfoGraphIndirect(g), _NodeIndex(i) {};
   ChemInfoVertexData() : _NodeIndex(-1) {};
 };
 
@@ -1312,6 +1316,7 @@ public:
   gctools::Vec0<ChemInfoNode_sp> _atomNodes;
   gctools::Vec0<BondToAtomTest_sp> _bondNodes;
   ChemInfoGraphType*     _chemInfoGraph;
+  core::ImmobileObject_sp _immobilePointerToSelf;
 public:
 
   ChemInfoGraph_O(Root_sp);

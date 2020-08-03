@@ -51,6 +51,7 @@ This is an open source license for the CANDO software from Temple University, bu
 //#include "core/archiveNode.h"
 #include <clasp/core/evaluator.h>
 #include <clasp/core/lispStream.h>
+#include <clasp/core/externalObject.h>
 #include <clasp/core/environment.h>
 //#include "boundFrame.h"
 #include <cando/adapt/symbolMap.h>
@@ -2823,7 +2824,8 @@ CL_DEFMETHOD size_t MoleculeGraph_O::add_vertex(core::T_sp vertex)
   size_t index = this->_nodes->length();
   this->_nodes_to_index->setf_gethash(vertex,core::make_fixnum(index));
   this->_nodes->vectorPushExtend(vertex);
-  boost::add_vertex(MoleculeVertexData(this,index),*this->_moleculeGraph);
+  core::ImmobileObject_sp holder = core::ImmobileObject_O::make_immobile_object(this->asSmartPtr());
+  boost::add_vertex(MoleculeVertexData(holder,index),*this->_moleculeGraph);
   return index;
 }
 
@@ -2888,6 +2890,7 @@ void MoleculeGraph_O::initialize() {
 CL_DEFUN MoleculeGraph_sp chem__make_molecule_graph() {
   GC_ALLOCATE_VARIADIC(MoleculeGraph_O,graph);
   graph->_moleculeGraph = new MoleculeGraphType();
+  graph->_immobileSelfIndirect = core::ImmobileObject_O::make_immobile_object(graph);
   return graph;
 }
 
@@ -2908,8 +2911,9 @@ CL_DEFUN MoleculeGraph_sp chem__make_molecule_graph_from_molecule(Molecule_sp ma
     //create an -undirected- graph type, using vectors as the underlying containers
     //and an adjacency_list as the basic representation
   graph->_moleculeGraph = new MoleculeGraphType();
+  core::ImmobileObject_sp io = core::ImmobileObject_O::make_immobile_object(graph);
   for ( size_t iii=0; iii<graph->_nodes->length(); iii++ ) {
-    add_vertex(MoleculeVertexData(&*graph,iii),*graph->_moleculeGraph);
+    add_vertex(MoleculeVertexData(io,iii),*graph->_moleculeGraph);
   }
   
     //Example uses an array, but we can easily use another container type
@@ -2966,6 +2970,7 @@ CL_DOCSTRING(R"doc(Make a chem:chem-info-graph from a chem:root object)doc");
 CL_DEFUN ChemInfoGraph_sp chem__make_chem_info_graph(Root_sp pattern)
 {
   GC_ALLOCATE_VARIADIC(ChemInfoGraph_O,graph,pattern);
+  graph->_immobilePointerToSelf = core::ImmobileObject_O::make_immobile_object(graph);
   if (chem__verbose(1)) {
     core::write_bf_stream(BF("Starting make-chem-info-graph\n"));
   }
@@ -3060,7 +3065,7 @@ CL_DEFUN ChemInfoGraph_sp chem__make_chem_info_graph(Root_sp pattern)
                                // The parent is NIL - we are at the top, create a vertex
                                size_t index = head_index.unsafe_fixnum();
                                if (chem__verbose(1)) core::write_bf_stream(BF("Adding vertex: %d\n") % index );
-                               add_vertex(ChemInfoVertexData(&*graph,index),*graph->_chemInfoGraph);
+                               add_vertex(ChemInfoVertexData(graph->_immobilePointerToSelf,index),*graph->_chemInfoGraph);
                                graph->_nodeOrder.push_back(index);
                              } else {
                                SIMPLE_ERROR(BF("Hit an AtomTest but it wasn't the only thing in the tree - parent should be NIL but is: %s") % _rep_(parentOrNil));
@@ -3081,7 +3086,7 @@ CL_DEFUN ChemInfoGraph_sp chem__make_chem_info_graph(Root_sp pattern)
                                // The parent is NIL - we are at the top, create a vertex
                                size_t index = head_index.unsafe_fixnum();
                                if (chem__verbose(1)) core::write_bf_stream(BF("Adding vertex: %d\n") % index );
-                               add_vertex(ChemInfoVertexData(&*graph,index),*graph->_chemInfoGraph);
+                               add_vertex(ChemInfoVertexData(graph->_immobilePointerToSelf,index),*graph->_chemInfoGraph);
                                graph->_nodeOrder.push_back(index);
                              } else {
                                SIMPLE_ERROR(BF("Hit an Logical but it wasn't the only thing in the tree - parent should be NIL but is: %s") % _rep_(parentOrNil));
@@ -3110,7 +3115,7 @@ CL_DEFUN ChemInfoGraph_sp chem__make_chem_info_graph(Root_sp pattern)
                                // The parent is NIL - we are at the top, create a vertex
                                size_t index = head_index.unsafe_fixnum();
                                if (chem__verbose(1)) core::write_bf_stream(BF("Adding vertex: %d\n") % index );
-                               add_vertex(ChemInfoVertexData(&*graph,index),*graph->_chemInfoGraph);
+                               add_vertex(ChemInfoVertexData(graph->_immobilePointerToSelf,index),*graph->_chemInfoGraph);
                                graph->_nodeOrder.push_back(index);
                              } else {
                                ChemInfoNode_sp parent = gc::As_unsafe<ChemInfoNode_sp>(parentOrNil);
@@ -3123,7 +3128,7 @@ CL_DEFUN ChemInfoGraph_sp chem__make_chem_info_graph(Root_sp pattern)
                                  // If parentOrNil is not NIL and it has a parent then keep adding to the graph
                                  size_t index = head_index.unsafe_fixnum();
                                  if (chem__verbose(1)) core::write_bf_stream(BF("Adding vertex: %d\n") % index );
-                                 add_vertex(ChemInfoVertexData(&*graph,index),*graph->_chemInfoGraph);
+                                 add_vertex(ChemInfoVertexData(graph->_immobilePointerToSelf,index),*graph->_chemInfoGraph);
                                  graph->_nodeOrder.push_back(index);
                                  ChemInfoNode_sp up = gc::As<ChemInfoNode_sp>(tup);
                                  core::T_sp up_index = graph->_nodes_to_index->gethash(up);
