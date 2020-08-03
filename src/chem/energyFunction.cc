@@ -1333,9 +1333,9 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatterWithAtomTypes(Matter_sp matte
     }    
     core::List_sp solvent = solvent_molecules.cons();
     first_solvent_molecule_nspsol = number_of_molecules_nspm+1;
-    if (chem__verbose(0)) {
+    if (chem__verbose(1)) {
       if (core::cl__length(solvent)>0) {
-        Molecule_sp onemol = gc::As<Molecule_sp>(oCar(oCar(solvent)));
+        Molecule_sp onemol = gc::As<Molecule_sp>(oCar(solvent));
         core::T_sp force_field_name = onemol->force_field_name();
         core::write_bf_stream(BF("Generating parameters for solvent %s using %s force-field.\n") % _rep_(onemol->getName()) % _rep_(force_field_name) );
       }
