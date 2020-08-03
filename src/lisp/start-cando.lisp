@@ -96,6 +96,4 @@
   (core:symbol-global-value-set '*package* (find-package :cando-user))
   )
 
-;; Startup lparallels
-(cando:lazy-setup-lparallel-kernel)
 
