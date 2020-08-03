@@ -751,7 +751,7 @@ CL_DEFMETHOD     bool	Atom_O::isBondedToElementOrder(Element el, BondOrder o)
 CL_LISPIFY_NAME("hasBondWithOrder");
 CL_DEFMETHOD     bool Atom_O::hasBondWithOrder(BondOrder o) const
 {
-  VectorBond::const_iterator	b;
+  VectorBond::iterator	b;
   for ( b=this->bonds.begin();b!=this->bonds.end() ; b++ ) 
   {
     if ( (*b)->getOrder() == o) return true;

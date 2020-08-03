@@ -58,7 +58,7 @@ namespace chem
 //
     MonomerContext_O::MonomerContext_O(const MonomerContext_O& mc) : core::CxxObject_O(mc)
     {
-	NeighborMap::const_iterator	mi;
+	NeighborMap::iterator	mi;
 	GC_COPY(EntityNameSetBase_O, temp , *mc._Self); // = RP_Copy<EntityNameSetBase_O>(mc._Self);
 	this->_Self = temp;
 	for ( mi=mc._Neighbors.begin(); mi!=mc._Neighbors.end(); mi++ ) {

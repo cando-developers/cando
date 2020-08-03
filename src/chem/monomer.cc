@@ -214,7 +214,7 @@ CL_DEFMETHOD     core::List_sp	Monomer_O::plugNamesAndCouplingsAsList()
 
 bool Monomer_O::hasRingClosingOutPlug() const
 {_OF();
-  Couplings::const_iterator it;
+  Couplings::iterator it;
   for ( it=this->_Couplings.begin(); it!=this->_Couplings.end(); it++ )
   {
     if ( it->second->isRingClosing() ) return true;
@@ -851,7 +851,7 @@ string Monomer_O::description() const
   ss << "Monomer(";
   ss << "[" <<" id:" << _rep_(this->_Id) << "]=";
   ss << " plugs: ";
-  Couplings::const_iterator	ci;
+  Couplings::iterator	ci;
   for ( ci=this->_Couplings.begin(); ci!=this->_Couplings.end(); ci++ ) {
     ss << _rep_(ci->first) << ",";
   }

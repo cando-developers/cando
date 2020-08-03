@@ -86,7 +86,7 @@ void	TrajectoryFrame_O::initialize()
 {
     this->_Coordinates = geom::SimpleVectorCoordinate_O::make(atomList.size());
     geom::SimpleVectorCoordinate_O::iterator ci;
-    gctools::Vec0<Atom_sp>::const_iterator ai;
+    gctools::Vec0<Atom_sp>::iterator ai;
     for ( ai=atomList.begin(), ci = this->_Coordinates->begin(); ai!=atomList.end(); ai++, ci++ )
     {
 	(*ci) = (*ai)->getPosition();

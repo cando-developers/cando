@@ -534,7 +534,7 @@ BondList_sp	BondList_O::copy()
 
 string	BondList_O::description() const
 {
-  BondList_O::const_iterator	bi;
+  BondList_O::iterator	bi;
   stringstream ss;
   ss << "(BondList numBonds=" << this->_Bonds.size() << std::endl;
   for ( bi=this->_Bonds.begin(); bi!=this->_Bonds.end(); bi++ ) {
@@ -546,7 +546,7 @@ string	BondList_O::description() const
 
 string	BondList_O::describeOthers(Atom_sp from) const
 {
-  BondList_O::const_iterator	bi;
+  BondList_O::iterator	bi;
   stringstream ss;
   ss << "BondList[[[" << std::endl;
   for ( bi=this->_Bonds.begin(); bi!=this->_Bonds.end(); bi++ ) {

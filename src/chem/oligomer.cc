@@ -191,31 +191,31 @@ CL_DEFMETHOD core::List_sp Oligomer_O::couplingsAsList()
 
 void	Oligomer_O::expandMonomerListToNeighbors(gctools::SmallOrderedSet<Monomer_sp>& monomers)
 {
-    gctools::SmallOrderedSet<Monomer_sp>				expanded;
-    gctools::SmallOrderedSet<Monomer_sp>::iterator		mi;
-Monomer_sp				neighbor;
-Monomer_O::Couplings::const_iterator	ci;
-Coupling_sp				coupling;
-    expanded.clear();
-    LOG(BF("Starting set of monomers:") );
-    for ( mi=monomers.begin(); mi!=monomers.end(); mi++ )
+  gctools::SmallOrderedSet<Monomer_sp>				expanded;
+  gctools::SmallOrderedSet<Monomer_sp>::iterator		mi;
+  Monomer_sp				neighbor;
+  Monomer_O::Couplings::iterator	        ci;
+  Coupling_sp				coupling;
+  expanded.clear();
+  LOG(BF("Starting set of monomers:") );
+  for ( mi=monomers.begin(); mi!=monomers.end(); mi++ )
     {
-	LOG(BF("    %s") % (*mi)->description().c_str()  );
-        for ( ci = (*mi)->_Couplings.begin();
-		ci != (*mi)->_Couplings.end(); ci++ )
+      LOG(BF("    %s") % (*mi)->description().c_str()  );
+      for ( ci = (*mi)->_Couplings.begin();
+            ci != (*mi)->_Couplings.end(); ci++ )
 	{
-	    ASSERTNOTNULL(ci->second);
-	    coupling = ci->second;
-	    neighbor = coupling->getOtherSideMonomer(*mi);
-	    expanded.insert(neighbor);
+          ASSERTNOTNULL(ci->second);
+          coupling = ci->second;
+          neighbor = coupling->getOtherSideMonomer(*mi);
+          expanded.insert(neighbor);
 	}
     }
-    monomers.clear();
-    LOG(BF("Expanded set of monomers:") );
-    for ( gctools::SmallOrderedSet<Monomer_sp>::iterator si=expanded.begin(); si!=expanded.end(); si++ )
+  monomers.clear();
+  LOG(BF("Expanded set of monomers:") );
+  for ( gctools::SmallOrderedSet<Monomer_sp>::iterator si=expanded.begin(); si!=expanded.end(); si++ )
     {
-	LOG(BF("    %s") % (*si)->description().c_str()  );
-        monomers.insert(*si);
+      LOG(BF("    %s") % (*si)->description().c_str()  );
+      monomers.insert(*si);
     };
 }
 
