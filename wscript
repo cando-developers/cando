@@ -101,6 +101,9 @@ def post_install(ctx):
         # cmd = '%s -e "(sys:quit)" 2>&1 | (ls -l /dev/fd > cboehm_install.log 2>&1 ; tee -a cboehm_install.log) | (echo foo 1>&3 && tee 1>&3 || cat)' % installed_cando
         cmd = '%s -N -D -e "(sys:quit)"' % installed_cando
         print("Executing post-install command %s" % cmd)
+        print("environment variable  ASDF_OUTPUT_TRANSLATIONS=%s" % os.getenv("ASDF_OUTPUT_TRANSLATIONS")) 
+        print("environment variable            XDG_CACHE_HOME=%s" % os.getenv("XDG_CACHE_HOME")) 
+        print("environment variable CLASP_QUICKLISP_DIRECTORY=%s" % os.getenv("CLASP_QUICKLISP_DIRECTORY")) 
         sys.stdout.flush()
         print("Start time: %s" % time.asctime())
         sys.stdout.flush()
