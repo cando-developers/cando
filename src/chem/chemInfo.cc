@@ -2028,7 +2028,6 @@ bool Branch_O::matches_BondList(Root_sp root, chem::Atom_sp from, chem::BondList
     for ( auto ci = (*neighbors).begin(); ci!=(*neighbors).end(); ++ci ) {
       if (*bi != *ci) rightBondList->addBond(*ci);
     }
-//    GC_COPY(chem::BondList_O, rightBondList, *neighbors); // = RP_Copy<BondList_O>(neighbors);
     LOG(BF("Right bond list after copy without left = %s") % rightBondList->describeOthers(from));
     LOG(BF("copied neighbors into right bond list and removed left bond"));
     LOG(BF("Checking if left matches"));

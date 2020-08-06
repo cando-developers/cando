@@ -274,7 +274,6 @@ double	rmsDistanceFrom(NVector_sp u, NVector_sp v, core::T_sp frozen)
 
 NVector_sp copy_nvector(NVector_sp orig )
 {
-//  GC_COPY(NVector_O,vv,*orig);
   NVector_sp vv = NVector_O::make(orig->length(),0.0,false,orig->length(),(double*)&(*orig)[0]);
   return vv;
 }

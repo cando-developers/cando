@@ -189,7 +189,7 @@ class BondList_O : public core::CxxObject_O
   void		removeBond(Bond_sp b);
   void		removeBondBetween(Atom_sp a,Atom_sp b);
   int		size() { return this->_Bonds.size(); };
-//	BondList_sp	copy();
+  BondList_sp	deepishCopy() const;
 
   string	description() const;
   string describeOthers(Atom_sp from) const;

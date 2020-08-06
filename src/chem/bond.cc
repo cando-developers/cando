@@ -518,19 +518,16 @@ bool Bond_O::equalp(core::T_sp b) const {
   return false;
 }
 
-#if 0
-/*! Shallow copy of a bond list */
-BondList_sp	BondList_O::copy()
+/*! deep(ish) copy of a bond list.
+Create a new BondList_O and create a new copy of the Vec0 in the BondList_O but
+use the same Bond_O's */
+BondList_sp	BondList_O::deepishCopy() const
 {
   BondList_O::iterator	bi;
   GC_ALLOCATE(BondList_O, bl );
-  for ( bi=this->_Bonds.begin(); bi!=this->_Bonds.end(); bi++ )
-  {
-    bl->addBond(*bi);
-  }
+  for ( bi=this->_Bonds.begin(); bi!=this->_Bonds.end(); bi++ ) bl->addBond(*bi);
   return bl;
 }
-#endif
 
 string	BondList_O::description() const
 {
