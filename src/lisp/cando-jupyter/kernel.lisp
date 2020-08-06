@@ -59,6 +59,55 @@
         (list (leap-eval ast))))))
 
 
+(defun leap-locate (ast cursor-pos &optional child-pos parents)
+  (if (listp (car ast))
+    (loop for child in ast
+          for index from 0
+          for fragment = (leap-locate child cursor-pos index parents)
+          when fragment
+          return fragment)
+    (let ((bounds (getf (cddr ast) :bounds))
+          (new-parents (cons ast parents)))
+      (unless (and bounds
+                   (or (< cursor-pos (car bounds))
+                       (>= cursor-pos (cdr bounds))))
+        (setf (getf (cddr ast) :position) child-pos)
+        (or (leap-locate (second ast) cursor-pos nil new-parents)
+            (when bounds
+              new-parents))))))
+
+
+(defun complete-command (match-set partial start end)
+  (dolist (pair leap.parser:*function-names/alist*)
+    (when (and (<= (length partial) (length (car pair)))
+               (string-equal partial (subseq (car pair) 0 (length partial))))
+      (jupyter:match-set-add match-set (car pair) start end :type "command"))))
+
+
+(defmethod jupyter:complete-code ((k kernel) match-set code cursor-pos)
+   (if (or (not *leap-syntax*)
+           (lisp-code-p code))
+    (call-next-method)
+    (let* ((ast (leap-read code))
+           (fragment (unless (typep ast 'jupyter:result)
+                       (leap-locate ast (1- cursor-pos)))))
+      (when (and fragment
+                 (eql :s-expr (caar fragment)))
+        (let ((start (car (getf (car fragment) :bounds)))
+              (end (cdr (getf (car fragment) :bounds))))
+          (jupyter:inform :error k (subseq code start end))
+          (call-next-method k (jupyter:make-offset-match-set :parent match-set :offset start)
+                            (subseq code start end) (- cursor-pos start))))
+      (when (and fragment
+                 (eql :s-expr (caar fragment))
+                 (symbolp (getf (car fragment) :value))
+                 (eql 0 (getf (car fragment) :position))
+                 (eql :instruction (caadr fragment)))
+        (complete-command match-set (symbol-name (getf (car fragment) :value))
+              (car (getf (car fragment) :bounds))
+              (cdr (getf (car fragment) :bounds)))))))
+
+
 (defclass cando-installer (jupyter:installer)
   ()
   (:default-initargs
