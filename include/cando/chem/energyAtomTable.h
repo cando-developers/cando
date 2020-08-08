@@ -200,7 +200,7 @@ public:
   EnergyAtom&	energyAtomEntry(uint i) { return this->_Atoms[i]; };
   EnergyAtom*	findEnergyAtomWithCoordinateIndex(uint i) { return &this->_Atoms[i/3]; };
 
-  void	add(EnergyAtom& aa) { this->_Atoms.push_back(aa);};
+  void	add(EnergyAtom& aa) { SIMPLE_ERROR(BF("AtomTable->add(EnergyAtom may cause recursive allocation")); this->_Atoms.push_back(aa);};
 
 	/*! Add the info for a single atom and return the coordinate index (index*3) of the atom */
   int addAtomInfo(Atom_sp atom, units::Quantity_sp charge, units::Quantity_sp mass, int typeIndex, uint atomicNumber );

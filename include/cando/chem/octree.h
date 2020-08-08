@@ -120,10 +120,10 @@ public:
   //static int iBuildInteriorOctant( OctNode_sp PonNode, int iAtoms, Atom_sp *PaAtomList );
   //OctNode_sp PonMakeChildren( Vector3& vCorner, int iDepth, int iStatus );
   void PonMakeChildren(OctNode_sp ponNode, int iDepth, int iStatus, size_t& iNodeCount );
-  int dFinalCheck( OctNode_sp PonNode, int iAtoms, gctools::Vec0<Atom_sp> PaAtomList, double dShellRadius  );
+  int dFinalCheck( OctNode_sp PonNode, int iAtoms, gctools::Vec0<Atom_sp>& PaAtomList, double dShellRadius  );
   void DestroyOctant( OctNode_sp PonNode, int iStatus );
-  int iBuildShellOctant( OctNode_sp PonNode, int iAtoms, gctools::Vec0<Atom_sp> PaAtomList,  double dShellRadius );
-  int iBuildInteriorOctant( OctNode_sp PonNode, int iAtoms, gctools::Vec0<Atom_sp> PaAtomList );
+  int iBuildShellOctant( OctNode_sp PonNode, int iAtoms, gctools::Vec0<Atom_sp>& PaAtomList,  double dShellRadius );
+  int iBuildInteriorOctant( OctNode_sp PonNode, int iAtoms, gctools::Vec0<Atom_sp>& PaAtomList );
   void OctreeDestroy();
   //static void OctNodeInitCharges( OctNode_sp *PonNode );
   //static void OctNodePrintGrid( OctNode_sp *PonNode );
@@ -135,7 +135,7 @@ public:
   void OctNodePrintGrid( OctNode_sp PonNode, int iColor );
   void SplitIncludedNode( OctNode_sp PonNode );
   int OctNodeDeleteSphere( OctNode_sp PonNode, double dDeleteRadius  );
-  void OctNodeUpdateCharge( OctNode_sp PonNode, int iParentAtoms, gctools::Vec0<Atom_sp> PaParentAtoms, int iDistanceCharge );
+  void OctNodeUpdateCharge( OctNode_sp PonNode, int iParentAtoms, gctools::Vec0<Atom_sp>& PaParentAtoms, int iDistanceCharge );
   int OctNodeCheckSolvent( OctNode_sp PonNode );
   void OctreeCreate(Aggregate_sp uUnit, AddIonOctreeEnum iType, double dGridSpace, 
                      double dAddExtent, double dShellExtent, FFNonbondDb_sp nonbondDb, int iIncludeSolvent, bool bVerbose);

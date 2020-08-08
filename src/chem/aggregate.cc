@@ -383,7 +383,7 @@ void	Aggregate_O::initialize()
 
 Matter_sp Aggregate_O::copy(core::T_sp new_to_old)
 {
-  GC_COPY(Aggregate_O, newAgg, *this ); // = RP_Copy<Aggregate_O>(this);
+  GC_NON_RECURSIVE_COPY(Aggregate_O, newAgg, *this ); // = RP_Copy<Aggregate_O>(this);
   if (gc::IsA<core::HashTable_sp>(new_to_old)) {
     core::HashTable_sp new_to_old_ht = gc::As_unsafe<core::HashTable_sp>(new_to_old);
     new_to_old_ht->setf_gethash(newAgg,this->asSmartPtr());
@@ -404,7 +404,7 @@ Matter_sp Aggregate_O::copy(core::T_sp new_to_old)
 
 Matter_sp Aggregate_O::copyDontRedirectAtoms(core::T_sp new_to_old)
 {_OF();
-  GC_COPY(Aggregate_O, newAgg , *this); // = RP_Copy<Aggregate_O>(this);
+  GC_NON_RECURSIVE_COPY(Aggregate_O, newAgg , *this); // = RP_Copy<Aggregate_O>(this);
   if (gc::IsA<core::HashTable_sp>(new_to_old)) {
     core::HashTable_sp new_to_old_ht = gc::As_unsafe<core::HashTable_sp>(new_to_old);
     new_to_old_ht->setf_gethash(newAgg,this->asSmartPtr());
@@ -551,12 +551,12 @@ CL_DEFMETHOD core::List_sp	Aggregate_O::atomsWithChimeraSpecifications(const str
     MatterName atomSym = chemkw_intern(atomName);
 //    printf("%s:%d Looking for chainSym[%s] atomSym[%s]\n", __FILE__, __LINE__, _rep_(chainSym).c_str(), _rep_(atomSym).c_str());
     bool foundAtom = false;
-    for ( mi=this->getContents().begin(); mi!= this->getContents().end(); mi++ ) {
+    for ( mi=this->begin_molecules(); mi!= this->end_molecules(); mi++ ) {
       mol = gc::As<Molecule_sp>(*mi);
 //      printf("%s:%d mol->getName()= %s  matches chainSym[%s] = %d\n", __FILE__, __LINE__, _rep_(mol->getName()).c_str(),_rep_(chainSym).c_str(), mol->getName()==chainSym);
       if ( mol->getName() == chainSym ) {
         bool foundResidue = false;
-        for ( ri = mol->getContents().begin(); ri!=mol->getContents().end(); ri++ ) {
+        for ( ri = mol->begin_residues(); ri!=mol->end_residues(); ri++ ) {
           res = (*ri).as<Residue_O>();
 //          printf("%s:%d res->getFileSequenceNumber()= %d  matches fileSequenceNumber[%d] = %d\n", __FILE__, __LINE__, res->getFileSequenceNumber(), fileSequenceNumber,  res->getFileSequenceNumber()==fileSequenceNumber);
 //          printf("%s:%d     res->getId() = %d\n", __FILE__, __LINE__, res->getId());
@@ -573,10 +573,9 @@ CL_DEFMETHOD core::List_sp	Aggregate_O::atomsWithChimeraSpecifications(const str
           }
         }
           // Try the residue at the fileSequenceNumber index
-        MatterVector& residues = mol->getContents();
 //        printf("%s:%d Using molecule content array to lookup atom\n", __FILE__, __LINE__);
-        if ( (fileSequenceNumber-1) < residues.size() ) {
-          res = gc::As<Residue_sp>(residues[fileSequenceNumber-1]);
+        if ( (fileSequenceNumber-1) < mol->length() ) {
+          res = gc::As<Residue_sp>(mol->contentAt(fileSequenceNumber-1));
           if ( res->hasAtomWithName(atomSym) ) {
             atom = gc::As_unsafe<Atom_sp>(res->atomWithName(atomSym));
             result = core::Cons_O::create(atom,result);
@@ -601,7 +600,7 @@ CL_LISPIFY_NAME("removeMolecule");
 CL_DEFMETHOD     void Aggregate_O::removeMolecule( Molecule_sp a )
     {_OF();
 	contentIterator	it;
-	for ( it=this->getContents().begin(); it!= this->getContents().end(); it++ ) {
+	for ( it=this->begin_molecules(); it!= this->end_molecules(); it++ ) {
           if ((*it).as<Molecule_O>() == a ) 
 	    {
 		this->eraseContent(it);

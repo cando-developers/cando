@@ -212,7 +212,7 @@ void Loop::buildListOfImpropersCenteredOn(Atom_sp a)
       LOG(BF("Loop 1") );
       GC_ALLOCATE(BondList_O, accumulate1 );
       accumulate1->append(*bl1);
-      BondList_sp blrest1 = blrest0->deepishCopy(); // GC_COPY(BondList_O, blrest1 , *blrest0);
+      BondList_sp blrest1 = blrest0->deepishCopy(); 
       LOG(BF("Copy blrest1 = %s") % blrest1->description() );
       ASSERTF(blrest1->size() == blrest0->size(),
               BF("The blrest1 copy doesn't have the same number of elements as the original"));
@@ -220,13 +220,13 @@ void Loop::buildListOfImpropersCenteredOn(Atom_sp a)
       for ( bl2 = blrest1->begin(); bl2!=blrest1->end(); bl2++ )
       {
         LOG(BF("Loop 2") );
-        BondList_sp accumulate2 = accumulate1->deepishCopy(); // GC_COPY(BondList_O, accumulate2 , *accumulate1); /
+        BondList_sp accumulate2 = accumulate1->deepishCopy();
         accumulate2->append(*bl2);
-        BondList_sp blrest2 = blrest1->deepishCopy(); // GC_COPY(BondList_O, blrest2 , *blrest1); 
+        BondList_sp blrest2 = blrest1->deepishCopy();
         blrest2->removeBond(*bl2);
         for ( bl3=blrest2->begin(); bl3!=blrest2->end(); bl3++ ) {
           LOG(BF("Loop 3") );
-          BondList_sp accumulate3 = accumulate2->deepishCopy(); // GC_COPY(BondList_O, accumulate3 , *accumulate2);
+          BondList_sp accumulate3 = accumulate2->deepishCopy();
           accumulate3->append(*bl3);
           this->_Impropers.push_back(accumulate3);
         }

@@ -138,8 +138,8 @@ public:
 
     char	getMatterType() { return AGGREGATE_CLASS; };
 
-    contentIterator begin_molecules() { return this->_contents.begin(); };
-    contentIterator end_molecules() {return this->_contents.end(); };
+  contentIterator begin_molecules() { return this->_contents.begin(); };
+  contentIterator end_molecules() {return this->_contents.end(); };
 
     Atom_sp		atomWithId(int i);
 

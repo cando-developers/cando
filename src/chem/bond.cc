@@ -326,7 +326,7 @@ void	Bond_O::imposeYourself()
 
 
 
-ConstitutionBond_sp Bond_O::asConstitutionBond(Atom_sp from, MapAtomsToConstitutionAtomIndex0N atomMap)
+ConstitutionBond_sp Bond_O::asConstitutionBond(Atom_sp from, const MapAtomsToConstitutionAtomIndex0N& atomMap)
 {_OF();
   Atom_sp to = this->getOtherAtom(from);
   MapAtomsToConstitutionAtomIndex0N::iterator it = atomMap.find(to);

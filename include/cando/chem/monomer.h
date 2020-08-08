@@ -142,14 +142,14 @@ public:
 public:
   friend class	AlchemistState_O;
 public:
-  typedef gctools::SmallMultimap<core::Symbol_sp,Coupling_sp,core::SymbolComparer> Couplings;
+  typedef gctools::SmallMultimap_uncopyable<core::Symbol_sp,Coupling_sp,core::SymbolComparer> Couplings;
 public:
   core::Symbol_sp		_Id;
   size_t			_SequenceNumber;
   Couplings			_Couplings;
   mutable size_t		_CurrentMonomerIndex;
   mutable size_t                _CurrentStereoisomerOffset;
-  gctools::Vec0<core::Symbol_sp>    _Monomers;
+  gctools::Vec0_uncopyable<core::Symbol_sp>    _Monomers;
 //    adapt::SymbolSet_sp			_Aliases; //!< this will identify monomers for searches
 public:
 //    adapt::SymbolSet_sp getMonomerAliases()	{_OF(); ANN(this->_Aliases);return this->_Aliases; };
@@ -184,6 +184,8 @@ public:
 
   uint	numberOfCouplings() const;
 
+  Monomer_sp deepCopy() const;
+  
   void eraseCouplings();
   void	addCoupling(core::Symbol_sp plugName, Coupling_sp out);
         /*! Generate the in-coupling name and add this

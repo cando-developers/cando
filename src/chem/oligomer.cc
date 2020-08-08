@@ -90,8 +90,7 @@ Oligomer_O::Oligomer_O(const Oligomer_O& original)
   this->_Monomers.resize(original._Monomers.size());
   for ( size_t i=0, iEnd(this->_Monomers.size()); i<iEnd; ++i ) {
     Monomer_sp oldMonomer = original._Monomers[i];
-    Monomer_O& ref = *oldMonomer;
-    GC_COPY(Monomer_O,monomerCopy,ref);
+    Monomer_sp monomerCopy = oldMonomer->deepCopy();
     this->_Monomers[i] = monomerCopy;
     newMonomersFromOld->setf_gethash(oldMonomer,monomerCopy);
   }
@@ -675,7 +674,7 @@ int			residueNetCharge;
 
 
 
-void Oligomer_O::_gatherMultiMonomers(gctools::Vec0<Monomer_sp>& multiMonomers)
+void Oligomer_O::_gatherMultiMonomers(gctools::Vec0_uncopyable<Monomer_sp>& multiMonomers)
 {
     gctools::Vec0<Monomer_sp>::iterator	mi;
     multiMonomers.clear();
@@ -1029,7 +1028,9 @@ void	Oligomer_O::_assembleFromParts(core::List_sp parts, CandoDatabase_sp bdb)
 
 CL_DEFMETHOD core::T_sp Oligomer_O::copyOligomer() const
 {
-  GC_COPY(Oligomer_O,newOligomer,*this);
+  GC_NON_RECURSIVE_COPY(Oligomer_O,newOligomer,*this);
+  newOligomer->_Monomers = this->_Monomers;
+  newOligomer->_Couplings = this->_Couplings;
   return newOligomer;
 }
 

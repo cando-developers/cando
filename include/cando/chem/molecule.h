@@ -116,8 +116,7 @@ namespace chem {
 
     virtual bool isMolecule() { return true;};
 
-    CL_LISPIFY_NAME("residueCount");
-    CL_DEFMETHOD 	int		residueCount() {return (this->_contents.size());};
+    CL_DEFMETHOD size_t residueCount() {return (this->_contents.size());};
 
     void		moveAllAtomsIntoFirstResidue();
 

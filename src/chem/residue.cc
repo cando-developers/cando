@@ -180,7 +180,7 @@ void	Residue_O::fields( core::Record_sp node )
 	    //	    GC_ALLOCATE(BondList_O, bondList );
     { _BLOCK_TRACE("Building bond list");
       for ( aPPCur=this->getContents().begin();
-            aPPCur != this->getContents().end(); aPPCur++ ) {
+            aPPCur != this->end_atoms(); aPPCur++ ) {
         a = (*aPPCur).as<Atom_O>();
         a->addUniqueIntraResidueBondCopiesToBondList(bondList);
       }
@@ -269,7 +269,7 @@ Matter_sp	Residue_O::copyDontRedirectAtoms(core::T_sp new_to_old)
     Atom_sp				acopy;
     Atom_sp				aorig;
 
-    GC_COPY(Residue_O, rPNew, *this ); // = RP_Copy<Residue_O>(this); // _copy_Residue_sp(this);
+    GC_NON_RECURSIVE_COPY(Residue_O, rPNew, *this ); // = RP_Copy<Residue_O>(this); // _copy_Residue_sp(this);
     if (gc::IsA<core::HashTable_sp>(new_to_old)) {
       core::HashTable_sp new_to_old_ht = gc::As_unsafe<core::HashTable_sp>(new_to_old);
       new_to_old_ht->setf_gethash(rPNew,this->asSmartPtr());
@@ -277,7 +277,7 @@ Matter_sp	Residue_O::copyDontRedirectAtoms(core::T_sp new_to_old)
 //    rPNew = Residue_sp(n_ew Residue_O(*this));
 //    rPNew->duplicateFrom(this); //    *rPNew = *this;
     rPNew->eraseContents();
-    for ( a=this->getContents().begin(); a!=this->getContents().end(); a++ ) 
+    for ( a=this->begin_atoms(); a!=this->end_atoms(); a++ ) 
     {
 	aorig = (*a).as<Atom_O>();
 	acopy = aorig->copyDontRedirectAtoms(new_to_old).as<Atom_O>();
@@ -339,8 +339,8 @@ CL_DEFMETHOD void	Residue_O::removeAtomDeleteBonds(Atom_sp a)
 contentIterator	atom;
 Atom_sp				aTemp;
     LOG(BF("Residue_O::removeAtomsDeleteBonds| Removing a:%x from r:%x") % &a % this  );
-    for ( atom=this->getContents().begin();
-		atom != this->getContents().end(); atom++ ) {
+    for ( atom=this->begin_atoms();
+		atom != this->end_atoms(); atom++ ) {
       aTemp = (*atom).as<Atom_O>();
 	if ( aTemp == a ) {
 	    this->eraseContent(atom);
@@ -377,8 +377,8 @@ CL_DEFMETHOD void	Residue_O::removeAtomDontDeleteBonds(Atom_sp a)
 contentIterator	atom;
 Atom_sp				aTemp;
     LOG(BF("Residue_O::removeAtomsDontDeleteBonds| Removing a:%x from r:%x") % &a % this  );
-    for ( atom=this->getContents().begin();
-		atom != this->getContents().end(); atom++ ) {
+    for ( atom=this->begin_atoms();
+		atom != this->end_atoms(); atom++ ) {
       aTemp = (*atom).as<Atom_O>();
 	LOG(BF("Looking for atom name: %s in residue with name: %s") % a->getName().c_str() % aTemp->getName().c_str()  );
 	if ( aTemp == a ) {
@@ -500,8 +500,8 @@ void Residue_O::makeAllAtomNamesInEachResidueUnique()
     adapt::SymbolSet_sp allNamesAccumulate = adapt::SymbolSet_O::create();
     core::HashTableEq_sp atomsThatShareName = core::HashTableEq_O::create_default();
 //    multimap<string,Atom_sp>	atomsThatShareName;
-    for ( ai=this->getContents().begin();
-          ai != this->getContents().end(); ai++ ) {
+    for ( ai=this->begin_atoms();
+          ai != this->end_atoms(); ai++ ) {
 	Atom_sp atom = (*ai).as<Atom_O>();
 	LOG(BF("Looking at atom name(%s)") % _rep_(atom->getName())  );
         allNames->insert(atom->getName());
@@ -570,8 +570,8 @@ CL_DEFMETHOD adapt::SymbolSet_sp	Residue_O::getAtomNamesAsSymbolSet()
 contentIterator	atom;
 Atom_sp				aTemp;
 adapt::SymbolSet_sp unique = adapt::SymbolSet_O::create();
-    for ( atom=this->getContents().begin();
-		atom != this->getContents().end(); atom++ ) {
+    for ( atom=this->begin_atoms();
+		atom != this->end_atoms(); atom++ ) {
 	aTemp = (*atom).as<Atom_O>();
 	unique->insert(aTemp->getName());
     }
@@ -588,8 +588,8 @@ adapt::SymbolSet_sp	Residue_O::getAllUniqueAtomNames()
     adapt::SymbolSet_sp unique;
 contentIterator	atom;
 Atom_sp				aTemp;
-    for ( atom=this->getContents().begin();
-		atom != this->getContents().end(); atom++ ) {
+    for ( atom=this->begin_atoms();
+		atom != this->end_atoms(); atom++ ) {
 	aTemp = (*atom).as<Atom_O>();
 	unique->insert(aTemp->getName());
     }
@@ -606,8 +606,8 @@ VectorAtom			atoms;
 Atom_sp				aTemp;
 contentIterator	atom;
     LOG(BF("Residue_O::allAtoms") );
-    for ( atom=this->getContents().begin();
-		atom != this->getContents().end(); atom++ ) {
+    for ( atom=this->begin_atoms();
+		atom != this->end_atoms(); atom++ ) {
 	aTemp = (*atom).as<Atom_O>();
 	atoms.push_back(aTemp);
     }
@@ -625,8 +625,8 @@ gctools::Vec0<Bond_sp>	Residue_O::g_etUniqueIntraResidueBonds()
     gctools::Vec0<Bond_sp>			bonds;
 contentIterator	aPPCur;
 Atom_sp				a;
-    for ( aPPCur=this->getContents().begin();
-		aPPCur != this->getContents().end(); aPPCur++ ) {
+    for ( aPPCur=this->begin_atoms();
+		aPPCur != this->end_atoms(); aPPCur++ ) {
       a = (*aPPCur).as<Atom_O>();
 	a->addUniqueIntraResidueBondsToVectorBonds(bonds);
     }
@@ -644,8 +644,8 @@ BondList_sp	Residue_O::getOutGoingBonds()
     BondList_sp			bonds = BondList_O::create();
 contentIterator	aPPCur;
 Atom_sp				a;
-    for ( aPPCur=this->getContents().begin();
-		aPPCur != this->getContents().end(); aPPCur++ ) {
+    for ( aPPCur=this->begin_atoms();
+		aPPCur != this->end_atoms(); aPPCur++ ) {
 	a = (*aPPCur).as<Atom_O>();
 	a->addInterResidueBondsToBondList(bonds);
     }
@@ -683,8 +683,8 @@ bool	Residue_O::invalid()
 {
 contentIterator	aPPCur;
 Atom_sp				a;
-    for ( aPPCur=this->getContents().begin();
-		aPPCur != this->getContents().end(); aPPCur++ ) {
+    for ( aPPCur=this->begin_atoms();
+		aPPCur != this->end_atoms(); aPPCur++ ) {
       a = (*aPPCur).as<Atom_O>();
 	if ( a->invalid() ) return true;
     }
@@ -729,8 +729,8 @@ CL_DEFMETHOD void	Residue_O::useAtomCoordinatesToDefineAnchors()
 #if ATOMIC_ANCHOR
 contentIterator	aPPCur;
 Atom_sp				a;
-    for ( aPPCur=this->getContents().begin();
-		aPPCur != this->getContents().end(); aPPCur++ ) {
+    for ( aPPCur=this->begin_atoms();
+		aPPCur != this->end_atoms(); aPPCur++ ) {
       a = (*aPPCur).as<Atom_O>();
 	a->setAnchorPos(a->getPosition());
 	a->setAnchorRestraintOn();

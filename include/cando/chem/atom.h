@@ -164,7 +164,7 @@ namespace chem
   SMART(Bond);
   SMART(BondList);
 
-  typedef	gctools::Vec0<Bond_sp>	VectorBond;
+  typedef	gctools::Vec0_uncopyable<Bond_sp>	VectorBond;
 
 };
 

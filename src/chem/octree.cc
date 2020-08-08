@@ -411,8 +411,7 @@ void AddIonOctree_O::PonMakeChildren(OctNode_sp ponNode, int iDepth, int iStatus
 //	return( PonChildren );
 }
 
-//static int AddIonOctree_O::dFinalCheck( OctNode_sp PonNode, int iAtoms, Atom_sp PaAtomList )
-int AddIonOctree_O::dFinalCheck( OctNode_sp PonNode, int iAtoms, gctools::Vec0<Atom_sp> PaAtomList, double dShellRadius )
+int AddIonOctree_O::dFinalCheck( OctNode_sp PonNode, int iAtoms, gctools::Vec0<Atom_sp>& PaAtomList, double dShellRadius )
 {
   int	i;
   Atom_sp PaAtom;
@@ -495,7 +494,7 @@ void AddIonOctree_O::DestroyOctant( OctNode_sp PonNode, int iStatus )
   
 }
 //static int AddIonOctree_O::iBuildShellOctant( OctNode_sp PonNode, int iAtoms, Atom_sp *PaAtomList )
-int AddIonOctree_O::iBuildShellOctant( OctNode_sp PonNode, int iAtoms, gctools::Vec0<Atom_sp> PaAtomList, double dShellRadius )
+int AddIonOctree_O::iBuildShellOctant( OctNode_sp PonNode, int iAtoms, gctools::Vec0<Atom_sp>& PaAtomList, double dShellRadius )
 {
   int	         	i, iPartialIn, iPartialOut, iIncluded, iExcluded, iNewAtoms;
   Atom_sp	        PaAtom;
@@ -745,7 +744,7 @@ int AddIonOctree_O::iBuildShellOctant( OctNode_sp PonNode, int iAtoms, gctools::
  *	the bottom nodes of the tree.
  */
 //static int AddIonOctree_O::iBuildInteriorOctant( OctNode_sp PonNode, int iAtoms, Atom_sp *PaAtomList )
-int AddIonOctree_O::iBuildInteriorOctant( OctNode_sp PonNode, int iAtoms, gctools::Vec0<Atom_sp> PaAtomList)
+int AddIonOctree_O::iBuildInteriorOctant( OctNode_sp PonNode, int iAtoms, gctools::Vec0<Atom_sp>& PaAtomList)
 {
   int		         i, iIncluded, iExcluded; 
   Atom_sp		 PaAtom;
@@ -1940,7 +1939,7 @@ CL_DEFMETHOD void AddIonOctree_O::OctreeDeleteSphere( /*AddIonOctree_sp octTree,
  *************************************************************************/
 
 //static void AddIonOctree_O::OctNodeUpdateCharge( OctNode_sp *PonNode, int iParentAtoms, Atom_sp *PaParentAtoms )
-CL_DEFMETHOD void AddIonOctree_O::OctNodeUpdateCharge( OctNode_sp PonNode, int iParentAtoms, gctools::Vec0<Atom_sp> PaParentAtoms,  int iDistanceCharge )
+CL_DEFMETHOD void AddIonOctree_O::OctNodeUpdateCharge( OctNode_sp PonNode, int iParentAtoms, gctools::Vec0<Atom_sp>& PaParentAtoms,  int iDistanceCharge )
 {
   Vector3         	vPoint;
   double          	d;
