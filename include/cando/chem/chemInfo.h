@@ -1171,31 +1171,17 @@ class MoleculeGraph_O;
 template <>
 struct gctools::GCInfo<chem::MoleculeGraph_O> {
   static bool constexpr NeedsInitialization = true;
-  static bool constexpr NeedsFinalization = false;
-  static GCInfo_policy constexpr Policy = collectable_immobile;
+  static bool constexpr NeedsFinalization = true;
+  static GCInfo_policy constexpr Policy = normal;
 };
 
 
 namespace chem {
 struct MoleculeVertexData {
-  MoleculeGraph_O* _moleculeGraph;
   int _AtomIndex;
-  MoleculeVertexData(MoleculeGraph_O* g, int i) : _moleculeGraph(g), _AtomIndex(i) {};
+  MoleculeVertexData(int i) : _AtomIndex(i) {};
   MoleculeVertexData(): _AtomIndex(-1) {};
 };
-
-#if 0
-struct MoleculeEdgeData {
-  BondOrder _BondOrder;
-  MoleculeEdgeData(BondOrder bo) : _BondOrder(bo) {};
-  bool operator<(const MoleculeEdgeData& other) const {
-    return this->_BondOrder<other._BondOrder;
-  }
-  bool operator==(const MoleculeEdgeData& other) const {
-    return this->_BondOrder==other._BondOrder;
-  }
-};
-#endif
 
 typedef boost::property<boost::edge_weight_t,BondOrder> BondOrderProperty;
 
@@ -1245,8 +1231,8 @@ class ChemInfoGraph_O;
 template <>
 struct gctools::GCInfo<chem::ChemInfoGraph_O> {
   static bool constexpr NeedsInitialization = true;
-  static bool constexpr NeedsFinalization = false;
-  static GCInfo_policy constexpr Policy = collectable_immobile;
+  static bool constexpr NeedsFinalization = true;
+  static GCInfo_policy constexpr Policy = normal;
 };
 
 
@@ -1255,9 +1241,8 @@ namespace chem {
 
 
 struct ChemInfoVertexData {
-  ChemInfoGraph_O* _chemInfoGraph;
   int _NodeIndex;
-  ChemInfoVertexData(ChemInfoGraph_O* g, int i) : _chemInfoGraph(g), _NodeIndex(i) {};
+  ChemInfoVertexData(int i) : _NodeIndex(i) {};
   ChemInfoVertexData() : _NodeIndex(-1) {};
 };
 
