@@ -10,4 +10,4 @@
   :components ((:file "packages")
                  (:file "start-swank")
                  (:file "graphviz")
-                 #+(or)(:file "cl-jupyter")))
+                 (:file "cl-jupyter")))
