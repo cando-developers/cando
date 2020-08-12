@@ -129,6 +129,10 @@ namespace chem {
     CL_DEFMETHOD core::Symbol_sp residue_type() { return this->_Type; };
     CL_DEFMETHOD core::Symbol_sp setf_residue_type(core::Symbol_sp type) { this->_Type = type; return type; };
   
+    contentIterator begin_atoms() { return this->_contents.begin(); };
+    contentIterator end_atoms() {return this->_contents.end(); };
+    const_contentIterator begin_atoms() const { return this->_contents.begin(); };
+    const_contentIterator end_atoms() const {return this->_contents.end(); };
 
     virtual	char	getClass()	{return residueId; };
     char	getMatterType() { return RESIDUE_CLASS; };
@@ -136,9 +140,6 @@ namespace chem {
 //    virtual bool equal(core::T_sp obj) const;
     virtual void	transferCoordinates(Matter_sp other);
 
-
-    contentIterator begin_atoms() { return this->_contents.begin(); };
-    contentIterator end_atoms() {return this->_contents.end(); };
 
     virtual bool isResidue() { return true;};
     virtual bool applyPropertyToSlot(core::Symbol_sp prop, core::T_sp value);

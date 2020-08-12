@@ -326,7 +326,7 @@ void	Bond_O::imposeYourself()
 
 
 
-ConstitutionBond_sp Bond_O::asConstitutionBond(Atom_sp from, MapAtomsToConstitutionAtomIndex0N atomMap)
+ConstitutionBond_sp Bond_O::asConstitutionBond(Atom_sp from, const MapAtomsToConstitutionAtomIndex0N& atomMap)
 {_OF();
   Atom_sp to = this->getOtherAtom(from);
   MapAtomsToConstitutionAtomIndex0N::iterator it = atomMap.find(to);
@@ -518,23 +518,20 @@ bool Bond_O::equalp(core::T_sp b) const {
   return false;
 }
 
-#if 0
-/*! Shallow copy of a bond list */
-BondList_sp	BondList_O::copy()
+/*! deep(ish) copy of a bond list.
+Create a new BondList_O and create a new copy of the Vec0 in the BondList_O but
+use the same Bond_O's */
+BondList_sp	BondList_O::deepishCopy() const
 {
   BondList_O::iterator	bi;
   GC_ALLOCATE(BondList_O, bl );
-  for ( bi=this->_Bonds.begin(); bi!=this->_Bonds.end(); bi++ )
-  {
-    bl->addBond(*bi);
-  }
+  for ( bi=this->_Bonds.begin(); bi!=this->_Bonds.end(); bi++ ) bl->addBond(*bi);
   return bl;
 }
-#endif
 
 string	BondList_O::description() const
 {
-  BondList_O::const_iterator	bi;
+  BondList_O::iterator	bi;
   stringstream ss;
   ss << "(BondList numBonds=" << this->_Bonds.size() << std::endl;
   for ( bi=this->_Bonds.begin(); bi!=this->_Bonds.end(); bi++ ) {
@@ -546,7 +543,7 @@ string	BondList_O::description() const
 
 string	BondList_O::describeOthers(Atom_sp from) const
 {
-  BondList_O::const_iterator	bi;
+  BondList_O::iterator	bi;
   stringstream ss;
   ss << "BondList[[[" << std::endl;
   for ( bi=this->_Bonds.begin(); bi!=this->_Bonds.end(); bi++ ) {

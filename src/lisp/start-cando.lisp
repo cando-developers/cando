@@ -88,6 +88,7 @@
 ;;; If quickclasp isn't installed then install it
 ;;; It provides extra systems for cando
 (unless (ql-dist:find-dist "quickclasp")
+  (sleep 2) ; ensure that the sequence number if quickclasp is higher
   (ql-dist:install-dist "http://thirdlaw.tech/quickclasp/quickclasp.txt" :prompt nil))
 
 (progn
@@ -96,6 +97,4 @@
   (core:symbol-global-value-set '*package* (find-package :cando-user))
   )
 
-;; Startup lparallels
-(cando:lazy-setup-lparallel-kernel)
 

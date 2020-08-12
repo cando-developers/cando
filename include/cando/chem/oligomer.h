@@ -96,8 +96,8 @@ public:
     friend core::T_sp chem__set_oligomer(core::Symbol_sp oligomerName, core::List_sp parts);
     friend core::T_sp chem__oligomer_sequence(Oligomer_sp olig);
 protected:
-    gctools::Vec0<Monomer_sp>     	_Monomers;
-    gctools::Vec0<Coupling_sp>		_Couplings;
+    gctools::Vec0_uncopyable<Monomer_sp>     	_Monomers;
+    gctools::Vec0_uncopyable<Coupling_sp>	_Couplings;
 private:	// Do not archive
 		/*! When one of my MultiMonomers experiences a UserGroupChange
 		 * we will store it here for others to access.
@@ -107,15 +107,15 @@ private:	// Do not archive
     string	stateAsString(uint state);
 
 public:
-    void _gatherMultiMonomers(gctools::Vec0<Monomer_sp>&multiMonomer);
+    void _gatherMultiMonomers(gctools::Vec0_uncopyable<Monomer_sp>&multiMonomer);
   void _fillSequenceAsStringForChildren(Monomer_sp mon, stringstream& seq) const;
     void _fillMonomerAsString(Monomer_sp mon, stringstream& seq) const;
     void _fillSequenceAsFileNameForChildren(Monomer_sp rootMonomer, stringstream& seq) const;
     void _assembleFromParts(core::List_sp parts,CandoDatabase_sp bdb);
 public:
 public:
-    typedef	gctools::Vec0<Monomer_sp>::iterator	monomerIterator;
-    typedef	gctools::Vec0<Coupling_sp>::iterator	couplingIterator;
+    typedef	gctools::Vec0_uncopyable<Monomer_sp>::iterator	monomerIterator;
+    typedef	gctools::Vec0_uncopyable<Coupling_sp>::iterator	couplingIterator;
 
 public:	// /////////////////////////////////////////////////////////////////
 
@@ -182,8 +182,8 @@ public:
 
     Molecule_sp	getMolecule();
 
-    gctools::Vec0<Monomer_sp>	getMonomers() {return this->_Monomers;}
-    gctools::Vec0<Coupling_sp>	getCouplings() { return this->_Couplings;}
+    gctools::Vec0_uncopyable<Monomer_sp>&	getMonomers() {return this->_Monomers;}
+    gctools::Vec0_uncopyable<Coupling_sp>&	getCouplings() { return this->_Couplings;}
     Monomer_sp		getFirstMonomer();
 
     bool hasMonomerWithId(core::Symbol_sp id);

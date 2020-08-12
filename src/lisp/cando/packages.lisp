@@ -143,8 +143,6 @@
   (:shadowing-import-from :chem "ATOM")
   (:import-from :ext #:chdir #:getcwd)
   (:export
-   #:.=
-   #:lazy-setup-lparallel-kernel
    #:nfx
    #:agg
    #:mol

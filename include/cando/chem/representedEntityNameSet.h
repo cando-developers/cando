@@ -44,30 +44,14 @@ SMART(RepresentedEntityNameSet);
 class RepresentedEntityNameSet_O : public EntityNameSet_O
 {
     LISP_CLASS(chem,ChemPkg,RepresentedEntityNameSet_O,"RepresentedEntityNameSet",EntityNameSet_O);
-#if INIT_TO_FACTORIES
  public:
     static RepresentedEntityNameSet_sp make(core::Symbol_sp representativeName);
-#else
 public:
-    DECLARE_INIT();
-#endif
-public:
-	void	initialize();
-
+  void	initialize();
 private:
 	core::Symbol_sp	_Representative;
 public:
-#if 0
-    static RepresentedEntityNameSet_sp	create(CandoDatabase_sp db)
-    {
-        GC_ALLOCATE(RepresentedEntityNameSet_O, group ); // RP_Create<RepresentedEntityNameSet_O>(e);
-//	group->setCandoDatabase(db);
-	return group;
-    };
-#endif
-public:
     virtual RepresentativeList_sp expandedRepresentativeList() const;
-
 public:
     string __repr__() const { return this->description(); };
 	string description() const;

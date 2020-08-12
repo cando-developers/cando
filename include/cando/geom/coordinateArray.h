@@ -145,20 +145,6 @@ namespace geom {
     typedef core::template_SimpleArray<SimpleMDArrayCoordinate_O,SimpleVectorCoordinate_O,core::SimpleMDArray_O> TemplatedBase;
     typedef typename TemplatedBase::simple_element_type simple_element_type;
     typedef typename TemplatedBase::simple_type simple_type;
-#if 0
-  public: // make vector
-  SimpleMDArrayCoordinate_O(size_t rank1, size_t dimension, core::Array_sp data) : TemplatedBase(dimension,data) {};
-    static SimpleMDArrayCoordinate_sp make_vector(size_t dimension, simple_element_type initialElement/*=_Nil<T_O>()*/, core::T_sp data/*=_Nil<T_O>()*/) {
-      LIKELY_if (data.nilp()) {
-        data = SimpleVectorCoordinate_O::make(dimension,initialElement,true);
-      }
-      SimpleMDArrayCoordinate_sp array = gctools::GC<SimpleMDArrayCoordinate_O>::allocate_container(false,1,dimension,gc::As_unsafe<core::Array_sp>(data));
-      return array;
-    }
-    static SimpleMDArrayCoordinate_sp make_vector(size_t dimension, simple_element_type initialElement) {
-      return make_vector(dimension,initialElement,_Nil<T_O>());
-    }
-#endif
   public: // make array
   SimpleMDArrayCoordinate_O(size_t rank,
                   core::List_sp dimensions,
@@ -222,16 +208,17 @@ namespace geom {
     typedef typename TemplatedBase::simple_element_type simple_element_type;
     typedef typename TemplatedBase::simple_type simple_type;
   public: // make vector
-  ComplexVectorCoordinate_O(size_t dimension,
-                      core::T_sp fillPointer,
-                      core::Array_sp data,
-                      bool displacedToP,
-                      core::Fixnum_sp displacedIndexOffset) : TemplatedBase(dimension,fillPointer,data,displacedToP,displacedIndexOffset) {};
+    ComplexVectorCoordinate_O(size_t rank1,
+                              size_t dimension,
+                              core::T_sp fillPointer,
+                              core::Array_sp data,
+                              bool displacedToP,
+                              core::Fixnum_sp displacedIndexOffset) : TemplatedBase(dimension,fillPointer,data,displacedToP,displacedIndexOffset) {};
     static ComplexVectorCoordinate_sp make_vector(size_t dimension, simple_element_type initialElement/*=simple_element_type()*/, core::T_sp fillPointer/*=_Nil<T_O>()*/, core::T_sp dataOrDisplacedTo/*=_Nil<T_O>()*/, bool displacedToP/*=false*/, core::Fixnum_sp displacedIndexOffset/*=clasp_make_fixnum(0)*/ ) {
       LIKELY_if (dataOrDisplacedTo.nilp()) {
         dataOrDisplacedTo = simple_type::make(dimension,initialElement,true);
       }
-      ComplexVectorCoordinate_sp array = gctools::GC<ComplexVectorCoordinate_O>::allocate_container(false,dimension,fillPointer,gc::As_unsafe<core::Array_sp>(dataOrDisplacedTo),displacedToP,displacedIndexOffset);
+      ComplexVectorCoordinate_sp array = gctools::GC<ComplexVectorCoordinate_O>::allocate_container(false,1/*CRANK*/,dimension,fillPointer,gc::As_unsafe<core::Array_sp>(dataOrDisplacedTo),displacedToP,displacedIndexOffset);
       return array;
     }
     static ComplexVectorCoordinate_sp make_vector(size_t dimension, simple_element_type initialElement, core::T_sp fillPointer) {

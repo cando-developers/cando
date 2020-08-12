@@ -751,7 +751,7 @@ CL_DEFMETHOD     bool	Atom_O::isBondedToElementOrder(Element el, BondOrder o)
 CL_LISPIFY_NAME("hasBondWithOrder");
 CL_DEFMETHOD     bool Atom_O::hasBondWithOrder(BondOrder o) const
 {
-  VectorBond::const_iterator	b;
+  VectorBond::iterator	b;
   for ( b=this->bonds.begin();b!=this->bonds.end() ; b++ ) 
   {
     if ( (*b)->getOrder() == o) return true;
@@ -1243,7 +1243,7 @@ Matter_sp Atom_O::copyDontRedirectAtoms(core::T_sp new_to_old)
 {_OF();
   LOG(BF("Copying atom @%p") % this );
   Atom_sp myself = this->sharedThis<Atom_O>();
-  GC_COPY(Atom_O, aNew , *this); // = RP_Copy<Atom_O>(this);
+  GC_NON_RECURSIVE_COPY(Atom_O, aNew , *this); // = RP_Copy<Atom_O>(this);
 #if 1
   aNew->bonds.clear();
 #else
@@ -1290,7 +1290,7 @@ void Atom_O::redirectAtoms()
 
 
 
-VectorAtom	Atom_O::getBondedAtoms()
+VectorAtom Atom_O::getBondedAtoms()
 {
   VectorBond::iterator	b;
   VectorAtom			vAtoms;

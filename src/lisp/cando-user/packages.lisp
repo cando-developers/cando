@@ -31,6 +31,7 @@
   (:import-from :leap.pdb #:load-pdb)
   (:export #:start-swank
            #:load-pdb
+           #:jupyterlab-fork-server
 )
   )
 

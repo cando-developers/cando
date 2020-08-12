@@ -73,10 +73,8 @@ CL_EXTERN_DEFMETHOD(Matter_O,(Matter_sp(Matter_O::*)() const)&Matter_O::containe
 
 CL_DEFMETHOD Matter_sp Matter_O::contentAt(size_t i) const
 {
-  if (i<this->_contents.size()) {
-    return this->_contents[i];
-  }
-  SIMPLE_ERROR(BF("Content index %lu is out of bounds (max %lu)") % i % this->_contents.size());
+  BOUNDS_ASSERT(i<this->_contents->length());
+  return this->_contents[i];
 }
 
 string Matter_O::__repr__() const
@@ -107,11 +105,12 @@ void	Matter_O::eraseContents()
 {
   this->_contents.clear();
 }
+
 CL_LISPIFY_NAME("hasContent");
 CL_DEFMETHOD bool	Matter_O::hasContent(Matter_sp maybe_child)
 {
   contentIterator		aCur;
-  for ( aCur=this->_contents.begin();aCur!=this->_contents.end(); aCur++ ) {
+  for ( aCur=this->begin_contents();aCur!=this->end_contents(); aCur++ ) {
     LOG(BF("Looking at(%s) for(%s)") % (*aCur)->getName().c_str() % sName.c_str()  );
     if ( (*aCur) == maybe_child ) {
       return true;
@@ -127,7 +126,7 @@ CL_DEFMETHOD bool	Matter_O::hasContentWithName(MatterName    sName )
 {
   contentIterator		aCur;
 
-  for ( aCur=this->_contents.begin();aCur!=this->_contents.end(); aCur++ ) {
+  for ( aCur=this->begin_contents();aCur!=this->end_contents(); aCur++ ) {
     LOG(BF("Looking at(%s) for(%s)") % (*aCur)->getName().c_str() % sName.c_str()  );
     if ( (*aCur)->getName() == sName ) {
       return true;
@@ -354,7 +353,7 @@ CL_DEFMETHOD Matter_sp   Matter_O::contentWithName(MatterName    sName )
 {
   contentIterator	aCur;
 
-  for ( aCur=this->_contents.begin();aCur!=this->_contents.end(); aCur++ ) {
+  for ( aCur=this->begin_contents();aCur!=this->end_contents(); aCur++ ) {
     LOG(BF("Looking at(%s) for(%s)") % (*aCur)->getName().c_str() % sName.c_str()  );
     if ( (*aCur)->getName() == sName ) {
       return( (*aCur) );
@@ -373,7 +372,7 @@ CL_DEFMETHOD Matter_sp   Matter_O::contentWithName(MatterName    sName )
 CL_DEFMETHOD core::T_sp   Matter_O::contentWithNameOrNil(MatterName sName )
 {
   contentIterator	aCur;
-  for ( aCur=this->_contents.begin();aCur!=this->_contents.end(); aCur++ ) {
+  for ( aCur=this->begin_contents();aCur!=this->end_contents(); aCur++ ) {
     if ( (*aCur)->getName() == sName ) return( (*aCur) );
   }
   return _Nil<core::T_O>();
@@ -385,7 +384,7 @@ CL_LISPIFY_NAME("makeAllAtomNamesInEachResidueUnique");
 CL_DEFMETHOD void	Matter_O::makeAllAtomNamesInEachResidueUnique()
 {
   contentIterator	aCur;
-  for ( aCur=this->_contents.begin();aCur!=this->_contents.end(); aCur++ ) 
+  for ( aCur=this->begin_contents();aCur!=this->end_contents(); aCur++ ) 
   {
     (*aCur)->makeAllAtomNamesInEachResidueUnique();
   }
@@ -395,7 +394,7 @@ CL_LISPIFY_NAME("fillInImplicitHydrogens");
 CL_DEFMETHOD void	Matter_O::fillInImplicitHydrogens()
 {
   contentIterator	aCur;
-  for ( aCur=this->_contents.begin();aCur!=this->_contents.end(); aCur++ ) 
+  for ( aCur=this->begin_contents();aCur!=this->end_contents(); aCur++ ) 
   {
     (*aCur)->fillInImplicitHydrogens();
   }
@@ -405,7 +404,7 @@ CL_LISPIFY_NAME("randomizeAtomPositions");
 CL_DEFMETHOD void	Matter_O::randomizeAtomPositions()
 {
   contentIterator	aCur;
-  for ( aCur=this->_contents.begin();aCur!=this->_contents.end(); aCur++ ) 
+  for ( aCur=this->begin_contents();aCur!=this->end_contents(); aCur++ ) 
   {
     (*aCur)->randomizeAtomPositions();
   }
@@ -416,7 +415,7 @@ CL_LISPIFY_NAME("perturbAtomPositions");
 CL_DEFMETHOD void	Matter_O::perturbAtomPositions(double dist)
 {
   contentIterator	aCur;
-  for ( aCur=this->_contents.begin();aCur!=this->_contents.end(); aCur++ ) 
+  for ( aCur=this->begin_contents();aCur!=this->end_contents(); aCur++ ) 
   {
     (*aCur)->perturbAtomPositions(dist);
   }
@@ -435,7 +434,7 @@ CL_DEFMETHOD int	Matter_O::contentIndexWithName(MatterName sName )
   contentIterator	aCur;
   int				i;
   i = 0;
-  for ( aCur=this->_contents.begin();aCur!=this->_contents.end(); aCur++, i++ ) {
+  for ( aCur=this->begin_contents();aCur!=this->end_contents(); aCur++, i++ ) {
     if ( (*aCur)->getName() == sName ) {
       return( i );
     }
@@ -455,7 +454,7 @@ CL_DEFMETHOD Matter_sp   Matter_O::contentWithId( int lid )
   contentIterator	aCur;
   Matter_sp			c;
 
-  for ( aCur=this->_contents.begin();aCur!=this->_contents.end(); aCur++ ) {
+  for ( aCur=this->begin_contents();aCur!=this->end_contents(); aCur++ ) {
     c = (*aCur);
     LOG(BF("Looking at content with id(%d)") % c->getId() );
     if ( c->getId() == lid ) {
@@ -476,7 +475,7 @@ CL_DEFMETHOD bool	Matter_O::hasContentWithId( int lid )
 {
   contentIterator	aCur;
   Matter_sp			c;
-  for ( aCur=this->_contents.begin();aCur!=this->_contents.end(); aCur++ ) {
+  for ( aCur=this->begin_contents();aCur!=this->end_contents(); aCur++ ) {
     c = (*aCur);
     LOG(BF("Looking at content with id(%d)") % c->getId() );
     if ( c->getId() == lid ) {
@@ -499,7 +498,7 @@ Matter_sp   Matter_O::contentWithStorageId( int lid )
   Matter_sp			c;
 
   LOG(BF("Looking in container(%s) type(%c) for content with storageId(%d)") % this->name.c_str() % this->containerType % lid );
-  for ( aCur=this->_contents.begin();aCur!=this->_contents.end(); aCur++ ) {
+  for ( aCur=this->begin_contents();aCur!=this->end_contents(); aCur++ ) {
     c = (*aCur);
     LOG(BF("Looking at content with id(%d)") % c->getId() );
     if ( c->getStorageId() == lid ) {
@@ -521,7 +520,7 @@ bool	Matter_O::hasContentWithStorageId( int lid )
   contentIterator	aCur;
   Matter_sp			c;
   LOG(BF("Looking in container(%s) type(%c) for content with storageId(%d)") % this->name.c_str() % this->containerType % lid );
-  for ( aCur=this->_contents.begin();aCur!=this->_contents.end(); aCur++ ) {
+  for ( aCur=this->begin_contents();aCur!=this->end_contents(); aCur++ ) {
     c = (*aCur);
     LOG(BF("Looking at content with id(%d)") % c->getId() );
     if ( c->getStorageId() == lid ) {
@@ -543,7 +542,7 @@ CL_DEFMETHOD int	Matter_O::contentIndexWithId( int lid )
   int				i;
   Matter_sp			c;
   i = 0;
-  for ( aCur=this->_contents.begin();aCur!=this->_contents.end(); aCur++, i++ ) {
+  for ( aCur=this->begin_contents();aCur!=this->end_contents(); aCur++, i++ ) {
     c = *aCur;
     if ( c->getId() == lid ) {
       return( i );
@@ -563,7 +562,7 @@ CL_DEFMETHOD int	Matter_O::contentIndex( Matter_sp cc)
   contentIterator	aCur;
   int				i;
   i = 0;
-  for ( aCur=this->_contents.begin();aCur!=this->_contents.end(); aCur++, i++ ) {
+  for ( aCur=this->begin_contents();aCur!=this->end_contents(); aCur++, i++ ) {
     if ( (*aCur) == cc ) {
       return( i );
     }
@@ -643,7 +642,7 @@ CL_DEFMETHOD void	Matter_O::applyTransformToAtoms( const Matrix& m )
 {_OF();
   contentIterator	a;
   LOG(BF("Transforming all atoms with:%s") % (m.asString().c_str() ) );
-  for ( a=this->_contents.begin(); a!=this->_contents.end(); a++ ) {
+  for ( a=this->begin_contents(); a!=this->end_contents(); a++ ) {
     (*a)->applyTransformToAtoms(m);
   }
     this->applyTransformToRestraints(m);
@@ -663,7 +662,7 @@ CL_DEFMETHOD void	Matter_O::invertStructureAndRestraints()
 {
 	// First invert all of the contained objects and their restraints
   contentIterator	a;
-  for ( a=this->_contents.begin(); a!=this->_contents.end(); a++ )
+  for ( a=this->begin_contents(); a!=this->end_contents(); a++ )
   {
     (*a)->invertStructureAndRestraints();
   }
@@ -718,7 +717,7 @@ CL_DEFMETHOD bool	Matter_O::testConsistancy(const Matter_sp parentShouldBe )
     LOG(BF("  Parentage ok") );
   }
   c = this->sharedThis<Matter_O>();
-  for ( a=this->_contents.begin(); a!=this->_contents.end(); a++ ) {
+  for ( a=this->begin_contents(); a!=this->end_contents(); a++ ) {
     c  = *a;
     if ( !(c->testConsistancy(this->sharedThis<Matter_O>())) ) {
       LOG(BF("Child failed consistancy test") );
@@ -1000,7 +999,7 @@ CL_DEFMETHOD core::List_sp Matter_O::contentsAsList()
 {
   ql::list result;
   contentIterator	it;
-  for ( it=this->_contents.begin(); it!=this->_contents.end(); ++it )
+  for ( it=this->begin_contents(); it!=this->end_contents(); ++it )
     result << *it;
   return result.result();
 }
@@ -1115,8 +1114,7 @@ void	Matter_O::fields(core::Record_sp node )
     _BLOCK_TRACEF(BF("serializing container contents - there are %d objects")% this->_contents.size() );
 	    // Make sure all contents have us as a parent
     Matter_sp c = this->sharedThis<Matter_O>();
-    gctools::Vec0<Matter_sp>::iterator ai;
-    for ( ai=this->_contents.begin(); ai!=this->_contents.end(); ai++ ) {
+    for ( auto ai=this->begin_contents(); ai!=this->end_contents(); ai++ ) {
       (*ai)->setContainedBy(c);
     }
   }

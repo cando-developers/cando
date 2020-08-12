@@ -90,8 +90,7 @@ Oligomer_O::Oligomer_O(const Oligomer_O& original)
   this->_Monomers.resize(original._Monomers.size());
   for ( size_t i=0, iEnd(this->_Monomers.size()); i<iEnd; ++i ) {
     Monomer_sp oldMonomer = original._Monomers[i];
-    Monomer_O& ref = *oldMonomer;
-    GC_COPY(Monomer_O,monomerCopy,ref);
+    Monomer_sp monomerCopy = oldMonomer->deepCopy();
     this->_Monomers[i] = monomerCopy;
     newMonomersFromOld->setf_gethash(oldMonomer,monomerCopy);
   }
@@ -191,31 +190,31 @@ CL_DEFMETHOD core::List_sp Oligomer_O::couplingsAsList()
 
 void	Oligomer_O::expandMonomerListToNeighbors(gctools::SmallOrderedSet<Monomer_sp>& monomers)
 {
-    gctools::SmallOrderedSet<Monomer_sp>				expanded;
-    gctools::SmallOrderedSet<Monomer_sp>::iterator		mi;
-Monomer_sp				neighbor;
-Monomer_O::Couplings::const_iterator	ci;
-Coupling_sp				coupling;
-    expanded.clear();
-    LOG(BF("Starting set of monomers:") );
-    for ( mi=monomers.begin(); mi!=monomers.end(); mi++ )
+  gctools::SmallOrderedSet<Monomer_sp>				expanded;
+  gctools::SmallOrderedSet<Monomer_sp>::iterator		mi;
+  Monomer_sp				neighbor;
+  Monomer_O::Couplings::iterator	        ci;
+  Coupling_sp				coupling;
+  expanded.clear();
+  LOG(BF("Starting set of monomers:") );
+  for ( mi=monomers.begin(); mi!=monomers.end(); mi++ )
     {
-	LOG(BF("    %s") % (*mi)->description().c_str()  );
-        for ( ci = (*mi)->_Couplings.begin();
-		ci != (*mi)->_Couplings.end(); ci++ )
+      LOG(BF("    %s") % (*mi)->description().c_str()  );
+      for ( ci = (*mi)->_Couplings.begin();
+            ci != (*mi)->_Couplings.end(); ci++ )
 	{
-	    ASSERTNOTNULL(ci->second);
-	    coupling = ci->second;
-	    neighbor = coupling->getOtherSideMonomer(*mi);
-	    expanded.insert(neighbor);
+          ASSERTNOTNULL(ci->second);
+          coupling = ci->second;
+          neighbor = coupling->getOtherSideMonomer(*mi);
+          expanded.insert(neighbor);
 	}
     }
-    monomers.clear();
-    LOG(BF("Expanded set of monomers:") );
-    for ( gctools::SmallOrderedSet<Monomer_sp>::iterator si=expanded.begin(); si!=expanded.end(); si++ )
+  monomers.clear();
+  LOG(BF("Expanded set of monomers:") );
+  for ( gctools::SmallOrderedSet<Monomer_sp>::iterator si=expanded.begin(); si!=expanded.end(); si++ )
     {
-	LOG(BF("    %s") % (*si)->description().c_str()  );
-        monomers.insert(*si);
+      LOG(BF("    %s") % (*si)->description().c_str()  );
+      monomers.insert(*si);
     };
 }
 
@@ -675,7 +674,7 @@ int			residueNetCharge;
 
 
 
-void Oligomer_O::_gatherMultiMonomers(gctools::Vec0<Monomer_sp>& multiMonomers)
+void Oligomer_O::_gatherMultiMonomers(gctools::Vec0_uncopyable<Monomer_sp>& multiMonomers)
 {
     gctools::Vec0<Monomer_sp>::iterator	mi;
     multiMonomers.clear();
@@ -1029,7 +1028,9 @@ void	Oligomer_O::_assembleFromParts(core::List_sp parts, CandoDatabase_sp bdb)
 
 CL_DEFMETHOD core::T_sp Oligomer_O::copyOligomer() const
 {
-  GC_COPY(Oligomer_O,newOligomer,*this);
+  GC_NON_RECURSIVE_COPY(Oligomer_O,newOligomer,*this);
+  newOligomer->_Monomers = this->_Monomers;
+  newOligomer->_Couplings = this->_Couplings;
   return newOligomer;
 }
 

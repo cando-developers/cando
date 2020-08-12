@@ -129,7 +129,7 @@ CL_DEFMETHOD   void	setOrderFromInt(int o)	{ this->order=(BondOrder)(o); };
 
 	/*! Return a ConstitutionBond_sp object using the ConstitutionBond_O::atomIdMap 
 	  to map Atoms to ConstitutionAtomIndex0N values */
-  ConstitutionBond_sp asConstitutionBond(Atom_sp from, MapAtomsToConstitutionAtomIndex0N atomMap);
+  ConstitutionBond_sp asConstitutionBond(Atom_sp from, const MapAtomsToConstitutionAtomIndex0N& atomMap);
 
 		//! For bonds that are read from XML we instruct them to join the atoms that they are supposed to join
   void		joinYourAtoms();
@@ -169,7 +169,7 @@ class BondList_O : public core::CxxObject_O
   void initialize();
  public:
  private:
-  gctools::Vec0<Bond_sp>	_Bonds;
+  gctools::Vec0_uncopyable<Bond_sp>	_Bonds;
 //	gctools::Vec0<Bond_sp>	_Bonds;
  public:
 
@@ -189,7 +189,7 @@ class BondList_O : public core::CxxObject_O
   void		removeBond(Bond_sp b);
   void		removeBondBetween(Atom_sp a,Atom_sp b);
   int		size() { return this->_Bonds.size(); };
-//	BondList_sp	copy();
+  BondList_sp	deepishCopy() const;
 
   string	description() const;
   string describeOthers(Atom_sp from) const;

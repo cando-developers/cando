@@ -85,7 +85,6 @@ namespace chem
 It stores the atom name, element, properties and a vector of bonds in the form of chem:constitution-bond(s).)");
     LISP_CLASS(chem,ChemPkg,ConstitutionAtom_O,"ConstitutionAtom",core::CxxObject_O);
   public:
-  public:
     MatterName                          _AtomName;
     size_t                              _Index;
     Element			        _Element;
@@ -103,15 +102,16 @@ It stores the atom name, element, properties and a vector of bonds in the form o
     virtual bool isVirtualAtom() { return false;};
 	/*! Append a ConstitutionBond_sp to our list of bonds */
     void addConstitutionBond(ConstitutionBond_sp cb) {this->_Bonds.push_back(cb);};
-    ConstitutionAtom_O(MatterName atomName, Element element, core::T_sp atomType, size_t index, StereochemistryType stype, core::List_sp properties ) : _AtomName(atomName), _Element(element), _AtomType(atomType), _Index(index), _StereochemistryType(stype), _Properties(core::cl__copy_list(properties)) {};
+    ConstitutionAtom_O(MatterName atomName, Element element, core::T_sp atomType, size_t index, StereochemistryType stype, core::List_sp properties ) : _AtomName(atomName), _Element(element), _AtomType(atomType), _Index(index), _StereochemistryType(stype), _Properties(properties) {};
     ConstitutionAtom_O() : _AtomType(_Nil<core::T_O>()) {};
     virtual Atom_sp buildAtom() const;
   };
 
   // Put the namespace in front of the types - otherwise there will be problems with the wrappers
 CL_DEFUN inline ConstitutionAtom_sp makeConstitutionAtom(chem::MatterName uniqueAtomName, chem::Element element, core::T_sp atomType, size_t index, chem::StereochemistryType stereochemistry_type, core::List_sp properties) {
-  return gctools::GC<ConstitutionAtom_O>::allocate(uniqueAtomName,element,atomType,index,stereochemistry_type,properties);
-  }
+  core::List_sp copy_prop = core::cl__copy_list(properties);
+  return gctools::GC<ConstitutionAtom_O>::allocate(uniqueAtomName,element,atomType,index,stereochemistry_type,copy_prop);
+}
 
   class ConstitutionVirtualAtom_O : public ConstitutionAtom_O
   {

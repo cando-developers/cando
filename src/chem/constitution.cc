@@ -162,7 +162,7 @@ void	Constitution_O::makeResidueConsistentWithStereoisomerNamed(Residue_sp res,
 
 RepresentativeList_sp	Constitution_O::expandedRepresentativeList() const
 {
-    gctools::Vec0<Stereoisomer_sp>::const_iterator	si;
+    gctools::Vec0<Stereoisomer_sp>::iterator	si;
     RepresentativeList_sp allRepresentatives  = RepresentativeList_O::create();
     for (si=this->begin_Stereoisomers(); si!=this->end_Stereoisomers(); si++)
     {
@@ -250,7 +250,7 @@ CL_DEFMETHOD adapt::StringList_sp Constitution_O::getPdbNamesAsStringList() {
 
     Stereoisomer_sp Constitution_O::getStereoisomerWithName(core::Symbol_sp stereoisomerName) const
 {
-    const_stereoisomerIterator	si;
+  stereoisomerIterator	si;
     LOG(BF("Looking for Stereoisomer with name(%s)") % _rep_(stereoisomerName) );
     for (si=this->begin_Stereoisomers(); si!=this->end_Stereoisomers(); si++)
     {

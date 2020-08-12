@@ -115,22 +115,22 @@ class Matter_O : public core::CxxObject_O
 //	void	serialize(serialize::SNode snode);
 
   friend	class Loop;
- public:
-  typedef	gctools::Vec0<Matter_sp>			MatterVector;
-  typedef	gctools::Vec0<Matter_sp>::iterator		contentIterator;
-  typedef	gctools::Vec0<Matter_sp>::const_iterator	const_contentIterator;
- protected:
+protected:
 //  int			_NextContentId;
   int			_Id;
 //  int			_TempFileId;	//!< Use to define temporary index while reading/writing to non XML formats
   MatterName			name;
-  Matter_sp	containerContainedBy;
-  MatterVector		_contents;	// KEEP THIS as a vector
+  Matter_sp	                containerContainedBy;
+  gctools::Vec0_uncopyable<Matter_sp>		_contents;	// KEEP THIS as a vector
 						// A lot depends on residues
 						// maintaining an identical
 						// order of atoms
 						// Through the database
 						// building process
+public:
+  typedef gctools::Vec0_uncopyable<Matter_sp>::iterator contentIterator;
+  typedef gctools::Vec0_uncopyable<Matter_sp>::const_iterator const_contentIterator;
+  
 		/*! Store Symbol keyed properties of matter
 		 */
   core::List_sp   	_Properties;
@@ -189,7 +189,6 @@ class Matter_O : public core::CxxObject_O
   contentIterator end_contents() { return this->_contents.end(); };
   const_contentIterator begin_contents() const { return this->_contents.begin(); };
   const_contentIterator end_contents() const { return this->_contents.end(); };
-
 		/*! Transfer the coordinates from an equivalent (equal) Matter.
 		 * If the (other) isnt equal then throw an exception.
 		 */
@@ -256,9 +255,8 @@ class Matter_O : public core::CxxObject_O
   Matter_sp	containedBy() const	{ASSERT(!this->containerContainedBy.unboundp());return this->containerContainedBy;};
   Matter_sp	containedBy()	{ASSERT(!this->containerContainedBy.unboundp()); return this->containerContainedBy; };
   bool		isContainedBy(Matter_sp matter);
-  MatterVector&	getContents()	{return(this->_contents);};
   void	eraseContents(); // Empty the contents vector, don't free the memory
-        
+
   contentIterator eraseContent(contentIterator x) {return this->_contents.erase(x);};
 
   virtual void	makeAllAtomNamesInEachResidueUnique();
@@ -335,8 +333,8 @@ class Matter_O : public core::CxxObject_O
   CL_LISPIFY_NAME("contentAt");
   CL_DEFMETHOD   Matter_sp	contentAt( size_t i ) const;
   CL_LISPIFY_NAME("contentSize");
-  CL_DEFMETHOD   int		contentSize( ) { return this->_contents.size(); };
-
+  CL_DEFMETHOD   size_t		contentSize( ) { return this->_contents.size(); };
+  size_t length() const { return this->_contents.size(); };
   void	translateAllAtoms(const Vector3& v);
 
   void	setAtomAliasesForResiduesNamed(core::List_sp residueAliasAtoms, core::List_sp atomAliases );

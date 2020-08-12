@@ -117,8 +117,7 @@ void Molecule_O::addResidueRetainId( Matter_sp r )
 CL_LISPIFY_NAME("removeResidue");
 CL_DEFMETHOD void Molecule_O::removeResidue( Matter_sp a )
 {
-  gctools::Vec0<Matter_sp>::iterator	it;
-  for ( it=this->getContents().begin(); it!= this->getContents().end(); it++ ) {
+  for ( auto it=this->begin_residues(); it!= this->end_residues(); it++ ) {
     if ( (*it).as<Residue_O>() == a ) {
       this->eraseContent(it);
       return;
@@ -154,7 +153,7 @@ void Molecule_O::transferCoordinates(Matter_sp obj)
 	    SIMPLE_ERROR(BF("You can only transfer coordinates to a Molecule from another Molecule"));
 	}
 	Molecule_sp other = obj.as<Molecule_O>();
-	if ( other->_contents.size() != this->_contents.size() )
+	if ( other->length() != this->length() )
 	{
 	    SIMPLE_ERROR(BF("You can only transfer coordinates if the two Molecules have the same number of contents"));
 	}
@@ -172,10 +171,10 @@ CL_DEFMETHOD     void	Molecule_O::moveAllAtomsIntoFirstResidue()
 	contentIterator	r;
 	contentIterator	rHead;
 	contentIterator	rRest;
-	rHead = this->getContents().begin();
+	rHead = this->begin_residues();
 	rRest = rHead+1;
-	for ( r=rRest;r!=this->getContents().end(); ) {
-	    for ( a = (*r)->getContents().begin(); a!= (*r)->getContents().end();) {
+	for ( r=rRest;r!=this->end_residues(); ) {
+	    for ( a = (*r)->begin_contents(); a!= (*r)->end_contents();) {
 		(*a)->reparent(*rHead);
 		a = (*r)->eraseContent(a);
 	    }
@@ -195,7 +194,7 @@ CL_DEFMETHOD     void	Molecule_O::moveAllAtomsIntoFirstResidue()
 Matter_sp	Molecule_O::copyDontRedirectAtoms(core::T_sp new_to_old)
 {
   Residue_sp			res;
-  GC_COPY(Molecule_O, newMol , *this); // = RP_Copy<Molecule_O>(this);
+  GC_NON_RECURSIVE_COPY(Molecule_O, newMol , *this); // = RP_Copy<Molecule_O>(this);
   if (gc::IsA<core::HashTable_sp>(new_to_old)) {
     core::HashTable_sp new_to_old_ht = gc::As_unsafe<core::HashTable_sp>(new_to_old);
     new_to_old_ht->setf_gethash(newMol,this->asSmartPtr());
@@ -211,7 +210,7 @@ Matter_sp	Molecule_O::copyDontRedirectAtoms(core::T_sp new_to_old)
 void	Molecule_O::redirectAtoms()
     {_OF();
 	LOG(BF("Molecule_O::redirectAtoms START") );
-	for ( contentIterator a=this->getContents().begin(); a!=this->getContents().end(); a++ )
+	for ( contentIterator a=this->begin_contents(); a!=this->end_contents(); a++ )
 	{
           Residue_sp res = (*a).as<Residue_O>();
 	    res->redirectAtoms();
