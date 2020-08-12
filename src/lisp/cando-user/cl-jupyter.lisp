@@ -67,7 +67,7 @@
                              (funcall jupyter-symbol kernel connection-filename))
                            (sb-bsd-sockets:socket-close listen)
                            (format t "Child ~a is exiting - client ~a should be killed as well...~%" (core:getpid) client-pid)
-                           (core:exit))))
+                           (core:c_exit))))
                      (progn             ; parent
                        (close stream)))))))
       (sb-bsd-sockets:socket-close listen))))
