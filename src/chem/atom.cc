@@ -588,6 +588,7 @@ void Atom_O::addBond(Bond_sp bond)
 }
 
 CL_LISPIFY_NAME("bondTo");
+__attribute__((optnone))
 CL_DEFMETHOD     Bond_sp Atom_O::bondTo( Atom_sp to, BondOrder o )
 {_OF();
 	// Check if there is already a bond to this atom and

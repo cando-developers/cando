@@ -94,6 +94,9 @@ void	Mol2File::advanceLine() {
       }
     }
   }
+  if (chem__verbose(2)) {
+    core::write_bf_stream(BF("advanceLine mLine = %s\n") % this->mLine.str());
+  }
 };
 std::queue<string>	Mol2File::splitLine() {
   std::queue<string>	qWords;
@@ -379,8 +382,15 @@ core::T_sp mol2Read(Mol2File& fIn)
       }
     } else if ( line == "@<TRIPOS>FF_PBC" ) {
       line = fIn.line().str();
-      fIn.advanceLine();
+      if (chem__verbose(1)) {
+        core::write_bf_stream(BF("@<TRIPOSE>FF_PBC\n"));
+        core::write_bf_stream(BF("%s\n") % line);
+      }
       words = fIn.splitLine();
+      fIn.advanceLine();
+      if (words.empty()) {
+        SIMPLE_ERROR(BF("No data followed @<TRIPOSE>FF_PBC"));
+      }
       words.pop(); // get rid of version
       int pbc_type = atoi(words.front().c_str());
       words.pop(); // pop pbc type
