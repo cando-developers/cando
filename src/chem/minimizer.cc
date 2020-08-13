@@ -502,7 +502,6 @@ void	Minimizer_O::minBracket(
  *	Return the function value at the new point and the
  *	new minimum in (xmin)
  */
-__attribute__((optnone))
 double 	Minimizer_O::dbrent(	double ax, double bx, double cx,
                                 double tol,
                                 double& lineStep,

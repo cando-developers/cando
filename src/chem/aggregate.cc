@@ -61,7 +61,6 @@ CL_DOCSTRING(R"doc(Create a chem:bounding-box using three lengths in angstroms a
 When angles are missing they are assumed to be 90.0 degrees.)doc");
 CL_LAMBDA(widths &key angles-degrees center);
 CL_LISPIFY_NAME(make-bounding-box);
-__attribute__((optnone))
 CL_DEF_CLASS_METHOD
 BoundingBox_sp BoundingBox_O::make(core::List_sp widths, core::T_sp angles_degrees, core::T_sp center)
 {

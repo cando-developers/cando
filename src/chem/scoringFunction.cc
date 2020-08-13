@@ -297,7 +297,6 @@ CL_DEFUN size_t chem__velocity_verlet_step_limit_displacement(ScoringFunction_sp
                                                               double delta_t,
                                                               core::T_sp tfrozen,
                                                               const Vector3& limit_displacement)
-__attribute__((optnone))
 {
   core::SimpleBitVector_sp frozen;
   if (gc::IsA<core::SimpleBitVector_sp>(tfrozen)) {

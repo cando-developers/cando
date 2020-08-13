@@ -94,6 +94,9 @@ void	Mol2File::advanceLine() {
       }
     }
   }
+  if (chem__verbose(2)) {
+    core::write_bf_stream(BF("advanceLine mLine = %s\n") % this->mLine.str());
+  }
 };
 std::queue<string>	Mol2File::splitLine() {
   std::queue<string>	qWords;
@@ -134,6 +137,7 @@ struct TriposMolecule {
 
 struct TriposAtom {
   uint	mIndex;
+  uint  mArrayIndex;
   string	atom_name;
   double	mX;
   double	mY;
@@ -142,7 +146,6 @@ struct TriposAtom {
   uint	mSubstId;
   string	mSubstName;
   double	mCharge;
-  Atom_sp	mAtom;
 };
 
 struct TriposBond {
@@ -279,6 +282,7 @@ core::T_sp mol2Read(Mol2File& fIn)
   bool  firstMolecule = true;
   core::List_sp boundingBox = _Nil<core::T_O>();
   core::T_sp solventName = _Nil<core::T_O>();
+  size_t atom_counter = 0;
   while ( !fIn.eof() ) {
     line = fIn.line().str();
     if ( fIn.hasDataLine() ) {
@@ -329,6 +333,7 @@ core::T_sp mol2Read(Mol2File& fIn)
         }
         words = fIn.splitLine();
         oneAtom.mIndex = atoi(words.front().c_str()); words.pop();
+        oneAtom.mArrayIndex = atom_counter++;
         oneAtom.atom_name = words.front(); words.pop();
         oneAtom.mX = atof(words.front().c_str()); words.pop();
         oneAtom.mY = atof(words.front().c_str()); words.pop();
@@ -357,7 +362,8 @@ core::T_sp mol2Read(Mol2File& fIn)
           }
         }
         atoms[oneAtom.mIndex] = oneAtom;
-        LOG(BF("Added atom with id: %d name: %s") % oneAtom.mIndex % oneAtom.atom_name.c_str()  );
+        //        printf("%s:%d Adding atom[%lu] -> %s\n", __FILE__, __LINE__, oneAtom.mArrayIndex, oneAtom.atom_name.c_str());
+        LOG(BF("Added atom with id: %d name: %s") % oneAtom.mArrayIndex % oneAtom.atom_name.c_str()  );
         fIn.advanceLine();
       }
     } else if ( line == "@<TRIPOS>BOND" ) {
@@ -379,8 +385,15 @@ core::T_sp mol2Read(Mol2File& fIn)
       }
     } else if ( line == "@<TRIPOS>FF_PBC" ) {
       line = fIn.line().str();
-      fIn.advanceLine();
+      if (chem__verbose(1)) {
+        core::write_bf_stream(BF("@<TRIPOSE>FF_PBC\n"));
+        core::write_bf_stream(BF("%s\n") % line);
+      }
       words = fIn.splitLine();
+      fIn.advanceLine();
+      if (words.empty()) {
+        SIMPLE_ERROR(BF("No data followed @<TRIPOSE>FF_PBC"));
+      }
       words.pop(); // get rid of version
       int pbc_type = atoi(words.front().c_str());
       words.pop(); // pop pbc type
@@ -492,6 +505,7 @@ core::T_sp mol2Read(Mol2File& fIn)
   map<uint,TriposAtom>::iterator	ai;
   Vector3				pos;
   string				nm, el;
+  core::SimpleVector_sp atoms_sv = core::SimpleVector_O::make(atoms.size());
   for ( ai=atoms.begin(); ai!= atoms.end(); ai++ ) {
     GC_ALLOCATE(Atom_O, tempa ); // new_Atom_sp();
     a = tempa;
@@ -502,7 +516,11 @@ core::T_sp mol2Read(Mol2File& fIn)
     a->setType(chemkw_intern(ai->second.mType));
     a->setCharge(ai->second.mCharge);
     LOG(BF(" atom info: %s") % a->description().c_str()  );
-    ai->second.mAtom = a;
+    if (ai->second.mArrayIndex<atoms.size()) {
+      (*atoms_sv)[ai->second.mArrayIndex] = a;
+    } else {
+      SIMPLE_ERROR(BF("Bad index %u for atom atoms.size() -> %lu\n") % ai->second.mArrayIndex % atoms.size());
+    }
 	//
 	// If we haven't seen this residue before
 	// we need to create it
@@ -542,8 +560,11 @@ core::T_sp mol2Read(Mol2File& fIn)
   BondOrder				bo;
   for ( bi=bonds.begin(); bi!=bonds.end(); bi++ ) {
     LOG(BF("Creating bond between atom id: %d - %d") % bi->mAtom1Id % bi->mAtom2Id  );
-    a1 = atoms[bi->mAtom1Id].mAtom;
-    a2 = atoms[bi->mAtom2Id].mAtom;
+    TriposAtom& at1 = atoms[bi->mAtom1Id];
+    TriposAtom& at2 = atoms[bi->mAtom2Id];
+    a1 = gc::As<Atom_sp>((*atoms_sv)[at1.mArrayIndex]);
+    a2 = gc::As<Atom_sp>((*atoms_sv)[at2.mArrayIndex]);
+    // printf("%s:%d Bonding atom[%lu] to atom[%lu]\n", __FILE__, __LINE__, bi->mAtom1Id, bi->mAtom2Id);
     LOG(BF("Creating bond between %s - %s") % a1->description().c_str() % a2->description().c_str()  );
     if ( bi->mOrder=="1" ) bo = singleBond;
     else if ( bi->mOrder=="2" ) bo = doubleBond;
@@ -615,7 +636,7 @@ core::T_sp mol2Read(Mol2File& fIn)
         res->setPdbName(sub_type);
         if (solventName.notnilp() && (sub_name==solventName || sub_type==solventName))
         {
-          printf("%s:%d Setting molecule %s to solvent\n", __FILE__, __LINE__, _rep_(m).c_str());
+          //          printf("%s:%d Setting molecule %s to solvent\n", __FILE__, __LINE__, _rep_(m).c_str());
           m->setf_molecule_type(kw::_sym_solvent);
         }
         LOG(BF("Adding residue number: %d name(%s) pdbName(%s) to molecule: %s") % si->mId % res->getName().c_str() % res->getPdbName().c_str() % si->chain.c_str()  );
@@ -638,7 +659,8 @@ core::T_sp mol2Read(Mol2File& fIn)
     // Determine the elements and hybridization of each atom
     //
   for ( ai=atoms.begin(); ai!= atoms.end(); ai++ ) {
-    _calculateElementAndHybridization(ai->second.mAtom);
+    Atom_sp aa = gc::As<Atom_sp>((*atoms_sv)[ai->second.mArrayIndex]);
+    _calculateElementAndHybridization(aa);
   }
   return aggregate;
 }
