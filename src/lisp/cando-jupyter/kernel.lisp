@@ -28,6 +28,15 @@
     (jupyter:inform :info k "Setting amber host pathname translation -> ~a" amber-home)))
 
 
+(defmethod jupyter:start :before ((k kernel))
+  (when lparallel:*kernel*
+    (error "The lparallel:*kernel* is not NIL and it must be when jupyter starts.   Add -f no-auto-lparallel to cando startup"))
+  (setf lparallel:*kernel* (lparallel:make-kernel (core:num-logical-processors))))
+
+(defmethod jupyter:stop :after ((k kernel))
+  (format t "jupyter:stop :after (mp:all-processes) -> ~s~%" (mp:all-processes))
+  (lparallel:end-kernel :wait t))
+
 (defun lisp-code-p (code)
   (do ((index 0 (1+ index)))
       ((>= index (length code)))

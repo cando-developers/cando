@@ -159,7 +159,7 @@ CL_INITIALIZER void cando_initializer()
   std::vector<string> parts = core::split(executable_path,"/");
   std::string exec_name = parts[parts.size()-1];
   if (exec_name.find("cando")!=std::string::npos) {
-    std::pair<core::LoadEvalEnum,std::string> cmd2(core::cloEval,"(setf lparallel:*kernel* (lparallel:make-kernel (core:num-logical-processors)))");
+    std::pair<core::LoadEvalEnum,std::string> cmd2(core::cloEval,"(unless (member :no-auto-lparallel *features*) (setf lparallel:*kernel* (lparallel:make-kernel (core:num-logical-processors))))");
     core::global_options->_LoadEvalList.insert(core::global_options->_LoadEvalList.begin(),cmd2);
     std::pair<core::LoadEvalEnum,std::string> cmd1(core::cloEval,"(in-package :cando-user)");
     core::global_options->_LoadEvalList.insert(core::global_options->_LoadEvalList.begin(),cmd1);
@@ -172,7 +172,7 @@ CL_INITIALIZER void cando_initializer()
     core::global_options->_LoadEvalList.push_back(cmdNm1);
     std::pair<core::LoadEvalEnum,std::string> cmdN(core::cloEval,"(leap.commands:leap-repl-then-exit)");
     core::global_options->_LoadEvalList.push_back(cmdN);
-    std::pair<core::LoadEvalEnum,std::string> cmd2(core::cloEval,"(setf lparallel:*kernel* (lparallel:make-kernel (core:num-logical-processors)))");
+    std::pair<core::LoadEvalEnum,std::string> cmd2(core::cloEval,"(unless (member :no-auto-lparallel *features*) (setf lparallel:*kernel* (lparallel:make-kernel (core:num-logical-processors))))");
     core::global_options->_LoadEvalList.insert(core::global_options->_LoadEvalList.begin(),cmd2);
     std::pair<core::LoadEvalEnum,std::string> cmd1(core::cloEval,"(in-package :cando-user)");
     core::global_options->_LoadEvalList.insert(core::global_options->_LoadEvalList.begin(),cmd1);
@@ -183,13 +183,13 @@ CL_INITIALIZER void cando_initializer()
 }
 
 SYMBOL_EXPORT_SC_(KeywordPkg,wait);
+SYMBOL_EXPORT_SC_(KeywordPkg,no_auto_lparallel);
 
 CL_TERMINATOR void cando_terminator()
 {
-  core::T_sp lparallel = _lisp->findPackage("LPARALLEL");
-  if (lparallel.notnilp()) {
-    core::Symbol_sp kernel = _lisp->findSymbol("*KERNEL*",lparallel);
-    if (kernel->symbolValue().notnilp()) {
+  if (gctools::As<core::Cons_sp>(cl::_sym_STARfeaturesSTAR->symbolValue())->memberEq(kw::_sym_no_auto_lparallel).nilp()) {
+    core::T_sp lparallel = _lisp->findPackage("LPARALLEL");
+    if (lparallel.notnilp()) {
       core::Symbol_sp end_kernel = _lisp->findSymbol("END-KERNEL",lparallel);
       core::eval::funcall(end_kernel,kw::_sym_wait,_lisp->_true());
     }
