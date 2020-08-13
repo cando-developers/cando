@@ -168,11 +168,7 @@
                                                                          :input-coordinate-file ti-input-coordinate-file)
                                                            decharge-jobs)))
                                         (:vdw-bonded (let* ((input-topology-file input-topology-file)
-                                                            (heat-input-coordinate-file (output-file morph-side-prepare-job :-r))
-                                                            (heat-job (make-heat-ti-step morph side stage lambda-label lambda-values
-                                                                                         :input-topology-file input-topology-file
-                                                                                         :input-coordinate-file heat-input-coordinate-file))
-                                                            (ti-input-coordinate-file (output-file heat-job :-r)))
+                                                            (ti-input-coordinate-file (output-file morph-side-prepare-job :-r)))
                                                        (push (make-ti-step morph side stage lambda-label lambda-values
                                                                            :input-topology-file input-topology-file
                                                                            :input-coordinate-file ti-input-coordinate-file)

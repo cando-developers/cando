@@ -11,12 +11,8 @@
     :accessor loaded-ligands
     :initform nil
     :trait :list)
-   (ligands
-    :accessor ligands
-    :initform nil
-    :trait :list)
-   (ligand-names
-    :accessor ligand-names
+   (selected-ligands
+    :accessor selected-ligands
     :initform nil
     :trait :list)
    (ligand-widget
@@ -30,6 +26,10 @@
     :accessor all-edges
     :initform nil
     :trait :list)
+   (smirks
+    :accessor smirks
+    :initform ""
+    :trait :string)
    (distributor
     :accessor distributor
     :initform "s103.thirdlaw.tech"
@@ -50,6 +50,10 @@
     :accessor cyto-widget
     :initform nil
     :trait :list)
+   (smirk-pattern
+    :accessor smirk-pattern
+    :initform nil
+    :trait :string)
 
 
 
@@ -94,6 +98,14 @@
   (setf *app* (make-instance 'app))
   (setf *tirun* (make-instance 'tirun:tirun-calculation)))
 
+#+(or)(defun new-pas ()
+  (with-output-to-string (sout)
+    (let ((*standard-output* sout))
+      (cando-user:source "leaprc.lipid14")
+      (cando-user:source "leaprc.water.tip3p")))
+    (asdf:load-asd "/Users/yonkunas/Development/pas/pas.asd")
+    (asdf:load-system :pas))
+    
 
 (defun widget-visibility (widget visibility)
   (setf (w:widget-display (w:widget-layout widget)) visibility))
@@ -182,7 +194,7 @@
 (defvar *current-component* nil)
 (defvar *smallest-ligand-sketch*)
 (defun observe-ligand-selector (nglview structure-view messages calc ligand-name new-value)
-  (let ((mol (elt (ligands *app*) new-value)))
+  (let ((mol (elt (selected-ligands *app*) new-value)))
     (let* ((agg (chem:make-aggregate)))
       (chem:add-matter agg mol)
       (setf (w:widget-value ligand-name) (string (chem:get-name mol)))
@@ -203,6 +215,8 @@
 
 (defvar *lv* nil)
 (defun load-ligands (&key (calc *tirun*) (show-receptor t))
+  "load-ligands loads a list of ligands using a file-upload widget and puts them into (loaded-ligands *app*) and
+(selected-ligands *app*)"
   (setf *current-component* nil)
   (let* ((fu (make-instance 'w:file-upload :description "Upload SDF file"
                             :style *button-style*))
@@ -234,7 +248,7 @@
                        (let ((ligands (with-input-from-string (sin as-text)
                                         (sdf:parse-sdf-file sin))))
                          (setf (loaded-ligands *app*) ligands
-                               (ligands *app*) ligands))
+                               (selected-ligands *app*) ligands))
                        (flet ((build-prototype-sketch (ligands)
                                 (let ((min-atoms (chem:number-of-atoms (car ligands)))
                                       (min-mol (car ligands)))
@@ -244,7 +258,7 @@
                                           do (setf min-atoms num-atoms
                                                    min-mol mol))
                                   (sketch2d:sketch2d min-mol))))
-                         (setf *smallest-ligand-sketch* (build-prototype-sketch (ligands *app*))))
+                         (setf *smallest-ligand-sketch* (build-prototype-sketch (selected-ligands *app*))))
                        (setf (w:widget-value ligand-selector) 0
                              (w:widget-value ligand-total) (format nil "~a" (length (loaded-ligands *app*)))
                              (w:widget-max ligand-selector) (1- (length (loaded-ligands *app*)))
@@ -255,7 +269,7 @@
                        (when show-receptor
                          (nglview:add-structure nglview (make-instance 'nglview:text-structure :text (receptor-string *app*))))
                        (observe-ligand-selector nglview structure-view messages calc ligand-name 0)
-                       (tirun:tirun-calculation-from-ligands calc (ligands *app*))
+                       (tirun:tirun-calculation-from-ligands calc (selected-ligands *app*))
                        (format t "Done observe fu~%"))))))
     (w:observe ligand-selector :value (lambda (instance type name old-value new-value source)
                                         (declare (ignore instance type name old-value source))
@@ -280,28 +294,31 @@
 
 
 (defun select-ligands (&key (calc *tirun*))
-  (labels ((get-loaded ()
+  "select-ligands takes the ligands in (loaded-ligands *app*) and lets the user downselect a
+subset that it then puts into (selected-ligands *app*)"
+  (labels ((get-loaded-names ()
              (let* ((names (loop for lig in (loaded-ligands *app*)
                                  collect (string (chem:get-name lig))))
                     (sorted-names (sort names #'string<)))
                sorted-names)))
-    (let* ((messages (make-instance 'w:text-area))
+    (let* ((sorted-names (get-loaded-names))
+           (messages (make-instance 'w:text-area))
            (multi-select (make-instance 'jupyter-widgets:select-multiple
-                                        :%options-labels (get-loaded)))
+                                        :%options-labels (get-loaded-names)))
            (vbox (make-instance 'w:v-box :children (list multi-select messages))))
       (w:observe *app* :loaded-ligands (lambda (&rest args)
-                                         (let ((sorted-names (get-loaded)))
-                                           (setf (ligand-names *app*) sorted-names
-                                                 (w:widget-%options-labels multi-select) sorted-names))))
+                                         (let ((new-sorted-names (get-loaded-names)))
+                                           (setf (w:widget-%options-labels multi-select) new-sorted-names
+                                                 sorted-names new-sorted-names))))
       (w:observe multi-select :index (lambda (instance type name old-value new-value source)
-                                       (setf (w:widget-value messages) (format nil "Starting multi-select index ligand-names: ~a" (ligand-names *app*)))
-                                       (let ((mols (if (ligand-names *app*)
+                                       (setf (w:widget-value messages) (format nil "Starting multi-select index sorted-names: ~a" sorted-names))
+                                       (let ((mols (if sorted-names
                                                        (loop for index in new-value
-                                                             for name = (elt (ligand-names *app*) index)
+                                                             for name = (elt sorted-names index)
                                                              for name-key = (intern name :keyword)
                                                              collect (find name-key (loaded-ligands *app*) :key #'chem:get-name))
                                                        (loaded-ligands *app*))))
-                                         (setf (ligands *app*) mols)
+                                         (setf (selected-ligands *app*) mols)
                                          (setf (w:widget-value messages)
                                                (format nil "Molecules:~% ~a~%" (if mols (mapcar #'chem:get-name mols) "all"))))))
       vbox)))
@@ -329,7 +346,7 @@
     ((string= "nodes" (cytoscape:group instance))
      (let* ((name-str (cdr (assoc "id" (cytoscape:data instance) :test #'string=)))
             (name-sym (intern name-str :keyword))
-            (mol (find name-sym (ligands *app*) :key #'chem:get-name)))
+            (mol (find name-sym (selected-ligands *app*) :key #'chem:get-name)))
        (setf (jupyter-widgets:widget-value (cyto-observe *app*))
              (format nil "~a~%~a"
                      name-str
@@ -339,8 +356,8 @@
             (source-sym (intern source-str :keyword))
             (target-str (cdr (assoc "target" (cytoscape:data instance) :test #'string=)))
             (target-sym (intern target-str :keyword))
-            (source-mol (find source-sym (ligands *app*) :key #'chem:get-name))
-            (target-mol (find target-sym (ligands *app*) :key #'chem:get-name)))
+            (source-mol (find source-sym (selected-ligands *app*) :key #'chem:get-name))
+            (target-mol (find target-sym (selected-ligands *app*) :key #'chem:get-name)))
        (setf (jupyter-widgets:widget-value (cyto-observe *app*))
              (format nil "~a~%~a~%~a~%~a"
                      source-str
@@ -394,11 +411,110 @@
           (cyto-widget *app*) cyto-widget)
     boxen))
 
-(defun lomap-progress (tirun &key (molecules (ligands *app*)) advance-progress-callback )
+(defun lomap-progress (tirun &key (molecules (selected-ligands *app*)) advance-progress-callback )
   (let* ((mat (lomap::similarity-matrix molecules :advance-progress-callback advance-progress-callback))
          (multigraph (lomap::similarity-multigraph molecules mat)))
     (setf multigraph (lomap::lomap-multigraph multigraph :debug nil))
     (generate-nodes-and-edges multigraph)))
+
+(defun pasrun (&key (calc *tirun*))
+  "pasrun loads a ligand template and runs PAS on it to generate multiple ligands.
+It will put those multiple ligands into (loaded-ligands *app*) and (selected-ligands *app*)"
+  (let* (template-sketch2d
+         template-molecule
+         (file-upload-msg (make-instance 'w:label :value "PAS ligand template: "))
+         (file-upload (make-instance 'jupyter-widgets:file-upload :description "ligand to run PAS on"
+                                                                  :style *button-style*
+                                                                  :width "auto"
+                                                                  :layout (make-instance 'w:layout :width "auto")))
+         (file-upload-hbox (make-instance 'w:h-box
+                                          :layout *box-layout*
+                                          :children (list file-upload-msg file-upload)))
+         (template-view (make-instance 'w:html
+                                       :layout (make-instance 'w:layout :flex "1 1 0%" :width "auto" :height "auto")))
+         (smirks-pattern-label (make-instance 'w:label :value "Smirks Pattern"))
+         (smirks-box (make-instance 'w:text :value (smirks *app*)))
+         (messages (make-instance 'w:text-area))
+         (structure-view (make-instance 'w:html
+                                        :layout (make-instance 'w:layout :flex "1 1 0%" :width "auto" :height "auto")))
+         (nglview (make-instance 'nglv:nglwidget
+                                 :layout (make-instance 'w:layout :width "auto" :height "auto")))
+         (go-button (make-instance 'jupyter-widgets:button
+                                   :description "Run PAS"
+                                   :style *button-style*
+                                   :layout (make-instance 'w:layout :width "30em")
+                                   :tooltip "Use the smirks pattern entered above to generate a PAS"
+                                   :on-click (list
+                                              (lambda (&rest args)
+                                                (setf (w:widget-value messages)
+                                                      (format nil "Clicked go"))
+                                                (let* ((smirks (w:widget-value smirks-box))
+                                                       (lig template-molecule)
+                                                       (new-mols (pas:pas smirks lig))
+                                                       (_ (setf (w:widget-value messages)
+                                                                (format nil "Got ligand ~a with smirks: ~a new-mols: ~a" lig smirks new-mols)))
+                                                       #+(or)(new-mols-svg (with-output-to-string (sout)
+                                                                       (loop for mol in new-mols
+                                                                             do (format sout (sketch2d:render-svg-to-string (sketch2d:svg (sketch2d:similar-sketch2d mol template-sketch2d))))))))
+                                                  (setf (selected-ligands *app*) new-mols
+                                                        (loaded-ligands *app*) new-mols
+                                                        (w:widget-value messages) (format nil "Built ~d molecules" (length new-mols)))
+                                                   (tirun:tirun-calculation-from-ligands calc (selected-ligands *app*))
+                                                  
+                                                  #+(or)(setf (w:widget-value structure-view)
+                                                              new-mols-svg))))))
+         (Ligand-selector (make-instance 'w:bounded-int-text :description "Ligand"))
+         (ligand-total (make-instance 'w:label :value ""))
+         (ligand-name (make-instance 'w:label :value "Molecule"))
+         (ligand-h-box (make-instance 'w:h-box :children (list ligand-selector ligand-total ligand-name))))
+    (w:observe smirks-box :value
+               (lambda (instance type name old-value new-value source)
+                 (declare (ignore instance type name old-value source))
+                 (setf (smirks *app*) new-value)))
+    (w:observe file-upload :data
+               (lambda (instance type name old-value new-value source)
+                 (declare (ignore instance type name old-value source))
+                 (format t "observe fu~%")
+                 (when new-value
+                   (let* ((last-sdf (car (last new-value)))
+                          (octets (make-array (length last-sdf) :element-type 'ext:byte8
+                                                                :initial-contents last-sdf)))
+                     (let ((as-text (babel:octets-to-string octets)))
+                       (let ((ligands (with-input-from-string (sin as-text)
+                                        (sdf:parse-sdf-file sin))))
+                         (setf template-molecule (first ligands)
+                               template-sketch2d (sketch2d:sketch2d (first ligands)))
+                         (let ((str (sketch2d:render-svg-to-string (sketch2d:svg template-sketch2d))))
+                           (setf (w:widget-value template-view) str))))))))
+    (w:observe ligand-selector :value (lambda (instance type name old-value new-value source)
+                                        (declare (ignore instance type name old-value source))
+                                        (when new-value
+                                          (observe-ligand-selector nglview structure-view messages calc ligand-name new-value))))
+    #||
+    
+
+    (setf (w:widget-value structure-view)
+    (sketch2d:render-svg-to-string (sketch2d:svg (sketch2d:similar-sketch2d new-mol *smallest-ligand-sketch*))))))))))
+
+||#
+    #+(or)(w:observe smirks-box :value (lambda (instance type name old-value new-value source)
+                                   (declare (ignore instance type name old-value source))
+                                   (when new-value
+                                     (setf (smirk-pattern *app*) new-value))))    
+    (make-instance 'w:v-box
+                   :children (list
+                              file-upload-hbox
+                              template-view
+                              (make-instance 'w:h-box
+                                             :layout *box-layout*
+                                             :children (list smirks-pattern-label smirks-box))
+                              (make-instance 'w:h-box
+                                             :layout *box-layout*
+                                             :children (list go-button))
+                              messages
+                              ligand-h-box
+                              structure-view
+                              nglview))))
 
 (defun lomap (&key (tirun *tirun*))
   (let* ((progress (make-instance 'w:int-progress :description "Progress")) 
@@ -412,8 +528,7 @@
                                    :tooltip "Click me"
                                    :on-click (list
                                               (lambda (&rest args)
-                                                (let ((mols (if (ligands *app*)
-                                                                (ligands *app*)
+                                                (let ((mols (if (selected-ligands *app*)
                                                                 (loaded-ligands *app*))))
                                                   (setf (w:widget-value messages) (format nil "Calculating lomap on ~a" mols))
                                                   (multiple-value-bind (nodes edges)
@@ -494,7 +609,7 @@
                                                                :tooltip "Click me"
                                                                :on-click (list
                                                                           (lambda (&rest args)
-                                                                            (setf (w:widget-value messages)
+                                                                             (setf (w:widget-value messages)
                                                                                   (format nil "Configure~%")))))))
         (make-instance 'w:v-box
                        :children (append (list steps
@@ -549,7 +664,7 @@ lisp_jobs_only_on=172.234.2.1
                                 (lambda (&rest args)
                                   (let* ((name (w:widget-value (input-widget job-name)))
                                          (dir (calculate-jobs-dir name)))
-                                    (setf (w:widget-value messages) (format nil "Starting to write jobs dir-> ~a" dir))
+                                    (setf (w:widget-value messages) (format nil "Writing jobs to -> ~a ..." dir))
                                     (if (probe-file dir)
                                         (progn
                                           (setf (w:widget-value messages) (format nil "The directory ~a already exists - aborting writing jobs" dir)))
@@ -561,7 +676,7 @@ lisp_jobs_only_on=172.234.2.1
                                                                              (setf (w:widget-value progress) index
                                                                                    (w:widget-max progress) max-progress)
                                                                              (incf index)))))
-                                          (setf (w:widget-value messages) "Done writing jobs"))))))))
+                                          (setf (w:widget-value messages) "Done."))))))))
          )
     (w:observe (input-widget job-name) :value (lambda (instance type name old-value new-value source)
                                                 (setf (job-name *app*) new-value)))
@@ -576,7 +691,7 @@ lisp_jobs_only_on=172.234.2.1
                               (make-instance 'w:h-box
                                              :layout *box-layout*
                                              :children (list messages))))))
-
+ 
 (defun read-submit-stream (num)
   (let ((buffer (make-array 15 :adjustable t :fill-pointer 0)))
     (flet ((grab ()

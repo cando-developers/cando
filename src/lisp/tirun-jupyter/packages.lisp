@@ -18,6 +18,8 @@
                     (:w :jupyter-widgets))
   (:export
    #:new-tirun
+   #:new-pas
+   #:pasrun
    #:load-receptor
    #:load-ligands
    #:select-ligands

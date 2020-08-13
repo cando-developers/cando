@@ -1786,6 +1786,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter
         core::List_sp priority = a1->getNeighborsByRelativePriority();
         ASSERTP(core::cl__length(priority) == 4, "There must be 4 neighbors to assign stereochemistry");
         core::List_sp cur = priority;
+        if (chem__verbose(2)) core::write_bf_stream(BF("Assigning stereochemistry for central atom %s neighbors: %s\n") % _rep_(a1) % _rep_(cur));
         n1 = cur.asCons()->car<Atom_O>();
         cur = cur.asCons()->cdr();
         n2 = cur.asCons()->car<Atom_O>();
