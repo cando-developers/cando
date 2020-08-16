@@ -97,7 +97,7 @@
    (if (or (not *leap-syntax*)
            (lisp-code-p code))
     (call-next-method)
-    (let* ((ast (leap-read code))
+    (let* ((ast (ignore-errors (leap-read code)))
            (fragment (unless (typep ast 'jupyter:result)
                        (leap-locate ast (1- cursor-pos)))))
       (when (and fragment
