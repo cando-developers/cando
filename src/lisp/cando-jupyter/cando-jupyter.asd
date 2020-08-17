@@ -13,6 +13,7 @@
                :cando-user
                :static-vectors
                :smarts-jupyter
+               :tirun-jupyter
                )
   :serial t
   :components
