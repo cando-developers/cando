@@ -145,6 +145,7 @@
       (or implementation
           (first (uiop:raw-command-line-arguments))
           (format nil "~(~A~)" (uiop:implementation-type)))
+      "-f" "no-auto-lparallel"
       "--eval" "(ql:quickload :cando-jupyter)"
       "--eval" "(jupyter:run-kernel 'cando-jupyter:kernel #\"{connection_file}\")")))
 
@@ -155,6 +156,7 @@
       (or implementation
           (first (uiop:raw-command-line-arguments))
           (format nil "~(~A~)" (uiop:implementation-type)))
+      "-f" "no-auto-lparallel"
       "--load" (namestring (jupyter:installer-path instance :root :program :bundle))
       "--eval" "(asdf:load-system :cando-jupyter)"
       "--eval" "(jupyter:run-kernel 'cando-jupyter:kernel #\"{connection_file}\")")))
