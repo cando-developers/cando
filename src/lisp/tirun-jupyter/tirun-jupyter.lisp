@@ -1,6 +1,17 @@
 (in-package :tirun-jupyter)
 
-(defvar *button-style* (make-instance 'w:button-style :button-color "aquamarine"))
+
+(defmacro def-dyn-widget (name initial-value)
+  (let ((var-name (gensym)))
+    `(progn
+       (defparameter ,var-name nil)
+       (defun ,name ()
+         (or ,var-name
+             (setf ,var-name ,initial-value))))))
+
+
+(def-dyn-widget button-style (make-instance 'w:button-style :button-color "aquamarine"))
+
 
 (defclass app (jupyter-widgets:has-traits)
   ((receptor-string
@@ -73,7 +84,7 @@
 (defvar *app* nil)
 
 
-(defvar *box-layout*
+(def-dyn-widget box-layout
   (make-instance 'w:layout :width "auto" :flex-flow "row wrap"))
          
 (defvar *fu* nil)
@@ -139,11 +150,11 @@
          (desc-style (make-instance 'w:description-style :description-width desc-width))
          (file-upload-msg (make-instance 'w:label :value "Receptor structure: "))
          (file-upload (make-instance 'jupyter-widgets:file-upload :description "PDB file for receptor"
-                                                                  :style *button-style*
+                                                                  :style (button-style)
                                                                   :width "auto"
                                                                   :layout (make-instance 'w:layout :width "auto")))
          (file-upload-vbox (make-instance 'w:h-box
-                                          :layout *box-layout*
+                                          :layout (box-layout)
                                           :children (list file-upload-msg file-upload)))
          (messages (make-instance 'w:text-area :description "Messages"
                                                :layout (make-instance 'w:layout :width "60em")))
@@ -180,13 +191,13 @@
       (make-instance 'w:v-box
                      :children (list
                                 (make-instance 'w:h-box
-                                               :layout *box-layout*
+                                               :layout (box-layout)
                                                :children (list file-upload-vbox))
                                 (make-instance 'w:h-box
-                                               :layout *box-layout*
+                                               :layout (box-layout)
                                                :children (list messages))
                                 (make-instance 'w:h-box
-                                               :layout *box-layout*
+                                               :layout (box-layout)
                                                :children (list nglview)))))))
 
 
@@ -219,7 +230,7 @@
 (selected-ligands *app*)"
   (setf *current-component* nil)
   (let* ((fu (make-instance 'w:file-upload :description "Upload SDF file"
-                            :style *button-style*))
+                            :style (button-style)))
          (Ligand-selector (make-instance 'w:bounded-int-text :description "Ligand"))
          (ligand-total (make-instance 'w:label :value ""))
          (ligand-name (make-instance 'w:label :value "Molecule"))
@@ -278,13 +289,13 @@
     (make-instance 'w:v-box
                    :children (list
                               (make-instance 'w:h-box
-                                             :layout *box-layout*
+                                             :layout (box-layout)
                                              :children (list control-box structure-view))
                               #+(or)(make-instance 'w:h-box
-                                                   ;;                                             :layout *box-layout*
+                                                   ;;                                             :layout (box-layout)
                                                    :children (list ligand-h-box))
                               (make-instance 'w:h-box
-;;;                                             :layout *box-layout*
+;;;                                             :layout (box-layout)
                                             #+(or):layout #+(or)(make-instance 'w:layout
                                                                           :width "100em"
                                                                           :flex-flow "row"
@@ -424,11 +435,11 @@ It will put those multiple ligands into (loaded-ligands *app*) and (selected-lig
          template-molecule
          (file-upload-msg (make-instance 'w:label :value "PAS ligand template: "))
          (file-upload (make-instance 'jupyter-widgets:file-upload :description "ligand to run PAS on"
-                                                                  :style *button-style*
+                                                                  :style (button-style)
                                                                   :width "auto"
                                                                   :layout (make-instance 'w:layout :width "auto")))
          (file-upload-hbox (make-instance 'w:h-box
-                                          :layout *box-layout*
+                                          :layout (box-layout)
                                           :children (list file-upload-msg file-upload)))
          (template-view (make-instance 'w:html
                                        :layout (make-instance 'w:layout :flex "1 1 0%" :width "auto" :height "auto")))
@@ -441,7 +452,7 @@ It will put those multiple ligands into (loaded-ligands *app*) and (selected-lig
                                  :layout (make-instance 'w:layout :width "auto" :height "auto")))
          (go-button (make-instance 'jupyter-widgets:button
                                    :description "Run PAS"
-                                   :style *button-style*
+                                   :style (button-style)
                                    :layout (make-instance 'w:layout :width "30em")
                                    :tooltip "Use the smirks pattern entered above to generate a PAS"
                                    :on-click (list
@@ -506,10 +517,10 @@ It will put those multiple ligands into (loaded-ligands *app*) and (selected-lig
                               file-upload-hbox
                               template-view
                               (make-instance 'w:h-box
-                                             :layout *box-layout*
+                                             :layout (box-layout)
                                              :children (list smirks-pattern-label smirks-box))
                               (make-instance 'w:h-box
-                                             :layout *box-layout*
+                                             :layout (box-layout)
                                              :children (list go-button))
                               messages
                               ligand-h-box
@@ -523,7 +534,7 @@ It will put those multiple ligands into (loaded-ligands *app*) and (selected-lig
          (boxen (cyto-layout-graph))
          (go-button (make-instance 'jupyter-widgets:button
                                    :description "Calculate molecular similarities"
-                                   :style *button-style*
+                                   :style (button-style)
                                    :layout (make-instance 'w:layout :width "30em")
                                    :tooltip "Click me"
                                    :on-click (list
@@ -552,13 +563,13 @@ It will put those multiple ligands into (loaded-ligands *app*) and (selected-lig
     (make-instance 'w:v-box
                    :children (list
                               (make-instance 'w:h-box
-                                             :layout *box-layout*
+                                             :layout (box-layout)
                                              :children (list go-button))
                               (make-instance 'w:h-box
-                                             :layout *box-layout*
+                                             :layout (box-layout)
                                              :children (list progress))
                               (make-instance 'w:h-box
-                                             :layout *box-layout*
+                                             :layout (box-layout)
                                              :children (list messages))
                               boxen))))
 
@@ -605,7 +616,7 @@ It will put those multiple ligands into (loaded-ligands *app*) and (selected-lig
              (messages (make-instance 'w:text-area :description "Messages"
                                                    :layout (make-instance 'w:layout :width "60em")))
              (go-button (make-instance 'jupyter-widgets:button :description "Configure"
-                                                               :style *button-style*
+                                                               :style (button-style)
                                                                :tooltip "Click me"
                                                                :on-click (list
                                                                           (lambda (&rest args)
@@ -616,10 +627,10 @@ It will put those multiple ligands into (loaded-ligands *app*) and (selected-lig
                                                accordion)
                                          (list 
                                           (make-instance 'w:h-box
-                                                         :layout *box-layout*
+                                                         :layout (box-layout)
                                                          :children (list go-button))
                                           (make-instance 'w:h-box
-                                                         :layout *box-layout*
+                                                         :layout (box-layout)
                                                          :children (list messages)))))))))
 
 (defun ensure-write-jobs (tirun jobs-dir &optional progress-callback)
@@ -659,7 +670,7 @@ lisp_jobs_only_on=172.234.2.1
          (progress (make-instance 'w:int-progress :description "Progress"))
          (go-button (make-instance
                      'w:button :description "Write jobs"
-                     :style *button-style*
+                     :style (button-style)
                      :on-click (list
                                 (lambda (&rest args)
                                   (let* ((name (w:widget-value (input-widget job-name)))
@@ -684,12 +695,12 @@ lisp_jobs_only_on=172.234.2.1
                    :children (list
                               (hbox job-name)
                               (make-instance 'w:h-box
-                                             :layout *box-layout*
+                                             :layout (box-layout)
                                              :children (list go-button))
                               (make-instance 'w:h-box
                                              :children (list progress))
                               (make-instance 'w:h-box
-                                             :layout *box-layout*
+                                             :layout (box-layout)
                                              :children (list messages))))))
  
 (defun read-submit-stream (num)
@@ -709,13 +720,13 @@ lisp_jobs_only_on=172.234.2.1
          (distributor (make-simple-input "Distributor" :default (distributor *app*)))
          (job-name (make-simple-input "Job name" :default "default"))
          (ssh-key-file (make-instance 'jupyter-widgets:file-upload :description "SSH key file"
-                                                                   :style *button-style*))
+                                                                   :style (button-style)))
          (messages (make-instance 'w:text-area :description "Messages"
                                                :layout (make-instance 'w:layout :width "60em")))
          (go-button (make-instance
                      'jupyter-widgets:button
                      :description "Submit jobs"
-                     :style *button-style*
+                     :style (button-style)
                      :tooltip "Click me"
                      :on-click (list
                                 (lambda (&rest args)
@@ -748,10 +759,10 @@ lisp_jobs_only_on=172.234.2.1
     (make-instance 'w:v-box
                    :children (append (list (hbox distributor) (hbox job-name) ssh-key-file)
                                      (list (make-instance 'w:h-box
-                                                          :layout *box-layout*
+                                                          :layout (box-layout)
                                                           :children (list go-button))
                                            (make-instance 'w:h-box
-                                                          :layout *box-layout*
+                                                          :layout (box-layout)
                                                           :children (list messages)))))))
 
 
@@ -761,7 +772,7 @@ lisp_jobs_only_on=172.234.2.1
          (messages (make-instance 'w:text-area :description "Messages"
                                                :layout (make-instance 'w:layout :width "60em")))
          (go-button (make-instance 'w:button :description "Check calculation"
-                                             :style *button-style*
+                                             :style (button-style)
                                              :on-click (list
                                                         (lambda (&rest args)
                                                           (let* ((schando-dir (UIOP/PATHNAME:ENSURE-DIRECTORY-PATHNAME
@@ -796,8 +807,8 @@ lisp_jobs_only_on=172.234.2.1
                               (hbox distributor)
                               (hbox job-name)
                               (make-instance 'w:h-box
-                                             :layout *box-layout*
+                                             :layout (box-layout)
                                              :children (list go-button))
                               (make-instance 'w:h-box
-                                             :layout *box-layout*
+                                             :layout (box-layout)
                                              :children (list messages))))))
