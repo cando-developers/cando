@@ -245,6 +245,15 @@
          (reactant-smarts (chem:reactant smirks))
          (product-smarts (chem:product smirks))
          (matches (find-matches molecule reactant-smarts)))
-    (loop for match in matches
-          collect (apply-match match molecule product-smarts))))
+    ;; Rename the pas-molecules so that they all have unique names
+    (format t "matches -> ~s~%" matches)
+    (let ((pas-molecules (loop for match in matches
+                               collect (apply-match match molecule product-smarts))))
+      (loop for counter from 1
+            for mol in pas-molecules
+            for name = (chem:get-name mol)
+            for name-str = (string name)
+            for new-name-str = (format nil "~a-~d" name-str counter)
+            do (chem:set-name mol (intern new-name-str :keyword)))
+      pas-molecules)))
 
