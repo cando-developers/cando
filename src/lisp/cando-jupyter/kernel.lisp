@@ -48,9 +48,8 @@
         (return nil)))))
 
 (defun leap-read (code)
-  (jupyter:handling-errors
-    (architecture.builder-protocol:with-builder ('list)
-      (esrap:parse 'leap.parser::leap code))))
+  (architecture.builder-protocol:with-builder ('list)
+    (esrap:parse 'leap.parser::leap code)))
 
 (defun leap-eval (ast)
   (jupyter:handling-errors
@@ -62,7 +61,7 @@
   (if (or (not *leap-syntax*)
           (lisp-code-p code))
     (call-next-method)
-    (let ((ast (leap-read code)))
+    (let ((ast (jupyter:handling-errors (leap-read code))))
       (if (typep ast 'jupyter:result)
         ast
         (list (leap-eval ast))))))
@@ -104,7 +103,6 @@
                  (eql :s-expr (caar fragment)))
         (let ((start (car (getf (car fragment) :bounds)))
               (end (cdr (getf (car fragment) :bounds))))
-          (jupyter:inform :error k (subseq code start end))
           (call-next-method k (jupyter:make-offset-match-set :parent match-set :offset start)
                             (subseq code start end) (- cursor-pos start))))
       (when (and fragment
