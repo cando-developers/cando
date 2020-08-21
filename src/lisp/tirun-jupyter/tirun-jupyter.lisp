@@ -540,6 +540,7 @@ It will put those multiple ligands into (loaded-ligands *app*) and (selected-lig
                                    :on-click (list
                                               (lambda (&rest args)
                                                 (let ((mols (if (selected-ligands *app*)
+                                                                (selected-ligands *app*)
                                                                 (loaded-ligands *app*))))
                                                   (setf (w:widget-value messages) (format nil "Calculating lomap on ~a" mols))
                                                   (multiple-value-bind (nodes edges)
@@ -547,6 +548,7 @@ It will put those multiple ligands into (loaded-ligands *app*) and (selected-lig
                                                                       :molecules mols
                                                                       :advance-progress-callback (let ((index 0))
                                                                                                    (lambda (max-progress)
+                                                                                                     (core:check-pending-interrupts)
                                                                                                      (setf (w:widget-value progress) index
                                                                                                            (w:widget-max progress) (1- max-progress))
                                                                                                      (incf index))))
