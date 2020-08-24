@@ -662,8 +662,33 @@ lisp_jobs_only_on=172.234.2.1
          (dir (merge-pathnames (make-pathname :directory (list
                                                           :relative
                                                           name))
-                               jobs-dir)))
-    dir))
+                               jobs-dir))
+         (tar-file (merge-pathnames (make-pathname :name name
+                                                   :type "tgz")
+                                    jobs-dir)))
+    (values dir tar-file jobs-dir)))
+
+(defparameter *tar-thread* nil)
+(defun generate-tar-file (messages job-name dir tar-file jobs-dir)
+  (let ((cmd (list "tar"
+                   "czvf"
+                   (namestring tar-file)
+                   "-C"
+                   (namestring jobs-dir)
+                   (format nil "./~a" job-name))))
+    (setf (w:widget-value messages)
+          (format nil "~atar cmd: ~a~%" (w:widget-value messages) cmd))
+    (setf *tar-thread*
+          (bordeaux-threads:make-thread
+           (lambda ()
+             (multiple-value-bind (ret child-pid stream)
+                 (ext:vfork-execvp cmd t)
+               (if (= 0 ret)
+                   (setf (w:widget-value messages)
+                         (format nil "~aSuccessfully generated tar file ~a~%" (w:widget-value messages) tar-file))
+                   (setf (w:widget-value messages)
+                         (format nil "~aFailed to submit job errno: ~a" (w:widget-value messages) ret)))
+               ))))))
 
 (defun write-jobs (&key (tirun *tirun*))
   (let* ((job-name (make-simple-input "Job name" :default (job-name *app*)))
@@ -675,21 +700,24 @@ lisp_jobs_only_on=172.234.2.1
                      :style (button-style)
                      :on-click (list
                                 (lambda (&rest args)
-                                  (let* ((name (w:widget-value (input-widget job-name)))
-                                         (dir (calculate-jobs-dir name)))
-                                    (setf (w:widget-value messages) (format nil "Writing jobs to -> ~a ..." dir))
-                                    (if (probe-file dir)
-                                        (progn
-                                          (setf (w:widget-value messages) (format nil "The directory ~a already exists - aborting writing jobs" dir)))
-                                        (progn
-                                          (ensure-write-jobs tirun dir (let ((index 0)
-                                                                             (lock (bordeaux-threads:make-recursive-lock "progress")))
-                                                                         (lambda (max-progress)
-                                                                           (bordeaux-threads:with-recursive-lock-held (lock)
-                                                                             (setf (w:widget-value progress) index
-                                                                                   (w:widget-max progress) max-progress)
-                                                                             (incf index)))))
-                                          (setf (w:widget-value messages) "Done."))))))))
+                                  (let ((name (w:widget-value (input-widget job-name))))
+                                    (multiple-value-bind (dir tar-file from-path)
+                                        (calculate-jobs-dir name)
+                                      (setf (w:widget-value messages) (format nil "Writing jobs to -> ~a ...~%" dir))
+                                      (if (probe-file dir)
+                                          (progn
+                                            (setf (w:widget-value messages) (format nil "The directory ~a already exists - aborting writing jobs" dir)))
+                                          (progn
+                                            (ensure-write-jobs tirun dir (let ((index 0)
+                                                                               (lock (bordeaux-threads:make-recursive-lock "progress")))
+                                                                           (lambda (max-progress)
+                                                                             (bordeaux-threads:with-recursive-lock-held (lock)
+                                                                               (setf (w:widget-value progress) index
+                                                                                     (w:widget-max progress) max-progress)
+                                                                               (incf index)))))
+                                            (setf (w:widget-value messages) (format nil "~a~%Generating tar file.~%"
+                                                                                    (w:widget-value messages)))
+                                            (generate-tar-file messages name dir tar-file from-path)))))))))
          )
     (w:observe (input-widget job-name) :value (lambda (instance type name old-value new-value source)
                                                 (setf (job-name *app*) new-value)))
