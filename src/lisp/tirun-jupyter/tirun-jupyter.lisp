@@ -213,7 +213,7 @@
         (when *current-component*
           (nglview:remove-components nglview 1)) ;; *current-component*)) ;; *current-component* fails sometimes
         (let ((new-component (nglview:add-structure nglview (make-instance 'nglview:text-structure :text mol2 :ext "mol2"))))
-          (setf (w:widget-value messages)
+          #+(or)(setf (w:widget-value messages)
                 (format nil "~a~%---------~%Components:~%~a~%new-component: ~a~%Removed component: ~a  added component: ~a~%" (w:widget-value messages)
                         (mapcar #'nglview::id (nglview::components nglview))
                         new-component
@@ -260,16 +260,7 @@
                                         (sdf:parse-sdf-file sin))))
                          (setf (loaded-ligands *app*) ligands
                                (selected-ligands *app*) ligands))
-                       (flet ((build-prototype-sketch (ligands)
-                                (let ((min-atoms (chem:number-of-atoms (car ligands)))
-                                      (min-mol (car ligands)))
-                                  (loop for mol in (cdr ligands)
-                                        for num-atoms = (chem:number-of-atoms mol)
-                                        when (< num-atoms min-atoms)
-                                          do (setf min-atoms num-atoms
-                                                   min-mol mol))
-                                  (sketch2d:sketch2d min-mol))))
-                         (setf *smallest-ligand-sketch* (build-prototype-sketch (selected-ligands *app*))))
+                       (setf *smallest-ligand-sketch* (build-prototype-sketch (selected-ligands *app*)))
                        (setf (w:widget-value ligand-selector) 0
                              (w:widget-value ligand-total) (format nil "~a" (length (loaded-ligands *app*)))
                              (w:widget-max ligand-selector) (1- (length (loaded-ligands *app*)))
@@ -428,6 +419,18 @@ subset that it then puts into (selected-ligands *app*)"
     (setf multigraph (lomap::lomap-multigraph multigraph :debug nil))
     (generate-nodes-and-edges multigraph)))
 
+(defun build-prototype-sketch (ligands)
+  "Find the smallest ligand and build a sketch for it"
+  (let ((min-atoms (chem:number-of-atoms (car ligands)))
+        (min-mol (car ligands)))
+    (loop for mol in (cdr ligands)
+          for num-atoms = (chem:number-of-atoms mol)
+          when (< num-atoms min-atoms)
+            do (setf min-atoms num-atoms
+                     min-mol mol))
+    (sketch2d:sketch2d min-mol)))
+
+
 (defun pasrun (&key (calc *tirun*))
   "pasrun loads a ligand template and runs PAS on it to generate multiple ligands.
 It will put those multiple ligands into (loaded-ligands *app*) and (selected-ligands *app*)"
@@ -443,13 +446,17 @@ It will put those multiple ligands into (loaded-ligands *app*) and (selected-lig
                                           :children (list file-upload-msg file-upload)))
          (template-view (make-instance 'w:html
                                        :layout (make-instance 'w:layout :flex "1 1 0%" :width "auto" :height "auto")))
-         (smirks-pattern-label (make-instance 'w:label :value "Smirks Pattern"))
+         (smirks-pattern-label (make-instance 'w:label :value "SMIRKS pattern:"))
          (smirks-box (make-instance 'w:text :value (smirks *app*)))
          (messages (make-instance 'w:text-area))
          (structure-view (make-instance 'w:html
                                         :layout (make-instance 'w:layout :flex "1 1 0%" :width "auto" :height "auto")))
          (nglview (make-instance 'nglv:nglwidget
                                  :layout (make-instance 'w:layout :width "auto" :height "auto")))
+         (Ligand-selector (make-instance 'w:bounded-int-text :description "Ligand"))
+         (ligand-total (make-instance 'w:label :value ""))
+         (ligand-name (make-instance 'w:label :value "Molecule"))
+         (ligand-h-box (make-instance 'w:h-box :children (list ligand-selector ligand-total ligand-name)))
          (go-button (make-instance 'jupyter-widgets:button
                                    :description "Run PAS"
                                    :style (button-style)
@@ -458,26 +465,28 @@ It will put those multiple ligands into (loaded-ligands *app*) and (selected-lig
                                    :on-click (list
                                               (lambda (&rest args)
                                                 (setf (w:widget-value messages)
-                                                      (format nil "Clicked go"))
+                                                      (format nil "~aRunning position-analogue-scanning~%"
+                                                              (w:widget-value messages)))
                                                 (let* ((smirks (w:widget-value smirks-box))
                                                        (lig template-molecule)
                                                        (new-mols (pas:pas smirks lig))
                                                        (_ (setf (w:widget-value messages)
-                                                                (format nil "Got ligand ~a with smirks: ~a new-mols: ~a" lig smirks new-mols)))
+                                                                (format nil "~aGot ligand ~a with smirks: ~a new-mols: ~a~%"
+                                                                        (w:widget-value messages)
+                                                                        lig smirks new-mols)))
                                                        #+(or)(new-mols-svg (with-output-to-string (sout)
-                                                                       (loop for mol in new-mols
-                                                                             do (format sout (sketch2d:render-svg-to-string (sketch2d:svg (sketch2d:similar-sketch2d mol template-sketch2d))))))))
+                                                                             (loop for mol in new-mols
+                                                                                   do (format sout (sketch2d:render-svg-to-string (sketch2d:svg (sketch2d:similar-sketch2d mol template-sketch2d))))))))
+                                                  (setf (w:widget-max ligand-selector) (1- (length new-mols)))
                                                   (setf (selected-ligands *app*) new-mols
                                                         (loaded-ligands *app*) new-mols
-                                                        (w:widget-value messages) (format nil "Built ~d molecules" (length new-mols)))
-                                                   (tirun:tirun-calculation-from-ligands calc (selected-ligands *app*))
+                                                        (w:widget-value messages) (format nil "~aBuilt ~d molecules~%"
+                                                                                          (w:widget-value messages)
+                                                                                          (length new-mols)))
+                                                  (tirun:tirun-calculation-from-ligands calc (selected-ligands *app*))
                                                   
                                                   #+(or)(setf (w:widget-value structure-view)
-                                                              new-mols-svg))))))
-         (Ligand-selector (make-instance 'w:bounded-int-text :description "Ligand"))
-         (ligand-total (make-instance 'w:label :value ""))
-         (ligand-name (make-instance 'w:label :value "Molecule"))
-         (ligand-h-box (make-instance 'w:h-box :children (list ligand-selector ligand-total ligand-name))))
+                                                              new-mols-svg)))))))
     (w:observe smirks-box :value
                (lambda (instance type name old-value new-value source)
                  (declare (ignore instance type name old-value source))
@@ -493,8 +502,9 @@ It will put those multiple ligands into (loaded-ligands *app*) and (selected-lig
                      (let ((as-text (babel:octets-to-string octets)))
                        (let ((ligands (with-input-from-string (sin as-text)
                                         (sdf:parse-sdf-file sin))))
+                         (setf *smallest-ligand-sketch* (build-prototype-sketch (list (first ligands))))
                          (setf template-molecule (first ligands)
-                               template-sketch2d (sketch2d:sketch2d (first ligands)))
+                               template-sketch2d *smallest-ligand-sketch* #+(or)(sketch2d:sketch2d (first ligands)))
                          (let ((str (sketch2d:render-svg-to-string (sketch2d:svg template-sketch2d))))
                            (setf (w:widget-value template-view) str))))))))
     (w:observe ligand-selector :value (lambda (instance type name old-value new-value source)

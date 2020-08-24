@@ -4,6 +4,7 @@
 (defclass build-context ()
   ((match :initarg :match :accessor match)
    (molecule :initarg :molecule :accessor molecule)
+   (atoms-to-residues :initarg :atoms-to-residues :initform (make-hash-table) :accessor atoms-to-residues)
    (name-counter :initarg :name-counter :accessor name-counter)
    (ring-bonds :initform (make-hash-table) :accessor ring-bonds)))
 
@@ -159,11 +160,30 @@
                 (otherwise :single-bond))))
       (chem:bond-to cur-atm new-atm bo))))
 
+(defun unique-atom-name (residue element)
+  "Calculate the name of a new atom with ELEMENT that has the form ELEMENT# like N5 
+that is unique given all the other atom names with the same element"
+  (let ((name-index 1))
+    (cando:do-atoms (atm residue)
+      (let* ((name (string (chem:get-name atm)))
+             (number-start (position-if-not #'digit-char-p name :from-end t))
+             (number (if (< number-start (1- (length name)))
+                         (parse-integer name :start (1+ number-start) :junk-allowed t)
+                         1)))
+        (setf name-index (max name-index number))))
+    (let ((new-name (format nil "~a~a" (string element) (1+ name-index))))
+      (intern new-name :keyword))))
+  
 (defun walk-build-instructions (build context cur-atm)
   (if (tag build)
-      (let ((tag-atm (elt (match context) (tag build))))
-        (setf cur-atm tag-atm)
-        (chem:set-element tag-atm (element build)))
+      (let* ((tag-atm (elt (match context) (tag build)))
+             (tag-residue (gethash tag-atm (atoms-to-residues context))))
+        (unless tag-residue
+          (error "The atom ~a must be in a residue - but it is not" tag-residue))
+        (let ((unique-name (unique-atom-name tag-residue (element build))))
+          (setf cur-atm tag-atm)
+          (chem:set-element tag-atm (element build))
+          (chem:set-name tag-atm unique-name)))
       (let* ((element (element build))
              (new-atm (chem:make-atom (name-atom context element) element))
              (bond-order (bond-order build)))
@@ -230,10 +250,16 @@
                      (setf root build)))
                  build)
         ;; Now walk the build instructions and apply them to the molecule
-        (let ((context (make-instance 'build-context
-                                      :match new-match
-                                      :molecule new-mol
-                                      :name-counter (calculate-name-counter new-mol))))
+        (let* ((atoms-to-residues (let ((ht (make-hash-table)))
+                                    (cando:do-residues (res new-mol)
+                                      (cando:do-atoms (atm res)
+                                        (setf (gethash atm ht) res)))
+                                    ht))
+               (context (make-instance 'build-context
+                                       :match new-match
+                                       :molecule new-mol
+                                       :atoms-to-residues atoms-to-residues
+                                       :name-counter (calculate-name-counter new-mol))))
           (walk-build-instructions root context nil)
           (finish-build context)
           (let ((mol (molecule context)))
@@ -246,10 +272,9 @@
          (product-smarts (chem:product smirks))
          (matches (find-matches molecule reactant-smarts)))
     ;; Rename the pas-molecules so that they all have unique names
-    (format t "matches -> ~s~%" matches)
     (let ((pas-molecules (loop for match in matches
                                collect (apply-match match molecule product-smarts))))
-      (loop for counter from 1
+      (loop for counter from 0
             for mol in pas-molecules
             for name = (chem:get-name mol)
             for name-str = (string name)
