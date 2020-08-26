@@ -236,10 +236,14 @@ If we need to read the atom position pass T for read-atom-pos. If it's a big-z P
 file (the Z coordinate needs an extra floating point digit) then pass big-z = T.
 If you want to check if it's a big-z file then pass check-big-z = T."
   (let ((core:*read-hook* nil))
-    (flet ((read-one-char (line start)
-             (let ((s (subseq line start (1+ start))))
-               (when (not (string= s " "))
-                 (read-from-string s)))))
+    (labels ((my-read-from-string (str)
+               ;; bypass eclector because it's too slow
+               (with-string-input-stream (sin str)
+                 (core:fast-read sin)))
+             (read-one-char (line start)
+               (let ((s (subseq line start (1+ start))))
+                 (when (not (string= s " "))
+                   (my-read-from-string s)))))
       (let* ((*package* (find-package :keyword))
              (head (string-right-trim '(#\space) (subseq line 0 (min 6 (length line))))))
         (cond 
@@ -263,9 +267,9 @@ If you want to check if it's a big-z file then pass check-big-z = T."
                    (read-one-char line 26)                ; chainid
                    (if read-atom-pos
                        #+(or)(list 
-                              (read-from-string line t nil :start 30 :end 38) ; x
-                              (read-from-string line t nil :start 38 :end 46) ; y
-                              (read-from-string line t nil :start 46 :end 54)) ; z
+                              (my-read-from-string line t nil :start 30 :end 38) ; x
+                              (my-read-from-string line t nil :start 38 :end 46) ; y
+                              (my-read-from-string line t nil :start 46 :end 54)) ; z
                        (list
                         (parse-fixed-double (subseq line 30 38))
                         (parse-fixed-double (subseq line 38 46))
@@ -275,12 +279,12 @@ If you want to check if it's a big-z file then pass check-big-z = T."
           ((string= head "TER") (list :ter))
           ((string= head "MTRIX" :start1 0 :end1 5)
            (list (intern head :keyword)
-                 (read-from-string line t nil :start 7 :end 10)
-                 (read-from-string line t nil :start 10 :end 20)
-                 (read-from-string line t nil :start 20 :end 30)
-                 (read-from-string line t nil :start 30 :end 40)
-                 (read-from-string line t nil :start 45 :end 55)
-                 (read-from-string line t nil :start 59 :end 60)))
+                 (my-read-from-string line t nil :start 7 :end 10)
+                 (my-read-from-string line t nil :start 10 :end 20)
+                 (my-read-from-string line t nil :start 20 :end 30)
+                 (my-read-from-string line t nil :start 30 :end 40)
+                 (my-read-from-string line t nil :start 45 :end 55)
+                 (my-read-from-string line t nil :start 59 :end 60)))
           ((string= head "CONECT")
            (list* :conect
                   (parse-integer line :start 7 :end 11)
