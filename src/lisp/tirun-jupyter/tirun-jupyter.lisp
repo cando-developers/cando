@@ -211,7 +211,7 @@
       (setf (w:widget-value ligand-name) (string (chem:get-name mol)))
       (let* ((mol2 (chem:aggregate-as-mol2-string agg t)))
         (when *current-component*
-          (nglview:remove-components nglview 1)) ;; *current-component*)) ;; *current-component* fails sometimes
+          (nglview:remove-components nglview *current-component*)) ;; *current-component* fails sometimes
         (let ((new-component (nglview:add-structure nglview (make-instance 'nglview:text-structure :text mol2 :ext "mol2"))))
           #+(or)(setf (w:widget-value messages)
                 (format nil "~a~%---------~%Components:~%~a~%new-component: ~a~%Removed component: ~a  added component: ~a~%" (w:widget-value messages)
