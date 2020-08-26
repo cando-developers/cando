@@ -332,26 +332,23 @@ CL_DEFMETHOD void Residue_O::removeAtomsWithNames(core::List_sp args)
 //	removeAtomDeleteBonds
 //
 //	Remove the atom from the residue and delete its bonds
-//	This does not delete the atom!
 CL_LISPIFY_NAME("removeAtomDeleteBonds");
 CL_DEFMETHOD void	Residue_O::removeAtomDeleteBonds(Atom_sp a)
 {_OF();
-contentIterator	atom;
-Atom_sp				aTemp;
-    LOG(BF("Residue_O::removeAtomsDeleteBonds| Removing a:%x from r:%x") % &a % this  );
-    for ( atom=this->begin_atoms();
-		atom != this->end_atoms(); atom++ ) {
-      aTemp = (*atom).as<Atom_O>();
-	if ( aTemp == a ) {
-	    this->eraseContent(atom);
-	    aTemp->removeAllBonds();
-LOG(BF("Residue_O::removeAtomDeleteBonds setting atom %x parent to null") % &a  );
-    	    aTemp->setContainedByNothing();
-//	    delete (aTemp);
-	    return;
-	}
+  contentIterator	atom;
+  Atom_sp		aTemp;
+  LOG(BF("Residue_O::removeAtomsDeleteBonds| Removing a:%x from r:%x") % &a % this  );
+  for ( atom=this->begin_atoms(); atom != this->end_atoms(); atom++ ) {
+    aTemp = (*atom).as<Atom_O>();
+    if ( aTemp == a ) {
+      this->eraseContent(atom);
+      aTemp->removeAllBonds();
+      LOG(BF("Residue_O::removeAtomDeleteBonds setting atom %x parent to null") % &a  );
+      aTemp->setContainedByNothing();
+      return;
     }
-    SIMPLE_ERROR(BF("Residue does not contain atom for removal"));
+  }
+  SIMPLE_ERROR(BF("Residue does not contain atom for removal"));
 }
 
 
