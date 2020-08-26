@@ -241,9 +241,15 @@ If you want to check if it's a big-z file then pass check-big-z = T."
                (with-string-input-stream (sin str)
                  (core:fast-read sin)))
              (read-one-char (line start)
-               (let ((s (subseq line start (1+ start))))
-                 (when (not (string= s " "))
-                   (my-read-from-string s)))))
+               (let ((ch (elt line start)))
+                 (cond
+                   ((char= ch #\space)
+                    nil)
+                   ((alpha-char-p ch)
+                    (intern (string ch) :keyword))
+                   ((digit-char-p ch)
+                    (- (char-int ch) (char-int #\0)))
+                   (t nil)))))
       (let* ((*package* (find-package :keyword))
              (head (string-right-trim '(#\space) (subseq line 0 (min 6 (length line))))))
         (cond 
