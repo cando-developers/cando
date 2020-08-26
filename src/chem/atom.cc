@@ -1053,7 +1053,7 @@ void Atom_O::writeUniqueBondsToStream(string prefix, std::ostream& out )
 string	Atom_O::__repr__() const
 {
   stringstream ss;
-  ss << "#<" << this->className() << " " << this->name << "/" << _rep_(symbolFromElement(this->_Element)) << " " << this->getId() << ">";
+  ss << "#<" << this->className() << " " << this->name << "/" << _rep_(symbolFromElement(this->_Element)) << " 0x" << std::setbase(16) << core::lisp_general_badge(this->asSmartPtr()) << ">";
   return ss.str();
 }
 
