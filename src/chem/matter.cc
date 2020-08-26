@@ -33,6 +33,7 @@ This is an open source license for the CANDO software from Temple University, bu
 
 #include <string.h>
 #include <iostream>
+#include <iomanip>
 #include <vector>
 //#include	<strings>
 #include <stdio.h>

@@ -28,6 +28,7 @@ This is an open source license for the CANDO software from Temple University, bu
 // (C) 2004 Christian E. Schafmeister
 //
 #include <string.h>
+#include <iomanip>
 #include <clasp/core/foundation.h>
 #include <clasp/core/common.h>
 #include <clasp/core/record.h>
