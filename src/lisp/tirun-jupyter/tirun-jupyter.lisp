@@ -145,74 +145,58 @@
                    :hbox (make-instance 'w:h-box
                                         :children (list label-widget input-widget)))))
 
+
+(defclass receptor-loader (loader)
+  ((ngl
+     :reader receptor-loader-ngl
+     :initform (make-instance 'nglv:nglwidget
+                              :layout (make-instance 'w:layout
+                                                     :grid-area "ngl")))
+   (calc
+     :reader receptor-loader-calc
+     :initform *tirun*)))
+
+
+(defmethod loader-parse ((instance receptor-loader) data)
+  (nglview:remove-all-components (receptor-loader-ngl instance))
+  (handler-case
+      (let ((as-text (babel:octets-to-string data)))
+        (list as-text
+              (with-input-from-string (sin as-text)
+                (leap.pdb:load-pdb-stream sin))))
+    (leap.pdb:pdb-read-error (condition)
+      (write-string (leap.pdb:messages condition))
+      nil)
+    (error (condition)
+      (print condition *error-output*)
+      nil)))
+
+
+(defmethod loader-show ((instance receptor-loader) data)
+  (destructuring-bind (as-text agg)
+                      data
+    (nglview:add-structure (receptor-loader-ngl instance)
+    (make-instance 'nglview:text-structure :text as-text))
+    (nglview:handle-resize (receptor-loader-ngl instance))
+    (setf (receptor-string *app*) as-text)
+    (setf (tirun:receptors (receptor-loader-calc instance)) (list agg))))
+
+
+(defmethod initialize-instance :after ((instance receptor-loader) &rest initargs &key &allow-other-keys)
+  (declare (ignore initargs))
+  (setf (w:widget-accept (loader-upload-button instance)) ".pdb")
+  (setf (w:widget-%titles (loader-accordion instance)) (list "Structure Load" "Structure View"))
+  (setf (w:widget-children (loader-view-grid instance))
+        (list (receptor-loader-ngl instance)))
+  (setf (w:widget-layout (loader-view-grid instance))
+        (make-instance 'w:layout
+                       :grid-template-rows "1fr"
+                       :grid-template-columns "1fr"
+                       :grid-template-areas "\"ngl\"")))
+
+
 (defun load-receptor (&optional (calc *tirun*))
-  (let* ((file-upload (make-instance 'jupyter-widgets:file-upload
-                                     :description "Select PDB file"
-                                     ;:style (button-style)
-                                     :width "auto"
-                                     :accept ".pdb"
-                                     :layout (make-instance 'w:layout
-                                                            :align-self "start"
-                                                            :grid-area "upload")))
-         (label (make-instance 'w:label
-                               :value "Click to select or drag a file onto the upload button."
-                               :layout (make-instance 'w:layout
-                                                      :align-self "start"
-                                                      :grid-area "label")))
-         (progress (make-instance 'w:int-progress
-                                  :layout (make-instance 'w:layout
-                                                         :align-self "end"
-                                                         :grid-area "progress")))
-         (nglview (make-instance 'nglv:nglwidget))
-         (log (make-instance 'w:output
-                             :layout (make-instance 'w:layout
-                                                    :grid-area "log"
-                                                    :padding "var(--jp-widgets-container-padding)"
-                                                    :border "var(--jp-widgets-border-width) solid var(--jp-border-color1)"
-                                                    :overflow-y "scroll")))
-         (upload-and-parsing (make-instance 'w:grid-box
-                                            :layout (make-instance 'w:layout
-                                                                   :width "100%"
-                                                                   :max-height "12em"
-                                                                   :grid-gap "0.1em 1em"
-                                                                   :grid-template-rows "min-content min-content 1fr"
-                                                                   :grid-template-columns "auto 1fr"
-                                                                   :grid-template-areas "\"upload log\" \"label log\" \"progress log\"")
-                                            :children (list file-upload label progress log)))
-         (accordion (make-instance 'w:accordion
-                                   :%titles (list "Structure Upload" "Structure View")
-                                   :children (list upload-and-parsing
-                                                   nglview)
-                                   :selected-index 0)))
-    (w:observe file-upload :data
-      (lambda (instance type name old-value new-value source)
-        (declare (ignore instance type name old-value source))
-        (setf (w:widget-outputs log) nil)
-        (w:with-output log
-          (handler-case
-              (when new-value
-                (write-string "Parsing PDB file...")
-                (finish-output)
-                (setf (receptor-string *app*) nil)
-                (nglview:remove-all-components nglview)
-                (let* ((last-pdb (car (last new-value)))
-                       (octets (make-array (length last-pdb) :element-type 'ext:byte8
-                                           :initial-contents last-pdb))
-                       (as-text (babel:octets-to-string octets))
-                       (agg (with-input-from-string (sin as-text)
-                              (leap.pdb:load-pdb-stream sin))))
-                  (setf (w:widget-selected-index accordion) 1)
-                  (nglview:add-structure nglview (make-instance 'nglview:text-structure :text as-text))
-                  (nglview:handle-resize nglview)
-                  (setf (receptor-string *app*) as-text)
-                  (setf (tirun:receptors calc) (list agg))
-                  (write-string "Parsing complete.")))
-            (leap.pdb:pdb-read-error (condition)
-              (write-string "Parsing failed." *error-output*)
-              (finish-output *error-output*)
-              (write-string (leap.pdb:messages condition))
-              (setf (w:widget-selected-index accordion) 0))))))
-    accordion))
+  (loader-accordion (make-instance 'receptor-loader :calc calc)))
 
 
 (defvar *ligands-string* nil)
