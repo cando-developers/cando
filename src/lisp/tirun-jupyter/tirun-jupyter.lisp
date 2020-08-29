@@ -223,6 +223,7 @@
      :reader ligand-loader-receptor-toggle
      :initform (make-instance 'w:toggle-button
                               :description "Show Receptor"
+                              :value t
                               :layout (make-instance 'w:layout
                                                      :grid-area "toggle")))
    (calc
@@ -231,7 +232,6 @@
 
 
 (defvar *ligands-string* nil)
-(defvar *current-component* nil)
 (defvar *smallest-ligand-sketch*)
 
 
@@ -240,16 +240,15 @@
               instance
     (let ((mol (elt (selected-ligands *app*) index))
           (agg (chem:make-aggregate)))
+      (setf (w:widget-value structure)
+            (format nil "<div style='display:flex;align-items:center;height:100%;'><div style='display:block;margin:auto;'>~A</div></div>"
+                    (sketch2d:render-svg-to-string (sketch2d:svg (sketch2d:similar-sketch2d mol *smallest-ligand-sketch*)))))
+      (nglview:handle-resize ngl)
       (chem:add-matter agg mol)
-      (let* ((mol2 (chem:aggregate-as-mol2-string agg t))
-             (component (nglview:add-structure ngl (make-instance 'nglview:text-structure :text mol2 :ext "mol2"))))
-        (when *current-component*
-          (nglview:remove-components ngl *current-component*)) ;; *current-component* fails sometimes
-        (setf *current-component* component)
-        (setf (w:widget-value structure)
-              (format nil "<div style='display:flex;align-items:center;height:100%;'><div style='display:block;margin:auto;'>~A</div></div>"
-                      (sketch2d:render-svg-to-string (sketch2d:svg (sketch2d:similar-sketch2d mol *smallest-ligand-sketch*)))))
-        (nglview:handle-resize ngl)))))
+      (nglview:remove-components ngl "ligand")
+      (nglview:add-structure ngl (make-instance 'nglview:text-structure
+                                                :id "ligand" :ext "mol2"
+                                                :text (chem:aggregate-as-mol2-string agg t))))))
 
 
 (defmethod loader-parse ((instance ligand-loader) data)
@@ -278,7 +277,10 @@
                                                           (string (chem:get-name mol)))
                                                         ligands)
             (w:widget-index selector) 0)
-      (nglview:add-structure ngl (make-instance 'nglview:text-structure :text (receptor-string *app*)))
+      (nglview:add-structure (ligand-loader-ngl instance)
+                             (make-instance 'nglview:text-structure
+                                            :id "receptor"
+                                            :text (receptor-string *app*)))
       (nglview:handle-resize ngl)
       (on-ligand-select instance 0)
       (tirun:tirun-calculation-from-ligands calc ligands))))
@@ -299,9 +301,10 @@
                        :grid-template-rows "1fr min-content"
                        :grid-template-columns "1fr 1fr"
                        :grid-template-areas "\"structure ngl\" \"selector toggle\""))
-  (w:observe (ligand-loader-receptor-toggle instance) :index
+  (w:observe (ligand-loader-receptor-toggle instance) :value
     (lambda (inst type name old-value new-value source)
-      (declare (ignore inst type name old-value source))))
+      (declare (ignore inst type name old-value source))
+      (nglview:set-visibility (ligand-loader-ngl instance) new-value "receptor")))
   (w:observe (ligand-loader-selector instance) :index
     (lambda (inst type name old-value new-value source)
       (declare (ignore inst type name old-value source))
