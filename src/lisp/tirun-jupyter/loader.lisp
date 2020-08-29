@@ -29,7 +29,7 @@
      :initform (make-instance 'w:output
                               :layout (make-instance 'w:layout
                                                      :grid-area "log"
-                                                     :padding "var(--jp-widgets-container-padding)"
+                                                     :padding "var(--jp-widgets-input-padding)"
                                                      :border "var(--jp-widgets-border-width) solid var(--jp-border-color1)"
                                                      :overflow-y "scroll")))
    (upload-grid

@@ -151,6 +151,7 @@
      :reader receptor-loader-ngl
      :initform (make-instance 'nglv:nglwidget
                               :layout (make-instance 'w:layout
+                                                     :border "var(--jp-widgets-border-width) solid var(--jp-border-color1)"
                                                      :grid-area "ngl")))
    (calc
      :reader receptor-loader-calc
@@ -199,98 +200,116 @@
   (loader-accordion (make-instance 'receptor-loader :calc calc)))
 
 
+(defclass ligand-loader (loader)
+  ((ngl
+     :reader ligand-loader-ngl
+     :initform (make-instance 'nglv:nglwidget
+                              :layout (make-instance 'w:layout
+                                                     :border "var(--jp-widgets-border-width) solid var(--jp-border-color1)"
+                                                     :grid-area "ngl")))
+   (structure
+     :reader ligand-loader-structure
+     :initform (make-instance 'w:html
+                              :layout (make-instance 'w:layout
+                                                     :border "var(--jp-widgets-border-width) solid var(--jp-border-color1)"
+                                                     :grid-area "structure")))
+   (selector
+     :reader ligand-loader-selector
+     :initform (make-instance 'w:selection-slider
+                              :layout (make-instance 'w:layout
+                                                     :width "75%"
+                                                     :grid-area "selector")))
+   (receptor-toggle
+     :reader ligand-loader-receptor-toggle
+     :initform (make-instance 'w:toggle-button
+                              :description "Show Receptor"
+                              :layout (make-instance 'w:layout
+                                                     :grid-area "toggle")))
+   (calc
+     :reader ligand-loader-calc
+     :initform *tirun*)))
+
+
 (defvar *ligands-string* nil)
 (defvar *current-component* nil)
 (defvar *smallest-ligand-sketch*)
-(defun observe-ligand-selector (nglview structure-view messages calc ligand-name new-value)
-  (let ((mol (elt (selected-ligands *app*) new-value)))
-    (let* ((agg (chem:make-aggregate)))
-      (chem:add-matter agg mol)
-      (setf (w:widget-value ligand-name) (string (chem:get-name mol)))
-      (let* ((mol2 (chem:aggregate-as-mol2-string agg t)))
-        (when *current-component*
-          (nglview:remove-components nglview *current-component*)) ;; *current-component* fails sometimes
-        (let ((new-component (nglview:add-structure nglview (make-instance 'nglview:text-structure :text mol2 :ext "mol2"))))
-          #+(or)(setf (w:widget-value messages)
-                (format nil "~a~%---------~%Components:~%~a~%new-component: ~a~%Removed component: ~a  added component: ~a~%" (w:widget-value messages)
-                        (mapcar #'nglview::id (nglview::components nglview))
-                        new-component
-                        *current-component*
-                        new-value))
-          (setf (w:widget-value structure-view)
-                (sketch2d:render-svg-to-string (sketch2d:svg (sketch2d:similar-sketch2d mol *smallest-ligand-sketch*))))
-          (setf *current-component* new-component)
-          )))))
 
-(defvar *lv* nil)
-(defun load-ligands (&key (calc *tirun*) (show-receptor t))
-  "load-ligands loads a list of ligands using a file-upload widget and puts them into (loaded-ligands *app*) and
-(selected-ligands *app*)"
-  (setf *current-component* nil)
-  (let* ((fu (make-instance 'w:file-upload :description "Upload SDF file"
-                            :style (button-style)))
-         (Ligand-selector (make-instance 'w:bounded-int-text :description "Ligand"))
-         (ligand-total (make-instance 'w:label :value ""))
-         (ligand-name (make-instance 'w:label :value "Molecule"))
-         (ligand-h-box (make-instance 'w:h-box :children (list ligand-selector ligand-total ligand-name)))
-         (messages (make-instance 'w:text-area))
-         (control-box (make-instance 'w:v-box :children (list fu ligand-h-box messages)
-                                              :layout (make-instance 'w:layout :flex "1 1 0%" :width "auto" :height "auto")))
-         (structure-view (make-instance 'w:html
-                                        :layout (make-instance 'w:layout :flex "1 1 0%" :width "auto" :height "auto")))
-         (nglview (make-instance 'nglv:nglwidget
-                                 :layout (make-instance 'w:layout :width "auto" :height "auto"))))
-    (setf *lv* nglview)
-    (widget-hide ligand-h-box)
-    (widget-hide messages)
-    (widget-hide nglview)
-    (w:observe fu :data
-               (lambda (instance type name old-value new-value source)
-                 (declare (ignore instance type name old-value source))
-                 (format t "observe fu~%")
-                 (when new-value
-                   (let* ((last-pdb (car (last new-value)))
-                          (octets (make-array (length last-pdb) :element-type 'ext:byte8
-                                                                :initial-contents last-pdb)))
-                     (let ((as-text (babel:octets-to-string octets)))
-                       (setf *ligands-string* as-text)
-                       (let ((ligands (with-input-from-string (sin as-text)
-                                        (sdf:parse-sdf-file sin))))
-                         (setf (loaded-ligands *app*) ligands
-                               (selected-ligands *app*) ligands))
-                       (setf *smallest-ligand-sketch* (build-prototype-sketch (selected-ligands *app*)))
-                       (setf (w:widget-value ligand-selector) 0
-                             (w:widget-value ligand-total) (format nil "~a" (length (loaded-ligands *app*)))
-                             (w:widget-max ligand-selector) (1- (length (loaded-ligands *app*)))
-                             (w:widget-min ligand-selector) 0)
-                       (widget-show ligand-h-box)
-                       (widget-show nglview)
-                       (setf (w:widget-value ligand-selector) 0)
-                       (when show-receptor
-                         (nglview:add-structure nglview (make-instance 'nglview:text-structure :text (receptor-string *app*))))
-                       (observe-ligand-selector nglview structure-view messages calc ligand-name 0)
-                       (tirun:tirun-calculation-from-ligands calc (selected-ligands *app*))
-                       (format t "Done observe fu~%"))))))
-    (w:observe ligand-selector :value (lambda (instance type name old-value new-value source)
-                                        (declare (ignore instance type name old-value source))
-                                        (when new-value
-                                          (observe-ligand-selector nglview structure-view messages calc ligand-name new-value))))
-    (make-instance 'w:v-box
-                   :children (list
-                              (make-instance 'w:h-box
-                                             :layout (box-layout)
-                                             :children (list control-box structure-view))
-                              #+(or)(make-instance 'w:h-box
-                                                   ;;                                             :layout (box-layout)
-                                                   :children (list ligand-h-box))
-                              (make-instance 'w:h-box
-;;;                                             :layout (box-layout)
-                                            #+(or):layout #+(or)(make-instance 'w:layout
-                                                                          :width "100em"
-                                                                          :flex-flow "row"
-                                                                          :align-items "stretch")
-                                             :children (list nglview))
-                              ))))
+
+(defun on-ligand-select (instance index)
+  (with-slots (ngl structure calc)
+              instance
+    (let ((mol (elt (selected-ligands *app*) index))
+          (agg (chem:make-aggregate)))
+      (chem:add-matter agg mol)
+      (let* ((mol2 (chem:aggregate-as-mol2-string agg t))
+             (component (nglview:add-structure ngl (make-instance 'nglview:text-structure :text mol2 :ext "mol2"))))
+        (when *current-component*
+          (nglview:remove-components ngl *current-component*)) ;; *current-component* fails sometimes
+        (setf *current-component* component)
+        (setf (w:widget-value structure)
+              (format nil "<div style='display:flex;align-items:center;height:100%;'><div style='display:block;margin:auto;'>~A</div></div>"
+                      (sketch2d:render-svg-to-string (sketch2d:svg (sketch2d:similar-sketch2d mol *smallest-ligand-sketch*)))))
+        (nglview:handle-resize ngl)))))
+
+
+(defmethod loader-parse ((instance ligand-loader) data)
+  (nglview:remove-all-components (ligand-loader-ngl instance))
+  (handler-case
+      (let ((as-text (babel:octets-to-string data)))
+        (list as-text
+              (with-input-from-string (sin as-text)
+                (sdf:parse-sdf-file sin))))
+    (error (condition)
+      (print condition *error-output*)
+      nil)))
+
+
+(defmethod loader-show ((instance ligand-loader) data)
+  (with-slots (selector ngl calc)
+              instance
+    (destructuring-bind (as-text ligands)
+                        data
+      (setf *ligands-string* as-text
+            (loaded-ligands *app*) ligands
+            (selected-ligands *app*) ligands
+            *smallest-ligand-sketch* (build-prototype-sketch ligands)
+            (w:widget-description selector) (format nil "~A ligands" (length ligands))
+            (w:widget-%options-labels selector) (mapcar (lambda (mol)
+                                                          (string (chem:get-name mol)))
+                                                        ligands)
+            (w:widget-index selector) 0)
+      (nglview:add-structure ngl (make-instance 'nglview:text-structure :text (receptor-string *app*)))
+      (nglview:handle-resize ngl)
+      (on-ligand-select instance 0)
+      (tirun:tirun-calculation-from-ligands calc ligands))))
+
+
+(defmethod initialize-instance :after ((instance ligand-loader) &rest initargs &key &allow-other-keys)
+  (declare (ignore initargs))
+  (setf (w:widget-accept (loader-upload-button instance)) ".sdf")
+  (setf (w:widget-%titles (loader-accordion instance)) (list "Ligand Load" "Ligand View"))
+  (setf (w:widget-children (loader-view-grid instance))
+        (list (ligand-loader-ngl instance)
+              (ligand-loader-structure instance)
+              (ligand-loader-selector instance)
+              (ligand-loader-receptor-toggle instance)))
+  (setf (w:widget-layout (loader-view-grid instance))
+        (make-instance 'w:layout
+                       :grid-gap "1em"
+                       :grid-template-rows "1fr min-content"
+                       :grid-template-columns "1fr 1fr"
+                       :grid-template-areas "\"structure ngl\" \"selector toggle\""))
+  (w:observe (ligand-loader-receptor-toggle instance) :index
+    (lambda (inst type name old-value new-value source)
+      (declare (ignore inst type name old-value source))))
+  (w:observe (ligand-loader-selector instance) :index
+    (lambda (inst type name old-value new-value source)
+      (declare (ignore inst type name old-value source))
+      (on-ligand-select instance new-value))))
+
+
+(defun load-ligands (&optional (calc *tirun*)); (show-receptor t))
+  (loader-accordion (make-instance 'ligand-loader :calc calc)))
 
 
 (defun select-ligands (&key (calc *tirun*))
