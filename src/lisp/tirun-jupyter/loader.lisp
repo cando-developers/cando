@@ -23,6 +23,7 @@
      :initform (make-instance 'w:int-progress
                               :layout (make-instance 'w:layout
                                                      :align-self "end"
+                                                     :display "none"
                                                      :grid-area "progress")))
    (upload-log
      :reader loader-upload-log

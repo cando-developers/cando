@@ -213,19 +213,24 @@
                               :layout (make-instance 'w:layout
                                                      :border "var(--jp-widgets-border-width) solid var(--jp-border-color1)"
                                                      :grid-area "structure")))
-   (selector
-     :reader ligand-loader-selector
-     :initform (make-instance 'w:selection-slider
+   (slider
+     :reader ligand-loader-slider
+     :initform (make-instance 'w:int-slider
                               :layout (make-instance 'w:layout
-                                                     :width "75%"
-                                                     :grid-area "selector")))
+                                                     :width "100%")))
+   (dropdown
+     :reader ligand-loader-dropdown
+     :initform (make-instance 'w:dropdown
+                              :layout (make-instance 'w:layout
+                                                     :width "max-content")))
    (receptor-toggle
      :reader ligand-loader-receptor-toggle
      :initform (make-instance 'w:toggle-button
                               :description "Show Receptor"
                               :value t
                               :layout (make-instance 'w:layout
-                                                     :grid-area "toggle")))
+                                                     :margin "auto"
+                                                     :grid-area "ngl-ctl")))
    (calc
      :reader ligand-loader-calc
      :initform *tirun*)))
@@ -272,7 +277,7 @@
 
 
 (defmethod loader-show ((instance ligand-loader) data)
-  (with-slots (selector ngl calc)
+  (with-slots (slider dropdown ngl calc)
               instance
     (destructuring-bind (as-text ligands)
                         data
@@ -280,11 +285,12 @@
             (loaded-ligands *app*) ligands
             (selected-ligands *app*) ligands
             *smallest-ligand-sketch* (build-prototype-sketch ligands)
-            (w:widget-description selector) (format nil "~A ligands" (length ligands))
-            (w:widget-%options-labels selector) (mapcar (lambda (mol)
+            (w:widget-description slider) (format nil "~A ligands" (length ligands))
+            (w:widget-max slider) (1- (length ligands))
+            (w:widget-%options-labels dropdown) (mapcar (lambda (mol)
                                                           (symbol-name (chem:get-name mol)))
                                                         ligands)
-            (w:widget-index selector) 0)
+            (w:widget-value slider) 0)
       (nglview:add-structure (ligand-loader-ngl instance)
                              (make-instance 'nglview:text-structure
                                             :id "receptor"
@@ -297,24 +303,31 @@
 
 (defmethod initialize-instance :after ((instance ligand-loader) &rest initargs &key &allow-other-keys)
   (declare (ignore initargs))
+  (jupyter-widgets:link (ligand-loader-slider instance) :value
+                        (ligand-loader-dropdown instance) :index)
   (setf (w:widget-accept (loader-upload-button instance)) ".sdf")
   (setf (w:widget-%titles (loader-accordion instance)) (list "Ligand Load" "Ligand View"))
   (setf (w:widget-children (loader-view-grid instance))
         (list (ligand-loader-ngl instance)
               (ligand-loader-structure instance)
-              (ligand-loader-selector instance)
+              (make-instance 'w:h-box
+                             :children (list (ligand-loader-slider instance)
+                                             (ligand-loader-dropdown instance))
+                             :layout (make-instance 'w:layout
+                                                    :width "90%" :margin "auto"
+                                                    :grid-area "structure-ctl"))
               (ligand-loader-receptor-toggle instance)))
   (setf (w:widget-layout (loader-view-grid instance))
         (make-instance 'w:layout
                        :grid-gap "1em"
                        :grid-template-rows "1fr min-content"
                        :grid-template-columns "1fr 1fr"
-                       :grid-template-areas "\"structure ngl\" \"selector toggle\""))
+                       :grid-template-areas "\"structure ngl\" \"structure-ctl ngl-ctl\""))
   (w:observe (ligand-loader-receptor-toggle instance) :value
     (lambda (inst type name old-value new-value source)
       (declare (ignore inst type name old-value source))
       (nglview:set-visibility (ligand-loader-ngl instance) new-value "receptor")))
-  (w:observe (ligand-loader-selector instance) :index
+  (w:observe (ligand-loader-slider instance) :value
     (lambda (inst type name old-value new-value source)
       (declare (ignore inst type name old-value source))
       (on-ligand-select instance new-value old-value))))
