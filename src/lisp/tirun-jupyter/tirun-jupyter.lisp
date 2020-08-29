@@ -235,20 +235,28 @@
 (defvar *smallest-ligand-sketch*)
 
 
-(defun on-ligand-select (instance index)
+(defun on-ligand-select (instance index &optional previous)
   (with-slots (ngl structure calc)
               instance
-    (let ((mol (elt (selected-ligands *app*) index))
-          (agg (chem:make-aggregate)))
+    (let* ((mol (elt (selected-ligands *app*) index))
+           (id (symbol-name (chem:get-name mol))))
       (setf (w:widget-value structure)
             (format nil "<div style='display:flex;align-items:center;height:100%;'><div style='display:block;margin:auto;'>~A</div></div>"
                     (sketch2d:render-svg-to-string (sketch2d:svg (sketch2d:similar-sketch2d mol *smallest-ligand-sketch*)))))
       (nglview:handle-resize ngl)
-      (chem:add-matter agg mol)
-      (nglview:remove-components ngl "ligand")
-      (nglview:add-structure ngl (make-instance 'nglview:text-structure
-                                                :id "ligand" :ext "mol2"
-                                                :text (chem:aggregate-as-mol2-string agg t))))))
+      (when previous
+        (nglview:hide-components ngl (symbol-name (chem:get-name (elt (selected-ligands *app*) previous)))))
+      (cond
+        ((position id (nglview:component-ids ngl) :test #'string=)
+          (nglview:show-components ngl id)
+          (nglview:center ngl :component id))
+        (t
+          (let ((agg (chem:make-aggregate)))
+            (chem:add-matter agg mol)
+            (nglview:add-structure ngl
+                                   (make-instance 'nglview:text-structure
+                                                  :id id :ext "mol2"
+                                                  :text (chem:aggregate-as-mol2-string agg t)))))))))
 
 
 (defmethod loader-parse ((instance ligand-loader) data)
@@ -274,7 +282,7 @@
             *smallest-ligand-sketch* (build-prototype-sketch ligands)
             (w:widget-description selector) (format nil "~A ligands" (length ligands))
             (w:widget-%options-labels selector) (mapcar (lambda (mol)
-                                                          (string (chem:get-name mol)))
+                                                          (symbol-name (chem:get-name mol)))
                                                         ligands)
             (w:widget-index selector) 0)
       (nglview:add-structure (ligand-loader-ngl instance)
@@ -283,7 +291,8 @@
                                             :text (receptor-string *app*)))
       (nglview:handle-resize ngl)
       (on-ligand-select instance 0)
-      (tirun:tirun-calculation-from-ligands calc ligands))))
+      (ignore-errors
+        (tirun:tirun-calculation-from-ligands calc ligands)))))
 
 
 (defmethod initialize-instance :after ((instance ligand-loader) &rest initargs &key &allow-other-keys)
@@ -308,7 +317,7 @@
   (w:observe (ligand-loader-selector instance) :index
     (lambda (inst type name old-value new-value source)
       (declare (ignore inst type name old-value source))
-      (on-ligand-select instance new-value))))
+      (on-ligand-select instance new-value old-value))))
 
 
 (defun load-ligands (&optional (calc *tirun*)); (show-receptor t))
