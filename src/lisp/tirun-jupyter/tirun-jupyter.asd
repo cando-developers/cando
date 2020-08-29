@@ -15,6 +15,7 @@
 ;;;  :build-pathname #P"/tmp/tirun.fasb"
   :components
   ((:file "packages")
+   (:file "loader")
    (:file "tirun-jupyter")
    ))
 
