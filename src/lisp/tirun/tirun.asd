@@ -27,7 +27,7 @@
 ;;;  :build-pathname #P"/tmp/tirun.fasb"
   :components
   ((:file "packages")
-   (:file "jsme")
+   (:file "assemble")
    (:file "graph2")
    (:file "tirun-version")
    (:file "tirun")

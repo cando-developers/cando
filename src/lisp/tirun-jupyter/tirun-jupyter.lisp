@@ -14,7 +14,12 @@
 
 
 (defclass app (jupyter-widgets:has-traits)
-  ((receptor-string
+  ((composer-json
+    :accessor composer-json
+    :initarg :composer-json
+    :initform nil
+    :trait :list)
+   (receptor-string
     :accessor receptor-string
     :initform nil
     :trait :string)
@@ -65,11 +70,21 @@
     :accessor smirk-pattern
     :initform nil
     :trait :string)
-
-
-
-   )  
+   )
   (:metaclass jupyter-widgets:trait-metaclass))
+
+
+(defun structure-editor:set-composer-json (app json)
+  (setf (composer-json app) json))
+
+(defun structure-editor:get-composer-json (app)
+  (composer-json app))
+
+
+(defclass save-load-app ()
+  ((composer-json :initarg :composer-json :accessor composer-json)))
+
+(cando:make-class-save-load save-load-app)
 
 #|
 (defmethod initialize-instance ((instance app) &rest initargs &key &allow-other-keys)
@@ -108,6 +123,34 @@
       (leap:add-pdb-res-map '((1 :NMA :NME)))))
   (setf *app* (make-instance 'app))
   (setf *tirun* (make-instance 'tirun:tirun-calculation)))
+
+(defun load-app (&optional (name "data/structure-editor/default.dat"))
+  (let ((pn (pathname name)))
+    (if (probe-file pn)
+        (let ((sl-app (cando:load-cando pn)))
+          (setf *app* (make-instance 'app
+                                     :composer-json (composer-json sl-app))))
+        (setf *app* (make-instance 'app))))
+  
+  t)
+
+(defun save-app (&optional (name "data/structure-editor/default.dat"))
+  (let ((pn (pathname name)))
+    (ensure-directories-exist pn)
+    (let ((sl (make-instance 'save-load-app
+                             :composer-json (composer-json *app*)
+                             )))
+      (cando:save-cando sl (pathname name)))))
+
+
+(defun setup-tirun (name)
+  (let ((job-name (intern name :keyword)))
+    (setf (job-name *app*) job-name))
+  )
+
+
+
+
 
 #+(or)(defun new-pas ()
   (with-output-to-string (sout)
@@ -894,3 +937,18 @@ lisp_jobs_only_on=172.234.2.1
                               (make-instance 'w:h-box
                                              :layout (box-layout)
                                              :children (list messages))))))
+
+
+(defun composer (&key (app *app*))
+  (let ((composer (make-instance 'structure-editor::composer :app app)))
+    (w:observe *app* :composer-json
+               (lambda (inst type name old-value new-value source)
+                 (when new-value
+                   (save-app)
+                   ;; This is where we put the logic to build the molecules?
+                   (let ((agg (structure-editor:parse-kekule-json (composer-json *app*))))
+                     (setf (w:widget-outputs (structure-editor:composer-log composer)) nil)
+                     (w:with-output (structure-editor:composer-log composer)
+                       (format t "agg -> ~s~%" agg)
+                       )))))
+    (structure-editor::composer-accordion composer)))

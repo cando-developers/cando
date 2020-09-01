@@ -29,5 +29,6 @@
    #:write-jobs
    #:submit-calc
    #:check-calc
+   #:composer
    ))
 
