@@ -434,11 +434,28 @@
                                                         in-plug-name)))
                       (set-stereocenters molecule)
                       (make-instance 'tirun-structure :name name :drawing molecule
-                                                    :core-residue core-residue
-                                                    :core-residue-name (chem:get-name core-residue)
-                                                    :side-chain-residue-names side-chain-residue-names))))))
+                                                      :core-residue core-residue
+                                                      :core-residue-name (chem:get-name core-residue)
+                                                      :side-chain-residue-names side-chain-residue-names))))))
+
+
+(defun build-ligand-molecules (assembly)
+  "This is replicating some of the stuff done by setup-ligands.   
+We need setup-ligands for the tirun demo."
+  (let* ((tirun-structures (build-tiruns assembly)))
+    (loop for ligand in tirun-structures
+          for mol = (chem:matter-copy (drawing ligand))
+          do (chem:fill-in-implicit-hydrogens mol)
+             (ensure-unique-hydrogen-names mol)
+             (cando:build-unbuilt-hydrogens mol)
+             (combine-into-single-residue mol (core-residue-name ligand))
+          collect mol)))
 
 (defun setup-ligands (tiruns sketch &key verbose)
+  "This generates the ligands while keeping track of additional information about
+what is core and what is the side-chains.  We may not need this because the tirun
+code is a lot smarter now about comparing molecules to each other.
+But this code is necessary for the tirun demo."
   (let* ((assembly (build-assembly sketch :verbose verbose)))
     (setf (core-topology tiruns) (core-topology assembly))
     (setf (side-topologys tiruns) (side-chain-topologys assembly))
