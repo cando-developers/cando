@@ -16,12 +16,12 @@
 (defun version ()
   *version*)
 
-(defun cartesian (l) 
+(defun cartesian-product (l) 
   (cond ((null l) nil) 
         ((null (cdr l)) 
          (mapcar #'list (car l))) 
         (t (mapcan #'(lambda (x) (mapcar #'(lambda (y) (cons y x)) (car l))) 
-                   (cartesian (cdr l))))))
+                   (cartesian-product (cdr l))))))
 
 (defvar *tirun-time* 0)
 
@@ -196,7 +196,6 @@
   (make-load-form-saving-slots object))
 
 
-#+(or)
 (defun am1-file-name (tirun type)
   (make-pathname :directory '(:relative "am1bcc") :name (format nil "am1-~a" (string (name tirun))) :type type :defaults *default-pathname-defaults*))
 
@@ -507,7 +506,7 @@ METHOD controls how the masks are calculated"
     (with-open-file (fin (open filename :direction :input))
       (chem:make-chem-draw fin nil nil))))
 
-
+#+(or)
 (defun scale-molecule (mol)
   (let ((total-length 0.0)
         (num-bonds 0))

@@ -11,9 +11,13 @@
   (loop for entry in json
         do (format t "entry: ~s~%" entry)))
 
-(defun json-bond-order (jbo)
+(defun json-bond-order (jbo stereo)
   (case jbo
-    (1 :single-bond)
+    (1 (cond
+         ((null stereo) :single-bond)
+         ((= stereo 1) :single-bond-wedge)
+         ((= stereo 3) :single-bond-dash)
+         (t (error "Illegal bond-order stereo (~a/~a) combination" jbo stereo))))
     (2 :double-bond)
     (3 :triple-bond)
     (otherwise (warn "Unrecognized bond order ~a" jbo))
@@ -37,6 +41,12 @@
      (intern symbol :keyword))
     (t (error "Cannot calculate name ~a" type))))
 
+(defun property-list-from-annotation (annotation)
+  (let ((*package* (find-package :keyword)))
+    (with-input-from-string (sin (format nil "(~a)" annotation))
+      (let ((plist (read sin)))
+        plist))))
+
 (defun parse-kekule-json-molecule (json)
   (let* ((molecule (chem:make-molecule nil))
          (residue (chem:make-residue nil))
@@ -55,8 +65,12 @@
          (jconnectors (json-lookup ctab "connectors"))
          (atoms (make-array (length jnodes))))
     (chem:add-matter molecule residue)
-    (when annotation
-      (chem:set-property molecule :annotation annotation))
+    (when (stringp annotation)
+      (let ((property-list (property-list-from-annotation)))
+        (loop for cur = property-list then (cddr cur)
+              for label = (first cur)
+              for value = (second cur)
+              do (chem:set-property molecule label value))))
     (loop for jnode in jnodes
           for type = (json-lookup jnode "__type__")
           for symbol = (json-lookup jnode "symbol")
@@ -80,8 +94,12 @@
                        0.0)
           do (chem:set-position atom (geom:vec (+ xp coord-x) (+ yp coord-y) 0.0))
           do (chem:set-charge atom charge)
-          do (when jannotation
-               (chem:set-property atom :annotation jannotation))
+          do (when (stringp jannotation)
+               (let ((property-list (property-list-from-annotation jannotation)))
+                 (loop for cur = property-list then (cddr cur)
+                       for label = (first cur)
+                       for value = (second cur)
+                       do (chem:set-property atom label value))))
           do (setf (aref atoms index) atom)
           do (chem:add-matter residue atom))
     (loop for jedge in jconnectors
@@ -93,10 +111,9 @@
           for to = (second connected-objs)
           for from-atom = (aref atoms from)
           for to-atom = (aref atoms to)
-          for bond-order = (json-bond-order jbond-order)
+          for bond-order = (json-bond-order jbond-order stereo)
           for bond = (chem:bond-to from-atom to-atom bond-order)
-          do (when stereo
-               (chem:bond-set-property bond :stereo (list from-atom to-atom stereo))))
+          )
     molecule))
 
 (defun parse-kekule-json (json)

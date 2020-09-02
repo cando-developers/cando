@@ -124,7 +124,7 @@
   (setf *app* (make-instance 'app))
   (setf *tirun* (make-instance 'tirun:tirun-calculation)))
 
-(defun load-app (&optional (name "data/structure-editor/default.dat"))
+(defun load-app (&optional (name "default.dat"))
   (let ((pn (pathname name)))
     (if (probe-file pn)
         (let ((sl-app (cando:load-cando pn)))
@@ -134,7 +134,7 @@
   
   t)
 
-(defun save-app (&optional (name "data/structure-editor/default.dat"))
+(defun save-app (&optional (name "default.dat"))
   (let ((pn (pathname name)))
     (ensure-directories-exist pn)
     (let ((sl (make-instance 'save-load-app

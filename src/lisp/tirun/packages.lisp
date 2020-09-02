@@ -12,18 +12,6 @@
 ;; -^-
 (cl:in-package #:common-lisp-user)
 
-(defpackage #:jsme
-  (:use #:common-lisp)
-  (:export
-   #:*sketch*
-   #:sketch
-   #:load-sketch
-   #:save-sketch
-   #:build-atom-vector
-   #:parse-groups
-   #:save-graph
-   ))
-
 (defpackage #:graph
   (:use #:common-lisp)
   (:export
