@@ -209,14 +209,16 @@ TRANSLATE(chem::BondList_O);
 
 
 namespace kw {
-    extern core::Symbol_sp& _sym_singleBond;
-    extern core::Symbol_sp& _sym_doubleBond;
-    extern core::Symbol_sp& _sym_tripleBond;
-    extern core::Symbol_sp& _sym_aromaticBond;
-    extern core::Symbol_sp& _sym_hydrogenBond;
-    extern core::Symbol_sp& _sym_virtualBond;
-    extern core::Symbol_sp& _sym_dashedSingleBond;
-    extern core::Symbol_sp& _sym_dashedDoubleBond;
+extern core::Symbol_sp& _sym_singleBond;
+extern core::Symbol_sp& _sym_doubleBond;
+extern core::Symbol_sp& _sym_tripleBond;
+extern core::Symbol_sp& _sym_aromaticBond;
+extern core::Symbol_sp& _sym_hydrogenBond;
+extern core::Symbol_sp& _sym_virtualBond;
+extern core::Symbol_sp& _sym_dashedSingleBond;
+extern core::Symbol_sp& _sym_dashedDoubleBond;
+extern core::Symbol_sp& _sym_singleWedge;
+extern core::Symbol_sp& _sym_singleDash;
 };
 
 

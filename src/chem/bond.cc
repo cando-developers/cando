@@ -57,6 +57,8 @@ SYMBOL_EXPORT_SC_(ChemKwPkg,_hydrogenBond);
 SYMBOL_EXPORT_SC_(ChemKwPkg,_virtualBond);
 SYMBOL_EXPORT_SC_(ChemKwPkg,_dashedSingleBond);
 SYMBOL_EXPORT_SC_(ChemKwPkg,_dashedDoubleBond);
+SYMBOL_EXPORT_SC_(ChemKwPkg,singleWedge);
+SYMBOL_EXPORT_SC_(ChemKwPkg,singleDash);
 
 
 string	XmlName_Bond = "bond";
@@ -167,6 +169,8 @@ core::NullTerminatedEnumAssociation bondOrderKeys[] = {
     { "virtual", virtualBond },
     { "dashedSingle", dashedSingleBond },
     { "dashedDouble", dashedDoubleBond },
+    { "singleWedge", singleWedge },
+    { "singleDash", singleDash },
     { "", -1 }
 };
 
@@ -377,6 +381,12 @@ string	bondOrderToString(BondOrder bo) {
   case singleBond:
       return "single";
       break;
+  case singleWedge:
+      return "singleWedge";
+      break;
+  case singleDash:
+      return "singleDash";
+      break;
   case doubleBond:
       return "double";
       break;
@@ -401,6 +411,8 @@ string	bondOrderToString(BondOrder bo) {
 BondOrder	stringToBondOrder(string bos) {
   if ( bos=="none" ) return noBond;
   if ( bos=="single" ) return singleBond;
+  if ( bos=="singleWedge" ) return singleWedge;
+  if ( bos=="singleDash" ) return singleDash;
   if ( bos=="double" ) return doubleBond;
   if ( bos=="triple" ) return tripleBond;
   if ( bos=="aromatic" ) return aromaticBond;
@@ -418,6 +430,12 @@ char bondOrderToChar(BondOrder bo)
       break;
   case singleBond:
       return '-';
+      break;
+  case singleWedge:
+      return '/';
+      break;
+  case singleDash:
+      return '\\';
       break;
   case doubleBond:
       return '=';
@@ -586,6 +604,8 @@ void	BondList_O::archiveBase(core::ArchiveP node)
 
   SYMBOL_EXPORT_SC_(ChemKwPkg,noBond);
   SYMBOL_EXPORT_SC_(ChemKwPkg,singleBond);
+  SYMBOL_EXPORT_SC_(ChemKwPkg,singleWedge);
+  SYMBOL_EXPORT_SC_(ChemKwPkg,singleDash);
   SYMBOL_EXPORT_SC_(ChemKwPkg,doubleBond);
   SYMBOL_EXPORT_SC_(ChemKwPkg,tripleBond);
   SYMBOL_EXPORT_SC_(ChemKwPkg,aromaticBond);
@@ -597,6 +617,8 @@ void	BondList_O::archiveBase(core::ArchiveP node)
   CL_BEGIN_ENUM(BondOrder,_sym__PLUS_bondOrderToSymbolConverter_PLUS_,"BondOrder");
   CL_VALUE_ENUM(chemkw::_sym_noBond, noBond );
   CL_VALUE_ENUM(chemkw::_sym_singleBond, singleBond );
+  CL_VALUE_ENUM(chemkw::_sym_singleWedge, singleWedge );
+  CL_VALUE_ENUM(chemkw::_sym_singleDash, singleDash );
   CL_VALUE_ENUM(chemkw::_sym_doubleBond, doubleBond );
   CL_VALUE_ENUM(chemkw::_sym_tripleBond, tripleBond );
   CL_VALUE_ENUM(chemkw::_sym_aromaticBond, aromaticBond );

@@ -48,6 +48,8 @@ typedef	enum 	BondOrderEnum
     virtualBond,
     dashedSingleBond,
     dashedDoubleBond,
+    singleWedge,
+    singleDash,
     unknownOrderBond
 } BondOrder;
 
