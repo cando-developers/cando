@@ -20,6 +20,7 @@
    #:parse-kekule-json
    #:composer-accordion
    #:composer-log
+   #:composer-view-grid
    #:get-composer-json
    #:set-composer-json   ))
 

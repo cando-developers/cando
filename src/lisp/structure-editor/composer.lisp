@@ -56,8 +56,9 @@
 
 
 (defmethod initialize-instance :after ((instance composer) &rest initargs &key &allow-other-keys)
-  (declare (ignore initargs))  (setf (w:widget-children (composer-accordion instance))
-                                     (list (composer-grid instance) (composer-view-grid instance)))
+  (declare (ignore initargs))
+  (setf (w:widget-children (composer-accordion instance))
+        (list (composer-grid instance) (composer-view-grid instance)))
   (setf (w:widget-children (composer-grid instance))
         (list (composer-kekule instance) (composer-save-button instance) (composer-log instance)))
   (setf (kekule:data (composer-kekule instance))
@@ -67,9 +68,10 @@
          (lambda (&rest args)
            (setf (w:widget-outputs (composer-log instance)) nil)
            (w:with-output (composer-log instance)
+             (format t "Button pressed3 ~a~%" (random 10000))
              (let ((json (kekule:data (composer-kekule instance))))
-               (set-composer-json (composer-app instance) json)
-               #+(or)(format t "new observe save-button pressed~%~s~%" json)
+               (set-composer-json instance (composer-app instance) json)
+               (setf (w:widget-selected-index (composer-accordion instance)) 1)
                (finish-output)
                ))))))
   

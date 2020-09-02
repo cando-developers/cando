@@ -66,11 +66,11 @@
          (atoms (make-array (length jnodes))))
     (chem:add-matter molecule residue)
     (when (stringp annotation)
-      (let ((property-list (property-list-from-annotation)))
+      (let ((property-list (property-list-from-annotation annotation)))
         (loop for cur = property-list then (cddr cur)
               for label = (first cur)
               for value = (second cur)
-              do (chem:set-property molecule label value))))
+              while cur do (chem:set-property molecule label value))))
     (loop for jnode in jnodes
           for type = (json-lookup jnode "__type__")
           for symbol = (json-lookup jnode "symbol")

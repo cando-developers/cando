@@ -74,8 +74,31 @@
   (:metaclass jupyter-widgets:trait-metaclass))
 
 
-(defun structure-editor:set-composer-json (app json)
-  (setf (composer-json app) json))
+
+(defun composer-save (composer app)
+  (format t "In composer-save About to parse ~d~%" (random 1000))
+  ;; This is where we put the logic to build the molecules?
+  (let ((agg (structure-editor:parse-kekule-json (composer-json app))))
+    (format t "agg2 -> ~s~%" agg)
+    (let* ((assembly (tirun::build-assembly agg))
+           (ligands (tirun::build-tiruns assembly)))
+      (format t "ligands -> ~s~%" ligands)
+      (let ((molecules-svg-str (with-output-to-string (sout)
+                                 (loop for ligand in ligands
+                                       for molecule = (tirun::drawing ligand)
+                                       for sketch2d = (sketch2d:sketch2d molecule)
+                                       for svg = (sketch2d:svg sketch2d)
+                                       for svg-str = (sketch2d:render-svg-to-string svg)
+                                       do (format sout "~a" svg-str)))))
+        (setf (w:widget-value (structure-editor:composer-view-grid composer)) molecules-svg-str))
+      (finish-output)
+      )))
+
+(defun structure-editor:set-composer-json (composer app json)
+  (setf (composer-json app) json)
+  (format t "In set-composer-json~%")
+  (composer-save composer app)
+  )
 
 (defun structure-editor:get-composer-json (app)
   (composer-json app))
@@ -945,10 +968,7 @@ lisp_jobs_only_on=172.234.2.1
                (lambda (inst type name old-value new-value source)
                  (when new-value
                    (save-app)
-                   ;; This is where we put the logic to build the molecules?
-                   (let ((agg (structure-editor:parse-kekule-json (composer-json *app*))))
-                     (setf (w:widget-outputs (structure-editor:composer-log composer)) nil)
-                     (w:with-output (structure-editor:composer-log composer)
-                       (format t "agg -> ~s~%" agg)
-                       )))))
+                   )))
     (structure-editor::composer-accordion composer)))
+
+
