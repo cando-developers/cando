@@ -61,6 +61,10 @@
                            (with-open-file (fout (make-pathname :name "client-pidfile" :defaults child-directory) :direction :output :if-exists :supersede)
                              (format fout "~d~%" client-pid))
                            (close stream)
+                           ;; Change this forked version of cando's current working director to that of the fork-client
+                           (format t "Changing forked cando current working directory to: ~s~%" client-current-working-dir)
+                           (ext:chdir client-current-working-dir t)
+                           (format t "After change of current working directory (ext:getcwd) -> ~s~%" (ext:getcwd))
                            (format t "Starting jupyter:run-kernel~%")
                            (let ((jupyter-symbol (find-symbol "RUN-KERNEL" (find-package "JUPYTER")))
                                  (kernel (find-symbol "KERNEL" (find-package "CANDO-JUPYTER"))))
