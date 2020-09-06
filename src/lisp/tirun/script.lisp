@@ -183,12 +183,9 @@
                                                                          :input-topology-file input-topology-file
                                                                          :input-coordinate-file ti-input-coordinate-file)
                                                            recharge-jobs)))))
-                             (let ((script (make-instance 'python-script-file
-                                                          :script *python-getdvdl*
-                                                          :name "getdvdl"
-                                                          :extension "py")))
+                             (let ((script (make-instance 'getdvdl-script-file)))
                                (push (connect-graph
-                                      (make-instance 'morph-side-stage-python-job
+                                      (make-instance 'morph-side-stage-getdvdl-job
                                                      :morph morph :side side :stage stage
                                                      :scripts (list script)
                                                      :inputs (case stage
@@ -198,7 +195,10 @@
                                                      :outputs (arguments :%STAGE-ANALYSIS% (make-instance 'morph-side-stage-file
                                                                                                           :morph morph :side side :stage stage
                                                                                                           :name "dvdl" :extension "dat"))
-                                                     :makefile-clause (standard-makefile-clause "python2 getdvdl.py :%STAGE-ANALYSIS% :%INPUTS%")))
+                                                     :makefile-clause (standard-makefile-clause (format nil "~a ~a.~a :%STAGE-ANALYSIS% :%INPUTS%"
+                                                                                                        (executable script)
+                                                                                                        (name script)
+                                                                                                        (extension script)))))
                                      stage-jobs)))))
                 ;; combine stage-jobs
                 (let ((side-script (make-instance 'morph-side-script

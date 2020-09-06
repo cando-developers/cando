@@ -324,7 +324,7 @@ Otherwise return NIL."
                     am1-bcc-charges))))
 
 
-(defun complex (calculation ligand-name &optional (receptor-index 0))
+(defun build-complex (calculation ligand-name &optional (receptor-index 0))
   (let ((receptor (elt (receptors calculation) receptor-index))
         (ligand (find ligand-name (ligands calculation) :test #'eq :key #'name)))
     (let ((agg (chem:matter-copy receptor)))

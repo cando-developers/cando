@@ -88,7 +88,7 @@
    #:calculate-am1-bcc-charges
    #:build-job-nodes
    #:connect-job-nodes
-   #:complex
+   #:build-complex
    #:sqm-job-mixin
    #:amber-job-mixin
    #:pattern-atoms
