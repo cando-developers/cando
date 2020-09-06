@@ -19,12 +19,12 @@
         (vector-push-extend x data)))))
 
 (defmethod get-variance ((self online-av-var))
-  \"Convenience function to return the variance\"
+  "Convenience function to return the variance"
   (with-slots (m2 step%) self
     (/ (m2 self) (1- (step% self)))))
 
 (defmethod get-stat ((self online-av-var))
-  \"Convenience function to return the mean and standard deviation\"
+  "Convenience function to return the mean and standard deviation"
   (with-slots (mean m2 step%) self
     (values mean (sqrt (/ m2 (1- step%))))))
 
@@ -79,9 +79,9 @@
           until (eq line :eof)
           do (incf ln)
              (when (and (> ln *skip*)
-                        (string= line \"L9\" :start1 0 :end1 2)
-                        (null (search \"dV/dlambda\" line)))
-               (let ((val (elt (sys:split line \" \") 5)))
+                        (string= line "L9" :start1 0 :end1 2)
+                        (null (search "dV/dlambda" line)))
+               (let ((val (elt (sys:split line " ") 5)))
                  (accumulate dvdl (read-from-string val)))))
     (multiple-value-bind (mean std)
         (get-stat dvdl)
@@ -112,32 +112,32 @@
   (multiple-value-bind (x y data)
       (calculate-dvdl windows)
     (let ((fout (open output-filename :direction :output :if-exists :supersede)))
-      (format fout \"(( :lambdas (~%\")
+      (format fout "(( :lambdas (~%")
       (loop for a in x
             for b in y
             for val-cur = (member a data :key #'car :test #'=)
             do (if val-cur
                    (let ((v (cdr (car val-cur))))
-                     (format fout \"( ~a ~{~a ~})~%\" a v))
-                   (format fout \";;; ~a ~a~%\" a b)))
-      (format fout \"))~%\")
-      (format fout \"( :dg . ~a ))~%\" (numscl:trapz (coerce y 'vector)
+                     (format fout "( ~a ~{~a ~})~%" a v))
+                   (format fout ";;; ~a ~a~%" a b)))
+      (format fout "))~%")
+      (format fout "( :dg . ~a ))~%" (numscl:trapz (coerce y 'vector)
                                                    (coerce x 'vector)))
       (close fout))))
 
 (defun main ()
   (let ((prog (elt sys:*command-line-arguments* 0)))
     (when (< (length sys:*command-line-arguments*) 3)
-      (format t \"Usage: ~a output-filename windows...~%\" prog)
+      (format t "Usage: ~a output-filename windows...~%" prog)
       (sys:exit 1)))
   (let* ((output-filename (elt sys:*command-line-arguments* 0))
          (windows-vec (subseq sys:*command-line-arguments* 1 (length sys:*command-line-arguments*)))
          (windows (coerce windows-vec 'list)))
-    (format t \"run-dvdl output: ~s\n\" output-filename)
+    (format t "run-dvdl output: ~s\n" output-filename)
     (run-dvdl output-filename windows)))
     
   
 (main)
-(format t \"Done getdvdl~%\")
+(format t "Done getdvdl~%")
 (core:quit)
 
