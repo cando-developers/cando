@@ -23,6 +23,10 @@
     :accessor receptor-string
     :initform nil
     :trait :string)
+   (ligands-string
+    :accessor ligands-string
+    :initform nil
+    :trait :string)
    (loaded-ligands
     :accessor loaded-ligands
     :initform nil
@@ -227,26 +231,19 @@
 (defmethod loader-parse ((instance receptor-loader) data)
   (nglview:remove-all-components (receptor-loader-ngl instance))
   (handler-case
-      (let ((as-text (babel:octets-to-string data)))
-        (list as-text
-              (with-input-from-string (sin as-text)
+      (with-slots (receptor-string)
+                  *app*
+        (setf receptor-string (babel:octets-to-string data))
+        (setf (tirun:receptors (receptor-loader-calc instance))
+              (list (with-input-from-string (sin receptor-string)
                 (leap.pdb:load-pdb-stream sin))))
+        t)
     (leap.pdb:pdb-read-error (condition)
       (write-string (leap.pdb:messages condition))
       nil)
     (error (condition)
       (print condition *error-output*)
       nil)))
-
-
-(defmethod loader-show ((instance receptor-loader) data)
-  (destructuring-bind (as-text agg)
-                      data
-    (nglview:add-structure (receptor-loader-ngl instance)
-    (make-instance 'nglview:text-structure :text as-text))
-    (nglview:handle-resize (receptor-loader-ngl instance))
-    (setf (receptor-string *app*) as-text)
-    (setf (tirun:receptors (receptor-loader-calc instance)) (list agg))))
 
 
 (defmethod initialize-instance :after ((instance receptor-loader) &rest initargs &key &allow-other-keys)
@@ -259,11 +256,23 @@
         (make-instance 'w:layout
                        :grid-template-rows "1fr"
                        :grid-template-columns "1fr"
-                       :grid-template-areas "\"ngl\"")))
+                       :grid-template-areas "\"ngl\""))
+  (w:observe (loader-accordion instance) :selected-index
+    (lambda (inst type name old-value new-value source)
+      (declare (ignore inst type name old-value source))
+      (when (equal new-value 1)
+        (nglview:handle-resize (receptor-loader-ngl instance)))))
+  (w:observe *app* :receptor-string
+    (lambda (inst type name old-value new-value source)
+      (declare (ignore inst type name old-value source))
+      (nglview:remove-all-components (receptor-loader-ngl instance))
+      (when new-value
+        (nglview:add-structure (receptor-loader-ngl instance)
+                               (make-instance 'nglview:text-structure :text new-value))))))
 
 
 (defun load-receptor (&optional (calc *tirun*))
-  (loader-accordion (make-instance 'receptor-loader :calc calc)))
+  (w:display (make-instance 'receptor-loader :calc calc)))
 
 
 (defclass ligand-loader (loader)
@@ -309,11 +318,11 @@
 (defun on-ligand-select (instance index &optional previous)
   (with-slots (ngl structure calc)
               instance
-    (let* ((mol (elt (selected-ligands *app*) index))
+    (let* ((mol (elt (loaded-ligands *app*) index))
            (id (symbol-name (chem:get-name mol))))
       (setf (w:widget-value structure)
             (format nil "<div style='display:flex;align-items:center;height:100%;'><div style='display:block;margin:auto;'>~A</div></div>"
-                    (sketch2d:render-svg-to-string (sketch2d:svg (sketch2d:similar-sketch2d mol *smallest-ligand-sketch*)))))
+                    (sketch2d:render-svg-to-string (sketch-molecule mol))))
       (nglview:handle-resize ngl)
       (when previous
         (nglview:hide-components ngl (symbol-name (chem:get-name (elt (selected-ligands *app*) previous)))))
@@ -331,40 +340,17 @@
 
 
 (defmethod loader-parse ((instance ligand-loader) data)
-  (nglview:remove-all-components (ligand-loader-ngl instance))
   (handler-case
-      (let ((as-text (babel:octets-to-string data)))
-        (list as-text
-              (with-input-from-string (sin as-text)
-                (sdf:parse-sdf-file sin))))
+      (with-slots (ligands-string loaded-ligands selected-ligands)
+                  *app*
+        (setf ligands-string (babel:octets-to-string data)
+              loaded-ligands (with-input-from-string (sin ligands-string)
+                               (sdf:parse-sdf-file sin))
+              selected-ligands loaded-ligands)
+        t)
     (error (condition)
       (print condition *error-output*)
       nil)))
-
-
-(defmethod loader-show ((instance ligand-loader) data)
-  (with-slots (slider dropdown ngl calc)
-              instance
-    (destructuring-bind (as-text ligands)
-                        data
-      (setf *ligands-string* as-text
-            (loaded-ligands *app*) ligands
-            (selected-ligands *app*) ligands
-            *smallest-ligand-sketch* (build-prototype-sketch ligands)
-            (w:widget-description slider) (format nil "~A ligands" (length ligands))
-            (w:widget-max slider) (1- (length ligands))
-            (w:widget-%options-labels dropdown) (mapcar (lambda (mol)
-                                                          (symbol-name (chem:get-name mol)))
-                                                        ligands)
-            (w:widget-value slider) 0)
-      (nglview:add-structure (ligand-loader-ngl instance)
-                             (make-instance 'nglview:text-structure
-                                            :id "receptor"
-                                            :text (receptor-string *app*)))
-      (nglview:handle-resize ngl)
-      (on-ligand-select instance 0)
-      (ignore-errors
-        (tirun:tirun-calculation-from-ligands calc ligands)))))
 
 
 (defmethod initialize-instance :after ((instance ligand-loader) &rest initargs &key &allow-other-keys)
@@ -396,42 +382,61 @@
   (w:observe (ligand-loader-slider instance) :value
     (lambda (inst type name old-value new-value source)
       (declare (ignore inst type name old-value source))
-      (on-ligand-select instance new-value old-value))))
+      (on-ligand-select instance new-value old-value)))
+  (w:observe (loader-accordion instance) :selected-index
+    (lambda (inst type name old-value new-value source)
+      (declare (ignore inst type name old-value source))
+      (when (equal new-value 1)
+        (nglview:handle-resize (ligand-loader-ngl instance)))))
+  (when (receptor-string *app*)
+    (nglview:add-structure (ligand-loader-ngl instance)
+                           (make-instance 'nglview:text-structure
+                                          :id "receptor"
+                                          :text (receptor-string *app*))))
+  (w:observe *app* :receptor-string
+    (lambda (inst type name old-value new-value source)
+      (declare (ignore inst type name source))
+      (when old-value
+        (nglview:remove-components (ligand-loader-ngl instance) "receptor"))
+      (nglview:add-structure (ligand-loader-ngl instance)
+                             (make-instance 'nglview:text-structure
+                                            :id "receptor"
+                                            :text new-value))))
+  (w:observe *app* :loaded-ligands
+    (lambda (inst type name old-value ligands source)
+      (declare (ignore inst type name old-value source))
+      (with-slots (slider dropdown calc)
+                  instance
+        (setf (w:widget-description slider) (format nil "~A ligands" (length ligands))
+              (w:widget-max slider) (1- (length ligands))
+              (w:widget-%options-labels dropdown) (mapcar (lambda (mol)
+                                                            (symbol-name (chem:get-name mol)))
+                                                          ligands)
+              (w:widget-value slider) 0)
+        (when ligands
+          (sketch-molecules ligands)
+          (on-ligand-select instance 0)
+          (ignore-errors
+            (tirun:tirun-calculation-from-ligands calc ligands)))))))
 
 
 (defun load-ligands (&optional (calc *tirun*)); (show-receptor t))
-  (loader-accordion (make-instance 'ligand-loader :calc calc)))
+  (w:display (make-instance 'ligand-loader :calc calc)))
 
 
 (defun select-ligands (&key (calc *tirun*))
   "select-ligands takes the ligands in (loaded-ligands *app*) and lets the user downselect a
 subset that it then puts into (selected-ligands *app*)"
-  (labels ((get-loaded-names ()
-             (let* ((names (loop for lig in (loaded-ligands *app*)
-                                 collect (string (chem:get-name lig))))
-                    (sorted-names (sort names #'string<)))
-               sorted-names)))
-    (let* ((sorted-names (get-loaded-names))
-           (messages (make-instance 'w:text-area))
-           (multi-select (make-instance 'jupyter-widgets:select-multiple
-                                        :%options-labels (get-loaded-names)))
-           (vbox (make-instance 'w:v-box :children (list multi-select messages))))
-      (w:observe *app* :loaded-ligands (lambda (&rest args)
-                                         (let ((new-sorted-names (get-loaded-names)))
-                                           (setf (w:widget-%options-labels multi-select) new-sorted-names
-                                                 sorted-names new-sorted-names))))
-      (w:observe multi-select :index (lambda (instance type name old-value new-value source)
-                                       (setf (w:widget-value messages) (format nil "Starting multi-select index sorted-names: ~a" sorted-names))
-                                       (let ((mols (if sorted-names
-                                                       (loop for index in new-value
-                                                             for name = (elt sorted-names index)
-                                                             for name-key = (intern name :keyword)
-                                                             collect (find name-key (loaded-ligands *app*) :key #'chem:get-name))
-                                                       (loaded-ligands *app*))))
-                                         (setf (selected-ligands *app*) mols)
-                                         (setf (w:widget-value messages)
-                                               (format nil "Molecules:~% ~a~%" (if mols (mapcar #'chem:get-name mols) "all"))))))
-      vbox)))
+  (let ((sel (make-instance 'molecule-select
+                            :molecules (loaded-ligands *app*)
+                            :selected (selected-ligands *app*))))
+    (w:link sel :molecules *app* :loaded-ligands)
+    (w:link sel :selected *app* :selected-ligands)
+    (make-instance 'w:accordion
+                   :selected-index nil
+                   :%titles (list "Select Ligands")
+                   :children (list (outer sel)))))
+
 
 (defun generate-nodes-and-edges (multigraph)
   (let (all-nodes all-edges)
@@ -460,7 +465,7 @@ subset that it then puts into (selected-ligands *app*)"
        (setf (jupyter-widgets:widget-value (cyto-observe *app*))
              (format nil "~a~%~a"
                      name-str
-                     (sketch2d:render-svg-to-string (sketch2d:svg (sketch2d:similar-sketch2d mol *smallest-ligand-sketch*)))))))
+                     (sketch2d:render-svg-to-string (sketch-molecule mol))))))
     ((string= "edges" (cytoscape:group instance))
      (let* ((source-str (cdr (assoc "source" (cytoscape:data instance) :test #'string=)))
             (source-sym (intern source-str :keyword))
@@ -471,8 +476,8 @@ subset that it then puts into (selected-ligands *app*)"
        (setf (jupyter-widgets:widget-value (cyto-observe *app*))
              (format nil "~a~%~a~%~a~%~a"
                      source-str
-                     (sketch2d:render-svg-to-string (sketch2d:svg (sketch2d:similar-sketch2d source-mol *smallest-ligand-sketch*)))
-                     (sketch2d:render-svg-to-string (sketch2d:svg (sketch2d:similar-sketch2d target-mol *smallest-ligand-sketch*)))
+                     (sketch2d:render-svg-to-string (sketch-molecule source-mol))
+                     (sketch2d:render-svg-to-string (sketch-molecule target-mol))
                      target-str))))))
 
 (defun cyto-fill-graph (&optional (all-nodes (all-nodes *app*)) (all-edges (all-edges *app*)))

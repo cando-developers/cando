@@ -509,59 +509,55 @@ This will place the calculated bond on one or the other side of the x1,y1-x2,y2 
         do (render-node scene atom-node)))
 
 
-(defun svg (sketch2d &key (toplevel t) (width 1000) (xbuffer 0.1) (ybuffer 0.1) before-render after-render (id "") show-names)
+(defun svg (sketch2d &key (toplevel t) (width 1000) (xbuffer 0.1) (ybuffer 0.1) before-render after-render (id "") show-names (scale 20) (margin 20))
   "Generate SVG to render the molecule.  Pass a BEFORE-RENDER function or AFTER-RENDER function to add info to the structure.
 Each of these functions take two arguments, the svg-scene and the sketch-svg. 
 The caller provided functions should use cl-svg to render additional graphics."
   (let* ((molecule (molecule sketch2d))
-         (bbox (chem:matter-calculate-bounding-cuboid molecule 0.0))
-         (xscale 20.0)                  ; scale from angstroms to pts?
-         (yscale 20.0)                  ; scale from angstroms to pts
-         (bbox-width (- (geom:get-max-x bbox) (geom:get-min-x bbox)))
-         (bbox-height (- (geom:get-max-y bbox) (geom:get-min-y bbox)))
-         (x-mol-center (/ (+ (geom:get-max-x bbox) (geom:get-min-x bbox)) 2.0))
-         (y-mol-center (/ (+ (geom:get-max-y bbox) (geom:get-min-y bbox)) 2.0))
-         (xviewport (* bbox-width (+ 1.0 (* 2.0 xbuffer)) xscale))
-         (yviewport (* bbox-height (+ 1.0 (* 2.0 ybuffer)) yscale))
-         (x-viewport-center (/ xviewport 2.0))
-         (y-viewport-center (/ yviewport 2.0))
-         (height (* width (/ yviewport xviewport)))
-         ;; It looks like for jupyter we need to specify width and height
-         ;; Here it says to ignore them?  https://css-tricks.com/scale-svg/
-         )
+         (xmin most-positive-single-float)
+         (ymin most-positive-single-float)
+         (xmax most-negative-single-float)
+         (ymax most-negative-single-float))
     (flet ((transform-point (atomic-pos)
-             (let ((x (geom:vx atomic-pos))
-                   (y (geom:vy atomic-pos)))
-               (let ((x1 (+ (* xscale (- x x-mol-center)) x-viewport-center))
-                     (y1 (+ (* yscale (- y y-mol-center)) y-viewport-center)))
-                 (geom:vec x1 y1 0.0)))))
-      #+(or)(cl-svg:draw scene (:rect :x 0 :y 0 :width xviewport :height yviewport :stroke "green" :fill "green"))
-      (let ((sketch (generate-sketch sketch2d xviewport yviewport)))
+             (let ((x (* scale (geom:vx atomic-pos)))
+                   (y (* scale (geom:vy atomic-pos))))
+               (setf xmin (min xmin x))
+               (setf xmax (max xmax x))
+               (setf ymin (min ymin y))
+               (setf ymax (max ymax y))
+               (geom:vec x y 0.0))))
+      (let ((sketch (generate-sketch sketch2d 0 0)))
         (layout-sketch sketch #'transform-point)
+        (setf xmin (floor (- xmin margin))
+              ymin (floor (- ymin margin))
+              xmax (ceiling (+ xmax margin))
+              ymax (ceiling (+ ymax margin))
+              (width sketch) (- xmax xmin)
+              (height sketch) (- ymax ymin))
         (optimize-sketch sketch)
         (render-dbg "About to render-sketch  bond-nodes ~a~%" (length (bond-nodes sketch)))
-        (let* ((rxviewport (round xviewport))
-               (ryviewport (round yviewport))
+        ;; It looks like for jupyter we need to specify width and height
+        ;; Here it says to ignore them?  https://css-tricks.com/scale-svg/
+        (let* ((view-box (format nil "~a ~a ~a ~a" xmin ymin (width sketch) (height sketch)))
+               (width (format nil "~apx" (width sketch)))
+               (height (format nil "~apx" (height sketch)))
                (scene (if toplevel
-                          (cl-svg:make-svg-toplevel
-                           'cl-svg:svg-1.2-toplevel
-                           :id id
-                           :width (round xviewport)
-                           :height (round yviewport) 
-                           :viewport (format nil "0 0 ~d ~d" (round xviewport) (round yviewport)))
-                          (make-instance 'cl-svg::svg-element
-                                         :name "svg"
-                                         :attributes
-                                         (list :width (round xviewport)
-                                               :height (round yviewport) ; :width "1000" :height "auto" ; :width width :height height
-                                               :id id
-                                               :viewport (format nil "0 0 ~d ~d" (round xviewport) (round yviewport))))
-                          )))
-          (setf (scene sketch) scene)
-          (setf (before-render sketch) before-render
+                        (cl-svg:make-svg-toplevel 'cl-svg:svg-1.2-toplevel
+                                                  :id id
+                                                  :width width
+                                                  :height height
+                                                  "viewBox" view-box)
+                        (make-instance 'cl-svg::svg-element
+                                       :name "svg"
+                                       :attributes (list :id id
+                                                         :width width
+                                                         :height height
+                                                         "viewBox" view-box)))))
+          (setf (scene sketch) scene
+                (before-render sketch) before-render
                 (show-names sketch) show-names
                 (after-render sketch) after-render)
-          (values sketch ))))))
+          (values sketch))))))
 
 (defun render-svg-scene (sketch-svg)
   (let ((scene (scene sketch-svg)))

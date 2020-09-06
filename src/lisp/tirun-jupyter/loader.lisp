@@ -56,14 +56,6 @@
 (defgeneric loader-parse (instance data))
 
 
-(defgeneric loader-show (instance data))
-
-
-(defmethod loader-show :before ((instance loader) data)
-  (declare (ignore data))
-  (setf (w:widget-selected-index (loader-accordion instance)) 1))
-
-
 (defmethod initialize-instance :after ((instance loader) &rest initargs &key &allow-other-keys)
   (declare (ignore initargs))
   (setf (w:widget-children (loader-upload-grid instance)) (list (loader-upload-button instance)
@@ -81,14 +73,16 @@
         (when new-value
           (write-string "Parsing file...")
           (finish-output)
-          (let ((data (loader-parse instance (car (last new-value)))))
-            (cond
-              (data
-                (write-string "Parsing complete.")
-                (loader-show instance data))
-              (t
-                (write-string "Parsing failed." *error-output*)
-                (finish-output *error-output*)))))))))
+          (cond
+            ((loader-parse instance (car (last new-value)))
+              (write-string "Parsing complete.")
+              (setf (w:widget-selected-index (loader-accordion instance)) 1))
+            (t
+              (write-string "Parsing failed." *error-output*)
+              (finish-output *error-output*))))))))
 
 
+(defmethod jupyter-widgets:%display ((instance loader) &rest args &key &allow-other-keys)
+  (declare (ignore args))
+  (loader-accordion instance))
 
