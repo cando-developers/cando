@@ -71,7 +71,7 @@
       (rplacd (last y) (list (loop for coef in coefs sum coef))))))
 
 
-(defun read-one-window (en-filename &optional rev-data)
+(defun read-one-window (en-filename)
   (let ((en-file (open en-filename :direction :input))
         (ln 0)
         (dvdl (make-instance 'online-av-var)))
@@ -92,10 +92,9 @@
     
 
 (defun read-dvdl-windows (windows)
-  (let (rev-data)
-    (loop for window in windows
-          for one-data = (read-one-window window rev-data)
-          collect one-data)))
+  (loop for window in windows
+        for one-data = (read-one-window window)
+        collect one-data))
 
 (defun calculate-dvdl (windows)
   (let* ((extrap :polyfit)
