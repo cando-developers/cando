@@ -133,7 +133,7 @@
                                    :layout (make-instance 'w:layout
                                                           :margin "var(--jp-widgets-margin) auto")
                                    :value (symbol-name (chem:get-name molecule)))
-                    (make-instance 'w:toggle-button
+                    (make-instance 'w:checkbox
                                    :layout (make-instance 'w:layout
                                                           :margin "var(--jp-widgets-margin) auto")
                                    :description (symbol-name (chem:get-name molecule)))))
