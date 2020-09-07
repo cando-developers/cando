@@ -325,7 +325,7 @@
                     (sketch2d:render-svg-to-string (sketch-molecule mol))))
       (nglview:handle-resize ngl)
       (when previous
-        (nglview:hide-components ngl (symbol-name (chem:get-name (elt (selected-ligands *app*) previous)))))
+        (nglview:hide-components ngl (symbol-name (chem:get-name (elt (loaded-ligands *app*) previous)))))
       (cond
         ((position id (nglview:component-ids ngl) :test #'string=)
           (nglview:show-components ngl id)
