@@ -1,0 +1,33 @@
+#! /bin/sh
+
+RUN_IN_DOCKER="${RUN_IN_DOCKER-./run-in-docker}"
+
+try_special ()
+{
+    local arg
+    local count=0
+    local executable
+    for arg in "$@" ; do
+        [ "$arg" = -- ] && count="$(($count + 1))"
+        shift
+        [ "$count" = 3 ] && break # more than 3 are allowed
+    done
+    if [ "$count" = 3 ] ; then
+        executable=$1
+        case "$executable" in
+            *clasp*|*cando*|*python*)
+            echo running in docker
+            return 42
+            ;;
+        esac
+        exec "$@"
+        # exit # not reachable
+    fi
+}
+
+try_special "$@"
+if [ $? = 42 ] ; then
+    exec "$RUN_IN_DOCKER" "$@"
+fi
+# if try_special didn't like it execute directly
+exec "$@"

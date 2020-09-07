@@ -1,0 +1,291 @@
+#! /bin/bash
+
+set -e
+set -u
+
+f_verbose ()
+{
+    if [ "$verbose" -gt 1 ] ; then
+        "$@" || true
+    fi
+    return 0
+}
+
+exec_file_remote ()
+{
+    local thisworker="$1"; shift
+    local file="$1"; shift
+    local errcode=0
+    # we must use bash here since some of the env
+    # settings from amber.sh are not sh compatible
+    f_echo_env > last_env.tmp
+    mv last_env.tmp last_env.sh 2> /dev/null || true
+    if f_echo_env | cat - "$file" | ssh_to_worker "$thisworker" bash -e ; then
+        return 0
+    else
+        errcode=$?
+        echo exec_file_remote failed: "$file" to ssh worker on "$thisworker" into bash code $errcode 1>&2
+        cat "$file" 1>&2
+        return "$errcode"
+    fi
+}
+
+# part two - possibly calling local functions instead of default actions
+
+case "${1-}" in
+    f_*) # local function called
+        "$@"
+        exit
+        ;;
+esac
+
+# part three - execute command in a fancy way
+
+allow_missing_output_files=1
+
+# verbose is verbosity level
+
+# 0 = silent, do not echo commands, do not show command output unless 
+#     command fails.  Failed commands echo the entire logfile of stdout
+#     and stderr 
+# 1 = show command output if any, but still do not echo commands.  When
+#     commands fail there is more verbose description of how they failed
+# 2 = show command output if any, echo important-ish commands and
+#     print some info
+# 3 = show command output if any, and echo all commands and print
+#     some info
+
+verbose=UNSET
+
+# this script doesn't use the distributor anyway
+distributor="ERRORM1"
+# default for worker is some error display
+# since local execution is default
+# otherwise it can be a hostname for static use of e.g. a GPU machine
+# or "schando", which uses the distributor.
+# fixme - get rid of this variable name and use something less confusing.
+worker="ERRORM2"
+pmemd_cuda="pmemd"
+execute_cpu_local=1
+execute_gpu_local=1
+# uncommon things
+execute_lisp_local=UNSET
+execute_python_local=UNSET
+execute_python2_local=UNSET
+lisp_jobs_only_on=""
+if [ -f conf.sh ] ; then
+    . ./conf.sh
+fi
+
+# $MAKEFLAGS works in both GNU make and BSD make
+if [ "$verbose" = UNSET ] ; then
+    case "${MAKEFLAGS-}" in
+        *-j' '*|*-j[0-9]*|*-j) verbose=0;;
+        *) verbose=1;;
+    esac
+fi
+
+# By default we request cpu machines.
+# values: cpu gpu local
+use_this=cpu
+
+# parsing phases:
+# 0 = nothing
+# 1 = inputs
+# 2 = outputs
+# 3 = executable
+# 4 = args
+phase=0
+inputs=""
+outputs=""
+executable=""
+args=""
+
+
+oldifs=""
+# to deal with special characters, including spaces, in filenames
+# we use "|" as a separator for this script.
+# It is not impossible for "|" to legitimately appear in a commandline.
+# However, we forbid this anyway since users are not supposed to
+# pipe things on the worker.
+
+# fix me, use getopt
+if [ $1 = -c ] ; then
+    minus_c="$2"
+fi
+
+for arg in "$@" ; do
+    #echo FOO1: $arg $executable
+    case "$arg" in
+        "--")
+            #echo BAR $phase
+            # this check allows "--" to appear in commandlines
+            #if [ "$phase" -le 3 ] ; then
+                phase=$(($phase + 1))
+                shift
+                continue
+            #fi
+            ;;
+    esac
+    #echo foo2: $phase
+    case "$phase" in
+        0)
+            #echo BAZ
+            shift
+            ;; # this happens when e.g. `runcmd ls`
+        1) inputs="$inputs|$arg"
+            shift;;
+        2) outputs="$outputs|$arg"; shift;;
+        3) executable="$arg"; phase=$(($phase + 1));;
+        4) args="$args|$arg";;
+        *) echo ERROR phase $phase 1>&2; exit 1;;
+    esac
+done
+
+#echo LOO1: $inputs
+#echo LOO2: $executable
+#echo LOO3: $args
+
+
+subjobdir=`mktemp -d "./subjobdir-XXXXXXXXXXXXXXX"`
+
+# additional inputs, hacks to work around problems
+#for file in `find . -name \*.lisp` ; do
+#    inputs="$inputs|$file"
+#done
+
+inputs="${inputs#|}"
+outputs="${outputs#|}"
+args="${args#|}"
+
+oldifs="$IFS"
+IFS="|" # we do not allow '|' to appear in commandlines
+f_verbose echo inputs: $inputs
+if [ -n "$inputs" ] ; then
+    if ! wc $inputs ; then
+        echo One or more files declared as input not 1>&2
+        echo actually present in `pwd` - aborting runcmd 1>&2
+        exit 
+    fi
+fi
+f_verbose echo outputs: $outputs
+f_verbose echo executable: $executable
+f_verbose echo args: $args
+
+# 1 = things to do before the actual process
+# 2 = the actual process
+# 3 = things to do after the process
+# 4 = more things to do after the process
+for i in 1 2 3 4 ; do
+    echo "cd runjobs/$subjobdir || exit" > "$subjobdir/tmp$i.cmd"
+done
+
+# fixme, this won't play well if we want to run parallel processes
+# of the same job on the same machine while sharing data.
+# maybe too messy anyway
+printf "rm -rf outputs; \n" >> "$subjobdir/tmp1.cmd"
+
+if [ "$allow_missing_output_files" = 1 ] ; then
+    error_reaction=true
+else
+    error_reaction=exit
+fi
+
+for out in $outputs ; do
+    case "$out" in
+        *.log)  # don't bother with those, pmemd seems to never
+                # actually create them
+                continue
+                ;;
+        */*)
+            # create needed dirs for the cmd run
+            printf "mkdir -p ${out%/*}\n" >> "$subjobdir/tmp1.cmd"
+            # create needed dirs for our output mechanism
+            printf "mkdir -p outputs/${out%/*}\n" >> "$subjobdir/tmp4.cmd"
+            ;;
+        # fixme, executed too often
+        *) printf "mkdir -p outputs\n" >> "$subjobdir/tmp4.cmd";;
+    esac
+    # If an output file already exists, remember the md5 checksum of
+    # the one we already have.  If the new one is the same, don't transfer
+    # it.
+    # UPDATE: disabled.  We need to preserve the timestamp of the new file.
+    #if [ -f "$out" ] ; then
+    #    printf '[ "`md5sum < %s`" != "%s" ] && ' "$out" "`md5sum < $out`" >> "$subjobdir/tmp4.cmd"
+    #fi
+    printf "ln '%s' 'outputs/%s' || $error_reaction\n" "$out" "$out" >> "$subjobdir/tmp4.cmd"
+done
+
+f_exec_in_docker ()
+{
+    local err=0
+    if docker exec "$DOCKERCONTAINER" "$@" ; then
+        return 0
+    else
+        err=$?
+        printf "failed in docker: '%s'" "$*" 1>&2
+        return $err
+    fi
+}
+
+f_cp_into_docker ()
+{
+    local targetdir="$1" ; shift 
+
+    if [ "$#" = 0 ] ; then
+        return 0
+    fi
+
+    # docker cp does not have rsync's --relative
+    local subjobdir2=`mktemp -d "./subjobdir2-XXXXXXXXXXXXXXX"`
+
+    rsync -a --relative "$@" "$subjobdir2"/.
+
+    docker cp "$subjobdir2"/. "$DOCKERCONTAINER":"$targetdir"/.
+
+    #rm -r "$subjobdir2"
+}
+
+f_docker_main ()
+{
+    local arg
+    f_exec_in_docker mkdir -p runjobs/"$subjobdir"
+
+    f_cp_into_docker runjobs/"$subjobdir"/. $inputs
+
+cat <<EOF > "$subjobdir"/run
+    . /opt/clasp/bin/setenv-clasp
+    cd runjobs/'$subjobdir'
+EOF
+    for arg in "$@" ; do
+        case "$arg" in
+            *\'*\"*|*\"*\'*)
+                printf "Error, do not mix single and double quotes\n" 1>&2
+                exit 2;;
+            *\'*)
+                printf " \"%s\" " "$arg";;
+            *\"*)
+                printf " '%s' " "$arg";;
+            *)
+                printf " '%s' " "$arg";;
+        esac
+    done >> "$subjobdir"/run
+    echo >> "$subjobdir"/run
+
+    chmod a+x "$subjobdir"/run "$subjobdir"/tmp4.cmd
+    docker cp "$subjobdir"/run "$DOCKERCONTAINER":runjobs/"$subjobdir"
+    docker cp "$subjobdir"/tmp4.cmd "$DOCKERCONTAINER":runjobs/"$subjobdir"
+
+    IFS="$oldifs"
+    f_exec_in_docker bash -ce runjobs/"$subjobdir"/run
+    f_exec_in_docker bash -ce runjobs/"$subjobdir"/tmp4.cmd
+
+    if [ -n "$outputs" ] ; then
+        docker cp "$DOCKERCONTAINER":runjobs/"$subjobdir"/outputs/. .
+    fi
+}
+
+f_docker_main "$@"
+exit
+exit
+exit
