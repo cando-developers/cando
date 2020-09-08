@@ -3,6 +3,7 @@
 
 (defparameter *molecule-sketches* (make-hash-table :test #'eql))
 
+
 (defun sketch-molecule (molecule)
   (multiple-value-bind (sketch present-p)
                        (gethash molecule *molecule-sketches*)
@@ -147,15 +148,19 @@
         (w:observe toggle :value
           (lambda (inst type name old-value new-value source)
             (declare (ignore inst type name old-value source))
-            (setf (selected instance)
-                  (cond
-                    ((and new-value
-                          (eql :multiple selection-mode))
-                      (nconc (selected instance) (list molecule)))
-                    (new-value
-                      (list molecule))
-                    (t
-                      (remove molecule (selected instance) :test #'eql))))))
+            (let ((current-position (position molecule (selected instance) :test #'eql)))
+              (cond
+                ((and (not new-value)
+                      current-position)
+                  (setf (selected instance)
+                        (remove molecule (selected instance) :test #'eql)))
+                ((not new-value))
+                ((eql :single selection-mode)
+                  (setf (selected instance)
+                        (list molecule)))
+                ((not current-position)
+                  (setf (selected instance)
+                        (nconc (selected instance) (list molecule))))))))
         (w:observe instance :selected
           (lambda (inst type name old-value new-value source)
             (declare (ignore type name old-value source))
