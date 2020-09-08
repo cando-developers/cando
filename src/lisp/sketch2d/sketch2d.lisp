@@ -1097,8 +1097,10 @@ The coordinates are all pressed into the X-Y plane and some hydrogens are added 
     sketch2d))
 
 (defun similar-sketch2d (molecule other-sketch2d &key accumulate-coordinates atom-match-callback)
-  "Generates a sketch of MOLECULE that determines a common subgraph with the molecule in OTHER-SKETCH2D 
-and aligns the new sketch the same way.  If atom-match-callback is NIL then all atoms can match each other.
+  "Generates a sketch of molecule that shares a common substructure 
+with the molecule in other-sketch2d 
+and aligns the new sketch the same way.  
+If atom-match-callback is NIL then all atoms can match each other.
 Otherwise pass a function that takes two atoms and returns T if they are matchable."
   (check-type molecule chem:molecule)
   (check-type other-sketch2d sketch2d)
@@ -1107,13 +1109,12 @@ Otherwise pass a function that takes two atoms and returns T if they are matchab
     #+(or)(format t "About to compare molecules~%")
     (multiple-value-bind (equiv diff1 diff2)
         (molecule-graph.max-clique:compare-molecules molecule other-molecule :atom-match-callback atom-match-callback :topological-constraint-theta 2)
-      #+(or)
-      (progn
-        (format t "mol1: ~s~%" molecule)
-        (format t "mol2: ~s~%" other-molecule)
-        (format t "similar-sketch2d equiv atoms: ~a~%" equiv)
-        (format t "diff1: ~s~%" diff1)
-        (format t "diff2: ~s~%" diff2))
+      #+(or)(progn
+              (format t "mol1: ~s~%" molecule)
+              (format t "mol2: ~s~%" other-molecule)
+              (format t "similar-sketch2d equiv atoms: ~a~%" equiv)
+              (format t "diff1: ~s~%" diff1)
+              (format t "diff2: ~s~%" diff2))
       (let ((new-sketch (setup-simulation molecule :accumulate-coordinates accumulate-coordinates)))
         ;; We need hash-tables for the original atoms to the sketch atoms
         (let ((other-original-to-sketch (make-hash-table))
