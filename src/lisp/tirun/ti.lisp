@@ -1468,8 +1468,9 @@ added to inputs and outputs but not option-inputs or option-outputs"
 
 
 (defun generate-runcmd ()
-  (with-open-file (fout "runcmd_simple" :direction :output :if-exists :supersede)
-    (format fout "#! /bin/sh
+  (progn
+    (with-open-file (fout "runcmd_simple" :direction :output :if-exists :supersede)
+      (format fout "#! /bin/sh
 
 try_special ()
 {
@@ -1490,7 +1491,20 @@ try_special \"$@\"
 # if try_special didn't like it execute directly
 exec \"$@\"
 "))
-  (core:chmod "runcmd_simple" #o755))
+    (core:chmod "runcmd_simple" #o755))
+  (let ((run-in-docker-file #P"source-dir:extensions;cando;src;data;common;run-in-docker"))
+    (unless (probe-file run-in-docker-file)
+      (error "Could not find file ~s~%" run-in-docker-file))
+    (let ((run-in-docker (read-file (probe-file run-in-docker-file))))
+      (with-open-file (fout "run-in-docker" :direction :output :if-exists :supersede)
+        (write-string run-in-docker fout))))
+  (let ((runcmd_with_docker-file #P"source-dir:extensions;cando;src;data;common;runcmd_with_docker"))
+    (unless (probe-file runcmd_with_docker-file)
+      (error "Could not find file ~s~%" runcmd_with_docker-file))
+    (let ((runcmd_with_docker (read-file (probe-file runcmd_with_docker-file))))
+      (with-open-file (fout "runcmd_with_docker" :direction :output :if-exists :supersede)
+        (write-string runcmd_with_docker fout))))
+  )
 
 
 (defun generate-all-code (calculation work-list final-outputs &key progress-callback)
