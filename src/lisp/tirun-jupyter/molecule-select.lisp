@@ -3,7 +3,6 @@
 
 (defparameter *molecule-sketches* (make-hash-table :test #'eql))
 
-
 (defun sketch-molecule (molecule)
   (multiple-value-bind (sketch present-p)
                        (gethash molecule *molecule-sketches*)
@@ -12,6 +11,7 @@
       (setf (gethash molecule *molecule-sketches*)
             (sketch2d:svg (sketch2d:sketch2d molecule))))))
 
+(defparameter *common-sketch* nil)
 
 (defun sketch-molecules (molecules)
   (let (common-sketch)
@@ -22,6 +22,7 @@
         (unless present-p
           (unless common-sketch
             (setf common-sketch (build-prototype-sketch molecules)))
+          (setf *common-sketch* common-sketch)
           (setf (gethash molecule *molecule-sketches*)
                 (eval `(lparallel:future
                          (sketch2d:svg (sketch2d:similar-sketch2d ,molecule ,common-sketch))))))))))
