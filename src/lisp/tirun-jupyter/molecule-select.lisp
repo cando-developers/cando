@@ -66,6 +66,10 @@
                               :description "Select None"
                               :layout (make-instance 'w:layout
                                                      :grid-area "none")))
+   (selection-mode
+     :reader selection-mode
+     :initarg :selection-mode
+     :initform :multiple)
    (molecules
      :accessor molecules
      :initarg :molecules
@@ -80,10 +84,6 @@
      :accessor max-width
      :initform +min-sketch-width+
      :trait :float)
-   (selection-mode
-     :reader selection-mode
-     :initarg :selection-mode
-     :initform :multiple)
    (task-channel
      :reader task-channel
      :initform (lparallel:make-channel)))
@@ -133,7 +133,7 @@
                                    :layout (make-instance 'w:layout
                                                           :margin "var(--jp-widgets-margin) auto")
                                    :value (symbol-name (chem:get-name molecule)))
-                    (make-instance 'w:toggle-button
+                    (make-instance 'w:checkbox
                                    :layout (make-instance 'w:layout
                                                           :margin "var(--jp-widgets-margin) auto")
                                    :description (symbol-name (chem:get-name molecule)))))
