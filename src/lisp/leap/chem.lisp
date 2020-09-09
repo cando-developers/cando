@@ -62,7 +62,7 @@
            (atom4 (if (string= atom4-name "X") NIL (intern atom4-name :keyword)))
            (divider-start (position-if #'digit-char-p line :start 11))
            (divider-end (position #\space line :start divider-start))
-           (divider (parse-integer (subseq line divider-start divider-end)))
+           (divider (round (fortran::parse-double-float (subseq line divider-start divider-end))))
            (barrier-start (position-if #'not-white-space-p line :start divider-end))
            (barrier-end (position-if #'white-space-p line :start barrier-start))
            (barrier (fortran::parse-double-float (subseq line barrier-start barrier-end)))
