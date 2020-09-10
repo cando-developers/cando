@@ -37,15 +37,17 @@
          parser.common-rules:whitespace/not-newline
          parser.common-rules:float-literal
          parser.common-rules:whitespace/not-newline
-         label/s
-         number/s number/s number/s number/s number/s number
+         label
+         (+ (and parser.common-rules:whitespace/not-newline parser.common-rules:integer-literal/decimal))
+         parser.common-rules:whitespace*
          )
-  (:destructure (x s1 y s2 z s3 label n0 n1 n2 n3 n4 n5)
-                (declare (ignore s0 s1 s2 s3))
-                (list x y z label n0 n1 n2 n3 n4 n5)))
+  (:destructure (x s1 y s2 z s3 label nrest space)
+                (declare (ignore s0 s1 s2 s3 space))
+                (list x y z label (mapcar #'second nrest))))
 
 (esrap:defrule bond-line
-    (and number/s number/s number/s number/s number/s number)
+    (and number/s number/s number/s number/s number (+ (and parser.common-rules:whitespace+ number))
+         parser.common-rules:whitespace*)
   (:lambda (x)
     x))
 
@@ -70,7 +72,7 @@
     data))
 
 (esrap:defrule header-line
-    (and number/s number/s number/s number/s number/s number/s "999 V2000"))
+    (and number/s number/s number/s number/s number/s number/s (+ number/s) "V2000"))
 
 #|
 (esrap:parse 'header-line "8  8  0  0  0  0  0  0  0  0999 V2000")
