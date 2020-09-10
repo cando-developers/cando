@@ -51,6 +51,131 @@
 
 (defconstant +degrees-to-radians+ 0.0174533)
 
+(esrap:defrule type-name
+    (and (esrap:character-ranges (#\a #\z) (#\A #\Z) (#\0 #\9))
+         (* (or (esrap:character-ranges (#\! #\,))
+                (esrap:character-ranges (#\. #\~)))) ; entire ascii printable range, exclude #\- (dash)
+         )
+  (:text t))
+
+(esrap:defrule ptor-types
+    (and type-name parser.common-rules:whitespace* "-" parser.common-rules:whitespace*
+         type-name parser.common-rules:whitespace* "-" parser.common-rules:whitespace*
+         type-name parser.common-rules:whitespace* "-" parser.common-rules:whitespace*
+         type-name
+         )
+  (:destructure (t1 s1a d1 s1b t2 s2a d2 s2b t3 s3a d3 s3b t4)
+    (declare (ignore d1 d2 d3 s1a s1b s2a s2b s3a s3b))
+    (list t1 t2 t3 t4)))
+
+(esrap:defrule ptor-rule
+  (and ptor-types parser.common-rules:whitespace+
+       (esrap:? (and parser.common-rules:integer-literal/decimal
+                     parser.common-rules:whitespace+))
+          parser.common-rules:float-literal
+          parser.common-rules:whitespace+
+          parser.common-rules:float-literal
+          parser.common-rules:whitespace+
+       (or parser.common-rules:float-literal
+           parser.common-rules:integer-literal/decimal)
+       parser.common-rules:whitespace*
+       (esrap:? (and (esrap:character-ranges (#\a #\z) (#\A #\Z))
+                     (* esrap:character))))
+  (:destructure (types blank0 opt-idivf pk blank1 phase blank2 pn blank3 comment)
+                (declare (ignore blank0 blank1 blank2 blank3))
+                (list types
+                      (if opt-idivf
+                          (first opt-idivf)
+                          1)
+                      pk
+                      phase
+                      pn
+                      (esrap:text comment))))
+
+(esrap:defrule scee
+  (and (or "SCEE" "scee")
+       parser.common-rules:whitespace*
+       "="
+       parser.common-rules:whitespace*
+       parser.common-rules:float-literal)
+  (:destructure (scee space1 eq1 space2 value)
+                value))
+
+(esrap:defrule scnb
+  (and (or "SCNB" "scnb")
+       parser.common-rules:whitespace*
+       "="
+       parser.common-rules:whitespace*
+       parser.common-rules:float-literal)
+  (:destructure (scnb space1 eq1 space2 value)
+                value))
+
+(esrap:defrule scee-scnb-comment
+  (and scee
+       parser.common-rules:whitespace+
+       scnb
+       (or (and parser.common-rules:whitespace+
+                (and (esrap:character-ranges (#\a #\z) (#\A #\Z))
+                     (* esrap:character)))
+           parser.common-rules:whitespace*))
+  (:destructure (scee blank1 scnb comment)
+                (declare (ignore blank1))
+                (list scee scnb (esrap:text (second comment)))))
+
+(defun maybe-parse-scee-scnb (comment)
+  (when (stringp comment)
+    (handler-case (esrap:parse 'scee-scnb-comment comment)
+      (esrap:parse-error (err)
+        ;; ignore parse errors - it's a comment
+        nil))))
+
+
+(defun parse-ptor-line (line)
+  (let ((parse (esrap:parse 'ptor-rule line)))
+    (destructuring-bind (type-names idivf barrier phase periodicity comment)
+        parse
+      (destructuring-bind (atom1 atom2 atom3 atom4)
+          (mapcar (lambda (name) (intern name :keyword)) type-names)
+        (let ((scee -1.0)
+              (scnb -1.0))
+          ;; Parse "SCEE=1.0 SCNB=1.0 2-methl..."
+          ;;        .123456789.123456789
+          (let ((maybe-scee-scnb (maybe-parse-scee-scnb comment)))
+            (when maybe-scee-scnb
+              (destructuring-bind (got-scee got-scnb comment)
+                  maybe-scee-scnb
+                (setf scee got-scee
+                      scnb got-scnb))))
+          (let ((barrier (/ barrier idivf)))
+            (values atom1 atom2 atom3 atom4 barrier phase periodicity scee scnb comment)))))))
+
+
+
+(esrap:defrule nonbond-line
+    (and parser.common-rules:whitespace*
+         type-name parser.common-rules:whitespace+
+         parser.common-rules:float-literal
+         parser.common-rules:whitespace+
+         parser.common-rules:float-literal
+         (esrap:? (and parser.common-rules:whitespace+
+                       (* esrap:character))))
+  (:destructure (blank0 type blank1 radius blank2 edep maybe-comment)
+                (declare (ignore blank0 blank1 blank2 maybe-comment))
+                (list (intern type :keyword) radius edep)))
+
+(defun chem:parse-nonbond-line (line)
+  "Return :end when we hit the END keyword"
+  (when (stringp line)
+    (let ((tline (string-trim " " line)))
+      (cond
+        ((string= tline "END")
+         :end)
+        ((> (length tline) 0)
+         (esrap:parse 'nonbond-line (string-trim " " tline)))
+        (t nil)))))
+
+  
+#+(or)
 (defun parse-ptor-line (line)
   (flet ((not-white-space-p (c) (char>= c #\!))
          (white-space-p (c) (char< c #\!)))
@@ -62,7 +187,7 @@
            (atom4 (if (string= atom4-name "X") NIL (intern atom4-name :keyword)))
            (divider-start (position-if #'digit-char-p line :start 11))
            (divider-end (position #\space line :start divider-start))
-           (divider (round (fortran::parse-double-float (subseq line divider-start divider-end))))
+           (divider (fortran::parse-double-float (subseq line divider-start divider-end)))
            (barrier-start (position-if #'not-white-space-p line :start divider-end))
            (barrier-end (position-if #'white-space-p line :start barrier-start))
            (barrier (fortran::parse-double-float (subseq line barrier-start barrier-end)))

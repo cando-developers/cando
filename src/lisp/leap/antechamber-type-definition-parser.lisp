@@ -290,7 +290,8 @@
 
 (parser.common-rules:defrule/s type-name
     (and (esrap:character-ranges (#\a #\z) (#\A #\Z))
-         (* (or (esrap:character-ranges (#\! #\~))))) ; entire ascii printable range
+         (* (or (esrap:character-ranges (#\! #\,))
+                (esrap:character-ranges (#\. #\~))))) ; entire ascii printable range, exclude #\- (dash)
   (:text t))
 
 (parser.common-rules:defrule/s wild-card

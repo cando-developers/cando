@@ -1,0 +1,23 @@
+Parms for phosphorothioate - Values from the article by Ferguson
+MASS
+S     32.065 
+
+BOND
+P-S	420.0	1.960     
+
+ANGLE
+O2-P-S	  112.0	  122.90  
+OS-P-S	   80.0	  108.10  
+
+DIHE
+OS-P -OS-CT    1.00    0.0     3
+OS-P -OS-CT    0.25    0.0     2
+OS-P -OS-CT    1.25  180.0     1
+SD-P -OS-CT    0.15    0.0     3
+SD-P -OS-CT    1.05    0.0     2
+SD-P -OS-CT    0.25    0.0     1
+
+IMPROPER
+
+NONBON
+S	2.385    0.50     

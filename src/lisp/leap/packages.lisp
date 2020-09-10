@@ -28,6 +28,9 @@
 (defpackage #:leap.antechamber-type-definition-parser
   (:use #:common-lisp #:esrap #:parser.common-rules #:PARSER.COMMON-RULES.OPERATORS)
   (:export
+   #:type-name
+   #:type-name/s
+   #:type-name/?s
    #:antechamber-line
    #:read-antechamber-type-rules))
 
