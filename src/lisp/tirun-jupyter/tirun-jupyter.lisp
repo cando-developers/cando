@@ -18,63 +18,55 @@
     :accessor composer-json
     :initarg :composer-json
     :initform nil
-    :trait :list)
+    :trait t)
    (receptor-string
     :accessor receptor-string
     :initform nil
-    :trait :string)
+    :trait t)
    (ligands-string
     :accessor ligands-string
     :initform nil
-    :trait :string)
+    :trait t)
    (loaded-ligands
     :accessor loaded-ligands
     :initform nil
-    :trait :list)
+    :trait t)
    (selected-ligands
     :accessor selected-ligands
     :initform nil
-    :trait :list)
-   (ligand-widget
-    :accessor ligand-widget
-    :initform nil)
+    :trait t)
+   (similarity-matrix
+    :accessor similarity-matrix
+    :initform nil
+    :trait t)
    (all-nodes
     :accessor all-nodes
     :initform nil
-    :trait :list)
+    :trait t)
    (all-edges
     :accessor all-edges
     :initform nil
-    :trait :list)
+    :trait t)
    (smirks
     :accessor smirks
     :initform ""
-    :trait :string)
+    :trait t)
    (distributor
     :accessor distributor
     :initform "s103.thirdlaw.tech"
-    :trait :string)
+    :trait t)
    (job-name
     :accessor job-name
     :initform "default"
-    :trait :string)
+    :trait t)
    (submit-stream
     :accessor submit-stream
     :initform nil
-    :trait :stream)
-   (cyto-observe
-    :accessor cyto-observe
-    :initform nil
-    :trait :list)
-   (cyto-widget
-    :accessor cyto-widget
-    :initform nil
-    :trait :list)
+    :trait t)
    (smirk-pattern
     :accessor smirk-pattern
     :initform nil
-    :trait :string)
-   )
+    :trait t))
   (:metaclass jupyter-widgets:trait-metaclass))
 
 
@@ -129,9 +121,6 @@
 (def-dyn-widget box-layout
   (make-instance 'w:layout :width "auto" :flex-flow "row wrap"))
          
-(defvar *fu* nil)
-(defvar *nglv* nil)
-
 (defvar *tirun* nil)
 
 (defun new-tirun ()
@@ -188,14 +177,6 @@
     (asdf:load-system :pas))
     
 
-(defun widget-visibility (widget visibility)
-  (setf (w:widget-display (w:widget-layout widget)) visibility))
-(defun widget-hide (widget)
-  (widget-visibility widget "none"))
-(defun widget-show (widget)
-  (widget-visibility widget ""))
-
-
 (defclass simple-input ()
   ((name :initarg :name :accessor name)
    (label-widget :initarg :label-widget :accessor label-widget)
@@ -216,113 +197,122 @@
                                         :children (list label-widget input-widget)))))
 
 
-(defclass receptor-loader (loader)
-  ((ngl
-     :reader receptor-loader-ngl
-     :initform (make-instance 'nglv:nglwidget
-                              :layout (make-instance 'w:layout
-                                                     :border "var(--jp-widgets-border-width) solid var(--jp-border-color1)"
-                                                     :grid-area "ngl")))
-   (calc
-     :reader receptor-loader-calc
-     :initform *tirun*)))
-
-
-(defmethod loader-parse ((instance receptor-loader) data)
-  (nglview:remove-all-components (receptor-loader-ngl instance))
+(defun parse-receptor (parameter progress-callback)
+  "Called from file task page to parse receptor."
+  (declare (ignore progress-callback))
   (handler-case
       (with-slots (receptor-string)
-          *app*
-        (setf receptor-string (babel:octets-to-string data))
-        (setf (tirun:receptors (receptor-loader-calc instance))
-              (list (with-input-from-string (sin receptor-string)
-                      (leap.pdb:load-pdb-stream sin))))
+                  *app*
+        (setf receptor-string (babel:octets-to-string (cdr (assoc "content" (car parameter) :test #'string=)))
+              (tirun:receptors *tirun*)
+              (list (with-input-from-string (input-stream receptor-string)
+                      (leap.pdb:load-pdb-stream input-stream))))
         t)
     (leap.pdb:pdb-read-error (condition)
-      (write-string (leap.pdb:messages condition))
+      (princ condition *error-output*)
+      nil)
+    (end-of-file (condition)
+      (princ condition *error-output*)
       nil)))
 
 
-(defmethod initialize-instance :after ((instance receptor-loader) &rest initargs &key &allow-other-keys)
-  (declare (ignore initargs))
-  (setf (w:widget-accept (loader-upload-button instance)) ".pdb")
-  (setf (w:widget-%titles (loader-accordion instance)) (list "Structure Load" "Structure View"))
-  (setf (w:widget-children (loader-view-grid instance))
-        (list (receptor-loader-ngl instance)))
-  (setf (w:widget-layout (loader-view-grid instance))
-        (make-instance 'w:layout
-                       :grid-template-rows "1fr"
-                       :grid-template-columns "1fr"
-                       :grid-template-areas "\"ngl\""))
-  (w:observe (loader-accordion instance) :selected-index
-    (lambda (inst type name old-value new-value source)
-      (declare (ignore inst type name old-value source))
-      (when (equal new-value 1)
-        (nglview:handle-resize (receptor-loader-ngl instance)))))
-  (w:observe *app* :receptor-string
-    (lambda (inst type name old-value new-value source)
-      (declare (ignore inst type name old-value source))
-      (nglview:remove-all-components (receptor-loader-ngl instance))
-      (when new-value
-        (nglview:add-structure (receptor-loader-ngl instance)
-                               (make-instance 'nglview:text-structure :text new-value))))))
+(defun load-receptor ()
+  "Present a graphical interface to load and view a receptor into the current application."
+  (let* ((container (make-instance 'w:accordion :selected-index 0))
+         (ngl (make-instance 'nglv:nglwidget
+                              :layout (make-instance 'w:layout
+                                                     :border "var(--jp-widgets-border-width) solid var(--jp-border-color1)"
+                                                     :grid-area "ngl"))))
+    (cw:make-file-task-page container "Load Receptor" #'parse-receptor :accept ".pdb")
+    ;; Make a simple page to display the receptor in nglview
+    (setf (w:widget-%titles container) (append (w:widget-%titles container)
+                                              (list "View Receptor"))
+          (w:widget-children container) (append (w:widget-children container)
+                                               (list ngl)))
+    ;; When the view page opens give nglview a chance to resize.
+    (w:observe container :selected-index
+      (lambda (inst type name old-value new-value source)
+        (declare (ignore inst type name old-value source))
+        (when (equal new-value 1)
+          (nglview:handle-resize ngl))))
+    ;; Add the receptor if one is already defined.
+    (when (receptor-string *app*)
+      (nglview:add-structure ngl (make-instance 'nglview:text-structure :text (receptor-string *app*))))
+    ;; Listen for changes to the receptor and add or delete when needed.
+    (w:observe *app* :receptor-string
+      (lambda (inst type name old-value new-value source)
+        (declare (ignore inst type name old-value source))
+        (nglview:remove-all-components ngl)
+        (when new-value
+          (nglview:add-structure ngl (make-instance 'nglview:text-structure :text new-value)))))
+    container))
 
 
-(defun load-receptor (&optional (calc *tirun*))
-  (w:display (make-instance 'receptor-loader :calc calc)))
-
-
-(defclass ligand-loader (loader)
+(defclass view-ligand-page (cw:page)
   ((ngl
-     :reader ligand-loader-ngl
+     :reader view-ligand-ngl
      :initform (make-instance 'nglv:nglwidget
                               :layout (make-instance 'w:layout
                                                      :border "var(--jp-widgets-border-width) solid var(--jp-border-color1)"
-                                                     :grid-area "ngl")))
+                                                     :grid-area "ngl"))
+     :documentation "nglview for the selected ligand and the receptor.")
    (structure
-     :reader ligand-loader-structure
+     :reader view-ligand-structure
      :initform (make-instance 'w:html
                               :layout (make-instance 'w:layout
                                                      :border "var(--jp-widgets-border-width) solid var(--jp-border-color1)"
-                                                     :grid-area "structure")))
+                                                     :grid-area "structure"))
+     :documentation "A sketch view for the selected ligand.")
    (slider
-     :reader ligand-loader-slider
+     :reader view-ligand-slider
      :initform (make-instance 'w:int-slider
                               :layout (make-instance 'w:layout
-                                                     :width "100%")))
+                                                     :width "100%"))
+     :documentation "A slider to select a ligand.")
    (dropdown
-     :reader ligand-loader-dropdown
+     :reader view-ligand-dropdown
      :initform (make-instance 'w:dropdown
                               :layout (make-instance 'w:layout
-                                                     :width "max-content")))
+                                                     :width "max-content"))
+     :documentation "A dropdown of all the available ligands.")
    (receptor-toggle
-     :reader ligand-loader-receptor-toggle
+     :reader view-ligand-receptor-toggle
      :initform (make-instance 'w:toggle-button
                               :description "Show Receptor"
                               :value t
                               :layout (make-instance 'w:layout
                                                      :margin "auto"
-                                                     :grid-area "ngl-ctl")))
-   (calc
-     :reader ligand-loader-calc
-     :initform *tirun*)))
+                                                     :grid-area "ngl-ctl"))
+     :documentation "A toggle button to control the visibility of the receptor."))
+  (:metaclass jupyter-widgets:trait-metaclass)
+  (:documentation "A page to view ligands that has a sketch and an nglview widget along with controls and ligand selector.")
+  (:default-initargs
+    :layout (make-instance 'w:layout
+                           :grid-gap "1em"
+                           :grid-template-rows "1fr min-content"
+                           :grid-template-columns "1fr 1fr"
+                           :grid-template-areas "\"structure ngl\" \"structure-ctl ngl-ctl\"")))
 
 
-(defvar *ligands-string* nil)
 (defvar *smallest-ligand-sketch*)
 
 
 (defun on-ligand-select (instance index &optional previous)
-  (with-slots (ngl structure calc)
+  "Select a ligand on a view-ligand-page and hide a previous ligand if one was selected."
+  (with-slots (ngl structure)
               instance
     (let* ((mol (elt (loaded-ligands *app*) index))
            (id (symbol-name (chem:get-name mol))))
+      ;; Load the sketch
       (setf (w:widget-value structure)
             (format nil "<div style='display:flex;align-items:center;height:100%;'><div style='display:block;margin:auto;'>~A</div></div>"
-                    (sketch2d:render-svg-to-string (sketch-molecule mol))))
+                    (sketch2d:render-svg-to-string (cw:sketch-molecule mol))))
+      ;; A resize can't hurt.
       (nglview:handle-resize ngl)
+      ;; Hide previous ligand.
       (when previous
         (nglview:hide-components ngl (symbol-name (chem:get-name (elt (loaded-ligands *app*) previous)))))
+      ;; Show the ligand if it is already in nglview otherwise load it.
       (cond
         ((position id (nglview:component-ids ngl) :test #'string=)
           (nglview:show-components ngl id)
@@ -336,73 +326,58 @@
                                                   :text (chem:aggregate-as-mol2-string agg t)))))))))
 
 
-(defmethod loader-parse ((instance ligand-loader) data)
-  (handler-case
-      (with-slots (ligands-string loaded-ligands selected-ligands)
-                  *app*
-        (setf ligands-string (babel:octets-to-string data)
-              loaded-ligands (with-input-from-string (sin ligands-string)
-                               (sdf:parse-sdf-file sin))
-              selected-ligands loaded-ligands)
-        t)
-    (leap.pdb:pdb-read-error (condition)
-      (write-string (leap.pdb:messages condition))
-      nil)))
-
-
-(defmethod initialize-instance :after ((instance ligand-loader) &rest initargs &key &allow-other-keys)
+(defmethod initialize-instance :after ((instance view-ligand-page) &rest initargs &key &allow-other-keys)
   (declare (ignore initargs))
-  (jupyter-widgets:link (ligand-loader-slider instance) :value
-                        (ligand-loader-dropdown instance) :index)
-  (setf (w:widget-accept (loader-upload-button instance)) ".sdf")
-  (setf (w:widget-%titles (loader-accordion instance)) (list "Ligand Load" "Ligand View"))
-  (setf (w:widget-children (loader-view-grid instance))
-        (list (ligand-loader-ngl instance)
-              (ligand-loader-structure instance)
+  ;; Link the slider and the dropdown states together
+  (jupyter-widgets:link (view-ligand-slider instance) :value
+                        (view-ligand-dropdown instance) :index)
+  (setf (w:widget-children instance)
+        (list (view-ligand-ngl instance)
+              (view-ligand-structure instance)
               (make-instance 'w:h-box
-                             :children (list (ligand-loader-slider instance)
-                                             (ligand-loader-dropdown instance))
+                             :children (list (view-ligand-slider instance)
+                                             (view-ligand-dropdown instance))
                              :layout (make-instance 'w:layout
                                                     :width "90%" :margin "auto"
                                                     :grid-area "structure-ctl"))
-              (ligand-loader-receptor-toggle instance)))
-  (setf (w:widget-layout (loader-view-grid instance))
-        (make-instance 'w:layout
-                       :grid-gap "1em"
-                       :grid-template-rows "1fr min-content"
-                       :grid-template-columns "1fr 1fr"
-                       :grid-template-areas "\"structure ngl\" \"structure-ctl ngl-ctl\""))
-  (w:observe (ligand-loader-receptor-toggle instance) :value
+              (view-ligand-receptor-toggle instance)))
+  ;; Set the receptor visibility based the toggle.
+  (w:observe (view-ligand-receptor-toggle instance) :value
     (lambda (inst type name old-value new-value source)
       (declare (ignore inst type name old-value source))
-      (nglview:set-visibility (ligand-loader-ngl instance) new-value "receptor")))
-  (w:observe (ligand-loader-slider instance) :value
+      (nglview:set-visibility (view-ligand-ngl instance) new-value "receptor")))
+  ;; When the slider index changes update the sketch and nglview.
+  (w:observe (view-ligand-slider instance) :value
     (lambda (inst type name old-value new-value source)
       (declare (ignore inst type name old-value source))
       (on-ligand-select instance new-value old-value)))
-  (w:observe (loader-accordion instance) :selected-index
+  ;; When the view ligand page opens up make sure we give nglview an opportunity to resize.
+  (w:observe (cw:container instance) :selected-index
     (lambda (inst type name old-value new-value source)
       (declare (ignore inst type name old-value source))
       (when (equal new-value 1)
-        (nglview:handle-resize (ligand-loader-ngl instance)))))
+        (nglview:handle-resize (view-ligand-ngl instance)))))
+  ;; If the receptor-string is already set then load the current receptor.
   (when (receptor-string *app*)
-    (nglview:add-structure (ligand-loader-ngl instance)
+    (nglview:add-structure (view-ligand-ngl instance)
                            (make-instance 'nglview:text-structure
                                           :id "receptor"
                                           :text (receptor-string *app*))))
+  ;; When the receptor-string changes reload the receptor in nglview.
   (w:observe *app* :receptor-string
     (lambda (inst type name old-value new-value source)
       (declare (ignore inst type name source))
       (when old-value
-        (nglview:remove-components (ligand-loader-ngl instance) "receptor"))
-      (nglview:add-structure (ligand-loader-ngl instance)
+        (nglview:remove-components (view-ligand-ngl instance) "receptor"))
+      (nglview:add-structure (view-ligand-ngl instance)
                              (make-instance 'nglview:text-structure
                                             :id "receptor"
                                             :text new-value))))
+  ;; If the loaded-ligands changes then reload the whole thing.
   (w:observe *app* :loaded-ligands
     (lambda (inst type name old-value ligands source)
       (declare (ignore inst type name old-value source))
-      (with-slots (slider dropdown calc)
+      (with-slots (slider dropdown)
                   instance
         (setf (w:widget-description slider) (format nil "~A ligands" (length ligands))
               (w:widget-max slider) (1- (length ligands))
@@ -411,20 +386,52 @@
                                                           ligands)
               (w:widget-value slider) 0)
         (when ligands
-          (sketch-molecules ligands)
+          (cw:sketch-molecules ligands)
           (on-ligand-select instance 0)
           (ignore-errors
-            (tirun:tirun-calculation-from-ligands calc ligands)))))))
+            (tirun:tirun-calculation-from-ligands *tirun* ligands)))))))
 
 
-(defun load-ligands (&optional (calc *tirun*)); (show-receptor t))
-  (w:display (make-instance 'ligand-loader :calc calc)))
+(defun make-view-ligand-page (container title)
+  "Create an instance of a view-ligand-page and add it to the container."
+  (let ((page (make-instance 'view-ligand-page :container container)))
+    (cw:add-page container page title)
+    (values)))
 
 
-(defun select-ligands (&key (calc *tirun*))
-  "select-ligands takes the ligands in (loaded-ligands *app*) and lets the user downselect a
-subset that it then puts into (selected-ligands *app*)"
-  (let ((sel (make-instance 'molecule-select
+(defun parse-ligands (parameter progress-callback)
+  "Called from the file task page to actually parse the ligands file."
+  (declare (ignore progress-callback))
+  (handler-case
+      (with-slots (ligands-string loaded-ligands selected-ligands)
+                  *app*
+        (setf ligands-string (babel:octets-to-string (cdr (assoc "content" (car parameter) :test #'string=)))
+              loaded-ligands (with-input-from-string (input-stream ligands-string)
+                               (sdf:parse-sdf-file input-stream))
+              selected-ligands loaded-ligands)
+        t)
+    (sdf:sdf-parse-error (condition)
+      (princ condition *error-output*)
+      nil)
+    (end-of-file (condition)
+      (princ condition *error-output*)
+      nil)))
+
+
+(defun load-ligands ()
+  "Present a graphical interface to load a collection of ligands from a file into the current
+  application and then display the ligand structure using two-dimension diagrams and three
+  dimension representation."
+  (let ((container (make-instance 'w:accordion :selected-index 0)))
+    (cw:make-file-task-page container "Load Ligands" #'parse-ligands :accept ".sdf")
+    (make-view-ligand-page container "View Ligands")
+    container))
+
+
+(defun select-ligands ()
+  "select-ligands in the current application and displays a molecule selection list that allows one
+  to select a subset of the molecules to use in further calculations."
+  (let ((sel (make-instance 'cw:molecule-select
                             :molecules (loaded-ligands *app*)
                             :selected (selected-ligands *app*))))
     (w:link sel :molecules *app* :loaded-ligands)
@@ -432,102 +439,8 @@ subset that it then puts into (selected-ligands *app*)"
     (make-instance 'w:accordion
                    :selected-index nil
                    :%titles (list "Select Ligands")
-                   :children (list (outer sel)))))
+                   :children (list sel))))
 
-
-(defun generate-nodes-and-edges (multigraph)
-  (let (all-nodes all-edges)
-    (loop for subgraph in (lomap::subgraphs multigraph)
-          do (let ((nodes (loop for vertex in (lomap::vertices subgraph)
-                                for mol = (lomap:molecule vertex)
-                                for name = (chem:get-name mol)
-                                collect name))
-                   (edges (loop for edge in (lomap::edges subgraph)
-                                for vertex1 = (lomap:vertex1 edge)
-                                for vertex2 = (lomap:vertex2 edge)
-                                for score = (lomap:sim-score edge)
-                                for name1 = (chem:get-name (lomap:molecule vertex1))
-                                for name2 = (chem:get-name (lomap:molecule vertex2))
-                                collect (list name1 name2 score))))
-               (setf all-nodes (append all-nodes nodes)
-                     all-edges (append all-edges edges))))
-    (values all-nodes all-edges)))
-
-(defun on-selection (instance name type old-value new-value source)
-  (cond
-    ((string= "nodes" (cytoscape:group instance))
-     (let* ((name-str (cdr (assoc "id" (cytoscape:data instance) :test #'string=)))
-            (name-sym (intern name-str :keyword))
-            (mol (find name-sym (selected-ligands *app*) :key #'chem:get-name)))
-       (setf (jupyter-widgets:widget-value (cyto-observe *app*))
-             (format nil "~a~%~a"
-                     name-str
-                     (sketch2d:render-svg-to-string (sketch-molecule mol))))))
-    ((string= "edges" (cytoscape:group instance))
-     (let* ((source-str (cdr (assoc "source" (cytoscape:data instance) :test #'string=)))
-            (source-sym (intern source-str :keyword))
-            (target-str (cdr (assoc "target" (cytoscape:data instance) :test #'string=)))
-            (target-sym (intern target-str :keyword))
-            (source-mol (find source-sym (selected-ligands *app*) :key #'chem:get-name))
-            (target-mol (find target-sym (selected-ligands *app*) :key #'chem:get-name)))
-       (setf (jupyter-widgets:widget-value (cyto-observe *app*))
-             (format nil "~a~%~a~%~a~%~a"
-                     source-str
-                     (sketch2d:render-svg-to-string (sketch-molecule source-mol))
-                     (sketch2d:render-svg-to-string (sketch-molecule target-mol))
-                     target-str))))))
-
-(defun cyto-fill-graph (&optional (all-nodes (all-nodes *app*)) (all-edges (all-edges *app*)))
-  (let ((all-nodes (loop for name in all-nodes
-                         collect (make-instance 'cytoscape:element
-                                                :group "nodes"
-                                                :data (list (cons "id" (string name)) (cons "label" (string name))))))
-        (all-edges (loop for edge in all-edges
-                         collect (destructuring-bind (name1 name2 score)
-                                     edge
-                                   (make-instance 'cytoscape:element
-                                                  :group "edges"
-                                                  :data (list (cons "source" (string name1))
-                                                              (cons "target" (string name2))
-                                                              (cons "label" (format nil "~3,2f" score))))))))
-    (setf (cytoscape:elements (cyto-widget *app*)) nil)
-    (setf (cytoscape:elements (cyto-widget *app*)) (append all-nodes all-edges))
-    (let ((closure (lambda (&rest args)
-                     (apply 'on-selection args))))
-      (dolist (instance (cytoscape:elements (cyto-widget *app*)))
-        (jupyter-widgets:observe instance :selected closure)))))
-
-
-(defun cyto-layout-graph ()
-  (let* ((observe (make-instance 'jupyter-widgets:html
-                                 :layout (make-instance 'w:layout
-                                                        :border "solid"
-                                                        :height "auto")))
-         (cyto-widget (make-instance 'cytoscape:cytoscape-widget
-                                     :graph-layouts (list (make-instance 'cytoscape:cose-layout))
-                                     :graph-style "* { label: data(label); font-size: 10; }"
-                                     :context-menus
-                                     (list
-                                      (make-instance
-                                       'cytoscape:context-menu 
-                                       :commands (list (make-instance
-                                                        'cytoscape:menu-command 
-                                                        :content "add edge"
-                                                        :on-select (list
-                                                                    (lambda (instance id)
-                                                                      (setf (jupyter-widgets:widget-value observe)
-                                                                            (format nil "~A~&examine ~A" (jupyter-widgets:widget-value observe) id))))))))))
-         (boxen (make-instance 'w:v-box
-                               :children (list cyto-widget observe))))
-    (setf (cyto-observe *app*) observe
-          (cyto-widget *app*) cyto-widget)
-    boxen))
-
-(defun lomap-progress (tirun &key (molecules (selected-ligands *app*)) advance-progress-callback )
-  (let* ((mat (lomap::similarity-matrix molecules :advance-progress-callback advance-progress-callback))
-         (multigraph (lomap::similarity-multigraph molecules mat)))
-    (setf multigraph (lomap::lomap-multigraph multigraph :debug nil))
-    (generate-nodes-and-edges multigraph)))
 
 (defun build-prototype-sketch (ligands)
   "Find the smallest ligand and build a sketch for it"
@@ -647,53 +560,162 @@ It will put those multiple ligands into (loaded-ligands *app*) and (selected-lig
                               structure-view
                               nglview))))
 
-(defun lomap (&key (tirun *tirun*))
-  (let* ((progress (make-instance 'w:int-progress :description "Progress")) 
-         (messages (make-instance 'w:text-area :description "Messages"
-                                               :layout (make-instance 'w:layout :width "60em")))
-         (boxen (cyto-layout-graph))
-         (go-button (make-instance 'jupyter-widgets:button
-                                   :description "Calculate molecular similarities"
-                                   :style (button-style)
-                                   :layout (make-instance 'w:layout :width "30em")
-                                   :tooltip "Click me"
-                                   :on-click (list
-                                              (lambda (&rest args)
-                                                (let ((mols (if (selected-ligands *app*)
-                                                                (selected-ligands *app*)
-                                                                (loaded-ligands *app*))))
-                                                  (setf (w:widget-value messages) (format nil "Calculating lomap on ~a" mols))
-                                                  (multiple-value-bind (nodes edges)
-                                                      (lomap-progress tirun
-                                                                      :molecules mols
-                                                                      :advance-progress-callback (let ((index 0))
-                                                                                                   (lambda (max-progress)
-                                                                                                     (core:check-pending-interrupts)
-                                                                                                     (setf (w:widget-value progress) index
-                                                                                                           (w:widget-max progress) (1- max-progress))
-                                                                                                     (incf index))))
-                                                    (setf (w:widget-value messages) (format nil "Done lomap on ~a" mols))
-                                                    (widget-show boxen)
-                                                    (loop for element in (cytoscape:elements (cyto-widget *app*))
-                                                          do (setf (cytoscape:removed element) t))
-                                                    (setf (all-nodes *app*) nodes
-                                                          (all-edges *app*) edges)
-                                                    (cyto-fill-graph)
-                                                    (loop for element in (cytoscape:elements (cyto-widget *app*))
-                                                          do (setf (cytoscape:removed element) nil)))))))))
-    (widget-hide boxen)
-    (make-instance 'w:v-box
-                   :children (list
-                              (make-instance 'w:h-box
-                                             :layout (box-layout)
-                                             :children (list go-button))
-                              (make-instance 'w:h-box
-                                             :layout (box-layout)
-                                             :children (list progress))
-                              (make-instance 'w:h-box
-                                             :layout (box-layout)
-                                             :children (list messages))
-                              boxen))))
+
+(defun create-similarity-graph (graph)
+  "Create a cytoscape representation of the similarity graph in *app*. Also make an edge list for
+  the job list."
+  (let ((multigraph (lomap::lomap-multigraph (lomap::similarity-multigraph (selected-ligands *app*)
+                                                                           (similarity-matrix *app*))
+                                             :debug nil))
+        nodes edges all-edges)
+    ;; Loop over the subgraphs and the vertices and edges and create structure in cytoscape.
+    (dolist (subgraph (lomap::subgraphs multigraph))
+      (dolist (vertex (lomap::vertices subgraph))
+        (let* ((molecule (lomap:molecule vertex))
+               (name (symbol-name (chem:get-name molecule)))
+               (sketch (cw:sketch-molecule molecule)))
+          ;; Save sketch dimension and the sketch itself into the data slot. The sketch is SVG text
+          ;; so we just need do a percent encoded string for the reserved URL characters.
+          (push (make-instance 'cytoscape:element
+                               :group "nodes"
+                               :data (list (cons "id" name)
+                                           (cons "label" name)
+                                           (cons "width" (sketch2d:width sketch))
+                                           (cons "height" (sketch2d:height sketch))
+                                           (cons "image" (concatenate 'string
+                                                                      "data:image/svg+xml,"
+                                                                      (quri:url-encode (sketch2d:render-svg-to-string sketch))))))
+                nodes)))
+      (dolist (edge (lomap::edges subgraph))
+        (let ((name-1 (chem:get-name (lomap:molecule (lomap:vertex1 edge))))
+              (name-2 (chem:get-name (lomap:molecule (lomap:vertex2 edge))))
+              (score (lomap:sim-score edge)))
+          ;; Save the edge for the job configuration.
+          (push (list name-1 name-2 score) all-edges)
+          (push (make-instance 'cytoscape:element
+                               :group "edges"
+                               :data (list (cons "source" (symbol-name name-1))
+                                           (cons "target" (symbol-name name-2))
+                                           (cons "label" (format nil "~3,2f" score))))
+                edges))))
+    ;; Update the graph and the edge list.
+    (setf (cytoscape:elements graph) (nconc nodes edges)
+          (all-edges *app*) all-edges)))
+
+
+(defun run-lomap (parameter progress-callback)
+  "This function is called by the task page and updates a progress widget as lomap does the calculation."
+  (declare (ignore parameter))
+  (format t "Calculating similarity matrix of ~{~a~#[~;, and ~:;, ~]~}...~%"
+          (mapcar (lambda (molecule)
+                    (symbol-name (chem:get-name molecule)))
+                  (selected-ligands *app*)))
+  (finish-output) ; Make sure the message is synced to the frontend.
+  (setf (similarity-matrix *app*)
+        (lomap::similarity-matrix (selected-ligands *app*)
+                                  :advance-progress-callback progress-callback))
+  (write-line "Similarity matrix calculation completed."))
+
+
+(defparameter +similarity-graph-style/show-sketches+
+  "* {
+   label: data(label);
+   font-size: 30;
+  }
+  edge:selected {
+   color: #1976d2;
+  }
+  node:unselected {
+   background-color: white;
+   border-width: 2px;
+   border-style: solid;
+   border-color: black;
+  }
+  node:selected {
+   color: #1976d2;
+   background-color: white;
+   border-width: 2px;
+   border-style: solid;
+   border-color: #1976d2;
+  }
+  node {
+   shape: rectangle;
+   background-image: data(image);
+   width: data(width);
+   height: data(height);
+  }")
+
+
+(defparameter +similarity-graph-style/hide-sketches+
+  "* {
+   label: data(label);
+   font-size: 10;
+  }
+  edge:selected {
+   color: #1976d2;
+  }
+  node:selected {
+   color: #1976d2;
+  }")
+
+
+(defun lomap ()
+  "Calculate molecule similarities using a graph theory approach based on LOMAP
+  (J Comput Aided Mol Des 27, 755–770 (2013). https://doi.org/10.1007/s10822-013-9678-y)"
+  (let* ((container (make-instance 'w:accordion :selected-index 0))
+         (graph (make-instance 'cytoscape:cytoscape-widget
+                               :graph-layouts (list (make-instance 'cytoscape:cose-layout))
+                               :graph-style +similarity-graph-style/show-sketches+
+                               :wheel-sensitivity 0.8 ; Detune the wheel sensitivity a bit.
+                               :layout (make-instance 'w:layout
+                                                      :height "640px"
+                                                      :border "var(--jp-widgets-border-width) solid var(--jp-border-color1)"
+                                                      :grid-area "graph")))
+         (fit (make-instance 'w:button ; A button to refit to the whole graph.
+                               :description "Fit"
+                               :on-click (list (lambda (inst)
+                                                 (declare (ignore inst))
+                                                 (cytoscape:fit-elements graph)))
+                               :layout (make-instance 'w:layout
+                                                      :grid-area "fit")))
+         (show-sketches (make-instance 'w:toggle-button ; A button to toggle the sketch visibility
+                                       :description "Show Sketches"
+                                       :value t
+                                       :layout (make-instance 'w:layout
+                                                              :grid-area "show-sketches")
+                                       :on-trait-change (list (cons :value
+                                                                    (lambda (inst type name old-value new-value source)
+                                                                      (declare (ignore inst type name old-value source))
+                                                                      (setf (cytoscape:graph-style graph)
+                                                                            (if new-value
+                                                                              +similarity-graph-style/show-sketches+
+                                                                              +similarity-graph-style/hide-sketches+))
+                                                                      (cytoscape:layout graph))))))
+         (full-screen (make-instance 'w:button ; Full screen toggle button
+                                     :description "Full Screen"
+                                     :on-click (list (lambda (inst)
+                                                       (declare (ignore inst))
+                                                       (cytoscape:toggle-fullscreen graph)))
+                                     :layout (make-instance 'w:layout
+                                                            :grid-area "full-screen")))
+         (grid (make-instance 'w:grid-box ; Grid for the graph. Control buttons are in the bottom row.
+                              :children (list graph fit show-sketches full-screen)
+                              :layout (make-instance 'w:layout
+                                                     :grid-gap "var(--jp-widgets-container-padding)"
+                                                     :grid-template-columns "1fr min-content min-content min-content 1fr"
+                                                     :grid-template-rows "1fr min-content"
+                                                     :grid-template-areas "\"graph graph graph graph graph\" \". fit show-sketches full-screen .\""))))
+    (cw:make-simple-task-page container "Calculate Similarities" #'run-lomap
+                              :label "Click button to calculate molecular similarities.")
+    (setf (w:widget-%titles container) (append (w:widget-%titles container)
+                                              (list "Similarity Graph"))
+          (w:widget-children container) (append (w:widget-children container)
+                                               (list grid)))
+    (w:observe *app* :similarity-matrix ; Create the graph on a change to the similarity matrix.
+      (lambda (instance type name old-value new-value source)
+        (declare (ignore instance type name old-value new-value source))
+        (create-similarity-graph graph)))
+    container))
 
 
 (defun configure-layout (default-settings &key testing)
