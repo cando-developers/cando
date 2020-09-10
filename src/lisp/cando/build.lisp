@@ -50,6 +50,14 @@ Sort the atoms by name in increasing alphabetical order."
                    (string (chem:get-name y))))))
 
 (defparameter *rad-to-deg* (/ 1.0 0.0174533))
+
+(defparameter *one-over-tet-vec-length* (/ 1.0 (geom:vlength (geom:vec 1.0 1.0 1.0))))
+(defparameter *corners-of-tetrahedron*
+  (list (geom:v* (geom:vec  1.0  1.0  1.0) *one-over-tet-vec-length*)
+        (geom:v* (geom:vec -1.0 -1.0  1.0) *one-over-tet-vec-length*)
+        (geom:v* (geom:vec -1.0  1.0 -1.0) *one-over-tet-vec-length*)
+        (geom:v* (geom:vec  1.0 -1.0 -1.0) *one-over-tet-vec-length*)))
+        
 (defun build-unbuilt-hydrogens-on (central)
   (let ((neighbors (chem:bonded-atoms-as-list central))
         unbuilt-hydrogens built-atoms)
@@ -88,7 +96,12 @@ Sort the atoms by name in increasing alphabetical order."
                                                                (chem:get-position n2)))
                        (other-improper (- (* used-improper *rad-to-deg*))))
                   (build-hydrogen (car unbuilt-hydrogens) central n1 n2 1.0 109.5 other-improper)))))
-           (otherwise (error "Handle building hydrogens on sp3 centers with ~a built neighbors - unbuilt hydrogens: ~a" num-built unbuilt-hydrogens))))
+           (0
+            (let ((central-pos (chem:get-position central)))
+              (loop for h in unbuilt-hydrogens
+                    for index from 0
+                    do (chem:set-position h (geom:v+ central-pos (elt *corners-of-tetrahedron* index))))))
+           (otherwise (error "Handle building hydrogens on sp3 centers with ~a built neighbors - central atom ~a - unbuilt hydrogens: ~a" num-built central unbuilt-hydrogens))))
         (:sp2
          (case num-built
            (1 (let* ((angle-atom (car built-atoms))
