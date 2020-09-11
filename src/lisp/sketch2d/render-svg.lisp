@@ -34,6 +34,7 @@
 
 (defclass atom-node ()
   ((atom :initarg :atom :accessor atom)
+   (debug-info :initarg :debug-info :accessor debug-info)
    (renderp :initform nil :accessor renderp)
    (heavyp :initform nil :accessor heavyp)
    (labelp :initform nil :accessor labelp)
@@ -155,7 +156,10 @@ This will place the calculated bond on one or the other side of the x1,y1-x2,y2 
   (let* ((pos (pos atom-node))
          (xs1 (geom:vx pos))
          (ys1 (geom:vy pos))
-         (label (string (chem:get-name (atom atom-node)))))
+         (label #+debug-sketch2d (string (if (debug-info atom-node)
+                                             (label (debug-info atom-node))
+                                             (chem:get-name (atom atom-node))))
+                #-debug-sketch2d (string (chem:get-name (atom atom-node)))))
     (cl-svg:text scene (:x xs1 :y (- ys1 *lower-text*) :class "small" :text-anchor "left" :alignment-baseline "left") label)))
 
 (defun draw-atom-text (scene atom-node)
@@ -189,11 +193,12 @@ This will place the calculated bond on one or the other side of the x1,y1-x2,y2 
                    (format nil "~a" num-hydrogens)))))
 
 
-(defun get-atom-node (atom atom-ht)
+(defun get-atom-node (atom atom-ht sketch2d)
   (let ((found (gethash atom atom-ht)))
     (if found
         found
-        (let ((new-atom-node (make-instance 'atom-node :atom atom)))
+        (let* ((atom-debug-info (gethash atom (debug-info sketch2d)))
+               (new-atom-node (make-instance 'atom-node :atom atom :debug-info atom-debug-info)))
           (setf (gethash atom atom-ht) new-atom-node)
           new-atom-node))))
 
@@ -207,14 +212,14 @@ This will place the calculated bond on one or the other side of the x1,y1-x2,y2 
      (lambda (a1 a2 bo)
        (push (make-instance 'bond-node
                             :bond-order bo
-                            :atom-node1 (get-atom-node a1 atoms)
-                            :atom-node2 (get-atom-node a2 atoms))
+                            :atom-node1 (get-atom-node a1 atoms sketch2d)
+                            :atom-node2 (get-atom-node a2 atoms sketch2d))
              bonds))
      molecule)
     (let (atom-node-list)
       (maphash (lambda (atom dummy)
                  (declare (ignore dummy))
-                 (push (get-atom-node atom atoms) atom-node-list))
+                 (push (get-atom-node atom atoms sketch2d) atom-node-list))
                atoms)
       ;; Tell the atom-nodes their bond-nodes
       (loop for bond-node in bonds
@@ -509,7 +514,7 @@ This will place the calculated bond on one or the other side of the x1,y1-x2,y2 
         do (render-node scene atom-node)))
 
 
-(defun svg (sketch2d &key (toplevel t) (width 1000) (xbuffer 0.1) (ybuffer 0.1) before-render after-render (id "") show-names (scale 20) (margin 20))
+(defun svg (sketch2d &key (toplevel t) (width 1000) (xbuffer 0.1) (ybuffer 0.1) before-render after-render (id "") show-names (scale 20) (margin 40))
   "Generate SVG to render the molecule.  Pass a BEFORE-RENDER function or AFTER-RENDER function to add info to the structure.
 Each of these functions take two arguments, the svg-scene and the sketch-svg. 
 The caller provided functions should use cl-svg to render additional graphics."
@@ -563,7 +568,7 @@ The caller provided functions should use cl-svg to render additional graphics."
   (let ((scene (scene sketch-svg)))
     (when (before-render sketch-svg)
       (funcall (before-render sketch-svg) scene sketch-svg))
-    (let ((*show-names* (show-names sketch-svg)))
+    (let ((*show-names* (or *show-names* (show-names sketch-svg))))
       (render-sketch scene sketch-svg))
     (when (after-render sketch-svg)
       (funcall (after-render sketch-svg) scene sketch-svg))
