@@ -230,6 +230,14 @@
 
 (defmethod loader-parse ((instance receptor-loader) data)
   (nglview:remove-all-components (receptor-loader-ngl instance))
+  (with-slots (receptor-string)
+      *app*
+    (setf receptor-string (babel:octets-to-string data))
+    (setf (tirun:receptors (receptor-loader-calc instance))
+          (list (with-input-from-string (sin receptor-string)
+                  (leap.pdb:load-pdb-stream sin))))
+    t)
+  #+(or)
   (handler-case
       (with-slots (receptor-string)
                   *app*
@@ -242,6 +250,7 @@
       (write-string (leap.pdb:messages condition))
       nil)
     (error (condition)
+      (print "There was a problem foo" *error-output*)
       (print condition *error-output*)
       nil)))
 
