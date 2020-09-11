@@ -137,8 +137,9 @@ for them.  Show progress if progress is T."
             matter)
            num)))
     ;; Now build the hydrogens
-    (let ((bar (make-progress-bar :total number-of-unbuilt-hydrogens
-                                  :message "Hydrogens built"))
+    (let ((bar (when progress
+                 (make-progress-bar :total number-of-unbuilt-hydrogens
+                                    :message "Hydrogens built")))
           (built-hydrogens 0))
       (chem:map-atoms
        nil
@@ -147,7 +148,7 @@ for them.  Show progress if progress is T."
                     (chem:needs-build atom))
            (let ((built (build-unbuilt-hydrogens-on (chem:bonded-neighbor atom 0))))
              (incf built-hydrogens built))
-           (progress-advance bar built-hydrogens)))
+           (when progress (progress-advance bar built-hydrogens))))
        matter)
-      (progress-done bar)
+      (when progress (progress-done bar))
       built-hydrogens)))
