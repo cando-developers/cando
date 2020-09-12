@@ -5,7 +5,7 @@
   :version "0.0.1"
   :author "Christian Schafmeister"
   :licence "LGPL-2.0"
-  :depends-on (:cando :leap :cl-svg)
+  :depends-on (:cando :leap :cl-svg :spanning)
   :serial t
   :components
   ((:file "packages")
