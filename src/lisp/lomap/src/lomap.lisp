@@ -7,6 +7,9 @@
    (vertex2 :initarg :vertex2 :accessor vertex2)
    (sim-score :initarg :sim-score :accessor sim-score)))
 
+(defun edge-vertices (edge)
+  (values (vertex1 edge) (vertex2 edge)))
+
 (defmethod print-object ((edge edge) stream)
   (print-unreadable-object (edge stream)
     (format stream "LOMAP:EDGE ~a-~a :sim-score ~a"
@@ -20,12 +23,6 @@
    (xypos :initform nil :initarg :xypos :accessor xypos)
    ))
 
-(defun vertex-edges (vertex graph)
-  (loop for edge in (edges graph)
-        when (or (eq (vertex1 edge) vertex)
-                 (eq (vertex2 edge) vertex))
-          collect edge))
-
 (defmethod print-object ((vertex vertex) stream)
   (print-unreadable-object (vertex stream)
     (format stream "LOMAP:VERTEX molecule: ~a" (chem:get-name (molecule vertex)))))
@@ -33,6 +30,17 @@
 (defclass graph ()
   ((vertices :initarg :vertices :initform nil :accessor vertices)
    (edges :initarg :edges :initform nil :accessor edges)))
+
+(defmethod spanning:vertex-edges ((vertex vertex) (graph graph))
+  (loop for edge in (edges graph)
+        when (or (eq (vertex1 edge) vertex)
+                 (eq (vertex2 edge) vertex))
+          collect edge))
+
+(defmethod spanning:other-vertex ((edge edge) (vertex vertex))
+  (if (eq (vertex1 edge) vertex)
+      (vertex2 edge)
+      (vertex1 edge)))
 
 (defclass multigraph ()
   ((subgraphs :initarg :subgraphs :initform nil :accessor subgraphs)))
@@ -285,7 +293,7 @@
       for edge in sorted-edges
       do (let* ((new-graph (copy-graph-with-edge-removed graph edge))
                 (new-bitvec (edge-bitvec-from-edges new-graph))
-                (spanning-tree (calculate-spanning-tree new-graph (first (vertices new-graph))))
+                (spanning-tree (spanning:calculate-spanning-tree new-graph (first (vertices new-graph))))
                 )
            #+debug-lomap (format t "Testing removal of edge: ~a~%" edge)
            (progn

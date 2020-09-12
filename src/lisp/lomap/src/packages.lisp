@@ -22,10 +22,7 @@
    #:vertex2
    #:index
    #:sim-score
-   #:calculate-spanning-tree
-   #:back-span
    #:distance-to-root
-   #:back-vertex
    #:draw-graph-to-file
    #:draw-graph-to-stream
    #:lomap-multigraph

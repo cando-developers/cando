@@ -33,11 +33,11 @@
                (let* ((edge-symbol (if back-span-info
                                        (cond
                                          ((let ((back-span (gethash (vertex1 edge) back-span-info)))
-                                            (if (and back-span (eq (back-vertex back-span) (vertex2 edge)))
+                                            (if (and back-span (eq (spanning:back-vertex back-span) (vertex2 edge)))
                                                 "->"
                                                 nil)))
                                          ((let ((back-span (gethash (vertex2 edge) back-span-info)))
-                                            (if (and back-span (eq (back-vertex back-span) (vertex1 edge)))
+                                            (if (and back-span (eq (spanning:back-vertex back-span) (vertex1 edge)))
                                                 (progn
                                                   (rotatef id1 id2)
                                                   "->")

@@ -8,6 +8,7 @@
   :licence "LGPL-2.0"
   :depends-on (:cando
                :molecule-graph
+               :spanning
                :smarts)
   :serial t
   :components ((:module src
@@ -15,8 +16,8 @@
                 :serial t
                 :components (
                              (:file "packages")
+                             (:file "spanning")
                              (:file "lomap")
                              (:file "graphviz")
-                             (:file "spanning")
                              ))))
 
