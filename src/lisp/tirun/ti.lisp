@@ -725,7 +725,7 @@ if __name__ == '__main__':
 
 (defclass getdvdl-script-file (node-file)
   ((script-file :initform #P"source-dir:extensions;cando;src;lisp;tirun;getdvdl.lisp" :reader script-file)
-   (executable :initform #+(or)"python2" "iclasp-boehm" :reader executable))
+   (executable :initform #+(or)"python2" "icando-boehm" :reader executable))
   (:default-initargs
    :name "getdvdl"
    :extension #+(or)"py" "lisp"))

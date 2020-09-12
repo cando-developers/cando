@@ -195,7 +195,7 @@
                                                      :outputs (arguments :%STAGE-ANALYSIS% (make-instance 'morph-side-stage-file
                                                                                                           :morph morph :side side :stage stage
                                                                                                           :name "dvdl" :extension "dat"))
-                                                     :makefile-clause (standard-makefile-clause (format nil "~a -- ~a.~a :%STAGE-ANALYSIS% :%INPUTS%"
+                                                     :makefile-clause (standard-makefile-clause (format nil "~a -N -l ~a.~a -- :%STAGE-ANALYSIS% :%INPUTS%"
                                                                                                         (executable script)
                                                                                                         (name script)
                                                                                                         (extension script)))))
