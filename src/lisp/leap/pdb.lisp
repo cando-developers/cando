@@ -579,7 +579,7 @@ MTRIX- Used to build a list of matrices."
 
 
                                   
-                                  (defun scan-pdb-stream (fin &key progress system)
+(defun scan-pdb-stream (fin &key progress system)
   (let ((pdb-scanner (make-instance 'pdb-scanner
                                     :stream fin
                                     :scanner (make-instance 'scanner)))
@@ -841,13 +841,15 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
                       (chem:needs-build a))
              (incf unbuilt-heavy-atoms)))
          aggregate)
-        (if (> unbuilt-heavy-atoms 0)
-            (warn "There are ~a unbuilt heavy atoms - not building hydrogens" unbuilt-heavy-atoms)
-            (progn
-              (when progress
-                (format t "Building missing hydrogens~%"))
-              (let ((built (cando:build-unbuilt-hydrogens aggregate)))
-                (format t "Built ~d missing hydrogens~%" built))))
+        (when (> unbuilt-heavy-atoms 0)
+          (when progress
+            (format t "There are ~a unbuilt heavy atoms - building them " unbuilt-heavy-atoms))
+          (cando:simple-build-unbuilt-atoms aggregate))
+        (when progress
+          (format t "Building missing hydrogens~%"))
+        (let ((built (cando:build-unbuilt-hydrogens aggregate)))
+          (when progress
+            (format t "Built ~d missing hydrogens~%" built)))
 ;;;            (cando:maybe-join-molecules-in-aggregate aggregate)
 ;;;            (cando:maybe-split-molecules-in-aggregate aggregate)
         (setf aggregate (classify-molecules aggregate system))
