@@ -11,14 +11,8 @@
 (defgeneric vertex-edges (vertex graph)
   (:documentation "Return the list of edges that connect the vertex to other vertices in the graph"))
 
-(defgeneric edge-vertices (edge)
-  (:documentation "Return the two vertices in the edge"))
-
 (defgeneric other-vertex (edge vertex)
   (:documentation "Given an edge and a vertex, return the other vertex in the edge"))
-
-(defgeneric graph-edges (graph)
-  (:documentation "Return a list of edges for the graph"))
 
 (defun span-from-node (vertex distance back-span-info graph)
   (when *debug-spanning-tree*
@@ -53,25 +47,3 @@ Also return a second value that is the longest path in the spanning tree from th
       (span-from-node root-vertex 0 back-span-info graph)
       (values back-span-info *largest-distance*))))
 
-(defun edge-in-spanning-tree-p (edge back-span-info)
-  ;; Check the first vertex of edge
-  (multiple-value-bind (vertex1 vertex2)
-      (edge-vertices edge)
-    (let* ((vertex vertex1)
-           (bsi (gethash vertex back-span-info)))
-      (when bsi
-        (let ((back-vertex (back-vertex bsi)))
-          (when (eq back-vertex vertex2)
-            (return-from edge-in-spanning-tree-p t)))))
-    (let* ((vertex vertex2)
-           (bsi (gethash vertex back-span-info)))
-      (when bsi
-        (let ((back-vertex (back-vertex bsi)))
-          (when (eq back-vertex vertex1)
-            (return-from edge-in-spanning-tree-p t)))))
-    nil))
-
-(defun edges-outside-of-spanning-tree (graph back-span-info)
-  (loop for edge in (graph-edges graph)
-        when (not (edge-in-spanning-tree-p edge back-span-info))
-          collect edge))

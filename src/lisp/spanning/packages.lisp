@@ -19,4 +19,5 @@
    #:back-vertex
    #:vertex-edges
    #:other-vertex
+   #:graph-edges
    ))
