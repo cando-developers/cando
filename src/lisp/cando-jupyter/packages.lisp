@@ -50,6 +50,7 @@
    #:make-amber-netcdf-trajectory
    #:amber-netcdf-trajectory
    #:run-kernel-from-slime
+   #:jupyterlab
    #:show
    #:repr
    #:kernel
