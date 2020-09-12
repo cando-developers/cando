@@ -230,28 +230,16 @@
 
 (defmethod loader-parse ((instance receptor-loader) data)
   (nglview:remove-all-components (receptor-loader-ngl instance))
-  (with-slots (receptor-string)
-      *app*
-    (setf receptor-string (babel:octets-to-string data))
-    (setf (tirun:receptors (receptor-loader-calc instance))
-          (list (with-input-from-string (sin receptor-string)
-                  (leap.pdb:load-pdb-stream sin))))
-    t)
-  #+(or)
   (handler-case
       (with-slots (receptor-string)
-                  *app*
+          *app*
         (setf receptor-string (babel:octets-to-string data))
         (setf (tirun:receptors (receptor-loader-calc instance))
               (list (with-input-from-string (sin receptor-string)
-                (leap.pdb:load-pdb-stream sin))))
+                      (leap.pdb:load-pdb-stream sin))))
         t)
     (leap.pdb:pdb-read-error (condition)
       (write-string (leap.pdb:messages condition))
-      nil)
-    (error (condition)
-      (print "There was a problem foo" *error-output*)
-      (print condition *error-output*)
       nil)))
 
 
@@ -357,8 +345,8 @@
                                (sdf:parse-sdf-file sin))
               selected-ligands loaded-ligands)
         t)
-    (error (condition)
-      (print condition *error-output*)
+    (leap.pdb:pdb-read-error (condition)
+      (write-string (leap.pdb:messages condition))
       nil)))
 
 
