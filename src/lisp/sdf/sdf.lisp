@@ -180,33 +180,52 @@
            (return-from parse-mdl-molecule eof)))
       ((= (length atom-groups) 1)
        (let* ((atoms (first atom-groups))
-              (name-symbol (intern name :keyword))
-              (molecule (chem:make-molecule name-symbol))
-              (residue (chem:make-residue name-symbol)))
+              (molecule (chem:make-molecule nil))
+              (residue (chem:make-residue nil)))
          (chem:add-matter molecule residue)
          (loop for group in atom-groups
                do (loop for atom in group
                         do (chem:add-matter residue atom)))
-         molecule))
+         (values molecule name)))
       (t (error "Deal with multiple molecules in sdf")))))
 
 (defun parse-sdf-section (fin eof-error-p eof)
-  (let ((molecule (parse-mdl-molecule fin eof-error-p eof)))
-    (format t "Read molecule: ~a~%" molecule)
+  (multiple-value-bind (molecule name)
+      (parse-mdl-molecule fin eof-error-p eof)
     (if (eq molecule eof)
         eof
         (progn
           (loop for line = (read-line fin eof-error-p eof)
                 until (string= line "$$$$"))
-          molecule))))
+          (values molecule name)))))
 
 (defun parse-sdf-file (fin)
-  (let ((molecules nil))
-    (loop for molecule = (parse-sdf-section fin nil :eof)
-          if (eq molecule :eof)
-            do (return-from parse-sdf-file molecules)
-          else
-            do (push molecule molecules))))
+  (let ((molecules
+          (let (molecules names)
+            (loop named load-molecules
+                  do (multiple-value-bind (molecule name)
+                         (parse-sdf-section fin nil :eof)
+                       (if (eq molecule :eof)
+                           (return-from load-molecules molecules)
+                           (push (cons name molecule) molecules)))))))
+    (let ((sorted-by-name (sort molecules #'string< :key #'car))
+          (counter 1))
+      (loop with (prev-name . prev-molecule ) = (first sorted-by-name)
+            for cur = (rest sorted-by-name) then (cdr cur)
+            for (name . molecule) = (car cur)
+            while cur
+            do (when (string= name prev-name)
+                 (let ((new-name (format nil "~a_~a" name (incf counter))))
+                   (format t "prev-name: ~a  name: ~a  new-name: ~a~%" prev-name name new-name)
+                   (rplaca (car cur) new-name)))
+               (setf prev-name name
+                     prev-molecule molecule))
+      (loop for (name . molecule) in sorted-by-name
+            for residue = (chem:content-at molecule 0)
+            for name-sym = (intern name :keyword)
+            do (chem:set-name molecule name-sym)
+               (chem:set-name residue name-sym))
+      (mapcar #'cdr sorted-by-name))))
 
 (defun load-sdf-as-list-of-molecules (fname)
   (with-open-file (fin fname :direction :input)
