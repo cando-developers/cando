@@ -199,16 +199,10 @@
                 until (string= line "$$$$"))
           (values molecule name)))))
 
-(defun parse-sdf-file (fin)
-  (let ((molecules
-          (let (molecules names)
-            (loop named load-molecules
-                  do (multiple-value-bind (molecule name)
-                         (parse-sdf-section fin nil :eof)
-                       (if (eq molecule :eof)
-                           (return-from load-molecules molecules)
-                           (push (cons name molecule) molecules)))))))
-    (let ((sorted-by-name (sort molecules #'string< :key #'car))
+(defun ensure-names-unique (names-molecules)
+  (loop
+    (let ((sorted-by-name (sort names-molecules #'string< :key #'car))
+          (collision nil)
           (counter 1))
       (loop with (prev-name . prev-molecule ) = (first sorted-by-name)
             for cur = (rest sorted-by-name) then (cdr cur)
@@ -220,6 +214,18 @@
                    (rplaca (car cur) new-name)))
                (setf prev-name name
                      prev-molecule molecule))
+      (unless collision (return-from ensure-names-unique sorted-by-name)))))
+
+(defun parse-sdf-file (fin)
+  (let ((names-molecules
+          (let (molecules names)
+            (loop named load-molecules
+                  do (multiple-value-bind (molecule name)
+                         (parse-sdf-section fin nil :eof)
+                       (if (eq molecule :eof)
+                           (return-from load-molecules molecules)
+                           (push (cons name molecule) molecules)))))))
+    (let ((sorted-by-name (ensure-names-unique names-molecules)))
       (loop for (name . molecule) in sorted-by-name
             for residue = (chem:content-at molecule 0)
             for name-sym = (intern name :keyword)
