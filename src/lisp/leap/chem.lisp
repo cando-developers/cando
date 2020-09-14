@@ -51,7 +51,15 @@
 
 (defconstant +degrees-to-radians+ 0.0174533)
 
-(esrap:defrule type-name
+(esrap:defrule nonb-type-name
+    (and (esrap:character-ranges (#\a #\z) (#\A #\Z) (#\0 #\9))
+         (* (or (esrap:character-ranges (#\! #\~)))) ; entire ascii printable range
+         )
+  (:text t))
+
+
+
+(esrap:defrule bond-angle-dihe-type-name
     (and (esrap:character-ranges (#\a #\z) (#\A #\Z) (#\0 #\9))
          (* (or (esrap:character-ranges (#\! #\,))
                 (esrap:character-ranges (#\. #\~)))) ; entire ascii printable range, exclude #\- (dash)
@@ -59,10 +67,10 @@
   (:text t))
 
 (esrap:defrule ptor-types
-    (and type-name parser.common-rules:whitespace* "-" parser.common-rules:whitespace*
-         type-name parser.common-rules:whitespace* "-" parser.common-rules:whitespace*
-         type-name parser.common-rules:whitespace* "-" parser.common-rules:whitespace*
-         type-name
+    (and bond-angle-dihe-type-name parser.common-rules:whitespace* "-" parser.common-rules:whitespace*
+         bond-angle-dihe-type-name parser.common-rules:whitespace* "-" parser.common-rules:whitespace*
+         bond-angle-dihe-type-name parser.common-rules:whitespace* "-" parser.common-rules:whitespace*
+         bond-angle-dihe-type-name
          )
   (:destructure (t1 s1a d1 s1b t2 s2a d2 s2b t3 s3a d3 s3b t4)
     (declare (ignore d1 d2 d3 s1a s1b s2a s2b s3a s3b))
@@ -153,7 +161,7 @@
 
 (esrap:defrule nonbond-line
     (and parser.common-rules:whitespace*
-         type-name parser.common-rules:whitespace+
+         nonb-type-name parser.common-rules:whitespace+
          parser.common-rules:float-literal
          parser.common-rules:whitespace+
          parser.common-rules:float-literal
