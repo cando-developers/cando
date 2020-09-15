@@ -238,7 +238,7 @@ If you want to check if it's a big-z file then pass check-big-z = T."
   (let ((core:*read-hook* nil))
     (labels ((my-read-from-string (str)
                ;; bypass eclector because it's too slow
-               (with-string-input-stream (sin str)
+               (with-input-from-string (sin str)
                  (core:fast-read sin)))
              (read-one-char (line start)
                (let ((ch (elt line start)))
@@ -298,7 +298,6 @@ If you want to check if it's a big-z file then pass check-big-z = T."
                         until (> start (length line))
                         collect (parse-integer line :start start :end end :junk-allowed t))))
           ((string= head "SSBOND")
-           (format *trace-output* "pdb.lisp::parse-line  head == ~a~%" head)
            (list :ssbond
                  (read-one-char line 15)
                  (parse-integer (string-trim '(#\space #\tab) (subseq line 17 21)))
@@ -428,7 +427,6 @@ MTRIX- Used to build a list of matrices."
             (:ter
              (finish-previous-sequence pdb))
             (:ssbond
-             (format t ":ssbond for ~a~%" line-data)
              (destructuring-bind (head chain-id1 res-seq1 chain-id2 res-seq2)
                  line-data
                (push (make-instance 'disulphide
@@ -549,7 +547,7 @@ MTRIX- Used to build a list of matrices."
       (values sorted-unique-a sorted-unique-b))))
           
         
-(defun validate-scanner (scanner)
+(defun validate-scanner (scanner &key ignore-missing-topology)
   (let* (saw-problems
          (*print-pretty* nil)
          (messages 
@@ -569,7 +567,7 @@ MTRIX- Used to build a list of matrices."
                                            (sorted-mismatch atom-names topology-atom-names)
                                        (format sout "Residue ~a ~a ~a - atom names mismatch~%   PDB: ~a and ~a in AMBER residue ~a~%" res-name chain-id res-seq unique-pdb unique-amber (chem:get-name topology) ))
                                        (setf saw-problems t)))
-                                   (progn
+                                   (when (not ignore-missing-topology)
                                      (format sout "Residue ~a ~a ~a - is unknown~%" res-name chain-id res-seq)
                                      (setf saw-problems t))))))))
     (when saw-problems
@@ -579,7 +577,7 @@ MTRIX- Used to build a list of matrices."
 
 
                                   
-(defun scan-pdb-stream (fin &key progress system)
+(defun scan-pdb-stream (fin &key progress system ignore-missing-topology)
   (let ((pdb-scanner (make-instance 'pdb-scanner
                                     :stream fin
                                     :scanner (make-instance 'scanner)))
@@ -608,19 +606,21 @@ MTRIX- Used to build a list of matrices."
       (assign-topologys scanner)
       (split-solvent scanner)
       (let ((result-scanner (build-sequence scanner system)))
-        (validate-scanner result-scanner)
+        (validate-scanner result-scanner :ignore-missing-topology ignore-missing-topology)
         result-scanner))))
 
 
-(defun scan-pdb (filename &key progress system)
+(defun scan-pdb (filename &key progress system ignore-missing-topology)
   "* Arguments
 - filename : A pathname
 * Description
 Scan the PDB file and use the ATOM records to build a list of residue sequences and matrices.
 * Return
 values residue-sequences matrices"
-  (with-open-file (fin filename :direction :input)]
-    (scan-pdb-stream fin :progress progress :system system)
+  (with-open-file (fin filename :direction :input)
+    (scan-pdb-stream fin :progress progress
+                         :system system
+                         :ignore-missing-topology ignore-missing-topology)
     ))
 
 (defun warn-of-unknown-topology (res scanner)
@@ -791,10 +791,11 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
                   mol)))
 
 
-(defun load-pdb-stream (fin &key filename scanner progress system)
+(defun load-pdb-stream (fin &key filename scanner progress system ignore-missing-topology)
   (let* ((scanner (if scanner
                       scanner
-                      (let ((new-scanner (build-sequence (scan-pdb-stream fin :progress progress) system)))
+                      (let ((new-scanner (build-sequence (scan-pdb-stream fin :progress progress
+                                                                          :ignore-missing-topology ignore-missing-topology) system)))
                         (file-position fin 0)
                         new-scanner)))
          (serial-to-atoms (connect-atoms-hash-table scanner)))
@@ -860,7 +861,7 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
         (values aggregate scanner pdb-atom-reader)))))
 
 
-(defun load-pdb (filename &key scanner progress system)
+(defun load-pdb (filename &key scanner progress system ignore-missing-topology)
   "    variable = loadPdb filename
       STRING                       _filename_
 
@@ -887,7 +888,8 @@ specified in PDB files.
       (load-pdb-stream fin :filename filename
                            :scanner scanner
                            :progress progress
-                           :system system)
+                           :system system
+                           :ignore-missing-topology ignore-missing-topology)
       )))
 
 (defgeneric classify-molecules (aggregate system))
@@ -897,7 +899,7 @@ specified in PDB files.
     (cando:do-molecules (molecule aggregate)
       (chem:set-id molecule (incf mol-id))
       (cond
-        ((member (chem:get-name molecule) (list :hoh))
+        ((member (chem:get-name molecule) (list :hoh :wat))
          (chem:setf-molecule-type molecule :solvent))))
     aggregate))
 

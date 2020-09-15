@@ -81,6 +81,7 @@ public:
 
  public:
   static Bond_sp create(Atom_sp a1, Atom_sp a2, BondOrder o= singleBond);
+  static void canonicalizeBondOrder(Atom_sp& a1, Atom_sp& a2, BondOrder& order);
  public:
 	/*! Return true if atom is Atom1, false if its Atom2 and throw an exception if its neither */
   bool isAtom1(Atom_sp atom) const;
@@ -125,6 +126,7 @@ CL_DEFMETHOD   void	setOrderFromInt(int o)	{ this->order=(BondOrder)(o); };
 
   bool isBondBetween(Atom_sp a, Atom_sp b) const;
 
+  BondOrder maybeFlipOrder(Atom_sp from);
 
 
 	/*! Return a ConstitutionBond_sp object using the ConstitutionBond_O::atomIdMap 

@@ -170,6 +170,7 @@ CL_DEFMETHOD Residue_sp Topology_O::buildResidueForIsomer(size_t isomer) const
 //      printf("%s:%d     @%d toAtom -> %s\n", __FILE__, __LINE__, (*bi)->_ToAtomIndex, _rep_(toAtom).c_str());
       if ( fromAtom->atLowerUniqueAtomOrderThan(toAtom) ) {
         BondOrder order = (*bi)->_BondOrder;
+        Bond_O::canonicalizeBondOrder(fromAtom,toAtom,order);
         fromAtom->bondTo(toAtom,order);
       }
     }
@@ -346,11 +347,13 @@ CL_DEFUN void connect_residues(Topology_sp prev_topology,
   Atom_sp in_atom = gc::As_unsafe<Atom_sp>(next_residue->atomWithName(in_plug_atom_name));
 //  printf("%s:%d  out_atom = %s  in_atom = %s\n", __FILE__, __LINE__, _rep_(out_atom).c_str(), _rep_(in_atom).c_str());
   BondOrder bo = in_plug->getBondOrder0();
+  Bond_O::canonicalizeBondOrder(in_atom,out_atom,bo);
   in_atom->bondTo(out_atom, bo);
   if (in_plug->getB1().notnilp()) {
     Atom_sp out_atom = gc::As_unsafe<Atom_sp>(prev_residue->atomWithName(out_plug->getB1()));
     Atom_sp in_atom = gc::As_unsafe<Atom_sp>(next_residue->atomWithName(in_plug->getB1()));
     BondOrder bo = in_plug->getBondOrder1();
+    Bond_O::canonicalizeBondOrder(in_atom,out_atom,bo);
     in_atom->bondTo(out_atom, bo);
   }
 }

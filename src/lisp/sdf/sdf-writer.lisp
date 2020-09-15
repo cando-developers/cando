@@ -44,7 +44,7 @@ Structure written by MMmdl.~%")
                                            (:single-bond 1)
                                            (:double-bond 2)
                                            (:triple-bond 3)
-                                           (otherwise 4))))
+                                           (otherwise 1))))
                           (format stream "~3d~3d~3d~3d~3d~3d~%"
                                   (1+ (gethash a1 atom-to-index))
                                   (1+ (gethash a2 atom-to-index))

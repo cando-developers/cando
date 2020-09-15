@@ -66,7 +66,7 @@
                                :cg-tolerance cg-tolerance
                                :tn-tolerance tn-tolerance)
     (if print-intermediate-results
-        (chem:enable-print-intermediate-results minimizer 10)
+        (chem:enable-print-intermediate-results minimizer 100)
         (chem:disable-print-intermediate-results minimizer))
     (chem:set-option energy-function 'chem:nonbond-term t)
     (cando:minimize-no-fail minimizer)))
@@ -144,7 +144,7 @@
                                :sd-tolerance sd-tolerance
                                :cg-tolerance cg-tolerance
                                :tn-tolerance tn-tolerance)
-    (chem:enable-print-intermediate-results minimizer 10)
+    (chem:enable-print-intermediate-results minimizer 100)
     (chem:set-option energy-function 'chem:nonbond-term nil)
     (cando:minimize-no-fail minimizer)
     (chem:set-option energy-function 'chem:nonbond-term t)

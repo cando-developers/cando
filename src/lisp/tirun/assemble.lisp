@@ -178,17 +178,20 @@
   (let* ((agg (chem:as-aggregate sketch)))
     (parse-residue-groups agg)))
 
-(defmethod parse-residue-groups ((agg chem:aggregate))
-  (let* (core-molecule
+(defmethod parse-residue-groups ((original-agg chem:aggregate))
+  (let* ((agg (chem:matter-copy original-agg))
+         core-molecule
          side-chain-molecules
          (core-atom-count 0)
          (map-atoms-numbers (make-hash-table)))
     (let ((num-bonds 0)
           (sum-lengths 0.0)
           (index 0))
+      ; map each atom to a unique index
       (chem:map-atoms nil (lambda (a)
                             (setf (gethash a map-atoms-numbers) (incf index)))
                       agg)
+      ; calculate average bond length
       (chem:map-bonds nil (lambda (a1 a2 order)
                             (let* ((v1 (chem:get-position a1))
                                    (v2 (chem:get-position a2))
@@ -217,6 +220,8 @@
                                 (push m side-chain-molecules)))
                         agg)
     ;; Handle the core-group
+    (unless core-molecule
+      (error "There must be a core molecule"))
     (let ((core-group (chem:map-atoms 'list #'identity core-molecule))
           (core-attachment-indicators (make-hash-table))
           (map-names-numbers (make-hash-table)))
@@ -447,9 +452,71 @@ We need setup-ligands for the tirun demo."
           for mol = (chem:matter-copy (drawing ligand))
           do (chem:fill-in-implicit-hydrogens mol)
              (ensure-unique-hydrogen-names mol)
+             (assign-stereochemical-restraints mol)
              (cando:build-unbuilt-hydrogens mol)
              (combine-into-single-residue mol (core-residue-name ligand))
           collect mol)))
+
+
+(defun assign-stereochemical-restraints (molecule)
+  (chem:map-bonds
+   'nil
+   (lambda (a1 a2 bond-order)
+     (when (member bond-order '(:single-wedge-begin :single-wedge-end
+                                :single-dash-begin :single-dash-end))
+       (let* ((bond (chem:get-bond-to a1 a2))
+              (ba1 (chem:get-atom1 bond))
+              (ba2 (chem:get-atom2 bond)))
+         #+(or)(format t "Found a bond ~a that needs a stereochemical restraint~%" bond)
+         (case bond-order
+           (:single-wedge-end
+            (rotatef ba1 ba2)
+            (setf bond-order :single-wedge-begin))
+           (:single-dash-end
+            (rotatef ba1 ba2)
+            (setf bond-order :single-dash-begin)))
+         (unless (or (= (chem:number-of-bonds ba1) 3)
+                     (= (chem:number-of-bonds ba1) 4))
+           (error "There must be 3 or 4 neighbors for atoms with wedge bonds - atom ~a doesn't have that" ba1))
+         (let* ((center ba1)
+                (bonds (chem:bonds-as-list center))
+                (bond-to-ba2 (find-if (lambda (x) (eq (chem:get-other-atom x center) ba2)) bonds))
+                (remaining-bonds (remove bond-to-ba2 bonds))
+                bonds-without-coordinates
+                (bonds-with-coordinates (loop for bond in remaining-bonds
+                                              for other-atom = (chem:get-other-atom bond center)
+                                              for position = (chem:get-position other-atom)
+                                              if (geom:vec-p position)
+                                                collect bond
+                                              else
+                                                do (push bond bonds-without-coordinates))))
+           (unless (>= (length bonds-with-coordinates) 2)
+             (error "There must be at least two bonds to atoms with coordinates but there are ~a"
+                    (length bonds-with-coordinates)))
+           (let* ((bond-a (first bonds-with-coordinates))
+                  (bond-b (second bonds-with-coordinates))
+                  (bond-c (or (third bonds-with-coordinates)
+                              (first bonds-without-coordinates)))
+                  (atom-a (chem:get-other-atom bond-a center))
+                  (atom-b (chem:get-other-atom bond-b center))
+                  (vec-center (chem:get-position center))
+                  (vec-a (geom:v- (chem:get-position atom-a) vec-center))
+                  (vec-b (geom:v- (chem:get-position atom-b) vec-center))
+                  (cross (geom:vcross vec-a vec-b))
+                  (side (* (float-sign (geom:vz cross) 1.0)
+                           (case bond-order
+                             (:single-wedge-begin 1.0)
+                             (:single-dash-begin -1.0))))
+                  (config (if (> 0.0 side)
+                              :right-handed
+                              :left-handed)))
+             (chem:set-absolute-configuration center config atom-a atom-b ba2)
+             #+(or)(format t "Set absolute-config center: ~a to ~a for ~a ~a ~a~%"
+                           center config atom-a atom-b ba2)
+             )))))
+   molecule))
+
+
 
 (defun setup-ligands (tiruns sketch &key verbose)
   "This generates the ligands while keeping track of additional information about
@@ -465,6 +532,7 @@ But this code is necessary for the tirun demo."
             for side-chain-atoms = nil
             do (chem:fill-in-implicit-hydrogens mol)
                (ensure-unique-hydrogen-names mol)
+               (assign-stereochemical-restraints mol)
                (cando:build-unbuilt-hydrogens mol)
                (setf (molecule ligand) mol)
                (let ((core-atoms (chem:map-atoms 'list #'identity
@@ -586,7 +654,8 @@ But this code is necessary for the tirun demo."
           for agg = (chem:make-aggregate nil)
           do (chem:add-matter agg mol)
           do (funcall (find-symbol "ASSIGN-ATOM-TYPES" :leap) agg)
-          do (energy:minimize agg :cg-tolerance 0.0001 :max-tn-steps 100 :tn-tolerance 0.00001))))
+          do (format t "Minimizing tirun molecule: ~a~%" (molecule tirun))
+          do (energy:minimize agg :sd-tolerance 10.0 :max-sd-steps 10000 :cg-tolerance 0.01 :max-tn-steps 100 :tn-tolerance 0.00000001))))
 
 (defun sorted-map-atoms (tirun assembly)
   (let ((molecule (molecule tirun))
@@ -600,7 +669,7 @@ But this code is necessary for the tirun demo."
 
 
 (defun anchor-to-pose (moveable-atoms fixed-pose-atoms &key stereochemical-restraints)
-  (mapc (lambda (fixed-pose-atom moveable-atom)
+  (mapc (lambda (moveable-atom fixed-pose-atom)
           (let* ((pos (chem:get-position fixed-pose-atom))
                  (anchor-restraint (core:make-cxx-object
                                     'chem:restraint-anchor
@@ -614,11 +683,8 @@ But this code is necessary for the tirun demo."
                    (stereochemistry-assignment (assoc map-id stereochemical-restraints)))
               (when stereochemistry-assignment
                 (chem:set-stereochemistry-type moveable-atom :chiral)
-                (format t "chem:get-stereochemistry-type ~a -> ~a~%" moveable-atom (chem:get-stereochemistry-type moveable-atom))
-                (chem:set-configuration moveable-atom (cdr stereochemistry-assignment))
-                (format t "Set stereochemistry of ~a to ~a~%" moveable-atom (cdr stereochemistry-assignment))))
-            (format t "Anchored ~a to ~a restraints: ~a props: ~s~%" moveable-atom pos (chem:all-restraints moveable-atom) (chem:properties moveable-atom))))
-        fixed-pose-atoms moveable-atoms))
+                (chem:set-configuration moveable-atom (cdr stereochemistry-assignment))))))
+        moveable-atoms fixed-pose-atoms))
 
 (defun pose-ligands-using-pattern (calculation pattern docked-molecule &key stereochemical-restraints)
   (let* ((fixed-atoms-map (pattern-atoms pattern docked-molecule))
@@ -640,7 +706,19 @@ But this code is necessary for the tirun demo."
           do (anchor-to-pose moveable-atoms fixed-atoms :stereochemical-restraints stereochemical-restraints)))
   (minimize-ligands calculation))
 
-
+(defun pose-ligands-using-similarity (calculation docked-molecule)
+  (let ((tiruns (ligands calculation)))
+    (loop for tirun in tiruns
+          for molecule = (molecule tirun)
+          do (multiple-value-bind (equiv diff1 diff2)
+                 (molecule-graph.max-clique:compare-molecules molecule docked-molecule)
+               (format t "tirun ~a~%" tirun)
+               (format t "  equiv -> ~a~%" equiv)
+               (let ((moveable-atoms (mapcar #'car equiv))
+                     (fixed-atoms (mapcar #'cdr equiv)))
+                 (chem:superpose-one molecule moveable-atoms fixed-atoms)
+                 (anchor-to-pose moveable-atoms fixed-atoms)))))
+  (minimize-ligands calculation))
 
 (defun pose-ligands (calculation fixed-atoms &key stereochemical-restraints)
   (let ((tiruns (ligands calculation)))

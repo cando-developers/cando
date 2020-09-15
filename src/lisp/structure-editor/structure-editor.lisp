@@ -15,8 +15,8 @@
   (case jbo
     (1 (cond
          ((null stereo) :single-bond)
-         ((= stereo 1) :single-bond-wedge)
-         ((= stereo 3) :single-bond-dash)
+         ((= stereo 1) :single-wedge-begin)
+         ((= stereo 3) :single-dash-begin)
          (t (error "Illegal bond-order stereo (~a/~a) combination" jbo stereo))))
     (2 :double-bond)
     (3 :triple-bond)

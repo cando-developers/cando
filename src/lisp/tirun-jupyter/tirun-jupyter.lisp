@@ -87,6 +87,7 @@
     (let* ((assembly (tirun::build-assembly agg))
            (ligand-molecules (tirun::build-ligand-molecules assembly)))
       (format t "ligand-molecules -> ~s~%" ligand-molecules)
+      (setf (loaded-ligands *app*) ligand-molecules)
       (let ((molecules-svg-str (with-output-to-string (sout)
                                  (loop for molecule in ligand-molecules
                                        for sketch2d = (sketch2d:sketch2d molecule)

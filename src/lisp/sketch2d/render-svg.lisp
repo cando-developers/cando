@@ -25,7 +25,7 @@
 (defclass line ()
   ((p1 :initarg :p1 :accessor p1)
    (p2 :initarg :p2 :accessor p2)
-   (style :initform nil :initarg :style :accessor style :type (member nil :dash :wedge-forward :hash-forward))
+   (style :initform nil :initarg :style :accessor style :type (member nil :dash :single-wedge-begin :single-hash-begin))
    (color :initform "black" :initarg :color :accessor color)))
 
 (defclass polygon ()
@@ -369,7 +369,7 @@ This will place the calculated bond on one or the other side of the x1,y1-x2,y2 
       (let ((bond-order (bond-order bond-node)))
         (labels ((calc-pos (pos dir dist)
                    (geom:v+ pos (geom:v* dir dist))))
-          (if (eq :single-bond bond-order)
+          (if (member bond-order (list :single-bond :single-wedge-begin :single-hash-begin))
               (multiple-value-bind (chiral-info from-atom-node to-atom-node bond-type)
                   (lookup-chiral-info sketch atom-node1 atom-node2)
                 (if chiral-info
@@ -380,11 +380,11 @@ This will place the calculated bond on one or the other side of the x1,y1-x2,y2 
                              (c2 (geom:v+ p2 left))
                              (c3 (geom:v+ p2 (geom:v* left -1.0))))
                         (case bond-type
-                          (:wedge-forward
+                          (:single-wedge-begin
                            #+(or)(when (/= 0.0 start)
                              (warn "The start of a wedge bond is not zero - that means we need a more complex polygon than a triangle start: ~a" start))
                            (list (make-instance 'polygon :points (list p1 c2 c3))))
-                          (:hash-forward
+                          (:single-hash-begin
                            #+(or)(when (/= 0.0 start)
                              (warn "The start of a wedge bond is not zero - that means we need a more complex polygon than a triangle start: ~a" start))
                            (let ((hashes (loop for index from 1 below *number-of-hashes-in-hashed-bond*
@@ -397,7 +397,7 @@ This will place the calculated bond on one or the other side of the x1,y1-x2,y2 
                                                for cc3 = (geom:v+ minus-left offset)
                                                collect (make-instance 'line :p1 cc2 :p2 cc3))))
                              hashes))
-                          (otherwise (warn "Handle bond type: ~a~%" (bond-type chiral-info))
+                          (otherwise (warn "single-bond Handle bond type: ~a~%" (bond-type chiral-info))
                            (list (make-instance 'polygon :points (list p1 c2 c3)))))))
                     (multiple-value-bind (pos1 pos2 delta12 len12 dir12 left start stop)
                         (calculate-bond-geometry atom-node1 atom-node2)
@@ -432,7 +432,7 @@ This will place the calculated bond on one or the other side of the x1,y1-x2,y2 
                       (make-instance 'line :p1 p1 :p2 p2)
                       (make-instance 'line :p1 (geom:v+ p1 left) :p2 (geom:v+ p2 left))
                       (make-instance 'line :p1 (geom:v- p1 left) :p2 (geom:v- p2 left)))))
-                  (t (warn "Handle bond ~a" bond-order))))))))))
+                  (t (warn "In render-svg calculate-bond Handle bond ~a" bond-order))))))))))
 
 (defun calculate-bonds (sketch)
   (let ((lines nil))

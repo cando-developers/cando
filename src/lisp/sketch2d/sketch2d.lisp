@@ -27,7 +27,7 @@ I'll use an angle term instead of a bond term.
    (sketch-atoms-to-original :initarg :sketch-atoms-to-original :accessor sketch-atoms-to-original)
    (original-molecule :initarg :original-molecule :accessor original-molecule)))
 
-
+(defparameter *max-tries* 10)
 (defconstant +oozp-scale+ 1.0)
 (defconstant +150-degrees-rad+ (* 150.0 0.0174533))
 (defparameter *stage1-flatten-force-components* (list 0.85 0.85 0.85))
@@ -449,21 +449,25 @@ to check if two line segments (bonds) overlap/intersect
           for atomq1 = (stretch-term-atom2 str1)
           for p1 = (chem:get-position atomp1)
           for q1 = (chem:get-position atomq1)
-          do (loop named inner
-                   for idx2 from (1+ idx1) below (length stretches)
-                   for str2 = (elt stretches idx2)
-                   for atomp2 = (stretch-term-atom1 str2)
-                   for atomq2 = (stretch-term-atom2 str2)
-                   for p2 = (chem:get-position atomp2)
-                   for q2 = (chem:get-position atomq2)
-                   do (progn
-                        (cond
-                          ((or (eq atomp1 atomp2)
-                               (eq atomp1 atomq2)
-                               (eq atomq1 atomp2)
-                               (eq atomq1 atomq2)))
-                          ((bonds-intersect p1 q1 p2 q2)
-                           (push (cons str1 str2) intersecting))))))
+          unless (or (eq (chem:get-element atomp1) :h)
+                     (eq (chem:get-element atomq1) :h))
+            do (loop named inner
+                     for idx2 from (1+ idx1) below (length stretches)
+                     for str2 = (elt stretches idx2)
+                     for atomp2 = (stretch-term-atom1 str2)
+                     for atomq2 = (stretch-term-atom2 str2)
+                     for p2 = (chem:get-position atomp2)
+                     for q2 = (chem:get-position atomq2)
+                     unless (or (eq (chem:get-element atomp2) :h)
+                                (eq (chem:get-element atomq2) :h))
+                       do (progn
+                            (cond
+                              ((or (eq atomp1 atomp2)
+                                   (eq atomp1 atomq2)
+                                   (eq atomq1 atomp2)
+                                   (eq atomq1 atomq2)))
+                              ((bonds-intersect p1 q1 p2 q2)
+                               (push (cons str1 str2) intersecting))))))
     intersecting))
 
 (defstruct distance-atom distance index atom)
@@ -483,8 +487,14 @@ to check if two line segments (bonds) overlap/intersect
                (push da close-atoms)))
     close-atoms))
 
-(defun identify-problem-areas (dynamics &optional (cutoff (* 2.4 +stage4-bond-length+)))
-  (let* ((energy-function (dynamics:scoring-function dynamics))
+(defgeneric identify-problem-areas (thing))
+
+(defmethod identify-problem-areas ((sketch sketch2d))
+  (identify-problem-areas (dynamics sketch)))
+
+(defmethod identify-problem-areas (dynamics)
+  (let* ((cutoff (* 2.4 +stage4-bond-length+))
+         (energy-function (dynamics:scoring-function dynamics))
          (molecule (chem:get-graph energy-function))
          (atom-table (chem:atom-table energy-function))
          (energy-stretch (chem:get-stretch-component energy-function))
@@ -537,7 +547,7 @@ to check if two line segments (bonds) overlap/intersect
               
 (defun unfreeze (atom-table coordinates frozen)
   (let ((new-frozen (copy-seq frozen)))
-    (loop for index from 0 below (length frozen)
+    (loop for index from 0 below (/ (length frozen) 3)
           for atom = (chem:elt-atom atom-table index)
           do (when (= (elt frozen (* 3 index)) 0)
                (loop named inner
@@ -849,12 +859,10 @@ to check if two line segments (bonds) overlap/intersect
     ;; Drop the bond lengths to 1.5
     ;; Add the angle terms
     ;; Progressively reduce the nonbond scale
-    (chem:walk-sketch-stretch-terms
-     
-     energy-stretch
-     (lambda (index atom1-I1 atom2-I2 kb r0)
-       (chem:modify-sketch-stretch-term-kb energy-stretch index +stage4-bond-force+)
-       (chem:modify-sketch-stretch-term-r0 energy-stretch index +stage4-bond-length+)))
+    (chem:walk-sketch-stretch-terms energy-stretch
+                                    (lambda (index atom1-I1 atom2-I2 kb r0)
+                                      (chem:modify-sketch-stretch-term-kb energy-stretch index +stage4-bond-force+)
+                                      (chem:modify-sketch-stretch-term-r0 energy-stretch index +stage4-bond-length+)))
     (add-angle-terms sketch-function +stage4-bond-force+ +stage4-bond-length+)
     (loop for i from 0 below 5000
           for cutoff from 80.0 downto 1.0 by (/ 79.0 5000.0)
@@ -912,17 +920,28 @@ are in the order (low, middle, high) and the column eigen-vectors are in the sam
         (chem:apply-transform-to-atoms molecule transposed-transform)))))
 
 
+(defgeneric do-sketch2d (thing &key accumulate-coordinates max-tries))
 
-(defgeneric do-sketch2d (matter &key accumulate-coordinates)
-  (:documentation "Return an edited molecule that looks like a chemdraw sketch of the molecule. 
-The coordinates are all pressed into the X-Y plane and some hydrogens are added and lone-pairs removed."))
+(defmethod do-sketch2d (molecule &key accumulate-coordinates (max-tries *max-tries*))
+  (let (sketch
+        (count 0))
+    (loop repeat max-tries
+          do (progn
+               (setf sketch (sketch2d-molecule molecule :accumulate-coordinates accumulate-coordinates))
+               (incf count)
+               (let ((problems (identify-problem-areas sketch)))
+                 (when (= problems 0)
+                   (let* ((dynamics (dynamics sketch))
+                          (result-molecule (chem:get-graph (dynamics:scoring-function dynamics))))
+                     #+(or)(align-molecule-horizontal result-molecule))
+                   (return-from do-sketch2d (values sketch count))))))
+    (values sketch count)))
 
-(defmethod do-sketch2d ((molecule chem:molecule) &key accumulate-coordinates transform)
-  (let* ((sketch (sketch2d-molecule molecule :accumulate-coordinates accumulate-coordinates))
-         (dynamics (dynamics sketch))
+#+(or)
+(defmethod do-sketch2d ((sketch sketch2d) &key accumulate-coordinates)
+  (let* ((dynamics (dynamics sketch))
          (scoring-function (dynamics:scoring-function dynamics)))
     ;; Check for problems
-    #+(or)
     (let* ((temp-coordinates (copy-seq (dynamics:coordinates dynamics)))
            (edited-molecule (chem:get-graph (dynamics:scoring-function dynamics))))
       (multiple-value-bind (number-of-problem-areas frozen)
@@ -935,14 +954,19 @@ The coordinates are all pressed into the X-Y plane and some hydrogens are added 
               (chem:load-coordinates-into-vector scoring-function temp-coordinates)
               (chem:reset-sketch-function scoring-function)
               ;; Jostle the non-frozen atoms
+              (format t "Jostling atoms~%")
               (randomize-atoms atom-table :frozen frozen :width 5.0)
               (chem:load-coordinates-into-vector scoring-function (dynamics:coordinates dynamics))
+              (format t "About to rerun dynamics (length atom-table) -> ~a (length frozen) -> ~a~%" (chem:get-number-of-atoms atom-table) (length frozen))
+              (format t "frozen: ~a~%" frozen)
               (let ((dynamics (sketch2d-dynamics dynamics
                                                  :accumulate-coordinates accumulate-coordinates
                                                  :frozen frozen
                                                  :bond-length +stage4-bond-length+)))
+                (format t "About to check for new problem areas~%")
                 (multiple-value-bind (new-number-of-problem-areas new-frozen)
                     (identify-problem-areas dynamics)
+                  (format t "After second identify-problem-areas -> ~d~%" new-number-of-problem-areas)
                   (cond
                     ((= new-number-of-problem-areas number-of-problem-areas)
                      (chem:save-coordinates-from-vector scoring-function temp-coordinates))
@@ -955,6 +979,7 @@ The coordinates are all pressed into the X-Y plane and some hydrogens are added 
            (molecule (chem:get-graph energy-function))
            (fixed (fix-bad-angles sketch)))
       (when fixed
+        (format t "Found bad angles~%")
         (chem:load-coordinates-into-vector energy-function (dynamics:coordinates dynamics))
         (loop for i from 0 below 5000
               do (advance-simulation dynamics))
@@ -965,6 +990,7 @@ The coordinates are all pressed into the X-Y plane and some hydrogens are added 
         (check-type transform geom:m4)
         (chem:apply-transform-to-atoms (molecule sketch) transform))
       sketch)))
+
 
 (defun insert (item lst compare key)
   (let ((item-key (funcall key item)))
@@ -980,9 +1006,9 @@ The coordinates are all pressed into the X-Y plane and some hydrogens are added 
     (insert (car lst) (insertion-sort (cdr lst) compare key) compare key)))
 
 
-(defmethod do-sketch2d ((aggregate chem:aggregate) &key accumulate-coordinates transform)
+(defmethod do-sketch2d ((aggregate chem:aggregate) &key accumulate-coordinates (max-tries *max-tries*))
   (if (= (chem:content-size aggregate) 1)
-      (do-sketch2d (chem:content-at aggregate 0) :accumulate-coordinates accumulate-coordinates :transform transform)
+      (do-sketch2d (chem:content-at aggregate 0) :accumulate-coordinates accumulate-coordinates :max-tries max-tries)
       (error "sketch2d only accepts a molecule or an aggregate with a single molecule")))
 
 #+debug-sketch2d
@@ -1062,8 +1088,8 @@ The coordinates are all pressed into the X-Y plane and some hydrogens are added 
                                (cross (geom:vcross vec1 vec2))
                                (draw-config (if (< (geom:vz cross) 0.0) :r :s))
                                (bond-type (if (eq draw-config config)
-                                              :wedge-forward
-                                              :hash-forward)))
+                                              :single-wedge-begin
+                                              :single-hash-begin)))
                           (setf (chiral-bonds chiral-info)
                                 (list (make-instance 'chiral-bond-info
                                                      :bond-type bond-type
@@ -1086,8 +1112,8 @@ The coordinates are all pressed into the X-Y plane and some hydrogens are added 
                                (draw-config (if (< (* (geom:vz cross12) (geom:vz cross34)) 0.0) :r :s))) ; Change this to flip the rendered config of the center
                           (multiple-value-bind (bond-type1 bond-type2)
                               (if (eq draw-config config)
-                                  (values :wedge-forward :hash-forward)
-                                  (values :hash-forward :wedge-forward))
+                                  (values :single-wedge-begin :single-hash-begin)
+                                  (values :single-hash-begin :single-wedge-begin))
                             (setf (chiral-bonds chiral-info)
                                   (list (make-instance 'chiral-bond-info
                                                        :bond-type bond-type1
@@ -1098,9 +1124,9 @@ The coordinates are all pressed into the X-Y plane and some hydrogens are added 
                    (push chiral-info (chiral-infos sketch2d))))))))
 
 
-(defun sketch2d (matter &key accumulate-coordinates transform)
+(defun sketch2d (matter &key accumulate-coordinates)
   (chem:calculate-stereochemistry-from-structure matter)
-  (let ((sketch2d (do-sketch2d matter :accumulate-coordinates accumulate-coordinates :transform transform)))
+  (let ((sketch2d (do-sketch2d matter :accumulate-coordinates accumulate-coordinates)))
     (augment-sketch-with-stereochemistry sketch2d)
     sketch2d))
 

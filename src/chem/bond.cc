@@ -340,7 +340,43 @@ void	Bond_O::imposeYourself()
   a2->_addExistingBond(this->sharedThis<Bond_O>());
 }
 
+/*! If the from atom matches this->_Atom1 then return the order,
+otherwise if it's a directional stereochemical bond then flip
+the direction */
+BondOrder Bond_O::maybeFlipOrder(Atom_sp from)
+{
+  if (from == this->_Atom1) return this->order;
+  switch (this->order) {
+  case singleWedgeBegin: return singleWedgeEnd;
+  case singleWedgeEnd: return singleWedgeBegin;
+  case singleDashBegin: return singleDashEnd;
+  case singleDashEnd: return singleDashBegin;
+  default:
+      return this->order;
+  }
+}
 
+void Bond_O::canonicalizeBondOrder(Atom_sp& a1, Atom_sp& a2, BondOrder& order) {
+  switch (order) {
+  case singleWedgeEnd: {
+    order = singleWedgeBegin;
+    Atom_sp temp = a2;
+    a2 = a1;
+    a1 = temp;
+    return;
+  }
+      break;
+  case singleDashEnd: {
+    order = singleDashBegin;
+    Atom_sp temp = a2;
+    a2 = a1;
+    a1 = temp;
+    return;
+  }
+      break;
+  default: return;
+  }
+}
 
 ConstitutionBond_sp Bond_O::asConstitutionBond(Atom_sp from, const MapAtomsToConstitutionAtomIndex0N& atomMap)
 {_OF();
@@ -351,7 +387,8 @@ ConstitutionBond_sp Bond_O::asConstitutionBond(Atom_sp from, const MapAtomsToCon
     SIMPLE_ERROR(BF("Could not find atom[%s] in atomMap") % _rep_(to));
   }
   ConstitutionAtomIndex0N index = it->second;
-  ConstitutionBond_sp cb = makeConstitutionBond(index, this->getOrder());
+  BondOrder order = this->maybeFlipOrder(from);
+  ConstitutionBond_sp cb = makeConstitutionBond(index, order);
   return cb;
 }
 

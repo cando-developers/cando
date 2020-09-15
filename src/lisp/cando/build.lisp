@@ -89,7 +89,6 @@ Sort the atoms by name in increasing alphabetical order."
             (let* ((sorted-built (sort-atoms-by-name built-atoms)))
               (destructuring-bind (n0 n1 n2)
                   sorted-built
-                (format t "Building from sorted-built: ~a~%" sorted-built)
                 (let* ((used-improper (geom:calculate-dihedral (chem:get-position n0)
                                                                (chem:get-position central)
                                                                (chem:get-position n1)
