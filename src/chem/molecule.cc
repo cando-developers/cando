@@ -229,6 +229,7 @@ CL_DEFMETHOD     Matter_sp Molecule_O::copy(core::T_sp new_to_old)
         Loop lbonds(this->asSmartPtr(),BONDS);
         while (lbonds.advanceLoopAndProcess()) {
           Bond_sp b = lbonds.getBond();
+          // printf("%s:%d Molecule_O::copy copy bond %s\n", __FILE__, __LINE__, _rep_(b).c_str() );
           Bond_sp bcopy = b->copyDontRedirectAtoms();
           bcopy->addYourselfToCopiedAtoms();
         }
