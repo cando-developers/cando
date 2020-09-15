@@ -4,6 +4,21 @@
 
 (in-package :sdf)
 
+(define-condition sdf-parse-error (error)
+  ((message
+     :accessor sdf-parse-error-message
+     :initarg :message
+     :initform nil)
+   (code
+     :accessor sdf-parse-error-code
+     :initarg :code
+     :initform nil))
+  (:report
+    (lambda (condition stream)
+      (format stream "~a~@[ encountered while parsing \"~a\"~].~%"
+              (sdf-parse-error-message condition)
+              (sdf-parse-error-code condition)))))
+
 (esrap:defrule skippable
     (+ (or parser.common-rules:shell-style-comment
            parser.common-rules:whitespace)))
@@ -123,7 +138,7 @@
        :chg)
       ((eq (car m-line) :end)
        :end)
-      (t (error "Unknown m-line ~a" line)))))
+      (t (error 'sdf-parse-error :message "Unknown m-line" :code line)))))
 
 (defun parse-groups (sin eof-error-p eof)
   (flet ((terminating-read-line (sin)
@@ -176,7 +191,7 @@
     (cond
       ((eq atom-groups eof)
        (if eof-error-p
-           (error "End of file hit in parse-mdl-molecule")
+           (error 'end-of-file :stream fin)
            (return-from parse-mdl-molecule eof)))
       ((= (length atom-groups) 1)
        (let* ((atoms (first atom-groups))
@@ -187,7 +202,7 @@
                do (loop for atom in group
                         do (chem:add-matter residue atom)))
          (values molecule name)))
-      (t (error "Deal with multiple molecules in sdf")))))
+      (t (error 'sdf-parse-error :message "Deal with multiple molecules in sdf")))))
 
 (defun parse-sdf-section (fin eof-error-p eof)
   (multiple-value-bind (molecule name)

@@ -1,4 +1,4 @@
-(in-package :tirun-jupyter)
+(in-package :cando-widgets)
 
 
 (defparameter *molecule-sketches* (make-hash-table :test #'eql))
@@ -12,7 +12,21 @@
       (setf (gethash molecule *molecule-sketches*)
             (sketch2d:svg (sketch2d:sketch2d molecule))))))
 
+
 (defparameter *common-sketch* nil)
+
+
+(defun build-prototype-sketch (ligands)
+  "Find the smallest ligand and build a sketch for it"
+  (let ((min-atoms (chem:number-of-atoms (car ligands)))
+        (min-mol (car ligands)))
+    (loop for mol in (cdr ligands)
+          for num-atoms = (chem:number-of-atoms mol)
+          when (< num-atoms min-atoms)
+            do (setf min-atoms num-atoms
+                     min-mol mol))
+    (sketch2d:sketch2d min-mol)))
+
 
 (defun sketch-molecules (molecules)
   (let (common-sketch)
@@ -32,11 +46,11 @@
 (defconstant +min-sketch-width+ 50.0)
 
 
-(defclass molecule-select (w:has-traits)
+(defclass molecule-select (jw:grid-box)
   ((container
      :accessor container
-     :initform (make-instance 'w:grid-box
-                              :layout (make-instance 'w:layout
+     :initform (make-instance 'jw:grid-box
+                              :layout (make-instance 'jw:layout
                                                      :height "640px"
                                                      :overflow-y "scroll"
                                                      :grid-auto-rows "min-content"
@@ -45,28 +59,17 @@
                                                      :padding ".25em"
                                                      :grid-area "list"
                                                      :grid-template-columns "repeat(auto-fill, 200px)")))
-   (outer
-     :accessor outer
-     :initform (make-instance 'w:grid-box
-                              :layout (make-instance 'w:layout
-                                                     :border "var(--jp-widgets-border-width) solid var(--jp-border-color1)"
-                                                     :grid-gap "var(--jp-widgets-container-padding)"
-                                                     :padding "var(--jp-widgets-container-padding)"
-                                                     :grid-template-columns "1fr min-content min-content 1fr"
-                                                     :grid-template-rows "min-content 1fr"
-                                                     :grid-template-areas "\". all none .\"
-                                                                           \"list list list list\"")))
    (select-all
      :accessor select-all
-     :initform (make-instance 'w:button
+     :initform (make-instance 'jw:button
                               :description "Select All"
-                              :layout (make-instance 'w:layout
+                              :layout (make-instance 'jw:layout
                                                      :grid-area "all")))
    (select-none
      :accessor select-none
-     :initform (make-instance 'w:button
+     :initform (make-instance 'jw:button
                               :description "Select None"
-                              :layout (make-instance 'w:layout
+                              :layout (make-instance 'jw:layout
                                                      :grid-area "none")))
    (selection-mode
      :reader selection-mode
@@ -76,76 +79,79 @@
      :accessor molecules
      :initarg :molecules
      :initform nil
-     :trait :list)
+     :trait t)
    (selected
      :accessor selected
      :initarg :selected
      :initform nil
-     :trait :list)
+     :trait t)
    (max-width
      :accessor max-width
      :initform +min-sketch-width+
-     :trait :float)
+     :trait t)
    (task-channel
      :reader task-channel
      :initform (lparallel:make-channel)))
-  (:metaclass jupyter-widgets:trait-metaclass))
+  (:metaclass jupyter-widgets:trait-metaclass)
+  (:default-initargs
+    :layout (make-instance 'jw:layout
+                           ;:border "var(--jp-widgets-border-width) solid var(--jp-border-color1)"
+                           :grid-gap "var(--jp-widgets-container-padding)"
+                           ;:padding "var(--jp-widgets-container-padding)"
+                           :grid-template-columns "1fr min-content min-content 1fr"
+                           :grid-template-rows "min-content 1fr"
+                           :grid-template-areas "\"list list list list\" \". all none .\"")))
 
 
 (defmethod initialize-instance :after ((instance molecule-select) &rest args &key &allow-other-keys)
   (declare (ignore args))
-  (with-slots (select-all select-none outer container selection-mode)
+  (with-slots (select-all select-none container selection-mode)
               instance
-    (w:observe instance :max-width
+    (jw:observe instance :max-width
       (lambda (inst type name old-value new-value source)
         (declare (ignore inst type name old-value source))
-        (setf (w:widget-grid-template-columns (w:widget-layout (container instance)))
+        (setf (jw:widget-grid-template-columns (jw:widget-layout (container instance)))
               (format nil "repeat(auto-fill,~Fpx)" (+ 2 new-value)))))
-    (setf (w:widget-children outer)
+    (setf (jw:widget-children instance)
           (if (eql :multiple selection-mode)
             (list select-all select-none container)
             (list container)))
-    (w:on-button-click select-all
+    (jw:on-button-click select-all
       (lambda (inst)
         (declare (ignore inst))
         (setf (selected instance) (molecules instance))))
-    (w:on-button-click select-none
+    (jw:on-button-click select-none
       (lambda (inst)
         (declare (ignore inst))
         (setf (selected instance) nil)))))
-
-
-(defmethod jupyter-widgets:%display ((instance molecule-select) &rest args &key &allow-other-keys)
-  (declare (ignore args))
-  (outer instance))
 
 
 (defun sketch-and-update (instance html molecule)
   (ignore-errors
     (let ((sketch (sketch-molecule molecule)))
       (setf (max-width instance) (max (max-width instance) (sketch2d:width sketch))
-            (w:widget-value html) (sketch2d:render-svg-to-string sketch)))))
+            (jw:widget-value html) (sketch2d:render-svg-to-string sketch)))))
 
 
 (defun make-molecule-view (instance molecule)
   (with-slots (selection-mode)
               instance
     (let ((toggle (if (eql :none selection-mode)
-                    (make-instance 'w:label
-                                   :layout (make-instance 'w:layout
+                    (make-instance 'jw:label
+                                   :layout (make-instance 'jw:layout
                                                           :margin "var(--jp-widgets-margin) auto")
                                    :value (symbol-name (chem:get-name molecule)))
-                    (make-instance 'w:checkbox
-                                   :layout (make-instance 'w:layout
+                    (make-instance 'jw:checkbox
+                                   :layout (make-instance 'jw:layout
                                                           :margin "var(--jp-widgets-margin) auto")
                                    :description (symbol-name (chem:get-name molecule)))))
-          (html (make-instance 'w:html
-                               :layout (make-instance 'w:layout
+          (html (make-instance 'jw:html
+                               :layout (make-instance 'jw:layout
                                                       :margin "auto"
                                                       :overflow "hidden"))))
       (lparallel:submit-task (task-channel instance) #'sketch-and-update instance html molecule)
       (unless (eql :none selection-mode)
-        (w:observe toggle :value
+        (jw:observe toggle :value
           (lambda (inst type name old-value new-value source)
             (declare (ignore inst type name old-value source))
             (let ((current-position (position molecule (selected instance) :test #'eql)))
@@ -161,21 +167,21 @@
                 ((not current-position)
                   (setf (selected instance)
                         (nconc (selected instance) (list molecule))))))))
-        (w:observe instance :selected
+        (jw:observe instance :selected
           (lambda (inst type name old-value new-value source)
             (declare (ignore type name old-value source))
-            (setf (w:widget-value toggle)
+            (setf (jw:widget-value toggle)
                   (and (position molecule (selected instance) :test #'eql)
                        t)))))
-      (make-instance 'w:v-box
-                     :layout (make-instance 'w:layout
+      (make-instance 'jw:v-box
+                     :layout (make-instance 'jw:layout
                                             :border "var(--jp-widgets-border-width) solid var(--jp-border-color1)")
                      :children (list toggle html)))))
 
 
 (defun render-molecules (instance)
   (setf (max-width instance) +min-sketch-width+
-        (w:widget-children (container instance)) (mapcar (lambda (molecule)
+        (jw:widget-children (container instance)) (mapcar (lambda (molecule)
                                                            (make-molecule-view instance molecule))
                                                          (molecules instance))))
 

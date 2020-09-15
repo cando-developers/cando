@@ -28,5 +28,6 @@
   (:use #:common-lisp)
   (:export
    #:parse-sdf-file
+   #:sdf-parse-error
    #:load-sdf-as-list-of-molecules
    #:load-sdf-as-aggregate))
