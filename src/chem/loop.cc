@@ -813,9 +813,10 @@ CL_DEFUN core::T_sp chem__map_bonds(core::Symbol_sp result_type, core::T_sp func
   BondOrder o;
   if ( result_type.nilp() ) {
     while (l.advanceLoopAndProcess()) {
-      a1 = l.getBondA1();
-      a2 = l.getBondA2();
-      o = l.getBondOrder();
+      Bond_sp bond = l.getBond();
+      a1 = bond->getAtom1();
+      a2 = bond->getAtom2();
+      o = bond->getOrder();
       core::eval::funcall(func,a1,a2,translate::to_object<BondOrder>::convert(o));
     }
     return _Nil<core::T_O>(); 
@@ -823,9 +824,10 @@ CL_DEFUN core::T_sp chem__map_bonds(core::Symbol_sp result_type, core::T_sp func
   if ( result_type == cl::_sym_list ) {
     ql::list res;
     while (l.advanceLoopAndProcess()) {
-      a1 = l.getBondA1();
-      a2 = l.getBondA2();
-      o = l.getBondOrder();
+      Bond_sp bond = l.getBond();
+      a1 = bond->getAtom1();
+      a2 = bond->getAtom2();
+      o = bond->getOrder();
       res << core::eval::funcall(func,a1,a2,translate::to_object<BondOrder>::convert(o));
     }
     return res.cons();
@@ -833,9 +835,10 @@ CL_DEFUN core::T_sp chem__map_bonds(core::Symbol_sp result_type, core::T_sp func
   if ( result_type == cl::_sym_vector ) {
     core::ComplexVector_T_sp vo = core::ComplexVector_T_O::make(16,_Nil<core::T_O>(),core::clasp_make_fixnum(0));
     while (l.advanceLoopAndProcess()) {
-      a1 = l.getBondA1();
-      a2 = l.getBondA2();
-      o = l.getBondOrder();
+      Bond_sp bond = l.getBond();
+      a1 = bond->getAtom1();
+      a2 = bond->getAtom2();
+      o = bond->getOrder();
       vo->vectorPushExtend(core::eval::funcall(func,a1,a2,translate::to_object<BondOrder>::convert(o)));
     }
     return vo;

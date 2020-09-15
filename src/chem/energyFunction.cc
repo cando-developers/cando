@@ -1255,6 +1255,7 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, bool useEx
 CL_LAMBDA((energy-function !) matter &key use-excluded-atoms active-atoms (assign-types t));
 CL_DEFMETHOD void EnergyFunction_O::defineForMatterWithAtomTypes(Matter_sp matter, bool useExcludedAtoms, core::T_sp activeAtoms)
 {_OF();
+  if (chem__verbose(0)) core::write_bf_stream(BF("defineForMatterWithAtomTypes\n"));
   this->_Matter= matter;
   if ( !(matter.isA<Aggregate_O>() || matter.isA<Molecule_O>() ) )
   {
@@ -1373,6 +1374,7 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatterWithAtomTypes(Matter_sp matte
     this->_AtomTable->set_totalNumberOfMoleculesNSPM(number_of_molecules_nspm);
   }
   {
+    if (chem__verbose(1)) core::write_bf_stream(BF("About to calculate nonbond and restraint terms"));
     core::T_sp nonbondForceField = this->_AtomTable->nonbondForceFieldForAggregate();
     this->generateNonbondEnergyFunctionTables(useExcludedAtoms,matter,nonbondForceField,activeAtoms);
     this->generateRestraintEnergyFunctionTables(matter,nonbondForceField,activeAtoms);
@@ -1732,6 +1734,8 @@ CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter
   FFItor_sp        ffItor;
   FFNonbond_sp	ffNonbond1, ffNonbond2;
   int             coordinateIndex;
+  if (chem__verbose(1)) core::write_bf_stream(BF("In generateRestraintEnergyFunctionTables\n"));
+  
     	//
 	// Setup the atom chiral restraints
 	//
@@ -1743,9 +1747,10 @@ CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter
     loop.loopTopGoal(matter,ATOMS);
     while ( loop.advanceLoopAndProcess() ) {
       a1 = loop.getAtom();
+      if (chem__verbose(1)) core::write_bf_stream(BF("Looking to assign stereochemical restraint for %s\n") % _rep_(a1));
       if ( activeAtoms.notnilp() && !inAtomSet(activeAtoms,a1) ) continue;
-      if ( a1->getStereochemistryType() != undefinedCenter ) 
-      {
+      if ( a1->getStereochemistryType() != undefinedCenter ) {
+        if (chem__verbose(1)) core::write_bf_stream(BF("getStereochemistryType != undefinedCenter for %s\n") % _rep_(a1));
         LOG(BF("Create a chiral restraint for %s") % a1->description()  );
 			//
 			// Figure out what the desired configuration should be
@@ -1762,38 +1767,45 @@ CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter
 			// default R-stereochemistry (1-center)x(2-center).(3-center) is POSITIVE
 			//
         side = 1.0;
+        core::List_sp priority;
         if ( a1->getConfiguration() != undefinedConfiguration )
         {
-          if ( a1->getConfiguration() == R_Configuration )
-          {
+          if ( a1->getConfiguration() == R_Configuration ) {
             side = 1.0;
-          } else
-          {
+          } else if ( a1->getConfiguration() == S_Configuration ) {
             side = -1.0;
+          } else if ( a1->getConfiguration() == RightHanded_Configuration ) {
+            side = -1.0;
+          } else if ( a1->getConfiguration() == LeftHanded_Configuration ) {
+            side = 1.0;
           }
         } else
         {
-          if ( a1->getStereochemistryType() == prochiralCenter )
-          {
+          if ( a1->getStereochemistryType() == prochiralCenter ) {
             side = 1.0;
-          } else
-          {
+          } else {
             SIMPLE_WARN(BF("Chiral center (%s) with configuration settings[%s] doesn't have its configuration set")
                          % a1->description()
                          % a1->getConfigurationAsString() );
           }
         }
-        core::List_sp priority = a1->getNeighborsByRelativePriority();
-        ASSERTP(core::cl__length(priority) == 4, "There must be 4 neighbors to assign stereochemistry");
-        core::List_sp cur = priority;
-        if (chem__verbose(2)) core::write_bf_stream(BF("Assigning stereochemistry for central atom %s neighbors: %s\n") % _rep_(a1) % _rep_(cur));
-        n1 = cur.asCons()->car<Atom_O>();
-        cur = cur.asCons()->cdr();
-        n2 = cur.asCons()->car<Atom_O>();
-        cur = cur.asCons()->cdr();
-        n3 = cur.asCons()->car<Atom_O>();
-        cur = cur.asCons()->cdr();
-        n4 = cur.asCons()->car<Atom_O>();
+        if ( a1->getConfiguration() == R_Configuration
+             || a1->getConfiguration() == S_Configuration ) {
+          priority = a1->getNeighborsByRelativePriority();
+        } else if (a1->getConfiguration() == RightHanded_Configuration
+                   || a1->getConfiguration() == LeftHanded_Configuration) {
+          priority = a1->getNeighborsForAbsoluteConfiguration();
+        } else {
+          priority = a1->getNeighborsForAbsoluteConfiguration();
+        }
+        if (core::cl__length(priority)!=4) {
+          SIMPLE_ERROR(BF("There must be 4 neighbors of %s - but there is only %s") % _rep_(a1) % _rep_(priority));
+        }
+        if (chem__verbose(1)) core::write_bf_stream(BF("Assigning stereochemistry for central atom %s neighbors: %s\n") % _rep_(a1) % _rep_(priority));
+        n1 = gc::As<Atom_sp>(oFirst(priority));
+        n2 = gc::As<Atom_sp>(oSecond(priority));
+        n3 = gc::As<Atom_sp>(oThird(priority));
+        n4 = gc::As<Atom_sp>(oFourth(priority));
 #if 0
         s1 = a1->getConfigurationPriorityHighest();
         s2 = a1->getConfigurationPriorityHigh();
@@ -1818,6 +1830,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter
 			// Setup chiral restraints for 1->2->center->3
 			//			and 1->2->center->4
 			//
+        if (chem__verbose(1)) core::write_bf_stream(BF("Assigning stereochemistry for central atom %s neighbors: %s\n") % _rep_(a1) % _rep_(priority));
         ichiral._Atom1 = ea1->atom();
         ichiral._Atom2 = ea2->atom();
         ichiral._Atom3 = eaCenter->atom();
@@ -1878,6 +1891,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter
 	// Set up the anchor restraints
 	//
 #if ATOMIC_ANCHOR
+#error "ATOMIC_ANCHOR is on"
   {_BLOCK_TRACE("Defining anchor restraints");
     if ( this->_AtomTable->getNumberOfAtoms() > 0 )
     {

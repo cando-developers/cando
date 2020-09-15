@@ -155,14 +155,15 @@ CL_DEFMETHOD void    FFTypesDb_O::assignTypes(chem::Matter_sp matter)
     }
     if (name.notnilp()) {
       core::T_mv result_mv = chem__findTopology(name,false);
+      core::T_sp found = result_mv.second();
       if (chem__verbose(2)) {
-        core::write_bf_stream(BF("chem__findTopology -> %s %s\n") % _rep_(result_mv) % _rep_(result_mv.second()));
+        core::write_bf_stream(BF("chem__findTopology -> %s %s\n") % _rep_(result_mv) % _rep_(found));
       }
-      if (result_mv.second().notnilp()) {
+      if (found.notnilp()) {
+        Topology_sp topology = gc::As<Topology_sp>(result_mv);
         if (chem__verbose(2)) {
           core::write_bf_stream(BF("Found topology for residue name: %s\n") % _rep_(name));
         }
-        Topology_sp topology = gc::As<Topology_sp>(result_mv);
         Constitution_sp constitution = topology->getConstitution();
         ConstitutionAtoms_sp constitution_atoms = constitution->getConstitutionAtoms();
         // Use the Topology to assign atom types

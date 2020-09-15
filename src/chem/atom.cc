@@ -88,6 +88,8 @@ core::NullTerminatedEnumAssociation configurationEnum[] = {
     { "UNDEFINED", undefinedConfiguration },
     { "S", S_Configuration },
     { "R", R_Configuration },
+    { "RightHanded", RightHanded_Configuration },
+    { "LeftHanded", LeftHanded_Configuration },
     { "", -1 }
 };
 
@@ -222,6 +224,12 @@ string Atom_O::calculateStereochemicalConfigurationAsString()
       break;
   case R_Configuration:
       s = "R";
+      break;
+  case RightHanded_Configuration:
+      s = "RightHanded";
+      break;
+  case LeftHanded_Configuration:
+      s = "LeftHanded";
       break;
   default:
       s = "undefinedConfiguration";
@@ -662,6 +670,15 @@ public:
   }
 };
 
+core::List_sp	Atom_O::getNeighborsForAbsoluteConfiguration()
+{
+  ql::list l;
+  for ( auto b=this->bonds.begin();b!=this->bonds.end() ; b++ ) {
+    l << (*b)->getOtherAtom(this->sharedThis<Atom_O>());
+  }
+  return l.cons();
+}
+  
 core::List_sp	Atom_O::getNeighborsByRelativePriority()
 {
   LOG(BF("Ordering neighbors around(%s) by priority and name") % this->getName()  );
@@ -976,15 +993,16 @@ CL_LISPIFY_NAME("getConfigurationAsString");
 CL_DEFMETHOD     string	Atom_O::getConfigurationAsString()
 {
   string config, stereo;
-  if ( this->_Configuration == undefinedConfiguration )
-  {
+  if ( this->_Configuration == undefinedConfiguration ) {
     config = "UndefinedConfiguration";
-  } else if ( this->_Configuration == S_Configuration )
-  {
+  } else if ( this->_Configuration == S_Configuration ) {
     config = "(S)";
-  } else if ( this->_Configuration == R_Configuration )
-  {
+  } else if ( this->_Configuration == R_Configuration ) {
     config = "(R)";
+  } else if ( this->_Configuration == RightHanded_Configuration ) {
+    config = "(rh)";
+  } else if ( this->_Configuration == LeftHanded_Configuration ) {
+    config = "(lh)";
   } else
   {
     config = "???";
@@ -1245,20 +1263,7 @@ Matter_sp Atom_O::copyDontRedirectAtoms(core::T_sp new_to_old)
   LOG(BF("Copying atom @%p") % this );
   Atom_sp myself = this->sharedThis<Atom_O>();
   GC_NON_RECURSIVE_COPY(Atom_O, aNew , *this); // = RP_Copy<Atom_O>(this);
-#if 1
   aNew->bonds.clear();
-#else
-  printf("%s:%d copyDontRedirectAtom original: %p  copy %p\n", __FILE__, __LINE__, myself.raw_(), aNew.raw_());
-  for ( VectorBond::const_iterator b=bonds.begin();b!=bonds.end() ; b++ ) {
-	    /* Only copy Bond object if we are the Atom1
-	     This is to ensure that bonds aren't duplicated*/
-    if ( (*b)->isAtom1(myself) ) {
-      Bond_sp bNew = (*b)->copyDontRedirectAtoms();
-      printf("%s:%d copyDontRedirectAtom newBond between atoms: %p - %p\n", __FILE__, __LINE__, bNew->_Atom1.raw_(), bNew->_Atom2.raw_());
-      aNew->bonds.push_back(bNew);
-    }
-  }
-#endif
   this->copyAtom = aNew;
   aNew->copyRestraintsDontRedirectAtoms(this->asSmartPtr());
   LOG(BF("    copy atom== %s") % aNew->description());
@@ -1608,6 +1613,34 @@ CL_DEFMETHOD     bool Atom_O::isConfigurable()
   return this->_StereochemistryType != undefinedCenter;
 }
 
+CL_DEFMETHOD void Atom_O::setAbsoluteConfiguration(ConfigurationEnum config, Atom_sp n1, Atom_sp n2, Atom_sp n3)
+{
+  Bond_sp b1(_Unbound<Bond_O>());
+  Bond_sp b2(_Unbound<Bond_O>());
+  Bond_sp b3(_Unbound<Bond_O>());
+  Bond_sp b4(_Unbound<Bond_O>());
+  if (!(this->bonds.size()==4||this->bonds.size()==3)) {
+    SIMPLE_ERROR(BF("You cannot define the absolute configuration of an atom that has %d bonds - it must have 3 or 4") % this->bonds.size());
+  }
+  for ( int bi=0; bi<this->bonds.size(); bi++ ) {
+    Bond_sp bc = this->bonds[bi];
+    Atom_sp other = bc->getOtherAtom(this->asSmartPtr());
+    if (other==n1) b1 = bc;
+    else if (other==n2) b2 = bc;
+    else if (other==n3) b3 = bc;
+    else b4 = bc;
+  }
+  this->bonds[0] = b1;
+  this->bonds[1] = b2;
+  this->bonds[2] = b3;
+  if (!b4.unboundp()) {
+    this->bonds[3] = b4;
+  }
+  this->_StereochemistryType = chiralCenter;
+  this->_Configuration = config;
+}
+
+
 
 void Atom_O::invertStructureAndRestraints()
 {
@@ -1622,12 +1655,14 @@ void Atom_O::invertStructureAndRestraints()
 #endif
 	
   ConfigurationEnum config = this->_Configuration;
-  if ( config == S_Configuration )
-  {
+  if ( config == S_Configuration ) {
     this->_Configuration = R_Configuration;
-  } else if ( config == R_Configuration )
-  {
+  } else if ( config == R_Configuration ) {
     this->_Configuration = S_Configuration;
+  } else if ( config == RightHanded_Configuration ) {
+    this->_Configuration = LeftHanded_Configuration;
+  } else if ( config == LeftHanded_Configuration ) {
+    this->_Configuration = RightHanded_Configuration;
   }
 }
 

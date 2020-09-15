@@ -170,6 +170,27 @@ double	_evaluateEnergyOnly_ChiralRestraint(
 
 
 
+core::List_sp EnergyChiralRestraint::encode() const {
+  return core::Cons_O::createList(core::Cons_O::create(INTERN_(kw,k),core::clasp_make_double_float(this->term.K)),
+                                  core::Cons_O::create(INTERN_(kw,CO),core::clasp_make_double_float(this->term.CO)),
+                                  core::Cons_O::create(INTERN_(kw,i1), core::make_fixnum(this->term.I1)),
+                                  core::Cons_O::create(INTERN_(kw,i2), core::make_fixnum(this->term.I2)),
+                                  core::Cons_O::create(INTERN_(kw,i3), core::make_fixnum(this->term.I3)),
+                                  core::Cons_O::create(INTERN_(kw,i4), core::make_fixnum(this->term.I4)),
+                                  core::Cons_O::create(INTERN_(kw,atom1), this->_Atom1),
+                                  core::Cons_O::create(INTERN_(kw,atom2), this->_Atom2),
+                                  core::Cons_O::create(INTERN_(kw,atom2), this->_Atom3),
+                                  core::Cons_O::create(INTERN_(kw,atom3), this->_Atom4));
+}
+
+
+void EnergyChiralRestraint_O::fields(core::Record_sp node)
+{
+  node->field( INTERN_(kw,terms), this->_Terms );
+  this->Base::fields(node);
+}
+
+
 void EnergyChiralRestraint_O::addTerm(const EnergyChiralRestraint& e)
 {
     this->_Terms.push_back(e);

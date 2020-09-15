@@ -502,6 +502,7 @@ namespace chem {
 	//
 	//! If the atom can have a stereochemical configuration return true
     core::List_sp	getNeighborsByRelativePriority();
+    core::List_sp	getNeighborsForAbsoluteConfiguration();
     CL_LISPIFY_NAME("getRelativePriority");
     CL_DEFMETHOD 	int	getRelativePriority() { return this->_RelativePriority;};
     void	setRelativePriority(int p) { this->_RelativePriority = p;};
@@ -518,13 +519,9 @@ namespace chem {
     CL_LISPIFY_NAME("getConfiguration");
     CL_DEFMETHOD 	ConfigurationEnum getConfiguration() { return this->_Configuration;};
     string	getConfigurationAsString();
-#if 0
-    void	setConfigurationPriorityHighToLow(string highest, string high, string low, string lowest);
-    string	getConfigurationPriorityHighest();
-    string	getConfigurationPriorityHigh();
-    string	getConfigurationPriorityLow();
-    string	getConfigurationPriorityLowest();
-#endif
+
+    void setAbsoluteConfiguration(ConfigurationEnum config, Atom_sp n1, Atom_sp n2, Atom_sp n3);
+
     void	addUniqueIntraResidueBondCopiesToBondList(BondList_sp list);
     void	addUniqueInterResidueBondCopiesToBondList(BondList_sp list);
 

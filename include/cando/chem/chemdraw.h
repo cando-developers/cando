@@ -55,18 +55,20 @@ SMART(Lisp);
 
 
 typedef	enum { singleCDBond,
-		doubleCDBond,
-		tripleCDBond,
-		dativeCDBond,
-		singleDashCDBond,
-		doubleDashCDBond,
-		tripleDashCDBond,
-		hashCDBond,
+               doubleCDBond,
+               tripleCDBond,
+               dativeCDBond,
+               singleDashCDBond,
+               doubleDashCDBond,
+               tripleDashCDBond,
+               hashCDBond,
                hollowWedgeCDBond,
-               wedgeHashCDBond,
-               wedgeCDBond,
-                 wavyCDBond,
-		unknownCDBond
+               WedgedHashBeginCDBond,
+               WedgedHashEndCDBond,
+               WedgeBeginCDBond,
+               WedgeEndCDBond,
+               wavyCDBond,
+               unknownCDBond
     } CDBondOrder;
 
 

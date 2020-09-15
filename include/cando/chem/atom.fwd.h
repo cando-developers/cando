@@ -49,7 +49,9 @@ namespace chem
     typedef	enum {
 	undefinedConfiguration,
 	S_Configuration,
-	R_Configuration
+	R_Configuration,
+        RightHanded_Configuration,
+        LeftHanded_Configuration
     } ConfigurationEnum;
 
     

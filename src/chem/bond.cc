@@ -57,8 +57,10 @@ SYMBOL_EXPORT_SC_(ChemKwPkg,_hydrogenBond);
 SYMBOL_EXPORT_SC_(ChemKwPkg,_virtualBond);
 SYMBOL_EXPORT_SC_(ChemKwPkg,_dashedSingleBond);
 SYMBOL_EXPORT_SC_(ChemKwPkg,_dashedDoubleBond);
-SYMBOL_EXPORT_SC_(ChemKwPkg,singleWedge);
-SYMBOL_EXPORT_SC_(ChemKwPkg,singleDash);
+SYMBOL_EXPORT_SC_(ChemKwPkg,singleWedgeBegin);
+SYMBOL_EXPORT_SC_(ChemKwPkg,singleDashBegin);
+SYMBOL_EXPORT_SC_(ChemKwPkg,singleWedgeEnd);
+SYMBOL_EXPORT_SC_(ChemKwPkg,singleDashEnd);
 
 
 string	XmlName_Bond = "bond";
@@ -70,6 +72,12 @@ Bond_sp	Bond_O::create(Atom_sp from, Atom_sp to, BondOrder o)
   bond->_Atom1 = from;
   bond->_Atom2 = to;
   bond->setOrder(o);
+#if 0
+  if (from->getName()->symbolNameAsString() == "C8" &&
+      to->getName()->symbolNameAsString() == "C7") {
+    printf("%s:%d Created bond %s -> %s %s\n", __FILE__, __LINE__, _rep_(from).c_str(), _rep_(to).c_str(), bondOrderToString(o).c_str());
+  }
+#endif
   LOG(BF("created bond from=%s to=%s")
       % bond->_Atom1->description()
       % bond->_Atom2->description() );
@@ -92,6 +100,7 @@ Bond_O::Bond_O(const Bond_O& bb)  : core::CxxObject_O(bb)
   this->order = bb.order;
   this->_Atom1 = bb._Atom1;
   this->_Atom2 = bb._Atom2;
+//  printf("%s:%d  Bond_O copy ctor %s -> %s %s\n", __FILE__, __LINE__, _rep_(bb._Atom1).c_str(), _rep_(bb._Atom2).c_str(), bondOrderToString(bb.order).c_str());
   this->_Properties = bb._Properties; // You can't call allocators from ctors core::cl__copy_list(bb._Properties);
   LOG(BF("copy _Atom1=%s _Atom2=%s")
       % this->_Atom1->description()
@@ -120,8 +129,8 @@ Bond_sp Bond_O::copyDontRedirectAtoms()
 
 void Bond_O::addYourselfToCopiedAtoms()
 {_OF();
-//  printf("%s:%d Redirecting bond from atoms %p - %p\n", __FILE__, __LINE__, this->_Atom1.raw_(), this->_Atom2.raw_());
-//  printf("%s:%d                    to atoms %p - %p\n", __FILE__, __LINE__, this->_Atom1->getCopyAtom().raw_(), this->_Atom2->getCopyAtom().raw_());
+//  printf("%s:%d Redirecting bond from atoms %s@%p - %s@%p\n", __FILE__, __LINE__, _rep_(this->_Atom1).c_str(), this->_Atom1.raw_(), _rep_(this->_Atom2).c_str(), this->_Atom2.raw_() );
+//  printf("%s:%d                    to atoms %s@%p - %s@%p\n", __FILE__, __LINE__, _rep_(this->_Atom1->getCopyAtom()).c_str(), this->_Atom1->getCopyAtom().raw_(), _rep_(this->_Atom2->getCopyAtom()).c_str(), this->_Atom2->getCopyAtom().raw_());
   ASSERTNOTNULL(this->_Atom1);
   this->_Atom1 = this->_Atom1->getCopyAtom();
   this->_Atom1->addBond(this->asSmartPtr());
@@ -169,8 +178,10 @@ core::NullTerminatedEnumAssociation bondOrderKeys[] = {
     { "virtual", virtualBond },
     { "dashedSingle", dashedSingleBond },
     { "dashedDouble", dashedDoubleBond },
-    { "singleWedge", singleWedge },
-    { "singleDash", singleDash },
+    { "singleWedgeBegin", singleWedgeBegin },
+    { "singleDashBegin", singleDashBegin },
+    { "singleWedgeEnd", singleWedgeEnd },
+    { "singleDashEnd", singleDashEnd },
     { "", -1 }
 };
 
@@ -258,6 +269,7 @@ string  Bond_O::description() const
   ss << bondOrderToChar(this->order);
   Atom_sp wa2 = this->_Atom2;
   ss << _rep_(wa2);
+  ss << " " << bondOrderToString(this->order);
   ss << " @"<<std::hex<<this<<std::dec<<")";
   return ss.str();
 }
@@ -381,11 +393,17 @@ string	bondOrderToString(BondOrder bo) {
   case singleBond:
       return "single";
       break;
-  case singleWedge:
-      return "singleWedge";
+  case singleWedgeBegin:
+      return "singleWedgeBegin";
       break;
-  case singleDash:
-      return "singleDash";
+  case singleDashBegin:
+      return "singleDashBegin";
+      break;
+  case singleWedgeEnd:
+      return "singleWedgeEnd";
+      break;
+  case singleDashEnd:
+      return "singleDashEnd";
       break;
   case doubleBond:
       return "double";
@@ -411,8 +429,10 @@ string	bondOrderToString(BondOrder bo) {
 BondOrder	stringToBondOrder(string bos) {
   if ( bos=="none" ) return noBond;
   if ( bos=="single" ) return singleBond;
-  if ( bos=="singleWedge" ) return singleWedge;
-  if ( bos=="singleDash" ) return singleDash;
+  if ( bos=="singleWedgeBegin" ) return singleWedgeBegin;
+  if ( bos=="singleDashBegin" ) return singleDashBegin;
+  if ( bos=="singleWedgeEnd" ) return singleWedgeEnd;
+  if ( bos=="singleDashEnd" ) return singleDashEnd;
   if ( bos=="double" ) return doubleBond;
   if ( bos=="triple" ) return tripleBond;
   if ( bos=="aromatic" ) return aromaticBond;
@@ -431,11 +451,17 @@ char bondOrderToChar(BondOrder bo)
   case singleBond:
       return '-';
       break;
-  case singleWedge:
+  case singleWedgeBegin:
       return '/';
       break;
-  case singleDash:
+  case singleDashBegin:
       return '\\';
+      break;
+  case singleWedgeEnd:
+      return '\'';
+      break;
+  case singleDashEnd:
+      return '"';
       break;
   case doubleBond:
       return '=';
@@ -604,8 +630,10 @@ void	BondList_O::archiveBase(core::ArchiveP node)
 
   SYMBOL_EXPORT_SC_(ChemKwPkg,noBond);
   SYMBOL_EXPORT_SC_(ChemKwPkg,singleBond);
-  SYMBOL_EXPORT_SC_(ChemKwPkg,singleWedge);
-  SYMBOL_EXPORT_SC_(ChemKwPkg,singleDash);
+  SYMBOL_EXPORT_SC_(ChemKwPkg,singleWedgeBegin);
+  SYMBOL_EXPORT_SC_(ChemKwPkg,singleDashBegin);
+  SYMBOL_EXPORT_SC_(ChemKwPkg,singleWedgeEnd);
+  SYMBOL_EXPORT_SC_(ChemKwPkg,singleDashEnd);
   SYMBOL_EXPORT_SC_(ChemKwPkg,doubleBond);
   SYMBOL_EXPORT_SC_(ChemKwPkg,tripleBond);
   SYMBOL_EXPORT_SC_(ChemKwPkg,aromaticBond);
@@ -617,8 +645,10 @@ void	BondList_O::archiveBase(core::ArchiveP node)
   CL_BEGIN_ENUM(BondOrder,_sym__PLUS_bondOrderToSymbolConverter_PLUS_,"BondOrder");
   CL_VALUE_ENUM(chemkw::_sym_noBond, noBond );
   CL_VALUE_ENUM(chemkw::_sym_singleBond, singleBond );
-  CL_VALUE_ENUM(chemkw::_sym_singleWedge, singleWedge );
-  CL_VALUE_ENUM(chemkw::_sym_singleDash, singleDash );
+  CL_VALUE_ENUM(chemkw::_sym_singleWedgeBegin, singleWedgeBegin );
+  CL_VALUE_ENUM(chemkw::_sym_singleDashBegin, singleDashBegin );
+  CL_VALUE_ENUM(chemkw::_sym_singleWedgeEnd, singleWedgeEnd );
+  CL_VALUE_ENUM(chemkw::_sym_singleDashEnd, singleDashEnd );
   CL_VALUE_ENUM(chemkw::_sym_doubleBond, doubleBond );
   CL_VALUE_ENUM(chemkw::_sym_tripleBond, tripleBond );
   CL_VALUE_ENUM(chemkw::_sym_aromaticBond, aromaticBond );

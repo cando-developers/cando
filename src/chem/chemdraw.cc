@@ -230,8 +230,10 @@ string	CDBond_O::getOrderAsString() const
   case tripleDashCDBond: return "tripleDash";
   case hashCDBond: return "hash";
   case hollowWedgeCDBond: return "hollowWedge";
-  case wedgeHashCDBond: return "wedgeHash";
-  case wedgeCDBond: return "wedge";
+  case WedgedHashBeginCDBond: return "WedgedHashBegin";
+  case WedgedHashEndCDBond: return "WedgedHashEnd";
+  case WedgeBeginCDBond: return "WedgeBegin";
+  case WedgeEndCDBond: return "WedgeEnd";
   case wavyCDBond: return "wavy";
   case unknownCDBond: return "unknown";
   }
@@ -268,9 +270,13 @@ void	CDBond_O::parseFromXml(adapt::QDomNode_sp xml, bool verbose)
     } else if ( display == "HollowWedgeBegin" ) {
       this->_Order = hollowWedgeCDBond;
     } else if ( display == "WedgedHashBegin" ) {
-      this->_Order = wedgeHashCDBond;
-    } else if ( display == "WedgedBegin" ) {
-      this->_Order = wedgeCDBond;
+      this->_Order = WedgedHashBeginCDBond;
+    } else if ( display == "WedgedHashEnd" ) {
+      this->_Order = WedgedHashEndCDBond;
+    } else if ( display == "WedgeBegin" ) {
+      this->_Order = WedgeBeginCDBond;
+    } else if ( display == "WedgeEnd" ) {
+      this->_Order = WedgeEndCDBond;
     } else if ( display == "Wavy" ) {
       this->_Order = wavyCDBond;
     } else {
@@ -533,7 +539,10 @@ bool CDFragment_O::interpret(bool verbose, bool addHydrogens)
       // and when a molecule is created later the atom generated
       // from the node will get those properties.
       //
-      if ( cdorder == wedgeHashCDBond
+      if ( cdorder == WedgedHashBeginCDBond
+           || cdorder == WedgedHashEndCDBond
+           || cdorder == WedgeBeginCDBond
+           || cdorder == WedgeEndCDBond
            || cdorder == singleCDBond
            || cdorder == doubleCDBond
            || cdorder == tripleCDBond
@@ -721,7 +730,8 @@ void CDFragment_O::createAtomsAndBonds()
     CDBondOrder o = ( (*bi)->getOrder() );
     gc::Nilable<Atom_sp> beginAtom;
     gc::Nilable<Atom_sp> endAtom;
-    if ( o == wedgeHashCDBond
+    if ( o == WedgedHashBeginCDBond || o == WedgedHashEndCDBond
+         || o == WedgeBeginCDBond || o == WedgeEndCDBond
          || o == singleCDBond || o == doubleCDBond || o == tripleCDBond
          || o == singleDashCDBond || o == doubleDashCDBond || o == tripleDashCDBond )
     {
@@ -739,7 +749,22 @@ void CDFragment_O::createAtomsAndBonds()
       switch (o) {
       case singleDashCDBond:
           bond->setProperty(INTERN_(kw,chemdraw_dashed_bond),_lisp->_true());
-      case wedgeHashCDBond:
+      case WedgedHashBeginCDBond:
+//          printf("%s:%d wedgeHashCDBond %s\n", __FILE__, __LINE__, _rep_(bond).c_str());
+          bond->setOrder(singleDashBegin);
+          break;
+      case WedgedHashEndCDBond:
+//          printf("%s:%d wedgeHashCDBond %s\n", __FILE__, __LINE__, _rep_(bond).c_str());
+          bond->setOrder(singleDashEnd);
+          break;
+      case WedgeBeginCDBond:
+//          printf("%s:%d WedgeBeginCDBond %s\n", __FILE__, __LINE__, _rep_(bond).c_str());
+          bond->setOrder(singleWedgeBegin);
+          break;
+      case WedgeEndCDBond:
+//          printf("%s:%d WedgeEndCDBond %s\n", __FILE__, __LINE__, _rep_(bond).c_str());
+          bond->setOrder(singleWedgeEnd);
+          break;
       case singleCDBond:
           bond->setOrder(singleBond);
           break;
@@ -1255,8 +1280,10 @@ SYMBOL_EXPORT_SC_(ChemPkg,doubleDashCDBond);
 SYMBOL_EXPORT_SC_(ChemPkg,tripleDashCDBond);
 SYMBOL_EXPORT_SC_(ChemPkg,hashCDBond);
 SYMBOL_EXPORT_SC_(ChemPkg,hollowWedgeCDBond);
-SYMBOL_EXPORT_SC_(ChemPkg,wedgeHashCDBond);
-SYMBOL_EXPORT_SC_(ChemPkg,wedgeCDBond);
+SYMBOL_EXPORT_SC_(ChemPkg,wedgedHashBeginCDBond);
+SYMBOL_EXPORT_SC_(ChemPkg,wedgedHashEndCDBond);
+SYMBOL_EXPORT_SC_(ChemPkg,wedgeBeginCDBond);
+SYMBOL_EXPORT_SC_(ChemPkg,wedgeEndCDBond);
 SYMBOL_EXPORT_SC_(ChemPkg,wavyCDBond);
 SYMBOL_EXPORT_SC_(ChemPkg,unknownCDBond);
 
@@ -1272,8 +1299,10 @@ CL_VALUE_ENUM(_sym_doubleDashCDBond,doubleDashCDBond);
 CL_VALUE_ENUM(_sym_tripleDashCDBond,tripleDashCDBond);
 CL_VALUE_ENUM(_sym_hashCDBond,hashCDBond);
 CL_VALUE_ENUM(_sym_hollowWedgeCDBond,hollowWedgeCDBond);
-CL_VALUE_ENUM(_sym_wedgeHashCDBond,wedgeHashCDBond);
-CL_VALUE_ENUM(_sym_wedgeCDBond,wedgeCDBond);
+CL_VALUE_ENUM(_sym_wedgedHashBeginCDBond,WedgedHashBeginCDBond);
+CL_VALUE_ENUM(_sym_wedgedHashEndCDBond,WedgedHashEndCDBond);
+CL_VALUE_ENUM(_sym_wedgeBeginCDBond,WedgeBeginCDBond);
+CL_VALUE_ENUM(_sym_wedgeEndCDBond,WedgeEndCDBond);
 CL_VALUE_ENUM(_sym_wavyCDBond,wavyCDBond);
 CL_VALUE_ENUM(_sym_unknownCDBond,unknownCDBond);
 CL_END_ENUM(_sym__PLUS_CDBondOrderConverter_PLUS_);

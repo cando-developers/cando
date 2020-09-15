@@ -403,10 +403,14 @@ adapt::StringList_sp StereoInformation_O::getPdbNamesAsStringList()
 SYMBOL_EXPORT_SC_(ChemKwPkg,undefinedConfiguration);
 SYMBOL_EXPORT_SC_(ChemKwPkg,S);
 SYMBOL_EXPORT_SC_(ChemKwPkg,R);
+SYMBOL_EXPORT_SC_(ChemKwPkg,RightHanded);
+SYMBOL_EXPORT_SC_(ChemKwPkg,LeftHanded);
 CL_BEGIN_ENUM(ConfigurationEnum,_sym__PLUS_configurationEnumConverter_PLUS_,"Configuration");
 CL_VALUE_ENUM(chemkw::_sym_undefinedConfiguration, undefinedConfiguration );
 CL_VALUE_ENUM(chemkw::_sym_S, S_Configuration );
 CL_VALUE_ENUM(chemkw::_sym_R, R_Configuration );
+CL_VALUE_ENUM(chemkw::_sym_RightHanded, RightHanded_Configuration );
+CL_VALUE_ENUM(chemkw::_sym_LeftHanded, LeftHanded_Configuration );
 CL_END_ENUM(_sym__PLUS_configurationEnumConverter_PLUS_);
 ;
 

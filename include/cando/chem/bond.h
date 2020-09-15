@@ -217,8 +217,10 @@ extern core::Symbol_sp& _sym_hydrogenBond;
 extern core::Symbol_sp& _sym_virtualBond;
 extern core::Symbol_sp& _sym_dashedSingleBond;
 extern core::Symbol_sp& _sym_dashedDoubleBond;
-extern core::Symbol_sp& _sym_singleWedge;
-extern core::Symbol_sp& _sym_singleDash;
+extern core::Symbol_sp& _sym_singleWedgeBegin;
+extern core::Symbol_sp& _sym_singleDashBegin;
+extern core::Symbol_sp& _sym_singleWedgeEnd;
+extern core::Symbol_sp& _sym_singleDashEnd;
 };
 
 

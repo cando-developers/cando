@@ -91,13 +91,40 @@ public:
         Atom_sp	getAtom4() { return this->_Atom4; };
 public:
 public:
-	adapt::QDomNode_sp	asXml();
-	void	parseFromXmlUsingAtomTable(adapt::QDomNode_sp xml, AtomTable_sp atomTable );
+  core::List_sp encode() const;
+  adapt::QDomNode_sp	asXml();
+  void	parseFromXmlUsingAtomTable(adapt::QDomNode_sp xml, AtomTable_sp atomTable );
 public:
-	string	description();
+  string	description();
+};
+};
+namespace translate {
+
+template <>
+struct	to_object<chem::EnergyChiralRestraint >
+{
+  typedef	core::Cons_sp ExpectedType;
+  typedef	core::Cons_sp DeclareType;
+  static core::T_sp convert(const chem::EnergyChiralRestraint& tt)
+  {
+    return tt.encode();
+  }
 };
 
+template <>
+struct	from_object<chem::EnergyChiralRestraint>
+{
+  typedef	chem::EnergyChiralRestraint	ExpectedType;
+  typedef	ExpectedType 		DeclareType;
+	DeclareType _v;
+	from_object(core::T_sp o)
+	{
+          SIMPLE_ERROR(BF("Implement me"));
+        }
+};
+};
 
+namespace chem {
 
 
 double	_evaluateEnergyOnly_ChiralRestraint(
@@ -114,6 +141,8 @@ class EnergyChiralRestraint_O : public EnergyComponent_O
 {
     LISP_CLASS(chem,ChemPkg,EnergyChiralRestraint_O,"EnergyChiralRestraint",EnergyComponent_O);
 public:
+    bool fieldsp() const { return true; };
+    void fields(core::Record_sp node);
 public: // virtual functions inherited from Object
     void	initialize();
 //	string	__repr__() const;
