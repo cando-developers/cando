@@ -1310,7 +1310,7 @@ void	Minimizer_O::_conjugateGradient(int numSteps,
           if (!printedLatestMessage) {
             printedLatestMessage = this->_displayIntermediateMessage(step,fp,forceRmsMag,cosAngle,steepestDescent,true);
           }
-          core::clasp_writeln_string((BF(" ! DONE absolute force test:\n ! forceRmsMag(%lf)<forceTolerance(%lf)")% forceRmsMag % forceTolerance ).str());
+          core::clasp_writeln_string((BF(" ! DONE absolute force test:\n ! forceRmsMag(%e)<forceTolerance(%e)")% forceRmsMag % forceTolerance ).str());
         }
         break;
       }
@@ -1814,7 +1814,9 @@ void	Minimizer_O::_truncatedNewton(
       LOG(BF("[ EPSILONF*(1.0+fabs(energyXk))=%le") % EPSILONF*(1.0+fabs(energyXk)) );
       if ( b1aTest ) {
         if ( this->_PrintIntermediateResults ) {
-          core::clasp_writeln_string((BF( "search complete according to b1aTest last alphaK = %lf energyXkNext = %lf energyXk = %lf") % alphaK % energyXkNext % energyXk).str());
+          core::clasp_writeln_string((BF( "search complete step %d according to b1aTest") % this->_Iteration ).str());
+          core::clasp_writeln_string((BF("last alphaK = %lf energyXkNext = %lf energyXk = %lf") % alphaK % energyXkNext % energyXk ).str());
+          core::clasp_writeln_string((BF("b1aTest=fabs(energyXkNext-energyXk)<EPSILONF*(1.0+fabs(energyXk)) %e < %e;") % fabs(energyXkNext-energyXk) % (EPSILONF*(1.0+fabs(energyXk)))).str());
         }
         break;
       }
@@ -1823,7 +1825,7 @@ void	Minimizer_O::_truncatedNewton(
       b1bTest=(delta<SQRT_EPSILONF*(1.0+rmsMagXKNext)/100.0);
       if ( b1bTest ) {
         if ( this->_PrintIntermediateResults ) {
-          core::clasp_writeln_string((BF( "search complete according to b1bTest" )).str());
+          core::clasp_writeln_string((BF( "search complete step %d according to b1bTest delta[%e] < SQRT_EPSILONF*(1.0+rmsMagXKNext)/100.0 [%e]" ) % this->_Iteration % delta % (SQRT_EPSILONF*(1.0+rmsMagXKNext)/100.0)).str());
         }
         break;
       }
@@ -1831,7 +1833,7 @@ void	Minimizer_O::_truncatedNewton(
       rmsForceMag = rmsMagnitude(forceK,this->_Frozen);
       if ( rmsForceMag < forceTolerance ) {
         if ( this->_PrintIntermediateResults ) {
-          core::clasp_writeln_string((BF( "search complete according to absolute force test" )).str());
+          core::clasp_writeln_string((BF( "search complete [%d] according to absolute force test rmsForceMag(%e) < forceTolerance(%e)" ) % this->_Iteration % rmsForceMag % forceTolerance ).str());
         }
         break;
       }
@@ -2009,7 +2011,7 @@ CL_DEFMETHOD     void	Minimizer_O::useDefaultSettings()
   this->_TruncatedNewtonPreconditioner = hessianPreconditioner;
   this->_PrintIntermediateResults = 0;
   LOG(BF("_PrintIntermediateResults = %d") % this->_PrintIntermediateResults  );
-  this->_ReportEverySteps = 1;
+  this->_ReportEverySteps = 100;
   this->_Status = minimizerIdle;
   this->_ShowElapsedTime = true;
 #ifdef	USE_CALLBACKS
@@ -2037,7 +2039,7 @@ CL_LAMBDA((chem:minimizer chem:minimizer) cl:&optional (steps 1) (level 1));
 CL_DEFMETHOD     void	Minimizer_O::enablePrintIntermediateResults(size_t steps, size_t level)
 {
   if (steps < 1 ) {
-    this->_ReportEverySteps = 1;
+    this->_ReportEverySteps = 100;
   } else {
     this->_ReportEverySteps = steps;
   }
