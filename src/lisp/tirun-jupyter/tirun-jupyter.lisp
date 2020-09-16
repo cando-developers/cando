@@ -380,8 +380,7 @@
       (declare (ignore inst type name old-value source))
       (with-slots (slider dropdown)
                   instance
-        (setf (w:widget-description slider) (format nil "~A ligands" (length ligands))
-              (w:widget-max slider) (1- (length ligands))
+        (setf (w:widget-max slider) (1- (length ligands))
               (w:widget-%options-labels dropdown) (mapcar (lambda (mol)
                                                             (symbol-name (chem:get-name mol)))
                                                           ligands)
@@ -406,16 +405,34 @@
   (handler-case
       (with-slots (ligands-string loaded-ligands selected-ligands)
                   *app*
+        (jupyter:inform :err nil "~A" (pathname-type (cdr (assoc "name" (car parameter) :test #'string=))))
         (setf ligands-string (babel:octets-to-string (cdr (assoc "content" (car parameter) :test #'string=)))
               loaded-ligands (with-input-from-string (input-stream ligands-string)
-                               (sdf:parse-sdf-file input-stream))
+                               (let ((ext (pathname-type (cdr (assoc "name" (car parameter) :test #'string=)))))
+                                 (cond
+                                   ((string-equal ext "sdf")
+                                     (sdf:parse-sdf-file input-stream))
+                                   ((string-equal ext "mol2")
+                                     (chem:read-mol2-list input-stream))
+                                   (t
+                                     (error "Unknown file type ~A." ext)))))
               selected-ligands loaded-ligands)
         t)
+    (esrap:esrap-parse-error (condition)
+      (princ condition *error-output*)
+      (fresh-line *error-output*)
+      nil)
+    (simple-error (condition) ; This is temporary until we have mol2-parse-error
+      (princ condition *error-output*)
+      (fresh-line *error-output*)
+      nil)
     (sdf:sdf-parse-error (condition)
       (princ condition *error-output*)
+      (fresh-line *error-output*)
       nil)
     (end-of-file (condition)
       (princ condition *error-output*)
+      (fresh-line *error-output*)
       nil)))
 
 
@@ -424,7 +441,7 @@
   application and then display the ligand structure using two-dimension diagrams and three
   dimension representation."
   (let ((container (make-instance 'w:accordion :selected-index 0)))
-    (cw:make-file-task-page container "Load Ligands" #'parse-ligands :accept ".sdf")
+    (cw:make-file-task-page container "Load Ligands" #'parse-ligands :accept ".mol2,.sdf")
     (make-view-ligand-page container "View Ligands")
     container))
 
@@ -432,9 +449,8 @@
 (defun select-ligands ()
   "select-ligands in the current application and displays a molecule selection list that allows one
   to select a subset of the molecules to use in further calculations."
-  (let ((sel (make-instance 'cw:molecule-select
-                            :molecules (loaded-ligands *app*)
-                            :selected (selected-ligands *app*))))
+  (let ((sel (cw:make-molecule-select :molecules (loaded-ligands *app*)
+                                      :selected (selected-ligands *app*))))
     (w:link sel :molecules *app* :loaded-ligands)
     (w:link sel :selected *app* :selected-ligands)
     (make-instance 'w:accordion

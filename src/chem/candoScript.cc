@@ -583,9 +583,7 @@ CL_DEFUN core::T_sp chem__load_mol2(core::T_sp fileName)
 }
 
 
-CL_DOCSTRING(R"doc(Load all or a number of aggregates from the mol2 file.)doc");
-CL_LAMBDA(file-name &optional number-to-load);
-CL_DEFUN core::T_sp chem__load_mol2_list(core::T_sp fileName, core::T_sp number_to_load)
+core::T_sp chem__read_mol2_list_common(Mol2File& fin, core::T_sp number_to_load)
 {
   core::T_sp make_progress;
   core::T_sp progress_advance;
@@ -601,8 +599,6 @@ CL_DEFUN core::T_sp chem__load_mol2_list(core::T_sp fileName, core::T_sp number_
       SIMPLE_ERROR(BF("Could not get progress bar functions make-progress, progress-advance, progress-done"));
     }
   }
-  Mol2File fin;
-  fin.openFileName(fileName);
   core::T_sp progress_bar = _Nil<core::T_O>();
   if (chem__verbose(0)) {
     if (number_to_load.nilp()) {
@@ -644,6 +640,22 @@ CL_DEFUN core::T_sp chem__load_mol2_list(core::T_sp fileName, core::T_sp number_
   return result.cons();
 }
 
+CL_DOCSTRING(R"doc(Read all or a number of aggregates from the mol2 stream.)doc");
+CL_LAMBDA(stream &optional number-to-load);
+CL_DEFUN core::T_sp chem__read_mol2_list(core::T_sp stream, core::T_sp number_to_load)
+{
+  Mol2File fin(stream);
+  return chem__read_mol2_list_common(fin, number_to_load);
+}
+
+CL_DOCSTRING(R"doc(Load all or a number of aggregates from the mol2 file.)doc");
+CL_LAMBDA(file-name &optional number-to-load);
+CL_DEFUN core::T_sp chem__load_mol2_list(core::T_sp fileName, core::T_sp number_to_load)
+{
+  Mol2File fin;
+  fin.openFileName(fileName);
+  return chem__read_mol2_list_common(fin, number_to_load);
+}
 
 /*
 __BEGIN_DOC( candoScript.general.saveMol2, subsection, saveMol2)

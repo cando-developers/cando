@@ -13,9 +13,6 @@
             (sketch2d:svg (sketch2d:sketch2d molecule))))))
 
 
-(defparameter *common-sketch* nil)
-
-
 (defun build-prototype-sketch (ligands)
   "Find the smallest ligand and build a sketch for it"
   (let ((min-atoms (chem:number-of-atoms (car ligands)))
@@ -34,13 +31,20 @@
       (multiple-value-bind (sketch present-p)
                            (gethash molecule *molecule-sketches*)
         (declare (ignore sketch))
-        (unless present-p
-          (unless common-sketch
-            (setf common-sketch (build-prototype-sketch molecules)))
-          (setf *common-sketch* common-sketch)
-          (setf (gethash molecule *molecule-sketches*)
-                (eval `(lparallel:future
-                         (sketch2d:svg (sketch2d:similar-sketch2d ,molecule ,common-sketch))))))))))
+        (cond
+          (present-p)
+          ((every (lambda (molecule)
+                    (typep molecule 'chem:molecule))
+                  molecules)
+            (unless common-sketch
+              (setf common-sketch (build-prototype-sketch molecules)))
+            (setf (gethash molecule *molecule-sketches*)
+                  (eval `(lparallel:future
+                           (sketch2d:svg (sketch2d:similar-sketch2d ,molecule ,common-sketch))))))
+          (t
+            (setf (gethash molecule *molecule-sketches*)
+                  (eval `(lparallel:future
+                           (sketch2d:svg (sketch2d:sketch2d ,molecule)))))))))))
 
 
 (defconstant +min-sketch-width+ 50.0)
@@ -142,6 +146,7 @@
                                                           :margin "var(--jp-widgets-margin) auto")
                                    :value (symbol-name (chem:get-name molecule)))
                     (make-instance 'jw:checkbox
+                                   :value (or (position molecule (selected instance)) t)
                                    :layout (make-instance 'jw:layout
                                                           :margin "var(--jp-widgets-margin) auto")
                                    :description (symbol-name (chem:get-name molecule)))))
@@ -182,12 +187,20 @@
 (defun render-molecules (instance)
   (setf (max-width instance) +min-sketch-width+
         (jw:widget-children (container instance)) (mapcar (lambda (molecule)
-                                                           (make-molecule-view instance molecule))
-                                                         (molecules instance))))
+                                                            (make-molecule-view instance molecule))
+                                                          (molecules instance))))
 
 
 (defmethod jupyter-widgets:on-trait-change ((instance molecule-select) type (name (eql :molecules))
                                             old-value new-value source)
   (declare (ignore type name old-value new-value source))
   (render-molecules instance))
+
+
+(defun make-molecule-select (&rest args &key &allow-other-keys)
+  (let ((instance (apply #'make-instance 'molecule-select args)))
+    (render-molecules instance)
+    instance))
+
+
 
