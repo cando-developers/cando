@@ -6,13 +6,17 @@
 
 (defparameter *sketch* "")
 
+(defclass core ()
+  ((name :initarg :name :accessor name)
+   (group :initarg :group :accessor group)
+   (attachment-indicators :initarg :attachment-indicators :accessor attachment-indicators)
+   (attachment-atoms :initarg :attachment-atoms :accessor attachment-atoms)
+   (residue :initarg :residue :accessor residue)
+   (topology :initarg :topology :accessor topology)
+   (out-vectors :initarg :out-vectors :accessor out-vectors)))
+
 (defclass assembly ()
-  ((core-group :initarg :core-group :accessor core-group)
-   (core-attachment-indicators :initarg :core-attachment-indicators :accessor core-attachment-indicators)
-   (core-attachment-atoms :initarg :core-attachment-atoms :accessor core-attachment-atoms)
-   (core-residue :initarg :core-residue :accessor core-residue)
-   (core-topology :initarg :core-topology :accessor core-topology)
-   (core-out-vectors :initarg :core-out-vectors :accessor core-out-vectors)
+  ((cores :initarg :cores :initform nil :accessor cores)
    (side-chain-groups :initarg :side-chain-groups :accessor side-chain-groups)
    (side-chain-attachment-indicators :initarg :side-chain-attachment-indicators :accessor side-chain-attachment-indicators)
    (side-chain-attachment-names :initarg :side-chain-attachment-names :accessor side-chain-attachment-names)
@@ -180,18 +184,18 @@
 
 (defmethod parse-residue-groups ((original-agg chem:aggregate))
   (let* ((agg (chem:matter-copy original-agg))
-         core-molecule
+         core-molecules
          side-chain-molecules
          (core-atom-count 0)
          (map-atoms-numbers (make-hash-table)))
     (let ((num-bonds 0)
           (sum-lengths 0.0)
           (index 0))
-      ; map each atom to a unique index
+                                        ; map each atom to a unique index
       (chem:map-atoms nil (lambda (a)
                             (setf (gethash a map-atoms-numbers) (incf index)))
                       agg)
-      ; calculate average bond length
+                                        ; calculate average bond length
       (chem:map-bonds nil (lambda (a1 a2 order)
                             (let* ((v1 (chem:get-position a1))
                                    (v2 (chem:get-position a2))
@@ -208,58 +212,69 @@
                               (let ((pos (chem:get-position a)))
                                 (chem:set-position a (geom:v* pos scale-factor))))
                         agg)))
-    ;; Find the core-molecule - it has the property :id :core
-    (chem:map-molecules nil (lambda (m)
-                              (let ((num-atoms (chem:number-of-atoms m)))
-                                (when (eq (chem:matter-get-property-or-default m :id nil) :core)
-                                  (setf core-molecule m))))
-                        agg)
+    ;; Find the core-molecules - it has the property :core
+    (let ((names nil))
+      (chem:map-molecules nil (lambda (mol)
+                                (let* ((num-atoms (chem:number-of-atoms mol))
+                                       (name (chem:matter-get-property-or-default mol :core nil)))
+                                  (when name
+                                    (format t "core name: ~a~%" name)
+                                    (when (member name names)
+                                      (error "Each core must have a unique name - you have more than one core with name ~a names: ~a" name names))
+                                    (push name names)
+                                    (chem:set-name mol name)
+                                    (push mol core-molecules))))
+                          agg))
+    ;; Handle the core-group
+    (unless core-molecules
+      (error "There must be at least one core molecule"))
     ;; Everything else is a side-chain molecules
     (chem:map-molecules nil (lambda (m)
-                              (unless (eq m core-molecule)
+                              (unless (member m core-molecules)
                                 (push m side-chain-molecules)))
                         agg)
-    ;; Handle the core-group
-    (unless core-molecule
-      (error "There must be a core molecule"))
-    (let ((core-group (chem:map-atoms 'list #'identity core-molecule))
-          (core-attachment-indicators (make-hash-table))
-          (map-names-numbers (make-hash-table)))
-      (mapcar (lambda (a)
-                (if (member (chem:get-element a) (list :du :ne))
-                    (let ((bonds (chem:bonds-as-list a)))
-                      (unless (= (length bonds) 1)
-                        (warn "There are the wrong number of bonds from ~a bonds: ~a" a bonds))
-                      (setf (gethash (chem:get-name a) core-attachment-indicators) a))))
-              core-group)
-      (multiple-value-bind (core-residue out-vectors core-attachment-atoms)
-          (build-attachment-residue core-group core-attachment-indicators :name :cor :direction :out)
-        ;; Handle the side-chains
-        (let ((side-chain-groups (make-hash-table))
-              (side-chain-attachment-indicators (make-hash-table)))
-          (loop for side-chain-molecule in side-chain-molecules
-                do (let* (side-chain-name
-                          (side-chain-atoms (chem:map-atoms
-                                             'list
-                                             (lambda (a)
-                                               (when (member (chem:get-element a) (list :du :ne))
-                                                 (setf side-chain-name (chem:get-name a))
-                                                 (format t "side-chain-name: ~s~%" side-chain-name)
-                                                 (setf (gethash side-chain-name side-chain-attachment-indicators) a))
-                                               a)
-                                             side-chain-molecule)))
-                     (setf (gethash side-chain-name side-chain-groups) side-chain-atoms)))
-          ;; Sort out the side-chains now
-          (make-instance 'assembly
-                         :map-atoms-numbers map-atoms-numbers
-                         :core-group core-group
-                         :core-attachment-atoms core-attachment-atoms
-                         :core-attachment-indicators core-attachment-indicators
-                         :core-residue core-residue
-                         :core-out-vectors out-vectors
-                         :side-chain-groups side-chain-groups
-                         :side-chain-attachment-indicators side-chain-attachment-indicators
-                         ))))))
+    (let ((cores
+            (loop for core-molecule in core-molecules
+                  for core-name = (chem:get-name core-molecule)
+                  for core-group = (chem:map-atoms 'list #'identity core-molecule)
+                  for core-attachment-indicators = (make-hash-table)
+                  do (loop for atm in core-group
+                           do (if (member (chem:get-element atm) (list :du :ne))
+                                  (let ((bonds (chem:bonds-as-list atm)))
+                                    (unless (= (length bonds) 1)
+                                      (warn "There are the wrong number of bonds from ~a bonds: ~a" atm bonds))
+                                    (setf (gethash (chem:get-name atm) core-attachment-indicators) atm))))
+                  collect (multiple-value-bind (core-residue out-vectors core-attachment-atoms)
+                              (build-attachment-residue core-group core-attachment-indicators :name core-name :direction :out)
+                            (make-instance 'core
+                                           :name core-name
+                                           :group core-group
+                                           :attachment-indicators core-attachment-indicators
+                                           :residue core-residue
+                                           :topology (cando:make-simple-topology-from-residue core-residue)
+                                           :out-vectors out-vectors
+                                           :attachment-atoms core-attachment-atoms)))))
+      ;; Handle the side-chains
+      (let ((side-chain-groups (make-hash-table))
+            (side-chain-attachment-indicators (make-hash-table)))
+        (loop for side-chain-molecule in side-chain-molecules
+              do (let* (side-chain-name
+                        (side-chain-atoms (chem:map-atoms
+                                           'list
+                                           (lambda (a)
+                                             (when (member (chem:get-element a) (list :du :ne))
+                                               (setf side-chain-name (chem:get-name a))
+                                               (format t "side-chain-name: ~s~%" side-chain-name)
+                                               (setf (gethash side-chain-name side-chain-attachment-indicators) a))
+                                             a)
+                                           side-chain-molecule)))
+                   (setf (gethash side-chain-name side-chain-groups) side-chain-atoms)))
+        ;; Sort out the side-chains now
+        (make-instance 'assembly
+                       :map-atoms-numbers map-atoms-numbers
+                       :cores cores
+                       :side-chain-groups side-chain-groups
+                       :side-chain-attachment-indicators side-chain-attachment-indicators)))))
 
 (defun group-name (group)
   (loop for atom in group
@@ -273,17 +288,16 @@
 
 (defun build-assembly (sketch &key verbose)
   (let* ((topology-to-residue (make-hash-table))
-         (assembly (parse-residue-groups sketch))
-         (core-topology (cando:make-simple-topology-from-residue (core-residue assembly))))
-    (setf (core-topology assembly) core-topology)
-    (maphash (lambda (name vec)
-               (let* ((plug-name (intern (format nil "+~a" (string name)) :keyword))
-                      (plug-atom (gethash name (core-attachment-atoms assembly)))
-                      (plug-atom-name (chem:get-name plug-atom))
-                      #+(or)(_ (format t "Making out plug plug-name: ~a    name: ~a~%" plug-name plug-atom-name))
-                      (out-plug (chem:make-out-plug plug-name nil nil plug-atom-name :single-bond)))
-                 (chem:add-plug core-topology (chem:get-name out-plug) out-plug)))
-             (core-out-vectors assembly))
+         (assembly (parse-residue-groups sketch)))
+    (loop for core in (cores assembly)
+          do (maphash (lambda (name vec)
+                        (let* ((plug-name (intern (format nil "+~a" (string name)) :keyword))
+                               (plug-atom (gethash name (attachment-atoms core)))
+                               (plug-atom-name (chem:get-name plug-atom))
+                               #+(or)(_ (format t "Making out plug plug-name: ~a    name: ~a~%" plug-name plug-atom-name))
+                               (out-plug (chem:make-out-plug plug-name nil nil plug-atom-name :single-bond)))
+                          (chem:add-plug (topology core) (chem:get-name out-plug) out-plug)))
+                      (out-vectors core)))
     (let ((side-chain-attachment-names (make-hash-table)))
       (loop for side-chain-name being the hash-keys in (side-chain-groups assembly) using (hash-value side-chain-group)
             with side-chain-residue
@@ -294,19 +308,19 @@
                                            side-chain-name
                                            side-chain-group
                                            (side-chain-attachment-indicators assembly)
-                                           (gethash (short-name side-chain-name) (core-out-vectors assembly))
-                                           (core-attachment-atoms assembly)))
+                                           #+(or)(gethash (short-name side-chain-name) (core-out-vectors assembly))
+                                           #+(or)(core-attachment-atoms assembly)))
             do (let* ((side-chain-topology (cando:make-simple-topology-from-residue side-chain-residue))
                       (short-name (short-name (chem:get-name side-chain-residue)))
                       (plug-name (intern (format nil "-~a" (string short-name)) :keyword))
                       (in-plug (chem:make-in-plug plug-name nil (chem:get-name attachment-atom) :single-bond)))
                  (setf (gethash side-chain-topology topology-to-residue) side-chain-residue)
                  (chem:add-plug side-chain-topology plug-name in-plug)
-                 (push side-chain-topology (gethash short-name (side-chain-topologys assembly)))))
+                 (setf (gethash side-chain-name (side-chain-topologys assembly)) side-chain-topology)))
       (setf (topology-to-residue assembly) topology-to-residue)
       (setf (side-chain-attachment-names assembly) side-chain-attachment-names))
     assembly))
-                                   
+
 #+(or)
 (defmethod build-topologys-chemdraw (chemdraw)
   (let ((side-chains (make-hash-table))
@@ -364,12 +378,11 @@
                   residue)
   nil)
 
-(defun build-side-chain-residue (side-chain-names side-chain-name atoms side-chain-attachment-indicators core-vector core-attachment-atoms)
+(defun build-side-chain-residue (side-chain-names side-chain-name atoms side-chain-attachment-indicators) ;;  core-vector core-attachment-atoms)
   (let* ((residue (chem:make-residue side-chain-name))
          (short-side-chain-name (short-name side-chain-name))
          in-atom-vector
-         attach-atom
-         (core-atom (gethash short-side-chain-name core-attachment-atoms)))
+         attach-atom)
     (push side-chain-name (gethash short-side-chain-name side-chain-names))
     (loop for atom in atoms
           for label = (chem:get-name atom)
@@ -387,7 +400,7 @@
             do (chem:add-matter residue atom))
     (unless in-atom-vector
       (error "There is no in-atom-vector for atoms: ~a~%" atoms))
-    (let* ((cross (geom:vcross (geom:vnormalized (direction in-atom-vector)) (geom:vnormalized (direction core-vector))))
+    #+(or)(let* ((cross (geom:vcross (geom:vnormalized (direction in-atom-vector)) (geom:vnormalized (direction core-vector))))
            (angle (* 1.0 (asin (geom:vlength cross))))
            (residue-to-origin (geom:make-m4-translate (geom:v* (start-vector in-atom-vector) -1.0)))
            (residue-to-core (geom:make-m4-translate (chem:get-position core-atom)))
@@ -399,54 +412,68 @@
     (values residue in-atom-vector attach-atom)))
 
 (defun build-tiruns (assembly)
-  ;;; core-topology side-topologys topology-to-residue map-names-numbers)
-  (let ((top-groups nil))
-    (maphash (lambda (name tops)
-               (push tops top-groups))
-             (side-chain-topologys assembly))
-    (let ((cartesian (cartesian-product top-groups)))
-      (loop for cart in cartesian
-            for name = (structure-name cart)
-            for molecule = (chem:make-molecule name)
-            for core-residue = (let ((res (chem:build-residue-single-name (core-topology assembly))))
-                                 (set-coordinates-for-residue res (core-residue assembly))
-                                 res)
-            collect (let (side-chain-residue-names)
-                      (chem:add-matter molecule core-residue)
-                      (loop for top in cart
-                            for name = (chem:get-name top)
-                            for side-residue = (let ((res (chem:build-residue-single-name top)))
-                                                 (set-coordinates-for-residue res (gethash top (topology-to-residue assembly)))
-                                                 res)
-                            for in-plug = (chem:get-in-plug top)
-                            for in-plug-name = (chem:get-name in-plug)
-                            for out-plug-name = (chem:other-plug-name in-plug-name)
-                            for side-atoms = (chem:map-atoms 'list #'identity side-residue)
-                            do (progn
-                                 (push (chem:get-name side-residue) side-chain-residue-names)
-                                 (chem:add-matter molecule side-residue)
-                                 #+(or)
-                                 (maphash (lambda (name number)
-                                            (let ((atom (chem:atom-with-name core-residue name)))
-                                              #+(or)(format t "Atom: ~a   number: ~a~%" atom number)
-                                              (chem:set-property atom :map number)))
-                                          (map-names-numbers assembly))
-                                 (chem:connect-residues (core-topology assembly)
-                                                        core-residue
-                                                        out-plug-name
-                                                        top
-                                                        side-residue
-                                                        in-plug-name)))
-                      (set-stereocenters molecule)
-                      (make-instance 'tirun-structure :name name :drawing molecule
-                                                      :core-residue core-residue
-                                                      :core-residue-name (chem:get-name core-residue)
-                                                      :side-chain-residue-names side-chain-residue-names))))))
-
+;;; core-topology side-topologys topology-to-residue map-names-numbers)
+  (loop for core in (cores assembly)
+        for keys = (alexandria:hash-table-keys (attachment-atoms core))
+        for key-groups = (loop for key in keys
+                               collect (gethash key (side-chain-attachment-names assembly)))
+        for cartesian = (cartesian-product key-groups)
+        append (if cartesian
+                   (loop for cart in cartesian         
+                         for name = (structure-name core cart)
+                         for molecule = (chem:make-molecule name) 
+                         for core-residue = (let ((res (chem:build-residue-single-name (topology core)))) 
+                                              (set-coordinates-for-residue res (residue core)) 
+                                              res)                                
+                         collect (let (side-chain-residue-names) 
+                                   (chem:add-matter molecule core-residue) 
+                                   (loop for top-name in cart
+                                         for top = (gethash top-name (side-chain-topologys assembly))
+                                         for side-residue = (let ((res (chem:build-residue-single-name top))) 
+                                                              (set-coordinates-for-residue res (gethash top (topology-to-residue assembly))) 
+                                                              res)                                
+                                         for in-plug = (chem:get-in-plug top) 
+                                         for in-plug-name = (chem:get-name in-plug) 
+                                         for out-plug-name = (chem:other-plug-name in-plug-name) 
+                                         for side-atoms = (chem:map-atoms 'list #'identity side-residue) 
+                                         do (progn                           
+                                              (push (chem:get-name side-residue) side-chain-residue-names) 
+                                              (chem:add-matter molecule side-residue) 
+                                              #+(or)                              
+                                              (maphash (lambda (name number)      
+                                                         (let ((atom (chem:atom-with-name core-residue name))) 
+                                                           #+(or)(format t "Atom: ~a   number: ~a~%" atom number) 
+                                                           (chem:set-property atom :map number))) 
+                                                       (map-names-numbers assembly))       
+                                              (chem:connect-residues (topology core) 
+                                                                     core-residue                        
+                                                                     out-plug-name                       
+                                                                     top                                 
+                                                                     side-residue                        
+                                                                     in-plug-name)))
+                                   (make-instance 'tirun-structure :name name 
+                                                                   :drawing molecule                   
+                                                                   :core-residue core-residue          
+                                                                   :core-residue-name (chem:get-name core-residue) 
+                                                                   :side-chain-residue-names side-chain-residue-names)))
+                   (let* ((name (name core))
+                          (molecule (chem:make-molecule name))
+                          (core-residue (let ((res (chem:build-residue-single-name (topology core))))
+                                          (set-coordinates-for-residue res (residue core))
+                                          res)))
+                     (chem:add-matter molecule core-residue)
+                     (list
+                      (make-instance 'tirun-structure :name name 
+                                                      :drawing molecule                   
+                                                      :core-residue core-residue          
+                                                      :core-residue-name (chem:get-name core-residue) 
+                                                      :side-chain-residue-names nil))
+                     ))))
+  
 
 (defun build-ligand-molecules (assembly)
-  "This is replicating some of the stuff done by setup-ligands.   
-We need setup-ligands for the tirun demo."
+  "This is replicating some of the stuff done by assemble-ligands.   
+We need assemble-ligands for the tirun demo."
   (let* ((tirun-structures (build-tiruns assembly)))
     (loop for ligand in tirun-structures
           for mol = (chem:matter-copy (drawing ligand))
@@ -518,13 +545,13 @@ We need setup-ligands for the tirun demo."
 
 
 
-(defun setup-ligands (tiruns sketch &key verbose)
+(defun assemble-ligands (tiruns sketch &key verbose)
   "This generates the ligands while keeping track of additional information about
 what is core and what is the side-chains.  We may not need this because the tirun
 code is a lot smarter now about comparing molecules to each other.
 But this code is necessary for the tirun demo."
   (let* ((assembly (build-assembly sketch :verbose verbose)))
-    (setf (core-topology tiruns) (core-topology assembly))
+    (setf (core-topologys tiruns) (mapcar #'topology (cores assembly)))
     (setf (side-topologys tiruns) (side-chain-topologys assembly))
     (let ((ligands (build-tiruns assembly)))
       (loop for ligand in ligands
@@ -592,9 +619,12 @@ But this code is necessary for the tirun demo."
     (loop for residue in side-residues
           do (chem:remove-residue molecule residue))))
     
-(defun structure-name (tops)
-  (let ((names (mapcar (lambda (x) (subseq (string (chem:get-name x)) 1 3)) tops)))
-    (intern (apply #'concatenate 'string (sort names #'string<)) :keyword)))
+(defun structure-name (core tops)
+  (let* ((core-name (name core))
+         (sorted-tops (sort tops (lambda (x y) (string< (string x) (string y)))))
+         (names (mapcar (lambda (x) (subseq (string x) 1 (length (string x)))) sorted-tops))
+         (namestr (apply #'concatenate 'string (string (name core)) "-" (sort names #'string<))))
+    (intern namestr :keyword)))
 
 (defun set-coordinates-for-residue (res other-res)
   (chem:map-atoms
@@ -604,12 +634,6 @@ But this code is necessary for the tirun demo."
             (pos (chem:get-position other-atom)))
        (chem:set-position a pos)))
    res))
-
-(defun set-stereocenters (mol)
-  (let ((stereocenters 
-          (sort (cando:gather-stereocenters mol) #'string< :key #'chem:get-name)))
-    (cando:set-stereoisomer-func stereocenters (constantly :S))))
-
 
 (defun layout-ligands (calculation &key (xdelta 15.0) (ydelta 15.0) (accessor 'drawing))
   (let* ((ligands (copy-list (ligands calculation)))

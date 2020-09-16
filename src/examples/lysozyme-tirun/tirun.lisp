@@ -4,7 +4,7 @@
 (source "leaprc.gaff")
 (defparameter tiruns (tirun:make-tirun))
 (defparameter sk (load-chem-draw "ligands.cdxml"))
-(tirun:setup-ligands tiruns sk)
+(tirun:assemble-ligands tiruns sk)
 (defparameter tests (list (cons :c1 (lambda (a) (eq (chem:get-name a) :c1))) (cons :c3 (lambda (a) (eq (chem:get-name a) :c3))) (cons :c5 (lambda (a) (eq (chem:get-name a) :c5)))))
 (defparameter pick (chem:compile-smarts "[C:6]1~[C<c1>:1]~[C:2]~[C<c3>:3]~[C:4]~[C<c5>:5]1" :tests tests))
 (defparameter lysozyme (load-pdb "181L_mod.pdb"))

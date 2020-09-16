@@ -152,7 +152,7 @@
   ((receptors :initform nil :initarg :receptors :accessor receptors)
    (ligands :initarg :ligands :accessor ligands)
    (mask-method :initform :default :initarg :mask-method :accessor mask-method)
-   (core-topology :initform nil :initarg :core-topology :accessor core-topology)
+   (core-topologys :initform nil :initarg :core-topologys :accessor core-topologys)
    (side-topologys :initform nil :initarg :side-topologys :accessor side-topologys)
    (jobs :initform (make-instance 'job-graph) :initarg :jobs :accessor jobs)
    (ti-stages :initarg :ti-stages :initform 1 :accessor ti-stages)

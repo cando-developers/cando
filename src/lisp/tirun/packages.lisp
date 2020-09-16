@@ -37,7 +37,8 @@
    #:receptors
    #:version
    #:ligands
-   #:setup-ligands
+   #:assemble-ligands
+   #:extract-ligands
    #:argument
    #:node
    #:option

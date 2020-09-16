@@ -1203,7 +1203,9 @@ are in the order (low, middle, high) and the column eigen-vectors are in the sam
             max-equiv)))))
 
 
-(defun similar-sketch2d (molecule anchor-sketch2d &key accumulate-coordinates (atom-match-callback #'molecule-graph:element-match))
+(defgeneric similar-sketch2d (thing anchor-sketch2d &key accumulate-coordinates atom-match-callback))
+
+(defmethod similar-sketch2d ((molecule chem:molecule) anchor-sketch2d &key accumulate-coordinates (atom-match-callback #'molecule-graph:element-match))
   "Generates a sketch of molecule that shares a common substructure 
 with the molecule in anchor-sketch2d 
 and aligns the new sketch the same way.  
@@ -1270,3 +1272,12 @@ Otherwise pass a function that takes two atoms and returns T if they are matchab
               new-sketch
               )))))))
                    
+
+
+(defmethod similar-sketch2d ((aggregate chem:aggregate) anchor-sketch2d
+                             &key accumulate-coordinates (atom-match-callback #'molecule-graph:element-match))
+  (unless (= (chem:content-size aggregate) 1)
+    (error "There can only be one molecule passed to similar-sketch2d - you passed an aggregate containing ~a molecules" (chem:content-size aggregate)))
+  (similar-sketch2d (chem:content-at aggregate 0) anchor-sketch2d
+                    :accumulate-coordinates accumulate-coordinates
+                    :atom-match-callback atom-match-callback))
