@@ -7,6 +7,7 @@
     #:add-page
     #:container
     #:make-file-task-page
+    #:make-molecule-select
     #:make-simple-task-page
     #:molecules
     #:molecule-select
