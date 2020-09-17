@@ -3,7 +3,7 @@
 <CDXML
  CreationProgram="ChemDraw 19.1.1.32"
  Name="ligands.cdxml"
- BoundingBox="41.23 106.32 241.71 246.13"
+ BoundingBox="41.23 106.32 253.38 246.13"
  WindowPosition="0 0"
  WindowSize="0 0"
  FractionalWidths="yes"
@@ -82,7 +82,7 @@
 <font id="20" charset="x-mac-roman" name="Times"/>
 <font id="21" charset="x-mac-roman" name="Helvetica"/>
 </fonttable><page
- id="415"
+ id="417"
  BoundingBox="0 0 540 720"
  HeaderPosition="36"
  FooterPosition="36"
@@ -91,7 +91,7 @@
  WidthPages="1"
 ><fragment
  id="340"
- BoundingBox="41.23 146.41 241.71 246.13"
+ BoundingBox="41.23 146.41 253.38 246.13"
  Z="87"
 ><n
  id="337"
@@ -108,7 +108,7 @@
  AS="N"
  BondOrdering="349 350"
 ><fragment
- id="416"
+ id="418"
  ConnectionOrder="371 372"
 ><n
  id="370"
@@ -163,7 +163,7 @@
  AS="N"
  BondOrdering="351 352"
 ><fragment
- id="417"
+ id="419"
  ConnectionOrder="380 381"
 ><n
  id="377"
@@ -237,7 +237,7 @@
  AS="N"
  BondOrdering="353 354"
 ><fragment
- id="418"
+ id="420"
  ConnectionOrder="393 394"
 ><n
  id="388"
@@ -352,11 +352,11 @@
  NeedsClean="yes"
  AS="N"
 ><t
- p="206.57 243.60"
- BoundingBox="207.68 236.40 241.71 243.79"
+ p="206.57 242.69"
+ BoundingBox="207.68 237.31 253.38 242.88"
  LabelJustification="Left"
  LabelAlignment="Left"
-><s font="21" size="10" color="0" face="96">:id :core</s></t></n><b
+><s font="21" size="10" color="0" face="96">:core :core</s></t></n><b
  id="349"
  Z="92"
  B="337"
