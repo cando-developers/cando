@@ -1744,14 +1744,18 @@ CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter
     Atom_sp	n1,n2,n3,n4;
     string	s1,s2,s3,s4;
     double	side ;
-    loop.loopTopGoal(matter,ATOMS);
-    while ( loop.advanceLoopAndProcess() ) {
-      a1 = loop.getAtom();
-      if (chem__verbose(1)) core::write_bf_stream(BF("Looking to assign stereochemical restraint for %s\n") % _rep_(a1));
-      if ( activeAtoms.notnilp() && !inAtomSet(activeAtoms,a1) ) continue;
-      if ( a1->getStereochemistryType() != undefinedCenter ) {
-        if (chem__verbose(1)) core::write_bf_stream(BF("getStereochemistryType != undefinedCenter for %s\n") % _rep_(a1));
-        LOG(BF("Create a chiral restraint for %s") % a1->description()  );
+    Loop residue_loop;
+    residue_loop.loopTopGoal(matter,RESIDUES);
+    while (residue_loop.advanceLoopAndProcess()) {
+      Residue_sp res = residue_loop.getResidue();
+      loop.loopTopGoal(res,ATOMS);
+      while ( loop.advanceLoopAndProcess() ) {
+        a1 = loop.getAtom();
+        if (chem__verbose(1)) core::write_bf_stream(BF("Looking to assign stereochemical restraint for %s\n") % _rep_(a1));
+        if ( activeAtoms.notnilp() && !inAtomSet(activeAtoms,a1) ) continue;
+        if ( a1->getStereochemistryType() != undefinedCenter ) {
+          if (chem__verbose(1)) core::write_bf_stream(BF("getStereochemistryType != undefinedCenter for %s\n") % _rep_(a1));
+          LOG(BF("Create a chiral restraint for %s") % a1->description()  );
 			//
 			// Figure out what the desired configuration should be
 			// If it has been set then use that
@@ -1766,91 +1770,91 @@ CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter
 			// the stereochemistry that we want to impose
 			// default R-stereochemistry (1-center)x(2-center).(3-center) is POSITIVE
 			//
-        side = 1.0;
-        core::List_sp priority;
-        if ( a1->getConfiguration() != undefinedConfiguration )
-        {
-          if ( a1->getConfiguration() == R_Configuration ) {
-            side = 1.0;
-          } else if ( a1->getConfiguration() == S_Configuration ) {
-            side = -1.0;
-          } else if ( a1->getConfiguration() == RightHanded_Configuration ) {
-            side = -1.0;
-          } else if ( a1->getConfiguration() == LeftHanded_Configuration ) {
-            side = 1.0;
-          }
-        } else
-        {
-          if ( a1->getStereochemistryType() == prochiralCenter ) {
-            side = 1.0;
+          side = 1.0;
+          core::List_sp priority;
+          if ( a1->getConfiguration() != undefinedConfiguration )
+          {
+            if ( a1->getConfiguration() == R_Configuration ) {
+              side = 1.0;
+            } else if ( a1->getConfiguration() == S_Configuration ) {
+              side = -1.0;
+            } else if ( a1->getConfiguration() == RightHanded_Configuration ) {
+              side = -1.0;
+            } else if ( a1->getConfiguration() == LeftHanded_Configuration ) {
+              side = 1.0;
+            }
           } else {
-            SIMPLE_WARN(BF("Chiral center (%s) with configuration settings[%s] doesn't have its configuration set")
-                         % a1->description()
-                         % a1->getConfigurationAsString() );
+            if ( a1->getStereochemistryType() == prochiralCenter ) {
+              side = 1.0;
+            } else {
+              SIMPLE_WARN(BF("Chiral center (%s:%s) with configuration settings[%s] doesn't have its configuration set")
+                          % _rep_(res)
+                          % _rep_(a1)
+                          % a1->getConfigurationAsString() );
+            }
           }
-        }
-        if ( a1->getConfiguration() == R_Configuration
-             || a1->getConfiguration() == S_Configuration ) {
-          priority = a1->getNeighborsByRelativePriority();
-        } else if (a1->getConfiguration() == RightHanded_Configuration
-                   || a1->getConfiguration() == LeftHanded_Configuration) {
-          priority = a1->getNeighborsForAbsoluteConfiguration();
-        } else {
-          priority = a1->getNeighborsForAbsoluteConfiguration();
-        }
-        if (core::cl__length(priority)!=4) {
-          SIMPLE_ERROR(BF("There must be 4 neighbors of %s - but there is only %s") % _rep_(a1) % _rep_(priority));
-        }
-        if (chem__verbose(1)) core::write_bf_stream(BF("Assigning stereochemistry for central atom %s neighbors: %s\n") % _rep_(a1) % _rep_(priority));
-        n1 = gc::As<Atom_sp>(oFirst(priority));
-        n2 = gc::As<Atom_sp>(oSecond(priority));
-        n3 = gc::As<Atom_sp>(oThird(priority));
-        n4 = gc::As<Atom_sp>(oFourth(priority));
+          if ( a1->getConfiguration() == R_Configuration
+               || a1->getConfiguration() == S_Configuration ) {
+            priority = a1->getNeighborsByRelativePriority();
+          } else if (a1->getConfiguration() == RightHanded_Configuration
+                     || a1->getConfiguration() == LeftHanded_Configuration) {
+            priority = a1->getNeighborsForAbsoluteConfiguration();
+          } else {
+            priority = a1->getNeighborsForAbsoluteConfiguration();
+          }
+          if (core::cl__length(priority)!=4) {
+            SIMPLE_ERROR(BF("There must be 4 neighbors of %s - but there is only %s") % _rep_(a1) % _rep_(priority));
+          }
+          if (chem__verbose(1)) core::write_bf_stream(BF("Assigning stereochemistry for central atom %s neighbors: %s\n") % _rep_(a1) % _rep_(priority));
+          n1 = gc::As<Atom_sp>(oFirst(priority));
+          n2 = gc::As<Atom_sp>(oSecond(priority));
+          n3 = gc::As<Atom_sp>(oThird(priority));
+          n4 = gc::As<Atom_sp>(oFourth(priority));
 #if 0
-        s1 = a1->getConfigurationPriorityHighest();
-        s2 = a1->getConfigurationPriorityHigh();
-        s3 = a1->getConfigurationPriorityLow();
-        s4 = a1->getConfigurationPriorityLowest();
-        n1 = a1->bondedNeighborWithName(s1);
-        n2 = a1->bondedNeighborWithName(s2);
-        n3 = a1->bondedNeighborWithName(s3);
-        n4 = a1->bondedNeighborWithName(s4);
-        ASSERTNOTNULLP(n1, "Atom("+a1->getName()+") does not have neighbor1("+s1+")");
-        ASSERTNOTNULLP(n2, "Atom("+a2->getName()+") does not have neighbor2("+s2+")");
-        ASSERTNOTNULLP(n3, "Atom("+a3->getName()+") does not have neighbor3("+s3+")");
-        ASSERTNOTNULLP(n4, "Atom("+a4->getName()+") does not have neighbor4("+s4+")");
+          s1 = a1->getConfigurationPriorityHighest();
+          s2 = a1->getConfigurationPriorityHigh();
+          s3 = a1->getConfigurationPriorityLow();
+          s4 = a1->getConfigurationPriorityLowest();
+          n1 = a1->bondedNeighborWithName(s1);
+          n2 = a1->bondedNeighborWithName(s2);
+          n3 = a1->bondedNeighborWithName(s3);
+          n4 = a1->bondedNeighborWithName(s4);
+          ASSERTNOTNULLP(n1, "Atom("+a1->getName()+") does not have neighbor1("+s1+")");
+          ASSERTNOTNULLP(n2, "Atom("+a2->getName()+") does not have neighbor2("+s2+")");
+          ASSERTNOTNULLP(n3, "Atom("+a3->getName()+") does not have neighbor3("+s3+")");
+          ASSERTNOTNULLP(n4, "Atom("+a4->getName()+") does not have neighbor4("+s4+")");
 #endif
-        eaCenter = this->getEnergyAtomPointer(a1);
-        ea1 = this->getEnergyAtomPointer(n1);
-        ea2 = this->getEnergyAtomPointer(n2);
-        ea3 = this->getEnergyAtomPointer(n3);
-        ea4 = this->getEnergyAtomPointer(n4);
+          eaCenter = this->getEnergyAtomPointer(a1);
+          ea1 = this->getEnergyAtomPointer(n1);
+          ea2 = this->getEnergyAtomPointer(n2);
+          ea3 = this->getEnergyAtomPointer(n3);
+          ea4 = this->getEnergyAtomPointer(n4);
 
 			//
 			// Setup chiral restraints for 1->2->center->3
 			//			and 1->2->center->4
 			//
-        if (chem__verbose(1)) core::write_bf_stream(BF("Assigning stereochemistry for central atom %s neighbors: %s\n") % _rep_(a1) % _rep_(priority));
-        ichiral._Atom1 = ea1->atom();
-        ichiral._Atom2 = ea2->atom();
-        ichiral._Atom3 = eaCenter->atom();
-        ichiral._Atom4 = ea3->atom();
-        ichiral.term.I1 = ea1->coordinateIndexTimes3();
-        ichiral.term.I2 = ea2->coordinateIndexTimes3();
-        ichiral.term.I3 = eaCenter->coordinateIndexTimes3();
-        ichiral.term.I4 = ea3->coordinateIndexTimes3();
-        ichiral.term.K = this->_ChiralRestraintWeight * side;
-        ichiral.term.CO = this->_ChiralRestraintOffset;
-        this->_ChiralRestraint->addTerm(ichiral);
+          if (chem__verbose(1)) core::write_bf_stream(BF("Assigning stereochemistry for central atom %s neighbors: %s\n") % _rep_(a1) % _rep_(priority));
+          ichiral._Atom1 = ea1->atom();
+          ichiral._Atom2 = ea2->atom();
+          ichiral._Atom3 = eaCenter->atom();
+          ichiral._Atom4 = ea3->atom();
+          ichiral.term.I1 = ea1->coordinateIndexTimes3();
+          ichiral.term.I2 = ea2->coordinateIndexTimes3();
+          ichiral.term.I3 = eaCenter->coordinateIndexTimes3();
+          ichiral.term.I4 = ea3->coordinateIndexTimes3();
+          ichiral.term.K = this->_ChiralRestraintWeight * side;
+          ichiral.term.CO = this->_ChiralRestraintOffset;
+          this->_ChiralRestraint->addTerm(ichiral);
 				// Now apply it to the other atom
 				// on the chiral center, just flip the sign
 				// of K
-        ichiral._Atom4 = ea4->atom();
-        ichiral.term.I4 = ea4->coordinateIndexTimes3();
+          ichiral._Atom4 = ea4->atom();
+          ichiral.term.I4 = ea4->coordinateIndexTimes3();
 					// flip the sign of the chiral restraint
-        ichiral.term.K = this->_ChiralRestraintWeight * side * -1.0;
-        ichiral.term.CO = this->_ChiralRestraintOffset;
-        this->_ChiralRestraint->addTerm(ichiral);
+          ichiral.term.K = this->_ChiralRestraintWeight * side * -1.0;
+          ichiral.term.CO = this->_ChiralRestraintOffset;
+          this->_ChiralRestraint->addTerm(ichiral);
 
 			// To try and increase the number of molecules that
 			// minimize into the correct configuration I'll add another
@@ -1859,29 +1863,30 @@ CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter
 			// Setup chiral restraints for 2->4->center->3
 			//			and 2->4->center->1
 			//
-        ichiral._Atom1 = ea2->atom();
-        ichiral._Atom2 = ea4->atom();
-        ichiral._Atom3 = eaCenter->atom();
-        ichiral._Atom4 = ea3->atom();
-        ichiral.term.I1 = ea2->coordinateIndexTimes3();
-        ichiral.term.I2 = ea4->coordinateIndexTimes3();
-        ichiral.term.I3 = eaCenter->coordinateIndexTimes3();
-        ichiral.term.I4 = ea3->coordinateIndexTimes3();
-        ichiral.term.K = this->_ChiralRestraintWeight * side;
-        ichiral.term.CO = this->_ChiralRestraintOffset;
-        this->_ChiralRestraint->addTerm(ichiral);
+          ichiral._Atom1 = ea2->atom();
+          ichiral._Atom2 = ea4->atom();
+          ichiral._Atom3 = eaCenter->atom();
+          ichiral._Atom4 = ea3->atom();
+          ichiral.term.I1 = ea2->coordinateIndexTimes3();
+          ichiral.term.I2 = ea4->coordinateIndexTimes3();
+          ichiral.term.I3 = eaCenter->coordinateIndexTimes3();
+          ichiral.term.I4 = ea3->coordinateIndexTimes3();
+          ichiral.term.K = this->_ChiralRestraintWeight * side;
+          ichiral.term.CO = this->_ChiralRestraintOffset;
+          this->_ChiralRestraint->addTerm(ichiral);
 				// Now apply it to the other atom
 				// on the chiral center, just flip the sign
 				// of K
-        ichiral._Atom4 = ea1->atom();
-        ichiral.term.I4 = ea1->coordinateIndexTimes3();
+          ichiral._Atom4 = ea1->atom();
+          ichiral.term.I4 = ea1->coordinateIndexTimes3();
 					// flip the sign of the chiral restraint
-        ichiral.term.K = this->_ChiralRestraintWeight * side * -1.0;
-        ichiral.term.CO = this->_ChiralRestraintOffset;
-        this->_ChiralRestraint->addTerm(ichiral);
-      } else
-      {
-        LOG(BF("There is no chiral restraint for: %s") % a1->description()  );
+          ichiral.term.K = this->_ChiralRestraintWeight * side * -1.0;
+          ichiral.term.CO = this->_ChiralRestraintOffset;
+          this->_ChiralRestraint->addTerm(ichiral);
+        } else
+        {
+          LOG(BF("There is no chiral restraint for: %s") % a1->description()  );
+        }
       }
     }
     if (chem__verbose(0)) core::write_bf_stream(BF("Built chiral restraints table for %d terms\n") % this->_ChiralRestraint->numberOfTerms());
