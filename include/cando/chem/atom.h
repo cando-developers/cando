@@ -327,7 +327,7 @@ namespace chem {
     void	setHintLP(bool o) { if (o) turnOnFlags(HintLp); else turnOffFlags(HintLp); };
     CL_LISPIFY_NAME("GET-ELEMENT");
     CL_DEFMETHOD 	Element getElement() const { return this->_Element; };
-    string	getElementAsString();
+    string	getElementAsString() const;
     core::Symbol_sp	getElementAsSymbol() const;
     CL_LISPIFY_NAME("SET-ELEMENT");
     CL_DEFMETHOD 	void	setElement(Element o) { this->_Element= o; };

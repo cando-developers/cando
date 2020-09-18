@@ -923,7 +923,7 @@ string Atom_O::getHybridizationAsString()
 }
 
 CL_LISPIFY_NAME("getElementAsString");
-CL_DEFMETHOD     string Atom_O::getElementAsString()
+CL_DEFMETHOD     string Atom_O::getElementAsString() const
 {
   return atomicSymbolFromElement(this->getElement())->symbolName()->get_std_string();
 }
@@ -1084,12 +1084,8 @@ string	Atom_O::description() const
 {
   stringstream ss;
   ss << this->className() << "("<<this->getName();
-  if ( this->containerContainedBy.notnilp() ) {
-    ss <<"["<<this->getResidueContainedBy_const()->description()<<"]";
-  } else {
-    ss << "[residue-NULL-]";
-  }
-  ss << "bonds[" << this->numberOfBonds() << "]";
+  ss << ":element " << _rep_(this->getElementAsSymbol());
+  ss << " bonds[" << this->numberOfBonds() << "]";
   ss <<")";
   return ss.str();
 }
