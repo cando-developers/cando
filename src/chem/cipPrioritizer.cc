@@ -603,8 +603,10 @@ CL_DEFMETHOD void CipPrioritizer_O::setStereochemicalTypeForAllAtoms(Matter_sp m
 }
 
 CL_DOCSTRING(R"doc(Calculate the stereochemistry for each atom in the aggregate or molecule
-from the three-dimensional structure.)doc");
-CL_DEFUN void chem__calculateStereochemistryFromStructure(Matter_sp matter)
+from the three-dimensional structure. If only-undefined-configuration is passed T then 
+only centers with unefinedConfiguration are changed.)doc");
+CL_LAMBDA(matter &key (only_undefined_configuration t));
+CL_DEFUN void chem__calculateStereochemistryFromStructure(Matter_sp matter,bool onlyUndefinedConfiguration)
 {
   CipPrioritizer_sp prior;
   if (gc::IsA<Molecule_sp>(matter)) {
