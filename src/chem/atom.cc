@@ -619,10 +619,10 @@ CL_DEFMETHOD     Bond_sp Atom_O::bondTo( Atom_sp to, BondOrder o )
   this->bonds.push_back(bn);
   to->bonds.push_back(bn);
   if (this->_Element == element_C && this->bonds.size()>4) {
-    SIMPLE_WARN(BF("More than four bonds to carbon will be made to %s") % _rep_(this->asSmartPtr()));
+    SIMPLE_ERROR(BF("More than four bonds to carbon will be made to %s") % _rep_(this->asSmartPtr()));
   }
   if (to->_Element == element_C && to->bonds.size()>4 ) {
-    SIMPLE_WARN(BF("More than four bonds to carbon will be made to %s") % _rep_(to));
+    SIMPLE_ERROR(BF("More than four bonds to carbon will be made to %s") % _rep_(to));
   }
   return bn;
 }
