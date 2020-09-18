@@ -171,13 +171,15 @@ CL_DEFMETHOD void	Atom_O::perturbAtomPosition(double dist)
  *  Priority is decided by comparing RelativePriority and if they are the same
  *  by comparing names.
  */
-int Atom_O::priorityOrder(Atom_sp a, Atom_sp b)
+int Atom_O::priorityOrder(Atom_sp a, Atom_sp b, core::HashTable_sp priorityMap)
 {
   if ( a.nilp() && b.nilp() ) return 0;
   if ( b.nilp() ) return 1;
   if ( a.nilp() ) return -1;
-  if ( a->getRelativePriority()>b->getRelativePriority() ) return 1;
-  if ( a->getRelativePriority()<b->getRelativePriority() ) return -1;
+  Fixnum apriority = core::clasp_fixnum(priorityMap->gethash(a));
+  Fixnum bpriority = core::clasp_fixnum(priorityMap->gethash(b));
+  if ( apriority>bpriority ) return 1;
+  if ( apriority<bpriority ) return -1;
   if ( a->getName()->symbolNameAsString() > b->getName()->symbolNameAsString() ) return 1;
   if ( a->getName()->symbolNameAsString() < b->getName()->symbolNameAsString() ) return -1;
   return 0;
@@ -266,7 +268,6 @@ void	Atom_O::initialize()
   this->type= _Nil<core::Symbol_O>();
   this->invalidateBackSpan();
   this->invalidateNextSpan();
-  this->_RelativePriority = 0;
   this->_Configuration = undefinedConfiguration;
   this->_StereochemistryType = undefinedCenter;
 }
@@ -347,7 +348,6 @@ Atom_O::Atom_O(const Atom_O& ss) :Matter_O(ss)
 //  this->moeIndex = ss.moeIndex;
 //  this->moeType = ss.moeType;
   this->_Ionization = ss._Ionization;
-  this->_RelativePriority = ss._RelativePriority;
   this->_Configuration = ss._Configuration;
   this->_StereochemistryType = ss._StereochemistryType;
 }
@@ -664,14 +664,18 @@ CL_DEFMETHOD     string	Atom_O::getNameIndex()
 
 class	OrderByPriorityAndName
 {
+  core::HashTable_sp _priority;
 public:
   bool operator() ( Atom_sp x, Atom_sp y )
   {
-    if ( x->getRelativePriority()<y->getRelativePriority() ) return true;
-    if ( x->getRelativePriority()>y->getRelativePriority() ) return false;
+    Fixnum xpriority = core::as_fixnum(this->_priority->gethash(x));
+    Fixnum ypriority = core::as_fixnum(this->_priority->gethash(y));
+    if ( xpriority<ypriority ) return true;
+    if ( xpriority>ypriority ) return false;
     if ( x->getName()->symbolNameAsString()<y->getName()->symbolNameAsString() ) return true;
     return false;
   }
+  OrderByPriorityAndName(core::HashTable_sp priorityMap) : _priority(priority) {};
 };
 
 core::List_sp	Atom_O::getNeighborsForAbsoluteConfiguration()
@@ -683,7 +687,7 @@ core::List_sp	Atom_O::getNeighborsForAbsoluteConfiguration()
   return l.cons();
 }
   
-core::List_sp	Atom_O::getNeighborsByRelativePriority()
+core::List_sp	Atom_O::getNeighborsByRelativePriority(core::HashTable_sp cip_priority)
 {
   LOG(BF("Ordering neighbors around(%s) by priority and name") % this->getName()  );
   VectorAtom	reversedNeighbors;
@@ -691,7 +695,7 @@ core::List_sp	Atom_O::getNeighborsByRelativePriority()
   for ( b=this->bonds.begin();b!=this->bonds.end() ; b++ ) {
     reversedNeighbors.push_back((*b)->getOtherAtom(this->sharedThis<Atom_O>()));
   }
-  OrderByPriorityAndName orderer;
+  OrderByPriorityAndName orderer(cip_priority);
   core::List_sp ncons = _Nil<core::T_O>();
   sort::quickSort(reversedNeighbors.begin(),reversedNeighbors.end(),orderer);
 	// At this point the sorted in reverse order
@@ -942,7 +946,6 @@ void	Atom_O::serialize(serialize::SNode snode)
   snode->attributeSymbolEnumHiddenConverter( "element", this->_Element, _sym__PLUS_elementToSymbolConverter_PLUS_);
   snode->attributeSymbolEnumHiddenConverterIfNotDefault( "hybrid", this->_Hybridization, _sym__PLUS_hybridizationToSymbolConverter_PLUS_,hybridization_sp3 );
   snode->attributeIfNotNil( "alias", this->_Alias );
-  snode->attributeIfNotDefault<uint>( "priority", this->_RelativePriority, 0 );
   snode->attributeIfNotDefault<double>( "chg", this->charge, 0.0 );
   snode->attributeSymbolEnumHiddenConverterIfNotDefault( "configuration", this->_Configuration, _sym__PLUS_configurationEnumConverter_PLUS_, undefinedConfiguration  );
   snode->attributeSymbolEnumHiddenConverterIfNotDefault( "stereochemistryType", this->_StereochemistryType, _sym__PLUS_stereochemistryTypeConverter_PLUS_, undefinedCenter );
@@ -968,7 +971,6 @@ void	Atom_O::fields(core::Record_sp node)
   node->/*pod_*/field_if_not_default<size_t>( INTERN_(kw,flags), this->flags, 0 );
   node->/*pod_*/field( INTERN_(kw,element), this->_Element);
   node->/*pod_*/field_if_not_default( INTERN_(kw,hybridization), this->_Hybridization,hybridization_sp3 );
-  node->/*pod_*/field_if_not_default( INTERN_(kw,priority), this->_RelativePriority, 0 );
   node->/*pod_*/field_if_not_default( INTERN_(kw,chg), this->charge, 0.0 );
   node->/*pod_*/field_if_not_default<short>( INTERN_(kw,ion), this->_Ionization, 0 );
   node->field_if_not_nil( INTERN_(kw,type), this->type);

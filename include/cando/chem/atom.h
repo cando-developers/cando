@@ -216,7 +216,6 @@ namespace chem {
     float		covalentRadius;
     StereochemistryType _StereochemistryType;
     ConfigurationEnum   _Configuration;
-    int		        _RelativePriority;
 	// Selection mask
     unsigned int	_Mask;
     Element		_Element;
@@ -501,11 +500,8 @@ namespace chem {
 	// Configuration
 	//
 	//! If the atom can have a stereochemical configuration return true
-    core::List_sp	getNeighborsByRelativePriority();
+    core::List_sp	getNeighborsByRelativePriority(core::HashTable_sp cip_priority);
     core::List_sp	getNeighborsForAbsoluteConfiguration();
-    CL_LISPIFY_NAME("getRelativePriority");
-    CL_DEFMETHOD 	int	getRelativePriority() { return this->_RelativePriority;};
-    void	setRelativePriority(int p) { this->_RelativePriority = p;};
     bool	isConfigurable();
 //	void	setConfigurationInfo(ConfigurationInfo& conf);
     void	setConfiguration(ConfigurationEnum conf);
@@ -592,7 +588,6 @@ namespace chem {
       flags(0),
       _StereochemistryType(undefinedCenter),
       _Configuration(undefinedConfiguration),
-      _RelativePriority(0),
       _Ionization(0),
       charge(0.0),
       occupancy(0.0),
