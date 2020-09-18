@@ -168,10 +168,12 @@ CL_DEFMETHOD Residue_sp Topology_O::buildResidueForIsomer(size_t isomer) const
       }
       Atom_sp toAtom = atoms[(*bi)->_ToAtomIndex];
 //      printf("%s:%d     @%d toAtom -> %s\n", __FILE__, __LINE__, (*bi)->_ToAtomIndex, _rep_(toAtom).c_str());
-      if ( fromAtom->atLowerUniqueAtomOrderThan(toAtom) ) {
+      if ( !fromAtom->isBondedTo(toAtom) ) {
         BondOrder order = (*bi)->_BondOrder;
-        Bond_O::canonicalizeBondOrder(fromAtom,toAtom,order);
-        fromAtom->bondTo(toAtom,order);
+        Atom_sp tempFromAtom = fromAtom;
+        Atom_sp tempToAtom = toAtom;
+        Bond_O::canonicalizeBondOrder(tempFromAtom,tempToAtom,order);
+        tempFromAtom->bondTo(tempToAtom,order);
       }
     }
   }
