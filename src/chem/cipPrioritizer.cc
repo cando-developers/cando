@@ -626,7 +626,7 @@ CL_DEFUN void chem__calculateStereochemistryFromStructure(Matter_sp matter,bool 
     l.loopTopGoal(matter,MOLECULES);
     while ( l.advanceLoopAndProcess() ) {
       Molecule_sp mol = l.getMolecule();
-      chem__calculateStereochemistryFromStructure(mol);
+      chem__calculateStereochemistryFromStructure(mol,onlyUndefinedConfiguration);
     }
   } else {
     TYPE_ERROR(matter,core::Cons_O::createList(_sym_Aggregate_O,_sym_Molecule_O));
