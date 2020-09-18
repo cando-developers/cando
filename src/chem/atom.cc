@@ -32,6 +32,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/foundation.h>
 #include <clasp/core/common.h>
 #include <clasp/core/record.h>
+#include <clasp/core/lispStream.h>
 #include <clasp/core/evaluator.h>
 #include <clasp/core/array.h>
 #include <clasp/core/symbolTable.h>
@@ -362,6 +363,9 @@ CL_LISPIFY_NAME("setConfiguration");
 CL_DEFMETHOD     void Atom_O::setConfiguration(ConfigurationEnum conf)
 {_OF();
   this->_Configuration = conf;
+  if (chem__verbose(1)) {
+    core::write_bf_stream(BF("Changed configuration of atom %s to %s\n") % _rep_(this->asSmartPtr()) % this->getConfigurationAsString());
+  }
   LOG(BF("Changed configuration of atom[%s] to [%s]")
       % this->__repr__() % this->getConfigurationAsString() );
 }
@@ -1636,7 +1640,7 @@ CL_DEFMETHOD void Atom_O::setAbsoluteConfiguration(ConfigurationEnum config, Ato
     this->bonds[3] = b4;
   }
   this->_StereochemistryType = chiralCenter;
-  this->_Configuration = config;
+  this->setConfiguration(config);
 }
 
 
@@ -1654,15 +1658,17 @@ void Atom_O::invertStructureAndRestraints()
 #endif
 	
   ConfigurationEnum config = this->_Configuration;
+  ConfigurationEnum newconfig = config;
   if ( config == S_Configuration ) {
-    this->_Configuration = R_Configuration;
+    newconfig = R_Configuration;
   } else if ( config == R_Configuration ) {
-    this->_Configuration = S_Configuration;
+    newconfig = S_Configuration;
   } else if ( config == RightHanded_Configuration ) {
-    this->_Configuration = LeftHanded_Configuration;
+    newconfig = LeftHanded_Configuration;
   } else if ( config == LeftHanded_Configuration ) {
-    this->_Configuration = RightHanded_Configuration;
+    newconfig = RightHanded_Configuration;
   }
+  this->setConfiguration(newconfig);
 }
 
 
