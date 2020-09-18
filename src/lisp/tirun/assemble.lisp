@@ -544,6 +544,21 @@ We need assemble-ligands for the tirun demo."
    molecule))
 
 
+(defun find-atom-with-name (tiruns name)
+  (loop for ligand in (ligands tiruns)
+        do (cando:do-residues (res (drawing ligand))
+             (cando:do-atoms (atm res)
+               (when (eq (chem:get-name atm) name)
+                 (return-from find-atom-with-name (values atm res (drawing ligand))))))))
+
+
+(defun summarize-stereochemistry (ligands)
+  (loop for ligand in ligands
+        do (cando:do-residues (res ligand)
+             (cando:do-atoms (atm res)
+               (when (eq (chem:get-stereochemistry-type atm) :chiral)
+                 (format t "~a  ~a ~a~%" atm (chem:get-stereochemistry-type atm) (chem:get-configuration atm))
+                 (format t "~a~%" (chem:bonds-as-list atm)))))))
 
 (defun assemble-ligands (tiruns sketch &key verbose)
   "This generates the ligands while keeping track of additional information about
