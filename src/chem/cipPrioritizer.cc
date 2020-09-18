@@ -617,8 +617,13 @@ CL_DEFUN void chem__calculateStereochemistryFromStructure(Matter_sp matter,bool 
     while (la.advanceLoopAndProcess() ) {
       Atom_sp atm = la.getAtom();
       if (atm->getStereochemistryType()==chiralCenter) {
-        ConfigurationEnum ce = atm->calculateStereochemicalConfiguration();
-        atm->setConfiguration(ce);
+        if (!onlyUndefinedConfiguration) {
+          ConfigurationEnum ce = atm->calculateStereochemicalConfiguration();
+          atm->setConfiguration(ce);
+        } else if (onlyUndefinedConfiguration&&atm->getConfiguration()==undefinedConfiguration) {
+          ConfigurationEnum ce = atm->calculateStereochemicalConfiguration();
+          atm->setConfiguration(ce);
+        }
       }
     }
   } else if (gc::IsA<Aggregate_sp>(matter)) {
