@@ -1403,13 +1403,12 @@ CL_DEFMETHOD     uint Atom_O::totalBondOrder()
 CL_LISPIFY_NAME("bondsAsList");
 CL_DEFMETHOD     core::List_sp Atom_O::bondsAsList()
 {
+  ql::list ll;
   VectorBond::iterator	b;
-  core::List_sp		list;
-  list = _Nil<core::T_O>();
   for (b=this->bonds.begin();b!=this->bonds.end(); b++ ) {
-    list = core::Cons_O::create(*b,list);
+    ll << *b;
   }
-  return list;
+  return ll.result();
 }
 
 bool	Atom_O::isHeavyAtom()
