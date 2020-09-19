@@ -110,15 +110,56 @@ for a list of symbols.  When they ask for a list of symbols we use this list."))
 
 (defun (setf lookup-variable*) (new-value name environment)
   ;; Save the name of the variable in a hash-table of variable names
-  (setf (gethash (string name) (%variables *leap-env*)) (string name))
-  ;;
-  (when (typep new-value 'chem:topology)
-    (cando:register-topology name new-value))
-  (core:*make-special name)
-  (set name new-value))
+  (let ((expanded (macroexpand name)))
+    (cond
+      ((eq expanded name)
+       (setf (gethash (string name) (%variables *leap-env*)) (string name))
+       ;;
+       (when (and (symbolp name) (typep new-value 'chem:topology))
+         (cando:register-topology name new-value))
+       (core:*make-special name)
+       (set name new-value))
+      (t (error "What do you do with name: ~s" name)))))
+
+
+
+;;; ------------------------------------------------------------
+;;;
+;;; Maintain a hash-table that maps object names to objects
+;;; 
+(define-condition object-not-found ()
+  ((name :initarg :name :reader name)))
+
+(defun register-variable (name object)
+  "* Arguments
+- name :: Symbol
+- object :: an object
+* Description
+Associate the name with the object"
+  (let ((expanded (macroexpand name)))
+    (if (eq expanded name)
+        (setf (lookup-variable* name *package*) object)
+        (let ((expression `(setf ,expanded ',object)))
+          (eval expression)))))
+
+
+(defun lookup-variable (name-or-object &optional (errorp t) error-value)
+  "* Arguments
+- name-or-object : Symbol or object
+* Description
+Lookup the object in the variable space."
+  (cond
+    ((symbolp name-or-object)
+     (lookup-variable* name-or-object *package* errorp error-value))
+    ((stringp name-or-object)
+     (let ((obj (leap.parser:parse-sub-matter name-or-object)))
+       (if obj
+           obj
+           name-or-object)))
+    (t name-or-object)))
+
 
 (defun evaluate (builder ast environment)
-  ;;  (format t "evaluating: ~s~%" ast)
   (let ((result (architecture.builder-protocol:walk-nodes
                  builder
                  (lambda (recurse relation relation-args node kind relations
@@ -126,7 +167,10 @@ for a list of symbols.  When they ask for a list of symbols we use this list."))
                    (declare (ignore relation relation-args relations))
                    (case kind
                      (:literal
-                      value)
+                      (let ((expansion (macroexpand value)))
+                        (if (eq expansion value)
+                            value
+                            (eval value))))
                      (:list
                       (first (funcall recurse :relations '(:element))))
                      (:s-expr
@@ -148,37 +192,6 @@ for a list of symbols.  When they ask for a list of symbols we use this list."))
 
 
 
-
-
-;;; ------------------------------------------------------------
-;;;
-;;; Maintain a hash-table that maps object names to objects
-;;; 
-(define-condition object-not-found ()
-  ((name :initarg :name :reader name)))
-
-(defun register-variable (name object)
-  "* Arguments
-- name :: Symbol
-- object :: an object
-* Description
-Associate the name with the object"
-  (setf (lookup-variable* name *package*) object))
-
-(defun lookup-variable (name-or-object &optional (errorp t) error-value)
-  "* Arguments
-- name-or-object : Symbol or object
-* Description
-Lookup the object in the variable space."
-  (cond
-    ((symbolp name-or-object)
-     (lookup-variable* name-or-object *package* errorp error-value))
-    ((stringp name-or-object)
-     (let ((obj (leap.parser:parse-sub-matter name-or-object)))
-       (if obj
-           obj
-           name-or-object)))
-    (t name-or-object)))
 
 
 

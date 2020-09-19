@@ -132,10 +132,12 @@
 
 (defun maybe-parse-scee-scnb (comment)
   (when (stringp comment)
-    (handler-case (esrap:parse 'scee-scnb-comment comment)
-      (esrap:parse-error (err)
-        ;; ignore parse errors - it's a comment
-        nil))))
+    (when (or (search "scee" comment)
+              (search "SCEE" comment))
+      (handler-case (esrap:parse 'scee-scnb-comment comment)
+        (esrap:parse-error (err)
+          ;; ignore parse errors - it's a comment
+          nil)))))
 
 
 (defun parse-ptor-line (line)
