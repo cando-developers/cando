@@ -178,10 +178,10 @@ public:
   CL_DEFMETHOD Constitution_sp	getConstitution() const { return this->_Constitution; };
   MonomerContext_sp getMonomerContext(CandoDatabase_sp bdb);
 
-  Residue_sp buildResidueSingleName() const;
-  Residue_sp buildResidueForIsomer(size_t isomer) const;
-  Residue_sp buildResidueForMonomerName(core::Symbol_sp monomerName) const;
-  Residue_sp buildResidueForIsoname(Isoname_sp isoname) const;
+    Residue_sp buildResidueSingleName() const;
+    Residue_sp buildResidueForIsomer(size_t isomer) const;
+    Residue_sp buildResidueForMonomerName(core::Symbol_sp monomerName) const;
+    Residue_sp buildResidueForIsoname(Isoname_sp isoname) const;
 
   string __repr__() const;
  

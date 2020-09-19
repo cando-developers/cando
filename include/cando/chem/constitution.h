@@ -170,7 +170,8 @@ FORWARD(Monomer);
     bool	isSameAs(Constitution_sp& m) { return (this->getName()==m->getName());};
 
     void	makeResidueConsistentWithStereoisomerNamed(Residue_sp res,
-                                                           core::Symbol_sp stereoisomerName );
+                                                           core::Symbol_sp stereoisomerName,
+                                                           core::HashTable_sp cip);
 
     Topology_sp	getTopologyForContext(MonomerContext_sp c );
 

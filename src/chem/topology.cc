@@ -35,11 +35,15 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/lispStream.h>
 #include <clasp/core/ql.h>
 #include <clasp/core/evaluator.h>
+#include <clasp/core/hashTableEq.h>
 #include <cando/adapt/stringSet.h>
 #include <cando/adapt/adapters.h>
+#include <cando/chem/atom.h>
+#include <cando/chem/molecule.h>
 #include <cando/chem/topology.h>
 #include <cando/chem/coupling.h>
 #include <cando/chem/monomer.h>
+#include <cando/chem/cipPrioritizer.h>
 #include <cando/chem/monomerContext.h>
 #include <cando/chem/plug.h>
 #include <cando/chem/constitution.h>
@@ -189,21 +193,21 @@ CL_DEFMETHOD Residue_sp Topology_O::buildResidueForIsomer(size_t isomer) const
     core::T_mv aa_mv = res->atomWithName(name);
     Atom_sp aa = gc::As<Atom_sp>(aa_mv);
     LOG(BF("Setting the configuration of atom(%s) to(%s)") % aa->description().c_str() % _rep_((*sci)->getConfiguration())  ); //
-    if ( (*sci)->getConfiguration() == chemkw::_sym_S ) {
-      aa->setConfiguration( S_Configuration );
-    } else if ( (*sci)->getConfiguration() == chemkw::_sym_R ) {
-      aa->setConfiguration( R_Configuration );
-    }
+    auto trans = translate::from_object<ConfigurationEnum,std::true_type>((*sci)->getConfiguration())._v;
+    aa->setConfiguration(trans);
   }
     //
     //
     // Set dihedral restraints for E/Z pi bonds
     //
     //
+  Molecule_sp tempMolecule = Molecule_O::create();
+  tempMolecule->addMatter(res);
+  core::HashTable_sp cip_priorities = CipPrioritizer_O::assignPrioritiesHashTable(tempMolecule);
   gctools::Vec0<ComplexRestraint_sp>::iterator	tpi;
   for ( tpi=this->_Constitution->_StereoInformation->begin_ComplexRestraints(); 
         tpi!=this->_Constitution->_StereoInformation->end_ComplexRestraints(); tpi++ ) {
-    (*tpi)->fillRestraints(res);
+    (*tpi)->fillRestraints(res,cip_priorities);
   }
   return res;
 }
@@ -211,7 +215,7 @@ CL_DEFMETHOD Residue_sp Topology_O::buildResidueForIsomer(size_t isomer) const
 CL_DEFMETHOD Residue_sp Topology_O::buildResidueForMonomerName(core::Symbol_sp monomerName) const {
   for ( size_t isomer(0); isomer<this->_StereoisomerAtomProperties.size(); ++isomer) {
     if (this->_StereoisomerAtomProperties[isomer]->getName() == monomerName) {
-      return this->buildResidueForIsomer(isomer);
+        return this->buildResidueForIsomer(isomer);
     }
   }
   stringstream snames;
@@ -223,7 +227,7 @@ CL_DEFMETHOD Residue_sp Topology_O::buildResidueForMonomerName(core::Symbol_sp m
 
 CL_DEFMETHOD Residue_sp Topology_O::buildResidueForIsoname(Isoname_sp isoname) const {
   if (isoname->_Isomer<this->_StereoisomerAtomProperties.size()) {
-    return this->buildResidueForIsomer(isoname->_Isomer);
+      return this->buildResidueForIsomer(isoname->_Isomer);
   }
   stringstream snames;
   for ( size_t isomer(0); isomer<this->_StereoisomerAtomProperties.size(); ++isomer) {
@@ -233,8 +237,9 @@ CL_DEFMETHOD Residue_sp Topology_O::buildResidueForIsoname(Isoname_sp isoname) c
 }
 
 CL_DEFMETHOD Residue_sp Topology_O::buildResidueSingleName() const {
+  core::HashTable_sp cip = core::HashTableEq_O::create_default(); // dummy hash table
   if (this->_StereoisomerAtomProperties.size()==1) {
-    return this->buildResidueForIsomer(0);
+      return this->buildResidueForIsomer(0);
   }
   stringstream snames;
   for ( size_t isomer(0); isomer<this->_StereoisomerAtomProperties.size(); ++isomer) {

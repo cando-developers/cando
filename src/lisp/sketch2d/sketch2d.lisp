@@ -1028,14 +1028,16 @@ are in the order (low, middle, high) and the column eigen-vectors are in the sam
   (print-unreadable-object (obj stream :type t)
     (format stream "~a -> ~a" (chiral-sketch-atom obj) (chiral-bonds obj))))
 
-(defclass atom-priority ()
+(defclass atom-order ()
   ((original-atom :initarg :original-atom :accessor original-atom)
    (sketch-atom :initarg :sketch-atom :accessor sketch-atom)
    (priority :initarg :priority :accessor priority)))
 
-(defmethod print-object ((obj atom-priority) stream)
+(defmethod print-object ((obj atom-order) stream)
   (print-unreadable-object (obj stream :type t)
-    (format stream "~a :priority ~a" (original-atom obj) (priority obj))))
+    (format stream "~a" (original-atom obj))
+    (when (slot-boundp obj 'priority)
+      (format stream " :priority ~a" (priority obj)))))
 
 
 (defun select-best-chiral-neighbor (sketch-neighbors chiral-atoms)
@@ -1052,7 +1054,8 @@ are in the order (low, middle, high) and the column eigen-vectors are in the sam
                           (when (eq (chem:get-stereochemistry-type atm) :chiral)
                             (push atm chirals)))
                         chirals))
-        (original-to-sketch (make-hash-table)))
+        (original-to-sketch (make-hash-table))
+        (cip (chem:assign-priorities-hash-table (molecule sketch2d))))
     (cando:do-atoms (atm (molecule sketch2d))
       (let ((original-atm (gethash atm (sketch-atoms-to-original sketch2d))))
         (setf (gethash original-atm original-to-sketch) atm)))
@@ -1062,80 +1065,104 @@ are in the order (low, middle, high) and the column eigen-vectors are in the sam
                                     for other-atom = (chem:get-other-atom bond chiral-atom)
                                     collect other-atom))
                    (config (chem:get-configuration chiral-atom)))
-               (format t "neighbors: ~a~%" (mapcar #'chem:get-name neighbors))
-               (format t "   config: ~a~%" config)
-               (if (member config '(:r :s))
-                   (let ((sketch-chiral (gethash chiral-atom original-to-sketch))
-                         sketch-neighbors)
-                     (loop for neighbor in neighbors
-                           for sketch-neighbor = (gethash neighbor original-to-sketch)
-                           for priority = (chem:get-relative-priority neighbor)
-                           when sketch-neighbor
-                             do (let ((atom-priority (make-instance 'atom-priority
-                                                                    :original-atom neighbor
-                                                                    :sketch-atom sketch-neighbor
-                                                                    :priority priority)))
-                                  (push atom-priority sketch-neighbors)))
-                     (setf sketch-neighbors (sort sketch-neighbors #'> :key #'priority))
-                     (let ((chiral-info (make-instance 'chiral-info
-                                                       :chiral-sketch-atom sketch-chiral
-                                                       :neighbors sketch-neighbors)))
+               (cond
+                 ((member config '(:r :s))
+                  (let* ((sketch-chiral (gethash chiral-atom original-to-sketch))
+                         (sketch-neighbors (loop for neighbor in neighbors
+                                                 for sketch-neighbor = (gethash neighbor original-to-sketch)
+                                                 for priority = (chem:get-relative-priority neighbor cip)
+                                                 when sketch-neighbor
+                                                   collect (make-instance 'atom-order
+                                                                          :original-atom neighbor
+                                                                          :sketch-atom sketch-neighbor
+                                                                          :priority priority))))
+                    (setf sketch-neighbors (sort sketch-neighbors #'> :key #'priority))
+                    (let ((chiral-info (make-instance 'chiral-info
+                                                      :chiral-sketch-atom sketch-chiral
+                                                      :neighbors sketch-neighbors)))
 ;;; svg is a left handed coordinate system
-                       (case (length (neighbors chiral-info))
-                         (3 (let* ((atm-1 (sketch-atom (car sketch-neighbors)))
-                                   (atm-ch sketch-chiral)
-                                   (atm-2 (sketch-atom (cadr sketch-neighbors)))
-                                   (vec1 (geom:v- (chem:get-position atm-1)
-                                                  (chem:get-position atm-ch)))
-                                   (vec2 (geom:v- (chem:get-position atm-2)
-                                                  (chem:get-position atm-ch)))
-                                   (cross (geom:vcross vec1 vec2))
-                                   (draw-config (if (< (geom:vz cross) 0.0) :r :s))
-                                   (bond-type (if (eq draw-config config)
-                                                  :single-wedge-begin
-                                                  :single-hash-begin)))
-                              (format t "chiral-atom: ~a~%" chiral-atom)
-                              (format t "sketch-neighbors: ~a~%" sketch-neighbors)
-                              (format t "   draw-config: ~a     config ~a~%" draw-config config)
-                              (format t "    bond-type: ~a~%" bond-type)
-                              (setf (chiral-bonds chiral-info)
-                                    (list (make-instance 'chiral-bond-info
-                                                         :bond-type bond-type
-                                                         :bond-atom (select-best-chiral-neighbor sketch-neighbors chiral-atoms))))))
-                         (4 (let* ((atm-1 (sketch-atom (first sketch-neighbors)))
-                                   (atm-ch sketch-chiral)
-                                   (atm-2 (sketch-atom (second sketch-neighbors)))
-                                   (vec1 (geom:v- (chem:get-position atm-1)
-                                                  (chem:get-position atm-ch)))
-                                   (vec2 (geom:v- (chem:get-position atm-2)
-                                                  (chem:get-position atm-ch)))
-                                   (cross12 (geom:vcross vec1 vec2))
-                                   (atm-3 (sketch-atom (third sketch-neighbors)))
-                                   (atm-4 (sketch-atom (fourth sketch-neighbors)))
-                                   (vec3 (geom:v- (chem:get-position atm-3)
-                                                  (chem:get-position atm-ch)))
-                                   (vec4 (geom:v- (chem:get-position atm-4)
-                                                  (chem:get-position atm-ch)))
-                                   (cross34 (geom:vcross vec3 vec4))
-                                   (draw-config (if (< (* (geom:vz cross12) (geom:vz cross34)) 0.0) :r :s))) ; Change this to flip the rendered config of the center
-                              (multiple-value-bind (bond-type1 bond-type2)
-                                  (if (eq draw-config config)
-                                      (values :single-wedge-begin :single-hash-begin)
-                                      (values :single-hash-begin :single-wedge-begin))
-                                (setf (chiral-bonds chiral-info)
-                                      (list (make-instance 'chiral-bond-info
-                                                           :bond-type bond-type1
-                                                           :bond-atom (sketch-atom (first sketch-neighbors)))
-                                            (make-instance 'chiral-bond-info
-                                                           :bond-type bond-type2
-                                                           :bond-atom (sketch-atom (second sketch-neighbors)))))))))
-                       (push chiral-info (chiral-infos sketch2d))))
-                   ;; Handle right-handed/left-handed configuration
-                   (error "augment-sketch-with-stereochemistry - handle ~a" config)
-                   )
-
-
-               ))))
+                      (case (length (neighbors chiral-info))
+                        (3 (let* ((atm-1 (sketch-atom (car sketch-neighbors)))
+                                  (atm-ch sketch-chiral)
+                                  (atm-2 (sketch-atom (cadr sketch-neighbors)))
+                                  (vec1 (geom:v- (chem:get-position atm-1)
+                                                 (chem:get-position atm-ch)))
+                                  (vec2 (geom:v- (chem:get-position atm-2)
+                                                 (chem:get-position atm-ch)))
+                                  (cross (geom:vcross vec1 vec2))
+                                  (draw-config (if (< (geom:vz cross) 0.0) :r :s))
+                                  (bond-type (if (eq draw-config config)
+                                                 :single-wedge-begin
+                                                 :single-hash-begin)))
+                             (setf (chiral-bonds chiral-info)
+                                   (list (make-instance 'chiral-bond-info
+                                                        :bond-type bond-type
+                                                        :bond-atom (select-best-chiral-neighbor sketch-neighbors chiral-atoms))))))
+                        (4 (let* ((atm-1 (sketch-atom (first sketch-neighbors)))
+                                  (atm-ch sketch-chiral)
+                                  (atm-2 (sketch-atom (second sketch-neighbors)))
+                                  (vec1 (geom:v- (chem:get-position atm-1)
+                                                 (chem:get-position atm-ch)))
+                                  (vec2 (geom:v- (chem:get-position atm-2)
+                                                 (chem:get-position atm-ch)))
+                                  (cross12 (geom:vcross vec1 vec2))
+                                  (atm-3 (sketch-atom (third sketch-neighbors)))
+                                  (atm-4 (sketch-atom (fourth sketch-neighbors)))
+                                  (vec3 (geom:v- (chem:get-position atm-3)
+                                                 (chem:get-position atm-ch)))
+                                  (vec4 (geom:v- (chem:get-position atm-4)
+                                                 (chem:get-position atm-ch)))
+                                  (cross34 (geom:vcross vec3 vec4))
+                                  (draw-config (if (< (* (geom:vz cross12) (geom:vz cross34)) 0.0) :r :s))) ; Change this to flip the rendered config of the center
+                             (multiple-value-bind (bond-type1 bond-type2)
+                                 (if (eq draw-config config)
+                                     (values :single-wedge-begin :single-hash-begin)
+                                     (values :single-hash-begin :single-wedge-begin))
+                               (setf (chiral-bonds chiral-info)
+                                     (list (make-instance 'chiral-bond-info
+                                                          :bond-type bond-type1
+                                                          :bond-atom (sketch-atom (first sketch-neighbors)))
+                                           (make-instance 'chiral-bond-info
+                                                          :bond-type bond-type2
+                                                          :bond-atom (sketch-atom (second sketch-neighbors)))))))))
+                      (push chiral-info (chiral-infos sketch2d)))))
+                 ((member config '(:left-handed :right-handed))
+                  (let* ((sketch-chiral (gethash chiral-atom original-to-sketch))
+                         (sketch-neighbors (loop for neighbor in neighbors
+                                                 for sketch-neighbor = (gethash neighbor original-to-sketch)
+                                                 when sketch-neighbor
+                                                   collect (make-instance 'atom-order
+                                                                          :original-atom neighbor
+                                                                          :sketch-atom sketch-neighbor))))
+                    (let ((chiral-info (make-instance 'chiral-info
+                                                      :chiral-sketch-atom sketch-chiral
+                                                      :neighbors sketch-neighbors)))
+;;; svg is a left handed coordinate system
+                      ;;                      (case (length (neighbors chiral-info))
+                      (let* ((atm-1 (sketch-atom (car sketch-neighbors)))
+                             (atm-ch sketch-chiral)
+                             (atm-2 (sketch-atom (cadr sketch-neighbors)))
+                             (vec1 (geom:v- (chem:get-position atm-1)
+                                            (chem:get-position atm-ch)))
+                             (vec2 (geom:v- (chem:get-position atm-2)
+                                            (chem:get-position atm-ch)))
+                             (cross (geom:vcross vec1 vec2))
+                             (draw-config (if (< (geom:vz cross) 0.0) :right-handed :left-handed)))
+                        (multiple-value-bind (bond-type1 bond-type2)
+                            (if (eq draw-config config)
+                                (values :single-wedge-begin :single-hash-begin)
+                                (values :single-hash-begin :single-wedge-begin))
+                          (setf (chiral-bonds chiral-info)
+                                (list* (make-instance 'chiral-bond-info
+                                                      :bond-type bond-type1
+                                                      :bond-atom (sketch-atom (third sketch-neighbors)))
+                                       (if (> (length (neighbors chiral-info)) 3)
+                                           (list (make-instance 'chiral-bond-info
+                                                                :bond-type bond-type2
+                                                                :bond-atom (sketch-atom (fourth sketch-neighbors))))
+                                           nil)))))
+                      (push chiral-info (chiral-infos sketch2d)))))
+                 (t (error "Handle config ~a" config)))))))
 
 
 (defun sketch2d (matter &key accumulate-coordinates)

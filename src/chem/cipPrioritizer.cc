@@ -35,6 +35,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/aggregate.h>
 #include <cando/chem/loop.h>
 #include <clasp/core/sort.h>
+#include <clasp/core/hashTableEq.h>
 #include <cando/chem/bond.h>
 #include <cando/chem/virtualAtom.h>
 #include <clasp/core/wrappers.h>
@@ -53,36 +54,45 @@ uint atomicNumber(Atom_sp a)
 }
 
 
-class	OrderByBase
+struct	OrderByBase
 {
-protected:
-	CipPrioritizer_sp	prior;
-public:
+    OrderByBase(core::HashTable_sp cip) : _cip(cip) {};
+    core::HashTable_sp _cip;
+    CipPrioritizer_sp	prior;
     void setCipPrioritizer(CipPrioritizer_sp p) { this->prior = p;};
     virtual bool operator() (Atom_sp x, Atom_sp y) = 0;
 };
 
+    struct OrderByPriority : public OrderByBase {
+    public:
+        bool operator()(Atom_sp x, Atom_sp y )
+        {
+            return y->getRelativePriority(this->_cip) < x->getRelativePriority(this->_cip);
+        }
+        OrderByPriority(core::HashTable_sp cip) : OrderByBase(cip) {};
+    };        
 
-class	OrderByP : public OrderByBase
+struct	OrderByP : public OrderByBase
 {
 public:
     bool operator()(Atom_sp x, Atom_sp y )
     {
-	if ( prior->getP(x) <= prior->getP(y) ) return true;
+	if ( prior->getP(x,this->_cip) <= prior->getP(y,this->_cip) ) return true;
 	return false;
     }
+    OrderByP(core::HashTable_sp cip) : OrderByBase(cip) {};
 };
 
 
-class	OrderByS : public OrderByBase
+struct	OrderByS : public OrderByBase
 {
-public:
+    OrderByS(core::HashTable_sp cip) : OrderByBase(cip) {};
     int cmpByS(Atom_sp x, Atom_sp y )
 {
         ASSERTNOTNULL(x);
         ASSERTNOTNULL(y);
-	vector<int>&	xv = prior->getS(x);
-	vector<int>&	yv = prior->getS(y);
+	vector<int>&	xv = prior->getS(x,this->_cip);
+	vector<int>&	yv = prior->getS(y,this->_cip);
 	vector<int>::iterator	xi = xv.begin();
 	vector<int>::iterator	yi = yv.begin();
 	bool done=false;
@@ -137,23 +147,23 @@ void	CipPrioritizer_O::initialize()
     this->Base::initialize();
 }
 
-int	CipPrioritizer_O::getP(Atom_sp a)
+    int	CipPrioritizer_O::getP(Atom_sp a, core::HashTable_sp cip)
 {_OF();
-    ASSERT_lessThan(a->getRelativePriority(),this->_p.size());
-    return this->_p[a->getRelativePriority()];
+    ASSERT_lessThan(a->getRelativePriority(cip),this->_p.size());
+    return this->_p[a->getRelativePriority(cip)];
 }
 
-vector<int>& CipPrioritizer_O::getS(Atom_sp a)
+    vector<int>& CipPrioritizer_O::getS(Atom_sp a, core::HashTable_sp cip)
 {_OF();
     ASSERTNOTNULL(a);
-    if ( ! ( a->getRelativePriority() < this->_s.size() ) )
+    if ( ! ( a->getRelativePriority(cip) < this->_s.size() ) )
     {
 	LOG(BF("Bad priority for atom") );
 	LOG(BF("Bad priority for atom: %s") % a->description().c_str()  );
-	LOG(BF("   priority value = %d") % a->getRelativePriority()  );
+	LOG(BF("   priority value = %d") % a->getRelativePriority(cip)  );
     }
-    ASSERT_lessThan(a->getRelativePriority(),this->_s.size());
-    return this->_s[a->getRelativePriority()];
+    ASSERT_lessThan(a->getRelativePriority(cip),this->_s.size());
+    return this->_s[a->getRelativePriority(cip)];
 }
 
 
@@ -176,25 +186,26 @@ vector<int>& CipPrioritizer_O::getS(Atom_sp a)
 }
 
 
-CL_LISPIFY_NAME(chem:assign-priorities);
-CL_DEFUN void CipPrioritizer_O::assignPriorities(Matter_sp matter)
+CL_LISPIFY_NAME(chem:assign-priorities-hash-table);
+    CL_DEFUN core::HashTable_sp CipPrioritizer_O::assignPrioritiesHashTable(Matter_sp matter)
 {
-  CipPrioritizer_sp prior;
-  if (gc::IsA<Molecule_sp>(matter)) {
-    prior = CipPrioritizer_O::create();
-    prior->assignCahnIngoldPrelogPriorityToAtomsRelativePriority(matter);
-  } else if (gc::IsA<Aggregate_sp>(matter)) {
-    Loop l;
-    l.loopTopGoal(matter,MOLECULES);
-    while ( l.advanceLoopAndProcess() )
-    {
-      Molecule_sp mol = l.getMolecule();
-      prior = CipPrioritizer_O::create();
-      prior->assignCahnIngoldPrelogPriorityToAtomsRelativePriority(mol);
+    core::HashTable_sp cip = core::HashTableEq_O::create_default();
+    CipPrioritizer_sp prior;
+    if (gc::IsA<Molecule_sp>(matter)) {
+        prior = CipPrioritizer_O::create();
+        prior->assignCahnIngoldPrelogPriorityToAtomsRelativePriority(matter,cip);
+    } else if (gc::IsA<Aggregate_sp>(matter)) {
+        Loop l;
+        l.loopTopGoal(matter,MOLECULES);
+        while ( l.advanceLoopAndProcess() ) {
+            Molecule_sp mol = l.getMolecule();
+            prior = CipPrioritizer_O::create();
+            prior->assignCahnIngoldPrelogPriorityToAtomsRelativePriority(mol,cip);
+        }
+    } else {
+        TYPE_ERROR(matter,core::Cons_O::createList(_sym_Aggregate_O,_sym_Molecule_O));
     }
-  } else {
-    TYPE_ERROR(matter,core::Cons_O::createList(_sym_Aggregate_O,_sym_Molecule_O));
-  }
+    return cip;
 }
 
 
@@ -224,7 +235,7 @@ p and s arrays.
 Write the relative cip priority in the _RelativePriority slot of each atom.
 )doc");
 CL_LISPIFY_NAME("assignCahnIngoldPrelogPriorityToAtomsRelativePriority");
-CL_DEFMETHOD void CipPrioritizer_O::assignCahnIngoldPrelogPriorityToAtomsRelativePriority(Matter_sp molOrAgg)
+    CL_DEFMETHOD void CipPrioritizer_O::assignCahnIngoldPrelogPriorityToAtomsRelativePriority(Matter_sp molOrAgg, core::HashTable_sp cip)
 {
     gctools::Vec0<Atom_sp>	mAtoms;
     vector<int> newC;
@@ -261,12 +272,12 @@ CL_DEFMETHOD void CipPrioritizer_O::assignCahnIngoldPrelogPriorityToAtomsRelativ
 	{
 	    Atom_sp a = l.getAtom();
 	    if ( a.isA<VirtualAtom_O>() ) continue;
-	    a->setRelativePriority(mAtoms.size());
+            cip->setf_gethash(a,core::clasp_make_fixnum(mAtoms.size()));
 	    mAtoms.push_back(a);
 	    this->_p.push_back(atomicNumber(a));
 	}
 
-	OrderByP byP;
+	OrderByP byP(cip);
 	byP.setCipPrioritizer(this->sharedThis<CipPrioritizer_O>());
 	if ( mAtoms.size()>1 ) 
 	{
@@ -278,7 +289,7 @@ CL_DEFMETHOD void CipPrioritizer_O::assignCahnIngoldPrelogPriorityToAtomsRelativ
 	for ( uint ai=0; ai<mAtoms.size(); ai++ )
 	{
 	    Atom_sp a = mAtoms[ai];
-	    uint idx = a->getRelativePriority();
+	    uint idx = a->getRelativePriority(cip);
 	    if (pcur != this->_p[idx])
 	    {
 		C.push_back(ai);
@@ -337,7 +348,7 @@ CL_DEFMETHOD void CipPrioritizer_O::assignCahnIngoldPrelogPriorityToAtomsRelativ
 			if ( (*bi)->getOrder() == tripleBond ) bondOrder = 3;
 			for ( int oi=0; oi<bondOrder; oi++ )
 			{
-			    mys.push_back(this->_p[(*bi)->getOtherAtom(myatom)->getRelativePriority()]);
+			    mys.push_back(this->_p[(*bi)->getOtherAtom(myatom)->getRelativePriority(cip)]);
 			}
 		    }
 		    LOG(BF("About to sort %d mys objects") % mys.size()  );
@@ -348,7 +359,7 @@ CL_DEFMETHOD void CipPrioritizer_O::assignCahnIngoldPrelogPriorityToAtomsRelativ
                       LOG(BF("Done reverse") );
                     }
 		    // print "atom(%s) mys = %s"%(myatom.getName(),str(mys))
-		    this->_s[myatom->getRelativePriority()] = mys;
+		    this->_s[myatom->getRelativePriority(cip)] = mys;
 		}
 	    }
 #ifdef	DEBUG_ON
@@ -404,7 +415,7 @@ CL_DEFMETHOD void CipPrioritizer_O::assignCahnIngoldPrelogPriorityToAtomsRelativ
 			    // print "Before sort S.atom(%s) s=%s"%(a.getName(),str(s[a.getRelativePriority()]))
 			}
 		    }
-		    OrderByS byS;
+		    OrderByS byS(cip);
 		    {_BLOCK_TRACE("Sorting mAtoms and S");
 			LOG(BF("Setting up prioritizer") );
 			byS.setCipPrioritizer(this->sharedThis<CipPrioritizer_O>());
@@ -502,7 +513,7 @@ for ( iiS=S.begin(); iiS!=S.end(); iiS++)
 		    for ( uint cci =classBegin; cci!=classEnd; cci++ )
 		    {
 			Atom_sp a = mAtoms[cci];
-			this->_p[a->getRelativePriority()] = classIndex;
+			this->_p[a->getRelativePriority(cip)] = classIndex;
 		    }
 		}
 	    }
@@ -528,18 +539,13 @@ for ( iiS=S.begin(); iiS!=S.end(); iiS++)
     { _BLOCK_TRACE("Writing priorities to atoms");
 	for ( gctools::Vec0<Atom_sp>::iterator ai=mAtoms.begin(); ai!=mAtoms.end(); ai++ )
 	{
-	    uint relPriority = this->_p[(*ai)->getRelativePriority()];
-	    (*ai)->setRelativePriority(relPriority);
+	    uint relPriority = this->_p[(*ai)->getRelativePriority(cip)];
+            cip->setf_gethash((*ai),core::clasp_make_fixnum(relPriority));
 	    LOG(BF("Assigned to atom: %s priority: %d") % (*ai)->getName().c_str() % relPriority  );
 	}
     }
 }
 
-
-bool orderByPriority( Atom_sp p1, Atom_sp p2 )
-{
-    return p2->getRelativePriority() < p1->getRelativePriority();
-}
 
 bool orderByName( Atom_sp p1, Atom_sp p2 )
 {
@@ -547,9 +553,10 @@ bool orderByName( Atom_sp p1, Atom_sp p2 )
 }
 
 CL_LISPIFY_NAME("setStereochemicalTypeForAllAtoms");
-CL_DEFMETHOD void CipPrioritizer_O::setStereochemicalTypeForAllAtoms(Matter_sp molOrAgg)
+CL_DEFMETHOD core::HashTable_sp CipPrioritizer_O::setStereochemicalTypeForAllAtoms(Matter_sp molOrAgg)
 {
-    this->assignCahnIngoldPrelogPriorityToAtomsRelativePriority(molOrAgg);
+    core::HashTable_sp cip = core::HashTableEq_O::create_default();
+    this->assignCahnIngoldPrelogPriorityToAtomsRelativePriority(molOrAgg,cip);
     Loop l;
     l.loopTopGoal(molOrAgg,ATOMS);
     while ( l.advanceLoopAndProcess() )
@@ -564,6 +571,7 @@ CL_DEFMETHOD void CipPrioritizer_O::setStereochemicalTypeForAllAtoms(Matter_sp m
 	    {
 		priority.push_back((*bi)->getOtherAtom(a));
 	    }
+            OrderByPriority orderByPriority(cip);
 	    sort::quickSort(priority.begin(), priority.end(), orderByPriority);
 	    //  now figure out if they are four different priorities
 	    uint prevPriority = UndefinedUnsignedInt;
@@ -571,11 +579,11 @@ CL_DEFMETHOD void CipPrioritizer_O::setStereochemicalTypeForAllAtoms(Matter_sp m
 	    for ( gctools::Vec0<Atom_sp>::iterator pi=priority.begin(); 
 	    		pi!=priority.end(); pi++ )
 	    {
-		if ( (*pi)->getRelativePriority() != prevPriority )
+		if ( (*pi)->getRelativePriority(cip) != prevPriority )
 		{
 		    diff += 1;
 		}
-		prevPriority = (*pi)->getRelativePriority();
+		prevPriority = (*pi)->getRelativePriority(cip);
 	    }
 	    if ( diff == 4 )
 	    {
@@ -600,6 +608,7 @@ CL_DEFMETHOD void CipPrioritizer_O::setStereochemicalTypeForAllAtoms(Matter_sp m
 	    a->setStereochemistryType(undefinedCenter);
 	}
     }
+    return cip;
 }
 
 CL_DOCSTRING(R"doc(Calculate the stereochemistry for each atom in the aggregate or molecule
@@ -611,17 +620,17 @@ CL_DEFUN void chem__calculateStereochemistryFromStructure(Matter_sp matter,bool 
   CipPrioritizer_sp prior;
   if (gc::IsA<Molecule_sp>(matter)) {
     prior = CipPrioritizer_O::create();
-    prior->setStereochemicalTypeForAllAtoms(matter);
+    core::HashTable_sp cip = prior->setStereochemicalTypeForAllAtoms(matter);
     Loop la;
     la.loopTopGoal(matter,ATOMS);
     while (la.advanceLoopAndProcess() ) {
       Atom_sp atm = la.getAtom();
       if (atm->getStereochemistryType()==chiralCenter) {
         if (!onlyUndefinedConfiguration) {
-          ConfigurationEnum ce = atm->calculateStereochemicalConfiguration();
+          ConfigurationEnum ce = atm->calculateStereochemicalConfiguration(cip);
           atm->setConfiguration(ce);
         } else if (onlyUndefinedConfiguration&&atm->getConfiguration()==undefinedConfiguration) {
-          ConfigurationEnum ce = atm->calculateStereochemicalConfiguration();
+          ConfigurationEnum ce = atm->calculateStereochemicalConfiguration(cip);
           atm->setConfiguration(ce);
         }
       }

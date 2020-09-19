@@ -43,6 +43,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/molecule.h>
 #include <cando/chem/restraint.h>
 #include <clasp/core/numerics.h>
+#include <clasp/core/hashTable.h>
 #include <cando/geom/ovector3.h>
 #include <clasp/core/sort.h>
 #include <cando/geom/omatrix.h>
@@ -171,13 +172,13 @@ CL_DEFMETHOD void	Atom_O::perturbAtomPosition(double dist)
  *  Priority is decided by comparing RelativePriority and if they are the same
  *  by comparing names.
  */
-int Atom_O::priorityOrder(Atom_sp a, Atom_sp b, core::HashTable_sp priorityMap)
+int Atom_O::priorityOrder(Atom_sp a, Atom_sp b, core::HashTable_sp cip_priority)
 {
   if ( a.nilp() && b.nilp() ) return 0;
   if ( b.nilp() ) return 1;
   if ( a.nilp() ) return -1;
-  Fixnum apriority = core::clasp_fixnum(priorityMap->gethash(a));
-  Fixnum bpriority = core::clasp_fixnum(priorityMap->gethash(b));
+  Fixnum apriority = core::clasp_to_fixnum(cip_priority->gethash(a));
+  Fixnum bpriority = core::clasp_to_fixnum(cip_priority->gethash(b));
   if ( apriority>bpriority ) return 1;
   if ( apriority<bpriority ) return -1;
   if ( a->getName()->symbolNameAsString() > b->getName()->symbolNameAsString() ) return 1;
@@ -188,10 +189,10 @@ int Atom_O::priorityOrder(Atom_sp a, Atom_sp b, core::HashTable_sp priorityMap)
 CL_DOCSTRING(R"doc(Calculate the stereochemical configuration of the atom.
 This requires that relative cip priorities are defined using CipPrioritizer_O::assignCahnIngoldPrelogPriorityToAtomsRelativePriority.)doc");
 CL_LISPIFY_NAME("calculateStereochemicalConfiguration");
-CL_DEFMETHOD     ConfigurationEnum Atom_O::calculateStereochemicalConfiguration()
+CL_DEFMETHOD     ConfigurationEnum Atom_O::calculateStereochemicalConfiguration(core::HashTable_sp cip_priority)
 {
   if ( this->numberOfBonds() != 4 ) return undefinedConfiguration;
-  core::List_sp neighborsByPriority = this->getNeighborsByRelativePriority();
+  core::List_sp neighborsByPriority = this->getNeighborsByRelativePriority(cip_priority);
   Atom_sp a4 = core::oCar(neighborsByPriority).as<Atom_O>();
   Atom_sp a3 = core::oCadr(neighborsByPriority).as<Atom_O>();
   Atom_sp a2 = core::oCaddr(neighborsByPriority).as<Atom_O>();
@@ -216,10 +217,10 @@ CL_DEFMETHOD     ConfigurationEnum Atom_O::calculateStereochemicalConfiguration(
 }
 
 
-string Atom_O::calculateStereochemicalConfigurationAsString()
+string Atom_O::calculateStereochemicalConfigurationAsString(core::HashTable_sp cip)
 {
   string s;
-  ConfigurationEnum config = this->calculateStereochemicalConfiguration();
+  ConfigurationEnum config = this->calculateStereochemicalConfiguration(cip);
   switch ( config )
   {
   case S_Configuration:
@@ -543,7 +544,7 @@ void Atom_O::fillInImplicitHydrogens()
 
 
 
-gc::Nilable<Atom_sp> Atom_O::highestPriorityNeighborThatIsnt(gc::Nilable<Atom_sp> avoid)
+gc::Nilable<Atom_sp> Atom_O::highestPriorityNeighborThatIsnt(gc::Nilable<Atom_sp> avoid, core::HashTable_sp cip)
 {
   Atom_sp bestAtom = _Nil<Atom_O>();
   Atom_sp atom;
@@ -551,7 +552,7 @@ gc::Nilable<Atom_sp> Atom_O::highestPriorityNeighborThatIsnt(gc::Nilable<Atom_sp
   for ( b=this->bonds.begin();b!=this->bonds.end() ; b++ ) {
     atom = (*b)->getOtherAtom(this->sharedThis<Atom_O>());
     if ( avoid.notnilp() && atom == avoid ) continue;
-    if ( priorityOrder(atom,bestAtom)>0 )
+    if ( priorityOrder(atom,bestAtom,cip)>0 )
     {
       bestAtom = atom;
     }
@@ -560,7 +561,7 @@ gc::Nilable<Atom_sp> Atom_O::highestPriorityNeighborThatIsnt(gc::Nilable<Atom_sp
 }
     
 
-gc::Nilable<Atom_sp> Atom_O::lowestPriorityNeighborThatIsnt(gc::Nilable<Atom_sp> avoid)
+gc::Nilable<Atom_sp> Atom_O::lowestPriorityNeighborThatIsnt(gc::Nilable<Atom_sp> avoid, core::HashTable_sp cip)
 {
   gc::Nilable<Atom_sp> bestAtom = _Nil<core::T_O>();
   Atom_sp atom;
@@ -572,7 +573,7 @@ gc::Nilable<Atom_sp> Atom_O::lowestPriorityNeighborThatIsnt(gc::Nilable<Atom_sp>
       bestAtom = atom;
       continue;
     }
-    if ( priorityOrder(atom,bestAtom)<0 ) bestAtom = atom;
+    if ( priorityOrder(atom,bestAtom,cip)<0 ) bestAtom = atom;
   }
   return bestAtom;
 }
@@ -668,15 +669,19 @@ class	OrderByPriorityAndName
 public:
   bool operator() ( Atom_sp x, Atom_sp y )
   {
-    Fixnum xpriority = core::as_fixnum(this->_priority->gethash(x));
-    Fixnum ypriority = core::as_fixnum(this->_priority->gethash(y));
+    Fixnum xpriority = core::clasp_to_fixnum(this->_priority->gethash(x));
+    Fixnum ypriority = core::clasp_to_fixnum(this->_priority->gethash(y));
     if ( xpriority<ypriority ) return true;
     if ( xpriority>ypriority ) return false;
     if ( x->getName()->symbolNameAsString()<y->getName()->symbolNameAsString() ) return true;
     return false;
   }
-  OrderByPriorityAndName(core::HashTable_sp priorityMap) : _priority(priority) {};
+  OrderByPriorityAndName(core::HashTable_sp cip_priority) : _priority(cip_priority) {};
 };
+
+CL_DEFMETHOD int Atom_O::getRelativePriority(core::HashTable_sp cip) const {
+    return core::clasp_to_fixnum(cip->gethash(this->asSmartPtr()));
+}
 
 core::List_sp	Atom_O::getNeighborsForAbsoluteConfiguration()
 {

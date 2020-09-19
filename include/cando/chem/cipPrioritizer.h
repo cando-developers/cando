@@ -54,14 +54,14 @@ private:
 public:
 	void	initialize();
 public:
-    static void assignPriorities(Matter_sp molOrAgg);
+    static core::HashTable_sp assignPrioritiesHashTable(Matter_sp molOrAgg);
 public:
-	int	getP(Atom_sp a);
-    std::vector<int>& getS(Atom_sp a);
-     void assignCahnIngoldPrelogPriorityToAtomsRelativePriority(Matter_sp molOrAgg);
+    int	getP(Atom_sp a, core::HashTable_sp cip);
+    std::vector<int>& getS(Atom_sp a, core::HashTable_sp cip);
+    void assignCahnIngoldPrelogPriorityToAtomsRelativePriority(Matter_sp molOrAgg,core::HashTable_sp cip);
 public:
 
-	void setStereochemicalTypeForAllAtoms(Matter_sp molOrAgg);
+    core::HashTable_sp setStereochemicalTypeForAllAtoms(Matter_sp molOrAgg);
 	CipPrioritizer_O( const CipPrioritizer_O& ss ); //!< Copy constructor
 
 	DEFAULT_CTOR_DTOR(CipPrioritizer_O);

@@ -114,7 +114,8 @@ void Constitution_O::add_topology(Topology_sp topology) {
 	Return a copy of the residue that this constitution defines
 */
 void	Constitution_O::makeResidueConsistentWithStereoisomerNamed(Residue_sp res,
-								   core::Symbol_sp stereoisomerName)
+								   core::Symbol_sp stereoisomerName,
+                                                                   core::HashTable_sp cip)
 {
   DEPRECATED();
   Stereoisomer_sp				si;
@@ -149,7 +150,7 @@ void	Constitution_O::makeResidueConsistentWithStereoisomerNamed(Residue_sp res,
   for ( tpi=this->_StereoInformation->begin_ComplexRestraints(); 
         tpi!=this->_StereoInformation->end_ComplexRestraints(); tpi++ )
   {
-    (*tpi)->fillRestraints(res);
+      (*tpi)->fillRestraints(res,cip);
   }
 }
 

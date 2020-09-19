@@ -227,7 +227,7 @@ namespace chem {
   public:
     static Atom_sp make(MatterName name, Element element);
   public:
-    static int priorityOrder(Atom_sp a, Atom_sp b);
+      static int priorityOrder(Atom_sp a, Atom_sp b, core::HashTable_sp cip_priority);
 //	static double vdwRadiusForElement(Element element);
   public:
     uint	getMask() { return this->_Mask; };
@@ -267,6 +267,8 @@ namespace chem {
     int	getTempInt() { return this->tempInt; };
     void	setTempInt(int o) { this->tempInt = o;};
 
+      int getRelativePriority(core::HashTable_sp cip) const;
+      
     CL_LISPIFY_NAME("getAlias");
     CL_DEFMETHOD 	core::Symbol_sp	getAlias() { return this->_Alias; };
     CL_LISPIFY_NAME("setAlias");
@@ -307,8 +309,8 @@ namespace chem {
 
 
     virtual bool isAtom() { return true;};
-    gc::Nilable<Atom_sp> highestPriorityNeighborThatIsnt(gc::Nilable<Atom_sp> a);
-    gc::Nilable<Atom_sp> lowestPriorityNeighborThatIsnt(gc::Nilable<Atom_sp> a);
+    gc::Nilable<Atom_sp> highestPriorityNeighborThatIsnt(gc::Nilable<Atom_sp> a, core::HashTable_sp cip);
+      gc::Nilable<Atom_sp> lowestPriorityNeighborThatIsnt(gc::Nilable<Atom_sp> a, core::HashTable_sp cip);
 
     bool	hasAtomNameAttribute(char c);
 
@@ -485,8 +487,8 @@ namespace chem {
 	/*! Calculate the stereochemical configuration "R" or "S"
 	 * based on the positions of this atom and the four attached atoms
 	 */
-    ConfigurationEnum calculateStereochemicalConfiguration();
-    string calculateStereochemicalConfigurationAsString();
+      ConfigurationEnum calculateStereochemicalConfiguration(core::HashTable_sp cip_priority);
+    string calculateStereochemicalConfigurationAsString(core::HashTable_sp cip_priority);
 
     core::List_sp	bondsAsList();
     BondList_sp	getBondList();

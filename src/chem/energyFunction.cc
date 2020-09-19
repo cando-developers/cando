@@ -1213,7 +1213,7 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, bool useEx
   // Assign relative Cahn-Ingold-Preylog priorities
   //
   if (chem__verbose(0)) core::write_bf_stream(BF("Assigning CIP priorities.\n"));
-  CipPrioritizer_O::assignPriorities(matter);
+  core::HashTable_sp cip = CipPrioritizer_O::assignPrioritiesHashTable(matter);
 
     //
     // Assign atom types for each molecule
@@ -1734,6 +1734,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter
   FFItor_sp        ffItor;
   FFNonbond_sp	ffNonbond1, ffNonbond2;
   int             coordinateIndex;
+  core::HashTable_sp cip;
   if (chem__verbose(1)) core::write_bf_stream(BF("In generateRestraintEnergyFunctionTables\n"));
   
     	//
@@ -1795,7 +1796,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter
           }
           if ( a1->getConfiguration() == R_Configuration
                || a1->getConfiguration() == S_Configuration ) {
-            priority = a1->getNeighborsByRelativePriority();
+            priority = a1->getNeighborsByRelativePriority(cip);
           } else if (a1->getConfiguration() == RightHanded_Configuration
                      || a1->getConfiguration() == LeftHanded_Configuration) {
             priority = a1->getNeighborsForAbsoluteConfiguration();

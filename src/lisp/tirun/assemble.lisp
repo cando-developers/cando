@@ -206,7 +206,6 @@
                       agg)
       (let* ((average-length (/ sum-lengths num-bonds))
              (scale-factor (/ 1.5 average-length)))
-        (format t "Average bond length: ~a~%" average-length)
         ;; Scale bonds to 1.5 Angstroms
         (chem:map-atoms nil (lambda (a)
                               (let ((pos (chem:get-position a)))
@@ -218,7 +217,6 @@
                                 (let* ((num-atoms (chem:number-of-atoms mol))
                                        (name (chem:matter-get-property-or-default mol :core nil)))
                                   (when name
-                                    (format t "core name: ~a~%" name)
                                     (when (member name names)
                                       (error "Each core must have a unique name - you have more than one core with name ~a names: ~a" name names))
                                     (push name names)

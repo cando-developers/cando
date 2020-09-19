@@ -149,20 +149,20 @@ void	RestrainedPiBond_O::fillOneDihedralRestraint(Residue_sp residue,
  * for "E"  x1&y1 trans
  * for "Z"  x1&y1 cis
  */
-void	RestrainedPiBond_O::fillRestraints(Residue_sp residue)
+    void	RestrainedPiBond_O::fillRestraints(Residue_sp residue, core::HashTable_sp cip)
 {_OF();
     core::Symbol_sp config = this->_Configuration;
     Atom_sp pX  = gc::As_unsafe<Atom_sp>(residue->atomWithName(this->getPiAtomX()));
     Atom_sp pY  = gc::As_unsafe<Atom_sp>(residue->atomWithName(this->getPiAtomY()));
 
-    Atom_sp p1X = pX->highestPriorityNeighborThatIsnt(pY);
-    Atom_sp p2X = pX->lowestPriorityNeighborThatIsnt(pY);
+    Atom_sp p1X = pX->highestPriorityNeighborThatIsnt(pY,cip);
+    Atom_sp p2X = pX->lowestPriorityNeighborThatIsnt(pY,cip);
     if ( p2X == p1X )
     {
 	p2X = _Nil<Atom_O>();
     }
-    Atom_sp p1Y = pY->highestPriorityNeighborThatIsnt(pX);
-    Atom_sp p2Y = pY->lowestPriorityNeighborThatIsnt(pX);
+    Atom_sp p1Y = pY->highestPriorityNeighborThatIsnt(pX,cip);
+    Atom_sp p2Y = pY->lowestPriorityNeighborThatIsnt(pX,cip);
     if ( p2Y == p1Y )
     {
 	p2Y = _Nil<Atom_O>();
@@ -272,7 +272,7 @@ void	RestrainedExoCyclicAtom_O::archiveBase(core::ArchiveP node)
 
 
 
-void RestrainedExoCyclicAtom_O::fillRestraints(Residue_sp residue )
+    void RestrainedExoCyclicAtom_O::fillRestraints(Residue_sp residue, core::HashTable_sp cip )
 {_OF();
   SIMPLE_ERROR(BF("Fix the implementation of %s") % __FUNCTION__);
     this->lazyInitializeSmarts();
