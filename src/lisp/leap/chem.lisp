@@ -146,6 +146,10 @@
         parse
       (destructuring-bind (atom1 atom2 atom3 atom4)
           (mapcar (lambda (name) (intern name :keyword)) type-names)
+        (when (eq atom1 :x)
+          (setf atom1 nil))
+        (when (eq atom4 :x)
+          (setf atom4 nil))
         (let ((scee -1.0)
               (scnb -1.0))
           ;; Parse "SCEE=1.0 SCNB=1.0 2-methl..."

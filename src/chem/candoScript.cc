@@ -682,6 +682,23 @@ CL_DEFUN std::string chem__aggregate_as_mol2_string(Aggregate_sp matter, bool us
   return ss.str();
 }
 
+CL_LAMBDA(matter &optional use-sybyl-types);
+CL_DEFUN std::string chem__matter_as_mol2_string(Matter_sp matter, bool useSybylTypes)
+{
+  stringstream ss;
+  if (gc::IsA<Aggregate_sp>(matter)) {
+    Aggregate_sp agg = gc::As_unsafe<Aggregate_sp>(matter);
+    mol2WriteAggregateStream(agg,ss,useSybylTypes);
+    return ss.str();
+  } else if (gc::IsA<Molecule_sp>(matter)) {
+    Aggregate_sp agg = Aggregate_O::create();
+    agg->addMatter(gc::As_unsafe<Molecule_sp>(matter));
+    mol2WriteAggregateStream(agg,ss,useSybylTypes);
+    return ss.str();
+  }
+  SIMPLE_ERROR(BF("Matter must be an aggregate or molecule - it is %s") % _rep_(matter));
+}
+
 /*!
  * Look for a residue using an identifier,
  * this looks for residues with a sequence number if the identifier is an int

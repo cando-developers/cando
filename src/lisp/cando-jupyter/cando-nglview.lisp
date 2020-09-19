@@ -188,7 +188,7 @@
   (chem:get-name (dynamics:matter self)))
 
 (defmethod nglv:get-structure-string ((self cando-trajectory))
-  (chem:aggregate-as-mol2-string (dynamics:matter self) t))
+  (chem:matter-as-mol2-string (dynamics:matter self) t))
 
 
 (defmethod nglv:append-coordinates ((self cando-trajectory) coordinates)
