@@ -17,18 +17,20 @@
   (:local-nicknames (:j :jupyter)
                     (:w :jupyter-widgets))
   (:export
-   #:new-tirun
-   #:new-pas
-   #:pasrun
-   #:load-receptor
-   #:load-ligands
-   #:select-ligands
-   #:view-complex
-   #:lomap
-   #:configure-jobs
-   #:write-jobs
-   #:submit-calc
-   #:check-calc
-   #:composer
-   ))
+    #:all-edges
+    #:all-ligands
+    #:check-calc
+    #:composer
+    #:configure-jobs
+    #:load-ligands
+    #:load-receptor
+    #:lomap
+    #:new-pas
+    #:new-tirun
+    #:pasrun
+    #:selected-ligands
+    #:select-ligands
+    #:submit-calc
+    #:view-complex
+    #:write-jobs))
 
