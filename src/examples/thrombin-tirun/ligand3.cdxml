@@ -19,7 +19,6 @@
  ShowTerminalCarbonLabels="no"
  ShowNonTerminalCarbonLabels="no"
  HideImplicitHydrogens="no"
- Magnification="666"
  LabelFont="21"
  LabelSize="10"
  LabelFace="96"
@@ -82,7 +81,7 @@
 <font id="20" charset="x-mac-roman" name="Times"/>
 <font id="21" charset="x-mac-roman" name="Helvetica"/>
 </fonttable><page
- id="1579"
+ id="1569"
  BoundingBox="0 0 1080 1440"
  HeaderPosition="36"
  FooterPosition="36"

@@ -86,7 +86,8 @@
    (atom-order :initarg :atom-order :accessor atom-order)
    (net-charge :initform 0.0  :initarg :net-charge :accessor net-charge)
    (am1-charges :initarg :am1-charges :accessor am1-charges)
-   (am1-bcc-charges :initarg :am1-bcc-charges :accessor am1-bcc-charges)))
+   (am1-bcc-charges :initarg :am1-bcc-charges :accessor am1-bcc-charges)
+   (has-problem :initform nil :initarg :has-problem :accessor has-problem)))
 
 (defmethod print-object ((object simple-tirun-structure) stream)
   (print-unreadable-object (object stream)
@@ -151,6 +152,7 @@
 (defclass calculation ()
   ((receptors :initform nil :initarg :receptors :accessor receptors)
    (ligands :initarg :ligands :accessor ligands)
+   (template-ligands :initform nil :initarg :template-ligands :accessor template-ligands)
    (mask-method :initform :default :initarg :mask-method :accessor mask-method)
    (core-topologys :initform nil :initarg :core-topologys :accessor core-topologys)
    (side-topologys :initform nil :initarg :side-topologys :accessor side-topologys)

@@ -71,15 +71,19 @@
 
 
 
-(defun composer-save (composer app)
-  (format t "In composer-save About to parse ~d~%" (random 1000))
+(defun composer-save (composer app &key (tirun *tirun*))
+  (format t "In composer-save - about to parse get-decoded-time ~s~%" (get-decoded-time))
   ;; This is where we put the logic to build the molecules?
-  (let ((agg (structure-editor:parse-kekule-json (composer-json app))))
+  (let ((agg (handler-bind
+                 ((error (lambda (err)
+                          (format t "Hit error ~a" err)
+                          (error err))))
+               (structure-editor:parse-kekule-json (composer-json app)))))
     (format t "agg2 -> ~s~%" agg)
-    (let* ((assembly (tirun::build-assembly agg))
-           (ligand-molecules (tirun::build-ligand-molecules assembly)))
+    (let ((ligand-molecules (tirun::assemble-ligands *tirun* agg :verbose t)))
       (format t "ligand-molecules -> ~s~%" ligand-molecules)
-      (setf (loaded-ligands *app*) ligand-molecules)
+      (setf (loaded-ligands *app*) ligand-molecules
+            (selected-ligands *app*) ligand-molecules)
       (let ((molecules-svg-str (with-output-to-string (sout)
                                  (loop for molecule in ligand-molecules
                                        for sketch2d = (sketch2d:sketch2d molecule)

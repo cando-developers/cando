@@ -25,6 +25,12 @@
 ;; -^-
 (in-package :energy)
 
+(defparameter *max-sd-steps* 100000)
+(defparameter *sd-tolerance* 100000.0)
+(defparameter *max-cg-steps* 100000)
+(defparameter *cg-tolerance* 100.0)
+(defparameter *max-tn-steps* 10000)
+(defparameter *tn-tolerance* 0.00000001)
 
 (defparameter *ff* nil)
 (export '*ff*)
@@ -45,13 +51,14 @@
 
 
 (defun minimize-minimizer (minimizer &key (restraints-on t)
-                                       (max-sd-steps 1000)
-                                       (max-cg-steps 50000)
-                                       (max-tn-steps 0)
-                                       (sd-tolerance 5000.0)
-                                       (cg-tolerance 0.5)
-                                       (tn-tolerance 0.00001)
+                                       (max-sd-steps *max-sd-steps*)
+                                       (sd-tolerance *sd-tolerance*)
+                                       (max-cg-steps *max-cg-steps*)
+                                       (cg-tolerance *cg-tolerance*)
+                                       (max-tn-steps *max-tn-steps*)
+                                       (tn-tolerance *tn-tolerance*)
                                        (print-intermediate-results t)
+                                       resignal-error
                                        &allow-other-keys)
   "Minimize the conformational energy for an energy-function"
   (let ((energy-function (chem:get-energy-function minimizer)))
@@ -69,7 +76,7 @@
         (chem:enable-print-intermediate-results minimizer 100)
         (chem:disable-print-intermediate-results minimizer))
     (chem:set-option energy-function 'chem:nonbond-term t)
-    (cando:minimize-no-fail minimizer)))
+    (cando:minimize-no-fail minimizer :resignal-error resignal-error)))
 
 (defun save-minimizer-coordinates (coordinates minimizer-trajectory)
   (let ((single-float-coordinates (make-array (length coordinates) :element-type 'single-float :adjustable nil)))
@@ -81,13 +88,14 @@
 
 (defun minimize-energy-function (energy-function &rest args
                                  &key (restraints-on t)
-                                   (max-sd-steps 1000)
-                                   (max-cg-steps 50000)
-                                   (max-tn-steps 0)
-                                   (sd-tolerance 5000.0)
-                                   (cg-tolerance 0.5)
-                                   (tn-tolerance 0.00001)
+                                   (max-sd-steps *max-sd-steps*)
+                                   (sd-tolerance *sd-tolerance*)
+                                   (max-cg-steps *max-cg-steps*)
+                                   (cg-tolerance *cg-tolerance*)
+                                   (max-tn-steps *max-tn-steps*)
+                                   (tn-tolerance *tn-tolerance*)
                                    (frozen nil)
+                                   resignal-error
                                    (save-trajectory nil)
                                    (print-intermediate-results t))
   "Minimize the conformational energy for an energy-function"
@@ -111,14 +119,16 @@
 
 (defun minimize (agg &rest args
                  &key (restraints-on t)
-                   (max-sd-steps 1000)
-                   (max-cg-steps 50000)
-                   (max-tn-steps 0)
-                   (sd-tolerance 5000.0)
-                   (cg-tolerance 0.5)
-                   (tn-tolerance 0.00001)
+                   (max-sd-steps *max-sd-steps*)
+                   (sd-tolerance *sd-tolerance*)
+                   (max-cg-steps *max-cg-steps*)
+                   (cg-tolerance *cg-tolerance*)
+                   (max-tn-steps *max-tn-steps*)
+                   (tn-tolerance *tn-tolerance*)
                    (use-excluded-atoms t)
                    (assign-types t)
+                   (resignal-error nil)
+                   (print-intermediate-results t)
                    (save-trajectory nil))
   "Minimize the conformational energy for an aggregate"
   (format t "Entered minimize~%")
@@ -126,12 +136,13 @@
     (apply #'minimize-energy-function energy-func args)))
 
 (defun minimize-energy-function-from-bad-geometry (energy-function &key (restraints-on t)
-                                                                     (max-sd-steps 1000)
-                                                                     (max-cg-steps 50000)
-                                                                     (max-tn-steps 0)
-                                                                     (sd-tolerance 5000.0)
-                                                                     (cg-tolerance 0.5)
-                                                                     (tn-tolerance 0.00001))
+                                                                     (max-sd-steps *max-sd-steps*)
+                                                                     (sd-tolerance *sd-tolerance*)
+                                                                     (max-cg-steps *max-cg-steps*)
+                                                                     (cg-tolerance *cg-tolerance*)
+                                                                     (max-tn-steps *max-tn-steps*)
+                                                                     (tn-tolerance *tn-tolerance*)
+                                                                     )
   "Minimize the conformational energy for an energy-function"
   (let ((minimizer (chem:make-minimizer energy-function)))
     (unless restraints-on
@@ -152,12 +163,12 @@
 
 (defun minimize-from-bad-geometry (agg &rest args
                                    &key (restraints-on t)
-                                     (max-sd-steps 1000)
-                                     (max-cg-steps 50000)
-                                     (max-tn-steps 0)
-                                     (sd-tolerance 5000.0)
-                                     (cg-tolerance 0.5)
-                                     (tn-tolerance 0.00001)
+                                     (max-sd-steps *max-sd-steps*)
+                                     (sd-tolerance *sd-tolerance*)
+                                     (max-cg-steps *max-cg-steps*)
+                                     (cg-tolerance *cg-tolerance*)
+                                     (max-tn-steps *max-tn-steps*)
+                                     (tn-tolerance *tn-tolerance*)
                                      (use-excluded-atoms t)
                                      (assign-types t))
   "Minimize the conformational energy for an aggregate"
