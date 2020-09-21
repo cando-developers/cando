@@ -1055,7 +1055,7 @@ are in the order (low, middle, high) and the column eigen-vectors are in the sam
                             (push atm chirals)))
                         chirals))
         (original-to-sketch (make-hash-table))
-        (cip (chem:assign-priorities-hash-table (molecule sketch2d))))
+        (cip (chem:assign-priorities-hash-table (original-molecule sketch2d))))
     (cando:do-atoms (atm (molecule sketch2d))
       (let ((original-atm (gethash atm (sketch-atoms-to-original sketch2d))))
         (setf (gethash original-atm original-to-sketch) atm)))
