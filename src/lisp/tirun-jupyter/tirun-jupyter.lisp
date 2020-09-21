@@ -82,18 +82,8 @@
                           (format t "Hit error ~a" err)
                           (error err))))
                (structure-editor:parse-kekule-json (composer-json app)))))
-    (format t "agg2 -> ~s~%" agg)
     (let ((ligand-molecules (tirun::assemble-ligands *tirun* agg :verbose t)))
-      (format t "ligand-molecules -> ~s~%" ligand-molecules)
       (setf all-ligands ligand-molecules)
-      (let ((molecules-svg-str (with-output-to-string (sout)
-                                 (loop for molecule in ligand-molecules
-                                       for sketch2d = (sketch2d:sketch2d molecule)
-                                       for __1 = (format t "composer ~a~%" (random 100))
-                                       for svg = (sketch2d:svg sketch2d)
-                                       for svg-str = (sketch2d:render-svg-to-string svg)
-                                       do (format sout "~a" svg-str)))))
-        (setf (w:widget-value (structure-editor:composer-view-grid composer)) molecules-svg-str))
       (finish-output)
       )))
 
