@@ -1039,12 +1039,12 @@ bool _matchBondTypes(BondEnum be, chem::BondOrder bo, Atom_sp a1, Atom_sp a2) {
   switch (be) {
   case SABSingleBond:
       LOG(BF("SMARTS BondEnum = SABSingleBond"));
-      if (bo != chem::singleBond) goto nomatch;
+      if (!Bond_O::singleBondP(bo)) goto nomatch;
       if (_matchInAromaticBond(a1,a2)) goto nomatch;
       break;
   case SABSingleOrAromaticBond:
       LOG(BF("SMARTS BondEnum = SABSingleOrAromaticBond"));
-      if (!(bo == chem::singleBond || bo == chem::aromaticBond || _matchInAromaticBond(a1,a2)))
+          if (!(Bond_O::singleBondP(bo) || bo == chem::aromaticBond || _matchInAromaticBond(a1,a2)))
         goto nomatch;
       break;
   case SABDoubleOrAromaticBond:

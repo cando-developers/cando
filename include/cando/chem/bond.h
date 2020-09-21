@@ -82,6 +82,13 @@ public:
  public:
   static Bond_sp create(Atom_sp a1, Atom_sp a2, BondOrder o= singleBond);
   static void canonicalizeBondOrder(Atom_sp& a1, Atom_sp& a2, BondOrder& order);
+  static bool singleBondP(BondOrder order) {
+    return (order == singleBond ||
+            order == singleDashBegin ||
+            order == singleDashEnd ||
+            order == singleWedgeBegin ||
+            order == singleWedgeEnd );
+  };
  public:
 	/*! Return true if atom is Atom1, false if its Atom2 and throw an exception if its neither */
   bool isAtom1(Atom_sp atom) const;
