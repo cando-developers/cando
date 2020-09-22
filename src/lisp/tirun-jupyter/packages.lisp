@@ -34,3 +34,15 @@
     #:view-complex
     #:write-jobs))
 
+
+(import '(tirun-jupyter:all-ligands
+          tirun-jupyter:selected-ligands
+          tirun-jupyter:all-edges)
+        :cando-user)
+
+
+(export '(tirun-jupyter:all-ligands
+          tirun-jupyter:selected-ligands
+          tirun-jupyter:all-edges)
+        :cando-user)
+
