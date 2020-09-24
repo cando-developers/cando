@@ -55,8 +55,8 @@
     :accessor submit-stream
     :initform nil
     :trait t)
-   (smirk-pattern
-    :accessor smirk-pattern
+   (smirks-pattern
+    :accessor smirks-pattern
     :initform nil
     :trait t))
   (:metaclass jupyter-widgets:trait-metaclass))
@@ -285,12 +285,17 @@
 (defvar *smallest-ligand-sketch*)
 
 
+(defun molecule-name (molecule)
+  "Get a string representation of the structure."
+  (symbol-name (chem:get-name molecule)))
+
+
 (defun on-ligand-select (instance index &optional previous)
   "Select a ligand on a view-ligand-page and hide a previous ligand if one was selected."
   (with-slots (ngl structure)
               instance
     (let* ((mol (elt all-ligands index))
-           (id (symbol-name (chem:get-name mol))))
+           (id (molecule-name mol)))
       ;; Load the sketch
       (setf (w:widget-value structure)
             (format nil "<div style='display:flex;align-items:center;height:100%;'><div style='display:block;margin:auto;'>~A</div></div>"
@@ -299,7 +304,7 @@
       (nglview:handle-resize ngl)
       ;; Hide previous ligand.
       (when previous
-        (nglview:hide-components ngl (symbol-name (chem:get-name (elt all-ligands previous)))))
+        (nglview:hide-components ngl (molecule-name (elt all-ligands previous))))
       ;; Show the ligand if it is already in nglview otherwise load it.
       (cond
         ((position id (nglview:component-ids ngl) :test #'string=)
@@ -343,8 +348,7 @@
   (w:observe (cw:container instance) :selected-index
     (lambda (inst type name old-value new-value source)
       (declare (ignore inst type name old-value source))
-      (when (equal new-value 1)
-        (nglview:handle-resize (view-ligand-ngl instance)))))
+      (nglview:handle-resize (view-ligand-ngl instance))))
   ;; If the receptor-string is already set then load the current receptor.
   (when (receptor-string *app*)
     (nglview:add-structure (view-ligand-ngl instance)
@@ -368,9 +372,7 @@
       (with-slots (slider dropdown)
                   instance
         (setf (w:widget-max slider) (1- (length ligands))
-              (w:widget-%options-labels dropdown) (mapcar (lambda (mol)
-                                                            (symbol-name (chem:get-name mol)))
-                                                          ligands)
+              (w:widget-%options-labels dropdown) (mapcar #'molecule-name ligands)
               (w:widget-value slider) 0)
         (when ligands
           (cw:sketch-molecules ligands)
@@ -392,7 +394,6 @@
   (handler-case
       (with-slots (ligands-string)
                   *app*
-        (jupyter:inform :err nil "~A" (pathname-type (cdr (assoc "name" (car parameter) :test #'string=))))
         (setf ligands-string (babel:octets-to-string (cdr (assoc "content" (car parameter) :test #'string=)))
               all-ligands (with-input-from-string (input-stream ligands-string)
                                (let ((ext (pathname-type (cdr (assoc "name" (car parameter) :test #'string=)))))
@@ -458,111 +459,93 @@
     (sketch2d:sketch2d min-mol)))
 
 
-(defun pasrun (&key (calc *tirun*))
+(defun run-pas (parameter progress-callback)
+  "Called by the simple-task-page to do the PAS calculation."
+  (declare (ignore parameter))
+  (write-line "Running position analogue scanning...")
+  (finish-output)
+  ;; Loop over the current selected ligands and run PAS on each one accumulating the results.
+  (setf all-ligands
+        (loop for template-ligand in selected-ligands
+              for new-ligands = (pas:pas (smirks-pattern *app*) template-ligand)
+              append new-ligands
+              do (format t "Using template ligand of ~a built the ligands ~{~a~#[~;, and ~:;, ~]~}...~%"
+                         (molecule-name template-ligand)
+                         (mapcar #'molecule-name new-ligands))
+              do (finish-output)
+              do (funcall progress-callback (length selected-ligands)))
+        selected-ligands all-ligands))
+
+
+(defvar +smirks-patterns+
+  '(("[D3&CH1:1]-[#1:2]>>[N:1]" . "Replace aromatic methine carbons with nitrogen.")))
+
+
+(defclass pas-config-page (cw:page)
+  ((help
+     :accessor help
+     :initform (make-instance 'w:html
+                              :layout (make-instance 'w:layout :grid-area "help"))
+     :documentation "A help page listing SMIRKS examples.")
+   (snippets
+     :accessor snippets
+     :initform (make-instance 'w:select
+                              :%options-labels (mapcar #'car +smirks-patterns+)
+                              :description "SMIRKS snippets"
+                              :style (make-instance 'w:description-style :description-width "12em")
+                              :layout (make-instance 'w:layout :width "100%" :grid-area "snippets")))
+   (smirks-pattern-editor
+     :accessor smirks-pattern-editor
+     :initform (make-instance 'w:text
+                              :description "SMIRKS pattern"
+                              :value (smirks-pattern *app*)
+                              :style (make-instance 'w:description-style :description-width "12em")
+                              :layout (make-instance 'w:layout :width "100%" :grid-area "smirks"))
+     :documentation "The SMIRKS pattern editor"))
+  (:metaclass jupyter-widgets:trait-metaclass)
+  (:default-initargs
+    :layout (make-instance 'w:layout
+                           :width "100%"
+                           :max-height "12em"
+                           :grid-gap "0.1em 1em"
+                           :grid-template-rows "min-content 1fr"
+                           :grid-template-columns "1fr 1fr"
+                           :grid-template-areas "\"smirks help\" \"snippets help\"")))
+
+
+(defmethod initialize-instance :after ((instance pas-config-page) &rest initargs &key &allow-other-keys)
+  (declare (ignore initargs))
+  (with-slots (snippets smirks-pattern-editor help)
+              instance
+    ;; Connect the SMIRKS editor to *app* smirks-pattern
+    (w:link *app* :smirks-pattern smirks-pattern-editor :value)
+    (setf (w:widget-children instance) (list help smirks-pattern-editor snippets))
+    (w:observe snippets :index
+      (lambda (inst type name old-value new-value source)
+        (declare (ignore inst type name old-value source))
+        (destructuring-bind (snippet . text)
+                            (nth new-value +smirks-patterns+)
+          (setf (w:widget-value (smirks-pattern-editor instance)) snippet
+                (w:widget-value (help instance)) text))))))
+
+
+(defun make-pas-config-page (container title)
+  "Create a pas-config-page instance and add it to the container."
+  (let* ((page (make-instance 'pas-config-page :container container)))
+    (cw:add-page container page title)
+    (values)))
+
+
+(defun pasrun ()
   "pasrun loads a ligand template and runs PAS on it to generate multiple ligands.
 It will put those multiple ligands into all-ligands and selected-ligands"
-  (let* (template-sketch2d
-         template-molecule
-         (file-upload-msg (make-instance 'w:label :value "PAS ligand template: "))
-         (file-upload (make-instance 'jupyter-widgets:file-upload :description "ligand to run PAS on"
-                                                                  :style (button-style)
-                                                                  :width "auto"
-                                                                  :layout (make-instance 'w:layout :width "auto")))
-         (file-upload-hbox (make-instance 'w:h-box
-                                          :layout (box-layout)
-                                          :children (list file-upload-msg file-upload)))
-         (template-view (make-instance 'w:html
-                                       :layout (make-instance 'w:layout :flex "1 1 0%" :width "auto" :height "auto")))
-         (smirks-pattern-label (make-instance 'w:label :value "SMIRKS pattern:"))
-         (smirks-box (make-instance 'w:text :value (smirks *app*)))
-         (messages (make-instance 'w:text-area))
-         (structure-view (make-instance 'w:html
-                                        :layout (make-instance 'w:layout :flex "1 1 0%" :width "auto" :height "auto")))
-         (nglview (make-instance 'nglv:nglwidget
-                                 :layout (make-instance 'w:layout :width "auto" :height "auto")))
-         (Ligand-selector (make-instance 'w:bounded-int-text :description "Ligand"))
-         (ligand-total (make-instance 'w:label :value ""))
-         (ligand-name (make-instance 'w:label :value "Molecule"))
-         (ligand-h-box (make-instance 'w:h-box :children (list ligand-selector ligand-total ligand-name)))
-         (go-button (make-instance 'jupyter-widgets:button
-                                   :description "Run PAS"
-                                   :style (button-style)
-                                   :layout (make-instance 'w:layout :width "30em")
-                                   :tooltip "Use the smirks pattern entered above to generate a PAS"
-                                   :on-click (list
-                                              (lambda (&rest args)
-                                                (setf (w:widget-value messages)
-                                                      (format nil "~aRunning position-analogue-scanning~%"
-                                                              (w:widget-value messages)))
-                                                (let* ((smirks (w:widget-value smirks-box))
-                                                       (lig template-molecule)
-                                                       (new-mols (pas:pas smirks lig))
-                                                       (_ (setf (w:widget-value messages)
-                                                                (format nil "~aGot ligand ~a with smirks: ~a new-mols: ~a~%"
-                                                                        (w:widget-value messages)
-                                                                        lig smirks new-mols)))
-                                                       #+(or)(new-mols-svg (with-output-to-string (sout)
-                                                                             (loop for mol in new-mols
-                                                                                   do (format sout (sketch2d:render-svg-to-string (sketch2d:svg (sketch2d:similar-sketch2d mol template-sketch2d))))))))
-                                                  (setf (w:widget-max ligand-selector) (1- (length new-mols)))
-                                                  (setf selected-ligands new-mols
-                                                        all-ligands new-mols
-                                                        (w:widget-value messages) (format nil "~aBuilt ~d molecules~%"
-                                                                                          (w:widget-value messages)
-                                                                                          (length new-mols)))
-                                                  (tirun:tirun-calculation-from-ligands calc selected-ligands)
-                                                  
-                                                  #+(or)(setf (w:widget-value structure-view)
-                                                              new-mols-svg)))))))
-    (w:observe smirks-box :value
-               (lambda (instance type name old-value new-value source)
-                 (declare (ignore instance type name old-value source))
-                 (setf (smirks *app*) new-value)))
-    (w:observe file-upload :data
-               (lambda (instance type name old-value new-value source)
-                 (declare (ignore instance type name old-value source))
-                 (format t "observe fu~%")
-                 (when new-value
-                   (let* ((last-sdf (car (last new-value)))
-                          (octets (make-array (length last-sdf) :element-type 'ext:byte8
-                                                                :initial-contents last-sdf)))
-                     (let ((as-text (babel:octets-to-string octets)))
-                       (let ((ligands (with-input-from-string (sin as-text)
-                                        (sdf:parse-sdf-file sin))))
-                         (setf *smallest-ligand-sketch* (build-prototype-sketch (list (first ligands))))
-                         (setf template-molecule (first ligands)
-                               template-sketch2d *smallest-ligand-sketch* #+(or)(sketch2d:sketch2d (first ligands)))
-                         (let ((str (sketch2d:render-svg-to-string (sketch2d:svg template-sketch2d))))
-                           (setf (w:widget-value template-view) str))))))))
-    (w:observe ligand-selector :value (lambda (instance type name old-value new-value source)
-                                        (declare (ignore instance type name old-value source))
-                                        (when new-value
-                                          (observe-ligand-selector nglview structure-view messages calc ligand-name new-value))))
-    #||
-    
-
-    (setf (w:widget-value structure-view)
-    (sketch2d:render-svg-to-string (sketch2d:svg (sketch2d:similar-sketch2d new-mol *smallest-ligand-sketch*))))))))))
-
-||#
-    #+(or)(w:observe smirks-box :value (lambda (instance type name old-value new-value source)
-                                   (declare (ignore instance type name old-value source))
-                                   (when new-value
-                                     (setf (smirk-pattern *app*) new-value))))    
-    (make-instance 'w:v-box
-                   :children (list
-                              file-upload-hbox
-                              template-view
-                              (make-instance 'w:h-box
-                                             :layout (box-layout)
-                                             :children (list smirks-pattern-label smirks-box))
-                              (make-instance 'w:h-box
-                                             :layout (box-layout)
-                                             :children (list go-button))
-                              messages
-                              ligand-h-box
-                              structure-view
-                              nglview))))
+  (let ((container (make-instance 'w:accordion :selected-index 0)))
+    (cw:make-file-task-page container "Load Template Ligands" #'parse-ligands :accept ".mol2,.sdf")
+    (make-pas-config-page container "Configure PAS")
+    (cw:make-simple-task-page container "Calculate PAS" #'run-pas
+                              :label "Click button to calculate PAS.")
+    (make-view-ligand-page container "View Ligands")
+    container))
 
 
 (defun edge-id (name-1 name-2)
@@ -574,7 +557,7 @@ It will put those multiple ligands into all-ligands and selected-ligands"
 
 (defun make-node (ligand)
   "Construct a cytoscape node based on a ligand."
-  (let ((name (symbol-name (chem:get-name ligand)))
+  (let ((name (molecule-name ligand))
         (sketch (cw:sketch-molecule ligand)))
     ;; Save sketch dimension and the sketch itself into the data slot. The sketch is SVG text
     ;; so we just need do a percent encoded string for the reserved URL characters.
@@ -630,8 +613,7 @@ It will put those multiple ligands into all-ligands and selected-ligands"
                              (if (equal "nodes" (cytoscape:group element))
                                (not (position id selected-ligands ; the element is node so look in selected-ligands.
                                               :test #'string=
-                                              :key (lambda (ligand)
-                                                     (symbol-name (chem:get-name ligand)))))
+                                              :key #'molecule-name))
                                (notany (lambda (edge) ; the element is an edge so look in all-edges.
                                          (equal id (edge-id (symbol-name (first edge)) ; the ids are already in normal order.
                                                             (symbol-name (second edge)))))
@@ -655,9 +637,7 @@ It will put those multiple ligands into all-ligands and selected-ligands"
   "This function is called by the task page and updates a progress widget as lomap does the calculation."
   (declare (ignore parameter))
   (format t "Calculating similarity matrix of ~{~a~#[~;, and ~:;, ~]~}...~%"
-          (mapcar (lambda (molecule)
-                    (symbol-name (chem:get-name molecule)))
-                  selected-ligands))
+          (mapcar #'molecule-name selected-ligands))
   (finish-output) ; Make sure the message is synced to the frontend.
   (let ((multigraph (lomap::lomap-multigraph
                       (lomap::similarity-multigraph
