@@ -112,39 +112,73 @@
 
 (defvar *default-calculation-settings*
   '(("Simulation Input Parameters"
-     ((:%DECHARGE-RECHARGE-TI-IN.NSTLIM% "Decharge/recharge nstlim" (3000000 3000)) ; if *testing* must be >= 3000
-      (:%PREPARE-MIN-IN.MAXCYC% "Number of steepest decent minimization steps" (50000))
-      (:%VDW-TI-IN.NSTLIM% "Vdw nstlim" (3000000 3000)) ; if *testing* must be >= 3000
-      (:%PREPARE-HEAT-IN.NSTLIM% "PREPARE-HEAT-IN.NSTLIM" (100000 3000))
-      (:%PREPARE-PRESS-IN.NSTLIM% "PREPARE-PRESS-IN.NSTLIM" (2500000 3000))
-      (:%DECHARGE-RECHARGE-HEAT-IN.NSTLIM% "DECHARGE-RECHARGE-HEAT-IN.NSTLIM" (100000 3000))
-      (:%VDW-HEAT-IN.NSTLIM% "VDW-HEAT-IN.NSTLIM" (100000 3000))
-      (:%PREPARE-PRESS-IN-DT% "NPT with SHAKE timestep (fs)" 0.002)
-      (:%PREPARE-REST-WT% "Equilibration harmonic restraint weight (kcal/mol/A^2)" 5.00)
-      (:%DT% "TI without SHAKE timestep (fs) [DT]" 0.001)
-      (:%NTC% "SHAKE-on (2) SHAKE-off (1) [NTC]" 2)
-      (:%NTF% "Force calculation-on (1) -off (2) [NTF]" 1)
-      (:%TEMP0% "Constant temperature" 300.0 )
-      (:%SCALPHA% "Softcore alpha in potential for 1 and 3 step TI" 0.5)
-      (:%SCBETA% "Softcore beta in Coulomb eq. for 1 step TI" 12.0) 
-      ))))
+     ((:indicator :%DECHARGE-RECHARGE-TI-IN.NSTLIM%
+       :label "Decharge/recharge nstlim"
+       :type :int :default 3000000 :testing 3000) ; if *testing* must be >= 3000
+      (:indicator :%PREPARE-MIN-IN.MAXCYC%
+       :label "Number of steepest decent minimization steps"
+       :type :int :default 50000)
+      (:indicator :%VDW-TI-IN.NSTLIM%
+       :label "Vdw nstlim"
+       :type :int :default 3000000 :testing 3000) ; if *testing* must be >= 3000
+      (:indicator :%PREPARE-HEAT-IN.NSTLIM%
+       :label "PREPARE-HEAT-IN.NSTLIM"
+       :type :int :default 100000 :testing 3000)
+      (:indicator :%PREPARE-PRESS-IN.NSTLIM%
+       :label "PREPARE-PRESS-IN.NSTLIM"
+       :type :int :default 2500000 :testing 3000)
+      (:indicator :%DECHARGE-RECHARGE-HEAT-IN.NSTLIM%
+       :label "DECHARGE-RECHARGE-HEAT-IN.NSTLIM"
+       :type :int :default 100000 :testing 3000)
+      (:indicator :%VDW-HEAT-IN.NSTLIM%
+       :label "VDW-HEAT-IN.NSTLIM"
+       :type :int :default 100000 :testing 3000)
+      (:indicator :%PREPARE-PRESS-IN-DT%
+       :label "NPT with SHAKE timestep (fs)"
+       :type :float :default 0.002 :step 0.001)
+      (:indicator :%PREPARE-REST-WT%
+       :label "Equilibration harmonic restraint weight (kcal/mol/A^2)"
+       :type :float :default 5.00)
+      (:indicator :%DT%
+       :label "TI without SHAKE timestep (fs) [DT]"
+       :type :float :default 0.001 :step 0.001)
+      (:indicator :%NTC%
+       :label "Bond length constraints for SHAKE [NTC]"
+       :type :option :default 2 :style :dropdown
+       :options (1 2 3)
+       :labels ("SHAKE is not performed"
+                "bonds involving hydrogen are constrained"
+                "all bonds are constrained (not available for parallel or qmmm runs in sander)"))
+      (:indicator :%NTF%
+       :label "Force evaluation [NTF]"
+       :type :option :default 1 :style :dropdown
+       :options (1 2 3 4 5 6 7 8)
+       :labels ("complete interaction is calculated"
+                "bond interactions involving H-atoms omitted (use with NTC=2)"
+                "all the bond interactions are omitted (use with NTC=3)"
+                "angle involving H-atoms and all bonds are omitted"
+                "all bond and angle interactions are omitted"
+                "dihedrals involving H-atoms and all bonds and all angle interactions are omitted"
+                "all bond, angle and dihedral interactions are omitted"
+                "all bond, angle, dihedral and non-bonded interactions are omitted"))
+      (:indicator :%TEMP0%
+       :label "Constant temperature"
+       :type :float :default 300.0)
+      (:indicator :%SCALPHA%
+       :label "Softcore alpha in potential for 1 and 3 step TI"
+       :type :float :default 0.5 :step 0.1)
+      (:indicator :%SCBETA%
+       :label "Softcore beta in Coulomb eq. for 1 step TI"
+       :type :float :default 12.0)))))
 
 (defun default-calculation-settings (&key (default-settings *default-calculation-settings*) testing)
-  (let (all-settings)
-    (loop for batch in default-settings
-          for name = (first batch)
-          for settings = (second batch)
-          do (loop for setting in settings
-                   for setting-key = (first setting)
-                   for setting-name = (second setting)
-                   for setting-value = (third setting)
-                   do (push (cons setting-key (if (consp setting-value)
-                                                  (if testing
-                                                      (second setting-value)
-                                                      (first setting-value))
-                                                  setting-value))
-                            all-settings)))
-    all-settings))
+  (loop for batch in default-settings
+        for settings = (second batch)
+        append (loop for setting in settings
+                     collect (cons (getf setting :indicator)
+                                   (if testing
+                                     (getf setting :testing (getf setting :default))
+                                     (getf setting :default))))))
 
 
 (defparameter *testing-lambdas* (loop for idx from 0 to 5 collect (/ (float idx) 5.0)))
