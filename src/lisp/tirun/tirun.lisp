@@ -177,7 +177,8 @@
         append (loop for setting in settings
                      collect (cons (getf setting :indicator)
                                    (if testing
-                                     (getf setting :testing (getf setting :default))
+                                     (or (getf setting :testing)
+                                         (getf setting :default))
                                      (getf setting :default))))))
 
 
