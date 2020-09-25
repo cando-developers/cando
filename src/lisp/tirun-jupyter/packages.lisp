@@ -21,7 +21,7 @@
     #:all-ligands
     #:check-calc
     #:composer
-    #:configure-jobs
+    #:jobs
     #:load-ligands
     #:load-receptor
     #:lomap

@@ -1319,8 +1319,8 @@ its for and then create a new class for it."))
                                :lambda% lam
                                :name "ti-gpu"
                                :script (cond
-                                         ((eq stage :decharge) (decharge-recharge-ti-in morph))
-                                         ((eq stage :recharge) (decharge-recharge-ti-in morph))
+                                         ((eq stage :decharge) (decharge-recharge-ti-in-script morph))
+                                         ((eq stage :recharge) (decharge-recharge-ti-in-script morph))
                                          ((eq stage :vdw-bonded) (vdw-ti-in morph))
                                          ((null stage) (vdw-ti-in morph))
                                          (t (error "Illegal stage ~a for make-ti-step script - what do I do with this?" stage))))))
