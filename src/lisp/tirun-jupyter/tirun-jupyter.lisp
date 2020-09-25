@@ -1144,7 +1144,6 @@ lisp_jobs_only_on=172.234.2.1
                                              :layout (box-layout)
                                              :children (list messages))))))
 
-
 (defun composer (&key (app *app*))
   (let ((composer (make-instance 'structure-editor::composer :app app)))
     (w:observe *app* :composer-json
@@ -1152,6 +1151,9 @@ lisp_jobs_only_on=172.234.2.1
                  (when new-value
                    (save-app)
                    )))
-    (structure-editor::composer-accordion composer)))
+    (let ((widgets (structure-editor::composer-accordion composer)))
+      (jupyter-widgets:display widgets)
+      (kekule:fit (structure-editor::composer-kekule composer))
+      (values))))
 
 

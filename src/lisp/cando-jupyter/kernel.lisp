@@ -34,7 +34,7 @@
   (setf lparallel:*kernel* (lparallel:make-kernel (core:num-logical-processors))))
 
 (defmethod jupyter:stop :after ((k kernel))
-  (format t "jupyter:stop :after (mp:all-processes) -> ~s~%" (mp:all-processes))
+  #+(or)(format t "jupyter:stop :after (mp:all-processes) -> ~s~%" (mp:all-processes))
   (lparallel:end-kernel :wait t))
 
 (defun lisp-code-p (code)
