@@ -477,8 +477,11 @@
         selected-ligands all-ligands))
 
 
-(defvar +smirks-patterns+
-  '(("[D3&CH1:1]-[#1:2]>>[N:1]" . "Replace aromatic methine carbons with nitrogen.")))
+(defparameter +smirks-patterns+
+  '(("[D3&CH1:1]-[#1:2]>>[N:1]" . "Replace aromatic methine carbons with nitrogen.")
+    ("[D3&CH1:1]-[#1:2]>>[O:1]" . "Replace aromatic methine carbons with oxygen.")
+    ("[D3&CH1:1]-[#1:2]>>[CH1:1]-[F:2]" . "Generate all mono-halo [choose F,Br,Cl,I] analouges of template.")
+    ("[D3&CH1:1]-[#1:2]>>[CH1:1]-[CH3:2]" . "Perform all alkylations of template.")))
 
 
 (defclass pas-config-page (cw:page)
