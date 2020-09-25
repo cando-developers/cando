@@ -877,13 +877,56 @@ It will put those multiple ligands into all-ligands and selected-ligands"
     container))
 
 
-(defun configure-jobs ()
-  (let ((container (make-instance 'w:accordion)))
-    (dolist (schema-group tirun::*default-calculation-settings* container)
-      (cw:add-page container
-                   (w:make-interactive-alist (second schema-group)
-                                             (tirun::settings *tirun*))
-                   (first schema-group)))))
+(defclass jobs-config-page (cw:page)
+  ((job-name
+     :accessor job-name
+     :initform (make-instance 'w:text
+                              :description "Job name"
+                              :value (job-name *app*)
+                              :style (make-instance 'w:description-style :description-width "12em")
+                              :layout (make-instance 'w:layout :grid-area "name"))
+     :documentation "The job name.")
+   (ti-stages
+     :accessor ti-stages
+     :initform (make-instance 'w:radio-buttons
+                              :options '(1 3)
+                              :%options-labels '("one stage" "three stage")
+                              :description "TI stages"
+                              :value (tirun::ti-stages *tirun*)
+                              :style (make-instance 'w:description-style :description-width "12em")
+                              :layout (make-instance 'w:layout :grid-area "stages"))
+     :documentation "The number of stages in the TI calculation."))
+  (:metaclass jupyter-widgets:trait-metaclass)
+  (:documentation "A page to set job name and the number of stages.")
+  (:default-initargs
+    :layout (make-instance 'w:layout
+                           :width "100%"
+                           :max-height "12em"
+                           :grid-gap "0.1em 1em"
+                           :grid-template-rows "min-content min-content"
+                           :grid-template-columns "1fr"
+                           :grid-template-areas "\"name\" \"stages\"")))
+
+
+(defmethod initialize-instance :after ((instance jobs-config-page) &rest initargs &key &allow-other-keys)
+  (declare (ignore initargs))
+  (with-slots (job-name ti-stages)
+              instance
+    ;; Connect the job-name to *app* job-name
+    (w:link *app* :job-name job-name :value)
+    (setf (w:widget-children instance) (list job-name ti-stages))
+    ;; ti-stages isn't a trait so we can't use link.
+    (w:observe ti-stages :value
+      (lambda (inst type name old-value new-value source)
+        (declare (ignore inst type name old-value source))
+        (setf (tirun::ti-stages *tirun*) new-value)))))
+
+
+(defun make-jobs-config-page (container title)
+  "Create a jobs-config-page instance and add it to the container."
+  (let* ((page (make-instance 'jobs-config-page :container container)))
+    (cw:add-page container page title)
+    (values)))
 
 
 (defun ensure-write-jobs (tirun jobs-dir &optional progress-callback)
@@ -920,70 +963,63 @@ lisp_jobs_only_on=172.234.2.1
     (values dir tar-file jobs-dir)))
 
 (defparameter *tar-thread* nil)
-(defun generate-tar-file (messages job-name dir tar-file jobs-dir)
+
+(defun generate-tar-file (job-name dir tar-file jobs-dir)
   (let ((cmd (list "tar"
                    "czvf"
                    (namestring tar-file)
                    "-C"
                    (namestring jobs-dir)
                    (format nil "./~a" job-name))))
-    (setf (w:widget-value messages)
-          (format nil "~atar cmd: ~a~%" (w:widget-value messages) cmd))
-    (setf *tar-thread*
-          (bordeaux-threads:make-thread
-           (lambda ()
-             (multiple-value-bind (ret child-pid stream)
-                 (ext:vfork-execvp cmd t)
-               (if (= 0 ret)
-                   (setf (w:widget-value messages)
-                         (format nil "~aSuccessfully generated tar file ~a~%" (w:widget-value messages) tar-file))
-                   (setf (w:widget-value messages)
-                         (format nil "~aFailed to submit job errno: ~a" (w:widget-value messages) ret)))
-               ))))))
+    (format t "tar cmd: ~a~%" cmd)
+    (finish-output)
+    (multiple-value-bind (ret child-pid stream)
+                         (ext:vfork-execvp cmd nil)
+      (cond
+        ((or (null ret)
+             (zerop ret))
+          (format t "Successfully generated tar file ~a~%" tar-file)
+          (finish-output)
+          t)
+        (t
+          (format *error-output* "Failed to submit job errno: ~a~%" ret)
+          (finish-output *error-output*)
+          nil)))))
 
-(defun write-jobs (&key (tirun *tirun*))
-  (let* ((job-name (make-simple-input "Job name" :default (job-name *app*)))
-         (messages (make-instance 'w:text-area :description "Messages"
-                                               :layout (make-instance 'w:layout :width "60em")))
-         (progress (make-instance 'w:int-progress :description "Progress"))
-         (go-button (make-instance
-                     'w:button :description "Write jobs"
-                     :style (button-style)
-                     :on-click (list
-                                (lambda (&rest args)
-                                  (let ((name (w:widget-value (input-widget job-name))))
-                                    (multiple-value-bind (dir tar-file from-path)
-                                        (calculate-jobs-dir name)
-                                      (setf (w:widget-value messages) (format nil "Writing jobs to -> ~a ...~%" dir))
-                                      (if (probe-file dir)
-                                          (progn
-                                            (setf (w:widget-value messages) (format nil "The directory ~a already exists - aborting writing jobs" dir)))
-                                          (progn
-                                            (ensure-write-jobs tirun dir (let ((index 0)
-                                                                               (lock (bordeaux-threads:make-recursive-lock "progress")))
-                                                                           (lambda (max-progress)
-                                                                             (bordeaux-threads:with-recursive-lock-held (lock)
-                                                                               (setf (w:widget-value progress) index
-                                                                                     (w:widget-max progress) max-progress)
-                                                                               (incf index)))))
-                                            (setf (w:widget-value messages) (format nil "~a~%Generating tar file.~%"
-                                                                                    (w:widget-value messages)))
-                                            (generate-tar-file messages name dir tar-file from-path)))))))))
-         )
-    (w:observe (input-widget job-name) :value (lambda (instance type name old-value new-value source)
-                                                (setf (job-name *app*) new-value)))
-    (make-instance 'w:v-box
-                   :children (list
-                              (hbox job-name)
-                              (make-instance 'w:h-box
-                                             :layout (box-layout)
-                                             :children (list go-button))
-                              (make-instance 'w:h-box
-                                             :children (list progress))
-                              (make-instance 'w:h-box
-                                             :layout (box-layout)
-                                             :children (list messages))))))
- 
+
+(defun run-write-jobs (parameter progress-callback)
+  "Called by the write task page to start the write jobs task."
+  (declare (ignore parameter))
+  (multiple-value-bind (dir tar-file from-path)
+                       (calculate-jobs-dir (job-name *app*))
+    (format t "Writing jobs to -> ~a ...~%" dir)
+    (finish-output)
+    (cond
+      ((probe-file dir)
+        (format *error-output* "The directory ~a already exists - aborting writing jobs" dir)
+        (finish-output *error-output*)
+        nil)
+      (t
+        (ensure-write-jobs *tirun* dir progress-callback)
+        (write-line "Generating tar file.")
+        (finish-output)
+        (generate-tar-file (job-name *app*) dir tar-file from-path)))))
+
+
+(defun jobs ()
+  "Configure and write TI jobs to jobs directory."
+  (let ((container (make-instance 'w:accordion :selected-index 0)))
+    (dolist (schema-group tirun::*default-calculation-settings*)
+      (cw:add-page container
+                   (w:make-interactive-alist (second schema-group)
+                                             (tirun::settings *tirun*))
+                   (first schema-group)))
+    (make-jobs-config-page container "Configure Jobs")
+    (cw:make-simple-task-page container "Write Jobs" #'run-write-jobs
+                              :label "Click button to write jobs.")
+    container))
+
+
 (defun read-submit-stream (num)
   (let ((buffer (make-array 15 :adjustable t :fill-pointer 0)))
     (flet ((grab ()
