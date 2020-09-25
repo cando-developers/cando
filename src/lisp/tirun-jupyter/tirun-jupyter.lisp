@@ -877,64 +877,14 @@ It will put those multiple ligands into all-ligands and selected-ligands"
     container))
 
 
-(defun configure-layout (default-settings &key testing)
-  (let (all-inputs)
-    (multiple-value-bind (titles vboxes)
-        (loop for batch in default-settings
-              for title = (first batch)
-              for settings = (second batch)
-              collect (make-instance 'w:v-box
-                                     :children
-                                     (loop for setting in settings
-                                           for setting-key = (first setting)
-                                           for setting-name = (second setting)
-                                           for setting-value = (third setting)
-                                           for input = (make-simple-input setting-name
-                                                                          :default (if (consp setting-value)
-                                                                                       (if testing
-                                                                                           (second setting-value)
-                                                                                           (first setting-value))
-                                                                                       setting-value)
-                                                                          :name setting-key)
-                                           do (push input all-inputs)
-                                           collect (hbox input)))
-                into vboxes
-              collect title into titles
-              finally (return (values titles vboxes)))
-      (values (make-instance 'jupyter-widgets:accordion
-                             :%titles titles
-                             :selected-index nil
-                             :children vboxes)
-              all-inputs))))
+(defun configure-jobs ()
+  (let ((container (make-instance 'w:accordion)))
+    (dolist (schema-group tirun::*default-calculation-settings* container)
+      (cw:add-page container
+                   (w:make-interactive-alist (second schema-group)
+                                             (tirun::settings *tirun*))
+                   (first schema-group)))))
 
-(defun configure-jobs (&key (calc *tirun*))
-  (let* ((desc-width "12em")
-         (steps (make-instance 'jupyter-widgets:dropdown :%options-labels (list "single" "3-step")
-                                                         :options (list "single" "3-step")
-                                                         :index 0
-                                                         :description "Steps:")))
-    (multiple-value-bind (accordion all-inputs)
-        (configure-layout tirun::*default-calculation-settings*)
-      (let* ((desc-style (make-instance 'w:description-style :description-width desc-width))
-             (messages (make-instance 'w:text-area :description "Messages"
-                                                   :layout (make-instance 'w:layout :width "60em")))
-             (go-button (make-instance 'jupyter-widgets:button :description "Configure"
-                                                               :style (button-style)
-                                                               :tooltip "Click me"
-                                                               :on-click (list
-                                                                          (lambda (&rest args)
-                                                                             (setf (w:widget-value messages)
-                                                                                  (format nil "Configure~%")))))))
-        (make-instance 'w:v-box
-                       :children (append (list steps
-                                               accordion)
-                                         (list 
-                                          (make-instance 'w:h-box
-                                                         :layout (box-layout)
-                                                         :children (list go-button))
-                                          (make-instance 'w:h-box
-                                                         :layout (box-layout)
-                                                         :children (list messages)))))))))
 
 (defun ensure-write-jobs (tirun jobs-dir &optional progress-callback)
   (ensure-directories-exist jobs-dir)
