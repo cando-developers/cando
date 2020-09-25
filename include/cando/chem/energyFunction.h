@@ -258,10 +258,10 @@ namespace chem {
 
     void assignAtomTypes(Matter_sp matter, bool show_progress);
     void defineForMatter(Matter_sp agg, bool useExcludedAtoms, core::T_sp activeAtomSet=_Nil<core::T_O>(), bool assign_types=true );
-    void defineForMatterWithAtomTypes(Matter_sp matter, bool useExcludedAtoms, core::T_sp activeAtoms);
+    void defineForMatterWithAtomTypes(Matter_sp matter, bool useExcludedAtoms, core::T_sp activeAtoms, core::T_sp cip_priorities);
     void generateStandardEnergyFunctionTables(Matter_sp mol, CombinedForceField_sp forceField, core::T_sp activeAtomSet=_Nil<core::T_O>());
     void generateNonbondEnergyFunctionTables(bool useExcludedAtoms, Matter_sp agg, core::T_sp forceField, core::T_sp activeAtomSet=_Nil<core::T_O>());
-    void generateRestraintEnergyFunctionTables(Matter_sp agg, core::T_sp nonbonds, core::T_sp activeAtomSet=_Nil<core::T_O>());
+    void generateRestraintEnergyFunctionTables(Matter_sp agg, core::T_sp nonbonds, core::T_sp activeAtomSet=_Nil<core::T_O>(), core::T_sp cip_priorities=_Nil<core::T_O>());
 
 
     /*! Add the restraints to the energy function.

@@ -1248,13 +1248,16 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, bool useEx
       core::eval::funcall(_sym_assign_force_field_types,combined_force_field,molecule);
     }
   }
-  this->defineForMatterWithAtomTypes(matter,useExcludedAtoms,activeAtoms);
+  this->defineForMatterWithAtomTypes(matter,useExcludedAtoms,activeAtoms,cip);
 }
 
 
-CL_LAMBDA((energy-function !) matter &key use-excluded-atoms active-atoms (assign-types t));
-CL_DEFMETHOD void EnergyFunction_O::defineForMatterWithAtomTypes(Matter_sp matter, bool useExcludedAtoms, core::T_sp activeAtoms)
+CL_LAMBDA((energy-function !) matter &key use-excluded-atoms active-atoms (assign-types t) cip-priorities);
+CL_DEFMETHOD void EnergyFunction_O::defineForMatterWithAtomTypes(Matter_sp matter, bool useExcludedAtoms, core::T_sp activeAtoms, core::T_sp cip_priorities)
 {_OF();
+  if (!gc::IsA<core::HashTable_sp>(cip_priorities)) {
+    SIMPLE_ERROR(BF("You need to provide a hash-table of atoms to relative CIP priorities - see CipPrioritizer_O::assignPrioritiesHashTable(matter)"));
+  }
   if (chem__verbose(0)) core::write_bf_stream(BF("defineForMatterWithAtomTypes\n"));
   this->_Matter= matter;
   if ( !(matter.isA<Aggregate_O>() || matter.isA<Molecule_O>() ) )
@@ -1377,7 +1380,7 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatterWithAtomTypes(Matter_sp matte
     if (chem__verbose(1)) core::write_bf_stream(BF("About to calculate nonbond and restraint terms"));
     core::T_sp nonbondForceField = this->_AtomTable->nonbondForceFieldForAggregate();
     this->generateNonbondEnergyFunctionTables(useExcludedAtoms,matter,nonbondForceField,activeAtoms);
-    this->generateRestraintEnergyFunctionTables(matter,nonbondForceField,activeAtoms);
+    this->generateRestraintEnergyFunctionTables(matter,nonbondForceField,activeAtoms,cip_priorities);
   }
   core::eval::funcall(_sym_report_parameter_warnings);
 }
@@ -1720,10 +1723,11 @@ CL_DEFMETHOD void EnergyFunction_O::generateNonbondEnergyFunctionTables(bool use
 }
 
 
-CL_LAMBDA((energy-function !) matter force-field &key active-atoms);
+CL_LAMBDA((energy-function !) matter force-field &key active-atoms cip-priorities);
 CL_DOCSTRING(R"doc(Generate the restraint energy function tables. The atom types, and CIP priorities need to be precalculated.
-This should be called after generateStandardEnergyFunctionTables.)doc");
-CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter_sp matter, core::T_sp ffNonbond, core::T_sp activeAtoms )
+This should be called after generateStandardEnergyFunctionTables.
+You need to pass a hash-table of atoms to relative CIP priorities (calculated using CipPrioritizer_O::assignPrioritiesHashTable(matter) for stereochemical restraints.)doc");
+CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter_sp matter, core::T_sp ffNonbond, core::T_sp activeAtoms, core::T_sp cip_priorities )
 {
   Loop loop;
   Atom_sp          a1, a2, a3, a4, aImproperCenter;
@@ -1734,13 +1738,16 @@ CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter
   FFItor_sp        ffItor;
   FFNonbond_sp	ffNonbond1, ffNonbond2;
   int             coordinateIndex;
-  core::HashTable_sp cip;
   if (chem__verbose(1)) core::write_bf_stream(BF("In generateRestraintEnergyFunctionTables\n"));
   
     	//
 	// Setup the atom chiral restraints
 	//
   {_BLOCK_TRACE("Defining chiral restraints");
+    if (!gc::IsA<core::HashTable_sp>(cip_priorities)) {
+      SIMPLE_ERROR(BF("You need to provide a hash-table of atoms to relative CIP priorities - see CipPrioritizer_O::assignPrioritiesHashTable(matter)"));
+    }
+    core::HashTable_sp cip = gc::As_unsafe<core::HashTable_sp>(cip_priorities);
     EnergyChiralRestraint	ichiral;
     Atom_sp	n1,n2,n3,n4;
     string	s1,s2,s3,s4;
