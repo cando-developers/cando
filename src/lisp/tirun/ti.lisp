@@ -78,9 +78,9 @@
                     (defparameter *system* (cando:combine (chem:matter-copy *ligands*)
                                                           (chem:matter-copy *receptor*))))
                    (t (error "Unknown *side-name* ~s - must be one of :ligand or :complex" *side-name*)))
-                 (leap:solvate-box *system*
+                 (leap:tool-solvate-and-shell *system*
                   (leap.core:lookup-variable (solvent-box *tiruns*))
-                  (solvent-buffer *tiruns*)
+                  '(:%SOLV-BOX-X% :%SOLV-BOX-Y% :%SOLV-BOX-Z%)
                   :closeness (solvent-closeness *tiruns*))
                  (leap.add-ions:add-ions *system* :|Cl-| 0)
                  (cando:save-mol2 *system* (ensure-directories-exist ":%MOL2%"))
