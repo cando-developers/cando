@@ -894,8 +894,10 @@ It will put those multiple ligands into all-ligands and selected-ligands"
                               :description "TI stages"
                               :value (tirun::ti-stages *tirun*)
                               :style (make-instance 'w:description-style :description-width "12em")
-                              :layout (make-instance 'w:layout :grid-area "stages"))))
+                              :layout (make-instance 'w:layout :grid-area "stages"))
+     :documentation "The number of stages in the TI calculation."))
   (:metaclass jupyter-widgets:trait-metaclass)
+  (:documentation "A page to set job name and the number of stages.")
   (:default-initargs
     :layout (make-instance 'w:layout
                            :width "100%"
@@ -913,6 +915,7 @@ It will put those multiple ligands into all-ligands and selected-ligands"
     ;; Connect the job-name to *app* job-name
     (w:link *app* :job-name job-name :value)
     (setf (w:widget-children instance) (list job-name ti-stages))
+    ;; ti-stages isn't a trait so we can't use link.
     (w:observe ti-stages :value
       (lambda (inst type name old-value new-value source)
         (declare (ignore inst type name old-value source))
@@ -985,6 +988,7 @@ lisp_jobs_only_on=172.234.2.1
 
 
 (defun run-write-jobs (parameter progress-callback)
+  "Called by the write task page to start the write jobs task."
   (declare (ignore parameter))
   (multiple-value-bind (dir tar-file from-path)
                        (calculate-jobs-dir (job-name *app*))
@@ -1003,6 +1007,7 @@ lisp_jobs_only_on=172.234.2.1
 
 
 (defun jobs ()
+  "Configure and write TI jobs to jobs directory."
   (let ((container (make-instance 'w:accordion :selected-index 0)))
     (dolist (schema-group tirun::*default-calculation-settings*)
       (cw:add-page container
