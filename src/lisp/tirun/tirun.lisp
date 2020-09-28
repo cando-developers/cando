@@ -112,7 +112,16 @@
 
 (defvar *default-calculation-settings*
   '(("Simulation Input Parameters"
-     ((:indicator :%DECHARGE-RECHARGE-TI-IN.NSTLIM%
+     ((:indicator :%SOLV-BOX-X%
+       :label "Distance from aggregate to box edge in X dim."
+       :type :int :default 12)
+      (:indicator :%SOLV-BOX-Y%
+       :label "Distance from aggregate to box edge in Y dim."
+       :type :int :default 12)
+      (:indicator :%SOLV-BOX-Z%
+       :label "Distance from aggregate to box edge in Z dim."
+       :type :int :default 12)
+      (:indicator :%DECHARGE-RECHARGE-TI-IN.NSTLIM%
        :label "Decharge/recharge nstlim"
        :type :int :default 3000000 :testing 3000) ; if *testing* must be >= 3000
       (:indicator :%PREPARE-MIN-IN.MAXCYC%
