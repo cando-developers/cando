@@ -33,6 +33,7 @@
    (:file "ring-builder")
    (:file "chemdraw")
    (:file "energy")
+   (:file "formula-weight")
    (:file "matter-hierarchy")
    (:file "psf-files")
 ;;;     (:file "remove-overlaps")

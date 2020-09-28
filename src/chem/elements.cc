@@ -30,6 +30,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/environment.h>
 #include <clasp/core/evaluator.h>
 #include <clasp/core/array.h>
+#include <clasp/core/ql.h>
 #include <clasp/core/symbolTable.h>
 #include <clasp/core/wrappers.h>
 #include <cando/geom/color.h>
@@ -601,6 +602,18 @@ CL_DEFUN ::chem::Element elementFromAtomNameString(const string& name)
     return elementFromAtomNameStringBasic(name,false);
 }
 
+CL_DEFUN core::List_sp all_element_symbols() {
+  ql::list ll;
+  for ( vector<AtomicInfo>::iterator ai=atomicInfo.begin(); ai!=atomicInfo.end(); ai++ ) {
+    if ( ai->_Valid ) {
+      core::Symbol_sp sym = chemkw_intern(ai->_AtomicSymbol);
+      ll << sym;
+    }
+  }
+  return ll.cons();
+}
+
+  
 CL_DEFUN chem::Element elementForAtomicNumber(int atomicNumber)
 {
   if (atomicNumber<0 || atomicNumber>element_MAX || atomicNumberToAtomicInfoIndex[atomicNumber] ==-1 ) {
