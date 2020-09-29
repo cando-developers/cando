@@ -774,8 +774,20 @@ It will put those multiple ligands into all-ligands and selected-ligands"
                                              :content "<span class='fa fa-trash fa-2x'></span>"))
          (delete-elements-command (make-instance 'cytoscape:menu-command ; Delete all selected elements.
                                                  :content "<span class='fa fa-trash fa-2x'></span>"))
+         (layouts (list (list "Circle layout"
+                              (make-instance 'cytoscape:circle-layout))
+                        (list "Concentric layout"
+                              (make-instance 'cytoscape:concentric-layout))
+                        (list "Breadth-First layout"
+                              (make-instance 'cytoscape:breadth-first-layout))
+                        (list "CoSE layout"
+                              (make-instance 'cytoscape:cose-layout))
+                        (list "Dagre layout"
+                              (make-instance 'cytoscape:dagre-layout))
+                        (list "Grid layout"
+                              (make-instance 'cytoscape:grid-layout))))
          (graph (make-instance 'cytoscape:cytoscape-widget
-                               :graph-layouts (list (make-instance 'cytoscape:cose-layout))
+                               :graph-layouts (cdr (fourth layouts))
                                :context-menus (list (make-instance 'cytoscape:context-menu
                                                                    :selector "core"
                                                                    :commands (list add-edges-command delete-elements-command))
@@ -791,6 +803,18 @@ It will put those multiple ligands into all-ligands and selected-ligands"
                                                       :height "640px"
                                                       :border "var(--jp-widgets-border-width) solid var(--jp-border-color1)"
                                                       :grid-area "graph")))
+         (layout-select (make-instance 'w:dropdown ; A dropdown to select the layout
+                                       :%options-labels (mapcar #'car layouts)
+                                       :index 3
+                                       :on-trait-change (list (cons :index
+                                                                    (lambda (inst type name old-value new-value source)
+                                                                      (declare (ignore inst type name old-value source))
+                                                                      (setf (cytoscape:graph-layouts graph)
+                                                                            (cdr (nth new-value layouts)))
+                                                                      (cytoscape:layout graph))))
+                                       :layout (make-instance 'w:layout
+                                                              :width "max-content"
+                                                              :grid-area "layout")))
          (fit (make-instance 'w:button ; A button to refit to the whole graph.
                              :description "Fit"
                              :on-click (list (lambda (inst)
@@ -819,12 +843,12 @@ It will put those multiple ligands into all-ligands and selected-ligands"
                                      :layout (make-instance 'w:layout
                                                             :grid-area "full-screen")))
          (grid (make-instance 'w:grid-box ; Grid for the graph. Control buttons are in the bottom row.
-                              :children (list graph fit show-sketches full-screen)
+                              :children (list graph fit layout-select show-sketches full-screen)
                               :layout (make-instance 'w:layout
                                                      :grid-gap "var(--jp-widgets-container-padding)"
-                                                     :grid-template-columns "1fr min-content min-content min-content min-content 1fr"
+                                                     :grid-template-columns "1fr min-content min-content min-content min-content min-content 1fr"
                                                      :grid-template-rows "1fr min-content"
-                                                     :grid-template-areas "\"graph graph graph graph graph graph\" \". fit show-sketches add-edges full-screen .\""))))
+                                                     :grid-template-areas "\"graph graph graph graph graph graph graph\" \". fit layout show-sketches add-edges full-screen .\""))))
     ;; Delete the current node.
     (cytoscape:on-menu-command-select delete-node-command
       (lambda (inst id)

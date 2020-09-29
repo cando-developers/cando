@@ -67,40 +67,42 @@
 
 (defun run-task (instance parameter)
   (declare (ignore args))
-  (with-slots (container messages progress button)
-              instance
-    (setf (jw:widget-outputs messages) nil
-          (jw:widget-value progress) 0
-          (jw:widget-disabled button) t)
-    (jw:with-output messages
-      (handler-bind
-          ((warning
-             (lambda (wrn)
-               (princ wrn)
-               (terpri)
-               (finish-output)
-               (muffle-warning))))
-        (write-line "Starting task...")
-        (finish-output)
-        (cond
-          ((funcall (task-function instance)
-                    parameter
-                    (lambda (maximum)
-                      (setf (jw:widget-display (jw:widget-layout progress)) nil
-                            (jw:widget-max progress) maximum
-                            (jw:widget-value progress) (1+ (jw:widget-value progress)))))
-            (write-line "Task completed successfully.")
-            (setf (jw:widget-display (jw:widget-layout progress)) "none")
-            (let ((index (position instance (jw:widget-children container) :test #'eql)))
-              (setf (jw:widget-selected-index container)
-                    (when (and index
-                               (< (1+ index) (length (jw:widget-children container))))
-                      (1+ index)))))
-          (t
-            (write-line "Task completed with failures." *error-output*)
-            (finish-output *error-output*)))
-        (setf (jw:widget-disabled button) nil)
-        (values)))))
+  (unwind-protect
+      (with-slots (container messages progress button)
+                  instance
+        (setf (jw:widget-outputs messages) nil
+              (jw:widget-value progress) 0
+              (jw:widget-disabled button) t)
+        (jw:with-output messages
+          (handler-bind
+              ((warning
+                 (lambda (wrn)
+                   (princ wrn)
+                   (terpri)
+                   (finish-output)
+                   (muffle-warning))))
+            (write-line "Starting task...")
+            (finish-output)
+            (cond
+              ((funcall (task-function instance)
+                        parameter
+                        (lambda (maximum)
+                          (setf (jw:widget-display (jw:widget-layout progress)) nil
+                                (jw:widget-max progress) maximum
+                                (jw:widget-value progress) (1+ (jw:widget-value progress)))))
+                (write-line "Task completed successfully.")
+                (setf (jw:widget-display (jw:widget-layout progress)) "none")
+                (let ((index (position instance (jw:widget-children container) :test #'eql)))
+                  (setf (jw:widget-selected-index container)
+                        (when (and index
+                                   (< (1+ index) (length (jw:widget-children container))))
+                          (1+ index)))))
+              (t
+                (write-line "Task completed with failures." *error-output*)
+                (finish-output *error-output*)))
+            (values))))
+    (setf (jw:widget-disabled button) nil)))
+
 
 (defclass file-task-page (task-page)
   ()
