@@ -35,6 +35,7 @@
    #:sketch-atoms-to-original
    #:molecule
    #:dynamics
+   #:*svg-stylesheet*
    #:atom-nodes
    #:atom-node
    #:renderp
