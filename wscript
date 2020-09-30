@@ -22,7 +22,7 @@ def configure(cfg):
     cfg.extensions_stlib += cfg.env.STLIB_Z
     cfg.extensions_clasp_gc_names += "cando"
     cfg.check_cxx(stlib='boost_graph', cflags='-Wall', uselib_store='BOOST-boost_graph')
-    cfg.check_cxx(stlib='netcdf', cflags='-Wall', uselib_store='BOOST-netcdf')
+    cfg.check_cxx(lib='netcdf', cflags='-Wall', uselib_store='BOOST-netcdf')
     cfg.define("BUILD_EXTENSION",1)   # add this whenever building an extension
 #    cfg.define("DEBUG_ENERGY_FUNCTION",1)
 
