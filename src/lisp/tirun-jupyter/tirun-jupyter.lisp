@@ -595,7 +595,7 @@ It will put those multiple ligands into all-ligands and selected-ligands"
             do (loop for atom-2 in atoms
                      for pos-1 below pos-1
                      do (format output-stream "~%,.bond.~A.~A" atom-1 atom-2)))
-      (format output-stream " {~%  fill: red;~%  stroke: red;~%}"))))
+      (format output-stream " {~%  filter: url(#highlight);~%}"))))
 
 
 (defun update-selected-sketches (graph unselected-names)
