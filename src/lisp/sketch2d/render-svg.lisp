@@ -521,7 +521,32 @@ This will place the calculated bond on one or the other side of the x1,y1-x2,y2 
    }")
 
 
+(cl-svg::define-element-maker :filter "filter" '(:id))
+(cl-svg::define-defs-group-maker make-filter :filter)
+
+(cl-svg::define-element-maker :feMorphology "feMorphology" '())
+(cl-svg::define-element-maker :feFlood "feFlood" '())
+(cl-svg::define-element-maker :feComposite "feComposite" '())
+(cl-svg::define-element-maker :feMerge "feMerge" '())
+(cl-svg::define-element-maker :feMergeNode "feMergeNode" '())
+
+
+(defmacro feMerge ((&rest opts) &body inputs)
+  (let ((feMerge (gensym "feMerge")))
+    `(let ((,feMerge (cl-svg:draw* (:feMerge))))
+       (dolist (input (list ,@inputs))
+         (if input
+           (cl-svg:draw ,feMerge (:feMergeNode :in input))
+           (cl-svg:draw ,feMerge (:feMergeNode))))
+       ,feMerge)))
+
+
 (defun render-sketch (scene sketch)
+  (make-filter scene (:id "highlight" :x "-1" :y "-1" :width "3" :height "3")
+    (cl-svg:draw* (:feMorphology :operator "dilate" :radius "3" :result "dilate"))
+    (cl-svg:draw* (:feFlood :flood-color "rgb(237,212,0)"))
+    (cl-svg:draw* (:feComposite :in2 "dilate" :operator "in"))
+    (feMerge () nil "SourceGraphic"))
   (cl-svg:style scene *svg-stylesheet*)
   (loop for bond-node in (bond-nodes sketch)
         for count from 0
