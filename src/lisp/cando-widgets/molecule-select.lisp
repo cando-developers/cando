@@ -4,13 +4,27 @@
 (defparameter *molecule-sketches* (make-hash-table :test #'eql))
 
 
-(defun sketch-molecule (molecule)
+(defun add-sketch (molecule &optional common-sketch)
+  (let ((sketch2d:*svg-stylesheet* (concatenate 'string sketch2d:*svg-stylesheet* "~@[~%~A~]"))
+        (svg (sketch2d:svg (if common-sketch
+                             (sketch2d:similar-sketch2d molecule common-sketch)
+                             (sketch2d:sketch2d molecule)))))
+    (setf (gethash molecule *molecule-sketches*)
+          (list (sketch2d:render-svg-to-string svg)
+                (sketch2d:width svg)
+                (sketch2d:height svg)))))
+
+
+(defun sketch-molecule (molecule &optional styles)
   (multiple-value-bind (sketch present-p)
                        (gethash molecule *molecule-sketches*)
-    (if present-p
-      (lparallel:force sketch)
-      (setf (gethash molecule *molecule-sketches*)
-            (sketch2d:svg (sketch2d:sketch2d molecule))))))
+    (destructuring-bind (svg width height)
+                        (if present-p
+                          (lparallel:force sketch)
+                          (add-sketch molecule))
+      (values (format nil svg styles)
+              width
+              height))))
 
 
 (defun build-prototype-sketch (ligands)
@@ -39,12 +53,10 @@
             (unless common-sketch
               (setf common-sketch (build-prototype-sketch molecules)))
             (setf (gethash molecule *molecule-sketches*)
-                  (eval `(lparallel:future
-                           (sketch2d:svg (sketch2d:similar-sketch2d ,molecule ,common-sketch))))))
+                  (eval `(lparallel:future (add-sketch ,molecule ,common-sketch)))))
           (t
             (setf (gethash molecule *molecule-sketches*)
-                  (eval `(lparallel:future
-                           (sketch2d:svg (sketch2d:sketch2d ,molecule)))))))))))
+                  (eval `(lparallel:future (add-sketch ,molecule))))))))))
 
 
 (defconstant +min-sketch-width+ 50.0)
@@ -132,9 +144,11 @@
 
 (defun sketch-and-update (instance html molecule)
   (ignore-errors
-    (let ((sketch (sketch-molecule molecule)))
-      (setf (max-width instance) (max (max-width instance) (sketch2d:width sketch))
-            (jw:widget-value html) (sketch2d:render-svg-to-string sketch)))))
+    (multiple-value-bind (svg width height)
+                         (sketch-molecule molecule)
+      (declare (ignore height))
+      (setf (max-width instance) (max (max-width instance) width)
+            (jw:widget-value html) svg))))
 
 
 (defun make-molecule-view (instance molecule)

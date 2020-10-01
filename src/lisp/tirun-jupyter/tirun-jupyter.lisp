@@ -299,7 +299,7 @@
       ;; Load the sketch
       (setf (w:widget-value structure)
             (format nil "<div style='display:flex;align-items:center;height:100%;'><div style='display:block;margin:auto;'>~A</div></div>"
-                    (sketch2d:render-svg-to-string (cw:sketch-molecule mol))))
+                    (cw:sketch-molecule mol)))
       ;; A resize can't hurt.
       (nglview:handle-resize ngl)
       ;; Hide previous ligand.
@@ -558,31 +558,100 @@ It will put those multiple ligands into all-ligands and selected-ligands"
     (concatenate 'string name-2 "|" name-1)))
 
 
-(defun make-node (ligand)
+(defun encode-svg (svg)
+  (concatenate 'string
+               "data:image/svg+xml,"
+               (quri:url-encode svg)))
+
+
+(defun element-id (element)
+  (cdr (assoc "id" (cytoscape:data element) :test #'string=)))
+
+
+(defun get-selected-names (graph)
+  (mapcan (lambda (element)
+            (when (cytoscape:selected element)
+              (let* ((id (element-id element))
+                     (pos (position #\| id))) ; If there is vertical bar it is an edge.
+                (if pos
+                  (list (subseq id 0 pos) (subseq id (1+ pos)))
+                  (list id)))))
+          (cytoscape:elements graph)))
+
+
+(defun match-ligands (ligands)
+  (mapcar (lambda (ligand)
+            (declare (ignore ligand))
+            (list :O33 :C10))
+          ligands))
+
+
+(defun generate-stylesheet (atoms)
+  (when atoms
+    (with-output-to-string (output-stream)
+      (format output-stream "~{.atom.~A~^,~%~}" atoms)
+      (loop for atom-1 in atoms
+            for pos-1 from 0
+            do (loop for atom-2 in atoms
+                     for pos-1 below pos-1
+                     do (format output-stream "~%,.bond.~A.~A" atom-1 atom-2)))
+      (format output-stream " {~%  filter: url(#highlight);~%}"))))
+
+
+(defun update-selected-sketches (graph unselected-names)
+  (let* ((selected-names (get-selected-names graph))
+         (selected (mapcan (lambda (ligand)
+                             (when (position (molecule-name ligand) selected-names :test #'string=)
+                               (list ligand)))
+                           all-ligands))
+         (atom-matches (match-ligands selected)))
+    (dolist (element (cytoscape:elements graph))
+      (when (and (position (element-id element) unselected-names :test #'equal))
+        ;(not (position (element-id element) selected-names :test #'equal)))
+        (setf (cdr (assoc "image" (cytoscape:data element) :test #'string=))
+              (encode-svg (cando-widgets:sketch-molecule (find (element-id element) all-ligands :test #'string= :key #'molecule-name))))
+        (jupyter-widgets:notify-trait-change element :dict :data (cytoscape:data element) (cytoscape:data element) t)))
+    (loop for ligand in selected
+          for atoms in atom-matches
+          for element = (find (molecule-name ligand) (cytoscape:elements graph) :test #'string= :key #'element-id)
+          do (setf (cdr (assoc "image" (cytoscape:data element) :test #'string=))
+                   (encode-svg (cando-widgets:sketch-molecule ligand (generate-stylesheet atoms))))
+          do (jupyter-widgets:notify-trait-change element :dict :data (cytoscape:data element) (cytoscape:data element) t))))
+
+
+(defun make-node (graph ligand)
   "Construct a cytoscape node based on a ligand."
-  (let ((name (molecule-name ligand))
-        (sketch (cw:sketch-molecule ligand)))
-    ;; Save sketch dimension and the sketch itself into the data slot. The sketch is SVG text
-    ;; so we just need do a percent encoded string for the reserved URL characters.
-    (make-instance 'cytoscape:element
-                   :group "nodes"
-                   :removed (not (position ligand selected-ligands))
-                   :data (list (cons "id" name)
-                               (cons "label" name)
-                               (cons "width" (sketch2d:width sketch))
-                               (cons "height" (sketch2d:height sketch))
-                               (cons "image" (concatenate 'string
-                                                          "data:image/svg+xml,"
-                                                          (quri:url-encode (sketch2d:render-svg-to-string sketch))))))))
+  (let ((name (molecule-name ligand)))
+    (multiple-value-bind (svg width height)
+                         (cw:sketch-molecule ligand)
+      ;; Save sketch dimension and the sketch itself into the data slot. The sketch is SVG text
+      ;; so we just need do a percent encoded string for the reserved URL characters.
+      (make-instance 'cytoscape:element
+                     :group "nodes"
+                     :removed (not (position ligand selected-ligands))
+                     :on-trait-change (list (cons :selected
+                                                  (lambda (instance type nm old-value new-value source)
+                                                    (declare (ignore instance type nm old-value source))
+                                                    (update-selected-sketches graph (unless new-value (list name))))))
+                     :data (list (cons "id" name)
+                                 (cons "label" name)
+                                 (cons "width" width)
+                                 (cons "height" height)
+                                 (cons "image" (encode-svg svg)))))))
 
 
-(defun make-edge (edge)
+(defun make-edge (graph edge)
   "Construct an cytoscape edge based on an edge definition when is a list of
   the form (source target label)."
   (let ((name-1 (symbol-name (first edge)))
         (name-2 (symbol-name (second edge))))
     (make-instance 'cytoscape:element
                    :group "edges"
+                   :on-trait-change (list (cons :selected
+                                                (lambda (instance type name old-value new-value source)
+                                                  (declare (ignore instance type name old-value source))
+                                                  (update-selected-sketches graph (unless new-value
+                                                                                    (list name-1 name-2))))))
                    :data (list (cons "id" (edge-id name-1 name-2))
                                (cons "label" (or (third edge) :null))
                                (cons "source" name-1)
@@ -592,8 +661,12 @@ It will put those multiple ligands into all-ligands and selected-ligands"
 (defun create-graph (graph)
   "Create a graph from all-ligands and all-edges."
   (setf (cytoscape:elements graph)
-        (nconc (mapcar #'make-node all-ligands)
-               (mapcar #'make-edge all-edges))))
+        (nconc (mapcar (lambda (ligand)
+                         (make-node graph ligand))
+                       all-ligands)
+               (mapcar (lambda (edge)
+                         (make-edge graph edge))
+                       all-edges))))
 
 
 (defun set-element-removed (element removed)
@@ -628,7 +701,7 @@ It will put those multiple ligands into all-ligands and selected-ligands"
                                     (edge-id (symbol-name (first edge))
                                              (symbol-name (second edge)))))
                     (cytoscape:elements graph))
-        (push (make-edge edge) new-edges)))
+        (push (make-edge graph edge) new-edges)))
     ;; If new edges have been created then just add them. The layout will be updated automatically.
     ;; Otherwise force the layout to update.
     (if new-edges
