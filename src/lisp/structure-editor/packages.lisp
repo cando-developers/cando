@@ -18,6 +18,7 @@
                     (:w :jupyter-widgets))
   (:export
    #:parse-kekule-json
+   #:composer
    #:composer-accordion
    #:composer-log
    #:composer-view-grid

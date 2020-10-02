@@ -18,9 +18,7 @@
 (defun json-lookup (json key)
   (unless (eq (car json) :obj)
     (error "The json must start with :obj but it doesn't json: ~s" json))
-  (loop for entry in (cdr json)
-        when (string= (car entry) key)
-          do (return (cdr entry))))
+  (cdr (assoc key (cdr json) :test #'string=)))
 
 (defun describe-json (json)
   (loop for entry in json
