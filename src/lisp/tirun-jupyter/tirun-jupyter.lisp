@@ -578,13 +578,12 @@ It will put those multiple ligands into all-ligands and selected-ligands"
                   (list id)))))
           (cytoscape:elements graph)))
 
-
 (defun match-ligands (ligands)
-  (mapcar (lambda (ligand)
-            (declare (ignore ligand))
-            (list :O33 :C10))
-          ligands))
-
+  (when (= 2 (length ligands))
+    (multiple-value-bind (equivs diff1 diff2)
+        (tirun::calculate-masks-for-molecules (first ligands) (second ligands))
+       (list (mapcar (lambda (mol) (chem:get-name mol)) diff1)
+             (mapcar (lambda (mol) (chem:get-name mol)) diff2)))))
 
 (defun generate-stylesheet (atoms)
   (when atoms
