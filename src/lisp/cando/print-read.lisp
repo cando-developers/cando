@@ -67,19 +67,23 @@ Save the object to the file PATHNAME as an s-expression."
 (set-dispatch-macro-character #\# #\$ 'sharp-$-reader)
 
 
-(defun print-object-readably-with-slots (obj stream)
+(defun print-object-readably-with-slots (obj stream skip-slot-names)
   (format stream "#$(~s " (class-name (class-of obj)))
   (loop for slot in (clos:class-slots (class-of obj))
         for slot-name = (clos:slot-definition-name slot)
         for initargs = (clos:slot-definition-initargs slot)
-        if (and (car initargs) (slot-boundp obj slot-name))
+        if (and (car initargs)
+                (not (position slot-name skip-slot-names))
+                (slot-boundp obj slot-name))
           do (format stream "~s ~s " (car initargs) (slot-value obj slot-name)))
   (format stream ") "))
 
-(defmacro make-class-save-load (class-name)
+(defmacro make-class-save-load (class-name &rest skip-slot-names)
+  "Create a serializer for class-name. Slots that have :initarg defined and do not appear in
+  skip-slot-names will be serialized."
   `(defmethod print-object ((obj ,class-name) stream)
      (if *print-readably*
          (progn
-           (print-object-readably-with-slots obj stream))
+           (print-object-readably-with-slots obj stream (quote ,skip-slot-names)))
          (print-unreadable-object (obj stream)
            (format stream "~a" (class-name (class-of obj)))))))

@@ -1,81 +1,51 @@
 
 (in-package :structure-editor)
 
-(defclass composer ()
-  ((app
-    :accessor composer-app
-    :initarg :app)
-   (kekule
-    :reader composer-kekule
-    :initform (make-instance 'kekule:composer :format-id kekule:+kekule-json-format+
-                                              :width "auto"
-                                              :layout (make-instance 'w:layout
-                                                                     :width "auto"
-                                                                     :align-self "start"
-                                                                     :grid-area "composer")))
-   (save-button
-    :reader composer-save-button
-    :initform (make-instance 'jupyter-widgets:button
-                             :description "Save"
-                             :width "auto"
-                             :layout (make-instance 'w:layout
-                                                    :align-self "end"
-                                                    :grid-area "save")
-                             ))
-   (composer-log
-    :reader composer-log
-    :initform (make-instance 'w:output
-                             :layout (make-instance 'w:layout
-                                                    :grid-area "log"
-                                                    :padding "var(--jp-widgets-input-padding)"
-                                                    :border "var(--jp-widgets-border-width) solid var(--jp-border-color1)"
-                                                    :overflow-y "scroll")))
-   (composer-grid
-    :reader composer-grid
-    :initform (make-instance 'w:grid-box
-                             :layout (make-instance 'w:layout
-                                                    :width "auto"
-                                                    :max-height "auto"
-                                                    :grid-gap "0.1em"
-                                                    :grid-template-rows "1fr min-content"
-                                                    :grid-template-columns "1fr 3fr"
-                                                    :grid-template-areas "\"composer composer\" \"save log\"")))
-   (view-grid
-    :reader composer-view-grid
-    :initform (make-instance 'w:html
-                             :layout (make-instance 'w:layout
-                                                    :width "100%"
-                                                    :height "auto"
-                                                    )))
-   (accordion
-    :reader composer-accordion
-    :initform (make-instance 'w:accordion
-                             :%titles (list "Composer" "View")
-                             :selected-index 0))))
+
+(defclass composer (w:accordion)
+  ((kekule
+     :reader composer-kekule
+     :initform (make-instance 'kekule:composer
+                              :format-id kekule:+kekule-json-format+
+                              :layout (make-instance 'w:layout :width "95%")))
+   (data
+     :accessor composer-data
+     :initform nil
+     :trait :json)
+   (aggregate
+     :accessor composer-aggregate
+     :initform nil
+     :trait t))
+  (:metaclass jupyter-widgets:trait-metaclass)
+  (:default-initargs
+    :selected-index 0))
 
 
-
-(defmethod initialize-instance :after ((instance composer) &rest initargs &key &allow-other-keys)
-  (declare (ignore initargs))
-  (setf (w:widget-children (composer-accordion instance))
-        (list (composer-grid instance) (composer-view-grid instance)))
-  (setf (w:widget-children (composer-grid instance))
-        (list (composer-kekule instance) (composer-save-button instance) (composer-log instance)))
-  (setf (kekule:data (composer-kekule instance))
-        (get-composer-json (composer-app instance)))
-  (setf (w::widget-on-click (composer-save-button instance))
-        (list 
-         (lambda (&rest args)
-           (setf (w:widget-outputs (composer-log instance)) nil)
-           (w:with-output (composer-log instance)
-             (format t "Button pressed3 ~a~%" (random 10000))
-             (let ((json (kekule:data (composer-kekule instance))))
-               (set-composer-json instance (composer-app instance) json)
-               (setf (w:widget-selected-index (composer-accordion instance)) 1)
-               (finish-output)
-               ))))))
-  
+(defun run-parsing (instance progress-callback)
+  (declare (ignore progress-callback))
+  (handler-case
+      (setf (composer-aggregate instance) (parse-kekule-json (composer-data instance)))
+    (simple-error (condition) ; This is temporary until we have composer-parse-error
+      (princ condition *error-output*)
+      (fresh-line *error-output*)
+      nil)
+    (:no-error (ret)
+      (declare (ignore ret))
+      t)))
 
 
-
-
+(defun composer (kekule-title parsing-title)
+  (let ((instance (make-instance 'composer)))
+    (cw:add-page instance (composer-kekule instance) kekule-title)
+    (cw:make-simple-task-page instance parsing-title (lambda (parameter progress-callback)
+                                                       (declare (ignore parameter))
+                                                       (run-parsing instance progress-callback))
+                              :label "Click button to parse Kekule output.")
+    (w:link instance :data (composer-kekule instance) :data t)
+    (w:observe (composer-kekule instance) :data
+      (lambda (kekule-instance type name old-value new-value source)
+        (declare (ignore type name source))
+        (when (and new-value
+                   (not old-value))
+          (kekule:fit kekule-instance))))
+    instance))

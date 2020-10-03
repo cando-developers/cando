@@ -14,51 +14,58 @@
 
 
 (defclass app (jupyter-widgets:has-traits)
-  ((composer-json
-    :accessor composer-json
-    :initarg :composer-json
-    :initform nil
-    :trait t)
+  ((composer-data
+     :accessor composer-data
+     :initarg :composer-data
+     :initform nil
+     :trait t)
    (receptor-string
-    :accessor receptor-string
-    :initform nil
-    :trait t)
+     :accessor receptor-string
+     :initarg :receptor-string
+     :initform nil
+     :trait t)
    (ligands-string
-    :accessor ligands-string
-    :initform nil
-    :trait t)
+     :accessor ligands-string
+     :initarg :ligands-string
+     :initform nil
+     :trait t)
    (all-ligands
-    :accessor all-ligands
-    :initform nil
-    :trait t)
+     :accessor all-ligands
+     :initarg :all-ligands
+     :initform nil
+     :trait t)
    (selected-ligands
-    :accessor selected-ligands
-    :initform nil
-    :trait t)
+     :accessor selected-ligands
+     :initarg :selected-ligands
+     :initform nil
+     :trait t)
    (all-edges
-    :accessor all-edges
-    :initform nil
-    :trait t)
-   (smirks
-    :accessor smirks
-    :initform ""
-    :trait t)
+     :accessor all-edges
+     :initarg :all-edges
+     :initform nil
+     :trait t)
    (distributor
-    :accessor distributor
-    :initform "s103.thirdlaw.tech"
-    :trait t)
+     :accessor distributor
+     :initarg :distributor
+     :initform "s103.thirdlaw.tech"
+     :trait t)
    (job-name
-    :accessor job-name
-    :initform "default"
-    :trait t)
+     :accessor job-name
+     :initarg :job-name
+     :initform "default"
+     :trait t)
    (submit-stream
-    :accessor submit-stream
-    :initform nil
-    :trait t)
+     :accessor submit-stream
+     :initform nil
+     :trait t)
    (smirks-pattern
-    :accessor smirks-pattern
-    :initform nil
-    :trait t))
+     :accessor smirks-pattern
+     :initarg :smirks-pattern
+     :initform nil
+     :trait t)
+   (tirun-calculation
+     :accessor tirun-calculation
+     :initform (make-instance 'tirun:tirun-calculation)))
   (:metaclass jupyter-widgets:trait-metaclass))
 
 
@@ -74,34 +81,7 @@
   (all-edges *app*))
 
 
-(defun composer-save (composer app &key (tirun *tirun*))
-  (format t "In composer-save - about to parse get-decoded-time ~s~%" (get-decoded-time))
-  ;; This is where we put the logic to build the molecules?
-  (let ((agg (handler-bind
-                 ((error (lambda (err)
-                          (format t "Hit error ~a" err)
-                          (error err))))
-               (structure-editor:parse-kekule-json (composer-json app)))))
-    (let ((ligand-molecules (tirun::assemble-ligands *tirun* agg :verbose t)))
-      (setf all-ligands ligand-molecules)
-      (finish-output)
-      )))
-
-(defun structure-editor:set-composer-json (composer app json)
-  (setf (composer-json app) json)
-  (format t "In set-composer-json~%")
-  (composer-save composer app)
-  )
-
-(defun structure-editor:get-composer-json (app)
-  (composer-json app))
-
-
-(defclass save-load-app ()
-  ((composer-json :initarg :composer-json :accessor composer-json)))
-
-(cando:make-class-save-load save-load-app)
-
+(cando:make-class-save-load app jupyter-widgets:on-trait-change)
    
 (defvar *app* nil)
 
@@ -109,51 +89,64 @@
 (def-dyn-widget box-layout
   (make-instance 'w:layout :width "auto" :flex-flow "row wrap"))
          
-(defvar *tirun* nil)
 
-(defun new-tirun ()
-  (let ((dest-dir (let ((dd (ext:getenv "CANDO_JOBS_DIRECTORY")))
-                    (if dd
+(defun initialize-system ()
+  (unless *app*
+    (let ((dest-dir (let ((dd (ext:getenv "CANDO_JOBS_DIRECTORY")))
+                      (if dd
                         dd
                         (pathname "~/jobs/")))))
-    (format t "Jobs will be saved to ~a~%setenv CANDO_JOBS_DIRECTORY if you want it to go elsewhere~%" (namestring dest-dir))
-    (ensure-directories-exist dest-dir))
-  (with-output-to-string (sout)
-    (let ((*standard-output* sout))
+      (format t "Jobs will be saved to ~a~%setenv CANDO_JOBS_DIRECTORY if you want it to go elsewhere~%" (namestring dest-dir))
+      (ensure-directories-exist dest-dir))
+   (let ((*standard-output* (make-string-output-stream)))
       (cando-user:setup-default-paths)
       (cando-user:load-atom-type-rules "ATOMTYPE_GFF.DEF")
       (cando-user:source "leaprc.ff14SB.redq")
       (cando-user:source "leaprc.gaff")
-      (leap:add-pdb-res-map '((1 :NMA :NME)))))
-  (setf *app* (make-instance 'app))
-  (setf *tirun* (make-instance 'tirun:tirun-calculation)))
-
-(defun load-app (&optional (name "default.dat"))
-  (let ((pn (pathname name)))
-    (if (probe-file pn)
-        (let ((sl-app (cando:load-cando pn)))
-          (setf *app* (make-instance 'app
-                                     :composer-json (composer-json sl-app))))
-        (setf *app* (make-instance 'app))))
-  
-  t)
-
-(defun save-app (&optional (name "default.dat"))
-  (let ((pn (pathname name)))
-    (ensure-directories-exist pn)
-    (let ((sl (make-instance 'save-load-app
-                             :composer-json (composer-json *app*)
-                             )))
-      (cando:save-cando sl (pathname name)))))
+      (leap:add-pdb-res-map '((1 :NMA :NME))))))
 
 
-(defun setup-tirun (name)
-  (let ((job-name (intern name :keyword)))
-    (setf (job-name *app*) job-name))
-  )
+(defun new-tirun (&rest initargs)
+  (initialize-system)
+  (setf *app* (apply #'make-instance 'app initargs))
+  (values))
 
 
+(defun app-save-path (&rest initargs &key job-name &allow-other-keys)
+  (let ((path (make-pathname :name (or job-name
+                                       (and *app*
+                                            (job-name *app*))
+                                       "default")
+                             :type "dat")))
+    (values path (probe-file path))))
 
+
+(defun load-tirun (&rest initargs)
+  (multiple-value-bind (save-path existsp)
+                       (apply #'app-save-path initargs)
+    (cond
+      (existsp
+        (initialize-system)
+        (finish-output)
+        (format t "Loading application state from ~A...~%" save-path)
+        (finish-output)
+        (setf *app* (cando:load-cando save-path))
+        (write-line "Load complete.")
+        (finish-output))
+      (t
+        (format *error-output* "Unable to file save file named ~A~%" save-path))))
+  (values))
+
+
+(defun save-tirun (&rest initargs)
+  (let ((save-path (apply #'app-save-path initargs)))
+    (format t "Saving application state to ~A...~%" save-path)
+    (finish-output)
+    (ensure-directories-exist save-path)
+    (cando:save-cando *app* save-path)
+    (write-line "Save complete.")
+    (finish-output))
+  (values))
 
 
 #+(or)(defun new-pas ()
@@ -192,7 +185,7 @@
       (with-slots (receptor-string)
                   *app*
         (setf receptor-string (babel:octets-to-string (cdr (assoc "content" (car parameter) :test #'string=)))
-              (tirun:receptors *tirun*)
+              (tirun:receptors (tirun-calculation *app*))
               (list (with-input-from-string (input-stream receptor-string)
                       (leap.pdb:load-pdb-stream input-stream))))
         t)
@@ -319,6 +312,20 @@
                                                   :text (chem:aggregate-as-mol2-string agg t)))))))))
 
 
+(defun refresh-ligands-view (instance)
+  "Refresh the ligand view and the ngl view."
+  (with-slots (slider dropdown)
+              instance
+    (setf (w:widget-max slider) (1- (length all-ligands))
+          (w:widget-%options-labels dropdown) (mapcar #'molecule-name all-ligands))
+    (when all-ligands
+      (cw:sketch-molecules all-ligands)
+      (setf (w:widget-value slider) 0)
+      (on-ligand-select instance 0)
+      (ignore-errors
+        (tirun:tirun-calculation-from-ligands (tirun-calculation *app*) all-ligands)))))
+
+
 (defmethod initialize-instance :after ((instance view-ligand-page) &rest initargs &key &allow-other-keys)
   (declare (ignore initargs))
   ;; Link the slider and the dropdown states together
@@ -334,6 +341,8 @@
                                                     :width "90%" :margin "auto"
                                                     :grid-area "structure-ctl"))
               (view-ligand-receptor-toggle instance)))
+  ;; Update the view
+  (refresh-ligands-view instance)
   ;; Set the receptor visibility based the toggle.
   (w:observe (view-ligand-receptor-toggle instance) :value
     (lambda (inst type name old-value new-value source)
@@ -367,18 +376,9 @@
                                             :text new-value))))
   ;; If the all-ligands changes then reload the whole thing.
   (w:observe *app* :all-ligands
-    (lambda (inst type name old-value ligands source)
-      (declare (ignore inst type name old-value source))
-      (with-slots (slider dropdown)
-                  instance
-        (setf (w:widget-max slider) (1- (length ligands))
-              (w:widget-%options-labels dropdown) (mapcar #'molecule-name ligands)
-              (w:widget-value slider) 0)
-        (when ligands
-          (cw:sketch-molecules ligands)
-          (on-ligand-select instance 0)
-          (ignore-errors
-            (tirun:tirun-calculation-from-ligands *tirun* ligands)))))))
+    (lambda (inst type name old-value new-value source)
+      (declare (ignore inst type name old-value new-value source))
+      (refresh-ligands-view instance))))
 
 
 (defun make-view-ligand-page (container title)
@@ -404,7 +404,8 @@
                                      (chem:read-mol2-list input-stream))
                                    (t
                                      (error "Unknown file type ~A." ext)))))
-              selected-ligands all-ligands)
+              selected-ligands all-ligands
+              all-edges nil)
         t)
     (esrap:esrap-parse-error (condition)
       (princ condition *error-output*)
@@ -474,7 +475,8 @@
                          (mapcar #'molecule-name new-ligands))
               do (finish-output)
               do (funcall progress-callback (length selected-ligands)))
-        selected-ligands all-ligands))
+        selected-ligands all-ligands
+        all-edges nil))
 
 
 (defparameter +smirks-patterns+
@@ -579,11 +581,12 @@ It will put those multiple ligands into all-ligands and selected-ligands"
           (cytoscape:elements graph)))
 
 (defun match-ligands (ligands)
-  (when (= 2 (length ligands))
+  (if (= 2 (length ligands))
     (multiple-value-bind (equivs diff1 diff2)
-        (tirun::calculate-masks-for-molecules (first ligands) (second ligands))
-       (list (mapcar (lambda (mol) (chem:get-name mol)) diff1)
-             (mapcar (lambda (mol) (chem:get-name mol)) diff2)))))
+                         (tirun::calculate-masks-for-molecules (first ligands) (second ligands))
+      (list (mapcar (lambda (mol) (chem:get-name mol)) diff1)
+            (mapcar (lambda (mol) (chem:get-name mol)) diff2)))
+    (mapcar (lambda (ligand)) ligands)))
 
 (defun generate-stylesheet (atoms)
   (when atoms
@@ -991,7 +994,7 @@ It will put those multiple ligands into all-ligands and selected-ligands"
                               :options '(1 3)
                               :%options-labels '("one stage" "three stage")
                               :description "TI stages"
-                              :value (tirun::ti-stages *tirun*)
+                              :value (tirun::ti-stages (tirun-calculation *app*))
                               :style (make-instance 'w:description-style :description-width "12em")
                               :layout (make-instance 'w:layout :grid-area "stages"))
      :documentation "The number of stages in the TI calculation."))
@@ -1018,7 +1021,7 @@ It will put those multiple ligands into all-ligands and selected-ligands"
     (w:observe ti-stages :value
       (lambda (inst type name old-value new-value source)
         (declare (ignore inst type name old-value source))
-        (setf (tirun::ti-stages *tirun*) new-value)))))
+        (setf (tirun::ti-stages (tirun-calculation *app*)) new-value)))))
 
 
 (defun make-jobs-config-page (container title)
@@ -1099,7 +1102,7 @@ lisp_jobs_only_on=172.234.2.1
         (finish-output *error-output*)
         nil)
       (t
-        (ensure-write-jobs *tirun* dir progress-callback)
+        (ensure-write-jobs (tirun-calculation *app*) dir progress-callback)
         (write-line "Generating tar file.")
         (finish-output)
         (generate-tar-file (job-name *app*) dir tar-file from-path)))))
@@ -1111,7 +1114,7 @@ lisp_jobs_only_on=172.234.2.1
     (dolist (schema-group tirun::*default-calculation-settings*)
       (cw:add-page container
                    (w:make-interactive-alist (second schema-group)
-                                             (tirun::settings *tirun*))
+                                             (tirun::settings (tirun-calculation *app*)))
                    (first schema-group)))
     (make-jobs-config-page container "Configure Jobs")
     (cw:make-simple-task-page container "Write Jobs" #'run-write-jobs
@@ -1130,7 +1133,7 @@ lisp_jobs_only_on=172.234.2.1
       buffer)))
 
 (defvar *submit-thread* nil)
-(defun submit-calc (&key (calc *tirun*))
+(defun submit-calc ()
   (let* ((desc-width "12em")
          (desc-style (make-instance 'w:description-style :description-width desc-width))
          (distributor (make-simple-input "Distributor" :default (distributor *app*)))
@@ -1182,7 +1185,7 @@ lisp_jobs_only_on=172.234.2.1
                                                           :children (list messages)))))))
 
 
-(defun check-calc (&key (tirun *tirun*))
+(defun check-calc ()
   (let* ((job-name (make-simple-input "Job name" :default (job-name *app*)))
          (distributor (make-simple-input "Distributor" :default (distributor *app*)))
          (messages (make-instance 'w:text-area :description "Messages"
@@ -1229,16 +1232,18 @@ lisp_jobs_only_on=172.234.2.1
                                              :layout (box-layout)
                                              :children (list messages))))))
 
-(defun composer (&key (app *app*))
-  (let ((composer (make-instance 'structure-editor::composer :app app)))
-    (w:observe *app* :composer-json
-               (lambda (inst type name old-value new-value source)
-                 (when new-value
-                   (save-app)
-                   )))
-    (let ((widgets (structure-editor::composer-accordion composer)))
-      (jupyter-widgets:display widgets)
-      (kekule:fit (structure-editor::composer-kekule composer))
-      (values))))
+
+(defun composer ()
+  (let ((instance (structure-editor:composer "Draw Ligands" "Parse Ligands")))
+    (w:link *app* :composer-data instance :data t)
+    (w:observe instance :aggregate
+      (lambda (inst type name old-value new-value source)
+        (declare (ignore (inst type name old-value source)))
+        (setf all-ligands (tirun::assemble-ligands (tirun-calculation *app*) new-value :verbose t)
+              selected-ligands all-ligands
+              all-edges nil)
+        (save-tirun)))
+    (make-view-ligand-page instance "View Ligands")
+    instance))
 
 

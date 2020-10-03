@@ -22,6 +22,8 @@
     #:check-calc
     #:composer
     #:jobs
+    #:load-tirun
+    #:save-tirun
     #:load-ligands
     #:load-receptor
     #:lomap
