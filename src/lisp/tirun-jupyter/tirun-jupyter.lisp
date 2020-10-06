@@ -375,14 +375,22 @@
   "Refresh the ligand view and the ngl view."
   (with-slots (slider dropdown)
               instance
-    (setf (w:widget-max slider) (1- (length all-ligands))
-          (w:widget-%options-labels dropdown) (mapcar #'molecule-name all-ligands))
-    (when all-ligands
-      (cw:sketch-molecules all-ligands)
-      (setf (w:widget-value slider) 0)
-      (on-ligand-select instance 0)
-      (ignore-errors
-        (tirun:tirun-calculation-from-ligands (tirun-calculation *app*) all-ligands)))))
+    (cond
+      (all-ligands
+        (setf (w:widget-disabled slider) nil
+              (w:widget-disabled dropdown) nil
+              (w:widget-max slider) (1- (length all-ligands))
+              (w:widget-%options-labels dropdown) (mapcar #'molecule-name all-ligands))
+        (cw:sketch-molecules all-ligands)
+        (setf (w:widget-value slider) 0)
+        (on-ligand-select instance 0)
+        (ignore-errors
+          (tirun:tirun-calculation-from-ligands (tirun-calculation *app*) all-ligands)))
+      (t
+        (setf (w:widget-disabled slider) t
+              (w:widget-disabled dropdown) t
+              (w:widget-max slider) 0
+              (w:widget-%options-labels dropdown) nil)))))
 
 
 (defmethod initialize-instance :after ((instance view-ligand-page) &rest initargs &key &allow-other-keys)
@@ -400,8 +408,6 @@
                                                     :width "90%" :margin "auto"
                                                     :grid-area "structure-ctl"))
               (view-ligand-receptor-toggle instance)))
-  ;; Update the view
-  (refresh-ligands-view instance)
   ;; Set the receptor visibility based the toggle.
   (w:observe (view-ligand-receptor-toggle instance) :value
     (lambda (inst type name old-value new-value source)
@@ -417,12 +423,6 @@
     (lambda (inst type name old-value new-value source)
       (declare (ignore inst type name old-value source))
       (nglview:handle-resize (view-ligand-ngl instance))))
-  ;; If the receptor-string is already set then load the current receptor.
-  (when (receptor-string *app*)
-    (nglview:add-structure (view-ligand-ngl instance)
-                           (make-instance 'nglview:text-structure
-                                          :id "receptor"
-                                          :text (receptor-string *app*))))
   ;; When the receptor-string changes reload the receptor in nglview.
   (w:observe *app* :receptor-string
     (lambda (inst type name old-value new-value source)
@@ -444,6 +444,14 @@
   "Create an instance of a view-ligand-page and add it to the container."
   (let ((page (make-instance 'view-ligand-page :container container)))
     (cw:add-page container page title)
+    ;; If the receptor-string is already set then load the current receptor.
+    (when (receptor-string *app*)
+      (nglview:add-structure (view-ligand-ngl page)
+                             (make-instance 'nglview:text-structure
+                                            :id "receptor"
+                                            :text (receptor-string *app*))))
+    ;; Update the view
+    (refresh-ligands-view page)
     (values)))
 
 
