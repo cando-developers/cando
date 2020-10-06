@@ -364,12 +364,6 @@
     (lambda (inst type name old-value new-value source)
       (declare (ignore inst type name old-value source))
       (nglview:handle-resize (view-ligand-ngl instance))))
-  ;; If the receptor-string is already set then load the current receptor.
-  (when (receptor-string *app*)
-    (nglview:add-structure (view-ligand-ngl instance)
-                           (make-instance 'nglview:text-structure
-                                          :id "receptor"
-                                          :text (receptor-string *app*))))
   ;; When the receptor-string changes reload the receptor in nglview.
   (w:observe *app* :receptor-string
     (lambda (inst type name old-value new-value source)
@@ -391,6 +385,12 @@
   "Create an instance of a view-ligand-page and add it to the container."
   (let ((page (make-instance 'view-ligand-page :container container)))
     (cw:add-page container page title)
+    ;; If the receptor-string is already set then load the current receptor.
+    (when (receptor-string *app*)
+      (nglview:add-structure (view-ligand-ngl page)
+                             (make-instance 'nglview:text-structure
+                                            :id "receptor"
+                                            :text (receptor-string *app*))))
     ;; Update the view
     (refresh-ligands-view page)
     (values)))
