@@ -351,9 +351,9 @@ create more problems."
           (assert (not (symbolp topology)))
           (setf (topology res) topology))
         (let ((key (scanner-unknown-residue-key res)))
-          (warn "Could not immediately identify topology for ~a" key)
+          (format t "Could not immediately identify topology for ~a~%" key)
           (unless (gethash key (unknown-residues scanner))
-            (warn "Could not identify topology for ~a" key)
+            (format t "Could not identify topology for ~a~%" key)
             (setf (gethash key (unknown-residues scanner)) t))))))
 
 (defgeneric scan (system field scanner line))

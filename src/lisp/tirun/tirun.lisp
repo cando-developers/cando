@@ -196,7 +196,7 @@
 (defclass calculation ()
   ((receptors :initform nil :initarg :receptors :accessor receptors)
    (ligands :initarg :ligands :accessor ligands)
-   (template-ligands :initform nil :initarg :template-ligands :accessor template-ligands)
+   (template-ligand :initform nil :initarg :template-ligand :accessor template-ligand)
    (mask-method :initform :default :initarg :mask-method :accessor mask-method)
    (core-topologys :initform nil :initarg :core-topologys :accessor core-topologys)
    (side-topologys :initform nil :initarg :side-topologys :accessor side-topologys)

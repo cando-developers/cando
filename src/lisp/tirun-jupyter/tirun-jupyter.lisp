@@ -24,6 +24,11 @@
      :initarg :receptor-string
      :initform nil
      :trait t)
+   (template-ligand-string
+    :accessor template-ligand-string
+    :initarg :template-ligand-string
+    :initform nil
+    :trait t)
    (ligands-string
      :accessor ligands-string
      :initarg :ligands-string
@@ -197,6 +202,27 @@
       nil)))
 
 
+(defun parse-template-ligand (parameter progress-callback)
+  "Called from file task page to parse template-ligand."
+  (declare (ignore progress-callback))
+  (handler-case
+      (with-slots (template-ligand-string)
+                  *app*
+        (setf template-ligand-string (babel:octets-to-string (cdr (assoc "content" (car parameter) :test #'string=))))
+        (format t "2About to parse ligand pdb file~%")
+        (setf (tirun:template-ligand (tirun-calculation *app*))
+              (with-input-from-string (input-stream template-ligand-string)
+                (leap.pdb:load-pdb-stream input-stream :ignore-missing-topology t)))
+        (format t "Done parse ligand pdb file~%")
+        t)
+    (leap.pdb:pdb-read-error (condition)
+      (princ condition *error-output*)
+      nil)
+    (end-of-file (condition)
+      (princ condition *error-output*)
+      nil)))
+
+
 (defun load-receptor ()
   "Present a graphical interface to load and view a receptor into the current application."
   (let* ((container (make-instance 'w:accordion :selected-index 0))
@@ -221,6 +247,39 @@
       (nglview:add-structure ngl (make-instance 'nglview:text-structure :text (receptor-string *app*))))
     ;; Listen for changes to the receptor and add or delete when needed.
     (w:observe *app* :receptor-string
+      (lambda (inst type name old-value new-value source)
+        (declare (ignore inst type name old-value source))
+        (nglview:remove-all-components ngl)
+        (when new-value
+          (nglview:add-structure ngl (make-instance 'nglview:text-structure :text new-value)))))
+    container))
+
+
+
+(defun load-template-ligand ()
+  "Present a graphical interface to load and view a template-ligand into the current application."
+  (let* ((container (make-instance 'w:accordion :selected-index 0))
+         (ngl (make-instance 'nglv:nglwidget
+                              :layout (make-instance 'w:layout
+                                                     :border "var(--jp-widgets-border-width) solid var(--jp-border-color1)"
+                                                     :grid-area "ngl"))))
+    (cw:make-file-task-page container "Load Template ligand" #'parse-template-ligand :accept ".pdb")
+    ;; Make a simple page to display the receptor in nglview
+    (setf (w:widget-%titles container) (append (w:widget-%titles container)
+                                              (list "View Template Ligand"))
+          (w:widget-children container) (append (w:widget-children container)
+                                               (list ngl)))
+    ;; When the view page opens give nglview a chance to resize.
+    (w:observe container :selected-index
+      (lambda (inst type name old-value new-value source)
+        (declare (ignore inst type name old-value source))
+        (when (equal new-value 1)
+          (nglview:handle-resize ngl))))
+    ;; Add the template ligand if one is already defined.
+    (when (template-ligand-string *app*)
+      (nglview:add-structure ngl (make-instance 'nglview:text-structure :text (template-ligand-string *app*))))
+    ;; Listen for changes to the template-ligand and add or delete when needed.
+    (w:observe *app* :template-ligand-string
       (lambda (inst type name old-value new-value source)
         (declare (ignore inst type name old-value source))
         (nglview:remove-all-components ngl)
@@ -1242,6 +1301,9 @@ lisp_jobs_only_on=172.234.2.1
         (setf all-ligands (tirun::assemble-ligands (tirun-calculation *app*) new-value :verbose t)
               selected-ligands all-ligands
               all-edges nil)
+        (tirun::pose-ligands-using-similarity
+         (tirun-jupyter::tirun-calculation tirun-jupyter::*app*)
+         (chem:content-at (tirun::template-ligand (tirun-jupyter::tirun-calculation tirun-jupyter::*app*)) 0))
         (save-tirun)))
     (make-view-ligand-page instance "View Ligands")
     instance))

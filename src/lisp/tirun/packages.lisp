@@ -35,6 +35,7 @@
    #:generate-jobs
    #:stage
    #:receptors
+   #:template-ligand
    #:version
    #:ligands
    #:assemble-ligands

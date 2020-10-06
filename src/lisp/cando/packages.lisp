@@ -152,6 +152,8 @@
    #:resid
    #:atmid
    #:formula-weight
+   #:formula-string-to-alist
+   #:most-abundant-isotope-weight
    #:move-geometric-center-to-origin
    #:move-geometric-center-to-point
    #:rename-atoms-using-smirks
