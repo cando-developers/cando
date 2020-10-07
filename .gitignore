@@ -7,3 +7,4 @@ local.config
 *.dwarf
 *.info
 *~
+.ipynb_checkpoints
