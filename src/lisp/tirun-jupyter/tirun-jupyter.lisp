@@ -34,14 +34,22 @@
      :initarg :ligands-string
      :initform nil
      :trait t)
+   (ligands-format
+     :accessor ligands-format
+     :initarg :ligands-format
+     :initform nil
+     :trait t)
    (all-ligands
      :accessor all-ligands
-     :initarg :all-ligands
+     :initform nil
+     :trait t)
+   (selected-ligand-names
+     :accessor selected-ligand-names
+     :initarg :selected-ligand-names
      :initform nil
      :trait t)
    (selected-ligands
      :accessor selected-ligands
-     :initarg :selected-ligands
      :initform nil
      :trait t)
    (all-edges
@@ -136,6 +144,16 @@
         (format t "Loading application state from ~A...~%" save-path)
         (finish-output)
         (setf *app* (cando:load-cando save-path))
+        (when (and (ligands-string *app*)
+                   (ligands-format *app*)
+                   (not (all-ligands *app*)))
+          (do-parse-ligands *app*))
+        (when (and (selected-ligand-names *app*)
+                   (not (selected-ligands *app*)))
+          (setf (selected-ligands *app*)
+                (mapcar (lambda (name)
+                          (find name (all-ligands *app*) :key #'chem:get-name))
+                        (selected-ligand-names *app*))))
         (write-line "Load complete.")
         (finish-output))
       (t
@@ -148,6 +166,7 @@
     (format t "Saving application state to ~A...~%" save-path)
     (finish-output)
     (ensure-directories-exist save-path)
+    (setf (selected-ligand-names *app*) (mapcar #'chem:get-name (selected-ligands *app*)))
     (cando:save-cando *app* save-path)
     (write-line "Save complete.")
     (finish-output))
@@ -209,7 +228,7 @@
       (with-slots (template-ligand-string)
                   *app*
         (setf template-ligand-string (babel:octets-to-string (cdr (assoc "content" (car parameter) :test #'string=))))
-        (format t "2About to parse ligand pdb file~%")
+        (format t "About to parse ligand pdb file~%")
         (setf (tirun:template-ligand (tirun-calculation *app*))
               (with-input-from-string (input-stream template-ligand-string)
                 (leap.pdb:load-pdb-stream input-stream :ignore-missing-topology t)))
@@ -444,34 +463,41 @@
   "Create an instance of a view-ligand-page and add it to the container."
   (let ((page (make-instance 'view-ligand-page :container container)))
     (cw:add-page container page title)
+    ;; Update the view
+    (refresh-ligands-view page)
     ;; If the receptor-string is already set then load the current receptor.
     (when (receptor-string *app*)
       (nglview:add-structure (view-ligand-ngl page)
                              (make-instance 'nglview:text-structure
                                             :id "receptor"
                                             :text (receptor-string *app*))))
-    ;; Update the view
-    (refresh-ligands-view page)
     (values)))
+
+
+(defun do-parse-ligands (instance)
+  (with-slots (ligands-string ligands-format all-ligands)
+              instance
+    (setf all-ligands
+          (with-input-from-string (input-stream ligands-string)
+            (cond
+              ((string-equal ligands-format "sdf")
+                (sdf:parse-sdf-file input-stream))
+              ((string-equal ligands-format "mol2")
+                (chem:read-mol2-list input-stream))
+              (t
+                (error "Unknown file type ~A." ligands-format)))))))
 
 
 (defun parse-ligands (parameter progress-callback)
   "Called from the file task page to actually parse the ligands file."
   (declare (ignore progress-callback))
   (handler-case
-      (with-slots (ligands-string)
+      (with-slots (ligands-string ligands-format)
                   *app*
         (setf ligands-string (babel:octets-to-string (cdr (assoc "content" (car parameter) :test #'string=)))
-              all-ligands (with-input-from-string (input-stream ligands-string)
-                               (let ((ext (pathname-type (cdr (assoc "name" (car parameter) :test #'string=)))))
-                                 (cond
-                                   ((string-equal ext "sdf")
-                                     (sdf:parse-sdf-file input-stream))
-                                   ((string-equal ext "mol2")
-                                     (chem:read-mol2-list input-stream))
-                                   (t
-                                     (error "Unknown file type ~A." ext)))))
-              selected-ligands all-ligands
+              ligands-format (pathname-type (cdr (assoc "name" (car parameter) :test #'string=))))
+        (do-parse-ligands *app*)
+        (setf selected-ligands all-ligands
               all-edges nil)
         t)
     (esrap:esrap-parse-error (condition)
