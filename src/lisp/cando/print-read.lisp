@@ -49,9 +49,6 @@ Save the object to the file PATHNAME as an s-expression."
           (*package* (find-package :keyword)))
       (cl:print obj fout))))
 
-(defun load-cando (pathname)
-  (with-open-file (fin pathname :direction :input)
-    (read fin)))
 
 (defun sharp-$-reader (stream subchar arg)
   (declare (ignore subchar))
@@ -64,8 +61,14 @@ Save the object to the file PATHNAME as an s-expression."
     (let ((circle-subst-args (mapcar (lambda (arg) (core::circle-subst (make-hash-table :test 'eq) arg)) l)))
       (apply 'make-instance circle-subst-args))))
 
-(set-dispatch-macro-character #\# #\$ 'sharp-$-reader)
+(defparameter *cando-reader* (load-time-value (cl:copy-readtable (symbol-value 'core:+standard-readtable+))))
+(set-dispatch-macro-character #\# #\$ 'sharp-$-reader *cando-reader*)
 
+(defun load-cando (pathname)
+  (with-open-file (fin pathname :direction :input)
+    (let ((core:*read-hook* nil)
+          (*readtable* *cando-reader*))
+      (read fin))))
 
 (defun print-object-readably-with-slots (obj stream skip-slot-names)
   (format stream "#$(~s " (class-name (class-of obj)))
