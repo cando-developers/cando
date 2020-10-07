@@ -57,7 +57,7 @@ public:
     static VirtualAtom_sp create(MatterName name, CalculatePosition_sp proc);
 public:
 
-	void calculatePosition();
+    void calculatePosition(Residue_sp res);
 
 //	virtual bool	equal(core::T_sp obj) const;
 

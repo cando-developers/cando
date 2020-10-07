@@ -559,15 +559,6 @@ CL_DEFMETHOD     void ConformationExplorer_O::clearEntries()
 	for ( ai=this->begin_AllAtoms(),ci=coords->begin(); ai!=this->end_AllAtoms(); ai++, ci++ )
 	{
 	    LOG(BF("Getting position of ATOM(%d) %s") % aidx % (*ai)->description().c_str() );
-	    if ( !(*ai)->isContainedBy(agg) )
-	    {
-		SIMPLE_ERROR(BF("You asked a ConformationExplorer to extract coordinates from the Matter(%s) but the ConformationExplorer atom(%s) is not contained within that Matter")%agg->description()%(*ai)->description());
-	    } else
-	    {
-#ifdef DEBUG_ON
-		LOG(BF("You asked a ConformationExplorer to extract coordinates from the Matter(%s) and the ConformationExplorer atom(%s) IS contained within that Matter")%agg->description()%(*ai)->description());
-#endif
-	    }
 	    *ci = (*ai)->getPosition();
 	    LOG(BF("Position = %s") % (*ci).asString() );
 	    aidx++;

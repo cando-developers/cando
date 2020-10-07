@@ -120,7 +120,6 @@ protected:
   int			_Id;
 //  int			_TempFileId;	//!< Use to define temporary index while reading/writing to non XML formats
   MatterName			name;
-  Matter_sp	                containerContainedBy;
   gctools::Vec0_uncopyable<Matter_sp>		_contents;	// KEEP THIS as a vector
 						// A lot depends on residues
 						// maintaining an identical
@@ -248,13 +247,6 @@ public:
   CL_LISPIFY_NAME("numberOfAtoms");
   CL_DEFMETHOD   virtual uint	numberOfAtoms() {_OF(); SUBCLASS_MUST_IMPLEMENT();};
 
-  void	setContainedBy(Matter_sp p){this->containerContainedBy= p;};
-  void	setContainedByNothing(){this->containerContainedBy = _Unbound<Matter_O>(); };
-		// Check containedByValid before touching containedBy
-  bool		containedByValid() const {return !(this->containerContainedBy.unboundp()); };
-  Matter_sp	containedBy() const	{ASSERT(!this->containerContainedBy.unboundp());return this->containerContainedBy;};
-  Matter_sp	containedBy()	{ASSERT(!this->containerContainedBy.unboundp()); return this->containerContainedBy; };
-  bool		isContainedBy(Matter_sp matter);
   void	eraseContents(); // Empty the contents vector, don't free the memory
 
   contentIterator eraseContent(contentIterator x) {return this->_contents.erase(x);};
@@ -339,11 +331,11 @@ public:
 
   void	setAtomAliasesForResiduesNamed(core::List_sp residueAliasAtoms, core::List_sp atomAliases );
 
+  virtual core::HashTable_sp atomToResidueMap();
 
   virtual void	applyTransformToAtoms( const Matrix& m );
   void applyTransformToRestraints(const Matrix& m);
   
-  virtual bool	testConsistancy(Matter_sp c);
   virtual	string	subMatter() {_OF(); SUBCLASS_MUST_IMPLEMENT(); };
   virtual	int	totalNetResidueCharge();
 
@@ -391,7 +383,6 @@ public:
 //    _Id(1),
 //    _TempFileId(0),
   name(_Nil<core::Symbol_O>()),
-    containerContainedBy(_Unbound<Matter_O>()),
     _Properties(_Nil<core::T_O>()),
     _RestraintList(_Nil<core::T_O>()) {};
 };

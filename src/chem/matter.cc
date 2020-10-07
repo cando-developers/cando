@@ -38,6 +38,7 @@ This is an open source license for the CANDO software from Temple University, bu
 //#include	<strings>
 #include <stdio.h>
 #include <clasp/core/common.h>
+#include <clasp/core/hashTableEq.h>
 #include <cando/adapt/stringSet.h>
 #include <cando/chem/matter.h>
 #include <cando/geom/omatrix.h>
@@ -64,8 +65,6 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace chem
 {
-
-CL_EXTERN_DEFMETHOD(Matter_O,(Matter_sp(Matter_O::*)() const)&Matter_O::containedBy);
 
 //
 // Constructor
@@ -181,8 +180,6 @@ void Matter_O::putMatter(int idx, Matter_sp matter)
 {_OF();
   ASSERTF(idx>=0 && idx<(int)this->_contents.size(),BF("Illegal putMatter index[%d] must be less than %d") % idx % this->_contents.size());
   this->_contents[idx] = matter;
-  matter->setContainedBy(this->sharedThis<Matter_O>());
-//  matter->setId(idx);
 }
 
 CL_LISPIFY_NAME("propertiesAsString");
@@ -298,14 +295,17 @@ CL_LISPIFY_NAME("calculateVirtualAtomPositions");
 CL_DEFMETHOD void Matter_O::calculateVirtualAtomPositions()
 {
   Loop l;
-  l.loopTopGoal(this->sharedThis<Matter_O>(),ATOMS);
-  while ( l.advance() )
-  {
-    Atom_sp a = l.getAtom();
-    if ( a.isA<VirtualAtom_O>() )
-    {
-      VirtualAtom_sp va = a.as<VirtualAtom_O>();
-      va->calculatePosition();
+  Loop lres;
+  lres.loopTopGoal(this->sharedThis<Matter_O>(),RESIDUES);
+  while (lres.advance()) {
+    Residue_sp res = lres.getResidue();
+    l.loopTopGoal(res,ATOMS);
+    while ( l.advance() ) {
+      Atom_sp a = l.getAtom();
+      if (gc::IsA<VirtualAtom_sp>(a)) {
+        VirtualAtom_sp va = gc::As_unsafe<VirtualAtom_sp>(a);
+        va->calculatePosition(res);
+      }
     }
   }
 }
@@ -690,55 +690,6 @@ CL_DEFMETHOD void Matter_O::translateAllAtoms(const Vector3& trans)
 }
 
 
-bool	Matter_O::isContainedBy(Matter_sp container)
-{
-  Matter_sp outer = this->sharedThis<Matter_O>();
-  while ( 1 )
-  {
-    if ( outer == container ) return true;
-    if ( !outer->containedByValid() ) return false;
-    outer = outer->containedBy();
-  }
-}
-
-
-CL_LISPIFY_NAME("testConsistancy");
-CL_DEFMETHOD bool	Matter_O::testConsistancy(const Matter_sp parentShouldBe )
-{_OF();
-  contentIterator	a;
-  Matter_sp			c;
-  if ( this->containedByValid() ) {
-    if ( (parentShouldBe != Matter_sp(this->containedBy())) ) {
-      LOG(BF("Matter_O::testConsistancy failed!") );
-      LOG(BF("  My name/type = %s/%c") % this->getName().c_str() % this->getMatterType()  );
-//	    LOG(BF("  My parent address = %x  was supposed to be: %x") % &(Matter_sp(this->containedBy))() % &parentShouldBe  );
-    }
-    return false;
-  } else {
-    LOG(BF("  Parentage ok") );
-  }
-  c = this->sharedThis<Matter_O>();
-  for ( a=this->begin_contents(); a!=this->end_contents(); a++ ) {
-    c  = *a;
-    if ( !(c->testConsistancy(this->sharedThis<Matter_O>())) ) {
-      LOG(BF("Child failed consistancy test") );
-      return false;
-    }
-  }
-  return true;
-}
-
-
-void	Matter_O::reparent(Matter_sp	newParent)
-{_OF();
-  Matter_sp			oldParent;
-  Matter_sp			wctemp;
-
-//    oldParent = this->containedBy();
-  this->setContainedBy(newParent);
-  newParent->addMatter(this->sharedThis<Matter_O>());
-}
-
 
 int	Matter_O::totalNetResidueCharge()
 {
@@ -1110,17 +1061,6 @@ void	Matter_O::fields(core::Record_sp node )
   node->field_if_not_empty( INTERN_(kw,contents), this->_contents);
 //  node->field_if_not_nil( INTERN_(kw,contained_by), this->containerContainedBy);
   LOG(BF("Status") );
-#if 1
-  if ( node->stage() == core::Record_O::loading ) {
-    _BLOCK_TRACEF(BF("serializing container contents - there are %d objects")% this->_contents.size() );
-	    // Make sure all contents have us as a parent
-    Matter_sp c = this->sharedThis<Matter_O>();
-    for ( auto ai=this->begin_contents(); ai!=this->end_contents(); ai++ ) {
-      (*ai)->setContainedBy(c);
-    }
-  }
-#endif
-  LOG(BF("Status") );
 }
 
 
@@ -1172,6 +1112,18 @@ CL_DEFMETHOD core::List_sp Matter_O::allBondsAsList(bool allowVirtualAtoms ) con
   return result;
 }
 
+
+core::HashTable_sp Matter_O::atomToResidueMap() {
+  core::HashTableEq_sp map = core::HashTableEq_O::create_default();
+  Loop lres(this->asSmartPtr(),RESIDUES);
+  while (lres.advance()) {
+    Residue_sp res = lres.getResidue();
+    for (auto aa = res->begin_atoms(); aa!=res->end_atoms(); aa++ ) {
+      map->setf_gethash(*aa,res);
+    }
+  }
+  return map;
+}
 
 
 CL_LISPIFY_NAME("allAnglesAsList");

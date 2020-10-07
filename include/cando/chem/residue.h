@@ -236,8 +236,7 @@ namespace chem {
     void	makeAllAtomNamesInEachResidueUnique();
 
     void		writeToStream(string prefix, std::ostream& out);
-    CL_LISPIFY_NAME("testResidueConsistancy");
-    CL_DEFMETHOD 	bool		testResidueConsistancy()	{return this->testConsistancy(Matter_sp());};
+    core::HashTable_sp atomToResidueMap();
 
 	//! For every atom, turn on the FIXED flag and copy the atom coordinates into the AnchorCoordinates
     void		useAtomCoordinatesToDefineAnchors();

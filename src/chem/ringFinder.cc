@@ -151,12 +151,9 @@ void PathMessage_O::dump()
 {
     Atom_sp a1 = this->_firstVertex->getAtom();
     core::Symbol_sp firstName = a1->getName();
-    uint firstResidue = a1->getResidueContainedBy()->getId();
     Atom_sp a2 = this->_lastVertex->getAtom();
     core::Symbol_sp lastName = a2->getName();
-    uint lastResidue = a2->getResidueContainedBy()->getId();
-    _lisp->print(BF("Ring start: %d:%s end: %d:%s") % firstResidue %  firstName
-		 % lastResidue % lastName );
+    _lisp->print(BF("Ring start: %s end: %s") %  firstName % lastName );
     _lisp->print(BF("Edges: "));
     vector<size_t>::iterator ei;
     vector<size_t> vals;
@@ -165,14 +162,12 @@ void PathMessage_O::dump()
     {
 	AGEdge_sp edge = this->getGraph()->getEdge(*ei);
 	a1 = edge->getVertex1()->getAtom();
-	uint r1 = a1->getResidueContainedBy()->getId();
 	core::Symbol_sp s1 = a1->getName();
 	a2 = edge->getVertex2()->getAtom();
-	uint r2 = a2->getResidueContainedBy()->getId();
 	core::Symbol_sp s2 = a2->getName();
-	_lisp->print(BF("    %d:%s - %d:%s")
-                     % r1 % s1->symbolName()->get_std_string()
-                     % r2 % s2->symbolName()->get_std_string() );
+	_lisp->print(BF("    %s - %s")
+                     % s1->symbolName()->get_std_string()
+                     % s2->symbolName()->get_std_string() );
     }
 }
 

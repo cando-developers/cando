@@ -70,6 +70,44 @@ void Molecule_O::fields(core::Record_sp node)
 {
   node->field_if_not_unbound(INTERN_(kw,force_field_name),this->_ForceFieldName);
   node->field_if_not_unbound(INTERN_(kw,type),this->_Type);
+  switch (node->stage()) {
+  case core::Record_O::saving: {
+	    // Accumulate intraresidue bonds into a vector
+#if 1
+    core::HashTable_sp atomToResidue = this->atomToResidueMap();
+    BondList_sp bondList = BondList_O::create();
+	    //	    GC_ALLOCATE(BondList_O, bondList );
+    { _BLOCK_TRACE("Building bond list");
+      Loop lmol(this->asSmartPtr(),ATOMS);
+      while (lmol.advance()) {
+        Atom_sp a = lmol.getAtom();
+        a->addUniqueInterResidueBondCopiesToBondList(atomToResidue,bondList);
+      }
+    }
+    node->field( INTERN_(kw,bl),bondList);
+    ASSERTNOTNULL(bondList);
+#endif    
+  }
+      break;
+  case core::Record_O::initializing:
+  case core::Record_O::loading: {
+#if 1
+    _BLOCK_TRACE("Loading BondList");
+    LOG(BF("Creating the intraResidue bonds") );
+	    // create the intraResidue bonds
+    LOG(BF("About to load bondList") );
+    BondList_sp bondList = BondList_O::create();
+    node->field( INTERN_(kw,bl),bondList);
+    ASSERTNOTNULL(bondList);
+    RECORD_LOG(BF("residue bondList = %s") % _rep_(bondList));
+    bondList->imposeYourself();
+#endif
+  }
+  case core::Record_O::patching: {
+    // Nothing should need to be done
+  }
+      break;
+  }
   this->Base::fields(node);
 }
 
@@ -166,22 +204,25 @@ void Molecule_O::transferCoordinates(Matter_sp obj)
     }
 CL_LISPIFY_NAME("moveAllAtomsIntoFirstResidue");
 CL_DEFMETHOD     void	Molecule_O::moveAllAtomsIntoFirstResidue()
-    {
-	contentIterator	a;
-	contentIterator	r;
-	contentIterator	rHead;
-	contentIterator	rRest;
-	rHead = this->begin_residues();
-	rRest = rHead+1;
-	for ( r=rRest;r!=this->end_residues(); ) {
-	    for ( a = (*r)->begin_contents(); a!= (*r)->end_contents();) {
-		(*a)->reparent(*rHead);
-		a = (*r)->eraseContent(a);
-	    }
-//	delete (*r);
-	    r = this->eraseContent(r);
-	}
+{
+  SIMPLE_ERROR(BF("Reimplement moveAllAtomsIntoFirstResidue()"));
+#if 0
+  contentIterator	a;
+  contentIterator	r;
+  contentIterator	rHead;
+  contentIterator	rRest;
+  rHead = this->begin_residues();
+  rRest = rHead+1;
+  for ( r=rRest;r!=this->end_residues(); ) {
+    for ( a = (*r)->begin_contents(); a!= (*r)->end_contents();) {
+      (*a)->reparent(*rHead);
+      a = (*r)->eraseContent(a);
     }
+//	delete (*r);
+    r = this->eraseContent(r);
+  }
+#endif
+}
 
 
 

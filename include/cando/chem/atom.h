@@ -69,11 +69,10 @@ namespace chem
 #define	ATOMFLAG_ON		3
 #define	ATOMFLAG_OFF		4
 
-  extern size_t globalUniqueAtomOrder;
+  extern std::atomic<size_t> globalUniqueAtomOrder;
 
   inline size_t nextUniqueAtomOrder() {
-    ++globalUniqueAtomOrder;
-    return globalUniqueAtomOrder;
+    return ++globalUniqueAtomOrder;
   }
 
 #include <cando/chem/elements.h>
@@ -411,10 +410,6 @@ namespace chem {
     CL_DEFMETHOD 	double	getCovalentRadius()	{ return this->covalentRadius; };
     CL_LISPIFY_NAME("setCovalentRadius");
     CL_DEFMETHOD 	void	setCovalentRadius(double c)	{ this->covalentRadius = c; };
-    Matter_sp	getMatterContainedBy();
-    Residue_sp	getResidueContainedBy();
-    Residue_sp	getResidueContainedBy_const() const;
-
 #if 0
     CL_LISPIFY_NAME("getMoeIndex");
     CL_DEFMETHOD 	int	getMoeIndex() { return this->moeIndex; };
@@ -520,15 +515,16 @@ namespace chem {
 
     void setAbsoluteConfiguration(ConfigurationEnum config, Atom_sp n1, Atom_sp n2, Atom_sp n3);
 
-    void	addUniqueIntraResidueBondCopiesToBondList(BondList_sp list);
-    void	addUniqueInterResidueBondCopiesToBondList(BondList_sp list);
+    void	addUniqueIntraResidueBondCopiesToBondList(core::HashTable_sp atomToResidue, BondList_sp list);
+    void	addUniqueInterResidueBondCopiesToBondList(core::HashTable_sp atomToResidue, BondList_sp list);
 
+    core::HashTable_sp atomToResidueMap() { SIMPLE_ERROR(BF("You cannot call atomToResidueMap with an atom")); };
 	//! Downgrade this
 //	void	addUniqueIntraResidueBondsToQDomNodeAsChildren(adapt::QDomNode_sp node);
 	//! Downgrade this
-    void	addUniqueIntraResidueBondsToVectorBonds(VectorBond& bonds);
+    void	addUniqueIntraResidueBondsToVectorBonds(core::HashTable_sp atomToResidue, VectorBond& bonds);
 	//! Downgrade this
-    void	addInterResidueBondsToBondList(BondList_sp bonds);
+    void	addInterResidueBondsToBondList(core::HashTable_sp atomToResidue, BondList_sp bonds);
 
     void	failIfInvalid();
     bool	invalid();

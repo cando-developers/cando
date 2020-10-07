@@ -651,12 +651,17 @@ CL_DEFMETHOD     uint Aggregate_O::separateMolecules()
 
 CL_LISPIFY_NAME("firstMoleculeWithAtomNamed");
 CL_DEFMETHOD     Molecule_sp Aggregate_O::firstMoleculeWithAtomNamed(core::Symbol_sp name)
-    {
-	Atom_sp a = this->firstAtomWithName(name);
-	Residue_sp res = a->containedBy().as<Residue_O>();
-	Molecule_sp mol = res->containedBy().as<Molecule_O>();
-	return mol;
+{
+  Loop lmol(this->asSmartPtr(),MOLECULES);
+  while (lmol.advance()) {
+    Molecule_sp mol = lmol.getMolecule();
+    Loop latm(mol,ATOMS);
+    while (latm.advance()) {
+      if (latm.getAtom()->getName()==name) return mol;
     }
+  }
+  SIMPLE_ERROR(BF("Could not find molecule with atom named %s") % _rep_(name));
+}
 
 
     void Aggregate_O::addMatter(Matter_sp matter)

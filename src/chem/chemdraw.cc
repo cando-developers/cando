@@ -696,7 +696,6 @@ Atom_sp CDFragment_O::createOneAtom(CDNode_sp n)
   pos3.set(n->_Pos.getX(),n->_Pos.getY(), 0.0 );
   a->setf_needs_build(false);
   a->setPosition(pos3);
-  a->setContainedBy(_Nil<chem::Matter_O>());
   n->setAtom(a);
   string name;
   bool saw_ionization = false;

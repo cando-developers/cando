@@ -155,7 +155,7 @@ void	Residue_O::addVirtualAtom(MatterName name, CalculatePosition_sp proc)
     VirtualAtom_sp va = VirtualAtom_O::create(name,proc);
     va->setElement(element_Dummy);
     this->addMatter(va);
-    va->calculatePosition();
+    va->calculatePosition(this->asSmartPtr());
 }
 
 
@@ -172,17 +172,14 @@ void	Residue_O::fields( core::Record_sp node )
   switch (node->stage()) {
   case core::Record_O::saving: {
 	    // Accumulate intraresidue bonds into a vector
-#if 0
-    _BLOCK_TRACE("Xmling intra-residue bonds");
-    contentIterator aPPCur;
-    Atom_sp			a;
+#if 1
+    core::HashTable_sp atomToResidue = this->atomToResidueMap();
     BondList_sp bondList = BondList_O::create();
 	    //	    GC_ALLOCATE(BondList_O, bondList );
     { _BLOCK_TRACE("Building bond list");
-      for ( aPPCur=this->getContents().begin();
-            aPPCur != this->end_atoms(); aPPCur++ ) {
-        a = (*aPPCur).as<Atom_O>();
-        a->addUniqueIntraResidueBondCopiesToBondList(bondList);
+      for ( auto aa = this->begin_atoms(); aa != this->end_atoms(); ++aa ) {
+        Atom_sp a = gc::As_unsafe<Atom_sp>(*aa);
+        a->addUniqueIntraResidueBondCopiesToBondList(atomToResidue,bondList);
       }
     }
     node->field( INTERN_(kw,bl),bondList);
@@ -192,7 +189,7 @@ void	Residue_O::fields( core::Record_sp node )
       break;
   case core::Record_O::initializing:
   case core::Record_O::loading: {
-#if 0
+#if 1
     _BLOCK_TRACE("Loading BondList");
     LOG(BF("Creating the intraResidue bonds") );
 	    // create the intraResidue bonds
@@ -344,7 +341,6 @@ CL_DEFMETHOD void	Residue_O::removeAtomDeleteBonds(Atom_sp a)
       this->eraseContent(atom);
       aTemp->removeAllBonds();
       LOG(BF("Residue_O::removeAtomDeleteBonds setting atom %x parent to null") % &a  );
-      aTemp->setContainedByNothing();
       return;
     }
   }
@@ -356,9 +352,11 @@ CL_DEFMETHOD void	Residue_O::removeAtomDeleteBonds(Atom_sp a)
 CL_LISPIFY_NAME("containsAtom");
 CL_DEFMETHOD bool	Residue_O::containsAtom(Atom_sp a)
 {
-    Residue_sp res = a->getResidueContainedBy();
-    if ( res.get() == this ) return true;
-    return false;
+  for (auto ii=this->begin_contents(); ii!=this->end_contents(); ++ii) {
+    Atom_sp aa = gc::As_unsafe<Atom_sp>(*ii);
+    if (aa == a) return true;
+  }
+  return false;
 }
 
 
@@ -382,7 +380,6 @@ Atom_sp				aTemp;
 	LOG(BF("     erasing") );
 	    this->eraseContent(atom);
 LOG(BF("Residue_O::removeAtomDeleteBonds setting atom %x parent to null") % &a  );
-    	    aTemp->setContainedByNothing();
 //	    delete (aTemp);
 	    return;
 	}
@@ -631,6 +628,17 @@ Atom_sp				a;
 }
 #endif //]
 
+
+
+core::HashTable_sp Residue_O::atomToResidueMap()
+{
+  core::HashTableEq_sp map = core::HashTableEq_O::create_default();
+  for ( auto aa = this->begin_atoms(); aa!=this->end_atoms(); ++aa ) {
+    map->setf_gethash(*aa,this->asSmartPtr());
+  }
+  return map;
+}
+
 //
 //	getOutGoingBonds
 //
@@ -638,15 +646,16 @@ Atom_sp				a;
 //
 BondList_sp	Residue_O::getOutGoingBonds()
 {
-    BondList_sp			bonds = BondList_O::create();
-contentIterator	aPPCur;
-Atom_sp				a;
-    for ( aPPCur=this->begin_atoms();
-		aPPCur != this->end_atoms(); aPPCur++ ) {
-	a = (*aPPCur).as<Atom_O>();
-	a->addInterResidueBondsToBondList(bonds);
-    }
-    return bonds;
+  BondList_sp			bonds = BondList_O::create();
+  contentIterator	aPPCur;
+  Atom_sp				a;
+  core::HashTable_sp atomToResidue = this->asSmartPtr()->atomToResidueMap();
+  for ( aPPCur=this->begin_atoms();
+        aPPCur != this->end_atoms(); aPPCur++ ) {
+    a = (*aPPCur).as<Atom_O>();
+    a->addInterResidueBondsToBondList(atomToResidue,bonds);
+  }
+  return bonds;
 }
 
 

@@ -233,9 +233,6 @@ FORWARD(Monomer);
     CL_LISPIFY_NAME("addPlug");
     CL_DEFMETHOD void addPlug(core::Symbol_sp name, Plug_sp plug) { this->_PlugsByName.insert(pair<core::Symbol_sp,Plug_sp>(name,plug));};
 
-//	void	testConsistency( std::ostream& sout );
-
-
 //	set<string>	getValidInCouplingRuleNames();
 
     bool	recognizesMonomerAndEnvironment(Monomer_sp mon);

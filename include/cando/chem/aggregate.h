@@ -165,8 +165,6 @@ CL_DEFMETHOD     Aggregate_sp	addMolecule( Molecule_sp a ) {this->addMatter(a); 
 //	void		dump();
 
     bool		testForVdwOverlap(Aggregate_sp other);
-CL_LISPIFY_NAME("testAggregateConsistancy");
-CL_DEFMETHOD     bool		testAggregateConsistancy() {return this->testConsistancy(Matter_sp());};
 
     virtual uint	numberOfAtoms( );
     virtual bool isAggregate() { return true;};

@@ -118,15 +118,8 @@ CL_DEFMETHOD bool VirtualAtom_O::VirtualAtom_equal(core::T_sp obj) const
 
 
 
-void	VirtualAtom_O::calculatePosition()
+void	VirtualAtom_O::calculatePosition(Residue_sp res)
 {
-    ASSERTNOTNULL(this->_CalculatePosition);
-//    ASSERTNOTNULL(this->_Environment);
-    Matter_sp wmres = this->containedBy();
-    ASSERTNOTNULL(wmres);
-    Matter_sp mres = wmres;
-    ASSERT(mres.notnilp());
-    Residue_sp res = mres.as<Residue_O>();
     Vector3 vpos = this->_CalculatePosition->calculatePosition(res);
     this->setPosition(vpos);
 }

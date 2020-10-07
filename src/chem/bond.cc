@@ -148,24 +148,12 @@ void Bond_O::addYourselfToCopiedAtoms()
 //
 //	Return true if this is an inter-residue bond
 //
-bool	Bond_O::isInterResidueBond()
+bool	Bond_O::isInterResidueBond(core::HashTable_sp atomToResidue)
 {
-  Matter_sp	wfromCont, wtoCont;
-  Matter_sp	fromCont, toCont;
   Atom_sp a1 = this->_Atom1;
-  ASSERTP(a1.objectp(), "Bond_O::isInterResidueBond from atom is undefined!");
-  LOG(BF("from atom = %s") % a1->description() );
-  wfromCont = a1->getResidueContainedBy();
-  ASSERTNOTNULL(wfromCont);
-  if ( wfromCont.nilp() ) SIMPLE_ERROR(BF("From atom isnt in a residue"));
-  Atom_sp a2 = this->_Atom2;
-  ASSERTNOTNULLP(a2, "Bond_O::isInterResidueBond to atom is undefined!");
-  wtoCont = a2->getResidueContainedBy();
-  ASSERTNOTNULL(wtoCont);
-  if ( wtoCont.nilp() ) SIMPLE_ERROR(BF("To atom isnt in a residue"));
-  fromCont = wfromCont;
-  toCont = wtoCont;
-  return ( fromCont != toCont );
+  core::T_sp res1 = atomToResidue->gethash(this->_Atom1);
+  core::T_sp res2 = atomToResidue->gethash(this->_Atom2);
+  return (res1!=res2);
 }
 
 core::NullTerminatedEnumAssociation bondOrderKeys[] = {

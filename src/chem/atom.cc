@@ -76,7 +76,7 @@ SYMBOL_EXPORT_SC_(ChemPkg,_PLUS_atomFlagSymbolConverter_PLUS_);
  */
 
 
-size_t globalUniqueAtomOrder = 1;
+std::atomic<size_t> globalUniqueAtomOrder;
 
 long	__AtomBuildCounter = 1;
 
@@ -984,7 +984,7 @@ void	Atom_O::fields(core::Record_sp node)
   node->/*pod_*/field_if_not_default( INTERN_(kw,configuration), this->_Configuration, undefinedConfiguration  );
   node->/*pod_*/field_if_not_default( INTERN_(kw,stereochemistryType), this->_StereochemistryType, undefinedCenter );
   node->/*pod_*/field_if_not_default( INTERN_(kw,pos), this->position, Vector3());
-  node->field_if_not_empty(INTERN_(kw,bonds),this->bonds);
+//  node->field_if_not_empty(INTERN_(kw,bonds),this->bonds);
   this->Base::fields(node);
 }
 
@@ -1101,7 +1101,7 @@ string	Atom_O::description() const
 /*!
  * Add all unique intra residue bonds to the BondList_sp
  */
-void	Atom_O::addUniqueIntraResidueBondCopiesToBondList(BondList_sp list)
+void	Atom_O::addUniqueIntraResidueBondCopiesToBondList(core::HashTable_sp atomToResidue,BondList_sp list)
 {_OF();
   VectorBond			bonds;
   VectorBond::iterator	b;
@@ -1110,7 +1110,7 @@ void	Atom_O::addUniqueIntraResidueBondCopiesToBondList(BondList_sp list)
   Atom_sp me = this->sharedThis<Atom_O>();
   for ( b=bonds.begin();b!=bonds.end() ; b++ ) {
     if ( me->atLowerUniqueAtomOrderThan( (*b)->getOtherAtom(me))) {
-      if ( !(*b)->isInterResidueBond() ) {
+      if ( !(*b)->isInterResidueBond(atomToResidue) ) {
         LOG(BF("Original bond: %s") % (*b)->description() );
         GC_COPY(Bond_O,bondCopy,*(b->get()));
         LOG(BF("Copy bond: %s") % bondCopy->description() );
@@ -1123,7 +1123,7 @@ void	Atom_O::addUniqueIntraResidueBondCopiesToBondList(BondList_sp list)
 /*!
  * Add all unique inter residue bonds to the BondList_sp
  */
-void Atom_O::addUniqueInterResidueBondCopiesToBondList(BondList_sp list)
+void Atom_O::addUniqueInterResidueBondCopiesToBondList(core::HashTable_sp atomToResidue, BondList_sp list)
 {_OF();
   VectorBond			bonds;
   VectorBond::iterator	b;
@@ -1132,7 +1132,7 @@ void Atom_O::addUniqueInterResidueBondCopiesToBondList(BondList_sp list)
   Atom_sp me = this->sharedThis<Atom_O>();
   for ( b=bonds.begin();b!=bonds.end() ; b++ ) {
     if ( me->atLowerUniqueAtomOrderThan( (*b)->getOtherAtom(me))) {
-      if ( (*b)->isInterResidueBond() ) {
+      if ( (*b)->isInterResidueBond(atomToResidue) ) {
         GC_COPY(Bond_O, bondCopy, *(b->get()) ); // = RP_Copy<Bond_O>(*b);
         list->addBond(bondCopy);
       }
@@ -1140,12 +1140,12 @@ void Atom_O::addUniqueInterResidueBondCopiesToBondList(BondList_sp list)
   }
 }
 
-void Atom_O::addInterResidueBondsToBondList(BondList_sp bondlist)
+void Atom_O::addInterResidueBondsToBondList(core::HashTable_sp atomToResidue, BondList_sp bondlist)
 {
   VectorBond::iterator	b;
   bonds = this->getBonds();
   for ( b=bonds.begin();b!=bonds.end() ; b++ ) {
-    if ( (*b)->isInterResidueBond() ) {
+    if ( (*b)->isInterResidueBond(atomToResidue) ) {
       bondlist->append(*b);
     }
   }
@@ -1715,41 +1715,6 @@ string	Atom_O::getConfigurationPriorityLowest()
   return this->_ConfigurationInfo._LowestPriority;
 }
 #endif
-
-Matter_sp	Atom_O::getMatterContainedBy()
-{_OF();
-  Matter_sp	containedBy;
-  Residue_sp	wpresidue;
-  Residue_sp	residue;
-  ASSERTNOTNULL(this->containedBy());
-  containedBy = this->containedBy();
-  if ( containedBy.nilp() )
-  {
-    SIMPLE_ERROR(BF("This atom isnt contained by anything"));
-  }
-  return containedBy;
-
-//    wpresidue = downcast <Residue_O> (containedBy);
-//    residue = wpresidue;
-//    return residue;
-}
-
-
-CL_LISPIFY_NAME("getResidueContainedBy");
-CL_DEFMETHOD     Residue_sp	Atom_O::getResidueContainedBy() 
-{
-  return this->containedBy().as<Residue_O>();
-}
-
-Residue_sp	Atom_O::getResidueContainedBy_const() const
-{
-  return this->containedBy().as<Residue_O>();
-}
-
-
-
-
-
 
 
 void Atom_O::_describeAtomRecursively(string prefix, Atom_sp parent, BondOrder order, int maxDepth, stringstream& ss) const

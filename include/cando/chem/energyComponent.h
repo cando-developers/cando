@@ -108,15 +108,7 @@ class BeyondThresholdEnergyTerm
 
 inline string	atomLabel(Atom_sp a)
 {
-  Residue_sp	res;
   stringstream	sstr;
-  core::T_sp maybeResidue = a->getResidueContainedBy();
-  if (gc::IsA<Residue_sp>(maybeResidue)) {
-    res= gc::As_unsafe<Residue_sp>(maybeResidue);
-    sstr <<":"<<res->getId()<<"@"<<_rep_(a->getName());
-  } else {
-    sstr << "@"<<_rep_(a->getName());
-  }
   return sstr.str();
 }
 

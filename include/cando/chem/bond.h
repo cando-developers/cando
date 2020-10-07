@@ -108,8 +108,8 @@ CL_DEFMETHOD int getOrderAsInt()	{ return this->order; };
 CL_LISPIFY_NAME("setOrder");
 CL_DEFMETHOD   void	setOrderFromInt(int o)	{ this->order=(BondOrder)(o); };
   Atom_sp	getOtherAtom(Atom_sp atom ) const;
-  bool	isInterResidueBond();
-  bool	isIntraResidueBond() {return !this->isInterResidueBond();};
+  bool	isInterResidueBond(core::HashTable_sp atomToResidue);
+  bool	isIntraResidueBond(core::HashTable_sp atomToResidue ) {return !this->isInterResidueBond(atomToResidue);};
   void	redirectToAtomCopies();
 
 	/*! Dump all of the properties associated with this matter */
