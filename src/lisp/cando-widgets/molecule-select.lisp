@@ -160,7 +160,7 @@
                                                           :margin "var(--jp-widgets-margin) auto")
                                    :value (symbol-name (chem:get-name molecule)))
                     (make-instance 'jw:checkbox
-                                   :value (or (position molecule (selected instance)) t)
+                                   :value (and (position molecule (selected instance)) t)
                                    :layout (make-instance 'jw:layout
                                                           :margin "var(--jp-widgets-margin) auto")
                                    :description (symbol-name (chem:get-name molecule)))))
