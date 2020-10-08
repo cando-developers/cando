@@ -15,10 +15,10 @@
 
 (defclass app (jupyter-widgets:has-traits)
   ((composer-data
-     :accessor composer-data
-     :initarg :composer-data
-     :initform nil
-     :trait t)
+    :accessor composer-data
+    :initarg :composer-data
+    :initform nil
+    :trait t)
    (template-ligand-string
     :accessor template-ligand-string
     :initarg :template-ligand-string
@@ -35,55 +35,62 @@
     :initform nil
     :trait t)
    (ligands-string
-     :accessor ligands-string
-     :initarg :ligands-string
-     :initform nil
-     :trait t)
+    :accessor ligands-string
+    :initarg :ligands-string
+    :initform nil
+    :trait t)
    (ligands-format
-     :accessor ligands-format
-     :initarg :ligands-format
-     :initform nil
-     :trait t)
+    :accessor ligands-format
+    :initarg :ligands-format
+    :initform nil
+    :trait t)
    (all-ligands
-     :accessor all-ligands
-     :initform nil
-     :trait t)
+    :accessor all-ligands
+    :initform nil
+    :trait t)
    (selected-ligand-names
-     :accessor selected-ligand-names
-     :initarg :selected-ligand-names
-     :initform nil
-     :trait t)
+    :accessor selected-ligand-names
+    :initarg :selected-ligand-names
+    :initform nil
+    :trait t)
    (selected-ligands
-     :accessor selected-ligands
-     :initform nil
-     :trait t)
+    :accessor selected-ligands
+    :initform nil
+    :trait t)
    (all-edges
-     :accessor all-edges
-     :initarg :all-edges
-     :initform nil
-     :trait t)
+    :accessor all-edges
+    :initarg :all-edges
+    :initform nil
+    :trait t)
    (distributor
-     :accessor distributor
-     :initarg :distributor
-     :initform "s103.thirdlaw.tech"
-     :trait t)
+    :accessor distributor
+    :initarg :distributor
+    :initform "s103.thirdlaw.tech"
+    :trait t)
    (job-name
-     :accessor job-name
-     :initarg :job-name
-     :initform "default"
-     :trait t)
+    :accessor job-name
+    :initarg :job-name
+    :initform "default"
+    :trait t)
    (submit-stream
-     :accessor submit-stream
-     :initform nil
-     :trait t)
+    :accessor submit-stream
+    :initform nil
+    :trait t)
    (smirks-pattern
-     :accessor smirks-pattern
-     :initarg :smirks-pattern
-     :initform nil
-     :trait t)
-   (tirun-calculation
-     :accessor tirun-calculation
-     :initform (make-instance 'tirun:tirun-calculation)))
+    :accessor smirks-pattern
+    :initarg :smirks-pattern
+    :initform nil
+    :trait t)
+   (tirun-settings
+    :accessor tirun-settings
+    :initarg :tirun-settings
+    :initform (tirun:default-calculation-settings)
+    :trait t)
+   (tirun-stages
+    :accessor tirun-stages
+    :initarg :tirun-stages
+    :initform 1
+    :trait t))
   (:metaclass jupyter-widgets:trait-metaclass))
 
 
@@ -416,15 +423,12 @@
               (w:widget-%options-labels dropdown) (mapcar #'molecule-name all-ligands))
         (cw:sketch-molecules all-ligands)
         (setf (w:widget-value slider) 0)
-        (on-ligand-select instance 0)
-        (ignore-errors
-          (tirun:tirun-calculation-from-ligands (tirun-calculation *app*) all-ligands)))
+        (on-ligand-select instance 0))
       (t
         (setf (w:widget-disabled slider) t
               (w:widget-disabled dropdown) t
               (w:widget-max slider) 0
               (w:widget-%options-labels dropdown) nil)))))
-
 
 (defmethod initialize-instance :after ((instance view-ligand-page) &rest initargs &key &allow-other-keys)
   (declare (ignore initargs))
@@ -1103,7 +1107,7 @@ It will put those multiple ligands into all-ligands and selected-ligands"
                               :options '(1 3)
                               :%options-labels '("one stage" "three stage")
                               :description "TI stages"
-                              :value (tirun::ti-stages (tirun-calculation *app*))
+                              :value (tirun-stages *app*)
                               :style (make-instance 'w:description-style :description-width "12em")
                               :layout (make-instance 'w:layout :grid-area "stages"))
      :documentation "The number of stages in the TI calculation."))
@@ -1130,7 +1134,7 @@ It will put those multiple ligands into all-ligands and selected-ligands"
     (w:observe ti-stages :value
       (lambda (inst type name old-value new-value source)
         (declare (ignore inst type name old-value source))
-        (setf (tirun::ti-stages (tirun-calculation *app*)) new-value)))))
+        (setf (tirun-stages *app*) new-value)))))
 
 
 (defun make-jobs-config-page (container title)
@@ -1202,37 +1206,68 @@ lisp_jobs_only_on=172.234.2.1
   "Called by the write task page to start the write jobs task."
   (declare (ignore parameter))
   (multiple-value-bind (dir tar-file from-path)
-                       (calculate-jobs-dir (job-name *app*))
+      (calculate-jobs-dir (job-name *app*))
     (format t "Writing jobs to -> ~a ...~%" dir)
     (finish-output)
     (cond
       ((probe-file dir)
-        (format *error-output* "The directory ~a already exists - aborting writing jobs" dir)
-        (finish-output *error-output*)
-        nil)
+       (format *error-output* "The directory ~a already exists - aborting writing jobs" dir)
+       (finish-output *error-output*)
+       nil)
       (t
-        (ensure-write-jobs (tirun-calculation *app*) dir progress-callback)
-        (write-line "Generating tar file.")
-        (finish-output)
-        (generate-tar-file (job-name *app*) dir tar-file from-path)))))
+       (let ((tirun-calculation (make-instance 'tirun:tirun-calculation)))
+         (prepare-calculation tirun-calculation *app*)
+         (ensure-write-jobs tirun-calculation dir progress-callback)
+         (write-line "Generating tar file.")
+         (finish-output)
+         (generate-tar-file (job-name *app*) dir tar-file from-path))))))
 
-(defun transfer-app-settings-to-calculation (app)
-  (let ((calc (tirun-calculation app)))
-    (setf (tirun:receptors calc) (list (receptor app))
-          (tirun:ligands calc) (mapcar (lambda (mol)
-                                         (make-instance 'tirun:tirun-structure :name (chem:get-name mol)
-                                                                               :drawing mol
-                                                                               :molecule mol))
-                                       (selected-ligands app)))))
+(defun only-residue (molecule)
+  (unless (= (chem:content-size molecule) 1)
+    (error "The molecule ~a must have only one residue" molecule))
+  (chem:content-at molecule 0))
+
+(defun short-residue-name (index)
+  (let ((label (format nil "!~36,2,'0r" index)))
+    (intern label :keyword)))
+
+(defun prepare-calculation (calc app)
+  (let ((residue-name-to-pdb-alist nil))
+    (loop for molecule in (selected-ligands app)
+          for residue = (only-residue molecule)
+          for residue-index from 0
+          for residue-name = (chem:get-name residue)
+          when (> (length (string residue-name)) 3)
+            do (push (cons residue-name (short-residue-name residue-index))
+                     residue-name-to-pdb-alist))
+    (let ((ligands (mapcar
+                    (lambda (molecule)
+                      (let ((residue (only-residue molecule)))
+                        (format t "Ligand: ~a~%" molecule)
+                        (finish-output)
+                        (make-instance 'tirun:tirun-structure
+                                       :name (chem:get-name molecule)
+                                       :drawing molecule
+                                       :molecule molecule
+                                       :core-residue residue
+                                       :core-residue-name (chem:get-name residue)
+                                       :core-atoms (chem:all-atoms-as-list molecule nil)
+                                       :net-charge 0.0 #|not always!|#)))
+                    (selected-ligands app))))
+      (setf (tirun:mask-method calc) :closest
+            (tirun:settings calc) (tirun-settings app)
+            (tirun:ti-stages calc) (tirun-stages app)
+            (tirun:residue-name-to-pdb-alist calc) residue-name-to-pdb-alist
+            (tirun:receptors calc) (list (receptor app))
+            (tirun:ligands calc) ligands))))
 
 (defun jobs ()
   "Configure and write TI jobs to jobs directory."
-  (transfer-app-settings-to-calculation *app*)
   (let ((container (make-instance 'w:accordion :selected-index 0)))
     (dolist (schema-group tirun::*default-calculation-settings*)
       (cw:add-page container
                    (w:make-interactive-alist (second schema-group)
-                                             (tirun::settings (tirun-calculation *app*)))
+                                             (tirun-settings *app*))
                    (first schema-group)))
     (make-jobs-config-page container "Configure Jobs")
     (cw:make-simple-task-page container "Write Jobs" #'run-write-jobs

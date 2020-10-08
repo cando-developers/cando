@@ -23,6 +23,7 @@
   (:shadowing-import-from :chem "ATOM")
   (:export
    #:ensure-jobs-directories-exist
+   #:default-calculation-settings
    #:make-tirun
    #:add-receptor
    #:tirun-calculation
@@ -49,6 +50,7 @@
    #:node-pathname
    #:morph
    #:stages
+   #:mask-method
    #:lambda-values
    #:inputs
    #:outputs
@@ -58,6 +60,8 @@
    #:scripts
    #:drawing
    #:molecule
+   #:settings
+   #:ti-stages
    #:tirun-morph
    #:node-file
    #:morph-side-file
@@ -97,7 +101,6 @@
    #:amber-job-mixin
    #:pattern-atoms
    #:average-core-atom-positions
-   #:tirun-calculation-from-ligands
    #:do-decharge-recharge
    #:check-calculation-atom-types
    #:validate-atom-types
