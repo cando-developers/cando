@@ -273,14 +273,18 @@
           (nglview:handle-resize ngl))))
     ;; Add the receptor if one is already defined.
     (when (receptor *app*)
-      (nglview:add-structure ngl (make-instance 'nglview:text-structure :text (receptor-string *app*))))
+      (nglview:add-structure ngl (make-instance 'nglview:text-structure
+                                                :ext "mol2"
+                                                :text (receptor-string *app*))))
     ;; Listen for changes to the receptor and add or delete when needed.
     (w:observe *app* :receptor
       (lambda (inst type name old-value new-value source)
         (declare (ignore inst type name old-value source))
         (nglview:remove-all-components ngl)
         (when new-value
-          (nglview:add-structure ngl (make-instance 'nglview:text-structure :text (receptor-to-string new-value))))))
+          (nglview:add-structure ngl (make-instance 'nglview:text-structure
+                                                    :ext "mol2"
+                                                    :text (receptor-to-string new-value))))))
     container))
 
 
@@ -452,8 +456,8 @@
     (lambda (inst type name old-value new-value source)
       (declare (ignore inst type name old-value source))
       (nglview:handle-resize (view-ligand-ngl instance))))
-  ;; When the receptor-string changes reload the receptor in nglview.
-  (w:observe *app* :receptor-string
+  ;; When the receptor changes reload the receptor in nglview.
+  (w:observe *app* :receptor
     (lambda (inst type name old-value new-value source)
       (declare (ignore inst type name source))
       (when old-value
@@ -461,6 +465,7 @@
       (nglview:add-structure (view-ligand-ngl instance)
                              (make-instance 'nglview:text-structure
                                             :id "receptor"
+                                            :ext "mol2"
                                             :text (receptor-to-string new-value)))))
   ;; If the all-ligands changes then reload the whole thing.
   (w:observe *app* :all-ligands
@@ -473,14 +478,15 @@
   "Create an instance of a view-ligand-page and add it to the container."
   (let ((page (make-instance 'view-ligand-page :container container)))
     (cw:add-page container page title)
-    ;; Update the view
-    (refresh-ligands-view page)
-    ;; If the receptor-string is already set then load the current receptor.
+    ;; If the receptor is already set then load the current receptor.
     (when (receptor *app*)
       (nglview:add-structure (view-ligand-ngl page)
                              (make-instance 'nglview:text-structure
                                             :id "receptor"
+                                            :ext "mol2"
                                             :text (receptor-string *app*))))
+    ;; Update the view
+    (refresh-ligands-view page)
     (values)))
 
 
