@@ -85,6 +85,7 @@
    #:minimize-molecule
    #:tirun-structure
    #:pose-molecules-using-similarity
+   #:pose-ligands-using-pattern
    #:setup-am1-calculations
    #:check-am1-calculations
    #:read-am1-charges

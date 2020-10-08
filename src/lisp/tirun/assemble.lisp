@@ -781,36 +781,9 @@ keeps track if the minimization encountered a problem."
                                :molecule mol
                                :minimize fail)))
 
-#+(or)
-(defun pose-molecules-using-pattern (calculation pattern docked-molecule &key stereochemical-restraints)
-  (let* ((fixed-atoms-map (pattern-atoms pattern docked-molecule))
-         (fixed-order (let (fo)
-                        (maphash (lambda (index atom)
-                                   (push index fo))
-                                 fixed-atoms-map)
-                        fo))
-         (fixed-atoms (mapcar (lambda (index) (gethash index fixed-atoms-map)) fixed-order))
-         (tiruns (ligands calculation)))
-    (loop for tirun in tiruns
-          for molecule = (molecule tirun)
-          for moveable-atoms-map = (pattern-atoms pattern molecule)
-          for moveable-atoms = (mapcar (lambda (index) (gethash index moveable-atoms-map)) fixed-order)
-          do (format t "tirun ~a~%" tirun)
-             (format t " ~a moveable-atoms -> ~a~%" tirun moveable-atoms)
-             (format t "    fixed-atoms -> ~a~%" fixed-atoms)
-          do (chem:superpose-one molecule moveable-atoms fixed-atoms)
-          do (anchor-to-pose moveable-atoms fixed-atoms :stereochemical-restraints stereochemical-restraints)))
-  (minimize-ligands calculation))
-
-(defun pose-molecules-using-similarity (molecules docked-molecule)
-  (loop for molecule in molecules
-        do (multiple-value-bind (equiv diff1 diff2)
-               (molecule-graph.max-clique:compare-molecules molecule docked-molecule)
-             #+(or)(format t "  pose-ligands-using-similarity equiv -> ~a~%" equiv)
-             (let ((moveable-atoms (mapcar #'car equiv))
-                   (fixed-atoms (mapcar #'cdr equiv)))
-               (chem:superpose-one molecule moveable-atoms fixed-atoms)
-               (anchor-to-pose moveable-atoms fixed-atoms))))
+(defun repeatedly-minimize-molecules (molecules)
+  "Keep trying to minimize the molecules until they all minimize.
+Try five times."
   (let ((jobs (mapcar (lambda (mol)
                         (make-instance 'tirun:minimize-molecule
                                        :molecule mol))
@@ -823,6 +796,36 @@ keeps track if the minimization encountered a problem."
                        do (cando:jostle (molecule job)))
           else
             do (return (mapcar #'molecule jobs)))))
+
+(defun pose-ligands-using-pattern (calculation pattern docked-molecule &key stereochemical-restraints)
+  (let* ((fixed-atoms-map (pattern-atoms pattern docked-molecule))
+         (fixed-order (let (fo)
+                        (maphash (lambda (index atom)
+                                   (push index fo))
+                                 fixed-atoms-map)
+                        fo))
+         (fixed-atoms (mapcar (lambda (index) (gethash index fixed-atoms-map)) fixed-order))
+         (molecules (mapcar #'tirun:molecule (tirun:ligands calculation))))
+    (loop for molecule in molecules
+          for moveable-atoms-map = (pattern-atoms pattern molecule)
+          for moveable-atoms = (mapcar (lambda (index) (gethash index moveable-atoms-map)) fixed-order)
+          do (format t "molecule ~a~%" molecule)
+             (format t " ~a moveable-atoms -> ~a~%" molecule moveable-atoms)
+             (format t "    fixed-atoms -> ~a~%" fixed-atoms)
+          do (chem:superpose-one molecule moveable-atoms fixed-atoms)
+          do (anchor-to-pose moveable-atoms fixed-atoms :stereochemical-restraints stereochemical-restraints))
+    (repeatedly-minimize-molecules molecules)))
+
+(defun pose-molecules-using-similarity (molecules docked-molecule)
+  (loop for molecule in molecules
+        do (multiple-value-bind (equiv diff1 diff2)
+               (molecule-graph.max-clique:compare-molecules molecule docked-molecule)
+             #+(or)(format t "  pose-ligands-using-similarity equiv -> ~a~%" equiv)
+             (let ((moveable-atoms (mapcar #'car equiv))
+                   (fixed-atoms (mapcar #'cdr equiv)))
+               (chem:superpose-one molecule moveable-atoms fixed-atoms)
+               (anchor-to-pose moveable-atoms fixed-atoms))))
+  (repeatedly-minimize-molecules molecules))
 
 #+(or)
 (defun pose-ligands (calculation fixed-atoms &key stereochemical-restraints)
