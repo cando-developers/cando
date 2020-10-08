@@ -589,15 +589,15 @@ We need assemble-ligands for the tirun demo."
                  (format t "~a  ~a ~a~%" atm (chem:get-stereochemistry-type atm) (chem:get-configuration atm))
                  (format t "~a~%" (chem:bonds-as-list atm)))))))
 
-(defun assemble-ligands (tiruns sketch-or-aggregate &key verbose)
+(defun assemble-ligands (sketch-or-aggregate &key verbose)
   "This generates the ligands while keeping track of additional information about
 what is core and what is the side-chains.  We may not need this because the tirun
 code is a lot smarter now about comparing molecules to each other.
 But this code is necessary for the tirun demo."
   (let* ((assembly (let ((assembly (parse-residue-groups sketch-or-aggregate)))
-                     (build-assembly assembly :verbose verbose))))
-    (setf (core-topologys tiruns) (mapcar #'topology (cores assembly)))
-    (setf (side-topologys tiruns) (side-chain-topologys assembly))
+                     (build-assembly assembly :verbose verbose)))
+         (core-topologys (mapcar #'topology (cores assembly)))
+         (side-topologys (side-chain-topologys assembly)))
     (let* ((ligands (build-tiruns assembly))
            (molecules (loop for ligand in ligands
                             for mol = (chem:matter-copy (drawing ligand))
@@ -617,8 +617,7 @@ But this code is necessary for the tirun demo."
                                (setf (side-chain-atoms ligand) side-chain-atoms)
                                (combine-into-single-residue mol (core-residue-name ligand))
                             collect mol)))
-      (setf (ligands tiruns) ligands)
-      molecules)))
+      (values molecules ligands))))
 
 (defun ensure-unique-hydrogen-names (molecule)
   (let ((hydrogen-counter 0))
@@ -719,29 +718,6 @@ But this code is necessary for the tirun demo."
              (setf (molecule tirun) mol)
           do (format t "build-structures tirun: ~a   map-atoms: ~a~%" tirun (sorted-map-atoms tirun)))))
 
-(defun minimize-ligands (calculation)
-  (let ((tiruns (ligands calculation)))
-    (loop for tirun in tiruns
-          for mol = (molecule tirun)
-          for agg = (chem:make-aggregate nil)
-          for fail = nil
-          do (format t "minimize-ligands ~a~%" tirun)
-          do (chem:add-matter agg mol)
-             (funcall (find-symbol "ASSIGN-ATOM-TYPES" :leap) agg)
-             (cando:jostle agg)
-             (loop named one-loop
-                   for time below 5
-                   do (format t "Minimizing ~a for the ~a time~%" tirun time)
-                   do (setf fail nil)
-                      (handler-case
-                          (energy:minimize agg :print-intermediate-results nil
-                                               :resignal-error t)
-                        (chem:minimizer-error (err)
-                          (setf fail t)
-                          (format t "IN minimize-ligands - hit minimizer error trying again~%")))
-                      (unless fail (return-from one-loop)))
-             (when fail (setf (has-problem tirun) t)
-                   (format t "The tirun ~a could not be optimized - flagging it as having a problem~%" tirun)))))
 
 (defun sorted-map-atoms (tirun assembly)
   (let ((molecule (molecule tirun))
@@ -772,7 +748,41 @@ But this code is necessary for the tirun demo."
                 (chem:set-configuration moveable-atom (cdr stereochemistry-assignment))))))
         moveable-atoms fixed-pose-atoms))
 
-(defun pose-ligands-using-pattern (calculation pattern docked-molecule &key stereochemical-restraints)
+(defclass minimize-molecule ()
+  ((molecule :initarg :molecule :accessor molecule)
+   (minimize :initform t :initarg :minimize :accessor minimize)))
+
+(defun minimize-molecules (minimize-molecules)
+  "ligands is a list of minimize-ligand instances each containing a molecule
+and minimize = T when that molecule should be minimized.  Minimize the energy of each one.
+Return a list of minimized-ligand instances.  Each minimized-ligand instance
+keeps track if the minimization encountered a problem."
+  (loop for one in minimize-molecules
+        for mol = (molecule one)
+        for agg = (chem:make-aggregate nil)
+        for fail = nil
+        do (format t "minimize-molecules ~a~%" mol)
+        do (chem:add-matter agg mol)
+           (funcall (find-symbol "ASSIGN-ATOM-TYPES" :leap) agg)
+           (cando:jostle agg)
+           (loop named one-loop
+                 for time below 5
+                 do (format t "Minimizing ~a for the ~a time~%" mol time)
+                 do (setf fail nil)
+                    (handler-case
+                        (energy:minimize agg :print-intermediate-results nil
+                                             :resignal-error t)
+                      (chem:minimizer-error (err)
+                        (setf fail t)
+                        (format t "IN minimize-ligands - hit minimizer error trying again~%")))
+                    (unless fail (return-from one-loop)))
+        do (when fail (format t "The molecule ~a could not be optimized - flagging it as having a problem~%" mol))
+        collect (make-instance 'minimize-molecule
+                               :molecule mol
+                               :minimize fail)))
+
+#+(or)
+(defun pose-molecules-using-pattern (calculation pattern docked-molecule &key stereochemical-restraints)
   (let* ((fixed-atoms-map (pattern-atoms pattern docked-molecule))
          (fixed-order (let (fo)
                         (maphash (lambda (index atom)
@@ -792,19 +802,29 @@ But this code is necessary for the tirun demo."
           do (anchor-to-pose moveable-atoms fixed-atoms :stereochemical-restraints stereochemical-restraints)))
   (minimize-ligands calculation))
 
-(defun pose-ligands-using-similarity (calculation docked-molecule)
-  (let ((tiruns (ligands calculation)))
-    (loop for tirun in tiruns
-          for molecule = (molecule tirun)
-          do (multiple-value-bind (equiv diff1 diff2)
-                 (molecule-graph.max-clique:compare-molecules molecule docked-molecule)
-               #+(or)(format t "  pose-ligands-using-similarity equiv -> ~a~%" equiv)
-               (let ((moveable-atoms (mapcar #'car equiv))
-                     (fixed-atoms (mapcar #'cdr equiv)))
-                 (chem:superpose-one molecule moveable-atoms fixed-atoms)
-                 (anchor-to-pose moveable-atoms fixed-atoms)))))
-  (minimize-ligands calculation))
+(defun pose-molecules-using-similarity (molecules docked-molecule)
+  (loop for molecule in molecules
+        do (multiple-value-bind (equiv diff1 diff2)
+               (molecule-graph.max-clique:compare-molecules molecule docked-molecule)
+             #+(or)(format t "  pose-ligands-using-similarity equiv -> ~a~%" equiv)
+             (let ((moveable-atoms (mapcar #'car equiv))
+                   (fixed-atoms (mapcar #'cdr equiv)))
+               (chem:superpose-one molecule moveable-atoms fixed-atoms)
+               (anchor-to-pose moveable-atoms fixed-atoms))))
+  (let ((jobs (mapcar (lambda (mol)
+                        (make-instance 'tirun:minimize-molecule
+                                       :molecule mol))
+                      molecules)))
+    (loop repeat 5
+          do (setf jobs (minimize-molecules jobs))
+          if (some #'minimize jobs)
+            do (loop for job in jobs
+                     when (minimize job)
+                       do (cando:jostle (molecule job)))
+          else
+            do (return (mapcar #'molecule jobs)))))
 
+#+(or)
 (defun pose-ligands (calculation fixed-atoms &key stereochemical-restraints)
   (let ((tiruns (ligands calculation)))
     (loop for tirun in tiruns

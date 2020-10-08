@@ -82,8 +82,9 @@
    #:layout-ligands
    #:layout-2
    #:build-ligands
-   #:pose-ligands
-   #:pose-ligands-using-pattern
+   #:minimize-molecule
+   #:tirun-structure
+   #:pose-molecules-using-similarity
    #:setup-am1-calculations
    #:check-am1-calculations
    #:read-am1-charges

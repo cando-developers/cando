@@ -26,6 +26,7 @@
     #:save-tirun
     #:load-ligands
     #:load-receptor
+    #:load-template-ligand
     #:lomap
     #:new-pas
     #:new-tirun

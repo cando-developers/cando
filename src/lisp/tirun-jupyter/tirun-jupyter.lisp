@@ -19,14 +19,19 @@
      :initarg :composer-data
      :initform nil
      :trait t)
-   (receptor-string
-     :accessor receptor-string
-     :initarg :receptor-string
-     :initform nil
-     :trait t)
    (template-ligand-string
     :accessor template-ligand-string
     :initarg :template-ligand-string
+    :initform nil
+    :trait t)
+   (receptor
+    :accessor receptor
+    :initarg :receptor
+    :initform nil
+    :trait t)
+   (template-ligand
+    :accessor template-ligand
+    :initarg :template-ligand
     :initform nil
     :trait t)
    (ligands-string
@@ -101,7 +106,14 @@
 
 (def-dyn-widget box-layout
   (make-instance 'w:layout :width "auto" :flex-flow "row wrap"))
-         
+
+
+(defun receptor-to-string (receptor)
+  (chem:aggregate-as-mol2-string receptor t))
+
+(defun receptor-string (app)
+  (when (receptor app)
+    (receptor-to-string (receptor app))))
 
 (defun initialize-system ()
   (unless *app*
@@ -119,12 +131,6 @@
       (leap:add-pdb-res-map '((1 :NMA :NME))))))
 
 
-(defun new-tirun (&rest initargs)
-  (initialize-system)
-  (setf *app* (apply #'make-instance 'app initargs))
-  (values))
-
-
 (defun app-save-path (&rest initargs &key job-name &allow-other-keys)
   (let ((path (make-pathname :name (or job-name
                                        (and *app*
@@ -132,6 +138,11 @@
                                        "default")
                              :type "dat")))
     (values path (probe-file path))))
+
+(defun new-tirun (&rest initargs)
+  (initialize-system)
+  (setf *app* (apply #'make-instance 'app initargs))
+  (values))
 
 
 (defun load-tirun (&rest initargs)
@@ -157,7 +168,7 @@
         (write-line "Load complete.")
         (finish-output))
       (t
-        (format *error-output* "Unable to file save file named ~A~%" save-path))))
+        (format *error-output* "Unable to find save file named ~A~%" save-path))))
   (values))
 
 
@@ -206,13 +217,12 @@
   "Called from file task page to parse receptor."
   (declare (ignore progress-callback))
   (handler-case
-      (with-slots (receptor-string)
-                  *app*
-        (setf receptor-string (babel:octets-to-string (cdr (assoc "content" (car parameter) :test #'string=)))
-              (tirun:receptors (tirun-calculation *app*))
-              (list (with-input-from-string (input-stream receptor-string)
-                      (leap.pdb:load-pdb-stream input-stream))))
-        t)
+      (with-slots (receptor)
+          *app*
+        (let ((receptor-string (babel:octets-to-string (cdr (assoc "content" (car parameter) :test #'string=)))))
+          (setf (receptor *app*) (with-input-from-string (input-stream receptor-string)
+                                   (leap.pdb:load-pdb-stream input-stream)))
+        t))
     (leap.pdb:pdb-read-error (condition)
       (princ condition *error-output*)
       nil)
@@ -229,7 +239,7 @@
                   *app*
         (setf template-ligand-string (babel:octets-to-string (cdr (assoc "content" (car parameter) :test #'string=))))
         (format t "About to parse ligand pdb file~%")
-        (setf (tirun:template-ligand (tirun-calculation *app*))
+        (setf (template-ligand *app*)
               (with-input-from-string (input-stream template-ligand-string)
                 (leap.pdb:load-pdb-stream input-stream :ignore-missing-topology t)))
         (format t "Done parse ligand pdb file~%")
@@ -262,15 +272,15 @@
         (when (equal new-value 1)
           (nglview:handle-resize ngl))))
     ;; Add the receptor if one is already defined.
-    (when (receptor-string *app*)
+    (when (receptor *app*)
       (nglview:add-structure ngl (make-instance 'nglview:text-structure :text (receptor-string *app*))))
     ;; Listen for changes to the receptor and add or delete when needed.
-    (w:observe *app* :receptor-string
+    (w:observe *app* :receptor
       (lambda (inst type name old-value new-value source)
         (declare (ignore inst type name old-value source))
         (nglview:remove-all-components ngl)
         (when new-value
-          (nglview:add-structure ngl (make-instance 'nglview:text-structure :text new-value)))))
+          (nglview:add-structure ngl (make-instance 'nglview:text-structure :text (receptor-to-string new-value))))))
     container))
 
 
@@ -451,7 +461,7 @@
       (nglview:add-structure (view-ligand-ngl instance)
                              (make-instance 'nglview:text-structure
                                             :id "receptor"
-                                            :text new-value))))
+                                            :text (receptor-to-string new-value)))))
   ;; If the all-ligands changes then reload the whole thing.
   (w:observe *app* :all-ligands
     (lambda (inst type name old-value new-value source)
@@ -466,7 +476,7 @@
     ;; Update the view
     (refresh-ligands-view page)
     ;; If the receptor-string is already set then load the current receptor.
-    (when (receptor-string *app*)
+    (when (receptor *app*)
       (nglview:add-structure (view-ligand-ngl page)
                              (make-instance 'nglview:text-structure
                                             :id "receptor"
@@ -1200,9 +1210,18 @@ lisp_jobs_only_on=172.234.2.1
         (finish-output)
         (generate-tar-file (job-name *app*) dir tar-file from-path)))))
 
+(defun transfer-app-settings-to-calculation (app)
+  (let ((calc (tirun-calculation app)))
+    (setf (tirun:receptors calc) (list (receptor app))
+          (tirun:ligands calc) (mapcar (lambda (mol)
+                                         (make-instance 'tirun:tirun-structure :name (chem:get-name mol)
+                                                                               :drawing mol
+                                                                               :molecule mol))
+                                       (selected-ligands app)))))
 
 (defun jobs ()
   "Configure and write TI jobs to jobs directory."
+  (transfer-app-settings-to-calculation *app*)
   (let ((container (make-instance 'w:accordion :selected-index 0)))
     (dolist (schema-group tirun::*default-calculation-settings*)
       (cw:add-page container
@@ -1218,7 +1237,7 @@ lisp_jobs_only_on=172.234.2.1
 (defun read-submit-stream (num)
   (let ((buffer (make-array 15 :adjustable t :fill-pointer 0)))
     (flet ((grab ()
-             (loop for line = (read-line (tirun-jupyter::submit-stream tirun-jupyter::*app*) nil :eof)
+             (loop for line = (read-line (submit-stream *app*) nil :eof)
                    for index below num
                    do (vector-push-extend line buffer)
                    until (eq line :eof))))
@@ -1326,20 +1345,31 @@ lisp_jobs_only_on=172.234.2.1
                                              :children (list messages))))))
 
 
+
 (defun composer ()
   (let ((instance (structure-editor:composer "Draw Ligands" "Parse Ligands")))
     (w:link *app* :composer-data instance :data t)
     (w:observe instance :aggregate
-      (lambda (inst type name old-value new-value source)
-        (declare (ignore (inst type name old-value source)))
-        (setf all-ligands (tirun::assemble-ligands (tirun-calculation *app*) new-value :verbose t)
-              selected-ligands all-ligands
-              all-edges nil)
-        (tirun::pose-ligands-using-similarity
-         (tirun-jupyter::tirun-calculation tirun-jupyter::*app*)
-         (chem:content-at (tirun::template-ligand (tirun-jupyter::tirun-calculation tirun-jupyter::*app*)) 0))
-        (save-tirun)))
+               (lambda (inst type name old-value new-value source)
+                 (declare (ignore (inst type name old-value source)))
+                 ;; tirun-ligands are what goes in (ligands *app)
+                 (multiple-value-bind (molecules tirun-ligands)
+                     (tirun:assemble-ligands new-value :verbose t)
+                   (let* ((template-molecule (template-ligand *app*))
+                          (posed-molecules (tirun:pose-molecules-using-similarity molecules template-molecule)))
+                     (setf all-ligands posed-molecules
+                           selected-ligands all-ligands
+                           all-edges nil)
+                     (save-tirun)))))
     (make-view-ligand-page instance "View Ligands")
     instance))
 
 
+
+(defun load-chemdraw (filename)
+  "Like composer - but gets the structure sketch from a chemdraw file"
+  (let ((sketch (tirun:load-chem-draw-tirun filename)))
+    (let ((molecules (tirun::assemble-ligands sketch)))
+      (let ((posed-molecules (pose-molecules-using-similarity molecules (template-ligand *app*))))
+        (setf all-ligands posed-molecules
+              selected-ligands all-ligands)))))

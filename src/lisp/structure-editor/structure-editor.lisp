@@ -15,10 +15,27 @@
                         (format t "~a -> ~a  ~a~%" a1 a2 o)))
                     mol)))
 
-(defun json-lookup (json key)
+(defun json-keys (json)
+  (mapcar #'car json))
+
+(defun json-lookup (json key &optional context)
   (unless (eq (car json) :obj)
-    (error "The json must start with :obj but it doesn't json: ~s" json))
+    (if context
+        (error "In json context: ~s~%Looking for key: ~a - the json  must start with :obj but it doesn't json keys: ~s" context key (json-keys json))
+        (error "Looking for key: ~a - the json  must start with :obj but it doesn't json keys: ~s" key (json-keys json))))
   (cdr (assoc key (cdr json) :test #'string=)))
+
+(defun json-lookup-not-nil (json key &optional context)
+  (unless (eq (car json) :obj)
+    (if context
+        (error "In json context: ~s~%Looking for key: ~a - the json  must start with :obj but it doesn't json: ~s" context key (json-keys json))
+        (error "Looking for key: ~a - the json  must start with :obj but it doesn't json: ~s" key (json-keys json))))
+  (let* ((pair (assoc key (cdr json) :test #'string=)))
+    (unless pair
+      (if context
+          (error "In json context: ~s~%Could not find key: ~a keys " context key (json-keys json))
+          (error "Could not find key: ~a" key)))
+    (cdr pair)))
 
 (defun describe-json (json)
   (loop for entry in json
@@ -144,8 +161,8 @@
                       (json-lookup coord-2d "y")
                       0.0))
          (annotation (json-lookup json "annotation"))
-         (ctab (json-lookup json "ctab"))
-         (jnodes (json-lookup ctab "nodes"))
+         (ctab (json-lookup-not-nil json "ctab" json))
+         (jnodes (json-lookup ctab "nodes" json))
          (jconnectors (json-lookup ctab "connectors")))
     (when (stringp annotation)
       (let ((property-list (property-list-from-annotation annotation)))
