@@ -150,9 +150,9 @@
                    when (and (aromaticity:is-aromatic a1)
                              (aromaticity:is-aromatic a2))
                      do (cond
-                          ((eq (chem:get-order bond) :single-bond)
+                          ((chem:single-bond-p (chem:get-order-from-atom bond a1))
                            (set-bond-type bond 7))
-                          ((eq (chem:get-order bond) :double-bond)
+                          ((eq (chem:get-order-from-atom bond a1) :double-bond)
                            (set-bond-type bond 8))
                           (t nil)))))
                                         ; First look for delocalized bonds - carboxyl groups, nitro groups
@@ -177,7 +177,7 @@
      (let ((bond (chem:get-bond-to a1 a2)))
        (when (not (has-bond-type bond))
          (cond
-           ((eq (chem:get-order bond) :single-bond)
+           ((eq (chem:get-order-from-atom bond a1) :single-bond)
             (cond
               ((or (and (= (chem:get-ionization a1) -1) (= (chem:get-ionization a2) +1))
                    (and (= (chem:get-ionization a1) 1) (= (chem:get-ionization a2) -1)))
@@ -186,7 +186,7 @@
                    (and (= (chem:get-ionization a1) -1) (= (chem:get-ionization a2) 0)))
                (set-bond-type bond 09))     ; 0- polarized bond
               (t (set-bond-type bond 1)))) ; simple single bond
-           ((eq (chem:get-order bond) :double-bond)
+           ((eq (chem:get-order-from-atom bond a1) :double-bond)
             (set-bond-type bond 02))          ; simple double bond
            (t (set-bond-type bond 03))))))  ; triple bond
    mol)

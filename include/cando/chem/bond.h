@@ -82,6 +82,7 @@ public:
  public:
   static Bond_sp create(Atom_sp a1, Atom_sp a2, BondOrder o= singleBond);
   static void canonicalizeBondOrder(Atom_sp& a1, Atom_sp& a2, BondOrder& order);
+
   static bool singleBondP(BondOrder order) {
     return (order == singleBond ||
             order == singleDashBegin ||

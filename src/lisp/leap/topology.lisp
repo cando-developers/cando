@@ -56,7 +56,7 @@ Return (values compressed-atom-name-map max-atom-name-length). "
 (defun bond-order-int (atom1 atom2)
   "Return the bond order as an integer"
   (let* ((bond (chem:get-bond-to atom1 atom2)))
-    (chem:get-order-as-int bond)))
+    (chem:get-order-from-atom-as-int bond atom1)))
                
 (defun collapse-stretch-parameters (kb-vec r0-vec atom1-vec atom2-vec)
   (let ((j-vec (make-array 256 :fill-pointer 0 :adjustable t))

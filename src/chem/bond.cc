@@ -65,6 +65,11 @@ SYMBOL_EXPORT_SC_(ChemKwPkg,singleDashEnd);
 
 string	XmlName_Bond = "bond";
 
+CL_DEFUN bool chem__single_bond_p(chem::BondOrder o)
+{
+  return Bond_O::singleBondP(o);
+}
+
 
 Bond_sp	Bond_O::create(Atom_sp from, Atom_sp to, BondOrder o)
 {
