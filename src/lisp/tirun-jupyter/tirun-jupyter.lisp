@@ -34,27 +34,14 @@
     :initarg :template-ligand
     :initform nil
     :trait t)
-   (ligands-string
-    :accessor ligands-string
-    :initarg :ligands-string
-    :initform nil
-    :trait t)
-   (ligands-format
-    :accessor ligands-format
-    :initarg :ligands-format
-    :initform nil
-    :trait t)
    (all-ligands
     :accessor all-ligands
-    :initform nil
-    :trait t)
-   (selected-ligand-names
-    :accessor selected-ligand-names
-    :initarg :selected-ligand-names
+    :initarg all-ligands
     :initform nil
     :trait t)
    (selected-ligands
     :accessor selected-ligands
+    :initarg selected-ligands
     :initform nil
     :trait t)
    (all-edges
@@ -111,6 +98,12 @@
 (defvar *app* nil)
 
 
+(defmethod make-instance ((class (eql (find-class 'app))) &rest initargs)
+  (if *app*
+    (apply #'reinitialize-instance *app* initargs)
+    (setf *app* (call-next-method))))
+
+
 (def-dyn-widget box-layout
   (make-instance 'w:layout :width "auto" :flex-flow "row wrap"))
 
@@ -146,9 +139,10 @@
                              :type "dat")))
     (values path (probe-file path))))
 
+
 (defun new-tirun (&rest initargs)
   (initialize-system)
-  (setf *app* (apply #'make-instance 'app initargs))
+  (apply #'make-instance 'app initargs)
   (values))
 
 
@@ -161,17 +155,7 @@
         (finish-output)
         (format t "Loading application state from ~A...~%" save-path)
         (finish-output)
-        (setf *app* (cando:load-cando save-path))
-        (when (and (ligands-string *app*)
-                   (ligands-format *app*)
-                   (not (all-ligands *app*)))
-          (do-parse-ligands *app*))
-        (when (and (selected-ligand-names *app*)
-                   (not (selected-ligands *app*)))
-          (setf (selected-ligands *app*)
-                (mapcar (lambda (name)
-                          (find name (all-ligands *app*) :key #'chem:get-name))
-                        (selected-ligand-names *app*))))
+        (cando:load-cando save-path)
         (write-line "Load complete.")
         (finish-output))
       (t
@@ -184,7 +168,6 @@
     (format t "Saving application state to ~A...~%" save-path)
     (finish-output)
     (ensure-directories-exist save-path)
-    (setf (selected-ligand-names *app*) (mapcar #'chem:get-name (selected-ligands *app*)))
     (cando:save-cando *app* save-path)
     (write-line "Save complete.")
     (finish-output))
@@ -494,30 +477,22 @@
     (values)))
 
 
-(defun do-parse-ligands (instance)
-  (with-slots (ligands-string ligands-format all-ligands)
-              instance
-    (setf all-ligands
-          (with-input-from-string (input-stream ligands-string)
-            (cond
-              ((string-equal ligands-format "sdf")
-                (sdf:parse-sdf-file input-stream))
-              ((string-equal ligands-format "mol2")
-                (chem:read-mol2-list input-stream))
-              (t
-                (error "Unknown file type ~A." ligands-format)))))))
-
-
 (defun parse-ligands (parameter progress-callback)
   "Called from the file task page to actually parse the ligands file."
   (declare (ignore progress-callback))
   (handler-case
-      (with-slots (ligands-string ligands-format)
-                  *app*
-        (setf ligands-string (babel:octets-to-string (cdr (assoc "content" (car parameter) :test #'string=)))
-              ligands-format (pathname-type (cdr (assoc "name" (car parameter) :test #'string=))))
-        (do-parse-ligands *app*)
-        (setf selected-ligands all-ligands
+      (let ((ligands-string (babel:octets-to-string (cdr (assoc "content" (car parameter) :test #'string=))))
+            (ligands-format (pathname-type (cdr (assoc "name" (car parameter) :test #'string=)))))
+        (setf all-ligands
+              (with-input-from-string (input-stream ligands-string)
+                (cond
+                  ((string-equal ligands-format "sdf")
+                    (sdf:parse-sdf-file input-stream))
+                  ((string-equal ligands-format "mol2")
+                    (chem:read-mol2-list input-stream))
+                  (t
+                    (error "Unknown file type ~A." ligands-format))))
+              selected-ligands all-ligands
               all-edges nil)
         t)
     (esrap:esrap-parse-error (condition)
