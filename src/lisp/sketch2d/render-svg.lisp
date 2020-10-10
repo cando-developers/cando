@@ -130,17 +130,21 @@ This will place the calculated bond on one or the other side of the x1,y1-x2,y2 
                                                                         (points obj)))
                                :class (%class obj))))
 
-(defun draw-atom-name (scene atom-node)
-  (let* ((pos (pos atom-node))
-         (xs1 (geom:vx pos))
-         (ys1 (geom:vy pos))
-         (label #+debug-sketch2d (string (if (debug-info atom-node)
-                                             (label (debug-info atom-node))
-                                             (chem:get-name (atom atom-node))))
-                #-debug-sketch2d (string (chem:get-name (atom atom-node)))))
-    (cl-svg:text scene (:x xs1 :y (- ys1 *lower-text*)
-                        :class (format nil "atom name ~A" (chem:get-name (atom atom-node))))
-                 label)))
+(defun draw-atom-name (scene atom-node show-names)
+  (unless show-names
+    (if (and (<= (chem:get-atomic-number (atom atom-node)) 1)
+             (not (eq show-names :light)))
+        (return-from draw-atom-name)
+        (let* ((pos (pos atom-node))
+               (xs1 (geom:vx pos))
+               (ys1 (geom:vy pos))
+               (label #+debug-sketch2d (string (if (debug-info atom-node)
+                                                   (label (debug-info atom-node))
+                                                   (chem:get-name (atom atom-node))))
+                      #-debug-sketch2d (string (chem:get-name (atom atom-node)))))
+          (cl-svg:text scene (:x xs1 :y (- ys1 *lower-text*)
+                              :class (format nil "atom name ~A" (chem:get-name (atom atom-node))))
+                       label)))))
 
 (defun draw-atom-text (scene atom-node)
   (let* ((pos (pos atom-node))
@@ -484,8 +488,7 @@ This will place the calculated bond on one or the other side of the x1,y1-x2,y2 
 (defgeneric render-node (scene node))
 
 (defmethod render-node (scene (node atom-node))
-  (when *show-names*
-    (draw-atom-name scene node))
+  (draw-atom-name scene node *show-names*)
   (when (and (or *show-all* (renderp node)) (labelp node))
     (draw-atom-text scene node)))
 

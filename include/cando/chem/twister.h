@@ -88,6 +88,8 @@ public:
 		 */
 	void	rotate(double angle);
 
+        double currentDihedralAngleRadians();
+        
 		/*! Rotate the twister to angle(radians) absolute
 		 */
 	void	rotateAbsolute(double angle);
@@ -139,8 +141,7 @@ CL_DEFMETHOD     uint	numberOfTwisters() { return this->_Twisters.size(); };
 CL_DEFMETHOD   void perturbConformation();
     string description() const;
 
-
-    DEFAULT_CTOR_DTOR(TwisterDriver_O);
+    TwisterDriver_O(Aggregate_sp agg) : _Aggregate(agg) {};
     };
 
 

@@ -343,9 +343,9 @@ CL_LISPIFY_NAME("assignCahnIngoldPrelogPriorityToAtomsRelativePriority");
 				 bi!=myatom->bonds_end(); bi++ )
 		    {
 			int bondOrder = 1;
-			if ( (*bi)->getOrder() == singleBond ) bondOrder = 1;
-			if ( (*bi)->getOrder() == doubleBond ) bondOrder = 2;
-			if ( (*bi)->getOrder() == tripleBond ) bondOrder = 3;
+			if ( Bond_O::singleBondP((*bi)->getRawOrder()) ) bondOrder = 1;
+			if ( (*bi)->getRawOrder() == doubleBond ) bondOrder = 2;
+			if ( (*bi)->getRawOrder() == tripleBond ) bondOrder = 3;
 			for ( int oi=0; oi<bondOrder; oi++ )
 			{
 			    mys.push_back(this->_p[(*bi)->getOtherAtom(myatom)->getRelativePriority(cip)]);

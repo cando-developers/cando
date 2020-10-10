@@ -3,6 +3,7 @@
 
 (defstruct molecule-graph atoms edges)
 
+
 (defun build-molecule-graph (molecule &key (exclude-hydrogens t))
   (let ((atoms (make-array 256 :adjustable t :fill-pointer 0)))
     (cando:do-atoms (atm molecule)
@@ -275,6 +276,110 @@ Otherwise pass a function that takes two atoms and returns T if they are matchab
                                  unless (gethash atm mol2-matches)
                                    collect atm)))
       (values matches mol1-mismatches mol2-mismatches))))
-          
-         
-    
+
+(defun in-cluster-p (atm clusters)
+  (loop for cluster in clusters
+        when (member atm cluster)
+          do (return-from in-cluster-p t))
+  nil)
+
+(defun atom-not-in-cluster (equivs clusters)
+  (loop for pair in equivs
+        for atm = (car pair)
+        unless (in-cluster-p atm clusters)
+          do (return-from atom-not-in-cluster atm)))
+
+(defclass cluster-node ()
+  ((atm :initarg :atm :accessor atm)
+   (equiv :initarg :equiv :accessor equiv)
+   (edges :initform nil :accessor edges)))
+
+(defclass cluster-graph ()
+  ((vertices :initform nil :accessor vertices)))
+
+
+(defmethod spanning:vertex-edges ((vertex cluster-node) (graph cluster-graph))
+  (edges vertex))
+
+(defmethod spanning:other-vertex ((edge cluster-node) (vertex cluster-node))
+  edge)
+
+
+
+(defun largest-connected-cluster-of-equivalent-atoms (max-equiv molecule)
+  "Calculate the largest connected cluster of atoms that are equivalent"
+  (let ((graph (make-instance 'cluster-graph))
+        (atm-to-node (make-hash-table)))
+    ;; Create a graph with a node for each equivelance.
+    ;; Containing only the equiv atoms using the first
+    ;; atom of each equivilance
+    (loop for pair in max-equiv
+          for atm = (car pair)
+          for node = (make-instance 'cluster-node :atm atm :equiv pair)
+          do (setf (gethash atm atm-to-node ) node)
+             (push node (vertices graph)))
+    ;; Connect the nodes with edges but only between atoms that are in the equiv set
+    (loop for pair in max-equiv
+          for atm = (car pair)
+          for node = (gethash atm atm-to-node)
+          for bonds = (chem:bonds-as-list atm)
+          do (loop for bond in bonds
+                   for other-atm = (chem:get-other-atom bond atm)
+                   for other-node = (gethash other-atm atm-to-node)
+                   when other-node
+                     do (push other-node (edges node))
+                        (push node (edges other-node))))
+    ;; Now find the largest connected graph
+    (let (clusters)
+      (tagbody
+       top
+         (let* ((atm (atom-not-in-cluster max-equiv clusters))
+                (root-node (gethash atm atm-to-node)))
+           (when atm
+             (let* ((spanning-tree (spanning:calculate-spanning-tree graph root-node))
+                    cluster)
+               (maphash (lambda (node back-span)
+                          (push (atm node) cluster))
+                        spanning-tree)
+               (push (cons (length cluster) cluster) clusters))
+             (go top))))
+      (let* ((sorted-clusters (sort clusters #'> :key #'car))
+             (largest-cluster (cdr (car sorted-clusters))))
+        (if largest-cluster
+            (let ((equiv (mapcar (lambda (atm)
+                                   (let ((node (gethash atm atm-to-node)))
+                                     (equiv node)))
+                                 largest-cluster)))
+              equiv)
+            max-equiv)))))
+
+(defun compare-molecules-return-largest-connected-cluster-of-equivalent-atoms
+    (molecule1 molecule2
+     &rest rest
+     &key
+       topological-constraint-theta
+       exclude-hydrogens
+       atom-match-callback)
+  "Compare two molecules using max-clique and then identify the largest cluster of connected equivalent atoms.
+Then move the equivalent atoms that are not part of the largest cluster of connected equivalent atoms into the difference lists.
+Return the equivalent cluster and the new expanded differences."
+  (multiple-value-bind (heavy-equivs heavy-diff1 heavy-diff2)
+      (apply 'molecule-graph.max-clique:compare-molecules
+             molecule1
+             molecule2
+             rest)
+    (let* ((cluster-equiv (largest-connected-cluster-of-equivalent-atoms heavy-equivs molecule1))
+           (cluster-ht (make-hash-table :test 'equal)))
+      ;; Create a hash-table of the largest connected cluster of equivalent pairs
+      (loop for equiv in cluster-equiv
+            do (setf (gethash equiv cluster-ht) t))
+      ;; Move equiv atoms not connected to the largest connected cluster
+      ;; into the difference lists
+      (loop for equiv in heavy-equivs
+            unless (gethash equiv cluster-ht)
+              do (let ((a1 (car equiv))        ; first atom in equiv pair
+                       (a2 (cdr equiv)))       ; atom it is equiv to
+                   (push a1 heavy-diff1)
+                   (push a2 heavy-diff2)))
+      (values cluster-equiv heavy-diff1 heavy-diff2))))
+      

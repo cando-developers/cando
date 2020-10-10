@@ -1171,79 +1171,6 @@ are in the order (low, middle, high) and the column eigen-vectors are in the sam
     (augment-sketch-with-stereochemistry sketch2d)
     sketch2d))
 
-(defun in-cluster-p (atm clusters)
-  (loop for cluster in clusters
-        when (member atm cluster)
-          do (return-from in-cluster-p t))
-  nil)
-
-(defun atom-not-in-cluster (equivs clusters)
-  (loop for pair in equivs
-        for atm = (car pair)
-        unless (in-cluster-p atm clusters)
-          do (return-from atom-not-in-cluster atm)))
-
-(defclass cluster-node ()
-  ((atm :initarg :atm :accessor atm)
-   (equiv :initarg :equiv :accessor equiv)
-   (edges :initform nil :accessor edges)))
-
-(defclass cluster-graph ()
-  ((vertices :initform nil :accessor vertices)))
-
-(defmethod spanning:vertex-edges ((vertex cluster-node) (graph cluster-graph))
-  (edges vertex))
-
-(defmethod spanning:other-vertex ((edge cluster-node) (vertex cluster-node))
-  edge)
-
-(defun largest-cluster-of-equiv (max-equiv molecule)
-  (let ((graph (make-instance 'cluster-graph))
-        (atm-to-node (make-hash-table)))
-    ;; Create a graph with a node for each equivelance.
-    ;; Containing only the equiv atoms using the first
-    ;; atom of each equivilance
-    (loop for pair in max-equiv
-          for atm = (car pair)
-          for node = (make-instance 'cluster-node :atm atm :equiv pair)
-          do (setf (gethash atm atm-to-node ) node)
-             (push node (vertices graph)))
-    ;; Connect the nodes with edges but only between atoms that are in the equiv set
-    (loop for pair in max-equiv
-          for atm = (car pair)
-          for node = (gethash atm atm-to-node)
-          for bonds = (chem:bonds-as-list atm)
-          do (loop for bond in bonds
-                   for other-atm = (chem:get-other-atom bond atm)
-                   for other-node = (gethash other-atm atm-to-node)
-                   when other-node
-                     do (push other-node (edges node))
-                        (push node (edges other-node))))
-    ;; Now find the largest connected graph
-    (let (clusters)
-      (tagbody
-       top
-         (let* ((atm (atom-not-in-cluster max-equiv clusters))
-                (root-node (gethash atm atm-to-node)))
-           (when atm
-             (let* ((spanning-tree (spanning:calculate-spanning-tree graph root-node))
-                    cluster)
-               (maphash (lambda (node back-span)
-                          (push (atm node) cluster))
-                        spanning-tree)
-               (push (cons (length cluster) cluster) clusters))
-             (go top))))
-      (let* ((sorted-clusters (sort clusters #'> :key #'car))
-             (largest-cluster (cdr (car sorted-clusters))))
-        (if largest-cluster
-            (let ((equiv (mapcar (lambda (atm)
-                                   (let ((node (gethash atm atm-to-node)))
-                                     (equiv node)))
-                                 largest-cluster)))
-              equiv)
-            max-equiv)))))
-
-
 (defgeneric similar-sketch2d (thing anchor-sketch2d &key accumulate-coordinates atom-match-callback))
 
 (defmethod similar-sketch2d ((molecule chem:molecule) anchor-sketch2d &key accumulate-coordinates (atom-match-callback #'molecule-graph:element-match))
@@ -1259,7 +1186,7 @@ Otherwise pass a function that takes two atoms and returns T if they are matchab
     #+(or)(format t "About to compare molecules~%")
     (multiple-value-bind (max-equiv diff1 diff2)
         (molecule-graph.max-clique:compare-molecules molecule anchor-molecule :atom-match-callback atom-match-callback :topological-constraint-theta 2)
-      (let ((equiv (largest-cluster-of-equiv max-equiv molecule)))
+      (let ((equiv (molecule-graph.max-clique:largest-connected-cluster-of-equivalent-atoms max-equiv molecule)))
         #+(or)(progn
                 (format t "mol1: ~s~%" molecule)
                 (format t "mol2: ~s~%" anchor-molecule)

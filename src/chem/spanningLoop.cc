@@ -365,7 +365,7 @@ Atom_sp	SpanningLoop_O::nextSpanningAtom(std::function<bool (Atom_sp fromAtom, B
 	for ( i=0; i<this->aCurSpan->coordination(); i++ ) {
           Bond_sp bond = this->aCurSpan->bondAtIndex(i);
           aBond = bond->getOtherAtom(this->aCurSpan);
-          BondOrder order = bond->getOrder();
+          BondOrder order = bond->getOrderFromAtom(this->aCurSpan);
           bool followBond = bondTester(this->aCurSpan,bond);
 	    /* If the atom is visible then add it */
           if ( followBond && this->bSpanAtomVisible( aBond, order, &bSeenBefore ) ) {

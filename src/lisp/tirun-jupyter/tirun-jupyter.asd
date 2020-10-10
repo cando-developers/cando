@@ -16,5 +16,6 @@
   :components
   ((:file "packages")
    (:file "tirun-jupyter")
+   (:file "twister")
    ))
 

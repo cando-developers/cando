@@ -63,7 +63,7 @@ class Bond_O : public core::CxxObject_O
 
   friend	class Loop;
 public:
-  BondOrder	order;
+  BondOrder	        _DirectionalOrder;
   Atom_sp		_Atom1;
   Atom_sp		_Atom2;
     /*! Store Symbol keyed properties of bond in alist */
@@ -100,17 +100,18 @@ CL_DEFMETHOD   Atom_sp getAtom1() const { return this->_Atom1; };
 CL_LISPIFY_NAME("getAtom2");
 CL_DEFMETHOD   Atom_sp getAtom2() const { return this->_Atom2; };
 
-CL_LISPIFY_NAME("getOrder");
-CL_DEFMETHOD   BondOrder getOrder()	{ return this->order; };
-CL_DEFMETHOD int getOrderAsInt()	{ return this->order; };
-  string	getOrderAsString();
-  void	setOrder(BondOrder o)	{ this->order=o; };
-CL_LISPIFY_NAME("setOrder");
-CL_DEFMETHOD   void	setOrderFromInt(int o)	{ this->order=(BondOrder)(o); };
-  Atom_sp	getOtherAtom(Atom_sp atom ) const;
-  bool	isInterResidueBond(core::HashTable_sp atomToResidue);
-  bool	isIntraResidueBond(core::HashTable_sp atomToResidue ) {return !this->isInterResidueBond(atomToResidue);};
-  void	redirectToAtomCopies();
+ BondOrder getOrderFromAtom(Atom_sp fromAtom);
+ 
+ CL_DEFMETHOD int getOrderFromAtomAsInt(Atom_sp fromAtom)	{ return this->getOrderFromAtom(fromAtom); };
+ string	getOrderFromAtomAsString(Atom_sp fromAtom);
+ void	setOrder(BondOrder o)	{ this->_DirectionalOrder=o; };
+ BondOrder getRawOrder() { return this->_DirectionalOrder;};
+ CL_LISPIFY_NAME("setOrder");
+ CL_DEFMETHOD   void	setOrderFromInt(int o)	{ this->setOrder((BondOrder)o); };
+ Atom_sp	getOtherAtom(Atom_sp atom ) const;
+ bool	isInterResidueBond(core::HashTable_sp atomToResidue);
+ bool	isIntraResidueBond(core::HashTable_sp atomToResidue ) {return !this->isInterResidueBond(atomToResidue);};
+ void	redirectToAtomCopies();
 
 	/*! Dump all of the properties associated with this matter */
   string	propertiesAsString() const;

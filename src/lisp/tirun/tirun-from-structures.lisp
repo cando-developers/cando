@@ -91,7 +91,7 @@
   "Calculate the mask using the max-clique algorithm to find the largest common subgraph
    and what remains of each molecule are the differences used to construct the mask"
   (multiple-value-bind (heavy-equivs heavy-diff1 heavy-diff2)
-      (molecule-graph.max-clique:compare-molecules
+      (molecule-graph.max-clique:compare-molecules-return-largest-connected-cluster-of-equivalent-atoms
        source-molecule
        target-molecule
        :atom-match-callback (lambda (atom1 atom2)

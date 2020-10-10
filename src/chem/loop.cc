@@ -816,7 +816,7 @@ CL_DEFUN core::T_sp chem__map_bonds(core::Symbol_sp result_type, core::T_sp func
       Bond_sp bond = l.getBond();
       a1 = bond->getAtom1();
       a2 = bond->getAtom2();
-      o = bond->getOrder();
+      o = bond->getOrderFromAtom(a1);
       core::eval::funcall(func,a1,a2,translate::to_object<BondOrder>::convert(o));
     }
     return _Nil<core::T_O>(); 
@@ -827,7 +827,7 @@ CL_DEFUN core::T_sp chem__map_bonds(core::Symbol_sp result_type, core::T_sp func
       Bond_sp bond = l.getBond();
       a1 = bond->getAtom1();
       a2 = bond->getAtom2();
-      o = bond->getOrder();
+      o = bond->getOrderFromAtom(a1);
       res << core::eval::funcall(func,a1,a2,translate::to_object<BondOrder>::convert(o));
     }
     return res.cons();
@@ -838,7 +838,7 @@ CL_DEFUN core::T_sp chem__map_bonds(core::Symbol_sp result_type, core::T_sp func
       Bond_sp bond = l.getBond();
       a1 = bond->getAtom1();
       a2 = bond->getAtom2();
-      o = bond->getOrder();
+      o = bond->getOrderFromAtom(a1);
       vo->vectorPushExtend(core::eval::funcall(func,a1,a2,translate::to_object<BondOrder>::convert(o)));
     }
     return vo;

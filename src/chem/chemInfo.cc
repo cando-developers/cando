@@ -1291,7 +1291,7 @@ void BondTest_O::fields(core::Record_sp node)
 
 
 bool BondTest_O::matches_Bond(Root_sp root, Atom_sp from, Bond_sp bond) {
-  chem::BondOrder bo = bond->getOrder();
+  chem::BondOrder bo = bond->getOrderFromAtom(from);
   return _matchBondTypesWithAtoms(this->_Bond, bo, from, bond);
 }
 
@@ -1385,7 +1385,7 @@ bool BondToAtomTest_O::matches_Bond(Root_sp root, chem::Atom_sp from, chem::Bond
   LOG(BF("%s\natom: %s bond: %s") % this->asSmarts() % _rep_(from) % _rep_(bond));
   if (this->_Bond!=SABUseBondMatcher) {
     chem::BondOrder bo;
-    bo = bond->getOrder();
+    bo = bond->getOrderFromAtom(from);
     if (!chem::_matchBondTypesWithAtoms(this->_Bond, bo, from, bond ))
       goto FAIL;
     if (this->_AtomTest->matches_Atom(root, bond->getOtherAtom(from)))
@@ -1431,11 +1431,11 @@ bool AtomTest_O::matches_Bond(Root_sp root, chem::Atom_sp from, chem::Bond_sp bo
   LOG(BF("%s\natom: %s bond: %s") % this->asSmarts() % _rep_(from) % _rep_(bond));
   switch (this->_Test) {
   case SAPBondedToPrevious:
-      if (chem::_matchBondTypesWithAtoms((chem::BondEnum) this->_IntArg, bond->getOrder(), from, bond))
+      if (chem::_matchBondTypesWithAtoms((chem::BondEnum) this->_IntArg, bond->getOrderFromAtom(from), from, bond))
         goto SUCCESS;
       goto FAIL;
   case SAPNotBondedToPrevious:
-      if (!chem::_matchBondTypesWithAtoms((chem::BondEnum) this->_IntArg, bond->getOrder(), from, bond))
+      if (!chem::_matchBondTypesWithAtoms((chem::BondEnum) this->_IntArg, bond->getOrderFromAtom(from), from, bond))
         goto SUCCESS;
       goto FAIL;
   default:

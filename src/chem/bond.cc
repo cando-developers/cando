@@ -88,7 +88,7 @@ Bond_sp	Bond_O::create(Atom_sp from, Atom_sp to, BondOrder o)
 void Bond_O::initialize()
 {_OF();
   this->Base::initialize();
-  this->order = singleBond;
+  this->_DirectionalOrder = singleBond;
   LOG(BF("Setting fromAtom and toAtom to nil") ); //
   this->_Atom1 = _Nil<Atom_O>();
   this->_Atom2 = _Nil<Atom_O>();
@@ -97,7 +97,7 @@ void Bond_O::initialize()
 Bond_O::Bond_O(const Bond_O& bb)  : core::CxxObject_O(bb)
 {
   LOG(BF("Copying Bond_O") ); //
-  this->order = bb.order;
+  this->_DirectionalOrder = bb._DirectionalOrder;
   this->_Atom1 = bb._Atom1;
   this->_Atom2 = bb._Atom2;
 //  printf("%s:%d  Bond_O copy ctor %s -> %s %s\n", __FILE__, __LINE__, _rep_(bb._Atom1).c_str(), _rep_(bb._Atom2).c_str(), bondOrderToString(bb.order).c_str());
@@ -185,7 +185,7 @@ core::NullTerminatedEnumAssociation bondOrderKeys[] = {
 void Bond_O::fields(core::Record_sp node)
 {
   LOG(BF("archive direction = %s") % (node->loading()?"loading":"saving") ); //
-  node->field(INTERN_(kw,order), this->order ); // attributeSymbolEnumHiddenConverter("order",this->order,_sym__PLUS_bondOrderToSymbolConverter_PLUS_);
+  node->field(INTERN_(kw,order), this->_DirectionalOrder ); // attributeSymbolEnumHiddenConverter("order",this->order,_sym__PLUS_bondOrderToSymbolConverter_PLUS_);
   node->field_if_not_nil(INTERN_(kw,properties),this->_Properties);
   node->field( INTERN_(kw,a1), this->_Atom1 );
   node->field( INTERN_(kw,a2), this->_Atom2 );
@@ -200,6 +200,11 @@ void Bond_O::clearProperty(core::Symbol_sp prop)
 {
   this->_Properties = core::core__rem_f(this->_Properties,prop);
 }
+
+CL_DEFMETHOD BondOrder Bond_O::getOrderFromAtom(Atom_sp firstAtom) {
+  return this->maybeFlipOrder(firstAtom);
+}
+
 
 CL_LISPIFY_NAME("bond-setProperty");
 CL_DEFMETHOD void Bond_O::setProperty(core::Symbol_sp prop, core::T_sp val)
@@ -254,10 +259,10 @@ string  Bond_O::description() const
   ss << "(Bond ";
   Atom_sp wa1 = this->_Atom1;
   ss << _rep_(wa1);
-  ss << bondOrderToChar(this->order);
+  ss << bondOrderToChar(this->_DirectionalOrder);
   Atom_sp wa2 = this->_Atom2;
   ss << _rep_(wa2);
-  ss << " " << bondOrderToString(this->order);
+  ss << " " << bondOrderToString(this->_DirectionalOrder);
   ss << " @"<<std::hex<<this<<std::dec<<")";
   return ss.str();
 }
@@ -268,7 +273,7 @@ string  Bond_O::describeOther(Atom_sp from) const
   stringstream    ss;
   ss << "Bond(";
   ss << from->description();
-  ss << bondOrderToChar(this->order);
+  ss << bondOrderToChar(this->_DirectionalOrder);
   Atom_sp a2 = this->getOtherAtom(from);
   ss << a2->description();
   ss << ")";
@@ -333,14 +338,14 @@ otherwise if it's a directional stereochemical bond then flip
 the direction */
 BondOrder Bond_O::maybeFlipOrder(Atom_sp from)
 {
-  if (from == this->_Atom1) return this->order;
-  switch (this->order) {
+  if (from == this->_Atom1) return this->_DirectionalOrder;
+  switch (this->_DirectionalOrder) {
   case singleWedgeBegin: return singleWedgeEnd;
   case singleWedgeEnd: return singleWedgeBegin;
   case singleDashBegin: return singleDashEnd;
   case singleDashEnd: return singleDashBegin;
   default:
-      return this->order;
+      return this->_DirectionalOrder;
   }
 }
 
@@ -383,10 +388,10 @@ ConstitutionBond_sp Bond_O::asConstitutionBond(Atom_sp from, const MapAtomsToCon
 
 
 
-CL_LISPIFY_NAME("getOrderAsString");
-CL_DEFMETHOD string	Bond_O::getOrderAsString()
+CL_LISPIFY_NAME("getOrderFromAtomAsString");
+CL_DEFMETHOD string	Bond_O::getOrderFromAtomAsString(Atom_sp fromAtom)
 {
-  return bondOrderToString(this->order);
+  return bondOrderToString(this->getOrderFromAtom(fromAtom));
 }
 
 void	Bond_O::joinYourAtoms()

@@ -419,7 +419,7 @@ CL_DEFMETHOD     Atom_sp Atom_O::bondedNeighbor(int i)
 CL_LISPIFY_NAME("bondedOrder");
 CL_DEFMETHOD     BondOrder Atom_O::bondedOrder(int i) 
 {
-  return this->bonds[i]->getOrder();
+  return this->bonds[i]->getOrderFromAtom(this->asSmartPtr());
 };
 
 CL_LISPIFY_NAME("numberOfBonds");
@@ -767,12 +767,17 @@ CL_LISPIFY_NAME("isBondedToElementOrder");
 CL_DEFMETHOD     bool	Atom_O::isBondedToElementOrder(Element el, BondOrder o)
 {
   VectorBond::iterator	b;
-
-  for ( b=this->bonds.begin();b!=this->bonds.end() ; b++ ) 
-  {
-    if ( (*b)->getOtherAtom(this->sharedThis<Atom_O>())->getElement() == el ) 
-    {
-      if ( (*b)->getOrder() == o ) return true;
+  if (Bond_O::singleBondP(o)) {
+    for ( b=this->bonds.begin();b!=this->bonds.end() ; b++ ) {
+      if ( (*b)->getOtherAtom(this->sharedThis<Atom_O>())->getElement() == el ) {
+        if ( Bond_O::singleBondP((*b)->getRawOrder())) return true;
+      }
+    }
+  } else {
+    for ( b=this->bonds.begin();b!=this->bonds.end() ; b++ ) {
+      if ( (*b)->getOtherAtom(this->sharedThis<Atom_O>())->getElement() == el ) {
+        if ( (*b)->getRawOrder() == o ) return true;
+      }
     }
   }
   return false;
@@ -783,13 +788,17 @@ CL_LISPIFY_NAME("hasBondWithOrder");
 CL_DEFMETHOD     bool Atom_O::hasBondWithOrder(BondOrder o) const
 {
   VectorBond::iterator	b;
-  for ( b=this->bonds.begin();b!=this->bonds.end() ; b++ ) 
-  {
-    if ( (*b)->getOrder() == o) return true;
+  if (Bond_O::singleBondP(o)) {
+    for ( b=this->bonds.begin();b!=this->bonds.end() ; b++ ) {
+      if ( Bond_O::singleBondP((*b)->getRawOrder())) return true;
+    }
+  } else {
+    for ( b=this->bonds.begin();b!=this->bonds.end() ; b++ ) {
+      if ( (*b)->getRawOrder() == o) return true;
+    }
   }
   return false;
 }
-
 
 
 CL_LISPIFY_NAME("isBondedToElementHybridization");
@@ -1034,52 +1043,6 @@ CL_DEFMETHOD     string	Atom_O::getConfigurationAsString()
   return config+"/"+stereo;
 }
 
-
-
-
-
-
-//
-// writeUniqueBondsToStream
-//
-// Stream the atoms bonds description to the output
-//
-#if 0
-void Atom_O::writeUniqueBondsToStream(string prefix, std::ostream& out )
-{
-  VectorBond	bonds;
-  VectorBond::iterator	b;
-  bonds = this->getBonds();
-  Atom_sp me = this->sharedThis<Atom_O>();
-  for ( b=bonds.begin();b!=bonds.end() ; b++ ) {
-    if ( me->atLowerUniqueAtomOrderThan((*b)->getOtherAtom(me)))
-    {
-      out << prefix << "bond ";
-      switch ( (*b)->getOrder() ) {
-      case singleBond:
-          out << "single";
-          break;
-      case doubleBond:
-          out << "double";
-          break;
-      case tripleBond:
-          out << "triple";
-          break;
-      case aromaticBond:
-          out << "aromatic";
-          break;
-      default:
-          out << "--unknown--";
-      }
-      out << " " << me->getId() << " ";
-      out << (*b)->getOtherAtom(me)->getId() << " ;" << std::endl;
-    }
-  }
-}
-#endif
-
-
-
 string	Atom_O::__repr__() const
 {
   stringstream ss;
@@ -1163,12 +1126,18 @@ CL_DEFMETHOD     bool Atom_O::isBondedToWithBondOrder( Atom_sp aTarget, BondOrde
   VectorBond::iterator	b;
   Atom_sp				a2;
   Atom_sp me = this->sharedThis<Atom_O>();
-  for ( b=this->bonds.begin();b!=this->bonds.end() ; b++ )
-  {
-    a2 = (*b)->getOtherAtom(me);
-    if ( a2 == aTarget ) {
-      if ( o == (*b)->getOrder() ) {
-        return true;
+  if (Bond_O::singleBondP(o)) {
+    for ( b=this->bonds.begin();b!=this->bonds.end() ; b++ ) {
+      a2 = (*b)->getOtherAtom(me);
+      if ( a2 == aTarget ) {
+        if ( Bond_O::singleBondP((*b)->getRawOrder())) return true;
+      }
+    }
+  } else {
+    for ( b=this->bonds.begin();b!=this->bonds.end() ; b++ ) {
+      a2 = (*b)->getOtherAtom(me);
+      if ( a2 == aTarget ) {
+        if ( o == (*b)->getRawOrder() ) return true;
       }
     }
   }
@@ -1214,12 +1183,10 @@ BondOrder	Atom_O::bondOrderTo( Atom_sp other )
   VectorBond::iterator	b;
   Atom_sp				a2;
   Atom_sp me = this->sharedThis<Atom_O>();
-  for ( b=this->bonds.begin();b!=this->bonds.end() ; b++ )
-  {
+  for ( b=this->bonds.begin();b!=this->bonds.end() ; b++ ) {
     a2 = (*b)->getOtherAtom(me);
-    if ( a2 == other )
-    {
-      return (*b)->getOrder();
+    if ( a2 == other ) {
+      return (*b)->getOrderFromAtom(me);
     }
   }
   return noBond;
@@ -1240,7 +1207,7 @@ CL_DEFMETHOD     bool Atom_O::testConsistancy(Matter_sp parentShouldBe)
   for ( b=this->bonds.begin();b!=this->bonds.end() ; b++ )
   {
     a2 = (*b)->getOtherAtom(me);
-    if ( !(a2->isBondedToWithBondOrder(me,(*b)->getOrder())) )
+    if ( !(a2->isBondedToWithBondOrder(me,(*b)->getRawOrder())) )
     {
       _lisp->print(BF( "Atom_O::testConsistancy failed" ));
       return false;
@@ -1387,12 +1354,13 @@ CL_DEFMETHOD     uint Atom_O::totalBondOrder()
   uint twice = 0;
   for (b=this->bonds.begin();b!=this->bonds.end(); b++ ) 
   {
-    if ( (*b)->getOrder() == singleBond ) twice += 2;
-    else if ((*b)->getOrder() == doubleBond ) twice += 4;
-    else if ((*b)->getOrder() == aromaticBond ) twice += 3;
-    else if ((*b)->getOrder() == tripleBond ) twice += 6;
-    else if ((*b)->getOrder() == dashedSingleBond ) twice += 2;
-    else if ((*b)->getOrder() == dashedDoubleBond ) twice += 4;
+    BondOrder bo = (*b)->getRawOrder();
+    if ( Bond_O::singleBondP(bo)) twice += 2;
+    else if (bo == doubleBond ) twice += 4;
+    else if (bo == aromaticBond ) twice += 3;
+    else if (bo == tripleBond ) twice += 6;
+    else if (bo == dashedSingleBond ) twice += 2;
+    else if (bo == dashedDoubleBond ) twice += 4;
     else twice += 2;
   }
   if ( (twice & 1) != 0 )
@@ -1556,22 +1524,22 @@ CL_DEFMETHOD     int     Atom_O::getValence()
   int             valence;
   BondOrder       bo;
   valence = 0;
-  for (b=this->bonds.begin();b!=this->bonds.end(); b++ )
-  {
-    bo = (*b)->getOrder();
-    switch ( bo ) {
-    case singleBond:
-        valence += 1;
-        break;
-    case doubleBond:
-    case aromaticBond:
-        valence += 2;
-        break;
-    case tripleBond:
-        valence += 3;
-        break;
-    default:
-        valence += 0;
+  for (b=this->bonds.begin();b!=this->bonds.end(); b++ ) {
+    bo = (*b)->getRawOrder();
+    if (Bond_O::singleBondP(bo)) {
+      valence += 1;
+    } else {
+      switch ( bo ) {
+      case doubleBond:
+      case aromaticBond:
+          valence += 2;
+          break;
+      case tripleBond:
+          valence += 3;
+          break;
+      default:
+          valence += 0;
+      }
     }
   }
   return valence;
@@ -1734,7 +1702,7 @@ void Atom_O::_describeAtomRecursively(string prefix, Atom_sp parent, BondOrder o
     Atom_sp other = (*bi)->getOtherAtom(this->const_sharedThis<Atom_O>());
     if ( other!=parent)
     {
-      other->_describeAtomRecursively(prefix+"  ",this->const_sharedThis<Atom_O>(),(*bi)->getOrder(),maxDepth-1,ss);
+      other->_describeAtomRecursively(prefix+"  ",this->const_sharedThis<Atom_O>(),(*bi)->getRawOrder(),maxDepth-1,ss);
     }
   }
 }

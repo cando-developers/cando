@@ -28,6 +28,8 @@
   (:use #:common-lisp)
   (:export
    #:compare-molecules
+   #:largest-connected-cluster-of-equivalent-atoms
+   #:compare-molecules-return-largest-connected-cluster-of-equivalent-atoms
    ))
 
 (defpackage #:graphviz-molecule-graph
