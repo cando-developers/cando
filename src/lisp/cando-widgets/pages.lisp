@@ -95,7 +95,7 @@
 (defgeneric end-task (instance)
   (:method (instance))
   (:method ((instance single-task-page))
-    (setf (jw:widget-disabled (button intance)) nil)))
+    (setf (jw:widget-disabled (button instance)) nil)))
 
 
 (defun run-task (instance action parameter)
