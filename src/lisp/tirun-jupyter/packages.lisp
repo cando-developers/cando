@@ -21,20 +21,20 @@
     #:all-ligands
     #:check-calc
     #:composer
+    #:open-workspace
+    #:save-workspace
     #:jobs
-    #:load-tirun
-    #:save-tirun
     #:load-ligands
     #:load-receptor
     #:load-template-ligand
     #:lomap
-    #:new-pas
-    #:new-tirun
+    #:new-workspace
     #:pasrun
     #:selected-ligands
     #:select-ligands
     #:submit-calc
     #:view-complex
+    #:workspace
     #:write-jobs))
 
 

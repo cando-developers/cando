@@ -14,5 +14,6 @@
   :serial t
   :components ((:file "packages")
                (:file "molecule-select")
-               (:file "pages")))
+               (:file "pages")
+               (:file "workspace-task-page")))
 

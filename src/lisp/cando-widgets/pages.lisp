@@ -16,6 +16,48 @@
 
 
 (defclass task-page (page)
+  ((progress
+     :accessor progress
+     :initform (make-instance 'jw:int-progress
+                              :layout (make-instance 'jw:layout
+                                                     :align-self "end"
+                                                     :display "none"
+                                                     :grid-area "progress")))
+   (messages-label
+     :accessor messages-label
+     :initform (make-instance 'jw:label
+                              :value "Messages"
+                              :layout (make-instance 'jw:layout
+                                                     :text-align "center"
+                                                     :grid-area "messages-label")))
+   (messages
+     :accessor messages
+     :initform (make-instance 'jw:output
+                              :layout (make-instance 'jw:layout
+                                                     :grid-area "messages"
+                                                     :padding "var(--jp-widgets-input-padding)"
+                                                     :border "var(--jp-widgets-border-width) solid var(--jp-border-color1)"
+                                                     :min-height "4em"
+                                                     :overflow-y "scroll")))
+   (task-function
+     :accessor task-function
+     :initarg :task-function
+     :initform (lambda (action parameter progress-callback)
+                 (declare (ignore action parameter progress-callback))
+                 t)))
+  (:metaclass jupyter-widgets:trait-metaclass))
+
+
+(defmethod initialize-instance :after ((instance task-page) &rest initargs &key &allow-other-keys)
+  (declare (ignore initargs))
+  (setf (jw:widget-children instance)
+        (append (jw:widget-children instance)
+                (list (progress instance)
+                      (messages-label instance)
+                      (messages instance)))))
+
+
+(defclass single-task-page (task-page)
   ((button
      :accessor button
      :initarg :button)
@@ -24,28 +66,7 @@
      :initform (make-instance 'jw:label
                               :layout (make-instance 'jw:layout
                                                      :align-self "start"
-                                                     :grid-area "label")))
-   (progress
-     :accessor progress
-     :initform (make-instance 'jw:int-progress
-                              :layout (make-instance 'jw:layout
-                                                     :align-self "end"
-                                                     :display "none"
-                                                     :grid-area "progress")))
-   (messages
-     :accessor messages
-     :initform (make-instance 'jw:output
-                              :layout (make-instance 'jw:layout
-                                                     :grid-area "messages"
-                                                     :padding "var(--jp-widgets-input-padding)"
-                                                     :border "var(--jp-widgets-border-width) solid var(--jp-border-color1)"
-                                                     :overflow-y "scroll")))
-   (task-function
-     :accessor task-function
-     :initarg :task-function
-     :initform (lambda (parameter progress-callback)
-                 (declare (ignore parameter progress-callback))
-                 t)))
+                                                     :grid-area "label"))))
   (:metaclass jupyter-widgets:trait-metaclass)
   (:default-initargs
     :layout (make-instance 'jw:layout
@@ -54,26 +75,38 @@
                            :grid-gap "0.1em 1em"
                            :grid-template-rows "min-content min-content 1fr"
                            :grid-template-columns "auto 1fr"
-                           :grid-template-areas "\"upload messages\" \"label messages\" \"progress messages\"")))
+                           :grid-template-areas "\"button messages-label\" \"label messages\" \"progress messages\"")))
 
 
-(defmethod initialize-instance :after ((instance task-page) &rest initargs &key &allow-other-keys)
+(defmethod initialize-instance :after ((instance single-task-page) &rest initargs &key &allow-other-keys)
   (declare (ignore initargs))
-  (setf (jw:widget-children instance) (list (button instance)
-                                            (label instance)
-                                            (progress instance)
-                                            (messages instance))))
+  (setf (jw:widget-children instance)
+        (append (jw:widget-children instance)
+                (list (button instance)
+                      (label instance)))))
 
 
-(defun run-task (instance parameter)
+(defgeneric begin-task (instance)
+  (:method (instance))
+  (:method ((instance single-task-page))
+    (setf (jw:widget-disabled (button instance)) t)))
+
+
+(defgeneric end-task (instance)
+  (:method (instance))
+  (:method ((instance single-task-page))
+    (setf (jw:widget-disabled (button intance)) nil)))
+
+
+(defun run-task (instance action parameter)
   (declare (ignore args))
-  (with-slots (container messages progress button)
+  (with-slots (container messages progress)
               instance
     (unwind-protect
         (progn
+          (begin-task instance)
           (setf (jw:widget-outputs messages) nil
-                (jw:widget-value progress) 0
-                (jw:widget-disabled button) t)
+                (jw:widget-value progress) 0)
           (jw:with-output messages
                           (handler-bind
                               ((warning
@@ -86,6 +119,7 @@
                             (finish-output)
                             (cond
                               ((funcall (task-function instance)
+                                        action
                                         parameter
                                         (lambda (maximum)
                                           (setf (jw:widget-display (jw:widget-layout progress)) nil
@@ -94,18 +128,17 @@
                                 (write-line "Task completed successfully.")
                                 (setf (jw:widget-display (jw:widget-layout progress)) "none")
                                 (let ((index (position instance (jw:widget-children container) :test #'eql)))
-                                  (setf (jw:widget-selected-index container)
-                                        (when (and index
-                                                   (< (1+ index) (length (jw:widget-children container))))
-                                          (1+ index)))))
+                                  (when (and index
+                                             (< (1+ index) (length (jw:widget-children container))))
+                                    (setf (jw:widget-selected-index container) (1+ index)))))
                               (t
                                 (write-line "Task completed with failures." *error-output*)
                                 (finish-output *error-output*)))
                             (values))))
-      (setf (jw:widget-disabled button) nil))))
+      (end-task instance))))
 
 
-(defclass file-task-page (task-page)
+(defclass file-task-page (single-task-page)
   ()
   (:metaclass jupyter-widgets:trait-metaclass)
   (:default-initargs
@@ -114,12 +147,12 @@
                            :width "auto"
                            :layout (make-instance 'jw:layout
                                                   :align-self "start"
-                                                  :grid-area "upload"))))
+                                                  :grid-area "button"))))
 
 
 (defun on-data-change (instance data metadata)
   (when (= (length data) (length metadata))
-    (run-task instance
+    (run-task instance nil
               (mapcar (lambda (content metadata)
                         (acons "content" content (copy-alist metadata)))
                       data metadata))))
@@ -152,7 +185,7 @@
     (values)))
 
 
-(defclass simple-task-page (task-page)
+(defclass simple-task-page (single-task-page)
   ()
   (:metaclass jupyter-widgets:trait-metaclass)
   (:default-initargs
@@ -161,14 +194,15 @@
                            :width "auto"
                            :layout (make-instance 'jw:layout
                                                   :align-self "start"
-                                                  :grid-area "upload"))))
+                                                  :grid-area "button"))))
 
 
 (defmethod initialize-instance :after ((instance simple-task-page) &rest initargs &key &allow-other-keys)
+  (declare (ignore initargs))
   (jw:on-button-click (button instance)
     (lambda (inst)
       (declare (ignore inst))
-      (run-task instance nil))))
+      (run-task instance nil nil))))
 
 
 (defun make-simple-task-page (container title task-function &key label description)
@@ -181,3 +215,4 @@
     (when description
       (setf (jw:widget-description (button page)) description))
     (values)))
+
