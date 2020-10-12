@@ -131,7 +131,7 @@ This will place the calculated bond on one or the other side of the x1,y1-x2,y2 
                                :class (%class obj))))
 
 (defun draw-atom-name (scene atom-node show-names)
-  (unless show-names
+  (when show-names
     (if (and (<= (chem:get-atomic-number (atom atom-node)) 1)
              (not (eq show-names :light)))
         (return-from draw-atom-name)

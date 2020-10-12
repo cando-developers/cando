@@ -13,8 +13,14 @@
 (def-dyn-widget button-style (make-instance 'w:button-style :button-color "aquamarine"))
 
 
-(defclass app (jupyter-widgets:has-traits)
-  ((composer-data
+(defparameter +default-distributor+ "s103.thirdlaw.tech")
+(defparameter +default-job-name+ "default")
+
+(defclass workspace (jupyter-widgets:has-traits)
+  ((workspace-path
+    :accessor workspace-path
+    :initform #P"workspace-1.tirun")
+   (composer-data
     :accessor composer-data
     :initarg :composer-data
     :initform nil
@@ -34,27 +40,14 @@
     :initarg :template-ligand
     :initform nil
     :trait t)
-   (ligands-string
-    :accessor ligands-string
-    :initarg :ligands-string
-    :initform nil
-    :trait t)
-   (ligands-format
-    :accessor ligands-format
-    :initarg :ligands-format
-    :initform nil
-    :trait t)
    (all-ligands
     :accessor all-ligands
-    :initform nil
-    :trait t)
-   (selected-ligand-names
-    :accessor selected-ligand-names
-    :initarg :selected-ligand-names
+    :initarg all-ligands
     :initform nil
     :trait t)
    (selected-ligands
     :accessor selected-ligands
+    :initarg selected-ligands
     :initform nil
     :trait t)
    (all-edges
@@ -65,12 +58,12 @@
    (distributor
     :accessor distributor
     :initarg :distributor
-    :initform "s103.thirdlaw.tech"
+    :initform +default-distributor+
     :trait t)
    (job-name
     :accessor job-name
     :initarg :job-name
-    :initform "default"
+    :initform +default-job-name+
     :trait t)
    (submit-stream
     :accessor submit-stream
@@ -95,20 +88,26 @@
 
 
 (define-symbol-macro all-ligands
-  (all-ligands *app*))
+  (all-ligands *workspace*))
 
 
 (define-symbol-macro selected-ligands
-  (selected-ligands *app*))
+  (selected-ligands *workspace*))
 
 
 (define-symbol-macro all-edges
-  (all-edges *app*))
+  (all-edges *workspace*))
 
 
-(cando:make-class-save-load app jupyter-widgets:on-trait-change)
+(cando:make-class-save-load workspace jupyter-widgets:on-trait-change)
    
-(defvar *app* nil)
+(defvar *workspace* nil)
+
+
+(defmethod make-instance ((class (eql (find-class 'workspace))) &rest initargs)
+  (if *workspace*
+    (apply #'reinitialize-instance *workspace* initargs)
+    (setf *workspace* (call-next-method))))
 
 
 (def-dyn-widget box-layout
@@ -118,87 +117,92 @@
 (defun receptor-to-string (receptor)
   (chem:aggregate-as-mol2-string receptor t))
 
-(defun receptor-string (app)
-  (when (receptor app)
-    (receptor-to-string (receptor app))))
-
-(defun initialize-system ()
-  (unless *app*
-    (let ((dest-dir (let ((dd (ext:getenv "CANDO_JOBS_DIRECTORY")))
-                      (if dd
-                        dd
-                        (pathname "~/jobs/")))))
-      (format t "Jobs will be saved to ~a~%setenv CANDO_JOBS_DIRECTORY if you want it to go elsewhere~%" (namestring dest-dir))
-      (ensure-directories-exist dest-dir))
-   (let ((*standard-output* (make-string-output-stream)))
-      (cando-user:setup-default-paths)
-      (cando-user:load-atom-type-rules "ATOMTYPE_GFF.DEF")
-      (cando-user:source "leaprc.ff14SB.redq")
-      (cando-user:source "leaprc.gaff")
-      (leap:add-pdb-res-map '((1 :NMA :NME))))))
+(defun receptor-string (workspace)
+  (when (receptor workspace)
+    (receptor-to-string (receptor workspace))))
 
 
-(defun app-save-path (&rest initargs &key job-name &allow-other-keys)
-  (let ((path (make-pathname :name (or job-name
-                                       (and *app*
-                                            (job-name *app*))
-                                       "default")
-                             :type "dat")))
-    (values path (probe-file path))))
-
-(defun new-tirun (&rest initargs)
-  (initialize-system)
-  (setf *app* (apply #'make-instance 'app initargs))
-  (values))
-
-
-(defun load-tirun (&rest initargs)
-  (multiple-value-bind (save-path existsp)
-                       (apply #'app-save-path initargs)
-    (cond
-      (existsp
-        (initialize-system)
-        (finish-output)
-        (format t "Loading application state from ~A...~%" save-path)
-        (finish-output)
-        (setf *app* (cando:load-cando save-path))
-        (when (and (ligands-string *app*)
-                   (ligands-format *app*)
-                   (not (all-ligands *app*)))
-          (do-parse-ligands *app*))
-        (when (and (selected-ligand-names *app*)
-                   (not (selected-ligands *app*)))
-          (setf (selected-ligands *app*)
-                (mapcar (lambda (name)
-                          (find name (all-ligands *app*) :key #'chem:get-name))
-                        (selected-ligand-names *app*))))
-        (write-line "Load complete.")
-        (finish-output))
-      (t
-        (format *error-output* "Unable to find save file named ~A~%" save-path))))
-  (values))
+(defun initialize-workspace ()
+  (let ((dest-dir (let ((dd (ext:getenv "CANDO_JOBS_DIRECTORY")))
+                    (if dd
+                      dd
+                      (pathname "~/jobs/")))))
+    (format t "Jobs will be saved to ~a~%setenv CANDO_JOBS_DIRECTORY if you want it to go elsewhere~%" (namestring dest-dir))
+    (ensure-directories-exist dest-dir))
+  (let ((*standard-output* (make-string-output-stream)))
+    (cando-user:setup-default-paths)
+    (cando-user:load-atom-type-rules "ATOMTYPE_GFF.DEF")
+    (cando-user:source "leaprc.ff14SB.redq")
+    (cando-user:source "leaprc.gaff")
+    (leap:add-pdb-res-map '((1 :NMA :NME))))
+  t)
 
 
-(defun save-tirun (&rest initargs)
-  (let ((save-path (apply #'app-save-path initargs)))
-    (format t "Saving application state to ~A...~%" save-path)
-    (finish-output)
-    (ensure-directories-exist save-path)
-    (setf (selected-ligand-names *app*) (mapcar #'chem:get-name (selected-ligands *app*)))
-    (cando:save-cando *app* save-path)
-    (write-line "Save complete.")
-    (finish-output))
-  (values))
+(defun run-workspace-task (action parameter progress-callback)
+  (declare (ignore progress-callback))
+  (case action
+    (:new
+      (new-workspace parameter))
+    (:initialize
+      (initialize-workspace))
+    (:open
+      (open-workspace parameter))
+    (:save
+      (save-workspace parameter))))
 
 
-#+(or)(defun new-pas ()
-  (with-output-to-string (sout)
-    (let ((*standard-output* sout))
-      (cando-user:source "leaprc.lipid14")
-      (cando-user:source "leaprc.water.tip3p")))
-    (asdf:load-asd "/Users/yonkunas/Development/pas/pas.asd")
-    (asdf:load-system :pas))
-    
+(defun workspace (&rest initargs)
+  (apply #'make-instance 'workspace initargs)
+  (let* ((container (make-instance 'w:accordion :selected-index 0))
+         (page (cw:make-workspace-task-page container "TIRUN Workspace" #'run-workspace-task :file-type "tirun")))
+    (cando-widgets:run-task page :initialize nil)
+    container))
+
+
+(defun new-workspace (&optional (path (workspace-path *workspace*)))
+  (setf (composer-data *workspace*) nil
+        (template-ligand-string *workspace*) nil
+        (receptor *workspace*) nil
+        (template-ligand *workspace*) nil
+        (all-ligands *workspace*) nil
+        (selected-ligands *workspace*) nil
+        (all-edges *workspace*) nil
+        (distributor *workspace*) +default-distributor+
+        (job-name *workspace*) +default-job-name+
+        (submit-stream *workspace*) nil
+        (smirks-pattern *workspace*) nil
+        (tirun-settings *workspace*) (tirun:default-calculation-settings)
+        (tirun-stages *workspace*) 1)
+  (save-workspace path))
+
+
+(defun open-workspace (&optional (path (workspace-path *workspace*)))
+  (setf (workspace-path *workspace*) path)
+  (cond
+    ((probe-file path)
+      (finish-output)
+      (format t "Opening workspace ~A...~%" path)
+      (finish-output)
+      (cando:load-cando path)
+      (write-line "Open complete.")
+      (finish-output)
+      t)
+    (t
+      (format *error-output* "Unable to find workspace file named ~A~%" path)
+      (finish-output *error-output*)
+      nil)))
+
+
+(defun save-workspace (&optional (path (workspace-path *workspace*)))
+  (setf (workspace-path *workspace*) path)
+  (format t "Saving workspace ~A...~%" path)
+  (finish-output)
+  (ensure-directories-exist path)
+  (cando:save-cando *workspace* path)
+  (write-line "Save complete.")
+  (finish-output)
+  t)
+
 
 (defclass simple-input ()
   ((name :initarg :name :accessor name)
@@ -220,16 +224,17 @@
                                         :children (list label-widget input-widget)))))
 
 
-(defun parse-receptor (parameter progress-callback)
+(defun parse-receptor (action parameter progress-callback)
   "Called from file task page to parse receptor."
-  (declare (ignore progress-callback))
+  (declare (ignore action progress-callback))
   (handler-case
       (with-slots (receptor)
-          *app*
+          *workspace*
         (let ((receptor-string (babel:octets-to-string (cdr (assoc "content" (car parameter) :test #'string=)))))
-          (setf (receptor *app*) (with-input-from-string (input-stream receptor-string)
-                                   (leap.pdb:load-pdb-stream input-stream)))
-        t))
+          (setf (receptor *workspace*)
+                (with-input-from-string (input-stream receptor-string)
+                  (leap.pdb:load-pdb-stream input-stream)))
+          (save-workspace)))
     (leap.pdb:pdb-read-error (condition)
       (princ condition *error-output*)
       nil)
@@ -238,19 +243,20 @@
       nil)))
 
 
-(defun parse-template-ligand (parameter progress-callback)
+(defun parse-template-ligand (action parameter progress-callback)
   "Called from file task page to parse template-ligand."
-  (declare (ignore progress-callback))
+  (declare (ignore action progress-callback))
   (handler-case
       (with-slots (template-ligand-string)
-                  *app*
+                  *workspace*
         (setf template-ligand-string (babel:octets-to-string (cdr (assoc "content" (car parameter) :test #'string=))))
         (format t "About to parse ligand pdb file~%")
-        (setf (template-ligand *app*)
+        (setf (template-ligand *workspace*)
               (with-input-from-string (input-stream template-ligand-string)
                 (leap.pdb:load-pdb-stream input-stream :ignore-missing-topology t)))
         (format t "Done parse ligand pdb file~%")
-        t)
+        (finish-output)
+        (save-workspace))
     (leap.pdb:pdb-read-error (condition)
       (princ condition *error-output*)
       nil)
@@ -279,12 +285,12 @@
         (when (equal new-value 1)
           (nglview:handle-resize ngl))))
     ;; Add the receptor if one is already defined.
-    (when (receptor *app*)
+    (when (receptor *workspace*)
       (nglview:add-structure ngl (make-instance 'nglview:text-structure
                                                 :ext "mol2"
-                                                :text (receptor-string *app*))))
+                                                :text (receptor-string *workspace*))))
     ;; Listen for changes to the receptor and add or delete when needed.
-    (w:observe *app* :receptor
+    (w:observe *workspace* :receptor
       (lambda (inst type name old-value new-value source)
         (declare (ignore inst type name old-value source))
         (nglview:remove-all-components ngl)
@@ -316,10 +322,10 @@
         (when (equal new-value 1)
           (nglview:handle-resize ngl))))
     ;; Add the template ligand if one is already defined.
-    (when (template-ligand-string *app*)
-      (nglview:add-structure ngl (make-instance 'nglview:text-structure :text (template-ligand-string *app*))))
+    (when (template-ligand-string *workspace*)
+      (nglview:add-structure ngl (make-instance 'nglview:text-structure :text (template-ligand-string *workspace*))))
     ;; Listen for changes to the template-ligand and add or delete when needed.
-    (w:observe *app* :template-ligand-string
+    (w:observe *workspace* :template-ligand-string
       (lambda (inst type name old-value new-value source)
         (declare (ignore inst type name old-value source))
         (nglview:remove-all-components ngl)
@@ -461,7 +467,7 @@
       (declare (ignore inst type name old-value source))
       (nglview:handle-resize (view-ligand-ngl instance))))
   ;; When the receptor changes reload the receptor in nglview.
-  (w:observe *app* :receptor
+  (w:observe *workspace* :receptor
     (lambda (inst type name old-value new-value source)
       (declare (ignore inst type name source))
       (when old-value
@@ -472,7 +478,7 @@
                                             :ext "mol2"
                                             :text (receptor-to-string new-value)))))
   ;; If the all-ligands changes then reload the whole thing.
-  (w:observe *app* :all-ligands
+  (w:observe *workspace* :all-ligands
     (lambda (inst type name old-value new-value source)
       (declare (ignore inst type name old-value new-value source))
       (refresh-ligands-view instance))))
@@ -483,43 +489,35 @@
   (let ((page (make-instance 'view-ligand-page :container container)))
     (cw:add-page container page title)
     ;; If the receptor is already set then load the current receptor.
-    (when (receptor *app*)
+    (when (receptor *workspace*)
       (nglview:add-structure (view-ligand-ngl page)
                              (make-instance 'nglview:text-structure
                                             :id "receptor"
                                             :ext "mol2"
-                                            :text (receptor-string *app*))))
+                                            :text (receptor-string *workspace*))))
     ;; Update the view
     (refresh-ligands-view page)
     (values)))
 
 
-(defun do-parse-ligands (instance)
-  (with-slots (ligands-string ligands-format all-ligands)
-              instance
-    (setf all-ligands
-          (with-input-from-string (input-stream ligands-string)
-            (cond
-              ((string-equal ligands-format "sdf")
-                (sdf:parse-sdf-file input-stream))
-              ((string-equal ligands-format "mol2")
-                (chem:read-mol2-list input-stream))
-              (t
-                (error "Unknown file type ~A." ligands-format)))))))
-
-
-(defun parse-ligands (parameter progress-callback)
+(defun parse-ligands (action parameter progress-callback)
   "Called from the file task page to actually parse the ligands file."
-  (declare (ignore progress-callback))
+  (declare (ignore action progress-callback))
   (handler-case
-      (with-slots (ligands-string ligands-format)
-                  *app*
-        (setf ligands-string (babel:octets-to-string (cdr (assoc "content" (car parameter) :test #'string=)))
-              ligands-format (pathname-type (cdr (assoc "name" (car parameter) :test #'string=))))
-        (do-parse-ligands *app*)
-        (setf selected-ligands all-ligands
+      (let ((ligands-string (babel:octets-to-string (cdr (assoc "content" (car parameter) :test #'string=))))
+            (ligands-format (pathname-type (cdr (assoc "name" (car parameter) :test #'string=)))))
+        (setf all-ligands
+              (with-input-from-string (input-stream ligands-string)
+                (cond
+                  ((string-equal ligands-format "sdf")
+                    (sdf:parse-sdf-file input-stream))
+                  ((string-equal ligands-format "mol2")
+                    (chem:read-mol2-list input-stream))
+                  (t
+                    (error "Unknown file type ~A." ligands-format))))
+              selected-ligands all-ligands
               all-edges nil)
-        t)
+        (save-workspace))
     (esrap:esrap-parse-error (condition)
       (princ condition *error-output*)
       (fresh-line *error-output*)
@@ -553,8 +551,8 @@
   to select a subset of the molecules to use in further calculations."
   (let ((sel (cw:make-molecule-select :molecules all-ligands
                                       :selected selected-ligands)))
-    (w:link sel :molecules *app* :all-ligands)
-    (w:link sel :selected *app* :selected-ligands)
+    (w:link sel :molecules *workspace* :all-ligands)
+    (w:link sel :selected *workspace* :selected-ligands)
     (make-instance 'w:accordion
                    :selected-index 0
                    :%titles (list "Select Ligands")
@@ -573,15 +571,15 @@
     (sketch2d:sketch2d min-mol)))
 
 
-(defun run-pas (parameter progress-callback)
+(defun run-pas (action parameter progress-callback)
   "Called by the simple-task-page to do the PAS calculation."
-  (declare (ignore parameter))
+  (declare (ignore action parameter))
   (write-line "Running position analogue scanning...")
   (finish-output)
   ;; Loop over the current selected ligands and run PAS on each one accumulating the results.
   (setf all-ligands
         (loop for template-ligand in selected-ligands
-              for new-ligands = (pas:pas (smirks-pattern *app*) template-ligand)
+              for new-ligands = (pas:pas (smirks-pattern *workspace*) template-ligand)
               append new-ligands
               do (format t "Using template ligand of ~a built the ligands ~{~a~#[~;, and ~:;, ~]~}...~%"
                          (molecule-name template-ligand)
@@ -589,7 +587,8 @@
               do (finish-output)
               do (funcall progress-callback (length selected-ligands)))
         selected-ligands all-ligands
-        all-edges nil))
+        all-edges nil)
+  (save-workspace))
 
 
 (defparameter +smirks-patterns+
@@ -616,7 +615,7 @@
      :accessor smirks-pattern-editor
      :initform (make-instance 'w:text
                               :description "SMIRKS pattern"
-                              :value (smirks-pattern *app*)
+                              :value (smirks-pattern *workspace*)
                               :style (make-instance 'w:description-style :description-width "12em")
                               :layout (make-instance 'w:layout :width "100%" :grid-area "smirks"))
      :documentation "The SMIRKS pattern editor"))
@@ -635,8 +634,8 @@
   (declare (ignore initargs))
   (with-slots (snippets smirks-pattern-editor help)
               instance
-    ;; Connect the SMIRKS editor to *app* smirks-pattern
-    (w:link *app* :smirks-pattern smirks-pattern-editor :value)
+    ;; Connect the SMIRKS editor to *workspace* smirks-pattern
+    (w:link *workspace* :smirks-pattern smirks-pattern-editor :value)
     (setf (w:widget-children instance) (list help smirks-pattern-editor snippets))
     (w:observe snippets :index
       (lambda (inst type name old-value new-value source)
@@ -824,9 +823,9 @@ It will put those multiple ligands into all-ligands and selected-ligands"
       (cytoscape:layout graph))))
 
 
-(defun run-lomap (parameter progress-callback)
+(defun run-lomap (action parameter progress-callback)
   "This function is called by the task page and updates a progress widget as lomap does the calculation."
-  (declare (ignore parameter))
+  (declare (ignore action parameter))
   (format t "Calculating similarity matrix of ~{~a~#[~;, and ~:;, ~]~}...~%"
           (mapcar #'molecule-name selected-ligands))
   (finish-output) ; Make sure the message is synced to the frontend.
@@ -845,7 +844,9 @@ It will put those multiple ligands into all-ligands and selected-ligands"
                      (list (format nil "S = ~3,2f" (lomap:sim-score edge))))
               new-edges)))
     (setf all-edges new-edges))
-  (write-line "Similarity matrix calculation completed."))
+  (write-line "Similarity matrix calculation completed.")
+  (finish-output)
+  (save-workspace))
 
 
 (defparameter +similarity-graph-style/show-sketches+
@@ -1076,16 +1077,16 @@ It will put those multiple ligands into all-ligands and selected-ligands"
                                                (list grid)))
     (create-graph graph)
     ;; When all-ligands changes create a completely new graph.
-    (w:observe *app* :all-ligands
+    (w:observe *workspace* :all-ligands
       (lambda (instance type name old-value new-value source)
         (declare (ignore instance type name old-value new-value source))
         (create-graph graph)))
     ;; If selected-ligands or all-edges change then just update the graph.
-    (w:observe *app* :selected-ligands
+    (w:observe *workspace* :selected-ligands
       (lambda (instance type name old-value new-value source)
         (declare (ignore instance type name old-value new-value source))
         (update-graph graph)))
-    (w:observe *app* :all-edges
+    (w:observe *workspace* :all-edges
       (lambda (instance type name old-value new-value source)
         (declare (ignore instance type name old-value new-value source))
         (update-graph graph)))
@@ -1097,7 +1098,7 @@ It will put those multiple ligands into all-ligands and selected-ligands"
      :accessor job-name
      :initform (make-instance 'w:text
                               :description "Job name"
-                              :value (job-name *app*)
+                              :value (job-name *workspace*)
                               :style (make-instance 'w:description-style :description-width "12em")
                               :layout (make-instance 'w:layout :grid-area "name"))
      :documentation "The job name.")
@@ -1107,7 +1108,7 @@ It will put those multiple ligands into all-ligands and selected-ligands"
                               :options '(1 3)
                               :%options-labels '("one stage" "three stage")
                               :description "TI stages"
-                              :value (tirun-stages *app*)
+                              :value (tirun-stages *workspace*)
                               :style (make-instance 'w:description-style :description-width "12em")
                               :layout (make-instance 'w:layout :grid-area "stages"))
      :documentation "The number of stages in the TI calculation."))
@@ -1127,14 +1128,14 @@ It will put those multiple ligands into all-ligands and selected-ligands"
   (declare (ignore initargs))
   (with-slots (job-name ti-stages)
               instance
-    ;; Connect the job-name to *app* job-name
-    (w:link *app* :job-name job-name :value)
+    ;; Connect the job-name to *workspace* job-name
+    (w:link *workspace* :job-name job-name :value)
     (setf (w:widget-children instance) (list job-name ti-stages))
     ;; ti-stages isn't a trait so we can't use link.
     (w:observe ti-stages :value
       (lambda (inst type name old-value new-value source)
         (declare (ignore inst type name old-value source))
-        (setf (tirun-stages *app*) new-value)))))
+        (setf (tirun-stages *workspace*) new-value)))))
 
 
 (defun make-jobs-config-page (container title)
@@ -1202,11 +1203,12 @@ lisp_jobs_only_on=172.234.2.1
           nil)))))
 
 
-(defun run-write-jobs (parameter progress-callback)
+(defun run-write-jobs (action parameter progress-callback)
   "Called by the write task page to start the write jobs task."
-  (declare (ignore parameter))
+  (declare (ignore action parameter))
   (multiple-value-bind (dir tar-file from-path)
-      (calculate-jobs-dir (job-name *app*))
+      (calculate-jobs-dir (job-name *workspace*))
+    (save-workspace)
     (format t "Writing jobs to -> ~a ...~%" dir)
     (finish-output)
     (cond
@@ -1216,11 +1218,11 @@ lisp_jobs_only_on=172.234.2.1
        nil)
       (t
        (let ((tirun-calculation (make-instance 'tirun:tirun-calculation)))
-         (prepare-calculation tirun-calculation *app*)
+         (prepare-calculation tirun-calculation *workspace*)
          (ensure-write-jobs tirun-calculation dir progress-callback)
          (write-line "Generating tar file.")
          (finish-output)
-         (generate-tar-file (job-name *app*) dir tar-file from-path))))))
+         (generate-tar-file (job-name *workspace*) dir tar-file from-path))))))
 
 (defun only-residue (molecule)
   (unless (= (chem:content-size molecule) 1)
@@ -1231,9 +1233,9 @@ lisp_jobs_only_on=172.234.2.1
   (let ((label (format nil "!~36,2,'0r" index)))
     (intern label :keyword)))
 
-(defun prepare-calculation (calc app)
+(defun prepare-calculation (calc workspace)
   (let ((residue-name-to-pdb-alist nil))
-    (loop for molecule in (selected-ligands app)
+    (loop for molecule in (selected-ligands workspace)
           for residue = (only-residue molecule)
           for residue-index from 0
           for residue-name = (chem:get-name residue)
@@ -1253,12 +1255,12 @@ lisp_jobs_only_on=172.234.2.1
                                        :core-residue-name (chem:get-name residue)
                                        :core-atoms (chem:all-atoms-as-list molecule nil)
                                        :net-charge 0.0 #|not always!|#)))
-                    (selected-ligands app))))
+                    (selected-ligands workspace))))
       (setf (tirun:mask-method calc) :closest
-            (tirun:settings calc) (tirun-settings app)
-            (tirun:ti-stages calc) (tirun-stages app)
+            (tirun:settings calc) (tirun-settings workspace)
+            (tirun:ti-stages calc) (tirun-stages workspace)
             (tirun:residue-name-to-pdb-alist calc) residue-name-to-pdb-alist
-            (tirun:receptors calc) (list (receptor app))
+            (tirun:receptors calc) (list (receptor workspace))
             (tirun:ligands calc) ligands))))
 
 (defun jobs ()
@@ -1267,7 +1269,7 @@ lisp_jobs_only_on=172.234.2.1
     (dolist (schema-group tirun::*default-calculation-settings*)
       (cw:add-page container
                    (w:make-interactive-alist (second schema-group)
-                                             (tirun-settings *app*))
+                                             (tirun-settings *workspace*))
                    (first schema-group)))
     (make-jobs-config-page container "Configure Jobs")
     (cw:make-simple-task-page container "Write Jobs" #'run-write-jobs
@@ -1278,7 +1280,7 @@ lisp_jobs_only_on=172.234.2.1
 (defun read-submit-stream (num)
   (let ((buffer (make-array 15 :adjustable t :fill-pointer 0)))
     (flet ((grab ()
-             (loop for line = (read-line (submit-stream *app*) nil :eof)
+             (loop for line = (read-line (submit-stream *workspace*) nil :eof)
                    for index below num
                    do (vector-push-extend line buffer)
                    until (eq line :eof))))
@@ -1289,7 +1291,7 @@ lisp_jobs_only_on=172.234.2.1
 (defun submit-calc ()
   (let* ((desc-width "12em")
          (desc-style (make-instance 'w:description-style :description-width desc-width))
-         (distributor (make-simple-input "Distributor" :default (distributor *app*)))
+         (distributor (make-simple-input "Distributor" :default (distributor *workspace*)))
          (job-name (make-simple-input "Job name" :default "default"))
          (ssh-key-file (make-instance 'jupyter-widgets:file-upload :description "SSH key file"
                                                                    :style (button-style)))
@@ -1321,12 +1323,12 @@ lisp_jobs_only_on=172.234.2.1
                                                #+(or)(if (= 0 ret)
                                                          (setf (w:widget-value messages)
                                                                (format nil "Successfully submitted job ~s~%" cmd)
-                                                               (submit-stream *app*) stream)
+                                                               (submit-stream *workspace*) stream)
                                                          (setf (w:widget-value messages)
                                                                (format nil "Failed to submit job errno: ~a" ret)))
                                                (sleep 1000000)))
                                            :name "submit"))))))))
-    (jupyter-widgets:observe *app* :job-name (lambda (instance type name old-value new-value source)
+    (jupyter-widgets:observe *workspace* :job-name (lambda (instance type name old-value new-value source)
                                                (setf (w:widget-value (input-widget job-name)) new-value)))
     (make-instance 'w:v-box
                    :children (append (list (hbox distributor) (hbox job-name) ssh-key-file)
@@ -1339,8 +1341,8 @@ lisp_jobs_only_on=172.234.2.1
 
 
 (defun check-calc ()
-  (let* ((job-name (make-simple-input "Job name" :default (job-name *app*)))
-         (distributor (make-simple-input "Distributor" :default (distributor *app*)))
+  (let* ((job-name (make-simple-input "Job name" :default (job-name *workspace*)))
+         (distributor (make-simple-input "Distributor" :default (distributor *workspace*)))
          (messages (make-instance 'w:text-area :description "Messages"
                                                :layout (make-instance 'w:layout :width "60em")))
          (go-button (make-instance 'w:button :description "Check calculation"
@@ -1389,19 +1391,19 @@ lisp_jobs_only_on=172.234.2.1
 
 (defun composer ()
   (let ((instance (structure-editor:composer "Draw Ligands" "Parse Ligands")))
-    (w:link *app* :composer-data instance :data t)
+    (w:link *workspace* :composer-data instance :data t)
     (w:observe instance :aggregate
                (lambda (inst type name old-value new-value source)
                  (declare (ignore (inst type name old-value source)))
-                 ;; tirun-ligands are what goes in (ligands *app)
+                 ;; tirun-ligands are what goes in (ligands *workspace)
                  (multiple-value-bind (molecules tirun-ligands)
                      (tirun:assemble-ligands new-value :verbose t)
-                   (let* ((template-molecule (template-ligand *app*))
+                   (let* ((template-molecule (template-ligand *workspace*))
                           (posed-molecules (tirun:pose-molecules-using-similarity molecules template-molecule)))
                      (setf all-ligands posed-molecules
                            selected-ligands all-ligands
                            all-edges nil)
-                     (save-tirun)))))
+                     (save-workspace)))))
     (make-view-ligand-page instance "View Ligands")
     instance))
 
@@ -1411,6 +1413,6 @@ lisp_jobs_only_on=172.234.2.1
   "Like composer - but gets the structure sketch from a chemdraw file"
   (let ((sketch (tirun:load-chem-draw-tirun filename)))
     (let ((molecules (tirun::assemble-ligands sketch)))
-      (let ((posed-molecules (pose-molecules-using-similarity molecules (template-ligand *app*))))
+      (let ((posed-molecules (pose-molecules-using-similarity molecules (template-ligand *workspace*))))
         (setf all-ligands posed-molecules
               selected-ligands all-ligands)))))
