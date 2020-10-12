@@ -519,7 +519,7 @@ CL_DEFMETHOD core::List_sp Atom_O::createImplicitHydrogenNames()
 
 
 
-
+CL_DEFMETHOD
 void Atom_O::fillInImplicitHydrogensWithResidue(Residue_sp residue)
 {
   core::List_sp names = this->createImplicitHydrogenNames();

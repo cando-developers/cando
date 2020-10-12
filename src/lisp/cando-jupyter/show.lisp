@@ -63,16 +63,15 @@
     (apply 'show agg kwargs)))
 
 (defun isolate-residue (residue)
-  (let ((agg (chem:make-aggregate nil))
-        (mol (chem:make-molecule nil))
-        (res (chem:copy residue)))
+  (let* ((agg (chem:make-aggregate nil))
+         (mol (chem:make-molecule nil))
+         (new-to-old (make-hash-table))
+         (res (chem:copy residue new-to-old)))
     (let (break-bonds)
       (chem:map-bonds
        'nil
        (lambda (a1 a2 order)
-         (format t "Looking at ~a ~a~%" a1 a2)
          (unless (and (chem:contains-atom res a1) (chem:contains-atom res a2))
-           (format t "Break bond ~a ~a~%" a1 a2)
            (push (list a1 a2) break-bonds)))
        res)
       (loop for bond in break-bonds

@@ -25,7 +25,7 @@
 
 
 (defun crd (agg)
-  (let ((arr (make-array (* 3 (chem:number-of-atoms tl)) :element-type 'single-float))
+  (let ((arr (make-array (* 3 (chem:number-of-atoms agg)) :element-type 'single-float))
         (index -1))
     (cando:do-atoms (atm agg)
       (let ((pos (chem:get-position atm)))
@@ -54,14 +54,25 @@
                                  (if bond
                                      (multiple-value-bind (bond-a bond-b)
                                          (picked-bond-atoms picked agg)
-                                         (setf *twister* (chem:make-twister))
+                                       (setf *twister* (chem:make-twister))
                                        (chem:twister-define-for-bond *twister* bond-a bond-b))
                                      (setf *twister* nil))))))
   (jupyter-widgets:observe slider :value
                            (lambda (instance type name old-value new-value source)
-                             (jupyter-widgets:with-output
-                               *log*
-                               #+(or)(format t "slider value: ~a  *twister* -> ~a~%" new-value *twister*)
-                               (when (and new-value *twister*)
-                                 (drive nglview agg *twister* (* 0.1 new-value))
-                                 #+(or)(format t "Called drive~%"))))))
+                             (when (and new-value *twister*)
+                               (drive nglview agg *twister* (* 0.1 new-value))))))
+
+(defun relax (agg nglview)
+  (let* ((energy-func (chem:make-energy-function :matter agg :use-excluded-atoms t :assign-types t))
+         (minimizer (chem:make-minimizer energy-func)))
+    (flet ((show-coords (pos)
+             (let ((coords (make-array (length pos) :element-type 'single-float)))
+               (loop for index below (length pos)
+                     do (setf (aref coords index) (float (aref pos index) 1.0s0)))
+               (nglv:set-coordinates nglview (list (cons 0 coords))))))
+      (chem:set-step-callback minimizer #'show-coords)
+      (energy:minimize-minimizer minimizer))))
+
+(defun jostle-relax (agg nglview)
+  (cando:jostle agg)
+  (relax agg nglview))

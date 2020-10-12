@@ -309,6 +309,16 @@ CL_LISPIFY_NAME("copy");
 CL_DEFMETHOD Matter_sp Residue_O::copy(core::T_sp new_to_old)
 { 
     Residue_sp newRes = this->copyDontRedirectAtoms(new_to_old).as<Residue_O>();
+    Loop lbonds(this->asSmartPtr(),BONDS);
+    while (lbonds.advanceLoopAndProcess()) {
+      Bond_sp b = lbonds.getBond();
+      Bond_sp bcopy = b->copyDontRedirectAtoms();
+      if (chem__verbose(1)) {
+        core::write_bf_stream(BF("    b -> %s\n") % _rep_(b));
+        core::write_bf_stream(BF("bcopy -> %s\n") % _rep_(bcopy));
+      }
+      bcopy->addYourselfToCopiedAtoms();
+    }
     newRes->redirectAtoms();
     return newRes;
 }
@@ -608,25 +618,6 @@ contentIterator	atom;
     return atoms;
 }
 
-#if 0 //[
-//
-//	getUniqueIntraResidueBonds
-//
-//	Return a vector of unique intra residue bonds
-//
-gctools::Vec0<Bond_sp>	Residue_O::g_etUniqueIntraResidueBonds()
-{
-    gctools::Vec0<Bond_sp>			bonds;
-contentIterator	aPPCur;
-Atom_sp				a;
-    for ( aPPCur=this->begin_atoms();
-		aPPCur != this->end_atoms(); aPPCur++ ) {
-      a = (*aPPCur).as<Atom_O>();
-	a->addUniqueIntraResidueBondsToVectorBonds(bonds);
-    }
-    return bonds;
-}
-#endif //]
 
 
 
