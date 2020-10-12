@@ -376,7 +376,7 @@
     :layout (make-instance 'w:layout
                            :grid-gap "1em"
                            :grid-template-rows "1fr min-content"
-                           :grid-template-columns "1fr 1fr"
+                           :grid-template-columns "2fr 3fr"
                            :grid-template-areas "\"structure ngl\" \"structure-ctl ngl-ctl\"")))
 
 
@@ -480,7 +480,9 @@
   ;; If the all-ligands changes then reload the whole thing.
   (w:observe *workspace* :all-ligands
     (lambda (inst type name old-value new-value source)
-      (declare (ignore inst type name old-value new-value source))
+      (declare (ignore inst type name new-value source))
+      (apply #'nglview:remove-components (view-ligand-ngl instance)
+                                         (mapcar #'molecule-name old-value))
       (refresh-ligands-view instance))))
 
 
