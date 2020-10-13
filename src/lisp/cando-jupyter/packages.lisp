@@ -29,44 +29,22 @@
   (:use #:common-lisp)
   (:export
    #:leap-syntax-enable
-   #:pick-history
-;;; Stuff for nglview demo
-   #:build-hydrogens
-   #:atom-map
-   #:named-atom-map
-   #:anchor-named-atom-map
-   #:cartoon-atom-map
-   #:center-on
-   #:rotate-x
-   #:rotate-y
-   #:rotate-z
-   #:distance-two-positions
-   #:picked-atoms
-   #:cando-structure
-   #:cando-trajectory
-   #:trajectory
-   #:show-aggregate
-   #:show-amber-netcdf-trajectory
-   #:make-amber-netcdf-trajectory
-   #:amber-netcdf-trajectory
    #:run-kernel-from-slime
    #:jupyterlab
-   #:show
-   #:repr
    #:kernel
    #:install
    ))
 
 
-(import '(cando-jupyter:show
-          cando-jupyter:repr
-          cando-jupyter:cando-structure
-          cando-jupyter:cando-trajectory
-          ) :cando-user)
+(import '(cando-widgets:show
+          cando-widgets:repr
+          cando-widgets:cando-structure
+          cando-widgets:cando-trajectory)
+        :cando-user)
 
-(export '(cando-jupyter:show
-          cando-jupyter:repr
-          cando-jupyter:cando-structure
-          cando-jupyter:cando-trajectory
-          ) :cando-user)
+(export '(cando-widgets:show
+          cando-widgets:repr
+          cando-widgets:cando-structure
+          cando-widgets:cando-trajectory)
+        :cando-user)
 

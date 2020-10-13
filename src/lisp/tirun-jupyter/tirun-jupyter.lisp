@@ -114,14 +114,6 @@
   (make-instance 'w:layout :width "auto" :flex-flow "row wrap"))
 
 
-(defun receptor-to-string (receptor)
-  (chem:aggregate-as-mol2-string receptor t))
-
-(defun receptor-string (workspace)
-  (when (receptor workspace)
-    (receptor-to-string (receptor workspace))))
-
-
 (defun initialize-workspace ()
   (let ((dest-dir (let ((dd (ext:getenv "CANDO_JOBS_DIRECTORY")))
                     (if dd
@@ -286,18 +278,18 @@
           (nglview:handle-resize ngl))))
     ;; Add the receptor if one is already defined.
     (when (receptor *workspace*)
-      (nglview:add-structure ngl (make-instance 'nglview:text-structure
-                                                :ext "mol2"
-                                                :text (receptor-string *workspace*))))
+      (nglview:add-structure ngl (make-instance 'cw:cando-structure
+                                                :id "receptor"
+                                                :matter (receptor *workspace*))))
     ;; Listen for changes to the receptor and add or delete when needed.
     (w:observe *workspace* :receptor
       (lambda (inst type name old-value new-value source)
         (declare (ignore inst type name old-value source))
         (nglview:remove-all-components ngl)
         (when new-value
-          (nglview:add-structure ngl (make-instance 'nglview:text-structure
-                                                    :ext "mol2"
-                                                    :text (receptor-to-string new-value))))))
+          (nglview:add-structure ngl (make-instance 'cw:cando-structure
+                                                    :id "receptor"
+                                                    :matter new-value)))))
     container))
 
 
@@ -335,13 +327,9 @@
 
 
 (defclass view-ligand-page (cw:page)
-  ((ngl
-     :reader view-ligand-ngl
-     :initform (make-instance 'nglv:nglwidget
-                              :layout (make-instance 'w:layout
-                                                     :border "var(--jp-widgets-border-width) solid var(--jp-border-color1)"
-                                                     :grid-area "ngl"))
-     :documentation "nglview for the selected ligand and the receptor.")
+  ((ngl-structure-viewer
+     :reader view-ligand-ngl-structure-viewer
+     :initform (make-instance 'cw:ngl-structure-viewer))
    (structure
      :reader view-ligand-structure
      :initform (make-instance 'w:html
@@ -360,16 +348,7 @@
      :initform (make-instance 'w:dropdown
                               :layout (make-instance 'w:layout
                                                      :width "max-content"))
-     :documentation "A dropdown of all the available ligands.")
-   (receptor-toggle
-     :reader view-ligand-receptor-toggle
-     :initform (make-instance 'w:toggle-button
-                              :description "Show Receptor"
-                              :value t
-                              :layout (make-instance 'w:layout
-                                                     :margin "auto"
-                                                     :grid-area "ngl-ctl"))
-     :documentation "A toggle button to control the visibility of the receptor."))
+     :documentation "A dropdown of all the available ligands."))
   (:metaclass jupyter-widgets:trait-metaclass)
   (:documentation "A page to view ligands that has a sketch and an nglview widget along with controls and ligand selector.")
   (:default-initargs
@@ -377,10 +356,7 @@
                            :grid-gap "1em"
                            :grid-template-rows "1fr min-content"
                            :grid-template-columns "2fr 3fr"
-                           :grid-template-areas "\"structure ngl\" \"structure-ctl ngl-ctl\"")))
-
-
-(defvar *smallest-ligand-sketch*)
+                           :grid-template-areas "'structure ngls' 'structure-ctl ngls'")))
 
 
 (defun molecule-name (molecule)
@@ -390,7 +366,7 @@
 
 (defun on-ligand-select (instance index &optional previous)
   "Select a ligand on a view-ligand-page and hide a previous ligand if one was selected."
-  (with-slots (ngl structure)
+  (with-slots (structure)
               instance
     (let* ((mol (elt all-ligands index))
            (id (molecule-name mol)))
@@ -399,22 +375,22 @@
             (format nil "<div style='display:flex;align-items:center;height:100%;'><div style='display:block;margin:auto;'>~A</div></div>"
                     (cw:sketch-molecule mol)))
       ;; A resize can't hurt.
-      (nglview:handle-resize ngl)
+      (nglview:handle-resize (cw:ngl (view-ligand-ngl-structure-viewer instance)))
       ;; Hide previous ligand.
       (when previous
-        (nglview:hide-components ngl (molecule-name (elt all-ligands previous))))
+        (nglview:hide-components (cw:ngl (view-ligand-ngl-structure-viewer instance)) (molecule-name (elt all-ligands previous))))
       ;; Show the ligand if it is already in nglview otherwise load it.
       (cond
-        ((position id (nglview:component-ids ngl) :test #'string=)
-          (nglview:show-components ngl id)
-          (nglview:center ngl :component id))
+        ((position id (nglview:component-ids (cw:ngl (view-ligand-ngl-structure-viewer instance))) :test #'string=)
+          (nglview:show-components (cw:ngl (view-ligand-ngl-structure-viewer instance)) id)
+          (nglview:center (cw:ngl (view-ligand-ngl-structure-viewer instance)) :component id))
         (t
           (let ((agg (chem:make-aggregate)))
             (chem:add-matter agg mol)
-            (nglview:add-structure ngl
-                                   (make-instance 'nglview:text-structure
-                                                  :id id :ext "mol2"
-                                                  :text (chem:aggregate-as-mol2-string agg t)))))))))
+            (nglview:add-structure (cw:ngl (view-ligand-ngl-structure-viewer instance))
+                                   (make-instance 'cw:cando-structure
+                                                  :id (molecule-name mol)
+                                                  :matter agg))))))))
 
 
 (defun refresh-ligands-view (instance)
@@ -442,20 +418,14 @@
   (jupyter-widgets:link (view-ligand-slider instance) :value
                         (view-ligand-dropdown instance) :index)
   (setf (w:widget-children instance)
-        (list (view-ligand-ngl instance)
+        (list (view-ligand-ngl-structure-viewer instance)
               (view-ligand-structure instance)
               (make-instance 'w:h-box
                              :children (list (view-ligand-slider instance)
                                              (view-ligand-dropdown instance))
                              :layout (make-instance 'w:layout
                                                     :width "90%" :margin "auto"
-                                                    :grid-area "structure-ctl"))
-              (view-ligand-receptor-toggle instance)))
-  ;; Set the receptor visibility based the toggle.
-  (w:observe (view-ligand-receptor-toggle instance) :value
-    (lambda (inst type name old-value new-value source)
-      (declare (ignore inst type name old-value source))
-      (nglview:set-visibility (view-ligand-ngl instance) new-value "receptor")))
+                                                    :grid-area "structure-ctl"))))
   ;; When the slider index changes update the sketch and nglview.
   (w:observe (view-ligand-slider instance) :value
     (lambda (inst type name old-value new-value source)
@@ -465,23 +435,17 @@
   (w:observe (cw:container instance) :selected-index
     (lambda (inst type name old-value new-value source)
       (declare (ignore inst type name old-value source))
-      (nglview:handle-resize (view-ligand-ngl instance))))
+      (nglview:handle-resize (cw:ngl (view-ligand-ngl-structure-viewer instance)))))
   ;; When the receptor changes reload the receptor in nglview.
   (w:observe *workspace* :receptor
     (lambda (inst type name old-value new-value source)
       (declare (ignore inst type name source))
-      (when old-value
-        (nglview:remove-components (view-ligand-ngl instance) "receptor"))
-      (nglview:add-structure (view-ligand-ngl instance)
-                             (make-instance 'nglview:text-structure
-                                            :id "receptor"
-                                            :ext "mol2"
-                                            :text (receptor-to-string new-value)))))
+      (cw:add-receptor (view-ligand-ngl-structure-viewer instance) new-value)))
   ;; If the all-ligands changes then reload the whole thing.
   (w:observe *workspace* :all-ligands
     (lambda (inst type name old-value new-value source)
       (declare (ignore inst type name new-value source))
-      (apply #'nglview:remove-components (view-ligand-ngl instance)
+      (apply #'nglview:remove-components (cw:ngl (view-ligand-ngl-structure-viewer instance))
                                          (mapcar #'molecule-name old-value))
       (refresh-ligands-view instance))))
 
@@ -489,14 +453,11 @@
 (defun make-view-ligand-page (container title)
   "Create an instance of a view-ligand-page and add it to the container."
   (let ((page (make-instance 'view-ligand-page :container container)))
+    (setf (w:widget-grid-area (w:widget-layout (view-ligand-ngl-structure-viewer page))) "ngls")
     (cw:add-page container page title)
     ;; If the receptor is already set then load the current receptor.
     (when (receptor *workspace*)
-      (nglview:add-structure (view-ligand-ngl page)
-                             (make-instance 'nglview:text-structure
-                                            :id "receptor"
-                                            :ext "mol2"
-                                            :text (receptor-string *workspace*))))
+      (cw:add-receptor (view-ligand-ngl-structure-viewer page) (receptor *workspace*)))
     ;; Update the view
     (refresh-ligands-view page)
     (values)))

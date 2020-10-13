@@ -1,5 +1,5 @@
 
-(in-package :cando-jupyter)
+(in-package :cando-widgets)
 
 (defun pick-history (widget)
   (funcall (find-symbol "PICK-HISTORY" :NGLV) widget))
@@ -28,8 +28,8 @@
 
 (defun npicked (widget n)
     (with-output-to-string (sout)
-  (mapcar (lambda (a) 
-                  (format sout ".~a "(cdr (assoc "atomname" (cdr (car a)) :test #'equal)))) 
+  (mapcar (lambda (a)
+                  (format sout ".~a "(cdr (assoc "atomname" (cdr (car a)) :test #'equal))))
           (subseq (pick-history widget) 0 n))))
 
 
@@ -118,7 +118,7 @@
                 ((typep dest 'geom:v3) dest)
                 ((consp dest) (geom:vec (first dest) (second dest) (third dest)))
                 (t (error "Convert ~a to vec" dest)))))
-    (let ((transform (geom:make-m4-translate 
+    (let ((transform (geom:make-m4-translate
                       (geom:v- dest (chem:geometric-center matter) ))))
       (chem:apply-transform-to-atoms matter transform))))
 
@@ -146,40 +146,22 @@
                            (z (cdr (assoc "z" atom :test #'string=)))
                            (pos (geom:vec x y z))
                             resulta)
-                         (chem:map-atoms nil (lambda (a) 
-                                 (when (< (distance-two-positions pos (chem:get-position a)) 0.01) 
+                         (chem:map-atoms nil (lambda (a)
+                                 (when (< (distance-two-positions pos (chem:get-position a)) 0.01)
                                      (setf resulta a))) agg)
                         resulta)))
 
 (defclass cando-structure (nglv:structure)
-  ((%matter :initarg :matter :accessor matter)))
+  ((matter :initarg :matter :accessor matter)))
 
 (defmethod nglv:ext ((self cando-structure))
   "mol2")
 
 (defmethod nglv:get-structure-string ((self cando-structure))
-  (check-type self cando-structure)
-  (progn
-    (jupyter:inform :info nil "Generating mol2 as string~%")
-    (chem:aggregate-as-mol2-string (matter self) t))
-  #++(progn
-       (jupyter:inform :info nil "Saving structure to /tmp/structure.mol2~%")
-       (cando:save-mol2 (matter self) "/tmp/structure.mol2" :use-sybyl-types t)
-       (with-open-file (stream "/tmp/structure.mol2" :direction :input)
-	 (let* ((entire-file (make-string (+ (file-length stream) 2)
-					  :initial-element #\newline)))
-	   (read-sequence entire-file stream)
-	   (close stream)
-	   entire-file))))
+  (chem:aggregate-as-mol2-string (matter self) t))
 
 (defclass cando-trajectory (nglv:trajectory nglv:structure dynamics:trajectory)
   ())
-
-#+(or)
-(defmethod initialize-instance :after ((self cando-trajectory) &key)
-  (warn "What do I do with nglv:*backends*")
-  #+(or)(setf (gethash "cando" nglv:*BACKENDS*) 'cando-trajectory)
-  (values))
 
 (defmethod nglv:ext ((self cando-trajectory))
   "mol2")

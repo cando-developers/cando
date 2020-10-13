@@ -15,7 +15,5 @@
 ;;;  :build-pathname #P"/tmp/tirun.fasb"
   :components
   ((:file "packages")
-   (:file "tirun-jupyter")
-   (:file "twister")
-   ))
+   (:file "tirun-jupyter")))
 
