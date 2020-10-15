@@ -49,9 +49,9 @@ typedef	enum 	BondOrderEnum
     dashedSingleBond,
     dashedDoubleBond,
     singleWedgeBegin,
-    singleDashBegin,
+    singleHashBegin,
     singleWedgeEnd,
-    singleDashEnd,
+    singleHashEnd,
     unknownOrderBond
 } BondOrder;
 

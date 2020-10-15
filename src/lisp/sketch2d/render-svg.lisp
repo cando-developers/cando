@@ -425,7 +425,7 @@ This will place the calculated bond on one or the other side of the x1,y1-x2,y2 
                       (make-instance 'line :p1 p1 :p2 p2 :class bond-class)
                       (make-instance 'line :p1 (geom:v+ p1 left) :p2 (geom:v+ p2 left) :class bond-class)
                       (make-instance 'line :p1 (geom:v- p1 left) :p2 (geom:v- p2 left) :class bond-class))))
-                  (t (warn "In render-svg calculate-bond Handle bond ~a" bond-order))))))))))
+                  (t (warn "In render-svg calculate-bond handle bond ~a" bond-order))))))))))
 
 (defun calculate-bonds (sketch)
   (let ((lines nil))

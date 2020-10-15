@@ -11,7 +11,7 @@
           (format t "~a~%" (chem:bonds-as-list atm)))))
     (chem:map-bonds nil
                     (lambda (a1 a2 o)
-                      (when (member o '(:single-wedge-begin :single-wedge-end :single-dash-begin :single-dash-end))
+                      (when (member o '(:single-wedge-begin :single-wedge-end :single-hash-begin :single-hash-end))
                         (format t "~a -> ~a  ~a~%" a1 a2 o)))
                     mol)))
 
@@ -46,7 +46,7 @@
     (1 (cond
          ((null stereo) :single-bond)
          ((= stereo 1) :single-wedge-begin)
-         ((= stereo 3) :single-dash-begin)
+         ((= stereo 3) :single-hash-begin)
          (t (error "Illegal bond-order stereo (~a/~a) combination" jbo stereo))))
     (2 :double-bond)
     (3 :triple-bond)

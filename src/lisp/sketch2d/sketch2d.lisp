@@ -1049,6 +1049,7 @@ are in the order (low, middle, high) and the column eigen-vectors are in the sam
   (sketch-atom (car sketch-neighbors)))
   
 (defun augment-sketch-with-stereochemistry (sketch2d)
+  ;; Gather the chiral atoms
   (let ((chiral-atoms (let (chirals)
                         (cando:do-atoms (atm (original-molecule sketch2d))
                           (when (eq (chem:get-stereochemistry-type atm) :chiral)
@@ -1056,9 +1057,11 @@ are in the order (low, middle, high) and the column eigen-vectors are in the sam
                         chirals))
         (original-to-sketch (make-hash-table))
         (cip (chem:assign-priorities-hash-table (original-molecule sketch2d))))
+    ;; calculate original atom to sketch atom map
     (cando:do-atoms (atm (molecule sketch2d))
       (let ((original-atm (gethash atm (sketch-atoms-to-original sketch2d))))
         (setf (gethash original-atm original-to-sketch) atm)))
+    ;; 
     (loop for chiral-atom in chiral-atoms
           for bonds = (chem:bonds-as-list chiral-atom)
           do (let ((neighbors (loop for bond in bonds
@@ -1127,7 +1130,7 @@ are in the order (low, middle, high) and the column eigen-vectors are in the sam
                                                           :bond-atom (sketch-atom (second sketch-neighbors)))))))))
                       (push chiral-info (chiral-infos sketch2d)))))
                  ((member config '(:left-handed :right-handed))
-                  (let* ((sketch-chiral (gethash chiral-atom original-to-sketch))
+                  (let* ((sketch-chiral-atom (gethash chiral-atom original-to-sketch))
                          (sketch-neighbors (loop for neighbor in neighbors
                                                  for sketch-neighbor = (gethash neighbor original-to-sketch)
                                                  when sketch-neighbor
@@ -1135,13 +1138,13 @@ are in the order (low, middle, high) and the column eigen-vectors are in the sam
                                                                           :original-atom neighbor
                                                                           :sketch-atom sketch-neighbor))))
                     (let ((chiral-info (make-instance 'chiral-info
-                                                      :chiral-sketch-atom sketch-chiral
+                                                      :chiral-sketch-atom sketch-chiral-atom
                                                       :neighbors sketch-neighbors)))
 ;;; svg is a left handed coordinate system
                       ;;                      (case (length (neighbors chiral-info))
-                      (let* ((atm-1 (sketch-atom (car sketch-neighbors)))
-                             (atm-ch sketch-chiral)
-                             (atm-2 (sketch-atom (cadr sketch-neighbors)))
+                      (let* ((atm-1 (sketch-atom (first sketch-neighbors)))
+                             (atm-ch sketch-chiral-atom)
+                             (atm-2 (sketch-atom (second sketch-neighbors)))
                              (vec1 (geom:v- (chem:get-position atm-1)
                                             (chem:get-position atm-ch)))
                              (vec2 (geom:v- (chem:get-position atm-2)

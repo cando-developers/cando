@@ -489,7 +489,7 @@ We need assemble-ligands for the tirun demo."
    'nil
    (lambda (a1 a2 bond-order)
      (when (member bond-order '(:single-wedge-begin :single-wedge-end
-                                :single-dash-begin :single-dash-end))
+                                :single-hash-begin :single-hash-end))
        (let* ((bond (chem:get-bond-to a1 a2))
               (ba1 (chem:get-atom1 bond))
               (ba2 (chem:get-atom2 bond)))
@@ -498,9 +498,9 @@ We need assemble-ligands for the tirun demo."
            (:single-wedge-end
             (rotatef ba1 ba2)
             (setf bond-order :single-wedge-begin))
-           (:single-dash-end
+           (:single-hash-end
             (rotatef ba1 ba2)
-            (setf bond-order :single-dash-begin)))
+            (setf bond-order :single-hash-begin)))
          (unless (or (= (chem:number-of-bonds ba1) 3)
                      (= (chem:number-of-bonds ba1) 4))
            (error "There must be 3 or 4 neighbors for atoms with wedge bonds - atom ~a doesn't have that" ba1))
@@ -532,7 +532,7 @@ We need assemble-ligands for the tirun demo."
                   (side (* (float-sign (geom:vz cross) 1.0)
                            (case bond-order
                              (:single-wedge-begin 1.0)
-                             (:single-dash-begin -1.0))))
+                             (:single-hash-begin -1.0))))
                   (config (if (> 0.0 side)
                               :right-handed
                               :left-handed)))

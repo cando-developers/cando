@@ -750,11 +750,11 @@ void CDFragment_O::createAtomsAndBonds()
           bond->setProperty(INTERN_(kw,chemdraw_dashed_bond),_lisp->_true());
       case WedgedHashBeginCDBond:
 //          printf("%s:%d wedgeHashCDBond %s\n", __FILE__, __LINE__, _rep_(bond).c_str());
-          bond->setOrder(singleDashBegin);
+          bond->setOrder(singleHashBegin);
           break;
       case WedgedHashEndCDBond:
 //          printf("%s:%d wedgeHashCDBond %s\n", __FILE__, __LINE__, _rep_(bond).c_str());
-          bond->setOrder(singleDashEnd);
+          bond->setOrder(singleHashEnd);
           break;
       case WedgeBeginCDBond:
 //          printf("%s:%d WedgeBeginCDBond %s\n", __FILE__, __LINE__, _rep_(bond).c_str());

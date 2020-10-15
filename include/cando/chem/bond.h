@@ -85,8 +85,8 @@ public:
 
   static bool singleBondP(BondOrder order) {
     return (order == singleBond ||
-            order == singleDashBegin ||
-            order == singleDashEnd ||
+            order == singleHashBegin ||
+            order == singleHashEnd ||
             order == singleWedgeBegin ||
             order == singleWedgeEnd );
   };
@@ -229,9 +229,9 @@ extern core::Symbol_sp& _sym_virtualBond;
 extern core::Symbol_sp& _sym_dashedSingleBond;
 extern core::Symbol_sp& _sym_dashedDoubleBond;
 extern core::Symbol_sp& _sym_singleWedgeBegin;
-extern core::Symbol_sp& _sym_singleDashBegin;
+extern core::Symbol_sp& _sym_singleHashBegin;
 extern core::Symbol_sp& _sym_singleWedgeEnd;
-extern core::Symbol_sp& _sym_singleDashEnd;
+extern core::Symbol_sp& _sym_singleHashEnd;
 };
 
 
