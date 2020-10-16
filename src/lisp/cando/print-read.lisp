@@ -81,12 +81,15 @@ Save the object to the file PATHNAME as an s-expression."
           do (format stream "~s ~s " (car initargs) (slot-value obj slot-name)))
   (format stream ") "))
 
-(defmacro make-class-save-load (class-name &rest skip-slot-names)
+(defmacro make-class-save-load (class-name &key skip-slot-names
+                                             (print-unreadably
+                                              `(lambda (obj stream)
+                                                 (print-unreadable-object (obj stream)
+                                                   (format stream "~a" (class-name (class-of obj)))))))
   "Create a serializer for class-name. Slots that have :initarg defined and do not appear in
   skip-slot-names will be serialized."
   `(defmethod print-object ((obj ,class-name) stream)
      (if *print-readably*
          (progn
            (print-object-readably-with-slots obj stream (quote ,skip-slot-names)))
-         (print-unreadable-object (obj stream)
-           (format stream "~a" (class-name (class-of obj)))))))
+         (funcall ,print-unreadably obj stream))))
