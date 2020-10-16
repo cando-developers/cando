@@ -10,10 +10,16 @@
   :licence "GPL2"
   :depends-on (:common-lisp-jupyter
                :lparallel
-               :sketch2d)
+               :netcdf
+               :nglview-cl
+               :sketch2d
+               :static-vectors)
   :serial t
   :components ((:file "packages")
+               (:file "show")
+               (:file "nglview")
                (:file "molecule-select")
                (:file "pages")
-               (:file "workspace-task-page")))
+               (:file "workspace-task-page")
+               (:file "ngl-structure-viewer")))
 
