@@ -65,7 +65,7 @@
   (cond
     ((string= type "Kekule.Atom")
      (if element
-         (intern (format nil "~a~a" element (1+ index)) :keyword)
+         (intern (symbol-name (gensym (symbol-name element))) :keyword)
          (error "Kekule.Atom doesn't have a valid element ~s~%" element)))
     ((string= type "Kekule.Pseudoatom")
      (intern symbol :keyword))

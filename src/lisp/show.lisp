@@ -85,7 +85,7 @@
 (defmethod show ((residue chem:residue)  &rest kwargs &key &allow-other-keys)
   (let ((agg (isolate-residue residue)))
     (apply 'show agg kwargs)))
-  
+
 (defun repr (widget representation &optional (selection "all"))
   (funcall (find-symbol "ADD-REPRESENTATION" :nglv) widget representation :selection selection))
 
