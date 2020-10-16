@@ -387,11 +387,7 @@
         (t
           (let ((agg (chem:make-aggregate)))
             (chem:add-matter agg mol)
-            (nglview:add-structure (cw:ngl (view-ligand-ngl-structure-viewer instance))
-                                   (make-instance 'cw:cando-structure
-                                                  :id (molecule-name mol)
-                                                  :matter agg))))))))
-
+            (cw:add-ligand (view-ligand-ngl-structure-viewer instance) (molecule-name mol) agg)))))))
 
 (defun refresh-ligands-view (instance)
   "Refresh the ligand view and the ngl view."

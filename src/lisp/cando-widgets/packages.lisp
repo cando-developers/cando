@@ -5,6 +5,7 @@
                     (:jw :jupyter-widgets))
   (:export
     #:add-page
+    #:add-ligand
     #:add-receptor
     #:amber-netcdf-trajectory
     #:anchor-named-atom-map
