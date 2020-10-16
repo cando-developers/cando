@@ -85,6 +85,7 @@ public:
 
   static bool singleBondP(BondOrder order) {
     return (order == singleBond ||
+            order == dashedSingleBond ||
             order == singleHashBegin ||
             order == singleHashEnd ||
             order == singleWedgeBegin ||
