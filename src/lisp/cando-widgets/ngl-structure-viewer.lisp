@@ -49,6 +49,13 @@
                    ("colorScheme" . "residueindex"))
                   (("type" . "licorice")
                    ("sele" . "ligand"))))
+    (:name "Cartoon/Space Fill"
+     :receptor t
+     :ligand nil
+     :definition ((("type" . "cartoon")
+                   ("colorScheme" . "residueindex"))
+                  (("type" . "spacefill")
+                   ("sele" . "ligand"))))
     (:name "Licorice"
      :receptor t
      :ligand t
@@ -79,6 +86,14 @@
                    ("colorScheme" . "residueindex"))
                   (("type" . "licorice")
                    ("sele" . "ligand"))))
+    (:name "Surface/Space Fill"
+     :receptor t
+     :ligand nil
+     :definition ((("type" . "surface")
+                   ("useWorker" . :true)
+                   ("colorScheme" . "residueindex"))
+                  (("type" . "spacefill")
+                   ("sele" . "ligand"))))
     (:name "Ribbon"
      :receptor t
      :ligand nil
@@ -97,7 +112,18 @@
      :definition ((("type" . "ribbon")
                    ("colorScheme" . "residueindex"))
                   (("type" . "licorice")
-                   ("sele" . "ligand"))))))
+                   ("sele" . "ligand"))))
+    (:name "Ribbon/Space Fill"
+     :receptor t
+     :ligand nil
+     :definition ((("type" . "ribbon")
+                   ("colorScheme" . "residueindex"))
+                  (("type" . "spacefill")
+                   ("sele" . "ligand"))))
+    (:name "Space Fill"
+     :receptor t
+     :ligand t
+     :definition ((("type" . "spacefill"))))))
 
 
 (defun get-representation-definition (name)
