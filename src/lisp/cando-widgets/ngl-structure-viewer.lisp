@@ -155,7 +155,7 @@
      :initform (make-instance 'nglv:nglwidget
                               :layout (make-instance 'jw:layout
                                                      :border "var(--jp-widgets-border-width) solid var(--jp-border-color1)"
-                                                     :grid-area "ngl1")))
+                                                     :grid-area "ngl")))
    (receptor-representation
      :reader receptor-representation
      :initform (make-instance 'jw:dropdown
@@ -169,10 +169,9 @@
                               :style (make-instance 'jw:description-style
                                                     :description-width "min-content")
                               :layout (make-instance 'jw:layout
-                                                     :margin "auto"
+                                                     :margin ".5em"
                                                      :width "max-content"
-                                                     :display "none"
-                                                     :grid-area "receptor")))
+                                                     :display "none")))
    (ligand-representation
      :reader ligand-representation
      :initform (make-instance 'jw:dropdown
@@ -185,10 +184,9 @@
                               :style (make-instance 'jw:description-style
                                                     :description-width "min-content")
                               :layout (make-instance 'jw:layout
-                                                     :margin "auto"
+                                                     :margin ".5em"
                                                      :width "max-content"
-                                                     :display "none"
-                                                     :grid-area "ligand")))
+                                                     :display "none")))
    (template-representation
      :reader template-representation
      :initform (make-instance 'jw:dropdown
@@ -202,10 +200,9 @@
                               :style (make-instance 'jw:description-style
                                                     :description-width "min-content")
                               :layout (make-instance 'jw:layout
-                                                     :margin "auto"
+                                                     :margin ".5em"
                                                      :width "max-content"
-                                                     :display "none"
-                                                     :grid-area "template")))
+                                                     :display "none")))
    (minimize-button
      :reader minimize-button
      :initform (make-instance 'jw:button
@@ -213,9 +210,8 @@
                               :style (make-instance 'jw:description-style
                                                     :description-width "min-content")
                               :layout (make-instance 'jw:layout
-                                                     :margin "auto"
-                                                     :width "max-content"
-                                                     :grid-area "minimize")))
+                                                     :margin ".5em"
+                                                     :width "max-content")))
    (jostle-button
      :reader jostle-button
      :initform (make-instance 'jw:button
@@ -223,9 +219,8 @@
                               :style (make-instance 'jw:description-style
                                                     :description-width "min-content")
                               :layout (make-instance 'jw:layout
-                                                     :margin "auto"
-                                                     :width "max-content"
-                                                     :grid-area "jostle")))
+                                                     :margin ".5em"
+                                                     :width "max-content")))
    (angle-slider
      :reader angle-slider
      :initform (make-instance 'jw:float-slider
@@ -239,6 +234,16 @@
                               :layout (make-instance 'jw:layout
                                                      :height "100%"
                                                      :grid-area "angle")))
+   (controls-container
+     :reader controls-container
+     :initform (make-instance 'jw:box
+                              :layout (make-instance 'jw:layout
+                                                     :flex-flow "row wrap"
+                                                     :justify-content "center"
+                                                     :margin "-.5em"
+                                                     :align-items "baseline"
+                                                     :align-content "flex-start"
+                                                     :grid-area "controls")))
    (twister
      :accessor twister
      :initform nil)
@@ -250,8 +255,8 @@
     :layout (make-instance 'jw:layout
                            :grid-gap "1em"
                            :grid-template-rows "1fr min-content"
-                           :grid-template-columns "1fr min-content min-content min-content min-content min-content 1fr min-content"
-                           :grid-template-areas "'ngl1 ngl1 ngl1 ngl1 ngl1 ngl1 ngl1 angle' '. receptor template ligand jostle minimize . .'")))
+                           :grid-template-columns "1fr min-content"
+                           :grid-template-areas "'ngl angle' 'controls .'")))
 
 
 (defun on-picked (instance picked)
@@ -319,14 +324,18 @@
 
 
 (defmethod initialize-instance :after ((instance ngl-structure-viewer) &rest initargs &key &allow-other-keys)
-  (setf (jw:widget-children instance)
-        (list (ngl instance)
-              (receptor-representation instance)
+  (setf (jw:widget-children (controls-container instance))
+        (list (receptor-representation instance)
               (template-representation instance)
               (ligand-representation instance)
-              (angle-slider instance)
               (minimize-button instance)
-              (jostle-button instance)))
+              (jostle-button instance))
+        (jw:widget-children instance)
+        (list (ngl instance)
+              (controls-container instance)
+              (angle-slider instance)))
+  ; hack
+  (jw:notify-trait-change (controls-container instance) :widget-list :children nil (jw:widget-children (controls-container instance)) t)
   (jw:observe (ngl instance) :picked
     (lambda (inst type name old-value new-value source)
       (declare (ignore inst type name old-value source))
@@ -431,3 +440,8 @@
                                "defaultRepresentation" :false)
         (when representation
           (nglview:set-representations ngl representation "template"))))))
+
+
+(defun make-ngl-structure-viewer ()
+  (make-instance 'ngl-structure-viewer))
+

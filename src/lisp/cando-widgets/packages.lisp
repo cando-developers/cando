@@ -21,6 +21,7 @@
     #:make-amber-netcdf-trajectory
     #:make-file-task-page
     #:make-molecule-select
+    #:make-ngl-structure-viewer
     #:make-simple-task-page
     #:make-workspace-task-page
     #:molecules

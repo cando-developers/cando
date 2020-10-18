@@ -329,7 +329,7 @@
 (defclass view-ligand-page (cw:page)
   ((ngl-structure-viewer
      :reader view-ligand-ngl-structure-viewer
-     :initform (make-instance 'cw:ngl-structure-viewer))
+     :initform (cw:make-ngl-structure-viewer))
    (structure
      :reader view-ligand-structure
      :initform (make-instance 'w:html
