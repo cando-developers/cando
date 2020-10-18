@@ -88,6 +88,9 @@ Save the object to the file PATHNAME as an s-expression."
                                                    (format stream "~a" (class-name (class-of obj)))))))
   "Create a serializer for class-name. Slots that have :initarg defined and do not appear in
   skip-slot-names will be serialized."
+  (unless (and (listp skip-slot-names)
+               (every #'symbolp skip-slot-names))
+    (error "The skip-slot-names must be a list of symbols - instead it is ~s" skip-slot-names))
   `(defmethod print-object ((obj ,class-name) stream)
      (if *print-readably*
          (progn

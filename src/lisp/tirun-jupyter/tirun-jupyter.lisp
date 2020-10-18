@@ -99,7 +99,7 @@
   (all-edges *workspace*))
 
 
-(cando:make-class-save-load workspace :skip-slot-names '(jupyter-widgets:on-trait-change))
+(cando:make-class-save-load workspace :skip-slot-names (jupyter-widgets:on-trait-change))
    
 (defvar *workspace* nil)
 
