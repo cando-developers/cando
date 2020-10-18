@@ -252,7 +252,7 @@ public:
   contentIterator eraseContent(contentIterator x) {return this->_contents.erase(x);};
 
   virtual void	makeAllAtomNamesInEachResidueUnique();
-  virtual void	fillInImplicitHydrogens();
+  virtual size_t fillInImplicitHydrogens();
   virtual void	randomizeAtomPositions();
   virtual void	perturbAtomPositions(double dist);
 

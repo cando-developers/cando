@@ -392,13 +392,15 @@ CL_DEFMETHOD void	Matter_O::makeAllAtomNamesInEachResidueUnique()
 }
 
 CL_LISPIFY_NAME("fillInImplicitHydrogens");
-CL_DEFMETHOD void	Matter_O::fillInImplicitHydrogens()
+CL_DEFMETHOD size_t	Matter_O::fillInImplicitHydrogens()
 {
   contentIterator	aCur;
+  size_t count = 0;
   for ( aCur=this->begin_contents();aCur!=this->end_contents(); aCur++ ) 
   {
-    (*aCur)->fillInImplicitHydrogens();
+    count += (*aCur)->fillInImplicitHydrogens();
   }
+  return count;
 }
 
 CL_LISPIFY_NAME("randomizeAtomPositions");

@@ -398,7 +398,7 @@ LOG(BF("Residue_O::removeAtomDeleteBonds setting atom %x parent to null") % &a  
 }
 
 
-void Residue_O::fillInImplicitHydrogens()
+size_t Residue_O::fillInImplicitHydrogens()
 {
     gctools::Vec0<Atom_sp>	atoms;
 contentIterator	aCur;
@@ -412,10 +412,12 @@ contentIterator	aCur;
     {
 	atoms.push_back((*aCur).as<Atom_O>());
     }
+    size_t count = 0;
     for (gctools::Vec0<Atom_sp>::iterator it=atoms.begin(); it!=atoms.end(); it++ )
     {
-      (*it)->fillInImplicitHydrogensWithResidue(this->asSmartPtr());
+      count += (*it)->fillInImplicitHydrogensWithResidue(this->asSmartPtr());
     }
+    return count;
 }
 
 
