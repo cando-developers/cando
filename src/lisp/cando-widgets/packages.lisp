@@ -7,6 +7,7 @@
     #:add-page
     #:add-ligand
     #:add-receptor
+    #:add-template
     #:amber-netcdf-trajectory
     #:anchor-named-atom-map
     #:atom-map

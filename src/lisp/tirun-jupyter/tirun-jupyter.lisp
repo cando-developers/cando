@@ -437,6 +437,11 @@
     (lambda (inst type name old-value new-value source)
       (declare (ignore inst type name source))
       (cw:add-receptor (view-ligand-ngl-structure-viewer instance) new-value)))
+  ;; When the template ligand changes reload the receptor in nglview.
+  (w:observe *workspace* :template-ligand
+    (lambda (inst type name old-value new-value source)
+      (declare (ignore inst type name source))
+      (cw:add-template (view-ligand-ngl-structure-viewer instance) new-value)))
   ;; If the all-ligands changes then reload the whole thing.
   (w:observe *workspace* :all-ligands
     (lambda (inst type name old-value new-value source)
@@ -454,6 +459,8 @@
     ;; If the receptor is already set then load the current receptor.
     (when (receptor *workspace*)
       (cw:add-receptor (view-ligand-ngl-structure-viewer page) (receptor *workspace*)))
+    (when (template-ligand *workspace*)
+      (cw:add-receptor (view-ligand-ngl-structure-viewer page) (template-ligand *workspace*)))
     ;; Update the view
     (refresh-ligands-view page)
     (values)))

@@ -25,19 +25,23 @@
   '((:name "Backbone"
      :receptor t
      :ligand nil
+     :template nil
      :definition ((("type" . "backbone"))))
     (:name "Ball & Stick"
      :receptor t
      :ligand t
+     :template t
      :definition ((("type" . "ball+stick"))))
     (:name "Cartoon"
      :receptor t
      :ligand nil
+     :template nil
      :definition ((("type" . "cartoon")
                    ("colorScheme" . "residueindex"))))
     (:name "Cartoon/Ball Stick"
      :receptor t
      :ligand nil
+     :template nil
      :definition ((("type" . "cartoon")
                    ("colorScheme" . "residueindex"))
                   (("type" . "ball+stick")
@@ -45,6 +49,7 @@
     (:name "Cartoon/Licorice"
      :receptor t
      :ligand nil
+     :template nil
      :definition ((("type" . "cartoon")
                    ("colorScheme" . "residueindex"))
                   (("type" . "licorice")
@@ -52,6 +57,7 @@
     (:name "Cartoon/Space Fill"
      :receptor t
      :ligand nil
+     :template nil
      :definition ((("type" . "cartoon")
                    ("colorScheme" . "residueindex"))
                   (("type" . "spacefill")
@@ -59,20 +65,24 @@
     (:name "Licorice"
      :receptor t
      :ligand t
+     :template t
      :definition ((("type" . "licorice"))))
     (:name "Line"
      :receptor t
      :ligand t
+     :template t
      :definition ((("type" . "line"))))
     (:name "Surface"
      :receptor t
      :ligand t
+     :template t
      :definition ((("type" . "surface")
                    ("useWorker" . :true)
                    ("colorScheme" . "residueindex"))))
     (:name "Surface/Ball & Stick"
      :receptor t
      :ligand nil
+     :template nil
      :definition ((("type" . "surface")
                    ("useWorker" . :true)
                    ("colorScheme" . "residueindex"))
@@ -81,6 +91,7 @@
     (:name "Surface/Licorice"
      :receptor t
      :ligand nil
+     :template nil
      :definition ((("type" . "surface")
                    ("useWorker" . :true)
                    ("colorScheme" . "residueindex"))
@@ -89,6 +100,7 @@
     (:name "Surface/Space Fill"
      :receptor t
      :ligand nil
+     :template nil
      :definition ((("type" . "surface")
                    ("useWorker" . :true)
                    ("colorScheme" . "residueindex"))
@@ -97,11 +109,13 @@
     (:name "Ribbon"
      :receptor t
      :ligand nil
+     :template nil
      :definition ((("type" . "ribbon")
                    ("colorScheme" . "residueindex"))))
     (:name "Ribbon/Ball & Stick"
      :receptor t
      :ligand nil
+     :template nil
      :definition ((("type" . "ribbon")
                    ("colorScheme" . "residueindex"))
                   (("type" . "ball+stick")
@@ -109,6 +123,7 @@
     (:name "Ribbon/Licorice"
      :receptor t
      :ligand nil
+     :template nil
      :definition ((("type" . "ribbon")
                    ("colorScheme" . "residueindex"))
                   (("type" . "licorice")
@@ -116,6 +131,7 @@
     (:name "Ribbon/Space Fill"
      :receptor t
      :ligand nil
+     :template nil
      :definition ((("type" . "ribbon")
                    ("colorScheme" . "residueindex"))
                   (("type" . "spacefill")
@@ -123,6 +139,7 @@
     (:name "Space Fill"
      :receptor t
      :ligand t
+     :template t
      :definition ((("type" . "spacefill"))))))
 
 
@@ -149,6 +166,8 @@
                                                                  (list (getf def :name))))
                                                              *ngl-representations*))
                               :value "Cartoon/Licorice"
+                              :style (make-instance 'jw:description-style
+                                                    :description-width "min-content")
                               :layout (make-instance 'jw:layout
                                                      :margin "auto"
                                                      :width "max-content"
@@ -163,23 +182,49 @@
                                                            (list (getf def :name))))
                                                        *ngl-representations*)
                               :value "Ball & Stick"
+                              :style (make-instance 'jw:description-style
+                                                    :description-width "min-content")
                               :layout (make-instance 'jw:layout
                                                      :margin "auto"
                                                      :width "max-content"
+                                                     :display "none"
                                                      :grid-area "ligand")))
+   (template-representation
+     :reader template-representation
+     :initform (make-instance 'jw:dropdown
+                              :description "Template"
+                              :%options-labels (cons "None"
+                                                     (mapcan (lambda (def)
+                                                               (when (getf def :template)
+                                                                 (list (getf def :name))))
+                                                             *ngl-representations*))
+                              :value "Line"
+                              :style (make-instance 'jw:description-style
+                                                    :description-width "min-content")
+                              :layout (make-instance 'jw:layout
+                                                     :margin "auto"
+                                                     :width "max-content"
+                                                     :display "none"
+                                                     :grid-area "template")))
    (minimize-button
      :reader minimize-button
      :initform (make-instance 'jw:button
                               :description "Minimize"
+                              :style (make-instance 'jw:description-style
+                                                    :description-width "min-content")
                               :layout (make-instance 'jw:layout
                                                      :margin "auto"
+                                                     :width "max-content"
                                                      :grid-area "minimize")))
    (jostle-button
      :reader jostle-button
      :initform (make-instance 'jw:button
                               :description "Jostle"
+                              :style (make-instance 'jw:description-style
+                                                    :description-width "min-content")
                               :layout (make-instance 'jw:layout
                                                      :margin "auto"
+                                                     :width "max-content"
                                                      :grid-area "jostle")))
    (angle-slider
      :reader angle-slider
@@ -205,8 +250,8 @@
     :layout (make-instance 'jw:layout
                            :grid-gap "1em"
                            :grid-template-rows "1fr min-content"
-                           :grid-template-columns "1fr min-content min-content min-content min-content 1fr min-content"
-                           :grid-template-areas "'ngl1 ngl1 ngl1 ngl1 ngl1 ngl1 angle' '. receptor ligand jostle minimize . .'")))
+                           :grid-template-columns "1fr min-content min-content min-content min-content min-content 1fr min-content"
+                           :grid-template-areas "'ngl1 ngl1 ngl1 ngl1 ngl1 ngl1 ngl1 angle' '. receptor template ligand jostle minimize . .'")))
 
 
 (defun on-picked (instance picked)
@@ -260,13 +305,24 @@
     (when representation
       (apply #'nglview:set-representations
              (ngl instance) representation
-             (remove "receptor" (mapcar #'nglview:id (nglview:components (ngl instance))) :test #'string=)))))
+             (remove-if (lambda (id)
+                          (or (string= "receptor" id)
+                              (string= "template" id)))
+                        (mapcar #'nglview:id (nglview:components (ngl instance))) :test #'string=)))))
+
+
+(defun change-template-representation (instance name)
+  (let ((representation (get-representation-definition name)))
+    (when representation
+      (nglview:set-representations (ngl instance) representation "template"))
+    (nglview:set-visibility (ngl instance) (and representation t) "template")))
 
 
 (defmethod initialize-instance :after ((instance ngl-structure-viewer) &rest initargs &key &allow-other-keys)
   (setf (jw:widget-children instance)
         (list (ngl instance)
               (receptor-representation instance)
+              (template-representation instance)
               (ligand-representation instance)
               (angle-slider instance)
               (minimize-button instance)
@@ -291,6 +347,10 @@
     (lambda (inst type name old-value new-value source)
       (declare (ignore inst type name old-value source))
       (change-ligand-representation instance new-value)))
+  (jw:observe (template-representation instance) :value
+    (lambda (inst type name old-value new-value source)
+      (declare (ignore inst type name old-value source))
+      (change-template-representation instance new-value)))
   ;; Set the receptor visibility based the toggle.
   (jw:observe (receptor-representation instance) :value
     (lambda (inst type name old-value new-value source)
@@ -344,6 +404,9 @@
 (defun add-ligand (instance id ligand)
   (with-slots (ngl ligand-representation)
               instance
+    (setf (jw:widget-display (jw:widget-layout ligand-representation))
+          (unless ligand
+            "none"))
     (when ligand
       (let ((representation (get-representation-definition (jw:widget-value ligand-representation))))
         (nglview:add-structure ngl
@@ -352,3 +415,19 @@
                                "defaultRepresentation" :false)
         (when representation
           (nglview:set-representations ngl representation id))))))
+
+
+(defun add-template (instance template)
+  (with-slots (ngl template-representation)
+              instance
+    (setf (jw:widget-display (jw:widget-layout template-representation))
+          (unless template
+            "none"))
+    (when template
+      (let ((representation (get-representation-definition (jw:widget-value template-representation))))
+        (nglview:add-structure ngl
+                               (make-instance 'cw:cando-structure
+                                              :id "template" :matter template)
+                               "defaultRepresentation" :false)
+        (when representation
+          (nglview:set-representations ngl representation "template"))))))
