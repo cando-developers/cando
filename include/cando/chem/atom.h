@@ -472,9 +472,9 @@ namespace chem {
     uint maxTotalBondOrder();
     uint numberOfOpenValence();
     core::List_sp createImplicitHydrogenNames();
-    void fillInImplicitHydrogensWithResidue(Residue_sp residue);
+    size_t fillInImplicitHydrogensWithResidue(Residue_sp residue);
     
-    void fillInImplicitHydrogens(); // signals error - use fillInImplicitHydrogensWithResidue
+    size_t fillInImplicitHydrogens(); // signals error - use fillInImplicitHydrogensWithResidue
 
     void randomizeAtomPosition(double width);
     void perturbAtomPosition(double dist);

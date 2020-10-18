@@ -520,16 +520,19 @@ CL_DEFMETHOD core::List_sp Atom_O::createImplicitHydrogenNames()
 
 
 CL_DEFMETHOD
-void Atom_O::fillInImplicitHydrogensWithResidue(Residue_sp residue)
+size_t Atom_O::fillInImplicitHydrogensWithResidue(Residue_sp residue)
 {
   core::List_sp names = this->createImplicitHydrogenNames();
-  if ( names.nilp() ) return;
+  if ( names.nilp() ) return 0;
+  size_t num = 0;
   for ( auto cur : names ) {
     this->_addHydrogenWithName(residue,oCar(cur).as<MatterName::Type>());
+    ++num;
   }
+  return num;  
 }
 
-void Atom_O::fillInImplicitHydrogens()
+size_t Atom_O::fillInImplicitHydrogens()
 {
   SIMPLE_ERROR(BF("You cannot invoke chem:fill-in-implicit with an atom - any new hydrogens must be added to the residue that contains this atom"));
 }
