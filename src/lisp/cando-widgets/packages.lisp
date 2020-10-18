@@ -7,6 +7,7 @@
     #:add-page
     #:add-ligand
     #:add-receptor
+    #:add-template
     #:amber-netcdf-trajectory
     #:anchor-named-atom-map
     #:atom-map
@@ -20,6 +21,7 @@
     #:make-amber-netcdf-trajectory
     #:make-file-task-page
     #:make-molecule-select
+    #:make-ngl-structure-viewer
     #:make-simple-task-page
     #:make-workspace-task-page
     #:molecules
