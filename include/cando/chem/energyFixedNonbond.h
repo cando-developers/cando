@@ -60,30 +60,31 @@ SMART(EnergyFixedNonbondRestraint);
  * I should combine energyFunction.cc and amberFunction.cc together.
  */
 class FixedNonbondRestraint : public EnergyTerm {
-public:
-	string	className()	{ return "FixedNonbondRestraint"; };
-public:
+ public:
+  string	className()	{ return "FixedNonbondRestraint"; };
+ public:
                 // Parameters
                 // Variables
-        Atom_sp		_FixedAtom;
-	double		_FixedCharge;
-	uint		_FixedType;
-	Vector3		_FixedPosition;
+  Atom_sp		_FixedAtom;
+  double		_FixedCharge;
+  uint		_FixedType;
+  Vector3		_FixedPosition;
 //	int		I1; //!< i*3 index into coordinate vector, must match Mathematica code!
 #if TURN_ENERGY_FUNCTION_DEBUG_ON
-	bool		_calcForce;
-	bool		_calcDiagonalHessian;
-	bool		_calcOffDiagonalHessian;
+  bool		_calcForce;
+  bool		_calcDiagonalHessian;
+  bool		_calcOffDiagonalHessian;
 #include <cando/chem/energy_functions/_FixedNonbond_debugEvalDeclares.cc>
 #endif
-        Atom_sp	getFixedAtom() { return this->_FixedAtom; };
-	double	getDistance();
-	bool	defineFrom(Atom_sp a);
+  Atom_sp	getFixedAtom() { return this->_FixedAtom; };
+  double	getDistance();
+  bool	defineFrom(Atom_sp a);
 
-public:
-	adapt::QDomNode_sp	asXml();
-	void	parseFromXmlRelativeToContainer( adapt::QDomNode_sp xml, Matter_sp parent );
-	void	parseFromXmlUsingAtomTable(adapt::QDomNode_sp xml, AtomTable_sp atomTable );
+ public:
+  core::List_sp encode() const;
+  adapt::QDomNode_sp	asXml();
+  void	parseFromXmlRelativeToContainer( adapt::QDomNode_sp xml, Matter_sp parent );
+  void	parseFromXmlUsingAtomTable(adapt::QDomNode_sp xml, AtomTable_sp atomTable );
 
 };
 
@@ -98,6 +99,38 @@ class BeyondThresholdFixedNonbondRestraint : public BeyondThresholdEnergyTerm
 
 
 
+}
+;
+
+
+namespace translate {
+
+  template <>
+    struct	to_object<chem::FixedNonbondRestraint >
+  {
+    typedef	core::Cons_sp ExpectedType;
+    typedef	core::Cons_sp DeclareType;
+    static core::T_sp convert(const chem::FixedNonbondRestraint& tt)
+    {
+      return tt.encode();
+    }
+  };
+
+  template <>
+    struct	from_object<chem::FixedNonbondRestraint>
+  {
+    typedef	chem::FixedNonbondRestraint	ExpectedType;
+    typedef	ExpectedType 		DeclareType;
+    DeclareType _v;
+    from_object(core::T_sp o)
+    {
+      SIMPLE_ERROR(BF("Implement me"));
+    }
+  };
+};
+
+
+namespace chem {
 
 
 double	_evaluateEnergyOnly_FixedNonbond(
@@ -109,9 +142,10 @@ double	_evaluateEnergyOnly_FixedNonbond(
 class EnergyFixedNonbondRestraint_O : public EnergyComponent_O
 {
     LISP_CLASS(chem,ChemPkg,EnergyFixedNonbondRestraint_O,"EnergyFixedNonbondRestraint",EnergyComponent_O);
-public:
 public: // virtual functions inherited from Object
     void	initialize();
+    bool fieldsp() const { return true; };
+    void fields(core::Record_sp node);
     typedef FixedNonbondRestraint TermType;
     typedef BeyondThresholdFixedNonbondRestraint BeyondThresholdTermType;
 public: // instance variables

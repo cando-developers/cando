@@ -51,6 +51,22 @@ EnergyAnchorRestraint::~EnergyAnchorRestraint()
 {
 }
 
+core::List_sp EnergyAnchorRestraint::encode() const {
+  return core::Cons_O::createList(core::Cons_O::create(INTERN_(kw,ka),core::clasp_make_double_float(this->term.ka)),
+                                  core::Cons_O::create(INTERN_(kw,i1), core::make_fixnum(this->term.I1)),
+                                  core::Cons_O::create(INTERN_(kw,xa), core::clasp_make_double_float(this->term.xa)),
+                                  core::Cons_O::create(INTERN_(kw,ya), core::clasp_make_double_float(this->term.ya)),
+                                  core::Cons_O::create(INTERN_(kw,za), core::clasp_make_double_float(this->term.za)),
+                                  core::Cons_O::create(INTERN_(kw,atom1), this->_Atom1));
+}
+
+
+void EnergyAnchorRestraint_O::fields(core::Record_sp node)
+{
+  node->field( INTERN_(kw,terms), this->_Terms );
+  this->Base::fields(node);
+}
+
 #ifdef XML_ARCHIVE
     void	EnergyAnchorRestraint::archive(core::ArchiveP node)
 {

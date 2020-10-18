@@ -61,32 +61,62 @@ namespace chem
 /*! Store a AnchorRestraint energy term
  */
 class	EnergyAnchorRestraint : public EnergyTerm {
-public:
-	string	className()	{ return "EnergyAnchorRestraint"; };
-public:
-	TermAnchorRestraint	term;
+ public:
+  string	className()	{ return "EnergyAnchorRestraint"; };
+ public:
+  TermAnchorRestraint	term;
 		// Variables
-        Atom_sp      _Atom1;
+  Atom_sp      _Atom1;
 		// Threshold
 #if TURN_ENERGY_FUNCTION_DEBUG_ON
-	bool		_calcForce;
-	bool		_calcDiagonalHessian;
-	bool		_calcOffDiagonalHessian;
+  bool		_calcForce;
+  bool		_calcDiagonalHessian;
+  bool		_calcOffDiagonalHessian;
 #include <cando/chem/energy_functions/_AnchorRestraint_debugEvalDeclares.cc>
 #endif
-        Atom_sp	getAtom() { return this->_Atom1; };
-	double		getXa() { return this->term.xa; };
-	double		getYa() { return this->term.ya; };
-	double		getZa() { return this->term.za; };
-public:
-	adapt::QDomNode_sp	asXml();
-	void	parseFromXmlUsingAtomTable(adapt::QDomNode_sp xml, AtomTable_sp atomTable );
-
-    EnergyAnchorRestraint();
-	virtual ~EnergyAnchorRestraint();
+  Atom_sp	getAtom() { return this->_Atom1; };
+  double		getXa() { return this->term.xa; };
+  double		getYa() { return this->term.ya; };
+  double		getZa() { return this->term.za; };
+ public:
+  core::List_sp encode() const;
+  EnergyAnchorRestraint();
+  virtual ~EnergyAnchorRestraint();
 
 };
 
+}
+;
+
+
+namespace translate {
+
+  template <>
+    struct	to_object<chem::EnergyAnchorRestraint >
+  {
+    typedef	core::Cons_sp ExpectedType;
+    typedef	core::Cons_sp DeclareType;
+    static core::T_sp convert(const chem::EnergyAnchorRestraint& tt)
+    {
+      return tt.encode();
+    }
+  };
+
+  template <>
+    struct	from_object<chem::EnergyAnchorRestraint>
+  {
+    typedef	chem::EnergyAnchorRestraint	ExpectedType;
+    typedef	ExpectedType 		DeclareType;
+    DeclareType _v;
+    from_object(core::T_sp o)
+    {
+      SIMPLE_ERROR(BF("Implement me"));
+    }
+  };
+};
+
+
+namespace chem {
 
 
 double	_evaluateEnergyOnly_AnchorRestraint(
@@ -100,6 +130,8 @@ class EnergyAnchorRestraint_O : public EnergyComponent_O
 public:
 public: // virtual functions inherited from Object
     void	initialize();
+    bool fieldsp() const { return true; };
+    void fields(core::Record_sp node);
 public:
     typedef EnergyAnchorRestraint	TermType;
 public: // instance variables

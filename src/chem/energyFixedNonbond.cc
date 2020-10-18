@@ -37,86 +37,23 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace chem {
 
-#ifdef XML_ARCHIVE
-    void	FixedNonbondRestraint::archive(core::ArchiveP node)
-{
-    IMPLEMENT_ME();
-#if TURN_ENERGY_FUNCTION_DEBUG_ON //[
-    node->attributeIfDefined("calcForce",this->_calcForce,this->_calcForce);
-    node->attributeIfDefined("calcDiagonalHessian",this->_calcDiagonalHessian,this->_calcDiagonalHessian);
-    node->attributeIfDefined("calcOffDiagonalHessian",this->_calcOffDiagonalHessian,this->_calcOffDiagonalHessian);
-#include <cando/chem/energy_functions/_FixedNonbond_debugEvalSerialize.cc>
-#endif //]
-}
-#endif
 
-
-
-
-adapt::QDomNode_sp	FixedNonbondRestraint::asXml()
-{
-    IMPLEMENT_ME();
-#if 0
-    adapt::QDomNode_sp	node;
-    Vector3	vdiff;
-
-    node = adapt::QDomNode_O::create(env,XmlTag_Term());
-    node->addAttributeString("atom1Name",this->_Atom1->getName());
-    node->addAttributeString("atom2Name",this->_Atom2->getName());
-    node->addAttributeInt("I1",this->I1);
-    node->addAttributeInt("I2",this->I2);
-    node->addAttributeBool("is14",this->_Is14);
-    node->addAttributeString("atom1Type",this->_Atom1->getType());
-    node->addAttributeString("atom2Type",this->_Atom2->getType());
-    node->addAttributeDoubleScientific("RStar",this->_RStar);
-    node->addAttributeDoubleScientific("A",this->_A);
-    node->addAttributeDoubleScientific("C",this->_C);
-    node->addAttributeDoubleScientific("Charge1",this->_Charge1);
-    node->addAttributeDoubleScientific("Charge2",this->_Charge2);
-//    vdiff = this->_Atom1->_Atom->getPosition() - this->_Atom2->_Atom->getPosition();
-//    diff = vdiff.length();
-//    node->addAttributeDouble("_r",diff,5,2);
-#if TURN_ENERGY_FUNCTION_DEBUG_ON
-    adapt::QDomNode_sp xml = adapt::QDomNode_O::create("Evaluated");
-    xml->addAttributeBool("calcForce",this->_calcForce );
-    xml->addAttributeBool("calcDiagonalHessian",this->_calcDiagonalHessian );
-    xml->addAttributeBool("calcOffDiagonalHessian",this->_calcOffDiagonalHessian );
-#include <_FixedNonbond_debugEvalXml.cc>
-    node->addChild(xml);
-#endif
-    node->addAttributeDoubleScientific("dA",this->dA);
-    node->addAttributeDoubleScientific("dC",this->dC);
-    node->addAttributeDoubleScientific("dQ1Q2",this->dQ1Q2);
-    return node;
-#endif
+core::List_sp FixedNonbondRestraint::encode() const {
+  return core::Cons_O::createList(core::Cons_O::create(INTERN_(kw,fixed_atom),this->_FixedAtom),
+                                  core::Cons_O::create(INTERN_(kw,fixed_charge),core::clasp_make_double_float(this->_FixedCharge)),
+                                  core::Cons_O::create(INTERN_(kw,fixed_type),core::make_fixnum(this->_FixedType)),
+                                  core::Cons_O::create(INTERN_(kw,fixed_pos_x),core::clasp_make_double_float(this->_FixedPosition.getX())),
+                                  core::Cons_O::create(INTERN_(kw,fixed_pos_y),core::clasp_make_double_float(this->_FixedPosition.getY())),
+                                  core::Cons_O::create(INTERN_(kw,fixed_pos_z),core::clasp_make_double_float(this->_FixedPosition.getZ())) );
 }
 
 
 
-
-void	FixedNonbondRestraint::parseFromXmlUsingAtomTable(adapt::QDomNode_sp	xml,
-					AtomTable_sp at)
+void EnergyFixedNonbondRestraint_O::fields(core::Record_sp node)
 {
-    IMPLEMENT_ME();
-#if 0
-    this->dA = xml->getAttributeDouble("dA");
-    this->dC = xml->getAttributeDouble("dC");
-    this->dQ1Q2 = xml->getAttributeDouble("dQ1Q2");
-    this->_RStar = xml->getAttributeDouble("RStar");
-    this->_A = xml->getAttributeDouble("A");
-    this->_C = xml->getAttributeDouble("C");
-    this->_Charge1 = xml->getAttributeDouble("Charge1");
-    this->_Charge2 = xml->getAttributeDouble("Charge2");
-    this->I1 = xml->getAttributeInt("I1");
-    this->I2 = xml->getAttributeInt("I2");
-    this->_Is14 = xml->getAttributeBool("is14");
-    this->_Atom1 = at->findEnergyAtomWithCoordinateIndex(this->I1)->_Atom;
-    this->_Atom2 = at->findEnergyAtomWithCoordinateIndex(this->I2)->_Atom;
-#endif
+  node->field( INTERN_(kw,terms), this->_Terms );
+  this->Base::fields(node);
 }
-
-
-
 
 //
 // Copy this from implementAmberFunction.cc

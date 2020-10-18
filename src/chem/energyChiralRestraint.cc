@@ -48,27 +48,6 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace chem {
 
-#ifdef XML_ARCHIVE
-    void	EnergyChiralRestraint::archive(core::ArchiveP node)
-{
-    node->attribute("K",this->term.K);
-    node->attribute("CO",this->term.CO);
-    node->attribute("I1",this->term.I1);
-    node->attribute("I2",this->term.I2);
-    node->attribute("I3",this->term.I3);
-    node->attribute("I4",this->term.I4);
-    node->attribute("a1",this->_Atom1);
-    node->attribute("a2",this->_Atom2);
-    node->attribute("a3",this->_Atom3);
-    node->attribute("a4",this->_Atom4);
-#if TURN_ENERGY_FUNCTION_DEBUG_ON //[
-    node->attributeIfDefined("calcForce",this->_calcForce,this->_calcForce);
-    node->attributeIfDefined("calcDiagonalHessian",this->_calcDiagonalHessian,this->_calcDiagonalHessian);
-    node->attributeIfDefined("calcOffDiagonalHessian",this->_calcOffDiagonalHessian,this->_calcOffDiagonalHessian);
-#include <cando/chem/energy_functions/_ChiralRestraint_debugEvalSerialize.cc>
-#endif //]
-}
-#endif
 
 
 
@@ -86,50 +65,6 @@ string	EnergyChiralRestraint::description()
 #endif
     return ss.str();
 }
-
-
-#if 0
-    adapt::QDomNode_sp	EnergyChiralRestraint::asXml()
-{
-    adapt::QDomNode_sp	node,child;
-    Vector3	vdiff;
-
-    node = adapt::QDomNode_O::create(env,"EnergyChiralRestraint");
-    node->addAttributeString("atom1Name",this->_Atom1->getName());
-    node->addAttributeString("atom2Name",this->_Atom2->getName());
-    node->addAttributeString("atom3Name",this->_Atom3->getName());
-    node->addAttributeString("atom4Name",this->_Atom4->getName());
-    node->addAttributeInt("I1",this->term.I1);
-    node->addAttributeInt("I2",this->term.I2);
-    node->addAttributeInt("I3",this->term.I3);
-    node->addAttributeInt("I4",this->term.I4);
-    node->addAttributeDoubleScientific("K",this->term.K);
-#if TURN_ENERGY_FUNCTION_DEBUG_ON
-    adapt::QDomNode_sp xml = adapt::QDomNode_O::create(env,"Evaluated");
-    xml->addAttributeBool("calcForce",this->_calcForce );
-    xml->addAttributeBool("calcDiagonalHessian",this->_calcDiagonalHessian );
-    xml->addAttributeBool("calcOffDiagonalHessian",this->_calcOffDiagonalHessian );
-#include <_ChiralRestraint_debugEvalXml.cc>
-    node->addChild(xml);
-#endif
-    return node;
-}
-
-    void	EnergyChiralRestraint::parseFromXmlUsingAtomTable(adapt::QDomNode_sp	xml,
-				AtomTable_sp at )
-{
-    this->term.K = xml->getAttributeDouble("K");
-    this->term.I1 = xml->getAttributeInt("I1");
-    this->term.I2 = xml->getAttributeInt("I2");
-    this->term.I3 = xml->getAttributeInt("I3");
-    this->term.I4 = xml->getAttributeInt("I4");
-    this->_Atom1 = at->findEnergyAtomWithCoordinateIndex(this->term.I1)->atom();
-    this->_Atom2 = at->findEnergyAtomWithCoordinateIndex(this->term.I2)->atom();
-    this->_Atom3 = at->findEnergyAtomWithCoordinateIndex(this->term.I3)->atom();
-    this->_Atom4 = at->findEnergyAtomWithCoordinateIndex(this->term.I4)->atom();
-}
-#endif
-
 
 
 
