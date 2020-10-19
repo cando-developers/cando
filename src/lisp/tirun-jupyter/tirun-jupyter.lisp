@@ -460,7 +460,7 @@
     (when (receptor *workspace*)
       (cw:add-receptor (view-ligand-ngl-structure-viewer page) (receptor *workspace*)))
     (when (template-ligand *workspace*)
-      (cw:add-receptor (view-ligand-ngl-structure-viewer page) (template-ligand *workspace*)))
+      (cw:add-template (view-ligand-ngl-structure-viewer page) (template-ligand *workspace*)))
     ;; Update the view
     (refresh-ligands-view page)
     (values)))
