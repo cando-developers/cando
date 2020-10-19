@@ -313,7 +313,7 @@
              (remove-if (lambda (id)
                           (or (string= "receptor" id)
                               (string= "template" id)))
-                        (mapcar #'nglview:id (nglview:components (ngl instance))) :test #'string=)))))
+                        (mapcar #'nglview:id (nglview:components (ngl instance))))))))
 
 
 (defun change-template-representation (instance name)
