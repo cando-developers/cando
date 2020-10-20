@@ -1379,6 +1379,6 @@ lisp_jobs_only_on=172.234.2.1
   "Like composer - but gets the structure sketch from a chemdraw file"
   (let ((sketch (tirun:load-chem-draw-tirun filename)))
     (let ((molecules (tirun::assemble-ligands sketch)))
-      (let ((posed-molecules (pose-molecules-using-similarity molecules (template-ligand *workspace*))))
+      (let ((posed-molecules (tirun:pose-molecules-using-similarity molecules (template-ligand *workspace*))))
         (setf all-ligands posed-molecules
               selected-ligands all-ligands)))))
