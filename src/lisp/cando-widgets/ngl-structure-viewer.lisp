@@ -284,6 +284,7 @@
              (twister (chem:make-twister)))
         (when quad
           (nglview:add-representation (ngl instance) "dihedral"
+                                      :component component
                                       :atom-quad (list (mapcar (lambda (a)
                                                                  (position a atom-vec))
                                                                quad))
