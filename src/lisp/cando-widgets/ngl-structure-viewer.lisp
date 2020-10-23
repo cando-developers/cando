@@ -260,25 +260,44 @@
 
 
 (defun on-picked (instance picked)
+  (setf (index instance) nil
+        (twister instance) nil
+        (jw:widget-value (angle-slider instance)) 0d0
+        (jw:widget-disabled (angle-slider instance)) t)
+  (dotimes (component (length (nglview:components (ngl instance))))
+    (nglview:remove-representations-by-name (ngl instance) "dihedral" :component component))
   (multiple-value-bind (bond presentp)
                        (get-json-obj picked "bond")
     (declare (ignore bond))
-    (if presentp
+    (when presentp
       (let* ((component (get-json-obj picked "component"))
              (aggregate (matter (elt (nglview:components (ngl instance)) component)))
              (atom-vec (chem:map-atoms 'vector #'identity aggregate))
+             (atom1 (aref atom-vec (get-json-obj picked "atom1" "index")))
+             (atom2 (aref atom-vec (get-json-obj picked "atom2" "index")))
+             (quad (find-if (lambda (d)
+                              (or (and (equal 1 (position atom1 d))
+                                       (equal 2 (position atom2 d)))
+                                  (and (equal 2 (position atom1 d))
+                                       (equal 1 (position atom2 d)))))
+                            (chem:map-dihedrals 'list #'list aggregate)))
              (twister (chem:make-twister)))
-        (chem:twister-define-for-bond twister
-                                      (aref atom-vec (get-json-obj picked "atom1" "index"))
-                                      (aref atom-vec (get-json-obj picked "atom2" "index")))
-        (setf (index instance) component
-              (twister instance) twister
-              (jw:widget-value (angle-slider instance)) (rad2deg (chem:twister-current-dihedral-angle-radians twister))
-              (jw:widget-disabled (angle-slider instance)) nil))
-      (setf (index instance) nil
-            (twister instance) nil
-            (jw:widget-value (angle-slider instance)) 0d0
-            (jw:widget-disabled (angle-slider instance)) t))))
+        (when quad
+          (nglview:add-representation (ngl instance) "dihedral"
+                                      :component component
+                                      :atom-quad (list (mapcar (lambda (a)
+                                                                 (position a atom-vec))
+                                                               quad))
+                                      :sdf :false
+                                      :label-size 1.0
+                                      :label-color "blue"
+                                      :color-value "red"
+                                      :sector-opacity 0.75)
+          (apply #'chem:twister-define-for-dihedral twister quad))
+          (setf (index instance) component
+                (twister instance) twister
+                (jw:widget-value (angle-slider instance)) (rad2deg (chem:twister-current-dihedral-angle-radians twister))
+                (jw:widget-disabled (angle-slider instance)) nil)))))
 
 
 (defun on-twist (instance angle)
