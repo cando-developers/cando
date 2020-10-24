@@ -648,9 +648,19 @@ void	Loop::advanceLoop()
 
 
 
-#define ARGS_map_molecules "(result-type func matter)"
-#define DECL_map_molecules ""
-#define DOCS_map_molecules "Loop over molecules, invoke function for each molecule"
+CL_LAMBDA(result-type function matter);
+CL_DOCSTRING(R"doc(Applies function to successive molecules in matter. The result-type specifies
+the type of the resulting sequence.
+
+For each molecule the function is passed a single argument which is the molecule.
+
+map-molecules returns nil if result-type is nil. Otherwise, map-molecules
+returns a sequence such that element j is the result of applying function to
+molecule j of matter.
+
+If the result-type is 'list, the result will be a list.
+
+If the result-type is 'vector, the result will be a vector.)doc");
 CL_DEFUN core::T_sp chem__map_molecules(core::Symbol_sp result_type, core::T_sp funcDesig, Matter_sp m )
 {
   if (gc::IsA<Molecule_sp>(m)) {
@@ -700,9 +710,19 @@ CL_DEFUN core::T_sp chem__map_molecules(core::Symbol_sp result_type, core::T_sp 
   TYPE_ERROR(m,_sym_Aggregate_O);
 };
 
-#define ARGS_map_residues "(result-type func matter)"
-#define DECL_map_residues ""
-#define DOCS_map_residues "Loop over residues, invoke function for each residue"
+CL_LAMBDA(result-type function matter);
+CL_DOCSTRING(R"doc(Applies function to successive residues in matter. The result-type specifies
+the type of the resulting sequence.
+
+For each residue the function is passed a single argument which is the residue.
+
+map-residues returns nil if result-type is nil. Otherwise, map-residues returns
+a sequence such that element j is the result of applying function to residue j
+of matter.
+
+If the result-type is 'list, the result will be a list.
+
+If the result-type is 'vector, the result will be a vector.)doc");
 CL_DEFUN core::T_sp chem__map_residues(core::Symbol_sp result_type, core::T_sp funcDesig, Matter_sp m)
 {
   if (gc::IsA<Residue_sp>(m)) {
@@ -753,9 +773,19 @@ CL_DEFUN core::T_sp chem__map_residues(core::Symbol_sp result_type, core::T_sp f
 };
 
 
-#define ARGS_map_atoms "(result-type func matter)"
-#define DECL_map_atoms ""
-#define DOCS_map_atoms "Loop over atoms, invoke function for each atom"
+CL_LAMBDA(result-type function matter);
+CL_DOCSTRING(R"doc(Applies function to successive atoms in matter. The result-type specifies
+the type of the resulting sequence.
+
+For each atom the function is passed a single argument which is the atom.
+
+map-atoms returns nil if result-type is nil. Otherwise, map-atoms returns a
+sequence such that element j is the result of applying function to atom j of
+matter.
+
+If the result-type is 'list, the result will be a list.
+
+If the result-type is 'vector, the result will be a vector.)doc");
 CL_DEFUN core::T_sp chem__map_atoms(core::Symbol_sp result_type, core::T_sp funcDesig, Matter_sp m)
 {
   core::Function_sp func = core::coerce::functionDesignator(funcDesig);
@@ -804,7 +834,20 @@ CL_DEFUN core::T_sp chem__map_atoms(core::Symbol_sp result_type, core::T_sp func
   TYPE_ERROR(m,core::Cons_O::createList(cl::_sym_or,_sym_Aggregate_O,_sym_Molecule_O,_sym_Residue_O));
 }
 
-#define DOCS_map_atoms "Loop over bonds, invoke function for each bond passing the two atoms and the bond order"
+CL_LAMBDA(result-type function matter);
+CL_DOCSTRING(R"doc(Applies function to successive bonds in matter. The result-type specifies
+the type of the resulting sequence.
+
+For each bond the function is passed the two atoms between which the bond is
+formed along with the bond order.
+
+map-bonds returns nil if result-type is nil. Otherwise, map-bonds returns a
+sequence such that element j is the result of applying function to bond j of
+matter.
+
+If the result-type is 'list, the result will be a list.
+
+If the result-type is 'vector, the result will be a vector.)doc");
 CL_DEFUN core::T_sp chem__map_bonds(core::Symbol_sp result_type, core::T_sp funcDesig, Matter_sp m)
 {
   core::Function_sp func = core::coerce::functionDesignator(funcDesig);
@@ -854,7 +897,19 @@ void validate_result_type(core::Symbol_sp result_type)
   SIMPLE_ERROR(BF("Illegal result type - must be nil, list or vector"));
 }
 
-CL_DOCSTRING("Loop over angles, invoke function for each bond passing the three atoms");
+CL_LAMBDA(result-type function matter);
+CL_DOCSTRING(R"doc(Applies function to successive angles in matter. The result-type specifies
+the type of the resulting sequence.
+
+For each angle the function is passed the three atoms that define the angle.
+
+map-angles returns nil if result-type is nil. Otherwise, map-angles returns a
+sequence such that element j is the result of applying function to angle j of
+matter.
+
+If the result-type is 'list, the result will be a list.
+
+If the result-type is 'vector, the result will be a vector.)doc");
 CL_DEFUN core::T_sp chem__map_angles(core::Symbol_sp result_type, core::T_sp funcDesig, Matter_sp m)
 {
   core::Function_sp func = core::coerce::functionDesignator(funcDesig);
@@ -888,7 +943,19 @@ CL_DEFUN core::T_sp chem__map_angles(core::Symbol_sp result_type, core::T_sp fun
   }
 };
 
-CL_DOCSTRING("Loop over dihedrals, invoke function for each bond passing the four atoms");
+CL_LAMBDA(result-type function matter);
+CL_DOCSTRING(R"doc(Applies function to successive dihedrals in matter. The result-type specifies
+the type of the resulting sequence.
+
+For each dihedral the function is passed the four atoms that define the dihedral.
+
+map-dihedrals returns nil if result-type is nil. Otherwise, map-dihedrals
+returns a sequence such that element j is the result of applying function to
+dihedral j of matter.
+
+If the result-type is 'list, the result will be a list.
+
+If the result-type is 'vector, the result will be a vector.)doc");
 CL_DEFUN core::T_sp chem__map_dihedrals(core::Symbol_sp result_type, core::T_sp funcDesig, Matter_sp m)
 {
   core::Function_sp func = core::coerce::functionDesignator(funcDesig);
@@ -923,7 +990,19 @@ CL_DEFUN core::T_sp chem__map_dihedrals(core::Symbol_sp result_type, core::T_sp 
   }
 };
 
-CL_DOCSTRING("Loop over impropers, invoke function for each bond passing the four atoms");
+CL_LAMBDA(result-type function matter);
+CL_DOCSTRING(R"doc(Applies function to successive impropers in matter. The result-type specifies
+the type of the resulting sequence.
+
+For each improper the function is passed the three atoms that define the improper.
+
+map-impropers returns nil if result-type is nil. Otherwise, map-impropers
+returns a sequence such that element j is the result of applying function to
+improper j of matter.
+
+If the result-type is 'list, the result will be a list.
+
+If the result-type is 'vector, the result will be a vector.)doc");
 CL_DEFUN core::T_sp chem__map_impropers(core::Symbol_sp result_type, core::T_sp funcDesig, Matter_sp m)
 {
   core::Function_sp func = core::coerce::functionDesignator(funcDesig);

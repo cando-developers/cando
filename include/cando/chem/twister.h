@@ -135,6 +135,7 @@ public:
     void	addTwister(Twister_sp twister);
     Twister_sp	getTwister(uint i);
 
+CL_DOCSTRING(R"doc(Get the number of twisters in the twister driver.)doc");
 CL_LISPIFY_NAME("numberOfTwisters");
 CL_DEFMETHOD     uint	numberOfTwisters() { return this->_Twisters.size(); };
 
