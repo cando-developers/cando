@@ -1235,7 +1235,9 @@ lisp_jobs_only_on=172.234.2.1
     (dolist (schema-group tirun::*default-calculation-settings*)
       (cw:add-page container
                    (w:make-interactive-alist (second schema-group)
-                                             (tirun-settings *workspace*))
+                                             (tirun-settings *workspace*)
+                                             :owner *workspace*
+                                             :name :tirun-settings)
                    (first schema-group)))
     (make-jobs-config-page container "Configure Jobs")
     (cw:make-simple-task-page container "Write Jobs" #'run-write-jobs

@@ -50,6 +50,7 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace chem {
 
 
+CL_DOCSTRING(R"doc(Create a new twister instance.)doc");
 CL_DEFUN Twister_sp chem__make_twister()
 {
   GC_ALLOCATE_VARIADIC(Twister_O,td);
@@ -67,6 +68,8 @@ void	Twister_O::initialize()
 }
 
 
+CL_LAMBDA(twister fixed-atom movable-atom);
+CL_DOCSTRING(R"doc(Set the fixed and moveable atoms of the twister.)doc");
 CL_LISPIFY_NAME("Twister_setFixedAndMovable");
 CL_DEFMETHOD void	Twister_O::setFixedAndMovable(Atom_sp fixed, Atom_sp movable )
 {
@@ -74,6 +77,8 @@ CL_DEFMETHOD void	Twister_O::setFixedAndMovable(Atom_sp fixed, Atom_sp movable )
     this->_Movable = movable;
 }
 
+CL_LAMBDA(twister atom);
+CL_DOCSTRING(R"doc(Add an atom to the twister.)doc");
 CL_LISPIFY_NAME("Twister_addAtom");
 CL_DEFMETHOD void	Twister_O::addAtom(Atom_sp a)
 {
@@ -169,6 +174,10 @@ void	Twister_O::_defineForDihedral(Atom_sp a1ref, Atom_sp a1, Atom_sp a2, Atom_s
 
 
 
+CL_LAMBDA(twister atom1-ref atom1 atom2 atom2-ref);
+CL_DOCSTRING(R"doc(Define the twister based on a dihedral between four atoms. Whichever side of the
+dihedral contains the least atoms will be the movable side while the other side
+will remain fixed.)doc");
 CL_LISPIFY_NAME("twister_defineForDihedral");
 CL_DEFMETHOD void	Twister_O::defineForDihedral(Atom_sp a1ref, Atom_sp a1, Atom_sp a2, Atom_sp a2ref )
 {
@@ -178,6 +187,9 @@ CL_DEFMETHOD void	Twister_O::defineForDihedral(Atom_sp a1ref, Atom_sp a1, Atom_s
 
 
 
+CL_LAMBDA(twister atom1 atom2);
+CL_DOCSTRING(R"doc(Define the twister based on a bond. Whichever side of the bond contains the
+least atoms will be the movable side while the other side will remain fixed.)doc");
 CL_LISPIFY_NAME("twister_defineForBond");
 CL_DEFMETHOD void	Twister_O::defineForBond(Atom_sp a1, Atom_sp a2 )
 {
@@ -185,6 +197,8 @@ CL_DEFMETHOD void	Twister_O::defineForBond(Atom_sp a1, Atom_sp a2 )
 }
 
 
+CL_LAMBDA(twister fixed-atom movable-atom);
+CL_DOCSTRING(R"doc(Define the twister based on a fixed and movable atom.)doc");
 CL_LISPIFY_NAME("twister_defineFixedAndMobile");
 CL_DEFMETHOD void	Twister_O::defineFixedAndMobile(Atom_sp afixed, Atom_sp amobile )
 {
@@ -192,6 +206,8 @@ CL_DEFMETHOD void	Twister_O::defineFixedAndMobile(Atom_sp afixed, Atom_sp amobil
 }
 
 
+CL_DOCSTRING(R"doc(Rotate the twister by a relative angle in radians.)doc");
+CL_LAMBDA(twister angle);
 CL_LISPIFY_NAME("twister_rotate");
 CL_DEFMETHOD void	Twister_O::rotate(double angle)
 {_OF();
@@ -226,6 +242,8 @@ CL_DEFMETHOD void	Twister_O::rotate(double angle)
 }
 
 
+CL_LAMBDA(twister);
+CL_DOCSTRING(R"doc(Get the current dihedral angle of the twister in radians.)doc");
 CL_LISPIFY_NAME("twister_currentDihedralAngleRadians");
 CL_DEFMETHOD double Twister_O::currentDihedralAngleRadians()
 {
@@ -244,6 +262,8 @@ CL_DEFMETHOD double Twister_O::currentDihedralAngleRadians()
 
 
 
+CL_LAMBDA(twister angle);
+CL_DOCSTRING(R"doc(Rotate the twister to an absolute angle in radians.)doc");
 CL_LISPIFY_NAME("twister_rotateAbsolute");
 CL_DEFMETHOD void Twister_O::rotateAbsolute(double angle)
 {
@@ -273,6 +293,8 @@ stringstream	ss;
 }
 
 
+CL_LAMBDA(aggregate);
+CL_DOCSTRING(R"doc(Create a new twister driver based on an aggregate.)doc");
 CL_DEFUN TwisterDriver_sp chem__make_twister_driver(Aggregate_sp agg)
 {
   GC_ALLOCATE_VARIADIC(TwisterDriver_O,td,agg);
@@ -280,6 +302,8 @@ CL_DEFUN TwisterDriver_sp chem__make_twister_driver(Aggregate_sp agg)
 }
 
 
+CL_LAMBDA(twister-driver twister);
+CL_DOCSTRING(R"doc(Add twister to a twister driver.)doc");
 CL_LISPIFY_NAME("twister_driver_addTwister");
 CL_DEFMETHOD void	TwisterDriver_O::addTwister(	Twister_sp twister )
 {
@@ -287,6 +311,8 @@ CL_DEFMETHOD void	TwisterDriver_O::addTwister(	Twister_sp twister )
 }
 
 
+CL_LAMBDA(twister-driver index);
+CL_DOCSTRING(R"doc(Get the twister in a twister driver based on index.)doc");
 CL_LISPIFY_NAME("twister_driver_getTwister");
 CL_DEFMETHOD Twister_sp	TwisterDriver_O::getTwister(uint i)
 {_OF();
@@ -295,6 +321,8 @@ CL_DEFMETHOD Twister_sp	TwisterDriver_O::getTwister(uint i)
     SIMPLE_ERROR(BF("Illegal twister index %d there are only %d twisters") % i % this->_Twisters.size());
 }
 
+CL_LAMBDA(twister-driver);
+CL_DOCSTRING(R"doc(Randomly select a twister and perturb the angle by a random amount.)doc");
 CL_LISPIFY_NAME("twister_driver_perturbConformation");
 CL_DEFMETHOD void	TwisterDriver_O::perturbConformation()
 {_OF();
