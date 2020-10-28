@@ -193,24 +193,25 @@ CL_DEFMETHOD     ConfigurationEnum Atom_O::calculateStereochemicalConfiguration(
 {
   if ( this->numberOfBonds() != 4 ) return undefinedConfiguration;
   core::List_sp neighborsByPriority = this->getNeighborsByRelativePriority(cip_priority);
-  Atom_sp a4 = core::oCar(neighborsByPriority).as<Atom_O>();
-  Atom_sp a3 = core::oCadr(neighborsByPriority).as<Atom_O>();
-  Atom_sp a2 = core::oCaddr(neighborsByPriority).as<Atom_O>();
-  Atom_sp a1 = core::oCadddr(neighborsByPriority).as<Atom_O>();
+  Atom_sp a1 = core::oCar(neighborsByPriority).as<Atom_O>();
+  Atom_sp a2 = core::oCadr(neighborsByPriority).as<Atom_O>();
+  Atom_sp a3 = core::oCaddr(neighborsByPriority).as<Atom_O>();
+  Atom_sp a4 = core::oCadddr(neighborsByPriority).as<Atom_O>();
   Vector3 vme = this->getPosition();
-  Vector3 v4 = a4->getPosition().sub(vme);
-  Vector3 v3 = a3->getPosition().sub(vme);
-  Vector3 v2 = a2->getPosition().sub(vme);
   Vector3 v1 = a1->getPosition().sub(vme);
-  double dir2 = v2.dotProduct(v4.crossProduct(v3)); // For R this should be >0
-  double dir1 = v1.dotProduct(v4.crossProduct(v3)); // For R this should be <0
+  Vector3 v2 = a2->getPosition().sub(vme);
+  Vector3 v3 = a3->getPosition().sub(vme);
+  Vector3 v4 = a4->getPosition().sub(vme);
+  Vector3 v43cross = v4.crossProduct(v3);
+  double dir1 = v1.dotProduct(v43cross); // For R this should be >0
+  double dir2 = v2.dotProduct(v43cross); // For R this should be <0
   if ( dir1 > 0.0 ) {
     if ( dir2 < 0.0 ) {
-      return S_Configuration;
+      return R_Configuration;
     }
   } else if ( dir1 < 0.0 ) {
     if ( dir2 > 0.0 ) {
-      return R_Configuration;
+      return S_Configuration;
     }
   }
   return undefinedConfiguration;
@@ -694,7 +695,9 @@ core::List_sp	Atom_O::getNeighborsForAbsoluteConfiguration()
   }
   return l.cons();
 }
-  
+
+CL_DOCSTRING("Return the neighbors sorted from highest CIP priority to lowest");
+CL_DEFMETHOD
 core::List_sp	Atom_O::getNeighborsByRelativePriority(core::HashTable_sp cip_priority)
 {
   LOG(BF("Ordering neighbors around(%s) by priority and name") % this->getName()  );

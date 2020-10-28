@@ -51,9 +51,9 @@ namespace chem
 
 
 struct TermOutOfZPlane {
-  double		kb;
+  double	kb;
   int		I1;
-  double		za;
+  double	za;
   TermOutOfZPlane(double k,int i, double z) : kb(k), I1(i), za(z) {};
 };
 
@@ -75,14 +75,48 @@ public:
   double		getZa() { return this->term.za; };
 public:
   adapt::QDomNode_sp	asXml();
+  core::List_sp encode() const;
 
   EnergyOutOfZPlane(double kb, int i1, double r0) :term(kb,i1,r0) {};
+  EnergyOutOfZPlane() : term(1.0,0,1.0) {}; // default ctor for fields
     
   virtual ~EnergyOutOfZPlane();
 
 };
 
+};
 
+
+namespace translate {
+
+template <>
+struct	to_object<chem::EnergyOutOfZPlane >
+{
+  typedef	core::Cons_sp ExpectedType;
+  typedef	core::Cons_sp DeclareType;
+  static core::T_sp convert(const chem::EnergyOutOfZPlane& term)
+  {
+    return term.encode();
+  }
+};
+
+template <>
+struct	from_object<chem::EnergyOutOfZPlane>
+{
+  typedef	chem::EnergyOutOfZPlane	ExpectedType;
+  typedef	ExpectedType 		DeclareType;
+	DeclareType _v;
+	from_object(core::T_sp o)
+	{
+          SIMPLE_ERROR(BF("Implement me"));
+        }
+};
+};
+
+
+
+
+namespace chem {
 
 double	_evaluateEnergyOnly_Oozp(
                                  double x1, double y1, double z1,
@@ -95,6 +129,8 @@ class EnergyOutOfZPlane_O : public EnergyComponent_O
 public:
 public: // virtual functions inherited from Object
   void	initialize();
+    bool fieldsp() const { return true; };
+    void fields(core::Record_sp node);
 public:
   typedef EnergyOutOfZPlane	TermType;
 public: // instance variables

@@ -180,7 +180,7 @@ public:
     //! Find and return the rootMonomer
     Monomer_sp	rootMonomer() const;
 
-    Molecule_sp	buildMolecule(core::HashTable_sp cip);
+    Molecule_sp	buildMolecule();
 
     gctools::Vec0_uncopyable<Monomer_sp>&	getMonomers() {return this->_Monomers;}
     gctools::Vec0_uncopyable<Coupling_sp>&	getCouplings() { return this->_Couplings;}

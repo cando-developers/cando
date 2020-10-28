@@ -4,7 +4,10 @@
 (defparameter chem:*cando-database* (chem:make-cando-database :default)
   "This is where topology's are stored")
 
-(defun register-topology (name topology)
+(defun register-topology (topology &optional name)
+  "Register a topology with cando "
+  (unless name
+    (setf name (chem:get-name topology)))
   (unless (keywordp name)
     (setf name (intern (string-upcase (string name)) :keyword)))
   (chem:setf-find-topology chem:*cando-database* name topology))

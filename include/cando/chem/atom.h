@@ -493,10 +493,6 @@ namespace chem {
 
     virtual	bool testConsistancy(Matter_sp c);
     void invertStructureAndRestraints();
-	//
-	// Configuration
-	//
-	//! If the atom can have a stereochemical configuration return true
     core::List_sp	getNeighborsByRelativePriority(core::HashTable_sp cip_priority);
     core::List_sp	getNeighborsForAbsoluteConfiguration();
     bool	isConfigurable();

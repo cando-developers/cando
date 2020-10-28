@@ -156,6 +156,15 @@ void EnergyPointToLineRestraint_O::initialize()
     this->setErrorThreshold(0.2);
 }
 
+
+void EnergyStretch_O::fields(core::Record_sp node)
+{
+  node->field( INTERN_(kw,bond_div_2), this->_Bond_div_2 );
+  node->field( INTERN_(kw,force_constant), this->_ForceConstant);
+  node->field( INTERN_(kw,stretch),this->_Stretch);
+  this->Base::fields(node);
+}
+
 void EnergyPointToLineRestraint_O::reset()
 {
 }

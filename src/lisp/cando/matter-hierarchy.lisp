@@ -315,3 +315,10 @@ residue in any molecules that have the molecule-type :solvent."
       (if (= (chem:content-size mol) 1)
           (chem:get-name (chem:content-at mol 0))
           (error "A molecule with molecule-type :solvent was found that has ~a residues - it needs to have a single residue" (chem:content-size mol))))))
+
+(defun ensure-unique-hydrogen-names (matter)
+  (let ((hydrogen-counter 0))
+    (cando:do-atoms (atom1 matter)
+      (when (eq (chem:get-element atom1) :H)
+        (let ((hydrogen-name (intern (format nil "H~a" (incf hydrogen-counter)) :keyword)))
+          (chem:set-name atom1 hydrogen-name))))))

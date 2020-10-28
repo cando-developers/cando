@@ -59,6 +59,7 @@ namespace chem
   public:
     bool fieldsp() const { return true; };
     void fields(core::Record_sp node);
+    string __repr__() const;
   public:
     ConstitutionAtomIndex0N toAtomIndex() const { return this->_ToAtomIndex;};
     BondOrder bondOrder() const { return this->_BondOrder; };

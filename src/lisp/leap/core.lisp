@@ -116,7 +116,7 @@ for a list of symbols.  When they ask for a list of symbols we use this list."))
        (setf (gethash (string name) (%variables *leap-env*)) (string name))
        ;;
        (when (and (symbolp name) (typep new-value 'chem:topology))
-         (cando:register-topology name new-value))
+         (cando:register-topology new-value name))
        (core:*make-special name)
        (set name new-value))
       (t (error "What do you do with name: ~s" name)))))

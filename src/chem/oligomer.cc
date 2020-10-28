@@ -630,7 +630,7 @@ CL_DEFMETHOD RingCoupling_sp	Oligomer_O::ringCoupleWithPlugNames( Monomer_sp mon
 
 
 CL_LISPIFY_NAME("Oligomer_buildMolecule");
-CL_DEFMETHOD Molecule_sp Oligomer_O::buildMolecule(core::HashTable_sp cip)
+CL_DEFMETHOD Molecule_sp Oligomer_O::buildMolecule()
 {
 Topology_sp		topology;
 int			residueNetCharge;

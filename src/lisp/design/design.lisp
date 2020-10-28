@@ -15,7 +15,7 @@
 (defun load-design (file-name)
   (let ((design (cando:load-cando file-name)))
     (loop for topology in (topologys design)
-          do (cando:register-topology (chem:get-name topology) topology))
+          do (cando:register-topology topology))
     design))
 
 
@@ -33,7 +33,7 @@
                           out-plug-info
                           (list out-plug-info))
                     (chem:add-plug topology out-plug-name (chem:make-out-plug out-plug-name nil nil atom-name bond-order))))
-    (cando:register-topology (chem:get-name topology) topology)
+    (cando:register-topology topology)
     topology))
 
 (defun lookup-topology (name)

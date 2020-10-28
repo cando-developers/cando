@@ -102,6 +102,14 @@ void	EnergyOutOfZPlane_O::addTerm(const EnergyOutOfZPlane& r)
     this->_Terms.push_back(r);
 }
 
+
+
+core::List_sp EnergyOutOfZPlane::encode() const {
+  return core::Cons_O::createList(core::Cons_O::create(INTERN_(kw,kb),core::clasp_make_double_float(this->term.kb)),
+                                  core::Cons_O::create(INTERN_(kw,i1), core::make_fixnum(this->term.I1)),
+                                  core::Cons_O::create(INTERN_(kw,za), core::make_fixnum(this->term.za)));
+}
+
 CL_DEFMETHOD
 void EnergyOutOfZPlane_O::addOutOfZPlaneTerm(size_t index, double kb, double r0) {
   EnergyOutOfZPlane term(kb,index,r0);
@@ -112,6 +120,11 @@ void	EnergyOutOfZPlane_O::dumpTerms()
 {
 }
 
+void EnergyOutOfZPlane_O::fields(core::Record_sp node)
+{
+  node->field( INTERN_(kw,terms), this->_Terms );
+  this->Base::fields(node);
+}
 
 
 string EnergyOutOfZPlane_O::beyondThresholdInteractionsAsString()

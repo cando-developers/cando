@@ -50,6 +50,16 @@ void ConstitutionBond_O::fields(core::Record_sp node)
   // this->Base::fields(node);
 }
 
+string ConstitutionBond_O::__repr__() const
+{
+  stringstream ss;
+  ss << "(" << this->className() << " ";
+  ss << " :toAtom " << this->_ToAtomIndex;
+  ss << " :bondOrder " << bondOrderToString(this->_BondOrder);
+  ss << ">";
+  return ss.str();
+}
+
 void ConstitutionAtom_O::fields(core::Record_sp node)
 {
   node->field(INTERN_(kw,name),this->_AtomName);
@@ -89,7 +99,7 @@ string ConstitutionAtom_O::__repr__() const
 {
   stringstream ss;
   ss << "(" << this->className() << " ";
-  ss << " :atomName \"" << this->_AtomName << "\"";
+  ss << " :atomName " << this->_AtomName;
   ss << " :element " << symbolFromElement(this->_Element);
   if (this->_StereochemistryType != undefinedCenter) {
     ss << " :stereochemistry-type " << _rep_(gc::As<core::SymbolToEnumConverter_sp>(_sym__PLUS_stereochemistryTypeConverter_PLUS_->symbolValue())->symbolForEnum(this->_StereochemistryType));

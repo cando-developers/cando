@@ -476,7 +476,7 @@ We need assemble-ligands for the tirun demo."
     (loop for ligand in tirun-structures
           for mol = (chem:matter-copy (drawing ligand))
           do (chem:fill-in-implicit-hydrogens mol)
-             (ensure-unique-hydrogen-names mol)
+             (cando:ensure-unique-hydrogen-names mol)
              (assign-stereochemical-restraints mol)
              (cando:build-unbuilt-hydrogens mol)
              (combine-into-single-residue mol (core-residue-name ligand))
@@ -603,7 +603,7 @@ But this code is necessary for the tirun demo."
                             for mol = (chem:matter-copy (drawing ligand))
                             for side-chain-atoms = nil
                             do (chem:fill-in-implicit-hydrogens mol)
-                               (ensure-unique-hydrogen-names mol)
+                               (cando:ensure-unique-hydrogen-names mol)
                                (assign-stereochemical-restraints mol)
                                (cando:build-unbuilt-hydrogens mol)
                                (setf (molecule ligand) mol)
@@ -618,13 +618,6 @@ But this code is necessary for the tirun demo."
                                (combine-into-single-residue mol (core-residue-name ligand))
                             collect mol)))
       (values molecules ligands))))
-
-(defun ensure-unique-hydrogen-names (molecule)
-  (let ((hydrogen-counter 0))
-    (cando:do-atoms (atom1 molecule)
-      (when (eq (chem:get-element atom1) :H)
-        (let ((hydrogen-name (intern (format nil "H~a" (incf hydrogen-counter)) :keyword)))
-          (chem:set-name atom1 hydrogen-name))))))
 
 (defun unique-name (atom counters)
   (let* ((atom-name (chem:get-name atom))

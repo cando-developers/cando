@@ -156,8 +156,10 @@
                                :cg-tolerance cg-tolerance
                                :tn-tolerance tn-tolerance)
     (chem:enable-print-intermediate-results minimizer 100)
+    (format t "Minimizing with nonbond terms disabled~%")
     (chem:set-option energy-function 'chem:nonbond-term nil)
     (cando:minimize-no-fail minimizer)
+    (format t "Minimizing with nonbond terms enabled~%")
     (chem:set-option energy-function 'chem:nonbond-term t)
     (cando:minimize-no-fail minimizer)))
 
@@ -173,7 +175,7 @@
                                      (assign-types t))
   "Minimize the conformational energy for an aggregate"
   (let ((energy-func (chem:make-energy-function :matter agg :use-excluded-atoms use-excluded-atoms :assign-types assign-types)))
-    (apply #'minimize-energy-function energy-func args)
+    (apply #'minimize-energy-function-from-bad-geometry energy-func args)
     energy-func))
 
 ;;;------------------------------------------------------------

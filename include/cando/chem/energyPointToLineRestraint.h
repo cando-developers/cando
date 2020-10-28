@@ -65,6 +65,8 @@ class EnergyPointToLineRestraint_O : public EnergyComponent_O
     LISP_CLASS(chem,ChemPkg,EnergyPointToLineRestraint_O,"EnergyPointToLineRestraint",EnergyComponent_O);
 public: // virtual functions inherited from Object
     void	initialize();
+    bool fieldsp() const { return true; };
+    void fields(core::Record_sp node);
 public: // instance variables
   double                  _Bond_div_2;  // cutoff - if _ForceConstant is negative then less than this force is off
   EnergySketchStretch_sp  _Stretch;

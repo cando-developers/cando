@@ -153,6 +153,7 @@
    #:atmid
    #:formula-weight
    #:formula-string-to-alist
+   #:ensure-unique-hydrogen-names
    #:most-abundant-isotope-weight
    #:move-geometric-center-to-origin
    #:move-geometric-center-to-point
