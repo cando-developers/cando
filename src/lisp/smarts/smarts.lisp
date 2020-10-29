@@ -771,9 +771,9 @@ results of calling chem:identify-rings.  This macro wraps that code."
      ,@body))
 
 (eval-when (:load-toplevel :execute)
-  (chem:initialize-smarts-users))
-
-
+  #-nosmarts(chem:initialize-smarts-users)
+  #+nosmarts(format t "Not calling chem:initialize-smarts-users~%")
+  )
 (defun chem:parse-smirks (code)
   (multiple-value-bind (reactant product)
       (language.smarts.parser:parse-smirks code :cando)

@@ -78,7 +78,7 @@
                                 (cons :aby #'chem:am1bcc-y)))
 
 ;; Apply aromaticity rule1 of Jakalian, Jack, and Bayly • Vol. 23, No. 16 • Journal of Computational Chemistry
-  (defparameter *rule1* (chem:make-chem-info-graph (chem:compile-smarts "[<abx>:1]1=[<abx>:2]-[<abx>:3]=[<abx>:4]-[<abx>:5]=[<abx>:6]1" :tests *artests*))))
+  (defparameter *rule1* #+nosmarts nil #-nosmarts(chem:make-chem-info-graph (chem:compile-smarts "[<abx>:1]1=[<abx>:2]-[<abx>:3]=[<abx>:4]-[<abx>:5]=[<abx>:6]1" :tests *artests*))))
 
 
 (defun exhaustively-apply-aromatic-rule (aromaticity-info molecule-graph rule aromaticity-type rule-name)
@@ -99,13 +99,13 @@
         (setf aromatic-atoms new-aromatic-atoms)))))
 
 ;; Apply aromaticity rule of Jakalian, Jack, and Bayly • Vol. 23, No. 16 • Journal of Computational Chemistry
-(defparameter *rule2* (chem:make-chem-info-graph (chem:compile-smarts "[<abx>:1]1=[<abx>:2]-[<abx>:3]=[<abx>:4]-[<ar6>]:[<ar6>]1" :tests *artests*)))
+(defparameter *rule2* #+nosmarts nil #-nosmarts(chem:make-chem-info-graph (chem:compile-smarts "[<abx>:1]1=[<abx>:2]-[<abx>:3]=[<abx>:4]-[<ar6>]:[<ar6>]1" :tests *artests*)))
 
-(defparameter *rule3* (chem:make-chem-info-graph (chem:compile-smarts "[<abx>:1]1=[<abx>:2]-[<ar6>]:[<ar6>]:[<ar6>]:[<ar6>]1" :tests *artests*)))
+(defparameter *rule3* #+nosmarts nil #-nosmarts(chem:make-chem-info-graph (chem:compile-smarts "[<abx>:1]1=[<abx>:2]-[<ar6>]:[<ar6>]:[<ar6>]:[<ar6>]1" :tests *artests*)))
 
 ;; Apply aromaticity rule of Jakalian, Jack, and Bayly • Vol. 23, No. 16 • Journal of Computational Chemistry
 
-(defparameter *rule4* (chem:make-chem-info-graph (chem:compile-smarts "[C&+:1]1-[<abx>:2]=[<abx>:3]-[<abx>:4]=[<abx>:5]-[<abx>:6]=[<abx>:7]1" :tests *artests*)))
+(defparameter *rule4* #+nosmarts nil #-nosmarts(chem:make-chem-info-graph (chem:compile-smarts "[C&+:1]1-[<abx>:2]=[<abx>:3]-[<abx>:4]=[<abx>:5]-[<abx>:6]=[<abx>:7]1" :tests *artests*)))
 
 
 (defparameter *ar67test*
@@ -115,7 +115,7 @@
                      (is-aromatic-type atom :ar7))))
          *artests*))
 
-(defparameter *rule5* (chem:make-chem-info-graph (chem:compile-smarts "[<aby>:1]1-[<abx>&!<ar67>:2]=[<abx>&!<ar67>:3]-[<abx>&!<ar67>:4]=[<abx>&!<ar67>:5]1" :tests *ar67test*)))
+(defparameter *rule5* #+nosmarts nil #-nosmarts(chem:make-chem-info-graph (chem:compile-smarts "[<aby>:1]1-[<abx>&!<ar67>:2]=[<abx>&!<ar67>:3]-[<abx>&!<ar67>:4]=[<abx>&!<ar67>:5]1" :tests *ar67test*)))
 
 ;; Apply aromaticity rule of Jakalian, Jack, and Bayly • Vol. 23, No. 16 • Journal of Computational Chemistry
 

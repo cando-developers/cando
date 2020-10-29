@@ -445,7 +445,11 @@ void ChemInfoNode_O::fields(core::Record_sp node) {
 
 string ChemInfoNode_O::__repr__() const {
   stringstream ss;
-  ss << "#<" << this->className() << " :id " << this->_Id << ">";
+  ss << "#<" << this->className();
+#ifdef DEBUG_ID
+  ss << " :id " << this->_Id;
+#endif
+  ss << ">";
   return ss.str();
 }
 
@@ -513,7 +517,9 @@ CL_DEFMETHOD int AtomOrBondMatchNode_O::getRingId() const {
 string AtomOrBondMatchNode_O::__repr__() const {
   stringstream ss;
   ss << "#<" << this->className() << " ";
-  ss << ":id " << this->_Id;
+#ifdef DEBUG_ID
+  ss << " :id " << this->_Id;
+#endif
   if (this->_RingTest!=SARNone) {
     ss << " :ring-id " << this->_RingId;
   }
@@ -700,8 +706,10 @@ void Logical_O::fields(core::Record_sp node) {
 
 string Logical_O::__repr__() const {
   stringstream ss;
-  ss << "#<LOGICAL ";
-  ss << ":id " << this->_Id;
+  ss << "#<LOGICAL";
+#ifdef DEBUG_ID
+  ss << " :id " << this->_Id;
+#endif
   ss << " :op ";
   for ( int i=0; logicalEnum[i]._Enum != -1; ++i ) {
     if (logicalEnum[i]._Enum == this->_Operator) {
@@ -2438,8 +2446,13 @@ CL_DEFMETHOD core::HashTableEql_sp ChemInfoMatch_O::tags_as_hashtable() const {
 
 CL_LAMBDA(code &key tests);
 CL_DEFUN SmartsRoot_sp chem__compile_smarts(const string& code, core::List_sp tests) {
+  printf("%s:%d:%s code: %s\n", __FILE__, __LINE__, __FUNCTION__, code.c_str());
   core::SimpleBaseString_sp scode = core::SimpleBaseString_O::make(code);
-  ChemInfoNode_sp node = gc::As<ChemInfoNode_sp>(core::eval::funcall(_sym_parse_smarts,scode));
+  core::T_sp tnode = core::eval::funcall(_sym_parse_smarts,scode);
+  if (tnode.nilp()) {
+    SIMPLE_ERROR(BF("When calling chem:parse-smarts with %s - it returned NIL") % _rep_(scode));
+  }
+  ChemInfoNode_sp node = gc::As<ChemInfoNode_sp>(tnode);
   size_t max_tag = calculate_max_tags(node);
 //  printf("%s:%d:%s  node-> %s\n", __FILE__, __LINE__, __FUNCTION__, _rep_(node).c_str());
   SmartsRoot_sp root = SmartsRoot_O::make(code,node,max_tag);

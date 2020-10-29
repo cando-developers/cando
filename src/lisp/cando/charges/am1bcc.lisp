@@ -132,7 +132,7 @@
 
 
 
-(defparameter *carboxyl-nitro-pattern* (chem:compile-smarts "[$([C:1](=[O:2])-[O&-;X1:3]),$([N;+:1](=[O:2])-[O&-;X1:3])]"))
+(defparameter *carboxyl-nitro-pattern* #+nosmarts nil #-nosmarts(chem:compile-smarts "[$([C:1](=[O:2])-[O&-;X1:3]),$([N;+:1](=[O:2])-[O&-;X1:3])]"))
 
 ;;
 ;; Assign Am1Bcc bond types for all bonds
@@ -215,10 +215,10 @@
 
 
 ;; CSMARTS rules for carbon atom types
-(defvar *cx3=c* (chem:compile-smarts "[C&X3]=C"))
-(defvar *cx3=norp* (chem:compile-smarts "[C&X3]=[N,P]"))
-(defvar *cx3=oors* (chem:compile-smarts "[C&X3]=[O,S]"))
-(defvar *cx3-ox2_cx3-nx2* (chem:compile-smarts "[$([C&X3]-[O&X2]),$([C&X3]~[N&X2])]"))
+(defvar *cx3=c* #+nosmarts nil #-nosmarts(chem:compile-smarts "[C&X3]=C"))
+(defvar *cx3=norp* #+nosmarts nil #-nosmarts(chem:compile-smarts "[C&X3]=[N,P]"))
+(defvar *cx3=oors* #+nosmarts nil #-nosmarts(chem:compile-smarts "[C&X3]=[O,S]"))
+(defvar *cx3-ox2_cx3-nx2* #+nosmarts nil #-nosmarts(chem:compile-smarts "[$([C&X3]-[O&X2]),$([C&X3]~[N&X2])]"))
 
 #|
 (defun make-chem-info (&key smarts)
@@ -245,9 +245,9 @@
 
 
 
-(defvar *match-lactone-lactam* (chem:compile-smarts "[$(O=[C]1-[O,N]~[*]~[*]1),$(O=[C]1-[O,N]~[*]~[*]~[*]1),$(O=[C]1-[O,N]~[*]~[*]~[*]~[*]1),$(O=[C]1-[O,N]~[*]~[*]~[*]~[*]~[*]1)]"))
+(defvar *match-lactone-lactam* #+nosmarts nil #-nosmarts(chem:compile-smarts "[$(O=[C]1-[O,N]~[*]~[*]1),$(O=[C]1-[O,N]~[*]~[*]~[*]1),$(O=[C]1-[O,N]~[*]~[*]~[*]~[*]1),$(O=[C]1-[O,N]~[*]~[*]~[*]~[*]~[*]1)]"))
 
-(defvar *match-ester-acid* (chem:compile-smarts "O=C-[O]"))
+(defvar *match-ester-acid* #+nosmarts nil #-nosmarts(chem:compile-smarts "O=C-[O]"))
 
 (defun apply-oxygen-atom-types (a)
   (cond
@@ -256,8 +256,8 @@
    ((chem:matches *match-ester-acid* a)     (set-am1-bcc-type a 32))
    (t (set-am1-bcc-type a 31))))
 
-(defvar *n-highly-deloc* (chem:compile-smarts "N1(-[C]=[C])-[C]=[C]1"))
-(defvar *ndeloc* (chem:compile-smarts "N-[C]=[O]"))
+(defvar *n-highly-deloc* #+nosmarts nil #-nosmarts(chem:compile-smarts "N1(-[C]=[C])-[C]=[C]1"))
+(defvar *ndeloc* #+nosmarts nil #-nosmarts(chem:compile-smarts "N-[C]=[O]"))
 
 
 ;; Figure out what these properties deloc and hdeloc really mean

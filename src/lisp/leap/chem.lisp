@@ -247,7 +247,8 @@
 
 (eval-when (:execute :load-toplevel)
   ;;; Initialize the sybyl-type-rules
-  (chem:initialize-sybyl-type-rules))
+  #-nosmarts(chem:initialize-sybyl-type-rules)
+  #+nosmarts(format t "Not calling chem:initialize-sybyl-type-rules~%"))
 
 
 (defmethod chem:compute-merged-nonbond-force-field-for-aggregate (aggregate)

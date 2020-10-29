@@ -1,8 +1,9 @@
 
 (in-package :cando)
 
-(defparameter *amide-smarts* (chem:compile-smarts "N[C&D3]~O"))
-(defparameter *imidazole-n* (chem:compile-smarts "N([C&D3])[C&D3]"))
+(defvar *amide-smarts* #-nosmarts(chem:compile-smarts "N[C&D3]~O"))
+(defvar *imidazole-n* #-nosmarts(chem:compile-smarts "N([C&D3])[C&D3]"))
+
 (defun calculate-hybridization (atom)
   "* Arguments
 - atom : chem:atom

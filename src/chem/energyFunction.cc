@@ -133,7 +133,11 @@ int	_areValuesClose( double numVal, double analVal, const char* funcName, const 
 SYMBOL_EXPORT_SC_(ChemPkg,STARsecondaryAmideSmartsSTAR);
 void energyFunction_initializeSmarts()
 {
-  if ( energyFunctionInitialized ) return;
+  if ( energyFunctionInitialized ) {
+    printf("%s:%d:%s  energyFunction_initializeSmarts was already called\n", __FILE__, __LINE__, __FUNCTION__ );
+    // return;
+  }
+
   _sym_STARparserNodeHolderSTAR->defparameter(adapt::IndexedObjectBag_O::create());
   energyFunctionInitialized = true;
   SmartsRoot_sp secondaryAmide = chem__compile_smarts("[$([N:1]([C:2])(~[#1:3])~[C:4](=[O:5])[C:6])]",_Nil<core::T_O>());
