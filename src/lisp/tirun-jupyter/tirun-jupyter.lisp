@@ -264,6 +264,7 @@
                               :layout (make-instance 'w:layout
                                                      :border "var(--jp-widgets-border-width) solid var(--jp-border-color1)"
                                                      :grid-area "ngl"))))
+    (setf (nglview::parameters ngl) '(:clip-dist 0))
     (cw:make-file-task-page container "Load Receptor" #'parse-receptor :accept ".pdb")
     ;; Make a simple page to display the receptor in nglview
     (setf (w:widget-%titles container) (append (w:widget-%titles container)

@@ -355,6 +355,7 @@
               (angle-slider instance)))
   ; hack
   (jw:notify-trait-change (controls-container instance) :widget-list :children nil (jw:widget-children (controls-container instance)) t)
+  (setf (nglview::parameters (ngl instance)) '(:clip-dist 0))
   (jw:observe (ngl instance) :picked
     (lambda (inst type name old-value new-value source)
       (declare (ignore inst type name old-value source))
