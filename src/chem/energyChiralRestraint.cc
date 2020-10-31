@@ -193,7 +193,7 @@ bool		calcOffDiagonalHessian = true;
 #define CHIRAL_RESTRAINT_CALC_DIAGONAL_HESSIAN
 #define CHIRAL_RESTRAINT_CALC_OFF_DIAGONAL_HESSIAN
 
-    if ( this->isEnabled() ) {
+ {
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include	<cando/chem/energy_functions/_ChiralRestraint_termDeclares.cc>
@@ -224,6 +224,7 @@ double	EnergyChiralRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
                                               gc::Nilable<chem::NVector_sp>	hdvec,
                                               gc::Nilable<chem::NVector_sp> dvec)
 {
+  this->_Evaluations++;
   if ( this->_DebugEnergy ) 
   {
     LOG_ENERGY_CLEAR();
@@ -264,7 +265,7 @@ double	EnergyChiralRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
 #define	CHIRAL_RESTRAINT_OFF_DIAGONAL_HESSIAN_ACCUMULATE OffDiagHessAcc
 
 
-  if ( this->isEnabled() ) {
+  {
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_ChiralRestraint_termDeclares.cc>
@@ -394,7 +395,7 @@ bool	calcOffDiagonalHessian = true;
 #define	CHIRAL_RESTRAINT_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
 
 
-	if ( this->isEnabled() ) {
+ {
 		_BLOCK_TRACE("ChiralRestraintEnergy finiteDifference comparison");
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
@@ -462,7 +463,7 @@ int	fails = 0;
 #define	CHIRAL_RESTRAINT_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
 
 
-    if ( this->isEnabled() ) {
+    {
 	    _BLOCK_TRACE("ChiralRestraintEnergy finiteDifference comparison");
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"

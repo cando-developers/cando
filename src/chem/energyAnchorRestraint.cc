@@ -212,7 +212,7 @@ bool		calcOffDiagonalHessian = true;
 #define ANCHOR_RESTRAINT_CALC_DIAGONAL_HESSIAN
 #define ANCHOR_RESTRAINT_CALC_OFF_DIAGONAL_HESSIAN
 
-    if ( this->isEnabled() ) {
+ {
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_AnchorRestraint_termDeclares.cc>
@@ -246,6 +246,7 @@ double EnergyAnchorRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
                                              gc::Nilable<NVector_sp>	hdvec,
                                              gc::Nilable<NVector_sp> dvec)
 {
+  this->_Evaluations++;
   bool	hasForce = force.notnilp();
   bool	hasHessian = hessian.notnilp();
   bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
@@ -273,7 +274,7 @@ double EnergyAnchorRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
 #define	ANCHOR_RESTRAINT_OFF_DIAGONAL_HESSIAN_ACCUMULATE OffDiagHessAcc
 
 
-  if ( this->isEnabled() ) {
+  {
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_AnchorRestraint_termDeclares.cc>
@@ -361,39 +362,39 @@ bool	calcOffDiagonalHessian = true;
 #define	ANCHOR_RESTRAINT_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
 
 
-	if ( this->isEnabled() ) {
-		_BLOCK_TRACE("AnchorRestraintEnergy finiteDifference comparison");
+ {
+   _BLOCK_TRACE("AnchorRestraintEnergy finiteDifference comparison");
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_AnchorRestraint_termDeclares.cc>
 #pragma clang diagnostic pop
-	    double x1,y1,z1,xa,ya,za,ka;
-	    int	I1, i;
-	    gctools::Vec0<EnergyAnchorRestraint>::iterator cri;
-	    for ( i=0,cri=this->_Terms.begin();
-			cri!=this->_Terms.end(); cri++,i++ ) {
+   double x1,y1,z1,xa,ya,za,ka;
+   int	I1, i;
+   gctools::Vec0<EnergyAnchorRestraint>::iterator cri;
+   for ( i=0,cri=this->_Terms.begin();
+         cri!=this->_Terms.end(); cri++,i++ ) {
 			  /* Obtain all the parameters necessary to calculate */
 			  /* the amber and forces */
 #include <cando/chem/energy_functions/_AnchorRestraint_termCode.cc>
-		LOG(BF("fx1 = %le") % fx1 );
-		LOG(BF("fy1 = %le") % fy1 );
-		LOG(BF("fz1 = %le") % fz1 );
-		int index = i;
+     LOG(BF("fx1 = %le") % fx1 );
+     LOG(BF("fy1 = %le") % fy1 );
+     LOG(BF("fz1 = %le") % fz1 );
+     int index = i;
 #if !USE_EXPLICIT_DECLARES
-		double fx1 = 0.0;
-		double fy1 = 0.0;
-		double fz1 = 0.0;
-		double dhx1x1 = 0.0;
-		double ohx1y1 = 0.0;
-		double dhy1y1 = 0.0;
-		double ohy1z1 = 0.0;
-		double dhz1z1 = 0.0;
-		double ohx1z1 = 0.0;
+     double fx1 = 0.0;
+     double fy1 = 0.0;
+     double fz1 = 0.0;
+     double dhx1x1 = 0.0;
+     double ohx1y1 = 0.0;
+     double dhy1y1 = 0.0;
+     double ohy1z1 = 0.0;
+     double dhz1z1 = 0.0;
+     double ohx1z1 = 0.0;
 #endif
 #include <cando/chem/energy_functions/_AnchorRestraint_debugFiniteDifference.cc>
 
-	    }
-	}
+   }
+ }
     IMPLEMENT_ME(); // must return some sort of integer value
 }
 
@@ -430,7 +431,7 @@ int	fails = 0;
 #define	ANCHOR_RESTRAINT_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
 
 
-	if ( this->isEnabled() ) {
+    {
 		_BLOCK_TRACE("AnchorRestraintEnergy finiteDifference comparison");
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"

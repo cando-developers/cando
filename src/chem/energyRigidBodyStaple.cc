@@ -146,7 +146,7 @@ void	EnergyRigidBodyStaple_O::setupHessianPreconditioner(
 #define STAPLE_CALC_DIAGONAL_HESSIAN
 #define STAPLE_CALC_OFF_DIAGONAL_HESSIAN
 
-  if ( this->isEnabled() ) {
+  {
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/energy-functions/_STAPLE_termDeclares.cc>
@@ -173,7 +173,8 @@ double EnergyRigidBodyStaple_O::evaluateAllComponent( ScoringFunction_sp score,
                                              gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
                                              gc::Nilable<NVector_sp>	hdvec,
                                              gc::Nilable<NVector_sp> dvec)
-{ 
+{
+  this->_Evaluations++;
   if ( this->_DebugEnergy ) 
   {
     //core::write_bf_stream_CLEAR();
@@ -212,7 +213,6 @@ double EnergyRigidBodyStaple_O::evaluateAllComponent( ScoringFunction_sp score,
 #define	STAPLE_DIAGONAL_HESSIAN_ACCUMULATE 	DiagHessAcc
 #define	STAPLE_OFF_DIAGONAL_HESSIAN_ACCUMULATE OffDiagHessAcc
 
-  if ( this->isEnabled() ) 
   { _BLOCK_TRACE("Stretch");
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"

@@ -59,21 +59,6 @@ void	EnergyComponent_O::zeroEnergy()
     this->_TotalEnergy = 0.0;
 }
 
-#ifdef XML_ARCHIVE
-    void	EnergyComponent_O::archiveBase(core::ArchiveP node)
-{
-    this->Base::archiveBase(node);
-    node->attribute("_Enabled",this->_Enabled);
-    node->attribute("_Scale",this->_Scale);
-    node->attribute("_ErrorThreshold",this->_ErrorThreshold);
-    node->attribute("_DebugEnergy",this->_DebugEnergy);
-    node->attribute("_TotalEnergy",this->_TotalEnergy);
-    node->attribute("_Debug_NumberOfTermsToCalculate",this->_Debug_NumberOfTermsToCalculate);
-    node->attribute("_Scale",this->_Scale);
-}
-#endif
-
-
 CL_LISPIFY_NAME("debugLogAsString");
 CL_DEFMETHOD string EnergyComponent_O::debugLogAsString()
 {

@@ -168,63 +168,6 @@ double	EnergyNonbond::getDistance()
 }
 
 
-#if 0
-adapt::QDomNode_sp	EnergyNonbond::asXml()
-{
-  adapt::QDomNode_sp	node;
-  Vector3	vdiff;
-
-  node = adapt::QDomNode_O::create(lisp,"EnergyNonbond");
-  node->addAttributeString("atom1Name",this->_Atom1->getName());
-  node->addAttributeString("atom2Name",this->_Atom2->getName());
-  node->addAttributeInt("I1",this->term.I1);
-  node->addAttributeInt("I2",this->term.I2);
-  node->addAttributeBool("is14",this->_Is14);
-  node->addAttributeString("atom1Type",this->_Atom1->getType());
-  node->addAttributeString("atom2Type",this->_Atom2->getType());
-  node->addAttributeDoubleScientific("RStar",this->_RStar);
-  node->addAttributeDoubleScientific("A",this->_A);
-  node->addAttributeDoubleScientific("C",this->_C);
-  node->addAttributeDoubleScientific("Charge1",this->_Charge1);
-  node->addAttributeDoubleScientific("Charge2",this->_Charge2);
-//    vdiff = this->_Atom1->_Atom->getPosition() - this->_Atom2->_Atom->getPosition();
-//    diff = vdiff.length();
-//    node->addAttributeDouble("_r",diff,5,2);
-#if TURN_ENERGY_FUNCTION_DEBUG_ON
-  adapt::QDomNode_sp xml = adapt::QDomNode_O::create(lisp,"Evaluated");
-  xml->addAttributeBool("calcForce",this->_calcForce );
-  xml->addAttributeBool("calcDiagonalHessian",this->_calcDiagonalHessian );
-  xml->addAttributeBool("calcOffDiagonalHessian",this->_calcOffDiagonalHessian );
-#include <_Nonbond_debugEvalXml.cc>
-  node->addChild(xml);
-#endif
-  node->addAttributeDoubleScientific("dA",this->term.dA);
-  node->addAttributeDoubleScientific("dC",this->term.dC);
-  node->addAttributeDoubleScientific("dQ1Q2",this->term.dQ1Q2);
-  return node;
-}
-
-void	EnergyNonbond::parseFromXmlUsingAtomTable(adapt::QDomNode_sp	xml,
-                                                  AtomTable_sp at)
-{
-  this->term.dA = xml->getAttributeDouble("dA");
-  this->term.dC = xml->getAttributeDouble("dC");
-  this->term.dQ1Q2 = xml->getAttributeDouble("dQ1Q2");
-  this->_RStar = xml->getAttributeDouble("RStar");
-  this->_A = xml->getAttributeDouble("A");
-  this->_C = xml->getAttributeDouble("C");
-  this->_Charge1 = xml->getAttributeDouble("Charge1");
-  this->_Charge2 = xml->getAttributeDouble("Charge2");
-  this->term.I1 = xml->getAttributeInt("I1");
-  this->term.I2 = xml->getAttributeInt("I2");
-  this->_Is14 = xml->getAttributeBool("is14");
-  this->_Atom1 = at->findEnergyAtomWithCoordinateIndex(this->term.I1)->atom();
-  this->_Atom2 = at->findEnergyAtomWithCoordinateIndex(this->term.I2)->atom();
-}
-#endif
-
-
-
 double	_evaluateEnergyOnly_Nonbond(ScoringFunction_sp score,
                                     double x1, double y1, double z1,
                                     double x2, double y2, double z2,
@@ -288,10 +231,11 @@ void	EnergyNonbond_O::dumpTerms()
   gctools::Vec0<EnergyNonbond>::iterator	eni;
   string				as1,as2,as3,as4;
   string				str1, str2, str3, str4;
+  core::write_bf_stream(BF("Dumping %d terms\n") % this->_Terms.size());
   for ( eni=this->_Terms.begin(); eni!=this->_Terms.end(); eni++ )
   {
-    as1 = atomLabel(eni->_Atom1);
-    as2 = atomLabel(eni->_Atom2);
+    as1 = _rep_(eni->_Atom1->getName());
+    as2 = _rep_(eni->_Atom2->getName());
     if ( as1 < as2 )
     {
       str1 = as1;
@@ -308,69 +252,6 @@ void	EnergyNonbond_O::dumpTerms()
   }
 
 }
-
-
-#ifdef RENDER
-int EnergyNonbond_O::countBadVdwOverlaps(double scaleSumOfVdwRadii, NVector_sp pos, geom::DisplayList_sp displayIn, core::Lisp_sp lisp)
-{
-  gctools::Vec0<EnergyNonbond>::iterator	eni;
-  string				as1,as2,as3,as4;
-  string				str1, str2, str3, str4;
-  int				overlapCount = 0;
-  int				ia1, ia2;
-  double				x1, y1, z1;
-  double				x2, y2, z2;
-  double				dx,dy,dz;
-  double				cutoff, distSquared;
-  bool				render;
-  Vector3				v1,v2;
-  geom::Color_sp				color;
-  geom::GrLines_sp			lines;
-  lines = geom::GrLines_O::create();
-  render = false;
-  ANN(displayIn);
-  if ( displayIn.notnilp() )
-  {
-    render = true;
-    displayIn->clear();
-    color = geom::Color_O::systemColor(kw::_sym_yellow);
-  }
-  for ( eni=this->_Terms.begin();
-        eni!=this->_Terms.end(); eni++ )
-  {
-    ia1 = eni->term.I1;
-    ia2 = eni->term.I2;
-    x1 = pos->element(ia1+0);
-    y1 = pos->element(ia1+1);
-    z1 = pos->element(ia1+2);
-    x2 = pos->element(ia2+0);
-    y2 = pos->element(ia2+1);
-    z2 = pos->element(ia2+2);
-    cutoff = eni->_RStar*scaleSumOfVdwRadii;
-    cutoff = cutoff*cutoff;
-    dx = x1-x2;
-    dy = y1-y2;
-    dz = z1-z2;
-    distSquared = dx*dx+dy*dy+dz*dz;
-    if ( distSquared<cutoff )
-    {
-      LOG(BF("Found a close contact with distance = %lf and cutoff %lf") % sqrt(distSquared) % sqrt(cutoff)  );
-      LOG(BF("Atom1 = %s") % eni->_Atom1->description()  );
-      LOG(BF("Atom2 = %s") % eni->_Atom2->description()  );
-      if ( render )
-      {
-        v1.set(x1,y1,z1);
-        v2.set(x2,y2,z2);
-        lines->appendLineWithVertices(v1,color,v2,color);
-      }
-      overlapCount++;
-    }
-  }
-  displayIn->append(lines);
-  return overlapCount;
-}
-#endif
-
 
 void	EnergyNonbond_O::setupHessianPreconditioner(
                                                     NVector_sp nvPosition,
@@ -389,6 +270,7 @@ double	EnergyNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
                                       gc::Nilable<NVector_sp>	hdvec, 
                                       gc::Nilable<NVector_sp> 	dvec )
 {
+  this->_Evaluations++;
 //  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
   if (this->_UsesExcludedAtoms) {
     // Evaluate the nonbonds using the excluded atom list
@@ -446,7 +328,6 @@ void	EnergyNonbond_O::evaluateTerms(ScoringFunction_sp score,
 #define	NONBOND_FORCE_ACCUMULATE 		ForceAcc
 #define	NONBOND_DIAGONAL_HESSIAN_ACCUMULATE 	DiagHessAcc
 #define	NONBOND_OFF_DIAGONAL_HESSIAN_ACCUMULATE OffDiagHessAcc
-  if ( this->isEnabled() ) 
   {
     gctools::Vec0<EnergyNonbond>::iterator firstElement = this->_Terms.begin();
     int nonBondTerms = this->_Terms.size();
@@ -530,8 +411,6 @@ void	EnergyNonbond_O::evaluateTerms(ScoringFunction_sp score,
 #endif
       }
     }
-  } else {
-    LOG(BF("Nonbond component is not enabled"));
   }
 //  printf( "Nonbond energy vdw(%lf) electrostatic(%lf)\n", (double)this->_EnergyVdw, this->_EnergyElectrostatic );
   LOG(BF( "Nonbond energy vdw(%lf) electrostatic(%lf)\n")% (double)this->_EnergyVdw % this->_EnergyElectrostatic );
@@ -582,7 +461,6 @@ void	EnergyNonbond_O::evaluateUsingExcludedAtoms(ScoringFunction_sp score,
 #define	NONBOND_DIAGONAL_HESSIAN_ACCUMULATE 	DiagHessAcc
 #define	NONBOND_OFF_DIAGONAL_HESSIAN_ACCUMULATE OffDiagHessAcc
 //  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
-  if ( !this->isEnabled() ) return;
 	    // If you are going to use openmp here, you need to control access to the force and hessian
 	    // arrays so that only one thread updates each element at a time.
   LOG(BF("Nonbond component is enabled") );
@@ -594,8 +472,8 @@ void	EnergyNonbond_O::evaluateUsingExcludedAtoms(ScoringFunction_sp score,
   double x1,y1,z1,x2,y2,z2,dA,dC,dQ1Q2,dA_old,dC_old,dQ1Q2_old;
   int	I1, I2;
   int i = 0;
-  int maxIndex = pos->length()/3;
-//  int maxIndex = this->_AtomTable->getNumberOfAtoms();
+  int endIndex = pos->length()/3;
+//  int endIndex = this->_AtomTable->getNumberOfAtoms();
   int excludedAtomIndex = 0;
   int nlocaltype = 0;
   // Find the max local type
@@ -605,120 +483,120 @@ void	EnergyNonbond_O::evaluateUsingExcludedAtoms(ScoringFunction_sp score,
     }
   }
 
-  int index1_end = maxIndex-1;
+  int index1_end = endIndex-1;
   for ( int index1 = 0; index1 <index1_end; ++index1 ) {
     LOG(BF("%s ====== top of outer loop - index1 = %d\n") % __FUNCTION__ % index1 );
-    int numberOfExcludedAtomsRemaining = numberOfExcludedAtoms->operator[](index1);
-    LOG(BF("Read numberOfExcludedAtomsRemaining from numberOfExcludedAtoms[%d]= %d\n") % index1 % numberOfExcludedAtomsRemaining);
           // Skip 0 in excluded atom list that amber requires
-    int maybe_excluded_atom = (*excludedAtomIndices)[excludedAtomIndex];
-    {
-      double charge11 = (*this->_charge_vector)[index1];
-      double electrostatic_scaled_charge11 = charge11*electrostaticScale;
-      int number_excluded = 0;
-      for ( int index2 = index1+1, index2_end(maxIndex); index2 < index2_end; ++index2 ) {
-        LOG(BF("    --- top of inner loop   numberOfExcludedAtomsRemaining -> %d    index2 -> %d\n") % numberOfExcludedAtomsRemaining % index2 );
-        maybe_excluded_atom = (*excludedAtomIndices)[excludedAtomIndex];
-        if ( numberOfExcludedAtomsRemaining>0 && maybe_excluded_atom == index2) {
-          LOG(BF("    Excluding atom %d\n") % index2);
-          ++excludedAtomIndex;
-          --numberOfExcludedAtomsRemaining;
-          number_excluded++;
-          continue;
-        }
+    bool has_excluded_atoms = ((*excludedAtomIndices)[excludedAtomIndex] >= 0);
+    int numberOfExcludedAtomsRemaining = numberOfExcludedAtoms->operator[](index1);
+    double charge11 = (*this->_charge_vector)[index1];
+    double electrostatic_scaled_charge11 = charge11*electrostaticScale;
+    for ( int index2 = index1+1, index2_end(endIndex); index2 < index2_end; ++index2 ) {
+      int maybe_excluded_atom = (*excludedAtomIndices)[excludedAtomIndex];
+      // state TOP-INNER
+      if (numberOfExcludedAtomsRemaining>0 && maybe_excluded_atom == index2) {
+        LOG(BF("    Excluding atom %d\n") % index2);
+        ++excludedAtomIndex;
+        --numberOfExcludedAtomsRemaining;
+        continue;
+      }
+      // state NONBOND
       //   cn1i    (*this->_cn1_vec)[cn1i]
-        int localindex1 = (*this->_iac_vec)[index1];
-        int localindex2 = (*this->_iac_vec)[index2];
-        dA = (*this->_cn1_vec)[(*this->_ico_vec)[nlocaltype*(localindex1-1)+localindex2-1]-1];
-        dC = (*this->_cn2_vec)[(*this->_ico_vec)[nlocaltype*(localindex1-1)+localindex2-1]-1];
+      int localindex1 = (*this->_iac_vec)[index1];
+      int localindex2 = (*this->_iac_vec)[index2];
+      dA = (*this->_cn1_vec)[(*this->_ico_vec)[nlocaltype*(localindex1-1)+localindex2-1]-1];
+      dC = (*this->_cn2_vec)[(*this->_ico_vec)[nlocaltype*(localindex1-1)+localindex2-1]-1];
 //      printf("%s:%d localindex1 %d and localindex2 %d\n", __FILE__, __LINE__, localindex1, localindex2);
 //      printf("%s:%d dA     %lf and dC     %lf\n", __FILE__, __LINE__, dA, dC);
-        double charge22 = (*this->_charge_vector)[index2];
+      double charge22 = (*this->_charge_vector)[index2];
 //      dQ1Q2 = electrostatic_scaled_charge11*charge22;
-        dQ1Q2 = charge11*charge22;
+      dQ1Q2 = charge11*charge22;
 //      printf("%s:%d charge1     %lf and charge2     %lf\n", __FILE__, __LINE__, charge11, charge22);
 //      printf("%s:%d electrostaticScale     %lf and dQ1Q2     %lf\n", __FILE__, __LINE__, electrostaticScale, dQ1Q2);
 #ifdef DEBUG_NONBOND_TERM
-        if ( this->_DebugEnergy ) {
-          LOG_ENERGY(BF( "nonbond localindex1 %d\n")% localindex1 );
-          LOG_ENERGY(BF( "nonbond localindex2 %d\n")% localindex2 );
-          LOG_ENERGY(BF( "nonbond dA %5.3lf\n")% dA );
-          LOG_ENERGY(BF( "nonbond dC %5.3lf\n")% dC );
-          LOG_ENERGY(BF( "nonbond dQ1Q2 %5.3lf\n")% dQ1Q2 );
-        }
+      if ( this->_DebugEnergy ) {
+        LOG_ENERGY(BF( "nonbond localindex1 %d\n")% localindex1 );
+        LOG_ENERGY(BF( "nonbond localindex2 %d\n")% localindex2 );
+        LOG_ENERGY(BF( "nonbond dA %5.3lf\n")% dA );
+        LOG_ENERGY(BF( "nonbond dC %5.3lf\n")% dC );
+        LOG_ENERGY(BF( "nonbond dQ1Q2 %5.3lf\n")% dQ1Q2 );
+      }
 #endif
       ////////////////////////////////////////////////////////////
       //
       // To here
       //
       ////////////////////////////////////////////////////////////
-        I1 = index1*3; 
-        I2 = index2*3; 
+      I1 = index1*3; 
+      I2 = index2*3; 
 #ifdef DEBUG_NONBOND_TERM
-        if ( this->_DebugEnergy ) {
-          LOG_ENERGY(BF( "nonbond I1 %d\n")% I1 );
-          LOG_ENERGY(BF( "nonbond I2 %d\n")% I2 );
-        }
+      if ( this->_DebugEnergy ) {
+        LOG_ENERGY(BF( "nonbond I1 %d\n")% I1 );
+        LOG_ENERGY(BF( "nonbond I2 %d\n")% I2 );
+      }
 #endif
 #ifdef	DEBUG_CONTROL_THE_NUMBER_OF_TERMS_EVALAUTED
-        if ( this->_Debug_NumberOfNonbondTermsToCalculate > 0 ) {
-          if ( i>= this->_Debug_NumberOfNonbondTermsToCalculate ) {
-            break;
-          }
+      if ( this->_Debug_NumberOfNonbondTermsToCalculate > 0 ) {
+        if ( i>= this->_Debug_NumberOfNonbondTermsToCalculate ) {
+          break;
         }
+      }
 #endif
 #include <cando/chem/energy_functions/_Nonbond_termCode.cc>
 #if TURN_ENERGY_FUNCTION_DEBUG_ON //[
-        nbi->_calcForce = calcForce;
-        nbi->_calcDiagonalHessian = calcDiagonalHessian;
-        nbi->_calcOffDiagonalHessian = calcOffDiagonalHessian;
+      nbi->_calcForce = calcForce;
+      nbi->_calcDiagonalHessian = calcDiagonalHessian;
+      nbi->_calcOffDiagonalHessian = calcOffDiagonalHessian;
 #undef EVAL_SET
 #define	EVAL_SET(var,val)	{ nbi->eval.var=val;};
 #include <cando/chem/energy_functions/_Nonbond_debugEvalSet.cc>
 #endif //]
 #ifdef DEBUG_NONBOND_TERM
-        if ( this->_DebugEnergy ) {
-          std::string key;
-          std::string atom1Name = gc::As<core::Symbol_sp>((*this->_atom_name_vector)[index1])->symbolNameAsString();
-          std::string atom2Name = gc::As<core::Symbol_sp>((*this->_atom_name_vector)[index2])->symbolNameAsString();
-          if ( atom1Name < atom2Name ) {
-            key = atom1Name+"-"+atom2Name;
-          } else {
-            key = atom2Name+"-"+atom1Name;
-          }
-          LOG_ENERGY(BF( "MEISTER nonbond %s args cando\n")% key );
-          LOG_ENERGY(BF( "MEISTER nonbond %s dA %5.3lf\n")% key % dA );
-          LOG_ENERGY(BF( "MEISTER nonbond %s dC %5.3lf\n")% key % dC );
-          LOG_ENERGY(BF( "MEISTER nonbond %s dQ1Q2 %5.3lf\n")% key % dQ1Q2 );
-          LOG_ENERGY(BF( "MEISTER nonbond %s x1 %5.3lf %d\n")% key % x1 % (I1/3+1) );
-          LOG_ENERGY(BF( "MEISTER nonbond %s y1 %5.3lf %d\n")% key % y1 % (I1/3+1) );
-          LOG_ENERGY(BF( "MEISTER nonbond %s z1 %5.3lf %d\n")% key % z1 % (I1/3+1) );
-          LOG_ENERGY(BF( "MEISTER nonbond %s x2 %5.3lf %d\n")% key % x2 % (I2/3+1) );
-          LOG_ENERGY(BF( "MEISTER nonbond %s y2 %5.3lf %d\n")% key % y2 % (I2/3+1) );
-          LOG_ENERGY(BF( "MEISTER nonbond %s z2 %5.3lf %d\n")% key % z2 % (I2/3+1) );
-          LOG_ENERGY(BF( "MEISTER nonbond %s results\n")% key );
-          LOG_ENERGY(BF( "MEISTER nonbond %s evdw %lf\n")% key % Evdw);
-          LOG_ENERGY(BF( "MEISTER nonbond %s eeel %lf\n")% key % Eeel);
-          LOG_ENERGY(BF( "MEISTER nonbond %s Enonbond(evdw+eeel) %lf\n")% key % (Evdw+Eeel) );
-          if ( calcForce ) {
-            LOG_ENERGY(BF( "MEISTER nonbond %s fx1 %lf %d\n")% key % fx1 % (I1/3+1) );
-            LOG_ENERGY(BF( "MEISTER nonbond %s fy1 %lf %d\n")% key % fy1 % (I1/3+1) );
-            LOG_ENERGY(BF( "MEISTER nonbond %s fz1 %lf %d\n")% key % fz1 % (I1/3+1) );
-            LOG_ENERGY(BF( "MEISTER nonbond %s fx2 %lf %d\n")% key % fx2 % (I2/3+1) );
-            LOG_ENERGY(BF( "MEISTER nonbond %s fy2 %lf %d\n")% key % fy2 % (I2/3+1) );
-            LOG_ENERGY(BF( "MEISTER nonbond %s fz2 %lf %d\n")% key % fz2 % (I2/3+1) );
-          }
-          LOG_ENERGY(BF( "MEISTER nonbond %s stop\n")% key );
+      if ( this->_DebugEnergy ) {
+        std::string key;
+        std::string atom1Name = gc::As<core::Symbol_sp>((*this->_atom_name_vector)[index1])->symbolNameAsString();
+        std::string atom2Name = gc::As<core::Symbol_sp>((*this->_atom_name_vector)[index2])->symbolNameAsString();
+        if ( atom1Name < atom2Name ) {
+          key = atom1Name+"-"+atom2Name;
+        } else {
+          key = atom2Name+"-"+atom1Name;
         }
-#endif
+        LOG_ENERGY(BF( "MEISTER nonbond %s args cando\n")% key );
+        LOG_ENERGY(BF( "MEISTER nonbond %s dA %5.3lf\n")% key % dA );
+        LOG_ENERGY(BF( "MEISTER nonbond %s dC %5.3lf\n")% key % dC );
+        LOG_ENERGY(BF( "MEISTER nonbond %s dQ1Q2 %5.3lf\n")% key % dQ1Q2 );
+        LOG_ENERGY(BF( "MEISTER nonbond %s x1 %5.3lf %d\n")% key % x1 % (I1/3+1) );
+        LOG_ENERGY(BF( "MEISTER nonbond %s y1 %5.3lf %d\n")% key % y1 % (I1/3+1) );
+        LOG_ENERGY(BF( "MEISTER nonbond %s z1 %5.3lf %d\n")% key % z1 % (I1/3+1) );
+        LOG_ENERGY(BF( "MEISTER nonbond %s x2 %5.3lf %d\n")% key % x2 % (I2/3+1) );
+        LOG_ENERGY(BF( "MEISTER nonbond %s y2 %5.3lf %d\n")% key % y2 % (I2/3+1) );
+        LOG_ENERGY(BF( "MEISTER nonbond %s z2 %5.3lf %d\n")% key % z2 % (I2/3+1) );
+        LOG_ENERGY(BF( "MEISTER nonbond %s results\n")% key );
+        LOG_ENERGY(BF( "MEISTER nonbond %s evdw %lf\n")% key % Evdw);
+        LOG_ENERGY(BF( "MEISTER nonbond %s eeel %lf\n")% key % Eeel);
+        LOG_ENERGY(BF( "MEISTER nonbond %s Enonbond(evdw+eeel) %lf\n")% key % (Evdw+Eeel) );
+        if ( calcForce ) {
+          LOG_ENERGY(BF( "MEISTER nonbond %s fx1 %lf %d\n")% key % fx1 % (I1/3+1) );
+          LOG_ENERGY(BF( "MEISTER nonbond %s fy1 %lf %d\n")% key % fy1 % (I1/3+1) );
+          LOG_ENERGY(BF( "MEISTER nonbond %s fz1 %lf %d\n")% key % fz1 % (I1/3+1) );
+          LOG_ENERGY(BF( "MEISTER nonbond %s fx2 %lf %d\n")% key % fx2 % (I2/3+1) );
+          LOG_ENERGY(BF( "MEISTER nonbond %s fy2 %lf %d\n")% key % fy2 % (I2/3+1) );
+          LOG_ENERGY(BF( "MEISTER nonbond %s fz2 %lf %d\n")% key % fz2 % (I2/3+1) );
+        }
+        LOG_ENERGY(BF( "MEISTER nonbond %s stop\n")% key );
       }
+#endif
+      // BOTTOM-INNER
     }
-    if (maybe_excluded_atom<0) {
-      // No excluded atoms see Swails document http://ambermd.org/prmtop.pdf
+    // state BOT-BEFORE 
+    if (!has_excluded_atoms) {
+      // No excluded atoms for the current index2 so increment excludedAtomIndex because inner loop didn't do it.
+      // see Swails document http://ambermd.org/prmtop.pdf
       ++excludedAtomIndex;
     }
+    // state BOT-OUT
   }
-//  printf( "Nonbond energy vdw(%lf) electrostatic(%lf)\n", (double)this->_EnergyVdw,  this->_EnergyElectrostatic );
+//  printf( "Nonbond energy vdw(%lf) electrostatic(%lf)\n", (double)this->_EnergyVdw,  this->o_EnergyElectrostatic );
   LOG(BF( "Nonbond energy vdw(%lf) electrostatic(%lf)\n")% (double)this->_EnergyVdw % this->_EnergyElectrostatic );
   LOG(BF( "Nonbond energy }\n"));
 }
@@ -741,9 +619,9 @@ CL_DEFMETHOD void EnergyNonbond_O::expandExcludedAtomsToTerms()
   double x1,y1,z1,x2,y2,z2,dA,dC,dQ1Q2,dA_old,dC_old,dQ1Q2_old;
   int	I1, I2;
   int i = 0;
-//  int maxIndex = pos->length()/3;
-  int maxIndex = this->_AtomTable->getNumberOfAtoms();
-//  printf( "%s:%d maxindex %d\n", __FILE__, __LINE__, maxIndex);
+//  int endIndex = pos->length()/3;
+  int endIndex = this->_AtomTable->getNumberOfAtoms();
+//  printf( "%s:%d maxindex %d\n", __FILE__, __LINE__, endIndex);
   int nlocaltype = 0;
   // Find the max local type
   for (i=0; i<this->_iac_vec->length(); ++i){
@@ -756,32 +634,25 @@ CL_DEFMETHOD void EnergyNonbond_O::expandExcludedAtomsToTerms()
   // Count the number of nonbond cross terms that we are going to generate
   size_t excludedAtomIndex = 0;
   size_t count = 0;
-  int index1_end = maxIndex-1;
+  int index1_end = endIndex-1;
   for ( int index1 = 0; index1 <index1_end; ++index1 ) {
     LOG(BF("%s ====== top of outer loop - index1 = %d\n") % __FUNCTION__ % index1 );
-    int numberOfExcludedAtomsRemaining = numberOfExcludedAtoms->operator[](index1);
-    LOG(BF("Read numberOfExcludedAtomsRemaining from numberOfExcludedAtoms[%d]= %d\n") % index1 % numberOfExcludedAtomsRemaining);
           // Skip 0 in excluded atom list that amber requires
-    int maybe_excluded_atom = (*excludedAtomIndices)[excludedAtomIndex];
-    {
-      int number_excluded = 0;
-      for ( int index2 = index1+1, index2_end(maxIndex); index2 < index2_end; ++index2 ) {
-        LOG(BF("    --- top of inner loop   numberOfExcludedAtomsRemaining -> %d    index2 -> %d\n") % numberOfExcludedAtomsRemaining % index2 );
-        maybe_excluded_atom = (*excludedAtomIndices)[excludedAtomIndex];
-        if ( numberOfExcludedAtomsRemaining>0 && maybe_excluded_atom == index2) {
-          LOG(BF("    Excluding atom %d\n") % index2);
-          ++excludedAtomIndex;
-          --numberOfExcludedAtomsRemaining;
-          number_excluded++;
-//          printf("%s:%d:%s Excluding atom %d\n", __FILE__, __LINE__, __FUNCTION__, index2);
-          continue;
-        }
-        ++count;
+    bool has_excluded_atoms = ((*excludedAtomIndices)[excludedAtomIndex] >= 0);
+    int numberOfExcludedAtomsRemaining = numberOfExcludedAtoms->operator[](index1);
+    for ( int index2 = index1+1, index2_end(endIndex); index2 < index2_end; ++index2 ) {
+      int maybe_excluded_atom = (*excludedAtomIndices)[excludedAtomIndex];
+      if (numberOfExcludedAtomsRemaining>0 && maybe_excluded_atom==index2) {
+        LOG(BF("    Excluding atom %d\n") % index2);
+        ++excludedAtomIndex;
+        --numberOfExcludedAtomsRemaining;
+        continue;
       }
+      ++count;
     }
-    if (maybe_excluded_atom<0) {
-      // No excluded atoms see Swails document http://ambermd.org/prmtop.pdf
-//      printf("%s:%d:%s SKIPPING numberOfExcludedAtomsRemaining<0\n", __FILE__, __LINE__, __FUNCTION__);
+    if (!has_excluded_atoms) {
+      // No excluded atoms for the current index2 so increment excludedAtomIndex because inner loop didn't do it.
+      // see Swails document http://ambermd.org/prmtop.pdf
       ++excludedAtomIndex;
     }
   }
@@ -796,78 +667,72 @@ CL_DEFMETHOD void EnergyNonbond_O::expandExcludedAtomsToTerms()
   size_t termIndex = 0;
   for ( int index1 = 0; index1 <index1_end; ++index1 ) {
     LOG(BF("%s ====== top of outer loop - index1 = %d\n") % __FUNCTION__ % index1 );
-    int numberOfExcludedAtomsRemaining = numberOfExcludedAtoms->operator[](index1);
-    LOG(BF("Read numberOfExcludedAtomsRemaining from numberOfExcludedAtoms[%d]= %d\n") % index1 % numberOfExcludedAtomsRemaining);
           // Skip 0 in excluded atom list that amber requires
-    int maybe_excluded_atom = (*excludedAtomIndices)[excludedAtomIndex];
-    {
-      double charge11 = (*this->_charge_vector)[index1];
-      double electrostatic_scaled_charge11 = charge11*electrostaticScale;
-      int number_excluded = 0;
-      for ( int index2 = index1+1, index2_end(maxIndex); index2 < index2_end; ++index2 ) {
-        LOG(BF("    --- top of inner loop   numberOfExcludedAtomsRemaining -> %d    index2 -> %d\n") % numberOfExcludedAtomsRemaining % index2 );
-        maybe_excluded_atom = (*excludedAtomIndices)[excludedAtomIndex];
-        if ( numberOfExcludedAtomsRemaining>0 && maybe_excluded_atom == index2) {
-          LOG(BF("    Excluding atom %d\n") % index2);
-          ++excludedAtomIndex;
-          --numberOfExcludedAtomsRemaining;
-          number_excluded++;
-          continue;
-        }
-
-
+    bool has_excluded_atoms = ((*excludedAtomIndices)[excludedAtomIndex] >= 0);
+    int numberOfExcludedAtomsRemaining = numberOfExcludedAtoms->operator[](index1);
+    double charge11 = (*this->_charge_vector)[index1];
+    double electrostatic_scaled_charge11 = charge11*electrostaticScale;
+    for ( int index2 = index1+1, index2_end(endIndex); index2 < index2_end; ++index2 ) {
+      LOG(BF("    --- top of inner loop   numberOfExcludedAtomsRemaining -> %d    index2 -> %d\n") % numberOfExcludedAtomsRemaining % index2 );
+      int maybe_excluded_atom = (*excludedAtomIndices)[excludedAtomIndex];
+      if (numberOfExcludedAtomsRemaining>0 && maybe_excluded_atom == index2) {
+        LOG(BF("    Excluding atom %d\n") % index2);
+        ++excludedAtomIndex;
+        --numberOfExcludedAtomsRemaining;
+        continue;
+      }
 //   cn1i    (*this->_cn1_vec)[cn1i]
-        int localindex1 = (*this->_iac_vec)[index1];
-        int localindex2 = (*this->_iac_vec)[index2];
-        dA = (*this->_cn1_vec)[(*this->_ico_vec)[nlocaltype*(localindex1-1)+localindex2-1]-1];
-        dC = (*this->_cn2_vec)[(*this ->_ico_vec)[nlocaltype*(localindex1-1)+localindex2-1]-1];
+      int localindex1 = (*this->_iac_vec)[index1];
+      int localindex2 = (*this->_iac_vec)[index2];
+      dA = (*this->_cn1_vec)[(*this->_ico_vec)[nlocaltype*(localindex1-1)+localindex2-1]-1];
+      dC = (*this->_cn2_vec)[(*this ->_ico_vec)[nlocaltype*(localindex1-1)+localindex2-1]-1];
 //      printf("%s:%d localindex1 %d and localindex2 %d\n", __FILE__, __LINE__, localindex1, localindex2);
 //      printf("%s:%d dA     %lf and dC     %lf\n", __FILE__, __LINE__, dA, dC);
-        double charge22 = (*this->_charge_vector)[index2];
-        I1 = index1*3; 
-        I2 = index2*3; 
-        EnergyNonbond enb;
+      double charge22 = (*this->_charge_vector)[index2];
+      I1 = index1*3; 
+      I2 = index2*3; 
+      EnergyNonbond enb;
 /// Atom-vector in AtomTable is empty
-//      enb._Atom1 = this->_AtomTable->elt_atom(index1);
-//      enb._Atom2 = this->_AtomTable->elt_atom(index2);
-        enb.term.dA = dA;
-        enb.term.dC = dC;
-        enb._Charge1 = charge11;
-        enb._Charge2 = charge22;
-        enb.term.I1 = I1;
-        enb.term.I2 = I2;
-        if (termIndex<count) {
-          this->_Terms[termIndex] = enb;
-        } else {
-          SIMPLE_ERROR(BF("Overflowed the _Terms array with termIndex=%lu and count = %lu\n") % termIndex % count);
-        }
-        ++termIndex;
+      enb._Atom1 = this->_AtomTable->elt_atom(index1);
+      enb._Atom2 = this->_AtomTable->elt_atom(index2);
+      enb.term.dA = dA;
+      enb.term.dC = dC;
+      enb._Charge1 = charge11;
+      enb._Charge2 = charge22;
+      enb.term.I1 = I1;
+      enb.term.I2 = I2;
+      if (termIndex<count) {
+        this->_Terms[termIndex] = enb;
+      } else {
+        SIMPLE_ERROR(BF("Overflowed the _Terms array with termIndex=%lu and count = %lu\n") % termIndex % count);
+      }
+      ++termIndex;
 //      printf( "nonbond index1 name %s index2 %s\n",  this->_AtomTable->elt_atom_name(index1), this->_AtomTable->elt_atom_name(index2));
 #ifdef DEBUG_NONBOND_TERM
-        if ( this->_DebugEnergy ) {
-          std::string key;
-          std::string atom1Name = gc::As<core::Symbol_sp>((*this->_atom_name_vector)[index1])->symbolNameAsString();
-          std::string atom2Name = gc::As<core::Symbol_sp>((*this->_atom_name_vector)[index2])->symbolNameAsString();
-          if ( atom1Name < atom2Name ) {
-            key = atom1Name+"-"+atom2Name;
-          } else {
-            key = atom2Name+"-"+atom1Name;
-          }
+      if ( this->_DebugEnergy ) {
+        std::string key;
+        std::string atom1Name = gc::As<core::Symbol_sp>((*this->_atom_name_vector)[index1])->symbolNameAsString();
+        std::string atom2Name = gc::As<core::Symbol_sp>((*this->_atom_name_vector)[index2])->symbolNameAsString();
+        if ( atom1Name < atom2Name ) {
+          key = atom1Name+"-"+atom2Name;
+        } else {
+          key = atom2Name+"-"+atom1Name;
+        }
         //printf( "nonbond %s  vdw(%lf) electrostatic(%lf)\n", (double)this->_EnergyVdw,  this->_EnergyElectrostatic );
-          LOG_ENERGY(BF( "MEISTER nonbond %s args cando\n")% key );
-          LOG_ENERGY(BF( "MEISTER nonbond %s dA %5.3lf\n")% key % dA );
-          LOG_ENERGY(BF( "MEISTER nonbond %s dC %5.3lf\n")% key % dC );
-          LOG_ENERGY(BF( "MEISTER nonbond %s dQ1Q2 %5.3lf\n")% key % dQ1Q2 );
-          LOG_ENERGY(BF( "MEISTER nonbond %s x1 %5.3lf %d\n")% key % x1 % (I1/3+1) );
-          LOG_ENERGY(BF( "MEISTER nonbond %s y1 %5.3lf %d\n")% key % y1 % (I1/3+1) );
-          LOG_ENERGY(BF( "MEISTER nonbond %s z1 %5.3lf %d\n")% key % z1 % (I1/3+1) );
-          LOG_ENERGY(BF( "MEISTER nonbond %s x2 %5.3lf %d\n")% key % x2 % (I2/3+1) );
-          LOG_ENERGY(BF( "MEISTER nonbond %s y2 %5.3lf %d\n")% key % y2 % (I2/3+1) );
-          LOG_ENERGY(BF( "MEISTER nonbond %s z2 %5.3lf %d\n")% key % z2 % (I2/3+1) );
-          LOG_ENERGY(BF( "MEISTER nonbond %s results\n")% key );
-          LOG_ENERGY(BF( "MEISTER nonbond %s evdw %lf\n")% key % Evdw);
-          LOG_ENERGY(BF( "MEISTER nonbond %s eeel %lf\n")% key % Eeel);
-          LOG_ENERGY(BF( "MEISTER nonbond %s Enonbond(evdw+eeel) %lf\n")% key % (Evdw+Eeel) );
+        LOG_ENERGY(BF( "MEISTER nonbond %s args cando\n")% key );
+        LOG_ENERGY(BF( "MEISTER nonbond %s dA %5.3lf\n")% key % dA );
+        LOG_ENERGY(BF( "MEISTER nonbond %s dC %5.3lf\n")% key % dC );
+        LOG_ENERGY(BF( "MEISTER nonbond %s dQ1Q2 %5.3lf\n")% key % dQ1Q2 );
+        LOG_ENERGY(BF( "MEISTER nonbond %s x1 %5.3lf %d\n")% key % x1 % (I1/3+1) );
+        LOG_ENERGY(BF( "MEISTER nonbond %s y1 %5.3lf %d\n")% key % y1 % (I1/3+1) );
+        LOG_ENERGY(BF( "MEISTER nonbond %s z1 %5.3lf %d\n")% key % z1 % (I1/3+1) );
+        LOG_ENERGY(BF( "MEISTER nonbond %s x2 %5.3lf %d\n")% key % x2 % (I2/3+1) );
+        LOG_ENERGY(BF( "MEISTER nonbond %s y2 %5.3lf %d\n")% key % y2 % (I2/3+1) );
+        LOG_ENERGY(BF( "MEISTER nonbond %s z2 %5.3lf %d\n")% key % z2 % (I2/3+1) );
+        LOG_ENERGY(BF( "MEISTER nonbond %s results\n")% key );
+        LOG_ENERGY(BF( "MEISTER nonbond %s evdw %lf\n")% key % Evdw);
+        LOG_ENERGY(BF( "MEISTER nonbond %s eeel %lf\n")% key % Eeel);
+        LOG_ENERGY(BF( "MEISTER nonbond %s Enonbond(evdw+eeel) %lf\n")% key % (Evdw+Eeel) );
 //        if ( calcForce ) { 
 //          LOG_ENERGY(BF( "MEISTER nonbond %s fx1 %lf %d\n")% key % fx1 % (I1/3+1) );
 //          LOG_ENERGY(BF( "MEISTER nonbond %s fy1 %lf %d\n")% key % fy1 % (I1/3+1) );
@@ -876,19 +741,17 @@ CL_DEFMETHOD void EnergyNonbond_O::expandExcludedAtomsToTerms()
 //          LOG_ENERGY(BF( "MEISTER nonbond %s fy2 %lf %d\n")% key % fy2 % (I2/3+1) );
 //          LOG_ENERGY(BF( "MEISTER nonbond %s fz2 %lf %d\n")% key % fz2 % (I2/3+1) );
 //        }
-          LOG_ENERGY(BF( "MEISTER nonbond %s stop\n")% key );
-        }
-#endif
+        LOG_ENERGY(BF( "MEISTER nonbond %s stop\n")% key );
       }
+#endif
     }
-    if (maybe_excluded_atom<0) {
-      // No excluded atoms see Swails document http://ambermd.org/prmtop.pdf
-//      printf("%s:%d:%s SKIPPING numberOfExcludedAtomsRemaining<0\n", __FILE__, __LINE__, __FUNCTION__);
+    if (!has_excluded_atoms) {
+      // No excluded atoms for the current index2 so increment excludedAtomIndex because inner loop didn't do it.
+      // see Swails document http://ambermd.org/prmtop.pdf
       ++excludedAtomIndex;
     }
   }
 //  printf("%s:%d:%s    values -> %lu\n", __FILE__, __LINE__, __FUNCTION__, this->_Terms.size());
-
 //  printf( "Nonbond energy vdw(%lf) electrostatic(%lf)\n", (double)this->_EnergyVdw,  this->_EnergyElectrostatic );
   LOG(BF( "Nonbond energy vdw(%lf) electrostatic(%lf)\n")% (double)this->_EnergyVdw % this->_EnergyElectrostatic );
   LOG(BF( "Nonbond energy }\n"));
@@ -938,7 +801,7 @@ void	EnergyNonbond_O::compareAnalyticalAndNumericalForceAndHessianTermByTerm(Sco
 #undef	NONBOND_OFF_DIAGONAL_HESSIAN_ACCUMULATE
 #define	NONBOND_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
 
-  if ( this->isEnabled() ) {
+  {
     _BLOCK_TRACE("NonbondEnergy finiteDifference comparison");
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
@@ -1010,8 +873,8 @@ core::List_sp	EnergyNonbond_O::checkForBeyondThresholdInteractionsWithPosition(N
   double x1,y1,z1,x2,y2,z2,dA,dC,dQ1Q2,dA_old,dC_old,dQ1Q2_old;
   int	I1, I2;
   int i = 0;
-  int maxIndex = pos->length()/3;
-//  int maxIndex = this->_AtomTable->getNumberOfAtoms();
+  int endIndex = pos->length()/3;
+//  int endIndex = this->_AtomTable->getNumberOfAtoms();
   int excludedAtomIndex = 0;
   int nlocaltype = 0;
   // Find the max local type
@@ -1020,96 +883,86 @@ core::List_sp	EnergyNonbond_O::checkForBeyondThresholdInteractionsWithPosition(N
       nlocaltype = (*this->_iac_vec)[i];
     }
   }
-  int index1_end = maxIndex-1;
+  int index1_end = endIndex-1;
   for ( int index1 = 0; index1<index1_end; ++index1 ) {
     LOG(BF("%s ====== top of outer loop - index1 = %d\n") % __FUNCTION__ % index1 );
-    int numberOfExcludedAtomsRemaining = numberOfExcludedAtoms->operator[](index1);
-//    printf("%s:%d:%s index1 = %d numberOfExcludedAtomsRemaining = %d  excludedAtomIndex = %d\n", __FILE__, __LINE__, __FUNCTION__, index1, numberOfExcludedAtomsRemaining, excludedAtomIndex);
-    LOG(BF("Read numberOfExcludedAtomsRemaining from numberOfExcludedAtoms[%d]= %d\n") % index1 % numberOfExcludedAtomsRemaining);
           // Skip 0 in excluded atom list that amber requires
-    int maybe_excluded_atom = (*excludedAtomIndices)[excludedAtomIndex];
-    {
-      double charge11 = (*this->_charge_vector)[index1];
-      double electrostatic_scaled_charge11 = charge11*electrostaticScale;
-      int number_excluded = 0;
-      for ( int index2 = index1+1, index2_end(maxIndex); index2 < index2_end; ++index2 ) {
-        LOG(BF("    --- top of inner loop   numberOfExcludedAtomsRemaining -> %d    index2 -> %d\n") % numberOfExcludedAtomsRemaining % index2 );
-        maybe_excluded_atom = (*excludedAtomIndices)[excludedAtomIndex];
-        if ( numberOfExcludedAtomsRemaining>0 && maybe_excluded_atom == index2) {
-          LOG(BF("    Excluding atom %d\n") % index2);
-          ++excludedAtomIndex;
-          --numberOfExcludedAtomsRemaining;
-          number_excluded++;
-//          printf("%s:%d:%s Excluding atom %d\n", __FILE__, __LINE__, __FUNCTION__, index2);
-          continue;
-        }
+    bool has_excluded_atoms = ((*excludedAtomIndices)[excludedAtomIndex] >= 0);
+    int numberOfExcludedAtomsRemaining = numberOfExcludedAtoms->operator[](index1);
+    double charge11 = (*this->_charge_vector)[index1];
+    double electrostatic_scaled_charge11 = charge11*electrostaticScale;
+    for ( int index2 = index1+1, index2_end(endIndex); index2 < index2_end; ++index2 ) {
+      LOG(BF("    --- top of inner loop   numberOfExcludedAtomsRemaining -> %d    index2 -> %d\n") % numberOfExcludedAtomsRemaining % index2 );
+      int maybe_excluded_atom = (*excludedAtomIndices)[excludedAtomIndex];
+      if (numberOfExcludedAtomsRemaining>0 && maybe_excluded_atom == index2) {
+        LOG(BF("    Excluding atom %d\n") % index2);
+        ++excludedAtomIndex;
+        --numberOfExcludedAtomsRemaining;
+        continue;
+      }
       //   cn1i    (*this->_cn1_vec)[cn1i]
       // printf("%s:%d:%s Interaction between atom %d = %d\n", __FILE__, __LINE__, __FUNCTION__, index1, index2);
-        int localindex1 = (*this->_iac_vec)[index1];
-        int localindex2 = (*this->_iac_vec)[index2];
-        dA = (*this->_cn1_vec)[(*this->_ico_vec)[nlocaltype*(localindex1-1)+localindex2-1]-1];
-        dC = (*this->_cn2_vec)[(*this->_ico_vec)[nlocaltype*(localindex1-1)+localindex2-1]-1];
+      int localindex1 = (*this->_iac_vec)[index1];
+      int localindex2 = (*this->_iac_vec)[index2];
+      dA = (*this->_cn1_vec)[(*this->_ico_vec)[nlocaltype*(localindex1-1)+localindex2-1]-1];
+      dC = (*this->_cn2_vec)[(*this->_ico_vec)[nlocaltype*(localindex1-1)+localindex2-1]-1];
 //      printf("%s:%d localindex1 %d and localindex2 %d\n", __FILE__, __LINE__, localindex1, localindex2);
 //      printf("%s:%d dA     %lf and dC     %lf\n", __FILE__, __LINE__, dA, dC);
-        double charge22 = (*this->_charge_vector)[index2];
+      double charge22 = (*this->_charge_vector)[index2];
 //      dQ1Q2 = electrostatic_scaled_charge11*charge22;
-        dQ1Q2 = charge11*charge22;
+      dQ1Q2 = charge11*charge22;
 //      printf("%s:%d charge1     %lf and charge2     %lf\n", __FILE__, __LINE__, charge11, charge22);
 //      printf("%s:%d electrostaticScale     %lf and dQ1Q2     %lf\n", __FILE__, __LINE__, electrostaticScale, dQ1Q2);
 #ifdef DEBUG_NONBOND_TERM
-        if ( this->_DebugEnergy ) {
-          LOG_ENERGY(BF( "nonbond localindex1 %d\n")% localindex1 );
-          LOG_ENERGY(BF( "nonbond localindex2 %d\n")% localindex2 );
-          LOG_ENERGY(BF( "nonbond dA %5.3lf\n")% dA );
-          LOG_ENERGY(BF( "nonbond dC %5.3lf\n")% dC );
-          LOG_ENERGY(BF( "nonbond dQ1Q2 %5.3lf\n")% dQ1Q2 );
-        }
+      if ( this->_DebugEnergy ) {
+        LOG_ENERGY(BF( "nonbond localindex1 %d\n")% localindex1 );
+        LOG_ENERGY(BF( "nonbond localindex2 %d\n")% localindex2 );
+        LOG_ENERGY(BF( "nonbond dA %5.3lf\n")% dA );
+        LOG_ENERGY(BF( "nonbond dC %5.3lf\n")% dC );
+        LOG_ENERGY(BF( "nonbond dQ1Q2 %5.3lf\n")% dQ1Q2 );
+      }
 #endif
       ////////////////////////////////////////////////////////////
       //
       // To here
       //
       ////////////////////////////////////////////////////////////
-        I1 = index1*3; 
-        I2 = index2*3; 
+      I1 = index1*3; 
+      I2 = index2*3; 
 #ifdef DEBUG_NONBOND_TERM
-        if ( this->_DebugEnergy ) {
-          LOG_ENERGY(BF( "nonbond I1 %d\n")% I1 );
-          LOG_ENERGY(BF( "nonbond I2 %d\n")% I2 );
-        }
+      if ( this->_DebugEnergy ) {
+        LOG_ENERGY(BF( "nonbond I1 %d\n")% I1 );
+        LOG_ENERGY(BF( "nonbond I2 %d\n")% I2 );
+      }
 #endif
 #ifdef	DEBUG_CONTROL_THE_NUMBER_OF_TERMS_EVALAUTED
-        if ( this->_Debug_NumberOfNonbondTermsToCalculate > 0 ) {
-          if ( i>= this->_Debug_NumberOfNonbondTermsToCalculate ) {
-            break;
-          }
+      if ( this->_Debug_NumberOfNonbondTermsToCalculate > 0 ) {
+        if ( i>= this->_Debug_NumberOfNonbondTermsToCalculate ) {
+          break;
         }
+      }
 #endif
 #include <cando/chem/energy_functions/_Nonbond_termCode.cc>
-        EnergyAtom& ea1 = this->_AtomTable->energyAtomEntry(index1);
-        EnergyAtom& ea2 = this->_AtomTable->energyAtomEntry(index2);
-        if ( NonbondDistance < this->_ErrorThreshold ||
-             (ea1._Flag && ea2._Flag)) {
-          Atom_sp a1, a2;
-          a1 = ea1.atom();
-          a2 = ea2.atom();
-          ql::list one;
-          one << kw::_sym_nonbond
-              << kw::_sym_atoms << core::Cons_O::createList(a1,a2)
-              << kw::_sym_distance << core::clasp_make_double_float(NonbondDistance)
-              << kw::_sym_force << (ql::list()
-                                    << geom::OVector3_O::make(fx1,fy1,fz1)
-                                    << geom::OVector3_O::make(fx2,fy2,fz2)).result();
-          result << one.result();
-        }
-      }
-      if (numberOfExcludedAtoms->operator[](index1)!=number_excluded) {
-        printf("%s:%d:%s ERROR the number of excluded atoms should be %d but we excluded %d\n", __FILE__, __LINE__, __FUNCTION__, numberOfExcludedAtoms->operator[](index1), number_excluded);
+      EnergyAtom& ea1 = this->_AtomTable->energyAtomEntry(index1);
+      EnergyAtom& ea2 = this->_AtomTable->energyAtomEntry(index2);
+      if ( NonbondDistance < this->_ErrorThreshold ||
+           (ea1._Flag && ea2._Flag)) {
+        Atom_sp a1, a2;
+        a1 = ea1.atom();
+        a2 = ea2.atom();
+        ql::list one;
+        one << kw::_sym_nonbond
+            << kw::_sym_atoms << core::Cons_O::createList(a1,a2)
+            << kw::_sym_distance << core::clasp_make_double_float(NonbondDistance)
+            << kw::_sym_force << (ql::list()
+                                  << geom::OVector3_O::make(fx1,fy1,fz1)
+                                  << geom::OVector3_O::make(fx2,fy2,fz2)).result();
+        result << one.result();
       }
     }
-    if (maybe_excluded_atom<0) {
-      // No excluded atoms see Swails document http://ambermd.org/prmtop.pdf
-//      printf("%s:%d:%s SKIPPING numberOfExcludedAtomsRemaining<0\n", __FILE__, __LINE__, __FUNCTION__);
+    if (!has_excluded_atoms) {
+      // No excluded atoms for the current index2 so increment excludedAtomIndex because inner loop didn't do it.
+      // see Swails document http://ambermd.org/prmtop.pdf
       ++excludedAtomIndex;
     }
   }

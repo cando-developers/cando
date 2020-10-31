@@ -58,6 +58,7 @@
                                        (max-tn-steps *max-tn-steps*)
                                        (tn-tolerance *tn-tolerance*)
                                        (print-intermediate-results t)
+                                       (report-every-n-steps 10)
                                        resignal-error
                                        &allow-other-keys)
   "Minimize the conformational energy for an energy-function"
@@ -73,9 +74,8 @@
                                :cg-tolerance cg-tolerance
                                :tn-tolerance tn-tolerance)
     (if print-intermediate-results
-        (chem:enable-print-intermediate-results minimizer 100)
+        (chem:enable-print-intermediate-results minimizer report-every-n-steps)
         (chem:disable-print-intermediate-results minimizer))
-    (chem:set-option energy-function 'chem:nonbond-term t)
     (cando:minimize-no-fail minimizer :resignal-error resignal-error)))
 
 (defun save-minimizer-coordinates (coordinates minimizer-trajectory)
@@ -97,7 +97,8 @@
                                    (frozen nil)
                                    resignal-error
                                    (save-trajectory nil)
-                                   (print-intermediate-results t))
+                                   (print-intermediate-results t)
+                                   (report-every-n-steps 10))
   "Minimize the conformational energy for an energy-function"
   (let ((minimizer (chem:make-minimizer energy-function)))
     (chem:minimizer-set-frozen minimizer frozen)
@@ -129,6 +130,7 @@
                    (assign-types t)
                    (resignal-error nil)
                    (print-intermediate-results t)
+                   (report-every-n-steps 10)
                    (save-trajectory nil))
   "Minimize the conformational energy for an aggregate"
   (format t "Entered minimize~%")
@@ -142,6 +144,7 @@
                                                                      (cg-tolerance *cg-tolerance*)
                                                                      (max-tn-steps *max-tn-steps*)
                                                                      (tn-tolerance *tn-tolerance*)
+                                                                     (report-every-n-steps 10)
                                                                      )
   "Minimize the conformational energy for an energy-function"
   (let ((minimizer (chem:make-minimizer energy-function)))
@@ -155,7 +158,7 @@
                                :sd-tolerance sd-tolerance
                                :cg-tolerance cg-tolerance
                                :tn-tolerance tn-tolerance)
-    (chem:enable-print-intermediate-results minimizer 100)
+    (chem:enable-print-intermediate-results minimizer report-every-n-steps)
     (format t "Minimizing with nonbond terms disabled~%")
     (chem:set-option energy-function 'chem:nonbond-term nil)
     (cando:minimize-no-fail minimizer)

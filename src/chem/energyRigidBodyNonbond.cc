@@ -402,6 +402,7 @@ double	EnergyRigidBodyNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
                                                         gc::Nilable<NVector_sp>	hdvec, 
                                                         gc::Nilable<NVector_sp> 	dvec )
 {
+  this->_Evaluations++;
   if (this->_CrossTerms.size() == 0 ) this->initializeCrossTerms(false);
   double vdwScale = this->getVdwScale();
   double electrostaticScale = this->getElectrostaticScale()*ELECTROSTATIC_MODIFIER/this->getDielectricConstant();
@@ -457,7 +458,6 @@ double	EnergyRigidBodyNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
   if (fabs(deltay)>half_y_size) continue; \
   if (fabs(deltaz)>half_z_size) continue;
   
-  if ( !this->isEnabled() ) return 0.0;
 	    // If you are going to use openmp here, you need to control access to the force and hessian
 	    // arrays so that only one thread updates each element at a time.
   LOG(BF("Nonbond component is enabled") );
@@ -626,7 +626,7 @@ void	EnergyRigidBodyNonbond_O::compareAnalyticalAndNumericalForceAndHessianTermB
 #undef	NONBOND_OFF_DIAGONAL_HESSIAN_ACCUMULATE
 #define	NONBOND_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
 
-  if ( this->isEnabled() ) {
+  {
     _BLOCK_TRACE("NonbondEnergy finiteDifference comparison");
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"

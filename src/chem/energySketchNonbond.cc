@@ -117,7 +117,7 @@ double	EnergySketchNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
                                             gc::Nilable<NVector_sp>	hdvec, 
                                             gc::Nilable<NVector_sp> 	dvec )
 {
-    // Evaluate everything using terms
+// Evaluate everything using terms
   this->evaluateTerms(pos,calcForce,force,calcDiagonalHessian,
                       calcOffDiagonalHessian,hessian,hdvec,dvec);
   return this->_TotalEnergy;
@@ -134,6 +134,7 @@ void	EnergySketchNonbond_O::evaluateTerms(NVector_sp 	pos,
                                              gc::Nilable<NVector_sp>	hdvec, 
                                              gc::Nilable<NVector_sp> 	dvec )
 {
+  this->_Evaluations++;
 //  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
   bool	hasForce = force.notnilp();
   bool	hasHessian = hessian.notnilp();
@@ -158,90 +159,87 @@ void	EnergySketchNonbond_O::evaluateTerms(NVector_sp 	pos,
   
 #include <cando/chem/energy_functions/_Erep_termDeclares.cc>
 
-  if ( this->isEnabled() ) 
-  {
-    double* coordinates_ptr = (double*)(pos->rowMajorAddressOfElement_(0));
-    double* force_ptr = (double*)(force->rowMajorAddressOfElement_(0));
-    double x1,y1,z1,x2,y2,z2,crep;
-    double dx, dy, dz;
-    double dsq, ERepDistance;
-    double crep_over_dsq;
-    double cutoff_sq = this->_LongDistanceCutoff*this->_LongDistanceCutoff;
-    for ( size_t index = 0; index<this->_Terms.size(); ++index ) {
-      EnergySketchNonbond& ea = this->_Terms[index];
-      if (this->_FreezeFlags&ea._FreezeFlags) continue;
-      int I1 = ea.I1;
-      int I2 = ea.I2;
-      crep = ea._Constant*this->_ScaleSketchNonbond;
-      EREP_SET_POSITION(x1,I1,0);
-      EREP_SET_POSITION(y1,I1,1);
-      EREP_SET_POSITION(z1,I1,2);
-      EREP_SET_POSITION(x2,I2,0);
-      EREP_SET_POSITION(y2,I2,1);
-      EREP_SET_POSITION(z2,I2,2);
-      dx = (x2-x1);
-      dy = (y2-y1);
-      dz = (z2-z1);
-      if (fabs(dx)>this->_LongDistanceCutoff) goto TOO_FAR;
-      if (fabs(dy)>this->_LongDistanceCutoff) goto TOO_FAR;
-      if (fabs(dz)>this->_LongDistanceCutoff) goto TOO_FAR;
-      dsq = dx*dx+dy*dy+dz*dz;
-      ErepDistance = sqrt(dsq);
-      if (ErepDistance <= (0.1)) goto TOO_CLOSE;
-      if (ErepDistance > this->_LongDistanceCutoff) goto TOO_FAR;
-      crep_over_dsq = crep/dsq;
-      fx1 = -dx*crep_over_dsq;
-      fy1 = -dy*crep_over_dsq;
-      fz1 = -dz*crep_over_dsq;
-      fx2 = -fx1;
-      fy2 = -fy1;
-      fz2 = -fz1;
-      EREP_FORCE_ACCUMULATE(I1,0,fx1);
-      EREP_FORCE_ACCUMULATE(I1,1,fy1);
-      EREP_FORCE_ACCUMULATE(I1,2,fz1);
-      EREP_FORCE_ACCUMULATE(I2,0,fx2);
-      EREP_FORCE_ACCUMULATE(I2,1,fy2);
-      EREP_FORCE_ACCUMULATE(I2,2,fz2);
+  double* coordinates_ptr = (double*)(pos->rowMajorAddressOfElement_(0));
+  double* force_ptr = (double*)(force->rowMajorAddressOfElement_(0));
+  double x1,y1,z1,x2,y2,z2,crep;
+  double dx, dy, dz;
+  double dsq, ERepDistance;
+  double crep_over_dsq;
+  double cutoff_sq = this->_LongDistanceCutoff*this->_LongDistanceCutoff;
+  for ( size_t index = 0; index<this->_Terms.size(); ++index ) {
+    EnergySketchNonbond& ea = this->_Terms[index];
+    if (this->_FreezeFlags&ea._FreezeFlags) continue;
+    int I1 = ea.I1;
+    int I2 = ea.I2;
+    crep = ea._Constant*this->_ScaleSketchNonbond;
+    EREP_SET_POSITION(x1,I1,0);
+    EREP_SET_POSITION(y1,I1,1);
+    EREP_SET_POSITION(z1,I1,2);
+    EREP_SET_POSITION(x2,I2,0);
+    EREP_SET_POSITION(y2,I2,1);
+    EREP_SET_POSITION(z2,I2,2);
+    dx = (x2-x1);
+    dy = (y2-y1);
+    dz = (z2-z1);
+    if (fabs(dx)>this->_LongDistanceCutoff) goto TOO_FAR;
+    if (fabs(dy)>this->_LongDistanceCutoff) goto TOO_FAR;
+    if (fabs(dz)>this->_LongDistanceCutoff) goto TOO_FAR;
+    dsq = dx*dx+dy*dy+dz*dz;
+    ErepDistance = sqrt(dsq);
+    if (ErepDistance <= (0.1)) goto TOO_CLOSE;
+    if (ErepDistance > this->_LongDistanceCutoff) goto TOO_FAR;
+    crep_over_dsq = crep/dsq;
+    fx1 = -dx*crep_over_dsq;
+    fy1 = -dy*crep_over_dsq;
+    fz1 = -dz*crep_over_dsq;
+    fx2 = -fx1;
+    fy2 = -fy1;
+    fz2 = -fz1;
+    EREP_FORCE_ACCUMULATE(I1,0,fx1);
+    EREP_FORCE_ACCUMULATE(I1,1,fy1);
+    EREP_FORCE_ACCUMULATE(I1,2,fz1);
+    EREP_FORCE_ACCUMULATE(I2,0,fx2);
+    EREP_FORCE_ACCUMULATE(I2,1,fy2);
+    EREP_FORCE_ACCUMULATE(I2,2,fz2);
 //#include <cando/chem/energy_functions/_Erep_termCode.cc>
 #if 0
-        if (chem__verbose(2)) {
-          core::write_bf_stream(BF("(defparameter v1 (geom:vec %f %f %f))\n") % x1 % y1 % z1 );
-          core::write_bf_stream(BF("(defparameter v2 (geom:vec %f %f %f))\n") % x2 % y2 % z2 );
-          core::write_bf_stream(BF("crep = %f\n") % crep );
-          core::write_bf_stream(BF("ErepDistance = %f\n") % ErepDistance );
-          core::write_bf_stream(BF("Erep = %f\n") % Erep );
-          core::write_bf_stream(BF("fx1 fy1 fz1 = %f %f %f\n") % fx1 % fy1 % fz1 );
-          core::write_bf_stream(BF("fx2 fy2 fz2 = %f %f %f\n") % fx2 % fy2 % fz2 );
-        }
+    if (chem__verbose(2)) {
+      core::write_bf_stream(BF("(defparameter v1 (geom:vec %f %f %f))\n") % x1 % y1 % z1 );
+      core::write_bf_stream(BF("(defparameter v2 (geom:vec %f %f %f))\n") % x2 % y2 % z2 );
+      core::write_bf_stream(BF("crep = %f\n") % crep );
+      core::write_bf_stream(BF("ErepDistance = %f\n") % ErepDistance );
+      core::write_bf_stream(BF("Erep = %f\n") % Erep );
+      core::write_bf_stream(BF("fx1 fy1 fz1 = %f %f %f\n") % fx1 % fy1 % fz1 );
+      core::write_bf_stream(BF("fx2 fy2 fz2 = %f %f %f\n") % fx2 % fy2 % fz2 );
+    }
 #endif
-        goto CONTINUE;
-      TOO_FAR:
+    goto CONTINUE;
+  TOO_FAR:
 #if 0
-        if (chem__verbose(2)) {
-          core::write_bf_stream(BF("x1 y1 z1 = %f %f %f\n") % x1 % y1 % z1 );
-          core::write_bf_stream(BF("x2 y2 z2 = %f %f %f\n") % x2 % y2 % z2 );
-          core::write_bf_stream(BF("Too far ErepDistance = %f\n") % ErepDistance );
-        }
+    if (chem__verbose(2)) {
+      core::write_bf_stream(BF("x1 y1 z1 = %f %f %f\n") % x1 % y1 % z1 );
+      core::write_bf_stream(BF("x2 y2 z2 = %f %f %f\n") % x2 % y2 % z2 );
+      core::write_bf_stream(BF("Too far ErepDistance = %f\n") % ErepDistance );
+    }
 #endif
         // Do nothing
-        goto CONTINUE;
-      TOO_CLOSE:
+    goto CONTINUE;
+  TOO_CLOSE:
 #if 0
-        if (chem__verbose(2)) {
-          core::write_bf_stream(BF("x1 y1 z1 = %f %f %f\n") % x1 % y1 % z1 );
-          core::write_bf_stream(BF("x2 y2 z2 = %f %f %f\n") % x2 % y2 % z2 );
-          core::write_bf_stream(BF("Too close ErepDistance = %f\n") % ErepDistance );
-        }
-#endif
-        EREP_FORCE_ACCUMULATE(I1,0,0.5+core::randomNumber01());
-        EREP_FORCE_ACCUMULATE(I1,1,0.5+core::randomNumber01());
-        EREP_FORCE_ACCUMULATE(I1,2,0.5+core::randomNumber01());
-        EREP_FORCE_ACCUMULATE(I2,0,0.5+core::randomNumber01());
-        EREP_FORCE_ACCUMULATE(I2,1,0.5+core::randomNumber01());
-        EREP_FORCE_ACCUMULATE(I2,2,0.5+core::randomNumber01());
-      CONTINUE:
-        (void)0;
+    if (chem__verbose(2)) {
+      core::write_bf_stream(BF("x1 y1 z1 = %f %f %f\n") % x1 % y1 % z1 );
+      core::write_bf_stream(BF("x2 y2 z2 = %f %f %f\n") % x2 % y2 % z2 );
+      core::write_bf_stream(BF("Too close ErepDistance = %f\n") % ErepDistance );
     }
+#endif
+    EREP_FORCE_ACCUMULATE(I1,0,0.5+core::randomNumber01());
+    EREP_FORCE_ACCUMULATE(I1,1,0.5+core::randomNumber01());
+    EREP_FORCE_ACCUMULATE(I1,2,0.5+core::randomNumber01());
+    EREP_FORCE_ACCUMULATE(I2,0,0.5+core::randomNumber01());
+    EREP_FORCE_ACCUMULATE(I2,1,0.5+core::randomNumber01());
+    EREP_FORCE_ACCUMULATE(I2,2,0.5+core::randomNumber01());
+  CONTINUE:
+    (void)0;
   }
 }
 

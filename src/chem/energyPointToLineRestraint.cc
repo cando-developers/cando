@@ -59,6 +59,7 @@ double EnergyPointToLineRestraint_O::evaluateAllComponent( ScoringFunction_sp sc
                                                   gc::Nilable<NVector_sp>	hdvec,
                                                   gc::Nilable<NVector_sp> dvec)
 {
+  this->_Evaluations++;
   bool	hasForce = force.notnilp();
   bool	hasHessian = hessian.notnilp();
   bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
@@ -86,61 +87,59 @@ double EnergyPointToLineRestraint_O::evaluateAllComponent( ScoringFunction_sp sc
 #define	POINT_TO_LINE_RESTRAINT_OFF_DIAGONAL_HESSIAN_ACCUMULATE OffDiagHessAcc
 
 
-  if ( this->isEnabled() ) {
-    double bond_length = this->_Bond_div_2*2.0;
-    for (size_t stretch_idx= 0; stretch_idx<this->_Stretch->_Terms.size(); stretch_idx++ ) {
-      EnergySketchStretch& estretch = this->_Stretch->_Terms[stretch_idx];
-      int IA = estretch.term.I1;
-      int IB = estretch.term.I2;
-      Vector3 vA((*pos)[IA+0],(*pos)[IA+1],(*pos)[IA+2]);
-      Vector3 vB((*pos)[IB+0],(*pos)[IB+1],(*pos)[IB+2]);
-      Vector3 dx21 = vB-vA;
-      double x2mx1sq = dx21.dotProduct(dx21);
-      for ( size_t I1 = 0; I1 < pos->length(); I1+=3 ) {
-        if (I1!=IA && I1!=IB) {
-          Vector3 v1((*pos)[I1+0],(*pos)[I1+1],(*pos)[I1+2]);
-          if (this->_ForceConstant>0.0) {
-            if (fabs(v1.getX()-vA.getX()) > bond_length) continue;
-            if (fabs(v1.getY()-vA.getY()) > bond_length) continue;
-            if (fabs(v1.getZ()-vA.getZ()) > bond_length) continue;
-            if (fabs(v1.getX()-vB.getX()) > bond_length) continue;
-            if (fabs(v1.getY()-vB.getY()) > bond_length) continue;
-            if (fabs(v1.getZ()-vB.getZ()) > bond_length) continue;
-          } else {
-            if (fabs(v1.getX()-vA.getX()) < bond_length) continue;
-            if (fabs(v1.getY()-vA.getY()) < bond_length) continue;
-            if (fabs(v1.getZ()-vA.getZ()) < bond_length) continue;
-            if (fabs(v1.getX()-vB.getX()) < bond_length) continue;
-            if (fabs(v1.getY()-vB.getY()) < bond_length) continue;
-            if (fabs(v1.getZ()-vB.getZ()) < bond_length) continue;
-          }
-          Vector3 dx10 = vA-v1;
-          double dot = dx10.dotProduct(dx21);
-          double t = dot/x2mx1sq;
-          if (t<0.0 || t>1.0) continue;
-          Vector3 close = (dx21*t)+vA;
-          Vector3 d = v1-close;
-          double dist = d.length();
-          if (this->_ForceConstant > 0.0 ) {
-            if (dist < this->_Bond_div_2) {
-              if (dist > 0.01) {
-                Vector3 fv = d*(this->_ForceConstant/dist);
-                POINT_TO_LINE_RESTRAINT_FORCE_ACCUMULATE(I1,0,fv.getX());
-                POINT_TO_LINE_RESTRAINT_FORCE_ACCUMULATE(I1,1,fv.getY());
-                POINT_TO_LINE_RESTRAINT_FORCE_ACCUMULATE(I1,2,fv.getZ());
-              } else {
-                POINT_TO_LINE_RESTRAINT_FORCE_ACCUMULATE(I1,0,0.5*core::randomNumber01());
-                POINT_TO_LINE_RESTRAINT_FORCE_ACCUMULATE(I1,1,0.5*core::randomNumber01());
-                POINT_TO_LINE_RESTRAINT_FORCE_ACCUMULATE(I1,2,0.5*core::randomNumber01());
-              }
-            }
-          } else {
-            if (dist>this->_Bond_div_2) {
+  double bond_length = this->_Bond_div_2*2.0;
+  for (size_t stretch_idx= 0; stretch_idx<this->_Stretch->_Terms.size(); stretch_idx++ ) {
+    EnergySketchStretch& estretch = this->_Stretch->_Terms[stretch_idx];
+    int IA = estretch.term.I1;
+    int IB = estretch.term.I2;
+    Vector3 vA((*pos)[IA+0],(*pos)[IA+1],(*pos)[IA+2]);
+    Vector3 vB((*pos)[IB+0],(*pos)[IB+1],(*pos)[IB+2]);
+    Vector3 dx21 = vB-vA;
+    double x2mx1sq = dx21.dotProduct(dx21);
+    for ( size_t I1 = 0; I1 < pos->length(); I1+=3 ) {
+      if (I1!=IA && I1!=IB) {
+        Vector3 v1((*pos)[I1+0],(*pos)[I1+1],(*pos)[I1+2]);
+        if (this->_ForceConstant>0.0) {
+          if (fabs(v1.getX()-vA.getX()) > bond_length) continue;
+          if (fabs(v1.getY()-vA.getY()) > bond_length) continue;
+          if (fabs(v1.getZ()-vA.getZ()) > bond_length) continue;
+          if (fabs(v1.getX()-vB.getX()) > bond_length) continue;
+          if (fabs(v1.getY()-vB.getY()) > bond_length) continue;
+          if (fabs(v1.getZ()-vB.getZ()) > bond_length) continue;
+        } else {
+          if (fabs(v1.getX()-vA.getX()) < bond_length) continue;
+          if (fabs(v1.getY()-vA.getY()) < bond_length) continue;
+          if (fabs(v1.getZ()-vA.getZ()) < bond_length) continue;
+          if (fabs(v1.getX()-vB.getX()) < bond_length) continue;
+          if (fabs(v1.getY()-vB.getY()) < bond_length) continue;
+          if (fabs(v1.getZ()-vB.getZ()) < bond_length) continue;
+        }
+        Vector3 dx10 = vA-v1;
+        double dot = dx10.dotProduct(dx21);
+        double t = dot/x2mx1sq;
+        if (t<0.0 || t>1.0) continue;
+        Vector3 close = (dx21*t)+vA;
+        Vector3 d = v1-close;
+        double dist = d.length();
+        if (this->_ForceConstant > 0.0 ) {
+          if (dist < this->_Bond_div_2) {
+            if (dist > 0.01) {
               Vector3 fv = d*(this->_ForceConstant/dist);
               POINT_TO_LINE_RESTRAINT_FORCE_ACCUMULATE(I1,0,fv.getX());
               POINT_TO_LINE_RESTRAINT_FORCE_ACCUMULATE(I1,1,fv.getY());
               POINT_TO_LINE_RESTRAINT_FORCE_ACCUMULATE(I1,2,fv.getZ());
+            } else {
+              POINT_TO_LINE_RESTRAINT_FORCE_ACCUMULATE(I1,0,0.5*core::randomNumber01());
+              POINT_TO_LINE_RESTRAINT_FORCE_ACCUMULATE(I1,1,0.5*core::randomNumber01());
+              POINT_TO_LINE_RESTRAINT_FORCE_ACCUMULATE(I1,2,0.5*core::randomNumber01());
             }
+          }
+        } else {
+          if (dist>this->_Bond_div_2) {
+            Vector3 fv = d*(this->_ForceConstant/dist);
+            POINT_TO_LINE_RESTRAINT_FORCE_ACCUMULATE(I1,0,fv.getX());
+            POINT_TO_LINE_RESTRAINT_FORCE_ACCUMULATE(I1,1,fv.getY());
+            POINT_TO_LINE_RESTRAINT_FORCE_ACCUMULATE(I1,2,fv.getZ());
           }
         }
       }

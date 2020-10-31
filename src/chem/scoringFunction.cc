@@ -356,4 +356,7 @@ CL_DEFUN size_t chem__velocity_verlet_step_limit_displacement(ScoringFunction_sp
 }
 
 
+CL_DEFUN core::List_sp chem__all_components(ScoringFunction_sp scoring_function) {
+  return scoring_function->allComponents();
+}
 };

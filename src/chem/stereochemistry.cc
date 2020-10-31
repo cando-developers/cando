@@ -66,14 +66,6 @@ CL_DEFMETHOD int	StereoConfiguration_O::getMoeConfiguration()
 SYMBOL_EXPORT_SC_(ChemKwPkg,R);
 SYMBOL_EXPORT_SC_(ChemKwPkg,S);
 
-#ifdef XML_ARCHIVE
-void	StereoConfiguration_O::archive(core::ArchiveP node)
-{
-  node->attribute("atom",this->_AtomName);
-  node->attribute("config",this->_Configuration);
-}
-#endif
-
 
 /*
 __BEGIN_DOC(classes.StereoConfiguration.!class.StereoConfiguration)
@@ -94,7 +86,13 @@ CL_DEF_CLASS_METHOD StereoConfiguration_sp StereoConfiguration_O::make(core::Sym
 };
 
     
-    
+string StereoConfiguration_O::__repr__() const
+{
+  stringstream ss;
+  ss << "#<STEREO-CONFIGURATION :atom-name " << _rep_(this->_AtomName) << " :config " << _rep_(this->_Configuration) << ">";
+  return ss.str();
+}
+
 core::List_sp StereoConfiguration_O::stereochemical_permutations(uint numberOfCenters)
 {
   core::List_sp list = _Nil<core::T_O>();
@@ -178,7 +176,8 @@ RepresentativeList_sp Stereoisomer_O::expandedRepresentativeList() const
 string Stereoisomer_O::__repr__() const
 {
   stringstream ss;
-  ss << "Stereoisomer-name(" << _rep_(this->_Name) << ")-pdbName(" << _rep_(this->_Pdb) << ")";
+  ss << "#<STEREOISOMER ";
+  ss << ":stereoisomer-name " << _rep_(this->_Name) << " :pdb-name " << _rep_(this->_Pdb) << ">";
   return ss.str();
 }
 

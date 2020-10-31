@@ -559,7 +559,9 @@ CL_DEFMETHOD size_t AtomTable_O::push_back_excluded_atom_indices_and_sort( core:
     for (auto bi = ea->_AtomsAtRemoveBondAngle14[ri].begin(); bi!=ea->_AtomsAtRemoveBondAngle14[ri].end(); ++bi ) {
       otherIndex = this->_AtomTableIndices->gethash(*bi).unsafe_fixnum();
       // Amber starts counting atom indices from 1 but Clasp starts with 0 
-      if (otherIndex > atomIndex) excludedAtomIndices->vectorPushExtend(otherIndex);
+      if (otherIndex > atomIndex) {
+        excludedAtomIndices->vectorPushExtend(otherIndex);
+      }
     }
   }
   size_t end_size = excludedAtomIndices->length();
@@ -573,6 +575,13 @@ CL_DEFMETHOD size_t AtomTable_O::push_back_excluded_atom_indices_and_sort( core:
   }
   // sort the indices in increasing order
   sort::quickSortMemory((int32_t*)excludedAtomIndices->rowMajorAddressOfElement_(0),start_size,end_size);
+  if (chem__verbose(1)) {
+    core::write_bf_stream(BF("%d: ") % atomIndex);
+    for ( size_t ii = start_size; ii<end_size; ++ii ) {
+      core::write_bf_stream(BF("%d ") % (*excludedAtomIndices)[ii]);
+    }
+    core::write_bf_stream(BF("\n"));
+  }
   return (end_size - start_size);
 }
 
@@ -643,6 +652,23 @@ CL_DEFMETHOD void  AtomTable_O::fill_atom_table_from_vectors(core::List_sp vecto
     this->_Atoms[i]._AtomicNumber =  translate::from_object<int>(atomic_number_vec->rowMajorAref(i))._v;       // vec
   }
 }
+
+
+CL_DEFUN core::List_sp chem__atoms_at_remove(AtomTable_sp table, size_t index, size_t remove ) {
+  if (index<table->_Atoms.size()) {
+    EnergyAtom* ea = &(table->_Atoms[index]);
+    if (remove <4) {
+      core::T_sp result = _Nil<core::T_O>();
+      for (auto bi = ea->_AtomsAtRemoveBondAngle14[remove].begin(); bi!=ea->_AtomsAtRemoveBondAngle14[remove].end(); ++bi ) {
+        result = core::Cons_O::create(*bi,result);
+      }
+      return result;
+    }
+    SIMPLE_ERROR(BF("The remove is out of bounds - %d must be <=3") % remove);
+  }
+  SIMPLE_ERROR(BF("Atom index %d is out of bounds - must be < %d") % index % table->_Atoms.size());
+}
+
 
 
 };

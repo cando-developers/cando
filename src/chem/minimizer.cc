@@ -865,8 +865,8 @@ bool	Minimizer_O::_displayIntermediateMessage(
   double		angle;
   char		buffer[MAX_DISPLAY];
   stringstream	sout;
-  if ( forcePrint || this->_Iteration % this->_ReportEverySteps == 0 ) {
-    if ( forcePrint || (this->_Iteration%(10*this->_ReportEverySteps) == 1 || this->_DebugOn ))
+  if ( forcePrint || this->_Iteration % this->_ReportEveryNSteps == 0 ) {
+    if ( forcePrint || (this->_Iteration%(10*this->_ReportEveryNSteps) == 1 || this->_DebugOn ))
     {
       sout << "---Stage-";
       if ( this->_ShowElapsedTime )
@@ -1837,26 +1837,6 @@ void	Minimizer_O::_truncatedNewton(
         }
         break;
       }
-
-#if 0 //[
-      b1cTest=rmsForceMag<CUBERT_EPSILONF*(1.0+fabs(energyXkNext));
-      LOG(BF("b1cTest = %d") % b1cTest  );
-      LOG(BF("rmsForceMag [[%le]]<CUBERT_EPSILONF*(1.0+fabs(energyXkNext))[[%le]]") % rmsForceMag % CUBERT_EPSILONF*(1.0+fabs(energyXkNext))  );
-      if ( b1cTest ) {
-        if ( this->_PrintIntermediateResults ) {
-          core::clasp_writeln_string((BF( "search complete according to b1cTest" )).str());
-        }
-        break;
-      }
-      b1dTest=rmsForceMag<EPSILONG*(1.0+fabs(energyXkNext));
-      if ( b1dTest ) {
-        if ( this->_PrintIntermediateResults ) {
-          core::clasp_writeln_string((BF( "search complete according to b1dTest" )).str());
-        }
-        break;
-      }
-#endif //]
-
 	    //
 	    // Preparation for next Newton step
 	    //
@@ -1892,7 +1872,11 @@ void	Minimizer_O::_truncatedNewton(
                                                << kw::_sym_number_of_steps << core::make_fixnum(kk)
                                                << kw::_sym_coordinates << xK).result());
       }
-      // Handle queued interrupts
+      if ( this->_PrintIntermediateResults ) {
+        this->_displayIntermediateMessage(prevAlphaK,fp,rmsForceMag,cosAngle,false);
+      }
+
+// Handle queued interrupts
       gctools::handle_all_queued_interrupts();
     }
   }
@@ -2011,7 +1995,7 @@ CL_DEFMETHOD     void	Minimizer_O::useDefaultSettings()
   this->_TruncatedNewtonPreconditioner = hessianPreconditioner;
   this->_PrintIntermediateResults = 0;
   LOG(BF("_PrintIntermediateResults = %d") % this->_PrintIntermediateResults  );
-  this->_ReportEverySteps = 100;
+  this->_ReportEveryNSteps = 100;
   this->_Status = minimizerIdle;
   this->_ShowElapsedTime = true;
 #ifdef	USE_CALLBACKS
@@ -2039,9 +2023,9 @@ CL_LAMBDA((chem:minimizer chem:minimizer) cl:&optional (steps 1) (level 1));
 CL_DEFMETHOD     void	Minimizer_O::enablePrintIntermediateResults(size_t steps, size_t level)
 {
   if (steps < 1 ) {
-    this->_ReportEverySteps = 100;
+    this->_ReportEveryNSteps = 100;
   } else {
-    this->_ReportEverySteps = steps;
+    this->_ReportEveryNSteps = steps;
   }
   this->_PrintIntermediateResults = level;
 }

@@ -155,6 +155,8 @@ namespace chem {
     
     void	useDefaultSettings();
 
+    core::List_sp allComponents() const;
+
 
     /*! Set a single options */
     void	setOption( core::Symbol_sp option, core::T_sp val);

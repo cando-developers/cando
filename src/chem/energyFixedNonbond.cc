@@ -252,6 +252,7 @@ double EnergyFixedNonbondRestraint_O::evaluateAllComponent( ScoringFunction_sp s
                                                    gc::Nilable<NVector_sp>	hdvec,
                                                    gc::Nilable<NVector_sp> dvec)
 {
+  this->_Evaluations++;
   if ( this->_DebugEnergy ) 
   {
     LOG_ENERGY_CLEAR();
@@ -298,7 +299,6 @@ double EnergyFixedNonbondRestraint_O::evaluateAllComponent( ScoringFunction_sp s
 #define	FNONBOND_OFF_DIAGONAL_HESSIAN_ACCUMULATE OffDiagHessAcc
 
 
-  if ( this->isEnabled() ) 
   {
 	// If you are going to use openmp here, you need to control access to the force and hessian
 	// arrays so that only one thread updates each element at a time.
@@ -379,8 +379,6 @@ double EnergyFixedNonbondRestraint_O::evaluateAllComponent( ScoringFunction_sp s
         }
       }
     }
-  } else {
-    LOG_ENERGY( "FixedNonbond component is not enabled" );
   }
   LOG_ENERGY(BF( "          Vdw energy = %lf\n")% (double)this->_EnergyVdw);
   LOG_ENERGY(BF( "Electrostatic energy = %lf\n")% (double)this->_EnergyElectrostatic);
@@ -431,7 +429,7 @@ bool	calcOffDiagonalHessian = true;
 #undef	FNONBOND_OFF_DIAGONAL_HESSIAN_ACCUMULATE
 #define	FNONBOND_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
 
-	if ( this->isEnabled() ) {
+ {
 		_BLOCK_TRACE("FixedNonbondRestraint finiteDifference comparison");
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
@@ -485,7 +483,6 @@ int	fails = 0;
 #undef	FNONBOND_OFF_DIAGONAL_HESSIAN_ACCUMULATE
 #define	FNONBOND_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
 
-    if ( this->isEnabled() ) 
     { _BLOCK_TRACE("FixedNonbondRestraint finiteDifference comparison");
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"

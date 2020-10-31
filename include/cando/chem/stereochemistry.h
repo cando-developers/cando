@@ -89,6 +89,7 @@ namespace chem
     CL_DEFMETHOD core::Symbol_sp getConfiguration()	{return this->_Configuration;};
     CL_DEFMETHOD void setConfiguration(core::Symbol_sp p) {this->_Configuration = p;};
     int		getMoeConfiguration();
+    string __repr__() const;
   };
 
 /*! Save a monomer name and pdb name pair

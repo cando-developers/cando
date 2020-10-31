@@ -173,7 +173,7 @@ bool		calcOffDiagonalHessian = true;
 #define OOZP_CALC_DIAGONAL_HESSIAN
 #define OOZP_CALC_OFF_DIAGONAL_HESSIAN
 
-    if ( this->isEnabled() ) {
+ {
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_Oozp_termDeclares.cc>
@@ -207,6 +207,7 @@ double EnergyOutOfZPlane_O::evaluateAllComponent( ScoringFunction_sp score,
                                          gc::Nilable<NVector_sp>	hdvec,
                                          gc::Nilable<NVector_sp> dvec)
 {
+  this->_Evaluations++;
   bool	hasForce = force.notnilp();
   bool	hasHessian = hessian.notnilp();
   bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
@@ -239,7 +240,7 @@ double EnergyOutOfZPlane_O::evaluateAllComponent( ScoringFunction_sp score,
 #pragma clang diagnostic pop
 
 
-  if ( this->isEnabled() ) {
+  {
     if (chem__verbose(1)) {
       core::write_bf_stream(BF("Evaluating Oozp component %d terms\n") % this->_Terms.size());
     }
@@ -315,7 +316,7 @@ bool	calcOffDiagonalHessian = true;
 #define	OOZP_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
 
 
-	if ( this->isEnabled() ) {
+ {
 		_BLOCK_TRACE("OutOfZPlaneEnergy finiteDifference comparison");
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
@@ -383,33 +384,33 @@ int	fails = 0;
 #define	OOZP_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
 
 
-	if ( this->isEnabled() ) {
-		_BLOCK_TRACE("OutOfZPlaneEnergy finiteDifference comparison");
+    {
+      _BLOCK_TRACE("OutOfZPlaneEnergy finiteDifference comparison");
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_Oozp_termDeclares.cc>
 #pragma clang diagnostic pop
-	    double x1,y1,z1,za,kb;
-	    int	I1, i;
-	    gctools::Vec0<EnergyOutOfZPlane>::iterator cri;
-	    for ( i=0,cri=this->_Terms.begin();
-			cri!=this->_Terms.end(); cri++,i++ ) {
+      double x1,y1,z1,za,kb;
+      int	I1, i;
+      gctools::Vec0<EnergyOutOfZPlane>::iterator cri;
+      for ( i=0,cri=this->_Terms.begin();
+            cri!=this->_Terms.end(); cri++,i++ ) {
 			  /* Obtain all the parameters necessary to calculate */
 			  /* the amber and forces */
 #include <cando/chem/energy_functions/_Oozp_termCode.cc>
-		if ( AnchorDeviation>this->_ErrorThreshold ) {
-                  Atom_sp a1;
-		    a1 = (*cri)._Atom1;
-		    info<< "OutOfZPlaneDeviation ";
+        if ( AnchorDeviation>this->_ErrorThreshold ) {
+          Atom_sp a1;
+          a1 = (*cri)._Atom1;
+          info<< "OutOfZPlaneDeviation ";
 //		    info<< a1->getAbsoluteIdPath() << " ";
-		    info<< "value " << AnchorDeviation << " ";
-		    info << a1->getName() << " ";
-		    info << std::endl;
-		    this->_BeyondThresholdTerms.push_back(*cri);
-		    fails++;
-		}
-	    }
-	}
+          info<< "value " << AnchorDeviation << " ";
+          info << a1->getName() << " ";
+          info << std::endl;
+          this->_BeyondThresholdTerms.push_back(*cri);
+          fails++;
+        }
+      }
+    }
 
     return fails;
 }

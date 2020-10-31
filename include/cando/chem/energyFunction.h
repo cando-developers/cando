@@ -172,6 +172,8 @@ namespace chem {
     CL_LISPIFY_NAME("atomTable");
     CL_DEFMETHOD     AtomTable_sp atomTable() const { return this->_AtomTable;};
 
+    core::List_sp allComponents() const;
+
     string	energyTermsEnabled() ;
     void	loadCoordinatesIntoVector(NVector_sp pos);
     void	saveCoordinatesFromVector(NVector_sp pos);
@@ -221,6 +223,8 @@ namespace chem {
     CL_DEFMETHOD     EnergyFixedNonbondRestraint_sp	getFixedNonbondRestraintComponent() { return this->_FixedNonbondRestraint; };
 #endif
 
+    core::List_sp allEnergyComponents() const;
+    
     core::List_sp otherEnergyComponents() const;
     void          pushOtherEnergyComponent(EnergyComponent_sp component);
 

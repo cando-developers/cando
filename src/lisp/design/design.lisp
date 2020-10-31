@@ -265,6 +265,7 @@ than the (chem:number-of-sequences oligomer)."
       (t (error "Handle ~a" names)))))
             
 (defun interpret-part (oligomer part-info labels)
+  (format t "Interpreting part: ~s~%" part-info)
   (destructuring-bind (names &key label)
       (cond
         ((and (consp part-info) (symbolp (first part-info)) (string= (first part-info) :cycle))
@@ -281,6 +282,8 @@ than the (chem:number-of-sequences oligomer)."
       (values new-parts ringp))))
 
 (defun do-coupling (oligomer coupling-name ring-info previous-parts next-parts)
+  (unless next-parts
+    (error "There are no next parts to add to ~a" previous-parts))
   (let ((in-plug-name (chem:in-plug-name coupling-name))
         (out-plug-name (chem:out-plug-name coupling-name)))
     (let ((previous-monomer (loop for part in previous-parts
@@ -304,7 +307,10 @@ than the (chem:number-of-sequences oligomer)."
       (unless (= (length previous-monomer) 1)
         (error "There is more than one monomer(~a) with the out-plug-name ~a" previous-monomer out-plug-name))
       (unless (= (length next-monomer) 1)
-        (error "There is more than one monomer(~a) with the in-plug-name ~a" next-monomer in-plug-name))
+        (format t "(length next-monomer) -> ~a~%" (length next-monomer))
+        (if (< (length next-monomer) 1)
+            (error "There is no monomer with the in-plug-name ~a to connect to ~a" in-plug-name previous-parts)
+            (error "There is more than one monomer(~a) with the in-plug-name ~a" next-monomer in-plug-name)))
       (if (null ring-info)
           (chem:couple oligomer
                        (first previous-monomer)
@@ -350,7 +356,7 @@ The component can be a name of a single topology, it can be a design:part,
 or it can 
 
 Examples:
-(make-oligomer '(:ccap :ala :default :ala :default :ser :default :ncap))
+(make-oligomer '(:ccap :default :ala :default :ala :default :ser :default :ncap))
 (make-oligomer '((:lego3 :label :first)
                  :default :lego3
                  :default :lego3

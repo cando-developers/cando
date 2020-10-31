@@ -309,7 +309,7 @@ bool		calcOffDiagonalHessian = true;
 #define ANGLE_CALC_DIAGONAL_HESSIAN
 #define ANGLE_CALC_OFF_DIAGONAL_HESSIAN
 
-    if ( this->isEnabled() ) {
+ {
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include	<cando/chem/energy_functions/_Angle_termDeclares.cc>
@@ -343,6 +343,7 @@ double EnergyAngle_O::evaluateAllComponent( ScoringFunction_sp score,
                                    gc::Nilable<chem::NVector_sp> hdvec,
                                    gc::Nilable<chem::NVector_sp> dvec)
 {
+  this->_Evaluations++;
   if ( this->_DebugEnergy ) 
   {
     LOG_ENERGY_CLEAR();
@@ -380,7 +381,6 @@ double EnergyAngle_O::evaluateAllComponent( ScoringFunction_sp score,
 
 
 
-  if ( this->isEnabled() ) 
   {_BLOCK_TRACE("Angle");
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
@@ -503,7 +503,7 @@ bool	calcOffDiagonalHessian = true;
 #undef	ANGLE_OFF_DIAGONAL_HESSIAN_ACCUMULATE
 #define	ANGLE_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
 
-	if ( this->isEnabled() ) {
+ {
 		_BLOCK_TRACE("AngleEnergy finiteDifference comparison");
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
@@ -584,7 +584,7 @@ core::List_sp	EnergyAngle_O::checkForBeyondThresholdInteractionsWithPosition(che
 #undef	ANGLE_OFF_DIAGONAL_HESSIAN_ACCUMULATE
 #define	ANGLE_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
 
-  if ( this->isEnabled() ) {
+  {
     _BLOCK_TRACE("AngleEnergy finiteDifference comparison");
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"

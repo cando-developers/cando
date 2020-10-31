@@ -134,7 +134,7 @@ void	EnergySketchStretch_O::setupHessianPreconditioner(
 #define STRETCH_CALC_DIAGONAL_HESSIAN
 #define STRETCH_CALC_OFF_DIAGONAL_HESSIAN
 
-  if ( this->isEnabled() ) {
+  {
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_Stretch_termDeclares.cc>
@@ -167,13 +167,12 @@ double EnergySketchStretch_O::evaluateAllComponent( ScoringFunction_sp score,
                                            gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
                                            gc::Nilable<NVector_sp>	hdvec,
                                            gc::Nilable<NVector_sp> dvec)
-{ 
-  if ( this->_DebugEnergy ) 
-  {
+{
+  this->_Evaluations++;
+  if ( this->_DebugEnergy ) {
     LOG_ENERGY_CLEAR();
     LOG_ENERGY(BF("%s {\n")% this->className());
   }
-
   ANN(force);
   ANN(hessian);
   ANN(hdvec);
@@ -198,7 +197,6 @@ double EnergySketchStretch_O::evaluateAllComponent( ScoringFunction_sp score,
 #define	STRETCH_DIAGONAL_HESSIAN_ACCUMULATE 	DiagHessAcc
 #define	STRETCH_OFF_DIAGONAL_HESSIAN_ACCUMULATE OffDiagHessAcc
 
-  if ( this->isEnabled() ) 
   { _BLOCK_TRACE("SketchStretch");
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"

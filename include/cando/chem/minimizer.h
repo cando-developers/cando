@@ -150,7 +150,7 @@ struct RestartMinimizer {};
     int			_MinBracketSteps;
     stringstream	_IterationMessages;
     size_t		_PrintIntermediateResults;
-    int			_ReportEverySteps;
+    int			_ReportEveryNSteps;
     ScoringFunction_sp	_ScoringFunction;
     int			_Iteration;
     core::PosixTime_sp	_StartTime;
@@ -312,6 +312,7 @@ takes a single argument, the NVECTOR position of the atoms.)doc");
     void	disablePrintIntermediateResults();
     void        setDebugOn(bool debugOn);
     void        setReportEveryNSteps(size_t steps);
+    size_t      getReportEveryNSteps();
     
     string	configurationAsString();
     void	restart();

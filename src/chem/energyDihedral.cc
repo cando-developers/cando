@@ -405,7 +405,7 @@ void	EnergyDihedral_O::setupHessianPreconditioner(
 #define DIHEDRAL_CALC_FORCE
 #define DIHEDRAL_CALC_DIAGONAL_HESSIAN
 #define DIHEDRAL_CALC_OFF_DIAGONAL_HESSIAN
-  if ( this->isEnabled() ) {
+  {
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include	<cando/chem/energy_functions/_Dihedral_termDeclares.cc>
@@ -441,6 +441,7 @@ double	EnergyDihedral_O::evaluateAllComponent( ScoringFunction_sp score,
                                        gc::Nilable<NVector_sp>	hdvec,
                                        gc::Nilable<NVector_sp> dvec)
 { 
+  this->_Evaluations++;
   if ( this->_DebugEnergy ) 
   {
     LOG_ENERGY_CLEAR();
@@ -476,10 +477,6 @@ double	EnergyDihedral_O::evaluateAllComponent( ScoringFunction_sp score,
 #define	DIHEDRAL_DIAGONAL_HESSIAN_ACCUMULATE 	DiagHessAcc
 #define	DIHEDRAL_OFF_DIAGONAL_HESSIAN_ACCUMULATE OffDiagHessAcc
 
-
-
-  if ( this->isEnabled() ) 
-  {
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_Dihedral_termDeclares.cc>
@@ -575,7 +572,6 @@ double	EnergyDihedral_O::evaluateAllComponent( ScoringFunction_sp score,
 //		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fz4>10000.0);
       }
     }
-  }
   if ( this->_DebugEnergy ) 
   {
     LOG_ENERGY(BF("%s }\n")% this->className());
@@ -620,7 +616,7 @@ void	EnergyDihedral_O::compareAnalyticalAndNumericalForceAndHessianTermByTerm(
 
 
 
-  if ( this->isEnabled() ) {
+  {
     _BLOCK_TRACE("DihedralEnergy finiteDifference comparison");
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"

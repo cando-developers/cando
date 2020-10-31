@@ -194,6 +194,7 @@ CL_DEFMETHOD Residue_sp Topology_O::buildResidueForIsomer(size_t isomer) const
     Atom_sp aa = gc::As<Atom_sp>(aa_mv);
     LOG(BF("Setting the configuration of atom(%s) to(%s)") % aa->description().c_str() % _rep_((*sci)->getConfiguration())  ); //
     auto trans = translate::from_object<ConfigurationEnum,std::true_type>((*sci)->getConfiguration())._v;
+    aa->setStereochemistryType(chiralCenter);
     aa->setConfiguration(trans);
   }
     //

@@ -110,8 +110,7 @@ FORWARD(RigidBodyEnergyFunction);
     CL_LISPIFY_NAME("rigid-body-energy-function-add-term");
     CL_DEFMETHOD void addTerm(EnergyRigidBodyComponent_sp comp) { this->_Terms = core::Cons_O::create(comp,this->_Terms);};
     
-    CL_LISPIFY_NAME("rigid-body-energy-function-terms");
-    CL_DEFMETHOD core::List_sp terms() { return this->_Terms;};
+    core::List_sp allComponents() const { return this->_Terms;};
   public:
     /*! 4 quaternion and 3 cartesian coordinates for each rigid body */
     size_t numberOfRigidBodies() const;

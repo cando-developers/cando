@@ -221,6 +221,9 @@ namespace       chem
     CL_LISPIFY_NAME("checkForBeyondThresholdInteractions");
     CL_DEFMETHOD virtual core::List_sp	checkForBeyondThresholdInteractions(double threshold);
 
+
+    virtual core::List_sp allComponents() const = 0;
+
     virtual void	dealWithProblem(core::Symbol_sp error_symbol, core::T_sp arguments) = 0;
 
     ScoringFunction_O();

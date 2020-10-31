@@ -255,15 +255,17 @@ double	RigidBodyEnergyFunction_O::evaluateAll( NVector_sp pos,
     double totalEnergy = 0.0;
     for ( auto cur : this->_Terms ) {
       EnergyRigidBodyComponent_sp term = gc::As<EnergyRigidBodyComponent_sp>(CONS_CAR(cur));
-      totalEnergy += term->evaluateAllComponent(this->asSmartPtr(),
-                                                pos,
-                                                calcForce,
-                                                force,
-                                                calcDiagonalHessian,
-                                                calcOffDiagonalHessian,
-                                                hessian,
-                                                hdvec,
-                                                dvec);
+      if (term->isEnabled()) {
+        totalEnergy += term->evaluateAllComponent(this->asSmartPtr(),
+                                                  pos,
+                                                  calcForce,
+                                                  force,
+                                                  calcDiagonalHessian,
+                                                  calcOffDiagonalHessian,
+                                                  hessian,
+                                                  hdvec,
+                                                  dvec);
+      }
     }
     return totalEnergy;
 }

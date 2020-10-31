@@ -45,32 +45,20 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace chem {
 
-
-#ifdef XML_ARCHIVE
-    void	EnergyImproperRestraint::archive(core::ArchiveP node)
-{
-    node->attribute("_AboveThreshold",this->_AboveThreshold);
-    node->attribute("_AboveThreshold_Phi",this->_AboveThreshold_Phi);
-    node->attribute("U",this->term.U);
-    node->attribute("L",this->term.L);
-    node->attribute("K",this->term.K);
-    node->attribute("I1",this->term.I1);
-    node->attribute("I2",this->term.I2);
-    node->attribute("I3",this->term.I3);
-    node->attribute("I4",this->term.I4);
-    node->attribute("a1",this->_Atom1);
-    node->attribute("a2",this->_Atom2);
-    node->attribute("a3",this->_Atom3);
-    node->attribute("a4",this->_Atom4);
-#if TURN_ENERGY_FUNCTION_DEBUG_ON //[
-    node->attributeIfDefined("calcForce",this->_calcForce,this->_calcForce);
-    node->attributeIfDefined("calcDiagonalHessian",this->_calcDiagonalHessian,this->_calcDiagonalHessian);
-    node->attributeIfDefined("calcOffDiagonalHessian",this->_calcOffDiagonalHessian,this->_calcOffDiagonalHessian);
-#include <cando/chem/energy_functions/_ImproperRestraint_debugEvalSerialize.cc>
-#endif //]
+core::List_sp EnergyImproperRestraint::encode() const {
+  return core::Cons_O::create(core::Cons_O::create(INTERN_(kw,k),core::clasp_make_double_float(this->term.K)),
+                              core::Cons_O::create(core::Cons_O::create(INTERN_(kw,U),core::clasp_make_double_float(this->term.U)),
+                                                   core::Cons_O::createList(core::Cons_O::create(INTERN_(kw,L),core::clasp_make_double_float(this->term.L)),
+                                                                            core::Cons_O::create(INTERN_(kw,i1), core::make_fixnum(this->term.I1)),
+                                                                            core::Cons_O::create(INTERN_(kw,i2), core::make_fixnum(this->term.I2)),
+                                                                            core::Cons_O::create(INTERN_(kw,i3), core::make_fixnum(this->term.I3)),
+                                                                            core::Cons_O::create(INTERN_(kw,i4), core::make_fixnum(this->term.I4)),
+                                                                            core::Cons_O::create(INTERN_(kw,atom1), this->_Atom1),
+                                                                            core::Cons_O::create(INTERN_(kw,atom2), this->_Atom2),
+                                                                            core::Cons_O::create(INTERN_(kw,atom3), this->_Atom3),
+                                                                            core::Cons_O::create(INTERN_(kw,atom4), this->_Atom4)
+                                                                            )));
 }
-#endif
-
 
 
 double	EnergyImproperRestraint::getAngle()
@@ -82,70 +70,6 @@ double	EnergyImproperRestraint::getAngle()
     pos4 = this->_Atom4->getPosition();
     return geom::calculateDihedral(pos1,pos2,pos3,pos4);
 }
-
-
-#if 0
-    adapt::QDomNode_sp	EnergyImproperRestraint::asXml()
-{
-    adapt::QDomNode_sp	node,child;
-    Vector3	vdiff;
-
-    node = adapt::QDomNode_O::create(env,"EnergyImproperRestraint");
-    node->addAttributeString("atom1Name",this->_Atom1->getName());
-    node->addAttributeString("atom2Name",this->_Atom2->getName());
-    node->addAttributeString("atom3Name",this->_Atom3->getName());
-    node->addAttributeString("atom4Name",this->_Atom4->getName());
-    node->addAttributeInt("I1",this->term.I1);
-    node->addAttributeInt("I2",this->term.I2);
-    node->addAttributeInt("I3",this->term.I3);
-    node->addAttributeInt("I4",this->term.I4);
-    node->addAttributeDouble("UDeg",this->term.U/0.0174533,6,2);
-    node->addAttributeDouble("LDeg",this->term.L/0.0174533,6,2);
-    node->addAttributeDoubleScientific("U",this->term.U);
-    node->addAttributeDoubleScientific("L",this->term.L);
-    node->addAttributeDoubleScientific("K",this->term.K);
-    if ( this->_AboveThreshold ) {
-	child = adapt::QDomNode_O::create(env,"AboveThreshold");
-	child->addAttributeDoubleScientific("Phi",this->_AboveThreshold_Phi );
-	child->addAttributeDouble("PhiDeg",this->_AboveThreshold_Phi/0.0174533,6,2 );
-	stringstream ss;
-	ss << std::endl << "This improper has the value("<<this->_AboveThreshold_Phi/0.0174533<<")"
-	    << " outside of bounds ["<<this->term.U/0.0174533<<","
-           <<this->term.L/0.0174533<<"]" << std::endl;
-	child->setCharacters(ss.str());
-	node->addChild(child);
-    }
-#if TURN_ENERGY_FUNCTION_DEBUG_ON
-    adapt::QDomNode_sp xml = adapt::QDomNode_O::create(env,"Evaluated");
-    xml->addAttributeBool("calcForce",this->_calcForce );
-    xml->addAttributeBool("calcDiagonalHessian",this->_calcDiagonalHessian );
-    xml->addAttributeBool("calcOffDiagonalHessian",this->_calcOffDiagonalHessian );
-#include <_ImproperRestraint_debugEvalXml.cc>
-    node->addChild(xml);
-#endif
-    return node;
-}
-
-    void	EnergyImproperRestraint::parseFromXmlUsingAtomTable(adapt::QDomNode_sp	xml,
-					AtomTable_sp at)
-{
-    this->term.U = xml->getAttributeDouble("U");
-    this->term.L = xml->getAttributeDouble("L");
-    this->term.K = xml->getAttributeDouble("K");
-    this->term.I1 = xml->getAttributeInt("I1");
-    this->term.I2 = xml->getAttributeInt("I2");
-    this->term.I3 = xml->getAttributeInt("I3");
-    this->term.I4 = xml->getAttributeInt("I4");
-    this->_Atom1 = at->findEnergyAtomWithCoordinateIndex(this->term.I1)->atom();
-    this->_Atom2 = at->findEnergyAtomWithCoordinateIndex(this->term.I2)->atom();
-    this->_Atom3 = at->findEnergyAtomWithCoordinateIndex(this->term.I3)->atom();
-    this->_Atom4 = at->findEnergyAtomWithCoordinateIndex(this->term.I4)->atom();
-}
-
-#endif
-
-
-
 
 //
 // Copy this from implementAmberFunction.cc
@@ -198,6 +122,12 @@ void	EnergyImproperRestraint_O::dumpTerms()
 {
 }
 
+void EnergyImproperRestraint_O::fields(core::Record_sp node)
+{
+  node->field( INTERN_(kw,terms), this->_Terms );
+  this->Base::fields(node);
+}
+
 
 string EnergyImproperRestraint_O::beyondThresholdInteractionsAsString()
 {
@@ -242,7 +172,7 @@ bool		calcOffDiagonalHessian = true;
 #define IMPROPER_RESTRAINT_CALC_DIAGONAL_HESSIAN
 #define IMPROPER_RESTRAINT_CALC_OFF_DIAGONAL_HESSIAN
 
-    if ( this->isEnabled() ) {
+ {
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include	<cando/chem/energy_functions/_ImproperRestraint_termDeclares.cc>
@@ -273,6 +203,7 @@ double EnergyImproperRestraint_O::evaluateAllComponent( ScoringFunction_sp score
                                                gc::Nilable<chem::NVector_sp>	hdvec,
                                                gc::Nilable<chem::NVector_sp> dvec)
 {
+  this->_Evaluations++;
   if ( this->_DebugEnergy ) 
   {
     LOG_ENERGY_CLEAR();
@@ -308,7 +239,7 @@ double EnergyImproperRestraint_O::evaluateAllComponent( ScoringFunction_sp score
 #define	IMPROPER_RESTRAINT_DIAGONAL_HESSIAN_ACCUMULATE 	DiagHessAcc
 #define	IMPROPER_RESTRAINT_OFF_DIAGONAL_HESSIAN_ACCUMULATE OffDiagHessAcc
 
-  if ( this->isEnabled() ) {
+  {
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_ImproperRestraint_termDeclares.cc>
@@ -446,7 +377,7 @@ void	EnergyImproperRestraint_O::compareAnalyticalAndNumericalForceAndHessianTerm
 #define	IMPROPER_RESTRAINT_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
 
 
-  if ( this->isEnabled() ) {
+  {
     _BLOCK_TRACE("ImproperRestraintEnergy finiteDifference comparison");
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
@@ -502,7 +433,7 @@ int	fails = 0;
 #define	IMPROPER_RESTRAINT_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
 
 
-	if ( this->isEnabled() ) {
+    {
 		_BLOCK_TRACE("ImproperRestraintEnergy finiteDifference comparison");
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"

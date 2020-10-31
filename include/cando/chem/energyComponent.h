@@ -109,6 +109,7 @@ class BeyondThresholdEnergyTerm
 inline string	atomLabel(Atom_sp a)
 {
   stringstream	sstr;
+  sstr << _rep_(a->getName());
   return sstr.str();
 }
 
@@ -256,6 +257,8 @@ class EnergyComponent_O : public core::CxxObject_O
   double		_TotalEnergy;
   int		_Debug_NumberOfTermsToCalculate;
   stringstream	_DebugLog;
+public:
+  size_t        _Evaluations;
 //protected:		// Define these in subclasses
 //	vector<TermClass>	_Terms;
 //	vector<TermClass>	_BeyondThresholdTerms;
@@ -263,6 +266,7 @@ class EnergyComponent_O : public core::CxxObject_O
   CL_DEFMETHOD virtual size_t numberOfTerms() {_OF(); SUBCLASS_MUST_IMPLEMENT();};
   void setScale(double s) {this->_Scale = s; };
   double getScale() { return this->_Scale ; };
+  CL_DEFMETHOD bool isEnabled() const { return this->_Enabled; };
   CL_LISPIFY_NAME("enable");
   CL_DEFMETHOD 	void enable() {this->_Enabled = true; };
   CL_LISPIFY_NAME("disable");
@@ -275,11 +279,13 @@ class EnergyComponent_O : public core::CxxObject_O
   CL_DEFMETHOD 	void disableDebug() {this->_DebugEnergy = false; };
   CL_LISPIFY_NAME("setDebug_NumberOfTermsToCalculate");
   CL_DEFMETHOD 	void setDebug_NumberOfTermsToCalculate(int i) {this->_Debug_NumberOfTermsToCalculate=i;}
-  bool isEnabled() { return this->_Enabled; };
   CL_LISPIFY_NAME("setErrorThreshold");
   CL_DEFMETHOD 	void	setErrorThreshold(double tr) { this->_ErrorThreshold = tr; };
   CL_LISPIFY_NAME("getErrorThreshold");
   CL_DEFMETHOD 	double	getErrorThreshold() { return this->_ErrorThreshold; };
+
+  CL_LISPIFY_NAME("energy-component-evaluations");
+  CL_DEFMETHOD 	size_t	evaluations() const { return this->_Evaluations; };
 
   CL_DEFMETHOD virtual core::List_sp extract_vectors_as_alist() const { SUBCLASS_MUST_IMPLEMENT(); };
  
@@ -310,7 +316,7 @@ class EnergyComponent_O : public core::CxxObject_O
  public:
   EnergyComponent_O( const EnergyComponent_O& ss ); //!< Copy constructor
 
-  DEFAULT_CTOR_DTOR(EnergyComponent_O);
+  EnergyComponent_O() : _Evaluations(0) {};
 };
 template <typename SP>
 SP safe_alist_lookup(core::List_sp list, core::T_sp key) {

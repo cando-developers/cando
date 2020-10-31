@@ -164,7 +164,8 @@ public:
   CL_DEFMETHOD size_t	getNumberOfAtoms()	{ return this->_Atoms.size();};
   CL_DEFMETHOD size_t   getNumberOfMolecules()  { return this->_AtomsPerMolecule->length();};
   core::T_mv getAtomIndexOrNil(Atom_sp atom);
-  
+
+  core::List_sp atomsAtRemoveBondAngle14(Atom_sp atom) const;
   core::T_sp   firstSolventMoleculeNSPSOL() const;
   bool firstSolventMoleculeNSPSOL_boundP() const;
   void set_firstSolventMoleculeNSPSOL(size_t num);

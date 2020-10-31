@@ -64,37 +64,68 @@ struct TermImproperRestraint
 
 
 class	EnergyImproperRestraint : public EnergyTerm {
-public:
-	string	className()	{ return "EnergyImproperRestraint"; };
-public:
+ public:
+  string	className()	{ return "EnergyImproperRestraint"; };
+ public:
 		// Variables
-        Atom_sp      _Atom1;
-        Atom_sp      _Atom2;
-        Atom_sp      _Atom3;
-        Atom_sp      _Atom4;
+  Atom_sp      _Atom1;
+  Atom_sp      _Atom2;
+  Atom_sp      _Atom3;
+  Atom_sp      _Atom4;
 		// Threshold
-	bool		_AboveThreshold;
-	double		_AboveThreshold_Phi;
-	TermImproperRestraint	term;
+  bool		_AboveThreshold;
+  double		_AboveThreshold_Phi;
+  TermImproperRestraint	term;
 #if TURN_ENERGY_FUNCTION_DEBUG_ON
-	bool		_calcForce;
-	bool		_calcDiagonalHessian;
-	bool		_calcOffDiagonalHessian;
+  bool		_calcForce;
+  bool		_calcDiagonalHessian;
+  bool		_calcOffDiagonalHessian;
 #include <cando/chem/energy_functions/_ImproperRestraint_debugEvalDeclares.cc>
 #endif
 
-        Atom_sp	getAtom1() { return this->_Atom1; };
-        Atom_sp	getAtom2() { return this->_Atom2; };
-        Atom_sp	getAtom3() { return this->_Atom3; };
-        Atom_sp	getAtom4() { return this->_Atom4; };
-	double	getAngle();
-public:
-public:
-	adapt::QDomNode_sp	asXml();
-	void	parseFromXmlUsingAtomTable(adapt::QDomNode_sp xml, AtomTable_sp atomTable );
+  Atom_sp	getAtom1() { return this->_Atom1; };
+  Atom_sp	getAtom2() { return this->_Atom2; };
+  Atom_sp	getAtom3() { return this->_Atom3; };
+  Atom_sp	getAtom4() { return this->_Atom4; };
+  double	getAngle();
+ public:
+  core::List_sp encode() const;
+  void decode(core::List_sp alist);
 
 };
 
+
+};
+
+namespace translate {
+
+template <>
+struct	to_object<chem::EnergyImproperRestraint >
+{
+  typedef	core::Cons_sp ExpectedType;
+  typedef	core::Cons_sp DeclareType;
+  static core::T_sp convert(const chem::EnergyImproperRestraint& imp)
+  {
+    return imp.encode();
+  }
+};
+
+template <>
+struct	from_object<chem::EnergyImproperRestraint>
+{
+  typedef	chem::EnergyImproperRestraint	ExpectedType;
+  typedef	ExpectedType 		DeclareType;
+	DeclareType _v;
+	from_object(core::T_sp o)
+	{
+          SIMPLE_ERROR(BF("Implement me"));
+        }
+};
+};
+
+
+
+namespace chem {
 
 
 double	_evaluateEnergyOnly_ImproperRestraint(
@@ -108,56 +139,55 @@ double	_evaluateEnergyOnly_ImproperRestraint(
 
 class EnergyImproperRestraint_O : public EnergyComponent_O
 {
-    LISP_CLASS(chem,ChemPkg,EnergyImproperRestraint_O,"EnergyImproperRestraint",EnergyComponent_O);
-public:
-public: // virtual functions inherited from Object
-    void	initialize();
-//	string	__repr__() const;
+  LISP_CLASS(chem,ChemPkg,EnergyImproperRestraint_O,"EnergyImproperRestraint",EnergyComponent_O);
+ public: // virtual functions inherited from Object
+  void	initialize();
+  bool fieldsp() const { return true; };
+  void fields(core::Record_sp node);
+ public:
+  typedef EnergyImproperRestraint	TermType;
+ public: // instance variables
+  gctools::Vec0<TermType>		_Terms;
+  gctools::Vec0<TermType>	_BeyondThresholdTerms;
 
-public:
-    typedef EnergyImproperRestraint	TermType;
-public: // instance variables
-    gctools::Vec0<TermType>		_Terms;
-    gctools::Vec0<TermType>	_BeyondThresholdTerms;
+ public:	// Creation class functions
 
-public:	// Creation class functions
-
-public:	
-    typedef gctools::Vec0<TermType>::iterator iterator;
-    iterator begin() { return this->_Terms.begin(); };
-    iterator end() { return this->_Terms.end(); };
+ public:	
+  typedef gctools::Vec0<TermType>::iterator iterator;
+  iterator begin() { return this->_Terms.begin(); };
+  iterator end() { return this->_Terms.end(); };
 //added by G 7.19.2011
-public:
-    virtual size_t numberOfTerms() { return this->_Terms.size();};
-public:
-    void addTerm(const TermType& term);
-    virtual void dumpTerms();
+ public:
+  virtual size_t numberOfTerms() { return this->_Terms.size();};
+ public:
+  void addTerm(const TermType& term);
+  virtual void dumpTerms();
 
-    virtual void setupHessianPreconditioner(NVector_sp nvPosition,
-					    AbstractLargeSquareMatrix_sp m );
+  virtual void setupHessianPreconditioner(NVector_sp nvPosition,
+                                          AbstractLargeSquareMatrix_sp m );
   virtual double evaluateAllComponent( ScoringFunction_sp scorer,
-                              NVector_sp 	pos,
-                              bool 		calcForce,
-                              gc::Nilable<NVector_sp> 	force,
-                              bool		calcDiagonalHessian,
-                              bool		calcOffDiagonalHessian,
-                              gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                              gc::Nilable<NVector_sp>	hdvec,
-                              gc::Nilable<NVector_sp> dvec);
+                                       NVector_sp 	pos,
+                                       bool 		calcForce,
+                                       gc::Nilable<NVector_sp> 	force,
+                                       bool		calcDiagonalHessian,
+                                       bool		calcOffDiagonalHessian,
+                                       gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                       gc::Nilable<NVector_sp>	hdvec,
+                                       gc::Nilable<NVector_sp> dvec);
 
-    virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm(
-	NVector_sp pos );
+  virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm(
+                                                                               NVector_sp pos );
 
     // virtual	int	checkForBeyondThresholdInteractions( stringstream& info, NVector_sp pos );
 
-    virtual string	beyondThresholdInteractionsAsString();
+  virtual string	beyondThresholdInteractionsAsString();
 
 
-public:
-    EnergyImproperRestraint_O( const EnergyImproperRestraint_O& ss ); //!< Copy constructor
+ public:
+  EnergyImproperRestraint_O( const EnergyImproperRestraint_O& ss ); //!< Copy constructor
 
-    EnergyImproperRestraint_O() {};
-    virtual ~EnergyImproperRestraint_O() {};
+  EnergyImproperRestraint_O() {};
+  virtual ~EnergyImproperRestraint_O() {};
 };
 
 };
