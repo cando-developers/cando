@@ -487,15 +487,13 @@ string	CDFragment_O::describeProperties()
 
 
 
-core::Symbol_mv parse_property(const string& propertyValue, CDBond_sp bond, const string& otherSideValue)
+core::Symbol_mv parse_property(core::T_sp stream, const string& propertyValue, CDBond_sp bond, const string& otherSideValue)
 {
-  core::T_sp stream = core::cl__make_string_input_stream(core::Str_O::create(propertyValue),core::clasp_make_fixnum(0),_Nil<core::T_O>());
-//  printf("%s:%d Parsing property string: %s\n", __FILE__, __LINE__, propertyValue.c_str());
   core::T_sp eof = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
   core::DynamicScopeManager scope(cl::_sym_STARpackageSTAR,_lisp->findPackage(ChemKwPkg));
   core::T_sp property = core::cl__read(stream,_Nil<core::T_O>(),eof);
   if ( property == eof ) {
-    SIMPLE_ERROR(BF("Could not parse first part of \"%s\" as a (symbol value) pair - in property bond of order %s other side of bond is \"%s\"") % propertyValue % bond->getOrderAsString() % otherSideValue );
+    return Values(_Nil<core::T_O>(),_Nil<core::T_O>());
   }
 //  printf("%s:%d Parsed property: %s\n", __FILE__, __LINE__, _rep_(property).c_str());
   core::T_sp value = core::cl__read(stream,_Nil<core::T_O>(),eof);
@@ -505,7 +503,6 @@ core::Symbol_mv parse_property(const string& propertyValue, CDBond_sp bond, cons
     // SIMPLE_ERROR(BF("Could not parse second part of \"%s\" as a (symbol value) pair - in property bond of order %s other side of bond is \"%s\"") % propertyValue % bond->getOrderAsString() % otherSideValue );
   }
 //  printf("%s:%d Parsed value: %s\n", __FILE__, __LINE__, _rep_(value).c_str());
-  core::cl__close(stream);
   if ( core::Symbol_sp key = property.asOrNull<core::Symbol_O>() ) {
     return Values(property,value);
   }
@@ -572,27 +569,32 @@ bool CDFragment_O::interpret(bool verbose, bool addHydrogens)
           SIMPLE_ERROR(BF("The %s bond must have one end with only one neighbor - the one in question has %d and %d neighbors\n") % (*bi)->getOrderAsString() % beginNeighbors % endNeighbors );
         }
         string propertyCode = propertyNode->_Label;
-        core::Symbol_mv parsedProperty = parse_property(propertyCode, *bi, targetNode->_Label);
-        core::T_sp value = parsedProperty.second();
         if (cdorder == dativeCDBond) {
           targetNode->_AtomProperties = core__put_f(targetNode->_AtomProperties,geom::OVector2_O::createFromVector2(propertyNode->_Pos),INTERN_(kw,property_position));
         }
-        if ( parsedProperty.number_of_values() == 2 ) {
-          if ( cdorder == dativeCDBond ) {
-            if (verbose) core::write_bf_stream(BF("Adding atom property %s value: %s\n") % _rep_(parsedProperty) % _rep_(value));
-            targetNode->_AtomProperties = core__put_f(targetNode->_AtomProperties,value,parsedProperty);
-          } else if ( cdorder == hollowWedgeCDBond ) {
-            if (verbose) core::write_bf_stream(BF("Adding residue property %s value: %s\n") % _rep_(parsedProperty) % _rep_(value));
-            targetNode->_ResidueProperties = core__put_f(targetNode->_ResidueProperties,value,parsedProperty);
-          } else if ( cdorder == wavyCDBond ) {
-            if (verbose) core::write_bf_stream(BF("Adding molecule property %s value: %s\n") % _rep_(parsedProperty) % _rep_(value));
-            targetNode->_MoleculeProperties = core__put_f(targetNode->_MoleculeProperties,value,parsedProperty);
-          } else {
-            SIMPLE_ERROR(BF("Cannot interpret bond %s in terms of where to put the property") % (*bi)->getOrderAsString().c_str());
+        core::T_sp stream = core::cl__make_string_input_stream(core::Str_O::create(propertyCode),core::clasp_make_fixnum(0),_Nil<core::T_O>());
+        core::Symbol_mv parsedProperty;
+        do {
+          parsedProperty = parse_property(stream, propertyCode, *bi, targetNode->_Label);
+          core::T_sp value = parsedProperty.second();
+          if ( parsedProperty.notnilp() && parsedProperty.number_of_values() == 2 ) {
+            if ( cdorder == dativeCDBond ) {
+              if (verbose) core::write_bf_stream(BF("Adding atom property %s value: %s\n") % _rep_(parsedProperty) % _rep_(value));
+              targetNode->_AtomProperties = core__put_f(targetNode->_AtomProperties,value,parsedProperty);
+            } else if ( cdorder == hollowWedgeCDBond ) {
+              if (verbose) core::write_bf_stream(BF("Adding residue property %s value: %s\n") % _rep_(parsedProperty) % _rep_(value));
+              targetNode->_ResidueProperties = core__put_f(targetNode->_ResidueProperties,value,parsedProperty);
+            } else if ( cdorder == wavyCDBond ) {
+              if (verbose) core::write_bf_stream(BF("Adding molecule property %s value: %s\n") % _rep_(parsedProperty) % _rep_(value));
+              targetNode->_MoleculeProperties = core__put_f(targetNode->_MoleculeProperties,value,parsedProperty);
+            } else {
+              SIMPLE_ERROR(BF("Cannot interpret bond %s in terms of where to put the property") % (*bi)->getOrderAsString().c_str());
+            }
+          } else if (parsedProperty.number_of_values() != 2) {
+            SIMPLE_ERROR(BF("The property on atom %s must be a list of keyword value pairs - got: %s") % targetNode->_Label % core::_rep_(targetNode->_AtomProperties));
           }
-        } else {
-          SIMPLE_ERROR(BF("What should I do when parse_property returns only one value from: %s") % propertyCode );
-        }
+        } while (parsedProperty.notnilp());
+        core::cl__close(stream);
       } else {
         Warn(core::Str_O::create((BF("Doing nothing with bond type %d")%(*bi)->getOrderAsString()).str()),
              _Nil<core::T_O>());

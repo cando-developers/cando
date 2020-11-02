@@ -78,7 +78,7 @@ namespace       chem {
 
 SMART(QDomNode);
 SMART(AbstractLargeSquareMatrix);
-
+FORWARD(EnergyFunction);
 
 #if TURN_ENERGY_FUNCTION_DEBUG_ON == 1
 #define	LOG_ENERGY_CLEAR() {this->_DebugLog.str("");};
@@ -222,7 +222,7 @@ inline string	atomLabel(Atom_sp a)
     this->_Angle->msg; 			\
     this->_Dihedral->msg; 			\
     this->_Nonbond->msg; 			\
-    this->_ImproperRestraint->msg; 		\
+    this->_DihedralRestraint->msg; 		\
     this->_ChiralRestraint->msg; 		\
     this->_AnchorRestraint->msg; 		\
     this->_FixedNonbondRestraint->msg; 	\

@@ -174,7 +174,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/energyChiralRestraint.h>
 #include <cando/chem/energyDihedral.h>
 #include <cando/chem/energyFixedNonbond.h>
-#include <cando/chem/energyImproperRestraint.h>
+#include <cando/chem/energyDihedralRestraint.h>
 #include <cando/chem/energyNonbond.h>
 #include <cando/chem/energyStretch.h>
 #include <cando/chem/entityNameSet.h>

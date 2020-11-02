@@ -1,5 +1,5 @@
 /*
-    File: energyImproperRestraint.cc
+    File: energyDihedralRestraint.cc
 */
 /*
 Open Source License
@@ -26,9 +26,10 @@ This is an open source license for the CANDO software from Temple University, bu
        
 #define	DEBUG_LEVEL_NONE
 
-
+#include <clasp/core/foundation.h>
+#include <clasp/core/lispStream.h>
 #include <cando/chem/largeSquareMatrix.h>
-#include <cando/chem/energyImproperRestraint.h>
+#include <cando/chem/energyDihedralRestraint.h>
 #include <cando/chem/energyAtomTable.h>
 #include <cando/chem/energyFunction.h>
 #include <cando/chem/bond.h>
@@ -45,7 +46,7 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace chem {
 
-core::List_sp EnergyImproperRestraint::encode() const {
+core::List_sp EnergyDihedralRestraint::encode() const {
   return core::Cons_O::create(core::Cons_O::create(INTERN_(kw,k),core::clasp_make_double_float(this->term.K)),
                               core::Cons_O::create(core::Cons_O::create(INTERN_(kw,U),core::clasp_make_double_float(this->term.U)),
                                                    core::Cons_O::createList(core::Cons_O::create(INTERN_(kw,L),core::clasp_make_double_float(this->term.L)),
@@ -61,7 +62,7 @@ core::List_sp EnergyImproperRestraint::encode() const {
 }
 
 
-double	EnergyImproperRestraint::getAngle()
+double	EnergyDihedralRestraint::getAngle()
 {
     Vector3	pos1, pos2, pos3, pos4;
     pos1 = this->_Atom1->getPosition();
@@ -111,33 +112,61 @@ bool	RestraintActive;
 }
 
 
-void EnergyImproperRestraint_O::addTerm(const EnergyImproperRestraint& e)
+void EnergyDihedralRestraint_O::addTerm(const EnergyDihedralRestraint& e)
 {
     this->_Terms.push_back(e);
 }
 
 
+CL_DEFMETHOD
+void EnergyDihedralRestraint_O::addDihedralRestraint(EnergyFunction_sp energyFunction, Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, double minRadians, double maxRadians, double weight)
+{
+  EnergyDihedralRestraint energyTerm;
+  energyTerm._Atom1 = a1;
+  energyTerm._Atom2 = a2;
+  energyTerm._Atom3 = a3;
+  energyTerm._Atom4 = a4;
+  EnergyAtom* ea1 = energyFunction->getEnergyAtomPointer(energyTerm._Atom1);
+  EnergyAtom* ea2 = energyFunction->getEnergyAtomPointer(energyTerm._Atom2);
+  EnergyAtom* ea3 = energyFunction->getEnergyAtomPointer(energyTerm._Atom3);
+  EnergyAtom* ea4 = energyFunction->getEnergyAtomPointer(energyTerm._Atom4);
+  energyTerm.term.I1 = ea1->coordinateIndexTimes3();
+  energyTerm.term.I2 = ea2->coordinateIndexTimes3();
+  energyTerm.term.I3 = ea3->coordinateIndexTimes3();
+  energyTerm.term.I4 = ea4->coordinateIndexTimes3();
+  if (!(minRadians<=maxRadians)) {
+    SIMPLE_ERROR(BF("min-radians %f must be less than or equal to max-radians %f") % minRadians % maxRadians);
+  }
+  energyTerm.term.U = minRadians;
+  energyTerm.term.L = maxRadians;
+  energyTerm.term.K = weight;
+  this->addTerm(energyTerm);
+}
 
-void	EnergyImproperRestraint_O::dumpTerms()
+
+
+
+
+void	EnergyDihedralRestraint_O::dumpTerms()
 {
 }
 
-void EnergyImproperRestraint_O::fields(core::Record_sp node)
+void EnergyDihedralRestraint_O::fields(core::Record_sp node)
 {
   node->field( INTERN_(kw,terms), this->_Terms );
   this->Base::fields(node);
 }
 
 
-string EnergyImproperRestraint_O::beyondThresholdInteractionsAsString()
+string EnergyDihedralRestraint_O::beyondThresholdInteractionsAsString()
 {
-    return component_beyondThresholdInteractionsAsString<EnergyImproperRestraint_O,EnergyImproperRestraint>(*this);
+    return component_beyondThresholdInteractionsAsString<EnergyDihedralRestraint_O,EnergyDihedralRestraint>(*this);
 }
 
 
 
 
-void	EnergyImproperRestraint_O::setupHessianPreconditioner(
+void	EnergyDihedralRestraint_O::setupHessianPreconditioner(
 					chem::NVector_sp nvPosition,
 					chem::AbstractLargeSquareMatrix_sp m )
 {
@@ -182,9 +211,11 @@ bool		calcOffDiagonalHessian = true;
 	double EraseLinearDihedral, UShift, PhiShift;
 	bool RestraintActive;
 	int	I1, I2, I3, I4;
-	for ( gctools::Vec0<EnergyImproperRestraint>::iterator iri=this->_Terms.begin();
+	for ( gctools::Vec0<EnergyDihedralRestraint>::iterator iri=this->_Terms.begin();
 		    iri!=this->_Terms.end(); iri++ ) {
+#define DEBUG_IMPROPER_RESTRAINT 1
 #include	<cando/chem/energy_functions/_ImproperRestraint_termCode.cc>
+#undef DEBUG_IMPROPER_RESTRAINT
 	}
     }
 }
@@ -193,7 +224,7 @@ bool		calcOffDiagonalHessian = true;
 
 
 
-double EnergyImproperRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
+double EnergyDihedralRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
                                                chem::NVector_sp 	pos,
                                                bool 		calcForce,
                                                gc::Nilable<chem::NVector_sp> 	force,
@@ -204,8 +235,8 @@ double EnergyImproperRestraint_O::evaluateAllComponent( ScoringFunction_sp score
                                                gc::Nilable<chem::NVector_sp> dvec)
 {
   this->_Evaluations++;
-  if ( this->_DebugEnergy ) 
-  {
+  if ( this->_DebugEnergy ) {
+    core::write_bf_stream(BF("%s\n") % __FUNCTION__ );
     LOG_ENERGY_CLEAR();
     LOG_ENERGY(BF("%s {")% this->className());
   }
@@ -249,17 +280,23 @@ double EnergyImproperRestraint_O::evaluateAllComponent( ScoringFunction_sp score
     double EraseLinearDihedral, UShift, PhiShift;
     bool RestraintActive;
     int	I1, I2, I3, I4,i;
-    gctools::Vec0<EnergyImproperRestraint>::iterator iri;
+    gctools::Vec0<EnergyDihedralRestraint>::iterator iri;
     for ( i=0,iri =this->_Terms.begin();
           iri!=this->_Terms.end(); iri++,i++ ) {
 #ifdef	DEBUG_CONTROL_THE_NUMBER_OF_TERMS_EVALAUTED
-      if ( this->_Debug_NumberOfImproperRestraintTermsToCalculate > 0 ) {
-        if ( i>= this->_Debug_NumberOfImproperRestraintTermsToCalculate ) {
+      if ( this->_Debug_NumberOfDihedralRestraintTermsToCalculate > 0 ) {
+        if ( i>= this->_Debug_NumberOfDihedralRestraintTermsToCalculate ) {
           break;
         }
       }
 #endif
-#include <cando/chem/energy_functions/_ImproperRestraint_termCode.cc>
+  if ( this->_DebugEnergy ) {
+    core::write_bf_stream(BF("Evaluating term: %d\n") % i );
+  }
+    
+#define DEBUG_IMPROPER_RESTRAINT 1
+#include	<cando/chem/energy_functions/_ImproperRestraint_termCode.cc>
+#undef DEBUG_IMPROPER_RESTRAINT
       if ( EraseLinearDihedral == 0.0 ) {
         ERROR(chem::_sym_LinearDihedralError,core::Cons_O::createList(kw::_sym_atoms,core::Cons_O::createList(iri->_Atom1,iri->_Atom2,iri->_Atom3,iri->_Atom4),
                                                                       kw::_sym_coordinates,pos,
@@ -276,6 +313,49 @@ double EnergyImproperRestraint_O::evaluateAllComponent( ScoringFunction_sp score
 
       if ( this->_DebugEnergy ) 
       {
+        core::write_bf_stream(BF( "MEISTER improperRestraint %d args cando\n")% (i+1) );
+        core::write_bf_stream(BF( "MEISTER improperRestraint %d K %lf\n")% (i+1) % K );
+        core::write_bf_stream(BF( "MEISTER improperRestraint %d U %lf\n")% (i+1) % U );
+        core::write_bf_stream(BF( "MEISTER improperRestraint %d L %lf\n")% (i+1) % L );
+        core::write_bf_stream(BF( "MEISTER improperRestraint %d x1 %5.3lf %d\n")%(i+1) % x1 % (I1/3+1) );
+        core::write_bf_stream(BF( "MEISTER improperRestraint %d y1 %5.3lf %d\n")%(i+1) % y1 % (I1/3+1) );
+        core::write_bf_stream(BF( "MEISTER improperRestraint %d z1 %5.3lf %d\n")%(i+1) % z1 % (I1/3+1) );
+        core::write_bf_stream(BF( "MEISTER improperRestraint %d x2 %5.3lf %d\n")%(i+1) % x2 % (I2/3+1) );
+        core::write_bf_stream(BF( "MEISTER improperRestraint %d y2 %5.3lf %d\n")%(i+1) % y2 % (I2/3+1) );
+        core::write_bf_stream(BF( "MEISTER improperRestraint %d z2 %5.3lf %d\n")%(i+1) % z2 % (I2/3+1) );
+        core::write_bf_stream(BF( "MEISTER improperRestraint %d x3 %5.3lf %d\n")%(i+1) % x3 % (I3/3+1) );
+        core::write_bf_stream(BF( "MEISTER improperRestraint %d y3 %5.3lf %d\n")%(i+1) % y3 % (I3/3+1) );
+        core::write_bf_stream(BF( "MEISTER improperRestraint %d z3 %5.3lf %d\n")%(i+1) % z3 % (I3/3+1) );
+        core::write_bf_stream(BF( "MEISTER improperRestraint %d x4 %5.3lf %d\n")%(i+1) % x4 % (I4/3+1) );
+        core::write_bf_stream(BF( "MEISTER improperRestraint %d y4 %5.3lf %d\n")%(i+1) % y4 % (I4/3+1) );
+        core::write_bf_stream(BF( "MEISTER improperRestraint %d z4 %5.3lf %d\n")%(i+1) % z4 % (I4/3+1) );
+        core::write_bf_stream(BF( "MEISTER improperRestraint %d results\n")% (i+1) );
+        core::write_bf_stream(BF( "MEISTER improperRestraint %d CosPhi %lf\n")% (i+1) % CosPhi );
+        core::write_bf_stream(BF( "MEISTER improperRestraint %d SinPhi %lf\n")% (i+1) % SinPhi );
+        if ( CosPhi>0.1 ) {
+          Phi = asin(SinPhi);
+        } else {
+          Phi = acos(CosPhi)*SIGN(SinPhi);
+        }
+        core::write_bf_stream(BF( "MEISTER improperRestraint %d Phi %lf\n")% (i+1) % Phi );
+        core::write_bf_stream(BF( "MEISTER improperRestraint %d Energy %lf\n")% (i+1) % Energy);
+        if ( calcForce ) 
+        {
+//			LOG_ENERGY(BF( "MEISTER improperRestraint %d DePhi %lf\n")% (i+1) % DePhi);
+          core::write_bf_stream(BF( "MEISTER improperRestraint %d fx1 %8.5lf %d\n")%(i+1) % fx1 % (I1/3+1) );
+          core::write_bf_stream(BF( "MEISTER improperRestraint %d fy1 %8.5lf %d\n")%(i+1) % fy1 % (I1/3+1) );
+          core::write_bf_stream(BF( "MEISTER improperRestraint %d fz1 %8.5lf %d\n")%(i+1) % fz1 % (I1/3+1) );
+          core::write_bf_stream(BF( "MEISTER improperRestraint %d fx2 %8.5lf %d\n")%(i+1) % fx2 % (I2/3+1) );
+          core::write_bf_stream(BF( "MEISTER improperRestraint %d fy2 %8.5lf %d\n")%(i+1) % fy2 % (I2/3+1) );
+          core::write_bf_stream(BF( "MEISTER improperRestraint %d fz2 %8.5lf %d\n")%(i+1) % fz2 % (I2/3+1) );
+          core::write_bf_stream(BF( "MEISTER improperRestraint %d fx3 %8.5lf %d\n")%(i+1) % fx3 % (I3/3+1) );
+          core::write_bf_stream(BF( "MEISTER improperRestraint %d fy3 %8.5lf %d\n")%(i+1) % fy3 % (I3/3+1) );
+          core::write_bf_stream(BF( "MEISTER improperRestraint %d fz3 %8.5lf %d\n")%(i+1) % fz3 % (I3/3+1) );
+          core::write_bf_stream(BF( "MEISTER improperRestraint %d fx4 %8.5lf %d\n")%(i+1) % fx4 % (I4/3+1) );
+          core::write_bf_stream(BF( "MEISTER improperRestraint %d fy4 %8.5lf %d\n")%(i+1) % fy4 % (I4/3+1) );
+          core::write_bf_stream(BF( "MEISTER improperRestraint %d fz4 %8.5lf %d\n")%(i+1) % fz4 % (I4/3+1) );
+        }
+        core::write_bf_stream(BF( "MEISTER improperRestraint %d stop\n")% (i+1) );
         LOG_ENERGY(BF( "MEISTER improperRestraint %d args cando\n")% (i+1) );
         LOG_ENERGY(BF( "MEISTER improperRestraint %d K %lf\n")% (i+1) % K );
         LOG_ENERGY(BF( "MEISTER improperRestraint %d U %lf\n")% (i+1) % U );
@@ -302,8 +382,7 @@ double EnergyImproperRestraint_O::evaluateAllComponent( ScoringFunction_sp score
         }
         LOG_ENERGY(BF( "MEISTER improperRestraint %d Phi %lf\n")% (i+1) % Phi );
         LOG_ENERGY(BF( "MEISTER improperRestraint %d Energy %lf\n")% (i+1) % Energy);
-        if ( calcForce ) 
-        {
+        if ( calcForce ) {
 //			LOG_ENERGY(BF( "MEISTER improperRestraint %d DePhi %lf\n")% (i+1) % DePhi);
           LOG_ENERGY(BF( "MEISTER improperRestraint %d fx1 %8.5lf %d\n")%(i+1) % fx1 % (I1/3+1) );
           LOG_ENERGY(BF( "MEISTER improperRestraint %d fy1 %8.5lf %d\n")%(i+1) % fy1 % (I1/3+1) );
@@ -338,7 +417,7 @@ double EnergyImproperRestraint_O::evaluateAllComponent( ScoringFunction_sp score
       }
     }
   }
-  LOG_ENERGY(BF( "ImproperRestraint energy = %lf\n")% (double)(this->_TotalEnergy) );
+  LOG_ENERGY(BF( "DihedralRestraint energy = %lf\n")% (double)(this->_TotalEnergy) );
   if ( this->_DebugEnergy ) 
   {
     LOG_ENERGY(BF("%s }\n")% this->className());
@@ -346,7 +425,7 @@ double EnergyImproperRestraint_O::evaluateAllComponent( ScoringFunction_sp score
   return this->_TotalEnergy;
 }
 
-void	EnergyImproperRestraint_O::compareAnalyticalAndNumericalForceAndHessianTermByTerm(chem::NVector_sp 	pos)
+void	EnergyDihedralRestraint_O::compareAnalyticalAndNumericalForceAndHessianTermByTerm(chem::NVector_sp 	pos)
 {
   int	fails = 0;
   bool	calcForce = true;
@@ -378,7 +457,7 @@ void	EnergyImproperRestraint_O::compareAnalyticalAndNumericalForceAndHessianTerm
 
 
   {
-    _BLOCK_TRACE("ImproperRestraintEnergy finiteDifference comparison");
+    _BLOCK_TRACE("DihedralRestraintEnergy finiteDifference comparison");
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_ImproperRestraint_termDeclares.cc>
@@ -388,10 +467,12 @@ void	EnergyImproperRestraint_O::compareAnalyticalAndNumericalForceAndHessianTerm
     double EraseLinearDihedral, UShift, PhiShift;
     bool RestraintActive;
     int	I1, I2, I3, I4,i;
-    gctools::Vec0<EnergyImproperRestraint>::iterator iri;
+    gctools::Vec0<EnergyDihedralRestraint>::iterator iri;
     for ( i=0,iri =this->_Terms.begin();
           iri!=this->_Terms.end(); iri++,i++ ) {
-#include <cando/chem/energy_functions/_ImproperRestraint_termCode.cc>
+#define DEBUG_IMPROPER_RESTRAINT 1
+#include	<cando/chem/energy_functions/_ImproperRestraint_termCode.cc>
+#undef DEBUG_IMPROPER_RESTRAINT
       int index = i;
 #include <cando/chem/energy_functions/_ImproperRestraint_debugFiniteDifference.cc>
     }
@@ -402,13 +483,12 @@ void	EnergyImproperRestraint_O::compareAnalyticalAndNumericalForceAndHessianTerm
 
 
 
-#if 0
-int	EnergyImproperRestraint_O::checkForBeyondThresholdInteractions(
+int	EnergyDihedralRestraint_O::checkForBeyondThresholdInteractions(
 			stringstream& info, chem::NVector_sp pos )
 {
-int	fails = 0;
+  int	fails = 0;
 
-    this->_BeyondThresholdTerms.clear();
+  this->_BeyondThresholdTerms.clear();
 
 //
 // Copy from implementAmberFunction::checkForBeyondThresholdInteractions
@@ -433,65 +513,55 @@ int	fails = 0;
 #define	IMPROPER_RESTRAINT_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
 
 
-    {
-		_BLOCK_TRACE("ImproperRestraintEnergy finiteDifference comparison");
+  {
+    _BLOCK_TRACE("DihedralRestraintEnergy finiteDifference comparison");
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_ImproperRestraint_termDeclares.cc>
 #pragma clang diagnostic pop
-	    double x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4;
-	    double K,U,L;
-	    double EraseLinearDihedral, UShift, PhiShift;
-	    bool RestraintActive;
-	    int	I1, I2, I3, I4,i;
-            gctools::Vec0<EnergyImproperRestraint>::iterator iri;
-	    for ( i=0,iri =this->_Terms.begin();
-			iri!=this->_Terms.end(); iri++,i++ ) {
-#include <cando/chem/energy_functions/_ImproperRestraint_termCode.cc>
-		if ( RestraintActive ) {
-		    chem::Atom_sp a1, a2, a3, a4;
-		    a1 = (*iri)._Atom1;
-		    a2 = (*iri)._Atom2;
-		    a3 = (*iri)._Atom3;
-		    a4 = (*iri)._Atom4;
-		    info<< "ImproperRestraintDeviation ";
-		    info<< "Phi[degrees](" << Phi/0.0174533 << ") ";
-		    info<< "U[degrees](" << U/0.0174533 << ") ";
-		    info<< "L[degrees](" << L/0.0174533 << ") ";
-		    info << a1->description() << " ";
-		    info << a2->description() << " ";
-		    info << a3->description() << " ";
-		    info << a4->description() << " ";
-		    info << std::endl;
-		    this->_BeyondThresholdTerms.push_back(*iri);
-		    fails++;
-		}
-	    }
-	}
-
-
-    return fails;
+    double x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4;
+    double K,U,L;
+    double EraseLinearDihedral, UShift, PhiShift;
+    bool RestraintActive;
+    int	I1, I2, I3, I4,i;
+    gctools::Vec0<EnergyDihedralRestraint>::iterator iri;
+    for ( i=0,iri =this->_Terms.begin();
+          iri!=this->_Terms.end(); iri++,i++ ) {
+#define DEBUG_IMPROPER_RESTRAINT 1
+#include	<cando/chem/energy_functions/_ImproperRestraint_termCode.cc>
+#undef DEBUG_IMPROPER_RESTRAINT
+      if ( RestraintActive ) {
+        chem::Atom_sp a1, a2, a3, a4;
+        a1 = (*iri)._Atom1;
+        a2 = (*iri)._Atom2;
+        a3 = (*iri)._Atom3;
+        a4 = (*iri)._Atom4;
+        info<< "DihedralRestraintDeviation ";
+        info<< "Phi[degrees](" << Phi/0.0174533 << ") ";
+        info<< "U[degrees](" << U/0.0174533 << ") ";
+        info<< "L[degrees](" << L/0.0174533 << ") ";
+        info << a1->description() << " ";
+        info << a2->description() << " ";
+        info << a3->description() << " ";
+        info << a4->description() << " ";
+        info << std::endl;
+        this->_BeyondThresholdTerms.push_back(*iri);
+        fails++;
+      }
+    }
+  }
+  return fails;
 }
-#endif
 
 
-
-
-
-
-
-
-
-
-
-void EnergyImproperRestraint_O::initialize()
+void EnergyDihedralRestraint_O::initialize()
 {
     this->Base::initialize();
     this->setErrorThreshold(0.001);
 }
 
 #ifdef XML_ARCHIVE
-void EnergyImproperRestraint_O::archiveBase(core::ArchiveP node)
+void EnergyDihedralRestraint_O::archiveBase(core::ArchiveP node)
 {
     this->Base::archiveBase(node);
     IMPLEMENT_ME();

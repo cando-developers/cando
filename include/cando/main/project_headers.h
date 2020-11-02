@@ -158,8 +158,8 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/scoringFunction.h>
 #include <cando/chem/energyFunction.h>
 #include <cando/chem/sketchFunction.h>
-#include <cando/chem/energyImproperRestraint.fwd.h>
-#include <cando/chem/energyImproperRestraint.h>
+#include <cando/chem/energyDihedralRestraint.fwd.h>
+#include <cando/chem/energyDihedralRestraint.h>
 #include <cando/chem/energyNonbond.fwd.h>
 #include <cando/chem/energyNonbond.h>
 #include <cando/chem/energyPeriodicBoundaryConditionsNonbond.fwd.h>
@@ -387,7 +387,7 @@ GC_MANAGED_TYPE(gctools::GCVector_moveable<chem::EnergyAngle>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<chem::EnergyAtom>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<chem::EnergyChiralRestraint>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<chem::EnergyDihedral>);
-GC_MANAGED_TYPE(gctools::GCVector_moveable<chem::EnergyImproperRestraint>);
+GC_MANAGED_TYPE(gctools::GCVector_moveable<chem::EnergyDihedralRestraint>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<chem::EnergyNonbond>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<chem::EnergySketchNonbond>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<chem::EnergyRigidBodyStaple>);
@@ -518,11 +518,11 @@ class Vector3;
     class IterateResidues_O;
     class DirectionalCoupling_O;
     class EnergyChiralRestraint_O;
-    class EnergyImproperRestraint_O;
+    class EnergyDihedralRestraint_O;
     class Root_O;
     class ResidueOut;
     class Monomer_O;
-    class EnergyImproperRestraint;
+    class EnergyDihedralRestraint;
     class MonomerContext_O;
     class FFStretch_O;
     class FFNonbondCrossTermTable_O;

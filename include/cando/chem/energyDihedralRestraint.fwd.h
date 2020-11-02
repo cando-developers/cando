@@ -1,5 +1,5 @@
 /*
-    File: energyImproperRestraint.fwd.h
+    File: energyDihedralRestraint.fwd.h
 */
 /*
 Open Source License
@@ -23,10 +23,10 @@ THE SOFTWARE.
 This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
 */
 /* -^- */
-#ifndef energyImproperRestraint_fwd_H
-#define energyImproperRestraint_fwd_H
+#ifndef energyDihedralRestraint_fwd_H
+#define energyDihedralRestraint_fwd_H
 namespace  chem
 {
-FORWARD(EnergyImproperRestraint);
+FORWARD(EnergyDihedralRestraint);
 }
 #endif

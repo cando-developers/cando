@@ -79,7 +79,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/energyAnchorRestraint.h>
 #include <cando/chem/energyPointToLineRestraint.h>
 #include <cando/chem/energyOutOfZPlane.h>
-#include <cando/chem/energyImproperRestraint.h>
+#include <cando/chem/energyDihedralRestraint.h>
 #include <cando/chem/energyFixedNonbond.h>
 #endif
 #include <clasp/core/wrappers.h>

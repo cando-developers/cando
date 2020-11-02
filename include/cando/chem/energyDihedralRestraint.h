@@ -1,5 +1,5 @@
 /*
-    File: energyImproperRestraint.h
+    File: energyDihedralRestraint.h
 */
 /*
 Open Source License
@@ -30,13 +30,13 @@ This is an open source license for the CANDO software from Temple University, bu
 
 
 /*
- *	energyImproperRestraint.h
+ *	energyDihedralRestraint.h
  *
  *	Maintains a database of stretch types
  */
 
-#ifndef EnergyImproperRestraint_H  //[
-#define	EnergyImproperRestraint_H
+#ifndef EnergyDihedralRestraint_H  //[
+#define	EnergyDihedralRestraint_H
 #include <stdio.h>
 #include <string>
 #include <vector>
@@ -49,6 +49,7 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace       chem {
 
 
+  FORWARD(EnergyFunction);
 
 
 struct TermImproperRestraint
@@ -63,9 +64,9 @@ struct TermImproperRestraint
 };
 
 
-class	EnergyImproperRestraint : public EnergyTerm {
+class	EnergyDihedralRestraint : public EnergyTerm {
  public:
-  string	className()	{ return "EnergyImproperRestraint"; };
+  string	className()	{ return "EnergyDihedralRestraint"; };
  public:
 		// Variables
   Atom_sp      _Atom1;
@@ -100,20 +101,20 @@ class	EnergyImproperRestraint : public EnergyTerm {
 namespace translate {
 
 template <>
-struct	to_object<chem::EnergyImproperRestraint >
+struct	to_object<chem::EnergyDihedralRestraint >
 {
   typedef	core::Cons_sp ExpectedType;
   typedef	core::Cons_sp DeclareType;
-  static core::T_sp convert(const chem::EnergyImproperRestraint& imp)
+  static core::T_sp convert(const chem::EnergyDihedralRestraint& imp)
   {
     return imp.encode();
   }
 };
 
 template <>
-struct	from_object<chem::EnergyImproperRestraint>
+struct	from_object<chem::EnergyDihedralRestraint>
 {
-  typedef	chem::EnergyImproperRestraint	ExpectedType;
+  typedef	chem::EnergyDihedralRestraint	ExpectedType;
   typedef	ExpectedType 		DeclareType;
 	DeclareType _v;
 	from_object(core::T_sp o)
@@ -137,15 +138,15 @@ double	_evaluateEnergyOnly_ImproperRestraint(
 
 
 
-class EnergyImproperRestraint_O : public EnergyComponent_O
+class EnergyDihedralRestraint_O : public EnergyComponent_O
 {
-  LISP_CLASS(chem,ChemPkg,EnergyImproperRestraint_O,"EnergyImproperRestraint",EnergyComponent_O);
+  LISP_CLASS(chem,ChemPkg,EnergyDihedralRestraint_O,"EnergyDihedralRestraint",EnergyComponent_O);
  public: // virtual functions inherited from Object
   void	initialize();
   bool fieldsp() const { return true; };
   void fields(core::Record_sp node);
  public:
-  typedef EnergyImproperRestraint	TermType;
+  typedef EnergyDihedralRestraint	TermType;
  public: // instance variables
   gctools::Vec0<TermType>		_Terms;
   gctools::Vec0<TermType>	_BeyondThresholdTerms;
@@ -161,6 +162,8 @@ class EnergyImproperRestraint_O : public EnergyComponent_O
   virtual size_t numberOfTerms() { return this->_Terms.size();};
  public:
   void addTerm(const TermType& term);
+  void addDihedralRestraint(EnergyFunction_sp energyFunction, Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, double minRadians, double maxRadians, double weight);
+
   virtual void dumpTerms();
 
   virtual void setupHessianPreconditioner(NVector_sp nvPosition,
@@ -178,19 +181,19 @@ class EnergyImproperRestraint_O : public EnergyComponent_O
   virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm(
                                                                                NVector_sp pos );
 
-    // virtual	int	checkForBeyondThresholdInteractions( stringstream& info, NVector_sp pos );
+  virtual int checkForBeyondThresholdInteractions( stringstream& info, NVector_sp pos );
 
   virtual string	beyondThresholdInteractionsAsString();
 
 
  public:
-  EnergyImproperRestraint_O( const EnergyImproperRestraint_O& ss ); //!< Copy constructor
+  EnergyDihedralRestraint_O( const EnergyDihedralRestraint_O& ss ); //!< Copy constructor
 
-  EnergyImproperRestraint_O() {};
-  virtual ~EnergyImproperRestraint_O() {};
+  EnergyDihedralRestraint_O() {};
+  virtual ~EnergyDihedralRestraint_O() {};
 };
 
 };
 
-TRANSLATE(chem::EnergyImproperRestraint_O);
+TRANSLATE(chem::EnergyDihedralRestraint_O);
 #endif //]

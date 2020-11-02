@@ -81,7 +81,7 @@ namespace       chem
   FORWARD(EnergyDihedral);
   FORWARD(EnergyNonbond);
   FORWARD(EnergyPeriodicBoundaryConditionNonbond);
-  FORWARD(EnergyImproperRestraint);
+  FORWARD(EnergyDihedralRestraint);
   FORWARD(EnergyChiralRestraint);
   FORWARD(EnergyAnchorRestraint);
   FORWARD(EnergyFixedNonbondRestraint);
@@ -136,7 +136,7 @@ namespace chem {
     EnergyAngle_sp			_Angle;
     EnergyDihedral_sp			_Dihedral;
     EnergyNonbond_sp			_Nonbond;
-    EnergyImproperRestraint_sp		_ImproperRestraint;
+    EnergyDihedralRestraint_sp		_DihedralRestraint;
     EnergyChiralRestraint_sp		_ChiralRestraint;
     EnergyAnchorRestraint_sp		_AnchorRestraint;
     EnergyFixedNonbondRestraint_sp	_FixedNonbondRestraint;
@@ -161,11 +161,11 @@ namespace chem {
     void	_addMissingParameter(FFParameter_sp p) { this->_MissingParameters = core::Cons_O::create(p,this->_MissingParameters);};
     void __createSecondaryAmideRestraints(VectorAtom& nitrogens, core::T_sp activeAtoms );
 
-    void	flagImproperRestraintsAboveThreshold(NVector_sp nvPosition);
+    void	flagDihedralRestraintsAboveThreshold(NVector_sp nvPosition);
 
   private:
     int _applyRestraints(core::T_sp forceField, core::Iterator_sp restraintIterator, core::T_sp activeAtoms );
-    void _applyDihedralRestraint(Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, double min, double max, double weight, core::T_sp activeAtoms );
+    void _addDihedralRestraint(Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, double min, double max, double weight, core::T_sp activeAtoms );
 
   public:
 
@@ -217,8 +217,8 @@ namespace chem {
     CL_DEFMETHOD     EnergyChiralRestraint_sp	getChiralRestraintComponent() { return this->_ChiralRestraint; };
     CL_LISPIFY_NAME("getAnchorRestraintComponent");
     CL_DEFMETHOD     EnergyAnchorRestraint_sp	getAnchorRestraintComponent() { return this->_AnchorRestraint; };
-    CL_LISPIFY_NAME("getImproperRestraintComponent");
-    CL_DEFMETHOD     EnergyImproperRestraint_sp	getImproperRestraintComponent() { return this->_ImproperRestraint; };
+    CL_LISPIFY_NAME("getDihedralRestraintComponent");
+    CL_DEFMETHOD     EnergyDihedralRestraint_sp	getDihedralRestraintComponent() { return this->_DihedralRestraint; };
     CL_LISPIFY_NAME("getFixedNonbondRestraintComponent");
     CL_DEFMETHOD     EnergyFixedNonbondRestraint_sp	getFixedNonbondRestraintComponent() { return this->_FixedNonbondRestraint; };
 #endif
@@ -229,7 +229,7 @@ namespace chem {
     void          pushOtherEnergyComponent(EnergyComponent_sp component);
 
     double getDihedralComponentEnergy(); // { return this->_Dihedral->getEnergy(); };
-    double getImproperRestraintComponentEnergy(); // { return this->_ImproperRestraint->getEnergy(); };
+    double getDihedralRestraintComponentEnergy(); // { return this->_DihedralRestraint->getEnergy(); };
 
     CL_DEFMETHOD bool hasMissingParameters();
     CL_DEFMETHOD core::List_sp getMissingParameters();
@@ -313,7 +313,7 @@ namespace chem {
       , _Angle(_Unbound<EnergyAngle_O>())
       , _Dihedral(_Unbound<EnergyDihedral_O>())
       , _Nonbond(_Unbound<EnergyNonbond_O>())
-      , _ImproperRestraint(_Unbound<EnergyImproperRestraint_O>())
+      , _DihedralRestraint(_Unbound<EnergyDihedralRestraint_O>())
       , _ChiralRestraint(_Unbound<EnergyChiralRestraint_O>())
       , _AnchorRestraint(_Unbound<EnergyAnchorRestraint_O>())
       , _FixedNonbondRestraint(_Unbound<EnergyFixedNonbondRestraint_O>())
@@ -332,7 +332,7 @@ namespace chem {
       , _Angle(_Unbound<EnergyAngle_O>())
       , _Dihedral(_Unbound<EnergyDihedral_O>())
       , _Nonbond(_Unbound<EnergyNonbond_O>())
-      , _ImproperRestraint(_Unbound<EnergyImproperRestraint_O>())
+      , _DihedralRestraint(_Unbound<EnergyDihedralRestraint_O>())
       , _ChiralRestraint(_Unbound<EnergyChiralRestraint_O>())
       , _AnchorRestraint(_Unbound<EnergyAnchorRestraint_O>())
       , _FixedNonbondRestraint(_Unbound<EnergyFixedNonbondRestraint_O>())

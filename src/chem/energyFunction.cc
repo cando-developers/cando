@@ -63,7 +63,7 @@ __END_DOC
 #include <cando/chem/energyDihedral.h>
 #include <cando/chem/energyNonbond.h>
 #include <cando/chem/energyPeriodicBoundaryConditionsNonbond.h>
-#include <cando/chem/energyImproperRestraint.h>
+#include <cando/chem/energyDihedralRestraint.h>
 #include <cando/chem/energyChiralRestraint.h>
 #include <cando/chem/energyAnchorRestraint.h>
 #include <cando/chem/energyFixedNonbond.h>
@@ -108,7 +108,7 @@ SYMBOL_EXPORT_SC_(ChemPkg,InteractionError);
 SYMBOL_EXPORT_SC_(ChemPkg,LinearAngleError);
 
 SYMBOL_EXPORT_SC_(ChemPkg,LinearDihedralError);
-SYMBOL_EXPORT_SC_(ChemPkg,LinearImproperRestraintError);
+SYMBOL_EXPORT_SC_(ChemPkg,LinearDihedralRestraintError);
 SYMBOL_EXPORT_SC_(ChemPkg,OverlappingNonbondError);
 SYMBOL_EXPORT_SC_(KeywordPkg,atoms);
 
@@ -150,7 +150,7 @@ core::List_sp EnergyFunction_O::allComponents() const {
   result = core::Cons_O::create(this->_FixedNonbondRestraint,result);
   result = core::Cons_O::create(this->_AnchorRestraint,result);
   result = core::Cons_O::create(this->_ChiralRestraint,result);
-  result = core::Cons_O::create(this->_ImproperRestraint,result);
+  result = core::Cons_O::create(this->_DihedralRestraint,result);
   result = core::Cons_O::create(this->_Nonbond,result);
   result = core::Cons_O::create(this->_Dihedral,result);
   result = core::Cons_O::create(this->_Angle,result);
@@ -215,7 +215,7 @@ void	EnergyFunction_O::initialize()
   }
   this->_ChiralRestraint = EnergyChiralRestraint_O::create();
   this->_AnchorRestraint = EnergyAnchorRestraint_O::create();
-  this->_ImproperRestraint = EnergyImproperRestraint_O::create();
+  this->_DihedralRestraint = EnergyDihedralRestraint_O::create();
   this->_FixedNonbondRestraint = EnergyFixedNonbondRestraint_O::create();
 #endif
   this->setScoringFunctionName("");
@@ -240,8 +240,8 @@ void	EnergyFunction_O::useDefaultSettings()
   ASSERT(this->_ChiralRestraint.notnilp());
   ASSERTNOTNULL(this->_AnchorRestraint);
   ASSERT(this->_AnchorRestraint.notnilp());
-  ASSERTNOTNULL(this->_ImproperRestraint);
-  ASSERT(this->_ImproperRestraint.notnilp());
+  ASSERTNOTNULL(this->_DihedralRestraint);
+  ASSERT(this->_DihedralRestraint.notnilp());
   ASSERTNOTNULL(this->_FixedNonbondRestraint);
   ASSERT(this->_FixedNonbondRestraint.notnilp());
   this->_Angle->initialize();
@@ -249,7 +249,7 @@ void	EnergyFunction_O::useDefaultSettings()
   this->_Nonbond->initialize();
   this->_ChiralRestraint->initialize();
   this->_AnchorRestraint->initialize();
-  this->_ImproperRestraint->initialize();
+  this->_DihedralRestraint->initialize();
   this->_FixedNonbondRestraint->initialize();
 #endif
   this->_ChiralRestraintWeight = DefaultChiralRestraintWeight;
@@ -268,7 +268,7 @@ void EnergyFunction_O::fields(core::Record_sp node)
   node->field_if_not_unbound(INTERN_(kw,Angle),this->_Angle);
   node->field_if_not_unbound(INTERN_(kw,Dihedral),this->_Dihedral);
   node->field_if_not_unbound(INTERN_(kw,Nonbond),this->_Nonbond);
-  node->field_if_not_unbound(INTERN_(kw,ImproperRestraint),this->_ImproperRestraint);
+  node->field_if_not_unbound(INTERN_(kw,DihedralRestraint),this->_DihedralRestraint);
   node->field_if_not_unbound(INTERN_(kw,ChiralRestraint),this->_ChiralRestraint);
   node->field_if_not_unbound(INTERN_(kw,AnchorRestraint),this->_AnchorRestraint);
   node->field_if_not_unbound(INTERN_(kw,FixedNonbondRestraint),this->_FixedNonbondRestraint);
@@ -321,9 +321,9 @@ double EnergyFunction_O::getDihedralComponentEnergy()
   return this->_Dihedral->getEnergy();
 }
 
-double EnergyFunction_O::getImproperRestraintComponentEnergy()
+double EnergyFunction_O::getDihedralRestraintComponentEnergy()
 {
-  return this->_ImproperRestraint->getEnergy();
+  return this->_DihedralRestraint->getEnergy();
 }
 #endif
 
@@ -465,8 +465,8 @@ void EnergyFunction_O::setupHessianPreconditioner(NVector_sp nvPosition,
     this->_ChiralRestraint->setupHessianPreconditioner(nvPosition, m );
   if (this->_AnchorRestraint->isEnabled())
     this->_AnchorRestraint->setupHessianPreconditioner(nvPosition, m );
-  if (this->_ImproperRestraint->isEnabled())
-    this->_ImproperRestraint->setupHessianPreconditioner(nvPosition, m );
+  if (this->_DihedralRestraint->isEnabled())
+    this->_DihedralRestraint->setupHessianPreconditioner(nvPosition, m );
 //    this->_FixedNonbondRestraint->setupHessianPreconditioner(nvPosition, m );
 #endif
 
@@ -599,14 +599,14 @@ double	EnergyFunction_O::evaluateAll( NVector_sp 	pos,
   }
 ////	_lisp->profiler().timer(core::timerNonbond).stop();
 
-////	_lisp->profiler().timer(core::timerImproperRestraint).start();
-  if(this->_ImproperRestraint->isEnabled()) {
-    this->_ImproperRestraint->evaluateAllComponent( this->asSmartPtr(),
+////	_lisp->profiler().timer(core::timerDihedralRestraint).start();
+  if(this->_DihedralRestraint->isEnabled()) {
+    this->_DihedralRestraint->evaluateAllComponent( this->asSmartPtr(),
                                                     pos, calcForce, force,
                                                     calcDiagonalHessian, calcOffDiagonalHessian, hessian, hdvec, dvec );
-    this->_TotalEnergy += this->_ImproperRestraint->getEnergy();
+    this->_TotalEnergy += this->_DihedralRestraint->getEnergy();
   }
-////	_lisp->profiler().timer(core::timerImproperRestraint).stop();
+////	_lisp->profiler().timer(core::timerDihedralRestraint).stop();
 
 ////	_lisp->profiler().timer(core::timerChiralRestraint).start();
   if(this->_ChiralRestraint->isEnabled()) {
@@ -662,7 +662,7 @@ string EnergyFunction_O::energyComponentsAsString()
   ss << boost::format("Dihedral(%lf)") % this->_Dihedral->getEnergy() << std::endl;
   ss << boost::format("Nonbond(%lf)") % this->_Nonbond->getEnergy() << std::endl;
   ss << boost::format("ChiralRestraint(%lf)") % this->_ChiralRestraint->getEnergy() << std::endl;
-  ss << boost::format("ImproperRestraint(%lf)") % this->_ImproperRestraint->getEnergy() << std::endl;
+  ss << boost::format("DihedralRestraint(%lf)") % this->_DihedralRestraint->getEnergy() << std::endl;
   ss << boost::format("AnchorRestraint(%lf)") % this->_AnchorRestraint->getEnergy() << std::endl;
   ss << boost::format("FixedNonbondRestraint(%lf)") % this->_FixedNonbondRestraint->getEnergy() << std::endl;
 #endif
@@ -690,7 +690,7 @@ int	EnergyFunction_O::compareAnalyticalAndNumericalForceAndHessianTermByTerm( NV
     this->_Angle->compareAnalyticalAndNumericalForceAndHessianTermByTerm(pos);
     this->_Dihedral->compareAnalyticalAndNumericalForceAndHessianTermByTerm(pos);
     this->_Nonbond->compareAnalyticalAndNumericalForceAndHessianTermByTerm(this->asSmartPtr(),pos);
-    this->_ImproperRestraint->compareAnalyticalAndNumericalForceAndHessianTermByTerm(pos);
+    this->_DihedralRestraint->compareAnalyticalAndNumericalForceAndHessianTermByTerm(pos);
     this->_ChiralRestraint->compareAnalyticalAndNumericalForceAndHessianTermByTerm(pos);
     this->_AnchorRestraint->compareAnalyticalAndNumericalForceAndHessianTermByTerm(pos);
     this->_FixedNonbondRestraint->compareAnalyticalAndNumericalForceAndHessianTermByTerm(pos);
@@ -767,7 +767,7 @@ string	EnergyFunction_O::energyTermsEnabled()
   ss << this->_Angle->enabledAsString();
   ss << this->_Dihedral->enabledAsString();
   ss << this->_Nonbond->enabledAsString();
-  ss << this->_ImproperRestraint->enabledAsString();
+  ss << this->_DihedralRestraint->enabledAsString();
   ss << this->_ChiralRestraint->enabledAsString();
   ss << this->_AnchorRestraint->enabledAsString();
   ss << this->_FixedNonbondRestraint->enabledAsString();
@@ -1001,7 +1001,7 @@ void	EnergyFunction_O::dumpTerms()
   this->_Angle->dumpTerms();
   this->_Dihedral->dumpTerms();
   this->_Nonbond->dumpTerms();
-  this->_ImproperRestraint->dumpTerms();
+  this->_DihedralRestraint->dumpTerms();
   this->_ChiralRestraint->dumpTerms();
   this->_AnchorRestraint->dumpTerms();
   this->_FixedNonbondRestraint->dumpTerms();
@@ -1028,7 +1028,7 @@ int EnergyFunction_O::_applyRestraints(core::T_sp nonbondDb, core::Iterator_sp r
     if ( restraint.isA<RestraintDihedral_O>() )
     {
       RestraintDihedral_sp dih = (restraint).as<RestraintDihedral_O>();
-      EnergyImproperRestraint energyTerm;
+      EnergyDihedralRestraint energyTerm;
       if ( activeAtoms.notnilp() &&
            (!inAtomSet(activeAtoms,dih->getAtomA())
             || !inAtomSet(activeAtoms,dih->getAtomB())
@@ -1049,7 +1049,7 @@ int EnergyFunction_O::_applyRestraints(core::T_sp nonbondDb, core::Iterator_sp r
       energyTerm.term.U = dih->getMaxDegrees()*0.0174533;
       energyTerm.term.L = dih->getMinDegrees()*0.0174533;
       energyTerm.term.K = dih->getWeight();
-      this->_ImproperRestraint->addTerm(energyTerm);
+      this->_DihedralRestraint->addTerm(energyTerm);
       ++terms;
     } else if ( restraint.isA<RestraintAnchor_O>() )
     {
@@ -1102,29 +1102,11 @@ int EnergyFunction_O::_applyRestraints(core::T_sp nonbondDb, core::Iterator_sp r
   return terms;
 }
 
-void EnergyFunction_O::_applyDihedralRestraint(Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, double minDegrees, double maxDegrees, double weight, core::T_sp activeAtoms)
+void EnergyFunction_O::_addDihedralRestraint(Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, double minDegrees, double maxDegrees, double weight, core::T_sp activeAtoms)
 {_OF();
   if ( activeAtoms.notnilp() &&
        (!inAtomSet(activeAtoms,a1) || !inAtomSet(activeAtoms,a2) || !inAtomSet(activeAtoms,a3) || !inAtomSet(activeAtoms,a4)) ) return;
-#if USE_ALL_ENERGY_COMPONENTS
-  EnergyImproperRestraint energyTerm;
-  energyTerm._Atom1 = a1;
-  energyTerm._Atom2 = a2;
-  energyTerm._Atom3 = a3;
-  energyTerm._Atom4 = a4;
-  EnergyAtom* ea1 = this->getEnergyAtomPointer(energyTerm._Atom1);
-  EnergyAtom* ea2 = this->getEnergyAtomPointer(energyTerm._Atom2);
-  EnergyAtom* ea3 = this->getEnergyAtomPointer(energyTerm._Atom3);
-  EnergyAtom* ea4 = this->getEnergyAtomPointer(energyTerm._Atom4);
-  energyTerm.term.I1 = ea1->coordinateIndexTimes3();
-  energyTerm.term.I2 = ea2->coordinateIndexTimes3();
-  energyTerm.term.I3 = ea3->coordinateIndexTimes3();
-  energyTerm.term.I4 = ea4->coordinateIndexTimes3();
-  energyTerm.term.U = maxDegrees*0.0174533;
-  energyTerm.term.L = minDegrees*0.0174533;
-  energyTerm.term.K = weight;
-  this->_ImproperRestraint->addTerm(energyTerm);
-#endif
+  this->_DihedralRestraint->addDihedralRestraint(this->asSmartPtr(),a1,a2,a3,a4,minDegrees*0.0174533,maxDegrees*0.0174533,weight);
 }
 
 void EnergyFunction_O::__createSecondaryAmideRestraints(gctools::Vec0<Atom_sp>& nitrogens, core::T_sp activeAtoms )
@@ -1164,13 +1146,13 @@ void EnergyFunction_O::__createSecondaryAmideRestraints(gctools::Vec0<Atom_sp>& 
       LOG(BF("Applying a secondary amide restraint between %s and %s") % ax->description() % ay->description()  );
 		    //
 		    // H3(ax2) and O5(ay1) should be trans
-      this->_applyDihedralRestraint(ax1,ax,ay,ay1,cisMin,cisMax,weight,activeAtoms);
+      this->_addDihedralRestraint(ax1,ax,ay,ay1,cisMin,cisMax,weight,activeAtoms);
       LOG(BF("Restrain cis %s - %s - %s -%s") % ax1->description() % ax->description() % ay->description() % ay1->description()  );
-      this->_applyDihedralRestraint(ax1,ax,ay,ay2,transMin,transMax,weight,activeAtoms);
+      this->_addDihedralRestraint(ax1,ax,ay,ay2,transMin,transMax,weight,activeAtoms);
       LOG(BF("Restrain trans %s - %s - %s -%s") % ax1->description() % ax->description() % ay->description() % ay2->description()  );
-      this->_applyDihedralRestraint(ax2,ax,ay,ay1,transMin,transMax,weight,activeAtoms);
+      this->_addDihedralRestraint(ax2,ax,ay,ay1,transMin,transMax,weight,activeAtoms);
       LOG(BF("Restrain trans %s - %s - %s -%s") % ax2->description() % ax->description() % ay->description() % ay1->description()  );
-      this->_applyDihedralRestraint(ax2,ax,ay,ay2,cisMin,cisMax,weight,activeAtoms);
+      this->_addDihedralRestraint(ax2,ax,ay,ay2,cisMin,cisMax,weight,activeAtoms);
       LOG(BF("Restrain cis %s - %s - %s -%s") % ax2->description() % ax->description() % ay->description() % ay2->description()  );
     }
   }
@@ -1959,9 +1941,9 @@ CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter
         nitrogens.push_back(a);
       }
     }
-    int startTerms = this->_ImproperRestraint->numberOfTerms();
-    this->__createSecondaryAmideRestraints(nitrogens,activeAtoms);
-    if (chem__verbose(0)) core::write_bf_stream(BF("Built secondary amide restraints including %d terms\n") % (this->_ImproperRestraint->numberOfTerms() - startTerms));
+    int startTerms = this->_DihedralRestraint->numberOfTerms();
+    // this->__createSecondaryAmideRestraints(nitrogens,activeAtoms);
+    if (chem__verbose(0)) core::write_bf_stream(BF("Built secondary amide restraints including %d terms\n") % (this->_DihedralRestraint->numberOfTerms() - startTerms));
   } else
   {
     LOG(BF("Skipping Secondary amide restraints because _RestrainSecondaryAmides = %d") % this->_RestrainSecondaryAmides );
@@ -2005,6 +1987,21 @@ void	EnergyFunction_O::loadCoordinatesIntoVector(NVector_sp pos)
   }
 }
 
+
+CL_DOCSTRING("Return the coordinate vector of the energy function");
+CL_DEFUN NVector_sp chem__energy_function_coordinate_vector(EnergyFunction_sp energy_function)
+{
+  NVector_sp pos = NVector_O::create(energy_function->getNVectorSize());
+  energy_function->loadCoordinatesIntoVector(pos);
+  return pos;
+}
+
+CL_DOCSTRING("Return an empty force vector of the energy function");
+CL_DEFUN NVector_sp chem__energy_function_empty_force_vector(EnergyFunction_sp energy_function)
+{
+  NVector_sp pos = NVector_O::make(energy_function->getNVectorSize(),0.0,true);
+  return pos;
+}
 
 
 void    EnergyFunction_O::saveCoordinatesFromVector(NVector_sp pos)
@@ -2084,7 +2081,7 @@ CL_DEFMETHOD string EnergyFunction_O::summarizeBeyondThresholdInteractionsAsStri
   ss << this->_Angle->beyondThresholdInteractionsAsString();
   ss << this->_Dihedral->beyondThresholdInteractionsAsString();
   ss << this->_Nonbond->beyondThresholdInteractionsAsString();
-  ss << this->_ImproperRestraint->beyondThresholdInteractionsAsString();
+  ss << this->_DihedralRestraint->beyondThresholdInteractionsAsString();
   ss << this->_ChiralRestraint->beyondThresholdInteractionsAsString();
   ss << this->_AnchorRestraint->beyondThresholdInteractionsAsString();
   ss << this->_FixedNonbondRestraint->beyondThresholdInteractionsAsString();
@@ -2110,7 +2107,7 @@ CL_DEFMETHOD string	EnergyFunction_O::summarizeEnergyAsString()
   ss << this->_Angle->summarizeEnergyAsString();
   ss << this->_Dihedral->summarizeEnergyAsString();
   ss << this->_Nonbond->summarizeEnergyAsString();
-  ss << this->_ImproperRestraint->summarizeEnergyAsString();
+  ss << this->_DihedralRestraint->summarizeEnergyAsString();
   ss << this->_ChiralRestraint->summarizeEnergyAsString();
   ss << this->_AnchorRestraint->summarizeEnergyAsString();
   ss << this->_FixedNonbondRestraint->summarizeEnergyAsString();
@@ -2148,7 +2145,7 @@ CL_DEFMETHOD string	EnergyFunction_O::debugLogAsString()
   ss << this->_Angle->debugLogAsString() << std::endl;
   ss << this->_Dihedral->debugLogAsString() << std::endl;
   ss << this->_Nonbond->debugLogAsString() << std::endl;
-  ss << this->_ImproperRestraint->debugLogAsString() << std::endl;
+  ss << this->_DihedralRestraint->debugLogAsString() << std::endl;
   ss << this->_ChiralRestraint->debugLogAsString() << std::endl;
   ss << this->_AnchorRestraint->debugLogAsString() << std::endl;
   ss << this->_FixedNonbondRestraint->debugLogAsString() << std::endl;

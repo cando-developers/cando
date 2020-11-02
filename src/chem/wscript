@@ -51,7 +51,7 @@ def build(bld):
             'energyAnchorRestraint',
             'energyPointToLineRestraint',
             'energyOutOfZPlane',
-            'energyImproperRestraint',
+            'energyDihedralRestraint',
             'energyFixedNonbond',
             'energyAtomTable',
             'energyRigidBodyStaple',
