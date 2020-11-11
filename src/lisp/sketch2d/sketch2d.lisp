@@ -1234,6 +1234,38 @@ are in the order (low, middle, high) and the column eigen-vectors are in the sam
     (augment-sketch-with-stereochemistry sketch2d)
     sketch2d))
 
+
+(defun remove-partial-rings (anchor equiv)
+  (loop with rings = (chem:identify-rings anchor)
+        with bonds = (chem:map-bonds 'list #'list anchor)
+        with new-equiv = equiv
+        with changed = t
+        while changed
+        do (setf changed nil)
+        do (loop for ring in rings
+                 for count = (count-if (lambda (atom)
+                                         (position atom new-equiv :key #'cdr))
+                                       ring)
+                 do (when (< 0 count (length ring)) ; ignore rings not in the map or rings that are complete
+                      (loop for atom in ring
+                            for neighbors = (mapcan (lambda (bond)
+                                                      (cond
+                                                        ((and (eql atom (first bond))
+                                                              (position (second bond) new-equiv :key #'cdr))
+                                                          (list (second bond)))
+                                                        ((and (eql atom (second bond))
+                                                              (position (first bond) new-equiv :key #'cdr))
+                                                          (list (first bond)))))
+                                                    bonds)
+                            do (when (and (position atom new-equiv :key #'cdr) ; is the atom in the equivalence list?
+                                          (or (zerop (length neighbors)) ; no neighbors
+                                              (and (= 1 (length neighbors)) ; one neighbor and they are in the ring
+                                                   (position (first neighbors) ring))))
+                                 (setf new-equiv (delete atom new-equiv :key #'cdr))
+                                 (setf changed t)))))
+        finally (return new-equiv)))
+
+
 (defgeneric similar-sketch2d (thing anchor-sketch2d &key accumulate-coordinates atom-match-callback))
 
 (defmethod similar-sketch2d ((molecule chem:molecule) anchor-sketch2d &key accumulate-coordinates (atom-match-callback #'molecule-graph:element-match))
@@ -1249,7 +1281,7 @@ Otherwise pass a function that takes two atoms and returns T if they are matchab
     #+(or)(format t "About to compare molecules~%")
     (multiple-value-bind (max-equiv diff1 diff2)
         (molecule-graph.max-clique:compare-molecules molecule anchor-molecule :atom-match-callback atom-match-callback :topological-constraint-theta 2)
-      (let ((equiv (molecule-graph.max-clique:largest-connected-cluster-of-equivalent-atoms max-equiv molecule)))
+      (let ((equiv (remove-partial-rings anchor-molecule (molecule-graph.max-clique:largest-connected-cluster-of-equivalent-atoms max-equiv molecule))))
         #+(or)(progn
                 (format t "mol1: ~s~%" molecule)
                 (format t "mol2: ~s~%" anchor-molecule)
