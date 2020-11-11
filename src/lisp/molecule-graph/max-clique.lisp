@@ -237,9 +237,41 @@ The last constraint abs(T(v1,v1')-T(v2,v2'))<=theta is the topological constrain
   (chem:find-maximum-clique-search dimacs *clique-search-threads* 1))
 
 
+(defun remove-partial-rings (anchor equiv)
+  (loop with rings = (chem:identify-rings anchor)
+        with bonds = (chem:map-bonds 'list #'list anchor)
+        with new-equiv = equiv
+        with changed = t
+        while changed
+        do (setf changed nil)
+        do (loop for ring in rings
+                 for count = (count-if (lambda (atom)
+                                         (position atom new-equiv :key #'cdr))
+                                       ring)
+                 do (when (< 0 count (length ring)) ; ignore rings not in the map or rings that are complete
+                      (loop for atom in ring
+                            for neighbors = (mapcan (lambda (bond)
+                                                      (cond
+                                                        ((and (eql atom (first bond))
+                                                              (position (second bond) new-equiv :key #'cdr))
+                                                          (list (second bond)))
+                                                        ((and (eql atom (second bond))
+                                                              (position (first bond) new-equiv :key #'cdr))
+                                                          (list (first bond)))))
+                                                    bonds)
+                            do (when (and (position atom new-equiv :key #'cdr) ; is the atom in the equivalence list?
+                                          (or (zerop (length neighbors)) ; no neighbors
+                                              (and (= 1 (length neighbors)) ; one neighbor and they are in the ring
+                                                   (position (first neighbors) ring))))
+                                 (setf new-equiv (delete atom new-equiv :key #'cdr))
+                                 (setf changed t)))))
+        finally (return new-equiv)))
+
+
 (defun compare-molecules (molecule1 molecule2 &key
                                                 (topological-constraint-theta 2)
                                                 (exclude-hydrogens t)
+                                                remove-partial-rings
                                                 atom-match-callback)
   "Return three values:
 a list of pairs of matching atoms 
@@ -264,6 +296,8 @@ Otherwise pass a function that takes two atoms and returns T if they are matchab
          (matches (extract-atom-pairs cross-product maximum-clique))
          (mol1-matches (make-hash-table))
          (mol2-matches (make-hash-table)))
+    (when remove-partial-rings
+      (setf matches (remove-partial-rings molecule2 matches)))
     (loop for pair in matches
           for atom1 = (car pair)
           for atom2 = (cdr pair)
@@ -358,6 +392,7 @@ Otherwise pass a function that takes two atoms and returns T if they are matchab
      &rest rest
      &key
        topological-constraint-theta
+       remove-partial-rings
        exclude-hydrogens
        atom-match-callback)
   "Compare two molecules using max-clique and then identify the largest cluster of connected equivalent atoms.

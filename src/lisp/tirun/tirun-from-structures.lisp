@@ -96,6 +96,7 @@
        target-molecule
        :atom-match-callback (lambda (atom1 atom2)
                               (chem:atom-within-angstroms atom1 atom2 0.3))
+       :remove-partial-rings t
        :exclude-hydrogens t)
     (integrate-hydrogens-into-comparison heavy-equivs heavy-diff1 heavy-diff2)))
 
