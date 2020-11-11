@@ -676,13 +676,7 @@ It will put those multiple ligands into all-ligands and selected-ligands"
 (defun generate-stylesheet (atoms)
   (when atoms
     (with-output-to-string (output-stream)
-      (format output-stream "~{.atom.~A~^,~%~}" atoms)
-      (loop for atom-1 in atoms
-            for pos-1 from 0
-            do (loop for atom-2 in atoms
-                     for pos-1 below pos-1
-                     do (format output-stream "~%,.bond.~A.~A" atom-1 atom-2)))
-      (format output-stream " {~%  filter: url(#highlight);~%}"))))
+      (format output-stream "~{.~A~^,~%~} {~%  filter: url(#highlight);~%}" atoms))))
 
 
 (defun update-selected-sketches (graph unselected-names)

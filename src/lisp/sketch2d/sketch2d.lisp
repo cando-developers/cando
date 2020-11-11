@@ -1235,37 +1235,6 @@ are in the order (low, middle, high) and the column eigen-vectors are in the sam
     sketch2d))
 
 
-(defun remove-partial-rings (anchor equiv)
-  (loop with rings = (chem:identify-rings anchor)
-        with bonds = (chem:map-bonds 'list #'list anchor)
-        with new-equiv = equiv
-        with changed = t
-        while changed
-        do (setf changed nil)
-        do (loop for ring in rings
-                 for count = (count-if (lambda (atom)
-                                         (position atom new-equiv :key #'cdr))
-                                       ring)
-                 do (when (< 0 count (length ring)) ; ignore rings not in the map or rings that are complete
-                      (loop for atom in ring
-                            for neighbors = (mapcan (lambda (bond)
-                                                      (cond
-                                                        ((and (eql atom (first bond))
-                                                              (position (second bond) new-equiv :key #'cdr))
-                                                          (list (second bond)))
-                                                        ((and (eql atom (second bond))
-                                                              (position (first bond) new-equiv :key #'cdr))
-                                                          (list (first bond)))))
-                                                    bonds)
-                            do (when (and (position atom new-equiv :key #'cdr) ; is the atom in the equivalence list?
-                                          (or (zerop (length neighbors)) ; no neighbors
-                                              (and (= 1 (length neighbors)) ; one neighbor and they are in the ring
-                                                   (position (first neighbors) ring))))
-                                 (setf new-equiv (delete atom new-equiv :key #'cdr))
-                                 (setf changed t)))))
-        finally (return new-equiv)))
-
-
 (defgeneric similar-sketch2d (thing anchor-sketch2d &key accumulate-coordinates atom-match-callback))
 
 (defmethod similar-sketch2d ((molecule chem:molecule) anchor-sketch2d &key accumulate-coordinates (atom-match-callback #'molecule-graph:element-match))
@@ -1279,61 +1248,63 @@ Otherwise pass a function that takes two atoms and returns T if they are matchab
   (chem:calculate-stereochemistry-from-structure molecule :only_undefined_configuration t)
   (let ((anchor-molecule (original-molecule anchor-sketch2d)))
     #+(or)(format t "About to compare molecules~%")
-    (multiple-value-bind (max-equiv diff1 diff2)
-        (molecule-graph.max-clique:compare-molecules molecule anchor-molecule :atom-match-callback atom-match-callback :topological-constraint-theta 2)
-      (let ((equiv (remove-partial-rings anchor-molecule (molecule-graph.max-clique:largest-connected-cluster-of-equivalent-atoms max-equiv molecule))))
-        #+(or)(progn
-                (format t "mol1: ~s~%" molecule)
-                (format t "mol2: ~s~%" anchor-molecule)
-                (format t "similar-sketch2d equiv atoms: ~a~%" equiv)
-                (format t "diff1: ~s~%" diff1)
-                (format t "diff2: ~s~%" diff2))
-        (let ((new-sketch (setup-simulation molecule :accumulate-coordinates accumulate-coordinates)))
-          ;; We need hash-tables for the original atoms to the sketch atoms
-          (let ((anchor-original-to-sketch (make-hash-table))
-                (new-original-to-sketch (make-hash-table)))
-            (maphash (lambda (key value)
-                       (setf (gethash value new-original-to-sketch) key))
-                     (sketch-atoms-to-original new-sketch))
-            (maphash (lambda (key value)
-                       (setf (gethash value anchor-original-to-sketch) key))
-                     (sketch-atoms-to-original anchor-sketch2d))
-            (let* ((dynamics (dynamics new-sketch))
-                   (energy-function (dynamics:scoring-function dynamics))
-                   (atom-table (chem:atom-table energy-function))
-                   (number-of-atoms (chem:get-number-of-atoms atom-table))
-                   (debug-info (make-hash-table))
-                   (frozen (make-array (* 3 number-of-atoms) :element-type 'bit :initial-element 0)))
-              #+(or)(format t "There are ~a atoms in atom-table~%" number-of-atoms)
-              (loop for equiv-pair in equiv
-                    for new-atom = (car equiv-pair)
-                    for anchor-atom = (cdr equiv-pair)
-                    for new-sketch-atom = (gethash new-atom new-original-to-sketch)
-                    for anchor-sketch-atom = (gethash anchor-atom anchor-original-to-sketch)
-                    for anchor-pos = (chem:get-position anchor-sketch-atom)
-                    do (unless (or (= 1 (chem:get-atomic-number anchor-sketch-atom))
-                                   (eq :lp (chem:get-element anchor-sketch-atom)))
-                         (let ((new-sketch-atom-index (chem:get-atom-index-or-nil atom-table new-sketch-atom)))
-                           ;; Some atoms from the original molecule are not in the sketch molecule
-                           ;; so if it's missing - then ignore it.
-                           (when new-sketch-atom-index
-                             #+debug-sketch2d
-                             (setf (gethash new-sketch-atom debug-info)
-                                   (make-instance 'sketch-debug-info
-                                                  :label (format nil "~a/~a" (chem:get-name new-atom) (chem:get-name anchor-atom))))
-                             (chem:set-position new-sketch-atom anchor-pos)
-                             (setf (aref frozen (* 3 new-sketch-atom-index)) 1
-                                   (aref frozen (+ 1 (* 3 new-sketch-atom-index))) 1
-                                   (aref frozen (+ 2 (* 3 new-sketch-atom-index))) 1
-                                   )))))
-              #+(or)(format t "Using frozen: ~a  length: ~a~%" frozen (length frozen))
-              (chem:load-coordinates-into-vector energy-function (dynamics:coordinates dynamics))
-              (sketch2d-dynamics new-sketch dynamics :frozen frozen :unfreeze nil
-                                          :accumulate-coordinates accumulate-coordinates)
-              (augment-sketch-with-stereochemistry new-sketch)
-              #+debug-sketch2d(setf (debug-info new-sketch) debug-info)
-              new-sketch
-              )))))))
+    (multiple-value-bind (equiv diff1 diff2)
+                         (molecule-graph.max-clique:compare-molecules-return-largest-connected-cluster-of-equivalent-atoms
+                           molecule anchor-molecule
+                           :atom-match-callback atom-match-callback
+                           :topological-constraint-theta 2
+                           :remove-partial-rings t)
+      #+(or)(progn
+              (format t "mol1: ~s~%" molecule)
+              (format t "mol2: ~s~%" anchor-molecule)
+              (format t "similar-sketch2d equiv atoms: ~a~%" equiv)
+              (format t "diff1: ~s~%" diff1)
+              (format t "diff2: ~s~%" diff2))
+      (let ((new-sketch (setup-simulation molecule :accumulate-coordinates accumulate-coordinates)))
+        ;; We need hash-tables for the original atoms to the sketch atoms
+        (let ((anchor-original-to-sketch (make-hash-table))
+              (new-original-to-sketch (make-hash-table)))
+          (maphash (lambda (key value)
+                     (setf (gethash value new-original-to-sketch) key))
+                   (sketch-atoms-to-original new-sketch))
+          (maphash (lambda (key value)
+                     (setf (gethash value anchor-original-to-sketch) key))
+                   (sketch-atoms-to-original anchor-sketch2d))
+          (let* ((dynamics (dynamics new-sketch))
+                 (energy-function (dynamics:scoring-function dynamics))
+                 (atom-table (chem:atom-table energy-function))
+                 (number-of-atoms (chem:get-number-of-atoms atom-table))
+                 (debug-info (make-hash-table))
+                 (frozen (make-array (* 3 number-of-atoms) :element-type 'bit :initial-element 0)))
+            #+(or)(format t "There are ~a atoms in atom-table~%" number-of-atoms)
+            (loop for equiv-pair in equiv
+                  for new-atom = (car equiv-pair)
+                  for anchor-atom = (cdr equiv-pair)
+                  for new-sketch-atom = (gethash new-atom new-original-to-sketch)
+                  for anchor-sketch-atom = (gethash anchor-atom anchor-original-to-sketch)
+                  for anchor-pos = (chem:get-position anchor-sketch-atom)
+                  do (unless (or (= 1 (chem:get-atomic-number anchor-sketch-atom))
+                                 (eq :lp (chem:get-element anchor-sketch-atom)))
+                       (let ((new-sketch-atom-index (chem:get-atom-index-or-nil atom-table new-sketch-atom)))
+                         ;; Some atoms from the original molecule are not in the sketch molecule
+                         ;; so if it's missing - then ignore it.
+                         (when new-sketch-atom-index
+                           #+debug-sketch2d
+                           (setf (gethash new-sketch-atom debug-info)
+                                 (make-instance 'sketch-debug-info
+                                                :label (format nil "~a/~a" (chem:get-name new-atom) (chem:get-name anchor-atom))))
+                           (chem:set-position new-sketch-atom anchor-pos)
+                           (setf (aref frozen (* 3 new-sketch-atom-index)) 1
+                                 (aref frozen (+ 1 (* 3 new-sketch-atom-index))) 1
+                                 (aref frozen (+ 2 (* 3 new-sketch-atom-index))) 1
+                                 )))))
+            #+(or)(format t "Using frozen: ~a  length: ~a~%" frozen (length frozen))
+            (chem:load-coordinates-into-vector energy-function (dynamics:coordinates dynamics))
+            (sketch2d-dynamics new-sketch dynamics :frozen frozen :unfreeze nil
+                               :accumulate-coordinates accumulate-coordinates)
+            (augment-sketch-with-stereochemistry new-sketch)
+            #+debug-sketch2d(setf (debug-info new-sketch) debug-info)
+            new-sketch))))))
                    
 
 
