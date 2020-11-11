@@ -263,7 +263,7 @@ The last constraint abs(T(v1,v1')-T(v2,v2'))<=theta is the topological constrain
                                           (or (zerop (length neighbors)) ; no neighbors
                                               (and (= 1 (length neighbors)) ; one neighbor and they are in the ring
                                                    (position (first neighbors) ring))))
-                                 (setf new-equiv (delete atom new-equiv :key #'cdr))
+                                 (setf new-equiv (remove atom new-equiv :key #'cdr))
                                  (setf changed t)))))
         finally (return new-equiv)))
 
