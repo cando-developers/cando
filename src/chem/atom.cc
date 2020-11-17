@@ -1245,6 +1245,9 @@ Matter_sp Atom_O::copyDontRedirectAtoms(core::T_sp new_to_old)
   GC_NON_RECURSIVE_COPY(Atom_O, aNew , *this); // = RP_Copy<Atom_O>(this);
   aNew->bonds.clear();
   this->copyAtom = aNew;
+  if (this->_Properties.notnilp()) {
+    aNew->_Properties = core::cl__copy_seq(this->_Properties);
+  }
   aNew->copyRestraintsDontRedirectAtoms(this->asSmartPtr());
   LOG(BF("    copy atom== %s") % aNew->description());
   return(aNew);
