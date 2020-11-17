@@ -809,15 +809,32 @@ Try five times."
           do (anchor-to-pose moveable-atoms fixed-atoms :stereochemical-restraints stereochemical-restraints))
     (repeatedly-minimize-molecules molecules)))
 
+(defun match-atoms (atom1 atom2)
+  "If the atom1 has a :match property then the atoms only match if the :match property eq the name of atom2.
+This is used to force the orientation of groups that could have ambiguous orientation."
+  (if (chem:has-property atom1 :match)
+      (let* ((match-name (chem:matter-get-property-or-default atom1 :match nil))
+             (matches (eq match-name (chem:get-name atom2))))
+        #+(or)(if matches
+                  (format t "Forcing match ~a to ~a~%" match-name (chem:get-name atom2))
+                  (format t "No match of ~a to ~a~%" match-name (chem:get-name atom2)))
+        matches)
+      t))
+
+(defun pose-one-molecule-using-similarity (molecule docked-molecule)
+  (format t "Posing molecule ~a~%" (chem:get-name molecule))
+  (multiple-value-bind (equiv diff1 diff2)
+      (molecule-graph.max-clique:compare-molecules molecule
+                                                   docked-molecule
+                                                   :atom-match-callback #'match-atoms)
+    (let ((moveable-atoms (mapcar #'car equiv))
+          (fixed-atoms (mapcar #'cdr equiv)))
+      (chem:superpose-one molecule moveable-atoms fixed-atoms)
+      (anchor-to-pose moveable-atoms fixed-atoms))))
+
 (defun pose-molecules-using-similarity (molecules docked-molecule)
   (loop for molecule in molecules
-        do (multiple-value-bind (equiv diff1 diff2)
-               (molecule-graph.max-clique:compare-molecules molecule docked-molecule)
-             #+(or)(format t "  pose-ligands-using-similarity equiv -> ~a~%" equiv)
-             (let ((moveable-atoms (mapcar #'car equiv))
-                   (fixed-atoms (mapcar #'cdr equiv)))
-               (chem:superpose-one molecule moveable-atoms fixed-atoms)
-               (anchor-to-pose moveable-atoms fixed-atoms))))
+        do (pose-one-molecule-using-similarity molecule docked-molecule))
   (repeatedly-minimize-molecules molecules))
 
 #+(or)
