@@ -313,7 +313,8 @@
         for component in (nglview:components (ngl instance))
         for index from 0
         when (and (nglview:shown component)
-                  (string/= "receptor" (nglview:id component)))
+                  (string/= "receptor" (nglview:id component))
+                  (string/= "template" (nglview:id component)))
         do (jostle-relax ngl index (matter component) jostle)))
 
 
