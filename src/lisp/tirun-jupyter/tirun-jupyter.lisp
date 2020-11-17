@@ -50,6 +50,11 @@
     :initarg selected-ligands
     :initform nil
     :trait t)
+   (similarities
+    :accessor similarities
+    :initarg :similarities
+    :initform nil
+    :trait t)
    (all-edges
     :accessor all-edges
     :initarg :all-edges
@@ -158,6 +163,7 @@
         (template-ligand *workspace*) nil
         (all-ligands *workspace*) nil
         (selected-ligands *workspace*) nil
+        (similarities *workspace*) nil
         (all-edges *workspace*) nil
         (distributor *workspace*) +default-distributor+
         (job-name *workspace*) +default-job-name+
@@ -670,13 +676,7 @@ It will put those multiple ligands into all-ligands and selected-ligands"
 (defun generate-stylesheet (atoms)
   (when atoms
     (with-output-to-string (output-stream)
-      (format output-stream "~{.atom.~A~^,~%~}" atoms)
-      (loop for atom-1 in atoms
-            for pos-1 from 0
-            do (loop for atom-2 in atoms
-                     for pos-1 below pos-1
-                     do (format output-stream "~%,.bond.~A.~A" atom-1 atom-2)))
-      (format output-stream " {~%  filter: url(#highlight);~%}"))))
+      (format output-stream "~{.~A~^,~%~} {~%  filter: url(#highlight);~%}" atoms))))
 
 
 (defun update-selected-sketches (graph unselected-names)
@@ -725,7 +725,8 @@ It will put those multiple ligands into all-ligands and selected-ligands"
   "Construct an cytoscape edge based on an edge definition when is a list of
   the form (source target label)."
   (let ((name-1 (symbol-name (first edge)))
-        (name-2 (symbol-name (second edge))))
+        (name-2 (symbol-name (second edge)))
+        (similarity (cdr (assoc edge (similarities *workspace*) :test #'equal))))
     (make-instance 'cytoscape:element
                    :group "edges"
                    :on-trait-change (list (cons :selected
@@ -734,7 +735,7 @@ It will put those multiple ligands into all-ligands and selected-ligands"
                                                   (update-selected-sketches graph (unless new-value
                                                                                     (list name-1 name-2))))))
                    :data (list (cons "id" (edge-id name-1 name-2))
-                               (cons "label" (or (third edge) :null))
+                               (cons "label" (format nil "~@[S = ~3,2f~]" similarity))
                                (cons "source" name-1)
                                (cons "target" name-2)))))
 
@@ -796,19 +797,27 @@ It will put those multiple ligands into all-ligands and selected-ligands"
   (format t "Calculating similarity matrix of ~{~a~#[~;, and ~:;, ~]~}...~%"
           (mapcar #'molecule-name selected-ligands))
   (finish-output) ; Make sure the message is synced to the frontend.
-  (let ((multigraph (lomap::lomap-multigraph
-                      (lomap::similarity-multigraph
-                        selected-ligands
-                        (lomap::similarity-matrix selected-ligands
-                                                  :advance-progress-callback progress-callback))))
-        new-edges)
+  (let* ((similarity-matrix (lomap::similarity-matrix selected-ligands
+                                                      :advance-progress-callback progress-callback))
+         (multigraph (lomap::lomap-multigraph (lomap::similarity-multigraph selected-ligands
+                                                                            similarity-matrix)))
+         new-edges)
+    ;; Loop over the similarity matrix and add the similarities
+    (setf (similarities *workspace*)
+          (loop for ligand1 in selected-ligands
+                for index1 from 0
+                append (loop for ligand2 in selected-ligands
+                             for index2 from 0 below index1
+                             collect (cons (sort (list (chem:get-name ligand1)
+                                                       (chem:get-name ligand2))
+                                                 #'string<)
+                                           (aref similarity-matrix index1 index2)))))
     ;; Loop over the subgraphs and the vertices and edges and create edges.
     (dolist (subgraph (lomap::subgraphs multigraph))
       (dolist (edge (lomap::edges subgraph))
-        (push (nconc (sort (list (chem:get-name (lomap:molecule (lomap:vertex1 edge)))
-                                 (chem:get-name (lomap:molecule (lomap:vertex2 edge))))
-                           #'string<)
-                     (list (format nil "S = ~3,2f" (lomap:sim-score edge))))
+        (push (sort (list (chem:get-name (lomap:molecule (lomap:vertex1 edge)))
+                          (chem:get-name (lomap:molecule (lomap:vertex2 edge))))
+                    #'string<)
               new-edges)))
     (setf all-edges new-edges))
   (write-line "Similarity matrix calculation completed.")
