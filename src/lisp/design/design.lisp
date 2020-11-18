@@ -265,7 +265,6 @@ than the (chem:number-of-sequences oligomer)."
       (t (error "Handle ~a" names)))))
             
 (defun interpret-part (oligomer part-info labels)
-  (format t "Interpreting part: ~s~%" part-info)
   (destructuring-bind (names &key label)
       (cond
         ((and (consp part-info) (symbolp (first part-info)) (string= (first part-info) :cycle))
@@ -289,13 +288,15 @@ than the (chem:number-of-sequences oligomer)."
     (let ((previous-monomer (loop for part in previous-parts
                                   for name = (chem:current-stereoisomer-name part)
                                   for topology = (chem:current-topology part) ; lookup-topology name)
-                                  do (format *debug-io* "do-coupling       part -> ~s~%" part)
-                                     (format *debug-io* "  (chem:current-stereoisomer-name part) -> ~s~%" (chem:current-stereoisomer-name part))
-                                     (format *debug-io* "      (type-of part) -> ~s~%" (type-of part))
-                                     (format *debug-io* "  name -> ~s~%" name)
-                                     (format *debug-io* "  (type-of name) -> ~s~%" (type-of name))
-                                     (format *debug-io* "              topology -> ~s~%" topology)
-                                     (format *debug-io* "         out-plug-name -> ~s~%" out-plug-name)
+#|                                  do (progn
+                                       (format *debug-io* "do-coupling       part -> ~s~%" part)
+                                       (format *debug-io* "  (chem:current-stereoisomer-name part) -> ~s~%" (chem:current-stereoisomer-name part))
+                                       (format *debug-io* "      (type-of part) -> ~s~%" (type-of part))
+                                       (format *debug-io* "  name -> ~s~%" name)
+                                       (format *debug-io* "  (type-of name) -> ~s~%" (type-of name))
+                                       (format *debug-io* "              topology -> ~s~%" topology)
+                                       (format *debug-io* "         out-plug-name -> ~s~%" out-plug-name))
+|#
                                   when (chem:has-plug-named topology out-plug-name)
                                     collect part))
           (next-monomer (loop for part in next-parts
