@@ -244,9 +244,6 @@ If[ U<=L && ((Phi<=U)||(Phi>=L)),
 		PhiShift = TWOPI;
 	];
 ];*/
-#ifdef DEBUG_IMPROPER_RESTRAINT
-if (this->_DebugEnergy) core::write_bf_stream(BF( "MEISTER improperRestraint termCode U=%f Phi=%f L=%f \n")% U % Phi % L );
-#endif
 if ( U<=L && ((Phi<=U)||(Phi>=L))) {
 	RestraintActive = true;
 	UShift = TWOPI;

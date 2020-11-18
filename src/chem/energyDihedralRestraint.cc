@@ -134,9 +134,6 @@ void EnergyDihedralRestraint_O::addDihedralRestraint(EnergyFunction_sp energyFun
   energyTerm.term.I2 = ea2->coordinateIndexTimes3();
   energyTerm.term.I3 = ea3->coordinateIndexTimes3();
   energyTerm.term.I4 = ea4->coordinateIndexTimes3();
-  if (!(minRadians<=maxRadians)) {
-    SIMPLE_ERROR(BF("min-radians %f must be less than or equal to max-radians %f") % minRadians % maxRadians);
-  }
   energyTerm.term.U = minRadians;
   energyTerm.term.L = maxRadians;
   energyTerm.term.K = weight;

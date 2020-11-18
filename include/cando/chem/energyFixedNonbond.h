@@ -193,6 +193,8 @@ public:
 
     void addTerm(const TermType& term);
     virtual void dumpTerms();
+    virtual bool is_restraint() const { return true; };
+
 
     virtual	void	zeroEnergy();
 //virtual void setupHessianPreconditioner(NVector_sp nvPosition,

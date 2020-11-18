@@ -164,6 +164,8 @@ class EnergyDihedralRestraint_O : public EnergyComponent_O
   void addTerm(const TermType& term);
   void addDihedralRestraint(EnergyFunction_sp energyFunction, Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, double minRadians, double maxRadians, double weight);
 
+  virtual bool is_restraint() const { return true; };
+  
   virtual void dumpTerms();
 
   virtual void setupHessianPreconditioner(NVector_sp nvPosition,

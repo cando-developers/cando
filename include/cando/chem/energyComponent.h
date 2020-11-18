@@ -284,6 +284,10 @@ public:
   CL_LISPIFY_NAME("getErrorThreshold");
   CL_DEFMETHOD 	double	getErrorThreshold() { return this->_ErrorThreshold; };
 
+  CL_DOCSTRING("Some energy-components are restraints - and should be disabled to calculate conformational energies");
+  CL_DEFMETHOD
+    virtual bool is_restraint() const { return false; };
+  
   CL_LISPIFY_NAME("energy-component-evaluations");
   CL_DEFMETHOD 	size_t	evaluations() const { return this->_Evaluations; };
 
