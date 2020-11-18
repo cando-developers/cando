@@ -42,6 +42,7 @@ I'll use an angle term instead of a bond term.
 (defparameter *stage3-flatten-force* 1.0)
 (defconstant +stage4-bond-length+ 1.5)
 (defconstant +stage4-bond-force+ (* 2.0 +first-bond-force+))
+(defparameter *stage4-angle-stretch-force* 0.3)
 (defconstant +angle-120+ (* 0.0174533 120.0))
 (defconstant +angle-180+ (* 0.0174533 180.0))
 
@@ -60,11 +61,20 @@ I'll use an angle term instead of a bond term.
 (defparameter *lp-sulfur* #+nosmarts nil #-nosmarts(chem:make-chem-info-graph (chem:compile-smarts "[#16X2:0]")))
 (defparameter *bad-angle* #+nosmarts nil #-nosmarts(chem:make-chem-info-graph (chem:compile-smarts "[*X3:0](~[*X1:1])(~[*:2])~[*:3]")))
 
+(defparameter *ring3-long-length* 2.898)
+(defparameter *ring3-short-length* 1.5)
+(defparameter *exo-ring3* (chem:make-chem-info-graph (chem:compile-smarts "[*:0]1(-[*:1])[*:2][*:3]1")))
+(defparameter *ring4-long-length* 2.77)
+(defparameter *ring4-short-length* 2.123)
+(defparameter *exo-ring4* (chem:make-chem-info-graph (chem:compile-smarts "[*:0]1(-[*:1])[*:2][*][*:3]1")))
+
 (defparameter *bis-amino-acid-alpha* #+nosmarts nil #-nosmarts(chem:compile-smarts "[C:0]1(-[C:1]=[O])CCCN1"))
 
 (defclass sketch-nonbond-force-field () ())
 
-(defmethod chem:find-atom-type-position ((force-field sketch-nonbond-force-field) type) 0)
+(defmethod chem:find-atom-type-position ((force-field sketch-nonbond-force-field) type)
+  (declare (ignore force-field type))
+  0)
 
 
 (defparameter *quaternary-center* #+nosmarts nil #-nosmarts(chem:make-chem-info-graph (chem:compile-smarts "[*X4:0](~[*:1])(~[*:2])(~[*:3])~[*:4]")))
@@ -97,6 +107,7 @@ I'll use an angle term instead of a bond term.
                                                     +stage1-sketch-nonbond-force+)))
     (chem:map-bonds 'nil
                     (lambda (a1 a2 bond-order)
+                      (declare (ignore bond-order))
                       (let ((atom1-coord-index (chem:get-coordinate-index atom-table a1))
                             (atom2-coord-index (chem:get-coordinate-index atom-table a2)))
                         (chem:add-sketch-stretch-term bond-energy
@@ -123,19 +134,39 @@ I'll use an angle term instead of a bond term.
       (cons ia1 ia2)
       (cons ia2 ia1)))
 
+(defun filter-using-first-atom (matches)
+  (let ((unique-first-atom-matches (make-hash-table)))
+    (loop for match in matches
+          for first-atom = (elt match 0)
+          do (setf (gethash first-atom unique-first-atom-matches) match))
+    (let ((unique-matches nil))
+      (maphash (lambda (key match)
+                 (declare (ignore key))
+                 (push match unique-matches))
+               unique-first-atom-matches)
+      unique-matches)))
+
 (defun add-angle-terms (sketch sketch-function bond-force bond-length)
+  (declare (ignore sketch))
   (let* ((molecule (chem:get-graph sketch-function))
          (angle120-bond-length (* (sqrt 3.0) bond-length))
-         (angle-quat-bond-length (* (sqrt 2.0) bond-length))
          (atom-table (chem:node-table sketch-function))
          (bond-energy (chem:get-stretch-component sketch-function))
          (sketch-nonbond-component (chem:get-sketch-nonbond-component sketch-function))
          (mol-graph (chem:make-molecule-graph-from-molecule molecule))
-         (linear-bond-centers (chem:boost-graph-vf2 *linear-bond-center* mol-graph))
-         (cumulated-double-bond-centers (chem:boost-graph-vf2 *cumulated-double-bond-center* mol-graph))
+         #+(or)(linear-bond-centers (chem:boost-graph-vf2 *linear-bond-center* mol-graph))
+         #+(or)(cumulated-double-bond-centers (chem:boost-graph-vf2 *cumulated-double-bond-center* mol-graph))
          (three-bond-centers (chem:boost-graph-vf2 *three-bond-center* mol-graph))
          (unique-three-bond-centers (make-hash-table :test #'equal))
          (quat-centers (chem:boost-graph-vf2 *quaternary-center* mol-graph))
+         (ring3-centers (filter-using-first-atom (chem:boost-graph-vf2 *exo-ring3* mol-graph)))
+         (ring4-centers (filter-using-first-atom (chem:boost-graph-vf2 *exo-ring4* mol-graph)))
+         (ring-centers (let ((ring-centers (make-hash-table)))
+                         (loop for center in ring3-centers
+                               do (setf (gethash center ring-centers) t))
+                         (loop for center in ring4-centers
+                               do (setf (gethash center ring-centers) t))
+                         ring-centers))
          (unique-quat-centers (make-hash-table :test #'equal))
          double-nonbond-pairs
          (atom-ids (make-hash-table)))
@@ -153,7 +184,8 @@ I'll use an angle term instead of a bond term.
             for atom2-id = (gethash atom2 atom-ids)
             for atom3-id = (gethash atom3 atom-ids)
             for sorted-ids = (sort (list atom1-id atom2-id atom3-id) #'<)
-            do (setf (gethash (cons center-id sorted-ids) unique-three-bond-centers) (list center atom1 atom2 atom3)))
+            when (null (gethash center ring-centers)) ; ignore centers that are in 3-, or 4-member rings
+              do (setf (gethash (cons center-id sorted-ids) unique-three-bond-centers) (list center atom1 atom2 atom3)))
       (loop for tbc being the hash-values of unique-three-bond-centers
             for center = (elt tbc 0)
             for atom1 = (elt tbc 1)
@@ -166,6 +198,30 @@ I'll use an angle term instead of a bond term.
                (chem:add-sketch-stretch-term bond-energy atom2-coord-index atom3-coord-index bond-force angle120-bond-length)
                (chem:add-sketch-stretch-term bond-energy atom3-coord-index atom1-coord-index bond-force angle120-bond-length)
             ))
+    (loop for ring3 in ring3-centers
+          for center = (elt ring3 0)
+          for exo = (elt ring3 1)
+          for left = (elt ring3 2)
+          for right = (elt ring3 3)
+          for exo-coord-index = (chem:get-coordinate-index atom-table exo)
+          for left-coord-index = (chem:get-coordinate-index atom-table left)
+          for right-coord-index = (chem:get-coordinate-index atom-table right)
+          do (format t "exocyclic ring3 ~a -> ~a ~a ~a~%" exo center left right)
+          do (chem:add-sketch-stretch-term bond-energy exo-coord-index left-coord-index bond-force *ring3-long-length*)
+             (chem:add-sketch-stretch-term bond-energy exo-coord-index right-coord-index bond-force *ring3-long-length*)
+             (chem:add-sketch-stretch-term bond-energy left-coord-index right-coord-index bond-force *ring3-short-length*))
+    (loop for ring4 in ring4-centers
+          for center = (elt ring4 0)
+          for exo = (elt ring4 1)
+          for left = (elt ring4 2)
+          for right = (elt ring4 3)
+          for exo-coord-index = (chem:get-coordinate-index atom-table exo)
+          for left-coord-index = (chem:get-coordinate-index atom-table left)
+          for right-coord-index = (chem:get-coordinate-index atom-table right)
+          do (format t "exocyclic ring4 ~a -> ~a ~a ~a~%" exo center left right)
+          do (chem:add-sketch-stretch-term bond-energy exo-coord-index left-coord-index bond-force *ring4-long-length*)
+             (chem:add-sketch-stretch-term bond-energy exo-coord-index right-coord-index bond-force *ring4-long-length*)
+             (chem:add-sketch-stretch-term bond-energy left-coord-index right-coord-index bond-force *ring4-short-length*))
     ;; Gather up all the unique quat-centers
     (progn
       (loop for tbc in quat-centers
@@ -228,8 +284,7 @@ I'll use an angle term instead of a bond term.
 
 (defun add-atom-annotations (molecule)
   (cando:do-atoms (atom molecule)
-    (let ((hydrogens 0)
-          (charge 0))
+    (let ((hydrogens 0))
     (cond
       ((/= (chem:get-atomic-number atom) 1)
        (let ((bonds (chem:bonds-as-list atom)))
@@ -244,6 +299,7 @@ I'll use an angle term instead of a bond term.
              (loop for match in (chem:boost-graph-vf2 chem-info-graph molecule-graph)
                    collect (elt match 0)))
            (remove-connected-hydrogens (mol sketch-atoms-to-original atoms &optional (number-to-remove 999) verbose)
+             (declare (ignore verbose))
              (let ((connected-hydrogens nil))
                (cando:do-residues (res mol)
                  (cando:do-atoms (atm res)
@@ -261,16 +317,17 @@ I'll use an angle term instead of a bond term.
                      (loop for (hatom . res) in connected-hydrogens
                            do (remhash hatom sketch-atoms-to-original)
                            do (chem:remove-atom-delete-bonds res hatom))))))
-           (add-lone-pair (mol atoms idx)
-             (cando:do-residues (res mol)
-               (loop for atom in atoms
-                     for lp-idx from idx
-                     for lp-name = (intern (format nil "lp~a" lp-idx) :keyword)
-                     for lp = (chem:make-atom lp-name :lp)
-                     do (incf idx)
-                        (chem:add-matter res lp)
-                        (chem:bond-to atom lp :single-bond)
-                     ))
+           (add-lone-pair (mol atoms idx atom-to-residue-map)
+             (declare (ignore mol))
+             (loop for atom in atoms
+                   for lp-idx from idx
+                   for lp-name = (intern (format nil "lp~a" lp-idx) :keyword)
+                   for lp = (chem:make-atom lp-name :lp)
+                   for res = (gethash atom atom-to-residue-map)
+                   do (incf idx)
+                      (chem:add-matter res lp)
+                      (chem:bond-to atom lp :single-bond)
+                   )
              idx)
            (unique-secondary-carbon-missing-h (mol-graph)
              (let ((missing-h (find-groups *secondary-carbon-missing-h* mol-graph))
@@ -300,13 +357,21 @@ I'll use an angle term instead of a bond term.
         (remove-connected-hydrogens mol-copy sketch-atoms-to-original (find-groups *secondary-carbon* mol-graph) 1)
         (remove-connected-hydrogens mol-copy sketch-atoms-to-original (find-groups *tertiary-carbon* mol-graph) 1 t)
         (remove-connected-hydrogens mol-copy sketch-atoms-to-original (find-groups *tertiary-amine-with-h* mol-graph) 1)
-        (let ((idx 0))
+        (let ((idx 0)
+              (atom-to-residue-map (make-hash-table))
+              (atoms-need-lps nil))
+          ;; Map atoms to residues
+          (cando:do-residues (res mol-copy)
+            (cando:do-atoms (atm res)
+              (setf (gethash atm atom-to-residue-map) res)))
+          ;; Collect all atoms that need lone-pairs.
+          (cando:do-atoms (atm mol-copy)
+            (when (and (member (chem:get-element atm) '(:O :N :S)) (= (chem:number-of-bonds atm) 2))
+               (push atm atoms-need-lps)))
+          ;; Add lone pairs to atoms that need them
           (let ((missing-h (unique-secondary-carbon-missing-h mol-graph)))
-            #+(or)(format t "Missing-h ~a~%" missing-h)
-            (setf idx (add-lone-pair mol-copy missing-h idx))
-            (setf idx (add-lone-pair mol-copy (find-groups *lp-oxygen* mol-graph) idx))
-            (setf idx (add-lone-pair mol-copy (find-groups *lp-nitrogen* mol-graph) idx))
-            (setf idx (add-lone-pair mol-copy (find-groups *lp-sulfur* mol-graph) idx))))
+            (setf idx (add-lone-pair mol-copy missing-h idx atom-to-residue-map)))
+          (setf idx (add-lone-pair mol-copy atoms-need-lps idx atom-to-residue-map)))
         (chem:setf-force-field-name mol-copy :.hidden.sketch2d-1)
 ;;;        (cando:jostle mol-copy 20.0 t)
         (make-instance 'sketch2d
@@ -367,7 +432,6 @@ I'll use an angle term instead of a bond term.
       (chem:set-type atom :sketch))
     (let* ((dummy-sketch-nonbond-ff (make-instance 'sketch-nonbond-force-field))
            (sketch-function (chem:make-sketch-function edited-mol dummy-sketch-nonbond-ff))
-           (atom-table (chem:node-table sketch-function))
            (dynamics (dynamics:make-atomic-simulation sketch-function
                                                       :accumulate-coordinates accumulate-coordinates)))
       (setf (dynamics sketch) dynamics)
@@ -464,6 +528,7 @@ to check if two line segments (bonds) overlap/intersect
   (let ((stretches (chem:map-bonds
                     'vector
                     (lambda (a1 a2 order)
+                      (declare (ignore order))
                       (make-stretch-term :atom1 a1 :atom2 a2))
                     matter))
         intersecting)
@@ -522,7 +587,7 @@ to check if two line segments (bonds) overlap/intersect
          (energy-function (dynamics:scoring-function dynamics))
          (molecule (chem:get-graph energy-function))
          (atom-table (chem:atom-table energy-function))
-         (energy-stretch (chem:get-stretch-component energy-function))
+         #+(or)(energy-stretch (chem:get-stretch-component energy-function))
          (intersections (detect-intersecting-bonds molecule)))
     (if intersections
         (let (worst-problem-area)
@@ -591,6 +656,7 @@ to check if two line segments (bonds) overlap/intersect
     new-frozen))
                           
 (defun geometric-center-of-unfrozen-atoms (atom-table coordinates frozen)
+  (declare (ignore atom-table))
   (let ((xpos 0.0)
         (ypos 0.0)
         (zpos 0.0)
@@ -608,8 +674,7 @@ to check if two line segments (bonds) overlap/intersect
 (defun transform-unfrozen-atoms-center-to (to-center atom-table coordinates frozen)
   (let* ((from-center (geometric-center-of-unfrozen-atoms atom-table coordinates frozen))
          (offset (geom:v- to-center from-center)))
-    (loop with count = 0
-          for coord-index from 0 below (length frozen) by 3
+    (loop for coord-index from 0 below (length frozen) by 3
           do (when (not (elt frozen coord-index))
                (let ((xpos (+ (geom:vx offset) (elt coordinates coord-index)))
                      (ypos (+ (geom:vy offset) (elt coordinates (+ 1 coord-index))))
@@ -631,8 +696,9 @@ to check if two line segments (bonds) overlap/intersect
       (> (geom:vdot vleft-right vdelta-mono) 0.0)))) ; mono pointed into V formed by left-center-right
 
 (defun has-wide-angle (center mono left right)
+  (declare (ignore mono))
   (let ((vcenter (chem:get-position center))
-        (vmono (chem:get-position mono))
+        #+(or)(vmono (chem:get-position mono))
         (vleft (chem:get-position left))
         (vright (chem:get-position right)))
     (let ((angle-rad (geom:vangle vleft vcenter vright)))
@@ -707,7 +773,7 @@ to check if two line segments (bonds) overlap/intersect
   (let ((new-bad-angle-vector (make-array (length bad-angle-vector) :fill-pointer 0 :adjustable t))
         (leftmost (find-leftmost-position bad-angle-vector)))
     (vector-push (elt bad-angle-vector leftmost) new-bad-angle-vector)
-    (let ((temp-index nil)
+    (let (#+(or)(temp-index nil)
           (left (elt bad-angle-vector leftmost)))
       (setf (elt bad-angle-vector leftmost) nil)
       (loop for ia from 1 below (length bad-angle-vector)
@@ -814,6 +880,7 @@ to check if two line segments (bonds) overlap/intersect
          (delta-dot-between-left-right (geom:vdot between-left-right delta))
          (would-flip-in (< delta-dot-between-left-right 0.0)))
     (flet ((flip-mono (why)
+             (declare (ignore why))
              (let ((flipped-mono (geom:v+ center (geom:v* delta -1.0))))
                (chem:set-position (bad-angle-mono bad-angle) flipped-mono))))
       (cond
@@ -853,6 +920,7 @@ to check if two line segments (bonds) overlap/intersect
     groups))
 
 (defun sketch2d-dynamics (sketch dynamics &key accumulate-coordinates (unfreeze t) frozen (bond-length +stage1-bond-length+))
+  (declare (ignore accumulate-coordinates))
   (let* ((sketch-function (dynamics:scoring-function dynamics))
          (atom-table (chem:node-table sketch-function))
          (energy-stretch (chem:get-stretch-component sketch-function))
@@ -890,9 +958,10 @@ to check if two line segments (bonds) overlap/intersect
     (progn
       (chem:walk-sketch-stretch-terms energy-stretch
                                       (lambda (index atom1-I1 atom2-I2 kb r0)
+                                        (declare (ignore atom1-I1 atom2-I2 kb r0))
                                         (chem:modify-sketch-stretch-term-kb energy-stretch index +stage4-bond-force+)
                                         (chem:modify-sketch-stretch-term-r0 energy-stretch index +stage4-bond-length+)))
-      (add-angle-terms sketch sketch-function +stage4-bond-force+ +stage4-bond-length+)
+      (add-angle-terms sketch sketch-function *stage4-angle-stretch-force* +stage4-bond-length+)
       (loop for i from 0 below 5000
             for cutoff from 80.0 downto 1.0 by (/ 79.0 5000.0)
             do (chem:set-long-distance-cutoff energy-sketch-nonbond (* cutoff +stage4-bond-length+))
@@ -912,7 +981,7 @@ to check if two line segments (bonds) overlap/intersect
 (defun sketch2d-molecule (molecule &key accumulate-coordinates)
   (let* ((sketch (setup-simulation molecule :accumulate-coordinates accumulate-coordinates))
          (dynamics (dynamics sketch))
-         (scoring-function (dynamics:scoring-function dynamics)))
+         #+(or)(scoring-function (dynamics:scoring-function dynamics)))
     (sketch2d-dynamics sketch dynamics :accumulate-coordinates accumulate-coordinates)
     sketch))
 
@@ -963,8 +1032,8 @@ are in the order (low, middle, high) and the column eigen-vectors are in the sam
                (incf count)
                (let ((problems (identify-problem-areas sketch)))
                  (when (= problems 0)
-                   (let* ((dynamics (dynamics sketch))
-                          (result-molecule (chem:get-graph (dynamics:scoring-function dynamics))))
+                   (let* (#+(or)(dynamics (dynamics sketch))
+                          #+(or)(result-molecule (chem:get-graph (dynamics:scoring-function dynamics))))
                      #+(or)(align-molecule-horizontal result-molecule))
                    (return-from do-sketch2d (values sketch count))))))
     (values sketch count)))
@@ -1249,11 +1318,12 @@ Otherwise pass a function that takes two atoms and returns T if they are matchab
   (let ((anchor-molecule (original-molecule anchor-sketch2d)))
     #+(or)(format t "About to compare molecules~%")
     (multiple-value-bind (equiv diff1 diff2)
-                         (molecule-graph.max-clique:compare-molecules-return-largest-connected-cluster-of-equivalent-atoms
-                           molecule anchor-molecule
-                           :atom-match-callback atom-match-callback
-                           :topological-constraint-theta 2
-                           :remove-partial-rings t)
+      (molecule-graph.max-clique:compare-molecules-return-largest-connected-cluster-of-equivalent-atoms
+       molecule anchor-molecule
+       :atom-match-callback atom-match-callback
+       :topological-constraint-theta 2
+       :remove-partial-rings t)
+      (declare (ignore diff1 diff2))
       #+(or)(progn
               (format t "mol1: ~s~%" molecule)
               (format t "mol2: ~s~%" anchor-molecule)

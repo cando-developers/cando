@@ -103,7 +103,7 @@
         (loop for cur = property-list then (cddr cur)
               for label = (first cur)
               for value = (second cur)
-              do (chem:set-property atom label value))))
+              while label do (chem:set-property atom label value))))
     (vector-push-extend atom atoms)
     (chem:add-matter residue atom)))
 
