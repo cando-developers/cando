@@ -25,11 +25,6 @@
     :initarg :composer-data
     :initform nil
     :trait t)
-   (template-ligand-string
-    :accessor template-ligand-string
-    :initarg :template-ligand-string
-    :initform nil
-    :trait t)
    (receptor
     :accessor receptor
     :initarg :receptor
@@ -100,6 +95,10 @@
   (selected-ligands *workspace*))
 
 
+(define-symbol-macro template-ligand
+  (template-ligand *workspace*))
+
+
 (define-symbol-macro all-edges
   (all-edges *workspace*))
 
@@ -158,7 +157,6 @@
 
 (defun new-workspace (&optional (path (workspace-path *workspace*)))
   (setf (composer-data *workspace*) nil
-        (template-ligand-string *workspace*) nil
         (receptor *workspace*) nil
         (template-ligand *workspace*) nil
         (all-ligands *workspace*) nil
@@ -227,9 +225,9 @@
   (declare (ignore action progress-callback))
   (handler-case
       (with-slots (receptor)
-          *workspace*
+                  *workspace*
         (let ((receptor-string (babel:octets-to-string (cdr (assoc "content" (car parameter) :test #'string=)))))
-          (setf (receptor *workspace*)
+          (setf receptor
                 (with-input-from-string (input-stream receptor-string)
                   (leap.pdb:load-pdb-stream input-stream)))
           (save-workspace)))
@@ -245,16 +243,16 @@
   "Called from file task page to parse template-ligand."
   (declare (ignore action progress-callback))
   (handler-case
-      (with-slots (template-ligand-string)
+      (with-slots (template-ligand)
                   *workspace*
-        (setf template-ligand-string (babel:octets-to-string (cdr (assoc "content" (car parameter) :test #'string=))))
-        (format t "About to parse ligand pdb file~%")
-        (setf (template-ligand *workspace*)
-              (with-input-from-string (input-stream template-ligand-string)
-                (leap.pdb:load-pdb-stream input-stream :ignore-missing-topology t)))
-        (format t "Done parse ligand pdb file~%")
-        (finish-output)
-        (save-workspace))
+        (let ((template-ligand-string (babel:octets-to-string (cdr (assoc "content" (car parameter) :test #'string=)))))
+          (format t "About to parse template ligand pdb file~%")
+          (setf template-ligand
+                (with-input-from-string (input-stream template-ligand-string)
+                  (leap.pdb:load-pdb-stream input-stream :ignore-missing-topology t)))
+          (format t "Done parsing ligand pdb file~%")
+          (finish-output)
+          (save-workspace)))
     (leap.pdb:pdb-read-error (condition)
       (princ condition *error-output*)
       nil)
@@ -266,11 +264,7 @@
 (defun load-receptor ()
   "Present a graphical interface to load and view a receptor into the current application."
   (let* ((container (make-instance 'w:accordion :selected-index 0))
-         (ngl (make-instance 'nglv:nglwidget
-                              :layout (make-instance 'w:layout
-                                                     :border "var(--jp-widgets-border-width) solid var(--jp-border-color1)"
-                                                     :grid-area "ngl"))))
-    (setf (nglview::parameters ngl) '(:clip-dist 0))
+         (ngl (cw:make-ngl-structure-viewer)))
     (cw:make-file-task-page container "Load Receptor" #'parse-receptor :accept ".pdb")
     ;; Make a simple page to display the receptor in nglview
     (setf (w:widget-%titles container) (append (w:widget-%titles container)
@@ -282,21 +276,17 @@
       (lambda (inst type name old-value new-value source)
         (declare (ignore inst type name old-value source))
         (when (equal new-value 1)
-          (nglview:handle-resize ngl))))
+          (nglview:handle-resize (cw:ngl ngl)))))
     ;; Add the receptor if one is already defined.
     (when (receptor *workspace*)
-      (nglview:add-structure ngl (make-instance 'cw:cando-structure
-                                                :id "receptor"
-                                                :matter (receptor *workspace*))))
+      (cw:add-receptor ngl (receptor *workspace*)))
     ;; Listen for changes to the receptor and add or delete when needed.
     (w:observe *workspace* :receptor
       (lambda (inst type name old-value new-value source)
         (declare (ignore inst type name old-value source))
-        (nglview:remove-all-components ngl)
+        #+(or)(nglview:remove-all-components ngl)
         (when new-value
-          (nglview:add-structure ngl (make-instance 'cw:cando-structure
-                                                    :id "receptor"
-                                                    :matter new-value)))))
+          (cw:add-receptor ngl new-value))))
     container))
 
 
@@ -304,10 +294,7 @@
 (defun load-template-ligand ()
   "Present a graphical interface to load and view a template-ligand into the current application."
   (let* ((container (make-instance 'w:accordion :selected-index 0))
-         (ngl (make-instance 'nglv:nglwidget
-                              :layout (make-instance 'w:layout
-                                                     :border "var(--jp-widgets-border-width) solid var(--jp-border-color1)"
-                                                     :grid-area "ngl"))))
+         (ngl (cw:make-ngl-structure-viewer)))
     (cw:make-file-task-page container "Load Template ligand" #'parse-template-ligand :accept ".pdb")
     ;; Make a simple page to display the receptor in nglview
     (setf (w:widget-%titles container) (append (w:widget-%titles container)
@@ -319,17 +306,17 @@
       (lambda (inst type name old-value new-value source)
         (declare (ignore inst type name old-value source))
         (when (equal new-value 1)
-          (nglview:handle-resize ngl))))
+          (nglview:handle-resize (cw:ngl ngl)))))
     ;; Add the template ligand if one is already defined.
-    (when (template-ligand-string *workspace*)
-      (nglview:add-structure ngl (make-instance 'nglview:text-structure :text (template-ligand-string *workspace*))))
+    (when (template-ligand *workspace*)
+      (cw:add-template ngl (template-ligand *workspace*)))
     ;; Listen for changes to the template-ligand and add or delete when needed.
-    (w:observe *workspace* :template-ligand-string
+    (w:observe *workspace* :template-ligand
       (lambda (inst type name old-value new-value source)
         (declare (ignore inst type name old-value source))
-        (nglview:remove-all-components ngl)
+        #+(or)(nglview:remove-all-components ngl)
         (when new-value
-          (nglview:add-structure ngl (make-instance 'nglview:text-structure :text new-value)))))
+          (cw:add-template ngl new-value))))
     container))
 
 
@@ -344,16 +331,24 @@
                                                      :border "var(--jp-widgets-border-width) solid var(--jp-border-color1)"
                                                      :grid-area "structure"))
      :documentation "A sketch view for the selected ligand.")
-   (slider
-     :reader view-ligand-slider
-     :initform (make-instance 'w:int-slider
-                              :layout (make-instance 'w:layout
-                                                     :width "100%"))
-     :documentation "A slider to select a ligand.")
    (dropdown
      :reader view-ligand-dropdown
      :initform (make-instance 'w:dropdown
+                              :description "Active Ligand"
+                              :style (make-instance 'w:description-style
+                                                    :description-width "min-content")
                               :layout (make-instance 'w:layout
+                                                     :margin ".5em"
+                                                     :width "max-content"))
+     :documentation "A dropdown of all the available ligands.")
+   (template-dropdown
+     :reader view-ligand-template-dropdown
+     :initform (make-instance 'w:dropdown
+                              :description "Template Ligand"
+                              :style (make-instance 'w:description-style
+                                                    :description-width "min-content")
+                              :layout (make-instance 'w:layout
+                                                     :margin ".5em"
                                                      :width "max-content"))
      :documentation "A dropdown of all the available ligands."))
   (:metaclass jupyter-widgets:trait-metaclass)
@@ -371,12 +366,11 @@
   (symbol-name (chem:get-name molecule)))
 
 
-(defun on-ligand-select (instance index &optional previous)
+(defun on-ligand-select (instance id &optional previous-id)
   "Select a ligand on a view-ligand-page and hide a previous ligand if one was selected."
   (with-slots (structure)
               instance
-    (let* ((mol (elt all-ligands index))
-           (id (molecule-name mol)))
+    (let ((mol (find id all-ligands :key #'molecule-name :test #'equal)))
       ;; Load the sketch
       (setf (w:widget-value structure)
             (format nil "<div style='display:flex;align-items:center;height:100%;'><div style='display:block;margin:auto;'>~A</div></div>"
@@ -384,8 +378,8 @@
       ;; A resize can't hurt.
       (nglview:handle-resize (cw:ngl (view-ligand-ngl-structure-viewer instance)))
       ;; Hide previous ligand.
-      (when previous
-        (nglview:hide-components (cw:ngl (view-ligand-ngl-structure-viewer instance)) (molecule-name (elt all-ligands previous))))
+      (when previous-id
+        (nglview:hide-components (cw:ngl (view-ligand-ngl-structure-viewer instance)) previous-id))
       ;; Show the ligand if it is already in nglview otherwise load it.
       (cond
         ((position id (nglview:component-ids (cw:ngl (view-ligand-ngl-structure-viewer instance))) :test #'string=)
@@ -398,42 +392,52 @@
 
 (defun refresh-ligands-view (instance)
   "Refresh the ligand view and the ngl view."
-  (with-slots (slider dropdown)
+  (with-slots (dropdown template-dropdown)
               instance
     (cond
       (all-ligands
-        (setf (w:widget-disabled slider) nil
-              (w:widget-disabled dropdown) nil
-              (w:widget-max slider) (1- (length all-ligands))
-              (w:widget-%options-labels dropdown) (mapcar #'molecule-name all-ligands))
+        (setf (w:widget-disabled dropdown) nil
+              (w:widget-%options-labels template-dropdown) (append (list "None")
+                                                                   (when template-ligand
+                                                                     (list "Template Ligand"))
+                                                                   (mapcar #'molecule-name all-ligands))
+              (w:widget-index template-dropdown) (if template-ligand 1 0)
+              (w:widget-%options-labels dropdown) (mapcar #'molecule-name all-ligands)
+              (w:widget-index dropdown) 0)
         (cw:sketch-molecules all-ligands)
-        (setf (w:widget-value slider) 0)
-        (on-ligand-select instance 0))
+        (on-ligand-select instance (molecule-name (car all-ligands))))
       (t
-        (setf (w:widget-disabled slider) t
-              (w:widget-disabled dropdown) t
-              (w:widget-max slider) 0
+        (setf (w:widget-disabled dropdown) t
               (w:widget-%options-labels dropdown) nil)))))
 
 (defmethod initialize-instance :after ((instance view-ligand-page) &rest initargs &key &allow-other-keys)
   (declare (ignore initargs))
-  ;; Link the slider and the dropdown states together
-  (jupyter-widgets:link (view-ligand-slider instance) :value
-                        (view-ligand-dropdown instance) :index)
   (setf (w:widget-children instance)
         (list (view-ligand-ngl-structure-viewer instance)
               (view-ligand-structure instance)
-              (make-instance 'w:h-box
-                             :children (list (view-ligand-slider instance)
-                                             (view-ligand-dropdown instance))
+              (make-instance 'w:box
+                             :children (list (view-ligand-dropdown instance)
+                                             (view-ligand-template-dropdown instance))
                              :layout (make-instance 'w:layout
-                                                    :width "90%" :margin "auto"
+                                                    :flex-flow "row wrap"
+                                                    :justify-content "center"
+                                                    :margin "-.5em"
+                                                    :align-items "baseline"
+                                                    :align-content "flex-start"
                                                     :grid-area "structure-ctl"))))
-  ;; When the slider index changes update the sketch and nglview.
-  (w:observe (view-ligand-slider instance) :value
+  ;; When the ligand changes update the sketch and nglview.
+  (w:observe (view-ligand-dropdown instance) :value
     (lambda (inst type name old-value new-value source)
       (declare (ignore inst type name old-value source))
       (on-ligand-select instance new-value old-value)))
+  ;; When the template changes update the sketch and nglview.
+  (w:observe (view-ligand-template-dropdown instance) :value
+    (lambda (inst type name old-value new-value source)
+      (declare (ignore inst type name old-value source))
+      (cw:add-template (view-ligand-ngl-structure-viewer instance)
+                       (if (equal "Template Ligand" new-value)
+                         template-ligand
+                         (find new-value all-ligands :key #'molecule-name :test #'equal)))))
   ;; When the view ligand page opens up make sure we give nglview an opportunity to resize.
   (w:observe (cw:container instance) :selected-index
     (lambda (inst type name old-value new-value source)
@@ -448,7 +452,14 @@
   (w:observe *workspace* :template-ligand
     (lambda (inst type name old-value new-value source)
       (declare (ignore inst type name source))
-      (cw:add-template (view-ligand-ngl-structure-viewer instance) new-value)))
+      (with-slots (template-dropdown)
+                  instance
+        (cw:add-template (view-ligand-ngl-structure-viewer instance) new-value)
+        (setf (w:widget-%options-labels template-dropdown) (append (list "None")
+                                                                   (when new-value
+                                                                     (list "Template Ligand"))
+                                                                   (mapcar #'molecule-name all-ligands))
+              (w:widget-index template-dropdown) (if new-value 1 0)))))
   ;; If the all-ligands changes then reload the whole thing.
   (w:observe *workspace* :all-ligands
     (lambda (inst type name old-value new-value source)
@@ -1373,15 +1384,13 @@ lisp_jobs_only_on=172.234.2.1
     (w:observe instance :aggregate
                (lambda (inst type name old-value new-value source)
                  (declare (ignore (inst type name old-value source)))
-                 ;; tirun-ligands are what goes in (ligands *workspace)
+                 ;; tirun-ligands are what goes in (ligands *workspace*)
                  (multiple-value-bind (molecules tirun-ligands)
-                     (tirun:assemble-ligands new-value :verbose t)
-                   (let* ((template-molecule (template-ligand *workspace*))
-                          (posed-molecules (tirun:pose-molecules-using-similarity molecules template-molecule)))
-                     (setf all-ligands posed-molecules
-                           selected-ligands all-ligands
-                           all-edges nil)
-                     (save-workspace)))))
+                                      (tirun:assemble-ligands new-value :verbose t)
+                   (setf all-ligands (tirun:pose-molecules-using-similarity molecules template-ligand)
+                         selected-ligands all-ligands
+                         all-edges nil)
+                   (save-workspace))))
     (make-view-ligand-page instance "View Ligands")
     instance))
 

@@ -1,6 +1,9 @@
 (in-package :cando-widgets)
 
 
+(defconstant +pose-frame-rate+ 60)
+
+
 (defun get-json-obj (obj &rest keys)
   (dolist (key keys (values obj t))
     (unless (and (listp obj)
@@ -159,7 +162,7 @@
    (receptor-representation
      :reader receptor-representation
      :initform (make-instance 'jw:dropdown
-                              :description "Receptor"
+                              :description "Receptor Representation"
                               :%options-labels (cons "None"
                                                      (mapcan (lambda (def)
                                                                (when (getf def :receptor)
@@ -175,7 +178,7 @@
    (ligand-representation
      :reader ligand-representation
      :initform (make-instance 'jw:dropdown
-                              :description "Ligand"
+                              :description "Ligand Representation"
                               :%options-labels (mapcan (lambda (def)
                                                          (when (getf def :ligand)
                                                            (list (getf def :name))))
@@ -190,7 +193,7 @@
    (template-representation
      :reader template-representation
      :initform (make-instance 'jw:dropdown
-                              :description "Template"
+                              :description "Template Representation"
                               :%options-labels (cons "None"
                                                      (mapcan (lambda (def)
                                                                (when (getf def :template)
@@ -206,21 +209,24 @@
    (minimize-button
      :reader minimize-button
      :initform (make-instance 'jw:button
-                              :description "Minimize"
+                              :description "Align & Minimize"
                               :style (make-instance 'jw:description-style
                                                     :description-width "min-content")
                               :layout (make-instance 'jw:layout
                                                      :margin ".5em"
-                                                     :width "max-content")))
+                                                     :width "max-content"
+                                                     :display "none")))
    (jostle-button
      :reader jostle-button
-     :initform (make-instance 'jw:button
+     :initform (make-instance 'jw:toggle-button
                               :description "Jostle"
+                              :value t
                               :style (make-instance 'jw:description-style
                                                     :description-width "min-content")
                               :layout (make-instance 'jw:layout
                                                      :margin ".5em"
-                                                     :width "max-content")))
+                                                     :width "max-content"
+                                                     :display "none")))
    (angle-slider
      :reader angle-slider
      :initform (make-instance 'jw:float-slider
@@ -233,7 +239,8 @@
                               :disabled t
                               :layout (make-instance 'jw:layout
                                                      :height "100%"
-                                                     :grid-area "angle")))
+                                                     :grid-area "angle"
+                                                     :display "none")))
    (controls-container
      :reader controls-container
      :initform (make-instance 'jw:box
@@ -346,10 +353,10 @@
 (defmethod initialize-instance :after ((instance ngl-structure-viewer) &rest initargs &key &allow-other-keys)
   (setf (jw:widget-children (controls-container instance))
         (list (receptor-representation instance)
-              (template-representation instance)
               (ligand-representation instance)
-              (minimize-button instance)
-              (jostle-button instance))
+              (template-representation instance)
+              (jostle-button instance)
+              (minimize-button instance))
         (jw:widget-children instance)
         (list (ngl instance)
               (controls-container instance)
@@ -368,11 +375,7 @@
   (jw:on-button-click (minimize-button instance)
     (lambda (inst)
       (declare (ignore inst))
-      (on-jostle-relax instance nil)))
-  (jw:on-button-click (jostle-button instance)
-    (lambda (inst)
-      (declare (ignore inst))
-      (on-jostle-relax instance t)))
+      (on-jostle-relax instance (jw:widget-value (jostle-button instance)))))
   (jw:observe (ligand-representation instance) :value
     (lambda (inst type name old-value new-value source)
       (declare (ignore inst type name old-value source))
@@ -400,17 +403,29 @@
 
 
 (defun jostle-relax (ngl index aggregate jostle)
+  (chem:map-atoms nil #'chem:clear-restraints aggregate)
   (when jostle
     (cando:jostle aggregate))
-  (let* ((energy-func (chem:make-energy-function :matter aggregate :use-excluded-atoms t :assign-types t))
-         (minimizer (chem:make-minimizer energy-func)))
-    (flet ((show-coords (pos)
-             (let ((coords (make-array (length pos) :element-type 'single-float)))
-               (loop for index below (length pos)
-                     do (setf (aref coords index) (float (aref pos index) 1.0s0)))
-               (nglv:set-coordinates ngl (list (cons index coords))))))
-      (chem:set-step-callback minimizer #'show-coords)
-      (energy:minimize-minimizer minimizer))))
+  (let ((template (find "template" (nglv:components ngl) :key #'nglv:id :test #'equal)))
+    (when template
+      (tirun::pose-one-molecule-using-similarity aggregate (matter template))))
+  (bordeaux-threads:make-thread
+    (lambda ()
+      (let* ((energy-func (chem:make-energy-function :matter aggregate :use-excluded-atoms t :assign-types t))
+             (minimizer (chem:make-minimizer energy-func))
+             (frame-period (floor internal-time-units-per-second +pose-frame-rate+))
+             (next-frame-time (get-internal-real-time)))
+        (chem:set-step-callback minimizer
+                                (lambda (pos)
+                                  (sleep (max 0 (/ (- next-frame-time (get-internal-real-time)) internal-time-units-per-second)))
+                                  (nglv:set-coordinates ngl
+                                                        (list (cons index
+                                                                    (map '(vector single-float *)
+                                                                         (lambda (x)
+                                                                           (coerce x 'single-float))
+                                                                         pos))))
+                                  (setf next-frame-time (+ (get-internal-real-time) frame-period))))
+        (energy:minimize-minimizer minimizer :print-intermediate-results nil)))))
 
 
 (defun add-receptor (instance receptor)
@@ -432,11 +447,13 @@
 
 
 (defun add-ligand (instance id ligand)
-  (with-slots (ngl ligand-representation)
+  (with-slots (ngl ligand-representation minimize-button jostle-button angle-slider)
               instance
-    (setf (jw:widget-display (jw:widget-layout ligand-representation))
-          (unless ligand
-            "none"))
+    (let ((display (unless ligand "none")))
+      (setf (jw:widget-display (jw:widget-layout ligand-representation)) display
+            (jw:widget-display (jw:widget-layout minimize-button)) display
+            (jw:widget-display (jw:widget-layout jostle-button)) display
+            (jw:widget-display (jw:widget-layout angle-slider)) display))
     (when ligand
       (let ((representation (get-representation-definition (jw:widget-value ligand-representation))))
         (nglview:add-structure ngl
@@ -448,11 +465,10 @@
 
 
 (defun add-template (instance template)
-  (with-slots (ngl template-representation)
+  (with-slots (ngl template-representation minimize-button jostle-button angle-slider)
               instance
-    (setf (jw:widget-display (jw:widget-layout template-representation))
-          (unless template
-            "none"))
+    (setf (jw:widget-display (jw:widget-layout template-representation)) (unless template "none"))
+    (nglv:remove-components ngl "template")
     (when template
       (let ((representation (get-representation-definition (jw:widget-value template-representation))))
         (nglview:add-structure ngl
@@ -465,4 +481,5 @@
 
 (defun make-ngl-structure-viewer ()
   (make-instance 'ngl-structure-viewer))
+
 

@@ -158,7 +158,12 @@
   "mol2")
 
 (defmethod nglv:get-structure-string ((self cando-structure))
-  (chem:aggregate-as-mol2-string (matter self) t))
+  (chem:aggregate-as-mol2-string (if (typep (matter self) 'chem:aggregate)
+                                   (matter self)
+                                   (let ((agg (chem:make-aggregate)))
+                                     (chem:add-matter agg (matter self))
+                                     agg))
+                                  t))
 
 (defclass cando-trajectory (nglv:trajectory nglv:structure dynamics:trajectory)
   ())
