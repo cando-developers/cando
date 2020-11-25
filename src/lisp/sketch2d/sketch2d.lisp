@@ -60,7 +60,7 @@ I'll use an angle term instead of a bond term.
 (defparameter *lp-nitrogen* #+nosmarts nil #-nosmarts(chem:make-chem-info-graph (chem:compile-smarts "[#7X2:0]")))
 (defparameter *lp-sulfur* #+nosmarts nil #-nosmarts(chem:make-chem-info-graph (chem:compile-smarts "[#16X2:0]")))
 (defparameter *bad-angle* #+nosmarts nil #-nosmarts(chem:make-chem-info-graph (chem:compile-smarts "[*X3:0](~[*X1:1])(~[*:2])~[*:3]")))
-
+(defparameter *ring6-across-length* 3.16)
 (defparameter *ring3-long-length* 2.898)
 (defparameter *ring3-short-length* 1.5)
 (defparameter *exo-ring3* (chem:make-chem-info-graph (chem:compile-smarts "[*:0]1(-[*:1])[*:2][*:3]1")))
@@ -147,7 +147,6 @@ I'll use an angle term instead of a bond term.
       unique-matches)))
 
 (defun add-angle-terms (sketch sketch-function bond-force bond-length)
-  (declare (ignore sketch))
   (let* ((molecule (chem:get-graph sketch-function))
          (angle120-bond-length (* (sqrt 3.0) bond-length))
          (atom-table (chem:node-table sketch-function))
@@ -222,6 +221,17 @@ I'll use an angle term instead of a bond term.
           do (chem:add-sketch-stretch-term bond-energy exo-coord-index left-coord-index bond-force *ring4-long-length*)
              (chem:add-sketch-stretch-term bond-energy exo-coord-index right-coord-index bond-force *ring4-long-length*)
              (chem:add-sketch-stretch-term bond-energy left-coord-index right-coord-index bond-force *ring4-short-length*))
+    (loop for ring in (rings sketch)
+          when (= (length ring) 6)
+            do (let ((i0 (chem:get-coordinate-index atom-table (elt ring 0)))
+                     (i1 (chem:get-coordinate-index atom-table (elt ring 1)))
+                     (i2 (chem:get-coordinate-index atom-table (elt ring 2)))
+                     (i3 (chem:get-coordinate-index atom-table (elt ring 3)))
+                     (i4 (chem:get-coordinate-index atom-table (elt ring 4)))
+                     (i5 (chem:get-coordinate-index atom-table (elt ring 5))))
+                 (chem:add-sketch-stretch-term bond-energy i0 i3 bond-force *ring6-across-length*)
+                 (chem:add-sketch-stretch-term bond-energy i1 i4 bond-force *ring6-across-length*)
+                 (chem:add-sketch-stretch-term bond-energy i2 i5 bond-force *ring6-across-length*)))
     ;; Gather up all the unique quat-centers
     (progn
       (loop for tbc in quat-centers
