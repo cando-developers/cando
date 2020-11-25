@@ -264,19 +264,25 @@
 (defun load-receptor ()
   "Present a graphical interface to load and view a receptor into the current application."
   (let* ((container (make-instance 'w:accordion :selected-index 0))
-         (ngl (cw:make-ngl-structure-viewer)))
+         (ngl-page (make-instance 'resizable-box:resizable-grid-box
+                                  :enable-full-screen t
+                                  :layout (make-instance 'resizable-box:resizable-layout
+                                                         :resize "vertical"
+                                                         :grid-gap "1em"
+                                                         :min-height "480px"
+                                                         ;:overflow "hidden"
+                                                         :padding "0 16px 0 0"
+                                                         :grid-template-rows "1fr min-content"
+                                                         :grid-template-columns "1fr min-content"
+                                                         :grid-template-areas "'ngl-content ngl-vertical-toolbar'
+                                                                               'ngl-horizontal-toolbar .")))
+         (ngl (cw:make-ngl-structure-viewer ngl-page)))
     (cw:make-file-task-page container "Load Receptor" #'parse-receptor :accept ".pdb")
     ;; Make a simple page to display the receptor in nglview
     (setf (w:widget-%titles container) (append (w:widget-%titles container)
-                                              (list "View Receptor"))
+                                               (list "View Receptor"))
           (w:widget-children container) (append (w:widget-children container)
-                                               (list ngl)))
-    ;; When the view page opens give nglview a chance to resize.
-    (w:observe container :selected-index
-      (lambda (inst type name old-value new-value source)
-        (declare (ignore inst type name old-value source))
-        (when (equal new-value 1)
-          (nglview:handle-resize (cw:ngl ngl)))))
+                                               (list ngl-page)))
     ;; Add the receptor if one is already defined.
     (when (receptor *workspace*)
       (cw:add-receptor ngl (receptor *workspace*)))
@@ -284,29 +290,33 @@
     (w:observe *workspace* :receptor
       (lambda (inst type name old-value new-value source)
         (declare (ignore inst type name old-value source))
-        #+(or)(nglview:remove-all-components ngl)
         (when new-value
           (cw:add-receptor ngl new-value))))
     container))
 
 
-
 (defun load-template-ligand ()
   "Present a graphical interface to load and view a template-ligand into the current application."
   (let* ((container (make-instance 'w:accordion :selected-index 0))
-         (ngl (cw:make-ngl-structure-viewer)))
+         (ngl-page (make-instance 'resizable-box:resizable-grid-box
+                                  :enable-full-screen t
+                                  :layout (make-instance 'resizable-box:resizable-layout
+                                                         :resize "vertical"
+                                                         :grid-gap "1em"
+                                                         ;:overflow "hidden"
+                                                         :padding "0 16px 0 0"
+                                                         :min-height "480px"
+                                                         :grid-template-rows "1fr min-content"
+                                                         :grid-template-columns "1fr min-content"
+                                                         :grid-template-areas "'ngl-content ngl-vertical-toolbar'
+                                                                               'ngl-horizontal-toolbar .")))
+         (ngl (cw:make-ngl-structure-viewer ngl-page)))
     (cw:make-file-task-page container "Load Template ligand" #'parse-template-ligand :accept ".pdb")
     ;; Make a simple page to display the receptor in nglview
     (setf (w:widget-%titles container) (append (w:widget-%titles container)
                                               (list "View Template Ligand"))
           (w:widget-children container) (append (w:widget-children container)
-                                               (list ngl)))
-    ;; When the view page opens give nglview a chance to resize.
-    (w:observe container :selected-index
-      (lambda (inst type name old-value new-value source)
-        (declare (ignore inst type name old-value source))
-        (when (equal new-value 1)
-          (nglview:handle-resize (cw:ngl ngl)))))
+                                               (list ngl-page)))
     ;; Add the template ligand if one is already defined.
     (when (template-ligand *workspace*)
       (cw:add-template ngl (template-ligand *workspace*)))
@@ -314,7 +324,6 @@
     (w:observe *workspace* :template-ligand
       (lambda (inst type name old-value new-value source)
         (declare (ignore inst type name old-value source))
-        #+(or)(nglview:remove-all-components ngl)
         (when new-value
           (cw:add-template ngl new-value))))
     container))
@@ -322,13 +331,11 @@
 
 (defclass view-ligand-page (cw:page)
   ((ngl-structure-viewer
-     :reader view-ligand-ngl-structure-viewer
-     :initform (cw:make-ngl-structure-viewer))
+     :accessor view-ligand-ngl-structure-viewer)
    (structure
      :reader view-ligand-structure
      :initform (make-instance 'w:html
                               :layout (make-instance 'w:layout
-                                                     :border "var(--jp-widgets-border-width) solid var(--jp-border-color1)"
                                                      :grid-area "structure"))
      :documentation "A sketch view for the selected ligand.")
    (dropdown
@@ -354,11 +361,16 @@
   (:metaclass jupyter-widgets:trait-metaclass)
   (:documentation "A page to view ligands that has a sketch and an nglview widget along with controls and ligand selector.")
   (:default-initargs
-    :layout (make-instance 'w:layout
+    :enable-full-screen t
+    :layout (make-instance 'resizable-box:resizable-layout
+                           :min-height "480px"
+                           ;:overflow "hidden"
+                           :resize "vertical"
                            :grid-gap "1em"
                            :grid-template-rows "1fr min-content"
-                           :grid-template-columns "2fr 3fr"
-                           :grid-template-areas "'structure ngls' 'structure-ctl ngls'")))
+                           :grid-template-columns "2fr 3fr min-content"
+                           :grid-template-areas "'structure     ngl-content            ngl-vertical-toolbar'
+                                                 'structure-ctl ngl-horizontal-toolbar .'")))
 
 
 (defun molecule-name (molecule)
@@ -371,24 +383,14 @@
   (with-slots (structure)
               instance
     (let ((mol (find id all-ligands :key #'molecule-name :test #'equal)))
-      ;; Load the sketch
-      (setf (w:widget-value structure)
-            (format nil "<div style='display:flex;align-items:center;height:100%;'><div style='display:block;margin:auto;'>~A</div></div>"
-                    (cw:sketch-molecule mol)))
-      ;; A resize can't hurt.
-      (nglview:handle-resize (cw:ngl (view-ligand-ngl-structure-viewer instance)))
-      ;; Hide previous ligand.
-      (when previous-id
-        (nglview:hide-components (cw:ngl (view-ligand-ngl-structure-viewer instance)) previous-id))
-      ;; Show the ligand if it is already in nglview otherwise load it.
-      (cond
-        ((position id (nglview:component-ids (cw:ngl (view-ligand-ngl-structure-viewer instance))) :test #'string=)
-          (nglview:show-components (cw:ngl (view-ligand-ngl-structure-viewer instance)) id)
-          (nglview:center (cw:ngl (view-ligand-ngl-structure-viewer instance)) :component id))
-        (t
-          (let ((agg (chem:make-aggregate)))
-            (chem:add-matter agg mol)
-            (cw:add-ligand (view-ligand-ngl-structure-viewer instance) (molecule-name mol) agg)))))))
+      (when mol
+        ;; Load the sketch
+        (setf (w:widget-value structure) (cw:sketch-molecule mol))
+        ;; Show the ligand if it is already in nglview otherwise load it.
+        (let ((agg (chem:make-aggregate (chem:get-name mol))))
+          (chem:add-matter agg mol)
+          (cw:add-ligand (view-ligand-ngl-structure-viewer instance) (molecule-name mol) agg))))))
+
 
 (defun refresh-ligands-view (instance)
   "Refresh the ligand view and the ngl view."
@@ -413,18 +415,24 @@
 (defmethod initialize-instance :after ((instance view-ligand-page) &rest initargs &key &allow-other-keys)
   (declare (ignore initargs))
   (setf (w:widget-children instance)
-        (list (view-ligand-ngl-structure-viewer instance)
-              (view-ligand-structure instance)
+        (list (make-instance 'w:box
+                             :children (list (view-ligand-structure instance))
+                             :layout (make-instance 'w:layout
+                                                    :border "var(--jp-widgets-border-width) solid var(--jp-border-color1)"
+                                                    :justify-content "center"
+                                                    :align-items "center"))
               (make-instance 'w:box
                              :children (list (view-ligand-dropdown instance)
                                              (view-ligand-template-dropdown instance))
                              :layout (make-instance 'w:layout
                                                     :flex-flow "row wrap"
                                                     :justify-content "center"
-                                                    :margin "-.5em"
+                                                    ;:margin "-.5em"
                                                     :align-items "baseline"
                                                     :align-content "flex-start"
                                                     :grid-area "structure-ctl"))))
+  (setf (view-ligand-ngl-structure-viewer instance)
+        (cw:make-ngl-structure-viewer instance))
   ;; When the ligand changes update the sketch and nglview.
   (w:observe (view-ligand-dropdown instance) :value
     (lambda (inst type name old-value new-value source)
@@ -434,15 +442,14 @@
   (w:observe (view-ligand-template-dropdown instance) :value
     (lambda (inst type name old-value new-value source)
       (declare (ignore inst type name old-value source))
-      (cw:add-template (view-ligand-ngl-structure-viewer instance)
-                       (if (equal "Template Ligand" new-value)
-                         template-ligand
-                         (find new-value all-ligands :key #'molecule-name :test #'equal)))))
-  ;; When the view ligand page opens up make sure we give nglview an opportunity to resize.
-  (w:observe (cw:container instance) :selected-index
-    (lambda (inst type name old-value new-value source)
-      (declare (ignore inst type name old-value source))
-      (nglview:handle-resize (cw:ngl (view-ligand-ngl-structure-viewer instance)))))
+      (unless (equal new-value "None")
+        (cw:add-template (view-ligand-ngl-structure-viewer instance)
+                         (let ((agg (chem:make-aggregate :template)))
+                           (chem:add-matter agg
+                                            (if (equal "Template Ligand" new-value)
+                                              template-ligand
+                                              (find new-value all-ligands :key #'molecule-name :test #'equal)))
+                           agg)))))
   ;; When the receptor changes reload the receptor in nglview.
   (w:observe *workspace* :receptor
     (lambda (inst type name old-value new-value source)
@@ -464,15 +471,14 @@
   (w:observe *workspace* :all-ligands
     (lambda (inst type name old-value new-value source)
       (declare (ignore inst type name new-value source))
-      (apply #'nglview:remove-components (cw:ngl (view-ligand-ngl-structure-viewer instance))
-                                         (mapcar #'molecule-name old-value))
+      (cw:clear-ligands (view-ligand-ngl-structure-viewer instance))
       (refresh-ligands-view instance))))
 
 
 (defun make-view-ligand-page (container title)
   "Create an instance of a view-ligand-page and add it to the container."
   (let ((page (make-instance 'view-ligand-page :container container)))
-    (setf (w:widget-grid-area (w:widget-layout (view-ligand-ngl-structure-viewer page))) "ngls")
+    ;(setf (w:widget-grid-area (w:widget-layout (view-ligand-ngl-structure-viewer page))) "ngls")
     (cw:add-page container page title)
     ;; If the receptor is already set then load the current receptor.
     (when (receptor *workspace*)
@@ -976,7 +982,8 @@ It will put those multiple ligands into all-ligands and selected-ligands"
                                :graph-style +similarity-graph-style/show-sketches+
                                :wheel-sensitivity 0.8 ; Detune the wheel sensitivity a bit.
                                :layout (make-instance 'w:layout
-                                                      :height "640px"
+                                                      :height "auto"
+                                                      :align-self "stretch"
                                                       :border "var(--jp-widgets-border-width) solid var(--jp-border-color1)"
                                                       :grid-area "graph")))
          (layout-select (make-instance 'w:dropdown ; A dropdown to select the layout
@@ -1011,20 +1018,17 @@ It will put those multiple ligands into all-ligands and selected-ligands"
                                                                               +similarity-graph-style/show-sketches+
                                                                               +similarity-graph-style/hide-sketches+))
                                                                       (cytoscape:layout graph))))))
-         (full-screen (make-instance 'w:button ; Full screen toggle button
-                                     :description "Full Screen"
-                                     :on-click (list (lambda (inst)
-                                                       (declare (ignore inst))
-                                                       (cytoscape:toggle-fullscreen graph)))
-                                     :layout (make-instance 'w:layout
-                                                            :grid-area "full-screen")))
-         (grid (make-instance 'w:grid-box ; Grid for the graph. Control buttons are in the bottom row.
-                              :children (list graph fit layout-select show-sketches full-screen)
-                              :layout (make-instance 'w:layout
+         (grid (make-instance 'resizable-box:resizable-grid-box ; Grid for the graph. Control buttons are in the bottom row.
+                              :children (list graph fit layout-select show-sketches)
+                              :enable-full-screen t
+                              :layout (make-instance 'resizable-box:resizable-layout
+                                                     :resize "vertical"
+                                                     :min-height "480px"
+                                                     :padding "0 24px 0 0"
                                                      :grid-gap "var(--jp-widgets-container-padding)"
-                                                     :grid-template-columns "1fr min-content min-content min-content min-content min-content 1fr"
+                                                     :grid-template-columns "1fr min-content min-content min-content min-content 1fr"
                                                      :grid-template-rows "1fr min-content"
-                                                     :grid-template-areas "\"graph graph graph graph graph graph graph\" \". fit layout show-sketches add-edges full-screen .\""))))
+                                                     :grid-template-areas "\"graph graph graph graph graph graph\" \". fit layout show-sketches add-edges .\""))))
     ;; Delete the current node.
     (cytoscape:on-menu-command-select delete-node-command
       (lambda (inst id)

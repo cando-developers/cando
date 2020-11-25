@@ -12,6 +12,8 @@
                :lparallel
                :netcdf
                :nglview-cl
+               :resizable-box-clj
+               :ngl-clj
                :sketch2d
                :static-vectors)
   :serial t

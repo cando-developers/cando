@@ -16,6 +16,7 @@
     #:cando-trajectory
     #:cartoon-atom-map
     #:center-on
+    #:clear-ligands
     #:container
     #:distance-two-positions
     #:make-amber-netcdf-trajectory

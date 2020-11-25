@@ -47,7 +47,6 @@
   (:default-initargs
     :layout (make-instance 'jw:layout
                            :width "100%"
-                           :max-height "12em"
                            :grid-gap "0.1em 1em"
                            :grid-template-rows "min-content min-content min-content min-content 1fr"
                            :grid-template-columns "auto auto auto auto 1fr"

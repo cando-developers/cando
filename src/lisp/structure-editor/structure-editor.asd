@@ -9,7 +9,7 @@
   :version "0.0.1"
   :author "Christian Schafmeister <meister@thirdlaw.tech>"
   :licence "Private"
-  :depends-on (:kekule-clj :cando-widgets)
+  :depends-on (:kekule-clj :cando-widgets :resizable-box-clj)
   :serial t
 ;;;  :build-operation asdf:monolithic-compile-bundle-op
 ;;;  :build-pathname #P"/tmp/tirun.fasb"
