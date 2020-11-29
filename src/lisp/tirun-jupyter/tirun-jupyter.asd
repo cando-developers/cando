@@ -9,7 +9,7 @@
   :version "0.0.2"
   :author "Christian Schafmeister <chris.schaf@verizon.net>, Nagai Shiho"
   :licence "Private"
-  :depends-on (:tirun :lomap :pas :cytoscape-clj :structure-editor :cando-widgets :quri)
+  :depends-on (:tirun :lomap :pas :cytoscape-clj :structure-editor :cando-widgets :quri :resizable-box-clj)
   :serial t
 ;;;  :build-operation asdf:monolithic-compile-bundle-op
 ;;;  :build-pathname #P"/tmp/tirun.fasb"
