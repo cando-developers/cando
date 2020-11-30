@@ -36,27 +36,17 @@
 
 (defun composer (kekule-title parsing-title)
   (let* ((instance (make-instance 'composer))
-         (full-screen (make-instance 'w:button ; Full screen toggle button
-                                     :tooltip "Full Screen"
-                                     :icon "expand"
-                                     :layout (make-instance 'w:layout
-                                                            :width "max-content"
-                                                            :justify-self "end"
-                                                            :grid-area "full-screen")))
         (kekule-page (make-instance 'resizable-box:resizable-grid-box
+                                    :enable-full-screen t
                                     :layout (make-instance 'resizable-box:resizable-layout
                                                            :height "400px"
                                                            :grid-template-columns "1fr"
                                                            :grid-template-rows "1fr min-content"
                                                            :grid-template-areas "'kekule' 'full-screen'"
-                                                           :padding "0 0 24px 0"
+                                                           :padding "0 16px 24px 0"
                                                            :resize "vertical"))))
-    (jupyter-widgets:on-button-click full-screen
-      (lambda (inst)
-       (declare (ignore inst))
-       (resizable-box:enter-full-screen kekule-page)))
     (cw:add-page instance kekule-page kekule-title)
-    (setf (jupyter-widgets:widget-children kekule-page) (list full-screen (composer-kekule instance)))
+    (setf (jupyter-widgets:widget-children kekule-page) (list (composer-kekule instance)))
     (cw:make-simple-task-page instance parsing-title (lambda (action parameter progress-callback)
                                                        (declare (ignore action parameter))
                                                        (run-parsing instance progress-callback))
