@@ -71,7 +71,7 @@ namespace chem {
 /*! Everything that depends on SMARTS parsing is initialized here */
 
 CL_DEFUN void chem__initialize_smarts_users() {
-  printf("%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
+//  printf("%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
   energyFunction_initializeSmarts();
 }
 
