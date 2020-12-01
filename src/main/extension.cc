@@ -150,18 +150,11 @@ CL_INITIALIZER void cando_initializer()
   _lisp->installPackage(AdaptPkg);
   _lisp->installPackage(ChemPkg);
   core::Cons_sp features = core::Cons_O::create(_lisp->intern("CANDO",KeywordPkg),cl::_sym_STARfeaturesSTAR->symbolValue());
-#if 0
-  core::List_sp loads = core::_sym_STARextension_startup_loadsSTAR->symbolValue();
-  loads = core::Cons_O::create(core::Cons_O::createList(cl::_sym_load,core::cl__pathname(core::Str_O::create("source-dir:extensions;cando;src;lisp;start-cando.lisp"))),loads);
-  core::_sym_STARextension_start up_loadsSTAR->defparameter(loads);
-#endif
   std::string executable_path = core::global_options->_ExecutableName;
   std::vector<string> parts = core::split(executable_path,"/");
   std::string exec_name = parts[parts.size()-1];
   if (exec_name.find("cando")!=std::string::npos) {
-    std::pair<core::LoadEvalEnum,std::string> cmd2(core::cloEval,"(unless (member :no-auto-lparallel *features*) (setf lparallel:*kernel* (lparallel:make-kernel (core:num-logical-processors))))");
-    core::global_options->_LoadEvalList.insert(core::global_options->_LoadEvalList.begin(),cmd2);
-    std::pair<core::LoadEvalEnum,std::string> cmd1(core::cloEval,"(in-package :cando-user)");
+    std::pair<core::LoadEvalEnum,std::string> cmd1(core::cloEval,"(in-package :cando-user))");
     core::global_options->_LoadEvalList.insert(core::global_options->_LoadEvalList.begin(),cmd1);
     std::pair<core::LoadEvalEnum,std::string> cmd0(core::cloLoad,"source-dir:extensions;cando;src;lisp;start-cando.lisp");
     core::global_options->_LoadEvalList.insert(core::global_options->_LoadEvalList.begin(),cmd0);
@@ -172,8 +165,6 @@ CL_INITIALIZER void cando_initializer()
     core::global_options->_LoadEvalList.push_back(cmdNm1);
     std::pair<core::LoadEvalEnum,std::string> cmdN(core::cloEval,"(leap.commands:leap-repl-then-exit)");
     core::global_options->_LoadEvalList.push_back(cmdN);
-    std::pair<core::LoadEvalEnum,std::string> cmd2(core::cloEval,"(unless (member :no-auto-lparallel *features*) (setf lparallel:*kernel* (lparallel:make-kernel (core:num-logical-processors))))");
-    core::global_options->_LoadEvalList.insert(core::global_options->_LoadEvalList.begin(),cmd2);
     std::pair<core::LoadEvalEnum,std::string> cmd1(core::cloEval,"(in-package :cando-user)");
     core::global_options->_LoadEvalList.insert(core::global_options->_LoadEvalList.begin(),cmd1);
     std::pair<core::LoadEvalEnum,std::string> cmd0(core::cloLoad,"source-dir:extensions;cando;src;lisp;start-cando.lisp");

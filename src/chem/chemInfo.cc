@@ -2446,7 +2446,7 @@ CL_DEFMETHOD core::HashTableEql_sp ChemInfoMatch_O::tags_as_hashtable() const {
 
 CL_LAMBDA(code &key tests);
 CL_DEFUN SmartsRoot_sp chem__compile_smarts(const string& code, core::List_sp tests) {
-  printf("%s:%d:%s code: %s\n", __FILE__, __LINE__, __FUNCTION__, code.c_str());
+//  printf("%s:%d:%s code: %s\n", __FILE__, __LINE__, __FUNCTION__, code.c_str());
   core::SimpleBaseString_sp scode = core::SimpleBaseString_O::make(code);
   core::T_sp tnode = core::eval::funcall(_sym_parse_smarts,scode);
   if (tnode.nilp()) {
