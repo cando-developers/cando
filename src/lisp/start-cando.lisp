@@ -91,10 +91,21 @@
   (sleep 2) ; ensure that the sequence number if quickclasp is higher
   (ql-dist:install-dist "http://thirdlaw.tech/quickclasp/quickclasp.txt" :prompt nil))
 
-(progn
+(defpackage :cando-user)
+
+(defun start-cando-user ()
   (funcall (find-symbol "QUICKLOAD" :ql) "cando-user" :silent (null (core:is-interactive-lisp)))
   ;; Ensure that all threads start in the :CANDO-USER package
   (core:symbol-global-value-set '*package* (find-package :cando-user))
+  (unless (member :no-auto-lparallel *features*)
+    (setf (symbol-value (find-symbol "*KERNEL*" :lparallel))
+          (funcall (find-symbol "MAKE-KERNEL" :lparallel) (core:num-logical-processors))))
+  (format t "Starting cando-user~%")
   )
+
+;; Only invoke start-cando-user if the :dont-start-cando-user feature is NOT set
+(if (null (member :dont-start-cando-user *features*))
+    (start-cando-user))
+
 
 
