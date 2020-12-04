@@ -518,13 +518,14 @@
         (remove-if #'ligandp (ngl:components (stage instance)))))
 
 
-(defun make-ngl-structure-viewer (container)
+(defun make-ngl-structure-viewer (container &key (auto-view "all"))
   (let ((instance (make-instance 'ngl-structure-viewer)))
     (setf (jw:widget-children container)
           (append (jw:widget-children container)
                   (list (stage instance)
                         (controls-container instance)
-                        (angle-slider instance))))
+                        (angle-slider instance)))
+          (jw:widget-value (auto-view-type instance)) auto-view)
     instance))
 
 
