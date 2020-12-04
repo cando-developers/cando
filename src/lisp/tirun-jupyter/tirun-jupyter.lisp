@@ -270,7 +270,7 @@
                                                          :resize "vertical"
                                                          :grid-gap "1em"
                                                          :min-height "480px"
-                                                         ;:overflow "hidden"
+                                                         :overflow "hidden"
                                                          :padding "0 16px 0 0"
                                                          :grid-template-rows "1fr min-content"
                                                          :grid-template-columns "1fr min-content"
@@ -303,7 +303,7 @@
                                   :layout (make-instance 'resizable-box:resizable-layout
                                                          :resize "vertical"
                                                          :grid-gap "1em"
-                                                         ;:overflow "hidden"
+                                                         :overflow "hidden"
                                                          :padding "0 16px 0 0"
                                                          :min-height "480px"
                                                          :grid-template-rows "1fr min-content"
@@ -364,7 +364,7 @@
     :enable-full-screen t
     :layout (make-instance 'resizable-box:resizable-layout
                            :min-height "480px"
-                           ;:overflow "hidden"
+                           :overflow "hidden"
                            :resize "vertical"
                            :grid-gap "1em"
                            :grid-template-rows "1fr min-content"
@@ -1023,6 +1023,7 @@ It will put those multiple ligands into all-ligands and selected-ligands"
                               :enable-full-screen t
                               :layout (make-instance 'resizable-box:resizable-layout
                                                      :resize "vertical"
+                                                     :overflow "hidden"
                                                      :min-height "480px"
                                                      :padding "0 24px 0 0"
                                                      :grid-gap "var(--jp-widgets-container-padding)"
