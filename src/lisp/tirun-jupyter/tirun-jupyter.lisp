@@ -276,7 +276,7 @@
                                                          :grid-template-columns "1fr min-content"
                                                          :grid-template-areas "'ngl-content ngl-vertical-toolbar'
                                                                                'ngl-horizontal-toolbar .")))
-         (ngl (cw:make-ngl-structure-viewer ngl-page)))
+         (ngl (cw:make-ngl-structure-viewer ngl-page :auto-view "receptor")))
     (cw:make-file-task-page container "Load Receptor" #'parse-receptor :accept ".pdb")
     ;; Make a simple page to display the receptor in nglview
     (setf (w:widget-%titles container) (append (w:widget-%titles container)
@@ -310,7 +310,7 @@
                                                          :grid-template-columns "1fr min-content"
                                                          :grid-template-areas "'ngl-content ngl-vertical-toolbar'
                                                                                'ngl-horizontal-toolbar .")))
-         (ngl (cw:make-ngl-structure-viewer ngl-page)))
+         (ngl (cw:make-ngl-structure-viewer ngl-page :auto-view "template")))
     (cw:make-file-task-page container "Load Template ligand" #'parse-template-ligand :accept ".pdb")
     ;; Make a simple page to display the receptor in nglview
     (setf (w:widget-%titles container) (append (w:widget-%titles container)
@@ -432,7 +432,7 @@
                                                     :align-content "flex-start"
                                                     :grid-area "structure-ctl"))))
   (setf (view-ligand-ngl-structure-viewer instance)
-        (cw:make-ngl-structure-viewer instance))
+        (cw:make-ngl-structure-viewer instance :auto-view "ligand"))
   ;; When the ligand changes update the sketch and nglview.
   (w:observe (view-ligand-dropdown instance) :value
     (lambda (inst type name old-value new-value source)
