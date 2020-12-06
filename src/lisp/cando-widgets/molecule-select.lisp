@@ -185,7 +185,7 @@
                         (list molecule)))
                 ((not current-position)
                   (setf (selected instance)
-                        (nconc (selected instance) (list molecule))))))))
+                        (append (selected instance) (list molecule))))))))
         (jw:observe instance :selected
           (lambda (inst type name old-value new-value source)
             (declare (ignore type name old-value source))

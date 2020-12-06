@@ -55,6 +55,11 @@
     :initarg :all-edges
     :initform nil
     :trait t)
+   (rbfe-edges
+    :accessor rbfe-edges
+    :initarg :rbfe-edges
+    :initform nil
+    :trait t)
    (distributor
     :accessor distributor
     :initarg :distributor
@@ -655,33 +660,6 @@ It will put those multiple ligands into all-ligands and selected-ligands"
     container))
 
 
-(defun edge-id (name-1 name-2)
-  "Construct an edge id with a normalized ordering for and undirected graph."
-  (if (string< name-1 name-2)
-    (concatenate 'string name-1 "|" name-2)
-    (concatenate 'string name-2 "|" name-1)))
-
-
-(defun encode-svg (svg)
-  (concatenate 'string
-               "data:image/svg+xml,"
-               (quri:url-encode svg)))
-
-
-(defun element-id (element)
-  (cdr (assoc "id" (cytoscape:data element) :test #'string=)))
-
-
-(defun get-selected-names (graph)
-  (mapcan (lambda (element)
-            (when (cytoscape:selected element)
-              (let* ((id (element-id element))
-                     (pos (position #\| id))) ; If there is vertical bar it is an edge.
-                (if pos
-                  (list (subseq id 0 pos) (subseq id (1+ pos)))
-                  (list id)))))
-          (cytoscape:elements graph)))
-
 (defun match-ligands (ligands)
   (if (= 2 (length ligands))
     (multiple-value-bind (equivs diff1 diff2)
@@ -689,123 +667,6 @@ It will put those multiple ligands into all-ligands and selected-ligands"
       (list (mapcar (lambda (mol) (chem:get-name mol)) diff1)
             (mapcar (lambda (mol) (chem:get-name mol)) diff2)))
     (mapcar (lambda (ligand)) ligands)))
-
-(defun generate-stylesheet (atoms)
-  (when atoms
-    (with-output-to-string (output-stream)
-      (format output-stream "~{.~A~^,~%~} {~%  filter: url(#highlight);~%}" atoms))))
-
-
-(defun update-selected-sketches (graph unselected-names)
-  (let* ((selected-names (get-selected-names graph))
-         (selected (mapcan (lambda (ligand)
-                             (when (position (molecule-name ligand) selected-names :test #'string=)
-                               (list ligand)))
-                           all-ligands))
-         (atom-matches (match-ligands selected)))
-    (dolist (element (cytoscape:elements graph))
-      (when (and (position (element-id element) unselected-names :test #'equal))
-        ;(not (position (element-id element) selected-names :test #'equal)))
-        (setf (cdr (assoc "image" (cytoscape:data element) :test #'string=))
-              (encode-svg (cando-widgets:sketch-molecule (find (element-id element) all-ligands :test #'string= :key #'molecule-name))))
-        (jupyter-widgets:notify-trait-change element :dict :data (cytoscape:data element) (cytoscape:data element) t)))
-    (loop for ligand in selected
-          for atoms in atom-matches
-          for element = (find (molecule-name ligand) (cytoscape:elements graph) :test #'string= :key #'element-id)
-          do (setf (cdr (assoc "image" (cytoscape:data element) :test #'string=))
-                   (encode-svg (cando-widgets:sketch-molecule ligand (generate-stylesheet atoms))))
-          do (jupyter-widgets:notify-trait-change element :dict :data (cytoscape:data element) (cytoscape:data element) t))))
-
-
-(defun make-node (graph ligand)
-  "Construct a cytoscape node based on a ligand."
-  (let ((name (molecule-name ligand)))
-    (multiple-value-bind (svg width height)
-                         (cw:sketch-molecule ligand)
-      ;; Save sketch dimension and the sketch itself into the data slot. The sketch is SVG text
-      ;; so we just need do a percent encoded string for the reserved URL characters.
-      (make-instance 'cytoscape:element
-                     :group "nodes"
-                     :removed (not (position ligand selected-ligands))
-                     :on-trait-change (list (cons :selected
-                                                  (lambda (instance type nm old-value new-value source)
-                                                    (declare (ignore instance type nm old-value source))
-                                                    (update-selected-sketches graph (unless new-value (list name))))))
-                     :data (list (cons "id" name)
-                                 (cons "label" name)
-                                 (cons "width" width)
-                                 (cons "height" height)
-                                 (cons "image" (encode-svg svg)))))))
-
-
-(defun make-edge (graph edge)
-  "Construct an cytoscape edge based on an edge definition when is a list of
-  the form (source target label)."
-  (let ((name-1 (symbol-name (first edge)))
-        (name-2 (symbol-name (second edge)))
-        (similarity (cdr (assoc edge (similarities *workspace*) :test #'equal))))
-    (make-instance 'cytoscape:element
-                   :group "edges"
-                   :on-trait-change (list (cons :selected
-                                                (lambda (instance type name old-value new-value source)
-                                                  (declare (ignore instance type name old-value source))
-                                                  (update-selected-sketches graph (unless new-value
-                                                                                    (list name-1 name-2))))))
-                   :data (list (cons "id" (edge-id name-1 name-2))
-                               (cons "label" (format nil "~@[S = ~3,2f~]" similarity))
-                               (cons "source" name-1)
-                               (cons "target" name-2)))))
-
-
-(defun create-graph (graph)
-  "Create a graph from all-ligands and all-edges."
-  (setf (cytoscape:elements graph)
-        (nconc (mapcar (lambda (ligand)
-                         (make-node graph ligand))
-                       all-ligands)
-               (mapcar (lambda (edge)
-                         (make-edge graph edge))
-                       all-edges))))
-
-
-(defun set-element-removed (element removed)
-  "Show or hide a cytoscape element and ensure that the element is not currently selected or
-  grabbed."
-  (when (or (and removed (not (cytoscape:removed element)))
-            (and (not removed) (cytoscape:removed element)))
-    (setf (cytoscape:selected element) nil
-          (cytoscape:grabbed element) nil
-          (cytoscape:removed element) removed)))
-
-
-(defun update-graph (graph)
-  "Update a graph in reponse to a change in selected-ligands or all-edges"
-  (let (new-edges)
-    ;; Look for elements that don't have a corresponding match in selected-ligands or all-edges.
-    (dolist (element (cytoscape:elements graph))
-      (let ((id (cdr (assoc "id" (cytoscape:data element) :test #'equal))))
-        (set-element-removed element
-                             (if (equal "nodes" (cytoscape:group element))
-                               (not (position id selected-ligands ; the element is node so look in selected-ligands.
-                                              :test #'string=
-                                              :key #'molecule-name))
-                               (notany (lambda (edge) ; the element is an edge so look in all-edges.
-                                         (equal id (edge-id (symbol-name (first edge)) ; the ids are already in normal order.
-                                                            (symbol-name (second edge)))))
-                                       all-edges)))))
-    ;; Look through all-edges for new edges
-    (dolist (edge all-edges)
-      (unless (some (lambda (element)
-                      (equal (cdr (assoc "id" (cytoscape:data element) :test #'equal))
-                                    (edge-id (symbol-name (first edge))
-                                             (symbol-name (second edge)))))
-                    (cytoscape:elements graph))
-        (push (make-edge graph edge) new-edges)))
-    ;; If new edges have been created then just add them. The layout will be updated automatically.
-    ;; Otherwise force the layout to update.
-    (if new-edges
-      (setf (cytoscape:elements graph) (append (cytoscape:elements graph) new-edges))
-      (cytoscape:layout graph))))
 
 
 (defun run-lomap (action parameter progress-callback)
@@ -832,194 +693,24 @@ It will put those multiple ligands into all-ligands and selected-ligands"
     ;; Loop over the subgraphs and the vertices and edges and create edges.
     (dolist (subgraph (lomap::subgraphs multigraph))
       (dolist (edge (lomap::edges subgraph))
-        (push (sort (list (chem:get-name (lomap:molecule (lomap:vertex1 edge)))
-                          (chem:get-name (lomap:molecule (lomap:vertex2 edge))))
-                    #'string<)
-              new-edges)))
+        (let ((edge-pair (sort (list (chem:get-name (lomap:molecule (lomap:vertex1 edge)))
+                                     (chem:get-name (lomap:molecule (lomap:vertex2 edge))))
+                               #'string<)))
+          (push (append edge-pair
+                        (list :label (format nil "~@[S = ~3,2f~]"
+                                             (cdr (assoc edge-pair (similarities *workspace*) :test #'equal)))))
+                new-edges))))
     (setf all-edges new-edges))
   (write-line "Similarity matrix calculation completed.")
   (finish-output)
   (save-workspace))
 
 
-(defparameter +similarity-graph-style/show-sketches+
-  "* {
-   label: data(label);
-   font-size: 30;
-  }
-  edge:selected {
-   color: #1976d2;
-  }
-  node:unselected {
-   background-color: white;
-   border-width: 2px;
-   border-style: solid;
-   border-color: black;
-  }
-  node:selected {
-   color: #1976d2;
-   background-color: white;
-   border-width: 2px;
-   border-style: solid;
-   border-color: #1976d2;
-  }
-  node {
-   shape: rectangle;
-   background-image: data(image);
-   width: data(width);
-   height: data(height);
-  }")
-
-
-(defparameter +similarity-graph-style/hide-sketches+
-  "* {
-   label: data(label);
-   font-size: 10;
-  }
-  edge:selected {
-   color: #1976d2;
-  }
-  node:selected {
-   color: #1976d2;
-  }")
-
-
-(defun add-edges (graph &rest ids)
-  "Add edges between all nodes."
-  (let ((names (mapcar (lambda (id)
-                         (intern id 'keyword))
-                       ids))
-        new-edges)
-    ;; Look over every pair of nodes, but only attempt to add an edge if the
-    ;; ids are in normal order. This makes comparing edge ids easy, plus it avoids loops.
-    (dolist (name-1 names)
-      (dolist (name-2 names)
-        (when (and (string< name-1 name-2)
-                   (notany (lambda (edge) ; check to make sure that edge doesn't already exist.
-                             (and (eq name-1 (first edge))
-                                  (eq name-2 (second edge))))
-                           all-edges))
-          (push (list name-1 name-2) new-edges))))
-    ;; If new edges have been created then just add them. The layout will be updated automatically.
-    ;; Otherwise force the layout to update.
-    (when new-edges
-      (setf all-edges (append all-edges new-edges))
-      (cytoscape:layout graph))))
-
-
-(defun delete-elements (graph &rest ids)
-  "Delete all nodes and edges associated with a set of ids."
-  (let* ((names (mapcar (lambda (id) ; extract the names.
-                          (let ((pos (position #\| id))) ; If there is vertical bar it is an edge.
-                            (if pos
-                              (list (intern (subseq id 0 pos) 'keyword)
-                                    (intern (subseq id (1+ pos)) 'keyword))
-                              (intern id 'keyword))))
-                        ids))
-         (new-selected (remove-if (lambda (ligand) ; ligands that do not appear in names
-                                    (position (chem:get-name ligand) names))
-                                  selected-ligands))
-         (new-edges (remove-if (lambda (edge) ; edges that do not appear in or do not refer to names.
-                                 (some (lambda (name)
-                                         (or (and (listp name)
-                                                  (eq (first edge) (first name))
-                                                  (eq (second edge) (second name)))
-                                             (and (symbolp name)
-                                                  (or (eq (first edge) name)
-                                                      (eq (second edge) name)))))
-                                       names))
-                               all-edges)))
-    ;; Remove edges first.
-    (unless (= (length all-edges)
-               (length new-edges))
-      (setf all-edges new-edges))
-    (unless (= (length selected-ligands)
-               (length new-selected))
-      (setf selected-ligands new-selected))
-    ;; If any update has happened then relayout the graph.
-    (when (or (/= (length all-edges)
-                  (length new-edges))
-              (/= (length selected-ligands)
-                  (length new-selected)))
-      (cytoscape:layout graph))))
-
-
 (defun lomap ()
   "Calculate molecule similarities using a graph theory approach based on LOMAP
   (J Comput Aided Mol Des 27, 755–770 (2013). https://doi.org/10.1007/s10822-013-9678-y)"
   (let* ((container (make-instance 'w:accordion :selected-index 0))
-         (add-edges-command (make-instance 'cytoscape:menu-command ; A command which adds edges
-                                          :content "<span class='fa fa-project-diagram fa-2x'></span>"))
-         (delete-node-command (make-instance 'cytoscape:menu-command ; Delete node based on context.
-                                             :content "<span class='fa fa-trash fa-2x'></span>"))
-         (delete-edge-command (make-instance 'cytoscape:menu-command ; Delete edge based on context.
-                                             :content "<span class='fa fa-trash fa-2x'></span>"))
-         (delete-elements-command (make-instance 'cytoscape:menu-command ; Delete all selected elements.
-                                                 :content "<span class='fa fa-trash fa-2x'></span>"))
-         (layouts (list (list "Circle layout"
-                              (make-instance 'cytoscape:circle-layout))
-                        (list "Concentric layout"
-                              (make-instance 'cytoscape:concentric-layout))
-                        (list "Breadth-First layout"
-                              (make-instance 'cytoscape:breadth-first-layout))
-                        (list "CoSE layout"
-                              (make-instance 'cytoscape:cose-layout))
-                        (list "Dagre layout"
-                              (make-instance 'cytoscape:dagre-layout))
-                        (list "Grid layout"
-                              (make-instance 'cytoscape:grid-layout))))
-         (graph (make-instance 'cytoscape:cytoscape-widget
-                               :graph-layouts (cdr (fourth layouts))
-                               :context-menus (list (make-instance 'cytoscape:context-menu
-                                                                   :selector "core"
-                                                                   :commands (list add-edges-command delete-elements-command))
-                                                    (make-instance 'cytoscape:context-menu
-                                                                   :selector "node"
-                                                                   :commands (list delete-node-command))
-                                                    (make-instance 'cytoscape:context-menu
-                                                                   :selector "edge"
-                                                                   :commands (list delete-edge-command)))
-                               :graph-style +similarity-graph-style/show-sketches+
-                               :wheel-sensitivity 0.8 ; Detune the wheel sensitivity a bit.
-                               :layout (make-instance 'w:layout
-                                                      :height "auto"
-                                                      :align-self "stretch"
-                                                      :border "var(--jp-widgets-border-width) solid var(--jp-border-color1)"
-                                                      :grid-area "graph")))
-         (layout-select (make-instance 'w:dropdown ; A dropdown to select the layout
-                                       :%options-labels (mapcar #'car layouts)
-                                       :index 3
-                                       :on-trait-change (list (cons :index
-                                                                    (lambda (inst type name old-value new-value source)
-                                                                      (declare (ignore inst type name old-value source))
-                                                                      (setf (cytoscape:graph-layouts graph)
-                                                                            (cdr (nth new-value layouts)))
-                                                                      (cytoscape:layout graph))))
-                                       :layout (make-instance 'w:layout
-                                                              :width "max-content"
-                                                              :grid-area "layout")))
-         (fit (make-instance 'w:button ; A button to refit to the whole graph.
-                             :description "Fit"
-                             :on-click (list (lambda (inst)
-                                               (declare (ignore inst))
-                                               (cytoscape:fit-elements graph)))
-                             :layout (make-instance 'w:layout
-                                                    :grid-area "fit")))
-         (show-sketches (make-instance 'w:toggle-button ; A button to toggle the sketch visibility
-                                       :description "Show Sketches"
-                                       :value t
-                                       :layout (make-instance 'w:layout
-                                                              :grid-area "show-sketches")
-                                       :on-trait-change (list (cons :value
-                                                                    (lambda (inst type name old-value new-value source)
-                                                                      (declare (ignore inst type name old-value source))
-                                                                      (setf (cytoscape:graph-style graph)
-                                                                            (if new-value
-                                                                              +similarity-graph-style/show-sketches+
-                                                                              +similarity-graph-style/hide-sketches+))
-                                                                      (cytoscape:layout graph))))))
          (grid (make-instance 'resizable-box:resizable-grid-box ; Grid for the graph. Control buttons are in the bottom row.
-                              :children (list graph fit layout-select show-sketches)
                               :enable-full-screen t
                               :layout (make-instance 'resizable-box:resizable-layout
                                                      :resize "vertical"
@@ -1027,61 +718,26 @@ It will put those multiple ligands into all-ligands and selected-ligands"
                                                      :min-height "480px"
                                                      :padding "0 24px 0 0"
                                                      :grid-gap "var(--jp-widgets-container-padding)"
-                                                     :grid-template-columns "1fr min-content min-content min-content min-content 1fr"
+                                                     :grid-template-columns "1fr"
                                                      :grid-template-rows "1fr min-content"
-                                                     :grid-template-areas "\"graph graph graph graph graph graph\" \". fit layout show-sketches add-edges .\""))))
-    ;; Delete the current node.
-    (cytoscape:on-menu-command-select delete-node-command
-      (lambda (inst id)
-        (declare (ignore inst))
-        (delete-elements graph id)))
-    ;; Delete the current edge.
-    (cytoscape:on-menu-command-select delete-edge-command
-      (lambda (inst id)
-        (declare (ignore inst))
-        (delete-elements graph id)))
-    ;; Add edges that connect all currently selected nodes.
-    (cytoscape:on-menu-command-select add-edges-command
-      (lambda (inst id)
-        (declare (ignore inst id))
-        (apply #'add-edges graph
-                           (mapcan (lambda (element)
-                                     (when (and (cytoscape:selected element)
-                                                (not (cytoscape:removed element))
-                                                (string= "nodes" (cytoscape:group element)))
-                                       (list (cdr (assoc "id" (cytoscape:data element) :test #'string=)))))
-                                   (cytoscape:elements graph)))))
-    ;; Delete all selected elements
-    (cytoscape:on-menu-command-select delete-elements-command
-      (lambda (inst id)
-        (declare (ignore inst id))
-        (apply #'delete-elements graph
-                                 (mapcan (lambda (element)
-                                           (when (and (cytoscape:selected element)
-                                                      (not (cytoscape:removed element)))
-                                             (list (cdr (assoc "id" (cytoscape:data element) :test #'string=)))))
-                                         (cytoscape:elements graph)))))
+                                                     :grid-template-areas "'molecule-map-content' 'molecule-map-controls'")))
+         (molecule-map (cw:make-molecule-map grid
+                                             :molecule-matcher #'match-ligands
+                                             :edge-constructor (lambda (name1 name2)
+                                                                 (when (string< name1 name2)
+                                                                   (list name1 name2
+                                                                         :label (format nil "~@[S = ~3,2f~]"
+                                                                                        (cdr (assoc (list name1 name2) (similarities *workspace*) :test #'equal))))))
+                                             :molecules selected-ligands
+                                             :edges all-edges)))
+    (w:link *workspace* :selected-ligands molecule-map :molecules)
+    (w:link *workspace* :all-edges molecule-map :edges)
     (cw:make-simple-task-page container "Calculate Similarities" #'run-lomap
                               :label "Click button to calculate molecular similarities.")
     (setf (w:widget-%titles container) (append (w:widget-%titles container)
                                               (list "Calculation Graph"))
           (w:widget-children container) (append (w:widget-children container)
                                                (list grid)))
-    (create-graph graph)
-    ;; When all-ligands changes create a completely new graph.
-    (w:observe *workspace* :all-ligands
-      (lambda (instance type name old-value new-value source)
-        (declare (ignore instance type name old-value new-value source))
-        (create-graph graph)))
-    ;; If selected-ligands or all-edges change then just update the graph.
-    (w:observe *workspace* :selected-ligands
-      (lambda (instance type name old-value new-value source)
-        (declare (ignore instance type name old-value new-value source))
-        (update-graph graph)))
-    (w:observe *workspace* :all-edges
-      (lambda (instance type name old-value new-value source)
-        (declare (ignore instance type name old-value new-value source))
-        (update-graph graph)))
     container))
 
 
@@ -1400,7 +1056,6 @@ lisp_jobs_only_on=172.234.2.1
     instance))
 
 
-
 (defun load-chemdraw (filename)
   "Like composer - but gets the structure sketch from a chemdraw file"
   (let ((sketch (tirun:load-chem-draw-tirun filename)))
@@ -1408,3 +1063,29 @@ lisp_jobs_only_on=172.234.2.1
       (let ((posed-molecules (tirun:pose-molecules-using-similarity molecules (template-ligand *workspace*))))
         (setf all-ligands posed-molecules
               selected-ligands all-ligands)))))
+
+
+(defun rbfe-map ()
+  (let* ((container (make-instance 'w:accordion :selected-index 0))
+         (grid (make-instance 'resizable-box:resizable-grid-box ; Grid for the graph. Control buttons are in the bottom row.
+                              :enable-full-screen t
+                              :layout (make-instance 'resizable-box:resizable-layout
+                                                     :resize "vertical"
+                                                     :overflow "hidden"
+                                                     :min-height "480px"
+                                                     :padding "0 24px 0 0"
+                                                     :grid-gap "var(--jp-widgets-container-padding)"
+                                                     :grid-template-columns "1fr"
+                                                     :grid-template-rows "1fr min-content"
+                                                     :grid-template-areas "'molecule-map-content' 'molecule-map-controls'")))
+         (molecule-map (cw:make-molecule-map grid
+                                             :molecules selected-ligands
+                                             :edges (rbfe-edges *workspace*))))
+    (w:link *workspace* :selected-ligands molecule-map :molecules)
+    (w:link *workspace* :rbfe-edges molecule-map :edges)
+    (setf (w:widget-%titles container) (append (w:widget-%titles container)
+                                               (list "Relative Binding Free Energy Map"))
+          (w:widget-children container) (append (w:widget-children container)
+                                                (list grid)))
+    container))
+
