@@ -1,11 +1,10 @@
 (in-package :cando-widgets)
 
-(defgeneric show (matter-or-trajectory &rest kwargs &key &allow-other-keys)
+(defgeneric show (instance &rest kwargs &key &allow-other-keys)
   (:documentation "Display a residue, molecule, aggregate or a trajectory in a Jupyter notebook"))
 
 
-
-(defun add-bounding-box (widget aggregate)
+(defun add-bounding-box (component aggregate)
   (unless (chem:bounding-box-bound-p aggregate)
     (error "There is no bounding-box defined for aggregate"))
   (let* ((bounding-box (chem:bounding-box aggregate))
@@ -18,44 +17,55 @@
          (minz (- (geom:vz center) z-width/2))
          (maxx (+ (geom:vx center) x-width/2))
          (maxy (+ (geom:vy center) y-width/2))
-         (maxz (+ (geom:vz center) z-width/2))
-         (xpair (vector minx maxx))
-         (ypair (vector miny maxy))
-         (zpair (vector minz maxz)))
-    (flet ((line (from to &optional (color #(0 0 0)))
-             (let ((start (vector (elt xpair (elt from 0)) (elt ypair (elt from 1)) (elt zpair (elt from 2))))
-                   (stop  (vector (elt xpair (elt to 0)) (elt ypair (elt to 1)) (elt zpair (elt to 2)))))
-               (vector "arrow" start stop color 1.0))))
-      (nglv::add-shape widget (vector (line #(0 0 0) #(1 0 0) #(1 0 0))
-                                      (line #(0 0 0) #(0 1 0) #(0 1 0))
-                                      (line #(0 0 0) #(0 0 1) #(0 0 1))
-                                      (line #(1 0 0) #(1 1 0))
-                                      (line #(1 0 0) #(1 0 1))
-                                      (line #(0 1 0) #(1 1 0))
-                                      (line #(0 1 0) #(0 1 1))
-                                      (line #(0 0 1) #(1 0 1))
-                                      (line #(0 0 1) #(0 1 1))
-                                      (line #(1 1 0) #(1 1 1))
-                                      (line #(1 0 1) #(1 1 1))
-                                      (line #(0 1 1) #(1 1 1)))
-                      :name "bounding-box"))))
+         (maxz (+ (geom:vz center) z-width/2)))
+    (setf (ngl:representations component)
+          (append (ngl:representations component)
+                  (list (make-instance 'ngl:buffer-representation
+                                       :name "bounding-box"
+                                       :buffer (list :type "wideline"
+                                                     :position1 (vector minx miny minz
+                                                                        minx miny minz
+                                                                        minx miny minz
+                                                                        minx miny maxz
+                                                                        minx miny maxz
+                                                                        minx maxy minz
+                                                                        minx maxy minz
+                                                                        maxx miny minz
+                                                                        maxx miny minz
+                                                                        minx maxy maxz
+                                                                        maxx miny maxz
+                                                                        maxx maxy minz)
+                                                     :position2 (vector minx miny maxz
+                                                                        minx maxy minz
+                                                                        maxx miny minz
+                                                                        minx maxy maxz
+                                                                        maxx miny maxz
+                                                                        minx maxy maxz
+                                                                        maxx maxy minz
+                                                                        maxx miny maxz
+                                                                        maxx maxy minz
+                                                                        maxx maxy maxz
+                                                                        maxx maxy maxz
+                                                                        maxx maxy maxz)
+                                                     :color #(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+                                                     :color2 #(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0))))))))
 
-(defmethod show ((aggregate chem:aggregate) &rest kwargs &key &allow-other-keys)
-  (let ((structure (make-instance 'cando-structure :matter aggregate))
-        (axes (getf kwargs :axes))
-        (shapes (getf kwargs :shapes)))
-    (remf kwargs :axes)
-    (remf kwargs :shapes)
-    (let ((widget (apply #'nglv:make-nglwidget :structure structure kwargs)))
-      (when (chem:bounding-box-bound-p aggregate)
-        (add-bounding-box widget aggregate))
-      #+(or)(when axes (nglv:add-axes widget))
-      (when shapes
-        (loop for index below (length shapes) by 2
-              for name = (string (elt shapes index))
-              for shape = (elt shapes (1+ index))
-              do (nglv::add-shape widget shape :name name)))
-      widget)))
+
+(defmethod show ((instance chem:aggregate) &rest kwargs &key &allow-other-keys)
+  (let ((component (make-instance 'ngl:structure
+                                  :name (symbol-name (chem:get-name instance))
+                                  :value (chem:aggregate-as-mol2-string instance t)
+                                  :ext "mol2")))
+    (when (chem:bounding-box-bound-p instance)
+      (add-bounding-box component instance))
+    (jw:display (apply #'make-instance 'ngl:stage
+                       :clip-dist 0
+                       :background-color "white"
+                       :components (list component
+                                         (make-instance 'ngl:shape :primitives (getf kwargs :shapes)))
+                       kwargs))
+    (ngl:auto-view component)
+    (values)))
 
 (defmethod show ((molecule chem:molecule) &rest kwargs &key &allow-other-keys)
   (let ((agg (chem:make-aggregate nil)))
@@ -85,10 +95,6 @@
 (defmethod show ((residue chem:residue)  &rest kwargs &key &allow-other-keys)
   (let ((agg (isolate-residue residue)))
     (apply 'show agg kwargs)))
-
-(defun repr (widget representation &optional (selection "all"))
-  (funcall (find-symbol "ADD-REPRESENTATION" :nglv) widget representation :selection selection))
-
 
 (defmethod show ((sketch sketch2d:sketch2d) &rest kwargs &key &allow-other-keys)
   (show (sketch2d:svg sketch)))
