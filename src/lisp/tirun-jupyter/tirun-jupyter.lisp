@@ -10,7 +10,7 @@
              (setf ,var-name ,initial-value))))))
 
 
-(def-dyn-widget button-style (make-instance 'w:button-style :button-color "aquamarine"))
+(def-dyn-widget button-style (make-instance 'jw:button-style :button-color "aquamarine"))
 
 
 (defparameter +default-distributor+ "s103.thirdlaw.tech")
@@ -120,7 +120,7 @@
 
 
 (def-dyn-widget box-layout
-  (make-instance 'w:layout :width "auto" :flex-flow "row wrap"))
+  (make-instance 'jw:layout :width "auto" :flex-flow "row wrap"))
 
 
 (defun initialize-workspace ()
@@ -154,7 +154,7 @@
 
 (defun workspace (&rest initargs)
   (apply #'make-instance 'workspace initargs)
-  (let* ((container (make-instance 'w:accordion :selected-index 0))
+  (let* ((container (make-instance 'jw:accordion :selected-index 0))
          (page (cw:make-workspace-task-page container "TIRUN Workspace" #'run-workspace-task :file-type "tirun")))
     (cando-widgets:run-task page :initialize nil)
     container))
@@ -212,16 +212,16 @@
    (hbox :initarg :hbox :accessor hbox)))
 
 (defun make-simple-input (label &key (default "") name)
-  (let ((label-widget (make-instance 'w:label :value label
-                                              :layout (make-instance 'w:layout :width "25em")))
-        (input-widget (make-instance 'w:text
+  (let ((label-widget (make-instance 'jw:label :value label
+                                               :layout (make-instance 'jw:layout :width "25em")))
+        (input-widget (make-instance 'jw:text
                                      :value default
-                                     :layout (make-instance 'w:layout :width "20em"))))
+                                     :layout (make-instance 'jw:layout :width "20em"))))
     (make-instance 'simple-input
                    :name name
                    :label-widget label-widget
                    :input-widget input-widget
-                   :hbox (make-instance 'w:h-box
+                   :hbox (make-instance 'jw:h-box
                                         :children (list label-widget input-widget)))))
 
 
@@ -268,7 +268,7 @@
 
 (defun load-receptor ()
   "Present a graphical interface to load and view a receptor into the current application."
-  (let* ((container (make-instance 'w:accordion :selected-index 0))
+  (let* ((container (make-instance 'jw:accordion :selected-index 0))
          (ngl-page (make-instance 'resizable-box:resizable-grid-box
                                   :enable-full-screen t
                                   :layout (make-instance 'resizable-box:resizable-layout
@@ -284,15 +284,15 @@
          (ngl (cw:make-ngl-structure-viewer ngl-page :auto-view "receptor")))
     (cw:make-file-task-page container "Load Receptor" #'parse-receptor :accept ".pdb")
     ;; Make a simple page to display the receptor in nglview
-    (setf (w:widget-%titles container) (append (w:widget-%titles container)
-                                               (list "View Receptor"))
-          (w:widget-children container) (append (w:widget-children container)
-                                               (list ngl-page)))
+    (setf (jw:widget-%titles container) (append (jw:widget-%titles container)
+                                                (list "View Receptor"))
+          (jw:widget-children container) (append (jw:widget-children container)
+                                                 (list ngl-page)))
     ;; Add the receptor if one is already defined.
     (when (receptor *workspace*)
       (cw:add-receptor ngl (receptor *workspace*)))
     ;; Listen for changes to the receptor and add or delete when needed.
-    (w:observe *workspace* :receptor
+    (jw:observe *workspace* :receptor
       (lambda (inst type name old-value new-value source)
         (declare (ignore inst type name old-value source))
         (when new-value
@@ -302,7 +302,7 @@
 
 (defun load-template-ligand ()
   "Present a graphical interface to load and view a template-ligand into the current application."
-  (let* ((container (make-instance 'w:accordion :selected-index 0))
+  (let* ((container (make-instance 'jw:accordion :selected-index 0))
          (ngl-page (make-instance 'resizable-box:resizable-grid-box
                                   :enable-full-screen t
                                   :layout (make-instance 'resizable-box:resizable-layout
@@ -318,15 +318,15 @@
          (ngl (cw:make-ngl-structure-viewer ngl-page :auto-view "template")))
     (cw:make-file-task-page container "Load Template ligand" #'parse-template-ligand :accept ".pdb")
     ;; Make a simple page to display the receptor in nglview
-    (setf (w:widget-%titles container) (append (w:widget-%titles container)
-                                              (list "View Template Ligand"))
-          (w:widget-children container) (append (w:widget-children container)
-                                               (list ngl-page)))
+    (setf (jw:widget-%titles container) (append (jw:widget-%titles container)
+                                                (list "View Template Ligand"))
+          (jw:widget-children container) (append (jw:widget-children container)
+                                                 (list ngl-page)))
     ;; Add the template ligand if one is already defined.
     (when (template-ligand *workspace*)
       (cw:add-template ngl (template-ligand *workspace*)))
     ;; Listen for changes to the template-ligand and add or delete when needed.
-    (w:observe *workspace* :template-ligand
+    (jw:observe *workspace* :template-ligand
       (lambda (inst type name old-value new-value source)
         (declare (ignore inst type name old-value source))
         (when new-value
@@ -339,27 +339,27 @@
      :accessor view-ligand-ngl-structure-viewer)
    (structure
      :reader view-ligand-structure
-     :initform (make-instance 'w:html
-                              :layout (make-instance 'w:layout
+     :initform (make-instance 'jw:html
+                              :layout (make-instance 'jw:layout
                                                      :grid-area "structure"))
      :documentation "A sketch view for the selected ligand.")
    (dropdown
      :reader view-ligand-dropdown
-     :initform (make-instance 'w:dropdown
+     :initform (make-instance 'jw:dropdown
                               :description "Active Ligand"
-                              :style (make-instance 'w:description-style
+                              :style (make-instance 'jw:description-style
                                                     :description-width "min-content")
-                              :layout (make-instance 'w:layout
+                              :layout (make-instance 'jw:layout
                                                      :margin ".5em"
                                                      :width "max-content"))
      :documentation "A dropdown of all the available ligands.")
    (template-dropdown
      :reader view-ligand-template-dropdown
-     :initform (make-instance 'w:dropdown
+     :initform (make-instance 'jw:dropdown
                               :description "Template Ligand"
-                              :style (make-instance 'w:description-style
+                              :style (make-instance 'jw:description-style
                                                     :description-width "min-content")
-                              :layout (make-instance 'w:layout
+                              :layout (make-instance 'jw:layout
                                                      :margin ".5em"
                                                      :width "max-content"))
      :documentation "A dropdown of all the available ligands."))
@@ -390,7 +390,7 @@
     (let ((mol (find id all-ligands :key #'molecule-name :test #'equal)))
       (when mol
         ;; Load the sketch
-        (setf (w:widget-value structure) (cw:sketch-molecule mol))
+        (setf (jw:widget-value structure) (cw:sketch-molecule mol))
         ;; Show the ligand if it is already in nglview otherwise load it.
         (let ((agg (chem:make-aggregate (chem:get-name mol))))
           (chem:add-matter agg mol)
@@ -403,33 +403,33 @@
               instance
     (cond
       (all-ligands
-        (setf (w:widget-disabled dropdown) nil
-              (w:widget-%options-labels template-dropdown) (append (list "None")
-                                                                   (when template-ligand
-                                                                     (list "Template Ligand"))
-                                                                   (mapcar #'molecule-name all-ligands))
-              (w:widget-index template-dropdown) (if template-ligand 1 0)
-              (w:widget-%options-labels dropdown) (mapcar #'molecule-name all-ligands)
-              (w:widget-index dropdown) 0)
+        (setf (jw:widget-disabled dropdown) nil
+              (jw:widget-%options-labels template-dropdown) (append (list "None")
+                                                                    (when template-ligand
+                                                                      (list "Template Ligand"))
+                                                                    (mapcar #'molecule-name all-ligands))
+              (jw:widget-index template-dropdown) (if template-ligand 1 0)
+              (jw:widget-%options-labels dropdown) (mapcar #'molecule-name all-ligands)
+              (jw:widget-index dropdown) 0)
         (cw:sketch-molecules all-ligands)
         (on-ligand-select instance (molecule-name (car all-ligands))))
       (t
-        (setf (w:widget-disabled dropdown) t
-              (w:widget-%options-labels dropdown) nil)))))
+        (setf (jw:widget-disabled dropdown) t
+              (jw:widget-%options-labels dropdown) nil)))))
 
 (defmethod initialize-instance :after ((instance view-ligand-page) &rest initargs &key &allow-other-keys)
   (declare (ignore initargs))
-  (setf (w:widget-children instance)
-        (list (make-instance 'w:box
+  (setf (jw:widget-children instance)
+        (list (make-instance 'jw:box
                              :children (list (view-ligand-structure instance))
-                             :layout (make-instance 'w:layout
+                             :layout (make-instance 'jw:layout
                                                     :border "var(--jp-widgets-border-width) solid var(--jp-border-color1)"
                                                     :justify-content "center"
                                                     :align-items "center"))
-              (make-instance 'w:box
+              (make-instance 'jw:box
                              :children (list (view-ligand-dropdown instance)
                                              (view-ligand-template-dropdown instance))
-                             :layout (make-instance 'w:layout
+                             :layout (make-instance 'jw:layout
                                                     :flex-flow "row wrap"
                                                     :justify-content "center"
                                                     ;:margin "-.5em"
@@ -439,12 +439,12 @@
   (setf (view-ligand-ngl-structure-viewer instance)
         (cw:make-ngl-structure-viewer instance :auto-view "ligand"))
   ;; When the ligand changes update the sketch and nglview.
-  (w:observe (view-ligand-dropdown instance) :value
+  (jw:observe (view-ligand-dropdown instance) :value
     (lambda (inst type name old-value new-value source)
       (declare (ignore inst type name old-value source))
       (on-ligand-select instance new-value old-value)))
   ;; When the template changes update the sketch and nglview.
-  (w:observe (view-ligand-template-dropdown instance) :value
+  (jw:observe (view-ligand-template-dropdown instance) :value
     (lambda (inst type name old-value new-value source)
       (declare (ignore inst type name old-value source))
       (unless (equal new-value "None")
@@ -456,24 +456,24 @@
                                               (find new-value all-ligands :key #'molecule-name :test #'equal)))
                            agg)))))
   ;; When the receptor changes reload the receptor in nglview.
-  (w:observe *workspace* :receptor
+  (jw:observe *workspace* :receptor
     (lambda (inst type name old-value new-value source)
       (declare (ignore inst type name source))
       (cw:add-receptor (view-ligand-ngl-structure-viewer instance) new-value)))
   ;; When the template ligand changes reload the receptor in nglview.
-  (w:observe *workspace* :template-ligand
+  (jw:observe *workspace* :template-ligand
     (lambda (inst type name old-value new-value source)
       (declare (ignore inst type name source))
       (with-slots (template-dropdown)
                   instance
         (cw:add-template (view-ligand-ngl-structure-viewer instance) new-value)
-        (setf (w:widget-%options-labels template-dropdown) (append (list "None")
+        (setf (jw:widget-%options-labels template-dropdown) (append (list "None")
                                                                    (when new-value
                                                                      (list "Template Ligand"))
                                                                    (mapcar #'molecule-name all-ligands))
-              (w:widget-index template-dropdown) (if new-value 1 0)))))
+              (jw:widget-index template-dropdown) (if new-value 1 0)))))
   ;; If the all-ligands changes then reload the whole thing.
-  (w:observe *workspace* :all-ligands
+  (jw:observe *workspace* :all-ligands
     (lambda (inst type name old-value new-value source)
       (declare (ignore inst type name new-value source))
       (cw:clear-ligands (view-ligand-ngl-structure-viewer instance))
@@ -483,7 +483,7 @@
 (defun make-view-ligand-page (container title)
   "Create an instance of a view-ligand-page and add it to the container."
   (let ((page (make-instance 'view-ligand-page :container container)))
-    ;(setf (w:widget-grid-area (w:widget-layout (view-ligand-ngl-structure-viewer page))) "ngls")
+    ;(setf (jw:widget-grid-area (jw:widget-layout (view-ligand-ngl-structure-viewer page))) "ngls")
     (cw:add-page container page title)
     ;; If the receptor is already set then load the current receptor.
     (when (receptor *workspace*)
@@ -535,7 +535,7 @@
   "Present a graphical interface to load a collection of ligands from a file into the current
   application and then display the ligand structure using two-dimension diagrams and three
   dimension representation."
-  (let ((container (make-instance 'w:accordion :selected-index 0)))
+  (let ((container (make-instance 'jw:accordion :selected-index 0)))
     (cw:make-file-task-page container "Load Ligands" #'parse-ligands :accept ".mol2,.sdf")
     (make-view-ligand-page container "View Ligands")
     container))
@@ -546,9 +546,9 @@
   to select a subset of the molecules to use in further calculations."
   (let ((sel (cw:make-molecule-select :molecules all-ligands
                                       :selected selected-ligands)))
-    (w:link sel :molecules *workspace* :all-ligands)
-    (w:link sel :selected *workspace* :selected-ligands)
-    (make-instance 'w:accordion
+    (jw:link sel :molecules *workspace* :all-ligands)
+    (jw:link sel :selected *workspace* :selected-ligands)
+    (make-instance 'jw:accordion
                    :selected-index 0
                    :%titles (list "Select Ligands")
                    :children (list sel))))
@@ -596,27 +596,27 @@
 (defclass pas-config-page (cw:page)
   ((help
      :accessor help
-     :initform (make-instance 'w:html
-                              :layout (make-instance 'w:layout :grid-area "help"))
+     :initform (make-instance 'jw:html
+                              :layout (make-instance 'jw:layout :grid-area "help"))
      :documentation "A help page listing SMIRKS examples.")
    (snippets
      :accessor snippets
-     :initform (make-instance 'w:select
+     :initform (make-instance 'jw:select
                               :%options-labels (mapcar #'car +smirks-patterns+)
                               :description "SMIRKS snippets"
-                              :style (make-instance 'w:description-style :description-width "12em")
-                              :layout (make-instance 'w:layout :width "100%" :grid-area "snippets")))
+                              :style (make-instance 'jw:description-style :description-width "12em")
+                              :layout (make-instance 'jw:layout :width "100%" :grid-area "snippets")))
    (smirks-pattern-editor
      :accessor smirks-pattern-editor
-     :initform (make-instance 'w:text
+     :initform (make-instance 'jw:text
                               :description "SMIRKS pattern"
                               :value (smirks-pattern *workspace*)
-                              :style (make-instance 'w:description-style :description-width "12em")
-                              :layout (make-instance 'w:layout :width "100%" :grid-area "smirks"))
+                              :style (make-instance 'jw:description-style :description-width "12em")
+                              :layout (make-instance 'jw:layout :width "100%" :grid-area "smirks"))
      :documentation "The SMIRKS pattern editor"))
   (:metaclass jupyter-widgets:trait-metaclass)
   (:default-initargs
-    :layout (make-instance 'w:layout
+    :layout (make-instance 'jw:layout
                            :width "100%"
                            :max-height "12em"
                            :grid-gap "0.1em 1em"
@@ -630,15 +630,15 @@
   (with-slots (snippets smirks-pattern-editor help)
               instance
     ;; Connect the SMIRKS editor to *workspace* smirks-pattern
-    (w:link *workspace* :smirks-pattern smirks-pattern-editor :value)
-    (setf (w:widget-children instance) (list help smirks-pattern-editor snippets))
-    (w:observe snippets :index
+    (jw:link *workspace* :smirks-pattern smirks-pattern-editor :value)
+    (setf (jw:widget-children instance) (list help smirks-pattern-editor snippets))
+    (jw:observe snippets :index
       (lambda (inst type name old-value new-value source)
         (declare (ignore inst type name old-value source))
         (destructuring-bind (snippet . text)
                             (nth new-value +smirks-patterns+)
-          (setf (w:widget-value (smirks-pattern-editor instance)) snippet
-                (w:widget-value (help instance)) text))))))
+          (setf (jw:widget-value (smirks-pattern-editor instance)) snippet
+                (jw:widget-value (help instance)) text))))))
 
 
 (defun make-pas-config-page (container title)
@@ -651,7 +651,7 @@
 (defun pasrun ()
   "pasrun loads a ligand template and runs PAS on it to generate multiple ligands.
 It will put those multiple ligands into all-ligands and selected-ligands"
-  (let ((container (make-instance 'w:accordion :selected-index 0)))
+  (let ((container (make-instance 'jw:accordion :selected-index 0)))
     (cw:make-file-task-page container "Load Template Ligands" #'parse-ligands :accept ".mol2,.sdf")
     (make-pas-config-page container "Configure PAS")
     (cw:make-simple-task-page container "Calculate PAS" #'run-pas
@@ -709,7 +709,7 @@ It will put those multiple ligands into all-ligands and selected-ligands"
 (defun lomap ()
   "Calculate molecule similarities using a graph theory approach based on LOMAP
   (J Comput Aided Mol Des 27, 755–770 (2013). https://doi.org/10.1007/s10822-013-9678-y)"
-  (let* ((container (make-instance 'w:accordion :selected-index 0))
+  (let* ((container (make-instance 'jw:accordion :selected-index 0))
          (grid (make-instance 'resizable-box:resizable-grid-box ; Grid for the graph. Control buttons are in the bottom row.
                               :enable-full-screen t
                               :layout (make-instance 'resizable-box:resizable-layout
@@ -730,40 +730,40 @@ It will put those multiple ligands into all-ligands and selected-ligands"
                                                                                         (cdr (assoc (list name1 name2) (similarities *workspace*) :test #'equal))))))
                                              :molecules selected-ligands
                                              :edges all-edges)))
-    (w:link *workspace* :selected-ligands molecule-map :molecules)
-    (w:link *workspace* :all-edges molecule-map :edges)
+    (jw:link *workspace* :selected-ligands molecule-map :molecules)
+    (jw:link *workspace* :all-edges molecule-map :edges)
     (cw:make-simple-task-page container "Calculate Similarities" #'run-lomap
                               :label "Click button to calculate molecular similarities.")
-    (setf (w:widget-%titles container) (append (w:widget-%titles container)
-                                              (list "Calculation Graph"))
-          (w:widget-children container) (append (w:widget-children container)
-                                               (list grid)))
+    (setf (jw:widget-%titles container) (append (jw:widget-%titles container)
+                                                (list "Calculation Graph"))
+          (jw:widget-children container) (append (jw:widget-children container)
+                                                 (list grid)))
     container))
 
 
 (defclass jobs-config-page (cw:page)
   ((job-name
      :accessor job-name
-     :initform (make-instance 'w:text
+     :initform (make-instance 'jw:text
                               :description "Job name"
                               :value (job-name *workspace*)
-                              :style (make-instance 'w:description-style :description-width "12em")
-                              :layout (make-instance 'w:layout :grid-area "name"))
+                              :style (make-instance 'jw:description-style :description-width "12em")
+                              :layout (make-instance 'jw:layout :grid-area "name"))
      :documentation "The job name.")
    (ti-stages
      :accessor ti-stages
-     :initform (make-instance 'w:radio-buttons
+     :initform (make-instance 'jw:radio-buttons
                               :options '(1 3)
                               :%options-labels '("one stage" "three stage")
                               :description "TI stages"
                               :value (tirun-stages *workspace*)
-                              :style (make-instance 'w:description-style :description-width "12em")
-                              :layout (make-instance 'w:layout :grid-area "stages"))
+                              :style (make-instance 'jw:description-style :description-width "12em")
+                              :layout (make-instance 'jw:layout :grid-area "stages"))
      :documentation "The number of stages in the TI calculation."))
   (:metaclass jupyter-widgets:trait-metaclass)
   (:documentation "A page to set job name and the number of stages.")
   (:default-initargs
-    :layout (make-instance 'w:layout
+    :layout (make-instance 'jw:layout
                            :width "100%"
                            :max-height "12em"
                            :grid-gap "0.1em 1em"
@@ -777,10 +777,10 @@ It will put those multiple ligands into all-ligands and selected-ligands"
   (with-slots (job-name ti-stages)
               instance
     ;; Connect the job-name to *workspace* job-name
-    (w:link *workspace* :job-name job-name :value)
-    (setf (w:widget-children instance) (list job-name ti-stages))
+    (jw:link *workspace* :job-name job-name :value)
+    (setf (jw:widget-children instance) (list job-name ti-stages))
     ;; ti-stages isn't a trait so we can't use link.
-    (w:observe ti-stages :value
+    (jw:observe ti-stages :value
       (lambda (inst type name old-value new-value source)
         (declare (ignore inst type name old-value source))
         (setf (tirun-stages *workspace*) new-value)))))
@@ -913,13 +913,13 @@ lisp_jobs_only_on=172.234.2.1
 
 (defun jobs ()
   "Configure and write TI jobs to jobs directory."
-  (let ((container (make-instance 'w:accordion :selected-index 0)))
+  (let ((container (make-instance 'jw:accordion :selected-index 0)))
     (dolist (schema-group tirun::*default-calculation-settings*)
       (cw:add-page container
-                   (w:make-interactive-alist (second schema-group)
-                                             (tirun-settings *workspace*)
-                                             :owner *workspace*
-                                             :name :tirun-settings)
+                   (jw:make-interactive-alist (second schema-group)
+                                              (tirun-settings *workspace*)
+                                              :owner *workspace*
+                                              :name :tirun-settings)
                    (first schema-group)))
     (make-jobs-config-page container "Configure Jobs")
     (cw:make-simple-task-page container "Write Jobs" #'run-write-jobs
@@ -940,13 +940,13 @@ lisp_jobs_only_on=172.234.2.1
 (defvar *submit-thread* nil)
 (defun submit-calc ()
   (let* ((desc-width "12em")
-         (desc-style (make-instance 'w:description-style :description-width desc-width))
+         (desc-style (make-instance 'jw:description-style :description-width desc-width))
          (distributor (make-simple-input "Distributor" :default (distributor *workspace*)))
          (job-name (make-simple-input "Job name" :default "default"))
          (ssh-key-file (make-instance 'jupyter-widgets:file-upload :description "SSH key file"
                                                                    :style (button-style)))
-         (messages (make-instance 'w:text-area :description "Messages"
-                                               :layout (make-instance 'w:layout :width "60em")))
+         (messages (make-instance 'jw:text-area :description "Messages"
+                                                :layout (make-instance 'jw:layout :width "60em")))
          (go-button (make-instance
                      'jupyter-widgets:button
                      :description "Submit jobs"
@@ -959,11 +959,11 @@ lisp_jobs_only_on=172.234.2.1
                                                            "/Users/meister/Development/schando/src/")))
                                          (submit-cmd (merge-pathnames (make-pathname :name "submit-to-distributor")
                                                                       schando-dir))
-                                         (name (w:widget-value (input-widget job-name)))
+                                         (name (jw:widget-value (input-widget job-name)))
                                          (cmd (list (namestring submit-cmd)
                                                     (namestring (calculate-jobs-dir name))
                                                     name)))
-                                    (setf (w:widget-value messages)
+                                    (setf (jw:widget-value messages)
                                           (format nil "About to evaluate: ~a" cmd))
                                     (setf *submit-thread*
                                           (bordeaux-threads:make-thread
@@ -971,21 +971,21 @@ lisp_jobs_only_on=172.234.2.1
                                              (multiple-value-bind (ret child-pid stream)
                                                  (ext:vfork-execvp cmd t)
                                                #+(or)(if (= 0 ret)
-                                                         (setf (w:widget-value messages)
+                                                         (setf (jw:widget-value messages)
                                                                (format nil "Successfully submitted job ~s~%" cmd)
                                                                (submit-stream *workspace*) stream)
-                                                         (setf (w:widget-value messages)
+                                                         (setf (jw:widget-value messages)
                                                                (format nil "Failed to submit job errno: ~a" ret)))
                                                (sleep 1000000)))
                                            :name "submit"))))))))
     (jupyter-widgets:observe *workspace* :job-name (lambda (instance type name old-value new-value source)
-                                               (setf (w:widget-value (input-widget job-name)) new-value)))
-    (make-instance 'w:v-box
+                                               (setf (jw:widget-value (input-widget job-name)) new-value)))
+    (make-instance 'jw:v-box
                    :children (append (list (hbox distributor) (hbox job-name) ssh-key-file)
-                                     (list (make-instance 'w:h-box
+                                     (list (make-instance 'jw:h-box
                                                           :layout (box-layout)
                                                           :children (list go-button))
-                                           (make-instance 'w:h-box
+                                           (make-instance 'jw:h-box
                                                           :layout (box-layout)
                                                           :children (list messages)))))))
 
@@ -993,19 +993,19 @@ lisp_jobs_only_on=172.234.2.1
 (defun check-calc ()
   (let* ((job-name (make-simple-input "Job name" :default (job-name *workspace*)))
          (distributor (make-simple-input "Distributor" :default (distributor *workspace*)))
-         (messages (make-instance 'w:text-area :description "Messages"
-                                               :layout (make-instance 'w:layout :width "60em")))
-         (go-button (make-instance 'w:button :description "Check calculation"
-                                             :style (button-style)
-                                             :on-click (list
-                                                        (lambda (&rest args)
-                                                          (let* ((schando-dir (UIOP/PATHNAME:ENSURE-DIRECTORY-PATHNAME
-                                                                               (or (ext:getenv "CLASP_SCANDO_PATH")
-                                                                                   "/Users/meister/Development/schando/src/")))
+         (messages (make-instance 'jw:text-area :description "Messages"
+                                                :layout (make-instance 'jw:layout :width "60em")))
+         (go-button (make-instance 'jw:button :description "Check calculation"
+                                              :style (button-style)
+                                              :on-click (list
+                                                          (lambda (&rest args)
+                                                            (let* ((schando-dir (UIOP/PATHNAME:ENSURE-DIRECTORY-PATHNAME
+                                                                                  (or (ext:getenv "CLASP_SCANDO_PATH")
+                                                                                      "/Users/meister/Development/schando/src/")))
 ;;; execute-in-jobdir jobdir default ls \*.SUCCESS \| wc -l
                                                                  (submit-cmd (merge-pathnames (make-pathname :name "execute-in-jobdir")
                                                                                               schando-dir))
-                                                                 (name (w:widget-value (input-widget job-name))))
+                                                                 (name (jw:widget-value (input-widget job-name))))
                                                             (multiple-value-bind (ret child-pid stream)
                                                                 (ext:vfork-execvp (list (namestring submit-cmd)
                                                                                         (namestring (calculate-jobs-dir name))
@@ -1022,18 +1022,18 @@ lisp_jobs_only_on=172.234.2.1
                                                                            (format buffer "~a" line)
                                                                            (go top)))
                                                                        )
-                                                                    (setf (w:widget-value messages)
+                                                                    (setf (jw:widget-value messages)
                                                                           (get-output-stream-string buffer)))
-                                                                  (setf (w:widget-value messages)
+                                                                  (setf (jw:widget-value messages)
                                                                         (format nil "Failed to submit job errno: ~a" ret))))))))))
-    (make-instance 'w:v-box
+    (make-instance 'jw:v-box
                    :children (list
                               (hbox distributor)
                               (hbox job-name)
-                              (make-instance 'w:h-box
+                              (make-instance 'jw:h-box
                                              :layout (box-layout)
                                              :children (list go-button))
-                              (make-instance 'w:h-box
+                              (make-instance 'jw:h-box
                                              :layout (box-layout)
                                              :children (list messages))))))
 
@@ -1041,17 +1041,17 @@ lisp_jobs_only_on=172.234.2.1
 
 (defun composer ()
   (let ((instance (structure-editor:composer "Draw Ligands" "Parse Ligands")))
-    (w:link *workspace* :composer-data instance :data t)
-    (w:observe instance :aggregate
-               (lambda (inst type name old-value new-value source)
-                 (declare (ignore (inst type name old-value source)))
-                 ;; tirun-ligands are what goes in (ligands *workspace*)
-                 (multiple-value-bind (molecules tirun-ligands)
-                                      (tirun:assemble-ligands new-value :verbose t)
-                   (setf all-ligands (tirun:pose-molecules-using-similarity molecules template-ligand)
-                         selected-ligands all-ligands
-                         all-edges nil)
-                   (save-workspace))))
+    (jw:link *workspace* :composer-data instance :data t)
+    (jw:observe instance :aggregate
+      (lambda (inst type name old-value new-value source)
+        (declare (ignore (inst type name old-value source)))
+        ;; tirun-ligands are what goes in (ligands *workspace*)
+        (multiple-value-bind (molecules tirun-ligands)
+                             (tirun:assemble-ligands new-value :verbose t)
+          (setf all-ligands (tirun:pose-molecules-using-similarity molecules template-ligand)
+                selected-ligands all-ligands
+                all-edges nil)
+          (save-workspace))))
     (make-view-ligand-page instance "View Ligands")
     instance))
 
@@ -1066,7 +1066,7 @@ lisp_jobs_only_on=172.234.2.1
 
 
 (defun rbfe-map ()
-  (let* ((container (make-instance 'w:accordion :selected-index 0))
+  (let* ((container (make-instance 'jw:accordion :selected-index 0))
          (grid (make-instance 'resizable-box:resizable-grid-box ; Grid for the graph. Control buttons are in the bottom row.
                               :enable-full-screen t
                               :layout (make-instance 'resizable-box:resizable-layout
@@ -1081,11 +1081,11 @@ lisp_jobs_only_on=172.234.2.1
          (molecule-map (cw:make-molecule-map grid
                                              :molecules selected-ligands
                                              :edges (rbfe-edges *workspace*))))
-    (w:link *workspace* :selected-ligands molecule-map :molecules)
-    (w:link *workspace* :rbfe-edges molecule-map :edges)
-    (setf (w:widget-%titles container) (append (w:widget-%titles container)
-                                               (list "Relative Binding Free Energy Map"))
-          (w:widget-children container) (append (w:widget-children container)
-                                                (list grid)))
+    (jw:link *workspace* :selected-ligands molecule-map :molecules)
+    (jw:link *workspace* :rbfe-edges molecule-map :edges)
+    (setf (jw:widget-%titles container) (append (jw:widget-%titles container)
+                                                (list "Relative Binding Free Energy Map"))
+          (jw:widget-children container) (append (jw:widget-children container)
+                                                 (list grid)))
     container))
 

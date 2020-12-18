@@ -2,12 +2,12 @@
 (in-package :structure-editor)
 
 
-(defclass composer (w:accordion)
+(defclass composer (jw:accordion)
   ((kekule
      :reader composer-kekule
      :initform (make-instance 'kekule:composer
                               :format-id kekule:+kekule-json-format+
-                              :layout (make-instance 'w:layout :grid-area "kekule" :width "100%" :height "100%")))
+                              :layout (make-instance 'jw:layout :grid-area "kekule" :width "100%" :height "100%")))
    (data
      :accessor composer-data
      :initform nil
@@ -51,8 +51,8 @@
                                                        (declare (ignore action parameter))
                                                        (run-parsing instance progress-callback))
                               :label "Click button to parse Kekule output.")
-    (w:link instance :data (composer-kekule instance) :data t)
-    (w:observe (composer-kekule instance) :data
+    (jw:link instance :data (composer-kekule instance) :data t)
+    (jw:observe (composer-kekule instance) :data
       (lambda (kekule-instance type name old-value new-value source)
         (declare (ignore type name source))
         (when (and new-value

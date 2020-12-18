@@ -284,7 +284,8 @@
 
 (defun on-picked (instance picked)
   (dolist (component (ngl:components (stage instance)))
-    (setf (ngl:visible (find "dihedral" (ngl:representations component) :key #'ngl:name :test #'equal)) nil))
+    (setf (ngl:visible (find "dihedral" (ngl:representations component) :key #'ngl:name :test #'equal))
+          nil))
   (setf (index instance) nil
         (twister instance) nil
         (jw:widget-value (angle-slider instance)) 0d0
@@ -324,7 +325,7 @@
               instance
     (when (and angle index twister)
       (chem:twister-rotate-absolute twister (deg2rad angle))
-      (ngl:update-position index (crd (gethash (ngl:name index) (structures instance)))))))
+      (setf (ngl:positions index) (crd (gethash (ngl:name index) (structures instance)))))))
 
 
 (defun on-jostle-relax (instance jostle)

@@ -14,8 +14,6 @@
 
 (defpackage #:tirun-jupyter
   (:use #:common-lisp)
-  (:local-nicknames (:j :jupyter)
-                    (:w :jupyter-widgets))
   (:export
     #:all-edges
     #:all-ligands
