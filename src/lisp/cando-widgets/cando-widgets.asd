@@ -9,9 +9,13 @@
            "Tarn W. Burton <twburton@gmail.com>")
   :licence "GPL2"
   :depends-on (:common-lisp-jupyter
+               :cytoscape-clj
                :lparallel
                :netcdf
+               :ngl-clj
                :nglview-cl
+               :quri
+               :resizable-box-clj
                :sketch2d
                :static-vectors)
   :serial t
@@ -21,5 +25,6 @@
                (:file "molecule-select")
                (:file "pages")
                (:file "workspace-task-page")
-               (:file "ngl-structure-viewer")))
+               (:file "ngl-structure-viewer")
+               (:file "molecule-map")))
 

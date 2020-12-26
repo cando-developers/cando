@@ -7,7 +7,7 @@
      :reader composer-kekule
      :initform (make-instance 'kekule:composer
                               :format-id kekule:+kekule-json-format+
-                              :layout (make-instance 'w:layout :width "95%")))
+                              :layout (make-instance 'w:layout :grid-area "kekule" :width "100%" :height "100%")))
    (data
      :accessor composer-data
      :initform nil
@@ -35,8 +35,18 @@
 
 
 (defun composer (kekule-title parsing-title)
-  (let ((instance (make-instance 'composer)))
-    (cw:add-page instance (composer-kekule instance) kekule-title)
+  (let* ((instance (make-instance 'composer))
+        (kekule-page (make-instance 'resizable-box:resizable-grid-box
+                                    :enable-full-screen t
+                                    :layout (make-instance 'resizable-box:resizable-layout
+                                                           :height "400px"
+                                                           :grid-template-columns "1fr"
+                                                           :grid-template-rows "1fr min-content"
+                                                           :grid-template-areas "'kekule' 'full-screen'"
+                                                           :padding "0 16px 24px 0"
+                                                           :resize "vertical"))))
+    (cw:add-page instance kekule-page kekule-title)
+    (setf (jupyter-widgets:widget-children kekule-page) (list (composer-kekule instance)))
     (cw:make-simple-task-page instance parsing-title (lambda (action parameter progress-callback)
                                                        (declare (ignore action parameter))
                                                        (run-parsing instance progress-callback))

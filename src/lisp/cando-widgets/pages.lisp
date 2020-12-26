@@ -1,7 +1,7 @@
 (in-package :cando-widgets)
 
 
-(defclass page (jw:grid-box)
+(defclass page (resizable-box:resizable-grid-box)
   ((container
      :accessor container
      :initarg :container
@@ -29,6 +29,7 @@
                               :value "Messages"
                               :layout (make-instance 'jw:layout
                                                      :text-align "center"
+                                                     :max-height "12em"
                                                      :grid-area "messages-label")))
    (messages
      :accessor messages
@@ -71,7 +72,6 @@
   (:default-initargs
     :layout (make-instance 'jw:layout
                            :width "100%"
-                           :max-height "12em"
                            :grid-gap "0.1em 1em"
                            :grid-template-rows "min-content min-content 1fr"
                            :grid-template-columns "auto 1fr"
