@@ -73,7 +73,7 @@ namespace chem
 
 CL_DEFMETHOD Matter_sp Matter_O::contentAt(size_t i) const
 {
-  BOUNDS_ASSERT(i<this->_contents->length());
+  BOUNDS_ASSERT(i<this->_contents.length());
   return this->_contents[i];
 }
 

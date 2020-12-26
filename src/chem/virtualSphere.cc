@@ -60,7 +60,7 @@ namespace chem
  */
 static void matrix_identity( double m[4][4] )
 {
-	register int	i, j;
+  int	i, j;
 
 	for (i = 0; i < 4; i++) {
 		for (j = 0; j < 4; j++)
@@ -76,7 +76,7 @@ static void matrix_identity( double m[4][4] )
 static void
 matrix_multiply(double m1[4][4], double m2[4][4], Matrix& result )
 {
-	register int	i, j, k;
+   int	i, j, k;
 	double		tmp;
 
 	for (i = 0; i < 4; i++)
@@ -122,7 +122,7 @@ double	d;
  */
 int vsphere(double fx, double fy, double tx, double ty, Matrix& rotmat )
 {
-	register int	i;
+   int	i;
 	double		d1, d2;
 	double		f[3], t[3], a[3], g[3], u[3];
 	double		m1[4][4], m2[4][4];
