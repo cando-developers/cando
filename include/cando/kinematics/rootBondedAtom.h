@@ -51,7 +51,8 @@ namespace kinematics
     RootBondedJoint_O(const chem::AtomId& atomId,core::T_sp name, const string& comment) :
 	BondedJoint_O(atomId,name,comment) {};
 
-
+      CL_DEFMETHOD double getPhi() const { return this->_Phi; };
+      
 	virtual RootAtomInfo const * rootAtomInfo() const { return &this->_RootInfo;};
 
 

@@ -30,6 +30,7 @@
     #:lomap
     #:new-workspace
     #:pasrun
+    #:rbfe-map
     #:selected-ligands
     #:select-ligands
     #:submit-calc
