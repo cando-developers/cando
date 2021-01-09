@@ -738,6 +738,7 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
                         (let ((in-connect (gethash atom-serial (serial-to-atom reader))))
                           (when in-connect
                             (setf (gethash atom-serial (serial-to-atom reader)) atom))))
+                      (chem:set-id atom atom-serial)
                       (chem:set-position atom (geom:vec x y z))
                       (chem:setf-needs-build atom nil))
                      #+(or)((current-topology reader) ; there is a topology
