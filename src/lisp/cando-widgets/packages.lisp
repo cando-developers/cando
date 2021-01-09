@@ -1,8 +1,6 @@
 (defpackage #:cando-widgets
   (:use #:common-lisp)
   (:nicknames :cw)
-  (:local-nicknames (:j :jupyter)
-                    (:jw :jupyter-widgets))
   (:export
     #:add-ligand
     #:add-page

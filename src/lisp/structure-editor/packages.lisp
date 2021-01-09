@@ -14,8 +14,6 @@
 
 (defpackage #:structure-editor
   (:use #:common-lisp)
-  (:local-nicknames (:j :jupyter)
-                    (:w :jupyter-widgets))
   (:export
    #:parse-kekule-json
    #:composer
