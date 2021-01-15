@@ -87,6 +87,9 @@ is written to the log file as if the verbosity level were set to 2."
 (defmethod set-property ((object chem:matter) (property (eql :name)) value)
   (chem:set-name object value))
 
+(defmethod set-property ((object chem:matter) (property (eql :type)) value)
+  (chem:set-type object value))
+
 (defmethod set-property ((object chem:matter) (property (eql :element)) value)
   (chem:set-element object (intern (string value) :keyword)))
 
