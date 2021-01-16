@@ -13,7 +13,8 @@
                #+(or):cando-jupyter
                :sdf
                :tirun
-               :sketch2d)
+               :sketch2d
+               :cando-build)
     :serial t
   :components ((:file "packages")
                  (:file "start-swank")
