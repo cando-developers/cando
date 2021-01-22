@@ -311,6 +311,19 @@
                                  (cons "height" height)
                                  (cons "image" (encode-svg svg)))))))
 
+(defun update-node (map element &optional molecule)
+  (let ((name (molecule-name molecule)))
+    (set-element-removed element (not molecule))
+    (when molecule
+      (multiple-value-bind (svg width height)
+                           (sketch-molecule molecule)
+        (setf (cytoscape:data element)
+              (list (cons "id" name)
+                    (cons "label" name)
+                    (cons "width" width)
+                    (cons "height" height)
+                    (cons "image" (encode-svg svg))))))))
+
 
 (defun make-edge (map molecule1 molecule2 &key arrow1 arrow2 label id &allow-other-keys)
   "Construct an cytoscape edge based on an edge definition when is a list of
@@ -430,14 +443,14 @@
       ;; Look for elements that don't have a corresponding match in molecules or edges.
       (dolist (element (cytoscape:elements graph))
         (let ((id (cdr (assoc "id" (cytoscape:data element) :test #'equal))))
-          (set-element-removed element
                                (if (equal "nodes" (cytoscape:group element))
-                                 (not (position id molecules ; the element is a node so look in molecules
-                                                :test #'string=
-                                                :key #'molecule-name))
-                                 (notany (lambda (edge) ; the element is an edge so look in edges.
-                                           (equal id (apply #'edge-id edge)))
-                                         edges)))))
+                                 (update-node map element
+                                              (find id molecules ; the element is a node so look in molecules
+                                                    :test #'string=
+                                                    :key #'molecule-name))
+                                 (set-element-removed (notany (lambda (edge) ; the element is an edge so look in edges.
+                                                                (equal id (apply #'edge-id edge)))
+                                                              edges)))))
       ;; Look through edges for new edges
       (dolist (edge edges)
         (unless (some (lambda (element)
