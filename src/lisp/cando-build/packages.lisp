@@ -29,4 +29,8 @@
   (:nicknames #:cb)
   (:export
    #:make-atom
+   #:calc-mol-charge
+   #:bond-atoms
+   #:add-atom-to-residue
+   #:make-new-residue
    ))
