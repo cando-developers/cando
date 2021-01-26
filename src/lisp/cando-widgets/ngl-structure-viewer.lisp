@@ -126,7 +126,7 @@
         (make-instance 'ngl:licorice :name "licorice")
         (make-instance 'ngl:licorice :name "ligand_licorice" :sele "ligand")
         (make-instance 'ngl:line :name "line")
-        (make-instance 'ngl:ribbon :name "ribbon" :color-cheme "residueindex")
+        (make-instance 'ngl:ribbon :name "ribbon" :color-scheme "residueindex")
         (make-instance 'ngl:spacefill :name "ligand_spacefill" :sele "ligand")
         (make-instance 'ngl:spacefill :name "spacefill")
         (make-instance 'ngl:surface :name "surface" :use-worker t :color-scheme "residueindex")))

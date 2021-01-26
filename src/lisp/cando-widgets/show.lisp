@@ -52,20 +52,79 @@
 
 
 (defmethod show ((instance chem:aggregate) &rest kwargs &key &allow-other-keys)
-  (let ((component (make-instance 'ngl:structure
-                                  :name (symbol-name (chem:get-name instance))
-                                  :value (chem:aggregate-as-mol2-string instance t)
-                                  :ext "mol2")))
-    (when (chem:bounding-box-bound-p instance)
-      (add-bounding-box component instance))
-    (jw:display (apply #'make-instance 'ngl:stage
+  (let* ((component (make-instance 'ngl:structure
+                                   :auto-view-duration 0
+                                   :name (symbol-name (chem:get-name instance))
+                                   :value (chem:aggregate-as-mol2-string instance t)
+                                   :ext "mol2"
+                                   :representations (list (make-instance 'ngl:backbone :name "Backbone" :visible nil)
+                                                          (make-instance 'ngl:ball-and-stick :name "Ball and Stick" :visible t)
+                                                          (make-instance 'ngl:cartoon :name "Cartoon" :color-scheme "residueindex" :visible nil)
+                                                          (make-instance 'ngl:licorice :name "Licorice" :visible nil)
+                                                          (make-instance 'ngl:line :name "Line" :visible nil)
+                                                          (make-instance 'ngl:ribbon :name "Ribbon" :color-scheme "residueindex" :visible nil)
+                                                          (make-instance 'ngl:spacefill :name "Spacefill" :visible nil)
+                                                          (make-instance 'ngl:surface :name "Surface" :use-worker t :color-scheme "residueindex" :visible nil))))
+         (stage (apply #'make-instance 'ngl:stage
                        :clip-dist 0
                        :background-color "white"
                        :components (list component
                                          (make-instance 'ngl:shape :primitives (getf kwargs :shapes)))
+                       :layout (make-instance 'jw:layout
+                                              :width "100%"
+                                              :height "auto"
+                                              :border "var(--jp-widgets-border-width) solid var(--jp-border-color1)"
+                                              :grid-area "stage")
                        kwargs))
-    (ngl:auto-view component)
-    (values)))
+         (representation-dropdown (make-instance 'jw:dropdown
+                                                 :description "Representation"
+                                                 :%options-labels (mapcar #'ngl:name (ngl:representations component))
+                                                 :index (position-if #'ngl:visible (ngl:representations component))
+                                                 :style (make-instance 'jw:description-style
+                                                                       :description-width "min-content")
+                                                 :layout (make-instance 'jw:layout
+                                                                        :margin ".5em"
+                                                                        :width "max-content")))
+         (auto-view-button (make-instance 'jw:button
+                                          :description "Auto View"
+                                          :style (make-instance 'jw:description-style
+                                                                :description-width "min-content")
+                                          :layout (make-instance 'jw:layout
+                                                                 :margin ".5em"
+                                                                 :width "max-content"))))
+    (when (chem:bounding-box-bound-p instance)
+      (add-bounding-box component instance))
+    (jw:observe representation-dropdown :value
+      (lambda (inst type name old-value new-value source)
+        (declare (ignore inst type name old-value source))
+        (dolist (representation (ngl:representations component))
+          (setf (ngl:visible representation) (equalp new-value (ngl:name representation))))))
+    (jw:on-button-click auto-view-button
+      (lambda (inst)
+        (declare (ignore inst))
+        (ngl:auto-view stage 1000)))
+    (make-instance 'resizable-box:resizable-grid-box
+                   :children (list stage
+                                   (make-instance 'jw:box
+                                                  :children (list representation-dropdown auto-view-button)
+                                                  :layout (make-instance 'jw:layout
+                                                                         :flex-flow "row wrap"
+                                                                         :justify-content "center"
+                                                                         ;:margin "-.5em"
+                                                                         :align-items "baseline"
+                                                                         :align-content "flex-start"
+                                                                         :grid-area "controls")))
+                   :enable-full-screen t
+                   :layout (make-instance 'resizable-box:resizable-layout
+                                          :resize "vertical"
+                                          :grid-gap "1em"
+                                          :min-height "480px"
+                                          :overflow "hidden"
+                                          :padding "0 24px 0 0"
+                                          :grid-template-rows "1fr min-content"
+                                          :grid-template-columns "1fr"
+                                          :grid-template-areas "'stage' 'controls"))))
+
 
 (defmethod show ((molecule chem:molecule) &rest kwargs &key &allow-other-keys)
   (let ((agg (chem:make-aggregate nil)))
