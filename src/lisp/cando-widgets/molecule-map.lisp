@@ -448,7 +448,8 @@
                                               (find id molecules ; the element is a node so look in molecules
                                                     :test #'string=
                                                     :key #'molecule-name))
-                                 (set-element-removed (notany (lambda (edge) ; the element is an edge so look in edges.
+                                 (set-element-removed element
+                                                      (notany (lambda (edge) ; the element is an edge so look in edges.
                                                                 (equal id (apply #'edge-id edge)))
                                                               edges)))))
       ;; Look through edges for new edges
