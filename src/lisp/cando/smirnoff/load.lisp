@@ -1,14 +1,9 @@
 (in-package :smirnoff)
 
-(defvar *type-index* (ext:make-atomic 0))
+(defvar *type-index* 0)
 
 (defun next-smirnoff-type-symbol ()
-  (let* ((index (loop named get-index
-                   for index = (ext:atomic-get *type-index*)
-                   for next-index = (1+ index)
-                   for changed = (ext:atomic-compare-and-swap-weak *type-index* index next-index)
-                   when changed
-                     do (return-from get-index index)))
+  (let* ((index (1- (mp:atomic-incf *type-index*)))
          (index-string (format nil "$~36r" index)))
     (unless (<= (length index-string) 4)
       (error "We have exhausted the numbe of Smirnoff atom types that are available"))
