@@ -904,14 +904,19 @@ translations along the appropriate axes (0 for no translation).
 This command calculates the total charge of the ATOMs within _container_.
 The unperturbed and perturbed total charge are displayed.
 "
-   (let ((container (leap.core:lookup-variable container-name)))
-     (format t "Total unperturbed charge:    ~,6f~%" (chem:get-charge container))
-     (format t "Total perturbed charge:      ~,6f~%" (chem:get-charge container))))
+  (let ((container (leap.core:lookup-variable container-name))
+        (total-charge 0.0)
+        (pert-charge 0.0))
+    ;; We don't handle pert-charge - and it would be a delta
+    (cando:do-atoms (atm container)
+      (incf total-charge (chem:get-charge atm)))
+    (format t "Total unperturbed charge:    ~,6f~%" total-charge)
+    (format t "Total perturbed charge:      ~,6f~%" (+ total-charge pert-charge))))
 
 (defun leap-add-ions (mol-name ion1-name ion1-number &optional ion2-name ion2-number)
 "
     addIons unit ion1 #ion1 [ion2 #ion2]
-      UNIT                      _unit_
+      UNIT   U                   _unit_
       UNIT                      _ion1_
       NUMBER                    _#ion1_
       UNIT                      _ion2_
