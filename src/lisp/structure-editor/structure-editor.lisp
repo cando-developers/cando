@@ -15,32 +15,6 @@
                         (format t "~a -> ~a  ~a~%" a1 a2 o)))
                     mol)))
 
-(defun json-keys (json)
-  (mapcar #'car json))
-
-(defun json-lookup (json key &optional context)
-  (unless (eq (car json) :obj)
-    (if context
-        (error "In json context: ~s~%Looking for key: ~a - the json  must start with :obj but it doesn't json keys: ~s" context key (json-keys json))
-        (error "Looking for key: ~a - the json  must start with :obj but it doesn't json keys: ~s" key (json-keys json))))
-  (cdr (assoc key (cdr json) :test #'string=)))
-
-(defun json-lookup-not-nil (json key &optional context)
-  (unless (eq (car json) :obj)
-    (if context
-        (error "In json context: ~s~%Looking for key: ~a - the json  must start with :obj but it doesn't json: ~s" context key (json-keys json))
-        (error "Looking for key: ~a - the json  must start with :obj but it doesn't json: ~s" key (json-keys json))))
-  (let* ((pair (assoc key (cdr json) :test #'string=)))
-    (unless pair
-      (if context
-          (error "In json context: ~s~%Could not find key: ~a keys " context key (json-keys json))
-          (error "Could not find key: ~a" key)))
-    (cdr pair)))
-
-(defun describe-json (json)
-  (loop for entry in json
-        do (format t "entry: ~s~%" entry)))
-
 (defun json-bond-order (jbo stereo)
   (case jbo
     (1 (cond
@@ -81,20 +55,20 @@
         plist))))
 
 (defun parse-kekule-atom-pseudo-atom (jnode type atoms residue coord-x coord-y)
-  (let* ((symbol (json-lookup jnode "symbol"))
-         (jid (json-lookup jnode "id"))
-         (jcoord2d (json-lookup jnode "coord2D"))
-         (jcharge (json-lookup jnode "charge"))
+  (let* ((symbol (gethash "symbol" jnode))
+         (jid (gethash "id" jnode))
+         (jcoord2d (gethash "coord2D" jnode))
+         (jcharge (gethash "charge" jnode))
          (charge jcharge)
-         (jparity (json-lookup jnode "parity"))
-         (jisotope (json-lookup jnode "isotopeId"))
-         (jannotation (json-lookup jnode "annotation"))
+         (jparity (gethash "parity" jnode))
+         (jisotope (gethash "isotopeId" jnode))
+         (jannotation (gethash "annotation" jnode))
          (element (calculate-element jisotope))
          (id (intern jid :keyword))
          (name (calculate-name type symbol element (length atoms)))
          (atom (chem:make-atom name element))
-         (xp (if jcoord2d (float (json-lookup jcoord2d "x")) 0.0))
-         (yp (if jcoord2d (float (json-lookup jcoord2d "y")) 0.0))
+         (xp (if jcoord2d (float (gethash "x" jcoord2d)) 0.0))
+         (yp (if jcoord2d (float (gethash "y" jcoord2d)) 0.0))
          )
     (chem:set-position atom (geom:vec (* -1.0 (+ xp coord-x)) (+ yp coord-y) 0.0)) ; flip X coordinate for stereochem
     (chem:set-charge atom charge)
@@ -119,10 +93,10 @@
     
 (defun parse-kekule-bonds (jconnectors atoms)
   (loop for jedge in jconnectors
-        for jbond-type = (json-lookup jedge "bondType")
-        for jbond-order = (json-lookup jedge "bondOrder")
-        for connected-objs = (json-lookup jedge "connectedObjs")
-        for stereo = (json-lookup jedge "stereo")
+        for jbond-type = (gethash "bondType" jedge)
+        for jbond-order = (gethash "bondOrder" jedge)
+        for connected-objs = (gethash "connectedObjs" jedge)
+        for stereo = (gethash "stereo" jedge)
         for from = (first connected-objs)
         for to = (second connected-objs)
         for from-atom = (atom-reference atoms from)
@@ -137,7 +111,7 @@
 
 (defun parse-kekule-json-subgroups-and-atoms (jnodes jconnectors atoms residue coord-x coord-y molecule)
   (loop for jnode in jnodes
-        for type = (json-lookup jnode "__type__")
+        for type = (gethash "__type__" jnode)
         do (progn
              (cond
                ((string= type "Kekule.SubGroup")
@@ -151,19 +125,19 @@
 
 (defun parse-kekule-json-group (json atoms molecule)
   (let* ((residue (chem:make-residue nil))
-         (name-string (json-lookup json "id"))
+         (name-string (gethash "id" json))
          (name (intern name-string :keyword))
-         (coord-2d (json-lookup json "coord2D"))
+         (coord-2d (gethash "coord2D" json))
          (coord-x (if coord-2d
-                      (json-lookup coord-2d "x")
+                      (gethash "x" coord-2d)
                       0.0))
          (coord-y (if coord-2d
-                      (json-lookup coord-2d "y")
+                      (gethash "y" coord-2d)
                       0.0))
-         (annotation (json-lookup json "annotation"))
-         (ctab (json-lookup-not-nil json "ctab" json))
-         (jnodes (json-lookup ctab "nodes" json))
-         (jconnectors (json-lookup ctab "connectors")))
+         (annotation (gethash "annotation" json))
+         (ctab (gethash "ctab" json))
+         (jnodes (gethash "nodes" json))
+         (jconnectors (gethash "connectors" ctab)))
     (when (stringp annotation)
       (let ((property-list (property-list-from-annotation annotation)))
         (loop for cur = property-list then (cddr cur)
@@ -181,9 +155,9 @@
 
 
 (defun parse-kekule-json (json)
-  (let* ((root (json-lookup json "root"))
-         (children (json-lookup root "children"))
-         (jmolecules (json-lookup children "items")))
+  (let* ((root (gethash "root" json))
+         (children (gethash "children" root))
+         (jmolecules (gethash "items" children)))
     (let ((agg (chem:make-aggregate nil)))
       (loop for jmolecule in jmolecules
             for mol = (parse-kekule-json-molecule jmolecule)

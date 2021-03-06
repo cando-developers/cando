@@ -150,23 +150,12 @@
                                                   :grid-area "button"))))
 
 
-(defun on-data-change (instance data metadata)
-  (when (= (length data) (length metadata))
-    (run-task instance nil
-              (mapcar (lambda (content metadata)
-                        (acons "content" content (copy-alist metadata)))
-                      data metadata))))
-
-
 (defmethod initialize-instance :after ((instance file-task-page) &rest initargs &key &allow-other-keys)
-  (jw:observe (button instance) :data
+  (jw:observe (button instance) :value
     (lambda (inst type name old-value new-value source)
       (declare (ignore type name old-value source))
-      (on-data-change instance new-value (jw:widget-metadata inst))))
-  (jw:observe (button instance) :metadata
-    (lambda (inst type name old-value new-value source)
-      (declare (ignore type name old-value source))
-      (on-data-change instance (jw:widget-data inst) new-value))))
+      (unless (zerop (length new-value))
+        (run-task instance nil new-value)))))
 
 
 (defun make-file-task-page (container title task-function &key label description accept)
