@@ -42,7 +42,6 @@ This is an open source license for the CANDO software from Temple University, bu
 
 #include <cando/chem/chemPackage.h>
 
-#include <clasp/core/intArray.fwd.h>
 #include <cando/geom/coordinateArray.fwd.h>// superposeEngine.h wants SimpleVectorCoordinate needs coordinateArray.fwd.h
 
 namespace chem

@@ -57,12 +57,6 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace chem {
 
 
-    struct UnknownType {
-	string	_Type;
-	UnknownType(const string& t) : _Type(t) {};
-    };
-
-
     SMART(FFNonbondDb);
 
 /*! A Nonbond term, this is subclassed in AmberFunction to deal with Amber specific stuff.
@@ -145,7 +139,7 @@ namespace chem {
     double		_Fcadj;	// formal charge sharing scale factor
     double		_Pbci;	// partial bond charge increment
     DonorAcceptorEnum	_DonorAcceptor;
-    string	        _SameParms;
+    core::T_sp	        _SameParms;
 
   public:
     static FFNonbond_sp make_FFNonbond(core::Symbol_sp type,
@@ -180,12 +174,12 @@ namespace chem {
     CL_DEFMETHOD double getEpsilon_kJ() const;
     CL_DEFMETHOD double getEpsilon_kCal() const;
 // get-epsilon-k-cal
-    void setSameParms(string sameparms);
-    string getSameParms() const;
+    void setSameParms(core::T_sp sameparms);
+    core::T_sp getSameParms() const;
  
     virtual	string	levelDescription();
     virtual ParameterType type() { return nonbond; };
-    DEFAULT_CTOR_DTOR(FFNonbond_O);
+    FFNonbond_O() : _SameParms(_Unbound<core::T_O>()) {};
   };
 
 

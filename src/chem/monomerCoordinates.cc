@@ -248,10 +248,10 @@ CL_DEFMETHOD core::List_sp	MonomerCoordinates_O::testExtraction(
     conformationExplorer->setMatter(aggregate);
     conformationExplorer->superposeAllHeavyAtoms();
     ConformationExplorerEntry_sp entry = conformationExplorer->createEntry();
-    ConformationExplorerEntryStage_sp stage = entry->createEntryStage("test");
+    ConformationExplorerEntryStage_sp stage = entry->createEntryStage(core::SimpleBaseString_O::make("test"));
     LOG(BF("Setting stage") );
-    stage->setExternalInterfaceName("testPackage");
-    stage->setModel("testModel");
+    stage->setExternalInterfaceName(core::SimpleBaseString_O::make("testPackage"));
+    stage->setModel(core::SimpleBaseString_O::make("testModel"));
     stage->setEnergyKCal(987654321.0);
     entry->setSelectedStage(stage);
     stage->extractCoordinatesFromMatter(aggregate);

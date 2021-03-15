@@ -690,17 +690,17 @@ void Minimizer_O::lineSearchInitialReport( StepReport_sp report,
   double xinc = (dxc-dxa)/100.0;
   report->_LineSearchPosition = copy_nvector(nvPos);
   report->_LineSearchDirection = copy_nvector(nvDir);
-  report->_TotalEnergyFn = NumericalFunction_O::create("Alpha","Total",xmin,xinc);
-  report->_StretchEnergyFn = NumericalFunction_O::create("Alpha","Stretch",xmin,xinc);
-  report->_AngleEnergyFn = NumericalFunction_O::create("Alpha","Angle",xmin,xinc);
-  report->_DihedralEnergyFn = NumericalFunction_O::create("Alpha","Dihedral",xmin,xinc);
-  report->_NonbondEnergyFn = NumericalFunction_O::create("Alpha","Nonbond",xmin,xinc);
-  report->_ImproperEnergyFn = NumericalFunction_O::create("Alpha","Improper",xmin,xinc);
-  report->_ChiralRestraintEnergyFn = NumericalFunction_O::create("Alpha","ChiralRestraint",xmin,xinc);
-  report->_AnchorRestraintEnergyFn = NumericalFunction_O::create("Alpha","AnchorRestraint",xmin,xinc);
-  report->_PointToLineRestraintEnergyFn = NumericalFunction_O::create("Alpha","PointToLineRestraint",xmin,xinc);
-  report->_OutOfZPlaneEnergyFn = NumericalFunction_O::create("Alpha","OutOfZPlane",xmin,xinc);
-  report->_FixedNonbondRestraintEnergyFn = NumericalFunction_O::create("Alpha","FixedNonbondRestraint",xmin,xinc);
+  report->_TotalEnergyFn = NumericalFunction_O::create(core::SimpleBaseString_O::make("Alpha"),core::SimpleBaseString_O::make("Total"),xmin,xinc);
+  report->_StretchEnergyFn = NumericalFunction_O::create(core::SimpleBaseString_O::make("Alpha"),core::SimpleBaseString_O::make("Stretch"),xmin,xinc);
+  report->_AngleEnergyFn = NumericalFunction_O::create(core::SimpleBaseString_O::make("Alpha"),core::SimpleBaseString_O::make("Angle"),xmin,xinc);
+  report->_DihedralEnergyFn = NumericalFunction_O::create(core::SimpleBaseString_O::make("Alpha"),core::SimpleBaseString_O::make("Dihedral"),xmin,xinc);
+  report->_NonbondEnergyFn = NumericalFunction_O::create(core::SimpleBaseString_O::make("Alpha"),core::SimpleBaseString_O::make("Nonbond"),xmin,xinc);
+  report->_ImproperEnergyFn = NumericalFunction_O::create(core::SimpleBaseString_O::make("Alpha"),core::SimpleBaseString_O::make("Improper"),xmin,xinc);
+  report->_ChiralRestraintEnergyFn = NumericalFunction_O::create(core::SimpleBaseString_O::make("Alpha"),core::SimpleBaseString_O::make("ChiralRestraint"),xmin,xinc);
+  report->_AnchorRestraintEnergyFn = NumericalFunction_O::create(core::SimpleBaseString_O::make("Alpha"),core::SimpleBaseString_O::make("AnchorRestraint"),xmin,xinc);
+  report->_PointToLineRestraintEnergyFn = NumericalFunction_O::create(core::SimpleBaseString_O::make("Alpha"),core::SimpleBaseString_O::make("PointToLineRestraint"),xmin,xinc);
+  report->_OutOfZPlaneEnergyFn = NumericalFunction_O::create(core::SimpleBaseString_O::make("Alpha"),core::SimpleBaseString_O::make("OutOfZPlane"),xmin,xinc);
+  report->_FixedNonbondRestraintEnergyFn = NumericalFunction_O::create(core::SimpleBaseString_O::make("Alpha"),core::SimpleBaseString_O::make("FixedNonbondRestraint"),xmin,xinc);
 
   for ( zx=dxa;zx<=dxc;zx+=(dxc-dxa)/100.0 ) {
     zy = this->d1DTotalEnergy(zx);
@@ -874,7 +874,7 @@ bool	Minimizer_O::_displayIntermediateMessage(
         sout << "Seconds--";
       }
       sout << "Step-log(Alpha)--Prev.dir--------Energy-----------RMSforce";
-      if ( this->_ScoringFunction->scoringFunctionName() != "" ) 
+      if ( this->_ScoringFunction->scoringFunctionName().notnilp() ) 
       {
         sout << "-------Name";
       }
@@ -906,7 +906,7 @@ bool	Minimizer_O::_displayIntermediateMessage(
     }
     sout << (BF(" %18.3lf") % fenergy );
     sout << (BF(" %18.3lf") % forceRMSMag);
-    if ( this->_ScoringFunction->scoringFunctionName() != "" ) 
+    if ( this->_ScoringFunction->scoringFunctionName().notnilp() ) 
     {
       sout << BF(" %s") % this->_ScoringFunction->scoringFunctionName();
     }

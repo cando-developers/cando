@@ -49,7 +49,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/geom/coordinateArray.h>
 #include <cando/chem/loop.h>
 #include <cando/chem/superposeEngine.h>
-#include <clasp/core/intArray.h>
 #include <clasp/core/wrappers.h>
 #include <cando/chem/candoScript.h>
 #include <cando/geom/vector3.h>

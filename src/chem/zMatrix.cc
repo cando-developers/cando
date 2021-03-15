@@ -147,7 +147,7 @@ namespace chem
 
 
 CL_LISPIFY_NAME("getBondAtomZMatrixName");
-CL_DEFMETHOD     string	ZMatrixBondInternal_O::getBondAtomZMatrixName()
+CL_DEFMETHOD     core::T_sp	ZMatrixBondInternal_O::getBondAtomZMatrixName()
     {
 	return this->getZMatrix()->_getAtomZMatrixNameAtIndex(this->_AtomBond);
     }
@@ -244,13 +244,13 @@ CL_DEFMETHOD     string	ZMatrixBondInternal_O::getBondAtomZMatrixName()
 #endif
 
 CL_LISPIFY_NAME("getBondAtomZMatrixName");
-CL_DEFMETHOD     string	ZMatrixAngleInternal_O::getBondAtomZMatrixName()
+CL_DEFMETHOD     core::T_sp	ZMatrixAngleInternal_O::getBondAtomZMatrixName()
     {
 	return this->getZMatrix()->_getAtomZMatrixNameAtIndex(this->_AtomBond);
     }
 
 CL_LISPIFY_NAME("getAngleAtomZMatrixName");
-CL_DEFMETHOD     string	ZMatrixAngleInternal_O::getAngleAtomZMatrixName()
+CL_DEFMETHOD     core::T_sp	ZMatrixAngleInternal_O::getAngleAtomZMatrixName()
     {
 	return this->getZMatrix()->_getAtomZMatrixNameAtIndex(this->_AtomAngle);
     }
@@ -339,19 +339,19 @@ CL_DEFMETHOD     string	ZMatrixAngleInternal_O::getAngleAtomZMatrixName()
 #endif
 
 CL_LISPIFY_NAME("getBondAtomZMatrixName");
-CL_DEFMETHOD     string	ZMatrixDihedralInternal_O::getBondAtomZMatrixName()
+CL_DEFMETHOD     core::T_sp	ZMatrixDihedralInternal_O::getBondAtomZMatrixName()
     {
 	return this->getZMatrix()->_getAtomZMatrixNameAtIndex(this->_AtomBond);
     }
 
 CL_LISPIFY_NAME("getAngleAtomZMatrixName");
-CL_DEFMETHOD     string	ZMatrixDihedralInternal_O::getAngleAtomZMatrixName()
+CL_DEFMETHOD     core::T_sp	ZMatrixDihedralInternal_O::getAngleAtomZMatrixName()
     {
 	return this->getZMatrix()->_getAtomZMatrixNameAtIndex(this->_AtomAngle);
     }
 
 CL_LISPIFY_NAME("getDihedralAtomZMatrixName");
-CL_DEFMETHOD     string	ZMatrixDihedralInternal_O::getDihedralAtomZMatrixName()
+CL_DEFMETHOD     core::T_sp	ZMatrixDihedralInternal_O::getDihedralAtomZMatrixName()
     {
 	return this->getZMatrix()->_getAtomZMatrixNameAtIndex(this->_AtomDihedral);
     }
@@ -392,7 +392,7 @@ CL_DEFMETHOD     string	ZMatrixDihedralInternal_O::getDihedralAtomZMatrixName()
 	stringstream name;
 	name << atom->getElementAsString() << atomIndices.size();
 	entry->_Atom = atom;
-	entry->_ZMatrixAtomName = name.str();
+	entry->_ZMatrixAtomName = core::SimpleBaseString_O::make(name.str());
 	return entry;
     }
 
@@ -400,7 +400,7 @@ CL_DEFMETHOD     string	ZMatrixDihedralInternal_O::getDihedralAtomZMatrixName()
     void	ZMatrixEntry_O::initialize()
     {
 	this->Base::initialize();
-	this->_ZMatrixAtomName = "";
+	this->_ZMatrixAtomName = _Unbound<core::T_O>();
 	this->_Atom = _Nil<Atom_O>();
 	this->_Bond = _Nil<ZMatrixBondInternal_O>();
 	this->_Angle = _Nil<ZMatrixAngleInternal_O>();
@@ -425,7 +425,7 @@ CL_DEFMETHOD     string	ZMatrixDihedralInternal_O::getDihedralAtomZMatrixName()
 
 
 CL_LISPIFY_NAME("get-zmatrix-atom-name-at-index");
-CL_DEFMETHOD     string ZMatrix_O::getZMatrixAtomNameAtIndex(uint i) const
+CL_DEFMETHOD     core::T_sp ZMatrix_O::getZMatrixAtomNameAtIndex(uint i) const
     {_OF();
 	return this->_getAtomZMatrixNameAtIndex(i);
     }
@@ -495,12 +495,12 @@ CL_DEFMETHOD     string ZMatrix_O::getZMatrixAtomNameAtIndex(uint i) const
 	return this->_ZMatrix[i]->getAtom();
     }
 
-    string	ZMatrix_O::_getAtomZMatrixNameAtIndex(uint i) const
-    {
-	LOG(BF("Looking for atom at index: %d    _ZMatrix.size=%d") % i % this->_ZMatrix.size()  );
-	ASSERT_lessThan(i,this->_ZMatrix.size());
-	return this->_ZMatrix[i]->getTargetAtomZMatrixName();
-    }
+core::T_sp	ZMatrix_O::_getAtomZMatrixNameAtIndex(uint i) const
+{
+  LOG(BF("Looking for atom at index: %d    _ZMatrix.size=%d") % i % this->_ZMatrix.size()  );
+  ASSERT_lessThan(i,this->_ZMatrix.size());
+  return this->_ZMatrix[i]->getTargetAtomZMatrixName();
+}
 
     void	ZMatrix_O::defineForMatterWithStartingAtom(Matter_sp matter, Atom_sp atom)
     {
@@ -626,7 +626,7 @@ CL_DEFMETHOD     core::List_sp ZMatrix_O::entriesAsList() const
     };
 
 CL_LISPIFY_NAME("zmatrix-entry-with-name");
-CL_DEFMETHOD     ZMatrixEntry_sp ZMatrix_O::zMatrixEntryWithName(string const& atomZMatrixName) const
+CL_DEFMETHOD     ZMatrixEntry_sp ZMatrix_O::zMatrixEntryWithName(core::T_sp atomZMatrixName) const
     {_OF();
 	for ( const_zMatrixEntryIterator it = this->begin_ZMatrixEntries();
 	      it != this->end_ZMatrixEntries(); it++ )

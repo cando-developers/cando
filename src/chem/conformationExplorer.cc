@@ -48,7 +48,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/superposeEngine.h>
 #include <clasp/core/sort.h>
 #include <clasp/core/array.h>
-#include <clasp/core/intArray.h>
 #include <cando/chem/atom.h>
 #include <cando/chem/residue.h>
 #include <cando/chem/nVector.h>
@@ -69,9 +68,9 @@ namespace chem
 	this->_WeakConformationExplorerEntry = _Nil<ConformationExplorerEntry_O>();
 	this->_Complete = true;
 	this->_EnergyKCal = 0.0;
-	this->_ExternalInterfaceName = "";
-	this->_Model = "";
-	this->_StageName = "undefStage";
+	this->_ExternalInterfaceName = _Unbound<core::T_O>();
+	this->_Model = _Unbound<core::T_O>();
+	this->_StageName = _Unbound<core::T_O>();
     }
 
 
@@ -352,7 +351,7 @@ CL_DEFMETHOD     void	ConformationExplorerEntry_O::setSelectedStage(Conformation
 
 
 CL_LISPIFY_NAME("createEntryStage");
-CL_DEFMETHOD     ConformationExplorerEntryStage_sp	ConformationExplorerEntry_O::createEntryStage(string const& name)
+CL_DEFMETHOD     ConformationExplorerEntryStage_sp	ConformationExplorerEntry_O::createEntryStage(core::T_sp name)
     {
 	ASSERTF(!this->hasEntryStageWithName(name),
 		BF("Stage with key[%s] already exists!") % name );
@@ -374,9 +373,9 @@ CL_DEFMETHOD     ConformationExplorerEntryStage_sp	ConformationExplorerEntry_O::
 
 
 CL_LISPIFY_NAME("lastEntryStageName");
-CL_DEFMETHOD     string	ConformationExplorerEntry_O::lastEntryStageName()
+CL_DEFMETHOD     core::T_sp	ConformationExplorerEntry_O::lastEntryStageName()
     {
-	if ( this->_Stages.size() == 0 ) return "";
+      if ( this->_Stages.size() == 0 ) return _Nil<core::T_O>();
 	return this->_Stages[this->_Stages.size()-1]->getStageName();
     }
 
@@ -392,7 +391,7 @@ CL_DEFMETHOD     ConformationExplorerEntryStage_sp ConformationExplorerEntry_O::
 
 
 CL_LISPIFY_NAME("alreadyHasLastCompleteStage");
-CL_DEFMETHOD     bool	ConformationExplorerEntry_O::alreadyHasLastCompleteStage(const string& stageName )
+CL_DEFMETHOD     bool	ConformationExplorerEntry_O::alreadyHasLastCompleteStage(core::T_sp stageName )
     {
 	ConformationExplorerEntryStage_sp	lastStage;
 	lastStage = this->getLastCompleteEntryStage();
@@ -401,7 +400,7 @@ CL_DEFMETHOD     bool	ConformationExplorerEntry_O::alreadyHasLastCompleteStage(c
 
 
 CL_LISPIFY_NAME("getOrCreateLastIncompleteEntryStage");
-CL_DEFMETHOD     ConformationExplorerEntryStage_sp ConformationExplorerEntry_O::getOrCreateLastIncompleteEntryStage(const string& stageName)
+CL_DEFMETHOD     ConformationExplorerEntryStage_sp ConformationExplorerEntry_O::getOrCreateLastIncompleteEntryStage(core::T_sp stageName)
     {
 	ConformationExplorerEntryStage_sp	lastStage, newStage;
 	lastStage = this->getLastEntryStage();
@@ -451,7 +450,7 @@ CL_DEFMETHOD     ConformationExplorerEntryStage_sp ConformationExplorerEntry_O::
 
 
 CL_LISPIFY_NAME("hasEntryStageWithName");
-CL_DEFMETHOD     bool	ConformationExplorerEntry_O::hasEntryStageWithName(const string& key)
+CL_DEFMETHOD     bool	ConformationExplorerEntry_O::hasEntryStageWithName(core::T_sp key)
     {
 	stageIterator	si;
 	for ( si=this->_Stages.begin(); si!=this->_Stages.end(); si++ )
@@ -463,7 +462,7 @@ CL_DEFMETHOD     bool	ConformationExplorerEntry_O::hasEntryStageWithName(const s
 
 
 CL_LISPIFY_NAME("getEntryStage");
-CL_DEFMETHOD     ConformationExplorerEntryStage_sp	ConformationExplorerEntry_O::getEntryStage(const string& key)
+CL_DEFMETHOD     ConformationExplorerEntryStage_sp	ConformationExplorerEntry_O::getEntryStage(core::T_sp key)
     {
 	stageIterator	si;
 	for ( si=this->_Stages.begin(); si!=this->_Stages.end(); si++ )
@@ -473,7 +472,7 @@ CL_DEFMETHOD     ConformationExplorerEntryStage_sp	ConformationExplorerEntry_O::
 		return (*si);
 	    }
 	}
-	SIMPLE_ERROR(BF("Could not find key: "+key));
+	SIMPLE_ERROR(BF("Could not find key: %s") % core::_rep_(key));
     }
 
 
@@ -504,16 +503,14 @@ CL_DEFMETHOD     ConformationExplorerEntryStage_sp	ConformationExplorerEntry_O::
 #endif
 
 
-    adapt::StringSet_sp ConformationExplorerEntry_O::getEntryStageNames()
-    {
-	adapt::StringSet_sp stageNames = adapt::StringSet_O::create();
-	stageIterator it;
-	for ( it=this->begin_Stages(); it!=this->end_Stages(); it++ )
-	{
-	    stageNames->insert((*it)->getStageName());
-	}
-	return stageNames;
-    }
+core::HashTable_sp ConformationExplorerEntry_O::getEntryStageNames()
+{
+  core::HashTableEq_sp stageNames = core::HashTableEq_O::create_default();
+  for ( auto it=this->begin_Stages(); it!=this->end_Stages(); it++ ) {
+    stageNames->setf_gethash((*it)->getStageName(), _lisp->_true());
+  }
+  return stageNames;
+}
 
     void	ConformationExplorer_O::initialize()
     {
@@ -758,26 +755,26 @@ CL_DEFMETHOD     void	ConformationExplorer_O::superposeAllHeavyAtoms()
 
     struct OrderStageAndKeyValue
     {
-	string _StageName;
-	core::Symbol_sp _KeyName;
-
-	bool operator()(ConformationExplorerEntry_sp x,ConformationExplorerEntry_sp y )
-	{
-	    ConformationExplorerEntryStage_sp xStage, yStage;
-	    xStage = x->getEntryStage(this->_StageName);
-	    yStage = y->getEntryStage(this->_StageName);
-	    core::T_sp xValue = xStage->getBinder()->gethash(this->_KeyName);
-	    core::T_sp yValue = yStage->getBinder()->gethash(this->_KeyName);
-	    if ( core::clasp_number_compare(xValue.as<core::Number_O>(),yValue.as<core::Number_O>())) return true;
-	    return false;
-	}
+      core::T_sp _StageName;
+      core::Symbol_sp _KeyName;
+      
+      bool operator()(ConformationExplorerEntry_sp x,ConformationExplorerEntry_sp y )
+      {
+        ConformationExplorerEntryStage_sp xStage, yStage;
+        xStage = x->getEntryStage(this->_StageName);
+        yStage = y->getEntryStage(this->_StageName);
+        core::T_sp xValue = xStage->getBinder()->gethash(this->_KeyName);
+        core::T_sp yValue = yStage->getBinder()->gethash(this->_KeyName);
+        if ( core::clasp_number_compare(xValue.as<core::Number_O>(),yValue.as<core::Number_O>())) return true;
+        return false;
+      }
     };
 
 
 
 
 CL_LISPIFY_NAME("ConformationExplorer-sort");
-CL_DEFMETHOD     void	ConformationExplorer_O::sort(const string& stageName, core::Symbol_sp keyName )
+CL_DEFMETHOD     void	ConformationExplorer_O::sort(core::T_sp stageName, core::Symbol_sp keyName )
     {
 	OrderStageAndKeyValue comparer;
 	comparer._StageName = stageName;
@@ -854,7 +851,7 @@ CL_DEFMETHOD     ConformationExplorerEntry_sp	ConformationExplorer_O::createEntr
 
 
 
-    bool	ConformationExplorer_O::hasStageNameInAllEntries(const string& stageKey)
+bool	ConformationExplorer_O::hasStageNameInAllEntries(core::T_sp stageKey)
     {
 	entryIterator		ei;
 	bool			inAll;
@@ -874,7 +871,7 @@ CL_DEFMETHOD     ConformationExplorerEntry_sp	ConformationExplorer_O::createEntr
 
     bool ConformationExplorer_O::findMostSimilarConformationEntryStageWithStageName(
 	Matter_sp 	matter,
-	const string&	stageName,
+	core::T_sp	stageName,
 	double&		bestRms,
 	ConformationExplorerEntryStage_sp& bestStage,
 	uint&		bestEntryIndex )
@@ -958,7 +955,8 @@ CL_DEFMETHOD     ConformationExplorerEntryStage_sp ConformationExplorer_O::getCl
 CL_LISPIFY_NAME("findClosestMatchingConformation");
 CL_DEFMETHOD     void ConformationExplorer_O::findClosestMatchingConformation(
 	ConformationExplorerMatch_sp match,
-	Matter_sp matter, const string& stageKey,
+	Matter_sp matter,
+        core::T_sp stageKey,
 	double rms )
     {
 	double					bestRms;
@@ -992,7 +990,7 @@ CL_DEFMETHOD     void ConformationExplorer_O::findClosestMatchingConformation(
 
 
 CL_LISPIFY_NAME("alignAllConformationsToTheFirstForStage");
-CL_DEFMETHOD     void	ConformationExplorer_O::alignAllConformationsToTheFirstForStage(const string& stageName )
+CL_DEFMETHOD     void	ConformationExplorer_O::alignAllConformationsToTheFirstForStage(core::T_sp stageName )
     {
 	if ( !this->hasStageNameInAllEntries(stageName) )
 	{
@@ -1018,7 +1016,7 @@ CL_DEFMETHOD     void	ConformationExplorer_O::alignAllConformationsToTheFirstFor
     class	OrderByEnergyAscending
     {
     public:
-	string	_StageName;
+      core::T_sp	_StageName;
     public:
 	bool operator()(ConformationExplorerEntry_sp x, ConformationExplorerEntry_sp y )
 	{
@@ -1030,7 +1028,7 @@ CL_DEFMETHOD     void	ConformationExplorer_O::alignAllConformationsToTheFirstFor
 
 
 CL_LISPIFY_NAME("sortByEnergyAscendingForStage");
-CL_DEFMETHOD     void	ConformationExplorer_O::sortByEnergyAscendingForStage(const string& stageName )
+CL_DEFMETHOD     void	ConformationExplorer_O::sortByEnergyAscendingForStage(core::T_sp stageName )
     {
 	OrderByEnergyAscending order;
 	order._StageName = stageName;

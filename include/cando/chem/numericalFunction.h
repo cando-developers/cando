@@ -67,28 +67,28 @@ class NumericalFunction_O : public core::CxxObject_O
 public:
 	void initialize();
 public:
-	string		title;
-	string		xAxisName;
-	string		yAxisName;
-	double		xInc;
-	double		xStart;
-    std::vector<double>	values;
+  core::T_sp		title;
+  core::T_sp		xAxisName;
+  core::T_sp		yAxisName;
+  double		xInc;
+  double		xStart;
+  std::vector<double>	values;
 
 public:
-	static NumericalFunction_sp create(const string& xaxis,
-				const string& yaxis,
-				double xstart, double xinc) ;
+  static NumericalFunction_sp create(core::T_sp xaxis,
+                                     core::T_sp yaxis,
+                                     double xstart, double xinc) ;
 public:
 
 
 	void	empty() { this->values.clear();};
-	void	setTitle(string x) {this->title = x;};
-	void	setXAxisName(string x) {this->xAxisName = x;};
-	void	setYAxisName(string y) {this->yAxisName = y;};
+  void	setTitle(core::T_sp x) {this->title = x;};
+  void	setXAxisName(core::T_sp x) {this->xAxisName = x;};
+  void	setYAxisName(core::T_sp y) {this->yAxisName = y;};
 
-	string	getTitle() {return this->title;};
-	string	getXAxisName() {return this->xAxisName;};
-	string	getYAxisName() {return this->yAxisName;};
+  core::T_sp	getTitle() {return this->title;};
+  core::T_sp	getXAxisName() {return this->xAxisName;};
+  core::T_sp	getYAxisName() {return this->yAxisName;};
 
 	void	setXStart(double xs) {this->xStart = xs;};
 	void	setXInc(double inc) {this->xInc = inc; };
@@ -148,9 +148,9 @@ public:
 // Constructor function
 
 
-inline	NumericalFunction_sp NumericalFunction_O::create(const string& xaxis,
-				const string& yaxis,
-				double xstart, double xinc) 
+inline	NumericalFunction_sp NumericalFunction_O::create(core::T_sp xaxis,
+                                                         core::T_sp yaxis,
+                                                         double xstart, double xinc) 
 {
     GC_ALLOCATE(NumericalFunction_O, f ); // RP_Create<NumericalFunction_O>(e);
     f->setXAxisName(xaxis);

@@ -68,11 +68,11 @@ namespace chem
 	LISP_CLASS(chem,ChemPkg,AtomReference_O,"AtomReference",AtomReferenceBase_O);
 #if INIT_TO_FACTORIES
     public:
-	static AtomReference_sp make(const string& alias);
+	static AtomReference_sp make(core::T_sp alias);
 #else
 #endif
     private:
-	string	_AtomAlias;
+      core::T_sp	_AtomAlias;
     public:
 //	bool equal(core::T_sp obj) const;
 	void	initialize();

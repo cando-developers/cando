@@ -103,7 +103,7 @@ CL_DEFMETHOD 	virtual double	getValue() { return this->_Value; };
     public:
 	void setup(Atom_sp newAtom, Atom_sp bondToAtom,
 		   ZMatrixInternal_O::atomMap atomIndices);
-	string	getBondAtomZMatrixName();
+        core::T_sp	getBondAtomZMatrixName();
 CL_LISPIFY_NAME("getBondAtomIndex");
 CL_DEFMETHOD 	int	getBondAtomIndex() const { return this->_AtomBond;};
 
@@ -146,8 +146,8 @@ CL_DEFMETHOD 	int	getBondAtomIndex() const { return this->_AtomBond;};
 		   Atom_sp angleToAtom,
 		   ZMatrixInternal_O::atomMap atomIndices);
     public:
-	string	getBondAtomZMatrixName();
-	string	getAngleAtomZMatrixName();
+        core::T_sp	getBondAtomZMatrixName();
+        core::T_sp	getAngleAtomZMatrixName();
 CL_LISPIFY_NAME("getBondAtomIndex");
 CL_DEFMETHOD 	int getBondAtomIndex() const { return this->_AtomBond;}
 CL_LISPIFY_NAME("getAngleAtomIndex");
@@ -196,9 +196,9 @@ CL_DEFMETHOD 	int getAngleAtomIndex() const { return this->_AtomAngle;}
 		   ZMatrixInternal_O::atomMap atomIndices);
 
     public:
-	string	getBondAtomZMatrixName();
-	string	getAngleAtomZMatrixName();
-	string	getDihedralAtomZMatrixName();
+        core::T_sp	getBondAtomZMatrixName();
+        core::T_sp	getAngleAtomZMatrixName();
+        core::T_sp	getDihedralAtomZMatrixName();
 CL_LISPIFY_NAME("getBondAtomIndex");
 CL_DEFMETHOD 	int getBondAtomIndex() const { return this->_AtomBond;}
 CL_LISPIFY_NAME("getAngleAtomIndex");
@@ -238,11 +238,11 @@ CL_DEFMETHOD 	int getDihedralAtomIndex() const { return this->_AtomDihedral;}
 	void initialize();
 	friend class ZMatrix_O;
     public:
-	string				_ZMatrixAtomName;
-	Atom_sp				_Atom;
-	ZMatrixBondInternal_sp		_Bond;
-	ZMatrixAngleInternal_sp		_Angle;
-	ZMatrixDihedralInternal_sp	_Dihedral;
+      core::T_sp         _ZMatrixAtomName;
+      Atom_sp				_Atom;
+      ZMatrixBondInternal_sp		_Bond;
+      ZMatrixAngleInternal_sp		_Angle;
+      ZMatrixDihedralInternal_sp	_Dihedral;
     public:
 	static ZMatrixEntry_sp create(Atom_sp atom, ZMatrixInternal_O::atomMap atomIndices);
 	void setup(Atom_sp atom, ZMatrixInternal_O::atomMap atomIndices);
@@ -250,7 +250,7 @@ CL_DEFMETHOD 	int getDihedralAtomIndex() const { return this->_AtomDihedral;}
 CL_LISPIFY_NAME("getAtom");
 CL_DEFMETHOD 	Atom_sp	getAtom() { return this->_Atom;};
 CL_LISPIFY_NAME("getTargetAtomZMatrixName");
-CL_DEFMETHOD 	string	getTargetAtomZMatrixName() { return this->_ZMatrixAtomName; };
+ CL_DEFMETHOD 	core::T_sp	getTargetAtomZMatrixName() { return this->_ZMatrixAtomName; };
 
 CL_LISPIFY_NAME("hasBond");
 CL_DEFMETHOD 	bool	hasBond() {_OF(); ASSERTNOTNULL(this->_Bond);return this->_Bond.notnilp(); };
@@ -296,7 +296,7 @@ CL_DEFMETHOD 	ZMatrixDihedralInternal_sp	getDihedral() {_OF(); ASSERTNOTNULL(thi
 	typedef	gctools::Vec0<ZMatrixInternal_sp>::iterator	internalIterator;
     protected:
 	Atom_sp	_getAtomAtIndex(uint i);
-	string	_getAtomZMatrixNameAtIndex(uint i) const;
+        core::T_sp	_getAtomZMatrixNameAtIndex(uint i) const;
 	void	defineForMatterWithStartingAtom(Matter_sp matter, Atom_sp atom);
 
     public:
@@ -306,7 +306,7 @@ CL_DEFMETHOD 	ZMatrixDihedralInternal_sp	getDihedral() {_OF(); ASSERTNOTNULL(thi
 	void	extractInternals();
 
 	/*! Get the atom name for a particular entry */
-	string getZMatrixAtomNameAtIndex(uint i) const;
+        core::T_sp getZMatrixAtomNameAtIndex(uint i) const;
 
 	/*! Return the entries as a Cons */
 	core::List_sp entriesAsList() const;
@@ -322,7 +322,7 @@ CL_DEFMETHOD 	ZMatrixDihedralInternal_sp	getDihedral() {_OF(); ASSERTNOTNULL(thi
 	void	constrainInternalsWithNoAtomsWithMask(uint mask);
 
 
-	ZMatrixEntry_sp zMatrixEntryWithName(string const& atomZMatrixName) const;
+	ZMatrixEntry_sp zMatrixEntryWithName(core::T_sp atomZMatrixName) const;
 
 	string allZMatrixAtomNamesAsString() const;
 

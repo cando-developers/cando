@@ -46,9 +46,6 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace       chem {
 
-extern	string	ConformationCollectionEntry_Xml;
-
-
 
 SMART(ConformationExplorer);
 DEFINE_O_SMART_POINTERS(ConformationCollectionEntry);

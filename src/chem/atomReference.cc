@@ -79,12 +79,12 @@ namespace chem
 #define ARGS_AtomReference_O_make "(alias)"
 #define DECL_AtomReference_O_make ""
 #define DOCS_AtomReference_O_make "make AtomReference args: alias"
-    AtomReference_sp AtomReference_O::make(const string& alias)
-    {
-        GC_ALLOCATE(AtomReference_O, me );
-	me->_AtomAlias = alias;
-	return me;
-    };
+AtomReference_sp AtomReference_O::make(core::T_sp alias)
+{
+  GC_ALLOCATE(AtomReference_O, me );
+  me->_AtomAlias = alias;
+  return me;
+};
 
 #else
 

@@ -218,8 +218,8 @@ void	EnergyFunction_O::initialize()
   this->_DihedralRestraint = EnergyDihedralRestraint_O::create();
   this->_FixedNonbondRestraint = EnergyFixedNonbondRestraint_O::create();
 #endif
-  this->setScoringFunctionName("");
-  this->_Message = "";
+  this->setScoringFunctionName(_Nil<core::T_O>());
+  this->_Message = _Nil<core::T_O>();
   this->useDefaultSettings();
 }
 

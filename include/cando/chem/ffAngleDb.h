@@ -127,12 +127,12 @@ public:
         bool fieldsp() const { return true; };
         void fields(core::Record_sp node);
 public:
-	string			_AngleFunction;
+        core::T_sp			_AngleFunction;
   gc::SmallMap<core::Symbol_sp,core::DoubleFloat_sp>		_ZConstants;	//<! Angle parameter constants from Wang et al. J. Comput. Chem 25, 1157-1174 (2004)
   gc::SmallMap<core::Symbol_sp, core::DoubleFloat_sp>		_CConstants;	//<! Angle parameter constants from Wang et al. J. Comput. Chem 25, 1157-1174 (2004)
 
 public:
-	void	setAngleFunction(const string& st) {this->_AngleFunction = st;};
+  void	setAngleFunction(core::T_sp st) {this->_AngleFunction = st;};
 	void	add( FFAngle_sp ang );
 
     void	addZConstant(core::Symbol_sp element, double value ) { this->_ZConstants.set(element,core::DoubleFloat_O::create(value));};

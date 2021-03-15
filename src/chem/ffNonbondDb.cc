@@ -415,7 +415,6 @@ void FFNonbond_O::initialize()
   this->_InitialCharge = 0.0;
   this->_Fcadj = 0.0;
   this->_Pbci = 0.0;
-  this->_SameParms = "";
 }
 
 
@@ -462,13 +461,14 @@ double FFNonbond_O::getEpsilon_kJ() const
   return this->_Epsilon_kJ;
 }
 
-void FFNonbond_O::setSameParms(string sameparms)
+void FFNonbond_O::setSameParms(core::T_sp sameparms)
 {
   this->_SameParms = sameparms;
 }
 
-string FFNonbond_O::getSameParms() const
+core::T_sp FFNonbond_O::getSameParms() const
 {
+  ASSERT(this->_SameParms.boundp());
   return this->_SameParms;
 }
 

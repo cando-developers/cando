@@ -152,8 +152,8 @@ namespace chem {
     double					_AnchorRestraintWeight;
     double					_FixedNonbondRestraintWeight;
     double					_TotalEnergy;
-    string					_Message;
     double					_DielectricConstant;
+    core::T_sp                   _Message;
     core::List_sp			_MissingParameters;
   public:
   public:
@@ -247,7 +247,7 @@ namespace chem {
 
     void	summarizeTerms();
     void	dumpTerms();
-    CL_DEFMETHOD     string	getMessage() { return this->_Message;};
+    CL_DEFMETHOD     core::T_sp	getMessage() { return this->_Message;};
 
     /*! Print the energy components as a single, multi-line string
      */

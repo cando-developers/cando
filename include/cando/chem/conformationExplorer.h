@@ -38,10 +38,8 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/bond.h>
 #include <cando/adapt/stringSet.fwd.h>
 #include <cando/geom/vector3.h>
-#include <clasp/core/intArray.h>
 #include <clasp/core/environment.fwd.h>
 #include <cando/geom/coordinateArray.fwd.h>
-#include <clasp/core/intArray.fwd.h>
 
 namespace       chem {
 
@@ -68,18 +66,18 @@ class ConformationExplorerEntryStage_O : public core::CxxObject_O
 public:
 	void	initialize();
 private:
-	string				_BasedOnStageName;
-	string				_StageName;
-	bool				_Complete;
-	ConformationExplorerEntry_sp	_WeakConformationExplorerEntry;
-        geom::SimpleVectorCoordinate_sp	_FinalCoordinates;
-	core::HashTableEq_sp			_Binder;
+  core::T_sp		_BasedOnStageName;
+  core::T_sp		_StageName;
+  bool				_Complete;
+  ConformationExplorerEntry_sp	_WeakConformationExplorerEntry;
+  geom::SimpleVectorCoordinate_sp	_FinalCoordinates;
+  core::HashTableEq_sp			_Binder;
 			//! Energy of the conformation in kCal as calculated by the package/model
-	double				_EnergyKCal;
+  double				_EnergyKCal;
 			//! ExternalInterfaceName is cando, gamess, gaussian, nwchem etc
-	string				_ExternalInterfaceName;
+  core::T_sp		_ExternalInterfaceName;
 			//! Model is gaff, am1, pm3, b3lyp etc.
-	string				_Model;
+  core::T_sp		_Model;
 public:
         void setFinalCoordinates(geom::SimpleVectorCoordinate_sp ac);
 CL_LISPIFY_NAME("getFinalCoordinates");
@@ -92,14 +90,14 @@ CL_LISPIFY_NAME("setEnergyKCal");
 CL_DEFMETHOD 	void		setEnergyKCal(double energy) { this->_EnergyKCal = energy; };
 
 CL_LISPIFY_NAME("getExternalInterfaceName");
-CL_DEFMETHOD 	string		getExternalInterfaceName() { return this->_ExternalInterfaceName;};
+  CL_DEFMETHOD 	core::T_sp	getExternalInterfaceName() { return this->_ExternalInterfaceName;};
 CL_LISPIFY_NAME("setExternalInterfaceName");
-CL_DEFMETHOD 	void		setExternalInterfaceName(const string& package) { this->_ExternalInterfaceName = package;};
+  CL_DEFMETHOD 	void		setExternalInterfaceName(core::T_sp package) { this->_ExternalInterfaceName = package;};
 
 CL_LISPIFY_NAME("getModel");
-CL_DEFMETHOD 	string		getModel() { return this->_Model;};
+  CL_DEFMETHOD 	core::T_sp	getModel() { return this->_Model;};
 CL_LISPIFY_NAME("setModel");
-CL_DEFMETHOD 	void		setModel(const string& package) { this->_Model = package;};
+  CL_DEFMETHOD 	void		setModel(core::T_sp package) { this->_Model = package;};
 
 
 	bool	recognizesAtom(Atom_sp atom);
@@ -109,14 +107,14 @@ CL_DEFMETHOD 	void		setModel(const string& package) { this->_Model = package;};
 	ConformationExplorer_sp	getConformationExplorer();
 
 CL_LISPIFY_NAME("getBasedOnStageName");
-CL_DEFMETHOD 	string	getBasedOnStageName() { return this->_BasedOnStageName; };
+ CL_DEFMETHOD 	core::T_sp	getBasedOnStageName() { return this->_BasedOnStageName; };
 CL_LISPIFY_NAME("setBasedOnStageName");
-CL_DEFMETHOD 	void	setBasedOnStageName(const string& key ) { this->_BasedOnStageName = key; };
+ CL_DEFMETHOD 	void	setBasedOnStageName(core::T_sp key ) { this->_BasedOnStageName = key; };
 
 CL_LISPIFY_NAME("getStageName");
-CL_DEFMETHOD 	string	getStageName() { return this->_StageName; };
+ CL_DEFMETHOD 	core::T_sp	getStageName() { return this->_StageName; };
 CL_LISPIFY_NAME("setStageName");
-CL_DEFMETHOD 	void	setStageName(const string& key ) { this->_StageName = key; };
+ CL_DEFMETHOD 	void	setStageName(core::T_sp key ) { this->_StageName = key; };
 
 CL_LISPIFY_NAME("isComplete");
 CL_DEFMETHOD 	bool	isComplete() { return this->_Complete; };
@@ -204,25 +202,25 @@ CL_DEFMETHOD 	bool	hasSelectedStage() {_OF(); ASSERTNOTNULL(this->_SelectedStage
 		/*! Set the selected stage, throws error if its not one of this entries stages */
 	void	setSelectedStage(ConformationExplorerEntryStage_sp stage);
 
-	adapt::StringSet_sp	getEntryStageNames();
+        core::HashTable_sp	getEntryStageNames();
 
 CL_LISPIFY_NAME("getUniqueEntryIndex");
 CL_DEFMETHOD 	int	getUniqueEntryIndex() const { return this->_UniqueEntryIndex;};
 
-	string			lastEntryStageName();
-	bool			hasEntryStageWithName(const string& key );
-	ConformationExplorerEntryStage_sp	getEntryStage(const string& key);
-
+ core::T_sp			lastEntryStageName();
+ bool			hasEntryStageWithName(core::T_sp key );
+ ConformationExplorerEntryStage_sp	getEntryStage(core::T_sp key);
+ 
 		/*! Return true if the last stage has the stageName and
 		 * is complete
 		 */
-	bool	alreadyHasLastCompleteStage(const string& stageName);
+ bool	alreadyHasLastCompleteStage(core::T_sp stageName);
 
 		/*! If the last EntryStage is incomplete then return it
 		 * Otherwise create a new one and return it
 		 * Give it the stageName and set it to incomplete
 		 */
-	ConformationExplorerEntryStage_sp	getOrCreateLastIncompleteEntryStage(const string& stageName);
+ ConformationExplorerEntryStage_sp	getOrCreateLastIncompleteEntryStage(core::T_sp stageName);
 
 	ConformationExplorerEntryStage_sp	getLastCompleteEntryStage();
 	ConformationExplorerEntryStage_sp	getLastEntryStage();
@@ -233,7 +231,7 @@ CL_DEFMETHOD 	int	getUniqueEntryIndex() const { return this->_UniqueEntryIndex;}
 	geom::Render_sp	rendered(core::List_sp options);
 #endif
 #endif
-	virtual ConformationExplorerEntryStage_sp createEntryStage(string const& name);
+	virtual ConformationExplorerEntryStage_sp createEntryStage(core::T_sp name);
 
 
 
@@ -335,25 +333,20 @@ CL_DEFMETHOD 	Matter_sp	getMatter() { return this->_Matter;};
 	 */
     	void appendEntry(ConformationExplorerEntry_sp entry);
 
-	bool	hasStageNameInAllEntries(const string& stageName);
+	bool	hasStageNameInAllEntries(core::T_sp stageName);
 	bool	findMostSimilarConformationEntryStageWithStageName(
 			Matter_sp 			matter,
-			const string& 			stageName,
+			core::T_sp 			stageName,
 			double&				rmsDifference,
 			ConformationExplorerEntryStage_sp &closestEntryStage,
 			uint&				bestEntryIndex );
 
-	void	findClosestMatchingConformation(ConformationExplorerMatch_sp match, Matter_sp matter, const string& stageName, double rms);
+	void	findClosestMatchingConformation(ConformationExplorerMatch_sp match, Matter_sp matter, core::T_sp stageName, double rms);
 
-
-
-#ifdef	USEBOOSTPYTHON
-	boost::python::tuple boost_findMostSimilarConformationEntryStageWithStageName(Matter_sp matter, const string& stageName );
-#endif
 
 	/*! Sort the ConformationExplorer based on a value in one of the entry stages
 	 */
-	void	sort(const string& stageName, core::Symbol_sp keyValue);
+	void	sort(core::T_sp stageName, core::Symbol_sp keyValue);
 
 
 //	void	addConformationExplorer(ConformationExplorer_sp structureList);
@@ -362,10 +355,10 @@ CL_LISPIFY_NAME("numberOfEntries");
 CL_DEFMETHOD 	uint numberOfEntries() { return this->_Entries.size();};
 	uint numberOfAllAtoms() { return this->_AllAtoms.size();};
 
-	bool	recognizesAtomName(const string& name);
+	bool	recognizesAtomName(core::T_sp name);
 	uint indexOfAtom(Atom_sp atom);
 
-	void	alignAllConformationsToTheFirstForStage(const string& stageName );
+	void	alignAllConformationsToTheFirstForStage(core::T_sp stageName );
 
 #if 0
 	bool canRender() { return true; }
@@ -383,7 +376,7 @@ virtual	ConformationExplorerEntry_sp	createEntry();
 
 		/*! Sort the entries by the energy of the given stage
 		 */
-	void sortByEnergyAscendingForStage(const string& stageName);
+ void sortByEnergyAscendingForStage(core::T_sp stageName);
 
 
 
@@ -411,7 +404,7 @@ private: // instance variables
 	bool			_Matches;
 	uint			_ClosestMatchIndex;
 	double			_ClosestMatchRms;
-	string			_MatchStageName;
+  core::T_sp	_MatchStageName;
 public:	// Creation class functions
 
 public:
@@ -419,8 +412,8 @@ public:
 	void setMatches(bool b) { this->_Matches = b; };
 CL_LISPIFY_NAME("getMatches");
 CL_DEFMETHOD 	bool getMatches() { return this->_Matches; };
-	void setMatchStageName(const string& s) { this->_MatchStageName=s;};
-	string getMatchStageName() { return this->_MatchStageName;};
+ void setMatchStageName(core::T_sp s) { this->_MatchStageName=s;};
+ core::T_sp getMatchStageName() { return this->_MatchStageName;};
 CL_LISPIFY_NAME("getClosestMatchRms");
 CL_DEFMETHOD 	double getClosestMatchRms() { return this->_ClosestMatchRms;};
 	void setClosestMatchRms(double i) { this->_ClosestMatchRms= i;};

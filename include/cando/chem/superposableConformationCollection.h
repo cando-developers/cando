@@ -39,7 +39,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/conformationCollection.h>
 #include <cando/adapt/stringList.h>
 #include <cando/chem/atom.h>
-#include <clasp/core/intArray.h>
 
 #include <cando/chem/chemPackage.h>
 
@@ -97,7 +96,6 @@ public:
 public:
   double		_RmsCutOff;
   core::ComplexVector_byte32_t_sp	_SuperposeAtomIndices;
-//	string		_SuperposableFileName;
 public:
 
   CL_DEFMETHOD void	setRmsCutOff(double co) { this->_RmsCutOff = co; };

@@ -501,9 +501,9 @@ void ReadAmberParameters_O::parseNonbondDb(core::T_sp fin, FFNonbondDb_sp ffNonb
 //	    print ffNonbond.asXml().asString()
       ffNonbond->setRadius_Angstroms(radius);
       ffNonbond->setEpsilon_kCal(edep);
-      if(ffNonbond->getSameParms() != "")
+      if(ffNonbond->getSameParms().notnilp())
       {
-        string sameparms = ffNonbond->getSameParms();
+        string sameparms = gc::As<core::String_sp>(ffNonbond->getSameParms())->get_std_string();
         vector<string> sameParmsParts = core::split(sameparms);
         for ( vector<string>::iterator it=sameParmsParts.begin(); it!=sameParmsParts.end(); it++ )
         {
@@ -549,7 +549,7 @@ void ReadAmberParameters_O::parseAtomEquivalences(core::T_sp fin, FFNonbondDb_sp
         SIMPLE_ERROR(BF("Could not find type: %s") % type);
       }
       string params = core::trimWhiteSpace(line.substr(4));
-      ffNonbond->setSameParms(params);
+      ffNonbond->setSameParms(core::SimpleBaseString_O::make(params));
     }
     if (line=="") return;
   }

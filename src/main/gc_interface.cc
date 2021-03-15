@@ -113,13 +113,11 @@ typedef bool _Bool;
 #include <clasp/core/character.h>
 #include <clasp/core/readtable.h>
 #include <clasp/core/arrayObjects.h>
-#include <clasp/core/intArray.h>
 #include <clasp/core/lispStream.h>
 #include <clasp/core/primitives.h>
 #include <clasp/core/singleDispatchMethod.h>
 #include <clasp/core/fileSystem.h>
 #include <clasp/core/null.h>
-#include <clasp/core/multiStringBuffer.h>
 #include <clasp/core/posixTime.h>
 #include <clasp/core/pointer.h>
 #include <clasp/core/smallMap.h>

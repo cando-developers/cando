@@ -127,7 +127,7 @@ namespace chem {
     double					_PointToLineRestraintWeight;
     double					_OutOfZPlaneWeight;
     double					_TotalEnergy;
-    string					_Message;
+    core::SimpleBaseString_sp			_Message;
     core::T_sp                                  _Frozen;
   public:
     SketchFunction_O(core::T_sp graph) : _Graph(graph), _Frozen(_Nil<core::T_O>()) {};
@@ -187,7 +187,7 @@ namespace chem {
 
     void	summarizeTerms();
     void	dumpTerms();
-    CL_DEFMETHOD     string	getMessage() { return this->_Message;};
+    CL_DEFMETHOD     core::T_sp	getMessage() { return this->_Message;};
 
     /*! Print the energy components as a single, multi-line string
      */

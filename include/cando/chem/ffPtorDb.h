@@ -100,7 +100,7 @@ namespace chem
         double          _Scee;
         bool            _HasScnb;
         double          _Scnb;
-        string          _Comment;
+        core::T_sp  _Comment;
 
 	void	setTypes( core::Symbol_sp a1, core::Symbol_sp a2, core::Symbol_sp a3, core::Symbol_sp a4);
 	int	maxPeriodicity() const { return MaxPeriodicity; };
@@ -122,14 +122,14 @@ namespace chem
         CL_DEFMETHOD bool    getHasScee() const { return this->_HasScee;};
         CL_DEFMETHOD bool    getHasScnb() const { return this->_HasScnb;};
 
-        CL_DEFMETHOD string  ptorComment() const { return this->_Comment; };
-        CL_DEFMETHOD void    setPtorComment(const string& s) { this->_Comment = s; };
+        CL_DEFMETHOD core::T_sp  ptorComment() const { return this->_Comment; };
+        CL_DEFMETHOD void    setPtorComment(core::T_sp s) { this->_Comment = s; };
         
        void    mergeWith(FFPtor_sp ptor);
 
 	virtual	ParameterType	type() { return ptor;};
 	virtual	string		levelDescription();
-    FFPtor_O() : _HasScee(false), _Scee(-1.0), _HasScnb(false), _Scnb(-1.0), _Comment("") {};
+    FFPtor_O() : _HasScee(false), _Scee(-1.0), _HasScnb(false), _Scnb(-1.0), _Comment(_Nil<core::T_O>()) {};
     };
 
 

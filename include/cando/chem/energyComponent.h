@@ -256,7 +256,7 @@ class EnergyComponent_O : public core::CxxObject_O
   bool		_DebugEnergy;
   double		_TotalEnergy;
   int		_Debug_NumberOfTermsToCalculate;
-  stringstream	_DebugLog;
+  core::StringOutputStream_sp 	_DebugLog;
 public:
   size_t        _Evaluations;
 //protected:		// Define these in subclasses

@@ -428,6 +428,7 @@ FORWARD(BondMatcher);
 class BondMatcher_O : public ChemInfoNode_O {
   LISP_CLASS(chem,ChemPkg,BondMatcher_O, "BondMatcher", ChemInfoNode_O );
 public:
+  BondMatcher_O() {};
 };
 
 FORWARD(BondLogical);
@@ -437,6 +438,7 @@ public:
   bool fieldsp() const { return true; };
   void fields(core::Record_sp node);
 public:
+  BondLogical_O() {};
   static BondLogical_sp create(LogicalOperatorType op,
 //                             AtomOrBondMatchNode_sp a1,
 //                             gc::Nilable<AtomOrBondMatchNode_sp> a2 )

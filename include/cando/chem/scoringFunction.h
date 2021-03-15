@@ -94,16 +94,16 @@ namespace       chem
   {
     LISP_CLASS(chem,ChemPkg,ScoringFunction_O,"ScoringFunction",core::CxxObject_O);
   public:
-    string	    _Name;
-    bool        _Debug;
-    Vector3                                     _VelocityScale;
+    core::T_sp 	    _Name;
+    bool            _Debug;
+    Vector3         _VelocityScale;
   public:
     bool fieldsp() const { return true; };
     void fields(core::Record_sp node);
   public:
     void setf_velocity_scale(double xscale, double yscale, double zscale);
-    CL_DEFMETHOD     void	setScoringFunctionName(const string& nm) { this->_Name = nm; };
-    CL_DEFMETHOD     string	scoringFunctionName() { return this->_Name; };
+    CL_DEFMETHOD     void	setScoringFunctionName(core::T_sp nm) { this->_Name = nm; };
+    CL_DEFMETHOD     core::T_sp	scoringFunctionName() { return this->_Name; };
 //    void		writeForceToAtoms(NVector_sp f);
 
   public:

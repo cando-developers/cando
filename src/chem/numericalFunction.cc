@@ -48,9 +48,9 @@ namespace chem {
 void	NumericalFunction_O::initialize()
 {
     this->Base::initialize();
-    this->title = "";
-    this->xAxisName = "";
-    this->yAxisName = "";
+    this->title = _Nil<core::T_O>();
+    this->xAxisName = _Nil<core::T_O>();
+    this->yAxisName = _Nil<core::T_O>();
     this->values.clear();
 }
 
@@ -151,7 +151,7 @@ stringstream			dataStream;
 vector<double>::iterator	dp;
 FILE*				fOut;
     fOut = fopen(fn.c_str(),"w");
-    fprintf( fOut, "# %s %s\n", this->xAxisName.c_str(), this->yAxisName.c_str() );
+    fprintf( fOut, "# %s %s\n", core::_rep_(this->xAxisName).c_str(), core::_rep_(this->yAxisName).c_str() );
     fprintf( fOut, "# %s\n", comment.c_str() );
     for (dp=this->values.begin(); dp!=this->values.end(); dp++ ) {
 	fprintf( fOut, "%10.9lf %10.9lf\n", this->xValue(dp-this->values.begin()), *dp );
@@ -167,7 +167,7 @@ stringstream			dataStream;
 vector<double>::iterator	dp;
 FILE*				fOut;
     fOut = fopen(fn.c_str(),"a");
-    fprintf( fOut, "# %s %s\n", this->xAxisName.c_str(), this->yAxisName.c_str() );
+    fprintf( fOut, "# %s %s\n", core::_rep_(this->xAxisName).c_str(), core::_rep_(this->yAxisName).c_str() );
     fprintf( fOut, "# %s\n", comment.c_str() );
     for (dp=this->values.begin(); dp!=this->values.end(); dp++ ) {
 	fprintf( fOut, "%10.9lf %10.9lf\n", this->xValue(dp-this->values.begin()), *dp );
