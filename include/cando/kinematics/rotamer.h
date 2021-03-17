@@ -48,11 +48,11 @@ namespace kinematics
 	void initialize();
     public:
     private: // instance variables here
-	vector<double>	_Dihedrals;
-	vector<double>	_Sigmas;
-	vector<int>	_Indices;
-	double		_Probability;
-	int		_Count;
+      gctools::Vec0<double>	_Dihedrals;
+      gctools::Vec0<double>	_Sigmas;
+      gctools::Vec0<int>	_Indices;
+      double		_Probability;
+      int		_Count;
     public: // Functions here
 	string __repr__() const;
 	double probability() const { return this->_Probability;};

@@ -104,7 +104,7 @@ class	Dumb_TorsionDriver{
 private:
 	bool			driveMode;
 	Aggregate_sp		aggregate;
-	vector<TorsionSegment>	torsions;
+  vector<TorsionSegment>	torsions;
 
 	void insertTorsion(	Atom_sp	fixed,
 				Atom_sp	movable,

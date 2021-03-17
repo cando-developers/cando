@@ -1295,7 +1295,7 @@ public:
 public:
   Root_sp                _Root;
   core::HashTableEq_sp   _nodes_to_index;
-  std::vector<size_t>               _nodeOrder;
+  std::vector<size_t>  _nodeOrder;
   gctools::Vec0<ChemInfoNode_sp> _atomNodes;
   gctools::Vec0<BondToAtomTest_sp> _bondNodes;
   ChemInfoGraphType*     _chemInfoGraph;
@@ -1303,22 +1303,26 @@ public:
 
   ChemInfoGraph_O(Root_sp);
   ~ChemInfoGraph_O();
+
+  // Build the object from _Root
+  void buildFromRoot_(); 
+  void fixupInternalsForImageSaveLoad(core::FixupOperation& op) {
+    if (op == core::SaveOp) {
+      this->_nodes_to_index = _Unbound<core::HashTableEq_O>();
+      this->_nodeOrder.clear();
+      this->_atomNodes.clear();
+      this->_bondNodes.clear();
+      this->_chemInfoGraph = NULL;
+    } else if (op == core::LoadOp) {
+      this->initialize();
+      this->buildFromRoot_();
+    }
+  }
 };
 
 };
-
-
-
-
-
-
-
-
 
 namespace chem {
-
-
-
 core::T_mv chem__chem_info_match(Root_sp testRoot, Atom_sp atom);
 SmartsRoot_sp chem__compile_smarts(const string& smarts, core::List_sp tests);
 AntechamberRoot_mv chem__compile_antechamber(const string& smarts,WildElementDict_sp xpdict);

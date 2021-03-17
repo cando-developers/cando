@@ -71,24 +71,6 @@ void	NumericalFunction_O::initialize()
 // Destructor
 //
 
-
-
-#ifdef XML_ARCHIVE
-    void	NumericalFunction_O::archive(core::ArchiveP node)
-{
-    node->attribute("title",this->title);
-    node->attribute("xAxisName",this->xAxisName);
-    node->attribute("yAxisName",this->yAxisName);
-    node->attribute("xInc",this->xInc);
-    node->archiveVectorDouble("values",this->values);
-}
-#endif
-
-
-
-
-
-
 /*! Return the index of the entry with the largest x-value smaller than or equal to
     the value of (x)
  */
@@ -120,12 +102,16 @@ double	x;
 void	NumericalFunction_O::setYValueAtIndex(int i, double v)
 {
     if ( i < 0 ) {
-	this->values.insert( this->values.begin(), -i, 0.0 );
-	this->xStart = this->xStart + (i*this->xInc);
-	this->values[0] = v;
+      for ( int zzz = 0; zzz<(-i); zzz++ ) {
+	this->values.insert( this->values.begin(), 0.0 );
+      }
+      this->xStart = this->xStart + (i*this->xInc);
+      this->values[0] = v;
     } else if ( i >= (int)(this->values.size()) ) {
-	this->values.insert( this->values.end(), i-this->values.size()+1, 0.0 );
-	this->values[this->values.size()-1] = v;
+      for ( int zzz = 0; zzz<(i-this->values.size()+1); zzz++ ) {
+        this->values.insert( this->values.end(), 0.0 );
+      }
+      this->values[this->values.size()-1] = v;
     } else {
 	this->values[i] = v;
     }
@@ -148,12 +134,11 @@ double	NumericalFunction_O::getYValueAtIndex(int i)
 void	NumericalFunction_O::dumpToXYFile(string fn, string comment)
 {
 stringstream			dataStream;
-vector<double>::iterator	dp;
 FILE*				fOut;
     fOut = fopen(fn.c_str(),"w");
     fprintf( fOut, "# %s %s\n", core::_rep_(this->xAxisName).c_str(), core::_rep_(this->yAxisName).c_str() );
     fprintf( fOut, "# %s\n", comment.c_str() );
-    for (dp=this->values.begin(); dp!=this->values.end(); dp++ ) {
+    for (auto dp=this->values.begin(); dp!=this->values.end(); dp++ ) {
 	fprintf( fOut, "%10.9lf %10.9lf\n", this->xValue(dp-this->values.begin()), *dp );
     }
     fprintf( fOut, "\n");
@@ -164,12 +149,11 @@ FILE*				fOut;
 void	NumericalFunction_O::appendToXYFile(string fn, string comment )
 {
 stringstream			dataStream;
-vector<double>::iterator	dp;
 FILE*				fOut;
     fOut = fopen(fn.c_str(),"a");
     fprintf( fOut, "# %s %s\n", core::_rep_(this->xAxisName).c_str(), core::_rep_(this->yAxisName).c_str() );
     fprintf( fOut, "# %s\n", comment.c_str() );
-    for (dp=this->values.begin(); dp!=this->values.end(); dp++ ) {
+    for (auto dp=this->values.begin(); dp!=this->values.end(); dp++ ) {
 	fprintf( fOut, "%10.9lf %10.9lf\n", this->xValue(dp-this->values.begin()), *dp );
     }
     fprintf( fOut, "\n");
@@ -197,10 +181,9 @@ double	NumericalFunction_O::getHighX()
 
 double	NumericalFunction_O::getLowY()
 {
-vector<double>::iterator	dp;
 double	lowY;
     lowY = 99999999.0;
-    for (dp=this->values.begin(); dp!=this->values.end(); dp++ ) {
+    for (auto dp=this->values.begin(); dp!=this->values.end(); dp++ ) {
 	if ( lowY > *dp ) lowY = *dp;
     }
     return lowY;
@@ -208,10 +191,9 @@ double	lowY;
 
 double	NumericalFunction_O::getHighY()
 {
-vector<double>::iterator	dp;
 double	highY;
     highY = -99999999.0;
-    for (dp=this->values.begin(); dp!=this->values.end(); dp++ ) {
+    for (auto dp=this->values.begin(); dp!=this->values.end(); dp++ ) {
 	if ( highY < *dp ) highY = *dp;
     }
     return highY;
@@ -226,43 +208,42 @@ double	highY;
 */
 void	NumericalFunction_O::parseFromXYFile(string fn, int xindex, int yindex)
 {_OF();
-    FILE*				fIn;
-    double				x, y;
-    double				values[10];
-    char				line[256];
-    int				n;
-    vector<double>			xv, yv;
-    vector<double>::iterator	dp;
-    this->reset();
-    fIn = fopen(fn.c_str(),"r");
-    while ( !feof(fIn) ) {
-	fgets( line, sizeof(line), fIn );
-	n = sscanf( line, "%lf %lf %lf %lf %lf %lf %lf %lf %lf %lf",
-		    &values[0], &values[1], &values[2], &values[3], &values[4],
-		    &values[5], &values[6], &values[7], &values[8], &values[9] );
-	if ( n == 0 ) continue;
-	x = 0.0;
-	y = 0.0;
-	if ( xindex-1 < n ) {
-	    x = values[xindex-1];
-	}  else {
-	    SIMPLE_ERROR(BF("Index beyond the end of line" ));
-	}
-	if ( yindex-1 < n ) {
-	    y = values[yindex-1];
-	}  else {
-	    SIMPLE_ERROR(BF("Index beyond the end of line" ));
-	}
-	xv.push_back(x);
-	yv.push_back(y);
+  FILE*				fIn;
+  double				x, y;
+  double				values[10];
+  char				line[256];
+  int				n;
+  gctools::Vec0<double>			xv, yv;
+  this->reset();
+  fIn = fopen(fn.c_str(),"r");
+  while ( !feof(fIn) ) {
+    fgets( line, sizeof(line), fIn );
+    n = sscanf( line, "%lf %lf %lf %lf %lf %lf %lf %lf %lf %lf",
+                &values[0], &values[1], &values[2], &values[3], &values[4],
+                &values[5], &values[6], &values[7], &values[8], &values[9] );
+    if ( n == 0 ) continue;
+    x = 0.0;
+    y = 0.0;
+    if ( xindex-1 < n ) {
+      x = values[xindex-1];
+    }  else {
+      SIMPLE_ERROR(BF("Index beyond the end of line" ));
     }
-    fclose(fIn);
-    this->xInc = xv[1]-xv[0];
-    this->xStart = ROUND(xv[0]/this->xInc)*this->xInc;
-    this->values.clear();
-    for( dp=yv.begin(); dp!=yv.end(); dp++ ) {
-	this->values.push_back(*dp);
+    if ( yindex-1 < n ) {
+      y = values[yindex-1];
+    }  else {
+      SIMPLE_ERROR(BF("Index beyond the end of line" ));
     }
+    xv.push_back(x);
+    yv.push_back(y);
+  }
+  fclose(fIn);
+  this->xInc = xv[1]-xv[0];
+  this->xStart = ROUND(xv[0]/this->xInc)*this->xInc;
+  this->values.clear();
+  for( auto dp=yv.begin(); dp!=yv.end(); dp++ ) {
+    this->values.push_back(*dp);
+  }
 }
 
 
@@ -277,7 +258,6 @@ NumericalFunction_sp NumericalFunction_O::add(NumericalFunction_sp fn)
 {_OF();
 NumericalFunction_sp		newFunc;
 double				xMin, xMax, x;
-vector<double>::iterator	dp;
 int				thisIndex, fnIndex, vals;
     if ( this->xInc != fn->xInc ) {
 	stringstream ss;
@@ -301,9 +281,12 @@ int				thisIndex, fnIndex, vals;
     newFunc = NumericalFunction_O::create();
     newFunc->setXStart(xMin);
     newFunc->setXInc(this->xInc);
-    newFunc->values.assign(vals,0.0);
+    newFunc->values.resize(vals);
+    for ( auto ii=newFunc->values.begin(); ii<newFunc->values.end(); ++ii ) {
+      *ii = 0.0;
+    }
     LOG(BF("resulting NumericalFunction has %d vals") % (newFunc->values.size()) );
-    for ( dp=newFunc->values.begin(); dp!=newFunc->values.end(); dp++ ) {
+    for ( auto dp=newFunc->values.begin(); dp!=newFunc->values.end(); dp++ ) {
 	x = newFunc->getXValueAtIndex(dp-newFunc->values.begin());
 	LOG(BF("Adding at x=%lf") % (x ) );
 	thisIndex = this->findIndex(x);
@@ -320,7 +303,6 @@ NumericalFunction_sp NumericalFunction_O::sub(NumericalFunction_sp fn)
 {_OF();
 NumericalFunction_sp		newFunc;
 double				xMin, xMax, x;
-vector<double>::iterator	dp;
 int				thisIndex, fnIndex, vals;
     if ( this->xInc != fn->xInc ) {
 	stringstream ss;
@@ -344,9 +326,10 @@ int				thisIndex, fnIndex, vals;
     newFunc = NumericalFunction_O::create();
     newFunc->setXStart(xMin);
     newFunc->setXInc(this->xInc);
-    newFunc->values.assign(vals,0.0);
+    newFunc->values.resize(vals);
+    for (auto ii=newFunc->values.begin(); ii<newFunc->values.end(); ii++ ) *ii = 0.0;
     LOG(BF("resulting NumericalFunction has %d vals") % (newFunc->values.size()) );
-    for ( dp=newFunc->values.begin(); dp!=newFunc->values.end(); dp++ ) {
+    for ( auto dp=newFunc->values.begin(); dp!=newFunc->values.end(); dp++ ) {
 	x = newFunc->getXValueAtIndex(dp-newFunc->values.begin());
 	LOG(BF("Adding at x=%lf") % (x ) );
 	thisIndex = this->findIndex(x);
@@ -386,11 +369,10 @@ double	NumericalFunction_O::rmsDifference(NumericalFunction_sp fn)
 {
 NumericalFunction_sp		newFunc;
 double				rms;
-vector<double>::iterator	dp;
 
     newFunc = this->sub(fn);
     rms = 0.0;
-    for ( dp=newFunc->values.begin(); dp!=newFunc->values.end(); dp++ ) {
+    for ( auto dp=newFunc->values.begin(); dp!=newFunc->values.end(); dp++ ) {
 	rms += (*dp)*(*dp);
     }
     rms /= this->values.size();
@@ -406,20 +388,17 @@ void	NumericalFunction_O::scaleXValues(double scale)
 
 void	NumericalFunction_O::scaleYValues(double scale)
 {
-vector<double>::iterator	ip;
 
-    for (ip=this->values.begin(); ip!=this->values.end(); ip++ ) {
+    for (auto ip=this->values.begin(); ip!=this->values.end(); ip++ ) {
 	*ip *= scale;
     }
 }
 
 void	NumericalFunction_O::offsetYValues(double offset)
 {
-vector<double>::iterator	ip;
-
-    for (ip=this->values.begin(); ip!=this->values.end(); ip++ ) {
-	*ip += offset;
-    }
+  for (auto ip=this->values.begin(); ip!=this->values.end(); ip++ ) {
+    *ip += offset;
+  }
 }
 
 };

@@ -170,7 +170,7 @@ CL_DEFMETHOD     void	MonomerContext_O::addNeighbor( core::Symbol_sp cn, EntityN
 
 
     void	MonomerContext_O::expandOuts(NeighborMap::iterator mit,
-					     adapt::StringSet_sp list,
+					     core::List_sp list,
 					     MCStringStack& name )
     {
 	IMPLEMENT_ME(); // work with new symbol based names
@@ -231,8 +231,10 @@ CL_DEFMETHOD core::Symbol_sp MonomerContext_O::getKey()
 
 
 CL_LISPIFY_NAME("getAllSpecificKeys");
-CL_DEFMETHOD     adapt::StringSet_sp	MonomerContext_O::getAllSpecificKeys()
+CL_DEFMETHOD     core::HashTableEqual_sp	MonomerContext_O::getAllSpecificKeys()
     {
+      IMPLEMENT_ME();
+#if 0
 	adapt::StringSet_sp	expandedList;
 	adapt::SymbolSet_sp	selfNames;
 	MCStringStack	name;
@@ -252,6 +254,7 @@ CL_DEFMETHOD     adapt::StringSet_sp	MonomerContext_O::getAllSpecificKeys()
 	    name.pop();
           });
 	return expandedList;
+#endif
     }
 
 CL_LISPIFY_NAME("getAllSpecificContexts");
@@ -278,6 +281,8 @@ CL_DEFMETHOD     SpecificContextSet_sp MonomerContext_O::getAllSpecificContexts(
 
 core::Symbol_sp MonomerContext_O::getFirstSpecificKey()
     {
+      IMPLEMENT_ME();
+#if 0
 	adapt::StringSet_sp	selfNames;
 	adapt::StringSet_sp	inNames;
 	adapt::StringSet_sp	outNames;
@@ -291,6 +296,7 @@ core::Symbol_sp MonomerContext_O::getFirstSpecificKey()
 //RETURN:
 	LOG(BF("Returning") );
         return chemkw_intern(res);
+#endif
     }
 
 

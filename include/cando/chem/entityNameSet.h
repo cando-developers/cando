@@ -170,8 +170,8 @@ CL_DEFMETHOD     virtual string getInterestingAtomNamesForMonomerName(core::Symb
 CL_LISPIFY_NAME("getInterestingAtomAliasesAsString");
 CL_DEFMETHOD     virtual string getInterestingAtomAliasesAsString() { return "";};
 
-    adapt::StringList_sp	getMonomerNamesOrdered();
-    adapt::StringList_sp	getUnrecognizedMonomerNamesOrdered();
+  core::List_sp	getMonomerNamesOrdered();
+  core::List_sp	getUnrecognizedMonomerNamesOrdered();
 
 
 

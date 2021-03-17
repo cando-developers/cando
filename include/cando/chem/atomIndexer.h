@@ -77,11 +77,11 @@ public:
 		/*! Set from a list of names separated by spaces */
 	void	setFromAtomNames(const string& names);
 
+		/*! Set from a list of names in StringList*/
+  void	setFromList(core::List_sp names);
+
 		/*! Append a Cons of Text objects */
 	void	appendConsOfTexts(core::List_sp list);
-
-		/*! Set from a list of names in StringList*/
-	void	setFromStringList(adapt::StringList_sp names);
 
 	string	description() const;
 

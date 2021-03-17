@@ -148,7 +148,6 @@ struct RestartMinimizer {};
     MinimizerStatus	_Status;
     PreconditionerType	_CurrentPreconditioner;
     int			_MinBracketSteps;
-    stringstream	_IterationMessages;
     size_t		_PrintIntermediateResults;
     int			_ReportEveryNSteps;
     ScoringFunction_sp	_ScoringFunction;

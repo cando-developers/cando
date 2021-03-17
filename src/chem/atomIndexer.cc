@@ -83,17 +83,11 @@ vector<string>::iterator	it;
     }
 }
 
-
-void	AtomIndexer_O::setFromStringList(adapt::StringList_sp sl)
+void	AtomIndexer_O::setFromList(core::List_sp sl)
 {
-adapt::StringList_O::iterator		it;
     LOG(BF("Setting from atom names: %s") % sl->asString().c_str()  );
-    for ( it = sl->begin(); it!=sl->end(); it++ )
-    {
-	if ( (*it).size()!= 0 )
-	{
-          this->_Names.push_back(chemkw_intern(*it));
-	}
+    for ( auto it : sl ) {
+      this->_Names.push_back(CONS_CAR(it));
     }
 }
 

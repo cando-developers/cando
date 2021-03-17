@@ -28,6 +28,8 @@ This is an open source license for the CANDO software from Temple University, bu
 // (C) 2004 Christian E. Schafmeister
 //
 
+#if 0
+
 #ifndef StringList_H
 #define StringList_H
 #include <stdio.h>
@@ -51,7 +53,7 @@ SMART(StringList);
 
 public:
 private:
-  vector<string> _Contents;
+ gctools:Vec0<string> _Contents;
 
 public:
   typedef vector<string>::iterator iterator;
@@ -79,7 +81,7 @@ public:
   void setFromString(const string &s);
   string asString();
 
-  StringSet_sp asStringSet();
+   core::HashTableEqual_sp asStringSet();
 
 #ifdef USEBOOSTPYTHON
   void python_setFromList(boost::python::list res);
@@ -91,4 +93,5 @@ public:
 };
 
 TRANSLATE(adapt::StringList_O);
+#endif
 #endif

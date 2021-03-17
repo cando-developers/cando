@@ -232,22 +232,18 @@ void FullLargeSquareMatrix_O::setup(uint dim, TriangleType type)
     this->_Values.resize(this->_ActiveElements,0);
 }
 
-
-
 FullLargeSquareMatrix_O::FullLargeSquareMatrix_O(const FullLargeSquareMatrix_O& orig)
 	: AbstractLargeSquareMatrix_O(orig)
 {
   DEPRECATED();
+#if 0
   // This will fail because it calls an allocator Schafmeister Nov 2017
     this->_ActiveElements = orig._ActiveElements;
     this->_Values.assign(orig._Values.begin(),orig._Values.end());
+#endif
 }
 
-
-
-
-uint	FullLargeSquareMatrix_O::indexFromCoordinatesOrUndefinedUnsignedInt(uint x, uint y )
-{
+uint	FullLargeSquareMatrix_O::indexFromCoordinatesOrUndefinedUnsignedInt(uint x, uint y ) {
 uint		i0,i;
     if ( x >= this->_Columns || y >= this->_Rows ) {
 	return UndefinedUnsignedInt;
@@ -383,6 +379,7 @@ SparseLargeSquareMatrix_O::SparseLargeSquareMatrix_O(const SparseLargeSquareMatr
 	: AbstractLargeSquareMatrix_O(orig)
 {
   DEPRECATED();
+#if 0
   // THis will fail because it calls an allocator
     this->_InsertionIsComplete = orig._InsertionIsComplete;
     this->_RowStartEntries = orig._RowStartEntries;
@@ -391,6 +388,7 @@ SparseLargeSquareMatrix_O::SparseLargeSquareMatrix_O(const SparseLargeSquareMatr
     this->_ReservedElements = orig._ReservedElements;
     this->_ColumnForValue.assign(orig._ColumnForValue.begin(),orig._ColumnForValue.end());
     this->_Values.assign(orig._Values.begin(),orig._Values.end());
+#endif
 }
 
 
@@ -399,6 +397,7 @@ void	SparseLargeSquareMatrix_O::initializeStorage()
 uint	rows = this->_Rows;
     this->_InsertionIsComplete = false;
     this->_RowStartEntries = rows+1;
+    
     this->_RowStarts.assign((rows+1),0);
     this->_ActiveElements = 0;
     this->_ReservedElements = 100;

@@ -149,6 +149,7 @@ FORWARD(Monomer);
     core::List_sp plugsAsList();
     core::List_sp plugsWithMatesAsList();
 
+    adapt::SymbolSet_sp	getMonomerNamesAsSymbolSet();
             
     stereoisomerIterator begin_Stereoisomers();
     stereoisomerIterator end_Stereoisomers();
@@ -206,12 +207,9 @@ FORWARD(Monomer);
 
     CL_DEFMETHOD StereoInformation_sp getStereoInformation() const { return this->_StereoInformation; }
 
-    adapt::StringList_sp getMonomerNamesAsStringList();
-    adapt::SymbolSet_sp	getMonomerNamesAsSymbolSet();
+    core::List_sp	getMonomerNamesAsList();
 
-    adapt::SymbolSet_sp	getPlugNames();
-
-    adapt::StringList_sp getPdbNamesAsStringList();
+    core::List_sp	getPlugNames();
 
 	    //! Return the monomer name for the monomer with the nameOrPdb
     core::Symbol_sp	nameFromNameOrPdb(core::Symbol_sp nm);

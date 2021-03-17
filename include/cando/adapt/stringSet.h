@@ -28,6 +28,9 @@ This is an open source license for the CANDO software from Temple University, bu
 // (C) 2004 Christian E. Schafmeister
 //
 
+#if 0
+
+
 #ifndef StringSet_H
 #define StringSet_H
 #include <stdio.h>
@@ -55,8 +58,8 @@ public:
   void initialize();
 
 private:
-  set<string> strs;
-  bool rest;
+   HashTableEqual_sp strs;
+   bool rest;
 
 public:
 public:
@@ -134,4 +137,5 @@ CL_DEFMETHOD   StringSet_sp cartesianProduct(StringSet_sp b) {
 };
 
 TRANSLATE(adapt::StringSet_O);
+#endif
 #endif

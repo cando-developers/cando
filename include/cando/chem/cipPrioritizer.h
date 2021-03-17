@@ -49,22 +49,22 @@ class CipPrioritizer_O : public core::CxxObject_O
     LISP_CLASS(chem,ChemPkg,CipPrioritizer_O,"CipPrioritizer",core::CxxObject_O);
 private:
 	// instance variables
-    std::vector<int>		_p;
-    std::vector< std::vector<int> > 	_s;
+  gctools::Vec0<int>		_p;
+  gctools::Vec0< gctools::Vec0<int> > 	_s;
 public:
 	void	initialize();
 public:
     static core::HashTable_sp assignPrioritiesHashTable(Matter_sp molOrAgg);
 public:
-    int	getP(Atom_sp a, core::HashTable_sp cip);
-    std::vector<int>& getS(Atom_sp a, core::HashTable_sp cip);
-    void assignCahnIngoldPrelogPriorityToAtomsRelativePriority(Matter_sp molOrAgg,core::HashTable_sp cip);
+  int	getP(Atom_sp a, core::HashTable_sp cip);
+  gctools::Vec0<int>& getS(Atom_sp a, core::HashTable_sp cip);
+  void assignCahnIngoldPrelogPriorityToAtomsRelativePriority(Matter_sp molOrAgg,core::HashTable_sp cip);
 public:
 
-    core::HashTable_sp setStereochemicalTypeForAllAtoms(Matter_sp molOrAgg);
-	CipPrioritizer_O( const CipPrioritizer_O& ss ); //!< Copy constructor
+  core::HashTable_sp setStereochemicalTypeForAllAtoms(Matter_sp molOrAgg);
+  CipPrioritizer_O( const CipPrioritizer_O& ss ); //!< Copy constructor
 
-	DEFAULT_CTOR_DTOR(CipPrioritizer_O);
+  DEFAULT_CTOR_DTOR(CipPrioritizer_O);
 };
 
 

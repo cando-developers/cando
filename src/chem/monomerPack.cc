@@ -288,10 +288,8 @@ void MonomerPack_O::extendAliases( core::List_sp atomAliases, core::List_sp part
 
 void	MonomerPack_O::setInterestingAtomNamesForMonomerName(core::Symbol_sp monomerName, const string& atomIndexerNames)
 { 
-adapt::StringSet_O::smart_ptr_type	monomerNames;
 CandoDatabase_sp		bdb;
 AtomIndexer_sp			indexer;
-adapt::StringSet_O::iterator		it;
     bdb = getCandoDatabase();
     ASSERTNOTNULL(this->_AtomIndexers);
     if ( !this->recognizesMonomerName(monomerName) )
@@ -306,12 +304,10 @@ adapt::StringSet_O::iterator		it;
 
 
 void	MonomerPack_O::setInterestingAtomNamesForMonomerNameStringList(
-			core::Symbol_sp monomerName, adapt::StringList_sp names )
+    core::Symbol_sp monomerName, core::List_sp names )
 { 
-adapt::StringSet_O::smart_ptr_type		monomerNames;
 CandoDatabase_sp		bdb;
 AtomIndexer_sp			indexer;
-adapt::StringSet_O::iterator		it;
     bdb = getCandoDatabase();
     ASSERTNOTNULL(this->_AtomIndexers);
     if ( !this->recognizesMonomerName(monomerName) )
@@ -319,7 +315,7 @@ adapt::StringSet_O::iterator		it;
         SIMPLE_ERROR(BF("Unrecognized monomer name: %s %s") % monomerName % this->description() );
     }
     indexer = AtomIndexer_O::create();
-    indexer->setFromStringList(names);
+    indexer->setFromList(names);
     this->_AtomIndexers->set(monomerName,indexer);
     this->_checkAtomIndexers();
 }
@@ -327,10 +323,8 @@ adapt::StringSet_O::iterator		it;
 void	MonomerPack_O::setInterestingAtomNamesForMonomerNameFromCons(
 			core::Symbol_sp monomerName, core::List_sp names )
 { 
-adapt::StringSet_O::smart_ptr_type		monomerNames;
 CandoDatabase_sp		bdb;
 AtomIndexer_sp			indexer;
-adapt::StringSet_O::iterator		it;
     bdb = getCandoDatabase();
     ASSERTNOTNULL(this->_AtomIndexers);
     if ( !this->recognizesMonomerName(monomerName) )

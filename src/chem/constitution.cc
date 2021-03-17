@@ -214,25 +214,17 @@ core::T_sp Constitution_O::getMissingRingClosingPlug(Monomer_sp mon, Monomer_sp 
     };
 
 
-adapt::StringList_sp Constitution_O::getMonomerNamesAsStringList()
-{
-	return this->_StereoInformation->getMonomerNamesAsStringList();
-};
 CL_LISPIFY_NAME("getMonomerNameAsStringSet");
 CL_DEFMETHOD adapt::SymbolSet_sp	Constitution_O::getMonomerNamesAsSymbolSet()
 {
+  IMPLEMENT_ME();
+#if 0
     return this->_StereoInformation->getMonomerNamesAsSymbolSet();
-};
-
-CL_LISPIFY_NAME("getPdbNamesAsStringList");
-CL_DEFMETHOD adapt::StringList_sp Constitution_O::getPdbNamesAsStringList() {
-	return this->_StereoInformation->getPdbNamesAsStringList();
+#endif
 };
 
 
-
-
-    bool Constitution_O::hasStereoisomerWithName(core::Symbol_sp stereoisomerName)
+bool Constitution_O::hasStereoisomerWithName(core::Symbol_sp stereoisomerName)
 {
     gctools::Vec0<Stereoisomer_sp>::iterator	si;
     LOG(BF("Looking for Stereoisomer with name(%s)") % _rep_(stereoisomerName) );
@@ -352,15 +344,15 @@ stringstream	ss;
     return ss.str();
 }
 
-adapt::SymbolSet_sp Constitution_O::getPlugNames()
+core::List_sp Constitution_O::getPlugNames()
 {
-    adapt::SymbolSet_sp ss = adapt::SymbolSet_O::create();
-    PlugMap::iterator pi;
-    for ( pi=this->_PlugsByName.begin(); pi!=this->_PlugsByName.end(); pi++ )
-    {
-	ss->insert(pi->first);
-    }
-    return ss;
+  ql::list result;
+  PlugMap::iterator pi;
+  for ( pi=this->_PlugsByName.begin(); pi!=this->_PlugsByName.end(); pi++ )
+  {
+    result << pi->first;
+  }
+  return result.result();
 }
 
 

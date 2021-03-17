@@ -354,16 +354,15 @@ StereoInformation_sp StereoInformation_O::make(core::List_sp stereoisomers, core
 //	getMonomerNames
 //
 //!	Return a adapt::StringList_sp of monomer names for this mold
-adapt::StringList_sp StereoInformation_O::getMonomerNamesAsStringList()
+core::List_sp StereoInformation_O::getMonomerNames()
 {
-  adapt::StringList_sp				names;
   gctools::Vec0<Stereoisomer_sp>::iterator	mnpi;
-  names = adapt::StringList_O::create();
+  ql::list names;
   for ( mnpi=this->_Stereoisomers.begin();
         mnpi!=this->_Stereoisomers.end(); mnpi++ ) {
-    names->append((*mnpi)->getName()->symbolNameAsString());
+    names << (*mnpi)->getName();
   }
-  return names;
+  return names.result();
 }
 
 
@@ -388,8 +387,10 @@ adapt::SymbolSet_sp StereoInformation_O::getMonomerNamesAsSymbolSet()
 //	getPdbNames
 //
 //!	Return a core::VectorStrings of monomer pdb names for this mold
-adapt::StringList_sp StereoInformation_O::getPdbNamesAsStringList()
+core::List_sp StereoInformation_O::getPdbNamesAsStringList()
 {
+  IMPLEMENT_ME();
+#if 0
   adapt::StringList_sp	names;
   gctools::Vec0<Stereoisomer_sp>::iterator	mnpi;
   names = adapt::StringList_O::create();
@@ -398,6 +399,7 @@ adapt::StringList_sp StereoInformation_O::getPdbNamesAsStringList()
     names->append((*mnpi)->getPdb()->symbolNameAsString());
   }
   return names;
+#endif
 }
 SYMBOL_EXPORT_SC_(ChemKwPkg,undefinedConfiguration);
 SYMBOL_EXPORT_SC_(ChemKwPkg,S);

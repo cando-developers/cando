@@ -86,70 +86,70 @@ public:
 SMART(MonomerContext);
 class MonomerContext_O : public core::CxxObject_O
 {
-    LISP_CLASS(chem,ChemPkg,MonomerContext_O,"MonomerContext",core::CxxObject_O);
+  LISP_CLASS(chem,ChemPkg,MonomerContext_O,"MonomerContext",core::CxxObject_O);
 public:
 
 
 public:
   typedef	gc::SmallMap<core::Symbol_sp,EntityNameSetBase_sp>	NeighborMap;
 private: // archive
-	EntityNameSetBase_sp		_Self;
+  EntityNameSetBase_sp		_Self;
 		//! Map coupling names to monomers
-	NeighborMap		 	_Neighbors;
+  NeighborMap		 	_Neighbors;
 
 private:
-	void	expandOutsSpecificContexts(
-	    NeighborMap::iterator mit,
-				SpecificContextSet_sp list,
-				SpecificContext_sp name );
-	void	expandOuts(NeighborMap::iterator mit,
-				adapt::StringSet_sp list,
-				MCStringStack& name);
+  void	expandOutsSpecificContexts(
+      NeighborMap::iterator mit,
+      SpecificContextSet_sp list,
+      SpecificContext_sp name );
+  void	expandOuts(NeighborMap::iterator mit,
+                   core::List_sp list,
+                   MCStringStack& name);
 public:
 
-CL_LISPIFY_NAME("setFocus");
-CL_DEFMETHOD 	void	setFocus(EntityNameSetBase_sp n )
-	{
-			this->_Self = n;
-	};
+  CL_LISPIFY_NAME("setFocus");
+  CL_DEFMETHOD 	void	setFocus(EntityNameSetBase_sp n )
+  {
+    this->_Self = n;
+  };
 
-	void	addNeighbor(core::Symbol_sp plugName, EntityNameSetBase_sp n);
-	bool	hasNeighborWithCouplingName(core::Symbol_sp plugName ) { return this->_Neighbors.contains(plugName);};
-	uint	numberOfNeighbors() { return this->_Neighbors.size(); };
-	EntityNameSetBase_sp getNeighbor(core::Symbol_sp plugName) const;
-	adapt::SymbolSet_sp getPlugNames() const;
+  void	addNeighbor(core::Symbol_sp plugName, EntityNameSetBase_sp n);
+  bool	hasNeighborWithCouplingName(core::Symbol_sp plugName ) { return this->_Neighbors.contains(plugName);};
+  uint	numberOfNeighbors() { return this->_Neighbors.size(); };
+  EntityNameSetBase_sp getNeighbor(core::Symbol_sp plugName) const;
+  adapt::SymbolSet_sp getPlugNames() const;
 
-CL_LISPIFY_NAME("getFocus");
-CL_DEFMETHOD 	EntityNameSetBase_sp	getFocus() { return this->_Self; };
+  CL_LISPIFY_NAME("getFocus");
+  CL_DEFMETHOD 	EntityNameSetBase_sp	getFocus() { return this->_Self; };
 
 	/*! Return true if this MonomerContext recognizes
 		this monomer in its context
 	*/
 
-	bool		containsMonomerContext(MonomerContext_sp mc);
-	bool		recognizesMonomerAndEnvironment(Monomer_sp mon);
+  bool		containsMonomerContext(MonomerContext_sp mc);
+  bool		recognizesMonomerAndEnvironment(Monomer_sp mon);
 
-	void		setFocusFromMonomer(Monomer_sp mon);
-    void		setFocusFromConstitutionName(core::Symbol_sp nm);
+  void		setFocusFromMonomer(Monomer_sp mon);
+  void		setFocusFromConstitutionName(core::Symbol_sp nm);
 
-	bool		hasInCoupling();
-	core::Symbol_sp	getInCoupling();
-    void		testConsistency( std::ostream& out );
+  bool		hasInCoupling();
+  core::Symbol_sp	getInCoupling();
+  void		testConsistency( std::ostream& out );
 
 		/*! Each context expands to a set of SpecificContexts that
 		 * list the specific context that this Context 
 		 * recognizes.  This is done by expanding all 
 		 * group names to monomer names. 
 		 */
-	SpecificContextSet_sp getAllSpecificContexts();
+  SpecificContextSet_sp getAllSpecificContexts();
 		/*! Each context expands to a set of strings that
 		 * list the specific context that this Context 
 		 * recognizes.  This is done by expanding all 
 		 * group names to monomer names. 
 		 */
-	adapt::StringSet_sp	getAllSpecificKeys();
+  core::HashTableEqual_sp	getAllSpecificKeys();
 		//! Return the first specific key
-    core::Symbol_sp		getFirstSpecificKey();
+  core::Symbol_sp		getFirstSpecificKey();
 
 //	void	defineSpecificContextFromMonomer(Monomer_sp mon);
 
@@ -158,17 +158,17 @@ CL_DEFMETHOD 	EntityNameSetBase_sp	getFocus() { return this->_Self; };
 			similar to getAllSpecificKeys except groups are not
 			expanded to monomers
 		*/
-    core::Symbol_sp	getKey();
+  core::Symbol_sp	getKey();
 
-	string description() const;
+  string description() const;
 
 
-	MonomerContext_O( const MonomerContext_O& tdb );
+  MonomerContext_O( const MonomerContext_O& tdb );
 //	MonomerContext_O( CandoDatabase_sp tdb, Monomer_sp mon );
 
 
 
-	DEFAULT_CTOR_DTOR(MonomerContext_O);
+  DEFAULT_CTOR_DTOR(MonomerContext_O);
 };
 
 

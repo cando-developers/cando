@@ -261,6 +261,8 @@ CL_DEFMETHOD     void EntityNameSetBase_O::contractEntityNames(adapt::SymbolSet_
 CL_LISPIFY_NAME("addMonomerName");
 CL_DEFMETHOD     void	EntityNameSetBase_O::addMonomerName(core::Symbol_sp nm)
     {
+      IMPLEMENT_ME();
+#if 0
 	CandoDatabase_sp	bdb;
 	adapt::StringSet_sp		monomerNames;
 	ASSERTNOTNULL(this->_EntityNames);
@@ -271,6 +273,7 @@ CL_DEFMETHOD     void	EntityNameSetBase_O::addMonomerName(core::Symbol_sp nm)
           SIMPLE_ERROR(BF("Unknown monomer name: "+_rep_(nm)));
 	}
 	this->_EntityNames->insert(nm);
+#endif
     }
 
 
@@ -443,7 +446,7 @@ CL_DEFMETHOD     bool	EntityNameSetBase_O::recognizesNameOrPdb(core::Symbol_sp n
 
 
 CL_LISPIFY_NAME("getUnrecognizedMonomerNamesOrdered");
-CL_DEFMETHOD     adapt::StringList_sp	EntityNameSetBase_O::getUnrecognizedMonomerNamesOrdered()
+CL_DEFMETHOD     core::List_sp	EntityNameSetBase_O::getUnrecognizedMonomerNamesOrdered()
     {
 	IMPLEMENT_ME();
 #if 0
@@ -473,7 +476,7 @@ CL_DEFMETHOD     bool EntityNameSetBase_O::hasInterestingAtomAlias(Alias_sp alia
 
 
 CL_LISPIFY_NAME("getMonomerNamesOrdered");
-CL_DEFMETHOD     adapt::StringList_sp	EntityNameSetBase_O::getMonomerNamesOrdered()
+CL_DEFMETHOD     core::List_sp	EntityNameSetBase_O::getMonomerNamesOrdered()
     {
 	IMPLEMENT_ME();
 #if 0
@@ -606,9 +609,8 @@ CL_DEFMETHOD     adapt::StringList_sp	EntityNameSetBase_O::getMonomerNamesOrdere
 CL_LISPIFY_NAME("addGroupName");
 CL_DEFMETHOD     void	EntityNameSetWithCap_O::addGroupName(core::Symbol_sp nm)
     {
-	CandoDatabase_sp	bdb;
-	adapt::StringSet_sp		monomerNames;
-	this->addMonomerName(nm);
+      CandoDatabase_sp	bdb;
+      this->addMonomerName(nm);
     }
 
 

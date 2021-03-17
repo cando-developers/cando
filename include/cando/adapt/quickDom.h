@@ -120,7 +120,6 @@ CL_DEFMETHOD     string	getCharacters()			{return this->characters.str();};
     int		dataCountNewLines();
     string	getData()			{return this->characters.str();};
     vector<string>	getDataAsVectorOfStrings();
-//    StringSet_sp		getDataAsStringSet();
     vector<int>		getDataAsVectorOfInts();
     vector<double>	getDataAsVectorOfDoubles();
 

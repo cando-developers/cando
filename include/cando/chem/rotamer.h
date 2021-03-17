@@ -37,8 +37,7 @@ namespace chem
 class RotamerAtom
 {
     friend class Rotamer_O;
-private:
-private:
+public:
     double	_Distance;
     double	_Angle;
     double	_Torsion;
@@ -54,7 +53,7 @@ public:
     void initialize();
 	// Functions here
 public:
-    typedef std::vector<RotamerAtom>	RotamerAtoms;
+  typedef gctools::Vec0<RotamerAtom>	RotamerAtoms;
 private:
 	// instance variables here
     /*! A list of distance/angle/dihedral values indexed by the ConstitutionAtomIndex0N */

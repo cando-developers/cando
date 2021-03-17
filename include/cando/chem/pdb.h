@@ -78,25 +78,6 @@ namespace chem
     SMART(Aggregate);
     SMART(Matter);
 
-#if 0
-    __ BEGIN_CLASS_DEFINITION(ChemPkg,PdbMonomerConnectivity_O,PdbMonomerConnectivity,core::T_O)
-	private:
-	string _PdbName;
-    geom::ObjectList_sp _HetNames;
-gc::SmallMap<core::Symbol_sp,adapt::StringSet_sp> _Connections;
-public:
-
-    __END_CLASS_DEFINITION(PdbMonomerConnectivity_O)
-
-
-    __ BEGIN_CLASS_DEFINITION(ChemPkg,PdbMonomerDatabase_O,PdbMonomerDatabase,core::T_O)
-    __END_CLASS_DEFINITION(PdbMonomerDatabase_O)
-#endif
-
-
-
-
-
     SMART(PdbReader );
     class PdbReader_O : public core::CxxObject_O
     {

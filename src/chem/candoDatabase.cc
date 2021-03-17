@@ -465,62 +465,6 @@ adapt::SymbolSet_sp CandoDatabase_O::allMonomerNamesAsSymbolSet()
 #endif
 
 
-#if 0
-//
-//	allMonomerNames
-//
-//	Return a StringList with all of the names of Monomers
-//
-adapt::StringList_sp CandoDatabase_O::allMonomerNamesAsStringList()
-{
-  adapt::SymbolMap<Constitution_O>::iterator	susi;
-  adapt::StringList_sp	names;
-  adapt::StringList_sp	monomers;
-  names = adapt::StringList_O::create();
-  for ( susi=this->_Constitutions.begin();
-        susi!=this->_Constitutions.end(); susi++ )
-  {
-    monomers = susi->second->getMonomerNamesAsStringList();
-    names->appendStringList(monomers);
-  }
-  return names;
-}
-
-
-
-
-
-/*!
-  Add the Constitution to the CandoDatabase
-*/
-void	CandoDatabase_O::addConstitution( Constitution_sp sum )
-{
-//    sum->setCandoDatabase(this->sharedThis<CandoDatabase_O>());
-//    this->_Names->fillFromConstitution(sum);
-//    sum->setCandoDatabase(this->sharedThis<CandoDatabase_O>());
-  LOG(BF("Adding constitution(%s)") % sum->getName() );
-  this->_Constitutions.set(sum->getName(),sum);
-  LOG(BF("CandoDatabase_Entities_add(%s) a Constitution") % (sum)->getName().c_str()  );
-  this->_Entities.addUnique((sum)->getName(), sum);
-  Constitution_O::stereoisomerIterator si;
-  for ( si=(sum)->begin_Stereoisomers(); si!=(sum)->end_Stereoisomers(); si++ )
-  {
-    LOG(BF("CandoDatabase_Entities_add(%s) a MonomerName") % (*si)->getName().c_str()  );
-    if ( (*si)->getName() == "" )
-    {
-      SIMPLE_ERROR(BF("While adding constitution(%s) a stereoisomer had a blank name!!") % sum->getName() );
-    }
-    this->_Entities.addUnique((*si)->getName(), (*si), _lisp );
-    LOG(BF("CandoDatabase_Entities_add(%s) a PdbName") % (*si)->getPdb().c_str()  );
-    if ( (*si)->getPdb() == "" )
-    {
-      SIMPLE_ERROR(BF("While adding constitution(%s) a stereoisomer had a blank pdb name!!") % sum->getName() );
-    }
-    this->_Entities.addUnique((*si)->getPdb(), (*si), _lisp );
-  }
-}
-#endif
-
 
 #if 0
 /*!

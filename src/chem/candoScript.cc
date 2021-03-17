@@ -367,8 +367,8 @@ CandoDatabase_sp	bdb;
     for ( ; cur.notnilp(); cur = cur->cdr() )
     {
 	Constitution_sp con = core::oCar(cur).as<Constitution_O>();
-	string stereoisomers = con->getMonomerNamesAsStringList()->asString();
-	lisp->print(BF(" Constitution: %12s -- %s") % _rep_(con->getName()) % stereoisomers );
+        core::T_sp stereoisomers = con->getMonomerNamesAsStringList()->asString();
+	lisp->print(BF(" Constitution: %12s -- %s") % _rep_(con->getName()) % core::_rep_(stereoisomers) );
     }
     return _Nil<core::T_O>();
 }

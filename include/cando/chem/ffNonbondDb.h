@@ -79,8 +79,8 @@ namespace chem {
 
     public:
     private:
-	uint				_NumberOfTypes;
-        std::vector<FFNonbondCrossTerm>	_CrossTerms;
+      uint				_NumberOfTypes;
+      gctools::Vec0<FFNonbondCrossTerm> _CrossTerms;
     public:
 	void fillUsingFFNonbondDb(FFNonbondDb_sp);
     public:

@@ -150,7 +150,7 @@ SMART(FullLargeSquareMatrix)
 
 private:
 	uint		_ActiveElements;
-	vector<double>	_Values;
+  gctools::Vec0<double>	_Values;
 
 private:
 	void	setup(uint dim, TriangleType type);
@@ -202,13 +202,13 @@ class SparseLargeSquareMatrix_O : public AbstractLargeSquareMatrix_O
     LISP_CLASS(chem,ChemPkg,SparseLargeSquareMatrix_O,"SparseLargeSquareMatrix",AbstractLargeSquareMatrix_O);
 
 private:
-	bool		_InsertionIsComplete;
-	uint		_RowStartEntries;
-	vector<uint> 	_RowStarts;
-	uint		_ActiveElements;
-	uint		_ReservedElements;
-	vector<uint> 	_ColumnForValue;
-	vector<double> 	_Values;
+  bool		_InsertionIsComplete;
+  uint		_RowStartEntries;
+  gctools::Vec0<uint> 	_RowStarts;
+  uint		_ActiveElements;
+  uint		_ReservedElements;
+  gctools::Vec0<uint> 	_ColumnForValue;
+  gctools::Vec0<double> 	_Values;
 public:
     static SparseLargeSquareMatrix_sp	create(uint dim, TriangleType type);
 private:

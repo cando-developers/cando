@@ -103,7 +103,7 @@ class EnergyRigidBodyNonbond_O : public EnergyRigidBodyComponent_O
   core::SimpleVector_byte32_t_sp    _RigidBodyEndAtom;
   gctools::Vec0<RigidBodyAtomInfo>  _AtomInfoTable;
   size_t               _NumberOfTypes;
-  std::vector<RigidBodyNonbondCrossTerm>  _CrossTerms;
+  gctools::Vec0<RigidBodyNonbondCrossTerm>  _CrossTerms;
  public:
   RigidBodyNonbondCrossTerm& crossTerm(size_t xi, size_t yi) { return this->_CrossTerms[this->_NumberOfTypes*xi+yi]; };
  public:

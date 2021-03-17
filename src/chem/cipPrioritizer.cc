@@ -91,10 +91,10 @@ struct	OrderByS : public OrderByBase
 {
         ASSERTNOTNULL(x);
         ASSERTNOTNULL(y);
-	vector<int>&	xv = prior->getS(x,this->_cip);
-	vector<int>&	yv = prior->getS(y,this->_cip);
-	vector<int>::iterator	xi = xv.begin();
-	vector<int>::iterator	yi = yv.begin();
+        gctools::Vec0<int>&	xv = prior->getS(x,this->_cip);
+        gctools::Vec0<int>&	yv = prior->getS(y,this->_cip);
+        gctools::Vec0<int>::iterator	xi = xv.begin();
+        gctools::Vec0<int>::iterator	yi = yv.begin();
 	bool done=false;
 	int res;
 	done =  (( xi == xv.end() ) || ( yi == yv.end() ));
@@ -153,7 +153,7 @@ void	CipPrioritizer_O::initialize()
     return this->_p[a->getRelativePriority(cip)];
 }
 
-    vector<int>& CipPrioritizer_O::getS(Atom_sp a, core::HashTable_sp cip)
+gctools::Vec0<int>& CipPrioritizer_O::getS(Atom_sp a, core::HashTable_sp cip)
 {_OF();
     ASSERTNOTNULL(a);
     if ( ! ( a->getRelativePriority(cip) < this->_s.size() ) )
@@ -338,7 +338,7 @@ CL_LISPIFY_NAME("assignCahnIngoldPrelogPriorityToAtomsRelativePriority");
 		{
 		    Atom_sp myatom = *mi;
 		    LOG(BF("About to fill mys") );
-		    vector<int>	mys;
+                    gctools::Vec0<int>	mys;
 		    for ( gctools::Vec0<Bond_sp>::iterator bi=myatom->bonds_begin();
 				 bi!=myatom->bonds_end(); bi++ )
 		    {
@@ -353,9 +353,11 @@ CL_LISPIFY_NAME("assignCahnIngoldPrelogPriorityToAtomsRelativePriority");
 		    }
 		    LOG(BF("About to sort %d mys objects") % mys.size()  );
 		    if (mys.size()>1) {
-                      sort::quickSort(mys.begin(),mys.end());
+                      int* begin = &mys[0];
+                      int* end = &mys[mys.size()];
+                      sort::quickSort(begin,end);
                       LOG(BF("Done sort") );
-                      sort::reverse(mys.begin(),mys.end());
+                      sort::reverse(begin,end);
                       LOG(BF("Done reverse") );
                     }
 		    // print "atom(%s) mys = %s"%(myatom.getName(),str(mys))

@@ -65,12 +65,16 @@ FORWARD(Dimacs);
         ~Dimacs_O();
 
       void add_edge(size_t v1, size_t v2);
-        bool load(const char* fname);
-        unsigned int getNumVertices() const {return numVertices;}
-        unsigned int getNumEdges() const {return edges.size();}
-        std::vector<std::vector<char> > getAdjacencyMatrix() const;
-        std::vector<int> getDegrees() const {return degrees;}
-        void calculateGraphStats(int& maxdegree, int& minDegree, std::vector<float>& degreeHistogram);
+      bool load(const char* fname);
+      unsigned int getNumVertices() const {return numVertices;}
+      unsigned int getNumEdges() const {return edges.size();}
+      std::vector<std::vector<char> > getAdjacencyMatrix() const;
+      std::vector<int> getDegrees() const {return degrees;}
+      void calculateGraphStats(int& maxdegree, int& minDegree, std::vector<float>& degreeHistogram);
+      void fixupInternalsForImageSaveLoad(core::FixupOperation& op) {
+        SIMPLE_ERROR(BF("We cannot current image save/load Dimacs's - you could try copying objects in and out of objects that can be image save/loaded"));
+      }
+
     };
 
 };

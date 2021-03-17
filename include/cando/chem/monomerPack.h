@@ -83,7 +83,7 @@ public:
 
     virtual	bool	supportsInterestingAtomAliases() { return true;};
     virtual void setInterestingAtomNamesForMonomerName(core::Symbol_sp monomerName, const string& atomIndexerNames);
-    virtual void setInterestingAtomNamesForMonomerNameStringList(core::Symbol_sp monomerName, adapt::StringList_sp atomIndexerNames);
+  virtual void setInterestingAtomNamesForMonomerNameStringList(core::Symbol_sp monomerName, core::List_sp atomIndexerNames);
     virtual void setInterestingAtomNamesForMonomerNameFromCons(core::Symbol_sp, core::List_sp atomIndexerNames);
     virtual string getInterestingAtomNamesForMonomerName(core::Symbol_sp name);
     virtual bool hasInterestingAtomAlias(Alias_sp alias);

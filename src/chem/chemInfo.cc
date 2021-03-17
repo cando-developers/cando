@@ -157,7 +157,9 @@ void walk_nodes(ChemInfoNode_sp node, std::function<void(ChemInfoNode_sp)> const
   }
 }
 
+__attribute__((optnone))
 void walk_nodes_with_parent(core::T_sp parent, ChemInfoNode_sp node, std::function<bool(core::T_sp,ChemInfoNode_sp)> const &fn) {
+  printf("%s:%d:%d About to walk_nodes_with_parent %s\n", __FILE__, __LINE__, __FUNCTION__, core::_rep_(node).c_str());
   bool descend = fn(parent,node);
   if (descend) {
     core::List_sp childs = node->children();
@@ -2854,9 +2856,21 @@ CL_DOCSTRING(R"doc(Make a chem:chem-info-graph from a chem:root object)doc");
 CL_DEFUN ChemInfoGraph_sp chem__make_chem_info_graph(Root_sp pattern)
 {
   GC_ALLOCATE_VARIADIC(ChemInfoGraph_O,graph,pattern);
+  graph->buildFromRoot_();
+  return graph;
+}
+
+__attribute__((optnone))
+void ChemInfoGraph_O::buildFromRoot_() {
   if (chem__verbose(1)) {
     core::write_bf_stream(BF("Starting make-chem-info-graph\n"));
   }
+  this->_nodeOrder.clear();
+  this->_atomNodes.clear();
+  this->_bondNodes.clear();
+  this->_chemInfoGraph = NULL;
+  ChemInfoGraph_sp graph = this->asSmartPtr();
+  Root_sp pattern = graph->_Root;
   std::vector<RingClosers> closers;
   walk_nodes_with_parent(_Nil<core::T_O>(),pattern->_Node,
                          [&graph,&closers]
@@ -3063,7 +3077,6 @@ CL_DEFUN ChemInfoGraph_sp chem__make_chem_info_graph(Root_sp pattern)
       }
     }
   }
-  return graph;
 }
 
 CL_DEFUN void chem__chem_info_graph_dump(ChemInfoGraph_sp graph) {

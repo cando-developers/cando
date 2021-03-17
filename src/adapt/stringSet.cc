@@ -29,6 +29,7 @@ This is an open source license for the CANDO software from Temple University, bu
 // (C) 2004 Christian E. Schafmeister
 //
 
+#if 0
 #include <clasp/core/common.h>
 #include <clasp/core/object.h>
 #include <clasp/core/lisp.h>
@@ -354,3 +355,4 @@ boost::python::list StringSet_O::python_asList() {
 #endif
 
 };
+#endif

@@ -765,7 +765,6 @@ void	Minimizer_O::stepReport( StepReport_sp report, double energy, NVector_sp fo
   ASSERT(report->_Iteration == this->_Iteration);
   report->_ForceMagnitude = magnitude(force,this->_Frozen);
   report->_TotalEnergy = energy;
-  report->_IterationMessages = this->_IterationMessages.str();
 }
 
 /*!
@@ -1047,8 +1046,6 @@ void	Minimizer_O::_steepestDescent( int numSteps,
         }
         break;
       }
-      
-      this->_IterationMessages.str("");
       if ( localSteps>=numSteps ) {
         if ( this->_DebugOn )
         {
@@ -1314,9 +1311,6 @@ void	Minimizer_O::_conjugateGradient(int numSteps,
         }
         break;
       }
-
-      this->_IterationMessages.str("");
-
       if ( localSteps > 0 ) {
         if ( localSteps>=numSteps ) {
           if ( this->_DebugOn )

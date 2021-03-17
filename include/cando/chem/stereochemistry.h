@@ -195,10 +195,10 @@ namespace chem
     };
 
 	    //! Return the names of Monomers that can be created from this constitution
-    adapt::StringList_sp getMonomerNamesAsStringList();
+    core::List_sp getMonomerNames();
     adapt::SymbolSet_sp getMonomerNamesAsSymbolSet();
 	    //! Return the pdb names of Monomers that can be created from this constitution
-    adapt::StringList_sp getPdbNamesAsStringList();
+    core::List_sp getPdbNamesAsStringList();
   };
 
 

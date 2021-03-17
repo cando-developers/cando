@@ -72,7 +72,7 @@ public:
   core::T_sp		yAxisName;
   double		xInc;
   double		xStart;
-  std::vector<double>	values;
+  gctools::Vec0<double>	values;
 
 public:
   static NumericalFunction_sp create(core::T_sp xaxis,
