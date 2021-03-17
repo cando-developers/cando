@@ -13,7 +13,6 @@
                :lparallel
                :netcdf
                :ngl-clj
-               :nglview-cl
                :quri
                :resizable-box-clj
                :sketch2d
@@ -21,7 +20,7 @@
   :serial t
   :components ((:file "packages")
                (:file "show")
-               (:file "nglview")
+               (:file "ngl-util")
                (:file "molecule-select")
                (:file "pages")
                (:file "workspace-task-page")

@@ -22,6 +22,8 @@
     #:make-molecule-map
     #:make-molecule-select
     #:make-ngl-structure-viewer
+    #:make-ngl-structure
+    #:make-ngl-trajectories
     #:make-simple-task-page
     #:make-workspace-task-page
     #:molecules
