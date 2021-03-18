@@ -1295,7 +1295,7 @@ public:
 public:
   Root_sp                _Root;
   core::HashTableEq_sp   _nodes_to_index;
-  std::vector<size_t>  _nodeOrder;
+  gctools::Vec0<size_t>          _nodeOrder;
   gctools::Vec0<ChemInfoNode_sp> _atomNodes;
   gctools::Vec0<BondToAtomTest_sp> _bondNodes;
   ChemInfoGraphType*     _chemInfoGraph;
