@@ -159,7 +159,6 @@ void walk_nodes(ChemInfoNode_sp node, std::function<void(ChemInfoNode_sp)> const
 
 __attribute__((optnone))
 void walk_nodes_with_parent(core::T_sp parent, ChemInfoNode_sp node, std::function<bool(core::T_sp,ChemInfoNode_sp)> const &fn) {
-  printf("%s:%d:%d About to walk_nodes_with_parent %s\n", __FILE__, __LINE__, __FUNCTION__, core::_rep_(node).c_str());
   bool descend = fn(parent,node);
   if (descend) {
     core::List_sp childs = node->children();
