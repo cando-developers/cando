@@ -51,6 +51,62 @@
                                                      :color2 #(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0))))))))
 
 
+(defun ngl-show-trajectory (trajectory)
+  (when trajectory
+    (let ((play-button (make-instance 'jw:toggle-button
+                                      :icon "play"
+                                      :style (make-instance 'jw:description-style
+                                                            :description-width "min-content")
+                                      :layout (make-instance 'jw:layout
+                                                             :margin ".5em"
+                                                             :width "max-content")))
+          (pause-button (make-instance 'jw:button
+                                      :icon "pause"
+                                      :style (make-instance 'jw:description-style
+                                                            :description-width "min-content")
+                                      :layout (make-instance 'jw:layout
+                                                             :margin ".5em"
+                                                             :width "max-content")))
+          (stop-button (make-instance 'jw:button
+                                      :icon "stop"
+                                      :style (make-instance 'jw:description-style
+                                                            :description-width "min-content")
+                                      :layout (make-instance 'jw:layout
+                                                             :margin ".5em"
+                                                             :width "max-content")))
+          (frame-slider (make-instance 'jw:int-slider
+                                       :layout (make-instance 'jw:layout
+                                                              :align-self "center"
+                                                              :margin ".5em")))
+          (mode-button (make-instance 'jw:toggle-button
+                                      :icon "retweet"
+                                      :value t
+                                      :style (make-instance 'jw:description-style
+                                                            :description-width "min-content")
+                                      :layout (make-instance 'jw:layout
+                                                             :margin ".5em"
+                                                             :width "max-content"))))
+      (jw:link play-button :value trajectory :is-running)
+      (jw:on-button-click pause-button
+        (lambda (inst)
+          (declare (ignore inst))
+          (ngl:pause trajectory)))
+      (jw:on-button-click stop-button
+        (lambda (inst)
+          (declare (ignore inst))
+          (ngl:stop trajectory)))
+      (jw:link trajectory :frame frame-slider :value)
+      (jw:observe trajectory :count
+        (lambda (inst type name old-value new-value source)
+          (declare (ignore inst type name old-value source))
+          (setf (jw:widget-max frame-slider) (1- new-value))))
+      (jw:observe mode-button :value
+        (lambda (inst type name old-value new-value source)
+          (declare (ignore inst type name old-value source))
+          (setf (ngl:mode trajectory) (if new-value "loop" "once"))))
+      (list play-button pause-button stop-button frame-slider mode-button))))
+
+
 (defun ngl-show (instance &rest kwargs &key &allow-other-keys)
   (let* ((component (make-ngl-structure instance
                                         :auto-view-duration 0
@@ -88,43 +144,7 @@
                                                                 :description-width "min-content")
                                           :layout (make-instance 'jw:layout
                                                                  :margin ".5em"
-                                                                 :width "max-content")))
-         (play-button (make-instance 'jw:toggle-button
-                                     :icon "play"
-                                     :style (make-instance 'jw:description-style
-                                                           :description-width "min-content")
-                                     :layout (make-instance 'jw:layout
-                                                            :margin ".5em"
-                                                            :width "max-content")))
-         (pause-button (make-instance 'jw:button
-                                     :icon "pause"
-                                     :style (make-instance 'jw:description-style
-                                                           :description-width "min-content")
-                                     :layout (make-instance 'jw:layout
-                                                            :margin ".5em"
-                                                            :width "max-content")))
-         (stop-button (make-instance 'jw:button
-                                     :icon "stop"
-                                     :style (make-instance 'jw:description-style
-                                                           :description-width "min-content")
-                                     :layout (make-instance 'jw:layout
-                                                            :margin ".5em"
-                                                            :width "max-content"))))
-    (jw:observe play-button :value
-      (lambda (inst type name old-value new-value source)
-        (declare (ignore inst type name old-value source))
-        (if new-value
-          (ngl:play stage)
-          (ngl:pause stage))))
-    (jw:on-button-click pause-button
-      (lambda (inst)
-        (declare (ignore inst))
-        (setf (jw:widget-value play-button) nil)))
-    (jw:on-button-click stop-button
-      (lambda (inst)
-        (declare (ignore inst))
-        (ngl:stop stage)
-        (setf (jw:widget-value play-button) nil)))
+                                                                 :width "max-content"))))
     (when (and (typep instance 'chem:aggregate)
                (chem:bounding-box-bound-p instance))
       (add-bounding-box component instance))
@@ -142,10 +162,7 @@
                                    (make-instance 'jw:box
                                                   :children (append (list representation-dropdown
                                                                           auto-view-button)
-                                                                    (when (ngl:trajectories component)
-                                                                      (list play-button
-                                                                            pause-button
-                                                                            stop-button)))
+                                                                    (ngl-show-trajectory (first (ngl:trajectories component))))
                                                   :layout (make-instance 'jw:layout
                                                                          :flex-flow "row wrap"
                                                                          :justify-content "center"
