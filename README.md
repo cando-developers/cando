@@ -26,6 +26,8 @@ To run JupyterLab and start a demo:
 For up to date video demos and tutorials please [subscribe](https://www.youtube.com/channel/UC4xYBaHwB2kDCXaRALXdh7w) and like our videos on YouTube.
 
 [Thermodynamic integration using a pre-build ligand library](https://www.youtube.com/watch?v=Md8rrrg7Kvg)
+
 [Sketching molecules for thermodynamic integration calculations](https://www.youtube.com/watch?v=CSa2jzzwves)
+
 [Running CANDO calculation jobs inside a Docker image](https://www.youtube.com/watch?v=3bMJB8dV2WU)
 
