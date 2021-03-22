@@ -4,6 +4,8 @@
 Cando is an open-source, computational chemistry environment for
 building and designing functional molecules and materials.
 
+<div style="text-align: center"><img src="documentation/CANDO_map.png" width=800 height=800 align=center /></div>
+
 # Building Cando 
 
 Cando needs [Clasp](https://github.com/clasp-developers/clasp.git) and Clasp has [dependencies](https://github.com/clasp-developers/clasp/wiki/Build-Instructions) that need to be installed first.  Cando has a few more [dependencies](https://github.com/drmeister/cando/wiki/Cando-dependencies).  Advanced use of Cando needs [AmberTools18](http://ambermd.org/GetAmber.php#ambertools) - I assume that anyone downloading Cando is familiar with Amber and Ambertools18.
