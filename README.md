@@ -4,7 +4,7 @@
 Cando is an open-source, computational chemistry environment for
 building and designing functional molecules and materials.
 
-<div style="text-align: center"><img src="documentation/CANDO_map.png" width=400 height=200 align=center/></div>
+<div style="text-align: center"><img src="documentation/CANDO_map.png" width=600 height=350 align=center/></div>
 
 # Building Cando 
 
