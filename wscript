@@ -4,6 +4,7 @@ import subprocess
 import waflib.Task
 from waflib import Utils, Logs, Task, TaskGen
 import os
+from wscript_utils import *
 
 def options(ctx):
     ctx.add_option('--enable-jupyter', action = 'store_true', dest = 'enable_jupyter',
@@ -56,7 +57,7 @@ def build(bld):
         cp_2.set_outputs(bld.ccando_executable)
         bld.add_to_group(cp_2)
         bld.install_as('${PREFIX}/bin/%s' % bld.ccando_executable.name, bld.ccando_executable, chmod = Utils.O755)
-        print("Going to build cando")        
+        print("Going to build cando")
     # The following will copy iclasp-<gc> to ileap-<gc>
     bld.ileap_executable = bld.path.find_or_declare(rename_executable(bld.iclasp_executable.abspath(),"clasp","leap"))
     bld.cleap_executable = bld.path.find_or_declare(rename_executable(bld.cclasp_executable.abspath(),"clasp","leap"))
@@ -89,9 +90,23 @@ def build(bld):
         extensions_result = bld.path.parent.parent.find_or_declare("%s/src/lisp/cando-user/packages.fasl" % (bld.path.abspath()))
         print("extensions_result -> %s" % extensions_result.abspath())
         bld_extensions = build_extension(env=bld.env)
-        bld_extensions.set_inputs([bld.ccando_executable,bld.cclasp_fasl,bld.asdf_fasl_cclasp]+bld.extensions_lisp_files)
+        bld_extensions.set_inputs([bld.icando_executable,bld.cclasp_link_product,bld.cclasp_asdf_fasl]+bld.extensions_lisp_files)
 #        bld_extensions.set_outputs([extensions_result])
         bld.add_to_group(bld_extensions)
+        cando_snapshot_product = bld.variant_obj.snapshot_name(bld,appname="cando",stage='c')
+        print("cando_snapshot_product = %s" % cando_snapshot_product)
+        leap_snapshot_product = bld.variant_obj.snapshot_name(bld,appname="leap",stage='c')
+        print("leap_snapshot_product = %s" % leap_snapshot_product)
+        task_cando_snapshot = link_snapshot(env=bld.env)
+        task_cando_snapshot.set_inputs([bld.iclasp_executable,
+                                        bld.cclasp_link_product ])
+        task_cando_snapshot.set_outputs([cando_snapshot_product])
+        bld.add_to_group(task_cando_snapshot)
+        task_cando_snapshot = link_snapshot(env=bld.env)
+        task_cando_snapshot.set_inputs([bld.iclasp_executable,
+                                        bld.cclasp_link_product ])
+        task_cando_snapshot.set_outputs([cando_snapshot_product])
+        bld.add_to_group(task_cando_snapshot)
     bld.add_post_fun(post_install)
     print("Leaving extensions build without cclasp_executable")
 
@@ -132,6 +147,7 @@ def post_install(ctx):
         os.symlink(installed_cleap,cleap_symlink)
 
 #            ctx.exec_command('${PREFIX}/bin/icando-boehm')
+
 
 class build_extension(waflib.Task.Task):
     def run(self):
