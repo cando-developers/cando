@@ -20,8 +20,8 @@
                        (t (format nil "~s" child))))
               (node (make-instance 'cytoscape:element
                                    :group "nodes"
-                                   :data (list (cons "id" (string node-id))
-                                               (cons "label" label)))))
+                                   :data (j:make-object "id" (string node-id)
+                                                        "label" label))))
          (unless root-id
            (setf root-id (string node-id)))
          (setf (gethash child chem-info-to-node) node
@@ -30,8 +30,8 @@
          (when parent-node-id
            (let ((edge (make-instance 'cytoscape:element
                                       :group "edges"
-                                      :data (list (cons "source" (string parent-node-id))
-                                                  (cons "target" (string node-id))))))
+                                      :data (j:make-object "source" (string parent-node-id)
+                                                           "target" (string node-id)))))
              (push edge edges))))))
     (make-instance 'cytoscape:cytoscape-widget
                    :graph-layouts (list (make-instance 'cytoscape:dagre-layout

@@ -12,8 +12,8 @@
               (label (class-name (class-of instruction)))
               (node (make-instance 'cytoscape:element
                                    :group "nodes"
-                                   :data (list (cons "id" (string node-id))
-                                               (cons "label" label)))))
+                                   :data (j:make-object "id" (string node-id)
+                                                        "label" label))))
          (push node nodes)
          (unless root-id
            (setf root-id (string node-id)))
@@ -26,8 +26,8 @@
          (loop for succ in (cleavir-ir:successors instruction)
                for edge = (make-instance 'cytoscape:element
                                          :group "edges"
-                                         :data (list (cons "source" (string (gethash instruction instruction-to-node-id)))
-                                                     (cons "target" (string (gethash succ instruction-to-node-id)))))
+                                         :data (j:make-object "source" (string (gethash instruction instruction-to-node-id))
+                                                              "target" (string (gethash succ instruction-to-node-id))))
                do (push edge edges)))
        hir)
       (format t "Number of nodes: ~a  edges: ~a~%" (length nodes) (length edges))
