@@ -177,17 +177,17 @@
                        (when (and (numberp status)
                                   (not (zerop status)))
                          (format *error-output* "wait returned for process ~d status ~d: exiting compile-system~%" wpid status)
-                         (core:exit 1))
+                         (ext:quit 1))
                        (decf child-count))
                      (error "wait returned ~d  status ~d~%" wpid status))
                  (if (and (numberp wpid) (>= wpid 0))
                      (progn
                        (finished-some wpid (gethash wpid jobs))
                        (error "The child with wpid ~a died with status ~a - terminating build" wpid status)
-                       (core:exit 1))
+                       (ext:quit 1))
                      (progn
                        (error "A child died with wpid ~a status ~a" wpid status)
-                       (core:exit 1)))))
+                       (ext:quit 1)))))
            (when systems
              (incf counter)
              (setq entry (pop systems))
@@ -214,7 +214,7 @@
                                    (error "sigthreadmask has an error errno = ~a" errno))
                                  (finish-output)
                                  (sleep 1)
-                                 (core:exit))))
+                                 (ext:quit))))
                            (let ((pjob (make-pjob
                                         :done nil
                                         :pid pid

@@ -41,7 +41,7 @@
   (let ((*package* (find-package :keyword)))
     (cl:format nil "~{~s~%~}"
                '((tirun::tirun-charge ":%TIRUNS%" ":%OUTPUT%")
-                 (core:exit)))))
+                 (ext:quit)))))
 
 
 (defparameter *solvate-addion-morph-side-script*
@@ -88,7 +88,7 @@
                  (ensure-jobs-directories-exist (pathname ":%COORDINATES%"))
                  (leap.topology:save-amber-parm-format *system* ":%TOPOLOGY%" ":%COORDINATES%"
                   :residue-name-to-pdb-alist (tirun:residue-name-to-pdb-alist *tiruns*))
-                 (core:exit)))))
+                 (ext:quit)))))
 
 (defparameter *prepare-min-in*
 "minimisation
@@ -245,7 +245,7 @@
                    ":%TOPOLOGY%" ":%COORDINATES%"
                    ":%DECHARGE-MOL2%"
                    ":%DECHARGE-TOPOLOGY%" ":%DECHARGE-COORDINATES%")
-                 (core:exit)))))
+                 (ext:quit)))))
 
 (defparameter *recharge*
   (let ((*package* (find-package :keyword)))
@@ -256,7 +256,7 @@
                    ":%TOPOLOGY%" ":%COORDINATES%"
                    ":%RECHARGE-MOL2%"
                    ":%RECHARGE-TOPOLOGY%" ":%RECHARGE-COORDINATES%")
-                 (core:exit)))))
+                 (ext:quit)))))
 
 (defparameter *decharge-recharge-heat-in* 
   "heating
@@ -526,7 +526,7 @@ TypeVDW, smooth_step2, complementary, 0.0, 1.0
   
 (main)
 (format t \"Done getdvdl~%\")
-(core:quit)
+(ext:quit)
 "
   #+(or)
   "import math
@@ -675,7 +675,7 @@ if __name__ == '__main__':
 		   (let ((result (list (cons :%SIDE-NAME% (list (cons :parts parts) (cons :total total))))))
                      (with-open-file (fout ":%SIDE-ANALYSIS%" :direction :output)
 				     (format fout "~s~%" result))))
-                 (core:exit 0)))))
+                 (ext:quit 0)))))
 
 (defparameter *combine-sides*
   (let ((*package* (find-package :keyword)))
@@ -699,7 +699,7 @@ if __name__ == '__main__':
 				   (format fout ";;; Is the sign right? complex-total - ligand-total~%")
 				   (format fout "~s~%" result))
 		   (format t "~s~%" result))
-                 (core:exit 0)))))
+                 (ext:quit 0)))))
 
 ;;; ------------------------------------------------------------
 ;;;
