@@ -235,7 +235,6 @@ Parse the PDB line in line and populate fields in pdb-atom-reader with the data.
 If we need to read the atom position pass T for read-atom-pos. If it's a big-z PDB
 file (the Z coordinate needs an extra floating point digit) then pass big-z = T.
 If you want to check if it's a big-z file then pass check-big-z = T."
-  (let ((core:*read-hook* nil))
     (labels ((my-read-from-string (str)
                ;; bypass eclector because it's too slow
                (with-input-from-string (sin str)
@@ -303,7 +302,7 @@ If you want to check if it's a big-z file then pass check-big-z = T."
                  (parse-integer (string-trim '(#\space #\tab) (subseq line 17 21)))
                  (read-one-char line 29)
                  (parse-integer (string-trim '(#\space #\tab) (subseq line 31 35)))))
-          (t nil))))))
+          (t nil)))))
 
 
 
