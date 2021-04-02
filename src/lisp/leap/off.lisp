@@ -114,8 +114,7 @@
 
 ;;; This uses READ - and it's faster than the one above...
 (defun parse-off-data-line (line header)
-  (let* ((data (make-array (length (fields header)) :element-type t))
-         (core:*read-hook* nil)) ; force use of clasp's reader
+  (let* ((data (make-array (length (fields header)) :element-type t)))
     (with-input-from-string (sin line)
       (loop for x from 0 below (length (fields header))
          do (setf (elt data x) (read sin))))

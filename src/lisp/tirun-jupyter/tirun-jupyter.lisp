@@ -231,10 +231,14 @@
   (handler-case
       (with-slots (receptor)
                   *workspace*
-        (let ((receptor-string (babel:octets-to-string (cdr (assoc "content" (car parameter) :test #'string=)))))
+        (let ((receptor-string (babel:octets-to-string (gethash "content" (elt parameter (1- (length parameter)))))))
+          (format t "About to parse receptor pdb file~%")
+          (finish-output)
           (setf receptor
                 (with-input-from-string (input-stream receptor-string)
                   (leap.pdb:load-pdb-stream input-stream)))
+          (format t "Done parsing receptor file~%")
+          (finish-output)
           (save-workspace)))
     (leap.pdb:pdb-read-error (condition)
       (princ condition *error-output*)
@@ -250,8 +254,9 @@
   (handler-case
       (with-slots (template-ligand)
                   *workspace*
-        (let ((template-ligand-string (babel:octets-to-string (cdr (assoc "content" (car parameter) :test #'string=)))))
+        (let ((template-ligand-string (babel:octets-to-string (gethash "content" (elt parameter (1- (length parameter)))))))
           (format t "About to parse template ligand pdb file~%")
+          (finish-output)
           (setf template-ligand
                 (with-input-from-string (input-stream template-ligand-string)
                   (leap.pdb:load-pdb-stream input-stream :ignore-missing-topology t)))
@@ -499,8 +504,9 @@
   "Called from the file task page to actually parse the ligands file."
   (declare (ignore action progress-callback))
   (handler-case
-      (let ((ligands-string (babel:octets-to-string (cdr (assoc "content" (car parameter) :test #'string=))))
-            (ligands-format (pathname-type (cdr (assoc "name" (car parameter) :test #'string=)))))
+      (let* ((file-data (elt parameter (1- (length parameter))))
+             (ligands-string (babel:octets-to-string (gethash "content" file-data)))
+             (ligands-format (pathname-type (gethash "name" file-data))))
         (setf all-ligands
               (with-input-from-string (input-stream ligands-string)
                 (cond

@@ -4,76 +4,40 @@
 Cando is an open-source, computational chemistry environment for
 building and designing functional molecules and materials.
 
+<div style="text-align: center"><img src="documentation/CANDO_map.png" width=600 height=350 align=center/></div>
+
 # Building Cando 
+## Docker Image
+The fastest method to start using CANDO is to download the [CANDO Docker image](https://hub.docker.com/r/thirdlaw/cando) from DockerHub or if you already have Docker installed:
 
-Cando needs [Clasp](https://github.com/clasp-developers/clasp.git) and Clasp has [dependencies](https://github.com/clasp-developers/clasp/wiki/Build-Instructions) that need to be installed first.  Cando has a few more [dependencies](https://github.com/drmeister/cando/wiki/Cando-dependencies).  Advanced use of Cando needs [AmberTools18](http://ambermd.org/GetAmber.php#ambertools) - I assume that anyone downloading Cando is familiar with Amber and Ambertools18.
+```docker pull thirdlaw/cando```
 
-1. Clone Clasp using: 
+Once downloaded, simply run:
 
-```
-git clone https://github.com/clasp-developers/clasp.git
-```
+```docker run -it -p 8888:8888 thirdlaw/cando```
 
-2. Create a wscript.conf file in the top level clasp directory as described below. (See Note 1)
+and open a web-browser (Firefox is reccomended) at 0.0.0.0:8888
 
-An example clasp/wscript.config looks like:
-```
-LLVM_CONFIG_BINARY="/usr/local/opt/llvm@6/bin/llvm-config"   # path to find llvm6 llvm-config executable
-PREFIX="/opt/clasp"                                          # installs everything in /opt/clasp
-```
+## Ubuntu 18.X
+A CANDO binary can be downloaded from [ThirdLaw Technologies LLC](http://www.thirdlaw.tech/downloads/cando/binaries/ubuntu-18/).
 
-3. Build and install Cando.
+To build CANDO on your native system, please see the state of dependencies for various installations on the [Wiki](https://github.com/cando-developers/cando/wiki).
 
-```
-./build-more-systems.sh configure build_cboehm install_cboehm
-```
+# CANDO + Jupyter Demonstrations
+Several JupyterLab notebooks that demonstrate how CANDO can be used in the realm of computational chemustry can be found in [CANDO-demos](https://github.com/cando-developers/cando-demos).
 
-## Free energy perturbation demo (You need AmberTools and Amber pmemd.cuda)
+To run JupyterLab and start a demo:
 
-1. Create an empty directory and ```cd``` into it.
+1. run ```/opt/clasp/bin/cando-jupyter```
 
-2. Set up the following environment variables.
-```
-export AMBERHOME=/opt/amber # adjust as needed
-export ASDF_OUTPUT_TRANSLATIONS=/:
-export CLASP_QUICKLISP_DIRECTORY=/opt/clasp/lib/clasp/src/lisp/modules/quicklisp/
-export PATH=$AMBERHOME/bin:$PATH
-```
+2. copy and paste the provided link into a web browser (Firefox is recommended).
 
-2. Evaluate:
+# Video Tutorials
+For up to date video demos and tutorials please [subscribe](https://www.youtube.com/channel/UC4xYBaHwB2kDCXaRALXdh7w) and like our videos on YouTube.
 
-```
-/opt/clasp/bin/cleap -f /opt/clasp/lib/clasp/extensions/cando/src/examples/lysozyme-fep/fep.leaprc
+[Thermodynamic integration using a pre-build ligand library](https://www.youtube.com/watch?v=Md8rrrg7Kvg)
 
-cd jobs
+[Sketching molecules for thermodynamic integration calculations](https://www.youtube.com/watch?v=CSa2jzzwves)
 
-make -j<number-of-cores>    
-```
+[Running CANDO calculation jobs inside a Docker image](https://www.youtube.com/watch?v=3bMJB8dV2WU)
 
-This will take many hours, it carries out over 140 molecular dynamics calculations. We have a 'distributor' that distributes the work to GPU accelerated AWS spot instances or a heterogeneous cluster of GPU machines and can carry out the calculation in about 15 min.
-
-## Updating Cando and Clasp
-
-Both Clasp and Cando are evolving - if you want the latest versions you need to update them both.
-
-1. Change directory into the top Clasp directory and pull Clasp updates.  I'm assuming you are using the master branch.
-
-```
-git pull origin master
-```
-
-2. Update Cando.
-
-```
-(cd extensions/cando && git pull origin master)
-```
-
-3. Rebuild and reinstall as above.
-
-Note 1. Clasp can be configured by copying the wscript.config.template to wscript.config and editing it. The most important option is the LLVM_CONFIG_BINARY - it is the path to the ```llvm-config``` executable for llvm6.  Once clasp has that it can find the rest of llvm.  *On macOS and Linux you must download llvm6 using homebrew or some other package manager. Clasp uses a lot of advanced features of the llvm library.*
-
-Example wscript.config
-```
-LLVM_CONFIG_BINARY="/usr/local/opt/llvm/bin/llvm-config"
-PREFIX="/opt/clasp"                                          # installs everything in /opt/clasp
-```

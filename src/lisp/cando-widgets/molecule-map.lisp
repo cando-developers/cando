@@ -229,7 +229,7 @@
                                      (when (and (cytoscape:selected element)
                                                 (not (cytoscape:removed element))
                                                 (string= "nodes" (cytoscape:group element)))
-                                       (list (cdr (assoc "id" (cytoscape:data element) :test #'string=)))))
+                                       (list (gethash "id" (cytoscape:data element)))))
                                    (cytoscape:elements (graph instance))))))
     ;; Delete all selected elements
     (cytoscape:on-menu-command-select delete-elements-command
@@ -239,7 +239,7 @@
                                  (mapcan (lambda (element)
                                            (when (and (cytoscape:selected element)
                                                       (not (cytoscape:removed element)))
-                                             (list (cdr (assoc "id" (cytoscape:data element) :test #'string=)))))
+                                             (list (gethash "id" (cytoscape:data element)))))
                                          (cytoscape:elements (graph instance))))))
     (jw:observe layout-select :index
       (lambda (inst type name old-value new-value source)
@@ -305,11 +305,11 @@
                                                   (lambda (instance type nm old-value new-value source)
                                                     (declare (ignore instance type nm old-value source))
                                                     (update-selected-sketches map (unless new-value (list name))))))
-                     :data (list (cons "id" name)
-                                 (cons "label" name)
-                                 (cons "width" width)
-                                 (cons "height" height)
-                                 (cons "image" (encode-svg svg)))))))
+                     :data (j:make-object "id" name
+                                          "label" name
+                                          "width" width
+                                          "height" height
+                                          "image" (encode-svg svg))))))
 
 (defun update-node (map element &optional molecule)
   (let ((name (molecule-name molecule)))
@@ -318,11 +318,11 @@
       (multiple-value-bind (svg width height)
                            (sketch-molecule molecule)
         (setf (cytoscape:data element)
-              (list (cons "id" name)
-                    (cons "label" name)
-                    (cons "width" width)
-                    (cons "height" height)
-                    (cons "image" (encode-svg svg))))))))
+              (j:make-object "id" name
+                             "label" name
+                             "width" width
+                             "height" height
+                             "image" (encode-svg svg)))))))
 
 
 (defun make-edge (map molecule1 molecule2 &key arrow1 arrow2 label id &allow-other-keys)
@@ -344,13 +344,13 @@
                                                   (declare (ignore instance type name old-value source))
                                                   (update-selected-sketches map (unless new-value
                                                                                   (list name-1 name-2))))))
-                   :data (list (cons "id" (edge-id name-1 name-2
+                   :data (j:make-object "id" (edge-id name-1 name-2
                                                    :id id
                                                    :arrow1 arrow1
-                                                   :arrow2 arrow2))
-                               (cons "label" (or label ""))
-                               (cons "source" name-1)
-                               (cons "target" name-2)))))
+                                                   :arrow2 arrow2)
+                                        "label" (or label "")
+                                        "source" name-1
+                                        "target" name-2))))
 
 
 (defun create-graph (map)
@@ -374,7 +374,7 @@
 
 
 (defun element-id (element)
-  (cdr (assoc "id" (cytoscape:data element) :test #'string=)))
+  (gethash "id" (cytoscape:data element)))
 
 
 (defun get-selected-names (map)
@@ -407,15 +407,15 @@
           (let ((molecule (find (element-id element) molecules :key #'molecule-name :test #'equal)))
             (when (and molecule
                        (position (element-id element) unselected-names :test #'equal))
-              (setf (cdr (assoc "image" (cytoscape:data element) :test #'string=))
+              (setf (gethash "image" (cytoscape:data element))
                     (encode-svg (cando-widgets:sketch-molecule (find (element-id element) molecules :key #'molecule-name :test #'equal)))))
-            (jupyter-widgets:notify-trait-change element :dict :data (cytoscape:data element) (cytoscape:data element) t)))
+            (jupyter-widgets:notify-trait-change element :json :data (cytoscape:data element) (cytoscape:data element) t)))
         (loop for molecule in selected
               for atoms in atom-matches
               for element = (find (molecule-name molecule) (cytoscape:elements graph) :test #'string= :key #'element-id)
-              do (setf (cdr (assoc "image" (cytoscape:data element) :test #'string=))
+              do (setf (gethash "image" (cytoscape:data element))
                        (encode-svg (cando-widgets:sketch-molecule molecule (generate-stylesheet atoms))))
-              do (jupyter-widgets:notify-trait-change element :dict :data (cytoscape:data element) (cytoscape:data element) t))))))
+              do (jupyter-widgets:notify-trait-change element :json :data (cytoscape:data element) (cytoscape:data element) t))))))
 
 
 (defun make-molecule-map (container &rest args)
@@ -442,27 +442,27 @@
     (let (new-elements)
       ;; Look for elements that don't have a corresponding match in molecules or edges.
       (dolist (element (cytoscape:elements graph))
-        (let ((id (cdr (assoc "id" (cytoscape:data element) :test #'equal))))
-                               (if (equal "nodes" (cytoscape:group element))
-                                 (update-node map element
-                                              (find id molecules ; the element is a node so look in molecules
-                                                    :test #'string=
-                                                    :key #'molecule-name))
-                                 (set-element-removed element
-                                                      (notany (lambda (edge) ; the element is an edge so look in edges.
-                                                                (equal id (apply #'edge-id edge)))
-                                                              edges)))))
+        (let ((id (gethash "id" (cytoscape:data element))))
+          (if (equal "nodes" (cytoscape:group element))
+            (update-node map element
+                         (find id molecules ; the element is a node so look in molecules
+                               :test #'string=
+                               :key #'molecule-name))
+            (set-element-removed element
+                                 (notany (lambda (edge) ; the element is an edge so look in edges.
+                                           (equal id (apply #'edge-id edge)))
+                                         edges)))))
       ;; Look through edges for new edges
       (dolist (edge edges)
         (unless (some (lambda (element)
-                        (equal (cdr (assoc "id" (cytoscape:data element) :test #'equal))
+                        (equal (gethash "id" (cytoscape:data element))
                                (apply #'edge-id edge)))
                       (cytoscape:elements graph))
           (push (apply #'make-edge map edge) new-elements)))
       ;; Look through molecules for new nodes
       (dolist (molecule molecules)
         (unless (some (lambda (element)
-                        (equal (cdr (assoc "id" (cytoscape:data element) :test #'equal))
+                        (equal (gethash "id" (cytoscape:data element))
                                (molecule-name molecule)))
                       (cytoscape:elements graph))
           (push (make-node map molecule) new-elements)))

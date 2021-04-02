@@ -51,20 +51,73 @@
                                                      :color2 #(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0))))))))
 
 
-(defmethod show ((instance chem:aggregate) &rest kwargs &key &allow-other-keys)
-  (let* ((component (make-instance 'ngl:structure
-                                   :auto-view-duration 0
-                                   :name (symbol-name (chem:get-name instance))
-                                   :value (chem:aggregate-as-mol2-string instance t)
-                                   :ext "mol2"
-                                   :representations (list (make-instance 'ngl:backbone :name "Backbone" :visible nil)
-                                                          (make-instance 'ngl:ball-and-stick :name "Ball and Stick" :visible t)
-                                                          (make-instance 'ngl:cartoon :name "Cartoon" :color-scheme "residueindex" :visible nil)
-                                                          (make-instance 'ngl:licorice :name "Licorice" :visible nil)
-                                                          (make-instance 'ngl:line :name "Line" :visible nil)
-                                                          (make-instance 'ngl:ribbon :name "Ribbon" :color-scheme "residueindex" :visible nil)
-                                                          (make-instance 'ngl:spacefill :name "Spacefill" :visible nil)
-                                                          (make-instance 'ngl:surface :name "Surface" :use-worker t :color-scheme "residueindex" :visible nil))))
+(defun ngl-show-trajectory (trajectory)
+  (when trajectory
+    (let ((play-button (make-instance 'jw:toggle-button
+                                      :icon "play"
+                                      :style (make-instance 'jw:description-style
+                                                            :description-width "min-content")
+                                      :layout (make-instance 'jw:layout
+                                                             :margin ".5em"
+                                                             :width "max-content")))
+          (pause-button (make-instance 'jw:button
+                                      :icon "pause"
+                                      :style (make-instance 'jw:description-style
+                                                            :description-width "min-content")
+                                      :layout (make-instance 'jw:layout
+                                                             :margin ".5em"
+                                                             :width "max-content")))
+          (stop-button (make-instance 'jw:button
+                                      :icon "stop"
+                                      :style (make-instance 'jw:description-style
+                                                            :description-width "min-content")
+                                      :layout (make-instance 'jw:layout
+                                                             :margin ".5em"
+                                                             :width "max-content")))
+          (frame-slider (make-instance 'jw:int-slider
+                                       :layout (make-instance 'jw:layout
+                                                              :align-self "center"
+                                                              :margin ".5em")))
+          (mode-button (make-instance 'jw:toggle-button
+                                      :icon "retweet"
+                                      :value t
+                                      :style (make-instance 'jw:description-style
+                                                            :description-width "min-content")
+                                      :layout (make-instance 'jw:layout
+                                                             :margin ".5em"
+                                                             :width "max-content"))))
+      (jw:link play-button :value trajectory :is-running)
+      (jw:on-button-click pause-button
+        (lambda (inst)
+          (declare (ignore inst))
+          (ngl:pause trajectory)))
+      (jw:on-button-click stop-button
+        (lambda (inst)
+          (declare (ignore inst))
+          (ngl:stop trajectory)))
+      (jw:link trajectory :frame frame-slider :value)
+      (jw:observe trajectory :count
+        (lambda (inst type name old-value new-value source)
+          (declare (ignore inst type name old-value source))
+          (setf (jw:widget-max frame-slider) (1- new-value))))
+      (jw:observe mode-button :value
+        (lambda (inst type name old-value new-value source)
+          (declare (ignore inst type name old-value source))
+          (setf (ngl:mode trajectory) (if new-value "loop" "once"))))
+      (list play-button pause-button stop-button frame-slider mode-button))))
+
+
+(defun ngl-show (instance &rest kwargs &key &allow-other-keys)
+  (let* ((component (make-ngl-structure instance
+                                        :auto-view-duration 0
+                                        :representations (list (make-instance 'ngl:backbone :name "Backbone" :visible nil)
+                                                               (make-instance 'ngl:ball-and-stick :name "Ball and Stick" :visible t)
+                                                               (make-instance 'ngl:cartoon :name "Cartoon" :color-scheme "residueindex" :visible nil)
+                                                               (make-instance 'ngl:licorice :name "Licorice" :visible nil)
+                                                               (make-instance 'ngl:line :name "Line" :visible nil)
+                                                               (make-instance 'ngl:ribbon :name "Ribbon" :color-scheme "residueindex" :visible nil)
+                                                               (make-instance 'ngl:spacefill :name "Spacefill" :visible nil)
+                                                               (make-instance 'ngl:surface :name "Surface" :use-worker t :color-scheme "residueindex" :visible nil))))
          (stage (apply #'make-instance 'ngl:stage
                        :clip-dist 0
                        :background-color "white"
@@ -92,7 +145,8 @@
                                           :layout (make-instance 'jw:layout
                                                                  :margin ".5em"
                                                                  :width "max-content"))))
-    (when (chem:bounding-box-bound-p instance)
+    (when (and (typep instance 'chem:aggregate)
+               (chem:bounding-box-bound-p instance))
       (add-bounding-box component instance))
     (jw:observe representation-dropdown :value
       (lambda (inst type name old-value new-value source)
@@ -106,7 +160,9 @@
     (make-instance 'resizable-box:resizable-grid-box
                    :children (list stage
                                    (make-instance 'jw:box
-                                                  :children (list representation-dropdown auto-view-button)
+                                                  :children (append (list representation-dropdown
+                                                                          auto-view-button)
+                                                                    (ngl-show-trajectory (first (ngl:trajectories component))))
                                                   :layout (make-instance 'jw:layout
                                                                          :flex-flow "row wrap"
                                                                          :justify-content "center"
@@ -126,10 +182,11 @@
                                           :grid-template-areas "'stage' 'controls"))))
 
 
-(defmethod show ((molecule chem:molecule) &rest kwargs &key &allow-other-keys)
-  (let ((agg (chem:make-aggregate nil)))
-    (chem:add-matter agg molecule)
-    (apply 'show agg kwargs)))
+(defmethod show ((instance chem:aggregate) &rest kwargs &key &allow-other-keys)
+  (apply #'ngl-show instance kwargs))
+
+(defmethod show ((instance chem:molecule) &rest kwargs &key &allow-other-keys)
+  (apply #'ngl-show instance kwargs))
 
 (defun isolate-residue (residue)
   (let* ((agg (chem:make-aggregate nil))
@@ -161,12 +218,8 @@
 (defmethod show ((sketch sketch2d:sketch-svg) &rest kwargs &key &allow-other-keys)
   (jupyter:svg (sketch2d:render-svg-to-string sketch)))
 
-(defmethod show ((trajectory dynamics:trajectory) &rest kwargs &key &allow-other-keys)
-  (change-class trajectory 'cando-trajectory)
-  (apply #'nglv:make-nglwidget :structure trajectory kwargs))
+(defmethod show ((instance dynamics:trajectory) &rest kwargs &key &allow-other-keys)
+  (apply #'ngl-show instance kwargs))
 
-(defmethod show ((dynamics dynamics:simulation) &rest kwargs &key &allow-other-keys)
-  (let ((trajectory (dynamics:make-trajectory dynamics)))
-    (change-class trajectory 'cando-trajectory)
-    (apply 'show trajectory kwargs)))
-
+(defmethod show ((instance dynamics:simulation) &rest kwargs &key &allow-other-keys)
+  (apply #'ngl-show (dynamics:make-trajectory instance) kwargs))
