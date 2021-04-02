@@ -11,6 +11,7 @@
                 :netcdf
                 :static-vectors
                 :alexandria
+                :split-sequence
                 #+(or)(:version :esrap "0.15")
                 #+(or):parser.common-rules
                 #+(or):PARSER.COMMON-RULES.OPERATORS
