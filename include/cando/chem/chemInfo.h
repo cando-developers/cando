@@ -1306,14 +1306,14 @@ public:
 
   // Build the object from _Root
   void buildFromRoot_(); 
-  void fixupInternalsForImageSaveLoad(core::FixupOperation& op) {
-    if (op == core::SaveOp) {
+  void fixupInternalsForImageSaveLoad(imageSaveLoad::Fixup* fixup) {
+    if (imageSaveLoad::operation(fixup) == imageSaveLoad::SaveOp) {
       this->_nodes_to_index = _Unbound<core::HashTableEq_O>();
       this->_nodeOrder.clear();
       this->_atomNodes.clear();
       this->_bondNodes.clear();
       this->_chemInfoGraph = NULL;
-    } else if (op == core::LoadOp) {
+    } else if (imageSaveLoad::operation(fixup) == imageSaveLoad::LoadOp) {
       this->initialize();
       this->buildFromRoot_();
     }

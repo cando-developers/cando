@@ -71,7 +71,7 @@ FORWARD(Dimacs);
       std::vector<std::vector<char> > getAdjacencyMatrix() const;
       std::vector<int> getDegrees() const {return degrees;}
       void calculateGraphStats(int& maxdegree, int& minDegree, std::vector<float>& degreeHistogram);
-      void fixupInternalsForImageSaveLoad(core::FixupOperation& op) {
+      void fixupInternalsForImageSaveLoad(imageSaveLoad::Fixup* fixup) {
         SIMPLE_ERROR(BF("We cannot current image save/load Dimacs's - you could try copying objects in and out of objects that can be image save/loaded"));
       }
 

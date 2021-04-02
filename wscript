@@ -93,20 +93,20 @@ def build(bld):
         bld_extensions.set_inputs([bld.icando_executable,bld.cclasp_link_product,bld.cclasp_asdf_fasl]+bld.extensions_lisp_files)
 #        bld_extensions.set_outputs([extensions_result])
         bld.add_to_group(bld_extensions)
-        cando_snapshot_product = bld.variant_obj.snapshot_name(bld,appname="cando",stage='c')
+        cando_snapshot_product = bld.variant_obj.snapshot_node(bld,appname="cando",stage='c')
         print("cando_snapshot_product = %s" % cando_snapshot_product)
-        leap_snapshot_product = bld.variant_obj.snapshot_name(bld,appname="leap",stage='c')
+        leap_snapshot_product = bld.variant_obj.snapshot_node(bld,appname="leap",stage='c')
         print("leap_snapshot_product = %s" % leap_snapshot_product)
         task_cando_snapshot = link_snapshot(env=bld.env)
         task_cando_snapshot.set_inputs([bld.iclasp_executable,
                                         bld.cclasp_link_product ])
         task_cando_snapshot.set_outputs([cando_snapshot_product])
         bld.add_to_group(task_cando_snapshot)
-        task_cando_snapshot = link_snapshot(env=bld.env)
-        task_cando_snapshot.set_inputs([bld.iclasp_executable,
+        task_leap_snapshot = link_snapshot(env=bld.env)
+        task_leap_snapshot.set_inputs([bld.ileap_executable,
                                         bld.cclasp_link_product ])
-        task_cando_snapshot.set_outputs([cando_snapshot_product])
-        bld.add_to_group(task_cando_snapshot)
+        task_leap_snapshot.set_outputs([leap_snapshot_product])
+        bld.add_to_group(task_leap_snapshot)
     bld.add_post_fun(post_install)
     print("Leaving extensions build without cclasp_executable")
 
