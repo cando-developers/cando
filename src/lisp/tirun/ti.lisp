@@ -1491,21 +1491,21 @@ try_special \"$@\"
 # if try_special didn't like it execute directly
 exec \"$@\"
 "))
-    (core:chmod "runcmd_simple" #o755))
+    (clasp-posix:chmod "runcmd_simple" #o755))
   (let ((run-in-docker-file #P"source-dir:extensions;cando;src;data;common;run-in-docker"))
     (unless (probe-file run-in-docker-file)
       (error "Could not find file ~s~%" run-in-docker-file))
     (let ((run-in-docker (read-file (probe-file run-in-docker-file))))
       (with-open-file (fout "run-in-docker" :direction :output :if-exists :supersede)
         (write-string run-in-docker fout))
-      (core:chmod "run-in-docker" #o755)))
+      (clasp-posix:chmod "run-in-docker" #o755)))
   (let ((runcmd_with_docker-file #P"source-dir:extensions;cando;src;data;common;runcmd_with_docker"))
     (unless (probe-file runcmd_with_docker-file)
       (error "Could not find file ~s~%" runcmd_with_docker-file))
     (let ((runcmd_with_docker (read-file (probe-file runcmd_with_docker-file))))
       (with-open-file (fout "runcmd_with_docker" :direction :output :if-exists :supersede)
         (write-string runcmd_with_docker fout))
-      (core:chmod "runcmd_with_docker" #o755)))
+      (clasp-posix:chmod "runcmd_with_docker" #o755)))
   )
 
 

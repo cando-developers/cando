@@ -36,7 +36,7 @@
                (format t "Received connection-filename: ~s~%" connection-filename)
                (finish-output)
                (multiple-value-bind (maybe-error pid child-stream)
-                   (core:fork)
+                   (clasp-posix:fork)
                  (if (= pid 0)
                      (progn
                        (format t "child starting  connection-filename: ~s~%" connection-filename)
