@@ -159,13 +159,14 @@
       "--eval" "(asdf:load-system :cando-jupyter)"
       "--eval" "(jupyter:run-kernel 'cando-jupyter:kernel #\"{connection_file}\")")))
 
-(defun install (&key bin-path system local prefix)
+
+(defun install (&key bin-path system local prefix root)
   "Install Cando kernel.
 - `bin-path` specifies path to LISP binary.
 - `system` toggles system versus user installation.
 - `local` toggles `/usr/local/share versus` `/usr/share` for system installations.
 - `prefix` key specifies directory prefix for packaging.
-"
+- `root` key specifies the root under which the Jupyter folder is found. Is automatically determined if not provided."
   (jupyter:install
     (make-instance
       (if system
@@ -173,7 +174,9 @@
         'user-installer)
       :implementation bin-path
       :local local
-      :prefix prefix)))
+      :prefix prefix
+      :root root)))
+
 
 (defun install-image (&key prefix)
   "Install Cando kernel based on image.
