@@ -441,30 +441,30 @@ MTRIX- Used to build a list of matrices."
                                     :to to)
                      (connects scanner))))
             (:mtrix1
-             (destructuring-bind (head serial x y z t)
+             (destructuring-bind (head serial x y z tt)
                  line-data
                (let ((matrix (geom:make-matrix-identity)))
                  (geom:at-row-col-put matrix 0 0 x)
                  (geom:at-row-col-put matrix 0 1 y)
                  (geom:at-row-col-put matrix 0 2 z)
-                 (geom:at-row-col-put matrix 0 3 t)
+                 (geom:at-row-col-put matrix 0 3 tt)
                  (push matrix (matrices scanner)))))
             (:mtrix2
-             (destructuring-bind (head serial x y z t)
+             (destructuring-bind (head serial x y z tt)
                  line-data
                (let ((matrix (car (matrices scanner))))
                  (geom:at-row-col-put matrix 1 0 x)
                  (geom:at-row-col-put matrix 1 1 y)
                  (geom:at-row-col-put matrix 1 2 z)
-                 (geom:at-row-col-put matrix 1 3 t))))
+                 (geom:at-row-col-put matrix 1 3 tt))))
             (:mtrix3
-             (destructuring-bind (head serial x y z t)
+             (destructuring-bind (head serial x y z tt)
                  line-data
                (let ((matrix (car (matrices scanner))))
                  (geom:at-row-col-put matrix 2 0 x)
                  (geom:at-row-col-put matrix 2 1 y)
                  (geom:at-row-col-put matrix 2 2 z)
-                 (geom:at-row-col-put matrix 2 3 t))))
+                 (geom:at-row-col-put matrix 2 3 tt))))
             (otherwise nil)))))
     line))
 
