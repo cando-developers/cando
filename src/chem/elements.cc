@@ -90,8 +90,8 @@ vector<HybridizationInfo>	hybridizationInfo;
 vector<int>                     atomicNumberToAtomicInfoIndex;
 vector<int>                     atomicMassToAtomicInfoIndex;
 
-
 void set_atomic_info(Element element,const string& as, const string& name, int an, double aw,int am=9999 ) {
+  fprintf(stderr, "%s:%d:%s You need to move the set_atomic_info info into GC managed memory\n", __FILE__, __LINE__, __FUNCTION__ );
   AtomicInfo ai;
   ASSERT(element<element_MAX);
   ai._Valid=true;
@@ -108,8 +108,10 @@ void set_atomic_info(Element element,const string& as, const string& name, int a
   if (atomicNumberToAtomicInfoIndex[an] == -1) {
     atomicNumberToAtomicInfoIndex[an] = element;
   }
-  if (atomicMassToAtomicInfoIndex[am] == -1) {
-    atomicMassToAtomicInfoIndex[am] = element;
+  if (am < atomicMassToAtomicInfoIndex.size() ) {
+    if (atomicMassToAtomicInfoIndex[am] == -1) {
+      atomicMassToAtomicInfoIndex[am] = element;
+    }
   }
 };
 
