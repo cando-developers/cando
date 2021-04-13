@@ -56,38 +56,54 @@ def build1(bld):
     bld.extensions_lisp_files = []
     bld.recurse('include')
     bld.recurse('src')
-        
-def build5(bld):
-    if (bld.stage_val >= 5):
-        print("bld.stage_val cando = %d" % bld.stage_val )
-        # The following will copy cclasp-<gc> to ccando-<gc>
-        bld.ccando_executable = bld.path.find_or_declare(rename_executable(bld.cclasp_executable.abspath(),"clasp","cando"))
-        cp_2 = duplicate_executable(env=bld.env)
-        cp_2.set_inputs(bld.cclasp_executable)
-        cp_2.set_outputs(bld.ccando_executable)
-        bld.add_to_group(cp_2)
-        bld_extensions = build_extension(env=bld.env)
-        snapshot_file = bld.path.find_or_declare("generated/cando.snapshot")
-        print("snapshot_file -> %s" % snapshot_file.abspath())
-        bld_extensions.set_inputs([bld.ccando_executable,
-                                   bld.cclasp_link_product])
-        bld_extensions.set_outputs([snapshot_file])
-        bld.add_to_group(bld_extensions)
-        bld.add_group()
-        bld.dcando_executable = bld.path.find_or_declare("cando")
-        print("dcando target -> %s" % bld.dcando_executable )
-        print("bld.env[DEST_OS] = %s" % bld.env["DEST_OS"] )
-        if (bld.env["DEST_OS"] == DARWIN_OS):
-            print("dcando target -> %s" % bld.dcando_executable )
-            env2 = bld.env.derive()
-            env2.append_value("LINKFLAGS",["-Wl,-exported_symbols_list",bld.exported_symbols_file.abspath()])
-            env2.append_value("LINKFLAGS",["-sectcreate", "__CLASP", "__clasp", snapshot_file.abspath()])
-            link2 = cxx.cxxprogram(env=env2)
-            link2.name = "final_build"
-            link2.set_inputs( bld.iclasp_link_task.inputs) # snapshot_file
-            link2.set_outputs( [ bld.dcando_executable ] )
-            bld.add_to_group(link2)
 
+def build3(bld):
+    print("Recursed into extensions/cando/wscript:build3")
+    bld.ccando_executable = bld.path.find_or_declare(rename_executable(bld.cclasp_executable.abspath(),"clasp","cando"))
+    task = symlink_executable(env=bld.env)
+    task.set_inputs(bld.iclasp_executable)
+    task.set_outputs(bld.ccando_executable)
+    bld.add_to_group(task)
+
+def build5(bld):
+    log.info("bld.stage_val cando = %d" % bld.stage_val )
+    bld.add_group()
+    # The following will copy cclasp-<gc> to ccando-<gc>
+    bld_extensions = build_extension(env=bld.env)
+    snapshot_file = bld.path.find_or_declare("generated/cando.snapshot")
+    log.info("snapshot_file -> %s" % snapshot_file.abspath())
+    bld_extensions.set_inputs([bld.ccando_executable,
+                               bld.cclasp_link_product])
+    bld_extensions.set_outputs([snapshot_file])
+    bld.add_to_group(bld_extensions)
+    bld.add_group()
+    bld.dcando_executable = bld.path.find_or_declare("cando")
+    log.info("dcando target -> %s" % bld.dcando_executable )
+    log.info("bld.env[DEST_OS] = %s" % bld.env["DEST_OS"] )
+    if (bld.env["DEST_OS"] == DARWIN_OS):
+        log.info("dcando target -> %s" % bld.dcando_executable )
+        env2 = bld.env.derive()
+        env2.append_value("LINKFLAGS",["-Wl,-exported_symbols_list",bld.exported_symbols_file.abspath()])
+        env2.append_value("LINKFLAGS",["-sectcreate", "__CLASP", "__clasp", snapshot_file.abspath()])
+        link2 = cxx.cxxprogram(env=env2)
+        link2.name = "final_build"
+        link2.set_inputs( bld.iclasp_link_task.inputs) # snapshot_file
+        link2.set_outputs( [ bld.dcando_executable ] )
+        bld.add_to_group(link2)
+    else:
+        log.info("How do we handle this operating system for the final link with embedded executable?")
+        snapshot_object_file = bld.path.find_or_declare("generated/cando_snapshot.o")
+        log.info("snapshot_object_file = %s" % snapshot_object_file.abspath() )
+        task = linux_snapshot_to_object(env=bld.env)
+        task.set_inputs( [snapshot_file])
+        task.set_outputs( [snapshot_object_file] )
+        bld.add_to_group(task)
+        link2 = embed_command_line_cxxprogram(env=bld.env)
+        link2.name = "final_build"
+        link2.set_inputs( bld.iclasp_link_task.inputs + [snapshot_object_file] ) # snapshot_file
+        link2.set_outputs( [ bld.dcando_executable ] )
+        bld.add_to_group(link2)
+        
 #         cando_snapshot_product = bld.variant_obj.snapshot_node(bld,appname="cando",stage='c')
 #         print("cando_snapshot_product = %s" % cando_snapshot_product)
 #         leap_snapshot_product = bld.variant_obj.snapshot_node(bld,appname="leap",stage='c')
@@ -209,3 +225,12 @@ class build_extension(waflib.Task.Task):
         return super(build_extension, self).exec_command(cmd, **kw)
     def keyword(self):
         return 'build extensions using... '
+
+
+
+class linux_snapshot_to_object(waflib.Task.Task):
+    def run(self):
+        cmd = [ 'objcopy', '--input', 'binary', '--output', 'elf64-x86-64', '--binary-architecture', 'i386', self.inputs[0].bldpath(), self.outputs[0].bldpath() ]
+        log.info("linux_snapshot_to_object cmd = %s" % cmd )
+        return self.exec_command(cmd)
+    
