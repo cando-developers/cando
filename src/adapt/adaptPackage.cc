@@ -130,7 +130,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/searchStatistics.h>
 #include <cando/chem/spanningLoop.h>
 #include <cando/chem/specificContext.h>
-#include <cando/chem/statusTracker.h>
 #include <cando/chem/stereochemistry.h>
 #include <cando/chem/stereoisomerAtoms.h>
 #include <cando/chem/structureComparer.h>

@@ -47,7 +47,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/symbol.fwd.h>
 #include <cando/adapt/symbolList.fwd.h>
 #include <cando/chem/entity.h>
-#include <cando/chem/statusTracker.h>
 
 
 #include <cando/chem/chemPackage.h>

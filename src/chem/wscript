@@ -95,7 +95,6 @@ def build(bld):
             'chimera', 
             'command', 
             'monomerPack', 
-            'statusTracker', 
             'atomIndexer', 
             'structureList', 
             'twister', 
