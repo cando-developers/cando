@@ -40,7 +40,7 @@ def rename_executable(p,frm,to):
     parts = os.path.split(p);
     return "%s/%s" % (parts[0],parts[1].replace(frm,to))
     
-def build1(bld):
+def build(bld):
     print("Recursed into bld bld.stage_val == %d" % bld.stage_val )
     print("bld.options.enable_jupyter -> %s" % bld.options.enable_jupyter)
     bld.env.options = bld.options
