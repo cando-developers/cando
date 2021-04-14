@@ -91,14 +91,48 @@ Element elementForIntegerAtomicMass(int atomicMass); // this is used in SMARTS
 
   double maximumBondLengthBetweenElements(Element element1, Element element2 );
 
+struct	AtomicInfo {
+  bool	_Valid;
+  bool	_RealElement;
+  Element	_ElementEnum;
+  core::Symbol_sp	_AtomicSymbol;
+  core::Symbol_sp	_ElementName;
+  int		_AtomicNumber;
+  int		_IntegerAtomicMass;
+  double	_RelativeAtomicWeight;
+  double	_VdwRadius;
+  double	_CovalentRadius;
+};
 
 
+struct HybridizationInfo
+{
+  Hybridization	_HybridizationEnum;
+  core::Symbol_sp		_HybridizationSymbol;
+};
 
+FORWARD(ElementsInfo);
+class ElementsInfo_O : public core::CxxObject_O
+{
+  LISP_CLASS(chem,ChemPkg,ElementsInfo_O,"ElementsInfo",core::CxxObject_O);
+public:
+  ElementsInfo_O() {};
+public:
+  void initialize();
+public:
+  gctools::Vec0<AtomicInfo>    _atomicInfo;
+  core::HashTableEq_sp      _elementFromAtomicSymbol;
+  core::HashTableEq_sp      _twoCharacterElementNames;
+  core::HashTableEq_sp      _oneCharacterElementNames;
+  gctools::Vec0<HybridizationInfo>  _hybridizationInfo;
+  gctools::Vec0<int>                _atomicNumberToAtomicInfoIndex;
+  gctools::Vec0<int>                _atomicMassToAtomicInfoIndex;
 };
 
 
 
 
+};
 
 
 namespace translate

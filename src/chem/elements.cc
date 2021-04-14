@@ -36,6 +36,8 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/geom/color.h>
 #include <clasp/core/symbolTable.h>
 #include <clasp/core/symbolTable.h>
+#include <clasp/core/hashTable.h>
+#include <clasp/core/hashTableEq.h>
 #include <clasp/core/hashTableEql.h>
 #include <cando/chem/chemPackage.h>
 #include <cando/chem/elements.h>
@@ -47,6 +49,7 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace chem
 {
 
+SYMBOL_EXPORT_SC_(ChemPkg,_PLUS_elementsInfo_PLUS_);
 SYMBOL_EXPORT_SC_(ChemPkg,_PLUS_elementToSymbolConverter_PLUS_);
 SYMBOL_EXPORT_SC_(ChemPkg,_PLUS_hybridizationToSymbolConverter_PLUS_);
 SYMBOL_EXPORT_SC_(ChemPkg,_PLUS_elementColors_PLUS_);
@@ -61,75 +64,65 @@ SYMBOL_EXPORT_SC_(ChemKwPkg,Cl);
 SYMBOL_EXPORT_SC_(ChemKwPkg,Br);
 SYMBOL_EXPORT_SC_(ChemKwPkg,I);
 
-struct	AtomicInfo {
-  bool	_Valid;
-  bool	_RealElement;
-  Element	_ElementEnum;
-  string	_AtomicSymbol;
-  string	_ElementName;
-  int		_AtomicNumber;
-  int		_IntegerAtomicMass;
-  double	_RelativeAtomicWeight;
-  double	_VdwRadius;
-  double	_CovalentRadius;
+
+void ElementsInfo_O::initialize() {
+  this->_elementFromAtomicSymbol = core::HashTableEq_O::create_default();
+  this->_twoCharacterElementNames = core::HashTableEq_O::create_default(); 
+  this->_oneCharacterElementNames = core::HashTableEq_O::create_default();
 };
-
-
-struct HybridizationInfo
-{
-  Hybridization	_HybridizationEnum;
-  string		_HybridizationSymbol;
+  
+ElementsInfo_sp elementsInfo() {
+  ElementsInfo_sp elementsInfo = gc::As<ElementsInfo_sp>(chem::_sym__PLUS_elementsInfo_PLUS_->symbolValue());
+  return elementsInfo;
 };
-
-bool    atomicInfoDefined = false;
-vector<AtomicInfo> 		atomicInfo;
-map<string,Element>		elementFromAtomicSymbol;
-set<string>			twoCharacterElementNames;
-set<string>			oneCharacterElementNames;
-vector<HybridizationInfo>	hybridizationInfo;
-vector<int>                     atomicNumberToAtomicInfoIndex;
-vector<int>                     atomicMassToAtomicInfoIndex;
-
+  
 void set_atomic_info(Element element,const string& as, const string& name, int an, double aw,int am=9999 ) {
-  fprintf(stderr, "%s:%d:%s You need to move the set_atomic_info info into GC managed memory\n", __FILE__, __LINE__, __FUNCTION__ );
   AtomicInfo ai;
   ASSERT(element<element_MAX);
   ai._Valid=true;
-  ai._AtomicSymbol=as;
+  ai._AtomicSymbol = core::Symbol_O::create_from_string(as);
   ai._ElementEnum=element;
-  ai._ElementName=name;
+  ai._ElementName= core::Symbol_O::create_from_string(name);
   ai._AtomicNumber=an;
   ai._IntegerAtomicMass = am;
   ai._RelativeAtomicWeight=aw;
   ai._VdwRadius=1.6 /* Uknown */;
   ai._RealElement = true; 
-  atomicInfo[element] = ai;
+  ElementsInfo_sp ei = elementsInfo();
+  ei->_atomicInfo[element] = ai;
   // Set an element for each atomic number
-  if (atomicNumberToAtomicInfoIndex[an] == -1) {
-    atomicNumberToAtomicInfoIndex[an] = element;
+  if (ei->_atomicNumberToAtomicInfoIndex[an] == -1) {
+    ei->_atomicNumberToAtomicInfoIndex[an] = element;
   }
-  if (am < atomicMassToAtomicInfoIndex.size() ) {
-    if (atomicMassToAtomicInfoIndex[am] == -1) {
-      atomicMassToAtomicInfoIndex[am] = element;
+  if (am < ei->_atomicMassToAtomicInfoIndex.size() ) {
+    if (ei->_atomicMassToAtomicInfoIndex[am] == -1) {
+      ei->_atomicMassToAtomicInfoIndex[am] = element;
     }
   }
 };
 
 void    _defineAtomicInfoMapIfNotDefined()
 {
-  if ( atomicInfoDefined ) return;
+  if (chem::_sym__PLUS_elementsInfo_PLUS_->boundP()) {
+    printf("%s:%d:%s Returning immediatly\n", __FILE__, __LINE__, __FUNCTION__ );
+    return;
+  }
+  printf("%s:%d:%s Defining \n", __FILE__, __LINE__, __FUNCTION__ );
   AtomicInfo	invalid;
   invalid._Valid = false;
-  atomicInfo.clear();
-  elementFromAtomicSymbol.clear();
-  atomicInfo.resize(((int)(element_MAX)),invalid);
-  atomicNumberToAtomicInfoIndex.resize((int)element_MAX,-1);
-  atomicMassToAtomicInfoIndex.resize((int)element_mass_MAX,-1);
-#define SET_ATOMIC_INFO_FAKE_ELEMENT(element,as,name,an,aw,am)  set_atomic_info(element,as,name,an,aw,am); atomicInfo[element]._RealElement = false;
-#define	SET_VDW_RADIUS(element,vdw) { atomicInfo[element]._VdwRadius = vdw;};
-#define	SET_COVALENT_RADIUS(element,cr) { atomicInfo[element]._CovalentRadius = cr;};
+  GC_ALLOCATE(ElementsInfo_O,ei);
+  chem::_sym__PLUS_elementsInfo_PLUS_->defparameter(ei);
+  if (!chem::_sym__PLUS_elementsInfo_PLUS_.boundp()) {
+    printf("%s:%d:%s It's unbound\n", __FILE__, __LINE__, __FUNCTION__ );
+    return;
+  }
+  ei->_atomicInfo.resize(((int)(element_MAX)),invalid);
+  ei->_atomicNumberToAtomicInfoIndex.resize((int)element_MAX,-1);
+  ei->_atomicMassToAtomicInfoIndex.resize((int)element_mass_MAX,-1);
+#define SET_ATOMIC_INFO_FAKE_ELEMENT(element,as,name,an,aw,am)  set_atomic_info(element,as,name,an,aw,am); ei->_atomicInfo[element]._RealElement = false;
+#define	SET_VDW_RADIUS(element,vdw) { ei->_atomicInfo[element]._VdwRadius = vdw;};
+#define	SET_COVALENT_RADIUS(element,cr) { ei->_atomicInfo[element]._CovalentRadius = cr;};
 
-  atomicInfoDefined = true;
   LOG(BF("Defining atomicNumberMaps") );
   SET_ATOMIC_INFO_FAKE_ELEMENT(element_LP,"LP","LONE-PAIR",0,0.0,0);
   SET_ATOMIC_INFO_FAKE_ELEMENT(element_Undefined,"UE","UNDEFINED-ELEMENT",0,0.000,0);
@@ -333,28 +326,24 @@ void    _defineAtomicInfoMapIfNotDefined()
   SET_COVALENT_RADIUS(element_U,1.96);
   SET_COVALENT_RADIUS(element_Pu,1.87);
 
-  hybridizationInfo.resize(((int)(hybridization_MAX)));
-  hybridizationInfo[hybridization_undefined]._HybridizationEnum = hybridization_undefined;
-  hybridizationInfo[hybridization_undefined]._HybridizationSymbol = "SP?";
-  hybridizationInfo[hybridization_sp]._HybridizationEnum = hybridization_sp;
-  hybridizationInfo[hybridization_sp]._HybridizationSymbol = "SP";
-  hybridizationInfo[hybridization_sp2]._HybridizationEnum = hybridization_sp2;
-  hybridizationInfo[hybridization_sp2]._HybridizationSymbol = "SP2";
-  hybridizationInfo[hybridization_sp3]._HybridizationEnum = hybridization_sp3;
-  hybridizationInfo[hybridization_sp3]._HybridizationSymbol = "SP3";
-  for ( vector<AtomicInfo>::iterator ai=atomicInfo.begin(); ai!=atomicInfo.end(); ai++ )
+  ei->_hybridizationInfo.resize(((int)(hybridization_MAX)));
+  ei->_hybridizationInfo[hybridization_undefined]._HybridizationEnum = hybridization_undefined;
+  ei->_hybridizationInfo[hybridization_undefined]._HybridizationSymbol = core::Symbol_O::create_from_string("SP?");
+  ei->_hybridizationInfo[hybridization_sp]._HybridizationEnum = hybridization_sp;
+  ei->_hybridizationInfo[hybridization_sp]._HybridizationSymbol = core::Symbol_O::create_from_string("SP");
+  ei->_hybridizationInfo[hybridization_sp2]._HybridizationEnum = hybridization_sp2;
+  ei->_hybridizationInfo[hybridization_sp2]._HybridizationSymbol = core::Symbol_O::create_from_string("SP2");
+  ei->_hybridizationInfo[hybridization_sp3]._HybridizationEnum = hybridization_sp3;
+  ei->_hybridizationInfo[hybridization_sp3]._HybridizationSymbol = core::Symbol_O::create_from_string("SP3");
+  for ( auto ai=ei->_atomicInfo.begin(); ai!=ei->_atomicInfo.end(); ai++ )
   {
-    if ( ai->_Valid )
-    {
-      elementFromAtomicSymbol[ai->_AtomicSymbol] = ai->_ElementEnum;
-      if ( ai->_Valid && ai->_RealElement )
-      {
-        if ( ai->_AtomicSymbol.size() == 2 )
-        {
-          twoCharacterElementNames.insert(ai->_AtomicSymbol);
-        } else if ( ai->_AtomicSymbol.size() == 1 )
-        {
-          oneCharacterElementNames.insert(ai->_AtomicSymbol);
+    if ( ai->_Valid ) {
+      ei->_elementFromAtomicSymbol->setf_gethash(ai->_AtomicSymbol, core::make_fixnum(ai->_ElementEnum));
+      if ( ai->_Valid && ai->_RealElement ) {
+        if ( ai->_AtomicSymbol->symbolNameAsString().size() == 2 ) {
+          ei->_twoCharacterElementNames->setf_gethash(ai->_AtomicSymbol,_Nil<core::T_O>());
+        } else if ( ai->_AtomicSymbol->symbolNameAsString().size() == 1 ) {
+          ei->_oneCharacterElementNames->setf_gethash(ai->_AtomicSymbol,_Nil<core::T_O>());
         }
       }
     }
@@ -366,12 +355,13 @@ void initializeElementsAndHybridization()
 {
   _defineAtomicInfoMapIfNotDefined();
   core::SymbolToEnumConverter_sp elementConverter = core::SymbolToEnumConverter_O::create("Element");
-  for ( vector<AtomicInfo>::iterator ai=atomicInfo.begin(); ai!=atomicInfo.end(); ai++ )
+  ElementsInfo_sp ei = elementsInfo();
+  for ( auto ai=ei->_atomicInfo.begin(); ai!=ei->_atomicInfo.end(); ai++ )
   {
     if ( ai->_Valid )
     {
-      core::Symbol_sp sym = chemkw_intern(ai->_AtomicSymbol);
-      elementConverter->addSymbolEnumPair(sym,chemkw_intern(ai->_AtomicSymbol),ai->_ElementEnum);
+      core::Symbol_sp sym = ai->_AtomicSymbol;
+      elementConverter->addSymbolEnumPair(sym,ai->_AtomicSymbol,ai->_ElementEnum);
     }
   }
   _sym__PLUS_elementToSymbolConverter_PLUS_->defconstant(elementConverter);
@@ -380,17 +370,14 @@ void initializeElementsAndHybridization()
     // Now generate the hybridization symbols
     //
   core::SymbolToEnumConverter_sp hybridizationConverter = core::SymbolToEnumConverter_O::create("Hybridization");
-  for ( vector<HybridizationInfo>::iterator hi=hybridizationInfo.begin(); hi!=hybridizationInfo.end(); hi++ )
+  for ( auto hi=ei->_hybridizationInfo.begin(); hi!=ei->_hybridizationInfo.end(); hi++ )
   {
-    core::Symbol_sp sym = chemkw_intern(hi->_HybridizationSymbol);
-    hybridizationConverter->addSymbolEnumPair(sym,chemkw_intern(hi->_HybridizationSymbol),hi->_HybridizationEnum);
+    core::Symbol_sp sym = hi->_HybridizationSymbol;
+    hybridizationConverter->addSymbolEnumPair(sym,hi->_HybridizationSymbol,hi->_HybridizationEnum);
   }
   _sym__PLUS_hybridizationToSymbolConverter_PLUS_->defconstant(hybridizationConverter);
 
 //  core::af_def(ChemPkg,"elementFromAtomNameString",&elementFromAtomNameString);
-//  core::af_def(ChemPkg,"elementFromAtomNameStringCaseInsensitive",&elementFromAtomNameStringCaseInsensitive);
-
-
   core::Symbol_sp elementColors = _sym__PLUS_elementColors_PLUS_;
   core::HashTableEql_sp dict = core::HashTableEql_O::create_default();
   dict->setf_gethash(core::clasp_make_fixnum(element_C),geom::Color_O::systemColor(kw::_sym_cyan));
@@ -425,7 +412,8 @@ Element elementForSymbol(core::Symbol_sp sym)
 bool elementIsRealElement(Element element)
 {
   HARD_ASSERT(element>0 && element<element_MAX);
-  AtomicInfo& ai = atomicInfo[element];
+  ElementsInfo_sp ei = elementsInfo();
+  AtomicInfo& ai = ei->_atomicInfo[element];
   HARD_ASSERT(ai._Valid);
   return ai._RealElement;
 }
@@ -484,7 +472,8 @@ uint maxTotalBondOrderForElement(Element element)
 
 CL_DEFUN double vdwRadiusForElement(::chem::Element element)
 {
-  return atomicInfo[element]._VdwRadius;
+  ElementsInfo_sp ei = elementsInfo();
+  return ei->_atomicInfo[element]._VdwRadius;
 }
 
 bool elementIsHydrogen(Element e)
@@ -505,8 +494,9 @@ Element elementFromSymbol(core::Symbol_sp sym)
 
 double maximumBondLengthBetweenElements(Element ie1, Element ie2 )
 {
-  double cr1 = atomicInfo[ie1]._CovalentRadius;
-  double cr2 = atomicInfo[ie2]._CovalentRadius;
+  ElementsInfo_sp ei = elementsInfo();
+  double cr1 = ei->_atomicInfo[ie1]._CovalentRadius;
+  double cr2 = ei->_atomicInfo[ie2]._CovalentRadius;
   double maxLength = cr1+cr2+0.56;
   return maxLength;
 }
@@ -566,20 +556,22 @@ string isolateElementName(const string& name, bool caseInsensitive)
                       
 
   
-Element elementFromAtomNameStringBasic(const string& name, bool caseInsensitive)
+Element elementFromAtomNameStringBasic(const std::string& name, bool caseInsensitive)
 {
+  ElementsInfo_sp ei = elementsInfo();
   string elementName = isolateElementName(name,caseInsensitive);
+  core::Symbol_sp se = chemkw_intern(elementName);
   if ( elementName.size() == 2 ) {
-    if ( twoCharacterElementNames.count(elementName) > 0 ) {
-      Element element = elementFromAtomicSymbol[elementName];
+    if ( ei->_twoCharacterElementNames->gethash(se).fixnump() ) {
+      Element element = (Element)ei->_elementFromAtomicSymbol->gethash(se).unsafe_fixnum();
       LOG(BF("Found match element(%d)") % element );
       return element;
     }
     LOG(BF("Didn't match two character names"));
     goto NONE;
   }
-  if ( oneCharacterElementNames.count(elementName) ) {
-    Element element = elementFromAtomicSymbol[elementName];
+  if ( ei->_oneCharacterElementNames->gethash(se).fixnump() ) {
+    Element element = (Element)ei->_elementFromAtomicSymbol->gethash(se).unsafe_fixnum();
     LOG(BF("Found match element(%d)") % element );
     return element;
   }
@@ -594,7 +586,7 @@ NONE:
 
 
 
-CL_DEFUN ::chem::Element elementFromAtomNameStringCaseInsensitive(const string& name)
+CL_DEFUN ::chem::Element elementFromAtomNameStringCaseInsensitive(const std::string& name)
 {
     return elementFromAtomNameStringBasic(name,true);
 }
@@ -605,10 +597,11 @@ CL_DEFUN ::chem::Element elementFromAtomNameString(const string& name)
 }
 
 CL_DEFUN core::List_sp all_element_symbols() {
+  ElementsInfo_sp ei = elementsInfo();
   ql::list ll;
-  for ( vector<AtomicInfo>::iterator ai=atomicInfo.begin(); ai!=atomicInfo.end(); ai++ ) {
+  for ( auto ai=ei->_atomicInfo.begin(); ai!=ei->_atomicInfo.end(); ai++ ) {
     if ( ai->_Valid ) {
-      core::Symbol_sp sym = chemkw_intern(ai->_AtomicSymbol);
+      core::Symbol_sp sym = ai->_AtomicSymbol;
       ll << sym;
     }
   }
@@ -618,40 +611,45 @@ CL_DEFUN core::List_sp all_element_symbols() {
   
 CL_DEFUN chem::Element elementForAtomicNumber(int atomicNumber)
 {
-  if (atomicNumber<0 || atomicNumber>element_MAX || atomicNumberToAtomicInfoIndex[atomicNumber] ==-1 ) {
+  ElementsInfo_sp ei = elementsInfo();
+  if (atomicNumber<0 || atomicNumber>element_MAX || ei->_atomicNumberToAtomicInfoIndex[atomicNumber] ==-1 ) {
     SIMPLE_ERROR(BF("Could not determine element for atomic number %d") % atomicNumber);
   }
-  return atomicInfo[atomicNumberToAtomicInfoIndex[atomicNumber]]._ElementEnum;
+  return ei->_atomicInfo[ei->_atomicNumberToAtomicInfoIndex[atomicNumber]]._ElementEnum;
 }
 
 CL_DEFUN chem::Element elementForIntegerAtomicMass(int atomicMass)
 {
-  if (atomicMass<0 || atomicMass>element_mass_MAX || atomicMassToAtomicInfoIndex[atomicMass] ==-1 ) {
+  ElementsInfo_sp ei = elementsInfo();
+  if (atomicMass<0 || atomicMass>element_mass_MAX || ei->_atomicMassToAtomicInfoIndex[atomicMass] ==-1 ) {
     SIMPLE_ERROR(BF("Could not determine element for integer atomic mass %d") % atomicMass);
   }
-  return atomicInfo[atomicMassToAtomicInfoIndex[atomicMass]]._ElementEnum;
+  return ei->_atomicInfo[ei->_atomicMassToAtomicInfoIndex[atomicMass]]._ElementEnum;
 }
 
 CL_DEFUN uint atomicNumberForElement(chem::Element element)
 {
-    HARD_ASSERT(element>0 && element<element_MAX);
-    AtomicInfo& ai = atomicInfo[element];
-    HARD_ASSERT(ai._Valid);
-    return ai._AtomicNumber;
+  ElementsInfo_sp ei = elementsInfo();
+  HARD_ASSERT(element>0 && element<element_MAX);
+  AtomicInfo& ai = ei->_atomicInfo[element];
+  HARD_ASSERT(ai._Valid);
+  return ai._AtomicNumber;
 }
 
 CL_DEFUN uint integerAtomicMassForElement(chem::Element element)
 {
-    HARD_ASSERT(element>0 && element<element_MAX);
-    AtomicInfo& ai = atomicInfo[element];
-    HARD_ASSERT(ai._Valid);
-    return ai._IntegerAtomicMass;
+  ElementsInfo_sp ei = elementsInfo();
+  HARD_ASSERT(element>0 && element<element_MAX);
+  AtomicInfo& ai = ei->_atomicInfo[element];
+  HARD_ASSERT(ai._Valid);
+  return ai._IntegerAtomicMass;
 }
 
 CL_DEFUN double atomicWeightForElement(chem::Element element)
 {
+  ElementsInfo_sp ei = elementsInfo();
     HARD_ASSERT(element>0 && element<element_MAX);
-    AtomicInfo& ai = atomicInfo[element];
+    AtomicInfo& ai = ei->_atomicInfo[element];
     HARD_ASSERT(ai._Valid);
     return ai._RelativeAtomicWeight;
 }
