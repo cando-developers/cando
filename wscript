@@ -65,7 +65,7 @@ def build3(bld):
     task.set_outputs(bld.ccando_executable)
     bld.add_to_group(task)
 
-def build5(bld):
+def build4(bld):
     log.info("bld.stage_val cando = %d" % bld.stage_val )
     bld.add_group()
     # The following will copy cclasp-<gc> to ccando-<gc>
@@ -104,70 +104,6 @@ def build5(bld):
         link2.set_outputs( [ bld.dcando_executable ] )
         bld.add_to_group(link2)
         
-#         cando_snapshot_product = bld.variant_obj.snapshot_node(bld,appname="cando",stage='c')
-#         print("cando_snapshot_product = %s" % cando_snapshot_product)
-#         leap_snapshot_product = bld.variant_obj.snapshot_node(bld,appname="leap",stage='c')
-#         print("leap_snapshot_product = %s" % leap_snapshot_product)
-#         task_cando_snapshot = link_snapshot(env=bld.env)
-#         task_cando_snapshot.set_inputs([bld.iclasp_executable,
-#                                         bld.cclasp_link_product ])
-#         task_cando_snapshot.set_outputs([cando_snapshot_product])
-#         bld.add_to_group(task_cando_snapshot)
-#         task_leap_snapshot = link_snapshot(env=bld.env)
-#         task_leap_snapshot.set_inputs([bld.ileap_executable,
-#                                         bld.cclasp_link_product ])
-#         task_leap_snapshot.set_outputs([leap_snapshot_product])
-#         bld.add_to_group(task_leap_snapshot)
-        
-    #     bld.install_as('${PREFIX}/bin/%s' % bld.ccando_executable.name, bld.ccando_executable, chmod = Utils.O755)
-    #     print("Going to build cando")
-    # # The following will copy iclasp-<gc> to ileap-<gc>
-    # bld.ileap_executable = bld.path.find_or_declare(rename_executable(bld.iclasp_executable.abspath(),"clasp","leap"))
-    # bld.cleap_executable = bld.path.find_or_declare(rename_executable(bld.cclasp_executable.abspath(),"clasp","leap"))
-    # cp_3 = duplicate_executable(env=bld.env)
-    # cp_3.set_inputs(bld.iclasp_executable)
-    # cp_3.set_outputs(bld.path.find_or_declare(rename_executable(bld.iclasp_executable.abspath(),"clasp","leap")))
-    # bld.add_to_group(cp_3)
-    # bld.install_as('${PREFIX}/bin/%s' % bld.ileap_executable.name, bld.ileap_executable, chmod = Utils.O755)
-    # if (bld.stage_val >= 3):
-    #     # The following will copy cclasp-<gc> to cleap-<gc>
-    #     cp_4 = duplicate_executable(env=bld.env)
-    #     cp_4.set_inputs(bld.cclasp_executable)
-    #     cp_4.set_outputs(bld.path.find_or_declare(rename_executable(bld.cclasp_executable.abspath(),"clasp","leap")))
-    #     bld.add_to_group(cp_4)
-    #     bld.install_as('${PREFIX}/bin/%s' % bld.cleap_executable.name, bld.cleap_executable, chmod = Utils.O755)
-    #     print("Going to build leap")
-#     if (bld.stage_val>=5):
-#         print("bld.path.abspath() -> %s" % bld.path.abspath())
-#         extensions_result = bld.path.parent.parent.find_or_declare("%s/src/lisp/cando-user/packages.fasl" % (bld.path.abspath()))
-#         print("extensions_result -> %s" % extensions_result.abspath())
-#         bld_extensions = build_extension(env=bld.env)
-#         bld_extensions.set_inputs([bld.icando_executable,bld.cclasp_link_product,bld.cclasp_asdf_fasl]+bld.extensions_lisp_files)
-# #        bld_extensions.set_outputs([extensions_result])
-#         bld.add_to_group(bld_extensions)
-#         cando_snapshot_product = bld.variant_obj.snapshot_node(bld,appname="cando",stage='c')
-#         print("cando_snapshot_product = %s" % cando_snapshot_product)
-#         leap_snapshot_product = bld.variant_obj.snapshot_node(bld,appname="leap",stage='c')
-#         print("leap_snapshot_product = %s" % leap_snapshot_product)
-#         task_cando_snapshot = link_snapshot(env=bld.env)
-#         task_cando_snapshot.set_inputs([bld.iclasp_executable,
-#                                         bld.cclasp_link_product ])
-#         task_cando_snapshot.set_outputs([cando_snapshot_product])
-#         bld.add_to_group(task_cando_snapshot)
-#         task_leap_snapshot = link_snapshot(env=bld.env)
-#         task_leap_snapshot.set_inputs([bld.ileap_executable,
-#                                         bld.cclasp_link_product ])
-#         task_leap_snapshot.set_outputs([leap_snapshot_product])
-#         bld.add_to_group(task_leap_snapshot)
-#     bld.add_post_fun(post_install)
-#     if (bld.stage_val >= 4):
-#         # The following will copy iclasp-<gc> to icando-<gc>
-#         cp_1 = duplicate_executable(env=bld.env)
-#         cp_1.set_inputs(bld.cclasp_executable)
-#         bld.ccando_executable = bld.path.find_or_declare(rename_executable(bld.cclasp_executable.abspath(),"clasp","cando"))
-#         cp_1.set_outputs(bld.ccando_executable)
-#         bld.add_to_group(cp_1)
-#         bld.install_as('${PREFIX}/bin/%s' % bld.ccando_executable.name, bld.ccando_executable, chmod = Utils.O755)
 
 def post_install(ctx):
     print('In post_install(ctx)')
