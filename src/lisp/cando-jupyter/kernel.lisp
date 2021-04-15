@@ -147,7 +147,8 @@
             (list "{connection_file}")
             (list "-f" "no-auto-lparallel"
                   "--eval" "(ql:quickload :cando-jupyter)"
-                  "--eval" "(jupyter:run-kernel 'cando-jupyter:kernel #\"{connection_file}\")")))))
+                  "--eval" "(jupyter:run-kernel 'cando-jupyter:kernel)"
+                  "--" "{connection_file}")))))
 
 (defun install (&key bin-path system local prefix root fork)
   "Install Cando kernel.
