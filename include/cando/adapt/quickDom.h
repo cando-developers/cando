@@ -48,6 +48,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/foundation.h>
 #include <clasp/core/object.h>
 #include <clasp/core/lisp.h>
+#include <clasp/core/lispStream.h>
 #include <cando/adapt/adaptPackage.fwd.h>
 
 namespace adapt {
@@ -62,7 +63,8 @@ SMART(QDomNode );
     class QDomNode_O : public core::CxxObject_O
 {
     LISP_CLASS(adapt,AdaptPkg,QDomNode_O,"QDomNode",core::CxxObject_O);
-
+public:
+  void initialize();
 private:
     void	dumpChild( const string& prefix);
     void	dumpChildToStream( std::ostream& o, const string& prefix);
@@ -72,10 +74,11 @@ private:
 #ifdef	SAVE_XML_FILE_NAME
     string			_FileName;
 #endif
-    int				lineNumber;
-    stringstream		characters;
-    VectorQDomNodes		_children;
-    map<string,string>		attributes;
+  int				lineNumber;
+  core::StringOutputStream_sp   characters;
+  VectorQDomNodes		_children;
+public:
+  gctools::SmallMap<core::T_sp,core::T_sp>  _attributes;
 
     void	fillVectorQDomNodesIfNameIs(int depth, QDomNode_sp me, VectorQDomNodes& vnodes, const string& name);
 
@@ -111,22 +114,24 @@ CL_DEFMETHOD     void	setLocalName(const string& nm)		{this->localName = nm;};
 CL_LISPIFY_NAME("getLineNumber");
 CL_DEFMETHOD     int		getLineNumber()			{return this->lineNumber;};
 CL_LISPIFY_NAME("getCharacters");
-CL_DEFMETHOD     string	getCharacters()			{return this->characters.str();};
-    stringstream&	charactersStream()	{return this->characters;};
+  CL_DEFMETHOD     string	getCharacters()			{return gc::As<core::String_sp>(core::cl__get_output_stream_string(this->characters))->get_std_string();};
 		//
 		// getData same as getCharacters
 		//
     bool	dataIsAllWhiteSpace();
     int		dataCountNewLines();
-    string	getData()			{return this->characters.str();};
+  string	getData()			{return this->getCharacters(); };
     vector<string>	getDataAsVectorOfStrings();
     vector<int>		getDataAsVectorOfInts();
     vector<double>	getDataAsVectorOfDoubles();
 
 
 CL_LISPIFY_NAME("setCharacters");
-CL_DEFMETHOD     void	setCharacters(const string& chrs)	{this->characters.str(""); this->characters << chrs;};
-    void	appendCharacters(const string& chrs)	{this->characters << chrs; };
+CL_DEFMETHOD     void	setCharacters(const string& chrs)	{
+  this->characters->getAndReset();
+  this->characters->fill(chrs);
+};
+  void	appendCharacters(const string& chrs)	{this->characters->fill(chrs); };
 
     void	writeXml( string prefix, std::ostream& out );
     void	writeToFileName( string fileName );
@@ -160,42 +165,56 @@ CL_LISPIFY_NAME("numberOfChildren");
 CL_DEFMETHOD     int		numberOfChildren() { return this->_children.size();};
 
     core::List_sp children();
+  
+  CL_LISPIFY_NAME("hasAttribute");
+  CL_DEFMETHOD  bool	hasAttribute(const std::string& at ) {
+    core::T_sp key = core::lisp_createStr(at);
+    return this->_attributes.findEqual(key) != this->_attributes.end();
+  };
+  
+  CL_LISPIFY_NAME("getAttribute");
+  CL_DEFMETHOD  std::string getAttributeValueNoError(const std::string& at) {
+    core::T_sp key = core::lisp_createStr(at);
+    auto result = this->_attributes.findEqual(key);
+    if (result == this->_attributes.end() ) return "";
+    return gc::As<core::String_sp>(result->second)->get_std_string();
+  };
 
-CL_LISPIFY_NAME("hasAttribute");
-CL_DEFMETHOD     bool	hasAttribute(const string& at ) {
-	return this->attributes.count(at)>0;
-    };
+  std::string getAttributeValueDefault(const std::string& at, const std::string& default_ ) {
+    core::T_sp key = core::lisp_createStr(at);
+    auto result = this->_attributes.findEqual(key);
+    if (result == this->_attributes.end() ) return default_;
+    return gc::As<core::String_sp>(result->second)->get_std_string();
+  };
 
-CL_LISPIFY_NAME("removeAttribute");
-CL_DEFMETHOD     void	removeAttribute(const string& at)
-    {
-        this->attributes.erase(at);
-    }
+  std::string getAttributeValue(const std::string& at)
+  {
+    core::T_sp key = core::lisp_createStr(at);
+    auto result = this->_attributes.findEqual(key);
+    if (result != this->_attributes.end() ) return gc::As<core::String_sp>(result->second)->get_std_string();
+    SIMPLE_ERROR(BF("Missing attribute: %s file(%s) line(%d)") % at % this->getFileName() % this->getLineNumber());
+  };
 
-CL_LISPIFY_NAME("getAttribute");
-CL_DEFMETHOD     string	getAttributeValueNoError(const string& at) {
-	if ( this->attributes.count(at)>0 ) {
-	    return this->attributes[at];
-	} else {
-	    return "";	// Don't throw an error, just return a blank string
-	}
-    };
-    string	getAttributeValueDefault(const string& at,const string& df) {
-	if ( this->attributes.count(at)>0 ) {
-	    return this->attributes[at];
-	} else {
-	    return df;	// return the default value
-	}
-    };
-    string	getAttributeValue(const string& at)
-    {_OF();
-	if ( this->attributes.count(at)>0 ) {
-	    return this->attributes[at];
-	} else {
-	    SIMPLE_ERROR(BF("Missing attribute: %s file(%s) line(%d)") % at % this->getFileName() % this->getLineNumber());
-	}
-    };
+  string	getAttributeString(const string& at) {
+    return this->getAttributeValue(at);
+  };
 
+  int getAttributeInt(const string& at) {
+    return atoi(this->getAttributeValue(at).c_str());
+  };
+
+  CL_LISPIFY_NAME("getAttributeIntDefault");
+  CL_DEFMETHOD     int		getAttributeIntDefault(const string& at,int df) {
+    string res = this->getAttributeValueDefault(at,"");
+    if (res=="") return df;
+    return atoi(res.c_str());
+  };
+  CL_LISPIFY_NAME("getAttributeDouble");
+  CL_DEFMETHOD     double	getAttributeDouble(const string& at) {
+    return atof(this->getAttributeValue(at).c_str());
+  };
+  
+#if 0
 	//
 	// Overloaded versions of getAttribute
 	//
@@ -243,10 +262,6 @@ CL_DEFMETHOD     string	getAttributeValueNoError(const string& at) {
 		// These routines could throw exceptions if they
 		// found invalid data
 		//
-CL_LISPIFY_NAME("getAttributeDouble");
-CL_DEFMETHOD     double	getAttributeDouble(const string& at) {
-		return atof(this->getAttributeValue(at).c_str());
-    };
     double	getAttributeFloat(const string& at) {
 		return atof(this->getAttributeValue(at).c_str());
     };
@@ -273,17 +288,7 @@ CL_DEFMETHOD     double	getAttributeDouble(const string& at) {
 			}
 			return df;
     };
-    int		getAttributeInt(const string& at) {
-			return atoi(this->getAttributeValue(at).c_str());
-    };
-CL_LISPIFY_NAME("getAttributeIntDefault");
-CL_DEFMETHOD     int		getAttributeIntDefault(const string& at,int df) {
-			if ( this->attributes.count(at) ) {
-			    return atoi(this->getAttributeValue(at).c_str());
-			} else {
-			    return df;
-			}
-    };
+
     bool	getAttributeBool(const string& at)
     {_OF();
 	string val;
@@ -327,12 +332,14 @@ CL_DEFMETHOD     int		getAttributeIntDefault(const string& at,int df) {
 		return d;
     };
 
-
+#endif
 
     void addAttribute(const string& at, const string& val) {
-		this->attributes[at] = val;
+      core::T_sp sat = core::lisp_createStr(at);
+      core::T_sp sval = core::lisp_createStr(val);
+      this->_attributes.setEqual(sat,sval);
     };
-
+#if 0
     void addAttribute(const string& at, double val ) {
 	this->addAttributeDoubleScientific(at,val);
     };
@@ -430,7 +437,8 @@ CL_DEFMETHOD     void addAttributeInt(const string& at, int val) {
 	}
 	this->addAttribute(at,temp.str());
     };
-
+#endif
+  
     string asString();
 
     void throwErrorForChildren();

@@ -114,7 +114,9 @@ int		i;
     {
 	this->getAttributeAtIndex( i, attrName, attrVal );
 //	LOG(BF("Adding attribute: %s = %s") % (attrName.c_str()) % (attrVal.c_str() ) );
-	nd->addAttribute( attrName, attrVal );
+        core::SimpleBaseString_sp sattrName = core::SimpleBaseString_O::make(attrName);
+        core::SimpleBaseString_sp sattrVal = core::SimpleBaseString_O::make(attrVal);
+	nd->_attributes.setEqual(sattrName,sattrVal);
     }
 //    LOG(BF("Setting _currentNode to %X") % (void*)(nd) );
     this->_currentNode = nd;
@@ -145,6 +147,9 @@ void	MySaxDomHandler::ignorableWhitespace()
 }
 
 
+void QDomNode_O::initialize() {
+  this->characters = core::StringOutputStream_O::make();
+}
 
     QDomNode_sp	QDomNode_O::create(const string& name)
 {
@@ -197,37 +202,36 @@ void	QDomNode_O::throwErrorForChildrenWithoutName(string nm)
 //      Return true if the data is all white space
 bool    QDomNode_O::dataIsAllWhiteSpace()
 {_OF();
-    bool                        sawChar;
-    string                      val;
-    string::iterator    it;
-    sawChar = false;
-    val = this->characters.str();
-    for (it=val.begin();it!=val.end();it++)
+  bool                        sawChar;
+  string                      val;
+  string::iterator    it;
+  sawChar = false;
+  for (size_t idx = 0; idx<this->characters->_Contents->length(); idx++ ) {
+    claspCharacter c = cl__char(this->characters->_Contents,idx).unsafe_character();
+    if (!isspace(c))
     {
-        if (!isspace(*it))
-        {
-            LOG(BF( "isspace was false char=|%c|\n")% *it );
-            return false;
-        }
+      LOG(BF( "isspace was false char=|%c|\n")% *it );
+      return false;
     }
-    return true;
+  }
+  return true;
 }
 
 
 
 int	QDomNode_O::dataCountNewLines()
 {
-string			val;
-string::iterator	it;
-int			newLines;
-    newLines = 0;
-    val = this->characters.str();
-    for (it=val.begin();it!=val.end();it++){
-	if (*it == '\n' ) {
-	    newLines++;
-	}
+  string			val;
+  string::iterator	it;
+  int			newLines;
+  newLines = 0;
+  for (size_t idx = 0; idx<this->characters->_Contents->length(); idx++ ) {
+    claspCharacter c = cl__char(this->characters->_Contents,idx).unsafe_character();
+    if ( c == '\n' ) {
+      newLines++;
     }
-    return newLines;
+  }
+  return newLines;
 }
 
 CL_LISPIFY_NAME("isLeaf");
@@ -271,22 +275,17 @@ CL_DEFMETHOD void	QDomNode_O::appendToFileName( string fileName )
     out.close();
 }
 
-
 void	QDomNode_O::writeXml( string prefix, std::ostream& out )
 {
     gctools::Vec0<QDomNode_sp>::iterator	it;
-map<string,string>::iterator	attr;
-map<string,string>::iterator	abegin;
-map<string,string>::iterator	aend;
-bool				dataWhiteSpace;
-int				dataNewLines;
-bool				usePrefix;
+    bool				dataWhiteSpace;
+    int				dataNewLines;
+    bool				usePrefix;
     out << prefix << "<" << this->getLocalName();
-	out.flush();
-    abegin = this->attributes.begin();
-    aend = this->attributes.end();
+    out.flush();
+    
     LOG(BF("A") );
-    for ( attr=abegin; attr!=aend; attr++ ) {
+    for ( auto attr = this->_attributes.begin(); attr!=this->_attributes.end(); attr++ ) {
 	out << " " << (*attr).first << "=\"" << (*attr).second << "\"";
 	out.flush();
     }
@@ -345,6 +344,8 @@ bool				usePrefix;
     }
     LOG(BF("D") );
 }
+
+
 
 #ifdef	_DEBUG
 _CrtMemState	memoryState;
@@ -696,8 +697,8 @@ VectorQDomNodes::iterator	it;
 void	QDomNode_O::eraseAll() {
     this->parent = NULL;
     this->localName = "";
-    this->characters.str("");
-    this->attributes.erase(this->attributes.begin(), this->attributes.end());
+    this->characters->clear();
+    this->_attributes.clear();
     this->_children.clear();
 }
 
