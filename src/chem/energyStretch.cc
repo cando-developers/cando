@@ -133,6 +133,7 @@ adapt::QDomNode_sp	EnergyStretch::asXml()
 }
 #endif
 
+ 
 void	EnergyStretch::parseFromXmlUsingAtomTable(adapt::QDomNode_sp	xml, AtomTable_sp atomTable )
 {
   int	i1, i2;

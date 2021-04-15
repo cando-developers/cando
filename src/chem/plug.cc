@@ -134,33 +134,6 @@ CL_DEFMETHOD     core::Symbol_sp Plug_O::otherSidePlugName()
 }
 
 
-#ifdef XML_ARCHIVE
-void	Plug_O::archiveBase(core::ArchiveP node)
-{
-  this->Base::archiveBase(node);
-  if ( node->saving() ) this->getConstitution();
-  node->archiveWeakPointer("constitution",this->_WeakConstitution);
-#if PRODUCTION_CODE   // FIXME use "name" only and remove the test for "_key"
-  node->attribute("name",this->_Name);
-#else
-  if ( node->loading() )
-  {
-    if ( node->hasAttribute("name") )
-    {
-      node->attribute("name",this->_Name);
-    } else
-    {
-      node->attribute("_key",this->_Name);
-    }
-  } else
-  {
-    node->attribute("name",this->_Name);
-  }
-#endif
-}
-#endif
-
-
 gctools::Vec0<Mate_sp>	_EmptyMateList;
 
 gctools::Vec0<Mate_sp>::iterator	Plug_O::begin_Mates()

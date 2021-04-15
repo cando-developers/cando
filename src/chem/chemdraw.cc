@@ -260,8 +260,8 @@ void	CDBond_O::parseFromXml(adapt::QDomNode_sp xml, bool verbose)
 {
   this->_IdBegin = xml->getAttributeInt("B");
   this->_IdEnd = xml->getAttributeInt("E");
-  string order = xml->getAttributeStringDefault("Order","1");
-  string display = xml->getAttributeStringDefault("Display","");
+  string order = xml->getAttributeValueDefault("Order","1");
+  string display = xml->getAttributeValueDefault("Display","");
   if ( order == "1" ) {
     if ( display == "Dash" ) {
       this->_Order = singleDashCDBond;

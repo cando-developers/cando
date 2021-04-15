@@ -2133,7 +2133,7 @@ CL_DEFMETHOD void Minimizer_O::writeIntermediateResultsToEnergyFunction()
   this->_ScoringFunction->saveCoordinatesAndForcesFromVectors(this->_Position,this->_Force);
 }
 
-
+#if 0
 adapt::QDomNode_sp	Minimizer_O::asXml()
 {
   adapt::QDomNode_sp	xml;
@@ -2148,6 +2148,7 @@ adapt::QDomNode_sp	Minimizer_O::asXml()
   xml->addAttributeString("TruncatedNewtonPreconditioner",stringForPreconditionerType(this->_TruncatedNewtonPreconditioner));
   return xml;
 }
+#endif
 
 
 CL_LISPIFY_NAME("configurationAsString");
