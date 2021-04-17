@@ -13,7 +13,7 @@
   (:default-initargs
     :package (find-package :cando-user)
     :banner "cando-jupyter: a Cando Jupyter kernel
-(C) 2020 Christian Schafmeister (LGPL-3.0)"))
+(C) 2020-2021 Christian Schafmeister (LGPL-3.0)"))
 
 ; The readtable was copied in the original code. Do we need to do that?
 (defmethod jupyter:start :after ((k kernel))
@@ -116,12 +116,13 @@
 
 
 (defclass cando-installer (jupyter:installer)
-  ()
+  ((fork-client
+     :reader fork-client
+     :initarg :fork-client
+     :initform nil))
   (:default-initargs
     :class 'kernel
     :language +language+
-    :display-name +display-name+
-    :kernel-name +language+
     :systems '(:cando-jupyter)))
 
 (defclass system-installer (jupyter:system-installer cando-installer)
@@ -136,44 +137,40 @@
   ()
   (:documentation "cando user image installer."))
 
-(defmethod jupyter:command-line ((instance user-installer))
-  "Get the command line for a user installation."
+(defmethod jupyter:command-line ((instance cando-installer))
+  "Get the command line for a cando installation."
   (let ((implementation (jupyter:installer-implementation instance)))
-    (list
-      (or implementation
-          (first (uiop:raw-command-line-arguments))
-          (format nil "~(~A~)" (uiop:implementation-type)))
-      "-f" "no-auto-lparallel"
-      "--eval" "(ql:quickload :cando-jupyter)"
-      "--eval" "(jupyter:run-kernel 'cando-jupyter:kernel #\"{connection_file}\")")))
+    (cons (or implementation
+              (first (uiop:raw-command-line-arguments))
+              (format nil "~(~A~)" (uiop:implementation-type)))
+          (if (fork-client instance)
+            (list "{connection_file}")
+            (list "-f" "no-auto-lparallel"
+                  "--eval" "(ql:quickload :cando-jupyter)"
+                  "--eval" "(jupyter:run-kernel 'cando-jupyter:kernel)"
+                  "--" "{connection_file}")))))
 
-(defmethod jupyter:command-line ((instance system-installer))
-  "Get the command line for a system installation."
-  (let ((implementation (jupyter:installer-implementation instance)))
-    (list
-      (or implementation
-          (first (uiop:raw-command-line-arguments))
-          (format nil "~(~A~)" (uiop:implementation-type)))
-      "-f" "no-auto-lparallel"
-      "--load" (namestring (jupyter:installer-path instance :root :program :bundle))
-      "--eval" "(asdf:load-system :cando-jupyter)"
-      "--eval" "(jupyter:run-kernel 'cando-jupyter:kernel #\"{connection_file}\")")))
-
-(defun install (&key bin-path system local prefix)
+(defun install (&key bin-path system local prefix root fork)
   "Install Cando kernel.
 - `bin-path` specifies path to LISP binary.
 - `system` toggles system versus user installation.
 - `local` toggles `/usr/local/share versus` `/usr/share` for system installations.
 - `prefix` key specifies directory prefix for packaging.
-"
+- `root` key specifies the root under which the Jupyter folder is found. Is automatically determined if not provided.
+- `fork` toggles a normal client versus a fork client."
   (jupyter:install
     (make-instance
       (if system
         'system-installer
         'user-installer)
       :implementation bin-path
+      :display-name (format nil "~A (~:[Slow Start/Non-Fork~;Quick Start/Fork~])" +display-name+ fork)
+      :kernel-name (format nil "~A~:[~;_fork~]" +language+ fork)
       :local local
-      :prefix prefix)))
+      :prefix prefix
+      :fork-client fork
+      :root root)))
+
 
 (defun install-image (&key prefix)
   "Install Cando kernel based on image.
