@@ -27,6 +27,7 @@ def configure(cfg):
     cfg.check_cxx(stlib='boost_graph', cflags='-Wall', uselib_store='BOOST-boost_graph')
     cfg.check_cxx(lib='netcdf', cflags='-Wall', uselib_store='BOOST-netcdf',msg="Checking for netcdf [netcdf]")
     if (cfg.options.enable_jupyter):
+        cfg.env.enable_jupyter = True
         cfg.check_cxx(stlib='zmq', cflags='-Wall', uselib_store='ZMQ')
     cfg.define("BUILD_EXTENSION",1)   # add this whenever building an extension
 #    cfg.define("DEBUG_ENERGY_FUNCTION",1)
@@ -42,9 +43,8 @@ def rename_executable(p,frm,to):
     
 def build(bld):
     print("Recursed into bld bld.stage_val == %d" % bld.stage_val )
-    print("bld.options.enable_jupyter -> %s" % bld.options.enable_jupyter)
+    print("bld.env.enable_jupyter -> %s" % bld.env.enable_jupyter)
     bld.env.options = bld.options
-    print("bld.env.options.enable_jupyter -> %s" % bld.env.options.enable_jupyter)
     print("In extensions build bld.cclasp_executable = %s" % bld.cclasp_executable)
     print("      bld.stage_val = %s" % bld.stage_val)
     cando_project_headers_name = "include/cando/main/project_headers.h"
@@ -146,9 +146,10 @@ def post_install(ctx):
 
 class build_extension(waflib.Task.Task):
     def run(self):
-        print("In run self.env.options.enable_jupyter -> %s" % self.env.options.enable_jupyter)
+        print("In build_extension self.env.enable_jupyter -> %s" % self.env.enable_jupyter)
         cmd = [ self.inputs[0].abspath(), "-N"]
-        if (self.env.options.enable_jupyter):
+        cmd = cmd + [ "-e", "(ql:update-all-dists :prompt nil)" ]
+        if (self.env.enable_jupyter):
             cmd = cmd + [ "-e", "(ql:quickload :cando-jupyter)" ]
         saveFile = self.outputs[0].abspath()
         cmd = cmd + [ "-e", "(gctools:save-lisp-and-die \"%s\")" % saveFile ]
