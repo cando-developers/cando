@@ -103,7 +103,7 @@ def build4(bld):
         link2.set_inputs( bld.iclasp_link_task.inputs + [snapshot_object_file] ) # snapshot_file
         link2.set_outputs( [ bld.dcando_executable ] )
         bld.add_to_group(link2)
-        
+    bld.install_as('${PREFIX}/bin/cando',bld.dcando_executable)
 
 def post_install(ctx):
     print('In post_install(ctx)')
