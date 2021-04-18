@@ -64,6 +64,7 @@ def build3(bld):
     task.set_inputs(bld.iclasp_executable)
     task.set_outputs(bld.ccando_executable)
     bld.add_to_group(task)
+    bld.symlink_as('${PREFIX}/bin/icando',bld.iclasp_executable)
 
 def build4(bld):
     log.info("bld.stage_val cando = %d" % bld.stage_val )
