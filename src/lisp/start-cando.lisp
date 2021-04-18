@@ -80,10 +80,13 @@
 ;;; Setup or startup the Cando system 
 ;;; If :setup-cando is in *features* then don't load the cando system
 (progn
-  #+(or)
-  (handler-bind ((error (lambda (&rest args) (sys:safe-backtrace))))
+  (handler-bind ((error (lambda (&rest args)
+                          (format t "Quicklisp could not be located~%")
+                          (format t "(translate-logical-pathname \"quicklisp:\" -> ~s~%" (translate-logical-pathname "quicklisp:"))
+                          (format t "(ext:getenv \"CLASP_QUICKLISP_DIRECTORY\") -> ~s~%" (ext:getenv "CLASP_QUICKLISP_DIRECTORY"))
+                          (sys:safe-backtrace))))
     (load "quicklisp:setup.lisp"))
-  (load "quicklisp:setup.lisp"))
+  #+(or)(load "quicklisp:setup.lisp"))
 
 ;;; If quickclasp isn't installed then install it
 ;;; It provides extra systems for cando
