@@ -122,8 +122,6 @@ public:
 public:
   gctools::Vec0<AtomicInfo>    _atomicInfo;
   core::HashTableEq_sp      _elementFromAtomicSymbol;
-  core::HashTableEq_sp      _twoCharacterElementNames;
-  core::HashTableEq_sp      _oneCharacterElementNames;
   gctools::Vec0<HybridizationInfo>  _hybridizationInfo;
   gctools::Vec0<int>                _atomicNumberToAtomicInfoIndex;
   gctools::Vec0<int>                _atomicMassToAtomicInfoIndex;

@@ -67,8 +67,6 @@ SYMBOL_EXPORT_SC_(ChemKwPkg,I);
 
 void ElementsInfo_O::initialize() {
   this->_elementFromAtomicSymbol = core::HashTableEq_O::create_default();
-  this->_twoCharacterElementNames = core::HashTableEq_O::create_default(); 
-  this->_oneCharacterElementNames = core::HashTableEq_O::create_default();
 };
   
 ElementsInfo_sp elementsInfo() {
@@ -80,7 +78,7 @@ void set_atomic_info(Element element,const string& as, const string& name, int a
   AtomicInfo ai;
   ASSERT(element<element_MAX);
   ai._Valid=true;
-  ai._AtomicSymbol = core::Symbol_O::create_from_string(as);
+  ai._AtomicSymbol = chemkw_intern(as);
   ai._ElementEnum=element;
   ai._ElementName= core::Symbol_O::create_from_string(name);
   ai._AtomicNumber=an;
@@ -339,13 +337,6 @@ void    _defineAtomicInfoMapIfNotDefined()
   {
     if ( ai->_Valid ) {
       ei->_elementFromAtomicSymbol->setf_gethash(ai->_AtomicSymbol, core::make_fixnum(ai->_ElementEnum));
-      if ( ai->_Valid && ai->_RealElement ) {
-        if ( ai->_AtomicSymbol->symbolNameAsString().size() == 2 ) {
-          ei->_twoCharacterElementNames->setf_gethash(ai->_AtomicSymbol,_Nil<core::T_O>());
-        } else if ( ai->_AtomicSymbol->symbolNameAsString().size() == 1 ) {
-          ei->_oneCharacterElementNames->setf_gethash(ai->_AtomicSymbol,_Nil<core::T_O>());
-        }
-      }
     }
   }
 }
@@ -561,22 +552,15 @@ Element elementFromAtomNameStringBasic(const std::string& name, bool caseInsensi
   ElementsInfo_sp ei = elementsInfo();
   string elementName = isolateElementName(name,caseInsensitive);
   core::Symbol_sp se = chemkw_intern(elementName);
-  if ( elementName.size() == 2 ) {
-    if ( ei->_twoCharacterElementNames->gethash(se).fixnump() ) {
-      Element element = (Element)ei->_elementFromAtomicSymbol->gethash(se).unsafe_fixnum();
-      LOG(BF("Found match element(%d)") % element );
+  core::T_mv val = ei->_elementFromAtomicSymbol->gethash(se);
+
+  if (val.notnilp()) {
+    Element element = (Element)val.unsafe_fixnum();
+    if (ei->_atomicInfo[element]._RealElement) {
       return element;
     }
-    LOG(BF("Didn't match two character names"));
-    goto NONE;
   }
-  if ( ei->_oneCharacterElementNames->gethash(se).fixnump() ) {
-    Element element = (Element)ei->_elementFromAtomicSymbol->gethash(se).unsafe_fixnum();
-    LOG(BF("Found match element(%d)") % element );
-    return element;
-  }
-  LOG(BF("No match, returning with element=(?)"));
-NONE:
+
   core::eval::funcall(cl::_sym_warn,
                       core::Str_O::create("Could not determine element from name ~a case-insensitive(~a)"),
                       core::Str_O::create(name),
