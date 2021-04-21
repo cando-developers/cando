@@ -2024,7 +2024,7 @@ cando-extensions               : T if you want cando-extensions written to the t
             (energy-angle (core:make-cxx-object 'chem:energy-angle))
             (energy-dihedral (core:make-cxx-object 'chem:energy-dihedral))
             (energy-nonbond (core:make-cxx-object 'chem:energy-nonbond))
-            (atom-table (chem:make-atom-table))
+            (atom-table (core:make-cxx-object 'chem:atom-table))
             ;; ... more of these
             (kbs-vec (make-array (+ nbonh mbona) :element-type 'double-float))
             (r0s-vec (make-array (+ nbonh mbona) :element-type 'double-float))
@@ -2338,7 +2338,7 @@ cando-extensions               : T if you want cando-extensions written to the t
                            (cons :angle energy-angle)
                            (cons :dihedral energy-dihedral)
                            (cons :nonbond energy-nonbond)))
-              (energy-function (chem:make-energy-function)))
+              (energy-function (core:make-cxx-object 'chem:energy-function)))
           (chem:fill-energy-function-from-alist energy-function alist)
           (rlog "Returning results~%")
           (values energy-function (generate-aggregate-for-energy-function energy-function )))))))

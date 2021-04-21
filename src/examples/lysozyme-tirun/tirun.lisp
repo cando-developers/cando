@@ -38,4 +38,4 @@
   (with-open-file (sout "/tmp/graph.dot" :direction :output) (tirundot:draw-graph-stream (list worklist) sout))
   (ext:system "dot -Tpdf -O /tmp/graph.dot")
   (ext:system "open -n /tmp/graph.dot.pdf"))
-(ext:quit)
+(core:exit)

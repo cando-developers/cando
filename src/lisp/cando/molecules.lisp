@@ -222,7 +222,7 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
 
 (defun array-stereoisomers (pathname-template max-files &key (scale 20.0))
   (let* ((width (ceiling (sqrt max-files)))
-         (accumulate-aggregate (chem:make-aggregate))
+         (accumulate-aggregate (core:make-cxx-object 'chem:aggregate))
          (target-pn (make-pathname :name (format nil "~a_grid"
                                                  (pathname-name pathname-template))
                                    :defaults pathname-template)))

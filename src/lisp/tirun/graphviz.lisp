@@ -17,8 +17,7 @@
 (defgeneric label (node))
 
 (defmethod label ((node tirun:node-file))
-  (format nil "~{~a~%~}" (split-sequence:split-sequence #\/ (namestring (tirun:node-pathname node))
-                                                        :remove-empty-subseqs t)))
+  (format nil "~{~a~%~}" (core:split (namestring (tirun:node-pathname node)) "/")))
 
 (defmethod draw-node (id (node tirun:argument) stream)
   (format stream "~a [label = \"~a\",shape=rectangle];~%" id (label (tirun:node node))))
