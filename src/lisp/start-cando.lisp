@@ -106,6 +106,14 @@
   (format t "Starting cando-user~%")
   )
 
+
+(defun cl-user::start-cando-user-from-snapshot ()
+  (funcall (find-symbol "RELOAD-FOREIGN-LIBRARIES" :cffi))
+  (format t "Starting cando-user from snapshot - calling sys:cclasp-snapshot-load-top-level~%")
+  (sys::cclasp-snapshot-load-top-level)
+  )
+(export 'cl-user::start-cando-user-from-snapshot)
+
 ;; Only invoke start-cando-user if the :dont-start-cando-user feature is NOT set
 (if (null (member :dont-start-cando-user *features*))
     (start-cando-user))
