@@ -181,7 +181,7 @@
 
 
 (defun do-run-kernel-from-slime ()
-  (jupyter:run-kernel 'cando-jupyter:kernel (core:argv (1- (core:argc)))))
+  (jupyter:run-kernel 'cando-jupyter:kernel (clasp-posix:argv (1- (clasp-posix:argc)))))
 
 
 (defun run-kernel-from-slime ()
@@ -189,7 +189,7 @@
    (lambda ()
      (loop for time from 1 below 100
            do (format t "Starting kernel for the ~a time~%" time)           
-           do (jupyter:run-kernel 'cando-jupyter:kernel (core:argv (1- (core:argc))))))
+           do (jupyter:run-kernel 'cando-jupyter:kernel (clasp-posix:argv (1- (clasp-posix:argc))))))
    :name :jupyter))
 
 (defun jupyterlab ()

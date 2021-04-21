@@ -139,7 +139,7 @@ class build_extension(waflib.Task.Task):
         cmd = [ self.inputs[0].abspath(), "-N"]
         if (self.env.options.enable_jupyter):
             cmd = cmd + [ "-e", "(ql:quickload :cando-jupyter)" ]
-        cmd = cmd + [ "-e", "(core:quit)" ]
+        cmd = cmd + [ "-e", "(ext:quit)" ]
         print("build_extension cmd -> %s" % cmd)
         print("build_extension outputs -> %s" % self.outputs)
         return self.exec_command(cmd)

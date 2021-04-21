@@ -15,6 +15,7 @@
                 :leap
                 :amber
                 :alexandria
+                :split-sequence
                 #+(or):common-lisp-jupyter
                 (:version :esrap "0.15")
                 :parser.common-rules

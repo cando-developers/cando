@@ -96,7 +96,7 @@
 
 (defun array-stereoisomers (pathname-template max-files &key (scale 20.0))
   (let* ((width (ceiling (sqrt max-files)))
-         (accumulate-aggregate (core:make-cxx-object 'chem:aggregate)))
+         (accumulate-aggregate (chem:make-aggregate)))
     (dotimes (i max-files)
       (multiple-value-bind (xi yi)
           (floor i width)

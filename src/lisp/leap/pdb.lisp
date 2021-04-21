@@ -235,74 +235,74 @@ Parse the PDB line in line and populate fields in pdb-atom-reader with the data.
 If we need to read the atom position pass T for read-atom-pos. If it's a big-z PDB
 file (the Z coordinate needs an extra floating point digit) then pass big-z = T.
 If you want to check if it's a big-z file then pass check-big-z = T."
-    (labels ((my-read-from-string (str)
-               ;; bypass eclector because it's too slow
-               (with-input-from-string (sin str)
-                 (core:fast-read sin)))
-             (read-one-char (line start)
-               (let ((ch (elt line start)))
-                 (cond
-                   ((char= ch #\space)
-                    nil)
-                   ((alpha-char-p ch)
-                    (intern (string ch) :keyword))
-                   ((digit-char-p ch)
-                    (- (char-int ch) (char-int #\0)))
-                   (t nil)))))
-      (let* ((*package* (find-package :keyword))
-             (head (string-right-trim '(#\space) (subseq line 0 (min 6 (length line))))))
-        (cond 
-          ((or (string= head "ATOM") (string= head "HETATM"))
-           ;; If we are checking if it's a big-z pdb file then
-           ;; test if the 52nd char is #\. - if it is - it's a big-z file
-           (when check-big-z
-             (when (char= (elt line 52) #\.)
-               (format t "~a~%" line)
-               (format t "(elt line 52) = ~a~%" (elt line 52))
-               (setf big-z t)))
-           (values
-            (list* (if (string= head "ATOM") :atom :hetatm)
-                   (parse-integer line :start 6 :end 12) ; atom-serial
-                   (let ((*readtable* *quote-readtable*))
-                     (parse-atom-name line))
-                   (read-one-char line 16) ; alt-loc
-                   (intern (string-trim '(#\space) (subseq line 17 20)) :keyword) ; residue-name
-                   (read-one-char line 21)                ; chainid
-                   (parse-integer line :start 22 :end 26) ; res-seq
-                   (read-one-char line 26)                ; chainid
-                   (if read-atom-pos
-                       #+(or)(list 
-                              (my-read-from-string line t nil :start 30 :end 38) ; x
-                              (my-read-from-string line t nil :start 38 :end 46) ; y
-                              (my-read-from-string line t nil :start 46 :end 54)) ; z
-                       (list
-                        (parse-fixed-double (subseq line 30 38))
-                        (parse-fixed-double (subseq line 38 46))
-                        (parse-fixed-double (subseq line 46 (if big-z 55 54))))
-                       nil))
-            big-z))
-          ((string= head "TER") (list :ter))
-          ((string= head "MTRIX" :start1 0 :end1 5)
-           (list (intern head :keyword)
-                 (my-read-from-string line t nil :start 7 :end 10)
-                 (my-read-from-string line t nil :start 10 :end 20)
-                 (my-read-from-string line t nil :start 20 :end 30)
-                 (my-read-from-string line t nil :start 30 :end 40)
-                 (my-read-from-string line t nil :start 45 :end 55)
-                 (my-read-from-string line t nil :start 59 :end 60)))
-          ((string= head "CONECT")
-           (list* :conect
-                  (parse-integer line :start 7 :end 11)
-                  (loop for (start . end) in '((12 . 16) (17 . 21 ) (22 . 26 ) (27 . 31 ) (32 . 36 ) (37 . 41 ) (42 . 46 ) (47 . 51 ) (52 . 56 ) (57 . 61 ))
-                        until (> start (length line))
-                        collect (parse-integer line :start start :end end :junk-allowed t))))
-          ((string= head "SSBOND")
-           (list :ssbond
-                 (read-one-char line 15)
-                 (parse-integer (string-trim '(#\space #\tab) (subseq line 17 21)))
-                 (read-one-char line 29)
-                 (parse-integer (string-trim '(#\space #\tab) (subseq line 31 35)))))
-          (t nil)))))
+  (labels ((my-read-from-string (str)
+             ;; bypass eclector because it's too slow
+             (with-input-from-string (sin str)
+               (core:fast-read sin)))
+           (read-one-char (line start)
+             (let ((ch (elt line start)))
+               (cond
+                 ((char= ch #\space)
+                  nil)
+                 ((alpha-char-p ch)
+                  (intern (string ch) :keyword))
+                 ((digit-char-p ch)
+                  (- (char-int ch) (char-int #\0)))
+                 (t nil)))))
+    (let* ((*package* (find-package :keyword))
+           (head (string-right-trim '(#\space) (subseq line 0 (min 6 (length line))))))
+      (cond
+        ((or (string= head "ATOM") (string= head "HETATM"))
+         ;; If we are checking if it's a big-z pdb file then
+         ;; test if the 52nd char is #\. - if it is - it's a big-z file
+         (when check-big-z
+           (when (char= (elt line 52) #\.)
+             (format t "~a~%" line)
+             (format t "(elt line 52) = ~a~%" (elt line 52))
+             (setf big-z t)))
+         (values
+          (list* (if (string= head "ATOM") :atom :hetatm)
+                 (parse-integer line :start 6 :end 12) ; atom-serial
+                 (let ((*readtable* *quote-readtable*))
+                   (parse-atom-name line))
+                 (read-one-char line 16) ; alt-loc
+                 (intern (string-trim '(#\space) (subseq line 17 20)) :keyword) ; residue-name
+                 (read-one-char line 21)                ; chainid
+                 (parse-integer line :start 22 :end 26) ; res-seq
+                 (read-one-char line 26)                ; chainid
+                 (if read-atom-pos
+                     #+(or)(list
+                            (my-read-from-string line t nil :start 30 :end 38) ; x
+                            (my-read-from-string line t nil :start 38 :end 46) ; y
+                            (my-read-from-string line t nil :start 46 :end 54)) ; z
+                     (list
+                      (parse-fixed-double (subseq line 30 38))
+                      (parse-fixed-double (subseq line 38 46))
+                      (parse-fixed-double (subseq line 46 (if big-z 55 54))))
+                     nil))
+          big-z))
+        ((string= head "TER") (list :ter))
+        ((string= head "MTRIX" :start1 0 :end1 5)
+         (list (intern head :keyword)
+               (my-read-from-string line t nil :start 7 :end 10)
+               (my-read-from-string line t nil :start 10 :end 20)
+               (my-read-from-string line t nil :start 20 :end 30)
+               (my-read-from-string line t nil :start 30 :end 40)
+               (my-read-from-string line t nil :start 45 :end 55)
+               (my-read-from-string line t nil :start 59 :end 60)))
+        ((string= head "CONECT")
+         (list* :conect
+                (parse-integer line :start 7 :end 11)
+                (loop for (start . end) in '((12 . 16) (17 . 21 ) (22 . 26 ) (27 . 31 ) (32 . 36 ) (37 . 41 ) (42 . 46 ) (47 . 51 ) (52 . 56 ) (57 . 61 ))
+                      until (> start (length line))
+                      collect (parse-integer line :start start :end end :junk-allowed t))))
+        ((string= head "SSBOND")
+         (list :ssbond
+               (read-one-char line 15)
+               (parse-integer (string-trim '(#\space #\tab) (subseq line 17 21)))
+               (read-one-char line 29)
+               (parse-integer (string-trim '(#\space #\tab) (subseq line 31 35)))))
+        (t nil)))))
 
 
 

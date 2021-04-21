@@ -41,7 +41,7 @@
   (let ((*package* (find-package :keyword)))
     (cl:format nil "~{~s~%~}"
                '((tirun::tirun-charge ":%TIRUNS%" ":%OUTPUT%")
-                 (core:exit)))))
+                 (ext:quit)))))
 
 
 (defparameter *solvate-addion-morph-side-script*
@@ -88,7 +88,7 @@
                  (ensure-jobs-directories-exist (pathname ":%COORDINATES%"))
                  (leap.topology:save-amber-parm-format *system* ":%TOPOLOGY%" ":%COORDINATES%"
                   :residue-name-to-pdb-alist (tirun:residue-name-to-pdb-alist *tiruns*))
-                 (core:exit)))))
+                 (ext:quit)))))
 
 (defparameter *prepare-min-in*
 "minimisation
@@ -245,7 +245,7 @@
                    ":%TOPOLOGY%" ":%COORDINATES%"
                    ":%DECHARGE-MOL2%"
                    ":%DECHARGE-TOPOLOGY%" ":%DECHARGE-COORDINATES%")
-                 (core:exit)))))
+                 (ext:quit)))))
 
 (defparameter *recharge*
   (let ((*package* (find-package :keyword)))
@@ -256,7 +256,7 @@
                    ":%TOPOLOGY%" ":%COORDINATES%"
                    ":%RECHARGE-MOL2%"
                    ":%RECHARGE-TOPOLOGY%" ":%RECHARGE-COORDINATES%")
-                 (core:exit)))))
+                 (ext:quit)))))
 
 (defparameter *decharge-recharge-heat-in* 
   "heating
@@ -526,7 +526,7 @@ TypeVDW, smooth_step2, complementary, 0.0, 1.0
   
 (main)
 (format t \"Done getdvdl~%\")
-(core:quit)
+(ext:quit)
 "
   #+(or)
   "import math
@@ -675,7 +675,7 @@ if __name__ == '__main__':
 		   (let ((result (list (cons :%SIDE-NAME% (list (cons :parts parts) (cons :total total))))))
                      (with-open-file (fout ":%SIDE-ANALYSIS%" :direction :output)
 				     (format fout "~s~%" result))))
-                 (core:exit 0)))))
+                 (ext:quit 0)))))
 
 (defparameter *combine-sides*
   (let ((*package* (find-package :keyword)))
@@ -699,7 +699,7 @@ if __name__ == '__main__':
 				   (format fout ";;; Is the sign right? complex-total - ligand-total~%")
 				   (format fout "~s~%" result))
 		   (format t "~s~%" result))
-                 (core:exit 0)))))
+                 (ext:quit 0)))))
 
 ;;; ------------------------------------------------------------
 ;;;
@@ -1491,21 +1491,21 @@ try_special \"$@\"
 # if try_special didn't like it execute directly
 exec \"$@\"
 "))
-    (core:chmod "runcmd_simple" #o755))
+    (clasp-posix:chmod "runcmd_simple" #o755))
   (let ((run-in-docker-file #P"source-dir:extensions;cando;src;data;common;run-in-docker"))
     (unless (probe-file run-in-docker-file)
       (error "Could not find file ~s~%" run-in-docker-file))
     (let ((run-in-docker (read-file (probe-file run-in-docker-file))))
       (with-open-file (fout "run-in-docker" :direction :output :if-exists :supersede)
         (write-string run-in-docker fout))
-      (core:chmod "run-in-docker" #o755)))
+      (clasp-posix:chmod "run-in-docker" #o755)))
   (let ((runcmd_with_docker-file #P"source-dir:extensions;cando;src;data;common;runcmd_with_docker"))
     (unless (probe-file runcmd_with_docker-file)
       (error "Could not find file ~s~%" runcmd_with_docker-file))
     (let ((runcmd_with_docker (read-file (probe-file runcmd_with_docker-file))))
       (with-open-file (fout "runcmd_with_docker" :direction :output :if-exists :supersede)
         (write-string runcmd_with_docker fout))
-      (core:chmod "runcmd_with_docker" #o755)))
+      (clasp-posix:chmod "runcmd_with_docker" #o755)))
   )
 
 

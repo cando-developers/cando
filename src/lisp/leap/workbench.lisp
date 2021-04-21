@@ -239,7 +239,7 @@ leap.core::*path*
 
 
 (progn
-  (defparameter *ef* (core:make-cxx-object 'chem:energy-function))
+  (defparameter *ef* (chem:make-energy-function))
   (defparameter *ff* (energy:setup-amber))
   (chem:generate-standard-energy-function-tables *ef* *1mil* *amber*)
   (chem:summarize-terms *ef*))
