@@ -1,6 +1,6 @@
 (setup-default-paths)
 (load-atom-type-rules "ATOMTYPE_GFF.DEF")
-(source "leaprc.ff14SB.redq")
+(source "leaprc.ff14SB.redq" :verbose t)
 (source "leaprc.gaff")
 (defparameter tiruns (tirun:make-tirun))
 (defparameter sk (load-chem-draw "ligands.cdxml"))

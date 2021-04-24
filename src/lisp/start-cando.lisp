@@ -110,6 +110,7 @@
 (defun cl-user::start-cando-user-from-snapshot ()
   (funcall (find-symbol "RELOAD-FOREIGN-LIBRARIES" :cffi))
   (format t "Starting cando-user from snapshot - calling sys:cclasp-snapshot-load-top-level~%")
+;;;  (setf *package* (find-package :cando-user))
   (sys::cclasp-snapshot-load-top-level)
   )
 (export 'cl-user::start-cando-user-from-snapshot)

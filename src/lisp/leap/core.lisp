@@ -176,12 +176,19 @@ Lookup the object in the variable space."
                      (:s-expr
                       (destructuring-bind (&key s-expr value bounds)
                           node
+                        (when *load-verbose*
+                          (format t "; eval ~a~%" value))
                         (eval value)))
                      (:function
-                      (apply (function-lookup name environment)
-                             (first (funcall recurse :relations '(:argument)))))
+                      (let ((function-name (function-lookup name environment))
+                            (args (first (funcall recurse :relations '(:argument)))))
+                        (when *load-verbose*
+                          (format t "; eval ~a ~a~%" function-name args))
+                        (apply function-name args)))
                      (:assignment
                       (let ((value (first (first (funcall recurse :relations '(:value))))))
+                        (when *load-verbose*
+                          (format t "; eval ~a = ~a~%" name value))
                         (register-variable name (lookup-variable value))))
                      (t
                       (funcall recurse))))

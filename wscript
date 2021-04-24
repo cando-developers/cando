@@ -70,6 +70,8 @@ def build4(bld):
     log.info("bld.stage_val cando = %d" % bld.stage_val )
     bld.add_group()
     bld_extensions = build_cando_extension(env=bld.env)
+    cando_system_files = bld.path.ant_glob("src/lisp/**/*.lisp")
+    log.info("cando_system_files = %s" % cando_system_files )
     start_cando_file = bld.path.find_node("src/lisp/start-cando.lisp")
     if (start_cando_file == None):
        raise Exception("Could not fild start_cando_file")       
@@ -78,7 +80,7 @@ def build4(bld):
     log.info("snapshot_file -> %s" % snapshot_file.abspath())
     bld_extensions.set_inputs([bld.ccando_executable,
                                bld.cclasp_link_product,
-                               start_cando_file])
+                               start_cando_file] + cando_system_files )
     bld_extensions.set_outputs([snapshot_file])
     bld.add_to_group(bld_extensions)
     bld.add_group()

@@ -34,7 +34,7 @@
              (format t "~s ~s~%" k (mapcar #'identity (chem:force-fields-as-list v))))
            leap.core:*force-fields*))
 
-(defun source (filename)
+(defun source (filename &key verbose)
 "    source filename
       STRING                       _filename_
 
@@ -49,7 +49,8 @@ leap path list so that files local to the script can be loaded.
                  p))
          (entire-file (alexandria:read-file-into-string path))
          (ast (architecture.builder-protocol:with-builder ('list)
-                (esrap:parse 'leap.parser:leap entire-file))))
+                (esrap:parse 'leap.parser:leap entire-file)))
+         (*load-verbose* verbose))
     (leap.core:with-path (namestring (make-pathname :directory (pathname-directory path)))
       (leap.core:evaluate 'list ast leap.core:*leap-env*)))
   t)
