@@ -1308,10 +1308,6 @@ public:
   void buildFromRoot_(); 
   void fixupInternalsForImageSaveLoad(imageSaveLoad::Fixup* fixup) {
     if (imageSaveLoad::operation(fixup) == imageSaveLoad::SaveOp) {
-      this->_nodes_to_index = _Unbound<core::HashTableEq_O>();
-      this->_nodeOrder.clear();
-      this->_atomNodes.clear();
-      this->_bondNodes.clear();
       this->_chemInfoGraph = NULL;
     } else if (imageSaveLoad::operation(fixup) == imageSaveLoad::LoadOp) {
       this->initialize();
