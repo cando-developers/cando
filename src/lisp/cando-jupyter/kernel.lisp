@@ -119,6 +119,10 @@
   ((fork-client
      :reader fork-client
      :initarg :fork-client
+     :initform nil)
+   (image
+     :reader image
+     :initarg :image
      :initform nil))
   (:default-initargs
     :class 'kernel
@@ -145,12 +149,13 @@
               (format nil "~(~A~)" (uiop:implementation-type)))
           (if (fork-client instance)
             (list "{connection_file}")
-            (list "-f" "no-auto-lparallel"
-                  "--eval" "(ql:quickload :cando-jupyter)"
-                  "--eval" "(jupyter:run-kernel 'cando-jupyter:kernel)"
-                  "--" "{connection_file}")))))
+            (append (list "-f" "no-auto-lparallel")
+                    (unless (image instance)
+                      (list "--eval" "(ql:quickload :cando-jupyter)"))
+                    (list "--eval" "(jupyter:run-kernel 'cando-jupyter:kernel)"
+                          "--" "{connection_file}"))))))
 
-(defun install (&key bin-path system local prefix root fork)
+(defun install (&key bin-path system local prefix root fork image)
   "Install Cando kernel.
 - `bin-path` specifies path to LISP binary.
 - `system` toggles system versus user installation.
@@ -164,15 +169,17 @@
         'system-installer
         'user-installer)
       :implementation bin-path
-      :display-name (format nil "~A (~:[Slow Start/Non-Fork~;Quick Start/Fork~])" +display-name+ fork)
+      :display-name (format nil "~A ~:[~;(Fork)~]" +display-name+ fork)
       :kernel-name (format nil "~A~:[~;_fork~]" +language+ fork)
       :local local
       :prefix prefix
+      :image image
       :fork-client fork
       :root root)))
 
 
-(defun install-image (&key prefix)
+;; cando doesn't create images on the fly yet.
+#+(or)(defun install-image (&key prefix)
   "Install Cando kernel based on image.
 - `prefix` key specifies directory prefix for packaging."
   (jupyter:install
