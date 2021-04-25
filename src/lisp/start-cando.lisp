@@ -108,8 +108,13 @@
 
 
 (defun cl-user::start-cando-user-from-snapshot ()
-  (funcall (find-symbol "RELOAD-FOREIGN-LIBRARIES" :cffi))
-  (format t "Starting cando-user from snapshot - calling sys:cclasp-snapshot-load-top-level~%")
+  (let ((list-foreign-library-sym (find-symbol "LIST-FOREIGN-LIBRARIES" :cffi))
+        (load-foreign-library-sym (find-symbol "LOAD-FOREIGN-LIBRARY" :cffi))
+        (foreign-library-name-sym (find-symbol "FOREIGN-LIBRARY-NAME" :cffi)))
+    (let ((foreign-libraries (funcall list-foreign-library-sym :loaded-only nil)))
+      (loop for lib in foreign-libraries
+            for name = (funcall foreign-library-name-sym lib)
+            do (funcall load-foreign-library-sym name))))
 ;;;  (setf *package* (find-package :cando-user))
   (sys::cclasp-snapshot-load-top-level)
   )
