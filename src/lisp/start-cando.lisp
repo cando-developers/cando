@@ -115,9 +115,9 @@
       (loop for lib in foreign-libraries
             for name = (funcall foreign-library-name-sym lib)
             do (funcall load-foreign-library-sym name))))
-;;;  (setf *package* (find-package :cando-user))
-  (sys::cclasp-snapshot-load-top-level)
-  )
+  (let ((*package* (find-package :cando-user)))
+    (format t "Starting shell with package: ~s~%" *package*)
+    (sys::cclasp-snapshot-load-top-level)))
 (export 'cl-user::start-cando-user-from-snapshot)
 
 ;; Only invoke start-cando-user if the :dont-start-cando-user feature is NOT set

@@ -1440,9 +1440,7 @@ Provide a list of commands that cleap has available to mimic tleap."
                                  (lambda (c)
                                    (format t "hander-bind Encountered error ~s while parsing ~s~%" c code))))
                   (esrap:parse 'leap.parser:leap code)))))
-    (core:call-with-stack-top-hint
-     (lambda ()
-       (leap.core:evaluate 'list ast leap.core:*leap-env*)))))
+    (leap.core:evaluate 'list ast leap.core:*leap-env*)))
 
 (defun leap-repl ()
   (process-command-line-options)

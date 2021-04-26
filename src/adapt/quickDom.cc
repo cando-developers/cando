@@ -148,7 +148,7 @@ void	MySaxDomHandler::ignorableWhitespace()
 
 
 void QDomNode_O::initialize() {
-  this->characters = core::StringOutputStream_O::make();
+  this->characters = gc::As<core::StringOutputStream_sp>(core::cl__make_string_output_stream(cl::_sym_base_char));
 }
 
     QDomNode_sp	QDomNode_O::create(const string& name)

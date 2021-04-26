@@ -612,7 +612,9 @@ CL_DEFMETHOD     Bond_sp Atom_O::bondTo( Atom_sp to, BondOrder o )
 	// throw an exception if there is
   Atom_sp from = this->sharedThis<Atom_O>();
   VectorBond::iterator	b;
-  for ( b=this->bonds.begin();b!=this->bonds.end() ; b++ )
+  VectorBond::iterator  begin(this->bonds.begin());;
+  VectorBond::iterator  end(this->bonds.end());
+  for ( b=begin;b!=end ; b++ )
   {
     if ( (*b)->getOtherAtom(from) == to )
     {

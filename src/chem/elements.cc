@@ -105,7 +105,6 @@ void    _defineAtomicInfoMapIfNotDefined()
     printf("%s:%d:%s Returning immediatly\n", __FILE__, __LINE__, __FUNCTION__ );
     return;
   }
-  printf("%s:%d:%s Defining \n", __FILE__, __LINE__, __FUNCTION__ );
   AtomicInfo	invalid;
   invalid._Valid = false;
   GC_ALLOCATE(ElementsInfo_O,ei);

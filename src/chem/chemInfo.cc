@@ -157,7 +157,6 @@ void walk_nodes(ChemInfoNode_sp node, std::function<void(ChemInfoNode_sp)> const
   }
 }
 
-__attribute__((optnone))
 void walk_nodes_with_parent(core::T_sp parent, ChemInfoNode_sp node, std::function<bool(core::T_sp,ChemInfoNode_sp)> const &fn) {
   bool descend = fn(parent,node);
   if (descend) {
@@ -2859,7 +2858,6 @@ CL_DEFUN ChemInfoGraph_sp chem__make_chem_info_graph(Root_sp pattern)
   return graph;
 }
 
-__attribute__((optnone))
 void ChemInfoGraph_O::buildFromRoot_() {
   if (chem__verbose(1)) {
     core::write_bf_stream(BF("Starting make-chem-info-graph\n"));

@@ -492,6 +492,9 @@ void ReadAmberParameters_O::parseNonbondDb(core::T_sp fin, FFNonbondDb_sp ffNonb
       core::T_sp tedep = core::oThird(parts);
       if ( ffNonbondDb->hasType(stype) ) {
         ffNonbond = gc::As_unsafe<FFNonbond_sp>(ffNonbondDb->FFNonbond_findType(stype));
+        if (!ffNonbond.raw_()) {
+          SIMPLE_ERROR(BF("The ffNonbond was not located for %s") % core::_rep_(stype));
+        }
       } else {
         SIMPLE_ERROR(BF("Could not find type: %s") % _rep_(stype));
       }
@@ -501,9 +504,14 @@ void ReadAmberParameters_O::parseNonbondDb(core::T_sp fin, FFNonbondDb_sp ffNonb
 //	    print ffNonbond.asXml().asString()
       ffNonbond->setRadius_Angstroms(radius);
       ffNonbond->setEpsilon_kCal(edep);
-      if(ffNonbond->getSameParms().notnilp())
+      if(ffNonbond->getSameParms().boundp())
       {
-        string sameparms = gc::As<core::String_sp>(ffNonbond->getSameParms())->get_std_string();
+        core::T_sp tstr = ffNonbond->getSameParms();
+        if (!gc::IsA<core::String_sp>(tstr)) {
+          SIMPLE_ERROR(BF("Did not get string from ffNonbond->getSameParms() for %s - got %s\n") % core::_rep_(ffNonbond) % core::_rep_(tstr));
+        }
+        core::String_sp sstr = gc::As<core::String_sp>(tstr);
+        string sameparms = sstr->get_std_string();
         vector<string> sameParmsParts = core::split(sameparms);
         for ( vector<string>::iterator it=sameParmsParts.begin(); it!=sameParmsParts.end(); it++ )
         {
@@ -540,6 +548,7 @@ void ReadAmberParameters_O::parseAtomEquivalences(core::T_sp fin, FFNonbondDb_sp
     line = core::trimWhiteSpace(line);
     if ( line.size() == 0 ) break;
     else {
+      printf("%s:%d:%s line: |%s|\n", __FILE__, __LINE__, __FUNCTION__, line.c_str());
       FFNonbond_sp ffNonbond;
       string type = core::trimWhiteSpace(line.substr(0,4));
       core::Symbol_sp stype = chemkw_intern(type);
@@ -549,6 +558,7 @@ void ReadAmberParameters_O::parseAtomEquivalences(core::T_sp fin, FFNonbondDb_sp
         SIMPLE_ERROR(BF("Could not find type: %s") % type);
       }
       string params = core::trimWhiteSpace(line.substr(4));
+      printf("%s:%d:%s ffNonbond %s -> setSameParams(%s)\n", __FILE__, __LINE__, __FUNCTION__, core::_rep_(ffNonbond).c_str(), params.c_str());
       ffNonbond->setSameParms(core::SimpleBaseString_O::make(params));
     }
     if (line=="") return;
