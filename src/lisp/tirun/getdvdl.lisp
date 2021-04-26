@@ -138,5 +138,5 @@
   
 (main)
 (format t "Done getdvdl~%")
-(core:quit)
+(ext:quit)
 

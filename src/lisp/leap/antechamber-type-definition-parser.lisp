@@ -58,9 +58,7 @@
                   (core:make-cxx-object 'chem:fftype-rule
                                         :test (core:make-cxx-object 'chem:antechamber-root
                                                                     :id (incf *next-chem-info-id*)
-                                                                    :node (core:make-cxx-object 'chem:chain
-                                                                                                :head focus
-                                                                                                :tail chemical-environment)
+                                                                    :node (chem:make-chain.head.tail focus chemical-environment)
                                                                     :after-match-tests bond-definitions
                                                                     :wild-dict *wild-dict*)
                                         :type (intern type-name :keyword)))))
@@ -79,9 +77,7 @@
                   (core:make-cxx-object 'chem:fftype-rule
                                         :test (core:make-cxx-object 'chem:antechamber-root
                                                                     :id (incf *next-chem-info-id*)
-                                                                    :node (core:make-cxx-object 'chem:chain
-                                                                                                :head focus
-                                                                                                :tail chemical-environment)
+                                                                    :node (chem:make-chain.head.tail focus chemical-environment)
                                                                     :wild-dict *wild-dict*)
                                         :type (intern type-name :keyword)))))
 

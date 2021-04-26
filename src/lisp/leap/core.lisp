@@ -117,7 +117,7 @@ for a list of symbols.  When they ask for a list of symbols we use this list."))
        ;;
        (when (and (symbolp name) (typep new-value 'chem:topology))
          (cando:register-topology new-value name))
-       (core:*make-special name)
+       (setf (ext:specialp name) t)
        (set name new-value))
       (t (error "What do you do with name: ~s" name)))))
 

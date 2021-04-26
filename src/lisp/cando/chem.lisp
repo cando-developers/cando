@@ -147,7 +147,7 @@ for the node in the table."))
 
 (defmethod chem:make-node-table-from-graph ((molecule chem:molecule) nonbond-force-field)
   "Construct a chem:atom-table from a molecule."
-  (let ((atom-table (core:make-cxx-object 'chem:atom-table)))
+  (let ((atom-table (chem:make-atom-table)))
     (chem:construct-from-molecule atom-table molecule nonbond-force-field nil)
     atom-table))
 

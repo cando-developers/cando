@@ -9,4 +9,4 @@
 (defun start-swank (&rest args)
   (suppress "start-swank"))
 (defun mpi-quit ()
-  (core:quit))
+  (ext:quit))

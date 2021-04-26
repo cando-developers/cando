@@ -630,7 +630,7 @@ Load an aggregate from a ChemDraw cdxml file and return it."
   (chem:compile-smarts smarts-string :tests tests))
     
 (defun leap-quit ()
-  (core:quit))
+  (ext:quit))
 
 (defun leap-cando ()
   "
@@ -1471,7 +1471,7 @@ Provide a list of commands that cleap has available to mimic tleap."
         (format t "Entering cando repl - use (leap) to re-enter leap.~%"))
       (progn
         (format t "Leaving leap~%")
-        (core:exit 0))))
+        (ext:quit 0))))
 
 
 

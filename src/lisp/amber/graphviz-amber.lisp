@@ -12,7 +12,8 @@
 (defgeneric label (node))
 
 (defmethod label ((node amber:node-file))
-  (format nil "~{~a~%~}" (core:split (namestring (amber:node-pathname node)) "/")))
+  (format nil "~{~a~%~}" (split-sequence:split-sequence #\/ (namestring (amber:node-pathname node))
+                                                        :remove-empty-subseqs t)))
 
 (defmethod draw-node (id (node amber:argument) stream)
   (format stream "~a [label = \"~a\",shape=rectangle];~%" id (label (amber:node node))))
