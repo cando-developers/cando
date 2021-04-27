@@ -81,6 +81,7 @@
 ;;; If :setup-cando is in *features* then don't load the cando system
 (progn
   (handler-bind ((error (lambda (&rest args)
+                          (declare (ignore args))
                           (format t "Quicklisp could not be located~%")
                           (format t "(translate-logical-pathname \"quicklisp:\" -> ~s~%" (translate-logical-pathname "quicklisp:"))
                           (format t "(ext:getenv \"CLASP_QUICKLISP_DIRECTORY\") -> ~s~%" (ext:getenv "CLASP_QUICKLISP_DIRECTORY"))
