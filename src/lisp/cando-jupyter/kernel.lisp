@@ -5,8 +5,10 @@
 
 (defparameter *leap-syntax* t)
 
+
 (defun leap-syntax-enable (on)
   (setq *leap-syntax* on))
+
 
 (defclass kernel (common-lisp-jupyter:kernel)
   ()
@@ -14,6 +16,7 @@
     :package (find-package :cando-user)
     :banner "cando-jupyter: a Cando Jupyter kernel
 (C) 2020-2021 Christian Schafmeister (LGPL-3.0)"))
+
 
 ; The readtable was copied in the original code. Do we need to do that?
 (defmethod jupyter:start :after ((k kernel))
@@ -33,9 +36,11 @@
     (error "The lparallel:*kernel* is not NIL and it must be when jupyter starts.   Add -f no-auto-lparallel to cando startup"))
   (setf lparallel:*kernel* (lparallel:make-kernel (core:num-logical-processors))))
 
+
 (defmethod jupyter:stop :after ((k kernel))
   #+(or)(format t "jupyter:stop :after (mp:all-processes) -> ~s~%" (mp:all-processes))
   (lparallel:end-kernel :wait t))
+
 
 (defun lisp-code-p (code)
   (do ((index 0 (1+ index)))
@@ -47,24 +52,30 @@
       (otherwise
         (return nil)))))
 
+
 (defun leap-read (code)
   (architecture.builder-protocol:with-builder ('list)
     (esrap:parse 'leap.parser::leap code)))
 
+
 (defun leap-eval (ast)
   (jupyter:handling-errors
-    ; Not sure if leap needs its own result handler
-    (jupyter:make-lisp-result
-      (leap.core:evaluate 'list ast leap.core:*leap-env*))))
+    (leap.core:evaluate 'list ast leap.core:*leap-env*)))
+
 
 (defmethod jupyter:evaluate-code ((k kernel) code)
   (if (or (not *leap-syntax*)
           (lisp-code-p code))
     (call-next-method)
-    (let ((ast (jupyter:handling-errors (leap-read code))))
-      (if (typep ast 'jupyter:result)
-        ast
-        (list (leap-eval ast))))))
+    (multiple-value-bind (ast ename evalue traceback)
+                         (jupyter:handling-errors (leap-read code))
+      (if ename
+        (values ename evalue traceback))
+        (multiple-value-bind (result ename evalue traceback)
+                             (jupyter:handling-errors (leap-eval ast))
+          (if ename
+            (values ename evalue traceback)
+            (jupyter:execute-result result))))))
 
 
 (defun leap-locate (ast cursor-pos &optional child-pos parents)
@@ -112,7 +123,8 @@
                  (eql :instruction (caadr fragment)))
         (complete-command match-set (symbol-name (getf (car fragment) :value))
               (car (getf (car fragment) :bounds))
-              (cdr (getf (car fragment) :bounds)))))))
+              (cdr (getf (car fragment) :bounds))))
+      (values))))
 
 
 (defclass cando-installer (jupyter:installer)
@@ -129,17 +141,21 @@
     :language +language+
     :systems '(:cando-jupyter)))
 
+
 (defclass system-installer (jupyter:system-installer cando-installer)
   ()
   (:documentation "cando system installer."))
+
 
 (defclass user-installer (jupyter:user-installer cando-installer)
   ()
   (:documentation "cando user installer."))
 
+
 (defclass user-image-installer (jupyter:user-image-installer cando-installer)
   ()
   (:documentation "cando user image installer."))
+
 
 (defmethod jupyter:command-line ((instance cando-installer))
   "Get the command line for a cando installation."
@@ -154,6 +170,7 @@
                       (list "--eval" "(ql:quickload :cando-jupyter)"))
                     (list "--eval" "(jupyter:run-kernel 'cando-jupyter:kernel)"
                           "--" "{connection_file}"))))))
+
 
 (defun install (&key bin-path system local prefix root fork image)
   "Install Cando kernel.
@@ -198,6 +215,7 @@
            do (format t "Starting kernel for the ~a time~%" time)           
            do (jupyter:run-kernel 'cando-jupyter:kernel (clasp-posix:argv (1- (clasp-posix:argc))))))
    :name :jupyter))
+
 
 (defun jupyterlab ()
   (run-kernel-from-slime))
