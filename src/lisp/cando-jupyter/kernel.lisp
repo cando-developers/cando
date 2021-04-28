@@ -70,12 +70,14 @@
     (multiple-value-bind (ast ename evalue traceback)
                          (jupyter:handling-errors (leap-read code))
       (if ename
-        (values ename evalue traceback))
-        (multiple-value-bind (result ename evalue traceback)
-                             (jupyter:handling-errors (leap-eval ast))
-          (if ename
-            (values ename evalue traceback)
-            (jupyter:execute-result result))))))
+        (values ename evalue traceback)
+        (dolist (expr (cadadr ast) (values))
+          (unless (eq :comment (caar expr))
+            (multiple-value-bind (result ename evalue traceback)
+                                 (leap-eval (list :leap (list :instruction (list expr))))
+            (when ename
+              (return (values ename evalue traceback)))
+            (jupyter:execute-result result))))))))
 
 
 (defun leap-locate (ast cursor-pos &optional child-pos parents)
