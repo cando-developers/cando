@@ -16,7 +16,8 @@
   (let* ((parts (split-sequence:split-sequence-if (lambda (ch)
                                                     (or (char= #\Space ch)
                                                         (char= #\Tab ch)))
-                                                  (subseq line 1)))
+                                                  (subseq line 1)
+                                                  :remove-empty-subseqs t))
          (name (elt parts 0))
          (type (intern (string-upcase (nth 1 parts)) :keyword))
          (fields (cond
