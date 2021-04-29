@@ -33,7 +33,7 @@
 
 (defmethod jupyter:start :before ((k kernel))
   (when lparallel:*kernel*
-    (error "The lparallel:*kernel* is not NIL and it must be when jupyter starts.   Add -f no-auto-lparallel to cando startup"))
+    (error "The lparallel:*kernel* is not NIL and it must be when jupyter starts. Add -f no-auto-lparallel to cando startup"))
   (setf lparallel:*kernel* (lparallel:make-kernel (core:num-logical-processors))))
 
 
@@ -154,7 +154,8 @@
   (:documentation "cando user installer."))
 
 
-(defclass user-image-installer (jupyter:user-image-installer cando-installer)
+;; cando doesn't create images on the fly yet.
+#+(or)(defclass user-image-installer (jupyter:user-image-installer cando-installer)
   ()
   (:documentation "cando user image installer."))
 
@@ -188,8 +189,8 @@
         'system-installer
         'user-installer)
       :implementation bin-path
-      :display-name (format nil "~A ~:[~;(Fork)~]" +display-name+ fork)
-      :kernel-name (format nil "~A~:[~;_fork~]" +language+ fork)
+      :display-name (format nil "~A ~:[~;(Fork)~]~:[(Bare)~;~]" +display-name+ fork image)
+      :kernel-name (format nil "~A~:[~;_fork~]~:[_bare~;~]" +language+ fork image)
       :local local
       :prefix prefix
       :image image
