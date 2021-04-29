@@ -325,13 +325,13 @@ void    _defineAtomicInfoMapIfNotDefined()
 
   ei->_hybridizationInfo.resize(((int)(hybridization_MAX)));
   ei->_hybridizationInfo[hybridization_undefined]._HybridizationEnum = hybridization_undefined;
-  ei->_hybridizationInfo[hybridization_undefined]._HybridizationSymbol = core::Symbol_O::create_from_string("SP?");
+  ei->_hybridizationInfo[hybridization_undefined]._HybridizationSymbol = chemkw_intern("SP?");
   ei->_hybridizationInfo[hybridization_sp]._HybridizationEnum = hybridization_sp;
-  ei->_hybridizationInfo[hybridization_sp]._HybridizationSymbol = core::Symbol_O::create_from_string("SP");
+  ei->_hybridizationInfo[hybridization_sp]._HybridizationSymbol = chemkw_intern("SP");
   ei->_hybridizationInfo[hybridization_sp2]._HybridizationEnum = hybridization_sp2;
-  ei->_hybridizationInfo[hybridization_sp2]._HybridizationSymbol = core::Symbol_O::create_from_string("SP2");
+  ei->_hybridizationInfo[hybridization_sp2]._HybridizationSymbol = chemkw_intern("SP2");
   ei->_hybridizationInfo[hybridization_sp3]._HybridizationEnum = hybridization_sp3;
-  ei->_hybridizationInfo[hybridization_sp3]._HybridizationSymbol = core::Symbol_O::create_from_string("SP3");
+  ei->_hybridizationInfo[hybridization_sp3]._HybridizationSymbol = chemkw_intern("SP3");
   for ( auto ai=ei->_atomicInfo.begin(); ai!=ei->_atomicInfo.end(); ai++ )
   {
     if ( ai->_Valid ) {
