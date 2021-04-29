@@ -81,6 +81,7 @@
 ;;; If :setup-cando is in *features* then don't load the cando system
 (progn
   (handler-bind ((error (lambda (&rest args)
+                          (declare (ignore args))
                           (format t "Quicklisp could not be located~%")
                           (format t "(translate-logical-pathname \"quicklisp:\" -> ~s~%" (translate-logical-pathname "quicklisp:"))
                           (format t "(ext:getenv \"CLASP_QUICKLISP_DIRECTORY\") -> ~s~%" (ext:getenv "CLASP_QUICKLISP_DIRECTORY"))
@@ -108,13 +109,14 @@
 
 
 (defun cl-user::start-cando-user-from-snapshot ()
+  (format t "start-cando-user-from-snapshot~%")
   (let ((list-foreign-library-sym (find-symbol "LIST-FOREIGN-LIBRARIES" :cffi))
         (load-foreign-library-sym (find-symbol "LOAD-FOREIGN-LIBRARY" :cffi))
         (foreign-library-name-sym (find-symbol "FOREIGN-LIBRARY-NAME" :cffi)))
     (let ((foreign-libraries (funcall list-foreign-library-sym :loaded-only nil)))
       (loop for lib in foreign-libraries
             for name = (funcall foreign-library-name-sym lib)
-            do (funcall load-foreign-library-sym name))))
+            do (ignore-errors (funcall load-foreign-library-sym name)))))
   (let ((*package* (find-package :cando-user)))
     (format t "Starting shell with package: ~s~%" *package*)
     (sys::cclasp-snapshot-load-top-level)))
