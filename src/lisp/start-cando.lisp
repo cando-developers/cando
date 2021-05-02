@@ -115,7 +115,7 @@
     (let ((foreign-libraries (funcall list-foreign-library-sym :loaded-only nil)))
       (loop for lib in foreign-libraries
             for name = (funcall foreign-library-name-sym lib)
-            do (funcall load-foreign-library-sym name))))
+            do (ignore-errors (funcall load-foreign-library-sym name)))))
   (let ((*package* (find-package :cando-user)))
     (format t "Starting shell with package: ~s~%" *package*)
     (sys::cclasp-snapshot-load-top-level)))
