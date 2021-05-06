@@ -754,14 +754,14 @@ template<class VectorSetRepresentation>
 class Graph {
 public:
     std::vector<VectorSetRepresentation> adjacencyMatrix, invAdjacencyMatrix;
-    std::vector<int> degrees;
+  gctools::Vec0<int> degrees;
     std::vector<int> mapping;
     
     typedef typename VectorSetRepresentation::VertexId VertexId;
     typedef VectorSetRepresentation VertexSet;
     
     size_t getNumVertices() const {return adjacencyMatrix.size();}
-    void init(const std::vector<std::vector<char> >& adjacency, const std::vector<int>& d) {
+  void init(const gctools::Vec0<gctools::Vec0<char> >& adjacency, const gctools::Vec0<int>& d) {
         size_t n = adjacency.size();
         adjacencyMatrix.resize(n); 
         invAdjacencyMatrix.resize(n); 
@@ -2458,10 +2458,10 @@ namespace chem {
         degrees[v2]++;
     }
 
-    std::vector<std::vector<char> > Dimacs_O::getAdjacencyMatrix() const {
+gctools::Vec0<gctools::Vec0<char> > Dimacs_O::getAdjacencyMatrix() const {
         if (adjacencyMatrixSizeLimit < getNumVertices() * getNumVertices())
             throw "Cannot create adjacency matrix because the number of vertices is to large";
-        std::vector<std::vector<char> > matrix;
+        gctools::Vec0<gctools::Vec0<char> > matrix;
         matrix.resize(getNumVertices());
         for (auto& v : matrix) {
             v.resize(getNumVertices(), 0);
@@ -2471,7 +2471,6 @@ namespace chem {
             matrix[edges[ei].first][edges[ei].second] = 1;
             matrix[edges[ei].second][edges[ei].first] = 1;
         }
-    
         return matrix;
     }
 
