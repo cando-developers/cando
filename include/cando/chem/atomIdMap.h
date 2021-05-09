@@ -46,9 +46,9 @@ template <class T>
 class AtomIdMap
 {
 public:
-  typedef	vector<T>		AtomMap;
-  typedef	vector<AtomMap>		ResidueMap;
-  typedef	vector<ResidueMap>	MoleculeMap;
+  typedef	gctools::Vec0<T>		AtomMap;
+  typedef	gctools::Vec0<AtomMap>		ResidueMap;
+  typedef	gctools::Vec0<ResidueMap>	MoleculeMap;
 
 public:	// Functions here
 

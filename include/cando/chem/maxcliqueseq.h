@@ -51,8 +51,8 @@ FORWARD(Dimacs);
         typedef std::pair<int, int> Edge;
     
     protected: public:
-      std::vector<Edge> edges;
-      std::vector<int> degrees;
+      gctools::Vec0<Edge> edges;
+      gctools::Vec0<int> degrees;
       size_t numVertices;
       size_t adjacencyMatrixSizeLimit; // TODO: set this from commandline
     
@@ -68,8 +68,8 @@ FORWARD(Dimacs);
       bool load(const char* fname);
       unsigned int getNumVertices() const {return numVertices;}
       unsigned int getNumEdges() const {return edges.size();}
-      std::vector<std::vector<char> > getAdjacencyMatrix() const;
-      std::vector<int> getDegrees() const {return degrees;}
+      gctools::Vec0<gctools::Vec0<char> > getAdjacencyMatrix() const;
+      gctools::Vec0<int> getDegrees() const {return degrees;}
       void calculateGraphStats(int& maxdegree, int& minDegree, std::vector<float>& degreeHistogram);
       void fixupInternalsForImageSaveLoad(imageSaveLoad::Fixup* fixup) {
         SIMPLE_ERROR(BF("We cannot current image save/load Dimacs's - you could try copying objects in and out of objects that can be image save/loaded"));
