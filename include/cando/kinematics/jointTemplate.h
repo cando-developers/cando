@@ -49,20 +49,20 @@ namespace kinematics
 {
   FORWARD(DelayedBondedJoint);
   FORWARD(JointTemplate);
-  FORWARD(CheckJoint);
+  FORWARD(Checkpoint);
 FORWARD(MonomerNode);
-  class CheckJoint_O : public core::CxxObject_O
+  class Checkpoint_O : public core::CxxObject_O
   {
-    LISP_CLASS(kinematics,KinPkg,CheckJoint_O,"CheckJoint",core::CxxObject_O);
+    LISP_CLASS(kinematics,KinPkg,Checkpoint_O,"Checkpoint",core::CxxObject_O);
   public:
     bool fieldsp() const { return true; };
     void fields(core::Record_sp node);
-    DEFAULT_CTOR_DTOR(CheckJoint_O);
+    DEFAULT_CTOR_DTOR(Checkpoint_O);
   protected:
     core::Symbol_sp	_ConstitutionName;
     core::Symbol_sp	_TopologyName;
   public:
-    static CheckJoint_sp make(const core::Symbol_sp& constitutionName,
+    static Checkpoint_sp make(const core::Symbol_sp& constitutionName,
                               const core::Symbol_sp& topologyName);
   public:
 	/*! Set up the DelayedBondedJoint */
@@ -71,15 +71,15 @@ FORWARD(MonomerNode);
   };
 
 
-  class CheckJointJoint_O : public CheckJoint_O
+  class CheckpointJoint_O : public Checkpoint_O
   {
-    LISP_CLASS(kinematics,KinPkg,CheckJointJoint_O,"CheckJointJoint",CheckJoint_O);
+    LISP_CLASS(kinematics,KinPkg,CheckpointJoint_O,"CheckpointJoint",Checkpoint_O);
   public:
     bool fieldsp() const { return true; };
     void fields(core::Record_sp node);
   public:
-    static CheckJointJoint_sp make(core::Symbol_sp atomName);
-    DEFAULT_CTOR_DTOR(CheckJointJoint_O);
+    static CheckpointJoint_sp make(core::Symbol_sp atomName);
+    DEFAULT_CTOR_DTOR(CheckpointJoint_O);
   private:
 	/*! The name of the atom that must be built (the checkJoint) before a
 	  DelayedBondedJoint is built */
@@ -90,16 +90,16 @@ FORWARD(MonomerNode);
   };
 
 
-  class CheckJointOutPlugJoint_O : public CheckJoint_O
+  class CheckpointOutPlugJoint_O : public Checkpoint_O
   {
-    LISP_CLASS(kinematics,KinPkg,CheckJointOutPlugJoint_O,"CheckJointOutPlugJoint",CheckJoint_O);
+    LISP_CLASS(kinematics,KinPkg,CheckpointOutPlugJoint_O,"CheckpointOutPlugJoint",Checkpoint_O);
   public:
     bool fieldsp() const { return true; };
     void fields(core::Record_sp node);
   public:
-    static CheckJointOutPlugJoint_sp make(chem::OutPlug_sp outPlug);
-  CheckJointOutPlugJoint_O() : _Plug(_Nil<chem::OutPlug_O>()) {};
-    virtual ~CheckJointOutPlugJoint_O() {};
+    static CheckpointOutPlugJoint_sp make(chem::OutPlug_sp outPlug);
+  CheckpointOutPlugJoint_O() : _Plug(_Nil<chem::OutPlug_O>()) {};
+    virtual ~CheckpointOutPlugJoint_O() {};
   public:
 	/*! The name of the plug on the other side of which the Bond1 atom
 	  must be built (the checkJoint) before a
@@ -236,12 +236,12 @@ FORWARD(MonomerNode);
     bool fieldsp() const { return true; };
     void fields(core::Record_sp node);
   public:
-    static DelayedBondedJointTemplate_sp make(const CheckJoint_sp& checkJoint);
+    static DelayedBondedJointTemplate_sp make(const Checkpoint_sp& checkJoint);
   protected:
 	/*! Defines the atom, either in the current residue or in the following
 	  one that must be built before this one can create a stub that it gives
 	  to its children */
-    CheckJoint_sp	_CheckJoint;
+    Checkpoint_sp	_Checkpoint;
   public:
 
     virtual Joint_sp writeIntoJointTree(const JointTree_sp& JointTree,
@@ -254,11 +254,9 @@ FORWARD(MonomerNode);
 
 
 //	DEFAULT_CTOR_DTOR(DelayedBondedJointTemplate_O);	
-  DelayedBondedJointTemplate_O() : _CheckJoint(_Nil<CheckJointJoint_O>()) {};
+  DelayedBondedJointTemplate_O() : _Checkpoint(_Nil<CheckpointJoint_O>()) {};
     virtual ~DelayedBondedJointTemplate_O() {};
   };
-
-
 
     /*! A template that builds an atom that will be the root of a residue
       within an JointTree.
@@ -290,14 +288,6 @@ FORWARD(MonomerNode);
 
     DEFAULT_CTOR_DTOR(RootBondedJointTemplate_O);
   };
-
-
-
-
-
-
-
-
 };
 
 #endif

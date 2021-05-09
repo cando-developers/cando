@@ -48,15 +48,15 @@ namespace kinematics
 //
 
 
-void CheckJoint_O::fields(core::Record_sp node) {
+void Checkpoint_O::fields(core::Record_sp node) {
   node->field(INTERN_(kw,constitution_name),this->_ConstitutionName);
   node->field(INTERN_(kw,topology_name),this->_TopologyName);
 }
 
-CheckJoint_sp CheckJoint_O::make(const core::Symbol_sp& constitutionName,
+Checkpoint_sp Checkpoint_O::make(const core::Symbol_sp& constitutionName,
                                  const core::Symbol_sp& topologyName )
 {
-  GC_ALLOCATE(CheckJoint_O, me);
+  GC_ALLOCATE(Checkpoint_O, me);
   me->_ConstitutionName = constitutionName;
   me->_TopologyName = topologyName;
   ASSERTF(me->_ConstitutionName.notnilp(),BF("You must provide constitutionName"));
@@ -64,7 +64,7 @@ CheckJoint_sp CheckJoint_O::make(const core::Symbol_sp& constitutionName,
   return me;
 }
 
-void CheckJoint_O::setupDelayedBondedJoint(DelayedBondedJoint_sp atom) const
+void Checkpoint_O::setupDelayedBondedJoint(DelayedBondedJoint_sp atom) const
 {_OF();
   chem::CandoDatabase_sp cdb = chem::getCandoDatabase();
   chem::Constitution_sp constitution  = gc::As<chem::Constitution_sp>(core::eval::funcall(chem::_sym_constitutionForNameOrPdb,cdb,this->_ConstitutionName));
@@ -78,21 +78,21 @@ void CheckJoint_O::setupDelayedBondedJoint(DelayedBondedJoint_sp atom) const
 // ----------------------------------------------------------------------
 //
 
-void CheckJointJoint_O::fields(core::Record_sp node) {
+void CheckpointJoint_O::fields(core::Record_sp node) {
   node->field(INTERN_(kw,atom_name),this->_AtomName);
   this->Base::fields(node);
 }
 
 
-CheckJointJoint_sp CheckJointJoint_O::make(core::Symbol_sp atomName)
+CheckpointJoint_sp CheckpointJoint_O::make(core::Symbol_sp atomName)
 {
-  GC_ALLOCATE(CheckJointJoint_O, me );
+  GC_ALLOCATE(CheckpointJoint_O, me );
   me->_AtomName = atomName;
   return me;
 };
 
 
-void CheckJointJoint_O::setupDelayedBondedJoint(DelayedBondedJoint_sp atom) const
+void CheckpointJoint_O::setupDelayedBondedJoint(DelayedBondedJoint_sp atom) const
 {_OF();
   this->Base::setupDelayedBondedJoint(atom);
   atom->_DelayType = kw::_sym_delayForInternalResidueAtom;
@@ -105,20 +105,20 @@ void CheckJointJoint_O::setupDelayedBondedJoint(DelayedBondedJoint_sp atom) cons
 
 
 
-void CheckJointOutPlugJoint_O::fields(core::Record_sp node) {
+void CheckpointOutPlugJoint_O::fields(core::Record_sp node) {
   node->field(INTERN_(kw,out_plug),this->_Plug);
   this->Base::fields(node);
 }
 
-CheckJointOutPlugJoint_sp CheckJointOutPlugJoint_O::make(chem::OutPlug_sp outPlug)
+CheckpointOutPlugJoint_sp CheckpointOutPlugJoint_O::make(chem::OutPlug_sp outPlug)
 {
-  GC_ALLOCATE(CheckJointOutPlugJoint_O, me );
+  GC_ALLOCATE(CheckpointOutPlugJoint_O, me );
   me->_Plug = outPlug;
   ASSERTF(me->_Plug.notnilp(),BF("You must provide outPlug argument"));
   return me;
 };
 
-void CheckJointOutPlugJoint_O::setupDelayedBondedJoint(DelayedBondedJoint_sp atom) const
+void CheckpointOutPlugJoint_O::setupDelayedBondedJoint(DelayedBondedJoint_sp atom) const
 {_OF();
   this->Base::setupDelayedBondedJoint(atom);
   atom->_DelayType = kw::_sym_delayForFollowingResidueBond1;
@@ -315,14 +315,14 @@ void BondedJointTemplate_O::setupOutPlugJointTree(Joint_sp owned,
 //
 
 void DelayedBondedJointTemplate_O::fields(core::Record_sp node) {
-  node->field(INTERN_(kw,checkJoint),this->_CheckJoint);
+  node->field(INTERN_(kw,checkJoint),this->_Checkpoint);
   this->Base::fields(node);
 }
 
-DelayedBondedJointTemplate_sp DelayedBondedJointTemplate_O::make(const CheckJoint_sp& checkJoint)
+DelayedBondedJointTemplate_sp DelayedBondedJointTemplate_O::make(const Checkpoint_sp& checkJoint)
 {
   GC_ALLOCATE(DelayedBondedJointTemplate_O, me );
-  me->_CheckJoint = checkJoint;
+  me->_Checkpoint = checkJoint;
   return me;
 };
 
@@ -338,7 +338,7 @@ Joint_sp DelayedBondedJointTemplate_O::writeIntoJointTree(const JointTree_sp& Jo
   chem::AtomId atomId(monomerId._Chain,monomerId._Monomer,this->_Id);
   Joint_sp ownedBonded = JointTree->newDelayedBondedJoint(atomId,this->_Name,this->_Comment);
   monomerNode->addJoint(this->_Id,ownedBonded);
-  this->_CheckJoint->setupDelayedBondedJoint(gc::As<DelayedBondedJoint_sp>(ownedBonded));
+  this->_Checkpoint->setupDelayedBondedJoint(gc::As<DelayedBondedJoint_sp>(ownedBonded));
   this->addChildren(ownedBonded,monomerId,JointTree,incoming,outgoing,monomerNode);
   if ( this->outPlug().boundp() ) {
     this->setupOutPlugJointTree(ownedBonded,
