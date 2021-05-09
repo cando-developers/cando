@@ -1,5 +1,5 @@
 /*
-    File: delayedBondedAtom.h
+    File: delayedBondedJoint.h
 */
 /*
 Open Source License
@@ -29,7 +29,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/foundation.h>
 #include <cando/kinematics/kinFoundation.h>
 #include <cando/chem/atomId.h>
-#include <cando/kinematics/bondedAtom.h>
+#include <cando/kinematics/bondedJoint.h>
 
 
 
@@ -41,9 +41,9 @@ namespace kinematics
     FORWARD(DelayedBondedJoint);
     class DelayedBondedJoint_O : public BondedJoint_O
     {
-	LISP_CLASS(kinematics,KinPkg,DelayedBondedJoint_O,"DelayedBondedAtom",BondedJoint_O);
+	LISP_CLASS(kinematics,KinPkg,DelayedBondedJoint_O,"DelayedBondedJoint",BondedJoint_O);
     public:
-	static const NodeType nodeType = delayedBondedAtom;
+	static const NodeType nodeType = delayedBondedJoint;
     public:
 	//! Store information that describes what atom this needs to build its children
         core::Symbol_sp 	_DelayType;
@@ -61,8 +61,8 @@ namespace kinematics
 
 	virtual core::Symbol_sp typeSymbol() const;
 
-	/*! Return the stubAtom3 */
-	virtual Joint_sp stubAtom3(AtomTree_sp tree) const;
+	/*! Return the stubJoint3 */
+	virtual Joint_sp stubJoint3(JointTree_sp tree) const;
 
 	/*! set the Delay type and the id of the atom we are delaying for
 	  If type == delayForFollowingResidueBond1 then the atomId is

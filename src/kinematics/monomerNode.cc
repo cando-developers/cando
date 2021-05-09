@@ -29,7 +29,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/evaluator.h>
 #include <clasp/core/lispStream.h>
 #include <cando/adapt/symbolSet.h>
-#include <cando/kinematics/atom.h>
+#include <cando/kinematics/joint.h>
 #include <cando/chem/monomer.h>
 #include <cando/chem/coupling.h>
 #include <cando/chem/constitution.h>

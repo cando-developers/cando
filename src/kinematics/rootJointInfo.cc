@@ -1,5 +1,5 @@
 /*
-    File: rootAtomInfo.cc
+    File: rootJointInfo.cc
 */
 /*
 Open Source License
@@ -30,14 +30,14 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/candoDatabase.h>
 #include <cando/chem/constitution.h>
 #include <cando/chem/constitutionAtoms.h>
-#include <cando/kinematics/rootAtomInfo.h>
+#include <cando/kinematics/rootJointInfo.h>
 
 namespace kinematics
 {
 
-    void RootAtomInfo::setup(core::Symbol_sp constitutionName,
-			     core::Symbol_sp topologyName,
-			     chem::Plug_sp plug)
+    void RootJointInfo::setup(core::Symbol_sp constitutionName,
+                              core::Symbol_sp topologyName,
+                              chem::Plug_sp plug)
     {
 	LOG(BF("Setting up RootAtomInfo for Constitution[%s] Topology[%s]")
 	    % _rep_(constitutionName)

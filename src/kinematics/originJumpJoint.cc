@@ -1,5 +1,5 @@
 /*
-    File: atom.fwd.h
+    File: originJumpJoint.cc
 */
 /*
 Open Source License
@@ -23,13 +23,53 @@ THE SOFTWARE.
 This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
 */
 /* -^- */
-#ifndef kinematics_atom_fwd_H
-#define kinematics_atom_fwd_H
+#define DEBUG_LEVEL_NONE
+
+
+
+#include <clasp/core/foundation.h>
+#include <clasp/core/object.h>
+#include <clasp/core/lisp.h>
+#include <clasp/core/symbolTable.h>
+#include <cando/kinematics/stub.h>
+#include <cando/kinematics/originJumpJoint.h>
 
 namespace kinematics
 {
 
-    FORWARD(Joint);
+void OriginJumpJoint_O::updateInternalCoords(bool const recursive,
+                                             JointTree_sp at)
+{_OF();
+  if ( recursive ) {
+    for (int childIdx=0; childIdx<this->_numberOfChildren(); childIdx++ ) {
+      this->_child(childIdx).get()->updateInternalCoords(true,at);
+    }
+  }
+}
+
+
+
+Stub OriginJumpJoint_O::getStub() const {
+  Stub origin;
+  origin._Transform.setToIdentity();
+  return origin;
+}
+
+
+
+
+core::Symbol_sp OriginJumpJoint_O::typeSymbol() const
+{_OF();
+  return _sym_origin;
+};
+
+
+void OriginJumpJoint_O::_updateXyzCoord(Stub& stub)
+{_OF();
+  Vector3 origin(0.0,0.0,0.0);
+  this->position(origin);
+}
+
+
 
 };
-#endif

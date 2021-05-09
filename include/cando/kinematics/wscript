@@ -11,7 +11,7 @@ def build(bld):
             'atomo.h',
             'bondId.fwd.h',
             'bondId.h',
-            'bondedAtom.h',
+            'bondedPoint.h',
             'chainNode.fwd.h',
             'chainNode.h',
             'chiDihedrals.fwd.h',

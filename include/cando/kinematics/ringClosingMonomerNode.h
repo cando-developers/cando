@@ -50,7 +50,7 @@ public:
 public:
 	static RingClosingMonomerNode_sp create(MonomerId monomerId);
 private:
-	/*! Store weak pointers to the other ring closing monomers indexed
+	/*! Store weak Jointers to the other ring closing monomers indexed
 	  by the name of the ring closing plug */
   gc::SmallMap<core::Symbol_sp,RingClosingMonomerNode_sp>	_RingClosingChildren;
 public:

@@ -1,5 +1,5 @@
 /*
-    File: delayedBondedAtom.cc
+    File: delayedBondedJoint.cc
 */
 /*
 Open Source License
@@ -31,9 +31,9 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/object.h>
 #include <clasp/core/lisp.h>
 #include <clasp/core/symbolTable.h>
-#include <cando/kinematics/rootAtomInfo.h>
-#include <cando/kinematics/atomTree.h>
-#include <cando/kinematics/delayedBondedAtom.h>
+#include <cando/kinematics/rootJointInfo.h>
+#include <cando/kinematics/jointTree.h>
+#include <cando/kinematics/delayedBondedJoint.h>
 
 
 SYMBOL_EXPORT_SC_(KeywordPkg,delayForFollowingResidueBond1);
@@ -48,39 +48,39 @@ void DelayedBondedJoint_O::fields(core::Record_sp node) {
   this->Base::fields(node);
 }
 
-    Joint_sp DelayedBondedJoint_O::stubAtom3(AtomTree_sp tree) const
-    {
-      if ( this->_DelayType == kw::_sym_delayForFollowingResidueBond1 )
-      {
+Joint_sp DelayedBondedJoint_O::stubJoint3(JointTree_sp tree) const
+{
+  if ( this->_DelayType == kw::_sym_delayForFollowingResidueBond1 )
+  {
 //	    chem::ConstitutionAtomIndex0N id = this->_DelayAtomId;
-        chem::AtomId bond0Id(this->_Id.moleculeId(),this->_Id.residueId(),this->_DelayAtomId);
-        Joint_sp outBond0 = tree->lookup(bond0Id);
-        int idx = outBond0.get()->firstNonJumpChildIndex();
-        Joint_sp nextResidueBond0 = outBond0.get()->child(idx);
-        chem::AtomId nextResidueBond0AtomId = nextResidueBond0.get()->id();
-        ASSERTF(bond0Id.residueId() != nextResidueBond0AtomId.residueId(),
-                BF("The atom that is supposed to be in the next residue has the same residueId[%d]")
-                % bond0Id.residueId() );
-        RootAtomInfo const* rootAtomInfo = nextResidueBond0.get()->rootAtomInfo();
-        ASSERTF(rootAtomInfo!=NULL,BF("The RootAtomInfo must never be NULL"));
-        chem::ConstitutionAtomIndex0N bond1Id = rootAtomInfo->_Bond1Id;
-        chem::AtomId bond1AtomId(nextResidueBond0AtomId.moleculeId(),
-                                 nextResidueBond0AtomId.residueId(),
-                                 bond1Id );
-        return tree->lookup(bond1AtomId);
-      } else if (this->_DelayType == kw::_sym_delayForInternalResidueAtom) {
+    chem::AtomId bond0Id(this->_Id.moleculeId(),this->_Id.residueId(),this->_DelayAtomId);
+    Joint_sp outBond0 = tree->lookup(bond0Id);
+    int idx = outBond0.get()->firstNonJumpChildIndex();
+    Joint_sp nextResidueBond0 = outBond0.get()->child(idx);
+    chem::AtomId nextResidueBond0AtomId = nextResidueBond0.get()->id();
+    ASSERTF(bond0Id.residueId() != nextResidueBond0AtomId.residueId(),
+            BF("The atom that is supposed to be in the next residue has the same residueId[%d]")
+            % bond0Id.residueId() );
+    RootJointInfo const* rootJointInfo = nextResidueBond0.get()->rootJointInfo();
+    ASSERTF(rootJointInfo!=NULL,BF("The RootJointInfo must never be NULL"));
+    chem::ConstitutionAtomIndex0N bond1Id = rootJointInfo->_Bond1Id;
+    chem::AtomId bond1AtomId(nextResidueBond0AtomId.moleculeId(),
+                             nextResidueBond0AtomId.residueId(),
+                             bond1Id );
+    return tree->lookup(bond1AtomId);
+  } else if (this->_DelayType == kw::_sym_delayForInternalResidueAtom) {
 	    // Delay is for InternalResidueAtom
 //	    chem::ConstitutionAtomIndex0N id = this->_DelayAtomId;
-	    chem::AtomId bond0Id(this->_Id.moleculeId(),this->_Id.residueId(),this->_DelayAtomId);
-	    Joint_sp outBond0 = tree->lookup(bond0Id);
-	    return outBond0;
-      } else {
-        SIMPLE_ERROR(BF("Illegal delay type: %s") % _rep_(this->_DelayType));
-      }
-    }
+    chem::AtomId bond0Id(this->_Id.moleculeId(),this->_Id.residueId(),this->_DelayAtomId);
+    Joint_sp outBond0 = tree->lookup(bond0Id);
+    return outBond0;
+  } else {
+    SIMPLE_ERROR(BF("Illegal delay type: %s") % _rep_(this->_DelayType));
+  }
+}
 
 
-    core::Symbol_sp DelayedBondedJoint_O::typeSymbol() const {_OF(); return _sym_delayed;};
+core::Symbol_sp DelayedBondedJoint_O::typeSymbol() const {_OF(); return _sym_delayed;};
 
 
 

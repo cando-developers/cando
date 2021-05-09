@@ -27,7 +27,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #define _BONDID_H
 
 #include <clasp/core/common.h>
-#include <cando/kinematics/atomTree.fwd.h>
+#include <cando/kinematics/jointTree.fwd.h>
 #include <cando/kinematics/bondId.fwd.h>
 #include <cando/kinematics/kinematicsPackage.h>
 

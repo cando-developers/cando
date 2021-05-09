@@ -257,7 +257,7 @@ void InPlug_O::fields(core::Record_sp node)
 */
 
 void JumpPlug_O::fields(core::Record_sp node) {
-  node->field(INTERN_(kw,jumpAtomName),this->_JumpAtomName);
+  node->field(INTERN_(kw,jumpPointName),this->_JumpPointName);
   this->Base::fields(node);
 }
 

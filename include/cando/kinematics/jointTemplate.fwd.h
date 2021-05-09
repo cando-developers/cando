@@ -32,9 +32,9 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace kinematics
 {
     FORWARD(JointTemplate);
-    FORWARD(CheckpointBase);
-    FORWARD(CheckpointJoint);
-    FORWARD(CheckpointOutPlugJoint);
+    FORWARD(CheckJointBase);
+    FORWARD(CheckJointJoint);
+    FORWARD(CheckJointOutPlugJoint);
     FORWARD(BondedJointTemplate);
     FORWARD(DelayedBondedJointTemplate);
     FORWARD(RootBondedJointTemplate);

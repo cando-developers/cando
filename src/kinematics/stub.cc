@@ -40,7 +40,7 @@ namespace kinematics
 	       Vector3 const& b,
 	       Vector3 const& c)
     {
-	this->fromFourPoints(center,a,b,c);
+	this->fromFourJoints(center,a,b,c);
     }
 
 
@@ -51,7 +51,7 @@ namespace kinematics
     }
 
 
-    void Stub::fromFourPoints(Vector3 const& center,
+    void Stub::fromFourJoints(Vector3 const& center,
 			      Vector3 const& a,
 			      Vector3 const& b,
 			      Vector3 const& c)

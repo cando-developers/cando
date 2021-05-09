@@ -1,5 +1,5 @@
 /*
-    File: atomTree.fwd.h
+    File: Joint.fwd.h
 */
 /*
 Open Source License
@@ -23,27 +23,13 @@ THE SOFTWARE.
 This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
 */
 /* -^- */
-#ifndef kinematics_atomTree_fwd_H
-#define kinematics_atomTree_fwd_H
-
-
-
+#ifndef kinematics_Joint_fwd_H
+#define kinematics_Joint_fwd_H
 
 namespace kinematics
 {
 
-
-
-    typedef enum { unused, jumpAtom, originJumpAtom, bondedAtom, rootBondedAtom, delayedBondedAtom } NodeType;
-
-
-
-
-
-    class AtomHolder;
-    FORWARD(AtomTree);
     FORWARD(Joint);
-
 
 };
 #endif

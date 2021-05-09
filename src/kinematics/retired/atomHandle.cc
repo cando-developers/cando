@@ -26,28 +26,28 @@ This is an open source license for the CANDO software from Temple University, bu
 #define	DEBUG_LEVEL_NONE
 
 #include <clasp/core/common.h>
-#include <cando/kinematics/atomTree.h>
-#include <cando/kinematics/atomHandle.h>
+#include <cando/kinematics/pointTree.h>
+#include <cando/kinematics/pointHandle.h>
 
 #define	DEBUG_REFCOUNT	0
 
 namespace kinematics
 {
 
-    AtomTree_sp WeakAtomHandle::atomTree() const
+    PointTree_sp WeakAtomHandle::pointTree() const
     {
 	if ( this->_Tree==NULL )
 	{
-	    THROW_HARD_ERROR(BF("Can not return AtomTree for undefined WeakAtomHandle"));
+	    THROW_HARD_ERROR(BF("Can not return PointTree for undefined WeakAtomHandle"));
 	}
-	return this->_Tree->sharedThis<AtomTree_O>();
+	return this->_Tree->sharedThis<PointTree_O>();
     }
 
 
     bool WeakAtomHandle::isJump() const
     {
 	AtomHolder const* holder = this->holder();
-	return ( holder->_Type == jumpAtom || holder->_Type == originJumpAtom );
+	return ( holder->_Type == jumpPoint || holder->_Type == originJumpPoint );
     }
 
     RefCountedAtomHandle WeakAtomHandle::lock() const
@@ -76,25 +76,25 @@ namespace kinematics
 	Atom* result = NULL;
 	switch (atomHolder._Type)
 	{
-	case jumpAtom:
-	    ASSERT((int)atomHolder._NodeIndex<(int)this->_Tree->_JumpAtoms.size());
-	    result = &(this->_Tree->_JumpAtoms[atomHolder._NodeIndex]);
+	case jumpPoint:
+	    ASSERT((int)atomHolder._NodeIndex<(int)this->_Tree->_JumpPoints.size());
+	    result = &(this->_Tree->_JumpPoints[atomHolder._NodeIndex]);
 	    break;
-	case bondedAtom:
-	    ASSERT((int)atomHolder._NodeIndex<(int)this->_Tree->_BondedAtoms.size());
-	    result = &(this->_Tree->_BondedAtoms[atomHolder._NodeIndex]);
+	case bondedPoint:
+	    ASSERT((int)atomHolder._NodeIndex<(int)this->_Tree->_BondedPoints.size());
+	    result = &(this->_Tree->_BondedPoints[atomHolder._NodeIndex]);
 	    break;
-	case rootBondedAtom:
-	    ASSERT((int)atomHolder._NodeIndex<(int)this->_Tree->_RootBondedAtoms.size());
-	    result = &(this->_Tree->_RootBondedAtoms[atomHolder._NodeIndex]);
+	case rootBondedPoint:
+	    ASSERT((int)atomHolder._NodeIndex<(int)this->_Tree->_RootBondedPoints.size());
+	    result = &(this->_Tree->_RootBondedPoints[atomHolder._NodeIndex]);
 	    break;
-	case originJumpAtom:
-	    ASSERT((int)atomHolder._NodeIndex<(int)this->_Tree->_OriginJumpAtoms.size());
-	    result = &(this->_Tree->_OriginJumpAtoms[atomHolder._NodeIndex]);
+	case originJumpPoint:
+	    ASSERT((int)atomHolder._NodeIndex<(int)this->_Tree->_OriginJumpPoints.size());
+	    result = &(this->_Tree->_OriginJumpPoints[atomHolder._NodeIndex]);
 	    break;
-	case delayedBondedAtom:
-	    ASSERT((int)atomHolder._NodeIndex<(int)this->_Tree->_DelayedBondedAtoms.size());
-	    result = &(this->_Tree->_DelayedBondedAtoms[atomHolder._NodeIndex]);
+	case delayedBondedPoint:
+	    ASSERT((int)atomHolder._NodeIndex<(int)this->_Tree->_DelayedBondedPoints.size());
+	    result = &(this->_Tree->_DelayedBondedPoints[atomHolder._NodeIndex]);
 	    break;
 	default:
 	    SIMPLE_ERROR(BF("Could not dereference AtomHolder - unknown type"));
@@ -119,20 +119,20 @@ namespace kinematics
 	Atom* result = NULL;
 	switch (atomHolder._Type)
 	{
-	case jumpAtom:
-	    result = &(this->_Tree->_JumpAtoms[atomHolder._NodeIndex]);
+	case jumpPoint:
+	    result = &(this->_Tree->_JumpPoints[atomHolder._NodeIndex]);
 	    break;
-	case bondedAtom:
-	    result = &(this->_Tree->_BondedAtoms[atomHolder._NodeIndex]);
+	case bondedPoint:
+	    result = &(this->_Tree->_BondedPoints[atomHolder._NodeIndex]);
 	    break;
-	case rootBondedAtom:
-	    result = &(this->_Tree->_RootBondedAtoms[atomHolder._NodeIndex]);
+	case rootBondedPoint:
+	    result = &(this->_Tree->_RootBondedPoints[atomHolder._NodeIndex]);
 	    break;
-	case originJumpAtom:
-	    result = &(this->_Tree->_OriginJumpAtoms[atomHolder._NodeIndex]);
+	case originJumpPoint:
+	    result = &(this->_Tree->_OriginJumpPoints[atomHolder._NodeIndex]);
 	    break;
-	case delayedBondedAtom:
-	    result = &(this->_Tree->_DelayedBondedAtoms[atomHolder._NodeIndex]);
+	case delayedBondedPoint:
+	    result = &(this->_Tree->_DelayedBondedPoints[atomHolder._NodeIndex]);
 	    break;
 	default:
 	    SIMPLE_ERROR(BF("Could not dereference AtomHolder - unknown type"));
@@ -162,7 +162,7 @@ namespace kinematics
 
 
 
-    RefCountedAtomHandle::RefCountedAtomHandle(AtomTree_O* tree, uint handleIndex ) : WeakAtomHandle(tree,handleIndex)
+    RefCountedAtomHandle::RefCountedAtomHandle(PointTree_O* tree, uint handleIndex ) : WeakAtomHandle(tree,handleIndex)
     {
 	if ( !this->notDefined() )
 	{

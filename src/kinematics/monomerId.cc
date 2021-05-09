@@ -28,7 +28,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/common.h>
 #include <clasp/core/environment.h>
 #include <clasp/core/lispStream.h>
-#include <cando/kinematics/atomTree.h>
+#include <cando/kinematics/jointTree.h>
 #include <cando/kinematics/monomerId.h>
 #include <clasp/core/wrappers.h>
 

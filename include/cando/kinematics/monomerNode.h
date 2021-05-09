@@ -68,7 +68,7 @@ public:	// instance variables here
   chem::Topology_sp	_Topology;
 	/*! Store the current conformation index of this monomer */
   size_t			_ConformationIndex;
-  /*! Store the AtomTree joints for this MonomerNode_sp */
+  /*! Store the JointTree joints for this MonomerNode_sp */
   gc::Vec0<Joint_sp>            _Joints;
 private:
 	/*! Return the MonomerName */

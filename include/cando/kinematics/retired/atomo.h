@@ -29,46 +29,46 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/common.h>
 #include <cando/geom/vector3.h>
 #include <clasp/core/multipleValues.fwd.h>
-#include <cando/kinematics/atom.fwd.h>
+#include <cando/kinematics/point.fwd.h>
 #include <cando/kinematics/chainNode.fwd.h>
-#include <cando/kinematics/atomTree.fwd.h>
+#include <cando/kinematics/pointTree.fwd.h>
 #include <cando/chem/atomId.h>
 #include <cando/kinematics/kinematicsPackage.h>
 
 namespace kinematics
 {
 
-    FORWARD(AtomTree);
+    FORWARD(PointTree);
 
-    /*! @class Wraps an AtomTree and an AtomHandle and provides
+    /*! @class Wraps an PointTree and an AtomHandle and provides
       safe, reference counted access to the underlying Atom.
     */
-    class Joint_O : public core::CxxObject_O
+    class Point_O : public core::CxxObject_O
     {
-	LISP_CLASS(kinematics,KinPkg,Joint_O,"Atom",core::CxxObject_O);
+	LISP_CLASS(kinematics,KinPkg,Point_O,"Atom",core::CxxObject_O);
     private:
-	AtomTree_sp		_AtomTree;
+	PointTree_sp		_PointTree;
 	RefCountedAtomHandle	_Handle;
     public:
-    Joint_O() : _Handle() {}
-	Joint_O(const AtomTree_sp& tree, Joint_sp handle);
+    Point_O() : _Handle() {}
+	Point_O(const PointTree_sp& tree, Point_sp handle);
 
 	//! Copy ctor increments ref count
-	Joint_O(const Joint_O& other);
-	virtual ~Joint_O();
+	Point_O(const Point_O& other);
+	virtual ~Point_O();
 
     public:
-	static Joint_sp create(Joint_sp handle)
+	static Point_sp create(Point_sp handle)
 	{
-	    GC_ALLOCATE(Joint_O,atom);
-	    atom->_AtomTree = handle.atomTree();
+	    GC_ALLOCATE(Point_O,atom);
+	    atom->_PointTree = handle.pointTree();
 	    atom->_Handle = handle;
 	    return atom;
 	}
-	static Joint_sp create(const AtomTree_sp& tree, uint handleIndex)
+	static Point_sp create(const PointTree_sp& tree, uint handleIndex)
 	{
-	    GC_ALLOCATE(Joint_O,atom);
-	    atom->_AtomTree = tree;
+	    GC_ALLOCATE(Point_O,atom);
+	    atom->_PointTree = tree;
 	    RefCountedAtomHandle handle(tree.get(),handleIndex);
 	    try
 	    {
@@ -111,7 +111,7 @@ namespace kinematics
 	}
 
 
-	Joint_O& operator=(const Joint_O& other);
+	Point_O& operator=(const Point_O& other);
 
 	string asString() const;
 
@@ -128,21 +128,21 @@ namespace kinematics
 	string comment() const;
 
 	/*! Append the atom as a child of this atom, this wraps appendChild */
-	void appendChild(Joint_sp atom);
+	void appendChild(Point_sp atom);
 
 
 	/*! Insert the atom as a child of this atom, this wraps insertChild */
-	void insertChild(Joint_sp atom);
+	void insertChild(Point_sp atom);
 
 
 	/*! Erase the atom */
-	void eraseChild(Joint_sp atom);
+	void eraseChild(Point_sp atom);
 
 	/*! Wrap setComment */
-	Joint_sp setComment(const string& comment);
+	Point_sp setComment(const string& comment);
 
 	/*! Return the index of the child of this Atom */
-	int indexOfChild(Joint_sp atom);
+	int indexOfChild(Point_sp atom);
 
 	/*! Return a string representation */
 	string __repr__() const;
@@ -154,17 +154,17 @@ namespace kinematics
 	Vector3 getPosition() const;
 
 	/*! Get parent */
-        gc::Nilable<Joint_sp> parent() const;
+        gc::Nilable<Point_sp> parent() const;
 
 
-	/*! Get stubAtom1 */
-        gc::Nilable<Joint_sp> stubAtom1() const;
+	/*! Get stubPoint1 */
+        gc::Nilable<Point_sp> stubPoint1() const;
 
-	/*! Get stubAtom2 */
-        gc::Nilable<Joint_sp> stubAtom2() const;
+	/*! Get stubPoint2 */
+        gc::Nilable<Point_sp> stubPoint2() const;
 
-	/*! Get stubAtom3 */
-        gc::Nilable<Joint_sp> stubAtom3(AtomTree_sp tree) const;
+	/*! Get stubPoint3 */
+        gc::Nilable<Point_sp> stubPoint3(PointTree_sp tree) const;
 
 
 #if 0
@@ -181,6 +181,6 @@ namespace kinematics
 
 }; /* kinematics */
 
-TRANSLATE(kinematics::Joint_O);
+TRANSLATE(kinematics::Point_O);
 
-#endif /* _kinematics_Joint_H */
+#endif /* _kinematics_Point_H */

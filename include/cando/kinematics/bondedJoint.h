@@ -1,5 +1,5 @@
 /*
-    File: bondedAtom.h
+    File: bondedJoint.h
 */
 /*
 Open Source License
@@ -29,7 +29,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/foundation.h>
 #include <cando/kinematics/kinFoundation.h>
 #include <cando/chem/atomId.h>
-#include <cando/kinematics/atom.h>
+#include <cando/kinematics/joint.h>
 
 
 
@@ -39,13 +39,13 @@ namespace kinematics
 FORWARD(BondedJoint);
     class BondedJoint_O : public Joint_O
     {
-	LISP_CLASS(kinematics,KinPkg,BondedJoint_O,"BondedAtom",Joint_O);
+	LISP_CLASS(kinematics,KinPkg,BondedJoint_O,"BondedJoint",Joint_O);
     public:
         bool fieldsp() { return true; };
         void fields(core::Record_sp node); 
         void initialize();
     public:
-	static const NodeType nodeType = bondedAtom;
+	static const NodeType nodeType = bondedJoint;
 	static const int MaxChildren = 5;
     public:
 	int		_NumberOfChildren;
@@ -56,7 +56,7 @@ FORWARD(BondedJoint);
 	Real		_Distance;
 	bool		_DofChangePropagatesToYoungerSiblings;
     public:
-	/*! Bonded atoms can have different numbers of children wrt JumpAtoms */
+	/*! Bonded atoms can have different numbers of children wrt JumpJoints */
 	virtual int _maxNumberOfChildren() const { return MaxChildren;};
 	/*! Return the current number of children */
 	virtual int _numberOfChildren() const {return this->_NumberOfChildren;};
@@ -80,22 +80,22 @@ FORWARD(BondedJoint);
 
 	virtual core::Symbol_sp typeSymbol() const;
 
-	/*! Return the stubAtom1 */
-	virtual Joint_sp stubAtom1() const { return this->asSmartPtr();}
+	/*! Return the stubJoint1 */
+	virtual Joint_sp stubJoint1() const { return this->asSmartPtr();}
 
-	/*! Return the stubAtom2 */
-	virtual Joint_sp stubAtom2() const { return this->parent();};
+	/*! Return the stubJoint2 */
+	virtual Joint_sp stubJoint2() const { return this->parent();};
 
-	/*! Return the stubAtom3 */
-	virtual Joint_sp stubAtom3(AtomTree_sp tree) const;
+	/*! Return the stubJoint3 */
+	virtual Joint_sp stubJoint3(JointTree_sp tree) const;
 
 	/*! Update the internal coordinates */
 	virtual void updateInternalCoords(bool const recursive,
-					  AtomTree_sp at);
+					  JointTree_sp at);
 
       virtual void _updateInternalCoord();
 
-	bool keepDofFixed(DofType dof,AtomTree_sp at) const;
+	bool keepDofFixed(DofType dof,JointTree_sp at) const;
 
 
 	string asString() const;

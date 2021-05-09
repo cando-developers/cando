@@ -1,5 +1,5 @@
 /*
-    File: jumpAtom.cc
+    File: jumpJoint.cc
 */
 /*
 Open Source License
@@ -28,11 +28,11 @@ This is an open source license for the CANDO software from Temple University, bu
 
 
 #include <clasp/core/foundation.h>
-#include <cando/kinematics/atomTree.h>
+#include <cando/kinematics/jointTree.h>
 #include <clasp/core/lispStream.h>
 #include <clasp/core/symbolTable.h>
 #include <cando/kinematics/stub.h>
-#include <cando/kinematics/jumpAtom.h>
+#include <cando/kinematics/jumpJoint.h>
 
 namespace kinematics
 {
@@ -138,7 +138,7 @@ void JumpJoint_O::_updateInternalCoord()
 }
 
 void JumpJoint_O::updateInternalCoords(bool const recursive,
-                                       AtomTree_sp at) {
+                                       JointTree_sp at) {
   this->_updateInternalCoord();
   if ( recursive )
   {
@@ -150,7 +150,7 @@ void JumpJoint_O::updateInternalCoords(bool const recursive,
 
 
 
-Joint_sp JumpJoint_O::stubAtom1() const
+Joint_sp JumpJoint_O::stubJoint1() const
 {
   if (this->stubDefined()) {
     return this->asSmartPtr();
@@ -158,34 +158,34 @@ Joint_sp JumpJoint_O::stubAtom1() const
   return this->parent();
 }
 
-Joint_sp JumpJoint_O::stubAtom2() const
+Joint_sp JumpJoint_O::stubJoint2() const
 {
   if ( this->stubDefined() )
   {
-    return this->getNonJumpAtom(0);
+    return this->getNonJumpJoint(0);
   } else
   {
-    return this->parent()->stubAtom2();
+    return this->parent()->stubJoint2();
   }
 }
 
-Joint_sp JumpJoint_O::stubAtom3(AtomTree_sp at) const
+Joint_sp JumpJoint_O::stubJoint3(JointTree_sp at) const
 {_OF();
   if ( this->stubDefined() )
   {
-    Joint_sp first(this->getNonJumpAtom(0));
+    Joint_sp first(this->getNonJumpJoint(0));
     ASSERT(first.boundp());
-    Joint_sp second(first->getNonJumpAtom(0));
+    Joint_sp second(first->getNonJumpJoint(0));
     if ( second.boundp() )
     {
       return second;
     } else
     {
-      return this->getNonJumpAtom(1);
+      return this->getNonJumpJoint(1);
     }
   } else
   {
-    return this->parent()->stubAtom3(at);
+    return this->parent()->stubJoint3(at);
   }
 }
 
@@ -240,7 +240,7 @@ double JumpJoint_O::dof(DofType const& dof) const
     SIMPLE_ERROR(BF("Do something for dof"));
 //    return _Jump.getRigidBodyDelta(dof,RigidBodyDirection::n2c);
   }
-  SIMPLE_ERROR(BF("Illegal dof for JumpAtom - I can only return rigid body dofs"));
+  SIMPLE_ERROR(BF("Illegal dof for JumpJoint - I can only return rigid body dofs"));
 }
 
 

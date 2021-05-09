@@ -34,9 +34,9 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/lispStream.h>
 #include <clasp/core/symbolTable.h>
 #include <cando/chem/atomId.h>
-#include <cando/kinematics/atomTree.h>
+#include <cando/kinematics/jointTree.h>
 #include <cando/kinematics/stub.h>
-#include <cando/kinematics/atom.h>
+#include <cando/kinematics/joint.h>
 
 
 SYMBOL_EXPORT_SC_(KeywordPkg,noop_to_external);
@@ -135,7 +135,7 @@ struct translate::from_object<kinematics::CoordinateCalculator>
 
 
 namespace kinematics {
-FORWARD(JumpAtom);
+FORWARD(JumpJoint);
 
 #define	ASSERT_VALID_HANDLE(tree,handle)				\
   ASSERTF((int)handle<tree->numberOfEntries(),BF("The handle[%d] is out of range (0->%d]") % handle % tree->numberOfEntries()); \
@@ -266,7 +266,7 @@ void Joint_O::insertChild(Joint_sp child)
       LOG(BF("The current firstNonJumpHandle is of type: %s")
           % _rep_(firstNonJumpHandle));
       {
-        LOG(BF("We are inserting a BondedAtom"));
+        LOG(BF("We are inserting a BondedJoint"));
       }
 #endif
     } else
@@ -279,9 +279,9 @@ void Joint_O::insertChild(Joint_sp child)
   }
 }
 
-RootAtomInfo const* Joint_O::rootAtomInfo() const
+RootJointInfo const* Joint_O::rootJointInfo() const
 {
-  THROW_HARD_ERROR(BF("rootAtomInfo is not available for non-root atoms"));
+  THROW_HARD_ERROR(BF("rootJointInfo is not available for non-root atoms"));
 }
 
 int Joint_O::firstNonJumpChildIndex() const
@@ -318,7 +318,7 @@ bool Joint_O::stubDefined() const
 	// Inspired by rosetta::Joint_::stub_defined()
 	// We have to handle a couple of cases
 	//
-	// note -- in counting dependent atoms, exclude JumpAtoms
+	// note -- in counting dependent atoms, exclude JumpJoints
 	//
 	// 1. no dependent atoms -> no way to define new coord sys
 	//    on this end. So take parent's rotation and my position
@@ -333,9 +333,9 @@ bool Joint_O::stubDefined() const
 	//
   if ( gc::IsA<JumpJoint_sp>(this->asSmartPtr()))
   {
-    Joint_sp first = this->getNonJumpAtom(0);
+    Joint_sp first = this->getNonJumpJoint(0);
     if ( first.boundp() &&
-         (first->getNonJumpAtom(0) || this->getNonJumpAtom(1).boundp() ))
+         (first->getNonJumpJoint(0) || this->getNonJumpJoint(1).boundp() ))
     {
       return true;
     } else
@@ -347,7 +347,7 @@ bool Joint_O::stubDefined() const
 }
 
 
-Joint_sp Joint_O::getNonJumpAtom(int offset) const
+Joint_sp Joint_O::getNonJumpJoint(int offset) const
 {
   int idx = this->firstNonJumpChildIndex();
   idx += offset;
@@ -388,7 +388,7 @@ Joint_sp Joint_O::previousChild(Joint_sp ch) const
     /*! See file:///Users/meister/Development/rosetta3.3/rosetta_source/html/core+numeric+protocols/dc/db0/_atom___8hh-source.html#l00475
       For definition
     */
-Joint_sp Joint_O::inputStubAtom3(AtomTree_sp at) const
+Joint_sp Joint_O::inputStubJoint3(JointTree_sp at) const
 {_OF();
   ASSERTF(this->parent().boundp(),BF("The parent isn't defined"));
   if (this->parent().unboundp()) {
@@ -399,8 +399,8 @@ Joint_sp Joint_O::inputStubAtom3(AtomTree_sp at) const
        || sibling.unboundp()
        || gc::IsA<JumpJoint_sp>(sibling)
        || (gc::IsA<JumpJoint_sp>(this->parent())
-           && sibling->id() == this->parent()->stubAtom2Id() ) ) {
-    return this->parent()->stubAtom3(at);
+           && sibling->id() == this->parent()->stubJoint2Id() ) ) {
+    return this->parent()->stubJoint3(at);
   } else {
     return sibling;
   }

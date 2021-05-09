@@ -31,9 +31,9 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/lisp.h>
 #include <cando/kinematics/kinematicsPackage.h>
 //#include "pool.h"
-#include <cando/kinematics/atomTree.fwd.h>
+#include <cando/kinematics/pointTree.fwd.h>
 #include <cando/kinematics/bondId.fwd.h>
-#include <cando/kinematics/atom.fwd.h>
+#include <cando/kinematics/point.fwd.h>
 #include <cando/chem/atomId.h>
 #include <cando/kinematics/bondId.h>
 
@@ -49,16 +49,16 @@ namespace kinematics
     public:
 	static const uint Undef = UndefinedUnsignedInt;
     protected:
-	/*! Raw pointer to AtomTree - its dangerous but AtomHandles within an AtomTree should
-	  never outlive their AtomTree */
-	AtomTree_O*	_Tree;
+	/*! Raw pointer to PointTree - its dangerous but AtomHandles within an PointTree should
+	  never outlive their PointTree */
+	PointTree_O*	_Tree;
 	uint		_HolderIndex;
     public:
     WeakAtomHandle() : _Tree(NULL), _HolderIndex(Undef) {};
-    WeakAtomHandle(AtomTree_O* tree, uint handleIndex) : _Tree(tree),_HolderIndex(handleIndex) {};
+    WeakAtomHandle(PointTree_O* tree, uint handleIndex) : _Tree(tree),_HolderIndex(handleIndex) {};
 
-	/*! Return the AtomTree_sp for this WeakAtomHandle */
-	AtomTree_sp atomTree() const;
+	/*! Return the PointTree_sp for this WeakAtomHandle */
+	PointTree_sp pointTree() const;
 
 	/*! Return true if the Handle is undefined */
 	bool notDefined() const { return this->_HolderIndex == Undef;};
@@ -68,7 +68,7 @@ namespace kinematics
 	bool isDefined() const { return this->_HolderIndex != Undef;};
 
 	/*! Assignment operator */
-	WeakAtomHandle& operator=(Joint_sp other)
+	WeakAtomHandle& operator=(Point_sp other)
 	{
 	    this->_Tree = other._Tree;
 	    this->_HolderIndex = other._HolderIndex;
@@ -94,7 +94,7 @@ namespace kinematics
 	  unused members, use this to get it */
 	uint getNextUnusedMember() const { return this->_HolderIndex;};
 
-	/*! Return true if this handle points to a JumpAtom */
+	/*! Return true if this handle points to a JumpPoint */
 	bool isJump() const;
 
 	/*! Reset this Handle to Undefined */
@@ -137,11 +137,11 @@ namespace kinematics
 
     RefCountedAtomHandle() : WeakAtomHandle() {};
 
-	RefCountedAtomHandle(AtomTree_O* tree, uint handleIndex );
+	RefCountedAtomHandle(PointTree_O* tree, uint handleIndex );
 
 	RefCountedAtomHandle(const WeakAtomHandle& handle);
 
-	RefCountedAtomHandle(Joint_sp handle);
+	RefCountedAtomHandle(Point_sp handle);
 
 	/*! Return a RefCountedAtomHandle for an undefined atom */
 	static RefCountedAtomHandle undefined()
@@ -152,14 +152,14 @@ namespace kinematics
 
 
 	/*! Comparison operator */
-	bool operator==(Joint_sp h) const
+	bool operator==(Point_sp h) const
 	{
 	    if ( this->_Tree != h._Tree ) return false;
 	    return (this->_HolderIndex == h._HolderIndex);
 	}
 
 
-	RefCountedAtomHandle& operator=(Joint_sp other)
+	RefCountedAtomHandle& operator=(Point_sp other)
 	    {
 		// Ignore self assignments
 		if ( this->_Tree == other._Tree && this->_HolderIndex == other._HolderIndex ) return *this;

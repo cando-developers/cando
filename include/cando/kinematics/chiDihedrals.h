@@ -38,7 +38,7 @@ FORWARD(ChiDihedral);
 /*! Define a Chi-dihedral angle that is defined within a Rotamer
   Atom4 is built using a dihedral angle wrt Atom3-Atom2-Atom1.
   This internal coordinate needs to be defined/referenced within the JointTemplate tree
-  and the AtomTree.  Each atom index is the ConstitutionAtomIndex0N of the atom in the
+  and the JointTree.  Each atom index is the ConstitutionAtomIndex0N of the atom in the
   current residue.  A value of -1 refers to atoms in the previous residue.
  */
 class ChiDihedral_O : public core::CxxObject_O

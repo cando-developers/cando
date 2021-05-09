@@ -31,7 +31,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/geom/ovector3.h>
 #include <cando/kinematics/atomo.h>
 #include <clasp/core/multipleValues.h>
-#include <cando/kinematics/atomTree.h>
+#include <cando/kinematics/pointTree.h>
 #include <clasp/core/wrappers.h>
 namespace kinematics
 {
@@ -41,15 +41,15 @@ namespace kinematics
 
 
 
-    Atom_O::Atom_O(const AtomTree_sp& tree, const RefCountedAtomHandle& handle) :
-	_AtomTree(tree),
+    Atom_O::Atom_O(const PointTree_sp& tree, const RefCountedAtomHandle& handle) :
+	_PointTree(tree),
 	_Handle(handle)
     {};
 
 
 	//! Copy ctor increments ref count
     Atom_O::Atom_O(const Atom_O& other) :
-	    _AtomTree(other._AtomTree),
+	    _PointTree(other._PointTree),
 	    _Handle(other._Handle)
 	    {};
 
@@ -57,12 +57,12 @@ namespace kinematics
 
     Atom_O& Atom_O::operator=(const Atom_O& other)
 	    {_OF();
-		ASSERTF(this->_AtomTree == other._AtomTree,BF("You tried to copy Atom_Os that are not referencing the same AtomTree"));
+		ASSERTF(this->_PointTree == other._PointTree,BF("You tried to copy Atom_Os that are not referencing the same PointTree"));
 		// Assignment operator
 		if ( this != &other ) // avoid self-assignment
 		{
 		    // If we already point to something then dereference it
-		    if ( this->_AtomTree.generalp() && this->_AtomTree.notnilp() )
+		    if ( this->_PointTree.generalp() && this->_PointTree.notnilp() )
 		    {
 			this->_Handle = other._Handle;
 		    }
@@ -108,7 +108,7 @@ namespace kinematics
 
     void Atom_O::appendChild(Atom_sp child)
     {_OF();
-	ASSERT(this->_AtomTree == child->_AtomTree);
+	ASSERT(this->_PointTree == child->_PointTree);
 	Atom* parent = this->get();
 	parent->appendChild(child);
     }
@@ -116,7 +116,7 @@ namespace kinematics
 
     void Atom_O::insertChild(Atom_sp child)
     {_OF();
-	ASSERT(this->_AtomTree == child->_AtomTree);
+	ASSERT(this->_PointTree == child->_PointTree);
 	Atom* parent = this->get();
 	parent->insertChild(child);
     }
@@ -173,7 +173,7 @@ gc::Nilable<Atom_sp> Atom_O::stubAtom2() const
   return Atom_O::create(sa);
 }
 
-gc::Nilable<Atom_sp> Atom_O::stubAtom3(AtomTree_sp at) const
+gc::Nilable<Atom_sp> Atom_O::stubAtom3(PointTree_sp at) const
 {_OF();
   if ( this->_Handle.notDefined() ) return _Nil<core::T_O>();
   const Atom* atom = this->_Handle.get();
