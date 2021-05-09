@@ -29,9 +29,9 @@
         (vb (apply #'geom:vec b)))
     (geom:vlength (geom:v- va vb))))
 
-(defun find-joint-using-atom (atom-tree input-atom atom-id-map)
-  "Return the joint in the atom-tree that corresponds to input-atom using the atom-id-map"
-  (kin:walk atom-tree
+(defun find-joint-using-atom (joint-tree input-atom atom-id-map)
+  "Return the joint in the joint-tree that corresponds to input-atom using the atom-id-map"
+  (kin:walk joint-tree
             (lambda (joint) 
               (let* ((atom (chem:lookup-atom atom-id-map (kin:atom-id joint)))
                      (pos (chem:get-position atom))

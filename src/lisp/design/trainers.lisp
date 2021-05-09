@@ -25,7 +25,7 @@
 (defun collect-focus-joints (conformation focus-monomer-index)
    (let ((focus-joints (make-hash-table)))
      ;; First put all of the joints in the focus-monomer into the focus-joints hash-table
-    (kin:walk (kin:get-atom-tree conformation)
+    (kin:walk (kin:get-joint-tree conformation)
               (lambda (joint)
                 (let ((atom-id (kin:atom-id joint)))
                   (when (= (second atom-id) focus-monomer-index)
@@ -43,11 +43,11 @@
        (let* ((parent (kin:get-parent root-joint))
               (grandparent (and parent (kin:get-parent parent)))
               (great-grandparent (and grandparent (and grandparent (kin:get-parent grandparent)))))
-         (when (and parent (kin:corresponds-to-atom parent))
+         (when (and parent (kin:corresponds-to-joint parent))
            (setf (gethash parent focus-joints) t))
-         (when (and grandparent (kin:corresponds-to-atom grandparent))
+         (when (and grandparent (kin:corresponds-to-joint grandparent))
            (setf (gethash grandparent focus-joints) t))
-         (when (and great-grandparent (kin:corresponds-to-atom great-grandparent))
+         (when (and great-grandparent (kin:corresponds-to-joint great-grandparent))
            (setf (gethash great-grandparent focus-joints) t))))
      ;; Return the focus-joints as a list
      (alexandria:hash-table-keys focus-joints)))
@@ -78,7 +78,7 @@
                                (first context)
                                (second context)
                                (third context))))
-        (design.graphviz-draw-joint-tree:draw-joint-tree (kin:get-atom-tree conformation)
+        (design.graphviz-draw-joint-tree:draw-joint-tree (kin:get-joint-tree conformation)
                                                          filename)))
     (setf (conformation trainer) conformation
           (aggregate trainer) agg
@@ -152,12 +152,12 @@
     (loop for index below (chem:number-of-entries conf-col)
           for entry = (chem:get-entry conf-col index)
           do (chem:write-coordinates-to-matter entry conf-col-agg)
-             (kin:walk (kin:get-atom-tree conformation) 
+             (kin:walk (kin:get-joint-tree conformation) 
                        (lambda (o) 
                          (let* ((atom (chem:lookup-atom atom-id-map (kin:atom-id o)))
                                 (pos (chem:get-position atom)))
                            (kin:set-position o pos))))
-             (kin:update-internal-coords (kin:get-atom-tree conformation))
+             (kin:update-internal-coords (kin:get-joint-tree conformation))
           collect (let* ((internals (make-array 16 :adjustable t :fill-pointer 0))
                          (monomer (kin:lookup-monomer-id (kin:get-fold-tree conformation)
                                                          (list 0 focus-monomer-sequence-number))))
@@ -171,7 +171,7 @@
                                                index
                                                (third (kin:atom-id joint)))
                                        (cond
-                                         ((typep joint 'kin:bonded-atom)
+                                         ((typep joint 'kin:bonded-joint)
                                           (vector-push-extend (third (kin:atom-id joint)) internals)
                                           (vector-push-extend (kin:name joint) internals)
                                           (vector-push-extend (kin:get-distance joint) internals)

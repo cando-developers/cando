@@ -138,7 +138,8 @@ namespace kinematics
 #endif
 
 	/*! Return the root of the JointTree */
-    CL_DEFMETHOD Joint_sp atom_tree_root() const { return this->_Root; };
+    CL_DEFMETHOD
+    Joint_sp jointTreeRoot() const { return this->_Root; };
 
 
 	/*! Print a description of the kin:Atom */
