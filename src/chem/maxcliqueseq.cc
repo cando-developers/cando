@@ -2477,7 +2477,7 @@ gctools::Vec0<gctools::Vec0<char> > Dimacs_O::getAdjacencyMatrix() const {
 
     void Dimacs_O::calculateGraphStats(int& maxDegree, int& minDegree, std::vector<float>& degreeHistogram) {
         auto degCopy = degrees;
-        std::sort(degCopy.begin(), degCopy.end());
+        std::sort(&*(degCopy.begin()), &*(degCopy.end()));
         size_t n = degCopy.size();
         size_t m = degreeHistogram.size();
         int cnt = 0;
