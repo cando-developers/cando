@@ -1,5 +1,5 @@
 /*
-    File: bondedAtom.cc
+    File: bondedJoint.cc
 */
 /*
 Open Source License
@@ -36,8 +36,8 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/atomId.h>
 #include <clasp/core/numerics.h>
 #include <cando/kinematics/stub.h>
-#include <cando/kinematics/atomTree.h>
-#include <cando/kinematics/bondedAtom.h>
+#include <cando/kinematics/jointTree.h>
+#include <cando/kinematics/bondedJoint.h>
 
 namespace kinematics
 {
@@ -74,7 +74,7 @@ void BondedJoint_O::_appendChild(Joint_sp c)
     {
 	if ( this->_numberOfChildren()>this->_maxNumberOfChildren() )
 	{
-	    THROW_HARD_ERROR(BF("You exceede the maximum[%d] number of children allowed for a BondedAtom") % this->_maxNumberOfChildren());
+	    THROW_HARD_ERROR(BF("You exceede the maximum[%d] number of children allowed for a BondedJoint") % this->_maxNumberOfChildren());
 	}
 	for ( int i=this->_numberOfChildren(); i>before; i-- )
 	    this->_Children[i] = this->_Children[i-1];
@@ -111,22 +111,22 @@ void BondedJoint_O::_appendChild(Joint_sp c)
 
 
 
-    Joint_sp BondedJoint_O::stubAtom3(AtomTree_sp at) const
+    Joint_sp BondedJoint_O::stubJoint3(JointTree_sp at) const
     {_OF();
       if ( gc::IsA<JumpJoint_sp>(this->parent()))
 	{
 	    ASSERT(this->parent().get()->stubDefined());
-	    Joint_sp p_stub2( this->parent().get()->stubAtom2() );
+	    Joint_sp p_stub2( this->parent().get()->stubJoint2() );
 	    chem::AtomId const & p_stub2_id( p_stub2.get()->id() );
 	    if ( this->id() == p_stub2_id )
 	    {
 		// very special case!!
-		return this->parent().get()->stubAtom3(at);
+		return this->parent().get()->stubJoint3(at);
 	    } else {
 		return p_stub2;
 	    }
 	} else {
-	    return this->parent().get()->stubAtom2();
+	    return this->parent().get()->stubJoint2();
 	}
     }
 
@@ -202,7 +202,7 @@ void BondedJoint_O::_updateInternalCoord()
 }
 
 void BondedJoint_O::updateInternalCoords( bool recursive,
-                                          AtomTree_sp at)
+                                          JointTree_sp at)
 {_OF();
   this->_updateInternalCoord();
   for ( int it=0; it<this->_numberOfChildren(); it++ ) {
@@ -211,22 +211,22 @@ void BondedJoint_O::updateInternalCoords( bool recursive,
   return;
 }
 
-bool BondedJoint_O::keepDofFixed(DofType dof,AtomTree_sp at) const
+bool BondedJoint_O::keepDofFixed(DofType dof,JointTree_sp at) const
 {_OF();
   if ( dof == DofType::distance ) {
     return false;
   } else if ( dof == DofType::theta ) {
     return ( gc::IsA<JumpJoint_sp>(this->parent())
-             && this->id() == this->parent()->stubAtom2Id() );
+             && this->id() == this->parent()->stubJoint2Id() );
   } else if ( dof == DofType::phi ) {
     Joint_sp parent = this->parent();
     if ( gc::IsA<JumpJoint_sp>(parent) &&
-         ( this->id() == parent->stubAtom2Id() ||
-           this->id() == parent->stubAtom3Id(at) ) ) return true;
+         ( this->id() == parent->stubJoint2Id() ||
+           this->id() == parent->stubJoint3Id(at) ) ) return true;
     if ( parent->parent().unboundp() ) return false;
     Joint_sp grandParent = parent->parent();
     return ( gc::IsA<JumpJoint_sp>(grandParent)
-             && this->id() == grandParent->stubAtom3Id(at));
+             && this->id() == grandParent->stubJoint3Id(at));
   } else {
     SIMPLE_ERROR(BF("BondedJoint_O::keepDofFixed: BAD_DOF: %s") % dof.asString() );
   }
@@ -414,7 +414,7 @@ void BondedJoint_O::updateXyzCoords()
 	{
 	    return this->_Distance;
 	}
-	SIMPLE_ERROR(BF("Illegal dof request for BondedAtom - I can only handle internal dofs not rigid body"));
+	SIMPLE_ERROR(BF("Illegal dof request for BondedJoint - I can only handle internal dofs not rigid body"));
     }
 
 

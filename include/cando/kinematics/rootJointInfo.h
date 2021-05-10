@@ -1,5 +1,5 @@
 /*
-    File: rootBondedAtom.h
+    File: rootJointInfo.h
 */
 /*
 Open Source License
@@ -23,50 +23,33 @@ THE SOFTWARE.
 This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
 */
 /* -^- */
-#ifndef	kinematics_rootBondedJoint_H
-#define kinematics_rootBondedJoint_H
+#ifndef _kinematics_rootJointInfo_H
+#define _kinematics_rootJointInfo_H
 
-#include <clasp/core/foundation.h>
-#include <cando/kinematics/kinFoundation.h>
-#include <cando/chem/atomId.h>
-#include <cando/kinematics/rootAtomInfo.h>
-#include <cando/kinematics/bondedAtom.h>
-
-
+#include <clasp/core/common.h>
+#include <cando/chem/plug.fwd.h>
+#include <cando/chem/constitutionAtoms.fwd.h>
 
 namespace kinematics
 {
 
-  FORWARD(RootBondedJoint);
-    class RootBondedJoint_O : public BondedJoint_O
+    /*! @class Stores information on the Residue that the containing Atom is the root of */
+
+    class RootJointInfo
     {
-	LISP_CLASS(kinematics,KinPkg,RootBondedJoint_O,"RootBondedAtom",BondedJoint_O);
+	friend class RootBondedJoint;
+	friend class DelayedBondedJoint;
     public:
-	static const NodeType nodeType = rootBondedAtom;
-    protected:
-	/*! Store the Id of the Bond1 atom if we have one
-	  otherwise it will be UndefinedUnsignedInt */
-	RootAtomInfo	_RootInfo;
+	core::Symbol_sp			_ConstitutionName;
+	core::Symbol_sp			_TopologyName;
+	chem::ConstitutionAtomIndex0N	_Bond1Id;
     public:
-    RootBondedJoint_O(const chem::AtomId& atomId,core::T_sp name, const string& comment) :
-	BondedJoint_O(atomId,name,comment) {};
-
-      CL_DEFMETHOD double getPhi() const { return this->_Phi; };
-      
-	virtual RootAtomInfo const * rootAtomInfo() const { return &this->_RootInfo;};
-
-
-	/*! Set the Bond1Id for this atom */
-
 	void setup(core::Symbol_sp constitutionName,
 		   core::Symbol_sp topologyName,
 		   chem::Plug_sp inPlug);
-
-	virtual core::Symbol_sp typeSymbol() const;
-
     };
 
 
-
 };
-#endif
+
+#endif // _kinematics_rootJointInfo_H

@@ -1,5 +1,5 @@
 /*
-    File: rootAtomInfo.h
+    File: JointTree.fwd.h
 */
 /*
 Open Source License
@@ -23,33 +23,15 @@ THE SOFTWARE.
 This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
 */
 /* -^- */
-#ifndef _kinematics_rootAtomInfo_H
-#define _kinematics_rootAtomInfo_H
-
-#include <clasp/core/common.h>
-#include <cando/chem/plug.fwd.h>
-#include <cando/chem/constitutionAtoms.fwd.h>
+#ifndef kinematics_JointTree_fwd_H
+#define kinematics_JointTree_fwd_H
 
 namespace kinematics
 {
+  typedef enum { unused, jumpJoint, originJumpJoint, bondedJoint, rootBondedJoint, delayedBondedJoint } NodeType;
 
-    /*! @class Stores information on the Residue that the containing Atom is the root of */
-
-    class RootAtomInfo
-    {
-	friend class RootBondedAtom;
-	friend class DelayedBondedAtom;
-    public:
-	core::Symbol_sp			_ConstitutionName;
-	core::Symbol_sp			_TopologyName;
-	chem::ConstitutionAtomIndex0N	_Bond1Id;
-    public:
-	void setup(core::Symbol_sp constitutionName,
-		   core::Symbol_sp topologyName,
-		   chem::Plug_sp inPlug);
-    };
-
-
+  class AtomHolder;
+  FORWARD(JointTree);
+  FORWARD(Joint);
 };
-
-#endif // _kinematics_rootAtomInfo_H
+#endif

@@ -27,6 +27,8 @@
         (error "Could not determine directory for slime - set SLIME_HOME"))))
 
 (defun start-swank (&optional (port 4005))
+  "Start a swank server to connect slime.
+Within emacs use M-x slime-connect to connect."
   ;; Bad!  This is hard-coded to work with docker
   (if *started-swank*
       (format t "Swank is already running~%")

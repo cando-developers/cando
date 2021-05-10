@@ -1,5 +1,5 @@
 /*
-    File: jumpAtom.h
+    File: jumpJoint.h
 */
 /*
 Open Source License
@@ -27,7 +27,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #define kinematics_jumpJoint_H
 
 #include <clasp/core/foundation.h>
-#include <cando/kinematics/atom.h>
+#include <cando/kinematics/joint.h>
 #include <cando/kinematics/jump.h>
 #include <cando/chem/atomId.h>
 
@@ -36,9 +36,9 @@ namespace kinematics
 
   FORWARD(JumpJoint);
   class JumpJoint_O : public Joint_O {
-    LISP_CLASS(kinematics,KinPkg,JumpJoint_O,"JumpAtom",Joint_O);
+    LISP_CLASS(kinematics,KinPkg,JumpJoint_O,"JumpJoint",Joint_O);
   public:
-    static const NodeType nodeType = jumpAtom;
+    static const NodeType nodeType = jumpJoint;
   public:
     bool fieldsp() const { return true; };
     void fields(core::Record_sp node);
@@ -49,10 +49,10 @@ namespace kinematics
     // relative to the parent.
     Matrix        _ParentRelativeTransform;
     
-	/*! JumpAtoms can have unlimited numbers of children */
+	/*! JumpJoints can have unlimited numbers of children */
     gc::Vec0< Joint_sp >	_Children;
   protected:
-	/*! Bonded atoms can have different numbers of children wrt JumpAtoms */
+	/*! Bonded atoms can have different numbers of children wrt JumpJoints */
     virtual int _maxNumberOfChildren() const { return INT_MAX;};
 	/*! Return the current number of children */
     virtual int _numberOfChildren() const {return this->_Children.size();};
@@ -90,20 +90,20 @@ namespace kinematics
     
 	/*! Update the internal coordinates */
     virtual void updateInternalCoords(bool const recursive,
-                                      AtomTree_sp at);
+                                      JointTree_sp at);
 
 
-	/*! Yes, this is a JumpAtom */
+	/*! Yes, this is a JumpJoint */
     bool isJump() const { return true;};
 
-	/*! Return the stubAtom1 */
-    virtual Joint_sp stubAtom1() const;
+	/*! Return the stubJoint1 */
+    virtual Joint_sp stubJoint1() const;
 
-	/*! Return the stubAtom2 */
-    virtual Joint_sp stubAtom2() const;
+	/*! Return the stubJoint2 */
+    virtual Joint_sp stubJoint2() const;
 
-	/*! Return the stubAtom3 */
-    virtual Joint_sp stubAtom3(AtomTree_sp at) const;
+	/*! Return the stubJoint3 */
+    virtual Joint_sp stubJoint3(JointTree_sp at) const;
 
     bool keepDofFixed(DofType dof) const;
 

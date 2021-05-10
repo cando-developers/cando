@@ -13,7 +13,7 @@
     (with-open-file (stream filename :direction :output :if-exists :supersede)
       (format stream "digraph G {~%   ordering = out; ~%")
       (let ((*table* (make-hash-table :test #'eq)))
-        (stream-draw-joint (kin:atom-tree-root atom-tree) atom-tree stream))
+        (stream-draw-joint (kin:joint-tree-root atom-tree) atom-tree stream))
       (format stream "}~%"))))
 
 (defmethod stream-draw-joint :around (joint atom-tree stream)
@@ -46,7 +46,7 @@
 
 
 #+(or)
-(defmethod stream-draw-joint ((joint kin:bonded-atom) atom-tree stream)
+(defmethod stream-draw-joint ((joint kin:bonded-joint) atom-tree stream)
   (let ((highlight (cond
                      ((let ((color (and *color-joints* (gethash joint *color-joints*))))
                          (if color
@@ -57,7 +57,7 @@
 
 
 ;;; This version draws joints with internal coordinates
-(defmethod stream-draw-joint ((joint kin:bonded-atom) atom-tree stream)
+(defmethod stream-draw-joint ((joint kin:bonded-joint) atom-tree stream)
   (let* ((pos (kin:get-position joint))
          (start-pos (kin:get-property-or-default joint :start-pos nil))
          (highlight (cond
@@ -84,7 +84,7 @@
             (kin:get-position joint)
             (kin:properties joint))))
 
-(defmethod stream-draw-joint ((joint kin:jump-atom) atom-tree stream)
+(defmethod stream-draw-joint ((joint kin:jump-joint) atom-tree stream)
   (let ((highlight (cond
                      ((let ((color (and *color-joints* (gethash joint *color-joints*))))
                         (if color

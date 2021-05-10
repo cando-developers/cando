@@ -85,7 +85,7 @@
                           (format t "Quicklisp could not be located~%")
                           (format t "(translate-logical-pathname \"quicklisp:\" -> ~s~%" (translate-logical-pathname "quicklisp:"))
                           (format t "(ext:getenv \"CLASP_QUICKLISP_DIRECTORY\") -> ~s~%" (ext:getenv "CLASP_QUICKLISP_DIRECTORY"))
-                          (sys:safe-backtrace))))
+                          (error "Quicklisp could not be located"))))
     (load "quicklisp:setup.lisp"))
   #+(or)(load "quicklisp:setup.lisp"))
 

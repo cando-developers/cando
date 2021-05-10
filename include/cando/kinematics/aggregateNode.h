@@ -52,7 +52,7 @@ public:	// Functions here
   void walkMonomerNodes(core::Function_sp callback);
 private:
 	// instance variables here
-	/*! Point to the Chains */
+	/*! Joint to the Chains */
   gctools::Vec0<ChainNode_sp>	_Chains;
 };
 

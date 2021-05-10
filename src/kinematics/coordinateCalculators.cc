@@ -29,9 +29,9 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/geom/vector3.h>
 #include <cando/geom/matrix.h>
 #include <clasp/core/symbolTable.h>
-#include <cando/kinematics/atom.h>
-#include <cando/kinematics/bondedAtom.h>
-#include <cando/kinematics/jumpAtom.h>
+#include <cando/kinematics/joint.h>
+#include <cando/kinematics/bondedJoint.h>
+#include <cando/kinematics/jumpJoint.h>
 #include <clasp/core/translators.h>
 #include <cando/kinematics/coordinateCalculators.h>
 

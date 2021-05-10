@@ -57,13 +57,13 @@ public: // Functions here
 
 	Matrix const& getTransform() const { return this->_Transform;};
 
-	/*! Define a stub from four points
-	  A center and three points a,b,c
+	/*! Define a stub from four Joints
+	  A center and three Joints a,b,c
 	  Orthogonal coordinate frame contains three unit vectors by column,
-	  the first one is the unit vector from b pointing to a
+	  the first one is the unit vector from b Jointing to a
 	  the second is the unit vector in the plane defined by vector b->a and perpendicular to b->a
 	  and the third is the cross product of the first two. */
-	void fromFourPoints(Vector3 const& center,
+	void fromFourJoints(Vector3 const& center,
 			    Vector3 const& a,
 			    Vector3 const& b,
 			    Vector3 const& c );

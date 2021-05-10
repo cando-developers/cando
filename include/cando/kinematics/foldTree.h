@@ -76,7 +76,7 @@ public:
   void walkMonomerNodes(core::Function_sp callback);
 
 private:
-	/*! Point to the AggregateNode that contains the ChainNodes */
+	/*! Joint to the AggregateNode that contains the ChainNodes */
 	AggregateNode_sp		_AggregateNode;
 
 };

@@ -254,30 +254,30 @@ namespace chem
 
   SMART(JumpPlug);
 
-/*! @class Define a Plug that is connected to the AtomTree through a Jump */
+/*! @class Define a Plug that is connected to the PointTree through a Jump */
 
   class JumpPlug_O : public Plug_O
   {
     LISP_CLASS(chem,ChemPkg,JumpPlug_O,"JumpPlug",Plug_O);
   public: // ctors
-  JumpPlug_O(core::Symbol_sp name, MatterName jumpAtomName ) : Plug_O(name), _JumpAtomName(jumpAtomName) {};
+  JumpPlug_O(core::Symbol_sp name, MatterName jumpPointName ) : Plug_O(name), _JumpPointName(jumpPointName) {};
     JumpPlug_O() {};
   public:
     CL_LISPIFY_NAME("make-jump-plug");
     CL_LAMBDA("plug-name jump-atom-name");
-    CL_DEF_CLASS_METHOD static JumpPlug_sp make(core::Symbol_sp name, MatterName jumpAtomName) {
-      return gctools::GC<JumpPlug_O>::allocate(name,jumpAtomName);
+    CL_DEF_CLASS_METHOD static JumpPlug_sp make(core::Symbol_sp name, MatterName jumpPointName) {
+      return gctools::GC<JumpPlug_O>::allocate(name,jumpPointName);
     }
   public:
     virtual bool fieldsp() const { return true; };
     virtual void fields(core::Record_sp node);
   private:
-    MatterName		_JumpAtomName {_Nil<core::Symbol_O>()};
+    MatterName		_JumpPointName {_Nil<core::Symbol_O>()};
   public:
 
     /*! Return the name of the root atom */
     CL_LISPIFY_NAME("rootAtomName");
-    CL_DEFMETHOD     virtual MatterName rootAtomName() const { return this->_JumpAtomName;};
+    CL_DEFMETHOD     virtual MatterName rootAtomName() const { return this->_JumpPointName;};
 
 		//! JumpPlugs are a kind of InPlugs
     bool getIsIn() const { return true;};

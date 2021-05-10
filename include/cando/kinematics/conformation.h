@@ -43,7 +43,7 @@ namespace kinematics
   SYMBOL_EXPORT_SC_(KeywordPkg,residueId);
 
   FORWARD(FoldTree);
-  FORWARD(AtomTree);
+  FORWARD(JointTree);
 
   FORWARD(Conformation);
   class Conformation_O : public core::CxxObject_O
@@ -64,8 +64,8 @@ namespace kinematics
 	/*! Add an Alchemist to the Conformation and return its MoleculeId */
     int addAlchemists(core::Cons_sp alchemists);
 #endif
-	/*! Build the AtomTree that will build the Alchemists */
-    void buildAtomTree();
+	/*! Build the JointTree that will build the Alchemists */
+    void buildJointTree();
   public:	// Functions here
 	/*! Return the number of molecules */
     int numberOfMolecules() const;
@@ -74,19 +74,19 @@ namespace kinematics
     void resizeMolecules(int numMolecules);
 
 	/*! Build a molecule as specified by the Oligomer.
-	 It will use the first Monomer of each MultiMonomer as a starting point.
+	 It will use the first Monomer of each MultiMonomer as a starting Joint.
 	@signal kin:rebuiltMolecule :data ( moleculeId ) */
     void buildMoleculeUsingOligomer(int moleculeId, chem::Oligomer_sp oligomer);
 
     CL_DEFMETHOD FoldTree_sp getFoldTree() const { return this->_FoldTree;};
-    CL_DEFMETHOD AtomTree_sp getAtomTree() const { return this->_AtomTree;};
+    CL_DEFMETHOD JointTree_sp getJointTree() const { return this->_JointTree;};
 
   private:
 	// instance variables here
 	/*! Store the FoldTree */
     FoldTree_sp				_FoldTree;
-	/*! Store the AtomTree */
-    AtomTree_sp				_AtomTree;
+	/*! Store the JointTree */
+    JointTree_sp				_JointTree;
   };
 
 }; /* kinematics */

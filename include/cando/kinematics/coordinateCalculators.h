@@ -29,7 +29,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/foundation.h>
 #include <cando/geom/vector3.h>
 #include <cando/kinematics/kinematicsPackage.h>
-#include <cando/kinematics/atom.h>
+#include <cando/kinematics/joint.h>
 
 namespace kinematics
 {

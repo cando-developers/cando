@@ -1,5 +1,5 @@
 /*
-    File: originJumpAtom.h
+    File: rootBondedJoint.h
 */
 /*
 Open Source License
@@ -23,40 +23,48 @@ THE SOFTWARE.
 This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
 */
 /* -^- */
-#ifndef	kinematics_originJumpJoint_H
-#define kinematics_originJumpJoint_H
+#ifndef	kinematics_rootBondedJoint_H
+#define kinematics_rootBondedJoint_H
 
 #include <clasp/core/foundation.h>
-#include <cando/kinematics/atom.h>
-#include <cando/kinematics/jump.h>
-#include <cando/kinematics/jumpAtom.h>
+#include <cando/kinematics/kinFoundation.h>
 #include <cando/chem/atomId.h>
+#include <cando/kinematics/rootJointInfo.h>
+#include <cando/kinematics/bondedJoint.h>
+
+
 
 namespace kinematics
 {
 
-  FORWARD(OriginJumpJoint);
-  class OriginJumpJoint_O : public JumpJoint_O {
-    LISP_CLASS(kinematics,KinPkg,OriginJumpJoint_O,"OriginJumpAtom",JumpJoint_O);
-  public:
-    static const NodeType nodeType = originJumpAtom;
-  public:
-	/*! Empty ctor */
-  OriginJumpJoint_O(const chem::AtomId& atomId, core::T_sp name, const string& comment) : JumpJoint_O(atomId,name,comment) {};
+  FORWARD(RootBondedJoint);
+    class RootBondedJoint_O : public BondedJoint_O
+    {
+	LISP_CLASS(kinematics,KinPkg,RootBondedJoint_O,"RootBondedJoint",BondedJoint_O);
+    public:
+	static const NodeType nodeType = rootBondedJoint;
+    protected:
+	/*! Store the Id of the Bond1 atom if we have one
+	  otherwise it will be UndefinedUnsignedInt */
+	RootJointInfo	_RootInfo;
+    public:
+    RootBondedJoint_O(const chem::AtomId& atomId,core::T_sp name, const string& comment) :
+	BondedJoint_O(atomId,name,comment) {};
 
-    virtual bool correspondsToAtom() const { return false; };
-
-    virtual core::Symbol_sp typeSymbol() const;
-    Stub getStub() const;
-
-	/*! Update the internal coordinates */
-    virtual void updateInternalCoords(bool const recursive,
-                                      AtomTree_sp at);
-
-    void _updateXyzCoord(Stub& stub);
+      CL_DEFMETHOD double getPhi() const { return this->_Phi; };
+      
+	virtual RootJointInfo const * rootJointInfo() const { return &this->_RootInfo;};
 
 
-  };
+	/*! Set the Bond1Id for this atom */
+
+	void setup(core::Symbol_sp constitutionName,
+		   core::Symbol_sp topologyName,
+		   chem::Plug_sp inPlug);
+
+	virtual core::Symbol_sp typeSymbol() const;
+
+    };
 
 
 

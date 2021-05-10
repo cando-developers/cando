@@ -49,7 +49,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/adapt/stringSet.fwd.h>
 #include <clasp/core/hashTableEq.h>
 #include <cando/chem/stereoisomerAtoms.fwd.h>
-//#include "kinematics/atomTemplate.fwd.h"
+//#include "kinematics/pointTemplate.fwd.h"
 //#include "kinematics/chiDihedrals.fwd.h"
 #include <cando/chem/topology.fwd.h>
 #include <cando/chem/constitutionAtoms.fwd.h>

@@ -1,5 +1,5 @@
 /*
-    File: originJumpAtom.cc
+    File: rootBondedJoint.cc
 */
 /*
 Open Source License
@@ -31,45 +31,25 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/object.h>
 #include <clasp/core/lisp.h>
 #include <clasp/core/symbolTable.h>
-#include <cando/kinematics/stub.h>
-#include <cando/kinematics/originJumpAtom.h>
+#include <cando/kinematics/rootBondedJoint.h>
 
 namespace kinematics
 {
 
-void OriginJumpJoint_O::updateInternalCoords(bool const recursive,
-                                             AtomTree_sp at)
-{_OF();
-  if ( recursive ) {
-    for (int childIdx=0; childIdx<this->_numberOfChildren(); childIdx++ ) {
-      this->_child(childIdx).get()->updateInternalCoords(true,at);
+
+
+
+    void RootBondedJoint_O::setup(core::Symbol_sp constitutionName,
+			       core::Symbol_sp topologyName,
+			       chem::Plug_sp inPlug)
+    {
+	this->_RootInfo.setup(constitutionName,topologyName,inPlug);
     }
-  }
-}
 
 
 
-Stub OriginJumpJoint_O::getStub() const {
-  Stub origin;
-  origin._Transform.setToIdentity();
-  return origin;
-}
-
-
-
-
-core::Symbol_sp OriginJumpJoint_O::typeSymbol() const
-{_OF();
-  return _sym_origin;
-};
-
-
-void OriginJumpJoint_O::_updateXyzCoord(Stub& stub)
-{_OF();
-  Vector3 origin(0.0,0.0,0.0);
-  this->position(origin);
-}
-
-
-
+    core::Symbol_sp RootBondedJoint_O::typeSymbol() const
+    {_OF();
+	return _sym_rootBonded;
+    };
 };

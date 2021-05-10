@@ -32,7 +32,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/kinematics/foldTree.h>
 #include <cando/kinematics/chainNode.h>
 #include <cando/kinematics/monomerNode.h>
-#include <cando/kinematics/atomTree.h>
+#include <cando/kinematics/jointTree.h>
 #include <cando/chem/oligomer.h>
 #include <clasp/core/wrappers.h>
 
@@ -51,7 +51,7 @@ SYMBOL_EXPORT_SC_(ChemKwPkg,residueId);
 
 void Conformation_O::fields(core::Record_sp node) {
   node->field(INTERN_(kw,fold_tree),this->_FoldTree);
-  node->field(INTERN_(kw,atom_tree),this->_AtomTree);
+  node->field(INTERN_(kw,atom_tree),this->_JointTree);
 }
 
 // ----------------------------------------------------------------------
@@ -83,7 +83,7 @@ void Conformation_O::initialize()
 {_OF();
   this->Base::initialize();
   this->_FoldTree = FoldTree_O::create();
-  this->_AtomTree = AtomTree_O::create();
+  this->_JointTree = JointTree_O::create();
 }
 
 
@@ -97,7 +97,7 @@ void Conformation_O::resizeMolecules(int numMolecules)
   ASSERTF(numMolecules > 0, BF("You must allocate more than 0 molecules"));
   int oldNumberOfMolecules = this->_FoldTree->numberOfChains();
   this->_FoldTree->resizeChains(numMolecules);
-  this->_AtomTree->resizeMolecules(numMolecules);
+  this->_JointTree->resizeMolecules(numMolecules);
 #if 0
 #if 1
   SIMPLE_ERROR(BF("What are resizeMoleculesEvents for?"));
@@ -119,7 +119,7 @@ void Conformation_O::buildMoleculeUsingOligomer(int moleculeId, chem::Oligomer_s
   ChainNode_sp chainNode =
     this->_FoldTree->buildChainUsingOligomer(moleculeId,oligomer);
   LOG(BF("Built FoldTree--->\n%s")%chainNode->_RootMonomerNode->asString());
-  this->_AtomTree->buildMoleculeUsingChainNode(moleculeId,chainNode,oligomer);
+  this->_JointTree->buildMoleculeUsingChainNode(moleculeId,chainNode,oligomer);
 #if 0
 #if 1
   SIMPLE_ERROR(BF("What do I do with buildMoleculesUsingOligomerEvent?"));

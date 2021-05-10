@@ -1,5 +1,5 @@
 /*
-    File: atomTree.h
+    File: JointTree.h
 */
 /*
 Open Source License
@@ -23,8 +23,8 @@ THE SOFTWARE.
 This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
 */
 /* -^- */
-#ifndef kinematics_atomTree_H
-#define kinematics_atomTree_H
+#ifndef kinematics_JointTree_H
+#define kinematics_JointTree_H
 
 #include <clasp/core/foundation.h>
 #include <clasp/core/object.h>
@@ -33,17 +33,17 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/kinematics/kinematicsPackage.h>
 #include <cando/kinematics/pool.h>
 #include <cando/chem/atomIdMap.h>
-#include <cando/kinematics/atomTree.fwd.h>
+#include <cando/kinematics/jointTree.fwd.h>
 #include <cando/kinematics/bondId.fwd.h>
 #include <cando/chem/plug.fwd.h>
-#include <cando/kinematics/atom.fwd.h>
+#include <cando/kinematics/joint.fwd.h>
 #include <cando/kinematics/monomerId.h>
-#include <cando/kinematics/bondedAtom.h>
-#include <cando/kinematics/rootBondedAtom.h>
+#include <cando/kinematics/bondedJoint.h>
+#include <cando/kinematics/rootBondedJoint.h>
 #include <cando/kinematics/chainNode.fwd.h>
-#include <cando/kinematics/delayedBondedAtom.h>
-#include <cando/kinematics/jumpAtom.h>
-#include <cando/kinematics/originJumpAtom.h>
+#include <cando/kinematics/delayedBondedJoint.h>
+#include <cando/kinematics/jumpJoint.h>
+#include <cando/kinematics/originJumpJoint.h>
 #include <cando/chem/atomId.h>
 #include <cando/kinematics/bondId.h>
 
@@ -98,9 +98,9 @@ namespace kinematics
 
 
 
-  class AtomTree_O : public core::CxxObject_O
+  class JointTree_O : public core::CxxObject_O
   {
-    LISP_CLASS(kinematics,KinPkg,AtomTree_O,"AtomTree",core::CxxObject_O);
+    LISP_CLASS(kinematics,KinPkg,JointTree_O,"JointTree",core::CxxObject_O);
   public:
     bool fieldsp() const { return true; };
     void fields(core::Record_sp node);
@@ -112,13 +112,13 @@ namespace kinematics
     chem::AtomIdMap<Joint_sp>	_AtomMap;
         
   public:
-  AtomTree_O() : _Root(_Unbound<Joint_O>()) {};
+  JointTree_O() : _Root(_Unbound<Joint_O>()) {};
 
 	/*! Lookup the atom by atomId */
     Joint_sp lookup(const chem::AtomId& atomId) const;
 
 	/*! Lookup the atom by atomId and return it as a shared Joint_O */
-    Joint_sp atomTreeLookupAtomid(const chem::AtomId& atomId) const;
+    Joint_sp JointTreeLookupAtomid(const chem::AtomId& atomId) const;
 
     size_t numberOfMolecules() const { return this->_AtomMap.numberOfMolecules();};
 
@@ -137,8 +137,9 @@ namespace kinematics
     int numberOfAtoms() const {return this->_AtomHolders.size();};
 #endif
 
-	/*! Return the root of the AtomTree */
-    CL_DEFMETHOD Joint_sp atom_tree_root() const { return this->_Root; };
+	/*! Return the root of the JointTree */
+    CL_DEFMETHOD
+    Joint_sp jointTreeRoot() const { return this->_Root; };
 
 
 	/*! Print a description of the kin:Atom */
@@ -156,25 +157,25 @@ namespace kinematics
     };
 
 
-	/*! Return a new JumpAtom */
-    Joint_sp newJumpAtom(const chem::AtomId& atomId, core::T_sp name, const string& comment);
+	/*! Return a new JumpJoint */
+    Joint_sp newJumpJoint(const chem::AtomId& atomId, core::T_sp name, const string& comment);
 
 
-	/*! Return a new OriginJumpAtom */
-    Joint_sp newOriginJumpAtom(const chem::AtomId& atomId, core::T_sp name, const string& comment);
+	/*! Return a new OriginJumpJoint */
+    Joint_sp newOriginJumpJoint(const chem::AtomId& atomId, core::T_sp name, const string& comment);
 
 
-	/*! allocate a new BondedAtom */
-    Joint_sp newBondedAtom(const chem::AtomId& atomId, core::T_sp name, const string& comment);
+	/*! allocate a new BondedJoint */
+    Joint_sp newBondedJoint(const chem::AtomId& atomId, core::T_sp name, const string& comment);
 
-	/*! allocate a new RootBondedAtom */
-    Joint_sp newRootBondedAtom(const chem::AtomId& atomId, core::T_sp name, const string& comment,
+	/*! allocate a new RootBondedJoint */
+    Joint_sp newRootBondedJoint(const chem::AtomId& atomId, core::T_sp name, const string& comment,
                                core::Symbol_sp constitutionName,
                                core::Symbol_sp topologyName,
                                chem::Plug_sp inPlug );
 
-	/*! allocate a new DelayedBondedAtom */
-    Joint_sp newDelayedBondedAtom(const chem::AtomId& atomId, core::T_sp name, const string& comment);
+	/*! allocate a new DelayedBondedJoint */
+    Joint_sp newDelayedBondedJoint(const chem::AtomId& atomId, core::T_sp name, const string& comment);
 
 
 	/*! Resize the number of molecules */
@@ -193,15 +194,15 @@ namespace kinematics
 
 
 	/*! Replace an existing sub-tree with a sub-tree derived from an JointTemplate that
-	  is the root of a new sub-tree.  (incoming) represents a bond within the AtomTree
+	  is the root of a new sub-tree.  (incoming) represents a bond within the JointTree
 	  whose child atom  will be replaced by the new sub-tree.
 	  This function will identify all of the connections going out of the monomer sub-tree
 	  being replaced and hook them into the new sub-tree.
 	  There are a couple of special instances.
 	  1) (incoming) is nil - in that case the new sub-tree
-	  is being inserted as the root of the AtomTree.
+	  is being inserted as the root of the JointTree.
 	  2) (incoming) parent is nil - in that case we are replacing
-	  the root monomer sub-tree of the AtomTree
+	  the root monomer sub-tree of the JointTree
 	  3) (incoming) parent is defined but child is nil 
 	      - in that case we are appending a sub-tree to an existing sub-tree.
 	  4) (incoming) parent is defined and child is defined
@@ -217,11 +218,11 @@ namespace kinematics
                                       ChainNode_sp chainNode,
                                       chem::Oligomer_sp oligomer);
 
-	/*! Walk the AtomTree and for each atom evaluate the Executable
+	/*! Walk the JointTree and for each atom evaluate the Executable
 	  with the atom as an argument */
     void walk(core::Function_sp exec);
 
-	/*! Walk the AtomTree and for each atom evaluate the Functor
+	/*! Walk the JointTree and for each atom evaluate the Functor
 	  with the atom as an argument */
     void walkTree(core::Function_sp callback_one_arg);
 
@@ -231,10 +232,10 @@ namespace kinematics
 
 	/*! Walk the atoms in a Residue and evaluate the executable for each Atom
 	 The executable should evaluate a single argument which is the atom */
-    void walkResidue(int residueId, Joint_sp const& rootAtom, core::Function_sp exec);
+    void walkResidue(int residueId, Joint_sp const& rootJoint, core::Function_sp exec);
 
 
-  }; // AtomTree
+  }; // JointTree
 
 
 
@@ -243,7 +244,7 @@ namespace kinematics
 };
 
 
-TRANSLATE(kinematics::AtomTree_O);
+TRANSLATE(kinematics::JointTree_O);
 
 
 #endif

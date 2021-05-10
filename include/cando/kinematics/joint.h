@@ -1,5 +1,5 @@
 /*
-    File: atom.h
+    File: Joint.h
 */
 /*
 Open Source License
@@ -23,18 +23,18 @@ THE SOFTWARE.
 This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
 */
 /* -^- */
-#ifndef	kinematics_atom_H
-#define kinematics_atom_H
+#ifndef	kinematics_Joint_H
+#define kinematics_Joint_H
 
 #include <clasp/core/foundation.h>
 #include <cando/geom/vector3.h>
 #include <cando/kinematics/kinematicsPackage.h>
-#include <cando/kinematics/atomTree.fwd.h>
+#include <cando/kinematics/jointTree.fwd.h>
 #include <cando/kinematics/dofType.h>
 #include <cando/kinematics/stub.fwd.h>
 #include <cando/kinematics/stub.h>
 #include <cando/kinematics/coordinateCalculators.h>
-#include <cando/kinematics/atom.fwd.h>
+#include <cando/kinematics/joint.fwd.h>
 #include <cando/chem/atomId.h>
 #include <cando/kinematics/pool.h>
 
@@ -42,7 +42,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #define PREPARE_ANGLE(ang) (MY_PI-ang)
 #define FINAL_ANGLE(ang) (ang)
 
-// Currently a maximum of 5 children hanging off of any atom
+// Currently a maximum of 5 children hanging off of any Joint
 // means we can handle octahedral coordination but no more
 
 namespace kinematics
@@ -56,23 +56,23 @@ namespace kinematics
 #endif
 
 
-#define	DEBUG_KIN_ATOM	1
+#define	DEBUG_KIN_JOINT	1
 
 
-class RootAtomInfo;
+class RootJointInfo;
 
-/*! Atom stores a link to a parent atom and a list of children atoms that
-  are reference counted.  The children atoms can be of different types and the order of the 
-  children is enforced as JumpAtoms | BondedAtom atoms.
+/*! Joint stores a link to a parent Joint and a list of children Joints that
+  are reference counted.  The children Joints can be of different types and the order of the 
+  children is enforced as JumpJoints | BondedJoint Joints.
  */
 
 class Joint_O : public core::CxxObject_O
 {
   LISP_CLASS(kinematics,KinPkg,Joint_O,"Joint",core::CxxObject_O);
-  friend class AtomTree_O;
-  friend class BondedAtom;
+  friend class JointTree_O;
+  friend class BondedJoint;
 public:
-	//! Point to the parent atom (also used to contruct linked list of unused PoolMembers)
+	//! Joint to the parent Joint (also used to contruct linked list of unused PoolMembers)
   Joint_sp 	_Parent;
   core::T_sp      _Name;
   chem::AtomId	_Id;
@@ -80,12 +80,12 @@ public:
   core::List_sp         _Properties;
   CoordinateCalculator  _ToInternal; // Function to calculate internal coordinate
   CoordinateCalculator  _ToExternal; // Function to calculate external coordinate
-#if DEBUG_KIN_ATOM
+#if DEBUG_KIN_JOINT
   string		_Comment;
   Vector3		_TestPosition;
 #endif
 private:
-	/*! Track my position in my owner's list of Atoms with modified DOFs
+	/*! Track my position in my owner's list of Joints with modified DOFs
 	  -1 when my dofs have not changed since the last update_coords
 	*/
   int		_DofRefoldIndex;
@@ -93,7 +93,7 @@ public:
   bool fieldsp() const { return true; };
   void fields(core::Record_sp node);
 public:
-	/*! Bonded atoms can have different numbers of children wrt JumpAtoms */
+	/*! Bonded Joints can have different numbers of children wrt JumpJoints */
   virtual int _maxNumberOfChildren() const = 0;
 	/*! Return the current number of children */
   virtual int _numberOfChildren() const = 0;
@@ -102,15 +102,15 @@ public:
 	/*! Return a reference to the indexed child */
   virtual Joint_sp _child(int idx) const = 0;
 	/*! Set a value of a child */
-  virtual void _setChild(int idx, Joint_sp atom) = 0;
+  virtual void _setChild(int idx, Joint_sp Joint) = 0;
 	/*! Delete the child at the given index */
   virtual void _releaseChild(int idx) = 0;
 	/*! Insert the child at the given index - this does the
 	  work of opening up a space and putting the new value in */
-  virtual void _insertChild(int idx, Joint_sp atom) = 0;
+  virtual void _insertChild(int idx, Joint_sp Joint) = 0;
 	/*! Insert the child at the given index - this does the work
 	  of opening up a space and putting the new value in */
-  virtual void _appendChild(Joint_sp atom) = 0;
+  virtual void _appendChild(Joint_sp Joint) = 0;
 
 	/*! Destructors need to delete all Children */
   virtual void _releaseAllChildren() = 0;
@@ -125,13 +125,13 @@ public:
     _Properties(_Nil<core::T_O>()),
     _ToExternal(general_to_external),
     _ToInternal(general_to_internal)    
-#if DEBUG_KIN_ATOM
+#if DEBUG_KIN_JOINT
     , _Comment(comment)
 #endif
   {};
 
-  /*! Returns true if the joint represents an atom */
-  CL_DEFMETHOD virtual bool correspondsToAtom() const { return true; };
+  /*! Returns true if the joint represents an Joint */
+  CL_DEFMETHOD virtual bool correspondsToJoint() const { return true; };
   
   chem::AtomId id() const { return this->_Id;};
   core::T_sp name() const;
@@ -151,8 +151,8 @@ public:
   void insertChild( int before, Joint_sp child );
 
 	/*! Insert the child.
-	  If the child is a JumpAtom then put it as the first child.
-	  If it's a Bonded atom then put it before all the existing BondedAtoms.
+	  If the child is a JumpJoint then put it as the first child.
+	  If it's a Bonded Joint then put it before all the existing BondedJoints.
 	*/
   void insertChild(Joint_sp child);
 
@@ -166,8 +166,8 @@ public:
 
 
 	/*! Append the child. 
-	  If the child is a JumpAtom then put it before all the other non-JumpAtoms.
-	  If it is a Bonded atom then put it at the end.
+	  If the child is a JumpJoint then put it before all the other non-JumpJoints.
+	  If it is a Bonded Joint then put it at the end.
 	*/
   void appendChild(Joint_sp handle);
 
@@ -184,10 +184,10 @@ public:
   Joint_sp child(int idx) const { return this->_child(idx);};
 
 
-	/*! Root nodes will return RootAtomInfo structures */
-  virtual RootAtomInfo const* rootAtomInfo() const;
+	/*! Root nodes will return RootJointInfo structures */
+  virtual RootJointInfo const* rootJointInfo() const;
 
-	/*! For debugging dump the AtomTree */
+	/*! For debugging dump the JointTree */
   void recursiveDumpChildrenIntoStringStream(const string& prefix,
                                              stringstream& out);
 
@@ -195,15 +195,15 @@ public:
   virtual void _updateInternalCoord() { THROW_HARD_ERROR(BF("Subclass must implement")); };
 	/*! Update the internal coordinates */
   virtual void updateInternalCoords(bool const recursive,
-                                    AtomTree_sp at 	) = 0;
+                                    JointTree_sp at 	) = 0;
 
-	/*! Return true if this atom is a JumpAtom (or subclass) */
+	/*! Return true if this Joint is a JumpJoint (or subclass) */
   virtual bool isJump() const { return false;};
 
   CL_DEFMETHOD chem::AtomId atomId() const { return this->_Id; };
 
-	/*! Return the i(th) non-jump atom */
-  Joint_sp getNonJumpAtom(int idx) const;
+	/*! Return the i(th) non-jump Joint */
+  Joint_sp getNonJumpJoint(int idx) const;
 
 	/*! Return true if the stub is defined */
   virtual bool stubDefined() const;
@@ -228,38 +228,38 @@ public:
   Vector3 getPosition2() const;
   void setPosition2(const Vector3& pos);
 
-	/*! Return the input stub atom */
-  inline Joint_sp inputStubAtom0() const
+	/*! Return the input stub Joint */
+  inline Joint_sp inputStubJoint0() const
   {_OF();
     ASSERTF(this->parent().boundp(),BF("Parent isn't defined"));
     return this->parent();
   }
 
-	/*! Return the input stub atom */
-  inline Joint_sp inputStubAtom1() const
+	/*! Return the input stub Joint */
+  inline Joint_sp inputStubJoint1() const
   {_OF();
     ASSERTF(this->parent().boundp(),BF("Parent isn't defined"));
     if (this->parent().unboundp()) {
-      SIMPLE_ERROR(BF("inputStubAtom1 parent of %s isn't defined") % _rep_(this->asSmartPtr()));
+      SIMPLE_ERROR(BF("inputStubJoint1 parent of %s isn't defined") % _rep_(this->asSmartPtr()));
     }
-    return this->parent().get()->stubAtom1();
+    return this->parent().get()->stubJoint1();
   }
 
-	/*! Return the input stub atom */
-  inline Joint_sp inputStubAtom2() const
+	/*! Return the input stub Joint */
+  inline Joint_sp inputStubJoint2() const
   {_OF();
     ASSERTF(this->parent().boundp(),BF("Parent isn't defined"));
     if (this->parent().unboundp()) {
-      SIMPLE_ERROR(BF("inputStubAtom2 parent of %s isn't defined") % _rep_(this->asSmartPtr()));
+      SIMPLE_ERROR(BF("inputStubJoint2 parent of %s isn't defined") % _rep_(this->asSmartPtr()));
     }
-    return this->parent().get()->stubAtom2();
+    return this->parent().get()->stubJoint2();
   }
 
 
 	/*! Return the previous child to this one */
   Joint_sp previousChild(Joint_sp child) const;
 
-	/*! Return the previous sibling of this atom */
+	/*! Return the previous sibling of this Joint */
   Joint_sp previousSibling() const
   {
     if ( this->parent().boundp() )
@@ -272,29 +272,29 @@ public:
   }
 
 
-	/*! Return the input stub atom3
-	  It is either its parents stubAtom3 or its previous sibling */
-  Joint_sp inputStubAtom3(AtomTree_sp at) const;
+	/*! Return the input stub Joint3
+	  It is either its parents stubJoint3 or its previous sibling */
+  Joint_sp inputStubJoint3(JointTree_sp at) const;
 
 
 
-	/*! Return the stubAtom1 */
-  virtual Joint_sp stubAtom1() const = 0;
+	/*! Return the stubJoint1 */
+  virtual Joint_sp stubJoint1() const = 0;
 
-	/*! Return the id of stubAtom */
-  chem::AtomId stubAtom1Id() const { return this->stubAtom1().get()->id();};
+	/*! Return the id of stubJoint */
+  chem::AtomId stubJoint1Id() const { return this->stubJoint1().get()->id();};
 
-	/*! Return the stubAtom2 */
-  virtual Joint_sp stubAtom2() const = 0;
+	/*! Return the stubJoint2 */
+  virtual Joint_sp stubJoint2() const = 0;
 
-	/*! Return the id of stubAtom */
-  chem::AtomId stubAtom2Id() const { return this->stubAtom2().get()->id();};
+	/*! Return the id of stubJoint */
+  chem::AtomId stubJoint2Id() const { return this->stubJoint2().get()->id();};
 
-	/*! Return the stubAtom3 */
-  virtual Joint_sp stubAtom3(AtomTree_sp tree) const = 0;
+	/*! Return the stubJoint3 */
+  virtual Joint_sp stubJoint3(JointTree_sp tree) const = 0;
 
-	/*! Return the id of stubAtom */
-  chem::AtomId stubAtom3Id(AtomTree_sp at) const { return this->stubAtom3(at).get()->id();};
+	/*! Return the id of stubJoint */
+  chem::AtomId stubJoint3Id(JointTree_sp at) const { return this->stubJoint3(at).get()->id();};
 
 	/*! Return true if we want to keep the Dof fixed */
   bool keepDofFixed(DofType dof) const { return false;};

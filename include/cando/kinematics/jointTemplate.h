@@ -34,9 +34,9 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/constitutionAtoms.h>
 #include <cando/kinematics/monomerId.h>
 #include <cando/kinematics/kinematicsPackage.h>
-#include <cando/kinematics/atomTree.fwd.h>
+#include <cando/kinematics/jointTree.fwd.h>
 #include <cando/kinematics/jointTemplate.fwd.h>
-#include <cando/kinematics/atom.fwd.h>
+#include <cando/kinematics/joint.fwd.h>
 #include <cando/chem/atomId.h>
 #include <cando/kinematics/bondId.h>
 #include <cando/kinematics/pool.h>
@@ -65,8 +65,8 @@ FORWARD(MonomerNode);
     static Checkpoint_sp make(const core::Symbol_sp& constitutionName,
                               const core::Symbol_sp& topologyName);
   public:
-	/*! Set up the DelayedBondedAtom */
-    virtual void setupDelayedBondedAtom(DelayedBondedJoint_sp atom) const;
+	/*! Set up the DelayedBondedJoint */
+    virtual void setupDelayedBondedJoint(DelayedBondedJoint_sp atom) const;
     CL_DEFMETHOD virtual core::Symbol_sp atomName() const {_OF(); SUBCLASS_MUST_IMPLEMENT();};
   };
 
@@ -81,11 +81,11 @@ FORWARD(MonomerNode);
     static CheckpointJoint_sp make(core::Symbol_sp atomName);
     DEFAULT_CTOR_DTOR(CheckpointJoint_O);
   private:
-	/*! The name of the atom that must be built (the checkpoint) before a
-	  DelayedBondedAtom is built */
+	/*! The name of the atom that must be built (the checkJoint) before a
+	  DelayedBondedJoint is built */
     core::Symbol_sp	_AtomName;
   public:
-    virtual void setupDelayedBondedAtom(DelayedBondedJoint_sp atom) const;
+    virtual void setupDelayedBondedJoint(DelayedBondedJoint_sp atom) const;
     virtual core::Symbol_sp atomName() const {return this->_AtomName;};
   };
 
@@ -102,18 +102,18 @@ FORWARD(MonomerNode);
     virtual ~CheckpointOutPlugJoint_O() {};
   public:
 	/*! The name of the plug on the other side of which the Bond1 atom
-	  must be built (the checkpoint) before a
-	  DelayedBondedAtom is built */
+	  must be built (the checkJoint) before a
+	  DelayedBondedJoint is built */
     chem::OutPlug_sp	_Plug;
   public:
-    virtual void setupDelayedBondedAtom(DelayedBondedJoint_sp atom) const;
+    virtual void setupDelayedBondedJoint(DelayedBondedJoint_sp atom) const;
     virtual core::Symbol_sp atomName() const {return this->_Plug->getB0();};
   };
 
 
 
 
-/*! Builds Atoms within an AtomTree
+/*! Builds Atoms within an JointTree
  */
   class JointTemplate_O : public core::CxxObject_O
   {
@@ -124,7 +124,7 @@ FORWARD(MonomerNode);
   public:
     static JointTemplate_sp make(const int id, core::T_sp name, const string& comment, const JointTemplate_sp parent);
   protected:
-	//! Point to the parent atom (also used to contruct linked list of unused PoolMembers)
+	//! Joint to the parent atom (also used to contruct linked list of unused PoolMembers)
     gc::Nilable<JointTemplate_sp>			_Parent;
     chem::ConstitutionAtomIndex0N	_Id;
     core::T_sp                          _Name;
@@ -149,7 +149,7 @@ FORWARD(MonomerNode);
     CL_DEFMETHOD chem::ConstitutionAtomIndex0N constitutionAtomIndex() const { return this->_Id; };
 
     typedef gc::SmallMap<core::Symbol_sp,BondId_sp> PlugNamesToBondIdMap;
-    virtual Joint_sp writeIntoAtomTree(const AtomTree_sp& atomTree,
+    virtual Joint_sp writeIntoJointTree(const JointTree_sp& JointTree,
                                        MonomerId monomerId,
                                        const BondId_sp& incoming,
                                        const PlugNamesToBondIdMap& outgoing,
@@ -171,7 +171,7 @@ FORWARD(MonomerNode);
   };
 
 
-    /*!  A template that builds a BondedAtom within an AtomTree
+    /*!  A template that builds a BondedJoint within an JointTree
      */
   class BondedJointTemplate_O : public JointTemplate_O
   {
@@ -198,20 +198,20 @@ FORWARD(MonomerNode);
 
     void addChildren(Joint_sp me,
                      MonomerId monomerId,
-                     const AtomTree_sp& atomTree,
+                     const JointTree_sp& JointTree,
                      const BondId_sp& incoming,
                      const PlugNamesToBondIdMap& outgoing,
                      MonomerNode_sp monomerNode);
 
 
-    virtual Joint_sp writeIntoAtomTree(const AtomTree_sp& atomTree,
+    virtual Joint_sp writeIntoJointTree(const JointTree_sp& JointTree,
                                        MonomerId monomerId,
                                        const BondId_sp& incoming,
                                        const PlugNamesToBondIdMap& outgoing,
                                        MonomerNode_sp monomerNode,
                                        bool rootNode = false );
-    void setupOutPlugAtomTree(Joint_sp owned,
-                              const AtomTree_sp& atomTree,
+    void setupOutPlugJointTree(Joint_sp owned,
+                              const JointTree_sp& JointTree,
                               const BondId_sp& incoming,
                               const PlugNamesToBondIdMap& outgoing );
 
@@ -226,8 +226,8 @@ FORWARD(MonomerNode);
   };
 
 
-    //! Builds DelayedBondedAtom within an AtomTree.
-    /*! DelayedBondedAtoms don't update their children until the second pass of
+    //! Builds DelayedBondedJoint within an JointTree.
+    /*! DelayedBondedJoints don't update their children until the second pass of
     the build process */
   class DelayedBondedJointTemplate_O : public BondedJointTemplate_O
   {
@@ -236,7 +236,7 @@ FORWARD(MonomerNode);
     bool fieldsp() const { return true; };
     void fields(core::Record_sp node);
   public:
-    static DelayedBondedJointTemplate_sp make(const Checkpoint_sp& checkpoint);
+    static DelayedBondedJointTemplate_sp make(const Checkpoint_sp& checkJoint);
   protected:
 	/*! Defines the atom, either in the current residue or in the following
 	  one that must be built before this one can create a stub that it gives
@@ -244,7 +244,7 @@ FORWARD(MonomerNode);
     Checkpoint_sp	_Checkpoint;
   public:
 
-    virtual Joint_sp writeIntoAtomTree(const AtomTree_sp& atomTree,
+    virtual Joint_sp writeIntoJointTree(const JointTree_sp& JointTree,
                                        MonomerId monomerId,
                                        const BondId_sp& incoming,
                                        const PlugNamesToBondIdMap& outgoing,
@@ -258,15 +258,13 @@ FORWARD(MonomerNode);
     virtual ~DelayedBondedJointTemplate_O() {};
   };
 
-
-
     /*! A template that builds an atom that will be the root of a residue
-      within an AtomTree.
+      within an JointTree.
       The type of atom that is built depends on the Parent of the new atom.
-      If the parent is a JumpAtom then a JumpAtom is created.
-      If the parent is a BondedAtom then a RootBondedAtom is created.
+      If the parent is a JumpJoint then a JumpJoint is created.
+      If the parent is a BondedJoint then a RootBondedJoint is created.
     In both cases, information about the residue is written into the Atom
-    that is created for use by the AtomTree as Atoms are built. */
+    that is created for use by the JointTree as Atoms are built. */
   class RootBondedJointTemplate_O : public BondedJointTemplate_O
   {
     LISP_CLASS(kinematics,KinPkg,RootBondedJointTemplate_O,"RootBondedJointTemplate",BondedJointTemplate_O);
@@ -281,7 +279,7 @@ FORWARD(MonomerNode);
 	/*! Can be InPlug or JumpPlug */
     chem::Plug_sp		_InPlug;
   public:
-    virtual Joint_sp writeIntoAtomTree(const AtomTree_sp& atomTree,
+    virtual Joint_sp writeIntoJointTree(const JointTree_sp& JointTree,
                                        MonomerId monomerId,
                                        const BondId_sp& incoming,
                                        const PlugNamesToBondIdMap& outgoing,
@@ -290,14 +288,6 @@ FORWARD(MonomerNode);
 
     DEFAULT_CTOR_DTOR(RootBondedJointTemplate_O);
   };
-
-
-
-
-
-
-
-
 };
 
 #endif
