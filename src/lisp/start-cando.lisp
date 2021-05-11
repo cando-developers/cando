@@ -80,14 +80,13 @@
 ;;; Setup or startup the Cando system 
 ;;; If :setup-cando is in *features* then don't load the cando system
 (progn
-  (handler-bind ((error (lambda (&rest args)
-                          (declare (ignore args))
-                          (format t "Quicklisp could not be located~%")
-                          (format t "(translate-logical-pathname \"quicklisp:\" -> ~s~%" (translate-logical-pathname "quicklisp:"))
-                          (format t "(ext:getenv \"CLASP_QUICKLISP_DIRECTORY\") -> ~s~%" (ext:getenv "CLASP_QUICKLISP_DIRECTORY"))
-                          (error "Quicklisp could not be located"))))
-    (load "quicklisp:setup.lisp"))
-  #+(or)(load "quicklisp:setup.lisp"))
+  (unless (probe-file "quicklisp:setup.lisp")
+    (format t "quicklisp:setup.lisp could not be located - maybe it's not setting up the quicklisp: hostname properly~%")
+    (format t "Try starting cando with the environment variable DEBUG_VERBOSE_BUNDLE_SETUP=1~%")
+    (format t "(translate-logical-pathname \"quicklisp:\" -> ~s~%" (translate-logical-pathname "quicklisp:"))
+    (format t "(ext:getenv \"CLASP_QUICKLISP_DIRECTORY\") -> ~s~%" (ext:getenv "CLASP_QUICKLISP_DIRECTORY"))
+    (error "quicklisp:setup could not be located"))
+  (load "quicklisp:setup.lisp"))
 
 ;;; If quickclasp isn't installed then install it
 ;;; It provides extra systems for cando
