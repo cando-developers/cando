@@ -18,10 +18,12 @@
               (mp:process-run-function 'swank-main
                                        (lambda ()
                                          (format *debug-io* "Starting server thread~%")
-                                         (funcall swank-create-server
-                                                  :port port
-                                                  :interface "0.0.0.0")
+                                         (let ((port (funcall swank-create-server
+                                                              :port port
+                                                              :interface "0.0.0.0")))
+                                           (format t "Started swank server on port ~d~%" port))
                                          (format *debug-io* "Leaving server thread~%")))
+              (sleep 2)
               (format t "Started swank server~%")
               (setf *started-swank* t))))
         (error "Could not determine directory for slime - set SLIME_HOME"))))

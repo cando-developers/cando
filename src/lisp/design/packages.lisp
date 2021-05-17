@@ -48,20 +48,31 @@
 (defpackage #:design
   (:use #:cl )
   (:export
-   define-part
-   make-oligomer
-   design
-   topologys
-   cap-name-map
-   trainers
-   oligomer
-   build-trainers
-   save-design
-   load-design
-   augment-trainer-with-superposable-conformation-collection
-   jostle-trainer
-   build-charge-solvate
-   build-all-trainers
+   #:build-molecule
+   #:*complex-plugs*
+   #:complex-plug
+   #:name
+   #:smarts
+   #:compiled-smarts
+   #:complex-plug-or-nil
+   #:dkp
+   #:define-part
+   #:make-oligomer
+   #:context
+   #:design
+   #:topologys
+   #:cap-name-map
+   #:trainers
+   #:oligomer
+   #:canonical-sequence
+   #:build-trainers
+   #:save-design
+   #:load-design
+   #:augment-trainer-with-superposable-conformation-collection
+   #:jostle-trainer
+   #:build-charge-solvate
+   #:build-all-trainers
+   #:canonical-sequence
    )
   (:documentation
    "Embryonic joint-tree code"))
@@ -81,3 +92,8 @@
   (:use #:cl)
   (:export
    #:draw-fold-tree))
+
+(defpackage #:work
+  (:use #:cl)
+  (:export
+   ))

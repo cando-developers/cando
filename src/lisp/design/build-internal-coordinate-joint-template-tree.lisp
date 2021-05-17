@@ -1,6 +1,7 @@
 (in-package :design.joint-tree)
 
 
+#+(or)
 (defun interpret-builder-info-instruction (instr residue)
   (error "This is currently not used")
   (cond
@@ -68,13 +69,13 @@
   '(:in :origin :in/origin/out :in/out :out))
 
 (defclass plug-factory ()
-  ((in-atom :initarg :in-atom :initform nil :reader in-atom)
+  ((in-reference-atom :initarg :in-reference-atom :initform nil :reader in-reference-atom)
    (in-name :initarg :in-name :reader in-name)
    (in-plug :initform nil :accessor in-plug)
    (origin-atom :initarg :origin-atom :initform nil :reader origin-atom)
    (origin-name :initarg :origin-name :reader origin-name)
    (origin-plug :initform nil :accessor origin-plug)
-   (out-atom :initarg :out-atom :initform nil :reader out-atom)
+   (out-reference-atom :initarg :out-reference-atom :initform nil :reader out-reference-atom)
    (out-name :initarg :out-name :reader out-name)
    (out-plug :initform nil :accessor out-plug))
   (:documentation "Create plugs of different kinds" ))
@@ -91,26 +92,67 @@
   "Either return the cached plug or create and cache one"
   (if (in-plug in-plug-factory)
       (in-plug in-plug-factory)
-      (setf (in-plug in-plug-factory)
-            (chem:make-in-plug (in-name in-plug-factory)
-                               nil
-                               (chem:get-name (in-atom in-plug-factory))
-                               :single-bond
-                               nil ; Handle two bond plugs
-                               :no-bond))))
+      (let ((reference-atom (in-reference-atom in-plug-factory))
+            (maybe-complex-plug (design:complex-plug-or-nil (in-name in-plug-factory))))
+        (if maybe-complex-plug
+            (let* ((compiled-smarts (design:compiled-smarts maybe-complex-plug))
+                   (matches (chem:matches compiled-smarts reference-atom)))
+              (unless matches
+                (error "No match could be found for in-plug ~a reference-atom ~a smarts ~a"
+                       (name maybe-complex-plug)
+                       reference-atom
+                       (design:smarts maybe-complex-plug)))
+              (let ((atom0 (chem:get-atom-with-tag matches 0))
+                    (atom1 (chem:get-atom-with-tag matches 1)))
+                (format t "matches: ~s ~s ~s~%" matches atom0 atom1)
+                (setf (in-plug in-plug-factory)
+                      (chem:make-in-plug (in-name in-plug-factory)
+                                         nil
+                                         (chem:get-name atom0)
+                                         :single-bond
+                                         (chem:get-name atom1)
+                                         :single-bond))))
+            (setf (in-plug in-plug-factory)
+                  (chem:make-in-plug (in-name in-plug-factory)
+                                     nil
+                                     (chem:get-name reference-atom)
+                                     :single-bond
+                                     nil ; Handle two bond plugs
+                                     :no-bond))))))
 
 (defun maybe-make-out-plug (out-plug-factory)
   "Either return the cached plug or create and cache one"
   (if (out-plug out-plug-factory)
       (out-plug out-plug-factory)
-      (setf (out-plug out-plug-factory)
-            (chem:make-out-plug (out-name out-plug-factory)
-                                nil
-                                nil
-                                (chem:get-name (out-atom out-plug-factory))
-                                :single-bond
-                                nil   ; Handle two bond plugs
-                                :no-bond))))
+      (let ((reference-atom (out-reference-atom out-plug-factory))
+            (maybe-complex-plug (design:complex-plug-or-nil (out-name out-plug-factory))))
+        (if maybe-complex-plug
+            (let* ((compiled-smarts (design:compiled-smarts maybe-complex-plug))
+                   (matches (chem:matches compiled-smarts reference-atom)))
+              (unless matches
+                (error "No match could be found for out-plug ~a reference-atom ~a smarts ~a"
+                       (name maybe-complex-plug)
+                       reference-atom
+                       (design:smarts maybe-complex-plug)))
+              (let ((atom0 (chem:get-atom-with-tag matches 0))
+                    (atom1 (chem:get-atom-with-tag matches 1)))
+                (format t "matches: ~s ~s ~s~%" matches atom0 atom1)
+                (setf (out-plug out-plug-factory)
+                      (chem:make-out-plug (out-name out-plug-factory)
+                                          nil
+                                          nil
+                                          (chem:get-name atom0)
+                                          :single-bond
+                                          (chem:get-name atom1)
+                                          :single-bond))))
+            (setf (out-plug out-plug-factory)
+                  (chem:make-out-plug (out-name out-plug-factory)
+                                      nil
+                                      nil
+                                      (chem:get-name reference-atom)
+                                      :single-bond
+                                      nil ; Handle two bond plugs
+                                      :no-bond))))))
 
 (defun gather-plugs (plug-factory)
   "Return a list of plugs that the plug-factory created"
@@ -121,7 +163,7 @@
     
 (defun in-plug-factory-p (plug-factory)
   "Return generalized boolean for whether this plug-factory is capable of generating an in-plug"
-  (in-atom plug-factory))
+  (in-reference-atom plug-factory))
 
 (defun origin-plug-factory-p (plug-factory)
   "Return generalized boolean for whether this plug-factory is capable of generating an origin-plug"
@@ -129,7 +171,7 @@
 
 (defun out-plug-factory-p (plug-factory)
   "Return generalized boolean for whether this plug-factory is capable of generating an out-plug"
-  (out-atom plug-factory))
+  (out-reference-atom plug-factory))
 
 (defun gather-plug-factories (residue)
   "Loop over the atoms in the residue and use the properties to create plug-factory(s).
@@ -158,17 +200,17 @@ The properties can look like:
                            (case property
                              (:in
                               (unless (symbolp value) (plug-factory-argument-error atom property value 'symbol))
-                              (make-instance 'plug-factory :in-atom atom
+                              (make-instance 'plug-factory :in-reference-atom atom
                                                            :in-name (in-plug-name value)))
                              (:out
                               (unless (symbolp value) (plug-factory-argument-error atom property value 'symbol))
-                              (make-instance 'plug-factory :out-atom atom
+                              (make-instance 'plug-factory :out-reference-atom atom
                                                            :out-name (out-plug-name value)))
                              (:in/out
                               (unless (listp value) (plug-factory-argument-error atom property value 'list))
-                              (make-instance 'plug-factory :in-atom atom
+                              (make-instance 'plug-factory :in-reference-atom atom
                                                            :in-name (in-plug-name (first value) :-default)
-                                                           :out-atom atom
+                                                           :out-reference-atom atom
                                                            :out-name (out-plug-name value :+out)))
                              (:origin
                               (format t "origin atom: ~s  value -> ~s~%" atom save-cur)
@@ -177,11 +219,11 @@ The properties can look like:
                                                            :origin-name (origin-plug-name (first value) :-origin)))
                              (:in/origin/out
                               (unless (listp value) (plug-factory-argument-error atom property value 'list))
-                              (make-instance 'plug-factory :in-atom atom
+                              (make-instance 'plug-factory :in-reference-atom atom
                                                            :in-name (in-plug-name (first value))
                                                            :origin-atom atom
                                                            :origin-name (origin-plug-name (second value) :-origin)
-                                                           :out-atom atom
+                                                           :out-reference-atom atom
                                                            :out-name (out-plug-name (third value) :+origin))))))
                      (when maybe-plug-factory (push maybe-plug-factory plug-factories))))))
       plug-factories)))
@@ -221,7 +263,7 @@ It's either the origin atom or the first in atom found."
         when (origin-plug-factory-p plug-factory)
           do (return-from identify-root-atom-name (chem:get-name (origin-atom plug-factory)))
         when (in-plug-factory-p plug-factory)
-          do (return-from identify-root-atom-name (chem:get-name (in-atom plug-factory))))
+          do (return-from identify-root-atom-name (chem:get-name (in-reference-atom plug-factory))))
   (error "There must either be an origin-plug or an in-plug in the residue ~a" residue))
 
 (defun build-stereoisomer (name chiral-atoms stereoisomer-index)
@@ -263,7 +305,9 @@ Build stereoinformation from all of this and return it."
     (let* ((root-atom (chem:atom-with-name residue root-atom-name))
            (spanning-loop (chem:make-spanning-loop root-atom))
            (atoms (chem:all-atoms spanning-loop))
-           (chiral-atoms (remove-if (lambda (x) (null (eq (chem:get-stereochemistry-type x) :chiral))) atoms))
+           (unsorted-chiral-atoms (remove-if (lambda (x) (null (eq (chem:get-stereochemistry-type x) :chiral))) atoms))
+           (chiral-atoms (sort unsorted-chiral-atoms #'string<
+                               :key (lambda (atm) (string (chem:get-name atm)))))
            (number-of-chiral-atoms (length chiral-atoms))
            (number-of-stereoisomers (expt 2 number-of-chiral-atoms)))
       #+(or)
@@ -308,7 +352,7 @@ All other plug-factory objects must be capable of generating out-plugs."
                                               origin-name
                                               origin-atom-name
                                               (if (slot-boundp plug-factory 'out-name) (out-name plug-factory) :unbound)
-                                              (chem:get-name (out-atom plug-factory))))))
+                                              (chem:get-name (out-reference-atom plug-factory))))))
                 (plugs (cons origin-plug out-plugs)))
            ;; If the topology has an origin-plug then name it XXX.ORIGIN
            (push (make-instance 'prepare-topology
@@ -474,8 +518,14 @@ Return a list of prepare-topology objects - one for each residue that we need to
     (cond
       (entity-to-delay-children-for
        (when root-atom-prop
-         (error "joint-template-factory problem - atom has entity-to-delay-children-for and root-atom-prop - atom[~s] constitutionName[~s] topologyName[~s]"  atom constitution-name topology-name))
-       (let ((checkpoint (if (type-of entity-to-delay-children-for 'chem:plug)
+         (error "joint-template-factory problem with atom ~a~% - atom has entity-to-delay-children-for ~a~% - and root-atom-prop ~a ~% -  constitutionName[~s] topologyName[~s]"
+                atom
+                entity-to-delay-children-for
+                root-atom-prop
+                atom
+                constitution-name
+                topology-name))
+       (let ((checkpoint (if (typep entity-to-delay-children-for 'chem:plug)
                              (core:make-cxx-object 'kin:checkpoint-out-plug-joint
                                                    :constitution-name constitution-name
                                                    :topology-name topology-name
@@ -484,32 +534,55 @@ Return a list of prepare-topology objects - one for each residue that we need to
                                                    :constitution-name constitution-name
                                                    :topology-name topology-name
                                                    :atom-name (chem:atom-name entity-to-delay-children-for)))))
-         (core:make-cxx-object 'kin:delayed-bonded-joint-template
-                               :id atom-index
-                               :name atom-name
-                               :parent parent-template
-                               :children #()
-                               :checkpoint checkpoint
-                               :comment comment
-                               :out-plug out-plug-atom-prop )))
+         (if out-plug-atom-prop
+             (core:make-cxx-object 'kin:delayed-bonded-joint-template
+                                   :id atom-index
+                                   :name atom-name
+                                   :parent parent-template
+                                   :children #()
+                                   :checkpoint checkpoint
+                                   :comment comment
+                                   :out-plug out-plug-atom-prop )
+             (core:make-cxx-object 'kin:delayed-bonded-joint-template
+                                   :id atom-index
+                                   :name atom-name
+                                   :parent parent-template
+                                   :children #()
+                                   :checkpoint checkpoint
+                                   :comment comment))))
       (root-atom-prop
-       (core:make-cxx-object 'kin:root-bonded-joint-template
-                             :id atom-index
-                             :parent parent-template
-                             :name atom-name
-                             :children #()
-                             :constitution-name constitution-name
-                             :topology-name topology-name
-                             :in-plug root-atom-prop
-                             :comment comment
-                             :out-plug out-plug-atom-prop))
-      (t (core:make-cxx-object 'kin:bonded-joint-template :id atom-index
-                                                          :parent parent-template
-                                                          :name atom-name
-                                                          :children #()
-                                                          :comment comment
-                                                          :out-plug out-plug-atom-prop)))))
-
+       (if out-plug-atom-prop
+           (core:make-cxx-object 'kin:root-bonded-joint-template
+                                 :id atom-index
+                                 :parent parent-template
+                                 :name atom-name
+                                 :children #()
+                                 :constitution-name constitution-name
+                                 :topology-name topology-name
+                                 :in-plug root-atom-prop
+                                 :comment comment
+                                 :out-plug out-plug-atom-prop)
+           (core:make-cxx-object 'kin:root-bonded-joint-template
+                                 :id atom-index
+                                 :parent parent-template
+                                 :name atom-name
+                                 :children #()
+                                 :constitution-name constitution-name
+                                 :topology-name topology-name
+                                 :in-plug root-atom-prop
+                                 :comment comment)))
+      (t (if out-plug-atom-prop
+             (core:make-cxx-object 'kin:bonded-joint-template :id atom-index
+                                                              :parent parent-template
+                                                              :name atom-name
+                                                              :children #()
+                                                              :comment comment
+                                                              :out-plug out-plug-atom-prop)
+             (core:make-cxx-object 'kin:bonded-joint-template :id atom-index
+                                                              :parent parent-template
+                                                              :name atom-name
+                                                              :children #()
+                                                              :comment comment))))))
 
 ;;
 ;; Build an AtomTreeTemplate recursively using the properties defined

@@ -33,8 +33,6 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace kinematics
 {
 
-    /*! @class Stores information on the Residue that the containing Atom is the root of */
-
     class RootJointInfo
     {
 	friend class RootBondedJoint;

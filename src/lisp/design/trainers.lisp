@@ -2,6 +2,7 @@
 
 
 (defun monomer-context (monomer)
+  "A context is a list of three names - the previous monomer name, the in coupling name and the current monomer name"
   (if (chem:has-in-coupling monomer)
       (let* ((in-coupling (chem:get-in-coupling monomer))
              (in-coupling-name (chem:get-name in-coupling))
@@ -18,7 +19,8 @@
    (conformation :initarg :conformation :accessor conformation)
    (aggregate :initarg :aggregate :accessor aggregate)
    (atom-id-map :initarg :atom-id-map :accessor atom-id-map)
-   (superposable-conformation-collection :accessor superposable-conformation-collection)))
+   (superposable-conformation-collection :initarg :superposable-conformation-collection
+                                         :accessor superposable-conformation-collection)))
 
 (cando:make-class-save-load trainers)
 
@@ -40,9 +42,20 @@
                       (return-from root-find joint))))
                 focus-joints))))
        ;; Add the parent, grandparent and great-grandparent if they exist and correspond to atoms
-       (let* ((parent (kin:get-parent root-joint))
-              (grandparent (and parent (kin:get-parent parent)))
-              (great-grandparent (and grandparent (and grandparent (kin:get-parent grandparent)))))
+       (let* ((parent (let ((relative (kin:get-parent root-joint)))
+                        (if (typep relative 'kin:origin-jump-joint)
+                            nil
+                            relative)))
+              (grandparent (and parent
+                                (let ((relative (kin:get-parent parent)))
+                                  (if (typep relative 'kin:origin-jump-joint)
+                                      nil
+                                      relative))))
+              (great-grandparent (and grandparent
+                                      (let ((relative (kin:get-parent grandparent)))
+                                        (if (typep relative 'kin:origin-jump-joint)
+                                            nil
+                                            relative)))))
          (when (and parent (kin:corresponds-to-joint parent))
            (setf (gethash parent focus-joints) t))
          (when (and grandparent (kin:corresponds-to-joint grandparent))
@@ -52,38 +65,34 @@
      ;; Return the focus-joints as a list
      (alexandria:hash-table-keys focus-joints)))
 
-(defun augment-trainer-with-superposable-conformation-collection (trainer &key generate-atom-tree-dot)
-  (let* ((oligomer (oligomer trainer))
-         (mol (chem:get-molecule oligomer))
-         (agg (let ((agg (chem:make-aggregate)))
-                (chem:add-molecule agg mol)
-                agg))
+(defun generate-superposable-conformation-collection (oligomer focus-monomer-sequence-number context &key generate-atom-tree-dot)
+  (let* ((mol (design:build-molecule oligomer))
+         (aggregate (let ((agg (chem:make-aggregate)))
+                      (chem:add-molecule agg mol)
+                      agg))
          (conformation (kin:make-conformation (list oligomer)))
-         (focus-joints (collect-focus-joints conformation (focus-monomer-sequence-number trainer)))
-         (atom-id-map (chem:build-atom-id-map agg))
+         (focus-joints (collect-focus-joints conformation focus-monomer-sequence-number))
+         (atom-id-map (chem:build-atom-id-map aggregate))
          (superpose-atoms (loop for focus-joint in focus-joints
-                                for atom = (chem:lookup-atom atom-id-map (kin:atom-id focus-joint))
+                                for atom-id = (kin:atom-id focus-joint)
+                                for atom = (chem:lookup-atom atom-id-map atom-id)
                                 when (not (eq (chem:get-element atom) :H))
                                   collect atom))
          ;; Now collect the atoms in the aggregate that correspond to the focus
          (superposable-conformation-collection (let ((scc (core:make-cxx-object 'chem:superposable-conformation-collection)))
                                                  (chem:set-rms-cut-off scc 1.0)
-                                                 (chem:set-matter scc agg)
+                                                 (chem:set-matter scc aggregate)
                                                  (loop for superpose-atom in superpose-atoms
                                                        do (chem:add-superpose-atom scc superpose-atom))
                                                  scc)))
     (when generate-atom-tree-dot
-      (let* ((context (design::context trainer))
-             (filename (format nil "/tmp/atom-tree-~a-~a-~a.dot"
+      (let* ((filename (format nil "/tmp/atom-tree-~a-~a-~a.dot"
                                (first context)
                                (second context)
                                (third context))))
-        (design.graphviz-draw-joint-tree:draw-joint-tree (kin:get-joint-tree conformation)
-                                                         filename)))
-    (setf (conformation trainer) conformation
-          (aggregate trainer) agg
-          (atom-id-map trainer) atom-id-map
-          (superposable-conformation-collection trainer) superposable-conformation-collection)))
+        (format t "Wrote joint tree to ~a~%" filename)
+        (design.graphviz-draw-joint-tree:draw-joint-tree (kin:get-joint-tree conformation) filename)))
+    (values conformation aggregate atom-id-map superposable-conformation-collection)))
 
 
 (defun build-trainers-from-oligomers (oligomers)
@@ -93,30 +102,35 @@
                              append (loop for sequence-id below (chem:number-of-sequences oligomer)
                                           collect (progn
                                                     (chem:goto-sequence oligomer sequence-id)
-                                                    (chem:copy oligomer))))))
+                                                    (chem:deep-copy-oligomer oligomer))))))
     (loop for oligomer in all-oligomers
           do (loop for monomer in (chem:monomers-as-list oligomer)
                    for monomer-sequence-number = (chem:get-sequence-number monomer)
                    for context = (monomer-context monomer)
-                   do (format t "context: ~a~%" context)
-                   do (setf (gethash context result) (make-instance 'trainers
-                                                                    :oligomer oligomer
-                                                                    :focus-monomer-sequence-number monomer-sequence-number
-                                                                    :context (monomer-context monomer)))))
+                   do (multiple-value-bind (conformation aggregate atom-id-map superposable-conformation-collection)
+                          (generate-superposable-conformation-collection oligomer monomer-sequence-number (monomer-context monomer) :generate-atom-tree-dot nil)
+                        (setf (gethash context result) (make-instance 'trainers
+                                                                      :oligomer oligomer
+                                                                      :focus-monomer-sequence-number monomer-sequence-number
+                                                                      :context (monomer-context monomer)
+                                                                      :conformation conformation
+                                                                      :aggregate aggregate
+                                                                      :atom-id-map atom-id-map
+                                                                      :superposable-conformation-collection superposable-conformation-collection)))))
     (let ((trainers (alexandria:hash-table-values result)))
       trainers)))
 
 (defun build-trainers (design)
+  "Return a new design that includes trainers"
   (let* ((oligomers (build-training-oligomers design))
          (trainers (build-trainers-from-oligomers oligomers)))
-    (setf (trainers design) trainers))
-  design)
-
-    
+    (make-instance 'design
+                   :topologys (topologys design)
+                   :cap-name-map (cap-name-map design)
+                   :trainers trainers)))
 
 
 (defun jostle-trainer (trainer &key test)
-  (format t "jostle-trainer ~s~%" (context trainer))
   (let ((aggregate (aggregate trainer))
         (atom-id-map (atom-id-map trainer))
         (superposable-conformation-collection (superposable-conformation-collection trainer)))
@@ -161,9 +175,6 @@
           collect (let* ((internals (make-array 16 :adjustable t :fill-pointer 0))
                          (monomer (kin:lookup-monomer-id (kin:get-fold-tree conformation)
                                                          (list 0 focus-monomer-sequence-number))))
-                    (format t "Extracting internals for monomer: ~s parentPlugName: ~s~%"
-                            monomer
-                            (kin:parent-plug-name monomer))
                     (kin:walk-joints monomer
                                      (lambda (index joint)
                                        (format t "Extracting internal for ~a index: ~a atom-id: ~a~%"

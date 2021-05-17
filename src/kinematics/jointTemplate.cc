@@ -106,7 +106,7 @@ void CheckpointJoint_O::setupDelayedBondedJoint(DelayedBondedJoint_sp atom) cons
 
 
 void CheckpointOutPlugJoint_O::fields(core::Record_sp node) {
-  node->field(INTERN_(kw,out_plug),this->_Plug);
+  node->field_if_not_unbound(INTERN_(kw,out_plug),this->_Plug);
   this->Base::fields(node);
 }
 
@@ -195,7 +195,7 @@ void BondedJointTemplate_O::fields(core::Record_sp node) {
   node->field_if_not_default(INTERN_(kw,distance),this->_Distance,0.0);
   node->field_if_not_default(INTERN_(kw,theta),this->_Theta,0.0);
   node->field_if_not_default(INTERN_(kw,phi),this->_Phi,0.0);
-  node->field(INTERN_(kw,out_plug),this->_OutPlug);
+  node->field_if_not_unbound(INTERN_(kw,out_plug),this->_OutPlug);
   this->Base::fields(node);
 }
 
@@ -271,16 +271,12 @@ Joint_sp BondedJointTemplate_O::writeIntoJointTree(const JointTree_sp& JointTree
 }
 
 
-
-
 void BondedJointTemplate_O::extractInternalCoords(Joint_sp const& atom)
 {
   this->_Distance = atom->dof(DofType::distance);
   this->_Theta = atom->dof(DofType::theta);
   this->_Phi = atom->dof(DofType::phi);
 }
-
-
 
 
 void BondedJointTemplate_O::setupOutPlugJointTree(Joint_sp owned,
@@ -315,14 +311,14 @@ void BondedJointTemplate_O::setupOutPlugJointTree(Joint_sp owned,
 //
 
 void DelayedBondedJointTemplate_O::fields(core::Record_sp node) {
-  node->field(INTERN_(kw,checkJoint),this->_Checkpoint);
+  node->field(INTERN_(kw,checkpoint),this->_Checkpoint);
   this->Base::fields(node);
 }
 
-DelayedBondedJointTemplate_sp DelayedBondedJointTemplate_O::make(const Checkpoint_sp& checkJoint)
+DelayedBondedJointTemplate_sp DelayedBondedJointTemplate_O::make(const Checkpoint_sp& checkpoint)
 {
   GC_ALLOCATE(DelayedBondedJointTemplate_O, me );
-  me->_Checkpoint = checkJoint;
+  me->_Checkpoint = checkpoint;
   return me;
 };
 

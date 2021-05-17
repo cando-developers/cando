@@ -1,6 +1,22 @@
 
 (in-package :design)
 
+(defparameter *complex-plugs* (make-hash-table))
+
+(defclass complex-plug ()
+  ((name :initarg :name :accessor name)
+   (smarts :initarg :smarts :accessor smarts)
+   (compiled-smarts :initarg :compiled-smarts :accessor compiled-smarts)))
+
+(defun complex-plug (name smarts)
+  "Define a complex plug that uses a SMARTS string to recognize bonding atoms"
+  (setf (gethash name *complex-plugs*) (make-instance 'complex-plug
+                                                      :name name
+                                                      :smarts smarts
+                                                      :compiled-smarts (chem:compile-smarts smarts))))
+
+(defun complex-plug-or-nil (name)
+  (gethash name *complex-plugs*))
 
 (defclass design ()
   ((topologys :initarg :topologys :accessor topologys)
@@ -10,7 +26,9 @@
 (cando:make-class-save-load design)
 
 (defun save-design (design file-name)
-  (cando:save-cando design file-name))
+  (let ((pn (pathname file-name)))
+    (ensure-directories-exist pn)
+    (cando:save-cando design file-name)))
 
 (defun load-design (file-name)
   (let ((design (cando:load-cando file-name)))
@@ -54,59 +72,70 @@ This is for looking up parts but if the thing returned is not a part then return
                                    prev-residue
                                    monomer-out-couplings
                                    molecule
-                                   monomers-to-residues)
+                                   monomers-to-residues
+                                   monomer-positions)
   (loop for out-coupling in (gethash prev-monomer monomer-out-couplings)
         for next-monomer = (chem:get-target-monomer out-coupling)
         for next-topology = (let ((next-top (chem:current-topology next-monomer)))
                               (unless (typep next-top 'chem:topology)
                                 (error "Unexpected object - expected a chem:topology - got ~s" next-top))
                               next-top)
+        for next-stereoisomer-name = (chem:current-stereoisomer-name next-monomer)
         for next-residue = (progn
-                             (format *debug-io* "About to build residue for next-topology ~a~%" next-topology)
-                             (chem:build-residue next-topology))
+                             (chem:build-residue-for-monomer-name next-topology next-stereoisomer-name))
         do (setf (gethash next-monomer monomers-to-residues) next-residue)
-           (chem:add-matter molecule next-residue)
+           (let* ((monomer-position (gethash next-monomer monomer-positions))
+                  (next-residue-index (chem:content-size molecule)))
+             (chem:put-matter molecule monomer-position next-residue))
            (chem:connect-residues prev-topology 
                                   prev-residue
-                                  (chem:get-target-plug-name out-coupling)
+                                  (chem:get-source-plug-name out-coupling)
                                   next-topology
                                   next-residue
-                                  (chem:get-source-plug-name out-coupling))
+                                  (chem:get-target-plug-name out-coupling))
            (recursively-build-molecule next-monomer
                                        next-topology
                                        next-residue
                                        monomer-out-couplings
                                        molecule
-                                       monomers-to-residues)))
+                                       monomers-to-residues
+                                       monomer-positions)))
 
 (defun build-molecule (oligomer)
   (let ((root-monomer (chem:root-monomer oligomer))
         (monomer-out-couplings (make-hash-table))
         (monomers-to-residues (make-hash-table))
         (ring-couplings nil))
-    (format *debug-io* "Gathering couplings~%")
     (loop for coupling in (chem:couplings-as-list oligomer)
           if (typep coupling 'chem:directional-coupling)
             do (push coupling (gethash (chem:get-source-monomer coupling) monomer-out-couplings))
           else
             do (pushnew coupling ring-couplings)) ; Only add ring coupling when unique
-    (format *debug-io* "Making molecule~%")
     (let* ((molecule (chem:make-molecule :mol))
            (root-topology (chem:current-topology root-monomer))
            (stereoisomer-name (chem:current-stereoisomer-name root-monomer))
            (root-residue (progn
-                           (format *debug-io* "About to build first residue ~a~%" root-topology)
                            (chem:build-residue-for-monomer-name root-topology stereoisomer-name))))
       (unless (typep root-topology 'chem:topology)
         (error "Unexpected object - expected a chem:topology - got ~s" root-topology))
       (setf (gethash root-monomer monomers-to-residues) root-residue)
-      (chem:add-matter molecule root-residue)
-      (recursively-build-molecule root-monomer
-                                  root-topology
-                                  root-residue
-                                  monomer-out-couplings
-                                  molecule
-                                  monomers-to-residues)
+      (let* ((monomer-positions (make-hash-table))
+             (monomer-list (chem:monomers-as-list oligomer))
+             (number-of-residues (length monomer-list)))
+        (loop for count from 0
+              for monomer in monomer-list
+              do (setf (gethash monomer monomer-positions) count))
+        (let* ((monomer-position (gethash root-monomer monomer-positions))
+               (next-residue-index (chem:content-size molecule)))
+          (chem:resize-contents molecule number-of-residues)
+          (chem:put-matter molecule monomer-position root-residue))
+        (recursively-build-molecule root-monomer
+                                    root-topology
+                                    root-residue
+                                    monomer-out-couplings
+                                    molecule
+                                    monomers-to-residues
+                                    monomer-positions))
       ;; Now close the rings
       (loop for ring-coupling in ring-couplings
             for monomer1 = (chem:get-monomer1 ring-coupling)
@@ -147,8 +176,7 @@ This is for looking up parts but if the thing returned is not a part then return
     ends))
 
 (defun bonds-between (start end)
-  (let* ((spanning-tree (chem:make-spanning-loop start))
-         (bond-count 0))
+  (let* ((spanning-tree (chem:make-spanning-loop start)))
     (loop for ok = (chem:advance-loop-and-process spanning-tree)
           for atom = (chem:get-atom spanning-tree)
           until (eq atom end))
@@ -405,7 +433,6 @@ of out-plugs."
   "Ensure that there is one topology with one out-plug with a name that corresponds to in-plug-name on
    a monomer that this one out-plug will be coupled through"
   (let* ((topology (chem:current-topology other-monomer))
-         (_ (format *debug-io* "topology -> ~s plugs -> ~s~%" topology (chem:plugs-as-list topology)))
          (out-plug-names (chem:all-out-plug-names-that-match-in-plug-name topology in-plug-name)))
     (format *debug-io* "out-plug-names -> ~s~%" out-plug-names)
     (case (length out-plug-names)
@@ -490,11 +517,13 @@ of out-plugs."
          (joint-ht (make-hash-table))
          joints)
     (kin:walk-joints monomer-node (lambda (index joint)
+                                    (declare (ignore index))
                                     (setf (gethash joint joint-ht) t)
                                     (push joint joints)))
     (let ((root-joint nil))
       (kin:walk-joints monomer-node
                        (lambda (index joint)
+                         (declare (ignore index))
                          (when (null (gethash (kin:get-parent joint) joint-ht))
                            (setf root-joint joint))))
       (when (typep root-joint 'kin:root-bonded-joint)
@@ -540,22 +569,29 @@ add cap monomers until no more cap monomers are needed."
             (clustered-bodys (cluster-topologys-using-out-plugs body)))
         (format *debug-io* "clustered-origins -> ~s~%" clustered-origins)
         (format *debug-io* "clustered-bodys -> ~s~%" clustered-bodys)
-        (append
-         (loop for focus-topologys in (append clustered-origins clustered-bodys)
-               collect (build-one-training-oligomer focus-topologys
-                                                    cap-name-map
-                                                    topology-map))
-         (loop for focus-cap-topology in caps
-               collect (build-one-training-oligomer (list focus-cap-topology)
-                                                    cap-name-map
-                                                    topology-map)))))))
+        (let ((all-oligomers (append
+                              (loop for focus-topologys in (append clustered-origins clustered-bodys)
+                                    collect (build-one-training-oligomer focus-topologys
+                                                                         cap-name-map
+                                                                         topology-map))
+                              (loop for focus-cap-topology in caps
+                                    collect (build-one-training-oligomer (list focus-cap-topology)
+                                                                         cap-name-map
+                                                                         topology-map)))))
+          ;; Eliminate oligomers that cover the same sequence space
+          (let ((unique-oligomers (make-hash-table :test 'equal)))
+            (loop for oligomer in all-oligomers
+                  for canonical-sequence = (canonical-sequence oligomer)
+                  do (setf (gethash canonical-sequence unique-oligomers) oligomer))
+            (alexandria:hash-table-values unique-oligomers)))))))
 
 (defun monomer-node-context (monomer-node)
   (let* ((parent-node (kin:parent monomer-node))
          (parent (if parent-node
                      (kin:stereoisomer-name parent-node)
                      nil))
-        (coupling (chem:coupling-name (kin:parent-plug-name monomer-node))))
+         (coupling (chem:coupling-name (kin:parent-plug-name monomer-node))))
+    (declare (ignore parent))
     (list coupling (kin:stereoisomer-name monomer-node))))
 
 (defun get-conformation (monomer-node conformations)

@@ -51,7 +51,7 @@ SYMBOL_EXPORT_SC_(ChemKwPkg,residueId);
 
 void Conformation_O::fields(core::Record_sp node) {
   node->field(INTERN_(kw,fold_tree),this->_FoldTree);
-  node->field(INTERN_(kw,atom_tree),this->_JointTree);
+  node->field(INTERN_(kw,joint_tree),this->_JointTree);
 }
 
 // ----------------------------------------------------------------------
@@ -120,14 +120,6 @@ void Conformation_O::buildMoleculeUsingOligomer(int moleculeId, chem::Oligomer_s
     this->_FoldTree->buildChainUsingOligomer(moleculeId,oligomer);
   LOG(BF("Built FoldTree--->\n%s")%chainNode->_RootMonomerNode->asString());
   this->_JointTree->buildMoleculeUsingChainNode(moleculeId,chainNode,oligomer);
-#if 0
-#if 1
-  SIMPLE_ERROR(BF("What do I do with buildMoleculesUsingOligomerEvent?"));
-#else
-  this->notify(_sym_buildMoleculeUsingOligomerEvent,
-               core::Cons_O::create(core::clasp_make_fixnum(moleculeId),_lisp));
-#endif
-#endif
 }
 
 

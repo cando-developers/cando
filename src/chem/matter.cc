@@ -170,14 +170,13 @@ CL_DEFMETHOD void Matter_O::addRestraint(Restraint_sp restraint)
 
 
 
-
-void Matter_O::resizeContents(int sz)
+CL_DEFMETHOD void Matter_O::resizeContents(int sz)
 {_OF();
-  this->_contents.resize(sz,_Nil<Matter_O>());
+  this->_contents.resize(sz,_Unbound<Matter_O>());
 }
 
 
-void Matter_O::putMatter(int idx, Matter_sp matter)
+CL_DEFMETHOD void Matter_O::putMatter(int idx, Matter_sp matter)
 {_OF();
   ASSERTF(idx>=0 && idx<(int)this->_contents.size(),BF("Illegal putMatter index[%d] must be less than %d") % idx % this->_contents.size());
   this->_contents[idx] = matter;

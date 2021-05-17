@@ -464,10 +464,9 @@ bool	Monomer_O::hasMatchingPlugNameAndCoupling( core::Symbol_sp plugName, Coupli
   return foundIt;
 }
 
-Monomer_sp Monomer_O::deepCopy() const {
+Monomer_sp Monomer_O::copyAndRemoveCouplings() const {
   GC_NON_RECURSIVE_COPY(Monomer_O, newMonomer, *this);
-  newMonomer->_Couplings = this->_Couplings;
-  newMonomer->_Monomers = this->_Monomers;
+  newMonomer->_Couplings.clear();
   return newMonomer;
 }
 

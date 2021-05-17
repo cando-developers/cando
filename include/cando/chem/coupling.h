@@ -94,8 +94,9 @@ namespace chem {
 
     CL_LISPIFY_NAME("doCoupling");
     CL_DEFMETHOD         virtual void doCoupling(Residue_sp inResidue, Residue_sp outResidue ) {_OF();SUBCLASS_MUST_IMPLEMENT();};
-
-
+    /*! Create a copy of this coupling and replace the monomers with monomer1 and monomer2 */
+    virtual Coupling_sp copyAndReplaceMonomers(Monomer_sp monomer1, Monomer_sp monomer2) = 0;
+    
     DEFAULT_CTOR_DTOR(Coupling_O);
   };
 
@@ -178,6 +179,7 @@ namespace chem {
     void	doCoupling(Residue_sp inResidue, Residue_sp outResidue );
     void	checkForErrors(core::T_sp errorStream);
     void	throwIfBadConnections();
+    virtual Coupling_sp copyAndReplaceMonomers(Monomer_sp monomer1, Monomer_sp monomer2);
 
   public:
     static DirectionalCoupling_sp make(Monomer_sp source, core::Symbol_sp sourcePlugName, core::Symbol_sp targetPlugName, Monomer_sp target) {
@@ -246,6 +248,7 @@ namespace chem {
     Monomer_sp	getOtherSideMonomer(Monomer_sp mon);
 
     void	doCoupling(Residue_sp inResidue, Residue_sp outResidue );
+    virtual Coupling_sp copyAndReplaceMonomers(Monomer_sp monomer1, Monomer_sp monomer2);
 
   public:
     static RingCoupling_sp make(Monomer_sp mon1, core::Symbol_sp plug1Name, Monomer_sp mon2, core::Symbol_sp plug2Name) {

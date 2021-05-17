@@ -26,6 +26,7 @@ This is an open source license for the CANDO software from Temple University, bu
 
 
 #include <clasp/core/common.h>
+#include <clasp/core/evaluator.h>
 #include <cando/chem/plug.h>
 #include <cando/chem/candoDatabase.h>
 #include <cando/chem/constitution.h>
@@ -45,15 +46,13 @@ namespace kinematics
 	this->_ConstitutionName = constitutionName;
 	this->_TopologyName = topologyName;
 	this->_Bond1Id = UndefinedUnsignedInt;
-	if ( gc::IsA<chem::InPlug_sp>(plug) )
-	{
+	if ( gc::IsA<chem::InPlug_sp>(plug) ) {
           chem::InPlug_sp inPlug = gc::As_unsafe<chem::InPlug_sp>(plug);
-          if ( inPlug->getB1().notnilp() )
-          {
+          if ( inPlug->getB1().notnilp() ) {
             core::Symbol_sp bond1AtomName = inPlug->getB1();
             LOG(BF("InPlug has a Bond1 atom[%s]") % bond1AtomName); 
             chem::CandoDatabase_sp db = chem::getCandoDatabase();
-            chem::Constitution_sp constitution = db->getEntity(constitutionName).as<chem::Constitution_O>();
+            chem::Constitution_sp constitution = gc::As<chem::Constitution_sp>(core::eval::funcall(chem::_sym_constitutionForNameOrPdb,db,constitutionName));
             chem::ConstitutionAtoms_sp constitutionAtoms = constitution->getConstitutionAtoms();
             this->_Bond1Id = constitutionAtoms->index(bond1AtomName);
           } else

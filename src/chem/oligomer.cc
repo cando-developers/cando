@@ -90,7 +90,7 @@ Oligomer_O::Oligomer_O(const Oligomer_O& original)
   this->_Monomers.resize(original._Monomers.size());
   for ( size_t i=0, iEnd(this->_Monomers.size()); i<iEnd; ++i ) {
     Monomer_sp oldMonomer = original._Monomers[i];
-    Monomer_sp monomerCopy = oldMonomer->deepCopy();
+    Monomer_sp monomerCopy = oldMonomer->copyAndRemoveCouplings();
     this->_Monomers[i] = monomerCopy;
     newMonomersFromOld->setf_gethash(oldMonomer,monomerCopy);
   }
@@ -161,6 +161,7 @@ void Oligomer_O::setCandoDatabase(CandoDatabase_sp bdb)
 };
 #endif //]
 
+/*! It's important that these monomers have the same order as in the oligomer */
 CL_LISPIFY_NAME("monomersAsList");
 CL_DEFMETHOD core::List_sp Oligomer_O::monomersAsList()
 {
@@ -1026,11 +1027,29 @@ void	Oligomer_O::_assembleFromParts(core::List_sp parts, CandoDatabase_sp bdb)
   }
 }
 
-CL_DEFMETHOD core::T_sp Oligomer_O::copyOligomer() const
+/*! Copy the oligomer, duplicating all monomers and create fresh couplings
+between them */
+CL_DEFMETHOD core::T_sp Oligomer_O::deepCopyOligomer() const
 {
   GC_NON_RECURSIVE_COPY(Oligomer_O,newOligomer,*this);
-  newOligomer->_Monomers = this->_Monomers;
-  newOligomer->_Couplings = this->_Couplings;
+#if 0
+  core::HashTableEq_sp monomerCopies = core::HashTableEq_O::create_default();
+  for ( auto mon : this->_Monomers ) {
+    Monomer_sp newMon = mon->copyAndRemoveCouplings();
+    monomerCopies->setf_gethash(mon,newMon);
+    newOligomer->_Monomers.push_back(newMon);
+  }
+  for (auto coup : this->_Couplings ) {
+    Monomer_sp oldMonomer1 = coup->getMonomer1();
+    Monomer_sp oldMonomer2 = coup->getMonomer2();
+    Monomer_sp newMonomer1 = gc::As_unsafe<Monomer_sp>(monomerCopies->gethash(oldMonomer1));
+    Monomer_sp newMonomer2 = gc::As_unsafe<Monomer_sp>(monomerCopies->gethash(oldMonomer1));
+    Coupling_sp newCoupling = coup->copyAndReplaceMonomers(newMonomer1,newMonomer2);
+    newMonomer1->addOutCoupling(newCoupling);
+    newMonomer2->setInCoupling(newCoupling);
+    newOligomer->_Couplings.push_back(newCoupling);
+  }
+#endif
   return newOligomer;
 }
 

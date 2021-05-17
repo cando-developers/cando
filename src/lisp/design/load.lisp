@@ -29,6 +29,7 @@
                             for constitution = (design.joint-tree:constitution prep-top)
                             do (chem:add-topology constitution topology)
                                (chem:set-property topology :joint-template joint-template)
+                               (cando:register-topology topology)
                             collect topology)))
       (loop for topology in topologys
             do (cando:register-topology topology))

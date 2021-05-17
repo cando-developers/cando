@@ -11,17 +11,15 @@
 (defvar *ef*)
 (defun build-trainer-job (&key design
                             (trainer-index 0)
-                            (sequence-index 0)
+                            sequence-index
                             pathname-template)
   (format t "*default-pathname-defaults* -> ~s~%" *default-pathname-defaults*)
   (let* ((trainer (elt (design:trainers design) trainer-index))
          (oligomer (design:oligomer trainer)))
     (leap:easy-gaff)
-    (chem:goto-sequence oligomer sequence-index)
-    (let* ((molecule (chem:get-molecule oligomer))
-           (tname (pathname-name pathname-template))
-           (aggregate (chem:make-aggregate (intern (pathname-name pathname-template) :keyword))))
-      (chem:add-molecule aggregate molecule)
+    (when sequence-index (chem:goto-sequence oligomer sequence-index))
+    (let* ((tname (pathname-name pathname-template))
+           (aggregate (design::aggregate trainer)))
       (cando:jostle aggregate)
       (let ((sequence-filename (make-pathname :type "mol2" :name tname :defaults pathname-template)))
         (ensure-directories-exist sequence-filename)
@@ -38,11 +36,10 @@
                 if (null (chem:check-for-beyond-threshold-interactions energy-fn 0.2))
                   do (return-from min nil)
                 else
-                  do (format t "Bad interactions -> ~d~%" (chem:check-for-beyond-threshold-interactions energy-fn 0.2))
-                     (save-values (setf *ef* energy-fn))))
+                  do (save-values (setf *ef* energy-fn))))
         (cando:save-mol2 aggregate sequence-filename :use-sybyl-types t)
         )
-      molecule)))
+      aggregate)))
 
 
 (defun run-am1-calculation (aggregate pathname-template &key (maxcyc 9999))

@@ -540,6 +540,11 @@ SIMPLE_ERROR(BF("I wasn't sure if this was ever called.  Take out this THROW if 
 //    SIGNAL(this,Coupling_connectionsChanged);
 };
 
+
+Coupling_sp DirectionalCoupling_O::copyAndReplaceMonomers( Monomer_sp monomer1, Monomer_sp monomer2 ) {
+  return DirectionalCoupling_O::make( monomer1, this->_SourcePlugName, this->_TargetPlugName, monomer2 );
+}
+
 #ifdef XML_ARCHIVE
 void RingCoupling_O::archiveBase(core::ArchiveP node)
 {
@@ -784,6 +789,9 @@ Atom_sp		inB0, outB0, inB1, outB1;
 }
 
 
+Coupling_sp RingCoupling_O::copyAndReplaceMonomers( Monomer_sp monomer1, Monomer_sp monomer2 ) {
+  return RingCoupling_O::make( monomer1, this->_Plug1, monomer2, this->_Plug2 );
+}
 
 
 

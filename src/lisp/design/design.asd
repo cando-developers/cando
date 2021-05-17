@@ -11,6 +11,7 @@
   ((:file "packages")
    (:file "build-internal-coordinate-joint-template-tree")
    (:file "load")
+   (:file "oligomer")
    (:file "util")
    (:file "design")
    (:file "trainers")

@@ -184,7 +184,7 @@ public:
 
   uint	numberOfCouplings() const;
 
-  Monomer_sp deepCopy() const;
+  Monomer_sp copyAndRemoveCouplings() const;
   
   void eraseCouplings();
   void	addCoupling(core::Symbol_sp plugName, Coupling_sp out);

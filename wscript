@@ -84,7 +84,7 @@ def build4(bld):
     bld_extensions.set_outputs([snapshot_file])
     bld.add_to_group(bld_extensions)
     bld.add_group()
-    bld.dcando_executable = bld.path.find_or_declare("cando")
+    bld.dcando_executable = bld.path.parent.parent.find_or_declare("cando")
     embed_snapshot(bld,snapshot_file,bld.ccando_executable,bld.dcando_executable,"cando")
 
 def post_install(ctx):

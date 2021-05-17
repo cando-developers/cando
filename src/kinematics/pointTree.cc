@@ -143,9 +143,9 @@ Joint_sp JointTree_O::newRootBondedJoint(const chem::AtomId& atomId, core::T_sp 
                                        core::Symbol_sp topologyName,
                                        chem::Plug_sp inPlug)
 {_OF();
-  RootBondedJoint_sp atom = gc::As<RootBondedJoint_sp>(this->_newAtom<RootBondedJoint_O>(atomId,name,comment));
-  atom->setup(constitutionName,topologyName,inPlug);
-  return atom;
+  RootBondedJoint_sp joint = gc::As<RootBondedJoint_sp>(this->_newAtom<RootBondedJoint_O>(atomId,name,comment));
+  joint->setup(constitutionName,topologyName,inPlug);
+  return joint;
 };
 
 Joint_sp JointTree_O::newDelayedBondedJoint(const chem::AtomId& atomId,core::T_sp name, const string& comment)
