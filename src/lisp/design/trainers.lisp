@@ -109,6 +109,7 @@
                    for context = (monomer-context monomer)
                    do (multiple-value-bind (conformation aggregate atom-id-map superposable-conformation-collection)
                           (generate-superposable-conformation-collection oligomer monomer-sequence-number (monomer-context monomer) :generate-atom-tree-dot nil)
+                        (cando-user:assign-atom-types aggregate)
                         (setf (gethash context result) (make-instance 'trainers
                                                                       :oligomer oligomer
                                                                       :focus-monomer-sequence-number monomer-sequence-number
@@ -142,7 +143,9 @@
                                  :tn-tolerance 100.0)
       (format t "Restraints on~%")
       (energy:minimize aggregate :max-tn-steps 20))
-    (chem:create-entry-if-conformation-is-new superposable-conformation-collection aggregate)))
+    (prog1
+        (chem:create-entry-if-conformation-is-new superposable-conformation-collection aggregate)
+      (format t "Number of entries: ~d~%" (chem:number-of-entries superposable-conformation-collection)))))
 
 
 (defun combine-all-coordinates (trainer)
@@ -158,14 +161,16 @@
 
 (defun extract-internal-coordinates (trainer)
   "Extract internal coordinates for the focus monomer of the trainer"
-  (let ((conf-col (superposable-conformation-collection trainer))
-        (conf-col-agg (aggregate trainer))
+  (let ((conformation-collection (superposable-conformation-collection trainer))
+        (conformation-collection-agg (aggregate trainer))
         (conformation (conformation trainer))
         (atom-id-map (atom-id-map trainer))
         (focus-monomer-sequence-number (focus-monomer-sequence-number trainer)))
-    (loop for index below (chem:number-of-entries conf-col)
-          for entry = (chem:get-entry conf-col index)
-          do (chem:write-coordinates-to-matter entry conf-col-agg)
+    (format t "extract-internal-coordinates ~%")
+    (loop for index below (chem:number-of-entries conformation-collection)
+          for entry = (chem:get-entry conformation-collection index)
+          do (format t "index = ~a~%" index)
+          do (chem:write-coordinates-to-matter entry conformation-collection-agg)
              (kin:walk (kin:get-joint-tree conformation) 
                        (lambda (o) 
                          (let* ((atom (chem:lookup-atom atom-id-map (kin:atom-id o)))
