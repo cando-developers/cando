@@ -65,28 +65,12 @@ void	ConformationCollectionEntry_O::initialize()
 }
 
 
-
-#ifdef XML_ARCHIVE
-    void	ConformationCollectionEntry_O::archive(core::ArchiveP node)
+void ConformationCollectionEntry_O::fields(core::Record_sp node)
 {
-    node->archiveWeakPointer( "ConformationCollection",
-   		 this->_WeakConformationCollection );
-    node->attribute("AllCoordinates", this->_AllCoordinates );
-    node->attribute("Data",this->_Data);
-    if ( node->loading() )
-    {
-        LOG(BF("Serialized object loaded from file") );
-	LOG(BF("allCoords =%s") % (this->_AllCoordinates->asXmlString().c_str() ) );
-    } else
-    {
-        LOG(BF("Serialized object output to file") );
-	LOG(BF("allCoords =%s") % (this->_AllCoordinates->asXmlString().c_str() ) );
-    }
+  node->field(INTERN_(kw,conformations),this->_WeakConformationCollection);
+  node->field(INTERN_(kw,coordinates),this->_AllCoordinates);
+  node->field(INTERN_(kw,data),this->_Data);
 }
-#endif
-
-
-
 
 CL_DEFMETHOD void	ConformationCollectionEntry_O::setConformationCollection(ConformationCollection_sp s)
 {
@@ -146,6 +130,13 @@ void	ConformationCollection_O::initialize()
     this->clearEntries();
 }
 
+void ConformationCollection_O::fields(core::Record_sp node)
+{
+  node->field(INTERN_(kw,matter),this->_Matter);
+  node->field(INTERN_(kw,entries),this->_Entries);
+  node->field(INTERN_(kw,AllAtoms),this->_AllAtoms);
+  node->field(INTERN_(kw,data),this->_Data);
+}
 
 CL_DEFMETHOD void	ConformationCollection_O::clearEntries()
 {

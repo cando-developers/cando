@@ -94,8 +94,11 @@ class SuperposableConformationCollection_O : public ConformationCollection_O
 public:
   void initialize();
 public:
-  double		_RmsCutOff;
-  core::ComplexVector_byte32_t_sp	_SuperposeAtomIndices;
+  bool fieldsp() const { return true; };
+  void fields(core::Record_sp node);
+public:
+  double		           _RmsCutOff;
+  core::ComplexVector_byte32_t_sp  _SuperposeAtomIndices;
 public:
 
   CL_DEFMETHOD void	setRmsCutOff(double co) { this->_RmsCutOff = co; };

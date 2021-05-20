@@ -47,6 +47,14 @@ void	SuperposableConformationCollection_O::initialize()
   this->_RmsCutOff = 0.1;
 }
 
+void SuperposableConformationCollection_O::fields(core::Record_sp node)
+{
+  node->field(INTERN_(kw,rmsCutOff),this->_RmsCutOff);
+  node->field(INTERN_(kw,atomIndices),this->_SuperposeAtomIndices);
+  this->Base::fields(node);
+}
+
+
 //
 // Destructor
 //

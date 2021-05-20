@@ -60,11 +60,13 @@ SMART(ConformationCollectionEntry);
 class ConformationCollectionEntry_O : public core::CxxObject_O
 {
   LISP_CLASS(chem,ChemPkg,ConformationCollectionEntry_O,"ConformationCollectionEntry",core::CxxObject_O);
-
 public:
-  ConformationCollection_sp	_WeakConformationCollection;
-  geom::SimpleVectorCoordinate_sp		_AllCoordinates;
-  core::HashTableEq_sp		_Data;
+  bool fieldsp() const { return true; };
+  void fields(core::Record_sp node);
+public:
+  ConformationCollection_sp	     _WeakConformationCollection;
+  geom::SimpleVectorCoordinate_sp    _AllCoordinates;
+  core::HashTableEq_sp		     _Data;
 
 public:
   void setAllCoordinates(geom::SimpleVectorCoordinate_sp ac);
@@ -108,55 +110,48 @@ class ConformationCollection_O;
 SMART(ConformationCollection);
 class ConformationCollection_O : public core::CxxObject_O
 {
-    LISP_CLASS(chem,ChemPkg,ConformationCollection_O,"ConformationCollection",core::CxxObject_O);
-
+  LISP_CLASS(chem,ChemPkg,ConformationCollection_O,"ConformationCollection",core::CxxObject_O);
 public:
-	void initialize();
+  void initialize();
 public:
-	Matter_sp				_Matter;
-    gctools::Vec0<ConformationCollectionEntry_sp>	_Entries;
-    gctools::SmallOrderedSet<Atom_sp>			_AllAtoms;
-    core::HashTableEq_sp			_Data;
-protected:
-
+  bool fieldsp() const { return true; };
+  void fields(core::Record_sp node);
 public:
-//    static ConformationCollection_sp open_ConformationCollection(const string& fn);
-
+  Matter_sp	       			        _Matter;
+  gctools::Vec0<ConformationCollectionEntry_sp>	_Entries;
+  gctools::SmallOrderedSet<Atom_sp>		_AllAtoms;
+  core::HashTableEq_sp			        _Data;
 public:
-    typedef	gctools::Vec0<ConformationCollectionEntry_sp>::iterator	entryIterator;
-    typedef	gctools::SmallOrderedSet<Atom_sp>::iterator	atomIterator;
-
+  typedef	gctools::Vec0<ConformationCollectionEntry_sp>::iterator	entryIterator;
+  typedef	gctools::SmallOrderedSet<Atom_sp>::iterator	atomIterator;
 public:
-	geom::SimpleVectorCoordinate_sp	_SimpleVectorCoordinate(Matter_sp matter);
-
+  geom::SimpleVectorCoordinate_sp	_SimpleVectorCoordinate(Matter_sp matter);
 public:
+  core::HashTableEq_sp	getData() { return this->_Data;};
 
-
-    core::HashTableEq_sp	getData() { return this->_Data;};
-
-	void	saveAs(const string& fn);
+  void	saveAs(const string& fn);
 
 
 		/* Set the Matter object that this ConformationCollection
 		 * compares conformations of
 		 */
-	virtual void	setMatter(Matter_sp agg);
-	Matter_sp	getMatter() { return this->_Matter;};
+  virtual void	setMatter(Matter_sp agg);
+  Matter_sp	getMatter() { return this->_Matter;};
 
-	atomIterator begin_AllAtoms()
-		{ return this->_AllAtoms.begin();};
-	atomIterator end_AllAtoms()
-		{ return this->_AllAtoms.end();};
+  atomIterator begin_AllAtoms()
+  { return this->_AllAtoms.begin();};
+  atomIterator end_AllAtoms()
+  { return this->_AllAtoms.end();};
 
-	entryIterator	begin_Entries()
-		{ return this->_Entries.begin();};
-	entryIterator	end_Entries()
-		{ return this->_Entries.end();};
+  entryIterator	begin_Entries()
+  { return this->_Entries.begin();};
+  entryIterator	end_Entries()
+  { return this->_Entries.end();};
 
-  	entryIterator	begin_Entries() const
-		{ return this->_Entries.begin();};
-	entryIterator	end_Entries() const
-		{ return this->_Entries.end();};
+  entryIterator	begin_Entries() const
+  { return this->_Entries.begin();};
+  entryIterator	end_Entries() const
+  { return this->_Entries.end();};
 
 		//! Return the index of the entry
   size_t	getEntryIndex(ConformationCollectionEntry_sp entry);
@@ -164,11 +159,11 @@ public:
 
   core::List_sp entriesAsList() const;
   
-	virtual void	clearEntries();
-	ConformationCollectionEntry_sp getEntry(uint i);
-	ConformationCollectionEntry_sp firstEntry();
+  virtual void	clearEntries();
+  ConformationCollectionEntry_sp getEntry(uint i);
+  ConformationCollectionEntry_sp firstEntry();
 
-	void	translateAllCoordinates(const Vector3& offset);
+  void	translateAllCoordinates(const Vector3& offset);
 
 		/* Return true if the conformation is a new one and
 		 * should be added to the ConformationCollection
@@ -178,7 +173,7 @@ public:
 	 * Subclass this to add the entry in a sorted order
 	 * or to not add entries if they don't meet some criteria
 	 */
-    virtual size_t addEntry(ConformationCollectionEntry_sp entry);
+  virtual size_t addEntry(ConformationCollectionEntry_sp entry);
 
   void	addConformationCollection(ConformationCollection_sp structureList);
   void	addConformationExplorerLatestConformations(ConformationExplorer_sp structureList);
@@ -187,9 +182,9 @@ public:
   CL_DEFMETHOD size_t numberOfEntries() { return this->_Entries.size();};
   CL_DEFMETHOD size_t numberOfAllAtoms() { return this->_AllAtoms.size();};
 
-	bool canRender() { return true; }
+  bool canRender() { return true; }
 #ifdef RENDER
-	geom::Render_sp rendered(core::List_sp options);
+  geom::Render_sp rendered(core::List_sp options);
 #endif
 
 		/*! Create a new entry but dont add it yet
@@ -197,19 +192,16 @@ public:
 		 * subclasses of ConformationCollectionEntry with different
 		 * behavior
 		 */
-virtual	ConformationCollectionEntry_sp	createEntry();
+  virtual	ConformationCollectionEntry_sp	createEntry();
 
 
 
 
 
 
-DEFAULT_CTOR_DTOR(ConformationCollection_O);
+  DEFAULT_CTOR_DTOR(ConformationCollection_O);
 };
 
 };
 
-
-TRANSLATE(chem::ConformationCollectionEntry_O);
-TRANSLATE(chem::ConformationCollection_O);
 #endif
