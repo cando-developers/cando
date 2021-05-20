@@ -38,13 +38,13 @@
                                :end (length (dynamics:coordinates instance))
                                :trajectory-count (lambda (inst) ; This function returns the frame count
                                                    (declare (ignore inst))
-                                                   (length (dynamics:coordinates instance)))
+                                                   (1- (length (dynamics:coordinates instance))))
                                :trajectory-frame (lambda (inst i atom-indices) ; This function returns a specific frame. Atom subsets not implemented yet.
                                                    (declare (ignore inst atom-indices))
                                                    (values i
                                                            nil
                                                            (elt (dynamics:coordinates instance) i)
-                                                           (length (dynamics:coordinates instance))))
+                                                           (1- (length (dynamics:coordinates instance)))))
                                initargs)))
 
 
