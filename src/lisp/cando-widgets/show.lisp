@@ -53,40 +53,41 @@
 
 (defun ngl-show-trajectory (trajectory)
   (when trajectory
-    (let ((play-button (make-instance 'jw:toggle-button
-                                      :icon "play"
-                                      :style (make-instance 'jw:description-style
-                                                            :description-width "min-content")
-                                      :layout (make-instance 'jw:layout
-                                                             :margin ".5em"
-                                                             :width "max-content")))
-          (pause-button (make-instance 'jw:button
-                                      :icon "pause"
-                                      :style (make-instance 'jw:description-style
-                                                            :description-width "min-content")
-                                      :layout (make-instance 'jw:layout
-                                                             :margin ".5em"
-                                                             :width "max-content")))
-          (stop-button (make-instance 'jw:button
-                                      :icon "stop"
-                                      :style (make-instance 'jw:description-style
-                                                            :description-width "min-content")
-                                      :layout (make-instance 'jw:layout
-                                                             :margin ".5em"
-                                                             :width "max-content")))
-          (frame-slider (make-instance 'jw:int-slider
-                                       :layout (make-instance 'jw:layout
-                                                              :align-self "center"
-                                                              :margin ".5em")))
-          (mode-button (make-instance 'jw:toggle-button
-                                      :icon "retweet"
-                                      :value t
-                                      :style (make-instance 'jw:description-style
-                                                            :description-width "min-content")
-                                      :layout (make-instance 'jw:layout
-                                                             :margin ".5em"
-                                                             :width "max-content"))))
-      (jw:link play-button :value trajectory :is-running)
+    (let* ((desc-style (jw:make-description-style :description-width "min-content"))
+           (play-back-2 (jw:make-toggle-button :icon "backward" :tooltip "Fast backward"
+                                               :style desc-style
+                                               :layout (jw:make-layout :margin ".5em .1em .5em .5em"
+                                                                       :width "max-content")))
+           (play-back-1 (jw:make-toggle-button :icon "caret-left" :tooltip "Backward"
+                                               :style desc-style
+                                               :layout (jw:make-layout :margin ".5em .1em .5em .1em"
+                                                                       :width "max-content")))
+           (stop-button (jw:make-button :icon "stop"
+                                        :tooltip "Stop"
+                                        :style desc-style
+                                        :layout (jw:make-layout :margin ".5em .1em .5em .1em"
+                                                                :width "max-content")))
+           (pause-button (jw:make-button :icon "pause"
+                                         :tooltip "Pause"
+                                         :style desc-style
+                                         :layout (jw:make-layout :margin ".5em .1em .5em .1em"
+                                                                 :width "max-content")))
+           (play-fore-1 (jw:make-toggle-button :icon "play" :tooltip "Foreward"
+                                               :style desc-style
+                                               :layout (jw:make-layout :margin ".5em .1em .5em .1em"
+                                                                       :width "max-content")))
+           (play-fore-2 (jw:make-toggle-button :icon "forward" :tooltip "Fast foreward"
+                                               :style desc-style
+                                               :layout (jw:make-layout :margin ".5em .1em .5em .1em"
+                                                                       :width "max-content")))
+           (mode-button (jw:make-toggle-button :icon "retweet"
+                                               :tooltip "Loop"
+                                               :value t
+                                               :style desc-style
+                                               :layout (jw:make-layout :margin ".5em .1em .5em .1em"
+                                                                       :width "max-content")))
+           (frame-slider (jw:make-int-slider :layout (jw:make-layout :align-self "center"
+                                                                     :margin ".25em"))))
       (jw:on-button-click pause-button
         (lambda (inst)
           (declare (ignore inst))
@@ -104,20 +105,107 @@
         (lambda (inst type name old-value new-value source)
           (declare (ignore inst type name old-value source))
           (setf (ngl:mode trajectory) (if new-value "loop" "once"))))
-      (list play-button pause-button stop-button frame-slider mode-button))))
+      (jw:observe trajectory :is-running
+        (lambda (inst type name old-value new-value source)
+          (declare (ignore inst type name old-value source))
+          (unless new-value
+            (setf (jw:widget-value play-back-2) nil
+                  (jw:widget-value play-back-1) nil
+                  (jw:widget-value play-fore-1) nil
+                  (jw:widget-value play-fore-2) nil))))
+      (jw:observe play-back-2 :value
+        (lambda (inst type name old-value new-value source)
+          (declare (ignore inst type name old-value source))
+          (cond
+            (new-value
+              (setf (jw:widget-value play-back-1) nil
+                    (jw:widget-value play-fore-1) nil
+                    (jw:widget-value play-fore-2) nil
+                    (ngl:%step trajectory) 10
+                    (ngl:direction trajectory) "backward")
+              (ngl:play trajectory))
+            ((not (or (jw:widget-value play-back-1)
+                      (jw:widget-value play-fore-1)
+                      (jw:widget-value play-fore-2)))
+              (ngl:pause trajectory)))))
+      (jw:observe play-back-1 :value
+        (lambda (inst type name old-value new-value source)
+          (declare (ignore inst type name old-value source))
+          (cond
+            (new-value
+              (setf (jw:widget-value play-back-2) nil
+                    (jw:widget-value play-fore-1) nil
+                    (jw:widget-value play-fore-2) nil
+                    (ngl:%step trajectory) 1
+                    (ngl:direction trajectory) "backward")
+              (ngl:play trajectory))
+            ((not (or (jw:widget-value play-back-1)
+                      (jw:widget-value play-fore-1)
+                      (jw:widget-value play-fore-2)))
+              (ngl:pause trajectory)))))
+      (jw:observe play-fore-1 :value
+        (lambda (inst type name old-value new-value source)
+          (declare (ignore inst type name old-value source))
+          (cond
+            (new-value
+              (setf (jw:widget-value play-back-2) nil
+                    (jw:widget-value play-back-1) nil
+                    (jw:widget-value play-fore-2) nil
+                    (ngl:%step trajectory) 1
+                    (ngl:direction trajectory) "forward")
+              (ngl:play trajectory))
+            ((not (or (jw:widget-value play-back-2)
+                      (jw:widget-value play-back-1)
+                      (jw:widget-value play-fore-2)))
+              (ngl:pause trajectory)))))
+      (jw:observe play-fore-2 :value
+        (lambda (inst type name old-value new-value source)
+          (declare (ignore inst type name old-value source))
+          (cond
+            (new-value
+              (setf (jw:widget-value play-back-2) nil
+                    (jw:widget-value play-back-1) nil
+                    (jw:widget-value play-fore-1) nil
+                    (ngl:%step trajectory) 10
+                    (ngl:direction trajectory) "forward")
+              (ngl:play trajectory))
+            ((not (or (jw:widget-value play-back-2)
+                      (jw:widget-value play-back-1)
+                      (jw:widget-value play-fore-1)))
+              (ngl:pause trajectory)))))
+      (list play-back-2 play-back-1 stop-button pause-button play-fore-1 play-fore-2 mode-button frame-slider))))
 
 
 (defun ngl-show (instance &rest kwargs &key &allow-other-keys)
   (let* ((component (make-ngl-structure instance
                                         :auto-view-duration 0
-                                        :representations (list (make-instance 'ngl:backbone :name "Backbone" :visible nil)
-                                                               (make-instance 'ngl:ball-and-stick :name "Ball and Stick" :visible t)
-                                                               (make-instance 'ngl:cartoon :name "Cartoon" :color-scheme "residueindex" :visible nil)
-                                                               (make-instance 'ngl:licorice :name "Licorice" :visible nil)
-                                                               (make-instance 'ngl:line :name "Line" :visible nil)
-                                                               (make-instance 'ngl:ribbon :name "Ribbon" :color-scheme "residueindex" :visible nil)
-                                                               (make-instance 'ngl:spacefill :name "Spacefill" :visible nil)
-                                                               (make-instance 'ngl:surface :name "Surface" :use-worker t :color-scheme "residueindex" :visible nil))))
+                                        :representations (list (make-instance 'ngl:backbone
+                                                                              :name "Backbone"
+                                                                              :visible nil :lazy t)
+                                                               (make-instance 'ngl:ball-and-stick
+                                                                              :name "Ball and Stick"
+                                                                              :visible t :lazy t)
+                                                               (make-instance 'ngl:cartoon
+                                                                              :name "Cartoon"
+                                                                              :color-scheme "residueindex"
+                                                                              :visible nil :lazy t)
+                                                               (make-instance 'ngl:licorice
+                                                                              :name "Licorice"
+                                                                              :visible nil :lazy t)
+                                                               (make-instance 'ngl:line
+                                                                              :name "Line"
+                                                                              :visible nil :lazy t)
+                                                               (make-instance 'ngl:ribbon
+                                                                              :name "Ribbon"
+                                                                              :color-scheme "residueindex"
+                                                                              :visible nil :lazy t)
+                                                               (make-instance 'ngl:spacefill
+                                                                              :name "Spacefill"
+                                                                              :visible nil :lazy t)
+                                                               (make-instance 'ngl:surface
+                                                                              :name "Surface" :use-worker t
+                                                                              :color-scheme "residueindex"
+                                                                              :visible nil :lazy t))))
          (stage (apply #'make-instance 'ngl:stage
                        :clip-dist 0
                        :background-color "white"
