@@ -32,7 +32,8 @@
   (:export #:start-swank
            #:load-pdb
            #:jupyterlab-fork-server
-)
+           #:force-field-viewer
+           )
   )
 
 

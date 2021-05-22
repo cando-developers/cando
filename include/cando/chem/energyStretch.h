@@ -209,7 +209,9 @@ public:
   void walkStretchTerms(core::T_sp callback);
   void modifyStretchTermKb(size_t index, float kb);
   void modifyStretchTermR0(size_t index, float r0);
-    
+
+  core::List_sp lookupStretchTerms(AtomTable_sp at, Atom_sp a1, Atom_sp a2 );
+
   void reset();
 public:
     EnergyStretch_O( const EnergyStretch_O& ss ); //!< Copy constructor

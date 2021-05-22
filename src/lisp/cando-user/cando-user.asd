@@ -14,9 +14,11 @@
                :sdf
                :tirun
                :sketch2d
+               :cando-widgets
                :cando-build)
     :serial t
   :components ((:file "packages")
                  (:file "start-swank")
                  (:file "graphviz")
-                 (:file "cl-jupyter")))
+                 (:file "cl-jupyter")
+                 (:file "interactive-tools")))

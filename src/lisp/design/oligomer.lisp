@@ -18,6 +18,8 @@
       (cons (chem:get-name coupling) result)
       result)))
 
+
+
 (defun canonical-sequence (oligomer)
   "Return a canonical sequence for the oligomer that can be compared to other oligomers to
    determine if they are equivalent"
@@ -30,3 +32,4 @@
             else
               do (pushnew coupling unique-ring-couplings))
       (canonical-sequence-monomer nil root-monomer monomer-out-couplings unique-ring-couplings))))
+

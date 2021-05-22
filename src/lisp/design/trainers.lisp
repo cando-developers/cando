@@ -109,7 +109,7 @@
                    for context = (monomer-context monomer)
                    do (multiple-value-bind (conformation aggregate atom-id-map superposable-conformation-collection)
                           (generate-superposable-conformation-collection oligomer monomer-sequence-number (monomer-context monomer) :generate-atom-tree-dot nil)
-                        (cando-user:assign-atom-types aggregate)
+                        (leap:assign-atom-types aggregate)
                         (setf (gethash context result) (make-instance 'trainers
                                                                       :oligomer oligomer
                                                                       :focus-monomer-sequence-number monomer-sequence-number
@@ -131,21 +131,24 @@
                    :trainers trainers)))
 
 
-(defun jostle-trainer (trainer &key test)
+(defun jostle-trainer (trainer &key test verbose)
   (let ((aggregate (aggregate trainer))
         (atom-id-map (atom-id-map trainer))
         (superposable-conformation-collection (superposable-conformation-collection trainer)))
-    (cando:jostle aggregate)
+    (cando:jostle aggregate 5.0)
     (unless test
-      (format t "Restraints off~%")
+      (when verbose (format t "Restraints off~%"))
       (energy:minimize aggregate :max-tn-steps 0
                                  :restraints-on nil
-                                 :tn-tolerance 100.0)
-      (format t "Restraints on~%")
-      (energy:minimize aggregate :max-tn-steps 20))
+                                 :tn-tolerance 100.0
+                                 :print-intermediate-results verbose)
+      (when verbose (format t "Restraints on~%"))
+      (energy:minimize aggregate :max-tn-steps 1000
+                       :tn-tolerance 1.0e-12
+                       :print-intermediate-results verbose))
     (prog1
         (chem:create-entry-if-conformation-is-new superposable-conformation-collection aggregate)
-      (format t "Number of entries: ~d~%" (chem:number-of-entries superposable-conformation-collection)))))
+      (when verbose (format t "Number of entries: ~d~%" (chem:number-of-entries superposable-conformation-collection))))))
 
 
 (defun combine-all-coordinates (trainer)

@@ -241,6 +241,8 @@ public:
 
     void addDihedralTerm(AtomTable_sp at, Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, double phase, bool proper, double v, int multiplicity);
 
+  core::List_sp lookupDihedralTerms(AtomTable_sp at, Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4);
+
 public:
     EnergyDihedral_O( const EnergyDihedral_O& ss ); //!< Copy constructor
 

@@ -371,6 +371,49 @@ void	EnergyDihedral_O::dumpTerms()
 }
 
 
+CL_DEFMETHOD
+core::List_sp	EnergyDihedral_O::lookupDihedralTerms(AtomTable_sp atomTable, Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4)
+{
+  gctools::Vec0<EnergyDihedral>::iterator	edi;
+  string				as1,as2,as3,as4;
+  string				str1, str2, str3, str4, type;
+  ql::list  result;
+  core::T_sp tia1 = atomTable->_AtomTableIndices->gethash(a1);
+  core::T_sp tia2 = atomTable->_AtomTableIndices->gethash(a2);
+  core::T_sp tia3 = atomTable->_AtomTableIndices->gethash(a3);
+  core::T_sp tia4 = atomTable->_AtomTableIndices->gethash(a4);
+  if (!tia1.fixnump()) SIMPLE_ERROR(BF("Could not find %s in energy function") % _rep_(a1));
+  if (!tia2.fixnump()) SIMPLE_ERROR(BF("Could not find %s in energy function") % _rep_(a2));
+  if (!tia3.fixnump()) SIMPLE_ERROR(BF("Could not find %s in energy function") % _rep_(a3));
+  if (!tia4.fixnump()) SIMPLE_ERROR(BF("Could not find %s in energy function") % _rep_(a4));
+  int ia1 = tia1.unsafe_fixnum();
+  int ia2 = tia2.unsafe_fixnum();
+  int ia3 = tia3.unsafe_fixnum();
+  int ia4 = tia4.unsafe_fixnum();
+  for (edi=this->_Terms.begin();edi!=this->_Terms.end();edi++) {
+    if ((edi->_Atom1==a1 &&
+         edi->_Atom2==a2 &&
+         edi->_Atom3==a3 &&
+         edi->_Atom4==a4)
+        || (edi->_Atom4==a1 &&
+            edi->_Atom3==a2 &&
+            edi->_Atom2==a3 &&
+            edi->_Atom1==a4)) {
+      ql::list oneResult;
+      oneResult << INTERN_(kw,type1) << edi->_Atom1->getType()
+                << INTERN_(kw,type2) << edi->_Atom2->getType()
+                << INTERN_(kw,type3) << edi->_Atom3->getType()
+                << INTERN_(kw,type4) << edi->_Atom4->getType()
+                << INTERN_(kw,proper) << _lisp->_boolean(edi->_Proper)
+                << INTERN_(kw,multiplicity) << core::clasp_make_fixnum(edi->term.IN)
+                << INTERN_(kw,phase_degrees) << core::clasp_make_double_float(edi->_PhaseRad)
+                << INTERN_(kw,v) << core::clasp_make_double_float(edi->term.V);
+      result << oneResult.result();
+    }
+  }
+  return result.result();
+}
+
 
 
 void	EnergyDihedral_O::setupHessianPreconditioner(

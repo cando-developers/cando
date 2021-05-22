@@ -13,6 +13,7 @@
 (cl:in-package #:common-lisp-user)
 
 (defpackage #:molecule-graph
+  (:nicknames #:mg)
   (:use #:common-lisp)
   (:export
    #:atom-cluster

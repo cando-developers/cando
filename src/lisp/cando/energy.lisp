@@ -133,7 +133,6 @@
                    (report-every-n-steps 10)
                    (save-trajectory nil))
   "Minimize the conformational energy for an aggregate"
-  (format t "Entered minimize~%")
   (let ((energy-func (chem:make-energy-function :matter agg :use-excluded-atoms use-excluded-atoms :assign-types assign-types)))
     (apply #'minimize-energy-function energy-func args)))
 
