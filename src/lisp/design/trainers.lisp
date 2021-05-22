@@ -109,7 +109,7 @@
                    for context = (monomer-context monomer)
                    do (multiple-value-bind (conformation aggregate atom-id-map superposable-conformation-collection)
                           (generate-superposable-conformation-collection oligomer monomer-sequence-number (monomer-context monomer) :generate-atom-tree-dot nil)
-                        (cando-user:assign-atom-types aggregate)
+                        (leap:assign-atom-types aggregate)
                         (setf (gethash context result) (make-instance 'trainers
                                                                       :oligomer oligomer
                                                                       :focus-monomer-sequence-number monomer-sequence-number
