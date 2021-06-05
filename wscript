@@ -32,6 +32,9 @@ def configure(cfg):
     cfg.define("BUILD_EXTENSION",1)   # add this whenever building an extension
 #    cfg.define("DEBUG_ENERGY_FUNCTION",1)
 
+def update_dependencies(cfg):
+    pass
+    
 class duplicate_executable(waflib.Task.Task):
     def run(self):
         print("     creating command for %s %s" % (self.inputs[0].abspath(),self.outputs[0].abspath()))
