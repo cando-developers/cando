@@ -70,6 +70,7 @@ public:
           pointK(pk),
           rigidBodyL(cl),
           pointL(pl) {};
+  EnergyRigidBodyStaple() {};
          
 };
 

@@ -134,31 +134,6 @@ CL_DEFMETHOD     core::Symbol_sp Plug_O::otherSidePlugName()
 }
 
 
-gctools::Vec0<Mate_sp>	_EmptyMateList;
-
-gctools::Vec0<Mate_sp>::iterator	Plug_O::begin_Mates()
-{
-  return _EmptyMateList.end();
-}
-
-gctools::Vec0<Mate_sp>::iterator	Plug_O::end_Mates()
-{
-  return _EmptyMateList.end();
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /*
   __BEGIN_DOC(classes.PlugWithMates)
   Defines one or two atoms of this monomer that can be plugged into, a plug name and a

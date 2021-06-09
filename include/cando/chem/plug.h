@@ -126,9 +126,6 @@ namespace chem
 
     virtual void	addMate(Mate_sp z ) {_OF();SUBCLASS_MUST_IMPLEMENT();};
 
-    virtual Mates::iterator begin_Mates();
-    virtual Mates::iterator end_Mates();
-
     virtual int		numberOfMates() { return 0; };
 
     CL_DEFMETHOD     virtual core::List_sp	matesAsList() { return _Nil<core::T_O>(); };
@@ -174,9 +171,6 @@ namespace chem
     virtual bool hasMates() { return true;};
 
     void	addMate(Mate_sp z ) {this->_Mates.push_back(z);};
-
-    Mates::iterator begin_Mates() { return this->_Mates.begin(); };
-    Mates::iterator end_Mates() { return this->_Mates.end(); };
 
     int		numberOfMates() { return this->_Mates.size(); };
     bool	recognizesMateNameOrPdb(core::Symbol_sp name);

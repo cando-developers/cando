@@ -108,7 +108,6 @@
 
 
 (defun cl-user::start-cando-user-from-snapshot ()
-  (format t "start-cando-user-from-snapshot~%")
   (let ((list-foreign-library-sym (find-symbol "LIST-FOREIGN-LIBRARIES" :cffi))
         (load-foreign-library-sym (find-symbol "LOAD-FOREIGN-LIBRARY" :cffi))
         (foreign-library-name-sym (find-symbol "FOREIGN-LIBRARY-NAME" :cffi)))
