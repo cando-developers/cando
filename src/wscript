@@ -1,4 +1,13 @@
 import os
 
+def configure(cfg):
+    cfg.extension_startup_loads.append("cando-startup.lisp")
+    
 def build(bld):
     bld.recurse('adapt geom units chem kinematics lisp main data examples')
+    src = bld.path.find_node("cando-startup.lisp")
+    dest = bld.path.get_bld().parent.parent.parent.make_node('extension-startup-loads/cando-startup.lisp')
+    print("About to add cando-startup.lisp to %s" % dest.abspath())
+    bld(source=src, target=dest, rule='cp ${SRC} ${TGT}')
+    bld.install_as('${PREFIX}/bin/extension-startup-loads/cando-startup.lisp', 'cando-startup.lisp')
+    

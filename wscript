@@ -30,6 +30,7 @@ def configure(cfg):
         cfg.env.enable_jupyter = True
         cfg.check_cxx(stlib='zmq', cflags='-Wall', uselib_store='ZMQ')
     cfg.define("BUILD_EXTENSION",1)   # add this whenever building an extension
+    cfg.recurse("src")
 #    cfg.define("DEBUG_ENERGY_FUNCTION",1)
 
 def update_dependencies(cfg):
