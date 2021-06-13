@@ -10,8 +10,13 @@
 
 
 (defun add-page (container page title)
-  (setf (jw:widget-%titles container) (append (jw:widget-%titles container) (list title))
-        (jw:widget-children container) (append (jw:widget-children container) (list page)))
+  (if (typep container 'jw:accordion)
+    (setf (jw:widget-%titles container) (append (jw:widget-%titles container)
+                                                (list title))
+          (jw:widget-children container) (append (jw:widget-children container)
+                                                 (list page)))
+    (setf (jw:widget-children container) (append (jw:widget-children container)
+                                                 (list (jw:make-html :value (format nil "<h1>~a</h1>" title)) page))))
   (values))
 
 
@@ -29,7 +34,6 @@
                               :value "Messages"
                               :layout (make-instance 'jw:layout
                                                      :text-align "center"
-                                                     :max-height "12em"
                                                      :grid-area "messages-label")))
    (messages
      :accessor messages
@@ -39,6 +43,7 @@
                                                      :padding "var(--jp-widgets-input-padding)"
                                                      :border "var(--jp-widgets-border-width) solid var(--jp-border-color1)"
                                                      :min-height "4em"
+                                                     :max-height "12em"
                                                      :overflow-y "scroll")))
    (task-function
      :accessor task-function
@@ -127,10 +132,11 @@
                                                 (jw:widget-value progress) (1+ (jw:widget-value progress)))))
                                 (write-line "Task completed successfully.")
                                 (setf (jw:widget-display (jw:widget-layout progress)) "none")
-                                (let ((index (position instance (jw:widget-children container) :test #'eql)))
-                                  (when (and index
-                                             (< (1+ index) (length (jw:widget-children container))))
-                                    (setf (jw:widget-selected-index container) (1+ index)))))
+                                (when (typep container 'jw:accordion)
+                                  (let ((index (position instance (jw:widget-children container) :test #'eql)))
+                                    (when (and index
+                                               (< (1+ index) (length (jw:widget-children container))))
+                                      (setf (jw:widget-selected-index container) (1+ index))))))
                               (t
                                 (write-line "Task completed with failures." *error-output*)
                                 (finish-output *error-output*)))
@@ -204,4 +210,74 @@
     (when description
       (setf (jw:widget-description (button page)) description))
     (values)))
+
+
+(defclass threaded-task-page (single-task-page)
+  ((thread
+     :accessor thread
+     :initform nil)
+   (stop-button
+     :accessor stop-button
+     :initform (jw:make-button :description "Stop task"
+                               :width "auto"
+                               :disabled t
+                               :layout (make-instance 'jw:layout
+                                                      :align-self "start"
+                                                      :grid-area "stop-button"))))
+  (:metaclass jupyter-widgets:trait-metaclass)
+  (:default-initargs
+    :layout (make-instance 'jw:layout
+                           :width "100%"
+                           :grid-gap "0.1em 1em"
+                           :grid-template-rows "min-content min-content 1fr"
+                           :grid-template-columns "auto auto 1fr"
+                           :grid-template-areas "\"button stop-button messages-label\" \"label label messages\" \"progress progress messages\"")
+    :button (make-instance 'jw:button
+                           :description "Start task"
+                           :width "auto"
+                           :layout (make-instance 'jw:layout
+                                                  :align-self "start"
+                                                  :grid-area "button"))))
+
+
+(defmethod initialize-instance :after ((instance threaded-task-page) &rest initargs &key &allow-other-keys)
+  (declare (ignore initargs))
+  (setf (jw:widget-children instance)
+        (append (jw:widget-children instance)
+                (list (stop-button instance))))
+  (jw:on-button-click (stop-button instance)
+    (lambda (inst)
+      (declare (ignore inst))
+      (bordeaux-threads:destroy-thread (thread instance))))
+  (jw:on-button-click (button instance)
+    (lambda (inst)
+      (declare (ignore inst))
+      (setf (thread instance)
+            (let ((bordeaux-threads:*default-special-bindings* `((jupyter::*kernel* . ,jupyter::*kernel*)
+                                                                 (jupyter::*message* . ,jupyter::*message*)
+                                                                 (*standard-output* . ,(jw:make-output-widget-stream (messages instance)))
+                                                                 (*error-output* . ,(jw:make-output-widget-stream (messages instance) t)))))
+              (bordeaux-threads:make-thread (lambda ()
+                                              (run-task instance nil nil))))))))
+
+
+(defun make-threaded-task-page (container title task-function &key label description)
+  (let ((page (make-instance 'threaded-task-page
+                             :container container
+                             :task-function task-function)))
+    (add-page container page title)
+    (when label
+      (setf (jw:widget-value (label page)) label))
+    (when description
+      (setf (jw:widget-description (button page)) description))
+    (values)))
+
+
+(defmethod begin-task :before ((instance threaded-task-page))
+  (setf (jw:widget-disabled (stop-button instance)) nil
+        (jw:widget-msg-id (messages instance)) nil))
+
+
+(defmethod end-task :before ((instance threaded-task-page))
+  (setf (jw:widget-disabled (stop-button instance)) t))
 
