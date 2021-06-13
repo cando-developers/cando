@@ -49,7 +49,7 @@ def build(bld):
     print("Recursed into bld bld.stage_val == %d" % bld.stage_val )
     print("bld.env.enable_jupyter -> %s" % bld.env.enable_jupyter)
     bld.env.options = bld.options
-    print("In extensions build bld.cclasp_executable = %s" % bld.cclasp_executable)
+    print("In extensions build bld.iclasp_executable = %s" % bld.iclasp_executable)
     print("      bld.stage_val = %s" % bld.stage_val)
     cando_project_headers_name = "include/cando/main/project_headers.h"
     cando_project_headers = bld.path.find_node(cando_project_headers_name)
@@ -63,10 +63,10 @@ def build(bld):
 
 def build3(bld):
     print("Recursed into extensions/cando/wscript:build3")
-    bld.ccando_executable = bld.path.find_or_declare(rename_executable(bld.cclasp_executable.abspath(),"clasp","cando"))
+    bld.icando_executable = bld.path.find_or_declare(rename_executable(bld.iclasp_executable.abspath(),"clasp","cando"))
     task = symlink_executable(env=bld.env)
     task.set_inputs(bld.iclasp_executable)
-    task.set_outputs(bld.ccando_executable)
+    task.set_outputs(bld.icando_executable)
     bld.add_to_group(task)
     bld.symlink_as('${PREFIX}/bin/icando',bld.iclasp_executable.abspath().split("/")[-1])
 
@@ -82,20 +82,20 @@ def build4(bld):
     log.info("start_cando_file = %s" % start_cando_file )
     snapshot_file = bld.path.find_or_declare("generated/%s.snapshot" % "cando")
     log.info("snapshot_file -> %s" % snapshot_file.abspath())
-    bld_extensions.set_inputs([bld.ccando_executable,
+    bld_extensions.set_inputs([bld.icando_executable,
                                bld.cclasp_link_product,
                                start_cando_file] + cando_system_files )
     bld_extensions.set_outputs([snapshot_file])
     bld.add_to_group(bld_extensions)
     bld.add_group()
     bld.dcando_executable = bld.path.parent.parent.find_or_declare("cando")
-    embed_snapshot(bld,snapshot_file,bld.ccando_executable,bld.dcando_executable,"cando")
+    embed_snapshot(bld,snapshot_file,bld.icando_executable,bld.dcando_executable,"cando")
 
 def post_install(ctx):
     print('In post_install(ctx)')
     if (ctx.cmd[:len('install_c')] == 'install_c'):
         prefix = ctx.env.PREFIX
-        cando_parts = os.path.split(ctx.ccando_executable.abspath())
+        cando_parts = os.path.split(ctx.icando_executable.abspath())
         installed_cando = "%s/bin/%s" % (prefix, cando_parts[1])
         # this trick with test -e /dev/fd/3 doesn't work on FreeBSD - cracauer fixme
         # cmd = '%s -e "(sys:quit)" 2>&1 | (ls -l /dev/fd > cboehm_install.log 2>&1 ; tee -a cboehm_install.log) | (echo foo 1>&3 && tee 1>&3 || cat)' % installed_cando
