@@ -110,14 +110,18 @@
            (lisp-code-p code))
     (call-next-method)
     (let* ((ast (ignore-errors (leap-read code)))
-           (fragment (unless (typep ast 'jupyter:result)
-                       (leap-locate ast (1- cursor-pos)))))
+           (fragment (leap-locate ast (1- cursor-pos))))
       (when (and fragment
                  (eql :s-expr (caar fragment)))
         (let ((start (car (getf (car fragment) :bounds)))
               (end (cdr (getf (car fragment) :bounds))))
-          (call-next-method k (jupyter:make-offset-match-set :parent match-set :offset start)
-                            (subseq code start end) (- cursor-pos start))))
+          (call-next-method k
+                            (j:make-substring-match-set :parent match-set :start start :end end)
+                            (concatenate 'string
+                                         (substitute-if #\space #'graphic-char-p (subseq code 0 start))
+                                         (subseq code start end)
+                                         (substitute-if #\space #'graphic-char-p (subseq code end)))
+                            cursor-pos)))
       (when (and fragment
                  (eql :s-expr (caar fragment))
                  (symbolp (getf (car fragment) :value))
