@@ -139,8 +139,8 @@
   t)
 
 
-(defun run-workspace-task (action parameter progress-callback)
-  (declare (ignore progress-callback))
+(defun run-workspace-task (instance action parameter progress-callback)
+  (declare (ignore instance progress-callback))
   (case action
     (:new
       (new-workspace parameter))
@@ -225,9 +225,9 @@
                                         :children (list label-widget input-widget)))))
 
 
-(defun parse-receptor (action parameter progress-callback)
+(defun parse-receptor (instance action parameter progress-callback)
   "Called from file task page to parse receptor."
-  (declare (ignore action progress-callback))
+  (declare (ignore instance action progress-callback))
   (handler-case
       (with-slots (receptor)
                   *workspace*
@@ -248,9 +248,9 @@
       nil)))
 
 
-(defun parse-template-ligand (action parameter progress-callback)
+(defun parse-template-ligand (instance action parameter progress-callback)
   "Called from file task page to parse template-ligand."
-  (declare (ignore action progress-callback))
+  (declare (ignore instance action progress-callback))
   (handler-case
       (with-slots (template-ligand)
                   *workspace*
@@ -572,9 +572,9 @@
     (sketch2d:sketch2d min-mol)))
 
 
-(defun run-pas (action parameter progress-callback)
+(defun run-pas (instance action parameter progress-callback)
   "Called by the simple-task-page to do the PAS calculation."
-  (declare (ignore action parameter))
+  (declare (ignore instance action parameter))
   (write-line "Running position analogue scanning...")
   (finish-output)
   ;; Loop over the current selected ligands and run PAS on each one accumulating the results.
@@ -675,9 +675,9 @@ It will put those multiple ligands into all-ligands and selected-ligands"
     (mapcar (lambda (ligand)) ligands)))
 
 
-(defun run-lomap (action parameter progress-callback)
+(defun run-lomap (instance action parameter progress-callback)
   "This function is called by the task page and updates a progress widget as lomap does the calculation."
-  (declare (ignore action parameter))
+  (declare (ignore instance action parameter))
   (format t "Calculating similarity matrix of ~{~a~#[~;, and ~:;, ~]~}...~%"
           (mapcar #'molecule-name selected-ligands))
   (finish-output) ; Make sure the message is synced to the frontend.
@@ -857,9 +857,9 @@ lisp_jobs_only_on=172.234.2.1
           nil)))))
 
 
-(defun run-write-jobs (action parameter progress-callback)
+(defun run-write-jobs (instance action parameter progress-callback)
   "Called by the write task page to start the write jobs task."
-  (declare (ignore action parameter))
+  (declare (ignore instance action parameter))
   (multiple-value-bind (dir tar-file from-path)
       (calculate-jobs-dir (job-name *workspace*))
     (save-workspace)

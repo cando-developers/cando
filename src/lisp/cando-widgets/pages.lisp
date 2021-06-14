@@ -124,6 +124,7 @@
                               (finish-output)
                               (cond
                                 ((funcall (task-function instance)
+                                          instance
                                           action
                                           parameter
                                           (lambda (maximum)
