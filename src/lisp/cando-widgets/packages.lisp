@@ -35,6 +35,7 @@
     #:page
     #:picked-atoms
     #:pick-history
+    #:run-task
     #:repr
     #:rotate-x
     #:rotate-y

@@ -103,45 +103,45 @@
     (setf (jw:widget-disabled (button instance)) nil)))
 
 
-(defun run-task (instance action parameter)
-  (declare (ignore args))
-  (with-slots (container messages progress)
-              instance
-    (unwind-protect
-        (progn
-          (begin-task instance)
-          (setf (jw:widget-outputs messages) nil
-                (jw:widget-value progress) 0)
-          (jw:with-output messages
-                          (handler-bind
-                              ((warning
-                                 (lambda (wrn)
-                                   (princ wrn)
-                                   (terpri)
-                                   (finish-output)
-                                   (muffle-warning))))
-                            (write-line "Starting task...")
-                            (finish-output)
-                            (cond
-                              ((funcall (task-function instance)
-                                        action
-                                        parameter
-                                        (lambda (maximum)
-                                          (setf (jw:widget-display (jw:widget-layout progress)) nil
-                                                (jw:widget-max progress) maximum
-                                                (jw:widget-value progress) (1+ (jw:widget-value progress)))))
-                                (write-line "Task completed successfully.")
-                                (setf (jw:widget-display (jw:widget-layout progress)) "none")
-                                (when (typep container 'jw:accordion)
-                                  (let ((index (position instance (jw:widget-children container) :test #'eql)))
-                                    (when (and index
-                                               (< (1+ index) (length (jw:widget-children container))))
-                                      (setf (jw:widget-selected-index container) (1+ index))))))
-                              (t
-                                (write-line "Task completed with failures." *error-output*)
-                                (finish-output *error-output*)))
-                            (values))))
-      (end-task instance))))
+(defgeneric run-task (instance &optional action parameter)
+  (:method (instance &optional action parameter)
+    (with-slots (container messages progress)
+                instance
+      (unwind-protect
+          (progn
+            (begin-task instance)
+            (setf (jw:widget-outputs messages) nil
+                  (jw:widget-value progress) 0)
+            (jw:with-output messages
+                            (handler-bind
+                                ((warning
+                                   (lambda (wrn)
+                                     (princ wrn)
+                                     (terpri)
+                                     (finish-output)
+                                     (muffle-warning))))
+                              (write-line "Starting task...")
+                              (finish-output)
+                              (cond
+                                ((funcall (task-function instance)
+                                          action
+                                          parameter
+                                          (lambda (maximum)
+                                            (setf (jw:widget-display (jw:widget-layout progress)) nil
+                                                  (jw:widget-max progress) maximum
+                                                  (jw:widget-value progress) (1+ (jw:widget-value progress)))))
+                                  (write-line "Task completed successfully.")
+                                  (setf (jw:widget-display (jw:widget-layout progress)) "none")
+                                  (when (typep container 'jw:accordion)
+                                    (let ((index (position instance (jw:widget-children container) :test #'eql)))
+                                      (when (and index
+                                                 (< (1+ index) (length (jw:widget-children container))))
+                                        (setf (jw:widget-selected-index container) (1+ index))))))
+                                (t
+                                  (write-line "Task completed with failures." *error-output*)
+                                  (finish-output *error-output*)))
+                              (values))))
+        (end-task instance)))))
 
 
 (defclass file-task-page (single-task-page)
@@ -177,7 +177,7 @@
           (jw:widget-description (button page))
           (or description
               "Select file"))
-    (values)))
+    page))
 
 
 (defclass simple-task-page (single-task-page)
@@ -209,7 +209,7 @@
       (setf (jw:widget-value (label page)) label))
     (when description
       (setf (jw:widget-description (button page)) description))
-    (values)))
+    page))
 
 
 (defclass threaded-task-page (single-task-page)
@@ -244,6 +244,17 @@
                                                   :grid-area "button"))))
 
 
+(defmethod run-task :around ((instance threaded-task-page) &optional action parameter)
+  (setf (thread instance)
+        (let ((bordeaux-threads:*default-special-bindings* `((jupyter::*kernel* . ,jupyter::*kernel*)
+                                                             (jupyter::*message* . ,jupyter::*message*)
+                                                             (*standard-output* . ,(jw:make-output-widget-stream (messages instance)))
+                                                             (*error-output* . ,(jw:make-output-widget-stream (messages instance) t))
+                                                             ,@bordeaux-threads:*default-special-bindings*)))
+          (bordeaux-threads:make-thread (lambda ()
+                                          (call-next-method instance action (or parameter (parameter instance))))))))
+
+
 (defmethod initialize-instance :after ((instance threaded-task-page) &rest initargs &key &allow-other-keys)
   (declare (ignore initargs))
   (setf (jw:widget-children instance)
@@ -276,7 +287,7 @@
       (setf (jw:widget-value (label page)) label))
     (when description
       (setf (jw:widget-description (button page)) description))
-    (values)))
+    page))
 
 
 (defmethod begin-task :before ((instance threaded-task-page))
