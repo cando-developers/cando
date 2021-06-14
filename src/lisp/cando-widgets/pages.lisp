@@ -223,7 +223,11 @@
                                :disabled t
                                :layout (make-instance 'jw:layout
                                                       :align-self "start"
-                                                      :grid-area "stop-button"))))
+                                                      :grid-area "stop-button")))
+   (parameter
+     :accessor parameter
+     :initarg :parameter
+     :initform nil))
   (:metaclass jupyter-widgets:trait-metaclass)
   (:default-initargs
     :layout (make-instance 'jw:layout
@@ -256,13 +260,15 @@
             (let ((bordeaux-threads:*default-special-bindings* `((jupyter::*kernel* . ,jupyter::*kernel*)
                                                                  (jupyter::*message* . ,jupyter::*message*)
                                                                  (*standard-output* . ,(jw:make-output-widget-stream (messages instance)))
-                                                                 (*error-output* . ,(jw:make-output-widget-stream (messages instance) t)))))
+                                                                 (*error-output* . ,(jw:make-output-widget-stream (messages instance) t))
+                                                                 ,@bordeaux-threads:*default-special-bindings*)))
               (bordeaux-threads:make-thread (lambda ()
-                                              (run-task instance nil nil))))))))
+                                              (run-task instance nil (parameter instance)))))))))
 
 
-(defun make-threaded-task-page (container title task-function &key label description)
+(defun make-threaded-task-page (container title task-function &key label description parameter)
   (let ((page (make-instance 'threaded-task-page
+                             :parameter parameter
                              :container container
                              :task-function task-function)))
     (add-page container page title)
