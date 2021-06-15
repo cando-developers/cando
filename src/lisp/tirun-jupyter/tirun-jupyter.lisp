@@ -586,7 +586,7 @@
                          (molecule-name template-ligand)
                          (mapcar #'molecule-name new-ligands))
               do (finish-output)
-              do (funcall progress-callback (length selected-ligands)))
+              do (funcall progress-callback :increment 1 :maximum (length selected-ligands)))
         selected-ligands all-ligands
         all-edges nil)
   (save-workspace))
@@ -682,7 +682,10 @@ It will put those multiple ligands into all-ligands and selected-ligands"
           (mapcar #'molecule-name selected-ligands))
   (finish-output) ; Make sure the message is synced to the frontend.
   (let* ((similarity-matrix (lomap::similarity-matrix selected-ligands
-                                                      :advance-progress-callback progress-callback))
+                                                      :advance-progress-callback (lambda (maximum)
+                                                                                   (funcall progress-callback
+                                                                                            :increment 1
+                                                                                            :maximum maximum))))
          (multigraph (lomap::lomap-multigraph (lomap::similarity-multigraph selected-ligands
                                                                             similarity-matrix)))
          new-edges)
@@ -805,7 +808,10 @@ It will put those multiple ligands into all-ligands and selected-ligands"
     (ext:chdir *default-pathname-defaults*)
     (tirun:build-job-nodes tirun)
     (tirun:connect-job-nodes tirun all-edges)
-    (let ((worklist (tirun:generate-jobs tirun :progress-callback progress-callback)))
+    (let ((worklist (tirun:generate-jobs tirun :progress-callback (lambda (maximum)
+                                                                    (funcall progress-callback
+                                                                             :increment 1
+                                                                             :maximum maximum)))))
       (with-open-file (fout #P"conf.sh" :direction :output :if-exists :supersede)
         (format fout "pmemd_cuda=pmemd.cuda
 execute_cpu_local=0

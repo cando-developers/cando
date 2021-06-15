@@ -127,10 +127,14 @@
                                           instance
                                           action
                                           parameter
-                                          (lambda (maximum)
-                                            (setf (jw:widget-display (jw:widget-layout progress)) nil
-                                                  (jw:widget-max progress) maximum
-                                                  (jw:widget-value progress) (1+ (jw:widget-value progress)))))
+                                          (lambda (&key increment value maximum)
+                                            (setf (jw:widget-display (jw:widget-layout progress)) nil)
+                                            (when maximum
+                                              (setf (jw:widget-max progress) maximum))
+                                            (when value
+                                              (setf (jw:widget-value progress) value))
+                                            (when increment
+                                              (incf (jw:widget-value progress) increment))))
                                   (write-line "Task completed successfully.")
                                   (setf (jw:widget-display (jw:widget-layout progress)) "none")
                                   (when (typep container 'jw:accordion)
