@@ -75,9 +75,14 @@
           (unless (eq :comment (caar expr))
             (multiple-value-bind (result ename evalue traceback)
                                  (leap-eval (list :leap (list :instruction (list expr))))
-            (when ename
-              (return (values ename evalue traceback)))
-            (jupyter:execute-result result))))))))
+              (when ename
+                (return (values ename evalue traceback)))
+              (multiple-value-bind (ret ename evalue traceback)
+                                   (jupyter:execute-result result)
+                (declare (ignore ret))
+                (when ename
+                  (return (values ename evalue traceback)))))))))))
+
 
 
 (defun leap-locate (ast cursor-pos &optional child-pos parents)
