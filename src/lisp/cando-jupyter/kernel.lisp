@@ -178,8 +178,9 @@
           (if (fork-client instance)
             (list "{connection_file}")
             (append (list "-f" "no-auto-lparallel")
-                    (unless (image instance)
-                      (list "--eval" "(ql:quickload :cando-jupyter)"))
+                    (if (image instance)
+                        (list "-T" "snapshot" "-i" (namestring (make-pathname :type "snapshot" :defaults (implementation instance))))
+                        (list "--eval" "(ql:quickload :cando-jupyter)"))
                     (list "--eval" "(jupyter:run-kernel 'cando-jupyter:kernel)"
                           "--" "{connection_file}"))))))
 
