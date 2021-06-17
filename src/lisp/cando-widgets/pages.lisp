@@ -279,7 +279,7 @@
                                                                  (*error-output* . ,(jw:make-output-widget-stream (messages instance) t))
                                                                  ,@bordeaux-threads:*default-special-bindings*)))
               (bordeaux-threads:make-thread (lambda ()
-                                              (j:handling-comm-errors
+                                              (j::handling-comm-errors
                                                 (run-task instance nil (parameter instance))))))))))
 
 
