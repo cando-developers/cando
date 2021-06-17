@@ -103,50 +103,54 @@
     (setf (jw:widget-disabled (button instance)) nil)))
 
 
+(defun do-run-task (instance action parameter)
+  (with-slots (container messages progress)
+              instance
+    (unwind-protect
+        (progn
+          (begin-task instance)
+          (setf (jw:widget-outputs messages) nil
+                (jw:widget-value progress) 0)
+          (jw:with-output messages
+                          (handler-bind
+                              ((warning
+                                 (lambda (wrn)
+                                   (princ wrn)
+                                   (terpri)
+                                   (finish-output)
+                                   (muffle-warning))))
+                            (write-line "Starting task...")
+                            (finish-output)
+                            (cond
+                              ((funcall (task-function instance)
+                                        instance
+                                        action
+                                        parameter
+                                        (lambda (&key increment value maximum)
+                                          (setf (jw:widget-display (jw:widget-layout progress)) nil)
+                                          (when maximum
+                                            (setf (jw:widget-max progress) maximum))
+                                          (when value
+                                            (setf (jw:widget-value progress) value))
+                                          (when increment
+                                            (incf (jw:widget-value progress) increment))))
+                                (write-line "Task completed successfully.")
+                                (setf (jw:widget-display (jw:widget-layout progress)) "none")
+                                (when (typep container 'jw:accordion)
+                                  (let ((index (position instance (jw:widget-children container) :test #'eql)))
+                                    (when (and index
+                                               (< (1+ index) (length (jw:widget-children container))))
+                                      (setf (jw:widget-selected-index container) (1+ index))))))
+                              (t
+                                (write-line "Task completed with failures." *error-output*)
+                                (finish-output *error-output*)))
+                            (values))))
+      (end-task instance))))
+
+
 (defgeneric run-task (instance &optional action parameter)
   (:method (instance &optional action parameter)
-    (with-slots (container messages progress)
-                instance
-      (unwind-protect
-          (progn
-            (begin-task instance)
-            (setf (jw:widget-outputs messages) nil
-                  (jw:widget-value progress) 0)
-            (jw:with-output messages
-                            (handler-bind
-                                ((warning
-                                   (lambda (wrn)
-                                     (princ wrn)
-                                     (terpri)
-                                     (finish-output)
-                                     (muffle-warning))))
-                              (write-line "Starting task...")
-                              (finish-output)
-                              (cond
-                                ((funcall (task-function instance)
-                                          instance
-                                          action
-                                          parameter
-                                          (lambda (&key increment value maximum)
-                                            (setf (jw:widget-display (jw:widget-layout progress)) nil)
-                                            (when maximum
-                                              (setf (jw:widget-max progress) maximum))
-                                            (when value
-                                              (setf (jw:widget-value progress) value))
-                                            (when increment
-                                              (incf (jw:widget-value progress) increment))))
-                                  (write-line "Task completed successfully.")
-                                  (setf (jw:widget-display (jw:widget-layout progress)) "none")
-                                  (when (typep container 'jw:accordion)
-                                    (let ((index (position instance (jw:widget-children container) :test #'eql)))
-                                      (when (and index
-                                                 (< (1+ index) (length (jw:widget-children container))))
-                                        (setf (jw:widget-selected-index container) (1+ index))))))
-                                (t
-                                  (write-line "Task completed with failures." *error-output*)
-                                  (finish-output *error-output*)))
-                              (values))))
-        (end-task instance)))))
+    (do-run-task instance action parameter)))
 
 
 (defclass file-task-page (single-task-page)
@@ -249,15 +253,21 @@
                                                   :grid-area "button"))))
 
 
-(defmethod run-task :around ((instance threaded-task-page) &optional action parameter)
+(defmethod run-task ((instance threaded-task-page) &optional action parameter)
   (setf (thread instance)
-        (let ((bordeaux-threads:*default-special-bindings* `((jupyter::*kernel* . ,jupyter::*kernel*)
-                                                             (jupyter::*message* . ,jupyter::*message*)
-                                                             (*standard-output* . ,(jw:make-output-widget-stream (messages instance)))
-                                                             (*error-output* . ,(jw:make-output-widget-stream (messages instance) t))
-                                                             ,@bordeaux-threads:*default-special-bindings*)))
-          (bordeaux-threads:make-thread (lambda ()
-                                          (call-next-method instance action (or parameter (parameter instance))))))))
+        (let* ((stdout (jw:make-output-widget-stream (messages instance)))
+               (stderr (jw:make-output-widget-stream (messages instance) t))
+               (bordeaux-threads:*default-special-bindings* `((jupyter::*kernel* . ,jupyter::*kernel*)
+                                                              (jupyter::*message* . nil)
+                                                              (*standard-output* . ,stdout)
+                                                              (*debug-io* . ,stdout)
+                                                              (*trace-output* . ,stdout)
+                                                              (*error-output* . ,stderr)
+                                                              ,@bordeaux-threads:*default-special-bindings*)))
+          (bordeaux-threads:make-thread
+            (lambda ()
+              (j:handling-comm-errors
+                (do-run-task instance action (or parameter (parameter instance)))))))))
 
 
 (defmethod initialize-instance :after ((instance threaded-task-page) &rest initargs &key &allow-other-keys)
@@ -272,15 +282,7 @@
   (jw:on-button-click (button instance)
     (lambda (inst)
       (declare (ignore inst))
-      (setf (thread instance)
-            (let ((bordeaux-threads:*default-special-bindings* `((jupyter::*kernel* . ,jupyter::*kernel*)
-                                                                 (jupyter::*message* . ,jupyter::*message*)
-                                                                 (*standard-output* . ,(jw:make-output-widget-stream (messages instance)))
-                                                                 (*error-output* . ,(jw:make-output-widget-stream (messages instance) t))
-                                                                 ,@bordeaux-threads:*default-special-bindings*)))
-              (bordeaux-threads:make-thread (lambda ()
-                                              (j::handling-comm-errors
-                                                (run-task instance nil (parameter instance))))))))))
+      (run-task instance nil nil))))
 
 
 (defun make-threaded-task-page (container title task-function &key label description parameter)
