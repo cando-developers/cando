@@ -133,7 +133,7 @@ def post_install(ctx):
 class build_cando_extension(waflib.Task.Task):
     def run(self):
         print("In build_extension self.env.enable_jupyter -> %s" % self.env.enable_jupyter)
-        cmd = [ self.inputs[0].abspath(), "-N"]
+        cmd = [ self.inputs[0].abspath(), "-N", "-T", "image"]
         cmd = cmd + [ "-e", "(ql:update-all-dists :prompt nil)" ]
         if (self.env.enable_jupyter):
             cmd = cmd + [ "-e", "(ql:quickload :cando-jupyter)" ]
