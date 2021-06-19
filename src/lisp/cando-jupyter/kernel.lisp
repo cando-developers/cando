@@ -178,7 +178,7 @@
           (if (fork-client instance)
             (list "{connection_file}")
             (append (list "-f" "no-auto-lparallel")
-                    (if (image instance)
+                    (unless (image instance)
                         (list "--eval" "(ql:quickload :cando-jupyter)"))
                     (list "--eval" "(jupyter:run-kernel 'cando-jupyter:kernel)"
                           "--" "{connection_file}"))))))
