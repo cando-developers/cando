@@ -25,12 +25,6 @@ This is an open source license for the CANDO software from Temple University, bu
 /* -^- */
 // #undef USEBOOSTPYTHON
 
-/* Currently using USE_POSIX_TIME=1 will fail to compile when USEBOOSTPYTHON is defined
-   this is a bug in the boost libraries in including posix time header files.
-   I have to fix this - for now, disable USE_POSIX_TIME */
-#define USE_POSIX_TIME 1
-
-
 #define	DEBUG_LEVEL_NONE
 
 //#define	TURN_LINESEARCH_DETAILS_ON
@@ -51,9 +45,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/bond.h>
 #include <cando/chem/atom.h>
 #include <cando/chem/residue.h>
-#if USE_POSIX_TIME
-#include <clasp/core/posixTime.h>
-#endif // USE_POSIX_TIME
 #include <cando/chem/nVector.h>
 #include <cando/chem/ffBaseDb.h>
 //#include "core/environment.h"
@@ -882,10 +873,9 @@ bool	Minimizer_O::_displayIntermediateMessage(
     sout << BF(" min%4s") % this->statusAsShortString();
     if ( this->_ShowElapsedTime )
     {
-#if USE_POSIX_TIME
-      core::PosixTimeDuration_sp elapsed = core::PosixTimeDuration_O::createDurationSince(this->_StartTime);
-      sout << BF(" %7ld") % elapsed->totalSeconds();
-#endif
+      auto EndTime = std::chrono::steady_clock::now();
+      auto elapsed = std::chrono::duration_cast<std::chrono::seconds>(EndTime - this->_StartTime);
+      sout << BF(" %7ld") % elapsed.count();
     }
     sout << BF(" %5d") % this->_Iteration;
     sout << BF(" %9.2lf") % log(step);
@@ -2069,9 +2059,7 @@ CL_DEFMETHOD     void	Minimizer_O::minimize()
 {
   NVector_sp	pos;
   int		retries;
-#if USE_POSIX_TIME
-  this->_StartTime = core::PosixTime_O::createNow();
-#endif
+  this->_StartTime = std::chrono::steady_clock::now();
   ASSERT(this->_ScoringFunction);
   pos = NVector_O::create(this->_ScoringFunction->getNVectorSize());
   this->_Position = pos;

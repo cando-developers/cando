@@ -45,6 +45,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <string>
 #include <vector>
 #include <set>
+#include <chrono>
 #include <clasp/core/common.h>
 //#include "bond.h"
 #include <cando/geom/vector3.h>
@@ -52,7 +53,6 @@ This is an open source license for the CANDO software from Temple University, bu
 
 
 #include <cando/adapt/quickDom.fwd.h>// minimizer.h wants QDomNode needs quickDom.fwd.h
-#include <clasp/core/posixTime.fwd.h>// minimizer.h wants PosixTime needs posixTime.fwd.h
 //#include "core/lispCallback.fwd.h"// minimizer.h wants LispCallback needs lispCallback.fwd.h
 
 namespace       chem
@@ -67,7 +67,6 @@ namespace       chem
   SMART(ScoringFunction);
   SMART(SparseLargeSquareMatrix);
   SMART(StepReport);
-  SMART(PosixTime);
 
 #define	CALLBACK_ERROR	0
 #define	CALLBACK_CONT	1
@@ -152,7 +151,7 @@ struct RestartMinimizer {};
     int			_ReportEveryNSteps;
     ScoringFunction_sp	_ScoringFunction;
     int			_Iteration;
-    core::PosixTime_sp	_StartTime;
+    std::chrono::time_point<std::chrono::steady_clock>	_StartTime;
     bool		_ShowElapsedTime;
     double		_MinGradientMean;
     double		_RMSForce;
