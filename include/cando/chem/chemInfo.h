@@ -1306,10 +1306,10 @@ public:
 
   // Build the object from _Root
   void buildFromRoot_(); 
-  void fixupInternalsForImageSaveLoad(imageSaveLoad::Fixup* fixup) {
-    if (imageSaveLoad::operation(fixup) == imageSaveLoad::SaveOp) {
+  void fixupInternalsForSnapshotSaveLoad(snapshotSaveLoad::Fixup* fixup) {
+    if (snapshotSaveLoad::operation(fixup) == snapshotSaveLoad::SaveOp) {
       this->_chemInfoGraph = NULL;
-    } else if (imageSaveLoad::operation(fixup) == imageSaveLoad::LoadOp) {
+    } else if (snapshotSaveLoad::operation(fixup) == snapshotSaveLoad::LoadOp) {
       this->initialize();
       this->buildFromRoot_();
     }

@@ -71,8 +71,8 @@ FORWARD(Dimacs);
       gctools::Vec0<gctools::Vec0<char> > getAdjacencyMatrix() const;
       gctools::Vec0<int> getDegrees() const {return degrees;}
       void calculateGraphStats(int& maxdegree, int& minDegree, std::vector<float>& degreeHistogram);
-      void fixupInternalsForImageSaveLoad(imageSaveLoad::Fixup* fixup) {
-        SIMPLE_ERROR(BF("We cannot current image save/load Dimacs's - you could try copying objects in and out of objects that can be image save/loaded"));
+      void fixupInternalsForSnapshotSaveLoad(snapshotSaveLoad::Fixup* fixup) {
+        SIMPLE_ERROR(BF("We cannot current snapshot save/load Dimacs's - you could try copying objects in and out of objects that can be snapshot save/loaded"));
       }
 
     };
