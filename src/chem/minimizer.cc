@@ -874,7 +874,7 @@ bool	Minimizer_O::_displayIntermediateMessage(
     if ( this->_ShowElapsedTime )
     {
       auto EndTime = std::chrono::steady_clock::now();
-      auto elapsed = std::chrono::duration_cast<std::chrono::seconds>(EndTime - this->_StartTime);
+      auto elapsed = std::chrono::duration_cast<std::chrono::seconds>(EndTime - this->_StartTime._value);
       sout << BF(" %7ld") % elapsed.count();
     }
     sout << BF(" %5d") % this->_Iteration;
@@ -2059,7 +2059,7 @@ CL_DEFMETHOD     void	Minimizer_O::minimize()
 {
   NVector_sp	pos;
   int		retries;
-  this->_StartTime = std::chrono::steady_clock::now();
+  this->_StartTime._value = std::chrono::steady_clock::now();
   ASSERT(this->_ScoringFunction);
   pos = NVector_O::create(this->_ScoringFunction->getNVectorSize());
   this->_Position = pos;

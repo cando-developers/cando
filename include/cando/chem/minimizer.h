@@ -151,7 +151,7 @@ struct RestartMinimizer {};
     int			_ReportEveryNSteps;
     ScoringFunction_sp	_ScoringFunction;
     int			_Iteration;
-    std::chrono::time_point<std::chrono::steady_clock>	_StartTime;
+    dont_expose<std::chrono::time_point<std::chrono::steady_clock>>	_StartTime;
     bool		_ShowElapsedTime;
     double		_MinGradientMean;
     double		_RMSForce;
