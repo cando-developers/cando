@@ -138,7 +138,7 @@ class build_cando_extension(waflib.Task.Task):
         if (self.env.enable_jupyter):
             cmd = cmd + [ "-e", "(ql:quickload :cando-jupyter)" ]
         saveFile = self.outputs[0].abspath()
-        cmd = cmd + [ "-e", "(setf ext:*image-save-load-startup* 'cl-user:start-cando-user-from-snapshot)"]
+        cmd = cmd + [ "-e", "(setf ext:*snapshot-save-load-startup* 'cl-user:start-cando-user-from-snapshot)"]
         cmd = cmd + [ "-e", "(clos:compile-all-generic-functions)" ]
         cmd = cmd + [ "-e", "(gctools:save-lisp-and-die \"%s\")" % saveFile ]
         cmd = cmd + [ "-e", "(core:quit)" ]
