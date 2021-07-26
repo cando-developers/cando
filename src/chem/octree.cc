@@ -129,7 +129,7 @@ CL_DEF_CLASS_METHOD
 AddIonOctree_sp AddIonOctree_O::make(Aggregate_sp aggregate, AddIonOctreeEnum iType, double dGridSpace, 
                                      double dAddExtent, double dShellExtent, FFNonbondDb_sp nonbondDb, int iIncludeSolvent, bool bVerbose)
 {
-  GC_ALLOCATE(AddIonOctree_O,octtree);
+  auto octtree = gctools::GC<AddIonOctree_O>::allocate_with_default_constructor();
   octtree->OctreeCreate(aggregate,iType,dGridSpace,dAddExtent,dShellExtent,nonbondDb,iIncludeSolvent,bVerbose);
   return octtree;
 }
@@ -326,7 +326,7 @@ void AddIonOctree_O::PonMakeChildren(OctNode_sp ponNode, int iDepth, int iStatus
 	 *  Make nodes & set simple stuff by initializing 1st node
 	 *	and copying it.
 	 */
-	//GC_ALLOCATE(OctNode_O, PonChildren); //MALLOC( PonChildren, Octnode_sp *, 8 * sizeof(OctNode_sp) );
+  auto  PonChildren = gctools::GC<OctNode_O>::allocate_with_default_constructor();
 	//memset(PonChildren, 0, sizeof(OctNode_sp));
 	//ponNode->PonChildren->iStatus = iStatus;
 	//ponNode->PonChildren->iDepth = iDepth;
@@ -535,10 +535,6 @@ int AddIonOctree_O::iBuildShellOctant( OctNode_sp PonNode, int iAtoms, gctools::
 	 *	is necessarily <= size of parent's.
 	 */
   
-	//GC_ALLOCATE(Atom_O, PaNewAtoms); // MALLOC( PaNewAtoms, ATOM *, iAtoms * sizeof(ATOM) );
-	//memset( PaNewAtoms, 0, iAtoms * sizeof(ATOM) );
-  //PaNewAtoms.resize(iAtoms, _Nil<Atom_O>());
-  //PonNode->PaAtomList = PaNewAtoms;
   iNewAtoms = 0;
 #ifdef DBG2
   fprintf(stderr, "@@@ node 0x%x atoms 0x%x\n", PonNode, PaNewAtoms);
@@ -779,9 +775,6 @@ int AddIonOctree_O::iBuildInteriorOctant( OctNode_sp PonNode, int iAtoms, gctool
 	 *  Get memory for list of atoms inside sphere enclosing this cube, which 
 	 *	must be <= size of parent's.
 	 */
-	//GC_ALLOCATE(Atom_O, PaNewAtoms); // MALLOC( PaNewAtoms, ATOM *, iAtoms * sizeof(ATOM) );
-	//memset( PaNewAtoms, 0, iAtoms * sizeof(ATOM) );
-  //PonNode->PaAtomList = PaNewAtoms;
 #ifdef DBG2
   fprintf(stderr, "@@@ inode 0x%x atoms 0x%x\n", PonNode, PonNode->PaAtomList);
 #endif
@@ -912,7 +905,7 @@ CL_DEFMETHOD void AddIonOctree_O::OctreeCreate(Aggregate_sp uUnit, AddIonOctreeE
 	/*
 	 *  Create the octree "object" and initialize
 	 */
-  //GC_ALLOCATE(AddIonOctree_O, octTree); // MALLOC( octTree, OCTREE, sizeof(OCTREEt) );
+  auto  octTree = gctools::GC<AddIonOctree_O>::allocate_with_default_constructor();
  // octTree->iType = iType;
   //octTree->dGridSize = dGridSpace;
   this->type = type;
@@ -1673,14 +1666,6 @@ void AddIonOctree_O::SplitIncludedNode( OctNode_sp PonNode)
   PonMakeChildren(PonNode, PonNode->iDepth + 1, OCT_INCLUDED, this->iNodeCount );
 //    printf("%s:%d:%s vPoint -> %d\n", __FILE__, __LINE__, __FUNCTION__,  PonNode->PonChildren[0]->iNodeNum);
   
-	/*
-	 *  copy the parent's charges to a temp array
-	 */
-  //GC_ALLOCATE(float, PfTmpCharges); // MALLOC( PfTmpCharges, float *, 
-			//sizeof(float) * PiDensities[PonNode->iDepth]);
-  //memcpy( PfTmpCharges, PonNode->PfCharges, 
-  //        sizeof(float) * PiDensities[PonNode->iDepth]);
-    
 
   for (i=0; i<PonNode->_PfCharges.size();i++){
     PfTmpCharges.push_back(PonNode->_PfCharges[i]);
@@ -2314,7 +2299,7 @@ core::T_mv chem__oct_tree_find_closest_atom(AddIonOctree_sp oct_tree, const Vect
 
 GenericOctree_sp GenericOctree_O::make(const Vector3& origin, const Vector3& halfDimension)
 {
-  GC_ALLOCATE_VARIADIC(GenericOctree_O,ot,origin,halfDimension);
+  auto ot = gctools::GC<GenericOctree_O>::allocate(origin,halfDimension);
   return ot;
 }
 

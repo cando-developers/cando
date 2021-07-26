@@ -152,7 +152,7 @@ namespace kinematics
     template <class T>
       Joint_sp _newAtom(const chem::AtomId& atomId, core::T_sp name, const string& comment)
     {_OF();
-      GC_ALLOCATE_VARIADIC(T,atom,atomId,name,comment);
+      auto atom = gctools::GC<T>::allocate(atomId,name,comment);
       return this->_initializeNewAtom(atom,atomId);
     };
 

@@ -43,7 +43,7 @@ namespace chem {
     VirtualAtom_sp VirtualAtom_O::create(MatterName name, CalculatePosition_sp proc)
 {
     LOG(BF("status") );
-    GC_ALLOCATE(VirtualAtom_O, va );
+    auto  va  = gctools::GC<VirtualAtom_O>::allocate_with_default_constructor();
     LOG(BF("status") );
     va->setName(name);
     LOG(BF("status") );
@@ -76,7 +76,7 @@ VirtualAtom_O::VirtualAtom_O(const VirtualAtom_O& ss) :Atom_O(ss)
 Matter_sp VirtualAtom_O::copy()
 {
     LOG(BF("Copying atom @%X") % this );
-    GC_NON_RECURSIVE_COPY(VirtualAtom_O,aNew, *this); // VirtualAtom_sp aNew = RP_Copy<VirtualAtom_O>(this);
+    auto aNew = gctools::GC<VirtualAtom_O>::copy( *this); // VirtualAtom_sp aNew = RP_Copy<VirtualAtom_O>(this);
     this->copyAtom = aNew;
     LOG(BF("    copy atom== %s") % aNew->description().c_str() );
     return(aNew);

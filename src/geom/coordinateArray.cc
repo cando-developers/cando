@@ -77,7 +77,7 @@ CL_DEF_CLASS_METHOD SimpleVectorCoordinate_sp SimpleVectorCoordinate_O::make(cor
   {
     SIMPLE_ERROR(BF("You can only pass size or vals"));
   }
-  GC_ALLOCATE(SimpleVectorCoordinate_O,me);
+  auto me = gctools::GC<SimpleVectorCoordinate_O>::allocate_with_default_constructor();
   if ( fnsize.notnilp() )
   {
     core::Fixnum size = core::clasp_to_fixnum(fnsize);
@@ -311,7 +311,7 @@ string SimpleVectorCoordinate_O::parseFromStream(core::Stream_sp sin)
 #if 0
 SimpleVectorCoordinateWithHash_sp SimpleVectorCoordinateWithHash_O::create(uint sz)
 {
-  GC_ALLOCATE(SimpleVectorCoordinateWithHash_O,h);
+  auto h = gctools::GC<SimpleVectorCoordinateWithHash_O>::allocate_with_default_constructor();
   h->resize(sz);
   return h;
 }

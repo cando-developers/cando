@@ -64,7 +64,7 @@ namespace chem
 #endif
     IterateMatter_sp IterateMatter_O::create(Matter_sp top, int goal)
     {
-	GC_ALLOCATE(IterateMatter_O, m );
+      auto  m  = gctools::GC<IterateMatter_O>::allocate_with_default_constructor();
 	m->_Top = top;
 	m->_Goal = goal;
 	return m;
@@ -148,7 +148,7 @@ CL_DEFMETHOD     bool	IterateMatter_O::advance()
 
     IterateAtoms_sp IterateAtoms_O::create(Matter_sp top)
     {
-	GC_ALLOCATE(IterateAtoms_O, ia );
+      auto  ia  = gctools::GC<IterateAtoms_O>::allocate_with_default_constructor();
 	ia->initTopAndGoal(top,ATOMS);
 	return ia;
     }
@@ -162,7 +162,7 @@ CL_DEFMETHOD     bool	IterateMatter_O::advance()
 #define DOCS_chem__create_for_matter "createForMatter"
 CL_DEFUN core::T_sp chem__create_for_matter(Matter_sp matter)
     {
-	GC_ALLOCATE(IterateAtoms_O, ia );
+      auto  ia  = gctools::GC<IterateAtoms_O>::allocate_with_default_constructor();
 	ia->initTopAndGoal(matter,ATOMS);
 	return ia;
     }
@@ -174,7 +174,7 @@ CL_DEFUN core::T_sp chem__create_for_matter(Matter_sp matter)
 #define DOCS_IterateAtoms_O_make "make IterateAtoms"
   IterateAtoms_sp IterateAtoms_O::make(Matter_sp matter)
   {
-      GC_ALLOCATE(IterateAtoms_O, me );
+    auto  me  = gctools::GC<IterateAtoms_O>::allocate_with_default_constructor();
     me->initTopAndGoal(matter,ATOMS);
     return me;
   };
@@ -203,7 +203,7 @@ CL_DEFUN core::T_sp chem__create_for_matter(Matter_sp matter)
 
     IterateResidues_sp IterateResidues_O::create(Matter_sp top)
     {
-	GC_ALLOCATE(IterateResidues_O, ia );
+      auto  ia  = gctools::GC<IterateResidues_O>::allocate_with_default_constructor();
 	ia->initTopAndGoal(top,RESIDUES);
 	return ia;
     }
@@ -233,7 +233,7 @@ CL_DEFUN core::T_sp IterateResidues_O::createForMatter(Matter_sp matter)
 CL_LISPIFY_NAME(bonds);
 CL_DEFUN IterateBonds_sp IterateBonds_O::make(Matter_sp top)
 {
-  GC_ALLOCATE(IterateBonds_O, ia );
+  auto  ia  = gctools::GC<IterateBonds_O>::allocate_with_default_constructor();
   ia->initTopAndGoal(top,BONDS);
   return ia;
 }

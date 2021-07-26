@@ -946,7 +946,7 @@ void	MoeReadFile::readNextLine()
 	tir=0;
 	for ( im=0; im<ptMolecules.getVector(0).size(); im++ ) {
 	    LOG(BF("Creating molecule #%d") % im  );
-	    GC_ALLOCATE(Molecule_O, mol );
+	    auto  mol  = gctools::GC<Molecule_O>::allocate_with_default_constructor();
 	    LOG(BF(" created") );
 	    agg->addMolecule(mol);
             mol->setId(agg->contentSize());
@@ -955,7 +955,7 @@ void	MoeReadFile::readNextLine()
 	    LOG(BF("  It has %d residues") % numResidues  );
 	    for ( ir=0; ir<numResidues; ir++ ) {
 		LOG(BF("     Creating residue: %d") % ir  );
-		GC_ALLOCATE(Residue_O, res );
+		auto  res  = gctools::GC<Residue_O>::allocate_with_default_constructor();
 		res->setTempInt(ir+1);
 		mol->addMatter(res);
 		LOG(BF("     Added residue to mol") );
@@ -970,7 +970,7 @@ void	MoeReadFile::readNextLine()
 		LOG(BF("        it has %d atoms") % numAtoms  );
 		tir++;
 		for ( it=0; it<numAtoms; it++ ) {
-		    GC_ALLOCATE(Atom_O, a );
+                  auto  a  = gctools::GC<Atom_O>::allocate_with_default_constructor();
                     //a->setMoeIndex( dynamic_cast<ParaInteger*>(ptAtoms.getVector(index_ID)[ia])->getValue() );
 		    a->setName( chemkw_intern(dynamic_cast<ParaToken*>(ptAtoms .getVector(index_aName)[ia])->getValue() ));
 		    a->setElementFromString( dynamic_cast<ParaToken*>(ptAtoms .getVector(index_aElement)[ia])->getValue() );
@@ -1250,7 +1250,7 @@ void	MoeReadFile::readNextLine()
 
     Aggregate_sp	moeReadAggregateWithAtomTypes(const string& nm)
     {
-	GC_ALLOCATE(Aggregate_O, agg );
+      auto  agg  = gctools::GC<Aggregate_O>::allocate_with_default_constructor();
 	moeReadAggregateWithAtomTypesFromFileName(agg,nm.c_str());
 	return agg;
     }
@@ -1317,7 +1317,7 @@ CL_DEFUN  Aggregate_sp chem__moeReadAggregate(const string& name )
 	LOG(BF("About to open moe file: %s") % name.c_str() );
 	f.openFileName(name.c_str());
 	LOG(BF("Opened moe file: %s") % name.c_str() );
-	GC_ALLOCATE(Aggregate_O, agg );
+	auto  agg  = gctools::GC<Aggregate_O>::allocate_with_default_constructor();
 	moeReadAggregateMoeFile( agg, f, gotMMTypes );
 	return agg;
     }

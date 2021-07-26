@@ -183,7 +183,7 @@ namespace chem {
 
   public:
     static DirectionalCoupling_sp make(Monomer_sp source, core::Symbol_sp sourcePlugName, core::Symbol_sp targetPlugName, Monomer_sp target) {
-      GC_ALLOCATE_VARIADIC(DirectionalCoupling_O,dc,source,sourcePlugName,targetPlugName,target);
+      auto dc = gctools::GC<DirectionalCoupling_O>::allocate(source,sourcePlugName,targetPlugName,target);
       return dc;
     }
   public:
@@ -252,7 +252,7 @@ namespace chem {
 
   public:
     static RingCoupling_sp make(Monomer_sp mon1, core::Symbol_sp plug1Name, Monomer_sp mon2, core::Symbol_sp plug2Name) {
-      GC_ALLOCATE_VARIADIC(RingCoupling_O,dc,mon1,plug1Name,mon2,plug2Name);
+      auto dc = gctools::GC<RingCoupling_O>::allocate(mon1,plug1Name,mon2,plug2Name);
       return dc;
     }
 

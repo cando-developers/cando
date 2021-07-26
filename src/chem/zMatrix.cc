@@ -388,7 +388,7 @@ CL_DEFMETHOD     core::T_sp	ZMatrixDihedralInternal_O::getDihedralAtomZMatrixNam
 
     ZMatrixEntry_sp ZMatrixEntry_O::create(Atom_sp atom, ZMatrixInternal_O::atomMap atomIndices)
     {
-	GC_ALLOCATE(ZMatrixEntry_O,	entry );
+      auto 	entry  = gctools::GC<ZMatrixEntry_O>::allocate_with_default_constructor();
 	stringstream name;
 	name << atom->getElementAsString() << atomIndices.size();
 	entry->_Atom = atom;
@@ -447,7 +447,7 @@ CL_DEFMETHOD     core::T_sp ZMatrix_O::getZMatrixAtomNameAtIndex(uint i) const
 #define DOCS_ZMatrix_O_make "make ZMatrix"
   ZMatrix_sp ZMatrix_O::make(Matter_sp matter, Atom_sp rootAtom)
   {
-      GC_ALLOCATE(ZMatrix_O, me );
+    auto  me  = gctools::GC<ZMatrix_O>::allocate_with_default_constructor();
       if ( rootAtom.nilp() )
       {
 	  me->defineForMatter(matter);

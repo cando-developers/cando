@@ -202,7 +202,7 @@ CL_DEFUN void chem__walk_chem_info_with_parent(ChemInfoNode_sp top, core::T_sp c
 
   
 ChemInfoMatch_sp ChemInfoMatch_O::make( Root_sp root, size_t maxTag, core::HashTableEql_sp ringLookup) {
-  GC_ALLOCATE_VARIADIC(ChemInfoMatch_O,match,root,maxTag+1);
+  auto match = gctools::GC<ChemInfoMatch_O>::allocate(root,maxTag+1);
   match->_TagLookup = core::SimpleVector_O::make(maxTag+1);
   match->_RingLookup = ringLookup;
   return match;
@@ -1158,7 +1158,7 @@ CL_DEF_CLASS_METHOD BondLogical_sp BondLogical_O::create_bondLogHighPrecedenceAn
 CL_LISPIFY_NAME("make-bond-test");
 CL_DEF_CLASS_METHOD BondTest_sp BondTest_O::make( BondEnum be )
 {_G();
-  GC_ALLOCATE_VARIADIC(BondTest_O, obj, be ); // RP_Create<Logical_O>(lisp);
+  auto  obj = gctools::GC<BondTest_O>::allocate( be ); // RP_Create<Logical_O>(lisp);
   return obj;
 };
 
@@ -1191,7 +1191,7 @@ void BondToAtomTest_O::initialize() {
 
 CL_LISPIFY_NAME(make-bond-to-atom-test);
 CL_DEF_CLASS_METHOD BondToAtomTest_sp BondToAtomTest_O::makeBondToAtomTest(BondEnum be, core::T_sp nilOrNode) {
-  GC_ALLOCATE_VARIADIC(BondToAtomTest_O,bta,be);
+  auto bta = gctools::GC<BondToAtomTest_O>::allocate(be);
   bta->_AtomTest = nilOrNode;
   bta->_BondMatcher = _Unbound<BondMatcher_O>();
   return bta;
@@ -1199,7 +1199,7 @@ CL_DEF_CLASS_METHOD BondToAtomTest_sp BondToAtomTest_O::makeBondToAtomTest(BondE
 
 CL_LISPIFY_NAME(make-bond-matcher-to-atom-test);
 CL_DEF_CLASS_METHOD BondToAtomTest_sp BondToAtomTest_O::makeBondMatcherToAtomTest(BondMatcher_sp bm, core::T_sp nilOrNode) {
-  GC_ALLOCATE_VARIADIC(BondToAtomTest_O,bta,SABUseBondMatcher);
+  auto bta = gctools::GC<BondToAtomTest_O>::allocate(SABUseBondMatcher);
   bta->_BondMatcher = bm;
   bta->_AtomTest = nilOrNode;
   return bta;
@@ -2110,7 +2110,7 @@ CL_LAMBDA(element neighbors props tag);
 CL_DEF_CLASS_METHOD AntechamberBondToAtomTest_sp AntechamberBondToAtomTest_O::create_args( core::Symbol_sp element, int neighbors,
                                                                                            AtomOrBondMatchNode_sp props, core::Symbol_sp tag )
 {_G();
-  GC_ALLOCATE(AntechamberBondToAtomTest_O, obj ); // RP_Create<AntechamberBondToAtomTest_O>(lisp);
+  auto  obj  = gctools::GC<AntechamberBondToAtomTest_O>::allocate_with_default_constructor();
   obj->_Element = element;
   obj->_Neighbors = neighbors;
   obj->_AtomProperties = props;
@@ -2340,7 +2340,7 @@ bool Root_O::matches_Atom(Root_sp root, chem::Atom_sp atom) {
 CL_LISPIFY_NAME("make-smarts-root");
 CL_DEF_CLASS_METHOD SmartsRoot_sp SmartsRoot_O::make(const std::string& code, ChemInfoNode_sp cinode, size_t maxTag)
 {
-  GC_ALLOCATE_VARIADIC(SmartsRoot_O, obj, code, cinode, maxTag ); // RP_Create<SmartsRoot_O>(lisp);
+  auto  obj = gctools::GC<SmartsRoot_O>::allocate( code, cinode, maxTag ); // RP_Create<SmartsRoot_O>(lisp);
 //  printf("%s:%d:%s  cinode-> %s\n", __FILE__, __LINE__, __FUNCTION__, _rep_(cinode).c_str());
   return obj;
 };
@@ -2774,14 +2774,14 @@ void MoleculeGraph_O::initialize() {
 }
 
 CL_DEFUN MoleculeGraph_sp chem__make_molecule_graph() {
-  GC_ALLOCATE_VARIADIC(MoleculeGraph_O,graph);
+  auto graph = gctools::GC<MoleculeGraph_O>::allocate_with_default_constructor();
   graph->_moleculeGraph = new MoleculeGraphType();
   return graph;
 }
 
 CL_LAMBDA(matter &optional (exclude_hydrogens nil));
 CL_DEFUN MoleculeGraph_sp chem__make_molecule_graph_from_molecule(Molecule_sp matter, bool exclude_hydrogens) {
-  GC_ALLOCATE_VARIADIC(MoleculeGraph_O,graph,matter);
+  auto graph = gctools::GC<MoleculeGraph_O>::allocate(matter);
   Loop lMol;
   Loop lAtoms;
   lAtoms.loopTopGoal(matter,ATOMS);
@@ -2853,7 +2853,7 @@ void ChemInfoGraph_O::initialize()
 CL_DOCSTRING(R"doc(Make a chem:chem-info-graph from a chem:root object)doc");
 CL_DEFUN ChemInfoGraph_sp chem__make_chem_info_graph(Root_sp pattern)
 {
-  GC_ALLOCATE_VARIADIC(ChemInfoGraph_O,graph,pattern);
+  auto graph = gctools::GC<ChemInfoGraph_O>::allocate(pattern);
   graph->buildFromRoot_();
   return graph;
 }
@@ -3063,7 +3063,7 @@ void ChemInfoGraph_O::buildFromRoot_() {
   for ( size_t ii=0; ii<closers.size(); ++ii) {
     if (closers[ii]._Active) {
       for (size_t jj=0; jj<closers[ii]._Bonds.size(); ++jj ) {
-        GC_ALLOCATE_VARIADIC(BondToAtomTest_O, dummyRingAtomTest, closers[ii]._Bonds[jj]._Bond);
+        auto  dummyRingAtomTest = gctools::GC<BondToAtomTest_O>::allocate( closers[ii]._Bonds[jj]._Bond);
         int edge_index = graph->_bondNodes.size();
         graph->_bondNodes.push_back(dummyRingAtomTest);
         if (chem__verbose(1)) {

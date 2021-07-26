@@ -210,7 +210,7 @@ void Loop::buildListOfImpropersCenteredOn(Atom_sp a)
     for ( bl1=blrest0->begin(); bl1!=blrest0->end(); bl1++ )
     {
       LOG(BF("Loop 1") );
-      GC_ALLOCATE(BondList_O, accumulate1 );
+      auto  accumulate1  = gctools::GC<BondList_O>::allocate_with_default_constructor();
       accumulate1->append(*bl1);
       BondList_sp blrest1 = blrest0->deepishCopy(); 
       LOG(BF("Copy blrest1 = %s") % blrest1->description() );

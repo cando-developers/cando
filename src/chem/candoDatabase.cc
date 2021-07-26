@@ -731,7 +731,7 @@ CL_LISPIFY_NAME(make-cando-database);
 CL_DEF_CLASS_METHOD
 CandoDatabase_sp CandoDatabase_O::make(core::Symbol_sp name)
 {
-  GC_ALLOCATE(CandoDatabase_O, me );
+  auto  me  = gctools::GC<CandoDatabase_O>::allocate_with_default_constructor();
   me->_Name = name;
 #if 0  
   me->_frameRecognizers.clear();

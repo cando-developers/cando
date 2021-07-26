@@ -86,7 +86,7 @@ SYMBOL_EXPORT_SC_(ChemKwPkg,Z);
 #define DOCS_RestrainedPiBond_O_make "make RestrainedPiBond"
 RestrainedPiBond_sp RestrainedPiBond_O::make(core::Symbol_sp config, core::List_sp piAtoms)
   {
-      GC_ALLOCATE(RestrainedPiBond_O, me );
+    auto  me  = gctools::GC<RestrainedPiBond_O>::allocate_with_default_constructor();
     me->_Configuration = config;
     if ( me->_Configuration != chemkw::_sym_E && me->_Configuration != chemkw::_sym_Z )
     {

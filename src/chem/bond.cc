@@ -73,7 +73,7 @@ CL_DEFUN bool chem__single_bond_p(chem::BondOrder o)
 
 Bond_sp	Bond_O::create(Atom_sp from, Atom_sp to, BondOrder o)
 {
-  GC_ALLOCATE(Bond_O, bond );
+  auto  bond  = gctools::GC<Bond_O>::allocate_with_default_constructor();
   bond->_Atom1 = from;
   bond->_Atom2 = to;
   bond->setOrder(o);
@@ -128,7 +128,7 @@ bool Bond_O::isAtom1(Atom_sp a) const
 
 Bond_sp Bond_O::copyDontRedirectAtoms()
 {_OF();
-  GC_COPY(Bond_O, bondNew , *this); // = RP_Copy<Bond_O>(this);
+  auto  bondNew  = gctools::GC<Bond_O>::copy( *this); // = RP_Copy<Bond_O>(this);
   return bondNew;
 }
 
@@ -603,7 +603,7 @@ use the same Bond_O's */
 BondList_sp	BondList_O::deepishCopy() const
 {
   BondList_O::iterator	bi;
-  GC_ALLOCATE(BondList_O, bl );
+  auto  bl  = gctools::GC<BondList_O>::allocate_with_default_constructor();
   for ( bi=this->_Bonds.begin(); bi!=this->_Bonds.end(); bi++ ) bl->addBond(*bi);
   return bl;
 }

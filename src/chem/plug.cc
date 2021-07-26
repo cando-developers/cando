@@ -271,7 +271,7 @@ RingClosingPlug_O::RingClosingPlug_O(const RingClosingPlug_O& p) : RingClosingPl
   LOG(BF("Copying %d ring closing mates") % p._Mates.size()  );
   for ( vi=p._RingClosingMates.begin(); vi!=p._RingClosingMates.end(); vi++ ) {
     LOG(BF("Copied mate") );
-    GC_COPY(RingClosingMate_O, rn, *vi->get() ); // = RP_Copy<RingClosingMate_O>(*vi);
+    auto  rn = gctools::GC<RingClosingMate_O>::copy( *vi->get() ); // = RP_Copy<RingClosingMate_O>(*vi);
     this->_RingClosingMates.push_back(rn);
   }
   LOG(BF("Copy constructed %s") % this->description().c_str()  );

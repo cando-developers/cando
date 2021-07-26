@@ -44,7 +44,7 @@ namespace chem {
 
 
 EnergyPointToLineRestraint_sp EnergyPointToLineRestraint_O::create(EnergySketchStretch_sp stretch) {
-  GC_ALLOCATE_VARIADIC(EnergyPointToLineRestraint_O,obj,stretch);
+  auto obj = gctools::GC<EnergyPointToLineRestraint_O>::allocate(stretch);
   return obj;
 }
 

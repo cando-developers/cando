@@ -110,7 +110,7 @@ CL_LISPIFY_NAME(make-sketch-function);
 CL_DEF_CLASS_METHOD
 SketchFunction_sp SketchFunction_O::make(core::T_sp graph, core::T_sp sketchNonbondForceField)
 {
-  GC_ALLOCATE_VARIADIC(SketchFunction_O,sf,graph);
+  auto sf = gctools::GC<SketchFunction_O>::allocate(graph);
   sf->_NodeTable = core::eval::funcall(chem::_sym_make_node_table_from_graph,graph,sketchNonbondForceField);
   return sf;
 }

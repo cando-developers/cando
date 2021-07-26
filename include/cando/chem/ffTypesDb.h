@@ -67,7 +67,7 @@ public:
   void fields(core::Record_sp node);
 public:
   CL_DEF_CLASS_METHOD static FFTypeRule_sp make(Root_sp rule,core::T_sp type) {
-    GC_ALLOCATE_VARIADIC(FFTypeRule_O,fft,rule,type);
+    auto fft = gctools::GC<FFTypeRule_O>::allocate(rule,type);
     return fft;
   }
 public:

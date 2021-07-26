@@ -87,7 +87,7 @@ void StringSet_O::insertStringList(StringList_sp s) {
 StringSet_sp StringSet_O::copy() {
   
   StringSet_O::iterator it;
-  GC_COPY(StringSet_O, snew, *this);
+  auto  snew = gctools::GC<StringSet_O>::copy( *this);
   snew->clear();
   for (it = this->begin(); it != this->end(); it++)
     snew->insert(*it);

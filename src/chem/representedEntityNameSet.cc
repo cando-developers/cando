@@ -74,7 +74,7 @@ namespace chem
 
     EntityNameSetBase_sp RepresentedEntityNameSet_O::copy() const
     {
-      GC_COPY(RepresentedEntityNameSet_O, newCopy, *this ); // = RP_Copy<RepresentedEntityNameSet_O>(this->const_sharedThis<RepresentedEntityNameSet_O>());
+      auto  newCopy = gctools::GC<RepresentedEntityNameSet_O>::copy( *this ); // = RP_Copy<RepresentedEntityNameSet_O>(this->const_sharedThis<RepresentedEntityNameSet_O>());
 	return newCopy;
     }
 
@@ -134,7 +134,7 @@ CL_DEFMETHOD     bool	RepresentedEntityNameSet_O::hasRepresentative()
 	obj = bdb->getEntity(this->_Representative);
 	ASSERT(obj->isTerminalName()); // BF("Representatives must always be terminal names, this representative(%s) is NOT")% obj->getName() );
 	objList = RepresentativeList_O::create();
-	GC_COPY(RepresentedEntityNameSet_O, expanded , *this); // = RP_Copy<RepresentedEntityNameSet_O>(this);
+	auto  expanded  = gctools::GC<RepresentedEntityNameSet_O>::copy( *this); // = RP_Copy<RepresentedEntityNameSet_O>(this);
 	expanded->expandToTerminalEntityNames();
 	LOG(BF("I have a representative[%s] so I'm created a RepresentedEntityNameSet: %s") % _rep_(expanded) );
 	objList->vectorPushExtend(expanded);
@@ -148,7 +148,7 @@ CL_DEFMETHOD     bool	RepresentedEntityNameSet_O::hasRepresentative()
 #define DOCS_RepresentedEntityNameSet_O_make "make RepresentedEntityNameSet"
   RepresentedEntityNameSet_sp RepresentedEntityNameSet_O::make(core::Symbol_sp representativeName)
   {
-      GC_ALLOCATE(RepresentedEntityNameSet_O, me );
+    auto  me  = gctools::GC<RepresentedEntityNameSet_O>::allocate_with_default_constructor();
     me->_Representative = representativeName;
     return me;
   };

@@ -89,7 +89,7 @@ void PathMessage_O::initialize()
 PathMessage_sp	PathMessage_O::create(RingFinder_sp graph, AGVertex_sp firstVertex,
     				AGEdge_sp firstEdge, AGVertex_sp lastVertex )
 {
-    GC_ALLOCATE(PathMessage_O, pm );
+  auto  pm  = gctools::GC<PathMessage_O>::allocate_with_default_constructor();
     pm->_graph = graph;
     pm->_beep = core::SimpleBitVector_O::make(graph->getNumberOfEdges());
     pm->_firstVertex = firstVertex;
@@ -102,7 +102,7 @@ PathMessage_sp	PathMessage_O::create(RingFinder_sp graph, AGVertex_sp firstVerte
 
 PathMessage_sp PathMessage_O::copy()
 {
-    GC_COPY(PathMessage_O, pm , *this); // = RP_Copy<PathMessage_O>(this);
+  auto  pm  = gctools::GC<PathMessage_O>::copy( *this); // = RP_Copy<PathMessage_O>(this);
     if (this->_beep.nilp()) {
       pm->_beep = _Nil<core::T_O>();
     } else {
@@ -214,7 +214,7 @@ core::SimpleBitVector_sp	PathMessage_O::beep()
 
 AGVertex_sp AGVertex_O::create(RingFinder_sp graph, Atom_sp atom)
 {
-    GC_ALLOCATE(AGVertex_O, v );
+  auto  v  = gctools::GC<AGVertex_O>::allocate_with_default_constructor();
     v->_graph = graph;
     v->_atom = atom;
     v->_edges.clear();
@@ -522,7 +522,7 @@ void AGVertex_O::receive(uint stage)
 
 AGEdge_sp AGEdge_O::create(RingFinder_sp graph, Atom_sp atom1, Atom_sp atom2 )
 {
-    GC_ALLOCATE(AGEdge_O, edge );
+  auto  edge  = gctools::GC<AGEdge_O>::allocate_with_default_constructor();
     edge->_graph = graph;
     edge->_id = graph->getNextEdgeId();
     if ( atom1->atLowerUniqueAtomOrderThan(atom2) ) {
@@ -578,7 +578,7 @@ uint AGEdge_O::getSide(AGVertex_sp vert)
 CL_LISPIFY_NAME(make_ring_finder);
 CL_DEF_CLASS_METHOD RingFinder_sp RingFinder_O::make(Molecule_sp mol)
 {
-    GC_ALLOCATE(RingFinder_O, graph );
+  auto  graph  = gctools::GC<RingFinder_O>::allocate_with_default_constructor();
     graph->_vertices = core::HashTable_O::create(cl::_sym_eq);
     graph->defineForMolecule(mol);
     return graph;

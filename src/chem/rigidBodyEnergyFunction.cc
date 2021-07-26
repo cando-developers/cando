@@ -71,7 +71,7 @@ namespace chem {
 
 CL_LISPIFY_NAME("CHEM:MAKE-RIGID-BODY-ENERGY-FUNCTION");
 CL_DEFUN RigidBodyEnergyFunction_sp RigidBodyEnergyFunction_O::make(size_t number_of_rigid_bodies, BoundingBox_sp boundingBox) {
-  GC_ALLOCATE_VARIADIC(RigidBodyEnergyFunction_O, energy, number_of_rigid_bodies, boundingBox);
+  auto  energy = gctools::GC<RigidBodyEnergyFunction_O>::allocate( number_of_rigid_bodies, boundingBox);
   energy->_SavedCoordinates = NVector_O::create(number_of_rigid_bodies*7);
   return energy;
 }

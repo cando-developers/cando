@@ -76,7 +76,6 @@ void Molecule_O::fields(core::Record_sp node)
 #if 1
     core::HashTable_sp atomToResidue = this->atomToResidueMap();
     BondList_sp bondList = BondList_O::create();
-	    //	    GC_ALLOCATE(BondList_O, bondList );
     { _BLOCK_TRACE("Building bond list");
       Loop lmol(this->asSmartPtr(),ATOMS);
       while (lmol.advance()) {
@@ -235,7 +234,7 @@ CL_DEFMETHOD     void	Molecule_O::moveAllAtomsIntoFirstResidue()
 Matter_sp	Molecule_O::copyDontRedirectAtoms(core::T_sp new_to_old)
 {
   Residue_sp			res;
-  GC_NON_RECURSIVE_COPY(Molecule_O, newMol , *this); // = RP_Copy<Molecule_O>(this);
+  auto  newMol  = gctools::GC<Molecule_O>::copy( *this); // = RP_Copy<Molecule_O>(this);
   if (gc::IsA<core::HashTable_sp>(new_to_old)) {
     core::HashTable_sp new_to_old_ht = gc::As_unsafe<core::HashTable_sp>(new_to_old);
     new_to_old_ht->setf_gethash(newMol,this->asSmartPtr());
@@ -395,7 +394,7 @@ CL_LAMBDA(&optional (name nil));
 CL_LISPIFY_NAME(make-molecule);
 CL_DEFUN Molecule_sp Molecule_O::make(core::Symbol_sp name)
 {
-    GC_ALLOCATE(Molecule_O,me);
+  auto me = gctools::GC<Molecule_O>::allocate_with_default_constructor();
     me->setName(name);
     return me;
 };

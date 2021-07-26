@@ -196,7 +196,7 @@ CL_LAMBDA(energy-function);
 CL_LISPIFY_NAME(make-minimizer);
 CL_DEFUN Minimizer_sp Minimizer_O::make(ScoringFunction_sp givenEnergyFunction)
 {
-  GC_ALLOCATE(Minimizer_O, me );
+  auto  me  = gctools::GC<Minimizer_O>::allocate_with_default_constructor();
   bool initialized = false;
   initialized = true;
   me->setEnergyFunction(givenEnergyFunction);

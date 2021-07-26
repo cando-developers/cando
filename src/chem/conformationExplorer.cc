@@ -355,7 +355,7 @@ CL_DEFMETHOD     ConformationExplorerEntryStage_sp	ConformationExplorerEntry_O::
     {
 	ASSERTF(!this->hasEntryStageWithName(name),
 		BF("Stage with key[%s] already exists!") % name );
-	GC_ALLOCATE(ConformationExplorerEntryStage_O, stage );
+	auto  stage  = gctools::GC<ConformationExplorerEntryStage_O>::allocate_with_default_constructor();
 	stage->setConformationExplorerEntry(this->sharedThis<ConformationExplorerEntry_O>());
 	stage->setStageName(name);
 	this->_Stages.push_back(stage);
@@ -841,7 +841,7 @@ CL_DEFMETHOD     ConformationExplorerEntry_sp	ConformationExplorer_O::firstEntry
 CL_LISPIFY_NAME("createEntry");
 CL_DEFMETHOD     ConformationExplorerEntry_sp	ConformationExplorer_O::createEntry()
     {
-	GC_ALLOCATE(ConformationExplorerEntry_O, entry );
+      auto  entry  = gctools::GC<ConformationExplorerEntry_O>::allocate_with_default_constructor();
 	entry->setConformationExplorer(this->sharedThis<ConformationExplorer_O>());
 	entry->_UniqueEntryIndex = this->numberOfEntries();
 	return entry;

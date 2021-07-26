@@ -74,7 +74,7 @@ eg: (make-unit (list units:meters 1 units:seconds -1))
 CL_LISPIFY_NAME(make-unit);
 CL_DEFUN Unit_sp Unit_O::make(core::List_sp args)
     {
-	GC_ALLOCATE(Unit_O,u);
+      auto u = gctools::GC<Unit_O>::allocate_with_default_constructor();
 	Unit_O::parseUnitList(u->_Amount,u->_Powers,args);
 	return u;
     }

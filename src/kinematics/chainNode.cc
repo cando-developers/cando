@@ -43,7 +43,7 @@ namespace kinematics
 
 ChainNode_sp ChainNode_O::create(int chainId)
 {
-  GC_ALLOCATE_VARIADIC(ChainNode_O, chainNode, chainId );
+  auto  chainNode = gctools::GC<ChainNode_O>::allocate( chainId );
   return chainNode;
 }
 

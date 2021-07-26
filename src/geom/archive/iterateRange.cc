@@ -37,7 +37,7 @@ namespace geom {
 
     IterateRange_sp IterateRange_O::create(core::Lisp_sp e,int ibegin, int iend)
 {
-    GC_ALLOCATE(IterateRange_O, r );
+  auto  r  = gctools::GC<IterateRange_O>::allocate_with_default_constructor();
     r->_Begin = ibegin;
     r->_Step = 1;
     r->_End = iend;
@@ -47,7 +47,7 @@ namespace geom {
 
     IterateRange_sp IterateRange_O::create(core::Lisp_sp e,int ibegin, int iend, int istep)
 {
-    GC_ALLOCATE(IterateRange_O,r);
+  auto r = gctools::GC<IterateRange_O>::allocate_with_default_constructor();
     r->_Begin = ibegin;
     r->_Step = istep;
     r->_End = iend;

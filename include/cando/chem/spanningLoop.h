@@ -124,7 +124,7 @@ private:
 
 public:
 	static SpanningLoop_sp create(Atom_sp t) {
-	    GC_ALLOCATE(SpanningLoop_O, s );
+          auto  s  = gctools::GC<SpanningLoop_O>::allocate_with_default_constructor();
 	    s->setTop(t);
 	    return s;
 	};

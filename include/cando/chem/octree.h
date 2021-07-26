@@ -326,7 +326,7 @@ public:
           new_Origin.getX() += _halfDimension.getX() * (i&4 ? .5f : -.5f);
           new_Origin.getY() += _halfDimension.getY() * (i&2 ? .5f : -.5f);
           new_Origin.getZ() += _halfDimension.getZ() * (i&1 ? .5f : -.5f);
-          GC_ALLOCATE_VARIADIC(GenericOctree_O,child,new_Origin, this->_halfDimension*.5f);
+          auto child = gctools::GC<GenericOctree_O>::allocate(new_Origin, this->_halfDimension*.5f);
           child->_depth = this->_depth+1;
           this->_children[i] = child;
         }

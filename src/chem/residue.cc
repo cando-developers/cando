@@ -174,8 +174,8 @@ void	Residue_O::fields( core::Record_sp node )
 	    // Accumulate intraresidue bonds into a vector
 #if 1
     core::HashTable_sp atomToResidue = this->atomToResidueMap();
-    BondList_sp bondList = BondList_O::create();
-	    //	    GC_ALLOCATE(BondList_O, bondList );
+//    BondList_sp bondList = BondList_O::create();
+    auto bondList  = gctools::GC<BondList_O>::allocate_with_default_constructor();
     { _BLOCK_TRACE("Building bond list");
       for ( auto aa = this->begin_atoms(); aa != this->end_atoms(); ++aa ) {
         Atom_sp a = gc::As_unsafe<Atom_sp>(*aa);
@@ -266,7 +266,7 @@ Matter_sp	Residue_O::copyDontRedirectAtoms(core::T_sp new_to_old)
     Atom_sp				acopy;
     Atom_sp				aorig;
 
-    GC_NON_RECURSIVE_COPY(Residue_O, rPNew, *this ); // = RP_Copy<Residue_O>(this); // _copy_Residue_sp(this);
+    auto  rPNew = gctools::GC<Residue_O>::copy( *this ); // = RP_Copy<Residue_O>(this); // _copy_Residue_sp(this);
     if (gc::IsA<core::HashTable_sp>(new_to_old)) {
       core::HashTable_sp new_to_old_ht = gc::As_unsafe<core::HashTable_sp>(new_to_old);
       new_to_old_ht->setf_gethash(rPNew,this->asSmartPtr());
@@ -784,7 +784,7 @@ uint Residue_O::numberOfAtoms()
 CL_LISPIFY_NAME(make-residue);
 CL_DEFUN Residue_sp Residue_O::make(core::Symbol_sp name)
 {
-    GC_ALLOCATE(Residue_O,me);
+  auto me = gctools::GC<Residue_O>::allocate_with_default_constructor();
     me->setName(name);
     return me;
 };

@@ -123,7 +123,7 @@ void AnchorRestraint::archive( core::ArchiveP node )
 CL_LISPIFY_NAME(make-atom);
 CL_DEFUN Atom_sp Atom_O::make(core::Symbol_sp name, chem::Element element)
 {
-  GC_ALLOCATE(Atom_O,atom);
+  auto atom = gctools::GC<Atom_O>::allocate_with_default_constructor();
   atom->setName(name);
   atom->setElement(element);
   return atom;
@@ -1083,7 +1083,7 @@ void	Atom_O::addUniqueIntraResidueBondCopiesToBondList(core::HashTable_sp atomTo
     if ( me->atLowerUniqueAtomOrderThan( (*b)->getOtherAtom(me))) {
       if ( !(*b)->isInterResidueBond(atomToResidue) ) {
         LOG(BF("Original bond: %s") % (*b)->description() );
-        GC_COPY(Bond_O,bondCopy,*(b->get()));
+        auto bondCopy = gctools::GC<Bond_O>::copy(*(b->get()));
         LOG(BF("Copy bond: %s") % bondCopy->description() );
         list->addBond(bondCopy);
       }
@@ -1104,7 +1104,7 @@ void Atom_O::addUniqueInterResidueBondCopiesToBondList(core::HashTable_sp atomTo
   for ( b=bonds.begin();b!=bonds.end() ; b++ ) {
     if ( me->atLowerUniqueAtomOrderThan( (*b)->getOtherAtom(me))) {
       if ( (*b)->isInterResidueBond(atomToResidue) ) {
-        GC_COPY(Bond_O, bondCopy, *(b->get()) ); // = RP_Copy<Bond_O>(*b);
+        auto  bondCopy = gctools::GC<Bond_O>::copy( *(b->get()) ); // = RP_Copy<Bond_O>(*b);
         list->addBond(bondCopy);
       }
     }
@@ -1244,7 +1244,7 @@ Matter_sp Atom_O::copyDontRedirectAtoms(core::T_sp new_to_old)
 {_OF();
   LOG(BF("Copying atom @%p") % this );
   Atom_sp myself = this->sharedThis<Atom_O>();
-  GC_NON_RECURSIVE_COPY(Atom_O, aNew , *this); // = RP_Copy<Atom_O>(this);
+  auto  aNew  = gctools::GC<Atom_O>::copy( *this); // = RP_Copy<Atom_O>(this);
   aNew->bonds.clear();
   this->copyAtom = aNew;
   if (this->_Properties.notnilp()) {
@@ -1322,7 +1322,7 @@ CL_LISPIFY_NAME("getBondList");
 CL_DEFMETHOD     BondList_sp	Atom_O::getBondList()
 {
   VectorBond::iterator	b;
-  GC_ALLOCATE(BondList_O, bl );
+  auto  bl  = gctools::GC<BondList_O>::allocate_with_default_constructor();
   for (b=this->bonds.begin();b!=this->bonds.end(); b++ )
   {
     bl->addBond(*b);
@@ -1407,7 +1407,7 @@ CL_LISPIFY_NAME("getHeavyAtomBondList");
 CL_DEFMETHOD     BondList_sp	Atom_O::getHeavyAtomBondList()
 {
   VectorBond::iterator	b;
-  GC_ALLOCATE(BondList_O, bl );
+  auto  bl  = gctools::GC<BondList_O>::allocate_with_default_constructor();
   Atom_sp me = this->sharedThis<Atom_O>();
   for (b=this->bonds.begin();b!=this->bonds.end(); b++ )
   {

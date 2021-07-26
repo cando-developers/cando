@@ -212,7 +212,7 @@ double	sum;
 
 FullLargeSquareMatrix_sp FullLargeSquareMatrix_O::create(uint dim, TriangleType type)
 {
-    GC_ALLOCATE(FullLargeSquareMatrix_O, res );
+  auto  res  = gctools::GC<FullLargeSquareMatrix_O>::allocate_with_default_constructor();
     res->setup(dim,type);
     return res;
 }
@@ -291,7 +291,7 @@ uint		i0,i;
 
 AbstractLargeSquareMatrix_sp	FullLargeSquareMatrix_O::copy()
 {
-    GC_COPY(FullLargeSquareMatrix_O, dest , *this); // = RP_Copy<FullLargeSquareMatrix_O>(this);
+  auto  dest  = gctools::GC<FullLargeSquareMatrix_O>::copy( *this); // = RP_Copy<FullLargeSquareMatrix_O>(this);
     return dest;
 }
 
@@ -345,7 +345,7 @@ uint		i;
 
 SparseLargeSquareMatrix_sp SparseLargeSquareMatrix_O::create(uint dim, TriangleType type)
 {
-    GC_ALLOCATE(SparseLargeSquareMatrix_O, res );
+  auto  res  = gctools::GC<SparseLargeSquareMatrix_O>::allocate_with_default_constructor();
     res->setup(dim,type);
     return res;
 }
@@ -564,7 +564,7 @@ gotOne:
 
 AbstractLargeSquareMatrix_sp	SparseLargeSquareMatrix_O::copy()
 {
-    GC_COPY(SparseLargeSquareMatrix_O, dest , *this); // = RP_Copy<SparseLargeSquareMatrix_O>(this->sharedThis<SparseLargeSquareMatrix_O>());
+  auto  dest  = gctools::GC<SparseLargeSquareMatrix_O>::copy( *this); // = RP_Copy<SparseLargeSquareMatrix_O>(this->sharedThis<SparseLargeSquareMatrix_O>());
     return dest;
 }
 

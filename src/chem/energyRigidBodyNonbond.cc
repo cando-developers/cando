@@ -134,7 +134,7 @@ EnergyRigidBodyNonbond_sp EnergyRigidBodyNonbond_O::make(core::Array_sp end_atom
     }
     (*sv)[i] = f;
   }
-  GC_ALLOCATE_VARIADIC(EnergyRigidBodyNonbond_O,nb,sv);
+  auto nb = gctools::GC<EnergyRigidBodyNonbond_O>::allocate(sv);
   return nb;
 }
 

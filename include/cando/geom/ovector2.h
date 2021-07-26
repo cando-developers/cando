@@ -76,7 +76,7 @@ CL_DEFMETHOD 	double getY() { return this->_Value.getY(); };
 
     inline OVector2_sp OVector2_O::createFromVector2(const Vector2& pnt)
 {
-    GC_ALLOCATE(OVector2_O, ov);
+  auto  ov = gctools::GC<OVector2_O>::allocate_with_default_constructor();
     ov->setAll(pnt.getX(),pnt.getY());
     return ov;
 }

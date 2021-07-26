@@ -73,7 +73,7 @@ namespace chem
 #define DOCS_ExternalInterface_O_make "make ExternalInterface"
   ExternalInterface_sp ExternalInterface_O::make(ConformationExplorer_sp conformationExplorer, string stageName)
   {
-      GC_ALLOCATE(ExternalInterface_O, me );
+    auto  me  = gctools::GC<ExternalInterface_O>::allocate_with_default_constructor();
     me->_WeakConformationExplorer = conformationExplorer;
     me->_StageName = stageName;
     return me;

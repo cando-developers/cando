@@ -120,7 +120,10 @@ public:
 //		/*! Read the forceField from a file*/
 //	static ForceField_sp	open_ForceField(const string& fn);
   CL_LISPIFY_NAME("make-ForceField");
-  CL_DEF_CLASS_METHOD static ForceField_sp make() { GC_ALLOCATE(ForceField_O,ff); return ff;};
+  CL_DEF_CLASS_METHOD static ForceField_sp make() {
+    auto ff = gctools::GC<ForceField_O>::allocate_with_default_constructor();
+    return ff;
+  };
 public:
   string				_Title;
   string				_Ref;

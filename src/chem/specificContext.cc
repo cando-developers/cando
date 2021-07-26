@@ -145,7 +145,7 @@ stringstream ss;
 
 CL_DEFMETHOD SpecificContext_sp SpecificContext_O::copySpecificContext()
 {
-    GC_COPY(SpecificContext_O, cpy , *this); // = RP_Copy<SpecificContext_O>(this);
+  auto  cpy  = gctools::GC<SpecificContext_O>::copy( *this); // = RP_Copy<SpecificContext_O>(this);
     return cpy;
 }
 

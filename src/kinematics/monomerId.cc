@@ -59,7 +59,7 @@ CL_DEFUN void kin__dumpMonomerId(const kinematics::MonomerId& id) {
 CL_LISPIFY_NAME(make-MonomerId);
 MonomerId_sp MonomerId_O::make(const int chain, const int monomer)
 {
-  GC_ALLOCATE(MonomerId_O, me );
+  auto  me  = gctools::GC<MonomerId_O>::allocate_with_default_constructor();
   me->_MonomerId._Chain = chain;
   me->_MonomerId._Monomer = monomer;
   return me;

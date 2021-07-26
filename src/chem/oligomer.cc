@@ -1031,7 +1031,7 @@ void	Oligomer_O::_assembleFromParts(core::List_sp parts, CandoDatabase_sp bdb)
 between them */
 CL_DEFMETHOD core::T_sp Oligomer_O::deepCopyOligomer() const
 {
-  GC_NON_RECURSIVE_COPY(Oligomer_O,newOligomer,*this);
+  auto newOligomer = gctools::GC<Oligomer_O>::copy(*this);
 #if 0
   core::HashTableEq_sp monomerCopies = core::HashTableEq_O::create_default();
   for ( auto mon : this->_Monomers ) {
@@ -1058,7 +1058,7 @@ CL_DEFMETHOD core::T_sp Oligomer_O::deepCopyOligomer() const
 #define DOCS_Oligomer_O_make "make Oligomer"
 Oligomer_sp Oligomer_O::make(core::List_sp parts)
   {
-      GC_ALLOCATE(Oligomer_O, me );
+    auto  me  = gctools::GC<Oligomer_O>::allocate_with_default_constructor();
     if ( parts.notnilp() )
       {
 	CandoDatabase_sp bdb = getCandoDatabase();

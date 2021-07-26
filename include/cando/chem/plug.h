@@ -191,7 +191,7 @@ namespace chem
     CL_LISPIFY_NAME("make-out-plug");
     CL_LAMBDA("name mates stub-pivot-atom bond0 bondorder0 &optional bond1 (bondorder1 :single-bond)");
     CL_DEF_CLASS_METHOD static OutPlug_sp make(core::Symbol_sp name, core::List_sp mates, MatterName stubPivotAtom, core::Symbol_sp bond0, BondOrder bondOrder0, core::Symbol_sp bond1, BondOrder bondOrder1) {
-      GC_ALLOCATE_VARIADIC(OutPlug_O, me, name, mates, stubPivotAtom, bond0, bondOrder0, bond1, bondOrder1);
+      auto  me = gctools::GC<OutPlug_O>::allocate( name, mates, stubPivotAtom, bond0, bondOrder0, bond1, bondOrder1);
       return me;
     };
 
@@ -227,7 +227,7 @@ namespace chem
     CL_LISPIFY_NAME("make-in-plug");
     CL_LAMBDA("name mates bond0 bondorder0 &optional bond1 (bondorder1 :single-bond)");
     CL_DEF_CLASS_METHOD static InPlug_sp make(core::Symbol_sp name, core::List_sp mates, core::Symbol_sp bond0, BondOrder bondOrder0, core::Symbol_sp bond1, BondOrder bondOrder1)  {
-      GC_ALLOCATE_VARIADIC(InPlug_O, me, name, mates, bond0, bondOrder0, bond1, bondOrder1 );
+      auto  me = gctools::GC<InPlug_O>::allocate( name, mates, bond0, bondOrder0, bond1, bondOrder1 );
       return me;
     };
   public:
@@ -323,7 +323,7 @@ namespace chem
   public:
     CL_LISPIFY_NAME("make-ring-closing-plug");
     CL_DEF_CLASS_METHOD static RingClosingPlug_sp make(core::Symbol_sp name, core::List_sp mates, MatterName stubPivotAtom, core::Symbol_sp bond0, BondOrder bondOrder0, core::Symbol_sp bond1, BondOrder bondOrder1) {
-      GC_ALLOCATE_VARIADIC(RingClosingPlug_O, me, name, mates, stubPivotAtom, bond0, bondOrder0, bond1, bondOrder1 );
+      auto  me = gctools::GC<RingClosingPlug_O>::allocate( name, mates, stubPivotAtom, bond0, bondOrder0, bond1, bondOrder1 );
       core::fillVec0(gc::As<core::List_sp>(mates),me->_Mates);
       return me;
     };

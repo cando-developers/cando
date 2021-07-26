@@ -339,7 +339,7 @@ public:
                            core::T_sp a1,
                            core::T_sp a2)
   { _G();
-    GC_ALLOCATE(Logical_O, obj ); // RP_Create<Logical_O>(lisp);
+    auto  obj  = gctools::GC<Logical_O>::allocate_with_default_constructor();
     obj->_Operator = op;
     if (a1.nilp()) {
       obj->_Left = _Nil<core::T_O>();
@@ -403,7 +403,7 @@ public:
   {
     _G();
     LOG(BF("ResidueTest_sp create: ringTag = (%s)")%ri);
-    GC_ALLOCATE(ResidueTest_O, obj ); // RP_Create<ResidueTest_O>(lisp);
+    auto  obj  = gctools::GC<ResidueTest_O>::allocate_with_default_constructor();
     obj->_Bond = b;
     obj->_AtomTest = at;
     obj->_RingTag = ri;
@@ -445,7 +445,7 @@ public:
                                BondMatcher_sp a1,
                                BondMatcher_sp a2)
   { _G();
-    GC_ALLOCATE(BondLogical_O, obj ); // RP_Create<Logical_O>(lisp);
+    auto  obj  = gctools::GC<BondLogical_O>::allocate_with_default_constructor();
     obj->_Operator = op;
     obj->_Left = a1;
     obj->_Right = a2;
@@ -456,7 +456,7 @@ public:
 //                             gc::Nilable<AtomOrBondMatchNode_sp> a2 )
                                BondMatcher_sp a)
   { _G();
-    GC_ALLOCATE(BondLogical_O, obj ); // RP_Create<Logical_O>(lisp);
+    auto  obj  = gctools::GC<BondLogical_O>::allocate_with_default_constructor();
     obj->_Operator = op;
     obj->_Left = a;
     obj->_Right = _Unbound<BondMatcher_O>();
@@ -519,7 +519,7 @@ public:
 #if 0
   static BondToAtomTest_sp create(BondEnum b, core::T_sp nilOrNode )
   {_G();
-    GC_ALLOCATE(BondToAtomTest_O, obj ); // RP_Create<BondToAtomTest_O>(lisp);
+    auto  obj  = gctools::GC<BondToAtomTest_O>::allocate_with_default_constructor();
     obj->_Bond = b;
     if (nilOrNode.nilp()) {
       obj->_AtomTest = _Nil<core::T_O>();
@@ -653,7 +653,7 @@ public:
   static AtomTest_sp create( AtomTestEnum t, int iArg, int num, const char* el, core::Symbol_sp sym) 
   {_G();
     LOG(BF("Creating an AtomTest"));
-    GC_ALLOCATE(AtomTest_O, obj ); // RP_Create<AtomTest_O>(lisp);
+    auto  obj  = gctools::GC<AtomTest_O>::allocate_with_default_constructor();
     obj->_Test = t;
     obj->_IntArg = iArg;
     obj->_NumArg = num;
@@ -811,7 +811,7 @@ public:
                                              int     numberOfElectronWithdrawingGroups,
                                              gc::Nilable<AtomOrBondMatchNode_sp> atomicProperty ) 
   {_G();
-    GC_ALLOCATE(AntechamberFocusAtomMatch_O, obj ); // RP_Create<AntechamberFocusAtomMatch_O>(lisp);
+    auto  obj  = gctools::GC<AntechamberFocusAtomMatch_O>::allocate_with_default_constructor();
     obj->_ResidueNames = residueNames;
     obj->_AtomicNumber = atomicNumber;
     obj->_NumberOfAttachedAtoms = numberOfAttachedAtoms;
@@ -867,7 +867,7 @@ public:
   CL_LISPIFY_NAME("make-chain.head.tail");
 //    CL_DEF_CLASS_METHOD static Chain_sp create_head_tail( BondMatchNode_sp head, BondListMatchNode_sp tail ) {
   CL_DEF_CLASS_METHOD static Chain_sp create_head_tail( core::T_sp head, core::T_sp tail ) {
-    GC_ALLOCATE(Chain_O, obj ); // RP_Create<Chain_O>(lisp);
+    auto  obj  = gctools::GC<Chain_O>::allocate_with_default_constructor();
 //      obj->_Head = head;
 //      obj->_Tail = tail;
     if (head.nilp()){
@@ -894,7 +894,7 @@ public:
     }
   }
   CL_DEF_CLASS_METHOD static Chain_sp create_empty_chain() {
-    GC_ALLOCATE(Chain_O,obj);
+    auto obj = gctools::GC<Chain_O>::allocate_with_default_constructor();
     return obj;
   }
 public:
@@ -941,7 +941,7 @@ public:
 //    CL_DEF_CLASS_METHOD static Branch_sp create_left_right( BondListMatchNode_sp left, BondListMatchNode_sp right )
 //    {
 //      _G();
-//      GC_ALLOCATE(Branch_O, obj ); // RP_Create<Branch_O>(lisp);
+//  auto  obj  = gctools::GC<Branch_O>::allocate_with_default_constructor();
 //      obj->_Left = left;
 //      obj->_Right = right;
 //      return obj;
@@ -949,7 +949,7 @@ public:
   CL_DEF_CLASS_METHOD static Branch_sp create_left_right( core::T_sp left, core::T_sp right )
   {
     _G();
-    GC_ALLOCATE(Branch_O, obj ); // RP_Create<Branch_O>(lisp);
+    auto  obj  = gctools::GC<Branch_O>::allocate_with_default_constructor();
     if(left.nilp()){
       obj->_Left = _Nil<core::T_O>();
     } else {       
@@ -967,7 +967,7 @@ public:
   CL_LISPIFY_NAME("make-branch.left");
   CL_DEF_CLASS_METHOD static Branch_sp create_left( BondListMatchNode_sp left ) {
     _G();
-    GC_ALLOCATE(Branch_O, obj ); // RP_Create<Branch_O>(lisp);
+    auto  obj  = gctools::GC<Branch_O>::allocate_with_default_constructor();
     obj->_Left = left;
     obj->_Right = _Nil<core::T_O>();
     return obj;
@@ -1005,7 +1005,7 @@ public:
   static AfterMatchBondToAtomTest_sp create( core::Symbol_sp tag1, core::Symbol_sp tag2, BondEnum b)
   {
     _G();
-    GC_ALLOCATE(AfterMatchBondToAtomTest_O, obj ); // RP_Create<AfterMatchBondToAtomTest_O>(lisp);
+    auto  obj  = gctools::GC<AfterMatchBondToAtomTest_O>::allocate_with_default_constructor();
     obj->_AtomTag1 = tag1;
     obj->_AtomTag2 = tag2;
     obj->_Bond = b;
@@ -1054,7 +1054,7 @@ public:
   static Root_sp create(const std::string& originalCode, ChemInfoNode_sp node)
   {
     size_t maxtag = calculate_maxtag(node);
-    GC_ALLOCATE_VARIADIC(Root_O, obj, originalCode, node, maxtag ); // RP_Create<Root_O>(lisp);
+    auto  obj = gctools::GC<Root_O>::allocate( originalCode, node, maxtag ); // RP_Create<Root_O>(lisp);
     return obj;
   }
   core::HashTableEq_sp lazyTests();
@@ -1114,7 +1114,7 @@ public:
 public:
   CL_LISPIFY_NAME("make-smirks");
   CL_DEF_CLASS_METHOD static Smirks_sp make(SmartsRoot_sp r, SmartsRoot_sp p) {
-    GC_ALLOCATE_VARIADIC(Smirks_O,smirks,r,p);
+    auto smirks = gctools::GC<Smirks_O>::allocate(r,p);
     return smirks;
   }
 

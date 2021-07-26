@@ -79,7 +79,7 @@ __END_DOC
 CL_LISPIFY_NAME(make_stereo_configuration);
 CL_DEF_CLASS_METHOD StereoConfiguration_sp StereoConfiguration_O::make(core::Symbol_sp atomName, core::Symbol_sp config)
 {
-  GC_ALLOCATE(StereoConfiguration_O, me );
+  auto  me  = gctools::GC<StereoConfiguration_O>::allocate_with_default_constructor();
   me->_AtomName = atomName;
   me->_Configuration = config;
   return me;
@@ -125,7 +125,7 @@ core::List_sp StereoConfiguration_O::create_multiple(core::List_sp atomNames, co
     core::List_sp curConfig = configurations;
     while ( curName.notnilp() )
     {
-	GC_ALLOCATE(StereoConfiguration_O, one );
+      auto  one  = gctools::GC<StereoConfiguration_O>::allocate_with_default_constructor();
 	one->setAtomName(oCar(curName).as<core::Symbol_O>());
 	one->setConfiguration(oCar(curConfig).as<core::Symbol_O>());
 	list = core::Cons_O::create(one,list);
@@ -205,7 +205,7 @@ __END_DOC
 CL_LISPIFY_NAME(make_stereoisomer);
 CL_DEF_CLASS_METHOD Stereoisomer_sp Stereoisomer_O::make(core::Symbol_sp name, core::Symbol_sp pdb, core::Integer_sp stereoisomer_index, core::List_sp configs)
 {
-  GC_ALLOCATE_VARIADIC(Stereoisomer_O, me, name, pdb, stereoisomer_index);
+  auto  me = gctools::GC<Stereoisomer_O>::allocate( name, pdb, stereoisomer_index);
   for ( auto cur : configs ) me->_Configurations.push_back(oCar(cur).as<StereoConfiguration_O>() );
   return me;
 };
@@ -320,7 +320,7 @@ public:
 
 StereoInformation_sp StereoInformation_O::make(core::List_sp stereoisomers, core::List_sp restraints)
 {
-  GC_ALLOCATE(StereoInformation_O, me );
+  auto  me  = gctools::GC<StereoInformation_O>::allocate_with_default_constructor();
   core::fillVec0(stereoisomers,me->_Stereoisomers);
   // sort the stereoisomers by index
   OrderByStereoisomerIndex byStereoisomerIndex;

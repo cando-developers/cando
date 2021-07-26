@@ -152,7 +152,7 @@ inline	NumericalFunction_sp NumericalFunction_O::create(core::T_sp xaxis,
                                                          core::T_sp yaxis,
                                                          double xstart, double xinc) 
 {
-    GC_ALLOCATE(NumericalFunction_O, f ); // RP_Create<NumericalFunction_O>(e);
+  auto  f  = gctools::GC<NumericalFunction_O>::allocate_with_default_constructor();
     f->setXAxisName(xaxis);
     f->setYAxisName(yaxis);
     f->setXStart(xstart);

@@ -132,7 +132,7 @@ CL_LAMBDA(residue &optional verbose);
 CL_DEFUN ConstitutionAtoms_sp ConstitutionAtoms_O::makeConstitutionAtomsFromResidue(Residue_sp residue, bool verbose)
 {
   residue->ensureAllAtomNamesAreUnique();
-  GC_ALLOCATE(ConstitutionAtoms_O, catoms );
+  auto  catoms  = gctools::GC<ConstitutionAtoms_O>::allocate_with_default_constructor();
   Matter_O::contentIterator it;
   ConstitutionAtomIndex0N index = 0;
   MapAtomsToConstitutionAtomIndex0N atomToIndexMap;

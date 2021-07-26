@@ -71,7 +71,7 @@ void	MonomerCoordinates_O::initialize()
 
   MonomerCoordinates_sp MonomerCoordinates_O::make(MonomerContext_sp context)
   {
-      GC_ALLOCATE(MonomerCoordinates_O, me );
+    auto  me  = gctools::GC<MonomerCoordinates_O>::allocate_with_default_constructor();
     me->setContext(context);
     return me;
   };

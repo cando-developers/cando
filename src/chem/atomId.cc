@@ -53,7 +53,7 @@ namespace chem
 CL_LISPIFY_NAME(make-atom-id);
 CL_DEFUN AtomId_sp AtomId_O::make(int mol, int res, int atom)
     {
-	GC_ALLOCATE(AtomId_O, ai );
+      auto  ai  = gctools::GC<AtomId_O>::allocate_with_default_constructor();
 	ai->_AtomId._Molecule = mol;
 	ai->_AtomId._Residue = res;
 	ai->_AtomId._Atom = atom;

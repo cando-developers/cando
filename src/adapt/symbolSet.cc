@@ -80,7 +80,7 @@ void SymbolSet_O::insertSymbolList(SymbolList_sp slist) {
 
 SymbolSet_sp SymbolSet_O::copy() {
   
-  GC_COPY(SymbolSet_O, snew, *this);
+  auto  snew = gctools::GC<SymbolSet_O>::copy( *this);
   snew->clear();
   this->map([&snew](Symbol_sp k) {
                 snew->insert(k);

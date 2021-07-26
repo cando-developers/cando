@@ -50,7 +50,7 @@ void OMatrix_O::archiveBase(core::ArchiveP node)
 CL_NAME("MAKE-MATRIX");
 CL_DEFUN OMatrix_sp OMatrix_O::make(bool ident)
 {
-  GC_ALLOCATE_VARIADIC(OMatrix_O,om,ident);
+  auto om = gctools::GC<OMatrix_O>::allocate(ident);
   return om;
 };
   
@@ -182,7 +182,7 @@ CL_DEFUN OMatrix_sp make_m4_rotate_axis(double radians,Vector3 axis)
 
 OMatrix_sp OMatrix_O::clone() const
 {
-  GC_COPY(OMatrix_O,clone,*this);
+  auto clone = gctools::GC<OMatrix_O>::copy(*this);
   return clone;
 }
 

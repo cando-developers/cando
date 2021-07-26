@@ -101,7 +101,7 @@ CL_DEFMETHOD     RepresentativeList_sp Entity_O::minimalRepresentativeList() con
 		minimalRepresentedEntityNameSet->mergeEntityNames(curNameSet);
 	    } else
 	    {
-		GC_COPY(RepresentedEntityNameSet_O, temp , *curNameSet); // = RP_Copy<RepresentedEntityNameSet_O>(curNameSet);
+              auto  temp  = gctools::GC<RepresentedEntityNameSet_O>::copy( *curNameSet); // = RP_Copy<RepresentedEntityNameSet_O>(curNameSet);
 		minimalRepresentedEntityNameSet = temp;
 		minimalRepresentedEntityNameSet->expandToTerminalEntityNames();
 		binder->setf_gethash(representor,minimalRepresentedEntityNameSet);

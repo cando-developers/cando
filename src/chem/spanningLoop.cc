@@ -68,7 +68,7 @@ namespace chem
 CL_NAME(CHEM:MAKE-SPANNING-LOOP);
 CL_DEFUN SpanningLoop_sp SpanningLoop_O::make(Atom_sp root)
   {
-      GC_ALLOCATE(SpanningLoop_O, me );
+    auto  me  = gctools::GC<SpanningLoop_O>::allocate_with_default_constructor();
       me->setTop(root);
       return me;
   };
@@ -264,7 +264,7 @@ CL_DEFMETHOD     bool	SpanningLoop_O::advanceLoopAndProcess()
     }
 
     SpanningInfo_sp SpanningLoop_O::storeSpanningInfo(Atom_sp key, int distance, core::T_sp toRoot, core::T_sp next) {
-        GC_ALLOCATE_VARIADIC(SpanningInfo_O,si,distance,toRoot,next);
+      auto si = gctools::GC<SpanningInfo_O>::allocate(distance,toRoot,next);
         this->_BackSpan->setf_gethash(key,si);
         return si;
     }

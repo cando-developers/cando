@@ -61,7 +61,7 @@ void MonomerNode_O::fields(core::Record_sp node) {
 
 MonomerNode_sp MonomerNode_O::create(MonomerId monomerId)
 {
-  GC_ALLOCATE(MonomerNode_O, monomerNode );
+  auto  monomerNode  = gctools::GC<MonomerNode_O>::allocate_with_default_constructor();
   monomerNode->_Id = monomerId;
   return monomerNode;
 }

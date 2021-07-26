@@ -465,7 +465,7 @@ bool	Monomer_O::hasMatchingPlugNameAndCoupling( core::Symbol_sp plugName, Coupli
 }
 
 Monomer_sp Monomer_O::copyAndRemoveCouplings() const {
-  GC_NON_RECURSIVE_COPY(Monomer_O, newMonomer, *this);
+  auto  newMonomer = gctools::GC<Monomer_O>::copy( *this);
   newMonomer->_Couplings.clear();
   return newMonomer;
 }
@@ -689,7 +689,7 @@ CL_LAMBDA(&optional topology-list)
 CL_DEF_CLASS_METHOD 
 Monomer_sp Monomer_O::makeMonomer(core::List_sp topology_list)
 {
-  GC_ALLOCATE(Monomer_O, me );
+  auto  me  = gctools::GC<Monomer_O>::allocate_with_default_constructor();
   for ( auto cur : topology_list ) {
     core::Symbol_sp top = gc::As<core::Symbol_sp>(CONS_CAR(cur));
     me->addTopologyName(top);

@@ -88,7 +88,7 @@ class EnergyRigidBodyStaple_O : public EnergyRigidBodyComponent_O
  public:
   CL_LISPIFY_NAME("make-energy-rigid-body-staple");
   CL_DEF_CLASS_METHOD static EnergyRigidBodyStaple_sp make() {
-    GC_ALLOCATE(EnergyRigidBodyStaple_O,energy);
+    auto energy = gctools::GC<EnergyRigidBodyStaple_O>::allocate_with_default_constructor();
     return energy;
   }
     

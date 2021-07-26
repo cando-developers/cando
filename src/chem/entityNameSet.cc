@@ -91,7 +91,7 @@ CL_DEFMETHOD     adapt::SymbolSet_sp	EntityNameSetBase_O::getUnExpandedNames()
 #define DOCS_EntityNameSetBase_O_make "make EntityNameSetBase"
   EntityNameSetBase_sp EntityNameSetBase_O::make(core::List_sp entityNamesCons)
   {
-      GC_ALLOCATE(EntityNameSetBase_O, me );
+    auto  me  = gctools::GC<EntityNameSetBase_O>::allocate_with_default_constructor();
     if ( entityNamesCons.notnilp() )
       {
 	  adapt::SymbolSet_sp entityNames = adapt::SymbolSet_O::create();
@@ -131,7 +131,7 @@ CL_DEFMETHOD     adapt::SymbolSet_sp	EntityNameSetBase_O::getUnExpandedNames()
       DEPRECATED();
       // This will fail in MPS because it calls an allocator
 	this->_Optional = emr._Optional;
-	GC_COPY(adapt::SymbolSet_O, symset , *emr._EntityNames); // = RP_Copy<adapt::SymbolSet_O>(emr._EntityNames);
+	auto  symset  = gctools::GC<adapt::SymbolSet_O>::copy( *emr._EntityNames); // = RP_Copy<adapt::SymbolSet_O>(emr._EntityNames);
 	this->_EntityNames = symset;
     }
 
@@ -525,7 +525,7 @@ CL_DEFMETHOD     core::List_sp	EntityNameSetBase_O::getMonomerNamesOrdered()
 #define DOCS_EntityNameSet_O_make "make EntityNameSet"
   EntityNameSet_sp EntityNameSet_O::make(core::Symbol_sp name)
   {
-      GC_ALLOCATE(EntityNameSet_O, me );
+    auto  me  = gctools::GC<EntityNameSet_O>::allocate_with_default_constructor();
     me->_Name = name;
     return me;
   };

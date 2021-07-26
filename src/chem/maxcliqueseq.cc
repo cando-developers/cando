@@ -2393,7 +2393,7 @@ namespace chem {
     CL_LISPIFY_NAME(make-dimacs);
     CL_DEF_CLASS_METHOD
     Dimacs_sp Dimacs_O::make(size_t numVertices, size_t numEdges ) {
-        GC_ALLOCATE_VARIADIC(Dimacs_O,dimacs,numVertices,numEdges);
+      auto dimacs = gctools::GC<Dimacs_O>::allocate(numVertices,numEdges);
         return dimacs;
     }
 

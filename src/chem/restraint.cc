@@ -78,14 +78,14 @@ void	RestraintAnchor_O::fields(core::Record_sp node)
 #define DOCS_RestraintAnchor_O_make "make RestraintAnchor"
 RestraintAnchor_sp RestraintAnchor_O::make(Atom_sp atom, const Vector3& pos, double weight )
 {
-  GC_ALLOCATE_VARIADIC(RestraintAnchor_O, ra, atom, pos, weight );
+  auto  ra = gctools::GC<RestraintAnchor_O>::allocate( atom, pos, weight );
   return ra;
 };
 
 
 Restraint_sp	RestraintAnchor_O::copyDontRedirectAtoms()
 {
-  GC_COPY(RestraintAnchor_O, rest , *this); // = RP_Copy<RestraintAnchor_O>(this);
+  auto  rest  = gctools::GC<RestraintAnchor_O>::copy( *this); // = RP_Copy<RestraintAnchor_O>(this);
   rest->_Atom = this->getAtom();
   return rest;
 }
@@ -138,7 +138,7 @@ RestraintChiral_O::RestraintChiral_O(const RestraintChiral_O& old) : Restraint_O
 
 Restraint_sp	RestraintChiral_O::copyDontRedirectAtoms()
 {
-  GC_COPY(RestraintChiral_O, rest , *this); // = RP_Copy<RestraintChiral_O>(this);
+  auto  rest  = gctools::GC<RestraintChiral_O>::copy( *this); // = RP_Copy<RestraintChiral_O>(this);
   rest->_A = this->getAtomA();
   return rest;
 }
@@ -190,7 +190,7 @@ void	RestraintDistance_O::fields(core::Record_sp node)
 
 Restraint_sp	RestraintDistance_O::copyDontRedirectAtoms()
 {
-  GC_COPY(RestraintDistance_O, rest , *this); // = RP_Copy<RestraintDistance_O>(this);
+  auto  rest  = gctools::GC<RestraintDistance_O>::copy( *this); // = RP_Copy<RestraintDistance_O>(this);
   rest->_A = this->getAtomA();
   rest->_B = this->getAtomB();
   return rest;
@@ -242,7 +242,7 @@ RestraintAngle_O::RestraintAngle_O(const RestraintAngle_O& old) : Restraint_O(ol
 
 Restraint_sp	RestraintAngle_O::copyDontRedirectAtoms()
 {
-  GC_COPY(RestraintAngle_O, rest , *this); // = RP_Copy<RestraintAngle_O>(this);
+  auto  rest  = gctools::GC<RestraintAngle_O>::copy( *this); // = RP_Copy<RestraintAngle_O>(this);
   rest->_A = this->getAtomA();
   rest->_B = this->getAtomB();
   rest->_C = this->getAtomC();
@@ -296,7 +296,7 @@ RestraintDihedral_O::RestraintDihedral_O(const RestraintDihedral_O& old) : Restr
 
 Restraint_sp	RestraintDihedral_O::copyDontRedirectAtoms()
 {_OF();
-  GC_COPY(RestraintDihedral_O, rest , *this); // = RP_Copy<RestraintDihedral_O>(this);
+  auto  rest  = gctools::GC<RestraintDihedral_O>::copy( *this); // = RP_Copy<RestraintDihedral_O>(this);
   rest->_A = this->getAtomA();
   rest->_B = this->getAtomB();
   rest->_C = this->getAtomC();
@@ -355,7 +355,7 @@ void	RestraintDihedral_O::invertStereochemistryOfRestraint()
 
 RestraintFixedNonbond_sp RestraintFixedNonbond_O::create(Matter_sp matter)
 {
-  GC_ALLOCATE(RestraintFixedNonbond_O, nb );
+  auto  nb  = gctools::GC<RestraintFixedNonbond_O>::allocate_with_default_constructor();
   nb->setMatter(matter);
   return nb;
 }

@@ -200,7 +200,7 @@ void	ForceField_O::setFFVdwDb(FFVdwDb_sp Vdws )
 CL_LISPIFY_NAME("make-CombinedForceField");
 CL_DEF_CLASS_METHOD
 CombinedForceField_sp CombinedForceField_O::make() {
-  GC_ALLOCATE(CombinedForceField_O,ff);
+  auto ff = gctools::GC<CombinedForceField_O>::allocate_with_default_constructor();
   return ff;
 };
 

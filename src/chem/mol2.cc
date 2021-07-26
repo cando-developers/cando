@@ -507,7 +507,7 @@ core::T_sp mol2Read(Mol2File& fIn)
   string				nm, el;
   core::SimpleVector_sp atoms_sv = core::SimpleVector_O::make(atoms.size());
   for ( ai=atoms.begin(); ai!= atoms.end(); ai++ ) {
-    GC_ALLOCATE(Atom_O, tempa ); // new_Atom_sp();
+    auto  tempa  = gctools::GC<Atom_O>::allocate_with_default_constructor();
     a = tempa;
     a->setName(chemkw_intern(ai->second.atom_name));
     LOG(BF("Creating atom with id: %d name: %s element: %s charge: %8.2f") % ai->second.mIndex % ai->second.atom_name.c_str() % el.c_str() % ai->second.mCharge  );
@@ -527,7 +527,7 @@ core::T_sp mol2Read(Mol2File& fIn)
 	//
     Residue_sp res;
     if ( residues.count(ai->second.mSubstId)==0 ) {
-      GC_ALLOCATE(Residue_O, tempRes ); // new_Residue_sp();
+      auto  tempRes  = gctools::GC<Residue_O>::allocate_with_default_constructor();
       res = tempRes;
 	    // April 06/2007 decided that its best to set the 
 	    // residue name from the substructure records below
@@ -585,7 +585,7 @@ core::T_sp mol2Read(Mol2File& fIn)
         core::Symbol_sp schain = chemkw_intern(si->chain);
         if ( chains.count(schain) == 0 ) {
           LOG(BF("Creating molecule: %s") % si->chain.c_str()  );
-          GC_ALLOCATE(Molecule_O, tempm );
+          auto  tempm  = gctools::GC<Molecule_O>::allocate_with_default_constructor();
           m = tempm;
           LOG(BF("Setting name") );
           m->setName(schain);
@@ -646,7 +646,7 @@ core::T_sp mol2Read(Mol2File& fIn)
   {
 	// No SUBSTRUCTURE entry was found, toss all of
 	// the residues into one "molecule"
-    GC_ALLOCATE(Molecule_O, mol );
+    auto  mol  = gctools::GC<Molecule_O>::allocate_with_default_constructor();
     gctools::SmallMap<uint,Residue_sp>::iterator rit;
     for ( rit=residues.begin(); rit!=residues.end(); rit++ )
     {

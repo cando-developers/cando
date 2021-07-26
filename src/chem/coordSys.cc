@@ -958,7 +958,7 @@ void	CoordinateSystem_O::archive(core::ArchiveP node)
 
 CL_DEFMETHOD CoordinateSystem_sp	CoordinateSystem_O::copyCoordinateSystem()
 {
-    GC_COPY(CoordinateSystem_O, n , *this); // = RP_Copy<CoordinateSystem_O>(this);
+  auto  n  = gctools::GC<CoordinateSystem_O>::copy( *this); // = RP_Copy<CoordinateSystem_O>(this);
     return n;
 }
 

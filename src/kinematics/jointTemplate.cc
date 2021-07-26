@@ -56,7 +56,7 @@ void Checkpoint_O::fields(core::Record_sp node) {
 Checkpoint_sp Checkpoint_O::make(const core::Symbol_sp& constitutionName,
                                  const core::Symbol_sp& topologyName )
 {
-  GC_ALLOCATE(Checkpoint_O, me);
+  auto  me = gctools::GC<Checkpoint_O>::allocate_with_default_constructor();
   me->_ConstitutionName = constitutionName;
   me->_TopologyName = topologyName;
   ASSERTF(me->_ConstitutionName.notnilp(),BF("You must provide constitutionName"));
@@ -86,7 +86,7 @@ void CheckpointJoint_O::fields(core::Record_sp node) {
 
 CheckpointJoint_sp CheckpointJoint_O::make(core::Symbol_sp atomName)
 {
-  GC_ALLOCATE(CheckpointJoint_O, me );
+  auto  me  = gctools::GC<CheckpointJoint_O>::allocate_with_default_constructor();
   me->_AtomName = atomName;
   return me;
 };
@@ -112,7 +112,7 @@ void CheckpointOutPlugJoint_O::fields(core::Record_sp node) {
 
 CheckpointOutPlugJoint_sp CheckpointOutPlugJoint_O::make(chem::OutPlug_sp outPlug)
 {
-  GC_ALLOCATE(CheckpointOutPlugJoint_O, me );
+  auto  me  = gctools::GC<CheckpointOutPlugJoint_O>::allocate_with_default_constructor();
   me->_Plug = outPlug;
   ASSERTF(me->_Plug.notnilp(),BF("You must provide outPlug argument"));
   return me;
@@ -149,7 +149,7 @@ string JointTemplate_O::__repr__() const
 
 JointTemplate_sp JointTemplate_O::make(const int id, core::T_sp name, const string& comment, JointTemplate_sp parent)
 {
-  GC_ALLOCATE(JointTemplate_O, me );
+  auto  me  = gctools::GC<JointTemplate_O>::allocate_with_default_constructor();
   me->_Id = id;
   me->_Name = name;
   me->_Comment = comment;
@@ -201,7 +201,7 @@ void BondedJointTemplate_O::fields(core::Record_sp node) {
 
 BondedJointTemplate_sp BondedJointTemplate_O::make(chem::OutPlug_sp outPlug)
 {
-  GC_ALLOCATE(BondedJointTemplate_O, me );
+  auto  me  = gctools::GC<BondedJointTemplate_O>::allocate_with_default_constructor();
   me->_OutPlug = outPlug;
   return me;
 };
@@ -317,7 +317,7 @@ void DelayedBondedJointTemplate_O::fields(core::Record_sp node) {
 
 DelayedBondedJointTemplate_sp DelayedBondedJointTemplate_O::make(const Checkpoint_sp& checkpoint)
 {
-  GC_ALLOCATE(DelayedBondedJointTemplate_O, me );
+  auto  me  = gctools::GC<DelayedBondedJointTemplate_O>::allocate_with_default_constructor();
   me->_Checkpoint = checkpoint;
   return me;
 };
@@ -362,7 +362,7 @@ void RootBondedJointTemplate_O::fields(core::Record_sp node) {
 
 RootBondedJointTemplate_sp RootBondedJointTemplate_O::make(core::Symbol_sp constitutionName, const core::Symbol_sp topologyName, chem::Plug_sp inPlug)
 {
-  GC_ALLOCATE(RootBondedJointTemplate_O, me );
+  auto  me  = gctools::GC<RootBondedJointTemplate_O>::allocate_with_default_constructor();
   me->_ConstitutionName = constitutionName;
   ASSERTF(me->_ConstitutionName.notnilp(),BF("You must provide constitutionName"));
   me->_TopologyName = topologyName;

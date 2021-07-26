@@ -94,7 +94,7 @@ BoundingBox_sp BoundingBox_O::make(core::List_sp widths, core::T_sp angles_degre
   Vector3 width(xwidth,ywidth,zwidth);
   Vector3 angle(xangle,yangle,zangle);
   Vector3 vcenter(xcenter,ycenter,zcenter);
-  GC_ALLOCATE_VARIADIC(BoundingBox_O,bb,width,angle,vcenter);
+  auto bb = gctools::GC<BoundingBox_O>::allocate(width,angle,vcenter);
   return bb;
 }
 
@@ -382,7 +382,7 @@ void	Aggregate_O::initialize()
 
 Matter_sp Aggregate_O::copy(core::T_sp new_to_old)
 {
-  GC_NON_RECURSIVE_COPY(Aggregate_O, newAgg, *this ); // = RP_Copy<Aggregate_O>(this);
+  auto  newAgg = gctools::GC<Aggregate_O>::copy( *this ); // = RP_Copy<Aggregate_O>(this);
   if (gc::IsA<core::HashTable_sp>(new_to_old)) {
     core::HashTable_sp new_to_old_ht = gc::As_unsafe<core::HashTable_sp>(new_to_old);
     new_to_old_ht->setf_gethash(newAgg,this->asSmartPtr());
@@ -403,7 +403,7 @@ Matter_sp Aggregate_O::copy(core::T_sp new_to_old)
 
 Matter_sp Aggregate_O::copyDontRedirectAtoms(core::T_sp new_to_old)
 {_OF();
-  GC_NON_RECURSIVE_COPY(Aggregate_O, newAgg , *this); // = RP_Copy<Aggregate_O>(this);
+  auto  newAgg  = gctools::GC<Aggregate_O>::copy( *this); // = RP_Copy<Aggregate_O>(this);
   if (gc::IsA<core::HashTable_sp>(new_to_old)) {
     core::HashTable_sp new_to_old_ht = gc::As_unsafe<core::HashTable_sp>(new_to_old);
     new_to_old_ht->setf_gethash(newAgg,this->asSmartPtr());
@@ -874,7 +874,7 @@ CL_LAMBDA(&optional (name nil));
 CL_LISPIFY_NAME(make-aggregate);
 CL_DEFUN Aggregate_sp Aggregate_O::make(core::Symbol_sp name)
     {
-        GC_ALLOCATE(Aggregate_O,me);
+      auto me = gctools::GC<Aggregate_O>::allocate_with_default_constructor();
 	me->setName(name);
 	return me;
     };

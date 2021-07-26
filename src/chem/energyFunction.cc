@@ -164,13 +164,13 @@ CL_LISPIFY_NAME(make_energy_function);
 CL_DEF_CLASS_METHOD EnergyFunction_sp EnergyFunction_O::make(core::T_sp matter, bool useExcludedAtoms, core::T_sp activeAtoms, bool assign_types, core::T_sp bounding_box)
 {
   if (bounding_box.nilp()) {
-    GC_ALLOCATE(EnergyFunction_O, me );
+    auto  me  = gctools::GC<EnergyFunction_O>::allocate_with_default_constructor();
     if ( matter.notnilp() ) {
       me->defineForMatter(gc::As<Matter_sp>(matter),useExcludedAtoms,activeAtoms,assign_types);
     }
     return me;
   } else {
-    GC_ALLOCATE_VARIADIC(EnergyFunction_O, me, gc::As<BoundingBox_sp>(bounding_box));
+    auto  me = gctools::GC<EnergyFunction_O>::allocate( gc::As<BoundingBox_sp>(bounding_box));
     if ( matter.notnilp() ) {
       me->defineForMatter(gc::As<Matter_sp>(matter),useExcludedAtoms,activeAtoms,assign_types);
     }
@@ -1415,7 +1415,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
   // FIXME: Why are we using the forcefield->getNonbondDb()?  We should be using the aggregate nonbond force-field
 #if 0  
   if (chem__verbose(0)) core::write_bf_stream(BF("Starting to build standard energy function tables\n"));
-  GC_ALLOCATE(FFNonbondCrossTermTable_O, temp );
+  auto  temp  = gctools::GC<FFNonbondCrossTermTable_O>::allocate_with_default_constructor();
   this->_NonbondCrossTermTable = temp;
   this->_NonbondCrossTermTable->fillUsingFFNonbondDb(forceField->getNonbondDb());
 #endif

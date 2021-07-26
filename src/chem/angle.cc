@@ -45,7 +45,7 @@ namespace chem
 
     Angle_sp Angle_O::create(Atom_sp a1, Atom_sp a2, Atom_sp a3)
     {
-	GC_ALLOCATE(Angle_O, obj );
+      auto  obj  = gctools::GC<Angle_O>::allocate_with_default_constructor();
 	obj->setup(a1,a2,a3);
 	return obj;
     }

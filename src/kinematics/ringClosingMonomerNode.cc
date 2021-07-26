@@ -42,7 +42,7 @@ namespace kinematics
 
     RingClosingMonomerNode_sp RingClosingMonomerNode_O::create(MonomerId monomerId)
     {
-	GC_ALLOCATE(RingClosingMonomerNode_O, monomerNode );
+      auto  monomerNode  = gctools::GC<RingClosingMonomerNode_O>::allocate_with_default_constructor();
 	monomerNode->_Id = monomerId;
 	return monomerNode;
     }

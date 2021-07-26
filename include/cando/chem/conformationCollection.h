@@ -96,7 +96,7 @@ public:
 #if 0
 inline	ConformationCollectionEntry_sp	create_ConformationCollectionEntry(core::Lisp_sp e,ConformationCollection_sp s)
 {
-    GC_ALLOCATE(ConformationCollectionEntry_O, ee ); // RP_Create<ConformationCollectionEntry_O>(e);
+  auto  ee  = gctools::GC<ConformationCollectionEntry_O>::allocate_with_default_constructor();
     ee->setConformationCollection(s);
     return ee;
 };

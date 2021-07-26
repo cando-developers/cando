@@ -53,7 +53,7 @@ namespace chem {
 CL_DOCSTRING(R"doc(Create a new twister instance.)doc");
 CL_DEFUN Twister_sp chem__make_twister()
 {
-  GC_ALLOCATE_VARIADIC(Twister_O,td);
+  auto td = gctools::GC<Twister_O>::allocate_with_default_constructor();
   return td;
 }
 
@@ -297,7 +297,7 @@ CL_LAMBDA(aggregate);
 CL_DOCSTRING(R"doc(Create a new twister driver based on an aggregate.)doc");
 CL_DEFUN TwisterDriver_sp chem__make_twister_driver(Aggregate_sp agg)
 {
-  GC_ALLOCATE_VARIADIC(TwisterDriver_O,td,agg);
+  auto td = gctools::GC<TwisterDriver_O>::allocate(agg);
   return td;
 }
 

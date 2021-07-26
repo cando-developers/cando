@@ -56,13 +56,13 @@ StereoisomerAtom_sp StereoisomerAtom_O::create(ConstitutionAtom_sp constitutionA
     StereoisomerVirtualAtom_sp tva = StereoisomerVirtualAtom_O::create(cva);
     return tva;
   }
-  GC_ALLOCATE_VARIADIC(StereoisomerAtom_O, ta, constitutionAtom->_AtomName,constitutionAtom->_Index,0.0,_Nil<core::Symbol_O>());
+  auto  ta = gctools::GC<StereoisomerAtom_O>::allocate( constitutionAtom->_AtomName,constitutionAtom->_Index,0.0,_Nil<core::Symbol_O>());
   return ta;
 }
 
 StereoisomerAtom_sp StereoisomerAtom_O::make(core::Symbol_sp atomName, core::Symbol_sp type, double charge, ConstitutionAtomIndex0N index )
 {
-  GC_ALLOCATE_VARIADIC(StereoisomerAtom_O, ta, atomName, index, charge, type );
+  auto  ta = gctools::GC<StereoisomerAtom_O>::allocate( atomName, index, charge, type );
   return ta;
 }
 
@@ -107,13 +107,13 @@ void StereoisomerAtoms_O::fields(core::Record_sp node) {
 ;
 StereoisomerAtoms_sp StereoisomerAtoms_O::create(core::Symbol_sp stereoisomerName )
 {
-  GC_ALLOCATE_VARIADIC(StereoisomerAtoms_O, stereoisomerAtoms, stereoisomerName );
+  auto  stereoisomerAtoms = gctools::GC<StereoisomerAtoms_O>::allocate( stereoisomerName );
   return stereoisomerAtoms;
 }
 
 StereoisomerAtoms_sp StereoisomerAtoms_O::create(core::Symbol_sp stereoisomerName, ConstitutionAtoms_sp constitutionAtoms)
 {
-  GC_ALLOCATE_VARIADIC(StereoisomerAtoms_O, stereoisomerAtoms, stereoisomerName );
+  auto  stereoisomerAtoms = gctools::GC<StereoisomerAtoms_O>::allocate( stereoisomerName );
   for ( ConstitutionAtoms_O::iterator it=constitutionAtoms->_Atoms.begin();
         it!=constitutionAtoms->_Atoms.end(); it++)
   {

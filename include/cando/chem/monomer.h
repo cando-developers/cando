@@ -106,7 +106,7 @@ namespace chem {
   public:
     CL_LAMBDA(name topology &optional (isomer 0));
     CL_DEF_CLASS_METHOD static Isoname_sp make_isoname(core::Symbol_sp name, Topology_sp topology, Fixnum isomer) {
-      GC_ALLOCATE_VARIADIC(Isoname_O,isoname,name,topology,isomer);
+      auto isoname = gctools::GC<Isoname_O>::allocate(name,topology,isomer);
       return isoname;
     }
     string __repr__() const;
