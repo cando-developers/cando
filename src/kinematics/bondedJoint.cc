@@ -59,7 +59,7 @@ void BondedJoint_O::fields(core::Record_sp record) {
 
 void BondedJoint_O::initialize() {
   for (int i=0; i<MaxChildren; ++i ) {
-    this->_Children[i] = _Unbound<Joint_O>();
+    this->_Children[i] = unbound<Joint_O>();
   }
 }
 
@@ -94,7 +94,7 @@ void BondedJoint_O::_appendChild(Joint_sp c)
 	    this->_Children[i] = this->_Children[i+1];
 	}
 	this->_NumberOfChildren--;
-        this->_Children[this->_NumberOfChildren] = _Unbound<Joint_O>();
+        this->_Children[this->_NumberOfChildren] = unbound<Joint_O>();
     }
 
 
@@ -104,7 +104,7 @@ void BondedJoint_O::_appendChild(Joint_sp c)
 	int num = this->_numberOfChildren();
 	for ( int idx=0; idx < num; idx++ )
 	{
-          this->_Children[idx] = _Unbound<Joint_O>();
+          this->_Children[idx] = unbound<Joint_O>();
 	}
 	this->_NumberOfChildren = 0;
     }

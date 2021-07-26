@@ -221,7 +221,7 @@ CL_DEFMETHOD void Bond_O::setProperty(core::Symbol_sp prop, core::T_sp val)
 CL_LISPIFY_NAME("bond-getProperty");
 CL_DEFMETHOD core::T_sp Bond_O::getProperty(core::Symbol_sp prop, core::T_sp defval)
 {
-  core::T_sp res = core::cl__getf(this->_Properties,prop,_Unbound<core::T_O>());
+  core::T_sp res = core::cl__getf(this->_Properties,prop,unbound<core::T_O>());
   if (res.unboundp()) {
     return defval;
   }
@@ -231,7 +231,7 @@ CL_DEFMETHOD core::T_sp Bond_O::getProperty(core::Symbol_sp prop, core::T_sp def
 CL_LISPIFY_NAME("bond-hasProperty");
 CL_DEFMETHOD bool Bond_O::hasProperty(core::Symbol_sp prop)
 {
-  return !core::cl__getf(this->_Properties,prop,_Unbound<core::T_O>()).unboundp();
+  return !core::cl__getf(this->_Properties,prop,unbound<core::T_O>()).unboundp();
 }
 
 

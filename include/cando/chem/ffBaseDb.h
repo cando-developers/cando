@@ -180,7 +180,7 @@ class FFParameterBaseDb_O : public FFBaseDb_O {
   core::HashTableEq_sp _Parameters;
  public:
   virtual void forceFieldMerge(FFBaseDb_sp other);
- FFParameterBaseDb_O() : FFBaseDb_O(), _Parameters(_Unbound<core::HashTableEq_O>()) {};
+ FFParameterBaseDb_O() : FFBaseDb_O(), _Parameters(unbound<core::HashTableEq_O>()) {};
   string __repr__() const;
 };
 

@@ -39,12 +39,12 @@ namespace kinematics
   {
     LISP_CLASS(kinematics,KinPkg,BondId_O,"BondId",core::CxxObject_O);
   public:
-  BondId_O() : _Parent(_Unbound<Joint_O>()), _Child(_Unbound<Joint_O>()) {};
+  BondId_O() : _Parent(unbound<Joint_O>()), _Child(unbound<Joint_O>()) {};
   public: // instance variables here
     Joint_sp	_Parent;
     Joint_sp	_Child;
   public:
-    static BondId_sp create(Joint_sp parent, Joint_sp child = _Unbound<Joint_O>());
+    static BondId_sp create(Joint_sp parent, Joint_sp child = unbound<Joint_O>());
     string __repr__() const;
   };
 

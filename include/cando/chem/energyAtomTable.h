@@ -250,17 +250,17 @@ public:
   size_t getCoordinateIndex(Atom_sp atom);
   size_t getCoordinateIndexForAtomAtIndex(size_t index);
   
- AtomTable_O() : _ResiduePointers(_Unbound<core::ComplexVector_int32_t_O>()),
-                 _ResidueNames(_Unbound<core::ComplexVector_T_O>()),
-                 _AtomsPerMolecule(_Unbound<core::ComplexVector_int32_t_O>()),
-                 _firstSolventMoleculeNSPSOL(_Unbound<core::T_O>()),
-                 _finalSoluteResidueIPTRES(_Unbound<core::T_O>()),
-                 _totalNumberOfMoleculesNSPM(_Unbound<core::T_O>()),
-                 _Residues(_Unbound<core::Vector_O>()),
-                 _Molecules(_Unbound<core::Vector_O>()),
-                 _AggregateName(_Unbound<core::T_O>()),
-                 _BoundingBox(_Unbound<core::T_O>()),
-                 _NonbondForceFieldForAggregate(_Unbound<core::T_O>()) {};
+ AtomTable_O() : _ResiduePointers(unbound<core::ComplexVector_int32_t_O>()),
+                 _ResidueNames(unbound<core::ComplexVector_T_O>()),
+                 _AtomsPerMolecule(unbound<core::ComplexVector_int32_t_O>()),
+                 _firstSolventMoleculeNSPSOL(unbound<core::T_O>()),
+                 _finalSoluteResidueIPTRES(unbound<core::T_O>()),
+                 _totalNumberOfMoleculesNSPM(unbound<core::T_O>()),
+                 _Residues(unbound<core::Vector_O>()),
+                 _Molecules(unbound<core::Vector_O>()),
+                 _AggregateName(unbound<core::T_O>()),
+                 _BoundingBox(unbound<core::T_O>()),
+                 _NonbondForceFieldForAggregate(unbound<core::T_O>()) {};
 
   virtual void fill_atom_table_from_vectors(core::List_sp values);
 //  int residue_index(int atom_index);

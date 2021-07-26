@@ -305,41 +305,41 @@ namespace chem {
     void	dealWithProblem(core::Symbol_sp error_symbol, core::T_sp arguments);
 
     EnergyFunction_O(BoundingBox_sp bounding_box) :
-      _Matter(_Unbound<Matter_O>())
-      , _NonbondCrossTermTable(_Unbound<FFNonbondCrossTermTable_O>())
-      , _AtomTable(_Unbound<AtomTable_O>())
-      , _Stretch(_Unbound<EnergyStretch_O>())
+      _Matter(unbound<Matter_O>())
+      , _NonbondCrossTermTable(unbound<FFNonbondCrossTermTable_O>())
+      , _AtomTable(unbound<AtomTable_O>())
+      , _Stretch(unbound<EnergyStretch_O>())
 #if USE_ALL_ENERGY_COMPONENTS
-      , _Angle(_Unbound<EnergyAngle_O>())
-      , _Dihedral(_Unbound<EnergyDihedral_O>())
-      , _Nonbond(_Unbound<EnergyNonbond_O>())
-      , _DihedralRestraint(_Unbound<EnergyDihedralRestraint_O>())
-      , _ChiralRestraint(_Unbound<EnergyChiralRestraint_O>())
-      , _AnchorRestraint(_Unbound<EnergyAnchorRestraint_O>())
-      , _FixedNonbondRestraint(_Unbound<EnergyFixedNonbondRestraint_O>())
+      , _Angle(unbound<EnergyAngle_O>())
+      , _Dihedral(unbound<EnergyDihedral_O>())
+      , _Nonbond(unbound<EnergyNonbond_O>())
+      , _DihedralRestraint(unbound<EnergyDihedralRestraint_O>())
+      , _ChiralRestraint(unbound<EnergyChiralRestraint_O>())
+      , _AnchorRestraint(unbound<EnergyAnchorRestraint_O>())
+      , _FixedNonbondRestraint(unbound<EnergyFixedNonbondRestraint_O>())
 #endif
       ,_OtherEnergyComponents(nil<core::T_O>())
       ,_BoundingBox(bounding_box)
-//      , _MissingParameters(_Unbound<core::List_O>())
+//      , _MissingParameters(unbound<core::List_O>())
     {};
     
   EnergyFunction_O() :
-    _Matter(_Unbound<Matter_O>())
-      , _NonbondCrossTermTable(_Unbound<FFNonbondCrossTermTable_O>())
-      , _AtomTable(_Unbound<AtomTable_O>())
-      , _Stretch(_Unbound<EnergyStretch_O>())
+    _Matter(unbound<Matter_O>())
+      , _NonbondCrossTermTable(unbound<FFNonbondCrossTermTable_O>())
+      , _AtomTable(unbound<AtomTable_O>())
+      , _Stretch(unbound<EnergyStretch_O>())
 #if USE_ALL_ENERGY_COMPONENTS
-      , _Angle(_Unbound<EnergyAngle_O>())
-      , _Dihedral(_Unbound<EnergyDihedral_O>())
-      , _Nonbond(_Unbound<EnergyNonbond_O>())
-      , _DihedralRestraint(_Unbound<EnergyDihedralRestraint_O>())
-      , _ChiralRestraint(_Unbound<EnergyChiralRestraint_O>())
-      , _AnchorRestraint(_Unbound<EnergyAnchorRestraint_O>())
-      , _FixedNonbondRestraint(_Unbound<EnergyFixedNonbondRestraint_O>())
+      , _Angle(unbound<EnergyAngle_O>())
+      , _Dihedral(unbound<EnergyDihedral_O>())
+      , _Nonbond(unbound<EnergyNonbond_O>())
+      , _DihedralRestraint(unbound<EnergyDihedralRestraint_O>())
+      , _ChiralRestraint(unbound<EnergyChiralRestraint_O>())
+      , _AnchorRestraint(unbound<EnergyAnchorRestraint_O>())
+      , _FixedNonbondRestraint(unbound<EnergyFixedNonbondRestraint_O>())
 #endif
     ,_OtherEnergyComponents(nil<core::T_O>())
-    ,_BoundingBox(_Unbound<BoundingBox_O>())
-//      , _MissingParameters(_Unbound<core::List_O>())
+    ,_BoundingBox(unbound<BoundingBox_O>())
+//      , _MissingParameters(unbound<core::List_O>())
     {};
   };
 

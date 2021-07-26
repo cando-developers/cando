@@ -218,7 +218,7 @@ public:
   void setf_force_field_name(core::T_sp name);
     
 
-  Aggregate_O() : _ForceFieldName(kw::_sym_default), _BoundingBox(_Unbound<BoundingBox_O>()) {};
+  Aggregate_O() : _ForceFieldName(kw::_sym_default), _BoundingBox(unbound<BoundingBox_O>()) {};
 };
 
 

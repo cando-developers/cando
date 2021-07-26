@@ -45,7 +45,7 @@ class FoldTree_O : public core::CxxObject_O
  public:
     static FoldTree_sp make();
 //    DECLARE_ARCHIVE();
- FoldTree_O() : _AggregateNode(_Unbound<AggregateNode_O>()) {};
+ FoldTree_O() : _AggregateNode(unbound<AggregateNode_O>()) {};
 public:
     
     bool fieldsp() const { return true; };

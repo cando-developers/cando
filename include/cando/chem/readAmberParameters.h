@@ -83,7 +83,7 @@ class ReadAmberParameters_O : public core::CxxObject_O
 
   ReadAmberParameters_O( const ReadAmberParameters_O& ss ); //!< Copy constructor
 
- ReadAmberParameters_O() : _Types(_Unbound<FFTypesDb_O>()), _ForceField(_Unbound<ForceField_O>()) {};
+ ReadAmberParameters_O() : _Types(unbound<FFTypesDb_O>()), _ForceField(unbound<ForceField_O>()) {};
 };
 
 

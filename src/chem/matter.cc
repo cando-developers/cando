@@ -172,7 +172,7 @@ CL_DEFMETHOD void Matter_O::addRestraint(Restraint_sp restraint)
 
 CL_DEFMETHOD void Matter_O::resizeContents(int sz)
 {_OF();
-  this->_contents.resize(sz,_Unbound<Matter_O>());
+  this->_contents.resize(sz,unbound<Matter_O>());
 }
 
 
@@ -250,7 +250,7 @@ CL_DOCSTRING("Return the property **symbol** of **this** (a chem:matter) - if it
 CL_LISPIFY_NAME("Matter-getProperty");
 CL_DEFMETHOD core::T_sp Matter_O::getProperty(core::Symbol_sp symbol)
 {
-  core::T_sp res = core::cl__getf(this->_Properties,symbol,_Unbound<core::T_O>());
+  core::T_sp res = core::cl__getf(this->_Properties,symbol,unbound<core::T_O>());
   if (res.unboundp()) {
     stringstream props;
     props << _rep_(this->_Properties);
@@ -270,7 +270,7 @@ CL_DOCSTRING("Return T if the property **symbol** of **this** (a chem:matter) is
 CL_LISPIFY_NAME("hasProperty");
 CL_DEFMETHOD bool Matter_O::hasProperty(core::Symbol_sp symbol)
 {
-  return !core::cl__getf(this->_Properties,symbol,_Unbound<core::T_O>()).unboundp();
+  return !core::cl__getf(this->_Properties,symbol,unbound<core::T_O>()).unboundp();
 }
 
 

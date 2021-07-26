@@ -1600,10 +1600,10 @@ CL_DEFMETHOD     bool Atom_O::isConfigurable()
 
 CL_DEFMETHOD void Atom_O::setAbsoluteConfiguration(ConfigurationEnum config, Atom_sp n1, Atom_sp n2, Atom_sp n3)
 {
-  Bond_sp b1(_Unbound<Bond_O>());
-  Bond_sp b2(_Unbound<Bond_O>());
-  Bond_sp b3(_Unbound<Bond_O>());
-  Bond_sp b4(_Unbound<Bond_O>());
+  Bond_sp b1(unbound<Bond_O>());
+  Bond_sp b2(unbound<Bond_O>());
+  Bond_sp b3(unbound<Bond_O>());
+  Bond_sp b4(unbound<Bond_O>());
   if (!(this->bonds.size()==4||this->bonds.size()==3)) {
     SIMPLE_ERROR(BF("You cannot define the absolute configuration of an atom that has %d bonds - it must have 3 or 4") % this->bonds.size());
   }

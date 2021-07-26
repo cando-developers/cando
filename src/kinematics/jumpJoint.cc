@@ -63,7 +63,7 @@ void JumpJoint_O::_appendChild(Joint_sp c)
 
 void JumpJoint_O::_releaseChild(int idx)
 {
-  this->_Children[idx] = _Unbound<Joint_O>();
+  this->_Children[idx] = unbound<Joint_O>();
   this->_Children.erase(this->_Children.begin()+idx);
 }
 

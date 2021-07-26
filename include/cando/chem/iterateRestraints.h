@@ -69,7 +69,7 @@ namespace chem {
 	
 //	IterateRestraints_O( const IterateRestraints_O& ss ); //!< Copy constructor
 
-  IterateRestraints_O() : _Top(_Unbound<Matter_O>()), _Restraints(nil<T_O>()), _CurRestraint(nil<T_O>()) {};
+  IterateRestraints_O() : _Top(unbound<Matter_O>()), _Restraints(nil<T_O>()), _CurRestraint(nil<T_O>()) {};
   };
 
 

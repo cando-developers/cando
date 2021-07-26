@@ -123,7 +123,7 @@ CL_DEFMETHOD void RigidBodyEnergyFunction_O::setBoundingBox(BoundingBox_sp bound
 CL_DOCSTRING(R"doc(Make the bounding-box unbound)doc");
 CL_LISPIFY_NAME(rigidBodyEnergyFunction-mak-unbound-bounding-box);
 CL_DEFMETHOD void RigidBodyEnergyFunction_O::makUnboundBoundingBox() {
-  this->_BoundingBox = _Unbound<BoundingBox_O>();
+  this->_BoundingBox = unbound<BoundingBox_O>();
 }
 
 CL_DEFMETHOD void RigidBodyEnergyFunction_O::set_coordinates(NVector_sp pos) {

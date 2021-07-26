@@ -179,7 +179,7 @@ namespace chem {
  
     virtual	string	levelDescription();
     virtual ParameterType type() { return nonbond; };
-    FFNonbond_O() : _SameParms(_Unbound<core::T_O>()) {};
+    FFNonbond_O() : _SameParms(unbound<core::T_O>()) {};
   };
 
 

@@ -57,10 +57,10 @@ public:
   gctools::Vec0<float>        _PfCharges;       /* float to save space */
   OctNode_sp                  PonChildren[8];
   OctNode_O() : iDepth(0), iAtoms(0),
-                PonChildren{_Unbound<OctNode_O>(),_Unbound<OctNode_O>(),
-                            _Unbound<OctNode_O>(),_Unbound<OctNode_O>(),
-                            _Unbound<OctNode_O>(),_Unbound<OctNode_O>(),
-                            _Unbound<OctNode_O>(),_Unbound<OctNode_O>()} {};
+                PonChildren{unbound<OctNode_O>(),unbound<OctNode_O>(),
+                            unbound<OctNode_O>(),unbound<OctNode_O>(),
+                            unbound<OctNode_O>(),unbound<OctNode_O>(),
+                            unbound<OctNode_O>(),unbound<OctNode_O>()} {};
   string __repr__() const;
 };
 
@@ -147,7 +147,7 @@ public:
                             float fCharge, double dCutDist);
   core::T_sp rOctreeCheckSolvent(/*AddIonOctree_sp octTree,*/ Vector3 vPoint);
 
-  AddIonOctree_O() : _BoundingBox(_Unbound<BoundingBox_O>()) {};
+  AddIonOctree_O() : _BoundingBox(unbound<BoundingBox_O>()) {};
 //  void OctreePrintGrid(AddIonOctree_sp octTree, core::T_sp stream, int iColor);
 
   };
@@ -259,10 +259,10 @@ public:
   static GenericOctree_sp make(const Vector3& origin, const Vector3& halfDimension);
 public:
   GenericOctree_O(const Vector3& origin, const Vector3& halfDimension) 
-    : _depth(0), _origin(origin), _halfDimension(halfDimension), _data(_Unbound<core::T_O>()) {
+    : _depth(0), _origin(origin), _halfDimension(halfDimension), _data(unbound<core::T_O>()) {
 				// Initially, there are no children
     for(int i=0; i<8; ++i) 
-      this->_children[i] = _Unbound<GenericOctree_O>();
+      this->_children[i] = unbound<GenericOctree_O>();
     this->_containing_radius = this->_halfDimension.getX()*this->_halfDimension.getX()
       + this->_halfDimension.getY()*this->_halfDimension.getY()
       + this->_halfDimension.getZ()*this->_halfDimension.getZ();
@@ -308,7 +308,7 @@ public:
 
 					// Save this data point that was here for a later re-insert
         core::T_sp oldData = this->_data;
-        this->_data = _Unbound<core::T_O>();
+        this->_data = unbound<core::T_O>();
         Vector3 oldPosition = this->_position;
         double dx = fabs(point.getX()-oldPosition.getX());
         double dy = fabs(point.getY()-oldPosition.getY());

@@ -1094,7 +1094,7 @@ CL_DEFMETHOD core::T_sp BondLogical_O::getLeft() const {
 }
 
 CL_DEFMETHOD void BondLogical_O::setLeft(core::T_sp b) {
-  if (b.nilp()) { this->_Left = _Unbound<BondMatcher_O>(); }
+  if (b.nilp()) { this->_Left = unbound<BondMatcher_O>(); }
   else this->_Left = gc::As<BondMatcher_sp>(b);
 }
 
@@ -1104,7 +1104,7 @@ CL_DEFMETHOD core::T_sp BondLogical_O::getRight() const {
 }
 
 CL_DEFMETHOD void BondLogical_O::setRight(core::T_sp b) {
-  if (b.nilp()) { this->_Right = _Unbound<BondMatcher_O>(); }
+  if (b.nilp()) { this->_Right = unbound<BondMatcher_O>(); }
   else this->_Right = gc::As<BondMatcher_sp>(b);
 }
 
@@ -1115,30 +1115,30 @@ CL_DEFMETHOD LogicalOperatorType BondLogical_O::bondLogicalOperator() const {
 
 CL_DEF_CLASS_METHOD BondLogical_sp BondLogical_O::create_bondLogIdentity(core::T_sp nilOrOp1)
 {
-  BondMatcher_sp b1(_Unbound<BondMatcher_O>());
+  BondMatcher_sp b1(unbound<BondMatcher_O>());
   if (nilOrOp1.notnilp()) b1 = gc::As<BondMatcher_sp>(nilOrOp1);
   return create(logIdentity, b1);
 };
 
 CL_DEF_CLASS_METHOD BondLogical_sp BondLogical_O::create_bondLogNot(core::T_sp nilOrOp1)
 {
-  BondMatcher_sp b1(_Unbound<BondMatcher_O>());
+  BondMatcher_sp b1(unbound<BondMatcher_O>());
   if (nilOrOp1.notnilp()) b1 = gc::As<BondMatcher_sp>(nilOrOp1);
   return create(logNot, b1 );
 };
 
 CL_DEF_CLASS_METHOD BondLogical_sp BondLogical_O::create_bondLogOr(core::T_sp nilOrOp1, core::T_sp nilOrOp2)
 {
-  BondMatcher_sp b1(_Unbound<BondMatcher_O>());
-  BondMatcher_sp b2(_Unbound<BondMatcher_O>());
+  BondMatcher_sp b1(unbound<BondMatcher_O>());
+  BondMatcher_sp b2(unbound<BondMatcher_O>());
   if (nilOrOp1.notnilp()) b1 = gc::As<BondMatcher_sp>(nilOrOp1);
   if (nilOrOp2.notnilp()) b2 = gc::As<BondMatcher_sp>(nilOrOp2);
   return create(logOr, b1, b2 );
 };
 CL_DEF_CLASS_METHOD BondLogical_sp BondLogical_O::create_bondLogLowPrecedenceAnd(core::T_sp nilOrOp1, core::T_sp nilOrOp2)
 {
-  BondMatcher_sp b1(_Unbound<BondMatcher_O>());
-  BondMatcher_sp b2(_Unbound<BondMatcher_O>());
+  BondMatcher_sp b1(unbound<BondMatcher_O>());
+  BondMatcher_sp b2(unbound<BondMatcher_O>());
   if (nilOrOp1.notnilp()) b1 = gc::As<BondMatcher_sp>(nilOrOp1);
   if (nilOrOp2.notnilp()) b2 = gc::As<BondMatcher_sp>(nilOrOp2);
   return create(logLowPrecedenceAnd, b1, b2 );
@@ -1146,8 +1146,8 @@ CL_DEF_CLASS_METHOD BondLogical_sp BondLogical_O::create_bondLogLowPrecedenceAnd
 
 CL_DEF_CLASS_METHOD BondLogical_sp BondLogical_O::create_bondLogHighPrecedenceAnd(core::T_sp nilOrOp1, core::T_sp nilOrOp2)
 {
-  BondMatcher_sp b1(_Unbound<BondMatcher_O>());
-  BondMatcher_sp b2(_Unbound<BondMatcher_O>());
+  BondMatcher_sp b1(unbound<BondMatcher_O>());
+  BondMatcher_sp b2(unbound<BondMatcher_O>());
   if (nilOrOp1.notnilp()) b1 = gc::As<BondMatcher_sp>(nilOrOp1);
   if (nilOrOp2.notnilp()) b2 = gc::As<BondMatcher_sp>(nilOrOp2);
   return create(logHighPrecedenceAnd, b1, b2 );
@@ -1193,7 +1193,7 @@ CL_LISPIFY_NAME(make-bond-to-atom-test);
 CL_DEF_CLASS_METHOD BondToAtomTest_sp BondToAtomTest_O::makeBondToAtomTest(BondEnum be, core::T_sp nilOrNode) {
   auto bta = gctools::GC<BondToAtomTest_O>::allocate(be);
   bta->_AtomTest = nilOrNode;
-  bta->_BondMatcher = _Unbound<BondMatcher_O>();
+  bta->_BondMatcher = unbound<BondMatcher_O>();
   return bta;
 };
 
@@ -3145,7 +3145,7 @@ CL_DEFUN void chem__chem_info_graph_dump(ChemInfoGraph_sp graph) {
     // If the comparison is simple then just match the bond type to the BondEnum
       if (bta->_Bond!=SABUseBondMatcher) {
         if (!aromatic_information_available_p()) {
-          bool match = _matchBondTypes(bta->_Bond,bo,_Unbound<Atom_O>(),_Unbound<Atom_O>());
+          bool match = _matchBondTypes(bta->_Bond,bo,unbound<Atom_O>(),unbound<Atom_O>());
           if (chem__verbose(1)) {
             core::write_bf_stream(BF("In EdgeComp matching with _matchBondTypes with no aromaticity info...\n"));
             core::write_bf_stream(BF(" bta->_Bond -> %d\n") % bta->_Bond );

@@ -166,7 +166,7 @@ FORWARD(MonomerNode);
     CL_LISPIFY_NAME(children);
     CL_DEFMETHOD virtual core::List_sp children() const {return nil<core::T_O>();}
     
-  JointTemplate_O() : _Parent(_Unbound<JointTemplate_O>()), _Id(-1), _Name(nil<core::T_O>()), _Comment("") {};
+  JointTemplate_O() : _Parent(unbound<JointTemplate_O>()), _Id(-1), _Name(nil<core::T_O>()), _Comment("") {};
     virtual ~JointTemplate_O() {};
   };
 
@@ -222,7 +222,7 @@ FORWARD(MonomerNode);
 
 
 //	DEFAULT_CTOR_DTOR(BondedJointTemplate_O);
-  BondedJointTemplate_O() : _Distance(0.0), _Theta(0.0), _Phi(0.0), _OutPlug(_Unbound<chem::OutPlug_O>()) {};
+  BondedJointTemplate_O() : _Distance(0.0), _Theta(0.0), _Phi(0.0), _OutPlug(unbound<chem::OutPlug_O>()) {};
   };
 
 

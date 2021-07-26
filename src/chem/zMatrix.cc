@@ -400,7 +400,7 @@ CL_DEFMETHOD     core::T_sp	ZMatrixDihedralInternal_O::getDihedralAtomZMatrixNam
     void	ZMatrixEntry_O::initialize()
     {
 	this->Base::initialize();
-	this->_ZMatrixAtomName = _Unbound<core::T_O>();
+	this->_ZMatrixAtomName = unbound<core::T_O>();
 	this->_Atom = nil<Atom_O>();
 	this->_Bond = nil<ZMatrixBondInternal_O>();
 	this->_Angle = nil<ZMatrixAngleInternal_O>();

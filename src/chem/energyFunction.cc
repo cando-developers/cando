@@ -304,7 +304,7 @@ CL_DEFMETHOD void EnergyFunction_O::setBoundingBox(BoundingBox_sp boundingBox) {
 CL_DOCSTRING(R"doc(Make the bounding-box unbound)doc");
 CL_LISPIFY_NAME(energyFunction-mak-unbound-bounding-box);
 CL_DEFMETHOD void EnergyFunction_O::makUnboundBoundingBox() {
-  this->_BoundingBox = _Unbound<BoundingBox_O>();
+  this->_BoundingBox = unbound<BoundingBox_O>();
 }
 
 
@@ -1260,7 +1260,7 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatterWithAtomTypes(Matter_sp matte
   // Get the name to pass that to the atomTable
   core::T_sp matterName = matter->getName();
   this->_AtomTable->setAggregateName(matterName);
-  core::T_sp boundingBox = _Unbound<core::T_O>();
+  core::T_sp boundingBox = unbound<core::T_O>();
   if (gc::IsA<Aggregate_sp>(matter)) {
     Aggregate_sp agg = gc::As_unsafe<Aggregate_sp>(matter);
     if (agg->boundingBoxBoundP()) {

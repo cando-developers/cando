@@ -459,7 +459,7 @@ public:
     auto  obj  = gctools::GC<BondLogical_O>::allocate_with_default_constructor();
     obj->_Operator = op;
     obj->_Left = a;
-    obj->_Right = _Unbound<BondMatcher_O>();
+    obj->_Right = unbound<BondMatcher_O>();
     return obj;
   };
 public:
@@ -543,8 +543,8 @@ public:
 
   void setAtomTest(core::T_sp atomTest);
   virtual core::T_sp children();
-  BondToAtomTest_O() : _Bond(SABUseBondMatcher), _BondMatcher(_Unbound<BondMatcher_O>()) {};
-  BondToAtomTest_O(BondEnum be) : _Bond(be), _BondMatcher(_Unbound<BondMatcher_O>()) {};
+  BondToAtomTest_O() : _Bond(SABUseBondMatcher), _BondMatcher(unbound<BondMatcher_O>()) {};
+  BondToAtomTest_O(BondEnum be) : _Bond(be), _BondMatcher(unbound<BondMatcher_O>()) {};
 };
 
 

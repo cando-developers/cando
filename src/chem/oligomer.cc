@@ -437,7 +437,7 @@ CL_DEFMETHOD Monomer_sp	Oligomer_O::rootMonomer() const
 {
   Monomer_sp	sub;
   Coupling_sp	coupling;
-  coupling = _Unbound<Coupling_O>();
+  coupling = unbound<Coupling_O>();
   if (this->_Monomers.size()==0) {
     SIMPLE_ERROR(BF("There are no monomers, root-monomer can not be determined"));
   }

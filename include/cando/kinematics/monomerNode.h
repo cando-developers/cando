@@ -48,7 +48,7 @@ class MonomerNode_O : public MonomerBaseNode_O
   LISP_CLASS(kinematics,KinPkg,MonomerNode_O,"MonomerNode",MonomerBaseNode_O);
 public:
   static MonomerNode_sp make();
-  MonomerNode_O() : _Parent(_Unbound<MonomerNode_O>()), _ParentPlugName(_Unbound<core::Symbol_O>()), _StereoisomerName(_Unbound<core::Symbol_O>()), _Topology(_Unbound<chem::Topology_O>()), _ConformationIndex(-1) {};
+  MonomerNode_O() : _Parent(unbound<MonomerNode_O>()), _ParentPlugName(unbound<core::Symbol_O>()), _StereoisomerName(unbound<core::Symbol_O>()), _Topology(unbound<chem::Topology_O>()), _ConformationIndex(-1) {};
 public:
   bool fieldsp() const { return true; };
   void fields(core::Record_sp node);	

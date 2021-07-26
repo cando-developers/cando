@@ -144,14 +144,14 @@ public:
 #endif
 public:
   ForceField_O() :
-    _Info(_Unbound<InfoDb_O>()),
-    _Types(_Unbound<FFTypesDb_O>()),
-    _Stretches(_Unbound<FFStretchDb_O>()),
-    _Angles(_Unbound<FFAngleDb_O>()),
-    _Itors(_Unbound<FFItorDb_O>()),
-    _Ptors(_Unbound<FFPtorDb_O>()),
-    _Nonbonds(_Unbound<FFNonbondDb_O>()),
-    _Vdws(_Unbound<FFVdwDb_O>())
+    _Info(unbound<InfoDb_O>()),
+    _Types(unbound<FFTypesDb_O>()),
+    _Stretches(unbound<FFStretchDb_O>()),
+    _Angles(unbound<FFAngleDb_O>()),
+    _Itors(unbound<FFItorDb_O>()),
+    _Ptors(unbound<FFPtorDb_O>()),
+    _Nonbonds(unbound<FFNonbondDb_O>()),
+    _Vdws(unbound<FFVdwDb_O>())
   {};
           
   void	addSingleBondMultiBondDistinctionType(core::Symbol_sp s) {

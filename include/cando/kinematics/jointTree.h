@@ -112,7 +112,7 @@ namespace kinematics
     chem::AtomIdMap<Joint_sp>	_AtomMap;
         
   public:
-  JointTree_O() : _Root(_Unbound<Joint_O>()) {};
+  JointTree_O() : _Root(unbound<Joint_O>()) {};
 
 	/*! Lookup the atom by atomId */
     Joint_sp lookup(const chem::AtomId& atomId) const;

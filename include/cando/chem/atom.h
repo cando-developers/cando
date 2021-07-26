@@ -589,7 +589,7 @@ namespace chem {
       vdwRadius(0.0),
       covalentRadius(0.0),
       _Mask(0),
-      copyAtom(_Unbound<chem::Atom_O>()),
+      copyAtom(unbound<chem::Atom_O>()),
       _RingMembershipCount(0),
       tempInt(0)
 //      moeIndex(0),

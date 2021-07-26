@@ -487,7 +487,7 @@ void AddIonOctree_O::DestroyOctant( OctNode_sp PonNode, int iStatus )
       DestroyOctant( PonNode->PonChildren[i], OCT_UNKNOWN );
     }
     for (i=0; i<8; i++){
-      PonNode->PonChildren[i]=_Unbound<OctNode_O>();//	FREE( PonNode->PonChildren );
+      PonNode->PonChildren[i]=unbound<OctNode_O>();//	FREE( PonNode->PonChildren );
     }
   }
   PonNode->iStatus = iStatus;
@@ -720,7 +720,7 @@ int AddIonOctree_O::iBuildShellOctant( OctNode_sp PonNode, int iAtoms, gctools::
 		//FREE( PonChildren );
 		//PonNode->PonChildren = NULL;
     for (i=0; i<8; i++) {
-      PonNode->PonChildren[i] = _Unbound<OctNode_O>();
+      PonNode->PonChildren[i] = unbound<OctNode_O>();
     }
     PonNode->iStatus = OCT_INCLUDED;
     return(OCT_INCLUDED);
@@ -864,7 +864,7 @@ int AddIonOctree_O::iBuildInteriorOctant( OctNode_sp PonNode, int iAtoms, gctool
 		//FREE( PonNode->PonChildren );
     for (i=0; i<8; i++) {
  		//PonNode->PonChildren = NULL;
-      PonNode->PonChildren[i] = _Unbound<OctNode_O>();
+      PonNode->PonChildren[i] = unbound<OctNode_O>();
     }
   } else {
 		//FREE( PonNode->PaAtomList );

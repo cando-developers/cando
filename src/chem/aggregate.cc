@@ -296,7 +296,7 @@ CL_DEFMETHOD void Aggregate_O::setBoundingBox(BoundingBox_sp boundingBox) {
 CL_DOCSTRING(R"doc(Make the bounding-box unbound)doc");
 CL_LISPIFY_NAME(aggregate-mak-unbound-bounding-box);
 CL_DEFMETHOD void Aggregate_O::makUnboundBoundingBox() {
-  this->_BoundingBox = _Unbound<BoundingBox_O>();
+  this->_BoundingBox = unbound<BoundingBox_O>();
 }
 
 

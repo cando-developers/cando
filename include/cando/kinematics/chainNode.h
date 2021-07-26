@@ -41,7 +41,7 @@ namespace kinematics
     LISP_CLASS(kinematics,KinPkg,ChainNode_O,"ChainNode",MonomerBaseNode_O);
   public:
     static ChainNode_sp make();
-    ChainNode_O(size_t id) : _Id(id), _RootMonomerNode(_Unbound<MonomerNode_O>()) {};
+    ChainNode_O(size_t id) : _Id(id), _RootMonomerNode(unbound<MonomerNode_O>()) {};
   public:
     bool fieldsp() const { return true; };
     void fields(core::Record_sp node);

@@ -117,9 +117,9 @@ public:
   virtual core::List_sp children() const;
 public:
 
-  Joint_O() : _Parent(_Unbound<Joint_O>()), _Name(_Unbound<core::T_O>()), _Id(), _ToExternal(general_to_external), _ToInternal(general_to_internal) {};
+  Joint_O() : _Parent(unbound<Joint_O>()), _Name(unbound<core::T_O>()), _Id(), _ToExternal(general_to_external), _ToInternal(general_to_internal) {};
   Joint_O(const chem::AtomId& atomId, core::T_sp name, const string& comment) :
-    _Parent(_Unbound<Joint_O>()),
+    _Parent(unbound<Joint_O>()),
     _Name(name),
     _Id(atomId),
     _Properties(nil<core::T_O>()),

@@ -75,7 +75,7 @@ FORWARD(BondedJoint);
 	virtual void _releaseAllChildren();
 
     public:
-    BondedJoint_O() : Joint_O(), _NumberOfChildren(0), _Children{_Unbound<Joint_O>(),_Unbound<Joint_O>(),_Unbound<Joint_O>(),_Unbound<Joint_O>(),_Unbound<Joint_O>()} {};
+    BondedJoint_O() : Joint_O(), _NumberOfChildren(0), _Children{unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>()} {};
     BondedJoint_O(const chem::AtomId& atomId, core::T_sp name, const string& comment) : Joint_O(atomId,name,comment), _NumberOfChildren(0) {};
 
 	virtual core::Symbol_sp typeSymbol() const;

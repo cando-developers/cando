@@ -68,9 +68,9 @@ namespace chem
 	this->_WeakConformationExplorerEntry = nil<ConformationExplorerEntry_O>();
 	this->_Complete = true;
 	this->_EnergyKCal = 0.0;
-	this->_ExternalInterfaceName = _Unbound<core::T_O>();
-	this->_Model = _Unbound<core::T_O>();
-	this->_StageName = _Unbound<core::T_O>();
+	this->_ExternalInterfaceName = unbound<core::T_O>();
+	this->_Model = unbound<core::T_O>();
+	this->_StageName = unbound<core::T_O>();
     }
 
 

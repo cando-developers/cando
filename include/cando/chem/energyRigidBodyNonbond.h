@@ -66,7 +66,7 @@ namespace       chem {
     double         _Epsilon;
     double         _Charge;
     Vector3        _Position;
-    RigidBodyAtomInfo() : _Object(_Unbound<core::T_O>()) {};
+    RigidBodyAtomInfo() : _Object(unbound<core::T_O>()) {};
   RigidBodyAtomInfo(core::T_sp a, double r, double e, double c, const Vector3& p) :
     _Object(a),
       _Radius(r),

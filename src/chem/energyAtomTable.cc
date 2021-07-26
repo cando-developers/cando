@@ -310,7 +310,7 @@ CL_DEFMETHOD void AtomTable_O::set_firstSolventMoleculeNSPSOL(size_t num) {
   this->_firstSolventMoleculeNSPSOL = core::make_fixnum(num);
 }
 CL_DEFMETHOD void AtomTable_O::makUnbound_firstSolventMoleculeNSPSOL() {
-  this->_firstSolventMoleculeNSPSOL = _Unbound<core::Fixnum_I>();
+  this->_firstSolventMoleculeNSPSOL = unbound<core::Fixnum_I>();
 }
 
 
@@ -325,7 +325,7 @@ CL_DEFMETHOD void AtomTable_O::set_finalSoluteResidueIPTRES(size_t num) {
   this->_finalSoluteResidueIPTRES = core::make_fixnum(num);
 }
 CL_DEFMETHOD void AtomTable_O::makUnbound_finalSoluteResidueIPTRES() {
-  this->_finalSoluteResidueIPTRES = _Unbound<core::Fixnum_I>();
+  this->_finalSoluteResidueIPTRES = unbound<core::Fixnum_I>();
 }
 
 
@@ -340,7 +340,7 @@ CL_DEFMETHOD void AtomTable_O::set_totalNumberOfMoleculesNSPM(size_t num) {
   this->_totalNumberOfMoleculesNSPM = core::make_fixnum(num);
 }
 CL_DEFMETHOD void AtomTable_O::makUnbound_totalNumberOfMoleculesNSPM() {
-  this->_totalNumberOfMoleculesNSPM = _Unbound<core::Fixnum_I>();
+  this->_totalNumberOfMoleculesNSPM = unbound<core::Fixnum_I>();
 }
 
 
@@ -364,7 +364,7 @@ CL_DEFMETHOD void AtomTable_O::setAggregateName(core::T_sp name) {
 }
 
 CL_DEFMETHOD void AtomTable_O::makUnboundAggregateName() {
-  this->_AggregateName = _Unbound<core::T_O>();
+  this->_AggregateName = unbound<core::T_O>();
 }
 
 SYMBOL_EXPORT_SC_(ChemPkg,bounding_box);
@@ -396,7 +396,7 @@ CL_DEFMETHOD void AtomTable_O::setBoundingBox(core::T_sp boundingBox) {
 CL_DOCSTRING(R"doc(Make the bounding-box unbound)doc");
 CL_LISPIFY_NAME(atom-table-mak-unbound-bounding-box);
 CL_DEFMETHOD void AtomTable_O::makUnboundBoundingBox() {
-  this->_BoundingBox = _Unbound<core::T_O>();
+  this->_BoundingBox = unbound<core::T_O>();
 }
 
 CL_DEFMETHOD core::T_sp AtomTable_O::nonbondForceFieldForAggregate() const {
@@ -415,7 +415,7 @@ CL_DEFMETHOD void AtomTable_O::setNonbondForceFieldForAggregate(core::T_sp force
 }
 
 CL_DEFMETHOD void AtomTable_O::makUnboundNonbondForceFieldForAggregate() {
-  this->_NonbondForceFieldForAggregate = _Unbound<FFNonbondDb_O>();
+  this->_NonbondForceFieldForAggregate = unbound<FFNonbondDb_O>();
 }
 
 CL_DEFMETHOD core::T_sp AtomTable_O::atom_table_residue_pointers() const {

@@ -140,7 +140,7 @@ namespace chem {
 
     virtual Atom_sp atomWithAtomId(const AtomId& atomId) const;
 
-    Molecule_O() : Base(), _ForceFieldName(kw::_sym_default), _Type(_Unbound<core::Symbol_O>()) {};
+    Molecule_O() : Base(), _ForceFieldName(kw::_sym_default), _Type(unbound<core::Symbol_O>()) {};
 
   public:
     virtual Matter_sp	copy(core::T_sp new_to_old);
