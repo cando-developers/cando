@@ -97,7 +97,7 @@ void MonomerNode_O::recursivelyBuildChildren(ChainNode_sp chainNode,
             % _rep_(this->_ParentPlugName) );
   } else
   {
-    this->_ParentPlugName = _Nil<core::Symbol_O>();
+    this->_ParentPlugName = nil<core::Symbol_O>();
   }
   this->_StereoisomerName = monomer->currentStereoisomerName();
   this->_Topology = monomer->currentTopology();
@@ -240,7 +240,7 @@ CL_DEFMETHOD void MonomerNode_O::setConformationIndex(size_t i) {
 
 CL_DEFMETHOD core::T_sp MonomerNode_O::parent() const {
   if (this->_Parent.boundp()) return this->_Parent;
-  return _Nil<core::T_O>();
+  return nil<core::T_O>();
 }
 
 CL_DEFMETHOD core::Symbol_sp MonomerNode_O::parentPlugName() const {

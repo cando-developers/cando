@@ -35,7 +35,7 @@ namespace chem
 {
 
     IndirectAtomCoordinateReference::IndirectAtomCoordinateReference()
-	: _SharedAtom(_Nil<Atom_O>()), _IndexTimes3(UndefinedUnsignedInt) {};
+	: _SharedAtom(nil<Atom_O>()), _IndexTimes3(UndefinedUnsignedInt) {};
 
 #ifdef XML_ARCHIVE
     void IndirectAtomCoordinateReference::archive(core::ArchiveP node)

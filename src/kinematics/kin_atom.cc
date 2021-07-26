@@ -509,7 +509,7 @@ SYMBOL_SC_(KinPkg,atom);
 core::Symbol_sp Joint_O::typeSymbol() const {_OF(); return _sym_atom;};
 
 CL_DEFMETHOD core::T_sp Joint_O::getParent() const {
-  return this->_Parent.unboundp() ? _Nil<core::T_O>() : gc::As_unsafe<core::T_sp>(this->_Parent);
+  return this->_Parent.unboundp() ? nil<core::T_O>() : gc::As_unsafe<core::T_sp>(this->_Parent);
 };
 
 

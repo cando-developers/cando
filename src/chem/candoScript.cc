@@ -203,7 +203,7 @@ CL_DEFUN core::T_sp chem__database(core::T_sp fileNameDesig, core::Fixnum_sp ove
 	LOG(BF("Opening file(%s)") % path->asString() );
 	loadCandoDatabase(path->asString(),verbosity);
 #endif
-	return _Nil<core::T_O>();
+	return nil<core::T_O>();
     }
 
 /*
@@ -242,7 +242,7 @@ CL_DEFUN core::T_sp chem__standard_database(core::T_sp pathDesig, core::T_sp loa
 	LOG(BF("About to load alchemist database(%s)") % filePath.string());
 	loadCandoDatabase(filePath.string(),verbosity);
 #endif
-	return _Nil<core::T_O>();
+	return nil<core::T_O>();
     }
 
 /*
@@ -264,7 +264,7 @@ CL_DEFUN core::T_sp chem__bundle_database_path(core::T_sp pathDesig)
     core::Str_sp fullPathName = core::Str_O::create(filePath.string());
     return fullPathName;
 #endif
-    return _Nil<core::T_O>();
+    return nil<core::T_O>();
 }
 
 
@@ -280,7 +280,7 @@ core::T_sp	prim_setDatabase(core::Function_sp e, core::Cons_sp args, core::Envir
 CandoDatabase_sp	cdb;
     cdb = args->car<CandoDatabase_O>();
     setCandoDatabase(cdb,lisp);
-    return _Nil<core::T_O>();
+    return nil<core::T_O>();
 }
 
 
@@ -600,7 +600,7 @@ core::T_sp chem__read_mol2_list_common(Mol2File& fin, core::T_sp number_to_load)
       SIMPLE_ERROR(BF("Could not get progress bar functions make-progress, progress-advance, progress-done"));
     }
   }
-  core::T_sp progress_bar = _Nil<core::T_O>();
+  core::T_sp progress_bar = nil<core::T_O>();
   if (chem__verbose(0)) {
     if (number_to_load.nilp()) {
       progress_bar = core::eval::funcall(make_progress,
@@ -623,7 +623,7 @@ core::T_sp chem__read_mol2_list_common(Mol2File& fin, core::T_sp number_to_load)
         result << tagg;
         if (chem__verbose(0)) {
           if (number_to_load.nilp()) {
-            core::eval::funcall(progress_advance, progress_bar, core::cl__file_position(fin.fIn,_Nil<core::T_O>()));
+            core::eval::funcall(progress_advance, progress_bar, core::cl__file_position(fin.fIn,nil<core::T_O>()));
           } else {
             core::eval::funcall(progress_advance, progress_bar, core::make_fixnum((size_t)num));
           }
@@ -671,7 +671,7 @@ CL_LAMBDA(matter dest-desig &optional use-sybyl-types);
 CL_DEFUN core::T_sp chem__save_mol2(Matter_sp matter, core::T_sp destDesig, bool useSybylTypes)
 {
   mol2WriteMatterToFileName(matter,destDesig,useSybylTypes);
-  return _Nil<core::T_O>();
+  return nil<core::T_O>();
 }
 
 
@@ -748,7 +748,7 @@ core::Fixnum_sp	residueSequenceNumber;
 	    return res;
 	}
     }
-    return _Nil<Residue_O>();
+    return nil<Residue_O>();
 }
 
 /*

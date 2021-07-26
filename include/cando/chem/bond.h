@@ -160,7 +160,7 @@ CL_DEFMETHOD   Atom_sp getAtom2() const { return this->_Atom2; };
 
   Bond_O( const Bond_O& bb );
 
- Bond_O() : _Properties(_Nil<core::T_O>()) {};
+ Bond_O() : _Properties(nil<core::T_O>()) {};
   virtual ~Bond_O() {};
 };
 

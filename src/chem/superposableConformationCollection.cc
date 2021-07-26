@@ -43,7 +43,7 @@ namespace chem {
 void	SuperposableConformationCollection_O::initialize()
 {
   this->Base::initialize();
-  this->_SuperposeAtomIndices = core::ComplexVector_byte32_t_O::make_vector(16,0,core::make_fixnum(0),_Nil<core::T_O>(),false,core::make_fixnum(0));
+  this->_SuperposeAtomIndices = core::ComplexVector_byte32_t_O::make_vector(16,0,core::make_fixnum(0),nil<core::T_O>(),false,core::make_fixnum(0));
   this->_RmsCutOff = 0.1;
 }
 
@@ -187,7 +187,7 @@ CL_DEFMETHOD core::T_sp	SuperposableConformationCollection_O::createEntryIfConfo
           LOG(BF("Found an identical minimum with rms(%lf)") % rms );
           LOG(BF("Entry will not be added") );
           LOG(BF("Fixed points at the end of superposer: %s") % (newConf->asXmlString().c_str() ) );
-          return _Nil<core::T_O>();
+          return nil<core::T_O>();
         }
         LOG(BF("EntryCoordinates points after superpose:%s") % (entryCoordinates->asXmlString().c_str() ) );
       }

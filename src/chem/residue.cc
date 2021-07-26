@@ -222,9 +222,9 @@ void	Residue_O::initialize()
 //    this->_Constitution = _Nil<CandoDatabaseReference_O>();
     this->_FileSequenceNumber = UndefinedUnsignedInt;
     this->_NetCharge = 0;
-    this->_MonomerAliases = _Nil<core::T_O>();
-    this->_UniqueLabel = _Nil<core::T_O>();
-    this->pdbName = _Nil<core::Symbol_O>();
+    this->_MonomerAliases = nil<core::T_O>();
+    this->_UniqueLabel = nil<core::T_O>();
+    this->pdbName = nil<core::Symbol_O>();
 }
 
 //
@@ -664,7 +664,7 @@ contentIterator	aCur;
             return a;
         }
     }
-    return _Nil<Atom_O>();
+    return nil<Atom_O>();
 }
 
 Atom_sp Residue_O::atomWithAlias(core::Symbol_sp alias)
@@ -702,7 +702,7 @@ core::T_mv Residue_O::atomWithName(MatterName name, bool errorp)
     }
   }
   if (!errorp) {
-    return Values(_Nil<core::T_O>(),_Nil<core::T_O>());
+    return Values(nil<core::T_O>(),nil<core::T_O>());
   }
   stringstream ss;
   ss << this->className() << " (" << _rep_(this->name) << ") does not contain name(" << _rep_(name) << ")";

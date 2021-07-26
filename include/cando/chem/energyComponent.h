@@ -325,7 +325,7 @@ public:
 template <typename SP>
 SP safe_alist_lookup(core::List_sp list, core::T_sp key) {
   if (list.consp()) {
-    core::T_sp entry = list.unsafe_cons()->assoc(key,_Nil<core::T_O>(),_Nil<core::T_O>(),_Nil<core::T_O>());
+    core::T_sp entry = list.unsafe_cons()->assoc(key,nil<core::T_O>(),nil<core::T_O>(),nil<core::T_O>());
     if (entry.consp()) {
       return gctools::As<SP>(CONS_CDR(entry));
     }

@@ -363,7 +363,7 @@ RestraintFixedNonbond_sp RestraintFixedNonbond_O::create(Matter_sp matter)
 
 void RestraintFixedNonbond_O::initialize()
 {
-  this->_Matter = _Nil<Matter_O>();
+  this->_Matter = nil<Matter_O>();
 }
 
 

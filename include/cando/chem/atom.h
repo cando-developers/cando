@@ -575,10 +575,10 @@ namespace chem {
 */
   Atom_O() :
     _UniqueAtomOrder(nextUniqueAtomOrder()),
-    _Alias(_Nil<core::Symbol_O>()),
+    _Alias(nil<core::Symbol_O>()),
       _Element(element_Undefined),
       _Hybridization(hybridization_undefined),
-      type(_Nil<core::Symbol_O>()),
+      type(nil<core::Symbol_O>()),
       flags(0),
       _StereochemistryType(undefinedCenter),
       _Configuration(undefinedConfiguration),

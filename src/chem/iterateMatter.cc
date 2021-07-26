@@ -128,7 +128,7 @@ CL_DEFMETHOD     bool	IterateMatter_O::advance()
 
     core::T_sp	IterateMatter_O::currentObject()
     {_OF();
-	if ( this->_IsDone ) return _Nil<Matter_O>();
+	if ( this->_IsDone ) return nil<Matter_O>();
 	Matter_sp res = this->_Loop.getMatter();
 	ASSERTNOTNULL(res);
 	return res;
@@ -193,7 +193,7 @@ CL_DEFUN core::T_sp chem__create_for_matter(Matter_sp matter)
 
     core::T_sp	IterateAtoms_O::currentObject()
     {
-	if ( this->isDone() ) return _Nil<core::T_O>();
+	if ( this->isDone() ) return nil<core::T_O>();
 	return this->_Loop.getAtom();
     }
 
@@ -224,7 +224,7 @@ CL_DEFUN core::T_sp IterateResidues_O::createForMatter(Matter_sp matter)
 
     core::T_sp	IterateResidues_O::currentObject()
     {
-	if ( this->isDone() ) return _Nil<core::T_O>();
+	if ( this->isDone() ) return nil<core::T_O>();
 	return this->_Loop.getResidue();
     }
 

@@ -98,7 +98,7 @@ FORWARD(MonomerNode);
     void fields(core::Record_sp node);
   public:
     static CheckpointOutPlugJoint_sp make(chem::OutPlug_sp outPlug);
-  CheckpointOutPlugJoint_O() : _Plug(_Nil<chem::OutPlug_O>()) {};
+  CheckpointOutPlugJoint_O() : _Plug(nil<chem::OutPlug_O>()) {};
     virtual ~CheckpointOutPlugJoint_O() {};
   public:
 	/*! The name of the plug on the other side of which the Bond1 atom
@@ -164,9 +164,9 @@ FORWARD(MonomerNode);
     virtual void extractInternalCoords(Joint_sp const& atom) {THROW_HARD_ERROR(BF("Subclass must implement"));};
 
     CL_LISPIFY_NAME(children);
-    CL_DEFMETHOD virtual core::List_sp children() const {return _Nil<core::T_O>();}
+    CL_DEFMETHOD virtual core::List_sp children() const {return nil<core::T_O>();}
     
-  JointTemplate_O() : _Parent(_Unbound<JointTemplate_O>()), _Id(-1), _Name(_Nil<core::T_O>()), _Comment("") {};
+  JointTemplate_O() : _Parent(_Unbound<JointTemplate_O>()), _Id(-1), _Name(nil<core::T_O>()), _Comment("") {};
     virtual ~JointTemplate_O() {};
   };
 
@@ -254,7 +254,7 @@ FORWARD(MonomerNode);
 
 
 //	DEFAULT_CTOR_DTOR(DelayedBondedJointTemplate_O);	
-  DelayedBondedJointTemplate_O() : _Checkpoint(_Nil<CheckpointJoint_O>()) {};
+  DelayedBondedJointTemplate_O() : _Checkpoint(nil<CheckpointJoint_O>()) {};
     virtual ~DelayedBondedJointTemplate_O() {};
   };
 

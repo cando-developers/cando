@@ -878,7 +878,7 @@ CL_DEFMETHOD void SketchFunction_O::resetSketchFunction()
 
 
 core::List_sp SketchFunction_O::allComponents() const {
-  core::List_sp result = _Nil<core::T_O>();
+  core::List_sp result = nil<core::T_O>();
   result = core::Cons_O::create(this->_Nonbond,result);
   result = core::Cons_O::create(this->_PointToLineRestraint,result);
   result = core::Cons_O::create(this->_OutOfZPlane,result);

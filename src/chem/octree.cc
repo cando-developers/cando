@@ -2228,7 +2228,7 @@ core::T_sp AddIonOctree_O::rOctreeCheckSolvent( /*AddIonOctree_sp octTree,*/ Vec
   if (!this->OctNodeCheckSolvent( this->onHead ) ) {
     printf("Completely out of solvent bounding area\n");
 //		return(NULL);
-    return(_Nil<core::T_O>());
+    return(nil<core::T_O>());
   }
   
 	/*
@@ -2244,7 +2244,7 @@ core::T_sp AddIonOctree_O::rOctreeCheckSolvent( /*AddIonOctree_sp octTree,*/ Vec
   }
   printf("No overlap w/ solvent\n");
 //	return(NULL);
-  return(_Nil<core::T_O>());
+  return(nil<core::T_O>());
 }
 
 
@@ -2279,7 +2279,7 @@ core::T_mv chem__oct_tree_find_closest_atom(AddIonOctree_sp oct_tree, const Vect
   if (!oct_tree->OctNodeCheckSolvent( oct_tree->onHead ) ) {
 //    printf("Completely out of solvent bounding area\n");
 //		return(NULL);
-    return(_Nil<core::T_O>());
+    return(nil<core::T_O>());
   }
   
 	/*
@@ -2294,7 +2294,7 @@ core::T_mv chem__oct_tree_find_closest_atom(AddIonOctree_sp oct_tree, const Vect
   }
   // printf("No overlap w/ solvent\n");
 //	return(NULL);
-  return(_Nil<core::T_O>());
+  return(nil<core::T_O>());
 }
 
 GenericOctree_sp GenericOctree_O::make(const Vector3& origin, const Vector3& halfDimension)

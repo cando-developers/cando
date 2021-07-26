@@ -118,12 +118,12 @@ class CDNode_O : public core::CxxObject_O
 
   CDNode_O( const CDNode_O& ss ); //!< Copy constructor
 
- CDNode_O() : _Atom(_Nil<core::T_O>())
-    , _BackSpan(_Nil<core::T_O>())
-    , _NextSpan(_Nil<core::T_O>())
-    , _AtomProperties(_Nil<core::T_O>())
-    , _ResidueProperties(_Nil<core::T_O>())
-    , _MoleculeProperties(_Nil<core::T_O>())
+ CDNode_O() : _Atom(nil<core::T_O>())
+    , _BackSpan(nil<core::T_O>())
+    , _NextSpan(nil<core::T_O>())
+    , _AtomProperties(nil<core::T_O>())
+    , _ResidueProperties(nil<core::T_O>())
+    , _MoleculeProperties(nil<core::T_O>())
   {};
   virtual ~CDNode_O() {};
 };
@@ -240,7 +240,7 @@ CL_DEFMETHOD core::T_sp getMolecule() { return this->_Molecule; };
 
     CDFragment_O( const CDFragment_O& ss ); //!< Copy constructor
 
- CDFragment_O() : _Molecule(_Nil<core::T_O>()) {};
+ CDFragment_O() : _Molecule(nil<core::T_O>()) {};
     virtual ~CDFragment_O() {};
 };
 
@@ -257,7 +257,7 @@ class CDText_O : public core::CxxObject_O
   core::T_sp		_Code;
  public:
   bool parseFromXml(adapt::QDomNode_sp xml, bool print);
- CDText_O() : _Code(_Nil<core::T_O>()) {};
+ CDText_O() : _Code(nil<core::T_O>()) {};
 };
 
 
@@ -316,7 +316,7 @@ class ChemDraw_O : public core::CxxObject_O
     */
   Aggregate_sp asAggregate();
 
- ChemDraw_O() : _Code(_Nil<core::T_O>()) {};
+ ChemDraw_O() : _Code(nil<core::T_O>()) {};
 };
 
 

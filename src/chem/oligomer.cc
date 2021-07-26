@@ -178,7 +178,7 @@ CL_LISPIFY_NAME("couplings-as-list");
 CL_DEFMETHOD core::List_sp Oligomer_O::couplingsAsList()
 {
   ql::list result;
-  core::List_sp cons = _Nil<core::T_O>();
+  core::List_sp cons = nil<core::T_O>();
   gctools::Vec0<Coupling_sp>::iterator	mi;
   for ( mi=this->_Couplings.begin(); mi!=this->_Couplings.end(); mi++ )
   {
@@ -282,7 +282,7 @@ CL_DEFMETHOD Monomer_sp Oligomer_O::getMonomerWithId(core::Symbol_sp id)
     {
 	if ( (*mi)->getId() == id ) return *mi;
     }
-    return _Nil<Monomer_O>();
+    return nil<Monomer_O>();
 }
 
 
@@ -820,7 +820,7 @@ CL_DEFMETHOD Monomer_sp	Oligomer_O::getFirstMonomer()
     if ( this->_Monomers.size() != 0 ) {
         return this->_Monomers[0];
     }
-    return _Nil<Monomer_O>();
+    return nil<Monomer_O>();
 }
 
 

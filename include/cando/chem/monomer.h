@@ -271,7 +271,7 @@ public:
 //    CL_DEFMETHOD virtual bool recognizesAlias(Alias_sp alias);
 public:
   Monomer_O(const Monomer_O& other);
-  Monomer_O() : _Id(_Nil<core::T_O>()), _CurrentMonomerIndex(0), _CurrentStereoisomerOffset(0) {};
+  Monomer_O() : _Id(nil<core::T_O>()), _CurrentMonomerIndex(0), _CurrentStereoisomerOffset(0) {};
 };
 };
 

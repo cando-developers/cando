@@ -401,10 +401,10 @@ CL_DEFMETHOD     core::T_sp	ZMatrixDihedralInternal_O::getDihedralAtomZMatrixNam
     {
 	this->Base::initialize();
 	this->_ZMatrixAtomName = _Unbound<core::T_O>();
-	this->_Atom = _Nil<Atom_O>();
-	this->_Bond = _Nil<ZMatrixBondInternal_O>();
-	this->_Angle = _Nil<ZMatrixAngleInternal_O>();
-	this->_Dihedral = _Nil<ZMatrixDihedralInternal_O>();
+	this->_Atom = nil<Atom_O>();
+	this->_Bond = nil<ZMatrixBondInternal_O>();
+	this->_Angle = nil<ZMatrixAngleInternal_O>();
+	this->_Dihedral = nil<ZMatrixDihedralInternal_O>();
     }
 
 //
@@ -633,7 +633,7 @@ CL_DEFMETHOD     ZMatrixEntry_sp ZMatrix_O::zMatrixEntryWithName(core::T_sp atom
 	{
 	    if ( (*it)->getTargetAtomZMatrixName()==atomZMatrixName) return *it;
 	}
-	return _Nil<ZMatrixEntry_O>();
+	return nil<ZMatrixEntry_O>();
     }
 
 

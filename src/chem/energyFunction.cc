@@ -140,7 +140,7 @@ void energyFunction_initializeSmarts()
 
   _sym_STARparserNodeHolderSTAR->defparameter(adapt::IndexedObjectBag_O::create());
   energyFunctionInitialized = true;
-  SmartsRoot_sp secondaryAmide = chem__compile_smarts("[$([N:1]([C:2])(~[#1:3])~[C:4](=[O:5])[C:6])]",_Nil<core::T_O>());
+  SmartsRoot_sp secondaryAmide = chem__compile_smarts("[$([N:1]([C:2])(~[#1:3])~[C:4](=[O:5])[C:6])]",nil<core::T_O>());
   _sym_STARsecondaryAmideSmartsSTAR->defparameter(secondaryAmide);
 }
 
@@ -218,8 +218,8 @@ void	EnergyFunction_O::initialize()
   this->_DihedralRestraint = EnergyDihedralRestraint_O::create();
   this->_FixedNonbondRestraint = EnergyFixedNonbondRestraint_O::create();
 #endif
-  this->setScoringFunctionName(_Nil<core::T_O>());
-  this->_Message = _Nil<core::T_O>();
+  this->setScoringFunctionName(nil<core::T_O>());
+  this->_Message = nil<core::T_O>();
   this->useDefaultSettings();
 }
 
@@ -923,9 +923,9 @@ ForceMatchReport_sp EnergyFunction_O::checkIfAnalyticalForceMatchesNumericalForc
 
   numForce = NVector_O::create(pos->size());
   this->evaluateNumericalForce(pos,numForce,DELTA);
-  dot = dotProduct(numForce,analyticalForce,_Nil<core::T_O>());
-  numericalMag = magnitude(numForce,_Nil<core::T_O>());
-  analyticalMag = magnitude(analyticalForce,_Nil<core::T_O>());
+  dot = dotProduct(numForce,analyticalForce,nil<core::T_O>());
+  numericalMag = magnitude(numForce,nil<core::T_O>());
+  analyticalMag = magnitude(analyticalForce,nil<core::T_O>());
   tempForce = NVector_O::create(pos->size());
     	// Evaluate the force at pos again
   this->evaluateEnergyForce(pos,true,tempForce);
@@ -1187,7 +1187,7 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, bool useEx
     SIMPLE_ERROR(BF("You can only define energy functions for Aggregates or Molecules"));
   }
 
-  core::DynamicScopeManager scope(_sym_STARparameter_warningsSTAR,_Nil<core::T_O>());
+  core::DynamicScopeManager scope(_sym_STARparameter_warningsSTAR,nil<core::T_O>());
   
 	//
 	// Identify rings
@@ -2058,7 +2058,7 @@ EnergyAtom*	EnergyFunction_O::getEnergyAtomPointer(Atom_sp a)
 
 void	EnergyFunction_O::dealWithProblem(core::Symbol_sp problem, core::T_sp error_args)
 {_OF();
-  core::List_sp atoms = _Nil<core::T_O>();
+  core::List_sp atoms = nil<core::T_O>();
   if ( error_args.consp() && CONS_CAR(error_args) == kw::_sym_atoms ) {
     atoms = atoms;
   }

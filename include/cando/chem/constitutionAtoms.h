@@ -104,7 +104,7 @@ It stores the atom name, element, properties and a vector of bonds in the form o
 	/*! Append a ConstitutionBond_sp to our list of bonds */
     void addConstitutionBond(ConstitutionBond_sp cb) {this->_Bonds.push_back(cb);};
     ConstitutionAtom_O(MatterName atomName, Element element, core::T_sp atomType, size_t index, StereochemistryType stype, core::List_sp properties ) : _AtomName(atomName), _Element(element), _AtomType(atomType), _Index(index), _StereochemistryType(stype), _Properties(properties) {};
-    ConstitutionAtom_O() : _AtomType(_Nil<core::T_O>()) {};
+    ConstitutionAtom_O() : _AtomType(nil<core::T_O>()) {};
     virtual Atom_sp buildAtom() const;
   };
 
@@ -126,7 +126,7 @@ CL_DEFUN inline ConstitutionAtom_sp makeConstitutionAtom(chem::MatterName unique
 
   public:
   ConstitutionVirtualAtom_O(MatterName atomname, Element element, size_t index, StereochemistryType stype, core::List_sp properties, CalculatePosition_sp calcPos) :
-    ConstitutionAtom_O(atomname,element,_Nil<core::T_O>(),index,stype,properties), _CalculatePositionCode(calcPos) {};
+    ConstitutionAtom_O(atomname,element,nil<core::T_O>(),index,stype,properties), _CalculatePositionCode(calcPos) {};
     ConstitutionVirtualAtom_O() {};
     virtual Atom_sp buildAtom() const;
   };

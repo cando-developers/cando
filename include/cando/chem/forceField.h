@@ -228,7 +228,7 @@ public:
   core::T_sp assignForceFieldTypes(Matter_sp molecule);
   void assignMolecularEnergyTables(Matter_sp molecule,core::T_sp activeAtoms);
   
-  CombinedForceField_O() : _ForceFields(_Nil<core::T_O>()) {};
+  CombinedForceField_O() : _ForceFields(nil<core::T_O>()) {};
 };
 
 };

@@ -87,7 +87,7 @@ Matter_sp VirtualAtom_O::copy()
 void	VirtualAtom_O::initialize()
 {
     this->Base::initialize();
-    this->_CalculatePosition = _Nil<CalculatePosition_O>();
+    this->_CalculatePosition = nil<CalculatePosition_O>();
 }
 
 #if 0

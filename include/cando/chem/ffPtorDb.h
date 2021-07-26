@@ -129,7 +129,7 @@ namespace chem
 
 	virtual	ParameterType	type() { return ptor;};
 	virtual	string		levelDescription();
-    FFPtor_O() : _HasScee(false), _Scee(-1.0), _HasScnb(false), _Scnb(-1.0), _Comment(_Nil<core::T_O>()) {};
+    FFPtor_O() : _HasScee(false), _Scee(-1.0), _HasScnb(false), _Scnb(-1.0), _Comment(nil<core::T_O>()) {};
     };
 
 

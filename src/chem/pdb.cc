@@ -231,7 +231,7 @@ Aggregate_sp	EntirePdbRec::createAggregate()
       { _BLOCK_TRACEF(BF("Creating molecule with moleculeIdx: %d") % ai->_moleculeIdx );
         moleculeIdx = ai->_moleculeIdx;
         ASSERT((unsigned)(moleculeIdx)==this->_molecules.size());
-        this->_molecules.resize(moleculeIdx+1,_Nil<Molecule_O>());
+        this->_molecules.resize(moleculeIdx+1,nil<Molecule_O>());
         Molecule_sp mol = Molecule_O::create();
         mol->setName(chemkw_intern(ai->_chainId));
         this->_molecules[moleculeIdx] = mol;
@@ -338,10 +338,10 @@ Aggregate_sp PdbReader_O::loadPdb(core::T_sp fileName)
   core::T_sp stream = cl__open(fileName,
                                kw::_sym_input,
                                cl::_sym_character,
-                               _Nil<T_O>(), false,
-                               _Nil<T_O>(), false,
+                               nil<T_O>(), false,
+                               nil<T_O>(), false,
                                kw::_sym_default,
-                               _Nil<T_O>());
+                               nil<T_O>());
   Aggregate_sp agg = pdb->parse(stream);
   return agg;
 }
@@ -360,10 +360,10 @@ Aggregate_sp PdbReader_O::loadPdbConnectAtoms(core::T_sp fileName)
   core::T_sp stream = cl__open(fileName,
                                kw::_sym_input,
                                cl::_sym_character,
-                               _Nil<T_O>(), false,
-                               _Nil<T_O>(), false,
+                               nil<T_O>(), false,
+                               nil<T_O>(), false,
                                kw::_sym_default,
-                               _Nil<T_O>());
+                               nil<T_O>());
   Aggregate_sp agg = pdb->parse(stream);
   chem__connectAtomsInMatterInCovalentContact(agg);
   return agg;
@@ -406,7 +406,7 @@ Aggregate_sp PdbReader_O::parse(core::T_sp stream)
   int moleculeIdx = 0;
   {_BLOCK_TRACE("Parsing file");
     while ( true ) {
-      core::T_mv line = cl__read_line(stream,_Nil<core::T_O>(),_Nil<core::T_O>(),_Nil<core::T_O>());
+      core::T_mv line = cl__read_line(stream,nil<core::T_O>(),nil<core::T_O>(),nil<core::T_O>());
       if (line.nilp()) break;
       string oneLine = gc::As<core::String_sp>(line)->get_std_string();
       LOG(BF("PDB line |%s|") % oneLine.c_str()  );
@@ -466,7 +466,7 @@ core::T_sp PdbWriter_O::__init__(core::Function_sp exec, core::Cons_sp args,
 void	PdbWriter_O::initialize()
 {
   this->Base::initialize();
-  this->_Out = _Nil<core::T_O>();
+  this->_Out = nil<core::T_O>();
 }
 
 

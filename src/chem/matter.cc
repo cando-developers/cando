@@ -96,7 +96,7 @@ Matter_O::Matter_O( const Matter_O& c ) : core::CxxObject_O(c)
   this->name = c.name;
 //	this->containerContainedBy = c.containerContainedBy;
   this->_Properties = c._Properties; // You can't call allocators in ctors core::cl__copy_list(c._Properties);
-  this->_RestraintList = _Nil<T_O>();
+  this->_RestraintList = nil<T_O>();
 }
 
 //
@@ -153,13 +153,13 @@ core::List_sp Matter_O::accumulateRestraints(core::List_sp allRestraints) const
 CL_LISPIFY_NAME("allRestraints");
 CL_DEFMETHOD core::List_sp Matter_O::allRestraints() const
 {
-  return this->accumulateRestraints(_Nil<core::T_O>());
+  return this->accumulateRestraints(nil<core::T_O>());
 }
 
 CL_LISPIFY_NAME("clearRestraints");
 CL_DEFMETHOD void Matter_O::clearRestraints()
 {
-  this->_RestraintList = _Nil<core::T_O>();
+  this->_RestraintList = nil<core::T_O>();
 }
 
 CL_LISPIFY_NAME("addRestraint");
@@ -376,7 +376,7 @@ CL_DEFMETHOD core::T_sp   Matter_O::contentWithNameOrNil(MatterName sName )
   for ( aCur=this->begin_contents();aCur!=this->end_contents(); aCur++ ) {
     if ( (*aCur)->getName() == sName ) return( (*aCur) );
   }
-  return _Nil<core::T_O>();
+  return nil<core::T_O>();
 }
 
 
@@ -963,7 +963,7 @@ CL_DEFMETHOD core::List_sp Matter_O::contentsAsList()
 CL_LISPIFY_NAME("allAtoms");
 CL_DEFMETHOD core::Vector_sp	Matter_O::allAtoms()
 {
-  core::ComplexVector_T_sp	atoms = core::ComplexVector_T_O::make(8,_Nil<T_O>(),core::clasp_make_fixnum(0));
+  core::ComplexVector_T_sp	atoms = core::ComplexVector_T_O::make(8,nil<T_O>(),core::clasp_make_fixnum(0));
   Loop		la;
   la.loopTopGoal(this->sharedThis<Matter_O>(),ATOMS);
   while ( la.advanceLoopAndProcess() )
@@ -976,7 +976,7 @@ CL_DEFMETHOD core::Vector_sp	Matter_O::allAtoms()
 
 core::Vector_sp	Matter_O::allAtomsOfElement(Element element)
 {
-  core::ComplexVector_T_sp atoms = core::ComplexVector_T_O::make(8,_Nil<T_O>(),core::clasp_make_fixnum(0));
+  core::ComplexVector_T_sp atoms = core::ComplexVector_T_O::make(8,nil<T_O>(),core::clasp_make_fixnum(0));
   Loop		la;
   Atom_sp		a;
   la.loopTopGoal(this->sharedThis<Matter_O>(),ATOMS);
@@ -1004,7 +1004,7 @@ CL_DEFMETHOD Residue_sp	Matter_O::aliasResidueOrNil(Alias_sp alias)
       return lRes.getResidue();
     }
   }
-  return _Nil<Residue_O>();
+  return nil<Residue_O>();
 }
 
 CL_LISPIFY_NAME("aliasResidue");
@@ -1019,7 +1019,7 @@ CL_LISPIFY_NAME("aliasAtomOrNil");
 CL_DEFMETHOD Atom_sp	Matter_O::aliasAtomOrNil(Alias_sp alias)
 {
   Residue_sp res = this->aliasResidueOrNil(alias);
-  if ( res.nilp() ) return _Nil<Atom_O>();
+  if ( res.nilp() ) return nil<Atom_O>();
   return res->atomWithAliasOrNil(alias->getAtomAlias());
 }
 
@@ -1038,7 +1038,7 @@ CL_DEFMETHOD Atom_sp Matter_O::aliasAtom(Alias_sp alias)
 CL_LISPIFY_NAME("allAtomsOfElementAsList");
 CL_DEFMETHOD core::List_sp Matter_O::allAtomsOfElementAsList(Element element)
 {
-  core::List_sp		list(_Nil<core::T_O>());
+  core::List_sp		list(nil<core::T_O>());
   Loop		la;
   Atom_sp		a;
 //  printf("%s:%d   At start list = |%s| list.nilp()--> %d  list@%p\n", __FILE__, __LINE__, _rep_(list).c_str(), list.nilp(), list.raw_());
@@ -1084,7 +1084,7 @@ geom::Render_sp Matter_O::rendered(core::List_sp kopts)
 CL_LISPIFY_NAME("allAtomsAsList");
 CL_DEFMETHOD core::List_sp Matter_O::allAtomsAsList(bool allowVirtualAtoms ) const
 {_OF();
-  core::List_sp result = _Nil<core::T_O>();
+  core::List_sp result = nil<core::T_O>();
   Loop l(this->const_sharedThis<Matter_O>(),ATOMS);
   while ( l.advance() )
   {
@@ -1100,7 +1100,7 @@ CL_DEFMETHOD core::List_sp Matter_O::allAtomsAsList(bool allowVirtualAtoms ) con
 CL_LISPIFY_NAME("allBondsAsList");
 CL_DEFMETHOD core::List_sp Matter_O::allBondsAsList(bool allowVirtualAtoms ) const
 {_OF();
-  core::List_sp result = _Nil<core::List_V>();
+  core::List_sp result = nil<core::List_V>();
   Loop l(this->const_sharedThis<Matter_O>(),BONDS);
   while ( l.advance() )
   {
@@ -1131,7 +1131,7 @@ core::HashTable_sp Matter_O::atomToResidueMap() {
 CL_LISPIFY_NAME("allAnglesAsList");
 CL_DEFMETHOD core::List_sp Matter_O::allAnglesAsList(bool allowVirtualAtoms ) const
 {_OF();
-  core::List_sp result = _Nil<core::T_O>();
+  core::List_sp result = nil<core::T_O>();
   Loop l(this->const_sharedThis<Matter_O>(),ANGLES);
   while ( l.advance() )
   {
@@ -1152,7 +1152,7 @@ CL_DEFMETHOD core::List_sp Matter_O::allAnglesAsList(bool allowVirtualAtoms ) co
 CL_LISPIFY_NAME("allImproperTorsionsAsList");
 CL_DEFMETHOD core::List_sp Matter_O::allImproperTorsionsAsList(bool allowVirtualAtoms ) const
 {_OF();
-  core::List_sp result = _Nil<core::List_V>();
+  core::List_sp result = nil<core::List_V>();
   Loop l(this->const_sharedThis<Matter_O>(),IMPROPERS);
   {_BLOCK_TRACE("Iterating over loop");
     int count=0;
@@ -1181,7 +1181,7 @@ CL_DEFMETHOD core::List_sp Matter_O::allImproperTorsionsAsList(bool allowVirtual
 CL_LISPIFY_NAME("allProperTorsionsAsList");
 CL_DEFMETHOD core::List_sp Matter_O::allProperTorsionsAsList(bool allowVirtualAtoms ) const
 {_OF();
-  core::List_sp result = _Nil<core::T_O>();
+  core::List_sp result = nil<core::T_O>();
   Loop l(this->const_sharedThis<Matter_O>(),PROPERS);
   while ( l.advance() )
   {
@@ -1215,7 +1215,7 @@ void Matter_O::redirectAtoms()
 
 void Matter_O::copyRestraintsDontRedirectAtoms(Matter_sp orig)
 {_OF();
-  this->_RestraintList = _Nil<core::T_O>();
+  this->_RestraintList = nil<core::T_O>();
   for ( auto cur : orig->_RestraintList ) {
     Restraint_sp restraint = gc::As<Restraint_sp>(CONS_CAR(cur));
     Restraint_sp copy_restraint = restraint->copyDontRedirectAtoms();

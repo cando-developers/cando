@@ -280,8 +280,8 @@ core::T_sp mol2Read(Mol2File& fIn)
   uint				lastmId;
   bool				sawSubStructure = false;
   bool  firstMolecule = true;
-  core::List_sp boundingBox = _Nil<core::T_O>();
-  core::T_sp solventName = _Nil<core::T_O>();
+  core::List_sp boundingBox = nil<core::T_O>();
+  core::T_sp solventName = nil<core::T_O>();
   size_t atom_counter = 0;
   while ( !fIn.eof() ) {
     line = fIn.line().str();
@@ -400,7 +400,7 @@ core::T_sp mol2Read(Mol2File& fIn)
       if (pbc_type == 0) {
         // Skip the pbc - there is none
         for ( size_t xx = 0; xx<6; ++xx) words.pop();
-        boundingBox = _Nil<core::T_O>();
+        boundingBox = nil<core::T_O>();
       } else if (pbc_type ==1) {
         // Rectanglar pbc
         double values[6];
@@ -487,7 +487,7 @@ core::T_sp mol2Read(Mol2File& fIn)
       }
     }
   }
-  if (molecules.size()==0) return _Nil<core::T_O>();
+  if (molecules.size()==0) return nil<core::T_O>();
     //
     // First create all of the Aggregate
     //	(Tripos calls this a molecule and it can have multiple chains.)
@@ -495,7 +495,7 @@ core::T_sp mol2Read(Mol2File& fIn)
   auto mi = molecules.begin();
   Aggregate_sp aggregate = Aggregate_O::create();
   if (boundingBox.notnilp()) {
-    BoundingBox_sp bb = BoundingBox_O::make(boundingBox,_Nil<core::T_O>(),_Nil<core::T_O>());
+    BoundingBox_sp bb = BoundingBox_O::make(boundingBox,nil<core::T_O>(),nil<core::T_O>());
     aggregate->setBoundingBox(bb);
   }
   aggregate->setName(chemkw_intern(moleculeName));
@@ -750,7 +750,7 @@ void	mol2WriteAggregateStream( Aggregate_sp agg, std::ostream &out, bool useSyby
             core::Symbol_sp type = gc::As<core::Symbol_sp>(a->getType());
             one._Type = type;
           } else {
-            one._Type = _Nil<core::Symbol_O>();
+            one._Type = nil<core::Symbol_O>();
           }
         }
         one._Residue = r;
@@ -763,8 +763,8 @@ void	mol2WriteAggregateStream( Aggregate_sp agg, std::ostream &out, bool useSyby
 
         // Figure out if there is a solvent residue and a bounding box
 
-  core::Symbol_sp solventName = _Nil<core::T_O>();
-  core::T_sp boundingBox = _Nil<core::T_O>();
+  core::Symbol_sp solventName = nil<core::T_O>();
+  core::T_sp boundingBox = nil<core::T_O>();
   {
     Loop lMol;
     loop.loopTopGoal(agg,MOLECULES);

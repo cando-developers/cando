@@ -107,7 +107,7 @@ CL_DEFMETHOD     chem::Atom_sp tag(core::T_sp tag) { return this->getAtomWithTag
 	 */
     BoundFrame_sp boundFrame();
 
-    ChemInfoMatch_O(Root_sp root, size_t maxtagPlus1) : _Root(root), _Matches(false), _MaxTagPlus1(maxtagPlus1), _TagHistory(_Nil<core::T_O>()) {};
+    ChemInfoMatch_O(Root_sp root, size_t maxtagPlus1) : _Root(root), _Matches(false), _MaxTagPlus1(maxtagPlus1), _TagHistory(nil<core::T_O>()) {};
   };
 
 
@@ -342,12 +342,12 @@ public:
     auto  obj  = gctools::GC<Logical_O>::allocate_with_default_constructor();
     obj->_Operator = op;
     if (a1.nilp()) {
-      obj->_Left = _Nil<core::T_O>();
+      obj->_Left = nil<core::T_O>();
     } else {
       obj->_Left = gc::As<ChemInfoNode_sp>(a1);
     }
     if (a2.nilp()) {
-      obj->_Right = _Nil<core::T_O>();
+      obj->_Right = nil<core::T_O>();
     } else {
       obj->_Right = gc::As<ChemInfoNode_sp>(a2);
     }
@@ -356,9 +356,9 @@ public:
   static Logical_sp create( LogicalOperatorType op, core::T_sp a1)
   {_G();
     if (a1.nilp()) {
-      return create(op ,_Nil<core::T_O>(), _Nil<core::T_O>());
+      return create(op ,nil<core::T_O>(), nil<core::T_O>());
     } else {
-      return create(op, a1, _Nil<core::T_O>());
+      return create(op, a1, nil<core::T_O>());
     }
 
   };
@@ -381,7 +381,7 @@ public:
   static Logical_sp create_logHighPrecedenceAnd(core::T_sp nilOrOp1, core::T_sp nilOrOp2);
   virtual core::T_sp children();
   LogicalOperatorType logical_operator() const;
-  Logical_O() : _Operator(logAlwaysTrue), _Left(_Nil<ChemInfoNode_O>()), _Right(_Nil<ChemInfoNode_O>()) {};
+  Logical_O() : _Operator(logAlwaysTrue), _Left(nil<ChemInfoNode_O>()), _Right(nil<ChemInfoNode_O>()) {};
   virtual ~Logical_O() {};
 };
 
@@ -663,7 +663,7 @@ public:
     obj->_SymbolArg = sym;
     return obj;
   };
-  static AtomTest_sp create( AtomTestEnum t) { return create( t, 0, 0, NULL, _Nil<core::Symbol_O>());};
+  static AtomTest_sp create( AtomTestEnum t) { return create( t, 0, 0, NULL, nil<core::Symbol_O>());};
   CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPElectronegativeElement() { return create(SAPElectronegativeElement); };
   CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPAliphatic() { return create(SAPAliphatic); };
   CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPAromatic() { return create(SAPAromatic); };
@@ -672,7 +672,7 @@ public:
   CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPPiBondOrbital() { return create(SAPPiBondOrbital); };
   CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPWildCard() { return create(SAPWildCard); };
 
-  static AtomTest_sp create( AtomTestEnum t, int iArg ) { return create(  t, iArg, 0, NULL,_Nil<core::Symbol_O>() );};
+  static AtomTest_sp create( AtomTestEnum t, int iArg ) { return create(  t, iArg, 0, NULL,nil<core::Symbol_O>() );};
   CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPAromaticPiElectron(int intVal) { return create(SAPAromaticPiElectron,intVal); };
   CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPAtomicMass(int intVal) { return create(SAPAtomicMass,intVal); };
   CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPAtomicNumber(int intVal) { return create(SAPAtomicNumber,intVal); };
@@ -698,12 +698,12 @@ public:
 
   static AtomTest_sp create( AtomTestEnum t, int iArg, int num ) 
   {_G();
-    return create( t, iArg, num, NULL,_Nil<core::Symbol_O>() );
+    return create( t, iArg, num, NULL,nil<core::Symbol_O>() );
   };
   static AtomTest_sp create( AtomTestEnum t, const char* el ) 
   {_G();
     LOG(BF("Create an AtomTest with string argument: %s")%el);
-    return create( t, 0, 0, el,_Nil<core::Symbol_O>());
+    return create( t, 0, 0, el,nil<core::Symbol_O>());
   };
   static AtomTest_sp create( AtomTestEnum t, core::Symbol_sp sym) {return create( t, 0, 0, NULL, sym );}
 
@@ -773,10 +773,10 @@ public:
   virtual string asSmarts() const;
 
   virtual core::T_sp children() {
-    return _Nil<core::T_O>();
+    return nil<core::T_O>();
   };
 
-  AtomTest_O() : _Test(SAPNone), _IntArg(0), _NumArg(0), _StringArg(""), _SymbolArg(_Nil<core::Symbol_O>()) {};
+  AtomTest_O() : _Test(SAPNone), _IntArg(0), _NumArg(0), _StringArg(""), _SymbolArg(nil<core::Symbol_O>()) {};
   virtual ~AtomTest_O() {};
 };
 
@@ -829,7 +829,7 @@ public:
                                              int     numberOfElectronWithdrawingGroups )
   {_G();
     gc::Nilable<AtomOrBondMatchNode_sp> atomicProperty;
-    atomicProperty = _Nil<core::T_O>();
+    atomicProperty = nil<core::T_O>();
     return create( residueNames, atomicNumber, numberOfAttachedAtoms, numberOfAttachedHydrogens, numberOfElectronWithdrawingGroups, atomicProperty);
   };
 public:
@@ -871,12 +871,12 @@ public:
 //      obj->_Head = head;
 //      obj->_Tail = tail;
     if (head.nilp()){
-      obj->_Head =  _Nil<core::T_O>();
+      obj->_Head =  nil<core::T_O>();
     } else {
       obj->_Head =  gc::As<BondMatchNode_sp>(head);
     } 
     if (tail.nilp()){
-      obj->_Tail =  _Nil<core::T_O>();
+      obj->_Tail =  nil<core::T_O>();
     } else {
       obj->_Tail =  gc::As<BondListMatchNode_sp>(tail);
     } 
@@ -888,9 +888,9 @@ public:
   CL_DEF_CLASS_METHOD static Chain_sp create_head( core::T_sp head )
   {
     if (head.nilp()){
-      return create_head_tail(_Nil<core::T_O>(),_Nil<BondListMatchNode_O>());
+      return create_head_tail(nil<core::T_O>(),nil<BondListMatchNode_O>());
     } else {
-      return create_head_tail(head,_Nil<BondListMatchNode_O>());
+      return create_head_tail(head,nil<BondListMatchNode_O>());
     }
   }
   CL_DEF_CLASS_METHOD static Chain_sp create_empty_chain() {
@@ -907,7 +907,7 @@ public:
   CL_DEFMETHOD void chain_set_tail(core::T_sp tail) {
     if (tail.nilp())
     {
-      this->_Tail =   _Nil<core::T_O>();
+      this->_Tail =   nil<core::T_O>();
     } else {
       this->_Tail = tail;
     }
@@ -916,7 +916,7 @@ public:
   BondMatchNode_sp chain_get_head() { return this->_Head; };
   BondListMatchNode_sp chain_get_tail();
   virtual core::T_sp children();
-  Chain_O() : _Head(_Nil<BondMatchNode_O>()), _Tail(_Nil<BondListMatchNode_O>()) {};
+  Chain_O() : _Head(nil<BondMatchNode_O>()), _Tail(nil<BondListMatchNode_O>()) {};
 };
 
 
@@ -951,12 +951,12 @@ public:
     _G();
     auto  obj  = gctools::GC<Branch_O>::allocate_with_default_constructor();
     if(left.nilp()){
-      obj->_Left = _Nil<core::T_O>();
+      obj->_Left = nil<core::T_O>();
     } else {       
       obj->_Left = gc::As<BondListMatchNode_sp>(left);
     }
     if(right.nilp()){
-      obj->_Right = _Nil<core::T_O>();
+      obj->_Right = nil<core::T_O>();
     } else {       
       obj->_Right = gc::As<BondListMatchNode_sp>(right);
     }
@@ -969,7 +969,7 @@ public:
     _G();
     auto  obj  = gctools::GC<Branch_O>::allocate_with_default_constructor();
     obj->_Left = left;
-    obj->_Right = _Nil<core::T_O>();
+    obj->_Right = nil<core::T_O>();
     return obj;
   }
 public:
@@ -1061,15 +1061,15 @@ public:
   void setTests(core::List_sp tests);
   void addTest(core::Symbol_sp testSymbol, core::Function_sp testCode);
   bool evaluateTest(core::Symbol_sp testSym, Atom_sp atom);
-  virtual core::Symbol_sp getAssignType() { return _Nil<core::Symbol_O>();};
+  virtual core::Symbol_sp getAssignType() { return nil<core::Symbol_O>();};
   virtual core::T_sp children();
 public:
   virtual	ChemInfoType	type() { return root; };
   virtual	bool		matches_Atom( Root_sp root, chem::Atom_sp atom );
   virtual	bool		matches_Bond( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );
-  Root_O(const std::string& code, ChemInfoNode_sp node, size_t maxtag) : _Code(code), _Node(node), _Tests(_Nil<core::T_O>()), _MaxTag(maxtag) {}
+  Root_O(const std::string& code, ChemInfoNode_sp node, size_t maxtag) : _Code(code), _Node(node), _Tests(nil<core::T_O>()), _MaxTag(maxtag) {}
   Root_O(const std::string& code) : _Code(code) {};
-  Root_O() : _Code(""), _Node(_Nil<core::T_O>()), _Tests(_Nil<core::T_O>()), _MaxTag(0) {};
+  Root_O() : _Code(""), _Node(nil<core::T_O>()), _Tests(nil<core::T_O>()), _MaxTag(0) {};
 };
 
 

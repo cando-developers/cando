@@ -65,7 +65,7 @@ namespace chem
 	this->Base::initialize();
 	this->_Binder = core::HashTableEq_O::create_default();
 	this->_FinalCoordinates = geom::SimpleVectorCoordinate_O::create();
-	this->_WeakConformationExplorerEntry = _Nil<ConformationExplorerEntry_O>();
+	this->_WeakConformationExplorerEntry = nil<ConformationExplorerEntry_O>();
 	this->_Complete = true;
 	this->_EnergyKCal = 0.0;
 	this->_ExternalInterfaceName = _Unbound<core::T_O>();
@@ -334,7 +334,7 @@ CL_DEFMETHOD     ConformationExplorerEntryStage_sp ConformationExplorerEntry_O::
     {
 	if ( !this->hasSelectedStage() )
 	{
-	    return _Nil<ConformationExplorerEntryStage_O>();
+	    return nil<ConformationExplorerEntryStage_O>();
 	}
 	return this->_SelectedStage;
     }
@@ -375,7 +375,7 @@ CL_DEFMETHOD     ConformationExplorerEntryStage_sp	ConformationExplorerEntry_O::
 CL_LISPIFY_NAME("lastEntryStageName");
 CL_DEFMETHOD     core::T_sp	ConformationExplorerEntry_O::lastEntryStageName()
     {
-      if ( this->_Stages.size() == 0 ) return _Nil<core::T_O>();
+      if ( this->_Stages.size() == 0 ) return nil<core::T_O>();
 	return this->_Stages[this->_Stages.size()-1]->getStageName();
     }
 
@@ -412,7 +412,7 @@ CL_DEFMETHOD     ConformationExplorerEntryStage_sp ConformationExplorerEntry_O::
 		newStage->setComplete(false);
 	    } else
 	    {
-		newStage = _Nil<ConformationExplorerEntryStage_O>();
+		newStage = nil<ConformationExplorerEntryStage_O>();
 		return newStage;
 	    }
 	} else
@@ -515,11 +515,11 @@ core::HashTable_sp ConformationExplorerEntry_O::getEntryStageNames()
     void	ConformationExplorer_O::initialize()
     {
 	this->Base::initialize();
-	this->_Matter = _Nil<Matter_O>();
+	this->_Matter = nil<Matter_O>();
 	this->_AllAtoms.clear();
 	this->_Binder = core::HashTableEq_O::create_default();
 	this->clearEntries();
-	this->_SuperposeAtomIndices = core::ComplexVector_byte32_t_O::make_vector(0,0,core::make_fixnum(0),_Nil<core::T_O>(),false,core::make_fixnum(0));
+	this->_SuperposeAtomIndices = core::ComplexVector_byte32_t_O::make_vector(0,0,core::make_fixnum(0),nil<core::T_O>(),false,core::make_fixnum(0));
     }
 
 
@@ -594,12 +594,12 @@ CL_DEFMETHOD     void	ConformationExplorer_O::appendEntry(ConformationExplorerEn
 CL_LISPIFY_NAME("entriesAsList");
 CL_DEFMETHOD     core::List_sp ConformationExplorer_O::entriesAsList()
     {
-	core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>(), _Nil<core::T_O>());
+	core::Cons_sp first = core::Cons_O::create(nil<core::T_O>(), nil<core::T_O>());
 	core::Cons_sp cur = first;
 	ConformationExplorer_O::entryIterator si;
 	for ( si=this->begin_Entries(); si!=this->end_Entries(); si++ )
 	{
-	    core::Cons_sp newCons = core::Cons_O::create(*si,_Nil<core::T_O>());
+	    core::Cons_sp newCons = core::Cons_O::create(*si,nil<core::T_O>());
 	    cur->setCdr(newCons);
 	    cur = newCons;
 	}
@@ -683,7 +683,7 @@ CL_LISPIFY_NAME("clearSuperposeAtoms");
 CL_DEFMETHOD     void	ConformationExplorer_O::clearSuperposeAtoms()
     {
 	ASSERTNOTNULL(this->_SuperposeAtomIndices);
-	this->_SuperposeAtomIndices = core::ComplexVector_byte32_t_O::make_vector(0,0,core::make_fixnum(0),_Nil<core::T_O>(),false,core::make_fixnum(0));
+	this->_SuperposeAtomIndices = core::ComplexVector_byte32_t_O::make_vector(0,0,core::make_fixnum(0),nil<core::T_O>(),false,core::make_fixnum(0));
     }
 
 
@@ -881,7 +881,7 @@ bool	ConformationExplorer_O::hasStageNameInAllEntries(core::T_sp stageKey)
 	bool					gotBest;
 	SuperposeEngine_sp			superposer;
 	geom::SimpleVectorCoordinate_sp			matterConf;
-	bestStage = _Nil<ConformationExplorerEntryStage_O>();
+	bestStage = nil<ConformationExplorerEntryStage_O>();
 	bestRms = 9.9e99;
 	gotBest = false;
 	uint numSuperposeAtoms = this->numberOfSuperposeAtoms();

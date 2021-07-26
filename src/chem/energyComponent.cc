@@ -108,11 +108,11 @@ double chem__energy_component_evaluate_energy(EnergyFunction_sp energy_function,
 {
   double val = component->evaluateAllComponent(energy_function,
                                                pos,
-                                               false,_Nil<NVector_O>(),
+                                               false,nil<NVector_O>(),
                                                false,false,
-                                               _Nil<AbstractLargeSquareMatrix_O>(),
-                                               _Nil<NVector_O>(),
-                                               _Nil<NVector_O>());
+                                               nil<AbstractLargeSquareMatrix_O>(),
+                                               nil<NVector_O>(),
+                                               nil<NVector_O>());
   return val;
 };
 
@@ -127,9 +127,9 @@ double chem__energy_component_evaluate_energy_force(EnergyFunction_sp energy_fun
                                                pos,
                                                true,force,
                                                false,false,
-                                               _Nil<AbstractLargeSquareMatrix_O>(),
-                                               _Nil<NVector_O>(),
-                                               _Nil<NVector_O>());
+                                               nil<AbstractLargeSquareMatrix_O>(),
+                                               nil<NVector_O>(),
+                                               nil<NVector_O>());
   return val;
 };
 

@@ -85,9 +85,9 @@ void	CalculatePosition_O::initialize()
 void	CalculatePositionUsingInternals_O::initialize()
 {
     this->Base::initialize();
-    this->_DistanceAtomName = _Nil<MatterName::Type>();
-    this->_AngleAtomName = _Nil<MatterName::Type>();
-    this->_DihedralAtomName = _Nil<MatterName::Type>();
+    this->_DistanceAtomName = nil<MatterName::Type>();
+    this->_AngleAtomName = nil<MatterName::Type>();
+    this->_DihedralAtomName = nil<MatterName::Type>();
 }
 
 #ifdef XML_ARCHIVE
@@ -169,8 +169,8 @@ void	CalculatePositionUsingInternals_O::initialize()
 void	CalculatePositionAlongBond_O::initialize()
 {
     this->Base::initialize();
-    this->_FromAtomName = _Nil<MatterName::Type>();
-    this->_ToAtomName = _Nil<MatterName::Type>();
+    this->_FromAtomName = nil<MatterName::Type>();
+    this->_ToAtomName = nil<MatterName::Type>();
     this->_ExtendDistance = 0.0;
 }
 
@@ -259,8 +259,8 @@ void	CalculatePositionAlongBond_O::initialize()
 void	CalculatePositionRelativeToOrigin_O::initialize()
 {
     this->Base::initialize();
-    this->_OriginAtomName = _Nil<MatterName::Type>();
-    this->_ToAtomName = _Nil<MatterName::Type>();
+    this->_OriginAtomName = nil<MatterName::Type>();
+    this->_ToAtomName = nil<MatterName::Type>();
     this->_ExtendDistance = 0.0;
 }
 

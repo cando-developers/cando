@@ -124,7 +124,7 @@ vector<Vector3>::iterator	ci;
 void	ConformationCollection_O::initialize()
 {
     this->Base::initialize();
-    this->_Matter = _Nil<Matter_O>();
+    this->_Matter = nil<Matter_O>();
     this->_AllAtoms.clear();
     this->_Data = core::HashTableEq_O::create_default();
     this->clearEntries();

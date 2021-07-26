@@ -70,7 +70,7 @@ void set_property(core::HashTableEq_sp properties, core::T_sp property, core::T_
 void	CDNode_O::initialize()
 {
   this->Base::initialize();
-  this->_Atom = _Nil<Atom_O>();
+  this->_Atom = nil<Atom_O>();
 }
 void CDNode_O::fields(core::Record_sp node)
 {
@@ -195,8 +195,8 @@ void	CDNode_O::bondTo(CDNode_sp other, CDBondOrder o )
 void	CDBond_O::initialize()
 {
   this->Base::initialize();
-  this->_BeginNode = _Nil<CDNode_O>();
-  this->_EndNode = _Nil<CDNode_O>();
+  this->_BeginNode = nil<CDNode_O>();
+  this->_EndNode = nil<CDNode_O>();
 }
 
 void CDBond_O::fields(core::Record_sp node)
@@ -297,7 +297,7 @@ void	CDBond_O::parseFromXml(adapt::QDomNode_sp xml, bool verbose)
   } else 
   {
     Warn(core::SimpleBaseString_O::make((BF("Unknown bond order %s") % this->_Order).str()),
-         _Nil<core::T_O>());
+         nil<core::T_O>());
     this->_Order = unknownCDBond;
   }
   if (verbose) core::write_bf_stream(BF("CDBond _IdBegin(%s) _IdEnd(%s) order(%s) display(%s)\n") % this->_IdBegin % this->_IdEnd % order % display );
@@ -319,7 +319,7 @@ void CDFragment_O::fields(core::Record_sp node)
 void	CDFragment_O::initialize()
 {_OF();
   this->Base::initialize();
-  this->_ConstitutionName = _Nil<core::Symbol_O>();
+  this->_ConstitutionName = nil<core::Symbol_O>();
   this->_Nodes.clear();
   this->_AtomsToNodes.clear();
   this->_Bonds.clear();
@@ -489,17 +489,17 @@ string	CDFragment_O::describeProperties()
 
 core::Symbol_mv parse_property(core::T_sp stream, const string& propertyValue, CDBond_sp bond, const string& otherSideValue)
 {
-  core::T_sp eof = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
+  core::T_sp eof = core::Cons_O::create(nil<core::T_O>(),nil<core::T_O>());
   core::DynamicScopeManager scope(cl::_sym_STARpackageSTAR,_lisp->findPackage(ChemKwPkg));
-  core::T_sp property = core::cl__read(stream,_Nil<core::T_O>(),eof);
+  core::T_sp property = core::cl__read(stream,nil<core::T_O>(),eof);
   if ( property == eof ) {
-    return Values(_Nil<core::T_O>(),_Nil<core::T_O>());
+    return Values(nil<core::T_O>(),nil<core::T_O>());
   }
 //  printf("%s:%d Parsed property: %s\n", __FILE__, __LINE__, _rep_(property).c_str());
-  core::T_sp value = core::cl__read(stream,_Nil<core::T_O>(),eof);
+  core::T_sp value = core::cl__read(stream,nil<core::T_O>(),eof);
   if ( value == eof ) {
     // If no value is provided then it will default to NIL
-    value = _Nil<core::T_O>(); 
+    value = nil<core::T_O>(); 
     // SIMPLE_ERROR(BF("Could not parse second part of \"%s\" as a (symbol value) pair - in property bond of order %s other side of bond is \"%s\"") % propertyValue % bond->getOrderAsString() % otherSideValue );
   }
 //  printf("%s:%d Parsed value: %s\n", __FILE__, __LINE__, _rep_(value).c_str());
@@ -572,7 +572,7 @@ bool CDFragment_O::interpret(bool verbose, bool addHydrogens)
         if (cdorder == dativeCDBond) {
           targetNode->_AtomProperties = core__put_f(targetNode->_AtomProperties,geom::OVector2_O::createFromVector2(propertyNode->_Pos),INTERN_(kw,property_position));
         }
-        core::T_sp stream = core::cl__make_string_input_stream(core::Str_O::create(propertyCode),core::clasp_make_fixnum(0),_Nil<core::T_O>());
+        core::T_sp stream = core::cl__make_string_input_stream(core::Str_O::create(propertyCode),core::clasp_make_fixnum(0),nil<core::T_O>());
         core::Symbol_mv parsedProperty;
         do {
           parsedProperty = parse_property(stream, propertyCode, *bi, targetNode->_Label);
@@ -597,7 +597,7 @@ bool CDFragment_O::interpret(bool verbose, bool addHydrogens)
         core::cl__close(stream);
       } else {
         Warn(core::Str_O::create((BF("Doing nothing with bond type %d")%(*bi)->getOrderAsString()).str()),
-             _Nil<core::T_O>());
+             nil<core::T_O>());
       }
     }
   }
@@ -782,7 +782,7 @@ void CDFragment_O::createAtomsAndBonds()
           bond->setOrder(tripleBond);
           break;
       default:
-          Warn(core::Str_O::create((BF("Add support for ChemDraw bond: %s") % (*bi)->getOrderAsString()).str()), _Nil<core::T_O>() );
+          Warn(core::Str_O::create((BF("Add support for ChemDraw bond: %s") % (*bi)->getOrderAsString()).str()), nil<core::T_O>() );
       }
       beginAtom->addBond(bond);
       endAtom->addBond(bond);
@@ -1041,10 +1041,10 @@ bool CDText_O::parseFromXml(adapt::QDomNode_sp text, bool verbose)
   core::StringInputStream_sp sin =
     gc::As<core::StringInputStream_sp>(core::cl__make_string_input_stream(core::Str_O::create(stext)
                                                                           ,core::clasp_make_fixnum(0)
-                                                                          ,_Nil<core::T_O>()));
+                                                                          ,nil<core::T_O>()));
   
   core::DynamicScopeManager scope(cl::_sym_STARpackageSTAR,_lisp->findPackage(ChemPkg));
-  core::List_sp block = read_lisp_object(sin,true,_Nil<core::T_O>(),false);
+  core::List_sp block = read_lisp_object(sin,true,nil<core::T_O>(),false);
   core::cl__close(sin);
   LOG(BF("Parsed text block: %s\n") % stext);
   if ( block.nilp() ) {
@@ -1237,7 +1237,7 @@ CL_DEFMETHOD     Aggregate_sp ChemDraw_O::asAggregate()
 CL_LISPIFY_NAME("getFragments");
 CL_DEFMETHOD     core::List_sp	ChemDraw_O::getFragments()
 {
-  core::List_sp	frags = _Nil<core::T_O>();
+  core::List_sp	frags = nil<core::T_O>();
   Fragments::iterator	fi;
   for ( fi=this->_AllFragments.begin(); fi!=this->_AllFragments.end(); fi++ ) {
     core::Cons_sp n = core::Cons_O::create(*fi,frags);
@@ -1250,7 +1250,7 @@ CL_DEFMETHOD     core::List_sp	ChemDraw_O::getFragments()
 CL_LISPIFY_NAME("getSubSetOfFragments");
 CL_DEFMETHOD     core::List_sp	ChemDraw_O::getSubSetOfFragments(adapt::SymbolSet_sp namesOfSubSet)
 {
-  core::List_sp	frags = _Nil<core::T_O>();
+  core::List_sp	frags = nil<core::T_O>();
   adapt::SymbolSet_sp namesChosen = adapt::SymbolSet_O::create();
   NamedFragments::iterator	fi;
   for ( fi=this->_NamedFragments.begin(); fi!=this->_NamedFragments.end(); fi++ )

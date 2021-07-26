@@ -117,7 +117,7 @@ CL_DEFMETHOD core::Symbol_sp FFTypesDb_O::assignType(chem::Atom_sp atom) {
       LOG(BF("Rule does not match, keep going") );
     }
   }
-  return _Nil<core::Symbol_O>();
+  return nil<core::Symbol_O>();
 }
 
 
@@ -129,7 +129,7 @@ CL_DEFMETHOD void    FFTypesDb_O::assignTypes(chem::Matter_sp matter)
   chem::Matter_sp				c;
   chem::Molecule_sp                     	mol;
   chem::Residue_sp				res;
-  core::List_sp                                 atoms_with_no_types = _Nil<core::T_O>();
+  core::List_sp                                 atoms_with_no_types = nil<core::T_O>();
   string 		                        name;
   size_t missing_types = 0;
   size_t total_atoms = 0;
@@ -137,7 +137,7 @@ CL_DEFMETHOD void    FFTypesDb_O::assignTypes(chem::Matter_sp matter)
   lAtoms.loopTopGoal(matter,ATOMS);
   while (lAtoms.advanceLoopAndProcess()) {
     atom = lAtoms.getAtom();
-    atom->setType(_Nil<core::T_O>());
+    atom->setType(nil<core::T_O>());
     total_atoms++;
   }
   // Now assign the types first checking for residues and then

@@ -45,7 +45,7 @@ namespace chem
     {_OF();
 	LOG(BF("RepresentedEntityNameSet_O::initialize()") );
 	this->Base::initialize();
-	this->_Representative = _Nil<core::Symbol_O>();
+	this->_Representative = nil<core::Symbol_O>();
 	LOG(BF("Creating %s") % this->description()  );
     }
 

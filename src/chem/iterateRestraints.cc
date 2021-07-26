@@ -62,7 +62,7 @@ void	IterateRestraints_O::_accumulateRestraints(Matter_sp m)
 
 void	IterateRestraints_O::initTop(Matter_sp m)
 {
-    this->_Restraints = _Nil<core::T_O>();
+    this->_Restraints = nil<core::T_O>();
     this->_accumulateRestraints(m);
 }
 
@@ -82,7 +82,7 @@ void	IterateRestraints_O::next()
 
     core::T_sp IterateRestraints_O::currentObject()
 {
-    if ( this->_CurRestraint.nilp() ) return _Nil<core::T_O>();
+    if ( this->_CurRestraint.nilp() ) return nil<core::T_O>();
     return core::oCar(this->_CurRestraint);
 }
 

@@ -63,7 +63,7 @@ namespace chem
 	int	_residueIdx;
 	int	_moleculeIdx;
 
-        AtomPdbRec() : _atom(_Nil<Atom_O>()) {};
+        AtomPdbRec() : _atom(nil<Atom_O>()) {};
 	void write(core::T_sp stream);
 	virtual ~AtomPdbRec() {};
 	void parse(const string& line);
@@ -127,7 +127,7 @@ namespace chem
 
       PdbWriter_O( const PdbWriter_O& ss ); //!< Copy constructor
 
-    PdbWriter_O() :  _Out(_Nil<core::T_O>()) {};
+    PdbWriter_O() :  _Out(nil<core::T_O>()) {};
       virtual ~PdbWriter_O() {};
     };
 

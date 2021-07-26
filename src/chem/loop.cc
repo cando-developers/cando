@@ -567,7 +567,7 @@ Matter_sp	Loop::nextHierarchyMatter()
       LOG(BF("running") );
       if ( this->noSubLoops() ) {
         LOG(BF("returning an empty Matter_sp") );
-        retVal = _Nil<Matter_O>();
+        retVal = nil<Matter_O>();
         this->done = true;
         goto DONE;
       }
@@ -667,13 +667,13 @@ CL_DEFUN core::T_sp chem__map_molecules(core::Symbol_sp result_type, core::T_sp 
     core::Function_sp func = core::coerce::functionDesignator(funcDesig);
     if ( result_type.nilp() ) {
       core::eval::funcall(func,m);
-      return _Nil<core::T_O>(); 
+      return nil<core::T_O>(); 
     } else if ( result_type == cl::_sym_list ) {
       ql::list res;
       res << core::eval::funcall(func,m);
       return res.cons();
     } else if ( result_type == cl::_sym_vector ) {
-      core::ComplexVector_T_sp vo = core::ComplexVector_T_O::make(16,_Nil<core::T_O>(),core::clasp_make_fixnum(0));
+      core::ComplexVector_T_sp vo = core::ComplexVector_T_O::make(16,nil<core::T_O>(),core::clasp_make_fixnum(0));
       vo->vectorPushExtend(core::eval::funcall(func,m));
       return vo;
     }
@@ -687,7 +687,7 @@ CL_DEFUN core::T_sp chem__map_molecules(core::Symbol_sp result_type, core::T_sp 
         a = l.getMolecule();
         core::eval::funcall(func,a);
       }
-      return _Nil<core::T_O>(); 
+      return nil<core::T_O>(); 
     }
     if ( result_type == cl::_sym_list ) {
       ql::list res;
@@ -698,7 +698,7 @@ CL_DEFUN core::T_sp chem__map_molecules(core::Symbol_sp result_type, core::T_sp 
       return res.cons();
     }
     if ( result_type == cl::_sym_vector ) {
-      core::ComplexVector_T_sp vo = core::ComplexVector_T_O::make(16,_Nil<core::T_O>(),core::clasp_make_fixnum(0));
+      core::ComplexVector_T_sp vo = core::ComplexVector_T_O::make(16,nil<core::T_O>(),core::clasp_make_fixnum(0));
       while (l.advanceLoopAndProcess()) {
         a = l.getMolecule();
         vo->vectorPushExtend(core::eval::funcall(func,a));
@@ -729,13 +729,13 @@ CL_DEFUN core::T_sp chem__map_residues(core::Symbol_sp result_type, core::T_sp f
     core::Function_sp func = core::coerce::functionDesignator(funcDesig);
     if ( result_type.nilp() ) {
       core::eval::funcall(func,m);
-      return _Nil<core::T_O>(); 
+      return nil<core::T_O>(); 
     } else if ( result_type == cl::_sym_list ) {
       ql::list res;
       res << core::eval::funcall(func,m);
       return res.cons();
     } else if ( result_type == cl::_sym_vector ) {
-      core::ComplexVector_T_sp vo = core::ComplexVector_T_O::make(16,_Nil<core::T_O>(),core::clasp_make_fixnum(0));
+      core::ComplexVector_T_sp vo = core::ComplexVector_T_O::make(16,nil<core::T_O>(),core::clasp_make_fixnum(0));
       vo->vectorPushExtend(core::eval::funcall(func,m));
       return vo;
     }
@@ -749,7 +749,7 @@ CL_DEFUN core::T_sp chem__map_residues(core::Symbol_sp result_type, core::T_sp f
         a = l.getResidue();
         core::eval::funcall(func,a);
       }
-      return _Nil<core::T_O>(); 
+      return nil<core::T_O>(); 
     }
     if ( result_type == cl::_sym_list ) {
       ql::list res;
@@ -760,7 +760,7 @@ CL_DEFUN core::T_sp chem__map_residues(core::Symbol_sp result_type, core::T_sp f
       return res.cons();
     }
     if ( result_type == cl::_sym_vector ) {
-      core::ComplexVector_T_sp vo = core::ComplexVector_T_O::make(16,_Nil<core::T_O>(),core::clasp_make_fixnum(0));
+      core::ComplexVector_T_sp vo = core::ComplexVector_T_O::make(16,nil<core::T_O>(),core::clasp_make_fixnum(0));
       while (l.advanceLoopAndProcess()) {
         a = l.getResidue();
         vo->vectorPushExtend(core::eval::funcall(func,a));
@@ -792,13 +792,13 @@ CL_DEFUN core::T_sp chem__map_atoms(core::Symbol_sp result_type, core::T_sp func
   if (gc::IsA<Atom_sp>(m)) {
     if ( result_type.nilp() ) {
       core::eval::funcall(func,m);
-      return _Nil<core::T_O>(); 
+      return nil<core::T_O>(); 
     } else if ( result_type == cl::_sym_list ) {
       ql::list res;
       res << core::eval::funcall(func,m);
       return res.cons();
     } else if ( result_type == cl::_sym_vector ) {
-      core::ComplexVector_T_sp vo = core::ComplexVector_T_O::make(16,_Nil<core::T_O>(),core::clasp_make_fixnum(0));
+      core::ComplexVector_T_sp vo = core::ComplexVector_T_O::make(16,nil<core::T_O>(),core::clasp_make_fixnum(0));
       vo->vectorPushExtend(core::eval::funcall(func,m));
       return vo;
     }
@@ -811,7 +811,7 @@ CL_DEFUN core::T_sp chem__map_atoms(core::Symbol_sp result_type, core::T_sp func
         a = l.getAtom();
         core::eval::funcall(func,a);
       }
-      return _Nil<core::T_O>(); 
+      return nil<core::T_O>(); 
     }
     if ( result_type == cl::_sym_list ) {
       ql::list res;
@@ -822,7 +822,7 @@ CL_DEFUN core::T_sp chem__map_atoms(core::Symbol_sp result_type, core::T_sp func
       return res.cons();
     }
     if ( result_type == cl::_sym_vector ) {
-      core::ComplexVector_T_sp vo = core::ComplexVector_T_O::make(16,_Nil<core::T_O>(),core::clasp_make_fixnum(0));
+      core::ComplexVector_T_sp vo = core::ComplexVector_T_O::make(16,nil<core::T_O>(),core::clasp_make_fixnum(0));
       while (l.advanceLoopAndProcess()) {
         a = l.getAtom();
         vo->vectorPushExtend(core::eval::funcall(func,a));
@@ -862,7 +862,7 @@ CL_DEFUN core::T_sp chem__map_bonds(core::Symbol_sp result_type, core::T_sp func
       o = bond->getOrderFromAtom(a1);
       core::eval::funcall(func,a1,a2,translate::to_object<BondOrder>::convert(o));
     }
-    return _Nil<core::T_O>(); 
+    return nil<core::T_O>(); 
   }
   if ( result_type == cl::_sym_list ) {
     ql::list res;
@@ -876,7 +876,7 @@ CL_DEFUN core::T_sp chem__map_bonds(core::Symbol_sp result_type, core::T_sp func
     return res.cons();
   }
   if ( result_type == cl::_sym_vector ) {
-    core::ComplexVector_T_sp vo = core::ComplexVector_T_O::make(16,_Nil<core::T_O>(),core::clasp_make_fixnum(0));
+    core::ComplexVector_T_sp vo = core::ComplexVector_T_O::make(16,nil<core::T_O>(),core::clasp_make_fixnum(0));
     while (l.advanceLoopAndProcess()) {
       Bond_sp bond = l.getBond();
       a1 = bond->getAtom1();
@@ -919,7 +919,7 @@ CL_DEFUN core::T_sp chem__map_angles(core::Symbol_sp result_type, core::T_sp fun
   ql::list list_result;
   core::ComplexVector_T_sp vector_result;
   if ( result_type == cl::_sym_vector ) {
-    vector_result = core::ComplexVector_T_O::make(16,_Nil<core::T_O>(),core::clasp_make_fixnum(0));
+    vector_result = core::ComplexVector_T_O::make(16,nil<core::T_O>(),core::clasp_make_fixnum(0));
   }
   while (l.advanceLoopAndProcess()) {
     a1 = l.getAtom1();
@@ -935,7 +935,7 @@ CL_DEFUN core::T_sp chem__map_angles(core::Symbol_sp result_type, core::T_sp fun
     }
   }
   if(result_type.nilp()) {
-    return _Nil<core::T_O>();
+    return nil<core::T_O>();
   } else if (result_type == cl::_sym_list) {
     return list_result.cons();
   } else {
@@ -965,7 +965,7 @@ CL_DEFUN core::T_sp chem__map_dihedrals(core::Symbol_sp result_type, core::T_sp 
   ql::list list_result;
   core::ComplexVector_T_sp vector_result;
   if ( result_type == cl::_sym_vector ) {
-    vector_result = core::ComplexVector_T_O::make(16,_Nil<core::T_O>(),core::clasp_make_fixnum(0));
+    vector_result = core::ComplexVector_T_O::make(16,nil<core::T_O>(),core::clasp_make_fixnum(0));
   }
   while (l.advanceLoopAndProcess()) {
     a1 = l.getAtom1();
@@ -982,7 +982,7 @@ CL_DEFUN core::T_sp chem__map_dihedrals(core::Symbol_sp result_type, core::T_sp 
     }
   }
   if(result_type.nilp()) {
-    return _Nil<core::T_O>();
+    return nil<core::T_O>();
   } else if (result_type == cl::_sym_list) {
     return list_result.cons();
   } else {
@@ -1012,7 +1012,7 @@ CL_DEFUN core::T_sp chem__map_impropers(core::Symbol_sp result_type, core::T_sp 
   ql::list list_result;
   core::ComplexVector_T_sp vector_result;
   if ( result_type == cl::_sym_vector ) {
-    vector_result = core::ComplexVector_T_O::make(16,_Nil<core::T_O>(),core::clasp_make_fixnum(0));
+    vector_result = core::ComplexVector_T_O::make(16,nil<core::T_O>(),core::clasp_make_fixnum(0));
   }
   while (l.advanceLoopAndProcess()) {
     a1 = l.getAtom1();
@@ -1029,7 +1029,7 @@ CL_DEFUN core::T_sp chem__map_impropers(core::Symbol_sp result_type, core::T_sp 
     }
   }
   if(result_type.nilp()) {
-    return _Nil<core::T_O>();
+    return nil<core::T_O>();
   } else if (result_type == cl::_sym_list) {
     return list_result.cons();
   } else {

@@ -88,11 +88,11 @@ CL_DEFMETHOD double	ScoringFunction_O::evaluateEnergy( NVector_sp pos )
   double		energy;
   energy = this->evaluateAll(pos,
                              false,
-                             _Nil<core::T_O>(),
+                             nil<core::T_O>(),
                              false, false,
-                             _Nil<core::T_O>(),
-                             _Nil<core::T_O>(),
-                             _Nil<core::T_O>() );
+                             nil<core::T_O>(),
+                             nil<core::T_O>(),
+                             nil<core::T_O>() );
   return energy;
 }
 
@@ -106,15 +106,15 @@ CL_DEFMETHOD double	ScoringFunction_O::evaluateEnergyForce( NVector_sp pos, bool
   if ( calcForce ) {
     rawGrad = force;
   } else {
-    rawGrad = _Nil<core::T_O>();
+    rawGrad = nil<core::T_O>();
   }
   energy = this->evaluateAll(pos,calcForce,
                              rawGrad,
                              false,
                              false,
-                             _Nil<core::T_O>(),
-                             _Nil<core::T_O>(),
-                             _Nil<core::T_O>() );
+                             nil<core::T_O>(),
+                             nil<core::T_O>(),
+                             nil<core::T_O>() );
   return energy;
 }
 
@@ -130,14 +130,14 @@ CL_DEFMETHOD double	ScoringFunction_O::evaluateEnergyForceFullHessian(
   double	energy;
   gc::Nilable<NVector_sp> rawGrad;
   if ( calcForce ) rawGrad = force;
-  else rawGrad = _Nil<core::T_O>();
+  else rawGrad = nil<core::T_O>();
   energy = this->evaluateAll( pos,
                               calcForce, rawGrad,
                               calcDiagonalHessian,
                               calcOffDiagonalHessian,
                               hessian,
-                              _Nil<core::T_O>(),
-                              _Nil<core::T_O>() );
+                              nil<core::T_O>(),
+                              nil<core::T_O>() );
   return energy;
 }
 
@@ -158,8 +158,8 @@ CL_DEFMETHOD double	ScoringFunction_O::evaluateEnergyForceFullHessianForDebuggin
                              true,
                              true,
                              hessian,
-                             _Nil<core::T_O>(),
-                             _Nil<core::T_O>() );
+                             nil<core::T_O>(),
+                             nil<core::T_O>() );
   return energy;
 }
 

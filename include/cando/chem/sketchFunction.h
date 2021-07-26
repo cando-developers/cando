@@ -130,7 +130,7 @@ namespace chem {
     core::SimpleBaseString_sp			_Message;
     core::T_sp                                  _Frozen;
   public:
-    SketchFunction_O(core::T_sp graph) : _Graph(graph), _Frozen(_Nil<core::T_O>()) {};
+    SketchFunction_O(core::T_sp graph) : _Graph(graph), _Frozen(nil<core::T_O>()) {};
   public:
     CL_LISPIFY_NAME("nodeTable");
     CL_DEFMETHOD     core::T_sp nodeTable() const { return this->_NodeTable;};

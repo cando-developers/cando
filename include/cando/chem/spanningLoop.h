@@ -64,7 +64,7 @@ namespace chem {
         int        _Distance;
         core::T_sp _ToRoot;
         core::T_sp _Next;
-        SpanningInfo_O(int dist=0, core::T_sp toRoot=_Nil<core::T_O>(), core::T_sp toNext=_Nil<core::T_O>() ) : _Distance(dist), _ToRoot(toRoot), _Next(toNext) {};
+        SpanningInfo_O(int dist=0, core::T_sp toRoot=nil<core::T_O>(), core::T_sp toNext=nil<core::T_O>() ) : _Distance(dist), _ToRoot(toRoot), _Next(toNext) {};
         std::string __repr__() const;
     };
 
@@ -120,7 +120,7 @@ private:
         int getBackCount(Atom_sp a);
         bool lookupSpanningInfo(Atom_sp a, SpanningInfo_sp& info);
         SpanningInfo_sp getSpanningInfo(Atom_sp a);
-        SpanningInfo_sp storeSpanningInfo(Atom_sp key, int distance, core::T_sp toRoot=_Nil<core::T_O>(), core::T_sp next=_Nil<core::T_O>());
+        SpanningInfo_sp storeSpanningInfo(Atom_sp key, int distance, core::T_sp toRoot=nil<core::T_O>(), core::T_sp next=nil<core::T_O>());
 
 public:
 	static SpanningLoop_sp create(Atom_sp t) {

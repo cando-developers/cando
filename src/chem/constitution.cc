@@ -178,7 +178,7 @@ RepresentativeList_sp	Constitution_O::expandedRepresentativeList() const
 core::T_sp Constitution_O::getMissingRingClosingPlug(Monomer_sp mon, Monomer_sp mate)
 {
   core::T_sp plug;
-  core::T_sp missing = _Nil<core::T_O>();
+  core::T_sp missing = nil<core::T_O>();
   TopologyMap::iterator	ti;
   gctools::SmallOrderedSet<Topology_sp>	candidateTopologies;
   for ( ti=this->_Topologies.begin(); ti!=this->_Topologies.end(); ti++ ) 
@@ -255,14 +255,14 @@ bool Constitution_O::hasStereoisomerWithName(core::Symbol_sp stereoisomerName)
 	}
     }
     LOG(BF("Could not find it") ); //
-    return _Nil<Stereoisomer_O>();
+    return nil<Stereoisomer_O>();
 }
 
 
 
 CL_DEFMETHOD core::List_sp Constitution_O::stereoisomersAsList() { return this->_StereoInformation->stereoisomersAsList(); };
 CL_DEFMETHOD core::List_sp Constitution_O::topologiesAsList() {
-    core::List_sp result = _Nil<core::T_O>();
+    core::List_sp result = nil<core::T_O>();
     for ( TopologyMap::iterator it = this->_Topologies.begin(); it!=this->_Topologies.end(); ++it ) {
         result = core::Cons_O::create(it->second,result);
     }
@@ -270,7 +270,7 @@ CL_DEFMETHOD core::List_sp Constitution_O::topologiesAsList() {
 }
 
 core::List_sp Constitution_O::plugsAsList() {
-    core::List_sp result = _Nil<core::T_O>();
+    core::List_sp result = nil<core::T_O>();
     for ( PlugMap::iterator it = this->_PlugsByName.begin(); it!=this->_PlugsByName.end(); ++it ) {
         result = core::Cons_O::create(it->second,result);
     }
@@ -279,7 +279,7 @@ core::List_sp Constitution_O::plugsAsList() {
 
 CL_DEFMETHOD core::List_sp Constitution_O::plugsWithMatesAsList()
 {
-    core::List_sp first = _Nil<core::T_O>();
+    core::List_sp first = nil<core::T_O>();
     PlugMap::iterator mi;
     for ( mi=this->_PlugsByName.begin(); mi!=this->_PlugsByName.end(); mi++ )
     {
@@ -362,7 +362,7 @@ CL_DEFMETHOD     Topology_sp	Constitution_O::simplestTopologyWithPlugNamed(core:
     TopologyMap::iterator	ti;
 Topology_sp			tres;
 int				connects,temp;
-tres = _Nil<Topology_O>();
+tres = nil<Topology_O>();
     connects = 9999999;
     for ( ti=this->_Topologies.begin(); ti!=this->_Topologies.end(); ti++ )
     {
@@ -443,7 +443,7 @@ CL_DEFMETHOD Topology_sp	Constitution_O::getTopologyForContext(MonomerContext_sp
 {
     TopologyMap::iterator	ti;
 Topology_sp			tres;
-tres = _Nil<Topology_O>();
+tres = nil<Topology_O>();
     for ( ti=this->_Topologies.begin(); ti!=this->_Topologies.end(); ti++ ) {
 	if ( ti->second->matchesContext(cont) ) {
 	    return ti->second;
@@ -659,7 +659,7 @@ void	Constitution_O::initialize()
 {_OF();
     this->Base::initialize();
     this->_Comment = core::Str_O::create("");
-    this->_Name = _Nil<core::Symbol_O>();
+    this->_Name = nil<core::Symbol_O>();
     this->_ConstitutionAtoms = ConstitutionAtoms_O::create();
 }
 

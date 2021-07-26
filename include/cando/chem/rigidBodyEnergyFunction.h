@@ -174,7 +174,7 @@ CL_LISPIFY_NAME("rigid-body-energy-function-normalize-position");
     
     RigidBodyEnergyFunction_O(size_t number_of_rigid_bodies, BoundingBox_sp boundingBox)
     : _RigidBodies(number_of_rigid_bodies),
-      _Terms(_Nil<core::T_O>()),
+      _Terms(nil<core::T_O>()),
       _BoundingBox(boundingBox){};
   };
 

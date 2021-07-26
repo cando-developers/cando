@@ -563,8 +563,8 @@ void EnergyFixedNonbondRestraint_O::initialize()
     this->setDielectricConstant(80.0);
     this->setVdwScale(1.0);
     this->setElectrostaticScale(1.0);
-    this->_MobileAtomTable = _Nil<AtomTable_O>();
-    this->_NonbondCrossTermTable = _Nil<FFNonbondCrossTermTable_O>();
+    this->_MobileAtomTable = nil<AtomTable_O>();
+    this->_NonbondCrossTermTable = nil<FFNonbondCrossTermTable_O>();
 }
 
 

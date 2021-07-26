@@ -156,9 +156,9 @@ AtomTable_sp AtomTable_O::make()
 void AtomTable_O::initialize()
 {
   this->_AtomTableIndices = core::HashTableEq_O::create_default();
-  core::ComplexVector_int32_t_sp residue_pointers = core::ComplexVector_int32_t_O::make_vector(32,0,core::make_fixnum(0),_Nil<core::T_O>(),false,core::make_fixnum(0));
-  core::ComplexVector_T_sp residue_names = core::ComplexVector_T_O::make(32,_Nil<core::T_O>(),core::make_fixnum(0));
-  core::ComplexVector_int32_t_sp atoms_per_molecule = core::ComplexVector_int32_t_O::make_vector(32,0,core::make_fixnum(0),_Nil<core::T_O>(),false,core::make_fixnum(0));
+  core::ComplexVector_int32_t_sp residue_pointers = core::ComplexVector_int32_t_O::make_vector(32,0,core::make_fixnum(0),nil<core::T_O>(),false,core::make_fixnum(0));
+  core::ComplexVector_T_sp residue_names = core::ComplexVector_T_O::make(32,nil<core::T_O>(),core::make_fixnum(0));
+  core::ComplexVector_int32_t_sp atoms_per_molecule = core::ComplexVector_int32_t_O::make_vector(32,0,core::make_fixnum(0),nil<core::T_O>(),false,core::make_fixnum(0));
 //  atoms_per_molecule->vectorPushExtend(0);
   this->_ResiduePointers = residue_pointers;
   this->_ResidueNames = residue_names;
@@ -216,7 +216,7 @@ CL_DEFMETHOD core::T_mv AtomTable_O::getAtomIndexOrNil(Atom_sp atom)
   core::write_bf_stream(BF("res.second() -> %s \n") % _rep_(res.second()));
 #endif
   if (res.second().nilp()) {
-    return Values(_Nil<core::T_O>(),_Nil<core::T_O>());
+    return Values(nil<core::T_O>(),nil<core::T_O>());
   }
   return Values(res,_lisp->_true());
 }
@@ -593,8 +593,8 @@ CL_DEFMETHOD core::T_mv AtomTable_O::calculate_excluded_atom_list()
 {
 //  printf("%s:%d In calculate_excludec_atom_list\n", __FILE__, __LINE__ );
 
-  core::ComplexVector_int32_t_sp number_excluded_atoms = core::ComplexVector_int32_t_O::make_vector(32,0,core::make_fixnum(0),_Nil<core::T_O>(),false,core::make_fixnum(0));
-  core::ComplexVector_int32_t_sp excluded_atoms_list = core::ComplexVector_int32_t_O::make_vector(32,0,core::make_fixnum(0),_Nil<core::T_O>(),false,core::make_fixnum(0));
+  core::ComplexVector_int32_t_sp number_excluded_atoms = core::ComplexVector_int32_t_O::make_vector(32,0,core::make_fixnum(0),nil<core::T_O>(),false,core::make_fixnum(0));
+  core::ComplexVector_int32_t_sp excluded_atoms_list = core::ComplexVector_int32_t_O::make_vector(32,0,core::make_fixnum(0),nil<core::T_O>(),false,core::make_fixnum(0));
   size_t num_atoms = this->getNumberOfAtoms();
   for ( size_t i1=0; i1<num_atoms; ++i1) {
     size_t num = this->push_back_excluded_atom_indices_and_sort(excluded_atoms_list,i1);
@@ -658,7 +658,7 @@ CL_DEFUN core::List_sp chem__atoms_at_remove(AtomTable_sp table, size_t index, s
   if (index<table->_Atoms.size()) {
     EnergyAtom* ea = &(table->_Atoms[index]);
     if (remove <4) {
-      core::T_sp result = _Nil<core::T_O>();
+      core::T_sp result = nil<core::T_O>();
       for (auto bi = ea->_AtomsAtRemoveBondAngle14[remove].begin(); bi!=ea->_AtomsAtRemoveBondAngle14[remove].end(); ++bi ) {
         result = core::Cons_O::create(*bi,result);
       }

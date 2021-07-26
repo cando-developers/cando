@@ -100,8 +100,8 @@ void ChainNode_O::fields(core::Record_sp node) {
 	RingClosingMonomerMap	ringClosingMonomerMap = core::HashTableEq_O::create_default();
 	MonomerNode_sp rootMonomerNode = this->monomerNodeFactory(this->asSmartPtr(),ringClosingMonomerMap,rootMonomer);
 	rootMonomerNode->recursivelyBuildChildren(this->sharedThis<ChainNode_O>(),
-						  ringClosingMonomerMap,_Nil<core::T_O>(),
-						  _Nil<core::T_O>(),rootMonomer);
+						  ringClosingMonomerMap,nil<core::T_O>(),
+						  nil<core::T_O>(),rootMonomer);
 	this->makeRingClosingConnections(ringClosingMonomerMap);
 	this->_RootMonomerNode = rootMonomerNode;
     }

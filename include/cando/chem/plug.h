@@ -46,7 +46,7 @@ namespace chem
   {
     LISP_CLASS(chem,ChemPkg,Mate_O,"Mate",EntityNameSetWithCap_O);
   public:
-  Mate_O() : _Cap(_Nil<core::Symbol_O>()) {};
+  Mate_O() : _Cap(nil<core::Symbol_O>()) {};
   Mate_O(core::Symbol_sp cap) : _Cap(cap) {};
   public:
     CL_LISPIFY_NAME(make_mate);
@@ -90,7 +90,7 @@ namespace chem
     LISP_CLASS(chem,ChemPkg,Plug_O,"Plug",core::CxxObject_O);
   public:
   Plug_O(core::Symbol_sp name) : _Name(name) {};
-    Plug_O() : _Name(_Nil<core::T_O>()) {};
+    Plug_O() : _Name(nil<core::T_O>()) {};
   public:
     CL_LISPIFY_NAME("make-plug");
     CL_DEF_CLASS_METHOD static Plug_sp make(core::Symbol_sp name) {
@@ -128,7 +128,7 @@ namespace chem
 
     virtual int		numberOfMates() { return 0; };
 
-    CL_DEFMETHOD     virtual core::List_sp	matesAsList() { return _Nil<core::T_O>(); };
+    CL_DEFMETHOD     virtual core::List_sp	matesAsList() { return nil<core::T_O>(); };
   };
 
   SMART(PlugWithMates);
@@ -151,9 +151,9 @@ namespace chem
     virtual void fields(core::Record_sp node);
   protected:
     //! Name of atom for first bond
-    core::Symbol_sp			_B0 {_Nil<core::Symbol_O>()};
+    core::Symbol_sp			_B0 {nil<core::Symbol_O>()};
     //! Name of atom for second bond
-    core::Symbol_sp			_B1 {_Nil<core::Symbol_O>()};
+    core::Symbol_sp			_B1 {nil<core::Symbol_O>()};
     BondOrder                           _BondOrder0;
     BondOrder                           _BondOrder1;
     //! RepresentedEntityNameSets that this plug can plug into
@@ -201,7 +201,7 @@ namespace chem
   private:
 	/*! This contains the name of the atom that we will force to be the third atom
 	  that defines the Stub of the Bond0 atom */
-    MatterName	_StubPivotAtom {_Nil<core::Symbol_O>()};
+    MatterName	_StubPivotAtom {nil<core::Symbol_O>()};
     bool        _IsRingClosing;
   public:
 
@@ -266,7 +266,7 @@ namespace chem
     virtual bool fieldsp() const { return true; };
     virtual void fields(core::Record_sp node);
   private:
-    MatterName		_JumpPointName {_Nil<core::Symbol_O>()};
+    MatterName		_JumpPointName {nil<core::Symbol_O>()};
   public:
 
     /*! Return the name of the root atom */
@@ -297,7 +297,7 @@ namespace chem
     virtual bool fieldsp() const { return true; };
     virtual void fields(core::Record_sp node);
   private:
-    MatterName		_OriginAtomName {_Nil<core::Symbol_O>()};
+    MatterName		_OriginAtomName {nil<core::Symbol_O>()};
   public:
 
     /*! Return the name of the root atom */

@@ -95,12 +95,12 @@ string StereoConfiguration_O::__repr__() const
 
 core::List_sp StereoConfiguration_O::stereochemical_permutations(uint numberOfCenters)
 {
-  core::List_sp list = _Nil<core::T_O>();
+  core::List_sp list = nil<core::T_O>();
   uint pow = 1 << numberOfCenters;
   for ( uint i=0; i<pow; i++ )
   {
     uint map = i;
-    core::List_sp one = _Nil<core::T_O>();
+    core::List_sp one = nil<core::T_O>();
     for ( uint ix=0; ix<numberOfCenters; ix++ )
     {
       if ( map & 1 )
@@ -120,7 +120,7 @@ core::List_sp StereoConfiguration_O::stereochemical_permutations(uint numberOfCe
 core::List_sp StereoConfiguration_O::create_multiple(core::List_sp atomNames, core::List_sp configurations)
 {
   ASSERT_eq(core::cl__length(atomNames), core::cl__length(configurations) );
-    core::List_sp list = _Nil<core::T_O>();
+    core::List_sp list = nil<core::T_O>();
     core::List_sp curName = atomNames;
     core::List_sp curConfig = configurations;
     while ( curName.notnilp() )

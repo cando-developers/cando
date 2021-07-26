@@ -74,7 +74,7 @@ The chain-id and atom-name will be CKW keyword symbols.
 CL_DEFUN core::List_sp chem__parseChimeraAtomSpecs(const string& spec)
 {
   vector<string> specs = core::split(spec," \n\t");
-  core::List_sp result(_Nil<core::T_O>());
+  core::List_sp result(nil<core::T_O>());
   uint sequenceNumber;
   string chainStr;
   string atomNameStr;

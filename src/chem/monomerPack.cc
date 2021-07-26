@@ -134,7 +134,7 @@ CL_DEFUN core::T_sp chem__extend_aliases(core::Symbol_sp packName, core::List_sp
           SIMPLE_ERROR(BF("monomerPack("+_rep_(packName)+") has not been defined"));
 	MonomerPack_sp monomerPack = bdb->getEntity(packName).as<MonomerPack_O>();
 	monomerPack->extendAliases(atomAliases, parts);
-	return _Nil<core::T_O>();
+	return nil<core::T_O>();
     }
 
 
@@ -376,7 +376,7 @@ string	s;
 
 void	MonomerPack_O::setInterestingAtomAliasesFromSymbolList(adapt::SymbolList_sp names)
 {
-  this->_InterestingAtomAliases = _Nil<core::T_O>();
+  this->_InterestingAtomAliases = nil<core::T_O>();
   for ( auto ni = names->begin(); ni!=names->end(); ++ni ) {
     this->_InterestingAtomAliases = core::Cons_O::create(*ni,this->_InterestingAtomAliases);
   }
@@ -424,7 +424,7 @@ int						mostNumberOfAtoms;
     if ( mostNumberOfAtoms == 0 )
     {
 	LOG(BF("Resetting _AtomIndexers") );
-	this->_AtomIndexers = _Nil<MapOfMonomerNamesToAtomIndexers_O>();
+	this->_AtomIndexers = nil<MapOfMonomerNamesToAtomIndexers_O>();
     }
 }
 

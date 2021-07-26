@@ -205,7 +205,7 @@ CL_DEFMETHOD     core::T_mv ConstitutionAtoms_O::atomWithName(MatterName nm, boo
     if ( (*ci)->_AtomName == nm ) return Values(*ci,_lisp->_true());
   }
   if (!errorp) {
-    return Values(_Nil<core::T_O>(),_Nil<core::T_O>());
+    return Values(nil<core::T_O>(),nil<core::T_O>());
   }
   SIMPLE_ERROR(BF("Could not find ConstitutionAtom with name[%s]") % nm );
 }

@@ -455,7 +455,7 @@ CL_DEFMETHOD uint Atom_O::numberOfOpenValence()
       if ( this->getIonization() != 0 )
       {
         core::Warn(core::Str_O::create("Add support for ~d ionization of carbon"),
-                   core::Cons_O::create(core::clasp_make_fixnum(this->getIonization()),_Nil<core::T_O>()));
+                   core::Cons_O::create(core::clasp_make_fixnum(this->getIonization()),nil<core::T_O>()));
       }
       maxHydrogens = 4;
       break;
@@ -496,12 +496,12 @@ CL_DEFMETHOD core::List_sp Atom_O::createImplicitHydrogenNames()
 {
   uint addHydrogens = this->numberOfOpenValence();
   string nameSuffix = this->getName()->symbolName()->get_std_string().substr(1,9999);
-  core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
+  core::Cons_sp first = core::Cons_O::create(nil<core::T_O>(),nil<core::T_O>());
   core::Cons_sp cons = first;
   if ( addHydrogens == 1 )
   {
     MatterName hname = chemkw_intern("H"+nameSuffix);
-    core::Cons_sp one = core::Cons_O::create(hname,_Nil<core::T_O>());
+    core::Cons_sp one = core::Cons_O::create(hname,nil<core::T_O>());
     cons->setCdr(one);
     cons = one;
     return oCdr(first);
@@ -511,7 +511,7 @@ CL_DEFMETHOD core::List_sp Atom_O::createImplicitHydrogenNames()
     stringstream ss;
     ss << "H" << nameSuffix << (i+1);
     MatterName hname = chemkw_intern(ss.str());
-    core::Cons_sp one = core::Cons_O::create(hname,_Nil<core::T_O>());
+    core::Cons_sp one = core::Cons_O::create(hname,nil<core::T_O>());
     cons->setCdr(one);
     cons = one;
   }
@@ -550,7 +550,7 @@ size_t Atom_O::fillInImplicitHydrogens()
 
 gc::Nilable<Atom_sp> Atom_O::highestPriorityNeighborThatIsnt(gc::Nilable<Atom_sp> avoid, core::HashTable_sp cip)
 {
-  Atom_sp bestAtom = _Nil<Atom_O>();
+  Atom_sp bestAtom = nil<Atom_O>();
   Atom_sp atom;
   VectorBond::iterator	b;
   for ( b=this->bonds.begin();b!=this->bonds.end() ; b++ ) {
@@ -567,7 +567,7 @@ gc::Nilable<Atom_sp> Atom_O::highestPriorityNeighborThatIsnt(gc::Nilable<Atom_sp
 
 gc::Nilable<Atom_sp> Atom_O::lowestPriorityNeighborThatIsnt(gc::Nilable<Atom_sp> avoid, core::HashTable_sp cip)
 {
-  gc::Nilable<Atom_sp> bestAtom = _Nil<core::T_O>();
+  gc::Nilable<Atom_sp> bestAtom = nil<core::T_O>();
   Atom_sp atom;
   VectorBond::iterator	b;
   for ( b=this->bonds.begin();b!=this->bonds.end() ; b++ ) {
@@ -709,7 +709,7 @@ core::List_sp	Atom_O::getNeighborsByRelativePriority(core::HashTable_sp cip_prio
     reversedNeighbors.push_back((*b)->getOtherAtom(this->sharedThis<Atom_O>()));
   }
   OrderByPriorityAndName orderer(cip_priority);
-  core::List_sp ncons = _Nil<core::T_O>();
+  core::List_sp ncons = nil<core::T_O>();
   sort::quickSort(reversedNeighbors.begin(),reversedNeighbors.end(),orderer);
 	// At this point the sorted in reverse order
 	// 
@@ -766,7 +766,7 @@ CL_DEFMETHOD     Atom_sp	Atom_O::bondedNeighborWithName(MatterName name)
       return (*b)->getOtherAtom(this->sharedThis<Atom_O>());
     }
   }
-  Atom_sp a = _Nil<Atom_O>();
+  Atom_sp a = nil<Atom_O>();
   return a;
 }
 
@@ -1296,7 +1296,7 @@ VectorAtom Atom_O::getBondedAtoms()
 CL_LISPIFY_NAME("bondedAtomsAsList");
 CL_DEFMETHOD     core::List_sp Atom_O::bondedAtomsAsList()
 {
-  core::List_sp list = _Nil<core::T_O>();
+  core::List_sp list = nil<core::T_O>();
   VectorBond::iterator	b;
   Atom_sp me = this->sharedThis<Atom_O>();
   for (b=this->bonds.begin();b!=this->bonds.end(); b++ )
@@ -1561,7 +1561,7 @@ CL_DEFMETHOD     int     Atom_O::getValence()
 
 core::List_sp Atom_O::_expandLocalSpanningTree(Atom_sp avoidAtom, Bond_sp incomingBond, uint depth)
 {
-  core::Cons_sp localTree = core::Cons_O::create(incomingBond,_Nil<core::T_O>());
+  core::Cons_sp localTree = core::Cons_O::create(incomingBond,nil<core::T_O>());
   if ( depth <= 0 ) return localTree;
   core::List_sp tail = localTree;
   for ( VectorBond::iterator bi=this->bonds.begin(); bi!=this->bonds.end(); bi++ )
@@ -1578,7 +1578,7 @@ core::List_sp Atom_O::_expandLocalSpanningTree(Atom_sp avoidAtom, Bond_sp incomi
 CL_LISPIFY_NAME("localSpanningTree");
 CL_DEFMETHOD     core::List_sp Atom_O::localSpanningTree(uint depth)
 {
-  core::Cons_sp localTree = core::Cons_O::create(this->sharedThis<Atom_O>(),_Nil<core::T_O>());
+  core::Cons_sp localTree = core::Cons_O::create(this->sharedThis<Atom_O>(),nil<core::T_O>());
   if ( depth <= 0 ) return localTree;
   core::List_sp tail = localTree;
   for ( VectorBond::iterator bi=this->bonds.begin(); bi!=this->bonds.end(); bi++ )
@@ -1722,7 +1722,7 @@ void Atom_O::_describeAtomRecursively(string prefix, Atom_sp parent, BondOrder o
 string Atom_O::localEnvironment(int maxDepth) const
 {_OF();
   stringstream ss;
-  this->_describeAtomRecursively("",_Nil<Atom_O>(),noBond,maxDepth,ss);
+  this->_describeAtomRecursively("",nil<Atom_O>(),noBond,maxDepth,ss);
   return ss.str();
 }
 

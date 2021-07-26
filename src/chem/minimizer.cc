@@ -1509,8 +1509,8 @@ void	Minimizer_O::_truncatedNewtonInnerLoop(
 
   ASSERTNOTNULL(this->_EnergyFunction);
   LOG(BF("Resetting dummy vector and matrix") );
-  nvDummy = _Nil<T_O>();
-  nmDummy = _Nil<T_O>();
+  nvDummy = nil<T_O>();
+  nmDummy = nil<T_O>();
 
   if ( this->_DebugOn )
   {
@@ -1959,8 +1959,8 @@ void	Minimizer_O::initialize()
   this->_DebugOn = false;
   this->useDefaultSettings();
   this->restart();
-  this->_Position = _Nil<core::T_O>();
-  this->_Force = _Nil<core::T_O>();
+  this->_Position = nil<core::T_O>();
+  this->_Force = nil<core::T_O>();
 //	this->_StepCallback = _Nil<core::LispCallback_O>();
 }
 

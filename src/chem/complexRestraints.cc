@@ -159,13 +159,13 @@ void	RestrainedPiBond_O::fillOneDihedralRestraint(Residue_sp residue,
     Atom_sp p2X = pX->lowestPriorityNeighborThatIsnt(pY,cip);
     if ( p2X == p1X )
     {
-	p2X = _Nil<Atom_O>();
+	p2X = nil<Atom_O>();
     }
     Atom_sp p1Y = pY->highestPriorityNeighborThatIsnt(pX,cip);
     Atom_sp p2Y = pY->lowestPriorityNeighborThatIsnt(pX,cip);
     if ( p2Y == p1Y )
     {
-	p2Y = _Nil<Atom_O>();
+	p2Y = nil<Atom_O>();
     }
     if ( pX->numberOfBonds() < 2 || pX->numberOfBonds() > 3  )
     {
@@ -230,14 +230,14 @@ void	RestrainedExoCyclicAtom_O::lazyInitializeSmarts()
     if ( !RestrainedExoCyclicAtom_O::_LazyInitializedSmarts )
     {
 	RestrainedExoCyclicAtom_O::_LazyInitializedSmarts = true;
-        SmartsRoot_sp atomExoToSixMemberedRing = chem__compile_smarts("[*]1[*:1][*:2][*:3][*:4][*:5][*:6]9",_Nil<core::T_O>());
+        SmartsRoot_sp atomExoToSixMemberedRing = chem__compile_smarts("[*]1[*:1][*:2][*:3][*:4][*:5][*:6]9",nil<core::T_O>());
         chem::_sym_STARAtomExoToSixMemberedRingSTAR->defparameter(atomExoToSixMemberedRing);
     }
 }
 
 void	RestrainedExoCyclicAtom_O::initialize()
 {
-    this->_ExoCyclicAtomName = _Nil<MatterName::Type>();
+    this->_ExoCyclicAtomName = nil<MatterName::Type>();
     this->_Axial = true;
 }
 

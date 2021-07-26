@@ -95,8 +95,8 @@ void Bond_O::initialize()
   this->Base::initialize();
   this->_DirectionalOrder = singleBond;
   LOG(BF("Setting fromAtom and toAtom to nil") ); //
-  this->_Atom1 = _Nil<Atom_O>();
-  this->_Atom2 = _Nil<Atom_O>();
+  this->_Atom1 = nil<Atom_O>();
+  this->_Atom2 = nil<Atom_O>();
 }
 
 Bond_O::Bond_O(const Bond_O& bb)  : core::CxxObject_O(bb)

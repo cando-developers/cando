@@ -280,7 +280,7 @@ namespace chem {
      */
     size_t  numberOfTypes() const;
 
-    FFNonbondDb_O() : _Name(_Nil<core::T_O>()),
+    FFNonbondDb_O() : _Name(nil<core::T_O>()),
                       EleDielectricValueDefined(false),
                       EleBufferDefined(false),
                       EleScale14Defined(false),

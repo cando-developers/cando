@@ -73,20 +73,20 @@ void	StepReport_O::initialize()
 {
     this->Base::initialize();
     this->_PrematureTermination = false;
-    this->_LineSearchPosition = _Nil<NVector_O>();
-    this->_LineSearchDirection = _Nil<NVector_O>();
-    this->_LineSearchForce = _Nil<NVector_O>();
-    this->_TotalEnergyFn = _Nil<NumericalFunction_O>();
-    this->_StretchEnergyFn = _Nil<NumericalFunction_O>();
-    this->_AngleEnergyFn = _Nil<NumericalFunction_O>();
-    this->_DihedralEnergyFn = _Nil<NumericalFunction_O>();
-    this->_NonbondEnergyFn = _Nil<NumericalFunction_O>();
-    this->_ImproperEnergyFn = _Nil<NumericalFunction_O>();
-    this->_ChiralRestraintEnergyFn = _Nil<NumericalFunction_O>();
-    this->_AnchorRestraintEnergyFn = _Nil<NumericalFunction_O>();
-    this->_PointToLineRestraintEnergyFn = _Nil<NumericalFunction_O>();
-    this->_OutOfZPlaneEnergyFn = _Nil<NumericalFunction_O>();
-    this->_ImproperRestraintEnergyFn = _Nil<NumericalFunction_O>();
+    this->_LineSearchPosition = nil<NVector_O>();
+    this->_LineSearchDirection = nil<NVector_O>();
+    this->_LineSearchForce = nil<NVector_O>();
+    this->_TotalEnergyFn = nil<NumericalFunction_O>();
+    this->_StretchEnergyFn = nil<NumericalFunction_O>();
+    this->_AngleEnergyFn = nil<NumericalFunction_O>();
+    this->_DihedralEnergyFn = nil<NumericalFunction_O>();
+    this->_NonbondEnergyFn = nil<NumericalFunction_O>();
+    this->_ImproperEnergyFn = nil<NumericalFunction_O>();
+    this->_ChiralRestraintEnergyFn = nil<NumericalFunction_O>();
+    this->_AnchorRestraintEnergyFn = nil<NumericalFunction_O>();
+    this->_PointToLineRestraintEnergyFn = nil<NumericalFunction_O>();
+    this->_OutOfZPlaneEnergyFn = nil<NumericalFunction_O>();
+    this->_ImproperRestraintEnergyFn = nil<NumericalFunction_O>();
 }
 
 

@@ -57,14 +57,14 @@ void	SpecificContext_O::initialize()
 {_OF();
     this->Base::initialize();
     this->_Neighbors.clear();
-    this->_SelfName = _Nil<core::Symbol_O>();
+    this->_SelfName = nil<core::Symbol_O>();
 }
 
 
 void SpecificContext_O::clear()
 {_OF();
     this->_Neighbors.clear();
-    this->_SelfName = _Nil<core::Symbol_O>();
+    this->_SelfName = nil<core::Symbol_O>();
 }
 
 #ifdef XML_ARCHIVE
@@ -246,12 +246,12 @@ CL_DEFMETHOD adapt::SymbolSet_sp SpecificContextSet_O::asSymbolSetOfKeys()
 CL_LISPIFY_NAME("asCons");
 CL_DEFMETHOD core::List_sp SpecificContextSet_O::asCons()
 {
-    core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
+    core::Cons_sp first = core::Cons_O::create(nil<core::T_O>(),nil<core::T_O>());
     core::Cons_sp cur = first;
     SpecificContextSet_O::iterator it;
     for ( it=this->begin(); it!=this->end(); it++ )
     {
-	core::Cons_sp one = core::Cons_O::create(it->second,_Nil<core::T_O>());
+	core::Cons_sp one = core::Cons_O::create(it->second,nil<core::T_O>());
 	cur->setCdr(one);
 	cur = one;
     }

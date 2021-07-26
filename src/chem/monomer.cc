@@ -169,7 +169,7 @@ CL_DEFMETHOD     MonomerContext_sp Monomer_O::getGeneralMonomerContext()
   Monomer_O::Couplings::iterator	ci;
   Coupling_sp		coupling;
   Monomer_sp		neighborMonomer;
-  context = _Nil<MonomerContext_O>();
+  context = nil<MonomerContext_O>();
   if ( !this->isMonomerContextValid() )
   {
     SIMPLE_ERROR(BF("Monomer context is invalid: %s") % this->sharedThis<Monomer_O>()->description() );
@@ -197,14 +197,14 @@ CL_DEFMETHOD     MonomerContext_sp Monomer_O::getGeneralMonomerContext()
 CL_LISPIFY_NAME("plugNamesAndCouplingsAsList");
 CL_DEFMETHOD     core::List_sp	Monomer_O::plugNamesAndCouplingsAsList()
 {
-  core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
+  core::Cons_sp first = core::Cons_O::create(nil<core::T_O>(),nil<core::T_O>());
   core::Cons_sp cur = first;
   Monomer_O::Couplings::iterator	ci;
   for ( ci=this->_Couplings.begin(); ci!=this->_Couplings.end(); ci++ )
   {
     Coupling_sp coupling = (ci->second);
     core::Cons_sp oneOne = core::Cons_O::createList(ci->first,coupling);
-    core::Cons_sp one = core::Cons_O::create(oneOne,_Nil<core::T_O>());
+    core::Cons_sp one = core::Cons_O::create(oneOne,nil<core::T_O>());
     cur->setCdr(one);
     cur = one;
   }
@@ -287,7 +287,7 @@ CL_DEFMETHOD     MonomerContext_sp Monomer_O::getSpecificMonomerContext()
   Monomer_O::Couplings::iterator	ci;
   Coupling_sp		coupling;
   Monomer_sp		neighborMonomer;
-  context = _Nil<MonomerContext_O>();
+  context = nil<MonomerContext_O>();
   if ( !this->isMonomerContextValid() )
   {
     SIMPLE_ERROR(BF("Monomer context is invalid: %s") %this->sharedThis<Monomer_O>()->description() );
@@ -373,7 +373,7 @@ core::Symbol_sp Monomer_O::getInCouplingName()
       if ( dc->isInCouplingToMonomer(this->sharedThis<Monomer_O>()) ) return it->first;
     }
   }
-  return _Nil<core::Symbol_O>();
+  return nil<core::Symbol_O>();
 };
 
 
@@ -677,7 +677,7 @@ void Monomer_O::initialize()
 {
   this->Base::initialize();
 //        this->_Couplings = core::HashTableEq_O::create_default();
-  this->_Id = _Nil<core::Symbol_O>();
+  this->_Id = nil<core::Symbol_O>();
   this->_SequenceNumber = 0;
   this->_Monomers.clear();
   this->_CurrentMonomerIndex = -1;
@@ -701,7 +701,7 @@ Monomer_sp Monomer_O::makeMonomer(core::List_sp topology_list)
 CL_DEFMETHOD core::Symbol_sp Monomer_O::currentStereoisomerName() const
 {_OF();
   if ( this->_Monomers.size() == 0 ) {
-    return _Nil<core::Symbol_O>();
+    return nil<core::Symbol_O>();
   }
   Topology_sp topology = gc::As<Topology_sp>(chem__findTopology(this->_Monomers[this->_CurrentMonomerIndex]));
   core::Symbol_sp name = topology->getStereoisomerName(this->_CurrentStereoisomerOffset);
@@ -798,7 +798,7 @@ CL_DEFMETHOD void Monomer_O::addTopologyName(core::Symbol_sp name)
 CL_DEFMETHOD core::List_sp Monomer_O::plugNamesAsList() const
 {
   if (this->_Monomers.size()==0) {
-    return _Nil<core::T_O>();
+    return nil<core::T_O>();
   }
   Topology_sp topology0 = gc::As<Topology_sp>(chem__findTopology(this->_Monomers[0]));
   core::List_sp plugs0 = topology0->plugsAsList();

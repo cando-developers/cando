@@ -76,7 +76,7 @@ public:
 public:
   string __repr__() const;
   FFTypeRule_O(Root_sp test, core::T_sp type) : _Test(test), _Type(type) {};
-  FFTypeRule_O() : _Test(_Unbound<Root_O>()), _Type(_Nil<core::T_O>()) {};
+  FFTypeRule_O() : _Test(_Unbound<Root_O>()), _Type(nil<core::T_O>()) {};
   Root_sp getTest() const;
   core::T_sp getType() const;
 };

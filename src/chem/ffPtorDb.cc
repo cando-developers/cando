@@ -101,10 +101,10 @@ void FFPtor_O::initialize()
 {
     this->Base::initialize();
     int i;
-    this->_T1 = _Nil<core::Symbol_O>();
-    this->_T2 = _Nil<core::Symbol_O>();
-    this->_T3 = _Nil<core::Symbol_O>();
-    this->_T4 = _Nil<core::Symbol_O>();
+    this->_T1 = nil<core::Symbol_O>();
+    this->_T2 = nil<core::Symbol_O>();
+    this->_T3 = nil<core::Symbol_O>();
+    this->_T4 = nil<core::Symbol_O>();
     for ( i=0; i<MaxPeriodicity; i++ )
     {
 	this->_HasPeriodicity[i] = false;
@@ -229,7 +229,7 @@ core::Symbol_sp key;
     key = keyString(t4,t3,t2,t1);
     parm = this->_Parameters->gethash(key);
     if (parm.notnilp()) return parm;
-    parm = _Nil<core::T_O>();
+    parm = nil<core::T_O>();
     return parm;
 }
 
@@ -243,14 +243,14 @@ core::T_sp FFPtorDb_O::findBestTerm( core::Symbol_sp t1, core::Symbol_sp t2, cor
   key = keyString(t4,t3,t2,t1);
   ptor = this->_Parameters->gethash(key);
   if (ptor.notnilp()) return ptor;
-  bl = _Nil<core::Symbol_O>();
+  bl = nil<core::Symbol_O>();
   key = keyString(bl,t2,t3,bl);
   ptor = this->_Parameters->gethash(key);
   if (ptor.notnilp()) return ptor;
   key = keyString(bl,t3,t2,bl);
   ptor = this->_Parameters->gethash(key);
   if (ptor.notnilp()) return ptor;
-  ptor = _Nil<core::T_O>();
+  ptor = nil<core::T_O>();
   return ptor;
 }
 

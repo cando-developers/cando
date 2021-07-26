@@ -55,10 +55,10 @@ void	FFItor_O::initialize()
 {
     this->Base::initialize();
     int i;
-    this->_T1 = _Nil<core::Symbol_O>();
-    this->_T2 = _Nil<core::Symbol_O>();
-    this->_T3 = _Nil<core::Symbol_O>();
-    this->_T4 = _Nil<core::Symbol_O>();
+    this->_T1 = nil<core::Symbol_O>();
+    this->_T2 = nil<core::Symbol_O>();
+    this->_T3 = nil<core::Symbol_O>();
+    this->_T4 = nil<core::Symbol_O>();
     for ( i=0; i<FFItor_O::IMaxPeriodicity; i++ )
     {
 	this->_hasPeriodicity[i] = false;
@@ -240,7 +240,7 @@ core::T_sp FFItorDb_O::findBestTerm( core::Symbol_sp t1, core::Symbol_sp t2, cor
     key = key4;
     goto DONE;
   }
-  bl = _Nil<core::Symbol_O>();
+  bl = nil<core::Symbol_O>();
   key3 = keyString(bl,t2,t3,t4);
   itor = this->_Parameters->gethash(key3);
   if (itor.notnilp()) {
@@ -259,7 +259,7 @@ core::T_sp FFItorDb_O::findBestTerm( core::Symbol_sp t1, core::Symbol_sp t2, cor
     key = key1;
     goto DONE;
   }
-  itor = _Nil<core::T_O>();
+  itor = nil<core::T_O>();
  DONE:
 #ifdef	DEBUG_ON
   if ( t3=="c" && t4=="o" ) {

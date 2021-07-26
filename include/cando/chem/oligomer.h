@@ -155,7 +155,7 @@ public:
     void		removeMonomer(Monomer_sp s);
     void		addCoupling(Coupling_sp c);
     void		removeCoupling(Coupling_sp c);
-  DirectionalCoupling_sp	couple(Monomer_sp sourceMon, core::T_sp sourcePlugName, Monomer_sp targetMon, core::Symbol_sp targetPlugName = _Nil<core::T_O>() );
+  DirectionalCoupling_sp	couple(Monomer_sp sourceMon, core::T_sp sourcePlugName, Monomer_sp targetMon, core::Symbol_sp targetPlugName = nil<core::T_O>() );
     /*! Create a coupling for the two _Monomers that should already
       be in the Oligomer */
 //	RingCoupling_sp	ringCouple(Monomer_sp mon1, const string& plug1, Monomer_sp mon2, const string& plug2 );

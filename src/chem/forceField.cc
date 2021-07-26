@@ -236,7 +236,7 @@ CL_LISPIFY_NAME(CombinedForceField_clear);
 CL_DEFMETHOD
 void CombinedForceField_O::clear()
 {
-  this->_ForceFields = _Nil<core::T_O>();
+  this->_ForceFields = nil<core::T_O>();
 }
 
 

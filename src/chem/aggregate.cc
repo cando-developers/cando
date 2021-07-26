@@ -537,7 +537,7 @@ CL_LISPIFY_NAME("atomsWithChimeraSpecifications");
 CL_DEFMETHOD core::List_sp	Aggregate_O::atomsWithChimeraSpecifications(const string& specs)
 {
   vector<string> specParts = core::split(specs," \n\t");
-  core::List_sp result(_Nil<core::T_O>());
+  core::List_sp result(nil<core::T_O>());
   contentIterator	mi,ri;
   Molecule_sp		mol;
   Residue_sp		res;

@@ -170,7 +170,7 @@ because the joint-template doesn't store the atom name, just an index into a con
 CL_LISPIFY_NAME("joint-template-atom-name");
 CL_DEFMETHOD core::Symbol_sp JointTemplate_O::jointTemplateAtomName(chem::ConstitutionAtoms_sp constitutionAtoms) const
 {
-  if ( this->_Id==-1) return _Nil<core::Symbol_O>();
+  if ( this->_Id==-1) return nil<core::Symbol_O>();
   chem::ConstitutionAtom_sp ca = (*constitutionAtoms)[this->_Id];
   return ca->atomName();
 }
@@ -209,7 +209,7 @@ BondedJointTemplate_sp BondedJointTemplate_O::make(chem::OutPlug_sp outPlug)
 
 
 core::List_sp BondedJointTemplate_O::children() const {
-  core::List_sp l = _Nil<core::T_O>();
+  core::List_sp l = nil<core::T_O>();
   for ( int i(0), iEnd(this->_Children.size()); i<iEnd; ++i ) {
     l = core::Cons_O::create(this->_Children[i],l);
   }

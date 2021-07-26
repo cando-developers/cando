@@ -208,7 +208,7 @@ CL_DEFUN PdbMonomerDatabase_sp chem__readPdbMonomerConnectivityDatabase(const st
 
     void PdbMonomerConnectivity_O::initialize()
     {
-	this->_LongNames = core::ComplexVector_T_O::make(8,_Nil<T_O>(),core::clasp_make_fixnum(0));
+	this->_LongNames = core::ComplexVector_T_O::make(8,nil<T_O>(),core::clasp_make_fixnum(0));
     }
 
 #ifdef XML_ARCHIVE
@@ -342,7 +342,7 @@ void PdbMonomerDatabase_O::addMonomer(PdbMonomerConnectivity_sp mon)
  {
     if ( this->_Database.contains(pdbName) )
     {
-	return _Nil<PdbMonomerConnectivity_O>();
+	return nil<PdbMonomerConnectivity_O>();
     }
     return this->_Database.get(pdbName);
 }

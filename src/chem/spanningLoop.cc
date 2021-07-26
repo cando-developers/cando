@@ -296,7 +296,7 @@ CL_DEFMETHOD     bool	SpanningLoop_O::advanceLoopAndProcess()
             SpanningInfo_sp si = gc::As_unsafe<SpanningInfo_sp>(tfirst);
             return si->_ToRoot;
         }
-        return _Nil<core::T_O>();
+        return nil<core::T_O>();
     }        
 
     CL_DEFMETHOD core::T_sp SpanningLoop_O::getNextSpan(Atom_sp a) {
@@ -306,7 +306,7 @@ CL_DEFMETHOD     bool	SpanningLoop_O::advanceLoopAndProcess()
             SpanningInfo_sp si = gc::As_unsafe<SpanningInfo_sp>(tfirst);
             return si->_Next;
         }
-        return _Nil<core::T_O>();
+        return nil<core::T_O>();
     }        
 
     CL_DEFMETHOD int SpanningLoop_O::getBackCount(Atom_sp a) {
@@ -337,7 +337,7 @@ Atom_sp	SpanningLoop_O::nextSpanningAtom(std::function<bool (Atom_sp fromAtom, B
 	/* some stuff on the first ATOM_CLASS */
 
 	if ( !this->initialized ) {
-            SpanningInfo_sp sitop = this->storeSpanningInfo(this->top,0,_Nil<core::T_O>());
+            SpanningInfo_sp sitop = this->storeSpanningInfo(this->top,0,nil<core::T_O>());
             //printf("%s:%d initialize sitop -> %s\n", __FILE__, __LINE__, _rep_(sitop).c_str());
             this->initialized = true;
 	}
@@ -440,7 +440,7 @@ bool SpanningLoop_O::advanceLoopAndProcessWhenTestTrue(std::function<bool (Atom_
 
 CL_LISPIFY_NAME("next");
 CL_DEFMETHOD core::T_sp SpanningLoop_O::next(core::T_sp funcDesig) {
-  if ( this->done ) return _Nil<core::T_O>();
+  if ( this->done ) return nil<core::T_O>();
   core::Function_sp func = core::coerce::functionDesignator(funcDesig);
   return this->nextSpanningAtom([&func] (Atom_sp a, Bond_sp b) -> bool {
       core::T_sp res = core::eval::funcall(func,a,b);
@@ -452,13 +452,13 @@ CL_DEFMETHOD core::T_sp SpanningLoop_O::next(core::T_sp funcDesig) {
 CL_LISPIFY_NAME("allAtoms");
 CL_DEFMETHOD     core::List_sp	SpanningLoop_O::allAtoms()
     {
-	core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
+	core::Cons_sp first = core::Cons_O::create(nil<core::T_O>(),nil<core::T_O>());
 	core::Cons_sp cur = first;
 	Atom_sp theTop = this->top;
 	this->setTop(theTop);
 	while ( this->advanceLoopAndProcess() )
 	{
-	    core::Cons_sp one = core::Cons_O::create(this->getAtom(),_Nil<core::T_O>());
+	    core::Cons_sp one = core::Cons_O::create(this->getAtom(),nil<core::T_O>());
 	    cur->setCdr(one);
 	    cur = one;
 	}

@@ -83,8 +83,8 @@ CL_DEF_CLASS_METHOD Topology_mv Topology_O::makeTopologyFromResidue(chem::Residu
   }
   constitution = gc::As<Constitution_sp>(tconstitution);
   ConstitutionAtoms_sp ca = constitution->getConstitutionAtoms();
-  Topology_sp topology = Topology_O::make(topologyName, constitution, _Nil<core::T_O>() );
-  core::ComplexVector_T_sp vec = core::ComplexVector_T_O::make(residue->numberOfAtoms(),_Nil<core::T_O>());
+  Topology_sp topology = Topology_O::make(topologyName, constitution, nil<core::T_O>() );
+  core::ComplexVector_T_sp vec = core::ComplexVector_T_O::make(residue->numberOfAtoms(),nil<core::T_O>());
   int atomIndex = 0;
   StereoisomerAtoms_sp stereoisomerAtoms = StereoisomerAtoms_O::create(stereoisomerName);
   for ( auto ai = residue->begin_atoms(); ai!=residue->end_atoms(); ++ai, ++atomIndex) {
@@ -409,20 +409,20 @@ CL_DEFMETHOD     Topology_O::plugType Topology_O::getInPlug()
       return i->second;
     }
   }
-  return _Nil<plugOType>();
+  return nil<plugOType>();
 }
 
 
 CL_LISPIFY_NAME("plugsAsList");
 CL_DEFMETHOD     core::List_sp Topology_O::plugsAsList()
 {_OF();
-  core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
+  core::Cons_sp first = core::Cons_O::create(nil<core::T_O>(),nil<core::T_O>());
   core::Cons_sp cur = first;
   LOG(BF("The number of plugs = %d") % this->_Plugs.size()  );
   for ( Plugs::iterator i=this->_Plugs.begin(); i!= this->_Plugs.end(); i++)
   {
     LOG(BF("Adding plug: %s") % i->second->getName());
-    core::Cons_sp one = core::Cons_O::create(i->second,_Nil<core::T_O>());
+    core::Cons_sp one = core::Cons_O::create(i->second,nil<core::T_O>());
     cur->setCdr(one);
     cur = one;
   }
@@ -434,7 +434,7 @@ CL_DEFMETHOD     core::List_sp Topology_O::plugsAsList()
 CL_LISPIFY_NAME("plugsWithMatesAsList");
 CL_DEFMETHOD     core::List_sp Topology_O::plugsWithMatesAsList()
 {
-  core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
+  core::Cons_sp first = core::Cons_O::create(nil<core::T_O>(),nil<core::T_O>());
   core::Cons_sp cur = first;
   LOG(BF("The number of plugs = %d") % this->_Plugs.size()  );
   for ( Plugs::iterator i=this->_Plugs.begin(); i!= this->_Plugs.end(); i++)
@@ -442,7 +442,7 @@ CL_DEFMETHOD     core::List_sp Topology_O::plugsWithMatesAsList()
 	    // skip origin plugs
     if ( !i->second.isA<PlugWithMates_O>() ) continue;
     LOG(BF("Adding plug: %s") % _rep_(i->second) );
-    core::Cons_sp one = core::Cons_O::create(i->second,_Nil<core::T_O>());
+    core::Cons_sp one = core::Cons_O::create(i->second,nil<core::T_O>());
     cur->setCdr(one);
     cur = one;
   }
@@ -453,14 +453,14 @@ CL_DEFMETHOD     core::List_sp Topology_O::plugsWithMatesAsList()
 CL_LISPIFY_NAME("outPlugsAsList");
 CL_DEFMETHOD     core::List_sp Topology_O::outPlugsAsList()
 {
-  core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
+  core::Cons_sp first = core::Cons_O::create(nil<core::T_O>(),nil<core::T_O>());
   core::Cons_sp cur = first;
   for ( Plugs::iterator i=this->_Plugs.begin(); i!= this->_Plugs.end(); i++)
   {
     Plug_sp plug = i->second;
     if ( !plug->getIsIn() )
     {
-      core::Cons_sp one = core::Cons_O::create(i->second,_Nil<core::T_O>());
+      core::Cons_sp one = core::Cons_O::create(i->second,nil<core::T_O>());
       cur->setCdr(one);
       cur = one;
     }
@@ -549,7 +549,7 @@ bool	Topology_O::matchesMonomerEnvironment( Monomer_sp mon )
 
 core::T_sp Topology_O::provideMissingRingClosingPlug( Monomer_sp mon )
 {
-  core::T_sp missingRingClosingPlug = _Nil<core::T_O>();
+  core::T_sp missingRingClosingPlug = nil<core::T_O>();
   uint numPlugsWithMates = 0;
   for ( Plugs::iterator i=this->_Plugs.begin();
         i!= this->_Plugs.end(); i++)
@@ -560,10 +560,10 @@ core::T_sp Topology_O::provideMissingRingClosingPlug( Monomer_sp mon )
       missingRingClosingPlug = gc::As<OutPlug_sp>(i->second);
       continue;
     }
-    if ( !mon->hasCouplingWithPlugName(i->second->getName()) ) return _Nil<core::T_O>();
+    if ( !mon->hasCouplingWithPlugName(i->second->getName()) ) return nil<core::T_O>();
     numPlugsWithMates++;
   }
-  if ( numPlugsWithMates != mon->numberOfCouplings() ) return _Nil<core::T_O>();
+  if ( numPlugsWithMates != mon->numberOfCouplings() ) return nil<core::T_O>();
   return missingRingClosingPlug;
 }
 
@@ -696,7 +696,7 @@ CL_DEFMETHOD core::T_mv Topology_O::lookupStereoisomerAtoms(Fixnum isomer)
   if (this->_StereoisomerAtomProperties.size() < 1 ) {
     return Values(this->_StereoisomerAtomProperties[0],this->_StereoisomerCoding,core::make_fixnum(isomer));
   }
-  return Values(_Nil<core::T_O>(),this->_StereoisomerCoding,core::make_fixnum(isomer));
+  return Values(nil<core::T_O>(),this->_StereoisomerCoding,core::make_fixnum(isomer));
 }
 
 CL_DEFMETHOD void Topology_O::walkStereoisomerAtoms(core::Function_sp func)

@@ -121,7 +121,7 @@ CL_DEFUN core::T_sp core__leap_command_line_ignore_leaprc()
       return _lisp->_true();
     }
   }
-  return _Nil<core::T_O>();
+  return nil<core::T_O>();
 }
 
 

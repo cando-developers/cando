@@ -47,7 +47,7 @@ CL_DEFMETHOD void ObjectSet_O::addObjects(ObjectSet_sp other) {
 
 CL_LISPIFY_NAME("asCons");
 CL_DEFMETHOD List_sp ObjectSet_O::asCons() {
-  List_sp res = _Nil<T_O>();
+  List_sp res = nil<T_O>();
   this->map([&res](T_sp o) {
 	    res = Cons_O::create(o,res);
   });

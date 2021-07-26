@@ -294,8 +294,8 @@ ObjectSet_sp SymbolSet_O::cartesianProductWrapped(SymbolSet_sp b, const SymbolSe
 }
 
 Symbol_mv SymbolSet_O::first() {
-  T_sp found = _Nil<T_O>();
-  Symbol_sp result = _Nil<Symbol_O>();
+  T_sp found = nil<T_O>();
+  Symbol_sp result = nil<Symbol_O>();
   this->_Symbols->map_while_true([&found, &result](T_sp key, T_sp val) -> bool {
                 result = key;
                 found = _lisp->_true();
@@ -307,7 +307,7 @@ Symbol_mv SymbolSet_O::first() {
 CL_LISPIFY_NAME("asCons");
 CL_DEFMETHOD List_sp SymbolSet_O::asCons() {
   
-  List_sp cur = _Nil<List_V>();
+  List_sp cur = nil<List_V>();
   this->map([&cur](Symbol_sp si) {
                 cur = Cons_O::create(si,cur);
   });

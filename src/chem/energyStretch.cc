@@ -273,7 +273,7 @@ CL_DEFMETHOD core::T_sp EnergyStretch_O::stretchTermBetweenAtoms(Atom_sp x, Atom
                                       core::Cons_O::create(INTERN_(kw,r0), core::clasp_make_double_float(si->term.r0)));
     }
   }
-  return _Nil<core::T_O>();
+  return nil<core::T_O>();
 }
   
 double EnergyStretch_O::evaluateAllComponent( ScoringFunction_sp score,

@@ -153,9 +153,9 @@ core::Symbol_sp		t1, t2, t3;
 void	FFAngle_O::initialize()
 {
     this->Base::initialize();
-    this->_Type1 = _Nil<core::Symbol_O>();
-    this->_Type2 = _Nil<core::Symbol_O>();
-    this->_Type3 = _Nil<core::Symbol_O>();
+    this->_Type1 = nil<core::Symbol_O>();
+    this->_Type2 = nil<core::Symbol_O>();
+    this->_Type3 = nil<core::Symbol_O>();
     this->_AngRad = 0.0;
     this->_K2__kJPerRadianSquared = 0.0;
 //    this->_K3 = 0.0;

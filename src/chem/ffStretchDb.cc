@@ -183,8 +183,8 @@ void	FFStretch_O::fields(core::Record_sp node)
 void FFStretch_O::initialize()
 {
     this->Base::initialize();
-    this->_Type1 = _Nil<core::T_O>();
-    this->_Type2 = _Nil<core::T_O>();
+    this->_Type1 = nil<core::T_O>();
+    this->_Type2 = nil<core::T_O>();
     this->_R0_Nanometer = 0.0;
     this->_Kb_kJPerNanometerSquared = 0.0;
 //    this->_K3 = 0.0;

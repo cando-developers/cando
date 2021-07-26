@@ -48,9 +48,9 @@ namespace chem {
 void	NumericalFunction_O::initialize()
 {
     this->Base::initialize();
-    this->title = _Nil<core::T_O>();
-    this->xAxisName = _Nil<core::T_O>();
-    this->yAxisName = _Nil<core::T_O>();
+    this->title = nil<core::T_O>();
+    this->xAxisName = nil<core::T_O>();
+    this->yAxisName = nil<core::T_O>();
     this->values.clear();
 }
 

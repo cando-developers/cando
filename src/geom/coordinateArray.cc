@@ -57,7 +57,7 @@ size_t ComplexVectorCoordinate_O::vectorPushExtend_Vector3(const Vector3& newEle
     unlikely_if (!cl::_sym_adjust_array || !cl::_sym_adjust_array->boundP()) {
       this->internalAdjustSize_(new_size);
     } else {
-      core::eval::funcall(cl::_sym_adjust_array,this->asSmartPtr(),_Nil<core::T_O>(),cl::_sym_fill_pointer,core::clasp_make_fixnum(this->_FillPointerOrLengthOrDummy));
+      core::eval::funcall(cl::_sym_adjust_array,this->asSmartPtr(),nil<core::T_O>(),cl::_sym_fill_pointer,core::clasp_make_fixnum(this->_FillPointerOrLengthOrDummy));
     }
   }
   (*this)[idx] = newElement;

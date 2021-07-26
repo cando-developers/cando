@@ -122,7 +122,7 @@ public:
     _Parent(_Unbound<Joint_O>()),
     _Name(name),
     _Id(atomId),
-    _Properties(_Nil<core::T_O>()),
+    _Properties(nil<core::T_O>()),
     _ToExternal(general_to_external),
     _ToInternal(general_to_internal)    
 #if DEBUG_KIN_JOINT

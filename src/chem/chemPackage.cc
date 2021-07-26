@@ -230,9 +230,9 @@ namespace chem
           core::Cons_sp ptsList = core::Cons_O::createList(pts);
           core::core__pathname_translations(core::Str_O::create("CANDO"),_lisp->_true(),ptsList);
 #endif
-          _sym_STARverboseSTAR->defparameter(_Nil<core::T_O>());
-          _sym_STARdebug_octreeSTAR->defparameter(_Nil<core::T_O>());
-          _sym_STARcurrent_matchSTAR->defparameter(_Nil<core::T_O>());
+          _sym_STARverboseSTAR->defparameter(nil<core::T_O>());
+          _sym_STARdebug_octreeSTAR->defparameter(nil<core::T_O>());
+          _sym_STARcurrent_matchSTAR->defparameter(nil<core::T_O>());
           _sym_STARcurrent_aromaticity_informationSTAR->defparameter(_Unbound<core::T_O>());
           _sym_STARcurrent_ringsSTAR->defparameter(_Unbound<core::T_O>());
 	}
@@ -297,7 +297,7 @@ CandoDatabase_sp getCandoDatabase()
 
 core::Symbol_sp chemkw_intern(const string& symName)
 {
-  if ( symName == "" ) return _Nil<core::Symbol_O>();
+  if ( symName == "" ) return nil<core::Symbol_O>();
   const string trimmed = core::trimWhiteSpace(symName);
   core::Package_sp chemkwPkg = _lisp->keywordPackage();
   core::SimpleBaseString_sp strimmed = core::SimpleBaseString_O::make(trimmed);
@@ -314,7 +314,7 @@ core::Symbol_sp chemkw_intern(core::String_sp symName)
 {
   ASSERT(cl__stringp(symName));
   string s = symName->get_std_string();
-  if ( s == "" ) return _Nil<core::Symbol_O>();
+  if ( s == "" ) return nil<core::Symbol_O>();
   return chemkw_intern(s);
 }
 

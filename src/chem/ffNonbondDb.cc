@@ -307,7 +307,7 @@ CL_DEFUN FFNonbondDb_sp chem__combine_nonbond_force_fields(FFNonbondDb_sp global
     for ( size_t otheri=0; otheri<nb->_Terms.size(); ++otheri ) {
       FFNonbond_sp term = nb->_Terms[otheri];
       core::T_sp type = term->_Type;
-      core::T_sp found = terms_ht->gethash(type,_Nil<core::T_O>());
+      core::T_sp found = terms_ht->gethash(type,nil<core::T_O>());
       if (found.notnilp()) {
         SIMPLE_ERROR(BF("The type %s exists in the force-field %s and %s - there can be only one") % _rep_(type) % _rep_(nb_name) % _rep_(found));
       }
@@ -357,7 +357,7 @@ CL_DEFMETHOD core::T_sp FFNonbondDb_O::FFNonbond_findType(core::Symbol_sp type)
     uint index = static_cast<uint>(val.unsafe_fixnum());
     return this->_Terms[index];
   }
-  return _Nil<core::T_O>();
+  return nil<core::T_O>();
 }
 
 CL_LISPIFY_NAME("findTypeIndex");
@@ -404,7 +404,7 @@ CL_DEFMETHOD size_t FFNonbondDb_O::numberOfTypes() const
 void FFNonbond_O::initialize()
 {
   this->Base::initialize();
-  this->_Type = _Nil<core::Symbol_O>();
+  this->_Type = nil<core::Symbol_O>();
   this->_Radius_Nanometers = 0.0;
   this->_Epsilon_kJ = 0.0; // Depth of the VDW well
   this->_Apol = 0.0;

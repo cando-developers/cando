@@ -191,7 +191,7 @@ size_t calculate_max_tags(ChemInfoNode_sp node) {
 
 CL_DEFUN void chem__walk_chem_info_with_parent(ChemInfoNode_sp top, core::T_sp callback)
 {
-  walk_nodes_with_parent(_Nil<core::T_O>(),top,
+  walk_nodes_with_parent(nil<core::T_O>(),top,
                          [&callback]
                          (core::T_sp parentOrNil, ChemInfoNode_sp node) {
                            core::eval::funcall(callback,parentOrNil,node);
@@ -245,7 +245,7 @@ string ChemInfoMatch_O::__repr__() const {
 
 void ChemInfoMatch_O::clearAtomTags() {
   for (size_t ii=0; ii<this->_TagLookup->length(); ++ii ) {
-    this->_TagLookup->rowMajorAset(ii,_Nil<core::T_O>());
+    this->_TagLookup->rowMajorAset(ii,nil<core::T_O>());
   }
 }
 
@@ -263,7 +263,7 @@ void ChemInfoMatch_O::saveTagLookup() {
     if (same) return;
   }
   core::SimpleVector_sp copy = core::SimpleVector_O::make(this->_TagLookup->length(),
-                                                          _Nil<core::T_O>(),
+                                                          nil<core::T_O>(),
                                                           false,
                                                           this->_TagLookup->length(),
                                                           (core::T_sp*)(this->_TagLookup->rowMajorAddressOfElement_(0)));
@@ -310,7 +310,7 @@ CL_DEFMETHOD Atom_sp ChemInfoMatch_O::getAtomWithTag(core::T_sp tag) {
 CL_LISPIFY_NAME("getAtomWithTagOrNil");
 CL_DEFMETHOD core::T_sp ChemInfoMatch_O::getAtomWithTagOrNil(core::T_sp tag) {
   if (!this->hasAtomWithTag(tag))
-    return _Nil<core::T_O>();
+    return nil<core::T_O>();
   return this->getAtomWithTag(tag);
 }
 
@@ -319,7 +319,7 @@ void ChemInfoMatch_O::setRingTag(Atom_sp atom, core::T_sp index) {
 }
 
 bool ChemInfoMatch_O::matchesRingTag(Atom_sp atom, core::T_sp tag) {
-  Atom_sp other = gc::As<Atom_sp>(this->_RingLookup->gethash(tag,_Nil<T_O>()));
+  Atom_sp other = gc::As<Atom_sp>(this->_RingLookup->gethash(tag,nil<T_O>()));
   return atom->isBondedTo(other);
 //  return core::cl__eq(other,atom);
 }
@@ -536,8 +536,8 @@ void BondMatchNode_O::fields(core::Record_sp node) {
 void Logical_O::initialize() {
   this->Base::initialize();
   this->_Operator = logAlwaysTrue;
-  this->_Left = _Nil<core::T_O>();
-  this->_Right = _Nil<core::T_O>();
+  this->_Left = nil<core::T_O>();
+  this->_Right = nil<core::T_O>();
 }
 
 core::T_sp Logical_O::children() {
@@ -775,8 +775,8 @@ core::NullTerminatedEnumAssociation bondEnum[] = {
 void ResidueTest_O::initialize() {
   this->Base::initialize();
   this->_Bond = SABAnyBond;
-  this->_AtomTest = _Nil<core::T_O>();
-  this->_RingTag = _Nil<core::Symbol_O>();
+  this->_AtomTest = nil<core::T_O>();
+  this->_RingTag = nil<core::Symbol_O>();
 }
 
 core::T_sp ResidueTest_O::children() {
@@ -1090,7 +1090,7 @@ core::T_sp BondLogical_O::children() {
 
 CL_DEFMETHOD core::T_sp BondLogical_O::getLeft() const {
   if (this->_Left.boundp()) { return this->_Left; }
-  return _Nil<core::T_O>();
+  return nil<core::T_O>();
 }
 
 CL_DEFMETHOD void BondLogical_O::setLeft(core::T_sp b) {
@@ -1100,7 +1100,7 @@ CL_DEFMETHOD void BondLogical_O::setLeft(core::T_sp b) {
 
 CL_DEFMETHOD core::T_sp BondLogical_O::getRight() const {
   if (this->_Right.boundp()) { return this->_Right; }
-  return _Nil<core::T_O>();
+  return nil<core::T_O>();
 }
 
 CL_DEFMETHOD void BondLogical_O::setRight(core::T_sp b) {
@@ -1179,14 +1179,14 @@ bool BondTest_O::matches_Bond(Root_sp root, Atom_sp from, Bond_sp bond) {
 }
 
 core::T_sp BondTest_O::children() {
-  return _Nil<core::T_O>();
+  return nil<core::T_O>();
 }
 
 
 
 void BondToAtomTest_O::initialize() {
   this->Base::initialize();
-  this->_AtomTest = _Nil<core::T_O>();
+  this->_AtomTest = nil<core::T_O>();
 }
 
 CL_LISPIFY_NAME(make-bond-to-atom-test);
@@ -1741,8 +1741,8 @@ void AtomTest_O::fields(core::Record_sp node) {
 
 void Chain_O::initialize() {
   this->Base::initialize();
-  this->_Head = _Nil<core::T_O>();
-  this->_Tail = _Nil<core::T_O>();
+  this->_Head = nil<core::T_O>();
+  this->_Tail = nil<core::T_O>();
 }
 
 string Chain_O::asSmarts() const {
@@ -1867,8 +1867,8 @@ CL_DEFMETHOD BondListMatchNode_sp Chain_O::chain_get_tail(){
 
 void Branch_O::initialize() {
   this->Base::initialize();
-  this->_Left = _Nil<core::T_O>();
-  this->_Right = _Nil<core::T_O>();
+  this->_Left = nil<core::T_O>();
+  this->_Right = nil<core::T_O>();
 }
 string Branch_O::asSmarts() const {
   _OF();
@@ -1981,8 +1981,8 @@ void RootMatchNode_O::fields(core::Record_sp node) {
 
 void AfterMatchBondToAtomTest_O::initialize() {
   _OF();
-  this->_AtomTag1 = _Nil<core::Symbol_O>();
-  this->_AtomTag2 = _Nil<core::Symbol_O>();
+  this->_AtomTag1 = nil<core::Symbol_O>();
+  this->_AtomTag2 = nil<core::Symbol_O>();
   this->_Bond = SABNoBond;
 }
 
@@ -2002,12 +2002,12 @@ bool AfterMatchBondToAtomTest_O::matches(Root_sp root) {
 
 void AntechamberFocusAtomMatch_O::initialize() {
   this->Base::initialize();
-  this->_ResidueNames = _Nil<core::T_O>();
+  this->_ResidueNames = nil<core::T_O>();
   this->_AtomicNumber = 0;
   this->_NumberOfAttachedAtoms = 0;
   this->_NumberOfAttachedHydrogens = 0;
   this->_NumberOfElectronWithdrawingGroups = 0;
-  this->_AtomicProperty = _Nil<core::T_O>();
+  this->_AtomicProperty = nil<core::T_O>();
 }
 
 void AntechamberFocusAtomMatch_O::fields(core::Record_sp node) {
@@ -2219,10 +2219,10 @@ bool AntechamberBondToAtomTest_O::matches_Bond(Root_sp root, chem::Atom_sp from,
 
 void AntechamberBondToAtomTest_O::initialize() {
   this->Base::initialize();
-  this->_Element = _Nil<core::Symbol_O>();
+  this->_Element = nil<core::Symbol_O>();
   this->_Neighbors = 0;
-  this->_Tag = _Nil<core::Symbol_O>();
-  this->_AtomProperties = _Nil<core::T_O>();
+  this->_Tag = nil<core::Symbol_O>();
+  this->_AtomProperties = nil<core::T_O>();
 }
 
 void AntechamberBondToAtomTest_O::fields(core::Record_sp node) {
@@ -2377,8 +2377,8 @@ bool SmartsRoot_O::matches_Atom(Root_sp root, chem::Atom_sp atom) {
 
 void AntechamberRoot_O::initialize() {
   this->Base::initialize();
-  this->_AfterMatchTests = _Nil<core::T_O>();
-  this->_WildElementDictionary = _Nil<core::T_O>();
+  this->_AfterMatchTests = nil<core::T_O>();
+  this->_WildElementDictionary = nil<core::T_O>();
 }
 
 void AntechamberRoot_O::fields(core::Record_sp node) {
@@ -2488,7 +2488,7 @@ CL_DEFUN AntechamberRoot_mv chem__compile_antechamber(const string& code, WildEl
   }
   LOG(BF("Compiling code: %s") % code.c_str());
   core::SimpleBaseString_sp scode = core::SimpleBaseString_O::make(code);
-  core::T_mv troot_mv = core::eval::funcall(chem::_sym_compile_antechamber_type_rule->symbolFunction(),_Nil<core::T_O>(),scode,dict);
+  core::T_mv troot_mv = core::eval::funcall(chem::_sym_compile_antechamber_type_rule->symbolFunction(),nil<core::T_O>(),scode,dict);
   if (troot_mv.nilp()) {
     SIMPLE_ERROR(BF("Error parsing antechamber type rule %s") % code);
   }
@@ -2517,7 +2517,7 @@ CL_DEFUN core::T_sp chem__matches(Root_sp testRoot, Atom_sp atom)
   if (matches_mv.notnilp()) {
     return matches_mv.second();
   }
-  return _Nil<core::T_O>();
+  return nil<core::T_O>();
 }
 
 CL_DEFUN core::T_sp chem__chem_info_node_children(ChemInfoNode_sp node) {
@@ -2770,7 +2770,7 @@ CL_DEFMETHOD void MoleculeGraph_O::walk_edges(core::T_sp callback)
 void MoleculeGraph_O::initialize() {
   this->_nodes_to_index = core::HashTableEq_O::create_default();
   this->_moleculeGraph = nullptr;
-  this->_nodes = core::ComplexVector_T_O::make(64,_Nil<core::T_O>(),core::make_fixnum(0));
+  this->_nodes = core::ComplexVector_T_O::make(64,nil<core::T_O>(),core::make_fixnum(0));
 }
 
 CL_DEFUN MoleculeGraph_sp chem__make_molecule_graph() {
@@ -2869,7 +2869,7 @@ void ChemInfoGraph_O::buildFromRoot_() {
   ChemInfoGraph_sp graph = this->asSmartPtr();
   Root_sp pattern = graph->_Root;
   std::vector<RingClosers> closers;
-  walk_nodes_with_parent(_Nil<core::T_O>(),pattern->_Node,
+  walk_nodes_with_parent(nil<core::T_O>(),pattern->_Node,
                          [&graph,&closers]
                          (core::T_sp parentOrNil, ChemInfoNode_sp node) {
 //      printf("%s:%d ChemInfoNode_sp -> %s\n", __FILE__, __LINE__, _rep_(node).c_str());
@@ -2938,7 +2938,7 @@ void ChemInfoGraph_O::buildFromRoot_() {
   // Transform a ChemInfo graph into a boost graph
   // This is tricky code
   core::HashTableEq_sp parent_nodes = core::HashTableEq_O::create_default();
-  walk_nodes_with_parent(_Nil<core::T_O>(),pattern->_Node,
+  walk_nodes_with_parent(nil<core::T_O>(),pattern->_Node,
                          [&graph,&parent_nodes,&closers]
                          (core::T_sp parentOrNil, ChemInfoNode_sp node) {
                            if (chem__verbose(2)) {
@@ -3017,7 +3017,7 @@ void ChemInfoGraph_O::buildFromRoot_() {
                                if (tup.nilp()) {
                                  // If the parent is not NIL but has no parent node - then we are in recursive smarts
                                  // and we don't want to create any vertices or do anything further
-                                 parent_nodes->setf_gethash(chain,_Nil<core::T_O>());
+                                 parent_nodes->setf_gethash(chain,nil<core::T_O>());
                                } else {
                                  // If parentOrNil is not NIL and it has a parent then keep adding to the graph
                                  size_t index = head_index.unsafe_fixnum();
@@ -3200,7 +3200,7 @@ CL_DEFUN void chem__chem_info_graph_dump(ChemInfoGraph_sp graph) {
         core::write_bf_stream(BF("vf2 found a match\n"));
       }
       core::SimpleVector_sp copy = core::SimpleVector_O::make(this->_currentMatch->_TagLookup->length(),
-                                                              _Nil<core::T_O>(),
+                                                              nil<core::T_O>(),
                                                               false,
                                                               this->_currentMatch->_TagLookup->length(),
                                                               (core::T_sp*)(this->_currentMatch->_TagLookup->rowMajorAddressOfElement_(0)));
@@ -3229,7 +3229,7 @@ CL_DEFUN void chem__chem_info_graph_dump(ChemInfoGraph_sp graph) {
 
   CL_DEFUN core::List_sp chem__boost_graph_vf2(ChemInfoGraph_sp chemInfoGraph, MoleculeGraph_sp moleculeGraph ) {
   if (boost::num_vertices(*chemInfoGraph->_chemInfoGraph)>boost::num_vertices(*moleculeGraph->_moleculeGraph)) {
-      return _Nil<core::T_O>();
+      return nil<core::T_O>();
     }
     core::HashTableEql_sp ringHashTable = core::HashTableEql_O::create_default();
     ChemInfoMatch_sp current_match = ChemInfoMatch_O::make( chemInfoGraph->_Root, chemInfoGraph->_Root->_MaxTag, ringHashTable);
@@ -3310,7 +3310,7 @@ public:
                  core::T_sp callback,
                  size_t max_callbacks) :
     m_graph1(graph1), m_graph2(graph2), m_callback(callback), _max_callbacks(max_callbacks), _count_callbacks(NULL) {
-    this->_results = core::ComplexVector_T_O::make(32,_Nil<core::T_O>(),core::make_fixnum(0));
+    this->_results = core::ComplexVector_T_O::make(32,nil<core::T_O>(),core::make_fixnum(0));
   }
 
   template <typename CorrespondenceMapFirstToSecond,
@@ -3364,7 +3364,7 @@ CL_DEFUN core::List_sp chem__boost_graph_mcgregor_common_subgraphs(MoleculeGraph
                           my_callback,
                           boost::edges_equivalent(edge_comp).vertices_equivalent(vertex_comp));
   delete my_callback._count_callbacks;
-  return _Nil<core::T_O>();
+  return nil<core::T_O>();
 }
 
 

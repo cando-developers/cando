@@ -60,10 +60,10 @@ CL_DEFUN Twister_sp chem__make_twister()
 void	Twister_O::initialize()
 {
     this->Base::initialize();
-    this->_FixedRef = _Nil<Atom_O>();
-    this->_Fixed = _Nil<Atom_O>();
-    this->_Movable = _Nil<Atom_O>();
-    this->_MovableRef = _Nil<Atom_O>();
+    this->_FixedRef = nil<Atom_O>();
+    this->_Fixed = nil<Atom_O>();
+    this->_Movable = nil<Atom_O>();
+    this->_MovableRef = nil<Atom_O>();
     this->_Atoms.clear();
 }
 
@@ -100,13 +100,13 @@ void	Twister_O::_defineForDihedral(Atom_sp a1ref, Atom_sp a1, Atom_sp a2, Atom_s
 		//
 		// Accumulate the atoms on each side of the bond
 		//
-    core::List_sp a1Atoms = _Nil<core::T_O>();
+    core::List_sp a1Atoms = nil<core::T_O>();
     SpanningLoop_sp span1 = SpanningLoop_O::create();
     span1->setTop(a1);
     while ( span1->advance() ) {
 	a1Atoms = core::Cons_O::create(span1->getAtom(),a1Atoms);
     }
-    core::List_sp a2Atoms = _Nil<core::T_O>();
+    core::List_sp a2Atoms = nil<core::T_O>();
     SpanningLoop_sp span2 = SpanningLoop_O::create();
     span2->setTop(a2);
     while ( span2->advance() ) {
@@ -193,7 +193,7 @@ least atoms will be the movable side while the other side will remain fixed.)doc
 CL_LISPIFY_NAME("twister_defineForBond");
 CL_DEFMETHOD void	Twister_O::defineForBond(Atom_sp a1, Atom_sp a2 )
 {
-    this->_defineForDihedral( _Nil<Atom_O>(),a1,a2,_Nil<Atom_O>(),false);
+    this->_defineForDihedral( nil<Atom_O>(),a1,a2,nil<Atom_O>(),false);
 }
 
 
@@ -202,7 +202,7 @@ CL_DOCSTRING(R"doc(Define the twister based on a fixed and movable atom.)doc");
 CL_LISPIFY_NAME("twister_defineFixedAndMobile");
 CL_DEFMETHOD void	Twister_O::defineFixedAndMobile(Atom_sp afixed, Atom_sp amobile )
 {
-    this->_defineForDihedral(_Nil<Atom_O>(),afixed,amobile,_Nil<Atom_O>(), true);
+    this->_defineForDihedral(nil<Atom_O>(),afixed,amobile,nil<Atom_O>(), true);
 }
 
 

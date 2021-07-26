@@ -245,19 +245,19 @@ public:
   core::Symbol_sp getStereoisomerName(size_t index) const;
   core::T_mv lookupStereoisomerAtoms(Fixnum index);
     
-  Topology_O() : _Name(_Nil<core::Symbol_O>()),
+  Topology_O() : _Name(nil<core::Symbol_O>()),
                  _Constitution(_Unbound<chem::Constitution_O>()),
 //    _AtomInfo(_Unbound<core::Vector_O>()),
                  _StereoisomerCoding(kw::_sym_absolute),
-                 _Properties(_Nil<core::T_O>()),
-                 _DefaultOutPlugName(_Nil<core::T_O>())
+                 _Properties(nil<core::T_O>()),
+                 _DefaultOutPlugName(nil<core::T_O>())
   {};
   Topology_O(core::Symbol_sp name, Constitution_sp constitution) : _Name(name),
                                                                    _Constitution(constitution),
 //    _AtomInfo(_Unbound<core::Vector_O>()),
                                                                    _StereoisomerCoding(kw::_sym_absolute),
-                                                                   _Properties(_Nil<core::T_O>()),
-                                                                   _DefaultOutPlugName(_Nil<core::T_O>())
+                                                                   _Properties(nil<core::T_O>()),
+                                                                   _DefaultOutPlugName(nil<core::T_O>())
   {};
 };
 

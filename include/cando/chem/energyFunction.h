@@ -119,7 +119,7 @@ namespace chem {
   {
     LISP_CLASS(chem,ChemPkg,EnergyFunction_O,"EnergyFunction",ScoringFunction_O);
   public:
-    static EnergyFunction_sp make(core::T_sp matter, bool useExcludedAtoms=false, core::T_sp activeAtoms=_Nil<core::T_O>(), bool assign_types=false, core::T_sp bounding_box=_Nil<core::T_sp>());
+    static EnergyFunction_sp make(core::T_sp matter, bool useExcludedAtoms=false, core::T_sp activeAtoms=nil<core::T_O>(), bool assign_types=false, core::T_sp bounding_box=nil<core::T_sp>());
   public:
     void initialize();
   public:
@@ -157,7 +157,7 @@ namespace chem {
     core::List_sp			_MissingParameters;
   public:
   public:
-    void	_eraseMissingParameters() { this->_MissingParameters = _Nil<core::T_O>();};
+    void	_eraseMissingParameters() { this->_MissingParameters = nil<core::T_O>();};
     void	_addMissingParameter(FFParameter_sp p) { this->_MissingParameters = core::Cons_O::create(p,this->_MissingParameters);};
     void __createSecondaryAmideRestraints(VectorAtom& nitrogens, core::T_sp activeAtoms );
 
@@ -261,11 +261,11 @@ namespace chem {
     EnergyAtom*     getEnergyAtomPointer(Atom_sp a);
 
     void assignAtomTypes(Matter_sp matter, bool show_progress);
-    void defineForMatter(Matter_sp agg, bool useExcludedAtoms, core::T_sp activeAtomSet=_Nil<core::T_O>(), bool assign_types=true );
+    void defineForMatter(Matter_sp agg, bool useExcludedAtoms, core::T_sp activeAtomSet=nil<core::T_O>(), bool assign_types=true );
     void defineForMatterWithAtomTypes(Matter_sp matter, bool useExcludedAtoms, core::T_sp activeAtoms, core::T_sp cip_priorities);
-    void generateStandardEnergyFunctionTables(Matter_sp mol, CombinedForceField_sp forceField, core::T_sp activeAtomSet=_Nil<core::T_O>());
-    void generateNonbondEnergyFunctionTables(bool useExcludedAtoms, Matter_sp agg, core::T_sp forceField, core::T_sp activeAtomSet=_Nil<core::T_O>());
-    void generateRestraintEnergyFunctionTables(Matter_sp agg, core::T_sp nonbonds, core::T_sp activeAtomSet=_Nil<core::T_O>(), core::T_sp cip_priorities=_Nil<core::T_O>());
+    void generateStandardEnergyFunctionTables(Matter_sp mol, CombinedForceField_sp forceField, core::T_sp activeAtomSet=nil<core::T_O>());
+    void generateNonbondEnergyFunctionTables(bool useExcludedAtoms, Matter_sp agg, core::T_sp forceField, core::T_sp activeAtomSet=nil<core::T_O>());
+    void generateRestraintEnergyFunctionTables(Matter_sp agg, core::T_sp nonbonds, core::T_sp activeAtomSet=nil<core::T_O>(), core::T_sp cip_priorities=nil<core::T_O>());
 
 
     /*! Add the restraints to the energy function.
@@ -318,7 +318,7 @@ namespace chem {
       , _AnchorRestraint(_Unbound<EnergyAnchorRestraint_O>())
       , _FixedNonbondRestraint(_Unbound<EnergyFixedNonbondRestraint_O>())
 #endif
-      ,_OtherEnergyComponents(_Nil<core::T_O>())
+      ,_OtherEnergyComponents(nil<core::T_O>())
       ,_BoundingBox(bounding_box)
 //      , _MissingParameters(_Unbound<core::List_O>())
     {};
@@ -337,7 +337,7 @@ namespace chem {
       , _AnchorRestraint(_Unbound<EnergyAnchorRestraint_O>())
       , _FixedNonbondRestraint(_Unbound<EnergyFixedNonbondRestraint_O>())
 #endif
-    ,_OtherEnergyComponents(_Nil<core::T_O>())
+    ,_OtherEnergyComponents(nil<core::T_O>())
     ,_BoundingBox(_Unbound<BoundingBox_O>())
 //      , _MissingParameters(_Unbound<core::List_O>())
     {};

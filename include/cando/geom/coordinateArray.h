@@ -222,7 +222,7 @@ namespace geom {
       return array;
     }
     static ComplexVectorCoordinate_sp make_vector(size_t dimension, simple_element_type initialElement, core::T_sp fillPointer) {
-      return make_vector(dimension,initialElement,fillPointer,_Nil<T_O>(),false,core::clasp_make_fixnum(0));
+      return make_vector(dimension,initialElement,fillPointer,nil<T_O>(),false,core::clasp_make_fixnum(0));
     }
     /*! Build a ComplexVectorCoordinate from a SimpleVectorCoordinate */
     static ComplexVectorCoordinate_sp make_vector(geom::SimpleVectorCoordinate_sp data) {

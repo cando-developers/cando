@@ -93,7 +93,7 @@ void CandoDatabase_O::fields(core::Record_sp node)
 
 core::List_sp CandoDatabase_O::entitiesSubClassOfAsList(core::Instance_sp mc)
 {_OF();
-  core::List_sp result = _Nil<core::T_O>();
+  core::List_sp result = nil<core::T_O>();
   this->_Entities->maphash( [&result,&mc] (core::T_sp key, core::T_sp value) {
                    if ( core::cl__class_of(value) == mc ) {
                      result = core::Cons_O::create(value,result);
@@ -573,7 +573,7 @@ CL_LISPIFY_NAME("uniqueMonomerCoordinatesAsList");
 CL_DEFMETHOD     core::List_sp CandoDatabase_O::uniqueMonomerCoordinatesAsList()
 {
   core::Cons_sp first, cur;
-  first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
+  first = core::Cons_O::create(nil<core::T_O>(),nil<core::T_O>());
   cur = first;
   monomerCoordinatesIterator it;
   gctools::SmallOrderedSet<MonomerCoordinates_sp> unique;
@@ -583,7 +583,7 @@ CL_DEFMETHOD     core::List_sp CandoDatabase_O::uniqueMonomerCoordinatesAsList()
   }
   for ( gctools::SmallOrderedSet<MonomerCoordinates_sp>::iterator ui=unique.begin(); ui!=unique.end(); ui++ )
   {
-    core::Cons_sp one = core::Cons_O::create((*ui),_Nil<core::T_O>());
+    core::Cons_sp one = core::Cons_O::create((*ui),nil<core::T_O>());
     cur->setCdr(one);
     cur = one;
   }
@@ -594,12 +594,12 @@ CL_LISPIFY_NAME("monomerCoordinatesKeysAsList");
 CL_DEFMETHOD     core::List_sp CandoDatabase_O::monomerCoordinatesKeysAsList()
 {
   core::Cons_sp first, cur;
-  first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
+  first = core::Cons_O::create(nil<core::T_O>(),nil<core::T_O>());
   cur = first;
   monomerCoordinatesIterator it;
   for ( it=this->begin_MonomerCoordinates(); it!=this->end_MonomerCoordinates(); it++ )
   {
-    core::Cons_sp one = core::Cons_O::create(it->first,_Nil<core::T_O>());
+    core::Cons_sp one = core::Cons_O::create(it->first,nil<core::T_O>());
     cur->setCdr(one);
     cur = one;
   }
@@ -622,7 +622,7 @@ CL_DEFMETHOD     MonomerCoordinates_sp	CandoDatabase_O::getMonomerCoordinatesWit
   {
     return this->_MonomerCoordinates.get(key);
   }
-  return _Nil<MonomerCoordinates_O>();
+  return nil<MonomerCoordinates_O>();
 }
 
 
@@ -634,7 +634,7 @@ CL_DEFMETHOD     MonomerCoordinates_sp	CandoDatabase_O::get(MonomerContext_sp co
   {
     return this->_MonomerCoordinates.get(key);
   }
-  return _Nil<MonomerCoordinates_O>();
+  return nil<MonomerCoordinates_O>();
 }
 
 CL_LISPIFY_NAME("recognizesContext");
@@ -775,7 +775,7 @@ core::T_mv CandoDatabase_O::findTopology(core::T_sp name, bool errorp) const {
   core::T_sp keyword_name = _lisp->_Roots._KeywordPackage->intern(sname);
   core::T_mv result_mv = this->_Topologys->gethash(keyword_name);
   if (result_mv.second().nilp()) {
-    if (!errorp) return Values(_Nil<core::T_O>(),_Nil<core::T_O>());
+    if (!errorp) return Values(nil<core::T_O>(),nil<core::T_O>());
     SIMPLE_ERROR(BF("Could not find topology with name %s") % core::_rep_(name));
   }
   return result_mv;

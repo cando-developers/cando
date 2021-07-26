@@ -817,7 +817,7 @@ void	MoeReadFile::readNextLine()
 	ParaArrayReal*	target;
 	bool		bGotRestraints, bGotFixed, bGotCharges;
 	bool		bGotForceRSm1, bGotForceRSp1, bGotHintLP;
-        core::List_sp	aggRestraints = _Nil<core::T_O>();
+        core::List_sp	aggRestraints = nil<core::T_O>();
 	int		aid;
 	int		index_mmTypeId, index_mmTypes;
 	string		str;

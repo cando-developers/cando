@@ -70,7 +70,7 @@ void Mate_O::fields(core::Record_sp node) {
 
 core::Symbol_sp Mate_O::getName() const
 {
-  return _Nil<core::Symbol_O>();
+  return nil<core::Symbol_O>();
 }
 
 

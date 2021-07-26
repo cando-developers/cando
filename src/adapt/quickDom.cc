@@ -244,11 +244,11 @@ CL_LISPIFY_NAME("children");
 CL_DEFMETHOD core::List_sp QDomNode_O::children()
 {
     core::Cons_sp first, cur;
-    first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
+    first = core::Cons_O::create(nil<core::T_O>(),nil<core::T_O>());
     cur = first;
     for ( QDomNode_O::iterator ci=this->begin_Children(); ci!=this->end_Children(); ci++ )
     {
-	core::Cons_sp one = core::Cons_O::create(*ci,_Nil<core::T_O>());
+	core::Cons_sp one = core::Cons_O::create(*ci,nil<core::T_O>());
 	cur->setCdr(one);
 	cur = one;
     }
@@ -769,7 +769,7 @@ gc::Nilable<QDomNode_sp>  QDomNode_O::parse(core::T_sp stream)
 	printf ("error durint XML initialization\n" );
 	LOG(BF("Error during XML initialization") );
 	parser.shutDown();
-	return _Nil<core::T_O>();
+	return nil<core::T_O>();
     }
 //    handler.setExecutionContext(this);
     LOG(BF("QDomParseString About to parse XML file") );

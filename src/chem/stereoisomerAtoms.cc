@@ -56,7 +56,7 @@ StereoisomerAtom_sp StereoisomerAtom_O::create(ConstitutionAtom_sp constitutionA
     StereoisomerVirtualAtom_sp tva = StereoisomerVirtualAtom_O::create(cva);
     return tva;
   }
-  auto  ta = gctools::GC<StereoisomerAtom_O>::allocate( constitutionAtom->_AtomName,constitutionAtom->_Index,0.0,_Nil<core::Symbol_O>());
+  auto  ta = gctools::GC<StereoisomerAtom_O>::allocate( constitutionAtom->_AtomName,constitutionAtom->_Index,0.0,nil<core::Symbol_O>());
   return ta;
 }
 
@@ -173,7 +173,7 @@ CL_DEFMETHOD     core::T_mv StereoisomerAtoms_O::atomWithName(MatterName nm,bool
     if ( (*ci)->_AtomName == nm ) return Values(*ci,_lisp->_true());
   }
   if (!errorp) {
-    return Values(_Nil<core::T_O>(),_Nil<core::T_O>());
+    return Values(nil<core::T_O>(),nil<core::T_O>());
   }
   SIMPLE_ERROR(BF("Could not find StereoisomerAtom with name[%s]") % nm );
 }

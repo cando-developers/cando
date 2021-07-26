@@ -501,7 +501,7 @@ CL_DEFMETHOD Matrix	SuperposeEngine_O::superpose()
 void SuperposeSelectedAtoms_O::initialize()
 {
     this->Base::initialize();
-    this->_Matter = _Nil<Matter_O>();
+    this->_Matter = nil<Matter_O>();
     this->_SuperposeAtoms.clear();
 }
 
@@ -543,7 +543,7 @@ void SuperposeSelectedAtoms_O::updateSuperposeAtoms()
 CL_LISPIFY_NAME("setSuperposeMatter");
 CL_DEFMETHOD void SuperposeSelectedAtoms_O::setMatter(Matter_sp matter)
 {
-  this->_Matter = matter->copy(_Nil<core::T_O>());
+  this->_Matter = matter->copy(nil<core::T_O>());
   this->_SuperposeAtoms.clear();
 }
 

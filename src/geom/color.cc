@@ -182,7 +182,7 @@ Color_O::Color_O(const Color_O& orig) : core::CxxObject_O(orig)
 void Color_O::initialize()
 {
     this->Base::initialize();
-    this->_ColorName = _Nil<core::Symbol_O>();
+    this->_ColorName = nil<core::Symbol_O>();
     this->setRGB(1.0,1.0,1.0);
 }
 

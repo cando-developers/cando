@@ -36,15 +36,15 @@ namespace chem {
 
 void	FrameRecognizer_O::initialize()
 {_OF();
-    this->_Name = _Nil<core::Symbol_O>();
-    this->_GroupName = _Nil<core::Symbol_O>();
+    this->_Name = nil<core::Symbol_O>();
+    this->_GroupName = nil<core::Symbol_O>();
 }
 
 CL_LISPIFY_NAME("frame-recognizer-compile-smarts");
 CL_DEFMETHOD void	FrameRecognizer_O::compileSmarts(const string& osm)
 {
     this->_Smarts = osm;
-    this->_Root = chem__compile_smarts(this->_Smarts,_Nil<core::T_O>());
+    this->_Root = chem__compile_smarts(this->_Smarts,nil<core::T_O>());
     LOG(BF("Successfully compiled smarts code for atom O") );
 //    LOG(BF("ChemInfo code = %s") % this->_ChemInfo->asXmlString());
 }
@@ -163,7 +163,7 @@ string FrameRecognizer_O::description() const
     me->_Name = name;
     me->_Smarts = smarts;
     me->_GroupName = groupName;
-    me->_Root = chem__compile_smarts(me->_Smarts,_Nil<core::T_O>());
+    me->_Root = chem__compile_smarts(me->_Smarts,nil<core::T_O>());
     return me;
   };
 

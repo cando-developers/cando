@@ -69,7 +69,7 @@ void	Entity_O::initialize()
 CL_LISPIFY_NAME("constitution");
 CL_DEFMETHOD Constitution_sp Entity_O::constitution()
 {
-    Constitution_sp x = _Nil<Constitution_O>();
+    Constitution_sp x = nil<Constitution_O>();
     return x;
 }
 

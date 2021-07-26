@@ -122,7 +122,7 @@ void	Structure_Old_List_O::initialize()
 {
     this->Base::initialize();
     this->_RmsCutOff = 0.05;
-    this->_Matter = _Nil<Matter_O>();
+    this->_Matter = nil<Matter_O>();
     this->_SuperposeAtoms.clear();
     this->_AllAtoms.clear();
     this->_Data = core::HashTableEq_O::create_default();
@@ -270,7 +270,7 @@ Structure_Old_ListEntry_sp Structure_Old_List_O::createStructureListEntryIfConfo
           LOG(BF("Entry will not be added") );
           (*ci)->setMembers((*ci)->getMembers()+1);
           Structure_Old_ListEntry_sp zilch;
-          zilch = _Nil<Structure_Old_ListEntry_O>();
+          zilch = nil<Structure_Old_ListEntry_O>();
           LOG(BF("Fixed points at the end of superposer: %s") % (newConf->asXmlString().c_str() ) );
           return zilch;
         }

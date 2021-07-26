@@ -382,9 +382,9 @@ public:
 //_NextContentId(1),
 //    _Id(1),
 //    _TempFileId(0),
-  name(_Nil<core::Symbol_O>()),
-    _Properties(_Nil<core::T_O>()),
-    _RestraintList(_Nil<core::T_O>()) {};
+  name(nil<core::Symbol_O>()),
+    _Properties(nil<core::T_O>()),
+    _RestraintList(nil<core::T_O>()) {};
 };
 
 };

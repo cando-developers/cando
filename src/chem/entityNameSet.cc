@@ -141,7 +141,7 @@ CL_DEFMETHOD     adapt::SymbolSet_sp	EntityNameSetBase_O::getUnExpandedNames()
 
 core::List_sp EntityNameSetBase_O::getInterestingAtomAliases()
 {
-  return _Nil<core::T_O>();
+  return nil<core::T_O>();
 }
 
 

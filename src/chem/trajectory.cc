@@ -136,7 +136,7 @@ void	TrajectoryFrame_O::initialize()
 void	Trajectory_O::initialize()
 {
     this->Base::initialize();
-    this->_Matter = _Nil<Matter_O>();
+    this->_Matter = nil<Matter_O>();
     this->_Namespace = core::HashTableEq_O::create_default();
 }
 

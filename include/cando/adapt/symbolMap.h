@@ -87,7 +87,7 @@ template <typename OT>
    typedef adapt::SymbolMap<OT> GivenType;
    static core::T_sp convert(const GivenType& v) {
      // Convert the SymbolMap into an alist
-     core::List_sp res = _Nil<core::T_O>();
+     core::List_sp res = nil<core::T_O>();
      for ( auto it : v ) {
        res = core::Cons_O::create(core::Cons_O::create(it.first,it.second),res);
      }
