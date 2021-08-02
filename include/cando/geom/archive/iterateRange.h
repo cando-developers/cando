@@ -52,11 +52,11 @@ private:
 	int	_End;
 	core::Fixnum_sp	_Cur;
 public:
-	static core::T_sp prim_range(core::Function_sp e,core::Cons_sp args, core::Environment_sp environ, core::Lisp_sp lisp);
+	static core::T_sp prim_range(core::Function_sp e,core::Cons_sp args, core::Environment_sp environ, core::LispPtr lisp);
 
 
-	static IterateRange_sp create(core::Lisp_sp e,int ibegin, int iend);
-	static IterateRange_sp create(core::Lisp_sp e,int ibegin, int iend, int istep);
+	static IterateRange_sp create(core::LispPtr e,int ibegin, int iend);
+	static IterateRange_sp create(core::LispPtr e,int ibegin, int iend, int istep);
 public:
 	void initRange(int b,int e);
 	void first();

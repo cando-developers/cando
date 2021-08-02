@@ -38,8 +38,8 @@ namespace adapt
     {
       LISP_CLASS(adapt,AdaptPkg,AdaptExposer_O,"AdaptExposer",core::Exposer_O);
     public:
-    AdaptExposer_O(core::Lisp_sp lisp) : Exposer_O(lisp,AdaptPkg) {};
-	virtual void expose(core::Lisp_sp lisp,WhatToExpose what) const;
+    AdaptExposer_O(core::LispPtr lisp) : Exposer_O(lisp,AdaptPkg) {};
+	virtual void expose(core::LispPtr lisp,WhatToExpose what) const;
     };
 
 

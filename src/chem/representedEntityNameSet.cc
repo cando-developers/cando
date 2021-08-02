@@ -155,7 +155,7 @@ CL_DEFMETHOD     bool	RepresentedEntityNameSet_O::hasRepresentative()
 
 #else
 
-    core::T_sp RepresentedEntityNameSet_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
+    core::T_sp RepresentedEntityNameSet_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::LispPtr lisp)
     {
 	this->Base::__init__(exec,args,env,lisp);
 	this->_Representative = translate::from_object<core::Symbol_O>::convert(env->lookup(Pkg(),"representativeName"));

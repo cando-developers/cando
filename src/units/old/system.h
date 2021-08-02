@@ -55,7 +55,7 @@ public:
 				uint temperatureSymbolIndex,
 				uint luminositySymbolIndex,
 				uint amountSymbolIndex,
-				core::Lisp_sp lisp);
+				core::LispPtr lisp);
 
 private: // instance variables here
 	/*! Name of this system */

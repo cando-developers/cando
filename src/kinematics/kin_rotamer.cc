@@ -69,7 +69,7 @@ Rotamer_sp Rotamer_O::make(core::List_sp dihedrals, core::List_sp sigmas, core::
     core::T_sp Rotamer_O::__init__(core::Function_sp exec,
 				  core::Cons_sp args,
 				  core::Environment_sp env,
-				  core::Lisp_sp lisp)
+				  core::LispPtr lisp)
     {
 //      this->Base::__init__(exec,args,env,lisp);
 	core::Cons_sp dihedrals = translate::from_object<core::Cons_sp>::convert(env->lookup(lisp->symbol(_sym_dihedrals)));
@@ -159,7 +159,7 @@ CL_LISPIFY_NAME(make-ChiDihedral);
     };
 
 #else
-    core::T_sp RotamerSetBase_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
+    core::T_sp RotamerSetBase_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::LispPtr lisp)
     {
 //      this->Base::__init__(exec,args,env,lisp);
 //      arg = translate::from_object<XXXX>::convert(env->lookup(this->Package(),"YYY"));
@@ -235,7 +235,7 @@ RotamerSet_sp RotamerSet_O::make()
     };
 
 #else
-    core::T_sp RotamerSet_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
+    core::T_sp RotamerSet_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::LispPtr lisp)
     {
 //      this->Base::__init__(exec,args,env,lisp);
 //      arg = translate::from_object<XXXX>::convert(env->lookup(this->Package(),"YYY"));
@@ -283,7 +283,7 @@ BackboneDependentRotamerSet_sp BackboneDependentRotamerSet_O::make(const int phi
     };
 
 #else
-    core::T_sp BackboneDependentRotamerSet_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
+    core::T_sp BackboneDependentRotamerSet_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::LispPtr lisp)
     {
 	this->_Phi = translate::from_object<int>::convert(env->lookup(_sym_phi));
 	this->_Psi = translate::from_object<int>::convert(env->lookup(_sym_psi));
@@ -331,7 +331,7 @@ BackboneDependentRotamerLibrary_sp BackboneDependentRotamerLibrary_O::make(const
     };
 
 #else
-    core::T_sp BackboneDependentRotamerLibrary_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
+    core::T_sp BackboneDependentRotamerLibrary_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::LispPtr lisp)
     {
 	this->_PhiStep = translate::from_object<int>::convert(env->lookup(Pkg(),"phiStep"));
 	this->_PhiStart = translate::from_object<int>::convert(env->lookup(Pkg(),"phiStart"));

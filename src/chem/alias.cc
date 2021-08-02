@@ -90,7 +90,7 @@ CL_DEFUN core::T_sp chem__alias(core::Symbol_sp monAlias, core::Symbol_sp atomAl
 
 #else
 
-    core::T_sp Alias_O::__init__(core::Function_sp exec, core::List_sp args, core::Environment_sp bargs, core::Lisp_sp lisp)
+    core::T_sp Alias_O::__init__(core::Function_sp exec, core::List_sp args, core::Environment_sp bargs, core::LispPtr lisp)
     {
 	this->_MonomerAlias = translate::from_object<core::Symbol_sp>::convert(bargs->lookup(ChemPkg,"monomerSym"));
 	this->_AtomAlias = translate::from_object<core::Symbol_sp>::convert(bargs->lookup(ChemPkg,"atomSym"));

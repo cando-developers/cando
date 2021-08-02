@@ -50,8 +50,8 @@ namespace omm
     private:
 	int _stuff;
     public:
-    OpenMMExposer(core::Lisp_sp lisp) : PackageExposer(lisp,OmmPkg) {};
-        virtual void expose(core::Lisp_sp lisp,WhatToExpose what) const;
+    OpenMMExposer(core::LispPtr lisp) : PackageExposer(lisp,OmmPkg) {};
+        virtual void expose(core::LispPtr lisp,WhatToExpose what) const;
     };
 
 

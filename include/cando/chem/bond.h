@@ -59,7 +59,7 @@ class Bond_O : public core::CxxObject_O
   bool fieldsp() const { return true;};
   void fields(core::Record_sp node);
  public:
-  static void lisp_initGlobals(core::Lisp_sp lisp);
+  static void lisp_initGlobals(core::LispPtr lisp);
 
   friend	class Loop;
 public:

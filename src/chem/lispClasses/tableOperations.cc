@@ -162,7 +162,7 @@ CL_DEFUN void chem__forEachEntryEvaluate(Table_sp table, core::Function_sp eval 
 
 
 
-void initialize_tableOperations(core::Lisp_sp lisp)
+void initialize_tableOperations(core::LispPtr lisp)
 {
 //    core::af_def( ChemPkg, "verifyThatFieldOfAllEntriesAreEqual", &verifyThatFieldOfAllEntriesAreEqual);
 //    core::af_def( ChemPkg, "sortTableEntriesUsingComparisonFunction", &sortTableEntriesUsingComparisonFunction);

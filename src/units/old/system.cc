@@ -42,7 +42,7 @@ namespace units
 
 
 
-    Object_sp System_O::__init__(::core::Executable_sp exec, ::core::Cons_sp args, ::core::Environment_sp env, ::core::Lisp_sp lisp)
+    Object_sp System_O::__init__(::core::Executable_sp exec, ::core::Cons_sp args, ::core::Environment_sp env, ::core::LispPtr lisp)
     {
 //      this->Base::__init__(exec,args,env,lisp);
 //      arg = from_object<XXXX>::convert(env->lookup(this->Package(),"YYY"));
@@ -71,7 +71,7 @@ namespace units
 				uint temperatureSymbolIndex,
 				uint luminositySymbolIndex,
 				uint amountSymbolIndex,
-				core::Lisp_sp lisp)
+				core::LispPtr lisp)
     {
 	System_sp system = RP_Create<System_O>(lisp);
 	core::Binder_sp dimensionDatabase = _lisp->symbol(_sym_UnitsPkg_StarUnitDatabaseStar)->symbolValue().as<core::Binder_O>();

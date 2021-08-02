@@ -227,11 +227,11 @@ namespace       chem
 
 
     core::HashTableEq_sp readTrainerHeader( core::Path_sp const& path);
-    core::T_sp readTrainerHeader_cando( core::Cons_sp args,  core::Environment_sp environ, core::Lisp_sp lisp);
+    core::T_sp readTrainerHeader_cando( core::Cons_sp args,  core::Environment_sp environ, core::LispPtr lisp);
 
 
-    extern Trainer_sp readTrainer(core::Path_sp const& path, core::Lisp_sp lisp);
-    extern core::T_sp readTrainer_cando(core::Cons_sp args, core::Environment_sp environ, core::Lisp_sp lisp);
+    extern Trainer_sp readTrainer(core::Path_sp const& path, core::LispPtr lisp);
+    extern core::T_sp readTrainer_cando(core::Cons_sp args, core::Environment_sp environ, core::LispPtr lisp);
 
 
 
@@ -296,8 +296,8 @@ namespace       chem
     };
 
 
-    extern	void		writeTrainerOrganizer(TrainerOrganizer_sp org, core::Lisp_sp lisp);
-    extern	TrainerOrganizer_sp 	readTrainerOrganizer(core::Lisp_sp lisp);
+    extern	void		writeTrainerOrganizer(TrainerOrganizer_sp org, core::LispPtr lisp);
+    extern	TrainerOrganizer_sp 	readTrainerOrganizer(core::LispPtr lisp);
 
 
 

@@ -77,7 +77,7 @@ string ObjRef_O::asString() {
  * Eg: Constitution=Pro4/Frame=+core
  *
  */
-ObjRef_sp ObjRef_O::create(Lisp_sp e, const string &asString) {
+ObjRef_sp ObjRef_O::create(LispPtr e, const string &asString) {
   string head, tail, orSelector, orName;
   auto  ref = gctools::GC<ObjRef_O>::allocate_with_default_constructor();
   VectorStrings parts;

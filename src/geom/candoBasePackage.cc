@@ -203,7 +203,7 @@ namespace geom
   #ifndef SCRAPING
 #include <generated/symbols_scraped_inc.h>
   #endif
-    void GeomExposer_O::expose(core::Lisp_sp lisp,WhatToExpose what) const
+    void GeomExposer_O::expose(core::LispPtr lisp,WhatToExpose what) const
     {
 	switch (what)
 	{

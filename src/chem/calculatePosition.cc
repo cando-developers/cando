@@ -68,7 +68,7 @@ void	CalculatePosition_O::initialize()
 
 #else
 
-    core::T_sp 	CalculatePositionUsingInternals_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
+    core::T_sp 	CalculatePositionUsingInternals_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::LispPtr lisp)
 {
     this->Base::__init__(exec,args,env,lisp);
     this->_DistanceAtomName = env->lookup(lisp->internWithPackageName(ChemPkg,"distanceAtomName")).as<core::Str_O>()->get();
@@ -155,7 +155,7 @@ void	CalculatePositionUsingInternals_O::initialize()
 
 #else
 
-    core::T_sp 	CalculatePositionAlongBond_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
+    core::T_sp 	CalculatePositionAlongBond_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::LispPtr lisp)
 {
     this->Base::__init__(exec,args,env,lisp);
     this->_FromAtomName = env->lookup(lisp->internWithPackageName(ChemPkg,"fromAtomName")).as<core::Str_O>()->get();
@@ -245,7 +245,7 @@ void	CalculatePositionAlongBond_O::initialize()
 
 #else
 
-    core::T_sp 	CalculatePositionRelativeToOrigin_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
+    core::T_sp 	CalculatePositionRelativeToOrigin_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::LispPtr lisp)
 {
     this->Base::__init__(exec,args,env,lisp);
     this->_OriginAtomName = env->lookup(lisp->internWithPackageName(ChemPkg,"originAtomName")).as<core::Str_O>()->get();

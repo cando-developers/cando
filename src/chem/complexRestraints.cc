@@ -103,7 +103,7 @@ RestrainedPiBond_sp RestrainedPiBond_O::make(core::Symbol_sp config, core::List_
 
 #else
 
-    core::T_sp 	RestrainedPiBond_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
+    core::T_sp 	RestrainedPiBond_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::LispPtr lisp)
 {_OF();
     this->_Configuration = env->lookup(Pkg(),"config").as<core::Str_O>()->get();
     core::Cons_sp piAtoms = env->lookup(Pkg(),"piAtoms").as<core::Cons_O>();
@@ -253,7 +253,7 @@ void	RestrainedExoCyclicAtom_O::initialize()
 
 #else
 
-    core::T_sp 	RestrainedExoCyclicAtom_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
+    core::T_sp 	RestrainedExoCyclicAtom_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::LispPtr lisp)
 {
     IMPLEMENT_ME();
 //    this->Base::oldLispInitialize(kargs,env);

@@ -145,7 +145,7 @@ void	MySaxDomHandler::ignorableWhitespace()
 
 
 
-    QDomNode_sp	QDomNode_O::create(core::Lisp_sp e,const string& name)
+    QDomNode_sp	QDomNode_O::create(core::LispPtr e,const string& name)
 {
     QDomNode_sp node = QDomNode_O::create();
     node->setLocalName(name);

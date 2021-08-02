@@ -88,13 +88,13 @@ void	CandoDatabase_ODependent::setCandoDatabase(CandoDatabase_sp db)
 {
 CandoDatabase_sp	bdb;
     ASSERTNOTNULL(db);
-    core::Lisp_sp env = db->getEnvironment();
+    core::LispPtr env = db->getEnvironment();
     this->setEnvironment(env);
 }
 
 bool	CandoDatabase_ODependent::hasCandoDatabase()
 {
-    core::Lisp_sp env = this->getEnvironment();
+    core::LispPtr env = this->getEnvironment();
     return env->hasCandoDatabase();
 }
 

@@ -66,7 +66,7 @@ MonomerId_sp MonomerId_O::make(const int chain, const int monomer)
 };
 
 #else
-core::T_sp MonomerId_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
+core::T_sp MonomerId_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::LispPtr lisp)
 {
   this->_MonomerId._Chain = translate::from_object<int>::convert(env->lookup(Pkg(),"chain"));
   this->_MonomerId._Monomer = translate::from_object<int>::convert(env->lookup(Pkg(),"monomer"));

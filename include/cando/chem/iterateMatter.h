@@ -57,7 +57,7 @@ class IterateMatter_O : public core::Iterator_O
     DECLARE_INIT();
 #endif
     public:
-static void lisp_initGlobals(core::Lisp_sp lisp);
+static void lisp_initGlobals(core::LispPtr lisp);
 public:
 	void	initialize();
 public:

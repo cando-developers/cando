@@ -40,7 +40,7 @@ namespace units
 
 
     Object_sp prim_quantity(core::Executable_sp exec, core::Cons_sp args,
-			    core::Environment_sp env, core::Lisp_sp lisp)
+			    core::Environment_sp env, core::LispPtr lisp)
     {
 //      this->Base::__init__(exec,args,env,lisp);
 //      arg = from_object<XXXX>::convert(env->lookup(this->Package(),"YYY"));
@@ -138,7 +138,7 @@ namespace units
 
 #if 0
     /*! If last argument is a System then use that system, otherwise use the default units:*SI* */
-    Object_sp Quantity_O::__init__(::core::Executable_sp exec, ::core::Cons_sp allargs, ::core::Environment_sp env, ::core::Lisp_sp lisp)
+    Object_sp Quantity_O::__init__(::core::Executable_sp exec, ::core::Cons_sp allargs, ::core::Environment_sp env, ::core::LispPtr lisp)
     {
 //      this->Base::__init__(exec,args,env,lisp);
 //      arg = from_object<XXXX>::convert(env->lookup(this->Package(),"YYY"));
@@ -231,7 +231,7 @@ namespace units
     }
 
 
-    Object_sp Quantity_O::amount_matchUnits(core::Executable_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
+    Object_sp Quantity_O::amount_matchUnits(core::Executable_sp exec, core::Cons_sp args, core::Environment_sp env, core::LispPtr lisp)
     {_OF();
 	IMPLEMENT_ME();
     }

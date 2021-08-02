@@ -166,7 +166,7 @@ CL_DEFMETHOD SpecificContext_sp SpecificContext_O::copySpecificContext()
 
 #else
 
-    core::T_sp 	SpecificContextSet_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
+    core::T_sp 	SpecificContextSet_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::LispPtr lisp)
 {_OF();
     IMPLEMENT_ME();
     LOG(BF("Creating SpecificContextSet") );

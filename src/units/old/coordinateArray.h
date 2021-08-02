@@ -56,7 +56,7 @@ private: // instance variables here
 private:
 public: // Functions here
 
-	static CoordinateArray_sp create(core::CoordinateArray_sp coords, core::Symbol_sp dimension, int power, core::Symbol_sp system, core::Lisp_sp lisp);
+	static CoordinateArray_sp create(core::CoordinateArray_sp coords, core::Symbol_sp dimension, int power, core::Symbol_sp system, core::LispPtr lisp);
 
 	void setDimension(BaseUnit_sp dimension, int power);
 
@@ -74,11 +74,11 @@ public: // Functions here
 
 	/*! Return the amount of this quantity - if the base dimensions powers
 	  that are provided as  arguments match my powers */
-	Object_sp amount_matchUnits(core::Executable_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp);
+	Object_sp amount_matchUnits(core::Executable_sp exec, core::Cons_sp args, core::Environment_sp env, core::LispPtr lisp);
 
 	/*! Return the amount of this quantity - if the base dimensions powers
 	  that are provided as  arguments match my powers */
-	Object_sp getElement_matchUnits(core::Executable_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp);
+	Object_sp getElement_matchUnits(core::Executable_sp exec, core::Cons_sp args, core::Environment_sp env, core::LispPtr lisp);
 
 	/*! Return one element with the appropriate units */
 	Xyz_sp getElement(int i) const;

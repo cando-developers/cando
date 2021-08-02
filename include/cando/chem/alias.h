@@ -105,7 +105,7 @@ namespace chem
 
 	string description() const;
 	string __repr__() const { return this->_MonomerAlias->__repr__()+"@"+this->_AtomAlias->__repr__();};
-	Alias_O(const core::Lisp_sp& lisp);
+	Alias_O(const core::LispPtr& lisp);
 	Alias_O( const Alias_O& ss ); //!< Copy constructor
 
 	DEFAULT_CTOR_DTOR(Alias_O);

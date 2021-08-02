@@ -86,7 +86,7 @@ namespace omm
 	ss->defconstant(core::DoubleFloat_O::create(val)); \
     }
 
-    void initializeOpenmmConstants(core::Lisp_sp lisp)
+    void initializeOpenmmConstants(core::LispPtr lisp)
     {
 	LOG(BF("Initializing constants and enums for OpenMM"));
 	lisp->inPackage(OmmPkg);
@@ -106,33 +106,33 @@ namespace omm
 
 
     template <>
-    core::Instance_sp metaClassForOmmClass<OpenMM::Platform>(core::Lisp_sp lisp)
+    core::Instance_sp metaClassForOmmClass<OpenMM::Platform>(core::LispPtr lisp)
     {
 	return lisp->classFromClassSID(Platform_O::static_classSID());
     }
 
     template <>
-    core::Instance_sp metaClassForOmmClass<OpenMM::LangevinIntegrator>(core::Lisp_sp lisp)
+    core::Instance_sp metaClassForOmmClass<OpenMM::LangevinIntegrator>(core::LispPtr lisp)
     {
 	return lisp->classFromClassSID(LangevinIntegrator_O::static_classSID());
     }
 
     template <>
-    core::Instance_sp metaClassForOmmClass<OpenMM::VerletIntegrator>(core::Lisp_sp lisp)
+    core::Instance_sp metaClassForOmmClass<OpenMM::VerletIntegrator>(core::LispPtr lisp)
     {
 	return lisp->classFromClassSID(VerletIntegrator_O::static_classSID());
     }
 
 
     template <>
-    core::Instance_sp metaClassForOmmClass<OpenMM::System>(core::Lisp_sp lisp)
+    core::Instance_sp metaClassForOmmClass<OpenMM::System>(core::LispPtr lisp)
     {
 	return lisp->classFromClassSID(System_O::static_classSID());
     }
 
 
     
-    core::ExternalObject_sp wrap_ommObject(void* ptr, core::Instance_sp mc, core::Lisp_sp lisp)
+    core::ExternalObject_sp wrap_ommObject(void* ptr, core::Instance_sp mc, core::LispPtr lisp)
     {
 	if ( ptr == NULL ) return lisp->nil<core::ExternalObject_O>();
 	if ( !lisp->hiddenBinder()->contains(_sym_OmmObjectWrappers)) 
@@ -237,7 +237,7 @@ namespace omm
 
 
 
-    Context_sp Context_O::create(System_sp system, Integrator_sp integrator, core::Lisp_sp lisp)
+    Context_sp Context_O::create(System_sp system, Integrator_sp integrator, core::LispPtr lisp)
     {
 	Context_sp context = RP_Create<Context_O>(lisp);
 	context->setup(system,integrator,lisp->nil<Platform_O>());
@@ -306,7 +306,7 @@ namespace omm
     ARGUMENT_SC_(parameters);
     ARGUMENT_SC_(enforcePeriodicBox);
     core::T_sp Context_O::getState(core::Function_sp exec, core::Cons_sp args,
-				  core::Environment_sp env, core::Lisp_sp lisp)
+				  core::Environment_sp env, core::LispPtr lisp)
     {_OF();
 	State_sp state = State_O::create(_lisp);
 	int types;
@@ -655,12 +655,12 @@ namespace omm
 
 
 
-    int wrap_Platform_getNumPlatforms(core::Lisp_sp lisp)
+    int wrap_Platform_getNumPlatforms(core::LispPtr lisp)
     {
 	return OpenMM::Platform::getNumPlatforms();
     }
 
-    Platform_sp wrap_Platform_getPlatform(int idx, core::Lisp_sp lisp)
+    Platform_sp wrap_Platform_getPlatform(int idx, core::LispPtr lisp)
     {
 	if ( idx < 0 || idx >= OpenMM::Platform::getNumPlatforms() ) 
 	{
@@ -671,7 +671,7 @@ namespace omm
 	return op;
     }
 
-    Platform_sp wrap_Platform_getPlatformByName(string const& name, core::Lisp_sp lisp)
+    Platform_sp wrap_Platform_getPlatformByName(string const& name, core::LispPtr lisp)
     {
 	OpenMM::Platform& p = OpenMM::Platform::getPlatformByName(name);
 	Platform_sp op = wrap_ommObject(&p,metaClassForOmmClass<OpenMM::Platform>(lisp),lisp).as<Platform_O>();
@@ -679,7 +679,7 @@ namespace omm
     }
 
 
-    core::Cons_sp wrap_Platform_loadPluginsFromDirectory( string const& directoryName, core::Lisp_sp lisp)
+    core::Cons_sp wrap_Platform_loadPluginsFromDirectory( string const& directoryName, core::LispPtr lisp)
     {
 	vector<string> plugins = OpenMM::Platform::loadPluginsFromDirectory(directoryName);
 	core::Cons_sp first = core::Cons_O::create(_lisp->onil(),_lisp);

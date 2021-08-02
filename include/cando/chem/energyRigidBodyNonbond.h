@@ -141,7 +141,7 @@ class EnergyRigidBodyNonbond_O : public EnergyRigidBodyComponent_O
   virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm(
                                                                                NVector_sp pos );
 
-//    int countBadVdwOverlaps(double scaleSumOfVdwRadii, NVector_sp pos, geom::DisplayList_sp displayIn, core::Lisp_sp );
+//    int countBadVdwOverlaps(double scaleSumOfVdwRadii, NVector_sp pos, geom::DisplayList_sp displayIn, core::LispPtr );
 
   virtual	double	getEnergy();
   virtual void dumpTerms();

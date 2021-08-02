@@ -283,7 +283,7 @@ TrainerHeader_sp Trainer_O::getHeader()
 }
 
 
-core::HashTableEq_sp readTrainerHeader(core::Path_sp path, core::Lisp_sp lisp )
+core::HashTableEq_sp readTrainerHeader(core::Path_sp path, core::LispPtr lisp )
 {
     char buffer[1024];
     string fileName = path->asString();
@@ -343,7 +343,7 @@ core::T_sp af_readTrainerHeader(core::Path_sp path)
 
 
 #ifdef XML_ARCHIVE
-Trainer_sp readTrainer(core::Path_sp const& path, core::Lisp_sp lisp)
+Trainer_sp readTrainer(core::Path_sp const& path, core::LispPtr lisp)
 {
     Trainer_sp job;
     core::XmlLoadArchive_sp a;
@@ -388,7 +388,7 @@ Trainer_sp readTrainerReplaceDatabase(const string& fileName, CandoDatabase_sp b
 
 
 #if 0
-    void writeTrainer(Trainer_sp job, const string& pathName, core::Lisp_sp lisp)
+    void writeTrainer(Trainer_sp job, const string& pathName, core::LispPtr lisp)
 {
     core::XmlSaveArchive_sp a;
     job->getHeader()->setPathName(pathName);
@@ -546,7 +546,7 @@ core::Cons_sp	TrainerOrganizer_O::entriesAsList()
 }
 
 #ifdef XML_ARCHIVE
-    void	writeTrainerOrganizer(TrainerOrganizer_sp org,core::Lisp_sp lisp)
+    void	writeTrainerOrganizer(TrainerOrganizer_sp org,core::LispPtr lisp)
 {
     core::XmlSaveArchive_sp	archive;
     archive = org->lisp()->create<core::XmlSaveArchive_O>();
@@ -555,7 +555,7 @@ core::Cons_sp	TrainerOrganizer_O::entriesAsList()
 }
 
 
-TrainerOrganizer_sp readTrainerOrganizer(core::Lisp_sp lisp)
+TrainerOrganizer_sp readTrainerOrganizer(core::LispPtr lisp)
 {
     core::XmlLoadArchive_sp	archive;
     TrainerOrganizer_sp org;

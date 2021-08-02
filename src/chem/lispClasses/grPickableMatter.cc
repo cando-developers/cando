@@ -174,7 +174,7 @@ void RenderMatterBond_O::setup(uint idx1, uint idx2, Atom_sp a1, Atom_sp a2)
 #endif
 
 
-geom::Color_sp GrPickableMatter_O::elementToColor(Element element, core::Lisp_sp lisp)
+geom::Color_sp GrPickableMatter_O::elementToColor(Element element, core::LispPtr lisp)
 {
     core::Symbol_sp sym = _sym__PLUS_elementColors_PLUS_;
     geom::IntegerKeyObjectDictionary_sp elementColorMap = sym->symbolValue().as<geom::IntegerKeyObjectDictionary_O>();

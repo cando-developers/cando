@@ -52,7 +52,7 @@ public:
 private:
 	core::ObjRef_sp	_Reference;
 public:
-    static CandoDatabaseReference_sp create(core::Lisp_sp e,CandoDatabase_sp bdb, const string& link);
+    static CandoDatabaseReference_sp create(core::LispPtr e,CandoDatabase_sp bdb, const string& link);
 public:
 
 

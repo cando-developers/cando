@@ -100,7 +100,7 @@ __END_DOC
 
 #else
 
-    core::T_sp AtomGrid_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp bargs, core::Lisp_sp lisp )
+    core::T_sp AtomGrid_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp bargs, core::LispPtr lisp )
 {
     Matter_sp matter = translate::from_object<Matter_sp>::convert(bargs->lookup(ChemPkg,"matter"));
     double stepSize = translate::from_object<core::DoubleFloat_sp>::convert(bargs->lookup(ChemPkg,"gridResolution"))->get();

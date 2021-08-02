@@ -52,8 +52,8 @@ namespace chem
     {
       LISP_CLASS(chem,ChemPkg,ChemExposer_O,"ChemExposer",core::Exposer_O);
     public:
-    ChemExposer_O(core::Lisp_sp lisp) : Exposer_O(lisp,ChemPkg) {};
-        virtual void expose(core::Lisp_sp lisp, WhatToExpose what) const;
+    ChemExposer_O(core::LispPtr lisp) : Exposer_O(lisp,ChemPkg) {};
+        virtual void expose(core::LispPtr lisp, WhatToExpose what) const;
     };
 
 

@@ -52,8 +52,8 @@ namespace geom {
 	core::LongLongInt	_End;
 	core::LongLongInt	_Step;
     public:
-	static Range_sp create(core::Lisp_sp e,core::LongLongInt begin, core::LongLongInt end);
-	static Range_sp create3(core::Lisp_sp e,core::LongLongInt begin, core::LongLongInt end, core::LongLongInt step);
+	static Range_sp create(core::LispPtr e,core::LongLongInt begin, core::LongLongInt end);
+	static Range_sp create3(core::LispPtr e,core::LongLongInt begin, core::LongLongInt end, core::LongLongInt step);
     public:
 
 	string __repr__() const;

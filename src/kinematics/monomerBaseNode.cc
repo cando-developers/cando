@@ -48,7 +48,7 @@ MonomerBaseNode_sp MonomerBaseNode_O::make()
 };
 
 #else
-core::T_sp MonomerBaseNode_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
+core::T_sp MonomerBaseNode_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::LispPtr lisp)
 {
 //      this->Base::__init__(exec,args,env,lisp);
 //      arg = translate::from_object<XXXX>::convert(env->lookup(this->Package(),"YYY"));

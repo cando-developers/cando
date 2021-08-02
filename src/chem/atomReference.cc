@@ -88,7 +88,7 @@ AtomReference_sp AtomReference_O::make(core::T_sp alias)
 
 #else
 
-    core::T_sp AtomReference_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp bargs, core::Lisp_sp lisp)
+    core::T_sp AtomReference_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp bargs, core::LispPtr lisp)
     {
 	this->_AtomAlias = translate::from_object<string>::convert(bargs->lookup(ChemPkg,"alias"));
 	return _Nil<core::T_O>();

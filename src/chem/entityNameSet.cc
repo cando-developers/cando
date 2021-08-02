@@ -103,7 +103,7 @@ CL_DEFMETHOD     adapt::SymbolSet_sp	EntityNameSetBase_O::getUnExpandedNames()
 
 #else
 
-    core::T_sp EntityNameSetBase_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp environ, core::Lisp_sp lisp)
+    core::T_sp EntityNameSetBase_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp environ, core::LispPtr lisp)
     {_OF();
 	core::List_sp entityNamesCons = translate::from_object<core::List_V>::convert(environ->lookup(Pkg(),"entityNames"));
 	if ( entityNamesCons.notnilp() )
@@ -532,7 +532,7 @@ CL_DEFMETHOD     core::List_sp	EntityNameSetBase_O::getMonomerNamesOrdered()
 
 #else
 
-    core::T_sp EntityNameSet_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
+    core::T_sp EntityNameSet_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::LispPtr lisp)
     {_OF();
 	this->Base::__init__(exec,args,env,lisp);
 	this->_Name = translate::from_object<core::Symbol_O>::convert(env->lookup(Pkg(),"name"));

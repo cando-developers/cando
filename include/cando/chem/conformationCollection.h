@@ -94,7 +94,7 @@ public:
 
 
 #if 0
-inline	ConformationCollectionEntry_sp	create_ConformationCollectionEntry(core::Lisp_sp e,ConformationCollection_sp s)
+inline	ConformationCollectionEntry_sp	create_ConformationCollectionEntry(core::LispPtr e,ConformationCollection_sp s)
 {
   auto  ee  = gctools::GC<ConformationCollectionEntry_O>::allocate_with_default_constructor();
     ee->setConformationCollection(s);

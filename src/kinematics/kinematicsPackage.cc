@@ -237,7 +237,7 @@ namespace kinematics
     SYMBOL_EXPORT_SC_(KinPkg,origin);
     SYMBOL_EXPORT_SC_(KinPkg,rootBonded);
 
-    void KinematicsExposer_O::expose(core::Lisp_sp lisp,core::Exposer_O::WhatToExpose what) const
+    void KinematicsExposer_O::expose(core::LispPtr lisp,core::Exposer_O::WhatToExpose what) const
     {
 	switch (what)
 	{

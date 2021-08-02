@@ -55,7 +55,7 @@ namespace chem
 
 #else
 
-    core::T_sp  IterateMatter_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
+    core::T_sp  IterateMatter_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::LispPtr lisp)
     {
 	IMPLEMENT_ME();
 //	this->Base::oldLispInitialize(kargs,env);
@@ -181,7 +181,7 @@ CL_DEFUN core::T_sp chem__create_for_matter(Matter_sp matter)
 
 #else
 
-    core::T_sp 	IterateAtoms_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
+    core::T_sp 	IterateAtoms_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::LispPtr lisp)
     {
 	this->Base::__init__(exec,args,env,lisp);
 	Matter_sp matter = env->lookup(lisp->internWithPackageName(ChemPkg,"matter")).as<Matter_O>();

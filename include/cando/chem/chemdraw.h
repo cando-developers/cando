@@ -273,7 +273,7 @@ class ChemDraw_O : public core::CxxObject_O
  public:
   static ChemDraw_sp make(core::T_sp stream, bool print=false, bool addHydrogens=true);
  public:
-  static void lisp_initGlobals(core::Lisp_sp lisp);
+  static void lisp_initGlobals(core::LispPtr lisp);
  public:
   typedef	gctools::Vec0<CDFragment_sp>	Fragments;
   typedef gc::SmallMap<core::Symbol_sp,CDFragment_sp>	NamedFragments;

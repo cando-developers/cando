@@ -102,7 +102,7 @@ CL_DEFUN void chem__initialize_smarts_users() {
  * If there already was one then tell it to give all of its
  * dependent objects to the new CandoDatabase
  */
-void setCandoDatabase(CandoDatabase_sp bdb, core::Lisp_sp lisp)
+void setCandoDatabase(CandoDatabase_sp bdb, core::LispPtr lisp)
 {
     LOG(BF("Setting *DATABASE* to database@%p") % bdb.get() );
     _sym_candoDatabase->defparameter(bdb);
@@ -112,7 +112,7 @@ void setCandoDatabase(CandoDatabase_sp bdb, core::Lisp_sp lisp)
 /*!
  * Load a CandoDatabase into this lisp environment.
  */
-    void	loadCandoDatabase(const string& fileName, uint verbosity, core::Lisp_sp lisp)
+    void	loadCandoDatabase(const string& fileName, uint verbosity, core::LispPtr lisp)
     {
 	CandoDatabase_sp	bdb;
 	core::XmlLoadArchive_sp	xml;
@@ -275,7 +275,7 @@ __BEGIN_DOC(candoScript.database.setDatabase,setDatabase)
 Set the database.
 __END_DOC
 */
-core::T_sp	prim_setDatabase(core::Function_sp e, core::Cons_sp args, core::Environment_sp environ, core::Lisp_sp lisp)
+core::T_sp	prim_setDatabase(core::Function_sp e, core::Cons_sp args, core::Environment_sp environ, core::LispPtr lisp)
 {
 CandoDatabase_sp	cdb;
     cdb = args->car<CandoDatabase_O>();
@@ -294,7 +294,7 @@ __BEGIN_DOC(candoScript.database.contextGrep)
 Search for contexts with keys that contain the substring.
 __END_DOC
 */
-core::T_sp	prim_contextGrep(core::Function_sp e, core::Cons_sp args, core::Environment_sp environ, core::Lisp_sp lisp)
+core::T_sp	prim_contextGrep(core::Function_sp e, core::Cons_sp args, core::Environment_sp environ, core::LispPtr lisp)
 {
 string	part;
     CandoDatabase_sp bdb = getCandoDatabase();
@@ -345,7 +345,7 @@ __END_DOC
 #define ARGS_prim_RequiredPlug "(plug)"
 #define DECL_prim_RequiredPlug ""
 #define DOCS_prim_RequiredPlug ""
-core::T_sp	prim_RequiredPlug(core::Function_sp e, core::Cons_sp args, core::Environment_sp environ, core::Lisp_sp lisp)
+core::T_sp	prim_RequiredPlug(core::Function_sp e, core::Cons_sp args, core::Environment_sp environ, core::LispPtr lisp)
 {
     Plug_sp p = environ->lookup(ChemPkg,"plug").as<Plug_O>();
     return p;
@@ -358,7 +358,7 @@ __BEGIN_DOC(candoScript.database.describeDatabase,subsection,describeDatabase)
 Describe the contents of the database.
 __END_DOC
 */
-core::T_sp	prim_describeDatabase(core::Function_sp e, core::List_sp args, core::Environment_sp environ, core::Lisp_sp lisp)
+core::T_sp	prim_describeDatabase(core::Function_sp e, core::List_sp args, core::Environment_sp environ, core::LispPtr lisp)
 {
 core::Str_sp		fileName;
 CandoDatabase_sp	bdb;
@@ -1046,7 +1046,7 @@ CL_DEFUN void chem__set_gaff_debug(bool on) {
 
 
 
-void	setupCandoPrimitives(core::Lisp_sp env)
+void	setupCandoPrimitives(core::LispPtr env)
 {
 
 	// for Mbb package
@@ -1073,7 +1073,7 @@ void	setupCandoPrimitives(core::Lisp_sp env)
 
 
 
-void	setupPythonPrimitives(core::Lisp_sp env)
+void	setupPythonPrimitives(core::LispPtr env)
 {
 
     IMPLEMENT_MEF("Add python primitives from candoScript.cc");

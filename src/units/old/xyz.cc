@@ -45,7 +45,7 @@ namespace units
 
 
 
-    Xyz_sp Xyz_O::create(Vector3 pos, Quantity_sp temp, core::Lisp_sp lisp)
+    Xyz_sp Xyz_O::create(Vector3 pos, Quantity_sp temp, core::LispPtr lisp)
     {	
 	Xyz_sp x = _lisp->create<Xyz_O>();
 	for ( int i=0; i<NumBaseDimensions; i++ ) x->_Powers[i] = temp->_Powers[i];
@@ -56,7 +56,7 @@ namespace units
 
 
     /*! If last argument is a System then use that system, otherwise use the default units:*SI* */
-    Object_sp Xyz_O::__init__(::core::Executable_sp exec, ::core::Cons_sp allargs, ::core::Environment_sp env, ::core::Lisp_sp lisp)
+    Object_sp Xyz_O::__init__(::core::Executable_sp exec, ::core::Cons_sp allargs, ::core::Environment_sp env, ::core::LispPtr lisp)
     {
 //      this->Base::__init__(exec,args,env,lisp);
 //      arg = from_object<XXXX>::convert(env->lookup(this->Package(),"YYY"));
@@ -85,7 +85,7 @@ namespace units
     }
 
 
-    Object_sp Xyz_O::amount_matchUnits(core::Executable_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
+    Object_sp Xyz_O::amount_matchUnits(core::Executable_sp exec, core::Cons_sp args, core::Environment_sp env, core::LispPtr lisp)
     {_OF();
 	int matchPowers[NumBaseDimensions] = {0,0,0,0,0,0,0};
 	double amountScale = 1.0;

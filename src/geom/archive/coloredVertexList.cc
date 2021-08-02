@@ -103,7 +103,7 @@ void	ColoredVertexList_O::initialize()
 }
 
 
-    ColoredVertexList_sp ColoredVertexList_O::create(core::Cons_sp elements, core::Lisp_sp env)
+    ColoredVertexList_sp ColoredVertexList_O::create(core::Cons_sp elements, core::LispPtr env)
 {
     uint sz = elements->length();
     ColoredVertexList_sp res = ColoredVertexList_O::create(sz);

@@ -182,7 +182,7 @@ public:
 	void	eigenSystem(Vector4& evals, Matrix& evecs );
 
 	void setFromString(const string& s);
-//	void setFromStringFast(const string& s,const core::Lisp_sp& lisp);
+//	void setFromStringFast(const string& s,const core::LispPtr& lisp);
 
 	string	asString() const;
 	string	asStringFormatted() const;

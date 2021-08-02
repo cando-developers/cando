@@ -68,14 +68,14 @@ namespace omm
     SMART(State);
 
     template <class ommT>
-	core::MetaClass_sp metaClassForOmmClass(core::Lisp_sp lisp)
+	core::MetaClass_sp metaClassForOmmClass(core::LispPtr lisp)
     {_G();
 	THROW(lisp->error(BF("You must specialize template function metaClassForOmmClass (in openmmExpose.cc) for the OpenMM class[%s]") % typeid(ommT).name()  ));
     }
 
 
 
-    core::ExternalObject_sp wrap_ommObject(void* ptr, core::MetaClass_sp mc, core::Lisp_sp lisp);
+    core::ExternalObject_sp wrap_ommObject(void* ptr, core::MetaClass_sp mc, core::LispPtr lisp);
 
 
 
@@ -102,7 +102,7 @@ template <>
 struct	to_object<const wxString&>
 {
     typedef	core::Str_sp		ExpectedType;
-    static core::T_sp convert(core::Lisp_sp e,const wxString& v)
+    static core::T_sp convert(core::LispPtr e,const wxString& v)
     {
 	core::Str_sp oi = core::Str_O::create(v.c_str(),e);
 	return oi;
@@ -114,7 +114,7 @@ template <>
 struct	to_object<wxString>
 {
     typedef	core::Str_sp		ExpectedType;
-    static core::T_sp convert(core::Lisp_sp e,const wxString& v)
+    static core::T_sp convert(core::LispPtr e,const wxString& v)
     {
 	core::Str_sp oi = core::Str_O::create(v.c_str(),e);
 	return oi;
@@ -141,10 +141,10 @@ struct	to_object<wxString>
 namespace omm
 {
 
-    extern int wrap_Platform_getNumPlatforms(core::Lisp_sp lisp);
-    extern Platform_sp wrap_Platform_getPlatform(int index, core::Lisp_sp lisp);
-    extern Platform_sp wrap_Platform_getPlatformByName(string const& name, core::Lisp_sp lisp);
-    extern core::Cons_sp wrap_Platform_loadPluginsFromDirectory(string const& directoryName, core::Lisp_sp lisp);
+    extern int wrap_Platform_getNumPlatforms(core::LispPtr lisp);
+    extern Platform_sp wrap_Platform_getPlatform(int index, core::LispPtr lisp);
+    extern Platform_sp wrap_Platform_getPlatformByName(string const& name, core::LispPtr lisp);
+    extern core::Cons_sp wrap_Platform_loadPluginsFromDirectory(string const& directoryName, core::LispPtr lisp);
 };
 
 
@@ -156,7 +156,7 @@ namespace translate
     struct	to_object<OpenMM::Vec3>
     {
 	typedef	core::OVector3_sp	ExpectedType;
-	static core::T_sp convert(core::Lisp_sp l, const OpenMM::Vec3& v)
+	static core::T_sp convert(core::LispPtr l, const OpenMM::Vec3& v)
 	{_G();
 	    core::OVector3_sp ov = core::OVector3_O::create(l);
 	    ov->setAll(v[0],v[1],v[2]);
@@ -168,7 +168,7 @@ namespace translate
     struct	to_object<const vector< OpenMM::Vec3>& >
     {
 	typedef	core::CoordinateArray_sp	ExpectedType;
-	static core::CoordinateArray_sp convert(core::Lisp_sp l, const vector<OpenMM::Vec3>& v)
+	static core::CoordinateArray_sp convert(core::LispPtr l, const vector<OpenMM::Vec3>& v)
 	{_G();
 	    uint numVectors = v.size();
 	    core::CoordinateArray_sp ca = core::CoordinateArray_O::create(numVectors,_lisp);

@@ -460,7 +460,7 @@ CL_DEFMETHOD     core::T_sp ZMatrix_O::getZMatrixAtomNameAtIndex(uint i) const
 
 #else
 
-    core::T_sp ZMatrix_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
+    core::T_sp ZMatrix_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::LispPtr lisp)
     {
 	Matter_sp matter = translate::from_object<Matter_sp>::convert(env->lookup(Pkg(),"matter"));
 	Atom_sp rootAtom = translate::from_object<Atom_sp>::convert(env->lookup(Pkg(),"rootAtom"));

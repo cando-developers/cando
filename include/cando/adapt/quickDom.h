@@ -92,7 +92,7 @@ public:
     void	setParent(QDomNode_O *par)	{this->parent = par;};
 
     /*! call proc with each child as an argument, return a tree of objects */
-//    T_sp walk(core::Function_sp exec, core::Cons_sp args, Environment_sp environ, Lisp_sp lisp);
+//    T_sp walk(core::Function_sp exec, core::Cons_sp args, Environment_sp environ, LispPtr lisp);
 
     iterator begin_Children() { return this->_children.begin(); };
     iterator end_Children() { return this->_children.end(); };

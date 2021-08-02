@@ -39,7 +39,7 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace geom {
 
 #if 0
-    core::T_sp Range_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp environ, core::Lisp_sp lisp)
+    core::T_sp Range_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp environ, core::LispPtr lisp)
     {
       LOG(BF("Argument types %s %s") % core::cl__class_of(core::oCar(args))->classNameAsString() % args->ocadr()->className() );
 	SYMBOL_SC_(GeomPkg,begin);
@@ -54,7 +54,7 @@ namespace geom {
 
 
 
-    Range_sp Range_O::create(core::Lisp_sp lisp,core::LongLongInt b, core::LongLongInt e)
+    Range_sp Range_O::create(core::LispPtr lisp,core::LongLongInt b, core::LongLongInt e)
 {
     LOG(BF("Range_O::create with begin=%d, end=%d") % b % e  );
     auto r = gctools::GC<Range_O>::allocate_with_default_constructor();
@@ -63,7 +63,7 @@ namespace geom {
     r->_Step = 1;
     return r;
 };
-    Range_sp Range_O::create3(core::Lisp_sp lisp, core::LongLongInt b, core::LongLongInt e, core::LongLongInt step)
+    Range_sp Range_O::create3(core::LispPtr lisp, core::LongLongInt b, core::LongLongInt e, core::LongLongInt step)
 {
     LOG(BF("Range_O::create with begin=%d, end=%d, step=%d") % b % e % step  );
     auto r = gctools::GC<Range_O>::allocate_with_default_constructor();

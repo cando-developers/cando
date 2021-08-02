@@ -38,7 +38,7 @@ SMART(Package);
 //
 // Non-class functions that belong in the mbbPackage are initialized here
 //
-inline void initialize_mbbPackage( core::Lisp_sp lisp, core::Package_sp mbbPackage )
+inline void initialize_mbbPackage( core::LispPtr lisp, core::Package_sp mbbPackage )
 {
 //    initialize_tableOperations(lisp);
 }

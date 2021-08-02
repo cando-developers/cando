@@ -45,7 +45,7 @@ namespace units
 
 
 
-    SimpleVectorCoordinate_sp SimpleVectorCoordinate_O::create(core::SimpleVectorCoordinate_sp coords, core::Symbol_sp dimension, int power, core::Symbol_sp system,core::Lisp_sp lisp)
+    SimpleVectorCoordinate_sp SimpleVectorCoordinate_O::create(core::SimpleVectorCoordinate_sp coords, core::Symbol_sp dimension, int power, core::Symbol_sp system,core::LispPtr lisp)
     {
 	SimpleVectorCoordinate_sp uc = _lisp->create<SimpleVectorCoordinate_O>();
 	/*Set the default system as units:*SI* */
@@ -60,7 +60,7 @@ namespace units
 
 
     /*! If last argument is a System then use that system, otherwise use the default units:*SI* */
-    Object_sp SimpleVectorCoordinate_O::__init__(::core::Executable_sp exec, ::core::Cons_sp allargs, ::core::Environment_sp env, ::core::Lisp_sp lisp)
+    Object_sp SimpleVectorCoordinate_O::__init__(::core::Executable_sp exec, ::core::Cons_sp allargs, ::core::Environment_sp env, ::core::LispPtr lisp)
     {
 //      this->Base::__init__(exec,args,env,lisp);
 //      arg = from_object<XXXX>::convert(env->lookup(this->Package(),"YYY"));
@@ -93,7 +93,7 @@ namespace units
     }
 
 
-    Object_sp SimpleVectorCoordinate_O::amount_matchUnits(core::Executable_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
+    Object_sp SimpleVectorCoordinate_O::amount_matchUnits(core::Executable_sp exec, core::Cons_sp args, core::Environment_sp env, core::LispPtr lisp)
     {_OF();
 	int matchPowers[NumBaseDimensions] = {0,0,0,0,0,0,0};
 	double amountScale = 1.0;
@@ -106,7 +106,7 @@ namespace units
 
 
 
-    Object_sp SimpleVectorCoordinate_O::getElement_matchUnits(core::Executable_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
+    Object_sp SimpleVectorCoordinate_O::getElement_matchUnits(core::Executable_sp exec, core::Cons_sp args, core::Environment_sp env, core::LispPtr lisp)
     {_OF();
 	int matchPowers[NumBaseDimensions] = {0,0,0,0,0,0,0};
 	double amountScale = 1.0;

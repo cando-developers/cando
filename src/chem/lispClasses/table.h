@@ -63,7 +63,7 @@ private: // instance variables
     gctools::Vec0<core::T_sp>		_Fields;
 
 public:
-    static TableEntry_sp createWithFields(uint numberOfFields,Table_sp table, core::Lisp_sp);
+    static TableEntry_sp createWithFields(uint numberOfFields,Table_sp table, core::LispPtr);
 
 public:
 		/*! Return the table (owner) of this entry.

@@ -115,7 +115,7 @@ SYMBOL_EXPORT_SC_(UnitsPkg,nm_per_ps);
 
 
 
-    void UnitsExposer_O::expose(core::Lisp_sp lisp,WhatToExpose what) const
+    void UnitsExposer_O::expose(core::LispPtr lisp,WhatToExpose what) const
     {
       switch (what)
       {

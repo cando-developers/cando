@@ -33,7 +33,7 @@ namespace omm
 {
 
 
-    void initializeSerializers(core::Lisp_sp lisp);
+    void initializeSerializers(core::LispPtr lisp);
 
 
 }; /* omm */

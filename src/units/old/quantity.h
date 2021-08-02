@@ -82,7 +82,7 @@ public: // Functions here
 
 	/*! Return the amount of this quantity - if the base dimensions powers
 	  that are provided as  arguments match my powers */
-	virtual Object_sp value_in_units_lisp(core::Executable_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp);
+	virtual Object_sp value_in_units_lisp(core::Executable_sp exec, core::Cons_sp args, core::Environment_sp env, core::LispPtr lisp);
 
 
 	/*! Return true if the powers all match - then the quantities have the same dimension */

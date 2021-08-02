@@ -54,9 +54,9 @@ namespace omm
 #include <symbols_scraped.inc>
 
 
-    extern void initializeOpenmmConstants(Lisp_sp lisp);
+    extern void initializeOpenmmConstants(LispPtr lisp);
 
-    void OpenMMExposer::expose(core::Lisp_sp lisp,core::PackageExposer::WhatToExpose what) const
+    void OpenMMExposer::expose(core::LispPtr lisp,core::PackageExposer::WhatToExpose what) const
     {
 	switch (what)
 	{

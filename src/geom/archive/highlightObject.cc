@@ -122,7 +122,7 @@ namespace geom {
 
 
 #if 0 // old way to initialize
-    void	HighlightedObject_O::lispInitialize(core::Cons_sp kargs, core::Lisp_sp env)
+    void	HighlightedObject_O::lispInitialize(core::Cons_sp kargs, core::LispPtr env)
 {
     this->Base::lispInitialize(kargs,env);
     	// your stuff here
@@ -173,7 +173,7 @@ void	HighlightedObject_O::initialize()
     }
 
 
-    T_sp HighlightedHolder_O::make_init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp environ, core::Lisp_sp lisp)
+    T_sp HighlightedHolder_O::make_init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp environ, core::LispPtr lisp)
 {_OF();
     SYMBOL_SC_(GeomPkg,obj);
     core::T_sp obj = translate::from_object<T_sp>::convert(environ->lookup(_sym_obj));

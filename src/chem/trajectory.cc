@@ -60,7 +60,7 @@ namespace chem {
 
 #else
 
-    core::T_sp 	TrajectoryFrame_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
+    core::T_sp 	TrajectoryFrame_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::LispPtr lisp)
 {
     IMPLEMENT_ME();
     	// your stuff here
@@ -121,7 +121,7 @@ void	TrajectoryFrame_O::initialize()
 
 #else
 
-    core::T_sp 	Trajectory_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
+    core::T_sp 	Trajectory_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::LispPtr lisp)
 {
     IMPLEMENT_ME();
 #if 0

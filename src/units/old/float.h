@@ -54,7 +54,7 @@ private: // instance variables here
 
 private:
 public:
-	static Float_sp create(double val, core::Symbol_sp dimension, int power, core::Symbol_sp system,core::Lisp_sp lisp);
+	static Float_sp create(double val, core::Symbol_sp dimension, int power, core::Symbol_sp system,core::LispPtr lisp);
 
 public: // Functions here
 	void setDimension(BaseUnit_sp dimension, int power);
@@ -66,7 +66,7 @@ public: // Functions here
 
 	/*! Return the amount of this quantity - if the base dimensions powers
 	  that are provided as  arguments match my powers */
-	Object_sp amount_matchUnits(core::Executable_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp);
+	Object_sp amount_matchUnits(core::Executable_sp exec, core::Cons_sp args, core::Environment_sp env, core::LispPtr lisp);
 
 	/*! Return the amount of this quantity - if the base dimensions powers
 	  that are provided as  arguments match my powers */

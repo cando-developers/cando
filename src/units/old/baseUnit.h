@@ -47,7 +47,7 @@ public:
 	void initialize();
 
 public:
-	static BaseUnit_sp create(uint symbolIndex, double scale, string const& label, BaseDimensionEnum baseDim, core::Lisp_sp lisp);
+	static BaseUnit_sp create(uint symbolIndex, double scale, string const& label, BaseDimensionEnum baseDim, core::LispPtr lisp);
 
 private: // instance variables here
 	/*! Store the index into the SIUnits  */

@@ -95,7 +95,7 @@ namespace geom
 	    a->resize(size);
 	    return a;
 	}
-	static ColoredVertexList_sp create(core::Cons_sp vertexCons, core::Lisp_sp e);
+	static ColoredVertexList_sp create(core::Cons_sp vertexCons, core::LispPtr e);
     public:
 	typedef gctools::Vec0<ColoredVertex_sp>::iterator	iterator;
     public:

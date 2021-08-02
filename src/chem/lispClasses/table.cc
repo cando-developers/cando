@@ -50,7 +50,7 @@ namespace chem
 
 
 
-    TableEntry_sp TableEntry_O::createWithFields(uint numFields, Table_sp owner, core::Lisp_sp lisp)
+    TableEntry_sp TableEntry_O::createWithFields(uint numFields, Table_sp owner, core::LispPtr lisp)
     {
 	TableEntry_sp entry = TableEntry_O::create();
 	IMPLEMENT_MEF("handle setOwner");
@@ -71,7 +71,7 @@ namespace chem
 
 #else
 
-    core::T_sp 	TableEntry_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
+    core::T_sp 	TableEntry_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::LispPtr lisp)
     {
 	IMPLEMENT_ME();
     	// your stuff here
@@ -206,7 +206,7 @@ namespace chem
 
 #else
 
-    core::T_sp 	Table_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
+    core::T_sp 	Table_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::LispPtr lisp)
     {
 	IMPLEMENT_ME();
     	// your stuff here

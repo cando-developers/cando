@@ -37,7 +37,7 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace geom {
 
 #if 0
-    T_sp OVector2_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp bargs, core::Lisp_sp lisp)
+    T_sp OVector2_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp bargs, core::LispPtr lisp)
 {
     double x = translate::from_object<double>::convert(bargs->lookup(CorePkg,"tx")->object());
     double y = translate::from_object<double>::convert(bargs->lookup(CorePkg,"ty")->object());

@@ -38,7 +38,7 @@ struct /*tagSMsmartsParserParam*/ msmarts_SParserParam
      */
     void* scanner; // was yyscan_t
 
-    core::Lisp_sp lisp;
+    core::LispPtr lisp;
 
     chem::SmartsRoot_sp	expression;
   std::map<string,int> atomTagCounter;

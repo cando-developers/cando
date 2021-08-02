@@ -203,11 +203,11 @@ namespace chem
     SYMBOL_EXPORT_SC_(ChemPkg,AM1_BCC_ar6);
     SYMBOL_EXPORT_SC_(ChemPkg,AM1_BCC_ar7);
 
-    extern void	Initialize_Mol2_TypeRules(core::Lisp_sp lisp);
+    extern void	Initialize_Mol2_TypeRules(core::LispPtr lisp);
 
 
 
-    void ChemExposer_O::expose(core::Lisp_sp lisp, WhatToExpose what) const
+    void ChemExposer_O::expose(core::LispPtr lisp, WhatToExpose what) const
     {
 	switch (what)
 	{

@@ -42,8 +42,8 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace chem {
 
-extern	void	setupCandoPrimitives(core::Lisp_sp);
-extern	void	setupPythonPrimitives(core::Lisp_sp);
+extern	void	setupCandoPrimitives(core::LispPtr);
+extern	void	setupPythonPrimitives(core::LispPtr);
 
  FORWARD(Monomer);
 SMART(CandoDatabase);

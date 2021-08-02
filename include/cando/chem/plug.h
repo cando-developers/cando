@@ -66,7 +66,7 @@ namespace chem
     core::Symbol_sp	_Cap;
 
   public:
-//	static  Mate_sp create(core::Lisp_sp e,CandoDatabase_sp db);
+//	static  Mate_sp create(core::LispPtr e,CandoDatabase_sp db);
   public:
 
     core::Symbol_sp getName() const;

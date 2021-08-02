@@ -35,7 +35,7 @@ namespace geom {
 
 
 
-    IterateRange_sp IterateRange_O::create(core::Lisp_sp e,int ibegin, int iend)
+    IterateRange_sp IterateRange_O::create(core::LispPtr e,int ibegin, int iend)
 {
   auto  r  = gctools::GC<IterateRange_O>::allocate_with_default_constructor();
     r->_Begin = ibegin;
@@ -45,7 +45,7 @@ namespace geom {
 };
 
 
-    IterateRange_sp IterateRange_O::create(core::Lisp_sp e,int ibegin, int iend, int istep)
+    IterateRange_sp IterateRange_O::create(core::LispPtr e,int ibegin, int iend, int istep)
 {
   auto r = gctools::GC<IterateRange_O>::allocate_with_default_constructor();
     r->_Begin = ibegin;
@@ -94,7 +94,7 @@ bool IterateRange_O::isDone()
 
 
 #if 0
-    core::T_sp IterateRange_O::prim_range(core::Function_sp e, core::Cons_sp args, core::Environment_sp environment, core::Lisp_sp lisp)
+    core::T_sp IterateRange_O::prim_range(core::Function_sp e, core::Cons_sp args, core::Environment_sp environment, core::LispPtr lisp)
 {
     SIMPLE_ERROR(BF("Don't use range, use Range"));
     int numArgs = args->length();

@@ -47,8 +47,8 @@ GCPRIVATE:
   T_sp _SubRef;
 
 public:
-  static ObjRef_sp create(Lisp_sp e, const string &asString);
-  static ObjRef_sp create2(Lisp_sp e, const string &asString) { return ObjRef_O::create(e, asString); };
+  static ObjRef_sp create(LispPtr e, const string &asString);
+  static ObjRef_sp create2(LispPtr e, const string &asString) { return ObjRef_O::create(e, asString); };
 
 public:
   string getSelector() { return this->_Selector; };

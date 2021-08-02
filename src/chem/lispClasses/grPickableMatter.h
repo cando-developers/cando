@@ -170,7 +170,7 @@ namespace chem
     private:
 //	void	render();
     public:
-	static candoBase::Color_sp elementToColor(Element element, core::Lisp_sp);
+	static candoBase::Color_sp elementToColor(Element element, core::LispPtr);
     private:
 	void generateRenderObjects();
     public:

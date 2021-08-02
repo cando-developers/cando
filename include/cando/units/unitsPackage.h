@@ -64,8 +64,8 @@ namespace units
     {
       LISP_CLASS(units,UnitsPkg,UnitsExposer_O,"UnitsExposer",core::Exposer_O);
     public:
-    UnitsExposer_O(core::Lisp_sp lisp) : core::Exposer_O(lisp,UnitsPkg) {};
-	virtual void expose(core::Lisp_sp lisp,WhatToExpose what) const;
+    UnitsExposer_O(core::LispPtr lisp) : core::Exposer_O(lisp,UnitsPkg) {};
+	virtual void expose(core::LispPtr lisp,WhatToExpose what) const;
     };
 
 

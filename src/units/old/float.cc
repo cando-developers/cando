@@ -41,7 +41,7 @@ namespace units
 
 
 
-    Float_sp Float_O::create(double amount, core::Symbol_sp dimension, int power, core::Symbol_sp system,core::Lisp_sp lisp)
+    Float_sp Float_O::create(double amount, core::Symbol_sp dimension, int power, core::Symbol_sp system,core::LispPtr lisp)
     {
 	Float_sp f = _lisp->create<Float_O>();
 	f->_System = system;
@@ -53,7 +53,7 @@ namespace units
 
 
     /*! If last argument is a System then use that system, otherwise use the default units:*SI* */
-    Object_sp Float_O::__init__(::core::Executable_sp exec, ::core::Cons_sp allargs, ::core::Environment_sp env, ::core::Lisp_sp lisp)
+    Object_sp Float_O::__init__(::core::Executable_sp exec, ::core::Cons_sp allargs, ::core::Environment_sp env, ::core::LispPtr lisp)
     {
 //      this->Base::__init__(exec,args,env,lisp);
 //      arg = from_object<XXXX>::convert(env->lookup(this->Package(),"YYY"));
@@ -85,7 +85,7 @@ namespace units
     }
 
 
-    Object_sp Float_O::amount_matchUnits(core::Executable_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
+    Object_sp Float_O::amount_matchUnits(core::Executable_sp exec, core::Cons_sp args, core::Environment_sp env, core::LispPtr lisp)
     {_OF();
 	int matchPowers[NumBaseDimensions] = {0,0,0,0,0,0,0};
 	double amountScale = 1.0;

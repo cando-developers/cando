@@ -46,8 +46,8 @@ namespace kinematics
       LISP_CLASS(kinematics,KinPkg,KinematicsExposer_O,"KinematicsExposer",core::Exposer_O);
     private:
     public:
-    KinematicsExposer_O(core::Lisp_sp lisp) : Exposer_O(lisp,KinPkg) {};
-        virtual void expose(core::Lisp_sp lisp,WhatToExpose what) const;
+    KinematicsExposer_O(core::LispPtr lisp) : Exposer_O(lisp,KinPkg) {};
+        virtual void expose(core::LispPtr lisp,WhatToExpose what) const;
     };
 
 

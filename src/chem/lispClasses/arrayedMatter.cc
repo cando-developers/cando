@@ -216,7 +216,7 @@ uint ArrayedResidue_O::SimpleVectorCoordinate(geom::SimpleVectorCoordinateWithHa
 // ArrayedMolecule
 //
 
-    core::T_sp 	ArrayedMolecule_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
+    core::T_sp 	ArrayedMolecule_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::LispPtr lisp)
 {
     return _Nil<core::T_O>();
 }

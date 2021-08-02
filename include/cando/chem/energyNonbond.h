@@ -267,7 +267,7 @@ class EnergyNonbond_O : public EnergyComponent_O
 
   virtual string	beyondThresholdInteractionsAsString();
 
-//    int countBadVdwOverlaps(double scaleSumOfVdwRadii, NVector_sp pos, geom::DisplayList_sp displayIn, core::Lisp_sp );
+//    int countBadVdwOverlaps(double scaleSumOfVdwRadii, NVector_sp pos, geom::DisplayList_sp displayIn, core::LispPtr );
 
   virtual	double	getEnergy();
   core::T_sp getFFNonbondDb();

@@ -55,7 +55,7 @@ namespace chem
     public:
 	void	initialize();
     public:
-	AtomReferenceBase_O(const core::Lisp_sp& lisp);
+	AtomReferenceBase_O(const core::LispPtr& lisp);
 	AtomReferenceBase_O( const AtomReferenceBase_O& ss ); //!< Copy constructor
 	DEFAULT_CTOR_DTOR(AtomReferenceBase_O);
     };

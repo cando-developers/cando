@@ -57,7 +57,7 @@ private: // instance variables here
 private:
 public:
 	/*! Create an Xyz using the powers/system in template */
-	static Xyz_sp create(Vector3 pos, Quantity_sp temp, core::Lisp_sp lisp);
+	static Xyz_sp create(Vector3 pos, Quantity_sp temp, core::LispPtr lisp);
 
 public: // Functions here
 	void setDimension(BaseUnit_sp dimension, int power);
@@ -69,7 +69,7 @@ public: // Functions here
 
 	/*! Return the amount of this quantity - if the base dimensions powers
 	  that are provided as  arguments match my powers */
-	Object_sp amount_matchUnits(core::Executable_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp);
+	Object_sp amount_matchUnits(core::Executable_sp exec, core::Cons_sp args, core::Environment_sp env, core::LispPtr lisp);
 
 
 	/*! Add the quantity to another quantity - this means powers must match */

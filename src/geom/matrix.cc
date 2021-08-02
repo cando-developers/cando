@@ -876,7 +876,7 @@ stringstream ss;
 // Row major, column minor
 //
 #if 0
-void	Matrix::setFromStringFast(const string& input,const core::Lisp_sp& lisp) 
+void	Matrix::setFromStringFast(const string& input,const core::LispPtr& lisp) 
 {
     bool r = client::parse_numbers(input.begin(),input.end(),*this,lisp);
     ASSERTP(r,"Could not parse matrix from: "+input);

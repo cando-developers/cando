@@ -77,7 +77,7 @@ void sortTableEntriesUsingComparisonFunction(Table_sp table, core::Function_sp c
 void sortTableEntriesUsingComparisonFunction(Table_sp table, core::Function_sp compare );
 
 
-void initialize_tableOperations(core::Lisp_sp);
+void initialize_tableOperations(core::LispPtr);
 
 };
 #endif

@@ -54,7 +54,7 @@ CL_LISPIFY_NAME(make-ChiDihedral);
     };
 
 #else
-    core::T_sp ChiDihedral_O::__init__(::core::Function_sp exec, ::core::Cons_sp args, ::core::Environment_sp env, ::core::Lisp_sp lisp)
+    core::T_sp ChiDihedral_O::__init__(::core::Function_sp exec, ::core::Cons_sp args, ::core::Environment_sp env, ::core::LispPtr lisp)
     {
 	this->_Atom1 = env->lookup(Pkg(),"atom1Index").as<core::Rational_O>()->as_int();
 	this->_Atom2 = env->lookup(Pkg(),"atom2Index").as<core::Rational_O>()->as_int();
@@ -100,7 +100,7 @@ CL_LISPIFY_NAME(make-ChiDihedral);
 
 #if INIT_TO_FACTORIES
 #else
-    core::T_sp ChiList_O::__init__(::core::Function_sp exec, ::core::Cons_sp args, ::core::Environment_sp env, ::core::Lisp_sp lisp)
+    core::T_sp ChiList_O::__init__(::core::Function_sp exec, ::core::Cons_sp args, ::core::Environment_sp env, ::core::LispPtr lisp)
     {
 //      this->Base::__init__(exec,args,env,lisp);
 //      arg = translate::from_object<XXXX>::convert(env->lookup(this->Package(),"YYY"));
