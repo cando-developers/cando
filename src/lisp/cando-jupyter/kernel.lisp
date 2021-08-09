@@ -59,30 +59,17 @@
 
 
 (defun leap-eval (ast)
-  (jupyter:handling-errors
-    (leap.core:evaluate 'list ast leap.core:*leap-env*)))
+  (leap.core:evaluate 'list ast leap.core:*leap-env*))
 
 
-(defmethod jupyter:evaluate-code ((k kernel) code)
+(defmethod jupyter:evaluate-code ((k kernel) code &optional source-path breakpoints)
   (if (or (not *leap-syntax*)
           (lisp-code-p code))
     (call-next-method)
-    (multiple-value-bind (ast ename evalue traceback)
-                         (jupyter:handling-errors (leap-read code))
-      (if ename
-        (values ename evalue traceback)
-        (dolist (expr (cadadr ast) (values))
-          (unless (eq :comment (caar expr))
-            (multiple-value-bind (result ename evalue traceback)
-                                 (leap-eval (list :leap (list :instruction (list expr))))
-              (when ename
-                (return (values ename evalue traceback)))
-              (multiple-value-bind (ret ename evalue traceback)
-                                   (jupyter:execute-result result)
-                (declare (ignore ret))
-                (when ename
-                  (return (values ename evalue traceback)))))))))))
-
+    (jupyter:handling-errors
+      (dolist (expr (cadadr (leap-read code)) (values))
+        (unless (eq :comment (caar expr))
+          (jupyter:execute-result (leap-eval (list :leap (list :instruction (list expr))))))))))
 
 
 (defun leap-locate (ast cursor-pos &optional child-pos parents)
