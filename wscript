@@ -17,16 +17,16 @@ def options(ctx):
 
 def analyze_clasp(cfg):
     print("In extensions/cando analyze_clasp")
-    cfg.extension_sif_nodes.append(cfg.path.ant_glob("src/clasp_gc_cando.sif")[0])
+    cfg.extensions_sif_nodes.append(cfg.path.ant_glob("src/clasp_gc_cando.sif")[0])
 
 def configure(cfg):
     print("----- Configuring cando extension")
     cfg.check_cxx(stlib='expat', cflags='-Wall', uselib_store='EXPAT')
     cfg.extensions_stlib += cfg.env.STLIB_EXPAT
     cfg.extensions_stlib += cfg.env.STLIB_Z
-    print("In extensions/cando configure before cfg.extension_sif_nodes = %s" % cfg.extension_sif_nodes)
-    cfg.extension_sif_nodes.append(cfg.path.ant_glob("src/clasp_gc_cando.sif")[0])
-    print("In extensions/cando configure after cfg.extension_sif_nodes = %s" % cfg.extension_sif_nodes)
+    print("In extensions/cando configure before cfg.extensions_sif_nodes = %s" % cfg.extensions_sif_nodes)
+    cfg.extensions_sif_nodes.append(cfg.path.ant_glob("src/clasp_gc_cando.sif")[0])
+    print("In extensions/cando configure after cfg.extensions_sif_nodes = %s" % cfg.extensions_sif_nodes)
     cfg.check_cxx(stlib='boost_graph', cflags='-Wall', uselib_store='BOOST-boost_graph')
     cfg.check_cxx(lib='netcdf', cflags='-Wall', uselib_store='BOOST-netcdf',msg="Checking for netcdf [netcdf]")
     if (cfg.options.enable_jupyter):
