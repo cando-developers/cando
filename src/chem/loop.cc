@@ -648,8 +648,8 @@ void	Loop::advanceLoop()
 
 
 
-CL_LAMBDA(result-type function matter);
-CL_DOCSTRING(R"doc(Applies function to successive molecules in matter. The result-type (nil, 'list, 'vector) specifies the type of the resulting sequence.)doc")
+CL_LAMBDA(result-type function matter)
+CL_DOCSTRING(R"dx(Applies function to successive molecules in matter. The result-type (nil, 'list, 'vector) specifies the type of the resulting sequence.)dx")
 CL_DEFUN core::T_sp chem__map_molecules(core::Symbol_sp result_type, core::T_sp funcDesig, Matter_sp m )
 {
   if (gc::IsA<Molecule_sp>(m)) {
@@ -699,8 +699,8 @@ CL_DEFUN core::T_sp chem__map_molecules(core::Symbol_sp result_type, core::T_sp 
   TYPE_ERROR(m,_sym_Aggregate_O);
 };
 
-CL_LAMBDA(result-type function matter);
-CL_DOCSTRING(R"doc(Applies function to successive residues in matter. The result-type (nil, 'list, 'vector) specifies the type of the resulting sequence.)doc")
+CL_LAMBDA(result-type function matter)
+CL_DOCSTRING(R"dx(Applies function to successive residues in matter. The result-type (nil, 'list, 'vector) specifies the type of the resulting sequence.)dx")
 CL_DEFUN core::T_sp chem__map_residues(core::Symbol_sp result_type, core::T_sp funcDesig, Matter_sp m)
 {
   if (gc::IsA<Residue_sp>(m)) {
@@ -751,8 +751,8 @@ CL_DEFUN core::T_sp chem__map_residues(core::Symbol_sp result_type, core::T_sp f
 };
 
 
-CL_LAMBDA(result-type function matter);
-CL_DOCSTRING(R"doc(Applies function to successive atoms in matter. The result-type (nil, 'list, 'vector) specifies the type of the resulting sequence.)doc")
+CL_LAMBDA(result-type function matter)
+CL_DOCSTRING(R"dx(Applies function to successive atoms in matter. The result-type (nil, 'list, 'vector) specifies the type of the resulting sequence.)dx")
 CL_DEFUN core::T_sp chem__map_atoms(core::Symbol_sp result_type, core::T_sp funcDesig, Matter_sp m)
 {
   core::Function_sp func = core::coerce::functionDesignator(funcDesig);
@@ -801,8 +801,8 @@ CL_DEFUN core::T_sp chem__map_atoms(core::Symbol_sp result_type, core::T_sp func
   TYPE_ERROR(m,core::Cons_O::createList(cl::_sym_or,_sym_Aggregate_O,_sym_Molecule_O,_sym_Residue_O));
 }
 
-CL_LAMBDA(result-type function matter);
-CL_DOCSTRING(R"doc(Applies function to successive bonds in matter. The result-type (nil, 'list, 'vector) specifies the type of the resulting sequence.)doc")
+CL_LAMBDA(result-type function matter)
+CL_DOCSTRING(R"dx(Applies function to successive bonds in matter. The result-type (nil, 'list, 'vector) specifies the type of the resulting sequence.)dx")
 CL_DEFUN core::T_sp chem__map_bonds(core::Symbol_sp result_type, core::T_sp funcDesig, Matter_sp m)
 {
   core::Function_sp func = core::coerce::functionDesignator(funcDesig);
@@ -852,8 +852,8 @@ void validate_result_type(core::Symbol_sp result_type)
   SIMPLE_ERROR(BF("Illegal result type - must be nil, list or vector"));
 }
 
-CL_LAMBDA(result-type function matter);
-CL_DOCSTRING(R"doc(Applies function to successive angles in matter. The result-type (nil, 'list, 'vector) specifies the type of the resulting sequence.)doc")
+CL_LAMBDA(result-type function matter)
+CL_DOCSTRING(R"dx(Applies function to successive angles in matter. The result-type (nil, 'list, 'vector) specifies the type of the resulting sequence.)dx")
 CL_DEFUN core::T_sp chem__map_angles(core::Symbol_sp result_type, core::T_sp funcDesig, Matter_sp m)
 {
   core::Function_sp func = core::coerce::functionDesignator(funcDesig);
@@ -887,8 +887,8 @@ CL_DEFUN core::T_sp chem__map_angles(core::Symbol_sp result_type, core::T_sp fun
   }
 };
 
-CL_LAMBDA(result-type function matter);
-CL_DOCSTRING(R"doc(Applies function to successive dihedrals in matter. The result-type (nil, 'list, 'vector) specifies the type of the resulting sequence.)doc")
+CL_LAMBDA(result-type function matter)
+CL_DOCSTRING(R"dx(Applies function to successive dihedrals in matter. The result-type (nil, 'list, 'vector) specifies the type of the resulting sequence.)dx")
 CL_DEFUN core::T_sp chem__map_dihedrals(core::Symbol_sp result_type, core::T_sp funcDesig, Matter_sp m)
 {
   core::Function_sp func = core::coerce::functionDesignator(funcDesig);
@@ -923,8 +923,8 @@ CL_DEFUN core::T_sp chem__map_dihedrals(core::Symbol_sp result_type, core::T_sp 
   }
 };
 
-CL_LAMBDA(result-type function matter);
-CL_DOCSTRING(R"doc(Applies function to successive impropers in matter. The result-type (nil, 'list, 'vector) specifies the type of the resulting sequence.)doc")
+CL_LAMBDA(result-type function matter)
+CL_DOCSTRING(R"dx(Applies function to successive impropers in matter. The result-type (nil, 'list, 'vector) specifies the type of the resulting sequence.)dx")
 CL_DEFUN core::T_sp chem__map_impropers(core::Symbol_sp result_type, core::T_sp funcDesig, Matter_sp m)
 {
   core::Function_sp func = core::coerce::functionDesignator(funcDesig);

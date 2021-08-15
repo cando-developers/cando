@@ -97,7 +97,7 @@ ChainNode_sp FoldTree_O::getChainNode(int chainId) const
 CL_DEFMETHOD AggregateNode_sp FoldTree_O::root() const { return this->_AggregateNode; };
 
 
-CL_DOCSTRING(R"doc(Return the monomer-node that corresponds to the monomer-id)doc")
+CL_DOCSTRING(R"dx(Return the monomer-node that corresponds to the monomer-id)dx")
 CL_DEFMETHOD MonomerNode_sp FoldTree_O::lookupMonomerId(MonomerId const& monomerId) const
 {_OF();
   ASSERTF(monomerId.chainId()<(int)this->_AggregateNode->_Chains.size(),

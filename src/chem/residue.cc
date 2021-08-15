@@ -690,7 +690,7 @@ Atom_sp				a;
     return false;
 }
 
-CL_LAMBDA(atom-name &optional (errorp t));
+CL_LAMBDA(atom-name &optional (errorp t))
 CL_DEFMETHOD
 core::T_mv Residue_O::atomWithName(MatterName name, bool errorp)
 {

@@ -339,16 +339,17 @@ CL_DEFMETHOD void EnergySketchStretch_O::fill_from_vectors_in_alist(core::List_s
   }
 }
 
-CL_DOCSTRING(R"doc(The indices I1 and I2 must be coordinat indices, in other words index*3.)doc")
+CL_DOCSTRING(R"dx(The indices I1 and I2 must be coordinat indices, in other words index*3.)dx")
 CL_DEFMETHOD void EnergySketchStretch_O::addSketchStretchTerm(size_t i1, size_t i2, double kb, double r0) {
   EnergySketchStretch energySketchStretch(i1,i2,kb,r0);
   this->addTerm(energySketchStretch);
 }
 
-CL_DOCSTRING(R"doc(Invoke a callback for every term in the energy-stretch.
+CL_DOCSTRING(R"dx(Invoke a callback for every term in the energy-stretch.)dx")
+CL_DOCSTRING_LONG(R"dx(
 The callback takes the lambda-list (index atom1 atom2 atom1-index*3 atom2-index*3 kb r0).
 Both kb and r0 are single-floats to avoid consing.
-Use the modify-stretch-term-kb and modify-stretch-term-r0 to modify the parameters.)doc")
+Use the modify-stretch-term-kb and modify-stretch-term-r0 to modify the parameters.)dx")
 CL_DEFMETHOD void EnergySketchStretch_O::walkSketchStretchTerms(core::T_sp callback)
 {
   for (size_t i=0;i<this->_Terms.size();++i) {

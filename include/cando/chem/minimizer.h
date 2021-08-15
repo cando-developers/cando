@@ -286,8 +286,8 @@ struct RestartMinimizer {};
     CL_LISPIFY_NAME("getRMSForce");
     CL_DEFMETHOD 	double	getRMSForce() { return this->_RMSForce; };
 
-    CL_DOCSTRING(R"doc(Set a callback that is called at every minimization step. The callback function
-takes a single argument, the NVECTOR position of the atoms.)doc");
+    CL_DOCSTRING(R"dx(Set a callback that is called at every minimization step. The callback function
+takes a single argument, the NVECTOR position of the atoms.)dx");
     CL_DEFMETHOD void	setStepCallback(core::T_sp stepCallback) { this->_StepCallback = stepCallback;};
 
     CL_LISPIFY_NAME("setMaximumNumberOfSteepestDescentSteps");

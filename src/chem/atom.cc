@@ -130,7 +130,7 @@ CL_DEFUN Atom_sp Atom_O::make(core::Symbol_sp name, chem::Element element)
 };
 
 CL_LISPIFY_NAME("randomizeAtomPosition");
-CL_LAMBDA((core::a chem:atom) &optional (width 10.0));
+CL_LAMBDA((core::a chem:atom) &optional (width 10.0))
 CL_DEFMETHOD void Atom_O::randomizeAtomPosition(double width)
 {
   double				x,y,z;
@@ -186,8 +186,8 @@ int Atom_O::priorityOrder(Atom_sp a, Atom_sp b, core::HashTable_sp cip_priority)
   return 0;
 }
 
-CL_DOCSTRING(R"doc(Calculate the stereochemical configuration of the atom.
-This requires that relative cip priorities are defined using CipPrioritizer_O::assignCahnIngoldPrelogPriorityToAtomsRelativePriority.)doc")
+CL_DOCSTRING(R"dx(Calculate the stereochemical configuration of the atom.
+This requires that relative cip priorities are defined using CipPrioritizer_O::assignCahnIngoldPrelogPriorityToAtomsRelativePriority.)dx")
 CL_LISPIFY_NAME("calculateStereochemicalConfiguration");
 CL_DEFMETHOD     ConfigurationEnum Atom_O::calculateStereochemicalConfiguration(core::HashTable_sp cip_priority)
 {
@@ -698,7 +698,7 @@ core::List_sp	Atom_O::getNeighborsForAbsoluteConfiguration()
   return l.cons();
 }
 
-CL_DOCSTRING(R"doc(Return the neighbors sorted from highest CIP priority to lowest)doc")
+CL_DOCSTRING(R"dx(Return the neighbors sorted from highest CIP priority to lowest)dx")
 CL_DEFMETHOD
 core::List_sp	Atom_O::getNeighborsByRelativePriority(core::HashTable_sp cip_priority)
 {
@@ -865,7 +865,8 @@ float Atom_O::distanceSquaredToAtom(Atom_sp other)
   return delta.getX()*delta.getX()+delta.getY()*delta.getY()+delta.getZ()*delta.getZ();
 }
 
-CL_DOCSTRING(R"doc(Return the distance squared between twoatoms. This provides a way to compare atom positions without allocating memory.)doc")
+CL_DOCSTRING(R"dx(Return the distance squared between two atoms)dx")
+CL_DOCSTRING_LONG(R"dx(This provides a way to compare atom positions without allocating memory.)dx")
 CL_DEFUN
 float chem__distance_squared_between_two_atoms(Atom_sp atom1, Atom_sp atom2)
 {
@@ -1184,7 +1185,7 @@ CL_DEFMETHOD     bool	Atom_O::isBondedTo( Atom_sp aTarget)
 //
 // Return the bond order by which we are bonded to the atom.
 // Return noBond if there is no bond.
-CL_DOCSTRING(R"doc(Return the bond-order to the OTHER atom.)doc")
+CL_DOCSTRING(R"dx(Return the bond-order to the OTHER atom.)dx")
 CL_DEFMETHOD
 BondOrder	Atom_O::bondOrderTo( Atom_sp other )
 {

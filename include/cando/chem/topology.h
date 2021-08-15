@@ -143,7 +143,7 @@ public:
   void fields(core::Record_sp node);
 public:
   CL_LISPIFY_NAME(make_topology);
-  CL_DOCSTRING(R"doc(Create a topology and return it, after this the topology needs to be added to a constitution)doc");
+  CL_DOCSTRING(R"dx(Create a topology and return it, after this the topology needs to be added to a constitution)dx");
   CL_DEF_CLASS_METHOD static Topology_sp make(core::Symbol_sp name, Constitution_sp constitution, core::List_sp plugs );
     
   static Topology_mv makeTopologyFromResidue(chem::Residue_sp residue, core::Symbol_sp topologyName, core::T_sp constitution);

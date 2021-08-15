@@ -299,7 +299,7 @@ void Matrix::transform_nvector_point(double& xdest, double& ydest, double& zdest
 
 
 namespace geom {
-CL_DOCSTRING(R"doc(Transform a point in an nvector by the matrix and put the result in the destination)doc")
+CL_DOCSTRING(R"dx(Transform a point in an nvector by the matrix and put the result in the destination)dx")
 CL_DEFUN
 void geom__inplace_transform_nvector_point(Vector3& destination, const Matrix& transform, chem::NVector_sp source, size_t source_index) {
   transform.transform_nvector_point(destination.getX(),destination.getY(),destination.getZ(),source,source_index);
@@ -419,7 +419,7 @@ Matrix Matrix::invertTransform() const
 }
 
 namespace geom {
-CL_DOCSTRING(R"doc(Return a matrix that will invert the transform of the argument)doc")
+CL_DOCSTRING(R"dx(Return a matrix that will invert the transform of the argument)dx")
 CL_DEFUN
 Matrix geom__invertTransform(const Matrix& matrix)
 {

@@ -311,14 +311,14 @@ CL_DEFUN double calculateDihedral( const Vector3& va,
 
 
 
-CL_DOCSTRING(R"doc(Return a vector (0 0 0))doc")
+CL_DOCSTRING(R"dx(Return a vector (0 0 0))dx")
 CL_DEFUN Vector3 geom__build_origin()
 {
   return Vector3(0.0,0.0,0.0);
 }
 
 
-CL_DOCSTRING(R"doc(Return a vector along the x axis distance away from vb)doc")
+CL_DOCSTRING(R"dx(Return a vector along the x axis distance away from vb)dx")
 CL_DEFUN Vector3 geom__build_using_bond( double distance, const Vector3& vb )
 {
   Vector3	vTarget;
@@ -394,7 +394,7 @@ CL_DEFUN double geom__planeVectorAngle(double dx, double dy)
 }
 
 
-CL_DOCSTRING(R"doc(Extract a geom:vec from a nvector at the particular index.)doc")
+CL_DOCSTRING(R"dx(Extract a geom:vec from a nvector at the particular index.)dx")
 CL_LISPIFY_NAME("vec-extract");
 CL_DEFUN void geom__vec_extract(Vector3& vec, chem::NVector_sp coordinates, size_t index0)
 {
@@ -407,7 +407,7 @@ CL_DEFUN void geom__vec_extract(Vector3& vec, chem::NVector_sp coordinates, size
   SIMPLE_ERROR(BF("Out of bounds extraction of geom:vec from nvector. Trying to extract starting at %lu and the nvector length is %lu") % index0 % coordinates->length());
 }
 
-CL_DOCSTRING(R"doc(Put a geom:vec into a nvector at the particular index.)doc")
+CL_DOCSTRING(R"dx(Put a geom:vec into a nvector at the particular index.)dx")
 CL_LISPIFY_NAME("vec-put");
 CL_DEFUN void geom__vec_put(chem::NVector_sp coordinates, const Vector3& pos, size_t index0)
 {
@@ -420,7 +420,7 @@ CL_DEFUN void geom__vec_put(chem::NVector_sp coordinates, const Vector3& pos, si
   SIMPLE_ERROR(BF("Out of bounds extraction of geom:vec from nvector. Trying to put starting at %lu and the nvector length is %lu") % index0 % coordinates->length());
 }
 
-CL_DOCSTRING(R"doc(Extract a geom:vec from a nvector at the particular index.)doc")
+CL_DOCSTRING(R"dx(Extract a geom:vec from a nvector at the particular index.)dx")
 CL_LISPIFY_NAME("vec-extract-transformed");
 CL_DEFUN void geom__vec_extract_transformed(Vector3& vec, chem::NVector_sp coordinates, size_t index0, const Matrix& transform)
 {

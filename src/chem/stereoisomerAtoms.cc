@@ -163,7 +163,7 @@ CL_DEFMETHOD     adapt::SymbolSet_sp StereoisomerAtoms_O::atomNamesAsSymbolSet()
 };
 
 
-CL_LAMBDA(name &optional (errorp t));
+CL_LAMBDA(name &optional (errorp t))
 CL_LISPIFY_NAME("atomWithName");
 CL_DEFMETHOD     core::T_mv StereoisomerAtoms_O::atomWithName(MatterName nm,bool errorp)
 {_OF();

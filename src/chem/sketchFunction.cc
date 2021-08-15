@@ -105,7 +105,7 @@ SYMBOL_EXPORT_SC_(ChemPkg,node_set_position);
 bool sketchFunctionInitialized = false;
 
 
-CL_DOCSTRING(R"doc(Create a sketch-function from a molecule. Pass an instance of a dummy sketch-nonbond-force-field passed to chem:find-atom-type-position.)doc")
+CL_DOCSTRING(R"dx(Create a sketch-function from a molecule. Pass an instance of a dummy sketch-nonbond-force-field passed to chem:find-atom-type-position.)dx")
 CL_LISPIFY_NAME(make-sketch-function);
 CL_DEF_CLASS_METHOD
 SketchFunction_sp SketchFunction_O::make(core::T_sp graph, core::T_sp sketchNonbondForceField)
@@ -159,9 +159,9 @@ CL_DEFMETHOD AtomTable_sp SketchFunction_O::atomTable() const
   SIMPLE_ERROR(BF("An attempt was made to get the atom-table of a sketch-function but one hasn't been set - instead we have a node-table: ~a~%") % _rep_(this->_NodeTable));
 }
 
-CL_DOCSTRING(R"doc(Return the instance graph slot if it is a Matter object. 
+CL_DOCSTRING(R"dx(Return the instance graph slot if it is a Matter object. 
 If it isn't then signal an error. 
-This is used in situations where the graph slot contains a matter object.)doc")
+This is used in situations where the graph slot contains a matter object.)dx")
 CL_DEFMETHOD
 Matter_sp SketchFunction_O::getMatter() {
   return gc::As<Matter_sp>(this->_Graph);
@@ -803,8 +803,7 @@ void	SketchFunction_O::dealWithProblem(core::Symbol_sp error_symbol, core::T_sp 
 }
 
 
-CL_LAMBDA(scoring-function position velocity force force-dt delta-t-over-mass delta-t &optional frozen)
-CL_LISPIFY_NAME("sketch-function-velocity-verlet-step");
+CL_LAMBDA(scoring-function position velocity force force-dt delta-t-over-mass delta-t &optional frozen)CL_LISPIFY_NAME("sketch-function-velocity-verlet-step");
 CL_DEFUN void chem__SketchFunction_velocity_verlet_step(SketchFunction_sp sketchFunc,
                                                         NVector_sp position,
                                                         NVector_sp velocity,

@@ -390,7 +390,7 @@ AtomIdToAtomMap_sp Molecule_O::buildAtomIdMap() const
 #define ARGS_Molecule_O_make "(&key (name \"\"))"
 #define DECL_Molecule_O_make ""
 #define DOCS_Molecule_O_make "make Molecule args: &key name"
-CL_LAMBDA(&optional (name nil));
+CL_LAMBDA(&optional (name nil))
 CL_LISPIFY_NAME(make-molecule);
 CL_DEFUN Molecule_sp Molecule_O::make(core::Symbol_sp name)
 {

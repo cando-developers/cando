@@ -69,7 +69,7 @@ size_t ComplexVectorCoordinate_O::vectorPushExtend_Vector3(const Vector3& newEle
 
 SYMBOL_EXPORT_SC_(GeomPkg,vector3);
 #if 0
-CL_LAMBDA(fnsize &optional vals);
+CL_LAMBDA(fnsize &optional vals)
 CL_LISPIFY_NAME(make-coordinate-array);
 CL_DEF_CLASS_METHOD SimpleVectorCoordinate_sp SimpleVectorCoordinate_O::make(core::T_sp fnsize, core::List_sp vals)
 {

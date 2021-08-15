@@ -2106,7 +2106,7 @@ bool AntechamberFocusAtomMatch_O::matches_Atom(Root_sp root, chem::Atom_sp atom)
 
 // ------- AntechamberBondToAtomTest
 CL_LISPIFY_NAME("make-antechamber-bond-to-atom-test");
-CL_LAMBDA(element neighbors props tag);
+CL_LAMBDA(element neighbors props tag)
 CL_DEF_CLASS_METHOD AntechamberBondToAtomTest_sp AntechamberBondToAtomTest_O::create_args( core::Symbol_sp element, int neighbors,
                                                                                            AtomOrBondMatchNode_sp props, core::Symbol_sp tag )
 {_G();
@@ -2444,7 +2444,7 @@ CL_DEFMETHOD core::HashTableEql_sp ChemInfoMatch_O::tags_as_hashtable() const {
   return ht;
 };
 
-CL_LAMBDA(code &key tests);
+CL_LAMBDA(code &key tests)
 CL_DEFUN SmartsRoot_sp chem__compile_smarts(const string& code, core::List_sp tests) {
 //  printf("%s:%d:%s code: %s\n", __FILE__, __LINE__, __FUNCTION__, code.c_str());
   core::SimpleBaseString_sp scode = core::SimpleBaseString_O::make(code);
@@ -2462,7 +2462,7 @@ CL_DEFUN SmartsRoot_sp chem__compile_smarts(const string& code, core::List_sp te
 
 
 
-CL_LAMBDA(code &key tests);
+CL_LAMBDA(code &key tests)
 CL_DEFUN Smirks_sp chem__compile_smirks(const string& code, core::List_sp tests) {
   core::SimpleBaseString_sp scode = core::SimpleBaseString_O::make(code);
   core::T_mv nodes = core::eval::funcall(_sym_parse_smirks,scode);
@@ -2779,7 +2779,7 @@ CL_DEFUN MoleculeGraph_sp chem__make_molecule_graph() {
   return graph;
 }
 
-CL_LAMBDA(matter &optional (exclude_hydrogens nil));
+CL_LAMBDA(matter &optional (exclude_hydrogens nil))
 CL_DEFUN MoleculeGraph_sp chem__make_molecule_graph_from_molecule(Molecule_sp matter, bool exclude_hydrogens) {
   auto graph = gctools::GC<MoleculeGraph_O>::allocate(matter);
   Loop lMol;
@@ -2850,7 +2850,7 @@ void ChemInfoGraph_O::initialize()
 }
 
 
-CL_DOCSTRING(R"doc(Make a chem:chem-info-graph from a chem:root object)doc")
+CL_DOCSTRING(R"dx(Make a chem:chem-info-graph from a chem:root object)dx")
 CL_DEFUN ChemInfoGraph_sp chem__make_chem_info_graph(Root_sp pattern)
 {
   auto graph = gctools::GC<ChemInfoGraph_O>::allocate(pattern);
@@ -3341,14 +3341,16 @@ public:
 };
 
 
-CL_DOCSTRING(R"doc(boost::graph::mcgregor_common_subgraphs wrapper. The MAXIMUM-CALLBACKS argument sets the maximum number
-of times the mcgregor algorithm can call its internal match callback function (which calls MATCH-CALLBACK) before this function returns.
-The MATCH-CALLBACK will only be invoked if the match is longer than any previous result.
-VERTEX-MATCHER is a lambda that takes two atoms and returns T if they are considered equivalent.
-MATCH-CALLBACK is a lambda that takes three arguments (RESULTS GRAPH1 GRAPH2) its return value is ignored.
-Edges are matched using bond orders.)doc")
-CL_LAMBDA(molecule_graph1 molecule_graph2 only_connected_subgraphs vertex_matcher match_callback &optional (maximum_callbacks 1000));
-CL_DEFUN core::List_sp chem__boost_graph_mcgregor_common_subgraphs(MoleculeGraph_sp moleculeGraph1, MoleculeGraph_sp moleculeGraph2,
+CL_DOCSTRING(R"dx(A wrapper for boost::graph::mcgregor_common_subgraphs)dx")
+CL_DOCSTRING_LONG(R"dx(The **maximum-callbacks** argument sets the maximum number
+of times the mcgregor algorithm can call its internal match callback function (which calls **match-callback**) before this function returns.
+The **match-callback** will only be invoked if the match is longer than any previous result.
+The **vertex-matcher** argument is a lambda that takes two atoms and returns T if they are considered equivalent.
+The **match-callback** argument is a lambda that takes three arguments (RESULTS GRAPH1 GRAPH2) and its return value is ignored.
+Edges are matched using bond orders.)dx")
+CL_LAMBDA(molecule-graph1 molecule-graph2 only-connected-subgraphs vertex-matcher match-callback &optional (maximum-callbacks 1000))
+CL_DEFUN core::List_sp chem__boost_graph_mcgregor_common_subgraphs(MoleculeGraph_sp moleculeGraph1,
+                                                                   MoleculeGraph_sp moleculeGraph2,
                                                                    bool only_connected_subgraphs,
                                                                    core::T_sp vertex_matcher,
                                                                    core::T_sp match_callback,

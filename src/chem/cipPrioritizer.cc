@@ -211,7 +211,7 @@ CL_LISPIFY_NAME(chem:assign-priorities-hash-table);
 
 //
 // ! Assign the CIP priority to the RelativePriority of each Atom in the molecule
-CL_DOCSTRING(R"doc(
+CL_DOCSTRING(R"dx(
 Assign the topological RS chirality
 see: http://www.chemcomp.com/journal/chiral.htm
 The objective of the algorithm is to assign a priority, p(i) to every 
@@ -233,7 +233,7 @@ have (i) p(i)<p(j) iff r<s; and (ii) p(i)=p(j) iff r=s.
 Use the RelativePriority value of each atom to store its position in the 
 p and s arrays.
 Write the relative cip priority in the _RelativePriority slot of each atom.
-)doc")
+)dx")
 CL_LISPIFY_NAME("assignCahnIngoldPrelogPriorityToAtomsRelativePriority");
     CL_DEFMETHOD void CipPrioritizer_O::assignCahnIngoldPrelogPriorityToAtomsRelativePriority(Matter_sp molOrAgg, core::HashTable_sp cip)
 {
@@ -613,10 +613,10 @@ CL_DEFMETHOD core::HashTable_sp CipPrioritizer_O::setStereochemicalTypeForAllAto
     return cip;
 }
 
-CL_DOCSTRING(R"doc(Calculate the stereochemistry for each atom in the aggregate or molecule
-from the three-dimensional structure. If only-undefined-configuration is passed T then 
-only centers with unefinedConfiguration are changed.)doc")
-CL_LAMBDA(matter &key (only_undefined_configuration t));
+CL_DOCSTRING(R"dx(Calculate the stereochemistry for each atom in the aggregate or molecule)dx")
+CL_DOCSTRING_LONG(R"dx(Start from the three-dimensional structure. If only-undefined-configuration is passed T then 
+only centers with unefinedConfiguration are changed.)dx")
+CL_LAMBDA(matter &key (only_undefined_configuration t))
 CL_DEFUN void chem__calculateStereochemistryFromStructure(Matter_sp matter,bool onlyUndefinedConfiguration)
 {
   CipPrioritizer_sp prior;

@@ -192,7 +192,7 @@ void	Minimizer_O::changeOptions(core::List_sp optionCons)
 #endif
 }
 
-CL_LAMBDA(energy-function);
+CL_LAMBDA(energy-function)
 CL_LISPIFY_NAME(make-minimizer);
 CL_DEFUN Minimizer_sp Minimizer_O::make(ScoringFunction_sp givenEnergyFunction)
 {
@@ -2003,7 +2003,7 @@ CL_DEFMETHOD void Minimizer_O::setDebugOn(bool debugOn) {
 
 
 CL_LISPIFY_NAME("enablePrintIntermediateResults");
-CL_LAMBDA((chem:minimizer chem:minimizer) cl:&optional (steps 1) (level 1));
+CL_LAMBDA((chem:minimizer chem:minimizer) cl:&optional (steps 1) (level 1))
 CL_DEFMETHOD     void	Minimizer_O::enablePrintIntermediateResults(size_t steps, size_t level)
 {
   if (steps < 1 ) {

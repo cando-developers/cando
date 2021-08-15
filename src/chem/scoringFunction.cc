@@ -201,8 +201,8 @@ CL_DEFMETHOD core::List_sp	ScoringFunction_O::checkForBeyondThresholdInteraction
 
 
 
-CL_DOCSTRING(R"doc(Velocity-verlet-step moves the atoms one velocity-verlet-step.  
-If tfrozen is a simple-bit-vector then it is used to determine frozen atoms.)doc")
+CL_DOCSTRING(R"dx(Velocity-verlet-step moves the atoms one velocity-verlet-step.  
+If tfrozen is a simple-bit-vector then it is used to determine frozen atoms.)dx")
 CL_LISPIFY_NAME("velocity-verlet-step");
 CL_DEFUN void chem__velocity_verlet_step(ScoringFunction_sp scoringFunc,
                                          NVector_sp position,
@@ -285,8 +285,8 @@ CL_DEFUN void chem__velocity_verlet_step(ScoringFunction_sp scoringFunc,
  
 
 
-CL_DOCSTRING(R"doc(Like velocity-verlet-step but limits displacement of atoms in the x,y,z directions using the limit_displacement vector.
-Return the number of atoms whose displacement was limited.)doc")
+CL_DOCSTRING(R"dx(Like velocity-verlet-step but limits displacement of atoms in the x,y,z directions using the limit_displacement vector)dx")
+CL_DOCSTRING_LONG(R"dx(Return the number of atoms whose displacement was limited.)dx")
 CL_LISPIFY_NAME("velocity-verlet-step-limit-displacement");
 CL_DEFUN size_t chem__velocity_verlet_step_limit_displacement(ScoringFunction_sp scoringFunc,
                                                               NVector_sp position,

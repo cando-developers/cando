@@ -293,7 +293,7 @@ NVector_sp chem__copy_nvector(NVector_sp source)
 
 
 
-CL_DOCSTRING(R"doc(Apply the transform matrix to the coordinates.)doc")
+CL_DOCSTRING(R"dx(Apply the transform matrix to the coordinates.)dx")
 CL_DEFUN
 NVector_sp chem__apply_transform_to_coordinates(NVector_sp destination, NVector_sp coordinates, const Matrix& transform )
 {
@@ -332,7 +332,7 @@ inline double dist_squared_bounding_box(NVector_sp coord1, size_t i1, NVector_sp
   return dx*dx+dy*dy+dz*dz;
 }
   
-CL_DOCSTRING(R"doc(Determine close contact. Return a pair of integers indexing into the coordinates)doc")
+CL_DOCSTRING(R"dx(Determine close contact. Return a pair of integers indexing into the coordinates)dx")
 CL_DEFUN
 core::T_mv chem__find_close_contact(NVector_sp coord1, NVector_sp coord2)
 {
@@ -359,7 +359,7 @@ core::T_mv chem__find_close_contact(NVector_sp coord1, NVector_sp coord2)
 
 
 
-CL_DOCSTRING(R"doc(Determine close contacts within the context of a bounding box. Return a pair of integers indexing into the coordinates.  Only the coordinates less than length1 and length2 are valid. Keep a count of how many close contacts are closer than close_distance.)doc")
+CL_DOCSTRING(R"dx(Determine close contacts within the context of a bounding box. Return a pair of integers indexing into the coordinates.  Only the coordinates less than length1 and length2 are valid. Keep a count of how many close contacts are closer than close_distance.)dx")
 CL_DEFUN
 core::T_mv chem__find_close_contact_in_bounding_box(NVector_sp coord1, size_t length1, NVector_sp coord2, size_t length2, BoundingBox_sp bounding_box, double close_distance)
 {
@@ -396,8 +396,8 @@ core::T_mv chem__find_close_contact_in_bounding_box(NVector_sp coord1, size_t le
 
 
 
-CL_DOCSTRING(R"doc(Determine close contact. Return a pair of integers indexing into the coordinates)doc")
-CL_LAMBDA(coordinates &optional coordinates-length);
+CL_DOCSTRING(R"dx(Determine close contact. Return a pair of integers indexing into the coordinates)dx")
+CL_LAMBDA(coordinates &optional coordinates-length)
 CL_DEFUN
 geom::BoundingCuboid_sp chem__nvector_bounding_cuboid(NVector_sp coords, core::T_sp coordinates_length)
 {

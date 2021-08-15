@@ -74,7 +74,7 @@ CL_DEFUN OVector3_sp OVector3_O::make(double x, double y, double z)
 	return ov;
     }
 
-CL_DOCSTRING(R"doc(Return T if the vec is anything other than 0.0,0.0,0.0)doc")
+CL_DOCSTRING(R"dx(Return T if the vec is anything other than 0.0,0.0,0.0)dx")
 CL_NAME("VEC-P");
 CL_DEFUN bool geom__vec_p(OVector3_sp ov) {
   return (ov->_Value[0] != 0.0 ||

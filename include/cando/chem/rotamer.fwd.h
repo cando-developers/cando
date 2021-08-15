@@ -34,6 +34,6 @@ namespace chem
 
     FORWARD(Rotamer);
 
-}; /* chem
+}; // chem
 
 #endif /* _ROTAMER.FWD_H */

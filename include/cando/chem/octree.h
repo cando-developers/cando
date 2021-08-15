@@ -253,7 +253,7 @@ public:
   bool fieldsp() const { return true;};
   void fields(core::Record_sp record);
 public:
-  CL_DOCSTRING(R"doc(Make a generic-octree centered on ORIGIN with HALF-DIMENSIONs)doc");
+  CL_DOCSTRING(R"dx(Make a generic-octree centered on ORIGIN with HALF-DIMENSIONs)dx");
   CL_LISPIFY_NAME(make-generic-octree);
   CL_DEF_CLASS_METHOD
   static GenericOctree_sp make(const Vector3& origin, const Vector3& halfDimension);

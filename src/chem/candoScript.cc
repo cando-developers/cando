@@ -193,7 +193,7 @@ __END_DOC
 #define ARGS_chem__database "(fileName &optional (verbosity 0))"
 #define DECL_chem__database ""
 #define DOCS_chem__database "database"
-CL_LAMBDA(fileName &optional (verbosity 0));
+CL_LAMBDA(fileName &optional (verbosity 0))
 CL_DEFUN core::T_sp chem__database(core::T_sp fileNameDesig, core::Fixnum_sp overbosity)
     {
 	IMPLEMENT_ME();
@@ -223,7 +223,7 @@ __END_DOC
 #define ARGS_chem__standard_database "(pathDesig &optional loadSeed (overbosity 0))"
 #define DECL_chem__standard_database ""
 #define DOCS_chem__standard_database "standardDatabase"
-CL_LAMBDA(pathDesig &optional loadSeed (overbosity 0));
+CL_LAMBDA(pathDesig &optional loadSeed (overbosity 0))
 CL_DEFUN core::T_sp chem__standard_database(core::T_sp pathDesig, core::T_sp loadSeed, core::Fixnum_sp overbosity)
     {
 	IMPLEMENT_ME();
@@ -566,7 +566,7 @@ CL_DEFUN geom::SimpleVectorCoordinate_sp chem__make_simple_vector_coordinate_fro
   return coords;
 }
 
-CL_DOCSTRING(R"doc(Load the only or the first aggregate from the mol2 file.)doc")
+CL_DOCSTRING(R"dx(Load the only or the first aggregate from the mol2 file.)dx")
 CL_DEFUN core::T_sp chem__read_mol2(core::T_sp stream)
 {
   Mol2File fin(stream);
@@ -574,7 +574,7 @@ CL_DEFUN core::T_sp chem__read_mol2(core::T_sp stream)
   return agg;
 }
 
-CL_DOCSTRING(R"doc(Read the only or the first aggregate from the mol2 file.)doc")
+CL_DOCSTRING(R"dx(Read the only or the first aggregate from the mol2 file.)dx")
 CL_DEFUN core::T_sp chem__load_mol2(core::T_sp fileName)
 {
   Mol2File fin;
@@ -641,16 +641,16 @@ core::T_sp chem__read_mol2_list_common(Mol2File& fin, core::T_sp number_to_load)
   return result.cons();
 }
 
-CL_DOCSTRING(R"doc(Read all or a number of aggregates from the mol2 stream.)doc")
-CL_LAMBDA(stream &optional number-to-load);
+CL_DOCSTRING(R"dx(Read all or a number of aggregates from the mol2 stream.)dx")
+CL_LAMBDA(stream &optional number-to-load)
 CL_DEFUN core::T_sp chem__read_mol2_list(core::T_sp stream, core::T_sp number_to_load)
 {
   Mol2File fin(stream);
   return chem__read_mol2_list_common(fin, number_to_load);
 }
 
-CL_DOCSTRING(R"doc(Load all or a number of aggregates from the mol2 file.)doc")
-CL_LAMBDA(file-name &optional number-to-load);
+CL_DOCSTRING(R"dx(Load all or a number of aggregates from the mol2 file.)dx")
+CL_LAMBDA(file-name &optional number-to-load)
 CL_DEFUN core::T_sp chem__load_mol2_list(core::T_sp fileName, core::T_sp number_to_load)
 {
   Mol2File fin;
@@ -667,7 +667,7 @@ __END_DOC
  */
 
 
-CL_LAMBDA(matter dest-desig &optional use-sybyl-types);
+CL_LAMBDA(matter dest-desig &optional use-sybyl-types)
 CL_DEFUN core::T_sp chem__save_mol2(Matter_sp matter, core::T_sp destDesig, bool useSybylTypes)
 {
   mol2WriteMatterToFileName(matter,destDesig,useSybylTypes);
@@ -675,7 +675,7 @@ CL_DEFUN core::T_sp chem__save_mol2(Matter_sp matter, core::T_sp destDesig, bool
 }
 
 
-CL_LAMBDA(matter &optional use-sybyl-types);
+CL_LAMBDA(matter &optional use-sybyl-types)
 CL_DEFUN std::string chem__aggregate_as_mol2_string(Aggregate_sp matter, bool useSybylTypes)
 {
   stringstream ss;
@@ -683,7 +683,7 @@ CL_DEFUN std::string chem__aggregate_as_mol2_string(Aggregate_sp matter, bool us
   return ss.str();
 }
 
-CL_LAMBDA(matter &optional use-sybyl-types);
+CL_LAMBDA(matter &optional use-sybyl-types)
 CL_DEFUN std::string chem__matter_as_mol2_string(Matter_sp matter, bool useSybylTypes)
 {
   stringstream ss;
@@ -766,7 +766,7 @@ __END_DOC
 #define ARGS_chem__find_residue "(&rest args)"
 #define DECL_chem__find_residue ""
 #define DOCS_chem__find_residue "findResidue"
-CL_LAMBDA(&rest args);
+CL_LAMBDA(&rest args)
 CL_DEFUN core::T_sp chem__find_residue(core::List_sp args)
 {
     Molecule_sp molecule;
@@ -815,7 +815,7 @@ __END_DOC
 #define ARGS_chem__atom_pos "(&rest args)"
 #define DECL_chem__atom_pos ""
 #define DOCS_chem__atom_pos "atomPos"
-CL_LAMBDA(&rest args);
+CL_LAMBDA(&rest args)
 CL_DEFUN core::T_sp chem__atom_pos(core::List_sp args)
 {
     Molecule_sp molecule;
@@ -872,7 +872,7 @@ CL_DEFUN core::T_sp chem__atom_pos(core::List_sp args)
 #define ARGS_chem__monomer "(monomerId groupName &optional monomerAliases comment)"
 #define DECL_chem__monomer ""
 #define DOCS_chem__monomer "monomer"
-CL_LAMBDA(monomerId groupName &optional monomerAliases comment);
+CL_LAMBDA(monomerId groupName &optional monomerAliases comment)
 CL_DEFUN core::T_sp chem__monomer(core::Symbol_sp monomerId, core::Symbol_sp groupName, core::List_sp monomerAliases, core::String_sp comment)
 {
     OligomerPart_Monomer_sp newMon;

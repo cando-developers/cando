@@ -159,7 +159,7 @@ core::List_sp EnergyFunction_O::allComponents() const {
 }
 
   
-CL_LAMBDA(&key matter (use-excluded-atoms t) active-atoms (assign-types t) bounding-box);
+CL_LAMBDA(&key matter (use-excluded-atoms t) active-atoms (assign-types t) bounding-box)
 CL_LISPIFY_NAME(make_energy_function);
 CL_DEF_CLASS_METHOD EnergyFunction_sp EnergyFunction_O::make(core::T_sp matter, bool useExcludedAtoms, core::T_sp activeAtoms, bool assign_types, core::T_sp bounding_box)
 {
@@ -278,7 +278,7 @@ void EnergyFunction_O::fields(core::Record_sp node)
   this->Base::fields(node);
 }
 
-CL_DOCSTRING(R"doc(Return the bounding-box for the atom-table.)doc")
+CL_DOCSTRING(R"dx(Return the bounding-box for the atom-table.)dx")
 CL_LISPIFY_NAME(energyFunction-bounding-box);
 CL_DEFMETHOD BoundingBox_sp EnergyFunction_O::boundingBox() const
 {
@@ -288,20 +288,20 @@ CL_DEFMETHOD BoundingBox_sp EnergyFunction_O::boundingBox() const
   SIMPLE_ERROR(BF("The bounding-box slot is unbound"));
 }
 
-CL_DOCSTRING(R"doc(Return T if the bounding-box is bound)doc")
+CL_DOCSTRING(R"dx(Return T if the bounding-box is bound)dx")
 CL_LISPIFY_NAME(energyFunction-bounding-box-bound-p);
 CL_DEFMETHOD bool EnergyFunction_O::boundingBoxBoundP() const
 {
   return this->_BoundingBox.boundp();
 }
 
-CL_DOCSTRING(R"doc(Set the bounding-box)doc")
+CL_DOCSTRING(R"dx(Set the bounding-box)dx")
 CL_LISPIFY_NAME(energyFunction-set-bounding-box);
 CL_DEFMETHOD void EnergyFunction_O::setBoundingBox(BoundingBox_sp boundingBox) {
   this->_BoundingBox = boundingBox;
 }
 
-CL_DOCSTRING(R"doc(Make the bounding-box unbound)doc")
+CL_DOCSTRING(R"dx(Make the bounding-box unbound)dx")
 CL_LISPIFY_NAME(energyFunction-mak-unbound-bounding-box);
 CL_DEFMETHOD void EnergyFunction_O::makUnboundBoundingBox() {
   this->_BoundingBox = unbound<BoundingBox_O>();
@@ -1178,7 +1178,7 @@ SYMBOL_EXPORT_SC_(ChemPkg,identify_aromatic_rings);
 SYMBOL_EXPORT_SC_(ChemPkg,STARcurrent_aromaticity_informationSTAR);
 
 CL_LISPIFY_NAME("defineForMatter");
-CL_LAMBDA((energy-function !) matter &key use-excluded-atoms active-atoms (assign-types t));
+CL_LAMBDA((energy-function !) matter &key use-excluded-atoms active-atoms (assign-types t))
 CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, bool useExcludedAtoms, core::T_sp activeAtoms, bool assign_types )
 {_OF();
 
@@ -1241,7 +1241,7 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, bool useEx
 }
 
 
-CL_LAMBDA((energy-function !) matter &key use-excluded-atoms active-atoms (assign-types t) cip-priorities);
+CL_LAMBDA((energy-function !) matter &key use-excluded-atoms active-atoms (assign-types t) cip-priorities)
 CL_DEFMETHOD void EnergyFunction_O::defineForMatterWithAtomTypes(Matter_sp matter, bool useExcludedAtoms, core::T_sp activeAtoms, core::T_sp cip_priorities)
 {_OF();
   if (!gc::IsA<core::HashTable_sp>(cip_priorities)) {
@@ -1394,8 +1394,8 @@ core::HashTable_sp createAtomToResidueHashTable(Matter_sp molecule)
       
 
 
-CL_LAMBDA((energy-function !) molecule force-field &key active-atoms);
-CL_DOCSTRING(R"doc(Generate the standard energy function tables. The atom types, and CIP priorities need to be precalculated.)doc")
+CL_LAMBDA((energy-function !) molecule force-field &key active-atoms)
+CL_DOCSTRING(R"dx(Generate the standard energy function tables. The atom types, and CIP priorities need to be precalculated.)dx")
 CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_sp molecule, CombinedForceField_sp combinedForceField, core::T_sp activeAtoms )
 {
   Loop loop;
@@ -1679,7 +1679,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
 
 SYMBOL_EXPORT_SC_(ChemPkg,prepare_amber_energy_nonbond);
 
-CL_DOCSTRING(R"doc(Generate the nonbond energy function tables. The atom types, and CIP priorities need to be precalculated.)doc")
+CL_DOCSTRING(R"dx(Generate the nonbond energy function tables. The atom types, and CIP priorities need to be precalculated.)dx")
 CL_DEFMETHOD void EnergyFunction_O::generateNonbondEnergyFunctionTables(bool useExcludedAtoms, Matter_sp matter, core::T_sp nonbondForceField, core::T_sp activeAtoms )
 {_OF();
   if (chem__verbose(0))
@@ -1712,10 +1712,10 @@ CL_DEFMETHOD void EnergyFunction_O::generateNonbondEnergyFunctionTables(bool use
 }
 
 
-CL_LAMBDA((energy-function !) matter force-field &key active-atoms cip-priorities);
-CL_DOCSTRING(R"doc(Generate the restraint energy function tables. The atom types, and CIP priorities need to be precalculated.
+CL_LAMBDA((energy-function !) matter force-field &key active-atoms cip-priorities)
+CL_DOCSTRING(R"dx(Generate the restraint energy function tables. The atom types, and CIP priorities need to be precalculated.
 This should be called after generateStandardEnergyFunctionTables.
-You need to pass a hash-table of atoms to relative CIP priorities (calculated using CipPrioritizer_O::assignPrioritiesHashTable(matter) for stereochemical restraints.)doc")
+You need to pass a hash-table of atoms to relative CIP priorities (calculated using CipPrioritizer_O::assignPrioritiesHashTable(matter) for stereochemical restraints.)dx")
 CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter_sp matter, core::T_sp ffNonbond, core::T_sp activeAtoms, core::T_sp cip_priorities )
 {
   Loop loop;
@@ -1988,7 +1988,7 @@ void	EnergyFunction_O::loadCoordinatesIntoVector(NVector_sp pos)
 }
 
 
-CL_DOCSTRING(R"doc(Return the coordinate vector of the energy function)doc")
+CL_DOCSTRING(R"dx(Return the coordinate vector of the energy function)dx")
 CL_DEFUN NVector_sp chem__energy_function_coordinate_vector(EnergyFunction_sp energy_function)
 {
   NVector_sp pos = NVector_O::create(energy_function->getNVectorSize());
@@ -1996,7 +1996,7 @@ CL_DEFUN NVector_sp chem__energy_function_coordinate_vector(EnergyFunction_sp en
   return pos;
 }
 
-CL_DOCSTRING(R"doc(Return an empty force vector of the energy function)doc")
+CL_DOCSTRING(R"dx(Return an empty force vector of the energy function)dx")
 CL_DEFUN NVector_sp chem__energy_function_empty_force_vector(EnergyFunction_sp energy_function)
 {
   NVector_sp pos = NVector_O::make(energy_function->getNVectorSize(),0.0,true);

@@ -64,8 +64,8 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace chem {
 
 CL_LISPIFY_NAME("CHEM:NAME");
-CL_LAMBDA(value isoname);
-CL_DOCSTRING(R"doc(isoname-name-set)doc")
+CL_LAMBDA(value isoname)
+CL_DOCSTRING(R"dx(isoname-name-set)dx")
 CL_DEFUN_SETF core::Symbol_sp chem__isoname_name_set(core::Symbol_sp name, Isoname_sp isoname)
 {
   isoname->_Name = name;
@@ -73,8 +73,8 @@ CL_DEFUN_SETF core::Symbol_sp chem__isoname_name_set(core::Symbol_sp name, Isona
 }
 
 CL_LISPIFY_NAME("CHEM:ISOMER");
-CL_LAMBDA(value isoname);
-CL_DOCSTRING(R"doc(isoname-isomer-set)doc")
+CL_LAMBDA(value isoname)
+CL_DOCSTRING(R"dx(isoname-isomer-set)dx")
 CL_DEFUN_SETF Fixnum chem__isoname_isomer_set(Fixnum isomer, Isoname_sp isoname)
 {
   isoname->_Isomer = isomer;
@@ -684,9 +684,8 @@ void Monomer_O::initialize()
 }
 
 
-CL_DOCSTRING(R"doc(Create a monomer using a list of topology objects)doc")
-CL_LAMBDA(&optional topology-list)
-CL_DEF_CLASS_METHOD 
+CL_DOCSTRING(R"dx(Create a monomer using a list of topology objects)dx")
+CL_LAMBDA(&optional topology-list)CL_DEF_CLASS_METHOD 
 Monomer_sp Monomer_O::makeMonomer(core::List_sp topology_list)
 {
   auto  me  = gctools::GC<Monomer_O>::allocate_with_default_constructor();

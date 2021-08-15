@@ -128,7 +128,7 @@ CL_DEFMETHOD Atom_sp ConstitutionVirtualAtom_O::buildAtom() const
   
 
 CL_LISPIFY_NAME(makeConstitutionAtomsFromResidue);
-CL_LAMBDA(residue &optional verbose);
+CL_LAMBDA(residue &optional verbose)
 CL_DEFUN ConstitutionAtoms_sp ConstitutionAtoms_O::makeConstitutionAtomsFromResidue(Residue_sp residue, bool verbose)
 {
   residue->ensureAllAtomNamesAreUnique();
@@ -193,11 +193,10 @@ void ConstitutionAtoms_O::fields(core::Record_sp node)
 }  
 
 
-CL_DOCSTRING(R"doc(Return (values constitution-atom T) if the atom with NAME is found.
-If it is not found and ERRORP is NIL then return (values NIL NIL), otherwise signal an error.)doc")
+CL_DOCSTRING(R"dx(Return (values constitution-atom T) if the atom with NAME is found.
+If it is not found and ERRORP is NIL then return (values NIL NIL), otherwise signal an error.)dx")
 CL_LISPIFY_NAME("atomWithName");
-CL_LAMBDA(atom-name &optional (errorp t))
-CL_DEFMETHOD     core::T_mv ConstitutionAtoms_O::atomWithName(MatterName nm, bool errorp )
+CL_LAMBDA(atom-name &optional (errorp t))CL_DEFMETHOD     core::T_mv ConstitutionAtoms_O::atomWithName(MatterName nm, bool errorp )
 {_OF();
   for ( gctools::Vec0<ConstitutionAtom_sp>::const_iterator ci=this->_Atoms.begin();
         ci!=this->_Atoms.end(); ci++ )
