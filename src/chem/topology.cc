@@ -73,7 +73,7 @@ void Topology_O::fields(core::Record_sp node)
 
 CL_LISPIFY_NAME(makeTopologyFromResidue);
 CL_LAMBDA(residue topology-name &optional constitution);
-CL_DOCSTRING("Create a topology from a residue. The constitution may be NIL or a constitution to use to define the atoms");
+CL_DOCSTRING(R"doc(Create a topology from a residue. The constitution may be NIL or a constitution to use to define the atoms)doc")
 CL_DEF_CLASS_METHOD Topology_mv Topology_O::makeTopologyFromResidue(chem::Residue_sp residue, core::Symbol_sp topologyName, core::T_sp tconstitution )
 {
   core::Symbol_sp stereoisomerName = topologyName;
@@ -502,7 +502,7 @@ bool Topology_O::hasMatchingPlugsWithMates(adapt::SymbolSet_sp plugSet)
   return match;
 }
 
-CL_DOCSTRING("Return true if this topology has identically named plugs of the other");
+CL_DOCSTRING(R"doc(Return true if this topology has identically named plugs of the other)doc")
 CL_DEFMETHOD bool Topology_O::matchesPlugs(Topology_sp other)
 {
   if (this->_Plugs.size() != other->_Plugs.size()) {
@@ -639,13 +639,13 @@ CL_DEFMETHOD void Topology_O::clearProperty(core::Symbol_sp symbol)
 {
   this->_Properties = core::core__rem_f(this->_Properties,symbol);
 }
-CL_DOCSTRING("Set the property **symbol** of **this** (a chem:topology) to **value**.");
+CL_DOCSTRING(R"doc(Set the property **symbol** of **this** (a chem:topology) to **value**.)doc")
 CL_DEFMETHOD void Topology_O::setProperty(core::Symbol_sp symbol, core::T_sp value)
 {
   this->_Properties = core::core__put_f(this->_Properties,value,symbol);
 }
 
-CL_DOCSTRING("Return the property **symbol** of **this** (a chem:topology) - if it isn't defined return NIL.");
+CL_DOCSTRING(R"doc(Return the property **symbol** of **this** (a chem:topology) - if it isn't defined return NIL.)doc")
 CL_LISPIFY_NAME("getProperty");
 CL_DEFMETHOD core::T_sp Topology_O::getProperty(core::Symbol_sp symbol)
 {
@@ -658,14 +658,14 @@ CL_DEFMETHOD core::T_sp Topology_O::getProperty(core::Symbol_sp symbol)
   return res;
 }
 
-CL_DOCSTRING("Return the property **symbol** of **this** (a chem:topology) - if it isn't defined return **defval**.");
+CL_DOCSTRING(R"doc(Return the property **symbol** of **this** (a chem:topology) - if it isn't defined return **defval**.)doc")
 CL_LISPIFY_NAME("getPropertyOrDefault");
 CL_DEFMETHOD core::T_sp Topology_O::getPropertyOrDefault(core::Symbol_sp prop,core::T_sp defval)
 {
   return core::cl__getf(this->_Properties,prop,defval);
 }
 
-CL_DOCSTRING("Return T if the property **symbol** of **this** (a chem:topology) is defined.");
+CL_DOCSTRING(R"doc(Return T if the property **symbol** of **this** (a chem:topology) is defined.)doc")
 CL_LISPIFY_NAME("hasProperty");
 CL_DEFMETHOD bool Topology_O::hasProperty(core::Symbol_sp symbol)
 {
@@ -674,7 +674,7 @@ CL_DEFMETHOD bool Topology_O::hasProperty(core::Symbol_sp symbol)
 
 
 
-CL_DOCSTRING(R"(Coding can be either :absolute or :coded. :absolute means the bitvector/integer stereoisomer index is used to determine which stereoisomer is specified.  Coded means the stereoisomer index is looked up in the _StereoisomerAtomProperties.)");
+CL_DOCSTRING(R"(Coding can be either :absolute or :coded. :absolute means the bitvector/integer stereoisomer index is used to determine which stereoisomer is specified.  Coded means the stereoisomer index is looked up in the _StereoisomerAtomProperties.)")
 CL_DEFMETHOD void Topology_O::setStereoisomerAtoms(core::Symbol_sp coding, core::List_sp stereoisomer_atoms) {
   this->_StereoisomerCoding = coding;
   this->_StereoisomerAtomProperties.clear();
@@ -687,8 +687,7 @@ CL_DEFMETHOD void Topology_O::setStereoisomerAtoms(core::Symbol_sp coding, core:
 
 
 CL_LISPIFY_NAME("lookupStereoisomerAtoms");
-CL_DOCSTRING("Return (values stereoisomer-atoms coded-or-absolute isomer)")
-CL_DEFMETHOD core::T_mv Topology_O::lookupStereoisomerAtoms(Fixnum isomer)
+CL_DOCSTRING(R"doc(Return (values stereoisomer-atoms coded-or-absolute isomer))doc")CL_DEFMETHOD core::T_mv Topology_O::lookupStereoisomerAtoms(Fixnum isomer)
 {
   if (this->_StereoisomerCoding == kw::_sym_coded) {
     return Values(this->_StereoisomerAtomProperties[isomer],this->_StereoisomerCoding,core::make_fixnum(isomer));

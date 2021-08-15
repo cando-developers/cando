@@ -221,7 +221,7 @@ string FFTypeRule_O::__repr__() const {
   return ss.str();
 }
 
-CL_DOCSTRING("Return the atom types as a hash-table with the atoms as keys and types as values");
+CL_DOCSTRING(R"doc(Return the atom types as a hash-table with the atoms as keys and types as values)doc")
 CL_DEFMETHOD core::HashTableEq_sp    FFTypesDb_O::atomTypes(chem::Matter_sp matter)
 { 
   chem::Loop    				lAtoms;

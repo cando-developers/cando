@@ -158,7 +158,7 @@ JointTemplate_sp JointTemplate_O::make(const int id, core::T_sp name, const stri
 };
 
 CL_DOCSTRING(R"(Return the atom name for this joint-template.
-This returns the _Name field of the joint-template.)");
+This returns the _Name field of the joint-template.)")
 CL_DEFMETHOD core::T_sp JointTemplate_O::name() const
 {
   return this->_Name;
@@ -166,7 +166,7 @@ CL_DEFMETHOD core::T_sp JointTemplate_O::name() const
 
 CL_DOCSTRING(R"(Return the atom name for this joint-template. 
 You need to pass the constitution-atoms that this joint-template's atom id indexes in to 
-because the joint-template doesn't store the atom name, just an index into a constitution-atoms object.)");
+because the joint-template doesn't store the atom name, just an index into a constitution-atoms object.)")
 CL_LISPIFY_NAME("joint-template-atom-name");
 CL_DEFMETHOD core::Symbol_sp JointTemplate_O::jointTemplateAtomName(chem::ConstitutionAtoms_sp constitutionAtoms) const
 {

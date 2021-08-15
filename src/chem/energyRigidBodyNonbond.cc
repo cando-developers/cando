@@ -243,7 +243,7 @@ each object (defined by a contiguous set of points) in coordinates ends. The 'en
 values are indexes directly into 'coordinates', so they are x3.
 coordinates : An nvector of coordinates.
 output : A complex-vector-float where the transformed points are written.
-)doc");
+)doc")
 CL_DEFMETHOD core::ComplexVector_float_sp EnergyRigidBodyNonbond_O::write_rigid_body_coordinates_to_complex_vector_float(NVector_sp rigid_body_pos, core::Array_sp end_indicesx3, NVector_sp coordinates, core::ComplexVector_float_sp output)
 {
   size_t istart = 0;

@@ -206,7 +206,7 @@ CL_DEFMETHOD size_t AtomTable_O::getCoordinateIndexForAtomAtIndex(size_t index)
 CL_DEFMETHOD core::HashTableEq_sp AtomTable_O::getAtomTableIndices() {
   return this->_AtomTableIndices;
 }
-CL_DOCSTRING("Return the index of ATOM or NIL if it is not found.  The second return value is T if found and NIL if not.");
+CL_DOCSTRING(R"doc(Return the index of ATOM or NIL if it is not found.  The second return value is T if found and NIL if not.)doc")
 CL_DEFMETHOD core::T_mv AtomTable_O::getAtomIndexOrNil(Atom_sp atom)
 {
   core::T_mv res= this->_AtomTableIndices->gethash(atom);
@@ -372,7 +372,7 @@ SYMBOL_EXPORT_SC_(ChemPkg,bounding_box_bound_p);
 SYMBOL_EXPORT_SC_(ChemPkg,set_bounding_box);
 SYMBOL_EXPORT_SC_(ChemPkg,mak_unbound_bounding_box);
 
-CL_DOCSTRING(R"doc(Return the bounding-box for the atom-table.)doc");
+CL_DOCSTRING(R"doc(Return the bounding-box for the atom-table.)doc")
 CL_LISPIFY_NAME(atom-table-bounding-box);
 CL_DEFMETHOD core::T_sp AtomTable_O::boundingBox() const {
   if (this->_BoundingBox.unboundp()) {
@@ -381,19 +381,19 @@ CL_DEFMETHOD core::T_sp AtomTable_O::boundingBox() const {
   return this->_BoundingBox;
 }
 
-CL_DOCSTRING(R"doc(Return T if the bounding-box is bound)doc");
+CL_DOCSTRING(R"doc(Return T if the bounding-box is bound)doc")
 CL_LISPIFY_NAME(atom-table-bounding-box-bound-p);
 CL_DEFMETHOD bool AtomTable_O::boundingBoxBoundP() const {
   return !this->_BoundingBox.unboundp();
 }
 
-CL_DOCSTRING(R"doc(Set the bounding-box)doc");
+CL_DOCSTRING(R"doc(Set the bounding-box)doc")
 CL_LISPIFY_NAME(atom-table-set-bounding-box);
 CL_DEFMETHOD void AtomTable_O::setBoundingBox(core::T_sp boundingBox) {
   this->_BoundingBox = boundingBox;
 }
 
-CL_DOCSTRING(R"doc(Make the bounding-box unbound)doc");
+CL_DOCSTRING(R"doc(Make the bounding-box unbound)doc")
 CL_LISPIFY_NAME(atom-table-mak-unbound-bounding-box);
 CL_DEFMETHOD void AtomTable_O::makUnboundBoundingBox() {
   this->_BoundingBox = unbound<core::T_O>();

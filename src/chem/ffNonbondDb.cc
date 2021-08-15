@@ -273,7 +273,7 @@ CL_DEFUN void chem__FFNonbondDb_merge(FFNonbondDb_sp dest, FFNonbondDb_sp source
 
 #if 0
 CL_LISPIFY_NAME(FFNonbondDb-concatenate);
-CL_DOCSTRING("Join the other FFNonbondDb_sp to the current one - signal an error if there are any type conflicts");
+CL_DOCSTRING(R"doc(Join the other FFNonbondDb_sp to the current one - signal an error if there are any type conflicts)doc")
 CL_DEFMETHOD void FFNonbondDb_O::FFNonbondDb_concatenate(FFNonbondDb_sp other, core::Symbol_sp other_name) {
   // What do we do with the nonbond parameters?
   // There needs to be something to control how nonbond interactions work across the whole system
@@ -293,7 +293,7 @@ CL_DEFMETHOD void FFNonbondDb_O::FFNonbondDb_concatenate(FFNonbondDb_sp other, c
 }
 #endif
 
-CL_DOCSTRING("Pass an alist of (nonbond-force-field . force-field-name) and a nonbond-force-field will be returned that combines them all. The global_nonbond defines the global parameters only.");
+CL_DOCSTRING(R"doc(Pass an alist of (nonbond-force-field . force-field-name) and a nonbond-force-field will be returned that combines them all. The global_nonbond defines the global parameters only.)doc")
 CL_DEFUN FFNonbondDb_sp chem__combine_nonbond_force_fields(FFNonbondDb_sp global_nonbond, core::List_sp nonbond_force_fields) {
   // What do we do with the nonbond parameters?
   // There needs to be something to control how nonbond interactions work across the whole system

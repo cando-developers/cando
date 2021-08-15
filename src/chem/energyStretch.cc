@@ -650,7 +650,7 @@ CL_DEFMETHOD void EnergyStretch_O::addStretchTerm(AtomTable_sp atomTable, Atom_s
 CL_DOCSTRING(R"doc(Invoke a callback for every term in the energy-stretch.
 The callback takes the lambda-list (index atom1 atom2 atom1-index*3 atom2-index*3 kb r0).
 Both kb and r0 are single-floats to avoid consing.
-Use the modify-stretch-term-kb and modify-stretch-term-r0 to modify the parameters.)doc");
+Use the modify-stretch-term-kb and modify-stretch-term-r0 to modify the parameters.)doc")
 CL_DEFMETHOD void EnergyStretch_O::walkStretchTerms(core::T_sp callback)
 {
   for (size_t i=0;i<this->_Terms.size();++i) {

@@ -2850,7 +2850,7 @@ void ChemInfoGraph_O::initialize()
 }
 
 
-CL_DOCSTRING(R"doc(Make a chem:chem-info-graph from a chem:root object)doc");
+CL_DOCSTRING(R"doc(Make a chem:chem-info-graph from a chem:root object)doc")
 CL_DEFUN ChemInfoGraph_sp chem__make_chem_info_graph(Root_sp pattern)
 {
   auto graph = gctools::GC<ChemInfoGraph_O>::allocate(pattern);
@@ -3346,7 +3346,7 @@ of times the mcgregor algorithm can call its internal match callback function (w
 The MATCH-CALLBACK will only be invoked if the match is longer than any previous result.
 VERTEX-MATCHER is a lambda that takes two atoms and returns T if they are considered equivalent.
 MATCH-CALLBACK is a lambda that takes three arguments (RESULTS GRAPH1 GRAPH2) its return value is ignored.
-Edges are matched using bond orders.)doc");
+Edges are matched using bond orders.)doc")
 CL_LAMBDA(molecule_graph1 molecule_graph2 only_connected_subgraphs vertex_matcher match_callback &optional (maximum_callbacks 1000));
 CL_DEFUN core::List_sp chem__boost_graph_mcgregor_common_subgraphs(MoleculeGraph_sp moleculeGraph1, MoleculeGraph_sp moleculeGraph2,
                                                                    bool only_connected_subgraphs,

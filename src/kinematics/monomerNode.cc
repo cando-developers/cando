@@ -223,7 +223,7 @@ CL_DEFMETHOD MonomerId MonomerNode_O::monomerId() const
   return this->_Id;
 }
 
-CL_DOCSTRING("Walk the joints of this monomer-node. Provide a callback that takes two arguments, the joint atom-id index and the joint.");
+CL_DOCSTRING(R"doc(Walk the joints of this monomer-node. Provide a callback that takes two arguments, the joint atom-id index and the joint.)doc")
 CL_DEFMETHOD void MonomerNode_O::walkJoints(core::Function_sp callback) {
   for ( int i=0, iEnd(this->_Joints.size()); i<iEnd; ++i ) {
     core::eval::funcall(callback,core::make_fixnum(i),this->_Joints[i]);

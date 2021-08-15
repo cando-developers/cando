@@ -122,7 +122,7 @@ ADD-EXTENT - Not sure what this does.
 SHELL-EXTENT - I'm not sure what this does.
 NONBOND-DB - A nonbond database for the aggregate - use chem:compute-merged-nonbond-force-field-for-aggregate to get this.
 INCLUDE-SOLVENT - 0 if don't include solvent and 1 if you do.
-VERBOSE - T if verbosity is desired and NIL if not.)doc");
+VERBOSE - T if verbosity is desired and NIL if not.)oc");
 CL_LISPIFY_NAME("make-oct-tree");
 CL_LAMBDA(aggregate type grid-space add-extent shell-extent nonbond-db include-solvent &optional verbose);
 CL_DEF_CLASS_METHOD
@@ -183,7 +183,7 @@ void AddIonOctree_O::fields(core::Record_sp node)
 }
 
 
-CL_DOCSTRING(R"doc(Set the bounding-box of the oct-tree - all distance calculations will use the bounding box)doc");
+CL_DOCSTRING(R"doc(Set the bounding-box of the oct-tree - all distance calculations will use the bounding box)doc")
 CL_LISPIFY_NAME("octree_set_bounding_box");
 CL_DEFMETHOD
 void AddIonOctree_O::setBoundingBox(BoundingBox_sp bounding_box)
@@ -2249,7 +2249,7 @@ core::T_sp AddIonOctree_O::rOctreeCheckSolvent( /*AddIonOctree_sp octTree,*/ Vec
 
 
 
-CL_DOCSTRING(R"doc(Find the closest atom in the oct-tree. Return the (values atom residue molecule) of the closest atom.)doc");
+CL_DOCSTRING(R"doc(Find the closest atom in the oct-tree. Return the (values atom residue molecule) of the closest atom.)doc")
 CL_DEFUN
 core::T_mv chem__oct_tree_find_closest_atom(AddIonOctree_sp oct_tree, const Vector3& point )
 {
@@ -2477,7 +2477,7 @@ CL_DEFUN void chem__generic_octree_get_points_within_cutoff(GenericOctree_sp oct
 
 
 
-CL_DOCSTRING(R"doc(Walk the octree and call the CALLBACK with each node.  The CALLBACK must take a single argument and that is the generic-octree node.)doc");
+CL_DOCSTRING(R"doc(Walk the octree and call the CALLBACK with each node.  The CALLBACK must take a single argument and that is the generic-octree node.)doc")
 CL_DEFMETHOD
 void GenericOctree_O::walkGenericOctree(core::Function_sp callback)
 {
@@ -2572,7 +2572,7 @@ void GenericOctree_O::fields(core::Record_sp node)
   node->field( INTERN_(kw,depth), this->_depth);
 }
 
-CL_DOCSTRING(R"doc(Test if two transformed octree's in a bounding-box intersect each other)doc");
+CL_DOCSTRING(R"doc(Test if two transformed octree's in a bounding-box intersect each other)doc")
 CL_DEFMETHOD
 bool GenericOctree_O::octreeTransformedIntersectsInBoundingBox(const Matrix& myTransform, GenericOctree_sp other, const Matrix& otherTransform, BoundingBox_sp boundingBox)
 {

@@ -187,7 +187,7 @@ int Atom_O::priorityOrder(Atom_sp a, Atom_sp b, core::HashTable_sp cip_priority)
 }
 
 CL_DOCSTRING(R"doc(Calculate the stereochemical configuration of the atom.
-This requires that relative cip priorities are defined using CipPrioritizer_O::assignCahnIngoldPrelogPriorityToAtomsRelativePriority.)doc");
+This requires that relative cip priorities are defined using CipPrioritizer_O::assignCahnIngoldPrelogPriorityToAtomsRelativePriority.)doc")
 CL_LISPIFY_NAME("calculateStereochemicalConfiguration");
 CL_DEFMETHOD     ConfigurationEnum Atom_O::calculateStereochemicalConfiguration(core::HashTable_sp cip_priority)
 {
@@ -698,7 +698,7 @@ core::List_sp	Atom_O::getNeighborsForAbsoluteConfiguration()
   return l.cons();
 }
 
-CL_DOCSTRING("Return the neighbors sorted from highest CIP priority to lowest");
+CL_DOCSTRING(R"doc(Return the neighbors sorted from highest CIP priority to lowest)doc")
 CL_DEFMETHOD
 core::List_sp	Atom_O::getNeighborsByRelativePriority(core::HashTable_sp cip_priority)
 {
@@ -865,7 +865,7 @@ float Atom_O::distanceSquaredToAtom(Atom_sp other)
   return delta.getX()*delta.getX()+delta.getY()*delta.getY()+delta.getZ()*delta.getZ();
 }
 
-CL_DOCSTRING(R"doc(Return the distance squared between twoatoms. This provides a way to compare atom positions without allocating memory.)doc");
+CL_DOCSTRING(R"doc(Return the distance squared between twoatoms. This provides a way to compare atom positions without allocating memory.)doc")
 CL_DEFUN
 float chem__distance_squared_between_two_atoms(Atom_sp atom1, Atom_sp atom2)
 {
@@ -1184,7 +1184,7 @@ CL_DEFMETHOD     bool	Atom_O::isBondedTo( Atom_sp aTarget)
 //
 // Return the bond order by which we are bonded to the atom.
 // Return noBond if there is no bond.
-CL_DOCSTRING("Return the bond-order to the OTHER atom.");
+CL_DOCSTRING(R"doc(Return the bond-order to the OTHER atom.)doc")
 CL_DEFMETHOD
 BondOrder	Atom_O::bondOrderTo( Atom_sp other )
 {

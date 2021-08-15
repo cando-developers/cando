@@ -58,7 +58,7 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace chem {
 
 CL_DOCSTRING(R"doc(Create a chem:bounding-box using three lengths in angstroms and zero to three angles (in degrees).
-When angles are missing they are assumed to be 90.0 degrees.)doc");
+When angles are missing they are assumed to be 90.0 degrees.)doc")
 CL_LAMBDA(widths &key angles-degrees center);
 CL_LISPIFY_NAME(make-bounding-box);
 CL_DEF_CLASS_METHOD
@@ -270,7 +270,7 @@ void Aggregate_O::fields(core::Record_sp node)
 }
 
 
-CL_DOCSTRING(R"doc(Return the bounding-box for the atom-table.)doc");
+CL_DOCSTRING(R"doc(Return the bounding-box for the atom-table.)doc")
 CL_LISPIFY_NAME(aggregate-bounding-box);
 CL_DEFMETHOD BoundingBox_sp Aggregate_O::boundingBox() const
 {
@@ -280,20 +280,20 @@ CL_DEFMETHOD BoundingBox_sp Aggregate_O::boundingBox() const
   SIMPLE_ERROR(BF("The bounding-box slot is unbound"));
 }
 
-CL_DOCSTRING(R"doc(Return T if the bounding-box is bound)doc");
+CL_DOCSTRING(R"doc(Return T if the bounding-box is bound)doc")
 CL_LISPIFY_NAME(aggregate-bounding-box-bound-p);
 CL_DEFMETHOD bool Aggregate_O::boundingBoxBoundP() const
 {
   return this->_BoundingBox.boundp();
 }
 
-CL_DOCSTRING(R"doc(Set the bounding-box)doc");
+CL_DOCSTRING(R"doc(Set the bounding-box)doc")
 CL_LISPIFY_NAME(aggregate-set-bounding-box);
 CL_DEFMETHOD void Aggregate_O::setBoundingBox(BoundingBox_sp boundingBox) {
   this->_BoundingBox = boundingBox;
 }
 
-CL_DOCSTRING(R"doc(Make the bounding-box unbound)doc");
+CL_DOCSTRING(R"doc(Make the bounding-box unbound)doc")
 CL_LISPIFY_NAME(aggregate-mak-unbound-bounding-box);
 CL_DEFMETHOD void Aggregate_O::makUnboundBoundingBox() {
   this->_BoundingBox = unbound<BoundingBox_O>();

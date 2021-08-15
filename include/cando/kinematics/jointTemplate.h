@@ -193,7 +193,7 @@ FORWARD(MonomerNode);
     chem::OutPlug_sp outPlug() const { return this->_OutPlug;};
 
     CL_DEFMETHOD void addChild(JointTemplate_sp child) {this->_Children.push_back(child);};
-	/*! Return a Cons of children */
+	/*! Return a list of children */
     core::List_sp children() const;
 
     void addChildren(Joint_sp me,
@@ -218,10 +218,7 @@ FORWARD(MonomerNode);
 
 	/*! Extract the internal coordinates from the atom */
     virtual void extractInternalCoords(Joint_sp const& atom);
-
-
-
-//	DEFAULT_CTOR_DTOR(BondedJointTemplate_O);
+    
   BondedJointTemplate_O() : _Distance(0.0), _Theta(0.0), _Phi(0.0), _OutPlug(unbound<chem::OutPlug_O>()) {};
   };
 

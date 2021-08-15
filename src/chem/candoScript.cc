@@ -566,7 +566,7 @@ CL_DEFUN geom::SimpleVectorCoordinate_sp chem__make_simple_vector_coordinate_fro
   return coords;
 }
 
-CL_DOCSTRING(R"doc(Load the only or the first aggregate from the mol2 file.)doc");
+CL_DOCSTRING(R"doc(Load the only or the first aggregate from the mol2 file.)doc")
 CL_DEFUN core::T_sp chem__read_mol2(core::T_sp stream)
 {
   Mol2File fin(stream);
@@ -574,7 +574,7 @@ CL_DEFUN core::T_sp chem__read_mol2(core::T_sp stream)
   return agg;
 }
 
-CL_DOCSTRING(R"doc(Read the only or the first aggregate from the mol2 file.)doc");
+CL_DOCSTRING(R"doc(Read the only or the first aggregate from the mol2 file.)doc")
 CL_DEFUN core::T_sp chem__load_mol2(core::T_sp fileName)
 {
   Mol2File fin;
@@ -641,7 +641,7 @@ core::T_sp chem__read_mol2_list_common(Mol2File& fin, core::T_sp number_to_load)
   return result.cons();
 }
 
-CL_DOCSTRING(R"doc(Read all or a number of aggregates from the mol2 stream.)doc");
+CL_DOCSTRING(R"doc(Read all or a number of aggregates from the mol2 stream.)doc")
 CL_LAMBDA(stream &optional number-to-load);
 CL_DEFUN core::T_sp chem__read_mol2_list(core::T_sp stream, core::T_sp number_to_load)
 {
@@ -649,7 +649,7 @@ CL_DEFUN core::T_sp chem__read_mol2_list(core::T_sp stream, core::T_sp number_to
   return chem__read_mol2_list_common(fin, number_to_load);
 }
 
-CL_DOCSTRING(R"doc(Load all or a number of aggregates from the mol2 file.)doc");
+CL_DOCSTRING(R"doc(Load all or a number of aggregates from the mol2 file.)doc")
 CL_LAMBDA(file-name &optional number-to-load);
 CL_DEFUN core::T_sp chem__load_mol2_list(core::T_sp fileName, core::T_sp number_to_load)
 {

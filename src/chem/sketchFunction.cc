@@ -105,7 +105,7 @@ SYMBOL_EXPORT_SC_(ChemPkg,node_set_position);
 bool sketchFunctionInitialized = false;
 
 
-CL_DOCSTRING("Create a sketch-function from a molecule. Pass an instance of a dummy sketch-nonbond-force-field passed to chem:find-atom-type-position.");
+CL_DOCSTRING(R"doc(Create a sketch-function from a molecule. Pass an instance of a dummy sketch-nonbond-force-field passed to chem:find-atom-type-position.)doc")
 CL_LISPIFY_NAME(make-sketch-function);
 CL_DEF_CLASS_METHOD
 SketchFunction_sp SketchFunction_O::make(core::T_sp graph, core::T_sp sketchNonbondForceField)
@@ -161,7 +161,7 @@ CL_DEFMETHOD AtomTable_sp SketchFunction_O::atomTable() const
 
 CL_DOCSTRING(R"doc(Return the instance graph slot if it is a Matter object. 
 If it isn't then signal an error. 
-This is used in situations where the graph slot contains a matter object.)doc");
+This is used in situations where the graph slot contains a matter object.)doc")
 CL_DEFMETHOD
 Matter_sp SketchFunction_O::getMatter() {
   return gc::As<Matter_sp>(this->_Graph);

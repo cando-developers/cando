@@ -65,7 +65,7 @@ namespace chem {
 
 CL_LISPIFY_NAME("CHEM:NAME");
 CL_LAMBDA(value isoname);
-CL_DOCSTRING("isoname-name-set");
+CL_DOCSTRING(R"doc(isoname-name-set)doc")
 CL_DEFUN_SETF core::Symbol_sp chem__isoname_name_set(core::Symbol_sp name, Isoname_sp isoname)
 {
   isoname->_Name = name;
@@ -74,7 +74,7 @@ CL_DEFUN_SETF core::Symbol_sp chem__isoname_name_set(core::Symbol_sp name, Isona
 
 CL_LISPIFY_NAME("CHEM:ISOMER");
 CL_LAMBDA(value isoname);
-CL_DOCSTRING("isoname-isomer-set");
+CL_DOCSTRING(R"doc(isoname-isomer-set)doc")
 CL_DEFUN_SETF Fixnum chem__isoname_isomer_set(Fixnum isomer, Isoname_sp isoname)
 {
   isoname->_Isomer = isomer;
@@ -684,7 +684,7 @@ void Monomer_O::initialize()
 }
 
 
-CL_DOCSTRING("Create a monomer using a list of topology objects");
+CL_DOCSTRING(R"doc(Create a monomer using a list of topology objects)doc")
 CL_LAMBDA(&optional topology-list)
 CL_DEF_CLASS_METHOD 
 Monomer_sp Monomer_O::makeMonomer(core::List_sp topology_list)

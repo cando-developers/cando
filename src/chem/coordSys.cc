@@ -592,6 +592,7 @@ CL_DEFMETHOD void CoordinateSystem_O::canonical()
 //	the z axis is orthogonal to (axy) and x axis
 //	the y axis is orthogonal to the new x and z axes
 CL_LISPIFY_NAME("defineForAtoms");
+CL_DOCSTRING(R"doc(Define a coordinate system using the origin, x-axis and another vector in the xy plane)doc")
 CL_DEFMETHOD void	CoordinateSystem_O::defineForAtoms( Atom_sp aorigin, Atom_sp ax, Atom_sp axy )
 {
     Vector3	vo, vx, vxy, vz, vy;
@@ -621,25 +622,27 @@ CL_DEFMETHOD void	CoordinateSystem_O::defineForAtoms( Atom_sp aorigin, Atom_sp a
 //	the z axis is orthogonal to (axy) and x axis
 //	the y axis is orthogonal to the new x and z axes
 CL_LISPIFY_NAME("defineForAtomVectors");
+CL_DOCSTRING(R"doc(Define a coordinate system using the three vectors. vo is the origin,
+vax is along the x axis and vaxy is in the xy-plane.)")
 CL_DEFMETHOD void	CoordinateSystem_O::defineForAtomVectors( const Vector3& vo,
 						  const Vector3& vax,
 						  const Vector3& vaxy )
 {
-    Vector3	vx, vxy, vz, vy;
-vx = (vax.sub(vo)).normalized();
-vxy = (vaxy.sub(vo)).normalized();
-    LOG(BF("vo=%lf,%lf,%lf") % vo.getX() % vo.getY() % vo.getZ() );
-    LOG(BF("vx=%lf,%lf,%lf") % vx.getX() % vx.getY() % vx.getZ() );
-    LOG(BF("vxy=%lf,%lf,%lf") % vxy.getX() % vxy.getY() % vxy.getZ() );
+  Vector3	vx, vxy, vz, vy;
+  vx = (vax.sub(vo)).normalized();
+  vxy = (vaxy.sub(vo)).normalized();
+  LOG(BF("vo=%lf,%lf,%lf") % vo.getX() % vo.getY() % vo.getZ() );
+  LOG(BF("vx=%lf,%lf,%lf") % vx.getX() % vx.getY() % vx.getZ() );
+  LOG(BF("vxy=%lf,%lf,%lf") % vxy.getX() % vxy.getY() % vxy.getZ() );
 
-    vz = (vx.crossProduct(vxy)).normalized();
-    LOG(BF("vz=%lf,%lf,%lf") % vz.getX() % vz.getY() % vz.getZ() );
-    vy = (vz.crossProduct(vx)).normalized();
-    LOG(BF("vy=%lf,%lf,%lf") % vy.getX() % vy.getY() % vy.getZ() );
-    this->origin = vo;
-    this->x = vx;
-    this->y = vy;
-    this->z = vz;
+  vz = (vx.crossProduct(vxy)).normalized();
+  LOG(BF("vz=%lf,%lf,%lf") % vz.getX() % vz.getY() % vz.getZ() );
+  vy = (vz.crossProduct(vx)).normalized();
+  LOG(BF("vy=%lf,%lf,%lf") % vy.getX() % vy.getY() % vy.getZ() );
+  this->origin = vo;
+  this->x = vx;
+  this->y = vy;
+  this->z = vz;
 }
 
 //

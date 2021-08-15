@@ -233,7 +233,7 @@ have (i) p(i)<p(j) iff r<s; and (ii) p(i)=p(j) iff r=s.
 Use the RelativePriority value of each atom to store its position in the 
 p and s arrays.
 Write the relative cip priority in the _RelativePriority slot of each atom.
-)doc");
+)doc")
 CL_LISPIFY_NAME("assignCahnIngoldPrelogPriorityToAtomsRelativePriority");
     CL_DEFMETHOD void CipPrioritizer_O::assignCahnIngoldPrelogPriorityToAtomsRelativePriority(Matter_sp molOrAgg, core::HashTable_sp cip)
 {
@@ -615,7 +615,7 @@ CL_DEFMETHOD core::HashTable_sp CipPrioritizer_O::setStereochemicalTypeForAllAto
 
 CL_DOCSTRING(R"doc(Calculate the stereochemistry for each atom in the aggregate or molecule
 from the three-dimensional structure. If only-undefined-configuration is passed T then 
-only centers with unefinedConfiguration are changed.)doc");
+only centers with unefinedConfiguration are changed.)doc")
 CL_LAMBDA(matter &key (only_undefined_configuration t));
 CL_DEFUN void chem__calculateStereochemistryFromStructure(Matter_sp matter,bool onlyUndefinedConfiguration)
 {

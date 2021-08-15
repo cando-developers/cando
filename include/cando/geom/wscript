@@ -1,24 +1,4 @@
 def build(bld):
-    for name in [
-            'boundingBox.fwd.h',
-            'boundingBox.h',
-            'color.fwd.h',
-            'color.h',
-            'coordinateArray.fwd.h',
-            'coordinateArray.h',
-            'geomPackage.fwd.h',
-            'geomPackage.h',
-            'matrix.h',
-            'omatrix.fwd.h',
-            'omatrix.h',
-            'otherPackageClasses.h',
-            'ovector2.fwd.h',
-            'ovector2.h',
-            'ovector3.fwd.h',
-            'ovector3.h',
-            'symbolTable.h',
-            'vector2.h',
-            'vector3.h',
-            'vector4.h'
-            ]:
-        bld.extensions_include_files.append(bld.path.find_node(name))
+    print("cando/adapt bld.path.ant_glob(\"*.h\") = %s" % bld.path.ant_glob("**/*.h"))
+    for name in bld.path.ant_glob("**/*.h"):
+        bld.extensions_include_files.append(name.abspath())

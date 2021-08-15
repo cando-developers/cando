@@ -72,7 +72,7 @@ void ConstitutionAtom_O::fields(core::Record_sp node)
   this->Base::fields(node);
 }  
 
-CL_DOCSTRING(R"(Build a chem:atom from this chem:constitution-atom.)");
+CL_DOCSTRING(R"(Build a chem:atom from this chem:constitution-atom.)")
 CL_DEFMETHOD Atom_sp ConstitutionAtom_O::buildAtom() const
 {
   Atom_sp atom = Atom_O::create();
@@ -115,7 +115,7 @@ void ConstitutionVirtualAtom_O::fields(core::Record_sp node)
 }  
 
 
-CL_DOCSTRING(R"(Build a chem:virtual-atom from this chem:constitution-virtual-atom.)");
+CL_DOCSTRING(R"(Build a chem:virtual-atom from this chem:constitution-virtual-atom.)")
 CL_DEFMETHOD Atom_sp ConstitutionVirtualAtom_O::buildAtom() const
 {
   VirtualAtom_sp atom = VirtualAtom_O::create(this->_AtomName,this->_CalculatePositionCode);
@@ -194,7 +194,7 @@ void ConstitutionAtoms_O::fields(core::Record_sp node)
 
 
 CL_DOCSTRING(R"doc(Return (values constitution-atom T) if the atom with NAME is found.
-If it is not found and ERRORP is NIL then return (values NIL NIL), otherwise signal an error.)doc");
+If it is not found and ERRORP is NIL then return (values NIL NIL), otherwise signal an error.)doc")
 CL_LISPIFY_NAME("atomWithName");
 CL_LAMBDA(atom-name &optional (errorp t))
 CL_DEFMETHOD     core::T_mv ConstitutionAtoms_O::atomWithName(MatterName nm, bool errorp )
@@ -237,7 +237,7 @@ CL_DEFMETHOD core::List_sp ConstitutionAtoms_O::constitutionAtomsAsList() const 
 }
 
 CL_DOCSTRING(R"(Create a chem:residue that has all the atoms/bonds and all the necessary atom/bond
-properties set properly for this chem:constitution-atoms.)");
+properties set properly for this chem:constitution-atoms.)")
 CL_DEFMETHOD     Residue_sp ConstitutionAtoms_O::buildResidue()
 {
   Residue_sp res = Residue_O::create();

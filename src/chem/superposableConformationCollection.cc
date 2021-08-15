@@ -133,7 +133,7 @@ int	SuperposableConformationCollection_O::numberOfSuperposeAtoms()
 
 
 
-CL_DOCSTRING("Create an entry if the conformation is new according to the rms deviation from existing conformations.  If a new entry is created - return it - otherwise return NIL.");
+CL_DOCSTRING(R"doc(Create an entry if the conformation is new according to the rms deviation from existing conformations.  If a new entry is created - return it - otherwise return NIL.)doc")
 CL_DEFMETHOD core::T_sp	SuperposableConformationCollection_O::createEntryIfConformationIsNew(Matter_sp matter)
 {
   geom::SimpleVectorCoordinate_sp			newConf;

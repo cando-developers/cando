@@ -98,10 +98,6 @@ public:
 		 */
 	void	defineForBond(Atom_sp a1, Atom_sp a2);
 
-		/*! Define a twister across a1-a2
-		 * Does exactly what defineForBond but works
-		 * when there isn't a bond between the atoms
-		 */
 	void	defineFixedAndMobile(Atom_sp fixed, Atom_sp mobile);
 
 

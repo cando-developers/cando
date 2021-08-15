@@ -216,7 +216,7 @@ void OMatrix_O::decode(core::List_sp c) {
   }
 }
 
-CL_DOCSTRING("Return the (values EIGEN-VALUES EIGEN-VECTOR-MATRIX) of the MATRIX.");
+CL_DOCSTRING(R"doc(Return the (values EIGEN-VALUES EIGEN-VECTOR-MATRIX) of the MATRIX.)doc")
 CL_DEFUN core::T_mv geom__eigen_system(OMatrix_sp matrix)
 {
   Vector4 evals;
@@ -232,7 +232,7 @@ CL_DEFUN core::T_mv geom__eigen_system(OMatrix_sp matrix)
 };
 
 
-CL_DOCSTRING("Convert a homogeneous matrix into a quaternion/translation. This takes the matrix and returns seven numbers, the w,x,y,z,tx,ty,tz where w,x,y,z are the quaternion and the tx,ty,tz is the translation.");
+CL_DOCSTRING(R"doc(Convert a homogeneous matrix into a quaternion/translation. This takes the matrix and returns seven numbers, the w,x,y,z,tx,ty,tz where w,x,y,z are the quaternion and the tx,ty,tz is the translation.)doc")
 CL_DEFUN core::T_mv geom__matrix_to_quaternion_translation(OMatrix_sp om)
 {
   Matrix& m = om->_Value;
@@ -251,7 +251,7 @@ CL_DEFUN core::T_mv geom__matrix_to_quaternion_translation(OMatrix_sp om)
 };
 
 
-CL_DOCSTRING("Set the matrix from a quaternion/translation - a set of seven numbers qw,qx,qy,qz,tx,ty,tz");
+CL_DOCSTRING(R"doc(Set the matrix from a quaternion/translation - a set of seven numbers qw,qx,qy,qz,tx,ty,tz)doc")
 CL_DEFMETHOD void OMatrix_O::set_from_quaternion(double qw, double qx, double qy, double qz, double tx, double ty, double tz) {
   quaternion_to_matrix(this->_Value,qw,qx,qy,qz,tx,ty,tz);
 }

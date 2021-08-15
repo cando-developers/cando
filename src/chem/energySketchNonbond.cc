@@ -266,7 +266,7 @@ void EnergySketchNonbond_O::setLongDistanceCutoff(float cutoff) {
 CL_DOCSTRING(R"doc(Invoke a callback for every term in the energy-sketch-nonbond.
 The callback takes the lambda-list (index atom1 atom2 atom1-index*3 atom2-index*3 constant).
 Constant is a single-float to avoid consing.
-Use the modify-sketch-nonbond-constant to modify the parameter.)doc");
+Use the modify-sketch-nonbond-constant to modify the parameter.)doc")
 CL_DEFMETHOD void EnergySketchNonbond_O::walkSketchNonbondTerms(core::T_sp callback)
 {
   for (size_t i=0;i<this->_Terms.size();++i) {

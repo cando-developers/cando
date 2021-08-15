@@ -1,24 +1,4 @@
 def build(bld):
-    for name in [
-            'adaptPackage.fwd.h',
-            'adaptPackage.h',
-            'adapters.h',
-            'indexedObjectBag.h',
-            'iterateCons.fwd.h',
-            'iterateCons.h',
-            'mySaxInterface.h',
-            'objectSet.fwd.h',
-            'objectSet.h',
-            'quickDom.fwd.h',
-            'quickDom.h',
-            'stringList.fwd.h',
-            'stringList.h',
-            'stringSet.fwd.h',
-            'stringSet.h',
-            'symbolList.fwd.h',
-            'symbolList.h',
-            'symbolMap.h',
-            'symbolSet.fwd.h',
-            'symbolSet.h'
-            ]:
-        bld.extensions_include_files.append(bld.path.find_node(name))
+    print("cando/adapt bld.path.ant_glob(\"*.h\") = %s" % bld.path.ant_glob("**/*.h"))
+    for name in bld.path.ant_glob("**/*.h"):
+        bld.extensions_include_files.append(name.abspath())

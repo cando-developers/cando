@@ -102,7 +102,7 @@ CL_DEFUN core::Symbol_sp chem__canonicalStretchKey(core::Symbol_sp type1, core::
 }
 
 CL_LISPIFY_NAME("findTerm");
-CL_DOCSTRING("Return the stretch term or NIL if none was found");
+CL_DOCSTRING(R"doc(Return the stretch term or NIL if none was found)doc")
 CL_DEFMETHOD core::T_sp	FFStretchDb_O::findTerm(chem::Atom_sp a1, chem::Atom_sp a2)
 {
   FFStretch_sp	match;

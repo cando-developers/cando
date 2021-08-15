@@ -1196,7 +1196,7 @@ CL_DEFMETHOD void EnergyNonbond_O::constructNonbondTermsFromAList(core::List_sp 
 
 CL_DOCSTRING(R"doc(These are the nonbond terms as they are read from the topology file.
 The AMBER charge conversion of 18.2223 has been divided out of the charge values.
-The results of this call should be able to be passed to EnergyNonbond_O::constructNonbondTermsFromAList.)doc");
+The results of this call should be able to be passed to EnergyNonbond_O::constructNonbondTermsFromAList.)doc")
 CL_DEFMETHOD core::List_sp EnergyNonbond_O::nonbondTermsAsAList()
 {
   ql::list result;

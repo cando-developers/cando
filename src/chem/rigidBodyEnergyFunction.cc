@@ -97,7 +97,7 @@ void RigidBodyEnergyFunction_O::fields(core::Record_sp node)
 }
 
 
-CL_DOCSTRING(R"doc(Return the bounding-box for the atom-table.)doc");
+CL_DOCSTRING(R"doc(Return the bounding-box for the atom-table.)doc")
 CL_LISPIFY_NAME(rigidBodyEnergyFunction-bounding-box);
 CL_DEFMETHOD BoundingBox_sp RigidBodyEnergyFunction_O::boundingBox() const
 {
@@ -107,20 +107,20 @@ CL_DEFMETHOD BoundingBox_sp RigidBodyEnergyFunction_O::boundingBox() const
   SIMPLE_ERROR(BF("The bounding-box slot is unbound"));
 }
 
-CL_DOCSTRING(R"doc(Return T if the bounding-box is bound)doc");
+CL_DOCSTRING(R"doc(Return T if the bounding-box is bound)doc")
 CL_LISPIFY_NAME(rigidBodyEnergyFunction-bounding-box-bound-p);
 CL_DEFMETHOD bool RigidBodyEnergyFunction_O::boundingBoxBoundP() const
 {
   return this->_BoundingBox.boundp();
 }
 
-CL_DOCSTRING(R"doc(Set the bounding-box)doc");
+CL_DOCSTRING(R"doc(Set the bounding-box)doc")
 CL_LISPIFY_NAME(rigidBodyEnergyFunction-set-bounding-box);
 CL_DEFMETHOD void RigidBodyEnergyFunction_O::setBoundingBox(BoundingBox_sp boundingBox) {
   this->_BoundingBox = boundingBox;
 }
 
-CL_DOCSTRING(R"doc(Make the bounding-box unbound)doc");
+CL_DOCSTRING(R"doc(Make the bounding-box unbound)doc")
 CL_LISPIFY_NAME(rigidBodyEnergyFunction-mak-unbound-bounding-box);
 CL_DEFMETHOD void RigidBodyEnergyFunction_O::makUnboundBoundingBox() {
   this->_BoundingBox = unbound<BoundingBox_O>();
@@ -354,7 +354,7 @@ void RigidBodyEnergyFunction_O::dumpTerms()
 CL_DOCSTRING(R"doc(Like velocity-verlet-step but limits displacement of rigid body quaternions and centers using the limit_displacement vector.
 Return the number of rigid bodies whose displacement was limited.  The limit_displacement nvector contains seven double precision values, 
 the a,b,c,d quaternion and x,y,z displacements.  The quaternion displacement idea is experimental.  I'm not sure how it will
-effect the dynamics.)doc");
+effect the dynamics.)doc")
 CL_LISPIFY_NAME("rigid-body-velocity-verlet-step-limit-displacement");
 CL_DEFUN size_t chem__rigid_body_velocity_verlet_step_limit_displacement(ScoringFunction_sp scoringFunc,
                                                                          NVector_sp position,

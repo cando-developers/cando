@@ -232,13 +232,13 @@ CL_DEFMETHOD void Matter_O::clearProperty(core::Symbol_sp symbol)
   this->_Properties = core::core__rem_f(this->_Properties,symbol);
 }
 
-CL_DOCSTRING("Set the property **symbol** of **this** (a chem:matter) to **value**.");
+CL_DOCSTRING(R"doc(Set the property **symbol** of **this** (a chem:matter) to **value**.)doc")
 CL_DEFMETHOD void Matter_O::setProperty(core::Symbol_sp symbol, core::T_sp value)
 {
   this->_Properties = core::core__put_f(this->_Properties,value,symbol);
 }
 
-CL_DOCSTRING("Set the property **symbol** of **this** (a chem:matter) to T.");
+CL_DOCSTRING(R"doc(Set the property **symbol** of **this** (a chem:matter) to T.)doc")
 CL_LISPIFY_NAME("setPropertyTrue");
 CL_DEFMETHOD void Matter_O::setPropertyTrue(core::Symbol_sp symbol)
 {
@@ -246,7 +246,7 @@ CL_DEFMETHOD void Matter_O::setPropertyTrue(core::Symbol_sp symbol)
 }
 
 
-CL_DOCSTRING("Return the property **symbol** of **this** (a chem:matter) - if it isn't defined return NIL.");
+CL_DOCSTRING(R"doc(Return the property **symbol** of **this** (a chem:matter) - if it isn't defined return NIL.)doc")
 CL_LISPIFY_NAME("Matter-getProperty");
 CL_DEFMETHOD core::T_sp Matter_O::getProperty(core::Symbol_sp symbol)
 {
@@ -259,14 +259,14 @@ CL_DEFMETHOD core::T_sp Matter_O::getProperty(core::Symbol_sp symbol)
   return res;
 }
 
-CL_DOCSTRING("Return the property **symbol** of **this** (a chem:matter) - if it isn't defined return **defval**.");
+CL_DOCSTRING(R"doc(Return the property **symbol** of **this** (a chem:matter) - if it isn't defined return **defval**.)doc")
 CL_LISPIFY_NAME("Matter-getPropertyOrDefault");
 CL_DEFMETHOD core::T_sp Matter_O::getPropertyOrDefault(core::Symbol_sp prop,core::T_sp defval)
 {
   return core::cl__getf(this->_Properties,prop,defval);
 }
 
-CL_DOCSTRING("Return T if the property **symbol** of **this** (a chem:matter) is defined.");
+CL_DOCSTRING(R"doc(Return T if the property **symbol** of **this** (a chem:matter) is defined.)doc")
 CL_LISPIFY_NAME("hasProperty");
 CL_DEFMETHOD bool Matter_O::hasProperty(core::Symbol_sp symbol)
 {
@@ -812,7 +812,7 @@ CL_DEFMETHOD Vector3	Matter_O::geometricCenter()
 }
 
 
-CL_DOCSTRING(R"doc(Return the moment of inertia tensor where the masses of atoms are all identical. Return (values moment-of-inertia-matrix center-of-geometry))doc");
+CL_DOCSTRING(R"doc(Return the moment of inertia tensor where the masses of atoms are all identical. Return (values moment-of-inertia-matrix center-of-geometry))doc")
 CL_LISPIFY_NAME("momentOfInertiaTensor");
 CL_DEFMETHOD core::T_mv	Matter_O::momentOfInertiaTensor()
 {_OF();
@@ -864,7 +864,7 @@ CL_DEFMETHOD core::T_mv	Matter_O::momentOfInertiaTensor()
   return Values(mm,geom::OVector3_O::createFromVector3(center));
 }
 
-CL_DOCSTRING(R"doc(Return the principle moments of inertia tensor where the masses of atoms are all identical. Return (values eigen-values eigen-vector-matrix center-of-geometry))doc");
+CL_DOCSTRING(R"doc(Return the principle moments of inertia tensor where the masses of atoms are all identical. Return (values eigen-values eigen-vector-matrix center-of-geometry))doc")
 CL_LISPIFY_NAME("momentOfGeometry");
 CL_DEFMETHOD core::T_mv	Matter_O::momentOfGeometry()
 {_OF();
