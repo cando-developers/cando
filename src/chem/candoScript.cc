@@ -977,9 +977,9 @@ CL_DEFUN core::T_sp chem__calculate_point()
     LOG(BF(" distance(%lf)  distancePoint(%s)") % distance % posDistanceAtom.asString().c_str()  );
     LOG(BF(" angleDegrees(%lf)  anglePoint(%s)") % angleDegrees % posAngleAtom.asString().c_str()  );
     LOG(BF(" dihedralDegrees(%lf)  dihedralPoint(%s)") % dihedralDegrees % posDihedralAtom.asString().c_str()  );
-    pnt = buildUsingBondAngleDihedral(distance,posDistanceAtom,
-				      angleDegrees*0.0174533,posAngleAtom,
-				      dihedralDegrees*0.0174533,posDihedralAtom);
+    pnt = geom::geom__build_using_bond_angle_dihedral(distance,posDistanceAtom,
+                                                      angleDegrees*0.0174533,posAngleAtom,
+                                                      dihedralDegrees*0.0174533,posDihedralAtom);
     LOG(BF("Generated point: %s") % pnt.asString().c_str()  );
     return geom::OVector3_O::createFromVector3(lisp,pnt);
 #endif

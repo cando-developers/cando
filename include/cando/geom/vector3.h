@@ -151,12 +151,12 @@ namespace geom {
                                    const Vector3& vb );
   double	calculateDistanceSquared( const Vector3& va,
                                           const Vector3& vb);
-  Vector3	buildOrigin();
-  Vector3	buildUsingBond( double distance, const Vector3& vb );
+Vector3	geom__build_origin();
+  Vector3	geom__build_using_bond( double distance, const Vector3& vb );
 //! Build a vector at distance from vb and angle from v
-  Vector3 buildUsingBondAngle( double distance, const Vector3& vb,
+  Vector3 geom__build_using_bond_angle( double distance, const Vector3& vb,
                                double angleRad, const Vector3& va );
-  Vector3 buildUsingBondAngleDihedral( double distance, const Vector3& vc,
+  Vector3 geom__build_using_bond_angle_dihedral( double distance, const Vector3& vc,
                                        double angleRad, const Vector3& vb,
                                        double dihedralRad, const Vector3& va );
 

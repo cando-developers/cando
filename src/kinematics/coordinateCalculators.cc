@@ -77,7 +77,7 @@ void bond_to_external(Joint_sp joint) {
 #if 0
   BondedJoint_sp bjoint = gc::As_unsafe<BondedJoint_sp>(joint);
   Joint_sp bondJoint = joint->_Parent;
-  Vector3 tempPos = geom::buildUsingBond(bjoint->_Distance,bondJoint->_Position);
+  Vector3 tempPos = geom::geom__build_using_bond(bjoint->_Distance,bondJoint->_Position);
   // Apply the transform from the bondJoint atom to the tempPos.
   if (!bondJoint->isJump()) {
     SIMPLE_ERROR(BF("bondJoint must be a JumpJoint_sp %s") % _rep_(bondJoint));
@@ -104,7 +104,7 @@ void bond_angle_to_external(Joint_sp joint) {
   BondedJoint_sp bjoint = gc::As_unsafe<BondedJoint_sp>(joint);
   Joint_sp bondJoint = joint->_Parent;
   Joint_sp angleJoint = bondJoint->_Parent;
-  Vector3 tempPos = geom::buildUsingBondAngle(bjoint->_Distance,bondJoint->_Position,
+  Vector3 tempPos = geom::geom__build_using_bond_angle(bjoint->_Distance,bondJoint->_Position,
                                               bjoint->_Theta,angleJoint->_Position);
   // Apply the transform from the angleJoint atom to the tempPos.
   if (!angleJoint->isJump()) {
@@ -132,9 +132,9 @@ void bond_angle_dihedral_to_external(Joint_sp joint) {
   Joint_sp bondJoint = joint->_Parent;
   Joint_sp angleJoint = bondJoint->_Parent;
   Joint_sp dihedralJoint = angleJoint->_Parent;
-  joint->_Position = geom::buildUsingBondAngleDihedral(bjoint->_Distance,bondJoint->_Position,
-                                                       bjoint->_Theta,angleJoint->_Position,
-                                                       bjoint->_Phi,dihedralJoint->_Position);
+  joint->_Position = geom::geom__build_using_bond_angle_dihedral(bjoint->_Distance,bondJoint->_Position,
+                                                                 bjoint->_Theta,angleJoint->_Position,
+                                                                 bjoint->_Phi,dihedralJoint->_Position);
 };
 
 
@@ -177,9 +177,9 @@ void general_to_external(Joint_sp joint) {
     return;
   }
   Joint_sp dihedralJoint = angleJoint->_Parent;
-  joint->_Position = geom::buildUsingBondAngleDihedral(bjoint->_Distance,bondJoint->_Position,
-                                                       bjoint->_Theta,angleJoint->_Position,
-                                                       bjoint->_Phi,dihedralJoint->_Position);
+  joint->_Position = geom::geom__build_using_bond_angle_dihedral(bjoint->_Distance,bondJoint->_Position,
+                                                                bjoint->_Theta,angleJoint->_Position,
+                                                                bjoint->_Phi,dihedralJoint->_Position);
 }
 
 

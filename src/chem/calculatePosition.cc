@@ -132,9 +132,9 @@ void	CalculatePositionUsingInternals_O::initialize()
     LOG(BF(" distance(%lf)  distancePoint(%s)") % this->_Distance % posDistanceAtom.asString().c_str()  );
     LOG(BF(" angleDegrees(%lf)  anglePoint(%s)") % this->_AngleDegrees % posAngleAtom.asString().c_str()  );
     LOG(BF(" dihedralDegrees(%lf)  dihedralPoint(%s)") % this->_DihedralDegrees % posDihedralAtom.asString().c_str()  );
-    pnt = geom::buildUsingBondAngleDihedral(this->_Distance,posDistanceAtom,
-			this->_AngleDegrees*0.0174533,posAngleAtom,
-				      this->_DihedralDegrees*0.0174533,posDihedralAtom);
+    pnt = geom::geom__build_using_bond_angle_dihedral(this->_Distance,posDistanceAtom,
+                                                      this->_AngleDegrees*0.0174533,posAngleAtom,
+                                                      this->_DihedralDegrees*0.0174533,posDihedralAtom);
     LOG(BF("Generated point: %s") % pnt.asString().c_str()  );
     return pnt;
 }

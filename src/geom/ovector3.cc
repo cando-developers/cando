@@ -211,14 +211,14 @@ CL_DEFMETHOD double	OVector3_O::distance( const Vector3& vb )
 CL_LISPIFY_NAME("v_setUsingBond");
 CL_DEFMETHOD void OVector3_O::setUsingBond(double distance, OVector3_sp v)
 {
-  this->_Value = buildUsingBond(distance,v->_Value);
+  this->_Value = geom::geom__build_using_bond(distance,v->_Value);
 }
 
 CL_LISPIFY_NAME("v_setUsingBondAngle");
 CL_DEFMETHOD void OVector3_O::setUsingBondAngle(double bond, OVector3_sp bondPos,
                                      double angle, OVector3_sp anglePos)
 {
-  this->_Value = buildUsingBondAngle(bond,bondPos->_Value,angle,anglePos->_Value);
+  this->_Value = geom::geom__build_using_bond_angle(bond,bondPos->_Value,angle,anglePos->_Value);
 }
 
 CL_LISPIFY_NAME("v_setUsingBondAngleDihedral");
@@ -226,10 +226,10 @@ CL_DEFMETHOD void OVector3_O::setUsingBondAngleDihedral(double bond, OVector3_sp
                                              double angle, OVector3_sp anglePos,
                                              double dihedral, OVector3_sp dihedralPos)
 {
-  this->_Value = buildUsingBondAngleDihedral(bond,bondPos->_Value,
-                                                      angle,anglePos->_Value,
-                                                      dihedral,dihedralPos->_Value
-                                                      );
+  this->_Value = geom::geom__build_using_bond_angle_dihedral(bond,bondPos->_Value,
+                                                       angle,anglePos->_Value,
+                                                       dihedral,dihedralPos->_Value
+                                                       );
 }
 
 void OVector3_O::fields(core::Record_sp node)
