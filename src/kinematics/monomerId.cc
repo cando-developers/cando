@@ -46,6 +46,7 @@ string MonomerId::asString() const
 }
 
 
+DOCGROUP(cando)
 CL_DEFUN void kin__dumpMonomerId(const kinematics::MonomerId& id) {
   core::write_bf_stream(BF("MonomerId %lu %lu\n") % id._Chain % id._Monomer );
 }

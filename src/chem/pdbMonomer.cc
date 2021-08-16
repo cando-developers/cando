@@ -145,6 +145,7 @@ struct FormulaMonomerRec
 
 
 
+DOCGROUP(cando)
 CL_DEFUN PdbMonomerDatabase_sp chem__readPdbMonomerConnectivityDatabase(const string& fileName)
     {
 	char buffer[1024];

@@ -65,6 +65,7 @@ SYMBOL_EXPORT_SC_(ChemKwPkg,singleHashEnd);
 
 string	XmlName_Bond = "bond";
 
+DOCGROUP(cando)
 CL_DEFUN bool chem__single_bond_p(chem::BondOrder o)
 {
   return Bond_O::singleBondP(o);

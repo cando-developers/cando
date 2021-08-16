@@ -63,6 +63,7 @@ CL_DEFMETHOD void IndexedObjectBag_O::remove_entry(Fixnum index)
 #define ARGS_chem__makeIndexedObjectBag "()"
 #define DECL_chem__makeIndexedObjectBag ""
 #define DOCS_chem__makeIndexedObjectBag "makeIndexedObjectBag"
+DOCGROUP(cando)
 CL_DEFUN IndexedObjectBag_sp chem__makeIndexedObjectBag()
 {
   IndexedObjectBag_sp obj = IndexedObjectBag_O::create();

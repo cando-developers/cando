@@ -68,7 +68,8 @@ namespace chem
     ConstitutionBond_O() {};
   };
 
-  CL_DEFUN inline ConstitutionBond_sp makeConstitutionBond(chem::ConstitutionAtomIndex0N index, chem::BondOrder order) {
+  DOCGROUP(cando)
+    CL_DEFUN inline ConstitutionBond_sp makeConstitutionBond(chem::ConstitutionAtomIndex0N index, chem::BondOrder order) {
     // Allocate a ConstitutionBond_O
     return gctools::GC<ConstitutionBond_O>::allocate(index,order);
   }
@@ -109,7 +110,8 @@ It stores the atom name, element, properties and a vector of bonds in the form o
   };
 
   // Put the namespace in front of the types - otherwise there will be problems with the wrappers
-CL_DEFUN inline ConstitutionAtom_sp makeConstitutionAtom(chem::MatterName uniqueAtomName, chem::Element element, core::T_sp atomType, size_t index, chem::StereochemistryType stereochemistry_type, core::List_sp properties) {
+  DOCGROUP(cando)
+    CL_DEFUN inline ConstitutionAtom_sp makeConstitutionAtom(chem::MatterName uniqueAtomName, chem::Element element, core::T_sp atomType, size_t index, chem::StereochemistryType stereochemistry_type, core::List_sp properties) {
   core::List_sp copy_prop = core::cl__copy_list(properties);
   return gctools::GC<ConstitutionAtom_O>::allocate(uniqueAtomName,element,atomType,index,stereochemistry_type,copy_prop);
 }
@@ -132,7 +134,8 @@ CL_DEFUN inline ConstitutionAtom_sp makeConstitutionAtom(chem::MatterName unique
   };
 
   // Put the namespace in front of the types - otherwise there will be problems with the wrappers
-  CL_DEFUN inline ConstitutionVirtualAtom_sp makeConstitutionVirtualAtom(core::Symbol_sp atomName, chem::Element element, size_t index, chem::StereochemistryType stereochemistry_type, core::List_sp properties, chem::CalculatePosition_sp calcPos) {
+  DOCGROUP(cando)
+    CL_DEFUN inline ConstitutionVirtualAtom_sp makeConstitutionVirtualAtom(core::Symbol_sp atomName, chem::Element element, size_t index, chem::StereochemistryType stereochemistry_type, core::List_sp properties, chem::CalculatePosition_sp calcPos) {
     return gctools::GC<ConstitutionVirtualAtom_O>::allocate(atomName,element,index,stereochemistry_type,properties,calcPos);
   }
 
@@ -186,7 +189,8 @@ the chem:constitution-atom(s) can be accessed using integer indices.)");
     DEFAULT_CTOR_DTOR(ConstitutionAtoms_O);
   };
 
-  CL_DEFUN inline ConstitutionAtoms_sp makeConstitutionAtoms() {
+  DOCGROUP(cando)
+    CL_DEFUN inline ConstitutionAtoms_sp makeConstitutionAtoms() {
     return gctools::GC<ConstitutionAtoms_O>::allocate();
   }
 };

@@ -373,12 +373,14 @@ Aggregate_sp PdbReader_O::loadPdbConnectAtoms(core::T_sp fileName)
 
     
     
+DOCGROUP(cando)
 CL_DEFUN core::T_sp chem__simple_load_pdb(core::String_sp fileName)
 {
   Aggregate_sp agg = PdbReader_O::loadPdbConnectAtoms(fileName);
   return agg;
 }
 
+DOCGROUP(cando)
 CL_DEFUN core::T_sp chem__load_pdb_from_stream(core::T_sp stream)
 {
   Aggregate_sp agg = PdbReader_O::loadPdbFromStreamConnectAtoms(stream);
@@ -612,6 +614,7 @@ CL_DEFMETHOD     void PdbWriter_O::close()
 }
 
 CL_LISPIFY_NAME(save-pdb);
+DOCGROUP(cando)
 CL_DEFUN void	PdbWriter_O::savePdb(Matter_sp matter, core::T_sp fileName )
 {
   PdbWriter_sp writer = PdbWriter_O::create();

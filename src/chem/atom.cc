@@ -121,6 +121,7 @@ void AnchorRestraint::archive( core::ArchiveP node )
 
 
 CL_LISPIFY_NAME(make-atom);
+DOCGROUP(cando)
 CL_DEFUN Atom_sp Atom_O::make(core::Symbol_sp name, chem::Element element)
 {
   auto atom = gctools::GC<Atom_O>::allocate_with_default_constructor();
@@ -867,6 +868,7 @@ float Atom_O::distanceSquaredToAtom(Atom_sp other)
 
 CL_DOCSTRING(R"dx(Return the distance squared between two atoms)dx")
 CL_DOCSTRING_LONG(R"dx(This provides a way to compare atom positions without allocating memory.)dx")
+DOCGROUP(cando)
 CL_DEFUN
 float chem__distance_squared_between_two_atoms(Atom_sp atom1, Atom_sp atom2)
 {

@@ -1106,6 +1106,7 @@ void ChemDraw_O::fields(core::Record_sp node)
 CL_LISPIFY_NAME(make-chem-draw);
 CL_LAMBDA(file-name &optional verbose (add-hydrogens t))
 CL_DOCSTRING(R"dx(Make a chem:chem-draw object from a string.  If verbose is T then print info to *standard-output*.)dx")
+DOCGROUP(cando)
 CL_DEFUN ChemDraw_sp ChemDraw_O::make(core::T_sp stream, bool verbose, bool addHydrogens)
 {
   auto  me  = gctools::GC<ChemDraw_O>::allocate_with_default_constructor();

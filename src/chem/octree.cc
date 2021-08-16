@@ -2251,6 +2251,7 @@ core::T_sp AddIonOctree_O::rOctreeCheckSolvent( /*AddIonOctree_sp octTree,*/ Vec
 
 
 CL_DOCSTRING(R"dx(Find the closest atom in the oct-tree. Return the (values atom residue molecule) of the closest atom.)dx")
+DOCGROUP(cando)
 CL_DEFUN
 core::T_mv chem__oct_tree_find_closest_atom(AddIonOctree_sp oct_tree, const Vector3& point )
 {
@@ -2446,6 +2447,7 @@ void GenericOctree_O::getPointsWithinCutoffNoTransform(double cutoff_squared, do
 
 CL_LISPIFY_NAME(generic-octree-get-points-within-cutoff);
 CL_LAMBDA(octree cutoff query-data query-point results &key (bounding-box nil bounding-box-p) (octree-transform nil octree-transform-p))
+DOCGROUP(cando)
 CL_DEFUN void chem__generic_octree_get_points_within_cutoff(GenericOctree_sp octree, double cutoff, core::T_sp query_data, const Vector3& querypoint, core::ComplexVector_sp results, core::T_sp bounding_box, bool bounding_box_p, core::T_sp octree_transform, bool octree_transform_p) {
   if (bounding_box_p) {
     if (!gc::IsA<BoundingBox_sp>(bounding_box)) {

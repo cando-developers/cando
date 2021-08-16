@@ -46,6 +46,7 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace chem {
 
 
+DOCGROUP(cando)
 CL_DEFUN ReadAmberParameters_sp chem__make_read_amber_parameters()
 {
   return ReadAmberParameters_O::create();

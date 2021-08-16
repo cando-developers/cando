@@ -129,6 +129,7 @@ CL_DEFMETHOD Atom_sp ConstitutionVirtualAtom_O::buildAtom() const
 
 CL_LISPIFY_NAME(makeConstitutionAtomsFromResidue);
 CL_LAMBDA(residue &optional verbose)
+DOCGROUP(cando)
 CL_DEFUN ConstitutionAtoms_sp ConstitutionAtoms_O::makeConstitutionAtomsFromResidue(Residue_sp residue, bool verbose)
 {
   residue->ensureAllAtomNamesAreUnique();

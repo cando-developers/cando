@@ -160,6 +160,7 @@ CL_DEFMETHOD     bool	IterateMatter_O::advance()
 #define ARGS_chem__create_for_matter "(matter)"
 #define DECL_chem__create_for_matter ""
 #define DOCS_chem__create_for_matter "createForMatter"
+DOCGROUP(cando)
 CL_DEFUN core::T_sp chem__create_for_matter(Matter_sp matter)
     {
       auto  ia  = gctools::GC<IterateAtoms_O>::allocate_with_default_constructor();
@@ -216,6 +217,7 @@ CL_DEFUN core::T_sp chem__create_for_matter(Matter_sp matter)
 #define DECL_IterateResidues_O_createForMatter ""
 #define DOCS_IterateResidues_O_createForMatter "IterateResidues_O_createForMatter"
 CL_LISPIFY_NAME(residues);
+DOCGROUP(cando)
 CL_DEFUN core::T_sp IterateResidues_O::createForMatter(Matter_sp matter)
     {
 	return IterateResidues_O::create(matter);
@@ -231,6 +233,7 @@ CL_DEFUN core::T_sp IterateResidues_O::createForMatter(Matter_sp matter)
 
 
 CL_LISPIFY_NAME(bonds);
+DOCGROUP(cando)
 CL_DEFUN IterateBonds_sp IterateBonds_O::make(Matter_sp top)
 {
   auto  ia  = gctools::GC<IterateBonds_O>::allocate_with_default_constructor();

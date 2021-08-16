@@ -189,6 +189,7 @@ size_t calculate_max_tags(ChemInfoNode_sp node) {
 
 
 
+DOCGROUP(cando)
 CL_DEFUN void chem__walk_chem_info_with_parent(ChemInfoNode_sp top, core::T_sp callback)
 {
   walk_nodes_with_parent(nil<core::T_O>(),top,
@@ -910,6 +911,7 @@ bool _matchInAromaticBond(Atom_sp a1, Atom_sp a2) {
   return false;
 }
 
+DOCGROUP(cando)
 CL_DEFUN bool chem__in_aromatic_bond(Atom_sp a1, Atom_sp a2)
 {
   core::write_bf_stream(BF("chem__in_aromatic_bond a1=%s a2=%s\n") % _rep_(a1) % _rep_(a2));
@@ -1337,6 +1339,7 @@ bool AtomTest_O::matches_Bond(Root_sp root, chem::Atom_sp from, chem::Bond_sp bo
   return true; // this->Base::matches_Bond(root,from,bond);
 }
 
+DOCGROUP(cando)
 CL_DEFUN bool am1BccX(chem::Atom_sp atom) {
   _OF();
   Element el = atom->getElement();
@@ -1359,6 +1362,7 @@ CL_DEFUN bool am1BccX(chem::Atom_sp atom) {
   return false;
 }
 
+DOCGROUP(cando)
 CL_DEFUN bool am1BccY(chem::Atom_sp atom) {
   _OF();
   Element el = atom->getElement();
@@ -2445,6 +2449,7 @@ CL_DEFMETHOD core::HashTableEql_sp ChemInfoMatch_O::tags_as_hashtable() const {
 };
 
 CL_LAMBDA(code &key tests)
+DOCGROUP(cando)
 CL_DEFUN SmartsRoot_sp chem__compile_smarts(const string& code, core::List_sp tests) {
 //  printf("%s:%d:%s code: %s\n", __FILE__, __LINE__, __FUNCTION__, code.c_str());
   core::SimpleBaseString_sp scode = core::SimpleBaseString_O::make(code);
@@ -2463,6 +2468,7 @@ CL_DEFUN SmartsRoot_sp chem__compile_smarts(const string& code, core::List_sp te
 
 
 CL_LAMBDA(code &key tests)
+DOCGROUP(cando)
 CL_DEFUN Smirks_sp chem__compile_smirks(const string& code, core::List_sp tests) {
   core::SimpleBaseString_sp scode = core::SimpleBaseString_O::make(code);
   core::T_mv nodes = core::eval::funcall(_sym_parse_smirks,scode);
@@ -2482,6 +2488,7 @@ CL_DEFUN Smirks_sp chem__compile_smirks(const string& code, core::List_sp tests)
 }
 
 
+DOCGROUP(cando)
 CL_DEFUN AntechamberRoot_mv chem__compile_antechamber(const string& code, WildElementDict_sp dict) {
   if (!chem::_sym_compile_antechamber_type_rule->fboundp()) {
     SIMPLE_ERROR(BF("chem:compile-antechamber-type-rule is not fbound"));
@@ -2500,6 +2507,7 @@ CL_DEFUN AntechamberRoot_mv chem__compile_antechamber(const string& code, WildEl
   return Values(root,type);
 }
 
+DOCGROUP(cando)
 CL_DEFUN core::T_mv chem__chem_info_match(Root_sp testRoot, Atom_sp atom)
 {
   core::HashTableEql_sp ringHashTable = core::HashTableEql_O::create_default();
@@ -2511,6 +2519,7 @@ CL_DEFUN core::T_mv chem__chem_info_match(Root_sp testRoot, Atom_sp atom)
   return Values(_lisp->_boolean(matches), current_match);
 }
 
+DOCGROUP(cando)
 CL_DEFUN core::T_sp chem__matches(Root_sp testRoot, Atom_sp atom)
 {
   core::T_mv matches_mv = chem__chem_info_match(testRoot,atom);
@@ -2520,6 +2529,7 @@ CL_DEFUN core::T_sp chem__matches(Root_sp testRoot, Atom_sp atom)
   return nil<core::T_O>();
 }
 
+DOCGROUP(cando)
 CL_DEFUN core::T_sp chem__chem_info_node_children(ChemInfoNode_sp node) {
   return node->children();
 }
@@ -2773,6 +2783,7 @@ void MoleculeGraph_O::initialize() {
   this->_nodes = core::ComplexVector_T_O::make(64,nil<core::T_O>(),core::make_fixnum(0));
 }
 
+DOCGROUP(cando)
 CL_DEFUN MoleculeGraph_sp chem__make_molecule_graph() {
   auto graph = gctools::GC<MoleculeGraph_O>::allocate_with_default_constructor();
   graph->_moleculeGraph = new MoleculeGraphType();
@@ -2780,6 +2791,7 @@ CL_DEFUN MoleculeGraph_sp chem__make_molecule_graph() {
 }
 
 CL_LAMBDA(matter &optional (exclude_hydrogens nil))
+DOCGROUP(cando)
 CL_DEFUN MoleculeGraph_sp chem__make_molecule_graph_from_molecule(Molecule_sp matter, bool exclude_hydrogens) {
   auto graph = gctools::GC<MoleculeGraph_O>::allocate(matter);
   Loop lMol;
@@ -2817,6 +2829,7 @@ CL_DEFUN MoleculeGraph_sp chem__make_molecule_graph_from_molecule(Molecule_sp ma
   return graph;
 }
 
+DOCGROUP(cando)
 CL_DEFUN void chem__molecule_graph_dump(MoleculeGraph_sp graph) {
   core::write_bf_stream(BF("Number of vertices: %d\n") % num_vertices(*graph->_moleculeGraph) );
   core::write_bf_stream(BF("Number of edges: %d\n") % num_edges(*graph->_moleculeGraph) );
@@ -2851,6 +2864,7 @@ void ChemInfoGraph_O::initialize()
 
 
 CL_DOCSTRING(R"dx(Make a chem:chem-info-graph from a chem:root object)dx")
+DOCGROUP(cando)
 CL_DEFUN ChemInfoGraph_sp chem__make_chem_info_graph(Root_sp pattern)
 {
   auto graph = gctools::GC<ChemInfoGraph_O>::allocate(pattern);
@@ -3076,6 +3090,7 @@ void ChemInfoGraph_O::buildFromRoot_() {
   }
 }
 
+DOCGROUP(cando)
 CL_DEFUN void chem__chem_info_graph_dump(ChemInfoGraph_sp graph) {
   core::write_bf_stream(BF("Number of vertices: %d\n") % num_vertices(*graph->_chemInfoGraph) );
   core::write_bf_stream(BF("Number of edges: %d\n") % num_edges(*graph->_chemInfoGraph) );
@@ -3227,7 +3242,8 @@ CL_DEFUN void chem__chem_info_graph_dump(ChemInfoGraph_sp graph) {
 #endif
 
 
-  CL_DEFUN core::List_sp chem__boost_graph_vf2(ChemInfoGraph_sp chemInfoGraph, MoleculeGraph_sp moleculeGraph ) {
+DOCGROUP(cando)
+CL_DEFUN core::List_sp chem__boost_graph_vf2(ChemInfoGraph_sp chemInfoGraph, MoleculeGraph_sp moleculeGraph ) {
   if (boost::num_vertices(*chemInfoGraph->_chemInfoGraph)>boost::num_vertices(*moleculeGraph->_moleculeGraph)) {
       return nil<core::T_O>();
     }
@@ -3349,6 +3365,7 @@ The **vertex-matcher** argument is a lambda that takes two atoms and returns T i
 The **match-callback** argument is a lambda that takes three arguments (RESULTS GRAPH1 GRAPH2) and its return value is ignored.
 Edges are matched using bond orders.)dx")
 CL_LAMBDA(molecule-graph1 molecule-graph2 only-connected-subgraphs vertex-matcher match-callback &optional (maximum-callbacks 1000))
+DOCGROUP(cando)
 CL_DEFUN core::List_sp chem__boost_graph_mcgregor_common_subgraphs(MoleculeGraph_sp moleculeGraph1,
                                                                    MoleculeGraph_sp moleculeGraph2,
                                                                    bool only_connected_subgraphs,
@@ -3376,6 +3393,7 @@ void Smirks_O::fields(core::Record_sp node) {
 }
 
 #if 0
+DOCGROUP(cando)
 CL_DEFUN core::List_sp chem__boost_graph_mcgregor_common_subgraphs_maximum(MoleculeGraph_sp moleculeGraph1, MoleculeGraph_sp moleculeGraph2,
                                                                    bool only_connected_subgraphs) {
   CommonEdgeComp edge_comp(moleculeGraph1,moleculeGraph2);
@@ -3390,6 +3408,7 @@ CL_DEFUN core::List_sp chem__boost_graph_mcgregor_common_subgraphs_maximum(Molec
   return _Nil<core::T_O>();
 }
 
+DOCGROUP(cando)
 CL_DEFUN core::List_sp chem__boost_graph_mcgregor_common_subgraphs_maximum_unique(MoleculeGraph_sp moleculeGraph1, MoleculeGraph_sp moleculeGraph2,
                                                                    bool only_connected_subgraphs) {
   CommonEdgeComp edge_comp(moleculeGraph1,moleculeGraph2);

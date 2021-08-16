@@ -103,6 +103,7 @@ CL_DEFMETHOD core::T_sp DirectionalCoupling_O::getTargetPlugName() const
     return IN_PLUG_PREFIX;
 }
 
+DOCGROUP(cando)
 CL_DEFUN bool DirectionalCoupling_O::isCouplingName(core::Symbol_sp name)
 {
   core::SimpleString_sp ss = name->symbolName();
@@ -115,6 +116,7 @@ CL_DEFUN bool DirectionalCoupling_O::isCouplingName(core::Symbol_sp name)
     If the name is an in-plug-name and contains a hash - then signal an error 
        - because the coupling name cannot be determined - you will need the coupling to get the coupling name.
  */
+DOCGROUP(cando)
 CL_DEFUN core::Symbol_sp  DirectionalCoupling_O::couplingName(core::Symbol_sp name)
 {
   string sname = name->symbolNameAsString();
@@ -130,6 +132,7 @@ CL_DEFUN core::Symbol_sp  DirectionalCoupling_O::couplingName(core::Symbol_sp na
 }
 
 
+DOCGROUP(cando)
 CL_DEFUN core::Symbol_sp DirectionalCoupling_O::inPlugName(core::Symbol_sp name)
 {
   string sname = name->symbolNameAsString();
@@ -153,6 +156,7 @@ CL_DEFUN core::Symbol_sp DirectionalCoupling_O::inPlugName(core::Symbol_sp name)
   return chemkw_intern(ss.str());
 };
 
+DOCGROUP(cando)
 CL_DEFUN bool DirectionalCoupling_O::outPlugNameMatchesInPlugName(core::Symbol_sp outPlugName, core::Symbol_sp inPlugName) {
   core::SimpleString_sp out = outPlugName->symbolName();
   core::SimpleString_sp in = inPlugName->symbolName();
@@ -172,6 +176,7 @@ CL_DEFUN bool DirectionalCoupling_O::outPlugNameMatchesInPlugName(core::Symbol_s
   return true;
 }
 
+DOCGROUP(cando)
 CL_DEFUN core::Symbol_sp DirectionalCoupling_O::outPlugName(core::Symbol_sp name)
 {
   string sname = name->symbolNameAsString();
@@ -193,12 +198,14 @@ bool DirectionalCoupling_O::isInPlugName(core::Symbol_sp plugName)
   return plugName->symbolName()->rowMajorAref(0).unsafe_character() == IN_PLUG_PREFIX;
 };
 
+DOCGROUP(cando)
 CL_DEFUN bool chem__is_in_plug_name(core::Symbol_sp plugName)
 {
   return DirectionalCoupling_O::isInPlugName(plugName);
 }
 
 
+DOCGROUP(cando)
 CL_DEFUN core::Symbol_sp DirectionalCoupling_O::otherPlugName(core::Symbol_sp name)
 {
   stringstream	ss;

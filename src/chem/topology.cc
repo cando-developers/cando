@@ -330,6 +330,7 @@ struct OverlappingFragments {
 };
 
 CL_LISPIFY_NAME(connect_residues);
+DOCGROUP(cando)
 CL_DEFUN void connect_residues(Topology_sp prev_topology,
                                Residue_sp prev_residue,
                                core::Symbol_sp out_plug_name,

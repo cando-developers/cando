@@ -70,6 +70,7 @@ namespace chem {
 
 /*! Everything that depends on SMARTS parsing is initialized here */
 
+DOCGROUP(cando)
 CL_DEFUN void chem__initialize_smarts_users() {
 //  printf("%s:%d:%s\n", __FILE__, __LINE__, __FUNCTION__);
   energyFunction_initializeSmarts();
@@ -194,6 +195,7 @@ __END_DOC
 #define DECL_chem__database ""
 #define DOCS_chem__database "database"
 CL_LAMBDA(fileName &optional (verbosity 0))
+DOCGROUP(cando)
 CL_DEFUN core::T_sp chem__database(core::T_sp fileNameDesig, core::Fixnum_sp overbosity)
     {
 	IMPLEMENT_ME();
@@ -224,6 +226,7 @@ __END_DOC
 #define DECL_chem__standard_database ""
 #define DOCS_chem__standard_database "standardDatabase"
 CL_LAMBDA(pathDesig &optional loadSeed (overbosity 0))
+DOCGROUP(cando)
 CL_DEFUN core::T_sp chem__standard_database(core::T_sp pathDesig, core::T_sp loadSeed, core::Fixnum_sp overbosity)
     {
 	IMPLEMENT_ME();
@@ -255,6 +258,7 @@ __END_DOC
 #define ARGS_chem__bundle_database_path "(pathDesig)"
 #define DECL_chem__bundle_database_path ""
 #define DOCS_chem__bundle_database_path "bundleDatabasePath"
+DOCGROUP(cando)
 CL_DEFUN core::T_sp chem__bundle_database_path(core::T_sp pathDesig)
 {
     IMPLEMENT_ME();
@@ -392,6 +396,7 @@ __END_DOC
 #define ARGS_chem__create_virtual_atom "()"
 #define DECL_chem__create_virtual_atom ""
 #define DOCS_chem__create_virtual_atom "createVirtualAtom"
+DOCGROUP(cando)
 CL_DEFUN core::T_sp chem__create_virtual_atom()
 {
     IMPLEMENT_ME(); // Handle new MonomerCoordinates
@@ -522,6 +527,7 @@ __END_DOC
 #define ARGS_chem__save_archive_with_auto_set_cando_database "()"
 #define DECL_chem__save_archive_with_auto_set_cando_database ""
 #define DOCS_chem__save_archive_with_auto_set_cando_database "saveArchiveWithAutoSetCandoDatabase"
+DOCGROUP(cando)
 CL_DEFUN core::T_sp chem__save_archive_with_auto_set_cando_database()
 {
     IMPLEMENT_ME();
@@ -552,6 +558,7 @@ Loads the Tripos ``mol2'' file and returns the Aggregate within it.
 __END_DOC
  */
 
+DOCGROUP(cando)
 CL_DEFUN geom::SimpleVectorCoordinate_sp chem__make_simple_vector_coordinate_from_atom_list(core::List_sp atoms)
 {
   size_t num = core::cl__length(atoms);
@@ -567,6 +574,7 @@ CL_DEFUN geom::SimpleVectorCoordinate_sp chem__make_simple_vector_coordinate_fro
 }
 
 CL_DOCSTRING(R"dx(Load the only or the first aggregate from the mol2 file.)dx")
+DOCGROUP(cando)
 CL_DEFUN core::T_sp chem__read_mol2(core::T_sp stream)
 {
   Mol2File fin(stream);
@@ -575,6 +583,7 @@ CL_DEFUN core::T_sp chem__read_mol2(core::T_sp stream)
 }
 
 CL_DOCSTRING(R"dx(Read the only or the first aggregate from the mol2 file.)dx")
+DOCGROUP(cando)
 CL_DEFUN core::T_sp chem__load_mol2(core::T_sp fileName)
 {
   Mol2File fin;
@@ -643,6 +652,7 @@ core::T_sp chem__read_mol2_list_common(Mol2File& fin, core::T_sp number_to_load)
 
 CL_DOCSTRING(R"dx(Read all or a number of aggregates from the mol2 stream.)dx")
 CL_LAMBDA(stream &optional number-to-load)
+DOCGROUP(cando)
 CL_DEFUN core::T_sp chem__read_mol2_list(core::T_sp stream, core::T_sp number_to_load)
 {
   Mol2File fin(stream);
@@ -651,6 +661,7 @@ CL_DEFUN core::T_sp chem__read_mol2_list(core::T_sp stream, core::T_sp number_to
 
 CL_DOCSTRING(R"dx(Load all or a number of aggregates from the mol2 file.)dx")
 CL_LAMBDA(file-name &optional number-to-load)
+DOCGROUP(cando)
 CL_DEFUN core::T_sp chem__load_mol2_list(core::T_sp fileName, core::T_sp number_to_load)
 {
   Mol2File fin;
@@ -668,6 +679,7 @@ __END_DOC
 
 
 CL_LAMBDA(matter dest-desig &optional use-sybyl-types)
+DOCGROUP(cando)
 CL_DEFUN core::T_sp chem__save_mol2(Matter_sp matter, core::T_sp destDesig, bool useSybylTypes)
 {
   mol2WriteMatterToFileName(matter,destDesig,useSybylTypes);
@@ -676,6 +688,7 @@ CL_DEFUN core::T_sp chem__save_mol2(Matter_sp matter, core::T_sp destDesig, bool
 
 
 CL_LAMBDA(matter &optional use-sybyl-types)
+DOCGROUP(cando)
 CL_DEFUN std::string chem__aggregate_as_mol2_string(Aggregate_sp matter, bool useSybylTypes)
 {
   stringstream ss;
@@ -684,6 +697,7 @@ CL_DEFUN std::string chem__aggregate_as_mol2_string(Aggregate_sp matter, bool us
 }
 
 CL_LAMBDA(matter &optional use-sybyl-types)
+DOCGROUP(cando)
 CL_DEFUN std::string chem__matter_as_mol2_string(Matter_sp matter, bool useSybylTypes)
 {
   stringstream ss;
@@ -767,6 +781,7 @@ __END_DOC
 #define DECL_chem__find_residue ""
 #define DOCS_chem__find_residue "findResidue"
 CL_LAMBDA(&rest args)
+DOCGROUP(cando)
 CL_DEFUN core::T_sp chem__find_residue(core::List_sp args)
 {
     Molecule_sp molecule;
@@ -816,6 +831,7 @@ __END_DOC
 #define DECL_chem__atom_pos ""
 #define DOCS_chem__atom_pos "atomPos"
 CL_LAMBDA(&rest args)
+DOCGROUP(cando)
 CL_DEFUN core::T_sp chem__atom_pos(core::List_sp args)
 {
     Molecule_sp molecule;
@@ -873,6 +889,7 @@ CL_DEFUN core::T_sp chem__atom_pos(core::List_sp args)
 #define DECL_chem__monomer ""
 #define DOCS_chem__monomer "monomer"
 CL_LAMBDA(monomerId groupName &optional monomerAliases comment)
+DOCGROUP(cando)
 CL_DEFUN core::T_sp chem__monomer(core::Symbol_sp monomerId, core::Symbol_sp groupName, core::List_sp monomerAliases, core::String_sp comment)
 {
     OligomerPart_Monomer_sp newMon;
@@ -894,6 +911,7 @@ CL_DEFUN core::T_sp chem__monomer(core::Symbol_sp monomerId, core::Symbol_sp gro
 #define ARGS_chem__link "(monomer1Id coupling monomer2)"
 #define DECL_chem__link ""
 #define DOCS_chem__link "link"
+DOCGROUP(cando)
 CL_DEFUN core::T_sp chem__link(core::Symbol_sp monomer1Id, core::Symbol_sp coupling, OligomerPart_Monomer_sp monomer2 )
 {
     OligomerPart_Link_sp newLink;
@@ -920,6 +938,7 @@ __END_DOC
 #define ARGS_chem__calculate_point "()"
 #define DECL_chem__calculate_point ""
 #define DOCS_chem__calculate_point "calculatePoint"
+DOCGROUP(cando)
 CL_DEFUN core::T_sp chem__calculate_point()
 {
     IMPLEMENT_ME(); // handle new way
@@ -972,6 +991,7 @@ CL_DEFUN core::T_sp chem__calculate_point()
 
 
 
+DOCGROUP(cando)
 CL_DEFUN core::T_sp chem__oligomer(core::List_sp parts)
 {
     Oligomer_sp olig = Oligomer_O::create();
@@ -997,6 +1017,7 @@ CL_DEFUN core::T_sp chem__oligomer(core::List_sp parts)
     return olig;
 }
 
+DOCGROUP(cando)
 CL_DEFUN bool chem__overlap_solvent(core::SimpleVector_double_sp solute_xvec,
                                     core::SimpleVector_double_sp solute_yvec,
                                     core::SimpleVector_double_sp solute_zvec,
@@ -1039,6 +1060,7 @@ CL_DEFUN bool chem__overlap_solvent(core::SimpleVector_double_sp solute_xvec,
 
 #if 0
 extern "C" int gaff_debug;
+DOCGROUP(cando)
 CL_DEFUN void chem__set_gaff_debug(bool on) {
   gaff_debug = on;
 }

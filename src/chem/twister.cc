@@ -51,6 +51,7 @@ namespace chem {
 
 
 CL_DOCSTRING(R"dx(Create a new twister instance.)dx")
+DOCGROUP(cando)
 CL_DEFUN Twister_sp chem__make_twister()
 {
   auto td = gctools::GC<Twister_O>::allocate_with_default_constructor();
@@ -295,6 +296,7 @@ stringstream	ss;
 
 CL_LAMBDA(aggregate)
 CL_DOCSTRING(R"dx(Create a new twister driver based on an aggregate.)dx")
+DOCGROUP(cando)
 CL_DEFUN TwisterDriver_sp chem__make_twister_driver(Aggregate_sp agg)
 {
   auto td = gctools::GC<TwisterDriver_O>::allocate(agg);

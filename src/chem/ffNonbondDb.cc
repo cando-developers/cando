@@ -265,6 +265,7 @@ void FFNonbondDb_O::forceFieldMerge(FFBaseDb_sp bother)
 }
 
 
+DOCGROUP(cando)
 CL_DEFUN void chem__FFNonbondDb_merge(FFNonbondDb_sp dest, FFNonbondDb_sp source)
 {
   dest->forceFieldMerge(source);
@@ -294,6 +295,7 @@ CL_DEFMETHOD void FFNonbondDb_O::FFNonbondDb_concatenate(FFNonbondDb_sp other, c
 #endif
 
 CL_DOCSTRING(R"dx(Pass an alist of (nonbond-force-field . force-field-name) and a nonbond-force-field will be returned that combines them all. The global_nonbond defines the global parameters only.)dx")
+DOCGROUP(cando)
 CL_DEFUN FFNonbondDb_sp chem__combine_nonbond_force_fields(FFNonbondDb_sp global_nonbond, core::List_sp nonbond_force_fields) {
   // What do we do with the nonbond parameters?
   // There needs to be something to control how nonbond interactions work across the whole system
@@ -486,6 +488,7 @@ string	FFNonbond_O::levelDescription()
   return desc.str();
 }
 
+DOCGROUP(cando)
 CL_DEFUN FFNonbondDb_sp chem__make_ffnonbond_db() {
   return FFNonbondDb_O::create();
 }

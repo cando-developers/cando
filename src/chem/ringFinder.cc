@@ -967,6 +967,7 @@ CL_DEF_CLASS_METHOD core::List_sp RingFinder_O::identifyRings(Matter_sp matter)
 }
 
 CL_LISPIFY_NAME(ring-bonds);
+DOCGROUP(cando)
 CL_DEFUN core::List_sp RingFinder_O::ringBonds(core::List_sp atoms) {
   core::List_sp ringBonds = nil<core::T_O>();
   gctools::SmallOrderedSet<Atom_sp> atomSet;

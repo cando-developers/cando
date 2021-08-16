@@ -48,6 +48,7 @@ void OMatrix_O::archiveBase(core::ArchiveP node)
 #endif
 
 CL_NAME("MAKE-MATRIX");
+DOCGROUP(cando)
 CL_DEFUN OMatrix_sp OMatrix_O::make(bool ident)
 {
   auto om = gctools::GC<OMatrix_O>::allocate(ident);
@@ -133,6 +134,7 @@ void OMatrix_O::rotationZ(double radians) { this->_Value.rotationZ(radians); }
 
 
 CL_LISPIFY_NAME("make-matrix-identity");
+DOCGROUP(cando)
 CL_DEFUN OMatrix_sp make_matrix_identity()
 {
   OMatrix_sp res = OMatrix_O::create();
@@ -141,6 +143,7 @@ CL_DEFUN OMatrix_sp make_matrix_identity()
 }
 
 CL_LISPIFY_NAME("make-m4-translate");
+DOCGROUP(cando)
 CL_DEFUN OMatrix_sp make_m4_translate(const Vector3& pos)
 {
   OMatrix_sp res = OMatrix_O::create();
@@ -149,6 +152,7 @@ CL_DEFUN OMatrix_sp make_m4_translate(const Vector3& pos)
 }
 
 CL_LISPIFY_NAME("make-m4-rotate-x");
+DOCGROUP(cando)
 CL_DEFUN OMatrix_sp make_m4_rotate_x(double radians)
 {
   OMatrix_sp res = OMatrix_O::create();
@@ -157,6 +161,7 @@ CL_DEFUN OMatrix_sp make_m4_rotate_x(double radians)
 }
 
 CL_LISPIFY_NAME("make-m4-rotate-y");
+DOCGROUP(cando)
 CL_DEFUN OMatrix_sp make_m4_rotate_y(double radians)
 {
   OMatrix_sp res = OMatrix_O::create();
@@ -165,6 +170,7 @@ CL_DEFUN OMatrix_sp make_m4_rotate_y(double radians)
 }
 
 CL_LISPIFY_NAME("make-m4-rotate-z");
+DOCGROUP(cando)
 CL_DEFUN OMatrix_sp make_m4_rotate_z(double radians)
 {
   OMatrix_sp res = OMatrix_O::create();
@@ -173,6 +179,7 @@ CL_DEFUN OMatrix_sp make_m4_rotate_z(double radians)
 }
 
 CL_LISPIFY_NAME("make-m4-rotate-axis");
+DOCGROUP(cando)
 CL_DEFUN OMatrix_sp make_m4_rotate_axis(double radians,Vector3 axis)
 {
   OMatrix_sp res = OMatrix_O::create();
@@ -217,6 +224,7 @@ void OMatrix_O::decode(core::List_sp c) {
 }
 
 CL_DOCSTRING(R"dx(Return the (values EIGEN-VALUES EIGEN-VECTOR-MATRIX) of the MATRIX.)dx")
+DOCGROUP(cando)
 CL_DEFUN core::T_mv geom__eigen_system(OMatrix_sp matrix)
 {
   Vector4 evals;
@@ -233,6 +241,7 @@ CL_DEFUN core::T_mv geom__eigen_system(OMatrix_sp matrix)
 
 
 CL_DOCSTRING(R"dx(Convert a homogeneous matrix into a quaternion/translation. This takes the matrix and returns seven numbers, the w,x,y,z,tx,ty,tz where w,x,y,z are the quaternion and the tx,ty,tz is the translation.)dx")
+DOCGROUP(cando)
 CL_DEFUN core::T_mv geom__matrix_to_quaternion_translation(OMatrix_sp om)
 {
   Matrix& m = om->_Value;

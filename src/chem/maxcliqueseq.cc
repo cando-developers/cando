@@ -2498,7 +2498,8 @@ gctools::Vec0<gctools::Vec0<char> > Dimacs_O::getAdjacencyMatrix() const {
 
     ////////////////////////////////////////////////////////////
 
-    CL_DEFUN
+DOCGROUP(cando)
+CL_DEFUN
     core::T_sp chem__find_maximum_clique_search(Dimacs_sp dimacsGraph, int numThreads, int numJobs) {
         if (numThreads>0) {
             printf("%s:%d Parallel maximum-clique-search is broken - it calls back() with empty vectors\n", __FILE__, __LINE__ );

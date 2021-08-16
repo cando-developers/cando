@@ -70,6 +70,7 @@ __END_DOC
 namespace chem {
 
 CL_LISPIFY_NAME("CHEM:MAKE-RIGID-BODY-ENERGY-FUNCTION");
+DOCGROUP(cando)
 CL_DEFUN RigidBodyEnergyFunction_sp RigidBodyEnergyFunction_O::make(size_t number_of_rigid_bodies, BoundingBox_sp boundingBox) {
   auto  energy = gctools::GC<RigidBodyEnergyFunction_O>::allocate( number_of_rigid_bodies, boundingBox);
   energy->_SavedCoordinates = NVector_O::create(number_of_rigid_bodies*7);
@@ -357,6 +358,7 @@ Return the number of rigid bodies whose displacement was limited.  The limit_dis
 the a,b,c,d quaternion and x,y,z displacements.  The quaternion displacement idea is experimental.  I'm not sure how it will
 effect the dynamics.)dx")
 CL_LISPIFY_NAME("rigid-body-velocity-verlet-step-limit-displacement");
+DOCGROUP(cando)
 CL_DEFUN size_t chem__rigid_body_velocity_verlet_step_limit_displacement(ScoringFunction_sp scoringFunc,
                                                                          NVector_sp position,
                                                                          NVector_sp velocity,

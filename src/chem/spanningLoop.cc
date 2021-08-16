@@ -66,6 +66,7 @@ namespace chem
     }
     
 CL_NAME(CHEM:MAKE-SPANNING-LOOP);
+DOCGROUP(cando)
 CL_DEFUN SpanningLoop_sp SpanningLoop_O::make(Atom_sp root)
   {
     auto  me  = gctools::GC<SpanningLoop_O>::allocate_with_default_constructor();

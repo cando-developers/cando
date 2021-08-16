@@ -596,6 +596,7 @@ CL_DEFMETHOD void SuperposeSelectedAtoms_O::copyMatterCoordinatesIntoMoveableCoo
 }
 
 
+DOCGROUP(cando)
 CL_DEFUN void chem__superpose_one(Matter_sp moveable_matter, core::List_sp moveable_atoms, core::List_sp fixed_atoms)
 {
   size_t num_moveable = core::cl__length(moveable_atoms);

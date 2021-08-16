@@ -65,6 +65,7 @@ namespace geom {
 
 
 CL_NAME("VEC");
+DOCGROUP(cando)
 CL_DEFUN OVector3_sp OVector3_O::make(double x, double y, double z)
     {
       auto ov = gctools::GC<OVector3_O>::allocate_with_default_constructor();
@@ -76,6 +77,7 @@ CL_DEFUN OVector3_sp OVector3_O::make(double x, double y, double z)
 
 CL_DOCSTRING(R"dx(Return T if the vec is anything other than 0.0,0.0,0.0)dx")
 CL_NAME("VEC-P");
+DOCGROUP(cando)
 CL_DEFUN bool geom__vec_p(OVector3_sp ov) {
   return (ov->_Value[0] != 0.0 ||
           ov->_Value[1] != 0.0 ||

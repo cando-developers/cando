@@ -355,6 +355,7 @@ namespace geom {
 
 
 CL_LISPIFY_NAME(transform);
+DOCGROUP(cando)
 CL_DEFUN void geom__in_place_transform(ArrayCoordinate_sp array, const Matrix& transform) {
   core::AbstractSimpleVector_sp sv;
   size_t start;
@@ -367,6 +368,7 @@ CL_DEFUN void geom__in_place_transform(ArrayCoordinate_sp array, const Matrix& t
 };
 
 CL_LISPIFY_NAME(transform);
+DOCGROUP(cando)
 CL_DEFUN void geom__in_place_mul_scalar(ArrayCoordinate_sp array, double mul) {
   core::AbstractSimpleVector_sp sv;
   size_t start;
@@ -378,6 +380,7 @@ CL_DEFUN void geom__in_place_mul_scalar(ArrayCoordinate_sp array, double mul) {
   }
 };
 
+DOCGROUP(cando)
 CL_DEFUN core::T_sp geom__unit_vectors()
 {
   Vector3 v;

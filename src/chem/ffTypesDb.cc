@@ -257,6 +257,7 @@ CL_DEFMETHOD chem::FFTypeRule_sp FFTypesDb_O::getRule(uint index)
 }
 
 
+DOCGROUP(cando)
 CL_DEFUN FFTypesDb_sp chem__make_fftypes_db()
 {
   return FFTypesDb_O::create();

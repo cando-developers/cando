@@ -77,6 +77,7 @@ __END_DOC
 #define DECL_chem__define_monomer_pack ""
 #define DOCS_chem__define_monomer_pack "defineMonomerPack"
 CL_LAMBDA(pack-name parts &optional atom-aliases)
+DOCGROUP(cando)
 CL_DEFUN core::T_sp chem__define_monomer_pack(core::Symbol_sp packName, core::List_sp parts, core::Cons_sp atomAliases )
     {
 	CandoDatabase_sp	bdb;
@@ -124,6 +125,7 @@ __END_DOC
 #define ARGS_chem__extend_aliases "(packName parts atomAliases)"
 #define DECL_chem__extend_aliases ""
 #define DOCS_chem__extend_aliases "extendAliases"
+DOCGROUP(cando)
 CL_DEFUN core::T_sp chem__extend_aliases(core::Symbol_sp packName, core::List_sp parts, core::Cons_sp atomAliases)
     {
 	CandoDatabase_sp	bdb;
@@ -167,6 +169,7 @@ __END_DOC
 #define DECL_chem__set_monomer_pack ""
 #define DOCS_chem__set_monomer_pack "setMonomerPack"
 CL_LAMBDA(pack-name parts &optional atom-aliases)
+DOCGROUP(cando)
 CL_DEFUN core::T_sp chem__set_monomer_pack(core::Symbol_sp packName, core::List_sp parts, core::Cons_sp atomNames )
     {
 	core::T_sp opack = chem__define_monomer_pack(packName,parts,atomNames);

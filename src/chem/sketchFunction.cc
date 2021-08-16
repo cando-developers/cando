@@ -804,6 +804,7 @@ void	SketchFunction_O::dealWithProblem(core::Symbol_sp error_symbol, core::T_sp 
 
 
 CL_LAMBDA(scoring-function position velocity force force-dt delta-t-over-mass delta-t &optional frozen)CL_LISPIFY_NAME("sketch-function-velocity-verlet-step");
+DOCGROUP(cando)
 CL_DEFUN void chem__SketchFunction_velocity_verlet_step(SketchFunction_sp sketchFunc,
                                                         NVector_sp position,
                                                         NVector_sp velocity,

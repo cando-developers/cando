@@ -1989,6 +1989,7 @@ void	EnergyFunction_O::loadCoordinatesIntoVector(NVector_sp pos)
 
 
 CL_DOCSTRING(R"dx(Return the coordinate vector of the energy function)dx")
+DOCGROUP(cando)
 CL_DEFUN NVector_sp chem__energy_function_coordinate_vector(EnergyFunction_sp energy_function)
 {
   NVector_sp pos = NVector_O::create(energy_function->getNVectorSize());
@@ -1997,6 +1998,7 @@ CL_DEFUN NVector_sp chem__energy_function_coordinate_vector(EnergyFunction_sp en
 }
 
 CL_DOCSTRING(R"dx(Return an empty force vector of the energy function)dx")
+DOCGROUP(cando)
 CL_DEFUN NVector_sp chem__energy_function_empty_force_vector(EnergyFunction_sp energy_function)
 {
   NVector_sp pos = NVector_O::make(energy_function->getNVectorSize(),0.0,true);
@@ -2164,6 +2166,7 @@ SYMBOL_EXPORT_SC_(KeywordPkg,angle);
 SYMBOL_EXPORT_SC_(KeywordPkg,dihedral);
 SYMBOL_EXPORT_SC_(KeywordPkg,nonbond);
 
+DOCGROUP(cando)
 CL_DEFUN void chem__fill_energy_function_from_alist(EnergyFunction_sp energy, core::List_sp alist)
 {
   energy->_AtomTable = (safe_alist_lookup<AtomTable_sp>(alist,kw::_sym_atom_table));

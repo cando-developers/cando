@@ -52,6 +52,7 @@ namespace geom
 #define DECL_ColoredVertex_O_make ""
 #define DOCS_ColoredVertex_O_make "Create a colored vertex"
 CL_LISPIFY_NAME(make-colored-vertex);
+DOCGROUP(cando)
 CL_DEFUN ColoredVertex_sp ColoredVertex_O::make(OVector3_sp opos, Color_sp color)
     {
 	ColoredVertex_sp me = ColoredVertex_O::create();

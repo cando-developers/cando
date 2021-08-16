@@ -1247,6 +1247,7 @@ CL_DEFMETHOD Atom_sp Matter_O::atomWithAtomId(const AtomId& atomId) const
 
 CL_LISPIFY_NAME("CHEM:MATTER-COPY");
 CL_LAMBDA(original &optional new-to-old-map)
+DOCGROUP(cando)
 CL_DEFUN Matter_sp chem__matter_copy(Matter_sp orig, core::T_sp new_to_old) {
   Matter_sp copy = orig->copy(new_to_old);
   return copy;

@@ -40,6 +40,7 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace chem
 {
 
+DOCGROUP(cando)
 CL_DEFUN bool chem__verifyThatFieldOfAllEntriesAreEqual(Table_sp table, core::Symbol_sp field )
     {
 	if ( table->numberOfEntries() <= 1 ) return true;
@@ -61,6 +62,7 @@ CL_DEFUN bool chem__verifyThatFieldOfAllEntriesAreEqual(Table_sp table, core::Sy
 
 
 
+DOCGROUP(cando)
 CL_DEFUN bool chem__superposeAllHeavyAtoms(Table_sp table, core::Symbol_sp matterField, core::Symbol_sp writeRmsd )
     {
 	if ( !table->hasField(writeRmsd) )
@@ -150,6 +152,7 @@ public:
  * The comparison function must take two TableEntries and return true is the first entry
  * comes before the second one.
  */
+DOCGROUP(cando)
 CL_DEFUN void chem__forEachEntryEvaluate(Table_sp table, core::Function_sp eval )
     {
     for ( Table_O::entryIterator ei=table->beginEntry(); ei!=table->endEntry(); ei++ )

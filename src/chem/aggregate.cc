@@ -117,6 +117,7 @@ double BoundingBox_O::distance_squared_between_two_points(const Vector3& v1, con
   return dx*dx+dy*dy+dz*dz;
 }
 
+DOCGROUP(cando)
 CL_DEFUN double chem__bounding_box_distance_squared_between_two_points(BoundingBox_sp bounding_box, const Vector3& v1, const Vector3& v2)
 {
   return bounding_box->distance_squared_between_two_points(v1,v2);
@@ -130,6 +131,7 @@ double BoundingBox_O::distance_squared_between_two_atoms(Atom_sp a1, Atom_sp a2)
   return this->distance_squared_between_two_points(pos1,pos2);
 }
 
+DOCGROUP(cando)
 CL_DEFUN double chem__bounding_box_distance_squared_between_two_atoms(BoundingBox_sp bounding_box, Atom_sp a1, Atom_sp a2)
 {
   return bounding_box->distance_squared_between_two_atoms(a1,a2);
@@ -872,6 +874,7 @@ CL_DEFMETHOD     void	Aggregate_O::perturbAtomPositions(double dist)
 #define DOCS_Aggregate_O_make "make Aggregate args: &key name"
 CL_LAMBDA(&optional (name nil))
 CL_LISPIFY_NAME(make-aggregate);
+DOCGROUP(cando)
 CL_DEFUN Aggregate_sp Aggregate_O::make(core::Symbol_sp name)
     {
       auto me = gctools::GC<Aggregate_O>::allocate_with_default_constructor();

@@ -392,6 +392,7 @@ AtomIdToAtomMap_sp Molecule_O::buildAtomIdMap() const
 #define DOCS_Molecule_O_make "make Molecule args: &key name"
 CL_LAMBDA(&optional (name nil))
 CL_LISPIFY_NAME(make-molecule);
+DOCGROUP(cando)
 CL_DEFUN Molecule_sp Molecule_O::make(core::Symbol_sp name)
 {
   auto me = gctools::GC<Molecule_O>::allocate_with_default_constructor();

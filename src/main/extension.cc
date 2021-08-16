@@ -77,6 +77,7 @@ CL_PRE_GC_STARTUP void cando_initialize_gc()
 }
 
 
+DOCGROUP(cando)
 CL_DEFUN core::T_sp core__leap_command_line_scripts()
 {
   ql::list scripts;
@@ -95,6 +96,7 @@ CL_DEFUN core::T_sp core__leap_command_line_scripts()
   return scripts.cons();
 }
 
+DOCGROUP(cando)
 CL_DEFUN core::T_sp core__leap_command_line_includes()
 {
   ql::list includes;
@@ -113,6 +115,7 @@ CL_DEFUN core::T_sp core__leap_command_line_includes()
   return includes.cons();
 }
 
+DOCGROUP(cando)
 CL_DEFUN core::T_sp core__leap_command_line_ignore_leaprc()
 {
   int iarg = 1;

@@ -1310,6 +1310,7 @@ void	MoeReadFile::readNextLine()
 //	moeReadAggregate
 //
 //	Read the Aggregate from the MOE file.
+DOCGROUP(cando)
 CL_DEFUN  Aggregate_sp chem__moeReadAggregate(const string& name )
 {
     MoeReadFile	f;

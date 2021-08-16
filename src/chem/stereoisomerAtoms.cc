@@ -124,6 +124,7 @@ StereoisomerAtoms_sp StereoisomerAtoms_O::create(core::Symbol_sp stereoisomerNam
   return stereoisomerAtoms;
 }
 
+DOCGROUP(cando)
 CL_DEFUN StereoisomerAtoms_sp chem__make_stereoisomer_atoms(core::Symbol_sp stereoisomerName, ConstitutionAtoms_sp constitutionAtoms)
 {
   return StereoisomerAtoms_O::create(stereoisomerName,constitutionAtoms);

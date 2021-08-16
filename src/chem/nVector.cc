@@ -279,12 +279,14 @@ NVector_sp copy_nvector(NVector_sp orig )
 }
 
 
+DOCGROUP(cando)
 CL_DEFUN
 NVector_sp chem__make_nvector(size_t size)
 {
   return NVector_O::make(size,0.0,true);
 }
 
+DOCGROUP(cando)
 CL_DEFUN
 NVector_sp chem__copy_nvector(NVector_sp source)
 {
@@ -294,6 +296,7 @@ NVector_sp chem__copy_nvector(NVector_sp source)
 
 
 CL_DOCSTRING(R"dx(Apply the transform matrix to the coordinates.)dx")
+DOCGROUP(cando)
 CL_DEFUN
 NVector_sp chem__apply_transform_to_coordinates(NVector_sp destination, NVector_sp coordinates, const Matrix& transform )
 {
@@ -333,6 +336,7 @@ inline double dist_squared_bounding_box(NVector_sp coord1, size_t i1, NVector_sp
 }
   
 CL_DOCSTRING(R"dx(Determine close contact. Return a pair of integers indexing into the coordinates)dx")
+DOCGROUP(cando)
 CL_DEFUN
 core::T_mv chem__find_close_contact(NVector_sp coord1, NVector_sp coord2)
 {
@@ -360,6 +364,7 @@ core::T_mv chem__find_close_contact(NVector_sp coord1, NVector_sp coord2)
 
 
 CL_DOCSTRING(R"dx(Determine close contacts within the context of a bounding box. Return a pair of integers indexing into the coordinates.  Only the coordinates less than length1 and length2 are valid. Keep a count of how many close contacts are closer than close_distance.)dx")
+DOCGROUP(cando)
 CL_DEFUN
 core::T_mv chem__find_close_contact_in_bounding_box(NVector_sp coord1, size_t length1, NVector_sp coord2, size_t length2, BoundingBox_sp bounding_box, double close_distance)
 {
@@ -398,6 +403,7 @@ core::T_mv chem__find_close_contact_in_bounding_box(NVector_sp coord1, size_t le
 
 CL_DOCSTRING(R"dx(Determine close contact. Return a pair of integers indexing into the coordinates)dx")
 CL_LAMBDA(coordinates &optional coordinates-length)
+DOCGROUP(cando)
 CL_DEFUN
 geom::BoundingCuboid_sp chem__nvector_bounding_cuboid(NVector_sp coords, core::T_sp coordinates_length)
 {

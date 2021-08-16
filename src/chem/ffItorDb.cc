@@ -224,6 +224,7 @@ void FFItorDb_O::improperAtomSort(Atom_sp& a1, Atom_sp& a2, Atom_sp& a4)
   if (!ordered(a1,a2)) {ta = a1; a1 = a2; a2 = ta;}
 }
 
+DOCGROUP(cando)
 CL_DEFUN core::T_mv chem__improperAtomSort(Atom_sp a1, Atom_sp a2, Atom_sp a3)
 {
   FFItorDb_O::improperAtomSort(a1,a2,a3);

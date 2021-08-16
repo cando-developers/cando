@@ -187,7 +187,8 @@ gctools::Vec0<int>& CipPrioritizer_O::getS(Atom_sp a, core::HashTable_sp cip)
 
 
 CL_LISPIFY_NAME(chem:assign-priorities-hash-table);
-    CL_DEFUN core::HashTable_sp CipPrioritizer_O::assignPrioritiesHashTable(Matter_sp matter)
+DOCGROUP(cando)
+CL_DEFUN core::HashTable_sp CipPrioritizer_O::assignPrioritiesHashTable(Matter_sp matter)
 {
     core::HashTable_sp cip = core::HashTableEq_O::create_default();
     CipPrioritizer_sp prior;
@@ -617,6 +618,7 @@ CL_DOCSTRING(R"dx(Calculate the stereochemistry for each atom in the aggregate o
 CL_DOCSTRING_LONG(R"dx(Start from the three-dimensional structure. If only-undefined-configuration is passed T then 
 only centers with unefinedConfiguration are changed.)dx")
 CL_LAMBDA(matter &key (only_undefined_configuration t))
+DOCGROUP(cando)
 CL_DEFUN void chem__calculateStereochemistryFromStructure(Matter_sp matter,bool onlyUndefinedConfiguration)
 {
   CipPrioritizer_sp prior;

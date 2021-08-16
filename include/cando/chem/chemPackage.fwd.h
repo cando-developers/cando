@@ -26,6 +26,9 @@ This is an open source license for the CANDO software from Temple University, bu
 #ifndef chemPackage_fwd_H
 #define chemPackage_fwd_H
 
+/** @defgroup cando
+    @ingroup exports
+*/
 namespace chem {
 
     core::Symbol_sp chemkw_intern(const string& symName);

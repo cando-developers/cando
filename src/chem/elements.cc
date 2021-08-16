@@ -418,6 +418,7 @@ Hybridization hybridizationForSymbol(core::Symbol_sp sym)
 /*!
  * Return the symbol associated with the hybridization
  */
+DOCGROUP(cando)
 CL_DEFUN core::Symbol_sp symbolFromHybridization(chem::Hybridization hybridization)
 {
   core::SymbolToEnumConverter_sp hybridizationConverter = _sym__PLUS_hybridizationToSymbolConverter_PLUS_->symbolValue().as<core::SymbolToEnumConverter_O>();
@@ -425,7 +426,8 @@ CL_DEFUN core::Symbol_sp symbolFromHybridization(chem::Hybridization hybridizati
 }
 
 
-
+CL_DOCSTRING(R"dx(Return hybridizaton value for string)dx")
+DOCGROUP(cando)
 CL_DEFUN chem::Hybridization hybridizationForString(const string& sym)
 {
   core::SymbolToEnumConverter_sp hybridizationConverter = _sym__PLUS_hybridizationToSymbolConverter_PLUS_->symbolValue().as<core::SymbolToEnumConverter_O>();
@@ -433,12 +435,14 @@ CL_DEFUN chem::Hybridization hybridizationForString(const string& sym)
 }
 
 
+DOCGROUP(cando)
 CL_DEFUN core::Symbol_sp hybridizationSymbolFromHybridization(chem::Hybridization h)
 {
   core::SymbolToEnumConverter_sp hybridizationConverter = _sym__PLUS_hybridizationToSymbolConverter_PLUS_->symbolValue().as<core::SymbolToEnumConverter_O>();
   return hybridizationConverter->symbolForEnum<Hybridization>(h);
 }
 
+DOCGROUP(cando)
 CL_DEFUN core::Symbol_sp atomicSymbolFromElement(chem::Element h)
 {
   core::SymbolToEnumConverter_sp elementConverter = _sym__PLUS_elementToSymbolConverter_PLUS_->symbolValue().as<core::SymbolToEnumConverter_O>();
@@ -460,6 +464,8 @@ uint maxTotalBondOrderForElement(Element element)
   return 4;
 }
 
+CL_DOCSTRING(R"dx(Return VdW radius for element)dx")
+DOCGROUP(cando)
 CL_DEFUN double vdwRadiusForElement(::chem::Element element)
 {
   ElementsInfo_sp ei = elementsInfo();
@@ -569,16 +575,19 @@ Element elementFromAtomNameStringBasic(const std::string& name, bool caseInsensi
 
 
 
+DOCGROUP(cando)
 CL_DEFUN ::chem::Element elementFromAtomNameStringCaseInsensitive(const std::string& name)
 {
     return elementFromAtomNameStringBasic(name,true);
 }
 
+DOCGROUP(cando)
 CL_DEFUN ::chem::Element elementFromAtomNameString(const string& name)
 {
     return elementFromAtomNameStringBasic(name,false);
 }
 
+DOCGROUP(cando)
 CL_DEFUN core::List_sp all_element_symbols() {
   ElementsInfo_sp ei = elementsInfo();
   ql::list ll;
@@ -592,6 +601,7 @@ CL_DEFUN core::List_sp all_element_symbols() {
 }
 
   
+DOCGROUP(cando)
 CL_DEFUN chem::Element elementForAtomicNumber(int atomicNumber)
 {
   ElementsInfo_sp ei = elementsInfo();
@@ -601,6 +611,7 @@ CL_DEFUN chem::Element elementForAtomicNumber(int atomicNumber)
   return ei->_atomicInfo[ei->_atomicNumberToAtomicInfoIndex[atomicNumber]]._ElementEnum;
 }
 
+DOCGROUP(cando)
 CL_DEFUN chem::Element elementForIntegerAtomicMass(int atomicMass)
 {
   ElementsInfo_sp ei = elementsInfo();
@@ -610,6 +621,7 @@ CL_DEFUN chem::Element elementForIntegerAtomicMass(int atomicMass)
   return ei->_atomicInfo[ei->_atomicMassToAtomicInfoIndex[atomicMass]]._ElementEnum;
 }
 
+DOCGROUP(cando)
 CL_DEFUN uint atomicNumberForElement(chem::Element element)
 {
   ElementsInfo_sp ei = elementsInfo();
@@ -619,6 +631,7 @@ CL_DEFUN uint atomicNumberForElement(chem::Element element)
   return ai._AtomicNumber;
 }
 
+DOCGROUP(cando)
 CL_DEFUN uint integerAtomicMassForElement(chem::Element element)
 {
   ElementsInfo_sp ei = elementsInfo();
@@ -628,6 +641,7 @@ CL_DEFUN uint integerAtomicMassForElement(chem::Element element)
   return ai._IntegerAtomicMass;
 }
 
+DOCGROUP(cando)
 CL_DEFUN double atomicWeightForElement(chem::Element element)
 {
   ElementsInfo_sp ei = elementsInfo();

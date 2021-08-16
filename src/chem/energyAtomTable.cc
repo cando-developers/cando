@@ -654,6 +654,7 @@ CL_DEFMETHOD void  AtomTable_O::fill_atom_table_from_vectors(core::List_sp vecto
 }
 
 
+DOCGROUP(cando)
 CL_DEFUN core::List_sp chem__atoms_at_remove(AtomTable_sp table, size_t index, size_t remove ) {
   if (index<table->_Atoms.size()) {
     EnergyAtom* ea = &(table->_Atoms[index]);

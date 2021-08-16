@@ -48,8 +48,10 @@ namespace chem
   uint maxTotalBondOrderForElement(Element element);
 
   Element elementForSymbol(core::Symbol_sp sym);
-  CL_DEFUN core::Symbol_sp symbolFromElement(chem::Element element);
-  CL_DEFUN bool elementIsHydrogen(chem::Element element);
+  DOCGROUP(cando)
+    CL_DEFUN core::Symbol_sp symbolFromElement(chem::Element element);
+  DOCGROUP(cando)
+    CL_DEFUN bool elementIsHydrogen(chem::Element element);
 
   core::Symbol_sp symbolFromHybridization(Hybridization element);
 

@@ -66,6 +66,7 @@ namespace chem {
 CL_LISPIFY_NAME("CHEM:NAME");
 CL_LAMBDA(value isoname)
 CL_DOCSTRING(R"dx(isoname-name-set)dx")
+DOCGROUP(cando)
 CL_DEFUN_SETF core::Symbol_sp chem__isoname_name_set(core::Symbol_sp name, Isoname_sp isoname)
 {
   isoname->_Name = name;
@@ -75,6 +76,7 @@ CL_DEFUN_SETF core::Symbol_sp chem__isoname_name_set(core::Symbol_sp name, Isona
 CL_LISPIFY_NAME("CHEM:ISOMER");
 CL_LAMBDA(value isoname)
 CL_DOCSTRING(R"dx(isoname-isomer-set)dx")
+DOCGROUP(cando)
 CL_DEFUN_SETF Fixnum chem__isoname_isomer_set(Fixnum isomer, Isoname_sp isoname)
 {
   isoname->_Isomer = isomer;

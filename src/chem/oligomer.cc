@@ -997,6 +997,7 @@ CL_DEFMETHOD SpecificContextSet_sp Oligomer_O::allSpecificMonomerContexts()
 #define ARGS_chem__oligomer_sequence "(olig)"
 #define DECL_chem__oligomer_sequence ""
 #define DOCS_chem__oligomer_sequence "oligomerSequence"
+DOCGROUP(cando)
 CL_DEFUN core::T_sp chem__oligomer_sequence(Oligomer_sp olig)
 {
     string seq = olig->sequenceAsString();

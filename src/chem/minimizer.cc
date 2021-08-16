@@ -194,6 +194,7 @@ void	Minimizer_O::changeOptions(core::List_sp optionCons)
 
 CL_LAMBDA(energy-function)
 CL_LISPIFY_NAME(make-minimizer);
+DOCGROUP(cando)
 CL_DEFUN Minimizer_sp Minimizer_O::make(ScoringFunction_sp givenEnergyFunction)
 {
   auto  me  = gctools::GC<Minimizer_O>::allocate_with_default_constructor();
@@ -2164,6 +2165,7 @@ CL_DEFMETHOD     void	Minimizer_O::restart()
 }
 
 
+DOCGROUP(cando)
 CL_DEFUN void chem__restart_minimizer()
 {
   throw RestartMinimizer();

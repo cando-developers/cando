@@ -782,6 +782,7 @@ uint Residue_O::numberOfAtoms()
 
 
 CL_LISPIFY_NAME(make-residue);
+DOCGROUP(cando)
 CL_DEFUN Residue_sp Residue_O::make(core::Symbol_sp name)
 {
   auto me = gctools::GC<Residue_O>::allocate_with_default_constructor();

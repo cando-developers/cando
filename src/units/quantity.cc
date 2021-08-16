@@ -178,6 +178,7 @@ Quantity_sp Quantity_O::create( double dbl, Unit_sp unit)
 
 
 CL_LISPIFY_NAME(make-quantity);
+DOCGROUP(cando)
 CL_DEFUN Quantity_sp Quantity_O::make(core::T_sp val, Unit_sp unit)
     {
       auto quant = gctools::GC<Quantity_O>::allocate_with_default_constructor();
