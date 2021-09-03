@@ -10,7 +10,7 @@
   (setq *leap-syntax* on))
 
 
-(defclass kernel (common-lisp-jupyter:kernel)
+(defclass kernel (jupyter/common-lisp:kernel)
   ()
   (:default-initargs
     :package (find-package :cando-user)
@@ -137,6 +137,7 @@
   (:default-initargs
     :class 'kernel
     :language +language+
+    :debugger t
     :systems '(:cando-jupyter)))
 
 
