@@ -301,10 +301,10 @@ bool	Loop::nextObjectInAtom()
       while ( this->iIndex0 < top->coordination() )
       {
         LOG(BF("status") );
-        topOrder = top.get();
+        topOrder = &*top;
         ASSERT(this->iIndex0<top->numberOfBonds());
         Atom_sp bondedTo = top->bondedNeighbor(this->iIndex0);
-        Atom_O* bondedOrder = bondedTo.get();
+        Atom_O* bondedOrder = &*bondedTo;
         if ( ( topOrder < bondedOrder ) || allowDuplicates ) {
           this->atoms[0] = top;
           this->atoms[1] = top->bondedNeighbor(this->iIndex0);

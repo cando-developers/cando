@@ -1555,22 +1555,20 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
         for ( int n=1;n<=FFPtor_O::MaxPeriodicity; n++ ) {
           if ( ffPtor->hasPeriodicity(n) ) {
             ++numPtors;
-//            LOG(BF( "Adding proper term for atoms %s-%s-%s-%s types: %s-%s-%s-%s")%
-//                ea1->getResidueAndName()
-//                % ea2->getResidueAndName()
-//                % ea3->getResidueAndName()
-//                % ea4->getResidueAndName()
-//                % t1 % t2 % t3 % t4
-//                );
-#if 0
-            core::write_bf_stream(BF( "Adding proper term for atoms %s-%s-%s-%s types: %s-%s-%s-%s /n")%
-                                  ea1->getResidueAndName()
-                                  % ea2->getResidueAndName()
-                                  % ea3->getResidueAndName()
-                                  % ea4->getResidueAndName()
-                                  % t1 % t2 % t3 % t4
-                                  );
-#endif
+            if (chem__verbose(1)) {
+              Residue_sp res1 = gc::As<Residue_sp>(atomToRes->gethash(a1));
+              Residue_sp res2 = gc::As<Residue_sp>(atomToRes->gethash(a2));
+              Residue_sp res3 = gc::As<Residue_sp>(atomToRes->gethash(a3));
+              Residue_sp res4 = gc::As<Residue_sp>(atomToRes->gethash(a4));
+              core::write_bf_stream(BF( "Adding proper term for atoms %s-%s-%s-%s types: %s-%s-%s-%s -> %s/n")%
+                                    ea1->getResidueAndName(res1)
+                                    % ea2->getResidueAndName(res2)
+                                    % ea3->getResidueAndName(res3)
+                                    % ea4->getResidueAndName(res4)
+                                    % t1 % t2 % t3 % t4
+                                    % _rep_(ffPtor)
+                                    );
+            }
             EnergyDihedral energyDihedral;
             energyDihedral.defineFrom(n,ffPtor,ea1,ea2,ea3,ea4,this->_Dihedral->getScale());
             this->_Dihedral->addTerm(energyDihedral);
@@ -1616,8 +1614,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
 //		ea4->_CloserThan15.insert(ea1->_Atom);
       }
     }
-//    if (chem__verbose(0)) core::write_bf_stream(BF("Built dihedral table with %d terms and %d missing terms\n") % terms % missing_terms);
-//   core::write_bf_stream(BF("Built dihedral table with %d terms and %d missing terms\n") % terms % missing_terms);
+    if (chem__verbose(0)) core::write_bf_stream(BF("Built dihedral table with %d terms and %d missing terms\n") % terms % missing_terms);
   }
   // Merge the itor terms
   FFItorDb_sp ffitors = FFItorDb_O::create();

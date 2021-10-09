@@ -90,7 +90,7 @@ public:
 		// methods
   core::List_sp encode() const;
   void		defineForAtom(core::T_sp forceField, Atom_sp atom, uint coordinateIndex);
-  string		getResidueAndName();
+  string		getResidueAndName(Residue_sp res);
 //	adapt::QDomNode_sp	asXmlRelativeToContainer(chem::Matter_sp parent);
 //	void		parseFromXmlRelativeToContainer( adapt::QDomNode_sp xml, chem::Matter_sp parent );
 };

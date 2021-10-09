@@ -201,7 +201,7 @@ void Joint_O::insertChild(int before, Joint_sp child )
 {_OF();
   ASSERTF(child.get() != this,BF("Circular atom reference"));
   this->_insertChild(before,child);
-  child.get()->setParent(this->asSmartPtr());
+  child->setParent(this->asSmartPtr());
 }
 
 void Joint_O::appendChild(Joint_sp child)
@@ -212,11 +212,11 @@ void Joint_O::appendChild(Joint_sp child)
   {
     int idx = this->firstNonJumpChildIndex();
     this->_insertChild(idx,child);
-    child.get()->setParent(this->asSmartPtr());
+    child->setParent(this->asSmartPtr());
     return;
   }
   this->_appendChild(child);
-  child.get()->setParent(this->asSmartPtr());
+  child->setParent(this->asSmartPtr());
 }
 
 void Joint_O::eraseChild(Joint_sp child)
@@ -253,7 +253,7 @@ void Joint_O::insertChild(Joint_sp child)
   {
     LOG(BF("It's a jump, inserting it at the start"));
     this->_insertChild(0,child);
-    child.get()->setParent(this->asSmartPtr());
+    child->setParent(this->asSmartPtr());
   } else {
     LOG(BF("It's a non-jump atom"));
     int firstNonJumpIndex = this->firstNonJumpChildIndex();

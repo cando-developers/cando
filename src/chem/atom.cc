@@ -1086,7 +1086,7 @@ void	Atom_O::addUniqueIntraResidueBondCopiesToBondList(core::HashTable_sp atomTo
     if ( me->atLowerUniqueAtomOrderThan( (*b)->getOtherAtom(me))) {
       if ( !(*b)->isInterResidueBond(atomToResidue) ) {
         LOG(BF("Original bond: %s") % (*b)->description() );
-        auto bondCopy = gctools::GC<Bond_O>::copy(*(b->get()));
+        auto bondCopy = gctools::GC<Bond_O>::copy(**b);
         LOG(BF("Copy bond: %s") % bondCopy->description() );
         list->addBond(bondCopy);
       }
@@ -1107,7 +1107,7 @@ void Atom_O::addUniqueInterResidueBondCopiesToBondList(core::HashTable_sp atomTo
   for ( b=bonds.begin();b!=bonds.end() ; b++ ) {
     if ( me->atLowerUniqueAtomOrderThan( (*b)->getOtherAtom(me))) {
       if ( (*b)->isInterResidueBond(atomToResidue) ) {
-        auto  bondCopy = gctools::GC<Bond_O>::copy( *(b->get()) ); // = RP_Copy<Bond_O>(*b);
+        auto  bondCopy = gctools::GC<Bond_O>::copy( **b ); // = RP_Copy<Bond_O>(*b);
         list->addBond(bondCopy);
       }
     }

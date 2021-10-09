@@ -4,7 +4,7 @@
   (load-atom-type-rules "ATOMTYPE_GFF.DEF")
   (load-amber-params "gaff.dat"))
 
-(defun easy-gaff ()
+(defun easy-gaff (&optional (parm-file "gaff.dat"))
   (leap.core:clear-path)
   (leap.core:add-path "amber:dat;leap;prep;")
   (leap.core:add-path "amber:dat;leap;lib;")
@@ -14,4 +14,4 @@
   (leap.core:add-path *default-pathname-defaults*)
   (leap.core:clear-force-field)
   (load-atom-type-rules "ATOMTYPE_GFF.DEF")
-  (load-amber-params "gaff.dat"))
+  (load-amber-params parm-file))

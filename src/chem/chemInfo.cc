@@ -2201,7 +2201,7 @@ bool AntechamberBondToAtomTest_O::matches_Bond(Root_sp root, chem::Atom_sp from,
   if (root->type() != chem::antechamberRoot) {
     stringstream ss;
     ss << "AntechamberBondToAtomTest::matches requires an AntechamberRoot "
-       << "instead we have" << (unsigned long)(root.get()) << " of type: " << root->type();
+       << "instead we have" << (unsigned long)(&*root) << " of type: " << root->type();
     SIMPLE_ERROR(BF("%s") % ss.str());
   }
   antechamberRoot = (root).as<AntechamberRoot_O>();

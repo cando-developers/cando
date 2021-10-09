@@ -143,7 +143,7 @@ void JumpJoint_O::updateInternalCoords(bool const recursive,
   if ( recursive )
   {
     for (int childIdx=0; childIdx<this->_numberOfChildren(); childIdx++ ) {
-      this->_child(childIdx).get()->updateInternalCoords(true,at);
+      this->_child(childIdx)->updateInternalCoords(true,at);
     }
   }
 }
@@ -211,7 +211,7 @@ void JumpJoint_O::_updateXyzCoords(Stub& stub)
   Stub newStub;
   newStub._Transform = this->_LabFrame;
   for ( int ii=0; ii<this->_numberOfChildren(); ii++ ) {
-    this->_child(ii).get()->_updateXyzCoords(newStub);
+    this->_child(ii)->_updateXyzCoords(newStub);
   }
   this->noteXyzUpToDate();
 }

@@ -116,17 +116,17 @@ void BondedJoint_O::_appendChild(Joint_sp c)
       if ( gc::IsA<JumpJoint_sp>(this->parent()))
 	{
 	    ASSERT(this->parent().get()->stubDefined());
-	    Joint_sp p_stub2( this->parent().get()->stubJoint2() );
-	    chem::AtomId const & p_stub2_id( p_stub2.get()->id() );
+	    Joint_sp p_stub2( this->parent()->stubJoint2() );
+	    chem::AtomId const & p_stub2_id( p_stub2->id() );
 	    if ( this->id() == p_stub2_id )
 	    {
 		// very special case!!
-		return this->parent().get()->stubJoint3(at);
+		return this->parent()->stubJoint3(at);
 	    } else {
 		return p_stub2;
 	    }
 	} else {
-	    return this->parent().get()->stubJoint2();
+	    return this->parent()->stubJoint2();
 	}
     }
 

@@ -133,17 +133,13 @@ void	EnergyAtom::parseFromXmlRelativeToContainer(adapt::QDomNode_sp xml,
 }
 #endif //]
 
-#if 0
-string		EnergyAtom::getResidueAndName()
+string		EnergyAtom::getResidueAndName(Residue_sp res)
 {
-  chem::Residue_sp	res;
   stringstream	ss;
-  res = this->atom()->getResidueContainedBy().as<Residue_O>();
   ss.str("");
   ss << ":"<<res->getId()<<"@"<<this->atom()->getName();
   return ss.str();
 }
-#endif
 
 CL_LISPIFY_NAME(make-atom-table);
 CL_DEF_CLASS_METHOD

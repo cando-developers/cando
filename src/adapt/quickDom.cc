@@ -98,7 +98,7 @@ int		i;
     } else {
 		    // Create a new node, give it its name and parent
 	newNode = QDomNode_O::create();
-	nd = newNode.get();
+	nd = &*newNode;
 //	LOG(BF("Created new node address=%lx") % (nd ) );
         this->_currentNode->addChild(newNode);
     }
@@ -761,7 +761,7 @@ gc::Nilable<QDomNode_sp>  QDomNode_O::parse(core::T_sp stream)
     QDomNode_sp	node;
 
     node = QDomNode_O::create();
-    handler.setTopNode(node.get());
+    handler.setTopNode(&*node);
     LOG(BF("QDomParseString about to parse string") );
     MySaxParser parser;
     res = parser.initialize();

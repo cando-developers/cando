@@ -242,7 +242,7 @@ public:
     if (this->parent().unboundp()) {
       SIMPLE_ERROR(BF("inputStubJoint1 parent of %s isn't defined") % _rep_(this->asSmartPtr()));
     }
-    return this->parent().get()->stubJoint1();
+    return this->parent()->stubJoint1();
   }
 
 	/*! Return the input stub Joint */
@@ -252,7 +252,7 @@ public:
     if (this->parent().unboundp()) {
       SIMPLE_ERROR(BF("inputStubJoint2 parent of %s isn't defined") % _rep_(this->asSmartPtr()));
     }
-    return this->parent().get()->stubJoint2();
+    return this->parent()->stubJoint2();
   }
 
 
@@ -282,19 +282,19 @@ public:
   virtual Joint_sp stubJoint1() const = 0;
 
 	/*! Return the id of stubJoint */
-  chem::AtomId stubJoint1Id() const { return this->stubJoint1().get()->id();};
+  chem::AtomId stubJoint1Id() const { return this->stubJoint1()->id();};
 
 	/*! Return the stubJoint2 */
   virtual Joint_sp stubJoint2() const = 0;
 
 	/*! Return the id of stubJoint */
-  chem::AtomId stubJoint2Id() const { return this->stubJoint2().get()->id();};
+  chem::AtomId stubJoint2Id() const { return this->stubJoint2()->id();};
 
 	/*! Return the stubJoint3 */
   virtual Joint_sp stubJoint3(JointTree_sp tree) const = 0;
 
 	/*! Return the id of stubJoint */
-  chem::AtomId stubJoint3Id(JointTree_sp at) const { return this->stubJoint3(at).get()->id();};
+  chem::AtomId stubJoint3Id(JointTree_sp at) const { return this->stubJoint3(at)->id();};
 
 	/*! Return true if we want to keep the Dof fixed */
   bool keepDofFixed(DofType dof) const { return false;};

@@ -479,7 +479,7 @@ string	Topology_O::description() const
   ss << " Plugs:";
   for ( Plugs::const_iterator i=this->_Plugs.begin(); i!= this->_Plugs.end(); i++)
   {
-    ss << (BF("%s@%p ") % _rep_(i->second->getName()) % i->second->getName().get() ).str();
+    ss << (BF("%s@%p ") % _rep_(i->second->getName()) % i->second->getName().raw_() ).str();
   }
   ss << ">";
   return ss.str();

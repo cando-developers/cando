@@ -42,7 +42,7 @@ void OriginJumpJoint_O::updateInternalCoords(bool const recursive,
 {_OF();
   if ( recursive ) {
     for (int childIdx=0; childIdx<this->_numberOfChildren(); childIdx++ ) {
-      this->_child(childIdx).get()->updateInternalCoords(true,at);
+      this->_child(childIdx)->updateInternalCoords(true,at);
     }
   }
 }
