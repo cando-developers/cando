@@ -210,7 +210,10 @@
                        :clip-dist 0
                        :background-color "white"
                        :components (list component
-                                         (make-instance 'ngl:shape :primitives (getf kwargs :shapes)))
+                                         (make-instance 'ngl:shape
+                                                        :primitives (getf kwargs :shapes)
+                                                        :representations (list (make-instance 'ngl:buffer-representation
+                                                                                              :opacity (getf kwargs :shapes-opacity 1d0)))))
                        :layout (make-instance 'jw:layout
                                               :width "100%"
                                               :height "auto"
