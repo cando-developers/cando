@@ -19,38 +19,42 @@
   "Constructs a plane from a collection of points
 so that the summed squared distance to all points is minimized.
 Returns (values t centroid normalized-dir) or (values nil)"
-  (when (< (length points) 3)
-    (return-from plane-from-points nil))
-  (let ((sum (geom:vec 0.0 0.0 0.0)))
-    (loop for vec in points
-          do (setf sum (geom:v+ sum vec)))
-    (let ((centroid (geom:v* sum (/ 1.0 (length points)))))
-      ;; Calculate full 3x3 covariance matrix, excluding symmetries
-      (multiple-value-bind (xx xy xz yy yz zz)
+  (if (< (length points) 3)
+      nil
+      (let ((sum (geom:vec 0.0 0.0 0.0))
+            (xx 0.0) (xy 0.0) (xz 0.0)
+            (yy 0.0) (yz 0.0) (zz 0.0))
+        (declare (double-float xx xy xz yy yz zz))
+        (loop for vec in points
+              do (setf sum (geom:v+ sum vec)))
+        (let ((centroid (geom:v* sum (/ 1.0 (length points)))))
+          ;; Calculate full 3x3 covariance matrix, excluding symmetries
           (loop for p in points
                 for r = (geom:v- p centroid)
-                sum (* (geom:vx r) (geom:vx r)) into xx of-type double-float
-                sum (* (geom:vx r) (geom:vy r)) into xy of-type double-float
-                sum (* (geom:vx r) (geom:vz r)) into xz of-type double-float
-                sum (* (geom:vy r) (geom:vy r)) into yy of-type double-float
-                sum (* (geom:vy r) (geom:vz r)) into yz of-type double-float
-                sum (* (geom:vz r) (geom:vx r)) into zz of-type double-float
-                finally (return (values xx xy xz yy yz zz)))
-        (let ((det-x (infix:infix yy * zz - yz * yz))
-              (det-y (infix:infix xx * zz - xz * xz))
-              (det-z (infix:infix xx * yy - xy * xy)))
-          (let ((det-max (max det-x det-y det-z)))
-            (when (<= det-max 0.0)
-              (return-from plane-from-points nil))
-            ;; Pick path with best conditioning
-            (let ((dir (cond
-                         ((= det-max det-x)
-                          (geom:vec det-x (infix:infix xz * yz - xy * zz) (infix:infix xy * yz - xz * yy)))
-                         ((= det-max det-y)
-                          (geom:vec (infix:infix xz * yz - xy * zz) det-y (infix:infix xy * xz - yz * xx)))
-                         ((= det-max det-z)
-                          (geom:vec (infix:infix xy * yz - xz * yy) (infix:infix xy * xz - yz * xx) det-z)))))
-              (make-instance 'plane :centroid centroid :normal (geom:vnormalized dir)))))))))
+                do (setf xx (+ xx (* (geom:vx r) (geom:vx r))))
+                do (setf xx (+ xx (* (geom:vx r) (geom:vx r))))
+                do (setf xy (+ xy (* (geom:vx r) (geom:vy r))))
+                do (setf xz (+ xz (* (geom:vx r) (geom:vz r))))
+                do (setf yy (+ yy (* (geom:vy r) (geom:vy r))))
+                do (setf yz (+ yz (* (geom:vy r) (geom:vz r))))
+                do (setf zz (+ zz (* (geom:vz r) (geom:vx r)))))
+          (let ((det-x (infix:infix yy * zz - yz * yz))
+                (det-y (infix:infix xx * zz - xz * xz))
+                (det-z (infix:infix xx * yy - xy * xy)))
+            (declare (double-float det-x det-y det-z))
+            (let ((det-max (max det-x det-y det-z)))
+              (declare (double-float det-max))
+              (if (<= det-max 0.0)
+                  nil
+                  ;; Pick path with best conditioning
+                  (let ((dir (cond
+                               ((= det-max det-x)
+                                (geom:vec det-x (infix:infix xz * yz - xy * zz) (infix:infix xy * yz - xz * yy)))
+                               ((= det-max det-y)
+                                (geom:vec (infix:infix xz * yz - xy * zz) det-y (infix:infix xy * xz - yz * xx)))
+                               ((= det-max det-z)
+                                (geom:vec (infix:infix xy * yz - xz * yy) (infix:infix xy * xz - yz * xx) det-z)))))
+                    (make-instance 'plane :centroid centroid :normal (geom:vnormalized dir))))))))))
 
 (defun perpendicular (direction)
   (let ((vx (geom:vx direction))
