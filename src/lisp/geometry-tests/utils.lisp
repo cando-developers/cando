@@ -22,8 +22,8 @@ Returns (values t centroid normalized-dir) or (values nil)"
   (if (< (length points) 3)
       nil
       (let ((sum (geom:vec 0.0 0.0 0.0))
-            (xx 0.0) (xy 0.0) (xz 0.0)
-            (yy 0.0) (yz 0.0) (zz 0.0))
+            (xx 0.0d0) (xy 0.0d0) (xz 0.0d0)
+            (yy 0.0d0) (yz 0.0d0) (zz 0.0d0))
         (declare (double-float xx xy xz yy yz zz))
         (loop for vec in points
               do (setf sum (geom:v+ sum vec)))
@@ -31,20 +31,22 @@ Returns (values t centroid normalized-dir) or (values nil)"
           ;; Calculate full 3x3 covariance matrix, excluding symmetries
           (loop for p in points
                 for r = (geom:v- p centroid)
-                do (setf xx (+ xx (* (geom:vx r) (geom:vx r))))
-                do (setf xx (+ xx (* (geom:vx r) (geom:vx r))))
-                do (setf xy (+ xy (* (geom:vx r) (geom:vy r))))
-                do (setf xz (+ xz (* (geom:vx r) (geom:vz r))))
-                do (setf yy (+ yy (* (geom:vy r) (geom:vy r))))
-                do (setf yz (+ yz (* (geom:vy r) (geom:vz r))))
-                do (setf zz (+ zz (* (geom:vz r) (geom:vx r)))))
+                for rx double-float = (geom:vx r)
+                for ry double-float = (geom:vy r)
+                for rz double-float = (geom:vz r)
+                do (incf xx (infix:infix rx * rx))
+                do (incf xy (infix:infix rx * ry))
+                do (incf xz (infix:infix rx * rz))
+                do (incf yy (infix:infix ry * ry))
+                do (incf yz (infix:infix ry * rz))
+                do (incf zz (infix:infix rz * rz)))
           (let ((det-x (infix:infix yy * zz - yz * yz))
                 (det-y (infix:infix xx * zz - xz * xz))
                 (det-z (infix:infix xx * yy - xy * xy)))
             (declare (double-float det-x det-y det-z))
             (let ((det-max (max det-x det-y det-z)))
               (declare (double-float det-max))
-              (if (<= det-max 0.0)
+              (if (<= det-max 0.0d0)
                   nil
                   ;; Pick path with best conditioning
                   (let ((dir (cond
@@ -78,9 +80,15 @@ Returns (values t centroid normalized-dir) or (values nil)"
        :position1 ,(list (geom:vx centroid) (geom:vy centroid) (geom:vz centroid))
        :position2 ,(list (geom:vx normal-pos) (geom:vy normal-pos) (geom:vz normal-pos))
        :color (0 0 1) :radius 0.2))))
-       
+
 
 (defun ring-planes (rings)
+  (loop for ring in rings
+        for points = (mapcar (lambda (atm) (chem:get-position atm)) ring)
+        for plane = (plane-from-points points)))
+
+
+(defun ring-plane-shapes (rings)
   (loop for ring in rings
         for points = (mapcar (lambda (atm) (chem:get-position atm)) ring)
         for plane = (plane-from-points points)
