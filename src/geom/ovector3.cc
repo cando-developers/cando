@@ -118,6 +118,19 @@ CL_DEFMETHOD Vector3 OVector3_O::_PLUS_(const Vector3& other)
   return s;
 }
 
+
+CL_NAME("V+!");
+CL_DEFUN void geom__v_PLUS__BANG_(const Vector3& x, const Vector3& y, Vector3& result )
+{
+  x.addSet(result,y);
+}
+
+CL_NAME("V-!");
+CL_DEFMETHOD void OVector3_O::v_MINUS__BANG_(const Vector3& other, Vector3& result)
+{
+  this->_Value.subSet(result,other);
+}
+
 CL_NAME("VLENGTH");
 CL_DEFMETHOD     double OVector3_O::magnitude()
     {
@@ -125,11 +138,18 @@ CL_DEFMETHOD     double OVector3_O::magnitude()
 	return l;
     }
 
-CL_LISPIFY_NAME("VCROSS");
-CL_DEFMETHOD     Vector3 OVector3_O::crossProduct(const Vector3& other)
+CL_NAME("VCROSS");
+CL_DEFMETHOD Vector3 OVector3_O::crossProduct(const Vector3& other)
     {
-	Vector3 s = this->_Value.crossProduct(other);
-	return s;
+      Vector3 result;
+      this->_Value.crossProductSet(other, result);
+      return result;
+    }
+
+CL_NAME("VCROSS!");
+CL_DEFMETHOD void OVector3_O::crossProduct_BANG_(const Vector3& other, Vector3& result )
+    {
+      this->_Value.crossProductSet(result, result);
     }
 
 CL_NAME("VDOT");
@@ -181,6 +201,12 @@ CL_DEFMETHOD Vector3 OVector3_O::timesScalar(double d)
 {
     Vector3 p = this->_Value.multiplyByScalar(d);
     return p;
+}
+
+CL_NAME("V*!");
+CL_DEFMETHOD void OVector3_O::timesScalar_BANG_(double d, Vector3& result)
+{
+  result = this->_Value.multiplyByScalar(d);
 }
 
 
@@ -239,6 +265,25 @@ void OVector3_O::fields(core::Record_sp node)
   node->field(INTERN_(kw,z),this->_Value[2]);
 }
 
+
+
+};
+
+
+
+extern "C" {
+
+double cc_OVector3_vx(core::T_sp tvec3) {
+  return gc::As<geom::OVector3_sp>(tvec3)->_Value[0];
+};
+
+double cc_OVector3_vy(core::T_sp tvec3) {
+  return gc::As<geom::OVector3_sp>(tvec3)->_Value[1];
+};
+
+double cc_OVector3_vz(core::T_sp tvec3) {
+  return gc::As<geom::OVector3_sp>(tvec3)->_Value[2];
+};
 
 
 };

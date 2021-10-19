@@ -46,88 +46,102 @@ This is an open source license for the CANDO software from Temple University, bu
 
 /*! A vector stores xyz coordinates in Angstroms */
 class Vector3 {
-    friend class OVector3_O;
+  friend class OVector3_O;
 
 protected:
-	double coords[3];
+  double coords[3];
 public:
 
 
 	//! Construct zerod vector
-        Vector3() : coords{0.0,0.0,0.0} {};
-        ~Vector3() {};
- Vector3( double x, double y, double z ) : coords{x,y,z} {};
+  Vector3() : coords{0.0,0.0,0.0} {};
+  ~Vector3() {};
+  Vector3( double x, double y, double z ) : coords{x,y,z} {};
 
 	/*! Return the vector in nanometers */
-	Vector3 inNanometers() const;
+  Vector3 inNanometers() const;
 
-	double& operator[](uint x) { return this->coords[x];};
+  double& operator[](uint x) { return this->coords[x];};
 
-	double const& operator[](uint x) const { return this->coords[x];};
+  double const& operator[](uint x) const { return this->coords[x];};
 
-	double& getX() { return this->coords[0]; }
-	double& getY() { return this->coords[1]; }
-	double& getZ() { return this->coords[2]; }
-	double getX() const { return this->coords[0]; }
-	double getY() const { return this->coords[1]; }
-	double getZ() const { return this->coords[2]; }
-	bool operator==( const Vector3& v ) const { return this->coords[0] == v.coords[0]
-                                                    && this->coords[1] == v.coords[1]
-                                                    && this->coords[2] == v.coords[2]; }
-	Vector3 operator+( const Vector3& v ) const { return Vector3( this->coords[0]+v.getX(),
-							 this->coords[1]+v.getY(),
-							 this->coords[2]+v.getZ() ); };
-	Vector3 operator- ( const Vector3& v ) const { return Vector3( this->coords[0]-v.getX(),
-							 this->coords[1]-v.getY(),
-							 this->coords[2]-v.getZ() ); };
-	Vector3 operator*( double s ) { return Vector3( this->coords[0]*s,
-							this->coords[1]*s,
-							this->coords[2]*s ); };
+  double& getX() { return this->coords[0]; }
+  double& getY() { return this->coords[1]; }
+  double& getZ() { return this->coords[2]; }
+  double getX() const { return this->coords[0]; }
+  double getY() const { return this->coords[1]; }
+  double getZ() const { return this->coords[2]; }
+  bool operator==( const Vector3& v ) const { return this->coords[0] == v.coords[0]
+        && this->coords[1] == v.coords[1]
+        && this->coords[2] == v.coords[2]; }
+  Vector3 operator+( const Vector3& v ) const { return Vector3( this->coords[0]+v.getX(),
+                                                                this->coords[1]+v.getY(),
+                                                                this->coords[2]+v.getZ() ); };
+  Vector3 operator- ( const Vector3& v ) const { return Vector3( this->coords[0]-v.getX(),
+                                                                 this->coords[1]-v.getY(),
+                                                                 this->coords[2]-v.getZ() ); };
+  Vector3 operator*( double s ) { return Vector3( this->coords[0]*s,
+                                                  this->coords[1]*s,
+                                                  this->coords[2]*s ); };
 
-	Vector3	add( const Vector3& v ) const { return (*this)+v; }  ;
-	void addToX(const double& offset) { this->coords[0] += offset;};
-	void addToY(const double& offset) { this->coords[1] += offset;};
-	void addToZ(const double& offset) { this->coords[2] += offset;};
-	Vector3	sub( const Vector3& v )  const{ return (*this)-v; } ;
-	Vector3	multiplyByScalar( double v ) { return (*this)*v; };
+  Vector3 add( const Vector3& v ) const { return (*this)+v; }  ;
+  void addSet( Vector3& result, const Vector3& v ) const { result = (*this)+v; }  ;
+  void addToX(const double& offset) { this->coords[0] += offset;};
+  void addToY(const double& offset) { this->coords[1] += offset;};
+  void addToZ(const double& offset) { this->coords[2] += offset;};
+  Vector3 sub( const Vector3& v ) const{ return (*this)-v; } ;
+  void subSet( Vector3& result, const Vector3& v ) const{ result = (*this)-v; } ;
+  Vector3	multiplyByScalar( double v ) { return (*this)*v; };
+  void multiplyByScalarSet( Vector3& result, double s) {
+    result.coords[0] = this->coords[0]*s;
+    result.coords[1] = this->coords[1]*s;
+    result.coords[2] = this->coords[2]*s;
+  }
+  
 
-	void	set( double x, double y, double z )	{ this->coords[0]=x;
-							this->coords[1]=y;
-							this->coords[2]=z;};
-	void	setVector( double x, double y, double z) {this->set(x,y,z);};
-	Vector3 crossProduct( const Vector3& v ) const;
+  void	set( double x, double y, double z )
+  {
+    this->coords[0]=x;
+    this->coords[1]=y;
+    this->coords[2]=z;
+  };
+  void	setVector( double x, double y, double z) {this->set(x,y,z);};
+  Vector3 crossProduct( const Vector3& v ) const;
+  void crossProductSet(const Vector3& v, Vector3& result ) const;
   double dotProduct( const Vector3& v ) {
     return(this->getX()*v.getX()
            +this->getY()*v.getY()
            +this->getZ()*v.getZ());
   }
-	double	length() const;
+  double	length() const;
 
 		//! If the Vector3 is not defined then set all coordinates to 0.0
-	void	setIsDefined(bool isDef) { if ( !isDef ) { this->set(0.0,0.0,0.0); }; };
+  void	setIsDefined(bool isDef) { if ( !isDef ) { this->set(0.0,0.0,0.0); }; };
 		//! A Vector3 is defined if any of its coordinates are not zero
-    bool	isDefined() { return ( this->coords[0]!=0.0 || this->coords[1]!=0.0 || this->coords[2]!=0.0 ); };
+  bool	isDefined() { return ( this->coords[0]!=0.0 || this->coords[1]!=0.0 || this->coords[2]!=0.0 ); };
 
-	Vector3	normalized() const;
+  Vector3 normalized() const;
+  void normalizedSet(Vector3& result);
 		//! Normalize the vector and if it is zero then return a zero vector
-	Vector3	normalizedOrZero() const;
+  Vector3 normalizedOrZero() const;
+  void normalizedOrZeroSet(Vector3& result) const;
 
-	double	angleToVectorAboutNormal(const Vector3& toVector, const Vector3& aboutNormal);
+  double	angleToVectorAboutNormal(const Vector3& toVector, const Vector3& aboutNormal);
 #if 0 //[
-	QDomNode_sp	asXml(string nm="V3");
-	void		parseFromXml(QDomNode_sp node);
+  QDomNode_sp	asXml(string nm="V3");
+  void		parseFromXml(QDomNode_sp node);
 #endif //]
-	void	dump();
-	bool	sameAs(const Vector3& x);
+  void	dump();
+  bool	sameAs(const Vector3& x);
 
-    void	writeToStream( std::ostream& out );
-    void write(core::T_sp out);
-	string	asString() const;
-	void	parseFromString(string& str);
-	void	parseFromCharacterArray(char* line);
+  void	writeToStream( std::ostream& out );
+  void write(core::T_sp out);
+  string	asString() const;
+  void	parseFromString(string& str);
+  void	parseFromCharacterArray(char* line);
 
 	/*! Fill from a cons of three Numbers */
-	void	fillFromCons(core::Cons_sp vals);
+  void	fillFromCons(core::Cons_sp vals);
 };
 
 

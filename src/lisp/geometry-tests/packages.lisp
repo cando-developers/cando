@@ -5,7 +5,7 @@
   (:use #:cl )
   (:nicknames :gt)
   (:export
-   #:plane-from-points
+   #:plane-from-atoms
    )
   (:documentation
    "Run tests on geometry to determine if there are problems"))
