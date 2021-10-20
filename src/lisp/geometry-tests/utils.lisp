@@ -135,29 +135,6 @@ Returns the plane or nil"
         (let ((d (/ (geom:vdot (geom:vdot p0-l0 (normal plane))) l.normal)))
           (<= 0.0 d 1.0)))))
 
-
-(defun segment-crosses-plane (plane l0 l1)
-  "Return T if the segment defined by l0 and l1 crosses the plane"
-  (let* ((l (geom:v- l1 l0)) ; allocate l on the stack
-         (p0-l0 (geom:v- p0 l0)) ; allocate p0-l0 on the stack
-         (l.normal (geom:vdot l (normal plane))))
-    (declare (dynamic-extent l p0-l0))
-    (if (= l.normal 0.0)
-        nil
-        (let ((d (/ (geom:vdot (geom:vdot p0-l0 (normal plane))) l.normal)))
-          (<= 0.0 d 1.0)))))
-
-
-(defun segment-crosses-plane-temps (plane l0 l1 l p0-l0)
-  "Return T if the segment defined by l0 and l1 crosses the plane"
-  (geom:v-! l l1 l0)
-  (geom:v-! p0-l0 p0 l0)
-  (let ((l.normal (geom:vdot l (normal plane))))
-    (if (= l.normal 0.0)
-        nil
-        (let ((d (/ (geom:vdot (geom:vdot p0-l0 (normal plane))) l.normal)))
-          (<= 0.0 d 1.0)))))
-
 (defun plane-shapes (plane)
   (let* ((centroid (centroid plane))
          (normal (normal plane))
