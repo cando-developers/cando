@@ -41,7 +41,7 @@ class OVector3_O : public core::CxxObject_O
   LISP_CLASS(geom,GeomPkg,OVector3_O,"V3",core::CxxObject_O);
 public:
   bool fieldsp() const { return true; };
-  void	fields(core::Record_sp node);
+  void fields(core::Record_sp node);
 public:
 #if 0
   core::List_sp encode() ;
@@ -72,7 +72,7 @@ public:
   CL_LISPIFY_NAME("getZ");
   CL_DEFMETHOD 	double getZ() { return this->_Value.getZ(); };
   Vector3& value() { return this->_Value;};
-  Vector3	get() { return this->_Value; };
+  Vector3 get() { return this->_Value; };
 		/*! Calculate the dihedral angle from this-vb-vc-vd
 		 */
   double dihedral( const Vector3& vb, const Vector3& vc, const Vector3& vd );
@@ -108,7 +108,9 @@ public:
   void setUsingBondAngleDihedral(double bond, OVector3_sp bondPos,
                                  double angle, OVector3_sp anglePos,
                                  double dihedral, OVector3_sp dihedralPos);
-  DEFAULT_CTOR_DTOR(OVector3_O);
+  OVector3_O() {};
+  OVector3_O(double x, double y, double z) : _Value{x,y,z} {};
+    
 };
 }; // namespace geom
 

@@ -67,13 +67,10 @@ namespace geom {
 CL_NAME("VEC");
 DOCGROUP(cando)
 CL_DEFUN OVector3_sp OVector3_O::make(double x, double y, double z)
-    {
-      auto ov = gctools::GC<OVector3_O>::allocate_with_default_constructor();
-	ov->_Value[0] = x;
-	ov->_Value[1] = y;
-	ov->_Value[2] = z;
-	return ov;
-    }
+{
+  auto ov = gctools::GC<OVector3_O>::allocate(x,y,z);
+  return ov;
+}
 
 CL_DOCSTRING(R"dx(Return T if the vec is anything other than 0.0,0.0,0.0)dx")
 CL_NAME("VEC-P");
@@ -273,17 +270,21 @@ void OVector3_O::fields(core::Record_sp node)
 
 extern "C" {
 
-double cc_OVector3_vx(core::T_sp tvec3) {
-  return gc::As<geom::OVector3_sp>(tvec3)->_Value[0];
-};
+  core::T_sp cc_OVector3_make(double x, double y, double z) {
+    return geom::OVector3_O::make(x,y,z);
+  }
+  
+  double cc_OVector3_vx(core::T_sp tvec3) {
+    return gc::As<geom::OVector3_sp>(tvec3)->_Value[0];
+  };
 
-double cc_OVector3_vy(core::T_sp tvec3) {
-  return gc::As<geom::OVector3_sp>(tvec3)->_Value[1];
-};
+  double cc_OVector3_vy(core::T_sp tvec3) {
+    return gc::As<geom::OVector3_sp>(tvec3)->_Value[1];
+  };
 
-double cc_OVector3_vz(core::T_sp tvec3) {
-  return gc::As<geom::OVector3_sp>(tvec3)->_Value[2];
-};
+  double cc_OVector3_vz(core::T_sp tvec3) {
+    return gc::As<geom::OVector3_sp>(tvec3)->_Value[2];
+  };
 
 
 };

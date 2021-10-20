@@ -53,12 +53,12 @@ protected:
 public:
 
 
-	//! Construct zerod vector
+  //! Construct zerod vector
   Vector3() : coords{0.0,0.0,0.0} {};
   ~Vector3() {};
   Vector3( double x, double y, double z ) : coords{x,y,z} {};
 
-	/*! Return the vector in nanometers */
+  /*! Return the vector in nanometers */
   Vector3 inNanometers() const;
 
   double& operator[](uint x) { return this->coords[x];};
@@ -115,14 +115,14 @@ public:
   }
   double	length() const;
 
-		//! If the Vector3 is not defined then set all coordinates to 0.0
+  //! If the Vector3 is not defined then set all coordinates to 0.0
   void	setIsDefined(bool isDef) { if ( !isDef ) { this->set(0.0,0.0,0.0); }; };
-		//! A Vector3 is defined if any of its coordinates are not zero
+  //! A Vector3 is defined if any of its coordinates are not zero
   bool	isDefined() { return ( this->coords[0]!=0.0 || this->coords[1]!=0.0 || this->coords[2]!=0.0 ); };
 
   Vector3 normalized() const;
   void normalizedSet(Vector3& result);
-		//! Normalize the vector and if it is zero then return a zero vector
+  //! Normalize the vector and if it is zero then return a zero vector
   Vector3 normalizedOrZero() const;
   void normalizedOrZeroSet(Vector3& result) const;
 
@@ -140,7 +140,7 @@ public:
   void	parseFromString(string& str);
   void	parseFromCharacterArray(char* line);
 
-	/*! Fill from a cons of three Numbers */
+  /*! Fill from a cons of three Numbers */
   void	fillFromCons(core::Cons_sp vals);
 };
 
