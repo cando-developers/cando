@@ -58,6 +58,7 @@ Returns (values t centroid normalized-dir) or (values nil)"
                                 (geom:vec (infix:infix xy * yz - xz * yy) (infix:infix xy * xz - yz * xx) det-z)))))
                     (make-instance 'plane :centroid centroid :normal (geom:vnormalized dir))))))))))
 
+
 (defun perpendicular (direction)
   (let ((vx (geom:vx direction))
         (vy (geom:vy direction))
@@ -68,6 +69,28 @@ Returns (values t centroid normalized-dir) or (values nil)"
            (perp (if select-try perp-try1 perp-try2)))
       perp)))
 
+
+(defun segment-crosses-plane (plane l0 l1)
+  "Return T if the segment defined by l0 and l1 crosses the plane"
+  (let* ((l (geom:v- l1 l0)) ; allocate l on the stack
+         (p0-l0 (geom:v- p0 l0)) ; allocate p0-l0 on the stack
+         (l.normal (geom:vdot l (normal plane))))
+    (declare (dynamic-extent l p0-l0))
+    (if (= l.normal 0.0)
+        nil
+        (let ((d (/ (geom:vdot (geom:vdot p0-l0 (normal plane))) l.normal)))
+          (<= 0.0 d 1.0)))))
+
+
+(defun segment-crosses-plane-temps (plane l0 l1 l p0-l0)
+  "Return T if the segment defined by l0 and l1 crosses the plane"
+  (geom:v-! l l1 l0)
+  (geom:v-! p0-l0 p0 l0)
+  (let ((l.normal (geom:vdot l (normal plane))))
+    (if (= l.normal 0.0)
+        nil
+        (let ((d (/ (geom:vdot (geom:vdot p0-l0 (normal plane))) l.normal)))
+          (<= 0.0 d 1.0)))))
 
 (defun plane-shapes (plane)
   (let* ((centroid (centroid plane))
