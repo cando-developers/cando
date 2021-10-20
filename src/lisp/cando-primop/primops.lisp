@@ -1,0 +1,30 @@
+
+(in-package :geom)
+
+(progn
+  (eval-when (:compile-toplevel :load-toplevel :execute)
+    (cmp:define-primitive "cc_OVector3_vx" :double-float '(:object))
+    (cmp:define-primitive "cc_OVector3_vy" :double-float '(:object))
+    (cmp:define-primitive "cc_OVector3_vz" :double-float '(:object))
+    (clasp-cleavir::defvprimop-intrinsic geom::%vx ((:double-float) :object) "cc_OVector3_vx")
+    (clasp-cleavir::defvprimop-intrinsic geom::%vy ((:double-float) :object) "cc_OVector3_vy")
+    (clasp-cleavir::defvprimop-intrinsic geom::%vz ((:double-float) :object) "cc_OVector3_vz"))
+  (declaim (inline geom::vx))
+  (defun vx (ovec) (core::primop geom::%vx ovec))
+  (declaim (inline geom::vy))
+  (defun vy (ovec) (core::primop geom::%vy ovec))
+  (declaim (inline geom::vz))
+  (defun vz (ovec) (core::primop geom::%vz ovec))
+  (export '(vx vy vz) :geom)
+  )
+
+#+(or)
+(progn
+  (export '(geom::vx geom::vy geom::vz) :geom)
+  (declaim (inline geom::vx))
+  (defun vx (ovec) (geom:get-x ovec))
+  (declaim (inline geom::vy))
+  (defun vy (ovec) (geom:get-y ovec))
+  (declaim (inline geom::vz))
+  (defun vz (ovec) (geom:get-z ovec))
+  )

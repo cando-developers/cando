@@ -92,6 +92,16 @@ double	x,y,z;
 	return Vector3(x,y,z);
 }
 
+void Vector3::crossProductSet( const Vector3& v, Vector3& result ) const
+{
+double	x,y,z;
+
+	x = this->getY()*v.getZ()-this->getZ()*v.getY();
+	y = this->getZ()*v.getX()-this->getX()*v.getZ();
+	z = this->getX()*v.getY()-this->getY()*v.getX();
+        result.set(x,y,z);
+}
+
 
 
 

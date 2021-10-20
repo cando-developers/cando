@@ -342,6 +342,7 @@ namespace chem {
     CL_LISPIFY_NAME("setSelected");
     CL_DEFMETHOD 	void	setSelected(bool o) { this->_selected = o; };
 #endif
+    void getPosition_BANG_(Vector3& pos);
     CL_LISPIFY_NAME("getPosition");
     CL_DEFMETHOD 	Vector3 getPosition() { return this->position; };
     CL_DEFMETHOD bool atomWithinAngstroms(Atom_sp other, float angstroms) const;

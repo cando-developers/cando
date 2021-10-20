@@ -167,6 +167,13 @@ CL_DEFMETHOD void	Atom_O::perturbAtomPosition(double dist)
   this->setPosition(v);
 }
 
+
+CL_NAME("GET-POSITION!");
+CL_DEFMETHOD void Atom_O::getPosition_BANG_(Vector3& pos)
+{
+  pos = this->position;
+}
+
 /*! Return +1 if priority(a)>priority(b)
  *  return -1 if priority(a)<priority(b)
  *  return 0 if priority(a) == priority(b)
