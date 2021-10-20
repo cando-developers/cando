@@ -1,7 +1,6 @@
 
 (in-package :geom)
 
-#+(or)
 (progn
   (eval-when (:compile-toplevel :load-toplevel :execute)
     (cmp:define-primitive "cc_OVector3_vx" :double-float '(:object))
@@ -19,7 +18,7 @@
   (export '(vx vy vz) :geom)
   )
 
-;;#+(or)
+#+(or)
 (progn
   (export '(geom::vx geom::vy geom::vz) :geom)
   (declaim (inline geom::vx))
