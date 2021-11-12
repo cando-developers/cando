@@ -613,7 +613,7 @@
  "llvmo::Pass_O"
  "chem::StepReport_O"
  "kinematics::BondedJointTemplate_O"
- "core::VaList_dummy_O"
+ "core::Vaslist_dummy_O"
  "geom::Color_O"
  "kinematics::JointTemplate_O"
  "chem::FFVdw_O"
@@ -4695,7 +4695,7 @@
 { TAGS:CLASS-KIND ((TAGS:FILE% . "-unknown-") (TAGS:LINE% . 0)(TAGS:STAMP-NAME . "STAMPWTAG_core__Cons_O")(TAGS:STAMP-KEY . "core::Cons_O")(TAGS:PARENT-CLASS . "core::T_O")(TAGS:LISP-CLASS-BASE . "core::T_O")(TAGS:ROOT-CLASS . "core::T_O")(TAGS:STAMP-WTAG . 3)(TAGS:DEFINITION-DATA . "0")) }
 { TAGS:FIXED-FIELD ((TAGS:FILE% . "-unknown-") (TAGS:LINE% . 0)( TAGS:OFFSET-TYPE-CXX-IDENTIFIER . "ATOMIC_SMART_PTR_OFFSET")( TAGS:OFFSET-CTYPE . "gctools::smart_ptr<core::T_O>")( TAGS:OFFSET-BASE-CTYPE . "core::Cons_O")( TAGS:LAYOUT-OFFSET-FIELD-NAMES . "_Car")) }
 { TAGS:FIXED-FIELD ((TAGS:FILE% . "-unknown-") (TAGS:LINE% . 0)( TAGS:OFFSET-TYPE-CXX-IDENTIFIER . "ATOMIC_SMART_PTR_OFFSET")( TAGS:OFFSET-CTYPE . "gctools::smart_ptr<core::T_O>")( TAGS:OFFSET-BASE-CTYPE . "core::Cons_O")( TAGS:LAYOUT-OFFSET-FIELD-NAMES . "_Cdr")) }
-{ TAGS:CLASS-KIND ((TAGS:FILE% . "-unknown-") (TAGS:LINE% . 0)(TAGS:STAMP-NAME . "STAMPWTAG_core__VaList_dummy_O")(TAGS:STAMP-KEY . "core::VaList_dummy_O")(TAGS:PARENT-CLASS . "core::T_O")(TAGS:LISP-CLASS-BASE . "core::T_O")(TAGS:ROOT-CLASS . "core::T_O")(TAGS:STAMP-WTAG . 3)(TAGS:DEFINITION-DATA . "0")) }
+{ TAGS:CLASS-KIND ((TAGS:FILE% . "-unknown-") (TAGS:LINE% . 0)(TAGS:STAMP-NAME . "STAMPWTAG_core__Vaslist_dummy_O")(TAGS:STAMP-KEY . "core::Vaslist_dummy_O")(TAGS:PARENT-CLASS . "core::T_O")(TAGS:LISP-CLASS-BASE . "core::T_O")(TAGS:ROOT-CLASS . "core::T_O")(TAGS:STAMP-WTAG . 3)(TAGS:DEFINITION-DATA . "0")) }
 { TAGS:CONTAINER-KIND ((TAGS:FILE% . "-unknown-") (TAGS:LINE% . 0)(TAGS:STAMP-NAME . "STAMPWTAG_gctools__GCVector_moveable_gctools__smart_ptr_kinematics__BackboneDependentRotamerSet_O__")(TAGS:STAMP-KEY . "gctools::GCVector_moveable<gctools::smart_ptr<kinematics::BackboneDependentRotamerSet_O>>")(TAGS:PARENT-CLASS . "gctools::GCContainer")(TAGS:LISP-CLASS-BASE . "NoLispBase")(TAGS:ROOT-CLASS . "gctools::GCContainer")(TAGS:STAMP-WTAG . 3)(TAGS:DEFINITION-DATA . "0")) }
 { TAGS:VARIABLE-ARRAY0 ((TAGS:FILE% . "-unknown-") (TAGS:LINE% . 0)( TAGS:OFFSET-BASE-CTYPE . "gctools::GCVector_moveable<gctools::smart_ptr<kinematics::BackboneDependentRotamerSet_O>>")( TAGS:FIELD-NAMES . ("_Data"))) }
 { TAGS:VARIABLE-CAPACITY ((TAGS:FILE% . "-unknown-") (TAGS:LINE% . 0)( TAGS:CTYPE . "gctools::smart_ptr<kinematics::BackboneDependentRotamerSet_O>")( TAGS:OFFSET-BASE-CTYPE . "gctools::GCVector_moveable<gctools::smart_ptr<kinematics::BackboneDependentRotamerSet_O>>")( TAGS:END-FIELD-NAMES . ("_End"))( TAGS:LENGTH-FIELD-NAMES . ("_Capacity"))) }
