@@ -100,7 +100,7 @@ namespace geom {
                                           size_t initialContentsSize=0,
                                           const value_type* initialContents=NULL,
                                           bool static_vector_p = false) {
-      auto bs = gctools::GC<SimpleVectorCoordinate_O>::allocate_container(static_vector_p,length,initialElement,initialElementSupplied,initialContentsSize,initialContents);
+      auto bs = gctools::GC<SimpleVectorCoordinate_O>::allocate_container<gctools::RuntimeStage>(static_vector_p,length,initialElement,initialElementSupplied,initialContentsSize,initialContents);
       return bs;
     }
     smart_ptr_type copy(size_t length, value_type initialElement, bool initialElementSupplied) {
@@ -156,7 +156,7 @@ namespace geom {
       LIKELY_if (data.nilp()) {
         data = SimpleVectorCoordinate_O::make(arrayTotalSize,initialElement,true);
       }
-      SimpleMDArrayCoordinate_sp array = gctools::GC<SimpleMDArrayCoordinate_O>::allocate_container(false,rank,dim_desig,gc::As<core::Array_sp>(data));
+      SimpleMDArrayCoordinate_sp array = gctools::GC<SimpleMDArrayCoordinate_O>::allocate_container<gctools::RuntimeStage>(false,rank,dim_desig,gc::As<core::Array_sp>(data));
       return array;
     }
   };
@@ -189,7 +189,7 @@ namespace geom {
       LIKELY_if (dataOrDisplacedTo.nilp()) {
         dataOrDisplacedTo = simple_type::make(arrayTotalSize,initialElement,true);
       }
-      MDArrayCoordinate_sp array = gctools::GC<MDArrayCoordinate_O>::allocate_container(false,rank,dim_desig,gc::As<core::Array_sp>(dataOrDisplacedTo),displacedToP,displacedIndexOffset);
+      MDArrayCoordinate_sp array = gctools::GC<MDArrayCoordinate_O>::allocate_container<gctools::RuntimeStage>(false,rank,dim_desig,gc::As<core::Array_sp>(dataOrDisplacedTo),displacedToP,displacedIndexOffset);
       return array;
     }
     size_t vectorPush_Vector3(const Vector3& newElement);
@@ -218,7 +218,7 @@ namespace geom {
       LIKELY_if (dataOrDisplacedTo.nilp()) {
         dataOrDisplacedTo = simple_type::make(dimension,initialElement,true);
       }
-      ComplexVectorCoordinate_sp array = gctools::GC<ComplexVectorCoordinate_O>::allocate_container(false,1/*CRANK*/,dimension,fillPointer,gc::As_unsafe<core::Array_sp>(dataOrDisplacedTo),displacedToP,displacedIndexOffset);
+      ComplexVectorCoordinate_sp array = gctools::GC<ComplexVectorCoordinate_O>::allocate_container<gctools::RuntimeStage>(false,1/*CRANK*/,dimension,fillPointer,gc::As_unsafe<core::Array_sp>(dataOrDisplacedTo),displacedToP,displacedIndexOffset);
       return array;
     }
     static ComplexVectorCoordinate_sp make_vector(size_t dimension, simple_element_type initialElement, core::T_sp fillPointer) {

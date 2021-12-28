@@ -48,7 +48,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <llvm/Transforms/IPO.h>
 #include <llvm/IR/InlineAsm.h>
 #include <llvm/Support/FormattedStream.h>
-#include <llvm/Support/TargetRegistry.h>
+#include <llvm/MC/TargetRegistry.h>
 #include <llvm/Support/MathExtras.h>
 #include <llvm/Pass.h>
 #include <llvm/IR/LegacyPassManager.h>
