@@ -49,12 +49,14 @@ FORWARD(BondedJoint);
 	static const int MaxChildren = 5;
     public:
 	int		_NumberOfChildren;
-        // _Children have the value 0x0 if unbound
+        // _Children have the value unbound unbound
 	Joint_sp	_Children[MaxChildren];
 	Real		_Phi;
 	Real		_Theta;
 	Real		_Distance;
 	bool		_DofChangePropagatesToYoungerSiblings;
+    public:
+      static BondedJoint_sp make();
     public:
 	/*! Bonded atoms can have different numbers of children wrt JumpJoints */
 	virtual int _maxNumberOfChildren() const { return MaxChildren;};
@@ -76,18 +78,18 @@ FORWARD(BondedJoint);
 
     public:
     BondedJoint_O() : Joint_O(), _NumberOfChildren(0), _Children{unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>()} {};
-    BondedJoint_O(const chem::AtomId& atomId, core::T_sp name, const string& comment) : Joint_O(atomId,name,comment), _NumberOfChildren(0) {};
+    BondedJoint_O(const chem::AtomId& atomId, core::T_sp name) : Joint_O(atomId,name), _NumberOfChildren(0) {};
 
 	virtual core::Symbol_sp typeSymbol() const;
 
 	/*! Return the stubJoint1 */
-	virtual Joint_sp stubJoint1() const { return this->asSmartPtr();}
+	virtual Joint_sp inputStubJoint0() const { return this->parent();}
 
 	/*! Return the stubJoint2 */
-	virtual Joint_sp stubJoint2() const { return this->parent();};
+      virtual Joint_sp inputStubJoint1() const { return this->parent()->parent();};
 
 	/*! Return the stubJoint3 */
-	virtual Joint_sp stubJoint3(JointTree_sp tree) const;
+      virtual Joint_sp inputStubJoint2() const { return this->parent()->parent()->parent(); };
 
 	/*! Update the internal coordinates */
 	virtual void updateInternalCoords(bool const recursive,
@@ -108,7 +110,7 @@ FORWARD(BondedJoint);
       virtual void _updateXyzCoords(Stub& stub);
       virtual void _updateXyzCoord(Stub& stub);
 
-      Stub getStub() const;
+      virtual Stub getInputStub() const;
 
 	/*! Geta the value of the DOF */
 	double dof(DofType const& dof) const;

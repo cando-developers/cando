@@ -1,3 +1,4 @@
+
 /*
     File: stub.h
 */
@@ -38,24 +39,21 @@ namespace kinematics
 
 class Stub
 {
-public: // instance variables here
-	Matrix	_Transform;
-
 public: // Functions here
 
-	Stub() { this->_Transform.setToIdentity();};
+  Stub() { this->_Transform.setToIdentity();};
 
-	Stub(const Matrix& mat) { this->_Transform = mat;};
+  Stub(const Matrix& mat) { this->_Transform = mat;};
 
-	Stub(Vector3 const& v1,
-	     Vector3 const& v2,
-	     Vector3 const& v3,
-	     Vector3 const& v4);
+  Stub(Vector3 const& v1,
+       Vector3 const& v2,
+       Vector3 const& v3,
+       Vector3 const& v4);
 
 	/*! Return true if the stub is orthogonal to the tolerance (tol) */
-	bool isOrthogonal(double tol) const;
+  bool isOrthogonal(double tol) const;
 
-	Matrix const& getTransform() const { return this->_Transform;};
+  Matrix const& getTransform() const { return this->_Transform;};
 
 	/*! Define a stub from four Joints
 	  A center and three Joints a,b,c
@@ -63,39 +61,47 @@ public: // Functions here
 	  the first one is the unit vector from b Jointing to a
 	  the second is the unit vector in the plane defined by vector b->a and perpendicular to b->a
 	  and the third is the cross product of the first two. */
-	void fromFourJoints(Vector3 const& center,
-			    Vector3 const& a,
-			    Vector3 const& b,
-			    Vector3 const& c );
+  void fromFourPoints(Vector3 const& center,
+                      Vector3 const& a,
+                      Vector3 const& b,
+                      Vector3 const& c );
 
+  /*! Define a stub from a center and a rotation matrix from the transform.
+*/
+  void fromCenterAndRotation(const Vector3& center,
+                             const Matrix& transform);
+  
 	/*! Return the translation part of the Stub */
-	Vector3 translation() const { return this->_Transform.getTranslation();};
+  Vector3 translation() const { return this->_Transform.getTranslation();};
 
 	/*! Return the rotation part of the stub */
-	Matrix rotation() const { return this->_Transform.extract3x3();};
+  Matrix rotation() const { return this->_Transform.extract3x3();};
 
 	/*! Multiply the rotation part by the given matrix */
-	void multiplyRotationPart(const Matrix& multiplier);
+  void multiplyRotationPart(const Matrix& multiplier);
 
 	/*! Return the colX of the Stub */
-	Vector3 colX() const { return this->_Transform.colX();};
+  Vector3 colX() const { return this->_Transform.colX();};
 	/*! Return the colY of the Stub */
-	Vector3 colY() const { return this->_Transform.colY();};
+  Vector3 colY() const { return this->_Transform.colY();};
 	/*! Return the colZ of the Stub */
-	Vector3 colZ() const { return this->_Transform.colZ();};
+  Vector3 colZ() const { return this->_Transform.colZ();};
 
 
 	/*! Add to the translation part */
-	void addToTranslation(const Vector3& offset);
+  void addToTranslation(const Vector3& offset);
 
 
 	/*! Return the rotation part colX */
-	Vector3 rotationColX() const;
+  Vector3 rotationColX() const;
 
 
 
 
-	string asString() const { return this->_Transform.asStringFormatted(); };
+  string asString() const { return this->_Transform.asStringFormatted(); };
+
+public: // instance variables here
+  Matrix	_Transform;
 };
 
 }; /* kinematics */

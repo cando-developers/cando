@@ -1,30 +1,15 @@
 def build(bld):
     for name in [
-        'aggregateNode',
-        'jointTemplate',
-        'pointTree',
-        'bondId',
-        'bondedJoint',
-        'chainNode',
-        'chiDihedrals',
-        'conformation',
+            'joint',
+            'jump',
+            'jumpJoint',
+            'bondedJoint',
+            "complexBondedJoint",
+            'jointTree',
+            'kinematicsPackage',
             'coordinateCalculators',
-        'delayedBondedJoint',
-        'dofType',
-        'foldTree',
-        'jump',
-        'jumpJoint',
-        'kin_atom',
-        'kin_rotamer',
-        'kinematicsPackage',
-        'monomerBaseNode',
-        'monomerId',
-        'monomerNode',
-        'originJumpJoint',
-        'ringClosingMonomerNode',
-        'rootJointInfo',
-        'rootBondedJoint',
-        'stub'
+            'dofType',
+            'stub'
     ]:
         source(bld,name)
 

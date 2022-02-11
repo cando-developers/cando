@@ -54,6 +54,7 @@
   (loop for child in (kin:children node)
         do (walk-joint-template child func)))
 
+#+(or)
 (defun topology-joint-template-order (topology)
   (let* ((joint-template (chem:get-property topology :joint-template))
          (max-index 0))

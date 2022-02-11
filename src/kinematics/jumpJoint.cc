@@ -37,6 +37,13 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace kinematics
 {
 
+CL_LAMBDA(atom-id &optional name);
+CL_LISPIFY_NAME("make_JumpJoint");
+CL_DEF_CLASS_METHOD
+JumpJoint_sp JumpJoint_O::make(const chem::AtomId& atomId, T_sp name) {
+  return gctools::GC<JumpJoint_O>::allocate(atomId, name);
+}
+
 void JumpJoint_O::fields(core::Record_sp node) {
   node->field_if_not_empty(INTERN_(kw,children),this->_Children);
   this->Base::fields(node);
@@ -149,46 +156,6 @@ void JumpJoint_O::updateInternalCoords(bool const recursive,
 }
 
 
-
-Joint_sp JumpJoint_O::stubJoint1() const
-{
-  if (this->stubDefined()) {
-    return this->asSmartPtr();
-  }
-  return this->parent();
-}
-
-Joint_sp JumpJoint_O::stubJoint2() const
-{
-  if ( this->stubDefined() )
-  {
-    return this->getNonJumpJoint(0);
-  } else
-  {
-    return this->parent()->stubJoint2();
-  }
-}
-
-Joint_sp JumpJoint_O::stubJoint3(JointTree_sp at) const
-{_OF();
-  if ( this->stubDefined() )
-  {
-    Joint_sp first(this->getNonJumpJoint(0));
-    ASSERT(first.boundp());
-    Joint_sp second(first->getNonJumpJoint(0));
-    if ( second.boundp() )
-    {
-      return second;
-    } else
-    {
-      return this->getNonJumpJoint(1);
-    }
-  } else
-  {
-    return this->parent()->stubJoint3(at);
-  }
-}
-
 bool JumpJoint_O::keepDofFixed(DofType dof) const
 {
   return (this->parent().boundp());
@@ -227,7 +194,7 @@ Stub JumpJoint_O::getStub() const {
 void JumpJoint_O::updateXyzCoords()
 {
   // parent must be an OriginJumpJoint
-  Stub stub = this->parent()->getStub();
+  Stub stub = this->getInputStub();
   this->JumpJoint_O::_updateXyzCoords(stub);
 }
 

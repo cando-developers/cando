@@ -1,5 +1,5 @@
 /*
-    File: sequenceNode.h
+    File: complexBondedJoint.h
 */
 /*
 Open Source License
@@ -23,37 +23,48 @@ THE SOFTWARE.
 This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
 */
 /* -^- */
-#ifndef	_kinematicsSequenceNode_H
-#define _kinematicsSequenceNode_H
+#ifndef	kinematics_complexBondedJoint_H
+#define kinematics_complexBondedJoint_H
 
-#include "core/common.h"
-#include "sequenceBaseNode.h"
-#include "kinematicsPackage.h"
+#include <clasp/core/foundation.h>
+#include <cando/kinematics/kinFoundation.h>
+#include <cando/chem/atomId.h>
+#include <cando/kinematics/joint.h>
+#include <cando/kinematics/bondedJoint.h>
+
+
 
 namespace kinematics
 {
 
-    FORWARD(SequenceNode);
-
-    /*! @class This is a base class for MonomerNode, MoleculeNode, AggregateNode
-      It stores the parent */
-class SequenceNode_O : public MonomerBaseNode_O
+FORWARD(ComplexBondedJoint);
+class ComplexBondedJoint_O : public BondedJoint_O
 {
-    LISP_CLASS(KinPkg,SequenceNode_O,SequenceNode,"MonomerBaseNode_O");
-    DECLARE_INIT();
-    DECLARE_ARCHIVE();
-    DECLARE_EXPOSE_CANDO();
-    DEFAULT_CTOR_DTOR(SequenceNode_O);
+  LISP_CLASS(kinematics,KinPkg,ComplexBondedJoint_O,"ComplexBondedJoint",BondedJoint_O);
 public:
-	void initialize();
+  bool fieldsp() { return true; };
+  void fields(core::Record_sp node); 
+  void initialize();
 public:
-	// Functions here
-protected:
-	// instance variables here
+  static const int MaxInputStubJoints = 2;
+  Joint_sp         _InputStubJoints[MaxInputStubJoints];
+public:
+  static ComplexBondedJoint_sp make();
+public:
+  ComplexBondedJoint_O(const chem::AtomId& atomId, core::T_sp name ) : BondedJoint_O(atomId,name) {};
+public:
+  virtual Stub getInputStub() const;
+
+  	/*! Return the stubJoint1 */
+  virtual Joint_sp inputStubJoint0() const { return this->parent();}
+  
+	/*! Return the stubJoint2 */
+  virtual Joint_sp inputStubJoint1() const { return this->_InputStubJoints[0]; };
+  
+	/*! Return the stubJoint3 */
+  virtual Joint_sp inputStubJoint2() const { return this->_InputStubJoints[1]; };
+
+
 };
-
-}; /* kinematics */
-
-TRANSLATE(kinematics::SequenceNode_O);
-
-#endif /* _kinematicsSEQUENCENODE_H */
+};
+#endif

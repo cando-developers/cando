@@ -31,12 +31,13 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/lisp.h>
 #include <cando/chem/oligomer.fwd.h>
 #include <cando/kinematics/kinematicsPackage.h>
-#include <cando/kinematics/pool.h>
+//#include <cando/kinematics/pool.h>
 #include <cando/chem/atomIdMap.h>
 #include <cando/kinematics/jointTree.fwd.h>
-#include <cando/kinematics/bondId.fwd.h>
 #include <cando/chem/plug.fwd.h>
 #include <cando/kinematics/joint.fwd.h>
+#if 0
+#include <cando/kinematics/bondId.fwd.h>
 #include <cando/kinematics/monomerId.h>
 #include <cando/kinematics/bondedJoint.h>
 #include <cando/kinematics/rootBondedJoint.h>
@@ -44,8 +45,9 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/kinematics/delayedBondedJoint.h>
 #include <cando/kinematics/jumpJoint.h>
 #include <cando/kinematics/originJumpJoint.h>
-#include <cando/chem/atomId.h>
 #include <cando/kinematics/bondId.h>
+#endif
+#include <cando/chem/atomId.h>
 
 
 namespace kinematics
@@ -54,7 +56,8 @@ namespace kinematics
   FORWARD(JointTemplate);
   FORWARD(JumpJoint);
 
-  class AtomHolder : public PoolMember
+#if 0
+class AtomHolder : public PoolMember
   {
   public:
 	//! Number of references to this resource
@@ -92,7 +95,7 @@ namespace kinematics
     string typeAsString() const;
 
   };
-
+#endif
 
 
 
@@ -160,14 +163,16 @@ namespace kinematics
 	/*! Return a new JumpJoint */
     Joint_sp newJumpJoint(const chem::AtomId& atomId, core::T_sp name, const string& comment);
 
-
+    #if 0
 	/*! Return a new OriginJumpJoint */
     Joint_sp newOriginJumpJoint(const chem::AtomId& atomId, core::T_sp name, const string& comment);
+    #endif
 
 
 	/*! allocate a new BondedJoint */
     Joint_sp newBondedJoint(const chem::AtomId& atomId, core::T_sp name, const string& comment);
 
+    #if 0
 	/*! allocate a new RootBondedJoint */
     Joint_sp newRootBondedJoint(const chem::AtomId& atomId, core::T_sp name, const string& comment,
                                core::Symbol_sp constitutionName,
@@ -176,7 +181,7 @@ namespace kinematics
 
 	/*! allocate a new DelayedBondedJoint */
     Joint_sp newDelayedBondedJoint(const chem::AtomId& atomId, core::T_sp name, const string& comment);
-
+    #endif
 
 	/*! Resize the number of molecules */
     void resizeMolecules(int numMolecules);
@@ -208,16 +213,16 @@ namespace kinematics
 	  4) (incoming) parent is defined and child is defined
 	      - in that case we are replacing a sub-tree with the new monomer sub-tree
 	*/
+#if 0    
     void recursivelyBuildMolecule(MonomerId monomerId,
                                   MonomerNode_sp chainNode,
                                   Joint_sp parent,
                                   bool rootNode = false);
-
 	/*! Build a Molecule according to the plan in ChainNode */
     void buildMoleculeUsingChainNode( int moleculeId,
                                       ChainNode_sp chainNode,
                                       chem::Oligomer_sp oligomer);
-
+#endif
 	/*! Walk the JointTree and for each atom evaluate the Executable
 	  with the atom as an argument */
     void walk(core::Function_sp exec);

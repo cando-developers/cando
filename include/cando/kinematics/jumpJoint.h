@@ -51,6 +51,8 @@ namespace kinematics
     
 	/*! JumpJoints can have unlimited numbers of children */
     gc::Vec0< Joint_sp >	_Children;
+  public:
+    static JumpJoint_sp make();
   protected:
 	/*! Bonded atoms can have different numbers of children wrt JumpJoints */
     virtual int _maxNumberOfChildren() const { return INT_MAX;};
@@ -75,7 +77,7 @@ namespace kinematics
 	/*! Empty ctor */
     JumpJoint_O() {};
 
-  JumpJoint_O(const chem::AtomId& atomId, core::T_sp name, const string& comment) : Joint_O(atomId,name,comment) {};
+  JumpJoint_O(const chem::AtomId& atomId, core::T_sp name) : Joint_O(atomId,name) {};
 
     // Return the 'external' coordinate    
     CL_DEFMETHOD Matrix getLabFrame() const { return this->_LabFrame; };
@@ -96,14 +98,16 @@ namespace kinematics
 	/*! Yes, this is a JumpJoint */
     bool isJump() const { return true;};
 
+   	/*! Return the stubJoint0 */
+    virtual Joint_sp inputStubJoint0() const { return unbound<Joint_O>(); };
+
 	/*! Return the stubJoint1 */
-    virtual Joint_sp stubJoint1() const;
+    virtual Joint_sp inputStubJoint1() const { return unbound<Joint_O>(); };
 
 	/*! Return the stubJoint2 */
-    virtual Joint_sp stubJoint2() const;
+    virtual Joint_sp inputStubJoint2() const { return unbound<Joint_O>(); };
 
-	/*! Return the stubJoint3 */
-    virtual Joint_sp stubJoint3(JointTree_sp at) const;
+    const Matrix& transform() const { return this->_LabFrame; };
 
     bool keepDofFixed(DofType dof) const;
 

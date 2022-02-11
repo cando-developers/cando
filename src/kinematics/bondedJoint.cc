@@ -37,6 +37,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/numerics.h>
 #include <cando/kinematics/stub.h>
 #include <cando/kinematics/jointTree.h>
+#include <cando/kinematics/jumpJoint.h>
 #include <cando/kinematics/bondedJoint.h>
 
 namespace kinematics
@@ -62,6 +63,14 @@ void BondedJoint_O::initialize() {
     this->_Children[i] = unbound<Joint_O>();
   }
 }
+
+CL_LAMBDA(atom-id &optional name);
+CL_LISPIFY_NAME("make_BondedJoint");
+CL_DEF_CLASS_METHOD
+BondedJoint_sp BondedJoint_O::make(const chem::AtomId& atomId, T_sp name) {
+  return gctools::GC<BondedJoint_O>::allocate(atomId,name);
+}
+
 
 void BondedJoint_O::_appendChild(Joint_sp c)
 {_OF();
@@ -111,26 +120,6 @@ void BondedJoint_O::_appendChild(Joint_sp c)
 
 
 
-    Joint_sp BondedJoint_O::stubJoint3(JointTree_sp at) const
-    {_OF();
-      if ( gc::IsA<JumpJoint_sp>(this->parent()))
-	{
-	    ASSERT(this->parent().get()->stubDefined());
-	    Joint_sp p_stub2( this->parent()->stubJoint2() );
-	    chem::AtomId const & p_stub2_id( p_stub2->id() );
-	    if ( this->id() == p_stub2_id )
-	    {
-		// very special case!!
-		return this->parent()->stubJoint3(at);
-	    } else {
-		return p_stub2;
-	    }
-	} else {
-	    return this->parent()->stubJoint2();
-	}
-    }
-
-
 void BondedJoint_O::_updateInternalCoord()
 {_OF();
   KIN_LOG(BF(" <<< %s\n") % _rep_(this->asSmartPtr()));
@@ -154,7 +143,7 @@ void BondedJoint_O::_updateInternalCoord()
     return;
   }
 #if 1
-  internalCoordinatesFromPointAndCoordinateSystem(this->getPosition(),jC->getStub()._Transform,
+  internalCoordinatesFromPointAndCoordinateSystem(this->getPosition(),this->getInputStub()._Transform,
                                                    this->_Distance, this->_Theta, this->_Phi );
 #else
   KIN_LOG(BF("gc::IsA<JumpJoint_sp>(jC)   jC = %s\n") % _rep_(jC));
@@ -213,6 +202,8 @@ void BondedJoint_O::updateInternalCoords( bool recursive,
 
 bool BondedJoint_O::keepDofFixed(DofType dof,JointTree_sp at) const
 {_OF();
+  IMPLEMENT_ME();
+#if 0
   if ( dof == DofType::distance ) {
     return false;
   } else if ( dof == DofType::theta ) {
@@ -231,6 +222,7 @@ bool BondedJoint_O::keepDofFixed(DofType dof,JointTree_sp at) const
     SIMPLE_ERROR(BF("BondedJoint_O::keepDofFixed: BAD_DOF: %s") % dof.asString() );
   }
   return false;
+#endif
 }
 
 
@@ -251,8 +243,15 @@ bool BondedJoint_O::keepDofFixed(DofType dof,JointTree_sp at) const
     (2)    <BondedJoint_sp>(B) <JumpJoint_sp>(A)
     (3)    <JumpJoint_sp>(A)
 */
-Stub BondedJoint_O::getStub() const
+Stub BondedJoint_O::getInputStub() const
 {_OF();
+  Stub stub;
+  stub.fromFourPoints(this->inputStubJoint0()->position(),
+                      this->inputStubJoint1()->position(),
+                      this->inputStubJoint0()->position(),
+                      this->inputStubJoint2()->position());
+  return stub;
+#if 0
   KIN_LOG(BF("getStub() -> %s\n") % _rep_(this->asSmartPtr()));
   Stub stub;
   BondedJoint_sp jbC = this->asSmartPtr();
@@ -326,6 +325,7 @@ Stub BondedJoint_O::getStub() const
     return stub;
   }
   SIMPLE_ERROR(BF("Parent jB %s must be a jump-joint or a bonded-joint ") % _rep_(jbC->parent()));
+#endif
 }
 
 void BondedJoint_O::_updateXyzCoord(Stub& stub)
@@ -355,6 +355,8 @@ void BondedJoint_O::_updateXyzCoord(Stub& stub)
 
 void BondedJoint_O::_updateXyzCoords(Stub& stub)
 {
+  IMPLEMENT_ME();
+#if 0
   this->_updateXyzCoord(stub);
   Stub newStub = this->getStub();
   for ( int ii=0; ii < this->_numberOfChildren(); ii++) {
@@ -362,6 +364,7 @@ void BondedJoint_O::_updateXyzCoords(Stub& stub)
     this->_DofChangePropagatesToYoungerSiblings = false;
     this->noteXyzUpToDate();
   }
+#endif
 }
 
 
@@ -375,7 +378,7 @@ void BondedJoint_O::updateXyzCoords()
 	/// is the root of a subtree that needs refolding.
 	/// The stub is passed to update_xyz_coords, and this atom will modify it;
 	/// after which the stub is ready to be passed to the younger siblings.
-  Stub stub = this->_Parent->getStub();
+  Stub stub = this->getInputStub();
   this->_updateXyzCoords(stub);
 #if 0  
   this->BondedJoint_O::_updateXyzCoords(stub);

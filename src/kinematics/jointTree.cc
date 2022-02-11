@@ -36,13 +36,13 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/symbolTable.h>
 #include <clasp/core/evaluator.h>
 #include <cando/chem/candoDatabase.h>
-#include <cando/kinematics/jointTemplate.h>
+//#include <cando/kinematics/jointTemplate.h>
 #include <cando/kinematics/stub.h>
-#include <cando/kinematics/monomerNode.h>
-#include <cando/kinematics/chainNode.h>
+//#include <cando/kinematics/monomerNode.h>
+//#include <cando/kinematics/chainNode.h>
 #include <cando/kinematics/joint.h>
-#include <cando/kinematics/originJumpJoint.h>
-#include <cando/kinematics/rootBondedJoint.h>
+#include <cando/kinematics/jumpJoint.h>
+#include <cando/kinematics/bondedJoint.h>
 #include <cando/kinematics/jointTree.h>
 
 namespace kinematics
@@ -53,7 +53,7 @@ void JointTree_O::fields(core::Record_sp node) {
 };
 
 
-
+#if 0
 string AtomHolder::typeAsString() const
 {
   switch (this->_Type)
@@ -72,12 +72,12 @@ string AtomHolder::typeAsString() const
       return "unknown";
   };
 };
-
+#endif
 
 void JointTree_O::initialize()
 {
   chem::AtomId id;
-  this->_Root = this->newOriginJumpJoint(id,nil<core::T_O>(),"-root-");
+  this->_Root = this->newJumpJoint(id,nil<core::T_O>(),"-root-");
 }
 
 
@@ -121,23 +121,28 @@ Joint_sp JointTree_O::_initializeNewAtom(Joint_sp atom, const chem::AtomId& atom
   return atom;
 }
 
-
+#if 0
 Joint_sp JointTree_O::newJumpJoint(const chem::AtomId& atomId, core::T_sp name, const string& comment)
 {_OF();
   return this->_newAtom<JumpJoint_O>(atomId,name,comment);
 };
+#endif
 
+#if 0
 Joint_sp JointTree_O::newOriginJumpJoint(const chem::AtomId& atomId, core::T_sp name,const string& comment)
 {_OF();
   return this->_newAtom<OriginJumpJoint_O>(atomId,name,comment);
 };
+#endif
 
-
+#if 0
 Joint_sp JointTree_O::newBondedJoint(const chem::AtomId& atomId, core::T_sp name, const string& comment)
 {_OF();
   return this->_newAtom<BondedJoint_O>(atomId,name,comment);
 };
+#endif
 
+#if 0
 Joint_sp JointTree_O::newRootBondedJoint(const chem::AtomId& atomId, core::T_sp name,  const string& comment,
                                        core::Symbol_sp constitutionName,
                                        core::Symbol_sp topologyName,
@@ -152,6 +157,7 @@ Joint_sp JointTree_O::newDelayedBondedJoint(const chem::AtomId& atomId,core::T_s
 {_OF();
   return this->_newAtom<DelayedBondedJoint_O>(atomId,name,comment);
 };
+#endif
 
 void JointTree_O::updateAtomIdMap(const chem::AtomId& atomId, Joint_sp atomHandle )
 {_OF();
@@ -168,7 +174,7 @@ void JointTree_O::replaceMonomerSubTree(const BondId_sp& incoming, const map<cor
 #endif
 
 
-
+#if 0
 DONT_OPTIMIZE_WHEN_DEBUG_RELEASE void JointTree_O::recursivelyBuildMolecule(MonomerId monomerId,
                                           MonomerNode_sp monomerNode,
                                           Joint_sp parent,
@@ -237,7 +243,7 @@ void JointTree_O::buildMoleculeUsingChainNode(int moleculeId, ChainNode_sp chain
                                  this->_Root,
                                  true);
 }
-
+#endif
 
 
 string JointTree_O::asString() const
@@ -252,8 +258,8 @@ string JointTree_O::asString() const
 
 void JointTree_O::walkTree(core::Function_sp callback)
 {_OF();
-  OriginJumpJoint_sp originJumpJoint = gc::As<OriginJumpJoint_sp>(this->_Root);
-  originJumpJoint->walkChildren(callback);
+  Joint_sp joint = this->_Root;
+  joint->walkChildren(callback);
 }
 
 CL_DEFMETHOD void JointTree_O::walk(core::Function_sp exec)

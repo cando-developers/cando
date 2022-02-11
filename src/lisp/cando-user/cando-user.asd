@@ -8,7 +8,7 @@
   :depends-on (:cando-primop
                :cando
                :charges
-               :design
+               #+(or):design
                :leap
                :leap-commands
                #+(or):cando-jupyter

@@ -1,5 +1,5 @@
 /*
-    File: kin_atom.cc
+    File: joint.cc
 */
 /*
 Open Source License
@@ -34,7 +34,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/lispStream.h>
 #include <clasp/core/symbolTable.h>
 #include <cando/chem/atomId.h>
-#include <cando/kinematics/jointTree.h>
 #include <cando/kinematics/stub.h>
 #include <cando/kinematics/joint.h>
 
@@ -135,17 +134,12 @@ struct translate::from_object<kinematics::CoordinateCalculator>
 
 
 namespace kinematics {
+FORWARD(JointTree);
 FORWARD(JumpJoint);
 
 #define	ASSERT_VALID_HANDLE(tree,handle)				\
   ASSERTF((int)handle<tree->numberOfEntries(),BF("The handle[%d] is out of range (0->%d]") % handle % tree->numberOfEntries()); \
   ASSERTF(tree->_AtomHolders[handle]._Type != unused,BF("The handle represents an unused node"));
-
-
-CL_DEFMETHOD void Joint_O::setToInternal(core::Symbol_sp cc) {this->_ToInternal = translate::from_object<CoordinateCalculator>(cc)._v; };
-CL_DEFMETHOD core::Symbol_sp Joint_O::getToInternal() {return translate::to_object<CoordinateCalculator>::convert(this->_ToInternal); };
-CL_DEFMETHOD void Joint_O::setToExternal(core::Symbol_sp cc) {this->_ToExternal = translate::from_object<CoordinateCalculator>(cc)._v; };
-CL_DEFMETHOD core::Symbol_sp Joint_O::getToExternal() {return translate::to_object<CoordinateCalculator>::convert(this->_ToExternal); };
 
 
 string Joint_O::__repr__() const {
@@ -160,8 +154,6 @@ void Joint_O::fields(core::Record_sp node) {
   node->field(INTERN_(kw,parent),this->_Parent);
   node->field(INTERN_(kw,name),this->_Name); // name
   node->field(INTERN_(kw,id),this->_Id);
-  node->field(INTERN_(kw,to_external),this->_ToExternal);
-  node->field(INTERN_(kw,to_internal),this->_ToInternal);
   node->field_if_not_default(INTERN_(kw,pos),this->_Position, Vector3());
 }
 
@@ -197,6 +189,7 @@ void Joint_O::setParent(Joint_sp parent)
     
     
 
+CL_DEFMETHOD
 void Joint_O::insertChild(int before, Joint_sp child )
 {_OF();
   ASSERTF(child.get() != this,BF("Circular atom reference"));
@@ -204,6 +197,7 @@ void Joint_O::insertChild(int before, Joint_sp child )
   child->setParent(this->asSmartPtr());
 }
 
+CL_DEFMETHOD
 void Joint_O::appendChild(Joint_sp child)
 {_OF();
   ASSERTF(child.get() != this,BF("Circular atom reference this@%p child@%p")
@@ -219,6 +213,7 @@ void Joint_O::appendChild(Joint_sp child)
   child->setParent(this->asSmartPtr());
 }
 
+CL_DEFMETHOD
 void Joint_O::eraseChild(Joint_sp child)
 {_OF();
   Joint_sp atom = this->asSmartPtr();
@@ -232,6 +227,7 @@ void Joint_O::eraseChild(Joint_sp child)
 }
 
 
+CL_DEFMETHOD
 int Joint_O::indexOfChild(Joint_sp child)
 {_OF();
   Joint_sp atom = this->asSmartPtr();
@@ -245,7 +241,8 @@ int Joint_O::indexOfChild(Joint_sp child)
 
 
 
-void Joint_O::insertChild(Joint_sp child)
+CL_DEFMETHOD
+void Joint_O::addChild(Joint_sp child)
 {_OF();
   ASSERTF(child.get() != this,BF("Circular atom reference"));
   LOG(BF("Inserting child: %s") % _rep_(child));
@@ -365,46 +362,10 @@ CL_DEFMETHOD core::List_sp Joint_O::children() const
 }
     
 
-Joint_sp Joint_O::previousChild(Joint_sp ch) const
-{_OF();
-  int num = this->_numberOfChildren();
-  int ii;
-  for ( ii=0; ii<num; ii++ )
-  {
-    if ( this->_child(ii) == ch ) break;
-  }
-  if ( ii == num )
-  {
-    SIMPLE_ERROR(BF("Could not find child"));
-  }
-  if ( ii == 0 )
-  {
-    return unbound<Joint_O>();
-  }
-  return this->_child(ii-1);
-}
-
-
     /*! See file:///Users/meister/Development/rosetta3.3/rosetta_source/html/core+numeric+protocols/dc/db0/_atom___8hh-source.html#l00475
       For definition
     */
-Joint_sp Joint_O::inputStubJoint3(JointTree_sp at) const
-{_OF();
-  ASSERTF(this->parent().boundp(),BF("The parent isn't defined"));
-  if (this->parent().unboundp()) {
-    SIMPLE_ERROR(BF("inputStubAtom2 parent of %s isn't defined") % _rep_(this->asSmartPtr()));
-  }
-  Joint_sp sibling = this->previousSibling();
-  if ( gc::IsA<JumpJoint_sp>(this->asSmartPtr())
-       || sibling.unboundp()
-       || gc::IsA<JumpJoint_sp>(sibling)
-       || (gc::IsA<JumpJoint_sp>(this->parent())
-           && sibling->id() == this->parent()->stubJoint2Id() ) ) {
-    return this->parent()->stubJoint3(at);
-  } else {
-    return sibling;
-  }
-}
+
 
 CL_DEFMETHOD Vector3 Joint_O::getPosition() const
 {
@@ -494,14 +455,14 @@ CL_DEFMETHOD void Joint_O::updateInternalCoord()
 CL_DEFMETHOD void Joint_O::updateXyzCoord()
 {_OF();
   KIN_LOG(BF("base method\n"));
-  Stub stub = this->parent()->getStub();
+  Stub stub = this->getInputStub();
   this->_updateXyzCoord(stub);
 }
 
 
 CL_DEFMETHOD void Joint_O::updateXyzCoords()
 {_OF();
-  Stub stub = this->parent()->getStub();
+  Stub stub = this->getInputStub();
   this->_updateXyzCoords(stub);
 }
 
