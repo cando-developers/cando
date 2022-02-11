@@ -49,7 +49,7 @@ public:
   static const int MaxInputStubJoints = 2;
   Joint_sp         _InputStubJoints[MaxInputStubJoints];
 public:
-  static ComplexBondedJoint_sp make();
+  static ComplexBondedJoint_sp make(const chem::AtomId& atomId, core::T_sp name);
 public:
   ComplexBondedJoint_O(const chem::AtomId& atomId, core::T_sp name ) : BondedJoint_O(atomId,name) {};
 public:
@@ -64,6 +64,13 @@ public:
 	/*! Return the stubJoint3 */
   virtual Joint_sp inputStubJoint2() const { return this->_InputStubJoints[1]; };
 
+  bool inputStubJoint1BoundP() const;
+  void setInputStubJoint1(Joint_sp joint);
+  void makeUnboundInputStubJoint1();
+  bool inputStubJoint2BoundP() const;
+  void setInputStubJoint2(Joint_sp joint);
+  void makeUnboundInputStubJoint2();
+  
 
 };
 };

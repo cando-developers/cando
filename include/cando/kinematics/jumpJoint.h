@@ -52,7 +52,7 @@ namespace kinematics
 	/*! JumpJoints can have unlimited numbers of children */
     gc::Vec0< Joint_sp >	_Children;
   public:
-    static JumpJoint_sp make();
+    static JumpJoint_sp make(const chem::AtomId& atomId, core::T_sp name);
   protected:
 	/*! Bonded atoms can have different numbers of children wrt JumpJoints */
     virtual int _maxNumberOfChildren() const { return INT_MAX;};

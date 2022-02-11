@@ -77,7 +77,7 @@ string AtomHolder::typeAsString() const
 void JointTree_O::initialize()
 {
   chem::AtomId id;
-  this->_Root = this->newJumpJoint(id,nil<core::T_O>(),"-root-");
+  this->_Root = unbound<Joint_O>();
 }
 
 

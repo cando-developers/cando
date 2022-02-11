@@ -67,7 +67,7 @@ void BondedJoint_O::initialize() {
 CL_LAMBDA(atom-id &optional name);
 CL_LISPIFY_NAME("make_BondedJoint");
 CL_DEF_CLASS_METHOD
-BondedJoint_sp BondedJoint_O::make(const chem::AtomId& atomId, T_sp name) {
+BondedJoint_sp BondedJoint_O::make(const chem::AtomId& atomId, core::T_sp name) {
   return gctools::GC<BondedJoint_O>::allocate(atomId,name);
 }
 

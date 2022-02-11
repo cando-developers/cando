@@ -40,7 +40,7 @@ namespace kinematics
 CL_LAMBDA(atom-id &optional name);
 CL_LISPIFY_NAME("make_JumpJoint");
 CL_DEF_CLASS_METHOD
-JumpJoint_sp JumpJoint_O::make(const chem::AtomId& atomId, T_sp name) {
+JumpJoint_sp JumpJoint_O::make(const chem::AtomId& atomId, core::T_sp name) {
   return gctools::GC<JumpJoint_O>::allocate(atomId, name);
 }
 

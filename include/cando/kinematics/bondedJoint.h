@@ -56,7 +56,7 @@ FORWARD(BondedJoint);
 	Real		_Distance;
 	bool		_DofChangePropagatesToYoungerSiblings;
     public:
-      static BondedJoint_sp make();
+      static BondedJoint_sp make(const chem::AtomId& atomId, core::T_sp name);
     public:
 	/*! Bonded atoms can have different numbers of children wrt JumpJoints */
 	virtual int _maxNumberOfChildren() const { return MaxChildren;};

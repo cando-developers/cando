@@ -59,7 +59,7 @@ void ComplexBondedJoint_O::initialize() {
 CL_LAMBDA(atom-id &optional name);
 CL_LISPIFY_NAME("make_ComplexBondedJoint");
 CL_DEF_CLASS_METHOD
-ComplexBondedJoint_sp ComplexBondedJoint_O::make(const chem::AtomId& atomId, T_sp name) {
+ComplexBondedJoint_sp ComplexBondedJoint_O::make(const chem::AtomId& atomId, core::T_sp name) {
   return gctools::GC<ComplexBondedJoint_O>::allocate(atomId, name);
 }
 
@@ -84,5 +84,31 @@ Stub ComplexBondedJoint_O::getInputStub() const
   }
   SIMPLE_ERROR(BF("Illegal to getInputStub with no inputStubJoints"));
 }
+
+CL_DEFMETHOD bool ComplexBondedJoint_O::inputStubJoint1BoundP() const {
+  return !this->_InputStubJoints[0].unboundp();
+}
+
+CL_DEFMETHOD void ComplexBondedJoint_O::setInputStubJoint1(Joint_sp joint) {
+  this->_InputStubJoints[0] = joint;
+}
+
+CL_DEFMETHOD void ComplexBondedJoint_O::makeUnboundInputStubJoint1() {
+  this->_InputStubJoints[0] = unbound<Joint_O>();
+}
+
+CL_DEFMETHOD bool ComplexBondedJoint_O::inputStubJoint2BoundP() const {
+  return !this->_InputStubJoints[1].unboundp();
+}
+
+CL_DEFMETHOD void ComplexBondedJoint_O::setInputStubJoint2(Joint_sp joint) {
+  this->_InputStubJoints[1] = joint;
+}
+
+CL_DEFMETHOD void ComplexBondedJoint_O::makeUnboundInputStubJoint2() {
+  this->_InputStubJoints[1] = unbound<Joint_O>();
+}
+
+
 
 };
