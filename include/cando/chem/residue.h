@@ -257,7 +257,7 @@ namespace chem {
 
     virtual uint	numberOfAtoms( );
 
-  Residue_O() : Base(), _Type(unbound<core::Symbol_O>()) {};
+  Residue_O() : Base(), _Type(nil<core::Symbol_O>()) {};
     Residue_O( const Residue_O& res );
 
 
