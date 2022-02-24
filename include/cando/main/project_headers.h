@@ -333,7 +333,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #ifdef USE_KINEMATICS
 #include <cando/kinematics/joint.fwd.h>
 #include <cando/kinematics/joint.h>
-#include <cando/kinematics/jointTree.h>
 #include <cando/kinematics/dofType.h>
 #include <cando/kinematics/stub.fwd.h>
 #include <cando/kinematics/stub.h>
@@ -722,7 +721,7 @@ class Vector3;
     class AtomTest_O;
     class Logical_O;
     class StepReport_O;
-    class AtomIdToAtomMap_O;
+    class AtomIdMap_O;
     class FFVdwDb_O;
     class OctNode_O;
     class Octree_O;

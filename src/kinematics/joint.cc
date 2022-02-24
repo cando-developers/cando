@@ -134,7 +134,6 @@ struct translate::from_object<kinematics::CoordinateCalculator>
 
 
 namespace kinematics {
-FORWARD(JointTree);
 FORWARD(JumpJoint);
 
 #define	ASSERT_VALID_HANDLE(tree,handle)				\
@@ -154,7 +153,7 @@ void Joint_O::fields(core::Record_sp node) {
   node->field(INTERN_(kw,parent),this->_Parent);
   node->field(INTERN_(kw,name),this->_Name); // name
   node->field(INTERN_(kw,id),this->_Id);
-  node->field_if_not_default(INTERN_(kw,pos),this->_Position, Vector3());
+  node->field(INTERN_(kw,pos),this->_Position);
 }
 
 CL_DEFMETHOD core::T_sp Joint_O::name() const {
@@ -246,33 +245,16 @@ void Joint_O::addChild(Joint_sp child)
 {_OF();
   ASSERTF(child.get() != this,BF("Circular atom reference"));
   LOG(BF("Inserting child: %s") % _rep_(child));
-  if ( gc::IsA<JumpJoint_sp>(child) )
-  {
+  if ( gc::IsA<JumpJoint_sp>(child) ) {
     LOG(BF("It's a jump, inserting it at the start"));
     this->_insertChild(0,child);
     child->setParent(this->asSmartPtr());
   } else {
     LOG(BF("It's a non-jump atom"));
     int firstNonJumpIndex = this->firstNonJumpChildIndex();
-    if ( firstNonJumpIndex < this->_numberOfChildren() )
-    {
-      //  IS THIS CORRECT?????
-      this->_insertChild(firstNonJumpIndex,child);
-#ifdef DEBUG_ON
-      Joint_sp firstNonJumpHandle = this->_child(firstNonJumpIndex);
-      LOG(BF("The current firstNonJumpHandle is of type: %s")
-          % _rep_(firstNonJumpHandle));
-      {
-        LOG(BF("We are inserting a BondedJoint"));
-      }
-#endif
-    } else
-    {
-      LOG(BF("We are at the end of the Children - appending"));
-      //  IS THIS CORRECT?????
-      this->_appendChild(child);
-    }
-    // this->insertChild(firstNonJumpIndex,child);
+    LOG(BF("We are at the end of the Children - appending"));
+    this->_appendChild(child);
+    child->setParent(this->asSmartPtr());
   }
 }
 
@@ -418,11 +400,8 @@ CL_DEFMETHOD bool Joint_O::hasProperty(core::Symbol_sp symbol)
 {
   return !core::cl__getf(this->_Properties,symbol,unbound<core::T_O>()).unboundp();
 }
-
-
-
        
-void Joint_O::walkChildren(core::Function_sp callback)
+CL_DEFMETHOD void Joint_O::walkChildren(core::Function_sp callback)
 {_OF();
   LOG(BF("There are %d children") % this->_numberOfChildren() );
   for ( int i=0; i<this->_numberOfChildren(); i++ )
@@ -432,8 +411,6 @@ void Joint_O::walkChildren(core::Function_sp callback)
     child->walkChildren(callback);
   }
 }
-
-
 
 void Joint_O::walkResidueTree(int residueId, core::Function_sp callback)
 {_OF();
@@ -452,6 +429,29 @@ CL_DEFMETHOD void Joint_O::updateInternalCoord()
   this->_updateInternalCoord();
 }
 
+CL_DEFMETHOD void Joint_O::updateInternalCoords()
+{
+  this->_updateInternalCoord();
+  for (int childIdx=0; childIdx<this->_numberOfChildren(); childIdx++ ) {
+    this->_child(childIdx)->updateInternalCoords();
+  }
+}
+
+void Joint_O::_updateChildrenXyzCoords() {
+  for ( int ii=0; ii < this->_numberOfChildren(); ii++) {
+    Stub stub = this->_child(ii)->getInputStub();
+    // I should ratchet the newStub around the X axis and use relative dihedral
+    this->_child(ii)->_updateXyzCoord(stub);
+    // ratchet newStub
+//    this->_DofChangePropagatesToYoungerSiblings = false;
+    this->noteXyzUpToDate();
+  }
+  for ( int ii=0; ii < this->_numberOfChildren(); ii++) {
+    this->_child(ii)->_updateChildrenXyzCoords();
+  }
+}
+
+
 CL_DEFMETHOD void Joint_O::updateXyzCoord()
 {_OF();
   KIN_LOG(BF("base method\n"));
@@ -463,7 +463,8 @@ CL_DEFMETHOD void Joint_O::updateXyzCoord()
 CL_DEFMETHOD void Joint_O::updateXyzCoords()
 {_OF();
   Stub stub = this->getInputStub();
-  this->_updateXyzCoords(stub);
+  this->_updateXyzCoord(stub);
+  this->_updateChildrenXyzCoords();
 }
 
 SYMBOL_SC_(KinPkg,atom);

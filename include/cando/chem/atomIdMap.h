@@ -37,13 +37,13 @@ namespace chem
 class AtomIdMapFunctor
 {
 public:
-  virtual void operator()(const AtomId& atomId, Atom_sp atom) = 0;
+  virtual void operator()(const AtomId& atomId, core::T_sp atom) = 0;
 };
 
 
 
 template <class T>
-class AtomIdMap
+class AtomIdMap_
 {
 public:
   typedef	gctools::Vec0<T>		AtomMap;
@@ -210,31 +210,31 @@ public:
 
 
 
-FORWARD(AtomIdToAtomMap);
-class AtomIdToAtomMap_O : public core::CxxObject_O
+FORWARD(AtomIdMap);
+class AtomIdMap_O : public core::CxxObject_O
 {
-  LISP_CLASS(chem,ChemPkg,AtomIdToAtomMap_O,"AtomIdToAtomMap",core::CxxObject_O);
+  LISP_CLASS(chem,ChemPkg,AtomIdMap_O,"AtomIdMap",core::CxxObject_O);
 private:
-  AtomIdMap<Atom_sp>	_AtomIdMap;
+  AtomIdMap_<core::T_sp>	_AtomIdMap;
 public:
   bool fieldsp() const { return true; };
   void fields(core::Record_sp node);
   void initialize();
-
 public:
-  void resize(int numMolecules);
-  void resize(int mol, int numRes);
-  void resize(int mol, int res, int numAtoms);
-  void set(AtomId const& atomId, Atom_sp atom);
-  Atom_sp lookupAtom(const AtomId& atomId) const ;
+  AtomIdMap_sp make();
+public:
+  void resizeAggregate(int numMolecules);
+  void resizeMolecule(int mol, int numRes);
+  void resizeResidue(int mol, int res, int numAtoms);
+  void set(AtomId const& atomId, core::T_sp atom);
+  void AtomIdMap_set(AtomId const& atomId, core::T_sp );
+  core::T_sp AtomIdMap_get(const AtomId& atomId) const ;
   void walk(core::Function_sp callback);
-  DEFAULT_CTOR_DTOR(AtomIdToAtomMap_O);
+  AtomIdMap_O() {};
 };
 
 
 
 }; /* chem */
-
-TRANSLATE(chem::AtomIdToAtomMap_O);
 
 #endif /* _ATOMIDMAP_H */

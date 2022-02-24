@@ -28,7 +28,6 @@ This is an open source license for the CANDO software from Temple University, bu
 
 
 #include <clasp/core/foundation.h>
-#include <cando/kinematics/jointTree.h>
 #include <clasp/core/lispStream.h>
 #include <clasp/core/symbolTable.h>
 #include <cando/kinematics/stub.h>
@@ -83,6 +82,7 @@ void JumpJoint_O::_releaseAllChildren()
 
 void JumpJoint_O::_updateInternalCoord()
 {_OF();
+#if 0
   KIN_LOG(BF(" <<< %s\n") % _rep_(this->asSmartPtr()));
   Vector3 O = this->_Position;
   if (this->_numberOfChildren()>=2) {
@@ -142,17 +142,7 @@ void JumpJoint_O::_updateInternalCoord()
     this->_ParentRelativeTransform = labFrame*parentInverted;
     KIN_LOG(BF("relativeTransform = \n%s\n") % this->_ParentRelativeTransform.asString());
   }
-}
-
-void JumpJoint_O::updateInternalCoords(bool const recursive,
-                                       JointTree_sp at) {
-  this->_updateInternalCoord();
-  if ( recursive )
-  {
-    for (int childIdx=0; childIdx<this->_numberOfChildren(); childIdx++ ) {
-      this->_child(childIdx)->updateInternalCoords(true,at);
-    }
-  }
+#endif
 }
 
 
@@ -170,34 +160,36 @@ void JumpJoint_O::_updateXyzCoord(Stub& stub)
   KIN_LOG(BF("LabFrame.getTranslation() = %s\n") % this->_LabFrame.getTranslation().asString());
 }
 
-
-    /*! Update the external coordinates using the input stub */
-void JumpJoint_O::_updateXyzCoords(Stub& stub)
-{_OF();
-  this->_updateXyzCoord(stub);
+void JumpJoint_O::updateXyzCoord()
+{
   Stub newStub;
   newStub._Transform = this->_LabFrame;
-  for ( int ii=0; ii<this->_numberOfChildren(); ii++ ) {
-    this->_child(ii)->_updateXyzCoords(newStub);
-  }
-  this->noteXyzUpToDate();
+  this->_updateXyzCoord(newStub);
 }
 
-Stub JumpJoint_O::getStub() const {
+
+
+    /*! Update the external coordinates using the input stub */
+void JumpJoint_O::_updateChildrenXyzCoords()
+{_OF();
+  Stub newStub;
+  newStub._Transform = this->_LabFrame;
+  for ( int ii=0; ii < this->_numberOfChildren(); ii++) {
+    this->_child(ii)->_updateXyzCoord(newStub);
+    // ratchet newStub
+//    this->_DofChangePropagatesToYoungerSiblings = false;
+    this->noteXyzUpToDate();
+  }
+  for ( int ii=0; ii < this->_numberOfChildren(); ii++) {
+    this->_child(ii)->_updateChildrenXyzCoords();
+  }
+}
+
+Stub JumpJoint_O::getInputStub() const {
   Stub jj;
   jj._Transform = this->_LabFrame;
   return jj;
 }
-
-
-
-void JumpJoint_O::updateXyzCoords()
-{
-  // parent must be an OriginJumpJoint
-  Stub stub = this->getInputStub();
-  this->JumpJoint_O::_updateXyzCoords(stub);
-}
-
 
 
 double JumpJoint_O::dof(DofType const& dof) const

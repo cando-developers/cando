@@ -5,7 +5,6 @@ def build(bld):
             'jumpJoint',
             'bondedJoint',
             "complexBondedJoint",
-            'jointTree',
             'kinematicsPackage',
             'coordinateCalculators',
             'dofType',

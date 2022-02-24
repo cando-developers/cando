@@ -36,7 +36,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/atomId.h>
 #include <clasp/core/numerics.h>
 #include <cando/kinematics/stub.h>
-#include <cando/kinematics/jointTree.h>
 #include <cando/kinematics/jumpJoint.h>
 #include <cando/kinematics/complexBondedJoint.h>
 
@@ -44,8 +43,8 @@ namespace kinematics
 {
 void ComplexBondedJoint_O::fields(core::Record_sp record) {
   static_assert(ComplexBondedJoint_O::MaxInputStubJoints==2,"ComplexBondedJoint_O::MaxInputStubJoints has changed from 2 - update the code below");
-  record->field_if_not_unbound(INTERN_(kw,stub1),this->_InputStubJoints[0]);
-  record->field_if_not_unbound(INTERN_(kw,stub2),this->_InputStubJoints[1]);
+  record->field_if_not_unbound(INTERN_(kw,inputStub1),this->_InputStubJoints[0]);
+  record->field_if_not_unbound(INTERN_(kw,inputStub2),this->_InputStubJoints[1]);
   this->Base::fields(record);
 }
 
@@ -68,21 +67,28 @@ ComplexBondedJoint_sp ComplexBondedJoint_O::make(const chem::AtomId& atomId, cor
 Stub ComplexBondedJoint_O::getInputStub() const
 {
   Stub stub;
-  if (!this->inputStubJoint2().unboundp()) {
-    stub.fromFourPoints(this->inputStubJoint0()->position(),
-                        this->inputStubJoint1()->position(),
-                        this->inputStubJoint0()->position(),
-                        this->inputStubJoint2()->position());
-    return stub;
-  } else if (!this->inputStubJoint1().unboundp()) {
-    if (gc::IsA<JumpJoint_sp>(this->inputStubJoint1())) {
-      JumpJoint_sp jumpJoint = gc::As_unsafe<JumpJoint_sp>(this->inputStubJoint1());
-      stub.fromCenterAndRotation(this->inputStubJoint0()->position(),
-                                 jumpJoint->transform());
+  if (this->inputStubJoint1().unboundp()) {
+    if (gc::IsA<JumpJoint_sp>(this->parent())) {
+      JumpJoint_sp jumpJoint = gc::As_unsafe<JumpJoint_sp>(this->parent());
+      Matrix flipped = jumpJoint->transform().flipXY();
+      stub.fromMatrix(flipped);
+      return stub;
     }
-    SIMPLE_ERROR(BF("Illegal to getInputStub with one inputStubJoint that is not a JumpJoint_sp - it's a %s") % _rep_(this->inputStubJoint1()));
+    SIMPLE_ERROR(BF("Illegal to getInputStub with only a parent and that parent is not a JumpJoint_sp - it's a %s") % _rep_(this->parent()));
   }
-  SIMPLE_ERROR(BF("Illegal to getInputStub with no inputStubJoints"));
+  if (this->inputStubJoint2().unboundp()) {
+    if (gc::IsA<JumpJoint_sp>(this->parent())) {
+      IMPLEMENT_MEF(BF("Handle inputStubJoint1() is defined but parent() is the JumpJoint"));
+    }
+    stub.fromCenterAndRotation( this->inputStubJoint0()->getPosition(), gc::As<JumpJoint_sp>(this->inputStubJoint1())->transform().flipXY());
+//    stub.fromCenterAndRotation( this->inputStubJoint0()->getPosition(), gc::As<JumpJoint_sp>(this->inputStubJoint1())->transform());
+    return stub;
+  }
+  stub.fromFourPoints(this->inputStubJoint0()->position(),
+                      this->inputStubJoint1()->position(),
+                      this->inputStubJoint0()->position(),
+                      this->inputStubJoint2()->position());
+  return stub;
 }
 
 CL_DEFMETHOD bool ComplexBondedJoint_O::inputStubJoint1BoundP() const {
@@ -107,6 +113,85 @@ CL_DEFMETHOD void ComplexBondedJoint_O::setInputStubJoint2(Joint_sp joint) {
 
 CL_DEFMETHOD void ComplexBondedJoint_O::makeUnboundInputStubJoint2() {
   this->_InputStubJoints[1] = unbound<Joint_O>();
+}
+
+void ComplexBondedJoint_O::_updateChildrenXyzCoords() {
+  this->Joint_O::_updateChildrenXyzCoords();
+}
+
+void ComplexBondedJoint_O::_updateInternalCoord()
+{_OF();
+  KIN_LOG(BF(" <<< %s\n") % _rep_(this->asSmartPtr()));
+//	using numeric::x_rotation_matrix_radians;
+//	using numerioc::z_rotation_matrix_radians;
+//	using numeric::constants::d::pi;
+  Joint_sp jC = this->parent();
+  Vector3 C = jC->position();
+  this->_Distance = geom::calculateDistance(this->_Position,C);
+  KIN_LOG(BF("Calculated _Distance = %lf\n") % this->_Distance );
+  if (!this->inputStubJoint1().unboundp()) {
+    Joint_sp jB = this->inputStubJoint1();
+    Vector3 B = jB->position();
+//    this->_Theta = PREPARE_ANGLE(geom::calculateAngle(this->_Position,C,B)); // Must be from incoming direction
+    this->_Theta = geom::calculateAngle(this->_Position,C,B); // Must be from incoming direction
+    KIN_LOG(BF("_Theta = %lf\n") % (this->_Theta/0.0174533));
+    if (!this->inputStubJoint2().unboundp()) {
+      Joint_sp jA = this->inputStubJoint2();
+      Vector3 A = jA->position();
+      this->_Phi = geom::calculateDihedral(this->_Position,C,B,A);
+      KIN_LOG(BF("_Phi = %lf\n") % (this->_Phi/0.0174533));
+      return;
+    }
+  }
+  
+#if 0
+#if 1
+  internalCoordinatesFromPointAndCoordinateSystem(this->getPosition(),this->getInputStub()._Transform,
+                                                  this->_Distance, this->_Theta, this->_Phi );
+#else
+  KIN_LOG(BF("gc::IsA<JumpJoint_sp>(jC)   jC = %s\n") % _rep_(jC));
+  Stub stub = jC->getStub();
+  KIN_LOG(BF("stub = \n%s\n") % stub._Transform.asString());
+  Vector3 x = stub._Transform.colX();
+  Vector3 y = stub._Transform.colY();
+  Vector3 z = stub._Transform.colZ();
+  KIN_LOG(BF("x = %s\n") % x.asString());
+  KIN_LOG(BF("y = %s\n") % y.asString());
+  KIN_LOG(BF("z = %s\n") % z.asString());
+  Vector3 D = this->getPosition();
+  Vector3 CD = D - C;
+  double lengthCD = CD.length();
+  if (lengthCD<SMALL_NUMBER) SIMPLE_ERROR(BF("About to divide by zero"));
+  Vector3 d = CD*(1.0/lengthCD);
+  KIN_LOG(BF("d = %s\n") % d.asString());
+  double dx = d.dotProduct(x);
+  double dy = d.dotProduct(y);
+  double dz = d.dotProduct(z);
+  KIN_LOG(BF("dx = %lf  dy = %lf  dz = %lf\n") % dx % dy % dz );
+  this->_Phi = geom::geom__planeVectorAngle(dy,dz);
+  KIN_LOG(BF("  dy = %lf   dz = %lf\n") % dy % dz );
+  KIN_LOG(BF("_Phi = %lf deg\n") % (this->_Phi/0.0174533));
+  Vector3 dox(1.0,0.0,0.0);
+  Vector3 dop(dx,dy,dz);
+  KIN_LOG(BF("dop = %s\n") % dop.asString());
+  KIN_LOG(BF("dop.dotProduct(dox) = %lf\n") % dop.dotProduct(dox));
+  if (dop.dotProduct(dox) > (1.0-SMALL_NUMBER)) {
+    this->_Theta = 0.0;
+    return;
+  }
+  Vector3 doz = dox.crossProduct(dop);
+  doz = doz.normalized();
+  KIN_LOG(BF("doz = %s\n") % doz.asString());
+  Vector3 doy = doz.crossProduct(dox);
+  KIN_LOG(BF("doy = %s\n") % doy.asString());
+  double eox = dop.dotProduct(dox);
+  double eoy = dop.dotProduct(doy);
+  KIN_LOG(BF("eox = %lf  eoy = %lf\n") % eox % eoy );
+//  double eoz = dop.dotProduct(doz); // Must be 0.0
+  this->_Theta = geom::geom__planeVectorAngle(eox,eoy);
+  KIN_LOG(BF("    this->_Theta = %lf deg\n") % (this->_Theta/0.0174533));
+#endif
+  #endif
 }
 
 

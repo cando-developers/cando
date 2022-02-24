@@ -304,22 +304,22 @@ CL_DEFMETHOD void Aggregate_O::makUnboundBoundingBox() {
 
 
 
-    AtomIdToAtomMap_sp Aggregate_O::buildAtomIdMap() const
+    AtomIdMap_sp Aggregate_O::buildAtomIdMap() const
     {_OF();
-	AtomIdToAtomMap_sp atomIdMap = AtomIdToAtomMap_O::create();
-	atomIdMap->resize(this->_contents.size());
+	AtomIdMap_sp atomIdMap = AtomIdMap_O::create();
+	atomIdMap->resizeAggregate(this->_contents.size());
 	for ( int mid = 0; mid<(int)this->_contents.size(); mid++ )
 	{
 	    int numResidues = this->_contents[mid]->_contents.size();
-	    atomIdMap->resize(mid,numResidues);
+	    atomIdMap->resizeMolecule(mid,numResidues);
 	    for ( int rid =0; rid<numResidues; rid++ )
 	    {
 		int numAtoms = this->_contents[mid]->_contents[rid]->_contents.size();
-		atomIdMap->resize(mid,rid,numAtoms);
+		atomIdMap->resizeResidue(mid,rid,numAtoms);
 		for ( int aid=0; aid<numAtoms; aid++ )
 		{
 		    AtomId atomId(mid,rid,aid);
-		    atomIdMap->set(atomId,this->_contents[mid]->_contents[rid]->_contents[aid].as<Atom_O>());
+		    atomIdMap->set(atomId,this->_contents[mid]->_contents[rid]->_contents[aid]);
 		}
 	    }
 	}

@@ -70,6 +70,8 @@ public: // Functions here
 */
   void fromCenterAndRotation(const Vector3& center,
                              const Matrix& transform);
+
+  void fromMatrix(const Matrix& transform);
   
 	/*! Return the translation part of the Stub */
   Vector3 translation() const { return this->_Transform.getTranslation();};

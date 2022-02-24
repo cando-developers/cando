@@ -36,7 +36,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/atomId.h>
 #include <clasp/core/numerics.h>
 #include <cando/kinematics/stub.h>
-#include <cando/kinematics/jointTree.h>
 #include <cando/kinematics/jumpJoint.h>
 #include <cando/kinematics/bondedJoint.h>
 
@@ -50,8 +49,28 @@ void BondedJoint_O::fields(core::Record_sp record) {
   record->field_if_not_unbound(INTERN_(kw,child1),this->_Children[1]);
   record->field_if_not_unbound(INTERN_(kw,child0),this->_Children[0]);
   record->field(INTERN_(kw,num_children),this->_NumberOfChildren);
-  record->field(INTERN_(kw,phi),this->_Phi);
-  record->field(INTERN_(kw,theta),this->_Theta);
+  switch (record->stage()) {
+  case core::Record_O::initializing:
+  case core::Record_O::loading:
+    {
+      double thetaDegrees;
+      double phiDegrees;
+      record->field(INTERN_(kw,phi_deg),phiDegrees);
+      record->field(INTERN_(kw,theta_deg),thetaDegrees);
+      this->_Phi = phiDegrees*0.0174533;
+      this->_Theta = thetaDegrees*0.0174533;
+    }
+    break;
+  case core::Record_O::saving: {
+    double thetaDegrees = this->_Theta/0.0174533;
+    double phiDegrees = this->_Phi/0.0174533;
+    record->field(INTERN_(kw,phi_deg),phiDegrees);
+    record->field(INTERN_(kw,theta_deg),thetaDegrees);
+  }
+      break;
+  default:
+      break;
+  }
   record->field(INTERN_(kw,distance),this->_Distance);
   record->field(INTERN_(kw,dof_propagates),this->_DofChangePropagatesToYoungerSiblings);
   this->Base::fields(record);
@@ -63,6 +82,16 @@ void BondedJoint_O::initialize() {
     this->_Children[i] = unbound<Joint_O>();
   }
 }
+
+	/*! Return the stubJoint1 */
+CL_DEFMETHOD Joint_sp BondedJoint_O::inputStubJoint0() const { return this->parent();}
+
+	/*! Return the stubJoint2 */
+CL_DEFMETHOD Joint_sp BondedJoint_O::inputStubJoint1() const { return this->parent()->parent();};
+
+	/*! Return the stubJoint3 */
+CL_DEFMETHOD Joint_sp BondedJoint_O::inputStubJoint2() const { return this->parent()->parent()->parent(); };
+
 
 CL_LAMBDA(atom-id &optional name);
 CL_LISPIFY_NAME("make_BondedJoint");
@@ -79,44 +108,45 @@ void BondedJoint_O::_appendChild(Joint_sp c)
   this->_Children[index] = c;
 }
   
-    void BondedJoint_O::_insertChild(int before, Joint_sp child)
-    {
-	if ( this->_numberOfChildren()>this->_maxNumberOfChildren() )
-	{
-	    THROW_HARD_ERROR(BF("You exceede the maximum[%d] number of children allowed for a BondedJoint") % this->_maxNumberOfChildren());
-	}
-	for ( int i=this->_numberOfChildren(); i>before; i-- )
-	    this->_Children[i] = this->_Children[i-1];
-	this->_Children[before] = child;
-	this->_NumberOfChildren++;
-    }
+void BondedJoint_O::_insertChild(int before, Joint_sp child)
+{
+  if ( this->_numberOfChildren()>this->_maxNumberOfChildren() )
+  {
+    THROW_HARD_ERROR(BF("You exceede the maximum[%d] number of children allowed for a BondedJoint") % this->_maxNumberOfChildren());
+  }
+  for ( int i=this->_numberOfChildren(); i>before; i-- )
+    this->_Children[i] = this->_Children[i-1];
+  this->_Children[before] = child;
+  this->_NumberOfChildren++;
+  child->_Parent = this->asSmartPtr();
+}
 
-    void BondedJoint_O::_releaseChild(int idx)
-    {
-	if ( this->_numberOfChildren() == 0 )
-	{
-	    THROW_HARD_ERROR(BF("There are no children to delete"));
-	}
-	int num = this->_numberOfChildren() - 1;
-	for ( int i=idx; i < num; i++ )
-	{
-	    this->_Children[i] = this->_Children[i+1];
-	}
-	this->_NumberOfChildren--;
-        this->_Children[this->_NumberOfChildren] = unbound<Joint_O>();
-    }
+void BondedJoint_O::_releaseChild(int idx)
+{
+  if ( this->_numberOfChildren() == 0 )
+  {
+    THROW_HARD_ERROR(BF("There are no children to delete"));
+  }
+  int num = this->_numberOfChildren() - 1;
+  for ( int i=idx; i < num; i++ )
+  {
+    this->_Children[i] = this->_Children[i+1];
+  }
+  this->_NumberOfChildren--;
+  this->_Children[this->_NumberOfChildren] = unbound<Joint_O>();
+}
 
 
-    void BondedJoint_O::_releaseAllChildren()
-    {
-	if ( this->_numberOfChildren() == 0 ) return;
-	int num = this->_numberOfChildren();
-	for ( int idx=0; idx < num; idx++ )
-	{
-          this->_Children[idx] = unbound<Joint_O>();
-	}
-	this->_NumberOfChildren = 0;
-    }
+void BondedJoint_O::_releaseAllChildren()
+{
+  if ( this->_numberOfChildren() == 0 ) return;
+  int num = this->_numberOfChildren();
+  for ( int idx=0; idx < num; idx++ )
+  {
+    this->_Children[idx] = unbound<Joint_O>();
+  }
+  this->_NumberOfChildren = 0;
+}
 
 
 
@@ -134,17 +164,18 @@ void BondedJoint_O::_updateInternalCoord()
     KIN_LOG(BF("!gc::IsA<JumpJoint_sp>(jC)   jC = %s\n") % _rep_(jC));
     Joint_sp jB = jC->parent();
     Vector3 B = jB->position();
-    this->_Theta = PREPARE_ANGLE(geom::calculateAngle(this->_Position,C,B)); // Must be from incoming direction
+    this->_Theta = geom::calculateAngle(this->_Position,C,B); // Must be from incoming direction
     KIN_LOG(BF("_Theta = %lf\n") % (this->_Theta/0.0174533));
     Joint_sp jA = jB->parent();
     Vector3 A = jA->position();
-    this->_Phi = geom::calculateDihedral(this->_Position,C,B,A);
+    double phi = geom::calculateDihedral(this->_Position,C,B,A);
+    this->setPhi(phi);
     KIN_LOG(BF("_Phi = %lf\n") % (this->_Phi/0.0174533));
     return;
   }
 #if 1
   internalCoordinatesFromPointAndCoordinateSystem(this->getPosition(),this->getInputStub()._Transform,
-                                                   this->_Distance, this->_Theta, this->_Phi );
+                                                  this->_Distance, this->_Theta, this->_Phi );
 #else
   KIN_LOG(BF("gc::IsA<JumpJoint_sp>(jC)   jC = %s\n") % _rep_(jC));
   Stub stub = jC->getStub();
@@ -190,17 +221,7 @@ void BondedJoint_O::_updateInternalCoord()
 #endif
 }
 
-void BondedJoint_O::updateInternalCoords( bool recursive,
-                                          JointTree_sp at)
-{_OF();
-  this->_updateInternalCoord();
-  for ( int it=0; it<this->_numberOfChildren(); it++ ) {
-    this->_child(it)->updateInternalCoords( true, at );
-  }
-  return;
-}
-
-bool BondedJoint_O::keepDofFixed(DofType dof,JointTree_sp at) const
+bool BondedJoint_O::keepDofFixed(DofType dof) const
 {_OF();
   IMPLEMENT_ME();
 #if 0
@@ -226,16 +247,16 @@ bool BondedJoint_O::keepDofFixed(DofType dof,JointTree_sp at) const
 }
 
 
-    string BondedJoint_O::asString() const
-    {
-	stringstream ss;
-	ss << this->Joint_O::asString();
-	ss << (BF("  _Distance[%lf]  _Theta[%lf]/deg  _Phi[%lf]/deg")
-	       % this->_Distance
-	       % (this->_Theta/0.0174533)
-	       % (this->_Phi/0.0174533) ).str() << std::endl;
-	return ss.str();
-    }
+string BondedJoint_O::asString() const
+{
+  stringstream ss;
+  ss << this->Joint_O::asString();
+  ss << (BF("  _Distance[%lf]  _Theta[%lf]/deg  _Phi[%lf]/deg")
+         % this->_Distance
+         % (this->_Theta/0.0174533)
+         % (this->_Phi/0.0174533) ).str() << std::endl;
+  return ss.str();
+}
 
 /*! There are three possible situations
     C is always a BondedJoint_sp
@@ -328,6 +349,31 @@ Stub BondedJoint_O::getInputStub() const
 #endif
 }
 
+
+void BondedJoint_O::_updateChildrenXyzCoords() {
+  if (this->_numberOfChildren()>0) {
+    int firstNonJumpIndex = this->firstNonJumpChildIndex();
+    for ( int ii=0; ii < firstNonJumpIndex; ii++) {
+      Stub jstub = this->_child(ii)->getInputStub();
+    // I should ratchet the newStub around the X axis and use relative dihedral
+      this->_child(ii)->_updateXyzCoord(jstub);
+    // ratchet newStub
+//    this->_DofChangePropagatesToYoungerSiblings = false;
+      this->noteXyzUpToDate();
+    }
+    Stub stub = this->_child(firstNonJumpIndex)->getInputStub();
+    for ( int ii=firstNonJumpIndex; ii < this->_numberOfChildren(); ii++) {
+    // I should ratchet the stub around the X axis and use relative dihedral
+      this->_child(ii)->_updateXyzCoord(stub);
+//    this->_DofChangePropagatesToYoungerSiblings = false;
+      this->noteXyzUpToDate();
+    }
+    for ( int ii=0; ii < this->_numberOfChildren(); ii++) {
+      this->_child(ii)->_updateChildrenXyzCoords();
+    }
+  }
+}
+
 void BondedJoint_O::_updateXyzCoord(Stub& stub)
 {
       // https://math.stackexchange.com/questions/133177/finding-a-unit-vector-perpendicular-to-another-vector
@@ -336,10 +382,19 @@ void BondedJoint_O::_updateXyzCoord(Stub& stub)
           % this->_Distance
           % (this->_Theta/0.0174533)
           % (this->_Phi/0.0174533) );
-  double bcTheta = FINAL_ANGLE(this->_Theta);
+  double bcTheta = this->_Theta;
 #if 1
   Vector3 d2;
+  printf("%s:%d:%s Calculating position for joint %s\n", __FILE__, __LINE__, __FUNCTION__, _rep_(this->_Name).c_str());
+  printf("%s:%d:%s distance = %lf  angle_deg = %lf   dihedral_deg = %lf\n", __FILE__, __LINE__, __FUNCTION__, this->_Distance, this->_Theta/0.0174533, this->_Phi/0.0174533 );
   this->_Position = pointFromMatrixAndInternalCoordinates(stub._Transform,this->_Distance, bcTheta, this->_Phi, d2 );
+  printf("%s:%d:%s d2 = %lf, %lf, %lf\n", __FILE__, __LINE__, __FUNCTION__, d2.getX(), d2.getY(), d2.getZ() );
+  Vector3 colX = stub._Transform.colX();
+  Vector3 colY = stub._Transform.colY();
+  Vector3 colZ = stub._Transform.colZ();
+  Vector3 trans = stub._Transform.getTranslation();
+  printf("%s:%d:%s transform = \n%s\n", __FILE__, __LINE__, __FUNCTION__, stub._Transform.asString().c_str());
+  printf("%s:%d:%s ==== Resulting position: %lf, %lf, %lf\n", __FILE__, __LINE__, __FUNCTION__, this->_Position.getX(), this->_Position.getY(), this->_Position.getZ() );
 #else
   KIN_LOG(BF(" rtTheta = %lf deg\n") % (bcTheta/0.0174533));
   double cosTheta = std::cos(bcTheta);
@@ -353,75 +408,29 @@ void BondedJoint_O::_updateXyzCoord(Stub& stub)
 #endif
 }
 
-void BondedJoint_O::_updateXyzCoords(Stub& stub)
-{
-  IMPLEMENT_ME();
-#if 0
-  this->_updateXyzCoord(stub);
-  Stub newStub = this->getStub();
-  for ( int ii=0; ii < this->_numberOfChildren(); ii++) {
-    this->_child(ii)->_updateXyzCoords(newStub);
-    this->_DofChangePropagatesToYoungerSiblings = false;
-    this->noteXyzUpToDate();
-  }
-#endif
-}
-
-
-void BondedJoint_O::updateXyzCoords()
-{_OF();
-	/// dof_change_propagates_to_younger_siblings_ will be set to false inside
-	/// update_xyz_coords -- keep a local copy.
-  bool local_dof_change_propagates_to_younger_siblings( this->_DofChangePropagatesToYoungerSiblings );
- 
-	/// Ancestral coordinates are up-to-date since this node
-	/// is the root of a subtree that needs refolding.
-	/// The stub is passed to update_xyz_coords, and this atom will modify it;
-	/// after which the stub is ready to be passed to the younger siblings.
+CL_DEFMETHOD void BondedJoint_O::updateXyzCoord() {
   Stub stub = this->getInputStub();
-  this->_updateXyzCoords(stub);
-#if 0  
-  this->BondedJoint_O::_updateXyzCoords(stub);
-  if ( local_dof_change_propagates_to_younger_siblings )
-  {
-    ASSERTF(this->_Parent.boundp(),BF("Parent is not defined"));
-    Joint_sp parent = this->_Parent;
-    int ii = 0;
-	    /// you had better find yourself in your parent's atom list.
-    while ( parent->_child(ii) != this->asSmartPtr() )
-    {
-      ++ii;
-      ASSERTF(ii != parent.get()->_numberOfChildren(),
-              BF("While iterating over all younger siblings I hit the end"
-                 " - this should never happen, I should hit myself"));
-    }
-    while ( ii != parent.get()->_numberOfChildren() )
-    {
-      parent->_child(ii)->_updateXyzCoords(stub,at);
-      ++ii;
-    }
-  }
-#endif
+  this->_updateXyzCoord(stub);
 }
 
 
-    double BondedJoint_O::dof(DofType const& dof) const
-    {_OF();
-	if ( dof == DofType::phi )
-	{
-	    return this->_Phi;
-	} else if ( dof == DofType::theta )
-	{
-	    return this->_Theta;
-	} else if ( dof == DofType::distance )
-	{
-	    return this->_Distance;
-	}
-	SIMPLE_ERROR(BF("Illegal dof request for BondedJoint - I can only handle internal dofs not rigid body"));
-    }
+double BondedJoint_O::dof(DofType const& dof) const
+{_OF();
+  if ( dof == DofType::phi )
+  {
+    return this->_Phi;
+  } else if ( dof == DofType::theta )
+  {
+    return this->_Theta;
+  } else if ( dof == DofType::distance )
+  {
+    return this->_Distance;
+  }
+  SIMPLE_ERROR(BF("Illegal dof request for BondedJoint - I can only handle internal dofs not rigid body"));
+}
 
 
-    core::Symbol_sp BondedJoint_O::typeSymbol() const {_OF(); return _sym_bonded;};
+core::Symbol_sp BondedJoint_O::typeSymbol() const {_OF(); return _sym_bonded;};
 
 
 

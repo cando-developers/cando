@@ -83,33 +83,29 @@ FORWARD(BondedJoint);
 	virtual core::Symbol_sp typeSymbol() const;
 
 	/*! Return the stubJoint1 */
-	virtual Joint_sp inputStubJoint0() const { return this->parent();}
+      virtual Joint_sp inputStubJoint0() const;
 
 	/*! Return the stubJoint2 */
-      virtual Joint_sp inputStubJoint1() const { return this->parent()->parent();};
+      virtual Joint_sp inputStubJoint1() const;
 
 	/*! Return the stubJoint3 */
-      virtual Joint_sp inputStubJoint2() const { return this->parent()->parent()->parent(); };
-
-	/*! Update the internal coordinates */
-	virtual void updateInternalCoords(bool const recursive,
-					  JointTree_sp at);
+      virtual Joint_sp inputStubJoint2() const;
 
       virtual void _updateInternalCoord();
 
-	bool keepDofFixed(DofType dof,JointTree_sp at) const;
+	bool keepDofFixed(DofType dof) const;
 
 
 	string asString() const;
 
-	/*! Update the external coordinates */
-	virtual void updateXyzCoords();
-
+      void _updateChildrenXyzCoords();
 
 	/*! Update the external coordinates using the input stub */
-      virtual void _updateXyzCoords(Stub& stub);
       virtual void _updateXyzCoord(Stub& stub);
 
+      /*! Get the stub and update the XYZ coordinate */
+      void updateXyzCoord();
+      
       virtual Stub getInputStub() const;
 
 	/*! Geta the value of the DOF */
@@ -121,7 +117,7 @@ FORWARD(BondedJoint);
 
       CL_DEFMETHOD void setDistance(double distance) { this->_Distance = distance;}
       CL_DEFMETHOD void setTheta(double angle) { this->_Theta = angle;}
-      CL_DEFMETHOD void setPhi(double dihedral) { this->_Phi = dihedral;}
+      CL_DEFMETHOD void setPhi(double dihedral) { this->_Phi = dihedral; };
 
 
     };

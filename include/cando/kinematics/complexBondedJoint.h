@@ -70,7 +70,9 @@ public:
   bool inputStubJoint2BoundP() const;
   void setInputStubJoint2(Joint_sp joint);
   void makeUnboundInputStubJoint2();
-  
+
+  void _updateInternalCoord();
+  void _updateChildrenXyzCoords();
 
 };
 };

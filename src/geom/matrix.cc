@@ -1202,6 +1202,16 @@ void	Matrix::rightHandedRotationY(double a)
 }
 
 
+
+Matrix Matrix::flipXY() const {
+  Matrix rotz;
+  rotz.rotationZ(180.0*0.0174533);
+  Matrix flipped = this->multiply3x3(rotz);
+  return flipped;
+}
+
+
+
 #ifdef XML_ARCHIVE
 void	Matrix::archive(core::ArchiveP node)
 {
@@ -1360,7 +1370,6 @@ void normalized_quaternion_to_matrix(Matrix& matrix, double w, double x, double 
   matrix.atRowColPut(3,3,1.0);
 }
 
-
 void rotation_matrix_to_quaternion(double& w, double& x, double& y, double& z, const Matrix& m)
 {
   w = sqrt(1.0+m.atRowCol(0,0)+m.atRowCol(1,1)+m.atRowCol(2,2))/2.0;
@@ -1390,8 +1399,8 @@ Vector3 pointFromMatrixAndInternalCoordinates(const Matrix& coordinateSystem,
 {
   double cosTheta = std::cos(angle);
   double sinTheta = std::sin(angle);
-  double cosPhi = std::cos(dihedral);
-  double sinPhi = std::sin(dihedral);
+  double cosPhi = std::cos(-dihedral);
+  double sinPhi = std::sin(-dihedral);
   d2.set(distance*cosTheta,distance*cosPhi*sinTheta,distance*sinPhi*sinTheta);
   Vector3 d2p = coordinateSystem * d2;
   return d2p;

@@ -31,7 +31,7 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace chem
 {
-    FORWARD(AtomIdToAtomMap);
+    FORWARD(AtomIdMap);
 };
 
 #endif // atom_FWD_H

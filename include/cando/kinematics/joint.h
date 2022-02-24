@@ -29,7 +29,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/foundation.h>
 #include <cando/geom/vector3.h>
 #include <cando/kinematics/kinematicsPackage.h>
-#include <cando/kinematics/jointTree.fwd.h>
 #include <cando/kinematics/dofType.h>
 #include <cando/kinematics/stub.fwd.h>
 #include <cando/kinematics/stub.h>
@@ -66,6 +65,7 @@ class RootJointInfo;
   children is enforced as JumpJoints | BondedJoint Joints.
  */
 
+FORWARD(Joint);
 class Joint_O : public core::CxxObject_O
 {
   LISP_CLASS(kinematics,KinPkg,Joint_O,"Joint",core::CxxObject_O);
@@ -174,15 +174,14 @@ public:
 	/*! Root nodes will return RootJointInfo structures */
   virtual RootJointInfo const* rootJointInfo() const;
 
-	/*! For debugging dump the JointTree */
+	/*! For debugging dump the tree */
   void recursiveDumpChildrenIntoStringStream(const string& prefix,
                                              stringstream& out);
 
   void updateInternalCoord();
   virtual void _updateInternalCoord() { THROW_HARD_ERROR(BF("Subclass must implement")); };
 	/*! Update the internal coordinates */
-  virtual void updateInternalCoords(bool const recursive,
-                                    JointTree_sp at 	) = 0;
+  void updateInternalCoords();
 
 	/*! Return true if this Joint is a JumpJoint (or subclass) */
   virtual bool isJump() const { return false;};
@@ -244,12 +243,9 @@ public:
   /*! Update the external coordinate of just this node */
   virtual void updateXyzCoord();
 
-	/*! Update the external coordinates using the input stub */
-  virtual void _updateXyzCoords(Stub& stub) {THROW_HARD_ERROR(BF("Subclass must implement"));};
-
   virtual void _updateXyzCoord(Stub& stub) {THROW_HARD_ERROR(BF("Subclass must implement"));};
 
-  void _updateChildrenXyzCoords(Stub& stub);
+  virtual void _updateChildrenXyzCoords();
 
 	/*! Ensure proper function of the output-sensitive refold subroutine
 	  derived classes must invoke this function during their updateXyzCoords subroutines

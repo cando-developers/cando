@@ -1751,7 +1751,7 @@ bool	Atom_O::invalid()
 
 
 
-AtomIdToAtomMap_sp Atom_O::buildAtomIdMap() const
+AtomIdMap_sp Atom_O::buildAtomIdMap() const
 {_OF();
   SIMPLE_ERROR(BF("Atom should never buildAtomIdMap"));
 };

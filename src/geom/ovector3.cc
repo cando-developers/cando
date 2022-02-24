@@ -26,6 +26,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #define	DEBUG_LEVEL_NONE
 #include <clasp/core/common.h>
 #include <clasp/core/symbolToEnumConverter.h>
+#include <clasp/core/ql.h>
 #include <cando/geom/ovector3.h>
 #include <clasp/core/multipleValues.h>
 #include <cando/geom/vector3.h>
@@ -211,6 +212,15 @@ CL_NAME("VNORMALIZED");
 CL_DEFMETHOD Vector3 OVector3_O::normalized()
 {
   return this->_Value.normalized();
+}
+
+CL_DEFMETHOD core::List_sp OVector3_O::vlist() const
+{
+  ql::list ll;
+  ll << core::make_single_float(this->_Value.getX())
+     << core::make_single_float(this->_Value.getY())
+     << core::make_single_float(this->_Value.getZ());
+  return ll.cons();
 }
 
 CL_NAME("VDIHEDRAL");

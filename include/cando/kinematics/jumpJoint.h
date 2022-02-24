@@ -86,15 +86,10 @@ namespace kinematics
 
     virtual core::Symbol_sp typeSymbol() const;
 
-    Stub getStub() const;
+    Stub getInputStub() const;
 
     virtual void _updateInternalCoord();
     
-	/*! Update the internal coordinates */
-    virtual void updateInternalCoords(bool const recursive,
-                                      JointTree_sp at);
-
-
 	/*! Yes, this is a JumpJoint */
     bool isJump() const { return true;};
 
@@ -111,17 +106,12 @@ namespace kinematics
 
     bool keepDofFixed(DofType dof) const;
 
-
-	/*! Update the external coordinates */
-    virtual void updateXyzCoords();
-
-
-	/*! Update the external coordinates using the input stub */
-    virtual void _updateXyzCoords(Stub& stub);
+    virtual void updateXyzCoord();
 
     /*! Update just this joints position */
     virtual void _updateXyzCoord(Stub& stub);
 
+    virtual void _updateChildrenXyzCoords();
 
 	/*! Return the DOF */
     double dof(DofType const& dof) const;

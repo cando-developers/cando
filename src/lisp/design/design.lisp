@@ -3,6 +3,12 @@
 
 (defparameter *complex-plugs* (make-hash-table))
 
+
+(defclass joint-tree ()
+  ((atom-id-map :initarg :atom-id-map :accessor atom-id-map)
+   (root :initarg :root :accessor root)))
+
+
 (defclass complex-plug ()
   ((name :initarg :name :accessor name)
    (smarts :initarg :smarts :accessor smarts)
@@ -510,6 +516,7 @@ of out-plugs."
           t)
         nil)))
 
+#+(or)
 (defun build-superposable-conformation-collection (conformation monomer-id)
   "Return (values superposable-conformation-collection aggregate)."
   (let* ((fold-tree (kin:get-fold-tree conformation))
@@ -585,6 +592,7 @@ add cap monomers until no more cap monomers are needed."
                   do (setf (gethash canonical-sequence unique-oligomers) oligomer))
             (alexandria:hash-table-values unique-oligomers)))))))
 
+#+(or)
 (defun monomer-node-context (monomer-node)
   (let* ((parent-node (kin:parent monomer-node))
          (parent (if parent-node
@@ -594,6 +602,7 @@ add cap monomers until no more cap monomers are needed."
     (declare (ignore parent))
     (list coupling (kin:stereoisomer-name monomer-node))))
 
+#+(or)
 (defun get-conformation (monomer-node conformations)
   (let* ((context (monomer-node-context monomer-node))
          (entry (gethash context conformations))
@@ -602,6 +611,7 @@ add cap monomers until no more cap monomers are needed."
     (format *debug-io* "monomer-node ~s context: ~s ~s~%" monomer-node context internals)
     internals))
 
+#+(or)
 (defun set-conformation (monomer-node coordinates)
   (let ((internals (get-conformation monomer-node coordinates)))
     (loop for index = 0 then (+ index 5)
