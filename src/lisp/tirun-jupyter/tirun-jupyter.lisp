@@ -500,7 +500,7 @@
     (values)))
 
 
-(defun parse-ligands (action parameter progress-callback)
+(defun parse-ligands (instance action parameter progress-callback)
   "Called from the file task page to actually parse the ligands file."
   (declare (ignore action progress-callback))
   (handler-case
