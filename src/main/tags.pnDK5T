@@ -1,0 +1,46 @@
+record-decl-p	dumpStmts.lisp	/^(defun record-decl-p (x)$/;"	f
+has-name-p	dumpStmts.lisp	/^(defun has-name-p (x name)$/;"	f
+find-named-class-visitor	dumpStmts.lisp	/^(defclass find-named-class-visitor (ast-tooling:ASTVisitor)$/;"	u
+visit	dumpStmts.lisp	/^(defgeneric visit (visitor node))$/;"	u
+visit	dumpStmts.lisp	/^(defmethod visit ((self find-named-class-visitor) node)$/;"	u
+ast-tooling:visit-stmt	dumpStmts.lisp	/^(core:defvirtual ast-tooling:visit-stmt ((self find-named-class-visitor) stmt) (visit self stmt)/;"	u
+ast-tooling:visit-decl	dumpStmts.lisp	/^(core:defvirtual ast-tooling:visit-decl ((self find-named-class-visitor) decl) (visit self decl)/;"	u
+ast-tooling:visit-type	dumpStmts.lisp	/^(core:defvirtual ast-tooling:visit-type ((self find-named-class-visitor) type) (visit self type)/;"	u
+find-named-class-consumer	dumpStmts.lisp	/^(defclass find-named-class-consumer (ast-tooling:astconsumer)$/;"	u
+ast-tooling:handle-translation-unit	dumpStmts.lisp	/^(core:defvirtual ast-tooling:handle-translation-unit ((self find-named-class-consumer) context)$/;"	u
+find-named-class-action	dumpStmts.lisp	/^(defclass find-named-class-action (ast-tooling:syntax-only-action)$/;"	u
+ast-tooling:create-astconsumer	dumpStmts.lisp	/^(core:defvirtual ast-tooling:create-astconsumer ((self find-named-class-action) compiler infile)$/;"	u
+action-factory	dumpStmts.lisp	/^(defclass action-factory (ast-tooling:frontend-action-factory)$/;"	u
+ast-tooling:create	dumpStmts.lisp	/^(core:defvirtual ast-tooling:create ((self action-factory))$/;"	u
+run-test-tool	dumpStmts.lisp	/^(defun run-test-tool ()$/;"	f
+run-tool	dumpStmts.lisp	/^(defun run-tool (&key test)$/;"	f
+a	foo.lisp	/^(defun a () (break "test"))$/;"	f
+b	foo.lisp	/^(defun b () (a))$/;"	f
+c	foo.lisp	/^(defun c () (b))$/;"	f
+_Bool	gc_interface.cc	/^typedef bool _Bool;$/;"	t	typeref:typename:bool	file:
+NAMESPACE_gctools	gc_interface.cc	/^#define NAMESPACE_gctools$/;"	d	file:
+NAMESPACE_core	gc_interface.cc	/^#define NAMESPACE_core$/;"	d	file:
+MPS_LOG	gc_interface.cc	/^#define MPS_LOG(/;"	d	file:
+MPS_LOG	gc_interface.cc	/^#define MPS_LOG(/;"	d	file:
+obj_name	gc_interface.cc	/^const char *obj_name(gctools::GCKindEnum kind) {$/;"	f	typeref:typename:const char *
+GC_KIND_NAME_MAP_TABLE	gc_interface.cc	/^#define GC_KIND_NAME_MAP_TABLE$/;"	d	file:
+GC_KIND_NAME_MAP	gc_interface.cc	/^#define GC_KIND_NAME_MAP$/;"	d	file:
+obj_skip	gc_interface.cc	/^mps_addr_t obj_skip(mps_addr_t client) {$/;"	f	typeref:typename:mps_addr_t
+GC_OBJ_SKIP_TABLE	gc_interface.cc	/^#define GC_OBJ_SKIP_TABLE$/;"	d	file:
+GC_OBJ_SKIP	gc_interface.cc	/^#define GC_OBJ_SKIP$/;"	d	file:
+obj_dump_base	gc_interface.cc	/^void obj_dump_base(mps_addr_t base) {$/;"	f	typeref:typename:void
+GC_OBJ_DUMP_MAP_TABLE	gc_interface.cc	/^#define GC_OBJ_DUMP_MAP_TABLE$/;"	d	file:
+GC_OBJ_DUMP_MAP	gc_interface.cc	/^#define GC_OBJ_DUMP_MAP$/;"	d	file:
+trap_obj_scan	gc_interface.cc	/^int trap_obj_scan = 0;$/;"	v	typeref:typename:int
+SHIELD_SAFE_TELEMETRY	gc_interface.cc	/^#define SHIELD_SAFE_TELEMETRY(/;"	d	file:
+SHIELD_SAFE_TELEMETRY	gc_interface.cc	/^#define SHIELD_SAFE_TELEMETRY(/;"	d	file:
+obj_scan	gc_interface.cc	/^GC_RESULT obj_scan(mps_ss_t ss, mps_addr_t client, mps_addr_t limit) {$/;"	f	typeref:typename:GC_RESULT
+GC_OBJ_SCAN_TABLE	gc_interface.cc	/^#define GC_OBJ_SCAN_TABLE$/;"	d	file:
+GC_OBJ_SCAN	gc_interface.cc	/^#define GC_OBJ_SCAN$/;"	d	file:
+GC_FINALIZE_METHOD	gc_interface.cc	/^#define GC_FINALIZE_METHOD$/;"	d	file:
+obj_finalize	gc_interface.cc	/^void obj_finalize(mps_addr_t client) {$/;"	f	typeref:typename:void
+GC_OBJ_FINALIZE_TABLE	gc_interface.cc	/^#define GC_OBJ_FINALIZE_TABLE$/;"	d	file:
+GC_OBJ_FINALIZE	gc_interface.cc	/^#define GC_OBJ_FINALIZE$/;"	d	file:
+globalLoadTimeValuesRoots	gc_interface.cc	/^vector<core::LoadTimeValues_O **> globalLoadTimeValuesRoots;$/;"	v	typeref:typename:vector<core::LoadTimeValues_O ** >
+registerLoadTimeValuesRoot	gc_interface.cc	/^void registerLoadTimeValuesRoot(core::LoadTimeValues_O **ptr) {$/;"	f	typeref:typename:void
+main_thread_roots_scan	gc_interface.cc	/^mps_res_t main_thread_roots_scan(mps_ss_t ss, void *g
