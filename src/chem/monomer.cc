@@ -214,7 +214,8 @@ CL_DEFMETHOD     core::List_sp	Monomer_O::plugNamesAndCouplingsAsList()
 }
 
 
-bool Monomer_O::hasRingClosingOutPlug() const
+CL_NAME(chem:|Monomer_O::hasRingClosingOutPlug|);
+CL_DEFMETHOD bool Monomer_O::hasRingClosingOutPlug() const
 {_OF();
   Couplings::iterator it;
   for ( it=this->_Couplings.begin(); it!=this->_Couplings.end(); it++ )

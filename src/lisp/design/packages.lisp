@@ -4,7 +4,7 @@
   (:use #:cl )
   (:export
    load-cdxml
-   )
+   #:setup)
   (:documentation
    "Load cdxml files and build topologies for doing design"))
 
@@ -24,10 +24,13 @@
   (:documentation
    "Embryonic joint-tree code"))
 
-
 (defpackage #:design
   (:use #:cl )
   (:export
+   #:configure
+   #:make-design
+   #:grammar
+   #:cap-name-map
    #:build-molecule
    #:*complex-plugs*
    #:complex-plug
@@ -40,6 +43,8 @@
    #:make-oligomer
    #:context
    #:design
+   #:chemdraw
+   #:complex-plugs
    #:topologys
    #:cap-name-map
    #:trainers
@@ -54,7 +59,8 @@
    #:build-all-trainers
    #:canonical-sequence
    #:joint-tree
-   #:root)
+   #:root
+   #:build-training-oligomers)
   (:documentation
    "Embryonic joint-tree code"))
 
@@ -79,6 +85,12 @@
    #:draw-joint-tree))
 
 
+(defpackage #:design.debug
+  (:use #:cl)
+  (:export
+   #:residue-graph
+   #:joint-template-graph
+   ))
 
 ;;;
 ;;;    File: packages.lisp

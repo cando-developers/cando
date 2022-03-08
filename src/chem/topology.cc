@@ -159,6 +159,10 @@ CL_DEFMETHOD Residue_sp Topology_O::buildResidueForIsomer(size_t isomer) const
     atom->turnOnFlags(needsBuild);
 //    printf("%s:%d  Creating atom@%d -> %s\n", __FILE__, __LINE__, ai->_ConstitutionAtomIndex, _rep_(atom).c_str());
     atoms[ai->_ConstitutionAtomIndex] = atom;
+    if (ai->_ConstitutionAtomIndex != idx) {
+      SIMPLE_ERROR(BF("The atom %s _ConstitutionAtomIndex %lu does not match the StereoisomerAtoms idx %lu")
+                   % _rep_(atom) % ai->_ConstitutionAtomIndex % idx );
+    }
     res->putMatter(idx,atom); // order atoms as in Topology
   }
   for ( size_t i=0, iEnd(constitutionAtoms->numberOfAtoms()); i<iEnd; ++i ) {

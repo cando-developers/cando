@@ -94,6 +94,9 @@ CL_DEFMETHOD  core::T_sp AtomIdMap_O::AtomIdMap_get(const AtomId& atomId) const
   return this->_AtomIdMap.safeLookup(atomId);
 }
 
+CL_DEFUN core::T_sp chem__lookup_atom(AtomIdMap_sp map, const chem::AtomId& atomId) {
+  return map->AtomIdMap_get(atomId);
+}
 
 void AtomIdMap_O::initialize()
 {_OF();

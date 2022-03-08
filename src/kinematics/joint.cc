@@ -334,7 +334,7 @@ Joint_sp Joint_O::getNonJumpJoint(int offset) const
   return this->_child(idx);
 }
 
-CL_DEFMETHOD core::List_sp Joint_O::children() const
+CL_DEFMETHOD core::List_sp Joint_O::jointChildren() const
 {
   ql::list l;
   for ( int i(0), iEnd(this->_numberOfChildren()); i<iEnd; ++i ) {
@@ -410,6 +410,11 @@ CL_DEFMETHOD void Joint_O::walkChildren(core::Function_sp callback)
     core::eval::funcall(callback,child);
     child->walkChildren(callback);
   }
+}
+
+CL_DEFUN void kin__walk(Joint_sp joint, core::Function_sp callback) {
+  core::eval::funcall(callback, joint);
+  joint->walkChildren(callback);
 }
 
 void Joint_O::walkResidueTree(int residueId, core::Function_sp callback)

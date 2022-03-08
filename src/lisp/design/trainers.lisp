@@ -1,4 +1,4 @@
-(in-package :design)
+(in-package :kin)
 
 
 (defun monomer-context (monomer)
@@ -14,7 +14,7 @@
 
 (defclass trainers ()
   ((oligomer :initarg :oligomer :accessor oligomer)
-   (focus-monomer-sequence-number :initarg :focus-monomer-sequence-number :accessor focus-monomer-sequence-number)
+   (focus-residue-sequence-number :initarg :focus-residue-sequence-number :accessor focus-residue-sequence-number)
    (context :initarg :context :accessor context)
    (conformation :initarg :conformation :accessor conformation)
    (aggregate :initarg :aggregate :accessor aggregate)
@@ -24,54 +24,52 @@
 
 (cando:make-class-save-load trainers)
 
-(defun collect-focus-joints (conformation focus-monomer-index)
-   (let ((focus-joints (make-hash-table)))
-     ;; First put all of the joints in the focus-monomer into the focus-joints hash-table
-    (kin:walk (kin:get-joint-tree conformation)
+(defun collect-focus-joints (conformation focus-residue-index)
+  (let ((focus-joints (make-hash-table)))
+    ;; First put all of the joints in the focus-residue into the focus-joints hash-table
+    (kin:walk (kin:joint-tree conformation)
               (lambda (joint)
                 (let ((atom-id (kin:atom-id joint)))
-                  (when (= (second atom-id) focus-monomer-index)
+                  (when (= (second atom-id) focus-residue-index)
                     (setf (gethash joint focus-joints) t)))))
-     ;; Then find the root joint
-     (let ((root-joint
-             (block root-find
-               (alexandria:maphash-keys
-                (lambda (joint)
-                  (let ((parent-joint (kin:get-parent joint)))
-                    (when (null (gethash parent-joint focus-joints))
-                      (return-from root-find joint))))
-                focus-joints))))
-       ;; Add the parent, grandparent and great-grandparent if they exist and correspond to atoms
-       (let* ((parent (let ((relative (kin:get-parent root-joint)))
-                        (if (typep relative 'kin:origin-jump-joint)
-                            nil
-                            relative)))
-              (grandparent (and parent
-                                (let ((relative (kin:get-parent parent)))
-                                  (if (typep relative 'kin:origin-jump-joint)
-                                      nil
-                                      relative))))
-              (great-grandparent (and grandparent
-                                      (let ((relative (kin:get-parent grandparent)))
-                                        (if (typep relative 'kin:origin-jump-joint)
-                                            nil
-                                            relative)))))
-         (when (and parent (kin:corresponds-to-joint parent))
-           (setf (gethash parent focus-joints) t))
-         (when (and grandparent (kin:corresponds-to-joint grandparent))
-           (setf (gethash grandparent focus-joints) t))
-         (when (and great-grandparent (kin:corresponds-to-joint great-grandparent))
-           (setf (gethash great-grandparent focus-joints) t))))
-     ;; Return the focus-joints as a list
-     (alexandria:hash-table-keys focus-joints)))
+    ;; Then find the root joint
+    (let ((root-joint
+            (block root-find
+              (alexandria:maphash-keys
+               (lambda (joint)
+                 (let ((parent-joint (kin:get-parent joint)))
+                   (when (null (gethash parent-joint focus-joints))
+                     (return-from root-find joint))))
+               focus-joints))))
+      ;; Add the parent, grandparent and great-grandparent if they exist and correspond to atoms
+      (let* ((parent (let ((relative (kin:get-parent root-joint)))
+                       (if (typep relative 'kin:jump-joint)
+                           nil
+                           relative)))
+             (grandparent (and parent
+                               (let ((relative (kin:get-parent parent)))
+                                 (if (typep relative 'kin:jump-joint)
+                                     nil
+                                     relative))))
+             (great-grandparent (and grandparent
+                                     (let ((relative (kin:get-parent grandparent)))
+                                       (if (typep relative 'kin:jump-joint)
+                                           nil
+                                           relative)))))
+        (when (and parent (kin:corresponds-to-joint parent))
+          (setf (gethash parent focus-joints) t))
+        (when (and grandparent (kin:corresponds-to-joint grandparent))
+          (setf (gethash grandparent focus-joints) t))
+        (when (and great-grandparent (kin:corresponds-to-joint great-grandparent))
+          (setf (gethash great-grandparent focus-joints) t))))
+    ;; Return the focus-joints as a list
+    (alexandria:hash-table-keys focus-joints)))
 
-(defun generate-superposable-conformation-collection (oligomer focus-monomer-sequence-number context &key generate-atom-tree-dot)
-  (let* ((mol (design:build-molecule oligomer))
-         (aggregate (let ((agg (chem:make-aggregate)))
-                      (chem:add-molecule agg mol)
-                      agg))
-         (conformation (kin:make-conformation (list oligomer)))
-         (focus-joints (collect-focus-joints conformation focus-monomer-sequence-number))
+(defun generate-superposable-conformation-collection (oligomer focus-residue-sequence-number context &key generate-atom-tree-dot)
+  (let* ((conformation (kin:make-conformation oligomer))
+         (aggregate (aggregate conformation))
+         (_ (break "Check the aggregate ~a and conformation ~a" aggregate conformation))
+         (focus-joints (collect-focus-joints conformation focus-residue-sequence-number))
          (atom-id-map (chem:build-atom-id-map aggregate))
          (superpose-atoms (loop for focus-joint in focus-joints
                                 for atom-id = (kin:atom-id focus-joint)
@@ -91,7 +89,7 @@
                                (second context)
                                (third context))))
         (format t "Wrote joint tree to ~a~%" filename)
-        (design.graphviz-draw-joint-tree:draw-joint-tree (kin:get-joint-tree conformation) filename)))
+        (design.graphviz-draw-joint-tree:draw-joint-tree (joint-tree conformation) filename)))
     (values conformation aggregate atom-id-map superposable-conformation-collection)))
 
 
@@ -99,12 +97,12 @@
   "Given a list of training oligomers expand them into a list of trainers"
   (let ((result (make-hash-table :test #'equalp))
         (all-oligomers (loop for oligomer in oligomers
-                             append (loop for sequence-id below (chem:number-of-sequences oligomer)
+                             append (loop for sequence-id below (chem:|Oligomer_O::numberOfSequences| oligomer)
                                           collect (progn
-                                                    (chem:goto-sequence oligomer sequence-id)
-                                                    (chem:deep-copy-oligomer oligomer))))))
+                                                    (chem:|Oligomer_O::gotoSequence| oligomer sequence-id)
+                                                    (chem:|Oligomer_O::deepCopy| oligomer))))))
     (loop for oligomer in all-oligomers
-          do (loop for monomer in (chem:monomers-as-list oligomer)
+          do (loop for monomer in (chem:|Oligomer_O::monomersAsList| oligomer)
                    for monomer-sequence-number = (chem:get-sequence-number monomer)
                    for context = (monomer-context monomer)
                    do (multiple-value-bind (conformation aggregate atom-id-map superposable-conformation-collection)
@@ -112,7 +110,7 @@
                         (leap:assign-atom-types aggregate)
                         (setf (gethash context result) (make-instance 'trainers
                                                                       :oligomer oligomer
-                                                                      :focus-monomer-sequence-number monomer-sequence-number
+                                                                      :focus-residue-sequence-number monomer-sequence-number
                                                                       :context (monomer-context monomer)
                                                                       :conformation conformation
                                                                       :aggregate aggregate
@@ -121,13 +119,13 @@
     (let ((trainers (alexandria:hash-table-values result)))
       trainers)))
 
-(defun build-trainers (design)
+(defun build-trainers (grammar)
   "Return a new design that includes trainers"
-  (let* ((oligomers (build-training-oligomers design))
+  (let* ((oligomers (design:build-training-oligomers grammar))
          (trainers (build-trainers-from-oligomers oligomers)))
-    (make-instance 'design
-                   :topologys (topologys design)
-                   :cap-name-map (cap-name-map design)
+    (make-instance 'grammar
+                   :topologys (topologys grammar)
+                   :cap-name-map (cap-name-map grammar)
                    :trainers trainers)))
 
 
@@ -168,34 +166,34 @@
         (conformation-collection-agg (aggregate trainer))
         (conformation (conformation trainer))
         (atom-id-map (atom-id-map trainer))
-        (focus-monomer-sequence-number (focus-monomer-sequence-number trainer)))
+        (focus-residue-sequence-number (focus-residue-sequence-number trainer)))
     (format t "extract-internal-coordinates ~%")
     (loop for index below (chem:number-of-entries conformation-collection)
           for entry = (chem:get-entry conformation-collection index)
           do (format t "index = ~a~%" index)
           do (chem:write-coordinates-to-matter entry conformation-collection-agg)
-             (kin:walk-children (kin:get-joint-tree conformation) 
-                       (lambda (o) 
-                         (let* ((atom (chem:lookup-atom atom-id-map (kin:atom-id o)))
-                                (pos (chem:get-position atom)))
-                           (kin:set-position o pos))))
-             (kin:update-internal-coords (kin:get-joint-tree conformation))
+             (kin:walk-children (joint-tree conformation) 
+                                (lambda (o) 
+                                  (let* ((atom (chem:lookup-atom atom-id-map (kin:atom-id o)))
+                                         (pos (chem:get-position atom)))
+                                    (kin:set-position o pos))))
+             (kin:update-internal-coords (joint-tree conformation))
           collect (let* ((internals (make-array 16 :adjustable t :fill-pointer 0))
-                         (monomer (kin:lookup-monomer-id (kin:get-fold-tree conformation)
-                                                         (list 0 focus-monomer-sequence-number))))
-                    (kin:walk-joints monomer
-                                     (lambda (index joint)
-                                       (format t "Extracting internal for ~a index: ~a atom-id: ~a~%"
-                                               (kin:name joint)
-                                               index
-                                               (third (kin:atom-id joint)))
-                                       (cond
-                                         ((typep joint 'kin:bonded-joint)
-                                          (vector-push-extend (third (kin:atom-id joint)) internals)
-                                          (vector-push-extend (kin:name joint) internals)
-                                          (vector-push-extend (kin:get-distance joint) internals)
-                                          (vector-push-extend (kin:get-theta joint) internals)
-                                          (vector-push-extend (kin:get-phi joint) internals)))))
+                         (residue (lookup-residue-id (fold-tree conformation)
+                                                     (list 0 focus-residue-sequence-number))))
+                    (walk-joints residue
+                                 (lambda (index joint)
+                                   (format t "Extracting internal for ~a index: ~a atom-id: ~a~%"
+                                           (kin:name joint)
+                                           index
+                                           (third (kin:atom-id joint)))
+                                   (cond
+                                     ((typep joint 'kin:bonded-joint)
+                                      (vector-push-extend (third (kin:atom-id joint)) internals)
+                                      (vector-push-extend (kin:name joint) internals)
+                                      (vector-push-extend (kin:get-distance joint) internals)
+                                      (vector-push-extend (kin:get-theta joint) internals)
+                                      (vector-push-extend (kin:get-phi joint) internals)))))
                     internals))))
 
 

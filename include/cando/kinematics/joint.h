@@ -106,7 +106,7 @@ public:
 
 	/*! Destructors need to delete all Children */
   virtual void _releaseAllChildren() = 0;
-  virtual core::List_sp children() const;
+  virtual core::List_sp jointChildren() const;
 public:
 
   Joint_O() : _Parent(unbound<Joint_O>()), _Name(nil<core::T_O>()), _Id() {};

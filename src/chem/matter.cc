@@ -577,7 +577,7 @@ CL_DEFMETHOD int	Matter_O::contentIndex( Matter_sp cc)
 /*! Add the Matter as a child of this Matter
  */
 CL_LISPIFY_NAME("addMatter");
-CL_DEFMETHOD void	Matter_O::addMatter(Matter_sp cp )
+CL_DEFMETHOD Matter_mv	Matter_O::addMatter(Matter_sp cp )
 {_OF();
   Matter_sp	ctemp;
   ASSERTNOTNULL(cp);
@@ -588,15 +588,9 @@ CL_DEFMETHOD void	Matter_O::addMatter(Matter_sp cp )
     	// Always add the content to the end of the vector
 	// A lot depends on Residues maintaining the order of Atoms
 	// throughout the various passes of building databases
+  size_t index = this->_contents.size();
   this->_contents.push_back(cp);
-#if 0
-  if ( this->_Id == UNDEFINED_ID )
-  {
-    this->_Id = this->_NextContentId;
-    this->_NextContentId++;
-  }
-#endif
-  LOG(BF("Finished adding") );
+  return Values(cp,core::make_fixnum(index));
 }
 
 //
