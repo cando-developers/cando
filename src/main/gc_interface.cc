@@ -463,7 +463,7 @@ mps_res_t main_thread_roots_scan(mps_ss_t ss, void *gc__p, size_t gc__s) {
 namespace gctools {
 };
 //
-// We don't want the static analyzer gc-builder.lsp to see the generated scanners
+// We don't want the static analyzer gc-builder.lisp to see the generated scanners
 //
 #ifndef RUNNING_GC_BUILDER
 #define HOUSEKEEPING_SCANNERS
