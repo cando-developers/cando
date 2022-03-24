@@ -122,6 +122,31 @@ string Plug_O::__repr__() const
   return ss.str();
 }
 
+CL_NAME(chem:|Plug_O::getB0|);
+CL_DEFMETHOD core::Symbol_sp Plug_O::getB0() const	{ SUBIMP(); };
+CL_NAME(chem:|Plug_O::getB1|);
+CL_DEFMETHOD core::Symbol_sp Plug_O::getB1() const	{ SUBIMP(); };
+CL_NAME(chem:|Plug_O::getBondOrder0|);
+CL_DEFMETHOD BondOrder Plug_O::getBondOrder0() const { SUBIMP(); };
+CL_NAME(chem:|Plug_O::getBondOrder1|);
+CL_DEFMETHOD BondOrder Plug_O::getBondOrder1() const { SUBIMP(); };
+
+CL_NAME(chem:|Plug_O::setName|);
+CL_DEFMETHOD void Plug_O::setName(core::Symbol_sp s) {
+  this->_Name = s;
+}
+
+CL_NAME(chem:|Plug_O::getName|);
+CL_DEFMETHOD core::Symbol_sp Plug_O::getName() const {
+  return this->_Name;
+}
+
+CL_DEFMETHOD bool Plug_O::getIsIn() const {_OF(); SUBCLASS_MUST_IMPLEMENT();};
+CL_DEFMETHOD bool Plug_O::getIsOrigin() const {return false;};
+CL_DEFMETHOD bool Plug_O::getIsRingClosing() const { return false; };
+
+
+
 CL_DEFMETHOD bool Plug_O::getIsOut() const
 {
   return !(this->getIsIn()||this->getIsRingClosing());

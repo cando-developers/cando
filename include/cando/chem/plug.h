@@ -107,11 +107,11 @@ namespace chem
      */
     core::Symbol_sp			_Name;
   public:
-    CL_DEFMETHOD     void setName(core::Symbol_sp s) { this->_Name = s; };
-    CL_DEFMETHOD     core::Symbol_sp getName() const { return this->_Name; };
-    CL_DEFMETHOD     virtual bool getIsIn() const {_OF(); SUBCLASS_MUST_IMPLEMENT();};
-    CL_DEFMETHOD virtual bool getIsOrigin() const {return false;};
-    CL_DEFMETHOD     virtual bool getIsRingClosing() const { return false; };
+    void setName(core::Symbol_sp s);
+    core::Symbol_sp getName() const;
+    virtual bool getIsIn() const;
+    virtual bool getIsOrigin() const;
+    virtual bool getIsRingClosing() const;
     bool getIsOut() const;
 
     virtual core::Symbol_sp otherSidePlugName();
@@ -119,10 +119,10 @@ namespace chem
 
     virtual string __repr__() const;
     
-    CL_DEFMETHOD virtual core::Symbol_sp getB0() const	{ SUBIMP(); };
-    CL_DEFMETHOD virtual core::Symbol_sp getB1() const	{ SUBIMP(); };
-    CL_DEFMETHOD virtual BondOrder getBondOrder0() const { SUBIMP(); };
-    CL_DEFMETHOD virtual BondOrder getBondOrder1() const { SUBIMP(); };
+    virtual core::Symbol_sp getB0() const;
+    virtual core::Symbol_sp getB1() const;
+    virtual BondOrder getBondOrder0() const;
+    virtual BondOrder getBondOrder1() const;
 
     virtual void	addMate(Mate_sp z ) {_OF();SUBCLASS_MUST_IMPLEMENT();};
 

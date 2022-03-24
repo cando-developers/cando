@@ -1562,6 +1562,7 @@ exec \"$@\"
       (format t "Writing runcmd~%")
       (generate-runcmd))))
 
+#+(or)
 (defmethod print-object ((object chem:aggregate) stream)
   "Aggregates can have atom graphs that are way too wide and deep to print the 
 normal way - so we short circuit it here using a mol2 file"

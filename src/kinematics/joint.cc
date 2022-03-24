@@ -156,6 +156,7 @@ void Joint_O::fields(core::Record_sp node) {
   node->field(INTERN_(kw,pos),this->_Position);
 }
 
+CL_NAME(kin:|Joint_O::name|);
 CL_DEFMETHOD core::T_sp Joint_O::name() const {
   return this->_Name;
 }
@@ -239,7 +240,7 @@ int Joint_O::indexOfChild(Joint_sp child)
 
 
 
-
+CL_NAME(kin:|Joint_O::addChild|);
 CL_DEFMETHOD
 void Joint_O::addChild(Joint_sp child)
 {_OF();

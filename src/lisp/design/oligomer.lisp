@@ -1,6 +1,5 @@
 
-(in-package :design)
-
+(in-package :kin)
 
 (defun canonical-sequence-monomer (coupling root monomer-out-couplings unique-ring-couplings)
   (let* ((outs (gethash root monomer-out-couplings))

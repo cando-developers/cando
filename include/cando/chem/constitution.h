@@ -198,7 +198,7 @@ FORWARD(Monomer);
     string __repr__() const;
     CL_DEFMETHOD void add_topology(Topology_sp topology);
     RepresentedEntityNameSet_sp	asGroup();
-    CL_LISPIFY_NAME("getConstitutionAtoms");
+    CL_NAME(chem:|Constitution_O::getConstitutionAtoms|);
     CL_DEFMETHOD 	    ConstitutionAtoms_sp getConstitutionAtoms() { return this->_ConstitutionAtoms;};
 
     Topology_sp	simplestTopologyWithPlugNamed(core::Symbol_sp name);
