@@ -16,7 +16,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
- 
+
 This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
 */")
 
@@ -41,7 +41,7 @@ This is an open source license for the CANDO software from Temple University, bu
 ;; LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 ;; OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 ;; THE SOFTWARE.
-;;  
+;;
 ;; This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
 ")
 (defparameter *lisp-copyright-tail* ";; -^-")
@@ -74,7 +74,7 @@ This is an open source license for the CANDO software from Temple University, bu
     (terpri fout)))
 
 (defun remove-copyright (contents notice)
-  "Remove the copyright and return the contents.  
+  "Remove the copyright and return the contents.
 If the copyright was removed the return the second value t"
   (let* ((cr-tail (copyright-notice-tail notice))
          (pos (search cr-tail contents)))
@@ -113,7 +113,7 @@ If the copyright was removed the return the second value t"
 
 
 ;;(copywrite-one-file "/Users/meister/Development/clasp/src/core/foundation.h")
-;;(copywrite-one-file "/Users/meister/Development/clasp/src/lisp/kernel/cmp/cmpeh.lsp")
+;;(copywrite-one-file "/Users/meister/Development/clasp/src/lisp/kernel/cmp/cmpeh.lisp")
 
 (defparameter *all-files* (append
                            (directory #P"~/Development/clasp/projects/cando/src/**/*.h")

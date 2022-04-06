@@ -55,10 +55,10 @@ boehm-cleavir:
 	make cleavir
 
 cclasp:
-	clasp_boehm_o  -l "buildCleavirClasp.lsp"
+	clasp_boehm_o  -l "buildCleavirClasp.lisp"
 
 bclasp-to-cclasp:
-	clasp_boehm_o  -l "buildBclaspToCclasp.lsp"
+	clasp_boehm_o  -l "buildBclaspToCclasp.lisp"
 
 
 
@@ -105,13 +105,13 @@ boehm-recompile:
 	make full-boehm
 
 min-boehm:
-	$(CLASP_BOEHM) -I -f ecl-min -l "buildClaspMinBoot.lsp"
+	$(CLASP_BOEHM) -I -f ecl-min -l "buildClaspMinBoot.lisp"
 
 min-boehm-recompile:
-	$(CLASP_BOEHM) -f ecl-min -l "buildClaspMinRecompile.lsp"
+	$(CLASP_BOEHM) -f ecl-min -l "buildClaspMinRecompile.lisp"
 
 full-boehm:
-	$(CLASP_BOEHM) -f ecl-min -l "buildClasp.lsp"
+	$(CLASP_BOEHM) -f ecl-min -l "buildClasp.lisp"
 
 
 mps:
@@ -123,25 +123,25 @@ mps-recompile:
 	make full-mps
 
 min-mps:
-	$(CLASP_MPS) -I -f ecl-min -l "buildClaspMinMps.lsp"
+	$(CLASP_MPS) -I -f ecl-min -l "buildClaspMinMps.lisp"
 
 min-mps-recompile:
-	$(CLASP_MPS) -f ecl-min -l "buildClaspMinRecompile.lsp"
+	$(CLASP_MPS) -f ecl-min -l "buildClaspMinRecompile.lisp"
 
 full-mps:
-	$(CLASP_MPS) -f ecl-min -l "buildClasp.lsp"
+	$(CLASP_MPS) -f ecl-min -l "buildClasp.lisp"
 
 
 short-compile-mps:
-	time $(CLASP_MPS) -f ecl-min -l "shortCompile.lsp"
+	time $(CLASP_MPS) -f ecl-min -l "shortCompile.lisp"
 
 short-compile-boehm:
-	time $(CLASP_BOEHM) -f ecl-min -l "shortCompile.lsp"
+	time $(CLASP_BOEHM) -f ecl-min -l "shortCompile.lisp"
 
 
 
 clasp-gc-interface:
-	$(CLASP_BOEHM) -l "buildClaspGC.lsp"
+	$(CLASP_BOEHM) -l "buildClaspGC.lisp"
 
 
 mps-interface-prep:
