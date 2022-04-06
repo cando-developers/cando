@@ -97,12 +97,12 @@
   "Given a list of training oligomers expand them into a list of trainers"
   (let ((result (make-hash-table :test #'equalp))
         (all-oligomers (loop for oligomer in oligomers
-                             append (loop for sequence-id below (chem:|Oligomer_O::numberOfSequences| oligomer)
+                             append (loop for sequence-id below (chem:oligomer/number-of-sequences oligomer)
                                           collect (progn
-                                                    (chem:|Oligomer_O::gotoSequence| oligomer sequence-id)
-                                                    (chem:|Oligomer_O::deepCopy| oligomer))))))
+                                                    (chem:oligomer/goto-sequence oligomer sequence-id)
+                                                    (chem:oligomer/deep-copy oligomer))))))
     (loop for oligomer in all-oligomers
-          do (loop for monomer in (chem:|Oligomer_O::monomersAsList| oligomer)
+          do (loop for monomer in (chem:oligomer/monomers-as-list oligomer)
                    for monomer-sequence-number = (chem:get-sequence-number monomer)
                    for context = (monomer-context monomer)
                    do (multiple-value-bind (conformation aggregate atom-id-map superposable-conformation-collection)

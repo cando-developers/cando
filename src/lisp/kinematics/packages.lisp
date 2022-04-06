@@ -1,5 +1,12 @@
 (cl:in-package #:common-lisp-user)
 
+(defpackage #:kin.work
+  (:use #:cl )
+  (:shadow #:atom)
+  (:export
+   #:*build-conformation*
+   #:build-conformation
+   ))
 
 
 (defpackage #:kin.fragment
@@ -16,7 +23,21 @@
    #:double-bond
    #:ring-single-bond
    #:ring-double-bond
-   extract-prepare-topology
+   #:extract-prepare-topology
+   )
+  (:documentation
+   "Load fragment sexp files and build topologies"))
+
+
+(defpackage #:kin.tasks
+  (:use #:cl )
+  (:shadow #:atom #:directory)
+  (:export
+   #:sanitize-filename
+   #:relative-node-pathname
+   #:project-node-pathname
+   #:with-project
+   #:make-grammar-node
    )
   (:documentation
    "Load fragment sexp files and build topologies"))
@@ -28,6 +49,8 @@
      (mapcar
       (lambda (name) (intern (string name) package))
       '(
+        #:trainer-node-pathnames
+        #:apply-rotamer-to-atresidue
         #:out-plug
         #:plug-name
         #:smarts
@@ -50,6 +73,7 @@
         #:stereoisomer-name
         #:topology
         #:conformation-index
+        #:focus-residue-sequence-number
         #:joints
         #:put-joint
         #:walk-ataggregate-joints
@@ -82,6 +106,9 @@
         #:joint-template-graph
         #:aggregate
         #:ataggregate
+        #:atmolecule-aref
+        #:atresidue-aref
+        #:atjoint-aref
         #:joint-tree
         #:make-conformation
         #:walk-atoms-joints
@@ -131,6 +158,17 @@
         #:joint-tree
         #:root
         #:build-training-oligomers
+        #:trainer-filename
+        #:maybe-save-trainer
+        #:load-trainer
+        #:save-rotamer-list
+        #:load-rotamer-list
+        #:rotamer-list
+        #:rotamer-library
+        #:extract-rotamer
+        #:entries
+        #:internal-match
+        #:internals-match
         ))
      package)))
         

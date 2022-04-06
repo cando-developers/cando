@@ -52,6 +52,7 @@ public:
   static ComplexBondedJoint_sp make(const chem::AtomId& atomId, core::T_sp name);
 public:
   ComplexBondedJoint_O(const chem::AtomId& atomId, core::T_sp name ) : BondedJoint_O(atomId,name) {};
+  ComplexBondedJoint_O() {};
 public:
   virtual Stub getInputStub() const;
 
@@ -64,6 +65,9 @@ public:
 	/*! Return the stubJoint3 */
   virtual Joint_sp inputStubJoint2() const { return this->_InputStubJoints[1]; };
 
+  bool inputStubJoint0BoundP() const;
+  void setInputStubJoint0(Joint_sp joint);
+  void makeUnboundInputStubJoint0();
   bool inputStubJoint1BoundP() const;
   void setInputStubJoint1(Joint_sp joint);
   void makeUnboundInputStubJoint1();

@@ -25,7 +25,6 @@
          (pn (target-pathname joblet)))
     (ensure-jobs-directories-exist pn)
     (write-file-if-it-has-changed pn substituted-script)))
-*
    
 ;;; What is this for????
 (defparameter *vdw-bonded* "ifsc=1, scmask1=':1@H6', scmask2=':2@O1,H6'")
@@ -1180,7 +1179,7 @@ its for and then create a new class for it."))
         collect (make-instance 'argument :option option :node node)))
 
 (defun standard-makefile-clause (command)
-  (format nil ":%OUTPUTS% : :%DEPENDENCY-INPUTS%
+  (format nil ":%OUTPUTS% &: :%DEPENDENCY-INPUTS%
 	$(RUNCMD) -c :%JOBID% -- :%DEPENDENCY-INPUTS% -- :%DEPENDENCY-OUTPUTS% -- \\
 	~a~%" command))
 
@@ -1296,7 +1295,7 @@ its for and then create a new class for it."))
                                         :-x (make-instance 'morph-side-stage-lambda-trajectory-file :morph morph :side side :stage stage :lambda% lam :name "heat" :extension "nc")
                                         :-l (make-instance 'morph-side-stage-lambda-unknown-file :morph morph :side side :stage stage :lambda% lam :name "heat" :extension "log")
                                         )
-                    :makefile-clause ":%OUTPUTS% : :%INPUTS%
+                    :makefile-clause ":%OUTPUTS% &: :%INPUTS%
 	$(RUNCMD) -c :%JOBID% -- :%DEPENDENCY-INPUTS% -- :%DEPENDENCY-OUTPUTS% -- \\
 	pmemd.cuda -AllowSmallBox :%OPTION-INPUTS% \\
 	  -O :%OPTION-OUTPUTS%"))))
@@ -1346,7 +1345,7 @@ its for and then create a new class for it."))
                                         :-x (make-instance 'morph-side-stage-lambda-trajectory-file :morph morph :side side :stage stage :lambda% lam :name "ti001" :extension "nc")
                                         :-l (make-instance 'morph-side-stage-lambda-unknown-file :morph morph :side side :stage stage :lambda% lam :name "ti001" :extension "log")
                                         )
-                    :makefile-clause ":%OUTPUTS% : :%INPUTS%
+                    :makefile-clause ":%OUTPUTS% &: :%INPUTS%
 	$(RUNCMD) -c :%JOBID% -- :%DEPENDENCY-INPUTS% -- :%DEPENDENCY-OUTPUTS% -- \\
 	pmemd.cuda -AllowSmallBox :%OPTION-INPUTS% \\
 	  -O :%OPTION-OUTPUTS%"))))

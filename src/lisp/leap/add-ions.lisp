@@ -2,7 +2,7 @@
 
 (defun ion-topology-atom-type (ion-topology)
   (let* ((constitution (chem:get-constitution ion-topology))
-         (constitution-atoms (chem:|Constitution_O::getConstitutionAtoms| constitution))
+         (constitution-atoms (chem:constitution/get-constitution-atoms constitution))
          (number-of-atoms (chem:number-of-atoms constitution-atoms)))
     (if (= number-of-atoms 1)
         (let ((constitution-atom (chem:atom-with-id constitution-atoms 0)))

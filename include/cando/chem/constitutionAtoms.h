@@ -161,7 +161,7 @@ the chem:constitution-atom(s) can be accessed using integer indices.)");
   public:
 
 	/*! Return the number of atoms */
-    CL_NAME(chem:|ConstitutionAtoms_O::numberOfAtoms|);
+    CL_NAME(CHEM:CONSTITUTION-ATOMS/NUMBER-OF-ATOMS);
     CL_DEFMETHOD int numberOfAtoms() const { return this->_Atoms.size();};
 
 	/*! Return the index of the ConstitutionAtom with the given name */

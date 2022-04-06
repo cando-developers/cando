@@ -20,5 +20,5 @@
 (defgeneric name (object))
 
 (defmethod name ((object kin:joint))
-  (kin:|Joint_O::name| object))
+  (kin:joint/name object))
 

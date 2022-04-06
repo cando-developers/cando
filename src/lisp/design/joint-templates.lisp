@@ -71,7 +71,7 @@
 (defun new-joint-template-factory (parent-template atom child-indexes in-plug constitution-atoms constitution-name topology-name)
   (declare (ignore atom constitution-atoms topology-name constitution-name))
   (let* ((atom-name (chem:get-name atom))
-         (constitution-atoms-index (chem:|ConstitutionAtoms_O::index| constitution-atoms atom-name))
+         (constitution-atoms-index (chem:constitution-atoms/index constitution-atoms atom-name))
          (gparent-template (if parent-template
                                (parent parent-template)
                                nil))
@@ -512,7 +512,7 @@ Build stereoinformation from all of this and return it."
   (let* ((residue (chem:build-residue constitution-atoms)))
 ;;;      (chem:define-stereochemical-configurations-for-all-atoms residue)
     (let* ((root-atom (chem:atom-with-name residue root-atom-name))
-           (spanning-loop (chem:make-spanning-loop root-atom))
+           (spanning-loop (chem:spanning-loop/make root-atom))
            (atoms (chem:all-atoms spanning-loop))
            (unsorted-chiral-atoms (remove-if (lambda (x) (null (eq (chem:get-stereochemistry-type x) :chiral))) atoms))
            (chiral-atoms (sort unsorted-chiral-atoms #'string<
@@ -721,7 +721,7 @@ Return a list of prepare-topology objects - one for each residue that we need to
   (let* ((out-plug-atom-prop (chem:matter-get-property-or-default atom :out-plug nil))
          (entity-to-delay-children-for (chem:matter-get-property-or-default atom :entity-to-delay-children-for nil))
          (root-atom-prop (chem:matter-get-property-or-default atom :root-atom nil))
-         (atom-index (chem:|ConstitutionAtoms_O::index| constitution-atoms (chem:atom-name atom)))
+         (atom-index (chem:constitution-atoms/index constitution-atoms (chem:atom-name atom)))
          (atom-name (chem:atom-name (chem:atom-with-id constitution-atoms atom-index)))
          (comment (format nil "~s [~a]" atom-name (chem:matter-get-property-or-default atom :weight -1))) )
     (cond
@@ -868,10 +868,10 @@ Return a list of prepare-topology objects - one for each residue that we need to
                           in-plug
                           (error "There has to be an in-plug in topology ~a" name))))
            (outplugs (find-out-plugs plugs))
-           (constitution-atoms (chem:|Constitution_O::getConstitutionAtoms| constitution))
+           (constitution-atoms (chem:constitution/get-constitution-atoms constitution))
            (root-atom-name (chem:root-atom-name in-plug))
            (root-atom (chem:atom-with-name residue root-atom-name))
-           (spanning-loop (chem:make-spanning-loop root-atom))
+           (spanning-loop (chem:spanning-loop/make root-atom))
            (all-spanning-atoms (chem:all-atoms spanning-loop)))
       (chem:set-property root-atom :root-atom in-plug)
       (loop for atom in all-spanning-atoms

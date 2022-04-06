@@ -217,7 +217,7 @@ CL_DEFMETHOD     ConstitutionAtom_sp ConstitutionAtoms_O::atomWithId(Constitutio
   return this->_Atoms[id];
 }
 
-CL_NAME(chem:|ConstitutionAtoms_O::index|);
+CL_NAME(CHEM:CONSTITUTION-ATOMS/INDEX);
 CL_DEFMETHOD     int ConstitutionAtoms_O::index(MatterName name) const
 {_OF();
   for ( int idx=0; idx<(int)this->_Atoms.size(); idx++ )

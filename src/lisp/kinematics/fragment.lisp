@@ -155,9 +155,10 @@
        
 
 (defun build-residue-from-fragment-fill-valences (fragment)
-  (format t "---- Fragment: ~a~%" (name fragment))
-  (format t "   (in-plug fragment) -> ~a~%" (in-plug fragment))
-  (format t "   (out-plugs fragment) -> ~a~%" (out-plugs fragment))
+  (when (chem:verbose 1)
+    (format t "---- Fragment: ~a~%" (name fragment))
+    (format t "   (in-plug fragment) -> ~a~%" (in-plug fragment))
+    (format t "   (out-plugs fragment) -> ~a~%" (out-plugs fragment)))
   (let ((atom-name-to-atom (make-hash-table))
         (residue (chem:make-residue (name fragment)))
         (plug-atoms (make-hash-table))
@@ -206,11 +207,13 @@
                                      (subseq atom-name-string (length atom-element-string))
                                      ""))
                (hydrogen-atom-names (stable-unique-hydrogen-names valence atom-suffix-name unique-atom-names)))
-          (format t " For atom ~a atom-valence: ~a  in-plug-count: ~a valence: ~a ~%"
-                  atom-name atom-valence in-plug-count valence)
-          (format t "    hydrogens: ~a plug-atoms: ~a~%"
-                  hydrogen-atom-names (alexandria:hash-table-alist plug-atoms))
-          (format t "    bonds: ~a~%"  (chem:bonds-as-list atom))
+          (when (chem:verbose 1)
+            (format t " For atom ~a atom-valence: ~a  in-plug-count: ~a valence: ~a ~%"
+                    atom-name atom-valence in-plug-count valence)
+            (format t "    hydrogens: ~a plug-atoms: ~a~%"
+                    hydrogen-atom-names (alexandria:hash-table-alist plug-atoms))
+            (format t "    bonds: ~a~%"  (chem:bonds-as-list atom))
+            )
           (loop for hydrogen-atom-name in hydrogen-atom-names
                 for hydrogen = (chem:make-atom hydrogen-atom-name :h)
                 do (setf (gethash hydrogen-atom-name back-spanning-names) atom-name)

@@ -117,7 +117,7 @@ This is for looking up parts but if the thing returned is not a part then return
     ends))
 
 (defun bonds-between (start end)
-  (let* ((spanning-tree (chem:make-spanning-loop start)))
+  (let* ((spanning-tree (chem:spanning-loop/make start)))
     (loop for ok = (chem:advance-loop-and-process spanning-tree)
           for atom = (chem:get-atom spanning-tree)
           until (eq atom end))
@@ -158,7 +158,7 @@ This is for looking up parts but if the thing returned is not a part then return
 - from the first alpha carbon to the last"
   (let* ((root-residue (chem:content-with-name molecule root-residue-name))
          (start-atom (chem:content-with-name root-residue :+default))
-         (spanning-tree (chem:make-spanning-loop start-atom))
+         (spanning-tree (chem:spanning-loop/make start-atom))
          (alpha-carbons (loop for ok = (chem:advance-loop-and-process spanning-tree)
                               for atom = (chem:get-atom spanning-tree)
                               until (null ok)
@@ -175,7 +175,7 @@ This is for looking up parts but if the thing returned is not a part then return
   (unless arguments
     (setf arguments '(:cg-tolerance 5.0 :max-tn-steps 100 :tn-tolerance 0.5)))
   (let ((mol (chem:content-at aggregate 0)))
-    #+(or)(let ((root-residue-name (chem:get-name (chem:|Oligomer_O::rootMonomer| oligomer))))
+    #+(or)(let ((root-residue-name (chem:get-name (chem:oligomer/root-monomer oligomer))))
             (chem:clear-restraints mol)
             (add-spiroligomer-guidance-restraints mol root-residue-name))
     (add-guidance-restraints mol)
@@ -204,7 +204,7 @@ This is for looking up parts but if the thing returned is not a part then return
 
 (defun my-add-monomers (oligomer names)
   (let ((monomer (chem:make-monomer names)))
-    (chem:|Oligomer_O::addMonomer| oligomer monomer)
+    (chem:oligomer/add-monomer oligomer monomer)
     (values (list monomer) nil)))
 
 (defun translate-part (oligomer names labels)
@@ -270,7 +270,7 @@ This is for looking up parts but if the thing returned is not a part then return
             (error "There is no monomer with the in-plug-name ~a to connect to ~a" in-plug-name previous-parts)
             (error "There is more than one monomer(~a) with the in-plug-name ~a" next-monomer in-plug-name)))
       (if (null ring-info)
-          (chem:|Oligomer_O::couple| oligomer
+          (chem:oligomer/couple oligomer
                        (first previous-monomer)
                        coupling-name
                        (first next-monomer))
@@ -366,7 +366,7 @@ of out-plugs."
     (format *debug-io* "out-plug-names -> ~s~%" out-plug-names)
     (case (length out-plug-names)
       (0
-       (error "There are no out-plugs in ~s that match the in-plug-name ~s - existing plugs: ~s" other-monomer in-plug-name (chem:|Topology_O::plugsAsList| topology)))
+       (error "There are no out-plugs in ~s that match the in-plug-name ~s - existing plugs: ~s" other-monomer in-plug-name (chem:topology/plugs-as-list topology)))
       (1
        (return-from ensure-one-unique-out-plug-name (first out-plug-names)))
       (otherwise
@@ -374,12 +374,12 @@ of out-plugs."
               out-plug-names other-monomer in-plug-name)))))
 
 (defun find-unsatisfied-monomer-plug-pairs (oligomer)
-  (let* ((monomers (chem:|Oligomer_O::monomersAsList| oligomer))
-         (couplings (chem:|Oligomer_O::couplingsAsList| oligomer))
+  (let* ((monomers (chem:oligomer/monomers-as-list oligomer))
+         (couplings (chem:oligomer/couplings-as-list oligomer))
          (monomer-plug-work-list (make-hash-table :test #'equal)))
     (loop for monomer in monomers
           for topology = (chem:current-topology monomer)
-          for plugs = (chem:|Topology_O::plugsAsList| topology)
+          for plugs = (chem:topology/plugs-as-list topology)
           do (loop for plug in plugs
                    for plug-name = (chem:get-name plug)
                    when (or (and (null (typep plug 'chem:origin-plug)) (chem:get-is-in plug))
@@ -420,7 +420,7 @@ of out-plugs."
                        (error "Could not find topology for cap ~s~%" cap))
                      (let ((other-monomer (chem:make-monomer (list (chem:get-name other-topology)))))
                        (when verbose (format *debug-io* "Adding new monomer ~s~%" other-monomer))
-                       (chem:|Oligomer_O::addMonomer| oligomer other-monomer)
+                       (chem:oligomer/add-monomer oligomer other-monomer)
                        (etypecase plug
                          (chem:out-plug
                           (let ((other-monomer-in-plug-name (chem:in-plug-name (chem:coupling-name plug-name))))
@@ -428,12 +428,12 @@ of out-plugs."
                               (error "While trying to couple monomer ~s with out-plug named ~s we could not find a corresponding in-plug named ~s in the cap monomer ~s"
                                      monomer plug-name other-monomer-in-plug-name other-monomer))
                             (when verbose (format *debug-io* "Coupling to out-coupling ~s ~s ~s ~s~%" monomer plug-name other-monomer other-monomer-in-plug-name))
-                            (chem:|Oligomer_O::couple| oligomer monomer plug-name other-monomer other-monomer-in-plug-name)))
+                            (chem:oligomer/couple oligomer monomer plug-name other-monomer other-monomer-in-plug-name)))
                          (chem:in-plug
                           (when verbose (format *debug-io* "Coupling monomer ~s with in coupling~%" other-monomer))
                           (let ((other-monomer-out-plug-name (ensure-one-unique-out-plug-name other-monomer plug-name)))
                             (when verbose (format *debug-io* "Coupling to in-coupling ~s ~s ~s ~s~%" other-monomer other-monomer-out-plug-name monomer plug-name))
-                            (chem:|Oligomer_O::couple| oligomer other-monomer other-monomer-out-plug-name monomer plug-name)))
+                            (chem:oligomer/couple oligomer other-monomer other-monomer-out-plug-name monomer plug-name)))
                          (chem:origin-plug
                           #| do nothing |#)))))
           t)
@@ -474,7 +474,7 @@ add cap monomers until no more cap monomers are needed."
   (let ((oligomer (core:make-cxx-object 'chem:oligomer))
         (focus-residue (chem:make-monomer (mapcar #'chem:get-name focus-topologys-in-list))))
     (format *debug-io* "Focus monomer: ~a~%" focus-residue)
-    (chem:|Oligomer_O::addMonomer| oligomer focus-residue)
+    (chem:oligomer/add-monomer oligomer focus-residue)
     ;; Now repeatedly cap the focus monomer until it's finished.
     (unless test
       (loop for step from 0

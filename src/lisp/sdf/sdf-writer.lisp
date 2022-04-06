@@ -4,11 +4,12 @@
   (with-open-file (fout filename :direction :output :if-exists :supersede)
     (write-sdf-stream aggregate fout)))
 
-(defun write-sdf-stream (aggregate stream)
-  (warn "write-sdf-stream doesn't handle charges properly yet")
-  (format stream "CHEMBL1093087~%
-                    3D~%
-Structure written by MMmdl.~%")
+(defun write-sdf-stream (aggregate stream &key name)
+  #+(or)(warn "write-sdf-stream doesn't handle charges properly yet")
+  (format stream "~a~%                    3D~%Structure written by MMmdl.~%"
+          (if name
+              name
+              (string (chem:get-name aggregate))))
   (let ((atom-to-index (make-hash-table)))
     (let* ((atoms (chem:map-atoms 'vector
                                   (lambda (atm) atm)
@@ -18,13 +19,13 @@ Structure written by MMmdl.~%")
                                     (list atm1 atm2 bond-order))
                                   aggregate))
            (coordinates (make-array (* 3 (length atoms)) :element-type 'double-float)))
-  (format stream "~3d~3d~3d~3d~3d~3d            999 V2000~%"
-          (length atoms)
-          (length bonds)
-          0
-          0
-          0
-          0)
+      (format stream "~3d~3d~3d~3d~3d~3d            999 V2000~%"
+              (length atoms)
+              (length bonds)
+              0
+              0
+              0
+              0)
       (loop for index below (length atoms)
             for atm = (elt atoms index) ;;get element from vector at position
             for pos = (chem:get-position atm)

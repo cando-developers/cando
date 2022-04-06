@@ -80,7 +80,7 @@ void	EstimateStretch::parseFromXml(adapt::QDomNode_sp node)
                            + t2->symbolName()->get_std_string());
     }
 
-CL_NAME(CHEM:FFSTRETCH-DB-ADD);
+CL_NAME(CHEM:FFSTRETCH-DB/ADD);
 CL_DEFMETHOD void    FFStretchDb_O::add(FFStretch_sp term)
 {
     core::Symbol_sp key;

@@ -60,7 +60,7 @@ is written to the log file as if the verbosity level were set to 2."
 
 (defmethod describe-object ((object chem:topology) stream)
   (let* ((constitution (chem:get-constitution object))
-         (constitution-atoms (chem:|Constitution_O::getConstitutionAtoms| constitution)))
+         (constitution-atoms (chem:constitution/get-constitution-atoms constitution)))
     (loop for index from 0 below (chem:number-of-atoms constitution-atoms)
           for atom = (chem:atom-with-id constitution-atoms index)
           do (format t "~a~%" (core:encode atom)))))

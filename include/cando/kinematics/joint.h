@@ -131,6 +131,7 @@ public:
   void setParent(Joint_sp parent);
 
 	/*! Return a Joint_sp for the parent */
+  bool parentBoundP() const { return this->_Parent.boundp(); };
   Joint_sp parent() const { return this->_Parent; };
   core::T_sp getParent() const;
   

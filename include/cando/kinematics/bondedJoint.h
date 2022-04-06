@@ -111,8 +111,11 @@ FORWARD(BondedJoint);
 	/*! Geta the value of the DOF */
 	double dof(DofType const& dof) const;
 
+      CL_NAME(KIN:BONDED-JOINT/GET-DISTANCE);
       CL_DEFMETHOD double getDistance() const { return this->_Distance; }
+      CL_NAME(KIN:BONDED-JOINT/GET-ANGLE);
       CL_DEFMETHOD double getTheta() const { return this->_Theta; };
+      CL_NAME(KIN:BONDED-JOINT/GET-DIHEDRAL);
       CL_DEFMETHOD double getPhi() const { return this->_Phi; };
 
       CL_DEFMETHOD void setDistance(double distance) { this->_Distance = distance;}

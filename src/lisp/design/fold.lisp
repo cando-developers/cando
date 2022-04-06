@@ -42,7 +42,7 @@
 
 (defun atresidue-factory (residue ring-closing-monomer-map monomer topology)
   (cond
-    ((chem:|Monomer_O::hasRingClosingOutPlug| monomer)
+    ((chem:monomer/has-ring-closing-out-plug monomer)
      (let ((atresidue (make-instance 'ring-closing-atresidue :residue residue)))
        (setf (gethash ring-closing-monomer-map monomer atresidue) atresidue)
        atresidue))
@@ -58,14 +58,14 @@
              
 
 (defun build-atmolecule-using-oligomer (oligomer molecule molecule-index monomer-positions joint-tree)
-  (let* ((root-monomer (chem:|Oligomer_O::rootMonomer| oligomer))
+  (let* ((root-monomer (chem:oligomer/root-monomer oligomer))
          (ring-closing-monomer-map (make-hash-table))
          (atmolecule (make-instance 'atmolecule :molecule molecule))
          (residue-index (gethash root-monomer monomer-positions))
          (residue (chem:content-at molecule residue-index))
          (topology (chem:current-topology root-monomer))
          (root-atresidue (atresidue-factory residue ring-closing-monomer-map root-monomer topology)))
-    (adjust-array (atresidues atmolecule) (chem:|Oligomer_O::numberOfMonomers| oligomer))
+    (adjust-array (atresidues atmolecule) (chem:oligomer/number-of-monomers oligomer))
     (put-atresidue atmolecule root-atresidue residue-index)
     (recursively-build-children joint-tree
                                 root-atresidue
@@ -135,7 +135,7 @@
           (conformation-index atresidue) 0)
     (loop for plug-and-coupling in (chem:plug-names-and-couplings-as-list monomer)
           for coupling = (second plug-and-coupling)
-          unless (chem:|Coupling_O::isRingClosing| coupling)
+          unless (chem:coupling/is-ring-closing coupling)
             do (let ((directional-coupling coupling))
                  (when (eq (chem:get-source-monomer directional-coupling) monomer)
                    (let* ((other-monomer (chem::get-target-monomer directional-coupling))
