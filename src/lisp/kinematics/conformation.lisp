@@ -129,3 +129,6 @@
                (build-structure conf rotamer-library)
                (energy:minimize (kin:aggregate conf))
                (sdf:write-sdf-stream (kin:aggregate conf) fout)))))
+
+
+

@@ -6,6 +6,7 @@
   (:export
    #:*build-conformation*
    #:build-conformation
+   #:!bad-geometry-p
    ))
 
 

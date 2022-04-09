@@ -1839,5 +1839,14 @@ void	Atom_O::defineConstitutionAtomBonding(ConstitutionAtom_sp consAtom, MapAtom
   }
 }
 
+CL_DEFUN double chem__calculate_dihedral_for_atoms(Atom_sp a, Atom_sp b, Atom_sp c, Atom_sp d) {
+  Vector3 va = a->getPosition();
+  Vector3 vb = b->getPosition();
+  Vector3 vc = c->getPosition();
+  Vector3 vd = d->getPosition();
+  return geom::calculateDihedral(va,vb,vc,vd);
+}
+
+
 
 }; // namespace chem
