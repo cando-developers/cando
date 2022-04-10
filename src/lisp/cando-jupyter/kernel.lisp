@@ -130,10 +130,9 @@
      :reader fork-client
      :initarg :fork-client
      :initform nil)
-   (image
-     :reader image
-     :initarg :image
-     :initform nil))
+   (load-system :accessor installer-load-system
+                :initarg :load-system
+                :type (or null string)))
   (:default-initargs
     :class 'kernel
     :language +language+
@@ -166,13 +165,13 @@
           (if (fork-client instance)
             (list "{connection_file}")
             (append (list "-f" "no-auto-lparallel")
-                    (unless (image instance)
-                        (list "--eval" "(ql:quickload :cando-jupyter)"))
+                    (when (installer-load-system instance)
+                      (list "--eval" (installer-load-system instance)))
                     (list "--eval" "(jupyter:run-kernel 'cando-jupyter:kernel)"
                           "--" "{connection_file}"))))))
 
 
-(defun install (&key bin-path system local prefix root fork image)
+(defun install (&key bin-path system local prefix root fork implementation (load-system t))
   "Install Cando kernel.
 - `bin-path` specifies path to LISP binary.
 - `system` toggles system versus user installation.
@@ -186,11 +185,19 @@
         'system-installer
         'user-installer)
       :implementation bin-path
-      :display-name (format nil "~A ~:[~;(Fork)~]~:[(Bare)~;~]" +display-name+ fork image)
-      :kernel-name (format nil "~A~:[~;_fork~]~:[_bare~;~]" +language+ fork image)
+      :display-name (format nil "~A~:[~; (Fork)~]~@[ (~A)~]"
+                                +display-name+ fork implementation)
+      :kernel-name (format nil "~A~:[~;_fork~]~@[_~(~A~)~]"
+                               +language+ fork implementation)
       :local local
       :prefix prefix
-      :image image
+      :load-system (cond ((or (null load-system)
+                              (stringp load-system))
+                          load-system)
+                         ((find-package :quicklisp)
+                          "(ql:quickload :cando-jupyter)")
+                         (t
+                          "(asdf:load-system :cando-jupyter)"))
       :fork-client fork
       :root root)))
 
