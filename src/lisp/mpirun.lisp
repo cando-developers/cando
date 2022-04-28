@@ -1,4 +1,4 @@
-(load "source-dir:extensions;cando;src;lisp;start-cando.lisp")
+(load "sys:extensions;cando;src;lisp;start-cando.lisp")
 (setf *package* (find-package :cando-user))
 (defun suppress (func)
   (format t "function ~a is ignored within mpi~%" func))

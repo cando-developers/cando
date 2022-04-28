@@ -1,4 +1,4 @@
-(load "source-dir:extensions;cando;src;lisp;start-cando.lisp")
+(load "sys:extensions;cando;src;lisp;start-cando.lisp")
 (in-package :cando-user)
 *default-pathname-defaults*
 

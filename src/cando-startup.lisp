@@ -1,6 +1,6 @@
 (format t "Entered cando-startup.lisp~%")
 (push :dont-start-cando-user *features*)
-(load "source-dir:extensions;cando;src;lisp;start-cando.lisp")
+(load "sys:extensions;cando;src;lisp;start-cando.lisp")
 (format t "Done load start-cando.lisp in cando-startup.lisp~%")
 
 (push (lambda ()

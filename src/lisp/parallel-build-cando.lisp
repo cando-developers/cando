@@ -249,7 +249,7 @@
 (format t "Setting CANDO hostname~%")
 (progn
   (setf (logical-pathname-translations "cando")
-        '(("**;*.*" "source-dir:extensions;cando;src;**;*.*"))))
+        '(("**;*.*" "sys:extensions;cando;src;**;*.*"))))
 
 ;;; Add directories for ASDF to search for systems
 (let* ((topdir (translate-logical-pathname #P"cando:lisp;"))

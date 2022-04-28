@@ -38,7 +38,7 @@
 #|
 (defun setup-gaff ()
   (let ((*default-pathname-defaults*
-          (translate-logical-pathname #P"source-dir:extensions;cando;src;data;force-field;"))
+          (translate-logical-pathname #P"sys:extensions;cando;src;data;force-field;"))
         (parms (chem:make-read-amber-parameters)))
     (let ((*
     (with-open-file (fin "ATOMTYPE_GFF.DEF" :direction :input)

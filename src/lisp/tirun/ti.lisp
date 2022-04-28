@@ -724,7 +724,7 @@ if __name__ == '__main__':
    :extension "cando"))
 
 (defclass getdvdl-script-file (node-file)
-  ((script-file :initform #P"source-dir:extensions;cando;src;lisp;tirun;getdvdl.lisp" :reader script-file)
+  ((script-file :initform #P"sys:extensions;cando;src;lisp;tirun;getdvdl.lisp" :reader script-file)
    (executable :initform #+(or)"python2" "icando-boehm" :reader executable))
   (:default-initargs
    :name "getdvdl"
@@ -1492,14 +1492,14 @@ try_special \"$@\"
 exec \"$@\"
 "))
     (clasp-posix:chmod "runcmd_simple" #o755))
-  (let ((run-in-docker-file #P"source-dir:extensions;cando;src;data;common;run-in-docker"))
+  (let ((run-in-docker-file #P"sys:extensions;cando;src;data;common;run-in-docker"))
     (unless (probe-file run-in-docker-file)
       (error "Could not find file ~s~%" run-in-docker-file))
     (let ((run-in-docker (read-file (probe-file run-in-docker-file))))
       (with-open-file (fout "run-in-docker" :direction :output :if-exists :supersede)
         (write-string run-in-docker fout))
       (clasp-posix:chmod "run-in-docker" #o755)))
-  (let ((runcmd_with_docker-file #P"source-dir:extensions;cando;src;data;common;runcmd_with_docker"))
+  (let ((runcmd_with_docker-file #P"sys:extensions;cando;src;data;common;runcmd_with_docker"))
     (unless (probe-file runcmd_with_docker-file)
       (error "Could not find file ~s~%" runcmd_with_docker-file))
     (let ((runcmd_with_docker (read-file (probe-file runcmd_with_docker-file))))

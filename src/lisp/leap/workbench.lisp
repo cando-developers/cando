@@ -16,7 +16,7 @@
 (progn
   (defparameter *new-rules*
     (architecture.builder-protocol:with-builder *antechamber-builder*
-      (let ((fin (open (merge-pathnames #P"extensions/cando/src/data/force-field/ATOMTYPE_GFF.DEF" #P"source-dir:"))))
+      (let ((fin (open (merge-pathnames #P"extensions/cando/src/data/force-field/ATOMTYPE_GFF.DEF" #P"sys:"))))
         (read-antechamber-type-rules fin))))
   ;; Read the rules with the old parser
   (energy::setup-amber)
@@ -40,7 +40,7 @@
 (progn
   (defparameter *new-amber-rules*
     (architecture.builder-protocol:with-builder *antechamber-builder*
-      (let ((fin (open (merge-pathnames #P"~/Development/amber16/dat/antechamber/ATOMTYPE_AMBER.DEF" #P"source-dir:"))))
+      (let ((fin (open (merge-pathnames #P"~/Development/amber16/dat/antechamber/ATOMTYPE_AMBER.DEF" #P"sys:"))))
         (read-antechamber-type-rules fin))))
   ;; Read the rules with the old parser
   (with-open-file (fout "/tmp/new-amber-rules.txt" :direction :output :if-exists :supersede)

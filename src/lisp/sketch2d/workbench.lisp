@@ -1,7 +1,7 @@
 (ql:quickload :sketch2d)
 
 
-(defparameter *default-pathname-defaults* (translate-logical-pathname #P"source-dir:extensions;cando;src;lisp;sketch2d;"))
+(defparameter *default-pathname-defaults* (translate-logical-pathname #P"sys:extensions;cando;src;lisp;sketch2d;"))
 (defparameter *agg* (cando:load-chem-draw-aggregate "/tmp/methane.cdxml"))
 (defparameter *agg* (cando:load-mol2 "examples/017.mol2"))
 (defparameter *mol* (chem:content-at *agg* 0))
@@ -39,7 +39,7 @@
 
 
 (progn
-  (defparameter *default-pathname-defaults* (translate-logical-pathname #P"source-dir:extensions;cando;src;lisp;sketch2d;"))
+  (defparameter *default-pathname-defaults* (translate-logical-pathname #P"sys:extensions;cando;src;lisp;sketch2d;"))
   (defparameter *agg* (cando:load-chem-draw-aggregate "/tmp/methane.cdxml"))
   (defparameter *agg* (cando:load-mol2 "examples/017.mol2"))
   (defparameter *mol* (chem:content-at *agg* 0))

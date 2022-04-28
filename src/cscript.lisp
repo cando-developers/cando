@@ -8,9 +8,6 @@
            #P"data/"
            #P"examples/")
 
-(k:sources :extension-load
-           #~"cando-startup.lisp")
-
 (k:sources :iclasp
            #~"clasp_gc_cando.sif")
 
