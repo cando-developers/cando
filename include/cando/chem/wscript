@@ -1,4 +1,0 @@
-def build(bld):
-    print("cando/adapt bld.path.ant_glob(\"*.h\") = %s" % bld.path.ant_glob("**/*.h"))
-    for name in bld.path.ant_glob("**/*.h"):
-        bld.extensions_include_files.append(name.abspath())
