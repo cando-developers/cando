@@ -385,16 +385,16 @@ void BondedJoint_O::_updateXyzCoord(Stub& stub)
   double bcTheta = this->_Theta;
 #if 1
   Vector3 d2;
-  printf("%s:%d:%s Calculating position for joint %s\n", __FILE__, __LINE__, __FUNCTION__, _rep_(this->_Name).c_str());
-  printf("%s:%d:%s distance = %lf  angle_deg = %lf   dihedral_deg = %lf\n", __FILE__, __LINE__, __FUNCTION__, this->_Distance, this->_Theta/0.0174533, this->_Phi/0.0174533 );
+//  printf("%s:%d:%s Calculating position for joint %s\n", __FILE__, __LINE__, __FUNCTION__, _rep_(this->_Name).c_str());
+//  printf("%s:%d:%s distance = %lf  angle_deg = %lf   dihedral_deg = %lf\n", __FILE__, __LINE__, __FUNCTION__, this->_Distance, this->_Theta/0.0174533, this->_Phi/0.0174533 );
   this->_Position = pointFromMatrixAndInternalCoordinates(stub._Transform,this->_Distance, bcTheta, this->_Phi, d2 );
-  printf("%s:%d:%s d2 = %lf, %lf, %lf\n", __FILE__, __LINE__, __FUNCTION__, d2.getX(), d2.getY(), d2.getZ() );
+//  printf("%s:%d:%s d2 = %lf, %lf, %lf\n", __FILE__, __LINE__, __FUNCTION__, d2.getX(), d2.getY(), d2.getZ() );
   Vector3 colX = stub._Transform.colX();
   Vector3 colY = stub._Transform.colY();
   Vector3 colZ = stub._Transform.colZ();
   Vector3 trans = stub._Transform.getTranslation();
-  printf("%s:%d:%s transform = \n%s\n", __FILE__, __LINE__, __FUNCTION__, stub._Transform.asString().c_str());
-  printf("%s:%d:%s ==== Resulting position: %lf, %lf, %lf\n", __FILE__, __LINE__, __FUNCTION__, this->_Position.getX(), this->_Position.getY(), this->_Position.getZ() );
+//  printf("%s:%d:%s transform = \n%s\n", __FILE__, __LINE__, __FUNCTION__, stub._Transform.asString().c_str());
+//  printf("%s:%d:%s ==== Resulting position: %lf, %lf, %lf\n", __FILE__, __LINE__, __FUNCTION__, this->_Position.getX(), this->_Position.getY(), this->_Position.getZ() );
 #else
   KIN_LOG(BF(" rtTheta = %lf deg\n") % (bcTheta/0.0174533));
   double cosTheta = std::cos(bcTheta);
