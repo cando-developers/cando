@@ -105,6 +105,50 @@
          (fortran:parse-double-float just-number)))
       (t (fortran:parse-double-float number-string)))))
 
+(defun elements-match (el1 el2 ela elb)
+  (or (and (eq el1 ela) (eq el2 elb))
+      (and (eq el1 elb) (eq el2 ela))))
+
+(defun calculate-bonds (agg)
+  (flet ((bonded-order (a1 a2 el1 el2 dist)
+           (cond
+             ((elements-match el1 el2 :c :c)
+              (cond
+                ((< 1.45 dist 1.55) :single-bond)
+                ((< 1.29 dist 1.45) :double-bond)
+                ((< dist 1.29) :triple-bond)))
+             ((elements-match el1 el2 :c :o)
+              (cond
+                ((< 1.23 dist 1.3)
+                 :double-bond)
+                ))
+             ((elements-match el1 el2 :c :s)
+              (cond
+                ((< 1.7 dist 1.82)
+                 :single-bond)
+                ))
+             ((elements-match el1 el2 :|Rh| :|Rh|)
+              (cond
+                ((< 2.3 dist 2.5)
+                 :single-bond)
+                )))))
+    (let ((atoms (chem:map-atoms 'list #'identity agg)))
+      (loop named outer-loop
+            for atm-cur = atoms then (cdr atm-cur)
+            for atom1 = (car atm-cur)
+            for element1 = (chem:get-element atom1)
+            for pos1 = (chem:get-position atom1)
+            when (null (cdr atm-cur))
+              do (return-from outer-loop nil)
+            do (loop for atom2 in (cdr atm-cur)
+                     for element2 = (chem:get-element atom2)
+                     for pos2 = (chem:get-position atom2)
+                     for delta = (geom:v- pos1 pos2)
+                     for dist = (geom:vlength delta)
+                     for order = (bonded-order atom1 atom2 element1 element2 dist)
+                     when order
+                       do (chem:bond-to atom1 atom2 order))))))
+
 (defun generate-aggregate (data)
   (let ((sname (intern (name data) :keyword))
         (dict (dict data)))
@@ -155,6 +199,7 @@
                 do (chem:set-position atm vec)
                 do (chem:add-matter res atm)
                 )
+          (calculate-bonds agg)
           agg)))))
                                         
 (defun process-cif-block (cif-block)
@@ -229,7 +274,7 @@
     (error "Could not find ~a" filename))
   (let ((cifs (load-cif-blocks filename :debug debug)))
     (unless (= (length cifs) 1) (error "load-cif expects one block - there are ~a - use load-cifs" (length cifs)))
-    (value (generate-aggregate (first cifs)) (first cifs))))
+    (values (generate-aggregate (first cifs)) (first cifs))))
 
 (defun load-cifs (filename &key debug)
   "Load a CIF file containing a multiple data blocks and return them as aggregates in a list"
