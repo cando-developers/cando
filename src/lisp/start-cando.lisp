@@ -72,7 +72,7 @@
 ;;;(make-package :cando)
 
 (let ((amber-home
-        (namestring (uiop:ensure-directory-pathname (or (ext:getenv "AMBERHOME") "/amber/")))))
+        (namestring (uiop:ensure-directory-pathname (or (ext:getenv "AMBERHOME") "/opt/amber/")))))
   (setf (logical-pathname-translations "amber")
         (list (list "**;*.*" (concatenate 'string amber-home "/**/*.*")))))
 

@@ -497,7 +497,8 @@ void ReadAmberParameters_O::parseNonbondDb(core::T_sp fin, FFNonbondDb_sp ffNonb
           SIMPLE_ERROR(BF("The ffNonbond was not located for %s") % core::_rep_(stype));
         }
       } else {
-        SIMPLE_ERROR(BF("Could not find type: %s") % _rep_(stype));
+        SIMPLE_WARN(BF("Could not find type: %s in line: %s") % _rep_(stype) % _rep_(tline));
+        continue;
       }
       double radius = gc::As<core::Number_sp>(tradius)->as_double_();
       double edep = gc::As<core::Number_sp>(tedep)->as_double_();
@@ -524,7 +525,7 @@ void ReadAmberParameters_O::parseNonbondDb(core::T_sp fin, FFNonbondDb_sp ffNonb
             ffNonbondSameParmType->setRadius_Angstroms(radius);
             ffNonbondSameParmType->setEpsilon_kCal(edep);             
           } else {
-            SIMPLE_ERROR(BF("Could not find type: %s") % _rep_(stype));
+            SIMPLE_WARN(BF("Could not find type: %s in line: %s") % _rep_(stype) % _rep_(tline));
           }
             
         }
@@ -556,7 +557,8 @@ void ReadAmberParameters_O::parseAtomEquivalences(core::T_sp fin, FFNonbondDb_sp
       if ( ffNonbondDb->hasType(stype) ) {
         ffNonbond = gc::As_unsafe<FFNonbond_sp>(ffNonbondDb->FFNonbond_findType(stype));
       } else {
-        SIMPLE_ERROR(BF("Could not find type: %s") % type);
+        SIMPLE_WARN(BF("Could not find type: %s in line: %s") % type % line );
+        continue;
       }
       string params = core::trimWhiteSpace(line.substr(4));
       printf("%s:%d:%s ffNonbond %s -> setSameParams(%s)\n", __FILE__, __LINE__, __FUNCTION__, core::_rep_(ffNonbond).c_str(), params.c_str());

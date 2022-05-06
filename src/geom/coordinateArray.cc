@@ -55,7 +55,7 @@ size_t ComplexVectorCoordinate_O::vectorPushExtend_Vector3(const Vector3& newEle
     if (extension <= 0) extension = 32;
     size_t new_size = this->_ArrayTotalSize+extension;
     unlikely_if (!cl::_sym_adjust_array || !cl::_sym_adjust_array->boundP()) {
-      this->internalAdjustSize_(new_size);
+      this->resize(new_size);
     } else {
       core::eval::funcall(cl::_sym_adjust_array,this->asSmartPtr(),nil<core::T_O>(),cl::_sym_fill_pointer,core::clasp_make_fixnum(this->_FillPointerOrLengthOrDummy));
     }

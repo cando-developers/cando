@@ -140,10 +140,10 @@ core::Symbol_sp		t1, t2, t3;
     key = angleKey(t1,t2,t3);
     core::T_sp parm;
     parm = this->_Parameters->gethash(key);
-    if (parm.notnilp()) return gc::As_unsafe<FFAngle_sp>(parm);
+    if (parm.notnilp()) return gc::As<FFAngle_sp>(parm);
     key = angleKey(t3,t2,t1);
     parm = this->_Parameters->gethash(key);
-    if (parm.notnilp()) return gc::As_unsafe<FFAngle_sp>(parm);
+    if (parm.notnilp()) return gc::As<FFAngle_sp>(parm);
     match = this->estimateTerm(ffstretch,a1,a2,a3);
     return match;
 }

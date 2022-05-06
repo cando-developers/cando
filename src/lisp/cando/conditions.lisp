@@ -76,6 +76,32 @@
 
 (defvar *parameter-warnings*)
 
+(define-condition estimated-stretch-term (error)
+  ((type1 :initarg :type1 :accessor type1)
+   (type2 :initarg :type2 :accessor type2)
+   (distance :initarg :distance :accessor angle-rad)
+   (force :initarg :force :accessor force)))
+
+(defun warn-estimated-stretch-term (t1 t2 distance force)
+  (when (string> (string t1) (string t2))
+    (let ((temp t1))
+      (setf t1 t2
+            t2 temp)))
+  (let ((term (make-condition 'estimated-stretch-term
+                              :type1 t1
+                              :type2 t2
+                              :distance distance
+                              :force force)))
+    (push term *parameter-warnings*)))
+
+(defmethod print-object ((condition estimated-stretch-term) stream)
+  (print-unreadable-object (condition stream :type t)
+    (format stream "types(~a ~a) distance(~3,2f) k(~5,2f)"
+            (type1 condition)
+            (type2 condition)
+            (distance condition)
+            (force condition))))
+
 (define-condition estimated-angle-term (error)
   ((type1 :initarg :type1 :accessor type1)
    (type2 :initarg :type2 :accessor type2)
@@ -84,10 +110,10 @@
    (force :initarg :force :accessor force)))
 
 (defun warn-estimated-angle-term (t1 t2 t3 angle-rad force)
-  (when (string> (string t1) (string t2))
+  (when (string> (string t1) (string t3))
     (let ((temp t1))
-      (setf t1 t2
-            t2 temp)))
+      (setf t1 t3
+            t3 temp)))
   (let ((term (make-condition 'estimated-angle-term
                               :type1 t1
                               :type2 t2
@@ -95,6 +121,15 @@
                               :angle-rad angle-rad
                               :force force)))
     (push term *parameter-warnings*)))
+
+(defmethod print-object ((condition estimated-angle-term) stream)
+  (print-unreadable-object (condition stream :type t)
+    (format stream "types(~a ~a ~a) angle(~5,2f deg) k(~5,2f)"
+            (type1 condition)
+            (type2 condition)
+            (type3 condition)
+            (/ (angle-rad condition) 0.0174533)
+            (force condition))))
 
 (defun compare-estimated-terms (term1 term2)
 ;;; Assume only angles for now

@@ -12,15 +12,23 @@
 (defpackage #:design.joint-tree
   (:use #:cl )
   (:export
-   joint
-   name
-   id
-   children
-   constitution
-   plugs
-   stereo-information
-   build-internal-coordinate-joint-template-tree
-   extract-prepare-topologys)
+   #:joint-template
+   #:bonded-joint-template
+   #:in-plug-bonded-joint-template
+   #:complex-bonded-joint-template
+   #:jump-joint-template
+   #:in-plug
+   #:name
+   #:id
+   #:children
+   #:constitution
+   #:atom-name
+   #:parent
+   #:input-stub-joints
+   #:plugs
+   #:stereo-information
+   #:build-internal-coordinate-joint-template-tree
+   #:extract-prepare-topologys)
   (:documentation
    "Embryonic joint-tree code"))
 
@@ -89,6 +97,7 @@
   (:use #:cl)
   (:export
    #:residue-graph
+   #:matter-graph
    #:joint-template-graph
    ))
 

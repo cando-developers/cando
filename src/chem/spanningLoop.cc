@@ -65,7 +65,7 @@ namespace chem
         return ss.str();
     }
     
-CL_NAME(CHEM:MAKE-SPANNING-LOOP);
+CL_NAME(CHEM:SPANNING-LOOP/MAKE);
 DOCGROUP(cando)
 CL_DEFUN SpanningLoop_sp SpanningLoop_O::make(Atom_sp root)
   {

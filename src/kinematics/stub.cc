@@ -62,10 +62,12 @@ void Stub::fromFourPoints(Vector3 const& center,
                           Vector3 const& b,
                           Vector3 const& c)
 {
+#if 0
   printf("%s:%d:%s center = %s\n", __FILE__, __LINE__, __FUNCTION__, center.asString().c_str());
   printf("%s:%d:%s a = %s\n", __FILE__, __LINE__, __FUNCTION__, a.asString().c_str());
   printf("%s:%d:%s b = %s\n", __FILE__, __LINE__, __FUNCTION__, b.asString().c_str());
   printf("%s:%d:%s c = %s\n", __FILE__, __LINE__, __FUNCTION__, c.asString().c_str());
+#endif
   LOG(BF("center = %s") % center.asString());
   LOG(BF("a = %s") % a.asString());
   LOG(BF("b = %s") % b.asString());
@@ -80,7 +82,7 @@ void Stub::fromFourPoints(Vector3 const& center,
   LOG(BF("e2 = (e3.crossProduct(e1)): %s") % e2.asString() );
   LOG(BF("Stub before being set: %s") % this->_Transform.asStringFormatted());
   this->_Transform.colX(e1).colY(e2).colZ(e3).setTranslate(center);
-  printf("%s:%d:%s this->_Transform = \n%s\n", __FILE__, __LINE__, __FUNCTION__, this->_Transform.asString().c_str());
+//  printf("%s:%d:%s this->_Transform = \n%s\n", __FILE__, __LINE__, __FUNCTION__, this->_Transform.asString().c_str());
   LOG(BF("Stub = \n%s") % this->_Transform.asStringFormatted());
 }
 

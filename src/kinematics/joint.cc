@@ -150,12 +150,13 @@ string Joint_O::__repr__() const {
 }
  
 void Joint_O::fields(core::Record_sp node) {
-  node->field(INTERN_(kw,parent),this->_Parent);
+  node->field_if_not_unbound(INTERN_(kw,parent),this->_Parent);
   node->field(INTERN_(kw,name),this->_Name); // name
   node->field(INTERN_(kw,id),this->_Id);
   node->field(INTERN_(kw,pos),this->_Position);
 }
 
+CL_NAME(KIN:JOINT/NAME);
 CL_DEFMETHOD core::T_sp Joint_O::name() const {
   return this->_Name;
 }
@@ -239,7 +240,7 @@ int Joint_O::indexOfChild(Joint_sp child)
 
 
 
-
+CL_NAME(KIN:JOINT/ADD-CHILD);
 CL_DEFMETHOD
 void Joint_O::addChild(Joint_sp child)
 {_OF();

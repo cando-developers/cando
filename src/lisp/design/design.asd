@@ -10,9 +10,9 @@
   :components
   ((:file "packages")
    (:file "kin");
+   (:file "fold")
    (:file "joint-templates")
    (:file "joint-tree")
-   (:file "fold")
    (:file "debug-graphs")
    #+(or)(:file "fold-tree")
    (:file "conformation")
@@ -20,6 +20,6 @@
    (:file "oligomer")
    (:file "design")
    (:file "trainers")
-   (:file "graphviz-draw-joint-template")
-   (:file "graphviz-draw-joint-tree")
+   #+(or)(:file "graphviz-draw-joint-template")
+   #+(or)(:file "graphviz-draw-joint-tree")
    ))

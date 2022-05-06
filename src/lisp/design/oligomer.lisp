@@ -1,6 +1,5 @@
 
-(in-package :design)
-
+(in-package :kin)
 
 (defun canonical-sequence-monomer (coupling root monomer-out-couplings unique-ring-couplings)
   (let* ((outs (gethash root monomer-out-couplings))
@@ -23,10 +22,10 @@
 (defun canonical-sequence (oligomer)
   "Return a canonical sequence for the oligomer that can be compared to other oligomers to
    determine if they are equivalent"
-  (let ((root-monomer (chem:|Oligomer_O::rootMonomer| oligomer)))
+  (let ((root-monomer (chem:oligomer/root-monomer oligomer)))
     (let ((monomer-out-couplings (make-hash-table))
           (unique-ring-couplings nil))
-      (loop for coupling in (chem:|Oligomer_O::couplingsAsList| oligomer)
+      (loop for coupling in (chem:oligomer/couplings-as-list oligomer)
             if (typep coupling 'chem:directional-coupling)
               do (push coupling (gethash (chem:get-source-monomer coupling) monomer-out-couplings))
             else
@@ -73,13 +72,13 @@
                                        monomer-positions)))
 
 (defun build-molecule (oligomer)
-  (let ((root-monomer (chem:|Oligomer_O::rootMonomer| oligomer))
+  (let ((root-monomer (chem:oligomer/root-monomer oligomer))
         (monomer-out-couplings (make-hash-table))
         (monomers-to-residues (make-hash-table))
         (monomers-to-topologys (make-hash-table))
         (ring-couplings nil)
         (monomer-positions (make-hash-table)))
-    (loop for coupling in (chem:|Oligomer_O::couplingsAsList| oligomer)
+    (loop for coupling in (chem:oligomer/couplings-as-list oligomer)
           if (typep coupling 'chem:directional-coupling)
             do (push coupling (gethash (chem:get-source-monomer coupling) monomer-out-couplings))
           else
@@ -94,7 +93,7 @@
                            (chem:build-residue-for-monomer-name root-topology stereoisomer-name))))
       (setf (gethash root-monomer monomers-to-residues) root-residue
             (gethash root-monomer monomers-to-topologys) root-topology)
-      (let* ((monomer-list (chem:|Oligomer_O::monomersAsList| oligomer))
+      (let* ((monomer-list (chem:oligomer/monomers-as-list oligomer))
              (number-of-residues (length monomer-list)))
         (loop for count from 0
               for monomer in monomer-list
@@ -139,14 +138,14 @@
       (values molecule monomer-positions))))
 
 
-(defun build-all-molecules (oligomer &optional (number-of-sequences (chem:|Oligomer_O::numberOfSequences| oligomer)))
+(defun build-all-molecules (oligomer &optional (number-of-sequences (chem:oligomer/number-of-sequences oligomer)))
   "Return a list of all built molecules for the oligomer.
 The number of entries can be limited by passing a lower value for the optional argument **number-of-sequences**
-than the (chem:|Oligomer_O::numberOfSequences| oligomer)."
+than the (chem:oligomer/number-of-sequences oligomer)."
   (loop for index from 0 below number-of-sequences
         for aggregate = (chem:make-aggregate (intern (format nil "seq-~a" index) :keyword))
         for molecule = (progn
-                         (chem:|Oligomer_O::gotoSequence| oligomer index)
+                         (chem:oligomer/goto-sequence oligomer index)
                          (build-molecule oligomer))
         do (chem:add-matter aggregate molecule)
            (cando:jostle aggregate)

@@ -81,7 +81,7 @@
    (coupled-dihedrals :initform (make-hash-table :test #'equal) :accessor coupled-dihedrals)))
 
 (defun build-atom-tree-for-molecule (mol root-atom)
-  (let ((spanning-loop (chem:make-spanning-loop root-atom)))
+  (let ((spanning-loop (chem:spanning-loop/make root-atom)))
     (let* ((spanning-atoms (loop for x = (chem:next spanning-loop (constantly t))
                               while x
                               collect x))
