@@ -29,6 +29,7 @@
    (:file "modelling")
    (:file "constitution")
    (:file "molecules")
+   (:file "cif")
    (:file "atom-tree")
    (:file "ring-builder")
    (:file "chemdraw")
