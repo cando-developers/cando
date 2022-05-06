@@ -138,7 +138,7 @@
 
 (defpackage #:cando
   (:use #:common-lisp
-        #:cando-utility
+        #+(or)#:cando-utility
         )
   (:shadowing-import-from :chem "ATOM")
   (:import-from :ext #:chdir #:getcwd)
@@ -267,3 +267,9 @@
   (:use #:common-lisp)
   (:export #:infix
            #:definfix))
+
+(defpackage #:cif
+  (:use #:common-lisp)
+  (:export #:load-cif
+           #:load-cifs
+           ))

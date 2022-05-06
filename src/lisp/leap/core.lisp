@@ -184,7 +184,9 @@ Lookup the object in the variable space."
                             (args (first (funcall recurse :relations '(:argument)))))
                         (when *load-verbose*
                           (format t "; eval ~a ~a~%" function-name args))
-                        (apply function-name args)))
+                        (if (listp args)
+                            (apply function-name args)
+                            (apply function-name nil))))
                      (:assignment
                       (let ((value (first (first (funcall recurse :relations '(:value))))))
                         (when *load-verbose*
