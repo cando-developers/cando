@@ -226,13 +226,13 @@ void BondedJointTemplate_O::addChildren(Joint_sp me,
 {_OF();
   for ( ChildList::iterator it=this->_Children.begin(); it!=this->_Children.end(); it++ )
   {
-    LOG(BF("About to write child[%s]") % (*it)->comment() );
+    LOG("About to write child[%s]" , (*it)->comment() );
     Joint_sp newChild = (*it)->writeIntoJointTree(JointTree,
                                                  monomerId,
                                                  incoming,
                                                  outgoing,
                                                  monomerNode);
-    LOG(BF("Child returned %s") % _rep_(newChild));
+    LOG("Child returned %s" , _rep_(newChild));
 	    /* In case the Array was moved by writeIntoJointTree we get bonded again */
     Joint_sp bonded = me;
     ASSERTF(bonded,BF("The dereferenced Jointer is NULL - this should not happen"));
@@ -240,8 +240,8 @@ void BondedJointTemplate_O::addChildren(Joint_sp me,
     {
       stringstream serr;
       serr << _rep_(JointTree);
-      LOG(BF("PROBLEM: %s") % serr.str() );
-      SIMPLE_ERROR(BF("You are adding an Atom to itself!"));
+      LOG("PROBLEM: %s" , serr.str() );
+      SIMPLE_ERROR(("You are adding an Atom to itself!"));
     }
     bonded->appendChild(newChild);
   }
@@ -255,7 +255,7 @@ Joint_sp BondedJointTemplate_O::writeIntoJointTree(const JointTree_sp& JointTree
                                                   MonomerNode_sp monomerNode,
                                                   bool rootNode)
 {_OF();
-  LOG(BF("BondedJointTemplate_O::writeIntoJointTree this: %s  BondId_sp: %s\n") % _rep_(this->asSmartPtr()) % _rep_(incoming));
+  LOG("BondedJointTemplate_O::writeIntoJointTree this: %s  BondId_sp: %s\n" , _rep_(this->asSmartPtr()) , _rep_(incoming));
   chem::AtomId atomId(monomerId._Chain,monomerId._Monomer,this->_Id);
   Joint_sp ownedBonded = JointTree->newBondedJoint(atomId,this->_Name,this->_Comment);
   monomerNode->addJoint(this->_Id,ownedBonded);
@@ -286,10 +286,10 @@ void BondedJointTemplate_O::setupOutPlugJointTree(Joint_sp owned,
 {_OF();
   if ( this->_OutPlug.boundp() )
   {
-    LOG(BF("There is no outplug defined - returning"));
+    LOG("There is no outplug defined - returning");
     return;
   }
-  LOG(BF("Setting up OutPlug part of JointTree"));
+  LOG("Setting up OutPlug part of JointTree");
   core::Symbol_sp plugName = this->_OutPlug->getName();
   PlugNamesToBondIdMap::const_iterator findOutPlug = outgoing.find(plugName);
   if ( findOutPlug != outgoing.end() )
@@ -330,7 +330,7 @@ Joint_sp DelayedBondedJointTemplate_O::writeIntoJointTree(const JointTree_sp& Jo
                                                          MonomerNode_sp monomerNode,
                                                          bool rootNode)
 {
-  LOG(BF("BondedJointTemplate_O::writeIntoJointTree this: %s  BondId_sp: %s\n") % _rep_(this->asSmartPtr()) % _rep_(incoming));
+  LOG("BondedJointTemplate_O::writeIntoJointTree this: %s  BondId_sp: %s\n" , _rep_(this->asSmartPtr()) , _rep_(incoming));
   chem::AtomId atomId(monomerId._Chain,monomerId._Monomer,this->_Id);
   Joint_sp ownedBonded = JointTree->newDelayedBondedJoint(atomId,this->_Name,this->_Comment);
   monomerNode->addJoint(this->_Id,ownedBonded);
@@ -380,15 +380,15 @@ Joint_sp RootBondedJointTemplate_O::writeIntoJointTree(const JointTree_sp& Joint
                                                       MonomerNode_sp monomerNode,
                                                       bool rootNode)
 {_OF();
-  LOG(BF("BondedJointTemplate_O::writeIntoJointTree this: %s  BondId_sp: %s\n") % _rep_(this->asSmartPtr()) % _rep_(incoming));
-  LOG(BF("Writing %s[%s] into JointTree") % this->className() % this->_Comment );
+  LOG("BondedJointTemplate_O::writeIntoJointTree this: %s  BondId_sp: %s\n" , _rep_(this->asSmartPtr()) , _rep_(incoming));
+  LOG("Writing %s[%s] into JointTree" , this->className() , this->_Comment );
   chem::AtomId atomId(monomerId._Chain, monomerId._Monomer,this->_Id);
     // The type of the Atom to write depends on what the incoming atom is
     // If it isJump then make this a JumpJoint otherwise make this a BondedJoint
   Joint_sp incomingParent = incoming->_Parent;
   if ( incomingParent.unboundp())
   {	
-    SIMPLE_ERROR(BF("The incoming parent has to be defined - it is not "));
+    SIMPLE_ERROR(("The incoming parent has to be defined - it is not "));
   }
   Joint_sp owned;
   if (gc::IsA<JumpJoint_sp>(incomingParent) && rootNode )

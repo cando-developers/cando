@@ -26,6 +26,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #define	DEBUG_LEVEL_NONE
 
 #include <clasp/core/common.h>
+#include <clasp/core/lispStream.h>
 #include <cando/adapt/stringSet.h>
 #include <cando/chem/pdb.h>
 //#include "core/archiveNode.h"
@@ -153,14 +154,14 @@ CL_DEFUN PdbMonomerDatabase_sp chem__readPdbMonomerConnectivityDatabase(const st
 	PdbMonomerDatabase_sp monomerDatabase = PdbMonomerDatabase_O::create();
 	if ( myfile.fail() )
 	{
-	    SIMPLE_ERROR(BF("Monomer connectivity database file not found: "+fileName));
+	    SIMPLE_ERROR(("Monomer connectivity database file not found: "+fileName));
 	}
-	{_BLOCK_TRACE("Parsing file");
+	{
 	    while ( !myfile.eof() )
 	    {
 		myfile.getline(buffer,1023);
 		string oneLine = buffer;
-		LOG(BF("PDB line |%s|") % oneLine.c_str()  );
+		LOG("PDB line |%s|" , oneLine.c_str()  );
 		string recordName = core::trimWhiteSpace(oneLine.substr(0,7));
 		if ( recordName == "RESIDUE" )
 		{
@@ -173,7 +174,7 @@ CL_DEFUN PdbMonomerDatabase_sp chem__readPdbMonomerConnectivityDatabase(const st
 		    {
 			myfile.getline(buffer,1023);
 			string oneLine = buffer;
-			LOG(BF("PDB line |%s|") % oneLine.c_str()  );
+			LOG("PDB line |%s|" , oneLine.c_str()  );
 			string recordName = core::trimWhiteSpace(oneLine.substr(0,7));
 			if ( recordName == "END" )
 			{
@@ -185,7 +186,7 @@ CL_DEFUN PdbMonomerDatabase_sp chem__readPdbMonomerConnectivityDatabase(const st
 			    oneMonomer->addConnect(connect._MainAtom,connect._Bonded);
 			} else
 			{
-			    SIMPLE_ERROR(BF("Illegal record(%s) in monomer connection database") % recordName );
+			    SIMPLE_ERROR(("Illegal record(%s) in monomer connection database") , recordName );
 			}
 		    }
 		} else if ( recordName == "HETNAM" )
@@ -245,38 +246,38 @@ uint PdbMonomerConnectivity_O::connectAtomsAndReturnUnconnected(Residue_sp res, 
     uint unknown = 0;
     uint bondsMade = 0;
     for ( gctools::Vec0<AtomPair>::iterator pi=this->_BondAtomPairs.begin(); pi!=this->_BondAtomPairs.end(); pi++ )
-    {_BLOCK_TRACEF(BF("Trying to connect %s - %s") % pi->first % pi->second );
+    {
 	MatterName s1 = pi->first;
 	MatterName s2 = pi->second;
 	Atom_sp a1 = res->contentWithNameOrNil(s1).as<Atom_O>();
 	Atom_sp a2 = res->contentWithNameOrNil(s2).as<Atom_O>();
 	if ( a1.nilp() && a2.notnilp() )
 	{
-	    LOG(BF("Could not find atom(%s) - marking atom(%s) as unconnected") % pi->first % pi->second );
+	    LOG("Could not find atom(%s) - marking atom(%s) as unconnected" , pi->first , pi->second );
 	    unconnected.push_back(a2);
 	    unconCount++;
 	    unknown++;
 	}
 	if ( a2.nilp() && a1.notnilp() ) 
 	{
-	    LOG(BF("Could not find atom(%s) - marking atom(%s) as unconnected") % pi->second % pi->first );
+	    LOG("Could not find atom(%s) - marking atom(%s) as unconnected" , pi->second , pi->first );
 	    unconnected.push_back(a1);
 	    unconCount++;
 	    unknown++;
 	}
 	if ( a1.nilp() && a2.nilp() )
 	{
-	    LOG(BF("Could not find either atom(%s) or atom(%s)") % pi->first % pi->second );
+	    LOG("Could not find either atom(%s) or atom(%s)" , pi->first , pi->second );
 	    unknown += 2;
 	}
 	if ( a1.notnilp() && a2.notnilp() ) 
 	{
-	    LOG(BF("Connecting atoms %s - %s") % a1->description() % a2->description() )
+	    LOG("Connecting atoms %s - %s" , a1->description() , a2->description() )
 	    a1->bondToSingle(a2);
 	    bondsMade++;
 	}
     }
-    LOG(BF("Total number of unconnected atoms(%d) and unknown atoms(%d)") % unconCount % unknown );
+    LOG("Total number of unconnected atoms(%d) and unknown atoms(%d)" , unconCount , unknown );
     return bondsMade;
 }
 
@@ -352,7 +353,7 @@ void PdbMonomerDatabase_O::addMonomer(PdbMonomerConnectivity_sp mon)
 uint PdbMonomerDatabase_O::connectVdwOverlappingUnconnectedAtoms(gctools::Vec0<Atom_sp>& atoms)
 {_OF();
     uint connected = 0;
-    LOG(BF("There are %d unconnected atoms to connect together") % atoms.size()  );
+    LOG("There are %d unconnected atoms to connect together" , atoms.size()  );
     for ( gctools::Vec0<Atom_sp>::iterator i1 = atoms.begin(); i1!=atoms.end()-1; i1++ )
     {
 	Vector3 v1 = (*i1)->getPosition();
@@ -367,14 +368,14 @@ uint PdbMonomerDatabase_O::connectVdwOverlappingUnconnectedAtoms(gctools::Vec0<A
 	    {
 		if (!(*i1)->isBondedTo(*i2))
 		{
-		    LOG(BF("Forming bond between atom(%s) and atom(%s) - they were %lf angstroms apart < max(%lf)") % (*i1)->description() % (*i2)->description() % len % maxLen );
+		    LOG("Forming bond between atom(%s) and atom(%s) - they were %lf angstroms apart < max(%lf)" , (*i1)->description() , (*i2)->description() , len , maxLen );
 		    (*i1)->bondToSingle(*i2);
 		    connected++;
 		}
 	    }
 	}
     }
-    LOG(BF("Connected %d bonds") % connected );
+    LOG("Connected %d bonds" , connected );
     return connected;
 }
 
@@ -392,16 +393,16 @@ CL_DEFMETHOD     void PdbMonomerDatabase_O::connectAtoms(Matter_sp matter)
 	uint numConnect = 0;
 	lResidues.loopTopGoal(matter,RESIDUES);
 	while ( lResidues.advance() )
-	{_BLOCK_TRACEF(BF("Looking at residue(%s)") % lResidues.getResidue()->getPdbName() );
+	{
 	    Residue_sp res = lResidues.getResidue();
 	    if ( this->_Database.contains(res->getPdbName()) )
 	    {
-		LOG(BF("Found residue(%s) in database connecting atoms") % res->getPdbName()   );
+		LOG("Found residue(%s) in database connecting atoms" , res->getPdbName()   );
 		PdbMonomerConnectivity_sp connector = this->_Database.get(res->getPdbName());
 		numConnect += connector->connectAtomsAndReturnUnconnected(res,unconnectedAtoms);
 	    } else
 	    {
-		LOG(BF("Could not find residue(%s) pushing %d atoms into unconnectedAtoms") % res->getPdbName() % res->numberOfAtoms() );
+		LOG("Could not find residue(%s) pushing %d atoms into unconnectedAtoms" , res->getPdbName() , res->numberOfAtoms() );
 		for ( Matter_O::contentIterator ci=res->begin_contents(); 
 		      ci != res->end_contents(); ci++ )
 		{
@@ -410,11 +411,11 @@ CL_DEFMETHOD     void PdbMonomerDatabase_O::connectAtoms(Matter_sp matter)
 	    }
 	}
 	uint numVdwConnected = this->connectVdwOverlappingUnconnectedAtoms(unconnectedAtoms);
-	LOG(BF("Number of atoms connected using connectivity tables: %d" ) % numConnect );
-	LOG(BF("Number of atoms connected using vdw overlap: %d" ) % numVdwConnected );
-	_lisp->print(BF("Number of unconnected atoms(%d)") % unconnectedAtoms.size() );
-	_lisp->print(BF("Number of atoms connected by monomer connectivity(%d)") % numConnect );
-	_lisp->print(BF("Number of atoms connected by vdw overlap(%d)") % numVdwConnected);
+	LOG("Number of atoms connected using connectivity tables: %d"  , numConnect );
+	LOG("Number of atoms connected using vdw overlap: %d"  , numVdwConnected );
+        core::writeln_bf_stream(fmt::sprintf("Number of unconnected atoms(%d)" , unconnectedAtoms.size() ));
+        core::writeln_bf_stream(fmt::sprintf("Number of atoms connected by monomer connectivity(%d)" , numConnect ));
+        core::writeln_bf_stream(fmt::sprintf("Number of atoms connected by vdw overlap(%d)" , numVdwConnected));
     }
 
 

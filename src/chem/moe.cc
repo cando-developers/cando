@@ -216,7 +216,7 @@ public:
 	// At this point all restraints must be absolute
     if ( rest.isA<RestraintDistance_O>() )
     {
-      SIMPLE_ERROR(BF("Add support for distance restraints"));
+      SIMPLE_ERROR(("Add support for distance restraints"));
 #if 0
       RestraintDistance_sp distRest = (rest).as<RestraintDistance_O>();
 	fout << "distance 2 "
@@ -364,7 +364,7 @@ void	MoeReadFile::splitLine( QueueString& q, char* line)
 
     start = line;
     while (*start) {
-	LOG(BF("Parsing rest of line: |%s|") % start  );
+	LOG("Parsing rest of line: |%s|" , start  );
         copy = caWord;
 	// skip whitespace
 	while ( (*start) && (isspace(*start)) ) start++;
@@ -411,7 +411,7 @@ void	MoeReadFile::splitLine( QueueString& q, char* line)
 	} else {
 	    retVal = caWord;
 	}
-	LOG(BF("Word: |%s|") % retVal.c_str()  );
+	LOG("Word: |%s|" , retVal.c_str()  );
 	q.push(retVal);
     }
 }
@@ -433,7 +433,7 @@ string		word;
     if ( line[0] != '#' ) {
 	strcpy( buf, "Non moe header: " );
 	strcat( buf, line );
-	SIMPLE_ERROR(BF("Invalid moe header"));
+	SIMPLE_ERROR(("Invalid moe header"));
     }
     this->splitLine( words, line );
     this->paraName = words.front();
@@ -518,7 +518,7 @@ void	MoeReadFile::readNextLine()
 	if ( stat(sFileName,&buf)==-1 ) {
 	    string errStr;
 	    errStr = sFileName;
-	    SIMPLE_ERROR(BF("Could not open MOE file: %s") % errStr );
+	    SIMPLE_ERROR(("Could not open MOE file: %s") , errStr );
 	}
 
 	fIn = new std::ifstream();
@@ -577,37 +577,37 @@ void	MoeReadFile::readNextLine()
 	// this may be inefficient to load all the words
 	// for the table.  For now I'll do this.
 	do {
-	    LOG(BF("readParaTable-- reading next line") );
+	    LOG("readParaTable-- reading next line" );
 	    this->readNextLine();
-	    LOG(BF("Read line: %s") % this->nextLine  );
+	    LOG("Read line: %s" , this->nextLine  );
 	    if ( !this->done && this->nextLine[0] != '#' ) {
-		LOG(BF("It's data, splitting it into queue") );
+		LOG("It's data, splitting it into queue" );
 		this->splitLine( words, this->nextLine );
-		LOG(BF("Done splitting it") );
+		LOG("Done splitting it" );
 	    }
 	} while ( !this->done && this->nextLine[0] != '#' );
-	LOG(BF("Finished reading data... creating ParaTable") );
+	LOG("Finished reading data... creating ParaTable" );
 
 	// first Empty the ParaTable
 	table->erase();
 	for ( field=0; field<this->nextParaTableFieldCount(); field++ ) {
-	    LOG(BF("Adding  fieldVector name: %s") % this->nextParaTableFieldName(field).c_str()  );
+	    LOG("Adding  fieldVector name: %s" , this->nextParaTableFieldName(field).c_str()  );
 	    table->addFieldVector( this->nextParaTableFieldName(field), col );
 	}
 
 	// Now build the ParaTable
 
 	for ( row=0; row<this->nextParaTableRows(); row++ ) {
-	    LOG(BF("Starting row") );
+	    LOG("Starting row" );
 	    for ( field = 0; field < this->nextParaTableFieldCount(); field++ ) {
-		LOG(BF("Parsing field: %s") % type.c_str()  );
+		LOG("Parsing field: %s" , type.c_str()  );
 		type = this->nextParaTableFieldType(field);
 		if ( type=="i" ) {
 		    str = words.front();
 		    words.pop();
 		    strncpy( caStr, &(str[0]), str.length() );
 		    caStr[str.length()] = '\0';
-		    LOG(BF(" i %s") % caStr  );
+		    LOG(" i %s" , caStr  );
 		    paraInt = new ParaInteger(atoi(caStr));
 		    table->getVector(field).push_back(paraInt);
 		    continue;
@@ -617,7 +617,7 @@ void	MoeReadFile::readNextLine()
 		    num = type.substr(2,type.length()-2);
 		    strncpy( caStr, num.c_str(), num.length() );
 		    caStr[num.length()] = '\0';
-		    LOG(BF(" i= %s") % caStr  );
+		    LOG(" i= %s" , caStr  );
 		    paraInt = new ParaInteger(atoi(caStr));
 		    table->getVector(field).push_back(paraInt);
 		    continue;
@@ -627,7 +627,7 @@ void	MoeReadFile::readNextLine()
 		    num = type.substr(2,type.length()-2);
 		    strncpy( caStr, num.c_str(), num.length() );
 		    caStr[num.length()] = '\0';
-		    LOG(BF(" r= %s") % caStr  );
+		    LOG(" r= %s" , caStr  );
 		    paraReal = new ParaReal(atof(caStr));
 		    table->getVector(field).push_back(paraReal);
 		    continue;
@@ -639,13 +639,13 @@ void	MoeReadFile::readNextLine()
 		    caStr[str.length()] = '\0';
 		    paraArrayInt = new ParaArrayInt();
 		    sz = atoi(caStr);
-		    LOG(BF(" i*= size = %s") % caStr  );
+		    LOG(" i*= size = %s" , caStr  );
 		    int ddd;
 		    for ( i=0;i<sz;i++) {
 			str = words.front();
 			words.pop();
 			ddd = atoi(str.c_str());
-			LOG(BF(" i*= data[%d] = %s") % i  % str.c_str()  );
+			LOG(" i*= data[%d] = %s" , i  , str.c_str()  );
 			paraArrayInt->push_back(ddd);
 		    }
 		    table->getVector(field).push_back(paraArrayInt);
@@ -658,13 +658,13 @@ void	MoeReadFile::readNextLine()
 		    caStr[str.length()] = '\0';
 		    paraArrayDbl = new ParaArrayReal();
 		    sz = atoi(caStr);
-		    LOG(BF(" r*= size = %s") % caStr  );
+		    LOG(" r*= size = %s" , caStr  );
 		    double ddd;
 		    for ( i=0;i<sz;i++) {
 			str = words.front();
 			words.pop();
 			ddd = atof(str.c_str());
-			LOG(BF("   r*= data[%d] = %s") % i  % str.c_str()  );
+			LOG("   r*= data[%d] = %s" , i  , str.c_str()  );
 			paraArrayDbl->push_back(ddd);
 		    }
 		    table->getVector(field).push_back(paraArrayDbl);
@@ -675,7 +675,7 @@ void	MoeReadFile::readNextLine()
 		    words.pop();
 		    strncpy( caStr, &(str[0]), str.length() );
 		    caStr[str.length()] = '\0';
-		    LOG(BF("   ix= %s") % caStr  );
+		    LOG("   ix= %s" , caStr  );
 		    paraHex = new ParaHexInteger(strtol(caStr,&cPTemp,16));
 		    table->getVector(field).push_back(paraHex);
 		    continue;
@@ -686,7 +686,7 @@ void	MoeReadFile::readNextLine()
 		    strncpy( caStr, &(str[0]), str.length() );
 		    caStr[str.length()] = '\0';
 		    paraReal = new ParaReal(atof(caStr));
-		    LOG(BF("   r = %s") % caStr  );
+		    LOG("   r = %s" , caStr  );
 		    table->getVector(field).push_back(paraReal);
 		    continue;
 		}
@@ -694,7 +694,7 @@ void	MoeReadFile::readNextLine()
 		    str = words.front();
 		    words.pop();
 		    paraChar = new ParaChar(str);
-		    LOG(BF("   c = %s") % str.c_str()  );
+		    LOG("   c = %s" , str.c_str()  );
 		    table->getVector(field).push_back(paraChar);
 		    continue;
 		}
@@ -702,7 +702,7 @@ void	MoeReadFile::readNextLine()
 		    str = words.front();
 		    words.pop();
 		    paraToken = new ParaToken(str);
-		    LOG(BF("   t = %s") % str.c_str()  );
+		    LOG("   t = %s" , str.c_str()  );
 		    table->getVector(field).push_back(paraToken);
 		    continue;
 		}
@@ -710,19 +710,19 @@ void	MoeReadFile::readNextLine()
 		    str = words.front();
 		    words.pop();
 		    paraString = new ParaString(str);
-		    LOG(BF("   s = %s") % str.c_str()  );
+		    LOG("   s = %s" , str.c_str()  );
 		    table->getVector(field).push_back(paraString);
 		    continue;
 		}
 		stringstream err;
 		err << "Unknown MOE file data type(";
 		err << type << ")";
-		SIMPLE_ERROR(BF(err.str()));
+		SIMPLE_ERROR((err.str()));
 	    }
 	}
-	LOG(BF("Done creating ParaTable") );
+	LOG("Done creating ParaTable" );
 	if ( !this->done && this->nextLine[0] == '#' ) {
-	    LOG(BF("Parsing header for next ParaTable") );
+	    LOG("Parsing header for next ParaTable" );
 	    this->parseHeader();
 	}
     }
@@ -837,11 +837,11 @@ void	MoeReadFile::readNextLine()
 	while ( f.nextParaTableExists() ) {
 	    if ( f.nextParaTableName() == "bond" ) {
 		if ( f.nextParaTableFieldCount() == 2 ) {
-		    LOG(BF("Reading ptBonds") );
+		    LOG("Reading ptBonds" );
 		    f.readParaTable(&ptBonds);
 		    bGotBonds = true;
 		} else if ( f.nextParaTableFieldCount() == 3 ) {
-		    LOG(BF("Checking the order") );
+		    LOG("Checking the order" );
 		    string order = f.nextParaTableFieldType(2);
 		    if ( order=="i=1" ) {
 			f.readParaTable(&ptBondsO1);
@@ -853,28 +853,28 @@ void	MoeReadFile::readNextLine()
 			f.readParaTable(&ptBondsO3);
 			bGotBondsO3 = true;
 		    } else {
-			SIMPLE_ERROR(BF("Unknown bond order type: "+f.nextParaTableFieldType(2)));
+			SIMPLE_ERROR(("Unknown bond order type: "+f.nextParaTableFieldType(2)));
 		    }
 		} else {
-		    SIMPLE_ERROR(BF("Invalid bond entry in moe file" ));
+		    SIMPLE_ERROR(("Invalid bond entry in moe file" ));
 		}
 	    } else if ( f.nextParaTableName() == "attr" &&
 			f.nextParaTableFieldName(1) == "aName" ) {
 		f.readParaTable(&ptAtoms);
 	    } else if ( f.nextParaTableName() == "attr" &&
 			f.nextParaTableFieldName(1) == "aFixed" ) {
-		LOG(BF("Starting to read ptFixed") );
+		LOG("Starting to read ptFixed" );
 		f.readParaTable(&ptFixed);
-		LOG(BF("There are %d fixed atoms") % ptFixed.getVector(0).size()  );
+		LOG("There are %d fixed atoms" , ptFixed.getVector(0).size()  );
 		bGotFixed = true;
 	    } else if ( f.nextParaTableName() == "attr" &&
 			f.nextParaTableFieldName(1) == "aCharge" ) {
-		LOG(BF("Starting to read ptCharges") );
+		LOG("Starting to read ptCharges" );
 		f.readParaTable(&ptCharges);
-		LOG(BF("There are %d charged atoms") % ptCharges.getVector(0).size()  );
+		LOG("There are %d charged atoms" , ptCharges.getVector(0).size()  );
 		bGotCharges = true;
 	    } else if ( f.nextParaTableName() == "MMTypes" ) {
-		LOG(BF("Reading MMTypes") );
+		LOG("Reading MMTypes" );
 		f.readParaTable(&ptMMTypes);
 		gotMMTypes = true;
 	    } else if ( f.nextParaTableName() == "attr" &&
@@ -889,7 +889,7 @@ void	MoeReadFile::readNextLine()
 		f.readParaTable(&ptRestraints);
 	    } else if ( f.nextParaTableName() == "attr" &&
 			f.nextParaTableFieldName(1) == "aHintLP" ) {
-		LOG(BF("Reading aHintLP") );
+		LOG("Reading aHintLP" );
 		bGotHintLP = true;
 		f.readParaTable(&ptHintLP);
 	    } else if ( f.nextParaTableName() == "attr" &&
@@ -897,11 +897,11 @@ void	MoeReadFile::readNextLine()
 		// Read the aForceRS paratable
 		// First figure out which one it should be
 		if ( f.nextParaTableFieldType(1)=="i=-1" ) {
-		    LOG(BF("Reading aForceRS i=-1 ParaTable") );
+		    LOG("Reading aForceRS i=-1 ParaTable" );
 		    bGotForceRSm1 = true;
 		    f.readParaTable(&ptForceRSm1);
 		} else if ( f.nextParaTableFieldType(1)=="i=1" ) {
-		    LOG(BF("Reading aForceRS i=1 ParaTable") );
+		    LOG("Reading aForceRS i=1 ParaTable" );
 		    bGotForceRSp1 = true;
 		    f.readParaTable(&ptForceRSp1);
 		} else {
@@ -911,20 +911,20 @@ void	MoeReadFile::readNextLine()
 		    exit(1);
 		}
 	    } else {
-		LOG(BF("Skipping table with name(%s)") % f.nextParaTableName().c_str()  );
+		LOG("Skipping table with name(%s)" , f.nextParaTableName().c_str()  );
 #ifdef	DEBUG_ON //[
 		if ( f.nextParaTableFieldCount() > 0 ) {
-		    LOG(BF("Skipping table with FieldType(0): %s") % f.nextParaTableFieldType(0).c_str()  );
+		    LOG("Skipping table with FieldType(0): %s" , f.nextParaTableFieldType(0).c_str()  );
 		}
 		if ( f.nextParaTableFieldCount() > 1 ) {
-		    LOG(BF("Skipping table with FieldType(1): %s") % f.nextParaTableFieldType(1).c_str()  );
+		    LOG("Skipping table with FieldType(1): %s" , f.nextParaTableFieldType(1).c_str()  );
 		}
 #endif //]
 		f.skipParaTable();
 	    }
 	}
 
-	LOG(BF("Building the molecule") );
+	LOG("Building the molecule" );
 
 	// Build the molecule
 	index_ID = ptAtoms.getFieldIndex("ID");
@@ -940,34 +940,34 @@ void	MoeReadFile::readNextLine()
 	index_cResidueCount = ptMolecules.getFieldIndex("cResidueCount");
 
 
-	LOG(BF("Creating atoms") );
+	LOG("Creating atoms" );
 	// Create the atoms
 	ia = 0;
 	tir=0;
 	for ( im=0; im<ptMolecules.getVector(0).size(); im++ ) {
-	    LOG(BF("Creating molecule #%d") % im  );
+	    LOG("Creating molecule #%d" , im  );
 	    auto  mol  = gctools::GC<Molecule_O>::allocate_with_default_constructor();
-	    LOG(BF(" created") );
+	    LOG(" created" );
 	    agg->addMolecule(mol);
             mol->setId(agg->contentSize());
-	    LOG(BF(" added to aggregate") );
+	    LOG(" added to aggregate" );
 	    numResidues = dynamic_cast<ParaInteger*>(ptMolecules.getVector(index_cResidueCount)[im])->getValue();
-	    LOG(BF("  It has %d residues") % numResidues  );
+	    LOG("  It has %d residues" , numResidues  );
 	    for ( ir=0; ir<numResidues; ir++ ) {
-		LOG(BF("     Creating residue: %d") % ir  );
+		LOG("     Creating residue: %d" , ir  );
 		auto  res  = gctools::GC<Residue_O>::allocate_with_default_constructor();
 		res->setTempInt(ir+1);
 		mol->addMatter(res);
-		LOG(BF("     Added residue to mol") );
+		LOG("     Added residue to mol" );
 		numAtoms = dynamic_cast<ParaInteger*>(ptResidues.getVector(index_rAtomCount)[tir])->getValue();
-		LOG(BF("     Got numAtoms") );
+		LOG("     Got numAtoms" );
 		str = dynamic_cast<ParaToken*>(ptResidues.getVector(index_rName)[tir])->getValue();
 		res->setName( chemkw_intern(str) );
                 int uid = dynamic_cast<ParaInteger*>(ptResidues.getVector(index_rUID)[tir])->getValue();
                 res->setId(uid);
                 res->setFileSequenceNumber(uid);
-		LOG(BF("     Set residue name: %s") % str.c_str()  );
-		LOG(BF("        it has %d atoms") % numAtoms  );
+		LOG("     Set residue name: %s" , str.c_str()  );
+		LOG("        it has %d atoms" , numAtoms  );
 		tir++;
 		for ( it=0; it<numAtoms; it++ ) {
                   auto  a  = gctools::GC<Atom_O>::allocate_with_default_constructor();
@@ -982,7 +982,7 @@ void	MoeReadFile::readNextLine()
 		    a->setPosition(pos);
 		    a->resetFlags();
 		    atoms.push_back(a);
-		    LOG(BF("Created atom: %s") % a->getName().c_str()  );
+		    LOG("Created atom: %s" , a->getName().c_str()  );
 		    res->addAtom(a);
                     a->setId(res->contentSize());
 		    ia++;
@@ -994,21 +994,21 @@ void	MoeReadFile::readNextLine()
 	// If any atoms are fixed then we need to set that AtomFlag
 	//
 
-	LOG(BF("Checking if bGotFixed") );
+	LOG("Checking if bGotFixed" );
 	if ( bGotFixed) {
 	    int i_id;
 	    int i_fixed;
 	    int fixed;
-	    LOG(BF("Yup, got %d fixed atoms") % ptFixed.getVector(0).size()  );
+	    LOG("Yup, got %d fixed atoms" , ptFixed.getVector(0).size()  );
 	    i_id    = ptFixed.getFieldIndex("ID");
 	    i_fixed = ptFixed.getFieldIndex("aFixed");
-	    LOG(BF("Processing Fixed i_id=%d, i_fixed=%d") % i_id % i_fixed  );
+	    LOG("Processing Fixed i_id=%d, i_fixed=%d" , i_id , i_fixed  );
 	    for ( i=0; i<ptFixed.getVector(0).size(); i++ ) {
-		LOG(BF("Processing element %d") % i  );
+		LOG("Processing element %d" , i  );
 		aid = dynamic_cast<ParaInteger*>(ptFixed.getVector(i_id)[i])->getValue()-1;
-		LOG(BF("Processing element got aid: %d ") % aid  );
+		LOG("Processing element got aid: %d " , aid  );
 		fixed = dynamic_cast<ParaInteger*>(ptFixed.getVector(i_fixed)[i])->getValue();
-		LOG(BF("Processing element got fixed: %d") % fixed  );
+		LOG("Processing element got fixed: %d" , fixed  );
 
 		if ( fixed != 0 ) {
 		    atoms[aid]->modifyFlags(ATOMFLAG_ON,ATOM_FIXED);
@@ -1016,32 +1016,32 @@ void	MoeReadFile::readNextLine()
 		    atoms[aid]->modifyFlags(ATOMFLAG_OFF,ATOM_FIXED);
 		}
 	    }
-	    LOG(BF("Done processing aFixed") );
+	    LOG("Done processing aFixed" );
 	}
 
 	//
 	// If any atoms have charges then we need to set that
 	//
 
-	LOG(BF("Checking if bGotCharges") );
+	LOG("Checking if bGotCharges" );
 	if ( bGotCharges) {
 	    int i_id;
 	    int i_charge;
 	    double charge;
-	    LOG(BF("Yup, got %d fixed atoms") % ptCharges.getVector(0).size()  );
+	    LOG("Yup, got %d fixed atoms" , ptCharges.getVector(0).size()  );
 	    i_id    = ptCharges.getFieldIndex("ID");
 	    i_charge = ptCharges.getFieldIndex("aCharge");
-	    LOG(BF("Processing Charges i_id=%d, i_charge=%i") % i_id % i_charge  );
+	    LOG("Processing Charges i_id=%d, i_charge=%i" , i_id , i_charge  );
 	    for ( i=0; i<ptCharges.getVector(0).size(); i++ ) {
-		LOG(BF("Processing element %d") % i  );
+		LOG("Processing element %d" , i  );
 		aid = dynamic_cast<ParaInteger*>(ptCharges.getVector(i_id)[i])->getValue()-1;
-		LOG(BF("Processing element got aid: %d ") % aid  );
+		LOG("Processing element got aid: %d " , aid  );
 		charge = dynamic_cast<ParaReal*>(ptCharges.getVector(i_charge)[i])->getValue();
-		LOG(BF("Processing element got fixed: %d") % fixed  );
+		LOG("Processing element got fixed: %d" , fixed  );
 
 		atoms[aid]->setCharge(charge);
 	    }
-	    LOG(BF("Done processing aCharges") );
+	    LOG("Done processing aCharges" );
 	}
 
 
@@ -1050,35 +1050,35 @@ void	MoeReadFile::readNextLine()
 	// if we read MMTypes from the moe file then set them in the
 	// moeType atom property
 	//
-	LOG(BF("Checking if gotMMTypes") );
+	LOG("Checking if gotMMTypes" );
 	if ( gotMMTypes ) {
-	    LOG(BF("Yup, got MMTypes") );
+	    LOG("Yup, got MMTypes" );
 	    index_mmTypeId = ptMMTypes.getFieldIndex("ID");
 	    index_mmTypes = ptMMTypes.getFieldIndex("aMMType");
-	    LOG(BF("Processing MMTypes mmTypeId=%d, mmTypes=%d") % index_mmTypeId % index_mmTypes  );
+	    LOG("Processing MMTypes mmTypeId=%d, mmTypes=%d" , index_mmTypeId , index_mmTypes  );
 	    for ( i=0; i<ptMMTypes.getVector(0).size(); i++ ) {
-		LOG(BF("Processing element %d") % i  );
+		LOG("Processing element %d" , i  );
 		aid = dynamic_cast<ParaInteger*>(ptMMTypes.getVector(index_mmTypeId)[i])->getValue()-1;
-		LOG(BF("Processing element got aid: %d ") % aid  );
+		LOG("Processing element got aid: %d " , aid  );
 		type = dynamic_cast<ParaToken*>(ptMMTypes.getVector(index_mmTypes)[i])->getValue();
-		LOG(BF("Processing element got type: %s") % type.c_str()  );
+		LOG("Processing element got type: %s" , type.c_str()  );
 
                 IMPLEMENT_MEF("setMoeType");
 //		atoms[aid]->setMoeType(chemkw_intern(type));
 	    }
-	    LOG(BF("Done processing MMTypes") );
+	    LOG("Done processing MMTypes" );
 	}
 
 
-	{_BLOCK_TRACE(( "Installing bonds" ));
-	    if ( bGotBonds ) { _BLOCK_TRACE("Installing bonds with undefined order");
+	{
+	    if ( bGotBonds ) { 
 		index_a = ptBonds.getFieldIndex("a");
 		index_b = ptBonds.getFieldIndex("b");
-		LOG(BF("Got a and b ptBonds.getVector(0).size() = %d") % ptBonds.getVector(0).size()  );
+		LOG("Got a and b ptBonds.getVector(0).size() = %d" , ptBonds.getVector(0).size()  );
 		for ( i=0; i<ptBonds.getVector(0).size(); i++ ) {
 		    from = dynamic_cast<ParaInteger*>(ptBonds.getVector(index_a)[i])->getValue()-1;
 		    to = dynamic_cast<ParaInteger*>(ptBonds.getVector(index_b)[i])->getValue()-1;
-		    LOG(BF("Read bond between atom indices %d-%d") % from+1 % to+1  );
+		    LOG("Read bond between atom indices %d-%d" , from+1 , to+1  );
 		    if ( atoms[from]->getHybridization()==hybridization_sp2 &&
 			 atoms[to]->getHybridization()==hybridization_sp2 ) 
 		    {
@@ -1100,57 +1100,57 @@ void	MoeReadFile::readNextLine()
 				      "Bond I just formed is invalid atom:"+atoms[to]->getName());
 #endif
 		    }
-		    LOG(BF("Installed bond between atoms: %s - %s") % atoms[from]->description().c_str() % atoms[to]->description().c_str()  );
+		    LOG("Installed bond between atoms: %s - %s" , atoms[from]->description().c_str() , atoms[to]->description().c_str()  );
 		}
 	    }
-	    if ( bGotBondsO1 ) { _BLOCK_TRACE("Installing bonds with order=1");
+	    if ( bGotBondsO1 ) { 
 		index_a = ptBondsO1.getFieldIndex("a");
 		index_b = ptBondsO1.getFieldIndex("b");
-		LOG(BF("Got a and b ptBondsO1.getVector(0).size() = %d") % ptBondsO1.getVector(0).size()  );
+		LOG("Got a and b ptBondsO1.getVector(0).size() = %d" , ptBondsO1.getVector(0).size()  );
 		for ( i=0; i<ptBondsO1.getVector(0).size(); i++ ) {
 		    from = dynamic_cast<ParaInteger*>(ptBondsO1.getVector(index_a)[i])->getValue()-1;
 		    to = dynamic_cast<ParaInteger*>(ptBondsO1.getVector(index_b)[i])->getValue()-1;
-		    LOG(BF("Read bond between atom indices %d-%d") % from+1 % to+1  );
+		    LOG("Read bond between atom indices %d-%d" , from+1 , to+1  );
 		    bo = singleBond;
 		    atoms[from]->bondTo( atoms[to], bo );
 		    ASSERT(!atoms[from]->invalid()); // "Bond I just formed is invalid atom:"+atoms[from]->getName());
 		    ASSERT(!atoms[to]->invalid()); // "Bond I just formed is invalid atom:"+atoms[to]->getName());
-		    LOG(BF("Installed bond between atoms: %s - %s") % atoms[from]->description().c_str() % atoms[to]->description().c_str()  );
+		    LOG("Installed bond between atoms: %s - %s" , atoms[from]->description().c_str() , atoms[to]->description().c_str()  );
 		}
 	    }
-	    if ( bGotBondsO2 ) { _BLOCK_TRACE("Installing bonds with order=2");
+	    if ( bGotBondsO2 ) { 
 		index_a = ptBondsO2.getFieldIndex("a");
 		index_b = ptBondsO2.getFieldIndex("b");
-		LOG(BF("Got a and b ptBondsO2.getVector(0).size() = %d") % ptBondsO2.getVector(0).size()  );
+		LOG("Got a and b ptBondsO2.getVector(0).size() = %d" , ptBondsO2.getVector(0).size()  );
 		for ( i=0; i<ptBondsO2.getVector(0).size(); i++ ) {
 		    from = dynamic_cast<ParaInteger*>(ptBondsO2.getVector(index_a)[i])->getValue()-1;
 		    to = dynamic_cast<ParaInteger*>(ptBondsO2.getVector(index_b)[i])->getValue()-1;
-		    LOG(BF("Read bond between atom indices %d-%d") % from+1 % to+1  );
+		    LOG("Read bond between atom indices %d-%d" , from+1 , to+1  );
 		    bo = doubleBond;
 		    atoms[from]->bondTo( atoms[to], bo );
 		    ASSERT(!atoms[from]->invalid()); // "Bond I just formed is invalid atom:"+atoms[from]->getName());
 		    ASSERT(!atoms[to]->invalid()); // "Bond I just formed is invalid atom:"+atoms[to]->getName());
-		    LOG(BF("Installed bond between atoms: %s - %s") % atoms[from]->description().c_str() % atoms[to]->description().c_str()  );
+		    LOG("Installed bond between atoms: %s - %s" , atoms[from]->description().c_str() , atoms[to]->description().c_str()  );
 		}
 	    }
-	    if ( bGotBondsO3 ) { _BLOCK_TRACE("Installing bonds with order=3");
+	    if ( bGotBondsO3 ) { 
 		index_a = ptBondsO3.getFieldIndex("a");
 		index_b = ptBondsO3.getFieldIndex("b");
-		LOG(BF("Got a and b ptBondsO3.getVector(0).size() = %d") % ptBondsO3.getVector(0).size()  );
+		LOG("Got a and b ptBondsO3.getVector(0).size() = %d" , ptBondsO3.getVector(0).size()  );
 		for ( i=0; i<ptBondsO3.getVector(0).size(); i++ ) {
 		    from = dynamic_cast<ParaInteger*>(ptBondsO3.getVector(index_a)[i])->getValue()-1;
 		    to = dynamic_cast<ParaInteger*>(ptBondsO3.getVector(index_b)[i])->getValue()-1;
-		    LOG(BF("Read bond between atom indices %d-%d") % from+1 % to+1  );
+		    LOG("Read bond between atom indices %d-%d" , from+1 , to+1  );
 		    bo = tripleBond;
 		    atoms[from]->bondTo( atoms[to], bo );
 		    ASSERT(!atoms[from]->invalid()); // "Bond I just formed is invalid atom:"+atoms[from]->getName());
 		    ASSERT(!atoms[to]->invalid()); // "Bond I just formed is invalid atom:"+atoms[to]->getName());
-		    LOG(BF("Installed bond between atoms: %s - %s") % atoms[from]->description().c_str() % atoms[to]->description().c_str()  );
+		    LOG("Installed bond between atoms: %s - %s" , atoms[from]->description().c_str() , atoms[to]->description().c_str()  );
 		}
 	    }
 	}
 
-	LOG(BF("Setting RS force constants") );
+	LOG("Setting RS force constants" );
 
 	if ( bGotForceRSm1 ) {
 	    aggRestraints = agg->allRestraints();
@@ -1180,12 +1180,12 @@ void	MoeReadFile::readNextLine()
 	}
 
 	if ( bGotHintLP ) {
-	    LOG(BF("Setting HintLP attribute") );
+	    LOG("Setting HintLP attribute" );
 	    index_ID = ptHintLP.getFieldIndex("ID");
 	    for ( i=0; i<ptHintLP.getVector(0).size();i++ ) {
 		aid = (dynamic_cast<ParaInteger*>(ptHintLP.getVector(index_ID)[i])->getValue()-1 );
 		Atom_sp lpAtom = atoms[aid];
-		LOG(BF("Setting HintLP=True for atom(%s)") % lpAtom->getName().c_str() );
+		LOG("Setting HintLP=True for atom(%s)" , lpAtom->getName().c_str() );
 		lpAtom->setHintLP(true);
 	    }
 	}
@@ -1228,7 +1228,7 @@ void	MoeReadFile::readNextLine()
 		    aggRestraints = core::Cons_O::create(restraint,aggRestraints);
 		} else if ( type == "distance" ) 
 		{
-                  SIMPLE_ERROR(BF("Add support for distance restraints"));
+                  SIMPLE_ERROR(("Add support for distance restraints"));
 #if 0
                   RestraintDistance_sp restraint = RestraintDistance_O::create();
 		    restraint->setAtomA(atoms[(*resAtoms)[0]-1]);
@@ -1244,7 +1244,7 @@ void	MoeReadFile::readNextLine()
 	    }
 	}
 
-	LOG(BF("Done") );
+	LOG("Done" );
     }
 
 
@@ -1264,12 +1264,12 @@ void	MoeReadFile::readNextLine()
 	Loop		l;
 	bool		gotMMTypes;
 
-	LOG(BF("About to open moe file: %s") % sFileName  );
+	LOG("About to open moe file: %s" , sFileName  );
 	f.openFileName(sFileName);
-	LOG(BF("Opened moe file: %s") % sFileName  );
+	LOG("Opened moe file: %s" , sFileName  );
 	moeReadAggregateMoeFile( agg, f, gotMMTypes );
 
-	LOG(BF("Assigning types") );
+	LOG("Assigning types" );
 	if ( gotMMTypes ) {
 	    l.loopTopGoal( agg, ATOMS );
 	    while ( l.advanceLoopAndProcess() ) {
@@ -1283,9 +1283,9 @@ void	MoeReadFile::readNextLine()
 #endif
 	    }
 	} else {
-	    SIMPLE_ERROR(BF("moeReadAggregateWithAtomTypesFromFileName-- there were no types in the file" ));
+	    SIMPLE_ERROR(("moeReadAggregateWithAtomTypesFromFileName-- there were no types in the file" ));
 	}
-	LOG(BF("Done assigning types") );
+	LOG("Done assigning types" );
     }
 
 
@@ -1299,9 +1299,9 @@ void	MoeReadFile::readNextLine()
 	MoeReadFile	f;
 	bool		gotMMTypes;
 
-	LOG(BF("About to open moe file: %s") % sFileName  );
+	LOG("About to open moe file: %s" , sFileName  );
 	f.openFileName(sFileName);
-	LOG(BF("Opened moe file: %s") % sFileName  );
+	LOG("Opened moe file: %s" , sFileName  );
 	moeReadAggregateMoeFile( agg, f, gotMMTypes );
     }
 
@@ -1315,9 +1315,9 @@ CL_DEFUN  Aggregate_sp chem__moeReadAggregate(const string& name )
 {
     MoeReadFile	f;
 	bool		gotMMTypes;
-	LOG(BF("About to open moe file: %s") % name.c_str() );
+	LOG("About to open moe file: %s" , name.c_str() );
 	f.openFileName(name.c_str());
-	LOG(BF("Opened moe file: %s") % name.c_str() );
+	LOG("Opened moe file: %s" , name.c_str() );
 	auto  agg  = gctools::GC<Aggregate_O>::allocate_with_default_constructor();
 	moeReadAggregateMoeFile( agg, f, gotMMTypes );
 	return agg;
@@ -1369,10 +1369,10 @@ void	moeWriteAggregateStream( Aggregate_sp agg, std::ostream& fout)
 	count = 0;
 	resId = 1;
 	lr.loopTopGoal( agg, RESIDUES );
-	{_BLOCK_TRACEF(BF("Looping through residues"));
+	{
 	    while ( lr.advanceLoopAndProcess() ) {
 		r = lr.getResidue();
-		_BLOCK_TRACEF(BF( "Looping through residue: %lx") % r.get() );
+		
 		la.loopTopGoal( r, ATOMS );
 		resAtomCount = 0;
 		while ( la.advanceLoopAndProcess() ) {
@@ -1380,7 +1380,7 @@ void	moeWriteAggregateStream( Aggregate_sp agg, std::ostream& fout)
 		    count++;
 		    resAtomCount++;
 		    a->setTempInt(count);
-		    LOG(BF("Assigning atom: %lx index: %d") % a.get() % count  );
+		    LOG("Assigning atom: %lx index: %d" , a.get() , count  );
 		    atoms.push_back(a);
 		};
 		residueAtomCount.push_back(resAtomCount);
@@ -1392,13 +1392,13 @@ void	moeWriteAggregateStream( Aggregate_sp agg, std::ostream& fout)
 	chainOffset = count+residueAtomCount.size()+1;
 	resOffset = count+1;
 	bondCount = 0;
-	LOG(BF("Counting bonds") );
+	LOG("Counting bonds" );
 	l.loopTopGoal( Matter_sp(agg), BONDS );
 	while ( l.advanceLoopAndProcess() ) {
-	    LOG(BF("Looking at bond#%d") % bondCount );
+	    LOG("Looking at bond#%d" , bondCount );
 	    bondCount++;
 	};
-	LOG(BF("Writing moe file") );
+	LOG("Writing moe file" );
 	fout << "#moe 2001.01" << std::endl;
 	fout << "#system 7 tag t value *" << std::endl;
 	fout << "BoxEnable i* 3 0 0 0 BoxSize i* 3 10 10 10 BoxShape i* 3 90 90 90" << std::endl;
@@ -1417,7 +1417,7 @@ void	moeWriteAggregateStream( Aggregate_sp agg, std::ostream& fout)
 	fout << "#attr " << count << " ID i aName t aElement t aGeometry t aPosX r aPosY r aPosZ r" << std::endl;
 	fixedCount = 0;
 	hintLPCount = 0;
-	LOG(BF("Writing atoms") );
+	LOG("Writing atoms" );
 	for ( ai=atoms.begin(); ai!=atoms.end(); ai++ ) {
 	    a = (*ai);
 	    fout << a->getTempInt() << " ";
@@ -1582,9 +1582,9 @@ void	moeWriteAggregateStream( Aggregate_sp agg, std::ostream& fout)
 
 void	moeRead( Aggregate_sp agg, const string& sFileName )
     {
-	LOG(BF("Reading from file: %s") % sFileName.c_str()  );
+	LOG("Reading from file: %s" , sFileName.c_str()  );
 	moeReadAggregateFromFileName(agg, sFileName.c_str() );
-	LOG(BF("moeRead done") );
+	LOG("moeRead done" );
     };
 
 

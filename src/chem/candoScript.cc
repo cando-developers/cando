@@ -26,7 +26,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #define	DEBUG_LEVEL_NONE
 
 #include <stdlib.h>
-#include <boost/format.hpp>
 #include <boost/filesystem.hpp>
 #include <clasp/core/common.h>
 #include <clasp/core/array.h>
@@ -105,7 +104,7 @@ CL_DEFUN void chem__initialize_smarts_users() {
  */
 void setCandoDatabase(CandoDatabase_sp bdb, core::LispPtr lisp)
 {
-    LOG(BF("Setting *DATABASE* to database@%p") % bdb.get() );
+    LOG("Setting *DATABASE* to database@%p" , bdb.get() );
     _sym_candoDatabase->defparameter(bdb);
 }
 
@@ -125,7 +124,7 @@ void setCandoDatabase(CandoDatabase_sp bdb, core::LispPtr lisp)
 	    core::T_sp obj = xml->get("candoDatabase");
 	    if (!obj.isA<CandoDatabase_O>() )
 	    {
-		SIMPLE_ERROR(BF("The 'candoDatabase' object is not of class CandoDatabase"));
+		SIMPLE_ERROR(("The 'candoDatabase' object is not of class CandoDatabase"));
 	    }
 	    bdb = obj.as<CandoDatabase_O>();
 	} else if ( xml->contains("only" ) )
@@ -133,12 +132,12 @@ void setCandoDatabase(CandoDatabase_sp bdb, core::LispPtr lisp)
 	    core::T_sp obj = xml->get("only");
 	    if (!obj.isA<CandoDatabase_O>() )
 	    {
-		SIMPLE_ERROR(BF("The 'only' object is not of class CandoDatabase"));
+		SIMPLE_ERROR(("The 'only' object is not of class CandoDatabase"));
 	    }
 	    bdb = obj.as<CandoDatabase_O>();
 	} else
 	{
-	    SIMPLE_ERROR(BF("Could not find database in file: "+fileName ));
+	    SIMPLE_ERROR(("Could not find database in file: "+fileName ));
 	}
 	setCandoDatabase(bdb,lisp);
     }
@@ -202,7 +201,7 @@ CL_DEFUN core::T_sp chem__database(core::T_sp fileNameDesig, core::Fixnum_sp ove
 #ifdef XML_ARCHIVE
 	core::Path_sp path = core::coerce::pathDesignator(fileNameDesig);
 	uint verbosity = overbosity->get();
-	LOG(BF("Opening file(%s)") % path->asString() );
+	LOG("Opening file(%s)" , path->asString() );
 	loadCandoDatabase(path->asString(),verbosity);
 #endif
 	return nil<core::T_O>();
@@ -242,7 +241,7 @@ CL_DEFUN core::T_sp chem__standard_database(core::T_sp pathDesig, core::T_sp loa
 	    name << "database_" << path->asString() << ".cxml";
 	}
 	boost_filesystem::path filePath  = _lisp->bundle().getDatabasesDir() / name.str();
-	LOG(BF("About to load alchemist database(%s)") % filePath.string());
+	LOG("About to load alchemist database(%s)" , filePath.string());
 	loadCandoDatabase(filePath.string(),verbosity);
 #endif
 	return nil<core::T_O>();
@@ -304,7 +303,7 @@ string	part;
     CandoDatabase_sp bdb = getCandoDatabase();
     if ( bdb.nilp() )
     {
-	SIMPLE_ERROR(BF("You must define a AlchemistDatabse"));
+	SIMPLE_ERROR(("You must define a AlchemistDatabse"));
     }
     part = args->car<core::Str_O>()->get();
 
@@ -327,8 +326,8 @@ string	part;
 	}
 	if ( times > 0 )
 	{
-	    lisp->print(BF( "%s") % mit->second->getComment().c_str() );
-	    lisp->print(BF("     Found %d times first: %s") %times % firstFind.c_str() );
+          core::writeln_bf_stream(fmt::sprintf( "%s" , mit->second->getComment().c_str() ));
+          core::writeln_bf_stream(fmt::sprintf("     Found %d times first: %s" , times , firstFind ));
 	} 
     }
     return _Nil<core::T_O>();
@@ -372,7 +371,7 @@ CandoDatabase_sp	bdb;
     {
 	Constitution_sp con = core::oCar(cur).as<Constitution_O>();
         core::T_sp stereoisomers = con->getMonomerNamesAsStringList()->asString();
-	lisp->print(BF(" Constitution: %12s -- %s") % _rep_(con->getName()) % core::_rep_(stereoisomers) );
+        core::writeln_bf_stream(fmt::sprintf(" Constitution: %12s -- %s" , _rep_(con->getName()) , core::_rep_(stereoisomers) ));
     }
     return _Nil<core::T_O>();
 }
@@ -413,33 +412,33 @@ CL_DEFUN core::T_sp chem__create_virtual_atom()
     //
     // Add the virtual atom to every constitution with this monomer name
     //
-    {_BLOCK_TRACEF(BF("Adding virtual atom(%s) to constitution(%s)") % virtualAtomName.c_str()%constitutionName.c_str() );
+    {
 	CandoDatabase_O::constitutionIterator ci;
 	for ( ci=bdb->begin_Constitutions();
 	      ci!=bdb->end_Constitutions(); ci++ )
 	{
-	    LOG(BF("Looking at constitution(%s)") % (*ci)->getName() );
+	    LOG("Looking at constitution(%s)" , (*ci)->getName() );
 	    if ( (*ci)->getName() == constitutionName )
 	    {
-		LOG(BF("Found constitution with name(%s)") % constitutionName );
+		LOG("Found constitution with name(%s)" , constitutionName );
 		ConstitutionAtoms_sp res = (*ci)->getConstitutionAtoms();
 		ConstitutionVirtualAtom_sp virt = ConstitutionVirtualAtom_O::create(virtualAtomName,calcPos);
 		res->addConstitutionVirtualAtom(virt);
 		added++;
 	    } else
 	    {
-		LOG(BF("Does not contain stereoisomer") );
+		LOG("Does not contain stereoisomer" );
 	    }
 	}
     }
     if ( added == 0 )
     {
-	SIMPLE_ERROR(BF("Could not find constitution: "+constitutionName));
+	SIMPLE_ERROR(("Could not find constitution: "+constitutionName));
     }
     //
     // Add the virtual atom to all MonomerCoordinates
     //
-    {_BLOCK_TRACEF(BF("Adding VirtualAtom(%s) to MonomerCoordinates") % virtualAtomName.c_str() );
+    {
         gctools::SmallOrderedSet<MonomerCoordinates_sp>	uniqueMonomerCoordinates;
 	for ( mi=bdb->begin_MonomerCoordinates(); 
 	      mi!=bdb->end_MonomerCoordinates();
@@ -452,7 +451,7 @@ CL_DEFUN core::T_sp chem__create_virtual_atom()
 	for ( ui=uniqueMonomerCoordinates.begin();
 	      ui!=uniqueMonomerCoordinates.end();
 	      ui++ )
-	{ _BLOCK_TRACEF(BF("Checking MonomerCoordinates with context: %s") % (*ui)->getContext()->getKey().c_str() );
+	{ 
 	    MonomerContext_sp context = (*ui)->getContext();
 	    EntityNameSetBase_sp focus = context->getFocus();
 	    string focusMonomerName = focus->getOnlyMonomerName();
@@ -460,14 +459,14 @@ CL_DEFUN core::T_sp chem__create_virtual_atom()
 	    Constitution_sp constitution = bdb->constitutionForNameOrPdb(focusMonomerName);
 	    if ( constitution->getName() == constitutionName )
 	    {
-		LOG(BF( "The context focus monomer(%s) has the constitution(%s)")%
-		    focus->getMonomerNamesAsString() % constitutionName );
+		LOG( "The context focus monomer(%s) has the constitution(%s)"%
+		    focus->getMonomerNamesAsString() , constitutionName );
 		interestingMonomerCoordinates.insert(*ui);
 	    }
 	}
 	for ( gctools::SmallOrderedSet<MonomerCoordinates_sp>::iterator si=interestingMonomerCoordinates.begin();
 	      si!=interestingMonomerCoordinates.end(); si++ )
-	{ _BLOCK_TRACEF(BF("Checking MonomerCoordinates with context: %s") % _rep_((*si)->getContext()) );
+	{ 
 	    // If the fragmentName wasn't defined then use the
 	    // CalculatePosition object to tell us what atom is closest
 	    // to the virtual atom and put it in the same fragment
@@ -477,32 +476,32 @@ CL_DEFUN core::T_sp chem__create_virtual_atom()
 	    if ( fragmentName == "" )
 	    {
 		fragmentCoords = monCoords->getFragmentCoordinatesThatContainAtomWithName(calcPos->closestAtomName());
-		LOG(BF( "Adding virtual atom(%s) to fragmentCoords for fragment(%s)")%
-		    virtualAtomName % fragmentCoords->getFragmentName() );
-		LOG(BF( "For the virtual atom(%s) the closestAtomName was(%s)")%
-		    virtualAtomName % calcPos->closestAtomName() );
+		LOG( "Adding virtual atom(%s) to fragmentCoords for fragment(%s)"%
+		    virtualAtomName , fragmentCoords->getFragmentName() );
+		LOG( "For the virtual atom(%s) the closestAtomName was(%s)"%
+		    virtualAtomName , calcPos->closestAtomName() );
 	    } else
 	    {
 		fragmentCoords = monCoords->getFragmentCoordinatesWithName(fragmentName);
 		if ( fragmentCoords.nilp() )
 		{
-		    SIMPLE_ERROR(BF("In createVirtualAtom: Unrecognized fragmentCoordinates name("+fragmentName+")"));
+		    SIMPLE_ERROR(("In createVirtualAtom: Unrecognized fragmentCoordinates name("+fragmentName+")"));
 		}
 	    }
 	    // Here create the Virtual atom
 	    //
-	    LOG(BF( "Creating virtual atom in FragmentCoordinates(%s)")% 
+	    LOG( "Creating virtual atom in FragmentCoordinates(%s)"% 
 		fragmentCoords->getFragmentName() );
 	    if ( !fragmentCoords->addVirtualAtom(virtualAtomName,calcPos,lisp) )
 		collisions++;
 	}
     }
-    lisp->print(BF("Added virtual atom(%s) for constitution(%s)") % virtualAtomName % constitutionName );
+    core::writeln_bf_stream(fmt::sprintf("Added virtual atom(%s) for constitution(%s)" , virtualAtomName , constitutionName ));
     if ( collisions > 0 )
     {
-        lisp->print(BF(" saw %d collisions") % collisions );
+      core::writeln_bf_stream(fmt::sprintf(" saw %d collisions" , collisions ));
     }
-    lisp->print(BF(""));
+    core::writeln_bf_stream(fmt::sprintf(""));
     return _Nil<core::T_O>();
 #endif
 }
@@ -533,7 +532,7 @@ CL_DEFUN core::T_sp chem__save_archive_with_auto_set_cando_database()
     IMPLEMENT_ME();
 #if 0 //fix below
     core::KeyedArguments_sp kargs = core::KeyedArguments_O::createFromKeyedObjectCons(args,lisp);
-    if ( kargs->numberOfPositionalArguments()!=2 ) SIMPLE_ERROR(BF("You must provide the object and file name"));
+    if ( kargs->numberOfPositionalArguments()!=2 ) SIMPLE_ERROR(("You must provide the object and file name"));
     core::T_sp obj = kargs->getPositionalArgument(0).as<core::T_O>();
     core::Str_sp fileName = kargs->getPositionalArgument(1).as<core::Str_O>();
     int debugLevel = kargs->getIntAndRemoveOrDefault("verbosity",0);
@@ -606,7 +605,7 @@ core::T_sp chem__read_mol2_list_common(Mol2File& fin, core::T_sp number_to_load)
     progress_done = core::eval::funcall(cl::_sym_findSymbol,core::SimpleBaseString_O::make("PROGRESS-DONE"),
                                         core::SimpleBaseString_O::make("CANDO"));
     if (make_progress.nilp()||progress_advance.nilp()||progress_done.nilp()) {
-      SIMPLE_ERROR(BF("Could not get progress bar functions make-progress, progress-advance, progress-done"));
+      SIMPLE_ERROR(("Could not get progress bar functions make-progress, progress-advance, progress-done"));
     }
   }
   core::T_sp progress_bar = nil<core::T_O>();
@@ -711,7 +710,7 @@ CL_DEFUN std::string chem__matter_as_mol2_string(Matter_sp matter, bool useSybyl
     mol2WriteAggregateStream(agg,ss,useSybylTypes);
     return ss.str();
   }
-  SIMPLE_ERROR(BF("Matter must be an aggregate or molecule - it is %s") % _rep_(matter));
+  SIMPLE_ERROR(("Matter must be an aggregate or molecule - it is %s") , _rep_(matter));
 }
 
 /*!
@@ -734,26 +733,26 @@ core::Fixnum_sp	residueSequenceNumber;
     while ( l.advanceLoopAndProcess() )
     {
         Residue_sp res = l.getResidue();
-        LOG(BF("Looking at residue with sequence number: %d") % res->getFileSequenceNumber()  );
+        LOG("Looking at residue with sequence number: %d" , res->getFileSequenceNumber()  );
 	bool foundResidue = false;
 	if ( resIdName )
 	{
-          LOG(BF("Checking if residue has name(%s) that matches(%s)") % res->getName().c_str() % _rep_(resIdName) );
+          LOG("Checking if residue has name(%s) that matches(%s)" , res->getName().c_str() , _rep_(resIdName) );
 	    if ( resIdName==res->getName() )
 	    {
-              LOG(BF("Found residue with sequence name: %s") % _rep_(resIdName) );
+              LOG("Found residue with sequence name: %s" , _rep_(resIdName) );
 		foundResidue = true;
 	    } else if ( res->recognizesMonomerAlias(resIdName) )
 	    {
-              LOG(BF("Found residue with Monomer alias: %s") % _rep_(resIdName) );
+              LOG("Found residue with Monomer alias: %s" , _rep_(resIdName) );
 		foundResidue = true;
 	    }
 	} else if ( resIdSeqNum )
 	{
-	    LOG(BF("Checking if residue has fileSequenceNumber(%d) that matches(%d)") % res->getFileSequenceNumber() % resIdSeqNum->get()  );
+	    LOG("Checking if residue has fileSequenceNumber(%d) that matches(%d)" , res->getFileSequenceNumber() , resIdSeqNum->get()  );
 	    if ( (int)(res->getFileSequenceNumber()) == resIdSeqNum.unsafe_fixnum())
 	    {
-	        LOG(BF("Found residue with sequence number: %s") % resIdSeqNum->get()  );
+	        LOG("Found residue with sequence number: %s" , resIdSeqNum->get()  );
 		foundResidue = true;
 	    }
 	}
@@ -799,14 +798,14 @@ CL_DEFUN core::T_sp chem__find_residue(core::List_sp args)
       residueIdentifier = args.asCons()->onth(1).as<core::T_O>();
     } else
     {
-    	SIMPLE_ERROR(BF("You must provide a molecule, residueId" ));
+    	SIMPLE_ERROR(("You must provide a molecule, residueId" ));
     }
     Residue_sp res = findResidue(molecule,residueIdentifier);
     if ( res.nilp() )
     {
 	stringstream serr;
 	serr << "Molecule does not contain residue with identifier: " << _rep_(residueIdentifier).c_str() ;
-	SIMPLE_ERROR(BF(serr.str()));
+	SIMPLE_ERROR((serr.str()));
     }
     return res;
 }
@@ -852,21 +851,21 @@ CL_DEFUN core::T_sp chem__atom_pos(core::List_sp args)
       atomName = args.asCons()->onth(2).as<core::Symbol_O>();
     } else
     {
-    	SIMPLE_ERROR(BF("You must provide a molecule, residueId and atom name"));
+    	SIMPLE_ERROR(("You must provide a molecule, residueId and atom name"));
     }
     Residue_sp foundResidue = findResidue(molecule,residueIdentifier);
     if ( foundResidue.notnilp() )
     {
       if ( foundResidue->hasAtomWithName(atomName)) {
-          LOG(BF("Found atom with name: %s") % _rep_(atomName)  );
+          LOG("Found atom with name: %s" , _rep_(atomName)  );
           Vector3 pos = gc::As_unsafe<Atom_sp>(foundResidue->atomWithName(atomName))->getPosition();
 	    geom::OVector3_sp v = geom::OVector3_O::create();
 	    v->setAll3(pos.getX(),pos.getY(),pos.getZ());
 	    return v;
 	}
-      SIMPLE_ERROR(BF("Residue does not contain atom named: %s") % _rep_(atomName));
+      SIMPLE_ERROR(("Residue does not contain atom named: %s") , _rep_(atomName));
     }
-    SIMPLE_ERROR(BF("Molecule does not contain residue with identifier: %s") % _rep_(residueIdentifier));
+    SIMPLE_ERROR(("Molecule does not contain residue with identifier: %s") , _rep_(residueIdentifier));
 }
 
 
@@ -971,16 +970,16 @@ CL_DEFUN core::T_sp chem__calculate_point()
 	posDihedralAtom = res->positionOfAtomWithName(dihedralAtom);
     } else
     {
-	SIMPLE_ERROR(BF("Unacceptable positionLookup class"));
+	SIMPLE_ERROR(("Unacceptable positionLookup class"));
     }
-    LOG(BF("About to calculate point with values") );
-    LOG(BF(" distance(%lf)  distancePoint(%s)") % distance % posDistanceAtom.asString().c_str()  );
-    LOG(BF(" angleDegrees(%lf)  anglePoint(%s)") % angleDegrees % posAngleAtom.asString().c_str()  );
-    LOG(BF(" dihedralDegrees(%lf)  dihedralPoint(%s)") % dihedralDegrees % posDihedralAtom.asString().c_str()  );
+    LOG("About to calculate point with values" );
+    LOG(" distance(%lf)  distancePoint(%s)" , distance , posDistanceAtom.asString().c_str()  );
+    LOG(" angleDegrees(%lf)  anglePoint(%s)" , angleDegrees , posAngleAtom.asString().c_str()  );
+    LOG(" dihedralDegrees(%lf)  dihedralPoint(%s)" , dihedralDegrees , posDihedralAtom.asString().c_str()  );
     pnt = geom::geom__build_using_bond_angle_dihedral(distance,posDistanceAtom,
                                                       angleDegrees*0.0174533,posAngleAtom,
                                                       dihedralDegrees*0.0174533,posDihedralAtom);
-    LOG(BF("Generated point: %s") % pnt.asString().c_str()  );
+    LOG("Generated point: %s" , pnt.asString().c_str()  );
     return geom::OVector3_O::createFromVector3(lisp,pnt);
 #endif
 #endif
@@ -1007,8 +1006,8 @@ CL_DEFUN core::T_sp chem__oligomer(core::List_sp parts)
           OligomerPart_Link_sp link = gc::As<OligomerPart_Link_sp>(oligPart);
 	    core::Symbol_sp	mon1Id = link->_Monomer1Id;
 	    core::Symbol_sp	mon2Id = link->_Monomer2->_MonomerId;
-	    if ( !monomerMap->contains(mon1Id) ) SIMPLE_ERROR(BF("Unknown monomer id: %s")%_rep_(mon1Id));
-	    if ( !monomerMap->contains(mon2Id) ) SIMPLE_ERROR(BF("Unknown monomer id: %s")%_rep_(mon2Id));
+	    if ( !monomerMap->contains(mon1Id) ) SIMPLE_ERROR(("Unknown monomer id: %s") , _rep_(mon1Id));
+	    if ( !monomerMap->contains(mon2Id) ) SIMPLE_ERROR(("Unknown monomer id: %s") , _rep_(mon2Id));
 	    Monomer_sp mon1 = monomerMap->gethash(mon1Id).as<Monomer_O>();
 	    Monomer_sp mon2 = monomerMap->gethash(mon2Id).as<Monomer_O>();
 	    olig->couple(mon1,link->_Coupling,mon2);

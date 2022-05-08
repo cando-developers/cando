@@ -38,7 +38,7 @@ namespace kinematics
     {
 	if ( this->_Tree==NULL )
 	{
-	    THROW_HARD_ERROR(BF("Can not return PointTree for undefined WeakAtomHandle"));
+	    THROW_HARD_ERROR("Can not return PointTree for undefined WeakAtomHandle");
 	}
 	return this->_Tree->sharedThis<PointTree_O>();
     }
@@ -66,7 +66,7 @@ namespace kinematics
     {_OF();
 	if ( this->notDefined() )
 	{
-	    SIMPLE_ERROR(BF("This handle is Undefined and you tried to get its pointed to object"));
+	    SIMPLE_ERROR(("This handle is Undefined and you tried to get its pointed to object"));
 	}
 	HARD_ASSERTF((int)this->_HolderIndex<this->_Tree->numberOfAtoms(),
 		     BF("Illegal handle index[%d] must be less than %d")
@@ -97,11 +97,11 @@ namespace kinematics
 	    result = &(this->_Tree->_DelayedBondedPoints[atomHolder._NodeIndex]);
 	    break;
 	default:
-	    SIMPLE_ERROR(BF("Could not dereference AtomHolder - unknown type"));
+	    SIMPLE_ERROR(("Could not dereference AtomHolder - unknown type"));
 	}
 	if ( result == NULL )
 	{
-	    SIMPLE_ERROR(BF("About to dereference AtomHandle but it will return NULL"));
+	    SIMPLE_ERROR(("About to dereference AtomHandle but it will return NULL"));
 	}
 	return result;
     }
@@ -110,7 +110,7 @@ namespace kinematics
     {_OF();
 	if ( this->notDefined() )
 	{
-	    SIMPLE_ERROR(BF("This handle is Undefined and you tried to get its pointed to object"));
+	    SIMPLE_ERROR(("This handle is Undefined and you tried to get its pointed to object"));
 	}
 	HARD_ASSERTF((int)this->_HolderIndex<this->_Tree->numberOfAtoms(),
 		     BF("Illegal handle index[%d] must be less than %d")
@@ -135,11 +135,11 @@ namespace kinematics
 	    result = &(this->_Tree->_DelayedBondedPoints[atomHolder._NodeIndex]);
 	    break;
 	default:
-	    SIMPLE_ERROR(BF("Could not dereference AtomHolder - unknown type"));
+	    SIMPLE_ERROR(("Could not dereference AtomHolder - unknown type"));
 	}
 	if ( result == NULL )
 	{
-	    SIMPLE_ERROR(BF("About to dereference AtomHandle but it will return NULL"));
+	    SIMPLE_ERROR(("About to dereference AtomHandle but it will return NULL"));
 	}
 	return result;
     }
@@ -235,17 +235,17 @@ namespace kinematics
 	printf("\n%s:%d - About to increment refCount->[%d] for handle[%d] nodeType[%s]",
 	       __FILE__, __LINE__, this->holder()->refCount(), this->_HolderIndex,
 	       this->holder()->typeAsString().c_str());
-	LOG(BF("REFCOUNT-- About to increment refCount->[%d] for handle[%d] nodeType[%s]")
-	    % this->holder()->refCount() % this->_HolderIndex % this->holder()->typeAsString() );
+	LOG("REFCOUNT-- About to increment refCount->[%d] for handle[%d] nodeType[%s]"
+	    , this->holder()->refCount() , this->_HolderIndex , this->holder()->typeAsString() );
 #endif
-	LOG(BF("Incrementing RefCount for handle[%d]") % this->_HolderIndex );
+	LOG("Incrementing RefCount for handle[%d]" , this->_HolderIndex );
 	ASSERTF(!this->notDefined(),BF("Tried to increment RefCount of undefined handle"));
 	ASSERTF((int)this->_HolderIndex<this->_Tree->numberOfAtoms(),BF("Illegal Handle for incrementRefCount"));
 	ASSERTF(this->holder()->_Type!=unused,
 		BF("incrementRefCount>>You tried to access an unused node[%d]") % this->_HolderIndex );
 	this->_Tree->_AtomHolders[this->_HolderIndex].refAdd();
-	LOG(BF("REFCOUNT++ incremented refCount->[%d] for handle[%d]")
-	    % this->holder()->refCount() % this->_HolderIndex );
+	LOG("REFCOUNT++ incremented refCount->[%d] for handle[%d]"
+	    , this->holder()->refCount() , this->_HolderIndex );
 #if DEBUG_REFCOUNT
 	printf("\n%s:%d - incremented refCount[%d] for handle[%d]",
 	       __FILE__, __LINE__, this->holder()->refCount(), this->_HolderIndex);
@@ -258,16 +258,16 @@ namespace kinematics
 	printf("\n%s:%d - About to decrement refCount->[%d] for handle[%d] nodeType[%s]",
 	       __FILE__, __LINE__, this->holder()->refCount(), this->_HolderIndex,
 	       this->holder()->typeAsString().c_str());
-	LOG(BF("REFCOUNT-- About to decrement refCount->[%d] for handle[%d] nodeType[%s]")
-	    % this->holder()->refCount() % this->_HolderIndex % this->holder()->typeAsString() );
+	LOG("REFCOUNT-- About to decrement refCount->[%d] for handle[%d] nodeType[%s]"
+	    , this->holder()->refCount() , this->_HolderIndex , this->holder()->typeAsString() );
 #endif
 	ASSERTF(!this->notDefined(),BF("Tried to increment RefCount of undefined handle"));
 	ASSERTF((int)this->_HolderIndex<this->_Tree->numberOfAtoms(),BF("Illegal Handle for incrementRefCount"));
 	ASSERTF(this->holder()->_Type!=unused,
 		BF("decrementRefCountAndReleaseIfZero>>You tried to access an unused node[%d]") % this->_HolderIndex );
 	bool isZero = this->_Tree->_AtomHolders[this->_HolderIndex].refDec();
-	LOG(BF("REFCOUNT-- decremented refCount->[%d] for handle[%d]")
-	    % this->holder()->refCount() % this->_HolderIndex );
+	LOG("REFCOUNT-- decremented refCount->[%d] for handle[%d]"
+	    , this->holder()->refCount() , this->_HolderIndex );
 #if DEBUG_REFCOUNT
 	printf("\n%s:%d - decremented refCount->[%d] for handle[%d]",
 	       __FILE__, __LINE__, this->holder()->refCount(), this->_HolderIndex );

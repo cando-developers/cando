@@ -145,7 +145,7 @@ uint					i;
     firstEntry->getData()->setDouble("energyWrtFirst",0.0);
     firstEntry->getData()->setDouble("rmsWrtFirst",0.0);
     energy = firstEntry->getData()->getDouble("energy");
-    LOG(BF("Entry 0  energy = %lf") % energy  );
+    LOG("Entry 0  energy = %lf" , energy  );
     	//
 	//
     	// Now check if the energy is within the limits
@@ -156,11 +156,11 @@ uint					i;
     uint highIndex = this->_Entries.size()-1;
     uint lastUsefulEntry = highIndex;
     double lowestEnergy = (*(this->_Entries.begin()))->getData()->getDouble("energy");
-    LOG(BF("Looking for entry with energy closest to energy(%lf)") % energy );
+    LOG("Looking for entry with energy closest to energy(%lf)" , energy );
     for ( i=1,ei=this->begin_Entries()+1; ei!=this->end_Entries(); i++,ei++ )
     {
         energy = (*ei)->getData()->getDouble("energy");
-	LOG(BF("Looking at existing entry(%3d) with energy(%lf)") % i % energy  );
+	LOG("Looking at existing entry(%3d) with energy(%lf)" , i , energy  );
 	double deltaEnergy = energy-lowestEnergy;
 		// If delta > this->_EnergyCutOff then throw this and following
 		// entries out
@@ -179,7 +179,7 @@ uint					i;
 	(*ei)->extractCoordinatesFromMatter(this->_Matter);
 	if ( this->_DisplayProgress)
 	{
-	    _lisp->print(BF("CONFSEARCH: Entry %d  energy(%lf) rms(%lf)") % i% energy % rms );
+          core::writeln_bf_stream(fmt::sprintf("CONFSEARCH: Entry %d  energy(%lf) rms(%lf)" , i , energy , rms ));
 	}
     }
 
@@ -187,9 +187,9 @@ uint					i;
     {
 	if ( this->_DisplayProgress )
 	{
-	    _lisp->print(BF( "CONFSEARCH: Trimming search entry table to %d elements") % (lastUsefulEntry+1) );
+          core::writeln_bf_stream(fmt::sprintf( "CONFSEARCH: Trimming search entry table to %d elements" , (lastUsefulEntry+1) ));
 	}
-	LOG(BF("CONFSEARCH: Trimming search entry table to %d elements") % (lastUsefulEntry+1 ) );
+	LOG("CONFSEARCH: Trimming search entry table to %d elements" , (lastUsefulEntry+1 ) );
 	this->_Entries.resize(lastUsefulEntry+1);
     }
 }

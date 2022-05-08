@@ -43,7 +43,7 @@ namespace geom {
     if ( this->_Map.count(ikey) == 0 ) {
         stringstream ss;
 	ss << "Could not find key(" << ikey << ")";
-        SIMPLE_ERROR(BF(ss.str()));
+        SIMPLE_ERROR((ss.str()));
     }
     return this->_Map[ikey];
 }
@@ -84,7 +84,7 @@ core::T_sp IntegerKeyObjectDictionary_O::getAndRemove(int ikey)
     {
         stringstream ss;
 	ss << "Could not find key(" << ikey << ")";
-        SIMPLE_ERROR(BF(ss.str()));
+        SIMPLE_ERROR((ss.str()));
     }
     obj = this->_Map[ikey];
     this->_Map.erase(ikey);
@@ -111,17 +111,17 @@ map<int,core::T_sp>::iterator	vi;
     dl = DisplayList_O::create();
     for ( vi=this->_Map.begin(); vi!=this->_Map.end(); vi++ )
     {
-	LOG(BF("Looking to render %s") % vi->second->description().c_str()  );
+	LOG("Looking to render %s" , vi->second->description().c_str()  );
 	if ( vi->second->canRender() )
 	{
-	    LOG(BF("YES,Rendering object") );
+	    LOG("YES,Rendering object" );
 	    dlOne = vi->second->rendered(opts);
 	    Symbol_sp isymbol = _lisp->internKeyword((BF("i%d")%vi->first).str());
 	    dlOne->setName(isymbol);
 	    dl->append(dlOne);
 	} else
 	{
-	    LOG(BF("NO can't render") );
+	    LOG("NO can't render" );
 	}
     }
     return dl;
@@ -188,7 +188,7 @@ stringstream		ss;
 void	IntegerKeyObjectDictionary_O::archiveBase(ArchiveP node)
 {
     if ( node->saving() )
-    { _BLOCK_TRACEF(BF("Saving IntegerKeyObjectDictionary - it contains %d objects") % this->_Map.size() );
+    { 
 	if ( this->_Map.size() != 0 )
 	{
 	    int i = 0;
@@ -196,7 +196,7 @@ void	IntegerKeyObjectDictionary_O::archiveBase(ArchiveP node)
 	    IntegerKeyObjectDictionary_O::iterator oi;
 	    for ( oi=this->_Map.begin(); oi!=this->_Map.end(); i++,oi++ )
 	    {
-	    	LOG(BF( "Archiving entry key(%d)")% oi->first );
+	    	LOG( "Archiving entry key(%d)"% oi->first );
 		suid.str("");
 		suid << i;
 		boost::format fmt = boost::format("%d");
@@ -207,7 +207,7 @@ void	IntegerKeyObjectDictionary_O::archiveBase(ArchiveP node)
 	    }
 	}
     } else
-    { _BLOCK_TRACEF(BF("Loading IntegerKeyObjectDictionary with uid(%d)") % node->getUniqueIdNumeric() );
+    { 
 	VectorNodes::iterator	ci;
 	core::T_sp object;
 	this->_Map.clear();
@@ -216,7 +216,7 @@ void	IntegerKeyObjectDictionary_O::archiveBase(ArchiveP node)
 	    (*ci)->setRecognized(true);
 	    object = node->getArchive()->loadObjectDirectly((*ci));
 	    ASSERTNOTNULL(object);
-	    LOG(BF( "Adding to the IntegerKeyObjectDictionary key(%d)")% (*ci)->getUniqueIdNumeric() );
+	    LOG( "Adding to the IntegerKeyObjectDictionary key(%d)"% (*ci)->getUniqueIdNumeric() );
 	    uint ikey = (*ci)->getUniqueIdNumeric();
 	    this->_Map[ikey] = object;
 	}

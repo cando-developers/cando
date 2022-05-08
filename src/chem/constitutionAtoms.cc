@@ -137,17 +137,17 @@ CL_DEFUN ConstitutionAtoms_sp ConstitutionAtoms_O::makeConstitutionAtomsFromResi
   Matter_O::contentIterator it;
   ConstitutionAtomIndex0N index = 0;
   MapAtomsToConstitutionAtomIndex0N atomToIndexMap;
-  {_BLOCK_TRACEF(BF("First assign each atom a unique ConstitutionAtomIndex0N"));
+  {
     for ( it=residue->begin_atoms(); it!=residue->end_atoms(); it++, index++ )
     {
       Atom_sp atom = (*it).as<Atom_O>();
       ConstitutionAtom_sp catom = atom->asConstitutionAtom(index);
       catoms->_Atoms.push_back(catom);
       atomToIndexMap[atom] = index;
-      if (verbose) core::write_bf_stream(BF("Atom %s index: %d\n") % _rep_(atom) % index);
+      if (verbose) core::write_bf_stream(fmt::sprintf("Atom %s index: %d\n" , _rep_(atom) , index));
     }
   }
-  {_BLOCK_TRACE("Then define the bonds for each atom using the indices");
+  {
     index = 0; // start indexing from 0 again
     for ( it=residue->begin_atoms(); it!=residue->end_atoms(); it++, index++ )
     {
@@ -207,7 +207,7 @@ CL_LAMBDA(atom-name &optional (errorp t))CL_DEFMETHOD     core::T_mv Constitutio
   if (!errorp) {
     return Values(nil<core::T_O>(),nil<core::T_O>());
   }
-  SIMPLE_ERROR(BF("Could not find ConstitutionAtom with name[%s]") % nm );
+  SIMPLE_ERROR(("Could not find ConstitutionAtom with name[%s]") , nm );
 }
 
 
@@ -225,7 +225,7 @@ CL_DEFMETHOD     int ConstitutionAtoms_O::index(MatterName name) const
     const ConstitutionAtom_sp& atom = this->_Atoms[idx];
     if ( atom->_AtomName == name ) return idx;
   }
-  SIMPLE_ERROR(BF("Unknown atom[%s]") % name );
+  SIMPLE_ERROR(("Unknown atom[%s]") , name );
 }
 
 CL_DEFMETHOD core::List_sp ConstitutionAtoms_O::constitutionAtomsAsList() const {

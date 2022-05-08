@@ -57,7 +57,6 @@ void FFVdwDb_O::fields(core::Record_sp node)
 
 void FFVdwDb_O::forceFieldMerge(FFBaseDb_sp bother)
 {
-//  SIMPLE_WARN(BF("Implement merge of FFVdwDb"));
 }
 
 };

@@ -52,11 +52,11 @@ CL_DEFUN bool chem__verifyThatFieldOfAllEntriesAreEqual(Table_sp table, core::Sy
 	    core::T_sp otherObject = (*it)->read(field);
 	    if ( !firstObject->equal(otherObject) ) 
 	    {
-              LOG(BF("The firstEntry field(%s)/value(%s) is not equal to that of entry(%d)/value(%s)") % field->fullName() % _rep_(firstObject) % idx % _rep_(otherObject) );
+              LOG("The firstEntry field(%s)/value(%s) is not equal to that of entry(%d)/value(%s)" , field->fullName() , _rep_(firstObject) , idx , _rep_(otherObject) );
 		return false;
 	    }
 	}
-	LOG(BF("They all match"));
+	LOG("They all match");
 	return true;
     }
 
@@ -71,11 +71,11 @@ CL_DEFUN bool chem__superposeAllHeavyAtoms(Table_sp table, core::Symbol_sp matte
 	}
 	if ( !(table->fieldClass(writeRmsd) == core::DoubleFloat_O::___staticClass ))
 	{
-	    SIMPLE_ERROR(BF("The tables field for writing the RMSD is not Real!"));
+	    SIMPLE_ERROR(("The tables field for writing the RMSD is not Real!"));
 	}
 	if ( !verifyThatFieldOfAllEntriesAreEqual(table,matterField) )
 	{
-	    SIMPLE_ERROR(BF("If you want to superpose fields of a table they must all be equal and these are not"));
+	    SIMPLE_ERROR(("If you want to superpose fields of a table they must all be equal and these are not"));
 	}
 	TableEntry_sp first = *(table->beginEntry());
     	//

@@ -87,7 +87,7 @@ void MonomerNode_O::recursivelyBuildChildren(ChainNode_sp chainNode,
                                              gctools::Nilable<chem::DirectionalCoupling_sp> coupling,
                                              chem::Monomer_sp monomer)
 {
-  LOG(BF("recursivelyBuildChildren on monomer[%s]") % _rep_(monomer->getName()) );
+  LOG("recursivelyBuildChildren on monomer[%s]" , _rep_(monomer->getName()) );
   this->_Parent = parent;
   if ( coupling.notnilp() )
   {
@@ -132,7 +132,7 @@ chem::Constitution_mv MonomerNode_O::identifyConstitutionAndTopology()
 #if 0  
   core::T_sp tconstitution = core::eval::funcall(chem::_sym_constitutionForNameOrPdb,_Nil<core::T_O>(),this->stereoisomerName());
   if (tconstitution.nilp()) {
-    SIMPLE_ERROR(BF("Could not find constitution for monomer %s") % _rep_(this->_StereoisomerName));
+    SIMPLE_ERROR(("Could not find constitution for monomer %s") , _rep_(this->_StereoisomerName));
   }
   chem::Constitution_sp constitution  = gc::As<chem::Constitution_sp>(tconstitution);
   adapt::SymbolSet_sp myPlugNameSet = adapt::SymbolSet_O::create();
@@ -147,7 +147,7 @@ chem::Constitution_mv MonomerNode_O::identifyConstitutionAndTopology()
   }
   chem::Topology_sp topology; // default is 0x0
   chem::Constitution_O::TopologyMap::iterator it;
-  {_BLOCK_TRACEF(BF("Looking for Topology with plugs: %s") % myPlugNameSet->asString() );
+  {
     for ( it= constitution->begin_Topologies();
           it!=constitution->end_Topologies(); it++ ) {
       if ( (it->second)->hasMatchingPlugsWithMates(myPlugNameSet))
@@ -158,8 +158,8 @@ chem::Constitution_mv MonomerNode_O::identifyConstitutionAndTopology()
     }
   }
   if (!topology) {
-    SIMPLE_ERROR(BF("No topology could be found for monomer %s with plugs %s")
-                 % _rep_(this->_StereoisomerName) % myPlugNameSet->asString() );
+    SIMPLE_ERROR(("No topology could be found for monomer %s with plugs %s")
+                 , _rep_(this->_StereoisomerName) , myPlugNameSet->asString() );
   }
   return Values(constitution, topology);
 #endif
@@ -168,7 +168,7 @@ chem::Constitution_mv MonomerNode_O::identifyConstitutionAndTopology()
 
 void MonomerNode_O::describeRecursivelyIntoStringStream(const string& prefix, stringstream& output) const
 {_OF();
-  LOG(BF("Describing %s[%s]") % this->className() % _rep_(this->_StereoisomerName) );
+  LOG("Describing %s[%s]" , this->className() , _rep_(this->_StereoisomerName) );
   output << prefix;
   if ( this->_ParentPlugName.notnilp() )
   {
@@ -202,7 +202,7 @@ string MonomerNode_O::__repr__() const {
 
 void MonomerNode_O::addJoint(size_t index, Joint_sp joint)
 {
-//  core::write_bf_stream(BF("%s:%d:%s  joint.id = %s  index -> %lu  joint = %s\n") % __FILE__ % __LINE__ % __FUNCTION__ % joint->atomId().asString() % index % core::_rep_(joint));
+//  core::write_bf_stream(BF("%s:%d:%s  joint.id = %s  index -> %lu  joint = %s\n") , __FILE__ , __LINE__ , __FUNCTION__ , joint->atomId().asString() , index , core::_rep_(joint));
   if (this->_Joints.size() <= index ) {
     this->_Joints.resize(index+1);
   }
@@ -251,7 +251,7 @@ CL_DEFMETHOD Joint_sp MonomerNode_O::jointAt(size_t i) const {
   if (i< this->_Joints.size()) {
     return this->_Joints[i];
   }
-  SIMPLE_ERROR(BF("Joint index %d must be less than %d") % i % this->_Joints.size());
+  SIMPLE_ERROR(("Joint index %d must be less than %d") , i , this->_Joints.size());
 }
 
     

@@ -41,7 +41,7 @@ namespace geom {
 {
     double x = translate::from_object<double>::convert(bargs->lookup(CorePkg,"tx")->object());
     double y = translate::from_object<double>::convert(bargs->lookup(CorePkg,"ty")->object());
-    LOG(BF("Got values for vector x,y,z = %lf, %lf") % x % y );
+    LOG("Got values for vector x,y,z = %lf, %lf" , x , y );
     this->_Value[0] = x;
     this->_Value[1] = y;
     return _Nil<core::T_O>();
@@ -107,12 +107,12 @@ CL_LISPIFY_NAME("add");
 CL_DEFMETHOD     core::T_sp OVector2_O::add(core::List_sp points)
     {
 	Vector2 result = Vector2(this->getX(),this->getY());
-	LOG(BF("First add = %s") % result.asString() );
+	LOG("First add = %s" , result.asString() );
 	for ( auto cur : points ) {
 	    OVector2_sp o = cur->car<OVector2_O>();
 	    result = result.add(o->get());
-	    LOG(BF("Adding %s") % _rep_(o) );
-	    LOG(BF("Intermediate result %s") % result.asString() );
+	    LOG("Adding %s" , _rep_(o) );
+	    LOG("Intermediate result %s" , result.asString() );
 	}
 	return OVector2_O::createFromVector2(result);
     }

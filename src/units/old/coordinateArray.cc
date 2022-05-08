@@ -65,7 +65,7 @@ namespace units
 //      this->Base::__init__(exec,args,env,lisp);
 //      arg = from_object<XXXX>::convert(env->lookup(this->Package(),"YYY"));
 	core::Cons_sp args = allargs->cdr();
-	LOG(BF("Initializing SimpleVectorCoordinate_O with args[%s]") % _rep_(args) );
+	LOG("Initializing SimpleVectorCoordinate_O with args[%s]" , _rep_(args) );
 	double amount = 1.0;
 	core::SimpleVectorCoordinate_sp camount = args->ocar().as<core::SimpleVectorCoordinate_O>();
 	if ( camount.nilp() )

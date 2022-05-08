@@ -88,7 +88,7 @@ struct	from_object<chem::EnergySketchNonbond>
 	DeclareType _v;
   from_object(core::T_sp o)
 	{
-          SIMPLE_ERROR(BF("Implement me"));
+          SIMPLE_ERROR(("Implement me"));
         }
 };
 };

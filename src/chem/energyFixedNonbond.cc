@@ -140,7 +140,7 @@ void	EnergyFixedNonbondRestraint_O::addFixedAtom(core::T_sp nonbondDb, Atom_sp f
     try
     {
       if (fa->getType().nilp()) {
-        SIMPLE_ERROR(BF("The atom type of %s is NIL!") % _rep_(fa));
+        SIMPLE_ERROR(("The atom type of %s is NIL!") , _rep_(fa));
       }
       core::T_sp pos = core::eval::funcall(_sym_find_atom_type_position,nonbondDb,fa->getType());
       if (pos.fixnump()) {
@@ -153,7 +153,7 @@ void	EnergyFixedNonbondRestraint_O::addFixedAtom(core::T_sp nonbondDb, Atom_sp f
 	stringstream serr;
 	serr << "Unknown type("<<fa->getType()<<") for fixed atom: " << fa->description() << std::endl;
 	serr << "Were types assigned for the fixed molecule?" << std::endl;
-	SIMPLE_ERROR(BF(serr.str()));
+	SIMPLE_ERROR((serr.str()));
     }
     entry._FixedPosition = fa->getPosition();
     this->_Terms.push_back(entry);
@@ -170,7 +170,7 @@ string					str1, str2, str3, str4;
 	    eni!=this->_Terms.end(); eni++ ) 
     {
 	as1 = atomLabel(eni->_FixedAtom);
-	_lisp->print(BF( "TERM 6FIXED_NONBOND %-9s") % as1.c_str() );
+        core::writeln_bf_stream(fmt::sprintf( "TERM 6FIXED_NONBOND %-9s" , as1.c_str() ));
     }
 }
 
@@ -220,9 +220,9 @@ Vector3				v1,v2;
 	distSquared = dx*dx+dy*dy+dz*dz;
 	if ( distSquared<cutoff )
 	{
-	    LOG(BF("Found a close contact with distance = %lf and cutoff %lf") % sqrt(distSquared) % sqrt(cutoff)  );
-	    LOG(BF("Atom1 = %s") % eni->_Atom1->description().c_str()  );
-	    LOG(BF("Atom2 = %s") % eni->_Atom2->description().c_str()  );
+	    LOG("Found a close contact with distance = %lf and cutoff %lf" , sqrt(distSquared) , sqrt(cutoff)  );
+	    LOG("Atom1 = %s" , eni->_Atom1->description().c_str()  );
+	    LOG("Atom2 = %s" , eni->_Atom2->description().c_str()  );
 	    if ( render )
 	    {
 	        v1.set(x1,y1,z1);
@@ -303,7 +303,7 @@ double EnergyFixedNonbondRestraint_O::evaluateAllComponent( ScoringFunction_sp s
 	// If you are going to use openmp here, you need to control access to the force and hessian
 	// arrays so that only one thread updates each element at a time.
     {
-      LOG(BF("FixedNonbond component is enabled") );
+      LOG("FixedNonbond component is enabled" );
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_FixedNonbond_termDeclares.cc>
@@ -430,7 +430,7 @@ bool	calcOffDiagonalHessian = true;
 #define	FNONBOND_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
 
  {
-		_BLOCK_TRACE("FixedNonbondRestraint finiteDifference comparison");
+		
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_FixedNonbond_termDeclares.cc>
@@ -483,7 +483,7 @@ int	fails = 0;
 #undef	FNONBOND_OFF_DIAGONAL_HESSIAN_ACCUMULATE
 #define	FNONBOND_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
 
-    { _BLOCK_TRACE("FixedNonbondRestraint finiteDifference comparison");
+    { 
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_FixedNonbond_termDeclares.cc>

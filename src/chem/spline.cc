@@ -41,6 +41,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <iomanip>
 
 #include <clasp/core/common.h>
+#include <clasp/core/lispStream.h>
 #include <cando/geom/matrix.h>
 #include <cando/chem/spline.h>
 
@@ -151,21 +152,21 @@ void	Dumb_Spline::describe()
 {
     Matrix	m, gm;
     uint	i;
-    _lisp->print(BF( "spline type = %d") % this->iType );
-    _lisp->print(BF( "gmMatrices ======>" ));
+    core::writeln_bf_stream(fmt::sprintf( "spline type = %d" , this->iType ));
+    core::writeln_bf_stream(fmt::sprintf( "gmMatrices ======>" ));
     for ( i=0; i<this->gmMatrices.size(); i++ ) {
 	this->gmMatrices[i].dump();
-	_lisp->print(BF( "--------------" ));
+        core::writeln_bf_stream(fmt::sprintf( "--------------" ));
     }
-    _lisp->print(BF( "mbAMatrix ======>" ));
+    core::writeln_bf_stream(fmt::sprintf( "mbAMatrix ======>" ));
     this->mbAMatrix.dump();
-    _lisp->print(BF( "mbBMatrix ======>" ));
+    core::writeln_bf_stream(fmt::sprintf( "mbBMatrix ======>" ));
     this->mbBMatrix.dump();
-    _lisp->print(BF( "mbsMatrix ======>" ));
+    core::writeln_bf_stream(fmt::sprintf( "mbsMatrix ======>" ));
     this->mbsMatrix.dump();
-    _lisp->print(BF( "mbYMatrix ======>" ));
+    core::writeln_bf_stream(fmt::sprintf( "mbYMatrix ======>" ));
     this->mbYMatrix.dump();
-    _lisp->print(BF( "mbZMatrix ======>" ));
+    core::writeln_bf_stream(fmt::sprintf( "mbZMatrix ======>" ));
     this->mbZMatrix.dump();
 }
 

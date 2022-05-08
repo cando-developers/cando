@@ -82,7 +82,7 @@ CL_DEFMETHOD void SuperposableConformationCollection_O::addSuperposeAtom(Atom_sp
       return;
     }
   }
-  SIMPLE_ERROR(BF("You cannot add superpose atom: "+a->description()+" because it isn't in the ConformationCollection"));
+  SIMPLE_ERROR(("You cannot add superpose atom: "+a->description()+" because it isn't in the ConformationCollection"));
 }
 
 
@@ -141,7 +141,7 @@ CL_DEFMETHOD core::T_sp	SuperposableConformationCollection_O::createEntryIfConfo
   Matrix					transform;
   ConformationCollectionEntry_sp		entry;
   ASSERT(matter==this->_Matter);
-  LOG(BF("Number of superpose atoms = %d") % this->_SuperposeAtomIndices->size()  );
+  LOG("Number of superpose atoms = %d" , this->_SuperposeAtomIndices->size()  );
   ASSERT(this->_SuperposeAtomIndices->length() >= 4 );
 
 
@@ -151,11 +151,11 @@ CL_DEFMETHOD core::T_sp	SuperposableConformationCollection_O::createEntryIfConfo
 	//
   newConf = this->_SimpleVectorCoordinate(matter);
 
-  {_BLOCK_TRACE("Comparing structure to known structures using superposer");
+  {
 
-    LOG(BF("Fixed points at the start of superposer: %s") % (newConf->asXmlString().c_str() ) );
+    LOG("Fixed points at the start of superposer: %s" , (newConf->asXmlString().c_str() ) );
 
-    {_BLOCK_TRACE("Creating and evaluating superposer");
+    {
 
 		//
 		// Now compare this conformation to every one in the database
@@ -173,25 +173,25 @@ CL_DEFMETHOD core::T_sp	SuperposableConformationCollection_O::createEntryIfConfo
       for ( ci=this->_Entries.begin(); ci!=this->_Entries.end(); ci++ )
       {
         entryCoordinates = (*ci)->getAllCoordinates();
-        LOG(BF("Entry coordinates before superpose:%s") % (entryCoordinates->asXmlString()) );
+        LOG("Entry coordinates before superpose:%s" , (entryCoordinates->asXmlString()) );
         superposer->setFixedPoints(this->_SuperposeAtomIndices, entryCoordinates);
-        LOG(BF("About to superpose") );
+        LOG("About to superpose" );
         transform = superposer->superpose();
         rms = superposer->rootMeanSquareDifference();
 #ifdef DEBUG_ON
         int					i=0;
-        LOG(BF("The rms difference(%lf) with structure(%d) " "compared to _RmsCutOff(%lf)") % rms % i % this->_RmsCutOff  );
+        LOG("The rms difference(%lf) with structure(%d) " "compared to _RmsCutOff(%lf)" , rms , i , this->_RmsCutOff  );
 #endif
         if ( rms < this->_RmsCutOff )
         {
-          LOG(BF("Found an identical minimum with rms(%lf)") % rms );
-          LOG(BF("Entry will not be added") );
-          LOG(BF("Fixed points at the end of superposer: %s") % (newConf->asXmlString().c_str() ) );
+          LOG("Found an identical minimum with rms(%lf)" , rms );
+          LOG("Entry will not be added" );
+          LOG("Fixed points at the end of superposer: %s" , (newConf->asXmlString().c_str() ) );
           return nil<core::T_O>();
         }
-        LOG(BF("EntryCoordinates points after superpose:%s") % (entryCoordinates->asXmlString().c_str() ) );
+        LOG("EntryCoordinates points after superpose:%s" , (entryCoordinates->asXmlString().c_str() ) );
       }
-      LOG(BF("Fixed points at the end of superposer: %s") % (newConf->asXmlString().c_str() ) );
+      LOG("Fixed points at the end of superposer: %s" , (newConf->asXmlString().c_str() ) );
     }
   }
 

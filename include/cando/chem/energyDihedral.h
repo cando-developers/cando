@@ -153,7 +153,7 @@ struct	from_object<chem::EnergyDihedral>
 	DeclareType _v;
 	from_object(core::T_sp o)
 	{
-          SIMPLE_ERROR(BF("Implement me"));
+          SIMPLE_ERROR(("Implement me"));
         }
 };
 };
@@ -202,7 +202,7 @@ public:
 
     CL_DEFMETHOD core::T_mv safe_amber_energy_dihedral_term(size_t index) {
       if (index >= this->numberOfTerms() ) {
-        SIMPLE_ERROR(BF("Illegal term index %zu must be less than %zu") % index % this->_Terms.size() );
+        SIMPLE_ERROR(("Illegal term index %zu must be less than %zu") , index , this->_Terms.size() );
       }
       return Values(core::DoubleFloat_O::create(this->_Terms[index].term.cosPhase), // Note switched order
                     core::DoubleFloat_O::create(this->_Terms[index].term.sinPhase),

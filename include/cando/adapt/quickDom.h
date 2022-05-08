@@ -192,7 +192,7 @@ CL_DEFMETHOD     int		numberOfChildren() { return this->_children.size();};
     core::T_sp key = core::lisp_createStr(at);
     auto result = this->_attributes.findEqual(key);
     if (result != this->_attributes.end() ) return gc::As<core::String_sp>(result->second)->get_std_string();
-    SIMPLE_ERROR(BF("Missing attribute: %s file(%s) line(%d)") % at % this->getFileName() % this->getLineNumber());
+    SIMPLE_ERROR(("Missing attribute: %s file(%s) line(%d)") , at , this->getFileName() , this->getLineNumber());
   };
 
   string	getAttributeString(const string& at) {
@@ -307,7 +307,7 @@ CL_DEFMETHOD     int		numberOfChildren() { return this->_children.size();};
 	if ( val== "No") return false;
 	if ( val== "NO") return false;
 	if ( val== "0" ) return false;
-	SIMPLE_ERROR(BF("Illegal boolean value: %s file(%s) line(%d) ") % val % this->getFileName() % this->getLineNumber());
+	SIMPLE_ERROR(("Illegal boolean value: %s file(%s) line(%d) ") , val , this->getFileName() , this->getLineNumber());
     };
 
     bool	getAttributeBoolDefault(const string& at,bool d) {

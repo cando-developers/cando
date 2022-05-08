@@ -161,7 +161,7 @@ FORWARD(MonomerNode);
 
 
 	/*! Extract the internal coordinates from the atom */
-    virtual void extractInternalCoords(Joint_sp const& atom) {THROW_HARD_ERROR(BF("Subclass must implement"));};
+    virtual void extractInternalCoords(Joint_sp const& atom) {THROW_HARD_ERROR("Subclass must implement");};
 
     CL_LISPIFY_NAME(children);
     CL_DEFMETHOD virtual core::List_sp children() const {return nil<core::T_O>();}

@@ -100,7 +100,7 @@ void Conformation_O::resizeMolecules(int numMolecules)
   this->_JointTree->resizeMolecules(numMolecules);
 #if 0
 #if 1
-  SIMPLE_ERROR(BF("What are resizeMoleculesEvents for?"));
+  SIMPLE_ERROR(("What are resizeMoleculesEvents for?"));
 #else
   this->notify(_sym_resizeMoleculesEvent,
                core::Cons_O::createList(kw::_sym_newValue,
@@ -118,7 +118,7 @@ void Conformation_O::buildMoleculeUsingOligomer(int moleculeId, chem::Oligomer_s
           BF("Illegal moleculeId[%d]") % moleculeId );
   ChainNode_sp chainNode =
     this->_FoldTree->buildChainUsingOligomer(moleculeId,oligomer);
-  LOG(BF("Built FoldTree--->\n%s")%chainNode->_RootMonomerNode->asString());
+  LOG("Built FoldTree--->\n%s"%chainNode->_RootMonomerNode->asString());
   this->_JointTree->buildMoleculeUsingChainNode(moleculeId,chainNode,oligomer);
 }
 

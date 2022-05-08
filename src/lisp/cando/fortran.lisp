@@ -37,16 +37,16 @@
 
 (defun fwrite (val &optional (ff *fortran-file*))
   "Write _val_ using the current format"
-  (core:bformat (fof-stream ff) (fof-format ff) val)
+  (core:bformat1 (fof-stream ff) (fof-format ff) val)
   (incf (fof-number-on-line ff))
   (setf (fof-wrote-nothing ff) nil)
   (when (>= (fof-number-on-line ff) (fof-per-line ff))
-    (core:bformat (fof-stream ff) "%N")
+    (terpri (fof-stream ff))
     (setf (fof-number-on-line ff) 0)))
 
 (defun end-line (&optional (ff *fortran-file*))
   (when (or (fof-wrote-nothing ff) (/= (fof-number-on-line ff) 0))
-    (core:bformat (fof-stream ff) "%N"))
+    (terpri (fof-stream ff)))
   (setf (fof-wrote-nothing ff) t
         (fof-number-on-line ff) 0))
 
@@ -58,7 +58,7 @@
 
 (defun debug (msg &optional (ff *fortran-file*))
   (when (fof-debug ff)
-    (core:bformat (fof-stream ff) "%c%s%N" +fortran-debug-comment-char+ msg)))
+    (core:fmt (fof-stream ff) "{}{}%N" +fortran-debug-comment-char+ msg)))
 
 
 ;;; ------------------------------------------------------------

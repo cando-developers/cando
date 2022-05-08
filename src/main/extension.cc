@@ -88,7 +88,7 @@ CL_DEFUN core::T_sp core__leap_command_line_scripts()
         scripts << core::SimpleBaseString_O::make(core::global_options->_RawArguments[iarg+1]);
         iarg++;
       } else {
-        SIMPLE_ERROR(BF("Illegal -f argument - missing argument"));
+        SIMPLE_ERROR(("Illegal -f argument - missing argument"));
       }
     }
     iarg++;
@@ -107,7 +107,7 @@ CL_DEFUN core::T_sp core__leap_command_line_includes()
         includes << core::SimpleBaseString_O::make(core::global_options->_RawArguments[iarg+1]);
         iarg++;
       } else {
-        SIMPLE_ERROR(BF("Illegal -f argument - missing argument"));
+        SIMPLE_ERROR(("Illegal -f argument - missing argument"));
       }
     }
     iarg++;

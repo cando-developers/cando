@@ -77,9 +77,7 @@ Rotamer_sp Rotamer_O::make(core::List_sp dihedrals, core::List_sp sigmas, core::
 	core::Cons_sp indices = translate::from_object<core::Cons_sp>::convert(env->lookup(lisp->symbol(_sym_indices)));
 	double probability = translate::from_object<double>::convert(env->lookup(lisp->symbol(_sym_probability)));
 	this->_Count = translate::from_object<int>::convert(env->lookup(lisp->symbol(_sym_count)));
-	ASSERTF(dihedrals->length()==sigmas->length(),
-		BF("Mismatch between #dihedrals[%d] and #sigmas[%d]")
-		% dihedrals->length() % sigmas->length() );
+	ASSERTF(dihedrals->length()==sigmas->length(), BF("Mismatch between #dihedrals[%d] and #sigmas[%d]") % dihedrals->length() % sigmas->length() );
 	this->_Probability = probability;
 	for ( ; dihedrals.notnilp(); dihedrals = dihedrals->cdr(),
 		  sigmas = sigmas->cdr(),
@@ -405,10 +403,10 @@ BackboneDependentRotamerLibrary_sp BackboneDependentRotamerLibrary_O::make(const
 	    int mphi;
 	    int mpsi;
 	    this->_index(rotamerSet->_Phi,rotamerSet->_Psi,mphi,mpsi);
-	    SIMPLE_ERROR(BF("Illegal phi[%d] or psi[%d] mphi[%d] mpsi[%d] phiCount[%d] psiCount[%d] for BackboneDependentRotamerLibrary")
-			       % rotamerSet->_Phi % rotamerSet->_Psi
-			       % mphi % mpsi
-			       % this->_PhiCount % this->_PsiCount
+	    SIMPLE_ERROR(("Illegal phi[%d] or psi[%d] mphi[%d] mpsi[%d] phiCount[%d] psiCount[%d] for BackboneDependentRotamerLibrary")
+			       , rotamerSet->_Phi , rotamerSet->_Psi
+			       , mphi , mpsi
+			       , this->_PhiCount , this->_PsiCount
 		      );
 	}
 	int mphi, mpsi;

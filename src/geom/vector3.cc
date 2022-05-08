@@ -58,7 +58,7 @@ Vector3 Vector3::inNanometers() const
 
 void Vector3::dump()
 {
-    _lisp->print(BF("<%lf,%lf,%lf>") % this->coords[0] % this->coords[1] % this->coords[2] );
+  core::writeln_bf_stream(fmt::sprintf("<%lf,%lf,%lf>" , this->coords[0] , this->coords[1] , this->coords[2] ));
 }
 
 void Vector3::writeToStream( std::ostream& out )
@@ -117,7 +117,7 @@ Vector3	v;
 	v.coords[2] = this->coords[2]/l;
 	return v;
     }
-    SIMPLE_ERROR(BF("Attempted to normalize the vector (0,0,0)"));
+    SIMPLE_ERROR(("Attempted to normalize the vector (0,0,0)"));
 }
 
 Vector3 Vector3::normalizedOrZero() const
@@ -172,7 +172,7 @@ double		x,y,z;
     ss >> std::skipws >> comma >> std::skipws;
     ss >> z;
     this->set(x,y,z);
-    LOG(BF("Vector3::parseFromString got (%lf,%lf,%lf)") % x % y % z );
+    LOG("Vector3::parseFromString got (%lf,%lf,%lf)" , x , y , z );
 }
 
 
@@ -189,7 +189,7 @@ double		x,y,z;
     ss >> comma;
     ss >> z;
     this->set(x,y,z);
-    LOG(BF("Vector3::parseFromCharacterArray got (%lf,%lf,%lf)") % x % y % z );
+    LOG("Vector3::parseFromCharacterArray got (%lf,%lf,%lf)" , x , y , z );
 }
 
 
@@ -236,20 +236,20 @@ Vector3	diff;
 double	Vector3::angleToVectorAboutNormal(const Vector3& toVector, const Vector3& aboutNormal)
 {
 	Vector3 men = this->normalizedOrZero();
-	LOG(BF("me.normalized{%lf,%lf,%lf} ") % men.getX() % men.getY() % men.getZ() );
+	LOG("me.normalized{%lf,%lf,%lf} " , men.getX() , men.getY() , men.getZ() );
 	Vector3 ton = toVector.normalizedOrZero();
-	LOG(BF("to.normalized{%lf,%lf,%lf} ") % ton.getX() % ton.getY() % ton.getZ() );
-	LOG(BF("about_normal{%lf,%lf,%lf} ") % aboutNormal.getX() % aboutNormal.getY() % aboutNormal.getZ() );
+	LOG("to.normalized{%lf,%lf,%lf} " , ton.getX() , ton.getY() , ton.getZ() );
+	LOG("about_normal{%lf,%lf,%lf} " , aboutNormal.getX() , aboutNormal.getY() , aboutNormal.getZ() );
 	double cosTheta = men.dotProduct(ton);
 	if ( fabs(cosTheta-1.0)<0.00001 )  return 0.0;
 	if ( fabs(cosTheta+1.0)<0.00001 )  return 3.14159;
-	LOG(BF("cosTheta = %lf") % cosTheta  );
+	LOG("cosTheta = %lf" , cosTheta  );
 	Vector3 cr = men.crossProduct(ton);
-	LOG(BF("status") );
+	LOG("status" );
 	double dir = cr.dotProduct(aboutNormal);
-	LOG(BF("dir = %lf ") % dir );
+	LOG("dir = %lf " , dir );
 	double theta = (dir>=0.0)?acos(cosTheta):(6.2831853-acos(cosTheta));
-	LOG(BF("theta = %lf deg") % theta/0.0174533 );
+	LOG("theta = %lf deg" , theta/0.0174533 );
 	return theta;
     }
 
@@ -311,13 +311,13 @@ CL_DEFUN double calculateDihedral( const Vector3& va,
   Vector3 vcb = (vc - vb);
   Vector3 vdc = (vd - vc);
   Vector3 vacCross = (vab.crossProduct(vcb)).normalized();
-  LOG(BF("vacCross = %lf,%lf,%lf") % (vacCross.getX()) % (vacCross.getY()) % (vacCross.getZ() ) );
+  LOG("vacCross = %lf,%lf,%lf" , (vacCross.getX()) , (vacCross.getY()) , (vacCross.getZ() ) );
   Vector3 vdcCross = (vdc.crossProduct(vcb)).normalized();
-  LOG(BF("vdcCross = %lf,%lf,%lf") % (vdcCross.getX()) % (vdcCross.getY()) % (vdcCross.getZ() ) );
+  LOG("vdcCross = %lf,%lf,%lf" , (vdcCross.getX()) , (vdcCross.getY()) , (vdcCross.getZ() ) );
   Vector3 vCross = vacCross.crossProduct(vdcCross);
-  LOG(BF("vCross = %lf,%lf,%lf") % (vCross.getX()) % (vCross.getY()) % (vCross.getZ() ) );
+  LOG("vCross = %lf,%lf,%lf" , (vCross.getX()) , (vCross.getY()) , (vCross.getZ() ) );
   double dih = acos(vacCross.dotProduct(vdcCross));
-  LOG(BF("dih = %lf") % (dih ) );
+  LOG("dih = %lf" , (dih ) );
   double sgn = (vCross.dotProduct(vcb))<0.0?-1.0:+1.0;
 //    if ( enantiomer ) return -dih*sgn;
   return dih*sgn;
@@ -424,7 +424,7 @@ CL_DEFUN void geom__vec_extract(Vector3& vec, chem::NVector_sp coordinates, size
          (*coordinates)[index0+2]);
   return;
   }
-  SIMPLE_ERROR(BF("Out of bounds extraction of geom:vec from nvector. Trying to extract starting at %lu and the nvector length is %lu") % index0 % coordinates->length());
+  SIMPLE_ERROR(("Out of bounds extraction of geom:vec from nvector. Trying to extract starting at %lu and the nvector length is %lu") , index0 , coordinates->length());
 }
 
 CL_DOCSTRING(R"dx(Put a geom:vec into a nvector at the particular index.)dx")
@@ -438,7 +438,7 @@ CL_DEFUN void geom__vec_put(chem::NVector_sp coordinates, const Vector3& pos, si
     (*coordinates)[index0+2] = pos.getZ();
   return;
   }
-  SIMPLE_ERROR(BF("Out of bounds extraction of geom:vec from nvector. Trying to put starting at %lu and the nvector length is %lu") % index0 % coordinates->length());
+  SIMPLE_ERROR(("Out of bounds extraction of geom:vec from nvector. Trying to put starting at %lu and the nvector length is %lu") , index0 , coordinates->length());
 }
 
 CL_DOCSTRING(R"dx(Extract a geom:vec from a nvector at the particular index.)dx")
@@ -451,7 +451,7 @@ CL_DEFUN void geom__vec_extract_transformed(Vector3& vec, chem::NVector_sp coord
     transform.transform_nvector_point(vec.getX(),vec.getY(),vec.getZ(),coordinates,index0);
     return;
   }
-  SIMPLE_ERROR(BF("Out of bounds extraction of geom:vec from nvector. Trying to extract starting at %lu and the nvector length is %lu") % index0 % coordinates->length());
+  SIMPLE_ERROR(("Out of bounds extraction of geom:vec from nvector. Trying to extract starting at %lu and the nvector length is %lu") , index0 , coordinates->length());
 }
 
 

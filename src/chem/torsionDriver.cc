@@ -83,7 +83,7 @@ bool	gotAtom;
 	}
     }
     if ( !gotAtom ) {
-	SIMPLE_ERROR(BF("Could not find atom with name: ", name ));
+	SIMPLE_ERROR(("Could not find atom with name: ", name ));
     }
     return a;
 }
@@ -163,11 +163,11 @@ Matrix			mat;
     mat = segment->relative*(*(segment->rotation));
     segment->accumulated = parent->accumulated*mat;
 
-    LOG(BF("Updated accumulated transform for segment: %d") % (start ) );
+    LOG("Updated accumulated transform for segment: %d" , (start ) );
 #ifdef	DEBUG_ON //[
-    LOG(BF("    rotation = ") );
+    LOG("    rotation = " );
 	segment->rotation->dump();
-    LOG(BF("    accumulated = ") );
+    LOG("    accumulated = " );
 	segment->accumulated.dump();
 #endif //]
 	//
@@ -212,7 +212,7 @@ int		spanningIndex;
 	}
     }
     if ( !gotRoot ) {
-	SIMPLE_ERROR(BF("Could not find atom name: %s in aggregate") % rootName );
+	SIMPLE_ERROR(("Could not find atom name: %s in aggregate") , rootName );
     }
 
 		//
@@ -254,18 +254,18 @@ Atom_sp	atom, a1, a2;
 Atom_sp	fixed, movable, backSpan;
 
     if ( this->driveMode ) {
-	SIMPLE_ERROR(BF("You can't add torsions once you've started driving torsions" ));
+	SIMPLE_ERROR(("You can't add torsions once you've started driving torsions" ));
     }
     ANN(this->aggregate);
     if ( this->aggregate.nilp() )
     {
-	SIMPLE_ERROR(BF("You must have defined the aggregate and root before adding torsions to drive."));
+	SIMPLE_ERROR(("You must have defined the aggregate and root before adding torsions to drive."));
     }
     if ( this->countOfAtomsWithName(this->aggregate,atom1 ) != 1 ) {
-	SIMPLE_ERROR(BF("There must be a unique atom with the name: %s") % atom1 );
+	SIMPLE_ERROR(("There must be a unique atom with the name: %s") , atom1 );
     }
     if ( this->countOfAtomsWithName(this->aggregate,atom2 ) != 1 ) {
-	SIMPLE_ERROR(BF("There must be a unique atom with the name: ") % atom2 );
+	SIMPLE_ERROR(("There must be a unique atom with the name: ") , atom2 );
     }
     a1 = this->aggregate->firstAtomWithName(atom1);
     a2 = this->aggregate->firstAtomWithName(atom2);
@@ -277,7 +277,7 @@ Atom_sp	fixed, movable, backSpan;
     if ( a2 == a1->getBackSpan() ) {
 	this->insertTorsion( a2, a1, steps );
     }
-    SIMPLE_ERROR(BF("Movable atom has to point back to the fixed atom" ));
+    SIMPLE_ERROR(("Movable atom has to point back to the fixed atom" ));
 }
 
 
@@ -306,19 +306,19 @@ Matrix					toCanonical;
 CoordinateSystem_sp			coord;
 
     if ( this->driveMode ) {
-	SIMPLE_ERROR(BF("You can't prepare to drive torsions when you're already driving them" ));
+	SIMPLE_ERROR(("You can't prepare to drive torsions when you're already driving them" ));
     }
 	//
 	// Break the bonds around which we are rotating the torsions
 	//
 	// Skip the first segment, it's a dummy
-    LOG(BF("Breaking torsion bonds") );
+    LOG("Breaking torsion bonds" );
     for ( pos=this->torsions.begin()+1;
 		pos!=this->torsions.end();
 		pos++ ) {
 	bo = pos->movable->bondOrderTo(pos->fixed);
 	if ( bo==noBond ) {
-	    SIMPLE_ERROR(BF("The two atoms of a torsion must be bonded. Atom: %s is not bonded to %s") % pos->fixed->getName() % pos->movable->getName() );
+	    SIMPLE_ERROR(("The two atoms of a torsion must be bonded. Atom: %s is not bonded to %s") , pos->fixed->getName() , pos->movable->getName() );
 	}
 	pos->order = bo;
 	pos->fixed->removeBondBetween(pos->movable,pos->fixed);
@@ -337,7 +337,7 @@ CoordinateSystem_sp			coord;
 	//
 	// Skip the first segment, it's a dummy
 
-    LOG(BF("Identifying atoms that belong to each segment") );
+    LOG("Identifying atoms that belong to each segment" );
     spanning = SpanningLoop_O::create();
     for ( pos=this->torsions.begin()+1;
 		pos!=this->torsions.end();
@@ -356,7 +356,7 @@ CoordinateSystem_sp			coord;
 	// Construct the matrix update tree.
 	// First define the parent of each segment.
 	//
-    LOG(BF("Constructing the matrix update tree - parents") );
+    LOG("Constructing the matrix update tree - parents" );
     for ( pos=this->torsions.begin(), index = 0;
 		pos!=this->torsions.end();
 		pos++, index++ ) {
@@ -374,7 +374,7 @@ CoordinateSystem_sp			coord;
 	//
 	// Now define the children
 	//
-    LOG(BF("Constructing the matrix update tree - children") );
+    LOG("Constructing the matrix update tree - children" );
     for ( pos=this->torsions.begin()+1, index = 1;
 		pos!=this->torsions.end();
 		pos++, index++ ) {
@@ -389,7 +389,7 @@ CoordinateSystem_sp			coord;
 	// with its Z-axis along the line joining the fixed atom to the
 	// movable one and its X-axis perpendicular to the Z-axis.
 	//
-    LOG(BF("Building a coordinate system for every fixed atom") );
+    LOG("Building a coordinate system for every fixed atom" );
     for ( pos=this->torsions.begin();
 		pos!=this->torsions.end();
 		pos++ ) {
@@ -409,7 +409,7 @@ CoordinateSystem_sp			coord;
 	    zDir = pos->movable->getPosition()-pos->fixed->getPosition();
 	    zDir = zDir.normalized(_lisp);
 	    if ( pos->movable->numberOfBonds() == 0 ) {
-		SIMPLE_ERROR(BF("The torsion around %s and %s won't roate anything. Please remove it") 
+		SIMPLE_ERROR(("The torsion around %s and %s won't roate anything. Please remove it") 
 					% pos->fixed->getName() % pos->movable->getName() );
 	    }
 	    vTemp = pos->movable->bondedNeighbor(0)->getPosition()
@@ -433,31 +433,31 @@ CoordinateSystem_sp			coord;
 	//
 	// Now calculate the relative transformation
 	//
-    LOG(BF("Calculating the relative transformations") );
+    LOG("Calculating the relative transformations" );
     for ( pos=this->torsions.begin()+1;
 		pos!=this->torsions.end();
 		pos++ ) {
-	LOG(BF("  for pos=%d") % (pos-this->torsions.begin() ) );
-	LOG(BF("  Parent =%d") % (pos->parent ) );
+	LOG("  for pos=%d" , (pos-this->torsions.begin() ) );
+	LOG("  Parent =%d" , (pos->parent ) );
 	parent = this->torsions.begin()+pos->parent;
-	LOG(BF("  Calculating transform") );
+	LOG("  Calculating transform" );
 	coord = parent->coord;
 	pos->relative = coord->matrixForTransformTo(pos->coord);
-	LOG(BF("  Calculating transform done") );
+	LOG("  Calculating transform done" );
     }
 
 	//
 	// Generate the rotation matrices that we will need to iterate over
 	//
 
-    LOG(BF("Generating rotation matrices") );
+    LOG("Generating rotation matrices" );
     for ( pos=this->torsions.begin();
 		pos!=this->torsions.end();
 		pos++ ) {
-	LOG(BF("Generating rotation matrices for segment: %d") % (pos-this->torsions.begin() ) );
+	LOG("Generating rotation matrices for segment: %d" , (pos-this->torsions.begin() ) );
 	for ( i=0; i<pos->steps; i++ ) {
 	    angle = i*(0.0174533*360.0/pos->steps);
-	    LOG(BF("Rotating by %lf radians") % (angle ) );
+	    LOG("Rotating by %lf radians" , (angle ) );
 	    rot.rightHandedRotationZ(-angle);
 	    pos->rotations.push_back(rot);
 	}
@@ -469,12 +469,12 @@ CoordinateSystem_sp			coord;
 	// The first accumulated matrix gets us from the origin
 	// to the first coordinate system.
 
-    LOG(BF("Updating the accumulated transformations") );
+    LOG("Updating the accumulated transformations" );
 		// Get the first real segment
     pos = this->torsions.begin()+1;
     this->torsions.begin()->accumulated.setToIdentity(); // = pos->coord->matrixFromCanonical();
 
-    LOG(BF("Updating the accumulated transformations") );
+    LOG("Updating the accumulated transformations" );
     this->updateAccumulatedTransforms(1);
 
 	//
@@ -482,14 +482,14 @@ CoordinateSystem_sp			coord;
 	// the cannonical coordinate system
 	//
 
-    LOG(BF("Calculating the positions of segment atoms in the cannonical coord system") );
+    LOG("Calculating the positions of segment atoms in the cannonical coord system" );
     for ( pos=this->torsions.begin()+1; pos!=this->torsions.end(); pos++ ) {
 	toCanonical = pos->coord->matrixToCanonical();
 	for ( tai=pos->atoms.begin(); tai!=pos->atoms.end(); tai++ ) {
 	    tai->setUntransformed(toCanonical*(tai->getAtom()->getPosition()));
 	}
     }
-    LOG(BF("Ready to drive torsions") );
+    LOG("Ready to drive torsions" );
     this->driveMode = true;
 }
 
@@ -516,7 +516,7 @@ vector<TorsionAtom>::iterator		tai;
 
 
     if ( !this->driveMode ) {
-	SIMPLE_ERROR(BF("TorsionDriver must be in drive mode to render graphics" )));
+	SIMPLE_ERROR(("TorsionDriver must be in drive mode to render graphics" )));
     }
 
     graphics = xmlGraphics("torsions");
@@ -571,12 +571,12 @@ vector<TorsionAtom>::iterator		tai;
 Vector3					trans;
 
     for ( pos=this->torsions.begin()+start; pos!=this->torsions.end(); pos++ ) {
-	LOG(BF("Applying matrix at segment: %d") % (pos-this->torsions.begin() ) );
+	LOG("Applying matrix at segment: %d" , (pos-this->torsions.begin() ) );
 #ifdef	DEBUG_ON
 	pos->accumulated.dump();
 #endif
 	for ( tai=pos->atoms.begin(); tai!=pos->atoms.end(); tai++ ) {
-	    LOG(BF("Transforming atom: %s") % (tai->getAtom()->getName().c_str() ) );
+	    LOG("Transforming atom: %s" , (tai->getAtom()->getName().c_str() ) );
 	    trans = pos->accumulated*(tai->getUntransformed());
 	    tai->getAtom()->setPosition(trans);
 	}
@@ -597,12 +597,12 @@ int	Dumb_TorsionDriver::advanceToNextConformationStartFromSegment(int segment)
 vector<TorsionSegment>::iterator	pos;
 vector<int>::iterator			cpos;
 
-    LOG(BF("----Advancing from segment: %d highest: %d") % (segment) % (this->torsions.end()-this->torsions.begin()-1) );
+    LOG("----Advancing from segment: %d highest: %d" , (segment) , (this->torsions.end()-this->torsions.begin()-1) );
     if (segment > this->highestSegmentIndex() ) {
 	segment = this->highestSegmentIndex();
-	LOG(BF("Trimmed to start at segment: %d") % (segment ) );
+	LOG("Trimmed to start at segment: %d" , (segment ) );
     } else if ( segment < this->highestSegmentIndex()) {
-	LOG(BF("Resetting rotations for segments after %d") % (segment ) );
+	LOG("Resetting rotations for segments after %d" , (segment ) );
 	for ( pos=this->torsions.begin()+segment+1;
 		pos!=this->torsions.end();
 		pos++ ) {
@@ -619,17 +619,17 @@ vector<int>::iterator			cpos;
 
     pos = this->torsions.begin()+segment; // this->torsions.end()-1;
     while ( pos > this->torsions.begin() ) {
-	LOG(BF("Incrementing segment: %d") % (pos-this->torsions.begin() ) );
+	LOG("Incrementing segment: %d" , (pos-this->torsions.begin() ) );
 	// Increment the current torsionSegment rotation
 	pos->rotation++;
-	LOG(BF("Incremented rotation %d of %d") % (pos->rotation-pos->rotations.begin()) % (pos->rotations.end()-pos->rotations.begin() ) );
+	LOG("Incremented rotation %d of %d" , (pos->rotation-pos->rotations.begin()) , (pos->rotations.end()-pos->rotations.begin() ) );
 	if ( pos->rotation != pos->rotations.end() ) break;
-	LOG(BF("Carried") );
+	LOG("Carried" );
 	pos->rotation = pos->rotations.begin();
 	pos--;
     }
     if ( pos > this->torsions.begin() ) {
-	LOG(BF("Updating transforms and coordinates from segment: %d") % (pos-this->torsions.begin() ) );
+	LOG("Updating transforms and coordinates from segment: %d" , (pos-this->torsions.begin() ) );
 	this->updateAccumulatedTransforms(pos-this->torsions.begin());
 	this->calculateNewCoordinates(pos-this->torsions.begin());
 	return pos-this->torsions.begin();
@@ -653,41 +653,41 @@ vector<int>::iterator			ip;
 vector<Matrix>::iterator		mp;
 
     if ( this->driveMode ) {
-	_lisp->print(BF( "Torsion driver in DRIVE mode" ));
+      core::writeln_bf_stream(fmt::sprintf( "Torsion driver in DRIVE mode" ));
     } else {
-	_lisp->print(BF( "Torsion driver in ADD_TORSION mode" ));
+      core::writeln_bf_stream(fmt::sprintf( "Torsion driver in ADD_TORSION mode" ));
     }
     for ( pos=this->torsions.begin(); pos != this->torsions.end(); pos++ ) {
 //	printf( "Driven torsion #%lX\n", (pos-this->torsions.begin() );
 	if ( pos!=this->torsions.begin() ) {
-	    _lisp->print(BF( "  Parent: %d") % pos->parent );
-	    _lisp->print(BF( "      Fixed: %s") % pos->fixed->getName().c_str() );
-	    _lisp->print(BF( "    Movable: %s") % pos->movable->getName().c_str() );
-	    _lisp->print(BF( "      Steps: %d") % pos->steps );
-	    _lisp->print(BF("      Atoms: " );
-	    for ( ap=pos->atoms.begin(); ap!=pos->atoms.end(); ap++ ) {
-		_lisp->print(BF(" %s", ap->getAtom()->getName().c_str() );
-	    }
-	    _lisp->print(BF( "" ));
-		_lisp->print(BF("      Children: " );
-	    for ( ip=pos->children.begin(); ip!=pos->children.end(); ip++ ) {
-		_lisp->print(BF(" %3d", *ip );
-	    }
-	    _lisp->print(BF( "" ));
-	    _lisp->print(BF( "      coordinate system:" ));
-	    pos->coord->dump();
-	    _lisp->print(BF( "      relative matrix: " ));
-	    pos->relative.dump();
-	    for (mp=pos->rotations.begin(); mp!=pos->rotations.end(); mp++ ) {
+          core::writeln_bf_stream(fmt::sprintf( "  Parent: %d" , pos->parent ));
+          core::writeln_bf_stream(fmt::sprintf( "      Fixed: %s" , pos->fixed->getName().c_str() ));
+          core::writeln_bf_stream(fmt::sprintf( "    Movable: %s" , pos->movable->getName().c_str() ));
+          core::writeln_bf_stream(fmt::sprintf( "      Steps: %d" , pos->steps ));
+          core::writeln_bf_stream(fmt::sprintf("      Atoms: " ));
+          for ( ap=pos->atoms.begin(); ap!=pos->atoms.end(); ap++ ) {
+            core::writeln_bf_stream(fmt::sprintf(" %s", ap->getAtom()->getName() ));
+          }
+          core::writeln_bf_stream(fmt::sprintf( "" ));
+          core::writeln_bf_stream(fmt::sprintf("      Children: " ));
+          for ( ip=pos->children.begin(); ip!=pos->children.end(); ip++ ) {
+            core::writeln_bf_stream(fmt::sprintf(" %3d", *ip ));
+          }
+          core::writeln_bf_stream(fmt::sprintf( "" ));
+          core::writeln_bf_stream(fmt::sprintf( "      coordinate system:" ));
+          pos->coord->dump();
+          core::writeln_bf_stream(fmt::sprintf( "      relative matrix: " ));
+          pos->relative.dump();
+          for (mp=pos->rotations.begin(); mp!=pos->rotations.end(); mp++ ) {
 //		_lisp->print(BF( "      rotation matrix %d: ") % mp-pos->rotations.begin() );
-	        mp->dump();
-	    }
+            mp->dump();
+          }
 //	    _lisp->print(BF( "      current rotation: %d") % pos->rotation-pos->rotations.begin() );
-
+          
 	}
-	_lisp->print(BF( "      accumulated matrix: " ));
+        core::writeln_bf_stream(fmt::sprintf( "      accumulated matrix: " ));
 	pos->accumulated.dump();
-	_lisp->print(BF( "" ));
+        core::writeln_bf_stream(fmt::sprintf( "" ));
     }
 }
 

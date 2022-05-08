@@ -87,35 +87,35 @@ CL_DEFUN SpanningLoop_sp SpanningLoop_O::make(Atom_sp root)
     bool	SpanningLoop_O:: bLoopAtomVisible(Atom_sp aAtom )
     {
 	AtomFlags		fFlags;
-	LOG(BF("status") );
+	LOG("status" );
 	fFlags = aAtom->getFlags();
 	if ( (fFlags&this->fVisibleFlagsOn)!=this->fVisibleFlagsOn )
 	    return(false);
 
-	LOG(BF("status") );
+	LOG("status" );
 	if ( (fFlags|(~(this->fVisibleFlagsOff)))!=(~(this->fVisibleFlagsOff)) )
 	    return(false);
 
-	LOG(BF("status") );
+	LOG("status" );
 	/* If the TempInt field is being used to determine */
 	/* visibility, then check if the ATOM_CLASS has the */
 	/* proper TempInt field */
 
-	LOG(BF("status") );
+	LOG("status" );
 	if ( this->fVisibilityFlags & TEMPINTUSED ) {
 	    if ( this->fVisibilityFlags & TEMPINTINVISIBLE ) {
 		if ( aAtom->getTempInt() == this->iTempInt ) {
-		    LOG(BF("status") );
+		    LOG("status" );
 		    return(false);
 		}
 	    } else {
 		if ( aAtom->getTempInt() != this->iTempInt ) {
-		    LOG(BF("status") );
+		    LOG("status" );
 		    return(false);
 		}
 	    }
 	}
-	LOG(BF("status") );
+	LOG("status" );
 
 	/* Check if the ATOM_CLASS is the one invisible ATOM_CLASS for the loop */
 	/* Used to construct spanning trees that do not pass a */
@@ -203,7 +203,7 @@ CL_DEFMETHOD     void SpanningLoop_O::setTop( Atom_sp c )
 	// Now setup the loop stack
 
 
-	LOG(BF("SpanningLoop_O::setTop atom moeIndex =%d") % (c->getMoeIndex() ) );
+	LOG("SpanningLoop_O::setTop atom moeIndex =%d" , (c->getMoeIndex() ) );
 	this->iMaxDistanceFromRoot = -1;
 	this->aCurSpan = c;
 	this->aLastSpan = c;
@@ -261,7 +261,7 @@ CL_DEFMETHOD     bool	SpanningLoop_O::advanceLoopAndProcess()
             core::T_sp tfirst = tinfo;
             return gc::As_unsafe<SpanningInfo_sp>(tfirst);
         }
-        SIMPLE_ERROR(BF("Could not get spanning-info for %s") % _rep_(a));
+        SIMPLE_ERROR(("Could not get spanning-info for %s") , _rep_(a));
     }
 
     SpanningInfo_sp SpanningLoop_O::storeSpanningInfo(Atom_sp key, int distance, core::T_sp toRoot, core::T_sp next) {
@@ -277,7 +277,7 @@ CL_DEFMETHOD     bool	SpanningLoop_O::advanceLoopAndProcess()
             SpanningInfo_sp si = gc::As_unsafe<SpanningInfo_sp>(tfirst);
             return si->_ToRoot.notnilp();
         }
-        SIMPLE_ERROR(BF("Could not get spanning-info for %s") % _rep_(a));
+        SIMPLE_ERROR(("Could not get spanning-info for %s") , _rep_(a));
     }        
 
     CL_DEFMETHOD bool SpanningLoop_O::isNextSpanValid(Atom_sp a) {
@@ -287,7 +287,7 @@ CL_DEFMETHOD     bool	SpanningLoop_O::advanceLoopAndProcess()
             SpanningInfo_sp si = gc::As_unsafe<SpanningInfo_sp>(tfirst);
             return si->_Next.notnilp();
         }
-        SIMPLE_ERROR(BF("Could not get spanning-info for %s") % _rep_(a));
+        SIMPLE_ERROR(("Could not get spanning-info for %s") , _rep_(a));
     }        
 
     CL_DEFMETHOD core::T_sp SpanningLoop_O::getBackSpan(Atom_sp a) {
@@ -317,7 +317,7 @@ CL_DEFMETHOD     bool	SpanningLoop_O::advanceLoopAndProcess()
             SpanningInfo_sp si = gc::As_unsafe<SpanningInfo_sp>(tfirst);
             return si->_Distance;
         }
-        SIMPLE_ERROR(BF("Could not get spanning-info for %s") % _rep_(a));
+        SIMPLE_ERROR(("Could not get spanning-info for %s") , _rep_(a));
     }
 
     
@@ -343,11 +343,11 @@ Atom_sp	SpanningLoop_O::nextSpanningAtom(std::function<bool (Atom_sp fromAtom, B
             this->initialized = true;
 	}
 
-	LOG(BF("--- Entered nextSpanningAtom aCurSpan = %d; nextSpan valid?=%d") 
-	    % this->aCurSpan->getMoeIndex() % this->aCurSpan->isNextSpanValid() );
+	LOG("--- Entered nextSpanningAtom aCurSpan = %d; nextSpan valid?=%d" 
+	    , this->aCurSpan->getMoeIndex() , this->aCurSpan->isNextSpanValid() );
 	ASSERT(this->aCurSpan.notnilp());
 //    if (IsNull(this->aCurSpan)) {
-//	LOG(BF("this->aCurSpan is NULL") );
+//	LOG("this->aCurSpan is NULL" );
 //	oObject = Atom();	// Return a dummy atom
 //	this->done = true;
 //	goto DONE;
@@ -360,8 +360,8 @@ Atom_sp	SpanningLoop_O::nextSpanningAtom(std::function<bool (Atom_sp fromAtom, B
         //        printf("%s:%d Looking up spanning info for %s\n", __FILE__, __LINE__, _rep_(aPrev).c_str());
         SpanningInfo_sp siPrev = this->getSpanningInfo(aPrev);
 	//aPrev->invalidateNextSpan();
-	LOG(BF("--- Invalidated nextSpan for atom: %d") % (aPrev->getMoeIndex() ) );
-	LOG(BF("--- Currently on atom: %d") % (this->aCurSpan->getMoeIndex() ) );
+	LOG("--- Invalidated nextSpan for atom: %d" , (aPrev->getMoeIndex() ) );
+	LOG("--- Currently on atom: %d" , (this->aCurSpan->getMoeIndex() ) );
         //        printf("%s:%d nextSpanningAtom: %s coordination: %d\n", __FILE__, __LINE__, _rep_(this->aCurSpan).c_str(), this->aCurSpan->coordination());
 	for ( i=0; i<this->aCurSpan->coordination(); i++ ) {
           Bond_sp bond = this->aCurSpan->bondAtIndex(i);
@@ -370,23 +370,23 @@ Atom_sp	SpanningLoop_O::nextSpanningAtom(std::function<bool (Atom_sp fromAtom, B
           bool followBond = bondTester(this->aCurSpan,bond);
 	    /* If the atom is visible then add it */
           if ( followBond && this->bSpanAtomVisible( aBond, order, &bSeenBefore ) ) {
-            LOG(BF("--- looking at bonded atom: %d") % (aBond->getMoeIndex() ) );
+            LOG("--- looking at bonded atom: %d" , (aBond->getMoeIndex() ) );
             SpanningInfo_sp siBond = this->storeSpanningInfo(aBond,this->getBackCount(aCurSpan)+1,this->aCurSpan);
             siPrev->_Next = aBond; // aPrev->setNextSpan( aBond );
             //            printf("%s:%d  aBond -> %s  siBond -> %s\n", __FILE__, __LINE__, _rep_(aBond).c_str(), _rep_(siBond).c_str());
-            LOG(BF("--- Setting atom: %d nextSpan to: %d") % (aPrev->getMoeIndex()) % (aBond->getMoeIndex() ) );
-            LOG(BF("--- Is atom: %d nextSpan valid? ==> %d") % (aPrev->getMoeIndex()) % (aPrev->isNextSpanValid() ) );
+            LOG("--- Setting atom: %d nextSpan to: %d" , (aPrev->getMoeIndex()) , (aBond->getMoeIndex() ) );
+            LOG("--- Is atom: %d nextSpan valid? ==> %d" , (aPrev->getMoeIndex()) , (aPrev->isNextSpanValid() ) );
             siPrev = siBond;
             aPrev = aBond;
           } else {
-		LOG(BF("--- NOT Visible") );
+		LOG("--- NOT Visible" );
 
 		/* If the atom is invisible, but has not been seen */
 		/* before then it counts as an invisible collision */
 		/* Increment the collision count and save the atom */
 		/* which caused the collision                      */
 		if ( !bSeenBefore ) {
-		    LOG(BF("--- COLLISION!") );
+		    LOG("--- COLLISION!" );
 		    this->iInvisibleCollisions++;
 		    this->aLastCollision = aBond;
 		}
@@ -394,20 +394,20 @@ Atom_sp	SpanningLoop_O::nextSpanningAtom(std::function<bool (Atom_sp fromAtom, B
 	}
 
 	/* Advance to the next atom and return the current one */
-	LOG(BF("Advancing spanning tree") );
+	LOG("Advancing spanning tree" );
 	this->aLastSpan = aPrev;
 	oObject = this->aCurSpan;
 	if ( this->isNextSpanValid(aCurSpan) ) {
 	    this->aCurSpan = gc::As_unsafe<Atom_sp>(this->getNextSpan(aCurSpan));
-	    LOG(BF("--- Setting this->aCurSpan to: %d") % (this->aCurSpan->getMoeIndex() ) );
-	    LOG(BF("--- Is atom: %d nextSpan valid? ==> %d") % (this->aCurSpan->getMoeIndex()) % (this->aCurSpan->isNextSpanValid() ) );
+	    LOG("--- Setting this->aCurSpan to: %d" , (this->aCurSpan->getMoeIndex() ) );
+	    LOG("--- Is atom: %d nextSpan valid? ==> %d" , (this->aCurSpan->getMoeIndex()) , (this->aCurSpan->isNextSpanValid() ) );
 	} else {
-	    LOG(BF("atom %d does not have a next span atom, loop done") % (this->aCurSpan->getMoeIndex() ) );
+	    LOG("atom %d does not have a next span atom, loop done" , (this->aCurSpan->getMoeIndex() ) );
 	    this->done = true;
 	    goto DONE;
 	}
 
-	LOG(BF("About to return") );
+	LOG("About to return" );
 
 	/* Return with oObject */
     DONE:

@@ -111,7 +111,7 @@ CL_DEFMETHOD core::T_sp	FFStretchDb_O::findTerm(chem::Atom_sp a1, chem::Atom_sp 
   core::Symbol_sp t1, t2;
   t1 = a1->getType();
   t2 = a2->getType();
-  LOG(BF("Looking for stretch between types (%s)-(%s)") % t1.c_str() % t2.c_str() );
+  LOG("Looking for stretch between types (%s)-(%s)" , t1.c_str() , t2.c_str() );
   key = stretchKey(t1,t2); // forwards
   core::T_sp parm = this->_Parameters->gethash(key);
   if (parm.notnilp()) return parm;
@@ -244,7 +244,6 @@ stringstream	desc;
 
 void FFStretchDb_O::forceFieldMerge(FFBaseDb_sp bother)
 {
-//  SIMPLE_WARN(BF("Merging stretch terms - but terms with different type orders will create duplicates!"));
   FFStretchDb_sp other = gc::As<FFStretchDb_sp>(bother);
   other->_Parameters->maphash([this] (core::T_sp key, core::T_sp value) {
       core::Symbol_sp skey = gc::As<core::Symbol_sp>(key);

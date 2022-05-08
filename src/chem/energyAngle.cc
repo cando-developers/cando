@@ -61,7 +61,7 @@ core::List_sp EnergyAngle::encode() const {
 }
 
 void EnergyAngle::decode(core::List_sp alist) {
-  SIMPLE_ERROR(BF("Implement decode of EnergyAngle"));
+  SIMPLE_ERROR(("Implement decode of EnergyAngle"));
 }
 
 #ifdef XML_ARCHIVE
@@ -265,12 +265,7 @@ string				str1, str2, str3, str4;
 	    str2 = as2;
 	    str1 = as3;
 	}
-	_lisp->print(BF("TERM 2ANG %-9s - %-9s - %-9s %8.2lf %8.2lf")
-			    % str1.c_str()
-			    % str2.c_str()
-			    % str3.c_str()	
-			    % eai->term.kt
-			    % core::degrees(eai->term.t0) );
+        core::writeln_bf_stream(fmt::sprintf("TERM 2ANG %-9s - %-9s - %-9s %8.2lf %8.2lf" , str1.c_str() , str2.c_str() , str3.c_str() , eai->term.kt , core::degrees(eai->term.t0) ));
     }
 }
 
@@ -381,7 +376,7 @@ double EnergyAngle_O::evaluateAllComponent( ScoringFunction_sp score,
 
 
 
-  {_BLOCK_TRACE("Angle");
+  {
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_Angle_termDeclares.cc>
@@ -504,7 +499,7 @@ bool	calcOffDiagonalHessian = true;
 #define	ANGLE_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
 
  {
-		_BLOCK_TRACE("AngleEnergy finiteDifference comparison");
+		
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_Angle_termDeclares.cc>
@@ -517,29 +512,29 @@ bool	calcOffDiagonalHessian = true;
 	    gctools::Vec0<EnergyAngle>::iterator ai;
 	    for ( i=0,ai=this->_Terms.begin();
 			ai!=this->_Terms.end(); ai++,i++ ) {
-		LOG(BF("ai->term.kt = %le") % ai->term.kt  );
-		LOG(BF("ai->term.t0 = %le") % ai->term.t0  );
-		LOG(BF("angleScale = %le") % angleScale  );
-		LOG(BF("ai->x1 = %le") % pos->element(ai->term.I1 ) );
-		LOG(BF("ai->y1 = %le") % pos->element(ai->term.I1+1 ) );
-		LOG(BF("ai->z1 = %le") % pos->element(ai->term.I1+2 ) );
-		LOG(BF("ai->x2 = %le") % pos->element(ai->term.I2 ) );
-		LOG(BF("ai->y2 = %le") % pos->element(ai->term.I2+1 ) );
-		LOG(BF("ai->z2 = %le") % pos->element(ai->term.I2+2 ) );
-		LOG(BF("ai->x3 = %le") % pos->element(ai->term.I3 ) );
-		LOG(BF("ai->y3 = %le") % pos->element(ai->term.I3+1 ) );
-		LOG(BF("ai->z3 = %le") % pos->element(ai->term.I3+2 ) );
+		LOG("ai->term.kt = %le" , ai->term.kt  );
+		LOG("ai->term.t0 = %le" , ai->term.t0  );
+		LOG("angleScale = %le" , angleScale  );
+		LOG("ai->x1 = %le" , pos->element(ai->term.I1 ) );
+		LOG("ai->y1 = %le" , pos->element(ai->term.I1+1 ) );
+		LOG("ai->z1 = %le" , pos->element(ai->term.I1+2 ) );
+		LOG("ai->x2 = %le" , pos->element(ai->term.I2 ) );
+		LOG("ai->y2 = %le" , pos->element(ai->term.I2+1 ) );
+		LOG("ai->z2 = %le" , pos->element(ai->term.I2+2 ) );
+		LOG("ai->x3 = %le" , pos->element(ai->term.I3 ) );
+		LOG("ai->y3 = %le" , pos->element(ai->term.I3+1 ) );
+		LOG("ai->z3 = %le" , pos->element(ai->term.I3+2 ) );
 #include	<cando/chem/energy_functions/_Angle_termCode.cc>
-		LOG(BF("Energy = %le") % Energy  );
-		LOG(BF("x1 = %le") % x1  );
-		LOG(BF("y1 = %le") % y1  );
-		LOG(BF("z1 = %le") % z1  );
-		LOG(BF("x2 = %le") % x2  );
-		LOG(BF("y2 = %le") % y2  );
-		LOG(BF("z2 = %le") % z2  );
-		LOG(BF("x3 = %le") % x3  );
-		LOG(BF("y3 = %le") % y3  );
-		LOG(BF("z3 = %le") % z3  );
+		LOG("Energy = %le" , Energy  );
+		LOG("x1 = %le" , x1  );
+		LOG("y1 = %le" , y1  );
+		LOG("z1 = %le" , z1  );
+		LOG("x2 = %le" , x2  );
+		LOG("y2 = %le" , y2  );
+		LOG("z2 = %le" , z2  );
+		LOG("x3 = %le" , x3  );
+		LOG("y3 = %le" , y3  );
+		LOG("z3 = %le" , z3  );
 		int index = i;
 #include <cando/chem/energy_functions/_Angle_debugFiniteDifference.cc>
 	    }
@@ -585,7 +580,7 @@ core::List_sp	EnergyAngle_O::checkForBeyondThresholdInteractionsWithPosition(che
 #define	ANGLE_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
 
   {
-    _BLOCK_TRACE("AngleEnergy finiteDifference comparison");
+    
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_Angle_termDeclares.cc>
@@ -728,9 +723,9 @@ core::List_sp	EnergyAngle_O::lookupAngleTerms(AtomTable_sp atomTable, Atom_sp a1
   core::T_sp tia1 = atomTable->_AtomTableIndices->gethash(a1);
   core::T_sp tia2 = atomTable->_AtomTableIndices->gethash(a2);
   core::T_sp tia3 = atomTable->_AtomTableIndices->gethash(a3);
-  if (!tia1.fixnump()) SIMPLE_ERROR(BF("Could not find %s in energy function") % _rep_(a1));
-  if (!tia2.fixnump()) SIMPLE_ERROR(BF("Could not find %s in energy function") % _rep_(a2));
-  if (!tia3.fixnump()) SIMPLE_ERROR(BF("Could not find %s in energy function") % _rep_(a3));
+  if (!tia1.fixnump()) SIMPLE_ERROR(("Could not find %s in energy function") , _rep_(a1));
+  if (!tia2.fixnump()) SIMPLE_ERROR(("Could not find %s in energy function") , _rep_(a2));
+  if (!tia3.fixnump()) SIMPLE_ERROR(("Could not find %s in energy function") , _rep_(a3));
   int ia1 = tia1.unsafe_fixnum();
   int ia2 = tia2.unsafe_fixnum();
   int ia3 = tia3.unsafe_fixnum();

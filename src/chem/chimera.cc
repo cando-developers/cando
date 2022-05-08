@@ -41,14 +41,14 @@ void parseChimeraAtomSpecification(const string& spec, uint& sequenceNumber, str
   size_t atomNameStart;
   atomNameStart = spec.find_first_of("@")+1;
   if ( atomNameStart == string::npos ) {
-    SIMPLE_ERROR(BF("Illegal Chimera atom specification"));
+    SIMPLE_ERROR(("Illegal Chimera atom specification"));
   }
   residueStart = spec.find_first_of(":")+1;
-  LOG(BF("residueStart(%d)") % residueStart );
+  LOG("residueStart(%d)" , residueStart );
   string residueInfo = spec.substr(residueStart,atomNameStart-residueStart-1);
-  LOG(BF("residueInfo(%s)") % residueInfo.c_str() );
+  LOG("residueInfo(%s)" , residueInfo.c_str() );
   atomName = spec.substr(atomNameStart,9999);
-  LOG(BF("atomName(%s)") % atomName.c_str() );
+  LOG("atomName(%s)" , atomName.c_str() );
   size_t chainStart = residueInfo.find_first_of(".");
   chain = "";
   if ( chainStart != string::npos )
@@ -58,12 +58,12 @@ void parseChimeraAtomSpecification(const string& spec, uint& sequenceNumber, str
   {
     chainStart = residueInfo.size();
   }
-  LOG(BF("chain(%s)") % chain.c_str() );
-  LOG(BF("chainStart(%d)") % chainStart );
+  LOG("chain(%s)" , chain.c_str() );
+  LOG("chainStart(%d)" , chainStart );
   string seqNumStr = residueInfo.substr(0,chainStart);
-  LOG(BF("seqNumStr(%s)") % seqNumStr.c_str() );
+  LOG("seqNumStr(%s)" , seqNumStr.c_str() );
   sequenceNumber = atoi(seqNumStr.c_str());
-  LOG(BF("sequenceNumber(%d)") % sequenceNumber );
+  LOG("sequenceNumber(%d)" , sequenceNumber );
 }
 
 /*! Split the string containing any number of Chimera atom specifications

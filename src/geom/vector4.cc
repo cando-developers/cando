@@ -34,6 +34,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/foundation.h>
 #include <clasp/core/object.h>
 #include <clasp/core/lisp.h>
+#include <clasp/core/lispStream.h>
 #include <iostream>
 #include <cando/geom/vector4.h>
 //#include "core/omath.h"
@@ -71,11 +72,7 @@ Vector4::Vector4( double w, double x, double y, double z )
 
 void Vector4::dump()
 {
-    _lisp->print(BF("<%lf,%lf,%lf,%lf>")
-		% this->coords[0]
-		% this->coords[1]
-		% this->coords[2]
-		% this->coords[3] );
+  core::writeln_bf_stream(fmt::sprintf("<%lf,%lf,%lf,%lf>" , this->coords[0] , this->coords[1] , this->coords[2] , this->coords[3] ));
 }
 
 
@@ -115,7 +112,7 @@ Vector4	v;
 	v.coords[3] = this->coords[3]/l;
 	return v;
     }
-    SIMPLE_ERROR(BF("Attempted to normalize a zero vector"));
+    SIMPLE_ERROR(("Attempted to normalize a zero vector"));
 }
 
 

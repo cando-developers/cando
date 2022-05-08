@@ -76,7 +76,7 @@ void Molecule_O::fields(core::Record_sp node)
 #if 1
     core::HashTable_sp atomToResidue = this->atomToResidueMap();
     BondList_sp bondList = BondList_O::create();
-    { _BLOCK_TRACE("Building bond list");
+    { 
       Loop lmol(this->asSmartPtr(),ATOMS);
       while (lmol.advance()) {
         Atom_sp a = lmol.getAtom();
@@ -91,14 +91,14 @@ void Molecule_O::fields(core::Record_sp node)
   case core::Record_O::initializing:
   case core::Record_O::loading: {
 #if 1
-    _BLOCK_TRACE("Loading BondList");
-    LOG(BF("Creating the intraResidue bonds") );
+    
+    LOG("Creating the intraResidue bonds" );
 	    // create the intraResidue bonds
-    LOG(BF("About to load bondList") );
+    LOG("About to load bondList" );
     BondList_sp bondList = BondList_O::create();
     node->field( INTERN_(kw,bl),bondList);
     ASSERTNOTNULL(bondList);
-    RECORD_LOG(BF("residue bondList = %s") % _rep_(bondList));
+    RECORD_LOG("residue bondList = %s" , _rep_(bondList));
     bondList->imposeYourself();
 #endif
   }
@@ -128,7 +128,7 @@ Molecule_O::Molecule_O(const Molecule_O& mol)
 void Molecule_O::addResidue( Matter_sp r )
 {
   this->addMatter( r );
-  LOG(BF("Added %s to %s") % r->description().c_str() % this->description().c_str()  );
+  LOG("Added %s to %s" , r->description().c_str() , this->description().c_str()  );
 }
 
 //
@@ -138,7 +138,7 @@ void Molecule_O::addResidue( Matter_sp r )
 //
 void Molecule_O::addResidueRetainId( Matter_sp r )
 {
-  LOG(BF("Adding %s to %s") % r->description().c_str() % this->description().c_str()  );
+  LOG("Adding %s to %s" , r->description().c_str() , this->description().c_str()  );
   this->addMatterRetainId( r );
 }
 
@@ -160,7 +160,7 @@ CL_DEFMETHOD void Molecule_O::removeResidue( Matter_sp a )
       return;
     }
   }
-  SIMPLE_ERROR(BF("removeResidue: Molecule does not contain residue: %s") % _rep_(a->getName()) );
+  SIMPLE_ERROR(("removeResidue: Molecule does not contain residue: %s") , _rep_(a->getName()) );
 }
 
 #if 0
@@ -187,12 +187,12 @@ void Molecule_O::transferCoordinates(Matter_sp obj)
     {
 	if ( !obj.isA<Molecule_O>() ) 
 	{
-	    SIMPLE_ERROR(BF("You can only transfer coordinates to a Molecule from another Molecule"));
+	    SIMPLE_ERROR(("You can only transfer coordinates to a Molecule from another Molecule"));
 	}
 	Molecule_sp other = obj.as<Molecule_O>();
 	if ( other->length() != this->length() )
 	{
-	    SIMPLE_ERROR(BF("You can only transfer coordinates if the two Molecules have the same number of contents"));
+	    SIMPLE_ERROR(("You can only transfer coordinates if the two Molecules have the same number of contents"));
 	}
 	Matter_O::contentIterator tit,oit;
 	for ( tit=this->_contents.begin(), oit=other->_contents.begin();
@@ -204,7 +204,7 @@ void Molecule_O::transferCoordinates(Matter_sp obj)
 CL_LISPIFY_NAME("moveAllAtomsIntoFirstResidue");
 CL_DEFMETHOD     void	Molecule_O::moveAllAtomsIntoFirstResidue()
 {
-  SIMPLE_ERROR(BF("Reimplement moveAllAtomsIntoFirstResidue()"));
+  SIMPLE_ERROR(("Reimplement moveAllAtomsIntoFirstResidue()"));
 #if 0
   contentIterator	a;
   contentIterator	r;
@@ -249,14 +249,14 @@ Matter_sp	Molecule_O::copyDontRedirectAtoms(core::T_sp new_to_old)
 
 void	Molecule_O::redirectAtoms()
     {_OF();
-	LOG(BF("Molecule_O::redirectAtoms START") );
+	LOG("Molecule_O::redirectAtoms START" );
 	for ( contentIterator a=this->begin_contents(); a!=this->end_contents(); a++ )
 	{
           Residue_sp res = (*a).as<Residue_O>();
 	    res->redirectAtoms();
 	}
 	this->redirectRestraintAtoms();
-	LOG(BF("Molecule_O::redirectAtoms DONE") );
+	LOG("Molecule_O::redirectAtoms DONE" );
     }
 
 
@@ -320,7 +320,7 @@ CL_DEFMETHOD     Residue_sp	Molecule_O::getFirstResidueWithName(MatterName name)
 	if ( residues.size() > 0 ) {
 	    return *(residues.begin());
 	}
-	SIMPLE_ERROR(BF("getFirstResidueWithName: Molecule does not contain residues with name: %s")% _rep_(name) );
+	SIMPLE_ERROR(("getFirstResidueWithName: Molecule does not contain residues with name: %s") , _rep_(name) );
     }
 
 
@@ -360,13 +360,13 @@ AtomIdToAtomMap_sp Molecule_O::buildAtomIdMap() const
   for ( int rid =0; rid<numResidues; rid++ )
   {
     int numAtoms = this->_contents[rid]->_contents.size();
-    core::write_bf_stream(BF("%s:%d rid %d of %d  numAtoms-> %d\n") % __FILE__ % __LINE__ % rid % numResidues % numAtoms );
+    core::write_bf_stream(fmt::sprintf("%s:%d rid %d of %d  numAtoms-> %d\n" , __FILE__ , __LINE__ , rid , numResidues , numAtoms ));
     atomIdMap->resize(mid,rid,numAtoms);
     for ( int aid=0; aid<numAtoms; aid++ )
     {
       AtomId atomId(mid,rid,aid);
       Atom_sp atom = this->_contents[rid]->_contents[aid].as<Atom_O>();
-      core::write_bf_stream(BF("%s:%d Adding %d %d %d -> %s\n") % __FILE__ % __LINE__ % mid % rid % aid % _rep_(atom));
+      core::write_bf_stream(fmt::sprintf("%s:%d Adding %d %d %d -> %s\n" , __FILE__ , __LINE__ , mid , rid , aid , _rep_(atom)));
       atomIdMap->set(atomId,atom);
     }
   }
@@ -381,7 +381,7 @@ AtomIdToAtomMap_sp Molecule_O::buildAtomIdMap() const
 	    Residue_sp residue = this->_contents[resId].as<Residue_O>();
 	    return residue->atomWithAtomId(atomId);
 	}
-	SIMPLE_ERROR(BF("Illegal residueId[%d] must be less than %d") % resId % this->_contents.size() );
+	SIMPLE_ERROR(("Illegal residueId[%d] must be less than %d") , resId , this->_contents.size() );
     }
 
 

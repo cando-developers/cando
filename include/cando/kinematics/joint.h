@@ -50,9 +50,9 @@ namespace kinematics
 
 
 #if 0
-#define KIN_LOG(msg) core::write_bf_stream(BF("%s:%d:%f - ") % __FILE__ % __LINE__ % __FUNCTION__ ); core::write_bf_stream(msg)
+#define KIN_LOG(...) core::write_bf_stream(BF("%s:%d:%f - ") % __FILE__ % __LINE__ % __FUNCTION__ ); core::write_bf_stream(fmt::sprintf(__VA_ARGS__))
 #else
-#define KIN_LOG(msg)
+#define KIN_LOG(...)
 #endif
 
 
@@ -192,7 +192,7 @@ public:
                                              stringstream& out);
 
   void updateInternalCoord();
-  virtual void _updateInternalCoord() { THROW_HARD_ERROR(BF("Subclass must implement")); };
+  virtual void _updateInternalCoord() { THROW_HARD_ERROR("Subclass must implement"); };
 	/*! Update the internal coordinates */
   virtual void updateInternalCoords(bool const recursive,
                                     JointTree_sp at 	) = 0;
@@ -240,7 +240,7 @@ public:
   {_OF();
     ASSERTF(this->parent().boundp(),BF("Parent isn't defined"));
     if (this->parent().unboundp()) {
-      SIMPLE_ERROR(BF("inputStubJoint1 parent of %s isn't defined") % _rep_(this->asSmartPtr()));
+      SIMPLE_ERROR(("inputStubJoint1 parent of %s isn't defined") , _rep_(this->asSmartPtr()));
     }
     return this->parent()->stubJoint1();
   }
@@ -250,7 +250,7 @@ public:
   {_OF();
     ASSERTF(this->parent().boundp(),BF("Parent isn't defined"));
     if (this->parent().unboundp()) {
-      SIMPLE_ERROR(BF("inputStubJoint2 parent of %s isn't defined") % _rep_(this->asSmartPtr()));
+      SIMPLE_ERROR(("inputStubJoint2 parent of %s isn't defined") , _rep_(this->asSmartPtr()));
     }
     return this->parent()->stubJoint2();
   }
@@ -313,9 +313,9 @@ public:
   virtual void updateXyzCoord();
 
 	/*! Update the external coordinates using the input stub */
-  virtual void _updateXyzCoords(Stub& stub) {THROW_HARD_ERROR(BF("Subclass must implement"));};
+  virtual void _updateXyzCoords(Stub& stub) {THROW_HARD_ERROR("Subclass must implement");};
 
-  virtual void _updateXyzCoord(Stub& stub) {THROW_HARD_ERROR(BF("Subclass must implement"));};
+  virtual void _updateXyzCoord(Stub& stub) {THROW_HARD_ERROR("Subclass must implement");};
 
   void _updateChildrenXyzCoords(Stub& stub);
 
@@ -329,11 +329,11 @@ public:
 
 
 	/*! Return the input stub */
-  virtual CL_DEFMETHOD Stub getStub() const { THROW_HARD_ERROR(BF("Subclass must implement")); };
+  virtual CL_DEFMETHOD Stub getStub() const { THROW_HARD_ERROR("Subclass must implement"); };
 
 
 	/*! Return the value of the DOF */
-  virtual double dof(DofType const& dof) const { THROW_HARD_ERROR(BF("SubClass must implement"));};
+  virtual double dof(DofType const& dof) const { THROW_HARD_ERROR("SubClass must implement");};
 
 };
 

@@ -75,7 +75,7 @@ public:
 	void	setAttributes(const XML_Char ** att) { this->attributes = att; };
 
 	// Sub-class these
-    virtual void	startElement() {THROW_HARD_ERROR(BF("Subclass must implement"));};
+    virtual void	startElement() {THROW_HARD_ERROR("Subclass must implement");};
 	virtual void	endElement() {return;};
 	virtual void	characters() {return;};
 	virtual void	ignorableWhiteSpace() {return;};

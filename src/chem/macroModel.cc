@@ -256,7 +256,7 @@ char			caPart[254], *cPTemp;
     iAtoms = this->lines;
     for ( i=0; i< iAtoms; i++ ) {
 	fgets( caLine, sizeof(caLine), this->file );
-        LOG(BF("Raw line: %s") % (caLine ) );
+        LOG("Raw line: %s" , (caLine ) );
 //	sscanf( caLine, " %3d %5d %1d %5d %1d %5d %1d %5d %1d %5d %1d %5d %1d %11.6lf %11.6lf %11.6lf %5d%c%c%4d%9.5lf%9.5lf %4s %4s\n",
 	sscanf( caLine, " %3d %5d %1d %5d %1d %5d %1d %5d %1d %5d %1d %5d %1d",
 			&oneAtom.iType,
@@ -271,63 +271,63 @@ char			caPart[254], *cPTemp;
 	len = 11;
 	strncpy( caPart, &caLine[offset], len );
 	caPart[len] = '\0';
-	LOG(BF("LEFT: |%s|") % (caPart ) );
+	LOG("LEFT: |%s|" , (caPart ) );
 	oneAtom.x = atof(caPart);
 	offset += len+1;
 
 	len = 11;
 	strncpy( caPart, &caLine[offset], len );
 	caPart[len] = '\0';
-	LOG(BF("LEFT: |%s|") % (caPart ) );
+	LOG("LEFT: |%s|" , (caPart ) );
 	oneAtom.y = atof(caPart);
 	offset += len+1;
 
 	len = 11;
 	strncpy( caPart, &caLine[offset], len );
 	caPart[len] = '\0';
-	LOG(BF("LEFT: |%s|") % (caPart ) );
+	LOG("LEFT: |%s|" , (caPart ) );
 	oneAtom.z = atof(caPart);
 	offset += len+1;
 
 	len = 5;
 	strncpy( caPart, &caLine[offset], len );
 	caPart[len] = '\0';
-	LOG(BF("LEFT: |%s|") % (caPart ) );
+	LOG("LEFT: |%s|" , (caPart ) );
 	oneAtom.resNum = atoi(caPart);
 	offset += len;
 
 	len = 1;
 	strncpy( caPart, &caLine[offset], len );
 	caPart[len] = '\0';
-	LOG(BF("LEFT: |%s|") % (caPart ) );
+	LOG("LEFT: |%s|" , (caPart ) );
 	oneAtom.resCode = caPart[0];
 	offset += len;
 
 	len = 1;
 	strncpy( caPart, &caLine[offset], len );
 	caPart[len] = '\0';
-	LOG(BF("LEFT: |%s|") % (caPart ) );
+	LOG("LEFT: |%s|" , (caPart ) );
 	oneAtom.resChain = caPart[0];
 	offset += len;
 
 	len = 4;
 	strncpy( caPart, &caLine[offset], len );
 	caPart[len] = '\0';
-	LOG(BF("LEFT: |%s|") % (caPart ) );
+	LOG("LEFT: |%s|" , (caPart ) );
 	oneAtom.atomColor = atoi(caPart);
 	offset += len;
 
 	len = 9;
 	strncpy( caPart, &caLine[offset], len );
 	caPart[len] = '\0';
-	LOG(BF("LEFT: |%s|") % (caPart ) );
+	LOG("LEFT: |%s|" , (caPart ) );
 	oneAtom.dCharge= atof(caPart);
 	offset += len;
 
 	len = 9;
 	strncpy( caPart, &caLine[offset], len );
 	caPart[len] = '\0';
-	LOG(BF("LEFT: |%s|") % (caPart ) );
+	LOG("LEFT: |%s|" , (caPart ) );
 	oneAtom.dMultiPoleCharge= atof(caPart);
 	offset += len+1;
 
@@ -337,7 +337,7 @@ char			caPart[254], *cPTemp;
 	cPTemp = caPart;
 	while ( *cPTemp != ' ' && *cPTemp != '\0' ) cPTemp++;
 	*cPTemp = '\0';
-	LOG(BF("LEFT: |%s|") % (caPart ) );
+	LOG("LEFT: |%s|" , (caPart ) );
 	strcpy( oneAtom.caResName, caPart );
 	offset += len+1;
 
@@ -347,7 +347,7 @@ char			caPart[254], *cPTemp;
 	cPTemp = caPart;
 	while ( *cPTemp != ' ' && *cPTemp != '\0' ) cPTemp++;
 	*cPTemp = '\0';
-	LOG(BF("LEFT: |%s|") % (caPart ) );
+	LOG("LEFT: |%s|" , (caPart ) );
 	strcpy( oneAtom.caAtomName, caPart );
 	offset += len+1;
 
@@ -365,8 +365,8 @@ char			caPart[254], *cPTemp;
 	atoms.push_back(oneAtom);
     }
 
-     LOG(BF("proc.   : %3d %5d %1d %5d %1d %5d %1d %5d %1d %5d %1d %5d %1d %11.6lf %11.6lf %11.6lf %5d%c%c%4d%9.5lf%9.5lf %4s %4s\n")
-     % oneAtom.iType %
+     LOG("proc.   : %3d %5d %1d %5d %1d %5d %1d %5d %1d %5d %1d %5d %1d %11.6lf %11.6lf %11.6lf %5d%c%c%4d%9.5lf%9.5lf %4s %4s\n"
+     , oneAtom.iType %
      oneAtom.bonds[0].iAtom% oneAtom.bonds[0].iBondOrder%
 			oneAtom.bonds[1].iAtom% oneAtom.bonds[1].iBondOrder%
 			oneAtom.bonds[2].iAtom% oneAtom.bonds[2].iBondOrder%
@@ -385,7 +385,7 @@ char			caPart[254], *cPTemp;
 	 );
 
      mol = Molecule_O::create();
-    LOG(BF("Created molecule") );
+    LOG("Created molecule" );
 		//
 		// Now create the residue for the atoms
 		//
@@ -398,7 +398,7 @@ char			caPart[254], *cPTemp;
 	    mol->addMatter(res);
 	}
     }
-    LOG(BF("Created residues") );
+    LOG("Created residues" );
 
 		//
 		// Now create the atoms and stick them in their
@@ -406,13 +406,13 @@ char			caPart[254], *cPTemp;
 		//
 
     for ( i=0; i<iAtoms; i++ ) {
-	LOG(BF("Creating atom: %d") % (i ) );
+	LOG("Creating atom: %d" , (i ) );
 	aPAtom = Atom_O::create();
-	LOG(BF("Creating atom") );
+	LOG("Creating atom" );
 	if ( residues.count(atoms[i].resNum) > 0 ) {
 	    res = residues[atoms[i].resNum];
 	} else {
-	    LOG(BF("Bad RESIDUE") );
+	    LOG("Bad RESIDUE" );
 	    exit(1);
 	}
 	res->addAtom(aPAtom);
@@ -427,7 +427,7 @@ char			caPart[254], *cPTemp;
 	aPAtom->setPosition(vPos);
         aPAtom->setCharge(atoms[i].dCharge );
     }
-    LOG(BF("Created atoms") );
+    LOG("Created atoms" );
 
 		// Connect bonds
     for ( i=0; i<iAtoms; i++ ) {
@@ -446,7 +446,7 @@ char			caPart[254], *cPTemp;
 	    }
 	}
     }
-    LOG(BF("Created bonds") );
+    LOG("Created bonds" );
 
 		// Read the number of lines in the next molecule
 

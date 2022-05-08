@@ -135,16 +135,16 @@ __END_DOC
     node->attribute("zMax",this->zMax);
     if ( node->saving() )
     {
-	LOG(BF("saving grid") );
-	LOG(BF(" status") );
+	LOG("saving grid" );
+	LOG(" status" );
 	stringstream sout;
-	LOG(BF(" status") );
+	LOG(" status" );
 	vector<bool>::iterator it;
-	LOG(BF(" status") );
+	LOG(" status" );
 	bool done = false;
-	LOG(BF(" status") );
+	LOG(" status" );
 	it = this->grid.begin();
-	LOG(BF(" status done = %d") % done );
+	LOG(" status done = %d" , done );
 	while ( !done )
 	{
 	    if (*it) 
@@ -152,14 +152,14 @@ __END_DOC
 		uint oneCount = 0;
 		while (it!=this->grid.end() && *it )
 		{
-	            LOG(BF(" status") );
+	            LOG(" status" );
 		    it++;
-	            LOG(BF(" status") );
+	            LOG(" status" );
 		    oneCount++;
 		}
-	        LOG(BF(" status") );
+	        LOG(" status" );
 		sout << oneCount << " 1"<<std::endl;
-		LOG(BF(" entry: %u 1") % oneCount  );
+		LOG(" entry: %u 1" , oneCount  );
 		if ( it == this->grid.end() ) done = true;
 		continue;
 	    }
@@ -170,16 +170,16 @@ __END_DOC
 		zeroCount++;
 	    }
 	    sout << zeroCount << " 0"<<std::endl;
-	    LOG(BF(" entry: %u 1") % zeroCount  );
+	    LOG(" entry: %u 1" , zeroCount  );
 	    if ( it == this->grid.end() ) done = true;
 	}
-	LOG(BF("Done loop") );
+	LOG("Done loop" );
 	sout << std::endl;
-	LOG(BF("Done saving") );
+	LOG("Done saving" );
 	node->setCharacters(sout.str());
     } else
     {
-	LOG(BF("loading grid") );
+	LOG("loading grid" );
 	stringstream sin;
 	sin.str(node->characters());
 	this->grid.resize(this->xSize*this->ySize*this->zSize,0);
@@ -192,14 +192,14 @@ __END_DOC
 	    sin.getline(buffer,sizeof(buffer));
 	    string raw= buffer;
 	    string line = core::trimWhiteSpace(raw);
-	    LOG(BF("line = |%s|") % line.c_str()  );
+	    LOG("line = |%s|" , line.c_str()  );
 	    vector<string> parts = core::split(line);
 	    if ( parts.size() == 0 ) continue;
 	    ASSERT_eq(parts.size(),2);
 	    num = atoi(parts[0].c_str());
 	    val = atoi(parts[1].c_str());
 	    ASSERT_greaterThan(num,0);
-	    LOG(BF("filling %u entries with %u") % num % val  );
+	    LOG("filling %u entries with %u" , num , val  );
 	    size_t zzt = (it - this->grid.begin())+num;
 	    ASSERT_lt(zzt,this->grid.size()+1);
 	    for ( uint ui = 0; ui<num; ui++ )
@@ -308,8 +308,8 @@ int		iTotal;
     yEnd   = yIndexBounded(this,pos.getY()+radius+1);
     zEnd   = zIndexBounded(this,pos.getZ()+radius+1);
     rad2 = radius*radius;
-    LOG(BF("Painting atom between: %d,%d,%d and %d,%d,%d") % xBegin % yBegin % zBegin % xEnd % yEnd % zEnd );
-    LOG(BF("  rad2 = %lf") % (rad2 ) );
+    LOG("Painting atom between: %d,%d,%d and %d,%d,%d" , xBegin , yBegin , zBegin , xEnd , yEnd , zEnd );
+    LOG("  rad2 = %lf" , (rad2 ) );
     iPainted = 0;
     iTotal = 0;
     for ( zi=zBegin; zi!=zEnd; zi++ ) {
@@ -335,7 +335,7 @@ int		iTotal;
 	    }
 	}
     }
-    LOG(BF("  painted %d of %d elements") % (iPainted) % (iTotal ) );
+    LOG("  painted %d of %d elements" , (iPainted) , (iTotal ) );
     return iPainted>0;
 }
 
@@ -361,7 +361,7 @@ Atom_sp	a;
 Vector3	diff;
 
     this->grid.resize( this->xSize*this->ySize*this->zSize, false );
-    LOG(BF("in build grid") );
+    LOG("in build grid" );
     this->paint(container,addRadius);
 }
 
@@ -465,20 +465,20 @@ void AtomGrid_O::paint(Matter_sp matter, double pad)
 void	AtomGrid_O::dump()
 {
 int	iOn, iOff;
-_lisp->print(BF( "AtomGrid dump" ));
-_lisp->print(BF("  size= ( %d, %d, %d )") % this->xSize % this->ySize % this->zSize );
-_lisp->print(BF( "  min=(%lf, %lf, %lf)") % this->xMin % this->yMin % this->zMin );
-_lisp->print(BF( "  max=(%lf, %lf, %lf)") % this->xMax % this->yMax % this->zMax );
-_lisp->print(BF( "  ballRadius=%lf") % this->ballRadius );
-_lisp->print(BF( "  stepSize=%lf") % this->stepSize );
-_lisp->print(BF( "  grid Elements=%d") % (int)(this->grid.size()) );
+ core::writeln_bf_stream(fmt::sprintf( "AtomGrid dump" ));
+ core::writeln_bf_stream(fmt::sprintf("  size= ( %d, %d, %d )" , this->xSize , this->ySize , this->zSize ));
+ core::writeln_bf_stream(fmt::sprintf( "  min=(%lf, %lf, %lf)" , this->xMin , this->yMin , this->zMin ));
+ core::writeln_bf_stream(fmt::sprintf( "  max=(%lf, %lf, %lf)" , this->xMax , this->yMax , this->zMax ));
+ core::writeln_bf_stream(fmt::sprintf( "  ballRadius=%lf" , this->ballRadius ));
+ core::writeln_bf_stream(fmt::sprintf( "  stepSize=%lf" , this->stepSize ));
+ core::writeln_bf_stream(fmt::sprintf( "  grid Elements=%d" , (int)(this->grid.size()) ));
     iOn = 0;
     iOff = 0;
     for ( uint i=0; i<this->grid.size(); i++ ) {
 	if ( this->grid[i] ) iOn++;
 	else	iOff++;
     }
-    _lisp->print(BF("  The grid has %d elements on and %d elements off") %	iOn % iOff );
+    core::writeln_bf_stream(fmt::sprintf("  The grid has %d elements on and %d elements off" , iOn , iOff ));
 }
 
 void AtomGrid_O::renderSquare( geom::DisplayList_sp dl,
@@ -537,7 +537,7 @@ double		xmax;
     iOn = 0;
 
     gsize = this->grid.size();
-    LOG(BF("Rendering an AtomGrid") );
+    LOG("Rendering an AtomGrid" );
 
 		//
 		// Render the bounding box
@@ -588,7 +588,7 @@ double		xmax;
     result->add(color);
     halfStep = this->stepSize/2.0;
     for ( zi=0; zi!=this->zSize; zi++ ) {
-	LOG(BF("Rendering a Z-slice: %d") % (zi ) );
+	LOG("Rendering a Z-slice: %d" , (zi ) );
 	for ( yi=0; yi!=this->ySize; yi++ ) {
 	    for ( xi=0; xi!=this->xSize; xi++ ) {
 		iTotal++;
@@ -665,7 +665,7 @@ double		xmax;
 	    }
 	}
     }
-    LOG(BF( "Total points=%d on=%d\n")% iTotal % iOn );
+    LOG( "Total points=%d on=%d\n"% iTotal , iOn );
     return result;
 #endif
 }
@@ -693,19 +693,19 @@ int	ii;
     xi = xIndex(this,pos.getX());
     yi = yIndex(this,pos.getY());
     zi = zIndex(this,pos.getZ());
-    LOG(BF( "collision test at: %d, %d, %d -->") % xi % yi % zi );
+    LOG( "collision test at: %d, %d, %d -->" , xi , yi , zi );
     if ( xi<0 || xi>=this->xSize ) goto NOCOLLISION;
     if ( yi<0 || yi>=this->ySize ) goto NOCOLLISION;
     if ( zi<0 || zi>=this->zSize ) goto NOCOLLISION;
-    LOG(BF("About to get gridIndex"));
+    LOG("About to get gridIndex");
     ii = gridIndex(this,xi,yi,zi);
-    LOG(BF("Got gridIndex=%d")%ii);
+    LOG("Got gridIndex=%d"%ii);
     if ( this->grid[ii] ) goto COLLISION;
 NOCOLLISION:
-    LOG(BF( "                no collision"));
+    LOG( "                no collision");
     return false;
 COLLISION:
-    LOG(BF( "                COLLISION" ));
+    LOG( "                COLLISION" );
     return true;
 }
 

@@ -293,7 +293,7 @@ public:
 			// If this node doesn't have a data point yet assigned 
 			// and it is a leaf, then we're done!
     if (this->_depth>20) {
-      SIMPLE_ERROR(BF("The octree is too deep - 20 levels"));
+      SIMPLE_ERROR(("The octree is too deep - 20 levels"));
     }
     if(isLeafNode()) {
       if (this->_data.unboundp()) {
@@ -315,7 +315,7 @@ public:
         double dz = fabs(point.getZ()-oldPosition.getZ());
         double dist_squared = dx*dx+dy*dy+dz*dz;
         if (dist_squared<0.1) {
-          SIMPLE_ERROR(BF("oldPosition %s and point %s are too close to add to octree") % oldPosition.asString() % point.asString());
+          SIMPLE_ERROR(("oldPosition %s and point %s are too close to add to octree") , oldPosition.asString() , point.asString());
         }
 
 					// Split the current node and create new empty trees for each
@@ -358,13 +358,13 @@ public:
          (point.getX()>(this->_origin.getX()+this->_halfDimension.getX())) ||
          (point.getY()>(this->_origin.getY()+this->_halfDimension.getY())) ||
          (point.getZ()>(this->_origin.getZ()+this->_halfDimension.getZ())))) {
-      SIMPLE_ERROR(BF("Trying to insert out of bounds point %lf,%lf,%lf into octree min %lf,%lf,%lf  max %lf,%lf,%lf") % point.getX() % point.getY() % point.getZ()
-                   % (this->_origin.getX()-this->_halfDimension.getX())
-                   % (this->_origin.getY()-this->_halfDimension.getY())
-                   % (this->_origin.getZ()-this->_halfDimension.getZ())
-                   % (this->_origin.getX()+this->_halfDimension.getX())
-                   % (this->_origin.getY()+this->_halfDimension.getY())
-                   % (this->_origin.getZ()+this->_halfDimension.getZ()));
+      SIMPLE_ERROR(("Trying to insert out of bounds point %lf,%lf,%lf into octree min %lf,%lf,%lf  max %lf,%lf,%lf") , point.getX() , point.getY() , point.getZ()
+                   , (this->_origin.getX()-this->_halfDimension.getX())
+                   , (this->_origin.getY()-this->_halfDimension.getY())
+                   , (this->_origin.getZ()-this->_halfDimension.getZ())
+                   , (this->_origin.getX()+this->_halfDimension.getX())
+                   , (this->_origin.getY()+this->_halfDimension.getY())
+                   , (this->_origin.getZ()+this->_halfDimension.getZ()));
     }
     this->insert_impl(point,data);
   }

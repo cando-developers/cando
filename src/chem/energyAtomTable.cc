@@ -70,7 +70,7 @@ void EnergyAtom::defineForAtom(core::T_sp forceField, Atom_sp a1, uint coordinat
 {
   this->setupBase(a1,coordinateIndex);
   if (a1->getType().nilp()) {
-    SIMPLE_ERROR(BF("The atom type of %s is NIL!") % _rep_(a1));
+    SIMPLE_ERROR(("The atom type of %s is NIL!") , _rep_(a1));
   }
   core::T_sp typeIndex = core::eval::funcall(_sym_find_atom_type_position,forceField,a1->getType());
   if (!typeIndex.fixnump()) {
@@ -115,7 +115,7 @@ void	EnergyAtom::parseFromXmlRelativeToContainer(adapt::QDomNode_sp xml,
   string	path;
   double	x,y,z,fx,fy,fz;
   Vector3	v;
-  LOG(BF("parsing xml with localName=%s") % xml->getLocalName().c_str() );
+  LOG("parsing xml with localName=%s" , xml->getLocalName().c_str() );
   path = xml->getAttributeString("storagePath");
   this->_Atom = (parent->getContentForIdPath(path)).as<chem::Atom_O>();
   ASSERTNOTNULL(this->_Atom);
@@ -196,7 +196,7 @@ CL_DEFMETHOD size_t AtomTable_O::getCoordinateIndexForAtomAtIndex(size_t index)
     EnergyAtom& ea = this->_Atoms[index];
     return this->getCoordinateIndex(ea._SharedAtom);
   }
-  SIMPLE_ERROR(BF("Atom index %d is out of range (0...%d)") % this->_Atoms.size());
+  SIMPLE_ERROR(("Atom index %d is out of range (0...%d)") , this->_Atoms.size());
 }
 
 CL_DEFMETHOD core::HashTableEq_sp AtomTable_O::getAtomTableIndices() {
@@ -207,9 +207,9 @@ CL_DEFMETHOD core::T_mv AtomTable_O::getAtomIndexOrNil(Atom_sp atom)
 {
   core::T_mv res= this->_AtomTableIndices->gethash(atom);
 #if 0
-  core::write_bf_stream(BF("Number of results %d\n") % res.number_of_values());
-  core::write_bf_stream(BF("res -> %s\n") % _rep_(res));
-  core::write_bf_stream(BF("res.second() -> %s \n") % _rep_(res.second()));
+  core::write_bf_stream(fmt::sprintf("Number of results %d\n" , res.number_of_values()));
+  core::write_bf_stream(fmt::sprintf("res -> %s\n" , _rep_(res)));
+  core::write_bf_stream(fmt::sprintf("res.second() -> %s \n" , _rep_(res.second())));
 #endif
   if (res.second().nilp()) {
     return Values(nil<core::T_O>(),nil<core::T_O>());
@@ -222,7 +222,7 @@ EnergyAtom* AtomTable_O::getEnergyAtomPointer(Atom_sp a)
   core::T_mv it = this->_AtomTableIndices->gethash(a);
   if ( it.second().nilp() ) // it == this->_AtomTableIndices.end() )
   {
-    SIMPLE_ERROR(BF("Could not find atom[%s] in AtomTable") % _rep_(a) );
+    SIMPLE_ERROR(("Could not find atom[%s] in AtomTable") , _rep_(a) );
   }
   return &this->_Atoms[core::clasp_to_fixnum(it)];
 }
@@ -284,19 +284,19 @@ CL_DEFMETHOD void	AtomTable_O::dumpTerms()
   for ( eai=this->_Atoms.begin(); eai!=this->_Atoms.end(); eai++ ) {
     as1 = atomLabel(eai->atom());
     str1 = eai->atom()->getType();
-    core::write_bf_stream(BF("(TERM %d ATOM %-9s %-9s :charge %8.5lf :mass %8.5lf :typeIndex %d)\n")
-              % index
-              % as1
-              % _rep_(str1)
-              % eai->_Charge
-              % eai->_Mass
-              % eai->_TypeIndex );
+    core::write_bf_stream(fmt::sprintf("(TERM %d ATOM %-9s %-9s :charge %8.5lf :mass %8.5lf :typeIndex %d)\n"
+              , index
+              , as1
+              , _rep_(str1)
+              , eai->_Charge
+              , eai->_Mass
+                                       , eai->_TypeIndex ));
     index++;
   }
 }
 
 CL_DEFMETHOD core::T_sp AtomTable_O::firstSolventMoleculeNSPSOL() const {
-  if (this->_firstSolventMoleculeNSPSOL.unboundp()) SIMPLE_ERROR(BF("The firstSolventMoleculeNSPSOL is unbound"));
+  if (this->_firstSolventMoleculeNSPSOL.unboundp()) SIMPLE_ERROR(("The firstSolventMoleculeNSPSOL is unbound"));
   return this->_firstSolventMoleculeNSPSOL;
 }
 CL_DEFMETHOD bool AtomTable_O::firstSolventMoleculeNSPSOL_boundP() const {
@@ -311,7 +311,7 @@ CL_DEFMETHOD void AtomTable_O::makUnbound_firstSolventMoleculeNSPSOL() {
 
 
 CL_DEFMETHOD core::T_sp AtomTable_O::finalSoluteResidueIPTRES() const {
-  if (this->_finalSoluteResidueIPTRES.unboundp()) SIMPLE_ERROR(BF("The finalSoluteResidueIPTRES is unbound"));
+  if (this->_finalSoluteResidueIPTRES.unboundp()) SIMPLE_ERROR(("The finalSoluteResidueIPTRES is unbound"));
   return this->_finalSoluteResidueIPTRES;
 }
 CL_DEFMETHOD bool AtomTable_O::finalSoluteResidueIPTRES_boundP() const {
@@ -326,7 +326,7 @@ CL_DEFMETHOD void AtomTable_O::makUnbound_finalSoluteResidueIPTRES() {
 
 
 CL_DEFMETHOD core::T_sp AtomTable_O::totalNumberOfMoleculesNSPM() const {
-  if (this->_totalNumberOfMoleculesNSPM.unboundp()) SIMPLE_ERROR(BF("The totalNumberOfMoleculesNSPM is unbound"));
+  if (this->_totalNumberOfMoleculesNSPM.unboundp()) SIMPLE_ERROR(("The totalNumberOfMoleculesNSPM is unbound"));
   return this->_totalNumberOfMoleculesNSPM;
 }
 CL_DEFMETHOD bool AtomTable_O::totalNumberOfMoleculesNSPM_boundP() const {
@@ -346,7 +346,7 @@ CL_DEFMETHOD void AtomTable_O::makUnbound_totalNumberOfMoleculesNSPM() {
 
 CL_DEFMETHOD core::T_sp AtomTable_O::aggregateName() const {
   if (this->_AggregateName.unboundp()) {
-    SIMPLE_ERROR(BF("The aggregate-name is unbound"));
+    SIMPLE_ERROR(("The aggregate-name is unbound"));
   }
   return this->_AggregateName;
 }
@@ -372,7 +372,7 @@ CL_DOCSTRING(R"dx(Return the bounding-box for the atom-table.)dx")
 CL_LISPIFY_NAME(atom-table-bounding-box);
 CL_DEFMETHOD core::T_sp AtomTable_O::boundingBox() const {
   if (this->_BoundingBox.unboundp()) {
-    SIMPLE_ERROR(BF("The bounding-box is unbound"));
+    SIMPLE_ERROR(("The bounding-box is unbound"));
   }
   return this->_BoundingBox;
 }
@@ -397,7 +397,7 @@ CL_DEFMETHOD void AtomTable_O::makUnboundBoundingBox() {
 
 CL_DEFMETHOD core::T_sp AtomTable_O::nonbondForceFieldForAggregate() const {
   if (this->_NonbondForceFieldForAggregate.unboundp()) {
-    SIMPLE_ERROR(BF("The nonbond-forcefield-for-aggregate is unbound"));
+    SIMPLE_ERROR(("The nonbond-forcefield-for-aggregate is unbound"));
   }
   return this->_NonbondForceFieldForAggregate;
 }
@@ -416,21 +416,21 @@ CL_DEFMETHOD void AtomTable_O::makUnboundNonbondForceFieldForAggregate() {
 
 CL_DEFMETHOD core::T_sp AtomTable_O::atom_table_residue_pointers() const {
   if (this->_ResiduePointers.unboundp()) {
-    SIMPLE_ERROR(BF("Residue pointers table is not bound"));
+    SIMPLE_ERROR(("Residue pointers table is not bound"));
   }
   return core::eval::funcall(cl::_sym_copySeq,this->_ResiduePointers);
 }
 
 CL_DEFMETHOD core::T_sp AtomTable_O::atom_table_residue_names() const {
   if (this->_ResidueNames.unboundp()) {
-    SIMPLE_ERROR(BF("Residue names table is not bound"));
+    SIMPLE_ERROR(("Residue names table is not bound"));
   }
   return core::eval::funcall(cl::_sym_copySeq,this->_ResidueNames);
 }
 
 CL_DEFMETHOD core::T_sp AtomTable_O::atom_table_atoms_per_molecule() const {
   if (this->_AtomsPerMolecule.unboundp()) {
-    SIMPLE_ERROR(BF("atoms per molecule table is not bound"));
+    SIMPLE_ERROR(("atoms per molecule table is not bound"));
   }
   return core::eval::funcall(cl::_sym_copySeq,this->_AtomsPerMolecule);
 }
@@ -438,7 +438,7 @@ CL_DEFMETHOD core::T_sp AtomTable_O::atom_table_atoms_per_molecule() const {
 CL_DEFMETHOD core::T_sp AtomTable_O::atom_table_residues() const {
 //  printf("%s:%d In :atom_table_residues\n", __FILE__, __LINE__ );
   if (this->_Residues.unboundp()) {
-    SIMPLE_ERROR(BF("residues table is not bound"));
+    SIMPLE_ERROR(("residues table is not bound"));
   }
   return core::eval::funcall(cl::_sym_copySeq,this->_Residues);
 }
@@ -446,7 +446,7 @@ CL_DEFMETHOD core::T_sp AtomTable_O::atom_table_residues() const {
 CL_DEFMETHOD core::T_sp AtomTable_O::atom_table_molecules() const {
 //  printf("%s:%d In :atom_table_residues\n", __FILE__, __LINE__ );
   if (this->_Molecules.unboundp()) {
-    SIMPLE_ERROR(BF("molecules table is not bound"));
+    SIMPLE_ERROR(("molecules table is not bound"));
   }
   return core::eval::funcall(cl::_sym_copySeq,this->_Molecules);
 }
@@ -454,7 +454,7 @@ CL_DEFMETHOD core::T_sp AtomTable_O::atom_table_molecules() const {
 CL_DEFMETHOD
 void AtomTable_O::setAtomFlag(size_t index, size_t flag) {
   if (index>=this->_Atoms.size()) {
-    SIMPLE_ERROR(BF("Index %lu is out of range - must be less than %lu") % index % this->_Atoms.size());
+    SIMPLE_ERROR(("Index %lu is out of range - must be less than %lu") , index , this->_Atoms.size());
   }
   this->_Atoms[index]._Flag = flag;
 }
@@ -462,7 +462,7 @@ void AtomTable_O::setAtomFlag(size_t index, size_t flag) {
 CL_DEFMETHOD
 size_t AtomTable_O::getAtomFlag(size_t index) {
   if (index>=this->_Atoms.size()) {
-    SIMPLE_ERROR(BF("Index %lu is out of range - must be less than %lu") % index % this->_Atoms.size());
+    SIMPLE_ERROR(("Index %lu is out of range - must be less than %lu") , index , this->_Atoms.size());
   }
   return this->_Atoms[index]._Flag;
 }
@@ -481,7 +481,7 @@ void AtomTable_O::constructFromMolecule(Molecule_sp mol, core::T_sp nonbondForce
     this->_ResiduePointers->vectorPushExtend(idx);
     this->_ResidueNames->vectorPushExtend(res->getName());
     this->_Residues->vectorPushExtend(res);
-    {_BLOCK_TRACE("Defining ATOMS");
+    {
       Loop loop;
       Atom_sp a1;
       loop.loopTopGoal(res,ATOMS);
@@ -491,29 +491,29 @@ void AtomTable_O::constructFromMolecule(Molecule_sp mol, core::T_sp nonbondForce
         if ( activeAtoms.notnilp() && !inAtomSet(activeAtoms,a1) ) continue;
         if ( a1.isA<VirtualAtom_O>() ) 
         {
-          LOG(BF("Skipping virtual atom[%s]") % _rep_(a1) );
+          LOG("Skipping virtual atom[%s]" , _rep_(a1) );
           continue; // skip virtuals
         }
-        LOG(BF("Setting atom[%s] in AtomTable[%d]") % _rep_(a1) % idx );
+        LOG("Setting atom[%s] in AtomTable[%d]" , _rep_(a1) , idx );
         this->_AtomTableIndices->setf_gethash(a1,core::clasp_make_fixnum(idx));
         EnergyAtom ea(nonbondForceField,a1,coordinateIndex);
         ea._AtomName = a1->getName();
-        {_BLOCK_TRACE("Building spanning tree for atom");
-          LOG(BF("Spanning tree for atom: %s\n") % _rep_(a1->getName()));
+        {
+          LOG("Spanning tree for atom: %s\n" , _rep_(a1->getName()));
           SpanningLoop_sp span = SpanningLoop_O::create(a1);
           Atom_sp bonded;
           while ( span->advance() ) {
             bonded = span->getAtom();
             if ( bonded == a1 ) continue;
             int backCount = span->getBackCount(bonded); // ->getBackCount();
-            LOG(BF("Looking at atom[%s] at remove[%d]") % _rep_(bonded) % backCount );
+            LOG("Looking at atom[%s] at remove[%d]" , _rep_(bonded) , backCount );
 			// Once we crawl out 4 bonds we have gone as far as we need
             if ( backCount >= 4 ) {
-              LOG(BF("Hit remove of 4 - terminating spanning loop"));
+              LOG("Hit remove of 4 - terminating spanning loop");
               break;
             }
             ASSERT(backCount>0 && backCount<=3);
-            LOG(BF("Adding atom at remove %d --> %s\n") % (backCount-1) % _rep_(bonded->getName()));
+            LOG("Adding atom at remove %d --> %s\n" , (backCount-1) , _rep_(bonded->getName()));
             ea._AtomsAtRemoveBondAngle14[backCount-1].insert(bonded);
           }
         }
@@ -528,7 +528,7 @@ void AtomTable_O::constructFromMolecule(Molecule_sp mol, core::T_sp nonbondForce
           for ( si = ea._AtomsAtRemoveBondAngle14[zr].begin(); si!=ea._AtomsAtRemoveBondAngle14[zr].end(); si++ ) {
             ss << " " << _rep_((*si));
           }
-          LOG(BF("Atoms at remove %d = %s") % zr % ss.str() );
+          LOG("Atoms at remove %d = %s" , zr , ss.str() );
         }
 #endif
       }
@@ -572,11 +572,11 @@ CL_DEFMETHOD size_t AtomTable_O::push_back_excluded_atom_indices_and_sort( core:
   // sort the indices in increasing order
   sort::quickSortMemory((int32_t*)excludedAtomIndices->rowMajorAddressOfElement_(0),start_size,end_size);
   if (chem__verbose(1)) {
-    core::write_bf_stream(BF("%d: ") % atomIndex);
+    core::write_bf_stream(fmt::sprintf("%d: " , atomIndex));
     for ( size_t ii = start_size; ii<end_size; ++ii ) {
-      core::write_bf_stream(BF("%d ") % (*excludedAtomIndices)[ii]);
+      core::write_bf_stream(fmt::sprintf("%d " , (*excludedAtomIndices)[ii]));
     }
-    core::write_bf_stream(BF("\n"));
+    core::write_bf_stream(fmt::sprintf("\n"));
   }
   return (end_size - start_size);
 }
@@ -661,9 +661,9 @@ CL_DEFUN core::List_sp chem__atoms_at_remove(AtomTable_sp table, size_t index, s
       }
       return result;
     }
-    SIMPLE_ERROR(BF("The remove is out of bounds - %d must be <=3") % remove);
+    SIMPLE_ERROR(("The remove is out of bounds - %d must be <=3") , remove);
   }
-  SIMPLE_ERROR(BF("Atom index %d is out of bounds - must be < %d") % index % table->_Atoms.size());
+  SIMPLE_ERROR(("Atom index %d is out of bounds - must be < %d") , index , table->_Atoms.size());
 }
 
 

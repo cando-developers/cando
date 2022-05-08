@@ -99,7 +99,7 @@ using namespace chem;
 #define	LEXDEBUG	1
 
 #ifdef	LEXDEBUG
-#define	LEXPRINT(x) {lisp_LOG(BF( "Token: %s") %(x));}
+#define	LEXPRINT(x) {lisp_LOG( "Token: %s" %(x));}
 #define	LEXDPRINT(x) {lisp_LOG(x)};
 #else
 #define	LEXPRINT(x)
@@ -2806,7 +2806,7 @@ char	ichar;
 	        ichar = data->lexStream->get();
 		if ( charCount >= MAX_CVAL )
 		{
-	            SIMPLE_ERROR(BF("Exceeded max number of digits in Lambda name"));
+	            SIMPLE_ERROR(("Exceeded max number of digits in Lambda name"));
 		}
 		yylval->cval[charCount] = ichar;
 		charCount++;
@@ -2814,10 +2814,10 @@ char	ichar;
 	    ichar = data->lexStream->get();
 	    if ( ichar != '>' )
 	    {
-	        SIMPLE_ERROR(BF("Illegal lambda name must match <[A-Za-z0-9]+> - instead saw[%c]") % ichar );
+	        SIMPLE_ERROR(("Illegal lambda name must match <[A-Za-z0-9]+> - instead saw[%c]") , ichar );
 	    }	
 	    yylval->cval[charCount] = '\0';
-	    lisp_LOG(BF("APLambda<%s>") % (yylval->cval) );
+	    lisp_LOG("APLambda<%s>" , (yylval->cval) );
 	    return  APLambda;
 	}
 	break;
@@ -2871,13 +2871,13 @@ char	ichar;
 		    ichar = data->lexStream->get();
 		    if ( digitCount >= MAX_CVAL )
 		    {
-		        SIMPLE_ERROR(BF("Exceeded max number of digits in Number"));
+		        SIMPLE_ERROR(("Exceeded max number of digits in Number"));
 		    }
 		    yylval->cval[digitCount] = ichar;
 		    digitCount++;
 	    }
 	    yylval->cval[digitCount] = '\0';
-	    lisp_LOG(BF("APNumber = (%s)") % (yylval->cval) );
+	    lisp_LOG("APNumber = (%s)" , (yylval->cval) );
 	    return  APNumber;
     }
     
@@ -2912,10 +2912,10 @@ chem::SmartsRoot_sp smarts_compile(const string& input, stringstream& errorStrea
     p.expression = _Nil<SmartsRoot_O>();
     p.lexStream = &sin;
     p.msmartsErrorStream = &errorStream;
-    lisp_LOG(BF("Entering msmarts_parse"));
+    lisp_LOG("Entering msmarts_parse");
     if ( msmarts_parse(&p) )
     {
-	SIMPLE_ERROR(BF("%s") % (p.msmartsErrorStream->str()));
+	SIMPLE_ERROR(("%s") , (p.msmartsErrorStream->str()));
     }
     return p.expression;
 }

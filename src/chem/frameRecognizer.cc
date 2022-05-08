@@ -45,8 +45,8 @@ CL_DEFMETHOD void	FrameRecognizer_O::compileSmarts(const string& osm)
 {
     this->_Smarts = osm;
     this->_Root = chem__compile_smarts(this->_Smarts,nil<core::T_O>());
-    LOG(BF("Successfully compiled smarts code for atom O") );
-//    LOG(BF("ChemInfo code = %s") % this->_ChemInfo->asXmlString());
+    LOG("Successfully compiled smarts code for atom O" );
+//    LOG("ChemInfo code = %s" , this->_ChemInfo->asXmlString());
 }
 
 
@@ -80,7 +80,7 @@ CL_DEFMETHOD void	FrameRecognizer_O::compileSmarts(const string& osm)
             this->compileSmarts(this->_Smarts);
 	} catch ( core::Condition& err )
 	{
-	    SIMPLE_ERROR(BF("Could not parse Smarts code for %s %s")% this->_Smarts % err.message() );
+          SIMPLE_ERROR(("Could not parse Smarts code for %s %s") , this->_Smarts , err.message() );
 	}
     }
 };

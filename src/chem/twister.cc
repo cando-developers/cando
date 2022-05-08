@@ -39,6 +39,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <exception>
 #include <cando/chem/matter.h>
 #include <clasp/core/exceptions.h>
+#include <clasp/core/lispStream.h>
 #include <cando/chem/loop.h>
 #include <cando/chem/spanningLoop.h>
 //#include	"xmlGraphics.h"
@@ -215,7 +216,7 @@ CL_DEFMETHOD void	Twister_O::rotate(double angle)
     Matrix	transform, tm;
     Vector3	rotVec, tv;
 
-    LOG(BF("Rotating by %lf degrees") % (angle/0.0174533) );
+    LOG("Rotating by %lf degrees" , (angle/0.0174533) );
     ASSERTNOTNULLP(this->_Fixed,"Fixed atom undefined");
     ASSERTNOTNULLP(this->_Movable,"Movable atom is undefined");
     ASSERTP(this->_Atoms.size()>0,"There must be atoms to rotate");
@@ -224,21 +225,21 @@ CL_DEFMETHOD void	Twister_O::rotate(double angle)
     tv = this->_Movable->getPosition();
     tv = tv.multiplyByScalar(-1.0);
     transform.translate(tv);
-    LOG(BF("To origin transform matrix: %s") % (transform.asString().c_str()) );
+    LOG("To origin transform matrix: %s" , (transform.asString().c_str()) );
     tm.rotationAxis(angle,&rotVec);
     transform = tm*transform;
     tv = this->_Movable->getPosition();
     tm.translate(tv);
-    LOG(BF("From origin transform matrix: %s") % (tm.asString().c_str()) );
+    LOG("From origin transform matrix: %s" , (tm.asString().c_str()) );
     transform = tm*transform;
-    LOG(BF("Complete transform matrix: %s") % (transform.asString().c_str()) );
+    LOG("Complete transform matrix: %s" , (transform.asString().c_str()) );
     for ( gctools::Vec0<Atom_sp>::iterator ai=this->_Atoms.begin();
 	  ai!=this->_Atoms.end(); ai++ ) {
-	LOG(BF("Perturbing atom(%s)  start position = %lf, %lf, %lf") % (*ai)->description().c_str() % (*ai)->getPosition().getX() % (*ai)->getPosition().getY() % (*ai)->getPosition().getZ()  );
+	LOG("Perturbing atom(%s)  start position = %lf, %lf, %lf" , (*ai)->description().c_str() , (*ai)->getPosition().getX() , (*ai)->getPosition().getY() , (*ai)->getPosition().getZ()  );
 	tv = (*ai)->getPosition();
 	tv = transform*tv;
 	(*ai)->setPosition(tv);
-	LOG(BF("                     pert. position = %lf, %lf, %lf") % (*ai)->getPosition().getX() % (*ai)->getPosition().getY() % (*ai)->getPosition().getZ()  );
+	LOG("                     pert. position = %lf, %lf, %lf" , (*ai)->getPosition().getX() , (*ai)->getPosition().getY() , (*ai)->getPosition().getZ()  );
     }
 }
 
@@ -250,7 +251,7 @@ CL_DEFMETHOD double Twister_O::currentDihedralAngleRadians()
 {
   if (this->_FixedRef.nilp() )
   {
-    SIMPLE_ERROR(BF("For absolute rotations the reference atoms of the twister must be defined"));
+    SIMPLE_ERROR(("For absolute rotations the reference atoms of the twister must be defined"));
   }
   Vector3 v1 = this->_FixedRef->getPosition();
   Vector3 v2 = this->_Fixed->getPosition();
@@ -271,7 +272,7 @@ CL_DEFMETHOD void Twister_O::rotateAbsolute(double angle)
   double currentAngle = this->currentDihedralAngleRadians();
   double delta = angle - currentAngle;
   if (chem__verbose(1)) {
-    _lisp->print(BF("current dihedral = %8.3lf  desired dihedral = %8.3lf delta=%8.3lf") % (currentAngle/0.0174533) % (angle/0.0174533) % (delta/0.0174533) );
+    core::writeln_bf_stream(fmt::sprintf("current dihedral = %8.3lf  desired dihedral = %8.3lf delta=%8.3lf" , (currentAngle/0.0174533) , (angle/0.0174533) , (delta/0.0174533) ));
   }
   this->rotate(delta);
 #ifdef DEBUG_ON
@@ -280,7 +281,7 @@ CL_DEFMETHOD void Twister_O::rotateAbsolute(double angle)
   v3 = this->_Movable->getPosition();
   v4 = this->_MovableRef->getPosition();
   double resultAngle = geom::calculateDihedral(v1,v2,v3,v4);
-  _lisp->print(BF("      result dihedral = %8.3lf") % (resultAngle/0.0174533) );
+  core::writeln_bf_stream(fmt::sprintf("      result dihedral = %8.3lf" , (resultAngle/0.0174533) ));
 #endif
 }
 
@@ -320,7 +321,7 @@ CL_DEFMETHOD Twister_sp	TwisterDriver_O::getTwister(uint i)
 {_OF();
     ASSERT_lessThan(i,this->_Twisters.size());
     if (i>=0 && i<this->_Twisters.size()) return this->_Twisters[i];
-    SIMPLE_ERROR(BF("Illegal twister index %d there are only %d twisters") % i % this->_Twisters.size());
+    SIMPLE_ERROR(("Illegal twister index %d there are only %d twisters") , i , this->_Twisters.size());
 }
 
 CL_LAMBDA(twister-driver)
@@ -332,13 +333,13 @@ int	it,ia;
 double	ang;
     if ( this->_Twisters.size() == 0 )
     {
-        LOG(BF("There are no twisters and nothing to perturb") );
+        LOG("There are no twisters and nothing to perturb" );
 	return;
     }
     it = core::randomNumber01()*this->_Twisters.size();
     ia = (int)(core::randomNumber01()*12.0);
     ang = (30.0*ia)*0.0174533+(core::randomNumberNormal01()*15);
-    LOG(BF("Perturbing twister#%d of %d by %lf degrees") % it % this->_Twisters.size() % (ang/0.0174533)  );
+    LOG("Perturbing twister#%d of %d by %lf degrees" , it , this->_Twisters.size() , (ang/0.0174533)  );
     this->_Twisters[it]->rotate(ang);
 }
 

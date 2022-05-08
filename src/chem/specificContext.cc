@@ -161,7 +161,7 @@ CL_DEFMETHOD SpecificContext_sp SpecificContext_O::copySpecificContext()
   SpecificContextSet_sp SpecificContextSet_O::make()
   {
     IMPLEMENT_ME();
-    LOG(BF("Creating SpecificContextSet") );
+    LOG("Creating SpecificContextSet" );
   };
 
 #else
@@ -169,7 +169,7 @@ CL_DEFMETHOD SpecificContext_sp SpecificContext_O::copySpecificContext()
     core::T_sp 	SpecificContextSet_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::LispPtr lisp)
 {_OF();
     IMPLEMENT_ME();
-    LOG(BF("Creating SpecificContextSet") );
+    LOG("Creating SpecificContextSet" );
     	// your stuff here
 }
 #endif
@@ -188,7 +188,7 @@ void	SpecificContextSet_O::initialize()
 
     void	SpecificContextSet_O::addWithKey(core::Symbol_sp keyKey, SpecificContext_sp key)
 {
-    LOG(BF("adding SpecificContext |%s|") % keyKey.c_str()  );
+    LOG("adding SpecificContext |%s|" , keyKey.c_str()  );
     this->_KeySets.set(keyKey, key );
 }
 
@@ -196,7 +196,7 @@ void	SpecificContextSet_O::initialize()
 CL_LISPIFY_NAME("addSpecificContext");
 CL_DEFMETHOD void	SpecificContextSet_O::add(SpecificContext_sp key)
 {
-    LOG(BF("adding SpecificContext |%s|") % key->asString().c_str()  );
+    LOG("adding SpecificContext |%s|" , key->asString().c_str()  );
     this->addWithKey(key->asSymbol(),key);
 }
 

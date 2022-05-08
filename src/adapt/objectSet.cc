@@ -70,10 +70,10 @@ CL_DEFMETHOD ObjectSet_sp ObjectSet_O::intersection(ObjectSet_sp b) {
 
   this->map([&b, &nset](T_sp o) {
             if ( b->contains(o) ) {
-                LOG(BF("Found it!!!") );
+                LOG("Found it!!!" );
                 nset->insert(o);
             } else {
-                LOG(BF("Not found") );
+                LOG("Not found" );
             }
   });
   return nset;
@@ -159,7 +159,7 @@ void ObjectSet_O::archive(ArchiveP node) {
   _OF();
   stringstream suid;
   if (node->saving()) {
-    _BLOCK_TRACE("Saving");
+    
     if (this->_Set.size() != 0) {
       int i = 0;
       stringstream suid;
@@ -173,7 +173,7 @@ void ObjectSet_O::archive(ArchiveP node) {
       }
     }
   } else {
-    _BLOCK_TRACE("Loading");
+    
     VectorNodes::iterator ci;
     T_sp object;
     this->_Set.clear();

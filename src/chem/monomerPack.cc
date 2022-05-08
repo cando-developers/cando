@@ -85,7 +85,7 @@ CL_DEFUN core::T_sp chem__define_monomer_pack(core::Symbol_sp packName, core::Li
 	bdb = getCandoDatabase();
 #if 0
 	if ( bdb->recognizesUserMonomerPack(packName->get()) )
-	    SIMPLE_ERROR(BF("monomerPack("+packName->get()+") is already defined"));
+	    SIMPLE_ERROR(("monomerPack("+packName->get()+") is already defined"));
 #endif
 	MonomerPack_sp monomerPack = MonomerPack_O::create();
 	monomerPack->setName(packName);
@@ -133,7 +133,7 @@ CL_DEFUN core::T_sp chem__extend_aliases(core::Symbol_sp packName, core::List_sp
 	bdb = getCandoDatabase();
 	ASSERTNOTNULL(bdb);
 	if ( !bdb->recognizesMonomerPack(packName) )
-          SIMPLE_ERROR(BF("monomerPack("+_rep_(packName)+") has not been defined"));
+          SIMPLE_ERROR(("monomerPack("+_rep_(packName)+") has not been defined"));
 	MonomerPack_sp monomerPack = bdb->getEntity(packName).as<MonomerPack_O>();
 	monomerPack->extendAliases(atomAliases, parts);
 	return nil<core::T_O>();
@@ -228,12 +228,12 @@ void	MonomerPack_O::defineContentsFromCons(core::List_sp atomAliases, core::List
   this->setInterestingAtomAliasesFromSymbolList(aliases);
   for ( auto p : parts ) {
     core::List_sp entry = oCar(p);
-    if ( core::cl__length(entry) <1 ) SIMPLE_ERROR(BF("monomerPack Entry contains no monomer name"));
+    if ( core::cl__length(entry) <1 ) SIMPLE_ERROR(("monomerPack Entry contains no monomer name"));
     core::Symbol_sp monomerName = oCar(entry).as<core::Symbol_O>();
     this->addMonomerName(monomerName);
     if ( aliases->size() > 0 )
     {
-      if ( core::cl__length(entry) < 2 ) SIMPLE_ERROR(BF("You defined atom aliases to each monomer must have interesting atom names"));
+      if ( core::cl__length(entry) < 2 ) SIMPLE_ERROR(("You defined atom aliases to each monomer must have interesting atom names"));
       core::List_sp interestingAtomNames = oSecond(entry);
       this->setInterestingAtomNamesForMonomerNameFromCons(monomerName,interestingAtomNames);
     }
@@ -254,14 +254,14 @@ void MonomerPack_O::extendAliases( core::List_sp atomAliases, core::List_sp part
       core::List_sp oneExtend = oCar(cur);
       if ( core::cl__length(oneExtend) != 2 )
 	{
-          SIMPLE_ERROR(BF("Each extendAliases entry must have two elements: %s") % _rep_(oneExtend) );
+          SIMPLE_ERROR(("Each extendAliases entry must have two elements: %s") , _rep_(oneExtend) );
 	}
 	core::Symbol_sp monomerName = oCar(oneExtend).as<core::Symbol_O>();
 	core::List_sp aliasAtoms = oCadr(oneExtend);
 	extendMonomers->insert(monomerName);
 	if ( !this->_AtomIndexers->recognizesMonomerName(monomerName) )
 	{
-          SIMPLE_ERROR(BF("MonomerPack("+_rep_(this->getName())+") does not recognize monomer name("+_rep_(monomerName)+")"));
+          SIMPLE_ERROR(("MonomerPack("+_rep_(this->getName())+") does not recognize monomer name("+_rep_(monomerName)+")"));
 	}
 	AtomIndexer_sp indexer = this->_AtomIndexers->getAtomIndexerForMonomerName(monomerName);
 	if ( core::cl__length(aliasAtoms) != numberOfAtomAliases )
@@ -272,7 +272,7 @@ void MonomerPack_O::extendAliases( core::List_sp atomAliases, core::List_sp part
 	    ss << " for monomer(" << _rep_(monomerName);
 	    ss << ") and the number of atom aliases ";
 	    ss << _rep_(atomAliases) ;
-	    SIMPLE_ERROR(BF("%s")%ss.str());
+	    SIMPLE_ERROR(("%s") , ss.str());
 	}
 	indexer->appendConsOfTexts(aliasAtoms);
     }
@@ -282,7 +282,7 @@ void MonomerPack_O::extendAliases( core::List_sp atomAliases, core::List_sp part
 	ss << "There is a mismatch between the monomers in this extendAliases command in the MonomerPack(" << this->getName() << ")" << std::endl;
 	ss << "extendAliases monomer names: " << _rep_(extendMonomers) <<std::endl;
 	ss << "MonomerPack names: " << _rep_(this->_EntityNames);
-	SIMPLE_ERROR(BF("%s")%ss.str());
+	SIMPLE_ERROR(("%s") , ss.str());
     }
 }
 
@@ -297,7 +297,7 @@ AtomIndexer_sp			indexer;
     ASSERTNOTNULL(this->_AtomIndexers);
     if ( !this->recognizesMonomerName(monomerName) )
     {
-        SIMPLE_ERROR(BF("Unrecognized monomer name: %s %s") % monomerName % this->description() );
+        SIMPLE_ERROR(("Unrecognized monomer name: %s %s") , monomerName , this->description() );
     }
     indexer = AtomIndexer_O::create();
     indexer->setFromAtomNames(atomIndexerNames);
@@ -315,7 +315,7 @@ AtomIndexer_sp			indexer;
     ASSERTNOTNULL(this->_AtomIndexers);
     if ( !this->recognizesMonomerName(monomerName) )
     {
-        SIMPLE_ERROR(BF("Unrecognized monomer name: %s %s") % monomerName % this->description() );
+        SIMPLE_ERROR(("Unrecognized monomer name: %s %s") , monomerName , this->description() );
     }
     indexer = AtomIndexer_O::create();
     indexer->setFromList(names);
@@ -332,7 +332,7 @@ AtomIndexer_sp			indexer;
     ASSERTNOTNULL(this->_AtomIndexers);
     if ( !this->recognizesMonomerName(monomerName) )
     {
-        SIMPLE_ERROR(BF("Unrecognized monomer name: %s %s") % monomerName % this->sharedThis<MonomerPack_O>()->description() );
+        SIMPLE_ERROR(("Unrecognized monomer name: %s %s") , monomerName , this->sharedThis<MonomerPack_O>()->description() );
     }
     indexer = AtomIndexer_O::create();
     for ( auto p : names ) {
@@ -366,11 +366,11 @@ CL_DEFMETHOD void	MonomerPack_O::removeMonomerName(core::Symbol_sp nm)
 string	MonomerPack_O::getInterestingAtomNamesForMonomerName(core::Symbol_sp nm)
 {
 string	s;
-    LOG(BF("Looking atoms for MonomerName(%s)") % nm.c_str() );
+    LOG("Looking atoms for MonomerName(%s)" , nm.c_str() );
     if ( this->_AtomIndexers->recognizesMonomerName(nm) )
     {
         s = this->_AtomIndexers->getAtomIndexerForMonomerName(nm)->asString();
-	LOG(BF("  Found atomNames(%s)") % s.c_str()  );
+	LOG("  Found atomNames(%s)" , s.c_str()  );
 	return s;
     }
     return "";
@@ -383,7 +383,7 @@ void	MonomerPack_O::setInterestingAtomAliasesFromSymbolList(adapt::SymbolList_sp
   for ( auto ni = names->begin(); ni!=names->end(); ++ni ) {
     this->_InterestingAtomAliases = core::Cons_O::create(*ni,this->_InterestingAtomAliases);
   }
-    LOG(BF("For MonomerPack(%s) setting aliases(%s)") % this->getName().c_str() % this->_InterestingAtomAliases->asString().c_str()  );
+    LOG("For MonomerPack(%s) setting aliases(%s)" , this->getName().c_str() , this->_InterestingAtomAliases->asString().c_str()  );
 }
 
 
@@ -426,7 +426,7 @@ int						mostNumberOfAtoms;
     }
     if ( mostNumberOfAtoms == 0 )
     {
-	LOG(BF("Resetting _AtomIndexers") );
+	LOG("Resetting _AtomIndexers" );
 	this->_AtomIndexers = nil<MapOfMonomerNamesToAtomIndexers_O>();
     }
 }
@@ -441,7 +441,7 @@ AtomIndexer_sp	atomIndexer;
     ss << nm;
     if ( !this->recognizesMonomerName(nm) )
     {
-        SIMPLE_ERROR(BF("Unrecognized monomer name: %s %s")% nm % this->sharedThis<MonomerPack_O>()->description() );
+      SIMPLE_ERROR(("Unrecognized monomer name: %s %s") , nm , this->sharedThis<MonomerPack_O>()->description() );
     }
     if ( this->_AtomIndexers->recognizesMonomerName(nm) )
     {

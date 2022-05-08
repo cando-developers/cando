@@ -93,7 +93,7 @@ void    FFPtorDb_O::cantFind(core::Symbol_sp t1, core::Symbol_sp t2, core::Symbo
 {_OF();
     stringstream ss;
     ss << "Can't find ptor term for ("<<t1<<")-("<<t2<<")-("<<t3<<")-("<<t4<<")";
-    SIMPLE_ERROR(BF("%s")%ss.str());
+    SIMPLE_ERROR(("%s") , ss.str());
 }
 
 
@@ -126,7 +126,7 @@ void    FFPtor_O::setTypes(core::Symbol_sp t1, core::Symbol_sp t2, core::Symbol_
 bool	FFPtor_O::hasPeriodicity(int idx ) const
 {_OF();
     if ( idx < 1 || idx > MaxPeriodicity ) {
-        SIMPLE_ERROR(BF("Illegal periodicity (%d) for hasPeriodicity") % idx);
+        SIMPLE_ERROR(("Illegal periodicity (%d) for hasPeriodicity") , idx);
     }
     return this->_HasPeriodicity[idx-1];
 }
@@ -137,7 +137,7 @@ bool	FFPtor_O::hasPeriodicity(int idx ) const
 double  FFPtor_O::getV_kJ(int idx) const
 {_OF();
     if ( idx < 1 || idx > MaxPeriodicity ) {
-        SIMPLE_ERROR(BF("Illegal periodicity (%d) for getV") % idx);
+        SIMPLE_ERROR(("Illegal periodicity (%d) for getV") , idx);
     }
     return this->_Vs_kJ[idx-1];
 }
@@ -145,7 +145,7 @@ double  FFPtor_O::getV_kJ(int idx) const
 CL_DEFMETHOD void    FFPtor_O::setV_kJ(int idx, double val)
 {_OF();
     if ( idx < 1 || idx > MaxPeriodicity ) {
-        SIMPLE_ERROR(BF("Illegal periodicity (%d) for setV") % idx);
+        SIMPLE_ERROR(("Illegal periodicity (%d) for setV") , idx);
     }
     this->_HasPeriodicity[idx-1] = true;
     this->_Vs_kJ[idx-1] = val;
@@ -165,7 +165,7 @@ CL_DEFMETHOD void FFPtor_O::setV_kCal(int idx, double val)
 CL_DEFMETHOD double  FFPtor_O::getPhaseRad(int idx) const
 {_OF();
     if ( idx < 1 || idx > MaxPeriodicity ) {
-        SIMPLE_ERROR(BF("Illegal periodicity[%d] for getPhaseRad - must be in [1,%d]") % idx % MaxPeriodicity );
+        SIMPLE_ERROR(("Illegal periodicity[%d] for getPhaseRad - must be in [1,%d]") , idx , MaxPeriodicity );
     }
     return this->_PhaseRads[idx-1];
 }
@@ -173,7 +173,7 @@ CL_DEFMETHOD double  FFPtor_O::getPhaseRad(int idx) const
 CL_DEFMETHOD void    FFPtor_O::setPhaseRad(int idx, double val)
 {_OF();
     if ( idx < 1 || idx > MaxPeriodicity ) {
-        SIMPLE_ERROR(BF("Illegal periodicity (%d) for setPhaseRad") % idx);
+        SIMPLE_ERROR(("Illegal periodicity (%d) for setPhaseRad") , idx);
     }
     this->_PhaseRads[idx-1] = val;
 }
@@ -270,7 +270,6 @@ stringstream	desc;
 
 void FFPtorDb_O::forceFieldMerge(FFBaseDb_sp bother)
 {
-  //SIMPLE_WARN(BF("Merging FFPtorDb terms - but terms with different type orders will create duplicates!"));
   FFPtorDb_sp other = gc::As<FFPtorDb_sp>(bother);
   other->_Parameters->maphash([this] (core::T_sp key, core::T_sp value) {
       core::Symbol_sp skey = gc::As<core::Symbol_sp>(key);

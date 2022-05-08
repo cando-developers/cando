@@ -90,11 +90,11 @@ RestrainedPiBond_sp RestrainedPiBond_O::make(core::Symbol_sp config, core::List_
     me->_Configuration = config;
     if ( me->_Configuration != chemkw::_sym_E && me->_Configuration != chemkw::_sym_Z )
     {
-	SIMPLE_ERROR(BF("config:  must be ""E"" or ""Z""" ));
+	SIMPLE_ERROR(("config:  must be ""E"" or ""Z""" ));
     }
     if ( core::cl__length(piAtoms) != 2 )
     {
-	SIMPLE_ERROR(BF("You must supply two atom names in piAtoms: argument"));
+	SIMPLE_ERROR(("You must supply two atom names in piAtoms: argument"));
     }
     me->_PiAtomX = oCar(piAtoms).as<MatterName::Type>();
     me->_PiAtomY = oCadr(piAtoms).as<MatterName::Type>();
@@ -109,11 +109,11 @@ RestrainedPiBond_sp RestrainedPiBond_O::make(core::Symbol_sp config, core::List_
     core::Cons_sp piAtoms = env->lookup(Pkg(),"piAtoms").as<core::Cons_O>();
     if ( this->_Configuration != "E" && this->_Configuration != "Z" )
     {
-	SIMPLE_ERROR(BF("config:  must be ""E"" or ""Z""" ));
+	SIMPLE_ERROR(("config:  must be ""E"" or ""Z""" ));
     }
     if ( core::cl__length(piAtoms) != 2 )
     {
-	SIMPLE_ERROR(BF("You must supply two atom names in piAtoms: argument"));
+	SIMPLE_ERROR(("You must supply two atom names in piAtoms: argument"));
     }
     this->_PiAtomX = piAtoms->car<core::Str_O>()->get();
     this->_PiAtomY = piAtoms->cadr<core::Str_O>()->get();
@@ -172,9 +172,9 @@ void	RestrainedPiBond_O::fillOneDihedralRestraint(Residue_sp residue,
 	stringstream ss;
 	ss << "Dihedral restraints X atom: " << this->_PiAtomX;
 	ss << " must have between 2 and 3 bonds - it has " << pX->numberOfBonds();
-	SIMPLE_ERROR(BF("Dihedral restraints Y atom: %s") % this->_PiAtomY );
+	SIMPLE_ERROR(("Dihedral restraints Y atom: %s") , this->_PiAtomY );
 	ss << " must have between 2 and 3 bonds - it has " << pY->numberOfBonds();
-	SIMPLE_ERROR(BF("%s")%ss.str() );
+	SIMPLE_ERROR(("%s") , ss.str() );
     }
     double transMin = -170.0;
     double transMax = 170.0;
@@ -213,7 +213,7 @@ void	RestrainedPiBond_O::fillOneDihedralRestraint(Residue_sp residue,
 	}
     } else
     {
-	SIMPLE_ERROR(BF("Illegal Pi bond configuration: %s must be E or Z") % config);
+	SIMPLE_ERROR(("Illegal Pi bond configuration: %s must be E or Z") , config);
     }
 }
 
@@ -226,7 +226,7 @@ SYMBOL_EXPORT_SC_(ChemPkg,STARAtomExoToSixMemberedRingSTAR);
 
 void	RestrainedExoCyclicAtom_O::lazyInitializeSmarts()
 {_OF();
-  SIMPLE_ERROR(BF("Fix me - my smarts is wrong"));
+  SIMPLE_ERROR(("Fix me - my smarts is wrong"));
     if ( !RestrainedExoCyclicAtom_O::_LazyInitializedSmarts )
     {
 	RestrainedExoCyclicAtom_O::_LazyInitializedSmarts = true;
@@ -274,18 +274,18 @@ void	RestrainedExoCyclicAtom_O::archiveBase(core::ArchiveP node)
 
     void RestrainedExoCyclicAtom_O::fillRestraints(Residue_sp residue, core::HashTable_sp cip )
 {_OF();
-  SIMPLE_ERROR(BF("Fix the implementation of %s") % __FUNCTION__);
+  SIMPLE_ERROR(("Fix the implementation of %s") , __FUNCTION__);
     this->lazyInitializeSmarts();
     if ( !residue->hasAtomWithName(this->_ExoCyclicAtomName) )
     {
-	SIMPLE_ERROR(BF("Residue(%s) doesn't have atom with name(%s)") % residue->description() % this->_ExoCyclicAtomName );
+	SIMPLE_ERROR(("Residue(%s) doesn't have atom with name(%s)") , residue->description() , this->_ExoCyclicAtomName );
     }
     Atom_sp exoCyclicAtom = gc::As_unsafe<Atom_sp>(residue->atomWithName(this->_ExoCyclicAtomName));
     Root_sp atomExoToSixMemberedRing = gctools::As<Root_sp>(chem::_sym_STARAtomExoToSixMemberedRingSTAR->symbolValue());
     core::T_mv match_mv = chem__chem_info_match(atomExoToSixMemberedRing,exoCyclicAtom);
     if ( match_mv.nilp() )
     {
-	SIMPLE_ERROR(BF("In residue(%s) the atom with name(%s) is not exo-cyclic to a six-membered ring") % residue->description() % _rep_(this->_ExoCyclicAtomName) );
+	SIMPLE_ERROR(("In residue(%s) the atom with name(%s) is not exo-cyclic to a six-membered ring") , residue->description() , _rep_(this->_ExoCyclicAtomName) );
     }
     ChemInfoMatch_sp match = gc::As<ChemInfoMatch_sp>(match_mv.second());
     Atom_sp a1 = match->tag(core::make_fixnum(1));

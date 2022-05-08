@@ -79,7 +79,7 @@ CL_DEF_CLASS_METHOD Topology_mv Topology_O::makeTopologyFromResidue(chem::Residu
   core::Symbol_sp stereoisomerName = topologyName;
   Constitution_sp constitution;
   if ( constitution.nilp() ) {
-    SIMPLE_ERROR(BF("The constitution was nil - you need to pass a constitution"));
+    SIMPLE_ERROR(("The constitution was nil - you need to pass a constitution"));
   }
   constitution = gc::As<Constitution_sp>(tconstitution);
   ConstitutionAtoms_sp ca = constitution->getConstitutionAtoms();
@@ -130,16 +130,16 @@ string Topology_O::__repr__() const {
 
 CL_DEFMETHOD Residue_sp Topology_O::buildResidueForIsomer(size_t isomer) const
 {
-//  core::write_bf_stream(BF("%s:%d Topology_O::buildResidueForIsomer\n") % __FILE__ % __LINE__ );
+//  core::write_bf_stream(fmt::sprintf("%s:%d Topology_O::buildResidueForIsomer\n" , __FILE__ , __LINE__ ));
   StereoisomerAtoms_sp info = this->_StereoisomerAtomProperties[isomer];
 //  printf("%s:%d buildResidueForIsomer isomer = %lu  stereoisomerAtoms = %s\n", __FILE__, __LINE__, isomer, _rep_(info).c_str());
-  LOG(BF("creating residue\n"));
+  LOG("creating residue\n");
   core::Symbol_sp residueName = info->getName();
   if (residueName.unboundp()) {
-    SIMPLE_ERROR(BF("residueName for %s was unbound") % _rep_(info));
+    SIMPLE_ERROR(("residueName for %s was unbound") , _rep_(info));
   }
   Residue_sp res = Residue_O::make(residueName);
-  LOG(BF("created residue\n"));
+  LOG("created residue\n");
 //  ASSERT(atomInfo.notnilp());
   ConstitutionAtoms_sp constitutionAtoms = this->_Constitution->getConstitutionAtoms();
   size_t numAtoms = constitutionAtoms->numberOfAtoms();
@@ -168,7 +168,7 @@ CL_DEFMETHOD Residue_sp Topology_O::buildResidueForIsomer(size_t isomer) const
     for ( auto bi=ca->_Bonds.begin(); bi!=ca->_Bonds.end(); ++bi )
     {
       if ((*bi)->_ToAtomIndex>=atoms.size()) {
-        SIMPLE_ERROR(BF("Atom index %d out of bounds (num-atoms %d)") % (*bi)->_ToAtomIndex % atoms.size());
+        SIMPLE_ERROR(("Atom index %d out of bounds (num-atoms %d)") , (*bi)->_ToAtomIndex , atoms.size());
       }
       Atom_sp toAtom = atoms[(*bi)->_ToAtomIndex];
 //      printf("%s:%d     @%d toAtom -> %s\n", __FILE__, __LINE__, (*bi)->_ToAtomIndex, _rep_(toAtom).c_str());
@@ -192,7 +192,7 @@ CL_DEFMETHOD Residue_sp Topology_O::buildResidueForIsomer(size_t isomer) const
     core::T_sp name = (*sci)->getAtomName();
     core::T_mv aa_mv = res->atomWithName(name);
     Atom_sp aa = gc::As<Atom_sp>(aa_mv);
-    LOG(BF("Setting the configuration of atom(%s) to(%s)") % aa->description().c_str() % _rep_((*sci)->getConfiguration())  ); //
+    LOG("Setting the configuration of atom(%s) to(%s)" , aa->description().c_str() , _rep_((*sci)->getConfiguration())  ); //
     auto trans = translate::from_object<ConfigurationEnum,std::true_type>((*sci)->getConfiguration())._v;
     aa->setStereochemistryType(chiralCenter);
     aa->setConfiguration(trans);
@@ -223,7 +223,7 @@ CL_DEFMETHOD Residue_sp Topology_O::buildResidueForMonomerName(core::Symbol_sp m
   for ( size_t isomer(0); isomer<this->_StereoisomerAtomProperties.size(); ++isomer) {
     snames << _rep_(this->_StereoisomerAtomProperties[isomer]->getName()) << " ";
   }
-  SIMPLE_ERROR(BF("Could not find monomer named %s in topology with names %s") % _rep_(monomerName) % snames.str());
+  SIMPLE_ERROR(("Could not find monomer named %s in topology with names %s") , _rep_(monomerName) , snames.str());
 }
 
 CL_DEFMETHOD Residue_sp Topology_O::buildResidueForIsoname(Isoname_sp isoname) const {
@@ -234,7 +234,7 @@ CL_DEFMETHOD Residue_sp Topology_O::buildResidueForIsoname(Isoname_sp isoname) c
   for ( size_t isomer(0); isomer<this->_StereoisomerAtomProperties.size(); ++isomer) {
     snames << _rep_(this->_StereoisomerAtomProperties[isomer]->getName()) << " ";
   }
-  SIMPLE_ERROR(BF("Could not find isoname %s in topology with names %s") % _rep_(isoname) % snames.str());
+  SIMPLE_ERROR(("Could not find isoname %s in topology with names %s") , _rep_(isoname) , snames.str());
 }
 
 CL_DEFMETHOD Residue_sp Topology_O::buildResidueSingleName() const {
@@ -246,7 +246,7 @@ CL_DEFMETHOD Residue_sp Topology_O::buildResidueSingleName() const {
   for ( size_t isomer(0); isomer<this->_StereoisomerAtomProperties.size(); ++isomer) {
     snames << _rep_(this->_StereoisomerAtomProperties[isomer]->getName()) << " ";
   }
-  SIMPLE_ERROR(BF("This topology does not have a single name - it has names %s") % snames.str());
+  SIMPLE_ERROR(("This topology does not have a single name - it has names %s") , snames.str());
 }
 
 
@@ -298,7 +298,7 @@ void Topology_O::throwIfExtractFragmentsAreNotExclusive(ConstitutionAtoms_sp res
     stringstream ss;
     ss << "The Topology " << this->getName() << " ExtractFragments do not include all atoms" << std::endl;
     ss << " of the Constitution.  The following atom names are missing: " << missingAtomNames->asString();
-    SIMPLE_ERROR(BF("%s")%ss.str());
+    SIMPLE_ERROR(("%s") , ss.str());
   }
   stringstream so;
   bool sawOverlaps = false;
@@ -319,7 +319,7 @@ void Topology_O::throwIfExtractFragmentsAreNotExclusive(ConstitutionAtoms_sp res
     stringstream se;
     se << "In definition of Topology(" << this->getName() << ") there were overlapping ExtractFragment definitions"<<std::endl;
     se << so.str();
-    SIMPLE_ERROR(BF(se.str()));
+    SIMPLE_ERROR((se.str()));
   }
 }
 #endif
@@ -346,10 +346,10 @@ CL_DEFUN void connect_residues(Topology_sp prev_topology,
   core::Symbol_sp out_plug_atom_name = out_plug->getB0();
   core::Symbol_sp in_plug_atom_name = in_plug->getB0();
   if ( out_plug_atom_name.nilp() ) {
-    SIMPLE_ERROR(BF("Could not find b0 in plug %s for topology %s") % _rep_(out_plug) % _rep_(prev_topology));
+    SIMPLE_ERROR(("Could not find b0 in plug %s for topology %s") , _rep_(out_plug) , _rep_(prev_topology));
   }
   if ( in_plug_atom_name.nilp() ) {
-    SIMPLE_ERROR(BF("Could not find b0 in plug %s for topology %s") % _rep_(in_plug) % _rep_(next_topology));
+    SIMPLE_ERROR(("Could not find b0 in plug %s for topology %s") , _rep_(in_plug) , _rep_(next_topology));
   }
 //  printf("%s:%d  out_plug_atom_name = %s  in_plug_atom_name = %s\n", __FILE__, __LINE__, _rep_(out_plug_atom_name).c_str(), _rep_(in_plug_atom_name).c_str());
   Atom_sp out_atom = gc::As_unsafe<Atom_sp>(prev_residue->atomWithName(out_plug_atom_name));
@@ -374,7 +374,7 @@ StereoisomerAtoms_sp Topology_O::getStereoisomerAtoms(core::Symbol_sp stereoisom
       return this->_StereoisomerAtomProperties[i];
     }
   }
-  SIMPLE_ERROR(BF("Could not find StereoisomerAtoms named %s") % _rep_(stereoisomerName));
+  SIMPLE_ERROR(("Could not find StereoisomerAtoms named %s") , _rep_(stereoisomerName));
 }
 
 
@@ -419,15 +419,15 @@ CL_DEFMETHOD     core::List_sp Topology_O::plugsAsList()
 {_OF();
   core::Cons_sp first = core::Cons_O::create(nil<core::T_O>(),nil<core::T_O>());
   core::Cons_sp cur = first;
-  LOG(BF("The number of plugs = %d") % this->_Plugs.size()  );
+  LOG("The number of plugs = %d" , this->_Plugs.size()  );
   for ( Plugs::iterator i=this->_Plugs.begin(); i!= this->_Plugs.end(); i++)
   {
-    LOG(BF("Adding plug: %s") % i->second->getName());
+    LOG("Adding plug: %s" , i->second->getName());
     core::Cons_sp one = core::Cons_O::create(i->second,nil<core::T_O>());
     cur->setCdr(one);
     cur = one;
   }
-  LOG(BF("Returning the plugs"));
+  LOG("Returning the plugs");
   return first->cdr();
 }
 
@@ -437,17 +437,17 @@ CL_DEFMETHOD     core::List_sp Topology_O::plugsWithMatesAsList()
 {
   core::Cons_sp first = core::Cons_O::create(nil<core::T_O>(),nil<core::T_O>());
   core::Cons_sp cur = first;
-  LOG(BF("The number of plugs = %d") % this->_Plugs.size()  );
+  LOG("The number of plugs = %d" , this->_Plugs.size()  );
   for ( Plugs::iterator i=this->_Plugs.begin(); i!= this->_Plugs.end(); i++)
   {
 	    // skip origin plugs
     if ( !i->second.isA<PlugWithMates_O>() ) continue;
-    LOG(BF("Adding plug: %s") % _rep_(i->second) );
+    LOG("Adding plug: %s" , _rep_(i->second) );
     core::Cons_sp one = core::Cons_O::create(i->second,nil<core::T_O>());
     cur->setCdr(one);
     cur = one;
   }
-  LOG(BF("Returning the plugs") );
+  LOG("Returning the plugs" );
   return first->cdr();
 }
 
@@ -479,7 +479,7 @@ string	Topology_O::description() const
   ss << " Plugs:";
   for ( Plugs::const_iterator i=this->_Plugs.begin(); i!= this->_Plugs.end(); i++)
   {
-    ss << (BF("%s@%p ") % _rep_(i->second->getName()) % i->second->getName().raw_() ).str();
+    ss << fmt::sprintf("%s@%p " , _rep_(i->second->getName()) , (void*)i->second->getName().raw_() );
   }
   ss << ">";
   return ss.str();
@@ -491,15 +491,15 @@ bool Topology_O::hasMatchingPlugsWithMates(adapt::SymbolSet_sp plugSet)
   adapt::SymbolSet_sp myPlugSet = adapt::SymbolSet_O::create();
   for ( Plugs::iterator i=this->_Plugs.begin(); i!= this->_Plugs.end(); i++)
   {
-    LOG(BF("Looking at plug[%s]") % _rep_(i->second->getName()) );
+    LOG("Looking at plug[%s]" , _rep_(i->second->getName()) );
     if (i->second.isA<PlugWithMates_O>() )
     {
       myPlugSet->insert(i->first);
     }
   }
-  LOG(BF("Topology plugs are: %s") % myPlugSet->asString() );
+  LOG("Topology plugs are: %s" , myPlugSet->asString() );
   bool match = plugSet->equal(myPlugSet);
-  LOG(BF("Do they match the plugs passed as arguments[%s] --> %d") % plugSet->asString() % match );
+  LOG("Do they match the plugs passed as arguments[%s] --> %d" , plugSet->asString() , match );
   return match;
 }
 
@@ -519,30 +519,30 @@ CL_DEFMETHOD bool Topology_O::matchesPlugs(Topology_sp other)
 
 bool	Topology_O::matchesMonomerEnvironment( Monomer_sp mon )
 {
-  LOG(BF("Checking if monomer[%s] matches the topology environment") % mon->description() );
+  LOG("Checking if monomer[%s] matches the topology environment" , mon->description() );
   uint numPlugsWithMates = 0;
-  LOG(BF("%s:%d monomer->%s  number of plugs: %d\n") % __FILE__ % __LINE__ % _rep_(mon) % this->_Plugs.size());
+  LOG("%s:%d monomer->%s  number of plugs: %d\n" , __FILE__ , __LINE__ , _rep_(mon) , this->_Plugs.size());
   for ( Plugs::iterator i=this->_Plugs.begin(); i!= this->_Plugs.end(); i++)
   {
-    LOG(BF("Looking at plug[%s]") % _rep_(i->second->getName()) );
+    LOG("Looking at plug[%s]" , _rep_(i->second->getName()) );
     if (!i->second.isA<PlugWithMates_O>() )
     {
-      LOG(BF("It's not a PlugWithMates"));
+      LOG("It's not a PlugWithMates");
       continue;
     }
     if ( !mon->hasCouplingWithPlugName(i->second->getName()) ) 
     {
-      SIMPLE_WARN(BF("The monomer %s doesn't have a coupling with plug name[%s]") % _rep_(mon) % _rep_(i->second->getName()) );
+      SIMPLE_WARN("The monomer %s doesn't have a coupling with plug name[%s]" ,_rep_(mon) ,_rep_(i->second->getName()) );
       return false;
     }
     numPlugsWithMates++;
   }
   if ( numPlugsWithMates != mon->numberOfCouplings() ) 
   {
-    SIMPLE_WARN(BF("There is a mismatch with the number of plugs %d in the topology %s and the number of couplings %d for the monomer %s") % numPlugsWithMates % _rep_(this->asSmartPtr()) % mon->numberOfCouplings() % _rep_(mon));
+    SIMPLE_WARN("There is a mismatch with the number of plugs %d in the topology %s and the number of couplings %d for the monomer %s" ,numPlugsWithMates ,_rep_(this->asSmartPtr()) ,mon->numberOfCouplings() ,_rep_(mon));
     return false;
   }
-  LOG(BF("They match"));
+  LOG("They match");
   return true;
 }
 
@@ -590,7 +590,7 @@ CL_LISPIFY_NAME("hasPlugNamed");
 CL_DEFMETHOD     bool	Topology_O::hasPlugNamed(core::Symbol_sp name)
 {
   bool res = this->_Plugs.contains(name);
-  LOG(BF("Result = %d") % res );
+  LOG("Result = %d" , res );
   return res;
 };
 
@@ -599,7 +599,7 @@ CL_DEFMETHOD     Plug_sp Topology_O::plugNamed(core::Symbol_sp name)
 {
   bool res = this->_Plugs.contains(name);
   if ( !res ) {
-    SIMPLE_ERROR(BF("Could not find plug with name %s") % _rep_(name));
+    SIMPLE_ERROR(("Could not find plug with name %s") , _rep_(name));
   }
   return this->_Plugs.get(name);
 };
@@ -654,7 +654,7 @@ CL_DEFMETHOD core::T_sp Topology_O::getProperty(core::Symbol_sp symbol)
   if (res.unboundp()) {
     stringstream props;
     props << _rep_(this->_Properties);
-    SIMPLE_ERROR(BF("You asked for an unknown property[%s] for topology[%s@%p] - the available properties are[%s]") % _rep_(symbol) % this->__repr__() % this % props.str()  );
+    SIMPLE_ERROR(("You asked for an unknown property[%s] for topology[%s@%p] - the available properties are[%s]") , _rep_(symbol) , this->__repr__() , (void*)this , props.str()  );
   }
   return res;
 }

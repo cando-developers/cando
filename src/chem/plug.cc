@@ -266,15 +266,15 @@ void RingClosingPlug_O::fields(core::Record_sp node) {
 #if 0
 RingClosingPlug_O::RingClosingPlug_O(const RingClosingPlug_O& p) : RingClosingPlug_O::Base(p)
 {
-  LOG(BF("Original %s") % p.description().c_str()  );
+  LOG("Original %s" , p.description().c_str()  );
   gctools::Vec0<RingClosingMate_sp>::const_iterator vi;
-  LOG(BF("Copying %d ring closing mates") % p._Mates.size()  );
+  LOG("Copying %d ring closing mates" , p._Mates.size()  );
   for ( vi=p._RingClosingMates.begin(); vi!=p._RingClosingMates.end(); vi++ ) {
-    LOG(BF("Copied mate") );
+    LOG("Copied mate" );
     auto  rn = gctools::GC<RingClosingMate_O>::copy( *vi->get() ); // = RP_Copy<RingClosingMate_O>(*vi);
     this->_RingClosingMates.push_back(rn);
   }
-  LOG(BF("Copy constructed %s") % this->description().c_str()  );
+  LOG("Copy constructed %s" , this->description().c_str()  );
 }
 #endif
 

@@ -120,7 +120,7 @@ void ChainNode_O::fields(core::Record_sp node) {
         if (monomerId<this->_IndexedMonomerNodes.size()) {
           return this->_IndexedMonomerNodes[monomerId];
         }
-        SIMPLE_ERROR(BF("Out of bounds monomerId %lu must be less than %lu") % monomerId % this->_IndexedMonomerNodes.size());
+        SIMPLE_ERROR(("Out of bounds monomerId %lu must be less than %lu") , monomerId , this->_IndexedMonomerNodes.size());
     }
 
 core::List_sp ChainNode_O::children() const

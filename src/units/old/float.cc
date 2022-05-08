@@ -58,7 +58,7 @@ namespace units
 //      this->Base::__init__(exec,args,env,lisp);
 //      arg = from_object<XXXX>::convert(env->lookup(this->Package(),"YYY"));
 	core::Cons_sp args = allargs->cdr();
-	LOG(BF("Initializing Float_O with args[%s]") % _rep_(args) );
+	LOG("Initializing Float_O with args[%s]" , _rep_(args) );
 	double amount = 1.0;
 	Object_sp oamount = args->ocar();
 	if ( oamount->notNil() )

@@ -255,7 +255,7 @@ namespace chem {
     bool	Atom_equal(core::T_sp obj) const;
     virtual void	transferCoordinates(Matter_sp other);
 
-    int	totalNetResidueCharge() { THROW_HARD_ERROR(BF("Atoms can't calculate totalNetResidueCharge"));};
+    int	totalNetResidueCharge() { THROW_HARD_ERROR("Atoms can't calculate totalNetResidueCharge");};
     VectorBond::iterator bonds_begin() { return this->bonds.begin(); };
     VectorBond::iterator bonds_end() {return this->bonds.end(); };
 
@@ -515,7 +515,7 @@ namespace chem {
     void	addUniqueIntraResidueBondCopiesToBondList(core::HashTable_sp atomToResidue, BondList_sp list);
     void	addUniqueInterResidueBondCopiesToBondList(core::HashTable_sp atomToResidue, BondList_sp list);
 
-    core::HashTable_sp atomToResidueMap() { SIMPLE_ERROR(BF("You cannot call atomToResidueMap with an atom")); };
+    core::HashTable_sp atomToResidueMap() { SIMPLE_ERROR(("You cannot call atomToResidueMap with an atom")); };
 	//! Downgrade this
 //	void	addUniqueIntraResidueBondsToQDomNodeAsChildren(adapt::QDomNode_sp node);
 	//! Downgrade this

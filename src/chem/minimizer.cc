@@ -288,7 +288,7 @@ CL_DEFMETHOD
 void Minimizer_O::set_frozen(core::T_sp frozen) {
   if (frozen.notnilp()) {
     if (!gc::IsA<core::SimpleBitVector_sp>(frozen)) {
-      SIMPLE_ERROR(BF("You can set frozen to NIL or simple-bit-vector"));
+      SIMPLE_ERROR(("You can set frozen to NIL or simple-bit-vector"));
     }
   }
   this->_Frozen = frozen;
@@ -351,7 +351,7 @@ double	Minimizer_O::d1DTotalEnergy( double x )
 {
 #ifdef	DEBUG_ON
 //    this->nvP1DSearchOrigin->debugDump("origin");
-//    LOG(BF("x = %lf") % (x ) );
+//    LOG("x = %lf" , (x ) );
 //    this->nvP1DSearchDirection->debugDump("direction");
 #endif
   this->getPosition(this->nvP1DSearchTemp1, this->nvP1DSearchOrigin, this->nvP1DSearchDirection,x);
@@ -368,7 +368,7 @@ double	Minimizer_O::d1DTotalEnergyForce( double x, double* fx, double * dfx )
 {
 #ifdef	DEBUG_ON
 //    this->nvP1DSearchOrigin->debugDump("origin");
-//    LOG(BF("x = %lf") % (x ) );
+//    LOG("x = %lf" , (x ) );
 //    this->nvP1DSearchDirection->debugDump("direction");
 #endif
   this->getPosition(this->nvP1DSearchTemp1,
@@ -418,7 +418,7 @@ void	Minimizer_O::minBracket(
   }
   xc = xb+GOLD*(xb-xa);
   fc = this->d1DTotalEnergy(xc);
-  LOG(BF("Start: xa(%lf) xb(%lf) xc(%lf) | fa(%lf) fb(%lf) fc(%lf)") % xa % xb % xc % fa % fb % fc );
+  LOG("Start: xa(%lf) xb(%lf) xc(%lf) | fa(%lf) fb(%lf) fc(%lf)" , xa , xb , xc , fa , fb , fc );
   while ( fb > fc ) {
     numSteps++;
     if (numSteps%1000==0) {
@@ -426,7 +426,7 @@ void	Minimizer_O::minBracket(
              __FILE__, __LINE__, numSteps, xa, xb, xc, fa, fb, fc );
     }
     this->_MinBracketSteps++;
-    LOG(BF("Loop:  xa(%lf) xb(%lf) xc(%lf) | fa(%lf) fb(%lf) fc(%lf)")%xa%xb%xc%fa%fb%fc);
+    LOG("Loop:  xa(%lf) xb(%lf) xc(%lf) | fa(%lf) fb(%lf) fc(%lf)"%xa%xb%xc%fa%fb%fc);
     r = (xb-xa)*(fb-fc);
     q = (xb-xc)*(fb-fa);
     u = xb-((xb-xc)*q-(xb-xa)*r)/
@@ -466,14 +466,14 @@ void	Minimizer_O::minBracket(
   }
  DONE:
 #ifdef	DEBUG_ON
-  LOG(BF("minBracket  xa(%lf), xb(%lf), xc(%lf)") % xa % xb % xc );
+  LOG("minBracket  xa(%lf), xb(%lf), xc(%lf)" , xa , xb , xc );
   if ( fa > fb && fb < fc ) {
-    LOG(BF("fa.GT.fb.LT.fc") );
+    LOG("fa.GT.fb.LT.fc" );
   } else {
-    LOG(BF("FAIL! minBracket FAILED!! It's not true that: fa.GT.fb.LT.fc") );
+    LOG("FAIL! minBracket FAILED!! It's not true that: fa.GT.fb.LT.fc" );
   }
   if ( xc < 0 ) {
-    LOG(BF("ATTN!  xc is less than zero ") );
+    LOG("ATTN!  xc is less than zero " );
   }
 #endif
   *dPxa = xa;
@@ -511,27 +511,27 @@ double 	Minimizer_O::dbrent(	double ax, double bx, double cx,
   energyEvals = 0;
   forceEvals = 0;
   dbrentSteps = 0;
-  LOG(BF("Incoming ax bx cx= %e %e %e") % ax % bx % cx );
+  LOG("Incoming ax bx cx= %e %e %e" , ax , bx , cx );
   if (chem__verbose(4) ) {
-    core::write_bf_stream(BF("Incoming ax bx cx -> %lf %lf %lf\n") % ax % bx % cx);
+    core::write_bf_stream(fmt::sprintf("Incoming ax bx cx -> %lf %lf %lf\n" , ax , bx , cx));
   }
   _a = (ax<cx?ax:cx);
   _b = (ax>cx?ax:cx);
-  LOG(BF("Initial _a _b= %lf %lf") % _a % _b );
+  LOG("Initial _a _b= %lf %lf" , _a , _b );
   x = w = v = bx;
 //
 // Calculate the derivative along the search direction
 //
   ft = d1DTotalEnergyForce( x, &fx, &dx );
   forceEvals++;
-  LOG(BF("dbrent: derivative x,fx,dx = %lf %lf %lf") % x % fx % dx  );
+  LOG("dbrent: derivative x,fx,dx = %lf %lf %lf" , x , fx , dx  );
   fw=fv=fx;
   dw=dv=dx;
   for (iter=1;iter<=DBRENTITMAX;iter++ ) {
     dbrentSteps++;
-//	LOG(BF("dbrent: iter=%3d  _a, _b= %10.15lf %10.15lf") % iter % _a % _b  );
+//	LOG("dbrent: iter=%3d  _a, _b= %10.15lf %10.15lf" , iter , _a , _b  );
     if (chem__verbose(4) ) {
-      core::write_bf_stream(BF("dbrent: iter = %3d  _a, _b -> %e %e\n") % iter % _a % _b );
+      core::write_bf_stream(fmt::sprintf("dbrent: iter = %3d  _a, _b -> %e %e\n" , iter , _a , _b ));
     }
     xm=0.5*(_a+_b);
     tol1=tol*fabs(x)+ZEPS;
@@ -539,9 +539,9 @@ double 	Minimizer_O::dbrent(	double ax, double bx, double cx,
     if (fabs(x-xm) <=(tol2-0.5*(_b-_a))) {	// Stopping criterion
       lineStep=x;
       retval = fx;
-      LOG(BF("done due to (fabs(x-xm)<=(tol2-0.5*(_b-_a)))") );
+      LOG("done due to (fabs(x-xm)<=(tol2-0.5*(_b-_a)))" );
       if (chem__verbose(4) ) {
-        core::write_bf_stream(BF("dbrent: done due to (fabs(x-xm) <= (tol2-0.5*(_b-_a))) -> %e <= %e\n") % fabs(x-xm) % (tol2-0.5*(_b-_a)));
+        core::write_bf_stream(fmt::sprintf("dbrent: done due to (fabs(x-xm) <= (tol2-0.5*(_b-_a))) -> %e <= %e\n" , fabs(x-xm) , (tol2-0.5*(_b-_a))));
       }
       goto DONE;
     }
@@ -597,9 +597,9 @@ double 	Minimizer_O::dbrent(	double ax, double bx, double cx,
 			  // uphill, then we are done
         lineStep=x;
         retval = fx;
-        LOG(BF("done due to fu>fx") );
+        LOG("done due to fu>fx" );
         if (chem__verbose(4) ) {
-          core::write_bf_stream(BF("dbrent: done due to fu>fx -> %lf > %lf\n") % fu % fx );
+          core::write_bf_stream(fmt::sprintf("dbrent: done due to fu>fx -> %lf > %lf\n" , fu , fx ));
         }
         goto DONE;
       }
@@ -625,13 +625,13 @@ double 	Minimizer_O::dbrent(	double ax, double bx, double cx,
       }
     }
   }
-  LOG(BF("dbrent: ERROR Exceeded max iterations") );
+  LOG("dbrent: ERROR Exceeded max iterations" );
   if (chem__verbose(4) ) {
-    core::write_bf_stream(BF("dbrent: exceeded max number of iterations %d\n") % DBRENTITMAX);
+    core::write_bf_stream(fmt::sprintf("dbrent: exceeded max number of iterations %d\n" , DBRENTITMAX));
   }
   retval = -1.0;
  DONE:
-  LOG(BF("dbrent evaluated energy(%d) and force(%d) times") % energyEvals % forceEvals  );
+  LOG("dbrent evaluated energy(%d) and force(%d) times" , energyEvals , forceEvals  );
   return retval;
 }
 
@@ -781,7 +781,7 @@ void	Minimizer_O::lineSearch(	double	*dPstep,
   int	functionEvals;
 
   functionEvals = 0;
-  LOG(BF("Starting") );
+  LOG("Starting" );
 
     //
     // Setup the 1D search origin and direction
@@ -800,17 +800,17 @@ void	Minimizer_O::lineSearch(	double	*dPstep,
     // Bracket the minimum
     //
   if ( chem__verbose(4) ) {
-    core::write_bf_stream(BF("Trying to bracket min this->_InitialLineSearchStep,directionMag,xb -> %e,%e,%e\n") % this->_InitialLineSearchStep % directionMag % xb);
+    core::write_bf_stream(fmt::sprintf("Trying to bracket min this->_InitialLineSearchStep,directionMag,xb -> %e,%e,%e\n" , this->_InitialLineSearchStep , directionMag , xb));
   }
 
   this->minBracket( nvOrigin, nvDirection,
                     &xa, &xb, &xc, &fa, &fb, &fc );
-  LOG(BF("Bracketed minimum") );
-  LOG(BF("xa,xb,xc = %lf %lf %lf ") % xa % xb % xc  );
-  LOG(BF("fa,fb,fc = %lf %lf %lf ") % fa % fb % fc  );
+  LOG("Bracketed minimum" );
+  LOG("xa,xb,xc = %lf %lf %lf " , xa , xb , xc  );
+  LOG("fa,fb,fc = %lf %lf %lf " , fa , fb , fc  );
   if ( chem__verbose(4) ) {
-    core::write_bf_stream(BF("Bracketed min xa,xb,xc -> %e,%e,%e\n") % xa % xb % xc );
-    core::write_bf_stream(BF("              fa,fb,fc -> %e,%e,%e\n") % fa % fb % fc );
+    core::write_bf_stream(fmt::sprintf("Bracketed min xa,xb,xc -> %e,%e,%e\n" , xa , xb , xc ));
+    core::write_bf_stream(fmt::sprintf("              fa,fb,fc -> %e,%e,%e\n" , fa , fb , fc ));
   }
 
   if ( this->_DebugOn )
@@ -828,7 +828,7 @@ void	Minimizer_O::lineSearch(	double	*dPstep,
   int forceEvals = 0;
   int dbrentSteps = 0;
   fb = dbrent( xa, xb, xc, TOL, step, energyEvals, forceEvals, dbrentSteps );
-  LOG(BF("brent bracketed step = %lf") % step  );
+  LOG("brent bracketed step = %lf" , step  );
   if ( this->_DebugOn )
   {
     this->lineSearchFinalReport( report, step, fb, energyEvals,
@@ -839,7 +839,7 @@ void	Minimizer_O::lineSearch(	double	*dPstep,
   *dPfnew = fb;
 
 
-  LOG(BF("Done") );
+  LOG("Done" );
 }
 
 
@@ -871,15 +871,15 @@ bool	Minimizer_O::_displayIntermediateMessage(
       }
       sout << std::endl;
     }
-    sout << BF(" min%4s") % this->statusAsShortString();
+    sout << fmt::sprintf(" min%4s" , this->statusAsShortString());
     if ( this->_ShowElapsedTime )
     {
       auto EndTime = std::chrono::steady_clock::now();
       auto elapsed = std::chrono::duration_cast<std::chrono::seconds>(EndTime - this->_StartTime._value);
-      sout << BF(" %7ld") % elapsed.count();
+      sout << fmt::sprintf(" %7ld" , elapsed.count());
     }
-    sout << BF(" %5d") % this->_Iteration;
-    sout << BF(" %9.2lf") % log(step);
+    sout << fmt::sprintf(" %5d" , this->_Iteration);
+    sout << fmt::sprintf(" %9.2lf" , log(step));
     if ( steepestDescent ) 
     {
       sout << "StDesc";
@@ -892,13 +892,13 @@ bool	Minimizer_O::_displayIntermediateMessage(
       {
         angle = 0.0;
       }
-      sout << (BF(" %5.1lf") % angle);
+      sout << (fmt::sprintf(" %5.1lf" , angle));
     }
-    sout << (BF(" %18.3lf") % fenergy );
-    sout << (BF(" %18.3lf") % forceRMSMag);
+    sout << (fmt::sprintf(" %18.3lf" , fenergy ));
+    sout << (fmt::sprintf(" %18.3lf" , forceRMSMag));
     if ( this->_ScoringFunction->scoringFunctionName().notnilp() ) 
     {
-      sout << BF(" %s") % this->_ScoringFunction->scoringFunctionName();
+      sout << fmt::sprintf(" %s" , this->_ScoringFunction->scoringFunctionName());
     }
     core::clasp_writeln_string(sout.str());
     if ( this->_DebugOn ) 
@@ -934,17 +934,17 @@ void	Minimizer_O::_steepestDescent( int numSteps,
   int		localSteps, k;
   bool          printedLatestMessage;
 
-  LOG(BF("Checking status") );
+  LOG("Checking status" );
   if ( this->_Status == minimizerError ) return;
   this->_Status = steepestDescentRunning;
   this->_CurrentPreconditioner = noPreconditioner;
-  LOG(BF("step") );
+  LOG("step" );
 
   localSteps = 0;
   k = 0;
   step = 0.0;
 
-  LOG(BF("step") );
+  LOG("step" );
 	/* Calculate how many conjugate gradient steps can be */
 	/* taken before a restart must be done */
 
@@ -953,20 +953,20 @@ void	Minimizer_O::_steepestDescent( int numSteps,
   force = NVector_O::create(iRestartSteps);
   this->_Force = force;
   s = NVector_O::create(iRestartSteps);
-  LOG(BF("step") );
+  LOG("step" );
   dir = NVector_O::create(iRestartSteps);
   tv1 = NVector_O::create(iRestartSteps);
   tv2 = NVector_O::create(iRestartSteps);
-  LOG(BF("step") );
+  LOG("step" );
 	// Done
   innerSteps = MIN(iRestartSteps,ITMAX);
-  LOG(BF("step") );
+  LOG("step" );
   double fp = this->dTotalEnergyForce( x, force );
-  LOG(BF("step") );
+  LOG("step" );
 //    r->inPlaceTimesScalar(-1.0);
 	//  no preconditioning
   copyVector(s,force);
-  LOG(BF("Done initialization") );
+  LOG("Done initialization" );
 #if 0 //[
 	// TODO calculate preconditioner here
 	// s = M^(-1)force rather than just copying it from force
@@ -983,8 +983,8 @@ void	Minimizer_O::_steepestDescent( int numSteps,
   case diagonalPreconditioner:
       m = NVector_O::create(iRestartSteps);
       this->_EnergyFunction->setupDiagonalPreconditioner(x,m);
-      LOG(BF("Preconditioner max value: %lf") % m->maxValue() );
-      LOG(BF("Preconditioner min value: %lf") % m->minValue() );
+      LOG("Preconditioner max value: %lf" , m->maxValue() );
+      LOG("Preconditioner min value: %lf" , m->minValue() );
       minVal = m->minValue();
       if ( minVal < 0.0 ) {
         m->addScalar(m,fabs(minVal)+1.0);
@@ -992,23 +992,23 @@ void	Minimizer_O::_steepestDescent( int numSteps,
       this->_EnergyFunction->backSubstituteDiagonalPreconditioner(m,s,force);
       break;
   default:
-      SIMPLE_ERROR(BF("Unsupported preconditioner"));
+      SIMPLE_ERROR(("Unsupported preconditioner"));
   }
 #endif //]
   copyVector(dir,s);
   deltaNew = dotProduct(force,dir,this->_Frozen);
   delta0 = deltaNew;
   eSquaredDelta0 = forceTolerance*delta0;
-  LOG(BF("eSquaredDelta0 = %lf") % (eSquaredDelta0 ) );
-  LOG(BF("forceTolerance = %lf") % (forceTolerance ) );
-  LOG(BF("delta0 = %lf") % (delta0 ) );
+  LOG("eSquaredDelta0 = %lf" , (eSquaredDelta0 ) );
+  LOG("forceTolerance = %lf" , (forceTolerance ) );
+  LOG("delta0 = %lf" , (delta0 ) );
   localSteps = 0;
   if ( this->_PrintIntermediateResults ) {
     core::clasp_writeln_string("======= Starting Steepest Descent Minimizer");
   }
   {
     while (1) 
-    { _BLOCK_TRACEF(BF("Step %d") %localSteps);
+    { 
       
       if (this->_StepCallback.notnilp()) core::eval::funcall(this->_StepCallback,x);
       
@@ -1033,7 +1033,7 @@ void	Minimizer_O::_steepestDescent( int numSteps,
           if (!printedLatestMessage) {
             printedLatestMessage = this->_displayIntermediateMessage(step,fp,forceRmsMag,cosAngle,steepestDescent,true);
           }
-          core::clasp_writeln_string((BF(" ! DONE absolute force test:\n ! forceRmsMag(%e) < forceTolerance(%e)") % forceRmsMag % forceTolerance).str() );
+          core::clasp_writeln_string(fmt::sprintf(" ! DONE absolute force test:\n ! forceRmsMag(%e) < forceTolerance(%e)" , forceRmsMag , forceTolerance) );
         }
         break;
       }
@@ -1093,11 +1093,11 @@ void	Minimizer_O::_steepestDescent( int numSteps,
 		    //
         dirMag = magnitude(dir,this->_Frozen);
         steepestDescent = false;
-        LOG(BF("Starting descent test") );
+        LOG("Starting descent test" );
         if ( forceMag != 0.0 && dirMag != 0.0 ) {
           cosAngle = dotProduct(force,dir,this->_Frozen)/(forceMag*dirMag);
         } else {
-          LOG(BF("something was zero length Using force") );
+          LOG("something was zero length Using force" );
           copyVector(dir,force);
           steepestDescent = true;
           cosAngle = 0.0;
@@ -1105,7 +1105,7 @@ void	Minimizer_O::_steepestDescent( int numSteps,
 
         this->lineSearch( &step, &fnew, x, dir, force, tv1, tv2, localSteps, stepReport );
         if (chem__verbose(5)) {
-          core::write_bf_stream(BF(" %s  lineSearch step-> %e\n") % __FUNCTION__ % step );
+          core::write_bf_stream(fmt::sprintf(" %s  lineSearch step-> %e\n" , __FUNCTION__ , step ));
         }
 
         if ( prevStep == 0.0 && step == 0.0 ) {
@@ -1138,10 +1138,10 @@ void	Minimizer_O::_steepestDescent( int numSteps,
             this->_EnergyFunction->backSubstituteDiagonalPreconditioner(m,s,force);
             break;
         case diagonalPreconditioner:
-            LOG(BF("Calculating diagonal preconditioner") );
+            LOG("Calculating diagonal preconditioner" );
             this->_EnergyFunction->setupDiagonalPreconditioner(x,m);
-            LOG(BF("Preconditioner max value: %lf") % m->maxValue()  );
-            LOG(BF("Preconditioner min value: %lf") % m->minValue()  );
+            LOG("Preconditioner max value: %lf" , m->maxValue()  );
+            LOG("Preconditioner min value: %lf" , m->minValue()  );
             minVal = m->minValue();
             if ( minVal < 0.0 ) {
               m->addScalar(m,fabs(minVal)+1.0);
@@ -1152,7 +1152,7 @@ void	Minimizer_O::_steepestDescent( int numSteps,
 			//		    }
             break;
         default:
-            SIMPLE_ERROR(BF("Unsupported preconditioner"));
+            SIMPLE_ERROR(("Unsupported preconditioner"));
             break;
         }
 #endif //]
@@ -1175,22 +1175,22 @@ void	Minimizer_O::_steepestDescent( int numSteps,
   }
   fp = dTotalEnergyForce( x, force );
   this->_ScoringFunction->saveCoordinatesAndForcesFromVectors(x,force);
-  LOG(BF("Wrote coordinates and force to atoms") );
+  LOG("Wrote coordinates and force to atoms" );
   if ( this->_DebugOn )
   {
-    LOG(BF("About to update stepReport") );
+    LOG("About to update stepReport" );
     ASSERTNOTNULL(stepReport);
     if ( stepReport.notnilp() )
     {
-      LOG(BF("About to add to stepReport") );
+      LOG("About to add to stepReport" );
       stepReport->prematureTermination("Stuck");
       ASSERTNOTNULL(this->_Log);
-      LOG(BF("About to write report to debugLog") );
+      LOG("About to write report to debugLog" );
       this->_Log->addReport(stepReport);
-      LOG(BF("Done writing report to debugLog") );
+      LOG("Done writing report to debugLog" );
     }
   }
-  LOG(BF("Leaving _steepestDescent") );
+  LOG("Leaving _steepestDescent" );
 }
 
 
@@ -1250,8 +1250,8 @@ void	Minimizer_O::_conjugateGradient(int numSteps,
   case diagonalPreconditioner:
       diag = NVector_O::create(iRestartSteps);
       this->_EnergyFunction->setupDiagonalPreconditioner(x,diag);
-      LOG(BF("Preconditioner max value: %lf") % diag->maxValue() );
-      LOG(BF("Preconditioner min value: %lf") % diag->minValue() );
+      LOG("Preconditioner max value: %lf" , diag->maxValue() );
+      LOG("Preconditioner min value: %lf" , diag->minValue() );
       this->_EnergyFunction->backSubstituteDiagonalPreconditioner(diag,s,force);
       break;
   case hessianPreconditioner:
@@ -1264,20 +1264,20 @@ void	Minimizer_O::_conjugateGradient(int numSteps,
       this->_EnergyFunction->backSubstituteLDLt(ldlt,s,force);
       break;
   default:
-      SIMPLE_ERROR(BF("Unknown preconditioner option"));
+      SIMPLE_ERROR(("Unknown preconditioner option"));
   }
 #endif //]
   copyVector(d,s);
   deltaNew = dotProduct(force,d,this->_Frozen);
   delta0 = deltaNew;
   eSquaredDelta0 = forceTolerance*delta0;
-  LOG(BF("eSquaredDelta0 = %lf") % (eSquaredDelta0 ) );
-  LOG(BF("forceTolerance = %lf") % (forceTolerance ) );
-  LOG(BF("delta0 = %lf") % (delta0 ) );
+  LOG("eSquaredDelta0 = %lf" , (eSquaredDelta0 ) );
+  LOG("forceTolerance = %lf" , (forceTolerance ) );
+  LOG("delta0 = %lf" , (delta0 ) );
   localSteps = 0;
   step = 0.0;
   if ( this->_PrintIntermediateResults ) {
-    core::clasp_writeln_string((BF( "======= Starting Conjugate Gradient Minimizer" )).str());
+    core::clasp_writeln_string("======= Starting Conjugate Gradient Minimizer");
   }
   {
     while (1) {
@@ -1298,7 +1298,7 @@ void	Minimizer_O::_conjugateGradient(int numSteps,
           if (!printedLatestMessage) {
             printedLatestMessage = this->_displayIntermediateMessage(step,fp,forceRmsMag,cosAngle,steepestDescent,true);
           }
-          core::clasp_writeln_string((BF(" ! DONE absolute force test:\n ! forceRmsMag(%e)<forceTolerance(%e)")% forceRmsMag % forceTolerance ).str());
+          core::clasp_writeln_string(fmt::sprintf(" ! DONE absolute force test:\n ! forceRmsMag(%e)<forceTolerance(%e)" , forceRmsMag , forceTolerance ));
         }
         break;
       }
@@ -1385,14 +1385,14 @@ void	Minimizer_O::_conjugateGradient(int numSteps,
 		//
         dirMag = magnitude(d,this->_Frozen);
         steepestDescent = false;
-        LOG(BF("Starting descent test") );
+        LOG("Starting descent test" );
         cosAngle = 0.0;
         if ( forceMag != 0.0 && dirMag != 0.0 ) {
-          LOG(BF("forceMag = %lf") % forceMag  );
-          LOG(BF("dirMag = %lf") % dirMag  );
+          LOG("forceMag = %lf" , forceMag  );
+          LOG("dirMag = %lf" , dirMag  );
           cosAngle = dotProduct(force,d,this->_Frozen)/(forceMag*dirMag);
         } else {
-          LOG(BF("some magnitude was zero Using force") );
+          LOG("some magnitude was zero Using force" );
           copyVector(d,force);
           steepestDescent = true;
         }
@@ -1432,8 +1432,8 @@ void	Minimizer_O::_conjugateGradient(int numSteps,
             break;
         case diagonalPreconditioner:
             this->_EnergyFunction->setupDiagonalPreconditioner(x,diag);
-            LOG(BF("Preconditioner max value: %lf") % diag->maxValue() );
-            LOG(BF("Preconditioner min value: %lf") % diag->minValue() );
+            LOG("Preconditioner max value: %lf" , diag->maxValue() );
+            LOG("Preconditioner min value: %lf" , diag->minValue() );
             this->_EnergyFunction->backSubstituteDiagonalPreconditioner(diag,s,force);
             break;
         case hessianPreconditioner:
@@ -1446,7 +1446,7 @@ void	Minimizer_O::_conjugateGradient(int numSteps,
             this->_EnergyFunction->backSubstituteLDLt(ldlt,s,force);
             break;
         default:
-            SIMPLE_ERROR(BF("Unknown preconditioner option"));
+            SIMPLE_ERROR(("Unknown preconditioner option"));
         }
 #endif //]
         deltaNew = dotProduct(force,s,this->_Frozen);		// deltaNew = r.r
@@ -1509,7 +1509,7 @@ void	Minimizer_O::_truncatedNewtonInnerLoop(
   gc::Nilable<SparseLargeSquareMatrix_sp>	nmDummy;
 
   ASSERTNOTNULL(this->_EnergyFunction);
-  LOG(BF("Resetting dummy vector and matrix") );
+  LOG("Resetting dummy vector and matrix" );
   nvDummy = nil<T_O>();
   nmDummy = nil<T_O>();
 
@@ -1517,7 +1517,7 @@ void	Minimizer_O::_truncatedNewtonInnerLoop(
   {
     this->_Log->addMessage("_truncatedNewtonInnerLoop>>Starting\n");
   }
-  LOG(BF("Setting up") );
+  LOG("Setting up" );
   j = 1;
   pj->zero();	// NVector
   cr = 0.5;
@@ -1535,7 +1535,7 @@ void	Minimizer_O::_truncatedNewtonInnerLoop(
     // (schlick uses tao=0). The factor L is stored in the
     // same sparse row format used for M.
     //
-  LOG(BF("Carrying out UMC") );
+  LOG("Carrying out UMC" );
 //
 //  Carry out UMC in the outer loop
 //    this->_EnergyFunction->unconventionalModifiedCholeskyFactorization(mprecon,ldlt);
@@ -1544,7 +1544,7 @@ void	Minimizer_O::_truncatedNewtonInnerLoop(
     // Solve for zj in (M~)(zj)=(rj) by using the triangular
     // systems: (L)(x)=(rj) and (L^T)(zj)=(D^-1)(x)
     //
-  LOG(BF("Back substitute") );
+  LOG("Back substitute" );
   backSubstituteLDLt(ldlt,zj,rj);
 
     // 2c.
@@ -1554,7 +1554,7 @@ void	Minimizer_O::_truncatedNewtonInnerLoop(
 
   rjDotzj = dotProduct(rj,zj,this->_Frozen);
   while ( 1 ) 
-  { _BLOCK_TRACEF(BF("_truncatedNewtonInnerLoop j=%d") % j );
+  { 
     // 3. Singularity test
     // Compute the matrix-vector product qj=(H)(dj)
     // If either |((rj)^T).(zj)|<=delta
@@ -1579,7 +1579,7 @@ void	Minimizer_O::_truncatedNewtonInnerLoop(
         this->_Log->addMessage(ss.str().c_str());
         this->_Log->addMessage("_truncatedNewtonInnerLoop>>Singularity test was true\n" );
       }
-      LOG(BF("Singularity test was true") );
+      LOG("Singularity test was true" );
       goto DONE;
     }
 
@@ -1597,7 +1597,7 @@ void	Minimizer_O::_truncatedNewtonInnerLoop(
     //
     alphaj = rjDotzj/djDotqj;
     XPlusYTimesScalar(pjNext,pj,dj,alphaj,this->_Frozen);
-    LOG(BF("pjNext angle with force=%lf(deg)") % pjNext->angleWithVector(force)/0.0174533 );
+    LOG("pjNext angle with force=%lf(deg)" , pjNext->angleWithVector(force)/0.0174533 );
     forceDotpjNext = dotProduct(force,pjNext,this->_Frozen);
     if ( forceDotpjNext <= (forceDotpj + delta) ) {
       if ( j == 1 ) {
@@ -1608,7 +1608,7 @@ void	Minimizer_O::_truncatedNewtonInnerLoop(
       if ( this->_DebugOn ) {
         this->_Log->addMessage("_truncatedNewtonInnerLoop>>Descent direction test was true\n" );
       }
-      LOG(BF("Descent direction test was true") );
+      LOG("Descent direction test was true" );
       goto DONE;
     }
 
@@ -1622,21 +1622,21 @@ void	Minimizer_O::_truncatedNewtonInnerLoop(
     inPlaceAddTimesScalar(rj,qj,-alphaj,this->_Frozen);
     rmsRjMag = rmsMagnitude(rj,this->_Frozen);
     if ( rmsRjMag < nkTimesRmsForceMag || (j+1)>ITpcg ) {
-      LOG(BF("rmsRjMag(%lf) < nkTimesRmsForceMag(%lf)") % rmsRjMag % nkTimesRmsForceMag );
+      LOG("rmsRjMag(%lf) < nkTimesRmsForceMag(%lf)" , rmsRjMag , nkTimesRmsForceMag );
       copyVector(pj,pjNext);
       if ( this->_DebugOn ) {
         this->_Log->addMessage("_truncatedNewtonInnerLoop>>Truncation test was true\n" );
       }
-      LOG(BF("Truncation test was true") );
+      LOG("Truncation test was true" );
       goto DONE;
     }
     if ( (j+1)>ITpcg ) {
-      LOG(BF("j+1(%d)>ITpcg(%d)") % j+1 % ITpcg );
+      LOG("j+1(%d)>ITpcg(%d)" , j+1 , ITpcg );
       copyVector(pj,pjNext);
       if ( this->_DebugOn ) {
         this->_Log->addMessage("_truncatedNewtonInnerLoop>>Step limit test was true\n" );
       }
-      LOG(BF("Step limit test was true") );
+      LOG("Step limit test was true" );
       goto DONE;
     }
 
@@ -1656,7 +1656,7 @@ void	Minimizer_O::_truncatedNewtonInnerLoop(
     copyVector(pj,pjNext);
   }
  DONE:
-  LOG(BF("Exiting inner loop with j = %d") % j );
+  LOG("Exiting inner loop with j = %d" , j );
   return;
 }
 
@@ -1686,25 +1686,25 @@ void	Minimizer_O::_truncatedNewton(
 #define	TENEMINUS8	10.0e-8
 
   alphaK = 1.0;
-  LOG(BF("Starting TN") );
+  LOG("Starting TN" );
   if ( this->_Status == minimizerError ) return;
   this->_Status = truncatedNewtonRunning;
   this->_CurrentPreconditioner = this->_TruncatedNewtonPreconditioner;
   kk = 1;
     // Define NVectors
-  LOG(BF("Defining NVectors") );
+  LOG("Defining NVectors" );
   iDimensions = xK->size();
   forceK = NVector_O::create(iDimensions);
   this->_Force = forceK;
-  LOG(BF("Defining NVectors xKNext") );
+  LOG("Defining NVectors xKNext" );
   xKNext = NVector_O::create(iDimensions);
-  LOG(BF("status") );
+  LOG("status" );
   pK = NVector_O::create(iDimensions);
-  LOG(BF("status") );
+  LOG("status" );
   pK->zero();
-  LOG(BF("Defining NVectors pjNext") );
+  LOG("Defining NVectors pjNext" );
   pjNext = NVector_O::create(iDimensions);
-  LOG(BF("Defining NVectors rj,dj,zj,qj") );
+  LOG("Defining NVectors rj,dj,zj,qj" );
   rj = NVector_O::create(iDimensions);
   dj = NVector_O::create(iDimensions);
   zj = NVector_O::create(iDimensions);
@@ -1717,7 +1717,7 @@ void	Minimizer_O::_truncatedNewton(
     //
     // Evaluate initial energy and force
     //
-  LOG(BF("Evaluating initial energy and force") );
+  LOG("Evaluating initial energy and force" );
   energyXkNext = dTotalEnergyForce( xK, forceK );
   rmsForceMag = rmsMagnitude(forceK,this->_Frozen);
   if ( this->_PrintIntermediateResults )
@@ -1728,17 +1728,17 @@ void	Minimizer_O::_truncatedNewton(
     //
     // Setup the preconditioner and carry out UMC
     //
-  LOG(BF("Setting up preconditioner") );
+  LOG("Setting up preconditioner" );
   this->_ScoringFunction->setupHessianPreconditioner(xK,mprecon);
   unconventionalModifiedCholeskySymbolicFactorization(mprecon,ldlt);
   unconventionalModifiedCholeskyFactorization(mprecon,ldlt,kSum);
 
   if ( this->_PrintIntermediateResults ) {
-    core::clasp_writeln_string((BF( "======= Starting Truncated Newton Minimizer" )).str());
+    core::clasp_writeln_string(fmt::sprintf( "======= Starting Truncated Newton Minimizer" ));
   }
 
   {
-    LOG(BF("Starting loop") );
+    LOG("Starting loop" );
     while ( 1 ) {
 
       if (this->_StepCallback.notnilp()) core::eval::funcall(this->_StepCallback,xK);
@@ -1765,10 +1765,10 @@ void	Minimizer_O::_truncatedNewton(
       if ( this->_PrintIntermediateResults ) {
         dirMag = magnitude(pK,this->_Frozen);
         forceMag = magnitude(forceK,this->_Frozen);
-        LOG(BF("Starting descent test") );
+        LOG("Starting descent test" );
         if ( forceMag != 0.0 && dirMag != 0.0 ) {
-          LOG(BF("forceMag = %lf") % forceMag  );
-          LOG(BF("dirMag = %lf") % dirMag  );
+          LOG("forceMag = %lf" , forceMag  );
+          LOG("dirMag = %lf" , dirMag  );
           cosAngle = dotProduct(forceK,pK,this->_Frozen)/(forceMag*dirMag);
         } else {
           cosAngle = 0.0;
@@ -1792,16 +1792,16 @@ void	Minimizer_O::_truncatedNewton(
 	    //
 
       b1aTest=fabs(energyXkNext-energyXk)<EPSILONF*(1.0+fabs(energyXk));
-      LOG(BF("b1aTest = %d") % b1aTest  );
-      LOG(BF("energyXkNext(%lf)") % energyXkNext );
-      LOG(BF("energyXk(%lf)") % energyXk );
-      LOG(BF("fabs[energyXkNext-energyXk]=%le") % fabs(energyXkNext-energyXk) );
-      LOG(BF("[ EPSILONF*(1.0+fabs(energyXk))=%le") % EPSILONF*(1.0+fabs(energyXk)) );
+      LOG("b1aTest = %d" , b1aTest  );
+      LOG("energyXkNext(%lf)" , energyXkNext );
+      LOG("energyXk(%lf)" , energyXk );
+      LOG("fabs[energyXkNext-energyXk]=%le" , fabs(energyXkNext-energyXk) );
+      LOG("[ EPSILONF*(1.0+fabs(energyXk))=%le" , EPSILONF*(1.0+fabs(energyXk)) );
       if ( b1aTest ) {
         if ( this->_PrintIntermediateResults ) {
-          core::clasp_writeln_string((BF( "search complete step %d according to b1aTest") % this->_Iteration ).str());
-          core::clasp_writeln_string((BF("last alphaK = %lf energyXkNext = %lf energyXk = %lf") % alphaK % energyXkNext % energyXk ).str());
-          core::clasp_writeln_string((BF("b1aTest=fabs(energyXkNext-energyXk)<EPSILONF*(1.0+fabs(energyXk)) %e < %e;") % fabs(energyXkNext-energyXk) % (EPSILONF*(1.0+fabs(energyXk)))).str());
+          core::clasp_writeln_string(fmt::sprintf( "search complete step %d according to b1aTest" , this->_Iteration ));
+          core::clasp_writeln_string(fmt::sprintf("last alphaK = %lf energyXkNext = %lf energyXk = %lf" , alphaK , energyXkNext , energyXk ));
+          core::clasp_writeln_string(fmt::sprintf("b1aTest=fabs(energyXkNext-energyXk)<EPSILONF*(1.0+fabs(energyXk)) %e < %e;" , fabs(energyXkNext-energyXk) , (EPSILONF*(1.0+fabs(energyXk)))));
         }
         break;
       }
@@ -1810,7 +1810,7 @@ void	Minimizer_O::_truncatedNewton(
       b1bTest=(delta<SQRT_EPSILONF*(1.0+rmsMagXKNext)/100.0);
       if ( b1bTest ) {
         if ( this->_PrintIntermediateResults ) {
-          core::clasp_writeln_string((BF( "search complete step %d according to b1bTest delta[%e] < SQRT_EPSILONF*(1.0+rmsMagXKNext)/100.0 [%e]" ) % this->_Iteration % delta % (SQRT_EPSILONF*(1.0+rmsMagXKNext)/100.0)).str());
+          core::clasp_writeln_string(fmt::sprintf( "search complete step %d according to b1bTest delta[%e] < SQRT_EPSILONF*(1.0+rmsMagXKNext)/100.0 [%e]"  , this->_Iteration , delta , (SQRT_EPSILONF*(1.0+rmsMagXKNext)/100.0)));
         }
         break;
       }
@@ -1818,7 +1818,7 @@ void	Minimizer_O::_truncatedNewton(
       rmsForceMag = rmsMagnitude(forceK,this->_Frozen);
       if ( rmsForceMag < forceTolerance ) {
         if ( this->_PrintIntermediateResults ) {
-          core::clasp_writeln_string((BF( "search complete [%d] according to absolute force test rmsForceMag(%e) < forceTolerance(%e)" ) % this->_Iteration % rmsForceMag % forceTolerance ).str());
+          core::clasp_writeln_string(fmt::sprintf( "search complete [%d] according to absolute force test rmsForceMag(%e) < forceTolerance(%e)"  , this->_Iteration , rmsForceMag , forceTolerance ));
         }
         break;
       }
@@ -1911,12 +1911,12 @@ void	Minimizer_O::_evaluateEnergyAndForceManyTimes( int numSteps,  NVector_sp nv
   do {
     dEnergy = this->dTotalEnergyForce( nvPos, nvNewForce);
     if ( iCount % 10000 == 0 ) {
-      core::clasp_writeln_string((BF("Evaluating energy step#%d") % iCount ).str());
+      core::clasp_writeln_string(fmt::sprintf("Evaluating energy step#%d" , iCount ));
     }
     iCount++;
   } while ( iCount < numSteps );
 
-  LOG(BF("Exceeded maximum number of steps") );
+  LOG("Exceeded maximum number of steps" );
 
 }
 
@@ -1979,7 +1979,7 @@ CL_DEFMETHOD     void	Minimizer_O::useDefaultSettings()
   this->_TruncatedNewtonTolerance = 0.00000001;
   this->_TruncatedNewtonPreconditioner = hessianPreconditioner;
   this->_PrintIntermediateResults = 0;
-  LOG(BF("_PrintIntermediateResults = %d") % this->_PrintIntermediateResults  );
+  LOG("_PrintIntermediateResults = %d" , this->_PrintIntermediateResults  );
   this->_ReportEveryNSteps = 100;
   this->_Status = minimizerIdle;
   this->_ShowElapsedTime = true;
@@ -2070,7 +2070,7 @@ CL_DEFMETHOD     void	Minimizer_O::minimize()
       this->_ScoringFunction->loadCoordinatesIntoVector(pos);
       if (chem__verbose(4)) {
         for (size_t idx=0; idx<pos->length(); idx++ ) {
-          core::write_bf_stream(BF("Starting pos[%d] -> %lf\n") % idx % (*pos)[idx]);
+          core::write_bf_stream(fmt::sprintf("Starting pos[%d] -> %lf\n" , idx , (*pos)[idx]));
         }
       }
       if ( this->_NumberOfSteepestDescentSteps > 0 ) {
@@ -2117,7 +2117,7 @@ CL_LISPIFY_NAME("writeIntermediateResultsToEnergyFunction");
 CL_DEFMETHOD void Minimizer_O::writeIntermediateResultsToEnergyFunction()
 {
   if ( this->_Position.nilp() ) {
-    SIMPLE_ERROR(BF("There are no intermediate results"));
+    SIMPLE_ERROR(("There are no intermediate results"));
   }
   this->_ScoringFunction->saveCoordinatesAndForcesFromVectors(this->_Position,this->_Force);
 }

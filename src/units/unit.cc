@@ -60,7 +60,7 @@ Unit_sp Unit_O::createSquareRoot(Unit_sp orig)
 	{
 	    if ( orig->_Powers[i] % 2 != 0 )
 	    {
-		SIMPLE_ERROR(BF("One of the powers is not divisible by 2"));
+		SIMPLE_ERROR(("One of the powers is not divisible by 2"));
 	    }
 	    unit->_Powers[i] = orig->_Powers[i]/2;
 	}
@@ -95,17 +95,17 @@ CL_DEFUN Unit_sp Unit_O::make(core::List_sp args)
 		if ( core::oCadr(dimCur).isA<core::Rational_O>() )
 		{
                   power = core::clasp_to_fixnum(core::oCadr(dimCur));
-                  LOG(BF("Got power[%d]") % power);
+                  LOG("Got power[%d]" , power);
                   dimCur = core::oCdr(dimCur);
 		}
 		u->adjustPowersAndAmountScale(power,powers,amountScale);
 	    } else
 	    {
-              SIMPLE_ERROR(BF("Unknown unit[%s]") % _rep_(odim));
+              SIMPLE_ERROR(("Unknown unit[%s]") , _rep_(odim));
 	    }
 	    dimCur = core::oCdr(dimCur);
 	}
-	LOG(BF("The amountScale[%lf]") % amountScale );
+	LOG("The amountScale[%lf]" , amountScale );
     }
 
 
@@ -158,7 +158,7 @@ CL_DEFUN Unit_sp Unit_O::make(core::List_sp args)
 	/*Set the default system as units:*SI* */
 //	core::Binder_sp unitDatabase = _lisp->symbol(_sym_UnitsPkg_StarUnitDatabaseStar)->symbolValue().as<core::Binder_O>();
 	// Repeat this block for multiple symbols
-      { _BLOCK_TRACEF(BF("Processing unit[%s]") % _rep_(u) );
+      { 
 	    u->adjustPowersAndAmountScale(power,this->_Powers,amountScale);
 	    this->_Amount *= amountScale;
 	}
@@ -226,8 +226,8 @@ CL_DEFMETHOD     double Unit_O::conversion_factor_to(Unit_sp other, int power) c
 	    double conversion = this->_Amount/::pow(other->_Amount,power);
 	    return conversion;
 	}
-	SIMPLE_ERROR(BF("Units[%s] are not compatible with Unit[%s]^%d") 
-		     % this->__repr__() % _rep_(other) % power );
+	SIMPLE_ERROR(("Units[%s] are not compatible with Unit[%s]^%d") 
+		     , this->__repr__() , _rep_(other) , power );
     }
 
     Unit_sp Unit_O::copyWithoutName() const
@@ -259,10 +259,10 @@ CL_DEFMETHOD     core::T_sp Unit_O::operator*(core::T_sp obj) const
           result = Quantity_O::create(obj,this->const_sharedThis<Unit_O>());
 	} else if ( obj.isA<Quantity_O>() )
 	{
-	    SIMPLE_ERROR(BF("Handle Unit*Quantity"));
+	    SIMPLE_ERROR(("Handle Unit*Quantity"));
 	} else
 	{
-          SIMPLE_ERROR(BF("Handle Unit*XXX where XXX=%s") % core::cl__class_of(obj)->_classNameAsString());
+          SIMPLE_ERROR(("Handle Unit*XXX where XXX=%s") , core::cl__class_of(obj)->_classNameAsString());
 	}
 	return result;
     }
@@ -283,7 +283,7 @@ CL_DEFMETHOD     core::T_sp Unit_O::operator/(core::T_sp obj) const
 	    return result;
 	} else
 	{
-          SIMPLE_ERROR(BF("Handle Unit/XXX where XXX=%s") % core::cl__class_of(obj)->_classNameAsString());
+          SIMPLE_ERROR(("Handle Unit/XXX where XXX=%s") , core::cl__class_of(obj)->_classNameAsString());
 	}
     }
 

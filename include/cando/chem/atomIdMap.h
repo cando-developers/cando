@@ -104,7 +104,7 @@ public:	// Functions here
   void throwIfInvalidMoleculeId(const AtomId& atomId) const
   {_G();
     if ( atomId.moleculeId() < (int)this->_MoleculeMap.size() ) return;
-    SIMPLE_ERROR(BF("moleculeId[%d] is out of range - it must be less than %d") % atomId.moleculeId() % this->_MoleculeMap.size() );
+    SIMPLE_ERROR(("moleculeId[%d] is out of range - it must be less than %d") , atomId.moleculeId() , this->_MoleculeMap.size() );
   }
 
   void throwIfInvalidResidueId(const AtomId& atomId) const
@@ -112,7 +112,7 @@ public:	// Functions here
     ASSERT(atomId.moleculeId() < (int)this->_MoleculeMap.size() );
     int numResidues = this->_MoleculeMap[atomId.moleculeId()].size();
     if ( atomId.residueId() < numResidues ) return;
-    SIMPLE_ERROR(BF("residueId[%d] is out of range - it must be less than %d") % atomId.residueId() % numResidues );
+    SIMPLE_ERROR(("residueId[%d] is out of range - it must be less than %d") , atomId.residueId() , numResidues );
   }
 
   void throwIfInvalidAtomId(const AtomId& atomId) const
@@ -121,7 +121,7 @@ public:	// Functions here
     ASSERT(atomId.residueId() < (int)this->_MoleculeMap[atomId.moleculeId()].size());
     int numAtoms = this->_MoleculeMap[atomId.moleculeId()][atomId.residueId()].size();
     if ( atomId.atomId() < numAtoms ) return;
-    SIMPLE_ERROR(BF("atomId[%d] is out of range - it must be less than %d") % atomId.atomId() % numAtoms );
+    SIMPLE_ERROR(("atomId[%d] is out of range - it must be less than %d") , atomId.atomId() , numAtoms );
   }
 
 
@@ -193,11 +193,11 @@ public: // Access
         if (atomId.atomId()<this->_MoleculeMap[atomId.moleculeId()][atomId.residueId()].size()) {
           return this->_MoleculeMap[atomId.moleculeId()][atomId.residueId()][atomId.atomId()];
         }
-        SIMPLE_ERROR(BF("atom index %lu is out of range %lu") % atomId.atomId() % this->_MoleculeMap[atomId.moleculeId()][atomId.residueId()].size() );
+        SIMPLE_ERROR(("atom index %lu is out of range %lu") , atomId.atomId() , this->_MoleculeMap[atomId.moleculeId()][atomId.residueId()].size() );
       }
-      SIMPLE_ERROR(BF("residue index %lu is out of range %lu") % atomId.residueId() % this->_MoleculeMap[atomId.moleculeId()].size() );
+      SIMPLE_ERROR(("residue index %lu is out of range %lu") , atomId.residueId() , this->_MoleculeMap[atomId.moleculeId()].size() );
     }
-    SIMPLE_ERROR(BF("molecule index %lu is out of range %lu") % atomId.moleculeId() % this->_MoleculeMap.size());
+    SIMPLE_ERROR(("molecule index %lu is out of range %lu") , atomId.moleculeId() , this->_MoleculeMap.size());
   }
 
 

@@ -112,7 +112,7 @@ double	Vector2::get(int i) const
 {
     node->attribute("x",this->coords[0]);
     node->attribute("y",this->coords[1]);
-    LOG(BF("Serialized vector@%X = %lf, %lf") % this % this->coords[0] % this->coords[1]  );
+    LOG("Serialized vector@%X = %lf, %lf" , this , this->coords[0] , this->coords[1]  );
 };
 #endif
 
@@ -143,7 +143,7 @@ Vector2	v;
 	v.coords[1] = this->coords[1]/l;
 	return v;
     }
-    THROW_HARD_ERROR(BF("Tried to normalize a zero vector")) ;
+    THROW_HARD_ERROR("Tried to normalize a zero vector") ;
 }
 
 

@@ -54,29 +54,29 @@ namespace chem {
 // Push a subloop onto the subloop stack
 void	Loop::pushSubLoop( Matter_sp c )
 {
-  LOG(BF("pushSubLoop: Starting a subloop over: %s") % c->description().c_str()  );
+  LOG("pushSubLoop: Starting a subloop over: %s" , c->description().c_str()  );
   this->curSubLoop++;
   this->subLoopTop[this->curSubLoop] = c;
   this->subLoopIteratorCur[this->curSubLoop] = c->_contents.begin();
   this->subLoopIteratorEnd[this->curSubLoop] = c->_contents.end();
-  LOG(BF("pushSubLoop:  number of children count = %d") % c->_contents.size()  );
+  LOG("pushSubLoop:  number of children count = %d" , c->_contents.size()  );
 }
 
 
 bool	Loop::advanceLoopAndProcess()
 {
   if ( !this->done) {
-    LOG(BF("Loop may still have values to generate") );
+    LOG("Loop may still have values to generate" );
     this->advanceLoop();
     if ( this->done )
     {
-      LOG(BF("The loop is done,returning false") );
+      LOG("The loop is done,returning false" );
       return false;
     }
-    LOG(BF("The loop continues,returning true") );
+    LOG("The loop continues,returning true" );
     return true;
   }
-  LOG(BF("The loop was done in the last step,returning false") );
+  LOG("The loop was done in the last step,returning false" );
   return false;
 }
 
@@ -146,7 +146,7 @@ bool	Loop:: bLoopAtomVisible(Atom_sp aAtom )
  */
 bool	Loop::bSpanAtomVisible( Atom_sp aAtom, bool *bPSeenBefore )
 {
-    SIMPLE_ERROR(BF("THis code won't work with new way to handle atoms"));
+    SIMPLE_ERROR(("THis code won't work with new way to handle atoms"));
 #if 0
   *bPSeenBefore = false;
   if ( aAtom->getSeenId() == this->iSeenId ) {
@@ -202,30 +202,30 @@ void Loop::buildListOfImpropersCenteredOn(Atom_sp a)
   gctools::Vec0<Bond_sp>::iterator	bl1, bl2, bl3;
   this->_Impropers.clear();
   blrest0 = a->getBondList();
-  LOG(BF("Attempting to build a list of impropers centered on %s") % a->description() );
-  LOG(BF("It has the bonds: %s") % blrest0->description() );
+  LOG("Attempting to build a list of impropers centered on %s" , a->description() );
+  LOG("It has the bonds: %s" , blrest0->description() );
   if ( blrest0->size() >= 3 )
   {
-    LOG(BF("This atom has more than three bonded neighbors"));
+    LOG("This atom has more than three bonded neighbors");
     for ( bl1=blrest0->begin(); bl1!=blrest0->end(); bl1++ )
     {
-      LOG(BF("Loop 1") );
+      LOG("Loop 1" );
       auto  accumulate1  = gctools::GC<BondList_O>::allocate_with_default_constructor();
       accumulate1->append(*bl1);
       BondList_sp blrest1 = blrest0->deepishCopy(); 
-      LOG(BF("Copy blrest1 = %s") % blrest1->description() );
+      LOG("Copy blrest1 = %s" , blrest1->description() );
       ASSERTF(blrest1->size() == blrest0->size(),
               BF("The blrest1 copy doesn't have the same number of elements as the original"));
       blrest1->removeBond(*bl1);
       for ( bl2 = blrest1->begin(); bl2!=blrest1->end(); bl2++ )
       {
-        LOG(BF("Loop 2") );
+        LOG("Loop 2" );
         BondList_sp accumulate2 = accumulate1->deepishCopy();
         accumulate2->append(*bl2);
         BondList_sp blrest2 = blrest1->deepishCopy();
         blrest2->removeBond(*bl2);
         for ( bl3=blrest2->begin(); bl3!=blrest2->end(); bl3++ ) {
-          LOG(BF("Loop 3") );
+          LOG("Loop 3" );
           BondList_sp accumulate3 = accumulate2->deepishCopy();
           accumulate3->append(*bl3);
           this->_Impropers.push_back(accumulate3);
@@ -233,7 +233,7 @@ void Loop::buildListOfImpropersCenteredOn(Atom_sp a)
       }
     }
   }
-  LOG(BF("Number of impropers = %d") % this->_Impropers.size() );
+  LOG("Number of impropers = %d" , this->_Impropers.size() );
 }
 
 
@@ -241,7 +241,7 @@ void	Loop::loopTopGoal( Matter_sp c, int goal )
 {
 
   if ( c.nilp() ) {
-    SIMPLE_ERROR(BF("Attempt to loop over null object"));
+    SIMPLE_ERROR(("Attempt to loop over null object"));
   }
 
   this->goal = 	goal;
@@ -258,9 +258,9 @@ void	Loop::loopTopGoal( Matter_sp c, int goal )
   this->fVisibilityFlags = 0;
 
 		// Now setup the loop stack
-  LOG(BF("Loop::loopTopGoal") );
+  LOG("Loop::loopTopGoal" );
   if ( !((goal & WAYONLY)==SPANNINGTREE) ) {
-    LOG(BF("Loop::loopTopGoal pushing subloop object=%s") % c->description().c_str()  );
+    LOG("Loop::loopTopGoal pushing subloop object=%s" , c->description().c_str()  );
     this->pushSubLoop( c );
   }
 }
@@ -283,7 +283,7 @@ bool	Loop::nextObjectInAtom()
 
   top = (this->getCurSubLoopTop()).as<Atom_O>();
   allowDuplicates = ( (this->goal&ALLOWDUPLICATES) != 0 );
-  LOG(BF("Loop::nextObjectInAtom atom name: %s  address=0x%08x") % top->getName().c_str() % top.get() );
+  LOG("Loop::nextObjectInAtom atom name: %s  address=0x%08x" , top->getName().c_str() , top.get() );
   switch ( this->goal&GOALONLY )
   {
 	/* When LOOPing over BONDS, use iIndex0 as      */
@@ -297,10 +297,10 @@ bool	Loop::nextObjectInAtom()
 	/* The atoms in the bonds can then be retrieved */
 	/* Using the LoopGetBond routine                */
   case BONDS:
-      LOG(BF("Looking for bond") );
+      LOG("Looking for bond" );
       while ( this->iIndex0 < top->coordination() )
       {
-        LOG(BF("status") );
+        LOG("status" );
         topOrder = &*top;
         ASSERT(this->iIndex0<top->numberOfBonds());
         Atom_sp bondedTo = top->bondedNeighbor(this->iIndex0);
@@ -447,7 +447,7 @@ bool	Loop::nextObjectInAtom()
 	/* maintain consistancy with the way impropers  */
 	/* are defined in PARM89A.DAT                   */
   case IMPROPERS:
-    {_BLOCK_TRACE("Goal is IMPROPERS");
+    {
         if ( this->_Impropers.size() == 0 )
         {
           this->buildListOfImpropersCenteredOn(top);
@@ -462,11 +462,11 @@ bool	Loop::nextObjectInAtom()
           this->atoms[3] = bl->atIndex(0)->getOtherAtom(top);
           this->atoms[0] = bl->atIndex(1)->getOtherAtom(top);
           this->atoms[1] = bl->atIndex(2)->getOtherAtom(top);
-          LOG(BF("Pulled an improper off of the list: %s-%s-%s-%s")
-              % this->atoms[0]
-              % this->atoms[1]
-              % this->atoms[2]
-              % this->atoms[3] );
+          LOG("Pulled an improper off of the list: %s-%s-%s-%s"
+              , this->atoms[0]
+              , this->atoms[1]
+              , this->atoms[2]
+              , this->atoms[3] );
           this->_ImproperIndex++;
           return true;
         }
@@ -522,7 +522,7 @@ Matter_sp	Loop::nextHierarchyMatter()
   hitEnd = false;
   while (1) 
   {
-    LOG(BF("running") );
+    LOG("running" );
 	    // Get the current object in the current subloop.
 	    // If the current object is an atom and the goal is
 	    //     internal coordinates then do special processing.
@@ -534,27 +534,27 @@ Matter_sp	Loop::nextHierarchyMatter()
          (this->goal&NONCONTAINERLOOP)!=0 ){
 		    // Loop over internal coordinates
       if ( this->nextObjectInAtom() ) {
-        LOG(BF("nextObjectInAtom success") );
+        LOG("nextObjectInAtom success" );
         retVal = this->getCurSubLoopTop();
         goto DONE;
       } else {
-        LOG(BF("nextObjectInAtom failed") );
+        LOG("nextObjectInAtom failed" );
         hitEnd = true;
       }
     } else {
-      LOG(BF("this->curSubLoop=%d") % this->curSubLoop  );
+      LOG("this->curSubLoop=%d" , this->curSubLoop  );
 		    // get the next Matter* in the list
 		    //
-      LOG(BF("running") );
+      LOG("running" );
       hitEnd = this->curSubLoopIteratorDone();
-      LOG(BF("hitEnd=%d") % hitEnd  );
+      LOG("hitEnd=%d" , hitEnd  );
       if ( !hitEnd ) {
-        LOG(BF("running") );
+        LOG("running" );
         retVal = this->getCurSubLoopIteratorCur();
-        LOG(BF("getCurSubLoopIteratorCur = %s") % retVal->description().c_str()  );
+        LOG("getCurSubLoopIteratorCur = %s" , retVal->description().c_str()  );
         this->curSubLoopAdvanceIteratorCur();
       }
-      LOG(BF("running") );
+      LOG("running" );
     }
 
 	    // If we hit the end of the subloop then pop the subloop
@@ -562,11 +562,11 @@ Matter_sp	Loop::nextHierarchyMatter()
 	    // the loop is done
 	    // If there are still subloops to be looped over continue
     if (hitEnd) {
-      LOG(BF("running") );
+      LOG("running" );
       this->popSubLoop();
-      LOG(BF("running") );
+      LOG("running" );
       if ( this->noSubLoops() ) {
-        LOG(BF("returning an empty Matter_sp") );
+        LOG("returning an empty Matter_sp" );
         retVal = nil<Matter_O>();
         this->done = true;
         goto DONE;
@@ -578,16 +578,16 @@ Matter_sp	Loop::nextHierarchyMatter()
 	    // Now check if the current object satisfies
 	    // the goal, if not, create a subloop over it
 
-    LOG(BF("goalOnly = %d") % goalOnly  );
-    LOG(BF("retVal->getMatterType() = %d") % retVal->getMatterType()  );
+    LOG("goalOnly = %d" , goalOnly  );
+    LOG("retVal->getMatterType() = %d" , retVal->getMatterType()  );
     if ( goalOnly == retVal->getMatterType() ) {
-      LOG(BF("goalOnly == retVal->getMatterType() ") );
+      LOG("goalOnly == retVal->getMatterType() " );
       if ( goalOnly == (ALL_MATTERS) )
       {
-        LOG(BF("goalOnly == ALL_MATTERS") );
+        LOG("goalOnly == ALL_MATTERS" );
         if ( retVal->getMatterType()!=ATOM_CLASS ) 
         {
-          LOG(BF("retVal->getMatterType() !=ATOM_CLASS") );
+          LOG("retVal->getMatterType() !=ATOM_CLASS" );
           this->pushSubLoop(retVal);
         }
       }
@@ -602,11 +602,11 @@ Matter_sp	Loop::nextHierarchyMatter()
 		    // The current subloop does not satisfy the goals
 		    // try another subloop
 
-    LOG(BF("running") );
+    LOG("running" );
     this->pushSubLoop(retVal);
   }
  DONE:
-  LOG(BF("returning") );
+  LOG("returning" );
   return retVal;
 }
 
@@ -622,16 +622,16 @@ void	Loop::advanceLoop()
   Matter_sp	retVal;
   int		goalOnly;
 
-  LOG(BF("Loop::next start") );
+  LOG("Loop::next start" );
   if ( this->done ) {
-    LOG(BF("Loop done,returning immediatly") );
+    LOG("Loop done,returning immediatly" );
     return;
   }
-  LOG(BF("Loop::next running") );
+  LOG("Loop::next running" );
 
   goalOnly = this->goal & GOALONLY;
 
-  LOG(BF("Loop::next running") );
+  LOG("Loop::next running" );
   retVal = this->nextHierarchyMatter();
 //DONE:
   this->currentObject = retVal;
@@ -639,7 +639,7 @@ void	Loop::advanceLoop()
   ANN(retVal);
   if ( retVal.notnilp() )
   {
-    LOG(BF("Loop::next returning with object: %s") % retVal->description().c_str()  );
+    LOG("Loop::next returning with object: %s" , retVal->description().c_str()  );
   }
 #endif
   return;
@@ -667,7 +667,7 @@ CL_DEFUN core::T_sp chem__map_molecules(core::Symbol_sp result_type, core::T_sp 
       vo->vectorPushExtend(core::eval::funcall(func,m));
       return vo;
     }
-    SIMPLE_ERROR(BF("Illegal return type: %s") % _rep_(result_type));
+    SIMPLE_ERROR(("Illegal return type: %s") , _rep_(result_type));
   } else if (gc::IsA<Aggregate_sp>(m)) {
     core::Function_sp func = core::coerce::functionDesignator(funcDesig);
     Loop l(m,MOLECULES);
@@ -695,7 +695,7 @@ CL_DEFUN core::T_sp chem__map_molecules(core::Symbol_sp result_type, core::T_sp 
       }
       return vo;
     }
-    SIMPLE_ERROR(BF("Illegal return type: %s") % _rep_(result_type));
+    SIMPLE_ERROR(("Illegal return type: %s") , _rep_(result_type));
   }
   TYPE_ERROR(m,_sym_Aggregate_O);
 };
@@ -719,7 +719,7 @@ CL_DEFUN core::T_sp chem__map_residues(core::Symbol_sp result_type, core::T_sp f
       vo->vectorPushExtend(core::eval::funcall(func,m));
       return vo;
     }
-    SIMPLE_ERROR(BF("Illegal return type: %s") % _rep_(result_type));
+    SIMPLE_ERROR(("Illegal return type: %s") , _rep_(result_type));
   } else if (gc::IsA<Aggregate_sp>(m)||gc::IsA<Molecule_sp>(m)) {
     core::Function_sp func = core::coerce::functionDesignator(funcDesig);
     Loop l(m,RESIDUES);
@@ -747,7 +747,7 @@ CL_DEFUN core::T_sp chem__map_residues(core::Symbol_sp result_type, core::T_sp f
       }
       return vo;
     }
-    SIMPLE_ERROR(BF("Illegal return type: %s") % _rep_(result_type));
+    SIMPLE_ERROR(("Illegal return type: %s") , _rep_(result_type));
   }
   TYPE_ERROR(m,core::Cons_O::createList(cl::_sym_or,_sym_Aggregate_O,_sym_Molecule_O));
 };
@@ -772,7 +772,7 @@ CL_DEFUN core::T_sp chem__map_atoms(core::Symbol_sp result_type, core::T_sp func
       vo->vectorPushExtend(core::eval::funcall(func,m));
       return vo;
     }
-    SIMPLE_ERROR(BF("Illegal return type: %s") % _rep_(result_type));
+    SIMPLE_ERROR(("Illegal return type: %s") , _rep_(result_type));
   } else if ((gc::IsA<Aggregate_sp>(m)||gc::IsA<Molecule_sp>(m)||gc::IsA<Residue_sp>(m))) {
     Loop l(m,ATOMS);
     Atom_sp a;
@@ -799,7 +799,7 @@ CL_DEFUN core::T_sp chem__map_atoms(core::Symbol_sp result_type, core::T_sp func
       }
       return vo;
     }
-    SIMPLE_ERROR(BF("Illegal return type: %s") % _rep_(result_type));
+    SIMPLE_ERROR(("Illegal return type: %s") , _rep_(result_type));
   };
   TYPE_ERROR(m,core::Cons_O::createList(cl::_sym_or,_sym_Aggregate_O,_sym_Molecule_O,_sym_Residue_O));
 }
@@ -845,7 +845,7 @@ CL_DEFUN core::T_sp chem__map_bonds(core::Symbol_sp result_type, core::T_sp func
     }
     return vo;
   }
-  SIMPLE_ERROR(BF("Illegal return type: %s") % _rep_(result_type));
+  SIMPLE_ERROR(("Illegal return type: %s") , _rep_(result_type));
 };
 
 void validate_result_type(core::Symbol_sp result_type)
@@ -853,7 +853,7 @@ void validate_result_type(core::Symbol_sp result_type)
   if (result_type.nilp()) return;
   if (result_type == cl::_sym_list) return;
   if (result_type == cl::_sym_vector) return;
-  SIMPLE_ERROR(BF("Illegal result type - must be nil, list or vector"));
+  SIMPLE_ERROR(("Illegal result type - must be nil, list or vector"));
 }
 
 CL_LAMBDA(result-type function matter)

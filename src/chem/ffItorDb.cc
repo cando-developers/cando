@@ -100,7 +100,7 @@ void    FFItor_O::setTypes(core::Symbol_sp t1, core::Symbol_sp t2, core::Symbol_
 double  FFItor_O::getV_kJ(int period) const
 {_OF();
     if ( period < 1 || period > IMaxPeriodicity ) {
-        SIMPLE_ERROR(BF("Illegal index for getV"));
+        SIMPLE_ERROR(("Illegal index for getV"));
     }
     return this->_Vs_kJ[period-1];
 }
@@ -108,7 +108,7 @@ double  FFItor_O::getV_kJ(int period) const
 void    FFItor_O::setV_kJ(int period, double val)
 {_OF();
     if ( period < 1 || period > IMaxPeriodicity ) {
-        SIMPLE_ERROR(BF("Illegal index for setV"));
+        SIMPLE_ERROR(("Illegal index for setV"));
     }
     this->_Vs_kJ[period-1] = val;
     this->_hasPeriodicity[period-1] = true;
@@ -137,7 +137,7 @@ void    FFItor_O::setV_kCal(int period, double val)
 double  FFItor_O::getPhaseRad(int period) const
 {_OF();
     if ( period < 1 || period > IMaxPeriodicity ) {
-        SIMPLE_ERROR(BF("Illegal index for getPhaseRad"));
+        SIMPLE_ERROR(("Illegal index for getPhaseRad"));
     }
     return this->_PhaseRads[period-1];
 }
@@ -145,7 +145,7 @@ double  FFItor_O::getPhaseRad(int period) const
 void    FFItor_O::setPhaseRad(int period, double val)
 {_OF();
     if ( period < 1 || period > IMaxPeriodicity ) {
-        SIMPLE_ERROR(BF("Illegal index for setPhaseRad"));
+        SIMPLE_ERROR(("Illegal index for setPhaseRad"));
     }
     this->_PhaseRads[period-1] = val;
     this->_hasPeriodicity[period-1] = true;
@@ -189,7 +189,7 @@ void	FFItorDb_O::add( FFItor_sp itor )
     this->_Parameters->setf_gethash(key,itor);
 #ifdef DEBUG_ON
     if ( itor->_T3=="c" && itor->_T4=="o" ) {
-      LOG(BF("FFItorDb::add adding term with key: %s") % key.c_str()  );
+      LOG("FFItorDb::add adding term with key: %s" , key.c_str()  );
     }
 #endif
   }
@@ -264,19 +264,19 @@ core::T_sp FFItorDb_O::findBestTerm( core::Symbol_sp t1, core::Symbol_sp t2, cor
  DONE:
 #ifdef	DEBUG_ON
   if ( t3=="c" && t4=="o" ) {
-    LOG(BF("FFITorDb::findBestTerm for types %s-%s-%s-%s") % t1.c_str() % t2.c_str() % t3.c_str() % t4.c_str()  );
+    LOG("FFITorDb::findBestTerm for types %s-%s-%s-%s" , t1.c_str() , t2.c_str() , t3.c_str() , t4.c_str()  );
     if ( itor.notnilp() )
     {
-      LOG(BF("Found term with key: %s") % key.c_str()  );
+      LOG("Found term with key: %s" , key.c_str()  );
     } else {
-      LOG(BF("Could not find term with key: %s") % key4.c_str()  );
-      LOG(BF("Could not find term with key: %s") % key3.c_str()  );
-      LOG(BF("Could not find term with key: %s") % key2.c_str()  );
-      LOG(BF("Could not find term with key: %s") % key1.c_str()  );
-      {_BLOCK_TRACE("itor dictionary");
+      LOG("Could not find term with key: %s" , key4.c_str()  );
+      LOG("Could not find term with key: %s" , key3.c_str()  );
+      LOG("Could not find term with key: %s" , key2.c_str()  );
+      LOG("Could not find term with key: %s" , key1.c_str()  );
+      {
         for ( gctools::SmallMap<string,FFItor_sp>::iterator ii=this->_Lookup.begin();
               ii!=this->_Lookup.end();ii++ ) {
-          LOG(BF("Entry key=%s") % ii->first.c_str()  );
+          LOG("Entry key=%s" , ii->first.c_str()  );
         }
       }
     }
@@ -291,7 +291,7 @@ void    FFItorDb_O::cantFind(core::Symbol_sp t1, core::Symbol_sp t2, core::Symbo
 {_OF();
     stringstream ss;
     ss << "Can't find itor term for ("<<t1<<")-("<<t2<<")-("<<t3<<")-("<<t4<<")";
-    SIMPLE_ERROR(BF("%s")%ss.str());
+    SIMPLE_ERROR(("%s") , ss.str());
 }
 
 
@@ -316,7 +316,6 @@ stringstream	desc;
 
 void FFItorDb_O::forceFieldMerge(FFBaseDb_sp bother)
 {
-  //SIMPLE_WARN(BF("Merging FFItorDb terms - but terms with different type orders will create duplicates!"));
   FFItorDb_sp other = gc::As<FFItorDb_sp>(bother);
   other->_Parameters->maphash([this] (core::T_sp key, core::T_sp value) {
       core::Symbol_sp skey = gc::As<core::Symbol_sp>(key);

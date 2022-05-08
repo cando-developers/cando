@@ -111,7 +111,7 @@ namespace chem
 CL_LISPIFY_NAME("addNeighbor");
 CL_DEFMETHOD     void	MonomerContext_O::addNeighbor( core::Symbol_sp cn, EntityNameSetBase_sp r)
     {_OF();
-      LOG(BF("Added neighbor with key plug: %s") % _rep_(cn)  );
+      LOG("Added neighbor with key plug: %s" , _rep_(cn)  );
 	getCandoDatabase();
 	ASSERTF(DirectionalCoupling_O::isPlugName(cn), BF("addNeighbor ILLEGAL PLUG NAME plugName=(%s)")% cn );
 	ASSERTF(this->_Neighbors.count(cn) == 0, BF("MonomerContext already has a key: %s")% cn );
@@ -134,19 +134,19 @@ CL_DEFMETHOD     void	MonomerContext_O::addNeighbor( core::Symbol_sp cn, EntityN
 	} else {
 	    if ( mit->second->getOptional() )
 	    {
-		LOG(BF("This is an optional EntityNameSetBase so we first skipping this EntityNameSetBase expanding the rest") );
+		LOG("This is an optional EntityNameSetBase so we first skipping this EntityNameSetBase expanding the rest" );
 		mitNext = mit;
 		mitNext++;
 		this->expandOutsSpecificContexts(mitNext, list, name );
 	    }
-	    LOG(BF("Handle neighbors") );
+	    LOG("Handle neighbors" );
 	    IMPLEMENT_ME();
 	    // Deal with pushNeighbor second argument
 	    name->pushNeighbor(mit->first,_Nil<core::Symbol_O>());
 //	name->pushNeighbor(mit->first,"");
-	    LOG(BF("Getting equivalent names") );
+	    LOG("Getting equivalent names" );
 	    adapt::SymbolSet_sp ss = mit->second->getMonomerNames();
-	    LOG(BF("There are %d equivalent names") % ss->size() );
+	    LOG("There are %d equivalent names" , ss->size() );
 //	ASSERTP(ss->size()!=0,"Problem, there are no equivalent names");
 	    if ( ss->size() == 0 )
 	    {
@@ -156,7 +156,7 @@ CL_DEFMETHOD     void	MonomerContext_O::addNeighbor( core::Symbol_sp cn, EntityN
 	    for (adapt::SymbolSet_O::iterator it=ss->begin(); it!=ss->end(); it++ ) 
 	    {
 		name->setLastNeighborName(*it);
-		LOG(BF("Pushed equivalent name: %s") % _rep_((*it)) );
+		LOG("Pushed equivalent name: %s" , _rep_((*it)) );
 		mitNext = mit;
 		mitNext++;
 		this->expandOutsSpecificContexts(mitNext, list, name );
@@ -179,15 +179,15 @@ CL_DEFMETHOD     void	MonomerContext_O::addNeighbor( core::Symbol_sp cn, EntityN
 	adapt::SymbolSet_sp		ss;
 	NeighborMap::iterator mitNext;
 	if ( mit==this->_Neighbors.end() ) {
-	    LOG(BF("Pushing back name: %s") % name.all().c_str()  );
+	    LOG("Pushing back name: %s" , name.all().c_str()  );
 	    list->insert(name.all());
 	} else {
-	    LOG(BF("We have neighbors") );
+	    LOG("We have neighbors" );
 	    name.push(mit->first->symbolNameAsString());
 	    name.push(COUPLING_CHAR);
-	    LOG(BF("Getting equivalent names") );
+	    LOG("Getting equivalent names" );
 	    ss = mit->second->getMonomerNames();
-	    LOG(BF("There are %d equivalent names") % ss->size() );
+	    LOG("There are %d equivalent names" , ss->size() );
 //	ASSERTP(ss->size()!=0,"Problem, there are no equivalent names");
 	    if ( ss->size() == 0 )
 	    {
@@ -198,7 +198,7 @@ CL_DEFMETHOD     void	MonomerContext_O::addNeighbor( core::Symbol_sp cn, EntityN
 		name.push("[");
 		name.push((*it)->symbolNameAsString());
 		name.push("]");
-		LOG(BF("Pushed equivalent name: %s") % _rep_((*it)) );
+		LOG("Pushed equivalent name: %s" , _rep_((*it)) );
 		mitNext = mit;
 		mitNext++;
 		this->expandOuts(mitNext, list, name );
@@ -238,13 +238,13 @@ CL_DEFMETHOD     core::HashTableEqual_sp	MonomerContext_O::getAllSpecificKeys()
 	adapt::StringSet_sp	expandedList;
 	adapt::SymbolSet_sp	selfNames;
 	MCStringStack	name;
-	LOG(BF("Getting context strings for context: %s") % this->asXmlString().c_str()  );
+	LOG("Getting context strings for context: %s" , this->asXmlString().c_str()  );
 	expandedList = adapt::StringSet_O::create();
 	name.clear();
 	selfNames = this->_Self->getMonomerNames();
-	LOG(BF("There are %d selfNames") % selfNames->size()  );
+	LOG("There are %d selfNames" , selfNames->size()  );
 	selfNames->map( [&name,this,&expandedList] (core::Symbol_sp si) {
-	    LOG(BF("Push self name: %s") % _rep_((*si)) );
+	    LOG("Push self name: %s" , _rep_((*si)) );
 	    name.push("![");
 	    name.push((si)->symbolNameAsString());
 	    name.push("]");
@@ -261,14 +261,14 @@ CL_LISPIFY_NAME("getAllSpecificContexts");
 CL_DEFMETHOD     SpecificContextSet_sp MonomerContext_O::getAllSpecificContexts()
     {
 	adapt::SymbolSet_sp	selfNames;
-	LOG(BF("Getting context strings for context: %s") % this->asXmlString().c_str()  );
+	LOG("Getting context strings for context: %s" , this->asXmlString().c_str()  );
 	SpecificContextSet_sp expandedList = SpecificContextSet_O::create();
 	SpecificContext_sp one = SpecificContext_O::create();
 	one->clear();
 	selfNames = this->_Self->getMonomerNames();
-	LOG(BF("There are %d selfNames") % selfNames->size()  );
+	LOG("There are %d selfNames" , selfNames->size()  );
 	selfNames->map( [&one,this,&expandedList] (core::Symbol_sp si) {
-	    LOG(BF("Push self name: %s") % _rep_((si)) );
+	    LOG("Push self name: %s" , _rep_((si)) );
 	    one->setSelfName(si);
 	    this->expandOutsSpecificContexts(this->_Neighbors.begin(), expandedList, one );
           } );
@@ -294,7 +294,7 @@ core::Symbol_sp MonomerContext_O::getFirstSpecificKey()
 	expandedList = this->getAllSpecificKeys();
 	res = *(expandedList->begin());
 //RETURN:
-	LOG(BF("Returning") );
+	LOG("Returning" );
         return chemkw_intern(res);
 #endif
     }
@@ -312,18 +312,18 @@ core::Symbol_sp MonomerContext_O::getFirstSpecificKey()
 	adapt::SymbolSet_sp				monomerNames;
 	if ( !this->_Self->recognizesNameOrPdb(
 		 testSub->_Self->getMonomerNames()->first()) ) {
-	    LOG(BF("MonomerContext doesn't recognize self") );
+	    LOG("MonomerContext doesn't recognize self" );
 	    return false;
 	}
 	if ( this->_Neighbors.size() != testSub->_Neighbors.size() ) {
-	    LOG(BF("MonomerContexts have different number of neighbors") );
+	    LOG("MonomerContexts have different number of neighbors" );
 	    return false;
 	}
 	for ( auto ti = this->_Neighbors.begin();
 	      ti != this->_Neighbors.end(); ti++ ) 
 	{
 	    if ( !testSub->_Neighbors.contains(ti->first) ) {
-              LOG(BF("testSub doesn't have a neighbor: %s") % _rep_(ti->first)  );
+              LOG("testSub doesn't have a neighbor: %s" , _rep_(ti->first)  );
 		return false;
 	    }
 	    testSubRecognizer = testSub->_Neighbors.get(ti->first);
@@ -331,13 +331,13 @@ core::Symbol_sp MonomerContext_O::getFirstSpecificKey()
 	    adapt::SymbolSet_sp testSubNames = testSubRecognizer->getMonomerNames();
 	    if ( !myNames->containsSubset(testSubNames) )
 	    {
-		LOG(BF("testSub is not a subset of this monomer context") );
-		LOG(BF("I recognize (%s)-> names: %s") % _rep_(ti->first) % myNames->asString()  );
-		LOG(BF("testSub recognizes (%s)-> names: %s") % _rep_(ti->first) % testSubNames->asString() );
+		LOG("testSub is not a subset of this monomer context" );
+		LOG("I recognize (%s)-> names: %s" , _rep_(ti->first) , myNames->asString()  );
+		LOG("testSub recognizes (%s)-> names: %s" , _rep_(ti->first) , testSubNames->asString() );
 		return false;
 	    }
 	}
-	LOG(BF("Yes, its a subset") );
+	LOG("Yes, its a subset" );
 	return true;
     }
 
@@ -346,38 +346,38 @@ core::Symbol_sp MonomerContext_O::getFirstSpecificKey()
 CL_LISPIFY_NAME("recognizesMonomerAndEnvironment");
 CL_DEFMETHOD     bool	MonomerContext_O::recognizesMonomerAndEnvironment(Monomer_sp mon)
     {
-      IMPLEMENT_MEF(BF("Handle new symbol names and monomer couplings are supposed to be a multimap!!!!!!"));
+      IMPLEMENT_MEF("Handle new symbol names and monomer couplings are supposed to be a multimap!!!!!!");
 #if 0
 	NeighborMap::iterator	ti;
 	Coupling_sp			coup;
 	if ( !this->_Self->recognizesNameOrPdb(mon->getName() )) {
-          LOG(BF("MonomerContext doesn't recognize central monomer: %s") % _rep_((mon->getName()) ));
+          LOG("MonomerContext doesn't recognize central monomer: %s" , _rep_((mon->getName()) ));
 	    return false;
 	}
-	LOG(BF("STATUS") );
+	LOG("STATUS" );
 	if ( this->_Neighbors.size() != mon->numberOfCouplings() ) {
-	    LOG(BF("MonomerContexts have different number of couplings") );
+	    LOG("MonomerContexts have different number of couplings" );
 	    return false;
 	}
-	LOG(BF("STATUS monomer = %s") % _rep_((mon->getName()) ) );
-	LOG(BF("Monomer has %d couplings") % (mon->numberOfCouplings() ) );
-	LOG(BF("MonomerContext has %d neighbors") % (this->_Neighbors.size() ) );
+	LOG("STATUS monomer = %s" , _rep_((mon->getName()) ) );
+	LOG("Monomer has %d couplings" , (mon->numberOfCouplings() ) );
+	LOG("MonomerContext has %d neighbors" , (this->_Neighbors.size() ) );
 	for ( auto oi=mon->begin_WeakCouplings(); oi!=mon->end_WeakCouplings(); oi++ )
 	{
 	    Coupling_sp coup = (oi->second);
 	    if (coup.isA<DirectionalCoupling_O>() )
 	    {
 		DirectionalCoupling_sp dc = coup.as<DirectionalCoupling_O>();
-		LOG(BF("Looking at dc->getName()= %s") % _rep_((dc->getName()) ) );
+		LOG("Looking at dc->getName()= %s" , _rep_((dc->getName()) ) );
 		if ( !this->_Neighbors.contains(dc->getName()) )
 		{
-                  LOG(BF("MonomerContext doesn't recognize out.coupling=%s ") % _rep_(dc->getName()) );
+                  LOG("MonomerContext doesn't recognize out.coupling=%s " , _rep_(dc->getName()) );
 		    return false;
 		}
 	    } else
 	    {
 		RingCoupling_sp rc = coup.as<RingCoupling_O>();
-		LOG(BF("Ignoring out coupling for RingCoupling: %s") % _rep_(rc->getName()) );
+		LOG("Ignoring out coupling for RingCoupling: %s" , _rep_(rc->getName()) );
 	    }
 	}
 	return true;
@@ -391,9 +391,9 @@ CL_DEFMETHOD     void	MonomerContext_O::setFocusFromMonomer(Monomer_sp mon)
     {
 	EntityNameSet_sp	ss;
 	ss = EntityNameSet_O::create();
-	LOG(BF("status") );
+	LOG("status" );
 	ss->setMonomerNameOrPdb(mon->currentStereoisomerName());
-	LOG(BF("status") );
+	LOG("status" );
 	this->_Self = ss;
     }
 
@@ -416,7 +416,7 @@ CL_DEFMETHOD     EntityNameSetBase_sp MonomerContext_O::getNeighbor(core::Symbol
     {_OF();
 	if ( this->_Neighbors.count(name) == 0 )
 	{
-          SIMPLE_ERROR(BF("Unknown MonomerContext-plugName[%s]") % _rep_(name) );
+          SIMPLE_ERROR(("Unknown MonomerContext-plugName[%s]") , _rep_(name) );
 	}
 	return this->_Neighbors.get(name);
     }

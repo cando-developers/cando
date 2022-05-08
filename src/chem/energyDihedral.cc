@@ -66,7 +66,7 @@ core::List_sp EnergyDihedral::encode() const {
 }
 
 void EnergyDihedral::decode(core::List_sp alist) {
-  SIMPLE_ERROR(BF("Implement decode of EnergyDihedral"));
+  SIMPLE_ERROR(("Implement decode of EnergyDihedral"));
 }
 
 #ifdef XML_ARCHIVE
@@ -358,15 +358,7 @@ void	EnergyDihedral_O::dumpTerms()
       ss << as4 << "#A4";
       str4 = ss.str();
     }
-    _lisp->print(BF("TERM 3DIH %s %-9s - %-9s - %-9s - %-9s %8.2lf %8.2lf %2.0lf")
-                 % type
-                 % str1
-                 % str2
-                 % str3
-                 % str4
-                 % edi->term.V
-                 % edi->_PhaseRad
-                 % edi->term.DN);
+    core::writeln_bf_stream(fmt::sprintf("TERM 3DIH %s %-9s - %-9s - %-9s - %-9s %8.2lf %8.2lf %2.0lf" , type , str1 , str2 , str3 , str4 , edi->term.V , edi->_PhaseRad , edi->term.DN));
   }
 }
 
@@ -382,10 +374,10 @@ core::List_sp	EnergyDihedral_O::lookupDihedralTerms(AtomTable_sp atomTable, Atom
   core::T_sp tia2 = atomTable->_AtomTableIndices->gethash(a2);
   core::T_sp tia3 = atomTable->_AtomTableIndices->gethash(a3);
   core::T_sp tia4 = atomTable->_AtomTableIndices->gethash(a4);
-  if (!tia1.fixnump()) SIMPLE_ERROR(BF("Could not find %s in energy function") % _rep_(a1));
-  if (!tia2.fixnump()) SIMPLE_ERROR(BF("Could not find %s in energy function") % _rep_(a2));
-  if (!tia3.fixnump()) SIMPLE_ERROR(BF("Could not find %s in energy function") % _rep_(a3));
-  if (!tia4.fixnump()) SIMPLE_ERROR(BF("Could not find %s in energy function") % _rep_(a4));
+  if (!tia1.fixnump()) SIMPLE_ERROR(("Could not find %s in energy function") , _rep_(a1));
+  if (!tia2.fixnump()) SIMPLE_ERROR(("Could not find %s in energy function") , _rep_(a2));
+  if (!tia3.fixnump()) SIMPLE_ERROR(("Could not find %s in energy function") , _rep_(a3));
+  if (!tia4.fixnump()) SIMPLE_ERROR(("Could not find %s in energy function") , _rep_(a4));
   int ia1 = tia1.unsafe_fixnum();
   int ia2 = tia2.unsafe_fixnum();
   int ia3 = tia3.unsafe_fixnum();
@@ -660,7 +652,7 @@ void	EnergyDihedral_O::compareAnalyticalAndNumericalForceAndHessianTermByTerm(
 
 
   {
-    _BLOCK_TRACE("DihedralEnergy finiteDifference comparison");
+    
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_Dihedral_termDeclares.cc>

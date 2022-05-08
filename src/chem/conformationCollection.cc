@@ -84,8 +84,8 @@ geom::SimpleVectorCoordinate_sp	ca;
 CL_DEFMETHOD void	ConformationCollectionEntry_O::setAllCoordinates(geom::SimpleVectorCoordinate_sp ac)
 {
     ASSERTNOTNULL(ac);
-    LOG(BF("setAllCoordinates:%s") % (ac->asXmlString().c_str() ) );
-    LOG(BF("The address of the geom::SimpleVectorCoordinate_sp is in o") );
+    LOG("setAllCoordinates:%s" , (ac->asXmlString().c_str() ) );
+    LOG("The address of the geom::SimpleVectorCoordinate_sp is in o" );
     this->_AllCoordinates = ac;
 }
 
@@ -111,9 +111,9 @@ vector<Vector3>::iterator	ci;
 #ifdef	DEBUG_ConformationCollectionEntry
     this->_Status->addMessage("extractCoordinatesFromMatter");
 #endif
-    LOG(BF("About to get ConformationCollection") );
+    LOG("About to get ConformationCollection" );
     sl = this->getConformationCollection();
-    LOG(BF("Got ConformationCollection") );
+    LOG("Got ConformationCollection" );
     ASSERTNOTNULL(sl);
     geom::SimpleVectorCoordinate_sp coords = sl->_SimpleVectorCoordinate(matter);
     ASSERTNOTNULL(coords);
@@ -160,16 +160,16 @@ geom::SimpleVectorCoordinate_sp ConformationCollection_O::_SimpleVectorCoordinat
 #ifdef	DEBUG_ConformationCollectionEntry
     this->_Status->addMessage("extractCoordinatesFromMatter");
 #endif
-    LOG(BF("About to get ConformationCollection") );
-    LOG(BF("About to iterate over atoms and get positions") );
+    LOG("About to get ConformationCollection" );
+    LOG("About to iterate over atoms and get positions" );
     geom::SimpleVectorCoordinate_sp coords = geom::SimpleVectorCoordinate_O::make(this->numberOfAllAtoms());
     ASSERTNOTNULL(coords);
     for ( ai=this->begin_AllAtoms(),ci=coords->begin(); ai!=this->end_AllAtoms(); ai++, ci++ )
     {
-        LOG(BF("Getting position of %s") % (*ai)->description().c_str()  );
+        LOG("Getting position of %s" , (*ai)->description().c_str()  );
         *ci = (*ai)->getPosition();
     }
-    LOG(BF("Done") );
+    LOG("Done" );
     return coords;
 }
 
@@ -337,7 +337,7 @@ entryIterator	ei;
 	    return i;
 	}
     }
-    SIMPLE_ERROR(BF("Could not find entry in ConformationCollection"));
+    SIMPLE_ERROR(("Could not find entry in ConformationCollection"));
 }
 
 
@@ -357,7 +357,7 @@ CL_DEFMETHOD ConformationCollectionEntry_sp	ConformationCollection_O::firstEntry
     if (this->_Entries.size()!=0) {
       return this->_Entries[0];
     }
-    SIMPLE_ERROR(BF("There are no entries in the conformation-collection"));
+    SIMPLE_ERROR(("There are no entries in the conformation-collection"));
 }
 
 

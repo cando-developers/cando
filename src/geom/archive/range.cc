@@ -41,7 +41,7 @@ namespace geom {
 #if 0
     core::T_sp Range_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp environ, core::LispPtr lisp)
     {
-      LOG(BF("Argument types %s %s") % core::cl__class_of(core::oCar(args))->classNameAsString() % args->ocadr()->className() );
+      LOG("Argument types %s %s" , core::cl__class_of(core::oCar(args))->classNameAsString() , args->ocadr()->className() );
 	SYMBOL_SC_(GeomPkg,begin);
 	SYMBOL_SC_(GeomPkg,end);
 	SYMBOL_SC_(GeomPkg,step);
@@ -56,7 +56,7 @@ namespace geom {
 
     Range_sp Range_O::create(core::LispPtr lisp,core::LongLongInt b, core::LongLongInt e)
 {
-    LOG(BF("Range_O::create with begin=%d, end=%d") % b % e  );
+    LOG("Range_O::create with begin=%d, end=%d" , b , e  );
     auto r = gctools::GC<Range_O>::allocate_with_default_constructor();
     r->_Begin = b;
     r->_End = e;
@@ -65,7 +65,7 @@ namespace geom {
 };
     Range_sp Range_O::create3(core::LispPtr lisp, core::LongLongInt b, core::LongLongInt e, core::LongLongInt step)
 {
-    LOG(BF("Range_O::create with begin=%d, end=%d, step=%d") % b % e % step  );
+    LOG("Range_O::create with begin=%d, end=%d, step=%d" , b , e , step  );
     auto r = gctools::GC<Range_O>::allocate_with_default_constructor();
     r->_Begin = b;
     r->_End = e;

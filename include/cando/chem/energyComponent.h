@@ -93,7 +93,7 @@ class EnergyTerm
 {
  private:
  public:
-  virtual string	className() {THROW_HARD_ERROR(BF("Subclass must implement"));};
+  virtual string	className() {THROW_HARD_ERROR("Subclass must implement");};
 
   EnergyTerm() {};
 };
@@ -330,7 +330,7 @@ SP safe_alist_lookup(core::List_sp list, core::T_sp key) {
       return gctools::As<SP>(CONS_CDR(entry));
     }
   }
-  SIMPLE_ERROR(BF("Could not find %s") % _rep_(key));
+  SIMPLE_ERROR(("Could not find %s") , _rep_(key));
 }
   
 ;

@@ -497,7 +497,7 @@ CL_DEFMETHOD     core::T_sp ZMatrix_O::getZMatrixAtomNameAtIndex(uint i) const
 
 core::T_sp	ZMatrix_O::_getAtomZMatrixNameAtIndex(uint i) const
 {
-  LOG(BF("Looking for atom at index: %d    _ZMatrix.size=%d") % i % this->_ZMatrix.size()  );
+  LOG("Looking for atom at index: %d    _ZMatrix.size=%d" , i , this->_ZMatrix.size()  );
   ASSERT_lessThan(i,this->_ZMatrix.size());
   return this->_ZMatrix[i]->getTargetAtomZMatrixName();
 }
@@ -512,7 +512,7 @@ core::T_sp	ZMatrix_O::_getAtomZMatrixNameAtIndex(uint i) const
 	SpanningLoop_sp			span;
 	ZMatrixInternal_O::atomMap 	atomIndices;
 	uint				numberOfEntries;
-	LOG(BF("Starting on atom: %s") % atom->description().c_str()  );
+	LOG("Starting on atom: %s" , atom->description().c_str()  );
 	this->_Matter = matter;
 	span = SpanningLoop_O::create();
 	span->setTop(atom);
@@ -520,7 +520,7 @@ core::T_sp	ZMatrix_O::_getAtomZMatrixNameAtIndex(uint i) const
 	while ( span->advanceLoopAndProcess() )
 	{
 	    newAtom = span->getAtom();
-	    _BLOCK_TRACEF(BF("ZMatrix entry for: %s") % newAtom->description().c_str() );
+	    
 	    atomIndices[newAtom] = this->_ZMatrix.size();
 	    entry = ZMatrixEntry_O::create(newAtom,atomIndices);
 	    this->_ZMatrix.push_back(entry);
@@ -530,17 +530,17 @@ core::T_sp	ZMatrix_O::_getAtomZMatrixNameAtIndex(uint i) const
 		continue;
 	    }
 	    bondToAtom = gc::As_unsafe<Atom_sp>(span->getBackSpan(newAtom));
-	    LOG(BF("bondToAtom = %s") % bondToAtom->description().c_str() );
+	    LOG("bondToAtom = %s" , bondToAtom->description().c_str() );
 	    bondInternal = ZMatrixBondInternal_O::create(newAtom,bondToAtom,atomIndices,this->sharedThis<ZMatrix_O>());
 	    this->_Internals.push_back(bondInternal);
 	    entry->_Bond = bondInternal;
 	    if ( !span->isBackSpanValid(bondToAtom) )
 	    {
-		LOG(BF("Stopped at bond") );
+		LOG("Stopped at bond" );
 		continue;
 	    }
 	    angleToAtom = gc::As_unsafe<Atom_sp>(span->getBackSpan(bondToAtom));
-	    LOG(BF("angleToAtom = %s") % angleToAtom->description().c_str() );
+	    LOG("angleToAtom = %s" , angleToAtom->description().c_str() );
 	    angleInternal = ZMatrixAngleInternal_O::create(newAtom,bondToAtom,
 							   angleToAtom,atomIndices,this->sharedThis<ZMatrix_O>());
 	    this->_Internals.push_back(angleInternal);
@@ -548,29 +548,29 @@ core::T_sp	ZMatrix_O::_getAtomZMatrixNameAtIndex(uint i) const
             core::T_sp backspan = span->getBackSpan(angleToAtom);
 	    if ( backspan.nilp() ) //!span->isBackSpanValid(angleToAtom) )
 	    {
-		LOG(BF("Stopped at angle") );
+		LOG("Stopped at angle" );
 		if ( numberOfEntries == 3 ) continue;
 		if ( numberOfEntries == 4 || numberOfEntries == 5 )
 		{
 		    dihedralToAtom = this->_getAtomAtIndex(2);
 		} else
 		{
-		    LOG(BF("Stopped at angle but numberOfEntries=%d") % numberOfEntries  );
-		    SIMPLE_ERROR(BF("There are too many entries to run out of a dihedral atom"));
+		    LOG("Stopped at angle but numberOfEntries=%d" , numberOfEntries  );
+		    SIMPLE_ERROR(("There are too many entries to run out of a dihedral atom"));
 		}
 	    } else
 	    {
 		dihedralToAtom = gc::As_unsafe<Atom_sp>(span->getBackSpan(angleToAtom));
 	    }
-	    LOG(BF("dihedralToAtom = %s") % dihedralToAtom->description().c_str() );
+	    LOG("dihedralToAtom = %s" , dihedralToAtom->description().c_str() );
 	    dihedralInternal = ZMatrixDihedralInternal_O::create(newAtom,bondToAtom,
 								 angleToAtom,dihedralToAtom,atomIndices,this->sharedThis<ZMatrix_O>());
-	    LOG(BF("Appending dihedral") );
+	    LOG("Appending dihedral" );
 	    this->_Internals.push_back(dihedralInternal);
-	    LOG(BF("Setting entry->_Dihedral") );
+	    LOG("Setting entry->_Dihedral" );
 	    entry->_Dihedral = dihedralInternal;
 	}
-	LOG(BF("Finished building zMatrix") );
+	LOG("Finished building zMatrix" );
     }
 
 

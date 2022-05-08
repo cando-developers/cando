@@ -196,11 +196,11 @@ void	TrainerHeader_O::initialize()
 #if 0
 string TrainerHeader_O::generateFileName() const
 {
-    LOG(BF("Generating file name directory(%s)") % this->_TopDirectory.c_str() );
-    LOG(BF("Generating file name fileNamePrefix(%s)") % this->getTrainerFileNamePrefix().c_str()  );
+    LOG("Generating file name directory(%s)" , this->_TopDirectory.c_str() );
+    LOG("Generating file name fileNamePrefix(%s)" , this->getTrainerFileNamePrefix().c_str()  );
     stringstream fileName;
     fileName << (BF("%s/%s") % this->_TopDirectory % this->getTrainerFileNamePrefix() ).str();
-    LOG(BF("Put it all together fileName(%s)") % fileName.str()  );
+    LOG("Put it all together fileName(%s)" , fileName.str()  );
     return fileName.str();
 }
 #endif
@@ -290,7 +290,7 @@ core::HashTableEq_sp readTrainerHeader(core::Path_sp path, core::LispPtr lisp )
     ifstream fin(fileName.c_str());
     if ( fin.bad() )
     {
-	SIMPLE_ERROR(BF("Could not open file: "+fileName));
+	SIMPLE_ERROR(("Could not open file: "+fileName));
     }
     vector<string> parts;
     uint lineCount = 0;
@@ -301,7 +301,7 @@ core::HashTableEq_sp readTrainerHeader(core::Path_sp path, core::LispPtr lisp )
 	lineCount++;
 	if ( lineCount > 100 )
 	{
-	    SIMPLE_ERROR(BF("Could not find (%s) in the first 100 lines")%search);
+          SIMPLE_ERROR(("Could not find (%s) in the first 100 lines") , search);
 	}
 	fin.getline(buffer,1024);
 	string line = buffer;
@@ -373,13 +373,13 @@ Trainer_sp readTrainerReplaceDatabase(const string& fileName, CandoDatabase_sp b
     Constitution_sp focusResidueConstitution = focusResidue->getConstitution();
     string constitutionName = focusResidueConstitution->getName();
     chem::CandoDatabase_sp oldTrainerCandoDatabase = job->getCandoDatabase();
-    LOG(BF("Replacing AlchemistDatabse of job with new one") );
+    LOG("Replacing AlchemistDatabse of job with new one" );
     oldTrainerCandoDatabase->giveYourDependantObjectsTo(bdh);
     Constitution_sp newFocusResidueConstitution = bdh->monomerConstitutionForName(constitutionName);
-    LOG(BF("Setting constitution for FocusResidue to: %s") % newFocusResidueConstitution->description().c_str()  );
+    LOG("Setting constitution for FocusResidue to: %s" , newFocusResidueConstitution->description().c_str()  );
     focusResidue->setConstitution(newFocusResidueConstitution);
-    LOG(BF("Setting constitution for FocusResidue: %s") % focusResidue->description().c_str()  );
-    LOG(BF("    constitution = %s") % newFocusResidueConstitution->description().c_str()  );
+    LOG("Setting constitution for FocusResidue: %s" , focusResidue->description().c_str()  );
+    LOG("    constitution = %s" , newFocusResidueConstitution->description().c_str()  );
     job->setCandoDatabase(bdh);
     return job;
 }
@@ -394,7 +394,7 @@ Trainer_sp readTrainerReplaceDatabase(const string& fileName, CandoDatabase_sp b
     job->getHeader()->setPathName(pathName);
     a = job->lisp()->create<core::XmlSaveArchive_O>();
     a->put("job",job);
-    LOG(BF("writeTrainer to file: %s") % fileName.c_str()  );
+    LOG("writeTrainer to file: %s" , fileName.c_str()  );
     a->saveAs(fileName);
 }
 #endif

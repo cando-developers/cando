@@ -143,7 +143,7 @@ void ArrayedResidue_O::setResidue(Residue_sp res)
 {
     if ( res->getUniqueLabel() == "" )
     {
-	SIMPLE_ERROR(BF("Every ArrayedResidue must have a label"));
+	SIMPLE_ERROR(("Every ArrayedResidue must have a label"));
     }
     this->_ResidueLabel = res->getUniqueLabel();
     this->_Residue = res;
@@ -304,11 +304,11 @@ void ArrayedMolecule_O::SimpleVectorCoordinate(geom::SimpleVectorCoordinateWithH
 {
     if ( h->getHash() != this->_Hash )
     {
-	SIMPLE_ERROR(BF("The hashes don't match"));
+	SIMPLE_ERROR(("The hashes don't match"));
     }
     if ( h->size() != this->getNumberOfAtoms() )
     {
-	SIMPLE_ERROR(BF("The number of atoms don't match"));
+	SIMPLE_ERROR(("The number of atoms don't match"));
     }
     uint start=0;
     for ( gctools::Vec0<ArrayedResidue_sp>::iterator it=this->_SortedResidues.begin();
@@ -322,11 +322,11 @@ void ArrayedMolecule_O::SimpleVectorCoordinate(geom::SimpleVectorCoordinateWithH
 {
     if ( h->getHash() != this->_Hash )
     {
-	SIMPLE_ERROR(BF("The hashes don't match"));
+	SIMPLE_ERROR(("The hashes don't match"));
     }
     if ( h->size() != this->getNumberOfAtoms() )
     {
-	SIMPLE_ERROR(BF("The number of atoms don't match"));
+	SIMPLE_ERROR(("The number of atoms don't match"));
     }
     uint start=0;
     for ( gctools::Vec0<ArrayedResidue_sp>::iterator it=this->_SortedResidues.begin();

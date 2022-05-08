@@ -237,7 +237,7 @@ string ChemInfoMatch_O::__repr__() const {
   for ( size_t ii=0; ii<this->_TagLookup->length(); ++ii) {
     core::T_sp atom = this->_TagLookup->rowMajorAref(ii);
     if (atom.notnilp()) {
-      ss << (BF(":tag %d :value %s ) ") % ii % _rep_(atom) );
+      ss << fmt::sprintf(":tag %d :value %s ) " , ii , _rep_(atom) );
     };
   }
   ss << " ))";
@@ -275,7 +275,7 @@ bool ChemInfoMatch_O::recognizesAtomTag(core::T_sp tag) {
   if (tag.fixnump() && tag.unsafe_fixnum()>=0 && tag.unsafe_fixnum()<this->_TagLookup->length()) {
     return this->_TagLookup->rowMajorAref(tag.unsafe_fixnum()).notnilp();
   }
-  SIMPLE_ERROR(BF("Illegal tag %lf") % _rep_(tag));
+  SIMPLE_ERROR(("Illegal tag %lf") , _rep_(tag));
 }
 
 void ChemInfoMatch_O::defineAtomTag(Atom_sp a, core::T_sp tag) {
@@ -285,7 +285,7 @@ void ChemInfoMatch_O::defineAtomTag(Atom_sp a, core::T_sp tag) {
     this->_TagLookup->rowMajorAset(tag.unsafe_fixnum(),a);
     return;
   }
-  SIMPLE_ERROR(BF("The tag %s is an illegal index into the tag vector %s") % _rep_(tag) % _rep_(this->_TagLookup));
+  SIMPLE_ERROR(("The tag %s is an illegal index into the tag vector %s") , _rep_(tag) , _rep_(this->_TagLookup));
 }
 
 
@@ -293,19 +293,19 @@ bool ChemInfoMatch_O::hasAtomWithTag(core::T_sp tag) {
   if (tag.fixnump() && tag.unsafe_fixnum()>=0 && tag.unsafe_fixnum()<this->_TagLookup->length()) {
     return this->_TagLookup->rowMajorAref(tag.unsafe_fixnum()).notnilp();
   }
-  SIMPLE_ERROR(BF("The tag %s is an illegal index into the tag vector %s") % _rep_(tag) % _rep_(this->_TagLookup));
+  SIMPLE_ERROR(("The tag %s is an illegal index into the tag vector %s") , _rep_(tag) , _rep_(this->_TagLookup));
 }
 
 
 CL_LISPIFY_NAME("getAtomWithTag");
 CL_DEFMETHOD Atom_sp ChemInfoMatch_O::getAtomWithTag(core::T_sp tag) {
   if (oCdr(this->_TagHistory).notnilp()) {
-    SIMPLE_WARN(BF("The chem-info-match has multiple solutions - get-atom-with-tag for tag %s works when there is one - solutions %s - smarts: %s") % _rep_(tag) % _rep_(this->_TagHistory) % this->_Root->originalCode());
+    SIMPLE_WARN("The chem-info-match has multiple solutions - get-atom-with-tag for tag %s works when there is one - solutions %s - smarts: %s" ,_rep_(tag) ,_rep_(this->_TagHistory) ,this->_Root->originalCode());
   }
   if (tag.fixnump() && tag.unsafe_fixnum()>=0 && tag.unsafe_fixnum()<this->_TagLookup->length()) {
     return gc::As<Atom_sp>(this->_TagLookup->rowMajorAref(tag.unsafe_fixnum()));
   }
-  SIMPLE_ERROR(BF("The tag %s is an illegal index into the tag vector %s") % _rep_(tag) % _rep_(this->_TagLookup));
+  SIMPLE_ERROR(("The tag %s is an illegal index into the tag vector %s") , _rep_(tag) , _rep_(this->_TagLookup));
 }
 
 CL_LISPIFY_NAME("getAtomWithTagOrNil");
@@ -342,11 +342,11 @@ CL_LISPIFY_NAME("addWildNameMap");
 CL_DEFMETHOD void WildElementDict_O::addWildNameMap(core::Symbol_sp wildName, core::Symbol_sp elementName) {
   _OF();
   if (!this->_AtomWildCards->contains(wildName)) {
-    SIMPLE_ERROR(BF("Could not find wild-card %s") % _rep_(core::Cons_O::createList(wildName)));
+    SIMPLE_ERROR(("Could not find wild-card %s") , _rep_(core::Cons_O::createList(wildName)));
   }
   core::T_sp tss = this->_AtomWildCards->gethash(wildName).as<adapt::SymbolSet_O>();
   if (tss.nilp()) {
-    SIMPLE_ERROR(BF("Could not find AtomWildCards for %s") % _rep_(wildName));
+    SIMPLE_ERROR(("Could not find AtomWildCards for %s") , _rep_(wildName));
   }
   adapt::SymbolSet_sp ss = tss.as<adapt::SymbolSet_O>();
   ss->insert(elementName);
@@ -362,7 +362,7 @@ bool WildElementDict_O::recognizesWildName(core::Symbol_sp name) {
 bool WildElementDict_O::recognizesWildNameElement(core::Symbol_sp name, core::Symbol_sp element) {
   core::T_sp symset = this->_AtomWildCards->gethash(name);
   if (symset.nilp()) {
-    SIMPLE_ERROR(BF("Unrecognized wild card name(%s)") % _rep_(name));
+    SIMPLE_ERROR(("Unrecognized wild card name(%s)") , _rep_(name));
   }
   if (symset.as<adapt::SymbolSet_O>()->contains(element) != 0)
     return true;
@@ -422,7 +422,7 @@ string chemInfoTypeString(ChemInfoType type) {
   }
   stringstream ss;
   ss << "Unknown ChemInfoType name(" << type << ")";
-  THROW_HARD_ERROR(BF("%s") % ss.str());
+  THROW_HARD_ERROR("%s" , ss.str());
 }
 
 ChemInfoType chemInfoTypeFromString(const string &name) {
@@ -435,7 +435,7 @@ ChemInfoType chemInfoTypeFromString(const string &name) {
   }
   stringstream ss;
   ss << "Unknown ChemInfoType name(" << name << ")";
-  THROW_HARD_ERROR(BF("%s") % ss.str());
+  THROW_HARD_ERROR("%s" , ss.str());
 }
 
 void ChemInfoNode_O::fields(core::Record_sp node) {
@@ -456,8 +456,8 @@ string ChemInfoNode_O::__repr__() const {
 
 uint ChemInfoNode_O::depth() const {
   _OF();
-  LOG(BF("Node type = %s") % this->className());
-  LOG(BF("Returning 1"));
+  LOG("Node type = %s" , this->className());
+  LOG("Returning 1");
   return 1;
 };
 
@@ -479,7 +479,7 @@ void AtomOrBondMatchNode_O::fields(core::Record_sp node) {
 
 bool AtomOrBondMatchNode_O::matches_Bond(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond) {
   _OF();
-  LOG(BF("%s\natom: %s bond: %s") % this->asSmarts() % _rep_(from) % _rep_(bond));
+  LOG("%s\natom: %s bond: %s" , this->asSmarts() , _rep_(from) , _rep_(bond));
   bool matches_from = this->matches_Atom(root,from);
   bool matches_other = this->matches_Atom(root,bond->getOtherAtom(from));
   return matches_from && matches_other;
@@ -487,16 +487,16 @@ bool AtomOrBondMatchNode_O::matches_Bond(Root_sp root, chem::Atom_sp from, chem:
 
 bool AtomOrBondMatchNode_O::matches_Atom(Root_sp root, chem::Atom_sp atom) {
   _OF();
-  LOG(BF("%s\natom: %s") % this->asSmarts() % _rep_(atom));
+  LOG("%s\natom: %s" , this->asSmarts() , _rep_(atom));
   if (this->_RingTest==SARNone) {
     return true;
   } else if (this->_RingTest==SARRingSet) {
-    LOG(BF("Setting atom %s matches _RingId %d") % _rep_(atom) % this->_RingId);
+    LOG("Setting atom %s matches _RingId %d" , _rep_(atom) , this->_RingId);
     current_match()->setRingTag(atom,core::make_fixnum(this->_RingId));
     return true;
   }
   // It's SARRingTest
-  LOG(BF("Checking if atom %s matches _RingId %d") % _rep_(atom) % this->_RingId);
+  LOG("Checking if atom %s matches _RingId %d" , _rep_(atom) , this->_RingId);
   return current_match()->matchesRingTag(atom,core::make_fixnum(this->_RingId));
 }
 
@@ -581,76 +581,76 @@ string Logical_O::asSmarts() const {
 uint Logical_O::depth() const {
   _OF();
   uint d = MAX(this->_Left->depth(), this->_Right->depth());
-  LOG(BF("Returning Logical depth=%d") % d);
+  LOG("Returning Logical depth=%d" , d);
   return d;
 }
 
 bool Logical_O::matches_Atom(Root_sp root, chem::Atom_sp atom) {
   _OF();
-  LOG(BF("%s\natom: %s") % this->asSmarts() % _rep_(atom));
+  LOG("%s\natom: %s" , this->asSmarts() , _rep_(atom));
   switch (this->_Operator) {
   case logAlwaysTrue:
       CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
-      LOG(BF("Always return true"));
+      LOG("Always return true");
       goto SUCCESS;
       break;
   case logIdentity:
       CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
-      LOG(BF("Identity no-op test"));
+      LOG("Identity no-op test");
       ASSERT(!this->_Left.nilp());
       if (this->_Left->matches_Atom(root, atom))
         goto SUCCESS;
       break;
   case logNot:
       CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
-      LOG(BF("logNot"));
+      LOG("logNot");
       ASSERT(!this->_Left.nilp());
       if (!(this->_Left->matches_Atom(root, atom)))
         goto SUCCESS;
       break;
   case logHighPrecedenceAnd:
       CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
-      LOG(BF("logHighPrecedenceAnd"));
+      LOG("logHighPrecedenceAnd");
       ASSERT(!this->_Left.nilp());
       if (this->_Left->matches_Atom(root, atom) && this->_Right->matches_Atom(root, atom))
         goto SUCCESS;
       break;
   case logLowPrecedenceAnd:
       CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
-      LOG(BF("logLowPrecedenceAnd"));
+      LOG("logLowPrecedenceAnd");
       if (this->_Left->matches_Atom(root, atom) && this->_Right->matches_Atom(root, atom))
         goto SUCCESS;
       break;
   case logOr: {
     CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
-    LOG(BF("logOr"));
+    LOG("logOr");
     ASSERT(!this->_Left.nilp());
     bool leftMatch = this->_Left->matches_Atom(root, atom);
     if (leftMatch)
       goto SUCCESS;
-    LOG(BF("Left match failed"));
+    LOG("Left match failed");
     ASSERT(!this->_Right.nilp());
     bool rightMatch = this->_Right->matches_Atom(root, atom);
     if (rightMatch)
       goto SUCCESS;
-    LOG(BF("Right match failed"));
+    LOG("Right match failed");
   } break;
   default:
       stringstream err;
       err << "Unknown logical operator(" << this->_Operator << ")";
-      SIMPLE_ERROR(BF("%s") % err.str());
+      SIMPLE_ERROR(("%s") , err.str());
   }
   //FAIL:
-  LOG(BF("FAIL"));
+  LOG("FAIL");
   return false;
  SUCCESS:
-  LOG(BF("SUCCESS!!!"));
+  LOG("SUCCESS!!!");
   return this->Base::matches_Atom(root,atom);
 }
 
 bool Logical_O::matches_Bond(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond) {
   _OF();
-  LOG(BF("%s\natom: %s bond: %s") % this->asSmarts() % _rep_(from) % _rep_(bond));
+  LOG("%s\natom: %s bond: %s" , this->asSmarts() , _rep_(from) , _rep_(bond));
   switch (this->_Operator) {
   case logAlwaysTrue:
       goto SUCCESS;
@@ -679,13 +679,13 @@ bool Logical_O::matches_Bond(Root_sp root, chem::Atom_sp from, chem::Bond_sp bon
   default:
       stringstream err;
       err << "Unknown logical operator(" << this->_Operator << ")";
-      SIMPLE_ERROR(BF("%s") % err.str());
+      SIMPLE_ERROR(("%s") , err.str());
   }
   //FAIL:
-  LOG(BF("FAIL"));
+  LOG("FAIL");
   return false;
  SUCCESS:
-  LOG(BF("SUCCESS!!!"));
+  LOG("SUCCESS!!!");
   return true; // this->Base::matches_Bond(root,from,bond);
 }
 
@@ -795,19 +795,19 @@ string ResidueTest_O::asSmarts() const {
 
 bool ResidueTest_O::matches_Atom(Root_sp root, chem::Atom_sp atom) {
   _OF();
-  LOG(BF("%s\natom: %s") % this->asSmarts() % _rep_(atom) );
+  LOG("%s\natom: %s" , this->asSmarts() , _rep_(atom) );
   Atom_sp ringAtom;
   SmartsRoot_sp smartsRoot;
-  LOG(BF("ResidueTest match for atom: %s") % atom->description().c_str());
+  LOG("ResidueTest match for atom: %s" , atom->description().c_str());
   if (root->type() != chem::smartsRoot) {
-    SIMPLE_ERROR(BF("Trying to carry out a ResidueTest with a non Smarts root"));
+    SIMPLE_ERROR(("Trying to carry out a ResidueTest with a non Smarts root"));
   }
-  SIMPLE_ERROR(BF("Handle atom tests in ResidueTest"));
+  SIMPLE_ERROR(("Handle atom tests in ResidueTest"));
 #if 0
   // First check if the AtomTest matches
   ASSERTNOTNULL(this->_AtomTest);
   if (!this->_AtomTest->matches_Atom(root, atom)) {
-    LOG(BF("The _AtomTest failed"));
+    LOG("The _AtomTest failed");
     goto FAIL;
   }
   // Now handle the ring test
@@ -815,28 +815,28 @@ bool ResidueTest_O::matches_Atom(Root_sp root, chem::Atom_sp atom) {
   // It does recognize the ring ID so check if the current atom is bonded to it
   // and then have the root forget the atom
   if (!smartsRoot->getMatch()->recognizesAtomTag(this->_RingTag)) {
-    SIMPLE_ERROR(BF("We are trying to test the atomTag (%s) but it doesn't exist!") % _rep_(this->_RingTag));
+    SIMPLE_ERROR(("We are trying to test the atomTag (%s) but it doesn't exist!") , _rep_(this->_RingTag));
   }
-  LOG(BF("      ResidueTest check close"));
+  LOG("      ResidueTest check close");
   ringAtom = smartsRoot->getMatch()->getAtomWithTag(this->_RingTag);
-  LOG(BF("      checking if %s matches ringAtom: %s") % atom->description().c_str() % ringAtom->description().c_str());
+  LOG("      checking if %s matches ringAtom: %s" , atom->description().c_str() , ringAtom->description().c_str());
   if (!atom->containedByValid()) {
-    SIMPLE_ERROR(BF("%s failed containedByValid()") % atom->description());
+    SIMPLE_ERROR(("%s failed containedByValid()") , atom->description());
   }
   if (!ringAtom->containedByValid()) {
-    SIMPLE_ERROR(BF("%s failed containedByValid()") % ringAtom->description());
+    SIMPLE_ERROR(("%s failed containedByValid()") , ringAtom->description());
   }
-  LOG(BF("   atom->containedBy()->description() = %s") % atom->containedBy()->description().c_str());
-  LOG(BF("   ringAtom->containedBy()->description() = %s") % ringAtom->containedBy()->description().c_str());
+  LOG("   atom->containedBy()->description() = %s" , atom->containedBy()->description().c_str());
+  LOG("   ringAtom->containedBy()->description() = %s" , ringAtom->containedBy()->description().c_str());
   if (atom->containedBy() == ringAtom->containedBy()) {
-    LOG(BF("RESIDUE MATCH THEY DO!!!!"));
+    LOG("RESIDUE MATCH THEY DO!!!!");
     goto SUCCESS;
   }
  FAIL:
-  LOG(BF("FAIL"));
+  LOG("FAIL");
   return false;
  SUCCESS:
-  LOG(BF("SUCCESS!"));
+  LOG("SUCCESS!");
   return true;
 #endif
 }
@@ -853,15 +853,15 @@ void ResidueTest_O::fields(core::Record_sp node) {
 bool unsafe_is_aromatic(Atom_sp a1) {
   core::T_sp taromaticity_info = chem::_sym_STARcurrent_aromaticity_informationSTAR->symbolValue();
   if (taromaticity_info.unboundp()) {
-    SIMPLE_ERROR(BF("In unsafe_is_aromatic and the chem:*current-aromaticity-information* is UNBOUND and it should not be"));
+    SIMPLE_ERROR(("In unsafe_is_aromatic and the chem:*current-aromaticity-information* is UNBOUND and it should not be"));
   }
   if (taromaticity_info.nilp()) {
-    SIMPLE_ERROR(BF("In unsafe_is_aromatic and the chem:*current-aromaticity-information* is NIL and it should not be"));
+    SIMPLE_ERROR(("In unsafe_is_aromatic and the chem:*current-aromaticity-information* is NIL and it should not be"));
   }
   core::HashTable_sp aromaticity_info = gc::As<core::HashTable_sp>(taromaticity_info);
   core::T_sp info = aromaticity_info->gethash(a1);
   if (chem__verbose(1)) {
-    core::write_bf_stream(BF("is_aromatic %s -> %d\n") % _rep_(a1) % _rep_(info));
+    core::write_bf_stream(fmt::sprintf("is_aromatic %s -> %d\n" , _rep_(a1) , _rep_(info)));
   }
   return info.notnilp();
 }
@@ -885,14 +885,14 @@ bool _matchInAromaticBond(Atom_sp a1, Atom_sp a2) {
     core::List_sp rings = chem::_sym_STARcurrent_ringsSTAR->symbolValue();
       // If a1 and other are in the same ring
     if (chem__verbose(1)) {
-      core::write_bf_stream(BF("_matchInAromaticBond a1=%s a2=%s\n") % _rep_(a1) % _rep_(a2));
+      core::write_bf_stream(fmt::sprintf("_matchInAromaticBond a1=%s a2=%s\n" , _rep_(a1) , _rep_(a2)));
     }
     bool found_a1 = false;
     bool found_a2 = false;
     for ( auto cur : rings ) {
       core::List_sp ring = CONS_CAR(cur);
       if (chem__verbose(1)) {
-        core::write_bf_stream(BF("Looking at ring: %s\n") % _rep_(ring));
+        core::write_bf_stream(fmt::sprintf("Looking at ring: %s\n" , _rep_(ring)));
       }
       found_a1 = false;
       found_a2 = false;
@@ -902,7 +902,7 @@ bool _matchInAromaticBond(Atom_sp a1, Atom_sp a2) {
         else if (one == a2 && unsafe_is_aromatic(a2)) found_a2 = true;
       }
       if (chem__verbose(1)) {
-        core::write_bf_stream(BF("found_a1 = %d found_a2 = %d\n") % found_a1 % found_a2 );
+        core::write_bf_stream(fmt::sprintf("found_a1 = %d found_a2 = %d\n" , found_a1 , found_a2 ));
       }      
       if (found_a1&&found_a2) return true;
     }
@@ -914,46 +914,46 @@ bool _matchInAromaticBond(Atom_sp a1, Atom_sp a2) {
 DOCGROUP(cando)
 CL_DEFUN bool chem__in_aromatic_bond(Atom_sp a1, Atom_sp a2)
 {
-  core::write_bf_stream(BF("chem__in_aromatic_bond a1=%s a2=%s\n") % _rep_(a1) % _rep_(a2));
+  core::write_bf_stream(fmt::sprintf("chem__in_aromatic_bond a1=%s a2=%s\n" , _rep_(a1) , _rep_(a2)));
   return _matchInAromaticBond(a1,a2);
 }
 
 
 bool _matchBondTypes(BondEnum be, chem::BondOrder bo, Atom_sp a1, Atom_sp a2) {
-  LOG(BF("bondOrder = %s") % bondOrderToString(bo).c_str());
+  LOG("bondOrder = %s" , bondOrderToString(bo).c_str());
   switch (be) {
   case SABSingleBond:
-      LOG(BF("SMARTS BondEnum = SABSingleBond"));
+      LOG("SMARTS BondEnum = SABSingleBond");
       if (!Bond_O::singleBondP(bo)) goto nomatch;
       if (_matchInAromaticBond(a1,a2)) goto nomatch;
       break;
   case SABSingleOrAromaticBond:
-      LOG(BF("SMARTS BondEnum = SABSingleOrAromaticBond"));
+      LOG("SMARTS BondEnum = SABSingleOrAromaticBond");
           if (!(Bond_O::singleBondP(bo) || bo == chem::aromaticBond || _matchInAromaticBond(a1,a2)))
         goto nomatch;
       break;
   case SABDoubleOrAromaticBond:
-      LOG(BF("SMARTS BondEnum = SABDoubleOrAromaticBond"));
+      LOG("SMARTS BondEnum = SABDoubleOrAromaticBond");
       if (!(bo == chem::doubleBond || bo == chem::aromaticBond || _matchInAromaticBond(a1,a2)))
         goto nomatch;
       break;
   case SABTripleOrAromaticBond:
-      LOG(BF("SMARTS BondEnum = SABTripleOrAromaticBond"));
+      LOG("SMARTS BondEnum = SABTripleOrAromaticBond");
       if (!(bo == chem::tripleBond || bo == chem::aromaticBond || _matchInAromaticBond(a1,a2)))
         goto nomatch;
       break;
   case SABDoubleBond:
-      LOG(BF("SMARTS BondEnum = SABDoubleBond"));
+      LOG("SMARTS BondEnum = SABDoubleBond");
       if (bo != chem::doubleBond) goto nomatch;
       if (_matchInAromaticBond(a1,a2)) goto nomatch;
       break;
   case SABTripleBond:
-      LOG(BF("SMARTS BondEnum = SABTriple"));
+      LOG("SMARTS BondEnum = SABTriple");
       if (bo != chem::tripleBond) goto nomatch;
       if (_matchInAromaticBond(a1,a2)) goto nomatch;
       break;
   case SABAromaticBond:
-      LOG(BF("SMARTS BondEnum = SABAromaticBond"));
+      LOG("SMARTS BondEnum = SABAromaticBond");
       if (!(bo == chem::aromaticBond || _matchInAromaticBond(a1,a2)))
         goto nomatch;
       break;
@@ -963,20 +963,20 @@ bool _matchBondTypes(BondEnum be, chem::BondOrder bo, Atom_sp a1, Atom_sp a2) {
       goto nomatch;
       break;
   case SABDirectionalSingleDownOrUnspecified:
-      SIMPLE_ERROR(BF("Must implement SingleDirectionalDownOrUnspecified"));
+      SIMPLE_ERROR(("Must implement SingleDirectionalDownOrUnspecified"));
   case SABDirectionalSingleUpOrUnspecified:
-      SIMPLE_ERROR(BF("Must implement SingleDirectionalUpOrUnspecified"));
+      SIMPLE_ERROR(("Must implement SingleDirectionalUpOrUnspecified"));
   case SABDirectionalSingleUp:
   case SABDirectionalSingleDown:
-      SIMPLE_ERROR(BF("Must implement directional bonds"));
+      SIMPLE_ERROR(("Must implement directional bonds"));
   default:
       printf("%s:%d:%s Fell through to default with be = %s - maybe the BondMatcher should handle it\n", __FILE__, __LINE__, __FUNCTION__, sabToString(be).c_str());
       goto nomatch;
   }
-  LOG(BF("THEY MATCH!!"));
+  LOG("THEY MATCH!!");
   return true;
  nomatch:
-  LOG(BF("THEY DONT MATCH"));
+  LOG("THEY DONT MATCH");
   return false;
 }
 
@@ -1006,7 +1006,7 @@ bool _matchBondTypesWithAtoms(BondEnum be, chem::BondOrder bo, Atom_sp from, Bon
       }
       return false;
     }
-    SIMPLE_ERROR(BF("ring-bond detection can only be done if the chem:*current-rings* dynamic variable is bound - it is not"));
+    SIMPLE_ERROR(("ring-bond detection can only be done if the chem:*current-rings* dynamic variable is bound - it is not"));
   } else {
     return _matchBondTypes(be,bo,from, bond->getOtherAtom(from));
   }
@@ -1030,24 +1030,24 @@ bool BondLogical_O::matches_Bond(Root_sp root, Atom_sp from, Bond_sp bond) {
   switch (this->_Operator) {
   case logAlwaysTrue:
       CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
-      LOG(BF("Always return true"));
+      LOG("Always return true");
       goto SUCCESS;
       break;
   case logIdentity:
       CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
-      LOG(BF("Identity no-op test"));
+      LOG("Identity no-op test");
       ASSERT(this->_Left.boundp());
       if (this->_Left->matches_Bond(root, from, bond)) goto SUCCESS;
       break;
   case logNot:
       CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
-      LOG(BF("logNot"));
+      LOG("logNot");
       ASSERT(this->_Left.boundp());
       if (!this->_Left->matches_Bond(root,from,bond)) goto SUCCESS;
       break;
   case logHighPrecedenceAnd:
       CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
-      LOG(BF("logHighPrecedenceAnd"));
+      LOG("logHighPrecedenceAnd");
       ASSERT(this->_Left.boundp());
       ASSERT(this->_Right.boundp());
       if (this->_Left->matches_Bond(root, from, bond)
@@ -1055,7 +1055,7 @@ bool BondLogical_O::matches_Bond(Root_sp root, Atom_sp from, Bond_sp bond) {
       break;
   case logLowPrecedenceAnd:
       CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
-      LOG(BF("logLowPrecedenceAnd"));
+      LOG("logLowPrecedenceAnd");
       ASSERT(this->_Left.boundp());
       ASSERT(this->_Right.boundp());
       if (this->_Left->matches_Bond(root, from, bond)
@@ -1063,7 +1063,7 @@ bool BondLogical_O::matches_Bond(Root_sp root, Atom_sp from, Bond_sp bond) {
       break;
   case logOr: {
     CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
-    LOG(BF("logOr"));
+    LOG("logOr");
     ASSERT(this->_Left.boundp());
     ASSERT(this->_Right.boundp());
     if (this->_Left->matches_Bond(root, from, bond)) goto SUCCESS;
@@ -1072,13 +1072,13 @@ bool BondLogical_O::matches_Bond(Root_sp root, Atom_sp from, Bond_sp bond) {
   default:
       stringstream err;
       err << "Unknown logical operator(" << this->_Operator << ")";
-      SIMPLE_ERROR(BF("%s") % err.str());
+      SIMPLE_ERROR(("%s") , err.str());
   }
   //FAIL:
-  LOG(BF("FAIL"));
+  LOG("FAIL");
   return false;
  SUCCESS:
-  LOG(BF("SUCCESS!!!"));
+  LOG("SUCCESS!!!");
   return true;
 }
 
@@ -1213,7 +1213,7 @@ core::T_sp BondToAtomTest_O::children() {
     if (this->_BondMatcher.boundp()) {
       result << this->_BondMatcher;
     } else {
-      SIMPLE_ERROR(BF("BondToAtomTest _Bond is SABUseBondMatcher but _BondMatcher is unbound"));
+      SIMPLE_ERROR(("BondToAtomTest _Bond is SABUseBondMatcher but _BondMatcher is unbound"));
     }
   }
   if (this->_AtomTest.notnilp()) result << this->_AtomTest;
@@ -1232,7 +1232,7 @@ CL_DEFMETHOD BondMatcher_sp BondToAtomTest_O::bondMatcher() const {
   if (this->_BondMatcher.boundp()) {
     return this->_BondMatcher;
   }
-  SIMPLE_ERROR(BF("bond-matcher is unbound"));
+  SIMPLE_ERROR(("bond-matcher is unbound"));
 }
 
 //! Set the BondType if it's one that is recognzed by _matchBondTypes
@@ -1267,7 +1267,7 @@ CL_DEFMETHOD void BondToAtomTest_O::setAtomTest(core::T_sp atomTest)
 
 bool BondToAtomTest_O::matches_Bond(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond) {
   _OF();
-  LOG(BF("%s\natom: %s bond: %s") % this->asSmarts() % _rep_(from) % _rep_(bond));
+  LOG("%s\natom: %s bond: %s" , this->asSmarts() , _rep_(from) , _rep_(bond));
   if (this->_Bond!=SABUseBondMatcher) {
     chem::BondOrder bo;
     bo = bond->getOrderFromAtom(from);
@@ -1277,16 +1277,16 @@ bool BondToAtomTest_O::matches_Bond(Root_sp root, chem::Atom_sp from, chem::Bond
       goto SUCCESS;
   } else {
     if (this->_BondMatcher.unboundp()) {
-      SIMPLE_ERROR(BF("The BondToAtomTest BondMatcher is unbound"));
+      SIMPLE_ERROR(("The BondToAtomTest BondMatcher is unbound"));
     }
     if (!this->_BondMatcher->matches_Bond(root,from,bond)) goto FAIL;
     if (this->_AtomTest->matches_Atom(root,bond->getOtherAtom(from))) goto SUCCESS;
   }
  FAIL:
-  LOG(BF("FAIL!"));
+  LOG("FAIL!");
   return false;
  SUCCESS:
-  LOG(BF("SUCCESS!"));
+  LOG("SUCCESS!");
   return true;
 }
 
@@ -1313,7 +1313,7 @@ CL_DEFMETHOD core::Symbol_sp AtomTest_O::getSymbolArg() const { return this->_Sy
 
 bool AtomTest_O::matches_Bond(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond) {
   _OF();
-  LOG(BF("%s\natom: %s bond: %s") % this->asSmarts() % _rep_(from) % _rep_(bond));
+  LOG("%s\natom: %s bond: %s" , this->asSmarts() , _rep_(from) , _rep_(bond));
   switch (this->_Test) {
   case SAPBondedToPrevious:
       if (chem::_matchBondTypesWithAtoms((chem::BondEnum) this->_IntArg, bond->getOrderFromAtom(from), from, bond))
@@ -1332,10 +1332,10 @@ bool AtomTest_O::matches_Bond(Root_sp root, chem::Atom_sp from, chem::Bond_sp bo
   if (this->matches_Atom(root, bond->getOtherAtom(from)))
     goto SUCCESS;
  FAIL:
-  LOG(BF("FAIL"));
+  LOG("FAIL");
   return false;
  SUCCESS:
-  LOG(BF("SUCCESS!"));
+  LOG("SUCCESS!");
   return true; // this->Base::matches_Bond(root,from,bond);
 }
 
@@ -1394,74 +1394,74 @@ SYMBOL_EXPORT_SC_(ChemPkg,STARcurrent_matchSTAR);
 
 bool AtomTest_O::matches_Atom(Root_sp root, chem::Atom_sp atom) {
   _OF();
-  LOG(BF("%s\natom: %s") % this->asSmarts() % _rep_(atom) );
+  LOG("%s\natom: %s" , this->asSmarts() , _rep_(atom) );
   int cnt;
   Atom_sp ringStartAtom;
   int hc = 0;
   if (chem__verbose(2)) {
-    core::write_bf_stream(BF("AtomTest_O::matches_Atom test: %s\n") % this->testName(this->_Test));
+    core::write_bf_stream(fmt::sprintf("AtomTest_O::matches_Atom test: %s\n" , this->testName(this->_Test)));
   }
   switch (this->_Test) {
   case SAPWildCard:
-      LOG(BF("SAPWildCard")); //
+      LOG("SAPWildCard"); //
       goto SUCCESS;
   case SAPAromaticElement:
-      LOG(BF("SAPAromaticElement(%s) == expecting(%s)") % _rep_(atom->getElementAsSymbol()) % _rep_(this->_SymbolArg));
+      LOG("SAPAromaticElement(%s) == expecting(%s)" , _rep_(atom->getElementAsSymbol()) , _rep_(this->_SymbolArg));
       if (this->_SymbolArg == atom->getElementAsSymbol() && is_aromatic(atom))
         goto SUCCESS;
       break;
   case SAPElement:
-      LOG(BF("SAPElement(%s) == expecting(%s)") % _rep_(atom->getElementAsSymbol()) % _rep_(this->_SymbolArg));
+      LOG("SAPElement(%s) == expecting(%s)" , _rep_(atom->getElementAsSymbol()) , _rep_(this->_SymbolArg));
       if (this->_SymbolArg == atom->getElementAsSymbol())
         goto SUCCESS;
       break;
   case SAPAliphatic:
-      LOG(BF("SAPAliphatic"));
+      LOG("SAPAliphatic");
       if (!is_aromatic(atom))
         goto SUCCESS;
       break;
   case SAPAromatic:
-      LOG(BF("SAPAromatic"));
+      LOG("SAPAromatic");
       if (is_aromatic(atom))
         goto SUCCESS;
       break;
   case SAPPredicateName:
-      LOG(BF("SAPPredicateName<%s> testing %s") % _rep_(this->_SymbolArg) % atom->description());
+      LOG("SAPPredicateName<%s> testing %s" , _rep_(this->_SymbolArg) , atom->description());
       if (root->evaluateTest(this->_SymbolArg, atom))
         goto SUCCESS;
       break;
   case SAPAtomicNumber:
-      LOG(BF("SAPAtomicNumber(%d) == expecting(%d)") % atom->getAtomicNumber() % this->_IntArg);
+      LOG("SAPAtomicNumber(%d) == expecting(%d)" , atom->getAtomicNumber() , this->_IntArg);
       if (this->_IntArg == atom->getAtomicNumber())
         goto SUCCESS;
       break;
   case SAPAtomicMass:
-      LOG(BF("SAPAtomicMass(%d) == expecting(%d)") % atom->getIntegerAtomicMass() % this->_IntArg);
+      LOG("SAPAtomicMass(%d) == expecting(%d)" , atom->getIntegerAtomicMass() , this->_IntArg);
       if (this->_IntArg == atom->getIntegerAtomicMass())
         goto SUCCESS;
       break;
   case SAPTotalHCount:
       hc = atom->getBondedHydrogenCount();
-      LOG(BF("SAPTotalHCount(%d) == expecting(%d)") % hc % this->_IntArg);
-      LOG(BF("Checking total hydrogen count looking for(%d) got(%d)") % this->_IntArg % hc);
+      LOG("SAPTotalHCount(%d) == expecting(%d)" , hc , this->_IntArg);
+      LOG("Checking total hydrogen count looking for(%d) got(%d)" , this->_IntArg , hc);
       if (this->_IntArg == hc) {
-        LOG(BF("Match")); //
+        LOG("Match"); //
         goto SUCCESS;
       }
-      LOG(BF("No match")); //
+      LOG("No match"); //
       break;
   case SAPResidueTest:
-      SIMPLE_WARN(BF("What do I do with SAPResidueText"));
+      SIMPLE_WARN("What do I do with SAPResidueText");
 #if 0
-      LOG(BF("SAPResidueTest looking for tag: %s") % this->_StringArg);
+      LOG("SAPResidueTest looking for tag: %s" , this->_StringArg);
       if (!root->getMatch()->recognizesAtomTag(chemkw_intern(this->_StringArg))) {
-        SIMPLE_ERROR(BF("We are trying to test the atomTag (" + this->_StringArg + ") but it doesn't exist!"));
+        SIMPLE_ERROR(("We are trying to test the atomTag (" + this->_StringArg + ") but it doesn't exist!"));
       }
-      LOG(BF("      SAPResidueTest check close")); //
+      LOG("      SAPResidueTest check close"); //
       ringStartAtom = root->getMatch()->getAtomWithTag(chemkw_intern(this->_StringArg));
-      LOG(BF("      checking if residue for %s matches residue for ringStart atom: %s") % atom->description().c_str() % ringStartAtom->description().c_str()); //
+      LOG("      checking if residue for %s matches residue for ringStart atom: %s" , atom->description().c_str() , ringStartAtom->description().c_str()); //
       if (atom->containedBy() == ringStartAtom->containedBy()) {
-        LOG(BF("RESIDUE MATCH THEY DO!!!!"));
+        LOG("RESIDUE MATCH THEY DO!!!!");
         goto SUCCESS;
       }
 #endif
@@ -1470,7 +1470,7 @@ bool AtomTest_O::matches_Atom(Root_sp root, chem::Atom_sp atom) {
   case SAPPositiveCharge:       // next
   case SAPNegativeFormalCharge: // next
   case SAPPositiveFormalCharge:
-      LOG(BF("SAPxxxxCharge")); //
+      LOG("SAPxxxxCharge"); //
       if (this->_IntArg == atom->getIonization())
         goto SUCCESS;
       break;
@@ -1478,7 +1478,7 @@ bool AtomTest_O::matches_Atom(Root_sp root, chem::Atom_sp atom) {
   case SAPRingMembershipCount: {
     int count = 0;
     if (!_sym_STARcurrent_ringsSTAR->boundP()) {
-      SIMPLE_WARN(BF("The SAPRingMembershipCount or SAPRingConnectivity test was attempted but chem:*current-rings* is not bound - so it cannot work properly"));
+      SIMPLE_WARN("The SAPRingMembershipCount or SAPRingConnectivity test was attempted but chem:*current-rings* is not bound - so it cannot work properly");
     } else {
       core::List_sp rings = _sym_STARcurrent_ringsSTAR->symbolValue();
       for ( auto ring_cur : rings ) {
@@ -1496,7 +1496,7 @@ bool AtomTest_O::matches_Atom(Root_sp root, chem::Atom_sp atom) {
       break;
   case SAPRingSize:
       if (!_sym_STARcurrent_ringsSTAR->boundP()) {
-        SIMPLE_WARN(BF("The SAPRingSize test was attempted but chem:*current-rings* is not bound - so it cannot work properly"));
+        SIMPLE_WARN("The SAPRingSize test was attempted but chem:*current-rings* is not bound - so it cannot work properly");
       } else {
         core::List_sp rings = _sym_STARcurrent_ringsSTAR->symbolValue();
         for ( auto ring_cur : rings ) {
@@ -1508,7 +1508,7 @@ bool AtomTest_O::matches_Atom(Root_sp root, chem::Atom_sp atom) {
       }
       break;
   case SAPValence:
-      LOG(BF("SAPRingValence"));
+      LOG("SAPRingValence");
     // total bond valence
     // each single bond counts 1
     // each double/aromatic bond counts 2
@@ -1518,7 +1518,7 @@ bool AtomTest_O::matches_Atom(Root_sp root, chem::Atom_sp atom) {
       break;
   case SAPAtomMap:
     {
-      LOG(BF("SAPAtomMap[%d]") % this->_IntArg);
+      LOG("SAPAtomMap[%d]" , this->_IntArg);
       // We have an atom and we have a tag in this->_IntArg
       ChemInfoMatch_sp match =  gc::As<ChemInfoMatch_sp>(_sym_STARcurrent_matchSTAR->symbolValue());
       match->defineAtomTag(atom,core::make_fixnum(this->_IntArg));
@@ -1527,12 +1527,12 @@ bool AtomTest_O::matches_Atom(Root_sp root, chem::Atom_sp atom) {
     break;
   case SAPConnectivity: // No implicit H's so Connectivity == Degree
   case SAPDegree:
-      LOG(BF("SAPDegree testing if atom->numberOfBonds(){%d} == this->_IntArg{%d}") % atom->numberOfBonds() % this->_IntArg);
+      LOG("SAPDegree testing if atom->numberOfBonds(){%d} == this->_IntArg{%d}" , atom->numberOfBonds() , this->_IntArg);
       if (this->_IntArg == atom->numberOfBonds())
         goto SUCCESS;
       break;
   case SAPInBond:
-      LOG(BF("SAPInBond"));
+      LOG("SAPInBond");
       cnt = 0;
       for (int i = 0; i < atom->numberOfBonds(); i++) {
         if (chem::_matchBondTypes((chem::BondEnum) this->_IntArg, atom->bondedOrder(i), atom,atom->bondedNeighbor(i)))
@@ -1542,7 +1542,7 @@ bool AtomTest_O::matches_Atom(Root_sp root, chem::Atom_sp atom) {
         goto SUCCESS;
       break;
   case SAPArLevel:
-      LOG(BF("SAPArLevel"));
+      LOG("SAPArLevel");
       switch (this->_IntArg) {
       case 1:
           if (atom->getMembershipAr1())
@@ -1567,12 +1567,12 @@ bool AtomTest_O::matches_Atom(Root_sp root, chem::Atom_sp atom) {
       }
       goto FAIL;
   case SAPNoRing:
-      LOG(BF("SAPNoRing"));
+      LOG("SAPNoRing");
       if (!atom->isInRing())
         goto SUCCESS;
       break;
   case SAPElectronegativeElement: // ( O, N, F, Cl, Br )
-      LOG(BF("SAPElectronegativeElement"));
+      LOG("SAPElectronegativeElement");
       if (atom->getElement() == element_O)
         goto SUCCESS;
       if (atom->getElement() == element_N)
@@ -1587,13 +1587,13 @@ bool AtomTest_O::matches_Atom(Root_sp root, chem::Atom_sp atom) {
   default:
       stringstream ss;
       ss << "You must implement a test for: " << this->testName(this->_Test);
-      SIMPLE_ERROR(BF("%s") % ss.str());
+      SIMPLE_ERROR(("%s") , ss.str());
   }
  FAIL:
-  LOG(BF("FAIL"));
+  LOG("FAIL");
   return false;
  SUCCESS:
-  LOG(BF("SUCCESS!"));
+  LOG("SUCCESS!");
   return this->Base::matches_Atom(root,atom);
 }
 
@@ -1772,10 +1772,10 @@ uint Chain_O::depth() const {
 
 bool Chain_O::matches_Atom(Root_sp root, chem::Atom_sp from) {
   _OF();
-  LOG(BF("%s\natom: %s") % this->asSmarts() % _rep_(from) );
+  LOG("%s\natom: %s" , this->asSmarts() , _rep_(from) );
 #if 1
   if (this->_Head->matches_Atom(root,from)) {
-    LOG(BF("SUCCESS!\n"));
+    LOG("SUCCESS!\n");
     chem::BondList_sp bonds = from->getBondList();
     return this->_Tail->matches_BondList(root,from,bonds);
   }
@@ -1784,29 +1784,29 @@ bool Chain_O::matches_Atom(Root_sp root, chem::Atom_sp from) {
   if (gc::IsA<AtomTest_sp>(this->_Head)) {
     AtomTest_sp atHead = gc::As_unsafe<AtomTest_sp>(this->_Head);
     if (atHead->matches_Atom(root,from)) {
-      LOG(BF("SUCCESS!\n"));
+      LOG("SUCCESS!\n");
       chem::BondList_sp bonds = from->getBondList();
       return this->_Tail->matches_BondList(root,from,bonds);
     }
-    LOG(BF("FAIL!\n"));
+    LOG("FAIL!\n");
     return false;
   } else if (gc::IsA<Logical_sp>(this->_Head)) {
     Logical_sp lHead = gc::As_unsafe<Logical_sp>(this->_Head);
     if (lHead->matches_Atom(root,from)) {
-      LOG(BF("SUCCESS!\n"));
+      LOG("SUCCESS!\n");
       chem::BondList_sp bonds = from->getBondList();
       return this->_Tail->matches_BondList(root,from,bonds);
     }
-    LOG(BF("FAIL!\n"));
+    LOG("FAIL!\n");
     return false;
   } else if (gc::IsA<AntechamberFocusAtomMatch_sp>(this->_Head)) {
     AntechamberFocusAtomMatch_sp focus = gc::As_unsafe<AntechamberFocusAtomMatch_sp>(this->_Head);
     if (focus->matches_Atom(root,from)) {
-      LOG(BF("SUCCESS!\n"));
+      LOG("SUCCESS!\n");
       chem::BondList_sp bonds = from->getBondList();
       return this->_Tail->matches_BondList(root,from,bonds);
     }
-    LOG(BF("FAIL!\n"));
+    LOG("FAIL!\n");
     return false;
   }
 #endif
@@ -1814,7 +1814,7 @@ bool Chain_O::matches_Atom(Root_sp root, chem::Atom_sp from) {
 
 bool Chain_O::matches_Bond(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond) {
   _OF();
-  LOG(BF("%s\natom: %s bond: %s") % this->asSmarts() % _rep_(from) % _rep_(bond));
+  LOG("%s\natom: %s bond: %s" , this->asSmarts() , _rep_(from) , _rep_(bond));
   if (this->_Head->matches_Bond(root,from,bond)) {
     if (this->_Tail.notnilp()) {
       Atom_sp other = bond->getOtherAtom(from);
@@ -1828,30 +1828,30 @@ bool Chain_O::matches_Bond(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond)
     goto SUCCESS;
   }
  FAIL:
-  LOG(BF("FAIL"));
+  LOG("FAIL");
   return false;
  SUCCESS:
-  LOG(BF("SUCCESS"));
+  LOG("SUCCESS");
   return true;
 }
  
 bool Chain_O::matches_BondList(Root_sp root, chem::Atom_sp from, chem::BondList_sp neighbors) {
   _OF();
-  LOG(BF("%s\natom: %s bondList: %s") % this->asSmarts() % _rep_(from) % _rep_(neighbors));
+  LOG("%s\natom: %s bondList: %s" , this->asSmarts() , _rep_(from) , _rep_(neighbors));
   gctools::Vec0<chem::Bond_sp>::iterator bi;
   chem::BondList_sp nextBonds, tempBondList;
-  LOG(BF("Chain_O matching pattern: %s") % this->asSmarts());
-  LOG(BF("There are %d neighbors bondList: %s") % neighbors->size() % neighbors->describeOthers(from));
+  LOG("Chain_O matching pattern: %s" , this->asSmarts());
+  LOG("There are %d neighbors bondList: %s" , neighbors->size() , neighbors->describeOthers(from));
   for (bi = neighbors->begin(); bi != neighbors->end(); bi++) {
     if (this->matches_Bond(root, from, *bi)) {
       goto SUCCESS;
     }
   }
   //FAIL:
-  LOG(BF("FAIL"));
+  LOG("FAIL");
   return false;
  SUCCESS:
-  LOG(BF("SUCCESS!"));
+  LOG("SUCCESS!");
   return true;
 }
 
@@ -1900,30 +1900,30 @@ uint Branch_O::depth() const {
 
 bool Branch_O::matches_BondList(Root_sp root, chem::Atom_sp from, chem::BondList_sp neighbors) {
   _OF();
-  LOG(BF("%s\natom: %s bondList: %s") % this->asSmarts() % _rep_(from) % _rep_(neighbors));
+  LOG("%s\natom: %s bondList: %s" , this->asSmarts() , _rep_(from) , _rep_(neighbors));
   gctools::Vec0<chem::Bond_sp>::iterator bi;
-  LOG(BF("Branch_O matching pattern: %s") % this->asSmarts());
-  LOG(BF("Neighbors bond list= %s") % neighbors->describeOthers(from));
+  LOG("Branch_O matching pattern: %s" , this->asSmarts());
+  LOG("Neighbors bond list= %s" , neighbors->describeOthers(from));
   for (bi = neighbors->begin(); bi != neighbors->end(); bi++) {
-    _BLOCK_TRACEF(BF("Checking neighbors focusing on %s") % (*bi)->describeOther(from));
+    
     BondList_sp leftBondList = BondList_O::create();
     leftBondList->addBond(*bi);
-    LOG(BF("Constructed left bond list"));
-    LOG(BF("Left bond list = %s") % leftBondList->describeOthers(from));
+    LOG("Constructed left bond list");
+    LOG("Left bond list = %s" , leftBondList->describeOthers(from));
     BondList_sp rightBondList = BondList_O::create();
     for ( auto ci = (*neighbors).begin(); ci!=(*neighbors).end(); ++ci ) {
       if (*bi != *ci) rightBondList->addBond(*ci);
     }
 //    GC_COPY(chem::BondList_O, rightBondList, *neighbors); // = RP_Copy<BondList_O>(neighbors);
-    LOG(BF("Right bond list after copy without left = %s") % rightBondList->describeOthers(from));
-    LOG(BF("copied neighbors into right bond list and removed left bond"));
-    LOG(BF("Checking if left matches"));
+    LOG("Right bond list after copy without left = %s" , rightBondList->describeOthers(from));
+    LOG("copied neighbors into right bond list and removed left bond");
+    LOG("Checking if left matches");
     if (this->_Left->matches_BondList(root, from, leftBondList)) {
-      LOG(BF("Left matches"));
+      LOG("Left matches");
       if (this->_Right.notnilp()) {
-        LOG(BF("Right branch is defined, checking if it matches"));
+        LOG("Right branch is defined, checking if it matches");
         if (this->_Right->matches_BondList(root, from, rightBondList)) {
-          LOG(BF("Right matches does"));
+          LOG("Right matches does");
           goto SUCCESS;
 #if 0
           // A match success - save it
@@ -1934,10 +1934,10 @@ bool Branch_O::matches_BondList(Root_sp root, chem::Atom_sp from, chem::BondList
           // goto SUCCESS;
 #endif
         } else {
-          LOG(BF("Right doesn't match, keep trying"));
+          LOG("Right doesn't match, keep trying");
         }
       } else {
-        LOG(BF("Left matches and there is no Right"));
+        LOG("Left matches and there is no Right");
         goto SUCCESS;
 #if 0
         // A match success - save it
@@ -1950,12 +1950,12 @@ bool Branch_O::matches_BondList(Root_sp root, chem::Atom_sp from, chem::BondList
       }
     }
   }
-  LOG(BF("No match"));
+  LOG("No match");
   //FAIL:
-  LOG(BF("FAIL"));
+  LOG("FAIL");
   return false;
  SUCCESS:
-  LOG(BF("SUCCESS!"));
+  LOG("SUCCESS!");
   return true;
 }
 
@@ -1999,7 +1999,7 @@ void AfterMatchBondToAtomTest_O::fields(core::Record_sp node) {
 
 bool AfterMatchBondToAtomTest_O::matches(Root_sp root) {
   _OF();
-  SIMPLE_ERROR(BF("Must implement"));
+  SIMPLE_ERROR(("Must implement"));
 }
 
 // -------- AntechamberFocusAtomMatch
@@ -2054,26 +2054,26 @@ string AntechamberFocusAtomMatch_O::asSmarts() const {
 
 bool AntechamberFocusAtomMatch_O::matches_Atom(Root_sp root, chem::Atom_sp atom) {
   _OF();
-  LOG(BF("%s\natom: %s") % this->asSmarts() % _rep_(atom) );
+  LOG("%s\natom: %s" , this->asSmarts() , _rep_(atom) );
   chem::Atom_sp neighbor, nn;
   if (this->_AtomicNumber >= 0) {
-    LOG(BF("Checking if atomic number(%d) == expected(%d)") % atom->getAtomicNumber() % this->_AtomicNumber);
+    LOG("Checking if atomic number(%d) == expected(%d)" , atom->getAtomicNumber() , this->_AtomicNumber);
     if (atom->getAtomicNumber() != this->_AtomicNumber)
       goto FAIL;
   }
   if (this->_NumberOfAttachedAtoms >= 0) {
-    LOG(BF("Checking if number of bonds(%d) == expected(%d)") % atom->numberOfBonds() % this->_NumberOfAttachedAtoms);
+    LOG("Checking if number of bonds(%d) == expected(%d)" , atom->numberOfBonds() , this->_NumberOfAttachedAtoms);
     if (atom->numberOfBonds() != this->_NumberOfAttachedAtoms)
       goto FAIL;
   }
   if (this->_NumberOfAttachedHydrogens >= 0) {
-    LOG(BF("Checking if number of attached hydrogens(%d) == expected(%d)") % atom->getBondedHydrogenCount() % this->_NumberOfAttachedHydrogens);
+    LOG("Checking if number of attached hydrogens(%d) == expected(%d)" , atom->getBondedHydrogenCount() , this->_NumberOfAttachedHydrogens);
     if (atom->getBondedHydrogenCount() != this->_NumberOfAttachedHydrogens)
       goto FAIL;
   }
   if (this->_NumberOfElectronWithdrawingGroups >= 0) {
     if (atom->numberOfBonds() != 1) {
-      SIMPLE_WARN(BF("Testing NumberOfElectronWithdrawingGroups must have one bond - test %s") % _rep_(this->asSmartPtr()));
+      SIMPLE_WARN("Testing NumberOfElectronWithdrawingGroups must have one bond - test %s" ,_rep_(this->asSmartPtr()));
       goto FAIL;
     }
     neighbor = atom->bondedNeighbor(0);
@@ -2091,7 +2091,7 @@ bool AntechamberFocusAtomMatch_O::matches_Atom(Root_sp root, chem::Atom_sp atom)
       if (nn->getElement() == element_Br)
         cnt++;
     }
-    LOG(BF("Checking if number of electron withdrawing groups(%d) == expected(%d)") % cnt % this->_NumberOfElectronWithdrawingGroups);
+    LOG("Checking if number of electron withdrawing groups(%d) == expected(%d)" , cnt , this->_NumberOfElectronWithdrawingGroups);
     if (cnt != this->_NumberOfElectronWithdrawingGroups)
       goto FAIL;
   }
@@ -2101,10 +2101,10 @@ bool AntechamberFocusAtomMatch_O::matches_Atom(Root_sp root, chem::Atom_sp atom)
       goto FAIL;
   }
   //SUCCESS:
-  LOG(BF("SUCCESS!"));
+  LOG("SUCCESS!");
   return true;
  FAIL:
-  LOG(BF("FAIL"));
+  LOG("FAIL");
   return false;
 }
 
@@ -2137,40 +2137,40 @@ bool AntechamberBondToAtomTest_O::matchBasic(AntechamberRoot_sp root, chem::Atom
   ANN(dict);
   if (dict.notnilp()) {
     if (dict->recognizesWildName(this->_Element)) {
-      LOG(BF("Matching wildcard element has(%s) == expecting (%s)") % atom->getElementAsString().c_str() % _rep_(this->_Element).c_str());
+      LOG("Matching wildcard element has(%s) == expecting (%s)" , atom->getElementAsString().c_str() , _rep_(this->_Element).c_str());
       if (!dict->recognizesWildNameElement(this->_Element, atom->getElementAsSymbol()))
         goto FAIL;
       gotElement = true;
     }
   }
   if (!gotElement) {
-    LOG(BF("Trying to match regular element(%s) == expected(%s)") % atom->getElementAsString().c_str() % _rep_(this->_Element));
+    LOG("Trying to match regular element(%s) == expected(%s)" , atom->getElementAsString().c_str() , _rep_(this->_Element));
     if (atom->getElementAsSymbol() != this->_Element)
       goto FAIL;
   }
-  LOG(BF("Trying to match number of bonds(%d) == expected(%d)") % atom->numberOfBonds() % this->_Neighbors);
+  LOG("Trying to match number of bonds(%d) == expected(%d)" , atom->numberOfBonds() , this->_Neighbors);
   if (this->_Neighbors >= 0) {
     if (atom->numberOfBonds() != this->_Neighbors)
       goto FAIL;
   }
   if (this->_Tag.notnilp()) {
-    SIMPLE_WARN(BF("%s:%d What do I do with the tag %s for AntechamberBondToAtomTest %s") % __FILE__ % __LINE__ % _rep_(this->_Tag) % _rep_(this->asSmartPtr()));
+    SIMPLE_WARN("%s:%d What do I do with the tag %s for AntechamberBondToAtomTest %s" ,__FILE__ ,__LINE__ ,_rep_(this->_Tag) ,_rep_(this->asSmartPtr()));
 //    root->getMatch()->defineAtomTag(atom, this->_Tag);
   }
   //SUCCESS:
-  LOG(BF("SUCCESS!"));
+  LOG("SUCCESS!");
   return true;
  FAIL:
-  LOG(BF("FAIL"));
+  LOG("FAIL");
   return false;
 }
 
 bool AntechamberBondToAtomTest_O::matches_Atom(Root_sp root, chem::Atom_sp atom) {
   _OF();
-  LOG(BF("%s\natom: %s") % this->asSmarts() % _rep_(atom) );
+  LOG("%s\natom: %s" , this->asSmarts() , _rep_(atom) );
   AntechamberRoot_sp acRoot;
   if (root->type() != antechamberRoot) {
-    SIMPLE_ERROR(BF("AntechamberBondToAtomTest::matches requires an AntechamberRoot"));
+    SIMPLE_ERROR(("AntechamberBondToAtomTest::matches requires an AntechamberRoot"));
   }
   acRoot = (root).as<AntechamberRoot_O>();
   if (!this->matchBasic(acRoot, atom))
@@ -2178,10 +2178,10 @@ bool AntechamberBondToAtomTest_O::matches_Atom(Root_sp root, chem::Atom_sp atom)
   if (this->_AtomProperties->matches_Atom(acRoot, atom))
     goto SUCCESS;
  FAIL:
-  LOG(BF("FAIL"));
+  LOG("FAIL");
   return false;
  SUCCESS:
-  LOG(BF("SUCCESS!"));
+  LOG("SUCCESS!");
   return true;
 }
 
@@ -2196,13 +2196,13 @@ string AntechamberBondToAtomTest_O::asSmarts() const {
 
 bool AntechamberBondToAtomTest_O::matches_Bond(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond) {
   _OF();
-  LOG(BF("%s\natom: %s bond: %s") % this->asSmarts() % _rep_(from) % _rep_(bond));
+  LOG("%s\natom: %s bond: %s" , this->asSmarts() , _rep_(from) , _rep_(bond));
   AntechamberRoot_sp antechamberRoot;
   if (root->type() != chem::antechamberRoot) {
     stringstream ss;
     ss << "AntechamberBondToAtomTest::matches requires an AntechamberRoot "
        << "instead we have" << (unsigned long)(&*root) << " of type: " << root->type();
-    SIMPLE_ERROR(BF("%s") % ss.str());
+    SIMPLE_ERROR(("%s") , ss.str());
   }
   antechamberRoot = (root).as<AntechamberRoot_O>();
   if (!this->matchBasic(antechamberRoot, bond->getOtherAtom(from)))
@@ -2212,12 +2212,12 @@ bool AntechamberBondToAtomTest_O::matches_Bond(Root_sp root, chem::Atom_sp from,
     if (!this->_AtomProperties->matches_Bond(antechamberRoot, from, bond))
       goto FAIL;
   }
-  LOG(BF("Matched!!"));
+  LOG("Matched!!");
   //SUCCESS:
-  LOG(BF("SUCCESS!"));
+  LOG("SUCCESS!");
   return true;
  FAIL:
-  LOG(BF("FAIL"));
+  LOG("FAIL");
   return false;
 }
 
@@ -2250,7 +2250,7 @@ core::HashTableEq_sp Root_O::lazyTests() {
 uint Root_O::depth() const {
   _OF();
   uint res = af_depth(this->_Node);
-  LOG(BF("Returning %d") % res);
+  LOG("Returning %d" , res);
   return res;
 }
 
@@ -2285,20 +2285,20 @@ void Root_O::initialize() {
 
 void Root_O::addTest(core::Symbol_sp testSym, core::Function_sp testCode) {
   _OF();
-  LOG(BF("Adding test<%s> with code: %s") % _rep_(testSym) % _rep_(testCode));
+  LOG("Adding test<%s> with code: %s" , _rep_(testSym) , _rep_(testCode));
   this->lazyTests()->setf_gethash(testSym, testCode);
 }
 
 bool Root_O::evaluateTest(core::Symbol_sp testSym, Atom_sp atom) {
   ASSERTF(testSym.notnilp(), BF("The test symbol was nil! - this should never occur"));
-  LOG(BF("Looking up test with symbol<%s>") % _rep_(testSym));
+  LOG("Looking up test with symbol<%s>" , _rep_(testSym));
   core::T_mv find = this->lazyTests()->gethash(testSym);
   if (find.second().nilp()) {
-    SIMPLE_ERROR(BF("Could not find named ChemInfo/Smarts test[%s] in Smarts object - available named tests are[%s]") % _rep_(testSym) % this->lazyTests()->keysAsString());
+    SIMPLE_ERROR(("Could not find named ChemInfo/Smarts test[%s] in Smarts object - available named tests are[%s]") , _rep_(testSym) , this->lazyTests()->keysAsString());
   }
   core::Function_sp func = core::coerce::functionDesignator(find);
   if (!gctools::IsA<core::Function_sp>(func)) {
-    SIMPLE_ERROR(BF("The test ChemInfo/Smarts test[%s] must be a function - instead it is a %s") % _rep_(testSym) % _rep_(find));
+    SIMPLE_ERROR(("The test ChemInfo/Smarts test[%s] must be a function - instead it is a %s") , _rep_(testSym) , _rep_(find));
   }
   core::Function_sp testCode = gctools::As_unsafe<core::Function_sp>(func);
   ASSERTF(testCode.notnilp(), BF("testCode was nil - it should never be"));
@@ -2315,29 +2315,29 @@ void Root_O::fields(core::Record_sp node) {
 
 bool Root_O::matches_Bond(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond) {
   _OF();
-  LOG(BF("%s\natom: %s bond: %s") % this->asSmarts() % _rep_(from) % _rep_(bond));
+  LOG("%s\natom: %s bond: %s" , this->asSmarts() , _rep_(from) , _rep_(bond));
   return this->matches_Atom(root, bond->getOtherAtom(from));
 };
 
 bool Root_O::matches_Atom(Root_sp root, chem::Atom_sp atom) {
   _OF();
-  LOG(BF("%s\natom: %s") % this->asSmarts() % _rep_(atom) );
+  LOG("%s\natom: %s" , this->asSmarts() , _rep_(atom) );
   chem::BondList_sp nextBonds;
   bool matches;
   matches = false;
   if (this->_Node.notnilp()) {
     CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
-    LOG(BF("_Node is notNil - testing"));
+    LOG("_Node is notNil - testing");
     if (!this->_Node->matches_Atom(root, atom)) {
       CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ ));
       goto FAIL;
     }
   }
   //SUCCESS:
-  LOG(BF("SUCCESS!!!"));
+  LOG("SUCCESS!!!");
   return true;
  FAIL:
-  LOG(BF("FAIL"));
+  LOG("FAIL");
   return false;
 }
 
@@ -2359,23 +2359,23 @@ void SmartsRoot_O::fields(core::Record_sp node) {
 
 bool SmartsRoot_O::matches_Bond(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond) {
   _OF();
-  LOG(BF("%s\natom: %s bond: %s") % this->asSmarts() % _rep_(from) % _rep_(bond));
+  LOG("%s\natom: %s bond: %s" , this->asSmarts() , _rep_(from) , _rep_(bond));
   return this->matches_Atom(root, bond->getOtherAtom(from));
 };
 
 bool SmartsRoot_O::matches_Atom(Root_sp root, chem::Atom_sp atom) {
   _OF();
-  LOG(BF("%s\natom: %s") % this->asSmarts() % _rep_(atom) );
+  LOG("%s\natom: %s" , this->asSmarts() , _rep_(atom) );
   chem::BondList_sp nextBonds;
   bool matches;
   matches = false;
   if (!this->Root_O::matches_Atom(root, atom))
     goto FAIL;
   //SUCCESS:
-  LOG(BF("SUCCESS!"));
+  LOG("SUCCESS!");
   return true;
  FAIL:
-  LOG(BF("FAIL"));
+  LOG("FAIL");
   return false;
 }
 
@@ -2405,13 +2405,13 @@ string AntechamberRoot_O::descriptionOfContents() const {
 
 bool AntechamberRoot_O::matches_Bond(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond) {
   _OF();
-  LOG(BF("%s\natom: %s bond: %s") % this->asSmarts() % _rep_(from) % _rep_(bond));
+  LOG("%s\natom: %s bond: %s" , this->asSmarts() , _rep_(from) , _rep_(bond));
   return this->matches_Atom(root, bond->getOtherAtom(from));
 };
 
 bool AntechamberRoot_O::matches_Atom(Root_sp root, chem::Atom_sp atom) {
   _OF();
-  LOG(BF("%s\natom: %s") % this->asSmarts() % _rep_(atom) );
+  LOG("%s\natom: %s" , this->asSmarts() , _rep_(atom) );
   chem::BondList_sp nextBonds;
   bool matches;
   matches = false;
@@ -2427,10 +2427,10 @@ bool AntechamberRoot_O::matches_Atom(Root_sp root, chem::Atom_sp atom) {
   // printf("%s:%d This is where I was assigning the type\n", __FILE__, __LINE__ );
 //  atom->setType(this->_AssignType);
   //SUCCESS:
-  LOG(BF("SUCCESS!"));
+  LOG("SUCCESS!");
   return true;
  FAIL:
-  LOG(BF("FAIL"));
+  LOG("FAIL");
   return false;
 }
 
@@ -2455,7 +2455,7 @@ CL_DEFUN SmartsRoot_sp chem__compile_smarts(const string& code, core::List_sp te
   core::SimpleBaseString_sp scode = core::SimpleBaseString_O::make(code);
   core::T_sp tnode = core::eval::funcall(_sym_parse_smarts,scode);
   if (tnode.nilp()) {
-    SIMPLE_ERROR(BF("When calling chem:parse-smarts with %s - it returned NIL") % _rep_(scode));
+    SIMPLE_ERROR(("When calling chem:parse-smarts with %s - it returned NIL") , _rep_(scode));
   }
   ChemInfoNode_sp node = gc::As<ChemInfoNode_sp>(tnode);
   size_t max_tag = calculate_max_tags(node);
@@ -2477,7 +2477,7 @@ CL_DEFUN Smirks_sp chem__compile_smirks(const string& code, core::List_sp tests)
   size_t max_reactant_tag = calculate_max_tags(reactant);
   size_t max_product_tag = calculate_max_tags(product);
   if (max_reactant_tag<max_product_tag) {
-    SIMPLE_ERROR(BF("The largest tag in the product must be equal to or less than the largest tag in the reactant"));
+    SIMPLE_ERROR(("The largest tag in the product must be equal to or less than the largest tag in the reactant"));
   }
 //  printf("%s:%d:%s  node-> %s\n", __FILE__, __LINE__, __FUNCTION__, _rep_(node).c_str());
   SmartsRoot_sp reactant_root = SmartsRoot_O::make(code,reactant,max_reactant_tag);
@@ -2491,19 +2491,19 @@ CL_DEFUN Smirks_sp chem__compile_smirks(const string& code, core::List_sp tests)
 DOCGROUP(cando)
 CL_DEFUN AntechamberRoot_mv chem__compile_antechamber(const string& code, WildElementDict_sp dict) {
   if (!chem::_sym_compile_antechamber_type_rule->fboundp()) {
-    SIMPLE_ERROR(BF("chem:compile-antechamber-type-rule is not fbound"));
+    SIMPLE_ERROR(("chem:compile-antechamber-type-rule is not fbound"));
   }
-  LOG(BF("Compiling code: %s") % code.c_str());
+  LOG("Compiling code: %s" , code.c_str());
   core::SimpleBaseString_sp scode = core::SimpleBaseString_O::make(code);
   core::T_mv troot_mv = core::eval::funcall(chem::_sym_compile_antechamber_type_rule->symbolFunction(),nil<core::T_O>(),scode,dict);
   if (troot_mv.nilp()) {
-    SIMPLE_ERROR(BF("Error parsing antechamber type rule %s") % code);
+    SIMPLE_ERROR(("Error parsing antechamber type rule %s") , code);
   }
   AntechamberRoot_sp root = gc::As<AntechamberRoot_sp>(troot_mv);
   root->_Code = code;
   core::T_sp type = troot_mv.second();
   root->setElementWildCardDictionary(dict);
-  LOG(BF("antechamber compile was successful"));
+  LOG("antechamber compile was successful");
   return Values(root,type);
 }
 
@@ -2729,7 +2729,7 @@ CL_DEFMETHOD size_t MoleculeGraph_O::vertex_index(core::T_sp vertex)
 {
   core::T_sp tindex = this->_nodes_to_index->gethash(vertex);
   if (tindex.nilp()) {
-    SIMPLE_ERROR(BF("Could not find vertex %s") % _rep_(vertex));
+    SIMPLE_ERROR(("Could not find vertex %s") , _rep_(vertex));
   }
   return tindex.unsafe_fixnum();
 }
@@ -2737,7 +2737,7 @@ CL_DEFMETHOD size_t MoleculeGraph_O::vertex_index(core::T_sp vertex)
 CL_DEFMETHOD core::T_sp MoleculeGraph_O::get_vertex(size_t index)
 {
   if (index>=this->_nodes->length()) {
-    SIMPLE_ERROR(BF("index %d must be less than %d") % index % this->_nodes->length());
+    SIMPLE_ERROR(("index %d must be less than %d") , index , this->_nodes->length());
   }
   return this->_nodes->rowMajorAref(index);
 }
@@ -2831,8 +2831,8 @@ CL_DEFUN MoleculeGraph_sp chem__make_molecule_graph_from_molecule(Molecule_sp ma
 
 DOCGROUP(cando)
 CL_DEFUN void chem__molecule_graph_dump(MoleculeGraph_sp graph) {
-  core::write_bf_stream(BF("Number of vertices: %d\n") % num_vertices(*graph->_moleculeGraph) );
-  core::write_bf_stream(BF("Number of edges: %d\n") % num_edges(*graph->_moleculeGraph) );
+  core::write_bf_stream(fmt::sprintf("Number of vertices: %d\n" , num_vertices(*graph->_moleculeGraph) ));
+  core::write_bf_stream(fmt::sprintf("Number of edges: %d\n" , num_edges(*graph->_moleculeGraph) ));
 
     //Ok, we want to see that all our edges are now contained in the graph
   typedef boost::graph_traits<MoleculeGraphType>::edge_iterator edge_iterator;
@@ -2843,7 +2843,7 @@ CL_DEFUN void chem__molecule_graph_dump(MoleculeGraph_sp graph) {
   for(edge_iterator edge_iter = ei.first; edge_iter != ei.second; ++edge_iter) {
     core::T_sp a1 = graph->_nodes->rowMajorAref(source(*edge_iter,*graph->_moleculeGraph));
     core::T_sp a2 = graph->_nodes->rowMajorAref(target(*edge_iter,*graph->_moleculeGraph));
-    core::write_bf_stream(BF("(%s - %s)\n") % _rep_(a1) % _rep_(a2) );
+    core::write_bf_stream(fmt::sprintf("(%s - %s)\n" , _rep_(a1) , _rep_(a2) ));
   }
 }
 
@@ -2874,7 +2874,7 @@ CL_DEFUN ChemInfoGraph_sp chem__make_chem_info_graph(Root_sp pattern)
 
 void ChemInfoGraph_O::buildFromRoot_() {
   if (chem__verbose(1)) {
-    core::write_bf_stream(BF("Starting make-chem-info-graph\n"));
+    core::write_bf_stream(fmt::sprintf("Starting make-chem-info-graph\n"));
   }
   this->_nodeOrder.clear();
   this->_atomNodes.clear();
@@ -2891,7 +2891,7 @@ void ChemInfoGraph_O::buildFromRoot_() {
                              Chain_sp chain = gc::As_unsafe<Chain_sp>(node);
                              ChemInfoNode_sp head = gc::As<ChemInfoNode_sp>(chain->_Head);
                              if (chem__verbose(1)) {
-                               core::write_bf_stream(BF("Converting chain to chem-info-graph nodes head: %s\n") % _rep_(head));
+                               core::write_bf_stream(fmt::sprintf("Converting chain to chem-info-graph nodes head: %s\n" , _rep_(head)));
                              }
                              if (gc::IsA<BondToAtomTest_sp>(head)) {
                                head = gc::As_unsafe<BondToAtomTest_sp>(head)->_AtomTest;
@@ -2902,7 +2902,7 @@ void ChemInfoGraph_O::buildFromRoot_() {
                              AtomOrBondMatchNode_sp ahead = gc::As<AtomOrBondMatchNode_sp>(head);
                              if (ahead->_RingTest==SARRingSet) {
                                if (chem__verbose(1)) {
-                                 core::write_bf_stream(BF("Found SARRingSet _RingId = %d\n") % ahead->_RingId );
+                                 core::write_bf_stream(fmt::sprintf("Found SARRingSet _RingId = %d\n" , ahead->_RingId ));
                                }
                                if (ahead->_RingId>=closers.size()) {
                                    closers.resize(ahead->_RingId+1);
@@ -2911,13 +2911,13 @@ void ChemInfoGraph_O::buildFromRoot_() {
                                closers[ahead->_RingId]._NodeIndex = node_index;
                              } else if (ahead->_RingTest==SARRingTest) {
                                if (chem__verbose(1)) {
-                                 core::write_bf_stream(BF("Found SARRingTest _RingId = %d\n") % ahead->_RingId );
+                                 core::write_bf_stream(fmt::sprintf("Found SARRingTest _RingId = %d\n" , ahead->_RingId ));
                                }
                                if (ahead->_RingId>=closers.size()) {
                                  closers.resize(ahead->_RingId+1);
                                }
                                if (!closers[ahead->_RingId]._Active) {
-                                 SIMPLE_ERROR(BF("Hit a SARRingTest for _RingId %d but the SARRingSet hasn't been seen") % ahead->_RingId);
+                                 SIMPLE_ERROR(("Hit a SARRingTest for _RingId %d but the SARRingSet hasn't been seen") , ahead->_RingId);
                                }
                                closers[ahead->_RingId]._Bonds.push_back(RingBond(SABSingleOrAromaticBond,node_index));
                              }
@@ -2927,7 +2927,7 @@ void ChemInfoGraph_O::buildFromRoot_() {
                            } else if (parentOrNil.nilp() && gc::IsA<AtomTest_sp>(node)) {
                              AtomTest_sp atomTest = gc::As_unsafe<AtomTest_sp>(node);
                              if (chem__verbose(1)) {
-                               core::write_bf_stream(BF("Converting AtomTest to chem-info-graph nodes head: %s\n") % _rep_(atomTest));
+                               core::write_bf_stream(fmt::sprintf("Converting AtomTest to chem-info-graph nodes head: %s\n" , _rep_(atomTest)));
                              }
                              graph->_nodes_to_index->setf_gethash(atomTest,core::make_fixnum(graph->_atomNodes.size()));
                              size_t node_index = graph->_atomNodes.size();
@@ -2936,7 +2936,7 @@ void ChemInfoGraph_O::buildFromRoot_() {
                            } else if (parentOrNil.nilp() && gc::IsA<Logical_sp>(node)) {
                              Logical_sp logical = gc::As_unsafe<Logical_sp>(node);
                              if (chem__verbose(1)) {
-                               core::write_bf_stream(BF("Converting logical to chem-info-graph nodes head: %s\n") % _rep_(logical));
+                               core::write_bf_stream(fmt::sprintf("Converting logical to chem-info-graph nodes head: %s\n" , _rep_(logical)));
                              }
                              graph->_nodes_to_index->setf_gethash(logical,core::make_fixnum(graph->_atomNodes.size()));
                              size_t node_index = graph->_atomNodes.size();
@@ -2956,58 +2956,58 @@ void ChemInfoGraph_O::buildFromRoot_() {
                          [&graph,&parent_nodes,&closers]
                          (core::T_sp parentOrNil, ChemInfoNode_sp node) {
                            if (chem__verbose(2)) {
-                             core::write_bf_stream(BF("Walking pattern parent: %s node: %s\n") % _rep_(parentOrNil) % _rep_(node));
+                             core::write_bf_stream(fmt::sprintf("Walking pattern parent: %s node: %s\n" , _rep_(parentOrNil) , _rep_(node)));
                            }
                            if (parentOrNil.nilp() && gc::IsA<AtomTest_sp>(node)) {
                              AtomTest_sp atomTest = gc::As_unsafe<AtomTest_sp>(node);
                              if (chem__verbose(1)) {
-                               core::write_bf_stream(BF("AtomTest node id(%d)\n") % atomTest->_Id );
+                               core::write_bf_stream(fmt::sprintf("AtomTest node id(%d)\n" , atomTest->_Id ));
                              }
                              core::T_sp thead = atomTest;
-                             if (thead.nilp()) SIMPLE_ERROR(BF("The head of a chain is NIL"));
+                             if (thead.nilp()) SIMPLE_ERROR(("The head of a chain is NIL"));
                              ChemInfoNode_sp head = gc::As<ChemInfoNode_sp>(thead);
                              AtomOrBondMatchNode_sp ahead = gc::As<AtomOrBondMatchNode_sp>(head);
                              core::T_sp head_index = graph->_nodes_to_index->gethash(ahead);
-                             if (!head_index.fixnump()) SIMPLE_ERROR(BF("There was no index for %s") % _rep_(ahead));
+                             if (!head_index.fixnump()) SIMPLE_ERROR(("There was no index for %s") , _rep_(ahead));
                              if (parentOrNil.nilp()) {
                                // The parent is NIL - we are at the top, create a vertex
                                size_t index = head_index.unsafe_fixnum();
-                               if (chem__verbose(1)) core::write_bf_stream(BF("Adding vertex: %d\n") % index );
+                               if (chem__verbose(1)) core::write_bf_stream(fmt::sprintf("Adding vertex: %d\n" , index ));
                                add_vertex(ChemInfoVertexData(index),*graph->_chemInfoGraph);
                                graph->_nodeOrder.push_back(index);
                              } else {
-                               SIMPLE_ERROR(BF("Hit an AtomTest but it wasn't the only thing in the tree - parent should be NIL but is: %s") % _rep_(parentOrNil));
+                               SIMPLE_ERROR(("Hit an AtomTest but it wasn't the only thing in the tree - parent should be NIL but is: %s") , _rep_(parentOrNil));
                              }
                              return true;
                            } else if (parentOrNil.nilp() && gc::IsA<Logical_sp>(node)) {
                              Logical_sp logical = gc::As_unsafe<Logical_sp>(node);
                              if (chem__verbose(1)) {
-                               core::write_bf_stream(BF("Logical node id(%d)\n") % logical->_Id );
+                               core::write_bf_stream(fmt::sprintf("Logical node id(%d)\n" , logical->_Id ));
                              }
                              core::T_sp thead = logical;
-                             if (thead.nilp()) SIMPLE_ERROR(BF("The head of a chain is NIL"));
+                             if (thead.nilp()) SIMPLE_ERROR(("The head of a chain is NIL"));
                              ChemInfoNode_sp head = gc::As<ChemInfoNode_sp>(thead);
                              AtomOrBondMatchNode_sp ahead = gc::As<AtomOrBondMatchNode_sp>(head);
                              core::T_sp head_index = graph->_nodes_to_index->gethash(ahead);
-                             if (!head_index.fixnump()) SIMPLE_ERROR(BF("There was no index for %s") % _rep_(ahead));
+                             if (!head_index.fixnump()) SIMPLE_ERROR(("There was no index for %s") , _rep_(ahead));
                              if (parentOrNil.nilp()) {
                                // The parent is NIL - we are at the top, create a vertex
                                size_t index = head_index.unsafe_fixnum();
-                               if (chem__verbose(1)) core::write_bf_stream(BF("Adding vertex: %d\n") % index );
+                               if (chem__verbose(1)) core::write_bf_stream(fmt::sprintf("Adding vertex: %d\n" , index ));
                                add_vertex(ChemInfoVertexData(index),*graph->_chemInfoGraph);
                                graph->_nodeOrder.push_back(index);
                              } else {
-                               SIMPLE_ERROR(BF("Hit an Logical but it wasn't the only thing in the tree - parent should be NIL but is: %s") % _rep_(parentOrNil));
+                               SIMPLE_ERROR(("Hit an Logical but it wasn't the only thing in the tree - parent should be NIL but is: %s") , _rep_(parentOrNil));
                              }
                              return true;
                            } else if (gc::IsA<Chain_sp>(node)) {
                              Chain_sp chain = gc::As_unsafe<Chain_sp>(node);
                              if (chem__verbose(1)) {
-                               core::write_bf_stream(BF("Chain node id(%d)\n") % chain->_Id );
-                               core::write_bf_stream(BF("Chain node     -> %s\n") % _rep_(chain->_Head).c_str());
+                               core::write_bf_stream(fmt::sprintf("Chain node id(%d)\n" , chain->_Id ));
+                               core::write_bf_stream(fmt::sprintf("Chain node     -> %s\n" , _rep_(chain->_Head).c_str()));
                              }
                              core::T_sp thead = chain->_Head;
-                             if (thead.nilp()) SIMPLE_ERROR(BF("The head of a chain is NIL"));
+                             if (thead.nilp()) SIMPLE_ERROR(("The head of a chain is NIL"));
                              ChemInfoNode_sp head = gc::As<ChemInfoNode_sp>(thead);
                              BondToAtomTest_sp bond;
                              if (gc::IsA<BondToAtomTest_sp>(head)) {
@@ -3015,14 +3015,14 @@ void ChemInfoGraph_O::buildFromRoot_() {
                                head = gc::As_unsafe<BondToAtomTest_sp>(head)->_AtomTest;
                              }
                              AtomOrBondMatchNode_sp ahead = gc::As<AtomOrBondMatchNode_sp>(head);
-                             if (chem__verbose(1)) core::write_bf_stream(BF("   setting parent_node of %s to %s\n") % _rep_(chain) % _rep_(ahead));
+                             if (chem__verbose(1)) core::write_bf_stream(fmt::sprintf("   setting parent_node of %s to %s\n" , _rep_(chain) , _rep_(ahead)));
                              parent_nodes->setf_gethash(chain,ahead);
                              core::T_sp head_index = graph->_nodes_to_index->gethash(ahead);
-                             if (!head_index.fixnump()) SIMPLE_ERROR(BF("There was no index for %s") % _rep_(ahead));
+                             if (!head_index.fixnump()) SIMPLE_ERROR(("There was no index for %s") , _rep_(ahead));
                              if (parentOrNil.nilp()) {
                                // The parent is NIL - we are at the top, create a vertex
                                size_t index = head_index.unsafe_fixnum();
-                               if (chem__verbose(1)) core::write_bf_stream(BF("Adding vertex: %d\n") % index );
+                               if (chem__verbose(1)) core::write_bf_stream(fmt::sprintf("Adding vertex: %d\n" , index ));
                                add_vertex(ChemInfoVertexData(index),*graph->_chemInfoGraph);
                                graph->_nodeOrder.push_back(index);
                              } else {
@@ -3035,20 +3035,20 @@ void ChemInfoGraph_O::buildFromRoot_() {
                                } else {
                                  // If parentOrNil is not NIL and it has a parent then keep adding to the graph
                                  size_t index = head_index.unsafe_fixnum();
-                                 if (chem__verbose(1)) core::write_bf_stream(BF("Adding vertex: %d\n") % index );
+                                 if (chem__verbose(1)) core::write_bf_stream(fmt::sprintf("Adding vertex: %d\n" , index ));
                                  add_vertex(ChemInfoVertexData(index),*graph->_chemInfoGraph);
                                  graph->_nodeOrder.push_back(index);
                                  ChemInfoNode_sp up = gc::As<ChemInfoNode_sp>(tup);
                                  core::T_sp up_index = graph->_nodes_to_index->gethash(up);
                                  if (!up_index.fixnump()) {
-                                   SIMPLE_ERROR(BF("There was no index for %s") % _rep_(up));
+                                   SIMPLE_ERROR(("There was no index for %s") , _rep_(up));
                                  }
                                  // The head must be a BondToAtomTest_sp
                                  BondToAtomTest_sp bondToAtomTest = gc::As<BondToAtomTest_sp>(chain->_Head);
                                  int edge_index = graph->_bondNodes.size();
                                  graph->_bondNodes.push_back(bondToAtomTest);
                                  if (chem__verbose(1)) {
-                                   core::write_bf_stream(BF("Adding edge: %d %d\n") % up_index.unsafe_fixnum() % head_index.unsafe_fixnum());
+                                   core::write_bf_stream(fmt::sprintf("Adding edge: %d %d\n" , up_index.unsafe_fixnum() , head_index.unsafe_fixnum()));
                                  }
                                  add_edge(up_index.unsafe_fixnum(),head_index.unsafe_fixnum(),
                                           EdgeProperty(edge_index), *graph->_chemInfoGraph);
@@ -3057,15 +3057,15 @@ void ChemInfoGraph_O::buildFromRoot_() {
                              return true;
                            } else if (gc::IsA<Branch_sp>(node)) {
                              if (parentOrNil.nilp()) {
-                               SIMPLE_ERROR(BF("Branches should always have a parent"));
+                               SIMPLE_ERROR(("Branches should always have a parent"));
                              }
                              Branch_sp branch = gc::As_unsafe<Branch_sp>(node);
-                             if (chem__verbose(1)) core::write_bf_stream(BF("Branch node id(%d)\n") % branch->_Id );
+                             if (chem__verbose(1)) core::write_bf_stream(fmt::sprintf("Branch node id(%d)\n" , branch->_Id ));
                              ChemInfoNode_sp parent = gc::As_unsafe<ChemInfoNode_sp>(parentOrNil);
                              core::T_sp tup = parent_nodes->gethash(parent);
-                             if (tup.nilp()) SIMPLE_ERROR(BF("The parent of %s is NIL") % _rep_(parent));
+                             if (tup.nilp()) SIMPLE_ERROR(("The parent of %s is NIL") , _rep_(parent));
                              ChemInfoNode_sp up = gc::As<ChemInfoNode_sp>(tup);
-                             if (chem__verbose(1)) core::write_bf_stream(BF("   setting parent_node of %s to %s\n") % _rep_(branch) % _rep_(up));
+                             if (chem__verbose(1)) core::write_bf_stream(fmt::sprintf("   setting parent_node of %s to %s\n" , _rep_(branch) , _rep_(up)));
                              parent_nodes->setf_gethash(branch,up);
                              return true;
                            } else {
@@ -3081,7 +3081,7 @@ void ChemInfoGraph_O::buildFromRoot_() {
         int edge_index = graph->_bondNodes.size();
         graph->_bondNodes.push_back(dummyRingAtomTest);
         if (chem__verbose(1)) {
-          core::write_bf_stream(BF("Adding ring closing edge: %d %d\n") % closers[ii]._NodeIndex % closers[ii]._Bonds[jj]._NodeIndex);
+          core::write_bf_stream(fmt::sprintf("Adding ring closing edge: %d %d\n" , closers[ii]._NodeIndex , closers[ii]._Bonds[jj]._NodeIndex));
         }
         add_edge(closers[ii]._NodeIndex,closers[ii]._Bonds[jj]._NodeIndex,
                  EdgeProperty(edge_index),*graph->_chemInfoGraph);
@@ -3092,21 +3092,21 @@ void ChemInfoGraph_O::buildFromRoot_() {
 
 DOCGROUP(cando)
 CL_DEFUN void chem__chem_info_graph_dump(ChemInfoGraph_sp graph) {
-  core::write_bf_stream(BF("Number of vertices: %d\n") % num_vertices(*graph->_chemInfoGraph) );
-  core::write_bf_stream(BF("Number of edges: %d\n") % num_edges(*graph->_chemInfoGraph) );
-  core::write_bf_stream(BF("Length of _nodeOrder -> %lu\n") % graph->_nodeOrder.size());
+  core::write_bf_stream(fmt::sprintf("Number of vertices: %d\n" , num_vertices(*graph->_chemInfoGraph) ));
+  core::write_bf_stream(fmt::sprintf("Number of edges: %d\n" , num_edges(*graph->_chemInfoGraph) ));
+  core::write_bf_stream(fmt::sprintf("Length of _nodeOrder -> %lu\n" , graph->_nodeOrder.size()));
   typedef boost::graph_traits<ChemInfoGraphType>::edge_iterator edge_iterator;
     //Tried to make this section more clear, instead of using tie, keeping all
     //the original types so it's more clear what is going on
   std::pair<edge_iterator, edge_iterator> ei = edges(*graph->_chemInfoGraph);
   for (size_t idx=0; idx<graph->_nodeOrder.size(); ++idx) {
     ChemInfoNode_sp a1 = graph->_atomNodes[graph->_nodeOrder[idx]];
-    core::write_bf_stream(BF("Vertex: %s\n") % _rep_(a1));
+    core::write_bf_stream(fmt::sprintf("Vertex: %s\n" , _rep_(a1)));
   }
   for(edge_iterator edge_iter = ei.first; edge_iter != ei.second; ++edge_iter) {
     ChemInfoNode_sp a1 = graph->_atomNodes[source(*edge_iter,*graph->_chemInfoGraph)];
     ChemInfoNode_sp a2 = graph->_atomNodes[target(*edge_iter,*graph->_chemInfoGraph)];
-    core::write_bf_stream(BF("(%s - %s)\n") % _rep_(a1) % _rep_(a2) );
+    core::write_bf_stream(fmt::sprintf("(%s - %s)\n" , _rep_(a1) , _rep_(a2) ));
   }
 }
 
@@ -3132,11 +3132,11 @@ CL_DEFUN void chem__chem_info_graph_dump(ChemInfoGraph_sp graph) {
       Atom_sp atom = gc::As<Atom_sp>(this->_moleculeGraph->_nodes->rowMajorAref(v2));
       bool match = node->matches_Atom(this->_chemInfoGraph->_Root,atom);
       if (chem__verbose(1)) {
-        core::write_bf_stream(BF("In VertexComp matching...  v1 %d to v2 %d\n") % v1 % v2 );
-        core::write_bf_stream(BF(" node -> %s\n") % _rep_(node));
-        core::write_bf_stream(BF(" atom -> %s\n") % _rep_(atom));
-        core::write_bf_stream(BF(" root -> %s\n") % _rep_(this->_chemInfoGraph->_Root));
-        core::write_bf_stream(BF("  match -> %d\n") % match);
+        core::write_bf_stream(fmt::sprintf("In VertexComp matching...  v1 %d to v2 %d\n" , v1 , v2 ));
+        core::write_bf_stream(fmt::sprintf(" node -> %s\n" , _rep_(node)));
+        core::write_bf_stream(fmt::sprintf(" atom -> %s\n" , _rep_(atom)));
+        core::write_bf_stream(fmt::sprintf(" root -> %s\n" , _rep_(this->_chemInfoGraph->_Root)));
+        core::write_bf_stream(fmt::sprintf("  match -> %d\n" , match));
       }
       return match;
     }
@@ -3162,10 +3162,10 @@ CL_DEFUN void chem__chem_info_graph_dump(ChemInfoGraph_sp graph) {
         if (!aromatic_information_available_p()) {
           bool match = _matchBondTypes(bta->_Bond,bo,unbound<Atom_O>(),unbound<Atom_O>());
           if (chem__verbose(1)) {
-            core::write_bf_stream(BF("In EdgeComp matching with _matchBondTypes with no aromaticity info...\n"));
-            core::write_bf_stream(BF(" bta->_Bond -> %d\n") % bta->_Bond );
-            core::write_bf_stream(BF(" bo -> %s\n") % bo );
-            core::write_bf_stream(BF("  match -> %d\n") % match);
+            core::write_bf_stream(fmt::sprintf("In EdgeComp matching with _matchBondTypes with no aromaticity info...\n"));
+            core::write_bf_stream(fmt::sprintf(" bta->_Bond -> %d\n" , bta->_Bond ));
+            core::write_bf_stream(fmt::sprintf(" bo -> %s\n" , bo ));
+            core::write_bf_stream(fmt::sprintf("  match -> %d\n" , match));
           }
           return match;
         } else {
@@ -3175,10 +3175,10 @@ CL_DEFUN void chem__chem_info_graph_dump(ChemInfoGraph_sp graph) {
           Atom_sp atarget = gc::As<Atom_sp>(this->_moleculeGraph->_nodes->rowMajorAref(mtarget));
           bool match = _matchBondTypes(bta->_Bond,bo,asource,atarget);
           if (chem__verbose(1)) {
-            core::write_bf_stream(BF("In EdgeComp matching with _matchBondTypes using aromaticity info...\n"));
-            core::write_bf_stream(BF(" bta->_Bond -> %d\n") % bta->_Bond );
-            core::write_bf_stream(BF(" bo -> %s\n") % bo );
-            core::write_bf_stream(BF("  match -> %d\n") % match);
+            core::write_bf_stream(fmt::sprintf("In EdgeComp matching with _matchBondTypes using aromaticity info...\n"));
+            core::write_bf_stream(fmt::sprintf(" bta->_Bond -> %d\n" , bta->_Bond ));
+            core::write_bf_stream(fmt::sprintf(" bo -> %s\n" , bo ));
+            core::write_bf_stream(fmt::sprintf("  match -> %d\n" , match));
           }
           return match;
         }
@@ -3192,11 +3192,11 @@ CL_DEFUN void chem__chem_info_graph_dump(ChemInfoGraph_sp graph) {
       BondMatcher_sp bondMatcher = gc::As<BondMatcher_sp>(bta->_BondMatcher);
       bool match = bondMatcher->matches_Bond(this->_chemInfoGraph->_Root,asource,bond);
       if (chem__verbose(1)) {
-        core::write_bf_stream(BF("In EdgeComp matching with matches_Bond...\n"));
-        core::write_bf_stream(BF(" asource -> %s\n") % _rep_(asource));
-        core::write_bf_stream(BF(" bond -> %s\n") % _rep_(bond));
-        core::write_bf_stream(BF(" root -> %s\n") % _rep_(this->_chemInfoGraph->_Root));
-        core::write_bf_stream(BF("  match -> %d\n") % match);
+        core::write_bf_stream(fmt::sprintf("In EdgeComp matching with matches_Bond...\n"));
+        core::write_bf_stream(fmt::sprintf(" asource -> %s\n" , _rep_(asource)));
+        core::write_bf_stream(fmt::sprintf(" bond -> %s\n" , _rep_(bond)));
+        core::write_bf_stream(fmt::sprintf(" root -> %s\n" , _rep_(this->_chemInfoGraph->_Root)));
+        core::write_bf_stream(fmt::sprintf("  match -> %d\n" , match));
       }
       return match;
     }
@@ -3212,7 +3212,7 @@ CL_DEFUN void chem__chem_info_graph_dump(ChemInfoGraph_sp graph) {
               typename CorrespondenceMap2To1>
     bool operator()(CorrespondenceMap1To2 f, CorrespondenceMap2To1 g) const {
       if (chem__verbose(2)) {
-        core::write_bf_stream(BF("vf2 found a match\n"));
+        core::write_bf_stream(fmt::sprintf("vf2 found a match\n"));
       }
       core::SimpleVector_sp copy = core::SimpleVector_O::make(this->_currentMatch->_TagLookup->length(),
                                                               nil<core::T_O>(),
@@ -3255,7 +3255,7 @@ CL_DEFUN core::List_sp chem__boost_graph_vf2(ChemInfoGraph_sp chemInfoGraph, Mol
     boost::vf2_print_callback<ChemInfoGraphType,MoleculeGraphType> callback(*chemInfoGraph->_chemInfoGraph,*moleculeGraph->_moleculeGraph);
     MatchCallback matchCallback(chemInfoGraph,moleculeGraph,current_match);
     if (chem__verbose(1)) {
-      core::write_bf_stream(BF("About to run boost::vf2_subgraph_iso\n"));
+      core::write_bf_stream(fmt::sprintf("About to run boost::vf2_subgraph_iso\n"));
     }
     boost::vf2_subgraph_iso(*chemInfoGraph->_chemInfoGraph,
                             *moleculeGraph->_moleculeGraph,
@@ -3301,10 +3301,10 @@ CL_DEFUN core::List_sp chem__boost_graph_vf2(ChemInfoGraph_sp chemInfoGraph, Mol
       BondOrder bo2 = moleculeEdge2[em2];
       bool match = (bo1==bo2);
       if (chem__verbose(1)) {
-        core::write_bf_stream(BF("In EdgeComp matching with _matchBondTypes with no aromaticity info...\n"));
-        core::write_bf_stream(BF(" bo1 -> %s\n") % bo1 );
-        core::write_bf_stream(BF(" bo2 -> %s\n") % bo2 );
-        core::write_bf_stream(BF("  match -> %d\n") % match);
+        core::write_bf_stream(fmt::sprintf("In EdgeComp matching with _matchBondTypes with no aromaticity info...\n"));
+        core::write_bf_stream(fmt::sprintf(" bo1 -> %s\n" , bo1 ));
+        core::write_bf_stream(fmt::sprintf(" bo2 -> %s\n" , bo2 ));
+        core::write_bf_stream(fmt::sprintf("  match -> %d\n" , match));
       }
       return match;
     }

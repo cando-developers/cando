@@ -286,7 +286,7 @@ namespace chem
         core::T_mv pi = this->_FieldIndices->gethash(positionSymbol);
 	if ( pi.second().nilp() ) 
 	{
-	    SIMPLE_ERROR(BF("This table doesn't contain the field(%s)") % _rep_(positionSymbol));
+	    SIMPLE_ERROR(("This table doesn't contain the field(%s)") , _rep_(positionSymbol));
 	}
 	return pi.as<core::Fixnum_O>()->get();
     }
@@ -311,7 +311,7 @@ namespace chem
     {
 	if ( this->_FieldIndices.count(fieldSymbol) != 0 )
 	{
-	    SIMPLE_ERROR(BF("This table already contains a field named(%s)") % fieldSymbol->fullName() );
+	    SIMPLE_ERROR(("This table already contains a field named(%s)") , fieldSymbol->fullName() );
 	}
 	uint idx = this->_FieldSymbols.size();
 	this->_FieldSymbols.push_back(fieldSymbol);
@@ -360,7 +360,7 @@ namespace chem
 	TableEntry_sp entry = this->_Entries[entryIdx];
 	if ( !val->isAssignableToClass(this->_FieldClasses[fieldIdx]) )
 	{
-	    SIMPLE_ERROR(BF("You tried to put a value of class(%s) into a field of a table that expected a %s") % val->className() % this->_FieldClasses[fieldIdx]->instanceClassName() );
+	    SIMPLE_ERROR(("You tried to put a value of class(%s) into a field of a table that expected a %s") , val->className() , this->_FieldClasses[fieldIdx]->instanceClassName() );
 	}
 	entry->putField(fieldIdx,val);
     }
@@ -459,7 +459,7 @@ namespace chem
 	    ss << "Tables to merge don't have matching fields" << std::endl;
 	    ss << "this: " << this->__repr__() << std::endl;
 	    ss << "other: " << _rep_(other) << std::endl;
-	    SIMPLE_ERROR(BF("%s")%BF("%s")%ss.str());
+	    SIMPLE_ERROR(("%s") , ss.str());
 	}
         gctools::Vec0<TableEntry_sp>::iterator it;
 	for ( it=other->_Entries.begin(); it!=other->_Entries.end(); it++ )

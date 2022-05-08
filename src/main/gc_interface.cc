@@ -188,7 +188,7 @@ mps_addr_t obj_skip(mps_addr_t client) {
 #undef GC_OBJ_SKIP_TABLE
 #endif
   gctools::Header_s *header = reinterpret_cast<gctools::Header_s *>(ClientPtrToBasePtr(client));
-  MPS_LOG(BF("obj_skip client = %p   header=%p  header-desc: %s") % client % header % header->description());
+  MPS_LOG("obj_skip client = %p   header=%p  header-desc: %s" , client , header , header->description());
   if (header->kindP()) {
     gctools::GCKindEnum kind = header->kind();
 #ifndef RUNNING_GC_BUILDER
@@ -206,7 +206,7 @@ mps_addr_t obj_skip(mps_addr_t client) {
   } else if (header->padP()) {
     client = (char *)(client) + header->padSize();
   } else {
-    THROW_HARD_ERROR(BF("Illegal header at %p") % header);
+    THROW_HARD_ERROR(("Illegal header at %p") , header);
   }
   return client;
 }
@@ -228,7 +228,7 @@ void obj_dump_base(mps_addr_t base) {
   }
   gctools::Header_s *header = reinterpret_cast<gctools::Header_s *>(base);
   void *client = BasePtrToMostDerivedPtr<void>(base);
-  MPS_LOG(BF("obj_dump base=%p header-desc: %s") % base % header->description());
+  MPS_LOG("obj_dump base=%p header-desc: %s" , base , header->description());
   stringstream sout;
   if (header->kindP()) {
     gctools::GCKindEnum kind = header->kind();
@@ -282,7 +282,7 @@ GC_RESULT obj_scan(mps_ss_t ss, mps_addr_t client, mps_addr_t limit) {
   MPS_SCAN_BEGIN(GC_SCAN_STATE) {
     while (client < limit) {
       gctools::Header_s *header = reinterpret_cast<gctools::Header_s *>(ClientPtrToBasePtr(client));
-      MPS_LOG(BF("obj_skip client = %p   header=%p  header-desc: %s") % client % header % header->description());
+      MPS_LOG("obj_skip client = %p   header=%p  header-desc: %s" , client , header , header->description());
       if (header->kindP()) {
         GCKindEnum kind = header->kind();
 #ifndef RUNNING_GC_BUILDER
@@ -298,7 +298,7 @@ GC_RESULT obj_scan(mps_ss_t ss, mps_addr_t client, mps_addr_t limit) {
       } else if (header->padP()) {
         client = (char *)(client) + header->padSize();
       } else {
-        THROW_HARD_ERROR(BF("Illegal header at %p") % header);
+        THROW_HARD_ERROR(("Illegal header at %p") , header);
       }
     TOP:
       continue;
@@ -340,7 +340,7 @@ void registerLoadTimeValuesRoot(core::LoadTimeValues_O **ptr) {
 mps_res_t main_thread_roots_scan(mps_ss_t ss, void *gc__p, size_t gc__s) {
   //	mps_thr_t gc__thr = 0; // This isn't passed in but the scanners need it
   MPS_SCAN_BEGIN(GC_SCAN_STATE) {
-    MPS_LOG(BF("Starting rooted_HeapRoots"));
+    MPS_LOG("Starting rooted_HeapRoots");
 
     //            printf("%s:%d  Fixing globalLoadTimeValuesRoots[%d]\n", __FILE__, __LINE__, globalLoadTimeValuesRoots.size() );
     for (auto &it : globalLoadTimeValuesRoots) {
@@ -453,7 +453,7 @@ mps_res_t main_thread_roots_scan(mps_ss_t ss, void *gc__p, size_t gc__s) {
 #endif
 #endif // RUNNING_GC_BUILDER
 
-    MPS_LOG(BF("Done roots_scan"));
+    MPS_LOG("Done roots_scan");
   }
   MPS_SCAN_END(GC_SCAN_STATE);
   return MPS_RES_OK;

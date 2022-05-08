@@ -34,6 +34,7 @@ This is an open source license for the CANDO software from Temple University, bu
 // coordSys.cc
 //
 #include <clasp/core/common.h>
+#include <clasp/core/lispStream.h>
 #include <cando/chem/coordSys.h>
 #include <clasp/core/numerics.h>
 #include <cando/geom/ovector3.h>
@@ -129,9 +130,9 @@ Vector3 vt;
 
     vt = this->origin.multiplyByScalar(-1.0);
     mt.translate(vt);
-    LOG(BF("mt = %s") % (mt.asString().c_str() ) );
+    LOG("mt = %s" , (mt.asString().c_str() ) );
     mn = m*mt;
-    LOG(BF("mn = %s") % (mn.asString().c_str() ) );
+    LOG("mn = %s" , (mn.asString().c_str() ) );
     return mn;
 }
 
@@ -168,15 +169,15 @@ CL_DEFMETHOD void	CoordinateSystem_O::defineForAtoms( Atom_sp aorigin, Atom_sp a
 {
     Vector3	vo, vx, vxy, vz, vy;
     vo = aorigin->getPosition();
-    LOG(BF("vo=%lf,%lf,%lf") % vo.getX() % vo.getY() % vo.getZ() );
+    LOG("vo=%lf,%lf,%lf" , vo.getX() , vo.getY() , vo.getZ() );
     vx = (ax->getPosition() - vo).normalized();
-    LOG(BF("vx=%lf,%lf,%lf") % vx.getX() % vx.getY() % vx.getZ() );
+    LOG("vx=%lf,%lf,%lf" , vx.getX() , vx.getY() , vx.getZ() );
     vxy = (axy->getPosition() - vo).normalized();
-    LOG(BF("vxy=%lf,%lf,%lf") % vxy.getX() % vxy.getY() % vxy.getZ() );
+    LOG("vxy=%lf,%lf,%lf" , vxy.getX() , vxy.getY() , vxy.getZ() );
     vz = (vx.crossProduct(vxy)).normalized();
-    LOG(BF("vz=%lf,%lf,%lf") % vz.getX() % vz.getY() % vz.getZ() );
+    LOG("vz=%lf,%lf,%lf" , vz.getX() , vz.getY() , vz.getZ() );
     vy = (vz.crossProduct(vx)).normalized();
-    LOG(BF("vy=%lf,%lf,%lf") % vy.getX() % vy.getY() % vy.getZ() );
+    LOG("vy=%lf,%lf,%lf" , vy.getX() , vy.getY() , vy.getZ() );
     this->origin = vo;
     this->x = vx;
     this->y = vy;
@@ -202,14 +203,14 @@ CL_DEFMETHOD void	CoordinateSystem_O::defineForAtomVectors( const Vector3& vo,
     Vector3	vx, vxy, vz, vy;
 vx = (vax.sub(vo)).normalized();
 vxy = (vaxy.sub(vo)).normalized();
-    LOG(BF("vo=%lf,%lf,%lf") % vo.getX() % vo.getY() % vo.getZ() );
-    LOG(BF("vx=%lf,%lf,%lf") % vx.getX() % vx.getY() % vx.getZ() );
-    LOG(BF("vxy=%lf,%lf,%lf") % vxy.getX() % vxy.getY() % vxy.getZ() );
+    LOG("vo=%lf,%lf,%lf" , vo.getX() , vo.getY() , vo.getZ() );
+    LOG("vx=%lf,%lf,%lf" , vx.getX() , vx.getY() , vx.getZ() );
+    LOG("vxy=%lf,%lf,%lf" , vxy.getX() , vxy.getY() , vxy.getZ() );
 
     vz = (vx.crossProduct(vxy)).normalized();
-    LOG(BF("vz=%lf,%lf,%lf") % vz.getX() % vz.getY() % vz.getZ() );
+    LOG("vz=%lf,%lf,%lf" , vz.getX() , vz.getY() , vz.getZ() );
     vy = (vz.crossProduct(vx)).normalized();
-    LOG(BF("vy=%lf,%lf,%lf") % vy.getX() % vy.getY() % vy.getZ() );
+    LOG("vy=%lf,%lf,%lf" , vy.getX() , vy.getY() , vy.getZ() );
     this->origin = vo;
     this->x = vx;
     this->y = vy;
@@ -229,8 +230,8 @@ void	CoordinateSystem_O::defineForTwoAtomVectors( const Vector3& vo,
 {
     Vector3	vx, vz, vy;
 vx = (vax.sub(vo)).normalized();
-    LOG(BF("vo=%lf,%lf,%lf") % vo.getX() % vo.getY() % vo.getZ() );
-    LOG(BF("vx=%lf,%lf,%lf") % vx.getX() % vx.getY() % vx.getZ() );
+    LOG("vo=%lf,%lf,%lf" , vo.getX() , vo.getY() , vo.getZ() );
+    LOG("vx=%lf,%lf,%lf" , vx.getX() , vx.getY() , vx.getZ() );
     Vector3 vOffset;
     vOffset.set(0.0,0.5,0.0);
     vy = (vx.add(vOffset)).normalized();
@@ -246,8 +247,8 @@ vx = (vax.sub(vo)).normalized();
 	vz = vz.normalized();
     }
     vy = (vz.crossProduct(vx)).normalized();
-    LOG(BF("vy=%lf,%lf,%lf") % vy.getX() % vy.getY() % vy.getZ() );
-    LOG(BF("vz=%lf,%lf,%lf") % vz.getX() % vz.getY() % vz.getZ() );
+    LOG("vy=%lf,%lf,%lf" , vy.getX() , vy.getY() , vy.getZ() );
+    LOG("vz=%lf,%lf,%lf" , vz.getX() , vz.getY() , vz.getZ() );
     this->origin = vo;
     this->x = vx;
     this->y = vy;
@@ -513,10 +514,10 @@ adapt::QDomNode_sp	graalphacs, line;
 CL_LISPIFY_NAME("dump");
 CL_DEFMETHOD void	CoordinateSystem_O::dump()
 {
-    _lisp->print(BF("origin: ( %lf, %lf, %lf )") %	this->origin.getX()% this->origin.getY() % this->origin.getZ() );
-    _lisp->print(BF("x-axis: ( %lf, %lf, %lf )") %	this->x.getX()% this->x.getY() % this->x.getZ() );
-    _lisp->print(BF("y-axis: ( %lf, %lf, %lf )") %	this->y.getX()% this->y.getY() % this->y.getZ() );
-    _lisp->print(BF("z-axis: ( %lf, %lf, %lf )") %	this->z.getX()% this->z.getY() % this->z.getZ() );
+  core::writeln_bf_stream(fmt::sprintf("origin: ( %lf, %lf, %lf )" , this->origin.getX() , this->origin.getY() , this->origin.getZ() ));
+  core::writeln_bf_stream(fmt::sprintf("x-axis: ( %lf, %lf, %lf )" , this->x.getX() , this->x.getY() , this->x.getZ() ));
+  core::writeln_bf_stream(fmt::sprintf("y-axis: ( %lf, %lf, %lf )" , this->y.getX() , this->y.getY() , this->y.getZ() ));
+  core::writeln_bf_stream(fmt::sprintf("z-axis: ( %lf, %lf, %lf )" , this->z.getX() , this->z.getY() , this->z.getZ() ));
 }
 
 #ifdef XML_ARCHIVE

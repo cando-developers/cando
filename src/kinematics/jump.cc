@@ -46,7 +46,7 @@ namespace kinematics
 	case DofType::rbbeta: return _Beta;
 	case DofType::rbgamma: return _Gamma;
 	default:
-	    THROW_HARD_ERROR(BF("Illegal dof for RigidBodyDelta[%s]") % dof.asString() );
+	    THROW_HARD_ERROR(("Illegal dof for RigidBodyDelta[%s]") , dof.asString() );
 	}
     };
 

@@ -120,7 +120,7 @@ void    _defineAtomicInfoMapIfNotDefined()
 #define	SET_VDW_RADIUS(element,vdw) { ei->_atomicInfo[element]._VdwRadius = vdw;};
 #define	SET_COVALENT_RADIUS(element,cr) { ei->_atomicInfo[element]._CovalentRadius = cr;};
 
-  LOG(BF("Defining atomicNumberMaps") );
+  LOG("Defining atomicNumberMaps" );
   SET_ATOMIC_INFO_FAKE_ELEMENT(element_LP,"LP","LONE-PAIR",0,0.0,0);
   SET_ATOMIC_INFO_FAKE_ELEMENT(element_Undefined,"UE","UNDEFINED-ELEMENT",0,0.000,0);
   SET_ATOMIC_INFO_FAKE_ELEMENT(element_None,"NE","NO-ELEMENT",0,0.000,0);
@@ -509,7 +509,7 @@ string isolateElementName(const string& name, bool caseInsensitive)
 {
   char firstChar = convertCase(name[0],caseInsensitive);
   if (name == "" ) {
-    SIMPLE_ERROR(BF("Cannot isolate element name from empty string"));
+    SIMPLE_ERROR(("Cannot isolate element name from empty string"));
   } else if (name.size() == 1) {
     goto ONE_CHAR_ELEMENT;
   }
@@ -606,7 +606,7 @@ CL_DEFUN chem::Element elementForAtomicNumber(int atomicNumber)
 {
   ElementsInfo_sp ei = elementsInfo();
   if (atomicNumber<0 || atomicNumber>element_MAX || ei->_atomicNumberToAtomicInfoIndex[atomicNumber] ==-1 ) {
-    SIMPLE_ERROR(BF("Could not determine element for atomic number %d") % atomicNumber);
+    SIMPLE_ERROR(("Could not determine element for atomic number %d") , atomicNumber);
   }
   return ei->_atomicInfo[ei->_atomicNumberToAtomicInfoIndex[atomicNumber]]._ElementEnum;
 }
@@ -616,7 +616,7 @@ CL_DEFUN chem::Element elementForIntegerAtomicMass(int atomicMass)
 {
   ElementsInfo_sp ei = elementsInfo();
   if (atomicMass<0 || atomicMass>element_mass_MAX || ei->_atomicMassToAtomicInfoIndex[atomicMass] ==-1 ) {
-    SIMPLE_ERROR(BF("Could not determine element for integer atomic mass %d") % atomicMass);
+    SIMPLE_ERROR(("Could not determine element for integer atomic mass %d") , atomicMass);
   }
   return ei->_atomicInfo[ei->_atomicMassToAtomicInfoIndex[atomicMass]]._ElementEnum;
 }

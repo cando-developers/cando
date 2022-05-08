@@ -43,6 +43,7 @@ __END_DOC
 
 #include <clasp/core/foundation.h>
 #include <clasp/core/array.h>
+#include <clasp/core/lispStream.h>
 #include <clasp/core/hashTableEql.h>
 #include <clasp/core/hashTableEq.h>
 #include <cando/chem/ringFinder.h>
@@ -77,10 +78,10 @@ void PathMessage_O::initialize()
     PathMessage_O::PathMessage_O(const PathMessage_O& orig) : core::CxxObject_O(orig)
 {_OF();
     this->_graph = orig._graph;
-    LOG(BF("About to copy beep") );
-    LOG(BF(" beep.nilp() = %d") % orig._beep.nilp()  );
+    LOG("About to copy beep" );
+    LOG(" beep.nilp() = %d" , orig._beep.nilp()  );
     this->_beep = orig._beep; // shallow copy because we can't allocate in ctor
-    LOG(BF("Done copy beep") );
+    LOG("Done copy beep" );
     this->_firstVertex = orig._firstVertex;
     this->_firstEdge = orig._firstEdge;
     this->_lastVertex = orig._lastVertex;
@@ -153,8 +154,8 @@ void PathMessage_O::dump()
     core::Symbol_sp firstName = a1->getName();
     Atom_sp a2 = this->_lastVertex->getAtom();
     core::Symbol_sp lastName = a2->getName();
-    _lisp->print(BF("Ring start: %s end: %s") %  firstName % lastName );
-    _lisp->print(BF("Edges: "));
+    core::write_bf_stream(fmt::sprintf("Ring start: %s end: %s",  firstName , lastName) );
+    core::write_bf_stream("Edges: ");
     vector<size_t>::iterator ei;
     vector<size_t> vals;
     core::SimpleBitVector_getOnIndices(this->_beep,vals);
@@ -165,9 +166,9 @@ void PathMessage_O::dump()
 	core::Symbol_sp s1 = a1->getName();
 	a2 = edge->getVertex2()->getAtom();
 	core::Symbol_sp s2 = a2->getName();
-	_lisp->print(BF("    %s - %s")
-                     % s1->symbolName()->get_std_string()
-                     % s2->symbolName()->get_std_string() );
+        core::write_bf_stream(fmt::sprintf("    %s - %s"
+                                           , s1->symbolName()->get_std_string()
+                                           , s2->symbolName()->get_std_string()) );
     }
 }
 
@@ -178,7 +179,7 @@ core::List_sp PathMessage_O::getAtoms()
     vector<size_t>::iterator ei;
     vector<size_t> edges;
     SimpleBitVector_getOnIndices(this->_beep,edges);
-    LOG(BF("Number of edges = %d") % edges.size()  );
+    LOG("Number of edges = %d" , edges.size()  );
     for ( ei=edges.begin(); ei!=edges.end(); ei++ )
     {
 	AGEdge_sp edge = this->getGraph()->getEdge(*ei);
@@ -187,7 +188,7 @@ core::List_sp PathMessage_O::getAtoms()
 	Atom_sp a2 = edge->getVertex2()->getAtom();
 	atoms.insert(a2);
     }
-    LOG(BF("Building list") );
+    LOG("Building list" );
     core::List_sp  list = nil<core::T_O>();
     for ( gctools::SmallOrderedSet<Atom_sp>::iterator si=atoms.begin(); si!=atoms.end(); si++ )
     {
@@ -248,9 +249,8 @@ void	AGVertex_O::dump()
 {
     this->_atom->dump();
     for ( auto cur : this->getConnectedVertices() ) {
- 	_lisp->prin1(BF("%s ") % cur->car<AGVertex_O>()->getAtom()->getName() );
+      core::write_bf_stream(fmt::sprintf("%s ", cur->car<AGVertex_O>()->getAtom()->getName() ));
     }
-    _lisp->print(BF(""));
 }
 
 
@@ -295,10 +295,10 @@ void AGVertex_O::send()
     for ( uint i=0,iEnd(this->_edges.size()); i<iEnd; ++i ) {
 	AGEdge_sp edge = this->_edges[i];
 	AGVertex_sp neighbor = (edge)->otherVertex(this->asSmartPtr());
-	_BLOCK_TRACEF(BF("sending messages to Vertex: %s") % neighbor->description().c_str() );
+	
 	for ( auto msgCur : this->_sendBuffer ) {
 	    PathMessage_sp msg = msgCur->car<PathMessage_O>();
-	    LOG(BF("Sending message: %s") % _rep_(msg->beep()) );
+	    LOG("Sending message: %s" , _rep_(msg->beep()) );
 	    	// If the message most recently came from the neighbor,
 		// don't send it back to them
 	    if ( msg->getLastVertex() == neighbor ) continue;
@@ -333,13 +333,13 @@ void AGVertex_O::receive(uint stage)
   RingFinder_sp		graph = this->getGraph();
   edgeArray0.resize(graph->getNumberOfEdges(), nil<PathMessage_O>());
   edgeArray1.resize(graph->getNumberOfEdges(), nil<PathMessage_O>());
-  LOG(BF("Stage(%d) Vertex(%s) distributing receiveBuffer, there are %d messages") % stage % this->_atom->description().c_str() % this->_receiveBuffer->length() );
+  LOG("Stage(%d) Vertex(%s) distributing receiveBuffer, there are %d messages" , stage , this->_atom->description().c_str() , this->_receiveBuffer->length() );
   uint addedMessages = 0;
     		// isolated atoms will have empty receive buffers
   ASSERT(this->_receiveBuffer.notnilp()); //,"The receive buffer is empty for atom("+this->_atom->description()+")!");
   for ( auto msgCur : this->_receiveBuffer ) {
     PathMessage_sp msg = msgCur->car<PathMessage_O>();
-    _BLOCK_TRACEF(BF("Stage(%d) Vertex(%s) received bitVector: %s") % stage % this->_atom->getName() % _rep_(msg->beep()) );
+    
     AGEdge_sp edge = msg->getFirstEdge();
     AGVertex_sp vert = msg->getFirstVertex();
     uint side = edge->getSide(vert);
@@ -359,7 +359,7 @@ void AGVertex_O::receive(uint stage)
       }
     }
   }
-  LOG(BF("Added %d messages") % addedMessages  );
+  LOG("Added %d messages" , addedMessages  );
 
 
 	    // Now every pair of messages in 
@@ -367,11 +367,11 @@ void AGVertex_O::receive(uint stage)
 	    // share the same first edge but different vertices
 	    // They represent odd-membered rings
   uint numEdges;
-  { _BLOCK_TRACEF(BF("Detecting odd-membered rings numberOfEdges=%d") % graph->getNumberOfEdges() );
+  { 
     numEdges = graph->getNumberOfEdges();
     for ( uint i=0; i<numEdges; i++ )
     {
-      LOG(BF("Detecting odd-membered rings i = %d") % i );
+      LOG("Detecting odd-membered rings i = %d" , i );
 		    // detect odd-membered rings
       if ( edgeArray0[i].notnilp() && edgeArray1[i].notnilp() )
       {
@@ -392,11 +392,11 @@ void AGVertex_O::receive(uint stage)
 	    //
 
   core::HashTableEq_sp vertexDict = core::HashTableEq_O::create_default();
-  {_BLOCK_TRACE("Detecting even-membered rings");
-    LOG(BF("Filling vertexDict") );
+  {
+    LOG("Filling vertexDict" );
     for ( uint i=0; i<numEdges; i++ )
     { 
-      LOG(BF("Detecting even-membered rings: i = %d") % i );
+      LOG("Detecting even-membered rings: i = %d" , i );
       if ( edgeArray0[i].notnilp() ) {
         PathMessage_sp msg = edgeArray0[i];
         AGVertex_sp nodeId = msg->getFirstVertex();
@@ -417,7 +417,7 @@ void AGVertex_O::receive(uint stage)
 	    // messages that aren't collisions are tossed into the
 	    // send buffer
 	    //
-  {_BLOCK_TRACEF(BF("Detecting even-membered rings"));
+  {
     vertexDict->maphash( [this,&graph,stage] (core::T_sp key, core::T_sp value) {
         AGVertex_sp nodeId = gc::As<AGVertex_sp>(key);
         core::List_sp list = gc::As<core::List_sp>(value);
@@ -445,11 +445,11 @@ void AGVertex_O::receive(uint stage)
   }
 #if 0 // original code
     map<void*,core::Cons_sp>	vertexDict;
-    {_BLOCK_TRACE("Detecting even-membered rings");
-	LOG(BF("Filling vertexDict") );
+    {
+	LOG("Filling vertexDict" );
 	for ( uint i=0; i<numEdges; i++ )
 	{ 
-	    LOG(BF("Detecting even-membered rings: i = %d") % i );
+	    LOG("Detecting even-membered rings: i = %d" , i );
 	    if ( edgeArray0[i].notnilp() )
 	    {
 		PathMessage_sp msg = edgeArray0[i];
@@ -482,7 +482,7 @@ void AGVertex_O::receive(uint stage)
 	    // messages that aren't collisions are tossed into the
 	    // send buffer
 	    //
-    {_BLOCK_TRACEF(BF("Detecting even-membered rings"));
+    {
 	map<void*,core::Cons_sp>::iterator	it;
 	for ( it=vertexDict.begin(); it!=vertexDict.end(); it++ )
 	{
@@ -587,7 +587,7 @@ CL_DEF_CLASS_METHOD RingFinder_sp RingFinder_O::make(Molecule_sp mol)
 
 void RingFinder_O::defineForMolecule(Molecule_sp mol)
 {
-  LOG(BF("Creating RingFinder") );
+  LOG("Creating RingFinder" );
   Loop loop;
   loop.loopTopGoal(mol,ATOMS);
   this->_vertices->clrhash();
@@ -595,11 +595,11 @@ void RingFinder_O::defineForMolecule(Molecule_sp mol)
   {
     Atom_sp at = loop.getAtom();
     if ( at.isA<VirtualAtom_O>() ) continue;
-    LOG(BF("### Adding atom: %s id:%p to graph") % at->description().c_str() % at.get()  );
+    LOG("### Adding atom: %s id:%p to graph" , at->description().c_str() , at.get()  );
 //    printf("%s:%d Adding atom as vertex: %s\n",__FILE__,__LINE__,_rep_(at).c_str());
     if ( this->_vertices->gethash(at,nil<T_O>()).notnilp() )
     {
-      SIMPLE_ERROR(BF("Non unique atom id"));
+      SIMPLE_ERROR(("Non unique atom id"));
     }
     AGVertex_sp vert = AGVertex_O::create(this->sharedThis<RingFinder_O>(),at);
     this->_vertices->hash_table_setf_gethash(at,vert);
@@ -639,7 +639,7 @@ AGVertex_sp RingFinder_O::vertexForAtom(Atom_sp anAtom)
 {
     core::T_sp result = this->_vertices->gethash(anAtom,nil<T_O>());
     if (result.nilp()) {
-	SIMPLE_ERROR(BF("Could not find atom: %s in atom-vertex map in RingFinder\n") % _rep_(anAtom).c_str() );
+	SIMPLE_ERROR(("Could not find atom: %s in atom-vertex map in RingFinder\n") , _rep_(anAtom).c_str() );
     }
     return result.as<AGVertex_O>();
 }
@@ -662,7 +662,7 @@ void RingFinder_O::dump()
 {
     RingFinderVertexMapper mapper;
     this->_vertices->lowLevelMapHash(&mapper);
-    _lisp->print(BF("There are %d atoms") % mapper._Count );
+    core::writeln_bf_stream(fmt::sprintf("There are %d atoms" , mapper._Count ));
 }
 
 
@@ -683,11 +683,11 @@ uint RingFinder_O::getNumberOfEdges()
 
 CL_DEFMETHOD int RingFinder_O::getNumberOfRingsExpected()
 {
-    LOG(BF("this->_edges.size() = %d") % this->_edges.size()  );
-    LOG(BF("this->_vertices->hashTableCount() = %d") % this->_vertices->hashTableCount()  );
+    LOG("this->_edges.size() = %d" , this->_edges.size()  );
+    LOG("this->_vertices->hashTableCount() = %d" , this->_vertices->hashTableCount()  );
     int num = this->_edges.size()-this->_vertices->hashTableCount()+1;
     ASSERTF(num>=0, BF("There can not be negative number of rings - calculated rings[%d]/edges[%d]/vertices[%d]") % num % this->_edges.size() % this->_vertices->hashTableCount() );
-    LOG(BF("expecting %d rings") % num  );
+    LOG("expecting %d rings" , num  );
     return (uint)num;
 }
 
@@ -737,11 +737,11 @@ public:
 
 void RingFinder_O::advanceRingSearch(uint stage)
 {
-    {_BLOCK_TRACE("send stage");
+    {
 	RingFinderVertexSend sender;
 	this->_vertices->lowLevelMapHash(&sender);
     }
-    {_BLOCK_TRACE("receive stage");
+    {
 	RingFinderVertexReceive receiver(stage);
 	this->_vertices->lowLevelMapHash(&receiver);
     }
@@ -754,32 +754,32 @@ CL_DEFMETHOD void RingFinder_O::findRings(int numAtoms)
 {
 #if 0
   if (numAtoms >2048) {
-    SIMPLE_ERROR(BF("You should not look for rings when there are more than 2048 atoms - the algorithm will blow up memory for %d atoms") % numAtoms );
+    SIMPLE_ERROR(("You should not look for rings when there are more than 2048 atoms - the algorithm will blow up memory for %d atoms") , numAtoms );
   }
 #endif
   if (numAtoms==0) {
-    SIMPLE_ERROR(BF("You tried to find rings in a molecule with zero atoms"));
+    SIMPLE_ERROR(("You tried to find rings in a molecule with zero atoms"));
   }
   this->initializeRingSearch();
   int numberOfRingsExpected = this->getNumberOfRingsExpected();
-  LOG(BF("Number of rings expected = %d") % numberOfRingsExpected  );
+  LOG("Number of rings expected = %d" , numberOfRingsExpected  );
   uint stage = 2;
 // if we try more than this many times
     // and don't find all the rings then something is wrong
   int trigger = numAtoms*2;
   for (int numSteps = 0; numSteps<std::min(numAtoms,10); ++numSteps ) {
 //  while ( this->_finalRings.size() < numberOfRingsExpected ) {
-    LOG(BF("Looking for rings, stage= %d : trigger[%d] : numAtoms[%d] : numberOfRingsExpected[%d]") % stage % trigger % numAtoms % numberOfRingsExpected  );
+    LOG("Looking for rings, stage= %d : trigger[%d] : numAtoms[%d] : numberOfRingsExpected[%d]" , stage , trigger , numAtoms , numberOfRingsExpected  );
     this->advanceRingSearch(stage);
-    LOG(BF("After ring search, number of rings found = %d")
-        % this->_finalRings.size()  );
+    LOG("After ring search, number of rings found = %d"
+        , this->_finalRings.size()  );
     // Stop once we find all the rings we expect to find
     if (this->_finalRings.size()>=numberOfRingsExpected) break;
     stage++;
     trigger--;
     if ( trigger<=0 )
     {
-      SIMPLE_WARN(BF("We advanced the ring search way beyond the number of times we should have needed to - there are %d atoms and %d rings expected and we advanced the search %d times") % numAtoms % numberOfRingsExpected % stage );
+      SIMPLE_WARN("We advanced the ring search way beyond the number of times we should have needed to - there are %d atoms and %d rings expected and we advanced the search %d times", numAtoms , numberOfRingsExpected , stage );
     }
   }
 }
@@ -788,7 +788,7 @@ CL_DEFMETHOD void RingFinder_O::findRings(int numAtoms)
 void RingFinder_O::addRing(PathMessage_sp ring, uint stage)
 {
     core::SimpleBitVector_sp beep = ring->beep();
-    LOG(BF("Adding ring with beep=%s") % _rep_(beep) );
+    LOG("Adding ring with beep=%s" , _rep_(beep) );
     core::HashGenerator hg;
     clasp_sxhash(beep,hg);
     core::Fixnum_sp hash = core::clasp_make_fixnum(hg.rawhash());
@@ -868,7 +868,7 @@ CL_DEFMETHOD core::List_sp RingFinder_O::getAllRingsAsListsOfAtoms()
     {
 	core::List_sp oneRing = (*it)->getAtoms();
 	lists = core::Cons_O::create(oneRing,lists);
-	LOG(BF("Ring #%d = size(%d) %s") % ridx % core::cl__length(oneRing) % _rep_(oneRing).c_str()  );
+	LOG("Ring #%d = size(%d) %s" , ridx , core::cl__length(oneRing) , _rep_(oneRing).c_str()  );
 	ridx++;
     }
     return lists;
@@ -882,7 +882,7 @@ core::List_sp RingFinder_O::identifyRingsInMolecule(Molecule_sp molecule)
 	// First clear all ring flags
 	//
     int numAtoms = 0;
-    { _BLOCK_TRACE("Clearing ring membership");
+    { 
 	Loop loop;
 	loop.loopTopGoal(molecule,ATOMS);
 	while ( loop.advance() )
@@ -894,7 +894,7 @@ core::List_sp RingFinder_O::identifyRingsInMolecule(Molecule_sp molecule)
 		ss << "There is a problem with atom " << atom->description()
 		   << " the sum of bond orders is: " << atom->totalBondOrder()
 		   << " and it should never be more than " << atom->maxTotalBondOrder();
-		SIMPLE_ERROR(BF("%s")%ss.str() );
+		SIMPLE_ERROR(("%s") , ss.str() );
 	    }
 	    atom->clearAllRingMembershipFlags();
 	    atom->setRingMembershipCount(0);
@@ -903,11 +903,11 @@ core::List_sp RingFinder_O::identifyRingsInMolecule(Molecule_sp molecule)
     }
     if (numAtoms<3) return nil<core::T_O>();
     RingFinder_sp atomGraph = RingFinder_O::make(molecule);
-    {_BLOCK_TRACE("Looking for rings");
+    {
       atomGraph->findRings(numAtoms);
     }
     core::List_sp rings = nil<core::T_O>();
-    {_BLOCK_TRACE("Assigning ring membership");
+    {
 	rings = atomGraph->getAllRingsAsListsOfAtoms();
 	for ( auto curRing : rings ) {
           core::List_sp atoms = oCar(curRing);
@@ -916,7 +916,7 @@ core::List_sp RingFinder_O::identifyRingsInMolecule(Molecule_sp molecule)
               Atom_sp atom = oCar(atomCons).as<Atom_O>();
 		atom->setInRingOfSize(ringSize);
 		atom->incrementRingMembershipCount();
-		LOG(BF("Set %s as part of ring[%d]") % atom->description() % ringSize);
+		LOG("Set %s as part of ring[%d]" , atom->description() , ringSize);
 	    }
 	}
     }
@@ -963,7 +963,7 @@ CL_DEF_CLASS_METHOD core::List_sp RingFinder_O::identifyRings(Matter_sp matter)
 	}
 	return allRings;
     }
-    SIMPLE_ERROR(BF("You can only find rings in aggregates or molecules"));
+    SIMPLE_ERROR(("You can only find rings in aggregates or molecules"));
 }
 
 CL_LISPIFY_NAME(ring-bonds);
@@ -972,23 +972,23 @@ CL_DEFUN core::List_sp RingFinder_O::ringBonds(core::List_sp atoms) {
   core::List_sp ringBonds = nil<core::T_O>();
   gctools::SmallOrderedSet<Atom_sp> atomSet;
   {
-    _BLOCK_TRACE(BF("Put atoms into set"));
+    
     for (auto cur : atoms) {
       Atom_sp atom = oCar(cur).as<Atom_O>();
-      LOG(BF("Atom in ring: %s") % atom->description());
+      LOG("Atom in ring: %s" , atom->description());
       atomSet.insert(atom);
     }
   }
   int num = 0;
   {
-    _BLOCK_TRACE(BF("Loop over all bonds and find those that join ring atoms"));
+    
     for (auto cur : atoms) {
       Atom_sp atom = oCar(cur).as<Atom_O>();
       VectorBond bonds = atom->getBonds();
       for (gctools::Vec0<Bond_sp>::const_iterator bi = bonds.begin(); bi != bonds.end(); bi++) {
-        LOG(BF("Testing %s") % (*bi)->describeOther(atom));
+        LOG("Testing %s" , (*bi)->describeOther(atom));
         if (atomSet.count((*bi)->getAtom1()) && atomSet.count((*bi)->getAtom2())) {
-          LOG(BF("It's part of the ring!!!"));
+          LOG("It's part of the ring!!!");
           core::Cons_sp one = core::Cons_O::create((*bi), ringBonds);
           ringBonds = one;
           num++;
@@ -996,7 +996,7 @@ CL_DEFUN core::List_sp RingFinder_O::ringBonds(core::List_sp atoms) {
       }
     }
   }
-  LOG(BF("There were %d bonds in the ring") % num);
+  LOG("There were %d bonds in the ring" , num);
   return ringBonds;
 }
 

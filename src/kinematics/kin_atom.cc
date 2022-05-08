@@ -86,7 +86,7 @@ struct	to_object<kinematics::CoordinateCalculator>
     } else if (v== kinematics::bond_angle_dihedral_to_internal) {
       return kw::_sym_bond_angle_dihedral_to_internal;
     }
-    SIMPLE_ERROR(BF("Cannot convert CoordinateCalculator %p") % v);
+    SIMPLE_ERROR(("Cannot convert CoordinateCalculator %p") , v);
   };
 };
 template <>
@@ -123,7 +123,7 @@ struct translate::from_object<kinematics::CoordinateCalculator>
     } else if (o == kw::_sym_bond_angle_dihedral_to_internal) {
       this->_v = kinematics::bond_angle_dihedral_to_internal;
     } else {
-      SIMPLE_ERROR(BF("Cannot convert CoordinateCalculator %s") % _rep_(o));
+      SIMPLE_ERROR(("Cannot convert CoordinateCalculator %s") , _rep_(o));
     }
   }
 };
@@ -228,7 +228,7 @@ void Joint_O::eraseChild(Joint_sp child)
       return;
     }
   }
-  SIMPLE_ERROR(BF("Could not find child %s in %s - so it could not be erased") % _rep_(child) % _rep_(this->asSmartPtr()));
+  SIMPLE_ERROR(("Could not find child %s in %s - so it could not be erased") , _rep_(child) , _rep_(this->asSmartPtr()));
 }
 
 
@@ -239,7 +239,7 @@ int Joint_O::indexOfChild(Joint_sp child)
   {
     if (child == atom->_child(i)) return i;
   }
-  SIMPLE_ERROR(BF("Could not find child"));
+  SIMPLE_ERROR(("Could not find child"));
 }
 
 
@@ -248,14 +248,14 @@ int Joint_O::indexOfChild(Joint_sp child)
 void Joint_O::insertChild(Joint_sp child)
 {_OF();
   ASSERTF(child.get() != this,BF("Circular atom reference"));
-  LOG(BF("Inserting child: %s") % _rep_(child));
+  LOG("Inserting child: %s" , _rep_(child));
   if ( gc::IsA<JumpJoint_sp>(child) )
   {
-    LOG(BF("It's a jump, inserting it at the start"));
+    LOG("It's a jump, inserting it at the start");
     this->_insertChild(0,child);
     child->setParent(this->asSmartPtr());
   } else {
-    LOG(BF("It's a non-jump atom"));
+    LOG("It's a non-jump atom");
     int firstNonJumpIndex = this->firstNonJumpChildIndex();
     if ( firstNonJumpIndex < this->_numberOfChildren() )
     {
@@ -263,15 +263,15 @@ void Joint_O::insertChild(Joint_sp child)
       this->_insertChild(firstNonJumpIndex,child);
 #ifdef DEBUG_ON
       Joint_sp firstNonJumpHandle = this->_child(firstNonJumpIndex);
-      LOG(BF("The current firstNonJumpHandle is of type: %s")
-          % _rep_(firstNonJumpHandle));
+      LOG("The current firstNonJumpHandle is of type: %s"
+          , _rep_(firstNonJumpHandle));
       {
-        LOG(BF("We are inserting a BondedJoint"));
+        LOG("We are inserting a BondedJoint");
       }
 #endif
     } else
     {
-      LOG(BF("We are at the end of the Children - appending"));
+      LOG("We are at the end of the Children - appending");
       //  IS THIS CORRECT?????
       this->_appendChild(child);
     }
@@ -281,7 +281,7 @@ void Joint_O::insertChild(Joint_sp child)
 
 RootJointInfo const* Joint_O::rootJointInfo() const
 {
-  THROW_HARD_ERROR(BF("rootJointInfo is not available for non-root atoms"));
+  THROW_HARD_ERROR(("rootJointInfo is not available for non-root atoms"));
 }
 
 int Joint_O::firstNonJumpChildIndex() const
@@ -375,7 +375,7 @@ Joint_sp Joint_O::previousChild(Joint_sp ch) const
   }
   if ( ii == num )
   {
-    SIMPLE_ERROR(BF("Could not find child"));
+    SIMPLE_ERROR(("Could not find child"));
   }
   if ( ii == 0 )
   {
@@ -392,7 +392,7 @@ Joint_sp Joint_O::inputStubJoint3(JointTree_sp at) const
 {_OF();
   ASSERTF(this->parent().boundp(),BF("The parent isn't defined"));
   if (this->parent().unboundp()) {
-    SIMPLE_ERROR(BF("inputStubAtom2 parent of %s isn't defined") % _rep_(this->asSmartPtr()));
+    SIMPLE_ERROR(("inputStubAtom2 parent of %s isn't defined") , _rep_(this->asSmartPtr()));
   }
   Joint_sp sibling = this->previousSibling();
   if ( gc::IsA<JumpJoint_sp>(this->asSmartPtr())
@@ -439,7 +439,7 @@ CL_DEFMETHOD core::T_sp Joint_O::getProperty(core::Symbol_sp symbol)
   if (res.unboundp()) {
     stringstream props;
     props << _rep_(this->_Properties);
-    SIMPLE_ERROR(BF("You asked for an unknown property[%s] for matter[%s@%p] - the available properties are[%s]") % _rep_(symbol) % this->__repr__() % this % props.str()  );
+    SIMPLE_ERROR(("You asked for an unknown property[%s] for matter[%s@%p] - the available properties are[%s]") , _rep_(symbol) , this->__repr__() , (void*)this , props.str()  );
   }
   return res;
 }
@@ -463,7 +463,7 @@ CL_DEFMETHOD bool Joint_O::hasProperty(core::Symbol_sp symbol)
        
 void Joint_O::walkChildren(core::Function_sp callback)
 {_OF();
-  LOG(BF("There are %d children") % this->_numberOfChildren() );
+  LOG("There are %d children" , this->_numberOfChildren() );
   for ( int i=0; i<this->_numberOfChildren(); i++ )
   {
     Joint_sp child = this->_child(i);
@@ -476,7 +476,7 @@ void Joint_O::walkChildren(core::Function_sp callback)
 
 void Joint_O::walkResidueTree(int residueId, core::Function_sp callback)
 {_OF();
-  LOG(BF("There are %d children") % this->_numberOfChildren() );
+  LOG("There are %d children" , this->_numberOfChildren() );
   for ( int i=0; i<this->_numberOfChildren(); i++ )
   {
     Joint_sp child = this->_child(i);
@@ -493,7 +493,7 @@ CL_DEFMETHOD void Joint_O::updateInternalCoord()
 
 CL_DEFMETHOD void Joint_O::updateXyzCoord()
 {_OF();
-  KIN_LOG(BF("base method\n"));
+  KIN_LOG("base method\n");
   Stub stub = this->parent()->getStub();
   this->_updateXyzCoord(stub);
 }

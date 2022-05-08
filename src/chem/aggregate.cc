@@ -31,6 +31,7 @@ This is an open source license for the CANDO software from Temple University, bu
 //
 
 #include <clasp/core/common.h>
+#include <clasp/core/lispStream.h>
 #include <cando/chem/aggregate.h>
 
 #include <iostream>
@@ -66,7 +67,7 @@ BoundingBox_sp BoundingBox_O::make(core::List_sp widths, core::T_sp angles_degre
 {
   Vector3 vwidths(0.0,0.0,0.0);
   if (core::cl__length(widths)!=3) {
-    SIMPLE_ERROR(BF("Three widths are required to define bounding-box - you supplied %s") % _rep_(widths));
+    SIMPLE_ERROR(("Three widths are required to define bounding-box - you supplied %s") , _rep_(widths));
   }
   core::Number_sp num;
   num = gc::As<core::Number_sp>(core::oFirst(widths));
@@ -237,7 +238,7 @@ bool BoundingBox_O::intersects(BoundingBox_sp other)
     double bminX = other->_Center.getX()-bHalfWidthX;
     return (amaxX >= bminX);
   }
-  SIMPLE_ERROR(BF("Handle non-cuboid bounding-box"));
+  SIMPLE_ERROR(("Handle non-cuboid bounding-box"));
 }
 
 bool BoundingBox_O::cuboidp() const
@@ -260,7 +261,7 @@ core::T_mv BoundingBox_O::get_cuboid_rsize() const
                   core::clasp_make_double_float(1.0/this->_Widths.getY()),
                   core::clasp_make_double_float(1.0/this->_Widths.getZ()));
   }
-  SIMPLE_ERROR(BF("The bounding-box is not cuboid"));
+  SIMPLE_ERROR(("The bounding-box is not cuboid"));
 }
 
 
@@ -279,7 +280,7 @@ CL_DEFMETHOD BoundingBox_sp Aggregate_O::boundingBox() const
   if (this->_BoundingBox.boundp()) {
     return this->_BoundingBox;
   }
-  SIMPLE_ERROR(BF("The bounding-box slot is unbound"));
+  SIMPLE_ERROR(("The bounding-box slot is unbound"));
 }
 
 CL_DOCSTRING(R"dx(Return T if the bounding-box is bound)dx")
@@ -335,7 +336,7 @@ Atom_sp Aggregate_O::atomWithAtomId(const AtomId& atomId) const
 	    Molecule_sp molecule = this->_contents[molId].as<Molecule_O>();
 	    return molecule->atomWithAtomId(atomId);
 	}
-	SIMPLE_ERROR(BF("Illegal moleculeId[%d] must be less than %d") % molId % this->_contents.size() );
+	SIMPLE_ERROR(("Illegal moleculeId[%d] must be less than %d") , molId , this->_contents.size() );
     }
 
 
@@ -424,12 +425,12 @@ Matter_sp Aggregate_O::copyDontRedirectAtoms(core::T_sp new_to_old)
 
     void Aggregate_O::redirectAtoms()
     {_OF();
-	LOG(BF("Aggregate_O::redirectAtoms START") );
+	LOG("Aggregate_O::redirectAtoms START" );
 	for ( contentIterator a=this->begin_contents(); a!=this->end_contents(); a++ ) {
 	    (*a)->redirectAtoms();
 	}
 	this->redirectRestraintAtoms();
-	LOG(BF("Aggregate_O::redirectAtoms DONE") );
+	LOG("Aggregate_O::redirectAtoms DONE" );
     }
 
 
@@ -456,12 +457,12 @@ bool	Aggregate_O::equal(core::T_sp obj) const
     {
 	if ( !obj.isA<Aggregate_O>() ) 
 	{
-	    SIMPLE_ERROR(BF("You can only transfer coordinates to a Aggregate from another Aggregate"));
+	    SIMPLE_ERROR(("You can only transfer coordinates to a Aggregate from another Aggregate"));
 	}
 	Aggregate_sp other = obj.as<Aggregate_O>();
 	if ( other->_contents.size() != this->_contents.size() )
 	{
-	    SIMPLE_ERROR(BF("You can only transfer coordinates if the two Aggregates have the same number of contents"));
+	    SIMPLE_ERROR(("You can only transfer coordinates if the two Aggregates have the same number of contents"));
 	}
 	Matter_O::contentIterator tit,oit;
 	for ( tit=this->_contents.begin(), oit=other->_contents.begin();
@@ -608,7 +609,7 @@ CL_DEFMETHOD     void Aggregate_O::removeMolecule( Molecule_sp a )
 		return;
 	    }
 	}
-	SIMPLE_ERROR(BF("Aggregate does not contain molecule: %s") % _rep_(a->getName()) );
+	SIMPLE_ERROR(("Aggregate does not contain molecule: %s") , _rep_(a->getName()) );
     }
 
 
@@ -620,7 +621,7 @@ CL_DEFMETHOD     uint Aggregate_O::separateMolecules()
         gctools::SmallOrderedSet<Atom_sp>	unassignedAtoms;
         gctools::Vec0<gctools::SmallOrderedSet<Atom_sp> >	moleculeGroups;
 	uint numMolecules = 0;
-	{ _BLOCK_TRACEF(BF("Get all of the atoms into a set"));
+	{ 
 	    Atom_sp a;
 	    Loop lb;
 	    Vector3 v,vd;
@@ -662,7 +663,7 @@ CL_DEFMETHOD     Molecule_sp Aggregate_O::firstMoleculeWithAtomNamed(core::Symbo
       if (latm.getAtom()->getName()==name) return mol;
     }
   }
-  SIMPLE_ERROR(BF("Could not find molecule with atom named %s") % _rep_(name));
+  SIMPLE_ERROR(("Could not find molecule with atom named %s") , _rep_(name));
 }
 
 
@@ -698,7 +699,7 @@ CL_DEFMETHOD     Molecule_sp Aggregate_O::firstMoleculeWithAtomNamed(core::Symbo
 	    }
 	}
 	if ( !gotAtom ) {
-          SIMPLE_ERROR(BF("Could not find atom with name: %s")% _rep_(name) );
+          SIMPLE_ERROR(("Could not find atom with name: %s") , _rep_(name) );
 	}
 	return a;
     }
@@ -726,7 +727,7 @@ CL_DEFMETHOD     void	Aggregate_O::writeToFile(const string& fileName)
 	    xml->put("aggregate",this->sharedThis<Aggregate_O>());
 	    xml->saveAs(fileName);
 	} else {
-	    SIMPLE_ERROR(BF("Cannot write aggregate to unknown fileType: %s")% fileName );
+          SIMPLE_ERROR(("Cannot write aggregate to unknown fileType: %s") , fileName );
 	}
 	return;
 #endif
@@ -746,14 +747,14 @@ CL_DEFMETHOD     Molecule_sp      Aggregate_O::firstMolecule()
 CL_LISPIFY_NAME("firstMoleculeName");
 CL_DEFMETHOD     MatterName  Aggregate_O::firstMoleculeName()
     {
-	LOG(BF("allocating mol") );
+	LOG("allocating mol" );
 	Molecule_sp mol;
 	Matter_sp c;
 	ASSERTP(this->_contents.size()>0,"Aggregate_O::firstMoleculeName contains no molecules");
 	c = this->contentAt(0);
-	LOG(BF("about to downcast mol") );
+	LOG("about to downcast mol" );
 	mol = (c).as<Molecule_O>();
-	LOG(BF("about to return name") );
+	LOG("about to return name" );
 	return mol->getName();
     }
 
@@ -816,7 +817,7 @@ CL_DEFMETHOD     void	Aggregate_O::perturbAtomPositions(double dist)
 		    // If the atoms are right on top of each other then
 		    // add a random vector to each
 		    if ( diff<0.1 ) {
-			_lisp->print(BF( "Aggregate_O::perturbAtomPositions>> Atoms are too close and being randomized!!!" ));
+                      core::writeln_bf_stream(fmt::sprintf( "Aggregate_O::perturbAtomPositions>> Atoms are too close and being randomized!!!" ));
 			xd = (core::randomNumber01()*2.0-1.0)*dist;
 			yd = (core::randomNumber01()*2.0-1.0)*dist;
 			zd = (core::randomNumber01()*2.0-1.0)*dist;
@@ -835,7 +836,7 @@ CL_DEFMETHOD     void	Aggregate_O::perturbAtomPositions(double dist)
 		    } else if ( diff < 0.7 ) {
 			// If the atoms are less than 0.1 angstroms away from each other then
 			// nudge them away from each other
-			_lisp->print(BF( "Aggregate_O::perturbAtomPositions>> Atoms are close and being nudged out!!!" ));
+                      core::writeln_bf_stream(fmt::sprintf( "Aggregate_O::perturbAtomPositions>> Atoms are close and being nudged out!!!" ));
 			vdiff = vdiff.multiplyByScalar(0.5/diff);
 			pos = (*af)->getPosition();
 			pos = pos + vdiff;
@@ -850,7 +851,7 @@ CL_DEFMETHOD     void	Aggregate_O::perturbAtomPositions(double dist)
 	    if ( !madeAdjustment) break;
 	    adjustCycles++;
 	    if ( adjustCycles>MAX_ADJUST_CYCLES ) {
-		_lisp->print(BF("MADE MORE THAN %d ADJUSTMENT CYCLES WHEN PERTURBING ATOMS") % MAX_ADJUST_CYCLES);
+              core::writeln_bf_stream(fmt::sprintf("MADE MORE THAN %d ADJUSTMENT CYCLES WHEN PERTURBING ATOMS" , MAX_ADJUST_CYCLES));
 		break;
 	    }
 	}

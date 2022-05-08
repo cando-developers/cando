@@ -231,7 +231,7 @@ namespace chem {
     size_t fillInImplicitHydrogens();
 
     CL_LISPIFY_NAME("firstAtom");
-    CL_DEFMETHOD 	Atom_sp		firstAtom() { if ( this->contentSize() <= 0 ) { SIMPLE_ERROR(BF("This matter has no contents")); } return this->contentAt(0).as<Atom_O>(); };
+    CL_DEFMETHOD 	Atom_sp		firstAtom() { if ( this->contentSize() <= 0 ) { SIMPLE_ERROR(("This matter has no contents")); } return this->contentAt(0).as<Atom_O>(); };
 
     void	makeAllAtomNamesInEachResidueUnique();
 

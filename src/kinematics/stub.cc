@@ -57,21 +57,21 @@ namespace kinematics
 			      Vector3 const& c)
     {
 	this->_Transform.setToIdentity();
-	LOG(BF("center = %s") % center.asString());
-	LOG(BF("a = %s") % a.asString());
-	LOG(BF("b = %s") % b.asString());
-	LOG(BF("c = %s") % c.asString());
+	LOG("center = %s" , center.asString());
+	LOG("a = %s" , a.asString());
+	LOG("b = %s" , b.asString());
+	LOG("c = %s" , c.asString());
 	Vector3 e1(a-b);
 	e1 = e1.normalized();
-	LOG(BF("e1 = (a-b).normalized : %s") % e1.asString() );
+	LOG("e1 = (a-b).normalized : %s" , e1.asString() );
 	Vector3 e3(e1.crossProduct(c-b));
 	e3 = e3.normalized();
-	LOG(BF("e3 = (e1.crossProduct(c-b)).normalized : %s") % e3.asString() );
+	LOG("e3 = (e1.crossProduct(c-b)).normalized : %s" , e3.asString() );
 	Vector3 e2(e3.crossProduct(e1));
-	LOG(BF("e2 = (e3.crossProduct(e1)): %s") % e2.asString() );
-	LOG(BF("Stub before being set: %s") % this->_Transform.asStringFormatted());
+	LOG("e2 = (e3.crossProduct(e1)): %s" , e2.asString() );
+	LOG("Stub before being set: %s" , this->_Transform.asStringFormatted());
 	this->_Transform.colX(e1).colY(e2).colZ(e3).setTranslate(center);
-	LOG(BF("Stub = \n%s") % this->_Transform.asStringFormatted());
+	LOG("Stub = \n%s" , this->_Transform.asStringFormatted());
     }
 
 

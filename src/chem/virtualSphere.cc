@@ -226,7 +226,7 @@ double	radius;
 //    ry = (halfHeight - ay)/radius;
 //    rx = (halfWidth-ax)/radius;
     ry = (ay-halfHeight)/radius;
-//    LOG(BF("relative mouse position = %lf, %lf") % (rx) % (ry ) );
+//    LOG("relative mouse position = %lf, %lf" , (rx) , (ry ) );
 }
 
 
@@ -277,7 +277,7 @@ CL_DEFMETHOD void VirtualSphere_O::dump()
     ss << "_Center = " << this->_Center.asString() << std::endl;
     ss << "_Rotate = " << this->_Rotate.asString() << std::endl;
     printf("%s", ss.str().c_str() );
-    LOG(BF("%s") % ss.str() );
+    LOG("%s" , ss.str() );
 }
 
 SYMBOL_EXPORT_SC_(ChemKwPkg,idle);
@@ -402,28 +402,28 @@ CL_DEFMETHOD     void
     VirtualSphere_O::setMouseXAxisWheelChange(core::Symbol_sp smode, double w)
     {_OF();
 	VirtualSphereMotionMode mode = this->mouseModeFromSymbol(smode);
-	LOG(BF("Mouse mode=%d") % mode );
+	LOG("Mouse mode=%d" , mode );
 	switch ( mode )
 	{
 	case vsIdle:
-	    LOG(BF("Mouse mode=== idle"));
+	    LOG("Mouse mode=== idle");
 	    break;
 	case vsRotate:
 	{
-	    LOG(BF("Mouse mode=== rotate"));
+	    LOG("Mouse mode=== rotate");
 	    Matrix mtemp;
 	    if ( w > 1.0 ) w = 1.0;
 	    if ( w < -1.0 ) w = -1.0;
 	    mtemp.rotationY(w);
 	    this->_Rotate = mtemp.multiplyByMatrix(this->_Rotate);
-	    LOG(BF("Rotating with matrix: %s") % (mtemp.asString()));
+	    LOG("Rotating with matrix: %s" , (mtemp.asString()));
 //	        this->_Rotate = this->_Rotate.multiplyByMatrix(mtemp);
 	    this->_Recalculate = true;
 	    break;
 	}
 	case vsTranslate:
 	{
-	    LOG(BF("Mouse mode=== translate"));
+	    LOG("Mouse mode=== translate");
 	    Vector3 delta;
 	    delta.set(w,0.0,0.0);
 	    this->_Translate = this->_Translate.add(delta);
@@ -431,11 +431,11 @@ CL_DEFMETHOD     void
 	    break;
 	}
 	case vsScale:
-	    LOG(BF("Mouse mode=== scale"));
+	    LOG("Mouse mode=== scale");
 	    this->setScaleChange(w);
 	    break;
     default:
-	LOG(BF("Unknown mouse mode"));
+	LOG("Unknown mouse mode");
 	break;
 	}
     }
@@ -446,27 +446,27 @@ CL_DEFMETHOD     void
     VirtualSphere_O::setMouseYAxisWheelChange(core::Symbol_sp smode, double w)
     {_OF();
 	VirtualSphereMotionMode mode = this->mouseModeFromSymbol(smode);
-	LOG(BF("Mouse mode=%d") % mode );
+	LOG("Mouse mode=%d" , mode );
 	switch ( mode )
 	{
 	case vsIdle:
 	    break;
 	case vsRotate:
 	{
-	    LOG(BF("Mouse mode=== rotate"));
+	    LOG("Mouse mode=== rotate");
 	    Matrix mtemp;
 	    if ( w > 1.0 ) w = 1.0;
 	    if ( w < -1.0 ) w = -1.0;
 	    mtemp.rotationX(w);
 	    this->_Rotate = mtemp.multiplyByMatrix(this->_Rotate);
-	    LOG(BF("Rotating with matrix: %s") % (mtemp.asString()));
+	    LOG("Rotating with matrix: %s" , (mtemp.asString()));
 //	        this->_Rotate = this->_Rotate.multiplyByMatrix(mtemp);
 	    this->_Recalculate = true;
 	    break;
 	}
 	case vsTranslate:
 	{
-	    LOG(BF("Mouse mode=== translate"));
+	    LOG("Mouse mode=== translate");
 	    Vector3 delta;
 	    delta.set(0.0,w,0.0);
 	    this->_Translate = this->_Translate.add(delta);
@@ -474,11 +474,11 @@ CL_DEFMETHOD     void
 	    break;
 	}
 	case vsScale:
-	    LOG(BF("Mouse mode=== scale"));
+	    LOG("Mouse mode=== scale");
 	    this->setScaleChange(w);
 	    break;
 	default:
-	    LOG(BF("Unknown mouse mode"));
+	    LOG("Unknown mouse mode");
 	    break;
 	}
     }
@@ -487,7 +487,7 @@ CL_DEFMETHOD     void
 
 void	VirtualSphere_O::setCenter(const Vector3& pos)
 {
-    LOG(BF("setCenter to %s") % pos.asString() );
+    LOG("setCenter to %s" , pos.asString() );
     this->_Center = pos;
     this->_Recalculate = true;
 }
@@ -495,7 +495,7 @@ void	VirtualSphere_O::setCenter(const Vector3& pos)
 
 void	VirtualSphere_O::setTranslate(const Vector3& pos )
 {
-    LOG(BF("setTranslate to %s") % pos.asString() );
+    LOG("setTranslate to %s" , pos.asString() );
     this->_Translate = pos;
     this->_Recalculate = true; 
 }
@@ -524,11 +524,11 @@ Matrix	result;
 Vector3	vCent;
 
     if (this->_Recalculate == false ) {
-        LOG(BF("Returning pre-calculated matrix") );
+        LOG("Returning pre-calculated matrix" );
 	result = this->_Overall;
 	return result;
     }
-    LOG(BF("Recalculating matrix") );
+    LOG("Recalculating matrix" );
 #if 1 //[
 Matrix	mTranslateCenterToOrigin;
 Matrix	mTranslateOriginToCenter;
@@ -541,7 +541,7 @@ Matrix	mA, mB;
 		// Calculate matrices
 		//
     vCent = this->_Center.multiplyByScalar(-1.0);
-    LOG(BF("vCent = %s") % vCent.asString().c_str()  );
+    LOG("vCent = %s" , vCent.asString().c_str()  );
     mTranslateCenterToOrigin.translate(vCent);
     mTranslateOriginToCenter.translate(this->_Center);
     mTranslate.translate(this->_Translate);

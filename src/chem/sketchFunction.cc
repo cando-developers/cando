@@ -156,7 +156,7 @@ CL_DEFMETHOD AtomTable_sp SketchFunction_O::atomTable() const
   if (gc::IsA<AtomTable_sp>(this->_NodeTable)) {
     return gc::As_unsafe<AtomTable_sp>(this->_NodeTable);
   }
-  SIMPLE_ERROR(BF("An attempt was made to get the atom-table of a sketch-function but one hasn't been set - instead we have a node-table: ~a~%") % _rep_(this->_NodeTable));
+  SIMPLE_ERROR(("An attempt was made to get the atom-table of a sketch-function but one hasn't been set - instead we have a node-table: ~a~%") , _rep_(this->_NodeTable));
 }
 
 CL_DOCSTRING(R"dx(Return the instance graph slot if it is a Matter object. 
@@ -173,13 +173,13 @@ size_t SketchFunction_O::getNVectorSize()
   if (tsize.fixnump()) {
     return tsize.unsafe_fixnum()*3;
   }
-  SIMPLE_ERROR(BF("chem:get-nvector-size must return a fixnum"));
+  SIMPLE_ERROR(("chem:get-nvector-size must return a fixnum"));
 };
 
 
 void	SketchFunction_O::setOption( core::Symbol_sp option, core::T_sp val)
 {_OF();
-  SIMPLE_ERROR(BF("Unknown SketchFunction setOption keyword[%s]") % _rep_(option) );
+  SIMPLE_ERROR(("Unknown SketchFunction setOption keyword[%s]") , _rep_(option) );
 }
 
 
@@ -288,7 +288,7 @@ uint	SketchFunction_O::countTermsBeyondThreshold()
 {_OF();
   int		terms;
   terms = 0;
-  SIMPLE_ERROR(BF("Should there be something here?"));
+  SIMPLE_ERROR(("Should there be something here?"));
 //    node = rawAccumulateTermsBeyondThresholdAsXml(terms);
   return terms;
 }
@@ -298,9 +298,9 @@ uint	SketchFunction_O::countTermsBeyondThreshold()
 void maybe_dump_force(const string& msg, NVector_sp force)
 {
   if (chem__verbose(2)) {
-    core::write_bf_stream(BF("Name: %s\n") % msg);
+    core::write_bf_stream(fmt::sprintf("Name: %s\n" , msg));
     for ( size_t idx=0; idx<force->length(); idx++ ) {
-      core::write_bf_stream(BF("force[%d] -> %f\n") % idx % (*force)[idx]);
+      core::write_bf_stream(fmt::sprintf("force[%d] -> %f\n" , idx , (*force)[idx]));
     }
   }
 }
@@ -364,21 +364,21 @@ double	SketchFunction_O::evaluateAll( NVector_sp 	pos,
 
 #ifdef	DEBUG_ON //[
 	// Summarize entry state for debugging
-  LOG(BF("calcForce = %d") % calcForce  );
-  LOG(BF("calcDiagonalHessian = %d") % calcDiagonalHessian  );
-  LOG(BF("calcOffDiagonalHessian = %d") % calcOffDiagonalHessian  );
-  LOG(BF("hasForce = %d") % hasForce  );
-  LOG(BF("hasHdAndD = %d") % hasHdAndD  );
+  LOG("calcForce = %d" , calcForce  );
+  LOG("calcDiagonalHessian = %d" , calcDiagonalHessian  );
+  LOG("calcOffDiagonalHessian = %d" , calcOffDiagonalHessian  );
+  LOG("hasForce = %d" , hasForce  );
+  LOG("hasHdAndD = %d" , hasHdAndD  );
   if ( hasForce && force->size() < pos->size() ) {
-    SIMPLE_ERROR(BF("Force does not have the necessary dimensions"));
+    SIMPLE_ERROR(("Force does not have the necessary dimensions"));
   }
 #endif //]
 
   if ( !calcForce && ( calcDiagonalHessian || calcOffDiagonalHessian ) ) {
-    SIMPLE_ERROR(BF("Inconsistant arguments: if you want to calcDiagonalHessian or calcOffDiagonalHessian you must calcForce"));
+    SIMPLE_ERROR(("Inconsistant arguments: if you want to calcDiagonalHessian or calcOffDiagonalHessian you must calcForce"));
   }
   if ( !calcDiagonalHessian & calcOffDiagonalHessian ) {
-    SIMPLE_ERROR(BF("Inconsistant arguments: if you want to calcOffDiagonalHessian you must calcDiagonalHessian"));
+    SIMPLE_ERROR(("Inconsistant arguments: if you want to calcOffDiagonalHessian you must calcDiagonalHessian"));
   }
 
 ////    _lisp->profiler().pushTimerStates();
@@ -391,11 +391,11 @@ double	SketchFunction_O::evaluateAll( NVector_sp 	pos,
   if ( hasForce ) force->zero();
   if ( hasHessian ) hessian->zero();
   if ( hasHdAndD ) {
-    LOG(BF("Zeroing hdvec") );
+    LOG("Zeroing hdvec" );
     hdvec->zero();	// Zero the result
   }
 
-  LOG(BF("Starting evaluation of energy") );
+  LOG("Starting evaluation of energy" );
 ////	_lisp->profiler().timer(core::timerEnergy).start();
 
 ////	_lisp->profiler().timer(core::timerBondAngleDihedral).start();
@@ -448,11 +448,11 @@ double	SketchFunction_O::evaluateAll( NVector_sp 	pos,
   this->_TotalEnergy += this->_PointToLineRestraint->getEnergy();
   this->_TotalEnergy += this->_OutOfZPlane->getEnergy();
   if (chem__verbose(1)) {
-    core::write_bf_stream(BF("Stretch energy -> %d.\n") % this->_Stretch->getEnergy() );
-    core::write_bf_stream(BF("Nonbond energy -> %d.\n") % this->_Nonbond->getEnergy() );
-    core::write_bf_stream(BF("PointToLineRestraint energy -> %d.\n") % this->_PointToLineRestraint->getEnergy() );
-    core::write_bf_stream(BF("OutOfZPlane energy -> %d.\n") % this->_OutOfZPlane->getEnergy() );
-    core::write_bf_stream(BF("Total energy -> %d.\n") % this->_TotalEnergy );
+    core::write_bf_stream(fmt::sprintf("Stretch energy -> %d.\n" , this->_Stretch->getEnergy() ));
+    core::write_bf_stream(fmt::sprintf("Nonbond energy -> %d.\n" , this->_Nonbond->getEnergy() ));
+    core::write_bf_stream(fmt::sprintf("PointToLineRestraint energy -> %d.\n" , this->_PointToLineRestraint->getEnergy() ));
+    core::write_bf_stream(fmt::sprintf("OutOfZPlane energy -> %d.\n" , this->_OutOfZPlane->getEnergy() ));
+    core::write_bf_stream(fmt::sprintf("Total energy -> %d.\n" , this->_TotalEnergy ));
   }
 
 ////	_lisp->profiler().timer(core::timerEnergy).stop();
@@ -465,9 +465,9 @@ double	SketchFunction_O::evaluateAll( NVector_sp 	pos,
 string SketchFunction_O::energyComponentsAsString()
 {
   stringstream ss;
-  ss << boost::format("Stretch(%lf)") % this->_Stretch->getEnergy() << std::endl;
-  ss << boost::format("PointToLineRestraint(%lf)") % this->_PointToLineRestraint->getEnergy() << std::endl;
-  ss << boost::format("OutOfZPlane(%lf)") % this->_OutOfZPlane->getEnergy() << std::endl;
+  ss << fmt::sprintf("Stretch(%lf)" , this->_Stretch->getEnergy()) << std::endl;
+  ss << fmt::sprintf("PointToLineRestraint(%lf)" , this->_PointToLineRestraint->getEnergy()) << std::endl;
+  ss << fmt::sprintf("OutOfZPlane(%lf)" , this->_OutOfZPlane->getEnergy()) << std::endl;
   return ss.str();
 }
 
@@ -561,16 +561,16 @@ double	SketchFunction_O::calculateNumericalSecondDerivative(NVector_sp pos, doub
     fmimj = this->evaluateEnergy(pos);
     pos->setElement(i,x);
     pos->setElement(j,y);
-    LOG(BF("fpipj = %le") % fpipj  );
-    LOG(BF("fpimj = %le") % fpimj  );
-    LOG(BF("fmipj = %le") % fmipj  );
-    LOG(BF("fmimj = %le") % fmimj  );
+    LOG("fpipj = %le" , fpipj  );
+    LOG("fpimj = %le" , fpimj  );
+    LOG("fmipj = %le" , fmipj  );
+    LOG("fmimj = %le" , fmimj  );
     fp = (fpipj-fpimj)/delta;
     fm = (fmipj-fmimj)/delta;
-    LOG(BF("fp = %le") % fp  );
-    LOG(BF("fm = %le") % fm  );
+    LOG("fp = %le" , fp  );
+    LOG("fm = %le" , fm  );
     f2 = (fp-fm)/delta;
-    LOG(BF("f2 = %le") % f2  );
+    LOG("f2 = %le" , f2  );
   }
   return f2;
 }
@@ -600,7 +600,7 @@ void	SketchFunction_O::evaluateNumericalHessian(NVector_sp pos, AbstractLargeSqu
   uint		c, r;
 
   if ( hessian->columns() != pos->size() || hessian->rows()!=pos->size() ) {
-    SIMPLE_ERROR(BF("evaluateNumericalHessian must have the right size"));
+    SIMPLE_ERROR(("evaluateNumericalHessian must have the right size"));
   }
   hessian->zero();
   for ( c=0; c<pos->size(); c++ ) {
@@ -708,7 +708,7 @@ void	SketchFunction_O::dumpTerms()
 void	SketchFunction_O::loadCoordinatesIntoVector(NVector_sp pos)
 {
   if ( pos->size() != this->getNVectorSize()) {
-    SIMPLE_ERROR(BF("NVector is the incorrect length"));
+    SIMPLE_ERROR(("NVector is the incorrect length"));
   }
   core::T_sp tsize = core::eval::funcall(_sym_node_table_size,this->_NodeTable);
   ASSERT(tsize.fixnump());
@@ -743,7 +743,7 @@ void    SketchFunction_O::saveCoordinatesFromVector(NVector_sp pos)
     x = pos->getElement(ci+0);
     y = pos->getElement(ci+1);
     z = pos->getElement(ci+2);
-    LOG(BF("Set atom(%d) position (%lf,%lf,%lf)") % ci % x % y % z  );
+    LOG("Set atom(%d) position (%lf,%lf,%lf)" , ci , x , y , z  );
     core::eval::funcall(_sym_node_set_position,node,geom::OVector3_O::make(x,y,z));
   }
 }
@@ -799,7 +799,7 @@ void SketchFunction_O::disableDebug()
 
 void	SketchFunction_O::dealWithProblem(core::Symbol_sp error_symbol, core::T_sp arguments)
 {
-  SIMPLE_ERROR(BF("Handle dealWithProblem"));
+  SIMPLE_ERROR(("Handle dealWithProblem"));
 }
 
 
@@ -818,10 +818,10 @@ CL_DEFUN void chem__SketchFunction_velocity_verlet_step(SketchFunction_sp sketch
   if (gc::IsA<core::SimpleBitVector_sp>(tfrozen)) {
     frozen = gc::As_unsafe<core::SimpleBitVector_sp>(tfrozen);
     if (frozen->length() != (position->length())) {
-      SIMPLE_ERROR(BF("frozen must be a simple-bit-vector of length %d or NIL") % (position->length()));
+      SIMPLE_ERROR(("frozen must be a simple-bit-vector of length %d or NIL") , (position->length()));
     }
   } else if (tfrozen.notnilp()) {
-    SIMPLE_ERROR(BF("frozen must be a simple-bit-vector or NIL"));
+    SIMPLE_ERROR(("frozen must be a simple-bit-vector or NIL"));
   }
     
   double delta_tsquared = delta_t*delta_t;

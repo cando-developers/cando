@@ -92,28 +92,28 @@ SYMBOL_EXPORT_SC_(ChemPkg,assignType);
 
 CL_LISPIFY_NAME("assignType");
 CL_LAMBDA((types-db !) atom)CL_DEFMETHOD core::Symbol_sp FFTypesDb_O::assignType(chem::Atom_sp atom) {
-  LOG(BF("Got atom") );
-  LOG(BF("atom name: %s") % atom->getName().c_str() );
-  LOG(BF("Assigning type for atom: %s") % atom->description().c_str()  );
+  LOG("Got atom" );
+  LOG("atom name: %s" , atom->getName().c_str() );
+  LOG("Assigning type for atom: %s" , atom->description().c_str()  );
   if (chem__verbose(0)) {
-    core::write_bf_stream(BF("Assigning type for atom: %s\n") % _rep_(atom));
+    core::write_bf_stream(fmt::sprintf("Assigning type for atom: %s\n" , _rep_(atom)));
   }
 
-  {_BLOCK_TRACE("Testing every type rule");
+  {
     for ( auto it=this->_TypeAssignmentRules.begin();
           it!=this->_TypeAssignmentRules.end(); it++ ) 
-    {_BLOCK_TRACEF(BF("Testing rule code(%s)") % (*it)->getCode().c_str() );
+    {
       Root_sp root = (*it)->_Test;
       core::T_mv matches_mv = chem::chem__chem_info_match(root,atom);
       ChemInfoMatch_sp match = gc::As<ChemInfoMatch_sp>(matches_mv.second());
       if ( matches_mv.notnilp() ) {
-        LOG(BF("Rule MATCH!!!") );
-        if (chem__verbose(2)) core::write_bf_stream(BF("Matched %s type-> %s\n") % _rep_(root) % _rep_((*it)->_Type));
+        LOG("Rule MATCH!!!" );
+        if (chem__verbose(2)) core::write_bf_stream(fmt::sprintf("Matched %s type-> %s\n" , _rep_(root) , _rep_((*it)->_Type)));
         return (*it)->_Type;
       } else {
-        if (chem__verbose(2)) core::write_bf_stream(BF("Did not match %s type-> %s\n") % _rep_(root) % _rep_((*it)->_Type));
+        if (chem__verbose(2)) core::write_bf_stream(fmt::sprintf("Did not match %s type-> %s\n" , _rep_(root) , _rep_((*it)->_Type)));
       }
-      LOG(BF("Rule does not match, keep going") );
+      LOG("Rule does not match, keep going" );
     }
   }
   return nil<core::Symbol_O>();
@@ -142,7 +142,7 @@ CL_DEFMETHOD void    FFTypesDb_O::assignTypes(chem::Matter_sp matter)
   // Now assign the types first checking for residues and then
   // applying atom type rules for missing types.
   if (chem__verbose(2)) {
-    core::write_bf_stream(BF("Assigning atom types to %s\n") % _rep_(matter));
+    core::write_bf_stream(fmt::sprintf("Assigning atom types to %s\n" , _rep_(matter)));
   }
   Loop lRes;
   lRes.loopTopGoal(matter,RESIDUES);
@@ -150,18 +150,18 @@ CL_DEFMETHOD void    FFTypesDb_O::assignTypes(chem::Matter_sp matter)
     Residue_sp res = lRes.getResidue();
     core::T_sp name = res->getName();
     if (chem__verbose(2)) {
-      core::write_bf_stream(BF("Looking for residue: %s\n") % _rep_(name));
+      core::write_bf_stream(fmt::sprintf("Looking for residue: %s\n" , _rep_(name)));
     }
     if (name.notnilp()) {
       core::T_mv result_mv = chem__findTopology(name,false);
       core::T_sp found = result_mv.second();
       if (chem__verbose(2)) {
-        core::write_bf_stream(BF("chem__findTopology -> %s %s\n") % _rep_(result_mv) % _rep_(found));
+        core::write_bf_stream(fmt::sprintf("chem__findTopology -> %s %s\n" , _rep_(result_mv) , _rep_(found)));
       }
       if (found.notnilp()) {
         Topology_sp topology = gc::As<Topology_sp>(result_mv);
         if (chem__verbose(2)) {
-          core::write_bf_stream(BF("Found topology for residue name: %s\n") % _rep_(name));
+          core::write_bf_stream(fmt::sprintf("Found topology for residue name: %s\n" , _rep_(name)));
         }
         Constitution_sp constitution = topology->getConstitution();
         ConstitutionAtoms_sp constitution_atoms = constitution->getConstitutionAtoms();
@@ -171,7 +171,7 @@ CL_DEFMETHOD void    FFTypesDb_O::assignTypes(chem::Matter_sp matter)
           atom = lAtoms.getAtom();
           core::T_sp atom_name = atom->getName();
           if (chem__verbose(2)) {
-            core::write_bf_stream(BF("Looking for atom with name: %s\n") % _rep_(atom_name));
+            core::write_bf_stream(fmt::sprintf("Looking for atom with name: %s\n" , _rep_(atom_name)));
           }
           core::T_mv constitution_atom_mv = constitution_atoms->atomWithName(atom_name,false);
           if (constitution_atom_mv.second().notnilp()) {
@@ -180,11 +180,11 @@ CL_DEFMETHOD void    FFTypesDb_O::assignTypes(chem::Matter_sp matter)
             core::T_sp type = constitution_atom->_AtomType;
             atom->setType(type);
             if (chem__verbose(2)) {
-              core::write_bf_stream(BF("Assigned atom type %s using topology %s\n") % _rep_(type) % _rep_(name));
+              core::write_bf_stream(fmt::sprintf("Assigned atom type %s using topology %s\n" , _rep_(type) , _rep_(name)));
             }
           } else {
             if (chem__verbose(2)) {
-              core::write_bf_stream(BF("   Not found\n"));
+              core::write_bf_stream(fmt::sprintf("   Not found\n"));
             }
           }
         }
@@ -197,7 +197,7 @@ CL_DEFMETHOD void    FFTypesDb_O::assignTypes(chem::Matter_sp matter)
         if (this->_TypeAssignmentRules.size()!=0) {
           core::T_sp type = this->assignType(atom);
           if (chem__verbose(2)) {
-            core::write_bf_stream(BF("Assigned atom type %s using type rules\n") % _rep_(type));
+            core::write_bf_stream(fmt::sprintf("Assigned atom type %s using type rules\n" , _rep_(type)));
           }
           atom->setType(type);
         }
@@ -209,7 +209,7 @@ CL_DEFMETHOD void    FFTypesDb_O::assignTypes(chem::Matter_sp matter)
     }
   }
   if (missing_types>0) {
-    SIMPLE_WARN(BF("There were %lu missing types of %lu atoms - %s") % missing_types % total_atoms % _rep_(atoms_with_no_types));
+    SIMPLE_WARN("There were %lu missing types of %lu atoms - %s" ,missing_types ,total_atoms ,_rep_(atoms_with_no_types));
   }
 }
 
@@ -228,9 +228,9 @@ CL_DEFMETHOD core::HashTableEq_sp    FFTypesDb_O::atomTypes(chem::Matter_sp matt
   core::HashTableEq_sp atomTypes = core::HashTableEq_O::create_default();
   if (this->_TypeAssignmentRules.size()==0)  return atomTypes;
   lAtoms.loopTopGoal(matter,ATOMS);
-  LOG(BF("defined loop") );
+  LOG("defined loop" );
   while ( lAtoms.advanceLoopAndProcess() ) {
-    LOG(BF("Getting container") );
+    LOG("Getting container" );
     atom = lAtoms.getAtom();
     core::Symbol_sp type = this->assignType(atom);
     atomTypes->setf_gethash(atom,type);
@@ -253,7 +253,7 @@ CL_DEFMETHOD chem::FFTypeRule_sp FFTypesDb_O::getRule(uint index)
   if ( index < this->_TypeAssignmentRules.size() ) {
     return this->_TypeAssignmentRules[index];
   }
-  SIMPLE_ERROR(BF("Rule index is out of bounds"));
+  SIMPLE_ERROR(("Rule index is out of bounds"));
 }
 
 

@@ -138,7 +138,7 @@ namespace chem
 		 << "_" << this->externalInterfaceName() << "_"
 		 << setw(4) << setfill('0') << entryIndex
 		 << "_" << stageName << ext;
-	LOG(BF("Assembled fileName: %s") % fnStream.str().c_str()  );
+	LOG("Assembled fileName: %s" , fnStream.str().c_str()  );
 	fileName = fnStream.str();
 	return fileName;
     }
@@ -159,7 +159,7 @@ namespace chem
 		 << "_" << this->externalInterfaceName() << "_"
 		 << setw(4) << setfill('0') << entryIndex
 		 << "_" << stageName << ext;
-	LOG(BF("Assembled fileName: %s") % fnStream.str().c_str()  );
+	LOG("Assembled fileName: %s" , fnStream.str().c_str()  );
 	filePath = fnStream.str();
 	return filePath;
     }
@@ -175,7 +175,7 @@ namespace chem
 	explorer = stage->getConformationExplorer();
 	index = explorer->getEntryIndex(entry);
 	stageName = stage->getStageName();
-	LOG(BF("stageName(%s)") % stageName.c_str()  );
+	LOG("stageName(%s)" , stageName.c_str()  );
 	return this->_assembleFileName(index,stageName,ext);
     }
 
@@ -189,7 +189,7 @@ namespace chem
 	explorer = stage->getConformationExplorer();
 	index = explorer->getEntryIndex(entry);
 	stageName = stage->getStageName();
-	LOG(BF("stageName(%s)") % stageName.c_str()  );
+	LOG("stageName(%s)" , stageName.c_str()  );
 	return this->_assembleFilePath(index,stageName,ext);
     }
 
@@ -205,19 +205,19 @@ namespace chem
 	Atom_sp		atom;
 	boost_filesystem::path	fileName;
 	fileName = this->assembleFileName(entryStage,this->summaryFileExtension());
-	LOG(BF("Final conformation and energy being parsed from a .sum (summary) file: %s") % fileName.string().c_str() );
+	LOG("Final conformation and energy being parsed from a .sum (summary) file: %s" , fileName.string().c_str() );
 	explorer = entryStage->getConformationExplorer();
 	fin.exceptions(ios::goodbit);
 	ASSERTP(boost_filesystem::exists(fileName),"The filename "+fileName.string()+" doesn't exist");
 	ASSERTP(boost_filesystem::is_regular(fileName),"The filename "+fileName.string()+" isn't a regular file");
 	fin.open(fileName.string().c_str(),ios::in);
-	LOG(BF("Opened file") );
+	LOG("Opened file" );
 	uint	numCoordsRead = 0;
 	while ( !fin.eof() )
 	{
 	    fin.getline(buffer,BUFSIZE);
 	    line = buffer;
-	    LOG(BF("Read line: %s") % line.c_str()  );
+	    LOG("Read line: %s" , line.c_str()  );
 	    core::tokenize(line,parts," ");
 	    if ( parts[0] == "coord" )
 	    {
@@ -226,7 +226,7 @@ namespace chem
 		double x = atof(parts[2].c_str());
 		double y = atof(parts[3].c_str());
 		double z = atof(parts[4].c_str());
-		LOG(BF("Read coords: %s %lf %lf %lf") % atomName.c_str() % x % y % z  );
+		LOG("Read coords: %s %lf %lf %lf" , atomName.c_str() , x , y , z  );
 		pos.set(x,y,z);
 		if ( this->_AtomNamesToAtoms.contains(atomName) )
 		{
@@ -234,19 +234,19 @@ namespace chem
 		    entryStage->setCoordinateForAtom(atom,pos);
 		} else
 		{
-		    SIMPLE_ERROR(BF("In summary file: "+fileName.string()+" did not recognize atom named: "+atomName));
+		    SIMPLE_ERROR(("In summary file: "+fileName.string()+" did not recognize atom named: "+atomName));
 		}
 		numCoordsRead++;
 	    } else if ( parts[0] == "hartrees" )
 	    {
 		double hartrees = atof(parts[1].c_str());
-		LOG(BF("Read hartrees: %lf") % hartrees );
+		LOG("Read hartrees: %lf" , hartrees );
 		entryStage->setEnergyKCal(hartrees*627.5095);
 	    }
 	}
 	if ( numCoordsRead != explorer->numberOfAllAtoms() )
 	{
-	    SIMPLE_ERROR(BF("Not enough coordinates"));
+	    SIMPLE_ERROR(("Not enough coordinates"));
 	}
 	return true;
     }

@@ -63,7 +63,7 @@ Structure_Old_ListEntry_sp	Structure_Old_ListEntry_O::create(Structure_Old_List_
 void	Structure_Old_ListEntry_O::initialize()
 {_OF();
     this->Base::initialize();
-    LOG(BF("Created StructureListEntry") );
+    LOG("Created StructureListEntry" );
     this->_Members = 0;
     this->_AllCoordinates = geom::SimpleVectorCoordinate_O::create();
     this->_SuperposeCoordinates = geom::SimpleVectorCoordinate_O::create();
@@ -81,14 +81,14 @@ void	Structure_Old_ListEntry_O::initialize()
     node->attribute("data",this->_Data);
     if ( node->loading() )
     {
-        LOG(BF("Serialized object loaded from file") );
-	LOG(BF("allCoords =%s") % (this->_AllCoordinates->asXmlString().c_str() ) );
-	LOG(BF("superposeCoords =%s") % (this->_SuperposeCoordinates->asXmlString().c_str() ) );
+        LOG("Serialized object loaded from file" );
+	LOG("allCoords =%s" , (this->_AllCoordinates->asXmlString().c_str() ) );
+	LOG("superposeCoords =%s" , (this->_SuperposeCoordinates->asXmlString().c_str() ) );
     } else
     {
-        LOG(BF("Serialized object output to file") );
-	LOG(BF("allCoords =%s") % (this->_AllCoordinates->asXmlString().c_str() ) );
-	LOG(BF("superposeCoords =%s") % (this->_SuperposeCoordinates->asXmlString().c_str() ) );
+        LOG("Serialized object output to file" );
+	LOG("allCoords =%s" , (this->_AllCoordinates->asXmlString().c_str() ) );
+	LOG("superposeCoords =%s" , (this->_SuperposeCoordinates->asXmlString().c_str() ) );
     }
 }
 #endif
@@ -96,14 +96,14 @@ void	Structure_Old_ListEntry_O::initialize()
 void	Structure_Old_ListEntry_O::setAllCoordinates(geom::SimpleVectorCoordinate_sp ac)
 {
     ASSERTNOTNULL(ac);
-    LOG(BF("setAllCoordinates:%s") % (ac->asXmlString().c_str() ) );
-    LOG(BF("The address of the geom::SimpleVectorCoordinate_sp is in o") );
+    LOG("setAllCoordinates:%s" , (ac->asXmlString().c_str() ) );
+    LOG("The address of the geom::SimpleVectorCoordinate_sp is in o" );
     this->_AllCoordinates = ac;
 }
 
 void	Structure_Old_ListEntry_O::setSuperposeCoordinates(geom::SimpleVectorCoordinate_sp ac)
 {
-    LOG(BF("setSuperposeCoordinates:%s") % (ac->asXmlString().c_str() ) );
+    LOG("setSuperposeCoordinates:%s" , (ac->asXmlString().c_str() ) );
     this->_SuperposeCoordinates = ac;
 }
 
@@ -215,14 +215,14 @@ Structure_Old_ListEntry_sp Structure_Old_List_O::createStructureListEntryIfConfo
   Structure_Old_ListEntry_sp			entry;
   if ( matter != this->_Matter )
   {
-    SIMPLE_ERROR(BF("The Matter passed must be the same as the one defined for the StructureList"));
+    SIMPLE_ERROR(("The Matter passed must be the same as the one defined for the StructureList"));
   }
 
   if ( this->_SuperposeAtoms.size() < 4 )
   {
-    SIMPLE_ERROR(BF("You must have defined at least three atoms to superpose"));
+    SIMPLE_ERROR(("You must have defined at least three atoms to superpose"));
   }
-  LOG(BF("Number of superpose atoms = %d") % this->_SuperposeAtoms.size()  );
+  LOG("Number of superpose atoms = %d" , this->_SuperposeAtoms.size()  );
 
 
 	//
@@ -233,16 +233,16 @@ Structure_Old_ListEntry_sp Structure_Old_List_O::createStructureListEntryIfConfo
   for ( ai=this->_SuperposeAtoms.begin(), i=0;
         ai!=this->_SuperposeAtoms.end(); ai++, i++)
   {
-    LOG(BF("Extracting coordinate for superpose atom(%s)") % (*ai)->getName().c_str()  );
+    LOG("Extracting coordinate for superpose atom(%s)" , (*ai)->getName().c_str()  );
     (*newConf)[i] = (*ai)->getPosition();
   }
-  LOG(BF("There are %d superposable atoms") % this->_SuperposeAtoms.size()  );
+  LOG("There are %d superposable atoms" , this->_SuperposeAtoms.size()  );
 
-  {_BLOCK_TRACE("Comparing structure to known structures using superposer");
+  {
 
-    LOG(BF("Fixed points at the start of superposer: %s") % (newConf->asXmlString().c_str() ) );
+    LOG("Fixed points at the start of superposer: %s" , (newConf->asXmlString().c_str() ) );
 
-    {_BLOCK_TRACE("Creating and evaluating superposer");
+    {
 
 		//
 		// Now compare this conformation to every one in the database
@@ -259,24 +259,24 @@ Structure_Old_ListEntry_sp Structure_Old_List_O::createStructureListEntryIfConfo
       for ( auto ci=this->_Entries.begin(); ci!=this->_Entries.end(); ci++ )
       {
         moveable = (*ci)->getSuperposeCoordinates();
-        LOG(BF("Moveable points before superpose:%s") % (moveable->asXmlString().c_str() ) );
+        LOG("Moveable points before superpose:%s" , (moveable->asXmlString().c_str() ) );
         superposer->setMoveableAllPoints(moveable);
         transform = superposer->superpose();
         rms = superposer->rootMeanSquareDifference();
-        LOG(BF("The rms difference(%lf) with structure(%d) " "compared to _RmsCutOff(%lf)") % rms % i % this->_RmsCutOff  );
+        LOG("The rms difference(%lf) with structure(%d) " "compared to _RmsCutOff(%lf)" , rms , i , this->_RmsCutOff  );
         if ( rms < this->_RmsCutOff )
         {
-          LOG(BF("Found an identical minimum with rms(%lf)") % rms );
-          LOG(BF("Entry will not be added") );
+          LOG("Found an identical minimum with rms(%lf)" , rms );
+          LOG("Entry will not be added" );
           (*ci)->setMembers((*ci)->getMembers()+1);
           Structure_Old_ListEntry_sp zilch;
           zilch = nil<Structure_Old_ListEntry_O>();
-          LOG(BF("Fixed points at the end of superposer: %s") % (newConf->asXmlString().c_str() ) );
+          LOG("Fixed points at the end of superposer: %s" , (newConf->asXmlString().c_str() ) );
           return zilch;
         }
-        LOG(BF("Moveable points after superpose:%s") % (moveable->asXmlString().c_str() ) );
+        LOG("Moveable points after superpose:%s" , (moveable->asXmlString().c_str() ) );
       }
-      LOG(BF("Fixed points at the end of superposer: %s") % (newConf->asXmlString().c_str() ) );
+      LOG("Fixed points at the end of superposer: %s" , (newConf->asXmlString().c_str() ) );
     }
   }
 
@@ -306,7 +306,7 @@ Structure_Old_ListEntry_sp Structure_Old_List_O::createStructureListEntryIfConfo
   {
     (*newConf)[i] = (*ai)->getPosition();
   }
-  LOG(BF("Writing superpose coordinates to entry:%s") % (newConf->asXmlString().c_str() ) );
+  LOG("Writing superpose coordinates to entry:%s" , (newConf->asXmlString().c_str() ) );
   entry->setSuperposeCoordinates(newConf);
   return entry;
 }

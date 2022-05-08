@@ -26,11 +26,10 @@ This is an open source license for the CANDO software from Temple University, bu
 #define	DEBUG_LEVEL_NONE
 
 #include <cando/chem/searchStatistics.h>
-//#include "core/archiveNode.h"
-//#include "core/archive.h"
-#
+
 // last include is wrappers.h
 #include <clasp/core/wrappers.h>
+#include <clasp/core/lispStream.h>
 
 
 namespace chem {
@@ -95,7 +94,7 @@ CL_DEFMETHOD void	SearchStatistics_O::incrementBuilds()
     if ( this->_ReportFrequency == UndefinedUnsignedInt ) return;
     if ( ( this->_Builds % this->_ReportFrequency ) == 0 )
     {
-        _lisp->print(BF("SearchStatistics_O::incrementBuilds>>%s") % this->description().c_str() );
+      core::writeln_bf_stream(fmt::sprintf("SearchStatistics_O::incrementBuilds>>%s" , this->description().c_str() ));
     }
 }
 
@@ -133,9 +132,8 @@ CL_DEFMETHOD Bignum SearchStatistics_O::getHits()
 
 string	SearchStatistics_O::description() const
 {
-    boost::format fmt("Builds[%s] Rejects[%s] Hits[%s]");
-    fmt % this->_Builds % this->_Rejects % this->_Hits;
-    return fmt.str();
+  return fmt::sprintf("Builds[%s] Rejects[%s] Hits[%s]"
+                      , this->_Builds , this->_Rejects , this->_Hits );
 }
 
 

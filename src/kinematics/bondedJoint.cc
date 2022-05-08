@@ -66,7 +66,7 @@ void BondedJoint_O::initialize() {
 void BondedJoint_O::_appendChild(Joint_sp c)
 {_OF();
   size_t index = this->_NumberOfChildren++;
-  LOG(BF(" Appending to node %s child %s at index %lu\n") % _rep_(this->asSmartPtr()) % _rep_(c) % index);
+  LOG(" Appending to node %s child %s at index %lu\n" , _rep_(this->asSmartPtr()) , _rep_(c) , index);
   this->_Children[index] = c;
 }
   
@@ -74,7 +74,7 @@ void BondedJoint_O::_appendChild(Joint_sp c)
     {
 	if ( this->_numberOfChildren()>this->_maxNumberOfChildren() )
 	{
-	    THROW_HARD_ERROR(BF("You exceede the maximum[%d] number of children allowed for a BondedJoint") % this->_maxNumberOfChildren());
+          THROW_HARD_ERROR(("You exceede the maximum[%d] number of children allowed for a BondedJoint") , this->_maxNumberOfChildren());
 	}
 	for ( int i=this->_numberOfChildren(); i>before; i-- )
 	    this->_Children[i] = this->_Children[i-1];
@@ -86,7 +86,7 @@ void BondedJoint_O::_appendChild(Joint_sp c)
     {
 	if ( this->_numberOfChildren() == 0 )
 	{
-	    THROW_HARD_ERROR(BF("There are no children to delete"));
+	    THROW_HARD_ERROR(("There are no children to delete"));
 	}
 	int num = this->_numberOfChildren() - 1;
 	for ( int i=idx; i < num; i++ )
@@ -133,71 +133,71 @@ void BondedJoint_O::_appendChild(Joint_sp c)
 
 void BondedJoint_O::_updateInternalCoord()
 {_OF();
-  KIN_LOG(BF(" <<< %s\n") % _rep_(this->asSmartPtr()));
+  KIN_LOG(" <<< %s\n" , _rep_(this->asSmartPtr()));
 //	using numeric::x_rotation_matrix_radians;
 //	using numerioc::z_rotation_matrix_radians;
 //	using numeric::constants::d::pi;
   Joint_sp jC = this->parent();
   Vector3 C = jC->position();
   this->_Distance = geom::calculateDistance(this->_Position,C);
-  KIN_LOG(BF("Calculated _Distance = %lf\n") % this->_Distance );
+  KIN_LOG("Calculated _Distance = %lf\n" , this->_Distance );
   if (gc::IsA<BondedJoint_sp>(jC) && gc::IsA<BondedJoint_sp>(jC->parent())) { // don't move past JumpJoint_O nodes
-    KIN_LOG(BF("!gc::IsA<JumpJoint_sp>(jC)   jC = %s\n") % _rep_(jC));
+    KIN_LOG("!gc::IsA<JumpJoint_sp>(jC)   jC = %s\n" , _rep_(jC));
     Joint_sp jB = jC->parent();
     Vector3 B = jB->position();
     this->_Theta = PREPARE_ANGLE(geom::calculateAngle(this->_Position,C,B)); // Must be from incoming direction
-    KIN_LOG(BF("_Theta = %lf\n") % (this->_Theta/0.0174533));
+    KIN_LOG("_Theta = %lf\n" , (this->_Theta/0.0174533));
     Joint_sp jA = jB->parent();
     Vector3 A = jA->position();
     this->_Phi = geom::calculateDihedral(this->_Position,C,B,A);
-    KIN_LOG(BF("_Phi = %lf\n") % (this->_Phi/0.0174533));
+    KIN_LOG("_Phi = %lf\n" , (this->_Phi/0.0174533));
     return;
   }
 #if 1
   internalCoordinatesFromPointAndCoordinateSystem(this->getPosition(),jC->getStub()._Transform,
                                                    this->_Distance, this->_Theta, this->_Phi );
 #else
-  KIN_LOG(BF("gc::IsA<JumpJoint_sp>(jC)   jC = %s\n") % _rep_(jC));
+  KIN_LOG("gc::IsA<JumpJoint_sp>(jC)   jC = %s\n" , _rep_(jC));
   Stub stub = jC->getStub();
-  KIN_LOG(BF("stub = \n%s\n") % stub._Transform.asString());
+  KIN_LOG("stub = \n%s\n" , stub._Transform.asString());
   Vector3 x = stub._Transform.colX();
   Vector3 y = stub._Transform.colY();
   Vector3 z = stub._Transform.colZ();
-  KIN_LOG(BF("x = %s\n") % x.asString());
-  KIN_LOG(BF("y = %s\n") % y.asString());
-  KIN_LOG(BF("z = %s\n") % z.asString());
+  KIN_LOG("x = %s\n" , x.asString());
+  KIN_LOG("y = %s\n" , y.asString());
+  KIN_LOG("z = %s\n" , z.asString());
   Vector3 D = this->getPosition();
   Vector3 CD = D - C;
   double lengthCD = CD.length();
-  if (lengthCD<SMALL_NUMBER) SIMPLE_ERROR(BF("About to divide by zero"));
+  if (lengthCD<SMALL_NUMBER) SIMPLE_ERROR(("About to divide by zero"));
   Vector3 d = CD*(1.0/lengthCD);
-  KIN_LOG(BF("d = %s\n") % d.asString());
+  KIN_LOG("d = %s\n" , d.asString());
   double dx = d.dotProduct(x);
   double dy = d.dotProduct(y);
   double dz = d.dotProduct(z);
-  KIN_LOG(BF("dx = %lf  dy = %lf  dz = %lf\n") % dx % dy % dz );
+  KIN_LOG("dx = %lf  dy = %lf  dz = %lf\n" , dx , dy , dz );
   this->_Phi = geom::geom__planeVectorAngle(dy,dz);
-  KIN_LOG(BF("  dy = %lf   dz = %lf\n") % dy % dz );
-  KIN_LOG(BF("_Phi = %lf deg\n") % (this->_Phi/0.0174533));
+  KIN_LOG("  dy = %lf   dz = %lf\n" , dy , dz );
+  KIN_LOG("_Phi = %lf deg\n" , (this->_Phi/0.0174533));
   Vector3 dox(1.0,0.0,0.0);
   Vector3 dop(dx,dy,dz);
-  KIN_LOG(BF("dop = %s\n") % dop.asString());
-  KIN_LOG(BF("dop.dotProduct(dox) = %lf\n") % dop.dotProduct(dox));
+  KIN_LOG("dop = %s\n" , dop.asString());
+  KIN_LOG("dop.dotProduct(dox) = %lf\n" , dop.dotProduct(dox));
   if (dop.dotProduct(dox) > (1.0-SMALL_NUMBER)) {
     this->_Theta = 0.0;
     return;
   }
   Vector3 doz = dox.crossProduct(dop);
   doz = doz.normalized();
-  KIN_LOG(BF("doz = %s\n") % doz.asString());
+  KIN_LOG("doz = %s\n" , doz.asString());
   Vector3 doy = doz.crossProduct(dox);
-  KIN_LOG(BF("doy = %s\n") % doy.asString());
+  KIN_LOG("doy = %s\n" , doy.asString());
   double eox = dop.dotProduct(dox);
   double eoy = dop.dotProduct(doy);
-  KIN_LOG(BF("eox = %lf  eoy = %lf\n") % eox % eoy );
+  KIN_LOG("eox = %lf  eoy = %lf\n" , eox , eoy );
 //  double eoz = dop.dotProduct(doz); // Must be 0.0
   this->_Theta = geom::geom__planeVectorAngle(eox,eoy);
-  KIN_LOG(BF("    this->_Theta = %lf deg\n") % (this->_Theta/0.0174533));
+  KIN_LOG("    this->_Theta = %lf deg\n" , (this->_Theta/0.0174533));
 #endif
 }
 
@@ -228,7 +228,7 @@ bool BondedJoint_O::keepDofFixed(DofType dof,JointTree_sp at) const
     return ( gc::IsA<JumpJoint_sp>(grandParent)
              && this->id() == grandParent->stubJoint3Id(at));
   } else {
-    SIMPLE_ERROR(BF("BondedJoint_O::keepDofFixed: BAD_DOF: %s") % dof.asString() );
+    SIMPLE_ERROR(("BondedJoint_O::keepDofFixed: BAD_DOF: %s") , dof.asString() );
   }
   return false;
 }
@@ -238,10 +238,10 @@ bool BondedJoint_O::keepDofFixed(DofType dof,JointTree_sp at) const
     {
 	stringstream ss;
 	ss << this->Joint_O::asString();
-	ss << (BF("  _Distance[%lf]  _Theta[%lf]/deg  _Phi[%lf]/deg")
-	       % this->_Distance
-	       % (this->_Theta/0.0174533)
-	       % (this->_Phi/0.0174533) ).str() << std::endl;
+	ss << fmt::sprintf("  _Distance[%lf]  _Theta[%lf]/deg  _Phi[%lf]/deg"
+                           , this->_Distance
+                           , (this->_Theta/0.0174533)
+                           , (this->_Phi/0.0174533) ) << std::endl;
 	return ss.str();
     }
 
@@ -253,54 +253,54 @@ bool BondedJoint_O::keepDofFixed(DofType dof,JointTree_sp at) const
 */
 Stub BondedJoint_O::getStub() const
 {_OF();
-  KIN_LOG(BF("getStub() -> %s\n") % _rep_(this->asSmartPtr()));
+  KIN_LOG("getStub() -> %s\n" , _rep_(this->asSmartPtr()));
   Stub stub;
   BondedJoint_sp jbC = this->asSmartPtr();
   Vector3 C = jbC->position();
-  KIN_LOG(BF("C position = %s\n") % C.asString());
+  KIN_LOG("C position = %s\n" , C.asString());
   if (gc::IsA<BondedJoint_sp>(jbC->parent())) {
     // jB is a BondedJoint - we have situation (1) or (2) - we only need the position of jC
-    KIN_LOG(BF("Situation (1) or (2) calculating stub\n"));
-    KIN_LOG(BF("Got jbC->%s\n") % _rep_(jbC));
+    KIN_LOG("Situation (1) or (2) calculating stub\n");
+    KIN_LOG("Got jbC->%s\n" , _rep_(jbC));
     BondedJoint_sp jbB = gc::As_unsafe<BondedJoint_sp>(this->parent());
-    KIN_LOG(BF("Got jbB->%s\n") % _rep_(jbB));
+    KIN_LOG("Got jbB->%s\n" , _rep_(jbB));
     Vector3 B = jbB->position();
-    KIN_LOG(BF("B position = %s\n") % B.asString());
+    KIN_LOG("B position = %s\n" , B.asString());
     Joint_sp jA = jbB->parent();
-    KIN_LOG(BF("Got jA->%s\n") % _rep_(jA));
+    KIN_LOG("Got jA->%s\n" , _rep_(jA));
     Vector3 A = jA->position();
-    KIN_LOG(BF("A position = %s\n") % A.asString());
+    KIN_LOG("A position = %s\n" , A.asString());
     Vector3 BC = (C - B);
     double lengthBC = BC.length();
-    if (lengthBC<SMALL_NUMBER) SIMPLE_ERROR(BF("About to divide by zero lengthBC"));
+    if (lengthBC<SMALL_NUMBER) SIMPLE_ERROR(("About to divide by zero lengthBC"));
     Vector3 bc = BC.multiplyByScalar(1.0/lengthBC);
-    KIN_LOG(BF("bc = %s\n") % bc.asString());
+    KIN_LOG("bc = %s\n" , bc.asString());
     Vector3 AB = (B - A);
-    KIN_LOG(BF("AB = %s\n") % AB.asString());
+    KIN_LOG("AB = %s\n" , AB.asString());
     Vector3 ABxbc = AB.crossProduct(bc);
-    KIN_LOG(BF("ABxbc = %s\n") % ABxbc.asString());
+    KIN_LOG("ABxbc = %s\n" , ABxbc.asString());
     double lengthABxbc = ABxbc.length();
-    KIN_LOG(BF("lengthABxbc = %lf\n") % lengthABxbc );
+    KIN_LOG("lengthABxbc = %lf\n" , lengthABxbc );
     if (lengthABxbc<SMALL_NUMBER) {
-      SIMPLE_ERROR(BF("About to divide by zero when calculating stub for %s")% _rep_(jbC));
+      SIMPLE_ERROR(("About to divide by zero when calculating stub for %s") , _rep_(jbC));
     }
     Vector3 n = ABxbc.multiplyByScalar(1.0/lengthABxbc);
-    KIN_LOG(BF("n = %s\n") % n.asString());
+    KIN_LOG("n = %s\n" , n.asString());
     Vector3 my = n.crossProduct(bc);
-    KIN_LOG(BF("Got my->%s\n") % my.asString());
+    KIN_LOG("Got my->%s\n" , my.asString());
         // Define the columns of the stub
         // stub._Transform = [ bc, my, n, C ]
     stub._Transform.colX(bc);
     stub._Transform.colY(my);
     stub._Transform.colZ(n);
     stub._Transform.setTranslate(C);
-    KIN_LOG(BF("Returning stub:\n%s\n") % stub._Transform.asString());
+    KIN_LOG("Returning stub:\n%s\n" , stub._Transform.asString());
     return stub;
   } else if (gc::IsA<JumpJoint_sp>(jbC->parent())) {
     // Situation (3) - we need to handle specially
-    KIN_LOG(BF("Situation (3) calculating stub\n"));
+    KIN_LOG("Situation (3) calculating stub\n");
     JumpJoint_sp jjB = gc::As_unsafe<JumpJoint_sp>(jbC->parent());
-    KIN_LOG(BF("B is jump-joint %s\n") % _rep_(jbC));
+    KIN_LOG("B is jump-joint %s\n" , _rep_(jbC));
     Matrix Btransform = jjB->_LabFrame;
     Vector3 Bx = Btransform.colX();
     Vector3 By = Btransform.colY();
@@ -322,34 +322,34 @@ Stub BondedJoint_O::getStub() const
       stub._Transform.colZ(z);
     }
     stub._Transform.setTranslate(C);
-    KIN_LOG(BF("Returning stub:\n%s\n") % stub._Transform.asString());
+    KIN_LOG("Returning stub:\n%s\n" , stub._Transform.asString());
     return stub;
   }
-  SIMPLE_ERROR(BF("Parent jB %s must be a jump-joint or a bonded-joint ") % _rep_(jbC->parent()));
+  SIMPLE_ERROR(("Parent jB %s must be a jump-joint or a bonded-joint ") , _rep_(jbC->parent()));
 }
 
 void BondedJoint_O::_updateXyzCoord(Stub& stub)
 {
       // https://math.stackexchange.com/questions/133177/finding-a-unit-vector-perpendicular-to-another-vector
-  KIN_LOG(BF("stub = \n%s\n") % stub._Transform.asString());
-  KIN_LOG(BF("_Distance = %lf  _Theta = %lf deg   _Phi = %lf deg\n")
-          % this->_Distance
-          % (this->_Theta/0.0174533)
-          % (this->_Phi/0.0174533) );
+  KIN_LOG("stub = \n%s\n" , stub._Transform.asString());
+  KIN_LOG("_Distance = %lf  _Theta = %lf deg   _Phi = %lf deg\n"
+          , this->_Distance
+          , (this->_Theta/0.0174533)
+          , (this->_Phi/0.0174533) );
   double bcTheta = FINAL_ANGLE(this->_Theta);
 #if 1
   Vector3 d2;
   this->_Position = pointFromMatrixAndInternalCoordinates(stub._Transform,this->_Distance, bcTheta, this->_Phi, d2 );
 #else
-  KIN_LOG(BF(" rtTheta = %lf deg\n") % (bcTheta/0.0174533));
+  KIN_LOG(" rtTheta = %lf deg\n" , (bcTheta/0.0174533));
   double cosTheta = std::cos(bcTheta);
   double sinTheta = std::sin(bcTheta);
   double cosPhi = std::cos(this->_Phi);
   double sinPhi = std::sin(this->_Phi);
   Vector3 d2(this->_Distance*cosTheta,this->_Distance*cosPhi*sinTheta,this->_Distance*sinPhi*sinTheta);
-  KIN_LOG(BF("d2 = %s\n") % d2.asString());
+  KIN_LOG("d2 = %s\n" , d2.asString());
   this->_Position = stub._Transform * d2;
-  KIN_LOG(BF("this->_Position = %s\n") % this->_Position.asString());
+  KIN_LOG("this->_Position = %s\n" , this->_Position.asString());
 #endif
 }
 
@@ -414,7 +414,7 @@ void BondedJoint_O::updateXyzCoords()
 	{
 	    return this->_Distance;
 	}
-	SIMPLE_ERROR(BF("Illegal dof request for BondedJoint - I can only handle internal dofs not rigid body"));
+	SIMPLE_ERROR(("Illegal dof request for BondedJoint - I can only handle internal dofs not rigid body"));
     }
 
 

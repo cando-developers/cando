@@ -43,10 +43,10 @@ namespace chem
 
     void	RepresentedEntityNameSet_O::initialize()
     {_OF();
-	LOG(BF("RepresentedEntityNameSet_O::initialize()") );
+	LOG("RepresentedEntityNameSet_O::initialize()" );
 	this->Base::initialize();
 	this->_Representative = nil<core::Symbol_O>();
-	LOG(BF("Creating %s") % this->description()  );
+	LOG("Creating %s" , this->description()  );
     }
 
 
@@ -127,7 +127,7 @@ CL_DEFMETHOD     bool	RepresentedEntityNameSet_O::hasRepresentative()
 	bdb = gc::As<CandoDatabase_sp>(getCandoDatabase());
 	if ( this->_Representative.nilp() )
 	{
-	    LOG(BF("this->_Representative.nilp -- expanding my EntryNames"));
+	    LOG("this->_Representative.nilp -- expanding my EntryNames");
 	    return this->Base::expandedRepresentativeList();
 	}
 	ASSERT(bdb->recognizesEntityName(this->_Representative)); // "candoDatabase does not recognize entity name("+_rep_(this->_Representative)+")");
@@ -136,7 +136,7 @@ CL_DEFMETHOD     bool	RepresentedEntityNameSet_O::hasRepresentative()
 	objList = RepresentativeList_O::create();
 	auto  expanded  = gctools::GC<RepresentedEntityNameSet_O>::copy( *this); // = RP_Copy<RepresentedEntityNameSet_O>(this);
 	expanded->expandToTerminalEntityNames();
-	LOG(BF("I have a representative[%s] so I'm created a RepresentedEntityNameSet: %s") % _rep_(expanded) );
+	LOG("I have a representative[%s] so I'm created a RepresentedEntityNameSet: %s" , _rep_(expanded) );
 	objList->vectorPushExtend(expanded);
 	return objList;
     }

@@ -158,9 +158,9 @@ gctools::Vec0<int>& CipPrioritizer_O::getS(Atom_sp a, core::HashTable_sp cip)
     ASSERTNOTNULL(a);
     if ( ! ( a->getRelativePriority(cip) < this->_s.size() ) )
     {
-	LOG(BF("Bad priority for atom") );
-	LOG(BF("Bad priority for atom: %s") % a->description().c_str()  );
-	LOG(BF("   priority value = %d") % a->getRelativePriority(cip)  );
+	LOG("Bad priority for atom" );
+	LOG("Bad priority for atom: %s" , a->description().c_str()  );
+	LOG("   priority value = %d" , a->getRelativePriority(cip)  );
     }
     ASSERT_lessThan(a->getRelativePriority(cip),this->_s.size());
     return this->_s[a->getRelativePriority(cip)];
@@ -265,7 +265,7 @@ CL_LISPIFY_NAME("assignCahnIngoldPrelogPriorityToAtomsRelativePriority");
     // p and s arrays
     //
     // 
-    { _BLOCK_TRACE("Stage 1 - setting initial priorities");
+    { 
 	this->_p.clear();
 	Loop l;
 	l.loopTopGoal(molOrAgg,ATOMS);
@@ -299,7 +299,7 @@ CL_LISPIFY_NAME("assignCahnIngoldPrelogPriorityToAtomsRelativePriority");
 	}
 #ifdef	DEBUG_ON
 	int cidx = 0;
-	LOG(BF("Assigning priorities STAGE1") );
+	LOG("Assigning priorities STAGE1" );
 	for ( gctools::Vec0<Atom_sp>::iterator mit=mAtoms.begin(); 
 		    mit!=mAtoms.end(); mit++ )
 	{
@@ -312,7 +312,7 @@ CL_LISPIFY_NAME("assignCahnIngoldPrelogPriorityToAtomsRelativePriority");
 		cidx++;
 	    }
 	    ss << " C-class: " << cidx-1;
-	    LOG(BF("%s") % ss.str().c_str()  );
+	    LOG("%s" , ss.str().c_str()  );
 	}
 #endif
     }
@@ -326,19 +326,19 @@ CL_LISPIFY_NAME("assignCahnIngoldPrelogPriorityToAtomsRelativePriority");
     //  multiplicities with repeated values (i.e., if atom i is double 
     //  bonded to an atom with priority p, then put p in the list twice).
 
-    {_BLOCK_TRACE("Stage 2 to 6");
+    {
 		    // previously this was at the top of step 3
 	bool didPartition = true;
 	while ( didPartition )
 	{
 	    this->_s.clear();
 	    this->_s.resize(mAtoms.size());
-	    { _BLOCK_TRACE("Stage 2");
+	    { 
 		for ( gctools::Vec0<Atom_sp>::iterator mi =mAtoms.begin();
 				 mi!=mAtoms.end(); mi++ )
 		{
 		    Atom_sp myatom = *mi;
-		    LOG(BF("About to fill mys") );
+		    LOG("About to fill mys" );
                     gctools::Vec0<int>	mys;
 		    for ( gctools::Vec0<Bond_sp>::iterator bi=myatom->bonds_begin();
 				 bi!=myatom->bonds_end(); bi++ )
@@ -352,24 +352,24 @@ CL_LISPIFY_NAME("assignCahnIngoldPrelogPriorityToAtomsRelativePriority");
 			    mys.push_back(this->_p[(*bi)->getOtherAtom(myatom)->getRelativePriority(cip)]);
 			}
 		    }
-		    LOG(BF("About to sort %d mys objects") % mys.size()  );
+		    LOG("About to sort %d mys objects" , mys.size()  );
 		    if (mys.size()>1) {
                       int* begin = &mys[0];
                       int* end = &mys[mys.size()];
                       sort::quickSort(begin,end);
-                      LOG(BF("Done sort") );
+                      LOG("Done sort" );
                       sort::reverse(begin,end);
-                      LOG(BF("Done reverse") );
+                      LOG("Done reverse" );
                     }
 		    // print "atom(%s) mys = %s"%(myatom.getName(),str(mys))
 		    this->_s[myatom->getRelativePriority(cip)] = mys;
 		}
 	    }
 #ifdef	DEBUG_ON
-	    { _BLOCK_TRACEF(BF("STAGE2 results - there are %d classes")% C.size() );
+	    { 
     //	vector< vector<int> >::iterator sit;
                 gctools::Vec0<Atom_sp>::iterator ait;
-	    LOG(BF("Reverse sorted neighbor priorities for each atom") );
+	    LOG("Reverse sorted neighbor priorities for each atom" );
 	    for ( ait=mAtoms.begin(); ait!=mAtoms.end(); ait++ )
 	    {
 		vector<int>::iterator zit;
@@ -380,7 +380,7 @@ CL_LISPIFY_NAME("assignCahnIngoldPrelogPriorityToAtomsRelativePriority");
 		{
 		    ss << " " << *zit;
 		}
-		LOG(BF("  reverse sorted priorities of neighbors of %s - %s") % (*ait)->getName().c_str() % ss.str().c_str()  );
+		LOG("  reverse sorted priorities of neighbors of %s - %s" , (*ait)->getName().c_str() , ss.str().c_str()  );
 	    }
 	}
 #endif
@@ -394,11 +394,11 @@ CL_LISPIFY_NAME("assignCahnIngoldPrelogPriorityToAtomsRelativePriority");
 	// didPartition = True
 	// while ( didPartition ):
 	    newC.clear();
-	    {_BLOCK_TRACE("Stage 3");
+	    {
 		didPartition = false;
 		uint classIndex;
 		for ( classIndex = 0; classIndex < C.size(); classIndex++ )
-		{ _BLOCK_TRACEF(BF(" classIndex = %u/%u") % classIndex%C.size() );
+		{ 
 		    uint classBegin = C[classIndex];
 		    uint classEnd;
 		    if ( classIndex == C.size()-1 )
@@ -408,9 +408,9 @@ CL_LISPIFY_NAME("assignCahnIngoldPrelogPriorityToAtomsRelativePriority");
 		    {
 			classEnd = C[classIndex+1];
 		    }
-		    LOG(BF("Looking at class (%u)-(%u)") % classBegin % classEnd  );
+		    LOG("Looking at class (%u)-(%u)" , classBegin , classEnd  );
                     gctools::Vec0<Atom_sp> S;
-		    {_BLOCK_TRACE("Filling S");
+		    {
 			for ( uint ci = classBegin; ci<classEnd; ci++ )
 			{
 			    Atom_sp a = mAtoms[ci];
@@ -419,22 +419,22 @@ CL_LISPIFY_NAME("assignCahnIngoldPrelogPriorityToAtomsRelativePriority");
 			}
 		    }
 		    OrderByS byS(cip);
-		    {_BLOCK_TRACE("Sorting mAtoms and S");
-			LOG(BF("Setting up prioritizer") );
+		    {
+			LOG("Setting up prioritizer" );
 			byS.setCipPrioritizer(this->sharedThis<CipPrioritizer_O>());
-			LOG(BF("about to sort number of elements = %d") % S.size()  );
+			LOG("about to sort number of elements = %d" , S.size()  );
 #ifdef DEBUG_ON
-			LOG(BF("Contents of S") );
+			LOG("Contents of S" );
 			for ( gctools::Vec0<Atom_sp>::iterator ssi=S.begin();ssi!=S.end();ssi++)
 			{
-			    LOG(BF("    %s") % (*ssi)->description().c_str() );
+			    LOG("    %s" , (*ssi)->description().c_str() );
 			}
 #endif
 			if (S.size()>1) sort::quickSort(S.begin(),S.end(),byS);
-			LOG(BF("done sort") );
+			LOG("done sort" );
 		    }
 //		    int i = 0;
-		    LOG(BF("About to dump sort results") );
+		    LOG("About to dump sort results" );
 #ifdef	DEBUG_ON
                     gctools::Vec0<Atom_sp>::iterator iiS;
 for ( iiS=S.begin(); iiS!=S.end(); iiS++)
@@ -450,16 +450,16 @@ for ( iiS=S.begin(); iiS!=S.end(); iiS++)
 	sz << " " << *zit;
     }
 
-    LOG(BF("%s") % sz.str().c_str()  );
+    LOG("%s" , sz.str().c_str()  );
 }
 #endif
 		//    for a in S:
 		// 	print "After sort S[%d].atom(%s) s=%s"%(classBegin+i,a.getName(),str(s[a.getRelativePriority()]))
 		// 	i += 1
-		    LOG(BF("Replacing mAtoms from (%u)-(%u) with S") % classBegin % classEnd );
+		    LOG("Replacing mAtoms from (%u)-(%u) with S" , classBegin , classEnd );
 		    uint si, mi;
 		    for ( si=0, mi=classBegin; mi!=classEnd; mi++, si++ ) mAtoms[mi] = S[si];
-		    LOG(BF("Partitioning based on s") );
+		    LOG("Partitioning based on s" );
 		    vector<int> partitionS = partition(S,classBegin,byS);
 #if DEBUG_ON
 		    vector<int>::iterator pSi;
@@ -468,11 +468,11 @@ for ( iiS=S.begin(); iiS!=S.end(); iiS++)
 		    {
 			Ss << " " << *pSi;
 		    }
-		    LOG(BF(" partitionS = %s") % Ss.str().c_str()  );
+		    LOG(" partitionS = %s" , Ss.str().c_str()  );
 #endif
 		    if ( partitionS.size()>1 ) 
 		    {
-			LOG(BF(" Did partition of S") );
+			LOG(" Did partition of S" );
 			didPartition = true;
 		    }
 		    for ( vector<int>::iterator psi=partitionS.begin(); psi!=partitionS.end(); psi++ )
@@ -483,7 +483,7 @@ for ( iiS=S.begin(); iiS!=S.end(); iiS++)
 	    }
 	// 4.	If every class was partitioned into only one subclass then 
 	//  terminate with p(i) as the priority of atom i.
-	    { _BLOCK_TRACE("Stage 4");
+	    { 
 		if ( !didPartition ) break;
 	    }
 
@@ -492,7 +492,7 @@ for ( iiS=S.begin(); iiS!=S.end(); iiS++)
 	//  	all of the computed subclasses of all of the classes (in the 
 	//  	same sequence as the original classes).
 
-	    { _BLOCK_TRACEF(BF("Stage 5 - there are now %d classes") % newC.size());
+	    { 
 		C = newC;
 	    }
 	    // print "Regenerated C = ", C
@@ -501,7 +501,7 @@ for ( iiS=S.begin(); iiS!=S.end(); iiS++)
 	// 	p(i) to r and go to Step 3.
 	// 
 	    // print "Resetting p's"
-	    { _BLOCK_TRACE("Stage 6" );
+	    { 
 		uint classBegin, classEnd;
 		for ( uint classIndex= 0; classIndex < C.size(); classIndex++ )
 		{
@@ -539,12 +539,12 @@ for ( iiS=S.begin(); iiS!=S.end(); iiS++)
     // assignment into account. This process will create new 
     // chiral centers based on the chirality of the branches.
     //  now write the CIP relative priority into RelativePriority 
-    { _BLOCK_TRACE("Writing priorities to atoms");
+    { 
 	for ( gctools::Vec0<Atom_sp>::iterator ai=mAtoms.begin(); ai!=mAtoms.end(); ai++ )
 	{
 	    uint relPriority = this->_p[(*ai)->getRelativePriority(cip)];
             cip->setf_gethash((*ai),core::clasp_make_fixnum(relPriority));
-	    LOG(BF("Assigned to atom: %s priority: %d") % (*ai)->getName().c_str() % relPriority  );
+	    LOG("Assigned to atom: %s priority: %d" , (*ai)->getName().c_str() , relPriority  );
 	}
     }
 }

@@ -96,17 +96,17 @@ bool IterateRange_O::isDone()
 #if 0
     core::T_sp IterateRange_O::prim_range(core::Function_sp e, core::Cons_sp args, core::Environment_sp environment, core::LispPtr lisp)
 {
-    SIMPLE_ERROR(BF("Don't use range, use Range"));
+    SIMPLE_ERROR(("Don't use range, use Range"));
     int numArgs = args->length();
     if ( numArgs> 3 || numArgs < 2 )
     {
-	SIMPLE_ERROR(BF("Only 2 or 3 arguments for range allowed"));
+	SIMPLE_ERROR(("Only 2 or 3 arguments for range allowed"));
     }
-    LOG(BF("Initializing IterateRange object") );
+    LOG("Initializing IterateRange object" );
     int ibegin = args->car<core::Fixnum_O>()->get();
 
     int iend = args->cadr<core::Fixnum_O>()->get();
-    LOG(BF("got begin=%d end=%d") % ibegin % iend );
+    LOG("got begin=%d end=%d" , ibegin , iend );
     int istep;
     if ( numArgs == 3 )
     {
@@ -115,7 +115,7 @@ bool IterateRange_O::isDone()
     {
 	istep = 1;
     }
-    LOG(BF(" begin=%d end=%d step=%d") % ibegin % iend % istep );
+    LOG(" begin=%d end=%d step=%d" , ibegin , iend , istep );
     IterateRange_sp it = IterateRange_O::create(lisp,ibegin,iend,istep);
     return it;
 }

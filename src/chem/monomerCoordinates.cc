@@ -106,10 +106,10 @@ void	MonomerCoordinates_O::_defineFromConformationExplorerOrDebug(
     // the same conformationExplorer
     //
 
-    { _BLOCK_TRACE("Extracting ScaffoldList and core FragmentCoordinates");
-	{ _BLOCK_TRACE("Identify unique core conformations");
+    { 
+	{ 
 	    extractFragment = topology->getExtractCoreFragment();
-	    LOG(BF("Got core fragment: %s") % extractFragment->description().c_str() );
+	    LOG("Got core fragment: %s" , extractFragment->description().c_str() );
 	    uniqueStructures = extractFragment->isolateUniqueStructures(
 		conformationExplorer, focusMonomer);
 
@@ -172,10 +172,10 @@ void	MonomerCoordinates_O::_defineFromConformationExplorerOrDebug(
 		   << " fragmentName:("+extractFragment->getFragment()->getName()+") atoms: ["
 		   << extractFragment->getFragment()->getAtomNames()->asString() << "]" << std::endl;
 		ss << problems.str();
-		SIMPLE_ERROR(BF(ss.str()));
+		SIMPLE_ERROR((ss.str()));
 	    }
 	}
-	{ _BLOCK_TRACE("Extract core FragmentCoordinates");
+	{ 
 	    coreFragmentCoordinates = FragmentCoordinates_O::create();
 	    coreFragmentCoordinates->defineFromConformationCollection(extractFragment,
 								      focusMonomer,
@@ -184,7 +184,7 @@ void	MonomerCoordinates_O::_defineFromConformationExplorerOrDebug(
 	    this->_FragmentCoordinates.clear();
 	    this->_FragmentCoordinates.push_back(coreFragmentCoordinates);
 	}
-	{ _BLOCK_TRACE("Extract ScaffoldList");
+	{ 
 	    scaffoldList = ScaffoldList_O::create();
 	    scaffoldList->defineFromExtractScaffoldAndConformationCollection( extractScaffold,
 									      focusMonomer,
@@ -198,7 +198,7 @@ void	MonomerCoordinates_O::_defineFromConformationExplorerOrDebug(
     //
     // Extract the other fragments
     //
-    {_BLOCK_TRACE("Extract the non-core fragments");
+    {
 	Topology_O::iterateExtractFragments	fi;
 	for ( fi = topology->begin_ExtractFragments();
 	      fi!=topology->end_ExtractFragments(); fi++ )
@@ -214,7 +214,7 @@ void	MonomerCoordinates_O::_defineFromConformationExplorerOrDebug(
 	    this->_FragmentCoordinates.push_back(fragmentCoordinates);
 	}
     }
-    LOG(BF("MonomerCoordinates defined: %s") % this->asXmlString().c_str()  );
+    LOG("MonomerCoordinates defined: %s" , this->asXmlString().c_str()  );
 #endif
 }
 
@@ -249,7 +249,7 @@ CL_DEFMETHOD core::List_sp	MonomerCoordinates_O::testExtraction(
     conformationExplorer->superposeAllHeavyAtoms();
     ConformationExplorerEntry_sp entry = conformationExplorer->createEntry();
     ConformationExplorerEntryStage_sp stage = entry->createEntryStage(core::SimpleBaseString_O::make("test"));
-    LOG(BF("Setting stage") );
+    LOG("Setting stage" );
     stage->setExternalInterfaceName(core::SimpleBaseString_O::make("testPackage"));
     stage->setModel(core::SimpleBaseString_O::make("testModel"));
     stage->setEnergyKCal(987654321.0);
@@ -268,10 +268,10 @@ CL_DEFMETHOD core::List_sp	MonomerCoordinates_O::testExtraction(
 	if ( !e.conditionObject().isA<core::MathException_O>() )
 	{
 	    throw;
-//	    RESIMPLE_ERROR(BF("An error was caught in MonomerCoordinates_O::testExtraction - here it is: %s") % e.message() ));
+//	    RESIMPLE_ERROR(("An error was caught in MonomerCoordinates_O::testExtraction - here it is: %s") , e.message() ));
 	}
 	sawProblem = true;
-	LOG(BF("%s") % e.message().c_str()  );
+	LOG("%s" , e.message().c_str()  );
 	problems->write(e.message());
     }
     core::Cons_sp results = core::Cons_O::createList(_lisp->internKeyword("sawProblems"),

@@ -363,7 +363,7 @@ bool	calcOffDiagonalHessian = true;
 
 
  {
-   _BLOCK_TRACE("AnchorRestraintEnergy finiteDifference comparison");
+   
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_AnchorRestraint_termDeclares.cc>
@@ -376,9 +376,9 @@ bool	calcOffDiagonalHessian = true;
 			  /* Obtain all the parameters necessary to calculate */
 			  /* the amber and forces */
 #include <cando/chem/energy_functions/_AnchorRestraint_termCode.cc>
-     LOG(BF("fx1 = %le") % fx1 );
-     LOG(BF("fy1 = %le") % fy1 );
-     LOG(BF("fz1 = %le") % fz1 );
+     LOG("fx1 = %le" , fx1 );
+     LOG("fy1 = %le" , fy1 );
+     LOG("fz1 = %le" , fz1 );
      int index = i;
 #if !USE_EXPLICIT_DECLARES
      double fx1 = 0.0;
@@ -432,7 +432,7 @@ int	fails = 0;
 
 
     {
-		_BLOCK_TRACE("AnchorRestraintEnergy finiteDifference comparison");
+		
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_AnchorRestraint_termDeclares.cc>

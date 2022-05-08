@@ -134,12 +134,12 @@ namespace adapt {
     {   
 	MySaxParser*	parser = (MySaxParser*)userData;
 	
-	LOG(BF("myExpatStartElement local name = %s") % (name ) );
+	LOG("myExpatStartElement local name = %s" , (name ) );
 	parser->handler->setLocalName(name);
 	parser->handler->setLineNumber(XML_GetCurrentLineNumber(parser->getXMLParser()));
 	parser->handler->setAttributes(atts);
 	parser->handler->startElement();
-	LOG(BF("myExpatStartElement done") );
+	LOG("myExpatStartElement done" );
     }
 
 
@@ -148,7 +148,7 @@ namespace adapt {
     {
 	MySaxParser*	parser = (MySaxParser*)userData;
 	
-	LOG(BF("myExpatEndElement local name = %s") % (name ) );
+	LOG("myExpatEndElement local name = %s" , (name ) );
 	parser->handler->setLocalName(name);
 	parser->handler->setLineNumber(XML_GetCurrentLineNumber(parser->getXMLParser()));
 	parser->handler->endElement();
@@ -166,7 +166,7 @@ namespace adapt {
 	myBuffer = (char*)malloc(len+1);
 	strncpy( myBuffer, data, len );
 	myBuffer[len] = '\0';
-	LOG(BF("myExpatCharacterDataHandler characters: |%s|") % (myBuffer ) );
+	LOG("myExpatCharacterDataHandler characters: |%s|" , (myBuffer ) );
 	parser->handler->setData(myBuffer);
 	parser->handler->setDataLength(len);
 	parser->handler->characters();
@@ -190,8 +190,8 @@ namespace adapt {
 
     bool	MySaxParser::initialize()
     {_OF();
-	LOG(BF("MySaxParser::initialize starting") );
-	LOG(BF("MySaxParser::initialize Creating expat parser") );
+	LOG("MySaxParser::initialize starting" );
+	LOG("MySaxParser::initialize Creating expat parser" );
 	this->parser= XML_ParserCreate( "UTF-8" );
 	XML_SetElementHandler( this->parser, myExpatStartElement, myExpatEndElement );
 	XML_SetCharacterDataHandler( this->parser, myExpatCharacterData );
@@ -219,7 +219,7 @@ namespace adapt {
 //
     void	MySaxParser::setContentHandler(MySaxHandlerDefault *aHandler )
     {
-	LOG(BF("MySaxParser::setContentHandler") );
+	LOG("MySaxParser::setContentHandler" );
 	this->handler = aHandler;
 
     }
@@ -282,25 +282,25 @@ namespace adapt {
 	int			done;
 	long		filePos;
 
-	LOG(BF("MySaxParser::expat:: opening file: %s") % (fileName.c_str() ) );
+	LOG("MySaxParser::expat:: opening file: %s" , (fileName.c_str() ) );
 
 //    this->_Progress.setMax(fileSize);
 //    this->_Progress.setSteps(fileSize/10000);
 	filePos = 0;
 	while ( core::clasp_peek_char(fIn) != EOF )
 	{
-	    LOG(BF("MySaxParser::expat:: reading/parsing block of data asking for buffer with up to %d bytes") % sizeof(buffer) );
+	    LOG("MySaxParser::expat:: reading/parsing block of data asking for buffer with up to %d bytes" , sizeof(buffer) );
             sz = core::clasp_read_byte8(fIn,buffer,sizeof(buffer));
 	    filePos = filePos + sz;
 	    done = sz < sizeof(buffer);
-	    LOG(BF("Read line from buffer - hit eof=%d read[%d bytes]") % done % sz );
+	    LOG("Read line from buffer - hit eof=%d read[%d bytes]" , done , sz );
 	    xmlStatus = XML_Parse( this->parser, (char*)buffer, sz, done );
 	    if ( xmlStatus == XML_STATUS_ERROR ) {
-              SIMPLE_ERROR(BF("Parse failed for stream: %s") % _rep_(fIn));
+              SIMPLE_ERROR(("Parse failed for stream: %s") , _rep_(fIn));
 	    }
 	}
 //    this->_Progress.finish();
-	LOG(BF("MySaxParser::expat:: parse succeeded!!!!") );
+	LOG("MySaxParser::expat:: parse succeeded!!!!" );
 	return true;
     }
 

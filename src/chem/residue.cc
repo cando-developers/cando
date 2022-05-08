@@ -88,12 +88,12 @@ void Residue_O::transferCoordinates(Matter_sp obj)
 {
     if ( !obj.isA<Residue_O>() ) 
     {
-	SIMPLE_ERROR(BF("You can only transfer coordinates to a Residue from another Residue"));
+	SIMPLE_ERROR(("You can only transfer coordinates to a Residue from another Residue"));
     }
     Residue_sp other = obj.as<Residue_O>();
     if ( other->_contents.size() != this->_contents.size() )
     {
-	SIMPLE_ERROR(BF("You can only transfer coordinates if the two residues have the same number of atoms"));
+	SIMPLE_ERROR(("You can only transfer coordinates if the two residues have the same number of atoms"));
     }
     Matter_O::contentIterator tit,oit;
     for ( tit=this->_contents.begin(), oit=other->_contents.begin();
@@ -109,7 +109,7 @@ CL_LISPIFY_NAME("addAtom");
 CL_DEFMETHOD void	Residue_O::addAtom(Atom_sp a)
 {_OF();
     this->addMatter(a);
-    LOG(BF("Added %s to %s") % a->description().c_str() % this->description().c_str() );
+    LOG("Added %s to %s" , a->description().c_str() , this->description().c_str() );
 }
 
 
@@ -145,12 +145,12 @@ adapt::SymbolSet_sp Residue_O::getMonomerAliases()
 
 void	Residue_O::addVirtualAtom(MatterName name, CalculatePosition_sp proc)
 {
-    LOG(BF("Residue_O::addVirtualAtom adding virtual atom with name(%s) in residue(%s)") % _rep_(name) % _rep_(this->getName())  );
+    LOG("Residue_O::addVirtualAtom adding virtual atom with name(%s) in residue(%s)" , _rep_(name) , _rep_(this->getName())  );
     if ( this->hasAtomWithName(name) )
     {
 	stringstream ss;
 	ss << "The " << this->description() << " already has the virtual atom: " << name;
-	SIMPLE_ERROR(BF("%s")%ss.str());
+	SIMPLE_ERROR(("%s") , ss.str());
     }
     VirtualAtom_sp va = VirtualAtom_O::create(name,proc);
     va->setElement(element_Dummy);
@@ -161,14 +161,14 @@ void	Residue_O::addVirtualAtom(MatterName name, CalculatePosition_sp proc)
 
 void	Residue_O::fields( core::Record_sp node )
 {
-  LOG(BF("Status") );
+  LOG("Status" );
   node->field_if_not_unbound(INTERN_(kw,type),this->_Type);
   node->field_if_not_nil( INTERN_(kw,pdbName),this->pdbName);
   node->field( INTERN_(kw,uniqueLabel),this->_UniqueLabel);
   node->/*pod_*/field_if_not_default( INTERN_(kw,NetCharge),this->_NetCharge,0);
   node->/*pod_*/field_if_not_default( INTERN_(kw,fileSeqNum),this->_FileSequenceNumber,UndefinedUnsignedInt);
   node->field_if_not_nil( INTERN_(kw,monomerAliases),this->_MonomerAliases);
-  LOG(BF("Status") );
+  LOG("Status" );
   switch (node->stage()) {
   case core::Record_O::saving: {
 	    // Accumulate intraresidue bonds into a vector
@@ -176,7 +176,7 @@ void	Residue_O::fields( core::Record_sp node )
     core::HashTable_sp atomToResidue = this->atomToResidueMap();
 //    BondList_sp bondList = BondList_O::create();
     auto bondList  = gctools::GC<BondList_O>::allocate_with_default_constructor();
-    { _BLOCK_TRACE("Building bond list");
+    { 
       for ( auto aa = this->begin_atoms(); aa != this->end_atoms(); ++aa ) {
         Atom_sp a = gc::As_unsafe<Atom_sp>(*aa);
         a->addUniqueIntraResidueBondCopiesToBondList(atomToResidue,bondList);
@@ -190,14 +190,14 @@ void	Residue_O::fields( core::Record_sp node )
   case core::Record_O::initializing:
   case core::Record_O::loading: {
 #if 1
-    _BLOCK_TRACE("Loading BondList");
-    LOG(BF("Creating the intraResidue bonds") );
+    
+    LOG("Creating the intraResidue bonds" );
 	    // create the intraResidue bonds
-    LOG(BF("About to load bondList") );
+    LOG("About to load bondList" );
     BondList_sp bondList = BondList_O::create();
     node->field( INTERN_(kw,bl),bondList);
     ASSERTNOTNULL(bondList);
-    RECORD_LOG(BF("residue bondList = %s") % _rep_(bondList));
+    RECORD_LOG("residue bondList = %s" , _rep_(bondList));
     bondList->imposeYourself();
 #endif
   }
@@ -282,9 +282,9 @@ Matter_sp	Residue_O::copyDontRedirectAtoms(core::T_sp new_to_old)
           core::HashTable_sp new_to_old_ht = gc::As_unsafe<core::HashTable_sp>(new_to_old);
           new_to_old_ht->setf_gethash(acopy,aorig);
         }
-	LOG(BF("Copying atom(%s) with %d bonds") % aorig->getName().c_str() % aorig->numberOfBonds()  );
+	LOG("Copying atom(%s) with %d bonds" , aorig->getName().c_str() , aorig->numberOfBonds()  );
 	rPNew->addMatter((Matter_sp)(acopy));
-	LOG(BF("Completed copy for new %s") % acopy->description().c_str()  );
+	LOG("Completed copy for new %s" , acopy->description().c_str()  );
     }
     rPNew->copyRestraintsDontRedirectAtoms(this->asSmartPtr());
     return rPNew;
@@ -296,8 +296,8 @@ void Residue_O::redirectAtoms()
     for ( contentIterator a=this->begin_contents(); a!=this->end_contents(); a++ )
     {
 	Atom_sp at = (*a).as<Atom_O>();
-	LOG(BF("Redirecting bonds for %s with %d bonds (only bonds where we are atom1)")
-	    % at->description() % at->numberOfBonds() );
+	LOG("Redirecting bonds for %s with %d bonds (only bonds where we are atom1)"
+	    , at->description() , at->numberOfBonds() );
 	at->redirectAtoms();
     }
     this->redirectRestraintAtoms();
@@ -314,8 +314,8 @@ CL_DEFMETHOD Matter_sp Residue_O::copy(core::T_sp new_to_old)
       Bond_sp b = lbonds.getBond();
       Bond_sp bcopy = b->copyDontRedirectAtoms();
       if (chem__verbose(1)) {
-        core::write_bf_stream(BF("    b -> %s\n") % _rep_(b));
-        core::write_bf_stream(BF("bcopy -> %s\n") % _rep_(bcopy));
+        core::write_bf_stream(fmt::sprintf("    b -> %s\n" , _rep_(b)));
+        core::write_bf_stream(fmt::sprintf("bcopy -> %s\n" , _rep_(bcopy)));
       }
       bcopy->addYourselfToCopiedAtoms();
     }
@@ -344,17 +344,17 @@ CL_DEFMETHOD void	Residue_O::removeAtomDeleteBonds(Atom_sp a)
 {_OF();
   contentIterator	atom;
   Atom_sp		aTemp;
-  LOG(BF("Residue_O::removeAtomsDeleteBonds| Removing a:%x from r:%x") % &a % this  );
+  LOG("Residue_O::removeAtomsDeleteBonds| Removing a:%x from r:%x" , &a , this  );
   for ( atom=this->begin_atoms(); atom != this->end_atoms(); atom++ ) {
     aTemp = (*atom).as<Atom_O>();
     if ( aTemp == a ) {
       this->eraseContent(atom);
       aTemp->removeAllBonds();
-      LOG(BF("Residue_O::removeAtomDeleteBonds setting atom %x parent to null") % &a  );
+      LOG("Residue_O::removeAtomDeleteBonds setting atom %x parent to null" , &a  );
       return;
     }
   }
-  SIMPLE_ERROR(BF("Residue does not contain atom for removal"));
+  SIMPLE_ERROR(("Residue does not contain atom for removal"));
 }
 
 
@@ -381,20 +381,20 @@ CL_DEFMETHOD void	Residue_O::removeAtomDontDeleteBonds(Atom_sp a)
 {_OF();
 contentIterator	atom;
 Atom_sp				aTemp;
-    LOG(BF("Residue_O::removeAtomsDontDeleteBonds| Removing a:%x from r:%x") % &a % this  );
+    LOG("Residue_O::removeAtomsDontDeleteBonds| Removing a:%x from r:%x" , &a , this  );
     for ( atom=this->begin_atoms();
 		atom != this->end_atoms(); atom++ ) {
       aTemp = (*atom).as<Atom_O>();
-	LOG(BF("Looking for atom name: %s in residue with name: %s") % a->getName().c_str() % aTemp->getName().c_str()  );
+	LOG("Looking for atom name: %s in residue with name: %s" , a->getName().c_str() , aTemp->getName().c_str()  );
 	if ( aTemp == a ) {
-	LOG(BF("     erasing") );
+	LOG("     erasing" );
 	    this->eraseContent(atom);
-LOG(BF("Residue_O::removeAtomDeleteBonds setting atom %x parent to null") % &a  );
+LOG("Residue_O::removeAtomDeleteBonds setting atom %x parent to null" , &a  );
 //	    delete (aTemp);
 	    return;
 	}
     }
-    SIMPLE_ERROR(BF("You are asking to remove an atom from a residue that doesn't contain it"));
+    SIMPLE_ERROR(("You are asking to remove an atom from a residue that doesn't contain it"));
 }
 
 
@@ -429,7 +429,7 @@ void Residue_O::ensureAllAtomNamesAreUnique() const
   while (lAtoms.advanceLoopAndProcess()) {
     Atom_sp atom = lAtoms.getAtom();
     if (names->gethash(atom->getName()).notnilp()) {
-      SIMPLE_ERROR(BF("To define a constitution from a residue - all atom names must be unique - but the name %s was found to be duplicated") % _rep_(atom->getName()));
+      SIMPLE_ERROR(("To define a constitution from a residue - all atom names must be unique - but the name %s was found to be duplicated") , _rep_(atom->getName()));
     }
     names->setf_gethash(atom->getName(),atom);
   }
@@ -459,7 +459,7 @@ void CDFragment_O::uniqifyResidueAtomNames(Molecule_sp mol, bool verbose)
           if (namesToIndices->gethash(sym).nilp()) break;
         } while (++nameTries<1024);
         if (nameTries>=1024) {
-          SIMPLE_ERROR(BF("Tried to uniqify an atom name more than 1024 times"));
+          SIMPLE_ERROR(("Tried to uniqify an atom name more than 1024 times"));
         }
         atom->setName(sym);
         namesToIndices->setf_gethash(sym,sym);
@@ -492,7 +492,7 @@ void Residue_O::makeAllAtomNamesInEachResidueUnique()
         index++;
       } while (++nameTries<1024);
       if (nameTries>=1024) {
-        SIMPLE_ERROR(BF("Tried to uniqify an atom name more than 1024 times"));
+        SIMPLE_ERROR(("Tried to uniqify an atom name more than 1024 times"));
       }
       atom->setName(sym);
       namesToIndices->setf_gethash(sym,sym);
@@ -509,7 +509,7 @@ void Residue_O::makeAllAtomNamesInEachResidueUnique()
     for ( ai=this->begin_atoms();
           ai != this->end_atoms(); ai++ ) {
 	Atom_sp atom = (*ai).as<Atom_O>();
-	LOG(BF("Looking at atom name(%s)") % _rep_(atom->getName())  );
+	LOG("Looking at atom name(%s)" , _rep_(atom->getName())  );
         allNames->insert(atom->getName());
 	allNamesAccumulate->insert(atom->getName());
         core::List_sp atoms = atomsThatShareName->gethash(atom->getName()
@@ -542,7 +542,7 @@ void Residue_O::makeAllAtomNamesInEachResidueUnique()
                     numberSuffix++;
                     if ( fails > 1000 )
                     {
-                        SIMPLE_ERROR(BF("There were more than 1000 fails trying to identify a unique atom name"));
+                        SIMPLE_ERROR(("There were more than 1000 fails trying to identify a unique atom name"));
                     }
                 }
             }
@@ -611,7 +611,7 @@ VectorAtom	Residue_O::getAtoms()
 VectorAtom			atoms;
 Atom_sp				aTemp;
 contentIterator	atom;
-    LOG(BF("Residue_O::allAtoms") );
+    LOG("Residue_O::allAtoms" );
     for ( atom=this->begin_atoms();
 		atom != this->end_atoms(); atom++ ) {
 	aTemp = (*atom).as<Atom_O>();
@@ -658,7 +658,7 @@ contentIterator	aCur;
     for ( aCur=this->_contents.begin();aCur!=this->_contents.end(); aCur++ )
     {
 	Atom_sp a = (*aCur).as<Atom_O>();
-	LOG(BF("Looking at(%s) for alias(%s)") % (*aCur)->getName().c_str() % _rep_(alias)  );
+	LOG("Looking at(%s) for alias(%s)" , (*aCur)->getName().c_str() , _rep_(alias)  );
         if ( a->getAlias() == alias)
 	{
             return a;
@@ -671,10 +671,10 @@ Atom_sp Residue_O::atomWithAlias(core::Symbol_sp alias)
 {
     Atom_sp a = this->atomWithAliasOrNil(alias);
     if ( a.notnilp() ) return a;
-    LOG(BF("Matter(%s) with %d contents does not contain content with alias(%s)") % this->name.c_str() % this->_contents.size() % _rep_(alias)  );
+    LOG("Matter(%s) with %d contents does not contain content with alias(%s)" , this->name.c_str() , this->_contents.size() , _rep_(alias)  );
     stringstream ss;
     ss << "residue (" << this->name << ") does not contain atom with alias(" << _rep_(alias) << ")";
-    SIMPLE_ERROR(BF(ss.str()));
+    SIMPLE_ERROR((ss.str()));
 }
 
 
@@ -696,7 +696,7 @@ core::T_mv Residue_O::atomWithName(MatterName name, bool errorp)
 {
   contentIterator	aCur;
   for ( aCur=this->_contents.begin();aCur!=this->_contents.end(); aCur++ ) {
-    LOG(BF("Looking at(%s) for(%s)") % (*aCur)->getName().c_str() % sName.c_str()  );
+    LOG("Looking at(%s) for(%s)" , (*aCur)->getName().c_str() , sName.c_str()  );
     if ( (*aCur)->getName() == name ) {
       return Values(*aCur,_lisp->_true());
     }
@@ -706,7 +706,7 @@ core::T_mv Residue_O::atomWithName(MatterName name, bool errorp)
   }
   stringstream ss;
   ss << this->className() << " (" << _rep_(this->name) << ") does not contain name(" << _rep_(name) << ")";
-  SIMPLE_ERROR(BF(ss.str()));
+  SIMPLE_ERROR((ss.str()));
 }
 
 Vector3 Residue_O::positionOfAtomWithName(MatterName name)
@@ -717,7 +717,7 @@ Vector3 Residue_O::positionOfAtomWithName(MatterName name)
 void	Residue_O::failIfInvalid()
 {_OF();
     if ( this->invalid() ) {
-	SIMPLE_ERROR(BF("INVALID %s")% this->description());
+      SIMPLE_ERROR(("INVALID %s") , this->description());
     }
 }
 
@@ -772,7 +772,7 @@ uint Residue_O::numberOfAtoms()
 	    Atom_sp atom = this->_contents[aid].as<Atom_O>();
 	    return atom;
 	}
-	SIMPLE_ERROR(BF("Illegal atomId[%d] must be less than %d") % aid % this->_contents.size() );
+	SIMPLE_ERROR(("Illegal atomId[%d] must be less than %d") , aid , this->_contents.size() );
     }
 
 

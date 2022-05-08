@@ -75,7 +75,7 @@ Joint_sp DelayedBondedJoint_O::stubJoint3(JointTree_sp tree) const
     Joint_sp outBond0 = tree->lookup(bond0Id);
     return outBond0;
   } else {
-    SIMPLE_ERROR(BF("Illegal delay type: %s") % _rep_(this->_DelayType));
+    SIMPLE_ERROR(("Illegal delay type: %s") , _rep_(this->_DelayType));
   }
 }
 

@@ -95,7 +95,7 @@ string Dimension_O::baseDimensionUnitName(int i)
 	case 6: return "mole";
 	case 7: return "rad";
 	};
-	SIMPLE_ERROR(BF("Illegal dimension index[%d]") % i);
+	SIMPLE_ERROR(("Illegal dimension index[%d]") , i);
     }
     
 

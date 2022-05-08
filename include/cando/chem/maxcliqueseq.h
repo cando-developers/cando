@@ -72,7 +72,7 @@ FORWARD(Dimacs);
       gctools::Vec0<int> getDegrees() const {return degrees;}
       void calculateGraphStats(int& maxdegree, int& minDegree, std::vector<float>& degreeHistogram);
       void fixupInternalsForSnapshotSaveLoad(snapshotSaveLoad::Fixup* fixup) {
-        SIMPLE_ERROR(BF("We cannot current snapshot save/load Dimacs's - you could try copying objects in and out of objects that can be snapshot save/loaded"));
+        SIMPLE_ERROR(("We cannot current snapshot save/load Dimacs's - you could try copying objects in and out of objects that can be snapshot save/loaded"));
       }
 
     };

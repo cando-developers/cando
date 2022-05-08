@@ -70,7 +70,7 @@ double	dotProduct( NVector_sp x, NVector_sp y, core::T_sp frozen )
     for ( size_t i(0), iEnd(x->length()); i<iEnd; ++i ) dDot += px[i]*py[i];
     return dDot;
   }
-  SIMPLE_ERROR(BF("frozen must be a simple-bit-vector or NIL"));
+  SIMPLE_ERROR(("frozen must be a simple-bit-vector or NIL"));
 }
 
 
@@ -94,7 +94,7 @@ double	squared(NVector_sp x, core::T_sp frozen)
     }
     return(dDot);
   }
-  SIMPLE_ERROR(BF("frozen must be a simple-bit-vector or NIL"));
+  SIMPLE_ERROR(("frozen must be a simple-bit-vector or NIL"));
 }
 
 double magnitude(NVector_sp me, core::T_sp frozen)
@@ -119,10 +119,10 @@ double	rmsMagnitude(NVector_sp me, core::T_sp frozen)
       dDot += (dp[i]*dp[i])*moveable;
     }
     if (chem__verbose(4)) {
-      core::write_bf_stream(BF("%s w/frozen dDot -> %e  num -> %s\n") % __FUNCTION__ % dDot % num );
+      core::write_bf_stream(fmt::sprintf("%s w/frozen dDot -> %e  num -> %s\n" , __FUNCTION__ , dDot , num ));
       if (chem__verbose(5)) {
         for ( int zz=0; zz<me->length(); zz++ ) {
-          core::write_bf_stream(BF("    frozen[%d] -> %d  nvector[%d] -> %e\n") % zz % frozen_->testBit(zz) % zz % (*me)[zz]);
+          core::write_bf_stream(fmt::sprintf("    frozen[%d] -> %d  nvector[%d] -> %e\n" , zz , frozen_->testBit(zz) , zz , (*me)[zz]));
         }
       }
     }
@@ -134,16 +134,16 @@ double	rmsMagnitude(NVector_sp me, core::T_sp frozen)
       dDot += dp[i]*dp[i];
     }
     if (chem__verbose(4)) {
-      core::write_bf_stream(BF("%s w/o frozen dDot -> %e  me->length() -> %s\n") % __FUNCTION__ % dDot % me->length());
+      core::write_bf_stream(fmt::sprintf("%s w/o frozen dDot -> %e  me->length() -> %s\n" , __FUNCTION__ , dDot , me->length()));
     }
     if (chem__verbose(5)) {
       for ( int zz=0; zz<me->length(); zz++ ) {
-        core::write_bf_stream(BF("    nvector[%d] -> %e\n") % zz % (*me)[zz]);
+        core::write_bf_stream(fmt::sprintf("    nvector[%d] -> %e\n" , zz , (*me)[zz]));
       }
     }
     return(dDot/me->length());
   }
-  SIMPLE_ERROR(BF("frozen must be a simple-bit-vector or NIL"));
+  SIMPLE_ERROR(("frozen must be a simple-bit-vector or NIL"));
 }
 
 
@@ -166,21 +166,21 @@ double	angleWithVector(NVector_sp me, NVector_sp other, core::T_sp frozen)
 /* Multiply each element of NVector Y by s and add to x and write into o IF frozen[index] == 0 */
 void XPlusYTimesScalar( NVector_sp output, NVector_sp x, NVector_sp y, double s, core::T_sp frozen )
 {
-  LOG(BF("this->_Values.size() = %d") % o->length() );
-  LOG(BF("x->size() = %d") % x->length() );
-  LOG(BF("y->size() = %d") % y->length() );
+  LOG("this->_Values.size() = %d" , o->length() );
+  LOG("x->size() = %d" , x->length() );
+  LOG("y->size() = %d" , y->length() );
   if (output->length()!=x->length()
       || output->length()!=y->length()) {
-    SIMPLE_ERROR(BF("Mismatch in lengths of nvectors - they are output, x, y -> %d, %d, %d") % output->length() % x->length() % y->length());
+    SIMPLE_ERROR(("Mismatch in lengths of nvectors - they are output, x, y -> %d, %d, %d") , output->length() , x->length() , y->length());
   }
   core::SimpleBitVector_sp frozen_bitvector;
   if (gc::IsA<core::SimpleBitVector_sp>(frozen)) {
     frozen_bitvector = gc::As_unsafe<core::SimpleBitVector_sp>(frozen);
     if (frozen_bitvector->length()!=output->length()) {
-      SIMPLE_ERROR(BF("frozen is defined but is not the correct length - it is %d and expected %d") % frozen_bitvector->length() % output->length());
+      SIMPLE_ERROR(("frozen is defined but is not the correct length - it is %d and expected %d") , frozen_bitvector->length() , output->length());
     }
   } else if (frozen.notnilp()) {
-    SIMPLE_ERROR(BF("Expected frozen to be a simple-bit-vector - but it is %s") % _rep_(frozen));
+    SIMPLE_ERROR(("Expected frozen to be a simple-bit-vector - but it is %s") , _rep_(frozen));
   }
   double* poutput = &(*output)[0];
   double* px = &(*x)[0];
@@ -234,7 +234,7 @@ void inPlaceAddTimesScalar( NVector_sp result, NVector_sp dir, double s, core::T
     }
     return;
   }
-  SIMPLE_ERROR(BF("frozen must be a simple-bit-vector or NIL"));
+  SIMPLE_ERROR(("frozen must be a simple-bit-vector or NIL"));
 }
 
 
@@ -268,7 +268,7 @@ double	rmsDistanceFrom(NVector_sp u, NVector_sp v, core::T_sp frozen)
     sum /= (float)(u->length());
     return sqrt(sum);
   }
-  SIMPLE_ERROR(BF("frozen must be a simple-bit-vector or NIL"));
+  SIMPLE_ERROR(("frozen must be a simple-bit-vector or NIL"));
 }
 
 
@@ -414,11 +414,11 @@ geom::BoundingCuboid_sp chem__nvector_bounding_cuboid(NVector_sp coords, core::T
     if (coordinates_length.unsafe_fixnum()<=coords->length())
       coord_len = coordinates_length.unsafe_fixnum();
     else {
-      SIMPLE_ERROR(BF("coordinates-length %s is out of bounds - must be less than or equal to %lu")
-                   % _rep_(coordinates_length) % coords->length());
+      SIMPLE_ERROR(("coordinates-length %s is out of bounds - must be less than or equal to %lu")
+                   , _rep_(coordinates_length) , coords->length());
     }
   } else if (coordinates_length.notnilp()) {
-    SIMPLE_ERROR(BF("coordinates-length must be NIL or a fixnum - it was %s") % _rep_(coordinates_length));
+    SIMPLE_ERROR(("coordinates-length must be NIL or a fixnum - it was %s") , _rep_(coordinates_length));
   }
   for ( size_t i1=0; i1<coords->length(); i1+=3 ) {
     geom::geom__vec_extract(cur,coords,i1);

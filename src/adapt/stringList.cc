@@ -81,7 +81,7 @@ void StringList_O::archiveBase(ArchiveP node) {
 #endif // defined(XML_ARCHIVE)
 
 void StringList_O::clear() {
-  LOG(BF("StringList::clear size=%d") % (this->_Contents.size()));
+  LOG("StringList::clear size=%d" , (this->_Contents.size()));
   if (this->_Contents.size() == 0)
     return;
   this->_Contents.clear();
@@ -136,15 +136,15 @@ int StringList_O::indexOf(const string &nm) {
   
   StringList_O::iterator it;
   int idx;
-  LOG(BF("Looking for string(%s)") % nm.c_str());
+  LOG("Looking for string(%s)" , nm.c_str());
   for (it = this->begin(), idx = 0; it != this->end(); it++, idx++) {
-    LOG(BF("   Looking at StringList entry(%s)") % (*it).c_str());
+    LOG("   Looking at StringList entry(%s)" , (*it).c_str());
     if ((*it) == nm) {
-      LOG(BF("Found Match!!!"));
+      LOG("Found Match!!!");
       return idx;
     }
   }
-  SIMPLE_ERROR(BF("StringList does not contain: " + nm));
+  SIMPLE_ERROR(("StringList does not contain: " + nm));
 }
 };
 #endif

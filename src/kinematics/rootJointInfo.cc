@@ -40,9 +40,9 @@ namespace kinematics
                               core::Symbol_sp topologyName,
                               chem::Plug_sp plug)
     {
-	LOG(BF("Setting up RootAtomInfo for Constitution[%s] Topology[%s]")
-	    % _rep_(constitutionName)
-	    % _rep_(topologyName) );
+	LOG("Setting up RootAtomInfo for Constitution[%s] Topology[%s]"
+	    , _rep_(constitutionName)
+	    , _rep_(topologyName) );
 	this->_ConstitutionName = constitutionName;
 	this->_TopologyName = topologyName;
 	this->_Bond1Id = UndefinedUnsignedInt;
@@ -50,14 +50,14 @@ namespace kinematics
           chem::InPlug_sp inPlug = gc::As_unsafe<chem::InPlug_sp>(plug);
           if ( inPlug->getB1().notnilp() ) {
             core::Symbol_sp bond1AtomName = inPlug->getB1();
-            LOG(BF("InPlug has a Bond1 atom[%s]") % bond1AtomName); 
+            LOG("InPlug has a Bond1 atom[%s]" , bond1AtomName); 
             chem::CandoDatabase_sp db = chem::getCandoDatabase();
             chem::Constitution_sp constitution = gc::As<chem::Constitution_sp>(core::eval::funcall(chem::_sym_constitutionForNameOrPdb,db,constitutionName));
             chem::ConstitutionAtoms_sp constitutionAtoms = constitution->getConstitutionAtoms();
             this->_Bond1Id = constitutionAtoms->index(bond1AtomName);
           } else
           {
-            LOG(BF("There is no Bond1 atom"));
+            LOG("There is no Bond1 atom");
           }
 	}
     }

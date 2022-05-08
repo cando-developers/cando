@@ -119,7 +119,7 @@ CL_DEFMETHOD     bool	IterateMatter_O::advance()
 	    bool d = this->_Loop.advance();
 	    if ( !d ) 
 	    {
-		LOG(BF("Advanced loop and hit end") );
+		LOG("Advanced loop and hit end" );
 		this->_IsDone = true;
 	    }
 	}

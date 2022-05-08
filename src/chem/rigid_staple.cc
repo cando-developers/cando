@@ -83,7 +83,7 @@ CL_DEFUN double chem__rigid_staple_evaluate( core::SimpleVector_double_sp helix_
 #define	STAPLE_DIAGONAL_HESSIAN_ACCUMULATE 	DiagHessAcc
 #define	STAPLE_OFF_DIAGONAL_HESSIAN_ACCUMULATE OffDiagHessAcc
 
-  { _BLOCK_TRACE("Staple");
+  { 
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/energy-functions/_STAPLE_termDeclares.cc>

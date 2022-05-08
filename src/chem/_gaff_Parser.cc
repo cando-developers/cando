@@ -123,15 +123,14 @@ using namespace core;
 #define	LEXDEBUG	1
 
 #ifdef	LEXDEBUG
-#define	LEXPRINT(x) {LOG(BF("Token: %s") % x );}
-#define	LEXDPRINT(x) { LOG(BF("%s") % (x));}
+#define	LEXPRINT(x) {LOG("Token: %s" , x );}
+#define	LEXDPRINT(x) { LOG("%s" , (x));}
 #else
 #define	LEXPRINT(x)
 #define	LEXDPRINT(x)
 #endif
 
-#define	_BT()	_BLOCK_TRACE("block trace")
-
+#define	_BT()	
 #define	GP() (data)
 
 void gaff_error(YYLTYPE* yyloc, gaff_SParserParam* data, const char* message );
@@ -1546,14 +1545,14 @@ yyreduce:
     {
         case 2:
 #line 142 "gaff_Parser.yy" /* yacc.c:1661  */
-    { data->expression = (yyvsp[0].antechamberRoot)->_obj; LOG(BF("Got AntechamberMatch tree=%0X") % (yyvsp[0].antechamberRoot) ); }
+    { data->expression = (yyvsp[0].antechamberRoot)->_obj; LOG("Got AntechamberMatch tree=%0X" , (yyvsp[0].antechamberRoot) ); }
 #line 1526 "_gaff_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 3:
 #line 156 "gaff_Parser.yy" /* yacc.c:1661  */
     {
-		    _BLOCK_TRACE("Got antechamber line");
+		    
                     chem::AntechamberFocusAtomMatch_sp focus;
                     focus = chem::AntechamberFocusAtomMatch_O::create( (yyvsp[-8].residueList)->_obj, (yyvsp[-7].ival), (yyvsp[-6].ival), (yyvsp[-5].ival), (yyvsp[-4].ival), (yyvsp[-3].logical)->_obj );
                     (yyval.antechamberRoot) = new chem::Hold<chem::AntechamberRoot_O>(chem::AntechamberRoot_O::create((yyvsp[-9].carr),focus,(yyvsp[-2].bondListMatchNode)->_obj,(yyvsp[-1].afterMatchBondTest)->_obj)); 
@@ -1564,7 +1563,7 @@ yyreduce:
   case 4:
 #line 171 "gaff_Parser.yy" /* yacc.c:1661  */
     {
-		    _BLOCK_TRACE("Got antechamber line");
+		    
                     chem::AntechamberFocusAtomMatch_sp focus;
                     focus = chem::AntechamberFocusAtomMatch_O::create( (yyvsp[-7].residueList)->_obj, (yyvsp[-6].ival), (yyvsp[-5].ival), (yyvsp[-4].ival), (yyvsp[-3].ival), (yyvsp[-2].logical)->_obj );
                     (yyval.antechamberRoot) = new chem::Hold<chem::AntechamberRoot_O>(chem::AntechamberRoot_O::create((yyvsp[-8].carr),focus,(yyvsp[-1].bondListMatchNode)->_obj)); 
@@ -1575,7 +1574,7 @@ yyreduce:
   case 5:
 #line 185 "gaff_Parser.yy" /* yacc.c:1661  */
     {
-		    _BLOCK_TRACE("Got antechamber line");
+		    
                     chem::AntechamberFocusAtomMatch_sp focus;
                     focus = chem::AntechamberFocusAtomMatch_O::create( (yyvsp[-6].residueList)->_obj, (yyvsp[-5].ival), (yyvsp[-4].ival), (yyvsp[-3].ival), (yyvsp[-2].ival), (yyvsp[-1].logical)->_obj );
                     (yyval.antechamberRoot) = new chem::Hold<chem::AntechamberRoot_O>(chem::AntechamberRoot_O::create((yyvsp[-7].carr),focus)); 
@@ -1586,7 +1585,7 @@ yyreduce:
   case 6:
 #line 198 "gaff_Parser.yy" /* yacc.c:1661  */
     {
-		    _BLOCK_TRACE("Got antechamber line");
+		    
                     chem::AntechamberFocusAtomMatch_sp focus;
 		    chem::AtomOrBondMatchNode_sp temp;
 		    temp = chem::AtomOrBondMatchNode_O::_nil;
@@ -1599,7 +1598,7 @@ yyreduce:
   case 7:
 #line 212 "gaff_Parser.yy" /* yacc.c:1661  */
     {
-		    _BLOCK_TRACE("Got antechamber line");
+		    
                     chem::AntechamberFocusAtomMatch_sp focus;
                     focus = chem::AntechamberFocusAtomMatch_O::create( (yyvsp[-4].residueList)->_obj, (yyvsp[-3].ival), (yyvsp[-2].ival), (yyvsp[-1].ival), -1);
                     (yyval.antechamberRoot) = new chem::Hold<chem::AntechamberRoot_O>(chem::AntechamberRoot_O::create((yyvsp[-5].carr),focus)); 
@@ -1610,7 +1609,7 @@ yyreduce:
   case 8:
 #line 223 "gaff_Parser.yy" /* yacc.c:1661  */
     {
-		    _BLOCK_TRACE("Got antechamber line");
+		    
                     chem::AntechamberFocusAtomMatch_sp focus;
 		    focus = chem::AntechamberFocusAtomMatch_O::create( (yyvsp[-3].residueList)->_obj, (yyvsp[-2].ival), (yyvsp[-1].ival), -1, -1);
                     (yyval.antechamberRoot) = new chem::Hold<chem::AntechamberRoot_O>(chem::AntechamberRoot_O::create((yyvsp[-4].carr),focus));
@@ -1621,7 +1620,7 @@ yyreduce:
   case 9:
 #line 233 "gaff_Parser.yy" /* yacc.c:1661  */
     {
-		    _BLOCK_TRACE("Got antechamber line");
+		    
                     chem::AntechamberFocusAtomMatch_sp focus;
                     focus = chem::AntechamberFocusAtomMatch_O::create( (yyvsp[-2].residueList)->_obj, (yyvsp[-1].ival), -1, -1, -1 );
                     (yyval.antechamberRoot) = new chem::Hold<chem::AntechamberRoot_O>(chem::AntechamberRoot_O::create((yyvsp[-3].carr),focus)); 
@@ -1632,7 +1631,7 @@ yyreduce:
   case 10:
 #line 242 "gaff_Parser.yy" /* yacc.c:1661  */
     {
-		    _BLOCK_TRACE("Got antechamber line");
+		    
                     chem::AntechamberFocusAtomMatch_sp focus;
                     focus = chem::AntechamberFocusAtomMatch_O::create( (yyvsp[-1].residueList)->_obj, -1, -1, -1, -1);
                     (yyval.antechamberRoot) = new chem::Hold<chem::AntechamberRoot_O>(chem::AntechamberRoot_O::create((yyvsp[-2].carr),focus)); 
@@ -1643,7 +1642,7 @@ yyreduce:
   case 11:
 #line 250 "gaff_Parser.yy" /* yacc.c:1661  */
     {
-		    _BLOCK_TRACE("Got antechamber line");
+		    
                     chem::AntechamberFocusAtomMatch_sp focus;
 		    focus = chem::AntechamberFocusAtomMatch_O::_nil;
                     (yyval.antechamberRoot) = new chem::Hold<chem::AntechamberRoot_O>(chem::AntechamberRoot_O::create((yyvsp[-1].carr),focus));
@@ -1750,7 +1749,7 @@ yyreduce:
   case 28:
 #line 300 "gaff_Parser.yy" /* yacc.c:1661  */
     { _BT(); 
-		LOG(BF("Got bracketedAtomicProperty") ); // vp0(( "Got bracketedAtomicProperty" ));
+		LOG("Got bracketedAtomicProperty" ); // vp0(( "Got bracketedAtomicProperty" ));
 		(yyval.logical) = new chem::Hold<chem::Logical_O>((yyvsp[-1].logical)->_obj); }
 #line 1731 "_gaff_Parser.cc" /* yacc.c:1661  */
     break;
@@ -2380,11 +2379,11 @@ char	ichar;
 		    // Handle special characters that are two or three 
 		    // characters long
 		    //
-    LOG(BF("peek(%c)") % (acLexStream->peek() ) ); // vp0(( "peek(%c)", acLexStream->peek() ));
-    LOG(BF("Checking ATD") ); // vp0(("Checking ATD"));
+    LOG("peek(%c)" , (acLexStream->peek() ) ); // vp0(( "peek(%c)", acLexStream->peek() ));
+    LOG("Checking ATD" ); // vp0(("Checking ATD"));
     if ( ichar == 'A' && data->acLexStream->peek() == 'T' ) {
         data->acLexStream->get();
-        LOG(BF("peek2(%c)") % (acLexStream->peek() ) ); // vp0(( "peek2(%c)", acLexStream->peek() ));
+        LOG("peek2(%c)" , (acLexStream->peek() ) ); // vp0(( "peek2(%c)", acLexStream->peek() ));
         if ( data->acLexStream->peek() != 'D' ) {
             return APError;
         }
@@ -2393,34 +2392,34 @@ char	ichar;
         return APAtomTypeDefinition;
     }
         
-    LOG(BF("Checking AR") ); // vp0(("Checking AR"));
+    LOG("Checking AR" ); // vp0(("Checking AR"));
     if (ichar == 'A' && data->acLexStream->peek() == 'R') {
         data->acLexStream->get();
         int aridx = data->acLexStream->get()-'0';
         if ( aridx >=1 && aridx <=5 ) {
             gaff_lval->ival = aridx;
-	    LOG(BF("AR level=%d") % (aridx ) ); // vp0(( "AR level=%d", aridx ));
+	    LOG("AR level=%d" , (aridx ) ); // vp0(( "AR level=%d", aridx ));
             return APAntechamberARLevel;
         }
         LEXPRINT("APAntechamberARLevel");
         return APError;
     }
 
-    LOG(BF("Checking RG") ); // vp0(("Checking RG"));
+    LOG("Checking RG" ); // vp0(("Checking RG"));
     if (ichar == 'R' && data->acLexStream->peek() == 'G') {
         data->acLexStream->get();	
         LEXPRINT("APAntechamberRingMembership");
         return APAntechamberRingMembership;
     }
 
-    LOG(BF("Checking NG") ); // vp0(("Checking NG"));
+    LOG("Checking NG" ); // vp0(("Checking NG"));
     if (ichar == 'N' && data->acLexStream->peek() == 'G') {
         data->acLexStream->get();	
         LEXPRINT("APAntechamberNoRingMembership");
         return APAntechamberNoRingMembership;
     }
 
-    LOG(BF("Checking SB") ); // vp0(("Checking SB"));
+    LOG("Checking SB" ); // vp0(("Checking SB"));
     if (ichar == 'S' && data->acLexStream->peek() == 'B') {
         data->acLexStream->get();	
         LEXPRINT("APSingleBond");
@@ -2516,7 +2515,7 @@ char	ichar;
             tagStr += ichar;
         }
         strcpy(gaff_lval->carr,tagStr.c_str());
-        LOG(BF("Got tag(%s)") % (gaff_lval->carr) ); // vp0(( "Got tag(%s)",gaff_lval->carr));
+        LOG("Got tag(%s)" , (gaff_lval->carr) ); // vp0(( "Got tag(%s)",gaff_lval->carr));
         LEXPRINT("APTag");
         return APTag;
     }
@@ -2561,10 +2560,10 @@ chem::AntechamberRoot_sp gaff_compile(const string& input,
     p.wildElementDictionary = dict;
     p.acLexStream = &sin;
     p.gaffErrorStream = &errorStream;
-    LOG(BF("Entering gaffparse"));
+    LOG("Entering gaffparse");
     if ( gaff_parse(&p) )
     {
-	SIMPLE_ERROR(BF("%s") % (p.gaffErrorStream->str()));
+	SIMPLE_ERROR(("%s") , (p.gaffErrorStream->str()));
     }
     return p.expression;
 }

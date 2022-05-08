@@ -237,17 +237,17 @@ void GrPickableMatter_O::check()
     {
 	if ( (*it)->isAssignableTo<geom::Render_O>() )
 	{
-	    LOG(BF( "Child: %s")% (*it)->description().c_str() );
+	    LOG( "Child: %s"% (*it)->description().c_str() );
 	    if ( (*it)->_InitializationOwner.pointerp() )
 	    {
-		LOG(BF( "   (*it)->_InitializationOwner.get() = %p")%
+		LOG( "   (*it)->_InitializationOwner.get() = %p"%
 		    (*it)->_InitializationOwner.get() );
 	    }
 	    geom::Render_sp render = (*it).as<geom::Render_O>();
-	    LOG(BF( "    (*it)->getParent().get() = %p")% (*it).as<geom::Render_O>()->getParent().get() );
+	    LOG( "    (*it)->getParent().get() = %p"% (*it).as<geom::Render_O>()->getParent().get() );
 	    if ( render->getParent().get() != this )
 	    {
-		SIMPLE_ERROR(BF("A child of %s name(%s) specifically(%s) does not have it as a parent") % this->description() % this->getName() % (*it)->description() );
+		SIMPLE_ERROR(("A child of %s name(%s) specifically(%s) does not have it as a parent") , this->description() , this->getName() , (*it)->description() );
 	    }
 	    (*it).as<geom::Render_O>()->check();
 	}
@@ -315,7 +315,7 @@ geom::OVector3_sp GrPickableMatter_O::centerOfRenderedGeometry()
     gctools::Vec0<RenderMatterAtom_sp>::iterator ai;
     Vector3 sum;
     uint num = 0;
-    LOG(BF( "Rendering %d atoms")% this->_Atoms.size() );
+    LOG( "Rendering %d atoms"% this->_Atoms.size() );
     for ( ai=this->_Atoms.begin(); ai!=this->_Atoms.end(); ai++ )
     {
 	Atom_sp atom = (*ai)->getAtom();
@@ -334,7 +334,7 @@ void	GrPickableMatter_O::generateRenderObjects()
     gctools::Vec0<RenderMatterAtom_sp>::iterator ai;
     for ( ai=this->_Atoms.begin(); ai!=this->_Atoms.end(); ai++ )
     {
-        LOG(BF( "Atom %s _NumberOfBonds = %d")% (*ai)->_Label % (*ai)->_NumberOfBonds );
+        LOG( "Atom %s _NumberOfBonds = %d"% (*ai)->_Label , (*ai)->_NumberOfBonds );
 	Vector3 pos = (*ai)->getAtom()->getPosition();
 	geom::Color_sp color = (*ai)->getColor();
 	this->_AtomPoints->appendPickablePoint(pos,color,*ai);
@@ -402,7 +402,7 @@ void	GrPickableMatter_O::setFromMatter(Matter_sp matter )
     RenderMatterBond_sp	grMatterBond;
 
     this->_Matter = matter;
-    { _BLOCK_TRACE("Storing atoms");
+    { 
 	this->_Atoms.clear();
 	atomLoop.loopTopGoal(matter,ATOMS);
 	while ( atomLoop.advanceLoopAndProcess() )
@@ -416,7 +416,7 @@ void	GrPickableMatter_O::setFromMatter(Matter_sp matter )
     }
     bondLoop.loopTopGoal(matter, BONDS );
     while ( bondLoop.advance() )
-    {_BLOCK_TRACE("Storing bonds");
+    {
 	grMatterBond = RenderMatterBond_O::create();
 	a1 = bondLoop.getBondA1();
 	a2 = bondLoop.getBondA2();
@@ -428,7 +428,7 @@ void	GrPickableMatter_O::setFromMatter(Matter_sp matter )
 	    this->_Bonds.push_back(grMatterBond);
 	} else
 	{
-	    SIMPLE_ERROR(BF("A bond was found that contained an atom that hasn't been seen"));
+	    SIMPLE_ERROR(("A bond was found that contained an atom that hasn't been seen"));
 	}
     }
     this->generateRenderObjects();

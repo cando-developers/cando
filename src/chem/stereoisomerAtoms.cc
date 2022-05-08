@@ -95,7 +95,7 @@ StereoisomerVirtualAtom_sp StereoisomerVirtualAtom_O::create(ConstitutionVirtual
 StereoisomerAtoms_O::StereoisomerAtoms_O(core::Symbol_sp stereoisomerName) : _StereoisomerName(stereoisomerName)
 {
   if (stereoisomerName.unboundp()) {
-    SIMPLE_ERROR(BF("The stereoisomerName was unbound"));
+    SIMPLE_ERROR(("The stereoisomerName was unbound"));
   }
 };
 
@@ -176,7 +176,7 @@ CL_DEFMETHOD     core::T_mv StereoisomerAtoms_O::atomWithName(MatterName nm,bool
   if (!errorp) {
     return Values(nil<core::T_O>(),nil<core::T_O>());
   }
-  SIMPLE_ERROR(BF("Could not find StereoisomerAtom with name[%s]") % nm );
+  SIMPLE_ERROR(("Could not find StereoisomerAtom with name[%s]") , nm );
 }
 
 
@@ -194,7 +194,7 @@ CL_DEFMETHOD     int StereoisomerAtoms_O::index(MatterName name) const
     const StereoisomerAtom_sp& atom = this->_Atoms[idx];
     if ( atom->_AtomName == name ) return idx;
   }
-  SIMPLE_ERROR(BF("Unknown atom[%s]") % name );
+  SIMPLE_ERROR(("Unknown atom[%s]") , name );
 }
 
 

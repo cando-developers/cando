@@ -61,7 +61,7 @@ namespace units
 //      this->Base::__init__(exec,args,env,lisp);
 //      arg = from_object<XXXX>::convert(env->lookup(this->Package(),"YYY"));
 	core::Cons_sp args = allargs->cdr();
-	LOG(BF("Initializing Xyz_O with args[%s]") % _rep_(args) );
+	LOG("Initializing Xyz_O with args[%s]" , _rep_(args) );
 	double amount = 1.0;
 	core::OVector3_sp vamount = args->ocar().as<core::OVector3_O>();
 	/*Set the default system as units:*SI* */

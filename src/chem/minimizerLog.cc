@@ -95,9 +95,9 @@ void	StepReport_O::initialize()
 {
     this->archiveBase(node);
     node->attribute("_Iteration",this->_Iteration);
-    LOG(BF("Status") );
+    LOG("Status" );
     node->attribute("_Iteration", this->_Iteration);
-    LOG(BF("Status") );
+    LOG("Status" );
     node->attribute("_Xa", this->_Xa);
     node->attribute("_Xb", this->_Xb);
     node->attribute("_Xc", this->_Xc);
@@ -109,48 +109,48 @@ void	StepReport_O::initialize()
     node->attribute("_TotalEnergy", this->_TotalEnergy);
     node->attribute("_DirectionMagnitude", this->_DirectionMagnitude);
     node->attribute("_ForceMagnitude", this->_ForceMagnitude);
-    LOG(BF("Status") );
+    LOG("Status" );
     node->attribute("_MinimizerStatus", this->_MinimizerStatus);
-    LOG(BF("Status") );
+    LOG("Status" );
     node->attribute("_Direction", this->_Direction);
-    LOG(BF("Finished attributes A") );
-    LOG(BF("Status") );
+    LOG("Finished attributes A" );
+    LOG("Status" );
     node->attributeIfNotNil("_LineSearchPosition", this->_LineSearchPosition );
 #if 0
     ANN(this->_LineSearchPosition);
     if ( this->_LineSearchPosition.notnilp() )
     {
-	LOG(BF("this->_LineSearchPosition size=%d") % this->_LineSearchPosition->size()  );
+	LOG("this->_LineSearchPosition size=%d" , this->_LineSearchPosition->size()  );
     }
 #endif
-    LOG(BF("Status") );
+    LOG("Status" );
     node->attributeIfNotNil("_LineSearchDirection", this->_LineSearchDirection);
-    LOG(BF("Status") );
+    LOG("Status" );
     ASSERTNOTNULL(this->_LineSearchForce);
     node->attributeIfNotNil("_LineSearchForce", this->_LineSearchForce);
-    LOG(BF("Status") );
-    LOG(BF("Finished NVectors A") );
+    LOG("Status" );
+    LOG("Finished NVectors A" );
     ASSERTNOTNULL(this->_TotalEnergyFn);
     node->attributeIfNotNil("_TotalEnergyFn",  this->_TotalEnergyFn);
-    LOG(BF("Status") );
+    LOG("Status" );
     ASSERTNOTNULL(this->_StretchEnergyFn);
     node->attributeIfNotNil("_StretchEnergyFn",  this->_StretchEnergyFn);
-    LOG(BF("Status") );
+    LOG("Status" );
     ASSERTNOTNULL(this->_AngleEnergyFn);
     node->attributeIfNotNil("_AngleEnergyFn",  this->_AngleEnergyFn);
-    LOG(BF("Status") );
+    LOG("Status" );
     ASSERTNOTNULL(this->_DihedralEnergyFn);
     node->attributeIfNotNil("_DihedralEnergyFn",  this->_DihedralEnergyFn);
-    LOG(BF("Status") );
+    LOG("Status" );
     ASSERTNOTNULL(this->_NonbondEnergyFn);
     node->attributeIfNotNil("_NonbondEnergyFn",  this->_NonbondEnergyFn);
-    LOG(BF("Status") );
+    LOG("Status" );
     ASSERTNOTNULL(this->_ImproperEnergyFn);
     node->attributeIfNotNil("_ImproperEnergyFn",  this->_ImproperEnergyFn);
-    LOG(BF("Status") );
+    LOG("Status" );
     ASSERTNOTNULL(this->_ChiralRestraintEnergyFn);
     node->attributeIfNotNil("_ChiralRestraintEnergyFn",  this->_ChiralRestraintEnergyFn);
-    LOG(BF("Status") );
+    LOG("Status" );
     ASSERTNOTNULL(this->_AnchorRestraintEnergyFn);
     node->attributeIfNotNil("_AnchorRestraintEnergyFn",  this->_AnchorRestraintEnergyFn);
     ASSERTNOTNULL(this->_PointToLineRestraintEnergyFn);
@@ -159,11 +159,11 @@ void	StepReport_O::initialize()
     node->attributeIfNotNil("_OutOfZPlaneEnergyFn",  this->_OutOfZPlane!EnergyFn);
     ASSERTNOTNULL(this->_ImproperRestraintEnergyFn);
     node->attributeIfNotNil("_ImproperRestraintEnergyFn",  this->_ImproperRestraintEnergyFn);
-    LOG(BF("Finished NumFunctions A") );
+    LOG("Finished NumFunctions A" );
     node->attribute("_DbrentSteps", this->_DbrentSteps);
-    LOG(BF("Status") );
+    LOG("Status" );
     node->attribute("_EnergyEvals", this->_EnergyEvals);
-    LOG(BF("Status") );
+    LOG("Status" );
     node->attribute("_ForceEvals", this->_ForceEvals);
     node->attribute("_Step", this->_Step);
     node->attribute("_FMin", this->_FMin);
@@ -173,8 +173,8 @@ void	StepReport_O::initialize()
     node->attribute("_AngleBetweenDirectionAndForceDeg", this->_AngleBetweenDirectionAndForceDeg);
     node->attribute("_PrematureTermination", this->_PrematureTermination);
     node->attribute("_PrematureTerminationMessage", this->_PrematureTerminationMessage);
-    LOG(BF("Finished Attributes B") );
-    LOG(BF("Status") );
+    LOG("Finished Attributes B" );
+    LOG("Status" );
 }
 #endif
 

@@ -73,7 +73,7 @@ void MonomerBaseNode_O::initialize()
 CL_LISPIFY_NAME(children);
 CL_DEFMETHOD core::List_sp MonomerBaseNode_O::children() const
 {
-  SIMPLE_ERROR(BF("Subclass must implement"));
+  SIMPLE_ERROR(("Subclass must implement"));
 }
     
 

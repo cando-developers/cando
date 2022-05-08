@@ -112,7 +112,7 @@ CL_DEFMETHOD bool	Matter_O::hasContent(Matter_sp maybe_child)
 {
   contentIterator		aCur;
   for ( aCur=this->begin_contents();aCur!=this->end_contents(); aCur++ ) {
-    LOG(BF("Looking at(%s) for(%s)") % (*aCur)->getName().c_str() % sName.c_str()  );
+    LOG("Looking at(%s) for(%s)" , (*aCur)->getName().c_str() , sName.c_str()  );
     if ( (*aCur) == maybe_child ) {
       return true;
     }
@@ -128,7 +128,7 @@ CL_DEFMETHOD bool	Matter_O::hasContentWithName(MatterName    sName )
   contentIterator		aCur;
 
   for ( aCur=this->begin_contents();aCur!=this->end_contents(); aCur++ ) {
-    LOG(BF("Looking at(%s) for(%s)") % (*aCur)->getName().c_str() % sName.c_str()  );
+    LOG("Looking at(%s) for(%s)" , (*aCur)->getName().c_str() , sName.c_str()  );
     if ( (*aCur)->getName() == sName ) {
       return true;
     }
@@ -218,7 +218,7 @@ void Matter_O::applyPropertyList(core::List_sp list)
     core::Symbol_sp property = gc::As<core::Symbol_sp>(oCar(cur));
     cur = oCdr(cur);
     if ( cur.nilp() ) {
-      SIMPLE_ERROR(BF("Incomplete property list: %s") % _rep_(list));
+      SIMPLE_ERROR(("Incomplete property list: %s") , _rep_(list));
     }
     core::T_sp value = oCar(cur);
     this->applyProperty(property,value);
@@ -254,7 +254,7 @@ CL_DEFMETHOD core::T_sp Matter_O::getProperty(core::Symbol_sp symbol)
   if (res.unboundp()) {
     stringstream props;
     props << _rep_(this->_Properties);
-    SIMPLE_ERROR(BF("You asked for an unknown property[%s] for matter[%s@%p] - the available properties are[%s]") % _rep_(symbol) % this->__repr__() % this % props.str()  );
+    SIMPLE_ERROR(("You asked for an unknown property[%s] for matter[%s@%p] - the available properties are[%s]") , _rep_(symbol) , this->__repr__() , (void*)this , props.str()  );
   }
   return res;
 }
@@ -287,7 +287,7 @@ CL_DEFMETHOD Atom_sp	Matter_O::firstAtomWithName(MatterName name)
       return a;
     }
   }
-  SIMPLE_ERROR(BF("Could not find atom with name %s") % _rep_(name));
+  SIMPLE_ERROR(("Could not find atom with name %s") , _rep_(name));
 }
 
 
@@ -355,15 +355,15 @@ CL_DEFMETHOD Matter_sp   Matter_O::contentWithName(MatterName    sName )
   contentIterator	aCur;
 
   for ( aCur=this->begin_contents();aCur!=this->end_contents(); aCur++ ) {
-    LOG(BF("Looking at(%s) for(%s)") % (*aCur)->getName().c_str() % sName.c_str()  );
+    LOG("Looking at(%s) for(%s)" , (*aCur)->getName().c_str() , sName.c_str()  );
     if ( (*aCur)->getName() == sName ) {
       return( (*aCur) );
     }
   }
-  LOG(BF("Matter(%s) with %d contents does not contain content with name(%s)") % this->name.c_str() % this->_contents.size() % sName.c_str()  );
+  LOG("Matter(%s) with %d contents does not contain content with name(%s)" , this->name.c_str() , this->_contents.size() , sName.c_str()  );
   stringstream ss;
   ss << this->className() << " (" << _rep_(this->name) << ") does not contain name(" << _rep_(sName) << ")";
-  SIMPLE_ERROR(BF(ss.str()));
+  SIMPLE_ERROR((ss.str()));
 }
 
 
@@ -444,7 +444,7 @@ CL_DEFMETHOD int	Matter_O::contentIndexWithName(MatterName sName )
   }
   stringstream ss;
   ss << this->description() <<") does not contain name("<<_rep_(sName)<<")";
-  SIMPLE_ERROR(BF("%s")%ss.str());
+  SIMPLE_ERROR(("%s") , ss.str());
 }
 
 
@@ -459,7 +459,7 @@ CL_DEFMETHOD Matter_sp   Matter_O::contentWithId( int lid )
 
   for ( aCur=this->begin_contents();aCur!=this->end_contents(); aCur++ ) {
     c = (*aCur);
-    LOG(BF("Looking at content with id(%d)") % c->getId() );
+    LOG("Looking at content with id(%d)" , c->getId() );
     if ( c->getId() == lid ) {
       return( c );
     }
@@ -467,7 +467,7 @@ CL_DEFMETHOD Matter_sp   Matter_O::contentWithId( int lid )
 	// THROW an exception
   stringstream ss;
   ss << this->description() << ") does not contain id("<<lid<<")";
-  SIMPLE_ERROR(BF("%s")%ss.str());
+  SIMPLE_ERROR(("%s") , ss.str());
 }
 
 //
@@ -480,7 +480,7 @@ CL_DEFMETHOD bool	Matter_O::hasContentWithId( int lid )
   Matter_sp			c;
   for ( aCur=this->begin_contents();aCur!=this->end_contents(); aCur++ ) {
     c = (*aCur);
-    LOG(BF("Looking at content with id(%d)") % c->getId() );
+    LOG("Looking at content with id(%d)" , c->getId() );
     if ( c->getId() == lid ) {
       return( true );
     }
@@ -500,10 +500,10 @@ Matter_sp   Matter_O::contentWithStorageId( int lid )
   char				str1[255];
   Matter_sp			c;
 
-  LOG(BF("Looking in container(%s) type(%c) for content with storageId(%d)") % this->name.c_str() % this->containerType % lid );
+  LOG("Looking in container(%s) type(%c) for content with storageId(%d)" , this->name.c_str() , this->containerType , lid );
   for ( aCur=this->begin_contents();aCur!=this->end_contents(); aCur++ ) {
     c = (*aCur);
-    LOG(BF("Looking at content with id(%d)") % c->getId() );
+    LOG("Looking at content with id(%d)" , c->getId() );
     if ( c->getStorageId() == lid ) {
       return( c );
     }
@@ -512,7 +512,7 @@ Matter_sp   Matter_O::contentWithStorageId( int lid )
 	// THROW an exception
   stringstream ss;
   ss << "Matter("<<this->name<<") type("<<this->containerType<<") does not contain id("<<lid<<")";
-  SIMPLE_ERROR(BF("%s")%ss.str());
+  SIMPLE_ERROR(("%s") , ss.str());
 }
 
 //
@@ -522,10 +522,10 @@ bool	Matter_O::hasContentWithStorageId( int lid )
 {
   contentIterator	aCur;
   Matter_sp			c;
-  LOG(BF("Looking in container(%s) type(%c) for content with storageId(%d)") % this->name.c_str() % this->containerType % lid );
+  LOG("Looking in container(%s) type(%c) for content with storageId(%d)" , this->name.c_str() , this->containerType , lid );
   for ( aCur=this->begin_contents();aCur!=this->end_contents(); aCur++ ) {
     c = (*aCur);
-    LOG(BF("Looking at content with id(%d)") % c->getId() );
+    LOG("Looking at content with id(%d)" , c->getId() );
     if ( c->getStorageId() == lid ) {
       return( true );
     }
@@ -551,7 +551,7 @@ CL_DEFMETHOD int	Matter_O::contentIndexWithId( int lid )
       return( i );
     }
   }
-  SIMPLE_ERROR(BF("Matter %s does not contain content with id(%s)") % _rep_(this->name) % lid);
+  SIMPLE_ERROR(("Matter %s does not contain content with id(%s)") , _rep_(this->name) , lid);
 }
 
 
@@ -570,7 +570,7 @@ CL_DEFMETHOD int	Matter_O::contentIndex( Matter_sp cc)
       return( i );
     }
   }
-  SIMPLE_ERROR(BF("Matter %s does not contain %s") % _rep_(this->name) % _rep_(cc->getName()));
+  SIMPLE_ERROR(("Matter %s does not contain %s") , _rep_(this->name) , _rep_(cc->getName()));
 }
 
 
@@ -581,10 +581,10 @@ CL_DEFMETHOD void	Matter_O::addMatter(Matter_sp cp )
 {_OF();
   Matter_sp	ctemp;
   ASSERTNOTNULL(cp);
-  LOG(BF("Adding: %s of type: %c") % cp->getName().c_str() % cp->getMatterType()  );
+  LOG("Adding: %s of type: %c" , cp->getName().c_str() , cp->getMatterType()  );
   ctemp = this->sharedThis<Matter_O>();
 //  cp->setContainedBy(ctemp);
-  LOG(BF("Adding %c:0x%08x to parent %c:0x%08x") % (cp->getMatterType()) % (cp.get()) % (this->getMatterType()) % (this ) );
+  LOG("Adding %c:0x%08x to parent %c:0x%08x" , (cp->getMatterType()) , (cp.get()) , (this->getMatterType()) , (this ) );
     	// Always add the content to the end of the vector
 	// A lot depends on Residues maintaining the order of Atoms
 	// throughout the various passes of building databases
@@ -596,7 +596,7 @@ CL_DEFMETHOD void	Matter_O::addMatter(Matter_sp cp )
     this->_NextContentId++;
   }
 #endif
-  LOG(BF("Finished adding") );
+  LOG("Finished adding" );
 }
 
 //
@@ -609,12 +609,12 @@ void	Matter_O::addMatterRetainId(Matter_sp cp )
 {_OF();
   IMPLEMENT_MEF("Get away from ids");
   Matter_sp	ctemp;
-  LOG(BF("addMatterRetainId to %s adding container %s")
-      % this->description()
-      % cp->description() );
+  LOG("addMatterRetainId to %s adding container %s"
+      , this->description()
+      , cp->description() );
   ctemp = this->sharedThis<Matter_O>();
 //  cp->setContainedBy(ctemp);
-  LOG(BF("Adding %c:0x%08x to parent %c:0x%08x") % (cp->getMatterType()) % (cp.get()) % (this->getMatterType()) % (this ) );
+  LOG("Adding %c:0x%08x to parent %c:0x%08x" , (cp->getMatterType()) , (cp.get()) , (this->getMatterType()) , (this ) );
     	// Always add the content to the end of the vector
 	// A lot depends on Residues maintaining the order of Atoms
 	// throughout the various passes of building databases
@@ -625,7 +625,7 @@ void	Matter_O::addMatterRetainId(Matter_sp cp )
     this->_NextContentId = cp->_Id+1;
   }
 #endif
-  LOG(BF("Finished adding") );
+  LOG("Finished adding" );
 }
 
 
@@ -644,7 +644,7 @@ CL_LISPIFY_NAME("applyTransformToAtoms");
 CL_DEFMETHOD void	Matter_O::applyTransformToAtoms( const Matrix& m )
 {_OF();
   contentIterator	a;
-  LOG(BF("Transforming all atoms with:%s") % (m.asString().c_str() ) );
+  LOG("Transforming all atoms with:%s" , (m.asString().c_str() ) );
   for ( a=this->begin_contents(); a!=this->end_contents(); a++ ) {
     (*a)->applyTransformToAtoms(m);
   }
@@ -745,19 +745,19 @@ CL_DEFMETHOD void	Matter_O::setAtomAliasesForResiduesNamed(core::List_sp parts, 
 #if 0
   if ( this->asSmartPtr().isA<Atom_O>() )
   {
-    SIMPLE_ERROR(BF("Needs Aggregate, Molecule or Residue"));
+    SIMPLE_ERROR(("Needs Aggregate, Molecule or Residue"));
   }
-  LOG(BF("setAtomAliasesForResiduesNamed with parts(%s) atomAliases(%s)") % _rep_(parts).c_str() % _rep_(atomAliases).c_str()  );
+  LOG("setAtomAliasesForResiduesNamed with parts(%s) atomAliases(%s)" , _rep_(parts).c_str() , _rep_(atomAliases).c_str()  );
   gctools::SmallMap<MatterName,core::List_sp> residueNamesToAliasAtoms;
   for ( auto cur : parts ) {
     core::List_sp oneExtend = oCar(cur);
     if ( oneExtend->length() != 2 )
     {
-      SIMPLE_ERROR(BF("Each entry must have two elements: "+_rep_(oneExtend) ));
+      SIMPLE_ERROR(("Each entry must have two elements: "+_rep_(oneExtend) ));
     }
     core::String_sp residueName = oneExtend->car<core::String_O>();
     core::List_sp aliasAtoms = oCadr(oneExtend);
-    LOG(BF("residueName(%s) aliasAtoms(%s)") % residueName->get().c_str() % _rep_(aliasAtoms).c_str() );
+    LOG("residueName(%s) aliasAtoms(%s)" , residueName->get().c_str() , _rep_(aliasAtoms).c_str() );
     residueNamesToAliasAtoms[residueName->get()] = aliasAtoms;
   }
     	//
@@ -770,13 +770,13 @@ CL_DEFMETHOD void	Matter_O::setAtomAliasesForResiduesNamed(core::List_sp parts, 
     Residue_sp res = lResidues.getResidue();
     if ( residueNamesToAliasAtoms.count(res->getName())>0 )
     {
-      LOG(BF("%s:%d Setting aliases for residue(%s)") % (__FILE__) % (__LINE__) % (res->getName().c_str()) );
+      LOG("%s:%d Setting aliases for residue(%s)" , (__FILE__) , (__LINE__) , (res->getName().c_str()) );
       core::List_sp aliasAtoms = residueNamesToAliasAtoms[res->getName()];
-      LOG(BF("setting aliases for residueName(%s) aliasAtoms(%s) atomAliases(%s)") % res->getName().c_str() % _rep_(aliasAtoms).c_str() % _rep_(atomAliases).c_str() );
+      LOG("setting aliases for residueName(%s) aliasAtoms(%s) atomAliases(%s)" , res->getName().c_str() , _rep_(aliasAtoms).c_str() , _rep_(atomAliases).c_str() );
       res->setAliasesForAtoms(aliasAtoms,atomAliases);
     } else
     {
-      LOG(BF("%s:%d Not setting aliases for residue(%s)") % (__FILE__) % (__LINE__) % (res->getName().c_str()) );
+      LOG("%s:%d Not setting aliases for residue(%s)" , (__FILE__) , (__LINE__) , (res->getName().c_str()) );
     }
   }
 #endif
@@ -803,11 +803,11 @@ CL_DEFMETHOD Vector3	Matter_O::geometricCenter()
     sum = sum + a->getPosition();
     count++;
   }
-  LOG(BF("geometricCenterOfMatter number of atoms = %d") % count  );
+  LOG("geometricCenterOfMatter number of atoms = %d" , count  );
   if ( count != 0 ) {
     sum = sum*(1.0/count);
   }
-  LOG(BF("Geometric center = %f, %f, %f") % sum.getX() % sum.getY() % sum.getZ()  );
+  LOG("Geometric center = %f, %f, %f" , sum.getX() , sum.getY() , sum.getZ()  );
   return sum;
 }
 
@@ -1012,7 +1012,7 @@ CL_DEFMETHOD Residue_sp Matter_O::aliasResidue(Alias_sp alias)
 {_OF();
   Residue_sp a = this->aliasResidueOrNil(alias);
   if ( a.notnilp() ) return a;
-  SIMPLE_ERROR(BF("could not find aliasResidue"));
+  SIMPLE_ERROR(("could not find aliasResidue"));
 }
 
 CL_LISPIFY_NAME("aliasAtomOrNil");
@@ -1028,7 +1028,7 @@ CL_DEFMETHOD Atom_sp Matter_O::aliasAtom(Alias_sp alias)
 {_OF();
   Atom_sp a = this->aliasAtomOrNil(alias);
   if ( a.notnilp() ) return a;
-  SIMPLE_ERROR(BF("could not find aliasAtom"));
+  SIMPLE_ERROR(("could not find aliasAtom"));
 }
 
 
@@ -1062,7 +1062,7 @@ void	Matter_O::fields(core::Record_sp node )
   node->field_if_not_nil( INTERN_(kw,properties),this->_Properties);
   node->field_if_not_empty( INTERN_(kw,contents), this->_contents);
 //  node->field_if_not_nil( INTERN_(kw,contained_by), this->containerContainedBy);
-  LOG(BF("Status") );
+  LOG("Status" );
 }
 
 
@@ -1105,7 +1105,7 @@ CL_DEFMETHOD core::List_sp Matter_O::allBondsAsList(bool allowVirtualAtoms ) con
   while ( l.advance() )
   {
     Bond_sp bond = l.getBond();
-    LOG(BF("Adding %s") % bond->description() );
+    LOG("Adding %s" , bond->description() );
     Atom_sp a1 = bond->getAtom1();
     Atom_sp a2 = bond->getAtom2();
     if ( !allowVirtualAtoms && ( a1->isVirtual() || a2->isVirtual() ) ) continue;
@@ -1154,7 +1154,7 @@ CL_DEFMETHOD core::List_sp Matter_O::allImproperTorsionsAsList(bool allowVirtual
 {_OF();
   core::List_sp result = nil<core::List_V>();
   Loop l(this->const_sharedThis<Matter_O>(),IMPROPERS);
-  {_BLOCK_TRACE("Iterating over loop");
+  {
     int count=0;
     while ( l.advance() )
     {
@@ -1170,7 +1170,7 @@ CL_DEFMETHOD core::List_sp Matter_O::allImproperTorsionsAsList(bool allowVirtual
       ImproperTorsion_sp entry = ImproperTorsion_O::create(a1,a2,a3,a4);
       result = core::Cons_O::create(entry,result);
     }
-    LOG(BF("There were %d improper torsions iterated over") % count );
+    LOG("There were %d improper torsions iterated over" , count );
   }
   return result;
 }

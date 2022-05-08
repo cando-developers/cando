@@ -227,12 +227,12 @@ void	NumericalFunction_O::parseFromXYFile(string fn, int xindex, int yindex)
     if ( xindex-1 < n ) {
       x = values[xindex-1];
     }  else {
-      SIMPLE_ERROR(BF("Index beyond the end of line" ));
+      SIMPLE_ERROR(("Index beyond the end of line" ));
     }
     if ( yindex-1 < n ) {
       y = values[yindex-1];
     }  else {
-      SIMPLE_ERROR(BF("Index beyond the end of line" ));
+      SIMPLE_ERROR(("Index beyond the end of line" ));
     }
     xv.push_back(x);
     yv.push_back(y);
@@ -264,7 +264,7 @@ int				thisIndex, fnIndex, vals;
 	ss << "xInc values must be identical this->xInc("
 		<< this->xInc << ") != fn->xInc("
 		<< fn->xInc << ")";
-	SIMPLE_ERROR(BF("%s")%ss.str());
+	SIMPLE_ERROR(("%s") , ss.str());
     }
     if ( this->values.size() == 0 ) {
 	xMin = fn->xStart;
@@ -285,16 +285,16 @@ int				thisIndex, fnIndex, vals;
     for ( auto ii=newFunc->values.begin(); ii<newFunc->values.end(); ++ii ) {
       *ii = 0.0;
     }
-    LOG(BF("resulting NumericalFunction has %d vals") % (newFunc->values.size()) );
+    LOG("resulting NumericalFunction has %d vals" , (newFunc->values.size()) );
     for ( auto dp=newFunc->values.begin(); dp!=newFunc->values.end(); dp++ ) {
 	x = newFunc->getXValueAtIndex(dp-newFunc->values.begin());
-	LOG(BF("Adding at x=%lf") % (x ) );
+	LOG("Adding at x=%lf" , (x ) );
 	thisIndex = this->findIndex(x);
-	LOG(BF("   thisIndex = %d value=%lf") % (thisIndex) % (this->getYValueAtIndex(thisIndex) ) );
+	LOG("   thisIndex = %d value=%lf" , (thisIndex) , (this->getYValueAtIndex(thisIndex) ) );
 	fnIndex = fn->findIndex(x);
-	LOG(BF("     fnIndex = %d valut=%lf") % (fnIndex) % (fn->getYValueAtIndex(fnIndex) ) );
+	LOG("     fnIndex = %d valut=%lf" , (fnIndex) , (fn->getYValueAtIndex(fnIndex) ) );
 	*dp = this->getYValueAtIndex(thisIndex) + fn->getYValueAtIndex(fnIndex);
-	LOG(BF("  Wrote value(%lf) to index(%d)") % (*dp) % (dp-newFunc->values.begin()) );
+	LOG("  Wrote value(%lf) to index(%d)" , (*dp) , (dp-newFunc->values.begin()) );
     }
     return newFunc;
 }
@@ -309,7 +309,7 @@ int				thisIndex, fnIndex, vals;
 	ss << "xInc values must be identical this->xInc("
 		<< this->xInc << ") != fn->xInc("
 		<< fn->xInc << ")";
-	SIMPLE_ERROR(BF("%s")%ss.str());
+	SIMPLE_ERROR(("%s") , ss.str());
     }
     if ( this->values.size() == 0 ) {
 	xMin = fn->xStart;
@@ -328,16 +328,16 @@ int				thisIndex, fnIndex, vals;
     newFunc->setXInc(this->xInc);
     newFunc->values.resize(vals);
     for (auto ii=newFunc->values.begin(); ii<newFunc->values.end(); ii++ ) *ii = 0.0;
-    LOG(BF("resulting NumericalFunction has %d vals") % (newFunc->values.size()) );
+    LOG("resulting NumericalFunction has %d vals" , (newFunc->values.size()) );
     for ( auto dp=newFunc->values.begin(); dp!=newFunc->values.end(); dp++ ) {
 	x = newFunc->getXValueAtIndex(dp-newFunc->values.begin());
-	LOG(BF("Adding at x=%lf") % (x ) );
+	LOG("Adding at x=%lf" , (x ) );
 	thisIndex = this->findIndex(x);
-	LOG(BF("   thisIndex = %d value=%lf") % (thisIndex) % (this->getYValueAtIndex(thisIndex) ) );
+	LOG("   thisIndex = %d value=%lf" , (thisIndex) , (this->getYValueAtIndex(thisIndex) ) );
 	fnIndex = fn->findIndex(x);
-	LOG(BF("     fnIndex = %d valut=%lf") % (fnIndex) % (fn->getYValueAtIndex(fnIndex) ) );
+	LOG("     fnIndex = %d valut=%lf" , (fnIndex) , (fn->getYValueAtIndex(fnIndex) ) );
 	*dp = this->getYValueAtIndex(thisIndex) - fn->getYValueAtIndex(fnIndex);
-	LOG(BF("  Wrote value(%lf) to index(%d)") % (*dp) % (dp-newFunc->values.begin()) );
+	LOG("  Wrote value(%lf) to index(%d)" , (*dp) , (dp-newFunc->values.begin()) );
     }
     return newFunc;
 }
@@ -347,17 +347,17 @@ void	NumericalFunction_O::addValueToHistogram(double x)
 {
 int		index;
 double		cnt, rnd;
-    LOG(BF("addValueToHistogram value = %lf    xInc = %lf") % (x) % (this->xInc ) );
+    LOG("addValueToHistogram value = %lf    xInc = %lf" , (x) , (this->xInc ) );
     if ( this->values.size() == 0 ) {
 	rnd = ROUND(x/this->xInc);
-	LOG(BF("addValueToHistogram rnd = %lf") % (rnd ) );
+	LOG("addValueToHistogram rnd = %lf" , (rnd ) );
 	this->xStart = this->xInc*rnd;
-	LOG(BF("addValueToHistogram xStart = %lf") % (this->xStart ) );
+	LOG("addValueToHistogram xStart = %lf" , (this->xStart ) );
 	this->values.push_back(1.0);
 	return;
     }
     index = this->findIndex(x);
-    LOG(BF("addValueToHistogram index= %d") % (index ) );
+    LOG("addValueToHistogram index= %d" , (index ) );
     cnt = this->getYValueAtIndex(index) + 1.0;
     this->setYValueAtIndex(index,cnt);
 }

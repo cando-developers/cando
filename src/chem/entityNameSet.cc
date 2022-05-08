@@ -148,7 +148,7 @@ core::List_sp EntityNameSetBase_O::getInterestingAtomAliases()
 CL_LISPIFY_NAME("getInterestingAtomAliasIndex");
 CL_DEFMETHOD     int	EntityNameSetBase_O::getInterestingAtomAliasIndex(Alias_sp alias)
     {
-      SIMPLE_ERROR(BF("Subclass must implement for alias: "+_rep_(alias)));
+      SIMPLE_ERROR(("Subclass must implement for alias: "+_rep_(alias)));
     }
 
 #if 0
@@ -225,8 +225,8 @@ CL_DEFMETHOD     void EntityNameSetBase_O::contractEntityNames(adapt::SymbolSet_
           ASSERT(bdb->recognizesEntityName(ni));
           Entity_sp entity = bdb->getEntity(ni);
           RepresentativeList_sp objs = entity->expandedRepresentativeList();
-          LOG(BF("Expanded representative list for entity[%s] is: %s") % _rep_(entity)
-              % _rep_(objs) );
+          LOG("Expanded representative list for entity[%s] is: %s" , _rep_(entity)
+              , _rep_(objs) );
           allRepresentatives->vectorPushExtend(objs);
         } );
       return allRepresentatives;
@@ -270,7 +270,7 @@ CL_DEFMETHOD     void	EntityNameSetBase_O::addMonomerName(core::Symbol_sp nm)
 	bdb = getCandoDatabase();
 	if ( !bdb->recognizesEntityName(nm) )
 	{
-          SIMPLE_ERROR(BF("Unknown monomer name: "+_rep_(nm)));
+          SIMPLE_ERROR(("Unknown monomer name: "+_rep_(nm)));
 	}
 	this->_EntityNames->insert(nm);
 #endif
@@ -374,7 +374,7 @@ CL_DEFMETHOD     core::Symbol_sp EntityNameSetBase_O::getOnlyMonomerName()
 	adapt::SymbolSet_sp names;
 	names = this->expandedNameSet();
 	if ( names->size() != 1 ) {
-	    SIMPLE_ERROR(BF("There must be only one equivalent name"));
+	    SIMPLE_ERROR(("There must be only one equivalent name"));
 	}
 	return names->first();
     }
@@ -388,20 +388,20 @@ CL_DEFMETHOD     void	EntityNameSetBase_O::setMonomerNameOrPdb(core::Symbol_sp m
     {
       core::T_sp db = getCandoDatabase();
 //    this->setName(mn);
-//    LOG(BF("Set name of EntityNameSetBase to: %s") % mn.c_str()  );
+//    LOG("Set name of EntityNameSetBase to: %s" , mn.c_str()  );
       core::T_sp found = core::eval::funcall(_sym_recognizesNameOrPdb,getCandoDatabase(),mn);
 	if ( found.isTrue() ) {
-	    LOG(BF("status") );
+	    LOG("status" );
 	    core::Symbol_sp full = gc::As<core::Symbol_sp>(core::eval::funcall(_sym_getMonomerNameForNameOrPdb, db, mn));
 	    this->_EntityNames->clear();
 	    this->_EntityNames->insert(full);
-	    LOG(BF("Added monomer name(%s) to EntityNameSetBase") % _rep_(mn)  );
+	    LOG("Added monomer name(%s) to EntityNameSetBase" , _rep_(mn)  );
 	} else {
 	    stringstream serr;
 	    serr << "setMonomerNameOrPdb"
 		 << " trying to add monomer but it isn't recognized: "
 		 << _rep_(mn);
-	    LOG(BF("%s") % serr.str() );
+	    LOG("%s" , serr.str() );
 	}
     }
 
@@ -470,7 +470,7 @@ CL_DEFMETHOD     core::List_sp	EntityNameSetBase_O::getUnrecognizedMonomerNamesO
 CL_LISPIFY_NAME("hasInterestingAtomAlias");
 CL_DEFMETHOD     bool EntityNameSetBase_O::hasInterestingAtomAlias(Alias_sp alias)
     {
-	LOG(BF("EntityNameSetBase_O always returns false") );
+	LOG("EntityNameSetBase_O always returns false" );
 	return false;
     };
 

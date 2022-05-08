@@ -92,7 +92,7 @@ CL_DEFMETHOD void EnergyRigidBodyNonbond_O::initializeCrossTerms(bool verbose)
   }
   this->_NumberOfTypes = next_type_index;
   if (verbose) {
-    core::write_bf_stream(BF("There are %d types\n") % this->_NumberOfTypes);
+    core::write_bf_stream(fmt::sprintf("There are %d types\n" , this->_NumberOfTypes));
   }
   this->_CrossTerms.resize(next_type_index*next_type_index);
   double vdwScale = this->getVdwScale();
@@ -109,10 +109,10 @@ CL_DEFMETHOD void EnergyRigidBodyNonbond_O::initializeCrossTerms(bool verbose)
       double dC = 2.0*epsilonij*rStar6*vdwScale;
       RigidBodyNonbondCrossTerm crossTerm(dA,dC);
       if (verbose) {
-        core::write_bf_stream(BF("Cross term for types %d - %d\n") % xi % yi );
-        core::write_bf_stream(BF("    type: %d   radius-> %f   epsilon-> %f\n") % xi % ea1._Radius % ea1._Epsilon);
-        core::write_bf_stream(BF("    type: %d   radius-> %f   epsilon-> %f\n") % yi % ea2._Radius % ea2._Epsilon);
-        core::write_bf_stream(BF("    dA -> %f      dC -> %f\n") % dA % dC );
+        core::write_bf_stream(fmt::sprintf("Cross term for types %d - %d\n" , xi , yi ));
+        core::write_bf_stream(fmt::sprintf("    type: %d   radius-> %f   epsilon-> %f\n" , xi , ea1._Radius , ea1._Epsilon));
+        core::write_bf_stream(fmt::sprintf("    type: %d   radius-> %f   epsilon-> %f\n" , yi , ea2._Radius , ea2._Epsilon));
+        core::write_bf_stream(fmt::sprintf("    dA -> %f      dC -> %f\n" , dA , dC ));
       }
       this->crossTerm(xi,yi) = crossTerm;
       this->crossTerm(yi,xi) = crossTerm;
@@ -122,7 +122,7 @@ CL_DEFMETHOD void EnergyRigidBodyNonbond_O::initializeCrossTerms(bool verbose)
           
 EnergyRigidBodyNonbond_sp EnergyRigidBodyNonbond_O::make(core::Array_sp end_atoms) {
   if (end_atoms->length()<1) {
-    SIMPLE_ERROR(BF("You must provide a vector of end atom indices with at least one end atom"));
+    SIMPLE_ERROR(("You must provide a vector of end atom indices with at least one end atom"));
   }
   core::SimpleVector_byte32_t_sp sv = core::SimpleVector_byte32_t_O::make(end_atoms->length());
   // Copy the atom indices
@@ -130,7 +130,7 @@ EnergyRigidBodyNonbond_sp EnergyRigidBodyNonbond_O::make(core::Array_sp end_atom
   for ( size_t i(0), iEnd(end_atoms->length()); i<iEnd; ++i ) {
     Fixnum f = core::clasp_to_fixnum(end_atoms->rowMajorAref(i));
     if (istart>=f) {
-      SIMPLE_ERROR(BF("The list of atom indices must be strictly increasing"));
+      SIMPLE_ERROR(("The list of atom indices must be strictly increasing"));
     }
     (*sv)[i] = f;
   }
@@ -155,10 +155,10 @@ double	EnergyRigidBodyNonbond_O::getEnergy()
 
  void EnergyRigidBodyNonbond_O::energyRigidBodyNonbondSetTerm(gc::Fixnum index, core::T_sp atom, double radius, double epsilon, double charge, const Vector3& position) {
   if (index < 0 || index >= this->_AtomInfoTable.size()) {
-    SIMPLE_ERROR(BF("Index out of range %d - max is %d") % index % this->_AtomInfoTable.size());
+    SIMPLE_ERROR(("Index out of range %d - max is %d") , index , this->_AtomInfoTable.size());
   }
   if (this->_AtomInfoTable[index]._Object.boundp()) {
-    SIMPLE_ERROR(BF("The rigid body nonbond term at %d has already been set to object %s") % index % _rep_(this->_AtomInfoTable[index]._Object));
+    SIMPLE_ERROR(("The rigid body nonbond term at %d has already been set to object %s") , index , _rep_(this->_AtomInfoTable[index]._Object));
   }
   RigidBodyAtomInfo info(atom,radius,epsilon,charge,position);
   this->_AtomInfoTable[index] = info;
@@ -171,7 +171,7 @@ Vector3 EnergyRigidBodyNonbond_O::getPosition(size_t index)
   if (index < this->_AtomInfoTable.size()) {
     return this->_AtomInfoTable[index]._Position;
   }
-  SIMPLE_ERROR(BF("index %lu is out of bounds") % index);
+  SIMPLE_ERROR(("index %lu is out of bounds") , index);
 }
 
 
@@ -181,7 +181,7 @@ void	EnergyRigidBodyNonbond_O::dumpTerms()
   for ( size_t rb = 0; rb<this->_RigidBodyEndAtom->length(); ++rb) {
     for ( size_t i = istart; i<(*this->_RigidBodyEndAtom)[rb]; ++i ) {
       RigidBodyAtomInfo& ai = this->_AtomInfoTable[i];
-      core::write_bf_stream(BF("I1 = %3d  %s  %lf %lf %lf %s\n") % (rb*7) % _rep_(ai._Object) % ai._Radius % ai._Epsilon % ai._Charge % ai._Position.asString());
+      core::write_bf_stream(fmt::sprintf("I1 = %3d  %s  %lf %lf %lf %s\n" , (rb*7) , _rep_(ai._Object) , ai._Radius , ai._Epsilon , ai._Charge , ai._Position.asString()));
     }
     istart = (*this->_RigidBodyEndAtom)[rb];
   }
@@ -274,15 +274,15 @@ CL_DEFMETHOD core::ComplexVector_float_sp EnergyRigidBodyNonbond_O::write_rigid_
       output->vectorPushExtend((float)plabmz);
 #if 0
       if (coordIndex==0) {
-        core::write_bf_stream(BF("fill_pointer -> %d\n") % output->fillPointer() );
-        core::write_bf_stream(BF("&plabmx -> %p\n") % (void*)&plabmx);
-        core::write_bf_stream(BF("&output[0] -> %p\n") % (void*)&(*output)[0]);
-        core::write_bf_stream(BF("Point[0] -> %f, %f, %f\n") % plabmx % plabmy % plabmz);
-        core::write_bf_stream(BF("output[0] -> %f\n") % (*output)[0]);
-        core::write_bf_stream(BF("hex dump output[0] -> %lX\n") % *(unsigned int*)&(*output)[0]);
+        core::write_bf_stream(fmt::sprintf("fill_pointer -> %d\n" , output->fillPointer() ));
+        core::write_bf_stream(fmt::sprintf("&plabmx -> %p\n" , (void*)&plabmx));
+        core::write_bf_stream(fmt::sprintf("&output[0] -> %p\n" , (void*)&(*output)[0]));
+        core::write_bf_stream(fmt::sprintf("Point[0] -> %f, %f, %f\n" , plabmx , plabmy , plabmz));
+        core::write_bf_stream(fmt::sprintf("output[0] -> %f\n" , (*output)[0]));
+        core::write_bf_stream(fmt::sprintf("hex dump output[0] -> %lX\n" , *(unsigned int*)&(*output)[0]));
         (*output)[0] = plabmx;
-        core::write_bf_stream(BF("after output[0] -> %f\n") % (*output)[0]);
-        core::write_bf_stream(BF("hex dump output[0] -> %lX\n") % *(unsigned int*)&(*output)[0]);
+        core::write_bf_stream(fmt::sprintf("after output[0] -> %f\n" , (*output)[0]));
+        core::write_bf_stream(fmt::sprintf("hex dump output[0] -> %lX\n" , *(unsigned int*)&(*output)[0]));
       }
       coordIndex += 3;
 #endif
@@ -313,7 +313,7 @@ CL_DEFMETHOD core::ComplexVector_float_sp EnergyRigidBodyNonbond_O::write_nonbon
     size_t I1end = (*this->_RigidBodyEndAtom)[iI1];
 #if 0
     if (iI1<3) {
-      core::write_bf_stream(BF("%s:%d I1start -> %d  I1end -> %d\n") % __FILE__ % __LINE__ % I1start % I1end);
+      core::write_bf_stream(fmt::sprintf("%s:%d I1start -> %d  I1end -> %d\n" , __FILE__ , __LINE__ , I1start , I1end));
     }
 #endif
     for ( size_t I1cur = I1start; I1cur<I1end; ++I1cur ) {
@@ -336,9 +336,9 @@ CL_DEFMETHOD core::ComplexVector_float_sp EnergyRigidBodyNonbond_O::write_nonbon
       parts->vectorPushExtend(plabmz);
 #if 0
       if (iI1<3) {
-        core::write_bf_stream(BF("%s:%d  I1cur[%d] I1[%d] -> Pos         %f %f %f\n") % __FILE__ % __LINE__ % I1cur % I1 % ea1._Position.getX() % ea1._Position.getY() % ea1._Position.getZ() );
-        core::write_bf_stream(BF("%s:%d  I1cur[%d] I1[%d] -> pxm,pym,pzm %f %f %f\n") % __FILE__ % __LINE__ % I1cur % I1 % pxm % pym % pzm );
-        core::write_bf_stream(BF("%s:%d               point -> %f %f %f\n") % __FILE__ % __LINE__ % plabmx % plabmy %plabmz );
+        core::write_bf_stream(fmt::sprintf("%s:%d  I1cur[%d] I1[%d] -> Pos         %f %f %f\n" , __FILE__ , __LINE__ , I1cur , I1 , ea1._Position.getX() , ea1._Position.getY() , ea1._Position.getZ() ));
+        core::write_bf_stream(fmt::sprintf("%s:%d  I1cur[%d] I1[%d] -> pxm,pym,pzm %f %f %f\n" , __FILE__ , __LINE__ , I1cur , I1 , pxm , pym , pzm ));
+        core::write_bf_stream(fmt::sprintf("%s:%d               point -> %f %f %f\n" , __FILE__ , __LINE__ , plabmx , plabmy %plabmz ));
       }
 #endif
     }
@@ -381,7 +381,7 @@ void	EnergyRigidBodyNonbond_O::setupHessianPreconditioner(
                                                     NVector_sp nvPosition,
                                                     AbstractLargeSquareMatrix_sp m )
 {
-  SIMPLE_ERROR(BF("Nonbond term isn't used when calculating setupHessianPreconditioner but it was called!!!"));
+  SIMPLE_ERROR(("Nonbond term isn't used when calculating setupHessianPreconditioner but it was called!!!"));
 }
 
 
@@ -415,7 +415,7 @@ double	EnergyRigidBodyNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
   RigidBodyEnergyFunction_sp rigidBodyEnergyFunction = gc::As<RigidBodyEnergyFunction_sp>(score);
   BoundingBox_sp boundingBox = rigidBodyEnergyFunction->boundingBox();
   if (boundingBox.unboundp()) {
-    SIMPLE_ERROR(BF("The rigid-body-energy-function bounding-box is unbound - it must be defined"));
+    SIMPLE_ERROR(("The rigid-body-energy-function bounding-box is unbound - it must be defined"));
   }
   Vector3 rwidths = boundingBox->get_bounding_box_rwidths();
   double x_rsize = rwidths.getX();
@@ -460,7 +460,7 @@ double	EnergyRigidBodyNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
   
 	    // If you are going to use openmp here, you need to control access to the force and hessian
 	    // arrays so that only one thread updates each element at a time.
-  LOG(BF("Nonbond component is enabled") );
+  LOG("Nonbond component is enabled" );
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_NONBONDRBPB_termDeclares.cc>
@@ -504,16 +504,16 @@ double	EnergyRigidBodyNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
 #include <cando/chem/energy_functions/_NONBONDRBPB_termCode.cc>
 #if 0
           if (Energy > 1.0) {
-            core::write_bf_stream(BF("Energy iHelix1 iHelix2 I1cur I2cur\n"));
-            core::write_bf_stream(BF("Energy= %f %d %d %d %d\n") % Energy % iHelix1 % iHelix2 %I1cur % I2cur);
-            core::write_bf_stream(BF("am,bm,cm,dm,xm,ym,zm,pxm,pym,pzm -> %f,%f,%f,%f,%f,%f,%f %f,%f,%f\n") % am % bm % cm % dm % xm % ym % zm % pxm % pym % pzm);
-            core::write_bf_stream(BF("an,bn,cn,dn,xn,yn,zn,pxn,pyn,pzn -> %f,%f,%f,%f,%f,%f,%f %f,%f,%f\n") % an % bn % cn % dn % xn % yn % zn % pxn % pyn % pzn);
-            core::write_bf_stream(BF("DeltaX, DeltaY, DeltaZ  -> %f, %f, %f\n") % DeltaX % DeltaY % DeltaZ );
-            core::write_bf_stream(BF("dA, dC -> %f, %f\n") % dA % dC );
+            core::write_bf_stream(fmt::sprintf("Energy iHelix1 iHelix2 I1cur I2cur\n"));
+            core::write_bf_stream(fmt::sprintf("Energy= %f %d %d %d %d\n" , Energy , iHelix1 , iHelix2 %I1cur , I2cur));
+            core::write_bf_stream(fmt::sprintf("am,bm,cm,dm,xm,ym,zm,pxm,pym,pzm -> %f,%f,%f,%f,%f,%f,%f %f,%f,%f\n" , am , bm , cm , dm , xm , ym , zm , pxm , pym , pzm));
+            core::write_bf_stream(fmt::sprintf("an,bn,cn,dn,xn,yn,zn,pxn,pyn,pzn -> %f,%f,%f,%f,%f,%f,%f %f,%f,%f\n" , an , bn , cn , dn , xn , yn , zn , pxn , pyn , pzn));
+            core::write_bf_stream(fmt::sprintf("DeltaX, DeltaY, DeltaZ  -> %f, %f, %f\n" , DeltaX , DeltaY , DeltaZ ));
+            core::write_bf_stream(fmt::sprintf("dA, dC -> %f, %f\n" , dA , dC ));
           }
           
           if (std::isnan(Energy)) {
-            SIMPLE_ERROR(BF("Energy is nan"));
+            SIMPLE_ERROR(("Energy is nan"));
           }
 #endif
 #if TURN_ENERGY_FUNCTION_DEBUG_ON //[
@@ -529,37 +529,37 @@ double	EnergyRigidBodyNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
             std::string key;
             key = _rep_(ea1._Object)+"-"+_rep_(ea2._Object);
             LOG_ENERGY(BF( "MEISTER nonbond %s args cando\n")% key );
-            LOG_ENERGY(BF( "MEISTER nonbond %s iHelix1->%3d iHelix2->%3d  I1Cur->%3d I2Cur->%3d\n")% key % iHelix1 % iHelix2 % I1cur % I2cur );
-            LOG_ENERGY(BF( "MEISTER nonbond %s dA %5.3lf\n")% key % dA );
-            LOG_ENERGY(BF( "MEISTER nonbond %s dC %5.3lf\n")% key % dC );
-            LOG_ENERGY(BF( "MEISTER nonbond %s dQ1Q2 %5.3lf\n")% key % dQ1Q2 );
+            LOG_ENERGY(BF( "MEISTER nonbond %s iHelix1->%3d iHelix2->%3d  I1Cur->%3d I2Cur->%3d\n")% key , iHelix1 , iHelix2 , I1cur , I2cur );
+            LOG_ENERGY(BF( "MEISTER nonbond %s dA %5.3lf\n")% key , dA );
+            LOG_ENERGY(BF( "MEISTER nonbond %s dC %5.3lf\n")% key , dC );
+            LOG_ENERGY(BF( "MEISTER nonbond %s dQ1Q2 %5.3lf\n")% key , dQ1Q2 );
 #if 0
-            LOG_ENERGY(BF( "MEISTER nonbond %s x1 %5.3lf %d\n")% key % x1 % (I1/3+1) );
-            LOG_ENERGY(BF( "MEISTER nonbond %s y1 %5.3lf %d\n")% key % y1 % (I1/3+1) );
-            LOG_ENERGY(BF( "MEISTER nonbond %s z1 %5.3lf %d\n")% key % z1 % (I1/3+1) );
-            LOG_ENERGY(BF( "MEISTER nonbond %s x2 %5.3lf %d\n")% key % x2 % (I2/3+1) );
-            LOG_ENERGY(BF( "MEISTER nonbond %s y2 %5.3lf %d\n")% key % y2 % (I2/3+1) );
-            LOG_ENERGY(BF( "MEISTER nonbond %s z2 %5.3lf %d\n")% key % z2 % (I2/3+1) );
+            LOG_ENERGY(BF( "MEISTER nonbond %s x1 %5.3lf %d\n")% key , x1 , (I1/3+1) );
+            LOG_ENERGY(BF( "MEISTER nonbond %s y1 %5.3lf %d\n")% key , y1 , (I1/3+1) );
+            LOG_ENERGY(BF( "MEISTER nonbond %s z1 %5.3lf %d\n")% key , z1 , (I1/3+1) );
+            LOG_ENERGY(BF( "MEISTER nonbond %s x2 %5.3lf %d\n")% key , x2 , (I2/3+1) );
+            LOG_ENERGY(BF( "MEISTER nonbond %s y2 %5.3lf %d\n")% key , y2 , (I2/3+1) );
+            LOG_ENERGY(BF( "MEISTER nonbond %s z2 %5.3lf %d\n")% key , z2 , (I2/3+1) );
 #endif
             LOG_ENERGY(BF( "MEISTER nonbond %s results\n")% key );
-            LOG_ENERGY(BF( "MEISTER nonbond %s EnergyVdw %lf\n")% key % EnergyVdw);
-            LOG_ENERGY(BF( "MEISTER nonbond %s EnergyElectrostatic %lf\n")% key % EnergyElectrostatic);
-            LOG_ENERGY(BF( "MEISTER nonbond %s Enonbond(EnergyVdw+EnergyElectrostatic) %lf\n")% key % (EnergyVdw+EnergyElectrostatic) );
+            LOG_ENERGY(BF( "MEISTER nonbond %s EnergyVdw %lf\n")% key , EnergyVdw);
+            LOG_ENERGY(BF( "MEISTER nonbond %s EnergyElectrostatic %lf\n")% key , EnergyElectrostatic);
+            LOG_ENERGY(BF( "MEISTER nonbond %s Enonbond(EnergyVdw+EnergyElectrostatic) %lf\n")% key , (EnergyVdw+EnergyElectrostatic) );
             if ( calcForce ) {
-              LOG_ENERGY(BF( "MEISTER nonbond %s fam %lf %d\n")% key % fam % (I1cur/3+1) );
-              LOG_ENERGY(BF( "MEISTER nonbond %s fbm %lf %d\n")% key % fbm % (I1cur/3+1) );
-              LOG_ENERGY(BF( "MEISTER nonbond %s fcm %lf %d\n")% key % fcm % (I1cur/3+1) );
-              LOG_ENERGY(BF( "MEISTER nonbond %s fdm %lf %d\n")% key % fdm % (I1cur/3+1) );
-              LOG_ENERGY(BF( "MEISTER nonbond %s fxm %lf %d\n")% key % fxm % (I1cur/3+1) );
-              LOG_ENERGY(BF( "MEISTER nonbond %s fym %lf %d\n")% key % fym % (I1cur/3+1) );
-              LOG_ENERGY(BF( "MEISTER nonbond %s fzm %lf %d\n")% key % fzm % (I1cur/3+1) );
-              LOG_ENERGY(BF( "MEISTER nonbond %s fan %lf %d\n")% key % fan % (I2cur/3+1) );
-              LOG_ENERGY(BF( "MEISTER nonbond %s fbn %lf %d\n")% key % fbn % (I2cur/3+1) );
-              LOG_ENERGY(BF( "MEISTER nonbond %s fcn %lf %d\n")% key % fcn % (I2cur/3+1) );
-              LOG_ENERGY(BF( "MEISTER nonbond %s fdn %lf %d\n")% key % fdn % (I2cur/3+1) );
-              LOG_ENERGY(BF( "MEISTER nonbond %s fxn %lf %d\n")% key % fxn % (I2cur/3+1) );
-              LOG_ENERGY(BF( "MEISTER nonbond %s fyn %lf %d\n")% key % fyn % (I2cur/3+1) );
-              LOG_ENERGY(BF( "MEISTER nonbond %s fzn %lf %d\n")% key % fzn % (I2cur/3+1) );
+              LOG_ENERGY(BF( "MEISTER nonbond %s fam %lf %d\n")% key , fam , (I1cur/3+1) );
+              LOG_ENERGY(BF( "MEISTER nonbond %s fbm %lf %d\n")% key , fbm , (I1cur/3+1) );
+              LOG_ENERGY(BF( "MEISTER nonbond %s fcm %lf %d\n")% key , fcm , (I1cur/3+1) );
+              LOG_ENERGY(BF( "MEISTER nonbond %s fdm %lf %d\n")% key , fdm , (I1cur/3+1) );
+              LOG_ENERGY(BF( "MEISTER nonbond %s fxm %lf %d\n")% key , fxm , (I1cur/3+1) );
+              LOG_ENERGY(BF( "MEISTER nonbond %s fym %lf %d\n")% key , fym , (I1cur/3+1) );
+              LOG_ENERGY(BF( "MEISTER nonbond %s fzm %lf %d\n")% key , fzm , (I1cur/3+1) );
+              LOG_ENERGY(BF( "MEISTER nonbond %s fan %lf %d\n")% key , fan , (I2cur/3+1) );
+              LOG_ENERGY(BF( "MEISTER nonbond %s fbn %lf %d\n")% key , fbn , (I2cur/3+1) );
+              LOG_ENERGY(BF( "MEISTER nonbond %s fcn %lf %d\n")% key , fcn , (I2cur/3+1) );
+              LOG_ENERGY(BF( "MEISTER nonbond %s fdn %lf %d\n")% key , fdn , (I2cur/3+1) );
+              LOG_ENERGY(BF( "MEISTER nonbond %s fxn %lf %d\n")% key , fxn , (I2cur/3+1) );
+              LOG_ENERGY(BF( "MEISTER nonbond %s fyn %lf %d\n")% key , fyn , (I2cur/3+1) );
+              LOG_ENERGY(BF( "MEISTER nonbond %s fzn %lf %d\n")% key , fzn , (I2cur/3+1) );
             }
             LOG_ENERGY(BF( "MEISTER nonbond %s stop\n")% key );
           }
@@ -572,7 +572,7 @@ double	EnergyRigidBodyNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
   }
 #ifdef DEBUG_NONBOND_TERM
   if ( this->_DebugEnergy ) {
-    LOG_ENERGY(BF( "MEISTER nonbond interactions -> %d\n") % interactions);
+    LOG_ENERGY(BF( "MEISTER nonbond interactions -> %d\n") , interactions);
   }
 #endif
   
@@ -580,10 +580,10 @@ double	EnergyRigidBodyNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
   printf("%s:%d NonbondRigidBody    TotalEnergy -> %lf\n", __FILE__, __LINE__, this->_TotalEnergy );
 #endif
   if (std::isnan(this->_TotalEnergy)) {
-    SIMPLE_ERROR(BF("Returning nan"));
+    SIMPLE_ERROR(("Returning nan"));
   }
 #if 0  
-  core::write_bf_stream(BF("Total-energy %e\n") % this->_TotalEnergy );
+  core::write_bf_stream(fmt::sprintf("Total-energy %e\n" , this->_TotalEnergy ));
 #endif
   return this->_TotalEnergy;
 }
@@ -627,7 +627,7 @@ void	EnergyRigidBodyNonbond_O::compareAnalyticalAndNumericalForceAndHessianTermB
 #define	NONBOND_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
 
   {
-    _BLOCK_TRACE("NonbondEnergy finiteDifference comparison");
+    
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_NONBONDRBPB_termDeclares.cc>

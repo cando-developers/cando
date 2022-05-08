@@ -155,7 +155,7 @@ double tresh,theta,tau,t,sm,s,h,g,c,b[MAXMATRIX],z[MAXMATRIX];
 	    z[ip]=0.0; // and reinitialize z.
 	}
     }
-    THROW_HARD_ERROR(BF("Too many iterations in routine jacobi"));
+    THROW_HARD_ERROR(("Too many iterations in routine jacobi"));
 }
 
 Matrix::Matrix()
@@ -408,7 +408,7 @@ Matrix Matrix::invertTransform() const
 {
     if ( !this->is3x3Orthogonal(1e-3) )
     {
-	THROW_HARD_ERROR(BF("The rotation part must be orthogonal to invert the transform"));
+	THROW_HARD_ERROR(("The rotation part must be orthogonal to invert the transform"));
     }
     Matrix invertRotation = this->transposed3x3();
     Vector3 trans = this->getTranslation();
@@ -740,8 +740,8 @@ namespace client
         bool r = phrase_parse(first, last, *double_, space, v);
         if (first != last)
 	{
-	    _lisp->print(BF("first!=last  v.size() = %d") % v.size());
-            return false;
+          core::writeln_bf_stream(fmt::sprintf("first!=last  v.size() = %d" , v.size()));
+          return false;
 	}
 	m.setFromDoubleVector(v);
         return r;
@@ -861,7 +861,7 @@ stringstream ss;
 	for (c=0; c<4; c++ ) 
 	{
 	    val = this->atRowCol(r,c);
-	    strcpy(cstr,(BF("%8.2lf") % val).str().c_str());
+	    strcpy(cstr,fmt::sprintf("%8.2lf", val).c_str());
 	    ss << cstr << " ";
 	}
 	ss << std::endl;
@@ -901,13 +901,13 @@ core::tokenize( str, tokens, " \n\t" );
 	    serr << "Token #" << ei << " = " << tokens[ei] << std::endl;
 	}
 	serr << "---done dump";
-	SIMPLE_ERROR(BF("%s")%serr.str());
+	SIMPLE_ERROR(("%s") , serr.str());
     }
     {
 	for ( i=0,token=tokens.begin(); token!=tokens.end(); token++,i++ ) {
 	    val = atof((*token).c_str());
 	    if ( i>15 ) {
-		SIMPLE_ERROR(BF("Too many numbers: %s") % str);
+		SIMPLE_ERROR(("Too many numbers: %s") , str);
 	    }
 	    vals[i] = val;
 	}
@@ -1208,9 +1208,9 @@ void	Matrix::archive(core::ArchiveP node)
     if ( node->loading() )
     {
         const string& values = node->characters();
-	LOG(BF("Loading matrix with values: [%s]") % (values.c_str() ) );
+	LOG("Loading matrix with values: [%s]" , (values.c_str() ) );
 	this->setFromString(values,node->lisp());
-	LOG(BF("Set myself using that string and the result is: %s") % (this->asString().c_str() ) );
+	LOG("Set myself using that string and the result is: %s" , (this->asString().c_str() ) );
     } else
     {
         string values = this->asString();
@@ -1398,54 +1398,54 @@ Vector3 pointFromMatrixAndInternalCoordinates(const Matrix& coordinateSystem,
 }
 
 #if 0
-#define VEC_LOG(msg) core::write_bf_stream(BF("%s:%d:%f - ") % __FILE__ % __LINE__ % __FUNCTION__ ); core::write_bf_stream(msg)
+#define VEC_LOG(...) core::write_bf_stream(fmt::sprintf("%s:%d:%f - " , __FILE__ , __LINE__ , __FUNCTION__ )); core::write_bf_stream(msg)
 #else
-#define VEC_LOG(msg)
+#define VEC_LOG(...)
 #endif
 
 
 void internalCoordinatesFromPointAndCoordinateSystem(const Vector3& D, const Matrix& coordinateSystem, double& distance, double& theta, double& phi)
 {
-  VEC_LOG(BF("stub = \n%s\n") % coordinateSystem.asString());
+  VEC_LOG("stub = \n%s\n" , coordinateSystem.asString());
   Vector3 x = coordinateSystem.colX();
   Vector3 y = coordinateSystem.colY();
   Vector3 z = coordinateSystem.colZ();
-  VEC_LOG(BF("x = %s\n") % x.asString());
-  VEC_LOG(BF("y = %s\n") % y.asString());
-  VEC_LOG(BF("z = %s\n") % z.asString());
+  VEC_LOG("x = %s\n" , x.asString());
+  VEC_LOG("y = %s\n" , y.asString());
+  VEC_LOG("z = %s\n" , z.asString());
   Vector3 C = coordinateSystem.getTranslation();
   Vector3 CD = D - C;
   double lengthCD = CD.length();
   distance = lengthCD;
-  if (lengthCD<SMALL_NUMBER) SIMPLE_ERROR(BF("About to divide by zero"));
+  if (lengthCD<SMALL_NUMBER) SIMPLE_ERROR(("About to divide by zero"));
   Vector3 d = CD*(1.0/lengthCD);
-  VEC_LOG(BF("d = %s\n") % d.asString());
+  VEC_LOG("d = %s\n" , d.asString());
   double dx = d.dotProduct(x);
   double dy = d.dotProduct(y);
   double dz = d.dotProduct(z);
-  VEC_LOG(BF("dx = %lf  dy = %lf  dz = %lf\n") % dx % dy % dz );
+  VEC_LOG("dx = %lf  dy = %lf  dz = %lf\n" , dx , dy , dz );
   phi = geom::geom__planeVectorAngle(dy,dz);
-  VEC_LOG(BF("  dy = %lf   dz = %lf\n") % dy % dz );
-  VEC_LOG(BF("_Phi = %lf deg\n") % (phi/0.0174533));
+  VEC_LOG("  dy = %lf   dz = %lf\n" , dy , dz );
+  VEC_LOG("_Phi = %lf deg\n" , (phi/0.0174533));
   Vector3 dox(1.0,0.0,0.0);
   Vector3 dop(dx,dy,dz);
-  VEC_LOG(BF("dop = %s\n") % dop.asString());
-  VEC_LOG(BF("dop.dotProduct(dox) = %lf\n") % dop.dotProduct(dox));
+  VEC_LOG("dop = %s\n" , dop.asString());
+  VEC_LOG("dop.dotProduct(dox) = %lf\n" , dop.dotProduct(dox));
   if (dop.dotProduct(dox) > (1.0-SMALL_NUMBER)) {
     theta = 0.0;
     return;
   }
   Vector3 doz = dox.crossProduct(dop);
   doz = doz.normalized();
-  VEC_LOG(BF("doz = %s\n") % doz.asString());
+  VEC_LOG("doz = %s\n" , doz.asString());
   Vector3 doy = doz.crossProduct(dox);
-  VEC_LOG(BF("doy = %s\n") % doy.asString());
+  VEC_LOG("doy = %s\n" , doy.asString());
   double eox = dop.dotProduct(dox);
   double eoy = dop.dotProduct(doy);
-  VEC_LOG(BF("eox = %lf  eoy = %lf\n") % eox % eoy );
+  VEC_LOG("eox = %lf  eoy = %lf\n" , eox , eoy );
 //  double eoz = dop.dotProduct(doz); // Must be 0.0
   theta = geom::geom__planeVectorAngle(eox,eoy);
-  VEC_LOG(BF("    theta = %lf deg\n") % (theta/0.0174533));
+  VEC_LOG("    theta = %lf deg\n" , (theta/0.0174533));
 }
 
 

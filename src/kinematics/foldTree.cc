@@ -71,10 +71,7 @@ void FoldTree_O::resizeChains(int numChains)
 
 void FoldTree_O::resizeMonomers(int chainId, int numMonomers)
 {_OF();
-  ASSERTF(chainId<(int)this->_AggregateNode->_Chains.size(),
-          BF("Illegal chainId[%d] - there are only %d chains")
-          % chainId
-          % this->_AggregateNode->_Chains.size());
+  ASSERTF(chainId<(int)this->_AggregateNode->_Chains.size(), BF("Illegal chainId[%d] - there are only %d chains") % chainId % this->_AggregateNode->_Chains.size());
   this->_AggregateNode->_Chains[chainId]->resizeMonomers(numMonomers);
 }
 
@@ -108,7 +105,7 @@ CL_DEFMETHOD MonomerNode_sp FoldTree_O::lookupMonomerId(MonomerId const& monomer
     MonomerNode_sp monomer = chainNode->lookupMonomerId(monomerId.monomerId());
     return monomer;
   }
-  SIMPLE_ERROR(BF("Out of bound chain node id %lu must be less than %lu") % monomerId.chainId() % this->_AggregateNode->_Chains.size());
+  SIMPLE_ERROR(("Out of bound chain node id %lu must be less than %lu") , monomerId.chainId() , this->_AggregateNode->_Chains.size());
 }
 
 CL_DEFMETHOD void FoldTree_O::walkMonomerNodes(core::Function_sp callback)

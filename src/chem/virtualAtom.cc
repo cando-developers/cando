@@ -42,13 +42,13 @@ namespace chem {
 
     VirtualAtom_sp VirtualAtom_O::create(MatterName name, CalculatePosition_sp proc)
 {
-    LOG(BF("status") );
+    LOG("status" );
     auto  va  = gctools::GC<VirtualAtom_O>::allocate_with_default_constructor();
-    LOG(BF("status") );
+    LOG("status" );
     va->setName(name);
-    LOG(BF("status") );
+    LOG("status" );
     va->_CalculatePosition = proc;
-    LOG(BF("status") );
+    LOG("status" );
     return va;
 }
 
@@ -75,10 +75,10 @@ VirtualAtom_O::VirtualAtom_O(const VirtualAtom_O& ss) :Atom_O(ss)
 //
 Matter_sp VirtualAtom_O::copy()
 {
-    LOG(BF("Copying atom @%X") % this );
+    LOG("Copying atom @%X" , this );
     auto aNew = gctools::GC<VirtualAtom_O>::copy( *this); // VirtualAtom_sp aNew = RP_Copy<VirtualAtom_O>(this);
     this->copyAtom = aNew;
-    LOG(BF("    copy atom== %s") % aNew->description().c_str() );
+    LOG("    copy atom== %s" , aNew->description().c_str() );
     return(aNew);
 }
 

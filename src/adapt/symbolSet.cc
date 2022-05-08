@@ -206,7 +206,7 @@ void SymbolSet_O::remove(Symbol_sp s) {
   _OF();
 #ifdef DEBUG_ON
   if (this->strs.count(s) != 1) {
-    SIMPLE_ERROR(BF("The string: %s was not found in SymbolSet") % s);
+    SIMPLE_ERROR(("The string: %s was not found in SymbolSet") , s);
   }
 #endif
   this->_Symbols->remhash(s);
@@ -236,13 +236,13 @@ CL_DEFMETHOD SymbolSet_sp SymbolSet_O::intersection(SymbolSet_sp b) {
   
   SymbolSet_sp nset = SymbolSet_O::create();
   this->map([&b, &nset](Symbol_sp s) {
-            LOG(BF("Looking for(%s)") % _rep_((*si)) );
+            LOG("Looking for(%s)" , _rep_((*si)) );
             if ( b->contains(s) )
             {
-                LOG(BF("Found it!!!") );
+                LOG("Found it!!!" );
                 nset->insert(s);
             } else {
-                LOG(BF("Not found") );
+                LOG("Not found" );
             }
   });
   return nset;

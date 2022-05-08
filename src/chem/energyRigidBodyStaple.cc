@@ -41,13 +41,13 @@ namespace chem {
 
 void EnergyRigidBodyStaple_O::energy_rigid_body_staple_add_term( double ks, double r0, size_t rba, const Vector3& pointa, size_t rbb, const Vector3& pointb)
 {
-  LOG(BF("Defining EnergyRigidBodyStaple with ks=%lf r0=%lf rba=%lu pointa=%s   rbb=%lu  pointb=%s\n")
-      % ks
-      % r0
-      % rba
-      % pointa.asString()
-      % rbb
-      % pointb.asString());
+  LOG("Defining EnergyRigidBodyStaple with ks=%lf r0=%lf rba=%lu pointa=%s   rbb=%lu  pointb=%s\n"
+      , ks
+      , r0
+      , rba
+      , pointa.asString()
+      , rbb
+      , pointb.asString());
   this->_Terms.emplace_back(ks,r0,rba,pointa,rbb,pointb);
 }
 
@@ -178,7 +178,7 @@ double EnergyRigidBodyStaple_O::evaluateAllComponent( ScoringFunction_sp score,
   if ( this->_DebugEnergy ) 
   {
     //core::write_bf_stream_CLEAR();
-    core::write_bf_stream(BF("%s {\n")% this->className());
+    core::write_bf_stream(fmt::sprintf("%s {\n" , this->className()));
   }
 
   ANN(force);
@@ -213,7 +213,7 @@ double EnergyRigidBodyStaple_O::evaluateAllComponent( ScoringFunction_sp score,
 #define	STAPLE_DIAGONAL_HESSIAN_ACCUMULATE 	DiagHessAcc
 #define	STAPLE_OFF_DIAGONAL_HESSIAN_ACCUMULATE OffDiagHessAcc
 
-  { _BLOCK_TRACE("Stretch");
+  { 
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/energy-functions/_STAPLE_termDeclares.cc>
@@ -242,51 +242,51 @@ double EnergyRigidBodyStaple_O::evaluateAllComponent( ScoringFunction_sp score,
 #include <cando/energy-functions/_STAPLE_debugEvalSet.cc>
 #endif //]
       if ( this->_DebugEnergy ) {
-        core::write_bf_stream(BF( "MEISTER staple %d args cando\n")% (i+1) );
-        core::write_bf_stream(BF( "MEISTER staple %d address %x \n")% (i+1) % (&(*si)) );
-        core::write_bf_stream(BF( "MEISTER staple %d r0  %5.3lf\n")% (i+1) % r0 );
-        core::write_bf_stream(BF( "MEISTER staple %d ks  %5.1lf\n")% (i+1) % ks );
-        core::write_bf_stream(BF( "MEISTER staple %d I1  %4d\n")% (i+1) % I1 );
-        core::write_bf_stream(BF( "MEISTER staple %d I2  %4d\n")% (i+1) % I2 );
-        core::write_bf_stream(BF( "MEISTER staple %d ak  %5.3lf %d\n")% (i+1) % ak % (I1/7+1) );
-        core::write_bf_stream(BF( "MEISTER staple %d bk  %5.3lf %d\n")% (i+1) % bk % (I1/7+1) );
-        core::write_bf_stream(BF( "MEISTER staple %d ck  %5.3lf %d\n")% (i+1) % ck % (I1/7+1) );
-        core::write_bf_stream(BF( "MEISTER staple %d dk  %5.3lf %d\n")% (i+1) % dk % (I1/7+1) );
-        core::write_bf_stream(BF( "MEISTER staple %d xk  %5.3lf %d\n")% (i+1) % xk % (I1/7+1) ); 
-        core::write_bf_stream(BF( "MEISTER staple %d yk  %5.3lf %d\n")% (i+1) % yk % (I1/7+1) );
-        core::write_bf_stream(BF( "MEISTER staple %d zk  %5.3lf %d\n")% (i+1) % zk % (I1/7+1) ); 
-        core::write_bf_stream(BF( "MEISTER staple %d pxk %5.3lf %d\n")% (i+1) % pxk % (I1/7+1) ); 
-        core::write_bf_stream(BF( "MEISTER staple %d pyk %5.3lf %d\n")% (i+1) % pyk % (I1/7+1) );
-        core::write_bf_stream(BF( "MEISTER staple %d pzk %5.3lf %d\n")% (i+1) % pzk % (I1/7+1) ); 
-        core::write_bf_stream(BF( "MEISTER staple %d al  %5.3lf %d\n")% (i+1) % al % (I2/7+1) );
-        core::write_bf_stream(BF( "MEISTER staple %d bl  %5.3lf %d\n")% (i+1) % bl % (I2/7+1) );
-        core::write_bf_stream(BF( "MEISTER staple %d cl  %5.3lf %d\n")% (i+1) % cl % (I2/7+1) );
-        core::write_bf_stream(BF( "MEISTER staple %d dl  %5.3lf %d\n")% (i+1) % dl % (I2/7+1) );
-        core::write_bf_stream(BF( "MEISTER staple %d xl  %5.3lf %d\n")% (i+1) % xl % (I2/7+1) ); 
-        core::write_bf_stream(BF( "MEISTER staple %d yl  %5.3lf %d\n")% (i+1) % yl % (I2/7+1) );
-        core::write_bf_stream(BF( "MEISTER staple %d zl  %5.3lf %d\n")% (i+1) % zl % (I2/7+1) );
-        core::write_bf_stream(BF( "MEISTER staple %d pxl %5.3lf %d\n")% (i+1) % pxl % (I2/7+1) ); 
-        core::write_bf_stream(BF( "MEISTER staple %d pyl %5.3lf %d\n")% (i+1) % pyl % (I2/7+1) );
-        core::write_bf_stream(BF( "MEISTER staple %d pzl %5.3lf %d\n")% (i+1) % pzl % (I2/7+1) ); 
-        core::write_bf_stream(BF( "MEISTER staple %d results\n")% (i+1) );
-        core::write_bf_stream(BF( "MEISTER staple %d Energy %lf\n")% (i+1) % Energy );
+        core::write_bf_stream(fmt::sprintf( "MEISTER staple %d args cando\n" , (i+1) ));
+        core::write_bf_stream(fmt::sprintf( "MEISTER staple %d address %x \n" , (i+1) , ((void*)&(*si)) ));
+        core::write_bf_stream(fmt::sprintf( "MEISTER staple %d r0  %5.3lf\n" , (i+1) , r0 ));
+        core::write_bf_stream(fmt::sprintf( "MEISTER staple %d ks  %5.1lf\n" , (i+1) , ks ));
+        core::write_bf_stream(fmt::sprintf( "MEISTER staple %d I1  %4d\n" , (i+1) , I1 ));
+        core::write_bf_stream(fmt::sprintf( "MEISTER staple %d I2  %4d\n" , (i+1) , I2 ));
+        core::write_bf_stream(fmt::sprintf( "MEISTER staple %d ak  %5.3lf %d\n" , (i+1) , ak , (I1/7+1) ));
+        core::write_bf_stream(fmt::sprintf( "MEISTER staple %d bk  %5.3lf %d\n" , (i+1) , bk , (I1/7+1) ));
+        core::write_bf_stream(fmt::sprintf( "MEISTER staple %d ck  %5.3lf %d\n" , (i+1) , ck , (I1/7+1) ));
+        core::write_bf_stream(fmt::sprintf( "MEISTER staple %d dk  %5.3lf %d\n" , (i+1) , dk , (I1/7+1) ));
+        core::write_bf_stream(fmt::sprintf( "MEISTER staple %d xk  %5.3lf %d\n" , (i+1) , xk , (I1/7+1) )); 
+        core::write_bf_stream(fmt::sprintf( "MEISTER staple %d yk  %5.3lf %d\n" , (i+1) , yk , (I1/7+1) ));
+        core::write_bf_stream(fmt::sprintf( "MEISTER staple %d zk  %5.3lf %d\n" , (i+1) , zk , (I1/7+1) )); 
+        core::write_bf_stream(fmt::sprintf( "MEISTER staple %d pxk %5.3lf %d\n" , (i+1) , pxk , (I1/7+1) )); 
+        core::write_bf_stream(fmt::sprintf( "MEISTER staple %d pyk %5.3lf %d\n" , (i+1) , pyk , (I1/7+1) ));
+        core::write_bf_stream(fmt::sprintf( "MEISTER staple %d pzk %5.3lf %d\n" , (i+1) , pzk , (I1/7+1) )); 
+        core::write_bf_stream(fmt::sprintf( "MEISTER staple %d al  %5.3lf %d\n" , (i+1) , al , (I2/7+1) ));
+        core::write_bf_stream(fmt::sprintf( "MEISTER staple %d bl  %5.3lf %d\n" , (i+1) , bl , (I2/7+1) ));
+        core::write_bf_stream(fmt::sprintf( "MEISTER staple %d cl  %5.3lf %d\n" , (i+1) , cl , (I2/7+1) ));
+        core::write_bf_stream(fmt::sprintf( "MEISTER staple %d dl  %5.3lf %d\n" , (i+1) , dl , (I2/7+1) ));
+        core::write_bf_stream(fmt::sprintf( "MEISTER staple %d xl  %5.3lf %d\n" , (i+1) , xl , (I2/7+1) )); 
+        core::write_bf_stream(fmt::sprintf( "MEISTER staple %d yl  %5.3lf %d\n" , (i+1) , yl , (I2/7+1) ));
+        core::write_bf_stream(fmt::sprintf( "MEISTER staple %d zl  %5.3lf %d\n" , (i+1) , zl , (I2/7+1) ));
+        core::write_bf_stream(fmt::sprintf( "MEISTER staple %d pxl %5.3lf %d\n" , (i+1) , pxl , (I2/7+1) )); 
+        core::write_bf_stream(fmt::sprintf( "MEISTER staple %d pyl %5.3lf %d\n" , (i+1) , pyl , (I2/7+1) ));
+        core::write_bf_stream(fmt::sprintf( "MEISTER staple %d pzl %5.3lf %d\n" , (i+1) , pzl , (I2/7+1) )); 
+        core::write_bf_stream(fmt::sprintf( "MEISTER staple %d results\n" , (i+1) ));
+        core::write_bf_stream(fmt::sprintf( "MEISTER staple %d Energy %lf\n" , (i+1) , Energy ));
         if ( calcForce ) {
-          core::write_bf_stream(BF( "MEISTER staple %d fak  %5.3lf %d\n")% (i+1) % fak % (I1/7+1) );
-          core::write_bf_stream(BF( "MEISTER staple %d fbk  %5.3lf %d\n")% (i+1) % fbk % (I1/7+1) );
-          core::write_bf_stream(BF( "MEISTER staple %d fck  %5.3lf %d\n")% (i+1) % fck % (I1/7+1) );
-          core::write_bf_stream(BF( "MEISTER staple %d fdk  %5.3lf %d\n")% (i+1) % fdk % (I1/7+1) );
-          core::write_bf_stream(BF( "MEISTER staple %d fxk  %5.3lf %d\n")% (i+1) % fxk % (I1/7+1) ); 
-          core::write_bf_stream(BF( "MEISTER staple %d fyk  %5.3lf %d\n")% (i+1) % fyk % (I1/7+1) );
-          core::write_bf_stream(BF( "MEISTER staple %d fzk  %5.3lf %d\n")% (i+1) % fzk % (I1/7+1) ); 
-          core::write_bf_stream(BF( "MEISTER staple %d fal  %5.3lf %d\n")% (i+1) % fal % (I2/7+1) );
-          core::write_bf_stream(BF( "MEISTER staple %d fbl  %5.3lf %d\n")% (i+1) % fbl % (I2/7+1) );
-          core::write_bf_stream(BF( "MEISTER staple %d fcl  %5.3lf %d\n")% (i+1) % fcl % (I2/7+1) );
-          core::write_bf_stream(BF( "MEISTER staple %d fdl  %5.3lf %d\n")% (i+1) % fdl % (I2/7+1) );
-          core::write_bf_stream(BF( "MEISTER staple %d fxl  %5.3lf %d\n")% (i+1) % fxl % (I2/7+1) ); 
-          core::write_bf_stream(BF( "MEISTER staple %d fyl  %5.3lf %d\n")% (i+1) % fyl % (I2/7+1) );
-          core::write_bf_stream(BF( "MEISTER staple %d fzl  %5.3lf %d\n")% (i+1) % fzl % (I2/7+1) );
+          core::write_bf_stream(fmt::sprintf( "MEISTER staple %d fak  %5.3lf %d\n" , (i+1) , fak , (I1/7+1) ));
+          core::write_bf_stream(fmt::sprintf( "MEISTER staple %d fbk  %5.3lf %d\n" , (i+1) , fbk , (I1/7+1) ));
+          core::write_bf_stream(fmt::sprintf( "MEISTER staple %d fck  %5.3lf %d\n" , (i+1) , fck , (I1/7+1) ));
+          core::write_bf_stream(fmt::sprintf( "MEISTER staple %d fdk  %5.3lf %d\n" , (i+1) , fdk , (I1/7+1) ));
+          core::write_bf_stream(fmt::sprintf( "MEISTER staple %d fxk  %5.3lf %d\n" , (i+1) , fxk , (I1/7+1) )); 
+          core::write_bf_stream(fmt::sprintf( "MEISTER staple %d fyk  %5.3lf %d\n" , (i+1) , fyk , (I1/7+1) ));
+          core::write_bf_stream(fmt::sprintf( "MEISTER staple %d fzk  %5.3lf %d\n" , (i+1) , fzk , (I1/7+1) )); 
+          core::write_bf_stream(fmt::sprintf( "MEISTER staple %d fal  %5.3lf %d\n" , (i+1) , fal , (I2/7+1) ));
+          core::write_bf_stream(fmt::sprintf( "MEISTER staple %d fbl  %5.3lf %d\n" , (i+1) , fbl , (I2/7+1) ));
+          core::write_bf_stream(fmt::sprintf( "MEISTER staple %d fcl  %5.3lf %d\n" , (i+1) , fcl , (I2/7+1) ));
+          core::write_bf_stream(fmt::sprintf( "MEISTER staple %d fdl  %5.3lf %d\n" , (i+1) , fdl , (I2/7+1) ));
+          core::write_bf_stream(fmt::sprintf( "MEISTER staple %d fxl  %5.3lf %d\n" , (i+1) , fxl , (I2/7+1) )); 
+          core::write_bf_stream(fmt::sprintf( "MEISTER staple %d fyl  %5.3lf %d\n" , (i+1) , fyl , (I2/7+1) ));
+          core::write_bf_stream(fmt::sprintf( "MEISTER staple %d fzl  %5.3lf %d\n" , (i+1) , fzl , (I2/7+1) ));
         }
-        core::write_bf_stream(BF( "MEISTER staple %d stop\n")% (i+1) );
+        core::write_bf_stream(fmt::sprintf( "MEISTER staple %d stop\n" , (i+1) ));
       }
 		/* Add the forces */
 
@@ -300,7 +300,7 @@ double EnergyRigidBodyStaple_O::evaluateAllComponent( ScoringFunction_sp score,
   }
   if ( this->_DebugEnergy ) 
   {
-    core::write_bf_stream(BF("%s }")% this->className());
+    core::write_bf_stream(fmt::sprintf("%s }" , this->className()));
   }
   return totalEnergy;
 }
@@ -311,21 +311,11 @@ void	EnergyRigidBodyStaple_O::dumpTerms()
   gctools::Vec0<EnergyRigidBodyStaple>::iterator	esi;
   string				as1,as2,as3,as4;
   string				str1, str2, str3, str4;
-  LOG(BF("Dumping EnergyRigidBodyStaple terms"));
+  LOG("Dumping EnergyRigidBodyStaple terms");
   uint idx;
   for ( idx = 0, esi=this->_Terms.begin(); esi!=this->_Terms.end(); esi++, idx++ )
   {
-    _lisp->print(BF("TERM 1RBST %-8.2lf %-8.2lf %-9lu %-8.2lf %-8.2lf %-8.2lf - %-9lu %-8.2lf %-8.2lf %-8.2lf") 
-                 % esi->ks
-                 % esi->r0
-                 % esi->rigidBodyK
-                 % esi->pointK.getX()
-                 % esi->pointK.getY()
-                 % esi->pointK.getZ()
-                 % esi->rigidBodyL
-                 % esi->pointL.getX()
-                 % esi->pointL.getY()
-                 % esi->pointL.getZ() );
+    core::writeln_bf_stream(fmt::sprintf("TERM 1RBST %-8.2lf %-8.2lf %-9lu %-8.2lf %-8.2lf %-8.2lf - %-9lu %-8.2lf %-8.2lf %-8.2lf" , esi->ks , esi->r0 , esi->rigidBodyK , esi->pointK.getX() , esi->pointK.getY() , esi->pointK.getZ() , esi->rigidBodyL , esi->pointL.getX() , esi->pointL.getY() , esi->pointL.getZ() ));
   }
 }
 

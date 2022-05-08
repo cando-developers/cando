@@ -55,7 +55,7 @@ core::List_sp EnergySketchStretch::encode() const {
 }
 
 void EnergySketchStretch::decode(core::List_sp alist) {
-  SIMPLE_ERROR(BF("Implement decode of EnergySketchStretch"));
+  SIMPLE_ERROR(("Implement decode of EnergySketchStretch"));
 }
 
 double	_evaluateEnergyOnly_SketchStretch (
@@ -197,7 +197,7 @@ double EnergySketchStretch_O::evaluateAllComponent( ScoringFunction_sp score,
 #define	STRETCH_DIAGONAL_HESSIAN_ACCUMULATE 	DiagHessAcc
 #define	STRETCH_OFF_DIAGONAL_HESSIAN_ACCUMULATE OffDiagHessAcc
 
-  { _BLOCK_TRACE("SketchStretch");
+  { 
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_Stretch_termDeclares.cc>
@@ -368,7 +368,7 @@ CL_DEFMETHOD void EnergySketchStretch_O::modifySketchStretchTermKb(size_t index,
     entry.term.kb = kb;
     return;
   }
-  SIMPLE_ERROR(BF("index %d is out of bounds as a energy-stretch term index (#entries %d)") % index % this->_Terms.size() );
+  SIMPLE_ERROR(("index %d is out of bounds as a energy-stretch term index (#entries %d)") , index , this->_Terms.size() );
 }
 
 CL_DEFMETHOD void EnergySketchStretch_O::modifySketchStretchTermR0(size_t index, float r0) {
@@ -377,7 +377,7 @@ CL_DEFMETHOD void EnergySketchStretch_O::modifySketchStretchTermR0(size_t index,
     entry.term.r0 = r0;
     return;
   }
-  SIMPLE_ERROR(BF("index %d is out of bounds as a energy-stretch term index (#entries %d)") % index % this->_Terms.size() );
+  SIMPLE_ERROR(("index %d is out of bounds as a energy-stretch term index (#entries %d)") , index , this->_Terms.size() );
 }
 
 void EnergySketchStretch_O::reset()

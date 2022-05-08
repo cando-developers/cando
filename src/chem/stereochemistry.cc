@@ -59,7 +59,7 @@ CL_DEFMETHOD int	StereoConfiguration_O::getMoeConfiguration()
 {
   if ( this->_Configuration == chem::_sym_R ) return 1;
   else if (this->_Configuration == chem::_sym_S ) return -1;
-  SIMPLE_ERROR(BF("Configuration can only be chem:S or chem:R - it was %s") % _rep_(this->_Configuration));
+  SIMPLE_ERROR(("Configuration can only be chem:S or chem:R - it was %s") , _rep_(this->_Configuration));
 }
 
 
@@ -239,7 +239,7 @@ void StereoInformation_O::fields(core::Record_sp node) {
 void	StereoInformation_O::addStereoisomer(Stereoisomer_sp s)
 {_OF();
   if ( this->_NameOrPdbToStereoisomer.count(s->getName())>0 ) {
-    SIMPLE_ERROR(BF("addStereoisomer monomer name (%s) has already been used") % s->getName());
+    SIMPLE_ERROR(("addStereoisomer monomer name (%s) has already been used") , s->getName());
   }
   this->_NameOrPdbToStereoisomer.set(s->getName(),s);
   this->_NameOrPdbToStereoisomer.set(s->getPdb(),s);
@@ -254,13 +254,13 @@ CL_DEFMETHOD void StereoInformation_O::validate()
   for ( gctools::Vec0<Stereoisomer_sp>::iterator it=this->_Stereoisomers.begin(); it!=this->_Stereoisomers.end(); it++ )
   {
     if ( (*it)->getName().nilp() ) {
-      SIMPLE_ERROR(BF("StereoInformation has stereoisomer with blank name"));
+      SIMPLE_ERROR(("StereoInformation has stereoisomer with blank name"));
     }
     size_t index = 0;
     for ( gctools::Vec0<Stereoisomer_sp>::iterator it = this->_Stereoisomers.begin();
           it != this->_Stereoisomers.end(); it++ ) {
       if ( core::clasp_number_compare(core::make_fixnum(index),(*it)->getStereoisomerIndex()) != 0) {
-        SIMPLE_WARN(BF("Stereoisomer with stereoisomer index %d does not match the array index in StereoInformation %d") % (*it)->getStereoisomerIndex() % index);
+        SIMPLE_WARN("Stereoisomer with stereoisomer index %d does not match the array index in StereoInformation %d" ,(*it)->getStereoisomerIndex() ,index);
       }
       index++;
     }
@@ -330,15 +330,15 @@ StereoInformation_sp StereoInformation_O::make(core::List_sp stereoisomers, core
   for ( gctools::Vec0<Stereoisomer_sp>::iterator it = me->_Stereoisomers.begin();
         it != me->_Stereoisomers.end(); it++ ) {
     if ( core::clasp_number_compare(core::make_fixnum(index),(*it)->getStereoisomerIndex()) != 0) {
-      SIMPLE_WARN(BF("Stereoisomer with stereoisomer index %d does not match the array index in StereoInformation %d") % (*it)->getStereoisomerIndex() % index);
+      SIMPLE_WARN("Stereoisomer with stereoisomer index %d does not match the array index in StereoInformation %d" ,(*it)->getStereoisomerIndex() ,index);
     }
     if ( me->_NameOrPdbToStereoisomer.count((*it)->getName())>0 ) {
-      SIMPLE_ERROR(BF("addStereoisomer monomer name (%s) has already been used") % (*it)->getName());
+      SIMPLE_ERROR(("addStereoisomer monomer name (%s) has already been used") , (*it)->getName());
     }
     if ((*it)->getName().notnilp()) {
       me->_NameOrPdbToStereoisomer.set((*it)->getName(),(*it));
     } else {
-      SIMPLE_ERROR(BF("A stereoisomer name in %s is NIL - this is not allowed") % _rep_(stereoisomers));
+      SIMPLE_ERROR(("A stereoisomer name in %s is NIL - this is not allowed") , _rep_(stereoisomers));
     }
     if ((*it)->getPdb().notnilp()) {
       // only non NIL names are added

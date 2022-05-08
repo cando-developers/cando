@@ -178,7 +178,7 @@ public:
     LOG(BF( "Agroup name in database=%d") % this->recognizesFrameRecognizerName(nm) );
     FrameRecognizers::iterator ig = this->_frameRecognizers.find(nm);
     if ( ig == this->_frameRecognizers.end() ) {
-      SIMPLE_ERROR(BF("Could not find %s") % _rep_(nm));
+      SIMPLE_ERROR(("Could not find %s") , _rep_(nm));
     }
     return ig->second;
   };

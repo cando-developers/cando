@@ -97,7 +97,7 @@ core::T_mv ReadAmberParameters_O::determineParmSetFrcModType(core::T_sp fin)
     core::T_mv mv_line = core::cl__read_line(fin,nil<T_O>(),nil<T_O>());
     if ( mv_line.nilp() ) break;
     string line = gc::As<core::String_sp>(mv_line)->get_std_string();
-    LOG(BF("Read line(%s)") % line  );
+    LOG("Read line(%s)" , line  );
     if ( line.size()>=4 && line.substr(0,4) == "MASS") {
       bNew = true;
       bMass = true;
@@ -132,11 +132,11 @@ FFTypesDb_sp ReadAmberParameters_O::parseTypeRules(core::T_sp fin)
     string line = gc::As<core::String_sp>(mv_line)->get_std_string();
     if (line.size() == 0) continue;
 //    printf("%s:%d:%s Read line: %s\n", __FILE__, __LINE__, __FUNCTION__, line.c_str()); fflush(stdout);
-    LOG(BF("Read line(%s)") % line  );
+    LOG("Read line(%s)" , line  );
     if ( line.substr(0,8) == "WILDATOM" ) {
       vector<string> names = core::split(line," \t");
       if (names.size()<2) {
-        SIMPLE_ERROR(BF("Could not interpret %s as a type rule") % line);
+        SIMPLE_ERROR(("Could not interpret %s as a type rule") , line);
       }
       string wildName = names[1];
       wildCardElementDictionary->addWildName(chemkw_intern(wildName));
@@ -190,7 +190,7 @@ FFNonbondDb_sp ReadAmberParameters_O::parseMasses(core::T_sp fin, FFNonbondDb_sp
         done = true;
       } else {
         core::T_sp linestream = core::cl__make_string_input_stream(sol,core::make_fixnum(0),nil<core::T_O>());
-        LOG(BF("Parsing line|%s|") % line.c_str()  );
+        LOG("Parsing line|%s|" , line.c_str()  );
 //      printf("%s:%d:%s parseMasses line: %s\n", __FILE__, __LINE__, __FUNCTION__, line.c_str());
         core::Symbol_sp typeSymbol = gc::As<core::Symbol_sp>(core::cl__read(linestream,nil<core::T_O>()));
         core::T_sp omass = core::cl__read(linestream,nil<core::T_O>());
@@ -209,7 +209,7 @@ FFNonbondDb_sp ReadAmberParameters_O::parseMasses(core::T_sp fin, FFNonbondDb_sp
         } else if (gc::IsA<FFNonbond_sp>(nonbond)) {
           ffNonbond = gc::As_unsafe<FFNonbond_sp>(nonbond);
         } else {
-          SIMPLE_ERROR(BF("Illegal atom type %s") % _rep_(nonbond));
+          SIMPLE_ERROR(("Illegal atom type %s") , _rep_(nonbond));
         }
         ffNonbond->setType(typeSymbol);
         ffNonbond->setMass(mass);
@@ -237,12 +237,12 @@ FFStretchDb_sp ReadAmberParameters_O::parseStretchDb(core::T_sp fin)
     {
       done = true;
     } else {
-      LOG(BF("Parsing line|%s|") % line.c_str()  );
+      LOG("Parsing line|%s|" , line.c_str()  );
       //printf("%s:%d reading line: %s\n", __FILE__, __LINE__, line.c_str());
       string types = line.substr(0,5);
       vector<string>typeParts = core::split(types,"-");
       if (typeParts.size() <2) {
-        SIMPLE_ERROR(BF("Could not interpret %s as a stretch parameter") % types);
+        SIMPLE_ERROR(("Could not interpret %s as a stretch parameter") , types);
       }
       string type1Name = core::trimWhiteSpace(typeParts[0]);
       string type2Name = core::trimWhiteSpace(typeParts[1]);
@@ -252,7 +252,7 @@ FFStretchDb_sp ReadAmberParameters_O::parseStretchDb(core::T_sp fin)
       string parms = line.substr(6);
       vector<string> parmsParts = core::split(parms);
       if (parms.size()<2) {
-        SIMPLE_ERROR(BF("Could not interpret %s as stretch parameter") % parms);
+        SIMPLE_ERROR(("Could not interpret %s as stretch parameter") , parms);
       }
       double kb_kJPerNanometerSquared = kCalPerAngstromSquared_to_kJPerNanometerSquared(atof(parmsParts[0].c_str()));
       double r0_Nanometer = angstrom_to_nanometer(atof(parmsParts[1].c_str()));
@@ -285,11 +285,11 @@ FFAngleDb_sp ReadAmberParameters_O::parseAngleDb(core::T_sp fin)
     } else 
     {
       line = core::trimWhiteSpace(line);
-      LOG(BF("Parsing line|%s|") % line.c_str()  );
+      LOG("Parsing line|%s|" , line.c_str()  );
       string types = line.substr(0,8);
       vector<string>typeParts = core::split(types,"-");
       if (typeParts.size() <3) {
-        SIMPLE_ERROR(BF("Could not interpret %s as an angle parameter - full line: %s") % types % line);
+        SIMPLE_ERROR(("Could not interpret %s as an angle parameter - full line: %s") , types , line);
       }
       string t1 = core::trimWhiteSpace(typeParts[0]);
       string t2 = core::trimWhiteSpace(typeParts[1]);
@@ -303,7 +303,7 @@ FFAngleDb_sp ReadAmberParameters_O::parseAngleDb(core::T_sp fin)
       string parms = line.substr(9);
       vector<string> parmsParts = core::split(parms);
       if (parms.size()<2) {
-        SIMPLE_ERROR(BF("Could not interpret %s as an angle parameter") % parms);
+        SIMPLE_ERROR(("Could not interpret %s as an angle parameter") , parms);
       }
       ffAngle->_K2__kJPerRadianSquared = kCalPerRadianSquared_to_kJPerRadianSquared(atof(parmsParts[0].c_str()));
       ffAngle->_AngRad = core::radians(atof(parmsParts[1].c_str()));
@@ -335,11 +335,11 @@ FFPtorDb_sp ReadAmberParameters_O::parsePtorDb(core::T_sp fin, core::T_sp system
       done = true;
     } else
     {
-      LOG(BF("Parsing line|%s|") % line.c_str()  );
+      LOG("Parsing line|%s|" , line.c_str()  );
       string types = line.substr(0,12);
       vector<string>typeParts = core::split(types,"-");
       if (typeParts.size() <4) {
-        SIMPLE_ERROR(BF("Could not interpret %s as a dihedral parameter") % types);
+        SIMPLE_ERROR(("Could not interpret %s as a dihedral parameter") , types);
       }
       string t1 = core::trimWhiteSpace(typeParts[0]);
       string t2 = core::trimWhiteSpace(typeParts[1]);
@@ -364,7 +364,7 @@ FFPtorDb_sp ReadAmberParameters_O::parsePtorDb(core::T_sp fin, core::T_sp system
       string parms = line.substr(13);
       vector<string> parmsParts = core::split(parms);
       if ( parmsParts.size() < 4) {
-        SIMPLE_ERROR(BF("Could not interpret %s as a dihedral parameter") % parms);
+        SIMPLE_ERROR(("Could not interpret %s as a dihedral parameter") , parms);
       }
       double idivf =  atof(parmsParts[0].c_str());
       double pk = atof(parmsParts[1].c_str());
@@ -403,11 +403,11 @@ FFItorDb_sp ReadAmberParameters_O::parseItorDb(core::T_sp fin)
       done = true;
     } else
     {
-      LOG(BF("Parsing line|%s|") % line.c_str()  );
+      LOG("Parsing line|%s|" , line.c_str()  );
       string types = line.substr(0,12);
       vector<string>typeParts = core::split(types,"-");
       if (types.size()<4) {
-        SIMPLE_ERROR(BF("Could not interpret %s as an itor parameter") % types);
+        SIMPLE_ERROR(("Could not interpret %s as an itor parameter") , types);
       }
       string t1 = core::trimWhiteSpace(typeParts[0]);
       string t2 = core::trimWhiteSpace(typeParts[1]);
@@ -437,7 +437,7 @@ FFItorDb_sp ReadAmberParameters_O::parseItorDb(core::T_sp fin)
       string parms = line.substr(13);
       vector<string> parmsParts = core::split(parms);
       if (parmsParts.size()<3) {
-        SIMPLE_ERROR(BF("Could not interpret %s as an itor parameter") % parms);
+        SIMPLE_ERROR(("Could not interpret %s as an itor parameter") , parms);
       }
       double pk = atof(parmsParts[0].c_str());
       double phaseRad = atof(parmsParts[1].c_str())*0.0174533;
@@ -459,13 +459,13 @@ string ReadAmberParameters_O::parseNonbondLabelKindNB(core::T_sp fin)
   string line = core::cl__read_line(fin).as<core::String_O>()->get_std_string();
   vector<string>parts = core::split(line);
   if (line.size()<2) {
-    SIMPLE_ERROR(BF("Could not interpret %s as a label kindnb") % line);
+    SIMPLE_ERROR(("Could not interpret %s as a label kindnb") , line);
   }
   string label = parts[0];
   string kindnb = parts[1];
   if ( kindnb != "RE" )
   {
-    SIMPLE_ERROR(BF("Nonbond parameters must be of kindnb=RE this file has kindnb="+kindnb));
+    SIMPLE_ERROR(("Nonbond parameters must be of kindnb=RE this file has kindnb="+kindnb));
   }
   return kindnb;
 }
@@ -483,21 +483,21 @@ void ReadAmberParameters_O::parseNonbondDb(core::T_sp fin, FFNonbondDb_sp ffNonb
     core::T_sp parts = core::eval::funcall(chem::_sym_parse_nonbond_line,tline);
     if (parts == kw::_sym_end) return;
     if (parts.consp()) {
-      LOG(BF("Parsing line|%s|") % line.c_str()  );
+      LOG("Parsing line|%s|" , line.c_str()  );
       FFNonbond_sp ffNonbond;
       core::Symbol_sp stype = gc::As<core::Symbol_sp>(core::oFirst(parts));
       if (core::cl__length(parts)!=3) {
-        SIMPLE_ERROR(BF("There must be three values for a NONB entry - got: %s") % _rep_(tline));
+        SIMPLE_ERROR(("There must be three values for a NONB entry - got: %s") , _rep_(tline));
       }
       core::T_sp tradius = core::oSecond(parts);
       core::T_sp tedep = core::oThird(parts);
       if ( ffNonbondDb->hasType(stype) ) {
         ffNonbond = gc::As_unsafe<FFNonbond_sp>(ffNonbondDb->FFNonbond_findType(stype));
         if (!ffNonbond.raw_()) {
-          SIMPLE_ERROR(BF("The ffNonbond was not located for %s") % core::_rep_(stype));
+          SIMPLE_ERROR(("The ffNonbond was not located for %s") , core::_rep_(stype));
         }
       } else {
-        SIMPLE_ERROR(BF("Could not find type: %s") % _rep_(stype));
+        SIMPLE_ERROR(("Could not find type: %s") , _rep_(stype));
       }
       double radius = gc::As<core::Number_sp>(tradius)->as_double_();
       double edep = gc::As<core::Number_sp>(tedep)->as_double_();
@@ -509,7 +509,7 @@ void ReadAmberParameters_O::parseNonbondDb(core::T_sp fin, FFNonbondDb_sp ffNonb
       {
         core::T_sp tstr = ffNonbond->getSameParms();
         if (!gc::IsA<core::String_sp>(tstr)) {
-          SIMPLE_ERROR(BF("Did not get string from ffNonbond->getSameParms() for %s - got %s\n") % core::_rep_(ffNonbond) % core::_rep_(tstr));
+          SIMPLE_ERROR(("Did not get string from ffNonbond->getSameParms() for %s - got %s\n") , core::_rep_(ffNonbond) , core::_rep_(tstr));
         }
         core::String_sp sstr = gc::As<core::String_sp>(tstr);
         string sameparms = sstr->get_std_string();
@@ -524,7 +524,7 @@ void ReadAmberParameters_O::parseNonbondDb(core::T_sp fin, FFNonbondDb_sp ffNonb
             ffNonbondSameParmType->setRadius_Angstroms(radius);
             ffNonbondSameParmType->setEpsilon_kCal(edep);             
           } else {
-            SIMPLE_ERROR(BF("Could not find type: %s") % _rep_(stype));
+            SIMPLE_ERROR(("Could not find type: %s") , _rep_(stype));
           }
             
         }
@@ -541,7 +541,7 @@ void ReadAmberParameters_O::parseNonbondDb(core::T_sp fin, FFNonbondDb_sp ffNonb
 
 void ReadAmberParameters_O::parseAtomEquivalences(core::T_sp fin, FFNonbondDb_sp ffNonbondDb)
 {
-  core::write_bf_stream(BF("Warning!  Skipping force field atom equivalences in %s\n") % _rep_(fin));
+  core::write_bf_stream(fmt::sprintf("Warning!  Skipping force field atom equivalences in %s\n" , _rep_(fin)));
   while (1) {
     core::T_sp tline = core::cl__read_line(fin,nil<T_O>(),nil<T_O>());
     if (tline.nilp()) break;
@@ -556,7 +556,7 @@ void ReadAmberParameters_O::parseAtomEquivalences(core::T_sp fin, FFNonbondDb_sp
       if ( ffNonbondDb->hasType(stype) ) {
         ffNonbond = gc::As_unsafe<FFNonbond_sp>(ffNonbondDb->FFNonbond_findType(stype));
       } else {
-        SIMPLE_ERROR(BF("Could not find type: %s") % type);
+        SIMPLE_ERROR(("Could not find type: %s") , type);
       }
       string params = core::trimWhiteSpace(line.substr(4));
       printf("%s:%d:%s ffNonbond %s -> setSameParams(%s)\n", __FILE__, __LINE__, __FUNCTION__, core::_rep_(ffNonbond).c_str(), params.c_str());
@@ -580,14 +580,14 @@ ForceField_sp ReadAmberParameters_O::parseAmberFormattedForceField(core::T_sp fi
     FFAngleDb_sp ffAnglesDb = this->parseAngleDb(fin);
     FFPtorDb_sp ffPtorsDb = this->parsePtorDb(fin,system); //gc::As<FFPtorDb_sp>(core::eval::funcall(chem::_sym_parse_ptor_db,fin,system));
     FFItorDb_sp ffItorsDb = this->parseItorDb(fin);
-    core::write_bf_stream(BF("Warning!  Skipping 10-12 hbond in %s\n") % _rep_(fin));
+    core::write_bf_stream(fmt::sprintf("Warning!  Skipping 10-12 hbond in %s\n" , _rep_(fin)));
     core::cl__read_line(fin); // skp 10-12 hbond
     core::cl__read_line(fin); // blank
     this->parseAtomEquivalences(fin,ffNonbondsDb);
     string kindNb = this->parseNonbondLabelKindNB(fin);
     this->parseNonbondDb(fin,ffNonbondsDb);
 //    printf("%s:%d Returned from this->parseNonbondDb\n", __FILE__, __LINE__ );
-    LOG(BF("All parameters read fine") );
+    LOG("All parameters read fine" );
     auto  ff  = gctools::GC<ForceField_O>::allocate_with_default_constructor();
     ff->setTitle(line);
     ff->setFFStretchDb(ffStretchesDb);
@@ -687,7 +687,7 @@ ForceField_sp ReadAmberParameters_O::parseFrcModFile(core::T_sp fin, core::T_sp 
     core::T_mv mv_line = core::cl__read_line(fin,nil<T_O>());
     if ( mv_line.nilp() ) break;
     string line = mv_line.as<core::String_O>()->get_std_string();
-    LOG(BF("Read line(%s)") % line  );
+    LOG("Read line(%s)" , line  );
     if ( line.size()>=4 && line.substr(0,4) == "MASS") {
       nonbondDb = this->parseMasses(fin,nonbondDb);
       lastSegment = 1;
@@ -705,14 +705,14 @@ ForceField_sp ReadAmberParameters_O::parseFrcModFile(core::T_sp fin, core::T_sp 
       ff->setFFItorDb(this->parseItorDb(fin));
       lastSegment = 5;
     } else if ( line.size()>=4 && line.substr(0,4) == "HBON") {
-      SIMPLE_WARN(BF("Skipping HBON FrcMod term"));
+      SIMPLE_WARN("Skipping HBON FrcMod term");
     } else if ( line.size()>=4 && line.substr(0,4) == "NONB") {
       this->parseNonbondDb(fin,nonbondDb);
       readNonbond = true;
       lastSegment = 7;
     } else {
       if (line.size()>0) {
-        SIMPLE_WARN(BF("Ignoring %s in FrcMod") % line );
+        SIMPLE_WARN("Ignoring %s in FrcMod", line );
       }
     }
   }
@@ -731,7 +731,7 @@ ForceField_sp ReadAmberParameters_O::parseAmberFormattedForceFieldOrFrcMod(core:
     return this->parseAmberFormattedForceField(strm,system);
   } else {
     if (masses.nilp() != nonbond.nilp()) {
-      SIMPLE_ERROR(BF("Modified force field files must contain both a MASS and a NONB entry, or neither"));
+      SIMPLE_ERROR(("Modified force field files must contain both a MASS and a NONB entry, or neither"));
     }
     return this->parseFrcModFile(strm,system);
   }

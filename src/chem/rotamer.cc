@@ -44,7 +44,7 @@ void	RotamerAtom::archive(core::ArchiveP node)
     node->attribute("d",this->_Distance);
     node->attribute("a",this->_Angle);
     node->attribute("t",this->_Torsion);
-    LOG(BF("Serialized RotamerAtom@%X = %lf, %lf, %lf") % this % this->_Distance % this->_Angle % this->_Torsion );
+    LOG("Serialized RotamerAtom@%X = %lf, %lf, %lf" , this , this->_Distance , this->_Angle , this->_Torsion );
 };
 
 #endif

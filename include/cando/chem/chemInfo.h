@@ -36,6 +36,8 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <iostream>
 #include <string>
 
+#include <boost/graph/adjacency_list.hpp>
+
 #include <clasp/core/common.h>
 #include <cando/adapt/stringSet.fwd.h>
 #include <cando/chem/atom.h>

@@ -95,22 +95,22 @@ Joint_sp JointTree_O::JointTreeLookupAtomid(const chem::AtomId& atomId) const
 
 void JointTree_O::resizeMolecules(int numMolecules)
 {_OF();
-  LOG(BF("Resizing JointTree to %d molecules") % numMolecules);
+  LOG("Resizing JointTree to %d molecules" , numMolecules);
 //	int originalNumMolecules = this->_AtomMap.numberOfMolecules();
   this->_AtomMap.resize(numMolecules);
 };
 
 void JointTree_O::resizeResidues(int mol, int numResidues)
 {_OF();
-  LOG(BF("Resizing JointTree to %d residues in moleculeId[%d]") % numResidues % mol );
+  LOG("Resizing JointTree to %d residues in moleculeId[%d]" , numResidues , mol );
   this->_AtomMap.resize(mol,numResidues);
 };
 
 void JointTree_O::resizeAtoms(int mol, int res, int numAtoms)
 {_OF();
-  LOG(BF("Resizing JointTree to %d atoms in residue[%d] moleculeId[%d]")
-      % numAtoms 
-      % res % mol );
+  LOG("Resizing JointTree to %d atoms in residue[%d] moleculeId[%d]"
+      , numAtoms 
+      , res , mol );
   this->_AtomMap.resize(mol,res,numAtoms);
 };
 
@@ -174,18 +174,17 @@ DONT_OPTIMIZE_WHEN_DEBUG_RELEASE void JointTree_O::recursivelyBuildMolecule(Mono
                                           Joint_sp parent,
                                           bool rootNode)
 {_OF();
-  LOG(BF("recursivelyBuildMolecule into parent: %s monomerNode: %s\n") % _rep_(parent) % _rep_(monomerNode));
+  LOG("recursivelyBuildMolecule into parent: %s monomerNode: %s\n" , _rep_(parent) , _rep_(monomerNode));
   chem::Constitution_mv constitutionAndTopology = monomerNode->identifyConstitutionAndTopology();
   chem::Constitution_sp constitution = constitutionAndTopology;
   chem::Topology_sp topology = constitutionAndTopology.second().as<chem::Topology_O>();
   chem::ConstitutionAtoms_sp constitutionAtoms;
-  {_BLOCK_TRACEF(BF("Building constitution[%s] Topology[%s]")
-                 % _rep_(constitution->getName()) % _rep_(topology->getName()) );
+  {
     constitutionAtoms = constitution->getConstitutionAtoms();
     this->resizeAtoms(monomerId._Chain,monomerId._Monomer,constitutionAtoms->numberOfAtoms());
     core::T_sp ttemplate = topology->getProperty(INTERN_(kw,jointTemplate));
     if (ttemplate.nilp()) {
-      SIMPLE_ERROR(BF("The topology %s is missing an :atom-template parameter") % _rep_(topology));
+      SIMPLE_ERROR(("The topology %s is missing an :atom-template parameter") , _rep_(topology));
     }
     JointTemplate_sp jointTemplate = gc::As<JointTemplate_sp>(ttemplate);
     BondId_sp incoming = BondId_O::create(parent);
@@ -230,7 +229,7 @@ void JointTree_O::buildMoleculeUsingChainNode(int moleculeId, ChainNode_sp chain
   this->resizeResidues(moleculeId,numResidues);
   MonomerNode_sp monomerNode = chainNode->_RootMonomerNode;
   ASSERTF(this->_Root.notnilp(),BF("The Root of the JointTree cannot be nil"));
-  LOG(BF("Building moleculeId[%d]") % moleculeId);
+  LOG("Building moleculeId[%d]" , moleculeId);
   MonomerId monomerId(moleculeId,monomerNode->_Id._Monomer);
   this->recursivelyBuildMolecule(monomerId,
                                  monomerNode,
