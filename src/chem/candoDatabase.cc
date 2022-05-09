@@ -276,8 +276,7 @@ Entity_sp CandoDatabase_O::getEntityOfClass(core::Symbol_sp nm, core::Instance_s
   Entity_sp entity = this->getEntity(nm);
   if ( core::cl__class_of(entity) != mc )
   {
-    SIMPLE_ERROR(("You asked for Entity[%s] of class[%s] and there is one with that name but it has the wrong class[%s]")
-                 , _rep_(nm) , mc->className() , entity->className() );
+    SIMPLE_ERROR(("You asked for Entity[%s] of class[%s] and there is one with that name but it has the wrong class[%s]") , _rep_(nm) , mc->className() , entity->className() );
   }
   return entity;
 }
@@ -561,7 +560,7 @@ CL_DEFMETHOD     uint CandoDatabase_O::addMonomerCoordinates(MonomerCoordinates_
       count++;
     } else
     {
-//	    _lisp->print(BF("      %s %u  Ignoring it") , __FILE__ , __LINE__ );
+//	    core::writeln_bf_stream(fmt::sprintf("      %s %u  Ignoring it" , __FILE__ , __LINE__ ));
     }
   }
   LOG("Only %u of the specific contexts were used" , count  );

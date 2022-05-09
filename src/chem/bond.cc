@@ -120,8 +120,7 @@ bool Bond_O::isAtom1(Atom_sp a) const
   if (this->_Atom1==a) return true;
   ASSERTNOTNULL(this->_Atom2);
   if ( this->_Atom2==a) return false;
-  SIMPLE_ERROR(("Atom[%s] is neither atom1[%s] or atom2[%s] of bond")
-               , _rep_(a) , _rep_(this->_Atom1) , _rep_(this->_Atom2) );
+  SIMPLE_ERROR(("Atom[%s] is neither atom1[%s] or atom2[%s] of bond") , _rep_(a) , _rep_(this->_Atom1) , _rep_(this->_Atom2) );
 }
 
 

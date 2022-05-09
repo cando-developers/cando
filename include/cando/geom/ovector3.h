@@ -134,13 +134,13 @@ struct	from_object<Vector3>
                core::clasp_to_double(vo->rowMajorAref(2)));
         return;
       } else {
-        SIMPLE_ERROR(("Vector must have 3 elements"));
+        SIMPLE_ERROR("Vector must have 3 elements");
       }
     } else if (geom::OVector3_sp ov = o.asOrNull<geom::OVector3_O>()) {
       _v.set(ov->getX(),ov->getY(),ov->getZ());
       return;
     }
-    SIMPLE_ERROR(("You must provide an OVector3 or a Vector of three elements"));
+    SIMPLE_ERROR("You must provide an OVector3 or a Vector of three elements");
   }
 };
 template <>
@@ -163,14 +163,14 @@ struct	from_object<const Vector3&>
       _v.set(ov3->getX(),ov3->getY(),ov3->getZ());
     } else if ( core::Vector_sp vec = o.asOrNull<core::Vector_O>() ) {
       if ( core::cl__length(vec) != 3 ) {
-        SIMPLE_ERROR(("ovector3 can only have three elements"));
+        SIMPLE_ERROR("ovector3 can only have three elements");
       }
       _v.set(clasp_to_double(gc::As<core::Number_sp>(vec->rowMajorAref(0))),
              clasp_to_double(gc::As<core::Number_sp>(vec->rowMajorAref(1))),
              clasp_to_double(gc::As<core::Number_sp>(vec->rowMajorAref(2))));
     } else if ( core::List_sp list = o.asOrNull<core::List_V>() ) {
       if ( core::cl__length(list) != 3 ) {
-        SIMPLE_ERROR(("ovector3 can only have three elements"));
+        SIMPLE_ERROR("ovector3 can only have three elements");
       }
       core::T_sp e1 = oCar(list);
       list = oCdr(list);
@@ -181,7 +181,7 @@ struct	from_object<const Vector3&>
              core::clasp_to_double(e2.as<core::Number_O>()),
              core::clasp_to_double(e3.as<core::Number_O>()));
     } else {
-      SIMPLE_ERROR(("Illegal type for ovector3"));
+      SIMPLE_ERROR("Illegal type for ovector3");
     }
   }
 };

@@ -326,7 +326,7 @@ string	part;
 	}
 	if ( times > 0 )
 	{
-          core::writeln_bf_stream(fmt::sprintf( "%s" , mit->second->getComment().c_str() ));
+          core::writeln_bf_stream(fmt::sprintf("%s", mit->second->getComment() ));
           core::writeln_bf_stream(fmt::sprintf("     Found %d times first: %s" , times , firstFind ));
 	} 
     }
@@ -371,7 +371,7 @@ CandoDatabase_sp	bdb;
     {
 	Constitution_sp con = core::oCar(cur).as<Constitution_O>();
         core::T_sp stereoisomers = con->getMonomerNamesAsStringList()->asString();
-        core::writeln_bf_stream(fmt::sprintf(" Constitution: %12s -- %s" , _rep_(con->getName()) , core::_rep_(stereoisomers) ));
+        core::writeln_bf_stream(fmt::sprintf(" Constitution: %12s -- %s" , _rep_(con->getName()) , core::_rep_(stereoisomers) );
     }
     return _Nil<core::T_O>();
 }

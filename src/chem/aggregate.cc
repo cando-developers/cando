@@ -33,6 +33,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/common.h>
 #include <clasp/core/lispStream.h>
 #include <cando/chem/aggregate.h>
+#include <clasp/core/lispStream.h>
 
 #include <iostream>
 #include <vector>
@@ -817,7 +818,7 @@ CL_DEFMETHOD     void	Aggregate_O::perturbAtomPositions(double dist)
 		    // If the atoms are right on top of each other then
 		    // add a random vector to each
 		    if ( diff<0.1 ) {
-                      core::writeln_bf_stream(fmt::sprintf( "Aggregate_O::perturbAtomPositions>> Atoms are too close and being randomized!!!" ));
+			core::writeln_bf_stream(fmt::sprintf( "Aggregate_O::perturbAtomPositions>> Atoms are too close and being randomized!!!" ));
 			xd = (core::randomNumber01()*2.0-1.0)*dist;
 			yd = (core::randomNumber01()*2.0-1.0)*dist;
 			zd = (core::randomNumber01()*2.0-1.0)*dist;

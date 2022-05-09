@@ -33,6 +33,10 @@ This is an open source license for the CANDO software from Temple University, bu
 #ifndef	CHEM_INFO_H
 #define	CHEM_INFO_H
 
+#include <boost/graph/properties.hpp>
+#include <boost/graph/adjacency_list.hpp>
+
+
 #include <iostream>
 #include <string>
 

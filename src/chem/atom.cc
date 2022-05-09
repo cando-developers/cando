@@ -626,8 +626,7 @@ CL_DEFMETHOD     Bond_sp Atom_O::bondTo( Atom_sp to, BondOrder o )
   {
     if ( (*b)->getOtherAtom(from) == to )
     {
-      SIMPLE_ERROR(("You tried to form a bond from[%s]-to[%s] but there is already one there!!") 
-                   , this->__repr__() , _rep_(to) );
+      SIMPLE_ERROR(("You tried to form a bond from[%s]-to[%s] but there is already one there!!") , this->__repr__() , _rep_(to) );
     }
   }
   Bond_sp bn = Bond_O::create(from,to,o);
