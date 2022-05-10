@@ -176,7 +176,7 @@ CL_DEFMETHOD     core::T_mv StereoisomerAtoms_O::atomWithName(MatterName nm,bool
   if (!errorp) {
     return Values(nil<core::T_O>(),nil<core::T_O>());
   }
-  SIMPLE_ERROR(("Could not find StereoisomerAtom with name[%s]") , nm );
+  SIMPLE_ERROR("Could not find StereoisomerAtom with name[%s]" , core::_rep_(nm));
 }
 
 
@@ -194,7 +194,7 @@ CL_DEFMETHOD     int StereoisomerAtoms_O::index(MatterName name) const
     const StereoisomerAtom_sp& atom = this->_Atoms[idx];
     if ( atom->_AtomName == name ) return idx;
   }
-  SIMPLE_ERROR(("Unknown atom[%s]") , name );
+  SIMPLE_ERROR(("Unknown atom[%s]") , core::_rep_(name) );
 }
 
 

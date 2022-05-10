@@ -239,7 +239,7 @@ void StereoInformation_O::fields(core::Record_sp node) {
 void	StereoInformation_O::addStereoisomer(Stereoisomer_sp s)
 {_OF();
   if ( this->_NameOrPdbToStereoisomer.count(s->getName())>0 ) {
-    SIMPLE_ERROR(("addStereoisomer monomer name (%s) has already been used") , s->getName());
+    SIMPLE_ERROR(("addStereoisomer monomer name (%s) has already been used") , core::_rep_(s->getName()));
   }
   this->_NameOrPdbToStereoisomer.set(s->getName(),s);
   this->_NameOrPdbToStereoisomer.set(s->getPdb(),s);
@@ -260,7 +260,7 @@ CL_DEFMETHOD void StereoInformation_O::validate()
     for ( gctools::Vec0<Stereoisomer_sp>::iterator it = this->_Stereoisomers.begin();
           it != this->_Stereoisomers.end(); it++ ) {
       if ( core::clasp_number_compare(core::make_fixnum(index),(*it)->getStereoisomerIndex()) != 0) {
-        SIMPLE_WARN("Stereoisomer with stereoisomer index %d does not match the array index in StereoInformation %d" ,(*it)->getStereoisomerIndex() ,index);
+        SIMPLE_WARN("Stereoisomer with stereoisomer index %d does not match the array index in StereoInformation %d" , core::_rep_((*it)->getStereoisomerIndex()) , index);
       }
       index++;
     }
@@ -330,10 +330,10 @@ StereoInformation_sp StereoInformation_O::make(core::List_sp stereoisomers, core
   for ( gctools::Vec0<Stereoisomer_sp>::iterator it = me->_Stereoisomers.begin();
         it != me->_Stereoisomers.end(); it++ ) {
     if ( core::clasp_number_compare(core::make_fixnum(index),(*it)->getStereoisomerIndex()) != 0) {
-      SIMPLE_WARN("Stereoisomer with stereoisomer index %d does not match the array index in StereoInformation %d" ,(*it)->getStereoisomerIndex() ,index);
+      SIMPLE_WARN("Stereoisomer with stereoisomer index %d does not match the array index in StereoInformation %d" , core::_rep_((*it)->getStereoisomerIndex()) ,index);
     }
     if ( me->_NameOrPdbToStereoisomer.count((*it)->getName())>0 ) {
-      SIMPLE_ERROR(("addStereoisomer monomer name (%s) has already been used") , (*it)->getName());
+      SIMPLE_ERROR(("addStereoisomer monomer name (%s) has already been used") , core::_rep_((*it)->getName()));
     }
     if ((*it)->getName().notnilp()) {
       me->_NameOrPdbToStereoisomer.set((*it)->getName(),(*it));

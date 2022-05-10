@@ -207,7 +207,7 @@ CL_LAMBDA(atom-name &optional (errorp t))CL_DEFMETHOD     core::T_mv Constitutio
   if (!errorp) {
     return Values(nil<core::T_O>(),nil<core::T_O>());
   }
-  SIMPLE_ERROR(("Could not find ConstitutionAtom with name[%s]") , nm );
+  SIMPLE_ERROR(("Could not find ConstitutionAtom with name[%s]") , core::_rep_(nm) );
 }
 
 
@@ -225,7 +225,7 @@ CL_DEFMETHOD     int ConstitutionAtoms_O::index(MatterName name) const
     const ConstitutionAtom_sp& atom = this->_Atoms[idx];
     if ( atom->_AtomName == name ) return idx;
   }
-  SIMPLE_ERROR(("Unknown atom[%s]") , name );
+  SIMPLE_ERROR(("Unknown atom[%s]") , core::_rep_(name) );
 }
 
 CL_DEFMETHOD core::List_sp ConstitutionAtoms_O::constitutionAtomsAsList() const {

@@ -1016,8 +1016,8 @@ void	Oligomer_O::_assembleFromParts(core::List_sp parts, CandoDatabase_sp bdb)
       OligomerPart_Link_sp link = gc::As<OligomerPart_Link_sp>(oligPart);
       core::Symbol_sp	mon1Id = link->_Monomer1Id;
       core::Symbol_sp	mon2Id = link->_Monomer2->_MonomerId;
-      if ( !monomerMap->contains(mon1Id) ) SIMPLE_ERROR(("Unknown monomer id: %s") , mon1Id);
-      if ( !monomerMap->contains(mon2Id) ) SIMPLE_ERROR(("Unknown monomer id: %s") , mon2Id);
+      if ( !monomerMap->contains(mon1Id) ) SIMPLE_ERROR(("Unknown monomer id: %s") , core::_rep_(mon1Id));
+      if ( !monomerMap->contains(mon2Id) ) SIMPLE_ERROR(("Unknown monomer id: %s") , core::_rep_(mon2Id));
       Monomer_sp mon1 = monomerMap->gethash(mon1Id).as<Monomer_O>();
       Monomer_sp mon2 = monomerMap->gethash(mon2Id).as<Monomer_O>();
       this->couple(mon1,link->_Coupling,mon2);

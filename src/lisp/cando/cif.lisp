@@ -1,6 +1,5 @@
 (in-package :cif)
 
-
 (defclass cif-block ()
   ((name :initarg :name :accessor name)
    (lines :initform nil :accessor lines)))

@@ -154,7 +154,7 @@ void PathMessage_O::dump()
     core::Symbol_sp firstName = a1->getName();
     Atom_sp a2 = this->_lastVertex->getAtom();
     core::Symbol_sp lastName = a2->getName();
-    core::write_bf_stream(fmt::sprintf("Ring start: %s end: %s",  firstName , lastName) );
+    core::write_bf_stream(fmt::sprintf("Ring start: %s end: %s", core::_rep_(firstName) , core::_rep_(lastName)) );
     core::write_bf_stream("Edges: ");
     vector<size_t>::iterator ei;
     vector<size_t> vals;
@@ -249,7 +249,7 @@ void	AGVertex_O::dump()
 {
     this->_atom->dump();
     for ( auto cur : this->getConnectedVertices() ) {
-      core::write_bf_stream(fmt::sprintf("%s ", cur->car<AGVertex_O>()->getAtom()->getName() ));
+      core::write_bf_stream(fmt::sprintf("%s ", core::_rep_(cur->car<AGVertex_O>()->getAtom()->getName())));
     }
 }
 

@@ -124,7 +124,17 @@ void AtomPdbRec::write(core::T_sp fout)
   {
     name = " " + this->_name->symbolName()->get_std_string();
   }
-  core::clasp_write_string(fmt::sprintf( "ATOM%7d %-4s %3s %1s%4d    %8.3f%8.3f%8.3f %5.2f %5.2f           %2s\n" , this->_serial , name , this->_resName , this->_chainId , this->_resSeq , this->_x , this->_y , this->_z , this->_occupancy , this->_tempFactor , this->_element), fout);
+  core::clasp_write_string(fmt::sprintf( "ATOM%7d ", this->_serial), fout);
+  core::clasp_write_string(fmt::sprintf( "%-4s ", name ), fout);
+  core::clasp_write_string(fmt::sprintf( "%3s ", core::_rep_(this->_resName) ), fout);
+  core::clasp_write_string(fmt::sprintf( "%1s", this->_chainId ), fout);
+  core::clasp_write_string(fmt::sprintf( "%4d    ", this->_resSeq ), fout );
+  core::clasp_write_string(fmt::sprintf( "%8.3f", this->_x ), fout );
+  core::clasp_write_string(fmt::sprintf( "%8.3f", this->_y ), fout );
+  core::clasp_write_string(fmt::sprintf( "%8.3f ", this->_z ), fout );
+  core::clasp_write_string(fmt::sprintf( "%5.2f ", this->_occupancy ), fout );
+  core::clasp_write_string(fmt::sprintf( "%5.2f           ", this->_tempFactor ), fout );
+  core::clasp_write_string(fmt::sprintf( "%2s\n", this->_element ), fout );
 }
 
 void	EntirePdbRec::addAtomPdbRec(AtomPdbRec& atom)

@@ -172,7 +172,7 @@ void	RestrainedPiBond_O::fillOneDihedralRestraint(Residue_sp residue,
 	stringstream ss;
 	ss << "Dihedral restraints X atom: " << this->_PiAtomX;
 	ss << " must have between 2 and 3 bonds - it has " << pX->numberOfBonds();
-	SIMPLE_ERROR(("Dihedral restraints Y atom: %s") , this->_PiAtomY );
+	SIMPLE_ERROR(("Dihedral restraints Y atom: %s") , core::_rep_(this->_PiAtomY) );
 	ss << " must have between 2 and 3 bonds - it has " << pY->numberOfBonds();
 	SIMPLE_ERROR(("%s") , ss.str() );
     }
@@ -213,7 +213,7 @@ void	RestrainedPiBond_O::fillOneDihedralRestraint(Residue_sp residue,
 	}
     } else
     {
-	SIMPLE_ERROR(("Illegal Pi bond configuration: %s must be E or Z") , config);
+      SIMPLE_ERROR(("Illegal Pi bond configuration: %s must be E or Z") , core::_rep_(config));
     }
 }
 
@@ -278,7 +278,7 @@ void	RestrainedExoCyclicAtom_O::archiveBase(core::ArchiveP node)
     this->lazyInitializeSmarts();
     if ( !residue->hasAtomWithName(this->_ExoCyclicAtomName) )
     {
-	SIMPLE_ERROR(("Residue(%s) doesn't have atom with name(%s)") , residue->description() , this->_ExoCyclicAtomName );
+      SIMPLE_ERROR(("Residue(%s) doesn't have atom with name(%s)") , residue->description() , core::_rep_(this->_ExoCyclicAtomName) );
     }
     Atom_sp exoCyclicAtom = gc::As_unsafe<Atom_sp>(residue->atomWithName(this->_ExoCyclicAtomName));
     Root_sp atomExoToSixMemberedRing = gctools::As<Root_sp>(chem::_sym_STARAtomExoToSixMemberedRingSTAR->symbolValue());

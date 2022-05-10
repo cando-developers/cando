@@ -86,7 +86,7 @@ struct	to_object<kinematics::CoordinateCalculator>
     } else if (v== kinematics::bond_angle_dihedral_to_internal) {
       return kw::_sym_bond_angle_dihedral_to_internal;
     }
-    SIMPLE_ERROR(("Cannot convert CoordinateCalculator %p") , v);
+    SIMPLE_ERROR("Cannot convert CoordinateCalculator");
   };
 };
 template <>

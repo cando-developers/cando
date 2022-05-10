@@ -297,7 +297,7 @@ AtomIndexer_sp			indexer;
     ASSERTNOTNULL(this->_AtomIndexers);
     if ( !this->recognizesMonomerName(monomerName) )
     {
-        SIMPLE_ERROR(("Unrecognized monomer name: %s %s") , monomerName , this->description() );
+      SIMPLE_ERROR( "Unrecognized monomer name: %s %s" , core::_rep_(monomerName) , this->description() );
     }
     indexer = AtomIndexer_O::create();
     indexer->setFromAtomNames(atomIndexerNames);
@@ -315,7 +315,7 @@ AtomIndexer_sp			indexer;
     ASSERTNOTNULL(this->_AtomIndexers);
     if ( !this->recognizesMonomerName(monomerName) )
     {
-        SIMPLE_ERROR(("Unrecognized monomer name: %s %s") , monomerName , this->description() );
+      SIMPLE_ERROR( "Unrecognized monomer name: %s %s" , core::_rep_(monomerName) , this->description() );
     }
     indexer = AtomIndexer_O::create();
     indexer->setFromList(names);
@@ -332,7 +332,7 @@ AtomIndexer_sp			indexer;
     ASSERTNOTNULL(this->_AtomIndexers);
     if ( !this->recognizesMonomerName(monomerName) )
     {
-        SIMPLE_ERROR(("Unrecognized monomer name: %s %s") , monomerName , this->sharedThis<MonomerPack_O>()->description() );
+      SIMPLE_ERROR(("Unrecognized monomer name: %s %s") , core::_rep_(monomerName) , this->sharedThis<MonomerPack_O>()->description() );
     }
     indexer = AtomIndexer_O::create();
     for ( auto p : names ) {
@@ -441,7 +441,7 @@ AtomIndexer_sp	atomIndexer;
     ss << nm;
     if ( !this->recognizesMonomerName(nm) )
     {
-      SIMPLE_ERROR(("Unrecognized monomer name: %s %s") , nm , this->sharedThis<MonomerPack_O>()->description() );
+      SIMPLE_ERROR(("Unrecognized monomer name: %s %s") , core::_rep_(nm) , this->sharedThis<MonomerPack_O>()->description() );
     }
     if ( this->_AtomIndexers->recognizesMonomerName(nm) )
     {

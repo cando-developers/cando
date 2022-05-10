@@ -1560,13 +1560,13 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
               Residue_sp res2 = gc::As<Residue_sp>(atomToRes->gethash(a2));
               Residue_sp res3 = gc::As<Residue_sp>(atomToRes->gethash(a3));
               Residue_sp res4 = gc::As<Residue_sp>(atomToRes->gethash(a4));
-              core::write_bf_stream(fmt::sprintf( "Adding proper term for atoms %s-%s-%s-%s types: %s-%s-%s-%s -> %s/n" , 
-                                    ea1->getResidueAndName(res1)
-                                    , ea2->getResidueAndName(res2)
-                                    , ea3->getResidueAndName(res3)
-                                    , ea4->getResidueAndName(res4)
-                                    , t1 , t2 , t3 , t4
-                                    , _rep_(ffPtor)
+              core::write_bf_stream(fmt::sprintf( "Adding proper term for atoms %s-%s-%s-%s types: %s-%s-%s-%s -> %s/n"
+                                                  , ea1->getResidueAndName(res1)
+                                                  , ea2->getResidueAndName(res2)
+                                                  , ea3->getResidueAndName(res3)
+                                                  , ea4->getResidueAndName(res4)
+                                                  , core::_rep_(t1) , core::_rep_(t2) , core::_rep_(t3) , core::_rep_(t4)
+                                                  , _rep_(ffPtor)
                                                   ));
             }
             EnergyDihedral energyDihedral;
