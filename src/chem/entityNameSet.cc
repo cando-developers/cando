@@ -329,8 +329,8 @@ core::Symbol_sp EntityNameSetBase_O::getKey()
 	keys.clear();
 	expanded = this->expandedNameSet();
 	ASSERTF(expanded->size()>0,
-		BF("There must be at least one monomer name in the EntityNameSet"
-		   " %s but it is completely empty")% this->description() );
+		("There must be at least one monomer name in the EntityNameSet"
+                 " %s but it is completely empty") , this->description() );
         expanded->map( [&keys] (core::Symbol_sp si) {
 	    keys.insert((si)->symbolNameAsString());
           } );

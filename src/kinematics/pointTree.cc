@@ -192,8 +192,7 @@ DONT_OPTIMIZE_WHEN_DEBUG_RELEASE void JointTree_O::recursivelyBuildMolecule(Mono
 	    //
 	    // Write the sub tree described by jointTemplate into the JointTree
 	    // recursively
-    ASSERTF(jointTemplate.notnilp(),BF("The JointTemplate for Topology[%s] is nil")
-            % _rep_(topology->getName()) );
+    ASSERTF(jointTemplate.notnilp(),("The JointTemplate for Topology[%s] is nil") , _rep_(topology->getName()) );
     jointTemplate->writeIntoJointTree(this->sharedThis<JointTree_O>(),
                                      monomerId,
                                      incoming,
@@ -224,11 +223,11 @@ DONT_OPTIMIZE_WHEN_DEBUG_RELEASE void JointTree_O::recursivelyBuildMolecule(Mono
 
 void JointTree_O::buildMoleculeUsingChainNode(int moleculeId, ChainNode_sp chainNode, chem::Oligomer_sp oligomer )
 {_OF();
-  ASSERTF(moleculeId<this->numberOfMolecules(),BF("Illegal moleculeId[%d]") % moleculeId );
+  ASSERTF(moleculeId<this->numberOfMolecules(),("Illegal moleculeId[%d]") , moleculeId );
   int numResidues = oligomer->numberOfMonomers();
   this->resizeResidues(moleculeId,numResidues);
   MonomerNode_sp monomerNode = chainNode->_RootMonomerNode;
-  ASSERTF(this->_Root.notnilp(),BF("The Root of the JointTree cannot be nil"));
+  ASSERTF(this->_Root.notnilp(),("The Root of the JointTree cannot be nil"));
   LOG("Building moleculeId[%d]" , moleculeId);
   MonomerId monomerId(moleculeId,monomerNode->_Id._Monomer);
   this->recursivelyBuildMolecule(monomerId,
@@ -262,7 +261,7 @@ CL_DEFMETHOD void JointTree_O::walk(core::Function_sp exec)
 
 CL_DEFMETHOD void JointTree_O::updateInternalCoords()
 {_OF();
-  ASSERTF(this->_Root.notnilp(),BF("The Root atom is nil - this should never happen"));
+  ASSERTF(this->_Root.notnilp(),("The Root atom is nil - this should never happen"));
   this->_Root->updateInternalCoords(true,this->sharedThis<JointTree_O>());
 }
 

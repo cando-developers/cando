@@ -82,8 +82,8 @@ namespace units
 
 string Dimension_O::baseDimensionUnitName(int i)
     {
-	ASSERTF(NumBaseDimensions==8,BF("When you change NumBaseDimensions you must update Dimension_O::baseDimensionUnitName"));
-	ASSERTF(i>=0 && i < NumBaseDimensions,BF("Illegal base dimension index[%d]") % i);
+	ASSERTF(NumBaseDimensions==8,("When you change NumBaseDimensions you must update Dimension_O::baseDimensionUnitName"));
+	ASSERTF(i>=0 && i < NumBaseDimensions,("Illegal base dimension index[%d]") , i);
 	switch (i)
 	{
 	case 0: return "m";

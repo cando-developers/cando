@@ -199,7 +199,7 @@ string TrainerHeader_O::generateFileName() const
     LOG("Generating file name directory(%s)" , this->_TopDirectory.c_str() );
     LOG("Generating file name fileNamePrefix(%s)" , this->getTrainerFileNamePrefix().c_str()  );
     stringstream fileName;
-    fileName << (BF("%s/%s") % this->_TopDirectory % this->getTrainerFileNamePrefix() ).str();
+    fileName << (fmt::sprintf("%s/%s" , this->_TopDirectory , this->getTrainerFileNamePrefix() );
     LOG("Put it all together fileName(%s)" , fileName.str()  );
     return fileName.str();
 }

@@ -115,7 +115,7 @@ void BondedJoint_O::_appendChild(Joint_sp c)
     {_OF();
       if ( gc::IsA<JumpJoint_sp>(this->parent()))
 	{
-	    ASSERT(this->parent().get()->stubDefined());
+	    ASSERT(this->parent()->stubDefined());
 	    Joint_sp p_stub2( this->parent()->stubJoint2() );
 	    chem::AtomId const & p_stub2_id( p_stub2->id() );
 	    if ( this->id() == p_stub2_id )
@@ -381,7 +381,7 @@ void BondedJoint_O::updateXyzCoords()
   this->BondedJoint_O::_updateXyzCoords(stub);
   if ( local_dof_change_propagates_to_younger_siblings )
   {
-    ASSERTF(this->_Parent.boundp(),BF("Parent is not defined"));
+    ASSERTF(this->_Parent.boundp(),("Parent is not defined"));
     Joint_sp parent = this->_Parent;
     int ii = 0;
 	    /// you had better find yourself in your parent's atom list.
@@ -389,7 +389,7 @@ void BondedJoint_O::updateXyzCoords()
     {
       ++ii;
       ASSERTF(ii != parent.get()->_numberOfChildren(),
-              BF("While iterating over all younger siblings I hit the end"
+              ("While iterating over all younger siblings I hit the end"
                  " - this should never happen, I should hit myself"));
     }
     while ( ii != parent.get()->_numberOfChildren() )

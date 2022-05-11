@@ -679,11 +679,8 @@ vector<Matrix>::iterator		mp;
           core::writeln_bf_stream(fmt::sprintf( "      relative matrix: " ));
           pos->relative.dump();
           for (mp=pos->rotations.begin(); mp!=pos->rotations.end(); mp++ ) {
-//		_lisp->print(BF( "      rotation matrix %d: ") % mp-pos->rotations.begin() );
             mp->dump();
           }
-//	    _lisp->print(BF( "      current rotation: %d") % pos->rotation-pos->rotations.begin() );
-          
 	}
         core::writeln_bf_stream(fmt::sprintf( "      accumulated matrix: " ));
 	pos->accumulated.dump();

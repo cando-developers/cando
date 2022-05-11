@@ -114,9 +114,9 @@ void ChainNode_O::fields(core::Record_sp node) {
     MonomerNode_sp ChainNode_O::lookupMonomerId(int monomerId) const
     {_OF();
 	ASSERTF(monomerId < (int)this->_IndexedMonomerNodes.size(),
-		BF("Illegal monomerId[%d] - there are only %d monomerNodes")
-		% monomerId
-		% this->_IndexedMonomerNodes.size());
+		("Illegal monomerId[%d] - there are only %d monomerNodes")
+		, monomerId
+		, this->_IndexedMonomerNodes.size());
         if (monomerId<this->_IndexedMonomerNodes.size()) {
           return this->_IndexedMonomerNodes[monomerId];
         }

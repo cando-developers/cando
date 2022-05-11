@@ -59,8 +59,8 @@ Checkpoint_sp Checkpoint_O::make(const core::Symbol_sp& constitutionName,
   auto  me = gctools::GC<Checkpoint_O>::allocate_with_default_constructor();
   me->_ConstitutionName = constitutionName;
   me->_TopologyName = topologyName;
-  ASSERTF(me->_ConstitutionName.notnilp(),BF("You must provide constitutionName"));
-  ASSERTF(me->_TopologyName.notnilp(),BF("You must provide topologyName"));
+  ASSERTF(me->_ConstitutionName.notnilp(),("You must provide constitutionName"));
+  ASSERTF(me->_TopologyName.notnilp(),("You must provide topologyName"));
   return me;
 }
 
@@ -114,7 +114,7 @@ CheckpointOutPlugJoint_sp CheckpointOutPlugJoint_O::make(chem::OutPlug_sp outPlu
 {
   auto  me  = gctools::GC<CheckpointOutPlugJoint_O>::allocate_with_default_constructor();
   me->_Plug = outPlug;
-  ASSERTF(me->_Plug.notnilp(),BF("You must provide outPlug argument"));
+  ASSERTF(me->_Plug.notnilp(),("You must provide outPlug argument"));
   return me;
 };
 
@@ -235,7 +235,7 @@ void BondedJointTemplate_O::addChildren(Joint_sp me,
     LOG("Child returned %s" , _rep_(newChild));
 	    /* In case the Array was moved by writeIntoJointTree we get bonded again */
     Joint_sp bonded = me;
-    ASSERTF(bonded,BF("The dereferenced Jointer is NULL - this should not happen"));
+    ASSERTF(bonded,("The dereferenced Jointer is NULL - this should not happen"));
     if ( bonded == newChild)
     {
       stringstream serr;
@@ -364,11 +364,11 @@ RootBondedJointTemplate_sp RootBondedJointTemplate_O::make(core::Symbol_sp const
 {
   auto  me  = gctools::GC<RootBondedJointTemplate_O>::allocate_with_default_constructor();
   me->_ConstitutionName = constitutionName;
-  ASSERTF(me->_ConstitutionName.notnilp(),BF("You must provide constitutionName"));
+  ASSERTF(me->_ConstitutionName.notnilp(),("You must provide constitutionName"));
   me->_TopologyName = topologyName;
-  ASSERTF(me->_TopologyName.notnilp(),BF("You must provide topologyName"));
+  ASSERTF(me->_TopologyName.notnilp(),("You must provide topologyName"));
   me->_InPlug = inPlug;
-  ASSERTF(me->_InPlug.notnilp(),BF("You must provide inPlug"));
+  ASSERTF(me->_InPlug.notnilp(),("You must provide inPlug"));
   return me;
 };
 

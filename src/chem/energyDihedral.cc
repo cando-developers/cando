@@ -480,7 +480,7 @@ double	EnergyDihedral_O::evaluateAllComponent( ScoringFunction_sp score,
   if ( this->_DebugEnergy ) 
   {
     LOG_ENERGY_CLEAR();
-    LOG_ENERGY(BF("%s {\n")% this->className());
+    LOG_ENERGY(("%s {\n") , this->className());
   }
 
   ANN(force);
@@ -551,44 +551,44 @@ double	EnergyDihedral_O::evaluateAllComponent( ScoringFunction_sp score,
 
       if ( this->_DebugEnergy ) 
       {
-        LOG_ENERGY(BF( "MEISTER dihedral %d args cando\n")% (i+1) );
-        LOG_ENERGY(BF( "MEISTER dihedral %d V %lf\n")% (i+1) % V );
-        LOG_ENERGY(BF( "MEISTER dihedral %d DN %lf\n")% (i+1) % DN );
-        LOG_ENERGY(BF( "MEISTER dihedral %d IN %d\n")% (i+1) % IN );
-//		    LOG_ENERGY(BF( "MEISTER dihedral %d phase %lf\n")% (i+1) % phase );
-        LOG_ENERGY(BF( "MEISTER dihedral %d sinPhase %lf\n")% (i+1) % sinPhase );
-        LOG_ENERGY(BF( "MEISTER dihedral %d cosPhase %lf\n")% (i+1) % cosPhase );
-        LOG_ENERGY(BF( "MEISTER dihedral %d x1 %5.3lf %d\n")%(i+1) % x1 % (I1/3+1) );
-        LOG_ENERGY(BF( "MEISTER dihedral %d y1 %5.3lf %d\n")%(i+1) % y1 % (I1/3+1) );
-        LOG_ENERGY(BF( "MEISTER dihedral %d z1 %5.3lf %d\n")%(i+1) % z1 % (I1/3+1) );
-        LOG_ENERGY(BF( "MEISTER dihedral %d x2 %5.3lf %d\n")%(i+1) % x2 % (I2/3+1) );
-        LOG_ENERGY(BF( "MEISTER dihedral %d y2 %5.3lf %d\n")%(i+1) % y2 % (I2/3+1) );
-        LOG_ENERGY(BF( "MEISTER dihedral %d z2 %5.3lf %d\n")%(i+1) % z2 % (I2/3+1) );
-        LOG_ENERGY(BF( "MEISTER dihedral %d x3 %5.3lf %d\n")%(i+1) % x3 % (I3/3+1) );
-        LOG_ENERGY(BF( "MEISTER dihedral %d y3 %5.3lf %d\n")%(i+1) % y3 % (I3/3+1) );
-        LOG_ENERGY(BF( "MEISTER dihedral %d z3 %5.3lf %d\n")%(i+1) % z3 % (I3/3+1) );
-        LOG_ENERGY(BF( "MEISTER dihedral %d x4 %5.3lf %d\n")%(i+1) % x4 % (I4/3+1) );
-        LOG_ENERGY(BF( "MEISTER dihedral %d y4 %5.3lf %d\n")%(i+1) % y4 % (I4/3+1) );
-        LOG_ENERGY(BF( "MEISTER dihedral %d z4 %5.3lf %d\n")%(i+1) % z4 % (I4/3+1) );
-        LOG_ENERGY(BF( "MEISTER dihedral %d results\n")% (i+1) );
-	//	LOG_ENERGY(BF( "MEISTER dihedral %d Phi %lf (%lf degrees)\n")% (i+1) %
+        LOG_ENERGY(( "MEISTER dihedral %d args cando\n") , (i+1) );
+        LOG_ENERGY(( "MEISTER dihedral %d V %lf\n") , (i+1) , V );
+        LOG_ENERGY(( "MEISTER dihedral %d DN %lf\n") , (i+1) , DN );
+        LOG_ENERGY(( "MEISTER dihedral %d IN %d\n") , (i+1) , IN );
+//		    LOG_ENERGY(( "MEISTER dihedral %d phase %lf\n") , (i+1) , phase );
+        LOG_ENERGY(( "MEISTER dihedral %d sinPhase %lf\n") , (i+1) , sinPhase );
+        LOG_ENERGY(( "MEISTER dihedral %d cosPhase %lf\n") , (i+1) , cosPhase );
+        LOG_ENERGY(( "MEISTER dihedral %d x1 %5.3lf %d\n") , (i+1) , x1 , (I1/3+1) );
+        LOG_ENERGY(( "MEISTER dihedral %d y1 %5.3lf %d\n") , (i+1) , y1 , (I1/3+1) );
+        LOG_ENERGY(( "MEISTER dihedral %d z1 %5.3lf %d\n") , (i+1) , z1 , (I1/3+1) );
+        LOG_ENERGY(( "MEISTER dihedral %d x2 %5.3lf %d\n") , (i+1) , x2 , (I2/3+1) );
+        LOG_ENERGY(( "MEISTER dihedral %d y2 %5.3lf %d\n") , (i+1) , y2 , (I2/3+1) );
+        LOG_ENERGY(( "MEISTER dihedral %d z2 %5.3lf %d\n") , (i+1) , z2 , (I2/3+1) );
+        LOG_ENERGY(( "MEISTER dihedral %d x3 %5.3lf %d\n") , (i+1) , x3 , (I3/3+1) );
+        LOG_ENERGY(( "MEISTER dihedral %d y3 %5.3lf %d\n") , (i+1) , y3 , (I3/3+1) );
+        LOG_ENERGY(( "MEISTER dihedral %d z3 %5.3lf %d\n") , (i+1) , z3 , (I3/3+1) );
+        LOG_ENERGY(( "MEISTER dihedral %d x4 %5.3lf %d\n") , (i+1) , x4 , (I4/3+1) );
+        LOG_ENERGY(( "MEISTER dihedral %d y4 %5.3lf %d\n") , (i+1) , y4 , (I4/3+1) );
+        LOG_ENERGY(( "MEISTER dihedral %d z4 %5.3lf %d\n") , (i+1) , z4 , (I4/3+1) );
+        LOG_ENERGY(( "MEISTER dihedral %d results\n") , (i+1) );
+	//	LOG_ENERGY(( "MEISTER dihedral %d Phi %lf (%lf degrees)\n") , (i+1) %
 	//		    	Phi, Phi/0.0174533 );
-        LOG_ENERGY(BF( "MEISTER dihedral %d Energy %lf\n")% (i+1) % Energy);
+        LOG_ENERGY(( "MEISTER dihedral %d Energy %lf\n") , (i+1) , Energy);
         if ( calcForce ) {
-          LOG_ENERGY(BF( "MEISTER dihedral %d fx1 %8.5lf %d\n")%(i+1) % fx1 % (I1/3+1) );
-          LOG_ENERGY(BF( "MEISTER dihedral %d fy1 %8.5lf %d\n")%(i+1) % fy1 % (I1/3+1) );
-          LOG_ENERGY(BF( "MEISTER dihedral %d fz1 %8.5lf %d\n")%(i+1) % fz1 % (I1/3+1) );
-          LOG_ENERGY(BF( "MEISTER dihedral %d fx2 %8.5lf %d\n")%(i+1) % fx2 % (I2/3+1) );
-          LOG_ENERGY(BF( "MEISTER dihedral %d fy2 %8.5lf %d\n")%(i+1) % fy2 % (I2/3+1) );
-          LOG_ENERGY(BF( "MEISTER dihedral %d fz2 %8.5lf %d\n")%(i+1) % fz2 % (I2/3+1) );
-          LOG_ENERGY(BF( "MEISTER dihedral %d fx3 %8.5lf %d\n")%(i+1) % fx3 % (I3/3+1) );
-          LOG_ENERGY(BF( "MEISTER dihedral %d fy3 %8.5lf %d\n")%(i+1) % fy3 % (I3/3+1) );
-          LOG_ENERGY(BF( "MEISTER dihedral %d fz3 %8.5lf %d\n")%(i+1) % fz3 % (I3/3+1) );
-          LOG_ENERGY(BF( "MEISTER dihedral %d fx4 %8.5lf %d\n")%(i+1) % fx4 % (I4/3+1) );
-          LOG_ENERGY(BF( "MEISTER dihedral %d fy4 %8.5lf %d\n")%(i+1) % fy4 % (I4/3+1) );
-          LOG_ENERGY(BF( "MEISTER dihedral %d fz4 %8.5lf %d\n")%(i+1) % fz4 % (I4/3+1) );
+          LOG_ENERGY(( "MEISTER dihedral %d fx1 %8.5lf %d\n") , (i+1) , fx1 , (I1/3+1) );
+          LOG_ENERGY(( "MEISTER dihedral %d fy1 %8.5lf %d\n") , (i+1) , fy1 , (I1/3+1) );
+          LOG_ENERGY(( "MEISTER dihedral %d fz1 %8.5lf %d\n") , (i+1) , fz1 , (I1/3+1) );
+          LOG_ENERGY(( "MEISTER dihedral %d fx2 %8.5lf %d\n") , (i+1) , fx2 , (I2/3+1) );
+          LOG_ENERGY(( "MEISTER dihedral %d fy2 %8.5lf %d\n") , (i+1) , fy2 , (I2/3+1) );
+          LOG_ENERGY(( "MEISTER dihedral %d fz2 %8.5lf %d\n") , (i+1) , fz2 , (I2/3+1) );
+          LOG_ENERGY(( "MEISTER dihedral %d fx3 %8.5lf %d\n") , (i+1) , fx3 , (I3/3+1) );
+          LOG_ENERGY(( "MEISTER dihedral %d fy3 %8.5lf %d\n") , (i+1) , fy3 , (I3/3+1) );
+          LOG_ENERGY(( "MEISTER dihedral %d fz3 %8.5lf %d\n") , (i+1) , fz3 , (I3/3+1) );
+          LOG_ENERGY(( "MEISTER dihedral %d fx4 %8.5lf %d\n") , (i+1) , fx4 , (I4/3+1) );
+          LOG_ENERGY(( "MEISTER dihedral %d fy4 %8.5lf %d\n") , (i+1) , fy4 , (I4/3+1) );
+          LOG_ENERGY(( "MEISTER dihedral %d fz4 %8.5lf %d\n") , (i+1) , fz4 , (I4/3+1) );
         }
-        LOG_ENERGY(BF( "MEISTER dihedral %d stop\n")% (i+1) );
+        LOG_ENERGY(( "MEISTER dihedral %d stop\n") , (i+1) );
       }
 			/* Add the forces */
 
@@ -609,7 +609,7 @@ double	EnergyDihedral_O::evaluateAllComponent( ScoringFunction_sp score,
     }
   if ( this->_DebugEnergy ) 
   {
-    LOG_ENERGY(BF("%s }\n")% this->className());
+    LOG_ENERGY(("%s }\n") , this->className());
   }
   return this->_TotalEnergy;
 }

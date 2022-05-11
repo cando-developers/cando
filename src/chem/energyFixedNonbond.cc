@@ -256,7 +256,7 @@ double EnergyFixedNonbondRestraint_O::evaluateAllComponent( ScoringFunction_sp s
   if ( this->_DebugEnergy ) 
   {
     LOG_ENERGY_CLEAR();
-    LOG_ENERGY(BF("%s {\n")% this->className());
+    LOG_ENERGY(("%s {\n") , this->className());
   }
   if ( this->_Terms.size() == 0 ) return 0.0;
   ASSERTNOTNULL(this->_MobileAtomTable);
@@ -353,26 +353,26 @@ double EnergyFixedNonbondRestraint_O::evaluateAllComponent( ScoringFunction_sp s
 
             if ( this->_DebugEnergy ) 
             {
-              LOG_ENERGY(BF( "MEISTER fixed nonbond %d args cando\n")% (i+1) );
-              LOG_ENERGY(BF( "MEISTER fixed nonbond %d dA %5.3lf\n")% (i+1) % dA );
-              LOG_ENERGY(BF( "MEISTER fixed nonbond %d dC %5.3lf\n")% (i+1) % dC );
-              LOG_ENERGY(BF( "MEISTER fixed nonbond %d dQ1Q2 %5.3lf\n")% (i+1) % dQ1Q2 );
-              LOG_ENERGY(BF( "MEISTER fixed nonbond %d x1 %5.3lf %d\n")% (i+1) % x1 % (I1/3+1) );
-              LOG_ENERGY(BF( "MEISTER fixed nonbond %d y1 %5.3lf %d\n")% (i+1) % y1 % (I1/3+1) );
-              LOG_ENERGY(BF( "MEISTER fixed nonbond %d z1 %5.3lf %d\n")% (i+1) % z1 % (I1/3+1) );
-              LOG_ENERGY(BF( "MEISTER fixed nonbond %d xf %5.3lf %d\n")% (i+1) % xf % (ifixed) );
-              LOG_ENERGY(BF( "MEISTER fixed nonbond %d yf %5.3lf %d\n")% (i+1) % yf % (ifixed) );
-              LOG_ENERGY(BF( "MEISTER fixed nonbond %d zf %5.3lf %d\n")% (i+1) % zf % (ifixed) );
-              LOG_ENERGY(BF( "MEISTER fixed nonbond %d results\n")% (i+1) );
-              LOG_ENERGY(BF( "MEISTER fixed nonbond %d Efixed nonbond %lf\n")% (i+1) % (Efvdw+Efeel) );
-              LOG_ENERGY(BF( "MEISTER fixed nonbond %d efvdw %lf\n")% (i+1) % Efvdw);
-              LOG_ENERGY(BF( "MEISTER fixed nonbond %d efeel %lf\n")% (i+1) % Efeel);
+              LOG_ENERGY(( "MEISTER fixed nonbond %d args cando\n") , (i+1) );
+              LOG_ENERGY(( "MEISTER fixed nonbond %d dA %5.3lf\n") , (i+1) , dA );
+              LOG_ENERGY(( "MEISTER fixed nonbond %d dC %5.3lf\n") , (i+1) , dC );
+              LOG_ENERGY(( "MEISTER fixed nonbond %d dQ1Q2 %5.3lf\n") , (i+1) , dQ1Q2 );
+              LOG_ENERGY(( "MEISTER fixed nonbond %d x1 %5.3lf %d\n") , (i+1) , x1 , (I1/3+1) );
+              LOG_ENERGY(( "MEISTER fixed nonbond %d y1 %5.3lf %d\n") , (i+1) , y1 , (I1/3+1) );
+              LOG_ENERGY(( "MEISTER fixed nonbond %d z1 %5.3lf %d\n") , (i+1) , z1 , (I1/3+1) );
+              LOG_ENERGY(( "MEISTER fixed nonbond %d xf %5.3lf %d\n") , (i+1) , xf , (ifixed) );
+              LOG_ENERGY(( "MEISTER fixed nonbond %d yf %5.3lf %d\n") , (i+1) , yf , (ifixed) );
+              LOG_ENERGY(( "MEISTER fixed nonbond %d zf %5.3lf %d\n") , (i+1) , zf , (ifixed) );
+              LOG_ENERGY(( "MEISTER fixed nonbond %d results\n") , (i+1) );
+              LOG_ENERGY(( "MEISTER fixed nonbond %d Efixed nonbond %lf\n") , (i+1) , (Efvdw+Efeel) );
+              LOG_ENERGY(( "MEISTER fixed nonbond %d efvdw %lf\n") , (i+1) , Efvdw);
+              LOG_ENERGY(( "MEISTER fixed nonbond %d efeel %lf\n") , (i+1) , Efeel);
               if ( calcForce ) {
-                LOG_ENERGY(BF( "MEISTER fixed nonbond %d fx1 %lf %d\n")% (i+1) % fx1 % (I1/3+1) );
-                LOG_ENERGY(BF( "MEISTER fixed nonbond %d fy1 %lf %d\n")% (i+1) % fy1 % (I1/3+1) );
-                LOG_ENERGY(BF( "MEISTER fixed nonbond %d fz1 %lf %d\n")% (i+1) % fz1 % (I1/3+1) );
+                LOG_ENERGY(( "MEISTER fixed nonbond %d fx1 %lf %d\n") , (i+1) , fx1 , (I1/3+1) );
+                LOG_ENERGY(( "MEISTER fixed nonbond %d fy1 %lf %d\n") , (i+1) , fy1 , (I1/3+1) );
+                LOG_ENERGY(( "MEISTER fixed nonbond %d fz1 %lf %d\n") , (i+1) , fz1 , (I1/3+1) );
               }
-              LOG_ENERGY(BF( "MEISTER fixed nonbond %d stop\n")% (i+1) );
+              LOG_ENERGY(( "MEISTER fixed nonbond %d stop\n") , (i+1) );
             }
             i++;
           }
@@ -380,9 +380,9 @@ double EnergyFixedNonbondRestraint_O::evaluateAllComponent( ScoringFunction_sp s
       }
     }
   }
-  LOG_ENERGY(BF( "          Vdw energy = %lf\n")% (double)this->_EnergyVdw);
-  LOG_ENERGY(BF( "Electrostatic energy = %lf\n")% (double)this->_EnergyElectrostatic);
-  LOG_ENERGY(BF("%s }\n")% this->className() );
+  LOG_ENERGY(( "          Vdw energy = %lf\n") , (double)this->_EnergyVdw);
+  LOG_ENERGY(( "Electrostatic energy = %lf\n") , (double)this->_EnergyElectrostatic);
+  LOG_ENERGY(("%s }\n") , this->className() );
   return this->_EnergyVdw+this->_EnergyElectrostatic;
 }
 

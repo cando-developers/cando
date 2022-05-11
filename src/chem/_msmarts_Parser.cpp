@@ -99,7 +99,7 @@ using namespace chem;
 #define	LEXDEBUG	1
 
 #ifdef	LEXDEBUG
-#define	LEXPRINT(x) {lisp_LOG(BF( "Token: %s") %(x));}
+#define	LEXPRINT(x) {lisp_LOG(( "Token: %s") , (x));}
 #define	LEXDPRINT(x) {lisp_LOG(x)};
 #else
 #define	LEXPRINT(x)

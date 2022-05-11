@@ -103,7 +103,7 @@ CL_DEFUN core::T_sp chem__alias(core::Symbol_sp monAlias, core::Symbol_sp atomAl
 #if 0
     Fingerprint_sp Alias_O::fingerprint()
     {_OF();
-	ASSERTF(this->_WeakFingerprint.pointerp(), BF("The _WeakFingerprint should never be NULL"));
+	ASSERTF(this->_WeakFingerprint.pointerp(), ("The _WeakFingerprint should never be NULL"));
 	return this->_WeakFingerprint;
     }
 #endif

@@ -2290,7 +2290,7 @@ void Root_O::addTest(core::Symbol_sp testSym, core::Function_sp testCode) {
 }
 
 bool Root_O::evaluateTest(core::Symbol_sp testSym, Atom_sp atom) {
-  ASSERTF(testSym.notnilp(), BF("The test symbol was nil! - this should never occur"));
+  ASSERTF(testSym.notnilp(), ("The test symbol was nil! - this should never occur"));
   LOG("Looking up test with symbol<%s>" , _rep_(testSym));
   core::T_mv find = this->lazyTests()->gethash(testSym);
   if (find.second().nilp()) {
@@ -2301,8 +2301,8 @@ bool Root_O::evaluateTest(core::Symbol_sp testSym, Atom_sp atom) {
     SIMPLE_ERROR(("The test ChemInfo/Smarts test[%s] must be a function - instead it is a %s") , _rep_(testSym) , _rep_(find));
   }
   core::Function_sp testCode = gctools::As_unsafe<core::Function_sp>(func);
-  ASSERTF(testCode.notnilp(), BF("testCode was nil - it should never be"));
-  ASSERTF(atom.notnilp(), BF("The atom arg should never be nil"));
+  ASSERTF(testCode.notnilp(), ("testCode was nil - it should never be"));
+  ASSERTF(atom.notnilp(), ("The atom arg should never be nil"));
   core::T_sp res = core::eval::funcall(testCode,atom);
   return res.isTrue();
 }

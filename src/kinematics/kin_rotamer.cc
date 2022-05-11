@@ -77,7 +77,7 @@ Rotamer_sp Rotamer_O::make(core::List_sp dihedrals, core::List_sp sigmas, core::
 	core::Cons_sp indices = translate::from_object<core::Cons_sp>::convert(env->lookup(lisp->symbol(_sym_indices)));
 	double probability = translate::from_object<double>::convert(env->lookup(lisp->symbol(_sym_probability)));
 	this->_Count = translate::from_object<int>::convert(env->lookup(lisp->symbol(_sym_count)));
-	ASSERTF(dihedrals->length()==sigmas->length(), BF("Mismatch between #dihedrals[%d] and #sigmas[%d]") % dihedrals->length() % sigmas->length() );
+	ASSERTF(dihedrals->length()==sigmas->length(), ("Mismatch between #dihedrals[%d] and #sigmas[%d]") , dihedrals->length() , sigmas->length() );
 	this->_Probability = probability;
 	for ( ; dihedrals.notnilp(); dihedrals = dihedrals->cdr(),
 		  sigmas = sigmas->cdr(),
@@ -187,7 +187,7 @@ CL_LISPIFY_NAME(make-ChiDihedral);
 
     Rotamer_sp RotamerSetBase_O::get(int i) const
     {_OF();
-	ASSERTF(i>=0 && i<(int)this->_Rotamers.size(),BF("Illegal index for rotamer[%d]") % i);
+	ASSERTF(i>=0 && i<(int)this->_Rotamers.size(),("Illegal index for rotamer[%d]") , i);
 	return this->_Rotamers[i];
     }
     
@@ -318,12 +318,12 @@ BackboneDependentRotamerLibrary_sp BackboneDependentRotamerLibrary_O::make(const
       me->_PsiStep = psiStep;
       me->_PsiStart = psiStart;
       me->_PsiCount = psiCount;
-      ASSERTF(me->_PhiStart>=-180 && me->_PhiStart<180,BF("Illegal phiStart[%d] - must be in [-180,180)") % me->_PhiStart);
-      ASSERTF(me->_PhiCount>0,BF("Illegal phiCount[%d]") % me->_PhiCount );
-      ASSERTF(me->_PhiStep>0 && me->_PhiStep<=180,BF("Illegal phiStep[%d] - must be in [1,180)") % me->_PhiStep);
-      ASSERTF(me->_PsiStart>=-180 && me->_PsiStart<180,BF("Illegal psiStart[%d] - must be in [-180,180)") % me->_PsiStart);
-      ASSERTF(me->_PsiCount>0,BF("Illegal psiCount[%d]") % me->_PsiCount );
-      ASSERTF(me->_PsiStep>0 && me->_PsiStep<=180,BF("Illegal psiStep[%d] - must be in [1,180)") % me->_PsiStep);
+      ASSERTF(me->_PhiStart>=-180 && me->_PhiStart<180,("Illegal phiStart[%d] - must be in [-180,180)") , me->_PhiStart);
+      ASSERTF(me->_PhiCount>0,("Illegal phiCount[%d]") , me->_PhiCount );
+      ASSERTF(me->_PhiStep>0 && me->_PhiStep<=180,("Illegal phiStep[%d] - must be in [1,180)") , me->_PhiStep);
+      ASSERTF(me->_PsiStart>=-180 && me->_PsiStart<180,("Illegal psiStart[%d] - must be in [-180,180)") , me->_PsiStart);
+      ASSERTF(me->_PsiCount>0,("Illegal psiCount[%d]") , me->_PsiCount );
+      ASSERTF(me->_PsiStep>0 && me->_PsiStep<=180,("Illegal psiStep[%d] - must be in [1,180)") , me->_PsiStep);
       me->_RotamerSets.resize(me->_PhiCount*me->_PsiCount);
       return me;
     };
@@ -337,12 +337,12 @@ BackboneDependentRotamerLibrary_sp BackboneDependentRotamerLibrary_O::make(const
 	this->_PsiStep = translate::from_object<int>::convert(env->lookup(Pkg(),"psiStep"));
 	this->_PsiStart = translate::from_object<int>::convert(env->lookup(Pkg(),"psiStart"));
 	this->_PsiCount = translate::from_object<int>::convert(env->lookup(Pkg(),"psiCount"));
-	ASSERTF(this->_PhiStart>=-180 && this->_PhiStart<180,BF("Illegal phiStart[%d] - must be in [-180,180)") % this->_PhiStart);
-	ASSERTF(this->_PhiCount>0,BF("Illegal phiCount[%d]") % this->_PhiCount );
-	ASSERTF(this->_PhiStep>0 && this->_PhiStep<=180,BF("Illegal phiStep[%d] - must be in [1,180)") % this->_PhiStep);
-	ASSERTF(this->_PsiStart>=-180 && this->_PsiStart<180,BF("Illegal psiStart[%d] - must be in [-180,180)") % this->_PsiStart);
-	ASSERTF(this->_PsiCount>0,BF("Illegal psiCount[%d]") % this->_PsiCount );
-	ASSERTF(this->_PsiStep>0 && this->_PsiStep<=180,BF("Illegal psiStep[%d] - must be in [1,180)") % this->_PsiStep);
+	ASSERTF(this->_PhiStart>=-180 && this->_PhiStart<180,("Illegal phiStart[%d] - must be in [-180,180)") , this->_PhiStart);
+	ASSERTF(this->_PhiCount>0,("Illegal phiCount[%d]") , this->_PhiCount );
+	ASSERTF(this->_PhiStep>0 && this->_PhiStep<=180,("Illegal phiStep[%d] - must be in [1,180)") , this->_PhiStep);
+	ASSERTF(this->_PsiStart>=-180 && this->_PsiStart<180,("Illegal psiStart[%d] - must be in [-180,180)") , this->_PsiStart);
+	ASSERTF(this->_PsiCount>0,("Illegal psiCount[%d]") , this->_PsiCount );
+	ASSERTF(this->_PsiStep>0 && this->_PsiStep<=180,("Illegal psiStep[%d] - must be in [1,180)") , this->_PsiStep);
 	this->_RotamerSets.resize(this->_PhiCount*this->_PsiCount);
 	return _Nil<core::T_O>();
     }

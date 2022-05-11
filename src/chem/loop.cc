@@ -215,7 +215,7 @@ void Loop::buildListOfImpropersCenteredOn(Atom_sp a)
       BondList_sp blrest1 = blrest0->deepishCopy(); 
       LOG("Copy blrest1 = %s" , blrest1->description() );
       ASSERTF(blrest1->size() == blrest0->size(),
-              BF("The blrest1 copy doesn't have the same number of elements as the original"));
+              ("The blrest1 copy doesn't have the same number of elements as the original"));
       blrest1->removeBond(*bl1);
       for ( bl2 = blrest1->begin(); bl2!=blrest1->end(); bl2++ )
       {

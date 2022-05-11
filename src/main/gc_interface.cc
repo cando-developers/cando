@@ -318,7 +318,7 @@ void obj_finalize(mps_addr_t client) {
 #endif
 
   gctools::Header_s *header = reinterpret_cast<gctools::Header_s *>(ClientPtrToBasePtr(client));
-  ASSERTF(header->kindP(), BF("obj_finalized called without a valid object"));
+  ASSERTF(header->kindP(), ("obj_finalized called without a valid object"));
   gctools::GCKindEnum kind = (GCKindEnum)(header->kind());
 #ifndef RUNNING_GC_BUILDER
   goto *(OBJ_FINALIZE_table[kind]);

@@ -138,8 +138,8 @@ namespace kinematics {
 FORWARD(JumpJoint);
 
 #define	ASSERT_VALID_HANDLE(tree,handle)				\
-  ASSERTF((int)handle<tree->numberOfEntries(),BF("The handle[%d] is out of range (0->%d]") % handle % tree->numberOfEntries()); \
-  ASSERTF(tree->_AtomHolders[handle]._Type != unused,BF("The handle represents an unused node"));
+  ASSERTF((int)handle<tree->numberOfEntries(),("The handle[%d] is out of range (0->%d]") , handle , tree->numberOfEntries()); \
+  ASSERTF(tree->_AtomHolders[handle]._Type != unused,("The handle represents an unused node"));
 
 
 CL_DEFMETHOD void Joint_O::setToInternal(core::Symbol_sp cc) {this->_ToInternal = translate::from_object<CoordinateCalculator>(cc)._v; };
@@ -199,15 +199,12 @@ void Joint_O::setParent(Joint_sp parent)
 
 void Joint_O::insertChild(int before, Joint_sp child )
 {_OF();
-  ASSERTF(child.get() != this,BF("Circular atom reference"));
   this->_insertChild(before,child);
   child->setParent(this->asSmartPtr());
 }
 
 void Joint_O::appendChild(Joint_sp child)
 {_OF();
-  ASSERTF(child.get() != this,BF("Circular atom reference this@%p child@%p")
-          % this % (child.get()));
   if ( gc::IsA<JumpJoint_sp>(child) )
   {
     int idx = this->firstNonJumpChildIndex();
@@ -247,7 +244,6 @@ int Joint_O::indexOfChild(Joint_sp child)
 
 void Joint_O::insertChild(Joint_sp child)
 {_OF();
-  ASSERTF(child.get() != this,BF("Circular atom reference"));
   LOG("Inserting child: %s" , _rep_(child));
   if ( gc::IsA<JumpJoint_sp>(child) )
   {
@@ -390,7 +386,7 @@ Joint_sp Joint_O::previousChild(Joint_sp ch) const
     */
 Joint_sp Joint_O::inputStubJoint3(JointTree_sp at) const
 {_OF();
-  ASSERTF(this->parent().boundp(),BF("The parent isn't defined"));
+  ASSERTF(this->parent().boundp(),("The parent isn't defined"));
   if (this->parent().unboundp()) {
     SIMPLE_ERROR(("inputStubAtom2 parent of %s isn't defined") , _rep_(this->asSmartPtr()));
   }

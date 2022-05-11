@@ -114,7 +114,7 @@ CL_DEFUN Unit_sp Unit_O::make(core::List_sp args)
     void Unit_O::serialize(serialize::SNode node)
     {
 	// Archive other instance variables here
-	ASSERTF(NumBaseDimensions==8,BF("You changed NumBaseDimensions but didnt change Unit_O::archiveBase"));
+	ASSERTF(NumBaseDimensions==8,("You changed NumBaseDimensions but didnt change Unit_O::archiveBase"));
 	node->attribute("amt",this->_Amount);
 	node->attributeIfNotDefault("d0",this->_Powers[0],0);
 	node->attributeIfNotDefault("w1",this->_Powers[1],0);
@@ -131,7 +131,7 @@ CL_DEFUN Unit_sp Unit_O::make(core::List_sp args)
     void Unit_O::archiveBase(::core::ArchiveP node)
     {
 	// Archive other instance variables here
-	ASSERTF(NumBaseDimensions==8,BF("You changed NumBaseDimensions but didnt change Unit_O::archiveBase"));
+	ASSERTF(NumBaseDimensions==8,("You changed NumBaseDimensions but didnt change Unit_O::archiveBase"));
 	node->attribute("amt",this->_Amount);
 	node->attribute("d0",this->_Powers[0]);
 	node->attribute("w1",this->_Powers[1]);

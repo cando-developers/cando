@@ -345,19 +345,19 @@ Atom_sp Aggregate_O::atomWithAtomId(const AtomId& atomId) const
     Atom_sp Aggregate_O::lookupAtom(const AtomId& atomId) const
     {_OF();
 	ASSERTF((int)this->_contents.size()==this->_AtomIdMap.numberOfMolecules(),
-		BF("The AtomIdMap is out of sync with the Aggregate contents - wrong number of molecules - use updateAtomIdMap to correct this"));
+		("The AtomIdMap is out of sync with the Aggregate contents - wrong number of molecules - use updateAtomIdMap to correct this"));
 	this->_AtomIdMap.throwIfInvalidMoleculeId(atomId);
 	int molId = atomId.moleculeId();
 	ASSERTF((int)this->_contents[molId]->_contents.size()==this->_AtomIdMap.numberOfResidues(molId),
-		BF("The AtomIdMap is out of sync with the Aggregate contents "
+		("The AtomIdMap is out of sync with the Aggregate contents "
 		   "- wrong number of residues in molecule[%d] - use updateAtomIdMap to correct this")
-		% molId );
+		, molId );
 	this->_AtomIdMap.throwIfInvalidResidueId(atomId);
 	int resId = atomId.residueId();
 	ASSERTF((int)this->_contents[molId]->_contents[resId]->_contents.size()==this->_AtomIdMap.numberOfAtoms(molId,resId),
-		BF("The AtomIdMap is out of sync with the Aggregate contents "
+		("The AtomIdMap is out of sync with the Aggregate contents "
 		   "- wrong number of atoms in residue[%d]s in molecule[%d] - use updateAtomIdMap to correct this")
-		% resId % molId );
+		, resId , molId );
 	this->_AtomIdMap.throwIfInvalidAtomId(atomId);
 	return this->_AtomIdMap[atomId];
     }

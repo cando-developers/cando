@@ -226,7 +226,7 @@ double	EnergyChiralRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
   if ( this->_DebugEnergy ) 
   {
     LOG_ENERGY_CLEAR();
-    LOG_ENERGY(BF("%s {\n")% this->className());
+    LOG_ENERGY(("%s {\n") , this->className());
   }
 
   ANN(force);
@@ -296,38 +296,38 @@ double	EnergyChiralRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
 #endif //]
 
       if ( this->_DebugEnergy ) {
-        LOG_ENERGY(BF( "MEISTER chiralRestraint %d args cando\n")% (i+1) );
-        LOG_ENERGY(BF( "MEISTER chiralRestraint %d K %lf\n")% (i+1) % K );
-        LOG_ENERGY(BF( "MEISTER chiralRestraint %d x1 %5.3lf %d\n")%(i+1) % x1 % (I1/3+1) );
-        LOG_ENERGY(BF( "MEISTER chiralRestraint %d y1 %5.3lf %d\n")%(i+1) % y1 % (I1/3+1) );
-        LOG_ENERGY(BF( "MEISTER chiralRestraint %d z1 %5.3lf %d\n")%(i+1) % z1 % (I1/3+1) );
-        LOG_ENERGY(BF( "MEISTER chiralRestraint %d x2 %5.3lf %d\n")%(i+1) % x2 % (I2/3+1) );
-        LOG_ENERGY(BF( "MEISTER chiralRestraint %d y2 %5.3lf %d\n")%(i+1) % y2 % (I2/3+1) );
-        LOG_ENERGY(BF( "MEISTER chiralRestraint %d z2 %5.3lf %d\n")%(i+1) % z2 % (I2/3+1) );
-        LOG_ENERGY(BF( "MEISTER chiralRestraint %d x3 %5.3lf %d\n")%(i+1) % x3 % (I3/3+1) );
-        LOG_ENERGY(BF( "MEISTER chiralRestraint %d y3 %5.3lf %d\n")%(i+1) % y3 % (I3/3+1) );
-        LOG_ENERGY(BF( "MEISTER chiralRestraint %d z3 %5.3lf %d\n")%(i+1) % z3 % (I3/3+1) );
-        LOG_ENERGY(BF( "MEISTER chiralRestraint %d x4 %5.3lf %d\n")%(i+1) % x4 % (I4/3+1) );
-        LOG_ENERGY(BF( "MEISTER chiralRestraint %d y4 %5.3lf %d\n")%(i+1) % y4 % (I4/3+1) );
-        LOG_ENERGY(BF( "MEISTER chiralRestraint %d z4 %5.3lf %d\n")%(i+1) % z4 % (I4/3+1) );
-        LOG_ENERGY(BF( "MEISTER chiralRestraint %d results\n")% (i+1) );
-        LOG_ENERGY(BF( "MEISTER chiralRestraint %d Energy %lf\n")% (i+1) % Energy);
+        LOG_ENERGY(( "MEISTER chiralRestraint %d args cando\n") , (i+1) );
+        LOG_ENERGY(( "MEISTER chiralRestraint %d K %lf\n") , (i+1) , K );
+        LOG_ENERGY(( "MEISTER chiralRestraint %d x1 %5.3lf %d\n") , (i+1) , x1 , (I1/3+1) );
+        LOG_ENERGY(( "MEISTER chiralRestraint %d y1 %5.3lf %d\n") , (i+1) , y1 , (I1/3+1) );
+        LOG_ENERGY(( "MEISTER chiralRestraint %d z1 %5.3lf %d\n") , (i+1) , z1 , (I1/3+1) );
+        LOG_ENERGY(( "MEISTER chiralRestraint %d x2 %5.3lf %d\n") , (i+1) , x2 , (I2/3+1) );
+        LOG_ENERGY(( "MEISTER chiralRestraint %d y2 %5.3lf %d\n") , (i+1) , y2 , (I2/3+1) );
+        LOG_ENERGY(( "MEISTER chiralRestraint %d z2 %5.3lf %d\n") , (i+1) , z2 , (I2/3+1) );
+        LOG_ENERGY(( "MEISTER chiralRestraint %d x3 %5.3lf %d\n") , (i+1) , x3 , (I3/3+1) );
+        LOG_ENERGY(( "MEISTER chiralRestraint %d y3 %5.3lf %d\n") , (i+1) , y3 , (I3/3+1) );
+        LOG_ENERGY(( "MEISTER chiralRestraint %d z3 %5.3lf %d\n") , (i+1) , z3 , (I3/3+1) );
+        LOG_ENERGY(( "MEISTER chiralRestraint %d x4 %5.3lf %d\n") , (i+1) , x4 , (I4/3+1) );
+        LOG_ENERGY(( "MEISTER chiralRestraint %d y4 %5.3lf %d\n") , (i+1) , y4 , (I4/3+1) );
+        LOG_ENERGY(( "MEISTER chiralRestraint %d z4 %5.3lf %d\n") , (i+1) , z4 , (I4/3+1) );
+        LOG_ENERGY(( "MEISTER chiralRestraint %d results\n") , (i+1) );
+        LOG_ENERGY(( "MEISTER chiralRestraint %d Energy %lf\n") , (i+1) , Energy);
         if ( calcForce ) {
-//			LOG_ENERGY(BF( "MEISTER chiralRestraint %d DePhi %lf\n")% (i+1) % DePhi);
-          LOG_ENERGY(BF( "MEISTER chiralRestraint %d fx1 %8.5lf %d\n")%(i+1) % fx1 % (I1/3+1) );
-          LOG_ENERGY(BF( "MEISTER chiralRestraint %d fy1 %8.5lf %d\n")%(i+1) % fy1 % (I1/3+1) );
-          LOG_ENERGY(BF( "MEISTER chiralRestraint %d fz1 %8.5lf %d\n")%(i+1) % fz1 % (I1/3+1) );
-          LOG_ENERGY(BF( "MEISTER chiralRestraint %d fx2 %8.5lf %d\n")%(i+1) % fx2 % (I2/3+1) );
-          LOG_ENERGY(BF( "MEISTER chiralRestraint %d fy2 %8.5lf %d\n")%(i+1) % fy2 % (I2/3+1) );
-          LOG_ENERGY(BF( "MEISTER chiralRestraint %d fz2 %8.5lf %d\n")%(i+1) % fz2 % (I2/3+1) );
-          LOG_ENERGY(BF( "MEISTER chiralRestraint %d fx3 %8.5lf %d\n")%(i+1) % fx3 % (I3/3+1) );
-          LOG_ENERGY(BF( "MEISTER chiralRestraint %d fy3 %8.5lf %d\n")%(i+1) % fy3 % (I3/3+1) );
-          LOG_ENERGY(BF( "MEISTER chiralRestraint %d fz3 %8.5lf %d\n")%(i+1) % fz3 % (I3/3+1) );
-          LOG_ENERGY(BF( "MEISTER chiralRestraint %d fx4 %8.5lf %d\n")%(i+1) % fx4 % (I4/3+1) );
-          LOG_ENERGY(BF( "MEISTER chiralRestraint %d fy4 %8.5lf %d\n")%(i+1) % fy4 % (I4/3+1) );
-          LOG_ENERGY(BF( "MEISTER chiralRestraint %d fz4 %8.5lf %d\n")%(i+1) % fz4 % (I4/3+1) );
+//			LOG_ENERGY(( "MEISTER chiralRestraint %d DePhi %lf\n") , (i+1) , DePhi);
+          LOG_ENERGY(( "MEISTER chiralRestraint %d fx1 %8.5lf %d\n") , (i+1) , fx1 , (I1/3+1) );
+          LOG_ENERGY(( "MEISTER chiralRestraint %d fy1 %8.5lf %d\n") , (i+1) , fy1 , (I1/3+1) );
+          LOG_ENERGY(( "MEISTER chiralRestraint %d fz1 %8.5lf %d\n") , (i+1) , fz1 , (I1/3+1) );
+          LOG_ENERGY(( "MEISTER chiralRestraint %d fx2 %8.5lf %d\n") , (i+1) , fx2 , (I2/3+1) );
+          LOG_ENERGY(( "MEISTER chiralRestraint %d fy2 %8.5lf %d\n") , (i+1) , fy2 , (I2/3+1) );
+          LOG_ENERGY(( "MEISTER chiralRestraint %d fz2 %8.5lf %d\n") , (i+1) , fz2 , (I2/3+1) );
+          LOG_ENERGY(( "MEISTER chiralRestraint %d fx3 %8.5lf %d\n") , (i+1) , fx3 , (I3/3+1) );
+          LOG_ENERGY(( "MEISTER chiralRestraint %d fy3 %8.5lf %d\n") , (i+1) , fy3 , (I3/3+1) );
+          LOG_ENERGY(( "MEISTER chiralRestraint %d fz3 %8.5lf %d\n") , (i+1) , fz3 , (I3/3+1) );
+          LOG_ENERGY(( "MEISTER chiralRestraint %d fx4 %8.5lf %d\n") , (i+1) , fx4 , (I4/3+1) );
+          LOG_ENERGY(( "MEISTER chiralRestraint %d fy4 %8.5lf %d\n") , (i+1) , fy4 , (I4/3+1) );
+          LOG_ENERGY(( "MEISTER chiralRestraint %d fz4 %8.5lf %d\n") , (i+1) , fz4 , (I4/3+1) );
         }
-        LOG_ENERGY(BF( "MEISTER chiralRestraint %d stop\n")% (i+1) );
+        LOG_ENERGY(( "MEISTER chiralRestraint %d stop\n") , (i+1) );
       }
 			/* Add the forces */
 
@@ -349,7 +349,7 @@ double	EnergyChiralRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
   }
   if ( this->_DebugEnergy ) 
   {
-    LOG_ENERGY(BF("%s }\n")% this->className());
+    LOG_ENERGY(("%s }\n") , this->className());
   }
   return this->_TotalEnergy;
 }

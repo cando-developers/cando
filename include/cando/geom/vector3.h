@@ -205,11 +205,11 @@ namespace serialize
     {_OF();
 	Node_p node = this->nextChild();
 	PODNode_p pod = dynamic_cast<PODNode_p>(node);
-	ASSERTF(pod!=NULL,BF("Did not find POD:Vector3 - found[%s]") % node->className());
+	ASSERTF(pod!=NULL,("Did not find POD:Vector3 - found[%s]") , node->className());
 	pod->resetCursorToHeadChild();
 	core::Symbol_sp head;
 	pod->loadObject(head);
-	ASSERTF(head->isKeywordSymbol()&&head->symbolName()=="V3",BF("Expected Vector3->V3 as head but got[%s]") % head->symbolName() );
+	ASSERTF(head->isKeywordSymbol()&&head->symbolName()=="V3",("Expected Vector3->V3 as head but got[%s]") , head->symbolName() );
 	pod->loadPOD(vec[0]);
 	pod->loadPOD(vec[1]);
 	pod->loadPOD(vec[2]);
@@ -237,11 +237,11 @@ namespace serialize
     {_OF();
 	Node_p node = this->nextChild();
 	PODNode_p pod = dynamic_cast<PODNode_p>(node);
-	ASSERTF(pod!=NULL,BF("Did not find POD:vector<Vector3> - found[%s]") % node->className());
+	ASSERTF(pod!=NULL,("Did not find POD:vector<Vector3> - found[%s]") , node->className());
 	pod->resetCursorToHeadChild();
 	core::Symbol_sp head;
 	pod->loadObject(head);
-	ASSERTF(head->isKeywordSymbol()&&head->symbolName()=="VectorVector3",BF("Expected VectorVector3 as head but got[%s]") % head->symbolName() );
+	ASSERTF(head->isKeywordSymbol()&&head->symbolName()=="VectorVector3",("Expected VectorVector3 as head but got[%s]") , head->symbolName() );
 	int sz;
 	pod->loadPOD(sz);
 	vals.resize(sz);

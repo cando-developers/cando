@@ -175,7 +175,7 @@ public:
   CL_DEFMETHOD 	FrameRecognizer_sp	getFrameRecognizer(core::Symbol_sp nm)
   { _G();
     FrameRecognizer_sp gr;
-    LOG(BF( "Agroup name in database=%d") % this->recognizesFrameRecognizerName(nm) );
+    LOG(( "Agroup name in database=%d") , this->recognizesFrameRecognizerName(nm) );
     FrameRecognizers::iterator ig = this->_frameRecognizers.find(nm);
     if ( ig == this->_frameRecognizers.end() ) {
       SIMPLE_ERROR(("Could not find %s") , _rep_(nm));

@@ -117,8 +117,7 @@ void    FFItor_O::setV_kJ(int period, double val)
 
 bool FFItor_O::hasPeriodicity(int period) const
 {_OF();
-    ASSERTF(period>=1 && period<=FFItor_O::IMaxPeriodicity,
-	    BF("hasPeriodicityperiod[%d] must be in [1,%d]") % period % IMaxPeriodicity );
+    ASSERTF(period>=1 && period<=FFItor_O::IMaxPeriodicity, ("hasPeriodicityperiod[%d] must be in [1,%d]") , period , IMaxPeriodicity );
     return this->_hasPeriodicity[period-1];
 }
 

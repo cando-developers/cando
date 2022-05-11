@@ -50,7 +50,7 @@ namespace kinematics
 
 
 #if 0
-#define KIN_LOG(...) core::write_bf_stream(BF("%s:%d:%f - ") % __FILE__ % __LINE__ % __FUNCTION__ ); core::write_bf_stream(fmt::sprintf(__VA_ARGS__))
+#define KIN_LOG(...) core::write_bf_stream(fmt::sprintf("%s:%d:%f - " , __FILE__ , __LINE__ , __FUNCTION__ ); core::write_bf_stream(fmt::sprintf(__VA_ARGS__))
 #else
 #define KIN_LOG(...)
 #endif
@@ -231,14 +231,14 @@ public:
 	/*! Return the input stub Joint */
   inline Joint_sp inputStubJoint0() const
   {_OF();
-    ASSERTF(this->parent().boundp(),BF("Parent isn't defined"));
+    ASSERTF(this->parent().boundp(),("Parent isn't defined"));
     return this->parent();
   }
 
 	/*! Return the input stub Joint */
   inline Joint_sp inputStubJoint1() const
   {_OF();
-    ASSERTF(this->parent().boundp(),BF("Parent isn't defined"));
+    ASSERTF(this->parent().boundp(),("Parent isn't defined"));
     if (this->parent().unboundp()) {
       SIMPLE_ERROR(("inputStubJoint1 parent of %s isn't defined") , _rep_(this->asSmartPtr()));
     }
@@ -248,7 +248,7 @@ public:
 	/*! Return the input stub Joint */
   inline Joint_sp inputStubJoint2() const
   {_OF();
-    ASSERTF(this->parent().boundp(),BF("Parent isn't defined"));
+    ASSERTF(this->parent().boundp(),("Parent isn't defined"));
     if (this->parent().unboundp()) {
       SIMPLE_ERROR(("inputStubJoint2 parent of %s isn't defined") , _rep_(this->asSmartPtr()));
     }

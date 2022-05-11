@@ -197,7 +197,7 @@ bool JumpJoint_O::keepDofFixed(DofType dof) const
 
 void JumpJoint_O::_updateXyzCoord(Stub& stub)
 {_OF();
-  ASSERTF(stub.isOrthogonal(1e-3),BF("Stub is not orthogonal - stub:\n%s") % stub.asString());
+  ASSERTF(stub.isOrthogonal(1e-3),("Stub is not orthogonal - stub:\n%s") , stub.asString());
   this->_LabFrame = stub._Transform.multiplyByMatrix(this->_ParentRelativeTransform);
   this->position(this->_LabFrame.getTranslation());
   KIN_LOG("LabFrame.getTranslation() = %s\n" , this->_LabFrame.getTranslation().asString());

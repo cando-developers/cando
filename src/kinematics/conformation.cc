@@ -94,7 +94,7 @@ int Conformation_O::numberOfMolecules() const
 
 void Conformation_O::resizeMolecules(int numMolecules)
 {_OF();
-  ASSERTF(numMolecules > 0, BF("You must allocate more than 0 molecules"));
+  ASSERTF(numMolecules > 0, ("You must allocate more than 0 molecules"));
   int oldNumberOfMolecules = this->_FoldTree->numberOfChains();
   this->_FoldTree->resizeChains(numMolecules);
   this->_JointTree->resizeMolecules(numMolecules);
@@ -114,11 +114,10 @@ void Conformation_O::resizeMolecules(int numMolecules)
 
 void Conformation_O::buildMoleculeUsingOligomer(int moleculeId, chem::Oligomer_sp oligomer)
 {_OF();
-  ASSERTF(moleculeId<this->numberOfMolecules(),
-          BF("Illegal moleculeId[%d]") % moleculeId );
+  ASSERTF(moleculeId<this->numberOfMolecules(), ("Illegal moleculeId[%d]") , moleculeId );
   ChainNode_sp chainNode =
     this->_FoldTree->buildChainUsingOligomer(moleculeId,oligomer);
-  LOG("Built FoldTree--->\n%s"%chainNode->_RootMonomerNode->asString());
+  LOG("Built FoldTree--->\n%s" , chainNode->_RootMonomerNode->asString());
   this->_JointTree->buildMoleculeUsingChainNode(moleculeId,chainNode,oligomer);
 }
 

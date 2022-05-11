@@ -81,7 +81,7 @@ namespace omm
 	    SIMPLE_ERROR(("Could not open file[%s] for reading") , path->asString() );
 	}
 	fin.close();
-	ASSERTF(rawSystem!=NULL,BF("The system was NULL"));
+	ASSERTF(rawSystem!=NULL,("The system was NULL"));
 	System_sp system = System_O::create(_lisp);
 	system->takeOwnershipOfSystem(rawSystem);
 	return system;

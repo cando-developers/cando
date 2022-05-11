@@ -349,8 +349,8 @@ namespace omm
 
     void Context_O::setVelocities(units::Quantity_sp coords)
     {_OF();
-	ASSERTF(coords->notNil(),BF("velocities coordinate array is nil"));
-	ASSERTF(coords->size()!=0,BF("There are no velocities"));
+	ASSERTF(coords->notNil(),("velocities coordinate array is nil"));
+	ASSERTF(coords->size()!=0,("There are no velocities"));
 	vector<OpenMM::Vec3> velocities;
 	velocities.resize(coords->size());
 	for ( int i=0; i<(int)coords->size(); i++ )
@@ -551,7 +551,7 @@ namespace omm
 	double epsilon = nonbond->getEpsilon_kJ();
 	int idx = this->wrappedPtr()->addParticle(charge,sigma,epsilon);
 	int recordedIdx = atom->getProperty(_lisp->internWithPackageName(Pkg(),ParticleIndex)).as<core::Fixnum_O>()->get();
-	ASSERTF(idx==recordedIdx,BF("There was a problem, you added a particle to the NonbondedForce and it returned index[%d] but it should have been the index[%d] for atom[%s] - make sure you add atoms to the NonbondForce immediately after you add them to the System") , idx , recordedIdx , atom->description() );
+	ASSERTF(idx==recordedIdx,("There was a problem, you added a particle to the NonbondedForce and it returned index[%d] but it should have been the index[%d] for atom[%s] - make sure you add atoms to the NonbondForce immediately after you add them to the System") , idx , recordedIdx , atom->description() );
 	return idx;
     }
 

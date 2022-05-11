@@ -93,8 +93,8 @@ void MonomerNode_O::recursivelyBuildChildren(ChainNode_sp chainNode,
   {
     this->_ParentPlugName = coupling->getTargetMonomerPlugName();
     ASSERTF(chem::DirectionalCoupling_O::isInPlugName(this->_ParentPlugName),
-            BF("This has to be an inPlugName[%s] - it isnt")
-            % _rep_(this->_ParentPlugName) );
+            ("This has to be an inPlugName[%s] - it isnt")
+            , _rep_(this->_ParentPlugName) );
   } else
   {
     this->_ParentPlugName = nil<core::Symbol_O>();
@@ -114,8 +114,8 @@ void MonomerNode_O::recursivelyBuildChildren(ChainNode_sp chainNode,
     MonomerNode_sp otherMonomerNode = ChainNode_O::monomerNodeFactory(chainNode,ringClosingMonomerMap,otherMonomer);
     core::Symbol_sp outPlugName = dirCoupling->getSourceMonomerPlugName();
     ASSERTF(chem::DirectionalCoupling_O::isOutPlugName(outPlugName),
-            BF("Problem - this[%s] should be an OutPlug name but it isnt")
-            %_rep_(outPlugName) );
+            ("Problem - this[%s] should be an OutPlug name but it isnt")
+            , _rep_(outPlugName) );
     this->_Children.set(outPlugName,otherMonomerNode);
     otherMonomerNode->recursivelyBuildChildren(chainNode,
                                                ringClosingMonomerMap,
@@ -202,7 +202,7 @@ string MonomerNode_O::__repr__() const {
 
 void MonomerNode_O::addJoint(size_t index, Joint_sp joint)
 {
-//  core::write_bf_stream(BF("%s:%d:%s  joint.id = %s  index -> %lu  joint = %s\n") , __FILE__ , __LINE__ , __FUNCTION__ , joint->atomId().asString() , index , core::_rep_(joint));
+//  core::write_bf_stream(("%s:%d:%s  joint.id = %s  index -> %lu  joint = %s\n") , __FILE__ , __LINE__ , __FUNCTION__ , joint->atomId().asString() , index , core::_rep_(joint));
   if (this->_Joints.size() <= index ) {
     this->_Joints.resize(index+1);
   }

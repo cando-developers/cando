@@ -342,7 +342,7 @@ double EnergyAngle_O::evaluateAllComponent( ScoringFunction_sp score,
   if ( this->_DebugEnergy ) 
   {
     LOG_ENERGY_CLEAR();
-    LOG_ENERGY(BF("%s {\n")% this->className());
+    LOG_ENERGY(("%s {\n") , this->className());
   }
 
 //bool	fail = false;
@@ -414,33 +414,33 @@ double EnergyAngle_O::evaluateAllComponent( ScoringFunction_sp score,
 #endif //]
       if ( this->_DebugEnergy ) 
       {
-        LOG_ENERGY(BF( "MEISTER angle %d args cando\n")% (i+1) );
-        LOG_ENERGY(BF( "MEISTER angle %d t0 %lf\n")%(i+1) % t0 );
-        LOG_ENERGY(BF( "MEISTER angle %d kt %lf\n")%(i+1) % kt);
-        LOG_ENERGY(BF( "MEISTER angle %d x1 %5.3lf %d\n")%(i+1) % x1 %(I1/3+1) );
-        LOG_ENERGY(BF( "MEISTER angle %d y1 %5.3lf %d\n")%(i+1) % y1 %(I1/3+1) );
-        LOG_ENERGY(BF( "MEISTER angle %d z1 %5.3lf %d\n")%(i+1) % z1 %(I1/3+1) );
-        LOG_ENERGY(BF( "MEISTER angle %d x2 %5.3lf %d\n")%(i+1) % x2 %(I2/3+1) );
-        LOG_ENERGY(BF( "MEISTER angle %d y2 %5.3lf %d\n")%(i+1) % y2 %(I2/3+1) );
-        LOG_ENERGY(BF( "MEISTER angle %d z2 %5.3lf %d\n")%(i+1) % z2 %(I2/3+1) );
-        LOG_ENERGY(BF( "MEISTER angle %d x3 %5.3lf %d\n")%(i+1) % x3 %(I3/3+1) );
-        LOG_ENERGY(BF( "MEISTER angle %d y3 %5.3lf %d\n")%(i+1) % y3 %(I3/3+1) );
-        LOG_ENERGY(BF( "MEISTER angle %d z3 %5.3lf %d\n")%(i+1) % z3 %(I3/3+1) );
-        LOG_ENERGY(BF( "MEISTER angle %d results\n")% (i+1) );
-        LOG_ENERGY(BF( "MEISTER angle %d Energy %lf\n")%(i+1) % Energy );
+        LOG_ENERGY(( "MEISTER angle %d args cando\n") , (i+1) );
+        LOG_ENERGY(( "MEISTER angle %d t0 %lf\n") , (i+1) , t0 );
+        LOG_ENERGY(( "MEISTER angle %d kt %lf\n") , (i+1) , kt);
+        LOG_ENERGY(( "MEISTER angle %d x1 %5.3lf %d\n") , (i+1) , x1 %(I1/3+1) );
+        LOG_ENERGY(( "MEISTER angle %d y1 %5.3lf %d\n") , (i+1) , y1 %(I1/3+1) );
+        LOG_ENERGY(( "MEISTER angle %d z1 %5.3lf %d\n") , (i+1) , z1 %(I1/3+1) );
+        LOG_ENERGY(( "MEISTER angle %d x2 %5.3lf %d\n") , (i+1) , x2 %(I2/3+1) );
+        LOG_ENERGY(( "MEISTER angle %d y2 %5.3lf %d\n") , (i+1) , y2 %(I2/3+1) );
+        LOG_ENERGY(( "MEISTER angle %d z2 %5.3lf %d\n") , (i+1) , z2 %(I2/3+1) );
+        LOG_ENERGY(( "MEISTER angle %d x3 %5.3lf %d\n") , (i+1) , x3 %(I3/3+1) );
+        LOG_ENERGY(( "MEISTER angle %d y3 %5.3lf %d\n") , (i+1) , y3 %(I3/3+1) );
+        LOG_ENERGY(( "MEISTER angle %d z3 %5.3lf %d\n") , (i+1) , z3 %(I3/3+1) );
+        LOG_ENERGY(( "MEISTER angle %d results\n") , (i+1) );
+        LOG_ENERGY(( "MEISTER angle %d Energy %lf\n") , (i+1) , Energy );
         if ( calcForce ) 
         {
-          LOG_ENERGY(BF( "MEISTER angle %d fx1 %8.5lf %d\n")%(i+1) % fx1 %(I1/3+1) );
-          LOG_ENERGY(BF( "MEISTER angle %d fy1 %8.5lf %d\n")%(i+1) % fy1 %(I1/3+1) );
-          LOG_ENERGY(BF( "MEISTER angle %d fz1 %8.5lf %d\n")%(i+1) % fz1 %(I1/3+1) );
-          LOG_ENERGY(BF( "MEISTER angle %d fx2 %8.5lf %d\n")%(i+1) % fx2 %(I2/3+1) );
-          LOG_ENERGY(BF( "MEISTER angle %d fy2 %8.5lf %d\n")%(i+1) % fy2 %(I2/3+1) );
-          LOG_ENERGY(BF( "MEISTER angle %d fz2 %8.5lf %d\n")%(i+1) % fz2 %(I2/3+1) );
-          LOG_ENERGY(BF( "MEISTER angle %d fx3 %8.5lf %d\n")%(i+1) % fx3 %(I3/3+1) );
-          LOG_ENERGY(BF( "MEISTER angle %d fy3 %8.5lf %d\n")%(i+1) % fy3 %(I3/3+1) );
-          LOG_ENERGY(BF( "MEISTER angle %d fz3 %8.5lf %d\n")%(i+1) % fz3 %(I3/3+1) );
+          LOG_ENERGY(( "MEISTER angle %d fx1 %8.5lf %d\n") , (i+1) , fx1 %(I1/3+1) );
+          LOG_ENERGY(( "MEISTER angle %d fy1 %8.5lf %d\n") , (i+1) , fy1 %(I1/3+1) );
+          LOG_ENERGY(( "MEISTER angle %d fz1 %8.5lf %d\n") , (i+1) , fz1 %(I1/3+1) );
+          LOG_ENERGY(( "MEISTER angle %d fx2 %8.5lf %d\n") , (i+1) , fx2 %(I2/3+1) );
+          LOG_ENERGY(( "MEISTER angle %d fy2 %8.5lf %d\n") , (i+1) , fy2 %(I2/3+1) );
+          LOG_ENERGY(( "MEISTER angle %d fz2 %8.5lf %d\n") , (i+1) , fz2 %(I2/3+1) );
+          LOG_ENERGY(( "MEISTER angle %d fx3 %8.5lf %d\n") , (i+1) , fx3 %(I3/3+1) );
+          LOG_ENERGY(( "MEISTER angle %d fy3 %8.5lf %d\n") , (i+1) , fy3 %(I3/3+1) );
+          LOG_ENERGY(( "MEISTER angle %d fz3 %8.5lf %d\n") , (i+1) , fz3 %(I3/3+1) );
         }
-        LOG_ENERGY(BF( "MEISTER angle %d stop\n")% (i+1) );
+        LOG_ENERGY(( "MEISTER angle %d stop\n") , (i+1) );
       }
 		    /* Add the forces */
       if ( calcForce ) {
@@ -458,7 +458,7 @@ double EnergyAngle_O::evaluateAllComponent( ScoringFunction_sp score,
   }
   if ( this->_DebugEnergy ) 
   {
-    LOG_ENERGY(BF("%s }\n")% this->className());
+    LOG_ENERGY(("%s }\n") , this->className());
   }
   return this->_TotalEnergy;
 }

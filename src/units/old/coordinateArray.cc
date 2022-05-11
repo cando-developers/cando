@@ -164,7 +164,7 @@ namespace units
 
     void SimpleVectorCoordinate_O::append(Xyz_sp xyz)
     {_OF();
-	ASSERTF(this->_System==xyz->_System,BF("Systems must match"));
+	ASSERTF(this->_System==xyz->_System,("Systems must match"));
 	this->_Coordinates->append(xyz->_Pos);
     }
 

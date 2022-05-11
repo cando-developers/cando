@@ -272,7 +272,7 @@ Aggregate_sp	EntirePdbRec::createAggregate()
       Atom_sp atom = ai->createAtom();
       ai->_atom = atom;
       LOG("currentResidueIdx = %d" , currentResidueIdx  );
-      ASSERTF(currentResidueIdx>=0,BF("residue index must be positive - line--> %s")%ai->_line );
+      ASSERTF(currentResidueIdx>=0,("residue index must be positive - line--> %s") , ai->_line );
       ASSERT_lessThan(currentResidueIdx,(int)(this->_residues.size()));
       ai->_residueIdx = currentResidueIdx;
       Residue_sp res = this->_residues[ai->_residueIdx];

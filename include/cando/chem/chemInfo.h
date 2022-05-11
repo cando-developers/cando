@@ -408,7 +408,7 @@ public:
   static ResidueTest_sp create( BondEnum b, gc::Nilable<AtomOrBondMatchNode_sp> at, core::Symbol_sp ri)
   {
     _G();
-    LOG(BF("ResidueTest_sp create: ringTag = (%s)")%ri);
+    LOG(("ResidueTest_sp create: ringTag = (%s)") , ri);
     auto  obj  = gctools::GC<ResidueTest_O>::allocate_with_default_constructor();
     obj->_Bond = b;
     obj->_AtomTest = at;
@@ -658,7 +658,7 @@ private:
 public:
   static AtomTest_sp create( AtomTestEnum t, int iArg, int num, const char* el, core::Symbol_sp sym) 
   {_G();
-    LOG(BF("Creating an AtomTest"));
+    LOG(("Creating an AtomTest"));
     auto  obj  = gctools::GC<AtomTest_O>::allocate_with_default_constructor();
     obj->_Test = t;
     obj->_IntArg = iArg;
@@ -708,7 +708,7 @@ public:
   };
   static AtomTest_sp create( AtomTestEnum t, const char* el ) 
   {_G();
-    LOG(BF("Create an AtomTest with string argument: %s")%el);
+    LOG(("Create an AtomTest with string argument: %s") , el);
     return create( t, 0, 0, el,nil<core::Symbol_O>());
   };
   static AtomTest_sp create( AtomTestEnum t, core::Symbol_sp sym) {return create( t, 0, 0, NULL, sym );}
@@ -824,7 +824,7 @@ public:
     obj->_NumberOfAttachedHydrogens = numberOfAttachedHydrogens;
     obj->_NumberOfElectronWithdrawingGroups =numberOfElectronWithdrawingGroups;
     obj->_AtomicProperty = atomicProperty;
-    LOG(BF("Created AntechamberFocusAtomMatch@%0X") % obj.get());
+    LOG(("Created AntechamberFocusAtomMatch@%0X") , (void*)obj.raw_());
     return obj;
   };
   static AntechamberFocusAtomMatch_sp create(

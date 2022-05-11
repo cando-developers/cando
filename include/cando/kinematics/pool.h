@@ -68,7 +68,7 @@ namespace kinematics
 	void resize(int newSize)
 	{_OF();
 	    int currentSize = this->_Pool.size();
-	    ASSERTF(currentSize<newSize,BF("The requested size[%d] of the Pool must be larger than the old size[%d]") % newSize % currentSize );
+	    ASSERTF(currentSize<newSize, ("The requested size[%d] of the Pool must be larger than the old size[%d]") , newSize , currentSize );
 	    this->_Pool.resize(newSize,this->_Empty);
 	    // Add the new entries to the empty list
 	    for ( int i=newSize-1; i>=currentSize; i-- )
@@ -90,8 +90,7 @@ namespace kinematics
 	    PoolMember& alloc = this->_Pool[memberIndex];
 	    this->_FirstUnusedMember = alloc.nextUnusedMember();
 	    this->_Pool[memberIndex] = entry;
-	    LOG(BF("ALLOC pool[%s] allocating idx[%d]")
-		% this->_Comment % memberIndex );
+	    LOG(("ALLOC pool[%s] allocating idx[%d]") , this->_Comment , memberIndex );
 	    return memberIndex;
 	}
 
@@ -100,9 +99,7 @@ namespace kinematics
 	  the pool */
 	void release(uint idx)
 	{_OF();
-	    LOG(BF("RELEASE pool[%s] releasing idx[%d]")
-		% this->_Comment
-		% idx );
+	    LOG(("RELEASE pool[%s] releasing idx[%d]") , this->_Comment , idx );
 	    PoolMember& releaseMember = this->_Pool[idx];
 	    releaseMember.setNextUnusedMember(this->_FirstUnusedMember);
 	    this->_FirstUnusedMember = idx;

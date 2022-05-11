@@ -235,7 +235,7 @@ double EnergyDihedralRestraint_O::evaluateAllComponent( ScoringFunction_sp score
   if ( this->_DebugEnergy ) {
     core::write_bf_stream(fmt::sprintf("%s\n" , __FUNCTION__ ));
     LOG_ENERGY_CLEAR();
-    LOG_ENERGY(BF("%s {")% this->className());
+    LOG_ENERGY(("%s {") , this->className());
   }
   ANN(force);
   ANN(hessian);
@@ -338,7 +338,7 @@ double EnergyDihedralRestraint_O::evaluateAllComponent( ScoringFunction_sp score
         core::write_bf_stream(fmt::sprintf( "MEISTER improperRestraint %d Energy %lf\n" , (i+1) , Energy));
         if ( calcForce ) 
         {
-//			LOG_ENERGY(BF( "MEISTER improperRestraint %d DePhi %lf\n")% (i+1) % DePhi);
+//			LOG_ENERGY(( "MEISTER improperRestraint %d DePhi %lf\n") , (i+1) , DePhi);
           core::write_bf_stream(fmt::sprintf( "MEISTER improperRestraint %d fx1 %8.5lf %d\n", (i+1) , fx1 , (I1/3+1) ));
           core::write_bf_stream(fmt::sprintf( "MEISTER improperRestraint %d fy1 %8.5lf %d\n", (i+1) , fy1 , (I1/3+1) ));
           core::write_bf_stream(fmt::sprintf( "MEISTER improperRestraint %d fz1 %8.5lf %d\n", (i+1) , fz1 , (I1/3+1) ));
@@ -353,57 +353,57 @@ double EnergyDihedralRestraint_O::evaluateAllComponent( ScoringFunction_sp score
           core::write_bf_stream(fmt::sprintf( "MEISTER improperRestraint %d fz4 %8.5lf %d\n", (i+1) , fz4 , (I4/3+1) ));
         }
         core::write_bf_stream(fmt::sprintf( "MEISTER improperRestraint %d stop\n" , (i+1) ));
-        LOG_ENERGY(BF( "MEISTER improperRestraint %d args cando\n")% (i+1) );
-        LOG_ENERGY(BF( "MEISTER improperRestraint %d K %lf\n")% (i+1) % K );
-        LOG_ENERGY(BF( "MEISTER improperRestraint %d U %lf\n")% (i+1) % U );
-        LOG_ENERGY(BF( "MEISTER improperRestraint %d L %lf\n")% (i+1) % L );
-        LOG_ENERGY(BF( "MEISTER improperRestraint %d x1 %5.3lf %d\n")%(i+1) % x1 % (I1/3+1) );
-        LOG_ENERGY(BF( "MEISTER improperRestraint %d y1 %5.3lf %d\n")%(i+1) % y1 % (I1/3+1) );
-        LOG_ENERGY(BF( "MEISTER improperRestraint %d z1 %5.3lf %d\n")%(i+1) % z1 % (I1/3+1) );
-        LOG_ENERGY(BF( "MEISTER improperRestraint %d x2 %5.3lf %d\n")%(i+1) % x2 % (I2/3+1) );
-        LOG_ENERGY(BF( "MEISTER improperRestraint %d y2 %5.3lf %d\n")%(i+1) % y2 % (I2/3+1) );
-        LOG_ENERGY(BF( "MEISTER improperRestraint %d z2 %5.3lf %d\n")%(i+1) % z2 % (I2/3+1) );
-        LOG_ENERGY(BF( "MEISTER improperRestraint %d x3 %5.3lf %d\n")%(i+1) % x3 % (I3/3+1) );
-        LOG_ENERGY(BF( "MEISTER improperRestraint %d y3 %5.3lf %d\n")%(i+1) % y3 % (I3/3+1) );
-        LOG_ENERGY(BF( "MEISTER improperRestraint %d z3 %5.3lf %d\n")%(i+1) % z3 % (I3/3+1) );
-        LOG_ENERGY(BF( "MEISTER improperRestraint %d x4 %5.3lf %d\n")%(i+1) % x4 % (I4/3+1) );
-        LOG_ENERGY(BF( "MEISTER improperRestraint %d y4 %5.3lf %d\n")%(i+1) % y4 % (I4/3+1) );
-        LOG_ENERGY(BF( "MEISTER improperRestraint %d z4 %5.3lf %d\n")%(i+1) % z4 % (I4/3+1) );
-        LOG_ENERGY(BF( "MEISTER improperRestraint %d results\n")% (i+1) );
-        LOG_ENERGY(BF( "MEISTER improperRestraint %d CosPhi %lf\n")% (i+1) % CosPhi );
-        LOG_ENERGY(BF( "MEISTER improperRestraint %d SinPhi %lf\n")% (i+1) % SinPhi );
+        LOG_ENERGY(( "MEISTER improperRestraint %d args cando\n") , (i+1) );
+        LOG_ENERGY(( "MEISTER improperRestraint %d K %lf\n") , (i+1) , K );
+        LOG_ENERGY(( "MEISTER improperRestraint %d U %lf\n") , (i+1) , U );
+        LOG_ENERGY(( "MEISTER improperRestraint %d L %lf\n") , (i+1) , L );
+        LOG_ENERGY(( "MEISTER improperRestraint %d x1 %5.3lf %d\n") , (i+1) , x1 , (I1/3+1) );
+        LOG_ENERGY(( "MEISTER improperRestraint %d y1 %5.3lf %d\n") , (i+1) , y1 , (I1/3+1) );
+        LOG_ENERGY(( "MEISTER improperRestraint %d z1 %5.3lf %d\n") , (i+1) , z1 , (I1/3+1) );
+        LOG_ENERGY(( "MEISTER improperRestraint %d x2 %5.3lf %d\n") , (i+1) , x2 , (I2/3+1) );
+        LOG_ENERGY(( "MEISTER improperRestraint %d y2 %5.3lf %d\n") , (i+1) , y2 , (I2/3+1) );
+        LOG_ENERGY(( "MEISTER improperRestraint %d z2 %5.3lf %d\n") , (i+1) , z2 , (I2/3+1) );
+        LOG_ENERGY(( "MEISTER improperRestraint %d x3 %5.3lf %d\n") , (i+1) , x3 , (I3/3+1) );
+        LOG_ENERGY(( "MEISTER improperRestraint %d y3 %5.3lf %d\n") , (i+1) , y3 , (I3/3+1) );
+        LOG_ENERGY(( "MEISTER improperRestraint %d z3 %5.3lf %d\n") , (i+1) , z3 , (I3/3+1) );
+        LOG_ENERGY(( "MEISTER improperRestraint %d x4 %5.3lf %d\n") , (i+1) , x4 , (I4/3+1) );
+        LOG_ENERGY(( "MEISTER improperRestraint %d y4 %5.3lf %d\n") , (i+1) , y4 , (I4/3+1) );
+        LOG_ENERGY(( "MEISTER improperRestraint %d z4 %5.3lf %d\n") , (i+1) , z4 , (I4/3+1) );
+        LOG_ENERGY(( "MEISTER improperRestraint %d results\n") , (i+1) );
+        LOG_ENERGY(( "MEISTER improperRestraint %d CosPhi %lf\n") , (i+1) , CosPhi );
+        LOG_ENERGY(( "MEISTER improperRestraint %d SinPhi %lf\n") , (i+1) , SinPhi );
         if ( CosPhi>0.1 ) {
           Phi = asin(SinPhi);
         } else {
           Phi = acos(CosPhi)*SIGN(SinPhi);
         }
-        LOG_ENERGY(BF( "MEISTER improperRestraint %d Phi %lf\n")% (i+1) % Phi );
-        LOG_ENERGY(BF( "MEISTER improperRestraint %d Energy %lf\n")% (i+1) % Energy);
+        LOG_ENERGY(( "MEISTER improperRestraint %d Phi %lf\n") , (i+1) , Phi );
+        LOG_ENERGY(( "MEISTER improperRestraint %d Energy %lf\n") , (i+1) , Energy);
         if ( calcForce ) {
-//			LOG_ENERGY(BF( "MEISTER improperRestraint %d DePhi %lf\n")% (i+1) % DePhi);
-          LOG_ENERGY(BF( "MEISTER improperRestraint %d fx1 %8.5lf %d\n")%(i+1) % fx1 % (I1/3+1) );
-          LOG_ENERGY(BF( "MEISTER improperRestraint %d fy1 %8.5lf %d\n")%(i+1) % fy1 % (I1/3+1) );
-          LOG_ENERGY(BF( "MEISTER improperRestraint %d fz1 %8.5lf %d\n")%(i+1) % fz1 % (I1/3+1) );
-          LOG_ENERGY(BF( "MEISTER improperRestraint %d fx2 %8.5lf %d\n")%(i+1) % fx2 % (I2/3+1) );
-          LOG_ENERGY(BF( "MEISTER improperRestraint %d fy2 %8.5lf %d\n")%(i+1) % fy2 % (I2/3+1) );
-          LOG_ENERGY(BF( "MEISTER improperRestraint %d fz2 %8.5lf %d\n")%(i+1) % fz2 % (I2/3+1) );
-          LOG_ENERGY(BF( "MEISTER improperRestraint %d fx3 %8.5lf %d\n")%(i+1) % fx3 % (I3/3+1) );
-          LOG_ENERGY(BF( "MEISTER improperRestraint %d fy3 %8.5lf %d\n")%(i+1) % fy3 % (I3/3+1) );
-          LOG_ENERGY(BF( "MEISTER improperRestraint %d fz3 %8.5lf %d\n")%(i+1) % fz3 % (I3/3+1) );
-          LOG_ENERGY(BF( "MEISTER improperRestraint %d fx4 %8.5lf %d\n")%(i+1) % fx4 % (I4/3+1) );
-          LOG_ENERGY(BF( "MEISTER improperRestraint %d fy4 %8.5lf %d\n")%(i+1) % fy4 % (I4/3+1) );
-          LOG_ENERGY(BF( "MEISTER improperRestraint %d fz4 %8.5lf %d\n")%(i+1) % fz4 % (I4/3+1) );
+//			LOG_ENERGY(( "MEISTER improperRestraint %d DePhi %lf\n") , (i+1) , DePhi);
+          LOG_ENERGY(( "MEISTER improperRestraint %d fx1 %8.5lf %d\n") , (i+1) , fx1 , (I1/3+1) );
+          LOG_ENERGY(( "MEISTER improperRestraint %d fy1 %8.5lf %d\n") , (i+1) , fy1 , (I1/3+1) );
+          LOG_ENERGY(( "MEISTER improperRestraint %d fz1 %8.5lf %d\n") , (i+1) , fz1 , (I1/3+1) );
+          LOG_ENERGY(( "MEISTER improperRestraint %d fx2 %8.5lf %d\n") , (i+1) , fx2 , (I2/3+1) );
+          LOG_ENERGY(( "MEISTER improperRestraint %d fy2 %8.5lf %d\n") , (i+1) , fy2 , (I2/3+1) );
+          LOG_ENERGY(( "MEISTER improperRestraint %d fz2 %8.5lf %d\n") , (i+1) , fz2 , (I2/3+1) );
+          LOG_ENERGY(( "MEISTER improperRestraint %d fx3 %8.5lf %d\n") , (i+1) , fx3 , (I3/3+1) );
+          LOG_ENERGY(( "MEISTER improperRestraint %d fy3 %8.5lf %d\n") , (i+1) , fy3 , (I3/3+1) );
+          LOG_ENERGY(( "MEISTER improperRestraint %d fz3 %8.5lf %d\n") , (i+1) , fz3 , (I3/3+1) );
+          LOG_ENERGY(( "MEISTER improperRestraint %d fx4 %8.5lf %d\n") , (i+1) , fx4 , (I4/3+1) );
+          LOG_ENERGY(( "MEISTER improperRestraint %d fy4 %8.5lf %d\n") , (i+1) , fy4 , (I4/3+1) );
+          LOG_ENERGY(( "MEISTER improperRestraint %d fz4 %8.5lf %d\n") , (i+1) , fz4 , (I4/3+1) );
         }
-        LOG_ENERGY(BF( "MEISTER improperRestraint %d stop\n")% (i+1) );
+        LOG_ENERGY(( "MEISTER improperRestraint %d stop\n") , (i+1) );
       }
 			/* Add the forces */
 
     }
   }
-  LOG_ENERGY(BF( "DihedralRestraint energy = %lf\n")% (double)(this->_TotalEnergy) );
+  LOG_ENERGY(( "DihedralRestraint energy = %lf\n") , (double)(this->_TotalEnergy) );
   if ( this->_DebugEnergy ) 
   {
-    LOG_ENERGY(BF("%s }\n")% this->className());
+    LOG_ENERGY(("%s }\n") , this->className());
   }
   return this->_TotalEnergy;
 }

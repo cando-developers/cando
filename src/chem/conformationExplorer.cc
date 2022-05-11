@@ -353,8 +353,7 @@ CL_DEFMETHOD     void	ConformationExplorerEntry_O::setSelectedStage(Conformation
 CL_LISPIFY_NAME("createEntryStage");
 CL_DEFMETHOD     ConformationExplorerEntryStage_sp	ConformationExplorerEntry_O::createEntryStage(core::T_sp name)
     {
-	ASSERTF(!this->hasEntryStageWithName(name),
-		BF("Stage with key[%s] already exists!") % name );
+	ASSERTF(!this->hasEntryStageWithName(name), ("Stage with key[%s] already exists!") , name );
 	auto  stage  = gctools::GC<ConformationExplorerEntryStage_O>::allocate_with_default_constructor();
 	stage->setConformationExplorerEntry(this->sharedThis<ConformationExplorerEntry_O>());
 	stage->setStageName(name);

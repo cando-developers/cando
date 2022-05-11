@@ -74,7 +74,7 @@ Constitution_sp Constitution_O::make(core::Symbol_sp name, core::String_sp comme
                 SIMPLE_ERROR(("There is already a plug named: %s") , _rep_(p->getName()) );
 	      }
 	      core::Symbol_sp key = p->getName();
-	      ASSERTF(!key->isKeywordSymbol(),BF("Don't use keyword symbols for plug names"));
+	      ASSERTF(!key->isKeywordSymbol(),("Don't use keyword symbols for plug names"));
 	      me->_PlugsByName.set(key,p);
 	  }
       }
@@ -399,7 +399,7 @@ CL_LISPIFY_NAME("topologyWithName");
 CL_DEFMETHOD     Topology_sp	Constitution_O::topologyWithName(core::Symbol_sp name) const
     {_OF();
 	Topology_sp			tres;
-	ASSERTF(this->_Topologies.contains(name),BF("There is no topology with name[%s] in constitution[%s]") % _rep_(name) % _rep_(this->getName()) );
+	ASSERTF(this->_Topologies.contains(name),("There is no topology with name[%s] in constitution[%s]") , _rep_(name) , _rep_(this->getName()) );
 	return this->_Topologies.get(name);
     }
 

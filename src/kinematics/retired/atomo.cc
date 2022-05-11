@@ -57,7 +57,7 @@ namespace kinematics
 
     Atom_O& Atom_O::operator=(const Atom_O& other)
 	    {_OF();
-		ASSERTF(this->_PointTree == other._PointTree,BF("You tried to copy Atom_Os that are not referencing the same PointTree"));
+		ASSERTF(this->_PointTree == other._PointTree,("You tried to copy Atom_Os that are not referencing the same PointTree"));
 		// Assignment operator
 		if ( this != &other ) // avoid self-assignment
 		{

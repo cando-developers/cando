@@ -73,7 +73,7 @@ namespace units
 	// Repeat this block for multiple symbols
 	{ 
 	    core::Binder_O::iterator it = dimensionDatabase->find(unit);
-	    ASSERTF(it!=dimensionDatabase->end(),BF("Could not find BaseUnit[%s]") % _rep_(unit) );
+	    ASSERTF(it!=dimensionDatabase->end(),("Could not find BaseUnit[%s]") , _rep_(unit) );
 	    Dimension_sp dimension = (*it).second.as<Dimension_O>();
 	    dimension->adjustPowersAndAmountScale(power,powers,amountScale);
 	}
@@ -337,7 +337,7 @@ namespace units
     System_sp Quantity_O::system() const
     {_OF();
 	System_sp system = _lisp->symbol(_sym_UnitsPkg_StarSISystemStar)->symbolValue().as<System_O>();
-	ASSERTF(this->_System->notNil(),BF("The system symbol should never be nil"));
+	ASSERTF(this->_System->notNil(),("The system symbol should never be nil"));
 	if (!this->_System->hasDynamicValue())
 	{
 	    system = this->_System->symbolValue().as<System_O>();

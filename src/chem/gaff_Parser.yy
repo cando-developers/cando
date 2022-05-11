@@ -35,8 +35,8 @@ using namespace core;
 #define	LEXDEBUG	1
 
 #ifdef	LEXDEBUG
-#define	LEXPRINT(x) {LOG(BF("Token: %s") % x );}
-#define	LEXDPRINT(x) { LOG(BF("%s") % (x));}
+#define	LEXPRINT(x) {LOG(("Token: %s") , x );}
+#define	LEXDPRINT(x) { LOG(("%s")  (x));}
 #else
 #define	LEXPRINT(x)
 #define	LEXDPRINT(x)

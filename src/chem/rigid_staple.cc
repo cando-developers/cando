@@ -57,7 +57,7 @@ CL_DEFUN double chem__rigid_staple_evaluate( core::SimpleVector_double_sp helix_
   if ( debugEnergy ) 
   {
     LOG_ENERGY_CLEAR();
-    LOG_ENERGY(BF("%s {\n")% this->className());
+    LOG_ENERGY(("%s {\n") , this->className());
   }
   bool	hasForce = force.notnilp();
 #if 0
@@ -120,27 +120,27 @@ CL_DEFUN double chem__rigid_staple_evaluate( core::SimpleVector_double_sp helix_
 #include <cando/energy-functions/_STAPLE_debugEvalSet.cc>
 #endif //]
       if ( debugEnergy ) {
-        LOG_ENERGY(BF( "MEISTER staple %d args cando\n")% (i+1) );
-        LOG_ENERGY(BF( "MEISTER staple %d address %x \n")% (i+1) % (&(*si)) );
-        LOG_ENERGY(BF( "MEISTER staple %d r0 %5.3lf\n")% (i+1) % r0 );
-        LOG_ENERGY(BF( "MEISTER staple %d kb %5.1lf\n")% (i+1) % kb );
-        LOG_ENERGY(BF( "MEISTER staple %d x1 %5.3lf %d\n")% (i+1) % x1 % (I1/3+1) );
-        LOG_ENERGY(BF( "MEISTER staple %d y1 %5.3lf %d\n")% (i+1) % y1 % (I1/3+1) );
-        LOG_ENERGY(BF( "MEISTER staple %d z1 %5.3lf %d\n")% (i+1) % z1 % (I1/3+1) );
-        LOG_ENERGY(BF( "MEISTER staple %d x2 %5.3lf %d\n")% (i+1) % x2 % (I2/3+1) );
-        LOG_ENERGY(BF( "MEISTER staple %d y2 %5.3lf %d\n")% (i+1) % y2 % (I2/3+1) );
-        LOG_ENERGY(BF( "MEISTER staple %d z2 %5.3lf %d\n")% (i+1) % z2 % (I2/3+1) );
-        LOG_ENERGY(BF( "MEISTER staple %d results\n")% (i+1) );
-        LOG_ENERGY(BF( "MEISTER staple %d Energy %lf\n")% (i+1) % Energy );
+        LOG_ENERGY(( "MEISTER staple %d args cando\n") , (i+1) );
+        LOG_ENERGY(( "MEISTER staple %d address %x \n") , (i+1) , (&(*si)) );
+        LOG_ENERGY(( "MEISTER staple %d r0 %5.3lf\n") , (i+1) , r0 );
+        LOG_ENERGY(( "MEISTER staple %d kb %5.1lf\n") , (i+1) , kb );
+        LOG_ENERGY(( "MEISTER staple %d x1 %5.3lf %d\n") , (i+1) , x1 , (I1/3+1) );
+        LOG_ENERGY(( "MEISTER staple %d y1 %5.3lf %d\n") , (i+1) , y1 , (I1/3+1) );
+        LOG_ENERGY(( "MEISTER staple %d z1 %5.3lf %d\n") , (i+1) , z1 , (I1/3+1) );
+        LOG_ENERGY(( "MEISTER staple %d x2 %5.3lf %d\n") , (i+1) , x2 , (I2/3+1) );
+        LOG_ENERGY(( "MEISTER staple %d y2 %5.3lf %d\n") , (i+1) , y2 , (I2/3+1) );
+        LOG_ENERGY(( "MEISTER staple %d z2 %5.3lf %d\n") , (i+1) , z2 , (I2/3+1) );
+        LOG_ENERGY(( "MEISTER staple %d results\n") , (i+1) );
+        LOG_ENERGY(( "MEISTER staple %d Energy %lf\n") , (i+1) , Energy );
         if ( calcForce ) {
-          LOG_ENERGY(BF( "MEISTER staple %d fx1 %lf %d\n")% (i+1) % fx1 % (I1/3+1) );
-          LOG_ENERGY(BF( "MEISTER staple %d fy1 %lf %d\n")% (i+1) % fy1 % (I1/3+1) );
-          LOG_ENERGY(BF( "MEISTER staple %d fz1 %lf %d\n")% (i+1) % fz1 % (I1/3+1) );
-          LOG_ENERGY(BF( "MEISTER staple %d fx2 %lf %d\n")% (i+1) % fx2 % (I2/3+1) );
-          LOG_ENERGY(BF( "MEISTER staple %d fy2 %lf %d\n")% (i+1) % fy2 % (I2/3+1) );
-          LOG_ENERGY(BF( "MEISTER staple %d fz2 %lf %d\n")% (i+1) % fz2 % (I2/3+1) );
+          LOG_ENERGY(( "MEISTER staple %d fx1 %lf %d\n") , (i+1) , fx1 , (I1/3+1) );
+          LOG_ENERGY(( "MEISTER staple %d fy1 %lf %d\n") , (i+1) , fy1 , (I1/3+1) );
+          LOG_ENERGY(( "MEISTER staple %d fz1 %lf %d\n") , (i+1) , fz1 , (I1/3+1) );
+          LOG_ENERGY(( "MEISTER staple %d fx2 %lf %d\n") , (i+1) , fx2 , (I2/3+1) );
+          LOG_ENERGY(( "MEISTER staple %d fy2 %lf %d\n") , (i+1) , fy2 , (I2/3+1) );
+          LOG_ENERGY(( "MEISTER staple %d fz2 %lf %d\n") , (i+1) , fz2 , (I2/3+1) );
         }
-        LOG_ENERGY(BF( "MEISTER staple %d stop\n")% (i+1) );
+        LOG_ENERGY(( "MEISTER staple %d stop\n") , (i+1) );
       }
 		/* Add the forces */
 
@@ -154,7 +154,7 @@ CL_DEFUN double chem__rigid_staple_evaluate( core::SimpleVector_double_sp helix_
   }
   if ( debugEnergy ) 
   {
-    LOG_ENERGY(BF("%s }")% this->className());
+    LOG_ENERGY(("%s }") , this->className());
   }
   return totalEnergy;
 }

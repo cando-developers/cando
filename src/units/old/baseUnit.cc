@@ -73,7 +73,7 @@ namespace units
 
     void BaseUnit_O::adjustPowersAndAmountScale(int power, int powers[], double& amountScale ) const
     {_OF();
-	ASSERTF(this->_BaseUnit<NumBaseDimensions,BF("Bad base dimension index[%d]") % this->_BaseUnit);
+	ASSERTF(this->_BaseUnit<NumBaseDimensions,("Bad base dimension index[%d]") , this->_BaseUnit);
 	powers[this->_BaseUnit] = power;
 	double scale = ::pow(this->_CanonicalToUnitScale,power);
 	amountScale /= scale;

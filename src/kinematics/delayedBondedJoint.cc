@@ -59,10 +59,10 @@ Joint_sp DelayedBondedJoint_O::stubJoint3(JointTree_sp tree) const
     Joint_sp nextResidueBond0 = outBond0->child(idx);
     chem::AtomId nextResidueBond0AtomId = nextResidueBond0->id();
     ASSERTF(bond0Id.residueId() != nextResidueBond0AtomId.residueId(),
-            BF("The atom that is supposed to be in the next residue has the same residueId[%d]")
-            % bond0Id.residueId() );
+            ("The atom that is supposed to be in the next residue has the same residueId[%d]")
+            , bond0Id.residueId() );
     RootJointInfo const* rootJointInfo = nextResidueBond0->rootJointInfo();
-    ASSERTF(rootJointInfo!=NULL,BF("The RootJointInfo must never be NULL"));
+    ASSERTF(rootJointInfo!=NULL,("The RootJointInfo must never be NULL"));
     chem::ConstitutionAtomIndex0N bond1Id = rootJointInfo->_Bond1Id;
     chem::AtomId bond1AtomId(nextResidueBond0AtomId.moleculeId(),
                              nextResidueBond0AtomId.residueId(),

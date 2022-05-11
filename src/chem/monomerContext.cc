@@ -80,7 +80,7 @@ namespace chem
 	    NeighborMap::iterator mi;
 	    for ( mi=this->_Neighbors.begin(); mi!=this->_Neighbors.end(); mi++ )
 	    {
-		ASSERTF(DirectionalCoupling_O::isPlugName(mi->first,_lisp),BF("About to save Bad plug name in MonomerContext Neighbor: %s")% mi->first );
+		ASSERTF(DirectionalCoupling_O::isPlugName(mi->first,_lisp),("About to save Bad plug name in MonomerContext Neighbor: %s") , mi->first );
 	    }
 	}
 #endif
@@ -92,7 +92,7 @@ namespace chem
 	    NeighborMap::iterator mi;
 	    for ( mi=this->_Neighbors.begin(); mi!=this->_Neighbors.end(); mi++ )
 	    {
-		ASSERTF(DirectionalCoupling_O::isPlugName(mi->first,_lisp), BF("Loaded Bad plug name in MonomerContext Neighbor: %s")% mi->first );
+		ASSERTF(DirectionalCoupling_O::isPlugName(mi->first,_lisp), ("Loaded Bad plug name in MonomerContext Neighbor: %s") , mi->first );
 	    }
 	}
 #endif
@@ -113,8 +113,8 @@ CL_DEFMETHOD     void	MonomerContext_O::addNeighbor( core::Symbol_sp cn, EntityN
     {_OF();
       LOG("Added neighbor with key plug: %s" , _rep_(cn)  );
 	getCandoDatabase();
-	ASSERTF(DirectionalCoupling_O::isPlugName(cn), BF("addNeighbor ILLEGAL PLUG NAME plugName=(%s)")% cn );
-	ASSERTF(this->_Neighbors.count(cn) == 0, BF("MonomerContext already has a key: %s")% cn );
+	ASSERTF(DirectionalCoupling_O::isPlugName(cn), ("addNeighbor ILLEGAL PLUG NAME plugName=(%s)") , cn );
+	ASSERTF(this->_Neighbors.count(cn) == 0, ("MonomerContext already has a key: %s") , cn );
 	this->_Neighbors.set(cn,r);
     }
 

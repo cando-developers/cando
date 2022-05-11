@@ -174,7 +174,7 @@ void	SuperposeEngine_O::doSuperpose()
     moveableIndicesSize = this->_MoveableIndices->length();
     LOG("Moveable indices fixed(%d) moveable(%d)" , fixedIndicesSize , moveableIndicesSize );
     ASSERTP(fixedIndicesSize==moveableIndicesSize,"num. fixed points must equal num. of moveable points");
-    ASSERTF(fixedIndicesSize>=3, BF("You must have at least 3 points to superpose and you only have: %d")% fixedIndicesSize );
+    ASSERTF(fixedIndicesSize>=3, ("You must have at least 3 points to superpose and you only have: %d") , fixedIndicesSize );
     Sj.resize(this->_FixedIndices->length());
     if ( this->_MoveableIndices->length() < 3 )
     {
@@ -197,8 +197,7 @@ void	SuperposeEngine_O::doSuperpose()
 	}
         LOG("About to divide by number of indices %lu\n" , this->_FixedIndices->length());
 	fixedCenter = fixedCenter.multiplyByScalar(1.0/(double)(this->_FixedIndices->length()));
-        LOG( "Translating fixed to fixed geometric center: %s"% 
-	    fixedCenter.asString().c_str() );
+        LOG( "Translating fixed to fixed geometric center: %s " , fixedCenter.asString() );
         VectorVector3s::iterator itS = Sj.begin();
 	for ( size_t iaV(0);
 	      iaV<this->_FixedIndices->length();
@@ -220,8 +219,8 @@ void	SuperposeEngine_O::doSuperpose()
           LOG("Centered _MoveableCoordinates index=%d   original=%s  new=%s" , iaV , (*this->_MoveableCoordinates)[(*this->_MoveableIndices)[iaV]].asString() , (*itS).asString() );
 	}
     }
-    LOG( "fixedCenter = %s"% fixedCenter.asString() );
-    LOG( "moveableCenter = %s"% moveableCenter.asString() );
+    LOG( "fixedCenter = %s" , fixedCenter.asString() );
+    LOG( "moveableCenter = %s" , moveableCenter.asString() );
     
     itSj = Sj.begin();
     itSi = Si.begin();
@@ -248,7 +247,7 @@ void	SuperposeEngine_O::doSuperpose()
 	itSj++;
 	itSi++;
     }
-    LOG( "M= \n%s"% M.asString() );
+    LOG( "M= \n%s" , M.asString() );
     MT = M.transpose();
     v4.set( 0.0, 0.0, 0.0, M.trace() );
     trM.setFromQuaternion(v4);
@@ -260,16 +259,16 @@ void	SuperposeEngine_O::doSuperpose()
     P.atRowColPut(2,3,M.atRowCol(0,1)-M.atRowCol(1,0));
     P.atRowColPut(3,2,P.atRowCol(2,3));
     P.atRowColPut(3,3,0.0);
-    LOG("P=\n%s"% P.asString() );
+    LOG("P=\n%s" , P.asString() );
     P.eigenSystem( evals, evecs );
     iLargestEv = evals.indexOfLargestElement();
     largestEv = evecs.getCol(iLargestEv);
-    LOG( "largestEv=\n%s"% largestEv.asString() );
+    LOG( "largestEv=\n%s" , largestEv.asString() );
     em.setFromQuaternion(largestEv);
 
-    LOG( "eigenMatrix=\n%s"% em.asString() );
+    LOG( "eigenMatrix=\n%s" , em.asString() );
     quaternion = em.getCol(3);
-    LOG( "quaternion = \n%s"% quaternion.asString() );
+    LOG( "quaternion = \n%s" , quaternion.asString() );
     //
     // Convert the quaternion into a rotation matrix
     rot.setValue(0.0);
@@ -291,15 +290,15 @@ void	SuperposeEngine_O::doSuperpose()
     rot.atRowColPut( 2,1,  2*(m*n + l*s));
     rot.atRowColPut( 2,2,  -ll - mm + nn + ss);
     rot.atRowColPut( 3,3,  1.0 );
-    LOG( "rot=\n%s"% rot.asString());
+    LOG( "rot=\n%s" , rot.asString());
     vTemp = moveableCenter*-1.0;
     trans.translate(vTemp);
-    LOG( "moveableTrans=\n%s"% trans.asString() );
+    LOG( "moveableTrans=\n%s" , trans.asString() );
 //    mat.setFromQuaternion(quaternion);
     mat = rot*trans;
-    LOG( "mat*moveableTrans= \n%s"% mat.asString() );
+    LOG( "mat*moveableTrans= \n%s" , mat.asString() );
     trans.translate(fixedCenter);
-    LOG( "fixedTrans = \n%s"% trans.asString() );
+    LOG( "fixedTrans = \n%s" , trans.asString() );
     this->_Transform = trans*mat;
     LOG("this->_Transform = \n%s" , this->_Transform.asString());
 }
@@ -319,18 +318,18 @@ double	SuperposeEngine_O::sumOfSquaresOfDifferences(ScorerState_sp scorerState )
 
     ASSERTNOTNULL(this->_MoveableIndices);
     ASSERTNOTNULL(this->_FixedIndices);
-    LOG_SCORE(scorerState,BF("SuperposeEngine_O::sumOfSquaresOfDifferences{"));
+    LOG_SCORE(scorerState,("SuperposeEngine_O::sumOfSquaresOfDifferences{"));
 #if	DEBUG_SCORE_EVALUATION
-    LOG_SCORE(scorerState,BF("There are %d moveable indices")%this->_MoveableIndices->length() );
-    LOG_SCORE(scorerState,BF("There are %d fixed indices")%this->_FixedIndices->length() );
+    LOG_SCORE(scorerState,("There are %d moveable indices") , this->_MoveableIndices->length() );
+    LOG_SCORE(scorerState,("There are %d fixed indices") , this->_FixedIndices->length() );
     for ( ititMoved = this->_MoveableIndices->begin(),
 	      itFixed = this->_FixedIndices->begin();
 	  itFixed != this->_FixedIndices->end();
 	  ititMoved++, itFixed++ )
     {
-	LOG_SCORE(BF(scorerState,"Superpose fixed%s with moveable%s")%
-		  this->_FixedCoordinates->getElement(*itFixed).asString()
-		  % this->_MoveableCoordinates->getElement(*ititMoved).asString()
+      LOG_SCORE(scorerState,"Superpose fixed%s with moveable%s" ,
+                this->_FixedCoordinates->getElement(*itFixed).asString()
+                , this->_MoveableCoordinates->getElement(*ititMoved).asString()
 	    );
     }
     LOG_SCORE(BF(scorerState,"SuperposeEngine_O calculated transform\n%s")% this->_Transform.asString());
@@ -464,7 +463,7 @@ CL_DEFMETHOD void	SuperposeEngine_O::setMoveableAllPoints( geom::SimpleVectorCoo
 {
   size_t ia;
   uint		ii;
-  ASSERTF(mc->length()>=3,BF("You must have at least three moveable points and there are only %d") % mc->length() );
+  ASSERTF(mc->length()>=3,("You must have at least three moveable points and there are only %d") , mc->length() );
   this->_MoveableCoordinates = geom::ComplexVectorCoordinate_O::make_vector(mc->length(),Vector3(),core::make_fixnum(mc->length()));
   this->_MoveableIndices = core::ComplexVector_byte32_t_O::make_vector(mc->length());
   for ( ii=0; ii<mc->length(); ii++ )

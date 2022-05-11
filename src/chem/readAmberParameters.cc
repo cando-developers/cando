@@ -370,7 +370,7 @@ FFPtorDb_sp ReadAmberParameters_O::parsePtorDb(core::T_sp fin, core::T_sp system
       double pk = atof(parmsParts[1].c_str());
       double phaseRad = atof(parmsParts[2].c_str())*0.0174533;
       int pn = abs(int(atof(parmsParts[3].c_str())));
-      ASSERTF(pn>=1 && pn<=6,BF("pn[%d] must range between [1,6]") % pn);
+      ASSERTF(pn>=1 && pn<=6,("pn[%d] must range between [1,6]") , pn);
       ffPtor->setV_kCal(pn,pk/idivf);
       ffPtor->setPhaseRad(pn,phaseRad);
       ffPtorDb->add(ffPtor);
@@ -442,8 +442,7 @@ FFItorDb_sp ReadAmberParameters_O::parseItorDb(core::T_sp fin)
       double pk = atof(parmsParts[0].c_str());
       double phaseRad = atof(parmsParts[1].c_str())*0.0174533;
       int pn = abs(int(atof(parmsParts[2].c_str())));
-      ASSERTF(pn>=1 && pn<=FFItor_O::IMaxPeriodicity,BF("Illegal pn[%d] must be in [1,%d]")
-              % pn % FFItor_O::IMaxPeriodicity );
+      ASSERTF(pn>=1 && pn<=FFItor_O::IMaxPeriodicity,("Illegal pn[%d] must be in [1,%d]") , pn , FFItor_O::IMaxPeriodicity );
       ffItor->setV_kCal(pn,pk);
       ffItor->setPhaseRad(pn,phaseRad);
       ffItorDb->add(ffItor);

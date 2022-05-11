@@ -82,10 +82,10 @@ FORWARD(EnergyFunction);
 
 #if TURN_ENERGY_FUNCTION_DEBUG_ON == 1
 #define	LOG_ENERGY_CLEAR() {this->_DebugLog.str("");};
-#define LOG_ENERGY(s) {this->_DebugLog << __FILE__ << ":" << __LINE__ << " " << s;}
+#define LOG_ENERGY(...) {fmt::sprintf("%s:%d:%s ", __FILE__, __LINE__, __FUNCTION__ ); fmt::sprintf(__VA_ARGS__);}
 #else
 #define	LOG_ENERGY_CLEAR() {}
-#define LOG_ENERGY(s) {}
+#define LOG_ENERGY(...) {}
 #endif
 
 
@@ -161,8 +161,8 @@ inline string	atomLabel(Atom_sp a)
     double eLow = func argLow;\
     double eHigh = func argHigh;\
     double numForce = -(eHigh-eLow)/(delta);\
-    LOG(BF("eHigh = %le eLow = %le delta = %le")% (eHigh) % (eLow) % (delta) ); \
-    LOG(BF("numForce = %le")% numForce );			\
+    LOG(("eHigh = %le eLow = %le delta = %le") , (eHigh) , (eLow) , (delta) ); \
+    LOG(("numForce = %le") , numForce );			\
     if ( !_areValuesClose( numForce, term, #func, #term, idx ) ) { fails++; };\
   }
 

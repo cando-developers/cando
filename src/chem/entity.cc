@@ -86,9 +86,7 @@ CL_DEFMETHOD Constitution_sp Entity_O::constitution()
 CL_LISPIFY_NAME("minimalRepresentativeList");
 CL_DEFMETHOD     RepresentativeList_sp Entity_O::minimalRepresentativeList() const
     {_OF();
-	SHOUT(BF("Generating minimalRepresentativeList of: %s") % this->__repr__() );
 	RepresentativeList_sp expandedList = this->expandedRepresentativeList();
-	SHOUT(BF("   after expandedRepresentativeList: %s") % _rep_(expandedList) );
 	core::HashTableEq_sp binder = core::HashTableEq_O::create_default();
 	for ( int i(0), iEnd(expandedList->length()); i<iEnd; ++i ) {
 	    RepresentedEntityNameSet_sp curNameSet = expandedList->rowMajorAref(i).as<RepresentedEntityNameSet_O>();
@@ -111,7 +109,6 @@ CL_DEFMETHOD     RepresentativeList_sp Entity_O::minimalRepresentativeList() con
         binder->maphash( [&minimalList] (core::T_sp key, core::T_sp val) {
                 minimalList->vectorPushExtend(val); //binder->indexed_value(val));
             } );
-	SHOUT(BF("    resulting minimalRepresentativeList of: %s") % _rep_(minimalList) );
 	return minimalList;
     }
 

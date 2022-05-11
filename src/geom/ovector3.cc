@@ -54,7 +54,7 @@ namespace geom {
 
     OVector3_sp OVector3_O::create(core::Cons_sp pnt)
     {
-    ASSERTF(pnt->length()==3,BF("Poorly formed Vector"));
+    ASSERTF(pnt->length()==3,("Poorly formed Vector"));
     auto ov = gctools::GC<OVector3_O>::allocate_with_default_constructor();
     ov->setAll3(core::clasp_to_double(core::oCar(pnt).as<core::Number_O>()),
 	       core::clasp_to_double(core::oCadr(pnt).as<core::Number_O>()),

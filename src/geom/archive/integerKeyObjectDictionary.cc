@@ -102,33 +102,6 @@ core::T_sp IntegerKeyObjectDictionary_O::getAndRemoveOrDefault(int ikey, core::T
     return obj;
 }
 
-#if 0
-Render_sp	IntegerKeyObjectDictionary_O::rendered(core::Cons_sp opts)
-{
-DisplayList_sp	dl;
-Render_sp		dlOne;
-map<int,core::T_sp>::iterator	vi;
-    dl = DisplayList_O::create();
-    for ( vi=this->_Map.begin(); vi!=this->_Map.end(); vi++ )
-    {
-	LOG("Looking to render %s" , vi->second->description().c_str()  );
-	if ( vi->second->canRender() )
-	{
-	    LOG("YES,Rendering object" );
-	    dlOne = vi->second->rendered(opts);
-	    Symbol_sp isymbol = _lisp->internKeyword((BF("i%d")%vi->first).str());
-	    dlOne->setName(isymbol);
-	    dl->append(dlOne);
-	} else
-	{
-	    LOG("NO can't render" );
-	}
-    }
-    return dl;
-}
-#endif
-
-
 string	IntegerKeyObjectDictionary_O::allKeys()
 {
 map<int,core::T_sp>::iterator	vi;

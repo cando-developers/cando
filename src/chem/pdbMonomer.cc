@@ -134,7 +134,7 @@ struct FormulaMonomerRec
 	for ( uint idx=2; idx<parts.size(); idx++ )
 	{
 	    this->_FormulaTerm[eidx] = parts[idx];
-	    ASSERTF(eidx<MAX_FORMULA_TERMS,BF("Allocate more space for formula terms - need at least %d") % eidx );
+	    ASSERTF(eidx<MAX_FORMULA_TERMS,("Allocate more space for formula terms - need at least %d") , eidx );
 	    eidx++;
 	}
     }

@@ -215,8 +215,8 @@ void SimpleVectorCoordinate_O::fields(core::Record_sp node)
 CL_LISPIFY_NAME("write-to-stream");
 CL_DEFMETHOD     void SimpleVectorCoordinate_O::writeToStream(string const& info, core::T_sp sout)
 {_OF();
-  core::clasp_write_string((BF("+++SimpleVectorCoordinate %d\n") % this->_Points.size() ).str(),sout);
-  core::clasp_write_string((BF("+ %s\n") % info).str(),sout);
+  core::clasp_write_string(fmt::sprintf(("+++SimpleVectorCoordinate %d\n") , this->_Points.size() ),sout);
+  core::clasp_write_string(fmt::sprintf(("+ %s\n") , info),sout);
   for (int i=0; i<(int)this->_Points.size(); i++ )
   {
     this->_Points[i].write(sout);
@@ -274,7 +274,7 @@ string SimpleVectorCoordinate_O::parseFromStream(core::Stream_sp sin)
     stringstream snum;
     snum.str(line.substr(18,999));
     snum >> numLines;
-    ASSERTF(numLines>=0,BF("Illegal number of entries[%d]") , numLines);
+    ASSERTF(numLines>=0,("Illegal number of entries[%d]") , numLines);
     this->resize(numLines);
     sin->readLine(line,hitEof);
 //	    getline(sin->stream(),line);

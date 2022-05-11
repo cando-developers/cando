@@ -232,7 +232,7 @@ void	DirectionalCoupling_O::checkForErrors(core::T_sp statusMessageStream)
     if ( this->_SourceMonomer.nilp() )
     {
         this->setHasError(true);
-        core::clasp_write_format(BF("SourceMonomer is NULL\n"), statusMessageStream);
+        core::clasp_write_format(("SourceMonomer is NULL\n"), statusMessageStream);
     }
     ANN(this->_TargetMonomer);
     if ( this->_TargetMonomer.nilp() )

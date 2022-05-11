@@ -132,7 +132,7 @@ CL_DEFMETHOD     bool	RepresentedEntityNameSet_O::hasRepresentative()
 	}
 	ASSERT(bdb->recognizesEntityName(this->_Representative)); // "candoDatabase does not recognize entity name("+_rep_(this->_Representative)+")");
 	obj = bdb->getEntity(this->_Representative);
-	ASSERT(obj->isTerminalName()); // BF("Representatives must always be terminal names, this representative(%s) is NOT")% obj->getName() );
+	ASSERT(obj->isTerminalName());
 	objList = RepresentativeList_O::create();
 	auto  expanded  = gctools::GC<RepresentedEntityNameSet_O>::copy( *this); // = RP_Copy<RepresentedEntityNameSet_O>(this);
 	expanded->expandToTerminalEntityNames();

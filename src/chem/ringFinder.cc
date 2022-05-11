@@ -686,7 +686,7 @@ CL_DEFMETHOD int RingFinder_O::getNumberOfRingsExpected()
     LOG("this->_edges.size() = %d" , this->_edges.size()  );
     LOG("this->_vertices->hashTableCount() = %d" , this->_vertices->hashTableCount()  );
     int num = this->_edges.size()-this->_vertices->hashTableCount()+1;
-    ASSERTF(num>=0, BF("There can not be negative number of rings - calculated rings[%d]/edges[%d]/vertices[%d]") % num % this->_edges.size() % this->_vertices->hashTableCount() );
+    ASSERTF(num>=0, ("There can not be negative number of rings - calculated rings[%d]/edges[%d]/vertices[%d]") , num , this->_edges.size() , this->_vertices->hashTableCount() );
     LOG("expecting %d rings" , num  );
     return (uint)num;
 }

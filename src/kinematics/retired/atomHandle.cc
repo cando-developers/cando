@@ -68,9 +68,7 @@ namespace kinematics
 	{
 	    SIMPLE_ERROR(("This handle is Undefined and you tried to get its pointed to object"));
 	}
-	HARD_ASSERTF((int)this->_HolderIndex<this->_Tree->numberOfAtoms(),
-		     BF("Illegal handle index[%d] must be less than %d")
-		     % this->_HolderIndex % this->_Tree->numberOfAtoms() );
+	HARD_ASSERTF((int)this->_HolderIndex<this->_Tree->numberOfAtoms(), ("Illegal handle index[%d] must be less than %d") , this->_HolderIndex , this->_Tree->numberOfAtoms() );
 	ASSERT((int)this->_HolderIndex<(int)this->_Tree->_AtomHolders.size());
 	AtomHolder& atomHolder = this->_Tree->_AtomHolders[this->_HolderIndex];
 	Atom* result = NULL;
@@ -112,9 +110,7 @@ namespace kinematics
 	{
 	    SIMPLE_ERROR(("This handle is Undefined and you tried to get its pointed to object"));
 	}
-	HARD_ASSERTF((int)this->_HolderIndex<this->_Tree->numberOfAtoms(),
-		     BF("Illegal handle index[%d] must be less than %d")
-		     % this->_HolderIndex % this->_Tree->numberOfAtoms() );
+	HARD_ASSERTF((int)this->_HolderIndex<this->_Tree->numberOfAtoms(), ("Illegal handle index[%d] must be less than %d") , this->_HolderIndex , this->_Tree->numberOfAtoms() );
 	AtomHolder& atomHolder = this->_Tree->_AtomHolders[this->_HolderIndex];
 	Atom* result = NULL;
 	switch (atomHolder._Type)
@@ -148,13 +144,13 @@ namespace kinematics
 
     AtomHolder* WeakAtomHandle::holder()
     {_OF();
-	ASSERTF(!this->notDefined(), BF("Undefined WeakAtomHandle"));
+	ASSERTF(!this->notDefined(), ("Undefined WeakAtomHandle"));
 	return &(this->_Tree->_AtomHolders[this->_HolderIndex]);
     }
 
     const AtomHolder* WeakAtomHandle::holder() const
     {_OF();
-	ASSERTF(!this->notDefined(), BF("Undefined WeakAtomHandle"));
+	ASSERTF(!this->notDefined(), ("Undefined WeakAtomHandle"));
 	return &(this->_Tree->_AtomHolders[this->_HolderIndex]);
     }
 
@@ -239,8 +235,8 @@ namespace kinematics
 	    , this->holder()->refCount() , this->_HolderIndex , this->holder()->typeAsString() );
 #endif
 	LOG("Incrementing RefCount for handle[%d]" , this->_HolderIndex );
-	ASSERTF(!this->notDefined(),BF("Tried to increment RefCount of undefined handle"));
-	ASSERTF((int)this->_HolderIndex<this->_Tree->numberOfAtoms(),BF("Illegal Handle for incrementRefCount"));
+	ASSERTF(!this->notDefined(),("Tried to increment RefCount of undefined handle"));
+	ASSERTF((int)this->_HolderIndex<this->_Tree->numberOfAtoms(),("Illegal Handle for incrementRefCount"));
 	ASSERTF(this->holder()->_Type!=unused,
 		BF("incrementRefCount>>You tried to access an unused node[%d]") % this->_HolderIndex );
 	this->_Tree->_AtomHolders[this->_HolderIndex].refAdd();
@@ -261,8 +257,8 @@ namespace kinematics
 	LOG("REFCOUNT-- About to decrement refCount->[%d] for handle[%d] nodeType[%s]"
 	    , this->holder()->refCount() , this->_HolderIndex , this->holder()->typeAsString() );
 #endif
-	ASSERTF(!this->notDefined(),BF("Tried to increment RefCount of undefined handle"));
-	ASSERTF((int)this->_HolderIndex<this->_Tree->numberOfAtoms(),BF("Illegal Handle for incrementRefCount"));
+	ASSERTF(!this->notDefined(),("Tried to increment RefCount of undefined handle"));
+	ASSERTF((int)this->_HolderIndex<this->_Tree->numberOfAtoms(),("Illegal Handle for incrementRefCount"));
 	ASSERTF(this->holder()->_Type!=unused,
 		BF("decrementRefCountAndReleaseIfZero>>You tried to access an unused node[%d]") % this->_HolderIndex );
 	bool isZero = this->_Tree->_AtomHolders[this->_HolderIndex].refDec();
