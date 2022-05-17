@@ -43,43 +43,44 @@ jobs:
 #       if: matrix.os == 'macos-latest'
 #       run: |
 #         brew install boost fmt gmp llvm@13 ninja pkg-config sbcl ecl
-
-    - name: List the current directory
-      run: |
-           ls
-
-    - name: Checkout repository
+#
+    - name: Checkout clasp
       uses: actions/checkout@v2
       with:
         repository: clasp-developers/clasp
-        path: clasp
+        path: .
 
-    # - name: Install boost
-    #   uses: MarkusJx/install-boost@v2.3.0
-    #   if: matrix.os == 'ubuntu-latest'
-    #   id: install-boost
-    #   with:
-    #     boost_version: 1.79.0
-    #     platform_version: 20.04
+    - name: Checkout cando
+      uses: actions/checkout@v2
+      with:
+        path: extensions/cando
 
-    # - name: Build Clasp (koga/Ubuntu)
-    #   if: matrix.os == 'ubuntu-latest'
-    #   run: |
-    #     ./koga --no-clang-cpp --ldlibs=-ldl --cflags=-I${{steps.install-boost.outputs.BOOST_ROOT}}/include --cppflags=-I${{steps.install-boost.outputs.BOOST_ROOT}}/include --cxxflags=-I${{steps.install-boost.outputs.BOOST_ROOT}}/include --extensions=cando,seqan-clasp
+    - name: Install boost
+      uses: MarkusJx/install-boost@v2.3.0
+      if: matrix.os == 'ubuntu-latest'
+      id: install-boost
+      with:
+        boost_version: 1.79.0
+        platform_version: 20.04
+
+    - name: Build Clasp (koga/Ubuntu)
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        ./koga --no-clang-cpp --ldlibs=-ldl --cflags=-I${{steps.install-boost.outputs.BOOST_ROOT}}/include --cppflags=-I${{steps.install-boost.outputs.BOOST_ROOT}}/include --cxxflags=-I${{steps.install-boost.outputs.BOOST_ROOT}}/include --extensions=cando
 
     # - name: Build Clasp (koga/MacOS)
     #   if: matrix.os == 'macos-latest'
     #   run: |
     #     ./koga --extensions=cando,seqan-clasp
 
-    # - name: Build Clasp (ninja)
-    #   run: |
-    #     ninja -C build
+    - name: Build Clasp (ninja)
+      run: |
+        ninja -C build
 
-    # - name: Run regression tests
-    #   run: |
-    #     ninja -C build test
+    - name: Run regression tests
+      run: |
+        ninja -C build test
 
-    # - name: Run ANSI tests
-    #   run: |
-    #     ninja -C build ansi-test
+    - name: Run ANSI tests
+      run: |
+        ninja -C build ansi-test
