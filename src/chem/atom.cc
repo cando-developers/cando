@@ -613,8 +613,12 @@ void Atom_O::addBond(Bond_sp bond)
   this->bonds.push_back(bond);
 }
 
+CL_DOCSTRING(R"doc(Create a bond between two atoms with the desired bond-order.
+If error-if-exists is T and the bond already exists then signal an error.
+If error-if-exists is NIL and the bond already exists then remove the old bond and create the new one.)doc");
 CL_LISPIFY_NAME("bondTo");
-CL_DEFMETHOD     Bond_sp Atom_O::bondTo( Atom_sp to, BondOrder o )
+CL_LAMBDA((from !) to bond_order &optional (error_if_exists t));
+CL_DEFMETHOD     Bond_sp Atom_O::bondTo( Atom_sp to, BondOrder o, bool error_if_exists )
 {_OF();
 	// Check if there is already a bond to this atom and
 	// throw an exception if there is
@@ -622,11 +626,14 @@ CL_DEFMETHOD     Bond_sp Atom_O::bondTo( Atom_sp to, BondOrder o )
   VectorBond::iterator	b;
   VectorBond::iterator  begin(this->bonds.begin());;
   VectorBond::iterator  end(this->bonds.end());
-  for ( b=begin;b!=end ; b++ )
-  {
-    if ( (*b)->getOtherAtom(from) == to )
-    {
-      SIMPLE_ERROR(("You tried to form a bond from[%s]-to[%s] but there is already one there!!") , this->__repr__() , _rep_(to) );
+  for ( b=begin;b!=end ; b++ ) {
+    if ( (*b)->getOtherAtom(from) == to ) {
+      if (error_if_exists) {
+        SIMPLE_ERROR(("You tried to form a bond from[%s]-to[%s] but there is already one there!!") , this->__repr__() , _rep_(to) );
+      } else {
+        this->bonds.erase(b);
+        break;
+      }
     }
   }
   Bond_sp bn = Bond_O::create(from,to,o);

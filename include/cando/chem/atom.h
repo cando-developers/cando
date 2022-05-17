@@ -447,7 +447,7 @@ namespace chem {
     core::List_sp	bondedAtomsAsList();
 
     Bond_sp	basicBondTo(  Atom_sp a, BondOrder o );
-    Bond_sp	bondTo(  Atom_sp a, BondOrder o );
+    Bond_sp	bondTo(  Atom_sp a, BondOrder o, bool error_if_exists = true );
     Bond_sp	bondToSingle(  Atom_sp a );
     Bond_sp	bondToOrderInt(  Atom_sp a, int o );
     Bond_sp	getBondTo(Atom_sp a);

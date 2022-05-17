@@ -15,6 +15,8 @@
     (funcall (find-symbol "SHOW" :cando-user) val)))
 
 
+(defun leap.z-matrix (arg)
+  (format t "leap.z-matrix arg: ~s~%" arg))
 
 ;;; ----------------------------------------------------------------------
 ;;;
@@ -110,12 +112,12 @@ is written to the log file as if the verbosity level were set to 2."
 (defmethod set-property ((object chem:molecule) (property (eql :molecule-type)) value)
   (chem:setf-molecule-type object value))
 
-(defun leap-set (object property value)
+(defun leap.set (object property value)
   (let ((object-fixed (leap.core:lookup-variable object))
         (property-fixed (keyword-upcase property))
         (value-fixed value))
-    (format t "setting ~a  property: ~s  value: ~s~%" object-fixed property-fixed value-fixed)
-    (set-property object-fixed property-fixed value-fixed)))
+    (set-property object-fixed property-fixed value-fixed))
+  (values))
 
 (defun leap-desc (name)
   "    desc variable
@@ -685,7 +687,8 @@ ATOMs within RESIDUEs, and RESIDUEs within UNITs.
 "
   (let ((object-a (leap.core:lookup-variable object-a-name))
         (object-b (leap.core:lookup-variable object-b-name)))
-  (chem:add-matter object-a object-b)))
+    (chem:add-matter object-a object-b))
+  (values))
 
 (defun leap-bond (atom1-name atom2-name &rest order)
 "    bond atom1 atom2 [ order ]
@@ -703,11 +706,11 @@ bond.
   (let ((atom1 (leap.core:lookup-variable atom1-name))
         (atom2 (leap.core:lookup-variable atom2-name)))
     (case order
-      (:s (chem:bond-to atom1 atom2 :single-bond))
-      (:d (chem:bond-to atom1 atom2 :double-bond))
-      (:t (chem:bond-to atom1 atom2 :triple-bond))
-      (:a (chem:bond-to atom1 atom2 :aromatic-bond))
-      (otherwise (chem:bond-to atom1 atom2 :single-bond)))))
+      (:s (chem:bond-to atom1 atom2 :single-bond nil))
+      (:d (chem:bond-to atom1 atom2 :double-bond nil))
+      (:t (chem:bond-to atom1 atom2 :triple-bond nil))
+      (:a (chem:bond-to atom1 atom2 :aromatic-bond nil))
+      (otherwise (chem:bond-to atom1 atom2 :single-bond nil)))))
 
 (defun leap-add-h (object-name)
 "    addH obj
@@ -731,13 +734,33 @@ Return a new and empty RESIDUE with the name _name_.
 
 (defun leap-create-unit (name)
 "    variable = createUnit name
-      UNIT                         _variable_
+      AGGREGATE                    _variable_
       STRING                       _name_
 
-Return a new and empty UNIT with the name _name_.
+Return a new and empty AGGREGATE with the name _name_.
 "
   (let ((aggregate (chem:make-aggregate name)))
     aggregate))
+
+(defun leap-create-aggregate (name)
+"    variable = createAggregate name
+      AGGREGATE                    _variable_
+      STRING                       _name_
+
+Return a new and empty AGGREGATE with the name _name_.
+"
+  (let ((aggregate (chem:make-aggregate name)))
+    aggregate))
+
+(defun leap-create-molecule (name)
+"    variable = createMolecule name
+      MOLECULE                    _variable_
+      STRING                       _name_
+
+Return a new and empty MOLECULE with the name _name_.
+"
+  (let ((molecule (chem:make-molecule name)))
+    molecule))
 
 (defun leap-translate (aggregate-name direction)
 "      translate atoms direction
@@ -1277,7 +1300,8 @@ Currently it checks for the following possible problems:
 (defparameter *leap-commands* (list       "add" "addAtomTypes"
     "addH" "addIons" "addIons2" "addIonsRand" "addPath" "addPdbAtomMap" "addPdbResMap" "alias" "alignAxes"
     "bond" "bondByDistance" "center" "charge" "check" "clearPdbAtomMap" "clearPdbResMap" "clearVariables" "combine"
-    "copy" "createAtom" "createParmset" "createResidue" "createUnit" "crossLink" "debugOff" "debugOn" "debugStatus"
+    "copy" "createAtom" "createParmset" "createResidue" "createUnit" "createAggregate" "createMolecule"
+    "crossLink" "debugOff" "debugOn" "debugStatus"
     "deleteBond" "deleteOffLibEntry" "deleteRestraint" "desc" "deSelect" "displayPdbAtomMap" "displayPdbResMap" "edit"
     "flip" "groupSelectedAtoms" "help" "impose" "list" "listOff" "loadAmberParams" "loadAmberPrep" "loadMol2"
     "loadMol3" "loadOff" "loadPdb" "loadPdbUsingSeq" "logFile" "matchVariables" "measureGeom" "quit" "relax"
@@ -1343,7 +1367,7 @@ Provide a list of commands that cleap has available to mimic tleap."
           ("listVariables" . leap-list-variables) ; alternative to "list"
           ("loadPdb" . leap.pdb:load-pdb)
           ("source" . leap-source)
-          ("set" . leap-set )
+          ("set" . leap.set )
           ("loadChemDraw" . leap.load-chem-draw)
           ("loadChemDrawAggregate" . leap.load-chem-draw-aggregate)
           ("compileSmarts" . leap.compile-smarts)
@@ -1368,6 +1392,7 @@ Provide a list of commands that cleap has available to mimic tleap."
           ("setBox" . leap.set-box:set-box)
           ("showPaths" . leap.show-paths)
           ("show" . leap.show )
+          ("zMatrix" . leap.z-matrix )
           ("createAtom" . create-atom )
           ("help" . leap-help)
           ("cando" . leap-cando )
@@ -1378,6 +1403,8 @@ Provide a list of commands that cleap has available to mimic tleap."
           ("addH" . leap-add-h)
           ("createResidue" . leap-create-residue)
           ("createUnit" . leap-create-unit)
+          ("createAggregate" . leap-create-aggregate)
+          ("createMolecule" . leap-create-molecule)
           ("translate" . leap-translate)
           ("transform" . leap-transform)
           ("copy" . leap-copy)
