@@ -1,0 +1,933 @@
+CHEM_INFO_H	chemInfo.h	/^#define	CHEM_INFO_H$/;"	d
+chem	chemInfo.h	/^namespace chem {$/;"	n
+SMART	chemInfo.h	/^  SMART(BoundFrame);$/;"	p	namespace:chem
+SMART	chemInfo.h	/^  SMART(Root);$/;"	p	namespace:chem
+SMART	chemInfo.h	/^  SMART(AntechamberRoot);$/;"	p	namespace:chem
+ChemInfoNode_sp	chemInfo.h	/^  typedef	gctools::smart_ptr<ChemInfoNode_O>	ChemInfoNode_sp;$/;"	t	namespace:chem	typeref:typename:gctools::smart_ptr<ChemInfoNode_O>
+walk_nodes	chemInfo.h	/^void walk_nodes(ChemInfoNode_sp node, std::function<void(ChemInfoNode_sp)> const &fn);$/;"	p	namespace:chem	typeref:typename:void
+calculate_maxtag	chemInfo.h	/^size_t calculate_maxtag(ChemInfoNode_sp node);$/;"	p	namespace:chem	typeref:typename:size_t
+SMART	chemInfo.h	/^  SMART(ChemInfoMatch);$/;"	p	namespace:chem
+ChemInfoMatch_O	chemInfo.h	/^  class ChemInfoMatch_O : public core::CxxObject_O$/;"	c	namespace:chem
+initialize	chemInfo.h	/^    void initialize();$/;"	p	class:chem::ChemInfoMatch_O	typeref:typename:void
+fieldsp	chemInfo.h	/^    bool fieldsp() const { return true; };$/;"	f	class:chem::ChemInfoMatch_O	typeref:typename:bool
+fields	chemInfo.h	/^    void fields(core::Record_sp node);$/;"	p	class:chem::ChemInfoMatch_O	typeref:typename:void
+make	chemInfo.h	/^    static ChemInfoMatch_sp make(Root_sp root,size_t maxtag, core::HashTableEql_sp ring);$/;"	p	class:chem::ChemInfoMatch_O	typeref:typename:ChemInfoMatch_sp
+_Matches	chemInfo.h	/^    bool		_Matches;$/;"	m	class:chem::ChemInfoMatch_O	typeref:typename:bool
+_MaxTagPlus1	chemInfo.h	/^    size_t              _MaxTagPlus1;$/;"	m	class:chem::ChemInfoMatch_O	typeref:typename:size_t
+_Root	chemInfo.h	/^    Root_sp               _Root;$/;"	m	class:chem::ChemInfoMatch_O	typeref:typename:Root_sp
+_RingLookup	chemInfo.h	/^    core::HashTableEql_sp _RingLookup;$/;"	m	class:chem::ChemInfoMatch_O	typeref:typename:core::HashTableEql_sp
+_TagLookup	chemInfo.h	/^    core::SimpleVector_sp _TagLookup; \/\/ core::StringMap<Atom_O>	_TagLookup;$/;"	m	class:chem::ChemInfoMatch_O	typeref:typename:core::SimpleVector_sp
+_TagHistory	chemInfo.h	/^    core::List_sp         _TagHistory;$/;"	m	class:chem::ChemInfoMatch_O	typeref:typename:core::List_sp
+__repr__	chemInfo.h	/^    string __repr__() const;$/;"	p	class:chem::ChemInfoMatch_O	typeref:typename:string
+matches	chemInfo.h	/^    bool matches();$/;"	p	class:chem::ChemInfoMatch_O	typeref:typename:bool
+setMatches	chemInfo.h	/^    void setMatches(bool b) { this->_Matches = b;};$/;"	f	class:chem::ChemInfoMatch_O	typeref:typename:void
+matchRoot	chemInfo.h	/^    Root_sp matchRoot() const { return this->_Root; };$/;"	f	class:chem::ChemInfoMatch_O	typeref:typename:Root_sp
+saveTagLookup	chemInfo.h	/^    void saveTagLookup();$/;"	p	class:chem::ChemInfoMatch_O	typeref:typename:void
+clearAtomTags	chemInfo.h	/^    void clearAtomTags();$/;"	p	class:chem::ChemInfoMatch_O	typeref:typename:void
+recognizesAtomTag	chemInfo.h	/^    bool recognizesAtomTag(core::T_sp tag);$/;"	p	class:chem::ChemInfoMatch_O	typeref:typename:bool
+defineAtomTag	chemInfo.h	/^    void defineAtomTag(Atom_sp a, core::T_sp tag );$/;"	p	class:chem::ChemInfoMatch_O	typeref:typename:void
+hasAtomWithTag	chemInfo.h	/^    bool hasAtomWithTag(core::T_sp tag );$/;"	p	class:chem::ChemInfoMatch_O	typeref:typename:bool
+getAtomWithTag	chemInfo.h	/^    chem::Atom_sp getAtomWithTag(core::T_sp tag);$/;"	p	class:chem::ChemInfoMatch_O	typeref:typename:chem::Atom_sp
+getAtomWithTagOrNil	chemInfo.h	/^    core::T_sp getAtomWithTagOrNil(core::T_sp tag);$/;"	p	class:chem::ChemInfoMatch_O	typeref:typename:core::T_sp
+tag	chemInfo.h	/^CL_DEFMETHOD     chem::Atom_sp tag(core::T_sp tag) { return this->getAtomWithTag(tag);};$/;"	f	class:chem::ChemInfoMatch_O	typeref:typename:CL_DEFMETHOD chem::Atom_sp
+tag_history	chemInfo.h	/^    CL_DEFMETHOD core::List_sp tag_history() const { return this->_TagHistory; };$/;"	f	class:chem::ChemInfoMatch_O	typeref:typename:CL_DEFMETHOD core::List_sp
+tags_as_hashtable	chemInfo.h	/^    core::HashTableEql_sp tags_as_hashtable() const;$/;"	p	class:chem::ChemInfoMatch_O	typeref:typename:core::HashTableEql_sp
+tags_as_vector	chemInfo.h	/^    core::Vector_sp tags_as_vector() const;$/;"	p	class:chem::ChemInfoMatch_O	typeref:typename:core::Vector_sp
+forgetAtomTag	chemInfo.h	/^    void forgetAtomTag(core::T_sp tag);$/;"	p	class:chem::ChemInfoMatch_O	typeref:typename:void
+setRingTag	chemInfo.h	/^    void setRingTag(Atom_sp a, core::T_sp tag);$/;"	p	class:chem::ChemInfoMatch_O	typeref:typename:void
+matchesRingTag	chemInfo.h	/^    bool matchesRingTag(Atom_sp a, core::T_sp tag);$/;"	p	class:chem::ChemInfoMatch_O	typeref:typename:bool
+boundFrame	chemInfo.h	/^    BoundFrame_sp boundFrame();$/;"	p	class:chem::ChemInfoMatch_O	typeref:typename:BoundFrame_sp
+ChemInfoMatch_O	chemInfo.h	/^    ChemInfoMatch_O(Root_sp root, size_t maxtagPlus1) : _Root(root), _Matches(false), _MaxTagPlu/;"	f	class:chem::ChemInfoMatch_O
+SMART	chemInfo.h	/^  SMART(WildElementDict);$/;"	p	namespace:chem
+WildElementDict_O	chemInfo.h	/^  class WildElementDict_O : public core::CxxObject_O$/;"	c	namespace:chem
+initialize	chemInfo.h	/^    void initialize();$/;"	p	class:chem::WildElementDict_O	typeref:typename:void
+fieldsp	chemInfo.h	/^    bool fieldsp() const { return true; };$/;"	f	class:chem::WildElementDict_O	typeref:typename:bool
+fields	chemInfo.h	/^    void	fields(core::Record_sp node);$/;"	p	class:chem::WildElementDict_O	typeref:typename:void
+_AtomWildCards	chemInfo.h	/^    core::HashTableEqual_sp _AtomWildCards; \/\/ core::StringMap<adapt::StringSet_O>	_AtomWildCa/;"	m	class:chem::WildElementDict_O	typeref:typename:core::HashTableEqual_sp
+addWildName	chemInfo.h	/^    void    addWildName(core::Symbol_sp  wildName);$/;"	p	class:chem::WildElementDict_O	typeref:typename:void
+addWildNameMap	chemInfo.h	/^    void    addWildNameMap(core::Symbol_sp wildName, core::Symbol_sp elementName );$/;"	p	class:chem::WildElementDict_O	typeref:typename:void
+lexWildNameMatches2Char	chemInfo.h	/^    bool    lexWildNameMatches2Char(char wildNameChar1, char wildNameChar2);$/;"	p	class:chem::WildElementDict_O	typeref:typename:bool
+lexWildNameMatches1Char	chemInfo.h	/^    bool    lexWildNameMatches1Char(char wildName);$/;"	p	class:chem::WildElementDict_O	typeref:typename:bool
+recognizesWildName	chemInfo.h	/^    bool    recognizesWildName(core::Symbol_sp name);$/;"	p	class:chem::WildElementDict_O	typeref:typename:bool
+recognizesWildNameElement	chemInfo.h	/^    bool    recognizesWildNameElement(core::Symbol_sp wildName, core::Symbol_sp element);$/;"	p	class:chem::WildElementDict_O	typeref:typename:bool
+DEFAULT_CTOR_DTOR	chemInfo.h	/^    DEFAULT_CTOR_DTOR(WildElementDict_O);$/;"	p	class:chem::WildElementDict_O
+__anonc71face40103	chemInfo.h	/^  typedef	enum { noType, recursiveRoot, root, smartsRoot, antechamberRoot, chain, branch,$/;"	g	namespace:chem
+noType	chemInfo.h	/^  typedef	enum { noType, recursiveRoot, root, smartsRoot, antechamberRoot, chain, branch,$/;"	e	enum:chem::__anonc71face40103
+recursiveRoot	chemInfo.h	/^  typedef	enum { noType, recursiveRoot, root, smartsRoot, antechamberRoot, chain, branch,$/;"	e	enum:chem::__anonc71face40103
+root	chemInfo.h	/^  typedef	enum { noType, recursiveRoot, root, smartsRoot, antechamberRoot, chain, branch,$/;"	e	enum:chem::__anonc71face40103
+smartsRoot	chemInfo.h	/^  typedef	enum { noType, recursiveRoot, root, smartsRoot, antechamberRoot, chain, branch,$/;"	e	enum:chem::__anonc71face40103
+antechamberRoot	chemInfo.h	/^  typedef	enum { noType, recursiveRoot, root, smartsRoot, antechamberRoot, chain, branch,$/;"	e	enum:chem::__anonc71face40103
+chain	chemInfo.h	/^  typedef	enum { noType, recursiveRoot, root, smartsRoot, antechamberRoot, chain, branch,$/;"	e	enum:chem::__anonc71face40103
+branch	chemInfo.h	/^  typedef	enum { noType, recursiveRoot, root, smartsRoot, antechamberRoot, chain, branch,$/;"	e	enum:chem::__anonc71face40103
+logical	chemInfo.h	/^		       logical, tagSet, ringTest,$/;"	e	enum:chem::__anonc71face40103
+tagSet	chemInfo.h	/^		       logical, tagSet, ringTest,$/;"	e	enum:chem::__anonc71face40103
+ringTest	chemInfo.h	/^		       logical, tagSet, ringTest,$/;"	e	enum:chem::__anonc71face40103
+atomTest	chemInfo.h	/^		       atomTest, antechamberBondToAtomTest, bondTest, afterMatchBondToAtomTest,$/;"	e	enum:chem::__anonc71face40103
+antechamberBondToAtomTest	chemInfo.h	/^		       atomTest, antechamberBondToAtomTest, bondTest, afterMatchBondToAtomTest,$/;"	e	enum:chem::__anonc71face40103
+bondTest	chemInfo.h	/^		       atomTest, antechamberBondToAtomTest, bondTest, afterMatchBondToAtomTest,$/;"	e	enum:chem::__anonc71face40103
+afterMatchBondToAtomTest	chemInfo.h	/^		       atomTest, antechamberBondToAtomTest, bondTest, afterMatchBondToAtomTest,$/;"	e	enum:chem::__anonc71face40103
+antechamberFocusAtomMatch	chemInfo.h	/^		       antechamberFocusAtomMatch } ChemInfoType;$/;"	e	enum:chem::__anonc71face40103
+ChemInfoType	chemInfo.h	/^		       antechamberFocusAtomMatch } ChemInfoType;$/;"	t	namespace:chem	typeref:enum:chem::__anonc71face40103
+chemInfoTypeString	chemInfo.h	/^  string  chemInfoTypeString(ChemInfoType type);$/;"	p	namespace:chem	typeref:typename:string
+chemInfoTypeFromString	chemInfo.h	/^  ChemInfoType chemInfoTypeFromString(const string& name);$/;"	p	namespace:chem	typeref:typename:ChemInfoType
+__anonc71face40203	chemInfo.h	/^  typedef enum	{$/;"	g	namespace:chem
+SABUseBondMatcher	chemInfo.h	/^      SABUseBondMatcher,$/;"	e	enum:chem::__anonc71face40203
+SABNoBond	chemInfo.h	/^      SABNoBond,$/;"	e	enum:chem::__anonc71face40203
+SABSingleBond	chemInfo.h	/^      SABSingleBond,$/;"	e	enum:chem::__anonc71face40203
+SABSingleOrAromaticBond	chemInfo.h	/^      SABSingleOrAromaticBond,$/;"	e	enum:chem::__anonc71face40203
+SABDoubleOrAromaticBond	chemInfo.h	/^      SABDoubleOrAromaticBond,$/;"	e	enum:chem::__anonc71face40203
+SABTripleOrAromaticBond	chemInfo.h	/^      SABTripleOrAromaticBond,$/;"	e	enum:chem::__anonc71face40203
+SABDelocalizedBond	chemInfo.h	/^      SABDelocalizedBond,$/;"	e	enum:chem::__anonc71face40203
+SABDoubleBond	chemInfo.h	/^      SABDoubleBond,$/;"	e	enum:chem::__anonc71face40203
+SABTripleBond	chemInfo.h	/^      SABTripleBond,$/;"	e	enum:chem::__anonc71face40203
+SABAromaticBond	chemInfo.h	/^      SABAromaticBond,$/;"	e	enum:chem::__anonc71face40203
+SABAnyBond	chemInfo.h	/^      SABAnyBond,$/;"	e	enum:chem::__anonc71face40203
+SABDirectionalSingleUpOrUnspecified	chemInfo.h	/^      SABDirectionalSingleUpOrUnspecified,$/;"	e	enum:chem::__anonc71face40203
+SABDirectionalSingleDownOrUnspecified	chemInfo.h	/^      SABDirectionalSingleDownOrUnspecified,$/;"	e	enum:chem::__anonc71face40203
+SABDirectionalSingleUp	chemInfo.h	/^      SABDirectionalSingleUp,$/;"	e	enum:chem::__anonc71face40203
+SABDirectionalSingleDown	chemInfo.h	/^      SABDirectionalSingleDown,$/;"	e	enum:chem::__anonc71face40203
+SABSameRingBond	chemInfo.h	/^      SABSameRingBond,$/;"	e	enum:chem::__anonc71face40203
+BondEnum	chemInfo.h	/^  } BondEnum;$/;"	t	namespace:chem	typeref:enum:chem::__anonc71face40203
+_sym_STARSabBondEnumConverterSTAR	chemInfo.h	/^  extern core::Symbol_sp& _sym_STARSabBondEnumConverterSTAR;$/;"	x	namespace:chem	typeref:typename:core::Symbol_sp &
+ENUM_TRANSLATOR	chemInfo.h	/^ENUM_TRANSLATOR(chem::BondEnum,chem::_sym_STARSabBondEnumConverterSTAR);$/;"	p
+chem	chemInfo.h	/^namespace chem {$/;"	n
+next_ChemInfoNodeId	chemInfo.h	/^  size_t next_ChemInfoNodeId();$/;"	p	namespace:chem	typeref:typename:size_t
+SMART	chemInfo.h	/^  SMART(ChemInfoNode);$/;"	p	namespace:chem
+ChemInfoNode_O	chemInfo.h	/^  class ChemInfoNode_O : public core::CxxObject_O$/;"	c	namespace:chem
+_Id	chemInfo.h	/^    size_t  _Id;$/;"	m	class:chem::ChemInfoNode_O	typeref:typename:size_t
+_Bounds	chemInfo.h	/^    core::T_sp _Bounds;$/;"	m	class:chem::ChemInfoNode_O	typeref:typename:core::T_sp
+fieldsp	chemInfo.h	/^    bool fieldsp() const { return true; };$/;"	f	class:chem::ChemInfoNode_O	typeref:typename:bool
+fields	chemInfo.h	/^    void	fields(core::Record_sp node);$/;"	p	class:chem::ChemInfoNode_O	typeref:typename:void
+getId	chemInfo.h	/^    CL_DEFMETHOD size_t getId() const { return this->_Id; };$/;"	f	class:chem::ChemInfoNode_O	typeref:typename:CL_DEFMETHOD size_t
+bounds	chemInfo.h	/^    CL_DEFMETHOD core::T_sp bounds() { return this->_Bounds; };$/;"	f	class:chem::ChemInfoNode_O	typeref:typename:CL_DEFMETHOD core::T_sp
+setf_bounds	chemInfo.h	/^    CL_DEFMETHOD void setf_bounds(core::T_sp bounds) { this->_Bounds = bounds; }$/;"	f	class:chem::ChemInfoNode_O	typeref:typename:CL_DEFMETHOD void
+__repr__	chemInfo.h	/^    string __repr__() const;$/;"	p	class:chem::ChemInfoNode_O	typeref:typename:string
+depth	chemInfo.h	/^    virtual uint depth() const;$/;"	p	class:chem::ChemInfoNode_O	typeref:typename:uint
+asSmarts	chemInfo.h	/^    CL_DEFMETHOD virtual string asSmarts() const {_OF();SUBCLASS_MUST_IMPLEMENT();};$/;"	f	class:chem::ChemInfoNode_O	typeref:typename:CL_DEFMETHOD string
+matches_Atom	chemInfo.h	/^    virtual bool    matches_Atom(Root_sp root, chem::Atom_sp atom) {_OF(); SUBCLASS_MUST_IMPLEME/;"	f	class:chem::ChemInfoNode_O	typeref:typename:bool
+matches_Bond	chemInfo.h	/^    virtual bool    matches_Bond(Root_sp root, chem::Atom_sp atom, chem::Bond_sp bond) {_OF(); S/;"	f	class:chem::ChemInfoNode_O	typeref:typename:bool
+children	chemInfo.h	/^    virtual core::T_sp children() = 0;$/;"	p	class:chem::ChemInfoNode_O	typeref:typename:core::T_sp
+ChemInfoNode_O	chemInfo.h	/^  ChemInfoNode_O() : _Id(next_ChemInfoNodeId()) {};$/;"	f	class:chem::ChemInfoNode_O
+SMART	chemInfo.h	/^  SMART(ResidueList);$/;"	p	namespace:chem
+ResidueList_O	chemInfo.h	/^  class ResidueList_O : public core::CxxObject_O$/;"	c	namespace:chem
+fieldsp	chemInfo.h	/^    bool fieldsp() const { return true; };$/;"	f	class:chem::ResidueList_O	typeref:typename:bool
+fields	chemInfo.h	/^    void	fields(core::Record_sp node);$/;"	p	class:chem::ResidueList_O	typeref:typename:void
+DEFAULT_CTOR_DTOR	chemInfo.h	/^    DEFAULT_CTOR_DTOR(ResidueList_O);$/;"	p	class:chem::ResidueList_O
+SMART	chemInfo.h	/^  SMART(RootMatchNode);$/;"	p	namespace:chem
+RootMatchNode_O	chemInfo.h	/^  class RootMatchNode_O : public ChemInfoNode_O$/;"	c	namespace:chem
+fieldsp	chemInfo.h	/^    bool fieldsp() const { return true; };$/;"	f	class:chem::RootMatchNode_O	typeref:typename:bool
+fields	chemInfo.h	/^    void	fields(core::Record_sp node);$/;"	p	class:chem::RootMatchNode_O	typeref:typename:void
+matches	chemInfo.h	/^    virtual	bool	matches(Root_sp root) {_OF(); SUBCLASS_MUST_IMPLEMENT(); };$/;"	f	class:chem::RootMatchNode_O	typeref:typename:bool
+DEFAULT_CTOR_DTOR	chemInfo.h	/^    DEFAULT_CTOR_DTOR(RootMatchNode_O);$/;"	p	class:chem::RootMatchNode_O
+SMART	chemInfo.h	/^  SMART(BondMatchNode);$/;"	p	namespace:chem
+BondMatchNode_O	chemInfo.h	/^  class BondMatchNode_O : public ChemInfoNode_O$/;"	c	namespace:chem
+fieldsp	chemInfo.h	/^    bool fieldsp() const { return true; };$/;"	f	class:chem::BondMatchNode_O	typeref:typename:bool
+fields	chemInfo.h	/^    void	fields(core::Record_sp node);$/;"	p	class:chem::BondMatchNode_O	typeref:typename:void
+matches_Bond	chemInfo.h	/^    virtual	bool	matches_Bond(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond ) {_OF();SUBC/;"	f	class:chem::BondMatchNode_O	typeref:typename:bool
+children	chemInfo.h	/^    virtual core::T_sp children() = 0;$/;"	p	class:chem::BondMatchNode_O	typeref:typename:core::T_sp
+DEFAULT_CTOR_DTOR	chemInfo.h	/^    DEFAULT_CTOR_DTOR(BondMatchNode_O);$/;"	p	class:chem::BondMatchNode_O
+__anonc71face40303	chemInfo.h	/^typedef enum {$/;"	g	namespace:chem
+SARNone	chemInfo.h	/^    SARNone, SARRingSet, SARRingTest$/;"	e	enum:chem::__anonc71face40303
+SARRingSet	chemInfo.h	/^    SARNone, SARRingSet, SARRingTest$/;"	e	enum:chem::__anonc71face40303
+SARRingTest	chemInfo.h	/^    SARNone, SARRingSet, SARRingTest$/;"	e	enum:chem::__anonc71face40303
+RingTestEnum	chemInfo.h	/^} RingTestEnum;$/;"	t	namespace:chem	typeref:enum:chem::__anonc71face40303
+DECLARE_ENUM_SYMBOL_TRANSLATOR	chemInfo.h	/^DECLARE_ENUM_SYMBOL_TRANSLATOR(chem::RingTestEnum,chem::_sym_STARSarRingTestEnumConverterSTAR);$/;"	p
+chem	chemInfo.h	/^namespace chem {$/;"	n
+SMART	chemInfo.h	/^SMART(AtomOrBondMatchNode);$/;"	p	namespace:chem
+AtomOrBondMatchNode_O	chemInfo.h	/^class AtomOrBondMatchNode_O : public BondMatchNode_O$/;"	c	namespace:chem
+_RingTest	chemInfo.h	/^  RingTestEnum   _RingTest;$/;"	m	class:chem::AtomOrBondMatchNode_O	typeref:typename:RingTestEnum
+_RingId	chemInfo.h	/^  int            _RingId;$/;"	m	class:chem::AtomOrBondMatchNode_O	typeref:typename:int
+fieldsp	chemInfo.h	/^  bool fieldsp() const { return true; };$/;"	f	class:chem::AtomOrBondMatchNode_O	typeref:typename:bool
+fields	chemInfo.h	/^  void fields(core::Record_sp node);$/;"	p	class:chem::AtomOrBondMatchNode_O	typeref:typename:void
+children	chemInfo.h	/^  virtual core::T_sp children() = 0;$/;"	p	class:chem::AtomOrBondMatchNode_O	typeref:typename:core::T_sp
+matches_Bond	chemInfo.h	/^  virtual bool    matches_Bond(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );$/;"	p	class:chem::AtomOrBondMatchNode_O	typeref:typename:bool
+matches_Atom	chemInfo.h	/^  virtual	bool	matches_Atom(Root_sp root, chem::Atom_sp atom);$/;"	p	class:chem::AtomOrBondMatchNode_O	typeref:typename:bool
+setRingTest	chemInfo.h	/^  void setRingTest(RingTestEnum test);$/;"	p	class:chem::AtomOrBondMatchNode_O	typeref:typename:void
+getRingTest	chemInfo.h	/^  RingTestEnum getRingTest() const;$/;"	p	class:chem::AtomOrBondMatchNode_O	typeref:typename:RingTestEnum
+setRingId	chemInfo.h	/^  void setRingId(int id);$/;"	p	class:chem::AtomOrBondMatchNode_O	typeref:typename:void
+getRingId	chemInfo.h	/^  int getRingId() const;$/;"	p	class:chem::AtomOrBondMatchNode_O	typeref:typename:int
+__repr__	chemInfo.h	/^  string __repr__() const;$/;"	p	class:chem::AtomOrBondMatchNode_O	typeref:typename:string
+AtomOrBondMatchNode_O	chemInfo.h	/^  AtomOrBondMatchNode_O() : _RingTest(SARNone), _RingId(-1) {};$/;"	f	class:chem::AtomOrBondMatchNode_O
+SMART	chemInfo.h	/^SMART(BondListMatchNode);$/;"	p	namespace:chem
+BondListMatchNode_O	chemInfo.h	/^class BondListMatchNode_O : public ChemInfoNode_O$/;"	c	namespace:chem
+fieldsp	chemInfo.h	/^  bool fieldsp() const { return true; };$/;"	f	class:chem::BondListMatchNode_O	typeref:typename:bool
+fields	chemInfo.h	/^  void	fields(core::Record_sp node);$/;"	p	class:chem::BondListMatchNode_O	typeref:typename:void
+children	chemInfo.h	/^  virtual core::T_sp children() = 0;$/;"	p	class:chem::BondListMatchNode_O	typeref:typename:core::T_sp
+matches_BondList	chemInfo.h	/^  virtual	bool	matches_BondList(Root_sp root, chem::Atom_sp from, chem::BondList_sp bondList ) {/;"	f	class:chem::BondListMatchNode_O	typeref:typename:bool
+asSmarts	chemInfo.h	/^  virtual string asSmarts() const;$/;"	p	class:chem::BondListMatchNode_O	typeref:typename:string
+DEFAULT_CTOR_DTOR	chemInfo.h	/^  DEFAULT_CTOR_DTOR(BondListMatchNode_O);$/;"	p	class:chem::BondListMatchNode_O
+__anonc71face40403	chemInfo.h	/^  typedef	enum { logAlwaysTrue, logIdentity, logNot, logHighPrecedenceAnd, logOr, logLowPreceden/;"	g	namespace:chem
+logAlwaysTrue	chemInfo.h	/^  typedef	enum { logAlwaysTrue, logIdentity, logNot, logHighPrecedenceAnd, logOr, logLowPreceden/;"	e	enum:chem::__anonc71face40403
+logIdentity	chemInfo.h	/^  typedef	enum { logAlwaysTrue, logIdentity, logNot, logHighPrecedenceAnd, logOr, logLowPreceden/;"	e	enum:chem::__anonc71face40403
+logNot	chemInfo.h	/^  typedef	enum { logAlwaysTrue, logIdentity, logNot, logHighPrecedenceAnd, logOr, logLowPreceden/;"	e	enum:chem::__anonc71face40403
+logHighPrecedenceAnd	chemInfo.h	/^  typedef	enum { logAlwaysTrue, logIdentity, logNot, logHighPrecedenceAnd, logOr, logLowPreceden/;"	e	enum:chem::__anonc71face40403
+logOr	chemInfo.h	/^  typedef	enum { logAlwaysTrue, logIdentity, logNot, logHighPrecedenceAnd, logOr, logLowPreceden/;"	e	enum:chem::__anonc71face40403
+logLowPrecedenceAnd	chemInfo.h	/^  typedef	enum { logAlwaysTrue, logIdentity, logNot, logHighPrecedenceAnd, logOr, logLowPreceden/;"	e	enum:chem::__anonc71face40403
+LogicalOperatorType	chemInfo.h	/^  typedef	enum { logAlwaysTrue, logIdentity, logNot, logHighPrecedenceAnd, logOr, logLowPreceden/;"	t	namespace:chem	typeref:enum:chem::__anonc71face40403
+_sym_STARSLogicalOperatorTypeConverterSTAR	chemInfo.h	/^  extern core::Symbol_sp& _sym_STARSLogicalOperatorTypeConverterSTAR;$/;"	x	namespace:chem	typeref:typename:core::Symbol_sp &
+DECLARE_ENUM_SYMBOL_TRANSLATOR	chemInfo.h	/^DECLARE_ENUM_SYMBOL_TRANSLATOR(chem::LogicalOperatorType,chem::_sym_STARLogicalOperatorTypeConve/;"	p
+chem	chemInfo.h	/^namespace chem {$/;"	n
+SMART	chemInfo.h	/^SMART(Logical);$/;"	p	namespace:chem
+Logical_O	chemInfo.h	/^class Logical_O : public AtomOrBondMatchNode_O$/;"	c	namespace:chem
+fieldsp	chemInfo.h	/^  bool fieldsp() const { return true; };$/;"	f	class:chem::Logical_O	typeref:typename:bool
+fields	chemInfo.h	/^  void	fields(core::Record_sp node);$/;"	p	class:chem::Logical_O	typeref:typename:void
+initialize	chemInfo.h	/^  void	initialize();$/;"	p	class:chem::Logical_O	typeref:typename:void
+_Operator	chemInfo.h	/^  LogicalOperatorType	_Operator;$/;"	m	class:chem::Logical_O	typeref:typename:LogicalOperatorType
+_Left	chemInfo.h	/^  gc::Nilable<ChemInfoNode_sp>	_Left;$/;"	m	class:chem::Logical_O	typeref:typename:gc::Nilable<ChemInfoNode_sp>
+_Right	chemInfo.h	/^  gc::Nilable<ChemInfoNode_sp>	_Right;$/;"	m	class:chem::Logical_O	typeref:typename:gc::Nilable<ChemInfoNode_sp>
+create	chemInfo.h	/^  static Logical_sp create(LogicalOperatorType op,$/;"	f	class:chem::Logical_O	typeref:typename:Logical_sp
+create	chemInfo.h	/^  static Logical_sp create( LogicalOperatorType op, core::T_sp a1)$/;"	f	class:chem::Logical_O	typeref:typename:Logical_sp
+type	chemInfo.h	/^  virtual	ChemInfoType	type() { return logical; };$/;"	f	class:chem::Logical_O	typeref:typename:ChemInfoType
+matches_Atom	chemInfo.h	/^  virtual	bool		matches_Atom( Root_sp root, chem::Atom_sp atom );$/;"	p	class:chem::Logical_O	typeref:typename:bool
+matches_Bond	chemInfo.h	/^  virtual	bool		matches_Bond( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );$/;"	p	class:chem::Logical_O	typeref:typename:bool
+getLeft	chemInfo.h	/^  CL_DEFMETHOD core::T_sp getLeft() const { return this->_Left; };$/;"	f	class:chem::Logical_O	typeref:typename:CL_DEFMETHOD core::T_sp
+getRight	chemInfo.h	/^  CL_DEFMETHOD core::T_sp getRight() const { return this->_Right; };$/;"	f	class:chem::Logical_O	typeref:typename:CL_DEFMETHOD core::T_sp
+setLeft	chemInfo.h	/^  CL_DEFMETHOD void setLeft(ChemInfoNode_sp val) { this->_Left = val; };$/;"	f	class:chem::Logical_O	typeref:typename:CL_DEFMETHOD void
+setRight	chemInfo.h	/^  CL_DEFMETHOD void setRight(ChemInfoNode_sp val) { this->_Right = val; };$/;"	f	class:chem::Logical_O	typeref:typename:CL_DEFMETHOD void
+depth	chemInfo.h	/^  virtual uint depth() const;$/;"	p	class:chem::Logical_O	typeref:typename:uint
+asSmarts	chemInfo.h	/^  virtual string asSmarts() const;$/;"	p	class:chem::Logical_O	typeref:typename:string
+__repr__	chemInfo.h	/^  virtual string __repr__() const;$/;"	p	class:chem::Logical_O	typeref:typename:string
+create_logIdentity	chemInfo.h	/^  static Logical_sp create_logIdentity(core::T_sp nilOrOp);$/;"	p	class:chem::Logical_O	typeref:typename:Logical_sp
+create_logOr	chemInfo.h	/^  static Logical_sp create_logOr(core::T_sp nilOrOp1, core::T_sp nilOrOp2);$/;"	p	class:chem::Logical_O	typeref:typename:Logical_sp
+create_logNot	chemInfo.h	/^  static Logical_sp create_logNot(core::T_sp nilOrOp);$/;"	p	class:chem::Logical_O	typeref:typename:Logical_sp
+create_logLowPrecedenceAnd	chemInfo.h	/^  static Logical_sp create_logLowPrecedenceAnd(core::T_sp nilOrOp1, core::T_sp nilOrOp2);$/;"	p	class:chem::Logical_O	typeref:typename:Logical_sp
+create_logHighPrecedenceAnd	chemInfo.h	/^  static Logical_sp create_logHighPrecedenceAnd(core::T_sp nilOrOp1, core::T_sp nilOrOp2);$/;"	p	class:chem::Logical_O	typeref:typename:Logical_sp
+children	chemInfo.h	/^  virtual core::T_sp children();$/;"	p	class:chem::Logical_O	typeref:typename:core::T_sp
+logical_operator	chemInfo.h	/^  LogicalOperatorType logical_operator() const;$/;"	p	class:chem::Logical_O	typeref:typename:LogicalOperatorType
+Logical_O	chemInfo.h	/^  Logical_O() : _Operator(logAlwaysTrue), _Left(nil<ChemInfoNode_O>()), _Right(nil<ChemInfoNode_/;"	f	class:chem::Logical_O
+~Logical_O	chemInfo.h	/^  virtual ~Logical_O() {};$/;"	f	class:chem::Logical_O
+SMART	chemInfo.h	/^SMART(ResidueTest);$/;"	p	namespace:chem
+ResidueTest_O	chemInfo.h	/^class ResidueTest_O : public AtomOrBondMatchNode_O$/;"	c	namespace:chem
+fieldsp	chemInfo.h	/^  bool fieldsp() const { return true; };$/;"	f	class:chem::ResidueTest_O	typeref:typename:bool
+fields	chemInfo.h	/^  void	fields(core::Record_sp node);$/;"	p	class:chem::ResidueTest_O	typeref:typename:void
+initialize	chemInfo.h	/^  void	initialize();$/;"	p	class:chem::ResidueTest_O	typeref:typename:void
+_Bond	chemInfo.h	/^  BondEnum        	_Bond;$/;"	m	class:chem::ResidueTest_O	typeref:typename:BondEnum
+_RingTag	chemInfo.h	/^  core::Symbol_sp			_RingTag;$/;"	m	class:chem::ResidueTest_O	typeref:typename:core::Symbol_sp
+_AtomTest	chemInfo.h	/^  gc::Nilable<AtomOrBondMatchNode_sp>	_AtomTest;$/;"	m	class:chem::ResidueTest_O	typeref:typename:gc::Nilable<AtomOrBondMatchNode_sp>
+create	chemInfo.h	/^  static ResidueTest_sp create( BondEnum b, gc::Nilable<AtomOrBondMatchNode_sp> at, core::Symbol/;"	f	class:chem::ResidueTest_O	typeref:typename:ResidueTest_sp
+type	chemInfo.h	/^  virtual	ChemInfoType	type() { return ringTest;};$/;"	f	class:chem::ResidueTest_O	typeref:typename:ChemInfoType
+matches_Atom	chemInfo.h	/^  virtual	bool		matches_Atom(Root_sp root, chem::Atom_sp atom );$/;"	p	class:chem::ResidueTest_O	typeref:typename:bool
+asSmarts	chemInfo.h	/^  virtual string asSmarts() const;$/;"	p	class:chem::ResidueTest_O	typeref:typename:string
+children	chemInfo.h	/^  virtual core::T_sp children();$/;"	p	class:chem::ResidueTest_O	typeref:typename:core::T_sp
+DEFAULT_CTOR_DTOR	chemInfo.h	/^  DEFAULT_CTOR_DTOR(ResidueTest_O);$/;"	p	class:chem::ResidueTest_O
+_matchInAromaticBond	chemInfo.h	/^bool    _matchInAromaticBond(Atom_sp a1, Atom_sp a2);$/;"	p	namespace:chem	typeref:typename:bool
+_matchBondTypes	chemInfo.h	/^bool    _matchBondTypes(BondEnum be, chem::BondOrder bo, Atom_sp a1, Atom_sp a2);$/;"	p	namespace:chem	typeref:typename:bool
+FORWARD	chemInfo.h	/^FORWARD(BondMatcher);$/;"	p	namespace:chem
+BondMatcher_O	chemInfo.h	/^class BondMatcher_O : public ChemInfoNode_O {$/;"	c	namespace:chem
+BondMatcher_O	chemInfo.h	/^  BondMatcher_O() {};$/;"	f	class:chem::BondMatcher_O
+FORWARD	chemInfo.h	/^FORWARD(BondLogical);$/;"	p	namespace:chem
+BondLogical_O	chemInfo.h	/^class BondLogical_O : public BondMatcher_O {$/;"	c	namespace:chem
+fieldsp	chemInfo.h	/^  bool fieldsp() const { return true; };$/;"	f	class:chem::BondLogical_O	typeref:typename:bool
+fields	chemInfo.h	/^  void fields(core::Record_sp node);$/;"	p	class:chem::BondLogical_O	typeref:typename:void
+BondLogical_O	chemInfo.h	/^  BondLogical_O() {};$/;"	f	class:chem::BondLogical_O
+create	chemInfo.h	/^  static BondLogical_sp create(LogicalOperatorType op,$/;"	f	class:chem::BondLogical_O	typeref:typename:BondLogical_sp
+create	chemInfo.h	/^  static BondLogical_sp create(LogicalOperatorType op,$/;"	f	class:chem::BondLogical_O	typeref:typename:BondLogical_sp
+_Operator	chemInfo.h	/^  LogicalOperatorType _Operator;$/;"	m	class:chem::BondLogical_O	typeref:typename:LogicalOperatorType
+_Left	chemInfo.h	/^  BondMatcher_sp  _Left;$/;"	m	class:chem::BondLogical_O	typeref:typename:BondMatcher_sp
+_Right	chemInfo.h	/^  BondMatcher_sp  _Right;$/;"	m	class:chem::BondLogical_O	typeref:typename:BondMatcher_sp
+create_bondLogIdentity	chemInfo.h	/^  static BondLogical_sp create_bondLogIdentity(core::T_sp nilOrOp);$/;"	p	class:chem::BondLogical_O	typeref:typename:BondLogical_sp
+create_bondLogOr	chemInfo.h	/^  static BondLogical_sp create_bondLogOr(core::T_sp nilOrOp1, core::T_sp nilOrOp2);$/;"	p	class:chem::BondLogical_O	typeref:typename:BondLogical_sp
+create_bondLogNot	chemInfo.h	/^  static BondLogical_sp create_bondLogNot(core::T_sp nilOrOp);$/;"	p	class:chem::BondLogical_O	typeref:typename:BondLogical_sp
+create_bondLogLowPrecedenceAnd	chemInfo.h	/^  static BondLogical_sp create_bondLogLowPrecedenceAnd(core::T_sp nilOrOp1, core::T_sp nilOrOp2)/;"	p	class:chem::BondLogical_O	typeref:typename:BondLogical_sp
+create_bondLogHighPrecedenceAnd	chemInfo.h	/^  static BondLogical_sp create_bondLogHighPrecedenceAnd(core::T_sp nilOrOp1, core::T_sp nilOrOp2/;"	p	class:chem::BondLogical_O	typeref:typename:BondLogical_sp
+children	chemInfo.h	/^  virtual core::T_sp children();$/;"	p	class:chem::BondLogical_O	typeref:typename:core::T_sp
+bondLogicalOperator	chemInfo.h	/^  LogicalOperatorType bondLogicalOperator() const;$/;"	p	class:chem::BondLogical_O	typeref:typename:LogicalOperatorType
+getLeft	chemInfo.h	/^  core::T_sp getLeft() const;$/;"	p	class:chem::BondLogical_O	typeref:typename:core::T_sp
+getRight	chemInfo.h	/^  core::T_sp getRight() const;$/;"	p	class:chem::BondLogical_O	typeref:typename:core::T_sp
+setLeft	chemInfo.h	/^  void setLeft(core::T_sp val);$/;"	p	class:chem::BondLogical_O	typeref:typename:void
+setRight	chemInfo.h	/^  void setRight(core::T_sp val);$/;"	p	class:chem::BondLogical_O	typeref:typename:void
+matches_Bond	chemInfo.h	/^  virtual	bool	matches_Bond( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond);$/;"	p	class:chem::BondLogical_O	typeref:typename:bool
+FORWARD	chemInfo.h	/^FORWARD(BondTest);$/;"	p	namespace:chem
+BondTest_O	chemInfo.h	/^class BondTest_O : public BondMatcher_O {$/;"	c	namespace:chem
+fieldsp	chemInfo.h	/^  bool fieldsp() const { return true; };$/;"	f	class:chem::BondTest_O	typeref:typename:bool
+fields	chemInfo.h	/^  void fields(core::Record_sp node);$/;"	p	class:chem::BondTest_O	typeref:typename:void
+make	chemInfo.h	/^  static BondTest_sp make( BondEnum be );$/;"	p	class:chem::BondTest_O	typeref:typename:BondTest_sp
+_Bond	chemInfo.h	/^  BondEnum        _Bond;$/;"	m	class:chem::BondTest_O	typeref:typename:BondEnum
+matches_Bond	chemInfo.h	/^    virtual	bool	matches_Bond( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond);$/;"	p	class:chem::BondTest_O	typeref:typename:bool
+children	chemInfo.h	/^  virtual core::T_sp children();$/;"	p	class:chem::BondTest_O	typeref:typename:core::T_sp
+bondTestGetBond	chemInfo.h	/^  BondEnum bondTestGetBond() const;$/;"	p	class:chem::BondTest_O	typeref:typename:BondEnum
+BondTest_O	chemInfo.h	/^  BondTest_O(BondEnum be) : _Bond(be) {};$/;"	f	class:chem::BondTest_O
+FORWARD	chemInfo.h	/^FORWARD(AtomTest);$/;"	p	namespace:chem
+SMART	chemInfo.h	/^SMART(BondToAtomTest);$/;"	p	namespace:chem
+BondToAtomTest_O	chemInfo.h	/^class BondToAtomTest_O : public BondMatchNode_O$/;"	c	namespace:chem
+initialize	chemInfo.h	/^  void	initialize();$/;"	p	class:chem::BondToAtomTest_O	typeref:typename:void
+fieldsp	chemInfo.h	/^  bool fieldsp() const { return true; };$/;"	f	class:chem::BondToAtomTest_O	typeref:typename:bool
+fields	chemInfo.h	/^  void	fields(core::Record_sp node);$/;"	p	class:chem::BondToAtomTest_O	typeref:typename:void
+_Bond	chemInfo.h	/^  BondEnum		_Bond;$/;"	m	class:chem::BondToAtomTest_O	typeref:typename:BondEnum
+_BondMatcher	chemInfo.h	/^  BondMatcher_sp        _BondMatcher;$/;"	m	class:chem::BondToAtomTest_O	typeref:typename:BondMatcher_sp
+_AtomTest	chemInfo.h	/^  gc::Nilable<AtomOrBondMatchNode_sp>	_AtomTest;$/;"	m	class:chem::BondToAtomTest_O	typeref:typename:gc::Nilable<AtomOrBondMatchNode_sp>
+bondType	chemInfo.h	/^  BondEnum	bondType();$/;"	p	class:chem::BondToAtomTest_O	typeref:typename:BondEnum
+setfBondTypeIfOptimizable	chemInfo.h	/^  bool setfBondTypeIfOptimizable(BondEnum be);$/;"	p	class:chem::BondToAtomTest_O	typeref:typename:bool
+bondMatcherBoundP	chemInfo.h	/^  bool  bondMatcherBoundP() const;$/;"	p	class:chem::BondToAtomTest_O	typeref:typename:bool
+bondMatcher	chemInfo.h	/^  BondMatcher_sp bondMatcher() const;$/;"	p	class:chem::BondToAtomTest_O	typeref:typename:BondMatcher_sp
+type	chemInfo.h	/^  virtual	ChemInfoType	type() { return bondTest;};$/;"	f	class:chem::BondToAtomTest_O	typeref:typename:ChemInfoType
+matches_Bond	chemInfo.h	/^  virtual	bool	matches_Bond( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );$/;"	p	class:chem::BondToAtomTest_O	typeref:typename:bool
+asSmarts	chemInfo.h	/^  virtual string asSmarts() const;$/;"	p	class:chem::BondToAtomTest_O	typeref:typename:string
+makeBondToAtomTest	chemInfo.h	/^  static BondToAtomTest_sp makeBondToAtomTest(BondEnum be, core::T_sp nilOrNode);$/;"	p	class:chem::BondToAtomTest_O	typeref:typename:BondToAtomTest_sp
+makeBondMatcherToAtomTest	chemInfo.h	/^  static BondToAtomTest_sp makeBondMatcherToAtomTest(BondMatcher_sp bm, core::T_sp nilOrNode);$/;"	p	class:chem::BondToAtomTest_O	typeref:typename:BondToAtomTest_sp
+setAtomTest	chemInfo.h	/^  void setAtomTest(core::T_sp atomTest);$/;"	p	class:chem::BondToAtomTest_O	typeref:typename:void
+children	chemInfo.h	/^  virtual core::T_sp children();$/;"	p	class:chem::BondToAtomTest_O	typeref:typename:core::T_sp
+BondToAtomTest_O	chemInfo.h	/^  BondToAtomTest_O() : _Bond(SABUseBondMatcher), _BondMatcher(unbound<BondMatcher_O>()) {};$/;"	f	class:chem::BondToAtomTest_O
+BondToAtomTest_O	chemInfo.h	/^  BondToAtomTest_O(BondEnum be) : _Bond(be), _BondMatcher(unbound<BondMatcher_O>()) {};$/;"	f	class:chem::BondToAtomTest_O
+SMART	chemInfo.h	/^SMART(AntechamberBondToAtomTest);$/;"	p	namespace:chem
+AntechamberBondToAtomTest_O	chemInfo.h	/^class AntechamberBondToAtomTest_O : public BondMatchNode_O$/;"	c	namespace:chem
+initialize	chemInfo.h	/^  void initialize();$/;"	p	class:chem::AntechamberBondToAtomTest_O	typeref:typename:void
+fieldsp	chemInfo.h	/^  bool fieldsp() const { return true; };$/;"	f	class:chem::AntechamberBondToAtomTest_O	typeref:typename:bool
+fields	chemInfo.h	/^  void	fields(core::Record_sp node);$/;"	p	class:chem::AntechamberBondToAtomTest_O	typeref:typename:void
+_Element	chemInfo.h	/^  core::Symbol_sp                   _Element;$/;"	m	class:chem::AntechamberBondToAtomTest_O	typeref:typename:core::Symbol_sp
+_Neighbors	chemInfo.h	/^  int                     _Neighbors;$/;"	m	class:chem::AntechamberBondToAtomTest_O	typeref:typename:int
+_AtomProperties	chemInfo.h	/^  gc::Nilable<AtomOrBondMatchNode_sp>	_AtomProperties;$/;"	m	class:chem::AntechamberBondToAtomTest_O	typeref:typename:gc::Nilable<AtomOrBondMatchNode_sp>
+_Tag	chemInfo.h	/^  core::Symbol_sp                   _Tag;$/;"	m	class:chem::AntechamberBondToAtomTest_O	typeref:typename:core::Symbol_sp
+create_args	chemInfo.h	/^  static AntechamberBondToAtomTest_sp create_args( core::Symbol_sp element, int neighbors,$/;"	p	class:chem::AntechamberBondToAtomTest_O	typeref:typename:AntechamberBondToAtomTest_sp
+type	chemInfo.h	/^  virtual	ChemInfoType	type() { return antechamberBondToAtomTest;};$/;"	f	class:chem::AntechamberBondToAtomTest_O	typeref:typename:ChemInfoType
+matchBasic	chemInfo.h	/^  bool	matchBasic( AntechamberRoot_sp root, chem::Atom_sp atom );$/;"	p	class:chem::AntechamberBondToAtomTest_O	typeref:typename:bool
+matches_Bond	chemInfo.h	/^  virtual	bool	matches_Bond( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );$/;"	p	class:chem::AntechamberBondToAtomTest_O	typeref:typename:bool
+matches_Atom	chemInfo.h	/^  virtual bool    matches_Atom( Root_sp root, chem::Atom_sp atom );$/;"	p	class:chem::AntechamberBondToAtomTest_O	typeref:typename:bool
+asSmarts	chemInfo.h	/^  virtual string asSmarts() const;$/;"	p	class:chem::AntechamberBondToAtomTest_O	typeref:typename:string
+children	chemInfo.h	/^  virtual core::T_sp children();$/;"	p	class:chem::AntechamberBondToAtomTest_O	typeref:typename:core::T_sp
+DEFAULT_CTOR_DTOR	chemInfo.h	/^  DEFAULT_CTOR_DTOR(AntechamberBondToAtomTest_O);$/;"	p	class:chem::AntechamberBondToAtomTest_O
+__anonc71face40503	chemInfo.h	/^typedef	enum	{$/;"	g	namespace:chem
+SAPNone	chemInfo.h	/^    SAPNone		=0,$/;"	e	enum:chem::__anonc71face40503
+SAPWildCard	chemInfo.h	/^    SAPWildCard		,$/;"	e	enum:chem::__anonc71face40503
+SAPDegree	chemInfo.h	/^    SAPDegree		,$/;"	e	enum:chem::__anonc71face40503
+SAPElement	chemInfo.h	/^    SAPElement		,$/;"	e	enum:chem::__anonc71face40503
+SAPTotalHCount	chemInfo.h	/^    SAPTotalHCount		,$/;"	e	enum:chem::__anonc71face40503
+SAPImplicitHCount	chemInfo.h	/^    SAPImplicitHCount	,$/;"	e	enum:chem::__anonc71face40503
+SAPRingConnectivity	chemInfo.h	/^    SAPRingConnectivity,$/;"	e	enum:chem::__anonc71face40503
+SAPRingMembershipCount	chemInfo.h	/^    SAPRingMembershipCount	,$/;"	e	enum:chem::__anonc71face40503
+SAPRingTest	chemInfo.h	/^    SAPRingTest,$/;"	e	enum:chem::__anonc71face40503
+SAPRingSize	chemInfo.h	/^    SAPRingSize		,$/;"	e	enum:chem::__anonc71face40503
+SAPValence	chemInfo.h	/^    SAPValence		,$/;"	e	enum:chem::__anonc71face40503
+SAPConnectivity	chemInfo.h	/^    SAPConnectivity		,$/;"	e	enum:chem::__anonc71face40503
+SAPNegativeCharge	chemInfo.h	/^    SAPNegativeCharge	,$/;"	e	enum:chem::__anonc71face40503
+SAPNegativeFormalCharge	chemInfo.h	/^    SAPNegativeFormalCharge	,$/;"	e	enum:chem::__anonc71face40503
+SAPPositiveCharge	chemInfo.h	/^    SAPPositiveCharge	,$/;"	e	enum:chem::__anonc71face40503
+SAPPositiveFormalCharge	chemInfo.h	/^    SAPPositiveFormalCharge	,$/;"	e	enum:chem::__anonc71face40503
+SAPAtomicNumber	chemInfo.h	/^    SAPAtomicNumber		,$/;"	e	enum:chem::__anonc71face40503
+SAPChiralityAntiClockwise	chemInfo.h	/^    SAPChiralityAntiClockwise,$/;"	e	enum:chem::__anonc71face40503
+SAPChiralityClockwise	chemInfo.h	/^    SAPChiralityClockwise	,$/;"	e	enum:chem::__anonc71face40503
+SAPAtomicMass	chemInfo.h	/^    SAPAtomicMass		,$/;"	e	enum:chem::__anonc71face40503
+SAPLonePair	chemInfo.h	/^    SAPLonePair		,$/;"	e	enum:chem::__anonc71face40503
+SAPTotalBondNumber	chemInfo.h	/^    SAPTotalBondNumber	,$/;"	e	enum:chem::__anonc71face40503
+SAPTotalExplicitBondNumber	chemInfo.h	/^    SAPTotalExplicitBondNumber,$/;"	e	enum:chem::__anonc71face40503
+SAPPiBondOrbital	chemInfo.h	/^    SAPPiBondOrbital	,$/;"	e	enum:chem::__anonc71face40503
+SAPAromaticPiElectron	chemInfo.h	/^    SAPAromaticPiElectron	,$/;"	e	enum:chem::__anonc71face40503
+SAPHeavyAtomTotalBond	chemInfo.h	/^    SAPHeavyAtomTotalBond	,$/;"	e	enum:chem::__anonc71face40503
+SAPGroupNumber	chemInfo.h	/^    SAPGroupNumber		,$/;"	e	enum:chem::__anonc71face40503
+SAPElectronegativeElement	chemInfo.h	/^    SAPElectronegativeElement,$/;"	e	enum:chem::__anonc71face40503
+SAPTransitionMetal	chemInfo.h	/^    SAPTransitionMetal	,$/;"	e	enum:chem::__anonc71face40503
+SAPBondedToPrevious	chemInfo.h	/^    SAPBondedToPrevious	,$/;"	e	enum:chem::__anonc71face40503
+SAPNotBondedToPrevious	chemInfo.h	/^    SAPNotBondedToPrevious	,$/;"	e	enum:chem::__anonc71face40503
+SAPInBond	chemInfo.h	/^    SAPInBond		,$/;"	e	enum:chem::__anonc71face40503
+SAPArLevel	chemInfo.h	/^    SAPArLevel		,$/;"	e	enum:chem::__anonc71face40503
+SAPNoRing	chemInfo.h	/^    SAPNoRing		,$/;"	e	enum:chem::__anonc71face40503
+SAPResidueTest	chemInfo.h	/^    SAPResidueTest		,$/;"	e	enum:chem::__anonc71face40503
+SAPPredicateName	chemInfo.h	/^    SAPPredicateName		,$/;"	e	enum:chem::__anonc71face40503
+SAPAromaticElement	chemInfo.h	/^    SAPAromaticElement	,$/;"	e	enum:chem::__anonc71face40503
+SAPAliphatic	chemInfo.h	/^    SAPAliphatic		,$/;"	e	enum:chem::__anonc71face40503
+SAPAromatic	chemInfo.h	/^    SAPAromatic,$/;"	e	enum:chem::__anonc71face40503
+SAPAtomMap	chemInfo.h	/^    SAPAtomMap$/;"	e	enum:chem::__anonc71face40503
+AtomTestEnum	chemInfo.h	/^} AtomTestEnum;$/;"	t	namespace:chem	typeref:enum:chem::__anonc71face40503
+_sym_STARAtomTestEnumConverterSTAR	chemInfo.h	/^extern core::Symbol_sp& _sym_STARAtomTestEnumConverterSTAR;$/;"	x	namespace:chem	typeref:typename:core::Symbol_sp &
+DECLARE_ENUM_SYMBOL_TRANSLATOR	chemInfo.h	/^DECLARE_ENUM_SYMBOL_TRANSLATOR(chem::AtomTestEnum,chem::_sym_STARAtomTestEnumConverterSTAR);$/;"	p
+chem	chemInfo.h	/^namespace chem {$/;"	n
+SMART	chemInfo.h	/^SMART(AtomTest);$/;"	p	namespace:chem
+AtomTest_O	chemInfo.h	/^class AtomTest_O : public AtomOrBondMatchNode_O$/;"	c	namespace:chem
+initialize	chemInfo.h	/^  void initialize();$/;"	p	class:chem::AtomTest_O	typeref:typename:void
+fieldsp	chemInfo.h	/^  bool fieldsp() const { return true; };$/;"	f	class:chem::AtomTest_O	typeref:typename:bool
+fields	chemInfo.h	/^  void	fields(core::Record_sp node);$/;"	p	class:chem::AtomTest_O	typeref:typename:void
+_Test	chemInfo.h	/^  AtomTestEnum	_Test;$/;"	m	class:chem::AtomTest_O	typeref:typename:AtomTestEnum
+_IntArg	chemInfo.h	/^  int		        _IntArg;$/;"	m	class:chem::AtomTest_O	typeref:typename:int
+_NumArg	chemInfo.h	/^  int		        _NumArg;$/;"	m	class:chem::AtomTest_O	typeref:typename:int
+_StringArg	chemInfo.h	/^  string		_StringArg;$/;"	m	class:chem::AtomTest_O	typeref:typename:string
+_SymbolArg	chemInfo.h	/^  core::Symbol_sp	_SymbolArg;$/;"	m	class:chem::AtomTest_O	typeref:typename:core::Symbol_sp
+create	chemInfo.h	/^  static AtomTest_sp create( AtomTestEnum t, int iArg, int num, const char* el, core::Symbol_sp /;"	f	class:chem::AtomTest_O	typeref:typename:AtomTest_sp
+create	chemInfo.h	/^  static AtomTest_sp create( AtomTestEnum t) { return create( t, 0, 0, NULL, nil<core::Symbol_O>/;"	f	class:chem::AtomTest_O	typeref:typename:AtomTest_sp
+create_SAPElectronegativeElement	chemInfo.h	/^  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPElectronegativeElement() { return create(SAPE/;"	f	class:chem::AtomTest_O	typeref:typename:CL_DEF_CLASS_METHOD AtomTest_sp
+create_SAPAliphatic	chemInfo.h	/^  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPAliphatic() { return create(SAPAliphatic); };$/;"	f	class:chem::AtomTest_O	typeref:typename:CL_DEF_CLASS_METHOD AtomTest_sp
+create_SAPAromatic	chemInfo.h	/^  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPAromatic() { return create(SAPAromatic); };$/;"	f	class:chem::AtomTest_O	typeref:typename:CL_DEF_CLASS_METHOD AtomTest_sp
+create_SAPChiralityAntiClockwise	chemInfo.h	/^  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPChiralityAntiClockwise() { return create(SAPC/;"	f	class:chem::AtomTest_O	typeref:typename:CL_DEF_CLASS_METHOD AtomTest_sp
+create_SAPChiralityClockwise	chemInfo.h	/^  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPChiralityClockwise() { return create(SAPChira/;"	f	class:chem::AtomTest_O	typeref:typename:CL_DEF_CLASS_METHOD AtomTest_sp
+create_SAPPiBondOrbital	chemInfo.h	/^  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPPiBondOrbital() { return create(SAPPiBondOrbi/;"	f	class:chem::AtomTest_O	typeref:typename:CL_DEF_CLASS_METHOD AtomTest_sp
+create_SAPWildCard	chemInfo.h	/^  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPWildCard() { return create(SAPWildCard); };$/;"	f	class:chem::AtomTest_O	typeref:typename:CL_DEF_CLASS_METHOD AtomTest_sp
+create	chemInfo.h	/^  static AtomTest_sp create( AtomTestEnum t, int iArg ) { return create(  t, iArg, 0, NULL,nil<c/;"	f	class:chem::AtomTest_O	typeref:typename:AtomTest_sp
+create_SAPAromaticPiElectron	chemInfo.h	/^  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPAromaticPiElectron(int intVal) { return creat/;"	f	class:chem::AtomTest_O	typeref:typename:CL_DEF_CLASS_METHOD AtomTest_sp
+create_SAPAtomicMass	chemInfo.h	/^  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPAtomicMass(int intVal) { return create(SAPAto/;"	f	class:chem::AtomTest_O	typeref:typename:CL_DEF_CLASS_METHOD AtomTest_sp
+create_SAPAtomicNumber	chemInfo.h	/^  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPAtomicNumber(int intVal) { return create(SAPA/;"	f	class:chem::AtomTest_O	typeref:typename:CL_DEF_CLASS_METHOD AtomTest_sp
+create_SAPConnectivity	chemInfo.h	/^  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPConnectivity(int intVal) { return create(SAPC/;"	f	class:chem::AtomTest_O	typeref:typename:CL_DEF_CLASS_METHOD AtomTest_sp
+create_SAPDegree	chemInfo.h	/^  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPDegree(int intVal) { return create(SAPDegree,/;"	f	class:chem::AtomTest_O	typeref:typename:CL_DEF_CLASS_METHOD AtomTest_sp
+create_SAPGroupNumber	chemInfo.h	/^  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPGroupNumber(int intVal) { return create(SAPGr/;"	f	class:chem::AtomTest_O	typeref:typename:CL_DEF_CLASS_METHOD AtomTest_sp
+create_SAPHeavyAtomTotalBond	chemInfo.h	/^  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPHeavyAtomTotalBond(int intVal) { return creat/;"	f	class:chem::AtomTest_O	typeref:typename:CL_DEF_CLASS_METHOD AtomTest_sp
+create_SAPImplicitHCount	chemInfo.h	/^  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPImplicitHCount(int intVal) { return create(SA/;"	f	class:chem::AtomTest_O	typeref:typename:CL_DEF_CLASS_METHOD AtomTest_sp
+create_SAPLonePair	chemInfo.h	/^  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPLonePair(int intVal) { return create(SAPLoneP/;"	f	class:chem::AtomTest_O	typeref:typename:CL_DEF_CLASS_METHOD AtomTest_sp
+create_SAPNegativeCharge	chemInfo.h	/^  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPNegativeCharge(int intVal) { return create(SA/;"	f	class:chem::AtomTest_O	typeref:typename:CL_DEF_CLASS_METHOD AtomTest_sp
+create_SAPNegativeFormalCharge	chemInfo.h	/^  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPNegativeFormalCharge(int intVal) { return cre/;"	f	class:chem::AtomTest_O	typeref:typename:CL_DEF_CLASS_METHOD AtomTest_sp
+create_SAPPositiveCharge	chemInfo.h	/^  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPPositiveCharge(int intVal) { return create(SA/;"	f	class:chem::AtomTest_O	typeref:typename:CL_DEF_CLASS_METHOD AtomTest_sp
+create_SAPPositiveFormalCharge	chemInfo.h	/^  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPPositiveFormalCharge(int intVal) { return cre/;"	f	class:chem::AtomTest_O	typeref:typename:CL_DEF_CLASS_METHOD AtomTest_sp
+create_SAPResidueTest	chemInfo.h	/^  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPResidueTest(int intVal) { return create(SAPRe/;"	f	class:chem::AtomTest_O	typeref:typename:CL_DEF_CLASS_METHOD AtomTest_sp
+create_SAPRingMembershipCount	chemInfo.h	/^  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPRingMembershipCount(int intVal) { return crea/;"	f	class:chem::AtomTest_O	typeref:typename:CL_DEF_CLASS_METHOD AtomTest_sp
+create_SAPRingSize	chemInfo.h	/^  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPRingSize(int intVal) { return create(SAPRingS/;"	f	class:chem::AtomTest_O	typeref:typename:CL_DEF_CLASS_METHOD AtomTest_sp
+create_SAPRingTest	chemInfo.h	/^  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPRingTest(int intVal) { return create(SAPRingT/;"	f	class:chem::AtomTest_O	typeref:typename:CL_DEF_CLASS_METHOD AtomTest_sp
+create_SAPRingConnectivity	chemInfo.h	/^  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPRingConnectivity(int intVal) { return create(/;"	f	class:chem::AtomTest_O	typeref:typename:CL_DEF_CLASS_METHOD AtomTest_sp
+create_SAPTotalHCount	chemInfo.h	/^  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPTotalHCount(int intVal) { return create(SAPTo/;"	f	class:chem::AtomTest_O	typeref:typename:CL_DEF_CLASS_METHOD AtomTest_sp
+create_SAPTransitionMetal	chemInfo.h	/^  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPTransitionMetal(int intVal) { return create(S/;"	f	class:chem::AtomTest_O	typeref:typename:CL_DEF_CLASS_METHOD AtomTest_sp
+create_SAPValence	chemInfo.h	/^  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPValence(int intVal) { return create(SAPValenc/;"	f	class:chem::AtomTest_O	typeref:typename:CL_DEF_CLASS_METHOD AtomTest_sp
+create_SAPAtomMap	chemInfo.h	/^  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPAtomMap(int intVal) { return create(SAPAtomMa/;"	f	class:chem::AtomTest_O	typeref:typename:CL_DEF_CLASS_METHOD AtomTest_sp
+create	chemInfo.h	/^  static AtomTest_sp create( AtomTestEnum t, int iArg, int num ) $/;"	f	class:chem::AtomTest_O	typeref:typename:AtomTest_sp
+create	chemInfo.h	/^  static AtomTest_sp create( AtomTestEnum t, const char* el ) $/;"	f	class:chem::AtomTest_O	typeref:typename:AtomTest_sp
+create	chemInfo.h	/^  static AtomTest_sp create( AtomTestEnum t, core::Symbol_sp sym) {return create( t, 0, 0, NULL,/;"	f	class:chem::AtomTest_O	typeref:typename:AtomTest_sp
+create_SAPAromaticElement	chemInfo.h	/^  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPAromaticElement(const std::string& symbolName/;"	f	class:chem::AtomTest_O	typeref:typename:CL_DEF_CLASS_METHOD AtomTest_sp
+create_SAPElement	chemInfo.h	/^  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPElement(const std::string& symbolName) { retu/;"	f	class:chem::AtomTest_O	typeref:typename:CL_DEF_CLASS_METHOD AtomTest_sp
+create_SAPPredicateName	chemInfo.h	/^  CL_DEF_CLASS_METHOD static AtomTest_sp create_SAPPredicateName(core::Symbol_sp name) { return /;"	f	class:chem::AtomTest_O	typeref:typename:CL_DEF_CLASS_METHOD AtomTest_sp
+create_in_bond1	chemInfo.h	/^  CL_DEF_CLASS_METHOD static AtomTest_sp create_in_bond1(BondEnum bond)$/;"	f	class:chem::AtomTest_O	typeref:typename:CL_DEF_CLASS_METHOD AtomTest_sp
+create_in_bond	chemInfo.h	/^  CL_DEF_CLASS_METHOD static AtomTest_sp create_in_bond(BondEnum bond, int num)$/;"	f	class:chem::AtomTest_O	typeref:typename:CL_DEF_CLASS_METHOD AtomTest_sp
+create_not_bonded_to_previous	chemInfo.h	/^  CL_DEF_CLASS_METHOD static AtomTest_sp create_not_bonded_to_previous(BondEnum bond)$/;"	f	class:chem::AtomTest_O	typeref:typename:CL_DEF_CLASS_METHOD AtomTest_sp
+create_bonded_to_previous	chemInfo.h	/^  CL_DEF_CLASS_METHOD static AtomTest_sp create_bonded_to_previous(BondEnum bond)$/;"	f	class:chem::AtomTest_O	typeref:typename:CL_DEF_CLASS_METHOD AtomTest_sp
+create_ar_level	chemInfo.h	/^  CL_DEF_CLASS_METHOD static AtomTest_sp create_ar_level(int arLevel)$/;"	f	class:chem::AtomTest_O	typeref:typename:CL_DEF_CLASS_METHOD AtomTest_sp
+create_ring_size	chemInfo.h	/^  CL_DEF_CLASS_METHOD static AtomTest_sp create_ring_size(int size)$/;"	f	class:chem::AtomTest_O	typeref:typename:CL_DEF_CLASS_METHOD AtomTest_sp
+create_ring_connectivity	chemInfo.h	/^  CL_DEF_CLASS_METHOD static AtomTest_sp create_ring_connectivity(int num)$/;"	f	class:chem::AtomTest_O	typeref:typename:CL_DEF_CLASS_METHOD AtomTest_sp
+create_ring_size2	chemInfo.h	/^  CL_DEF_CLASS_METHOD static AtomTest_sp create_ring_size2(int size, int num)$/;"	f	class:chem::AtomTest_O	typeref:typename:CL_DEF_CLASS_METHOD AtomTest_sp
+create_no_ring_membership	chemInfo.h	/^  CL_DEF_CLASS_METHOD static AtomTest_sp create_no_ring_membership()$/;"	f	class:chem::AtomTest_O	typeref:typename:CL_DEF_CLASS_METHOD AtomTest_sp
+atomTestType	chemInfo.h	/^  CL_DEFMETHOD AtomTestEnum	atomTestType() { return this->_Test; };$/;"	f	class:chem::AtomTest_O	typeref:typename:CL_DEFMETHOD AtomTestEnum
+getIntArg	chemInfo.h	/^  int getIntArg();$/;"	p	class:chem::AtomTest_O	typeref:typename:int
+getSymbolArg	chemInfo.h	/^  core::Symbol_sp getSymbolArg() const;$/;"	p	class:chem::AtomTest_O	typeref:typename:core::Symbol_sp
+testName	chemInfo.h	/^  string		testName(AtomTestEnum t) const;$/;"	p	class:chem::AtomTest_O	typeref:typename:string
+matchesAm1BccX	chemInfo.h	/^  bool matchesAm1BccX(chem::Atom_sp atom) const;$/;"	p	class:chem::AtomTest_O	typeref:typename:bool
+matchesAm1BccY	chemInfo.h	/^  bool matchesAm1BccY(chem::Atom_sp atom) const;$/;"	p	class:chem::AtomTest_O	typeref:typename:bool
+set_test	chemInfo.h	/^  CL_DEFMETHOD void set_test(AtomTestEnum test) { this->_Test = test; };$/;"	f	class:chem::AtomTest_O	typeref:typename:CL_DEFMETHOD void
+type	chemInfo.h	/^  virtual ChemInfoType    type() { return atomTest;};$/;"	f	class:chem::AtomTest_O	typeref:typename:ChemInfoType
+matches_Atom	chemInfo.h	/^  virtual	bool	matches_Atom( Root_sp root, chem::Atom_sp atom );$/;"	p	class:chem::AtomTest_O	typeref:typename:bool
+matches_Bond	chemInfo.h	/^  virtual	bool	matches_Bond( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond);$/;"	p	class:chem::AtomTest_O	typeref:typename:bool
+asSmarts	chemInfo.h	/^  virtual string asSmarts() const;$/;"	p	class:chem::AtomTest_O	typeref:typename:string
+children	chemInfo.h	/^  virtual core::T_sp children() {$/;"	f	class:chem::AtomTest_O	typeref:typename:core::T_sp
+AtomTest_O	chemInfo.h	/^  AtomTest_O() : _Test(SAPNone), _IntArg(0), _NumArg(0), _StringArg(""), _SymbolArg(nil<core::Sy/;"	f	class:chem::AtomTest_O
+~AtomTest_O	chemInfo.h	/^  virtual ~AtomTest_O() {};$/;"	f	class:chem::AtomTest_O
+SMART	chemInfo.h	/^SMART(AntechamberFocusAtomMatch);$/;"	p	namespace:chem
+AntechamberFocusAtomMatch_O	chemInfo.h	/^class AntechamberFocusAtomMatch_O : public AtomOrBondMatchNode_O$/;"	c	namespace:chem
+initialize	chemInfo.h	/^  void initialize();$/;"	p	class:chem::AntechamberFocusAtomMatch_O	typeref:typename:void
+fieldsp	chemInfo.h	/^  bool fieldsp() const { return true; };$/;"	f	class:chem::AntechamberFocusAtomMatch_O	typeref:typename:bool
+fields	chemInfo.h	/^  void	fields(core::Record_sp node);$/;"	p	class:chem::AntechamberFocusAtomMatch_O	typeref:typename:void
+_ResidueNames	chemInfo.h	/^  gc::Nilable<ResidueList_sp>  _ResidueNames;$/;"	m	class:chem::AntechamberFocusAtomMatch_O	typeref:typename:gc::Nilable<ResidueList_sp>
+_AtomicNumber	chemInfo.h	/^  int             _AtomicNumber;$/;"	m	class:chem::AntechamberFocusAtomMatch_O	typeref:typename:int
+_NumberOfAttachedAtoms	chemInfo.h	/^  int             _NumberOfAttachedAtoms;$/;"	m	class:chem::AntechamberFocusAtomMatch_O	typeref:typename:int
+_NumberOfAttachedHydrogens	chemInfo.h	/^  int             _NumberOfAttachedHydrogens;$/;"	m	class:chem::AntechamberFocusAtomMatch_O	typeref:typename:int
+_NumberOfElectronWithdrawingGroups	chemInfo.h	/^  int             _NumberOfElectronWithdrawingGroups;$/;"	m	class:chem::AntechamberFocusAtomMatch_O	typeref:typename:int
+_AtomicProperty	chemInfo.h	/^  gc::Nilable<AtomOrBondMatchNode_sp>   _AtomicProperty;$/;"	m	class:chem::AntechamberFocusAtomMatch_O	typeref:typename:gc::Nilable<AtomOrBondMatchNode_sp>
+create	chemInfo.h	/^  static AntechamberFocusAtomMatch_sp create(gc::Nilable<ResidueList_sp> residueNames,$/;"	f	class:chem::AntechamberFocusAtomMatch_O	typeref:typename:AntechamberFocusAtomMatch_sp
+create	chemInfo.h	/^  static AntechamberFocusAtomMatch_sp create($/;"	f	class:chem::AntechamberFocusAtomMatch_O	typeref:typename:AntechamberFocusAtomMatch_sp
+asSmarts	chemInfo.h	/^  string asSmarts() const;$/;"	p	class:chem::AntechamberFocusAtomMatch_O	typeref:typename:string
+children	chemInfo.h	/^  virtual core::T_sp children();$/;"	p	class:chem::AntechamberFocusAtomMatch_O	typeref:typename:core::T_sp
+matches_Atom	chemInfo.h	/^  virtual	bool	matches_Atom( Root_sp root, chem::Atom_sp atom );$/;"	p	class:chem::AntechamberFocusAtomMatch_O	typeref:typename:bool
+type	chemInfo.h	/^  virtual ChemInfoType    type() { return antechamberFocusAtomMatch; };$/;"	f	class:chem::AntechamberFocusAtomMatch_O	typeref:typename:ChemInfoType
+DEFAULT_CTOR_DTOR	chemInfo.h	/^  DEFAULT_CTOR_DTOR(AntechamberFocusAtomMatch_O);$/;"	p	class:chem::AntechamberFocusAtomMatch_O
+SMART	chemInfo.h	/^SMART(Chain);$/;"	p	namespace:chem
+Chain_O	chemInfo.h	/^class Chain_O : public BondListMatchNode_O$/;"	c	namespace:chem
+fieldsp	chemInfo.h	/^  bool fieldsp() const { return true; };$/;"	f	class:chem::Chain_O	typeref:typename:bool
+fields	chemInfo.h	/^  void	fields(core::Record_sp node);$/;"	p	class:chem::Chain_O	typeref:typename:void
+initialize	chemInfo.h	/^  void	initialize();$/;"	p	class:chem::Chain_O	typeref:typename:void
+_Head	chemInfo.h	/^  gc::Nilable<BondMatchNode_sp>	_Head;$/;"	m	class:chem::Chain_O	typeref:typename:gc::Nilable<BondMatchNode_sp>
+_Tail	chemInfo.h	/^  gc::Nilable<BondListMatchNode_sp>	_Tail;$/;"	m	class:chem::Chain_O	typeref:typename:gc::Nilable<BondListMatchNode_sp>
+depth	chemInfo.h	/^  virtual uint depth() const;$/;"	p	class:chem::Chain_O	typeref:typename:uint
+asSmarts	chemInfo.h	/^  virtual string asSmarts() const;$/;"	p	class:chem::Chain_O	typeref:typename:string
+CL_LAMBDA	chemInfo.h	/^  CL_LAMBDA(head tail);$/;"	p	class:chem::Chain_O
+create_head_tail	chemInfo.h	/^  CL_DEF_CLASS_METHOD static Chain_sp create_head_tail( core::T_sp head, core::T_sp tail ) {$/;"	f	class:chem::Chain_O	typeref:typename:CL_DEF_CLASS_METHOD Chain_sp
+CL_LAMBDA	chemInfo.h	/^  CL_LAMBDA(head);$/;"	p	class:chem::Chain_O
+create_head	chemInfo.h	/^  CL_DEF_CLASS_METHOD static Chain_sp create_head( core::T_sp head )$/;"	f	class:chem::Chain_O	typeref:typename:CL_DEF_CLASS_METHOD Chain_sp
+create_empty_chain	chemInfo.h	/^  CL_DEF_CLASS_METHOD static Chain_sp create_empty_chain() {$/;"	f	class:chem::Chain_O	typeref:typename:CL_DEF_CLASS_METHOD Chain_sp
+type	chemInfo.h	/^  virtual	ChemInfoType	type() { return chain; };$/;"	f	class:chem::Chain_O	typeref:typename:ChemInfoType
+matches_Atom	chemInfo.h	/^  virtual	bool		matches_Atom( Root_sp root, chem::Atom_sp from );$/;"	p	class:chem::Chain_O	typeref:typename:bool
+matches_Bond	chemInfo.h	/^  virtual	bool		matches_Bond( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );$/;"	p	class:chem::Chain_O	typeref:typename:bool
+matches_BondList	chemInfo.h	/^  virtual	bool		matches_BondList( Root_sp root, chem::Atom_sp from, chem::BondList_sp neighbors /;"	p	class:chem::Chain_O	typeref:typename:bool
+chain_set_head	chemInfo.h	/^  CL_DEFMETHOD void chain_set_head(BondMatchNode_sp head) { this->_Head = head; };$/;"	f	class:chem::Chain_O	typeref:typename:CL_DEFMETHOD void
+chain_set_tail	chemInfo.h	/^  CL_DEFMETHOD void chain_set_tail(core::T_sp tail) {$/;"	f	class:chem::Chain_O	typeref:typename:CL_DEFMETHOD void
+chain_get_head	chemInfo.h	/^  BondMatchNode_sp chain_get_head() { return this->_Head; };$/;"	f	class:chem::Chain_O	typeref:typename:BondMatchNode_sp
+chain_get_tail	chemInfo.h	/^  BondListMatchNode_sp chain_get_tail();$/;"	p	class:chem::Chain_O	typeref:typename:BondListMatchNode_sp
+children	chemInfo.h	/^  virtual core::T_sp children();$/;"	p	class:chem::Chain_O	typeref:typename:core::T_sp
+Chain_O	chemInfo.h	/^  Chain_O() : _Head(nil<BondMatchNode_O>()), _Tail(nil<BondListMatchNode_O>()) {};$/;"	f	class:chem::Chain_O
+SMART	chemInfo.h	/^SMART(Branch);$/;"	p	namespace:chem
+Branch_O	chemInfo.h	/^class Branch_O : public BondListMatchNode_O$/;"	c	namespace:chem
+fieldsp	chemInfo.h	/^  bool fieldsp() const { return true; };$/;"	f	class:chem::Branch_O	typeref:typename:bool
+fields	chemInfo.h	/^  void	fields(core::Record_sp node);$/;"	p	class:chem::Branch_O	typeref:typename:void
+initialize	chemInfo.h	/^  void	initialize();$/;"	p	class:chem::Branch_O	typeref:typename:void
+_Left	chemInfo.h	/^  gc::Nilable<BondListMatchNode_sp>	_Left;$/;"	m	class:chem::Branch_O	typeref:typename:gc::Nilable<BondListMatchNode_sp>
+_Right	chemInfo.h	/^  gc::Nilable<BondListMatchNode_sp>	_Right;$/;"	m	class:chem::Branch_O	typeref:typename:gc::Nilable<BondListMatchNode_sp>
+depth	chemInfo.h	/^  virtual uint depth() const;$/;"	p	class:chem::Branch_O	typeref:typename:uint
+asSmarts	chemInfo.h	/^  virtual string asSmarts() const;$/;"	p	class:chem::Branch_O	typeref:typename:string
+CL_LAMBDA	chemInfo.h	/^  CL_LAMBDA(left right);$/;"	p	class:chem::Branch_O
+create_left_right	chemInfo.h	/^  CL_DEF_CLASS_METHOD static Branch_sp create_left_right( core::T_sp left, core::T_sp right )$/;"	f	class:chem::Branch_O	typeref:typename:CL_DEF_CLASS_METHOD Branch_sp
+CL_LAMBDA	chemInfo.h	/^  CL_LAMBDA(left);$/;"	p	class:chem::Branch_O
+create_left	chemInfo.h	/^  CL_DEF_CLASS_METHOD static Branch_sp create_left( BondListMatchNode_sp left ) {$/;"	f	class:chem::Branch_O	typeref:typename:CL_DEF_CLASS_METHOD Branch_sp
+type	chemInfo.h	/^  virtual	ChemInfoType	type() { return branch; };$/;"	f	class:chem::Branch_O	typeref:typename:ChemInfoType
+matches_BondList	chemInfo.h	/^  virtual	bool		matches_BondList( Root_sp root, chem::Atom_sp from, chem::BondList_sp neighbors /;"	p	class:chem::Branch_O	typeref:typename:bool
+branch_set_left	chemInfo.h	/^  void branch_set_left(core::T_sp left);$/;"	p	class:chem::Branch_O	typeref:typename:void
+branch_set_right	chemInfo.h	/^  void branch_set_right(core::T_sp right);$/;"	p	class:chem::Branch_O	typeref:typename:void
+children	chemInfo.h	/^  virtual core::T_sp children();$/;"	p	class:chem::Branch_O	typeref:typename:core::T_sp
+DEFAULT_CTOR_DTOR	chemInfo.h	/^  DEFAULT_CTOR_DTOR(Branch_O);$/;"	p	class:chem::Branch_O
+SMART	chemInfo.h	/^SMART(AfterMatchBondToAtomTest);$/;"	p	namespace:chem
+AfterMatchBondToAtomTest_O	chemInfo.h	/^class AfterMatchBondToAtomTest_O : public RootMatchNode_O$/;"	c	namespace:chem
+initialize	chemInfo.h	/^  void initialize();$/;"	p	class:chem::AfterMatchBondToAtomTest_O	typeref:typename:void
+fieldsp	chemInfo.h	/^  bool fieldsp() const { return true; };$/;"	f	class:chem::AfterMatchBondToAtomTest_O	typeref:typename:bool
+fields	chemInfo.h	/^  void	fields(core::Record_sp node);$/;"	p	class:chem::AfterMatchBondToAtomTest_O	typeref:typename:void
+_AtomTag1	chemInfo.h	/^  core::Symbol_sp _AtomTag1;$/;"	m	class:chem::AfterMatchBondToAtomTest_O	typeref:typename:core::Symbol_sp
+_AtomTag2	chemInfo.h	/^  core::Symbol_sp _AtomTag2;$/;"	m	class:chem::AfterMatchBondToAtomTest_O	typeref:typename:core::Symbol_sp
+_Bond	chemInfo.h	/^  BondEnum	_Bond;$/;"	m	class:chem::AfterMatchBondToAtomTest_O	typeref:typename:BondEnum
+create	chemInfo.h	/^  static AfterMatchBondToAtomTest_sp create( core::Symbol_sp tag1, core::Symbol_sp tag2, BondEnu/;"	f	class:chem::AfterMatchBondToAtomTest_O	typeref:typename:AfterMatchBondToAtomTest_sp
+type	chemInfo.h	/^  virtual	ChemInfoType            type() { return afterMatchBondToAtomTest; };$/;"	f	class:chem::AfterMatchBondToAtomTest_O	typeref:typename:ChemInfoType
+matches	chemInfo.h	/^  virtual	bool    		matches( Root_sp root );$/;"	p	class:chem::AfterMatchBondToAtomTest_O	typeref:typename:bool
+DEFAULT_CTOR_DTOR	chemInfo.h	/^  DEFAULT_CTOR_DTOR(AfterMatchBondToAtomTest_O);$/;"	p	class:chem::AfterMatchBondToAtomTest_O
+SMART	chemInfo.h	/^SMART(Root);$/;"	p	namespace:chem
+Root_O	chemInfo.h	/^class Root_O : public AtomOrBondMatchNode_O$/;"	c	namespace:chem
+initialize	chemInfo.h	/^  void initialize();$/;"	p	class:chem::Root_O	typeref:typename:void
+fieldsp	chemInfo.h	/^  bool fieldsp() const { return true; };$/;"	f	class:chem::Root_O	typeref:typename:bool
+fields	chemInfo.h	/^  void	fields(core::Record_sp node);$/;"	p	class:chem::Root_O	typeref:typename:void
+_Node	chemInfo.h	/^  gc::Nilable<ChemInfoNode_sp>          _Node;$/;"	m	class:chem::Root_O	typeref:typename:gc::Nilable<ChemInfoNode_sp>
+_Tests	chemInfo.h	/^  core::T_sp		_Tests;$/;"	m	class:chem::Root_O	typeref:typename:core::T_sp
+_MaxTag	chemInfo.h	/^  size_t _MaxTag;$/;"	m	class:chem::Root_O	typeref:typename:size_t
+_Code	chemInfo.h	/^  std::string _Code;$/;"	m	class:chem::Root_O	typeref:typename:std::string
+depth	chemInfo.h	/^  virtual uint depth() const;$/;"	p	class:chem::Root_O	typeref:typename:uint
+originalCode	chemInfo.h	/^  virtual string originalCode() const { return this->_Code;};$/;"	f	class:chem::Root_O	typeref:typename:string
+asSmarts	chemInfo.h	/^  virtual string asSmarts() const;$/;"	p	class:chem::Root_O	typeref:typename:string
+create	chemInfo.h	/^  static Root_sp create(const std::string& originalCode, ChemInfoNode_sp node)$/;"	f	class:chem::Root_O	typeref:typename:Root_sp
+lazyTests	chemInfo.h	/^  core::HashTableEq_sp lazyTests();$/;"	p	class:chem::Root_O	typeref:typename:core::HashTableEq_sp
+setTests	chemInfo.h	/^  void setTests(core::List_sp tests);$/;"	p	class:chem::Root_O	typeref:typename:void
+addTest	chemInfo.h	/^  void addTest(core::Symbol_sp testSymbol, core::Function_sp testCode);$/;"	p	class:chem::Root_O	typeref:typename:void
+evaluateTest	chemInfo.h	/^  bool evaluateTest(core::Symbol_sp testSym, Atom_sp atom);$/;"	p	class:chem::Root_O	typeref:typename:bool
+getAssignType	chemInfo.h	/^  virtual core::Symbol_sp getAssignType() { return nil<core::Symbol_O>();};$/;"	f	class:chem::Root_O	typeref:typename:core::Symbol_sp
+children	chemInfo.h	/^  virtual core::T_sp children();$/;"	p	class:chem::Root_O	typeref:typename:core::T_sp
+type	chemInfo.h	/^  virtual	ChemInfoType	type() { return root; };$/;"	f	class:chem::Root_O	typeref:typename:ChemInfoType
+matches_Atom	chemInfo.h	/^  virtual	bool		matches_Atom( Root_sp root, chem::Atom_sp atom );$/;"	p	class:chem::Root_O	typeref:typename:bool
+matches_Bond	chemInfo.h	/^  virtual	bool		matches_Bond( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );$/;"	p	class:chem::Root_O	typeref:typename:bool
+Root_O	chemInfo.h	/^  Root_O(const std::string& code, ChemInfoNode_sp node, size_t maxtag) : _Code(code), _Node(node/;"	f	class:chem::Root_O
+Root_O	chemInfo.h	/^  Root_O(const std::string& code) : _Code(code) {};$/;"	f	class:chem::Root_O
+Root_O	chemInfo.h	/^  Root_O() : _Code(""), _Node(nil<core::T_O>()), _Tests(nil<core::T_O>()), _MaxTag(0) {};$/;"	f	class:chem::Root_O
+SMART	chemInfo.h	/^SMART(SmartsRoot);$/;"	p	namespace:chem
+SmartsRoot_O	chemInfo.h	/^class SmartsRoot_O : public Root_O$/;"	c	namespace:chem
+fieldsp	chemInfo.h	/^  bool fieldsp() const { return true; };$/;"	f	class:chem::SmartsRoot_O	typeref:typename:bool
+fields	chemInfo.h	/^  void	fields(core::Record_sp node);$/;"	p	class:chem::SmartsRoot_O	typeref:typename:void
+make	chemInfo.h	/^  static SmartsRoot_sp make(const std::string& code, ChemInfoNode_sp cinode,size_t maxtag);$/;"	p	class:chem::SmartsRoot_O	typeref:typename:SmartsRoot_sp
+type	chemInfo.h	/^  virtual	ChemInfoType	type() { return smartsRoot; };$/;"	f	class:chem::SmartsRoot_O	typeref:typename:ChemInfoType
+matches_Atom	chemInfo.h	/^  virtual	bool		matches_Atom( Root_sp root, chem::Atom_sp atom );$/;"	p	class:chem::SmartsRoot_O	typeref:typename:bool
+matches_Bond	chemInfo.h	/^  virtual	bool		matches_Bond( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );$/;"	p	class:chem::SmartsRoot_O	typeref:typename:bool
+SmartsRoot_O	chemInfo.h	/^  SmartsRoot_O(const std::string& code, ChemInfoNode_sp node, size_t maxtag) : Root_O(code,node,/;"	f	class:chem::SmartsRoot_O
+SmartsRoot_O	chemInfo.h	/^  SmartsRoot_O(const std::string& code) : Root_O(code) {};$/;"	f	class:chem::SmartsRoot_O
+SmartsRoot_O	chemInfo.h	/^  SmartsRoot_O() {};$/;"	f	class:chem::SmartsRoot_O
+FORWARD	chemInfo.h	/^FORWARD(Smirks);$/;"	p	namespace:chem
+Smirks_O	chemInfo.h	/^class Smirks_O : public core::CxxObject_O$/;"	c	namespace:chem
+fieldsp	chemInfo.h	/^  bool fieldsp() const { return true; };$/;"	f	class:chem::Smirks_O	typeref:typename:bool
+fields	chemInfo.h	/^  void	fields(core::Record_sp node);$/;"	p	class:chem::Smirks_O	typeref:typename:void
+make	chemInfo.h	/^  CL_DEF_CLASS_METHOD static Smirks_sp make(SmartsRoot_sp r, SmartsRoot_sp p) {$/;"	f	class:chem::Smirks_O	typeref:typename:CL_DEF_CLASS_METHOD Smirks_sp
+reactant	chemInfo.h	/^  CL_DEFMETHOD SmartsRoot_sp reactant() { return this->_reactant; };$/;"	f	class:chem::Smirks_O	typeref:typename:CL_DEFMETHOD SmartsRoot_sp
+product	chemInfo.h	/^  CL_DEFMETHOD SmartsRoot_sp product() { return this->_product; };$/;"	f	class:chem::Smirks_O	typeref:typename:CL_DEFMETHOD SmartsRoot_sp
+Smirks_O	chemInfo.h	/^  Smirks_O(SmartsRoot_sp r, SmartsRoot_sp p) : _reactant(r), _product(p) {};$/;"	f	class:chem::Smirks_O
+_reactant	chemInfo.h	/^  SmartsRoot_sp _reactant;$/;"	m	class:chem::Smirks_O	typeref:typename:SmartsRoot_sp
+_product	chemInfo.h	/^  SmartsRoot_sp _product;$/;"	m	class:chem::Smirks_O	typeref:typename:SmartsRoot_sp
+chem	chemInfo.h	/^namespace chem {$/;"	n
+SMART	chemInfo.h	/^SMART(AntechamberRoot);$/;"	p	namespace:chem
+AntechamberRoot_O	chemInfo.h	/^class AntechamberRoot_O : public Root_O$/;"	c	namespace:chem
+initialize	chemInfo.h	/^  void initialize();$/;"	p	class:chem::AntechamberRoot_O	typeref:typename:void
+fieldsp	chemInfo.h	/^  bool fieldsp() const { return true; };$/;"	f	class:chem::AntechamberRoot_O	typeref:typename:bool
+fields	chemInfo.h	/^  void	fields(core::Record_sp node);$/;"	p	class:chem::AntechamberRoot_O	typeref:typename:void
+_AfterMatchTests	chemInfo.h	/^   gc::Nilable<RootMatchNode_sp>         _AfterMatchTests;$/;"	m	class:chem::AntechamberRoot_O	typeref:typename:gc::Nilable<RootMatchNode_sp>
+_WildElementDictionary	chemInfo.h	/^  gc::Nilable<WildElementDict_sp>       _WildElementDictionary;$/;"	m	class:chem::AntechamberRoot_O	typeref:typename:gc::Nilable<WildElementDict_sp>
+setElementWildCardDictionary	chemInfo.h	/^  void    setElementWildCardDictionary(WildElementDict_sp dict) {$/;"	f	class:chem::AntechamberRoot_O	typeref:typename:void
+getElementWildCardDictionary	chemInfo.h	/^  WildElementDict_sp getElementWildCardDictionary() {$/;"	f	class:chem::AntechamberRoot_O	typeref:typename:WildElementDict_sp
+type	chemInfo.h	/^  virtual	ChemInfoType	type() { return antechamberRoot; };$/;"	f	class:chem::AntechamberRoot_O	typeref:typename:ChemInfoType
+matches_Atom	chemInfo.h	/^  virtual	bool		matches_Atom( Root_sp root, chem::Atom_sp atom );$/;"	p	class:chem::AntechamberRoot_O	typeref:typename:bool
+matches_Bond	chemInfo.h	/^  virtual	bool		matches_Bond( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );$/;"	p	class:chem::AntechamberRoot_O	typeref:typename:bool
+descriptionOfContents	chemInfo.h	/^  string descriptionOfContents() const;$/;"	p	class:chem::AntechamberRoot_O	typeref:typename:string
+children	chemInfo.h	/^  virtual core::T_sp children();$/;"	p	class:chem::AntechamberRoot_O	typeref:typename:core::T_sp
+AntechamberRoot_O	chemInfo.h	/^  AntechamberRoot_O(const std::string& code) : Root_O(code) {};$/;"	f	class:chem::AntechamberRoot_O
+DEFAULT_CTOR_DTOR	chemInfo.h	/^  DEFAULT_CTOR_DTOR(AntechamberRoot_O);$/;"	p	class:chem::AntechamberRoot_O
+chem	chemInfo.h	/^namespace chem {$/;"	n
+GCInfo	chemInfo.h	/^struct gctools::GCInfo<chem::MoleculeGraph_O> {$/;"	s	class:gctools
+NeedsInitialization	chemInfo.h	/^  static bool constexpr NeedsInitialization = true;$/;"	m	struct:gctools::GCInfo	typeref:typename:bool 
+NeedsFinalization	chemInfo.h	/^  static bool constexpr NeedsFinalization = true;$/;"	m	struct:gctools::GCInfo	typeref:typename:bool 
+Policy	chemInfo.h	/^  static GCInfo_policy constexpr Policy = normal;$/;"	m	struct:gctools::GCInfo	typeref:typename:GCInfo_policy 
+chem	chemInfo.h	/^namespace chem {$/;"	n
+MoleculeVertexData	chemInfo.h	/^struct MoleculeVertexData {$/;"	s	namespace:chem
+_AtomIndex	chemInfo.h	/^  int _AtomIndex;$/;"	m	struct:chem::MoleculeVertexData	typeref:typename:int
+MoleculeVertexData	chemInfo.h	/^  MoleculeVertexData(int i) : _AtomIndex(i) {};$/;"	f	struct:chem::MoleculeVertexData
+MoleculeVertexData	chemInfo.h	/^  MoleculeVertexData(): _AtomIndex(-1) {};$/;"	f	struct:chem::MoleculeVertexData
+BondOrderProperty	chemInfo.h	/^typedef boost::property<boost::edge_weight_t,BondOrder> BondOrderProperty;$/;"	t	namespace:chem	typeref:typename:boost::property<boost::edge_weight_t,BondOrder>
+MoleculeGraphType	chemInfo.h	/^                              BondOrderProperty> MoleculeGraphType;$/;"	t	namespace:chem	typeref:typename:boost::adjacency_list<boost::vecS,boost::vecS,boost::undirectedS,MoleculeVertexData,BondOrderProperty>
+FORWARD	chemInfo.h	/^FORWARD(MoleculeGraph);$/;"	p	namespace:chem
+MoleculeGraph_O	chemInfo.h	/^class MoleculeGraph_O : public core::CxxObject_O$/;"	c	namespace:chem
+initialize	chemInfo.h	/^  void initialize();$/;"	p	class:chem::MoleculeGraph_O	typeref:typename:void
+_nodes_to_index	chemInfo.h	/^  core::HashTableEq_sp     _nodes_to_index;$/;"	m	class:chem::MoleculeGraph_O	typeref:typename:core::HashTableEq_sp
+_nodes	chemInfo.h	/^  core::ComplexVector_T_sp _nodes;$/;"	m	class:chem::MoleculeGraph_O	typeref:typename:core::ComplexVector_T_sp
+_moleculeGraph	chemInfo.h	/^  MoleculeGraphType*       _moleculeGraph;$/;"	m	class:chem::MoleculeGraph_O	typeref:typename:MoleculeGraphType *
+_num_edges	chemInfo.h	/^  size_t                   _num_edges;$/;"	m	class:chem::MoleculeGraph_O	typeref:typename:size_t
+add_vertex	chemInfo.h	/^  size_t add_vertex(core::T_sp vertex);$/;"	p	class:chem::MoleculeGraph_O	typeref:typename:size_t
+vertex_index	chemInfo.h	/^  size_t vertex_index(core::T_sp vertex);$/;"	p	class:chem::MoleculeGraph_O	typeref:typename:size_t
+get_vertex	chemInfo.h	/^  core::T_sp get_vertex(size_t index);$/;"	p	class:chem::MoleculeGraph_O	typeref:typename:core::T_sp
+add_edge	chemInfo.h	/^  void add_edge(size_t v1, size_t v2, BondOrder bo);$/;"	p	class:chem::MoleculeGraph_O	typeref:typename:void
+walk_vertices	chemInfo.h	/^  void walk_vertices(core::T_sp callback);$/;"	p	class:chem::MoleculeGraph_O	typeref:typename:void
+walk_edges	chemInfo.h	/^  void walk_edges(core::T_sp callback);$/;"	p	class:chem::MoleculeGraph_O	typeref:typename:void
+num_vertices	chemInfo.h	/^  size_t num_vertices();$/;"	p	class:chem::MoleculeGraph_O	typeref:typename:size_t
+num_edges	chemInfo.h	/^  size_t num_edges();$/;"	p	class:chem::MoleculeGraph_O	typeref:typename:size_t
+MoleculeGraph_O	chemInfo.h	/^  MoleculeGraph_O(Molecule_sp);$/;"	p	class:chem::MoleculeGraph_O
+MoleculeGraph_O	chemInfo.h	/^  MoleculeGraph_O();$/;"	p	class:chem::MoleculeGraph_O
+~MoleculeGraph_O	chemInfo.h	/^  ~MoleculeGraph_O();$/;"	p	class:chem::MoleculeGraph_O
+chem	chemInfo.h	/^namespace chem {$/;"	n
+GCInfo	chemInfo.h	/^struct gctools::GCInfo<chem::ChemInfoGraph_O> {$/;"	s	class:gctools
+NeedsInitialization	chemInfo.h	/^  static bool constexpr NeedsInitialization = true;$/;"	m	struct:gctools::GCInfo	typeref:typename:bool 
+NeedsFinalization	chemInfo.h	/^  static bool constexpr NeedsFinalization = true;$/;"	m	struct:gctools::GCInfo	typeref:typename:bool 
+Policy	chemInfo.h	/^  static GCInfo_policy constexpr Policy = normal;$/;"	m	struct:gctools::GCInfo	typeref:typename:GCInfo_policy 
+chem	chemInfo.h	/^namespace chem {$/;"	n
+ChemInfoVertexData	chemInfo.h	/^struct ChemInfoVertexData {$/;"	s	namespace:chem
+_NodeIndex	chemInfo.h	/^  int _NodeIndex;$/;"	m	struct:chem::ChemInfoVertexData	typeref:typename:int
+ChemInfoVertexData	chemInfo.h	/^  ChemInfoVertexData(int i) : _NodeIndex(i) {};$/;"	f	struct:chem::ChemInfoVertexData
+ChemInfoVertexData	chemInfo.h	/^  ChemInfoVertexData() : _NodeIndex(-1) {};$/;"	f	struct:chem::ChemInfoVertexData
+RingBond	chemInfo.h	/^struct RingBond {$/;"	s	namespace:chem
+_Bond	chemInfo.h	/^  BondEnum _Bond;$/;"	m	struct:chem::RingBond	typeref:typename:BondEnum
+_NodeIndex	chemInfo.h	/^  int _NodeIndex;$/;"	m	struct:chem::RingBond	typeref:typename:int
+RingBond	chemInfo.h	/^  RingBond(BondEnum b, int ni) : _Bond(b), _NodeIndex(ni) {};$/;"	f	struct:chem::RingBond
+RingClosers	chemInfo.h	/^struct RingClosers {$/;"	s	namespace:chem
+_Active	chemInfo.h	/^  bool _Active;$/;"	m	struct:chem::RingClosers	typeref:typename:bool
+_NodeIndex	chemInfo.h	/^  int _NodeIndex;$/;"	m	struct:chem::RingClosers	typeref:typename:int
+_Bonds	chemInfo.h	/^  std::vector<RingBond> _Bonds;$/;"	m	struct:chem::RingClosers	typeref:typename:std::vector<RingBond>
+RingClosers	chemInfo.h	/^  RingClosers() : _Active(false) {};$/;"	f	struct:chem::RingClosers
+EdgeProperty	chemInfo.h	/^typedef boost::property<boost::edge_index_t,int> EdgeProperty;$/;"	t	namespace:chem	typeref:typename:boost::property<boost::edge_index_t,int>
+ChemInfoGraphType	chemInfo.h	/^                              EdgeProperty> ChemInfoGraphType;$/;"	t	namespace:chem	typeref:typename:boost::adjacency_list<boost::vecS,boost::vecS,boost::undirectedS,ChemInfoVertexData,EdgeProperty>
+FORWARD	chemInfo.h	/^FORWARD(ChemInfoGraph);$/;"	p	namespace:chem
+ChemInfoGraph_O	chemInfo.h	/^class ChemInfoGraph_O : public core::CxxObject_O$/;"	c	namespace:chem
+initialize	chemInfo.h	/^  void initialize();$/;"	p	class:chem::ChemInfoGraph_O	typeref:typename:void
+_Root	chemInfo.h	/^  Root_sp                _Root;$/;"	m	class:chem::ChemInfoGraph_O	typeref:typename:Root_sp
+_nodes_to_index	chemInfo.h	/^  core::HashTableEq_sp   _nodes_to_index;$/;"	m	class:chem::ChemInfoGraph_O	typeref:typename:core::HashTableEq_sp
+_nodeOrder	chemInfo.h	/^  gctools::Vec0<size_t>          _nodeOrder;$/;"	m	class:chem::ChemInfoGraph_O	typeref:typename:gctools::Vec0<size_t>
+_atomNodes	chemInfo.h	/^  gctools::Vec0<ChemInfoNode_sp> _atomNodes;$/;"	m	class:chem::ChemInfoGraph_O	typeref:typename:gctools::Vec0<ChemInfoNode_sp>
+_bondNodes	chemInfo.h	/^  gctools::Vec0<BondToAtomTest_sp> _bondNodes;$/;"	m	class:chem::ChemInfoGraph_O	typeref:typename:gctools::Vec0<BondToAtomTest_sp>
+_chemInfoGraph	chemInfo.h	/^  ChemInfoGraphType*     _chemInfoGraph;$/;"	m	class:chem::ChemInfoGraph_O	typeref:typename:ChemInfoGraphType *
+ChemInfoGraph_O	chemInfo.h	/^  ChemInfoGraph_O(Root_sp);$/;"	p	class:chem::ChemInfoGraph_O
+~ChemInfoGraph_O	chemInfo.h	/^  ~ChemInfoGraph_O();$/;"	p	class:chem::ChemInfoGraph_O
+buildFromRoot_	chemInfo.h	/^  void buildFromRoot_(); $/;"	p	class:chem::ChemInfoGraph_O	typeref:typename:void
+fixupInternalsForSnapshotSaveLoad	chemInfo.h	/^  void fixupInternalsForSnapshotSaveLoad(snapshotSaveLoad::Fixup* fixup) {$/;"	f	class:chem::ChemInfoGraph_O	typeref:typename:void
+chem	chemInfo.h	/^namespace chem {$/;"	n
+chem__chem_info_match	chemInfo.h	/^core::T_mv chem__chem_info_match(Root_sp testRoot, Atom_sp atom);$/;"	p	namespace:chem	typeref:typename:core::T_mv
+chem__compile_smarts	chemInfo.h	/^SmartsRoot_sp chem__compile_smarts(const string& smarts, core::List_sp tests);$/;"	p	namespace:chem	typeref:typename:SmartsRoot_sp
+chem__compile_antechamber	chemInfo.h	/^AntechamberRoot_mv chem__compile_antechamber(const string& smarts,WildElementDict_sp xpdict);$/;"	p	namespace:chem	typeref:typename:AntechamberRoot_mv
+DIMACS_H	maxcliqueseq.h	/^#define DIMACS_H$/;"	d
+chem	maxcliqueseq.h	/^namespace chem {$/;"	n
+GCInfo	maxcliqueseq.h	/^struct gctools::GCInfo<chem::Dimacs_O> {$/;"	s	class:gctools
+CanAllocateWithNoArguments	maxcliqueseq.h	/^  static bool constexpr CanAllocateWithNoArguments = true;$/;"	m	struct:gctools::GCInfo	typeref:typename:bool 
+NeedsInitialization	maxcliqueseq.h	/^  static bool constexpr NeedsInitialization = true;$/;"	m	struct:gctools::GCInfo	typeref:typename:bool 
+NeedsFinalization	maxcliqueseq.h	/^  static bool constexpr NeedsFinalization = true;$/;"	m	struct:gctools::GCInfo	typeref:typename:bool 
+Policy	maxcliqueseq.h	/^  static GCInfo_policy constexpr Policy = normal;$/;"	m	struct:gctools::GCInfo	typeref:typename:GCInfo_policy 
+chem	maxcliqueseq.h	/^namespace chem {$/;"	n
+FORWARD	maxcliqueseq.h	/^FORWARD(Dimacs);$/;"	p	namespace:chem
+Dimacs_O	maxcliqueseq.h	/^    class Dimacs_O : public core::CxxObject_O {$/;"	c	namespace:chem
+Edge	maxcliqueseq.h	/^        typedef std::pair<int, int> Edge;$/;"	t	class:chem::Dimacs_O	typeref:typename:std::pair<int,int>
+edges	maxcliqueseq.h	/^      gctools::Vec0<Edge> edges;$/;"	m	class:chem::Dimacs_O	typeref:typename:gctools::Vec0<Edge>
+degrees	maxcliqueseq.h	/^      gctools::Vec0<int> degrees;$/;"	m	class:chem::Dimacs_O	typeref:typename:gctools::Vec0<int>
+numVertices	maxcliqueseq.h	/^      size_t numVertices;$/;"	m	class:chem::Dimacs_O	typeref:typename:size_t
+adjacencyMatrixSizeLimit	maxcliqueseq.h	/^      size_t adjacencyMatrixSizeLimit; \/\/ TODO: set this from commandline$/;"	m	class:chem::Dimacs_O	typeref:typename:size_t
+make	maxcliqueseq.h	/^      static Dimacs_sp make(size_t numVertices, size_t numEdges );$/;"	p	class:chem::Dimacs_O	typeref:typename:Dimacs_sp
+Dimacs_O	maxcliqueseq.h	/^        Dimacs_O(size_t numVertices, size_t numEdges);$/;"	p	class:chem::Dimacs_O
+Dimacs_O	maxcliqueseq.h	/^      Dimacs_O();$/;"	p	class:chem::Dimacs_O
+~Dimacs_O	maxcliqueseq.h	/^        ~Dimacs_O();$/;"	p	class:chem::Dimacs_O
+add_edge	maxcliqueseq.h	/^      void add_edge(size_t v1, size_t v2);$/;"	p	class:chem::Dimacs_O	typeref:typename:void
+load	maxcliqueseq.h	/^      bool load(const char* fname);$/;"	p	class:chem::Dimacs_O	typeref:typename:bool
+getNumVertices	maxcliqueseq.h	/^      unsigned int getNumVertices() const {return numVertices;}$/;"	f	class:chem::Dimacs_O	typeref:typename:unsigned int
+getNumEdges	maxcliqueseq.h	/^      unsigned int getNumEdges() const {return edges.size();}$/;"	f	class:chem::Dimacs_O	typeref:typename:unsigned int
+getAdjacencyMatrix	maxcliqueseq.h	/^      gctools::Vec0<gctools::Vec0<char> > getAdjacencyMatrix() const;$/;"	p	class:chem::Dimacs_O	typeref:typename:gctools::Vec0<gctools::Vec0<char>>
+getDegrees	maxcliqueseq.h	/^      gctools::Vec0<int> getDegrees() const {return degrees;}$/;"	f	class:chem::Dimacs_O	typeref:typename:gctools::Vec0<int>
+calculateGraphStats	maxcliqueseq.h	/^      void calculateGraphStats(int& maxdegree, int& minDegree, std::vector<float>& degreeHistogr/;"	p	class:chem::Dimacs_O	typeref:typename:void
+fixupInternalsForSnapshotSaveLoad	maxcliqueseq.h	/^      void fixupInternalsForSnapshotSaveLoad(snapshotSaveLoad::Fixup* fixup) {$/;"	f	class:chem::Dimacs_O	typeref:typename:void
+FFMinimizer_H	minimizer.h	/^#define	FFMinimizer_H$/;"	d
+chem	minimizer.h	/^namespace       chem$/;"	n
+SMART	minimizer.h	/^  SMART(Atom);$/;"	p	namespace:chem
+SMART	minimizer.h	/^  SMART(Residue);$/;"	p	namespace:chem
+SMART	minimizer.h	/^  SMART(ForceField);$/;"	p	namespace:chem
+SMART	minimizer.h	/^  SMART(MinimizerLog);$/;"	p	namespace:chem
+SMART	minimizer.h	/^  SMART(ScoringFunction);$/;"	p	namespace:chem
+SMART	minimizer.h	/^  SMART(SparseLargeSquareMatrix);$/;"	p	namespace:chem
+SMART	minimizer.h	/^  SMART(StepReport);$/;"	p	namespace:chem
+CALLBACK_ERROR	minimizer.h	/^#define	CALLBACK_ERROR	/;"	d
+CALLBACK_CONT	minimizer.h	/^#define	CALLBACK_CONT	/;"	d
+CALLBACK_HALT	minimizer.h	/^#define	CALLBACK_HALT	/;"	d
+__anon1503dd0f0103	minimizer.h	/^  typedef	enum { minimizerIdle,$/;"	g	namespace:chem
+minimizerIdle	minimizer.h	/^  typedef	enum { minimizerIdle,$/;"	e	enum:chem::__anon1503dd0f0103
+steepestDescentRunning	minimizer.h	/^		       steepestDescentRunning,$/;"	e	enum:chem::__anon1503dd0f0103
+conjugateGradientRunning	minimizer.h	/^		       conjugateGradientRunning,$/;"	e	enum:chem::__anon1503dd0f0103
+truncatedNewtonRunning	minimizer.h	/^		       truncatedNewtonRunning,$/;"	e	enum:chem::__anon1503dd0f0103
+minimizerSucceeded	minimizer.h	/^		       minimizerSucceeded, minimizerError } MinimizerStatus;$/;"	e	enum:chem::__anon1503dd0f0103
+minimizerError	minimizer.h	/^		       minimizerSucceeded, minimizerError } MinimizerStatus;$/;"	e	enum:chem::__anon1503dd0f0103
+MinimizerStatus	minimizer.h	/^		       minimizerSucceeded, minimizerError } MinimizerStatus;$/;"	t	namespace:chem	typeref:enum:chem::__anon1503dd0f0103
+__anon1503dd0f0203	minimizer.h	/^  typedef	enum	{ unknownPreconditioner, noPreconditioner, hessianPreconditioner } Preconditioner/;"	g	namespace:chem
+unknownPreconditioner	minimizer.h	/^  typedef	enum	{ unknownPreconditioner, noPreconditioner, hessianPreconditioner } Preconditioner/;"	e	enum:chem::__anon1503dd0f0203
+noPreconditioner	minimizer.h	/^  typedef	enum	{ unknownPreconditioner, noPreconditioner, hessianPreconditioner } Preconditioner/;"	e	enum:chem::__anon1503dd0f0203
+hessianPreconditioner	minimizer.h	/^  typedef	enum	{ unknownPreconditioner, noPreconditioner, hessianPreconditioner } Preconditioner/;"	e	enum:chem::__anon1503dd0f0203
+PreconditionerType	minimizer.h	/^  typedef	enum	{ unknownPreconditioner, noPreconditioner, hessianPreconditioner } Preconditioner/;"	t	namespace:chem	typeref:enum:chem::__anon1503dd0f0203
+stringForPreconditionerType	minimizer.h	/^  extern	string	stringForPreconditionerType(PreconditionerType t);$/;"	p	namespace:chem	typeref:typename:string
+shortStringForPreconditionerType	minimizer.h	/^  extern	string	shortStringForPreconditionerType(PreconditionerType t);$/;"	p	namespace:chem	typeref:typename:string
+preconditionerTypeFromString	minimizer.h	/^  extern	PreconditionerType	preconditionerTypeFromString(const string& t );$/;"	p	namespace:chem	typeref:typename:PreconditionerType
+RestartMinimizer	minimizer.h	/^struct RestartMinimizer {};$/;"	s	namespace:chem
+MinimizerCondition	minimizer.h	/^  struct MinimizerCondition  {$/;"	s	namespace:chem
+MinimizerCondition_ExceededNumSteps	minimizer.h	/^  struct MinimizerCondition_ExceededNumSteps : public MinimizerCondition {$/;"	s	namespace:chem
+_Minimizer	minimizer.h	/^    core::Symbol_sp    _Minimizer;$/;"	m	struct:chem::MinimizerCondition_ExceededNumSteps	typeref:typename:core::Symbol_sp
+_NumberOfSteps	minimizer.h	/^    size_t _NumberOfSteps;$/;"	m	struct:chem::MinimizerCondition_ExceededNumSteps	typeref:typename:size_t
+MinimizerCondition_ExceededNumSteps	minimizer.h	/^  MinimizerCondition_ExceededNumSteps(core::Symbol_sp min, size_t steps)$/;"	f	struct:chem::MinimizerCondition_ExceededNumSteps
+MinimizerCondition_Stuck	minimizer.h	/^  class   MinimizerCondition_Stuck$/;"	c	namespace:chem
+_Message	minimizer.h	/^    string _Message;$/;"	m	class:chem::MinimizerCondition_Stuck	typeref:typename:string
+message	minimizer.h	/^    string  message() { return "Minimizer is stuck!("+ this->_Message+")"; };$/;"	f	class:chem::MinimizerCondition_Stuck	typeref:typename:string
+MinimizerCondition_Stuck	minimizer.h	/^    MinimizerCondition_Stuck(const string& msg) {this->_Message = msg;};$/;"	f	class:chem::MinimizerCondition_Stuck
+~MinimizerCondition_Stuck	minimizer.h	/^    virtual ~MinimizerCondition_Stuck() throw() {};$/;"	f	class:chem::MinimizerCondition_Stuck
+SMART	minimizer.h	/^  SMART(Minimizer);$/;"	p	namespace:chem
+Minimizer_O	minimizer.h	/^  class Minimizer_O : public core::CxxObject_O$/;"	c	namespace:chem
+make	minimizer.h	/^    static Minimizer_sp make(ScoringFunction_sp givenEnergyFunction);$/;"	p	class:chem::Minimizer_O	typeref:typename:Minimizer_sp
+initialize	minimizer.h	/^    void initialize();$/;"	p	class:chem::Minimizer_O	typeref:typename:void
+fieldsp	minimizer.h	/^    bool fieldsp() const { return true; };$/;"	f	class:chem::Minimizer_O	typeref:typename:bool
+fields	minimizer.h	/^    void fields(core::Record_sp node);$/;"	p	class:chem::Minimizer_O	typeref:typename:void
+_InitialLineSearchStep	minimizer.h	/^    double		_InitialLineSearchStep;$/;"	m	class:chem::Minimizer_O	typeref:typename:double
+_SteepestDescentTolerance	minimizer.h	/^    double		_SteepestDescentTolerance;$/;"	m	class:chem::Minimizer_O	typeref:typename:double
+_NumberOfSteepestDescentSteps	minimizer.h	/^    int			_NumberOfSteepestDescentSteps;$/;"	m	class:chem::Minimizer_O	typeref:typename:int
+_NumberOfConjugateGradientSteps	minimizer.h	/^    int			_NumberOfConjugateGradientSteps;$/;"	m	class:chem::Minimizer_O	typeref:typename:int
+_ConjugateGradientTolerance	minimizer.h	/^    double		_ConjugateGradientTolerance;$/;"	m	class:chem::Minimizer_O	typeref:typename:double
+_NumberOfTruncatedNewtonSteps	minimizer.h	/^    int			_NumberOfTruncatedNewtonSteps;$/;"	m	class:chem::Minimizer_O	typeref:typename:int
+_TruncatedNewtonTolerance	minimizer.h	/^    double		_TruncatedNewtonTolerance;$/;"	m	class:chem::Minimizer_O	typeref:typename:double
+_TruncatedNewtonPreconditioner	minimizer.h	/^    PreconditionerType	_TruncatedNewtonPreconditioner;$/;"	m	class:chem::Minimizer_O	typeref:typename:PreconditionerType
+_DebugOn	minimizer.h	/^    bool		_DebugOn;$/;"	m	class:chem::Minimizer_O	typeref:typename:bool
+_Log	minimizer.h	/^    MinimizerLog_sp	_Log;$/;"	m	class:chem::Minimizer_O	typeref:typename:MinimizerLog_sp
+_Status	minimizer.h	/^    MinimizerStatus	_Status;$/;"	m	class:chem::Minimizer_O	typeref:typename:MinimizerStatus
+_CurrentPreconditioner	minimizer.h	/^    PreconditionerType	_CurrentPreconditioner;$/;"	m	class:chem::Minimizer_O	typeref:typename:PreconditionerType
+_MinBracketSteps	minimizer.h	/^    int			_MinBracketSteps;$/;"	m	class:chem::Minimizer_O	typeref:typename:int
+_PrintIntermediateResults	minimizer.h	/^    size_t		_PrintIntermediateResults;$/;"	m	class:chem::Minimizer_O	typeref:typename:size_t
+_ReportEveryNSteps	minimizer.h	/^    int			_ReportEveryNSteps;$/;"	m	class:chem::Minimizer_O	typeref:typename:int
+_ScoringFunction	minimizer.h	/^    ScoringFunction_sp	_ScoringFunction;$/;"	m	class:chem::Minimizer_O	typeref:typename:ScoringFunction_sp
+_Iteration	minimizer.h	/^    int			_Iteration;$/;"	m	class:chem::Minimizer_O	typeref:typename:int
+_StartTime	minimizer.h	/^    dont_expose<std::chrono::time_point<std::chrono::steady_clock>>	_StartTime;$/;"	m	class:chem::Minimizer_O	typeref:typename:dont_expose<std::chrono::time_point<std::chrono::steady_clock>>
+_ShowElapsedTime	minimizer.h	/^    bool		_ShowElapsedTime;$/;"	m	class:chem::Minimizer_O	typeref:typename:bool
+_MinGradientMean	minimizer.h	/^    double		_MinGradientMean;$/;"	m	class:chem::Minimizer_O	typeref:typename:double
+_RMSForce	minimizer.h	/^    double		_RMSForce;$/;"	m	class:chem::Minimizer_O	typeref:typename:double
+nvP1DSearchTemp1	minimizer.h	/^    NVector_sp		nvP1DSearchTemp1;$/;"	m	class:chem::Minimizer_O	typeref:typename:NVector_sp
+nvP1DSearchTemp2	minimizer.h	/^    NVector_sp		nvP1DSearchTemp2;$/;"	m	class:chem::Minimizer_O	typeref:typename:NVector_sp
+nvP1DSearchOrigin	minimizer.h	/^    NVector_sp		nvP1DSearchOrigin;$/;"	m	class:chem::Minimizer_O	typeref:typename:NVector_sp
+nvP1DSearchDirection	minimizer.h	/^    NVector_sp		nvP1DSearchDirection;$/;"	m	class:chem::Minimizer_O	typeref:typename:NVector_sp
+_Frozen	minimizer.h	/^    core::T_sp          _Frozen;$/;"	m	class:chem::Minimizer_O	typeref:typename:core::T_sp
+_Position	minimizer.h	/^    gc::Nilable<NVector_sp> _Position;$/;"	m	class:chem::Minimizer_O	typeref:typename:gc::Nilable<NVector_sp>
+_Force	minimizer.h	/^    gc::Nilable<NVector_sp> _Force;$/;"	m	class:chem::Minimizer_O	typeref:typename:gc::Nilable<NVector_sp>
+_StepCallback	minimizer.h	/^    core::T_sp          _StepCallback;$/;"	m	class:chem::Minimizer_O	typeref:typename:core::T_sp
+set_frozen	minimizer.h	/^    void set_frozen(core::T_sp frozen);$/;"	p	class:chem::Minimizer_O	typeref:typename:void
+set_initial_line_search_step	minimizer.h	/^    void set_initial_line_search_step(double step);$/;"	p	class:chem::Minimizer_O	typeref:typename:void
+lineSearchInitialReport	minimizer.h	/^    void lineSearchInitialReport( StepReport_sp report,$/;"	p	class:chem::Minimizer_O	typeref:typename:void
+lineSearchFinalReport	minimizer.h	/^    void lineSearchFinalReport( StepReport_sp report, double step, double fmin,$/;"	p	class:chem::Minimizer_O	typeref:typename:void
+stepReport	minimizer.h	/^    void stepReport( StepReport_sp report, double energy,NVector_sp force );$/;"	p	class:chem::Minimizer_O	typeref:typename:void
+getPosition	minimizer.h	/^    void	getPosition(NVector_sp nvResult, NVector_sp nvOrigin, NVector_sp nvDirection, double x)/;"	p	class:chem::Minimizer_O	typeref:typename:void
+dTotalEnergy	minimizer.h	/^    double dTotalEnergy(NVector_sp pos);$/;"	p	class:chem::Minimizer_O	typeref:typename:double
+dTotalEnergyForce	minimizer.h	/^    double dTotalEnergyForce( NVector_sp nvPos, NVector_sp nvForce);$/;"	p	class:chem::Minimizer_O	typeref:typename:double
+d1DTotalEnergy	minimizer.h	/^    double d1DTotalEnergy(double x);$/;"	p	class:chem::Minimizer_O	typeref:typename:double
+d1DTotalEnergyForce	minimizer.h	/^    double d1DTotalEnergyForce( double x, double* fx, double* dfx );$/;"	p	class:chem::Minimizer_O	typeref:typename:double
+minBracket	minimizer.h	/^    void   minBracket(	NVector_sp	nvOrigin,$/;"	p	class:chem::Minimizer_O	typeref:typename:void
+dbrent	minimizer.h	/^    double 	dbrent(	double ax, double bx, double cx,$/;"	p	class:chem::Minimizer_O	typeref:typename:double
+lineSearch	minimizer.h	/^    void	lineSearch(	double	*dPxnew,$/;"	p	class:chem::Minimizer_O	typeref:typename:void
+define1DSearch	minimizer.h	/^    void		define1DSearch( NVector_sp o, NVector_sp d,$/;"	f	class:chem::Minimizer_O	typeref:typename:void
+_steepestDescent	minimizer.h	/^    void	_steepestDescent( int numSteps,$/;"	p	class:chem::Minimizer_O	typeref:typename:void
+_conjugateGradient	minimizer.h	/^    void	_conjugateGradient( int numSteps,$/;"	p	class:chem::Minimizer_O	typeref:typename:void
+_truncatedNewton	minimizer.h	/^    void	_truncatedNewton( int numSteps,$/;"	p	class:chem::Minimizer_O	typeref:typename:void
+_evaluateEnergyAndForceManyTimes	minimizer.h	/^    void	_evaluateEnergyAndForceManyTimes( int numSteps, NVector_sp nvPos );$/;"	p	class:chem::Minimizer_O	typeref:typename:void
+validateForce	minimizer.h	/^    void	validateForce(NVector_sp pos, NVector_sp force);$/;"	p	class:chem::Minimizer_O	typeref:typename:void
+debugBeginIteration	minimizer.h	/^    void	debugBeginIteration(int i);$/;"	p	class:chem::Minimizer_O	typeref:typename:void
+debugAccumulateMessage	minimizer.h	/^    void	debugAccumulateMessage( const char* str );$/;"	p	class:chem::Minimizer_O	typeref:typename:void
+debugEndIteration	minimizer.h	/^    void	debugEndIteration();$/;"	p	class:chem::Minimizer_O	typeref:typename:void
+_displayIntermediateMessage	minimizer.h	/^    bool _displayIntermediateMessage( double		step,$/;"	p	class:chem::Minimizer_O	typeref:typename:bool
+_truncatedNewtonInnerLoop	minimizer.h	/^    void _truncatedNewtonInnerLoop($/;"	p	class:chem::Minimizer_O	typeref:typename:void
+throwMinimizerExceededMaxSteps	minimizer.h	/^    void throwMinimizerExceededMaxSteps();$/;"	p	class:chem::Minimizer_O	typeref:typename:void
+throwMinimizerStuck	minimizer.h	/^    void throwMinimizerStuck();$/;"	p	class:chem::Minimizer_O	typeref:typename:void
+throwMinimizerError	minimizer.h	/^    void throwMinimizerError();$/;"	p	class:chem::Minimizer_O	typeref:typename:void
+getEnergyFunction	minimizer.h	/^    CL_DEFMETHOD 	ScoringFunction_sp	getEnergyFunction() {_OF(); ASSERTNOTNULL(this->_ScoringFun/;"	f	class:chem::Minimizer_O	typeref:typename:CL_DEFMETHOD ScoringFunction_sp
+useDefaultSettings	minimizer.h	/^    void	useDefaultSettings();$/;"	p	class:chem::Minimizer_O	typeref:typename:void
+changeOptions	minimizer.h	/^    void	changeOptions(core::List_sp options);$/;"	p	class:chem::Minimizer_O	typeref:typename:void
+status	minimizer.h	/^    MinimizerStatus status()	{return this->_Status;};$/;"	f	class:chem::Minimizer_O	typeref:typename:MinimizerStatus
+statusAsInt	minimizer.h	/^    CL_DEFMETHOD 	int statusAsInt()	{return (int)(this->_Status);};$/;"	f	class:chem::Minimizer_O	typeref:typename:CL_DEFMETHOD int
+getIteration	minimizer.h	/^    CL_DEFMETHOD 	int	getIteration()	{ return this->_Iteration; };$/;"	f	class:chem::Minimizer_O	typeref:typename:CL_DEFMETHOD int
+statusAsString	minimizer.h	/^    string	statusAsString();$/;"	p	class:chem::Minimizer_O	typeref:typename:string
+statusAsShortString	minimizer.h	/^    string	statusAsShortString();$/;"	p	class:chem::Minimizer_O	typeref:typename:string
+getRMSForce	minimizer.h	/^    CL_DEFMETHOD 	double	getRMSForce() { return this->_RMSForce; };$/;"	f	class:chem::Minimizer_O	typeref:typename:CL_DEFMETHOD double
+setStepCallback	minimizer.h	/^    CL_DEFMETHOD void	setStepCallback(core::T_sp stepCallback) { this->_StepCallback = stepCallb/;"	f	class:chem::Minimizer_O	typeref:typename:CL_DEFMETHOD void
+setMaximumNumberOfSteepestDescentSteps	minimizer.h	/^    CL_DEFMETHOD 	void	setMaximumNumberOfSteepestDescentSteps(int m) {this->_NumberOfSteepestDes/;"	f	class:chem::Minimizer_O	typeref:typename:CL_DEFMETHOD void
+setMaximumNumberOfConjugateGradientSteps	minimizer.h	/^    CL_DEFMETHOD 	void	setMaximumNumberOfConjugateGradientSteps(int m) {this->_NumberOfConjugate/;"	f	class:chem::Minimizer_O	typeref:typename:CL_DEFMETHOD void
+setMaximumNumberOfTruncatedNewtonSteps	minimizer.h	/^    CL_DEFMETHOD 	void	setMaximumNumberOfTruncatedNewtonSteps(int m) {this->_NumberOfTruncatedNe/;"	f	class:chem::Minimizer_O	typeref:typename:CL_DEFMETHOD void
+setSteepestDescentTolerance	minimizer.h	/^    CL_DEFMETHOD 	void	setSteepestDescentTolerance(double m) {this->_SteepestDescentTolerance = /;"	f	class:chem::Minimizer_O	typeref:typename:CL_DEFMETHOD void
+setConjugateGradientTolerance	minimizer.h	/^    CL_DEFMETHOD 	void	setConjugateGradientTolerance(double m) {this->_ConjugateGradientToleranc/;"	f	class:chem::Minimizer_O	typeref:typename:CL_DEFMETHOD void
+setTruncatedNewtonTolerance	minimizer.h	/^    CL_DEFMETHOD 	void	setTruncatedNewtonTolerance(double m) {this->_TruncatedNewtonTolerance = /;"	f	class:chem::Minimizer_O	typeref:typename:CL_DEFMETHOD void
+setTruncatedNewtonPreconditioner	minimizer.h	/^    void	setTruncatedNewtonPreconditioner(PreconditionerType m) {this->_TruncatedNewtonPrecondit/;"	f	class:chem::Minimizer_O	typeref:typename:void
+setEnergyFunction	minimizer.h	/^    void	setEnergyFunction(ScoringFunction_sp ef);$/;"	p	class:chem::Minimizer_O	typeref:typename:void
+enablePrintIntermediateResults	minimizer.h	/^    void	enablePrintIntermediateResults(size_t steps, size_t level);$/;"	p	class:chem::Minimizer_O	typeref:typename:void
+disablePrintIntermediateResults	minimizer.h	/^    void	disablePrintIntermediateResults();$/;"	p	class:chem::Minimizer_O	typeref:typename:void
+setDebugOn	minimizer.h	/^    void        setDebugOn(bool debugOn);$/;"	p	class:chem::Minimizer_O	typeref:typename:void
+setReportEveryNSteps	minimizer.h	/^    void        setReportEveryNSteps(size_t steps);$/;"	p	class:chem::Minimizer_O	typeref:typename:void
+getReportEveryNSteps	minimizer.h	/^    size_t      getReportEveryNSteps();$/;"	p	class:chem::Minimizer_O	typeref:typename:size_t
+configurationAsString	minimizer.h	/^    string	configurationAsString();$/;"	p	class:chem::Minimizer_O	typeref:typename:string
+restart	minimizer.h	/^    void	restart();$/;"	p	class:chem::Minimizer_O	typeref:typename:void
+minimizeSteepestDescent	minimizer.h	/^    void	minimizeSteepestDescent();$/;"	p	class:chem::Minimizer_O	typeref:typename:void
+minimizeConjugateGradient	minimizer.h	/^    void	minimizeConjugateGradient();$/;"	p	class:chem::Minimizer_O	typeref:typename:void
+resetAndMinimize	minimizer.h	/^    void	resetAndMinimize();$/;"	p	class:chem::Minimizer_O	typeref:typename:void
+minimize	minimizer.h	/^    void	minimize();$/;"	p	class:chem::Minimizer_O	typeref:typename:void
+writeIntermediateResultsToEnergyFunction	minimizer.h	/^    void    writeIntermediateResultsToEnergyFunction();$/;"	p	class:chem::Minimizer_O	typeref:typename:void
+evaluateEnergyAndForceManyTimes	minimizer.h	/^    void	evaluateEnergyAndForceManyTimes(int times);$/;"	p	class:chem::Minimizer_O	typeref:typename:void
+asXml	minimizer.h	/^    adapt::QDomNode_sp	asXml();$/;"	p	class:chem::Minimizer_O	typeref:typename:adapt::QDomNode_sp
+Minimizer_O	minimizer.h	/^    Minimizer_O() : _PrintIntermediateResults(1), _StepCallback(nil<core::T_O>()), _Frozen(nil<c/;"	f	class:chem::Minimizer_O
+_sym__PLUS_minimizerStatusConverter_PLUS_	minimizer.h	/^  extern core::Symbol_sp& _sym__PLUS_minimizerStatusConverter_PLUS_;$/;"	x	namespace:chem	typeref:typename:core::Symbol_sp &
+_sym__PLUS_preconditionerTypeConverter_PLUS_	minimizer.h	/^  extern core::Symbol_sp& _sym__PLUS_preconditionerTypeConverter_PLUS_;$/;"	x	namespace:chem	typeref:typename:core::Symbol_sp &
+DECLARE_ENUM_SYMBOL_TRANSLATOR	minimizer.h	/^DECLARE_ENUM_SYMBOL_TRANSLATOR(chem::MinimizerStatus,chem::_sym__PLUS_minimizerStatusConverter_P/;"	p
+DECLARE_ENUM_SYMBOL_TRANSLATOR	minimizer.h	/^DECLARE_ENUM_SYMBOL_TRANSLATOR(chem::PreconditionerType,chem::_sym__PLUS_preconditionerTypeConve/;"	p
+EnergyAngle_H	energyAngle.h	/^#define	EnergyAngle_H$/;"	d
+chem	energyAngle.h	/^namespace chem {$/;"	n
+SMART	energyAngle.h	/^SMART(FFAngle);$/;"	p	namespace:chem
+XmlTag_Angle	energyAngle.h	/^inline	string	XmlTag_Angle() { return "Angle"; };$/;"	f	namespace:chem	typeref:typename:string
+XmlTag_EnergyAngle	energyAngle.h	/^inline	string	XmlTag_EnergyAngle() { return "EnergyAngle"; };$/;"	f	namespace:chem	typeref:typename:string
+TermAngle	energyAngle.h	/^struct TermAngle {$/;"	s	namespace:chem
+kt	energyAngle.h	/^	REAL		kt;	\/\/!< Angle bend force constant, this must match Mathematica code!$/;"	m	struct:chem::TermAngle	typeref:typename:REAL
+t0	energyAngle.h	/^	REAL		t0;	\/\/!< Angle bend equilibrium angle (Radians), this must match Mathematica code!$/;"	m	struct:chem::TermAngle	typeref:typename:REAL
+I1	energyAngle.h	/^	INT		I1;	\/\/!< i*3 index into coordinate vector for atom1, this must match Mathematica code!$/;"	m	struct:chem::TermAngle	typeref:typename:INT
+I2	energyAngle.h	/^	INT		I2;	\/\/!< i*3 index into coordinate vector for atom2, this must match Mathematica code!$/;"	m	struct:chem::TermAngle	typeref:typename:INT
+I3	energyAngle.h	/^	INT		I3;	\/\/!< i*3 index into coordinate vector for atom3, this must match Mathematica code!$/;"	m	struct:chem::TermAngle	typeref:typename:INT
+TermAngle	energyAngle.h	/^  TermAngle(REAL k, REAL t, INT i1, INT i2, INT i3) : kt(k), t0(t), I1(i1), I2(i2), I3(i3) {};$/;"	f	struct:chem::TermAngle
+TermAngle	energyAngle.h	/^  TermAngle() {};$/;"	f	struct:chem::TermAngle
+EnergyAngle	energyAngle.h	/^class EnergyAngle : public EnergyTerm $/;"	c	namespace:chem
+className	energyAngle.h	/^	string	className()	{ return "EnergyAngle"; };$/;"	f	class:chem::EnergyAngle	typeref:typename:string
+term	energyAngle.h	/^	TermAngle	term;$/;"	m	class:chem::EnergyAngle	typeref:typename:TermAngle
+_Atom1	energyAngle.h	/^        Atom_sp      	_Atom1;$/;"	m	class:chem::EnergyAngle	typeref:typename:Atom_sp
+_Atom2	energyAngle.h	/^        Atom_sp    	_Atom2;$/;"	m	class:chem::EnergyAngle	typeref:typename:Atom_sp
+_Atom3	energyAngle.h	/^        Atom_sp		_Atom3;$/;"	m	class:chem::EnergyAngle	typeref:typename:Atom_sp
+_calcForce	energyAngle.h	/^	bool		_calcForce;$/;"	m	class:chem::EnergyAngle	typeref:typename:bool
+_calcDiagonalHessian	energyAngle.h	/^	bool		_calcDiagonalHessian;$/;"	m	class:chem::EnergyAngle	typeref:typename:bool
+_calcOffDiagonalHessian	energyAngle.h	/^	bool		_calcOffDiagonalHessian;$/;"	m	class:chem::EnergyAngle	typeref:typename:bool
+EnergyAngle	energyAngle.h	/^  EnergyAngle(Atom_sp a1, Atom_sp a2, Atom_sp a3, size_t i1, size_t i2, size_t i3, double kt, do/;"	f	class:chem::EnergyAngle
+EnergyAngle	energyAngle.h	/^  EnergyAngle() {};$/;"	f	class:chem::EnergyAngle
+getAtom1	energyAngle.h	/^        Atom_sp	getAtom1() { return this->_Atom1; };$/;"	f	class:chem::EnergyAngle	typeref:typename:Atom_sp
+getAtom2	energyAngle.h	/^        Atom_sp	getAtom2() { return this->_Atom2; };$/;"	f	class:chem::EnergyAngle	typeref:typename:Atom_sp
+getAtom3	energyAngle.h	/^        Atom_sp	getAtom3() { return this->_Atom3; };$/;"	f	class:chem::EnergyAngle	typeref:typename:Atom_sp
+getT0	energyAngle.h	/^	double	getT0()	{return this->term.t0;};$/;"	f	class:chem::EnergyAngle	typeref:typename:double
+getT	energyAngle.h	/^	double	getT();$/;"	p	class:chem::EnergyAngle	typeref:typename:double
+getTheta	energyAngle.h	/^	double	getTheta() {return this->getT();};$/;"	f	class:chem::EnergyAngle	typeref:typename:double
+getT0Degrees	energyAngle.h	/^	double	getT0Degrees()	{return this->getT0()\/0.0174533;};$/;"	f	class:chem::EnergyAngle	typeref:typename:double
+getTDegrees	energyAngle.h	/^	double	getTDegrees()	{return this->getT()\/0.0174533;};$/;"	f	class:chem::EnergyAngle	typeref:typename:double
+getThetaDegrees	energyAngle.h	/^	double	getThetaDegrees(){return this->getTDegrees();};$/;"	f	class:chem::EnergyAngle	typeref:typename:double
+asXml	energyAngle.h	/^	adapt::QDomNode_sp	asXml();$/;"	p	class:chem::EnergyAngle	typeref:typename:adapt::QDomNode_sp
+parseFromXmlUsingAtomTable	energyAngle.h	/^	void		parseFromXmlUsingAtomTable(adapt::QDomNode_sp xml,$/;"	p	class:chem::EnergyAngle	typeref:typename:void
+defineFrom	energyAngle.h	/^        void defineFrom( FFAngle_sp term, EnergyAtom *ea1, EnergyAtom *ea2, EnergyAtom *ea3, dou/;"	p	class:chem::EnergyAngle	typeref:typename:void
+defineMissing	energyAngle.h	/^	void defineMissing( EnergyAtom *ea1, EnergyAtom *ea2, EnergyAtom *ea3);$/;"	p	class:chem::EnergyAngle	typeref:typename:void
+encode	energyAngle.h	/^        core::List_sp encode() const;$/;"	p	class:chem::EnergyAngle	typeref:typename:core::List_sp
+decode	energyAngle.h	/^        void decode(core::List_sp alist);$/;"	p	class:chem::EnergyAngle	typeref:typename:void
+translate	energyAngle.h	/^namespace translate {$/;"	n
+to_object	energyAngle.h	/^struct	to_object<chem::EnergyAngle >$/;"	s	namespace:translate
+ExpectedType	energyAngle.h	/^  typedef	core::Cons_sp ExpectedType;$/;"	t	struct:translate::to_object	typeref:typename:core::Cons_sp
+DeclareType	energyAngle.h	/^  typedef	core::Cons_sp DeclareType;$/;"	t	struct:translate::to_object	typeref:typename:core::Cons_sp
+convert	energyAngle.h	/^  static core::T_sp convert(const chem::EnergyAngle& angle)$/;"	f	struct:translate::to_object	typeref:typename:core::T_sp
+from_object	energyAngle.h	/^struct	from_object<chem::EnergyAngle>$/;"	s	namespace:translate
+ExpectedType	energyAngle.h	/^  typedef	chem::EnergyAngle	ExpectedType;$/;"	t	struct:translate::from_object	typeref:typename:chem::EnergyAngle
+DeclareType	energyAngle.h	/^  typedef	ExpectedType 		DeclareType;$/;"	t	struct:translate::from_object	typeref:typename:ExpectedType
+_v	energyAngle.h	/^	DeclareType _v;$/;"	m	struct:translate::from_object	typeref:typename:DeclareType
+from_object	energyAngle.h	/^	from_object(core::T_sp o)$/;"	f	struct:translate::from_object
+chem	energyAngle.h	/^namespace chem {$/;"	n
+_evaluateEnergyOnly_Angle	energyAngle.h	/^double	_evaluateEnergyOnly_Angle($/;"	p	namespace:chem	typeref:typename:double
+EnergyAngle_O	energyAngle.h	/^class EnergyAngle_O : public EnergyComponent_O$/;"	c	namespace:chem
+fieldsp	energyAngle.h	/^    bool fieldsp() const { return true; };$/;"	f	class:chem::EnergyAngle_O	typeref:typename:bool
+fields	energyAngle.h	/^    void fields(core::Record_sp node);$/;"	p	class:chem::EnergyAngle_O	typeref:typename:void
+initialize	energyAngle.h	/^    void	initialize();$/;"	p	class:chem::EnergyAngle_O	typeref:typename:void
+TermType	energyAngle.h	/^    typedef EnergyAngle	TermType;$/;"	t	class:chem::EnergyAngle_O	typeref:typename:EnergyAngle
+_Terms	energyAngle.h	/^    gctools::Vec0<TermType>	_Terms;$/;"	m	class:chem::EnergyAngle_O	typeref:typename:gctools::Vec0<TermType>
+_BeyondThresholdTerms	energyAngle.h	/^    gctools::Vec0<TermType>	_BeyondThresholdTerms;$/;"	m	class:chem::EnergyAngle_O	typeref:typename:gctools::Vec0<TermType>
+iterator	energyAngle.h	/^    typedef gctools::Vec0<TermType>::iterator iterator;$/;"	t	class:chem::EnergyAngle_O	typeref:typename:gctools::Vec0<TermType>::iterator
+begin	energyAngle.h	/^    iterator begin() { return this->_Terms.begin(); };$/;"	f	class:chem::EnergyAngle_O	typeref:typename:iterator
+end	energyAngle.h	/^    iterator end() { return this->_Terms.end(); };$/;"	f	class:chem::EnergyAngle_O	typeref:typename:iterator
+numberOfTerms	energyAngle.h	/^    virtual size_t numberOfTerms() { return this->_Terms.size();};$/;"	f	class:chem::EnergyAngle_O	typeref:typename:size_t
+safe_amber_energy_angle_term	energyAngle.h	/^    CL_DEFMETHOD core::T_mv safe_amber_energy_angle_term(size_t index) {$/;"	f	class:chem::EnergyAngle_O	typeref:typename:CL_DEFMETHOD core::T_mv
+addTerm	energyAngle.h	/^    void addTerm(const TermType& term);$/;"	p	class:chem::EnergyAngle_O	typeref:typename:void
+dumpTerms	energyAngle.h	/^    virtual void dumpTerms();$/;"	p	class:chem::EnergyAngle_O	typeref:typename:void
+extract_vectors_as_alist	energyAngle.h	/^    virtual core::List_sp extract_vectors_as_alist() const;$/;"	p	class:chem::EnergyAngle_O	typeref:typename:core::List_sp
+fill_from_vectors_in_alist	energyAngle.h	/^    virtual void fill_from_vectors_in_alist(core::List_sp vectors);$/;"	p	class:chem::EnergyAngle_O	typeref:typename:void
+setupHessianPreconditioner	energyAngle.h	/^    virtual void setupHessianPreconditioner(NVector_sp nvPosition,$/;"	p	class:chem::EnergyAngle_O	typeref:typename:void
+evaluateAllComponent	energyAngle.h	/^  virtual double evaluateAllComponent( ScoringFunction_sp scorer,$/;"	p	class:chem::EnergyAngle_O	typeref:typename:double
+compareAnalyticalAndNumericalForceAndHessianTermByTerm	energyAngle.h	/^    virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm($/;"	p	class:chem::EnergyAngle_O	typeref:typename:void
+checkForBeyondThresholdInteractionsWithPosition	energyAngle.h	/^  virtual	core::List_sp checkForBeyondThresholdInteractionsWithPosition(NVector_sp pos, double t/;"	p	class:chem::EnergyAngle_O	typeref:typename:core::List_sp
+beyondThresholdInteractionsAsString	energyAngle.h	/^    virtual string	beyondThresholdInteractionsAsString();$/;"	p	class:chem::EnergyAngle_O	typeref:typename:string
+addAngleTerm	energyAngle.h	/^  void addAngleTerm(AtomTable_sp at, Atom_sp a1, Atom_sp a2, Atom_sp a3, double kt, double t0);$/;"	p	class:chem::EnergyAngle_O	typeref:typename:void
+lookupAngleTerms	energyAngle.h	/^  core::List_sp lookupAngleTerms(AtomTable_sp at, Atom_sp a1, Atom_sp a2 , Atom_sp a3 );$/;"	p	class:chem::EnergyAngle_O	typeref:typename:core::List_sp
+EnergyAngle_O	energyAngle.h	/^    EnergyAngle_O( const EnergyAngle_O& ss ); \/\/!< Copy constructor$/;"	p	class:chem::EnergyAngle_O
+DEFAULT_CTOR_DTOR	energyAngle.h	/^    DEFAULT_CTOR_DTOR(EnergyAngle_O);$/;"	p	class:chem::EnergyAngle_O
+TRANSLATE	energyAngle.h	/^TRANSLATE(chem::EnergyAngle_O);$/;"	p
+EnergyDihedral_H	energyDihedral.h	/^#define	EnergyDihedral_H$/;"	d
+chem	energyDihedral.h	/^namespace chem {$/;"	n
+SMART	energyDihedral.h	/^SMART(FFPtor);$/;"	p	namespace:chem
+SMART	energyDihedral.h	/^SMART(FFItor);$/;"	p	namespace:chem
+XmlTag_Dihedral	energyDihedral.h	/^inline	string	XmlTag_Dihedral() { return "Dihedral"; };$/;"	f	namespace:chem	typeref:typename:string
+XmlTag_EnergyDihedral	energyDihedral.h	/^inline	string	XmlTag_EnergyDihedral() { return "EnergyDihedral"; };$/;"	f	namespace:chem	typeref:typename:string
+TermDihedral	energyDihedral.h	/^struct TermDihedral$/;"	s	namespace:chem
+sinPhase	energyDihedral.h	/^	REAL		sinPhase;	\/\/!< Sine of phase, this must match Mathematica code!$/;"	m	struct:chem::TermDihedral	typeref:typename:REAL
+cosPhase	energyDihedral.h	/^	REAL		cosPhase;	\/\/!< Cosine of phase, this must match Mathematica code!$/;"	m	struct:chem::TermDihedral	typeref:typename:REAL
+V	energyDihedral.h	/^	REAL		V;	\/\/!< Dihedral force constant, this must match Mathematica code!$/;"	m	struct:chem::TermDihedral	typeref:typename:REAL
+DN	energyDihedral.h	/^        REAL          	DN;	\/\/!< Dihedral multiplicity as double, this must match Mathematica c/;"	m	struct:chem::TermDihedral	typeref:typename:REAL
+IN	energyDihedral.h	/^        INT		IN;	\/\/!< Dihedral multiplicity as int, this must match Mathematica code!$/;"	m	struct:chem::TermDihedral	typeref:typename:INT
+I1	energyDihedral.h	/^	INT		I1;	\/\/!< i*3 index into coordinate array, this must match Mathematica code!$/;"	m	struct:chem::TermDihedral	typeref:typename:INT
+I2	energyDihedral.h	/^	INT		I2;	\/\/!< i*3 index into coordinate array, this must match Mathematica code!$/;"	m	struct:chem::TermDihedral	typeref:typename:INT
+I3	energyDihedral.h	/^	INT		I3;	\/\/!< i*3 index into coordinate array, this must match Mathematica code!$/;"	m	struct:chem::TermDihedral	typeref:typename:INT
+I4	energyDihedral.h	/^	INT		I4;	\/\/!< i*3 index into coordinate array, this must match Mathematica code!$/;"	m	struct:chem::TermDihedral	typeref:typename:INT
+TermDihedral	energyDihedral.h	/^  TermDihedral(REAL sinp, REAL cosp, REAL v, REAL dn, INT in, INT i1, INT i2, INT i3, INT i4)$/;"	f	struct:chem::TermDihedral
+TermDihedral	energyDihedral.h	/^  TermDihedral() {};$/;"	f	struct:chem::TermDihedral
+EnergyDihedral	energyDihedral.h	/^class EnergyDihedral : public EnergyTerm $/;"	c	namespace:chem
+className	energyDihedral.h	/^	string	className()	{ return "EnergyDihedral"; };$/;"	f	class:chem::EnergyDihedral	typeref:typename:string
+_Proper	energyDihedral.h	/^	bool		_Proper;$/;"	m	class:chem::EnergyDihedral	typeref:typename:bool
+_Atom1	energyDihedral.h	/^        Atom_sp      _Atom1;$/;"	m	class:chem::EnergyDihedral	typeref:typename:Atom_sp
+_Atom2	energyDihedral.h	/^        Atom_sp      _Atom2;$/;"	m	class:chem::EnergyDihedral	typeref:typename:Atom_sp
+_Atom3	energyDihedral.h	/^        Atom_sp      _Atom3;$/;"	m	class:chem::EnergyDihedral	typeref:typename:Atom_sp
+_Atom4	energyDihedral.h	/^        Atom_sp      _Atom4;$/;"	m	class:chem::EnergyDihedral	typeref:typename:Atom_sp
+_PhaseRad	energyDihedral.h	/^	double		_PhaseRad;$/;"	m	class:chem::EnergyDihedral	typeref:typename:double
+term	energyDihedral.h	/^	TermDihedral	term;$/;"	m	class:chem::EnergyDihedral	typeref:typename:TermDihedral
+_calcForce	energyDihedral.h	/^	bool		_calcForce;$/;"	m	class:chem::EnergyDihedral	typeref:typename:bool
+_calcDiagonalHessian	energyDihedral.h	/^	bool		_calcDiagonalHessian;$/;"	m	class:chem::EnergyDihedral	typeref:typename:bool
+_calcOffDiagonalHessian	energyDihedral.h	/^	bool		_calcOffDiagonalHessian;$/;"	m	class:chem::EnergyDihedral	typeref:typename:bool
+_CalculatedDihedralDeviation	energyDihedral.h	/^	double		_CalculatedDihedralDeviation;$/;"	m	class:chem::EnergyDihedral	typeref:typename:double
+getAtom1	energyDihedral.h	/^        Atom_sp		getAtom1() { return this->_Atom1; };$/;"	f	class:chem::EnergyDihedral	typeref:typename:Atom_sp
+getAtom2	energyDihedral.h	/^        Atom_sp		getAtom2() { return this->_Atom2; };$/;"	f	class:chem::EnergyDihedral	typeref:typename:Atom_sp
+getAtom3	energyDihedral.h	/^        Atom_sp		getAtom3() { return this->_Atom3; };$/;"	f	class:chem::EnergyDihedral	typeref:typename:Atom_sp
+getAtom4	energyDihedral.h	/^        Atom_sp		getAtom4() { return this->_Atom4; };$/;"	f	class:chem::EnergyDihedral	typeref:typename:Atom_sp
+getDihedral	energyDihedral.h	/^	double		getDihedral();$/;"	p	class:chem::EnergyDihedral	typeref:typename:double
+getDihedralDeviation	energyDihedral.h	/^	double		getDihedralDeviation();$/;"	p	class:chem::EnergyDihedral	typeref:typename:double
+getCalculatedDihedralDeviation	energyDihedral.h	/^	double		getCalculatedDihedralDeviation() { return this->_CalculatedDihedralDeviation;};$/;"	f	class:chem::EnergyDihedral	typeref:typename:double
+EnergyDihedral	energyDihedral.h	/^ EnergyDihedral(Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, double phase, bool proper, size_/;"	f	class:chem::EnergyDihedral
+EnergyDihedral	energyDihedral.h	/^  EnergyDihedral() {};$/;"	f	class:chem::EnergyDihedral
+asXml	energyDihedral.h	/^	adapt::QDomNode_sp	asXml();$/;"	p	class:chem::EnergyDihedral	typeref:typename:adapt::QDomNode_sp
+parseFromXmlUsingAtomTable	energyDihedral.h	/^	void	parseFromXmlUsingAtomTable(adapt::QDomNode_sp xml, AtomTable_sp atomTable );$/;"	p	class:chem::EnergyDihedral	typeref:typename:void
+defineFrom	energyDihedral.h	/^        void defineFrom( int n, FFPtor_sp term, EnergyAtom *ea1, EnergyAtom *ea2, EnergyAtom *ea/;"	p	class:chem::EnergyDihedral	typeref:typename:void
+defineMissingProper	energyDihedral.h	/^	void defineMissingProper( EnergyAtom *ea1, EnergyAtom *ea2, EnergyAtom *ea3, EnergyAtom *ea4);$/;"	p	class:chem::EnergyDihedral	typeref:typename:void
+defineFrom	energyDihedral.h	/^        void defineFrom( int n, FFItor_sp term, EnergyAtom *ea1, EnergyAtom *ea2, EnergyAtom *ea/;"	p	class:chem::EnergyDihedral	typeref:typename:void
+encode	energyDihedral.h	/^        core::List_sp encode() const;$/;"	p	class:chem::EnergyDihedral	typeref:typename:core::List_sp
+decode	energyDihedral.h	/^        void decode(core::List_sp alist);$/;"	p	class:chem::EnergyDihedral	typeref:typename:void
+translate	energyDihedral.h	/^namespace translate {$/;"	n
+to_object	energyDihedral.h	/^struct	to_object<chem::EnergyDihedral >$/;"	s	namespace:translate
+ExpectedType	energyDihedral.h	/^  typedef	core::Cons_sp ExpectedType;$/;"	t	struct:translate::to_object	typeref:typename:core::Cons_sp
+DeclareType	energyDihedral.h	/^  typedef	core::Cons_sp DeclareType;$/;"	t	struct:translate::to_object	typeref:typename:core::Cons_sp
+convert	energyDihedral.h	/^  static core::T_sp convert(const chem::EnergyDihedral& dihedral)$/;"	f	struct:translate::to_object	typeref:typename:core::T_sp
+from_object	energyDihedral.h	/^struct	from_object<chem::EnergyDihedral>$/;"	s	namespace:translate
+ExpectedType	energyDihedral.h	/^  typedef	chem::EnergyDihedral	ExpectedType;$/;"	t	struct:translate::from_object	typeref:typename:chem::EnergyDihedral
+DeclareType	energyDihedral.h	/^  typedef	ExpectedType 		DeclareType;$/;"	t	struct:translate::from_object	typeref:typename:ExpectedType
+_v	energyDihedral.h	/^	DeclareType _v;$/;"	m	struct:translate::from_object	typeref:typename:DeclareType
+from_object	energyDihedral.h	/^	from_object(core::T_sp o)$/;"	f	struct:translate::from_object
+chem	energyDihedral.h	/^namespace chem {$/;"	n
+_evaluateEnergyOnly_Dihedral	energyDihedral.h	/^double  _evaluateEnergyOnly_Dihedral($/;"	p	namespace:chem	typeref:typename:double
+EnergyDihedral_O	energyDihedral.h	/^class EnergyDihedral_O : public EnergyComponent_O$/;"	c	namespace:chem
+fieldsp	energyDihedral.h	/^    bool fieldsp() const { return true; };$/;"	f	class:chem::EnergyDihedral_O	typeref:typename:bool
+fields	energyDihedral.h	/^    void fields(core::Record_sp node);$/;"	p	class:chem::EnergyDihedral_O	typeref:typename:void
+initialize	energyDihedral.h	/^    void	initialize();$/;"	p	class:chem::EnergyDihedral_O	typeref:typename:void
+TermType	energyDihedral.h	/^    typedef EnergyDihedral	TermType;$/;"	t	class:chem::EnergyDihedral_O	typeref:typename:EnergyDihedral
+_Terms	energyDihedral.h	/^    gctools::Vec0<TermType>	_Terms;$/;"	m	class:chem::EnergyDihedral_O	typeref:typename:gctools::Vec0<TermType>
+_BeyondThresholdTerms	energyDihedral.h	/^    gctools::Vec0<TermType>	_BeyondThresholdTerms;$/;"	m	class:chem::EnergyDihedral_O	typeref:typename:gctools::Vec0<TermType>
+iterator	energyDihedral.h	/^    typedef gctools::Vec0<TermType>::iterator iterator;$/;"	t	class:chem::EnergyDihedral_O	typeref:typename:gctools::Vec0<TermType>::iterator
+begin	energyDihedral.h	/^    iterator begin() { return this->_Terms.begin(); };$/;"	f	class:chem::EnergyDihedral_O	typeref:typename:iterator
+end	energyDihedral.h	/^    iterator end() { return this->_Terms.end(); };$/;"	f	class:chem::EnergyDihedral_O	typeref:typename:iterator
+numberOfTerms	energyDihedral.h	/^    virtual size_t numberOfTerms() { return this->_Terms.size();};$/;"	f	class:chem::EnergyDihedral_O	typeref:typename:size_t
+addTerm	energyDihedral.h	/^    void addTerm(const TermType& term);$/;"	p	class:chem::EnergyDihedral_O	typeref:typename:void
+dumpTerms	energyDihedral.h	/^    virtual void dumpTerms();$/;"	p	class:chem::EnergyDihedral_O	typeref:typename:void
+safe_amber_energy_dihedral_term	energyDihedral.h	/^    CL_DEFMETHOD core::T_mv safe_amber_energy_dihedral_term(size_t index) {$/;"	f	class:chem::EnergyDihedral_O	typeref:typename:CL_DEFMETHOD core::T_mv
+extract_vectors_as_alist	energyDihedral.h	/^    virtual core::List_sp extract_vectors_as_alist() const;$/;"	p	class:chem::EnergyDihedral_O	typeref:typename:core::List_sp
+fill_from_vectors_in_alist	energyDihedral.h	/^    virtual void fill_from_vectors_in_alist(core::List_sp vectors);$/;"	p	class:chem::EnergyDihedral_O	typeref:typename:void
+setupHessianPreconditioner	energyDihedral.h	/^    virtual void setupHessianPreconditioner(NVector_sp nvPosition,$/;"	p	class:chem::EnergyDihedral_O	typeref:typename:void
+evaluateAllComponent	energyDihedral.h	/^  virtual double evaluateAllComponent( ScoringFunction_sp scorer,$/;"	p	class:chem::EnergyDihedral_O	typeref:typename:double
+compareAnalyticalAndNumericalForceAndHessianTermByTerm	energyDihedral.h	/^    virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm($/;"	p	class:chem::EnergyDihedral_O	typeref:typename:void
+beyondThresholdInteractionsAsString	energyDihedral.h	/^    virtual string	beyondThresholdInteractionsAsString();$/;"	p	class:chem::EnergyDihedral_O	typeref:typename:string
+addDihedralTerm	energyDihedral.h	/^    void addDihedralTerm(AtomTable_sp at, Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, double/;"	p	class:chem::EnergyDihedral_O	typeref:typename:void
+lookupDihedralTerms	energyDihedral.h	/^  core::List_sp lookupDihedralTerms(AtomTable_sp at, Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp/;"	p	class:chem::EnergyDihedral_O	typeref:typename:core::List_sp
+EnergyDihedral_O	energyDihedral.h	/^    EnergyDihedral_O( const EnergyDihedral_O& ss ); \/\/!< Copy constructor$/;"	p	class:chem::EnergyDihedral_O
+DEFAULT_CTOR_DTOR	energyDihedral.h	/^    DEFAULT_CTOR_DTOR(EnergyDihedral_O);$/;"	p	class:chem::Energ
