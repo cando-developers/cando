@@ -17,8 +17,8 @@ jobs:
       fail-fast: false
       matrix:
         os:
-        - macos-latest
         - ubuntu-latest
+#        - macos-latest
 
     runs-on: ${{ matrix.os }}
 
@@ -39,10 +39,10 @@ jobs:
         make
         sudo make install
 
-    - name: Install MacOS dependencies
-       if: matrix.os == 'macos-latest'
-       run: |
-         brew install boost fmt gmp llvm@13 ninja pkg-config sbcl ecl
+#    - name: Install MacOS dependencies
+#       if: matrix.os == 'macos-latest'
+#       run: |
+#         brew install boost fmt gmp llvm@13 ninja pkg-config sbcl ecl
 
     - name: List the current directory
       run: |
