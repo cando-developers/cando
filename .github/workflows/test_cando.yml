@@ -40,9 +40,9 @@ jobs:
         sudo make install
 
     - name: Install MacOS dependencies
-       if: matrix.os == 'macos-latest'
-       run: |
-         brew install boost fmt gmp llvm@13 ninja pkg-config sbcl ecl netcdf
+      if: matrix.os == 'macos-latest'
+      run: |
+        brew install boost fmt gmp llvm@13 ninja pkg-config sbcl ecl netcdf
 
     - name: Checkout clasp
       uses: actions/checkout@v2
