@@ -276,6 +276,7 @@ public:
   core::T_sp	contentWithNameOrNil(MatterName sName);
   int		contentIndexWithName(MatterName sName);
 
+  size_t        nextId() const;
   Matter_sp	contentWithId( int lid );
   bool		hasContentWithId( int lid );
   int		contentIndexWithId( int lid );

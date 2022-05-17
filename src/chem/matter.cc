@@ -447,7 +447,6 @@ CL_DEFMETHOD int	Matter_O::contentIndexWithName(MatterName sName )
   SIMPLE_ERROR(("%s") , ss.str());
 }
 
-
 //
 // contentWithId
 //
@@ -574,13 +573,25 @@ CL_DEFMETHOD int	Matter_O::contentIndex( Matter_sp cc)
 }
 
 
+/*! Return the next _Id we would assign a child
+ */
+size_t Matter_O::nextId() const {
+  size_t maxId = 0;
+  for ( size_t idx = 0; idx<this->_contents.size(); idx++ ) {
+    size_t id = this->_contents[idx]->_Id;
+    if ( id > maxId ) maxId = id;
+  }
+  return maxId+1; // _Id's start counting at 1
+}
+
+      
+
 /*! Add the Matter as a child of this Matter
  */
 CL_LISPIFY_NAME("addMatter");
 CL_DEFMETHOD void	Matter_O::addMatter(Matter_sp cp )
 {_OF();
   Matter_sp	ctemp;
-  ASSERTNOTNULL(cp);
   LOG("Adding: %s of type: %c" , cp->getName().c_str() , cp->getMatterType()  );
   ctemp = this->sharedThis<Matter_O>();
 //  cp->setContainedBy(ctemp);
@@ -588,14 +599,8 @@ CL_DEFMETHOD void	Matter_O::addMatter(Matter_sp cp )
     	// Always add the content to the end of the vector
 	// A lot depends on Residues maintaining the order of Atoms
 	// throughout the various passes of building databases
+  cp->_Id = this->nextId(); // Advance the _Id
   this->_contents.push_back(cp);
-#if 0
-  if ( this->_Id == UNDEFINED_ID )
-  {
-    this->_Id = this->_NextContentId;
-    this->_NextContentId++;
-  }
-#endif
   LOG("Finished adding" );
 }
 
@@ -619,12 +624,6 @@ void	Matter_O::addMatterRetainId(Matter_sp cp )
 	// A lot depends on Residues maintaining the order of Atoms
 	// throughout the various passes of building databases
   this->_contents.push_back(cp);
-#if 0
-  if (this->_NextContentId <= cp->_Id ) 
-  {
-    this->_NextContentId = cp->_Id+1;
-  }
-#endif
   LOG("Finished adding" );
 }
 
@@ -1057,7 +1056,7 @@ CL_DEFMETHOD core::List_sp Matter_O::allAtomsOfElementAsList(Element element)
 void	Matter_O::fields(core::Record_sp node )
 {
   node->field( INTERN_(kw,name), this->name);
-  node->/*pod_*/field_if_not_default( INTERN_(kw,id), this->_Id, 0);
+  node->/*pod_*/field_if_not_default( INTERN_(kw,id), this->_Id, 1);
   node->field_if_not_nil( INTERN_(kw,restraints),this->_RestraintList);
   node->field_if_not_nil( INTERN_(kw,properties),this->_Properties);
   node->field_if_not_empty( INTERN_(kw,contents), this->_contents);

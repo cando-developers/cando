@@ -710,7 +710,8 @@ bond.
       (:d (chem:bond-to atom1 atom2 :double-bond nil))
       (:t (chem:bond-to atom1 atom2 :triple-bond nil))
       (:a (chem:bond-to atom1 atom2 :aromatic-bond nil))
-      (otherwise (chem:bond-to atom1 atom2 :single-bond nil)))))
+      (otherwise (chem:bond-to atom1 atom2 :single-bond nil))))
+  (values))
 
 (defun leap-add-h (object-name)
 "    addH obj
