@@ -48,8 +48,11 @@ jobs:
       run: |
            ls
 
-    # - name: Checkout repository
-    #   uses: actions/checkout@v2
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      with:
+        repository: clasp-developers/clasp
+        path: clasp
 
     # - name: Install boost
     #   uses: MarkusJx/install-boost@v2.3.0
