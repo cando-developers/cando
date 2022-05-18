@@ -396,6 +396,198 @@ CL_DEFUN Vector3 geom__build_using_bond_angle_dihedral( double distance, const V
   return dPos;
 }
 
+
+
+/*
+ *      zvZMatrixCalculatePositionFromAngles
+ *
+ *	Author:	Christian Schafmeister (1991)
+ *
+ *      Use NEWTON-RAPHSON method for finding the coordinate for the
+ *      vector(vC) which is dAngleA from the vector vA (on the X axis)
+ *	and dAngleB from a vector (vB) which lies in the XY plane
+ *	dAngleC from the X axis.
+ *
+ *      The point is dBond from the origin.
+ *
+ */
+#define VERYSMALL       0.000000000001
+#define MAXNEWTONSTEPS  20
+const Vector3 vXAxis = { 1.0, 0.0, 0.0 };
+const Vector3 vYAxis = { 0.0, 1.0, 0.0 };
+const Vector3 vZAxis = { 0.0, 0.0, 1.0 };
+
+Vector3 zvZMatrixCalculatePositionFromAngles( double dAngleA, double dAngleB,
+                                              double dAngleC, double dBond )
+{
+  int             iCount;
+  double		dCosA, dSinA;
+  double		dCosB, dSinB;
+  double		dCosC, dSinC;
+  double		dCosX, dSinX;
+  double		dX, dXNew;
+  double		dF1, dF2;
+  Vector3		vNew;
+
+  dCosA = cos(dAngleA);
+  dSinA = sin(dAngleA);
+  dCosB = cos(dAngleB);
+  dSinB = sin(dAngleB);
+  dCosC = cos(dAngleC);
+  dSinC = sin(dAngleC);
+
+		/* The idea is to minimize the function: */
+		/* E = ( DOT(vC,vB) - cos(dAngleB) )^2 */
+		/* using NEWTONS method */
+		/* The vector vC is constrained to make the angle */
+		/* dAngleA with vA */
+		/* The vector vC makes the angle (dX) with the XY plane */
+		/* and the parameter that is optimized is dX */
+
+
+		/* A reasonable starting point */
+
+  dX = dAngleB;
+  iCount = 0;
+  while ( iCount <MAXNEWTONSTEPS ) {
+
+    dCosX = cos(dX);
+    dSinX = sin(dX);
+
+    dF1 = -2*dSinA*dSinC*(-dCosB + dCosA*dCosC +
+                          dCosX*dSinA*dSinC)*dSinX;
+
+    dF2 = -2.0*dCosX*dSinA*dSinC*
+              (-dCosB + dCosA*dCosC + dCosX*dSinA*dSinC) +
+              2.0*dSinA*dSinA*dSinC*dSinC*dSinX*dSinX;
+
+    LOG( "Iteration %d dF1=%lf  dF2=%lf  dB=%lf\n",
+         iCount, dF1, dF2, dX );
+    if ( fabs(dF1) < VERYSMALL*10.0 ) break;
+    if ( fabs(dF2) < VERYSMALL ) {
+      SIMPLE_ERROR( "Could not optimize! dF1 = %lf, dF2 = %lfdX = %lf steps=%d", dF1, dF2, dX, iCount );
+    }
+    dXNew = dX - dF1/dF2;
+    if ( fabs(dXNew - dX) < VERYSMALL ) break;
+    dX = dXNew;
+    iCount++;
+  }
+
+#ifdef  DEBUG
+  if ( iCount > MAXNEWTONSTEPS )
+    DDEBUG( ("Exceeded maximum number of Newton Raphson steps: %d\n",
+             MAXNEWTONSTEPS) );
+#endif
+
+                /* Generate new coordinate */
+
+  vNew.set( dBond*cos(dAngleA),
+            dBond*sin(dAngleA)*cos(dX),
+            dBond*sin(dAngleA)*sin(dX) );
+  return(vNew);
+}
+
+
+
+/*
+ *      ZMatrixBondTwoAnglesOrientation
+ *
+ *	Author:	Christian Schafmeister (1991)
+ *
+ *      Build the external coordinate for the atom when
+ *      the orientation, a bond length and two angles are supplied.
+ *      The orientation is a positive or negative number which specifies
+ *      the orientation of the new position.  It is calculated by:
+ *              a=crossProduct( vPAtomA-vPCenter, vPAtomB-vPCenter );
+ *              orientation = dotProduct( vPPos-vPCenter, a );
+ *
+ *      vPAtomC points to the position of the central atom.
+ *
+ */
+
+CL_DEFUN Vector3 geom__build_using_bond_two_angles_orientation( const Vector3& vCenter,
+                                                                double dBond, const Vector3& vAtomA,
+                                                                double dAngleA, double dAngleB, const Vector3& vAtomB,
+                                                                double dOrient )
+{
+  Matrix          mT, mT1, mT2, mTX, mTY, mTZ, mTT;
+  double          dAngleX, dAngleY, dAngleZ;
+  double          dAngle;
+  Vector3         vTrans, vTempAC, vTempBC, vTempXZ, vNew, vLab;
+
+                /* The procedure for finding the the coordinate is: */
+                /* Translate vCenter to the origin -> A'-C' */
+                /* Find angle between PROJ((A'-C'),YZ plane) & Y axis */
+                /* Rotate into XZ plane */
+                /* Find angle between (A''-C'') and X axis */
+                /* Rotate onto X axis */
+                /* Find angle between PROJ((B'''-C'''),YZ plane) and Y axis */
+                /* Rotate onto XY plane */
+                /* Calculate coordinates in 3Space */
+                /* Apply the reverse transformation to the new point */
+                /* Actually, all that is done is the elements for the */
+                /* forward transformations are calculated then used */
+                /* to generate an inverse transform matrix */
+
+  vTrans = vCenter;
+  vTempAC = vAtomA-vCenter;
+  vTempBC = vAtomB-vCenter; // vVectorSub( vPAtomB, vPAtomC );
+  LOG( "AC= %s\n", vTempAC.asString() );
+  LOG( "BC= %s\n", vTempBC.asString() );
+  vTempXZ = vTempAC;
+  vTempXZ.getY() = 0.0;
+  if ( vTempXZ.length() != 0.0 ) {
+    dAngleY = calculateAngle(vTempXZ, vXAxis, vYAxis );
+  } else dAngleY = 0.0;
+
+  mT.rotationY(-dAngleY );
+  vTempAC = mT.multiplyByVector3(vTempAC);
+  vTempBC = mT.multiplyByVector3(vTempBC);
+  LOG( "Rotated around Y\n" );
+  LOG( "New AC= %s\n", vTempAC.asString() );
+  LOG( "New BC= %s\n", vTempBC.asString() );
+
+  dAngleZ = calculateAngle( vTempAC, vXAxis, vZAxis );
+  mT.rotationZ( -dAngleZ );
+  vTempBC = mT.multiplyByVector3(vTempBC);
+#ifdef DEBUG
+  vTempAC = mT.multiplyByVector3(vTempAC);
+#endif
+  LOG( "Rotated around Z\n" );
+  LOG( "New AC= %s\n", vTempAC.asString() );
+  LOG( "New BC= %s\n", vTempBC.asString() );
+
+  vTempBC.getX() = 0.0;
+
+  dAngleX = calculateAngle( vTempBC, vYAxis, vXAxis );
+
+                /* Build the transformation matrix to convert from */
+                /* lab coordinates to molecule coordinates in mT*/
+
+  mTX.rotationX( dAngleX );
+  mTZ.rotationZ( dAngleZ ); // MatrixZRotate( mTZ, dAngleZ );
+  mTY.rotationY( dAngleY ); // MatrixYRotate( mTY, dAngleY );
+  mTT.translate( vTrans ); // MatrixTranslate( mTT, dVX(&vTrans), dVY(&vTrans), dVZ(&vTrans) );
+  mT1 = mTZ.multiplyByMatrix(mTX); // MatrixMultiply mT1, mTZ, mTX );
+  mT2 = mTY.multiplyByMatrix(mT1); // MatrixMultiply( mT2, mTY, mT1 );
+  mT = mTT.multiplyByMatrix(mT2);  // MatrixMultiply( mT, mTT, mT2 );
+
+                /* Calculate coordinates of new atom */
+  dAngle = calculateAngle( vAtomA, vCenter, vAtomB ); // dVectorAtomAngle( vPAtomA, vPAtomC, vPAtomB );
+  vLab = zvZMatrixCalculatePositionFromAngles( dAngleA, dAngleB, dAngle, dBond );
+
+  if ( dOrient != 0.0 ) {
+    vLab.getZ() = dOrient * vLab.getZ(); // VectorSetZ( &vLab, dOrient*dVZ(&vLab) );
+  }
+
+                /* If there is no chirality defined yet then just */
+                /* leave it the way it is */
+
+  vNew = mT.multiplyByVector3(vLab);
+  LOG( "ZMatrix2Angle:  %s\n", vNew.asString() );
+  return vNew;
+}
+
 DOCGROUP(cando)
 CL_DEFUN double geom__planeVectorAngle(double dx, double dy)
 {

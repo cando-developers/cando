@@ -15,8 +15,71 @@
     (funcall (find-symbol "SHOW" :cando-user) val)))
 
 
-(defun leap.z-matrix (arg)
-  (format t "leap.z-matrix arg: ~s~%" arg))
+(defun leap.z-matrix (val list)
+  "
+      Construct the external coordinates for the atoms.
+
+      Arguments:
+              [0]     - Container that contains the atoms.
+              [1]     - A list of atoms and internal coordinates.
+
+      The entries in the list of atoms and internal coordinates can
+      look like:
+
+      a1 a2 b12
+      a1 a2 a3 b12 t123
+      a1 a2 a3 a4 b12 t123 p1234
+      a1 a2 a3 a4 b12 t123 t124 orientation
+
+      Where a1,a2,a3,a4 can be an atom or an atom name which exists
+      in the container.
+"
+  (let ((matter (leap.core:lookup-variable val)))
+    (flet ((get-atom (name)
+             (let* ((vname (leap.core:lookup-variable name nil :not-found))
+                    (atm (if (eq vname :not-found)
+                             (chem:first-atom-with-name matter name)
+                             vname)))
+               (unless (typep atm 'chem:atom)
+                 (error "The object ~a must represent an atom" name))
+               atm)))
+      (loop for entry in list
+            for len = (length entry)
+            do (case len
+                 (3
+                  (let* ((a1 (get-atom (first entry)))
+                         (a2 (get-atom (second entry)))
+                         (b12 (third entry))
+                         (pa2 (chem:get-position a2))
+                         (pa1 (geom:build-using-bond b12 pa2)))
+                    (chem:set-position a1 pa1)))
+                 (5
+                  (let* ((a1 (get-atom (first entry)))
+                         (a2 (get-atom (second entry)))
+                         (a3 (get-atom (third entry)))
+                         (b12 (fourth entry))
+                         (t123 (* (fifth entry)#|degrees|# (/ PI 180.0)))#|rad|#
+                         (pa3 (chem:get-position a3))
+                         (pa2 (chem:get-position a2))
+                         (pa1 (geom:build-using-bond-angle b12 pa2 t123 pa3)))
+                    (chem:set-position a1 pa1)))
+                 (7
+                  (let* ((a1 (get-atom (first entry)))
+                         (a2 (get-atom (second entry)))
+                         (a3 (get-atom (third entry)))
+                         (a4 (get-atom (fourth entry)))
+                         (b12 (fifth entry))
+                         (t123 (* (sixth entry)#|degrees|# (/ PI 180.0)))#|rad|#
+                         (p1234 (* (seventh entry)#|degrees|# (/ PI 180.0)))#|rad|#
+                         (pa4 (chem:get-position a4))
+                         (pa3 (chem:get-position a3))
+                         (pa2 (chem:get-position a2))
+                         (pa1 (geom:build-using-bond-angle-dihedral b12 pa2 t123 pa3 pa4 p1234)))
+                    (chem:set-position a1 pa1)))
+                 (otherwise
+                  (format t "~s : ~s : (class-of head) -> ~s~%" len entry (class-of (car entry))))
+                 ))))
+  :no-output)
 
 ;;; ----------------------------------------------------------------------
 ;;;
@@ -105,6 +168,10 @@ is written to the log file as if the verbosity level were set to 2."
                    (second value)
                    (third value))))
 
+(defmethod set-property ((object chem:residue) (property (eql :restype)) value)
+  (chem:setf-residue-type object value))
+
+
 (defmethod set-property ((object chem:molecule) (property (eql :force-field-name)) value)
   (let ((force-field (chem:find-force-field value)))
     (chem:setf-force-field-name object value)))
@@ -117,7 +184,7 @@ is written to the log file as if the verbosity level were set to 2."
         (property-fixed (keyword-upcase property))
         (value-fixed value))
     (set-property object-fixed property-fixed value-fixed))
-  (values))
+  :no-output)
 
 (defun leap-desc (name)
   "    desc variable
@@ -131,7 +198,7 @@ Print a description of the object.
       ((null val)
        (format t "~a~%" val))
       (t (describe val)))
-    nil))
+    :no-output))
 
 
 
@@ -688,7 +755,7 @@ ATOMs within RESIDUEs, and RESIDUEs within UNITs.
   (let ((object-a (leap.core:lookup-variable object-a-name))
         (object-b (leap.core:lookup-variable object-b-name)))
     (chem:add-matter object-a object-b))
-  (values))
+  :no-output)
 
 (defun leap-bond (atom1-name atom2-name &rest order)
 "    bond atom1 atom2 [ order ]
@@ -711,7 +778,7 @@ bond.
       (:t (chem:bond-to atom1 atom2 :triple-bond nil))
       (:a (chem:bond-to atom1 atom2 :aromatic-bond nil))
       (otherwise (chem:bond-to atom1 atom2 :single-bond nil))))
-  (values))
+  :no-output)
 
 (defun leap-add-h (object-name)
 "    addH obj
