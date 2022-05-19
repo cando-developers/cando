@@ -16,14 +16,13 @@
 
 
 (defun leap.z-matrix (val list)
-  "
-      Construct the external coordinates for the atoms.
+  "   Construct the external coordinates for the atoms.
 
       Arguments:
               [0]     - Container that contains the atoms.
               [1]     - A list of atoms and internal coordinates.
 
-      The entries in the list of atoms and internal coordinates can
+      The entries in the list of atoms and internal coordinates must
       look like:
 
       a1 a2 b12
@@ -41,7 +40,7 @@
                              (chem:first-atom-with-name matter name)
                              vname)))
                (unless (typep atm 'chem:atom)
-                 (error "The object ~a must represent an atom" name))
+                 (error "The object ~a -> ~a must represent an atom" name atm))
                atm)))
       (loop for entry in list
             for len = (length entry)
@@ -74,11 +73,35 @@
                          (pa4 (chem:get-position a4))
                          (pa3 (chem:get-position a3))
                          (pa2 (chem:get-position a2))
-                         (pa1 (geom:build-using-bond-angle-dihedral b12 pa2 t123 pa3 pa4 p1234)))
+                         (pa1 (geom:build-using-bond-angle-dihedral b12 pa2 t123 pa3 p1234 pa4)))
+                    (chem:set-position a1 pa1)))
+                 (8
+                  (let* ((a1 (get-atom (first entry)))
+                         (a2 (get-atom (second entry)))
+                         (a3 (get-atom (third entry)))
+                         (a4 (get-atom (fourth entry)))
+                         (b12 (fifth entry))
+                         (t123 (* (sixth entry)#|degrees|# (/ PI 180.0)))#|rad|#
+                         (t124 (* (seventh entry)#|degrees|# (/ PI 180.0)))#|rad|#
+                         (orientation (eighth entry))
+                         (pa4 (chem:get-position a4))
+                         (pa3 (chem:get-position a3))
+                         (pa2 (chem:get-position a2))
+                         (pa1 (geom:build-using-bond-two-angles-orientation pa2 pa3 pa4 b12 t123 t124 orientation)))
                     (chem:set-position a1 pa1)))
                  (otherwise
-                  (format t "~s : ~s : (class-of head) -> ~s~%" len entry (class-of (car entry))))
-                 ))))
+                  (error "      The entries in the list of atoms and internal coordinates must
+      look like:
+
+      a1 a2 b12
+      a1 a2 a3 b12 t123
+      a1 a2 a3 a4 b12 t123 p1234
+      a1 a2 a3 a4 b12 t123 t124 orientation
+
+      Where a1,a2,a3,a4 can be an atom or an atom name which exists
+      in the container.
+")
+                  )))))
   :no-output)
 
 ;;; ----------------------------------------------------------------------
@@ -257,9 +280,9 @@ together.
 
 "
   (apply 'cando:combine list))
-  
+
 (defun leap-list-variables ()
-  "    list 
+  "    list
 
 List the variables currently defined."
   (let* ((names (leap.core:all-variable-names))
@@ -274,16 +297,16 @@ List the variables currently defined."
                (setf count 0)))
     nil))
 
-  
+
 
 (defun leap.assign-atom-types (var-name)
   "    assignAtomTypes variable
      aggregate/molecule        _variable_
 
-Assign atom types to all atoms in the object. The way that atom types 
+Assign atom types to all atoms in the object. The way that atom types
 are assigned depends on the force-field-name of each molecule in the object.
 The Amber protein force field assigns types based on residue/atom names.
-The GAFFx force fields use GAFF type rules. Force fields like SMIRNOFF assign 
+The GAFFx force fields use GAFF type rules. Force fields like SMIRNOFF assign
 Cando internally defined types that correspond to unique SMIRKS patterns."
   (let ((object (leap.core:lookup-variable var-name)))
     (unless (or (typep object 'chem:molecule)
@@ -312,7 +335,7 @@ Cando internally defined types that correspond to unique SMIRKS patterns."
                (unless (chem:get-type atm)
                  (format t "~a ~a~%" res atm)))))))
       (format t "Assigned ~a types of a total of ~a atoms.~%" total-atoms-with-types total-atoms))))
-    
+
 (defun leap.load-smirnoff-params (filename)
   (leap:load-smirnoff-params filename))
 
@@ -370,7 +393,7 @@ Return a new ATOM with _name_, _type_, and _charge_.
                  (hybridization (intern (string-upcase (string hybridization-string)) :keyword)))
              (leap.atom-types:add-one-atom-type atom-type element hybridization))))
 
-                            
+
 (defun load-off (filename)
 "    loadOff filename
       STRING                       _filename_
@@ -397,7 +420,7 @@ that is searched whenever parameters are required.
 This command executes LEaP commands within a text file.  To display the
 commands as they are read, see the verbosity command.  The text within
 the source file must be formatted exactly like the text the user types
-into LEaP. This command temporarily adds the path of _filename_ to the 
+into LEaP. This command temporarily adds the path of _filename_ to the
 leap path list so that files local to the script can be loaded.
 "
   (let* ((filename (leap.core:ensure-path entry)))
@@ -424,7 +447,7 @@ for including atomic polarizabilities and preparing free energy
 perturbation calculations and saveAmberParmNetcdf for saving in a
 binary format.
 
-"  
+"
   (let ((aggregate (leap.core:lookup-variable aggregate-name))
         (crd-pathname (if crd-pathname-p
                           crd-pathname
@@ -697,13 +720,13 @@ Load an aggregate from a ChemDraw cdxml file and return it."
   (unless (stringp smarts-string)
     (error "You must provide a smarts string"))
   (chem:compile-smarts smarts-string :tests tests))
-    
+
 (defun leap-quit ()
   (ext:quit))
 
 (defun leap-cando ()
   "
-This command brings up a cando command line. 
+This command brings up a cando command line.
 Leap can be reentered by evaluating (leap).
 "
   (core:top-level nil nil))
@@ -848,7 +871,7 @@ the three NUMBERs in the LIST _ direction_.
               (x-position (geom:vx pos))
               (y-position (geom:vy pos))
               (z-position (geom:vz pos)))
-         (geom:set-all3 pos 
+         (geom:set-all3 pos
                         (+ x-position (first direction))
                         (+ y-position (second direction))
                         (+ z-position (third direction)))
@@ -980,7 +1003,7 @@ translations along the appropriate axes (0 for no translation).
                         (+ (* (geom:at-row-col-get transform 0 2) (geom:vx atom-position))
                            (* (geom:at-row-col-get transform 1 2) (geom:vy atom-position))
                            (* (geom:at-row-col-get transform 2 2) (geom:vz atom-position))))
-         #+(or)(geom:set-all3 atom-position 
+         #+(or)(geom:set-all3 atom-position
                               (geom:vx (geom:m*v transform atom-position))
                               (geom:vy (geom:m*v transform atom-position))
                               (geom:vz (geom:m*v transform atom-position)))
@@ -1242,10 +1265,10 @@ a default distance of 2 angstroms used.
                                   (if (< distance radius)
                                       (warn "Close contact of ~a angstroms between ~a and ~a~%"
                                              (sqrt distance) (chem:get-name (aref atom-vec i))
-                                             (chem:get-name (aref atom-vec j)))))))))                   
+                                             (chem:get-name (aref atom-vec j)))))))))
                    )))
-                              
-                                               
+
+
 
 (defun leap-check (matter-name)
 "    check unit [ parmset ]
@@ -1337,7 +1360,7 @@ Currently it checks for the following possible problems:
              (i2-vector (cdr (assoc :i2 dihedral-vectors)))
              (i3-vector (cdr (assoc :i3 dihedral-vectors)))
              (i4-vector (cdr (assoc :i4 dihedral-vectors)))
-             (proper-vector (cdr (assoc :proper dihedral-vectors)))         
+             (proper-vector (cdr (assoc :proper dihedral-vectors)))
              (atom1-vector (cdr (assoc :atom1 dihedral-vectors)))
              (atom2-vector (cdr (assoc :atom2 dihedral-vectors)))
              (atom3-vector (cdr (assoc :atom3 dihedral-vectors)))
@@ -1362,8 +1385,8 @@ Currently it checks for the following possible problems:
                          (not i3)
                          (not i4))
                          (warn "Could not find dihedral parameter: ~a - ~a - ~a - ~a~%" atom1 atom2 atom3 atom4)))))))
-    
-                               
+
+
 
 (defparameter *leap-commands* (list       "add" "addAtomTypes"
     "addH" "addIons" "addIons2" "addIonsRand" "addPath" "addPdbAtomMap" "addPdbResMap" "alias" "alignAxes"
@@ -1396,12 +1419,12 @@ Provide a list of commands that cleap has available to mimic tleap."
         when (member cmd-name leap.parser:*function-names/alist* :key #'car :test #'string=)
           do (format t "~a~%" cmd-name)))
 
-  
 
 
 
 
-    
+
+
 (defun leap-load-moe (filename)
   (let ((pathname (leap.core:ensure-path filename)))
     (unless pathname
@@ -1573,7 +1596,7 @@ Provide a list of commands that cleap has available to mimic tleap."
 
 
 
-;;(defun solvate-box (solute solvent width-list 
+;;(defun solvate-box (solute solvent width-list
 ;;
 ;;)
 ;;; ----------------------------------------------------------------------
@@ -1610,7 +1633,7 @@ An [expression] is either a command or a number or variable."
           (read-delimited-list #\newline stream nil))))
 
   (defun interpret-leap-entry (entry)
-    "Interpret a leap command or variable assignment. 
+    "Interpret a leap command or variable assignment.
 Nothing is returned, it's all side effects."
     (cond
       ((eq (second entry) :=)
@@ -1634,6 +1657,3 @@ Nothing is returned."
        until (eq entry eof)))
 
   )
-
-
-

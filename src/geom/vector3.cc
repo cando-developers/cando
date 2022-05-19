@@ -19,11 +19,11 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
- 
+
 This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
 */
 /* -^- */
-#define	DEBUG_LEVEL_NONE
+#define	DEBUG_LEVEL_FULL
 
 
 //
@@ -263,7 +263,7 @@ void Vector3::fillFromCons(core::Cons_sp vals)
   this->coords[1] = y;
   this->coords[2] = z;
 }
-    
+
 
 
 
@@ -372,7 +372,7 @@ CL_DEFUN Vector3 geom__build_using_bond_angle_dihedral( double distance, const V
   Vector3 dPosDist = bcDirNorm.multiplyByScalar(distance);
     //
     // Now find the axis around which to rotate the bond angle
-    //	
+    //
   Vector3	abDir = va-vb;
   if ( abDir.length() == 0.0 ) return Vector3(0.0,0.0,0.0);
   Vector3 abDirNorm = abDir.normalizedOrZero();
@@ -394,6 +394,50 @@ CL_DEFUN Vector3 geom__build_using_bond_angle_dihedral( double distance, const V
 	    //
   Vector3 dPos = dPosDihedral.add(vc);
   return dPos;
+}
+
+
+/*
+ *      myAcos
+ *
+ *	Author:	Christian Schafmeister (1991)
+ *
+ *      Return the acos of a number, but don't crap
+ *      out on domain errors.
+ */
+double
+myAcos( double d )
+{
+  if ( d >= 1.0 )
+    return(0.0);
+  if ( d <= -1.0 )
+    return(core::numerics::pi);
+  return(acos(d));
+}
+
+
+/*
+ *      dVectorAbsAngle
+ *
+ *      Author: Christian Schafmeister (1991)
+ *
+ *      Return the absolute angle between two vectors in Radians
+ *      the sign of the angle is determined by the direction of
+ *      the cross product.
+ */
+double
+dVectorAbsAngle( const Vector3& vX, const Vector3& vY, const Vector3& vRef )
+{
+  Vector3  vT1, vT2, vT;
+  double  dLen, dAngle;
+
+  vT1 = vX.normalized();
+  vT2 = vY.normalized();
+
+  vT = vT1.crossProduct(vT2);
+  dAngle = myAcos(vT1.dotProduct(vT2));
+  if ( vT.dotProduct(vRef) < 0.0 ) dAngle = -dAngle;
+  return(dAngle);
 }
 
 
@@ -505,10 +549,14 @@ Vector3 zvZMatrixCalculatePositionFromAngles( double dAngleA, double dAngleB,
  *
  */
 
-CL_DEFUN Vector3 geom__build_using_bond_two_angles_orientation( const Vector3& vCenter,
-                                                                double dBond, const Vector3& vAtomA,
-                                                                double dAngleA, double dAngleB, const Vector3& vAtomB,
-                                                                double dOrient )
+CL_DEFUN Vector3 geom__build_using_bond_two_angles_orientation(
+    const Vector3& vCenter,
+    const Vector3& vAtomA,
+    const Vector3& vAtomB,
+    double dBond,
+    double dAngleA,
+    double dAngleB,
+    double dOrient )
 {
   Matrix          mT, mT1, mT2, mTX, mTY, mTZ, mTT;
   double          dAngleX, dAngleY, dAngleZ;
@@ -536,18 +584,19 @@ CL_DEFUN Vector3 geom__build_using_bond_two_angles_orientation( const Vector3& v
   LOG( "BC= %s\n", vTempBC.asString() );
   vTempXZ = vTempAC;
   vTempXZ.getY() = 0.0;
+  LOG( "XZ= %s\n", vTempXZ.asString() );
   if ( vTempXZ.length() != 0.0 ) {
-    dAngleY = calculateAngle(vTempXZ, vXAxis, vYAxis );
+    dAngleY = dVectorAbsAngle(vTempXZ, vXAxis, vYAxis );
   } else dAngleY = 0.0;
-
+  LOG( "dAngleY = %lf\n", dAngleY );
   mT.rotationY(-dAngleY );
+  LOG( "Rotated around Y\n" );
   vTempAC = mT.multiplyByVector3(vTempAC);
   vTempBC = mT.multiplyByVector3(vTempBC);
-  LOG( "Rotated around Y\n" );
   LOG( "New AC= %s\n", vTempAC.asString() );
   LOG( "New BC= %s\n", vTempBC.asString() );
 
-  dAngleZ = calculateAngle( vTempAC, vXAxis, vZAxis );
+  dAngleZ = dVectorAbsAngle( vTempAC, vXAxis, vZAxis );
   mT.rotationZ( -dAngleZ );
   vTempBC = mT.multiplyByVector3(vTempBC);
 #ifdef DEBUG
@@ -559,7 +608,7 @@ CL_DEFUN Vector3 geom__build_using_bond_two_angles_orientation( const Vector3& v
 
   vTempBC.getX() = 0.0;
 
-  dAngleX = calculateAngle( vTempBC, vYAxis, vXAxis );
+  dAngleX = dVectorAbsAngle( vTempBC, vYAxis, vXAxis );
 
                 /* Build the transformation matrix to convert from */
                 /* lab coordinates to molecule coordinates in mT*/

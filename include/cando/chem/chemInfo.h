@@ -408,7 +408,7 @@ public:
   static ResidueTest_sp create( BondEnum b, gc::Nilable<AtomOrBondMatchNode_sp> at, core::Symbol_sp ri)
   {
     _G();
-    LOG(("ResidueTest_sp create: ringTag = (%s)") , ri);
+    LOG(("ResidueTest_sp create: ringTag = (%s)") , _rep_(ri));
     auto  obj  = gctools::GC<ResidueTest_O>::allocate_with_default_constructor();
     obj->_Bond = b;
     obj->_AtomTest = at;
