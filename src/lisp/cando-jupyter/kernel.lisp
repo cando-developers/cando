@@ -17,31 +17,6 @@
     :banner "cando-jupyter: a Cando Jupyter kernel
 (C) 2020-2021 Christian Schafmeister (LGPL-3.0)"))
 
-
-; The readtable was copied in the original code. Do we need to do that?
-(defmethod jupyter:start :after ((k kernel))
-  (let ((amber-home
-          (namestring (or (if (ext:getenv "AMBERHOME")
-                              (probe-file (ext:getenv "AMBERHOME"))
-                              "/usr/local/amber/")
-                          (probe-file "/home/app/amber16-data/")
-                          "/dev/null"))))
-    (setf (logical-pathname-translations "amber")
-          (list (list "**;*.*" (concatenate 'string amber-home "/**/*.*"))))
-    (jupyter:inform :info k "Setting amber host pathname translation -> ~a" amber-home)))
-
-
-(defmethod jupyter:start :before ((k kernel))
-  (when lparallel:*kernel*
-    (error "The lparallel:*kernel* is not NIL and it must be when jupyter starts. Add -f no-auto-lparallel to cando startup"))
-  (setf lparallel:*kernel* (lparallel:make-kernel (core:num-logical-processors))))
-
-
-(defmethod jupyter:stop :after ((k kernel))
-  #+(or)(format t "jupyter:stop :after (mp:all-processes) -> ~s~%" (mp:all-processes))
-  (lparallel:end-kernel :wait t))
-
-
 (defun lisp-code-p (code)
   (do ((index 0 (1+ index)))
       ((>= index (length code)))
@@ -51,7 +26,6 @@
       ((#\space #\tab #\newline))
       (otherwise
         (return nil)))))
-
 
 (defun leap-read (code)
   (architecture.builder-protocol:with-builder ('list)
