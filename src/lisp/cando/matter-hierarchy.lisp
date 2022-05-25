@@ -65,7 +65,7 @@ Return a hash table that maps atoms to residues that contain them."
 Walk the spanning tree of the ATOM and add the ATOM to ATOMS-SEEN.
 For each atom walked look up the residue in ATOMS-TO-RESIDUES
 and if the residue is not in RESIDUES-TO-MOLECULES add it."
-  (let ((spanning-loop (chem:make-spanning-loop atom)))
+  (let ((spanning-loop (chem:spanning-loop/make atom)))
     (loop for a = (chem:next spanning-loop (lambda (a b) t))
        while a
        do (unless (gethash a atoms-seen)
@@ -179,7 +179,7 @@ Break up the molecules in the aggregate into a list of molecules using spanning 
                                        atoms-to-residues)
   (format *debug-io* "span-across-molecule-from-atom old-molecule ~a atom ~a~%" old-molecule atom)
   (let ((new-molecule (chem:make-molecule (chem:get-name old-molecule)))
-        (spanning-tree (chem:make-spanning-loop atom))
+        (spanning-tree (chem:spanning-loop/make atom))
         (atoms-spanned 0)
         residues)
     (loop

@@ -22,11 +22,15 @@
    (superposable-conformation-collection :initarg :superposable-conformation-collection
                                          :accessor superposable-conformation-collection)))
 
+
+(defun trainer-filename (trainer)
+  (kin.tasks:sanitize-filename (concatenate 'string (format nil "(~{~a~^-~})" (context trainer)) (chem::oligomer/sequence-as-file-name (oligomer trainer)))))
+
 (cando:make-class-save-load
  trainer
  :print-unreadably (lambda (obj stream)
                      (print-unreadable-object (obj stream :type t)
-                       (format stream "~a" (chem::|Oligomer_O::sequenceAsFileName| (oligomer obj))))))
+                       (format stream "~a" (trainer-filename obj)))))
 
 (defun collect-focus-joints (conformation focus-residue-index)
   (let ((focus-joints (make-hash-table)))
@@ -101,12 +105,13 @@
   "Given a list of training oligomers expand them into a list of trainers"
   (let ((result (make-hash-table :test #'equalp))
         (all-oligomers (loop for oligomer in oligomers
-                             append (loop for sequence-id below (chem:|Oligomer_O::numberOfSequences| oligomer)
+                             append (loop for sequence-id below (chem:oligomer/number-of-sequences oligomer)
                                           collect (progn
-                                                    (chem:|Oligomer_O::gotoSequence| oligomer sequence-id)
-                                                    (chem:|Oligomer_O::deepCopy| oligomer))))))
+                                                    (chem:oligomer/goto-sequence oligomer sequence-id)
+                                                    (let ((olig (chem:oligomer/deep-copy oligomer)))
+                                                      olig))))))
     (loop for oligomer in all-oligomers
-          do (loop for monomer in (chem:|Oligomer_O::monomersAsList| oligomer)
+          do (loop for monomer in (chem:oligomer/monomers-as-list oligomer)
                    for monomer-sequence-number = (chem:get-sequence-number monomer)
                    for context = (monomer-context monomer)
                    do (multiple-value-bind (conformation aggregate atom-id-map superposable-conformation-collection)
@@ -127,11 +132,7 @@
   "Return a new design that includes trainers"
   (let* ((oligomers (build-training-oligomers grammar))
          (trainers (build-trainers-from-oligomers oligomers)))
-    (make-instance 'grammar
-                   :topologys (topologys grammar)
-                   :cap-name-map (cap-name-map grammar)
-                   :trainers trainers)))
-
+    trainers))
 
 (defun jostle-trainer (trainer &key test verbose)
   (let ((aggregate (aggregate trainer))
@@ -181,11 +182,12 @@
                                   (let* ((atom (chem:lookup-atom atom-id-map (atom-id o)))
                                          (pos (chem:get-position atom)))
                                     (set-position o pos))))
-             (update-internal-coords (joint-tree conformation))
+             (update-joint-tree-internal-coordinates conformation)
           collect (let* ((internals (make-array 16 :adjustable t :fill-pointer 0))
-                         (residue (lookup-residue-id (fold-tree conformation)
-                                                     (list 0 focus-residue-sequence-number))))
-                    (walk-joints residue
+                         (ataggregate (ataggregate conformation))
+                         (atmolecule (atmolecule-aref ataggregate 0))
+                         (atresidue (atresidue-aref atmolecule focus-residue-sequence-number)))
+                    (walk-joints atresidue
                                  (lambda (index joint)
                                    (format t "Extracting internal for ~a index: ~a atom-id: ~a~%"
                                            (name joint)
@@ -195,9 +197,9 @@
                                      ((typep joint 'bonded-joint)
                                       (vector-push-extend (third (atom-id joint)) internals)
                                       (vector-push-extend (name joint) internals)
-                                      (vector-push-extend (get-distance joint) internals)
-                                      (vector-push-extend (get-theta joint) internals)
-                                      (vector-push-extend (get-phi joint) internals)))))
+                                      (vector-push-extend (kin:bonded-joint/get-distance joint) internals)
+                                      (vector-push-extend (kin:bonded-joint/get-angle joint) internals)
+                                      (vector-push-extend (kin:bonded-joint/get-dihedral joint) internals)))))
                     internals))))
 
 
@@ -218,3 +220,18 @@
                      do (let ((atom-index (elt onec index))
                               (atom-name (elt onec (+ index 1))))
                           (format t "  ~a ~a~%" atom-index atom-name)))))))
+
+
+(defun maybe-save-trainer (trainer pname)
+  (if (probe-file pname)
+      (format t "Skipped ~a~%" pname)
+      (progn
+        (format t "Saved ~a~%" pname)
+        (ensure-directories-exist pname)
+        (cando:save-cando trainer pname))))
+
+
+
+(defun load-trainer (filename)
+  (cando:load-cando filename))
+                                                    

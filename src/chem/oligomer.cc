@@ -147,7 +147,7 @@ void Oligomer_O::reinitializeData()
 }
 
 
-CL_NAME(CHEM:|Oligomer_O::empty|);
+CL_NAME(CHEM:OLIGOMER/EMPTY);
 CL_DEFMETHOD void	Oligomer_O::empty()
 {
     this->_Monomers.clear();
@@ -162,7 +162,7 @@ void Oligomer_O::setCandoDatabase(CandoDatabase_sp bdb)
 #endif //]
 
 /*! It's important that these monomers have the same order as in the oligomer */
-CL_NAME(CHEM:|Oligomer_O::monomersAsList|);
+CL_NAME(CHEM:OLIGOMER/MONOMERS-AS-LIST);
 CL_DEFMETHOD core::List_sp Oligomer_O::monomersAsList()
 {
   ql::list result;
@@ -174,7 +174,7 @@ CL_DEFMETHOD core::List_sp Oligomer_O::monomersAsList()
   return result.cons();
 }
 
-CL_NAME(CHEM:|Oligomer_O::couplingsAsList|);
+CL_NAME(CHEM:OLIGOMER/COUPLINGS-AS-LIST);
 CL_DEFMETHOD core::List_sp Oligomer_O::couplingsAsList()
 {
   ql::list result;
@@ -247,7 +247,7 @@ void	Oligomer_O::expandMonomerListToNeighbors(gctools::SmallOrderedSet<Monomer_s
 /*! Add a monomer, don't change its id
  * Oligomer._State must be (alchemistsAreUndefined)
  */
-CL_NAME(CHEM:|Oligomer_O::addMonomer|);
+CL_NAME(CHEM:OLIGOMER/ADD-MONOMER);
 CL_DEFMETHOD uint Oligomer_O::addMonomer(Monomer_sp s)
 {
 Monomer_sp	monomer;
@@ -262,7 +262,7 @@ uint		idx;
     return idx;
 }
 
-CL_NAME(CHEM:|Oligomer_O::hasMonomerWithId|);
+CL_NAME(CHEM:OLIGOMER/HAS-MONOMER-WITH-ID);
 CL_DEFMETHOD bool Oligomer_O::hasMonomerWithId(core::Symbol_sp id)
 {
     gctools::Vec0<Monomer_sp>::iterator	mi;
@@ -274,7 +274,7 @@ CL_DEFMETHOD bool Oligomer_O::hasMonomerWithId(core::Symbol_sp id)
 }
 
 
-CL_NAME(CHEM:|Oligomer_O::getMonomerWithId|);
+CL_NAME(CHEM:OLIGOMER/GET-MONOMER-WITH-ID);
 CL_DEFMETHOD Monomer_sp Oligomer_O::getMonomerWithId(core::Symbol_sp id)
 {
     gctools::Vec0<Monomer_sp>::iterator	mi;
@@ -290,7 +290,7 @@ CL_DEFMETHOD Monomer_sp Oligomer_O::getMonomerWithId(core::Symbol_sp id)
 
 /*! Remove a monomer.
 Oligomer._State must be (alchemistsAreUndefined) */
-CL_NAME(CHEM:|Oligomer_O::removeMonomer|);
+CL_NAME(CHEM:OLIGOMER/REMOVE-MONOMER);
 CL_DEFMETHOD void	Oligomer_O::removeMonomer(Monomer_sp s)
 {
     gctools::Vec0<Monomer_sp>::iterator	mi;
@@ -308,7 +308,7 @@ CL_DEFMETHOD void	Oligomer_O::removeMonomer(Monomer_sp s)
 
 /*! Remove a coupling.
 Oligomer._State must be (alchemistsAreUndefined) */
-CL_NAME(CHEM:|Oligomer_O::removeCoupling|);
+CL_NAME(CHEM:OLIGOMER/REMOVE-COUPLING);
 CL_DEFMETHOD void	Oligomer_O::removeCoupling(Coupling_sp s)
 {
     gctools::Vec0<Coupling_sp>::iterator	mi;
@@ -323,7 +323,7 @@ CL_DEFMETHOD void	Oligomer_O::removeCoupling(Coupling_sp s)
 
 
 
-CL_NAME(CHEM:|Oligomer_O::checkForErrors|);
+CL_NAME(CHEM:OLIGOMER/CHECK-FOR-ERRORS);
 CL_DEFMETHOD bool	Oligomer_O::checkForErrors()
 {
   IMPLEMENT_ME();
@@ -352,7 +352,7 @@ CL_DEFMETHOD bool	Oligomer_O::checkForErrors()
 
 
 
-CL_NAME(CHEM:|Oligomer_O::updateMultiMonomers|);
+CL_NAME(CHEM:OLIGOMER/UPDATE-MULTI-MONOMERS);
 CL_DEFMETHOD void	Oligomer_O::updateMultiMonomers()
 {
 Oligomer_O::monomerIterator	mi;
@@ -393,7 +393,7 @@ Monomer_sp	monTo;
 /*! Remove a Monomer that is a leaf.
  * Returns the monomer that it was attached to.
  */
-CL_NAME(CHEM:|Oligomer_O::removeLeafMonomer|);
+CL_NAME(CHEM:OLIGOMER/REMOVE-LEAF-MONOMER);
 CL_DEFMETHOD Monomer_sp Oligomer_O::removeLeafMonomer(Monomer_sp monomerToRemove)
 {
 uint	couplings;
@@ -422,7 +422,7 @@ Monomer_sp	monomerToRemain;
 
 /*! Add a coupling.
 Oligomer._State must be (alchemistsAreUndefined) */
-CL_NAME(CHEM:|Oligomer_O::addCoupling|);
+CL_NAME(CHEM:OLIGOMER/ADD-COUPLING);
 CL_DEFMETHOD void	Oligomer_O::addCoupling(Coupling_sp c)
 {
     this->_Couplings.push_back(c);
@@ -432,7 +432,7 @@ CL_DEFMETHOD void	Oligomer_O::addCoupling(Coupling_sp c)
 
 /*! Return the monomer at the root of the tree.
 Oligomer._State can be anything. */
-CL_NAME(CHEM:|Oligomer_O::rootMonomer|);
+CL_NAME(CHEM:OLIGOMER/ROOT-MONOMER);
 CL_DEFMETHOD Monomer_sp	Oligomer_O::rootMonomer() const
 {
   Monomer_sp	sub;
@@ -458,7 +458,7 @@ CL_DEFMETHOD Monomer_sp	Oligomer_O::rootMonomer() const
 }
 
 
-CL_NAME(CHEM:|Oligomer_O::throwIfBadConnections|);
+CL_NAME(CHEM:OLIGOMER/THROW-IF-BAD-CONNECTIONS);
 CL_DEFMETHOD void	Oligomer_O::throwIfBadConnections()
 {
     gctools::Vec0<Monomer_sp>::iterator	mi;
@@ -478,7 +478,7 @@ CL_DEFMETHOD void	Oligomer_O::throwIfBadConnections()
 
 
 CL_LAMBDA("(oligomer !) source-monomer coupling-or-source-plug-name target-monomer &optional (target-plug-name nil)")
-CL_NAME(CHEM:|Oligomer_O::couple|);
+CL_NAME(CHEM:OLIGOMER/COUPLE);
 CL_DEFMETHOD DirectionalCoupling_sp	Oligomer_O::couple( Monomer_sp sourceMon, core::T_sp couplingOrSourcePlugName, Monomer_sp targetMon, core::Symbol_sp targetPlugName  )
 {
   DirectionalCoupling_sp	coupling;
@@ -631,7 +631,7 @@ CL_DEFMETHOD RingCoupling_sp	Oligomer_O::ringCoupleWithPlugNames( Monomer_sp mon
 
 
 #if 0
-CL_NAME(CHEM:|Oligomer_O::buildMolecule|);
+CL_NAME(CHEM:OLIGOMER/BUILD-MOLECULE);
 CL_DEFMETHOD Molecule_sp Oligomer_O::buildMolecule()
 {
 Topology_sp		topology;
@@ -721,7 +721,7 @@ uint				iperturb;
 }
 #endif
 
-CL_NAME(CHEM:|Oligomer_O::gotoSequence|);
+CL_NAME(CHEM:OLIGOMER/GOTO-SEQUENCE);
 CL_DEFMETHOD void	Oligomer_O::gotoSequence(core::Integer_sp index)
 {
   vector<int>	digits, bases;
@@ -750,7 +750,7 @@ CL_DEFMETHOD void	Oligomer_O::firstSequence()
     this->gotoSequence(core::Integer_O::create(0));
 }
 
-CL_NAME(CHEM:|Oligomer_O::numberOfMonomers|);
+CL_NAME(CHEM:OLIGOMER/NUMBER-OF-MONOMERS);
 CL_DEFMETHOD size_t Oligomer_O::numberOfMonomers() const {
   return this->_Monomers.size();
 }
@@ -773,7 +773,7 @@ Bignum			index = 0;
 }
 
 
-CL_NAME("CHEM:|Oligomer_O::monomerWithSequenceNumber|");
+CL_NAME(CHEM:OLIGOMER/MONOMER-WITH-SEQUENCE-NUMBER);
 CL_DEFMETHOD Monomer_sp Oligomer_O::monomerWithSequenceNumber(size_t sequence) const
 {
   if (sequence <= this->_Monomers.size()) {
@@ -786,7 +786,7 @@ CL_DEFMETHOD Monomer_sp Oligomer_O::monomerWithSequenceNumber(size_t sequence) c
  * Increment the monomer sequence.
  * Return -1 if there are too many sequences.
  */
-CL_NAME(CHEM:|Oligomer_O::numberOfSequences|);
+CL_NAME(CHEM:OLIGOMER/NUMBER-OF-SEQUENCES);
 CL_DEFMETHOD Bignum Oligomer_O::numberOfSequences()
 {
     gctools::Vec0<Monomer_sp>::iterator	mi;
@@ -820,7 +820,7 @@ long unsigned int numSeq;
 
 
 
-CL_NAME(CHEM:|Oligomer_O::getFirstMonomer|);
+CL_NAME(CHEM:OLIGOMER/GET-FIRST-MONOMER);
 CL_DEFMETHOD Monomer_sp	Oligomer_O::getFirstMonomer()
 {
     if ( this->_Monomers.size() != 0 ) {
@@ -890,7 +890,7 @@ string Oligomer_O::__repr__() const {
   return ss.str();
 }
 
-CL_NAME(CHEM:|Oligomer_O::sequenceAsString|);
+CL_NAME(CHEM:OLIGOMER/SEQUENCE-AS-STRING);
 CL_DEFMETHOD string	Oligomer_O::sequenceAsString() const
 {
   Monomer_sp mon2 = this->rootMonomer();
@@ -968,7 +968,7 @@ adapt::SymbolSet_sp Oligomer_O::allMonomerAliases()
 #endif
 
 
-CL_NAME("CHEM:|Oligomer_O::sequenceAsFileName|");
+CL_NAME(CHEM:OLIGOMER/SEQUENCE-AS-FILE-NAME);
 CL_DEFMETHOD string	Oligomer_O::sequenceAsFileName() const
 {
 
@@ -981,7 +981,7 @@ CL_DEFMETHOD string	Oligomer_O::sequenceAsFileName() const
     return name.substr(0,255);
 }
 
-CL_NAME("CHEM:|Oligomer_O::allSpecificMonomerContexts|");
+CL_NAME(CHEM:OLIGOMER/ALL-SPECIFIC-MONOMER-CONTEXTS);
 CL_DEFMETHOD SpecificContextSet_sp Oligomer_O::allSpecificMonomerContexts()
 {
     SpecificContextSet_sp allContexts = SpecificContextSet_O::create();
@@ -1036,7 +1036,7 @@ void	Oligomer_O::_assembleFromParts(core::List_sp parts, CandoDatabase_sp bdb)
 
 /*! Copy the oligomer, duplicating all monomers and create fresh couplings
 between them */
-CL_NAME(CHEM:|Oligomer_O::deepCopy|);
+CL_NAME(CHEM:OLIGOMER/DEEP-COPY);
 CL_DEFMETHOD core::T_sp Oligomer_O::deepCopyOligomer() const
 {
   auto newOligomer = gctools::GC<Oligomer_O>::copy(*this);

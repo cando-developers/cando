@@ -8,7 +8,7 @@
          (stereo-information (design.joint-tree:stereo-information prep-top))
          (topology (chem:make-topology name constitution plugs))
          (stereo-information (chem:get-stereo-information constitution))
-         (constitution-atoms (chem:|Constitution_O::getConstitutionAtoms| constitution))
+         (constitution-atoms (chem:constitution/get-constitution-atoms constitution))
 ;;;         (constitution-atom-list (chem:constitution-atoms-as-list constitution-atoms)))
          (stereoisomer-atoms-list (loop for stereoisomer in (chem:stereoisomers-as-list stereo-information)
                                         for stereoisomer-name = (chem:get-name stereoisomer)

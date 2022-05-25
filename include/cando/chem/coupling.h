@@ -192,6 +192,7 @@ namespace chem {
     _TargetPlugName(targetPlugName),
       _SourceMonomer(source),
       _TargetMonomer(target) {};
+    DirectionalCoupling_O() {};
   };
 
   typedef	enum	{ NoRingSide, Monomer1Side, Monomer2Side } RingCouplingSide;

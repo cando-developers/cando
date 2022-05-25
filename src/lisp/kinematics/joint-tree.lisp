@@ -44,10 +44,10 @@ JointTree_O::recursivelyBuildMolecule
 If (null parent-joint) then this is the root atresidue
 "
   (let* ((topology (chem:find-topology (topology-name atresidue) t))
-         (constitution (chem:|Topology_O::getConstitution| topology))
-         (constitution-atoms (chem:|Constitution_O::getConstitutionAtoms| constitution)))
-    (resize-atatoms atresidue (chem:|ConstitutionAtoms_O::numberOfAtoms| constitution-atoms))
-    (let* ((joint-template (chem:|Topology_O::getProperty| topology :joint-template))
+         (constitution (chem:topology/get-constitution topology))
+         (constitution-atoms (chem:constitution/get-constitution-atoms constitution)))
+    (resize-atatoms atresidue (chem:constitution-atoms/number-of-atoms constitution-atoms))
+    (let* ((joint-template (chem:topology/get-property topology :joint-template))
            ;; bondid is represented by a (cons parent child)
            (root-joint (recursively-write-into-atresidue joint-template
                                                          parent-joint
@@ -57,12 +57,12 @@ If (null parent-joint) then this is the root atresidue
       (unless (slot-boundp joint-tree 'root)
         (setf (root joint-tree) root-joint))
       (let ((outgoing-plug-names-to-joint-map (make-hash-table)))
-        (loop for plug in (chem:|Topology_O::plugsAsList| topology)
+        (loop for plug in (chem:topology/plugs-as-list topology)
             when (typep plug 'chem:out-plug)
               do (let* ((out-plug plug)
-                        (out-plug-name (chem:|Plug_O::getName| out-plug))
-                        (atomb0 (chem:|Plug_O::getB0| out-plug))
-                        (constitution-bond0-atomid (chem:|ConstitutionAtoms_O::index| constitution-atoms atomb0))
+                        (out-plug-name (chem:plug/get-name out-plug))
+                        (atomb0 (chem:plug/get-b0 out-plug))
+                        (constitution-bond0-atomid (chem:constitution-atoms/index constitution-atoms atomb0))
                         (joint-bond0-parent (aref (joints atresidue) constitution-bond0-atomid)))
                    (setf (gethash out-plug-name outgoing-plug-names-to-joint-map) joint-bond0-parent)))
         outgoing-plug-names-to-joint-map))))

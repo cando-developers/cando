@@ -23,6 +23,8 @@
    (cap-name-map :initarg :cap-name-map :accessor cap-name-map)
    (complex-plugs :initarg :complex-plugs :accessor complex-plugs)))
 
+(cando:make-class-save-load design)
+
 (defun configure (chemdraw)
   (error "You must provide a function (defun configure (chemdraw) ...) that returns a design object"))
 
@@ -47,7 +49,10 @@
 (defclass grammar ()
   ((topologys :initarg :topologys :accessor topologys)
    (cap-name-map :initarg :cap-name-map :accessor cap-name-map)
-   (trainers :initarg :trainers :accessor trainers)))
+   (trainer-node-pathnames :initform nil :initarg :trainer-node-pathnames :accessor trainer-node-pathnames) ))
+
+(cando:make-class-save-load grammar)
+
 
 #|
 (with-design (design ((:+default :smarts "[C](-[N:0])-[C:1]=O" :cap :pro)
@@ -56,8 +61,6 @@
                       (:+side :cap :4py)))
   (design.load:setup design))
 |#
-
-(cando:make-class-save-load design)
 
 (defun save-design (design file-name)
   (let ((pn (pathname file-name)))
@@ -115,7 +118,7 @@ This is for looking up parts but if the thing returned is not a part then return
     ends))
 
 (defun bonds-between (start end)
-  (let* ((spanning-tree (chem:make-spanning-loop start)))
+  (let* ((spanning-tree (chem:spanning-loop/make start)))
     (loop for ok = (chem:advance-loop-and-process spanning-tree)
           for atom = (chem:get-atom spanning-tree)
           until (eq atom end))
@@ -156,7 +159,7 @@ This is for looking up parts but if the thing returned is not a part then return
 - from the first alpha carbon to the last"
   (let* ((root-residue (chem:content-with-name molecule root-residue-name))
          (start-atom (chem:content-with-name root-residue :+default))
-         (spanning-tree (chem:make-spanning-loop start-atom))
+         (spanning-tree (chem:spanning-loop/make start-atom))
          (alpha-carbons (loop for ok = (chem:advance-loop-and-process spanning-tree)
                               for atom = (chem:get-atom spanning-tree)
                               until (null ok)
@@ -173,7 +176,7 @@ This is for looking up parts but if the thing returned is not a part then return
   (unless arguments
     (setf arguments '(:cg-tolerance 5.0 :max-tn-steps 100 :tn-tolerance 0.5)))
   (let ((mol (chem:content-at aggregate 0)))
-    #+(or)(let ((root-residue-name (chem:get-name (chem:|Oligomer_O::rootMonomer| oligomer))))
+    #+(or)(let ((root-residue-name (chem:get-name (chem:oligomer/root-monomer oligomer))))
             (chem:clear-restraints mol)
             (add-spiroligomer-guidance-restraints mol root-residue-name))
     (add-guidance-restraints mol)
@@ -202,7 +205,7 @@ This is for looking up parts but if the thing returned is not a part then return
 
 (defun my-add-monomers (oligomer names)
   (let ((monomer (chem:make-monomer names)))
-    (chem:|Oligomer_O::addMonomer| oligomer monomer)
+    (chem:oligomer/add-monomer oligomer monomer)
     (values (list monomer) nil)))
 
 (defun translate-part (oligomer names labels)
@@ -268,7 +271,7 @@ This is for looking up parts but if the thing returned is not a part then return
             (error "There is no monomer with the in-plug-name ~a to connect to ~a" in-plug-name previous-parts)
             (error "There is more than one monomer(~a) with the in-plug-name ~a" next-monomer in-plug-name)))
       (if (null ring-info)
-          (chem:|Oligomer_O::couple| oligomer
+          (chem:oligomer/couple oligomer
                        (first previous-monomer)
                        coupling-name
                        (first next-monomer))
@@ -351,7 +354,7 @@ Subdivide the list into a list of lists that contain Topologys with different nu
 of out-plugs."
   (let ((clusters (make-hash-table :test #'equal)))
     (loop for topology in list-of-topologys
-          for out-plug-names = (mapcar #'chem:get-name (chem:out-plugs-as-list topology))
+          for out-plug-names = (mapcar #'chem:plug/get-name (chem:out-plugs-as-list topology))
           for sorted-out-plug-names = (sort out-plug-names #'string<)
           do (push topology (gethash sorted-out-plug-names clusters)))
     (alexandria:hash-table-values clusters)))
@@ -361,10 +364,11 @@ of out-plugs."
    a monomer that this one out-plug will be coupled through"
   (let* ((topology (chem:current-topology other-monomer))
          (out-plug-names (chem:all-out-plug-names-that-match-in-plug-name topology in-plug-name)))
-    (format *debug-io* "out-plug-names -> ~s~%" out-plug-names)
+    (when (chem:verbose 1)
+      (format *debug-io* "out-plug-names -> ~s~%" out-plug-names))
     (case (length out-plug-names)
       (0
-       (error "There are no out-plugs in ~s that match the in-plug-name ~s - existing plugs: ~s" other-monomer in-plug-name (chem:|Topology_O::plugsAsList| topology)))
+       (error "There are no out-plugs in ~s that match the in-plug-name ~s - existing plugs: ~s" other-monomer in-plug-name (chem:topology/plugs-as-list topology)))
       (1
        (return-from ensure-one-unique-out-plug-name (first out-plug-names)))
       (otherwise
@@ -372,14 +376,14 @@ of out-plugs."
               out-plug-names other-monomer in-plug-name)))))
 
 (defun find-unsatisfied-monomer-plug-pairs (oligomer)
-  (let* ((monomers (chem:|Oligomer_O::monomersAsList| oligomer))
-         (couplings (chem:|Oligomer_O::couplingsAsList| oligomer))
+  (let* ((monomers (chem:oligomer/monomers-as-list oligomer))
+         (couplings (chem:oligomer/couplings-as-list oligomer))
          (monomer-plug-work-list (make-hash-table :test #'equal)))
     (loop for monomer in monomers
           for topology = (chem:current-topology monomer)
-          for plugs = (chem:|Topology_O::plugsAsList| topology)
+          for plugs = (chem:topology/plugs-as-list topology)
           do (loop for plug in plugs
-                   for plug-name = (chem:get-name plug)
+                   for plug-name = (chem:plug/get-name plug)
                    when (or (and (null (typep plug 'chem:origin-plug)) (chem:get-is-in plug))
                             (chem:get-is-out plug))
                      do (setf (gethash (cons monomer plug-name) monomer-plug-work-list) t)))
@@ -398,7 +402,7 @@ of out-plugs."
                monomer-plug-work-list)
       result)))
 
-(defun one-round-extend-oligomer-with-caps (oligomer cap-name-map topology-map &key (verbose t))
+(defun one-round-extend-oligomer-with-caps (oligomer cap-name-map topology-map &key (verbose nil))
   (let ((monomers-plugs (find-unsatisfied-monomer-plug-pairs oligomer)))
     (when verbose (format *debug-io* "monomers-plugs: ~%~a~%" monomers-plugs))
     (if monomers-plugs
@@ -406,7 +410,7 @@ of out-plugs."
           (when verbose (format *debug-io* "Extending oligomer with caps~%"))
           (loop for (monomer . plug-name) in monomers-plugs
                 for plug = (chem:get-plug-named monomer plug-name)
-                for cap = (gethash (chem:get-name plug) cap-name-map)
+                for cap = (gethash (chem:plug/get-name plug) cap-name-map)
                 do (when verbose (format *debug-io* "Extending monomer ~s  plug ~s~%" monomer plug))
                    (unless cap
                      (error "Could not find cap for monomer ~s plug ~s in cap-map"
@@ -418,7 +422,7 @@ of out-plugs."
                        (error "Could not find topology for cap ~s~%" cap))
                      (let ((other-monomer (chem:make-monomer (list (chem:get-name other-topology)))))
                        (when verbose (format *debug-io* "Adding new monomer ~s~%" other-monomer))
-                       (chem:|Oligomer_O::addMonomer| oligomer other-monomer)
+                       (chem:oligomer/add-monomer oligomer other-monomer)
                        (etypecase plug
                          (chem:out-plug
                           (let ((other-monomer-in-plug-name (chem:in-plug-name (chem:coupling-name plug-name))))
@@ -426,12 +430,12 @@ of out-plugs."
                               (error "While trying to couple monomer ~s with out-plug named ~s we could not find a corresponding in-plug named ~s in the cap monomer ~s"
                                      monomer plug-name other-monomer-in-plug-name other-monomer))
                             (when verbose (format *debug-io* "Coupling to out-coupling ~s ~s ~s ~s~%" monomer plug-name other-monomer other-monomer-in-plug-name))
-                            (chem:|Oligomer_O::couple| oligomer monomer plug-name other-monomer other-monomer-in-plug-name)))
+                            (chem:oligomer/couple oligomer monomer plug-name other-monomer other-monomer-in-plug-name)))
                          (chem:in-plug
                           (when verbose (format *debug-io* "Coupling monomer ~s with in coupling~%" other-monomer))
                           (let ((other-monomer-out-plug-name (ensure-one-unique-out-plug-name other-monomer plug-name)))
                             (when verbose (format *debug-io* "Coupling to in-coupling ~s ~s ~s ~s~%" other-monomer other-monomer-out-plug-name monomer plug-name))
-                            (chem:|Oligomer_O::couple| oligomer other-monomer other-monomer-out-plug-name monomer plug-name)))
+                            (chem:oligomer/couple oligomer other-monomer other-monomer-out-plug-name monomer plug-name)))
                          (chem:origin-plug
                           #| do nothing |#)))))
           t)
@@ -471,8 +475,30 @@ of out-plugs."
 add cap monomers until no more cap monomers are needed."
   (let ((oligomer (core:make-cxx-object 'chem:oligomer))
         (focus-residue (chem:make-monomer (mapcar #'chem:get-name focus-topologys-in-list))))
-    (format *debug-io* "Focus monomer: ~a~%" focus-residue)
-    (chem:|Oligomer_O::addMonomer| oligomer focus-residue)
+    (when (chem:verbose 1)
+      (format *debug-io* "Focus monomer: ~a~%" focus-residue))
+    (chem:oligomer/add-monomer oligomer focus-residue)
+    ;; Now repeatedly cap the focus monomer until it's finished.
+    (unless test
+      (loop for step from 0
+            while (one-round-extend-oligomer-with-caps oligomer cap-name-map topology-map)
+            when (> step 10)
+              do (error "Too many rounds of extending oligomer")))
+    oligomer))
+
+(defun build-one-body-training-oligomer (focus-body-topologys-in-list cap-name-map topology-map &key test)
+  "Build a training oligomer with a list of topologys in a focus-residue and then repeatedly
+add cap monomers until no more cap monomers are needed."
+  (let ((oligomer (core:make-cxx-object 'chem:oligomer))
+        (focus-residue (chem:make-monomer (mapcar #'chem:get-name focus-body-topologys-in-list)))
+        (prev-residue (chem:make-monomer (mapcar #'chem:get-name focus-body-topologys-in-list))))
+    (when (chem:verbose 1)
+      (format *debug-io* "Focus monomer: ~a~%" focus-residue))
+    (chem:oligomer/add-monomer oligomer focus-residue)
+    (chem:oligomer/add-monomer oligomer prev-residue)
+    (let ((coupling-name :default))
+      (chem:oligomer/couple oligomer prev-residue coupling-name focus-residue)
+      )
     ;; Now repeatedly cap the focus monomer until it's finished.
     (unless test
       (loop for step from 0
@@ -495,14 +521,27 @@ add cap monomers until no more cap monomers are needed."
       ;; First make the focus monomer and add it to the oligomer
       (let ((clustered-origins (cluster-topologys-using-out-plugs origins))
             (clustered-bodys (cluster-topologys-using-out-plugs body)))
-        (format *debug-io* "clustered-origins -> ~s~%" clustered-origins)
-        (format *debug-io* "clustered-bodys -> ~s~%" clustered-bodys)
+        (when (chem:verbose 1)
+          (format *debug-io* "clustered-origins -> ~s~%" clustered-origins)
+          (format *debug-io* "clustered-bodys -> ~s~%" clustered-bodys))
         (let ((all-oligomers (append
-                              (loop for focus-topologys in (append clustered-origins clustered-bodys)
-                                    collect (build-one-training-oligomer focus-topologys
+                              (loop for focus-origin-topologys in clustered-origins
+                                    do (format t "build-training-oligomers focus-origin-topologys: ~a~%" focus-origin-topologys)
+                                    collect (build-one-training-oligomer focus-origin-topologys
+                                                                         cap-name-map
+                                                                         topology-map))
+                              (loop for focus-body-topologys in clustered-bodys
+                                    do (format t "build-training-oligomers focus-body-topologys: ~a~%" focus-body-topologys)
+                                    collect (build-one-training-oligomer focus-body-topologys
+                                                                         cap-name-map
+                                                                         topology-map))
+                              (loop for focus-body-topologys in clustered-bodys
+                                    do (format t "build-training-oligomers focus-body-topologys: ~a~%" focus-body-topologys)
+                                    collect (build-one-body-training-oligomer focus-body-topologys
                                                                          cap-name-map
                                                                          topology-map))
                               (loop for focus-cap-topology in caps
+                                    do (format t "build-training-oligomers focus-cap-topology: ~a~%" focus-cap-topology)
                                     collect (build-one-training-oligomer (list focus-cap-topology)
                                                                          cap-name-map
                                                                          topology-map)))))

@@ -7,12 +7,19 @@
   ((aggregate :initarg :aggregate :accessor aggregate)
    (atmolecules :initarg :atmolecules :initform (make-array 0 :adjustable t) :accessor atmolecules)))
 
+(defun atmolecule-aref  (ataggregate atmolecule-id)
+  (aref (atmolecules ataggregate) atmolecule-id))
+
 (cando:make-class-save-load ataggregate)
 
 (defun put-atmolecule (ataggregate atmolecule index)
   (check-type ataggregate ataggregate)
   (check-type atmolecule atmolecule)
   (setf (aref (atmolecules ataggregate) index) atmolecule))
+
+(defun atresidue-aref  (atmolecule atresidue-id)
+  (aref (atresidues atmolecule) atresidue-id))
+
 
 (defmethod resize-atmolecules ((ataggregate ataggregate) num-atmolecules)
   (adjust-array (atmolecules ataggregate) num-atmolecules))
@@ -46,7 +53,7 @@
 
 (defun atresidue-factory (residue ring-closing-monomer-map monomer topology)
   (cond
-    ((chem:|Monomer_O::hasRingClosingOutPlug| monomer)
+    ((chem:monomer/has-ring-closing-out-plug monomer)
      (let ((atresidue (make-instance 'ring-closing-atresidue :residue residue)))
        (setf (gethash ring-closing-monomer-map monomer atresidue) atresidue)
        atresidue))
@@ -62,14 +69,14 @@
              
 
 (defun build-atmolecule-using-oligomer (oligomer molecule molecule-index monomer-positions joint-tree)
-  (let* ((root-monomer (chem:|Oligomer_O::rootMonomer| oligomer))
+  (let* ((root-monomer (chem:oligomer/root-monomer oligomer))
          (ring-closing-monomer-map (make-hash-table))
          (atmolecule (make-instance 'atmolecule :molecule molecule))
          (residue-index (gethash root-monomer monomer-positions))
          (residue (chem:content-at molecule residue-index))
          (topology (chem:current-topology root-monomer))
          (root-atresidue (atresidue-factory residue ring-closing-monomer-map root-monomer topology)))
-    (adjust-array (atresidues atmolecule) (chem:|Oligomer_O::numberOfMonomers| oligomer))
+    (adjust-array (atresidues atmolecule) (chem:oligomer/number-of-monomers oligomer))
     (put-atresidue atmolecule root-atresidue residue-index)
     (recursively-build-children joint-tree
                                 root-atresidue
@@ -104,12 +111,19 @@
 (cando:make-class-save-load
  atresidue
  :print-unreadably (lambda (object stream)
-                     (format stream "~a[~a]" (class-name (class-of object)) (stereoisomer-name object))))
+                     (format stream "~a[~a]" (class-name (class-of object)) (chem:get-name (residue object)))))
 
 (defun put-joint (atresidue joint index)
   (check-type atresidue atresidue)
   (check-type joint joint)
   (setf (aref (joints atresidue) index) joint))
+
+
+(defun joint-count (atresidue)
+  (length (joints atresidue)))
+
+(defun joint-aref (atresidue joint-id)
+  (aref (joints atresidue) joint-id))
 
 
 
@@ -144,7 +158,7 @@
           (conformation-index atresidue) 0)
     (loop for plug-and-coupling in (chem:plug-names-and-couplings-as-list monomer)
           for coupling = (second plug-and-coupling)
-          unless (chem:|Coupling_O::isRingClosing| coupling)
+          unless (chem:coupling/is-ring-closing coupling)
             do (let ((directional-coupling coupling))
                  (when (eq (chem:get-source-monomer directional-coupling) monomer)
                    (let* ((other-monomer (chem::get-target-monomer directional-coupling))

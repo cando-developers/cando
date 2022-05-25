@@ -547,7 +547,7 @@ SIMPLE_ERROR(("I wasn't sure if this was ever called.  Take out this THROW if it
 //    SIGNAL(this,Coupling_connectionsChanged);
 };
 
-CL_NAME(chem:|Coupling_O::isRingClosing|);
+CL_NAME(CHEM:COUPLING/IS-RING-CLOSING);
 CL_DEFMETHOD bool Coupling_O::isRingClosing() const
 {
   return false;

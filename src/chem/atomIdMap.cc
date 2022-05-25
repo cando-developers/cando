@@ -51,6 +51,9 @@ public:
 void AtomIdMap_O::fields(core::Record_sp node)
 {
   // this->Base::fields(node);
+#if 1
+  node->field(INTERN_(kw,data),this->_AtomIdMap);
+#else
   switch (node->stage()) {
   case core::Record_O::initializing: 
   case core::Record_O::loading: {
@@ -77,10 +80,11 @@ void AtomIdMap_O::fields(core::Record_sp node)
   }
       break;
   case core::Record_O::patching: {
-    IMPLEMENT_MEF("Do patching");
+    // Nothing
   }
       break;
   }
+#endif
 }
 
 
@@ -91,7 +95,7 @@ CL_DEFUN chem::AtomIdMap_sp make_AtomIdMap() {
 
 CL_DEFMETHOD  core::T_sp AtomIdMap_O::AtomIdMap_get(const AtomId& atomId) const
 {
-  return this->_AtomIdMap.safeLookup(atomId);
+  return this->safeLookup(atomId);
 }
 
 CL_DEFUN core::T_sp chem__lookup_atom(AtomIdMap_sp map, const chem::AtomId& atomId) {
@@ -100,34 +104,58 @@ CL_DEFUN core::T_sp chem__lookup_atom(AtomIdMap_sp map, const chem::AtomId& atom
 
 void AtomIdMap_O::initialize()
 {_OF();
+  this->_AtomIdMap = core::ComplexVector_T_O::make(0);
   this->Base::initialize();
 }
 
 
 CL_DEFMETHOD void AtomIdMap_O::resizeAggregate(int numMols)
 {_OF();
-  this->_AtomIdMap.resize(numMols);
+  size_t oldNumMols = this->_AtomIdMap->length();
+  this->_AtomIdMap->resize(numMols);
+  for ( size_t it = oldNumMols; it<numMols; it++ ) {
+    this->_AtomIdMap->rowMajorAset(it,core::ComplexVector_T_O::make(0));
+  }
 }
 
 CL_DEFMETHOD void AtomIdMap_O::resizeMolecule(int mol, int numRes)
 {_OF();
-  this->_AtomIdMap.resize(mol,numRes);
+  if (mol<this->_AtomIdMap->length()) {
+    core::ComplexVector_T_sp residues = gc::As<core::ComplexVector_T_sp>(this->_AtomIdMap->rowMajorAref(mol));
+    size_t oldNumRes = residues->length();
+    residues->resize(numRes);
+    for ( size_t it = oldNumRes; it<numRes; it++ ) {
+      residues->rowMajorAset(it,core::ComplexVector_T_O::make(0));
+    }
+    return;
+  }
+  SIMPLE_ERROR(BF("molecule index %lu is out of range %lu") % mol % this->_AtomIdMap->length());
 }
 
 CL_DEFMETHOD void AtomIdMap_O::resizeResidue(int mol, int res, int numAtoms)
 {_OF();
-  this->_AtomIdMap.resize(mol,res,numAtoms);
+  if (mol<this->_AtomIdMap->length()) {
+    core::ComplexVector_T_sp residues = gc::As<core::ComplexVector_T_sp>(this->_AtomIdMap->rowMajorAref(mol));
+    if (res<residues->length()) {
+      core::ComplexVector_T_sp atoms = gc::As<core::ComplexVector_T_sp>(residues->rowMajorAref(res));
+      size_t oldNumAtoms = atoms->length();
+      atoms->resize(numAtoms);
+      return;
+    }
+    SIMPLE_ERROR(BF("residue index %lu is out of range %lu") % res % residues->length() );
+  }
+  SIMPLE_ERROR(BF("molecule index %lu is out of range %lu") % mol % this->_AtomIdMap->length());
 }
 
 void AtomIdMap_O::set(AtomId const& atomId, core::T_sp atom)
 {_OF();
-  this->_AtomIdMap[atomId] = atom;
+  this->safeSet( atomId, atom );
 }
 
 
 CL_DEFMETHOD void AtomIdMap_O::AtomIdMap_set(const AtomId& atomId, core::T_sp atom)
 {
-  this->_AtomIdMap[atomId] = atom;
+  this->safeSet( atomId, atom );
 }
 
 
@@ -144,7 +172,7 @@ public:
 CL_DEFMETHOD void AtomIdMap_O::walk(core::Function_sp callback)
 {
   WalkMap walker(callback);
-  this->_AtomIdMap.iterate(walker);
+  this->iterate(walker);
 }
 
 }; /* chem */

@@ -6,9 +6,14 @@
    (constitution-atoms-index :initarg :constitution-atoms-index :accessor constitution-atoms-index)
    ))
 
+(cando:make-class-save-load joint-template)
+
 (defclass bonded-joint-template (joint-template)
   ((children :initform nil :initarg :children :accessor children)
    ))
+
+(cando:make-class-save-load bonded-joint-template)
+
 
 (defun make-bonded-joint-template (constitution-atoms-index &key atom-name parent)
   (make-instance 'bonded-joint-template
@@ -19,6 +24,8 @@
 (defclass in-plug-bonded-joint-template (bonded-joint-template)
   ((in-plug :initarg :in-plug :accessor in-plug)))
 
+(cando:make-class-save-load in-plug-bonded-joint-template)
+
 (defun make-in-plug-bonded-joint-template (constitution-atoms-index &key atom-name parent in-plug)
   (make-instance 'in-plug-bonded-joint-template
                  :constitution-atoms-index constitution-atoms-index
@@ -28,6 +35,9 @@
 
 (defclass complex-bonded-joint-template (bonded-joint-template)
   ((input-stub-joints :initform (make-array 2) :initarg :input-stub-joints :accessor input-stub-joints)))
+
+(cando:make-class-save-load complex-bonded-joint-template)
+
 
 (defun make-complex-bonded-joint-template (constitution-atoms-index &key atom-name stub-joints)
   (cond
@@ -56,6 +66,8 @@
 (defclass jump-joint-template (joint-template)
   ((children :initform nil :initarg :children :accessor children)))
 
+(cando:make-class-save-load jump-joint-template)
+
 (defun make-jump-joint-template (constitution-atoms-index &key atom-name)
   (make-instance 'jump-joint-template
                  :constitution-atoms-index constitution-atoms-index
@@ -64,7 +76,7 @@
 (defgeneric add-child (parent child))
 
 (defmethod add-child ((joint joint) child)
-  (kin:|Joint_O::addChild| joint child))
+  (kin:joint/add-child joint child))
 
 (defmethod add-child ((joint-template joint-template) child-template)
   (setf (parent child-template) joint-template)
@@ -76,7 +88,7 @@
 (defun new-joint-template-factory (parent-template atom child-indexes in-plug constitution-atoms constitution-name topology-name)
   (declare (ignore topology-name constitution-name))
   (let* ((atom-name (chem:get-name atom))
-         (constitution-atoms-index (chem:|ConstitutionAtoms_O::index| constitution-atoms atom-name))
+         (constitution-atoms-index (chem:constitution-atoms/index constitution-atoms atom-name))
          (gparent-template (if parent-template
                                (parent parent-template)
                                nil))
@@ -137,148 +149,6 @@
 ;;; ------------------------------------------------------------
 ;;; ------------------------------------------------------------
 ;;; ------------------------------------------------------------
-
-#+(or)
-(progn
-  (defclass joint ()
-    ((parent :initarg :parent :accessor parent)
-     (children :initarg :children :initform (make-array 4 :fill-pointer 0 :adjustable t) :accessor children)))
-
-  (defun add-child (joint-template child-template)
-    (setf (parent child-template) joint-template)
-    (vector-push-extend child-template (children joint-template)))
-
-  (defclass checkpoint-out-plug-joint (joint)
-    ((constitution-name :initarg :constitution-name :accessor constitution-name)
-     (topology-name :initarg :topology-name :accessor topology-name)
-     (out-plug :initarg :out-plug :accessor out-plug)
-     ))
-
-  (defun make-checkpoint-out-plug-joint (&rest args)
-    (apply 'make-instance 'checkpoint-out-plug-joint args))
-
-  (defclass checkpoint-joint (joint)
-    ((constitution-name :initarg :constitution-name :accessor constitution-name)
-     (topology-name :initarg :topology-name :accessor topology-name)
-     (out-plug :initarg :out-plug :accessor out-plug)
-     ))
-
-  (defun make-checkpoint-joint (&rest args)
-    (apply 'make-instance 'checkpoint-joint args))
-
-
-  (defclass delayed-bonded-joint-template (joint)
-    (
-     (id :initarg :id :accessor id )
-     (name :initarg :name :accessor name )
-     (parent :initarg :parent :accessor parent )
-     (children :initarg :children :accessor children )
-     (checkpoint :initarg :checkpoint :accessor checkpoint )
-     (comment :initarg :comment :accessor comment )
-     (out-plug :initarg :out-plug :accessor out-plug )
-     ))
-
-  (defun make-delayed-bonded-joint-template (&rest args)
-    (apply 'make-instance 'delayed-bonded-joint-template args))
-
-
-  (defclass root-bonded-joint-template (joint)
-    (
-     (id :initarg :id :accessor id )
-     (parent :initarg :parent :accessor parent )
-     (name :initarg :name :accessor name )
-     (children :initarg :children :accessor children )
-     (constitution-name :initarg :constitution-name :accessor constitution-name )
-     (topology-name :initarg :topology-name :accessor topology-name )
-     (in-plug :initarg :in-plug :accessor in-plug )
-     (comment :initarg :comment :accessor comment )
-     (out-plug :initarg :out-plug :accessor out-plug )
-     ))
-
-  (defmethod print-object ((obj root-bonded-joint-template) stream)
-    (print-unreadable-object (obj stream :type t)
-      (format stream ":name ~a" (name obj))))
-
-  (defun make-root-bonded-joint-template (&rest args)
-    (apply 'make-instance 'root-bonded-joint-template args))
-
-  (defclass bonded-joint-template (joint)
-    (
-     (id :initarg :id :accessor id )
-     (parent :initarg :parent :accessor parent )
-     (name :initarg :name :accessor name )
-     (children :initarg :children :accessor children )
-     (comment :initarg :comment :accessor comment )
-     (out-plug :initarg :out-plug :accessor out-plug )
-     ))
-
-  (defun make-bonded-joint-template (&rest args)
-    (apply 'make-instance 'bonded-joint-template args))
-  )
-  
-  #+(or)
-(defun interpret-builder-info-instruction (instr residue)
-  (error "This is currently not used")
-  (cond
-    ((eq (car instr) 'chem:origin-plug)
-     (destructuring-bind (cmd atom-name plug-name) instr
-       (declare (ignore cmd))
-       (let* ((atom (when (chem:has-atom-with-name residue atom-name)
-                      (chem:first-atom-with-name residue atom-name))))
-         (when atom
-           (chem:make-origin-plug plug-name atom-name)))))
-    ((eq (car instr) 'chem:jum*p-plug)
-     (destructuring-bind (cmd atom-name plug-name) instr
-       (declare (ignore cmd))
-       (let* ((atom (when (chem:has-atom-with-name residue atom-name)
-                      (chem:first-atom-with-name residue atom-name))))
-         (when atom
-           (chem:make-jump-plug plug-name atom-name)))))
-    ((eq (car instr) 'chem:in-plug)
-     (destructuring-bind (cmd
-                          atom-name
-                          plug-name
-                          &key
-                            frame
-                            (bond-order :single-bond)
-                            atom2-name
-                            (bond-order2 :single-bond))
-         instr
-       (declare (ignore cmd))
-       (let* ((atom (when (chem:has-atom-with-name residue atom-name)
-                      (chem:first-atom-with-name residue atom-name))))
-         (when atom
-           (chem:make-in-plug plug-name nil atom-name bond-order atom2-name bond-order2)))))
-    ((eq (car instr) 'chem:out-plug)
-     (destructuring-bind (cmd
-                          atom-name
-                          plug-name
-                          &key
-                            (bond-order :single-bond)
-                            atom2-name
-                            (bond-order2 :single-bond))
-         instr
-       (declare (ignore cmd))
-       (let* ((atom (when (chem:has-atom-with-name residue atom-name)
-                      (chem:first-atom-with-name residue atom-name))))
-         (when atom
-           (chem:make-out-plug plug-name nil nil atom-name bond-order atom2-name bond-order2)))))
-    ((error "handle (eq (car instr) 'chem:ring-closing-plug)")
-     (destructuring-bind (cmd
-                          atom-name
-                          plug-name
-                          &key
-                            (bond-order :single-bond)
-                            atom2-name
-                            (bond-order2 :single-bond))
-         instr
-       (declare (ignore cmd))
-       (let* ((atom (when (chem:has-atom-with-name residue atom-name)
-                      (chem:first-atom-with-name residue atom-name))))
-         (when atom
-           (error "(chem:make-ring-closing-plug plug-name nil nil atom-name bond-order atom2-name bond-order2)")
-           ))))
-    (t (error "Unknown instruction ~a" instr))))
 
 (defvar *valid-atom-properties*
   '(:in :origin :in/origin/out :in/out :out))
@@ -493,11 +363,11 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
                                    collect config))
              (stereo-configurations (mapcar (lambda (atom config) (chem:make-stereo-configuration (chem:get-name atom) config))
                                             chiral-atoms configurations))
-             (new-name-string (format nil "~A[~{~A~^,~}]"
+             (new-name-string (format nil "~A~{~A~}"
                                       name
                                       (mapcar (lambda (atom config)
-                                                (format nil "~A=~A"
-                                                        (string (chem:get-name atom))
+                                                (format nil "~A"
+                                                        #+(or)(string (chem:get-name atom))
                                                         (string config))) chiral-atoms configurations)))
              (new-name (intern new-name-string :keyword)))
         #+(or)
@@ -518,7 +388,7 @@ Build stereoinformation from all of this and return it."
   (let* ((residue (chem:build-residue constitution-atoms)))
 ;;;      (chem:define-stereochemical-configurations-for-all-atoms residue)
     (let* ((root-atom (chem:atom-with-name residue root-atom-name))
-           (spanning-loop (chem:make-spanning-loop root-atom))
+           (spanning-loop (chem:spanning-loop/make root-atom))
            (atoms (chem:all-atoms spanning-loop))
            (unsorted-chiral-atoms (remove-if (lambda (x) (null (eq (chem:get-stereochemistry-type x) :chiral))) atoms))
            (chiral-atoms (sort unsorted-chiral-atoms #'string<
@@ -586,9 +456,9 @@ All other plug-factory objects must be capable of generating out-plugs."
                                   collect (maybe-make-out-plug out-plug-factory complex-plugs))
             for plugs = (cons in-plug out-plugs)
             do (push (make-instance 'prepare-topology
-                                    :name (if (eq (chem:get-name in-plug) :-default)
+                                    :name (if (eq (chem:plug/get-name in-plug) :-default)
                                               name
-                                              (intern (format nil "~a~a" (string name) (string (chem:get-name in-plug))) :keyword))
+                                              (intern (format nil "~a~a" (string name) (string (chem:plug/get-name in-plug))) :keyword))
                                     :constitution constitution
                                     :constitution-atoms constitution-atoms
                                     :stereo-information stereo-information
@@ -629,7 +499,7 @@ Return a list of prepare-topology objects - one for each residue that we need to
              ;; For every plug that was generated by the plug-factories - add it to the constitution
           do (loop for plug-factory in plug-factories
                    do (loop for plug in (gather-plugs plug-factory)
-                            do (chem:add-plug constitution (chem:get-name plug) plug))))
+                            do (chem:add-plug constitution (chem:plug/get-name plug) plug))))
     (loop for prepare-topology in extracted-prepare-topologys
           for name = (name prepare-topology)
           for residue = (residue prepare-topology)
@@ -656,7 +526,7 @@ Return a list of prepare-topology objects - one for each residue that we need to
   (error "This function is messed up - fix it")
   #+(or)(let ((res nil))
     (loop for p in plugs
-          do (let ((atom-name (chem:get-b0 p)))
+          do (let ((atom-name (chem:plug/get-b0 p)))
                (unless (not (contains res atom-name))
                  (error "The atom name[~s] is already in the set[~s]" atom-name res))
                (push atom-name res)))
@@ -665,8 +535,8 @@ Return a list of prepare-topology objects - one for each residue that we need to
 (defun get-all-out-plug-bond1atoms-as-set (plugs out-plug-bond0-atoms-set )
   (let ((res nil))
     (loop for p in plugs
-          do (when (chem:get-b1 p)
-               (let ((atom-name (chem:get-b1 p)))
+          do (when (chem:plug/get-b1 p)
+               (let ((atom-name (chem:plug/get-b1 p)))
                  (unless (not (member atom-name res))
                    (error "The atom name[~s] is already in the listset[~s]" atom-name res))
                  (unless (not (member atom-name out-plug-bond0-atoms-set))
@@ -682,7 +552,7 @@ Return a list of prepare-topology objects - one for each residue that we need to
         (plug-counter 0))
     (loop for p in plugs
           do (when (chem:has-stub-pivot-atom p)
-               (let ((atom-name (chem:get-b1 p)))
+               (let ((atom-name (chem:plug/get-b1 p)))
                  (unless (not (member atom-name res))
                    (error "The atom name[~s] is already in the set[~s]" atom-name res))
                  (unless (not (member atom-name out-plug-bond0-atoms-set))
@@ -736,7 +606,7 @@ Return a list of prepare-topology objects - one for each residue that we need to
   (let* ((out-plug-atom-prop (chem:matter-get-property-or-default atom :out-plug nil))
          (entity-to-delay-children-for (chem:matter-get-property-or-default atom :entity-to-delay-children-for nil))
          (root-atom-prop (chem:matter-get-property-or-default atom :root-atom nil))
-         (atom-index (chem:|ConstitutionAtoms_O::index| constitution-atoms (chem:atom-name atom)))
+         (atom-index (chem:constitution-atoms/index constitution-atoms (chem:atom-name atom)))
          (atom-name (chem:atom-name (chem:atom-with-id constitution-atoms atom-index)))
          (comment (format nil "~s [~a]" atom-name (chem:matter-get-property-or-default atom :weight -1))) )
     (cond
@@ -881,7 +751,7 @@ Return a list of prepare-topology objects - one for each residue that we need to
                         in-plug
                         (error "There has to be an in-plug in topology ~a" name))))
          (outplugs (find-out-plugs plugs))
-         (constitution-atoms (chem:|Constitution_O::getConstitutionAtoms| constitution))
+         (constitution-atoms (chem:constitution/get-constitution-atoms constitution))
          )
     (chem:set-property root-atom :root-atom in-plug)
     (loop for atom in all-spanning-atoms
@@ -901,9 +771,9 @@ Return a list of prepare-topology objects - one for each residue that we need to
     (loop for plug in plugs
           do (cond
                ((typep plug 'chem:out-plug)
-                (let ((bond0-atom (chem:atom-with-name residue (chem:get-b0 plug)))
-                      (bond1-atom (when (chem:get-b1 plug)
-                                    (chem:atom-with-name residue (chem:get-b1 plug))))
+                (let ((bond0-atom (chem:atom-with-name residue (chem:plug/get-b0 plug)))
+                      (bond1-atom (when (chem:plug/get-b1 plug)
+                                    (chem:atom-with-name residue (chem:plug/get-b1 plug))))
                       (stub-pivot-atom (when (chem:has-stub-pivot-atom plug)
                                          (chem:atom-with-name residue (chem:get-stub-pivot-atom plug)))))
                   (unless (not (and (or bond1-atom stub-pivot-atom) (eq bond1-atom stub-pivot-atom)))
@@ -1003,7 +873,7 @@ Return a list of prepare-topology objects - one for each residue that we need to
                         (error "There has to be an in-plug in topology ~a" name))))
          (root-atom-name (chem:root-atom-name in-plug))
          (root-atom (chem:atom-with-name residue root-atom-name))
-         (spanning-loop (chem:make-spanning-loop root-atom))
+         (spanning-loop (chem:spanning-loop/make root-atom))
          (all-spanning-atoms (chem:all-atoms spanning-loop))
          (back-spanning-map (make-hash-table)))
     (loop for atm in all-spanning-atoms
