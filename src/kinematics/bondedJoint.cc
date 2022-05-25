@@ -121,26 +121,11 @@ void BondedJoint_O::_insertChild(int before, Joint_sp child)
   child->_Parent = this->asSmartPtr();
 }
 
-    void BondedJoint_O::_releaseChild(int idx)
-    {
-	if ( this->_numberOfChildren() == 0 )
-	{
-	    THROW_HARD_ERROR(("There are no children to delete"));
-	}
-	int num = this->_numberOfChildren() - 1;
-	for ( int i=idx; i < num; i++ )
-	{
-	    this->_Children[i] = this->_Children[i+1];
-	}
-	this->_NumberOfChildren--;
-        this->_Children[this->_NumberOfChildren] = unbound<Joint_O>();
-    }
-
 void BondedJoint_O::_releaseChild(int idx)
 {
   if ( this->_numberOfChildren() == 0 )
   {
-    THROW_HARD_ERROR(BF("There are no children to delete"));
+    THROW_HARD_ERROR(("There are no children to delete"));
   }
   int num = this->_numberOfChildren() - 1;
   for ( int i=idx; i < num; i++ )
@@ -309,32 +294,6 @@ void BondedJoint_O::_updateChildrenXyzCoords() {
       this->_child(ii)->_updateChildrenXyzCoords();
     }
   }
-}
-
-
-void BondedJoint_O::_updateChildrenXyzCoords() {
-  if (this->_numberOfChildren()>0) {
-    int firstNonJumpIndex = this->firstNonJumpChildIndex();
-    for ( int ii=0; ii < firstNonJumpIndex; ii++) {
-      Stub jstub = this->_child(ii)->getInputStub();
-    // I should ratchet the newStub around the X axis and use relative dihedral
-      this->_child(ii)->_updateXyzCoord(jstub);
-    // ratchet newStub
-//    this->_DofChangePropagatesToYoungerSiblings = false;
-      this->noteXyzUpToDate();
-    }
-    Stub stub = this->_child(firstNonJumpIndex)->getInputStub();
-    for ( int ii=firstNonJumpIndex; ii < this->_numberOfChildren(); ii++) {
-    // I should ratchet the stub around the X axis and use relative dihedral
-      this->_child(ii)->_updateXyzCoord(stub);
-//    this->_DofChangePropagatesToYoungerSiblings = false;
-      this->noteXyzUpToDate();
-    }
-    for ( int ii=0; ii < this->_numberOfChildren(); ii++) {
-      this->_child(ii)->_updateChildrenXyzCoords();
-    }
-  }
-
 }
 
 void BondedJoint_O::_updateXyzCoord(Stub& stub)

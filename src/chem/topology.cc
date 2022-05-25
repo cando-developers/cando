@@ -160,8 +160,7 @@ CL_DEFMETHOD Residue_sp Topology_O::buildResidueForIsomer(size_t isomer) const
 //    printf("%s:%d  Creating atom@%d -> %s\n", __FILE__, __LINE__, ai->_ConstitutionAtomIndex, _rep_(atom).c_str());
     atoms[ai->_ConstitutionAtomIndex] = atom;
     if (ai->_ConstitutionAtomIndex != idx) {
-      SIMPLE_ERROR(BF("The atom %s _ConstitutionAtomIndex %lu does not match the StereoisomerAtoms idx %lu")
-                   % _rep_(atom) % ai->_ConstitutionAtomIndex % idx );
+      SIMPLE_ERROR(("The atom %s _ConstitutionAtomIndex %lu does not match the StereoisomerAtoms idx %lu") , _rep_(atom) , ai->_ConstitutionAtomIndex , idx );
     }
     res->putMatter(idx,atom); // order atoms as in Topology
   }
@@ -363,9 +362,7 @@ CL_DEFUN void connect_residues(Topology_sp prev_topology,
   BondOrder boOut0 = out_plug->getBondOrder0();
   Bond_O::canonicalizeBondOrder(in_atom,out_atom,boIn0);
   if (boIn0!=boOut0) {
-    SIMPLE_ERROR(BF("bond order of in-plug %s/%s does not match bond order of out-plug %s/%s")
-                 % _rep_(in_plug_name) % bondOrderToString(boIn0)
-                 % _rep_(out_plug_name) % bondOrderToString(boOut0));
+    SIMPLE_ERROR(("bond order of in-plug %s/%s does not match bond order of out-plug %s/%s") , _rep_(in_plug_name) , bondOrderToString(boIn0) , _rep_(out_plug_name) , bondOrderToString(boOut0));
   }
   in_atom->bondTo(out_atom, boIn0);
   if (in_plug->getB1().notnilp()) {
@@ -375,9 +372,7 @@ CL_DEFUN void connect_residues(Topology_sp prev_topology,
     BondOrder boOut1 = out_plug->getBondOrder1();
     Bond_O::canonicalizeBondOrder(in_atom,out_atom,boIn1);
     if (boIn1!=boOut1) {
-      SIMPLE_ERROR(BF("bond order 1 of in-plug %s/%s does not match bond order of out-plug %s/%s")
-                   % _rep_(in_plug_name) % bondOrderToString(boIn1)
-                   % _rep_(out_plug_name) % bondOrderToString(boOut1));
+      SIMPLE_ERROR(("bond order 1 of in-plug %s/%s does not match bond order of out-plug %s/%s") , _rep_(in_plug_name) , bondOrderToString(boIn1) , _rep_(out_plug_name) , bondOrderToString(boOut1));
     }
     in_atom->bondTo(out_atom, boIn1);
   }

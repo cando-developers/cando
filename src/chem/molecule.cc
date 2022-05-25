@@ -361,7 +361,7 @@ AtomIdMap_sp Molecule_O::buildAtomIdMap() const
   {
     int numAtoms = this->_contents[rid]->_contents.size();
     core::write_bf_stream(fmt::sprintf("%s:%d rid %d of %d  numAtoms-> %d\n" , __FILE__ , __LINE__ , rid , numResidues , numAtoms ));
-    atomIdMap->resize(mid,rid,numAtoms);
+    atomIdMap->resizeResidue(mid,rid,numAtoms);
     for ( int aid=0; aid<numAtoms; aid++ )
     {
       AtomId atomId(mid,rid,aid);

@@ -207,11 +207,11 @@ public:
         if (atomId.atomId()<atoms->length()) {
           return atoms->rowMajorAref(atomId.atomId());
         }
-        SIMPLE_ERROR(BF("atom index %lu is out of range %lu") % atomId.atomId() % atoms->length() );
+        SIMPLE_ERROR(("atom index %lu is out of range %lu") , atomId.atomId() , atoms->length() );
       }
-      SIMPLE_ERROR(BF("residue index %lu is out of range %lu") % atomId.residueId() % residues->length() );
+      SIMPLE_ERROR(("residue index %lu is out of range %lu") , atomId.residueId() , residues->length() );
     }
-    SIMPLE_ERROR(BF("molecule index %lu is out of range %lu") % atomId.moleculeId() % this->_AtomIdMap->length());
+    SIMPLE_ERROR(("molecule index %lu is out of range %lu") , atomId.moleculeId() , this->_AtomIdMap->length());
   }
 
   void safeSet(const AtomId& atomId, core::T_sp value) const
@@ -224,11 +224,11 @@ public:
           atoms->rowMajorAset( atomId.atomId(), value );
           return;
         }
-        SIMPLE_ERROR(BF("atom index %lu is out of range %lu") % atomId.atomId() % atoms->length() );
+        SIMPLE_ERROR(("atom index %lu is out of range %lu") , atomId.atomId() , atoms->length() );
       }
-      SIMPLE_ERROR(BF("residue index %lu is out of range %lu") % atomId.residueId() % residues->length() );
+      SIMPLE_ERROR(("residue index %lu is out of range %lu") , atomId.residueId() , residues->length() );
     }
-    SIMPLE_ERROR(BF("molecule index %lu is out of range %lu") % atomId.moleculeId() % this->_AtomIdMap->length());
+    SIMPLE_ERROR(("molecule index %lu is out of range %lu") , atomId.moleculeId() , this->_AtomIdMap->length());
   }
 
   	/*! Iterate over every atom in the AtomIdMap and call the Functor with the AtomId and the atom */

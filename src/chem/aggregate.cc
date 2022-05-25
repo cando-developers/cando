@@ -671,7 +671,7 @@ CL_DEFMETHOD     Molecule_sp Aggregate_O::firstMoleculeWithAtomNamed(core::Symbo
 Matter_mv Aggregate_O::addMatter(Matter_sp matter)
 {
   if ( matter.isA<Molecule_O>() ) return this->Base::addMatter(matter);
-  SIMPLE_ERROR(BF("Don't add anything other than molecules"));
+  SIMPLE_ERROR(("Don't add anything other than molecules"));
 #if 0
   if ( matter.isA<Aggregate_O>())
   {

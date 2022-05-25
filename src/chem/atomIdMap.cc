@@ -129,7 +129,7 @@ CL_DEFMETHOD void AtomIdMap_O::resizeMolecule(int mol, int numRes)
     }
     return;
   }
-  SIMPLE_ERROR(BF("molecule index %lu is out of range %lu") % mol % this->_AtomIdMap->length());
+  SIMPLE_ERROR(("molecule index %lu is out of range %lu") , mol , this->_AtomIdMap->length());
 }
 
 CL_DEFMETHOD void AtomIdMap_O::resizeResidue(int mol, int res, int numAtoms)
@@ -142,9 +142,9 @@ CL_DEFMETHOD void AtomIdMap_O::resizeResidue(int mol, int res, int numAtoms)
       atoms->resize(numAtoms);
       return;
     }
-    SIMPLE_ERROR(BF("residue index %lu is out of range %lu") % res % residues->length() );
+    SIMPLE_ERROR(("residue index %lu is out of range %lu") , res , residues->length() );
   }
-  SIMPLE_ERROR(BF("molecule index %lu is out of range %lu") % mol % this->_AtomIdMap->length());
+  SIMPLE_ERROR(("molecule index %lu is out of range %lu") , mol , this->_AtomIdMap->length());
 }
 
 void AtomIdMap_O::set(AtomId const& atomId, core::T_sp atom)
