@@ -492,7 +492,8 @@ Return a list of prepare-topology objects - one for each residue that we need to
 ;; 
 
 (defun one-atom-as-string (me constitution-atoms)
-  (let ((target (make-string-output-stream))
+  ;; kin:joint-template-atom-name is no longer available
+  #+(or)(let ((target (make-string-output-stream))
         (result (make-string-output-stream)))
     (format target "~a" (kin:joint-template-atom-name me constitution-atoms))
     (format target "/~a" (class-name (class-of me)))
@@ -508,6 +509,7 @@ Return a list of prepare-topology objects - one for each residue that we need to
     (dump-build-order-recursively cur-template child constitution-atoms sout)))
 
 
+#+(or)
 (defun joint-template-factory (parent-template atom constitution-atoms constitution-name topology-name)
   (let* ((out-plug-atom-prop (chem:matter-get-property-or-default atom :out-plug nil))
          (entity-to-delay-children-for (chem:matter-get-property-or-default atom :entity-to-delay-children-for nil))
@@ -588,7 +590,7 @@ Return a list of prepare-topology objects - one for each residue that we need to
 ;; Build an AtomTreeTemplate recursively using the properties defined
 ;; for each atom
 ;;
-(defun build-atom-tree-template-recursively (parent root residue constitution-atoms constitution-name topology-name )
+#+(or)(defun build-atom-tree-template-recursively (parent root residue constitution-atoms constitution-name topology-name )
   (let ((root-template (joint-template-factory parent root constitution-atoms constitution-name topology-name))
         (children (progn
                     (chem:matter-get-property root :children))))
@@ -604,6 +606,7 @@ Return a list of prepare-topology objects - one for each residue that we need to
     root-template))
 
 
+#+(or)
 (defun build-internal-coordinate-joint-template-tree (prepare-topology)
 ;;;chemdraw-fragment constitution-atoms plugs constitution-name topology-name)
   (with-accessors ((name name) (residue residue) (plugs plugs) (constitution constitution))
@@ -733,17 +736,20 @@ Return a list of prepare-topology objects - one for each residue that we need to
 
 
 (defparameter *max-index* 0)
+#+(or)
 (defun walk-joint-templates (node)
   (setf *max-index* (max *max-index* (kin:id node)))
   (loop for child in (kin:children node)
         do (walk-joint-templates child)))
 
+#+(or)
 (defun save-joint-templates (node vec)
   (format t "Setting ~a -> ~a~%" (kin:id node) (kin:name node))
   (setf (aref vec (kin:id node)) (kin:name node))
   (loop for child in (kin:children node)
         do (save-joint-templates child vec)))
 
+#+(or)
 (defun sort-joint-templates (tree)
   (let ((*max-index* 0))
     (walk-joint-templates tree)

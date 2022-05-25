@@ -29,14 +29,13 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/foundation.h>
 #include <cando/geom/vector3.h>
 #include <cando/kinematics/kinematicsPackage.h>
-#include <cando/kinematics/jointTree.fwd.h>
 #include <cando/kinematics/dofType.h>
 #include <cando/kinematics/stub.fwd.h>
 #include <cando/kinematics/stub.h>
 #include <cando/kinematics/coordinateCalculators.h>
 #include <cando/kinematics/joint.fwd.h>
 #include <cando/chem/atomId.h>
-#include <cando/kinematics/pool.h>
+//#include <cando/kinematics/pool.h>
 
 
 #define PREPARE_ANGLE(ang) (MY_PI-ang)
@@ -66,11 +65,10 @@ class RootJointInfo;
   children is enforced as JumpJoints | BondedJoint Joints.
  */
 
+FORWARD(Joint);
 class Joint_O : public core::CxxObject_O
 {
   LISP_CLASS(kinematics,KinPkg,Joint_O,"Joint",core::CxxObject_O);
-  friend class JointTree_O;
-  friend class BondedJoint;
 public:
 	//! Joint to the parent Joint (also used to contruct linked list of unused PoolMembers)
   Joint_sp 	_Parent;
@@ -78,12 +76,6 @@ public:
   chem::AtomId	_Id;
   Vector3		_Position;
   core::List_sp         _Properties;
-  CoordinateCalculator  _ToInternal; // Function to calculate internal coordinate
-  CoordinateCalculator  _ToExternal; // Function to calculate external coordinate
-#if DEBUG_KIN_JOINT
-  string		_Comment;
-  Vector3		_TestPosition;
-#endif
 private:
 	/*! Track my position in my owner's list of Joints with modified DOFs
 	  -1 when my dofs have not changed since the last update_coords
@@ -114,20 +106,15 @@ public:
 
 	/*! Destructors need to delete all Children */
   virtual void _releaseAllChildren() = 0;
-  virtual core::List_sp children() const;
+  virtual core::List_sp jointChildren() const;
 public:
 
-  Joint_O() : _Parent(unbound<Joint_O>()), _Name(unbound<core::T_O>()), _Id(), _ToExternal(general_to_external), _ToInternal(general_to_internal) {};
-  Joint_O(const chem::AtomId& atomId, core::T_sp name, const string& comment) :
+  Joint_O() : _Parent(unbound<Joint_O>()), _Name(nil<core::T_O>()), _Id() {};
+  Joint_O(const chem::AtomId& atomId, core::T_sp name = nil<T_O>() ) :
     _Parent(unbound<Joint_O>()),
     _Name(name),
     _Id(atomId),
-    _Properties(nil<core::T_O>()),
-    _ToExternal(general_to_external),
-    _ToInternal(general_to_internal)    
-#if DEBUG_KIN_JOINT
-    , _Comment(comment)
-#endif
+    _Properties(nil<core::T_O>())    
   {};
 
   /*! Returns true if the joint represents an Joint */
@@ -144,17 +131,18 @@ public:
   void setParent(Joint_sp parent);
 
 	/*! Return a Joint_sp for the parent */
+  bool parentBoundP() const { return this->_Parent.boundp(); };
   Joint_sp parent() const { return this->_Parent; };
   core::T_sp getParent() const;
   
 	/*! Insert the child before the (before) index. */
   void insertChild( int before, Joint_sp child );
 
-	/*! Insert the child.
+	/*! Add the child.
 	  If the child is a JumpJoint then put it as the first child.
 	  If it's a Bonded Joint then put it before all the existing BondedJoints.
 	*/
-  void insertChild(Joint_sp child);
+  void addChild(Joint_sp child);
 
 
   void setToInternal(core::Symbol_sp cc);
@@ -187,15 +175,14 @@ public:
 	/*! Root nodes will return RootJointInfo structures */
   virtual RootJointInfo const* rootJointInfo() const;
 
-	/*! For debugging dump the JointTree */
+	/*! For debugging dump the tree */
   void recursiveDumpChildrenIntoStringStream(const string& prefix,
                                              stringstream& out);
 
   void updateInternalCoord();
   virtual void _updateInternalCoord() { THROW_HARD_ERROR("Subclass must implement"); };
 	/*! Update the internal coordinates */
-  virtual void updateInternalCoords(bool const recursive,
-                                    JointTree_sp at 	) = 0;
+  void updateInternalCoords();
 
 	/*! Return true if this Joint is a JumpJoint (or subclass) */
   virtual bool isJump() const { return false;};
@@ -229,72 +216,17 @@ public:
   void setPosition2(const Vector3& pos);
 
 	/*! Return the input stub Joint */
-  inline Joint_sp inputStubJoint0() const
+  virtual Joint_sp inputStubJoint0() const
   {_OF();
     ASSERTF(this->parent().boundp(),("Parent isn't defined"));
     return this->parent();
   }
 
 	/*! Return the input stub Joint */
-  inline Joint_sp inputStubJoint1() const
-  {_OF();
-    ASSERTF(this->parent().boundp(),("Parent isn't defined"));
-    if (this->parent().unboundp()) {
-      SIMPLE_ERROR(("inputStubJoint1 parent of %s isn't defined") , _rep_(this->asSmartPtr()));
-    }
-    return this->parent()->stubJoint1();
-  }
+  virtual Joint_sp inputStubJoint1() const = 0;
 
 	/*! Return the input stub Joint */
-  inline Joint_sp inputStubJoint2() const
-  {_OF();
-    ASSERTF(this->parent().boundp(),("Parent isn't defined"));
-    if (this->parent().unboundp()) {
-      SIMPLE_ERROR(("inputStubJoint2 parent of %s isn't defined") , _rep_(this->asSmartPtr()));
-    }
-    return this->parent()->stubJoint2();
-  }
-
-
-	/*! Return the previous child to this one */
-  Joint_sp previousChild(Joint_sp child) const;
-
-	/*! Return the previous sibling of this Joint */
-  Joint_sp previousSibling() const
-  {
-    if ( this->parent().boundp() )
-    {
-      return this->parent()->previousChild(this->asSmartPtr());
-    } else
-    {
-      return Joint_sp();
-    }
-  }
-
-
-	/*! Return the input stub Joint3
-	  It is either its parents stubJoint3 or its previous sibling */
-  Joint_sp inputStubJoint3(JointTree_sp at) const;
-
-
-
-	/*! Return the stubJoint1 */
-  virtual Joint_sp stubJoint1() const = 0;
-
-	/*! Return the id of stubJoint */
-  chem::AtomId stubJoint1Id() const { return this->stubJoint1()->id();};
-
-	/*! Return the stubJoint2 */
-  virtual Joint_sp stubJoint2() const = 0;
-
-	/*! Return the id of stubJoint */
-  chem::AtomId stubJoint2Id() const { return this->stubJoint2()->id();};
-
-	/*! Return the stubJoint3 */
-  virtual Joint_sp stubJoint3(JointTree_sp tree) const = 0;
-
-	/*! Return the id of stubJoint */
-  chem::AtomId stubJoint3Id(JointTree_sp at) const { return this->stubJoint3(at)->id();};
+  virtual Joint_sp inputStubJoint2() const = 0;
 
 	/*! Return true if we want to keep the Dof fixed */
   bool keepDofFixed(DofType dof) const { return false;};
@@ -317,7 +249,7 @@ public:
 
   virtual void _updateXyzCoord(Stub& stub) {THROW_HARD_ERROR("Subclass must implement");};
 
-  void _updateChildrenXyzCoords(Stub& stub);
+  void _updateChildrenXyzCoords();
 
 	/*! Ensure proper function of the output-sensitive refold subroutine
 	  derived classes must invoke this function during their updateXyzCoords subroutines
@@ -329,7 +261,7 @@ public:
 
 
 	/*! Return the input stub */
-  virtual CL_DEFMETHOD Stub getStub() const { THROW_HARD_ERROR("Subclass must implement"); };
+  virtual CL_DEFMETHOD Stub getInputStub() const { THROW_HARD_ERROR("Subclass must implement"); };
 
 
 	/*! Return the value of the DOF */

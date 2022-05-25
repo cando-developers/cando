@@ -1,5 +1,5 @@
 /*
-    File: kin_atom.cc
+    File: joint.cc
 */
 /*
 Open Source License
@@ -34,7 +34,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/lispStream.h>
 #include <clasp/core/symbolTable.h>
 #include <cando/chem/atomId.h>
-#include <cando/kinematics/jointTree.h>
 #include <cando/kinematics/stub.h>
 #include <cando/kinematics/joint.h>
 
@@ -142,12 +141,6 @@ FORWARD(JumpJoint);
   ASSERTF(tree->_AtomHolders[handle]._Type != unused,("The handle represents an unused node"));
 
 
-CL_DEFMETHOD void Joint_O::setToInternal(core::Symbol_sp cc) {this->_ToInternal = translate::from_object<CoordinateCalculator>(cc)._v; };
-CL_DEFMETHOD core::Symbol_sp Joint_O::getToInternal() {return translate::to_object<CoordinateCalculator>::convert(this->_ToInternal); };
-CL_DEFMETHOD void Joint_O::setToExternal(core::Symbol_sp cc) {this->_ToExternal = translate::from_object<CoordinateCalculator>(cc)._v; };
-CL_DEFMETHOD core::Symbol_sp Joint_O::getToExternal() {return translate::to_object<CoordinateCalculator>::convert(this->_ToExternal); };
-
-
 string Joint_O::__repr__() const {
   stringstream ss;
   ss << "#<";
@@ -157,14 +150,13 @@ string Joint_O::__repr__() const {
 }
  
 void Joint_O::fields(core::Record_sp node) {
-  node->field(INTERN_(kw,parent),this->_Parent);
+  node->field_if_not_unbound(INTERN_(kw,parent),this->_Parent);
   node->field(INTERN_(kw,name),this->_Name); // name
   node->field(INTERN_(kw,id),this->_Id);
-  node->field(INTERN_(kw,to_external),this->_ToExternal);
-  node->field(INTERN_(kw,to_internal),this->_ToInternal);
-  node->field_if_not_default(INTERN_(kw,pos),this->_Position, Vector3());
+  node->field(INTERN_(kw,pos),this->_Position);
 }
 
+CL_NAME(KIN:JOINT/NAME);
 CL_DEFMETHOD core::T_sp Joint_O::name() const {
   return this->_Name;
 }
@@ -197,12 +189,14 @@ void Joint_O::setParent(Joint_sp parent)
     
     
 
+CL_DEFMETHOD
 void Joint_O::insertChild(int before, Joint_sp child )
 {_OF();
   this->_insertChild(before,child);
   child->setParent(this->asSmartPtr());
 }
 
+CL_DEFMETHOD
 void Joint_O::appendChild(Joint_sp child)
 {_OF();
   if ( gc::IsA<JumpJoint_sp>(child) )
@@ -216,6 +210,7 @@ void Joint_O::appendChild(Joint_sp child)
   child->setParent(this->asSmartPtr());
 }
 
+CL_DEFMETHOD
 void Joint_O::eraseChild(Joint_sp child)
 {_OF();
   Joint_sp atom = this->asSmartPtr();
@@ -229,6 +224,7 @@ void Joint_O::eraseChild(Joint_sp child)
 }
 
 
+CL_DEFMETHOD
 int Joint_O::indexOfChild(Joint_sp child)
 {_OF();
   Joint_sp atom = this->asSmartPtr();
@@ -241,37 +237,21 @@ int Joint_O::indexOfChild(Joint_sp child)
 
 
 
-
-void Joint_O::insertChild(Joint_sp child)
+CL_NAME(KIN:JOINT/ADD-CHILD);
+CL_DEFMETHOD
+void Joint_O::addChild(Joint_sp child)
 {_OF();
-  LOG("Inserting child: %s" , _rep_(child));
-  if ( gc::IsA<JumpJoint_sp>(child) )
-  {
-    LOG("It's a jump, inserting it at the start");
+  LOG(("Inserting child: %s") , _rep_(child));
+  if ( gc::IsA<JumpJoint_sp>(child) ) {
+    LOG(("It's a jump, inserting it at the start"));
     this->_insertChild(0,child);
     child->setParent(this->asSmartPtr());
   } else {
     LOG("It's a non-jump atom");
     int firstNonJumpIndex = this->firstNonJumpChildIndex();
-    if ( firstNonJumpIndex < this->_numberOfChildren() )
-    {
-      //  IS THIS CORRECT?????
-      this->_insertChild(firstNonJumpIndex,child);
-#ifdef DEBUG_ON
-      Joint_sp firstNonJumpHandle = this->_child(firstNonJumpIndex);
-      LOG("The current firstNonJumpHandle is of type: %s"
-          , _rep_(firstNonJumpHandle));
-      {
-        LOG("We are inserting a BondedJoint");
-      }
-#endif
-    } else
-    {
-      LOG("We are at the end of the Children - appending");
-      //  IS THIS CORRECT?????
-      this->_appendChild(child);
-    }
-    // this->insertChild(firstNonJumpIndex,child);
+    LOG(BF("We are at the end of the Children - appending"));
+    this->_appendChild(child);
+    child->setParent(this->asSmartPtr());
   }
 }
 
@@ -351,7 +331,7 @@ Joint_sp Joint_O::getNonJumpJoint(int offset) const
   return this->_child(idx);
 }
 
-CL_DEFMETHOD core::List_sp Joint_O::children() const
+CL_DEFMETHOD core::List_sp Joint_O::jointChildren() const
 {
   ql::list l;
   for ( int i(0), iEnd(this->_numberOfChildren()); i<iEnd; ++i ) {
@@ -361,46 +341,10 @@ CL_DEFMETHOD core::List_sp Joint_O::children() const
 }
     
 
-Joint_sp Joint_O::previousChild(Joint_sp ch) const
-{_OF();
-  int num = this->_numberOfChildren();
-  int ii;
-  for ( ii=0; ii<num; ii++ )
-  {
-    if ( this->_child(ii) == ch ) break;
-  }
-  if ( ii == num )
-  {
-    SIMPLE_ERROR(("Could not find child"));
-  }
-  if ( ii == 0 )
-  {
-    return unbound<Joint_O>();
-  }
-  return this->_child(ii-1);
-}
-
-
     /*! See file:///Users/meister/Development/rosetta3.3/rosetta_source/html/core+numeric+protocols/dc/db0/_atom___8hh-source.html#l00475
       For definition
     */
-Joint_sp Joint_O::inputStubJoint3(JointTree_sp at) const
-{_OF();
-  ASSERTF(this->parent().boundp(),("The parent isn't defined"));
-  if (this->parent().unboundp()) {
-    SIMPLE_ERROR(("inputStubAtom2 parent of %s isn't defined") , _rep_(this->asSmartPtr()));
-  }
-  Joint_sp sibling = this->previousSibling();
-  if ( gc::IsA<JumpJoint_sp>(this->asSmartPtr())
-       || sibling.unboundp()
-       || gc::IsA<JumpJoint_sp>(sibling)
-       || (gc::IsA<JumpJoint_sp>(this->parent())
-           && sibling->id() == this->parent()->stubJoint2Id() ) ) {
-    return this->parent()->stubJoint3(at);
-  } else {
-    return sibling;
-  }
-}
+
 
 CL_DEFMETHOD Vector3 Joint_O::getPosition() const
 {
@@ -453,11 +397,8 @@ CL_DEFMETHOD bool Joint_O::hasProperty(core::Symbol_sp symbol)
 {
   return !core::cl__getf(this->_Properties,symbol,unbound<core::T_O>()).unboundp();
 }
-
-
-
        
-void Joint_O::walkChildren(core::Function_sp callback)
+CL_DEFMETHOD void Joint_O::walkChildren(core::Function_sp callback)
 {_OF();
   LOG("There are %d children" , this->_numberOfChildren() );
   for ( int i=0; i<this->_numberOfChildren(); i++ )
@@ -468,7 +409,10 @@ void Joint_O::walkChildren(core::Function_sp callback)
   }
 }
 
-
+CL_DEFUN void kin__walk(Joint_sp joint, core::Function_sp callback) {
+  core::eval::funcall(callback, joint);
+  joint->walkChildren(callback);
+}
 
 void Joint_O::walkResidueTree(int residueId, core::Function_sp callback)
 {_OF();
@@ -487,17 +431,40 @@ CL_DEFMETHOD void Joint_O::updateInternalCoord()
   this->_updateInternalCoord();
 }
 
+CL_DEFMETHOD void Joint_O::updateInternalCoords()
+{
+  this->_updateInternalCoord();
+  for (int childIdx=0; childIdx<this->_numberOfChildren(); childIdx++ ) {
+    this->_child(childIdx)->updateInternalCoords();
+  }
+}
+
+void Joint_O::_updateChildrenXyzCoords() {
+  for ( int ii=0; ii < this->_numberOfChildren(); ii++) {
+    Stub stub = this->_child(ii)->getInputStub();
+    // I should ratchet the newStub around the X axis and use relative dihedral
+    this->_child(ii)->_updateXyzCoord(stub);
+    // ratchet newStub
+//    this->_DofChangePropagatesToYoungerSiblings = false;
+    this->noteXyzUpToDate();
+  }
+  for ( int ii=0; ii < this->_numberOfChildren(); ii++) {
+    this->_child(ii)->_updateChildrenXyzCoords();
+  }
+}
+
+
 CL_DEFMETHOD void Joint_O::updateXyzCoord()
 {_OF();
   KIN_LOG("base method\n");
-  Stub stub = this->parent()->getStub();
+  Stub stub = this->getInputStub();
   this->_updateXyzCoord(stub);
 }
 
 
 CL_DEFMETHOD void Joint_O::updateXyzCoords()
 {_OF();
-  Stub stub = this->parent()->getStub();
+  Stub stub = this->getInputStub();
   this->_updateXyzCoords(stub);
 }
 

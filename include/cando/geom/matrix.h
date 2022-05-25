@@ -116,6 +116,8 @@ public:
 	void rightHandedRotationZ(double radians);
 	double trace();
 
+  Matrix flipXY() const;
+
         inline double& operator[](size_t i) { return this->elements[i]; };
         inline double const & operator[](size_t i) const { return this->elements[i]; };
         

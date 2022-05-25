@@ -28,7 +28,6 @@ This is an open source license for the CANDO software from Temple University, bu
 
 
 #include <clasp/core/foundation.h>
-#include <cando/kinematics/jointTree.h>
 #include <clasp/core/lispStream.h>
 #include <clasp/core/symbolTable.h>
 #include <cando/kinematics/stub.h>
@@ -36,6 +35,13 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace kinematics
 {
+
+CL_LAMBDA(atom-id &optional name);
+CL_LISPIFY_NAME("make_JumpJoint");
+CL_DEF_CLASS_METHOD
+JumpJoint_sp JumpJoint_O::make(const chem::AtomId& atomId, core::T_sp name) {
+  return gctools::GC<JumpJoint_O>::allocate(atomId, name);
+}
 
 void JumpJoint_O::fields(core::Record_sp node) {
   node->field_if_not_empty(INTERN_(kw,children),this->_Children);
@@ -76,7 +82,8 @@ void JumpJoint_O::_releaseAllChildren()
 
 void JumpJoint_O::_updateInternalCoord()
 {_OF();
-  KIN_LOG(" <<< %s\n" , _rep_(this->asSmartPtr()));
+#if 0
+  KIN_LOG((" <<< %s\n") , _rep_(this->asSmartPtr()));
   Vector3 O = this->_Position;
   if (this->_numberOfChildren()>=2) {
     Vector3 A = this->_child(0)->_Position;
@@ -133,61 +140,11 @@ void JumpJoint_O::_updateInternalCoord()
     JumpJoint_sp jjParent = gc::As<JumpJoint_sp>(this->parent());
     Matrix parentInverted = jjParent->_LabFrame.invertTransform();
     this->_ParentRelativeTransform = labFrame*parentInverted;
-    KIN_LOG("relativeTransform = \n%s\n" , this->_ParentRelativeTransform.asString());
+    KIN_LOG(("relativeTransform = \n%s\n") , this->_ParentRelativeTransform.asString());
   }
+#endif
 }
 
-void JumpJoint_O::updateInternalCoords(bool const recursive,
-                                       JointTree_sp at) {
-  this->_updateInternalCoord();
-  if ( recursive )
-  {
-    for (int childIdx=0; childIdx<this->_numberOfChildren(); childIdx++ ) {
-      this->_child(childIdx)->updateInternalCoords(true,at);
-    }
-  }
-}
-
-
-
-Joint_sp JumpJoint_O::stubJoint1() const
-{
-  if (this->stubDefined()) {
-    return this->asSmartPtr();
-  }
-  return this->parent();
-}
-
-Joint_sp JumpJoint_O::stubJoint2() const
-{
-  if ( this->stubDefined() )
-  {
-    return this->getNonJumpJoint(0);
-  } else
-  {
-    return this->parent()->stubJoint2();
-  }
-}
-
-Joint_sp JumpJoint_O::stubJoint3(JointTree_sp at) const
-{_OF();
-  if ( this->stubDefined() )
-  {
-    Joint_sp first(this->getNonJumpJoint(0));
-    ASSERT(first.boundp());
-    Joint_sp second(first->getNonJumpJoint(0));
-    if ( second.boundp() )
-    {
-      return second;
-    } else
-    {
-      return this->getNonJumpJoint(1);
-    }
-  } else
-  {
-    return this->parent()->stubJoint3(at);
-  }
-}
 
 bool JumpJoint_O::keepDofFixed(DofType dof) const
 {
@@ -200,37 +157,39 @@ void JumpJoint_O::_updateXyzCoord(Stub& stub)
   ASSERTF(stub.isOrthogonal(1e-3),("Stub is not orthogonal - stub:\n%s") , stub.asString());
   this->_LabFrame = stub._Transform.multiplyByMatrix(this->_ParentRelativeTransform);
   this->position(this->_LabFrame.getTranslation());
-  KIN_LOG("LabFrame.getTranslation() = %s\n" , this->_LabFrame.getTranslation().asString());
+  KIN_LOG(("LabFrame.getTranslation() = %s\n") , this->_LabFrame.getTranslation().asString());
 }
+
+void JumpJoint_O::updateXyzCoord()
+{
+  Stub newStub;
+  newStub._Transform = this->_LabFrame;
+  this->_updateXyzCoord(newStub);
+}
+
 
 
     /*! Update the external coordinates using the input stub */
-void JumpJoint_O::_updateXyzCoords(Stub& stub)
+void JumpJoint_O::_updateChildrenXyzCoords()
 {_OF();
-  this->_updateXyzCoord(stub);
   Stub newStub;
   newStub._Transform = this->_LabFrame;
-  for ( int ii=0; ii<this->_numberOfChildren(); ii++ ) {
-    this->_child(ii)->_updateXyzCoords(newStub);
+  for ( int ii=0; ii < this->_numberOfChildren(); ii++) {
+    this->_child(ii)->_updateXyzCoord(newStub);
+    // ratchet newStub
+//    this->_DofChangePropagatesToYoungerSiblings = false;
+    this->noteXyzUpToDate();
   }
-  this->noteXyzUpToDate();
+  for ( int ii=0; ii < this->_numberOfChildren(); ii++) {
+    this->_child(ii)->_updateChildrenXyzCoords();
+  }
 }
 
-Stub JumpJoint_O::getStub() const {
+Stub JumpJoint_O::getInputStub() const {
   Stub jj;
   jj._Transform = this->_LabFrame;
   return jj;
 }
-
-
-
-void JumpJoint_O::updateXyzCoords()
-{
-  // parent must be an OriginJumpJoint
-  Stub stub = this->parent()->getStub();
-  this->JumpJoint_O::_updateXyzCoords(stub);
-}
-
 
 
 double JumpJoint_O::dof(DofType const& dof) const

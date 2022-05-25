@@ -1201,6 +1201,13 @@ void	Matrix::rightHandedRotationY(double a)
     this->atRowColPut( 3, 3,	1.0	);
 }
 
+Matrix Matrix::flipXY() const {
+  Matrix rotz;
+  rotz.rotationZ(180.0*0.0174533);
+  Matrix flipped = this->multiply3x3(rotz);
+  return flipped;
+}
+
 
 #ifdef XML_ARCHIVE
 void	Matrix::archive(core::ArchiveP node)

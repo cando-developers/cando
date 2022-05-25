@@ -1,5 +1,8 @@
 (in-package :asdf-user)
 
+(eval-when (:compile-toplevel :execute :load-toplevel)
+  (format t "About to load cando asd file~%"))
+
 (defsystem "cando"
   :description "The CANDO compiler front end"
   :version "0.0.1"

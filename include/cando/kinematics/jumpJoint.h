@@ -51,6 +51,8 @@ namespace kinematics
     
 	/*! JumpJoints can have unlimited numbers of children */
     gc::Vec0< Joint_sp >	_Children;
+  public:
+    static JumpJoint_sp make(const chem::AtomId& atomId, core::T_sp name);
   protected:
 	/*! Bonded atoms can have different numbers of children wrt JumpJoints */
     virtual int _maxNumberOfChildren() const { return INT_MAX;};
@@ -75,7 +77,7 @@ namespace kinematics
 	/*! Empty ctor */
     JumpJoint_O() {};
 
-  JumpJoint_O(const chem::AtomId& atomId, core::T_sp name, const string& comment) : Joint_O(atomId,name,comment) {};
+  JumpJoint_O(const chem::AtomId& atomId, core::T_sp name) : Joint_O(atomId,name) {};
 
     // Return the 'external' coordinate    
     CL_DEFMETHOD Matrix getLabFrame() const { return this->_LabFrame; };
@@ -84,40 +86,32 @@ namespace kinematics
 
     virtual core::Symbol_sp typeSymbol() const;
 
-    Stub getStub() const;
+    Stub getInputStub() const;
 
     virtual void _updateInternalCoord();
     
-	/*! Update the internal coordinates */
-    virtual void updateInternalCoords(bool const recursive,
-                                      JointTree_sp at);
-
-
 	/*! Yes, this is a JumpJoint */
     bool isJump() const { return true;};
 
+   	/*! Return the stubJoint0 */
+    virtual Joint_sp inputStubJoint0() const { return unbound<Joint_O>(); };
+
 	/*! Return the stubJoint1 */
-    virtual Joint_sp stubJoint1() const;
+    virtual Joint_sp inputStubJoint1() const { return unbound<Joint_O>(); };
 
 	/*! Return the stubJoint2 */
-    virtual Joint_sp stubJoint2() const;
+    virtual Joint_sp inputStubJoint2() const { return unbound<Joint_O>(); };
 
-	/*! Return the stubJoint3 */
-    virtual Joint_sp stubJoint3(JointTree_sp at) const;
+    const Matrix& transform() const { return this->_LabFrame; };
 
     bool keepDofFixed(DofType dof) const;
 
-
-	/*! Update the external coordinates */
-    virtual void updateXyzCoords();
-
-
-	/*! Update the external coordinates using the input stub */
-    virtual void _updateXyzCoords(Stub& stub);
+    virtual void updateXyzCoord();
 
     /*! Update just this joints position */
     virtual void _updateXyzCoord(Stub& stub);
 
+    virtual void _updateChildrenXyzCoords();
 
 	/*! Return the DOF */
     double dof(DofType const& dof) const;

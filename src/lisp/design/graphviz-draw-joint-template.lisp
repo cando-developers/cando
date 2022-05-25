@@ -24,6 +24,7 @@
              (format stream "   ~a -> ~a [label = \"~d\"];~%"
                      (id joint-template) (id child) i))))
 
+#+(or)
 (defmethod label (joint-template)
   (let ((name (string (class-name (class-of joint-template)))))
     (format nil "~a/~a[~a]" name (kin:name joint-template) (kin:id joint-template))))
