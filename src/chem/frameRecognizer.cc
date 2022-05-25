@@ -48,6 +48,7 @@ CL_DEFMETHOD void	FrameRecognizer_O::compileSmarts(const string& osm)
     LOG("Successfully compiled smarts code for atom O" );
 //    LOG("ChemInfo code = %s" , this->_ChemInfo->asXmlString());
 }
+
 CL_LISPIFY_NAME("recognizes");
 CL_DEFMETHOD bool	FrameRecognizer_O::recognizes( Atom_sp o )
 {

@@ -175,8 +175,6 @@ void JumpJoint_O::updateXyzCoord()
 }
 
 
-
-
     /*! Update the external coordinates using the input stub */
 void JumpJoint_O::_updateChildrenXyzCoords()
 {_OF();

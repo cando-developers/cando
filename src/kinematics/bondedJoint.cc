@@ -136,6 +136,20 @@ void BondedJoint_O::_insertChild(int before, Joint_sp child)
         this->_Children[this->_NumberOfChildren] = unbound<Joint_O>();
     }
 
+void BondedJoint_O::_releaseChild(int idx)
+{
+  if ( this->_numberOfChildren() == 0 )
+  {
+    THROW_HARD_ERROR(BF("There are no children to delete"));
+  }
+  int num = this->_numberOfChildren() - 1;
+  for ( int i=idx; i < num; i++ )
+  {
+    this->_Children[i] = this->_Children[i+1];
+  }
+  this->_NumberOfChildren--;
+  this->_Children[this->_NumberOfChildren] = unbound<Joint_O>();
+}
 
 void BondedJoint_O::_releaseAllChildren()
 {
@@ -147,8 +161,6 @@ void BondedJoint_O::_releaseAllChildren()
   }
   this->_NumberOfChildren = 0;
 }
-
-
 
 void BondedJoint_O::_updateInternalCoord()
 {_OF();
@@ -322,6 +334,7 @@ void BondedJoint_O::_updateChildrenXyzCoords() {
       this->_child(ii)->_updateChildrenXyzCoords();
     }
   }
+
 }
 
 void BondedJoint_O::_updateXyzCoord(Stub& stub)

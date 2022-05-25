@@ -1219,6 +1219,16 @@ Matrix Matrix::flipXY() const {
 
 
 
+
+Matrix Matrix::flipXY() const {
+  Matrix rotz;
+  rotz.rotationZ(180.0*0.0174533);
+  Matrix flipped = this->multiply3x3(rotz);
+  return flipped;
+}
+
+
+
 #ifdef XML_ARCHIVE
 void	Matrix::archive(core::ArchiveP node)
 {
