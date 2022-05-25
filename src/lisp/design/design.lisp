@@ -1,5 +1,5 @@
 
-(in-package :design)
+(in-package :kin)
 
 (defvar *complex-plugs* (make-hash-table))
 (defvar *caps*)
@@ -366,7 +366,7 @@ of out-plugs."
     (format *debug-io* "out-plug-names -> ~s~%" out-plug-names)
     (case (length out-plug-names)
       (0
-       (error "There are no out-plugs in ~s that match the in-plug-name ~s - existing plugs: ~s" other-monomer in-plug-name (chem:plugs-as-list topology)))
+       (error "There are no out-plugs in ~s that match the in-plug-name ~s - existing plugs: ~s" other-monomer in-plug-name (chem:|Topology_O::plugsAsList| topology)))
       (1
        (return-from ensure-one-unique-out-plug-name (first out-plug-names)))
       (otherwise
@@ -379,7 +379,7 @@ of out-plugs."
          (monomer-plug-work-list (make-hash-table :test #'equal)))
     (loop for monomer in monomers
           for topology = (chem:current-topology monomer)
-          for plugs = (chem:plugs-as-list topology)
+          for plugs = (chem:|Topology_O::plugsAsList| topology)
           do (loop for plug in plugs
                    for plug-name = (chem:get-name plug)
                    when (or (and (null (typep plug 'chem:origin-plug)) (chem:get-is-in plug))

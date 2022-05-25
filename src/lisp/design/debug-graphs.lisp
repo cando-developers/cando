@@ -99,8 +99,95 @@
 
 
 
-(defun label (joint-template node-id)
-  (format nil "~a~%~a" (class-name (class-of joint-template)) (design.joint-tree::comment joint-template)))
+
+(defun matter-graph-nodes-edges (matter)
+  (let ((nodes nil)
+        (root-id nil)
+        (atom-to-node (make-hash-table))
+        (atom-to-node-id (make-hash-table)))
+    (cando:do-atoms (atm matter)
+      (let* ((node-id (gensym))
+             (label (chem:get-name atm))
+             (node (cytoscape:make-element
+                    :group "nodes"
+                    :data (j:make-object "id" (string node-id) "label" (format nil "~a~%~a" (string label) (chem:get-type atm))))))
+        (push node nodes)
+        (unless root-id
+          (setf root-id (string node-id)))
+        (setf (gethash atm atom-to-node) node
+              (gethash atm atom-to-node-id) node-id)))
+    (let ((edges nil))
+      (chem:map-bonds 'nil
+                      (lambda (atm1 atm2 bond-order)
+                        (declare (ignore bond-order))
+                        (let* ((node1 (gethash atm1 atom-to-node-id))
+                               (children1 (getf (chem:properties atm1) :children))
+                               (node2 (gethash atm2 atom-to-node-id))
+                               (children2 (getf (chem:properties atm2) :children))
+                               (node2-child-of-node1 (member atm2 children1))
+                               (edge (when (and node1 node2)
+                                       (if node2-child-of-node1
+                                           (let ((child-index (position atm2 children1)))
+                                             (cytoscape:make-element
+                                              :group "edges"
+                                              :data (j:make-object "source" (string node2)
+                                                                   "target" (string node1)
+                                                                   "label" (format nil " ~a" child-index))))
+                                           (let ((child-index (position atm1 children2)))
+                                             (cytoscape:make-element
+                                              :group "edges"
+                                              :data (j:make-object "source" (string node1)
+                                                                   "target" (string node2)
+                                                                   "label" (format nil " ~a" child-index))))))))
+                          (when edge (push edge edges))))
+                      matter)
+      #+(or)(progn
+        (format t "Number of nodes: ~a  edges: ~s~%" (length nodes) (length edges))
+        (loop for node in nodes
+              do (format t "node: ~s~%" (alexandria:hash-table-plist (cytoscape:data node))))
+        (loop for edge in edges
+              do (format t "edge: ~s~%" (alexandria:hash-table-plist (cytoscape:data edge)))))
+      (values nodes edges root-id))))
+
+(defun matter-graph (matter)
+  #+(or)(format t "Drawing graph ~a~%" matter)
+  (multiple-value-bind (nodes edges root-id)
+      (matter-graph-nodes-edges matter)
+    (make-instance 'cytoscape:cytoscape-widget
+                   :graph-layouts (list (make-instance 'cytoscape:cose-layout
+                                                       :roots (list root-id)))
+                   :graph-style "* { label: data(label); font-size: 10;text-wrap: wrap; } edge { curve-style: straight; target-arrow-shape: triangle; }"
+                   :elements (append (nreverse nodes) (nreverse edges))
+                   :layout (make-instance 'jupyter-widgets:layout :width "auto" :height "1000px"))))
+
+
+
+(defgeneric label (joint-template node-id))
+
+(defmethod label (joint-template node-id)
+  (format nil "~a~%~a" (class-name (class-of joint-template)) (design.joint-tree:atom-name joint-template)))
+
+(defmethod label ((joint-template design.joint-tree:bonded-joint-template) node-id)
+  (format nil "BONDJT~%~a" (design.joint-tree:atom-name joint-template)))
+
+(defmethod label ((joint-template design.joint-tree:jump-joint-template) node-id)
+  (format nil "JUMP~%~a" (design.joint-tree:atom-name joint-template)))
+
+(defmethod label ((joint-template design.joint-tree:in-plug-bonded-joint-template) node-id)
+  (format nil "IN~%~a~%~a" (design.joint-tree:atom-name joint-template) (design.joint-tree:in-plug joint-template)))
+
+(defmethod label ((joint-template design.joint-tree:complex-bonded-joint-template) node-id)
+  (let* ((ajoint (design.joint-tree:parent joint-template))
+         (ajoint-name (when ajoint (string (design.joint-tree:atom-name ajoint))))
+         (input-stub-joints (design.joint-tree:input-stub-joints joint-template))
+         (bjoint (aref input-stub-joints 0))
+         (bjoint-name (when bjoint (string (design.joint-tree:atom-name bjoint))))
+         (cjoint (aref input-stub-joints 1))
+         (cjoint-name (when cjoint (string (design.joint-tree:atom-name cjoint)))))
+  (format nil "CBJT~%~a~%~a" (design.joint-tree:atom-name joint-template)
+          (list ajoint-name bjoint-name cjoint-name))))
+
+
 
 (defun render-joint-template (parent joint-template child-index nodes-edges joint-template-to-node-id)
   (when (null (gethash joint-template joint-template-to-node-id))
@@ -120,7 +207,7 @@
                                                                    "label" (format nil "~d" child-index)))))))
         (when edge
           (push edge (cdr nodes-edges)))
-        (loop for child across (design.joint-tree:children joint-template)
+        (loop for child in (design.joint-tree:children joint-template)
               for sub-child-index from 0
               do (render-joint-template joint-template child sub-child-index nodes-edges joint-template-to-node-id))
         node-id))))

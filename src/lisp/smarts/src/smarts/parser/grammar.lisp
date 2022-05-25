@@ -124,8 +124,8 @@
        (let ((rules '()))
          (flet ((process-clause (name expression
                                  &key
-                                 parameter
-                                 (kind (make-keyword name)))
+                                   parameter
+                                   (kind (make-keyword name)))
                   (let ((rule-name (symbolicate '#:atom-rule- name)))
                     (push rule-name rules)
                     (ecase parameter
@@ -140,7 +140,7 @@
                             (bp:node* (:atom ',kind value :bounds (cons start end))))))
                       ((nil)
                        `(defrule ,rule-name
-                            ,expression
+                          ,expression
                           (:lambda (value &bounds start end)
                             (declare (ignore value))
                             (bp:node* (:atom :kind ',kind :bounds (cons start end))))))))))
@@ -148,9 +148,9 @@
               ,@(map 'list (curry #'apply #'process-clause) clauses)
               (defrule atom-pattern/non-literal (or ,@(nreverse rules))))))))
   (define-rules
-    (wildcard                #\*)
+      (wildcard                #\*)
 
-    (aromatic                #\a)
+      (aromatic                #\a)
     (aliphatic               #\A)
 
     (degree                  #\D :parameter t)
@@ -161,7 +161,8 @@
     (smallest-ring-size      #\r :parameter &optional)
     (valence                 #\v :parameter t)
     (connectivity            #\X :parameter t)
-    (atomic-number           #\# :parameter t)))
+    (atomic-number           #\# :parameter t)
+    (recursive-smarts        #\$ :parameter t)))
 
 ;;; SMARTS 4.2 Bonds Primitives
 

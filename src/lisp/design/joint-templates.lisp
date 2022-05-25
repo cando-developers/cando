@@ -2,86 +2,128 @@
 
 (defclass joint-template ()
   ((parent :initform nil :initarg :parent :accessor parent)
-   (constitution-name :initarg :constitution-name :accessor constitution-name)
+   (atom-name :initarg :atom-name :accessor atom-name)
+   (constitution-atoms-index :initarg :constitution-atoms-index :accessor constitution-atoms-index)
    ))
 
 (defclass bonded-joint-template (joint-template)
   ((children :initform nil :initarg :children :accessor children)
    ))
 
+(defun make-bonded-joint-template (constitution-atoms-index &key atom-name parent)
+  (make-instance 'bonded-joint-template
+                 :constitution-atoms-index constitution-atoms-index
+                 :atom-name atom-name
+                 :parent parent))
+
+(defclass in-plug-bonded-joint-template (bonded-joint-template)
+  ((in-plug :initarg :in-plug :accessor in-plug)))
+
+(defun make-in-plug-bonded-joint-template (constitution-atoms-index &key atom-name parent in-plug)
+  (make-instance 'in-plug-bonded-joint-template
+                 :constitution-atoms-index constitution-atoms-index
+                 :atom-name atom-name
+                 :parent parent
+                 :in-plug in-plug))
+
 (defclass complex-bonded-joint-template (bonded-joint-template)
-  
   ((input-stub-joints :initform (make-array 2) :initarg :input-stub-joints :accessor input-stub-joints)))
 
-(defun make-complex-bonded-joint-template (&key constitution-name stub-atoms)
+(defun make-complex-bonded-joint-template (constitution-atoms-index &key atom-name stub-joints)
   (cond
-    ((eq (length stub-atoms) 1)
-     (make-instance 'complex-bonded-joint-template :constitution-name constitution-name
-                                                   :parent (first stub-atoms)
-                                                   :input-stub-joints (make-array 2 :initial-element nil)))
-    ((eq (length stub-atoms) 2)
-     (make-instance 'complex-bonded-joint-template :constitution-name constitution-name
-                                                   :parent (first stub-atoms)
-                                                   :input-stub-joints (make-array 2 :initial-contents (list (second stub-atoms)))))
-    ((eq (length stub-atoms) 3)
-     (make-instance 'complex-bonded-joint-template :constitution-name constitution-name
-                                                   :parent (first stub-atoms)
-                                                   :input-stub-joints (make-array 2 :initial-contents (list (second stub-atoms)
-                                                                                                           (third stub-atoms)))))
-    (t (error "Illegal number of stub-atoms: ~s" stub-atoms))))
+    ((eq (length stub-joints) 1)
+     (make-instance 'complex-bonded-joint-template
+                    :constitution-atoms-index constitution-atoms-index
+                    :atom-name atom-name
+                    :parent (first stub-joints)
+                    :input-stub-joints (make-array 2 :initial-element nil)))
+    ((eq (length stub-joints) 2)
+     (make-instance 'complex-bonded-joint-template
+                    :constitution-atoms-index constitution-atoms-index
+                    :atom-name atom-name
+                    :parent (first stub-joints)
+                    :input-stub-joints (make-array 2 :initial-contents (list (second stub-joints)
+                                                                             nil))))
+    ((eq (length stub-joints) 3)
+     (make-instance 'complex-bonded-joint-template
+                    :constitution-atoms-index constitution-atoms-index
+                    :atom-name atom-name
+                    :parent (first stub-joints)
+                    :input-stub-joints (make-array 2 :initial-contents (list (second stub-joints)
+                                                                             (third stub-joints)))))
+    (t (error "Illegal number of stub-joints: ~s" stub-joints))))
 
 (defclass jump-joint-template (joint-template)
   ((children :initform nil :initarg :children :accessor children)))
 
-(defun make-jump-joint-template (&key constitution-name)
+(defun make-jump-joint-template (constitution-atoms-index &key atom-name)
   (make-instance 'jump-joint-template
-                 :constitution-name constitution-name))
+                 :constitution-atoms-index constitution-atoms-index
+                 :atom-name atom-name))
+
+(defun add-child (joint-template child-template)
+  (setf (parent child-template) joint-template)
+  (setf (children joint-template) (append (children joint-template) (list child-template))))
 
 (defun sibling (joint-template index)
   (nth index (children joint-template)))
 
-(defun new-joint-template-factory (parent-template atom child-indexes constitution-atoms constitution-name topology-name)
-  (declare (ignore atom constitution-atoms topology-name))
-  (let* ((gparent-template (if parent-template
-                                  (parent parent-template)
-                                  nil))
+(defun new-joint-template-factory (parent-template atom child-indexes in-plug constitution-atoms constitution-name topology-name)
+  (declare (ignore atom constitution-atoms topology-name constitution-name))
+  (let* ((atom-name (chem:get-name atom))
+         (constitution-atoms-index (chem:|ConstitutionAtoms_O::index| constitution-atoms atom-name))
+         (gparent-template (if parent-template
+                               (parent parent-template)
+                               nil))
          (ggparent-template (if gparent-template
-                                        (parent gparent-template)
-                                        nil)))
+                                (parent gparent-template)
+                                nil)))
     (cond
+      ((and (null parent-template) (typep in-plug 'chem:in-plug))
+       (make-in-plug-bonded-joint-template constitution-atoms-index
+                                           :atom-name atom-name
+                                           :parent nil
+                                           :in-plug in-plug))
+      ((typep in-plug 'chem:in-plug)
+       (make-bonded-joint-template constitution-atoms-index
+                                   :atom-name atom-name
+                                   :parent parent-template))
       ((null parent-template)
-       (make-jump-joint-template :constitution-name constitution-name))
+       (make-jump-joint-template constitution-atoms-index
+                                 :atom-name atom-name
+                                 ))
       ((null gparent-template)
-       (let ((stub-atoms (cond
-                           ((eql 0 (first child-indexes))
-                            (list parent-template))
-                           ((eql 1 (first child-indexes))
-                            (list parent-template (sibling parent-template 0)))
-                           (t
-                            (list parent-template
-                                  (sibling parent-template 1)
-                                  (sibling parent-template 0))))))
-         (make-complex-bonded-joint-template :constitution-name constitution-name
-                                             :stub-atoms stub-atoms)))
+       (let ((stub-joints (cond
+                            ((eql 0 (first child-indexes))
+                             (list parent-template))
+                            ((eql 1 (first child-indexes))
+                             (list parent-template (sibling parent-template 0)))
+                            (t
+                             (list parent-template
+                                   (sibling parent-template 1)
+                                   (sibling parent-template 0))))))
+         (make-complex-bonded-joint-template constitution-atoms-index
+                                             :atom-name atom-name
+                                             :stub-joints stub-joints)))
       ((null ggparent-template)
-       (let ((stub-atoms (cond
-                           ((and (eql 0 (first child-indexes)) (eql 0 (second child-indexes)))
-                            (list parent-template
-                                  gparent-template))
-                           ((and (> 0 (first child-indexes)) (eql 0 (second child-indexes)))
-                            (list parent-template
-                                  gparent-template
-                                  (sibling parent-template 0)))
-                           (t
-                            (list parent-template
-                                  gparent-template
-                                  (sibling gparent-template 0))))))
-         (make-complex-bonded-joint-template :constitution-name constitution-name
-                                             :stub-atoms stub-atoms)))
-      (t (make-bonded-joint-template :constitution-name constitution-name
-                                     :stub-atoms (list parent-template
-                                                       gparent-template
-                                                       ggparent-template))))))
+       (let ((stub-joints (cond
+                            ((and (eql 0 (first child-indexes)) (eql 0 (second child-indexes)))
+                             (list parent-template
+                                   gparent-template))
+                            ((and (> 0 (first child-indexes)) (eql 0 (second child-indexes)))
+                             (list parent-template
+                                   gparent-template
+                                   (sibling parent-template 0)))
+                            (t
+                             (list parent-template
+                                   gparent-template
+                                   (sibling gparent-template 0))))))
+         (make-complex-bonded-joint-template constitution-atoms-index
+                                             :atom-name atom-name
+                                             :stub-joints stub-joints)))
+      (t (make-bonded-joint-template constitution-atoms-index
+                                     :atom-name atom-name
+                                     :parent parent-template)))))
 
 ;;; ------------------------------------------------------------
 ;;; ------------------------------------------------------------
@@ -91,81 +133,83 @@
 ;;; ------------------------------------------------------------
 ;;; ------------------------------------------------------------
 
-(defclass joint ()
-  ((parent :initarg :parent :accessor parent)
-   (children :initarg :children :initform (make-array 4 :fill-pointer 0 :adjustable t) :accessor children)))
+#+(or)
+(progn
+  (defclass joint ()
+    ((parent :initarg :parent :accessor parent)
+     (children :initarg :children :initform (make-array 4 :fill-pointer 0 :adjustable t) :accessor children)))
 
-(defun add-child (joint-template child-template)
-  (setf (parent child-template) joint-template)
-  (vector-push-extend child-template (children joint-template)))
+  (defun add-child (joint-template child-template)
+    (setf (parent child-template) joint-template)
+    (vector-push-extend child-template (children joint-template)))
 
-(defclass checkpoint-out-plug-joint (joint)
-  ((constitution-name :initarg :constitution-name :accessor constitution-name)
-   (topology-name :initarg :topology-name :accessor topology-name)
-   (out-plug :initarg :out-plug :accessor out-plug)
-   ))
+  (defclass checkpoint-out-plug-joint (joint)
+    ((constitution-name :initarg :constitution-name :accessor constitution-name)
+     (topology-name :initarg :topology-name :accessor topology-name)
+     (out-plug :initarg :out-plug :accessor out-plug)
+     ))
 
-(defun make-checkpoint-out-plug-joint (&rest args)
-  (apply 'make-instance 'checkpoint-out-plug-joint args))
+  (defun make-checkpoint-out-plug-joint (&rest args)
+    (apply 'make-instance 'checkpoint-out-plug-joint args))
 
-(defclass checkpoint-joint (joint)
-  ((constitution-name :initarg :constitution-name :accessor constitution-name)
-   (topology-name :initarg :topology-name :accessor topology-name)
-   (out-plug :initarg :out-plug :accessor out-plug)
-   ))
+  (defclass checkpoint-joint (joint)
+    ((constitution-name :initarg :constitution-name :accessor constitution-name)
+     (topology-name :initarg :topology-name :accessor topology-name)
+     (out-plug :initarg :out-plug :accessor out-plug)
+     ))
 
-(defun make-checkpoint-joint (&rest args)
-  (apply 'make-instance 'checkpoint-joint args))
-
-
-(defclass delayed-bonded-joint-template (joint)
-  (
-   (id :initarg :id :accessor id )
-   (name :initarg :name :accessor name )
-   (parent :initarg :parent :accessor parent )
-   (children :initarg :children :accessor children )
-   (checkpoint :initarg :checkpoint :accessor checkpoint )
-   (comment :initarg :comment :accessor comment )
-   (out-plug :initarg :out-plug :accessor out-plug )
-   ))
-
-(defun make-delayed-bonded-joint-template (&rest args)
-  (apply 'make-instance 'delayed-bonded-joint-template args))
+  (defun make-checkpoint-joint (&rest args)
+    (apply 'make-instance 'checkpoint-joint args))
 
 
-(defclass root-bonded-joint-template (joint)
-  (
-   (id :initarg :id :accessor id )
-   (parent :initarg :parent :accessor parent )
-   (name :initarg :name :accessor name )
-   (children :initarg :children :accessor children )
-   (constitution-name :initarg :constitution-name :accessor constitution-name )
-   (topology-name :initarg :topology-name :accessor topology-name )
-   (in-plug :initarg :in-plug :accessor in-plug )
-   (comment :initarg :comment :accessor comment )
-   (out-plug :initarg :out-plug :accessor out-plug )
-   ))
+  (defclass delayed-bonded-joint-template (joint)
+    (
+     (id :initarg :id :accessor id )
+     (name :initarg :name :accessor name )
+     (parent :initarg :parent :accessor parent )
+     (children :initarg :children :accessor children )
+     (checkpoint :initarg :checkpoint :accessor checkpoint )
+     (comment :initarg :comment :accessor comment )
+     (out-plug :initarg :out-plug :accessor out-plug )
+     ))
 
-(defmethod print-object ((obj root-bonded-joint-template) stream)
-  (print-unreadable-object (obj stream :type t)
-    (format stream ":name ~a" (name obj))))
+  (defun make-delayed-bonded-joint-template (&rest args)
+    (apply 'make-instance 'delayed-bonded-joint-template args))
 
-(defun make-root-bonded-joint-template (&rest args)
-  (apply 'make-instance 'root-bonded-joint-template args))
 
-(defclass bonded-joint-template (joint)
-  (
-   (id :initarg :id :accessor id )
-   (parent :initarg :parent :accessor parent )
-   (name :initarg :name :accessor name )
-   (children :initarg :children :accessor children )
-   (comment :initarg :comment :accessor comment )
-   (out-plug :initarg :out-plug :accessor out-plug )
-   ))
+  (defclass root-bonded-joint-template (joint)
+    (
+     (id :initarg :id :accessor id )
+     (parent :initarg :parent :accessor parent )
+     (name :initarg :name :accessor name )
+     (children :initarg :children :accessor children )
+     (constitution-name :initarg :constitution-name :accessor constitution-name )
+     (topology-name :initarg :topology-name :accessor topology-name )
+     (in-plug :initarg :in-plug :accessor in-plug )
+     (comment :initarg :comment :accessor comment )
+     (out-plug :initarg :out-plug :accessor out-plug )
+     ))
 
-(defun make-bonded-joint-template (&rest args)
-  (apply 'make-instance 'bonded-joint-template args))
+  (defmethod print-object ((obj root-bonded-joint-template) stream)
+    (print-unreadable-object (obj stream :type t)
+      (format stream ":name ~a" (name obj))))
 
+  (defun make-root-bonded-joint-template (&rest args)
+    (apply 'make-instance 'root-bonded-joint-template args))
+
+  (defclass bonded-joint-template (joint)
+    (
+     (id :initarg :id :accessor id )
+     (parent :initarg :parent :accessor parent )
+     (name :initarg :name :accessor name )
+     (children :initarg :children :accessor children )
+     (comment :initarg :comment :accessor comment )
+     (out-plug :initarg :out-plug :accessor out-plug )
+     ))
+
+  (defun make-bonded-joint-template (&rest args)
+    (apply 'make-instance 'bonded-joint-template args))
+  )
   
   #+(or)
 (defun interpret-builder-info-instruction (instr residue)
@@ -677,7 +721,7 @@ Return a list of prepare-topology objects - one for each residue that we need to
   (let* ((out-plug-atom-prop (chem:matter-get-property-or-default atom :out-plug nil))
          (entity-to-delay-children-for (chem:matter-get-property-or-default atom :entity-to-delay-children-for nil))
          (root-atom-prop (chem:matter-get-property-or-default atom :root-atom nil))
-         (atom-index (chem:constitution-atoms-index constitution-atoms (chem:atom-name atom)))
+         (atom-index (chem:|ConstitutionAtoms_O::index| constitution-atoms (chem:atom-name atom)))
          (atom-name (chem:atom-name (chem:atom-with-id constitution-atoms atom-index)))
          (comment (format nil "~s [~a]" atom-name (chem:matter-get-property-or-default atom :weight -1))) )
     (cond
@@ -741,13 +785,63 @@ Return a list of prepare-topology objects - one for each residue that we need to
 
 
 
+(defgeneric write-into-joint-tree (joint-template parent-joint atresidue atmolecule-index atresidue-index))
+
+(defmethod write-into-joint-tree ((joint-template t) parent-joint atresidue atmolecule-index atresidue-index)
+  (error "write-into-joint-tree - handle joint-template ~a" joint-template))
+
+
+(defmethod write-into-joint-tree ((joint-template jump-joint-template) parent-joint atresidue atmolecule-index atresidue-index)
+  (let* ((constitution-atoms-index (constitution-atoms-index joint-template))
+         (atom-name (atom-name joint-template))
+         (atomid (list atmolecule-index atresidue-index constitution-atoms-index))
+         (joint (kin:make-jump-joint atomid atom-name)))
+    (kin:put-joint atresidue joint constitution-atoms-index)
+    (when parent-joint (kin:add-child parent-joint joint))
+    joint))
+
+(defmethod write-into-joint-tree ((joint-template complex-bonded-joint-template) parent-joint atresidue atmolecule-index atresidue-index)
+  (let* ((constitution-atoms-index (constitution-atoms-index joint-template))
+         (atom-name (atom-name joint-template))
+         (atomid (list atmolecule-index atresidue-index constitution-atoms-index))
+         (joint (kin:make-complex-bonded-joint atomid atom-name))
+         (input-stub-joints (input-stub-joints joint-template)))
+    (kin:put-joint atresidue joint constitution-atoms-index)
+    (let ((input-stub0-template (aref input-stub-joints 0))
+          (input-stub1-template (aref input-stub-joints 1)))
+      (cond
+        ((null input-stub0-template)
+         ;; Do nothing
+         )
+        ((null input-stub1-template)
+         (let* ((input-stub0-index (constitution-atoms-index input-stub0-template))
+                (input-stub0 (aref (kin:joints atresidue) input-stub0-index)))
+           (kin:set-input-stub-joint1 joint input-stub0)))
+        (t
+         (let* ((input-stub0-index (constitution-atoms-index input-stub0-template))
+                (input-stub0 (aref (kin:joints atresidue) input-stub0-index))
+                (input-stub1-index (constitution-atoms-index input-stub1-template))
+                (input-stub1 (aref (kin:joints atresidue) input-stub1-index)))
+           (kin:set-input-stub-joint1 joint input-stub0)
+           (kin:set-input-stub-joint2 joint input-stub1))))
+      (when parent-joint (kin:add-child parent-joint joint))
+      joint)))
+
+(defmethod write-into-joint-tree ((joint-template bonded-joint-template) parent-joint atresidue atmolecule-index atresidue-index)
+  (let* ((constitution-atoms-index (constitution-atoms-index joint-template))
+         (atom-name (atom-name joint-template))
+         (atomid (list atmolecule-index atresidue-index constitution-atoms-index))
+         (joint (kin:make-bonded-joint atomid atom-name)))
+    (kin:put-joint atresidue joint constitution-atoms-index)
+    (when parent-joint (kin:add-child parent-joint joint))
+    joint))
 
 ;;
 ;; Build an AtomTreeTemplate recursively using the properties defined
 ;; for each atom
 ;;
-(defun build-atom-tree-template-recursively (parent root child-indexes residue constitution-atoms constitution-name topology-name )
-  (let ((root-template (new-joint-template-factory parent root child-indexes constitution-atoms constitution-name topology-name))
+(defun build-atom-tree-template-recursively (parent root child-indexes in-plug residue constitution-atoms constitution-name topology-name )
+  (let ((root-template (new-joint-template-factory parent root child-indexes in-plug constitution-atoms constitution-name topology-name))
         (children (progn
                     (chem:matter-get-property root :children))))
     (loop for child in children
@@ -756,6 +850,7 @@ Return a list of prepare-topology objects - one for each residue that we need to
             do (let ((child-template (build-atom-tree-template-recursively root-template
                                                                            child
                                                                            (cons sub-child-index child-indexes)
+                                                                           in-plug
                                                                            residue
                                                                            constitution-atoms
                                                                            constitution-name
@@ -773,7 +868,7 @@ Return a list of prepare-topology objects - one for each residue that we need to
                           in-plug
                           (error "There has to be an in-plug in topology ~a" name))))
            (outplugs (find-out-plugs plugs))
-           (constitution-atoms (chem:get-constitution-atoms constitution))
+           (constitution-atoms (chem:|Constitution_O::getConstitutionAtoms| constitution))
            (root-atom-name (chem:root-atom-name in-plug))
            (root-atom (chem:atom-with-name residue root-atom-name))
            (spanning-loop (chem:make-spanning-loop root-atom))
@@ -879,7 +974,8 @@ Return a list of prepare-topology objects - one for each residue that we need to
       ;;
       (let ((tree-template (build-atom-tree-template-recursively nil
                                                                  root-atom
-                                                                 0
+                                                                 (list 0)
+                                                                 in-plug
                                                                  residue
                                                                  constitution-atoms
                                                                  name

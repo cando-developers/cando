@@ -175,6 +175,7 @@ public:
   void walkStereoisomerAtoms(core::Function_sp func);
   
   string description() const;
+  CL_NAME(chem:|Topology_O::getConstitution|);
   CL_DEFMETHOD Constitution_sp	getConstitution() const { return this->_Constitution; };
   MonomerContext_sp getMonomerContext(CandoDatabase_sp bdb);
 

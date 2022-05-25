@@ -497,6 +497,7 @@ void ReadAmberParameters_O::parseNonbondDb(core::T_sp fin, FFNonbondDb_sp ffNonb
         }
       } else {
         SIMPLE_ERROR(("Could not find type: %s") , _rep_(stype));
+        continue;
       }
       double radius = gc::As<core::Number_sp>(tradius)->as_double_();
       double edep = gc::As<core::Number_sp>(tedep)->as_double_();
@@ -556,6 +557,7 @@ void ReadAmberParameters_O::parseAtomEquivalences(core::T_sp fin, FFNonbondDb_sp
         ffNonbond = gc::As_unsafe<FFNonbond_sp>(ffNonbondDb->FFNonbond_findType(stype));
       } else {
         SIMPLE_ERROR(("Could not find type: %s") , type);
+        continue;
       }
       string params = core::trimWhiteSpace(line.substr(4));
       printf("%s:%d:%s ffNonbond %s -> setSameParams(%s)\n", __FILE__, __LINE__, __FUNCTION__, core::_rep_(ffNonbond).c_str(), params.c_str());

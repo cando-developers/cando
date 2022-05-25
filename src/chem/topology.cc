@@ -418,7 +418,7 @@ CL_DEFMETHOD     Topology_O::plugType Topology_O::getInPlug()
 }
 
 
-CL_LISPIFY_NAME("plugsAsList");
+CL_NAME("chem:|Topology_O::plugsAsList|");
 CL_DEFMETHOD     core::List_sp Topology_O::plugsAsList()
 {_OF();
   core::Cons_sp first = core::Cons_O::create(nil<core::T_O>(),nil<core::T_O>());
@@ -651,7 +651,7 @@ CL_DEFMETHOD void Topology_O::setProperty(core::Symbol_sp symbol, core::T_sp val
 }
 
 CL_DOCSTRING(R"dx(Return the property **symbol** of **this** (a chem:topology) - if it isn't defined return NIL.)dx")
-CL_LISPIFY_NAME("getProperty");
+CL_NAME("chem:|Topology_O::getProperty|");
 CL_DEFMETHOD core::T_sp Topology_O::getProperty(core::Symbol_sp symbol)
 {
   core::T_sp res = core::cl__getf(this->_Properties,symbol,unbound<core::T_O>());
