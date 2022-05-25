@@ -668,17 +668,20 @@ CL_DEFMETHOD     Molecule_sp Aggregate_O::firstMoleculeWithAtomNamed(core::Symbo
 }
 
 
-    void Aggregate_O::addMatter(Matter_sp matter)
+Matter_mv Aggregate_O::addMatter(Matter_sp matter)
+{
+  if ( matter.isA<Molecule_O>() ) return this->Base::addMatter(matter);
+  SIMPLE_ERROR(BF("Don't add anything other than molecules"));
+#if 0
+  if ( matter.isA<Aggregate_O>())
+  {
+    for ( Matter_O::contentIterator it=matter->begin_contents(); it!=matter->end_contents(); it++ )
     {
-	if ( matter.isA<Molecule_O>() ) this->Base::addMatter(matter);
-	if ( matter.isA<Aggregate_O>())
-	{
-	    for ( Matter_O::contentIterator it=matter->begin_contents(); it!=matter->end_contents(); it++ )
-	    {
-		this->Base::addMatter(*it);
-	    }
-	}
+      this->Base::addMatter(*it);
     }
+  }
+#endif
+}
 
 
     Atom_sp	Aggregate_O::firstAtomWithName( MatterName name )

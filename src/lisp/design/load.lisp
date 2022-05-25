@@ -17,24 +17,37 @@
     (chem:set-stereoisomer-atoms topology :absolute stereoisomer-atoms-list)
     topology))
 
+(defun setup (design)
+  (design.joint-tree:extract-prepare-topologys design))
+
+(defvar *prep-tops* nil)
+
 (defun load-cdxml (filename)
   (let ((pname (merge-pathnames filename)))
     (unless (probe-file pname)
       (error "File not found: ~a" pname))
     (let* ((chemdraw (cando:load-chem-draw pname))
-           (prepare-topologys (design.joint-tree:extract-prepare-topologys chemdraw))
-           (__ (when chem:*verbose*
-                 (format t "prepare-topologys = ~a~%" prepare-topologys)))
-           (topologys (loop for prep-top in prepare-topologys
-                            for joint-template = (design.joint-tree:build-internal-coordinate-joint-template-tree prep-top)
-                            for topology = (build-topology-from-prep-top prep-top)
-                            for constitution = (design.joint-tree:constitution prep-top)
-                            do (chem:add-topology constitution topology)
-                               (chem:set-property topology :joint-template joint-template)
-                               (cando:register-topology topology)
-                            collect topology)))
-      (loop for topology in topologys
-            do (cando:register-topology topology))
-      (format t "Returning from load-cdxml~%")
-      (values topologys chemdraw prepare-topologys))))
+           (codes (chem:chem-draw-code chemdraw)))
+      ;; Evaluate code - this must define the design:configure function
+      (loop for code in codes
+            do (eval code))
+      (let* ((design (design:configure chemdraw))
+             (prepare-topologys (design.joint-tree:extract-prepare-topologys design)))
+        (setf *prep-tops* prepare-topologys)
+        (when chem:*verbose*
+          (format t "prepare-topologys = ~a~%" prepare-topologys))
+        (let ((topologys (loop for prep-top in prepare-topologys
+                               for joint-template = (design.joint-tree:build-internal-coordinate-joint-template-tree prep-top)
+                               for topology = (build-topology-from-prep-top prep-top)
+                               for constitution = (design.joint-tree:constitution prep-top)
+                               do (chem:add-topology constitution topology)
+                                  (chem:set-property topology :joint-template joint-template)
+                                  (cando:register-topology topology)
+                               collect topology)))
+          (loop for topology in topologys
+                do (cando:register-topology topology))
+          (format t "Returning from load-cdxml~%")
+          (make-instance 'design:grammar
+                         :topologys topologys
+                         :cap-name-map (design:cap-name-map design)))))))
 

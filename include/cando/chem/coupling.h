@@ -84,7 +84,7 @@ namespace chem {
     virtual Monomer_sp	getMonomer2() {_OF();SUBCLASS_MUST_IMPLEMENT();};
     virtual Monomer_sp	getMonomer2_const() const {_OF();SUBCLASS_MUST_IMPLEMENT();};
 
-    virtual bool isRingClosing() { return false; };
+    virtual bool isRingClosing() const;
     CL_LISPIFY_NAME("throwIfBadConnections");
     CL_DEFMETHOD         virtual void throwIfBadConnections() {_OF();SUBCLASS_MUST_IMPLEMENT();};
     CL_LISPIFY_NAME("Coupling-checkForErrors");
@@ -157,7 +157,7 @@ namespace chem {
     void	setTargetMonomer(Monomer_sp sout);
     DirectionalCouplingSide	couplingSideOfMonomer( Monomer_sp mon);
 
-    bool	isRingClosing() { return false; };
+    bool	isRingClosing() const { return false; };
 
     string	description() const;
     void	setPlugNames( core::Symbol_sp sourcePlugName, core::Symbol_sp targetPlugName);
@@ -234,7 +234,7 @@ namespace chem {
     void	throwIfBadConnections();
     void	checkForErrors(core::T_sp errorStream);
 
-    bool	isRingClosing() { return true; };
+    bool	isRingClosing() const { return true; };
 
     string	description() const;
 

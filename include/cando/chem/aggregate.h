@@ -146,9 +146,9 @@ public:
 //    virtual bool equal(core::T_sp obj) const;
     virtual void	transferCoordinates(Matter_sp other);
 
-    virtual void addMatter(Matter_sp matter);
+    virtual Matter_mv addMatter(Matter_sp matter);
 CL_LISPIFY_NAME("addMolecule");
-CL_DEFMETHOD     Aggregate_sp	addMolecule( Molecule_sp a ) {this->addMatter(a); return this->sharedThis<Aggregate_O>();};
+CL_DEFMETHOD     void	addMolecule( Molecule_sp a ) {this->addMatter(a);};
     Aggregate_sp	addMoleculeRetainId( Molecule_sp a ) {this->addMatterRetainId(Matter_sp(a)); return this->sharedThis<Aggregate_O>();};
     Molecule_sp      firstMolecule();
     MatterName     firstMoleculeName();

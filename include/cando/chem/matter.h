@@ -264,7 +264,7 @@ public:
   CL_LISPIFY_NAME("getName");
   CL_DEFMETHOD   MatterName getName_notConst() { return this->name; };
 
-  virtual void	addMatter( Matter_sp child );
+  virtual Matter_mv	addMatter( Matter_sp child );
   void	addMatterRetainId( Matter_sp child );
   void	removeMatter( Matter_sp child );
 

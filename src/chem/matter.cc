@@ -589,7 +589,7 @@ size_t Matter_O::nextId() const {
 /*! Add the Matter as a child of this Matter
  */
 CL_LISPIFY_NAME("addMatter");
-CL_DEFMETHOD void	Matter_O::addMatter(Matter_sp cp )
+CL_DEFMETHOD Matter_mv	Matter_O::addMatter(Matter_sp cp )
 {_OF();
   Matter_sp	ctemp;
   LOG("Adding: %s of type: %c" , cp->getName().c_str() , cp->getMatterType()  );
@@ -600,8 +600,9 @@ CL_DEFMETHOD void	Matter_O::addMatter(Matter_sp cp )
 	// A lot depends on Residues maintaining the order of Atoms
 	// throughout the various passes of building databases
   cp->_Id = this->nextId(); // Advance the _Id
+  size_t index = this->_contents.size();
   this->_contents.push_back(cp);
-  LOG("Finished adding" );
+  return Values(cp,core::make_fixnum(index));
 }
 
 //

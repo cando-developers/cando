@@ -126,7 +126,7 @@ public:	// /////////////////////////////////////////////////////////////////
     monomerIterator end_Monomers() { return this->_Monomers.end(); };
 
   Monomer_sp monomerWithSequenceNumber(size_t sequence) const;
-  size_t	numberOfMonomers() { return this->_Monomers.size(); };
+  size_t	numberOfMonomers() const;
 
   /*! Update the monomers so that they have the right couplings */
   void reinitializeData();
@@ -180,7 +180,7 @@ public:
     //! Find and return the rootMonomer
     Monomer_sp	rootMonomer() const;
 
-    Molecule_sp	buildMolecule();
+//    Molecule_sp	buildMolecule();
 
     gctools::Vec0_uncopyable<Monomer_sp>&	getMonomers() {return this->_Monomers;}
     gctools::Vec0_uncopyable<Coupling_sp>&	getCouplings() { return this->_Couplings;}
