@@ -299,6 +299,31 @@ void BondedJoint_O::_updateChildrenXyzCoords() {
   }
 }
 
+
+void BondedJoint_O::_updateChildrenXyzCoords() {
+  if (this->_numberOfChildren()>0) {
+    int firstNonJumpIndex = this->firstNonJumpChildIndex();
+    for ( int ii=0; ii < firstNonJumpIndex; ii++) {
+      Stub jstub = this->_child(ii)->getInputStub();
+    // I should ratchet the newStub around the X axis and use relative dihedral
+      this->_child(ii)->_updateXyzCoord(jstub);
+    // ratchet newStub
+//    this->_DofChangePropagatesToYoungerSiblings = false;
+      this->noteXyzUpToDate();
+    }
+    Stub stub = this->_child(firstNonJumpIndex)->getInputStub();
+    for ( int ii=firstNonJumpIndex; ii < this->_numberOfChildren(); ii++) {
+    // I should ratchet the stub around the X axis and use relative dihedral
+      this->_child(ii)->_updateXyzCoord(stub);
+//    this->_DofChangePropagatesToYoungerSiblings = false;
+      this->noteXyzUpToDate();
+    }
+    for ( int ii=0; ii < this->_numberOfChildren(); ii++) {
+      this->_child(ii)->_updateChildrenXyzCoords();
+    }
+  }
+}
+
 void BondedJoint_O::_updateXyzCoord(Stub& stub)
 {
       // https://math.stackexchange.com/questions/133177/finding-a-unit-vector-perpendicular-to-another-vector

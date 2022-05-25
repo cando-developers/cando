@@ -64,7 +64,9 @@ namespace geom {
     string asStringFast();
     void setTranslation(const Vector3& pos);
     Vector3 getTranslation();
-
+    Vector3 getX_Column() const;
+    Vector3 getY_Column() const;
+    Vector3 getZ_Column() const;
     void set_from_quaternion(double qw, double qx, double qy, double qz, double tx, double ty, double tz);
     void set_from_normalized_quaternion(double qw, double qx, double qy, double qz, double tx, double ty, double tz);
     core::T_mv rotation_to_quaternion() const;
@@ -72,6 +74,8 @@ namespace geom {
     void rotationX(double radians);
     void rotationY(double radians);
     void rotationZ(double radians);
+
+    Matrix flipXY() const;
 
     Matrix m_TIMES_m(const Matrix& other) const;
     Vector3 m_TIMES_v(const Vector3& vec) const;

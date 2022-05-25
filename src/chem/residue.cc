@@ -745,19 +745,19 @@ uint Residue_O::numberOfAtoms()
 }
 
 
-    AtomIdToAtomMap_sp Residue_O::buildAtomIdMap() const
+    AtomIdMap_sp Residue_O::buildAtomIdMap() const
     {_OF();
-	AtomIdToAtomMap_sp atomIdMap = AtomIdToAtomMap_O::create();
-	atomIdMap->resize(1);
+	AtomIdMap_sp atomIdMap = AtomIdMap_O::create();
+	atomIdMap->resizeAggregate(1);
 	int mid = 0;
-	atomIdMap->resize(mid,1);
+	atomIdMap->resizeMolecule(mid,1);
 	int rid = 0;
 	int numAtoms = this->_contents[mid]->_contents[rid]->_contents.size();
-	atomIdMap->resize(mid,rid,numAtoms);
+	atomIdMap->resizeResidue(mid,rid,numAtoms);
 	for ( int aid=0; aid<numAtoms; aid++ )
 	{
 	    AtomId atomId(mid,rid,aid);
-	    atomIdMap->set(atomId,this->_contents[mid]->_contents[rid]->_contents[aid].as<Atom_O>());
+	    atomIdMap->set(atomId,this->_contents[mid]->_contents[rid]->_contents[aid]);
 	}
 	return atomIdMap;
     }

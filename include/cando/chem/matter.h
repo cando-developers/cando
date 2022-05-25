@@ -370,7 +370,7 @@ public:
   core::List_sp allImproperTorsionsAsList(bool allowVirtualAtoms) const;
 
 	/*! Build a map of AtomIds to Atoms */
-  virtual AtomIdToAtomMap_sp buildAtomIdMap() const;
+  virtual AtomIdMap_sp buildAtomIdMap() const;
 
 	/*! Return the atom with the AtomId */
   virtual Atom_sp atomWithAtomId(const AtomId& atomId) const;

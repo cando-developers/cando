@@ -555,7 +555,7 @@ namespace chem {
     Atom_O( const Atom_O& ss );
 
 	/*! Build a map of AtomIds to Atoms */
-    virtual AtomIdToAtomMap_sp buildAtomIdMap() const;
+    virtual AtomIdMap_sp buildAtomIdMap() const;
 
     virtual Atom_sp atomWithAtomId(const AtomId& atomId) const;
 

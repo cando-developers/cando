@@ -96,6 +96,8 @@ public:
   double magnitude();
   Vector3 normalized();
 
+  core::List_sp vlist() const;
+  
 	/*! add two vectors
 	 */
   core::T_sp add(core::List_sp points);

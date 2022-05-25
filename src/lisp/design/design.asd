@@ -9,14 +9,10 @@
   :serial t
   :components
   ((:file "packages")
-   (:file "build-internal-coordinate-joint-template-tree")
+   (:file "joint-templates")
    (:file "load")
-   (:file "oligomer")
-   (:file "util")
    (:file "design")
    (:file "trainers")
-   (:file "build-trainer-jobs")
    (:file "graphviz-draw-joint-template")
-   (:file "graphviz-draw-fold-tree")
    (:file "graphviz-draw-joint-tree")
    ))

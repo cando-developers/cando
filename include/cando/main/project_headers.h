@@ -721,7 +721,7 @@ class Vector3;
     class AtomTest_O;
     class Logical_O;
     class StepReport_O;
-    class AtomIdToAtomMap_O;
+    class AtomIdMap_O;
     class FFVdwDb_O;
     class OctNode_O;
     class Octree_O;

@@ -43,12 +43,12 @@ class BuildFields : public AtomIdMapFunctor {
 public:
   core::Vector_sp vector;
   BuildFields(core::Vector_sp v) : vector(v) {};
-  virtual void operator()(const AtomId& atomId, Atom_sp atom) {
+  virtual void operator()(const AtomId& atomId, core::T_sp atom) {
     vector->vectorPushExtend(core::Cons_O::create(translate::to_object<AtomId>::convert(atomId),atom));
   }
 };
 
-void AtomIdToAtomMap_O::fields(core::Record_sp node)
+void AtomIdMap_O::fields(core::Record_sp node)
 {
   // this->Base::fields(node);
   switch (node->stage()) {
@@ -61,7 +61,7 @@ void AtomIdToAtomMap_O::fields(core::Record_sp node)
       core::Cons_sp keyValue = gc::As<core::Cons_sp>(valueVec->rowMajorAref(i));
       core::T_sp key = CONS_CAR(keyValue);
       core::T_sp value = CONS_CDR(keyValue);
-      this->_AtomIdMap[translate::from_object<AtomId>(key)._v] = gc::As_unsafe<Atom_sp>(value);
+      this->_AtomIdMap[translate::from_object<AtomId>(key)._v] = value;
     }
   }
       break;
@@ -84,34 +84,46 @@ void AtomIdToAtomMap_O::fields(core::Record_sp node)
 }
 
 
-CL_DEFMETHOD  Atom_sp AtomIdToAtomMap_O::lookupAtom(const AtomId& atomId) const
+CL_DEFUN chem::AtomIdMap_sp make_AtomIdMap() {
+  return gctools::GC<AtomIdMap_O>::allocate_with_default_constructor();
+}
+
+
+CL_DEFMETHOD  core::T_sp AtomIdMap_O::AtomIdMap_get(const AtomId& atomId) const
 {
   return this->_AtomIdMap.safeLookup(atomId);
 }
 
 
-void AtomIdToAtomMap_O::initialize()
+void AtomIdMap_O::initialize()
 {_OF();
   this->Base::initialize();
 }
 
 
-void AtomIdToAtomMap_O::resize(int numMols)
+CL_DEFMETHOD void AtomIdMap_O::resizeAggregate(int numMols)
 {_OF();
   this->_AtomIdMap.resize(numMols);
 }
 
-void AtomIdToAtomMap_O::resize(int mol, int numRes)
+CL_DEFMETHOD void AtomIdMap_O::resizeMolecule(int mol, int numRes)
 {_OF();
   this->_AtomIdMap.resize(mol,numRes);
 }
 
-void AtomIdToAtomMap_O::resize(int mol, int res, int numAtoms)
+CL_DEFMETHOD void AtomIdMap_O::resizeResidue(int mol, int res, int numAtoms)
 {_OF();
   this->_AtomIdMap.resize(mol,res,numAtoms);
 }
-void AtomIdToAtomMap_O::set(AtomId const& atomId, Atom_sp atom)
+
+void AtomIdMap_O::set(AtomId const& atomId, core::T_sp atom)
 {_OF();
+  this->_AtomIdMap[atomId] = atom;
+}
+
+
+CL_DEFMETHOD void AtomIdMap_O::AtomIdMap_set(const AtomId& atomId, core::T_sp atom)
+{
   this->_AtomIdMap[atomId] = atom;
 }
 
@@ -120,13 +132,13 @@ class WalkMap : public AtomIdMapFunctor {
 public:
   core::Function_sp callback;
   WalkMap(core::Function_sp c) : callback(c) {};
-  virtual void operator()(const AtomId& atomId, Atom_sp atom) {
+  virtual void operator()(const AtomId& atomId, core::T_sp atom) {
     core::T_sp catomid = translate::to_object<AtomId>::convert(atomId);
     core::eval::funcall(callback,catomid,atom);
   }
 };
 
-CL_DEFMETHOD void AtomIdToAtomMap_O::walk(core::Function_sp callback)
+CL_DEFMETHOD void AtomIdMap_O::walk(core::Function_sp callback)
 {
   WalkMap walker(callback);
   this->_AtomIdMap.iterate(walker);

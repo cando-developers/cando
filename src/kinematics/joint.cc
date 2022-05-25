@@ -465,7 +465,8 @@ CL_DEFMETHOD void Joint_O::updateXyzCoord()
 CL_DEFMETHOD void Joint_O::updateXyzCoords()
 {_OF();
   Stub stub = this->getInputStub();
-  this->_updateXyzCoords(stub);
+  this->_updateXyzCoord(stub);
+  this->_updateChildrenXyzCoords();
 }
 
 SYMBOL_SC_(KinPkg,atom);

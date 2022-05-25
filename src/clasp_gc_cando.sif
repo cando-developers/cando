@@ -22,7 +22,6 @@
  "chem::Atom_O"
  "llvmo::Linker_O"
  "chem::ZMatrix_O"
- "chem::AtomIdToAtomMap_O"
  "core::MDArray_float_O"
  "chem::StereoisomerAtom_O"
  "core::SourcePosInfo_O"
@@ -181,6 +180,7 @@
  "core::TagbodyDynEnv_O"
  "chem::ConformationCollectionEntry_O"
  "chem::RingClosingMate_O"
+ "geom::OMatrix_O"
  "llvmo::ValueAsMetadata_O"
  "geom::OMatrix_O"
  "chem::EnergyDihedral"
@@ -314,6 +314,7 @@
  "core::CoreExposer_O"
  "chem::EnergyRigidBodyComponent_O"
  "core::BitVectorNs_O"
+ "chem::AtomIdMap_O"
  "geom::SimpleVectorCoordinate_O"
  "core::KeyValuePair"
  "chem::FFItor_O"
@@ -1899,6 +1900,9 @@
 { TAGS:FIXED-FIELD ((TAGS:FILE% . "-unknown-") (TAGS:LINE% . 0)( TAGS:OFFSET-TYPE-CXX-IDENTIFIER . "TAGGED_POINTER_OFFSET")( TAGS:OFFSET-CTYPE . "gctools::tagged_pointer<gctools::GCVector_moveable<gctools::smart_ptr<chem::ChemInfoNode_O>>>")( TAGS:OFFSET-BASE-CTYPE . "chem::ChemInfoGraph_O")( TAGS:LAYOUT-OFFSET-FIELD-NAMES . "_atomNodes._Vector._Contents")) }
 { TAGS:FIXED-FIELD ((TAGS:FILE% . "-unknown-") (TAGS:LINE% . 0)( TAGS:OFFSET-TYPE-CXX-IDENTIFIER . "TAGGED_POINTER_OFFSET")( TAGS:OFFSET-CTYPE . "gctools::tagged_pointer<gctools::GCVector_moveable<gctools::smart_ptr<chem::BondToAtomTest_O>>>")( TAGS:OFFSET-BASE-CTYPE . "chem::ChemInfoGraph_O")( TAGS:LAYOUT-OFFSET-FIELD-NAMES . "_bondNodes._Vector._Contents")) }
 { TAGS:FIXED-FIELD ((TAGS:FILE% . "-unknown-") (TAGS:LINE% . 0)( TAGS:OFFSET-TYPE-CXX-IDENTIFIER . "RAW_POINTER_OFFSET")( TAGS:OFFSET-CTYPE . "UnknownType")( TAGS:OFFSET-BASE-CTYPE . "chem::ChemInfoGraph_O")( TAGS:LAYOUT-OFFSET-FIELD-NAMES . "_chemInfoGraph")) }
+{ TAGS:CLASS-KIND ((TAGS:FILE% . "-unknown-") (TAGS:LINE% . 0)(TAGS:STAMP-NAME . "STAMPWTAG_chem__AtomIdMap_O")(TAGS:STAMP-KEY . "chem::AtomIdMap_O")(TAGS:PARENT-CLASS . "core::CxxObject_O")(TAGS:LISP-CLASS-BASE . "core::CxxObject_O")(TAGS:ROOT-CLASS . "core::T_O")(TAGS:STAMP-WTAG . 3)(TAGS:DEFINITION-DATA . "IS_POLYMORPHIC")) }
+{ TAGS:FIXED-FIELD ((TAGS:FILE% . "-unknown-") (TAGS:LINE% . 0)( TAGS:OFFSET-TYPE-CXX-IDENTIFIER . "SMART_PTR_OFFSET")( TAGS:OFFSET-CTYPE . "gctools::smart_ptr<core::T_O>")( TAGS:OFFSET-BASE-CTYPE . "chem::AtomIdMap_O")( TAGS:LAYOUT-OFFSET-FIELD-NAMES . "_AtomIdMap._DefaultValue")) }
+{ TAGS:FIXED-FIELD ((TAGS:FILE% . "-unknown-") (TAGS:LINE% . 0)( TAGS:OFFSET-TYPE-CXX-IDENTIFIER . "TAGGED_POINTER_OFFSET")( TAGS:OFFSET-CTYPE . "gctools::tagged_pointer<gctools::GCVector_moveable<gctools::Vec0<gctools::Vec0<gctools::smart_ptr<core::T_O>>>>>")( TAGS:OFFSET-BASE-CTYPE . "chem::AtomIdMap_O")( TAGS:LAYOUT-OFFSET-FIELD-NAMES . "_AtomIdMap._MoleculeMap._Vector._Contents")) }
 { TAGS:CLASS-KIND ((TAGS:FILE% . "-unknown-") (TAGS:LINE% . 0)(TAGS:STAMP-NAME . "STAMPWTAG_chem__CDText_O")(TAGS:STAMP-KEY . "chem::CDText_O")(TAGS:PARENT-CLASS . "core::CxxObject_O")(TAGS:LISP-CLASS-BASE . "core::CxxObject_O")(TAGS:ROOT-CLASS . "core::T_O")(TAGS:STAMP-WTAG . 3)(TAGS:DEFINITION-DATA . "IS_POLYMORPHIC")) }
 { TAGS:FIXED-FIELD ((TAGS:FILE% . "-unknown-") (TAGS:LINE% . 0)( TAGS:OFFSET-TYPE-CXX-IDENTIFIER . "SMART_PTR_OFFSET")( TAGS:OFFSET-CTYPE . "gctools::smart_ptr<core::T_O>")( TAGS:OFFSET-BASE-CTYPE . "chem::CDText_O")( TAGS:LAYOUT-OFFSET-FIELD-NAMES . "_Code")) }
 { TAGS:CLASS-KIND ((TAGS:FILE% . "-unknown-") (TAGS:LINE% . 0)(TAGS:STAMP-NAME . "STAMPWTAG_llvmo__DINodeArray_O")(TAGS:STAMP-KEY . "llvmo::DINodeArray_O")(TAGS:PARENT-CLASS . "core::CxxObject_O")(TAGS:LISP-CLASS-BASE . "core::CxxObject_O")(TAGS:ROOT-CLASS . "core::T_O")(TAGS:STAMP-WTAG . 3)(TAGS:DEFINITION-DATA . "IS_POLYMORPHIC")) }
@@ -2162,9 +2166,6 @@
 { TAGS:FIXED-FIELD ((TAGS:FILE% . "-unknown-") (TAGS:LINE% . 0)( TAGS:OFFSET-TYPE-CXX-IDENTIFIER . "SMART_PTR_OFFSET")( TAGS:OFFSET-CTYPE . "gctools::smart_ptr<core::Symbol_O>")( TAGS:OFFSET-BASE-CTYPE . "chem::Alias_O")( TAGS:LAYOUT-OFFSET-FIELD-NAMES . "_AtomAlias")) }
 { TAGS:FIXED-FIELD ((TAGS:FILE% . "-unknown-") (TAGS:LINE% . 0)( TAGS:OFFSET-TYPE-CXX-IDENTIFIER . "ctype_unsigned_int")( TAGS:OFFSET-CTYPE . "unsigned int")( TAGS:OFFSET-BASE-CTYPE . "chem::Alias_O")( TAGS:LAYOUT-OFFSET-FIELD-NAMES . "_MonomerId")) }
 { TAGS:FIXED-FIELD ((TAGS:FILE% . "-unknown-") (TAGS:LINE% . 0)( TAGS:OFFSET-TYPE-CXX-IDENTIFIER . "ctype_unsigned_int")( TAGS:OFFSET-CTYPE . "unsigned int")( TAGS:OFFSET-BASE-CTYPE . "chem::Alias_O")( TAGS:LAYOUT-OFFSET-FIELD-NAMES . "_AtomId")) }
-{ TAGS:CLASS-KIND ((TAGS:FILE% . "-unknown-") (TAGS:LINE% . 0)(TAGS:STAMP-NAME . "STAMPWTAG_chem__AtomIdToAtomMap_O")(TAGS:STAMP-KEY . "chem::AtomIdToAtomMap_O")(TAGS:PARENT-CLASS . "core::CxxObject_O")(TAGS:LISP-CLASS-BASE . "core::CxxObject_O")(TAGS:ROOT-CLASS . "core::T_O")(TAGS:STAMP-WTAG . 3)(TAGS:DEFINITION-DATA . "IS_POLYMORPHIC")) }
-{ TAGS:FIXED-FIELD ((TAGS:FILE% . "-unknown-") (TAGS:LINE% . 0)( TAGS:OFFSET-TYPE-CXX-IDENTIFIER . "SMART_PTR_OFFSET")( TAGS:OFFSET-CTYPE . "gctools::smart_ptr<chem::Atom_O>")( TAGS:OFFSET-BASE-CTYPE . "chem::AtomIdToAtomMap_O")( TAGS:LAYOUT-OFFSET-FIELD-NAMES . "_AtomIdMap._DefaultValue")) }
-{ TAGS:FIXED-FIELD ((TAGS:FILE% . "-unknown-") (TAGS:LINE% . 0)( TAGS:OFFSET-TYPE-CXX-IDENTIFIER . "TAGGED_POINTER_OFFSET")( TAGS:OFFSET-CTYPE . "gctools::tagged_pointer<gctools::GCVector_moveable<gctools::Vec0<gctools::Vec0<gctools::smart_ptr<chem::Atom_O>>>>>")( TAGS:OFFSET-BASE-CTYPE . "chem::AtomIdToAtomMap_O")( TAGS:LAYOUT-OFFSET-FIELD-NAMES . "_AtomIdMap._MoleculeMap._Vector._Contents")) }
 { TAGS:CLASS-KIND ((TAGS:FILE% . "-unknown-") (TAGS:LINE% . 0)(TAGS:STAMP-NAME . "STAMPWTAG_mp__Process_O")(TAGS:STAMP-KEY . "mp::Process_O")(TAGS:PARENT-CLASS . "core::CxxObject_O")(TAGS:LISP-CLASS-BASE . "core::CxxObject_O")(TAGS:ROOT-CLASS . "core::T_O")(TAGS:STAMP-WTAG . 3)(TAGS:DEFINITION-DATA . "IS_POLYMORPHIC")) }
 { TAGS:FIXED-FIELD ((TAGS:FILE% . "-unknown-") (TAGS:LINE% . 0)( TAGS:OFFSET-TYPE-CXX-IDENTIFIER . "ctype_unsigned_long")( TAGS:OFFSET-CTYPE . "unsigned long")( TAGS:OFFSET-BASE-CTYPE . "mp::Process_O")( TAGS:LAYOUT-OFFSET-FIELD-NAMES . "_UniqueID")) }
 { TAGS:FIXED-FIELD ((TAGS:FILE% . "-unknown-") (TAGS:LINE% . 0)( TAGS:OFFSET-TYPE-CXX-IDENTIFIER . "SMART_PTR_OFFSET")( TAGS:OFFSET-CTYPE . "gctools::smart_ptr<core::T_O>")( TAGS:OFFSET-BASE-CTYPE . "mp::Process_O")( TAGS:LAYOUT-OFFSET-FIELD-NAMES . "_Name")) }
@@ -4886,10 +4887,6 @@
 { TAGS:VARIABLE-ARRAY0 ((TAGS:FILE% . "-unknown-") (TAGS:LINE% . 0)( TAGS:OFFSET-BASE-CTYPE . "gctools::GCVector_moveable<gctools::smart_ptr<chem::Bond_O>>")( TAGS:FIELD-NAMES . ("_Data"))) }
 { TAGS:VARIABLE-CAPACITY ((TAGS:FILE% . "-unknown-") (TAGS:LINE% . 0)( TAGS:CTYPE . "gctools::smart_ptr<chem::Bond_O>")( TAGS:OFFSET-BASE-CTYPE . "gctools::GCVector_moveable<gctools::smart_ptr<chem::Bond_O>>")( TAGS:END-FIELD-NAMES . ("_End"))( TAGS:LENGTH-FIELD-NAMES . ("_Capacity"))) }
   { TAGS:VARIABLE-FIELD-ONLY ((TAGS:FILE% . "-unknown-") (TAGS:LINE% . 0)( TAGS:OFFSET-TYPE-CXX-IDENTIFIER . "SMART_PTR_OFFSET")( TAGS:FIXUP-TYPE . "gctools::smart_ptr<chem::Bond_O>")) }
-{ TAGS:CONTAINER-KIND ((TAGS:FILE% . "-unknown-") (TAGS:LINE% . 0)(TAGS:STAMP-NAME . "STAMPWTAG_gctools__GCVector_moveable_gctools__Vec0_gctools__smart_ptr_chem__Atom_O___")(TAGS:STAMP-KEY . "gctools::GCVector_moveable<gctools::Vec0<gctools::smart_ptr<chem::Atom_O>>>")(TAGS:PARENT-CLASS . "gctools::GCContainer")(TAGS:LISP-CLASS-BASE . "NoLispBase")(TAGS:ROOT-CLASS . "gctools::GCContainer")(TAGS:STAMP-WTAG . 3)(TAGS:DEFINITION-DATA . "0")) }
-{ TAGS:VARIABLE-ARRAY0 ((TAGS:FILE% . "-unknown-") (TAGS:LINE% . 0)( TAGS:OFFSET-BASE-CTYPE . "gctools::GCVector_moveable<gctools::Vec0<gctools::smart_ptr<chem::Atom_O>>>")( TAGS:FIELD-NAMES . ("_Data"))) }
-{ TAGS:VARIABLE-CAPACITY ((TAGS:FILE% . "-unknown-") (TAGS:LINE% . 0)( TAGS:CTYPE . "gctools::Vec0<gctools::smart_ptr<chem::Atom_O>>")( TAGS:OFFSET-BASE-CTYPE . "gctools::GCVector_moveable<gctools::Vec0<gctools::smart_ptr<chem::Atom_O>>>")( TAGS:END-FIELD-NAMES . ("_End"))( TAGS:LENGTH-FIELD-NAMES . ("_Capacity"))) }
-  { TAGS:VARIABLE-FIELD ((TAGS:FILE% . "-unknown-") (TAGS:LINE% . 0)( TAGS:OFFSET-TYPE-CXX-IDENTIFIER . "TAGGED_POINTER_OFFSET")( TAGS:FIXUP-CTYPE-OFFSET-TYPE-KEY . "gctools::tagged_pointer<gctools::GCVector_moveable<gctools::smart_ptr<chem::Atom_O>>>")( TAGS:FIXUP-CTYPE-KEY . "gctools::Vec0<gctools::smart_ptr<chem::Atom_O>>")( TAGS:LAYOUT-OFFSET-FIELD-NAMES . "_Vector._Contents")) }
 { TAGS:CONTAINER-KIND ((TAGS:FILE% . "-unknown-") (TAGS:LINE% . 0)(TAGS:STAMP-NAME . "STAMPWTAG_gctools__GCVector_moveable_core__T_O___")(TAGS:STAMP-KEY . "gctools::GCVector_moveable<core::T_O *>")(TAGS:PARENT-CLASS . "gctools::GCContainer")(TAGS:LISP-CLASS-BASE . "NoLispBase")(TAGS:ROOT-CLASS . "gctools::GCContainer")(TAGS:STAMP-WTAG . 3)(TAGS:DEFINITION-DATA . "0")) }
 { TAGS:VARIABLE-ARRAY0 ((TAGS:FILE% . "-unknown-") (TAGS:LINE% . 0)( TAGS:OFFSET-BASE-CTYPE . "gctools::GCVector_moveable<core::T_O *>")( TAGS:FIELD-NAMES . ("_Data"))) }
 { TAGS:VARIABLE-CAPACITY ((TAGS:FILE% . "-unknown-") (TAGS:LINE% . 0)( TAGS:CTYPE . "core::T_O*")( TAGS:OFFSET-BASE-CTYPE . "gctools::GCVector_moveable<core::T_O *>")( TAGS:END-FIELD-NAMES . ("_End"))( TAGS:LENGTH-FIELD-NAMES . ("_Capacity"))) }
@@ -5266,10 +5263,6 @@
 { TAGS:VARIABLE-ARRAY0 ((TAGS:FILE% . "-unknown-") (TAGS:LINE% . 0)( TAGS:OFFSET-BASE-CTYPE . "gctools::GCVector_moveable<gctools::smart_ptr<kinematics::Joint_O>>")( TAGS:FIELD-NAMES . ("_Data"))) }
 { TAGS:VARIABLE-CAPACITY ((TAGS:FILE% . "-unknown-") (TAGS:LINE% . 0)( TAGS:CTYPE . "gctools::smart_ptr<kinematics::Joint_O>")( TAGS:OFFSET-BASE-CTYPE . "gctools::GCVector_moveable<gctools::smart_ptr<kinematics::Joint_O>>")( TAGS:END-FIELD-NAMES . ("_End"))( TAGS:LENGTH-FIELD-NAMES . ("_Capacity"))) }
   { TAGS:VARIABLE-FIELD-ONLY ((TAGS:FILE% . "-unknown-") (TAGS:LINE% . 0)( TAGS:OFFSET-TYPE-CXX-IDENTIFIER . "SMART_PTR_OFFSET")( TAGS:FIXUP-TYPE . "gctools::smart_ptr<kinematics::Joint_O>")) }
-{ TAGS:CONTAINER-KIND ((TAGS:FILE% . "-unknown-") (TAGS:LINE% . 0)(TAGS:STAMP-NAME . "STAMPWTAG_gctools__GCVector_moveable_gctools__Vec0_gctools__Vec0_gctools__smart_ptr_chem__Atom_O____")(TAGS:STAMP-KEY . "gctools::GCVector_moveable<gctools::Vec0<gctools::Vec0<gctools::smart_ptr<chem::Atom_O>>>>")(TAGS:PARENT-CLASS . "gctools::GCContainer")(TAGS:LISP-CLASS-BASE . "NoLispBase")(TAGS:ROOT-CLASS . "gctools::GCContainer")(TAGS:STAMP-WTAG . 3)(TAGS:DEFINITION-DATA . "0")) }
-{ TAGS:VARIABLE-ARRAY0 ((TAGS:FILE% . "-unknown-") (TAGS:LINE% . 0)( TAGS:OFFSET-BASE-CTYPE . "gctools::GCVector_moveable<gctools::Vec0<gctools::Vec0<gctools::smart_ptr<chem::Atom_O>>>>")( TAGS:FIELD-NAMES . ("_Data"))) }
-{ TAGS:VARIABLE-CAPACITY ((TAGS:FILE% . "-unknown-") (TAGS:LINE% . 0)( TAGS:CTYPE . "gctools::Vec0<gctools::Vec0<gctools::smart_ptr<chem::Atom_O>>>")( TAGS:OFFSET-BASE-CTYPE . "gctools::GCVector_moveable<gctools::Vec0<gctools::Vec0<gctools::smart_ptr<chem::Atom_O>>>>")( TAGS:END-FIELD-NAMES . ("_End"))( TAGS:LENGTH-FIELD-NAMES . ("_Capacity"))) }
-  { TAGS:VARIABLE-FIELD ((TAGS:FILE% . "-unknown-") (TAGS:LINE% . 0)( TAGS:OFFSET-TYPE-CXX-IDENTIFIER . "TAGGED_POINTER_OFFSET")( TAGS:FIXUP-CTYPE-OFFSET-TYPE-KEY . "gctools::tagged_pointer<gctools::GCVector_moveable<gctools::Vec0<gctools::smart_ptr<chem::Atom_O>>>>")( TAGS:FIXUP-CTYPE-KEY . "gctools::Vec0<gctools::Vec0<gctools::smart_ptr<chem::Atom_O>>>")( TAGS:LAYOUT-OFFSET-FIELD-NAMES . "_Vector._Contents")) }
 { TAGS:CONTAINER-KIND ((TAGS:FILE% . "-unknown-") (TAGS:LINE% . 0)(TAGS:STAMP-NAME . "STAMPWTAG_gctools__GCArray_moveable_unsigned_short_")(TAGS:STAMP-KEY . "gctools::GCArray_moveable<unsigned short>")(TAGS:PARENT-CLASS . "gctools::GCContainer")(TAGS:LISP-CLASS-BASE . "NoLispBase")(TAGS:ROOT-CLASS . "gctools::GCContainer")(TAGS:STAMP-WTAG . 3)(TAGS:DEFINITION-DATA . "0")) }
 { TAGS:VARIABLE-ARRAY0 ((TAGS:FILE% . "-unknown-") (TAGS:LINE% . 0)( TAGS:OFFSET-BASE-CTYPE . "gctools::GCArray_moveable<unsigned short>")( TAGS:FIELD-NAMES . ("_Data"))) }
 { TAGS:VARIABLE-CAPACITY ((TAGS:FILE% . "-unknown-") (TAGS:LINE% . 0)( TAGS:CTYPE . "unsigned short")( TAGS:OFFSET-BASE-CTYPE . "gctools::GCArray_moveable<unsigned short>")( TAGS:END-FIELD-NAMES . ("_MaybeSignedLength"))( TAGS:LENGTH-FIELD-NAMES . ("_MaybeSignedLength"))) }

@@ -122,7 +122,7 @@ public:
     /*! Build an AtomIdMap that maps moleculeId/residueId/atomId to atoms
      Call this after you make any changes to the structure of the Aggregate.
     This is automatically called whenever an Aggregate is loaded. */
-    virtual AtomIdToAtomMap_sp buildAtomIdMap() const;
+    virtual AtomIdMap_sp buildAtomIdMap() const;
 
 
     virtual Atom_sp atomWithAtomId(const AtomId& atomId) const;

@@ -1233,7 +1233,7 @@ void Matter_O::redirectRestraintAtoms()
 
 
 CL_LISPIFY_NAME("buildAtomIdMap");
-CL_DEFMETHOD AtomIdToAtomMap_sp Matter_O::buildAtomIdMap() const
+CL_DEFMETHOD AtomIdMap_sp Matter_O::buildAtomIdMap() const
 {
   SUBCLASS_MUST_IMPLEMENT();
 }

@@ -250,7 +250,7 @@ namespace chem {
     void		failIfInvalid();
 
 	/*! Build a map of AtomIds to Atoms */
-    virtual AtomIdToAtomMap_sp buildAtomIdMap() const;
+    virtual AtomIdMap_sp buildAtomIdMap() const;
 
     virtual Atom_sp atomWithAtomId(const AtomId& atomId) const;
 

@@ -1,5 +1,3 @@
-
-
 (in-package :design.graphviz-draw-joint-tree)
 
 (defparameter *table* nil)
@@ -13,7 +11,7 @@
     (with-open-file (stream filename :direction :output :if-exists :supersede)
       (format stream "digraph G {~%   ordering = out; ~%")
       (let ((*table* (make-hash-table :test #'eq)))
-        (stream-draw-joint (kin:joint-tree-root atom-tree) atom-tree stream))
+        (stream-draw-joint (design:root atom-tree) atom-tree stream))
       (format stream "}~%"))))
 
 (defmethod stream-draw-joint :around (joint atom-tree stream)

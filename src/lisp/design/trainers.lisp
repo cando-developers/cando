@@ -174,7 +174,7 @@
           for entry = (chem:get-entry conformation-collection index)
           do (format t "index = ~a~%" index)
           do (chem:write-coordinates-to-matter entry conformation-collection-agg)
-             (kin:walk (kin:get-joint-tree conformation) 
+             (kin:walk-children (kin:get-joint-tree conformation) 
                        (lambda (o) 
                          (let* ((atom (chem:lookup-atom atom-id-map (kin:atom-id o)))
                                 (pos (chem:get-position atom)))

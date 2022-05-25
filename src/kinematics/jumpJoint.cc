@@ -167,6 +167,14 @@ void JumpJoint_O::updateXyzCoord()
   this->_updateXyzCoord(newStub);
 }
 
+void JumpJoint_O::updateXyzCoord()
+{
+  Stub newStub;
+  newStub._Transform = this->_LabFrame;
+  this->_updateXyzCoord(newStub);
+}
+
+
 
 
     /*! Update the external coordinates using the input stub */

@@ -350,13 +350,13 @@ CL_DEFMETHOD     Residue_sp	Molecule_O::getFirstResidueWithName(MatterName name)
     }
 
 
-AtomIdToAtomMap_sp Molecule_O::buildAtomIdMap() const
+AtomIdMap_sp Molecule_O::buildAtomIdMap() const
 {
-  AtomIdToAtomMap_sp atomIdMap = AtomIdToAtomMap_O::create();
-  atomIdMap->resize(1);
+  AtomIdMap_sp atomIdMap = AtomIdMap_O::create();
+  atomIdMap->resizeAggregate(1);
   int mid = 0;
   int numResidues = this->_contents.size();
-  atomIdMap->resize(mid,numResidues);
+  atomIdMap->resizeMolecule(mid,numResidues);
   for ( int rid =0; rid<numResidues; rid++ )
   {
     int numAtoms = this->_contents[rid]->_contents.size();
