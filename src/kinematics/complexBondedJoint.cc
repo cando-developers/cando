@@ -194,6 +194,4 @@ void ComplexBondedJoint_O::_updateInternalCoord()
   #endif
 }
 
-
-
 };
