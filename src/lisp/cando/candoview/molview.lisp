@@ -169,8 +169,8 @@
                (let ((a (car line))
                      (b (cdr line)))
                  (gl:begin :lines)
-                 (gl:vertex (geom:vx a) (geom:vy a) (geom:vz a))
-                 (gl:vertex (geom:vx b) (geom:vy b) (geom:vz b))
+                 (gl:vertex (geom:get-x a) (geom:get-y a) (geom:get-z a))
+                 (gl:vertex (geom:get-x b) (geom:get-y b) (geom:get-z b))
                  (gl:end))))
            *current-lines*))
 	   

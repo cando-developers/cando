@@ -138,9 +138,9 @@
                     (chem:add-matter mol ion1-copy)
                     (format t "Placed ~a in ~a at (~,2f, ~,2f, ~,2f).~%" (chem:get-name ion1-atom) 
                             (chem:get-name mol)
-                            (geom:vx new-point)
-                            (geom:vy new-point)
-                            (geom:vz new-point))
+                            (geom:get-x new-point)
+                            (geom:get-y new-point)
+                            (geom:get-z new-point))
                     (chem:octree-delete-sphere octree new-point (if ion2
                                                                   (+ ion1-size ion2-size)
                                                                   (+ ion1-size ion1-size)))
@@ -161,9 +161,9 @@
                       (chem:add-matter mol ion2-copy)
                       (format t "Placed ~a in ~a at (~,2f, ~,2f, ~,2f).~%" (chem:get-name ion2-atom) 
                               (chem:get-name mol)
-                              (geom:vx new-point)
-                              (geom:vy new-point)
-                              (geom:vz new-point))
+                              (geom:get-x new-point)
+                              (geom:get-y new-point)
+                              (geom:get-z new-point))
                       (chem:octree-delete-sphere octree new-point (if ion1
                                                                           (+ ion2-size ion1-size)
                                                                           (+ ion2-size ion2-size)))
@@ -288,9 +288,9 @@
                     (chem:add-matter mol ion1-copy)
                     (format t "Placed ~a in ~a at (~,2f, ~,2f, ~,2f).~%" (chem:get-name ion1-atom) 
                             (chem:get-name mol)
-                            (geom:vx new-point)
-                            (geom:vy new-point)
-                            (geom:vz new-point))
+                            (geom:get-x new-point)
+                            (geom:get-y new-point)
+                            (geom:get-z new-point))
                     (chem:octree-delete-sphere octree new-point (if ion2
                                                                         (+ ion1-size ion2-size)
                                                                         (+ ion1-size ion1-size)))
@@ -311,9 +311,9 @@
                       (chem:add-matter mol ion2-copy)
                       (format t "Placed ~a in ~a at (~,2f, ~,2f, ~,2f).~%" (chem:get-name ion2-atom) 
                               (chem:get-name mol)
-                              (geom:vx new-point)
-                              (geom:vy new-point)
-                              (geom:vz new-point))
+                              (geom:get-x new-point)
+                              (geom:get-y new-point)
+                              (geom:get-z new-point))
                       (chem:octree-delete-sphere octree new-point (if ion1
                                                                           (+ ion2-size ion1-size)
                                                                           (+ ion2-size ion2-size)))
@@ -337,16 +337,16 @@
           do (chem:map-atoms
               nil
               (lambda (a)
-                (setf x (- (geom:vx new-point) (geom:vx (chem:get-position a))))
-                (setf y (- (geom:vy new-point) (geom:vy (chem:get-position a))))
-                (setf z (- (geom:vz new-point) (geom:vz (chem:get-position a))))
+                (setf x (- (geom:get-x new-point) (geom:get-x (chem:get-position a))))
+                (setf y (- (geom:get-y new-point) (geom:get-y (chem:get-position a))))
+                (setf z (- (geom:get-z new-point) (geom:get-z (chem:get-position a))))
                 (setf d2 (+ (* x x) (* y y) (* z z)))
                 (if (< d2 dmin2)
                     (progn
                       (setf dmin2 d2)
-                      (setf (aref closest-atom-vector 0) (geom:vx (chem:get-position a)))
-                      (setf (aref closest-atom-vector 1) (geom:vy (chem:get-position a)))
-                      (setf (aref closest-atom-vector 2) (geom:vz (chem:get-position a))))))
+                      (setf (aref closest-atom-vector 0) (geom:get-x (chem:get-position a)))
+                      (setf (aref closest-atom-vector 1) (geom:get-y (chem:get-position a)))
+                      (setf (aref closest-atom-vector 2) (geom:get-z (chem:get-position a))))))
               residue))
      (if (< dmin2 9)
         (progn 
@@ -356,9 +356,9 @@
              (chem:map-atoms
               nil
               (lambda (a)
-                (when (and (= (geom:vx (chem:get-position a)) (aref closest-atom-vector 0))
-                           (= (geom:vy (chem:get-position a)) (aref closest-atom-vector 1))
-                           (= (geom:vz (chem:get-position a)) (aref closest-atom-vector 2)))
+                (when (and (= (geom:get-x (chem:get-position a)) (aref closest-atom-vector 0))
+                           (= (geom:get-y (chem:get-position a)) (aref closest-atom-vector 1))
+                           (= (geom:get-z (chem:get-position a)) (aref closest-atom-vector 2)))
                   (chem:set-name r :delete)))
               r))
            mol)
@@ -507,7 +507,7 @@
                      (progn
                        (format t "~a: Placed ~a in ~a at (~,2f, ~,2f, ~,2f).~%"
                                ion-count ion1 (chem:get-name aggregate)
-                               (geom:vx position) (geom:vy position) (geom:vz position))
+                               (geom:get-x position) (geom:get-y position) (geom:get-z position))
                        ;;Save this ion's position if desired
                        ;;Copy ion unit, position, and add it to the unit
                        (chem:apply-transform-to-atoms ion1-copy (geom:make-m4-translate position))
@@ -554,7 +554,7 @@
                      (progn
                        (format t "~a: Placed ~a in ~a at (~,2f, ~,2f, ~,2f).~%"
                                ion-count ion2 (chem:get-name aggregate)
-                               (geom:vx position) (geom:vy position) (geom:vz position))
+                               (geom:get-x position) (geom:get-y position) (geom:get-z position))
                        ;;Save this ion's position if desired
                        ;;Copy ion unit, position, and add it to the unit
                        (chem:apply-transform-to-atoms ion2-copy (geom:make-m4-translate position))

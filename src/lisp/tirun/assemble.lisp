@@ -529,7 +529,7 @@ We need assemble-ligands for the tirun demo."
                   (vec-a (geom:v- (chem:get-position atom-a) vec-center))
                   (vec-b (geom:v- (chem:get-position atom-b) vec-center))
                   (cross (geom:vcross vec-a vec-b))
-                  (side (* (float-sign (geom:vz cross) 1.0)
+                  (side (* (float-sign (geom:get-z cross) 1.0)
                            (case bond-order
                              (:single-wedge-begin 1.0)
                              (:single-hash-begin -1.0))))

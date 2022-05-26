@@ -25,9 +25,9 @@ qm-charge : The overall charge of the molecule"
                     (format fout "~2d ~a ~12,6f ~12,6f ~12,6f~%"
                             (chem:atomic-number-for-element (chem:get-element atom))
                             atom-name
-                            (geom:vx position)
-                            (geom:vy position)
-                            (geom:vz position)))
+                            (geom:get-x position)
+                            (geom:get-y position)
+                            (geom:get-z position)))
                   atom)
                 molecule)))
     atom-order))

@@ -398,9 +398,9 @@
         (index -1))
     (cando:do-atoms (atm agg)
       (let ((pos (chem:get-position atm)))
-        (setf (aref arr (incf index)) (float (geom:vx pos) 1.0s0)
-              (aref arr (incf index)) (float (geom:vy pos) 1.0s0)
-              (aref arr (incf index)) (float (geom:vz pos) 1.0s0))))
+        (setf (aref arr (incf index)) (float (geom:get-x pos) 1.0s0)
+              (aref arr (incf index)) (float (geom:get-y pos) 1.0s0)
+              (aref arr (incf index)) (float (geom:get-z pos) 1.0s0))))
     arr))
 
 

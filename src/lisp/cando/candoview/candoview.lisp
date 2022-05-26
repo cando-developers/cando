@@ -167,7 +167,7 @@
 (defparameter *max-colors* 5)
 
 
-(defun vlist (p) (list (geom:vx p) (geom:vy p) (geom:vz p)))
+(defun vlist (p) (list (geom:get-x p) (geom:get-y p) (geom:get-z p)))
 
 
 (defun translate-data-aggregate (w)

@@ -14,7 +14,7 @@
     (chem:apply-transform-to-atoms matter (geom:make-m4-translate point))))
 
 (defun unbuilt-vec3-p (v)
-  (= (geom:vx v) (geom:vy v) (geom:vz v) 0.0d0))
+  (= (geom:get-x v) (geom:get-y v) (geom:get-z v) 0.0d0))
 
 (defun unbuilt-atoms (matter)
   (let (unbuilt)

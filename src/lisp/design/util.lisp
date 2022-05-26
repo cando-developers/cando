@@ -2,9 +2,9 @@
 (in-package :design)
 
 (defun vec-to-array (vec)
-  (vector (float (geom:vx vec) 1s0)
-          (float (geom:vy vec) 1s0)
-          (float (geom:vz vec) 1s0)))
+  (vector (float (geom:get-x vec) 1s0)
+          (float (geom:get-y vec) 1s0)
+          (float (geom:get-z vec) 1s0)))
 
 (defun stub-as-coordinate-system (stub)
   (let* ((len 5.0)

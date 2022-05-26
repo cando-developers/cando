@@ -1560,9 +1560,9 @@ cando-extensions               : T if you want cando-extensions written to the t
               for pos = (chem:get-position atom)
 ;;;           do (format t "atom-coordinate-index-times3 -> ~a~%" atom-coordinate-index-times3)
               do (progn
-                   (fortran:fwrite (+ (geom:vx pos) ox))
-                   (fortran:fwrite (+ (geom:vy pos) oy))
-                   (fortran:fwrite (+ (geom:vz pos) oz))))
+                   (fortran:fwrite (+ (geom:get-x pos) ox))
+                   (fortran:fwrite (+ (geom:get-y pos) oy))
+                   (fortran:fwrite (+ (geom:get-z pos) oz))))
         (fortran:end-line))
       ;; write out the solvent box
       (if (chem:bounding-box-bound-p atom-table)

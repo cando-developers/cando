@@ -30,9 +30,9 @@
                            &aux (half-width (/ width 2.0)))
   (flet ((scramble-atom (atom)
            (let ((pos (geom:vec
-                       (+ (- (random width) half-width) (geom:vx center))
-                       (+ (- (random width) half-width) (geom:vy center))
-                       (+ (- (random width) half-width) (geom:vz center)))))
+                       (+ (- (random width) half-width) (geom:get-x center))
+                       (+ (- (random width) half-width) (geom:get-y center))
+                       (+ (- (random width) half-width) (geom:get-z center)))))
              (chem:set-position atom pos))))
     (cond
       ((typep matter 'chem:matter)
@@ -139,9 +139,9 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
               (loop for atom in (chem:atoms condition)
                     do (let* ((cp (chem:get-position atom))
                               (pos (geom:vec
-                                    (+ (- (random width) half-width) (geom:vx cp))
-                                    (+ (- (random width) half-width) (geom:vy cp))
-                                    (+ (- (random width) half-width) (geom:vz cp)))))
+                                    (+ (- (random width) half-width) (geom:get-x cp))
+                                    (+ (- (random width) half-width) (geom:get-y cp))
+                                    (+ (- (random width) half-width) (geom:get-z cp)))))
                          (chem:set-position atom pos))))
             (chem:restart-minimizer))))
      (progn
@@ -377,9 +377,9 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
              (chem:set-position atom (geom:vec 0.0 0.0 0.0)))
            (let* ((cp (chem:get-position atom))
                   (pos (geom:vec
-                       (+ (- (random width) half-width) (geom:vx cp))
-                       (+ (- (random width) half-width) (geom:vy cp))
-                       (+ (- (random width) half-width) (geom:vz cp)))))
+                       (+ (- (random width) half-width) (geom:get-x cp))
+                       (+ (- (random width) half-width) (geom:get-y cp))
+                       (+ (- (random width) half-width) (geom:get-z cp)))))
              (chem:set-position atom pos))))
     (cond
       ((typep matter 'chem:matter)

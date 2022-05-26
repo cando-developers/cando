@@ -399,9 +399,9 @@ I'll use an angle term instead of a bond term.
              (chem:set-position atom (geom:vec 0.0 0.0 0.0)))
            (let* ((cp (chem:get-position atom))
                   (pos (geom:vec
-                        (+ (- (random width) half-width) (geom:vx cp))
-                        (+ (- (random width) half-width) (geom:vy cp))
-                        (+ (- (random width) half-width) (geom:vz cp)))))
+                        (+ (- (random width) half-width) (geom:get-x cp))
+                        (+ (- (random width) half-width) (geom:get-y cp))
+                        (+ (- (random width) half-width) (geom:get-z cp)))))
              (chem:set-position atom pos))))
     (loop for index from 0 below (chem:get-number-of-atoms atom-table)
           for atom = (chem:elt-atom atom-table index)
@@ -461,10 +461,10 @@ https://www.geeksforgeeks.org/check-if-two-given-line-segments-intersect/
 to check if two line segments (bonds) overlap/intersect
 |#
 (defun orientation (p1 p2 p3)
-  (let ((orient (- (* (- (geom:vy p2) (geom:vy p1))
-                      (- (geom:vx p3) (geom:vx p2)))
-                   (* (- (geom:vy p3) (geom:vy p2))
-                      (- (geom:vx p2) (geom:vx p1))))))
+  (let ((orient (- (* (- (geom:get-y p2) (geom:get-y p1))
+                      (- (geom:get-x p3) (geom:get-x p2)))
+                   (* (- (geom:get-y p3) (geom:get-y p2))
+                      (- (geom:get-x p2) (geom:get-x p1))))))
     (cond
       ((= 0.0 orient) 0)
       ((< 0.0 orient) 1)
@@ -473,10 +473,10 @@ to check if two line segments (bonds) overlap/intersect
 ;;; Given three colinear points p, q, r, the function checks if 
 ;;; point q lies on line segment 'pr' 
 (defun on-segment (p q r)
-  (and (<= (geom:vx q) (max (geom:vx p) (geom:vx r)))
-       (>= (geom:vx q) (max (geom:vx p) (geom:vx r)))
-       (<= (geom:vy q) (max (geom:vy p) (geom:vy r)))
-       (>= (geom:vy q) (max (geom:vy p) (geom:vy r)))))
+  (and (<= (geom:get-x q) (max (geom:get-x p) (geom:get-x r)))
+       (>= (geom:get-x q) (max (geom:get-x p) (geom:get-x r)))
+       (<= (geom:get-y q) (max (geom:get-y p) (geom:get-y r)))
+       (>= (geom:get-y q) (max (geom:get-y p) (geom:get-y r)))))
 
 (defun bonds-intersect (p1 q1 p2 q2)
   (let ((o1 (orientation p1 q1 p2))
@@ -494,14 +494,14 @@ to check if two line segments (bonds) overlap/intersect
 
 
 (defun intersection-point (p1 q1 p2 q2)
-  (let ((x1 (geom:vx p1))
-        (y1 (geom:vy p1))
-        (x2 (geom:vx q1))
-        (y2 (geom:vy q1))
-        (x3 (geom:vx p2))
-        (y3 (geom:vy p2))
-        (x4 (geom:vx q2))
-        (y4 (geom:vy q2)))
+  (let ((x1 (geom:get-x p1))
+        (y1 (geom:get-y p1))
+        (x2 (geom:get-x q1))
+        (y2 (geom:get-y q1))
+        (x3 (geom:get-x p2))
+        (y3 (geom:get-y p2))
+        (x4 (geom:get-x q2))
+        (y4 (geom:get-y q2)))
     (let* ((tat (infix:infix ((y3 - y4)*(x1 - x3)+(x4 - x3)*(y1 - y3))))
            (tab (infix:infix ((x4 - x3)*(y1 - y2)-(x1 - x2)*(y4 - y3))))
            (ta (infix:infix tat / tab)))
@@ -686,9 +686,9 @@ to check if two line segments (bonds) overlap/intersect
          (offset (geom:v- to-center from-center)))
     (loop for coord-index from 0 below (length frozen) by 3
           do (when (not (elt frozen coord-index))
-               (let ((xpos (+ (geom:vx offset) (elt coordinates coord-index)))
-                     (ypos (+ (geom:vy offset) (elt coordinates (+ 1 coord-index))))
-                     (zpos (+ (geom:vz offset) (elt coordinates (+ 2 coord-index)))))
+               (let ((xpos (+ (geom:get-x offset) (elt coordinates coord-index)))
+                     (ypos (+ (geom:get-y offset) (elt coordinates (+ 1 coord-index))))
+                     (zpos (+ (geom:get-z offset) (elt coordinates (+ 2 coord-index)))))
                  (setf (elt coordinates coord-index) xpos
                        (elt coordinates (+ coord-index 1)) ypos
                        (elt coordinates (+ coord-index 2)) zpos))))))
@@ -1212,7 +1212,7 @@ are in the order (low, middle, high) and the column eigen-vectors are in the sam
                                   (vec2 (geom:v- (chem:get-position atm-2)
                                                  (chem:get-position atm-ch)))
                                   (cross (geom:vcross vec1 vec2))
-                                  (draw-config (if (> (geom:vz cross) 0.0) :r :s))
+                                  (draw-config (if (> (geom:get-z cross) 0.0) :r :s))
                                   (bond-type (if (eq draw-config config)
                                                  :single-wedge-begin
                                                  :single-hash-begin)))
@@ -1220,7 +1220,7 @@ are in the order (low, middle, high) and the column eigen-vectors are in the sam
                                      (chem:get-name atm-ch)
                                      (chem:get-name atm-1)
                                      (chem:get-name atm-2)
-                                     (geom:vz cross)
+                                     (geom:get-z cross)
                                      draw-config
                                      config)
                              (setf (chiral-bonds chiral-info)
@@ -1235,7 +1235,7 @@ are in the order (low, middle, high) and the column eigen-vectors are in the sam
                                   #+(or)(vec2 (geom:v- (chem:get-position atm-2)
                                                  (chem:get-position atm-ch)))
                                   #+(or)(cross12 (geom:vcross vec1 vec2))
-                                  #+(or)(cross12z (geom:vz cross12))
+                                  #+(or)(cross12z (geom:get-z cross12))
                                   (atm-3 (sketch-atom (third sketch-neighbors)))
                                   (atm-4 (sketch-atom (fourth sketch-neighbors)))
                                   (vec3 (geom:v- (chem:get-position atm-3)
@@ -1243,7 +1243,7 @@ are in the order (low, middle, high) and the column eigen-vectors are in the sam
                                   (vec4 (geom:v- (chem:get-position atm-4)
                                                  (chem:get-position atm-ch)))
                                   (cross34 (geom:vcross vec3 vec4))
-                                  (cross34z (geom:vz cross34))
+                                  (cross34z (geom:get-z cross34))
                                   (draw-config (if (> cross34z 0.0) :r :s))) ; Change this to flip the rendered config of the center
                              #+(or)(format t "Q atm-ch: ~4a  atm-1: ~3a  atm-2: ~3a cross12z: ~,1f~%"
                                      (chem:get-name atm-ch)
@@ -1288,7 +1288,7 @@ are in the order (low, middle, high) and the column eigen-vectors are in the sam
                              (vec2 (geom:v- (chem:get-position atm-2)
                                             (chem:get-position atm-ch)))
                              (cross (geom:vcross vec1 vec2))
-                             (draw-config (if (< (geom:vz cross) 0.0) :right-handed :left-handed)))
+                             (draw-config (if (< (geom:get-z cross) 0.0) :right-handed :left-handed)))
                         (multiple-value-bind (bond-type1 bond-type2)
                             (if (eq draw-config config)
                                 (values :single-wedge-begin :single-hash-begin)

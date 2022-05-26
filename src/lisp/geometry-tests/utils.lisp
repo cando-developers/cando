@@ -35,9 +35,9 @@ Returns the plane or nil"
           ;; Calculate full 3x3 covariance matrix, excluding symmetries
           (loop for p in points
                 for r = (geom:v- p centroid)
-                for rx double-float = (geom:vx r)
-                for ry double-float = (geom:vy r)
-                for rz double-float = (geom:vz r)
+                for rx double-float = (geom:get-x r)
+                for ry double-float = (geom:get-y r)
+                for rz double-float = (geom:get-z r)
                 do (incf xx (infix:infix rx * rx))
                 do (incf xy (infix:infix rx * ry))
                 do (incf xz (infix:infix rx * rz))
@@ -115,9 +115,9 @@ Returns the plane or nil"
 
 
 (defun perpendicular (direction)
-  (let ((vx (geom:vx direction))
-        (vy (geom:vy direction))
-        (vz (geom:vz direction)))
+  (let ((vx (geom:get-x direction))
+        (vy (geom:get-y direction))
+        (vz (geom:get-z direction)))
     (let* ((perp-try1 (geom:vec vz vz (- (- vx) vy)))
            (perp-try2 (geom:vec (- (- vy) vz) vx vx))
            (select-try (and (/= vz 0.0) (/= (- vx) vy)))
@@ -140,11 +140,11 @@ Returns the plane or nil"
          (normal (normal plane))
          (normal-pos (geom:v+ centroid (geom:v* normal 2.0))))
     `((:type "sphere"
-       :position ,(list (geom:vx centroid) (geom:vy centroid) (geom:vz centroid))
+       :position ,(list (geom:get-x centroid) (geom:get-y centroid) (geom:get-z centroid))
        :color (0 1 1) :radius 0.4)
       (:type "arrow"
-       :position1 ,(list (geom:vx centroid) (geom:vy centroid) (geom:vz centroid))
-       :position2 ,(list (geom:vx normal-pos) (geom:vy normal-pos) (geom:vz normal-pos))
+       :position1 ,(list (geom:get-x centroid) (geom:get-y centroid) (geom:get-z centroid))
+       :position2 ,(list (geom:get-x normal-pos) (geom:get-y normal-pos) (geom:get-z normal-pos))
        :color (0 0 1) :radius 0.2))))
 
 
@@ -180,9 +180,9 @@ Returns the plane or nil"
                (format t "(hash-table-plist (gethash \"position\" pick) -> ~s~%" (alexandria:hash-table-plist (gethash "position" pick)))
                (let ((compare nil))
                  (cando:do-atoms (atm matter)
-                   (let* ((dx (abs (- px (geom:vx (chem:get-position atm)))))
-                          (dy (abs (- px (geom:vy (chem:get-position atm)))))
-                          (dz (abs (- px (geom:vz (chem:get-position atm)))))
+                   (let* ((dx (abs (- px (geom:get-x (chem:get-position atm)))))
+                          (dy (abs (- px (geom:get-y (chem:get-position atm)))))
+                          (dz (abs (- px (geom:get-z (chem:get-position atm)))))
                           (dist (sqrt (+ (* dx dx) (* dy dy) (* dz dz)))))
                      (push (cons dist atm) compare)))
                  (let ((sorted-compare (sort compare #'< :key #'car)))

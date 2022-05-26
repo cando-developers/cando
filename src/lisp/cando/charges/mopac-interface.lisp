@@ -14,11 +14,11 @@ fout : A stream to write the header to."
                   (let ((position (chem:get-position atom)))
                     (format fout "~3a~8,3f~2d~8,3f~2d~8,3f~2d~%"
                             (chem:get-element atom)
-                            (geom:vx position)
+                            (geom:get-x position)
                             0
-                            (geom:vy position)
+                            (geom:get-y position)
                             0
-                            (geom:vz position)
+                            (geom:get-z position)
                             0))
                   atom)
                 molecule)))

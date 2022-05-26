@@ -70,9 +70,9 @@
                                atom-default-radius (chem:get-name a))
                  (setf radius atom-default-radius))))
        (chem:set-vdw-radius a radius)
-       (setf x (+ (geom:vx (chem:get-position a)) radius))
-       (setf y (+ (geom:vy (chem:get-position a)) radius))
-       (setf z (+ (geom:vz (chem:get-position a)) radius))
+       (setf x (+ (geom:get-x (chem:get-position a)) radius))
+       (setf y (+ (geom:get-y (chem:get-position a)) radius))
+       (setf z (+ (geom:get-z (chem:get-position a)) radius))
        (if (=  ifirst 1)
            (setf x-max x
                  y-max y
@@ -85,9 +85,9 @@
                  (setf y-max y))
              (if (> z z-max)
                  (setf z-max z))))
-       (setf x (- (geom:vx (chem:get-position a)) radius))
-       (setf y (- (geom:vy (chem:get-position a)) radius))
-       (setf z (- (geom:vz (chem:get-position a)) radius))
+       (setf x (- (geom:get-x (chem:get-position a)) radius))
+       (setf y (- (geom:get-y (chem:get-position a)) radius))
+       (setf z (- (geom:get-z (chem:get-position a)) radius))
        (if (=  ifirst 1)
            (setf x-min x
                  y-min y
@@ -129,9 +129,9 @@
     (chem:map-atoms
      nil
      (lambda (a)
-       (setf x (geom:vx (chem:get-position a)))
-       (setf y (geom:vy (chem:get-position a)))
-       (setf z (geom:vz (chem:get-position a)))
+       (setf x (geom:get-x (chem:get-position a)))
+       (setf y (geom:get-y (chem:get-position a)))
+       (setf z (geom:get-z (chem:get-position a)))
        (if (=  ifirst 1)
            (setf x-max x
                  x-min x
