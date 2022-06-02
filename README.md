@@ -18,7 +18,7 @@ These installations can be automatically updated from the Nighly Package Reposit
 
 If you want to use the jupyter-lab kernel implemented in Cando then follow the entire instructions below for each operating system.  If you only want to install Cando - then skip the steps that mention jupyter-lab.
 
-Binary packages for Cando for Linux are built nightly starting about 2:00 AM EST and take about 4 hours to complete. Currently packages are built for Ubuntu 22.04, Debian Bookworm (in testing), and Arch. The Ubuntu 22.04 package works on WSL2 (Windows Subsystem for Linux). To add the package repository to your local system and install Cando execute one of the following commands in a shell. You may need to prefix these commands with `sudo` for root access.
+Binary packages for Cando are built nightly starting about 2:00 AM EST and take about 4 hours to complete. Currently packages are built for Ubuntu 22.04, Debian Bookworm (in testing), Arch, and homebrew for macOS. The Ubuntu 22.04 package works on WSL2 (Windows Subsystem for Linux). To add the package repository to your local system and install Cando execute one of the following commands in a shell. You may need to prefix these commands with `sudo` for root access.
 
 #### Installing from the Nightly Linux Package Repository for Ubuntu 22.04 or Debian Bookworm.
 
@@ -69,9 +69,11 @@ Binary packages for Cando for Linux are built nightly starting about 2:00 AM EST
  
 #### Installing from the Nightly Homebrew Tap
 
-Binary packages for MacOS Catalina, Big Sur and Monterey are available from the `clasp-developers/clasp` tap. Binary packages for Cando are built nightly starting about 2:00 AM EST and take about 4 hours to complete. To install Cando do the following:
+Binary packages for MacOS Catalina, Big Sur and Monterey are available from the `clasp-developers/clasp` tap. 
 
-Currently Cando only runs on x86-64 systems or Apple Silicon using rosetta2. The rosetta2 environment on Apple Silicon is excellent. In the near future we will support native Apple Silicon - this is awaiting updates from Apple to the llvm JIT compiler.
+Currently Cando only runs on x86-64 systems or Apple Silicon using rosetta2. The rosetta2 environment on Apple Silicon is excellent and quite performant. In the near future we will support native Apple Silicon - this is awaiting updates from Apple to the llvm JIT compiler.
+
+To install Cando do the following:
 
 1. Install homebrew for x86.
 
@@ -105,9 +107,9 @@ After the initial install, to upgrade to the latest nightly build use `brew upda
 # Cando + Jupyter Demonstrations
 Several JupyterLab notebooks that demonstrate how Cando can be used for computational chemistry can be found in [Cando-demos](https://github.com/cando-developers/cando-demos).
 
-To run JupyterLab and start a demo:
+To run jupyter-lab and start a demo:
 
-1. run ```/opt/clasp/bin/cando-jupyter```
+1. From your home directory run ```jupyter-lab```
 
 2. copy and paste the provided link into a web browser (Firefox is recommended).
 
