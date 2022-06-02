@@ -6,7 +6,57 @@ building and designing functional molecules and materials.
 
 <div style="text-align: center"><img src="documentation/CANDO_map.png" width=600 height=350 align=center/></div>
 
-# Building Cando 
+## Installation
+
+### Install Cando using package managers:
+
+1. apt-get for Ubuntu 22.04, Debian Bookworm (in testing) and Windows Subsystem for Linux (WSL2).
+2. homebrew for MacOS.
+3. pacman for Arch Linux.
+
+These installations can be automatically updated from the Nighly Package Repository for each operating system to get bug fixes and the most up-to-date version of Cando. We are fixing (and creating :-)) bugs all the time.
+
+If you want to use the jupyter-lab kernel implemented in Cando then follow the entire instructions below for each operating system.  If you only want to install Cando - then skip the steps that mention jupyter-lab.
+
+#### Installing from the Nightly Linux Package Repository.
+
+Binary packages for Cando for Linux are built nightly starting about 2:00 AM EST and take about 4 hours to complete. Currently packages are built for Ubuntu 22.04, Debian Bookworm (in testing), and Arch. The Ubuntu 22.04 package works on WSL2 (Windows Subsystem for Linux). To add the package repository to your local system and install Cando execute one of the following commands in a shell. You may need to prefix these commands with `sudo` for root access.
+
+1. Install jupyter-lab using miniconda.
+  ```
+3. Install Cando
+  ```bash
+  bash -c "$(curl -fsSL https://www.thirdlaw.tech/pkg/cando.sh)"
+  ```
+  
+  If these scripts fail to detect your Operating System then you can install manually via one of the following.
+
+- Debian Bookworm
+    ```bash
+    curl -fsSL https://www.thirdlaw.tech/pkg/key.gpg | gpg --yes --dearmor --output /etc/apt/trusted.gpg.d/thirdlaw.gpg
+    add-apt-repository "deb https://www.thirdlaw.tech/pkg/bookworm/ ./"
+    apt-get update
+    apt-get install cando
+    ```
+- Ubunty Jammy
+    ```bash
+    curl -fsSL https://www.thirdlaw.tech/pkg/key.gpg | gpg --yes --dearmor --output /etc/apt/trusted.gpg.d/thirdlaw.gpg
+    add-apt-repository "deb https://www.thirdlaw.tech/pkg/jammy/ ./"
+    apt-get update
+    apt-get install cando
+    ```
+- Arch
+    ```bash
+    curl -fsSL https://www.thirdlaw.tech/pkg/key.gpg | pacman-key --add -
+    pacman-key --lsign-key 009C1F20737D81230A0928CBC812E10EC39DF202
+    echo -e "\n[thirdlaw]\nServer = https://www.thirdlaw.tech/pkg/arch\n" >>/etc/pacman.conf
+    pacman -Sy --noconfirm cando-git
+    ```
+
+3. Enhance the jupyter-lab/Cando environment by installing jupyter-lab widgets and visualization tools.
+  ``` You may need to install nodejs to install 
+
+
 ## Docker Image
 The fastest method to start using CANDO is to download the [CANDO Docker image](https://hub.docker.com/r/thirdlaw/cando) from DockerHub or if you already have Docker installed:
 
