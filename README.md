@@ -113,10 +113,12 @@ To run jupyter-lab and start a demo:
 
 2. copy and paste the provided link into a web browser (Firefox is recommended).
 
+For WSL2 (Windows Subsystem for Linux) you may need to run ```jupyter-lab --no-browser```
+
 # Video Tutorials
 For up to date video demos and tutorials please [subscribe](https://www.youtube.com/channel/UC4xYBaHwB2kDCXaRALXdh7w) and like our videos on YouTube.
 
-[Thermodynamic integration using a pre-build ligand library](https://www.youtube.com/watch?v=Md8rrrg7Kvg)
+[Thermodynamic integration using a pre-built ligand library](https://www.youtube.com/watch?v=Md8rrrg7Kvg)
 
 [Sketching molecules for thermodynamic integration calculations](https://www.youtube.com/watch?v=CSa2jzzwves)
 
