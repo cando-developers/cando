@@ -764,7 +764,8 @@ the STRING is not given then a list of legal STRINGs is provided.
                   when (and (> col 0) (= (rem col 4) 0))
                     do (terpri)
                   finally (when (/= (rem col 4) 0)
-                            (terpri))))))))
+                            (terpri)))))))
+  :no-output)
 
 (defun leap-add (object-a-name  object-b-name)
  "    add a b
