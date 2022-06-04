@@ -138,8 +138,7 @@
               (format nil "~(~A~)" (uiop:implementation-type)))
           (if (fork-client instance)
             (list "{connection_file}")
-            (append (list "-f" "no-auto-lparallel")
-                    (when (installer-load-system instance)
+            (append (when (installer-load-system instance)
                       (list "--eval" (installer-load-system instance)))
                     (list "--eval" "(jupyter:run-kernel 'cando-jupyter:kernel)"
                           "--" "{connection_file}"))))))
