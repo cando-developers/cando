@@ -77,7 +77,7 @@ To install Cando do the following:
 
 1. Install homebrew for x86.
 
-   If you have an x86 Mac then you can proceed.  If you have an M1/Apple Silicon Mac then [Set up an x86 shell](https://osxdaily.com/2020/11/18/how-run-homebrew-x86-terminal-apple-silicon-mac/) and open that shell.
+   If you have an x86 Mac then you can proceed.  If you have an M1/Apple Silicon Mac then [set up an x86 shell](https://osxdaily.com/2020/11/18/how-run-homebrew-x86-terminal-apple-silicon-mac/) and open that shell.
 
    [Install homebrew](https://brew.sh/)
    
