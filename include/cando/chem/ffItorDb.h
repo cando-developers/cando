@@ -77,6 +77,7 @@ namespace       chem
 
     void	setTypes( core::Symbol_sp a1, core::Symbol_sp a2, core::Symbol_sp a3, core::Symbol_sp a4);
 
+    size_t maxPeriodicity() const;
     bool hasPeriodicity(int period) const;
     double  getV_kj(int period) const;
     double  getV_kcal(int period) const;

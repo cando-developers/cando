@@ -89,6 +89,8 @@ void	FFItor_O::fields(core::Record_sp node)
   this->Base::fields(node);
 }
 
+CL_LISPIFY_NAME(FFItor_O/setTypes);
+CL_DEFMETHOD
 void    FFItor_O::setTypes(core::Symbol_sp t1, core::Symbol_sp t2, core::Symbol_sp t3, core::Symbol_sp t4 )
 {
     this->_T1 = t1;
@@ -97,6 +99,8 @@ void    FFItor_O::setTypes(core::Symbol_sp t1, core::Symbol_sp t2, core::Symbol_
     this->_T4 = t4;
 }
 
+CL_LISPIFY_NAME(FFItor_O/getV_kj);
+CL_DEFMETHOD
 double  FFItor_O::getV_kj(int period) const
 {_OF();
     if ( period < 1 || period > IMaxPeriodicity ) {
@@ -105,6 +109,8 @@ double  FFItor_O::getV_kj(int period) const
     return this->_Vs_kj[period-1];
 }
 
+CL_LISPIFY_NAME(FFItor_O/setV_kj);
+CL_DEFMETHOD
 void    FFItor_O::setV_kj(int period, double val)
 {_OF();
     if ( period < 1 || period > IMaxPeriodicity ) {
@@ -114,7 +120,15 @@ void    FFItor_O::setV_kj(int period, double val)
     this->_hasPeriodicity[period-1] = true;
 }
 
+CL_LISPIFY_NAME(FFItor/maxPeriodicity);
+CL_DEFMETHOD
+size_t FFItor_O::maxPeriodicity() const
+{
+  return MaxPeriodicity;
+}
 
+CL_LISPIFY_NAME(FFItor_O/hasPeriodicity);
+CL_DEFMETHOD
 bool FFItor_O::hasPeriodicity(int period) const
 {_OF();
     ASSERTF(period>=1 && period<=FFItor_O::IMaxPeriodicity, ("hasPeriodicityperiod[%d] must be in [1,%d]") , period , IMaxPeriodicity );
@@ -122,17 +136,23 @@ bool FFItor_O::hasPeriodicity(int period) const
 }
 
 
+CL_LISPIFY_NAME(FFItor_O/getV_kcal);
+CL_DEFMETHOD
 double  FFItor_O::getV_kcal(int period) const
 {_OF();
     return kj_to_kcal(this->getV_kj(period));
 }
 
+CL_LISPIFY_NAME(FFItor_O/setV_kcal);
+CL_DEFMETHOD
 void    FFItor_O::setV_kcal(int period, double val)
 {_OF();
     this->setV_kj(period,kcal_to_kj(val));
 }
 
 
+CL_LISPIFY_NAME(FFItor_O/getPhaseRad);
+CL_DEFMETHOD
 double  FFItor_O::getPhaseRad(int period) const
 {_OF();
     if ( period < 1 || period > IMaxPeriodicity ) {
@@ -141,6 +161,8 @@ double  FFItor_O::getPhaseRad(int period) const
     return this->_PhaseRads[period-1];
 }
 
+CL_LISPIFY_NAME(FFItor_O/setPhaseRad);
+CL_DEFMETHOD
 void    FFItor_O::setPhaseRad(int period, double val)
 {_OF();
     if ( period < 1 || period > IMaxPeriodicity ) {
