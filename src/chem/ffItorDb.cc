@@ -124,7 +124,7 @@ CL_LISPIFY_NAME(FFItor/maxPeriodicity);
 CL_DEFMETHOD
 size_t FFItor_O::maxPeriodicity() const
 {
-  return MaxPeriodicity;
+  return IMaxPeriodicity;
 }
 
 CL_LISPIFY_NAME(FFItor_O/hasPeriodicity);
