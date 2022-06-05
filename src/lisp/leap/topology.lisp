@@ -586,7 +586,7 @@ then don't calculate 1,4 interactions"
                           (index (- (+ (/ (* (+ j 1) j) 2) (+ i 1)) 1)) ; (((((j + 1) * j) / 2) + (i + 1)) - 1)
                           (ico-index (+ (* ntypes i) j)))
                       (setf rstar (+ (chem:get-radius-angstroms ffnonbond1) (chem:get-radius-angstroms ffnonbond2))
-                            epsilonij (sqrt (* (chem:get-epsilon-kcal ffnonbond1) (chem:get-epsilon-k-cal ffnonbond2)))
+                            epsilonij (sqrt (* (chem:get-epsilon-kcal ffnonbond1) (chem:get-epsilon-kcal ffnonbond2)))
                             (aref cn1-vec index) (* epsilonij (expt rstar 12.0))
                             (aref cn2-vec index) (* 2.0 epsilonij (expt rstar 6.0))
                             (aref ico-vec ico-index) (+ (/ (* (+ j 1) j) 2) (+ i 1)))

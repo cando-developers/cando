@@ -37,8 +37,8 @@
                      (progn
                        (unless ptor
                          (setf ptor (core:make-cxx-object 'chem:ffptor :type1 atom1 :type2 atom2 :type3 atom3 :type4 atom4 :level :parameterized)))
-                       (chem:set-v-kcal ptor iperiod barrier)
-                       (chem:set-phase-rad ptor iperiod phase)
+                       (chem:ffptor/set-v-kcal ptor iperiod barrier)
+                       (chem:ffptor/set-phase-rad ptor iperiod phase)
                        (when (and (> scee 0.0) (> scnb 0.0))
                          (chem:ffptor/set-scee ptor scee)
                          (chem:ffptor/set-scnb ptor scnb))
