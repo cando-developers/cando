@@ -106,7 +106,7 @@ the AMBER general type \"X\" is replaced with the LEaP general type \"?\".
   (let* ((path (leap.core:ensure-path filename))
          (fftypedb (with-open-file (fin path)
                        (leap.antechamber-type-definition-parser:read-antechamber-type-rules fin)))
-         (ff (chem:make-force-field)))
+         (ff (chem:force-field/make)))
     (chem:set-title ff filename)
     (chem:set-type-db ff fftypedb)
     (leap.core:add-force-field-or-modification ff :force-field-name force-field

@@ -137,7 +137,7 @@ bool	EnergyNonbond::defineFrom(core::T_sp	forceField,
   FFNonbond_sp ffNonbond2 = gc::As<FFNonbond_sp>(tffNonbond2);
   {
     this->_RStar = ffNonbond1->getRadius_Angstroms()+ffNonbond2->getRadius_Angstroms();
-    epsilonij = sqrt(ffNonbond1->getEpsilon_kCal()*ffNonbond2->getEpsilon_kCal());
+    epsilonij = sqrt(ffNonbond1->getEpsilon_kcal()*ffNonbond2->getEpsilon_kcal());
     this->_A = epsilonij*pow(this->_RStar,12.0);
     this->_C = 2.0*epsilonij*pow(this->_RStar,6.0);
     this->term.dA = this->_A*vdwScale;

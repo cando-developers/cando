@@ -62,7 +62,7 @@ void	FFItor_O::initialize()
     for ( i=0; i<FFItor_O::IMaxPeriodicity; i++ )
     {
 	this->_hasPeriodicity[i] = false;
-	this->_Vs_kJ[i] = 0.0;
+	this->_Vs_kj[i] = 0.0;
 	this->_PhaseRads[i] = 0.0;
     }
 }
@@ -74,17 +74,17 @@ void	FFItor_O::fields(core::Record_sp node)
   node->field( INTERN_(kw,type3), this->_T3 );
   node->field( INTERN_(kw,type4), this->_T4 );
   ASSERT(IMaxPeriodicity==6);
-  node->field_if_defined(INTERN_(kw,v0) ,this->_hasPeriodicity[0],this->_Vs_kJ[0]);
+  node->field_if_defined(INTERN_(kw,v0) ,this->_hasPeriodicity[0],this->_Vs_kj[0]);
   node->field_if_defined(INTERN_(kw,ph0),this->_hasPeriodicity[0],this->_PhaseRads[0]);
-  node->field_if_defined(INTERN_(kw,v1) ,this->_hasPeriodicity[1],this->_Vs_kJ[1]);
+  node->field_if_defined(INTERN_(kw,v1) ,this->_hasPeriodicity[1],this->_Vs_kj[1]);
   node->field_if_defined(INTERN_(kw,ph1),this->_hasPeriodicity[1],this->_PhaseRads[1]);
-  node->field_if_defined(INTERN_(kw,v2) ,this->_hasPeriodicity[2],this->_Vs_kJ[2]);
+  node->field_if_defined(INTERN_(kw,v2) ,this->_hasPeriodicity[2],this->_Vs_kj[2]);
   node->field_if_defined(INTERN_(kw,ph2),this->_hasPeriodicity[2],this->_PhaseRads[2]);
-  node->field_if_defined(INTERN_(kw,v3) ,this->_hasPeriodicity[3],this->_Vs_kJ[3]);
+  node->field_if_defined(INTERN_(kw,v3) ,this->_hasPeriodicity[3],this->_Vs_kj[3]);
   node->field_if_defined(INTERN_(kw,ph3),this->_hasPeriodicity[3],this->_PhaseRads[3]);
-  node->field_if_defined(INTERN_(kw,v4) ,this->_hasPeriodicity[4],this->_Vs_kJ[4]);
+  node->field_if_defined(INTERN_(kw,v4) ,this->_hasPeriodicity[4],this->_Vs_kj[4]);
   node->field_if_defined(INTERN_(kw,ph4),this->_hasPeriodicity[4],this->_PhaseRads[4]);
-  node->field_if_defined(INTERN_(kw,v5) ,this->_hasPeriodicity[5],this->_Vs_kJ[5]);
+  node->field_if_defined(INTERN_(kw,v5) ,this->_hasPeriodicity[5],this->_Vs_kj[5]);
   node->field_if_defined(INTERN_(kw,ph5),this->_hasPeriodicity[5],this->_PhaseRads[5]);
   this->Base::fields(node);
 }
@@ -97,20 +97,20 @@ void    FFItor_O::setTypes(core::Symbol_sp t1, core::Symbol_sp t2, core::Symbol_
     this->_T4 = t4;
 }
 
-double  FFItor_O::getV_kJ(int period) const
+double  FFItor_O::getV_kj(int period) const
 {_OF();
     if ( period < 1 || period > IMaxPeriodicity ) {
         SIMPLE_ERROR(("Illegal index for getV"));
     }
-    return this->_Vs_kJ[period-1];
+    return this->_Vs_kj[period-1];
 }
 
-void    FFItor_O::setV_kJ(int period, double val)
+void    FFItor_O::setV_kj(int period, double val)
 {_OF();
     if ( period < 1 || period > IMaxPeriodicity ) {
         SIMPLE_ERROR(("Illegal index for setV"));
     }
-    this->_Vs_kJ[period-1] = val;
+    this->_Vs_kj[period-1] = val;
     this->_hasPeriodicity[period-1] = true;
 }
 
@@ -122,14 +122,14 @@ bool FFItor_O::hasPeriodicity(int period) const
 }
 
 
-double  FFItor_O::getV_kCal(int period) const
+double  FFItor_O::getV_kcal(int period) const
 {_OF();
-    return kJ_to_kCal(this->getV_kJ(period));
+    return kj_to_kcal(this->getV_kj(period));
 }
 
-void    FFItor_O::setV_kCal(int period, double val)
+void    FFItor_O::setV_kcal(int period, double val)
 {_OF();
-    this->setV_kJ(period,kCal_to_kJ(val));
+    this->setV_kj(period,kcal_to_kj(val));
 }
 
 
@@ -158,7 +158,7 @@ int     i;
         if ( itor->hasPeriodicity(i))
 	{
 	    this->_hasPeriodicity[i-1] = itor->_hasPeriodicity[i-1];
-            this->_Vs_kJ[i-1] = itor->_Vs_kJ[i-1];
+            this->_Vs_kj[i-1] = itor->_Vs_kj[i-1];
             this->_PhaseRads[i-1] = itor->_PhaseRads[i-1];
         }
     }
@@ -168,6 +168,12 @@ int     i;
 
 
 
+
+CL_LISPIFY_NAME(FFItorDb/make);
+CL_DEF_CLASS_METHOD FFItorDb_sp FFItorDb_O::make()
+{
+  return FFItorDb_O::create();
+}
 
 
 void	FFItorDb_O::initialize()

@@ -119,7 +119,7 @@ public:
 public:
 //		/*! Read the forceField from a file*/
 //	static ForceField_sp	open_ForceField(const string& fn);
-  CL_LISPIFY_NAME("make-ForceField");
+  CL_LISPIFY_NAME("ForceField/make");
   CL_DEF_CLASS_METHOD static ForceField_sp make() {
     auto ff = gctools::GC<ForceField_O>::allocate_with_default_constructor();
     return ff;
@@ -190,11 +190,11 @@ public:
 //	void		parseFromMoeStream(istream in);
   void		parseFromMoeFormatFileName(string name);
 
-
   void	pointAllPartsToForceField(ForceField_sp ff);
 
-  void	saveAs(const string& fileName);
   string __repr__() const;
+
+  //  void writeAmberForceFieldParameterFile(core::T_sp stream, core::T_sp system);
 };
 
 

@@ -1396,7 +1396,12 @@ core::HashTable_sp createAtomToResidueHashTable(Matter_sp molecule)
 
 CL_LAMBDA((energy-function !) molecule force-field &key active-atoms)
 CL_DOCSTRING(R"dx(Generate the standard energy function tables. The atom types, and CIP priorities need to be precalculated.)dx")
-CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_sp molecule, CombinedForceField_sp combinedForceField, core::T_sp activeAtoms )
+CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_sp molecule,
+                                                                         FFStretchDb_sp ffstretches,
+                                                                         FFAngleDb_sp ffangles,
+                                                                         FFPtorDb_sp ffptors,
+                                                                         FFItorDb_sp ffitors,
+                                                                         core::T_sp activeAtoms )
 {
   Loop loop;
   Atom_sp          a1, a2, a3, a4, aImproperCenter;
@@ -1406,7 +1411,6 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
   FFItor_sp        ffItor;
   FFNonbond_sp	ffNonbond1, ffNonbond2;
   int             coordinateIndex;
-  
 
   //
   // Define a Nonbond cross term table
@@ -1428,14 +1432,6 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
   this->_eraseMissingParameters();
   coordinateIndex = 0;
   ASSERTNOTNULL(forceField);
-  // Merge the stretch terms
-  FFStretchDb_sp ffstretches = FFStretchDb_O::create();
-  core::List_sp parts = combinedForceField->forceFieldsAsList();
-  for ( auto cur : parts ) {
-    ForceField_sp other = gc::As<ForceField_sp>(CONS_CAR(cur));
-    FFStretchDb_sp other_ffstretch = other->getStretchDb();
-    ffstretches->forceFieldMerge(other_ffstretch);
-  }
   // Search the stretch terms
   {
     size_t terms = 0;
@@ -1447,11 +1443,11 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
       if ( activeAtoms.notnilp() &&
            (!inAtomSet(activeAtoms,a1) || !inAtomSet(activeAtoms,a2)) ) continue;
 //      printf("%s:%d Looking at STRETCH term between %s - %s\n", __FILE__, __LINE__, _rep_(a1).c_str(), _rep_(a2).c_str());
-//      t1 = a1->getType();
-//      t2 = a2->getType();
+      t1 = a1->getType();
+      t2 = a2->getType();
       ea1 = this->getEnergyAtomPointer(a1);
       ea2 = this->getEnergyAtomPointer(a2);
-      FFStretch_sp ffStretch = gc::As<FFStretch_sp>(ffstretches->findTerm(a1,a2));
+      FFStretch_sp ffStretch = gc::As<FFStretch_sp>(ffstretches->findTermForTypes(t1,t2));
       if ( ffStretch->level() != parameterized ) {
         this->_addMissingParameter(ffStretch);
         ++missing_terms;
@@ -1473,16 +1469,6 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
   core::writeln_bf_stream(fmt::sprintf("%s:%d There were %d stretch terms" , __FILE__ , __LINE__ , this->_Stretch.size() ));
 #endif
 #if USE_ALL_ENERGY_COMPONENTS
-  // Merge the angle terms
-  FFAngleDb_sp ffangles = FFAngleDb_O::create();
-  {
-    core::List_sp parts = combinedForceField->forceFieldsAsList();
-    for ( auto cur : parts ) {
-      ForceField_sp other = gc::As<ForceField_sp>(CONS_CAR(cur));
-      FFAngleDb_sp other_ffangle = other->getAngleDb();
-      ffangles->forceFieldMerge(other_ffangle);
-    }
-  }
   // Search the angle terms
   {
     size_t terms = 0;
@@ -1513,16 +1499,6 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
       }
     }
     if (chem__verbose(0)) core::write_bf_stream(fmt::sprintf("Built angle table with %d terms and %d missing terms\n" , terms , missing_terms));
-  }
-  // Merge the ptor terms
-  FFPtorDb_sp ffptors = FFPtorDb_O::create();
-  {
-    core::List_sp parts = combinedForceField->forceFieldsAsList();
-    for ( auto cur : parts ) {
-      ForceField_sp other = gc::As<ForceField_sp>(CONS_CAR(cur));
-      FFPtorDb_sp other_ffptor = other->getPtorDb();
-      ffptors->forceFieldMerge(other_ffptor);
-    }
   }
   // Search the ptor terms
   {
@@ -1615,16 +1591,6 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
       }
     }
     if (chem__verbose(0)) core::write_bf_stream(fmt::sprintf("Built dihedral table with %d terms and %d missing terms\n" , terms , missing_terms));
-  }
-  // Merge the itor terms
-  FFItorDb_sp ffitors = FFItorDb_O::create();
-  {
-    core::List_sp parts = combinedForceField->forceFieldsAsList();
-    for ( auto cur : parts ) {
-      ForceField_sp other = gc::As<ForceField_sp>(CONS_CAR(cur));
-      FFItorDb_sp other_ffitor = other->getItorDb();
-      ffitors->forceFieldMerge(other_ffitor);
-    }
   }
   // Search the itor terms
   {

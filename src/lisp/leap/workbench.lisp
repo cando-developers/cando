@@ -241,6 +241,7 @@ leap.core::*path*
 (progn
   (defparameter *ef* (chem:make-energy-function))
   (defparameter *ff* (energy:setup-amber))
+  (error "Next line will fail because generate-standard-energy-function-tables now takes force-field components")
   (chem:generate-standard-energy-function-tables *ef* *1mil* *amber*)
   (chem:summarize-terms *ef*))
 

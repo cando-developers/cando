@@ -130,7 +130,7 @@ namespace chem {
   public:
     core::Symbol_sp 	_Type;
     double		_Radius_Nanometers;
-    double		_Epsilon_kJ;	// epsilon in AMBER
+    double		_Epsilon_kj;	// epsilon in AMBER
     double		_Apol;
     double		_Neff;
     double		_Mass;
@@ -168,11 +168,11 @@ namespace chem {
     CL_DEFMETHOD double getRadius_Angstroms() const;
     CL_DEFMETHOD double getRadius_Nanometers() const;
 
-    CL_DEFMETHOD void setEpsilon_kJ(double val);
-    CL_DEFMETHOD void setEpsilon_kCal(double val);
+    CL_DEFMETHOD void setEpsilon_kj(double val);
+    CL_DEFMETHOD void setEpsilon_kcal(double val);
 
-    CL_DEFMETHOD double getEpsilon_kJ() const;
-    CL_DEFMETHOD double getEpsilon_kCal() const;
+    CL_DEFMETHOD double getEpsilon_kj() const;
+    CL_DEFMETHOD double getEpsilon_kcal() const;
 // get-epsilon-k-cal
     void setSameParms(core::T_sp sameparms);
     core::T_sp getSameParms() const;

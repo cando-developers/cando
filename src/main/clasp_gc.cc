@@ -9084,7 +9084,7 @@ public:
 { class_kind, KIND_LISPALLOC_chem__FFNonbond_O, sizeof(chem::FFNonbond_O), 0, "chem::FFNonbond_O" },
  {  fixed_field, SMART_PTR_OFFSET, sizeof(gctools::smart_ptr<core::Symbol_O>), offsetof(SAFE_TYPE_MACRO(chem::FFNonbond_O),_Type), "_Type" }, // public: (NIL) fixable: SMART-PTR-FIX good-name: T
 // not-exposing {  fixed_field, ctype_double, sizeof(double), offsetof(SAFE_TYPE_MACRO(chem::FFNonbond_O),_Radius_Nanometers), "_Radius_Nanometers" }, // public: (NIL) fixable: NIL good-name: T
-// not-exposing {  fixed_field, ctype_double, sizeof(double), offsetof(SAFE_TYPE_MACRO(chem::FFNonbond_O),_Epsilon_kJ), "_Epsilon_kJ" }, // public: (NIL) fixable: NIL good-name: T
+// not-exposing {  fixed_field, ctype_double, sizeof(double), offsetof(SAFE_TYPE_MACRO(chem::FFNonbond_O),_Epsilon_kj), "_Epsilon_kj" }, // public: (NIL) fixable: NIL good-name: T
 // not-exposing {  fixed_field, ctype_double, sizeof(double), offsetof(SAFE_TYPE_MACRO(chem::FFNonbond_O),_Apol), "_Apol" }, // public: (NIL) fixable: NIL good-name: T
 // not-exposing {  fixed_field, ctype_double, sizeof(double), offsetof(SAFE_TYPE_MACRO(chem::FFNonbond_O),_Neff), "_Neff" }, // public: (NIL) fixable: NIL good-name: T
 // not-exposing {  fixed_field, ctype_double, sizeof(double), offsetof(SAFE_TYPE_MACRO(chem::FFNonbond_O),_Mass), "_Mass" }, // public: (NIL) fixable: NIL good-name: T
@@ -9097,12 +9097,12 @@ public:
  {  fixed_field, SMART_PTR_OFFSET, sizeof(gctools::smart_ptr<core::Symbol_O>), offsetof(SAFE_TYPE_MACRO(chem::FFAngle_O),_Type2), "_Type2" }, // public: (T) fixable: SMART-PTR-FIX good-name: T
  {  fixed_field, SMART_PTR_OFFSET, sizeof(gctools::smart_ptr<core::Symbol_O>), offsetof(SAFE_TYPE_MACRO(chem::FFAngle_O),_Type3), "_Type3" }, // public: (T) fixable: SMART-PTR-FIX good-name: T
  {  fixed_field, ctype_double, sizeof(double), offsetof(SAFE_TYPE_MACRO(chem::FFAngle_O),_AngRad), "_AngRad" }, // public: (T) fixable: NIL good-name: T
- {  fixed_field, ctype_double, sizeof(double), offsetof(SAFE_TYPE_MACRO(chem::FFAngle_O),_K2__kJPerRadianSquared), "_K2__kJPerRadianSquared" }, // public: (T) fixable: NIL good-name: T
+ {  fixed_field, ctype_double, sizeof(double), offsetof(SAFE_TYPE_MACRO(chem::FFAngle_O),_K2__kjPerRadianSquared), "_K2__kjPerRadianSquared" }, // public: (T) fixable: NIL good-name: T
 { class_kind, KIND_LISPALLOC_chem__FFStretch_O, sizeof(chem::FFStretch_O), 0, "chem::FFStretch_O" },
  {  fixed_field, SMART_PTR_OFFSET, sizeof(gctools::smart_ptr<core::Symbol_O>), offsetof(SAFE_TYPE_MACRO(chem::FFStretch_O),_Type1), "_Type1" }, // public: (T) fixable: SMART-PTR-FIX good-name: T
  {  fixed_field, SMART_PTR_OFFSET, sizeof(gctools::smart_ptr<core::Symbol_O>), offsetof(SAFE_TYPE_MACRO(chem::FFStretch_O),_Type2), "_Type2" }, // public: (T) fixable: SMART-PTR-FIX good-name: T
  {  fixed_field, ctype_double, sizeof(double), offsetof(SAFE_TYPE_MACRO(chem::FFStretch_O),_R0_Nanometer), "_R0_Nanometer" }, // public: (T) fixable: NIL good-name: T
- {  fixed_field, ctype_double, sizeof(double), offsetof(SAFE_TYPE_MACRO(chem::FFStretch_O),_Kb_kJPerNanometerSquared), "_Kb_kJPerNanometerSquared" }, // public: (T) fixable: NIL good-name: T
+ {  fixed_field, ctype_double, sizeof(double), offsetof(SAFE_TYPE_MACRO(chem::FFStretch_O),_Kb_kjPerNanometerSquared), "_Kb_kjPerNanometerSquared" }, // public: (T) fixable: NIL good-name: T
 { class_kind, KIND_LISPALLOC_chem__FFItor_O, sizeof(chem::FFItor_O), 0, "chem::FFItor_O" },
  {  fixed_field, SMART_PTR_OFFSET, sizeof(gctools::smart_ptr<core::Symbol_O>), offsetof(SAFE_TYPE_MACRO(chem::FFItor_O),_T1), "_T1" }, // public: (T) fixable: SMART-PTR-FIX good-name: T
  {  fixed_field, SMART_PTR_OFFSET, sizeof(gctools::smart_ptr<core::Symbol_O>), offsetof(SAFE_TYPE_MACRO(chem::FFItor_O),_T2), "_T2" }, // public: (T) fixable: SMART-PTR-FIX good-name: T

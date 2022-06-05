@@ -59,7 +59,7 @@ void FFNonbondCrossTermTable_O::fillUsingFFNonbondDb( FFNonbondDb_sp db )
       FFNonbond_sp ffNonbond1 = db->getFFNonbondUsingTypeIndex(it1);
       FFNonbond_sp ffNonbond2 = db->getFFNonbondUsingTypeIndex(it2);
       term._RStar = ffNonbond1->getRadius_Angstroms() + ffNonbond2->getRadius_Angstroms();
-      double epsilonij = sqrt(ffNonbond1->getEpsilon_kCal()*ffNonbond2->getEpsilon_kCal());
+      double epsilonij = sqrt(ffNonbond1->getEpsilon_kcal()*ffNonbond2->getEpsilon_kcal());
       term._A = epsilonij*pow(term._RStar,12.0);
       term._C = 2.0*epsilonij*pow(term._RStar,6.0);
       this->_CrossTerms.push_back(term);
@@ -181,7 +181,7 @@ FFNonbond_sp FFNonbond_O::make_FFNonbond(core::Symbol_sp type,
   auto  res = gctools::GC<FFNonbond_O>::allocate_with_default_constructor();
   res->_Type = type;
   res->_Radius_Nanometers = radius_nanometers;
-  res->_Epsilon_kJ = epsilon_kj;
+  res->_Epsilon_kj = epsilon_kj;
   res->_Apol = apol;
   res->_Neff = neff;
   res->_Mass = mass;
@@ -197,7 +197,7 @@ void	FFNonbond_O::fields(core::Record_sp node)
 {
   node->field(INTERN_(kw,type),this->_Type );
   node->field(INTERN_(kw,radius),this->_Radius_Nanometers);
-  node->field(INTERN_(kw,well),this->_Epsilon_kJ);
+  node->field(INTERN_(kw,well),this->_Epsilon_kj);
   node->field_if_not_default(INTERN_(kw,apol),this->_Apol,0.0);
   node->field_if_not_default(INTERN_(kw,neff),this->_Neff,0.0);
   node->field(INTERN_(kw,mass),this->_Mass);
@@ -408,7 +408,7 @@ void FFNonbond_O::initialize()
   this->Base::initialize();
   this->_Type = nil<core::Symbol_O>();
   this->_Radius_Nanometers = 0.0;
-  this->_Epsilon_kJ = 0.0; // Depth of the VDW well
+  this->_Epsilon_kj = 0.0; // Depth of the VDW well
   this->_Apol = 0.0;
   this->_Neff = 0.0;
   this->_Mass = 0.0;
@@ -442,25 +442,25 @@ double FFNonbond_O::getRadius_Angstroms() const
 
 
 
-void FFNonbond_O::setEpsilon_kJ(double kj)
+void FFNonbond_O::setEpsilon_kj(double kj)
 {
-  this->_Epsilon_kJ = kj;
+  this->_Epsilon_kj = kj;
 }
 
-void FFNonbond_O::setEpsilon_kCal(double kcal)
+void FFNonbond_O::setEpsilon_kcal(double kcal)
 {
-  this->_Epsilon_kJ = kCal_to_kJ(kcal);
+  this->_Epsilon_kj = kcal_to_kj(kcal);
 }
 
 
-double FFNonbond_O::getEpsilon_kCal() const
+double FFNonbond_O::getEpsilon_kcal() const
 {
-  return kJ_to_kCal(this->_Epsilon_kJ);
+  return kj_to_kcal(this->_Epsilon_kj);
 }
 
-double FFNonbond_O::getEpsilon_kJ() const
+double FFNonbond_O::getEpsilon_kj() const
 {
-  return this->_Epsilon_kJ;
+  return this->_Epsilon_kj;
 }
 
 void FFNonbond_O::setSameParms(core::T_sp sameparms)

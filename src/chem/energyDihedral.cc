@@ -132,7 +132,7 @@ void EnergyDihedral::defineFrom( int n, FFPtor_sp ffterm , EnergyAtom *ea1, Ener
   this->_PhaseRad = ffterm->getPhaseRad(n);
   this->term.sinPhase = sin(this->_PhaseRad);
   this->term.cosPhase = cos(this->_PhaseRad);
-  this->term.V = ffterm->getV_kCal(n)*scale;
+  this->term.V = ffterm->getV_kcal(n)*scale;
   this->term.DN = n;
   this->term.IN = n;
   this->term.I1 = ea1->coordinateIndexTimes3();
@@ -181,7 +181,7 @@ void EnergyDihedral::defineFrom( int n, FFItor_sp term , EnergyAtom *ea1, Energy
   this->_Atom4 = ea4->atom();
   this->term.DN = n;
   this->term.IN = n;
-  this->term.V = term->getV_kCal(n)*scale;
+  this->term.V = term->getV_kcal(n)*scale;
   this->_PhaseRad = term->getPhaseRad(n);
   this->term.cosPhase = cos(this->_PhaseRad);
   this->term.sinPhase = sin(this->_PhaseRad);

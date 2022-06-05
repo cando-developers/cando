@@ -67,7 +67,7 @@
 
 (defclass nonbond-term (force-term)
   ((type :initarg :type :accessor type)
-   ;; in kJ/mol
+   ;; in kj/mol
    (epsilon :initarg :epsilon :accessor epsilon)
    ;; in angstroms
    (rmin-half :initarg :rmin-half :accessor rmin-half)))
@@ -133,7 +133,7 @@
                                  (units:* units:radians units:radians)))
                        1))
 
-(defun canonical-kJ/mol (quantity)
+(defun canonical-kj/mol (quantity)
   (units:value-in-unit quantity units:kilojoules-per-mole 1))
 
 (defun canonical-kcal/mol (quantity)
@@ -268,7 +268,7 @@
         (let* ((attrs (plump:attributes node))
                (smirks (safe-gethash "smirks" attrs))
                (id (safe-gethash "id" attrs))
-               (epsilon (canonical-kJ/mol (parse-quantity (safe-gethash "epsilon" attrs))))
+               (epsilon (canonical-kj/mol (parse-quantity (safe-gethash "epsilon" attrs))))
                (rmin-half
                  (nanometer-length
                   (parse-quantity

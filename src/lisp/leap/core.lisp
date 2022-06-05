@@ -206,17 +206,22 @@ Lookup the object in the variable space."
 
 ;;; ------------------------------------------------------------
 ;;;
-;;; Maintain a hash-table of named force-field-lists that are merged when
-;;;    they are needed.
+;;; Maintain a hash-table of named combined-force-fields.
 ;;;
-;;; The environment supports a collection of named force-fields that are
-;;; assembled by merging a list of a force-field with any number of force-field modifications (frcmods).
-;;; The force-fields and modifications are maintained as a list and
-;;; only merged when the merged force-field is needed.
-;;; There is a default merged force-field called :default.
+;;; combined-force-fields are passed to chem:generate-molecule-energy-tables
+;;;   to generate molecule energy tables for stretch, angle, ptor, itor terms.
+;;;
+;;; A force-field like GAFF2 needs to do very different things from
+;;;  a force-field like the Open Force Field initiative force field.
+;;;
+;;; The leap environment maintains a collection of named force-fields in *force-fields*.
+;;;
+;;; There is a default force-field called :default.
 
 (defvar *force-fields* (make-hash-table)
-  "Every time a force field is loaded, it is put into a new list and
+  "Associate names with combined-force-fields.
+Combined-force-fields are a list of force field components (eg: gaff2.dat and frcmods).
+Every time a force field is loaded, it is put into a new list and
 associated with a keyword symbol name.  As every frcmod is loaded it is pushed onto
 a named force-field list.  When parameters are needed a name must be provided and
 the list of frcmods and force-field are used to create a merged force-field that is
@@ -226,7 +231,7 @@ used to provide parameters.  There is one default force-field called :default.")
   (chem:clear-combined-force-field (gethash force-field-name *force-fields*))
   ;;; The default conbined-force-field always has one empty force-field for global nonbond info
   (when (eq force-field-name :default)
-    (add-force-field-or-modification (chem:make-force-field))))
+    (add-force-field-or-modification (chem:force-field/make))))
 
 (defun add-combined-force-field (combined-force-field force-field-name)
   (setf (gethash force-field-name *force-fields*) combined-force-field))
@@ -257,7 +262,7 @@ given in 'combined-force-field-class-name'.  I'm not sure what 'force-field-info
   force-field-or-frcmod)
 
 (eval-when (:load-toplevel :execute)
-  (add-force-field-or-modification (chem:make-force-field) :force-field-name :default
+  (add-force-field-or-modification (chem:force-field/make) :force-field-name :default
                                    :combined-force-field-class-name 'chem:combined-force-field))
 
 (defun merged-force-field (&optional (force-field-name :default))
@@ -267,9 +272,9 @@ given in 'combined-force-field-class-name'.  I'm not sure what 'force-field-info
          (reversed-force-field-list (reverse force-field-list)))
     (if (= (length force-field-list) 1)
         (car force-field-list)
-        (let ((merged-force-field (chem:make-force-field)))
+        (let ((merged-force-field (chem:force-field/make)))
           (dolist (ff reversed-force-field-list)
-            (chem:force-field-merge merged-force-field ff))
+            (chem:force-field/force-field-merge merged-force-field ff))
           merged-force-field))))
 
 

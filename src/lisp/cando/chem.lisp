@@ -61,7 +61,7 @@
   (:documentation "Clear everything out of the combined-force-field"))
 
 (defmethod chem:clear-combined-force-field ((dest chem:combined-force-field))
-  (chem:combined-force-field-clear dest))
+  (chem:combined-force-field/clear dest))
 
 (defgeneric chem:force-field-component-merge (dest source)
   (:documentation "Merge two force-field components of the specified kind"))
@@ -76,7 +76,7 @@ multiple force-fields and know how a more recently added force-field shadows a l
 (defmethod chem:add-shadowing-force-field ((combined-force-field chem:combined-force-field)
                                            (force-field chem:force-field)
                                            force-field-info)
-  (chem:combined-force-field-add-shadowing-force-field combined-force-field force-field force-field-info))
+  (chem:combined-force-field/add-shadowing-force-field combined-force-field force-field force-field-info))
 
 
 (defgeneric chem:force-fields-as-list (combined-force-field)
@@ -84,7 +84,7 @@ multiple force-fields and know how a more recently added force-field shadows a l
  The caller needs to know how they shadow each other."))
 
 (defmethod chem:force-fields-as-list ((combined-force-field chem:combined-force-field))
-  (chem:combined-force-field-force-fields-as-list combined-force-field))
+  (chem:combined-force-field/force-fields-as-list combined-force-field))
 
 
 (defgeneric chem:nonbond-component (force-field)
@@ -99,7 +99,7 @@ multiple force-fields and know how a more recently added force-field shadows a l
   (:documentation  "Assign force-field types"))
 
 (defmethod chem:assign-force-field-types ((combined-force-field chem:combined-force-field) molecule)
-  (chem:combined-force-field-assign-force-field-types combined-force-field molecule))
+  (chem:combined-force-field/assign-force-field-types combined-force-field molecule))
 
 
 
@@ -115,7 +115,16 @@ multiple force-fields and know how a more recently added force-field shadows a l
   (:documentation "Generate the molecule energy-function tables"))
 
 (defmethod chem:generate-molecule-energy-function-tables (energy-function molecule (combined-force-field chem:combined-force-field) active-atoms)
-  (chem:generate-standard-energy-function-tables energy-function molecule combined-force-field active-atoms))
+  "Combine AMBER and GAFF force field and frcmods and run parmchk2"
+  (let ((merged-force-field (chem:force-field/make)))
+    (loop for partial-force-field in (chem:combined-force-field/force-fields-as-list combined-force-field)
+          do (chem:force-field/force-field-merge merged-force-field partial-force-field))
+    (let ((ffstretch-db (chem:get-stretch-db merged-force-field))
+          (ffangle-db (chem:get-angle-db merged-force-field))
+          (ffptor-db (chem:get-ptor-db merged-force-field))
+          (ffitor-db (chem:get-itor-db merged-force-field)))
+      (warn "At this point we should run parmchk2 on the stretch/angle/ptor/itor components of the merged-force-field - any missing parameters should be provided by parmchk2")
+      (chem:generate-standard-energy-function-tables energy-function molecule ffstretch-db ffangle-db ffptor-db ffitor-db active-atoms))))
 
 
 ;;; ------------------------------------------------------------

@@ -32,4 +32,4 @@
 (bformat t "(amount v1*(m^-1*s)) = %s\n" (units:amount (units:mul v1 (units:Quantity 1.0 :meters -1 :seconds))))
 (bformat t "kB = %s\n" units:kB)
 (bformat t "R = %s\n" units:R)
-(bformat t "R in kCal = %s\n" (units:energy-to-kCal units:R))
+(bformat t "R in kcal = %s\n" (units:energy-to-kcal units:R))

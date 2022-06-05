@@ -72,16 +72,16 @@ namespace       chem
     core::Symbol_sp 	_T3;
     core::Symbol_sp 	_T4;
     bool      	_hasPeriodicity[IMaxPeriodicity];
-    double      _Vs_kJ[IMaxPeriodicity];
+    double      _Vs_kj[IMaxPeriodicity];
     double      _PhaseRads[IMaxPeriodicity];
 
     void	setTypes( core::Symbol_sp a1, core::Symbol_sp a2, core::Symbol_sp a3, core::Symbol_sp a4);
 
     bool hasPeriodicity(int period) const;
-    double  getV_kJ(int period) const;
-    double  getV_kCal(int period) const;
-    void    setV_kJ(int period, double v);
-    void    setV_kCal(int period, double v);
+    double  getV_kj(int period) const;
+    double  getV_kcal(int period) const;
+    void    setV_kj(int period, double v);
+    void    setV_kcal(int period, double v);
     double  getPhaseRad(int period) const;
     void    setPhaseRad(int period, double v);
 
@@ -104,6 +104,8 @@ namespace       chem
   {
     LISP_CLASS(chem,ChemPkg,FFItorDb_O,"FFItorDb",FFParameterBaseDb_O);
 
+  public:
+    static FFItorDb_sp make();
   public:
     bool fieldsp() const { return true; };
     void fields(core::Record_sp node);

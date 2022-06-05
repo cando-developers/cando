@@ -73,7 +73,7 @@ namespace       chem {
         core::Symbol_sp	_Type1;
         core::Symbol_sp	_Type2;
 	double		_R0_Nanometer;
-	double		_Kb_kJPerNanometerSquared;
+	double		_Kb_kjPerNanometerSquared;
 //	double		_K3;
 //	double		_K4;
 //	double		_Bci;
@@ -87,13 +87,13 @@ namespace       chem {
           return stretch;
         }
     public:
-	void setKb_kJPerNanometerSquared(double val);
+	void setKb_kjPerNanometerSquared(double val);
 	void setR0_Nanometer(double val);
 
 	double getR0_Nanometer() const;
 	double getR0_Angstrom() const;
-	double getKb_kJPerNanometerSquared() const;
-	double getKb_kCalPerAngstromSquared() const;
+	double getKb_kjPerNanometerSquared() const;
+	double getKb_kcalPerAngstromSquared() const;
 	virtual	string	levelDescription();
 	DEFAULT_CTOR_DTOR(FFStretch_O);
     };
@@ -117,22 +117,23 @@ namespace       chem {
     SMART(FFStretchDb);
     class FFStretchDb_O : public FFParameterBaseDb_O
     {
-	LISP_CLASS(chem,ChemPkg,FFStretchDb_O,"FFStretchDb",FFParameterBaseDb_O);
+      LISP_CLASS(chem,ChemPkg,FFStretchDb_O,"FFStretchDb",FFParameterBaseDb_O);
     public:
-        bool fieldsp() const { return true; };
-        void	fields(core::Record_sp node);
+      static FFStretchDb_sp make();
     public:
-        gctools::SmallMap<core::Symbol_sp,EstimateStretch>	_EstimateStretch; // Not archived
+      bool fieldsp() const { return true; };
+      void	fields(core::Record_sp node);
+    public:
+      gctools::SmallMap<core::Symbol_sp,EstimateStretch>	_EstimateStretch; // Not archived
 
-	void	clearEstimateStretch();
-	void	addEstimateStretch(core::Symbol_sp ti, core::Symbol_sp tj, double rij, double lnKij );
-	void	_addEstimateStretch(const EstimateStretch& es);
-	void	add( FFStretch_sp str );
-        core::T_sp	findTerm(chem::Atom_sp a1, chem::Atom_sp a2 );
+      void	clearEstimateStretch();
+      void	addEstimateStretch(core::Symbol_sp ti, core::Symbol_sp tj, double rij, double lnKij );
+      void	_addEstimateStretch(const EstimateStretch& es);
+      void	add( FFStretch_sp str );
+      core::T_sp findTermForTypes(core::Symbol_sp a1, core::Symbol_sp a2 );
 
-        void forceFieldMerge(FFBaseDb_sp other);
-        
-	DEFAULT_CTOR_DTOR(FFStretchDb_O);
+      void forceFieldMerge(FFBaseDb_sp other);
+      void writeAmberParams(core::T_sp stream, core::T_sp system);
     };
 
 

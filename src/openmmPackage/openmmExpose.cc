@@ -369,7 +369,7 @@ namespace omm
 	chem::Atom_sp a2 = b->getAtom2();
 	chem::FFStretch_sp term = forceField->getStretchDb()->findTerm(a1,a2);
 	double r0 = term->getR0_Nanometer();
-	double kb = term->getKb_kJPerNanometerSquared();
+	double kb = term->getKb_kjPerNanometerSquared();
 	ASSERT(_Force!=NULL);
 	int particle1 = a1->getProperty(_lisp->internWithPackageName(Pkg(),ParticleIndex)).as<core::Fixnum_O>()->get();
 	int particle2 = a2->getProperty(_lisp->internWithPackageName(Pkg(),ParticleIndex)).as<core::Fixnum_O>()->get();
@@ -402,7 +402,7 @@ namespace omm
 	chem::Atom_sp a3 = ang->getA3();
 	chem::FFAngle_sp term = forceField->getAngleDb()->findTerm(a1,a2,a3);
 	double t0 = term->getAngle_Radian();
-	double kt = term->getK2_kJPerRadianSquared();
+	double kt = term->getK2_kjPerRadianSquared();
 	ASSERT(_Force!=NULL);
 	int particle1 = a1->getProperty(_lisp->internWithPackageName(Pkg(),ParticleIndex)).as<core::Fixnum_O>()->get();
 	int particle2 = a2->getProperty(_lisp->internWithPackageName(Pkg(),ParticleIndex)).as<core::Fixnum_O>()->get();
@@ -472,7 +472,7 @@ namespace omm
 		int i3 = a3->getProperty(particleIndexSymbol).as<core::Fixnum_O>()->get();
 		int i4 = a4->getProperty(particleIndexSymbol).as<core::Fixnum_O>()->get();
 		int idx = this->wrappedPtr()->addTorsion(i1,i2,i3,i4,period,ffPtor->getPhaseRad(period),
-					    ffPtor->getV_kJ(period));
+					    ffPtor->getV_kj(period));
 		core::Cons_sp one = _lisp->create<core::Cons_O>(core::clasp_make_fixnum(idx));
 		cur->setCdr(one);
 		cur = one;
@@ -513,7 +513,7 @@ namespace omm
 		    int i3 = a3central->getProperty(particleIndexSymbol).as<core::Fixnum_O>()->get();
 		    int i4 = a4->getProperty(particleIndexSymbol).as<core::Fixnum_O>()->get();
 		    int idx = this->wrappedPtr()->addTorsion(i1,i2,i3,i4,n,ffItor->getPhaseRad(n),
-							  ffItor->getV_kJ(n));
+							  ffItor->getV_kj(n));
 		    core::Cons_sp one = _lisp->create<core::Cons_O>(core::clasp_make_fixnum(idx));
 		    cur->setCdr(one);
 		    cur = one;
@@ -548,7 +548,7 @@ namespace omm
 	double charge = atom->getCharge();
 	chem::FFNonbond_sp nonbond = forceField->getNonbondDb()->findType(ty);
 	double sigma = nonbond->getRadius_Nanometers();
-	double epsilon = nonbond->getEpsilon_kJ();
+	double epsilon = nonbond->getEpsilon_kj();
 	int idx = this->wrappedPtr()->addParticle(charge,sigma,epsilon);
 	int recordedIdx = atom->getProperty(_lisp->internWithPackageName(Pkg(),ParticleIndex)).as<core::Fixnum_O>()->get();
 	ASSERTF(idx==recordedIdx,("There was a problem, you added a particle to the NonbondedForce and it returned index[%d] but it should have been the index[%d] for atom[%s] - make sure you add atoms to the NonbondForce immediately after you add them to the System") , idx , recordedIdx , atom->description() );
