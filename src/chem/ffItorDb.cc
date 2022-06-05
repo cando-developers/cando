@@ -89,7 +89,7 @@ void	FFItor_O::fields(core::Record_sp node)
   this->Base::fields(node);
 }
 
-CL_LISPIFY_NAME(FFItor_O/setTypes);
+CL_LISPIFY_NAME(FFItor/setTypes);
 CL_DEFMETHOD
 void    FFItor_O::setTypes(core::Symbol_sp t1, core::Symbol_sp t2, core::Symbol_sp t3, core::Symbol_sp t4 )
 {
@@ -99,7 +99,7 @@ void    FFItor_O::setTypes(core::Symbol_sp t1, core::Symbol_sp t2, core::Symbol_
     this->_T4 = t4;
 }
 
-CL_LISPIFY_NAME(FFItor_O/getV_kj);
+CL_LISPIFY_NAME(FFItor/getV_kj);
 CL_DEFMETHOD
 double  FFItor_O::getV_kj(int period) const
 {_OF();
@@ -109,7 +109,7 @@ double  FFItor_O::getV_kj(int period) const
     return this->_Vs_kj[period-1];
 }
 
-CL_LISPIFY_NAME(FFItor_O/setV_kj);
+CL_LISPIFY_NAME(FFItor/setV_kj);
 CL_DEFMETHOD
 void    FFItor_O::setV_kj(int period, double val)
 {_OF();
@@ -127,7 +127,7 @@ size_t FFItor_O::maxPeriodicity() const
   return IMaxPeriodicity;
 }
 
-CL_LISPIFY_NAME(FFItor_O/hasPeriodicity);
+CL_LISPIFY_NAME(FFItor/hasPeriodicity);
 CL_DEFMETHOD
 bool FFItor_O::hasPeriodicity(int period) const
 {_OF();
@@ -136,14 +136,14 @@ bool FFItor_O::hasPeriodicity(int period) const
 }
 
 
-CL_LISPIFY_NAME(FFItor_O/getV_kcal);
+CL_LISPIFY_NAME(FFItor/getV_kcal);
 CL_DEFMETHOD
 double  FFItor_O::getV_kcal(int period) const
 {_OF();
     return kj_to_kcal(this->getV_kj(period));
 }
 
-CL_LISPIFY_NAME(FFItor_O/setV_kcal);
+CL_LISPIFY_NAME(FFItor/setV_kcal);
 CL_DEFMETHOD
 void    FFItor_O::setV_kcal(int period, double val)
 {_OF();
@@ -151,7 +151,7 @@ void    FFItor_O::setV_kcal(int period, double val)
 }
 
 
-CL_LISPIFY_NAME(FFItor_O/getPhaseRad);
+CL_LISPIFY_NAME(FFItor/getPhaseRad);
 CL_DEFMETHOD
 double  FFItor_O::getPhaseRad(int period) const
 {_OF();
@@ -161,7 +161,7 @@ double  FFItor_O::getPhaseRad(int period) const
     return this->_PhaseRads[period-1];
 }
 
-CL_LISPIFY_NAME(FFItor_O/setPhaseRad);
+CL_LISPIFY_NAME(FFItor/setPhaseRad);
 CL_DEFMETHOD
 void    FFItor_O::setPhaseRad(int period, double val)
 {_OF();
