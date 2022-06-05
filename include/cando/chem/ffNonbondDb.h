@@ -173,7 +173,6 @@ namespace chem {
 
     CL_DEFMETHOD double getEpsilon_kj() const;
     CL_DEFMETHOD double getEpsilon_kcal() const;
-// get-epsilon-k-cal
     void setSameParms(core::T_sp sameparms);
     core::T_sp getSameParms() const;
  
