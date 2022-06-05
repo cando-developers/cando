@@ -120,6 +120,7 @@ namespace       chem {
       LISP_CLASS(chem,ChemPkg,FFStretchDb_O,"FFStretchDb",FFParameterBaseDb_O);
     public:
       static FFStretchDb_sp make();
+      FFStretchDb_O() {};
     public:
       bool fieldsp() const { return true; };
       void	fields(core::Record_sp node);
@@ -133,7 +134,6 @@ namespace       chem {
       core::T_sp findTermForTypes(core::Symbol_sp a1, core::Symbol_sp a2 );
 
       void forceFieldMerge(FFBaseDb_sp other);
-      void writeAmberParams(core::T_sp stream, core::T_sp system);
     };
 
 
