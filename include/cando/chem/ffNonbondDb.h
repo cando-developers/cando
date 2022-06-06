@@ -181,18 +181,18 @@ namespace chem {
     void setSameParms(core::T_sp sameparms);
     core::T_sp getSameParms() const;
 
-    core::T_sp FFNonbond_O::getTypeComment() const;
-    void FFNonbond_O::setTypeComment(core::T_sp comment);
-    core::T_sp FFNonbond_O::getNonbondComment() const;
-    void FFNonbond_O::setNonbondComment(core::T_sp comment);
+    core::T_sp getTypeComment() const;
+    void setTypeComment(core::T_sp comment);
+    core::T_sp getNonbondComment() const;
+    void setNonbondComment(core::T_sp comment);
 
     virtual string	levelDescription();
     virtual ParameterType type() { return nonbond; };
     FFNonbond_O() :
         _SameParms(nil<core::T_O>()),
         _TypeComment(nil<core::T_O>()),
-        _NonbondComment(nil<core::T_O>()),
-    _{};
+        _NonbondComment(nil<core::T_O>())
+    {};
   };
 
 
