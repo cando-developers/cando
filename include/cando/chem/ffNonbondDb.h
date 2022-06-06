@@ -274,6 +274,7 @@ namespace chem {
     }
 
   public:
+    core::T_sp termVector() const;
     void forceFieldMergeGlobalParameters(FFNonbondDb_sp other);
     void forceFieldMerge(FFBaseDb_sp other);
     
