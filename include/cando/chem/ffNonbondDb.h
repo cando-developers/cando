@@ -140,6 +140,8 @@ namespace chem {
     double		_Pbci;	// partial bond charge increment
     DonorAcceptorEnum	_DonorAcceptor;
     core::T_sp	        _SameParms;
+    core::T_sp          _TypeComment;
+    core::T_sp          _NonbondComment;
 
   public:
     static FFNonbond_sp make_FFNonbond(core::Symbol_sp type,
@@ -153,32 +155,44 @@ namespace chem {
                                        double fcadj,
                                        double pbci,
                                        DonorAcceptorEnum donor_acceptor);
-                                       
+
   public:
     string __repr__() const;
-   
+
+    CL_LISPIFY_NAME(FFNonbond/setType);
     CL_DEFMETHOD void setType(core::Symbol_sp s) {this->_Type=s;};
+    CL_LISPIFY_NAME(FFNonbond/getType);
     CL_DEFMETHOD core::Symbol_sp getType() const { return this->_Type;};
+    CL_LISPIFY_NAME(FFNonbond/setPolarizability);
     CL_DEFMETHOD void setPolarizability(double d) { this->_Polarizability = d;};
+    CL_LISPIFY_NAME(FFNonbond/setMass);
     CL_DEFMETHOD void setMass(double d) { this->_Mass = d;};
+
     double getMass() const;
-    CL_DEFMETHOD void setRadius_Angstroms(double val);
-    CL_DEFMETHOD void setRadius_Nanometers(double val);
+    void setRadius_Angstroms(double val);
+    void setRadius_Nanometers(double val);
+    double getRadius_Angstroms() const;
+    double getRadius_Nanometers() const;
+    void setEpsilon_kj(double val);
+    void setEpsilon_kcal(double val);
+    double getEpsilon_kj() const;
+    double getEpsilon_kcal() const;
 
-    CL_DEFMETHOD double getRadius_Angstroms() const;
-    CL_DEFMETHOD double getRadius_Nanometers() const;
-
-    CL_DEFMETHOD void setEpsilon_kj(double val);
-    CL_DEFMETHOD void setEpsilon_kcal(double val);
-
-    CL_DEFMETHOD double getEpsilon_kj() const;
-    CL_DEFMETHOD double getEpsilon_kcal() const;
     void setSameParms(core::T_sp sameparms);
     core::T_sp getSameParms() const;
- 
-    virtual	string	levelDescription();
+
+    core::T_sp FFNonbond_O::getTypeComment() const;
+    void FFNonbond_O::setTypeComment(core::T_sp comment);
+    core::T_sp FFNonbond_O::getNonbondComment() const;
+    void FFNonbond_O::setNonbondComment(core::T_sp comment);
+
+    virtual string	levelDescription();
     virtual ParameterType type() { return nonbond; };
-    FFNonbond_O() : _SameParms(unbound<core::T_O>()) {};
+    FFNonbond_O() :
+        _SameParms(nil<core::T_O>()),
+        _TypeComment(nil<core::T_O>()),
+        _NonbondComment(nil<core::T_O>()),
+    _{};
   };
 
 

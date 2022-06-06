@@ -90,6 +90,7 @@ namespace       chem {
 	void setKb_kjPerNanometerSquared(double val);
 	void setR0_Nanometer(double val);
 
+      core::T_mv getTypes() const;
 	double getR0_Nanometer() const;
 	double getR0_Angstrom() const;
 	double getKb_kjPerNanometerSquared() const;

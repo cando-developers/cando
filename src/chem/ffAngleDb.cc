@@ -85,6 +85,19 @@ void FFAngle_O::fields(core::Record_sp node)
   this->Base::fields(node);
 }
 
+CL_LISPIFY_NAME(FFAngle/getTypes);
+CL_DEFMETHOD
+core::T_mv FFAngle_O::getTypes() const
+{
+  return Values(this->_Type1,this->_Type2,this->_Type3);
+}
+
+CL_LISPIFY_NAME(FFAngle/getAngle_Radian);
+CL_DEFMETHOD
+double FFAngle_O::getAngle_Radian() const {
+  return this->_AngRad;
+};
+
 CL_LISPIFY_NAME(FFAngle/setK2_kcalPerRadianSquared);
 CL_DEFMETHOD
 void FFAngle_O::setK2_kcalPerRadianSquared(double val)

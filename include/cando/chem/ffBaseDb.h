@@ -133,26 +133,29 @@ class FFParameter_O : public core::CxxObject_O
     LISP_CLASS(chem,ChemPkg,FFParameter_O,"FFParameter",core::CxxObject_O);
 
 public:
-    bool fieldsp() const { return true; };
-    void fields(core::Record_sp node);
+  FFParameter_O() : _Comment(nil<core::T_O>()) {};
 public:
-	ParameterizationLevel	_Level;
+  bool fieldsp() const { return true; };
+  void fields(core::Record_sp node);
+public:
+  ParameterizationLevel	_Level;
+  core::T_sp _Comment;
 
-
+  core::T_sp getComment() const;
+  void setComment(core::T_sp comment);
 
 /*! Return the parameterization level of this parameter.
  * In most cases if it isn't "excellent" then it will be noted and the
  * user can go and calculate a good parameter and put it into the force field.
  */
-	ParameterizationLevel	level() { return this->_Level;};
+  ParameterizationLevel	level() { return this->_Level;};
 
 /*! Describe this parameter in terms of its ParameterizationLevel and the atom types involved.
  * This will be used when collecting missing or poorly parameterized parameters.
  */
 virtual	string levelDescription();
-    virtual	ParameterType type() {SUBIMP();};
+  virtual	ParameterType type() {SUBIMP();};
 
-DEFAULT_CTOR_DTOR(FFParameter_O);
 };
 
 
@@ -178,6 +181,7 @@ class FFParameterBaseDb_O : public FFBaseDb_O {
   void initialize();
  public:
   core::HashTableEq_sp _Parameters;
+  core::ComplexVector_T_sp _ParameterVector;
  public:
   virtual void forceFieldMerge(FFBaseDb_sp other);
  FFParameterBaseDb_O() : FFBaseDb_O(), _Parameters(unbound<core::HashTableEq_O>()) {};

@@ -81,6 +81,28 @@ CL_DEFMETHOD ForceField_sp ReadAmberParameters_O::getForceField()
 }
 
 
+
+// trim from start (in place)
+static inline void ltrim(std::string &s) {
+    s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](unsigned char ch) {
+        return !std::isspace(ch);
+    }));
+}
+
+// trim from end (in place)
+static inline void rtrim(std::string &s) {
+    s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch) {
+        return !std::isspace(ch);
+    }).base(), s.end());
+}
+
+// trim from both ends (in place)
+static inline void trim(std::string &s) {
+    ltrim(s);
+    rtrim(s);
+}
+
+
 /*! Check if the stream contains a FrcMod file or a regular Amber Parameter file.
   If it's a FrcMod file then frcmod == T.
   If it contains a MASS entry then mass == T.
@@ -249,7 +271,10 @@ FFStretchDb_sp ReadAmberParameters_O::parseStretchDb(core::T_sp fin)
         auto  ffStretch  = gctools::GC<FFStretch_O>::allocate_with_default_constructor();
         ffStretch->_Type1 = chemkw_intern(type1Name);
         ffStretch->_Type2 = chemkw_intern(type2Name);
-        string parms = line.substr(6);
+        string parms = line.substr(6,23); // get r0 kb
+        string comment;
+        if (line.size()>24) comment = line.substr(24);
+        trim(comment);
         vector<string> parmsParts = core::split(parms);
         if (parms.size()<2) {
           SIMPLE_ERROR(("Could not interpret %s as stretch parameter") , parms);
@@ -258,6 +283,7 @@ FFStretchDb_sp ReadAmberParameters_O::parseStretchDb(core::T_sp fin)
         double r0_Nanometer = angstrom_to_nanometer(atof(parmsParts[1].c_str()));
         ffStretch->setKb_kjPerNanometerSquared(kb_kjPerNanometerSquared);
         ffStretch->setR0_Nanometer(r0_Nanometer);
+        if (comment.size()>0) ffStretch->setComment(core::SimpleBaseString_O::make(comment));
         //            print "(%s)-(%s) k=%lf len=%lf"%(ffStretch._Type1,ffStretch._Type2,ffStretch._kb, ffStretch._r0)
         ffStretchDb->add(ffStretch);
       }
@@ -300,14 +326,17 @@ FFAngleDb_sp ReadAmberParameters_O::parseAngleDb(core::T_sp fin)
           ffAngle->_Type3 = chemkw_intern(t3);
           //      printf("%s:%d  Parsing line: %s\n", __FILE__, __LINE__, line.c_str());
           fflush(stdout);
-          string parms = line.substr(9);
+          string parms = line.substr(9,30);
+          string comment;
+          if (line.size()>31) comment = line.substr(31);
+          trim(comment);
           vector<string> parmsParts = core::split(parms);
           if (parms.size()<2) {
             SIMPLE_ERROR(("Could not interpret %s as an angle parameter") , parms);
           }
           ffAngle->_K2__kjPerRadianSquared = kcalPerRadianSquared_to_kjPerRadianSquared(atof(parmsParts[0].c_str()));
           ffAngle->_AngRad = core::radians(atof(parmsParts[1].c_str()));
-          //            print "(%s)-(%s)-(%s) k=%lf ang(deg)=%lf"%(ffAngle._Type1,ffAngle._Type2, ffAngle._Type3,ffAngle._K2, ffAngle._AngRad/0.0174533)
+          if (comment.size()>0) ffAngle->setComment(core::SimpleBaseString_O::make(comment));
           ffAngleDb->add(ffAngle);
         }
     }
@@ -368,11 +397,11 @@ FFPtorDb_sp ReadAmberParameters_O::parsePtorDb(core::T_sp fin, core::T_sp system
           }
           double idivf =  atof(parmsParts[0].c_str());
           double pk = atof(parmsParts[1].c_str());
-          double phaseRad = atof(parmsParts[2].c_str())*0.0174533;
+          double phaseDegrees = atof(parmsParts[2].c_str());
           int pn = abs(int(atof(parmsParts[3].c_str())));
           ASSERTF(pn>=1 && pn<=6,("pn[%d] must range between [1,6]") , pn);
           ffPtor->setV_kcal(pn,pk/idivf);
-          ffPtor->setPhaseRad(pn,phaseRad);
+          ffPtor->setPhaseDegrees(pn,phaseDegrees);
           ffPtorDb->add(ffPtor);
         }
     }
@@ -434,17 +463,21 @@ FFItorDb_sp ReadAmberParameters_O::parseItorDb(core::T_sp fin)
             st4 = nil<core::T_O>();
           }
           ffItor->setTypes(st1,st2,st3,st4);
-          string parms = line.substr(13);
+          string parms = line.substr(13,52);
+          string comment;
+          if (line.size()>53) comment = line.substr(53);
+          trim(comment);
           vector<string> parmsParts = core::split(parms);
           if (parmsParts.size()<3) {
             SIMPLE_ERROR(("Could not interpret %s as an itor parameter") , parms);
           }
           double pk = atof(parmsParts[0].c_str());
-          double phaseRad = atof(parmsParts[1].c_str())*0.0174533;
+          double phaseDegrees = atof(parmsParts[1].c_str());
           int pn = abs(int(atof(parmsParts[2].c_str())));
           ASSERTF(pn>=1 && pn<=FFItor_O::IMaxPeriodicity,("Illegal pn[%d] must be in [1,%d]") , pn , FFItor_O::IMaxPeriodicity );
           ffItor->setV_kcal(pn,pk);
-          ffItor->setPhaseRad(pn,phaseRad);
+          ffItor->setPhaseDegrees(pn,phaseDegrees);
+          if (comment.size()>0) ffItor->setComment(core::SimpleBaseString_O::make(comment));
           ffItorDb->add(ffItor);
         }
     }

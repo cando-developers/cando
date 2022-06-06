@@ -471,7 +471,7 @@ namespace omm
 		int i2 = a2->getProperty(particleIndexSymbol).as<core::Fixnum_O>()->get();
 		int i3 = a3->getProperty(particleIndexSymbol).as<core::Fixnum_O>()->get();
 		int i4 = a4->getProperty(particleIndexSymbol).as<core::Fixnum_O>()->get();
-		int idx = this->wrappedPtr()->addTorsion(i1,i2,i3,i4,period,ffPtor->getPhaseRad(period),
+		int idx = this->wrappedPtr()->addTorsion(i1,i2,i3,i4,period,ffPtor->getPhaseRadians(period),
 					    ffPtor->getV_kj(period));
 		core::Cons_sp one = _lisp->create<core::Cons_O>(core::clasp_make_fixnum(idx));
 		cur->setCdr(one);
@@ -512,7 +512,7 @@ namespace omm
 		    int i2 = a2->getProperty(particleIndexSymbol).as<core::Fixnum_O>()->get();
 		    int i3 = a3central->getProperty(particleIndexSymbol).as<core::Fixnum_O>()->get();
 		    int i4 = a4->getProperty(particleIndexSymbol).as<core::Fixnum_O>()->get();
-		    int idx = this->wrappedPtr()->addTorsion(i1,i2,i3,i4,n,ffItor->getPhaseRad(n),
+		    int idx = this->wrappedPtr()->addTorsion(i1,i2,i3,i4,n,ffItor->getPhaseRadians(n),
 							  ffItor->getV_kj(n));
 		    core::Cons_sp one = _lisp->create<core::Cons_O>(core::clasp_make_fixnum(idx));
 		    cur->setCdr(one);

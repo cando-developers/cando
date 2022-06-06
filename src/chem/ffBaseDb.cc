@@ -49,39 +49,55 @@ SYMBOL_EXPORT_SC_(ChemKwPkg,unknown);
 
 namespace chem {
 
+CL_LISPIFY_NAME(FFParameter/getComment);
+CL_DEFMETHOD
+core::T_sp FFParameter_O::getComment() const
+{
+  return this->_Comment;
+}
+
+CL_LISPIFY_NAME(FFParameter/setComment);
+CL_DEFMETHOD
+void FFParameter_O::setComment(core::T_sp comment)
+{
+  this->_Comment = comment;
+}
+
+
 CL_DEFMETHOD string	FFParameter_O::levelDescription()
 {
   switch ( this->_Level ) {
   case parameterized:
-      return "parameterized ";
+    return "parameterized ";
   case estimated:
-      return "estimated ";
+    return "estimated ";
   case rough:
-      return "guessed ";
+    return "guessed ";
   case unknown:
-      return "unknown ";
+    return "unknown ";
   }
   return "unknownParameterLevel ";
 }
 
 
-    core::NullTerminatedEnumAssociation paramLevelEnum[] = {
-	{ "parameterized", parameterized },
-	{ "estimated", estimated },
-	{ "rough", rough },
-	{ "", -1 }
+core::NullTerminatedEnumAssociation paramLevelEnum[] = {
+  { "parameterized", parameterized },
+  { "estimated", estimated },
+  { "rough", rough },
+  { "", -1 }
 };
 
 void FFParameter_O::fields(core::Record_sp node)
 {
   //this->Base::fields(node); // T_O
   node->field( INTERN_(kw,level), this->_Level);
+  node->field_if_not_nil( INTERN_(kw,comment), this->_Comment);
 }
 
 
 void FFBaseDb_O::initialize()
 {
-      this->Base::initialize();
+  this->Base::initialize();
 }
 void FFBaseDb_O::fields(core::Record_sp node)
 {
@@ -108,8 +124,8 @@ void FFParameterBaseDb_O::fields(core::Record_sp node)
 
 void FFParameterBaseDb_O::initialize()
 {
-      this->_Parameters = core::HashTableEq_O::create_default();
-      this->Base::initialize();
+  this->_Parameters = core::HashTableEq_O::create_default();
+  this->Base::initialize();
 }
 
 
@@ -121,8 +137,8 @@ void FFParameterBaseDb_O::forceFieldMerge(FFBaseDb_sp other) {
   //        try to call this->Base::Base::forceFieldMerge(other);
   FFParameterBaseDb_sp parm_other = gc::As<FFParameterBaseDb_sp>(other);
   parm_other->_Parameters->maphash([this] (core::T_sp key, core::T_sp parm) {
-      this->_Parameters->setf_gethash(key,parm);
-    } );
+    this->_Parameters->setf_gethash(key,parm);
+  } );
   this->Base::forceFieldMerge(other);
 }
 

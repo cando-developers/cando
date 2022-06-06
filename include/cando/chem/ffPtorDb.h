@@ -94,24 +94,29 @@ public:
 
 public:
   bool		_HasPeriodicity[MaxPeriodicity];	// 6 terms can be stored
+  int           _idivf[MaxPeriodicity];
   double	_Vs_kj[MaxPeriodicity];		// 6 V terms
-  double        _PhaseRads[MaxPeriodicity]; 	// 6 phase terms
+  double        _PhaseDegrees[MaxPeriodicity]; 	// 6 phase terms
   bool          _HasScee;
   double        _Scee;
   bool          _HasScnb;
   double        _Scnb;
-  core::T_sp    _Comment;
 
+  core::T_mv getTypes() const;
   void	 setTypes( core::Symbol_sp a1, core::Symbol_sp a2, core::Symbol_sp a3, core::Symbol_sp a4);
   size_t maxPeriodicity() const;
   bool	 hasPeriodicity(int period) const;
+  int    getIdivf(int period) const;
+  void   setIdivf(int period, int v);
   double getV_kj(int period) const;
   void   setV_kj(int period, double v);
   double getV_kcal(int period) const;
   void	 setV_kcal(int period, double v);
 
-  double getPhaseRad(int period) const;
-  void   setPhaseRad(int period, double pr);
+  double getPhaseRadians(int period) const;
+  void   setPhaseRadians(int period, double pr);
+  double getPhaseDegrees(int period) const;
+  void   setPhaseDegrees(int period, double pr);
 
   CL_LISPIFY_NAME(FFPtor/setScee);
   CL_DEFMETHOD void    setScee(double s) { this->_HasScee = true; this->_Scee = s;}
@@ -130,16 +135,11 @@ public:
   CL_LISPIFY_NAME(FFPtor/getHasScnb);
   CL_DEFMETHOD bool    getHasScnb() const { return this->_HasScnb;};
 
-  CL_LISPIFY_NAME(FFPtor/ptorComment);
-  CL_DEFMETHOD core::T_sp  ptorComment() const { return this->_Comment; };
-  CL_LISPIFY_NAME(FFPtor/setPtorComment);
-  CL_DEFMETHOD void    setPtorComment(core::T_sp s) { this->_Comment = s; };
-
   void    mergeWith(FFPtor_sp ptor);
 
   virtual	ParameterType	type() { return ptor;};
   virtual	string		levelDescription();
-  FFPtor_O() : _HasScee(false), _Scee(-1.0), _HasScnb(false), _Scnb(-1.0), _Comment(nil<core::T_O>()) {};
+  FFPtor_O() : _HasScee(false), _Scee(-1.0), _HasScnb(false), _Scnb(-1.0) {};
 };
 
 

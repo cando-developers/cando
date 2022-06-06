@@ -63,7 +63,7 @@ void	FFItor_O::initialize()
     {
 	this->_hasPeriodicity[i] = false;
 	this->_Vs_kj[i] = 0.0;
-	this->_PhaseRads[i] = 0.0;
+	this->_PhaseDegrees[i] = 0.0;
     }
 }
 
@@ -75,18 +75,26 @@ void	FFItor_O::fields(core::Record_sp node)
   node->field( INTERN_(kw,type4), this->_T4 );
   ASSERT(IMaxPeriodicity==6);
   node->field_if_defined(INTERN_(kw,v0) ,this->_hasPeriodicity[0],this->_Vs_kj[0]);
-  node->field_if_defined(INTERN_(kw,ph0),this->_hasPeriodicity[0],this->_PhaseRads[0]);
+  node->field_if_defined(INTERN_(kw,ph0),this->_hasPeriodicity[0],this->_PhaseDegrees[0]);
   node->field_if_defined(INTERN_(kw,v1) ,this->_hasPeriodicity[1],this->_Vs_kj[1]);
-  node->field_if_defined(INTERN_(kw,ph1),this->_hasPeriodicity[1],this->_PhaseRads[1]);
+  node->field_if_defined(INTERN_(kw,ph1),this->_hasPeriodicity[1],this->_PhaseDegrees[1]);
   node->field_if_defined(INTERN_(kw,v2) ,this->_hasPeriodicity[2],this->_Vs_kj[2]);
-  node->field_if_defined(INTERN_(kw,ph2),this->_hasPeriodicity[2],this->_PhaseRads[2]);
+  node->field_if_defined(INTERN_(kw,ph2),this->_hasPeriodicity[2],this->_PhaseDegrees[2]);
   node->field_if_defined(INTERN_(kw,v3) ,this->_hasPeriodicity[3],this->_Vs_kj[3]);
-  node->field_if_defined(INTERN_(kw,ph3),this->_hasPeriodicity[3],this->_PhaseRads[3]);
+  node->field_if_defined(INTERN_(kw,ph3),this->_hasPeriodicity[3],this->_PhaseDegrees[3]);
   node->field_if_defined(INTERN_(kw,v4) ,this->_hasPeriodicity[4],this->_Vs_kj[4]);
-  node->field_if_defined(INTERN_(kw,ph4),this->_hasPeriodicity[4],this->_PhaseRads[4]);
+  node->field_if_defined(INTERN_(kw,ph4),this->_hasPeriodicity[4],this->_PhaseDegrees[4]);
   node->field_if_defined(INTERN_(kw,v5) ,this->_hasPeriodicity[5],this->_Vs_kj[5]);
-  node->field_if_defined(INTERN_(kw,ph5),this->_hasPeriodicity[5],this->_PhaseRads[5]);
+  node->field_if_defined(INTERN_(kw,ph5),this->_hasPeriodicity[5],this->_PhaseDegrees[5]);
   this->Base::fields(node);
+}
+
+
+CL_LISPIFY_NAME(FFItor/getTypes);
+CL_DEFMETHOD
+core::T_mv FFItor_O::getTypes() const
+{
+  return Values(this->_T1,this->_T2,this->_T3,this->_T4);
 }
 
 CL_LISPIFY_NAME(FFItor/setTypes);
@@ -124,7 +132,11 @@ CL_LISPIFY_NAME(FFItor/maxPeriodicity);
 CL_DEFMETHOD
 size_t FFItor_O::maxPeriodicity() const
 {
-  return IMaxPeriodicity;
+  for (size_t periodicity=IMaxPeriodicity; periodicity>0; periodicity-- ) {
+    size_t idx = periodicity-1;
+    if (this->_hasPeriodicity[idx]) return periodicity;
+  }
+  return 0;
 }
 
 CL_LISPIFY_NAME(FFItor/hasPeriodicity);
@@ -151,24 +163,45 @@ void    FFItor_O::setV_kcal(int period, double val)
 }
 
 
-CL_LISPIFY_NAME(FFItor/getPhaseRad);
+CL_LISPIFY_NAME(FFItor/getPhaseRadians);
 CL_DEFMETHOD
-double  FFItor_O::getPhaseRad(int period) const
+double  FFItor_O::getPhaseRadians(int period) const
 {_OF();
     if ( period < 1 || period > IMaxPeriodicity ) {
-        SIMPLE_ERROR(("Illegal index for getPhaseRad"));
+        SIMPLE_ERROR(("Illegal index for getPhaseRadians"));
     }
-    return this->_PhaseRads[period-1];
+    return this->_PhaseDegrees[period-1]*0.0174533;
 }
 
-CL_LISPIFY_NAME(FFItor/setPhaseRad);
+CL_LISPIFY_NAME(FFItor/setPhaseRadians);
 CL_DEFMETHOD
-void    FFItor_O::setPhaseRad(int period, double val)
+void    FFItor_O::setPhaseRadians(int period, double val)
 {_OF();
     if ( period < 1 || period > IMaxPeriodicity ) {
-        SIMPLE_ERROR(("Illegal index for setPhaseRad"));
+        SIMPLE_ERROR(("Illegal index for setPhaseRadians"));
     }
-    this->_PhaseRads[period-1] = val;
+    this->_PhaseDegrees[period-1] = val/0.0174533;
+    this->_hasPeriodicity[period-1] = true;
+}
+
+CL_LISPIFY_NAME(FFItor/getPhaseDegrees);
+CL_DEFMETHOD
+double  FFItor_O::getPhaseDegrees(int period) const
+{_OF();
+    if ( period < 1 || period > IMaxPeriodicity ) {
+        SIMPLE_ERROR(("Illegal index for getPhaseDegrees"));
+    }
+    return this->_PhaseDegrees[period-1];
+}
+
+CL_LISPIFY_NAME(FFItor/setPhaseDegrees);
+CL_DEFMETHOD
+void    FFItor_O::setPhaseDegrees(int period, double val)
+{_OF();
+    if ( period < 1 || period > IMaxPeriodicity ) {
+        SIMPLE_ERROR(("Illegal index for setPhaseDegrees"));
+    }
+    this->_PhaseDegrees[period-1] = val;
     this->_hasPeriodicity[period-1] = true;
 }
 
@@ -181,7 +214,7 @@ int     i;
 	{
 	    this->_hasPeriodicity[i-1] = itor->_hasPeriodicity[i-1];
             this->_Vs_kj[i-1] = itor->_Vs_kj[i-1];
-            this->_PhaseRads[i-1] = itor->_PhaseRads[i-1];
+            this->_PhaseDegrees[i-1] = itor->_PhaseDegrees[i-1];
         }
     }
 }

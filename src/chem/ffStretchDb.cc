@@ -146,11 +146,6 @@ void	FFStretchDb_O::addEstimateStretch(core::Symbol_sp ti, core::Symbol_sp tj, d
   this->_addEstimateStretch(es);
 }
 
-
-
-
-
-
 void	FFStretch_O::fields(core::Record_sp node)
 {
   node->field( INTERN_(kw,type1), this->_Type1 );
@@ -159,7 +154,6 @@ void	FFStretch_O::fields(core::Record_sp node)
   node->/*pod_*/field( INTERN_(kw,kb), this->_Kb_kjPerNanometerSquared );
   this->Base::fields(node);
 }
-
 
 void FFStretch_O::initialize()
 {
@@ -173,6 +167,13 @@ void FFStretch_O::initialize()
   //    this->_Bci = 0.0;
 }
 
+
+CL_LISPIFY_NAME(FFStretch/getTypes);
+CL_DEFMETHOD
+core::T_mv FFStretch_O::getTypes() const
+{
+  return Values(this->_Type1,this->_Type2);
+}
 
 CL_LISPIFY_NAME(FFStretch/getR0_Nanometer);
 CL_DEFMETHOD

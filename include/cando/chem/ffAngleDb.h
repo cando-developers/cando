@@ -67,45 +67,46 @@ class	FFAngle_O;
 SMART(FFAngle);
 class FFAngle_O : public FFParameter_O
 {
-    LISP_CLASS(chem,ChemPkg,FFAngle_O,"FFAngle",FFParameter_O);
+  LISP_CLASS(chem,ChemPkg,FFAngle_O,"FFAngle",FFParameter_O);
 
 public:
-	void initialize();
-        bool fieldsp() const { return true; };
-        void fields(core::Record_sp node);
- public:
-        static FFAngle_sp create_missing(core::Symbol_sp t1, core::Symbol_sp t2, core::Symbol_sp t3) {
-          FFAngle_sp angle = FFAngle_O::create();
-          angle->_Type1 = t1;
-          angle->_Type2 = t2;
-          angle->_Type3 = t3;
-          angle->_Level = unknown;
-          return angle;
-        }
+  void initialize();
+  bool fieldsp() const { return true; };
+  void fields(core::Record_sp node);
+public:
+  static FFAngle_sp create_missing(core::Symbol_sp t1, core::Symbol_sp t2, core::Symbol_sp t3) {
+    FFAngle_sp angle = FFAngle_O::create();
+    angle->_Type1 = t1;
+    angle->_Type2 = t2;
+    angle->_Type3 = t3;
+    angle->_Level = unknown;
+    return angle;
+  }
 
 public:
-    core::Symbol_sp 		_Type1;
-    core::Symbol_sp 		_Type2;
-    core::Symbol_sp 		_Type3;
-	double		_AngRad;
-	double		_K2__kjPerRadianSquared;
-//	double		_K3;
-//	double		_K4;
-//	double		_Ub_k;
-//	double		_Ub_len;
+  core::Symbol_sp 		_Type1;
+  core::Symbol_sp 		_Type2;
+  core::Symbol_sp 		_Type3;
+  double		_AngRad;
+  double		_K2__kjPerRadianSquared;
+  //	double		_K3;
+  //	double		_K4;
+  //	double		_Ub_k;
+  //	double		_Ub_len;
 
-	double getAngle_Radian() const { return this->_AngRad;};
+  core::T_mv getTypes() const;
+  double getAngle_Radian() const;
 
-	void setK2_kcalPerRadianSquared(double val);
-	void setK2_kjPerRadianSquared(double val);
+  void setK2_kcalPerRadianSquared(double val);
+  void setK2_kjPerRadianSquared(double val);
 	
-	double getK2_kcalPerRadianSquared() const;
-	double getK2_kjPerRadianSquared() const;
+  double getK2_kcalPerRadianSquared() const;
+  double getK2_kjPerRadianSquared() const;
 
-virtual	string	levelDescription();
-virtual ParameterType type() { return angle; };
+  virtual	string	levelDescription();
+  virtual ParameterType type() { return angle; };
 
-DEFAULT_CTOR_DTOR(FFAngle_O);
+  DEFAULT_CTOR_DTOR(FFAngle_O);
 };
 
 
