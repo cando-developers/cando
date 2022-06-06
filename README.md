@@ -45,7 +45,7 @@ Binary packages for Cando are built nightly starting about 2:00 AM EST and take 
   jupyter-labextension install cytoscape-clj kekule-clj ngl-clj resizable-box-clj @jupyter-widgets/jupyterlab-manager  jupyterlab_templates jupyterlab-debugger-restarts jupyterlab-molviewer
   ```
 
-Now the installation is done!  Scroll to the instructions below to download cando-demos and run jupyter-lab/cando!
+Now the installation is done!  Scroll to the instructions below to [download cando-demos and run jupyter-lab/cando](https://github.com/cando-developers/cando/blob/main/README.md#cando--jupyter-demonstrations)!
 
 If step 2 fails to detect your operating system then you can install manually via one of the following.
 
