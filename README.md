@@ -32,7 +32,22 @@ Binary packages for Cando are built nightly starting about 2:00 AM EST and take 
   bash -c "$(curl -fsSL https://www.thirdlaw.tech/pkg/cando.sh)"
   ```
   
-  If these scripts fail to detect your operating system then you can install manually via one of the following.
+
+
+
+3. Enhance the jupyter-lab/Cando environment by installing jupyter-lab widgets, drawing and visualization tools.
+```bash
+  conda install -c conda-forge nodejs=17.9.0
+  ```
+  and then...
+  
+  ```bash
+  jupyter-labextension install cytoscape-clj kekule-clj ngl-clj resizable-box-clj @jupyter-widgets/jupyterlab-manager  jupyterlab_templates jupyterlab-debugger-restarts jupyterlab-molviewer
+  ```
+
+Now the installation is done!  Scroll to the instructions below to download cando-demos and run jupyter-lab/cando!
+
+If step 2 fails to detect your operating system then you can install manually via one of the following.
 
 - Debian Bookworm
     ```bash
@@ -55,17 +70,7 @@ Binary packages for Cando are built nightly starting about 2:00 AM EST and take 
     echo -e "\n[thirdlaw]\nServer = https://www.thirdlaw.tech/pkg/arch\n" >>/etc/pacman.conf
     pacman -Sy --noconfirm cando-git
     ```
-
-3. Enhance the jupyter-lab/Cando environment by installing jupyter-lab widgets, drawing and visualization tools.
-```bash
-  conda install -c conda-forge nodejs=17.9.0
-  ```
-  and then...
-  
-  ```bash
-  jupyter-labextension install cytoscape-clj kekule-clj ngl-clj resizable-box-clj @jupyter-widgets/jupyterlab-manager  jupyterlab_templates jupyterlab-debugger-restarts jupyterlab-molviewer
-  ```
- 
+    
 #### Installing from the Nightly Homebrew Tap
 
 Binary packages for MacOS Catalina, Big Sur and Monterey are available from the `clasp-developers/clasp` tap. 
