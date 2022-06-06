@@ -338,6 +338,16 @@ void	FFNonbondDb_O::fields(core::Record_sp node)
   this->Base::fields(node);
 }
 
+
+CL_LISPIFY_NAME(FFNonbondDb/termVector);
+CL_DEFMETHOD core::SimpleVector_sp FFNonbondDb_O::termVector() const
+{
+  core::SimpleVector_sp terms = core::SimpleVector_O::make(this->_Terms.size());
+  for ( size_t ii=0; ii<this->_Terms.size(); ii++ ) {
+    terms->rowMajorAset(ii,this->_Terms[ii]);
+  }
+}
+
 CL_LISPIFY_NAME(FFNonbondDb_add);
 CL_DEFMETHOD void    FFNonbondDb_O::add(FFNonbond_sp nb)
 {
