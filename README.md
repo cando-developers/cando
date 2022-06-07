@@ -29,7 +29,7 @@ Binary packages for Cando are built nightly starting about 2:00 AM EST and take 
   
 2. Install Cando (this should detect and work for both Ubuntu or Debian)
   ```bash
-  bash -c "$(curl -fsSL https://www.thirdlaw.tech/pkg/cando.sh)"
+  sudo bash -c "$(curl -fsSL https://www.thirdlaw.tech/pkg/cando.sh)"
   ```
   
 
