@@ -31,9 +31,6 @@ Binary packages for Cando are built nightly starting about 2:00 AM EST and take 
   ```bash
   sudo bash -c "$(curl -fsSL https://www.thirdlaw.tech/pkg/cando.sh)"
   ```
-  
-
-
 
 3. Enhance the jupyter-lab/Cando environment by installing jupyter-lab widgets, drawing and visualization tools.
   ```bash
@@ -117,12 +114,10 @@ To run jupyter-lab and start a demo:
    ```
    git clone https://github.com/cando-developers/cando-demos.git
    ```
-
 2. From your home directory run ```jupyter-lab```
-
 3. Copy and paste the provided link into a web browser (Firefox is recommended).
 4. Double click on the filename "00-Welcome-and-README.ipynb" and it will open the jupyter-lab notebook.
-<img src="https://github.com/cando-developers/cando-demos/blob/master/docs/firstGlance01.png" width="600"/>
+<img src="https://github.com/cando-developers/cando-demos/blob/main/docs/firstGlance01.png" width="600"/>
 
 For operating systems where jupyter-lab cannot launch a browser like remote linux systems and
 WSL2 (Windows Subsystem for Linux) you should use ```jupyter-lab --no-browser``` and then copy
