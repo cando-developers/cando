@@ -120,7 +120,9 @@ To run jupyter-lab and start a demo:
 
 2. From your home directory run ```jupyter-lab```
 
-3. copy and paste the provided link into a web browser (Firefox is recommended).
+3. Copy and paste the provided link into a web browser (Firefox is recommended).
+4. Double click on the filename "00-Welcome-and-README.ipynb" and it will open the jupyter-lab notebook.
+
 
 For operating systems where jupyter-lab cannot launch a browser like remote linux systems and
 WSL2 (Windows Subsystem for Linux) you should use ```jupyter-lab --no-browser``` and then copy
