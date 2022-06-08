@@ -36,7 +36,7 @@ Binary packages for Cando are built nightly starting about 2:00 AM EST and take 
 
 
 3. Enhance the jupyter-lab/Cando environment by installing jupyter-lab widgets, drawing and visualization tools.
-```bash
+  ```bash
   conda install -c conda-forge nodejs=17.9.0
   ```
   and then...
