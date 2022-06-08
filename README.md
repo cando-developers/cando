@@ -122,7 +122,7 @@ To run jupyter-lab and start a demo:
 
 3. Copy and paste the provided link into a web browser (Firefox is recommended).
 4. Double click on the filename "00-Welcome-and-README.ipynb" and it will open the jupyter-lab notebook.
-<img source="https://github.com/cando-developers/cando-demos/blob/master/docs/firstGlance01.png" alt="drawing" style="width:200px;"/>
+![firstGlance01](https://github.com/cando-developers/cando-demos/blob/master/docs/firstGlance01.png = 200x)
 
 For operating systems where jupyter-lab cannot launch a browser like remote linux systems and
 WSL2 (Windows Subsystem for Linux) you should use ```jupyter-lab --no-browser``` and then copy
