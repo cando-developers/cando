@@ -14,7 +14,7 @@ fi
 echo "Updating Quicklisp..."
 clasp --non-interactive --eval "(unless (ql-dist:find-dist \"quickclasp\") (ql-dist:install-dist \"http://thirdlaw.tech/quickclasp/quickclasp.txt\" :prompt nil))" \
   --eval "(ql:update-all-dists :prompt nil)" --eval "(ql:quickload :common-lisp-jupyter)" \
-  --eval "(clj:install :implementation t)"
+  --eval "(clj:install :bin-path \"clasp\" :implementation t)"
 
 echo "Installing CANDO user features..."
 cando --eval "(ql:quickload :cando-user-install)" --eval "(cando-user-install:install)" --eval "(sys:quit)"
