@@ -113,9 +113,14 @@ Several JupyterLab notebooks that demonstrate how Cando can be used for computat
 
 To run jupyter-lab and start a demo:
 
-1. From your home directory run ```jupyter-lab```
+1. Clone the cando-demos.
+   ```
+   git clone https://github.com/cando-developers/cando-demos.git
+   ```
 
-2. copy and paste the provided link into a web browser (Firefox is recommended).
+2. From your home directory run ```jupyter-lab```
+
+3. copy and paste the provided link into a web browser (Firefox is recommended).
 
 For operating systems where jupyter-lab cannot launch a browser like remote linux systems and
 WSL2 (Windows Subsystem for Linux) you should use ```jupyter-lab --no-browser``` and then copy
