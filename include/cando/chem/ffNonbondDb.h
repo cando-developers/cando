@@ -165,6 +165,8 @@ namespace chem {
     CL_DEFMETHOD core::Symbol_sp getType() const { return this->_Type;};
     CL_LISPIFY_NAME(FFNonbond/setPolarizability);
     CL_DEFMETHOD void setPolarizability(double d) { this->_Polarizability = d;};
+    CL_LISPIFY_NAME(FFNonbond/getPolarizability);
+    CL_DEFMETHOD double getPolarizability() { return this->_Polarizability;};
     CL_LISPIFY_NAME(FFNonbond/setMass);
     CL_DEFMETHOD void setMass(double d) { this->_Mass = d;};
 
@@ -189,7 +191,7 @@ namespace chem {
     virtual string	levelDescription();
     virtual ParameterType type() { return nonbond; };
     FFNonbond_O() :
-        _SameParms(nil<core::T_O>()),
+        _SameParms(unbound<core::T_O>()),
         _TypeComment(nil<core::T_O>()),
         _NonbondComment(nil<core::T_O>())
     {};
@@ -274,7 +276,7 @@ namespace chem {
     }
 
   public:
-    core::T_sp termVector() const;
+    core::SimpleVector_sp termVector() const;
     void forceFieldMergeGlobalParameters(FFNonbondDb_sp other);
     void forceFieldMerge(FFBaseDb_sp other);
     

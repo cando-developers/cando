@@ -118,6 +118,8 @@
                      do (write-ptor-periodicity ptor periodicity max-periodicity stream)))))
 
 (defun write-force-field-parameters (force-field &optional (stream t))
+  (write-atom-parameters (chem:get-nonbond-db force-field) stream)
+  (sys:bformat stream "%N")
   (write-stretch-parameters (chem:get-stretch-db force-field) stream)
   (sys:bformat stream "%N")
   (write-angle-parameters (chem:get-angle-db force-field) stream)

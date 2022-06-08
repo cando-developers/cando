@@ -549,8 +549,8 @@ then don't calculate 1,4 interactions"
     (loop for i from 0 below (length type-index-vector)
        for index = (aref type-index-vector i)
        for ffnonbond = (chem:get-ffnonbond-using-type-index ffnonbond-db index)
-       for epsilon = (chem:get-epsilon-kcal ffnonbond)
-       for rm =  (chem:get-radius-angstroms ffnonbond)
+       for epsilon = (chem:ffnonbond/get-epsilon-kcal ffnonbond)
+       for rm =  (chem:ffnonbond/get-radius-angstroms ffnonbond)
        for key = (intern (format nil "~f-~f" epsilon rm) :keyword)
        do (if (setf jtemp (gethash key uniques))        
 ;       do (if (setf jtemp (gethash index uniques))
@@ -585,8 +585,8 @@ then don't calculate 1,4 interactions"
                           ;; See unitio.c line 3639
                           (index (- (+ (/ (* (+ j 1) j) 2) (+ i 1)) 1)) ; (((((j + 1) * j) / 2) + (i + 1)) - 1)
                           (ico-index (+ (* ntypes i) j)))
-                      (setf rstar (+ (chem:get-radius-angstroms ffnonbond1) (chem:get-radius-angstroms ffnonbond2))
-                            epsilonij (sqrt (* (chem:get-epsilon-kcal ffnonbond1) (chem:get-epsilon-kcal ffnonbond2)))
+                      (setf rstar (+ (chem:ffnonbond/get-radius-angstroms ffnonbond1) (chem:ffnonbond/get-radius-angstroms ffnonbond2))
+                            epsilonij (sqrt (* (chem:ffnonbond/get-epsilon-kcal ffnonbond1) (chem:ffnonbond/get-epsilon-kcal ffnonbond2)))
                             (aref cn1-vec index) (* epsilonij (expt rstar 12.0))
                             (aref cn2-vec index) (* 2.0 epsilonij (expt rstar 6.0))
                             (aref ico-vec ico-index) (+ (/ (* (+ j 1) j) 2) (+ i 1)))
@@ -616,8 +616,8 @@ then don't calculate 1,4 interactions"
        for type-index = (chem:elt-type-index atom-table i)
        for atomic-number = (chem:elt-atomic-number atom-table i)
        for ffnonbondi = (chem:get-ffnonbond-using-type-index ffnonbond-db type-index)
-       for atom-radius = (chem:get-radius-angstroms ffnonbondi)
-       for mass = (chem:get-mass ffnonbondi)
+       for atom-radius = (chem:ffnonbond/get-radius-angstroms ffnonbondi)
+       for mass = (chem:ffnonbond/get-mass ffnonbondi)
        do (setf (aref atom-name-vector i) atom-name
                 (aref atom-type-vector i) atom-type
                 (aref charge-vector i) charge

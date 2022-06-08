@@ -81,7 +81,7 @@ the AMBER general type \"X\" is replaced with the LEaP general type \"?\".
                (with-open-file (fin fn :direction :input)
                  (chem:read-parameters parmreader fin leap:*amber-system*)
                  (chem:get-force-field parmreader)))))
-    (chem:set-title ff filename)
+    (chem:force-field/set-title ff filename)
     (format *standard-output* "Adding force field ~a to ~a~%" filename force-field)
     (leap.core:add-force-field-or-modification ff
                                                :force-field-name force-field
@@ -107,8 +107,8 @@ the AMBER general type \"X\" is replaced with the LEaP general type \"?\".
          (fftypedb (with-open-file (fin path)
                        (leap.antechamber-type-definition-parser:read-antechamber-type-rules fin)))
          (ff (chem:force-field/make)))
-    (chem:set-title ff filename)
-    (chem:set-type-db ff fftypedb)
+    (chem:force-field/set-title ff filename)
+    (chem:force-field/set-fftype-db ff fftypedb)
     (leap.core:add-force-field-or-modification ff :force-field-name force-field
                                                   :force-field-info filename
                                                   :combined-force-field-class-name 'chem:combined-force-field)))

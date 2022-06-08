@@ -12,7 +12,7 @@
   (if (chem:has-type nonbond-db (chem:get-type atom))
       (let* ((type-index (chem:find-type-index nonbond-db (chem:get-type atom)))
              (ffnonbond (chem:get-ffnonbond-using-type-index nonbond-db type-index))
-             (atom-radius (chem:get-radius-angstroms ffnonbond)))
+             (atom-radius (chem:ffnonbond/get-radius-angstroms ffnonbond)))
         (values atom-radius nil))
       (progn
         (values 1.5 t))))

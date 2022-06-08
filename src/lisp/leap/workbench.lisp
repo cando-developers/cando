@@ -1,4 +1,19 @@
 ;;;
+;;; Test write parameters
+;;;
+
+(in-package :cando-user)
+
+(let ((chem::*verbose* 10))
+  (easy-gaff "gaff2.dat"))
+
+(leap.write-parameters::merge-force-fields :default)
+(leap.write-parameters::write-force-field-parameters (leap.write-parameters::merge-force-fields :default))
+
+
+
+
+;;;
 ;;; Test antechamber atom type definition parser
 ;;;
 (in-package :leap.antechamber-type-definition-parser)

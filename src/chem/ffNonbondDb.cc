@@ -207,6 +207,8 @@ void	FFNonbond_O::fields(core::Record_sp node)
   node->field_if_not_default(INTERN_(kw,pbci),this->_Pbci,0.0);
   node->field(INTERN_(kw,da),this->_DonorAcceptor );
   node->field(INTERN_(kw,sameParms),this->_SameParms);
+  node->field_if_not_nil(INTERN_(kw,type_comment),this->_TypeComment);
+  node->field_if_not_nil(INTERN_(kw,nonbond_comment),this->_NonbondComment);
   this->Base::fields(node);
 }
 
@@ -346,6 +348,7 @@ CL_DEFMETHOD core::SimpleVector_sp FFNonbondDb_O::termVector() const
   for ( size_t ii=0; ii<this->_Terms.size(); ii++ ) {
     terms->rowMajorAset(ii,this->_Terms[ii]);
   }
+  return terms;
 }
 
 CL_LISPIFY_NAME(FFNonbondDb_add);

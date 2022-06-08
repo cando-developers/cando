@@ -33,6 +33,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/lispStream.h>
 #include <clasp/core/bformat.h>
 #include <clasp/core/readtable.h>
+#include <clasp/core/sequence.h>
 #include <clasp/core/primitives.h>
 #include <clasp/core/evaluator.h>
 #include <clasp/core/array.h>
@@ -211,6 +212,9 @@ FFNonbondDb_sp ReadAmberParameters_O::parseMasses(core::T_sp fin, FFNonbondDb_sp
       if ( line.size() == 0 ) {
         done = true;
       } else {
+        if (chem__verbose(2)) {
+          core::write_bf_stream(fmt::sprintf("%s\n", sol->get_std_string()));
+        }
         core::T_sp linestream = core::cl__make_string_input_stream(sol,core::make_fixnum(0),nil<core::T_O>());
         LOG("Parsing line|%s|" , line.c_str()  );
         //      printf("%s:%d:%s parseMasses line: %s\n", __FILE__, __LINE__, __FUNCTION__, line.c_str());
@@ -221,6 +225,14 @@ FFNonbondDb_sp ReadAmberParameters_O::parseMasses(core::T_sp fin, FFNonbondDb_sp
         double polarizability = 0.0;
         if ( maybePolarizability.fixnump() || gc::IsA<core::Float_sp>(maybePolarizability)) {
           polarizability = core::clasp_to_double(maybePolarizability);
+        }
+        // Is there a comment?
+        size_t length = cl__length(sol);
+        core::T_sp comment = nil<core::T_O>();
+        if ((length-25)>0) {
+          std::string scomment = sol->get_std_string().substr(25);
+          trim(scomment);
+          comment = core::SimpleBaseString_O::make(scomment);
         }
         FFNonbond_sp ffNonbond;
         core::T_sp nonbond = ffNonbondDb->FFNonbond_findType(typeSymbol);
@@ -236,6 +248,7 @@ FFNonbondDb_sp ReadAmberParameters_O::parseMasses(core::T_sp fin, FFNonbondDb_sp
         ffNonbond->setType(typeSymbol);
         ffNonbond->setMass(mass);
         ffNonbond->setPolarizability(polarizability);
+        ffNonbond->setTypeComment(comment);
         //      printf("%s:%d Adding nonbond type with name: %s\n", __FILE__, __LINE__, _rep_(typeSymbol).c_str());
         if (newp) ffNonbondDb->add(ffNonbond);
       }
@@ -529,7 +542,8 @@ void ReadAmberParameters_O::parseNonbondDb(core::T_sp fin, FFNonbondDb_sp ffNonb
           SIMPLE_ERROR(("The ffNonbond was not located for %s") , core::_rep_(stype));
         }
       } else {
-        SIMPLE_ERROR(("Could not find type: %s") , _rep_(stype));
+        SIMPLE_WARN(("Could not find nonbond type: %s") , _rep_(stype));
+        continue;
       }
       double radius = gc::As<core::Number_sp>(tradius)->as_double_();
       double edep = gc::As<core::Number_sp>(tedep)->as_double_();
@@ -556,7 +570,7 @@ void ReadAmberParameters_O::parseNonbondDb(core::T_sp fin, FFNonbondDb_sp ffNonb
                 ffNonbondSameParmType->setRadius_Angstroms(radius);
                 ffNonbondSameParmType->setEpsilon_kcal(edep);             
               } else {
-                SIMPLE_ERROR(("Could not find type: %s") , _rep_(stype));
+                SIMPLE_ERROR(("Could not find nonbond2 type: %s") , _rep_(stype));
               }
             
             }
@@ -588,7 +602,7 @@ void ReadAmberParameters_O::parseAtomEquivalences(core::T_sp fin, FFNonbondDb_sp
       if ( ffNonbondDb->hasType(stype) ) {
         ffNonbond = gc::As_unsafe<FFNonbond_sp>(ffNonbondDb->FFNonbond_findType(stype));
       } else {
-        SIMPLE_ERROR(("Could not find type: %s") , type);
+        SIMPLE_ERROR(("Could not find atom equiv type: %s") , type);
       }
       string params = core::trimWhiteSpace(line.substr(4));
       printf("%s:%d:%s ffNonbond %s -> setSameParams(%s)\n", __FILE__, __LINE__, __FUNCTION__, core::_rep_(ffNonbond).c_str(), params.c_str());
