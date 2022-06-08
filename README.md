@@ -23,51 +23,56 @@ Binary packages for Cando are built nightly starting about 2:00 AM EST and take 
 #### Installing from the Nightly Linux Package Repository for Ubuntu 22.04 or Debian Bookworm.
 
 1. Install jupyter-lab using [miniconda](https://docs.conda.io/en/latest/miniconda.html).
-  ```bash
-  conda install -c conda-forge jupyterlab
-  ```
+   ```bash
+   conda install -c conda-forge jupyterlab
+   ```
   
 2. Install Cando (this should detect and work for both Ubuntu or Debian)
-  ```bash
-  sudo bash -c "$(curl -fsSL https://www.thirdlaw.tech/pkg/cando.sh)"
-  ```
+   ```bash
+   sudo bash -c "$(curl -fsSL https://www.thirdlaw.tech/pkg/cando.sh)"
+   ```
 
-3. Enhance the jupyter-lab/Cando environment by installing jupyter-lab widgets, drawing and visualization tools.
-  ```bash
-  conda install -c conda-forge nodejs=17.9.0
-  ```
-  and then...
+3. Install Cando user snapshot and Jupyter kernels
+   ```bash
+   cando-user-install
+   ```
+
+4. Enhance the jupyter-lab/Cando environment by installing jupyter-lab widgets, drawing and visualization tools.
+   ```bash
+   conda install -c conda-forge nodejs=17.9.0
+   ```
+   and then...
   
-  ```bash
-  jupyter-labextension install cytoscape-clj kekule-clj ngl-clj resizable-box-clj @jupyter-widgets/jupyterlab-manager  jupyterlab_templates jupyterlab-debugger-restarts jupyterlab-molviewer
-  ```
+   ```bash
+   jupyter-labextension install cytoscape-clj kekule-clj ngl-clj resizable-box-clj @jupyter-widgets/jupyterlab-manager  jupyterlab_templates jupyterlab-debugger-restarts jupyterlab-molviewer
+   ```
 
 Now the installation is done!  Scroll to the instructions below to [download cando-demos and run jupyter-lab/cando](https://github.com/cando-developers/cando/blob/main/README.md#cando--jupyter-demonstrations)!
 
 If step 2 fails to detect your operating system then you can install manually via one of the following.
 
 - Debian Bookworm
-    ```bash
-    curl -fsSL https://www.thirdlaw.tech/pkg/key.gpg | gpg --yes --dearmor --output /etc/apt/trusted.gpg.d/thirdlaw.gpg
-    add-apt-repository "deb https://www.thirdlaw.tech/pkg/bookworm/ ./"
-    apt-get update
-    apt-get install cando
-    ```
+  ```bash
+  curl -fsSL https://www.thirdlaw.tech/pkg/key.gpg | gpg --yes --dearmor --output /etc/apt/trusted.gpg.d/thirdlaw.gpg
+  add-apt-repository "deb https://www.thirdlaw.tech/pkg/bookworm/ ./"
+  apt-get update
+  apt-get install cando
+  ```
 - Ubuntu 22.04 (Jammy)
-    ```bash
-    curl -fsSL https://www.thirdlaw.tech/pkg/key.gpg | gpg --yes --dearmor --output /etc/apt/trusted.gpg.d/thirdlaw.gpg
-    add-apt-repository "deb https://www.thirdlaw.tech/pkg/jammy/ ./"
-    apt-get update
-    apt-get install cando
-    ```
+  ```bash
+  curl -fsSL https://www.thirdlaw.tech/pkg/key.gpg | gpg --yes --dearmor --output /etc/apt/trusted.gpg.d/thirdlaw.gpg
+  add-apt-repository "deb https://www.thirdlaw.tech/pkg/jammy/ ./"
+  apt-get update
+  apt-get install cando
+  ```
 - Arch
-    ```bash
-    curl -fsSL https://www.thirdlaw.tech/pkg/key.gpg | pacman-key --add -
-    pacman-key --lsign-key 009C1F20737D81230A0928CBC812E10EC39DF202
-    echo -e "\n[thirdlaw]\nServer = https://www.thirdlaw.tech/pkg/arch\n" >>/etc/pacman.conf
-    pacman -Sy --noconfirm cando-git
-    ```
-    
+  ```bash
+  curl -fsSL https://www.thirdlaw.tech/pkg/key.gpg | pacman-key --add -
+  pacman-key --lsign-key 009C1F20737D81230A0928CBC812E10EC39DF202
+  echo -e "\n[thirdlaw]\nServer = https://www.thirdlaw.tech/pkg/arch\n" >>/etc/pacman.conf
+  pacman -Sy --noconfirm cando-git
+  ```
+  
 #### Installing from the Nightly Homebrew Tap
 
 Binary packages for MacOS Catalina, Big Sur and Monterey are available from the `clasp-developers/clasp` tap. 
@@ -84,26 +89,25 @@ To install Cando do the following:
    
    Homebrew installed from an x86 shell installs in `/usr/local`.
    
-2. Install jupyterlab
+2. Install Cando
 
    ```bash
-   brew install jupyterlab
+   brew install clasp-developers/clasp/cando
    ```
 
-3. Install Cando
-
-    ```bash
-    brew install clasp-developers/clasp/cando
-    ```
+3. Install Cando user snapshot and Jupyter kernels
+   ```bash
+   cando-user-install
+   ```
 
 These Homebrew formula can be built from source by adding the `--build-from-source` option and can be built directly the most recent commit by adding the `--HEAD` option.
 
 After the initial install, to upgrade to the latest nightly build use `brew update && brew upgrade`. The `brew update` only needs to be done occasionally to update homebrew itself.
 
 4. Enhance the jupyter-lab/Cando environment by installing jupyter-lab widgets, drawing and visualization tools.
-  ```bash
-  jupyter-labextension install cytoscape-clj kekule-clj ngl-clj resizable-box-clj @jupyter-widgets/jupyterlab-manager  jupyterlab_templates jupyterlab-debugger-restarts jupyterlab-molviewer
-  ```
+   ```bash
+   jupyter-labextension install cytoscape-clj kekule-clj ngl-clj resizable-box-clj @jupyter-widgets/jupyterlab-manager  jupyterlab_templates jupyterlab-debugger-restarts jupyterlab-molviewer
+   ```
 
 # Cando + Jupyter Demonstrations
 Several JupyterLab notebooks that demonstrate how Cando can be used for computational chemistry can be found in [Cando-demos](https://github.com/cando-developers/cando-demos).
