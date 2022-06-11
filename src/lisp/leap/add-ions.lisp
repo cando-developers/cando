@@ -1,5 +1,10 @@
 (in-package :leap.add-ions)
 
+(defmacro fformat (stream fmt &rest args)
+  `(progn
+     (format ,stream ,fmt ,@args)
+     (finish-output ,stream)))
+
 (defun ion-topology-atom-type (ion-topology)
   (let* ((constitution (chem:get-constitution ion-topology))
          (constitution-atoms (chem:get-constitution-atoms constitution))
@@ -10,10 +15,12 @@
         (error "The topology ~s must have only one atom" ion-topology))))
 
 (defun add-ions (mol ion1 ion1-number &optional ion2 ion2-number)
-  (warn "This function is a bit broken - every molecule must specify what force-field it will use - leap.core::merged-force-field is incorrect - the force-field has to be looked up from the ion-topology since the ion topology will create single residue in a molecule.  Using :default for now")
+  (declare (optimize (debug 3)))
+  (when (chem:verbose 1) (fformat t "Entered add-ions~%"))
   (let* ((force-field-name :default)
          (nonbond-db (leap.core:nonbond-force-field-component force-field-name))
-         (ion1-topology (cando:lookup-topology ion1))
+         (ion1-topology (if (typep ion1 'chem:topology) ion1
+                            (cando:lookup-topology ion1)))
          (ion1-type (ion-topology-atom-type ion1-topology))
          (ion1-type-index (chem:find-type-index nonbond-db ion1-type))
          (ion1-ffnonbond (chem:get-ffnonbond-using-type-index nonbond-db ion1-type-index))
@@ -55,9 +62,9 @@
     (if (and (= 0 target-charge)
              (= 0 ion1-number))
         (progn
-          (format t "The total charge is ~a and so there are no charges to neutralize.~%" target-charge)
+          (fformat t "The total charge is ~a and so there are no charges to neutralize.~%" target-charge)
           (return-from add-ions))
-        (format t "Total charge ~,2f~%" target-charge))
+        (fformat t "Total charge ~,2f~%" target-charge))
     ;;Consider neutralizetion    
     (if (= ion1-number 0)
         (progn
@@ -73,7 +80,7 @@
           (when ion2
               (warn "Neutralization - can't do 2nd ion.")
               (return-from add-ions nil))
-          (format t "~d ~a ions required to neutraize. ~%" ion1-number (chem:get-name ion1-atom))))
+          (fformat t "~d ~a ions required to neutraize. ~%" ion1-number (chem:get-name ion1-atom))))
     ;;Consider ion sizes and postions
     (if ion2
         (let* ((ion2-topology (cando:lookup-topology ion2))
@@ -83,7 +90,7 @@
           (setf ion2-size (chem:get-radius-angstroms ion2-ffnonbond))
           (setf ion-min-size (min ion1-size ion2-size)))
         (setf ion-min-size ion1-size))
-    (format t "Adding ~d counter ions to ~a using 1A grid. ~%"
+    (fformat t "Adding ~d counter ions to ~a using 1A grid. ~%"
             (if ion2 (+ ion1-number ion2-number) ion1-number) (chem:get-name mol))
     (if ion2
         (if (> (+ ion1-number ion2-number) 5)
@@ -114,12 +121,12 @@
                   ion2-atom (chem:content-at ion2-residue 0))
             (chem:add-matter ion2-mol ion2-residue)
             (chem:add-matter ion2-agg ion2-mol)))
-      (format t "About to octree-create~%")
+      (fformat t "About to octree-create~%")
       (chem:octree-create octree mol :shell grid-space ion-min-size shell-extent nonbond-db include-solvent t)
-      (format t "Came out of octree-create~%")
+      (fformat t "Came out of octree-create~%")
       (if (aref solvent-vec 0)
-          (format t " Solvent present: replacing closest with ion when steric overlaps occur~%")
-          (format t "(no solvent present)~%"))
+          (fformat t " Solvent present: replacing closest with ion when steric overlaps occur~%")
+          (fformat t "(no solvent present)~%"))
       (multiple-value-bind (min-charge-point max-charge-point)
           (chem:octree-init-charges octree at-octree dielectric ion1-size)
         (loop 
@@ -136,7 +143,7 @@
                         (check-solvent mol solvent-vec ion1-copy new-point))  
                     (chem:apply-transform-to-atoms ion1-copy ion1-transform)
                     (chem:add-matter mol ion1-copy)
-                    (format t "Placed ~a in ~a at (~,2f, ~,2f, ~,2f).~%" (chem:get-name ion1-atom) 
+                    (fformat t "Placed ~a in ~a at (~,2f, ~,2f, ~,2f).~%" (chem:get-name ion1-atom) 
                             (chem:get-name mol)
                             (geom:get-x new-point)
                             (geom:get-y new-point)
@@ -159,7 +166,7 @@
                           (ion2-transform (geom:make-m4-translate new-point)))
                       (chem:apply-transform-to-atoms ion2-copy ion2-transform)
                       (chem:add-matter mol ion2-copy)
-                      (format t "Placed ~a in ~a at (~,2f, ~,2f, ~,2f).~%" (chem:get-name ion2-atom) 
+                      (fformat t "Placed ~a in ~a at (~,2f, ~,2f, ~,2f).~%" (chem:get-name ion2-atom) 
                               (chem:get-name mol)
                               (geom:get-x new-point)
                               (geom:get-y new-point)
@@ -203,6 +210,8 @@
     (if (and ion2 (= 0 ion2-number))
         (error "'0' is not allowed as the value for the second ion."))
     ;;Consider target unit's charge
+    (when (chem:verbose 1)
+      (fformat t "Calculating the total charge~%"))
     (chem:map-atoms
      nil
      (lambda (r)
@@ -211,9 +220,9 @@
     (if (and (= 0 target-charge)
              (= 0 ion1-number))
         (progn
-          (format t "The total charge is ~a and so there are no charges to neutralize.~%" target-charge)
+          (fformat t "The total charge is ~a and so there are no charges to neutralize.~%" target-charge)
           (return-from add-ions-2))
-        (format t "Total charge ~f~%" target-charge))
+        (fformat t "Total charge ~f~%" target-charge))
     ;;Consider neutralizetion    
     (if (= ion1-number 0)
         (progn
@@ -221,14 +230,14 @@
                        (< target-charge 0))
                   (and (> (chem:get-charge ion1-atom) 0)
                        (> target-charge 0)))
-            (warn "1st Ion and target aggregate have charges of the same sign - aggregate charge: ~f; ion charge: ~f"
+            (warn "1st Ion and target aggregate have charges of the same sign - aggregate charge: ~f; ion charge: ~f - not adding ions."
                   target-charge (chem:get-charge ion1-atom))
             (return-from add-ions-2 nil))
           ;;Get the nearest integer number of ions that we need to add to get as close as possible to neutral.
           (setf ion1-number (round (/ (abs target-charge) (abs (chem:get-charge ion1-atom)))))
           (when ion2
               (error "Neutralization - can't do 2nd ion."))
-          (format t "~d ~a ions required to neutraize. ~%" ion1-number (chem:get-name ion1-atom))))
+          (fformat t "~d ~a ions required to neutraize. ~%" ion1-number (chem:get-name ion1-atom))))
     ;;Consider ion sizes and postions
     (if ion2
         (let* ((ion2-topology (cando:lookup-topology ion2))
@@ -238,7 +247,7 @@
           (setf ion2-size (chem:get-radius-angstroms ion2-ffnonbond))
           (setf ion-min-size (min ion1-size ion2-size)))
         (setf ion-min-size ion1-size))
-    (format t "Adding ~d counter ions to ~a using 1A grid. ~%"
+    (fformat t "Adding ~d counter ions to ~a using 1A grid. ~%"
             (if ion2 (+ ion1-number ion2-number) ion1-number) (chem:get-name mol))
     (if ion2
         (if (> (+ ion1-number ion2-number) 5)
@@ -258,6 +267,7 @@
                                       1.0)))))
     
     ;;Build grid and calc potential on it
+    (when (chem:verbose 1) (fformat t "Setting up grid and calculate potential on it~%"))
     (let ((octree (core:make-cxx-object 'chem:add-ion-octree))
           (ion2-mol (chem:make-molecule))
           (ion2-agg (chem:make-aggregate))
@@ -269,9 +279,9 @@
                   ion2-atom (chem:content-at ion2-residue 0))
             (chem:add-matter ion2-mol ion2-residue)
             (chem:add-matter ion2-agg ion2-mol)))
-      (format t "About to octree-create~%")
+      (fformat t "About to octree-create~%")
       (chem:octree-create octree mol :shell grid-space ion-min-size shell-extent nonbond-db include-solvent t)
-      (format t "Came out of octree-create~%")
+      (fformat t "Came out of octree-create~%")
       (multiple-value-bind (min-charge-point max-charge-point)
           (chem:octree-init-charges octree at-octree dielectric ion1-size)
         (loop 
@@ -286,7 +296,7 @@
                   (progn
                     (chem:apply-transform-to-atoms ion1-copy ion1-transform)
                     (chem:add-matter mol ion1-copy)
-                    (format t "Placed ~a in ~a at (~,2f, ~,2f, ~,2f).~%" (chem:get-name ion1-atom) 
+                    (fformat t "Placed ~a in ~a at (~,2f, ~,2f, ~,2f).~%" (chem:get-name ion1-atom) 
                             (chem:get-name mol)
                             (geom:get-x new-point)
                             (geom:get-y new-point)
@@ -309,7 +319,7 @@
                           (ion2-transform (geom:make-m4-translate new-point)))
                       (chem:apply-transform-to-atoms ion2-copy ion2-transform)
                       (chem:add-matter mol ion2-copy)
-                      (format t "Placed ~a in ~a at (~,2f, ~,2f, ~,2f).~%" (chem:get-name ion2-atom) 
+                      (fformat t "Placed ~a in ~a at (~,2f, ~,2f, ~,2f).~%" (chem:get-name ion2-atom) 
                               (chem:get-name mol)
                               (geom:get-x new-point)
                               (geom:get-y new-point)
@@ -369,13 +379,13 @@
            (lambda (m)
              (if (= (chem:residue-count m) 1)
                    (when (eq (chem:get-name (chem:get-residue m 0)) :delete)
-                     (format t "Replacing solvent molecule~%")
+                     (fformat t "Replacing solvent molecule~%")
                      (chem:remove-molecule mol m))
                    (chem:map-residues
                     nil
                     (lambda (r)
                       (when (eq (chem:get-name r) :delete)
-                        (format t "Replacing solvent molecule~%")
+                        (fformat t "Replacing solvent molecule~%")
                         (chem:remove-residue m r)))
                     m)))
            mol)))))
@@ -412,17 +422,17 @@
      aggregate)
     (if (= 0 target-charge)
         (progn
-          (format t " ~s has a charge of 0. ~%" (chem:get-name aggregate))
+          (fformat t " ~s has a charge of 0. ~%" (chem:get-name aggregate))
           (if (= 0 ion1-number)
               (progn
                 (error "Can't neutralize")
                 (return-from add-ions-rand))
-              (format t "Adding the ions anyway~%")))
-        (format t "Charge ~,2f ~%" target-charge))
+              (fformat t "Adding the ions anyway~%")))
+        (fformat t "Charge ~,2f ~%" target-charge))
     ;;Make sure the ions are actually ions
     (if (= 0 (chem:get-charge ion1-atom))
         (progn
-          (format t "~a is not an ion and is not appropriate for placement. ~%" ion1)
+          (fformat t "~a is not an ion and is not appropriate for placement. ~%" ion1)
           (return-from add-ions-rand)))
     (if ion2
         (let* ((ion2-topology (cando:lookup-topology ion2))
@@ -454,7 +464,7 @@
           (when ion2
             (warn "Neutralization - can't do 2nd ion.")
             (return-from add-ions-rand nil))
-          (format t "~d ~a ions required to neutraize. ~%" ion1-number (chem:get-name ion1-atom))))
+          (fformat t "~d ~a ions required to neutraize. ~%" ion1-number (chem:get-name ion1-atom))))
     (if (not (chem:first-solvent-molecule-nspsol-bound-p atom-table))
         (error "No solvent present. Add solvent first.~%"))
     (let* ((final-solute-residue (chem:final-solute-residue-iptres atom-table))
@@ -466,7 +476,7 @@
               (error "Too few solvent molecules to add ions.~%"))
           (if (>= ion1-number total-number-of-solvent-molecules)
               (error "Too few solvent molecules to add ions.~%")))
-      (format t "Adding ~a counter ions to ~a. ~a solvent molecules will remain.~%"
+      (fformat t "Adding ~a counter ions to ~a. ~a solvent molecules will remain.~%"
               (if ion2 (+ ion1-number ion2-number) ion1-number) (chem:get-name aggregate)
               (if ion2 (- total-number-of-solvent-molecules ion1-number ion2-number)
                   (- total-number-of-solvent-molecules ion1-number)))
@@ -486,7 +496,7 @@
                       (fail-counter 0)
                       (place-ion t)
                       picked-molecule picked-residue position)
-                 (format t "picked-molecule-count ~a~%" picked-molecule-count)
+                 (fformat t "picked-molecule-count ~a~%" picked-molecule-count)
                  (chem:map-molecules
                   nil
                   (lambda (m)
@@ -505,7 +515,7 @@
                                 (incf fail-counter))))
                  (if place-ion
                      (progn
-                       (format t "~a: Placed ~a in ~a at (~,2f, ~,2f, ~,2f).~%"
+                       (fformat t "~a: Placed ~a in ~a at (~,2f, ~,2f, ~,2f).~%"
                                ion-count ion1 (chem:get-name aggregate)
                                (geom:get-x position) (geom:get-y position) (geom:get-z position))
                        ;;Save this ion's position if desired
@@ -533,7 +543,7 @@
                       (fail-count 0)
                       (place-ion t)
                       picked-molecule picked-residue position)
-                 (format t "picked-molecule-count ~a~%" picked-molecule-count)
+                 (fformat t "picked-molecule-count ~a~%" picked-molecule-count)
                  (chem:map-molecules
                   nil
                   (lambda (m)
@@ -552,7 +562,7 @@
                                 (incf fail-count))))
                  (if place-ion
                      (progn
-                       (format t "~a: Placed ~a in ~a at (~,2f, ~,2f, ~,2f).~%"
+                       (fformat t "~a: Placed ~a in ~a at (~,2f, ~,2f, ~,2f).~%"
                                ion-count ion2 (chem:get-name aggregate)
                                (geom:get-x position) (geom:get-y position) (geom:get-z position))
                        ;;Save this ion's position if desired

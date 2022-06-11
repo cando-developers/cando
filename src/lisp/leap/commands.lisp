@@ -1458,6 +1458,7 @@ Provide a list of commands that cleap has available to mimic tleap."
           ("list" . leap-list-variables)
           ("listVariables" . leap-list-variables) ; alternative to "list"
           ("loadPdb" . leap.pdb:load-pdb)
+          ("scanPdb" . leap.pdb:scanPdb)
           ("source" . leap-source)
           ("set" . leap.set )
           ("loadChemDraw" . leap.load-chem-draw)

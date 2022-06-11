@@ -110,6 +110,7 @@
 (defpackage #:leap.pdb
   (:use #:common-lisp)
   (:export
+   #:scanPdb
    #:scan-pdb
    #:scan-pdb-stream
    #:load-pdb

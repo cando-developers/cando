@@ -86,4 +86,4 @@ away from their bonded neighbor that has coordinates in a random direction."
               (error "No atoms were built - there are molecules with no built atoms"))
             (setf remaining cur-remaining)) ; repeat the loop
           )))
-  
+

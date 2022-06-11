@@ -1392,7 +1392,7 @@ cando-extensions               : T if you want cando-extensions written to the t
          (fortran:debug "-36-")
          (fortran:fformat 10 "%8d")
          (loop repeat natom
-               do (fortran:fwrite "0"))
+               do (fortran:fwrite 0))
          (fortran:end-line))
         ;;This section is no longer used and is currently just filled with zeros.
 
@@ -1405,7 +1405,7 @@ cando-extensions               : T if you want cando-extensions written to the t
          (fortran:debug "-37-")
          (fortran:fformat 10 "%8d")
          (loop repeat natom
-               do (fortran:fwrite "0"))
+               do (fortran:fwrite 0))
          (fortran:end-line))
         ;;This section is not used and is currently just filled with zeros.
 
@@ -1578,7 +1578,7 @@ cando-extensions               : T if you want cando-extensions written to the t
     (values energy-function)))
 
 (defun save-amber-parm-format (aggregate topology-pathname coordinate-pathname &key assign-types residue-name-to-pdb-alist (cando-extensions t))
-  (format t "Constructing energy function~%")
+  (format t "Constructing energy function - please wait~%")
   (finish-output)
   (let* ((energy-function (chem:make-energy-function :matter aggregate 
                                                      :use-excluded-atoms t
