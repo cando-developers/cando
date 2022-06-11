@@ -6,7 +6,9 @@
          (scando (merge-pathnames "scando" bin-path))
          (scleap (merge-pathnames "scleap" bin-path)))
     (cando-jupyter:install :load-system nil :bin-path scando)
-    (uiop:run-program (format nil "ln -sf ~a ~a" scando scleap))
+    (ensure-directories-exist bin-path)
+    (uiop:run-program (format nil "ln -sf ~a ~a" scando scleap)
+                      :ignore-error-status t)
     (clos:compile-all-generic-functions)
     (gctools:save-lisp-and-die (namestring scando) :executable t)))
 

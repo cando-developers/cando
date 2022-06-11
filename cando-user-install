@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+mkdir -p "$HOME/.local/bin" # TODO Check to see if it is in the path
+
 if [ ! -f "$HOME/quicklisp/setup.lisp" ]; then
   echo "Installing Quicklisp..."
   tmpfile=$(mktemp)
