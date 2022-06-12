@@ -4,6 +4,7 @@
   :author "Tarn W. Burton <twburton@gmail.com>"
   :licence "LGPL-3.0"
   :serial t
-  :depends-on (#:cando-jupyter)
+  :depends-on (#:cando-jupyter
+               #:cl-csv)
   :components ((:file "packages")
                (:file "install")))

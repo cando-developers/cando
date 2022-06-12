@@ -127,7 +127,7 @@ Setup the gaff-1 force-field."
   "quickload   system
 
 Download a Cando package from the internet, compile it and make it available for use."
-  (ql:quickload system))
+  (funcall (find-symbol "QUICKLOAD" "QL") system))
 
 (defun leap-log-file (entry)
   "    logFile filename

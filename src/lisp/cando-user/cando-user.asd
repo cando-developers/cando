@@ -9,11 +9,9 @@
                #:design
                #:leap
                #:leap-commands
-               #+(or)#:cando-jupyter
                #:sdf
                #:tirun
                #:sketch2d
-               #:cando-widgets
                #:cando-build
                #:lparallel)
   :serial t
@@ -21,5 +19,4 @@
                (:file "start-swank")
                (:file "graphviz")
                (:file "cl-jupyter")
-               (:file "extension")
-               (:file "interactive-tools")))
+               (:file "extension")))

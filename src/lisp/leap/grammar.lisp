@@ -105,9 +105,6 @@
                                                     :bounds (cons start end))
       (* :argument arguments))))
 
-(defrule/s function-name
-    (function-name-p function-name-string))
-
 ;;; leap.parser::*function-names*
 
 (defvar *function-names/alist* nil
@@ -120,11 +117,12 @@
     (+ (character-ranges (#\a #\z) (#\A #\Z) (#\0 #\9)))
   (:text t))
 
-
 (defrule matter-name-string
     (+ (character-ranges (#\a #\z) (#\A #\Z) (#\0 #\9)))
   (:text t))
 
+(defrule/s function-name
+    (function-name-p function-name-string))
 
 
 (defun file-path-unquoted-p (thing)

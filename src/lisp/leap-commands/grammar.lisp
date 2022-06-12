@@ -105,9 +105,6 @@
                                                     :bounds (cons start end))
       (* :argument arguments))))
 
-(defrule/s function-name
-    (function-name-p function-name-string))
-
 #+(or)
 (defvar *function-names*
   '("add" "addH" "addIons" "addIons2" "addIonSolv" "addIonsRand" "addPath"
@@ -132,6 +129,9 @@
 
 (defun function-name-p (thing)
   (assoc thing *function-names/alist* :test #'string-equal))
+
+(defrule/s function-name
+    (function-name-p function-name-string))
 
 (defrule function-name-string
     (+ (character-ranges (#\a #\z) (#\A #\Z) (#\0 #\9)))

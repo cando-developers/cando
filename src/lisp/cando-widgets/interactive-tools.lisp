@@ -1,5 +1,4 @@
-
-(in-package :cando-user)
+(in-package :cando-widgets)
 
 (defparameter *energy-function* nil)
 (defparameter *pick-aggregate* nil)
@@ -85,7 +84,7 @@
       (log-interactions atoms *energy-function*))))
 
 (defun force-field-viewer (aggregate)
-  "Interactively display bond, angle and dihedral terms of an energy function 
+  "Interactively display bond, angle and dihedral terms of an energy function
 generated from an aggregate"
   (let* ((energy-function (chem:make-energy-function :matter aggregate :assign-types t))
          (component (cando-widgets:make-ngl-structure
@@ -111,4 +110,4 @@ generated from an aggregate"
                          (lambda (inst data)
                            (stage-select outs inst data)))
     all))
-    
+
