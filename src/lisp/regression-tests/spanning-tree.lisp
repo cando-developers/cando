@@ -3,11 +3,12 @@
 
 
 (test spanning-tree
-      (let* ((filename (translate-logical-pathname "sys:extensions;cando;src;lisp;regression-tests;data;A1.mol2"))
+      (let* ((filename (translate-logical-pathname "sys:extensions;cando;src;lisp;regression-tests;data;a1.mol2"))
              (agg (chem:load-mol2 filename))
              (mol (chem:content-at agg 0))
              (res (chem:content-at mol 0))
              (atm (chem:content-at res 0))
              (span (chem:make-spanning-loop atm))
              (atoms (chem:all-atoms span)))
-        (= (length atoms) 95)))
+        (length atoms))
+      (95))

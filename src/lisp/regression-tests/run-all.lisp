@@ -2,10 +2,11 @@
 
 (declaim (optimize (safety 3)))
 
-(load (compile-file "sys:regression-tests;framework.lisp"))
+(load (compile-file "sys:src;lisp;regression-tests;framework.lisp"))
 
 (in-package :clasp-tests)
 
 (reset-clasp-tests)
 (load-if-compiled-correctly "sys:extensions;cando;src;lisp;regression-tests;leap.lisp")
 (load-if-compiled-correctly "sys:extensions;cando;src;lisp;regression-tests;spanning-tree.lisp")
+(ext:quit (if (show-test-summary) 0 1))
