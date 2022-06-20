@@ -201,7 +201,6 @@
     (and #\: (+ (character-ranges (#\a #\z) (#\A #\Z) (#\0 #\9) #\. #\_ #\+ #\-)))
   (:lambda (chars)
     (let ((str (string-upcase (esrap:text (cdr chars)))))
-      (format t "keyword str -> ~s~%" str)
       (intern str :keyword))))
 
 
