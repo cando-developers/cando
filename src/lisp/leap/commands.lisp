@@ -10,6 +10,31 @@
 (defun leap.show-paths ()
   (leap:show-paths))
 
+(defun leap.selectChainIds (scan chainIds)
+  (let ((pdb-scanner (leap.core:lookup-variable scan)))
+    (leap.pdb:selectChainIds pdb-scanner chainIds))
+  :no-output)
+
+(defun leap.ignoreResidues (scan residues)
+  (let ((pdb-scanner (leap.core:lookup-variable scan)))
+    (leap.pdb:ignoreResidues pdb-scanner residues))
+  :no-output)
+
+(defun leap.renameResidues (scan list)
+  (let ((pdb-scanner (leap.core:lookup-variable scan)))
+    (leap.pdb:renameResidues pdb-scanner list))
+  :no-output)
+
+(defun leap.renameAtoms (scan list)
+  (let ((pdb-scanner (leap.core:lookup-variable scan)))
+    (leap.pdb:renameAtoms pdb-scanner list))
+  :no-output)
+
+(defun leap.ignoreAtoms (scan list)
+  (let ((pdb-scanner (leap.core:lookup-variable scan)))
+    (leap.pdb:ignoreAtoms pdb-scanner list))
+  :no-output)
+
 (defun leap.show (arg)
   (let ((val (leap.core:lookup-variable arg)))
     (funcall (find-symbol "SHOW" :cando-user) val)))
@@ -224,6 +249,8 @@ Print a description of the object.
     :no-output))
 
 
+(defun leap.checkPdb (pdb-scanner)
+  (leap.pdb:checkPdb (leap.core:lookup-variable pdb-scanner)))
 
 (defgeneric do-remove (a b))
 
@@ -1457,8 +1484,14 @@ Provide a list of commands that cleap has available to mimic tleap."
           ("ls" . leap.dir)
           ("list" . leap-list-variables)
           ("listVariables" . leap-list-variables) ; alternative to "list"
-          ("loadPdb" . leap.pdb:load-pdb)
+          ("loadPdb" . leap.pdb:loadPdb)
           ("scanPdb" . leap.pdb:scanPdb)
+          ("selectChainIds" . leap.selectChainIds)
+          ("ignoreResidues" . leap.ignoreResidues)
+          ("renameResidues" . leap.renameResidues )
+          ("renameAtoms" . leap.renameAtoms )
+          ("ignoreAtoms" . leap.ignoreAtoms )
+          ("checkPdb" . leap.checkPdb)
           ("source" . leap-source)
           ("set" . leap.set )
           ("loadChemDraw" . leap.load-chem-draw)
@@ -1528,7 +1561,7 @@ Provide a list of commands that cleap has available to mimic tleap."
                  (if (not (fboundp leap-sym))
                    (progn
                      (setf (fdefinition leap-sym) (fdefinition command-symbol))
-                     (export leap-sym))
+                     #+(or)(export leap-sym))
                    (when *error-on-bad-alias*
                      (error "Cannot create a lisp alias for function name ~s because it already defines a function ~s~%" leap-sym (fdefinition leap-sym))))))))
   (setf *error-on-bad-alias* nil))
