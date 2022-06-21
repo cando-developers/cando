@@ -1,6 +1,13 @@
 (in-package :leap.commands)
 
 
+(defun leap.set-box (aggregate enclosure &optional (buffer nil bufferp))
+  (let ((enclosure (keyword-upcase enclosure)))
+    (if bufferp
+        (leap.set-box:set-box (leap.core:lookup-variable aggregate) enclosure buffer)
+        (leap.set-box:set-box (leap.core:lookup-variable aggregate) enclosure)
+        )))
+
 (defun leap-setup-amber-paths ()
   (leap:setup-amber-paths))
 
@@ -10,29 +17,33 @@
 (defun leap.show-paths ()
   (leap:show-paths))
 
-(defun leap.selectChainIds (scan chainIds)
+(defun leap.scanAmberCheck (scan)
   (let ((pdb-scanner (leap.core:lookup-variable scan)))
-    (leap.pdb:selectChainIds pdb-scanner chainIds))
+    (leap.pdb:scanAmberCheck pdb-scanner)))
+
+(defun leap.scanSelectChainIds (scan chainIds)
+  (let ((pdb-scanner (leap.core:lookup-variable scan)))
+    (leap.pdb:scanSelectChainIds pdb-scanner chainIds))
   :no-output)
 
-(defun leap.ignoreResidues (scan residues)
+(defun leap.scanIgnoreResidues (scan residues)
   (let ((pdb-scanner (leap.core:lookup-variable scan)))
-    (leap.pdb:ignoreResidues pdb-scanner residues))
+    (leap.pdb:scanIgnoreResidues pdb-scanner residues))
   :no-output)
 
-(defun leap.renameResidues (scan list)
+(defun leap.scanRenameResidues (scan list)
   (let ((pdb-scanner (leap.core:lookup-variable scan)))
-    (leap.pdb:renameResidues pdb-scanner list))
+    (leap.pdb:scanRenameResidues pdb-scanner list))
   :no-output)
 
-(defun leap.renameAtoms (scan list)
+(defun leap.scanRenameAtoms (scan list)
   (let ((pdb-scanner (leap.core:lookup-variable scan)))
-    (leap.pdb:renameAtoms pdb-scanner list))
+    (leap.pdb:scanRenameAtoms pdb-scanner list))
   :no-output)
 
-(defun leap.ignoreAtoms (scan list)
+(defun leap.scanIgnoreAtoms (scan list)
   (let ((pdb-scanner (leap.core:lookup-variable scan)))
-    (leap.pdb:ignoreAtoms pdb-scanner list))
+    (leap.pdb:scanIgnoreAtoms pdb-scanner list))
   :no-output)
 
 (defun leap.show (arg)
@@ -228,6 +239,49 @@ is written to the log file as if the verbosity level were set to 2."
   (chem:setf-molecule-type object value))
 
 (defun leap.set (object property value)
+  "
+   set default variable value
+      STRING                       _variable_
+      STRING                       _value_
+OR
+    set container parameter object
+      UNIT/RESIDUE/ATOM/STRING     _container_
+      STRING                       _parameter_
+      object                       _object/value_
+
+This command sets the values of some global parameters (when the first
+argument is \"default\") or sets various parameters associated with _container_.
+
+To see the possible variables for \"set default\", type \"help set_default\".
+
+The box parameter of a UNIT defines the bounding box of the UNIT; this is
+not a UNIT's periodic box.  The setBox and solvate family of commands add a
+periodic box to a UNIT; for a description, type, e.g., \"help setBox\".
+
+The more useful parameters for each type of _container_ are the following:
+  container    parameters           values
+
+  UNIT         name                 STRING
+               head, tail           ATOM [e.g. unit.1.1]
+               restype              \"protein\" \"nucleic\" \"saccharide\" \"solvent\"
+                                    \"undefined\" [sets all residues in UNIT]
+               box                  LIST [side lengths: {A B C}]
+                                    or NUMBER [cube side length] or \"null\"
+               cap                  LIST [center, radius: {X Y Z  R}]
+                                    or \"null\"
+
+  RESIDUE      name                 STRING
+  [e.g.        restype              [see UNIT]
+   unit.1]     connect0, connect1   ATOM [e.g. unit.1.1]
+               imagingAtom          ATOM [e.g. unit.1.1]
+
+  ATOM         name, pertName       STRING [<= 4 chars]
+  [e.g.        type, pertType       STRING [<= 2 chars]
+   unit.1.1]   element              STRING
+               pert                 \"true\" [or pert flag unset]
+               charge, pertCharge   DOUBLE
+               position             LIST [{X Y Z}]
+"
   (let ((object-fixed (leap.core:lookup-variable object))
         (property-fixed (keyword-upcase property))
         (value-fixed value))
@@ -248,9 +302,6 @@ Print a description of the object.
       (t (describe val)))
     :no-output))
 
-
-(defun leap.checkPdb (pdb-scanner)
-  (leap.pdb:checkPdb (leap.core:lookup-variable pdb-scanner)))
 
 (defgeneric do-remove (a b))
 
@@ -1486,12 +1537,12 @@ Provide a list of commands that cleap has available to mimic tleap."
           ("listVariables" . leap-list-variables) ; alternative to "list"
           ("loadPdb" . leap.pdb:loadPdb)
           ("scanPdb" . leap.pdb:scanPdb)
-          ("selectChainIds" . leap.selectChainIds)
-          ("ignoreResidues" . leap.ignoreResidues)
-          ("renameResidues" . leap.renameResidues )
-          ("renameAtoms" . leap.renameAtoms )
-          ("ignoreAtoms" . leap.ignoreAtoms )
-          ("checkPdb" . leap.checkPdb)
+          ("scanAmberCheck" . leap.scanAmberCheck)
+          ("scanSelectChainIds" . leap.scanSelectChainIds)
+          ("scanIgnoreResidues" . leap.scanIgnoreResidues)
+          ("scanRenameResidues" . leap.scanRenameResidues )
+          ("scanRenameAtoms" . leap.scanRenameAtoms )
+          ("scanIgnoreAtoms" . leap.scanIgnoreAtoms )
           ("source" . leap-source)
           ("set" . leap.set )
           ("loadChemDraw" . leap.load-chem-draw)
@@ -1515,7 +1566,7 @@ Provide a list of commands that cleap has available to mimic tleap."
           ("addIons" . leap-add-ions)
           ("addIons2" . leap-add-ions-2)
           ("addIonsRand" . leap-add-ions-rand)
-          ("setBox" . leap.set-box:set-box)
+          ("setBox" . leap.set-box)
           ("showPaths" . leap.show-paths)
           ("show" . leap.show )
           ("zMatrix" . leap.z-matrix )

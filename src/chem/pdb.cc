@@ -119,14 +119,14 @@ void AtomPdbRec::write(core::T_sp fout)
   if ( this->_name->symbolName()->length() > 3 )
   {
     string sname = this->_name->symbolName()->get_std_string();
-    name = sname.substr(3,1)+sname.substr(0,3);
+    name = sname; // sname.substr(3,1)+sname.substr(0,3);
   } else
   {
     name = " " + this->_name->symbolName()->get_std_string();
   }
   core::clasp_write_string(fmt::sprintf( "ATOM%7d ", this->_serial), fout);
   core::clasp_write_string(fmt::sprintf( "%-4s ", name ), fout);
-  core::clasp_write_string(fmt::sprintf( "%3s ", core::_rep_(this->_resName) ), fout);
+  core::clasp_write_string(fmt::sprintf( "%3s ", this->_resName->symbolNameAsString() ), fout);
   core::clasp_write_string(fmt::sprintf( "%1s", this->_chainId ), fout);
   core::clasp_write_string(fmt::sprintf( "%4d    ", this->_resSeq ), fout );
   core::clasp_write_string(fmt::sprintf( "%8.3f", this->_x ), fout );
@@ -483,15 +483,14 @@ void	PdbWriter_O::initialize()
 
 
 
-void _setupAtomAndConnectRecordsForOneMolecule(
-                                               Molecule_sp mol, 
+size_t _setupAtomAndConnectRecordsForOneMolecule(Molecule_sp mol, 
                                                gctools::Vec0<AtomPdbRec>& pdbAtoms, 
                                                vector<ConnectPdbRec>& pdbConnects, 
-                                               char chainId)
+                                               char chainId, size_t serialStart )
 {
   pdbAtoms.clear();
   pdbConnects.clear();
-  uint serial = 1;
+  size_t serial = serialStart;
   uint resSeq = 1;
   Loop lResidues;
   lResidues.loopTopGoal(mol,RESIDUES);
@@ -509,11 +508,7 @@ void _setupAtomAndConnectRecordsForOneMolecule(
       atom._element = a->getElementAsString();
       atom._recordName = "ATOM";
       atom._serial = serial++;
-      atom._resName = res->getPdbName();
-      if ( atom._resName->symbolName()->length() > 3 )
-      {
-        atom._resName = chemkw_intern("***");
-      }
+      atom._resName = res->getPdbName().notnilp() ? res->getPdbName() : res->getName();
       atom._chainId = chainId;
       atom._resSeq = resSeq;
       atom._x = a->getPosition().getX();
@@ -552,6 +547,7 @@ void _setupAtomAndConnectRecordsForOneMolecule(
       pdbConnects.push_back(connect);
     }
   }
+  return serial;
 }
 
 void _writeAtomAndConnectRecords( core::T_sp fout, gctools::Vec0<AtomPdbRec>& pdbAtoms, 
@@ -562,11 +558,13 @@ void _writeAtomAndConnectRecords( core::T_sp fout, gctools::Vec0<AtomPdbRec>& pd
   {
     ai->write(fout);
   }
+#if 0
   vector<ConnectPdbRec>::iterator ci;
   for ( ci=pdbConnects.begin(); ci!=pdbConnects.end(); ci++ )
   {
     ci->write(fout);
   }
+#endif
   core::clasp_write_string("TER\n", fout );
 }
 
@@ -581,6 +579,7 @@ CL_DEFMETHOD void PdbWriter_O::open(core::T_sp pathDesignator)
 
 void	PdbWriter_O::write(Matter_sp matter)
 {_OF();
+  size_t serialStart = 1;
   if ( matter.isA<Aggregate_O>() )
   {
     Loop lMolecules;
@@ -591,7 +590,7 @@ void	PdbWriter_O::write(Matter_sp matter)
       gctools::Vec0<AtomPdbRec> pdbAtoms;
       vector<ConnectPdbRec> pdbConnects;
       Molecule_sp mol = lMolecules.getMolecule();
-      _setupAtomAndConnectRecordsForOneMolecule(mol,pdbAtoms,pdbConnects,chainId);
+      serialStart = _setupAtomAndConnectRecordsForOneMolecule(mol,pdbAtoms,pdbConnects,chainId,serialStart);
       _writeAtomAndConnectRecords(this->_Out,pdbAtoms,pdbConnects);
       chainId++;
       if ( chainId > 'Z' ) chainId = 'A'; // recycle chain-ids if there are too many
@@ -600,7 +599,7 @@ void	PdbWriter_O::write(Matter_sp matter)
   {
     gctools::Vec0<AtomPdbRec> pdbAtoms;
     vector<ConnectPdbRec> pdbConnects;
-    _setupAtomAndConnectRecordsForOneMolecule(matter.as<Molecule_O>(),pdbAtoms,pdbConnects,1);
+    serialStart = _setupAtomAndConnectRecordsForOneMolecule(matter.as<Molecule_O>(),pdbAtoms,pdbConnects,'A',serialStart);
     _writeAtomAndConnectRecords(this->_Out,pdbAtoms,pdbConnects);
   }
 }

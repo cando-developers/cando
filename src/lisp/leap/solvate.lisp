@@ -39,7 +39,9 @@
      matter)
     (if (chem:bounding-box-bound-p matter)
         (let ((bounding-box (chem:bounding-box matter)))
-          (values x-vec y-vec z-vec
+          (values (copy-seq x-vec)
+                  (copy-seq y-vec)
+                  (copy-seq z-vec)
                   (chem:get-x-width bounding-box)
                   (chem:get-y-width bounding-box)
                   (chem:get-z-width bounding-box)))

@@ -111,13 +111,13 @@
   (:use #:common-lisp)
   (:export
    #:scanPdb
-   #:checkPdb
+   #:scanAmberCheck
    #:make-filter-scanner
-   #:selectChainIds
-   #:ignoreResidues
-   #:renameResidues
-   #:renameAtoms
-   #:ignoreAtoms
+   #:scanSelectChainIds
+   #:scanIgnoreResidues
+   #:scanRenameResidues
+   #:scanRenameAtoms
+   #:scanIgnoreAtoms
    #:scan-pdb-stream
    #:loadPdb
    #:load-pdb-stream

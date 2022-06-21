@@ -108,7 +108,8 @@ odd atom name maps only to the last standard atom name it was mapped to."
 (defstruct pdb-id name context)
 
 (defclass pdb-residue ()
-  ((start-lineno :initarg :start-lineno :accessor start-lineno)
+  ((hetatmp :initform nil :initarg :hetatmp :accessor hetatmp)
+   (start-lineno :initarg :start-lineno :accessor start-lineno)
    (sequences-index :initarg :sequences-index :accessor sequences-index)
    (sequence-index :initarg :sequence-index :accessor sequence-index)
    (chain-id :initarg :chain-id :accessor chain-id)
@@ -116,6 +117,7 @@ odd atom name maps only to the last standard atom name it was mapped to."
    (i-code :initarg :i-code :accessor i-code)
    (topology :initform nil :accessor topology)
    (name :initarg :name :accessor name)
+   (original-residue-name :initarg :original-residue-name :accessor original-residue-name)
    (residue-name :initarg :residue-name :accessor residue-name)
    (atom-names :initarg :atom-names :accessor atom-names)
    (context :initform nil :initarg :context :accessor context)
@@ -127,11 +129,13 @@ odd atom name maps only to the last standard atom name it was mapped to."
 
 (defmethod print-object ((obj pdb-residue) stream)
   (print-unreadable-object (obj stream :type t)
-    (format stream "~a ln_~a|~a:~a ~a :atoms ~a"
+    (format stream "~a ln_~a|~a:~a chid_~a ~s ~a :atoms ~a"
             (name obj)
             (start-lineno obj)
             (sequences-index obj)
             (sequence-index obj)
+            (chain-id obj)
+            (context obj)
             (residue-name obj)
             (atom-names obj))))
 
@@ -182,9 +186,13 @@ odd atom name maps only to the last standard atom name it was mapped to."
   ((filename :initarg :filename :accessor filename)
    (previous-atom-serial :initform nil :accessor previous-atom-serial)
    (previous-residue :initform nil :accessor previous-residue)
+   (previous-hetatmp :initform nil :accessor previous-hetatmp)
+   (previous-chain-id :initform nil :accessor previous-chain-id)
    (sequences-index :initform 0 :accessor sequences-index)
    (sequence-index :initform 0 :accessor sequence-index)
    (current-residue-name :initform nil :accessor current-residue-name)
+   (current-hetatmp :initform nil :accessor current-hetatmp)
+   (current-chain-id :initform nil :accessor current-chain-id)
    (current-reverse-sequence :initform nil :accessor current-reverse-sequence
                              :documentation "Accumulate the current sequence in reverse order")
    (reversed-sequences :initform nil :accessor reversed-sequences
@@ -213,6 +221,8 @@ odd atom name maps only to the last standard atom name it was mapped to."
    (sequences :initarg :sequences :accessor sequences)
    (previous-residue :initarg :previous-residue :accessor previous-residue)
    (previous-topology :initarg :previous-topology :accessor previous-topology)
+   (previous-chain-id :initform nil :initarg :previous-chain-id :accessor previous-chain-id)
+   (current-chain-id :initform nil :initarg :current-chain-id :accessor current-chain-id)
    (aggregate :initform (chem:make-aggregate) :reader aggregate)
    (molecules :initform nil :initarg :molecules :accessor molecules)
    (finish-molecule :initform nil :accessor finish-molecule)
@@ -233,9 +243,10 @@ odd atom name maps only to the last standard atom name it was mapped to."
     #+(or)(format *debug-io* "Added molecule ~a to aggregate~%" (molecule reader)))
   (molecule reader))
 
-(defun new-residue-p (residue-name residue-sequence-number i-code pdb-atom-reader)
+(defun new-residue-p (residue-name residue-sequence-number i-code chain-id pdb-atom-reader)
   (if (or (not (eq residue-sequence-number (current-residue-number pdb-atom-reader)))
-          (not (eq i-code (current-i-code pdb-atom-reader))))
+          (not (eq i-code (current-i-code pdb-atom-reader)))
+          (not (eq chain-id (previous-chain-id pdb-atom-reader))))
       t
       (if (not (eq residue-name (current-residue-name pdb-atom-reader)))
           (progn
@@ -461,9 +472,12 @@ create more problems."
       (let ((tail-residue (car (current-reverse-sequence pdb-scanner))))
         (setf (context tail-residue) :tail)
         (try-to-assign-topology tail-residue pdb-scanner)))
-    (push (nreverse (current-reverse-sequence pdb-scanner)) (reversed-sequences pdb-scanner))
+    (let ((seq (nreverse (current-reverse-sequence pdb-scanner))))
+      (push seq (reversed-sequences pdb-scanner)))
     (incf (sequences-index pdb-scanner))
     (setf (sequence-index pdb-scanner) 0)
+    (setf (previous-residue pdb-scanner) nil)
+    (setf (previous-hetatmp pdb-scanner) nil)
     (setf (current-reverse-sequence pdb-scanner) nil)))
 
 (defun try-to-assign-topology (res scanner)
@@ -482,37 +496,62 @@ create more problems."
 
 (defun apply-filter-to-scanner (line-filter scanner)
   (check-type scanner pdb-scanner)
-  (with-slots (rename-residues rename-atoms)
+  (with-slots (chain-ids ignore-residues rename-residues ignore-atoms rename-atoms)
       line-filter
     (loop named outer-loop
           for cur-sequence = (sequences scanner) then (cdr cur-sequence)
           for sequence = (car cur-sequence)
-          do (loop named inner-loop
-                   for inner-cur = sequence then (cdr inner-cur)
-                   for pdb-residue = (car inner-cur)
-                   for residue-name = (residue-name pdb-residue)
-                   for atom-names = (atom-names pdb-residue)
-                   for do-rename-atoms = (and rename-atoms
-                                              (gethash residue-name rename-atoms))
-                   for do-renamed-residue = (and rename-residues
-                                                 (gethash residue-name rename-residues))
-                   do (when (or do-renamed-residue do-rename-atoms)
-                        (let ((new-pdb-residue (shallow-copy pdb-residue)))
-                          (when do-renamed-residue
-                            (let ((topology (lookup-topology-using-pdb-name-and-context do-renamed-residue (context pdb-residue))))
-                              (setf (name new-pdb-residue) do-renamed-residue
-                                    (residue-name new-pdb-residue) do-renamed-residue
-                                    (topology new-pdb-residue) topology)))
-                          (when do-rename-atoms
-                            (let ((new-atoms (loop for atom-name in atom-names
-                                                   for new-atom-name = (or (gethash atom-name do-rename-atoms) atom-name)
-                                                   collect new-atom-name)))
-                              (setf (atom-names new-pdb-residue) new-atoms)))
-                          (setf (car inner-cur) new-pdb-residue)))
-                   when (null (cdr inner-cur))
-                     do (return-from inner-loop nil))
+          for selected-chain-id = (and sequence
+                                       (> (length sequence) 0)
+                                       (or (eq chain-ids :all)
+                                           (member (chain-id (first sequence)) chain-ids)))
+          if (null selected-chain-id)
+            do (setf (car cur-sequence) nil)
+          else
+            do (loop named inner-loop
+                     for inner-cur = sequence then (cdr inner-cur)
+                     for pdb-residue = (car inner-cur)
+                     for residue-name = (residue-name pdb-residue)
+                     for atom-names = (atom-names pdb-residue)
+                     for do-ignore-residue = (and ignore-residues
+                                                  (gethash residue-name ignore-residues))
+                     for do-renamed-residue = (and rename-residues
+                                                   (gethash residue-name rename-residues))
+                     for do-ignore-atoms = (and ignore-atoms
+                                                (gethash residue-name ignore-atoms))
+                     for do-rename-atoms = (and rename-atoms
+                                                (gethash residue-name rename-atoms))
+                     do (if do-ignore-residue
+                            (setf (car inner-cur) nil)
+                            (when (or do-ignore-atoms do-renamed-residue do-rename-atoms)
+                              (let ((new-pdb-residue (shallow-copy pdb-residue)))
+                                (when do-renamed-residue
+                                  (let ((topology (lookup-topology-using-pdb-name-and-context do-renamed-residue (context pdb-residue))))
+                                    (setf (name new-pdb-residue) do-renamed-residue
+                                          (residue-name new-pdb-residue) do-renamed-residue
+                                          (topology new-pdb-residue) topology)))
+                                (let ((atom-names (if do-ignore-atoms
+                                                      (loop for an in atom-names
+                                                            unless (gethash an do-ignore-atoms)
+                                                              collect an)
+                                                      atom-names)))
+                                  (setf (atom-names new-pdb-residue) atom-names)
+                                  (when do-rename-atoms
+                                    (let ((new-atoms (loop for atom-name in atom-names
+                                                           for new-atom-name = (or (gethash atom-name do-rename-atoms) atom-name)
+                                                           collect new-atom-name)))
+                                      (setf (atom-names new-pdb-residue) new-atoms)))
+                                  (setf (car inner-cur) new-pdb-residue)))))
+                     when (null (cdr inner-cur))
+                       do (return-from inner-loop nil))
           unless (consp (cdr cur-sequence))
             do (return-from outer-loop nil))
+    ;; Filter out (nil)
+    (setf (sequences scanner) (loop for sequence in (sequences scanner)
+                                    if (and sequence (or (> (length sequence) 1) (first sequence)))
+                                      collect sequence
+                                    else
+                                      collect nil))
     scanner))
 
 (defun apply-filter-to-line (line-filter original)
@@ -581,60 +620,78 @@ MTRIX- Used to build a list of matrices."
                 #+(or)(format t "Read:  ~a~%" line-data)
                 (typecase line-data
                   (atom-line
-                   (if (and check-big-z (slot-boundp scanner 'big-z))
-                       (unless (eq (big-z scanner) big-z)
-                         (error "The big-z status of the PDB file changed"))
-                       (progn
-                         (setf (big-z scanner) big-z
-                               check-big-z nil) ; only check big-z the first ATOM record
-                         (when big-z (warn "This is a BIG-Z PDB file (The Z-coordinate contains an extra digit)"))))
-                   (with-slots (atom-serial atom-name alt-loc residue-name chain-id residue-sequence-number i-code)
-                       line-data
-                     (declare (ignore alt-loc))
-                     ;; Deal with the current line of data
-                     (when (new-residue-p residue-name residue-sequence-number i-code pdb-scanner)
-                        #+(or)(progn
-                               (format t "Starting new residue residue-name: ~a name-of-current-residue: ~a info: ~a~%" residue-name (current-residue-name pdb) (list residue-sequence-number i-code pdb))
-                               (when (null (current-reverse-sequence pdb))
-                                 (format t "Starting new molecule~%")))
-                       (setf (current-residue-number pdb-scanner) residue-sequence-number
-                             (current-residue-name pdb-scanner) residue-name
-                             (current-i-code pdb-scanner) i-code)
-                       (let* ((context-guess (if (null (current-reverse-sequence pdb-scanner))
-                                                 :head
-                                                 :main))
-                              (new-residue (make-instance 'pdb-residue
-                                                          :start-lineno lineno
-                                                          :sequences-index (sequences-index pdb-scanner)
-                                                          :sequence-index (prog1
-                                                                              (sequence-index pdb-scanner)
-                                                                            (incf (sequence-index pdb-scanner)))
-                                                          :chain-id chain-id
-                                                          :res-seq residue-sequence-number
-                                                          :i-code i-code
-                                                          :name residue-name
-                                                          :residue-name residue-name
-                                                          :atom-names nil
-                                                          :context context-guess
-                                                          :atom-serial-first atom-serial)))
-                         (setf (current-residue pdb-scanner) new-residue)
-                         (unless (gethash residue-name (seen-residues pdb-scanner))
-                           ;;(format t "Creating hash-table for ~a~%" residue-name)
-                           (setf (gethash residue-name (seen-residues pdb-scanner)) (make-hash-table)))
-                         #+(or)(try-to-assign-topology new-residue (scanner pdb))
-                         (when (previous-residue pdb-scanner)
-                           (setf (atom-serial-last (previous-residue pdb-scanner)) (previous-atom-serial pdb-scanner)))
-                         (push new-residue (current-reverse-sequence pdb-scanner))
-                         ;; Set things up for the next new residue
-                         (setf (previous-residue pdb-scanner) new-residue)))
-                     (setf (gethash lineno (lineno-to-sequence-index pdb-scanner)) (cons (sequences-index (current-residue pdb-scanner))
-                                                                                         (sequence-index (current-residue pdb-scanner))))
-                     (let ((ht (gethash residue-name (seen-residues pdb-scanner))))
-                       (unless ht (error "Could not find residue-name ~a in the seen-residues: ~a" residue-name (alexandria:hash-table-keys (seen-residues pdb-scanner))))
-                       (setf (gethash atom-name ht) t))
-                     (push atom-name (atom-names (current-residue pdb-scanner)))
-                     ;; Now set things up for the next atom record
-                     (setf (previous-atom-serial pdb-scanner) atom-serial)))
+                   (let ((hetatmp (typep line-data 'hetatm-line)))
+                     (setf (previous-hetatmp pdb-scanner) (current-hetatmp pdb-scanner)
+                           (current-hetatmp pdb-scanner) hetatmp)
+                     (if (and check-big-z (slot-boundp scanner 'big-z))
+                         (unless (eq (big-z scanner) big-z)
+                           (error "The big-z status of the PDB file changed"))
+                         (progn
+                           (setf (big-z scanner) big-z
+                                 check-big-z nil) ; only check big-z the first ATOM record
+                           (when big-z (warn "This is a BIG-Z PDB file (The Z-coordinate contains an extra digit)"))))
+                     (with-slots (atom-serial atom-name alt-loc residue-name chain-id residue-sequence-number i-code)
+                         line-data
+                       (declare (ignore alt-loc))
+                       (setf (previous-chain-id pdb-scanner) (current-chain-id pdb-scanner)
+                             (current-chain-id pdb-scanner) chain-id)
+                       ;; Deal with the current line of data
+                       (when (new-residue-p residue-name residue-sequence-number i-code chain-id pdb-scanner)
+                         #+(or)(progn
+                           (format t "Starting new residue residue-name: ~a name-of-current-residue: ~a info: ~a~%"
+                                   residue-name
+                                   (current-residue-name pdb-scanner)
+                                   (list residue-sequence-number i-code pdb-scanner))
+                           (when (null (current-reverse-sequence pdb-scanner))
+                             (format t "Starting new molecule~%"))
+                           (when (and hetatmp (previous-hetatmp pdb-scanner))
+                             (format t "Should be starting a new molecule HETATM~%")))
+                         ;; Between HETATM residues there are no bonds - they are in separate molecules
+                         (when (and hetatmp (previous-hetatmp pdb-scanner))
+                           (finish-previous-sequence pdb-scanner))
+                         (setf (current-residue-number pdb-scanner) residue-sequence-number
+                               (current-residue-name pdb-scanner) residue-name
+                               (current-i-code pdb-scanner) i-code)
+                         (let* ((context-guess (if (null (current-reverse-sequence pdb-scanner))
+                                                   :head
+                                                   :main))
+                                (new-residue (make-instance 'pdb-residue
+                                                            :hetatmp hetatmp
+                                                            :start-lineno lineno
+                                                            :sequences-index (sequences-index pdb-scanner)
+                                                            :sequence-index (prog1
+                                                                                (sequence-index pdb-scanner)
+                                                                              (incf (sequence-index pdb-scanner)))
+                                                            :chain-id chain-id
+                                                            :res-seq residue-sequence-number
+                                                            :i-code i-code
+                                                            :name residue-name
+                                                            :original-residue-name residue-name
+                                                            :residue-name residue-name
+                                                            :atom-names nil
+                                                            :context context-guess
+                                                            :atom-serial-first atom-serial)))
+                           (setf (current-residue pdb-scanner) new-residue)
+                           (unless (gethash residue-name (seen-residues pdb-scanner))
+                             ;;(format t "Creating hash-table for ~a~%" residue-name)
+                             (setf (gethash residue-name (seen-residues pdb-scanner)) (make-hash-table)))
+                           #+(or)(try-to-assign-topology new-residue (scanner pdb))
+                           (when (previous-residue pdb-scanner)
+                             (setf (atom-serial-last (previous-residue pdb-scanner)) (previous-atom-serial pdb-scanner)))
+                           (push new-residue (current-reverse-sequence pdb-scanner))
+                           ;; Set things up for the next new residue
+                           (setf (previous-residue pdb-scanner) new-residue)))
+                       (setf (gethash lineno (lineno-to-sequence-index pdb-scanner))
+                             (cons (sequences-index (current-residue pdb-scanner))
+                                   (sequence-index (current-residue pdb-scanner))))
+                       (let ((ht (gethash residue-name (seen-residues pdb-scanner))))
+                         (unless ht (error "Could not find residue-name ~a in the seen-residues: ~a"
+                                           residue-name
+                                           (alexandria:hash-table-keys (seen-residues pdb-scanner))))
+                         (setf (gethash atom-name ht) t))
+                       (push atom-name (atom-names (current-residue pdb-scanner)))
+                       ;; Now set things up for the next atom record
+                       (setf (previous-atom-serial pdb-scanner) atom-serial))))
                   (ter-line
                    (finish-previous-sequence pdb-scanner))
                   (ssbond-line
@@ -705,6 +762,7 @@ MTRIX- Used to build a list of matrices."
         do (loop for residue in residues
                  do (adjust-residue-name (residue-name residue) residue scanner system))))
 
+#+(or)
 (defun split-solvent (scanner)
   (let (solvents solutes)
     (loop for group in (sequences scanner)
@@ -840,12 +898,12 @@ MTRIX- Used to build a list of matrices."
         (when (current-reverse-sequence pdb-scanner)
           (pop (current-reverse-sequence pdb-scanner)))
         (finish-previous-sequence pdb-scanner nil)))
-    (let ((sequences (nreverse (reversed-sequences pdb-scanner))))
+    (let ((sequences (reverse (reversed-sequences pdb-scanner))))
       (setf (sequences pdb-scanner) sequences)
       (finish-scanner pdb-scanner)
       (adjust-residue-names pdb-scanner system)
       (assign-topologys pdb-scanner)
-      (split-solvent pdb-scanner)
+      #+(or)(split-solvent pdb-scanner)
       (let* ((result-scanner (build-sequence pdb-scanner system))
              (problems (validate-scanner result-scanner :ignore-missing-topology ignore-missing-topology))
              (remaining-problems (loop for problem in problems
@@ -874,13 +932,13 @@ values residue-sequences matrices"
                        :ignore-missing-topology ignore-missing-topology)
       )))
 
-(defun selectChainIds (scanner list-or-all)
+(defun scanSelectChainIds (scanner list-or-all)
   (unless (or (eq list-or-all :all)
               (listp list-or-all))
     (error "You must specify :all or a list of chain ids"))
   (setf (chain-ids (line-filter scanner)) list-or-all))
 
-(defun ignoreResidues (scanner list)
+(defun scanIgnoreResidues (scanner list)
   (let ((ht (make-hash-table)))
     (loop for entry in list
           unless (keywordp entry)
@@ -888,7 +946,7 @@ values residue-sequences matrices"
           do (setf (gethash entry ht) t))
     (setf (ignore-residues (line-filter scanner)) ht)))
 
-(defun renameResidues (scanner list)
+(defun scanRenameResidues (scanner list)
   (let ((ht (make-hash-table)))
     (loop for entry in list
           for from-res = (first entry)
@@ -900,7 +958,7 @@ values residue-sequences matrices"
           do (setf (gethash from-res ht) to-res))
     (setf (rename-residues (line-filter scanner)) ht)))
 
-(defun ignoreAtoms (scanner list)
+(defun scanIgnoreAtoms (scanner list)
   ;; Parse the args into structured input
   (unless (listp list)
     (leap.core:leap-error "Illegal form for ignoreAtoms list ~s" list))
@@ -924,7 +982,7 @@ values residue-sequences matrices"
                      do (setf (gethash ignore residue-atom-ht) t)))
     (setf (ignore-atoms (line-filter scanner)) ignore-ht)))
 
-(defun renameAtoms (scanner list)
+(defun scanRenameAtoms (scanner list)
   ;; Parse the args into structured input
   (unless (listp list)
     (leap.core:leap-error "Illegal form for renameAtoms list ~s" list))
@@ -950,20 +1008,63 @@ values residue-sequences matrices"
                      do (setf (gethash atom-from residue-atom-ht) atom-to)))
     (setf (rename-atoms (line-filter scanner)) rename-ht)))
 
-(defun checkPdb (pdb-scanner &key progress system ignore-missing-topology)
+(defun scanAmberCheck (pdb-scanner)
   "* Arguments
 * Description
-Scan the PDB file and use the ATOM records to build a list of residue sequences and matrices.
+Check the scan of the PDB to see if its filters are sufficient to turn it into an AMBER PDB.
 * Return
-values residue-sequences matrices"
-  (format t "filename: ~a~%" (filename pdb-scanner))
-  (with-open-file (fin (filename pdb-scanner) :direction :input)
-    (scan-pdb-stream fin pdb-scanner
-                     :progress progress
-                     :system system
-                     :ignore-missing-topology ignore-missing-topology)
-    )
-  pdb-scanner)
+T if the it's an AMBER PDB and NIL if not."
+  ;; Gather all the chainids
+  (let* ((filter-scanner (make-filter-scanner pdb-scanner))
+         (chain-ids-ht (make-hash-table))
+         pdb-residues
+         (amber-pdb t))
+    (loop for sequence in (sequences filter-scanner)
+          do (loop for pdb-residue in sequence
+                   do (when pdb-residue
+                        (setf (gethash (chain-id pdb-residue) chain-ids-ht) t)
+                        (when (or (eq (chain-ids (line-filter pdb-scanner)) :all)
+                                  (member (chain-id pdb-residue) (chain-ids (line-filter pdb-scanner))))
+                          (push pdb-residue pdb-residues)))))
+    (format t "Chain-ids: ~s~%" (chain-ids (line-filter pdb-scanner)))
+    ;; Look for unrecognized residue names
+    (let (unknown-residue-names)
+      (loop for pres in pdb-residues
+            for top = (lookup-topology-using-pdb-name-and-context (residue-name pres) (context pres))
+            unless top
+              do (progn
+                   (setf amber-pdb nil)
+                   (pushnew (cons (residue-name pres) (context pres)) unknown-residue-names :test 'equal)))
+      (loop for residue-name-context in unknown-residue-names
+            for residue-name = (car residue-name-context)
+            for context = (cdr residue-name-context)
+            do (format t "Unknown residue/context ~s/~s~%" residue-name context)))
+    (when amber-pdb
+      (let ((unknown-atom-names nil))
+        (loop for pres in pdb-residues
+              for original-residue-name = (original-residue-name pres)
+              for residue-name = (residue-name pres)
+              for context = (context pres)
+              for top = (lookup-topology-using-pdb-name-and-context residue-name context)
+              for atom-names = (atom-names pres)
+              do (multiple-value-bind (match topology-atom-names)
+                     (atom-names-match-topology atom-names top)
+                   (unless match
+                     (let ((extra-atom-names (loop for name in atom-names
+                                                   unless (member name topology-atom-names)
+                                                     collect name)))
+                       (when extra-atom-names
+                         (setf amber-pdb nil)
+                         (pushnew (cons (cons original-residue-name context) extra-atom-names) unknown-atom-names :test 'equal))))))
+        (loop for unk in unknown-atom-names
+              for residue-name = (car (car unk))
+              for context = (cdr (car unk))
+              for names = (cdr unk)
+              do (format t "Unknown atom names: ~s/~s -> ~s~%" residue-name context names))))
+    (if amber-pdb
+        (format t "This is an AMBER compatible PDB file after filters are applied.~%")
+        (format t "This is NOT yet an AMBER compatible PDB file - keep adding filters.~%"))
+    amber-pdb))
 
 (defun warn-of-unknown-topology (res scanner)
   (let* ((name (name res))
@@ -1038,9 +1139,11 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
                (with-slots (atom-line-lineno atom-serial atom-name alt-loc residue-name chain-id residue-sequence-number i-code x y z)
                    line-data
                  (declare (ignore alt-loc))
+                 (setf (previous-chain-id reader) (current-chain-id reader)
+                       (current-chain-id reader) chain-id)
                  (when (chem:verbose 2) (format t "At top of atom residue-name: ~a residue-sequence-number: ~a i-code: ~a reader: ~a~%"
                                                 residue-name residue-sequence-number i-code reader))
-                 (when (new-residue-p residue-name residue-sequence-number i-code reader)
+                 (when (new-residue-p residue-name residue-sequence-number i-code chain-id reader)
                    (setf (current-residue-number reader) residue-sequence-number
                          (current-i-code reader) i-code)
                    (let ((sequence-indices (gethash lineno (lineno-to-sequence-index (pdb-scanner reader)))))
@@ -1068,6 +1171,7 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
                      (if cur-top
                          ;; There is a topology - use it
                          (let ((cur-res (chem:build-residue-single-name cur-top)))
+                           (chem:set-pdb-name cur-res (residue-name pdb-residue))
                            #+(or)(format *debug-io* "built residue with name ~a using topology ~a~%" cur-res cur-top)
                            (chem:set-id cur-res (calculate-residue-sequence-number residue-sequence-number i-code))
                            (setf (current-residue reader) cur-res)
@@ -1086,6 +1190,7 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
                                                       :-default))))
                          ;; There is no topology, create an empty residue
                          (let ((cur-res (chem:make-residue residue-name)))
+                           (chem:set-pdb-name cur-res (residue-name pdb-residue))
                            (setf (current-residue reader) cur-res)
                            (chem:add-matter (ensure-molecule reader chain-id) cur-res) cur-res))))
                  (let ((atom (or (chem:content-with-name-or-nil (current-residue reader) atom-name)
@@ -1145,13 +1250,17 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
 (defun molecules-from-sequences (sequences)
   (loop for sequence in sequences
         for index from 0
-        for sequence-name = (cond
-                              ((= (length sequence) 1)
-                               (intern (format nil "~a_~d" (string (name (first sequence))) index) :keyword))
-                              (t (intern (concatenate 'string "mol" (format nil "_~d" index)) :keyword)))
-        collect (let ((mol (chem:make-molecule sequence-name)))
-                  #+(or)(format *debug-io* "Creating molecule ~a for sequence ~a~%" mol sequence)
-                  mol)))
+        for make-molecule = (or (and (= (length sequence) 1) (first sequence))
+                                (> (length sequence) 1))
+        for sequence-name = (when make-molecule
+                              (cond
+                                ((and (= (length sequence) 1) (first sequence))
+                                 (intern (format nil "~a_~d" (string (name (first sequence))) index) :keyword))
+                                (t (intern (concatenate 'string "mol" (format nil "_~d" index)) :keyword))))
+        when make-molecule
+          collect (let ((mol (chem:make-molecule sequence-name)))
+                    #+(or)(format *debug-io* "Creating molecule ~a for sequence ~a~%" mol sequence)
+                    mol)))
 
 (defun make-filter-scanner (pdb-scanner)
   (let ((dup (shallow-copy-pdb-scanner pdb-scanner))) ; Use a copy of the scanner
@@ -1162,8 +1271,12 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
 (defun load-pdb-stream (fin &key filename pdb-scanner progress system ignore-missing-topology)
   (let* ((pdb-scanner (if pdb-scanner
                           (make-filter-scanner pdb-scanner)
-                          (let* ((new-scanner (build-sequence (scan-pdb-stream fin :progress progress
-                                                                                   :ignore-missing-topology ignore-missing-topology) system)))
+                          (let* ((new-scanner (build-sequence (let ((pdb-scanner (make-instance 'pdb-scanner
+                                                                                                :filename filename)))
+                                                                (scan-pdb-stream fin pdb-scanner
+                                                                                 :progress progress
+                                                                                 :ignore-missing-topology ignore-missing-topology))
+                                                              system)))
                             (file-position fin 0)
                             new-scanner)))
          (serial-to-atoms (connect-atoms-hash-table pdb-scanner)))
