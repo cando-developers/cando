@@ -63,6 +63,12 @@ jobs:
         boost_version: 1.79.0
         platform_version: 20.04
 
+    - uses: conda-incubator/setup-miniconda@v2
+
+    - name: Install AmberTools
+      run: |
+        conda install -c conda-forge ambertools
+
     - name: Build Clasp (koga/Ubuntu)
       if: matrix.os == 'ubuntu-latest'
       run: |
@@ -80,3 +86,7 @@ jobs:
     - name: Run regression tests
       run: |
         ninja -C build test
+
+    - name: Run Cando regression tests
+      run: |
+        ninja -C build cando-test
