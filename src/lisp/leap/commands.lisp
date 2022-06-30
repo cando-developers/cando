@@ -1,7 +1,33 @@
 (in-package :leap.commands)
 
+(defun leap.smiles (smiles-string)
+  "   Construct a molecule graph from a smiles string.
+
+      Arguments:
+              [0]     - String containing smiles code.
+"
+  (let* ((smiles-mol (smiles:parse-smiles-string smiles-string))
+         (mol (smiles:chem-molecule smiles-mol))
+         (agg (chem:make-aggregate :default))
+         )
+    (chem:add-matter agg mol)
+    agg))
 
 (defun leap.set-box (aggregate enclosure &optional (buffer nil bufferp))
+  "    setBox solute enclosure [ buffer ]
+      UNIT                         _solute_
+      \"vdw\" OR \"centers\"           _enclosure_
+      object                       _buffer_
+
+The setBox command creates a periodic box around the _solute_ UNIT, turning
+it into a periodic system for the simulation programs.  It does not add
+any solvent to the system. The choice of \"vdw\" or \"centers\" determines
+whether the box encloses all entire atoms or just all atom centers -
+use \"centers\" if the system has been previously equilibrated as a
+periodic box. See the solvateBox command for a description of the
+buffer object, which extends either type of box by an arbitrary amount.
+"
+
   (let ((enclosure (keyword-upcase enclosure)))
     (if bufferp
         (leap.set-box:set-box (leap.core:lookup-variable aggregate) enclosure buffer)
@@ -46,9 +72,16 @@
     (leap.pdb:scanIgnoreAtoms pdb-scanner list))
   :no-output)
 
-(defun leap.show (arg)
+(defun leap.show (arg &rest kwargs)
+  "    Show the structure
+
+       show aggregate [[:axes t] ...]
+
+       UNIT/AGGREGATE       structure to show
+       :axes t              show axes
+"
   (let ((val (leap.core:lookup-variable arg)))
-    (funcall (find-symbol "SHOW" :cando-user) val)))
+    (apply (find-symbol "SHOW" :cando-user) val kwargs)))
 
 
 (defun leap.z-matrix (val list)
@@ -1013,7 +1046,7 @@ respectively.
 Add the directory in _path_ to the list of directories that are searched
 for files specified by other commands.
 "
-  (setf *default-pathname-defaults* path))
+  (leap.core:add-path "amber:dat;leap;prep;"))
 
 (defun leap-align-axes (unit-name)
 "     alignAxes unit
@@ -1567,6 +1600,7 @@ Provide a list of commands that cleap has available to mimic tleap."
           ("addIons2" . leap-add-ions-2)
           ("addIonsRand" . leap-add-ions-rand)
           ("setBox" . leap.set-box)
+          ("smiles" . leap.smiles )
           ("showPaths" . leap.show-paths)
           ("show" . leap.show )
           ("zMatrix" . leap.z-matrix )

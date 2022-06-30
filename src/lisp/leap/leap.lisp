@@ -61,7 +61,8 @@ leap path list so that files local to the script can be loaded.
                            (merge-pathnames crd-pathname)
                            (make-pathname :type "crd" :defaults top-pathname))))
     (let ((chem:*verbose* show-progress))
-      (leap.topology:save-amber-parm-format aggregate top-pathname crd-pathname :assign-types t))))
+      (leap.topology:save-amber-parm-format aggregate top-pathname crd-pathname :assign-types t))
+    (values top-pathname crd-pathname)))
 
 
 (defun load-amber-params (filename &optional (force-field :default))

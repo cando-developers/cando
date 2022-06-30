@@ -358,7 +358,7 @@ Otherwise pass a function that takes two atoms and returns T if they are matchab
           for node = (gethash atm atm-to-node)
           for bonds = (chem:bonds-as-list atm)
           do (loop for bond in bonds
-                   for other-atm = (chem:get-other-atom bond atm)
+                   for other-atm = (chem:bond/get-other-atom bond atm)
                    for other-node = (gethash other-atm atm-to-node)
                    when other-node
                      do (push other-node (edges node))

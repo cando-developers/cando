@@ -7,6 +7,7 @@
                #:cando
                #:charges
                #:design
+               #:smiles
                #:leap
                #:leap-commands
                #:sdf

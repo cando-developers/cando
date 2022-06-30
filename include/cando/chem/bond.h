@@ -66,7 +66,18 @@ public:
   BondOrder	        _DirectionalOrder;
   Atom_sp		_Atom1;
   Atom_sp		_Atom2;
-    /*! Store Symbol keyed properties of bond in alist */
+    /*! Store Symbol keyed properties of bond in alist
+      Some valid properties:
+      :double-bond-geometry - geometry for a double bond
+                                     (a b c d e f) are names of atoms
+                                     define the double bond geometry
+                                      a      e
+                                       \    /
+                                       c====d
+                                      /     \
+                                     b      f
+                                    
+     */
   core::List_sp	_Properties;
  public:
   void initialize();
@@ -97,6 +108,9 @@ public:
 
   virtual bool equalp(core::T_sp obj) const;
 
+  core::List_sp properties() const;
+  void setProperties(core::List_sp props);
+  
 CL_LISPIFY_NAME("getAtom1");
 CL_DEFMETHOD   Atom_sp getAtom1() const { return this->_Atom1; };
 CL_LISPIFY_NAME("getAtom2");
@@ -115,10 +129,7 @@ CL_DEFMETHOD   Atom_sp getAtom2() const { return this->_Atom2; };
  bool	isIntraResidueBond(core::HashTable_sp atomToResidue ) {return !this->isInterResidueBond(atomToResidue);};
  void	redirectToAtomCopies();
 
-	/*! Dump all of the properties associated with this matter */
-  string	propertiesAsString() const;
-	    
-		/*! Remove the property from this Matters property list
+		/*! Remove the property from this property list
 		 */
   void	clearProperty(core::Symbol_sp propertySymbol);
 		/*! Define/set the value of the property.

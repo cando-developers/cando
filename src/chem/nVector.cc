@@ -293,7 +293,32 @@ NVector_sp chem__copy_nvector(NVector_sp source)
   return copy_nvector(source);
 }
 
+CL_LISPIFY_NAME(NVector/set_element);
+CL_DEFUN
+void chem__nvector_set_element(NVector_sp vec, size_t index, double val)
+{
+  if (vec->length()<=index) {
+    SIMPLE_ERROR("Index %lu is of bounds - length is %lu", index, vec->length() );
+  }
+  (*vec)[index] = val;
+}
 
+CL_LISPIFY_NAME(NVector/set_element);
+CL_DEFUN
+double chem__nvector_get_element(NVector_sp vec, size_t index, double val)
+{
+  if (vec->length()<=index) {
+    SIMPLE_ERROR("Index %lu is of bounds - length is %lu", index, vec->length() );
+  }
+  return (*vec)[index];
+}
+
+CL_LISPIFY_NAME(NVector/length);
+CL_DEFUN
+size_t chem__nvector_length(NVector_sp vec)
+{
+  return vec->length();
+}
 
 CL_DOCSTRING(R"dx(Apply the transform matrix to the coordinates.)dx")
 DOCGROUP(cando)

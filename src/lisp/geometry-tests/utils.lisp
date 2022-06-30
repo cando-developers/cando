@@ -83,8 +83,8 @@ Returns the plane or nil"
     ;; Loop over all bonds 
     (chem:map-bonds
      'nil
-     (lambda (a0 a1 order)
-       (declare (ignoreable order))
+     (lambda (a0 a1 order bond)
+       (declare (ignoreable order bond))
        (chem:get-position! a0 l0)
        (chem:get-position! a1 l1)
        (geom:v-! l1 l0 l)

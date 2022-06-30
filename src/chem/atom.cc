@@ -617,8 +617,8 @@ CL_DOCSTRING(R"doc(Create a bond between two atoms with the desired bond-order.
 If error-if-exists is T and the bond already exists then signal an error.
 If error-if-exists is NIL and the bond already exists then remove the old bond and create the new one.)doc");
 CL_LISPIFY_NAME("bondTo");
-CL_LAMBDA((from !) to bond_order &optional (error_if_exists t));
-CL_DEFMETHOD     Bond_sp Atom_O::bondTo( Atom_sp to, BondOrder o, bool error_if_exists )
+CL_LAMBDA((from !) to bond_order &optional (error_if_exists t) (error_if_exceed_valence t));
+CL_DEFMETHOD     Bond_sp Atom_O::bondTo( Atom_sp to, BondOrder o, bool error_if_exists, bool error_if_exceed_valence )
 {_OF();
 	// Check if there is already a bond to this atom and
 	// throw an exception if there is
@@ -639,11 +639,13 @@ CL_DEFMETHOD     Bond_sp Atom_O::bondTo( Atom_sp to, BondOrder o, bool error_if_
   Bond_sp bn = Bond_O::create(from,to,o);
   this->bonds.push_back(bn);
   to->bonds.push_back(bn);
-  if (this->_Element == element_C && this->bonds.size()>4) {
-    SIMPLE_ERROR(("More than four bonds to carbon will be made to %s") , _rep_(this->asSmartPtr()));
-  }
-  if (to->_Element == element_C && to->bonds.size()>4 ) {
-    SIMPLE_ERROR(("More than four bonds to carbon will be made to %s") , _rep_(to));
+  if (error_if_exceed_valence) {
+    if (this->_Element == element_C && this->bonds.size()>4) {
+      SIMPLE_ERROR(("More than four bonds to carbon will be made to %s") , _rep_(this->asSmartPtr()));
+    }
+    if (to->_Element == element_C && to->bonds.size()>4 ) {
+      SIMPLE_ERROR(("More than four bonds to carbon will be made to %s") , _rep_(to));
+    }
   }
   return bn;
 }
@@ -703,6 +705,8 @@ CL_DEFMETHOD int Atom_O::getRelativePriority(core::HashTable_sp cip) const {
     return core::clasp_to_fixnum(cip->gethash(this->asSmartPtr()));
 }
 
+CL_LISPIFY_NAME(Atom/getNeighborsForAbsoluteConfiguration);
+CL_DEFMETHOD
 core::List_sp	Atom_O::getNeighborsForAbsoluteConfiguration()
 {
   ql::list l;
@@ -1078,8 +1082,8 @@ string	Atom_O::description() const
 {
   stringstream ss;
   ss << this->className() << "("<<this->getName();
-  ss << ":element " << _rep_(this->getElementAsSymbol());
-  ss << " bonds[" << this->numberOfBonds() << "]";
+  ss << " :element " << _rep_(this->getElementAsSymbol());
+  ss << " bonds[" << _rep_(this->bondsAsList()) << "]";
   ss <<")";
   return ss.str();
 }
@@ -1216,6 +1220,31 @@ BondOrder	Atom_O::bondOrderTo( Atom_sp other )
   return noBond;
 }
 
+CL_DOCSTRING(R"dx(Reorder the bonds.)dx");
+CL_LISPIFY_NAME(Atom/reorderBonds);
+CL_DEFMETHOD
+void Atom_O::reorderBonds(core::List_sp atoms) {
+  VectorBond newBonds;
+  size_t numAtoms = core::cl__length(atoms);
+  Atom_sp me = this->sharedThis<Atom_O>();
+  if ( numAtoms != this->bonds.size()) {
+    SIMPLE_ERROR("The number of atoms %d must match the number of bonds %d", numAtoms, this->bonds.size() );
+  }
+  for ( auto cur : atoms ) {
+    Atom_sp atom = gc::As<Atom_sp>(CONS_CAR(cur));
+    VectorBond::iterator b;
+    for ( b = this->bonds.begin(); b != this->bonds.end(); b++ ) {
+      if ( (*b)->getOtherAtom(me) == atom ) {
+        newBonds.push_back(*b);
+        break;
+      }
+    }
+    if (b == this->bonds.end()) {
+      SIMPLE_ERROR("For atom %s not find bond with other atom %s bonded-atoms: %s", _rep_(me), _rep_(atom), _rep_(this->bondedAtomsAsList()));
+    }
+  }
+  this->bonds = newBonds;
+}
 
 //
 // testConsistancy
@@ -1309,17 +1338,16 @@ VectorAtom Atom_O::getBondedAtoms()
   return vAtoms;
 }
 
-CL_LISPIFY_NAME("bondedAtomsAsList");
-CL_DEFMETHOD     core::List_sp Atom_O::bondedAtomsAsList()
+CL_LISPIFY_NAME("Atom/bondedAtomsAsList");
+CL_DEFMETHOD     core::List_sp Atom_O::bondedAtomsAsList() const
 {
-  core::List_sp list = nil<core::T_O>();
+  ql::list ll;
   VectorBond::iterator	b;
-  Atom_sp me = this->sharedThis<Atom_O>();
-  for (b=this->bonds.begin();b!=this->bonds.end(); b++ )
-  {
-    list = core::Cons_O::create((*b)->getOtherAtom(me),list);
+  Atom_sp me(const_cast<Atom_O*>(this));
+  for (b=this->bonds.begin();b!=this->bonds.end(); b++ ) {
+    ll << (*b)->getOtherAtom(me);
   }
-  return list;
+  return ll.result();
 }
 
 void	advanceAtomBuildCounter()
@@ -1403,7 +1431,7 @@ CL_DEFMETHOD     uint Atom_O::totalBondOrder()
 
 
 CL_LISPIFY_NAME("bondsAsList");
-CL_DEFMETHOD     core::List_sp Atom_O::bondsAsList()
+CL_DEFMETHOD     core::List_sp Atom_O::bondsAsList() const
 {
   ql::list ll;
   VectorBond::iterator	b;
@@ -1412,6 +1440,7 @@ CL_DEFMETHOD     core::List_sp Atom_O::bondsAsList()
   }
   return ll.result();
 }
+
 
 bool	Atom_O::isHeavyAtom()
 {
@@ -1548,28 +1577,29 @@ CL_LISPIFY_NAME("getValence");
 CL_DEFMETHOD     int     Atom_O::getValence()
 {
   VectorBond::iterator	b;
-  int             valence;
   BondOrder       bo;
-  valence = 0;
+  int valence2 = 0;
   for (b=this->bonds.begin();b!=this->bonds.end(); b++ ) {
     bo = (*b)->getRawOrder();
     if (Bond_O::singleBondP(bo)) {
-      valence += 1;
+      valence2 += 2;
     } else {
       switch ( bo ) {
       case doubleBond:
+        valence2 += 4;
+        break;
       case aromaticBond:
-          valence += 2;
-          break;
+        valence2 += 3;
+        break;
       case tripleBond:
-          valence += 3;
+        valence2 += 6;
           break;
       default:
-          valence += 0;
+        valence2 += 0;
       }
     }
   }
-  return valence;
+  return valence2/2;
 }
 
 

@@ -149,7 +149,8 @@
   (let ((lines (make-hash-table)))
     (chem:map-bonds
      nil
-     (lambda (x y o)
+     (lambda (x y o b)
+       (declare (ignore b))
        (let ((x-element (chem:get-element x))
 	     (y-element (chem:get-element y))
 	     (xpos (chem:get-position x))

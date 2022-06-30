@@ -12,7 +12,7 @@
 (defun bonded-atoms (atm diffs)
   (let (heavy-match heavy-diff hydrogens)
     (loop for bond in (chem:bonds-as-list atm)
-          for other-atm = (chem:get-other-atom bond atm)
+          for other-atm = (chem:bond/get-other-atom bond atm)
           for element = (chem:get-element other-atm)
           for atomic-number = (chem:atomic-number-for-element element)
           do (if (= atomic-number 1)

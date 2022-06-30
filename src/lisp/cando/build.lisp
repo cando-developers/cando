@@ -13,7 +13,7 @@
 - excluded-neighbor :: A chem:atom
 * Description 
 Return a neighbor of atom that is not excluded-neighbor."
-  (let ((neighbors (chem:bonded-atoms-as-list atom)))
+  (let ((neighbors (chem:atom/bonded-atoms-as-list atom)))
     (dolist (neighbor neighbors)
       (when (not (eq neighbor excluded-neighbor))
         (return-from find-neighbor-excluding neighbor)))))
@@ -59,7 +59,7 @@ Sort the atoms by name in increasing alphabetical order."
         (geom:v* (geom:vec  1.0 -1.0 -1.0) *one-over-tet-vec-length*)))
         
 (defun build-unbuilt-hydrogens-on (central)
-  (let ((neighbors (chem:bonded-atoms-as-list central))
+  (let ((neighbors (chem:atom/bonded-atoms-as-list central))
         unbuilt-hydrogens built-atoms)
     (dolist (neighbor neighbors)
       (if (and (eq (chem:get-element neighbor) :H)

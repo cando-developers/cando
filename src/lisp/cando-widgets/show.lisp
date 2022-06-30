@@ -3,6 +3,20 @@
 (defgeneric show (instance &rest kwargs &key &allow-other-keys)
   (:documentation "Display a residue, molecule, aggregate or a trajectory in a Jupyter notebook"))
 
+(defun add-axes (component)
+  (setf (ngl:representations component)
+        (append (ngl:representations component)
+                (list (make-instance 'ngl:buffer-representation
+                                     :name "axes"
+                                     :buffer (list :type "wideline"
+                                                   :position1 (vector 0 0 0
+                                                                      0 0 0
+                                                                      0 0 0)
+                                                   :position2 (vector 10 0 0
+                                                                      0 10 0
+                                                                      0 0 10)
+                                                   :color #(#xFF 0 0 0 0xFF 0 0 0 0xFF)
+                                                   :color2 #(#xFF 0 0 0 0xFF 0 0 0 0xFF)))))))
 
 (defun add-bounding-box (component aggregate)
   (unless (chem:bounding-box-bound-p aggregate)
@@ -239,6 +253,8 @@
     (when (and (typep instance 'chem:aggregate)
                (chem:bounding-box-bound-p instance))
       (add-bounding-box component instance))
+    (when (getf kwargs :axes)
+      (add-axes component))
     (jw:observe representation-dropdown :value
       (lambda (inst type name old-value new-value source)
         (declare (ignore inst type name old-value source))
@@ -287,7 +303,8 @@
     (let (break-bonds)
       (chem:map-bonds
        'nil
-       (lambda (a1 a2 order)
+       (lambda (a1 a2 order bbond)
+         (declare (ignore bbond))
          (unless (and (chem:contains-atom res a1) (chem:contains-atom res a2))
            (push (list a1 a2) break-bonds)))
        res)

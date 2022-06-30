@@ -136,7 +136,7 @@
     (maphash (lambda (a v)
                (setf (gethash a new-set) a)
                (mapc (lambda (b) (setf (gethash b new-set) b))
-                     (chem:bonded-atoms-as-list a)))
+                     (chem:atom/bonded-atoms-as-list a)))
              (coerce-to-atom-set passed-atom-set))
     new-set))
 

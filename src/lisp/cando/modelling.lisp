@@ -66,7 +66,7 @@ away from their bonded neighbor that has coordinates in a random direction."
                  (let ((bonds (chem:bonds-as-list atom)))
                    (if (> (length bonds) 0) ; we have at least one bond
                        (let ((built-neighbor (loop for b in bonds
-                                         for o = (chem:get-other-atom b atom)
+                                         for o = (chem:bond/get-other-atom b atom)
                                          when (not (unbuilt-vec3-p (chem:get-position o)))
                                            return o)))
                          (when built-neighbor

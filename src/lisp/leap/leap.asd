@@ -7,6 +7,7 @@
                #:smirnoff
                #:inet
                #:netcdf
+               #:smiles
                #:static-vectors
                #:alexandria
                #:split-sequence)

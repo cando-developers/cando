@@ -262,9 +262,6 @@ class EnergyNonbond_O : public EnergyComponent_O
 
   void expandExcludedAtomsToTerms();
 
-  // virtual	int	checkForBeyondThresholdInteractions( stringstream& info, NVector_sp pos );
-  virtual core::List_sp	checkForBeyondThresholdInteractionsWithPosition(NVector_sp pos, double threshold );
-
   virtual string	beyondThresholdInteractionsAsString();
 
 //    int countBadVdwOverlaps(double scaleSumOfVdwRadii, NVector_sp pos, geom::DisplayList_sp displayIn, core::LispPtr );

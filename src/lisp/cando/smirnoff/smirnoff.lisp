@@ -100,7 +100,8 @@ The chem:force-field-type-rules-merged generic function was used to organize the
   (let ((bonds (make-hash-table :test #'equal)))
     (chem:map-bonds
      nil
-     (lambda (a1 a2 bond-order)
+     (lambda (a1 a2 bond-order bond)
+       (declare (ignore bond))
        (let ((key (list a1 a2)))
          (setf (gethash key bonds) nil)))
      molecule)

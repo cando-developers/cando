@@ -10,7 +10,8 @@
           (format t "~a  ~a ~a~%" atm (chem:get-stereochemistry-type atm) (chem:get-configuration atm))
           (format t "~a~%" (chem:bonds-as-list atm)))))
     (chem:map-bonds nil
-                    (lambda (a1 a2 o)
+                    (lambda (a1 a2 o bb)
+                      (declare (ignore bb))
                       (when (member o '(:single-wedge-begin :single-wedge-end :single-hash-begin :single-hash-end))
                         (format t "~a -> ~a  ~a~%" a1 a2 o)))
                     mol)))

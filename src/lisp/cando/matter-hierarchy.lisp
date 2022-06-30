@@ -116,7 +116,8 @@ This can happen if there are disulphide-bonds between chains."
         aggregate)
        (chem:map-bonds
         nil
-        (lambda (a1 a2 order)
+        (lambda (a1 a2 order bond)
+          (declare (ignore bond))
           (let ((m1 (gethash a1 atoms-to-molecules))
                 (m2 (gethash a2 atoms-to-molecules)))
             (unless (eq m1 m2)

@@ -819,6 +819,50 @@ CL_DEFUN core::T_sp chem__map_bonds(core::Symbol_sp result_type, core::T_sp func
       a1 = bond->getAtom1();
       a2 = bond->getAtom2();
       o = bond->getOrderFromAtom(a1);
+      core::eval::funcall( func, a1, a2, translate::to_object<BondOrder>::convert(o), bond);
+    }
+    return nil<core::T_O>(); 
+  }
+  if ( result_type == cl::_sym_list ) {
+    ql::list res;
+    while (l.advanceLoopAndProcess()) {
+      Bond_sp bond = l.getBond();
+      a1 = bond->getAtom1();
+      a2 = bond->getAtom2();
+      o = bond->getOrderFromAtom(a1);
+      res << core::eval::funcall(func,a1,a2,translate::to_object<BondOrder>::convert(o), bond );
+    }
+    return res.cons();
+  }
+  if ( result_type == cl::_sym_vector ) {
+    core::ComplexVector_T_sp vo = core::ComplexVector_T_O::make(16,nil<core::T_O>(),core::clasp_make_fixnum(0));
+    while (l.advanceLoopAndProcess()) {
+      Bond_sp bond = l.getBond();
+      a1 = bond->getAtom1();
+      a2 = bond->getAtom2();
+      o = bond->getOrderFromAtom(a1);
+      vo->vectorPushExtend(core::eval::funcall(func,a1,a2,translate::to_object<BondOrder>::convert(o), bond));
+    }
+    return vo;
+  }
+  SIMPLE_ERROR(("Illegal return type: %s") , _rep_(result_type));
+};
+
+CL_LAMBDA(result-type function matter)
+CL_DOCSTRING(R"dx(Applies function to successive bonds in matter. The result-type (nil, 'list, 'vector) specifies the type of the resulting sequence.)dx")
+DOCGROUP(cando)
+CL_DEFUN core::T_sp chem__map_bond_objects(core::Symbol_sp result_type, core::T_sp funcDesig, Matter_sp m)
+{
+  core::Function_sp func = core::coerce::functionDesignator(funcDesig);
+  Loop l(m,BONDS);
+  Atom_sp a1, a2;
+  BondOrder o;
+  if ( result_type.nilp() ) {
+    while (l.advanceLoopAndProcess()) {
+      Bond_sp bond = l.getBond();
+      a1 = bond->getAtom1();
+      a2 = bond->getAtom2();
+      o = bond->getOrderFromAtom(a1);
       core::eval::funcall(func,a1,a2,translate::to_object<BondOrder>::convert(o));
     }
     return nil<core::T_O>(); 
