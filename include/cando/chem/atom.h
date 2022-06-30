@@ -444,10 +444,10 @@ namespace chem {
     void	applyTransformToAtoms(const Matrix& m);
     VectorBond& getBonds()		{return this->bonds; };
     VectorAtom getBondedAtoms();
-    core::List_sp	bondedAtomsAsList();
+    core::List_sp	bondedAtomsAsList() const;
 
     Bond_sp	basicBondTo(  Atom_sp a, BondOrder o );
-    Bond_sp	bondTo(  Atom_sp a, BondOrder o, bool error_if_exists = true );
+    Bond_sp	bondTo(  Atom_sp a, BondOrder o, bool error_if_exists = true, bool error_if_exceed_valence = true );
     Bond_sp	bondToSingle(  Atom_sp a );
     Bond_sp	bondToOrderInt(  Atom_sp a, int o );
     Bond_sp	getBondTo(Atom_sp a);
@@ -462,6 +462,7 @@ namespace chem {
     void	removeBondTo(Atom_sp a);
     void	removeAllBonds();
     int	coordination();
+    void reorderBonds(core::List_sp atoms);
     Bond_sp bondAtIndex(int i);
     Atom_sp	bondedNeighbor(int i);
     Atom_sp	bondedNeighborWithName(MatterName name);
@@ -486,7 +487,7 @@ namespace chem {
       ConfigurationEnum calculateStereochemicalConfiguration(core::HashTable_sp cip_priority);
     string calculateStereochemicalConfigurationAsString(core::HashTable_sp cip_priority);
 
-    core::List_sp	bondsAsList();
+    core::List_sp	bondsAsList() const;
     BondList_sp	getBondList();
     bool		isHeavyAtom();
     BondList_sp	getHeavyAtomBondList();

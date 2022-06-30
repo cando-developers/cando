@@ -121,14 +121,14 @@ This will place the calculated bond on one or the other side of the x1,y1-x2,y2 
 (defmethod draw-bond (scene (line line))
   (let ((p1 (p1 line))
         (p2 (p2 line)))
-    (cl-svg:draw scene (:line :x1 (geom:vx p1) :y1 (geom:vy p1)
-                              :x2 (geom:vx p2) :y2 (geom:vy p2)
+    (cl-svg:draw scene (:line :x1 (geom:get-x p1) :y1 (geom:get-y p1)
+                              :x2 (geom:get-x p2) :y2 (geom:get-y p2)
                               :class (format nil "~A~@[ ~(~A~)~]" (%class line) (style line))))))
 
 
 (defmethod draw-bond (scene (obj polygon))
   (cl-svg:draw scene (:polygon :points (format nil "~{~5f~^ ~}" (mapcan (lambda (vec)
-                                                                          (list (geom:vx vec) (geom:vy vec)))
+                                                                          (list (geom:get-x vec) (geom:get-y vec)))
                                                                         (points obj)))
                                :class (%class obj))))
 
@@ -138,8 +138,8 @@ This will place the calculated bond on one or the other side of the x1,y1-x2,y2 
              (not (eq show-names :light)))
         (return-from draw-atom-name)
         (let* ((pos (pos atom-node))
-               (xs1 (geom:vx pos))
-               (ys1 (geom:vy pos))
+               (xs1 (geom:get-x pos))
+               (ys1 (geom:get-y pos))
                (label #+debug-sketch2d (string (if (debug-info atom-node)
                                                    (label (debug-info atom-node))
                                                    (chem:get-name (atom atom-node))))
@@ -150,8 +150,8 @@ This will place the calculated bond on one or the other side of the x1,y1-x2,y2 
 
 (defun draw-atom-text (scene atom-node)
   (let* ((pos (pos atom-node))
-         (xs1 (geom:vx pos))
-         (ys1 (geom:vy pos))
+         (xs1 (geom:get-x pos))
+         (ys1 (geom:get-y pos))
          (label (string (chem:get-element (atom atom-node)))))
     (cl-svg:text scene (:x xs1 :y (+ ys1 *lower-text*)
                         :class (format nil "atom element ~A" (chem:get-name (atom atom-node))))
@@ -198,7 +198,8 @@ This will place the calculated bond on one or the other side of the x1,y1-x2,y2 
         (atoms (make-hash-table)))
     (chem:map-bonds
      nil
-     (lambda (a1 a2 bo)
+     (lambda (a1 a2 bo bond)
+       (declare (ignore bond))
        (push (make-instance 'bond-node
                             :bond-order bo
                             :atom-node1 (get-atom-node a1 atoms sketch2d)
@@ -485,7 +486,7 @@ This will place the calculated bond on one or the other side of the x1,y1-x2,y2 
         for hydrogens = (getf properties :hydrogens)
         for bond-weight-dir = (bond-weight-dir atom-node)
         do (setf (hydrogens atom-node) hydrogens)
-        do (if (> (geom:vx bond-weight-dir) 0.0)
+        do (if (> (geom:get-x bond-weight-dir) 0.0)
                (setf (hydrogens-dir atom-node) :left)
                (setf (hydrogens-dir atom-node) :right)))
   (calculate-bonds sketch)
@@ -566,7 +567,7 @@ This will place the calculated bond on one or the other side of the x1,y1-x2,y2 
         do (render-node scene atom-node)))
 
 
-(defun svg (sketch2d &key (toplevel t) (width 1000) (xbuffer 0.1) (ybuffer 0.1) before-render after-render (id "") show-names (scale 20) (margin 40))
+(defun svg (sketch2d &key (toplevel t) (width 1000) (xbuffer 0.1) (ybuffer 0.1) before-render after-render (id "") show-names (scale 5) (margin 40))
   "Generate SVG to render the molecule.  Pass a BEFORE-RENDER function or AFTER-RENDER function to add info to the structure.
 Each of these functions take two arguments, the svg-scene and the sketch-svg. 
 The caller provided functions should use cl-svg to render additional graphics."
@@ -576,8 +577,8 @@ The caller provided functions should use cl-svg to render additional graphics."
          (xmax most-negative-single-float)
          (ymax most-negative-single-float))
     (flet ((transform-point (atomic-pos)
-             (let ((x (* scale (geom:vx atomic-pos)))
-                   (y (* scale (geom:vy atomic-pos))))
+             (let ((x (* scale (geom:get-x atomic-pos)))
+                   (y (* scale (geom:get-y atomic-pos))))
                (setf xmin (min xmin x))
                (setf xmax (max xmax x))
                (setf ymin (min ymin y))

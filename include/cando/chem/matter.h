@@ -216,7 +216,7 @@ public:
 
 	/*! Dump all of the properties associated with this matter */
   string	propertiesAsString() const;
-	    
+
 		/*! Define/set the value of the property to TRUE.
 		 * If it already exists it is overwritten.
 		 */

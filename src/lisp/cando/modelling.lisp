@@ -14,7 +14,7 @@
     (chem:apply-transform-to-atoms matter (geom:make-m4-translate point))))
 
 (defun unbuilt-vec3-p (v)
-  (= (geom:vx v) (geom:vy v) (geom:vz v) 0.0d0))
+  (= (geom:get-x v) (geom:get-y v) (geom:get-z v) 0.0d0))
 
 (defun unbuilt-atoms (matter)
   (let (unbuilt)
@@ -66,7 +66,7 @@ away from their bonded neighbor that has coordinates in a random direction."
                  (let ((bonds (chem:bonds-as-list atom)))
                    (if (> (length bonds) 0) ; we have at least one bond
                        (let ((built-neighbor (loop for b in bonds
-                                         for o = (chem:get-other-atom b atom)
+                                         for o = (chem:bond/get-other-atom b atom)
                                          when (not (unbuilt-vec3-p (chem:get-position o)))
                                            return o)))
                          (when built-neighbor
@@ -86,4 +86,4 @@ away from their bonded neighbor that has coordinates in a random direction."
               (error "No atoms were built - there are molecules with no built atoms"))
             (setf remaining cur-remaining)) ; repeat the loop
           )))
-  
+

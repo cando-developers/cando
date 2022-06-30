@@ -149,7 +149,7 @@
         (attachment-atoms (make-hash-table))
         (indicator-atoms (make-hash-table)))
     (maphash (lambda (label atom)
-               (let* ((attachment-atom (let ((bonded-atoms (chem:bonded-atoms-as-list atom)))
+               (let* ((attachment-atom (let ((bonded-atoms (chem:atom/bonded-atoms-as-list atom)))
                                          (unless (= (length bonded-atoms) 1)
                                            (error "There are too many bonded atoms to ~a" atom))
                                          (first bonded-atoms)))
@@ -196,7 +196,8 @@
                             (setf (gethash a map-atoms-numbers) (incf index)))
                       agg)
                                         ; calculate average bond length
-      (chem:map-bonds nil (lambda (a1 a2 order)
+      (chem:map-bonds nil (lambda (a1 a2 order bond)
+                            (declare (ignore bond))
                             (let* ((v1 (chem:get-position a1))
                                    (v2 (chem:get-position a2))
                                    (delta (geom:v- v1 v2))
@@ -357,7 +358,7 @@
 
 
 (defun labeled-atom (atom)
-  (first (chem:bonded-atoms-as-list atom)))
+  (first (chem:atom/bonded-atoms-as-list atom)))
 
 (defclass bond-vector ()
   ((start-vector :initarg :start-vector :accessor start-vector)
@@ -384,7 +385,7 @@
     (loop for atom in atoms
           for label = (chem:get-name atom)
           if (eq label side-chain-name)
-            do (let* ((attachment-atom (let ((bonded-neighbors (chem:bonded-atoms-as-list atom)))
+            do (let* ((attachment-atom (let ((bonded-neighbors (chem:atom/bonded-atoms-as-list atom)))
                                          (unless (= (length bonded-neighbors) 1)
                                            (error "There are too many bonded neighbors to ~a" atom))
                                          (first bonded-neighbors)))
@@ -487,11 +488,10 @@ We need assemble-ligands for the tirun demo."
   (format t "assign-stereochemical-restraints~%")
   (chem:map-bonds
    'nil
-   (lambda (a1 a2 bond-order)
+   (lambda (a1 a2 bond-order bond)
      (when (member bond-order '(:single-wedge-begin :single-wedge-end
                                 :single-hash-begin :single-hash-end))
-       (let* ((bond (chem:get-bond-to a1 a2))
-              (ba1 (chem:get-atom1 bond))
+       (let* ((ba1 (chem:get-atom1 bond))
               (ba2 (chem:get-atom2 bond)))
          #+(or)(format t "Found a bond ~a that needs a stereochemical restraint~%" bond)
          (case bond-order
@@ -506,11 +506,11 @@ We need assemble-ligands for the tirun demo."
            (error "There must be 3 or 4 neighbors for atoms with wedge bonds - atom ~a doesn't have that" ba1))
          (let* ((center ba1)
                 (bonds (chem:bonds-as-list center))
-                (bond-to-ba2 (find-if (lambda (x) (eq (chem:get-other-atom x center) ba2)) bonds))
+                (bond-to-ba2 (find-if (lambda (x) (eq (chem:bond/get-other-atom x center) ba2)) bonds))
                 (remaining-bonds (remove bond-to-ba2 bonds))
                 bonds-without-coordinates
                 (bonds-with-coordinates (loop for bond in remaining-bonds
-                                              for other-atom = (chem:get-other-atom bond center)
+                                              for other-atom = (chem:bond/get-other-atom bond center)
                                               for position = (chem:get-position other-atom)
                                               if (geom:vec-p position)
                                                 collect bond
@@ -523,13 +523,13 @@ We need assemble-ligands for the tirun demo."
                   (bond-b (second bonds-with-coordinates))
                   (bond-c (or (third bonds-with-coordinates)
                               (first bonds-without-coordinates)))
-                  (atom-a (chem:get-other-atom bond-a center))
-                  (atom-b (chem:get-other-atom bond-b center))
+                  (atom-a (chem:bond/get-other-atom bond-a center))
+                  (atom-b (chem:bond/get-other-atom bond-b center))
                   (vec-center (chem:get-position center))
                   (vec-a (geom:v- (chem:get-position atom-a) vec-center))
                   (vec-b (geom:v- (chem:get-position atom-b) vec-center))
                   (cross (geom:vcross vec-a vec-b))
-                  (side (* (float-sign (geom:vz cross) 1.0)
+                  (side (* (float-sign (geom:get-z cross) 1.0)
                            (case bond-order
                              (:single-wedge-begin 1.0)
                              (:single-hash-begin -1.0))))

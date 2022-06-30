@@ -8,6 +8,9 @@
 (defvar *path* nil)
 (defvar *default-force-field* nil)
 
+(defun leap-error (fmt &rest args)
+  (apply 'error fmt args))
+
 (defun clear-path ()
   (setf *path* nil))
 
@@ -109,6 +112,7 @@ for a list of symbols.  When they ask for a list of symbols we use this list."))
     (t error-value)))
 
 (defun (setf lookup-variable*) (new-value name environment)
+  (declare (ignore environment))
   ;; Save the name of the variable in a hash-table of variable names
   (let ((expanded (macroexpand name)))
     (cond
@@ -176,6 +180,7 @@ Lookup the object in the variable space."
                      (:s-expr
                       (destructuring-bind (&key s-expr value bounds)
                           node
+                        (declare (ignore s-expr bounds))
                         (when *load-verbose*
                           (format t "; eval ~a~%" value))
                         (eval value)))

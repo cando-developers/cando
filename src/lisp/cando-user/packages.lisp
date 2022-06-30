@@ -28,9 +28,9 @@
 (defpackage #:cando-user
   (:shadowing-import-from :chem "ATOM")
   (:use #:common-lisp)
-  (:import-from :leap.pdb #:load-pdb)
+  (:import-from :leap.pdb #:loadPdb)
   (:export #:start-swank
-           #:load-pdb
+           #:loadPdb
            #:jupyterlab-fork-server
            #:force-field-viewer
            )

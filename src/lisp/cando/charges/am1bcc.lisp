@@ -121,13 +121,13 @@
 ;; Set the a property in the bond that registers the Am1Bcc bond type
 (defun set-bond-type (b id)
 ;  (print (% "Setting bond type[%d] for bond: %s" id (repr b)))
-  (chem:bond-set-property b 'am1-bcc-type id))
+  (chem:bond/set-property b 'am1-bcc-type id))
 
 (defun has-bond-type (b)
-  (chem:bond-has-property b 'am1-bcc-type))
+  (chem:bond/has-property b 'am1-bcc-type))
 
 (defun get-bond-type (b)
-  (chem:bond-get-property b 'am1-bcc-type ()))
+  (chem:bond/get-property b 'am1-bcc-type ()))
 
 
 
@@ -173,26 +173,26 @@
 ;   (loop for bond in (all-bonds-as-cons mol nil)
   (chem:map-bonds
    nil
-   (lambda (a1 a2 order)
-     (let ((bond (chem:get-bond-to a1 a2)))
-       (when (not (has-bond-type bond))
-         (cond
-           ((eq (chem:get-order-from-atom bond a1) :single-bond)
-            (cond
-              ((or (and (= (chem:get-ionization a1) -1) (= (chem:get-ionization a2) +1))
-                   (and (= (chem:get-ionization a1) 1) (= (chem:get-ionization a2) -1)))
-               (set-bond-type bond 06)) ; +- polarized bond
-              ((or (and (= (chem:get-ionization a1) 0) (= (chem:get-ionization a2) -1))
-                   (and (= (chem:get-ionization a1) -1) (= (chem:get-ionization a2) 0)))
-               (set-bond-type bond 09))     ; 0- polarized bond
-              (t (set-bond-type bond 1)))) ; simple single bond
-           ((eq (chem:get-order-from-atom bond a1) :double-bond)
-            (set-bond-type bond 02))          ; simple double bond
-           (t (set-bond-type bond 03))))))  ; triple bond
+   (lambda (a1 a2 order bond)
+     (when (not (has-bond-type bond))
+       (cond
+         ((eq (chem:get-order-from-atom bond a1) :single-bond)
+          (cond
+            ((or (and (= (chem:get-ionization a1) -1) (= (chem:get-ionization a2) +1))
+                 (and (= (chem:get-ionization a1) 1) (= (chem:get-ionization a2) -1)))
+             (set-bond-type bond 06))   ; +- polarized bond
+            ((or (and (= (chem:get-ionization a1) 0) (= (chem:get-ionization a2) -1))
+                 (and (= (chem:get-ionization a1) -1) (= (chem:get-ionization a2) 0)))
+             (set-bond-type bond 09))    ; 0- polarized bond
+            (t (set-bond-type bond 1)))) ; simple single bond
+         ((eq (chem:get-order-from-atom bond a1) :double-bond)
+          (set-bond-type bond 02))      ; simple double bond
+         (t (set-bond-type bond 03))))) ; triple bond
    mol)
  #+(or)  (chem:map-bonds
    nil
-   (lambda (a1 a2 order)
+   (lambda (a1 a2 order bond)
+     (declare (ignore bond))
      (when (not (has-bond-type bond))
        (let ((a1 (chem:get-atom1 atom1))
              (a2 (chem:get-atom2 atom2)))
@@ -375,7 +375,7 @@
                            (previous-atom-correction-other 0.0)
                            (atom-correction 0.0)
                            (atom-correction-other 0.0)
-                           (other (chem:get-other-atom b a))
+                           (other (chem:bond/get-other-atom b a))
                            (bond-correction (lookup-am1-bcc-correction a b other)))
                       (if (gethash a correction-map)
                           (setf previous-atom-correction (gethash a correction-map)))
@@ -389,7 +389,7 @@
         ;;    (loop for a in (all-atoms-as-cons mol nil)
         ;;         do (let ((atom-correction 0.0))
         ;;           (loop for b in (chem:bonds-as-list a)
-        ;;                do (let* ((other (chem:get-other-atom b a))
+        ;;                do (let* ((other (chem:bond/get-other-atom b a))
         ;;                          (bond-correction (lookup-am1-bcc-correction a b other)))
         ;;                  (setq atom-correction (+ atom-correction bond-correction))))
         ;;           do (extend correction-map a atom-correction)))
@@ -452,7 +452,7 @@
                         
                         (format t "Atom ~a ----~%" (chem:get-name a)) ;(print (% "Atom %s -----" (chem:get-name a)))
                         (loop for b in (chem:bonds-as-list a)
-                           do (let* ((other (chem:get-other-atom b a))
+                           do (let* ((other (chem:bond/get-other-atom b a))
                                      (key-sign (lookup-am1-bcc-key a b other)))
                                 (format t " am1-bcc bond key: ~a~%" key-sign))) ; (print (% " am1-bcc bond key: %s" (repr key-sign)))))
                         (let ((am1-charge (lookup am1-charges a))

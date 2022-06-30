@@ -138,8 +138,7 @@
               (format nil "~(~A~)" (uiop:implementation-type)))
           (if (fork-client instance)
             (list "{connection_file}")
-            (append (list "-f" "no-auto-lparallel")
-                    (when (installer-load-system instance)
+            (append (when (installer-load-system instance)
                       (list "--eval" (installer-load-system instance)))
                     (list "--eval" "(jupyter:run-kernel 'cando-jupyter:kernel)"
                           "--" "{connection_file}"))))))
@@ -202,3 +201,11 @@
 
 (defun jupyterlab ()
   (run-kernel-from-slime))
+
+(defmethod jupyter:start :after ((kernel kernel))
+  (bordeaux-threads:make-thread (lambda ()
+                                  (sleep 600)
+                                  (with-output-to-string (*standard-output*)
+                                    (let ((*error-output* *standard-output*))
+                                      (asdf:load-system :cando-user-install)
+                                      (uiop:symbol-call "CANDO-USER-INSTALL" "UPDATE"))))))

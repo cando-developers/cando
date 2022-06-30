@@ -30,9 +30,9 @@
                            &aux (half-width (/ width 2.0)))
   (flet ((scramble-atom (atom)
            (let ((pos (geom:vec
-                       (+ (- (random width) half-width) (geom:vx center))
-                       (+ (- (random width) half-width) (geom:vy center))
-                       (+ (- (random width) half-width) (geom:vz center)))))
+                       (+ (- (random width) half-width) (geom:get-x center))
+                       (+ (- (random width) half-width) (geom:get-y center))
+                       (+ (- (random width) half-width) (geom:get-z center)))))
              (chem:set-position atom pos))))
     (cond
       ((typep matter 'chem:matter)
@@ -139,9 +139,9 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
               (loop for atom in (chem:atoms condition)
                     do (let* ((cp (chem:get-position atom))
                               (pos (geom:vec
-                                    (+ (- (random width) half-width) (geom:vx cp))
-                                    (+ (- (random width) half-width) (geom:vy cp))
-                                    (+ (- (random width) half-width) (geom:vz cp)))))
+                                    (+ (- (random width) half-width) (geom:get-x cp))
+                                    (+ (- (random width) half-width) (geom:get-y cp))
+                                    (+ (- (random width) half-width) (geom:get-z cp)))))
                          (chem:set-position atom pos))))
             (chem:restart-minimizer))))
      (progn
@@ -149,6 +149,7 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
 
 ;; Recover from minimization problems using Common Lisp restarts
 (defun minimize-no-fail (minimizer &key resignal-error)
+  (chem:disable-print-intermediate-results minimizer)
   (restart-case
       (handler-bind
           ((chem:minimizer-error (lambda (err)
@@ -188,15 +189,15 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
   (chem:set-conjugate-gradient-tolerance minimizer cg-tolerance)
   (chem:set-truncated-newton-tolerance minimizer tn-tolerance))
   
-#+(or)
-(defun optimize-structure (matter &optional active-atoms system)
-  (error "This function is broken because make-energy-function uses keywords")
-  (let* ((energy-function (chem:make-energy-function matter system active-atoms))
+(defun optimize-structure (matter &key active-atoms)
+  (let* ((energy-function (chem:make-energy-function :matter matter
+                                                     :assign-types t
+                                                     :active-atoms active-atoms))
          (min (chem:make-minimizer energy-function)))
     (configure-minimizer min
-                         :max-steepest-descent-steps 1000
-                         :max-conjugate-gradient-steps 50000
-                         :max-truncated-newton-steps 100)
+                         :max-sd-steps 1000
+                         :max-cg-steps 50000
+                         :max-tn-steps 100)
     (chem:enable-print-intermediate-results min)
     (chem:set-option energy-function 'chem::nonbond-term nil)
     (format t "Starting minimization stage 1 nonbond=NIL~%")
@@ -256,15 +257,23 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
       (format t "Executing: ~a~%" cmd)
       (ext:system cmd))))
 
-    
-(defun build-good-geometry-from-random (agg force-field)
-  (dotimes (i 20)
-    (format t "Attempt ~a to build good geometry from a random starting point~%" i)
-    (scramble-positions agg)
-    (optimize-structure agg force-field)
-    (when (not (bad-geometry-p agg force-field))
+(defun bad-geometry-p (agg)
+  (let ((energy-function (chem:make-energy-function :matter agg)))
+    (let ((fails (chem:check-for-beyond-threshold-interactions energy-function 0.2)))
+      (if (> (length fails) 0)
+          fails
+          nil))))
+
+(defun build-good-geometry-from-random (agg)
+  (let (bad-geom)
+    (dotimes (i 3)
+      (format t "Attempt ~a to build good geometry from a random starting point~%" i)
+      (scramble-positions agg)
+      (optimize-structure agg)
+      (setf bad-geom (bad-geometry-p agg))
+      (when (not bad-geom)
         (return-from build-good-geometry-from-random)))
-  (error "Exceeded max number of tries to build good geometry"))
+    (warn "Exceeded max number of tries to build good geometry~%Bad geometry:~%~a" bad-geom)))
 
 
 (defun save-mol2 (matter pathname &key use-sybyl-types)
@@ -377,9 +386,9 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
              (chem:set-position atom (geom:vec 0.0 0.0 0.0)))
            (let* ((cp (chem:get-position atom))
                   (pos (geom:vec
-                       (+ (- (random width) half-width) (geom:vx cp))
-                       (+ (- (random width) half-width) (geom:vy cp))
-                       (+ (- (random width) half-width) (geom:vz cp)))))
+                       (+ (- (random width) half-width) (geom:get-x cp))
+                       (+ (- (random width) half-width) (geom:get-y cp))
+                       (+ (- (random width) half-width) (geom:get-z cp)))))
              (chem:set-position atom pos))))
     (cond
       ((typep matter 'chem:matter)

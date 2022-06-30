@@ -46,6 +46,14 @@ namespace chem
     typedef core::T_sp AtomType;
     typedef core::Symbol_sp MoeType;
 
+    /*!
+      RightHanded_Configuration and
+      LeftHanded_Configuration
+      means bonds to atoms (a1 a2 a3 a4)
+      point a4 away then RightHanded_Configuration a1->a2->a3 right handed
+      point a4 away then LeftHanded_Configuration a1->a2->a3 left handed
+    */
+
     typedef	enum {
 	undefinedConfiguration,
 	S_Configuration,
@@ -54,10 +62,7 @@ namespace chem
         LeftHanded_Configuration
     } ConfigurationEnum;
 
-    
     typedef	enum { undefinedCenter, chiralCenter, prochiralCenter} StereochemistryType;
-
-
 
     extern core::Symbol_sp& _sym__PLUS_configurationEnumConverter_PLUS_;
     extern core::Symbol_sp& _sym__PLUS_stereochemistryTypeConverter_PLUS_;

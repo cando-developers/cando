@@ -13,6 +13,10 @@
     (setf moment (math-op-moment-of-inertia unit))
     ;;Diagonalize the moment of inertia matrix
     (math-op-diagonalize moment eigen-values diagonalize)
+    (when (chem:verbose 2)
+      (format t "eigen-values ~s~%" eigen-values)
+      (format t "moment: ~s~%" moment)
+      (format t "diagonalize: ~%~s~%" diagonalize))
     (let* ((diagonalize-0 (geom:vec (geom:at-row-col-get diagonalize 0 0)
                                     (geom:at-row-col-get diagonalize 0 1)
                                     (geom:at-row-col-get diagonalize 0 2)))
@@ -24,32 +28,52 @@
                                     (geom:at-row-col-get diagonalize 2 2)))
            (pos (geom:vcross diagonalize-0 diagonalize-1))
            (dot (geom:vdot pos diagonalize-2)))
-      (format t "The handedness of the transformation is (+1=Right): ~a~%" dot)
       ;;If the handedness of the matrix is wrong then change it
       (if (< dot 0.0)
           (progn
             (geom:at-row-col-put diagonalize 2 0 (* (geom:at-row-col-get diagonalize 2 0) -1.0))
             (geom:at-row-col-put diagonalize 2 1 (* (geom:at-row-col-get diagonalize 1 0) -1.0))
             (geom:at-row-col-put diagonalize 2 2 (* (geom:at-row-col-get diagonalize 2 0) -1.0))))
+      ;; Get the largest eigenvalue along z
+      (let* ((xeigen (elt eigen-values 0))
+             (yeigen (elt eigen-values 1))
+             (zeigen (elt eigen-values 2))
+             (rotate-largest-to-zaxis (cond
+                                       ((and (> xeigen yeigen)
+                                             (> xeigen zeigen))
+                                        (geom:make-m4-rotate-y (* 90.0 0.0174533)))
+                                       ((and (> yeigen xeigen)
+                                             (> yeigen zeigen))
+                                        (geom:make-m4-rotate-x (* 90.0 0.0174533)))
+                                       (t
+                                        (geom:make-m4-rotate-z 0.0)) ; identity
+                                       )))
+        (when (chem:verbose 2)
+          (format t "rotate-largest-to-zaxis:~%~s~%" rotate-largest-to-zaxis))
+        (setf diagonalize (geom:m*m rotate-largest-to-zaxis diagonalize)
+              eigen-values (geom:m*v rotate-largest-to-zaxis eigen-values)))
+      (when (chem:verbose 2)
+        (format t "after eigen-values ~s~%" eigen-values)
+        (format t "after diagonalize: ~%~s~%" diagonalize))
       ;; Apply the matrix to the UNIT
       (chem:map-atoms
        'nil
        (lambda (atom)
          (let ((atom-position (chem:get-position atom)))
            (geom:set-all3 atom-position
-                          (+ (* (geom:at-row-col-get diagonalize 0 0) (geom:vx atom-position))
-                             (* (geom:at-row-col-get diagonalize 1 0) (geom:vy atom-position))
-                             (* (geom:at-row-col-get diagonalize 2 0) (geom:vz atom-position)))
-                          (+ (* (geom:at-row-col-get diagonalize 0 1) (geom:vx atom-position))
-                             (* (geom:at-row-col-get diagonalize 1 1) (geom:vy atom-position))
-                             (* (geom:at-row-col-get diagonalize 2 1) (geom:vz atom-position)))
-                          (+ (* (geom:at-row-col-get diagonalize 0 2) (geom:vx atom-position))
-                             (* (geom:at-row-col-get diagonalize 1 2) (geom:vy atom-position))
-                             (* (geom:at-row-col-get diagonalize 2 2) (geom:vz atom-position))))
+                          (+ (* (geom:at-row-col-get diagonalize 0 0) (geom:get-x atom-position))
+                             (* (geom:at-row-col-get diagonalize 1 0) (geom:get-y atom-position))
+                             (* (geom:at-row-col-get diagonalize 2 0) (geom:get-z atom-position)))
+                          (+ (* (geom:at-row-col-get diagonalize 0 1) (geom:get-x atom-position))
+                             (* (geom:at-row-col-get diagonalize 1 1) (geom:get-y atom-position))
+                             (* (geom:at-row-col-get diagonalize 2 1) (geom:get-z atom-position)))
+                          (+ (* (geom:at-row-col-get diagonalize 0 2) (geom:get-x atom-position))
+                             (* (geom:at-row-col-get diagonalize 1 2) (geom:get-y atom-position))
+                             (* (geom:at-row-col-get diagonalize 2 2) (geom:get-z atom-position))))
            #+(or)(geom:set-all3 atom-position
-                          (geom:vx (geom:m*v diagonalize atom-position))
-                          (geom:vy (geom:m*v diagonalize atom-position))
-                          (geom:vz (geom:m*v diagonalize atom-position)))
+                          (geom:get-x (geom:m*v diagonalize atom-position))
+                          (geom:get-y (geom:m*v diagonalize atom-position))
+                          (geom:get-z (geom:m*v diagonalize atom-position)))
            (chem:set-position atom atom-position)))
        unit))))
 
@@ -68,15 +92,15 @@
      'nil
      (lambda (atom)
        (let* ((position (chem:get-position atom))
-              (x2 (* (geom:vx position) (geom:vx position)))
-              (y2 (* (geom:vy position) (geom:vy position)))
-              (z2 (* (geom:vz position) (geom:vz position))))
+              (x2 (* (geom:get-x position) (geom:get-x position)))
+              (y2 (* (geom:get-y position) (geom:get-y position)))
+              (z2 (* (geom:get-z position) (geom:get-z position))))
          (setf sxx (+ sxx y2 z2)
                syy (+ syy x2 z2)
                szz (+ szz x2 y2)
-               sxy (+ sxy (* (geom:vx position) (geom:vy position)))
-               sxz (+ sxz (* (geom:vx position) (geom:vz position)))
-               syz (+ syz (* (geom:vy position) (geom:vz position))))))
+               sxy (+ sxy (* (geom:get-x position) (geom:get-y position)))
+               sxz (+ sxz (* (geom:get-x position) (geom:get-z position)))
+               syz (+ syz (* (geom:get-y position) (geom:get-z position))))))
      unit)
     (setf (aref moment-array 0) sxx
           (aref moment-array 1) (- sxy)
@@ -97,7 +121,7 @@
         (z-vector (make-array vector-size :element-type 'double-float))
         (thresh 0.0)
         (h 0.0)
-        (t 0.0)
+        (tt 0.0)
         (theta 0.0)
         (c 0.0)
         (s 0.0)
@@ -130,15 +154,15 @@
                                        (progn
                                          (setf h (- (aref d-vector k) (aref d-vector j)))
                                          (if (= (abs h) (+ (abs h) g))
-                                             (setf t (/ (geom:at-row-col-get ma j k) h))
+                                             (setf tt (/ (geom:at-row-col-get ma j k) h))
                                              (progn
                                                (setf theta (* 0.5 (/ h  (geom:at-row-col-get ma j k))))
-                                               (setf t (/ 1.0 (+ (abs theta) (sqrt (+ 1.0 (* theta theta))))))
-                                               (if (< theta 0.0) (setf t (- t)))))
-                                         (setf c (/ 1.0 (sqrt (+ 1 (* t t))))
-                                               s (* t c)
+                                               (setf tt (/ 1.0 (+ (abs theta) (sqrt (+ 1.0 (* theta theta))))))
+                                               (if (< theta 0.0) (setf tt (- tt)))))
+                                         (setf c (/ 1.0 (sqrt (+ 1 (* tt tt))))
+                                               s (* tt c)
                                                tau (/ s (+ 1.0 c))
-                                               h (* t  (geom:at-row-col-get ma j k))
+                                               h (* tt  (geom:at-row-col-get ma j k))
                                                (aref z-vector j) (- (aref z-vector j) h)
                                                (aref z-vector k) (+ (aref z-vector k) h)
                                                (aref d-vector j) (- (aref d-vector j) h)
@@ -173,11 +197,3 @@
                    do (setf (aref b-vector j) (+ (aref b-vector j) (aref z-vector j))
                             (aref d-vector j) (aref b-vector j)
                             (aref z-vector j) 0.0d0)))))
-                                            
-
-                                               
-                                               
-                                        
-    
-        
-    

@@ -3,11 +3,14 @@
 
 (leap:setup-default-paths)
 
-(test load-frcmod
-      (leap:load-amber-params "frcmod.ff99SB"))
+(test-type load-frcmod
+           (leap:load-amber-params "frcmod.ff99SB")
+           chem:force-field)
 
-(test load-frcmod-scee-scnb
-      (leap:load-amber-params "frcmod.fb15"))
+(test-type load-frcmod-scee-scnb
+           (leap:load-amber-params "frcmod.fb15")
+           chem:force-field)
 
-(test load-frcmod-pho
-      (leap:load-amber-params "./data/frcmod.pho"))
+(test-type load-frcmod-pho
+           (leap:load-amber-params (namestring (translate-logical-pathname "sys:extensions;cando;src;lisp;regression-tests;data;frcmod.pho")))
+           chem:force-field)

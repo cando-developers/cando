@@ -1,3 +1,4 @@
+
 ;;;
 ;;;    File: packages.lisp
 ;;;
@@ -23,53 +24,10 @@
 ;; This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
 
 ;; -^-
-(cl:in-package #:common-lisp-user)
 
-(defpackage #:amber.params
+(defpackage #:smiles
   (:use #:common-lisp)
   (:export
-   ))
-
-(defpackage #:amber
-  (:use #:common-lisp)
-  (:export
-   #:simulation
-   #:addAggregates
-   #:addAggregate
-   #:saveSimulation
-   #:startSimulation
-   #:convert-to-script
-   #:job
-   #:job-file
-   #:node-file
-   #:script-mixin
-   #:substitutions
-   #:node-pathname
-   #:make-node-file
-   #:argument
-   #:node
-   #:option
-   #:definers
-   #:users
-   #:inputs
-   #:outputs
-   #:script
-   #:name
-   #:filename
-   #:jupyter-job
-   #:simple-jupyter-job
-   #:minimize
-   #:heat
-   #:pressurize
-   #:dynamics
-   #:mdcrd
-   #:generate-all-code
-   #:connect-graph
-   #:arguments
-   ))
-
-(defpackage #:graphviz-amber
-  (:use #:common-lisp)
-  (:export
-   #:draw-graph-stream
+   #:parse-smiles-string
+   #:chem-molecule
    ))

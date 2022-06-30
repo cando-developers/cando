@@ -15,7 +15,8 @@
                                   (lambda (atm) atm)
                                   aggregate))
            (bonds (chem:map-bonds 'vector
-                                  (lambda (atm1 atm2 bond-order)
+                                  (lambda (atm1 atm2 bond-order bond)
+                                    (declare (ignore bond))
                                     (list atm1 atm2 bond-order))
                                   aggregate))
            (coordinates (make-array (* 3 (length atoms)) :element-type 'double-float)))
@@ -31,16 +32,17 @@
             for pos = (chem:get-position atm)
             for coord-index = (* 3 index)
             do (setf (gethash atm atom-to-index) index) ;;key=atm value=index
-            do (setf (elt coordinates coord-index) (geom:vx pos)
-                     (elt coordinates (+ 1 coord-index)) (geom:vy pos)
-                     (elt coordinates (+ 2 coord-index)) (geom:vz pos))
+            do (setf (elt coordinates coord-index) (geom:get-x pos)
+                     (elt coordinates (+ 1 coord-index)) (geom:get-y pos)
+                     (elt coordinates (+ 2 coord-index)) (geom:get-z pos))
                (format stream "~10,4f~10,4f~10,4f ~2a  0  0  0  0  0  0~%"
                        (elt coordinates coord-index)
                        (elt coordinates (+ 1 coord-index)) 
                        (elt coordinates (+ 2 coord-index))
                        (string (chem:get-element atm))))
       (chem:map-bonds nil
-                      (lambda (a1 a2 order)
+                      (lambda (a1 a2 order bond)
+                        (declare (ignore bond))
                         (let ((order-num (case order
                                            (:single-bond 1)
                                            (:double-bond 2)

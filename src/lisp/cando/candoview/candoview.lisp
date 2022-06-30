@@ -140,7 +140,8 @@
   (let ((count 0))
     (chem:map-bonds
      nil
-     (lambda (x y o)
+     (lambda (x y o b)
+       (declare (ignore b))
        (incf count))
      agg)
     count))
@@ -167,7 +168,7 @@
 (defparameter *max-colors* 5)
 
 
-(defun vlist (p) (list (geom:vx p) (geom:vy p) (geom:vz p)))
+(defun vlist (p) (list (geom:get-x p) (geom:get-y p) (geom:get-z p)))
 
 
 (defun translate-data-aggregate (w)
@@ -197,7 +198,8 @@
                      (incf i))))))
       (chem:map-bonds
        nil
-       (lambda (x y o)
+       (lambda (x y o b)
+         (declare (ignore b))
          (let* ((p1 (vlist (chem:get-position x)))
                 (c1 (car (gethash (chem:get-element x) *element-color-index*)))
                 (p2 (vlist (chem:get-position y)))

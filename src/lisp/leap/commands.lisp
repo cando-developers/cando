@@ -1,5 +1,38 @@
 (in-package :leap.commands)
 
+(defun leap.smiles (smiles-string)
+  "   Construct a molecule graph from a smiles string.
+
+      Arguments:
+              [0]     - String containing smiles code.
+"
+  (let* ((smiles-mol (smiles:parse-smiles-string smiles-string))
+         (mol (smiles:chem-molecule smiles-mol))
+         (agg (chem:make-aggregate :default))
+         )
+    (chem:add-matter agg mol)
+    agg))
+
+(defun leap.set-box (aggregate enclosure &optional (buffer nil bufferp))
+  "    setBox solute enclosure [ buffer ]
+      UNIT                         _solute_
+      \"vdw\" OR \"centers\"           _enclosure_
+      object                       _buffer_
+
+The setBox command creates a periodic box around the _solute_ UNIT, turning
+it into a periodic system for the simulation programs.  It does not add
+any solvent to the system. The choice of \"vdw\" or \"centers\" determines
+whether the box encloses all entire atoms or just all atom centers -
+use \"centers\" if the system has been previously equilibrated as a
+periodic box. See the solvateBox command for a description of the
+buffer object, which extends either type of box by an arbitrary amount.
+"
+
+  (let ((enclosure (keyword-upcase enclosure)))
+    (if bufferp
+        (leap.set-box:set-box (leap.core:lookup-variable aggregate) enclosure buffer)
+        (leap.set-box:set-box (leap.core:lookup-variable aggregate) enclosure)
+        )))
 
 (defun leap-setup-amber-paths ()
   (leap:setup-amber-paths))
@@ -10,9 +43,45 @@
 (defun leap.show-paths ()
   (leap:show-paths))
 
-(defun leap.show (arg)
+(defun leap.scanAmberCheck (scan)
+  (let ((pdb-scanner (leap.core:lookup-variable scan)))
+    (leap.pdb:scanAmberCheck pdb-scanner)))
+
+(defun leap.scanSelectChainIds (scan chainIds)
+  (let ((pdb-scanner (leap.core:lookup-variable scan)))
+    (leap.pdb:scanSelectChainIds pdb-scanner chainIds))
+  :no-output)
+
+(defun leap.scanIgnoreResidues (scan residues)
+  (let ((pdb-scanner (leap.core:lookup-variable scan)))
+    (leap.pdb:scanIgnoreResidues pdb-scanner residues))
+  :no-output)
+
+(defun leap.scanRenameResidues (scan list)
+  (let ((pdb-scanner (leap.core:lookup-variable scan)))
+    (leap.pdb:scanRenameResidues pdb-scanner list))
+  :no-output)
+
+(defun leap.scanRenameAtoms (scan list)
+  (let ((pdb-scanner (leap.core:lookup-variable scan)))
+    (leap.pdb:scanRenameAtoms pdb-scanner list))
+  :no-output)
+
+(defun leap.scanIgnoreAtoms (scan list)
+  (let ((pdb-scanner (leap.core:lookup-variable scan)))
+    (leap.pdb:scanIgnoreAtoms pdb-scanner list))
+  :no-output)
+
+(defun leap.show (arg &rest kwargs)
+  "    Show the structure
+
+       show aggregate [[:axes t] ...]
+
+       UNIT/AGGREGATE       structure to show
+       :axes t              show axes
+"
   (let ((val (leap.core:lookup-variable arg)))
-    (funcall (find-symbol "SHOW" :cando-user) val)))
+    (apply (find-symbol "SHOW" :cando-user) val kwargs)))
 
 
 (defun leap.z-matrix (val list)
@@ -127,7 +196,7 @@ Setup the gaff-1 force-field."
   "quickload   system
 
 Download a Cando package from the internet, compile it and make it available for use."
-  (ql:quickload system))
+  (funcall (find-symbol "QUICKLOAD" "QL") system))
 
 (defun leap-log-file (entry)
   "    logFile filename
@@ -203,6 +272,49 @@ is written to the log file as if the verbosity level were set to 2."
   (chem:setf-molecule-type object value))
 
 (defun leap.set (object property value)
+  "
+   set default variable value
+      STRING                       _variable_
+      STRING                       _value_
+OR
+    set container parameter object
+      UNIT/RESIDUE/ATOM/STRING     _container_
+      STRING                       _parameter_
+      object                       _object/value_
+
+This command sets the values of some global parameters (when the first
+argument is \"default\") or sets various parameters associated with _container_.
+
+To see the possible variables for \"set default\", type \"help set_default\".
+
+The box parameter of a UNIT defines the bounding box of the UNIT; this is
+not a UNIT's periodic box.  The setBox and solvate family of commands add a
+periodic box to a UNIT; for a description, type, e.g., \"help setBox\".
+
+The more useful parameters for each type of _container_ are the following:
+  container    parameters           values
+
+  UNIT         name                 STRING
+               head, tail           ATOM [e.g. unit.1.1]
+               restype              \"protein\" \"nucleic\" \"saccharide\" \"solvent\"
+                                    \"undefined\" [sets all residues in UNIT]
+               box                  LIST [side lengths: {A B C}]
+                                    or NUMBER [cube side length] or \"null\"
+               cap                  LIST [center, radius: {X Y Z  R}]
+                                    or \"null\"
+
+  RESIDUE      name                 STRING
+  [e.g.        restype              [see UNIT]
+   unit.1]     connect0, connect1   ATOM [e.g. unit.1.1]
+               imagingAtom          ATOM [e.g. unit.1.1]
+
+  ATOM         name, pertName       STRING [<= 4 chars]
+  [e.g.        type, pertType       STRING [<= 2 chars]
+   unit.1.1]   element              STRING
+               pert                 \"true\" [or pert flag unset]
+               charge, pertCharge   DOUBLE
+               position             LIST [{X Y Z}]
+"
   (let ((object-fixed (leap.core:lookup-variable object))
         (property-fixed (keyword-upcase property))
         (value-fixed value))
@@ -222,7 +334,6 @@ Print a description of the object.
        (format t "~a~%" val))
       (t (describe val)))
     :no-output))
-
 
 
 (defgeneric do-remove (a b))
@@ -764,7 +875,8 @@ the STRING is not given then a list of legal STRINGs is provided.
                   when (and (> col 0) (= (rem col 4) 0))
                     do (terpri)
                   finally (when (/= (rem col 4) 0)
-                            (terpri))))))))
+                            (terpri)))))))
+  :no-output)
 
 (defun leap-add (object-a-name  object-b-name)
  "    add a b
@@ -868,9 +980,9 @@ the three NUMBERs in the LIST _ direction_.
      'nil
      (lambda (atom)
        (let* ((pos (chem:get-position atom))
-              (x-position (geom:vx pos))
-              (y-position (geom:vy pos))
-              (z-position (geom:vz pos)))
+              (x-position (geom:get-x pos))
+              (y-position (geom:get-y pos))
+              (z-position (geom:get-z pos)))
          (geom:set-all3 pos
                         (+ x-position (first direction))
                         (+ y-position (second direction))
@@ -902,7 +1014,7 @@ _container_.
 "
   (let* ((container (leap.core:lookup-variable container-name))
          (position (chem:geometric-center container)))
-    (format t "The center is at: ~,2f, ~,2f, ~,2f~%" (geom:vx position) (geom:vy position) (geom:vz position))))
+    (format t "The center is at: ~,2f, ~,2f, ~,2f~%" (geom:get-x position) (geom:get-y position) (geom:get-z position))))
 
 (defun leap-measure-geom (atom1 atom2 &optional atom3 atom4)
 "    measureGeom atom1 atom2 [ atom3 [ atom4 ] ]
@@ -934,7 +1046,7 @@ respectively.
 Add the directory in _path_ to the list of directories that are searched
 for files specified by other commands.
 "
-  (setf *default-pathname-defaults* path))
+  (leap.core:add-path "amber:dat;leap;prep;"))
 
 (defun leap-align-axes (unit-name)
 "     alignAxes unit
@@ -990,23 +1102,23 @@ translations along the appropriate axes (0 for no translation).
      'nil
      (lambda (atom)
        (let* ((atom-position (chem:get-position atom))
-              (x-position (geom:vx atom-position))
-              (y-position (geom:vy atom-position))
-              (z-position (geom:vz atom-position)))
+              (x-position (geom:get-x atom-position))
+              (y-position (geom:get-y atom-position))
+              (z-position (geom:get-z atom-position)))
          (geom:set-all3 atom-position
-                        (+ (* (geom:at-row-col-get transform 0 0) (geom:vx atom-position))
-                           (* (geom:at-row-col-get transform 1 0) (geom:vy atom-position))
-                           (* (geom:at-row-col-get transform 2 0) (geom:vz atom-position)))
-                        (+ (* (geom:at-row-col-get transform 0 1) (geom:vx atom-position))
-                           (* (geom:at-row-col-get transform 1 1) (geom:vy atom-position))
-                           (* (geom:at-row-col-get transform 2 1) (geom:vz atom-position)))
-                        (+ (* (geom:at-row-col-get transform 0 2) (geom:vx atom-position))
-                           (* (geom:at-row-col-get transform 1 2) (geom:vy atom-position))
-                           (* (geom:at-row-col-get transform 2 2) (geom:vz atom-position))))
+                        (+ (* (geom:at-row-col-get transform 0 0) (geom:get-x atom-position))
+                           (* (geom:at-row-col-get transform 1 0) (geom:get-y atom-position))
+                           (* (geom:at-row-col-get transform 2 0) (geom:get-z atom-position)))
+                        (+ (* (geom:at-row-col-get transform 0 1) (geom:get-x atom-position))
+                           (* (geom:at-row-col-get transform 1 1) (geom:get-y atom-position))
+                           (* (geom:at-row-col-get transform 2 1) (geom:get-z atom-position)))
+                        (+ (* (geom:at-row-col-get transform 0 2) (geom:get-x atom-position))
+                           (* (geom:at-row-col-get transform 1 2) (geom:get-y atom-position))
+                           (* (geom:at-row-col-get transform 2 2) (geom:get-z atom-position))))
          #+(or)(geom:set-all3 atom-position
-                              (geom:vx (geom:m*v transform atom-position))
-                              (geom:vy (geom:m*v transform atom-position))
-                              (geom:vz (geom:m*v transform atom-position)))
+                              (geom:get-x (geom:m*v transform atom-position))
+                              (geom:get-y (geom:m*v transform atom-position))
+                              (geom:get-z (geom:m*v transform atom-position)))
          (chem:set-position atom atom-position)))
      atoms)))
 
@@ -1250,16 +1362,16 @@ a default distance of 2 angstroms used.
                             (if absolute-distance
                                 (setf radius closeness)
                                 (setf radius (* 0.5 (+ atom1-rad atom2-rad))))
-                            (if (or (> (geom:vx atom1-pos) (+ (geom:vx atom2-pos) radius))
-                                    (> (geom:vy atom1-pos) (+ (geom:vy atom2-pos) radius))
-                                    (> (geom:vz atom1-pos) (+ (geom:vz atom2-pos) radius))
-                                    (< (geom:vx atom1-pos) (- (geom:vx atom2-pos) radius))
-                                    (< (geom:vy atom1-pos) (- (geom:vy atom2-pos) radius))
-                                    (< (geom:vz atom1-pos) (- (geom:vz atom2-pos) radius)))
+                            (if (or (> (geom:get-x atom1-pos) (+ (geom:get-x atom2-pos) radius))
+                                    (> (geom:get-y atom1-pos) (+ (geom:get-y atom2-pos) radius))
+                                    (> (geom:get-z atom1-pos) (+ (geom:get-z atom2-pos) radius))
+                                    (< (geom:get-x atom1-pos) (- (geom:get-x atom2-pos) radius))
+                                    (< (geom:get-y atom1-pos) (- (geom:get-y atom2-pos) radius))
+                                    (< (geom:get-z atom1-pos) (- (geom:get-z atom2-pos) radius)))
                                 (progn
-                                  (setf dx (- (geom:vx atom1-pos) (geom:vx atom2-pos))
-                                        dy (- (geom:vy atom1-pos) (geom:vy atom2-pos))
-                                        dz (- (geom:vz atom1-pos) (geom:vz atom2-pos)))
+                                  (setf dx (- (geom:get-x atom1-pos) (geom:get-x atom2-pos))
+                                        dy (- (geom:get-y atom1-pos) (geom:get-y atom2-pos))
+                                        dz (- (geom:get-z atom1-pos) (geom:get-z atom2-pos)))
                                   (setf radius (* radius radius))
                                   (setf distance (+ (* dx dx) (* dy dy) (* dz dz)))
                                   (if (< distance radius)
@@ -1456,7 +1568,14 @@ Provide a list of commands that cleap has available to mimic tleap."
           ("ls" . leap.dir)
           ("list" . leap-list-variables)
           ("listVariables" . leap-list-variables) ; alternative to "list"
-          ("loadPdb" . leap.pdb:load-pdb)
+          ("loadPdb" . leap.pdb:loadPdb)
+          ("scanPdb" . leap.pdb:scanPdb)
+          ("scanAmberCheck" . leap.scanAmberCheck)
+          ("scanSelectChainIds" . leap.scanSelectChainIds)
+          ("scanIgnoreResidues" . leap.scanIgnoreResidues)
+          ("scanRenameResidues" . leap.scanRenameResidues )
+          ("scanRenameAtoms" . leap.scanRenameAtoms )
+          ("scanIgnoreAtoms" . leap.scanIgnoreAtoms )
           ("source" . leap-source)
           ("set" . leap.set )
           ("loadChemDraw" . leap.load-chem-draw)
@@ -1480,7 +1599,8 @@ Provide a list of commands that cleap has available to mimic tleap."
           ("addIons" . leap-add-ions)
           ("addIons2" . leap-add-ions-2)
           ("addIonsRand" . leap-add-ions-rand)
-          ("setBox" . leap.set-box:set-box)
+          ("setBox" . leap.set-box)
+          ("smiles" . leap.smiles )
           ("showPaths" . leap.show-paths)
           ("show" . leap.show )
           ("zMatrix" . leap.z-matrix )
@@ -1526,7 +1646,7 @@ Provide a list of commands that cleap has available to mimic tleap."
                  (if (not (fboundp leap-sym))
                    (progn
                      (setf (fdefinition leap-sym) (fdefinition command-symbol))
-                     (export leap-sym))
+                     #+(or)(export leap-sym))
                    (when *error-on-bad-alias*
                      (error "Cannot create a lisp alias for function name ~s because it already defines a function ~s~%" leap-sym (fdefinition leap-sym))))))))
   (setf *error-on-bad-alias* nil))

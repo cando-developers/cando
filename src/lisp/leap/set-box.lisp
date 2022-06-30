@@ -1,18 +1,34 @@
 (in-package :leap.set-box)
 
 (defun set-box (aggregate enclosure &optional buffer)
-  "The set-box command creates a bounding-box around the solute."
+"    setBox solute enclosure [ buffer ]
+      UNIT                         _solute_
+      \"vdw\" OR \"centers\"           _enclosure_
+      object                       _buffer_
+
+The setBox command creates a periodic box around the _solute_ UNIT, turning
+it into a periodic system for the simulation programs.  It does not add
+any solvent to the system. The choice of \"vdw\" or \"centers\" determines
+whether the box encloses all entire atoms or just all atom centers -
+use \"centers\" if the system has been previously equilibrated as a
+periodic box. See the solvateBox command for a description of the
+buffer object, which extends either type of box by an arbitrary amount.
+"
   (check-type aggregate chem:aggregate)
+
   (let ((buffer-vec (make-array 3))
         (dx 0)
         (dy 0)
         (dz 0))
     (if (and (not (eq :vdw enclosure))
              (not (eq :centers enclosure)))
-        (error "~s - Expected :vdw or :centersfor second argument~%" enclosure))
+        (error "~s - Expected :vdw or :centers for second argument~%" enclosure))
     (if (eq :vdw enclosure)
         (center-unit-by-radii aggregate)
-        (set-unit-box-by-centers aggregate))
+        (let* ((center (chem:geometric-center aggregate))
+               (trans (geom:make-m4-translate (geom:v* center -1.0))))
+          (chem:apply-transform-to-atoms aggregate trans)
+          (set-unit-box-by-centers aggregate)))
     (when buffer
       (if (listp buffer)
           (progn
@@ -70,9 +86,9 @@
                                atom-default-radius (chem:get-name a))
                  (setf radius atom-default-radius))))
        (chem:set-vdw-radius a radius)
-       (setf x (+ (geom:vx (chem:get-position a)) radius))
-       (setf y (+ (geom:vy (chem:get-position a)) radius))
-       (setf z (+ (geom:vz (chem:get-position a)) radius))
+       (setf x (+ (geom:get-x (chem:get-position a)) radius))
+       (setf y (+ (geom:get-y (chem:get-position a)) radius))
+       (setf z (+ (geom:get-z (chem:get-position a)) radius))
        (if (=  ifirst 1)
            (setf x-max x
                  y-max y
@@ -85,9 +101,9 @@
                  (setf y-max y))
              (if (> z z-max)
                  (setf z-max z))))
-       (setf x (- (geom:vx (chem:get-position a)) radius))
-       (setf y (- (geom:vy (chem:get-position a)) radius))
-       (setf z (- (geom:vz (chem:get-position a)) radius))
+       (setf x (- (geom:get-x (chem:get-position a)) radius))
+       (setf y (- (geom:get-y (chem:get-position a)) radius))
+       (setf z (- (geom:get-z (chem:get-position a)) radius))
        (if (=  ifirst 1)
            (setf x-min x
                  y-min y
@@ -108,14 +124,13 @@
     (setf z (+ x-min (* (- x-max x-min) 0.5)))
 
     ;;Translate center to origin
-    (let* ((translate-mol (geom:vec x y z))
+    (let* ((translate-mol (geom:vec (- x) (- y) (- z)))
            (mol-transform (geom:make-m4-translate translate-mol)))
       (chem:apply-transform-to-atoms aggregate mol-transform)
       (chem:set-bounding-box aggregate (chem:make-bounding-box (list (- x-max x-min) (- y-max y-min) (- z-max z-min)))))))
 
 (defun set-unit-box-by-centers (aggregate)
-  (let ((atom-default-radius 1.5)
-        (ifirst 1)
+  (let ((ifirst 1)
         (x 0.0)
         (y 0.0)
         (z 0.0)
@@ -124,14 +139,13 @@
         (z-max 0.0)
         (x-min 0.0)
         (y-min 0.0)
-        (z-min 0.0)
-        (radius 0.0))
+        (z-min 0.0))
     (chem:map-atoms
      nil
      (lambda (a)
-       (setf x (geom:vx (chem:get-position a)))
-       (setf y (geom:vy (chem:get-position a)))
-       (setf z (geom:vz (chem:get-position a)))
+       (setf x (geom:get-x (chem:get-position a)))
+       (setf y (geom:get-y (chem:get-position a)))
+       (setf z (geom:get-z (chem:get-position a)))
        (if (=  ifirst 1)
            (setf x-max x
                  x-min x

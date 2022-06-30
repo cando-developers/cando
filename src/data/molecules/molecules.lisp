@@ -8,7 +8,7 @@
           (cons (translate-logical-pathname "cando:cando;")
                 (symbol-value central-registry)))
     (funcall load-system "cando"))
-  (format t "Done initialization pid = ~a~%" (getpid)))
+  (format t "Done initialization pid = ~a~%" (core:getpid)))
 
 (defun scramble-positions (matter)
   (chem:map-atoms
@@ -35,7 +35,7 @@
   (dotimes (i (length atom-vec))
     (let ((config (if (logbitp i index) 'chem:S 'chem:R))
           (atom (elt atom-vec i)))
-      (chem:set-configuration (elt atom-vec i) config)))
+      (chem:set-configuration atom config)))
   (when show
     (let ((bits (ceiling (length atom-vec))))
       (format t "======== Stereoisomer ~3d/~v,'0b~%" index bits index)
@@ -43,7 +43,7 @@
 
 (defun gather-stereocenters (matter)
   (let (chiral-atoms)
-    (chem:map-atoms nil (lambda (a &aux p)
+    (chem:map-atoms nil (lambda (a)
                           (when (eq (chem:get-stereochemistry-type a) 'chem::chiral)
                             (push a chiral-atoms)))
                     matter)
@@ -68,7 +68,7 @@
 
 (defun build-starting-structure-from-random (matter)
   (scramble-positions matter)
-  (let* ((energy-function (chem:make-energy-function matter *ff*))
+  (let* ((energy-function (chem:make-energy-function matter))
          (min (chem:make-minimizer :energy-function energy-function)))
     (chem:enable-print-intermediate-results min)
     (chem:set-option energy-function 'chem::nonbond-term nil)
@@ -124,25 +124,18 @@
     (t (error "You cannot run chimera on ~a" obj))))
 
 (defun bad-geometry-p (agg)
-  (let ((energy-function (chem:make-energy-function agg *ff*)))
+  (let ((energy-function (chem:make-energy-function agg)))
     (let ((fails (chem:check-for-beyond-threshold-interactions energy-function)))
       (if (> fails 0)
           fails
           nil))))
 
-(defun build-good-geometry-from-random (&optional (agg *agg*))
+(defun build-good-geometry-from-random (agg)
   (dotimes (i 20)
     (format t "Attempt ~a to build good geometry from a random starting point~%" i)
     (scramble-positions agg)
-    (build-starting-structure agg)
+    (build-starting-structure-from-random agg)
     (when (not (bad-geometry-p agg))
         (return-from build-good-geometry-from-random)))
   (error "Exceeded max number of tries to build good geometry"))
 
-(defun build-good-geometry-from-random (&optional (agg *agg*))
-  (dotimes (i 20)
-    (format t "Attempt ~a to build good geometry from a random starting point~%" i)
-    (let ((new-agg (build-starting-structure-from-random agg)))
-      (when (not (bad-geometry-p new-agg))
-        (return-from build-good-geometry-from-random new-agg))))
-  (error "Exceeded max number of tries to build good geometry"))

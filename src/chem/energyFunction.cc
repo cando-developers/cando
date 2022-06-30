@@ -742,7 +742,6 @@ core::List_sp EnergyFunction_O::checkForBeyondThresholdInteractions(double thres
   ql::list result;
   result & this->_Stretch->checkForBeyondThresholdInteractionsWithPosition(pos,threshold);
   result & this->_Angle->checkForBeyondThresholdInteractionsWithPosition(pos,threshold);
-  result & this->_Nonbond->checkForBeyondThresholdInteractionsWithPosition(pos,threshold);
   return result.cons();
 }
 
@@ -1969,6 +1968,9 @@ CL_DEFMETHOD void	EnergyFunction_O::addTermsForListOfRestraints(ForceField_sp fo
   this->_applyRestraints(forceField->getNonbondDb(),iterate,activeAtoms);
 }
 
+CL_DOCSTRING(R"doc(Write the coordinates into the nvector from the atom positions of the structure that this energy-function is based on.)doc");
+CL_LISPIFY_NAME(EnergyFunction/loadCoordinatesIntoVector);
+CL_DEFMETHOD
 void	EnergyFunction_O::loadCoordinatesIntoVector(NVector_sp pos)
 {
   int                             ci;
@@ -2002,7 +2004,9 @@ CL_DEFUN NVector_sp chem__energy_function_empty_force_vector(EnergyFunction_sp e
   return pos;
 }
 
-
+CL_DOCSTRING(R"doc(Write the coordinates in the nvector into the atom positions)doc");
+CL_LISPIFY_NAME(EnergyFunction/saveCoordinatesFromVector);
+CL_DEFMETHOD
 void    EnergyFunction_O::saveCoordinatesFromVector(NVector_sp pos)
 {
   int                             ci;

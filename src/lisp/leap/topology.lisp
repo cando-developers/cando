@@ -1392,7 +1392,7 @@ cando-extensions               : T if you want cando-extensions written to the t
          (fortran:debug "-36-")
          (fortran:fformat 10 "%8d")
          (loop repeat natom
-               do (fortran:fwrite "0"))
+               do (fortran:fwrite 0))
          (fortran:end-line))
         ;;This section is no longer used and is currently just filled with zeros.
 
@@ -1405,7 +1405,7 @@ cando-extensions               : T if you want cando-extensions written to the t
          (fortran:debug "-37-")
          (fortran:fformat 10 "%8d")
          (loop repeat natom
-               do (fortran:fwrite "0"))
+               do (fortran:fwrite 0))
          (fortran:end-line))
         ;;This section is not used and is currently just filled with zeros.
 
@@ -1415,14 +1415,14 @@ cando-extensions               : T if you want cando-extensions written to the t
              (progn
                (fortran:fformat 1 "%-80s")
                (cando:progress-advance bar (incf bar-counter))
-               (format t "solvent_pointers info: iptres nspm nspsol -> ~a ~a ~a~%"
+               #+(or)(format t "solvent_pointers info: iptres nspm nspsol -> ~a ~a ~a~%"
                        (chem:final-solute-residue-iptres-bound-p atom-table)
                        (chem:total-number-of-molecules-nspm-bound-p atom-table)
                        (chem:first-solvent-molecule-nspsol-bound-p atom-table))
                (when (and (chem:final-solute-residue-iptres-bound-p atom-table)
                           (chem:total-number-of-molecules-nspm-bound-p atom-table)
                           (chem:first-solvent-molecule-nspsol-bound-p atom-table))
-                 (format t "Generating SOLVENT_POINTERS~%")
+                 #+(or)(format t "Generating SOLVENT_POINTERS~%")
                  (let ((final-solute-residue-iptres (chem:final-solute-residue-iptres atom-table))
                        (total-number-of-molecules-nspm (chem:total-number-of-molecules-nspm atom-table))
                        (first-solvent-molecule-nspsol (chem:first-solvent-molecule-nspsol atom-table)))
@@ -1560,9 +1560,9 @@ cando-extensions               : T if you want cando-extensions written to the t
               for pos = (chem:get-position atom)
 ;;;           do (format t "atom-coordinate-index-times3 -> ~a~%" atom-coordinate-index-times3)
               do (progn
-                   (fortran:fwrite (+ (geom:vx pos) ox))
-                   (fortran:fwrite (+ (geom:vy pos) oy))
-                   (fortran:fwrite (+ (geom:vz pos) oz))))
+                   (fortran:fwrite (+ (geom:get-x pos) ox))
+                   (fortran:fwrite (+ (geom:get-y pos) oy))
+                   (fortran:fwrite (+ (geom:get-z pos) oz))))
         (fortran:end-line))
       ;; write out the solvent box
       (if (chem:bounding-box-bound-p atom-table)
@@ -1575,10 +1575,10 @@ cando-extensions               : T if you want cando-extensions written to the t
             (fortran:fwrite (float (chem:get-z-angle-degrees solvent-box)))))
       (fortran:end-line))
     (cando:progress-done bar)
-    (values energy-function)))
+    (values energy-function topology-pathname coordinate-pathname)))
 
 (defun save-amber-parm-format (aggregate topology-pathname coordinate-pathname &key assign-types residue-name-to-pdb-alist (cando-extensions t))
-  (format t "Constructing energy function~%")
+  (format t "Constructing energy function - please wait~%")
   (finish-output)
   (let* ((energy-function (chem:make-energy-function :matter aggregate 
                                                      :use-excluded-atoms t

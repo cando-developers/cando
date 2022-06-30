@@ -61,7 +61,8 @@ leap path list so that files local to the script can be loaded.
                            (merge-pathnames crd-pathname)
                            (make-pathname :type "crd" :defaults top-pathname))))
     (let ((chem:*verbose* show-progress))
-      (leap.topology:save-amber-parm-format aggregate top-pathname crd-pathname :assign-types t))))
+      (leap.topology:save-amber-parm-format aggregate top-pathname crd-pathname :assign-types t))
+    (values top-pathname crd-pathname)))
 
 
 (defun load-amber-params (filename &optional (force-field :default))
@@ -140,9 +141,9 @@ the AMBER general type \"X\" is replaced with the LEaP general type \"?\".
             (if (chem:is-aggregate(first position))
                 (progn
                   (loop for i from 0 below (list-length position) 
-                        for x = (geom:vx (chem:geometric-center (nth i position)))
-                        for y = (geom:vy (chem:geometric-center (nth i position)))
-                        for z = (geom:vz (chem:geometric-center (nth i position)))
+                        for x = (geom:get-x (chem:geometric-center (nth i position)))
+                        for y = (geom:get-y (chem:geometric-center (nth i position)))
+                        for z = (geom:get-z (chem:geometric-center (nth i position)))
                         do (progn
                              (setf x-center (+ x-center x)
                                    y-center (+ y-center y)

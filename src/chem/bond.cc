@@ -196,11 +196,20 @@ void Bond_O::fields(core::Record_sp node)
   node->field( INTERN_(kw,a2), this->_Atom2 );
 };
 
-string Bond_O::propertiesAsString() const
-{_OF();
-  IMPLEMENT_ME();
+CL_LISPIFY_NAME(Bond/properties);
+CL_DEFMETHOD
+core::List_sp Bond_O::properties() const {
+  return this->_Properties;
 }
 
+CL_LISPIFY_NAME(Bond/setProperties);
+CL_DEFMETHOD
+void Bond_O::setProperties(core::List_sp p) {
+  this->_Properties = p;
+}
+
+CL_LISPIFY_NAME(Bond/clearProperty);
+CL_DEFMETHOD
 void Bond_O::clearProperty(core::Symbol_sp prop)
 {
   this->_Properties = core::core__rem_f(this->_Properties,prop);
@@ -211,14 +220,15 @@ CL_DEFMETHOD BondOrder Bond_O::getOrderFromAtom(Atom_sp firstAtom) {
 }
 
 
-CL_LISPIFY_NAME("bond-setProperty");
-CL_DEFMETHOD void Bond_O::setProperty(core::Symbol_sp prop, core::T_sp val)
+CL_LISPIFY_NAME(Bond/setProperty);
+CL_DEFMETHOD
+void Bond_O::setProperty(core::Symbol_sp prop, core::T_sp val)
     {
       this->_Properties = core::core__put_f(this->_Properties,val,prop);
     }
 
 
-CL_LISPIFY_NAME("bond-getProperty");
+CL_LISPIFY_NAME(Bond/getProperty);
 CL_DEFMETHOD core::T_sp Bond_O::getProperty(core::Symbol_sp prop, core::T_sp defval)
 {
   core::T_sp res = core::cl__getf(this->_Properties,prop,unbound<core::T_O>());
@@ -228,7 +238,7 @@ CL_DEFMETHOD core::T_sp Bond_O::getProperty(core::Symbol_sp prop, core::T_sp def
   return res;
 }
 
-CL_LISPIFY_NAME("bond-hasProperty");
+CL_LISPIFY_NAME("Bond/hasProperty");
 CL_DEFMETHOD bool Bond_O::hasProperty(core::Symbol_sp prop)
 {
   return !core::cl__getf(this->_Properties,prop,unbound<core::T_O>()).unboundp();
@@ -236,7 +246,7 @@ CL_DEFMETHOD bool Bond_O::hasProperty(core::Symbol_sp prop)
 
 
 
-CL_LISPIFY_NAME("getOtherAtom");
+CL_LISPIFY_NAME("Bond/getOtherAtom");
 CL_DEFMETHOD Atom_sp Bond_O::getOtherAtom(Atom_sp atom) const
 {
   if ( atom == this->_Atom1 ) return this->_Atom2;

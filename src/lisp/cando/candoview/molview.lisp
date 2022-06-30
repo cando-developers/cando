@@ -149,7 +149,8 @@
   (let ((lines (make-hash-table)))
     (chem:map-bonds
      nil
-     (lambda (x y o)
+     (lambda (x y o b)
+       (declare (ignore b))
        (let ((x-element (chem:get-element x))
 	     (y-element (chem:get-element y))
 	     (xpos (chem:get-position x))
@@ -169,8 +170,8 @@
                (let ((a (car line))
                      (b (cdr line)))
                  (gl:begin :lines)
-                 (gl:vertex (geom:vx a) (geom:vy a) (geom:vz a))
-                 (gl:vertex (geom:vx b) (geom:vy b) (geom:vz b))
+                 (gl:vertex (geom:get-x a) (geom:get-y a) (geom:get-z a))
+                 (gl:vertex (geom:get-x b) (geom:get-y b) (geom:get-z b))
                  (gl:end))))
            *current-lines*))
 	   

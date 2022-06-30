@@ -110,9 +110,16 @@
 (defpackage #:leap.pdb
   (:use #:common-lisp)
   (:export
-   #:scan-pdb
+   #:scanPdb
+   #:scanAmberCheck
+   #:make-filter-scanner
+   #:scanSelectChainIds
+   #:scanIgnoreResidues
+   #:scanRenameResidues
+   #:scanRenameAtoms
+   #:scanIgnoreAtoms
    #:scan-pdb-stream
-   #:load-pdb
+   #:loadPdb
    #:load-pdb-stream
    #:sequences
    #:build-sequence
@@ -139,6 +146,7 @@
 (defpackage #:leap.core
   (:use #:common-lisp)
   (:export
+   #:leap-error
    #:with-path
    #:ensure-path
    #:nonbond-force-field-component
@@ -209,7 +217,7 @@
 ;;;  (:import-from :cando-utility #:mkdir #:set-current-directory #:current-directory #:directory-files)
   (:import-from :inet #:download-pdb)
   (:import-from :leap.pdb
-                #:load-pdb
+                #:loadPdb
                 #:add-pdb-res-map
                 #:add-pdb-atom-map
                 )

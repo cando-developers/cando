@@ -1,5 +1,4 @@
-
-(in-package :cando-user)
+(in-package :cando-widgets)
 
 (defparameter *energy-function* nil)
 (defparameter *pick-aggregate* nil)
@@ -10,9 +9,9 @@
         (ypos (gethash "y" atom-ht))
         (zpos (gethash "z" atom-ht)))
     (cando:do-atoms (atm aggregate)
-      (let ((deltax (abs (- xpos (geom:vx (chem:get-position atm)))))
-            (deltay (abs (- ypos (geom:vy (chem:get-position atm)))))
-            (deltaz (abs (- zpos (geom:vz (chem:get-position atm))))))
+      (let ((deltax (abs (- xpos (geom:get-x (chem:get-position atm)))))
+            (deltay (abs (- ypos (geom:get-y (chem:get-position atm)))))
+            (deltaz (abs (- zpos (geom:get-z (chem:get-position atm))))))
         (when (and (< deltax 0.01)
                    (< deltay 0.01)
                    (< deltaz 0.01))
@@ -85,7 +84,7 @@
       (log-interactions atoms *energy-function*))))
 
 (defun force-field-viewer (aggregate)
-  "Interactively display bond, angle and dihedral terms of an energy function 
+  "Interactively display bond, angle and dihedral terms of an energy function
 generated from an aggregate"
   (let* ((energy-function (chem:make-energy-function :matter aggregate :assign-types t))
          (component (cando-widgets:make-ngl-structure
@@ -111,4 +110,4 @@ generated from an aggregate"
                          (lambda (inst data)
                            (stage-select outs inst data)))
     all))
-    
+
