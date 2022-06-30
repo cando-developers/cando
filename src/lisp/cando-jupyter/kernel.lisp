@@ -201,3 +201,11 @@
 
 (defun jupyterlab ()
   (run-kernel-from-slime))
+
+(defmethod jupyter:start :after ((kernel kernel))
+  (bordeaux-threads:make-thread (lambda ()
+                                  (sleep 600)
+                                  (with-output-to-string (*standard-output*)
+                                    (let ((*error-output* *standard-output*))
+                                      (asdf:load-system :cando-user-install)
+                                      (uiop:symbol-call "CANDO-USER-INSTALL" "UPDATE"))))))
