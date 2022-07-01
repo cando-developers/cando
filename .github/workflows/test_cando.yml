@@ -77,7 +77,7 @@ jobs:
     - name: Build Clasp (koga/MacOS)
       if: matrix.os == 'macos-latest'
       run: |
-        ./koga --extensions=cando,seqan-clasp --skip-sync=cando
+        ./koga --extensions=cando,seqan-clasp --skip-sync=cando --llvm-config=/usr/local/Cellar/llvm@13/13.0.1/bin/llvm-config
 
     - name: Build Clasp (ninja)
       run: |
