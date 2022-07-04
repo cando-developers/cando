@@ -114,20 +114,57 @@ the AMBER general type \"X\" is replaced with the LEaP general type \"?\".
                                                   :force-field-info filename
                                                   :combined-force-field-class-name 'chem:combined-force-field)))
 
-(defun solvate-box (solute solvent buffer &key isotropic closeness)
+(defun process-iso-closeness (iso-closeness)
+  (let ((iso nil)
+        (closeness 1.0))
+    (flet ((error-iso-closeness ()
+             (error "You must provide either :iso or a number for closeness - you provided ~s" iso-closeness)))
+      (cond
+        ((= (length iso-closeness) 0))
+        ((= (length iso-closeness) 1)
+         (cond
+           ((numberp (first iso-closeness))
+            (setf closeness (first iso-closeness)))
+           ((eq (first iso-closeness) :iso)
+            (setf iso t))
+           ((string-equal (first iso-closeness) "iso")
+            (setf iso t))
+           (t (error-iso-closeness))))
+        ((and (= (length iso-closeness) 2)
+              (or (find :iso iso-closeness)
+                  (find "iso" iso-closeness :test #'string-equal))
+              (find-if #'numberp iso-closeness))
+         (setf iso t
+               closeness (find-if #'numberp iso-closeness)))
+        (t (error-iso-closeness))))
+    (values iso closeness)))
+
+(defun solvate-box (solute solvent buffer &key iso-closeness resolvate)
   (when (numberp buffer)
     (setf buffer (list buffer buffer buffer)))
-  (leap.solvate:tool-solvate-and-shell solute solvent buffer :closeness closeness :isotropic isotropic))
+  (format t "solvate-box bounding-box -> ~a~%" (if (chem:bounding-box-bound-p solute)
+                                                   (chem:bounding-box solute)
+                                                   "UNBOUND"))
+  (multiple-value-bind (isotropic closeness)
+      (process-iso-closeness iso-closeness)
+    (leap.solvate:tool-solvate-and-shell solute solvent buffer :closeness closeness :isotropic isotropic :resolvate resolvate)))
 
-(defun solvate-oct (solute solvent buffer &key isotropic closeness)
+(defun resolvate-box (solute solvent buffer &key iso-closeness)
+  (solvate-box solute solvent buffer :iso-closeness iso-closeness :resolvate t))
+
+(defun solvate-oct (solute solvent buffer &key iso-closeness)
   (when (numberp buffer)
     (setf buffer (list buffer buffer buffer)))
-  (leap.solvate:tool-solvate-and-shell solute solvent buffer :oct t :isotropic isotropic :closeness closeness))
+  (multiple-value-bind (isotropic closeness)
+      (process-iso-closeness iso-closeness)
+    (leap.solvate:tool-solvate-and-shell solute solvent buffer :oct t :isotropic isotropic :closeness closeness)))
 
 
-(defun solvate-shell (solute solvent farness &key isotropic closeness)
+(defun solvate-shell (solute solvent farness &key iso-closeness)
   (let ((buffer (list farness farness farness)))
-    (leap.solvate:tool-solvate-and-shell solute solvent buffer :closeness closeness :farness farness :shell t :isotropic isotropic)))
+    (multiple-value-bind (isotropic closeness)
+        (process-iso-closeness iso-closeness)
+      (leap.solvate:tool-solvate-and-shell solute solvent buffer :closeness closeness :farness farness :shell t :isotropic isotropic))))
 
 (defun solvate-cap (solute solvent position radius &key closeness)
   (let ((count 0)

@@ -34,10 +34,10 @@
   (:use #:common-lisp)
   (:export
    #:simulation
-   #:addAggregates
-   #:addAggregate
-   #:saveSimulation
-   #:startSimulation
+   #:add-aggregates
+   #:add-aggregate
+   #:save-simulation
+   #:start-simulation
    #:convert-to-script
    #:job
    #:job-file
@@ -66,6 +66,17 @@
    #:generate-all-code
    #:connect-graph
    #:arguments
+   #:updated
+   #:make-dashboard
+   #:current-info-file
+   #:panels
+   #:update
+   #:job-name
+   #:panel-summary-percent-done
+   #:summary
+   #:target
+   #:action
+   #:panel-summary-estimated-time-remaining
    ))
 
 (defpackage #:graphviz-amber
