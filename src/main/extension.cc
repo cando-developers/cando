@@ -131,8 +131,12 @@ void leap_process_arguments(core::CommandLineOptions* options) {
              " -h         Generate this message.\n"
              " -s         Ignore leaprc startup file.\n"
              " -I {dir}   Add {dir} to search path.\n"
-             " -f {file}  Source {file}.\n");
+             " -f {file}  Source {file}.\n"
+             " -t c       Startup using cclasp and quicklisp for all systems\n");
       exit(0);
+    } else if (arg == "-t") {
+      options->_StartupStage = options->_RawArguments[++iarg][0];
+      printf("Loading stage %c\n", options->_StartupStage );
     }
   }
   options->_LoadEvalList.push_back(std::pair<core::LoadEvalEnum,std::string>(core::cloEval,"(leap.commands:leap-repl-then-exit)"));

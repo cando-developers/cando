@@ -90,6 +90,8 @@
    #:amber-topology-coord-pair
    #:load-amber-topology-restart-pair
    #:load-amber-topology-trajectory-pair
+   #:amber-topology-trajectory-pair
+   #:netcdf
    #:change-coordinate-file
    #:cell-lengths
    #:number-of-frames
@@ -176,7 +178,9 @@
   (:use #:common-lisp)
   (:export
    #:tool-solvate-and-shell
-   #:tool-solvate-in-sphare)
+   #:tool-solvate-in-sphare
+   #:remove-solvent
+   )
   )
 
 (defpackage #:leap.add-ions
@@ -250,6 +254,7 @@
    #:minimize
    #:as-string
    #:solvate-box
+   #:resolvate-box
    #:solvate-oct
    #:solvate-shell
    #:solvate-cap

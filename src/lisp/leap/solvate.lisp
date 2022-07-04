@@ -1,5 +1,14 @@
 (in-package :leap.solvate)
 
+(defun remove-solvent (aggregate)
+  (check-type aggregate chem:aggregate)
+  (let ((solvents nil))
+    (cando:do-molecules (mol aggregate)
+      (when (eq (chem:molecule-type mol) :solvent)
+        (push mol solvents)))
+    (loop for solvent in solvents
+          do (chem:remove-molecule aggregate solvent))
+    (format t "Removed ~a solvent molecules~%" (length solvents))))
 
 (defun tool-build-solute-array (matter)
   (let ((x-vec (make-array 10 :element-type 'double-float :fill-pointer 0 :adjustable t))
@@ -93,8 +102,15 @@
 
 ;;Closeness controls how close solvent can get to solute before they are considered to be overlapping.
 ;;Farness defines shell's range.
-(defun tool-solvate-and-shell (solute solvent width-list &key (closeness 0.0) (farness 10.0) shell oct isotropic (verbose t))
+(defun tool-solvate-and-shell (solute solvent width-list &key (closeness 0.0) (farness 10.0) shell oct isotropic (verbose t) resolvate)
   (check-type width-list list)
+  (format t "tool-solvate-and-shell bounding-box -> ~a~%" (if (chem:bounding-box-bound-p solute)
+                                       (chem:bounding-box solute)
+                                       "UNBOUND"))
+  (when resolvate
+    (format t "Removing solvent and solute box~%")
+    (remove-solvent solute)
+    (chem:aggregate-mak-unbound-bounding-box solute))
   (let* ((solvent-box (chem:bounding-box solvent))
          (solvent-x-width (chem:get-x-width solvent-box))
          (solvent-y-width (chem:get-y-width solvent-box))
@@ -106,9 +122,8 @@
          solute-x-width solute-y-width solute-z-width
          xwidth ywidth zwidth
          ix iy iz
-         xstart ystart zstart
-         ;;Make a copy of original solute just in case.
-         (original-solute (chem:matter-copy solute)))
+         xstart ystart zstart)
+    (format t "solvent-box = ~a~%" solvent-box)
     (let* ((solute-center (chem:geometric-center solute))
            (transform-to-origin (geom:make-m4-translate (geom:v* solute-center -1.0))))
       (chem:apply-transform-to-atoms solute transform-to-origin))
