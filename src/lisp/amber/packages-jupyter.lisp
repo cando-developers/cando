@@ -1,5 +1,5 @@
 ;;;
-;;;    File: packages.lisp
+;;;    File: packages-jupyter.lisp
 ;;;
 
 ;; Open Source License
@@ -25,62 +25,7 @@
 ;; -^-
 (cl:in-package #:common-lisp-user)
 
-(defpackage #:amber.params
+(defpackage #:amber.jupyter
   (:use #:common-lisp)
   (:export
-   ))
-
-(defpackage #:amber
-  (:use #:common-lisp)
-  (:export
-   #:simulation
-   #:add-aggregates
-   #:add-aggregate
-   #:save-simulation
-   #:start-simulation
-   #:convert-to-script
-   #:job
-   #:job-file
-   #:node-file
-   #:script-mixin
-   #:substitutions
-   #:node-pathname
-   #:make-node-file
-   #:argument
-   #:node
-   #:option
-   #:definers
-   #:users
-   #:inputs
-   #:outputs
-   #:script
-   #:name
-   #:filename
-   #:jupyter-job
-   #:simple-jupyter-job
-   #:minimize
-   #:heat
-   #:pressurize
-   #:dynamics
-   #:mdcrd
-   #:generate-all-code
-   #:connect-graph
-   #:arguments
-   #:updated
-   #:make-dashboard
-   #:current-info-file
-   #:panels
-   #:update
-   #:job-name
-   #:panel-summary-percent-done
-   #:summary
-   #:target
-   #:action
-   #:panel-summary-estimated-time-remaining
-   ))
-
-(defpackage #:graphviz-amber
-  (:use #:common-lisp)
-  (:export
-   #:draw-graph-stream
    ))

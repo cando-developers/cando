@@ -119,6 +119,15 @@ double BoundingBox_O::distance_squared_between_two_points(const Vector3& v1, con
   return dx*dx+dy*dy+dz*dz;
 }
 
+std::string BoundingBox_O::__repr__() const {
+  stringstream ss;
+  ss << "#<CHEM:BOUNDING-BOX ";
+  ss << this->_Widths.getX() << " ";
+  ss << this->_Widths.getY() << " ";
+  ss << this->_Widths.getZ() << ">";
+  return ss.str();
+}
+
 DOCGROUP(cando)
 CL_DEFUN double chem__bounding_box_distance_squared_between_two_points(BoundingBox_sp bounding_box, const Vector3& v1, const Vector3& v2)
 {
