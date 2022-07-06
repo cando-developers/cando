@@ -191,6 +191,7 @@
    #:configure-minimizer
    #:minimize-no-fail
    #:build-good-geometry-from-random
+   #:starting-geometry
    #:build-molecules-from-atom-connectivity
    #:chimera
    #:bad-geometry-p

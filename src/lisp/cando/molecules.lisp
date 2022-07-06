@@ -40,7 +40,9 @@
         nil
         (lambda (a) (scramble-atom a)) matter))
       ((hash-table-p matter)
-       (maphash (lambda (a v) (scramble-atom a)) matter))
+       (maphash (lambda (atm value)
+                  (declare (ignore value))
+                  (scramble-atom atm)) matter))
       ((listp matter)
        (mapc (lambda (a) (scramble-atom a)) matter))
       (t (error "Add support to scramble positions for ~s" matter)))))
@@ -66,7 +68,7 @@
   (dotimes (i (length atom-vec))
     (let ((config (if (logbitp i index) :S :R))
           (atom (elt atom-vec i)))
-      (chem:set-configuration (elt atom-vec i) config)))
+      (chem:set-configuration atom config)))
   (when show
     (let ((bits (ceiling (length atom-vec))))
       (format t "======== Stereoisomer ~3d/~v,'0b~%" index bits index)
@@ -74,9 +76,9 @@
 
 (defun gather-stereocenters (matter)
   (let (chiral-atoms)
-    (chem:map-atoms nil (lambda (a &aux p)
-                          (when (eq (chem:get-stereochemistry-type a) :chiral)
-                            (push a chiral-atoms)))
+    (chem:map-atoms nil (lambda (atm)
+                          (when (eq (chem:get-stereochemistry-type atm) :chiral)
+                            (push atm chiral-atoms)))
                     matter)
     (make-array (length chiral-atoms) :initial-contents chiral-atoms)))
 
@@ -167,7 +169,9 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
 (defun minimizer-obey-interrupt (minimizer)
   (restart-case
       (handler-bind
-          ((ext:unix-signal-received (lambda (c) (print "Done") (invoke-restart 'skip-rest))))
+          ((ext:unix-signal-received (lambda (c)
+                                       (declare (ignore c))
+                                       (print "Done") (invoke-restart 'skip-rest))))
         (chem:minimize minimizer))
     (skip-rest ()
       :report "Skip rest of minimization"
@@ -189,7 +193,7 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
   (chem:set-conjugate-gradient-tolerance minimizer cg-tolerance)
   (chem:set-truncated-newton-tolerance minimizer tn-tolerance))
   
-(defun optimize-structure (matter &key active-atoms)
+(defun optimize-structure (matter &key active-atoms (turn-off-nonbond t))
   (let* ((energy-function (chem:make-energy-function :matter matter
                                                      :assign-types t
                                                      :active-atoms active-atoms))
@@ -199,12 +203,15 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
                          :max-cg-steps 50000
                          :max-tn-steps 100)
     (chem:enable-print-intermediate-results min)
-    (chem:set-option energy-function 'chem::nonbond-term nil)
-    (format t "Starting minimization stage 1 nonbond=NIL~%")
-    (minimize-no-fail min)
+    (when turn-off-nonbond
+      (chem:set-option energy-function 'chem::nonbond-term nil)
+      (finish-output t)
+      (minimize-no-fail min))
     (chem:set-option energy-function 'chem:nonbond-term t)
-    (format t "Starting minimization stage 2 nonbond=T~%")
-    (minimize-no-fail min))
+    (finish-output t)
+    (minimize-no-fail min)
+    (format t "Done.~%")
+    (finish-output t))
   matter)
 
 (defun indexed-pathname (template index)
@@ -263,6 +270,144 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
       (if (> (length fails) 0)
           fails
           nil))))
+
+(defclass sketch-nonbond-force-field () ())
+
+(defmethod chem:find-atom-type-position ((force-field sketch-nonbond-force-field) type)
+  (declare (ignore force-field type))
+  0)
+
+(defparameter *stage1-flatten-force-components* (list 0.85 0.85 0.85))
+
+(defun randomize-coordinates (coordinates &key frozen from-zero (width 40.0) &aux (half-width (/ width 2.0)))
+  "Randomly jostle atoms from their current positions"
+  (flet ((jostle-atom (index)
+           (when from-zero
+             (setf (elt coordinates (+ index 0)) 0.0
+                   (elt coordinates (+ index 1)) 0.0
+                   (elt coordinates (+ index 2)) 0.0))
+           (let* ((xp (elt coordinates (+ index 0)))
+                  (yp (elt coordinates (+ index 1)))
+                  (zp (elt coordinates (+ index 2)))
+                  (xn (+ (- (random width) half-width) xp))
+                  (yn (+ (- (random width) half-width) yp))
+                  (zn (+ (- (random width) half-width) zp)))
+             (setf (elt coordinates (+ index 0)) xn
+                   (elt coordinates (+ index 1)) yn
+                   (elt coordinates (+ index 2)) zn))))
+    (loop for coord-index below (length coordinates) by 3
+          for index from 0
+          do (if frozen
+                 (when (= (elt frozen (* 3 index)) 0)
+                   (jostle-atom coord-index))
+                 (jostle-atom coord-index)))))
+
+(defparameter *stage1-scale-sketch-nonbond* 0.04)
+(defparameter *stage1-sketch-nonbond-force* 0.2)
+(defparameter *stage1-bond-length* 1.5)
+(defparameter *first-bond-force* 0.1)
+(defparameter *stage1-nonbond-constant* 0.04)
+
+
+(defun prepare-stage1-sketch-function (sketch-function &optional sketch)
+  "Generate bond energy terms for a 2D sketch."
+  (declare (ignore sketch))
+  (let* ((molecule (chem:get-graph sketch-function))
+         (atom-table (chem:node-table sketch-function))
+         (nonbond-energy (chem:get-sketch-nonbond-component sketch-function))
+         (bond-energy (chem:get-stretch-component sketch-function)))
+    (chem:set-scale-sketch-nonbond nonbond-energy *stage1-scale-sketch-nonbond*)
+    (loop for ia1 from 0 below (1- (chem:get-number-of-atoms atom-table))
+          for atom1 = (chem:elt-atom atom-table ia1)
+          for atom1-coordinate-index = (chem:get-coordinate-index atom-table atom1)
+          for freeze1 = (or (= (chem:get-atomic-number atom1) 1)
+                            (eq (chem:get-element atom1) :lp))
+          do (loop for ia2 from (1+ ia1) below (chem:get-number-of-atoms atom-table)
+                   for atom2 = (chem:elt-atom atom-table ia2)
+                   for atom2-coordinate-index = (chem:get-coordinate-index atom-table atom2)
+                   for freeze2 = (or (= (chem:get-atomic-number atom2) 1)
+                                     (eq (chem:get-element atom2) :lp))
+                   for freeze-flag = (if (or freeze1 freeze2) 1 0)
+                   do (chem:add-sketch-nonbond-term nonbond-energy
+                                                    atom1-coordinate-index
+                                                    atom2-coordinate-index
+                                                    freeze-flag
+                                                    *stage1-sketch-nonbond-force*)))
+    (flet
+        ((add-stretch (bond-energy a1 a2 a1ci a2ci bond-force bond-length)
+           (declare (ignore a1 a2))
+           #+(or)(format t "Adding sketch-stretch-term ~a ~a ~a ~a~%" (chem:get-name a1) (chem:get-name a2) bond-force bond-length)
+           (chem:add-sketch-stretch-term bond-energy a1ci a2ci bond-force bond-length)))
+      (chem:map-bonds
+       'nil
+       (lambda (a1 a2 bond-order bond)
+         (declare (ignore bond-order bond))
+         (let ((atom1-coord-index (chem:get-coordinate-index atom-table a1))
+               (atom2-coord-index (chem:get-coordinate-index atom-table a2))
+               (bond-length *stage1-bond-length*))
+           #+(or)
+           (let ((valence1 (chem:matter-get-property-or-default a1 :valence 1))
+                 (valence2 (chem:matter-get-property-or-default a2 :valence 1)))
+             (format t "a1 ~a a2 ~a   valence1 ~a valence2 ~a~%" (chem:get-name a1) (chem:get-name a2) valence1 valence2))
+           (add-stretch bond-energy
+                        a1 a2
+                        atom1-coord-index atom2-coord-index
+                        *first-bond-force* bond-length)))
+       molecule))
+    #+(or)(when sketch
+      (loop for double-bond-restraint in (double-bond-restraints sketch)
+            do (with-slots (top-left-atom bottom-left-atom left-atom right-atom top-right-atom bottom-right-atom) double-bond-restraint
+                 (let ((top-left-index (chem:get-coordinate-index atom-table top-left-atom))
+                       (bottom-left-index (chem:get-coordinate-index atom-table bottom-left-atom))
+                       (top-right-index (chem:get-coordinate-index atom-table top-right-atom))
+                       (bottom-right-index (chem:get-coordinate-index atom-table bottom-right-atom)))
+                   (add-stretch bond-energy
+                                top-left-atom top-right-atom
+                                top-left-index top-right-index
+                                +first-bond-force+
+                                (* 2.0 +stage1-bond-length+))
+                   (add-stretch bond-energy
+                                bottom-left-atom bottom-right-atom
+                                bottom-left-index bottom-right-index
+                                +first-bond-force+
+                                (* 2.0 +stage1-bond-length+))))))
+    sketch-function))
+
+(defun advance-simulation (dynamics &key frozen)
+  (dynamics:velocity-verlet-step
+   dynamics
+   :velocity-verlet-function #'chem:sketch-function-velocity-verlet-step
+   :frozen frozen))
+
+(defun starting-geometry (agg &key accumulate-coordinates)
+  "Rapidly calculate a starting geometry for the single molecule in the aggregate"
+  (unless (= (chem:content-size agg) 1)
+    (format t "The aggregate must have a single molecule.")
+    (return-from starting-geometry nil))
+  (chem:map-atoms
+   nil
+   (lambda (atm)
+     (chem:set-type atm :sketch))
+   agg)
+  (let* ((mol (cando:mol agg 0))
+         (dummy-sketch-nonbond-ff (make-instance 'sketch-nonbond-force-field))
+         (sketch-function (chem:make-sketch-function mol dummy-sketch-nonbond-ff))
+         (dynamics (dynamics:make-atomic-simulation sketch-function 
+                                                    :accumulate-coordinates accumulate-coordinates))
+         (energy-sketch-nonbond (chem:get-sketch-nonbond-component sketch-function)))
+    (randomize-coordinates (dynamics:coordinates dynamics) :from-zero t :frozen nil)
+    (chem:disable (chem:get-point-to-line-restraint-component sketch-function))
+    (apply #'chem:setf-velocity-scale sketch-function *stage1-flatten-force-components*)
+    ;; stage 1  step 0 - 1999
+    (progn
+      (prepare-stage1-sketch-function sketch-function)
+      (chem:set-scale-sketch-nonbond energy-sketch-nonbond *stage1-nonbond-constant*)
+      ;; Everything interesting happens in 1000 steps
+      (dotimes (i 1000) (advance-simulation dynamics :frozen nil)))
+    (dynamics:write-coordinates-back-to-matter dynamics)
+    (optimize-structure agg :turn-off-nonbond nil)
+    dynamics
+    ))
 
 (defun build-good-geometry-from-random (agg)
   (let (bad-geom)
@@ -396,7 +541,9 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
         nil
         (lambda (a) (jostle-atom a)) matter))
       ((hash-table-p matter)
-       (maphash (lambda (a v) (jostle-atom a)) matter))
+       (maphash (lambda (a v)
+                  (declare (ignore v))
+                  (jostle-atom a)) matter))
       ((listp matter)
        (mapc (lambda (a) (jostle-atom a)) matter))
       (t (error "Add support to jostle positions for ~s" matter)))))
