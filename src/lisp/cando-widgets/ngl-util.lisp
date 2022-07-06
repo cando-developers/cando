@@ -67,6 +67,11 @@
                                           :trajectories (apply #'make-ngl-trajectories instance initargs)
                                           initargs)))
 
+(defmethod make-ngl-structure ((instance dynamics:trajectory) &rest initargs &key &allow-other-keys)
+  (apply #'make-instance 'ngl:structure :ext "mol2"
+                                        :value (chem:aggregate-as-mol2-string (dynamics:matter instance) t)
+                                        :trajectories (apply #'make-ngl-trajectories instance initargs)
+                                        initargs))
 
 (defmethod make-ngl-structure ((instance leap.topology:amber-topology-trajectory-pair) &rest initargs &key &allow-other-keys)
   (apply #'make-instance 'ngl:structure :ext "mol2"
