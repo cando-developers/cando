@@ -8,7 +8,8 @@
                #:cando-user
                #:cando-widgets
                #:smarts-jupyter
-               #:tirun-jupyter)
+               #:tirun-jupyter
+               #:amber-jupyter)
   :serial t
   :components ((:file "packages")
                (:file "kernel")))
