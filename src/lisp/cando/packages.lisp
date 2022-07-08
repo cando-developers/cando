@@ -214,6 +214,8 @@
    #:progress-advance
    #:progress-bar
    #:make-progress-bar
+   #:do-make-progress-bar
+   #:*ui-client*
    #:progress-done
    #:home/
    #:make-simple-topology-from-residue
