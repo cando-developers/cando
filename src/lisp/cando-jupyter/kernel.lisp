@@ -194,7 +194,7 @@
   (bordeaux-threads:make-thread
    (lambda ()
      (loop for time from 1 below 100
-           do (format t "Starting kernel for the ~a time~%" time)           
+           do (format t "Starting kernel for the ~a time~%" time)
            do (jupyter:run-kernel 'cando-jupyter:kernel (clasp-posix:argv (1- (clasp-posix:argc))))))
    :name :jupyter))
 
@@ -203,6 +203,7 @@
   (run-kernel-from-slime))
 
 (defmethod jupyter:start :after ((kernel kernel))
+  (setf cando:*ui-client* (make-instance 'jupyter-ui-client))
   (bordeaux-threads:make-thread (lambda ()
                                   (sleep 600)
                                   (with-output-to-string (*standard-output*)

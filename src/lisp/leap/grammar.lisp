@@ -114,7 +114,7 @@
   (assoc thing *function-names/alist* :test #'string-equal))
 
 (defrule function-name-string
-    (+ (character-ranges (#\a #\z) (#\A #\Z) (#\0 #\9)))
+    (+ (character-ranges (#\a #\z) #\- (#\A #\Z) (#\0 #\9)))
   (:text t))
 
 (defrule matter-name-string
@@ -259,13 +259,13 @@
         (read-from-string text t nil :start position :end end))
     ;; When READ-FROM-STRING fails, indicate the parse failure,
     ;; including CONDITION as explanation.
-    (stream-error (condition)
-      ;; For STREAM-ERRORs, we can try to determine and return the
-      ;; exact position of the failure.
-      (let ((position (ignore-errors
-                        (file-position (stream-error-stream condition)))))
-        (values nil position condition)))
-    (error (condition)
+    #+(or)(stream-error (condition)
+            ;; For STREAM-ERRORs, we can try to determine and return the
+            ;; exact position of the failure.
+            (let ((position (ignore-errors
+                             (file-position (stream-error-stream condition)))))
+              (values nil position condition)))
+    #+(or)(error (condition)
       ;; For general ERRORs, we cannot determine the exact position of
       ;; the failure.
       (values nil nil condition))))

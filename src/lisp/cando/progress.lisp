@@ -1,7 +1,21 @@
 (in-package :cando)
 
+(defclass console-ui-client ()
+  ())
+
+(defvar *ui-client* (make-instance 'console-ui-client))
+
+(defgeneric do-make-progress-bar (client &rest initargs &key &allow-other-keys))
+
+(defgeneric progress-advance (instance counter &optional message))
+
+(defgeneric progress-done (instance))
+
+(defun make-progress-bar (&rest initargs &key &allow-other-keys)
+  (apply #'do-make-progress-bar *ui-client* initargs))
+
 (defstruct (progress-bar
-            (:constructor make-progress-bar
+            (:constructor %make-progress-bar
                 (&key (total 100.0) (divisions 100.0)
                    (message "Completed")
                    (message-width 10)
@@ -20,6 +34,9 @@
   (width 50)
   (start-time (get-universal-time))
   divisions message message-width spacing (next 0))
+
+(defmethod do-make-progress-bar ((client console-ui-client) &rest initargs &key &allow-other-keys)
+  (apply #'%make-progress-bar initargs))
 
 (defun progress-convenient-time (time)
   (block nil
@@ -61,7 +78,7 @@
     (let* ((new-next (* (1+ (floor (/ counter (progress-bar-spacing bar)))) (progress-bar-spacing bar))))
       (setf (progress-bar-next bar) new-next))))
 
-(defun progress-advance (bar counter &optional message)
+(defmethod progress-advance ((bar progress-bar) counter &optional message)
   (when message
     (setf (progress-bar-message bar) message))
   (if (<= (decf (progress-bar-advance-counter bar)) 0)
@@ -69,7 +86,7 @@
       (when (and (progress-bar-on bar) (>= counter (progress-bar-next bar)))
         (progress-display bar counter))))
 
-(defun progress-done (bar)
+(defmethod progress-done ((bar progress-bar))
   (progress-advance bar (progress-bar-total bar))
   (setf (progress-bar-advance-counter bar) 0)
   (terpri)

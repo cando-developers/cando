@@ -331,3 +331,6 @@
 
 (defmethod show ((instance dynamics:simulation) &rest kwargs &key &allow-other-keys)
   (apply #'ngl-show (dynamics:make-trajectory instance) kwargs))
+
+(defmethod show ((instance leap.topology:amber-topology-trajectory-pair) &rest kwargs &key &allow-other-keys)
+  (apply #'ngl-show instance kwargs))

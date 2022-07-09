@@ -92,7 +92,7 @@ I'll use an angle term instead of a bond term.
   #+(or)(format t "Adding sketch-stretch-term ~a ~a ~a ~a~%" (chem:get-name a1) (chem:get-name a2) bond-force bond-length)
   (chem:add-sketch-stretch-term bond-energy a1ci a2ci bond-force bond-length))
 
-(defun prepare-stage1-sketch-function (sketch sketch-function)
+(defun prepare-stage1-sketch-function (sketch-function sketch)
   "Generate bond energy terms for a 2D sketch."
   (let* ((molecule (chem:get-graph sketch-function))
          (atom-table (chem:node-table sketch-function))
@@ -1171,7 +1171,7 @@ to check if two line segments (bonds) overlap/intersect
     (apply #'chem:setf-velocity-scale sketch-function *stage1-flatten-force-components*)
     ;; stage 1  step 0 - 4999
     (progn
-      (prepare-stage1-sketch-function sketch sketch-function)
+      (prepare-stage1-sketch-function sketch-function sketch)
       (chem:set-scale-sketch-nonbond energy-sketch-nonbond +stage1-nonbond-constant+)
       (when (verbose sketch) (describe-terms sketch-function "stage1"))
       (dotimes (i 5000) (advance-simulation dynamics :frozen frozen)))

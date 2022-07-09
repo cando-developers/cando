@@ -1,0 +1,23 @@
+NAME	Makefile	/^NAME=cando$/;"	m
+TEXFILES	Makefile	/^TEXFILES=$(NAME).tex $(shell .\/tex-dependencies $(NAME).tex)$/;"	m
+BIBFILES	Makefile	/^BIBFILES=$(NAME).bib$/;"	m
+PDF_T	Makefile	/^PDF_T=$(shell .\/strip-dependence inputfig $(TEXFILES))$/;"	m
+VERBATIM	Makefile	/^VERBATIM=$(shell .\/strip-dependence verbatimtabinput $(TEXFILES))$/;"	m
+CODEFILES	Makefile	/^CODEFILES=$(shell .\/strip-dependence inputcode $(TEXFILES))$/;"	m
+PDF	Makefile	/^PDF=$(subst .pdf_t,.pdf,$(PDF_T))$/;"	m
+all	Makefile	/^all : $(NAME).pdf$/;"	t
+%.pdf	Makefile	/^%.pdf: %.fig$/;"	t
+$(NAME).pdf	Makefile	/^ $(NAME).pdf: $(TEXFILES) $(PDF) $(PDF_T) $(VERBATIM) $(CODEFILES) $(BIBFILES)$/;"	t
+clean	Makefile	/^clean:$/;"	t
+Introduction	cando.tex	/^\\chapter{Introduction}$/;"	c
+Building Molecules from Parts	chem-chapter.tex	/^\\chapter{Building Molecules from Parts}$/;"	c
+chap-parts	chem-chapter.tex	/^\\label{chap-parts}$/;"	l
+Constitution	chem-chapter.tex	/^\\section{Constitution}$/;"	s	chapter:Building Molecules from Parts
+Constitution-atoms	chem-chapter.tex	/^\\section{Constitution-atoms}$/;"	s	chapter:Building Molecules from Parts
+Stereoinformation	chem-chapter.tex	/^\\section{Stereoinformation}$/;"	s	chapter:Building Molecules from Parts
+Topology	chem-chapter.tex	/^\\section{Topology}$/;"	s	chapter:Building Molecules from Parts
+Stereoisomer-atoms	chem-chapter.tex	/^\\section{Stereoisomer-atoms}$/;"	s	chapter:Building Molecules from Parts
+Stereoisomer-atom	chem-chapter.tex	/^\\section{Stereoisomer-atom}$/;"	s	chapter:Building Molecules from Parts
+Isoname	chem-chapter.tex	/^\\section{Isoname}$/;"	s	chapter:Building Molecules from Parts
+Oligomer	chem-chapter.tex	/^\\section{Oligomer}$/;"	s	chapter:Building Molecules from Parts
+Monomer	chem-chapter.tex	/^\\section{Monomer}$/;"	s	chapter:Building Molecules from Parts

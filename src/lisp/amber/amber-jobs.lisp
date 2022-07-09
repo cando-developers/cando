@@ -3,20 +3,36 @@
 (defmacro convert-to-script (&rest code)
   `(cl:format nil "~{~s~%~}" ',code))
 
+
+
+;;; ------------------------------------------------------------
+;;;
+;;; rule is a class that can generate a ninja-rule
+;;;
+
+(defclass rule ()
+  ((name :initarg :name :accessor name)
+   (description :initarg :description :accessor description)
+   (command :initarg :command :accessor command)))
+
+
+;;; It has two parts, a action (what is done) and a target (aggregate name)
+;;; names are like MINIMIZE-MOL0 or HEAT-MOL5
+
 ;;; ------------------------------------------------------------
 ;;;
 ;;; job-name is a unique name for every job
 ;;;
-;;; It has two parts, a verb (what is done) and a noun (aggregate name)
+;;; It has two parts, a action (what is done) and a target (aggregate name)
 ;;; names are like MINIMIZE-MOL0 or HEAT-MOL5
 
 (defclass job-name ()
   ((path :initform nil :initarg :path :accessor path)
-   (verb :initarg :verb :accessor verb)
-   (noun :initarg :noun :accessor noun)))
+   (action :initarg :action :accessor action)
+   (target :initarg :target :accessor target)))
 
 (defun job-pathname (job-name &key type)
-  (make-pathname :name (format nil "~a-~a" (string (verb job-name)) (string (noun job-name)))
+  (make-pathname :name (format nil "~a-~a" (string (action job-name)) (string (target job-name)))
                  :type type))
 
 
@@ -74,7 +90,9 @@
    (latest-jobs :initform nil :accessor latest-jobs)
    (aggregates :initform (make-hash-table) :accessor aggregates)
    (parameters :initform (make-hash-table) :accessor parameters)
-   (jobs :initform nil :initarg :jobs :accessor jobs)))
+   (jobs :initform nil :initarg :jobs :accessor jobs)
+   (process-stream :initform nil :accessor process-stream)
+   (external-process :initform nil :accessor external-process)))
 
 (defmethod print-object ((object simulation) stream)
   (print-unreadable-object (object stream :type t)
@@ -91,7 +109,7 @@
    (parm-node :initarg :parm-node :accessor parm-node)
    (coord-node :initarg :coord-node :accessor coord-node)))
 
-(defun addAggregates (simulation aggregate-list)
+(defun add-aggregates (simulation aggregate-list)
   (let ((jobs (loop for aggregate in aggregate-list
                     for name = (chem:get-name aggregate)
                     for parm-node = (make-node-file (make-pathname :name (format nil "start-~a" (string name)) :type "parm"))
@@ -106,20 +124,25 @@
                                             :the-simulation simulation
                                             :aggregate aggregate
                                             :script nil
-                                            :job-name (make-instance 'job-name :verb "START" :noun name)
+                                            :job-name (make-instance 'job-name :action "START" :target name)
                                             :outputs (arguments :|-p| parm-node
                                                                 :|-r| coord-node))))))
     (format t "Setting latest-jobs simulation -> ~a~%" jobs)
     (setf (latest-jobs simulation) jobs)))
 
-(defun addAggregate (simulation aggregate)
-  (addAggregates simulation (list aggregate)))
+(defun add-aggregate (simulation aggregate)
+  (add-aggregates simulation (list aggregate)))
 
-(defun saveSimulation (simulation &key (name "jobs/") (if-exists :overwrite))
+(defun save-simulation (simulation &key (name "jobs/") (if-exists :overwrite))
   (let ((pathname (uiop:ensure-directory-pathname name)))
-    (when (and (probe-file pathname) (not (eq if-exists :overwrite)))
-      (format t "A simulation already exists in ~a~%" pathname)
-      (return-from saveSimulation nil))
+    (when (probe-file pathname)
+      (if (not (eq if-exists :overwrite))
+          (progn
+            (error "A simulation already exists in ~a~%" pathname)
+            (return-from save-simulation nil))
+          (progn
+            (format t "Removing ~a~%" (namestring pathname))
+            (uiop/filesystem:delete-directory-tree pathname :validate t))))
     (setf (path simulation) (merge-pathnames (pathname name)))
     (maphash (lambda (key agg-node)
                (declare (ignore key))
@@ -135,20 +158,28 @@
     (generate-all-code simulation)))
 
 
-(defun startSimulation (simulation &key (name "jobs/") (if-exists :overwrite))
-  (saveSimulation simulation :name name :if-exists if-exists)
-  (let ((cmd (format nil "cd ~a; make &" (namestring (path simulation)))))
-    (ext:run-program "/bin/bash" (list "-c" cmd))))
+(defun start-simulation (simulation &key (name "jobs/") (if-exists :overwrite))
+  (save-simulation simulation :name name :if-exists if-exists)
+  (let ((cmd (format nil "cd ~a; ninja" (namestring (path simulation)))))
+    (multiple-value-bind (process-stream status external-process)
+        (ext:run-program "/bin/bash" (list "-c" cmd) :wait nil)
+      (setf (process-stream simulation) process-stream
+            (external-process simulation) external-process)
+      nil)))
 
 (defclass job ()
   ((the-simulation :initarg :the-simulation :accessor the-simulation)
    (aggregate :initarg :aggregate :accessor aggregate)
    (job-name :initarg :job-name :accessor job-name)
+   (micro-name :initarg :micro-name :accessor micro-name)
+   (job-kind :initform :dynamics :initarg :job-kind :accessor job-kind)
+   (minimize-job-steps :initarg :minimize-job-steps :accessor minimize-job-steps)
    (script :initform nil :initarg :script :accessor script)
    (inputs :initform nil :initarg :inputs :accessor inputs)
    (outputs :initform nil :initarg :outputs :accessor outputs)
    (parameters :initform nil :initarg :parameters :accessor parameters)
-   (makefile-clause :initarg :makefile-clause :accessor makefile-clause)))
+   (previous-job :initform nil :initarg :previous-job :accessor previous-job)
+   (rule-clause :initarg :rule-clause :accessor rule-clause)))
 
 (defmethod print-object ((obj job) stream)
   (print-unreadable-object (obj stream :type t)
@@ -157,7 +188,7 @@
 (defclass jupyter-job (job)
   ()
   (:default-initargs
-   :makefile-clause nil))
+   :rule-clause nil))
 
 
 (defclass dynamics (job)
@@ -268,16 +299,18 @@ added to inputs and outputs but not option-inputs or option-outputs"
           do (push job (definers (node output))))
     job))
 
-(defgeneric job-file (what option))
+(defgeneric job-file (what option &optional errorp))
 
-(defmethod job-file (job option)
+(defmethod job-file (job option &optional (errorp t))
   (loop for output-arg in (outputs job)
         when (eq option (option output-arg))
           do (return-from job-file (node output-arg)))
   (loop for input-arg in (inputs job)
         when (eq option (option input-arg))
           do (return-from job-file (node input-arg)))
-  (error "Could not find option ~a in ~a" option (append (outputs job) (inputs job))))
+  (if errorp
+      (error "Could not find option ~a in ~a" option (append (outputs job) (inputs job)))
+      nil))
 
 (defclass argument ()
   ((option :initarg :option :accessor option)
@@ -310,12 +343,20 @@ added to inputs and outputs but not option-inputs or option-outputs"
                                ((stringp match) (format nil ":~a" match))
                                ((symbolp match) (format nil "~s" match))
                                (t (error "Illegal match ~s for regex key" match)))
-          do (setf script-result (cl-ppcre:regex-replace-all match-string script substitution))
+          for substitution-string = (cond
+                                      ((stringp substitution) substitution)
+                                      ((symbolp substitution) (string substitution))
+                                      ((integerp substitution) (format nil "~a" substitution))
+                                      ((floatp substitution) (format nil "~2,3f" substitution))
+                                      (t (error "Illegal substitution value ~s" substitution-string)))
+          do (setf script-result (cl-ppcre:regex-replace-all match-string script substitution-string))
           finally (return-from replace-all script-result))))
 
-(defun generate-code (simulation makefile)
+(defun generate-code (simulation build-file)
   ;; Generate script
   (loop for job in (jobs simulation)
+        for rule-clause = (rule-clause job)
+        with unique-rules = (make-hash-table)
         do (let ((script (script job))
                  script-code)
              (when script
@@ -323,14 +364,31 @@ added to inputs and outputs but not option-inputs or option-outputs"
                       (substituted-script (replace-all (substitutions job script) raw-script)))
                  (setf script-code substituted-script)
                  (write-file-if-it-has-changed (node-pathname simulation script) substituted-script)))
-             (when (slot-boundp job 'makefile-clause)
-               (let ((raw-makefile-clause (makefile-clause job)))
-                 (when raw-makefile-clause
-                   (let* ((makefile-substitutions (makefile-substitutions job script-code))
-                          (substituted-makefile-clause (replace-all makefile-substitutions raw-makefile-clause)))
-                     (write-string substituted-makefile-clause makefile))
-                   (terpri makefile)
-                   (terpri makefile)))))))
+             (when rule-clause
+               (unless (gethash (name rule-clause) unique-rules)
+                 (setf (gethash (name rule-clause) unique-rules) rule-clause)
+                 (format build-file "rule ~a~%" (string-downcase (name rule-clause)))
+                 (format build-file "  command = ./runcmd -- $in -- $out -- ~a -O ~{~a ~:*$~a~^ ~} ~{~a ~:*$~a~^ ~}~%"
+                         (command rule-clause)
+                         (mapcar (lambda (arg) (option arg)) (inputs job))
+                         (mapcar (lambda (arg) (option arg)) (outputs job)))
+                 (terpri build-file)
+                 (terpri build-file))))
+        when (inputs job)
+          do (progn
+               (format build-file "build ~{~a ~} : ~a ~{~a ~}~%"
+                       (mapcar (lambda (arg) (in-simulation-node-namestring simulation (node arg))) (outputs job))
+                       (string-downcase (name rule-clause))
+                       (mapcar (lambda (arg) (in-simulation-node-namestring simulation (node arg))) (inputs job)))
+               (loop for input in (inputs job)
+                     for option = (option input)
+                     for node = (node input)
+                     do (format build-file "   ~a = ~a~%" option (in-simulation-node-namestring simulation node)))
+               (loop for output in (outputs job)
+                     for option = (option output)
+                     for node = (node output)
+                     do (format build-file "   ~a = ~a~%" option (in-simulation-node-namestring simulation node)))
+               (terpri build-file))))
 
 (defun write-file-if-it-has-changed (pathname code)
     (when (probe-file pathname)
@@ -350,22 +408,15 @@ added to inputs and outputs but not option-inputs or option-outputs"
         (all-outputs (loop for job in (jobs simulation)
                            when (not (typep job 'jupyter-job))
                              append (outputs job)))
-        (makefile-pathname (ensure-directories-exist (merge-pathnames "makefile" (path simulation)))))
-    (format t "Writing makefile to ~a~%" (translate-logical-pathname makefile-pathname))
-    (let ((body (with-output-to-string (makefile)
-                  (generate-code simulation makefile))))
+        (build-file-pathname (ensure-directories-exist (merge-pathnames "build.ninja" (path simulation)))))
+    (format t "Writing build-file to ~a~%" (translate-logical-pathname build-file-pathname))
+    (let ((body (with-output-to-string (build-file)
+                  (generate-code simulation build-file))))
       (write-file-if-it-has-changed
-       makefile-pathname
-       (with-output-to-string (makefile)
-         (format makefile "RUNCMD = ./runcmd~%")
-         (format makefile "all : ~{~a ~}~%" (mapcar (lambda (argument) (in-simulation-node-namestring simulation (node argument))) final-outputs))
-         (format makefile "~aecho all DONE~%" #\tab)
-         (format makefile "~%")
-         (format makefile "clean :~%~arm -f ~{~a ~}~%" #\tab (mapcar (lambda (arg) (in-simulation-node-namestring simulation (node arg))) all-outputs))
-         (format makefile "~aecho clean DONE~%" #\tab)
-         (format makefile "~%")
-         (write-string body makefile)
-         (terpri makefile)))))
+       build-file-pathname
+       (with-output-to-string (build-file)
+         (write-string body build-file)
+         (terpri build-file)))))
   nil
   )
 
@@ -378,10 +429,13 @@ added to inputs and outputs but not option-inputs or option-outputs"
     (:|-x| . "nc")))
 (defun setup-job (simulation previous-job &key parameters
                                             job-name
+                                            micro-name
                                             input-topology-file
                                             input-coordinate-file
                                             script
-                                            makefile-clause
+                                            rule-clause
+                                            (job-kind :dynamics)
+                                            minimize-job-steps
                                             (output-args '(:|-o| :|-inf| :|-e| :|-r| :|-x|)))
   (let ((script-file (make-instance 'amber-script-file
                                     :script script
@@ -395,14 +449,18 @@ added to inputs and outputs but not option-inputs or option-outputs"
                       :the-simulation simulation
                       :aggregate (aggregate previous-job)
                       :job-name job-name
+                      :micro-name micro-name
                       :script script-file
                       :parameters parameters
+                      :job-kind job-kind
+                      :minimize-job-steps minimize-job-steps
                       :inputs (arguments :|-i| script-file
                                          :|-c| input-coordinate-file
                                          :|-ref| input-coordinate-file
                                          :|-p| input-topology-file)
                       :outputs (apply 'arguments outputs)
-                      :makefile-clause makefile-clause)))))
+                      :previous-job previous-job
+                      :rule-clause rule-clause)))))
 
 
 (defun jupyter-job (&key outputs)
@@ -434,6 +492,19 @@ added to inputs and outputs but not option-inputs or option-outputs"
  "
 )
 
+(defun time-steps-parameters (steps stepsp time-ps time-ps-p time-step-ps)
+  (when (and stepsp time-ps-p)
+    (error "You cannot specify both :steps and :time-ps together"))
+  (cond
+    (stepsp
+     ;; Do nothing
+     )
+    (time-ps-p
+     (setf steps (* 100 (ceiling (/ (/ time-ps time-step-ps) 100)))))
+    )
+  (list (cons :%STEPS% steps)
+        (cons :%TIME-STEP-PS% time-step-ps)))
+
 (defun bounding-box-parameters (aggregate &key constant-pressure)
   (let ((bounding-box 0)
         (cutoff 16.0))
@@ -445,32 +516,42 @@ added to inputs and outputs but not option-inputs or option-outputs"
     (list (cons :%BOX% bounding-box)
           (cons :%VDW-CUTOFF% cutoff))))
 
-(defun minimize (simulation &key (name "minimize")
-                              (steps 1000)
-                              (sd-steps 100 sd-steps-p)
-                              )
+
+(defparameter *minimize-rule*
+  (make-instance 'rule
+                 :name :minimize
+                 :description "Minimize energy"
+                 :command "sander"))
+
+(defun minimize
+    (simulation
+     &key
+       (name "minimize")
+       (steps 1000 stepsp)
+       (sd-steps 100 sd-steps-p)
+       )
   (let ((jobs (loop for prev-job in (latest-jobs simulation)
                     for aggregate = (aggregate prev-job)
                     collect (setup-job simulation prev-job
                                        :input-topology-file (job-file prev-job :|-p|)
                                        :input-coordinate-file (job-file prev-job :|-r|)
                                        :script *min-in*
-                                       :job-name (make-instance 'job-name :verb name :noun (noun (job-name prev-job)))
+                                       :job-name (make-instance 'job-name :action name :target (target (job-name prev-job)))
+                                       :micro-name #\m
+                                       :job-kind :minimize ; minimize jobs have different info files - we need to keep track of this for later
+                                       :minimize-job-steps steps ; minimize jobs don't print how many steps are left
                                        :parameters (list* (cons :%MAXCYC% steps)
                                                           (cons :%SDCYC% sd-steps)
                                                           (bounding-box-parameters aggregate))
                                        :output-args '(:|-o| :|-inf| :|-r|)
-                                       :makefile-clause ":%OUTPUTS% &: :%INPUTS%
-	$(RUNCMD) -- :%DEPENDENCY-INPUTS% -- :%DEPENDENCY-OUTPUTS% -- \\
-	sander :%OPTION-INPUTS% \\
-	  -O :%OPTION-OUTPUTS%"))))
+                                       :rule-clause *minimize-rule*))))
     (setf (latest-jobs simulation) jobs))
   simulation)
 
 (defparameter *heat-in*
   "heating
  &cntrl
-   imin = 0, nstlim = :%STEPS%, irest = 0, ntx = 1, dt = 0.002,
+   imin = 0, nstlim = :%STEPS%, irest = 0, ntx = 1, dt = :%TIME-STEP-PS%,
    nmropt = 1,
    ntt = 3, temp0 = :%TEMPERATURE%, gamma_ln = 2.0, ig = -1,
    tempi = 5.0, tautp = 1.0,
@@ -494,38 +575,43 @@ added to inputs and outputs but not option-inputs or option-outputs"
 
  &wt type = 'END'
  /
-
 ")
 
-(defun heat (simulation &key
-                          (name "heat")
-                          (temperature 300.0)
-                          (steps 10000)
-                          (steps-per-write 0)
-                          )
+(defun heat
+    (simulation
+     &key
+       (name "heat")
+       (temperature 300.0)
+       (steps 10000 stepsp)
+       (time-step-ps 0.002)
+       (time-ps 10 time-ps-p)
+       (steps-per-write 0)
+       )
   (let ((jobs (loop for prev-job in (latest-jobs simulation)
                     for aggregate = (aggregate prev-job)
                     collect (setup-job simulation prev-job
                                        :input-topology-file (job-file prev-job :|-p|)
                                        :input-coordinate-file (job-file prev-job :|-r|)
                                        :script *heat-in*
-                                       :job-name (make-instance 'job-name :verb name :noun (noun (job-name prev-job)))
+                                       :job-name (make-instance 'job-name :action name :target (target (job-name prev-job)))
+                                       :micro-name #\h
                                        :parameters (list*
-                                                    (cons :%STEPS% steps)
                                                     (cons :%STEPS-PER-WRITE% steps-per-write)
                                                     (cons :%TEMPERATURE% temperature)
-                                                    (bounding-box-parameters aggregate))
-                                       :makefile-clause ":%OUTPUTS% &: :%INPUTS%
-	$(RUNCMD) -- :%DEPENDENCY-INPUTS% -- :%DEPENDENCY-OUTPUTS% -- \\
-	sander :%OPTION-INPUTS% \\
-	  -O :%OPTION-OUTPUTS%"))))
+                                                    (append
+                                                     (time-steps-parameters steps stepsp time-ps time-ps-p time-step-ps)
+                                                     (bounding-box-parameters aggregate)))
+                                       :rule-clause (load-time-value (make-instance 'rule
+                                                                                    :name :heat
+                                                                                    :description "Heat system"
+                                                                                    :command "sander"))))))
     (setf (latest-jobs simulation) jobs))
   simulation)
 
 (defparameter *press-in*
   "pressurising
  &cntrl
-   imin = 0, nstlim = :%STEPS%, irest = 1, ntx = 5, dt = 0.002,
+   imin = 0, nstlim = :%STEPS%, irest = 1, ntx = 5, dt = :%TIME-STEP-PS%,
    ntt = 3, temp0 = :%TEMPERATURE%, gamma_ln = 2.0, ig = -1,
    tautp = 1.0,
    vlimit = 20,
@@ -540,36 +626,43 @@ added to inputs and outputs but not option-inputs or option-outputs"
  /
  &ewald
  / 
-
 ")
 
-(defun pressurize (simulation &key (name "pressurize")
-                                (steps 10000)
-                                (steps-per-write 0)
-                                (temperature 300.0))
+(defun pressurize
+    (simulation
+     &key
+       (name "pressurize")
+       (temperature 300.0)
+       (steps 10000 stepsp)
+       (time-step-ps 0.002)
+       (time-ps 10 time-ps-p)
+       (steps-per-write 0)
+       )
   (let ((jobs (loop for prev-job in (latest-jobs simulation)
                     for aggregate = (aggregate prev-job)
                     collect (setup-job simulation prev-job
                                        :input-topology-file (job-file prev-job :|-p|)
                                        :input-coordinate-file (job-file prev-job :|-r|)
                                        :script *press-in*
-                                       :job-name (make-instance 'job-name :verb name :noun (noun (job-name prev-job)))
+                                       :job-name (make-instance 'job-name :action name :target (target (job-name prev-job)))
+                                       :micro-name #\p
                                        :parameters (list*
-                                                    (cons :%STEPS% steps)
                                                     (cons :%STEPS-PER-WRITE% steps-per-write)
                                                     (cons :%TEMPERATURE% temperature)
-                                                    (bounding-box-parameters aggregate :constant-pressure t))
-                                       :makefile-clause ":%OUTPUTS% &: :%INPUTS%
-	$(RUNCMD) -- :%DEPENDENCY-INPUTS% -- :%DEPENDENCY-OUTPUTS% -- \\
-	sander :%OPTION-INPUTS% \\
-	  -O :%OPTION-OUTPUTS%"))))
+                                                    (append
+                                                     (time-steps-parameters steps stepsp time-ps time-ps-p time-step-ps)
+                                                     (bounding-box-parameters aggregate :constant-pressure t)))
+                                       :rule-clause (load-time-value (make-instance 'rule
+                                                                                    :name :pressurize
+                                                                                    :description "Pressurize system"
+                                                                                    :command "sander"))))))
     (setf (latest-jobs simulation) jobs))
   simulation)
 
 (defparameter *dynamics-in*
   "dynamics
  &cntrl
-   imin = 0, nstlim = :%STEPS%, irest = 0, ntx = 1, dt = 0.002,
+   imin = 0, nstlim = :%STEPS%, irest = 0, ntx = 1, dt = :%TIME-STEP-PS%,
    nmropt = 1,
    ntt = 3, temp0 = :%TEMPERATURE%, gamma_ln = 2.0, ig = -1,
    tempi = 5.0, tautp = 1.0,
@@ -597,28 +690,35 @@ added to inputs and outputs but not option-inputs or option-outputs"
 
 ")
 
-(defun dynamics (simulation &key (name "dynamics")
-                              (steps 10000)
-                              (steps-per-write 1000)
-                              (temperature 300.0)
-                              (constant-pressure nil)
-                              )
+(defun dynamics
+    (simulation
+     &key
+       (name "dynamics")
+       (temperature 300.0)
+       (steps 10000 stepsp)
+       (time-step-ps 0.002)
+       (time-ps 10 time-ps-p)
+       (steps-per-write 1000)
+       (constant-pressure nil)
+       )
   (let ((jobs (loop for prev-job in (latest-jobs simulation)
                     for aggregate = (aggregate prev-job)
                     collect (setup-job simulation prev-job
                                        :input-topology-file (job-file prev-job :|-p|)
                                        :input-coordinate-file (job-file prev-job :|-r|)
                                        :script *dynamics-in*
-                                       :job-name (make-instance 'job-name :verb name :noun (noun (job-name prev-job)))
+                                       :job-name (make-instance 'job-name :action name :target (target (job-name prev-job)))
+                                       :micro-name #\D
                                        :parameters (list*
-                                                    (cons :%STEPS% steps)
                                                     (cons :%STEPS-PER-WRITE% steps-per-write)
                                                     (cons :%TEMPERATURE% temperature)
-                                                    (bounding-box-parameters aggregate :constant-pressure constant-pressure))
-                                       :makefile-clause ":%OUTPUTS% &: :%INPUTS%
-	$(RUNCMD) -- :%DEPENDENCY-INPUTS% -- :%DEPENDENCY-OUTPUTS% -- \\
-	sander :%OPTION-INPUTS% \\
-	  -O :%OPTION-OUTPUTS%"))))
+                                                    (append
+                                                     (time-steps-parameters steps stepsp time-ps time-ps-p time-step-ps)
+                                                     (bounding-box-parameters aggregate :constant-pressure constant-pressure)))
+                                       :rule-clause (load-time-value (make-instance 'rule
+                                                                                    :name :dynamics
+                                                                                    :description "Molecular dynamics"
+                                                                                    :command "sander"))))))
     (setf (latest-jobs simulation) jobs))
   simulation)
 
@@ -630,79 +730,110 @@ added to inputs and outputs but not option-inputs or option-outputs"
 (defparameter *replica-exchange-equilibration1*
   "Equilibration
  &cntrl
-   irest=0, ntx=1, 
-   nstlim=:%NSTLIM%, dt=0.002,
-   irest=0, ntt=3, gamma_ln=1.0,
-   temp0=:%TEMP0%, ig=:%IG%,
-   ntc=2, ntf=2, nscm=1000,
-   ntb=0, igb=5,
-   cut=999.0, rgbmax=999.0,
-   ntpr=500, ntwx=:%NTWX%, ntwr=100000,
-   nmropt=1,
+   irest = 0, ntx = 1, 
+   nstlim = :%STEPS%, dt = :%TIME-STEP-PS%,
+   irest = 0, ntt = 3, gamma_ln = 1.0,
+   temp0 = :%TEMPERATURE%, ig = :%RANDOM-SEED%,
+   ntc = 2, ntf = 2, nscm = 1000,
+   ntb = :%BOX%, igb = 5,
+   cut = 999.0, rgbmax = 999.0,
+   ntpr = 500, ntwx = :%STEPS-PER-WRITE%, ntwr = 100000,
+   nmropt = 1,
  /
- &wt TYPE='END'
+ &wt TYPE = 'END'
  /
 ")
 
-(defun replica-exchange-equilibrate1 ( &key previous-job
-                                         input-topology-file input-coordinate-file
-                                         (pathname-defaults #P"equilibrate" p-d-p)
-                                         (nstlim 10000)
-                                         (ntwx 100)
-                                         (temp0 300.0)
-                                         (random (random 32768))
-                                         )
-  (setup-job :input-topology-file (or input-topology-file (job-file previous-job :|-p|))
-             :input-coordinate-file (or input-coordinate-file (job-file previous-job :|-r|))
-             :script *dynamics-in*
-             :parameters (list (cons :%nstlim% nstlim)
-                               (cons :%ntwx% ntwx)
-                               (cons :%temp0% temp0)
-                               (cons :%ig% random))
-             :pathname-defaults pathname-defaults
-             :makefile-clause ":%OUTPUTS% &: :%INPUTS%
-	$(RUNCMD) -- :%DEPENDENCY-INPUTS% -- :%DEPENDENCY-OUTPUTS% -- \\
-	pmemd.cuda -AllowSmallBox :%OPTION-INPUTS% \\
-	  -O :%OPTION-OUTPUTS%"))
+(defun replica-exchange-equilibrate
+    (simulation
+     &key
+       (name "replica-exchange-equilibrate")
+       (temperature 300.0)
+       (steps 10000 stepsp)
+       (time-step-ps 0.002)
+       (time-ps 10 time-ps-p)
+       (steps-per-write 0)
+       (constant-pressure nil)
+       (random-seed (random 32768))
+       )
+  (let ((jobs (loop for prev-job in (latest-jobs simulation)
+                    for aggregate = (aggregate prev-job)
+                    collect (setup-job simulation prev-job
+                                       :input-topology-file (job-file prev-job :|-p|)
+                                       :input-coordinate-file (job-file prev-job :|-r|)
+                                       :script *dynamics-in*
+                                       :job-name (make-instance 'job-name :action name :target (target (job-name prev-job)))
+                                       :micro-name #\r
+                                       :parameters (list*
+                                                    (cons :%STEPS-PER-WRITE% steps-per-write)
+                                                    (cons :%TEMPERATURE% temperature)
+                                                    (cons :%RANDOM-SEED% (if (eq random-seed t)
+                                                                             (random 32768)
+                                                                             random-seed))
+                                                    (append
+                                                     (time-steps-parameters steps stepsp time-ps time-ps-p time-step-ps)
+                                                     (bounding-box-parameters aggregate)))
+                                       :rule-clause (load-time-value (make-instance 'rule
+                                                                                    :name :replica-exchange-equilibrate
+                                                                                    :description "Replica exchange equilibrate"
+                                                                                    :command "sander"))))))
+    (setf (latest-jobs simulation) jobs))
+  simulation)
 
 (defparameter *replica-exchange-run1*
   "Replica exchange
  &cntrl
-   irest=0, ntx=1, 
-   nstlim=:%NSTLIM%, dt=0.002,
-   irest=0, ntt=3, gamma_ln=1.0,
-   temp0=:%TEMP0%, ig=:%IG%,
-   ntc=2, ntf=2, nscm=1000,
-   ntb=0, igb=5,
-   cut=999.0, rgbmax=999.0,
-   ntpr=100, ntwx=:%NTWX%, ntwr=100000,
-   nmropt=1,
-   numexchg=1000,
+   irest = 0, ntx = 1, 
+   nstlim = :%STEPS%, dt = :%TIME-STEP-PS%,
+   irest = 0, ntt = 3, gamma_ln = 1.0,
+   temp0 = :%TEMPERATURE%, ig = :%RANDOM-SEED%,
+   ntc = 2, ntf = 2, nscm = 1000,
+   ntb = :%BOX%, igb = 5,
+   cut = 999.0, rgbmax = 999.0,
+   ntpr = 100, ntwx = :%STEPS-PER-WRITE%, ntwr = 100000,
+   nmropt = 1,
+   numexchg = 1000,
  /
- &wt TYPE='END'
+ &wt TYPE = 'END'
  /
 ")
 
-(defun replica-exchange1 ( &key previous-job
-                            input-topology-file input-coordinate-file
-                            (pathname-defaults #P"replica-exchange" p-d-p)
-                            (nstlim 10000)
-                            (ntwx 100)
-                            (temp0 300.0)
-                            (random (random 32768))
-                            )
-  (setup-job :input-topology-file (or input-topology-file (job-file previous-job :|-p|))
-             :input-coordinate-file (or input-coordinate-file (job-file previous-job :|-r|))
-             :script *replica-exchange-run1*
-             :parameters (list (cons :%nstlim% nstlim)
-                               (cons :%ntwx% ntwx)
-                               (cons :%temp0% temp0)
-                               (cons :%ig% random))
-             :pathname-defaults pathname-defaults
-             :makefile-clause ":%OUTPUTS% &: :%INPUTS%
-	$(RUNCMD) -- :%DEPENDENCY-INPUTS% -- :%DEPENDENCY-OUTPUTS% -- \\
-	pmemd.cuda -AllowSmallBox :%OPTION-INPUTS% \\
-	  -O :%OPTION-OUTPUTS%"))
+(defun replica-exchange
+    (simulation
+     &key
+       (name "replica-exchange")
+       (temperature 300.0)
+       (steps 10000 stepsp)
+       (time-step-ps 0.002)
+       (time-ps 10 time-ps-p)
+       (steps-per-write 1000)
+       (steps-per-write 100)
+       (constant-pressure nil)
+       (random-seed (random 32768))
+       )
+  (let ((jobs (loop for prev-job in (latest-jobs simulation)
+                    for aggregate = (aggregate prev-job)
+                    collect (setup-job simulation prev-job
+                                       :input-topology-file (job-file prev-job :|-p|)
+                                       :input-coordinate-file (job-file prev-job :|-r|)
+                                       :script *dynamics-in*
+                                       :job-name (make-instance 'job-name :action name :target (target (job-name prev-job)))
+                                       :micro-name #\R
+                                       :parameters (list*
+                                                    (cons :%STEPS-PER-WRITE% steps-per-write)
+                                                    (cons :%TEMPERATURE% temperature)
+                                                    (cons :%RANDOM-SEED% (if (eq random-seed t)
+                                                                             (random 32768)
+                                                                             random-seed))
+                                                    (append
+                                                     (time-steps-parameters steps stepsp time-ps time-ps-p time-step-ps)
+                                                     (bounding-box-parameters aggregate :constant-pressure constant-pressure)))
+                                       :rule-clause (load-time-value (make-instance 'rule
+                                                                                    :name :replica-exchange
+                                                                                    :description "Replica exchange"
+                                                                                    :command "sander"))))))
+    (setf (latest-jobs simulation) jobs))
+  simulation)
 
 (defun read-file (infile)
   (with-open-file (instream infile :direction :input :if-does-not-exist nil)
@@ -754,3 +885,43 @@ exec \"$@\"
         (write-string runcmd_with_docker fout))
       (clasp-posix:chmod "runcmd_with_docker" #o755)))
   )
+
+(defclass seen ()
+  ((name :initarg :name :accessor name)
+   (stream :initarg :stream :accessor stream)))
+
+(defun monitor (sim)
+  (let ((seen (make-hash-table :test 'equal)))
+    (loop for job in (jobs sim)
+          for outputs = (outputs job)
+          for name = (loop named inner
+                           for output in outputs
+                           for option = (option output)
+                           for node = (node output)
+                           when (eq option :|-o|)
+                             do (return-from inner (in-simulation-node-namestring sim node)))
+          when name
+            do (setf (gethash name seen) nil))
+    (loop named watch
+          with count = 0
+          with iter = 0
+          when (= count (hash-table-count seen))
+            do (return-from watch t)
+          do (maphash (lambda (name saw)
+                        (let ((pathname (merge-pathnames (merge-pathnames name (path sim)))))
+                          (cond
+                            ((not saw)
+                             (when (probe-file pathname)
+                               (incf count)
+                               (setf (gethash name seen) (make-instance 'seen
+                                                                        :name name
+                                                                        :stream (open pathname :direction :input)))
+                               (format t "Saw: ~a~%" name)
+                               (finish-output t)))
+                            (saw
+                             (format t "Seen file ~a size: ~a~%" (name saw) (file-length (stream saw)))
+                             (finish-output t)))))
+                      seen)
+          do (sleep 1))
+    (format t "Done~%")
+    ))

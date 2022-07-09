@@ -10,4 +10,5 @@
   :components
   ((:file "packages")
    (:file "amber-jobs")
+   (:file "dashboard")
    (:file "graphviz-amber")))

@@ -191,6 +191,7 @@
    #:configure-minimizer
    #:minimize-no-fail
    #:build-good-geometry-from-random
+   #:starting-geometry
    #:build-molecules-from-atom-connectivity
    #:chimera
    #:bad-geometry-p
@@ -213,6 +214,8 @@
    #:progress-advance
    #:progress-bar
    #:make-progress-bar
+   #:do-make-progress-bar
+   #:*ui-client*
    #:progress-done
    #:home/
    #:make-simple-topology-from-residue

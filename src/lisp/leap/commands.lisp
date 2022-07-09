@@ -47,6 +47,10 @@ buffer object, which extends either type of box by an arbitrary amount.
   (let ((pdb-scanner (leap.core:lookup-variable scan)))
     (leap.pdb:scanAmberCheck pdb-scanner)))
 
+(defun leap.remove-solvent (aggregate)
+  (let ((agg (leap.core:lookup-variable aggregate)))
+    (leap.solvate:remove-solvent agg)))
+
 (defun leap.scanSelectChainIds (scan chainIds)
   (let ((pdb-scanner (leap.core:lookup-variable scan)))
     (leap.pdb:scanSelectChainIds pdb-scanner chainIds))
@@ -220,7 +224,7 @@ is written to the log file as if the verbosity level were set to 2."
          (constitution-atoms (chem:constitution/get-constitution-atoms constitution)))
     (loop for index from 0 below (chem:number-of-atoms constitution-atoms)
           for atom = (chem:atom-with-id constitution-atoms index)
-          do (format t "~a~%" (core:encode atom)))))
+          do (format stream "~a~%" (core:encode atom)))))
 
 (defmethod describe-object ((object chem:molecule) stream)
   (format stream "Force-field-name: ~a~%" (chem:force-field-name object))
@@ -265,8 +269,7 @@ is written to the log file as if the verbosity level were set to 2."
 
 
 (defmethod set-property ((object chem:molecule) (property (eql :force-field-name)) value)
-  (let ((force-field (chem:find-force-field value)))
-    (chem:setf-force-field-name object value)))
+    (chem:setf-force-field-name object value))
 
 (defmethod set-property ((object chem:molecule) (property (eql :molecule-type)) value)
   (chem:setf-molecule-type object value))
@@ -580,30 +583,6 @@ binary format.
 
 
 
-(defun process-iso-closeness (iso-closeness)
-  (let ((iso nil)
-        (closeness 1.0))
-    (flet ((error-iso-closeness ()
-             (error "You must provide either :iso or a number for closeness - you provided ~s" iso-closeness)))
-      (cond
-        ((= (length iso-closeness) 0))
-        ((= (length iso-closeness) 1)
-         (cond
-           ((numberp (first iso-closeness))
-            (setf closeness (first iso-closeness)))
-           ((eq (first iso-closeness) :iso)
-            (setf iso t))
-           ((string-equal (first iso-closeness) "iso")
-            (setf iso t))
-           (t (error-iso-closeness))))
-        ((and (= (length iso-closeness) 2)
-              (or (find :iso iso-closeness)
-                  (find "iso" iso-closeness :test #'string-equal))
-              (find-if #'numberp iso-closeness))
-         (setf iso t
-               closeness (find-if #'numberp iso-closeness)))
-        (t (error-iso-closeness))))
-    (list :isotropic iso :closeness closeness)))
 
 (defun leap.solvate-box (solute-name solvent-name buffer &rest iso-closeness)
   "    solvateBox solute solvent buffer [ \"iso\" ] [ closeness ]
@@ -659,9 +638,70 @@ named for the _solute_) is modified to reflect the fact that a periodic,
 rectilinear solvent box has been created around it.
 "
   (let ((solute (leap.core:lookup-variable solute-name))
-        (solvent (leap.core:lookup-variable solvent-name))
-        (iso-closeness-args (process-iso-closeness iso-closeness)))
-     (apply #'leap:solvate-box solute solvent buffer iso-closeness-args)))
+        (solvent (leap.core:lookup-variable solvent-name)))
+    (format t "leap.solvate-box bounding-box -> ~a~%" (if (chem:bounding-box-bound-p solute)
+                                                          (chem:bounding-box solute)
+                                                          "UNBOUND"))
+    (leap:solvate-box solute solvent buffer :iso-closeness iso-closeness)))
+
+(defun leap.resolvate-box (solute-name solvent-name buffer &rest iso-closeness)
+  "    resolvateBox solute solvent buffer [ \"iso\" ] [ closeness ]
+
+      UNIT                         _solute_
+      UNIT                         _solvent_
+      object                       _buffer_
+      NUMBER                       _closeness_
+
+The solvateBox command creates a solvent box around the _solute_ UNIT.
+The _solute_ UNIT is modified by the addition of _solvent_ RESIDUEs.
+
+It first removes any solvent and removes any solvent box.
+
+The user may want to first align long solutes that are not expected
+to tumble using alignAxes, in order to minimize box volume.
+
+The normal choice for a TIP3 _solvent_ UNIT is WATBOX216. Note that
+constant pressure equilibration is required to bring the artificial box
+to reasonable density, since Van der Waals voids remain due to the
+impossibility of natural packing of solvent around the solute and at
+the edges of the box.
+
+The solvent box UNIT is copied and repeated in all three spatial directions
+to create a box containing the entire solute and a buffer zone defined
+by the _buffer_ argument. The _buffer_ argument defines the distance,
+in angstroms, between the wall of the box and the closest ATOM in the
+solute.
+
+If the buffer argument is a single NUMBER, then the buffer distance is
+the same for the x, y, and z directions, unless the \"iso\" option is used
+to make the box isometric, with the shortest box clearance = buffer. If
+\"iso\" is used, the solute is rotated to orient the principal axes,
+otherwise it is just centered on the origin.
+
+If the buffer argument is a LIST of three NUMBERS, then the NUMBERs are
+applied to the x, y, and z axes respectively. As the larger box is created
+and superimposed on the solute, solvent molecules overlapping the solute
+are removed.
+
+The optional _closeness_ parameter can be used to control the extent to
+which _solvent_ ATOMs overlap _solute_ ATOMs.  The default value of
+the _closeness_ argument is 1.0, which allows no overlap.  Smaller
+values allow solvent ATOMs to overlap _solute_ ATOMs by (1 - closeness) *
+R*ij, where R*ij is the sum of the Van der Waals radii of solute and
+solvent atoms.  Values greater than 1 enforce a minimum gap between
+solvent and solute of (closeness - 1) * R*ij.
+
+This command modifies the _solute_ UNIT in several ways.  First, the
+coordinates of the ATOMs are modified to move the center of a box
+enclosing the Van der Waals radii of the atoms to the origin.  Secondly,
+the UNIT is modified by the addition of _solvent_ RESIDUEs copied from
+the _solvent_ UNIT. Finally, the box parameter of the new system (still
+named for the _solute_) is modified to reflect the fact that a periodic,
+rectilinear solvent box has been created around it.
+"
+  (let ((solute (leap.core:lookup-variable solute-name))
+        (solvent (leap.core:lookup-variable solvent-name)))
+     (leap:solvate-box solute solvent buffer :resolvate t :iso-closeness iso-closeness)))
 
 (defun leap.solvate-oct (solute solvent farness &rest iso-closeness)
   "    solvateOct solute solvent buffer [ \"iso\" ] [ closeness ]
@@ -689,9 +729,8 @@ rotated to an orientation used by the PME code, and the box and angle
 dimensions output by the saveAmberParm* commands are adjusted for PME
 code imaging.
 "
-  (let ((buffer (list farness farness farness))
-        (iso-closeness-args (process-iso-closeness iso-closeness)))
-    (apply #'leap:solvate-shell solute solvent buffer :farness farness :oct t iso-closeness-args)))
+  (let ((buffer (list farness farness farness)))
+    (leap:solvate-shell solute solvent buffer :farness farness :oct t :iso-closeness iso-closeness)))
 
 (defun leap.solvate-shell (solute solvent farness &rest iso-closeness)
   "    solvateShell solute solvent thickness [ closeness ]
@@ -717,9 +756,8 @@ with _solute_ ATOMs.   The default value of the _closeness_ argument is
 1.0, which allows contact but no overlap.  Please see the solvateBox
 command for more details on the _closeness_ parameter.
 "
-  (let ((buffer (list farness farness farness))
-        (iso-closeness-args (process-iso-closeness iso-closeness)))
-    (apply #'leap:solvate-shell solute solvent buffer iso-closeness-args)))
+  (let ((buffer (list farness farness farness)))
+    (leap:solvate-shell solute solvent buffer :iso-closeness iso-closeness)))
 
 (defun leap.solvate-cap (solute-name solvent-name position radius &optional closeness)
   "    solvateCap solute solvent position radius [ closeness ]
@@ -1576,6 +1614,7 @@ Provide a list of commands that cleap has available to mimic tleap."
           ("scanRenameResidues" . leap.scanRenameResidues )
           ("scanRenameAtoms" . leap.scanRenameAtoms )
           ("scanIgnoreAtoms" . leap.scanIgnoreAtoms )
+          ("remove-solvent" . leap.remove-solvent )
           ("source" . leap-source)
           ("set" . leap.set )
           ("loadChemDraw" . leap.load-chem-draw)
@@ -1591,6 +1630,7 @@ Provide a list of commands that cleap has available to mimic tleap."
           ("remove" . leap-remove-matter)
           ("removeMatter" . leap-remove-matter)
           ("saveAmberParm" . leap.save-amber-parm)
+          ("resolvateBox" . leap.resolvate-box)
           ("solvateBox" . leap.solvate-box)
           ("solvateOct" . leap.solvate-oct)
           ("solvateShell" . leap.solvate-shell)
@@ -1651,11 +1691,68 @@ Provide a list of commands that cleap has available to mimic tleap."
                      (error "Cannot create a lisp alias for function name ~s because it already defines a function ~s~%" leap-sym (fdefinition leap-sym))))))))
   (setf *error-on-bad-alias* nil))
 
+(defgeneric analyze-esrap-result-detail (esrap-error indent))
+
+(defmethod analyze-esrap-result-detail ((esrap-error list) indent)
+  #+(or)(format t "~3d list of errors ~s~%" indent esrap-error)
+  (loop for one-err in esrap-error
+        do (analyze-esrap-result-detail one-err (1+ indent))))
+
+(defmethod analyze-esrap-result-detail ((esrap-error esrap::inactive-rule) indent)
+  #+(or)(format t "~3d INACTIVE RULE!!! ~s~%" indent (esrap::inactive-rule-expression esrap-error))
+  )
+
+(defmethod analyze-esrap-result-detail ((esrap-error eclector.reader:unterminated-list) indent)
+  #+(or)(format t "Returning :unterminated-s-exp~%")
+  (throw 'read-error :unterminated-s-exp))
+
+(defmethod analyze-esrap-result-detail ((esrap-error eclector.reader:unterminated-string) indent)
+  #+(or)(format t "Returning :unterminated-string~%")
+  (throw 'read-error :unterminated-string))
+
+(defmethod analyze-esrap-result-detail ((esrap-error esrap::successful-parse) indent)
+  #+(or)(format t "~3d SUCCESS!!! ~s~%" indent (esrap::successful-parse-expression esrap-error))
+  (analyze-esrap-result-detail (esrap::result-detail esrap-error) (1+ indent)))
+
+(defmethod analyze-esrap-result-detail ((esrap-error esrap::failed-parse) indent)
+  #+(or)(format t "~3d FAILED-PARSE ~s~%" indent (esrap::failed-parse-expression esrap-error))
+  (analyze-esrap-result-detail (esrap::result-detail esrap-error) (1+ indent)))
+
+(defgeneric analyze-esrap-parse-error (esrap-error indent))
+
+(defmethod analyze-esrap-parse-error ((err esrap::esrap-parse-error) indent)
+  #+(or)(format t "Top level err = ~s~%" err)
+  (let ((context (esrap::esrap-parse-error-%context err)))
+    (format t "context: ~s~%" context)
+    (if (and (typep context 'esrap::failed-parse)
+             (eq (esrap::failed-parse-expression context) 'list))
+        :unterminated-list
+        (catch 'read-error
+          (format t "About to analyze-esrap-result-detail ~s~%" context)
+          (analyze-esrap-result-detail context 0) ; (esrap::esrap-parse-error-result err)
+          err))))
+
 (defun parse-leap-code (code)
   "Parse the CODE and return the result of the parse. This is for debugging the parser."
-  (let ((ast (architecture.builder-protocol:with-builder ('list)
-               (esrap:parse 'leap.parser:leap code))))
-    ast))
+  (catch 'incomplete-leap-code
+    (handler-bind
+        ((eclector.reader:unterminated-string
+           (lambda (err)
+             (throw 'incomplete-leap-code :unterminated-string)))
+         (eclector.reader:unterminated-list
+           (lambda (err)
+             (throw 'incomplete-leap-code :unterminated-s-exp)))
+         (esrap:esrap-parse-error
+           (lambda (err)
+             (let ((context (esrap:esrap-parse-error-context err)))
+               (when (and (typep context 'esrap::failed-parse )
+                          (eq (esrap::failed-parse-expression context) 'list))
+                 (throw 'incomplete-leap-code :unterminated-list)))))
+         )
+         (let ((ast (architecture.builder-protocol:with-builder ('list)
+                   (esrap:parse 'leap.parser:leap code))))
+        ast
+        ))))
 
 (defun process-command-line-options ()
   (let ((includes (core:leap-command-line-includes))
@@ -1671,6 +1768,7 @@ Provide a list of commands that cleap has available to mimic tleap."
 (defun parse-evaluate-leap-command (code)
   (let* ((*debugger-hook*
            #'(lambda (condition &rest argss)
+               (declare (ignore argss))
                (format t "*debugger-hook* Encountered error ~s while parsing ~s~%" condition code)))
          (ast (architecture.builder-protocol:with-builder
                   ('list)

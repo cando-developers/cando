@@ -89,6 +89,7 @@ public:
   double get_y_angle_degrees() const;
   double get_z_angle_degrees() const;
   core::T_mv get_cuboid_rsize() const;
+  std::string __repr__() const;
 
 
   double distance_squared_between_two_points(const Vector3& v1, const Vector3& v2);
