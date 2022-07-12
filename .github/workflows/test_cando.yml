@@ -17,27 +17,17 @@ jobs:
       fail-fast: false
       matrix:
         os:
-        - ubuntu-latest
+        - ubuntu-22.04
         - macos-latest
 
     runs-on: ${{ matrix.os }}
 
     steps:
     - name: Install Ubuntu dependencies
-      if: matrix.os == 'ubuntu-latest'
+      if: matrix.os == 'ubuntu-22.04'
       run: |
-        wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
-        sudo add-apt-repository "deb http://apt.llvm.org/focal/ llvm-toolchain-focal-13 main"
         sudo apt-get update
-        sudo apt install -y binutils-gold libbsd-dev clang-13 libclang-13-dev llvm-13 llvm-13-dev libelf-dev libgmp-dev libncurses-dev libunwind-dev ninja-build sbcl zlib1g-dev libnetcdf-dev libczmq-dev
-        wget https://github.com/fmtlib/fmt/releases/download/8.1.1/fmt-8.1.1.zip
-        unzip fmt-8.1.1.zip
-        cd fmt-8.1.1
-        mkdir build
-        cd build
-        cmake ..
-        make
-        sudo make install
+        sudo apt install -y binutils-gold libbsd-dev clang-14 libclang-14-dev llvm-14 llvm-14-dev libelf-dev libgmp-dev libncurses-dev libunwind-dev ninja-build sbcl zlib1g-dev libnetcdf-dev libexpat1-dev libfmt-dev libboost-all-dev
 
     - name: Install MacOS dependencies
       if: matrix.os == 'macos-latest'
@@ -55,14 +45,6 @@ jobs:
       with:
         path: extensions/cando
 
-    - name: Install boost
-      uses: MarkusJx/install-boost@v2.3.0
-      if: matrix.os == 'ubuntu-latest'
-      id: install-boost
-      with:
-        boost_version: 1.79.0
-        platform_version: 20.04
-
     - uses: conda-incubator/setup-miniconda@v2
 
     - name: Install AmberTools
@@ -70,14 +52,14 @@ jobs:
         conda install -c conda-forge ambertools
 
     - name: Build Clasp (koga/Ubuntu)
-      if: matrix.os == 'ubuntu-latest'
+      if: matrix.os == 'ubuntu-22.04'
       run: |
-        ./koga --no-clang-cpp --ldlibs=-ldl --cflags=-I${{steps.install-boost.outputs.BOOST_ROOT}}/include --cppflags=-I${{steps.install-boost.outputs.BOOST_ROOT}}/include --cxxflags=-I${{steps.install-boost.outputs.BOOST_ROOT}}/include --extensions=cando,seqan-clasp --skip-sync=cando
+        ./koga --no-clang-cpp --ldlibs=-ldl --extensions=cando,seqan-clasp --skip-sync=cando
 
     - name: Build Clasp (koga/MacOS)
       if: matrix.os == 'macos-latest'
       run: |
-        ./koga --extensions=cando,seqan-clasp --skip-sync=cando --llvm-config=/usr/local/Cellar/llvm@13/13.0.1/bin/llvm-config
+        ./koga --extensions=cando,seqan-clasp --skip-sync=cando
 
     - name: Build Clasp (ninja)
       run: |
