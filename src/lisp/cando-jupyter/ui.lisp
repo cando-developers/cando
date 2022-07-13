@@ -43,7 +43,7 @@
             (format nil "~3d%, ~@[Elapsed: ~a, ~]Remaining: ~a"
                     (round (* 100 fraction))
                     (when (eq style :time)
-                      (cando::progress-convenient-time elasped-time))
+                      (cando::progress-convenient-time elapsed-time))
                     (cando::progress-convenient-time remaining-time))))))
 
 (defmethod cando:progress-done ((instance progress-bar))
