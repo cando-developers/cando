@@ -317,7 +317,7 @@ CL_DEFMETHOD void Aggregate_O::makUnboundBoundingBox() {
 
     AtomIdMap_sp Aggregate_O::buildAtomIdMap() const
     {_OF();
-	AtomIdToAtomMap_sp atomIdMap = AtomIdToAtomMap_O::create();
+	AtomIdMap_sp atomIdMap = AtomIdMap_O::create();
 	atomIdMap->resizeAggregate(this->_Contents.size());
 	for ( int mid = 0; mid<(int)this->_Contents.size(); mid++ )
 	{
@@ -330,7 +330,7 @@ CL_DEFMETHOD void Aggregate_O::makUnboundBoundingBox() {
 		for ( int aid=0; aid<numAtoms; aid++ )
 		{
 		    AtomId atomId(mid,rid,aid);
-		    atomIdMap->set(atomId,this->_Contents[mid]->_Contents[rid]->_Contents[aid].as<Atom_O>());
+		    atomIdMap->set(atomId,this->_Contents[mid]->_Contents[rid]->_Contents[aid]);
 		}
 	    }
 	}

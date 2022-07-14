@@ -600,7 +600,7 @@ CL_DEFMETHOD Matter_mv	Matter_O::addMatter(Matter_sp cp )
 	// A lot depends on Residues maintaining the order of Atoms
 	// throughout the various passes of building databases
   cp->_Id = this->nextId(); // Advance the _Id
-  size_t index = this->_contents.size();
+  size_t index = this->_Contents.size();
   this->_Contents.push_back(cp);
   return Values(cp,core::make_fixnum(index));
 }

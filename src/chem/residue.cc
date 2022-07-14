@@ -746,7 +746,7 @@ uint Residue_O::numberOfAtoms()
 	for ( int aid=0; aid<numAtoms; aid++ )
 	{
 	    AtomId atomId(mid,rid,aid);
-	    atomIdMap->set(atomId,this->_Contents[mid]->_Contents[rid]->_Contents[aid].as<Atom_O>());
+	    atomIdMap->set(atomId,this->_Contents[mid]->_Contents[rid]->_Contents[aid]);
 	}
 	return atomIdMap;
     }
