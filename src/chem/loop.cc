@@ -57,9 +57,9 @@ void	Loop::pushSubLoop( Matter_sp c )
   LOG("pushSubLoop: Starting a subloop over: %s" , c->description().c_str()  );
   this->curSubLoop++;
   this->subLoopTop[this->curSubLoop] = c;
-  this->subLoopIteratorCur[this->curSubLoop] = c->_contents.begin();
-  this->subLoopIteratorEnd[this->curSubLoop] = c->_contents.end();
-  LOG("pushSubLoop:  number of children count = %d" , c->_contents.size()  );
+  this->subLoopIteratorCur[this->curSubLoop] = c->_Contents.begin();
+  this->subLoopIteratorEnd[this->curSubLoop] = c->_Contents.end();
+  LOG("pushSubLoop:  number of children count = %d" , c->_Contents.size()  );
 }
 
 

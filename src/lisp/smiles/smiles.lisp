@@ -424,7 +424,6 @@ of the chem:MOLECULE class with the appropriate atoms and bonds."
                                                   for tet-center in (chiral-arrangements mol)
                                                   when (eq (chiral-atom tet-center) ring)
                                                     do (progn
-                                                         (format t "Found last: ~a chiral ring atom ~a neighbors: ~a~%" last ring (neighbors tet-center))
                                                          (vector-push last (neighbors tet-center))
                                                          (return-from tets nil)))
                                             (add-bond mol ring last
@@ -483,17 +482,26 @@ of the chem:MOLECULE class with the appropriate atoms and bonds."
           for chiral-atom = (chiral-atom tet)
           for neighbors = (coerce (neighbors tet) 'list)
           for orientation = (orientation tet)
-          for implicit-hydrogen = (loop named imp-hyd
+          for implicit-hydrogens = (loop named imp-hyd
                                         for bonded-neighbor in (chem:atom/bonded-atoms-as-list chiral-atom)
                                         for index from 0
                                         unless (member bonded-neighbor neighbors)
-                                          do (return-from imp-hyd bonded-neighbor))
+                                          collect bonded-neighbor)
           do (cond
-               ((= (length (neighbors tet)) 3)
-                (vector-push implicit-hydrogen (neighbors tet)))
-               ((null (elt (neighbors tet) 0))
-                (setf (elt (neighbors tet) 0) implicit-hydrogen))
-               (t (error "I don't know where in ~s to put ~s" (neighbors tet) implicit-hydrogen)))
+               ((null implicit-hydrogens)
+                ;; Do nothing
+                )
+               ((and (= (length implicit-hydrogens) 2)
+                     (= (length (neighbors tet)) 2))
+                (vector-push (first implicit-hydrogens) (neighbors tet))
+                (vector-push (second implicit-hydrogens) (neighbors tet)))
+               ((and (= (length implicit-hydrogens) 1)
+                     (= (length (neighbors tet)) 3))
+                (vector-push (first implicit-hydrogens) (neighbors tet)))
+               ((and (null (elt (neighbors tet) 0))
+                     (= (length implicit-hydrogens) 1))
+                (setf (elt (neighbors tet) 0) (first implicit-hydrogens)))
+               (t (error "I don't know where in ~s to put ~s" (neighbors tet) implicit-hydrogens)))
           do (progn
                (let ((neighbors (coerce (neighbors tet) 'list)))
                  (when (member nil neighbors)

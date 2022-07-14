@@ -1888,40 +1888,6 @@ CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter
 	//
 	// Set up the anchor restraints
 	//
-#if ATOMIC_ANCHOR
-#error "ATOMIC_ANCHOR is on"
-  {
-    if ( this->_AtomTable->getNumberOfAtoms() > 0 )
-    {
-      EnergyAnchorRestraint	iterm(_lisp);
-      Atom_sp	n1;
-      string	s1;
-      Vector3	anchorPos;
-      gctools::Vec0<EnergyAtom>::iterator	iea1;
-      for ( iea1 = this->_AtomTable->begin();
-            iea1 != this->_AtomTable->end()-1; iea1++ )
-      {
-        a1 = iea1->atom();
-        if ( activeAtoms.notnilp() && !inAtomSet(activeAtoms,a1) ) continue;
-        if ( a1->isAnchorRestraintOn() )
-        {
-          LOG("Create an anchor restraint for %s" , a1->description()  );
-          anchorPos = a1->getAnchorPos();
-          iterm.term.xa = anchorPos.getX();
-          iterm.term.ya = anchorPos.getY();
-          iterm.term.za = anchorPos.getZ();
-          iterm.term.ka = this->_AnchorRestraintWeight;
-          iterm.term.I1 = iea1->coordinateIndexTimes3();
-          this->_AnchorRestraint->addTerm(iterm);
-        }
-      }
-    } else
-    {
-      LOG("There are no atoms");
-    }
-    if (chem__verbose(0)) core::write_bf_stream(fmt::sprintf("Built anchor restraints table for %d terms\n" , this->_AnchorRestraint->numberOfTerms()));
-  }
-#endif
 	//
 	// Define secondary amide restraints
 	//

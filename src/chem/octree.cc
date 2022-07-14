@@ -432,7 +432,7 @@ int AddIonOctree_O::dFinalCheck( OctNode_sp PonNode, int iAtoms, gctools::Vec0<A
     if ( d < dShellRadius )
       PonNode->iStatus = OCT_INCLUDED;
 		//if ( d < dAtomTemp(PaAtom)) {
-    if ( d < PaAtom->dAtomTemp) {
+    if ( d < PaAtom->_dAtomTemp) {
 #ifdef OCTDEBUG
       insex[oct->depth]++;
 #endif
@@ -552,7 +552,7 @@ int AddIonOctree_O::iBuildShellOctant( OctNode_sp PonNode, int iAtoms, gctools::
     
 		//d = dDistance( &vCenter, &vAtomPosition( PaAtom ) );
     d = dDistance( vCenter, PaAtom->getPosition() );
-//    printf("dAtomTem %5.2f\n", PaAtom->dAtomTemp  );
+//    printf("dAtomTem %5.2f\n", PaAtom->_dAtomTemp  );
 //    printf("d + dHalfDiagonal %5.2f\n", d + dHalfDiagonal );
 //    printf("dShellRadius %5.2f\n", dShellRadius );
 //    printf("d - dHalfDiagonal %5.2f\n", d - dHalfDiagonal );
@@ -563,7 +563,7 @@ int AddIonOctree_O::iBuildShellOctant( OctNode_sp PonNode, int iAtoms, gctools::
 		 *	and the outer radius doesn't need to be looked at.
 		 */
 		//if ( d + dHalfDiagonal < dAtomTemp( PaAtom ) ) {
-    if ( d + dHalfDiagonal < PaAtom->dAtomTemp ) {
+    if ( d + dHalfDiagonal < PaAtom->_dAtomTemp ) {
 			/*
 			 *  Complete inclusion in inner radius of
 			 *	this atom: no need to ever look at 
@@ -607,7 +607,7 @@ int AddIonOctree_O::iBuildShellOctant( OctNode_sp PonNode, int iAtoms, gctools::
         iPartialOut++; /* partially inside outer */
       }
 			//if ( d - dHalfDiagonal < dAtomTemp( PaAtom ) ) {
-      if ( d - dHalfDiagonal < PaAtom->dAtomTemp ) {
+      if ( d - dHalfDiagonal < PaAtom->_dAtomTemp ) {
 
 				/* 
 				 *  Partial inclusion in inner radius of
@@ -951,7 +951,7 @@ CL_DEFMETHOD void AddIonOctree_O::OctreeCreate(Aggregate_sp uUnit, AddIonOctreeE
                 this->atomsToResidues->setf_gethash(aAtom,rRes);
             // iDefaultedRadius += iAtomSetTmpRadius( aAtom );
                 core::T_mv result = core::eval::funcall(chem::_sym_lookup_atom_properties_radius,aAtom, nonbondDb);
-                aAtom->dAtomTemp = core::clasp_to_double(result);
+                aAtom->_dAtomTemp = core::clasp_to_double(result);
                 core::T_sp defaulted = result.second();
                 iDefaultedRadius += defaulted.isTrue() ? 1 : 0;
               }
@@ -982,7 +982,7 @@ CL_DEFMETHOD void AddIonOctree_O::OctreeCreate(Aggregate_sp uUnit, AddIonOctreeE
               if (!i) vaAtoms.push_back(aAtom); // VarArrayAdd( vaAtoms, (GENP)&aAtom );
           //iDefaultedRadius += iAtomSetTmpRadius( aAtom );
               core::T_mv result = core::eval::funcall(chem::_sym_lookup_atom_properties_radius,aAtom);
-              aAtom->dAtomTemp = core::clasp_to_double(result);
+              aAtom->_dAtomTemp = core::clasp_to_double(result);
               core::T_sp defaulted = result.second();
               iDefaultedRadius += defaulted.isTrue() ? 1 : 0;
               i++;
@@ -1042,16 +1042,16 @@ return(octTree);
 	 *	then loop over others, comparing.
 	 */
   // PaAtoms = PVAI( vaAtoms, ATOM, 0 );
-  dCharge = vaAtoms[0]->charge; // dAtomCharge(  *PaAtoms );
-  dMaxRadius = vaAtoms[0]->dAtomTemp; // dAtomTemp( *PaAtoms );
+  dCharge = vaAtoms[0]->_Charge; // dAtomCharge(  *PaAtoms );
+  dMaxRadius = vaAtoms[0]->_dAtomTemp; // dAtomTemp( *PaAtoms );
   //vMinCorner = vMaxCorner = vAtomPosition( vaAtoms[0] ); // *PaAtoms );
   vMinCorner = vMaxCorner = vaAtoms[0]->getPosition(); // *PaAtoms );
-  vaAtoms[0]->dAtomTemp += dAddExtent; // AtomTempDoubleIncrement( *PaAtoms, dAddExtent );
+  vaAtoms[0]->_dAtomTemp += dAddExtent; // AtomTempDoubleIncrement( *PaAtoms, dAddExtent );
   // We initialized with the zeroth atom above - so start from 1 below
   for (i=1; i<iAtoms; i++ ) { // ++PaAtoms ) {
-    dCharge += vaAtoms[i]->charge; // dAtomCharge( *PaAtoms );
-    dMaxRadius = MAX( dMaxRadius, vaAtoms[i]->dAtomTemp); // MAX( dMaxRadius, dAtomTemp( *PaAtoms ) );
-    vaAtoms[i]->dAtomTemp += dAddExtent; // AtomTempDoubleIncrement( *PaAtoms, dAddExtent );
+    dCharge += vaAtoms[i]->_Charge; // dAtomCharge( *PaAtoms );
+    dMaxRadius = MAX( dMaxRadius, vaAtoms[i]->_dAtomTemp); // MAX( dMaxRadius, dAtomTemp( *PaAtoms ) );
+    vaAtoms[i]->_dAtomTemp += dAddExtent; // AtomTempDoubleIncrement( *PaAtoms, dAddExtent );
     vAtom = vaAtoms[i]->getPosition(); // vAtom = vAtomPosition( *PaAtoms );
     if (vAtom.getX() < vMinCorner.getX())
       vMinCorner.getX() = vAtom.getX();
@@ -1254,7 +1254,7 @@ return(octTree);
 	 */
   //PaAtoms = PVAI( vaAtoms, ATOM, 0 );
   for (i=0; i<iAtoms; i++)
-    vaAtoms[i]->dAtomTemp -= dAddExtent; //AtomTempDoubleIncrement( *PaAtoms, -dAddExtent );
+    vaAtoms[i]->_dAtomTemp -= dAddExtent; //AtomTempDoubleIncrement( *PaAtoms, -dAddExtent );
 
   //return(this->asSmartPtr());
   return;
@@ -1370,9 +1370,9 @@ void AddIonOctree_O::OctNodeInitCharges( OctNode_sp PonNode, int iDistanceCharge
           d = dX + dY + dZ;
           if ( iDistanceCharge )
             d = sqrt(d);
-          PonNode->_PfCharges[pfccount] += PaAtom->charge / d;
+          PonNode->_PfCharges[pfccount] += PaAtom->_Charge / d;
 				//if ( d < dAtomTemp(PaAtom) )
-          if ( d < PaAtom->dAtomTemp )
+          if ( d < PaAtom->_dAtomTemp )
             iCompCharge = 0;
         }
 //	printf("%s:%d:%s vPoint -> %d, %d, %d, %f\n", __FILE__, __LINE__, __FUNCTION__, PonNode->iStatus, PonNode->iNodeNum, PonNode->iDepth, PonNode->_PfCharges[pfccount]);
@@ -1457,13 +1457,13 @@ CL_DEFMETHOD core::T_mv AddIonOctree_O::OctreeInitCharges( /*AddIonOctree_sp oct
 		//PaAtom = PVAI( octTree->vaAtoms, ATOM, 0 );
     for (i=0; i<iChargeAtoms; i++ ){ //, PaAtom++) {
 /* TODO - chargeatoms not necc whole set */
-      this->vaAtoms[i]->dAtomTemp += dCutDist; //AtomTempDoubleIncrement( *PaAtom, dCutDist );
-      this->vaAtoms[i]->dAtomTemp *= this->vaAtoms[i]->dAtomTemp; //	AtomTempDoubleSquare( *PaAtom );
+      this->vaAtoms[i]->_dAtomTemp += dCutDist; //AtomTempDoubleIncrement( *PaAtom, dCutDist );
+      this->vaAtoms[i]->_dAtomTemp *= this->vaAtoms[i]->_dAtomTemp; //	AtomTempDoubleSquare( *PaAtom );
     }
   } else {
 		//PaAtom = PVAI( octTree->vaAtoms, ATOM, 0 );
     for (i=0; i<iChargeAtoms; i++ ){ //, PaAtom++)
-      this->vaAtoms[i]->dAtomTemp += dCutDist; // AtomTempDoubleIncrement( *PaAtom, dCutDist );
+      this->vaAtoms[i]->_dAtomTemp += dCutDist; // AtomTempDoubleIncrement( *PaAtom, dCutDist );
     }
   }
 
@@ -1481,13 +1481,13 @@ CL_DEFMETHOD core::T_mv AddIonOctree_O::OctreeInitCharges( /*AddIonOctree_sp oct
   if ( iDielectric == DIEL_R2 ) { 
 		//PaAtom = PVaAI( octTree->vaAtoms, ATOM, 0 );
     for (i=0; i<iChargeAtoms; i++ ){ //, PaAtom++) {
-      this->vaAtoms[i]->dAtomTemp = sqrt(this->vaAtoms[i]->dAtomTemp); //AtomTempDoubleSquareRoot( *PaAtom );
-      this->vaAtoms[i]->dAtomTemp += -dCutDist; //AtomTempDoubleIncrement( *PaAtom, -dCutDist );
+      this->vaAtoms[i]->_dAtomTemp = sqrt(this->vaAtoms[i]->_dAtomTemp); //AtomTempDoubleSquareRoot( *PaAtom );
+      this->vaAtoms[i]->_dAtomTemp += -dCutDist; //AtomTempDoubleIncrement( *PaAtom, -dCutDist );
     }
   } else {
 		//PaAtom = PVAI( octTree->vaAtoms, ATOM, 0 );
     for (i=0; i<iChargeAtoms; i++) //, PaAtom++)
-      this->vaAtoms[i]->dAtomTemp += -dCutDist; //AtomTempDoubleIncrement( *PaAtom, -dCutDist );
+      this->vaAtoms[i]->_dAtomTemp += -dCutDist; //AtomTempDoubleIncrement( *PaAtom, -dCutDist );
   }
   printf( "charges: %ld sec\n", time((time_t *) 0) - time_start);
   return Values(geom::OVector3_O::create(this->vMinCharge),geom::OVector3_O::create(this->vMaxCharge));
@@ -2014,7 +2014,7 @@ CL_DEFMETHOD void AddIonOctree_O::OctNodeUpdateCharge( OctNode_sp PonNode, int i
           dZ = dZ * dZ;
           d = dX + dY + dZ;
                           //if ( d < AtomTemp(PaAtom) ) {
-          if ( d < PaAtom->dAtomTemp ) {
+          if ( d < PaAtom->_dAtomTemp ) {
             iCompOk = 0;
             break;
           }
@@ -2079,8 +2079,8 @@ CL_DEFMETHOD core::T_mv AddIonOctree_O::OctreeUpdateCharge( /*AddIonOctree_sp oc
 	 */
 	//PaAtom = PVAI( octTree->vaAtoms, ATOM, 0 );
   for (i=0; i<iChargeAtoms; i++){ // , PaAtom++) {
-    this->vaAtoms[i]->dAtomTemp += dCutDist; // AtomTempDoubleIncrement( *PaAtom, dCutDist );
-    this->vaAtoms[i]->dAtomTemp *= this->vaAtoms[i]->dAtomTemp; //AtomTempDoubleSquare( *PaAtom );
+    this->vaAtoms[i]->_dAtomTemp += dCutDist; // AtomTempDoubleIncrement( *PaAtom, dCutDist );
+    this->vaAtoms[i]->_dAtomTemp *= this->vaAtoms[i]->_dAtomTemp; //AtomTempDoubleSquare( *PaAtom );
   }
 
   this->_PfCharges.clear();
@@ -2098,8 +2098,8 @@ CL_DEFMETHOD core::T_mv AddIonOctree_O::OctreeUpdateCharge( /*AddIonOctree_sp oc
 	 */
 	//PaAtom = PVAI( octTree->vaAtoms, ATOM, 0 );
   for (i=0; i<iChargeAtoms; i++ ){ //, PaAtom++) {
-    this->vaAtoms[i]->dAtomTemp = sqrt(this->vaAtoms[i]->dAtomTemp); // AtomTempDoubleSquareRoot( *PaAtom );
-    this->vaAtoms[i]->dAtomTemp += -dCutDist; // AtomTempDoubleIncrement( *PaAtom, -dCutDist );
+    this->vaAtoms[i]->_dAtomTemp = sqrt(this->vaAtoms[i]->_dAtomTemp); // AtomTempDoubleSquareRoot( *PaAtom );
+    this->vaAtoms[i]->_dAtomTemp += -dCutDist; // AtomTempDoubleIncrement( *PaAtom, -dCutDist );
   }
   return Values(geom::OVector3_O::create(this->vMinCharge),geom::OVector3_O::create(this->vMaxCharge));
 //  return;

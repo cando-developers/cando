@@ -73,8 +73,8 @@ namespace chem
 
 CL_DEFMETHOD Matter_sp Matter_O::contentAt(size_t i) const
 {
-  BOUNDS_ASSERT(i<this->_contents.size());
-  return this->_contents[i];
+  BOUNDS_ASSERT(i<this->_Contents.size());
+  return this->_Contents[i];
 }
 
 string Matter_O::__repr__() const
@@ -93,7 +93,7 @@ Matter_O::Matter_O( const Matter_O& c ) : core::CxxObject_O(c)
 {
 //  this->_NextContentId = c._NextContentId;
 //  this->_Id = c._Id;
-  this->name = c.name;
+  this->_Name = c._Name;
 //	this->containerContainedBy = c.containerContainedBy;
   this->_Properties = c._Properties; // You can't call allocators in ctors core::cl__copy_list(c._Properties);
   this->_RestraintList = nil<T_O>();
@@ -104,7 +104,7 @@ Matter_O::Matter_O( const Matter_O& c ) : core::CxxObject_O(c)
 //
 void	Matter_O::eraseContents()
 {
-  this->_contents.clear();
+  this->_Contents.clear();
 }
 
 CL_LISPIFY_NAME("hasContent");
@@ -172,14 +172,14 @@ CL_DEFMETHOD void Matter_O::addRestraint(Restraint_sp restraint)
 
 CL_DEFMETHOD void Matter_O::resizeContents(int sz)
 {_OF();
-  this->_contents.resize(sz,unbound<Matter_O>());
+  this->_Contents.resize(sz,unbound<Matter_O>());
 }
 
 
 CL_DEFMETHOD void Matter_O::putMatter(int idx, Matter_sp matter)
 {_OF();
-  ASSERTF(idx>=0 && idx<(int)this->_contents.size(),("Illegal putMatter index[%d] must be less than %d") , idx , this->_contents.size());
-  this->_contents[idx] = matter;
+  ASSERTF(idx>=0 && idx<(int)this->_Contents.size(),("Illegal putMatter index[%d] must be less than %d") , idx , this->_Contents.size());
+  this->_Contents[idx] = matter;
 }
 
 CL_LISPIFY_NAME("propertiesAsString");
@@ -195,7 +195,7 @@ CL_DEFMETHOD string Matter_O::propertiesAsString() const
 bool Matter_O::applyPropertyToSlot(core::Symbol_sp prop, core::T_sp value)
 {
   if ( prop == kw::_sym_name ) {
-    this->name = gc::As<core::Symbol_sp>(value);
+    this->_Name = gc::As<core::Symbol_sp>(value);
     return true;
   }
   return false;
@@ -360,9 +360,9 @@ CL_DEFMETHOD Matter_sp   Matter_O::contentWithName(MatterName    sName )
       return( (*aCur) );
     }
   }
-  LOG("Matter(%s) with %d contents does not contain content with name(%s)" , this->name.c_str() , this->_contents.size() , sName.c_str()  );
+  LOG("Matter(%s) with %d contents does not contain content with name(%s)" , this->_Name.c_str() , this->_Contents.size() , sName.c_str()  );
   stringstream ss;
-  ss << this->className() << " (" << _rep_(this->name) << ") does not contain name(" << _rep_(sName) << ")";
+  ss << this->className() << " (" << _rep_(this->_Name) << ") does not contain name(" << _rep_(sName) << ")";
   SIMPLE_ERROR((ss.str()));
 }
 
@@ -499,7 +499,7 @@ Matter_sp   Matter_O::contentWithStorageId( int lid )
   char				str1[255];
   Matter_sp			c;
 
-  LOG("Looking in container(%s) type(%c) for content with storageId(%d)" , this->name.c_str() , this->containerType , lid );
+  LOG("Looking in container(%s) type(%c) for content with storageId(%d)" , this->_Name.c_str() , this->containerType , lid );
   for ( aCur=this->begin_contents();aCur!=this->end_contents(); aCur++ ) {
     c = (*aCur);
     LOG("Looking at content with id(%d)" , c->getId() );
@@ -510,7 +510,7 @@ Matter_sp   Matter_O::contentWithStorageId( int lid )
 
 	// THROW an exception
   stringstream ss;
-  ss << "Matter("<<this->name<<") type("<<this->containerType<<") does not contain id("<<lid<<")";
+  ss << "Matter("<<this->_Name<<") type("<<this->containerType<<") does not contain id("<<lid<<")";
   SIMPLE_ERROR(("%s") , ss.str());
 }
 
@@ -521,7 +521,7 @@ bool	Matter_O::hasContentWithStorageId( int lid )
 {
   contentIterator	aCur;
   Matter_sp			c;
-  LOG("Looking in container(%s) type(%c) for content with storageId(%d)" , this->name.c_str() , this->containerType , lid );
+  LOG("Looking in container(%s) type(%c) for content with storageId(%d)" , this->_Name.c_str() , this->containerType , lid );
   for ( aCur=this->begin_contents();aCur!=this->end_contents(); aCur++ ) {
     c = (*aCur);
     LOG("Looking at content with id(%d)" , c->getId() );
@@ -550,7 +550,7 @@ CL_DEFMETHOD int	Matter_O::contentIndexWithId( int lid )
       return( i );
     }
   }
-  SIMPLE_ERROR(("Matter %s does not contain content with id(%s)") , _rep_(this->name) , lid);
+  SIMPLE_ERROR(("Matter %s does not contain content with id(%s)") , _rep_(this->_Name) , lid);
 }
 
 
@@ -569,7 +569,7 @@ CL_DEFMETHOD int	Matter_O::contentIndex( Matter_sp cc)
       return( i );
     }
   }
-  SIMPLE_ERROR(("Matter %s does not contain %s") , _rep_(this->name) , _rep_(cc->getName()));
+  SIMPLE_ERROR(("Matter %s does not contain %s") , _rep_(this->_Name) , _rep_(cc->getName()));
 }
 
 
@@ -577,8 +577,8 @@ CL_DEFMETHOD int	Matter_O::contentIndex( Matter_sp cc)
  */
 size_t Matter_O::nextId() const {
   size_t maxId = 0;
-  for ( size_t idx = 0; idx<this->_contents.size(); idx++ ) {
-    size_t id = this->_contents[idx]->_Id;
+  for ( size_t idx = 0; idx<this->_Contents.size(); idx++ ) {
+    size_t id = this->_Contents[idx]->_Id;
     if ( id > maxId ) maxId = id;
   }
   return maxId+1; // _Id's start counting at 1
@@ -600,7 +600,7 @@ CL_DEFMETHOD void	Matter_O::addMatter(Matter_sp cp )
 	// A lot depends on Residues maintaining the order of Atoms
 	// throughout the various passes of building databases
   cp->_Id = this->nextId(); // Advance the _Id
-  this->_contents.push_back(cp);
+  this->_Contents.push_back(cp);
   LOG("Finished adding" );
 }
 
@@ -623,7 +623,7 @@ void	Matter_O::addMatterRetainId(Matter_sp cp )
     	// Always add the content to the end of the vector
 	// A lot depends on Residues maintaining the order of Atoms
 	// throughout the various passes of building databases
-  this->_contents.push_back(cp);
+  this->_Contents.push_back(cp);
   LOG("Finished adding" );
 }
 
@@ -1055,11 +1055,11 @@ CL_DEFMETHOD core::List_sp Matter_O::allAtomsOfElementAsList(Element element)
 
 void	Matter_O::fields(core::Record_sp node )
 {
-  node->field( INTERN_(kw,name), this->name);
+  node->field( INTERN_(kw,name), this->_Name);
   node->/*pod_*/field_if_not_default( INTERN_(kw,id), this->_Id, 1);
   node->field_if_not_nil( INTERN_(kw,restraints),this->_RestraintList);
   node->field_if_not_nil( INTERN_(kw,properties),this->_Properties);
-  node->field_if_not_empty( INTERN_(kw,contents), this->_contents);
+  node->field_if_not_empty( INTERN_(kw,contents), this->_Contents);
 //  node->field_if_not_nil( INTERN_(kw,contained_by), this->containerContainedBy);
   LOG("Status" );
 }

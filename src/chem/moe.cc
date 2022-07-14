@@ -956,7 +956,7 @@ void	MoeReadFile::readNextLine()
 	    for ( ir=0; ir<numResidues; ir++ ) {
 		LOG("     Creating residue: %d" , ir  );
 		auto  res  = gctools::GC<Residue_O>::allocate_with_default_constructor();
-		res->setTempInt(ir+1);
+		//res->setTempInt(ir+1);
 		mol->addMatter(res);
 		LOG("     Added residue to mol" );
 		numAtoms = dynamic_cast<ParaInteger*>(ptResidues.getVector(index_rAtomCount)[tir])->getValue();
@@ -1385,7 +1385,7 @@ void	moeWriteAggregateStream( Aggregate_sp agg, std::ostream& fout)
 		};
 		residueAtomCount.push_back(resAtomCount);
 		residueNames.push_back(r->getPdbName());  // PDBNAME
-		r->setTempInt(resId);
+		//r->setTempInt(resId);
 		resId++;
 	    }
 	}

@@ -77,7 +77,7 @@ Matter_sp VirtualAtom_O::copy()
 {
     LOG("Copying atom @%X" , this );
     auto aNew = gctools::GC<VirtualAtom_O>::copy( *this); // VirtualAtom_sp aNew = RP_Copy<VirtualAtom_O>(this);
-    this->copyAtom = aNew;
+    this->_CopyAtom = aNew;
     LOG("    copy atom== %s" , aNew->description().c_str() );
     return(aNew);
 }

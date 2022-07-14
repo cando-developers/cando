@@ -145,6 +145,14 @@ odd atom name maps only to the last standard atom name it was mapped to."
    (chain-id2 :initarg :chain-id2 :reader chain-id2)
    (res-seq2 :initarg :res-seq2 :reader res-seq2)))
 
+(defmethod print-object ((dis disulphide) stream)
+  (print-unreadable-object (dis stream :type t)
+    (format stream ":chain-id1 ~s :res-seq1 ~s :chain-id2 ~s :res-seq2 ~s"
+            (chain-id1 dis)
+            (res-seq1 dis)
+            (chain-id2 dis)
+            (res-seq2 dis))))
+
 (defclass connect ()
   ((from :initarg :from :reader from)
    (to :initarg :to :reader to)))
@@ -1080,15 +1088,22 @@ T if the it's an AMBER PDB and NIL if not."
   (setf (matrices scanner) (nreverse (matrices scanner)))
   ;; Form the disulfide bonds
   (mapc (lambda (dis)
+          (format t "Scanning disulphide: ~s~%" dis)
           (let ((res1 (find-pdb-residue scanner (res-seq1 dis)
                                         (chain-id1 dis)))
                 (res2 (find-pdb-residue scanner (res-seq2 dis)
                                         (chain-id2 dis))))
+            (format t "res1 = ~s~%" res1)
+            (format t "res2 = ~s~%" res2)
             (let* ((top1 (lookup-topology-using-pdb-name-and-context :CYX (context res1)))
                    (top2 (lookup-topology-using-pdb-name-and-context :CYX (context res2))))
+              (format t "top1 = ~s~%" top1)
+              (format t "top2 = ~s~%" top2)
               ;; If CYX topologies are available - use those
-              (when top1 (setf (topology res1) top1))
-              (when top2 (setf (topology res2) top2))
+              (when top1 (setf (topology res1) top1
+                               (residue-name res1) :CYX))
+              (when top2 (setf (topology res2) top2
+                               (residue-name res2) :CYX))
               (unless (topology res1)
                 (warn "Could not identify a proper CYX residue for the first half of disulphide bond ~a" dis))
               (unless (topology res2)
@@ -1315,6 +1330,7 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
                              (error "CONECT ~a between ~a and ~a will fail" connect from-atom to-atom))
                            (when (>= (chem:number-of-bonds to-atom) 4)
                              (error "CONECT ~a will lead to too many bonds for to atom ~a" connect to-atom))
+                           (format t "CONECT ~a to ~a~%" from-atom to-atom)
                            (chem:bond-to from-atom to-atom :single-bond)))
                        to-atoms)))
       (let ((unbuilt-heavy-atoms 0)

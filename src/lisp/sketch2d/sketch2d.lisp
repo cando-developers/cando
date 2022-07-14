@@ -1288,7 +1288,7 @@ are in the order (low, middle, high) and the column eigen-vectors are in the sam
                (identify-problem-areas sketch))
           do (progn
                (when (= problems 0)
-                 (return-from do-sketch2d nil))
+                 (return-from do-sketch2d sketch))
                (incf count)
                (progn
                  (format t "There were ~a problems for try ~a~%" problems count)

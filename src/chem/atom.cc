@@ -78,13 +78,6 @@ SYMBOL_EXPORT_SC_(ChemPkg,_PLUS_atomFlagSymbolConverter_PLUS_);
 
 std::atomic<size_t> globalUniqueAtomOrder;
 
-long	__AtomBuildCounter = 1;
-
-
-
-
-
-
 
 core::NullTerminatedEnumAssociation configurationEnum[] = {
     { "UNDEFINED", undefinedConfiguration },
@@ -108,15 +101,6 @@ struct	VdwRadiiPairs
   string	_Element;
   double	_VdwRadius;
 };
-
-
-
-#if ATOMIC_ANCHOR
-void AnchorRestraint::archive( core::ArchiveP node )
-{
-  node->archivePlainObject<Vector3>("anchorPos","AnchorPos",this->_AnchorPos);
-}
-#endif
 
 
 
@@ -171,7 +155,7 @@ CL_DEFMETHOD void	Atom_O::perturbAtomPosition(double dist)
 CL_NAME("GET-POSITION!");
 CL_DEFMETHOD void Atom_O::getPosition_BANG_(Vector3& pos)
 {
-  pos = this->position;
+  pos = this->_Position;
 }
 
 /*! Return +1 if priority(a)>priority(b)
@@ -251,38 +235,6 @@ string Atom_O::calculateStereochemicalConfigurationAsString(core::HashTable_sp c
   return s;
 }
 
-
-
-//
-// Constructor
-//
-
-#if 0
-void	Atom_O::initialize()
-{
-  this->Base::initialize();
-  this->copyAtom = _Nil<Atom_O>();
-  this->flags = ATOM_NEEDS_MINIMIZER;
-  this->_Mask = 0;
-  this->tempInt = 0;
-  this->_Element = element_Undefined;
-  this->_Hybridization = hybridization_undefined;
-  this->_Alias = _Nil<core::Symbol_O>();
-  this->_Ionization = 0; // neutral
-#if ATOMIC_ANCHOR
-  this->_AnchorRestraint.setIsDefined(false);
-  this->_AnchorRestraint._AnchorPos.set(0.0,0.0,0.0);
-#endif
-  this->charge= 0;
-  this->_RingMembershipCount = 0;
-  this->type= _Nil<core::Symbol_O>();
-  this->invalidateBackSpan();
-  this->invalidateNextSpan();
-  this->_Configuration = undefinedConfiguration;
-  this->_StereochemistryType = undefinedCenter;
-}
-#endif
-
 CL_DEFMETHOD bool Atom_O::Atom_equal(core::T_sp obj) const
 {
   if ( this->eq(obj) ) goto T;
@@ -322,7 +274,7 @@ void Atom_O::transferCoordinates(Matter_sp obj)
 
 bool Atom_O::atomWithinAngstroms(Atom_sp other, float angstroms) const
 {
-  Vector3 delta = this->position-other->position;
+  Vector3 delta = this->_Position-other->_Position;
   if (fabs(delta.getX())<angstroms &&
       fabs(delta.getY())<angstroms &&
       fabs(delta.getZ())<angstroms) {
@@ -339,22 +291,17 @@ Atom_O::Atom_O(const Atom_O& ss) :Matter_O(ss)
   this->_UniqueAtomOrder = nextUniqueAtomOrder();
   this->_Element = ss._Element;
   this->_Alias = ss._Alias;
-  this->type = ss.type;
+  this->_Type = ss._Type;
   this->_Hybridization = ss._Hybridization;
-  this->flags = ss.flags;
+  this->_Flags = ss._Flags;
   this->_Mask = ss._Mask;
-  this->position = ss.position;
-#if ATOMIC_ANCHOR
-  this->_AnchorRestraint = ss._AnchorRestraint;
-#endif
-  this->charge = ss.charge;
+  this->_Position = ss._Position;
+  this->_Charge = ss._Charge;
   this->_RingMembershipCount = ss._RingMembershipCount;
-  this->occupancy = ss.occupancy;
-  this->tempFactor = ss.tempFactor;
-  this->vdwRadius = ss.vdwRadius;
-  this->covalentRadius = ss.covalentRadius;
-  this->copyAtom = Atom_sp();
-  this->tempInt = ss.tempInt;
+  this->_VdwRadius = ss._VdwRadius;
+  this->_CovalentRadius = ss._CovalentRadius;
+  this->_CopyAtom = Atom_sp();
+  this->_TempInt = ss._TempInt;
 //  this->moeIndex = ss.moeIndex;
 //  this->moeType = ss.moeType;
   this->_Ionization = ss._Ionization;
@@ -416,31 +363,31 @@ void Atom_O::_addHydrogenWithName(Residue_sp residueContainedBy, MatterName name
 
 Bond_sp Atom_O::bondAtIndex(int i)
 {
-  return this->bonds[i];
+  return this->_Bonds[i];
 }
 
 CL_LISPIFY_NAME("bondedNeighbor");
 CL_DEFMETHOD     Atom_sp Atom_O::bondedNeighbor(int i)
 {
-  return this->bonds[i]->getOtherAtom(this->sharedThis<Atom_O>());
+  return this->_Bonds[i]->getOtherAtom(this->sharedThis<Atom_O>());
 }
 
 CL_LISPIFY_NAME("bondedOrder");
 CL_DEFMETHOD     BondOrder Atom_O::bondedOrder(int i) 
 {
-  return this->bonds[i]->getOrderFromAtom(this->asSmartPtr());
+  return this->_Bonds[i]->getOrderFromAtom(this->asSmartPtr());
 };
 
 CL_LISPIFY_NAME("numberOfBonds");
 CL_DEFMETHOD     int	Atom_O::numberOfBonds() const
 {
-  return this->bonds.size();
+  return this->_Bonds.size();
 };
 
 CL_LISPIFY_NAME("coordination");
 CL_DEFMETHOD     int Atom_O::coordination() 
 {
-  return this->bonds.size();
+  return this->_Bonds.size();
 };
 
 /*! If this atom is a carbon then count the number of bonds and add
@@ -561,7 +508,7 @@ gc::Nilable<Atom_sp> Atom_O::highestPriorityNeighborThatIsnt(gc::Nilable<Atom_sp
   Atom_sp bestAtom = nil<Atom_O>();
   Atom_sp atom;
   VectorBond::iterator	b;
-  for ( b=this->bonds.begin();b!=this->bonds.end() ; b++ ) {
+  for ( b=this->_Bonds.begin();b!=this->_Bonds.end() ; b++ ) {
     atom = (*b)->getOtherAtom(this->sharedThis<Atom_O>());
     if ( avoid.notnilp() && atom == avoid ) continue;
     if ( priorityOrder(atom,bestAtom,cip)>0 )
@@ -578,7 +525,7 @@ gc::Nilable<Atom_sp> Atom_O::lowestPriorityNeighborThatIsnt(gc::Nilable<Atom_sp>
   gc::Nilable<Atom_sp> bestAtom = nil<core::T_O>();
   Atom_sp atom;
   VectorBond::iterator	b;
-  for ( b=this->bonds.begin();b!=this->bonds.end() ; b++ ) {
+  for ( b=this->_Bonds.begin();b!=this->_Bonds.end() ; b++ ) {
     atom = (*b)->getOtherAtom(this->sharedThis<Atom_O>());
     if ( avoid.notnilp() && atom == avoid ) continue;
     if ( bestAtom.nilp() ) {
@@ -596,7 +543,7 @@ CL_LISPIFY_NAME("getBondTo")
 CL_DEFMETHOD Bond_sp Atom_O::getBondTo(Atom_sp a)
 {_OF();
   VectorBond::iterator	b;
-  for ( b=this->bonds.begin();b!=this->bonds.end() ; b++ )
+  for ( b=this->_Bonds.begin();b!=this->_Bonds.end() ; b++ )
   {
     if ( a == (*b)->getOtherAtom(this->sharedThis<Atom_O>()) ) return *b;
   }
@@ -605,12 +552,12 @@ CL_DEFMETHOD Bond_sp Atom_O::getBondTo(Atom_sp a)
 
 void Atom_O::_addExistingBond(Bond_sp const& bond)
 {_OF();
-  this->bonds.push_back(bond);
+  this->_Bonds.push_back(bond);
 }
 
 void Atom_O::addBond(Bond_sp bond)
 {_OF();
-  this->bonds.push_back(bond);
+  this->_Bonds.push_back(bond);
 }
 
 CL_DOCSTRING(R"doc(Create a bond between two atoms with the desired bond-order.
@@ -624,26 +571,26 @@ CL_DEFMETHOD     Bond_sp Atom_O::bondTo( Atom_sp to, BondOrder o, bool error_if_
 	// throw an exception if there is
   Atom_sp from = this->sharedThis<Atom_O>();
   VectorBond::iterator	b;
-  VectorBond::iterator  begin(this->bonds.begin());;
-  VectorBond::iterator  end(this->bonds.end());
+  VectorBond::iterator  begin(this->_Bonds.begin());;
+  VectorBond::iterator  end(this->_Bonds.end());
   for ( b=begin;b!=end ; b++ ) {
     if ( (*b)->getOtherAtom(from) == to ) {
       if (error_if_exists) {
         SIMPLE_ERROR(("You tried to form a bond from[%s]-to[%s] but there is already one there!!") , this->__repr__() , _rep_(to) );
       } else {
-        this->bonds.erase(b);
+        this->_Bonds.erase(b);
         break;
       }
     }
   }
   Bond_sp bn = Bond_O::create(from,to,o);
-  this->bonds.push_back(bn);
-  to->bonds.push_back(bn);
+  this->_Bonds.push_back(bn);
+  to->_Bonds.push_back(bn);
   if (error_if_exceed_valence) {
-    if (this->_Element == element_C && this->bonds.size()>4) {
+    if (this->_Element == element_C && this->_Bonds.size()>4) {
       SIMPLE_ERROR(("More than four bonds to carbon will be made to %s") , _rep_(this->asSmartPtr()));
     }
-    if (to->_Element == element_C && to->bonds.size()>4 ) {
+    if (to->_Element == element_C && to->_Bonds.size()>4 ) {
       SIMPLE_ERROR(("More than four bonds to carbon will be made to %s") , _rep_(to));
     }
   }
@@ -710,7 +657,7 @@ CL_DEFMETHOD
 core::List_sp	Atom_O::getNeighborsForAbsoluteConfiguration()
 {
   ql::list l;
-  for ( auto b=this->bonds.begin();b!=this->bonds.end() ; b++ ) {
+  for ( auto b=this->_Bonds.begin();b!=this->_Bonds.end() ; b++ ) {
     l << (*b)->getOtherAtom(this->sharedThis<Atom_O>());
   }
   return l.cons();
@@ -723,7 +670,7 @@ core::List_sp	Atom_O::getNeighborsByRelativePriority(core::HashTable_sp cip_prio
   LOG("Ordering neighbors around(%s) by priority and name" , this->getName()  );
   VectorAtom	reversedNeighbors;
   VectorBond::iterator	b;
-  for ( b=this->bonds.begin();b!=this->bonds.end() ; b++ ) {
+  for ( b=this->_Bonds.begin();b!=this->_Bonds.end() ; b++ ) {
     reversedNeighbors.push_back((*b)->getOtherAtom(this->sharedThis<Atom_O>()));
   }
   OrderByPriorityAndName orderer(cip_priority);
@@ -749,13 +696,13 @@ core::List_sp	Atom_O::getNeighborsByRelativePriority(core::HashTable_sp cip_prio
 
 void	Atom_O::modifyFlags(int op, ATOM_FLAGS fl ) {
   if ( op == ATOMFLAG_OR ) {
-    this->flags |= fl;
+    this->_Flags |= fl;
   } else if ( op==ATOMFLAG_AND ) {
-    this->flags &= fl;
+    this->_Flags &= fl;
   } else if ( op==ATOMFLAG_ON ) {
-    this->flags |= fl;
+    this->_Flags |= fl;
   } else if ( op==ATOMFLAG_OFF ) {
-    this->flags &= (~fl);
+    this->_Flags &= (~fl);
   }
 }
 
@@ -767,7 +714,7 @@ CL_DEFMETHOD     bool	Atom_O::isBondedToAtomNamed(core::Symbol_sp name)
 {
   VectorBond::iterator	b;
 
-  for ( b=this->bonds.begin();b!=this->bonds.end() ; b++ ) {
+  for ( b=this->_Bonds.begin();b!=this->_Bonds.end() ; b++ ) {
     if ( (*b)->getOtherAtom(this->sharedThis<Atom_O>())->getName() == name ) {
       return true;
     }
@@ -779,7 +726,7 @@ CL_LISPIFY_NAME("bondedNeighborWithName");
 CL_DEFMETHOD     Atom_sp	Atom_O::bondedNeighborWithName(MatterName name)
 {
   VectorBond::iterator	b;
-  for ( b=this->bonds.begin();b!=this->bonds.end() ; b++ ) {
+  for ( b=this->_Bonds.begin();b!=this->_Bonds.end() ; b++ ) {
     if ( (*b)->getOtherAtom(this->sharedThis<Atom_O>())->getName() == name ) {
       return (*b)->getOtherAtom(this->sharedThis<Atom_O>());
     }
@@ -794,13 +741,13 @@ CL_DEFMETHOD     bool	Atom_O::isBondedToElementOrder(Element el, BondOrder o)
 {
   VectorBond::iterator	b;
   if (Bond_O::singleBondP(o)) {
-    for ( b=this->bonds.begin();b!=this->bonds.end() ; b++ ) {
+    for ( b=this->_Bonds.begin();b!=this->_Bonds.end() ; b++ ) {
       if ( (*b)->getOtherAtom(this->sharedThis<Atom_O>())->getElement() == el ) {
         if ( Bond_O::singleBondP((*b)->getRawOrder())) return true;
       }
     }
   } else {
-    for ( b=this->bonds.begin();b!=this->bonds.end() ; b++ ) {
+    for ( b=this->_Bonds.begin();b!=this->_Bonds.end() ; b++ ) {
       if ( (*b)->getOtherAtom(this->sharedThis<Atom_O>())->getElement() == el ) {
         if ( (*b)->getRawOrder() == o ) return true;
       }
@@ -815,11 +762,11 @@ CL_DEFMETHOD     bool Atom_O::hasBondWithOrder(BondOrder o) const
 {
   VectorBond::iterator	b;
   if (Bond_O::singleBondP(o)) {
-    for ( b=this->bonds.begin();b!=this->bonds.end() ; b++ ) {
+    for ( b=this->_Bonds.begin();b!=this->_Bonds.end() ; b++ ) {
       if ( Bond_O::singleBondP((*b)->getRawOrder())) return true;
     }
   } else {
-    for ( b=this->bonds.begin();b!=this->bonds.end() ; b++ ) {
+    for ( b=this->_Bonds.begin();b!=this->_Bonds.end() ; b++ ) {
       if ( (*b)->getRawOrder() == o) return true;
     }
   }
@@ -832,7 +779,7 @@ CL_DEFMETHOD     bool	Atom_O::isBondedToElementHybridization(Element el, Hybridi
 {
   VectorBond::iterator	b;
 
-  for ( b=this->bonds.begin();b!=this->bonds.end() ; b++ ) 
+  for ( b=this->_Bonds.begin();b!=this->_Bonds.end() ; b++ ) 
   {
     if ( (*b)->getOtherAtom(this->sharedThis<Atom_O>())->getElement() == el ) 
     {
@@ -854,14 +801,14 @@ CL_DEFMETHOD     bool	Atom_O::isBondedToElementHybridizationElementHybridization
   VectorBond::iterator	b2;
   Atom_sp	a1;
   Atom_sp	a2;
-  for ( b=this->bonds.begin();b!=this->bonds.end() ; b++ ) 
+  for ( b=this->_Bonds.begin();b!=this->_Bonds.end() ; b++ ) 
   {
     a1 = Atom_sp((*b)->getTo());
     if ( a1->getElement() == el1 ) 
     {
       if ( a1->getHybridization() == hy1 ) 
       {
-        for ( b2=a1->bonds.begin();b2!=a1->bonds.end();b2++) 
+        for ( b2=a1->_Bonds.begin();b2!=a1->_Bonds.end();b2++) 
         {
           a2 = Atom_sp((*b2)->getTo());
           if ( a2 == this->sharedThis<Atom_O>() ) continue;
@@ -879,7 +826,7 @@ CL_DEFMETHOD     bool	Atom_O::isBondedToElementHybridizationElementHybridization
 
 float Atom_O::distanceSquaredToAtom(Atom_sp other)
 {
-  Vector3 delta = this->position-other->position;
+  Vector3 delta = this->_Position-other->_Position;
   return delta.getX()*delta.getX()+delta.getY()*delta.getY()+delta.getZ()*delta.getZ();
 }
 
@@ -905,11 +852,11 @@ void Atom_O::basicRemoveBondTo(Atom_sp a)
   Bond_sp				bb;
   Atom_sp				aa;
   Atom_sp				wpa;
-  for ( b=this->bonds.begin();b!=this->bonds.end() ; b++ )
+  for ( b=this->_Bonds.begin();b!=this->_Bonds.end() ; b++ )
   {
     if ( (*b)->getOtherAtom(this->sharedThis<Atom_O>()) == a )
     {
-      this->bonds.erase(b);
+      this->_Bonds.erase(b);
       return;
     }
   }
@@ -937,12 +884,12 @@ CL_DEFMETHOD     void	Atom_O::removeAllBonds()
 	// Remove back bond
   LOG("Bond_O::removeAllBonds for %s" , this->description() );
   atemp = this->sharedThis<Atom_O>();
-  for ( b=this->bonds.begin();b!=this->bonds.end() ; b++ )
+  for ( b=this->_Bonds.begin();b!=this->_Bonds.end() ; b++ )
   {
     Atom_sp ato = (*b)->getOtherAtom(atemp);
     ato->basicRemoveBondTo(atemp);
   }
-  this->bonds.clear();
+  this->_Bonds.clear();
 }
 
 
@@ -953,7 +900,7 @@ CL_DEFMETHOD     void	Atom_O::removeAllBonds()
 CL_LISPIFY_NAME("applyTransformToAtoms");
 CL_DEFMETHOD     void	Atom_O::applyTransformToAtoms( const Matrix& m )
 {
-  this->position = (m)*this->position;
+  this->_Position = (m)*this->_Position;
   if ( this->_RestraintList.notnilp() ) {
     this->Base::applyTransformToRestraints(m);
   }
@@ -980,48 +927,21 @@ CL_DEFMETHOD core::Symbol_sp Atom_O::getElementAsSymbol() const
 }
 
 
-#ifdef OLD_SERIALIZE
-void	Atom_O::serialize(serialize::SNode snode)
-{_OF();
-  this->Base::serialize(snode);
-  snode->attributeIfNotDefault<ATOM_FLAGS>( "flags", this->flags, (unsigned long)0 );
-  snode->attributeSymbolEnumHiddenConverter( "element", this->_Element, _sym__PLUS_elementToSymbolConverter_PLUS_);
-  snode->attributeSymbolEnumHiddenConverterIfNotDefault( "hybrid", this->_Hybridization, _sym__PLUS_hybridizationToSymbolConverter_PLUS_,hybridization_sp3 );
-  snode->attributeIfNotNil( "alias", this->_Alias );
-  snode->attributeIfNotDefault<double>( "chg", this->charge, 0.0 );
-  snode->attributeSymbolEnumHiddenConverterIfNotDefault( "configuration", this->_Configuration, _sym__PLUS_configurationEnumConverter_PLUS_, undefinedConfiguration  );
-  snode->attributeSymbolEnumHiddenConverterIfNotDefault( "stereochemistryType", this->_StereochemistryType, _sym__PLUS_stereochemistryTypeConverter_PLUS_, undefinedCenter );
-  snode->attributeIfNotDefault<int>( "ion", this->_Ionization, 0 );
-  snode->attributeIfNotDefault<int>( "rings", this->_RingMembershipCount, 0 );
-  snode->attributeIfNotDefault<int>( "tempInt", this->tempInt, 0 );
-  snode->attributeIfNotDefault<string>( "type", this->typeString, "" );
-  snode->attributeIfNotDefault<uint>( "mask", this->_Mask, (unsigned int)(0) );
-  snode->archivePlainObjectIfDefined<Vector3>( "pos","Vector3",
-                                               this->position.isDefined(), this->position );
-  LOG("After pos archived Atom position@%p = %s" , &(this->position) , this->position.asString()  );
-  LOG("Atom position = %s" , this->position.asString() );
-}
-#endif
-
-
-
-
-
 void	Atom_O::fields(core::Record_sp node)
 {
   node->field_if_not_nil( INTERN_(kw,alias), this->_Alias );
-  node->/*pod_*/field_if_not_default<size_t>( INTERN_(kw,flags), this->flags, 0 );
+  node->/*pod_*/field_if_not_default<size_t>( INTERN_(kw,flags), this->_Flags, 0 );
   node->/*pod_*/field( INTERN_(kw,element), this->_Element);
   node->/*pod_*/field_if_not_default( INTERN_(kw,hybridization), this->_Hybridization,hybridization_sp3 );
-  node->/*pod_*/field_if_not_default( INTERN_(kw,chg), this->charge, 0.0 );
+  node->/*pod_*/field_if_not_default( INTERN_(kw,chg), this->_Charge, 0.0 );
   node->/*pod_*/field_if_not_default<short>( INTERN_(kw,ion), this->_Ionization, 0 );
-  node->field_if_not_nil( INTERN_(kw,type), this->type);
+  node->field_if_not_nil( INTERN_(kw,type), this->_Type);
   node->/*pod_*/field_if_not_default<ushort>( INTERN_(kw,rings), this->_RingMembershipCount, 0 );
   node->/*pod_*/field_if_not_default( INTERN_(kw,mask), this->_Mask, (uint)(0) );
   node->/*pod_*/field_if_not_default( INTERN_(kw,configuration), this->_Configuration, undefinedConfiguration  );
   node->/*pod_*/field_if_not_default( INTERN_(kw,stereochemistryType), this->_StereochemistryType, undefinedCenter );
-  node->/*pod_*/field_if_not_default( INTERN_(kw,pos), this->position, Vector3());
-//  node->field_if_not_empty(INTERN_(kw,bonds),this->bonds);
+  node->/*pod_*/field_if_not_default( INTERN_(kw,pos), this->_Position, Vector3());
+//  node->field_if_not_empty(INTERN_(kw,bonds),this->_Bonds);
   this->Base::fields(node);
 }
 
@@ -1033,7 +953,7 @@ CL_LISPIFY_NAME("setPositionInNanometers");
 CL_DEFMETHOD     void Atom_O::setPositionInNanometers(Vector3 o)
 {_OF();
   Vector3 angpos = o.multiplyByScalar(10.0);
-  this->position = angpos;
+  this->_Position = angpos;
 }
 
 
@@ -1074,7 +994,7 @@ CL_DEFMETHOD     string	Atom_O::getConfigurationAsString()
 string	Atom_O::__repr__() const
 {
   stringstream ss;
-  ss << "#<" << this->className() << " " << this->name << "/" << _rep_(symbolFromElement(this->_Element)) << " :id " << this->_Id << " 0x" << std::setbase(16) << core::lisp_general_badge(this->asSmartPtr()) << ">";
+  ss << "#<" << this->className() << " " << this->_Name << "/" << _rep_(symbolFromElement(this->_Element)) << " :id " << this->_Id << " 0x" << std::setbase(16) << core::lisp_general_badge(this->asSmartPtr()) << ">";
   return ss.str();
 }
 
@@ -1134,8 +1054,8 @@ void Atom_O::addUniqueInterResidueBondCopiesToBondList(core::HashTable_sp atomTo
 void Atom_O::addInterResidueBondsToBondList(core::HashTable_sp atomToResidue, BondList_sp bondlist)
 {
   VectorBond::iterator	b;
-  bonds = this->getBonds();
-  for ( b=bonds.begin();b!=bonds.end() ; b++ ) {
+  this->_Bonds = this->getBonds();
+  for ( b=this->_Bonds.begin();b!=this->_Bonds.end() ; b++ ) {
     if ( (*b)->isInterResidueBond(atomToResidue) ) {
       bondlist->append(*b);
     }
@@ -1155,14 +1075,14 @@ CL_DEFMETHOD     bool Atom_O::isBondedToWithBondOrder( Atom_sp aTarget, BondOrde
   Atom_sp				a2;
   Atom_sp me = this->sharedThis<Atom_O>();
   if (Bond_O::singleBondP(o)) {
-    for ( b=this->bonds.begin();b!=this->bonds.end() ; b++ ) {
+    for ( b=this->_Bonds.begin();b!=this->_Bonds.end() ; b++ ) {
       a2 = (*b)->getOtherAtom(me);
       if ( a2 == aTarget ) {
         if ( Bond_O::singleBondP((*b)->getRawOrder())) return true;
       }
     }
   } else {
-    for ( b=this->bonds.begin();b!=this->bonds.end() ; b++ ) {
+    for ( b=this->_Bonds.begin();b!=this->_Bonds.end() ; b++ ) {
       a2 = (*b)->getOtherAtom(me);
       if ( a2 == aTarget ) {
         if ( o == (*b)->getRawOrder() ) return true;
@@ -1186,7 +1106,7 @@ CL_DEFMETHOD     bool	Atom_O::isBondedTo( Atom_sp aTarget)
       , this->getName()
       , aTarget->getName() );
   Atom_sp me = this->sharedThis<Atom_O>();
-  for ( b=this->bonds.begin();b!=this->bonds.end() ; b++ )
+  for ( b=this->_Bonds.begin();b!=this->_Bonds.end() ; b++ )
   {
     a2 = (*b)->getOtherAtom(me);
     LOG("  looking at atom(%s)" , a2->getName() );
@@ -1211,7 +1131,7 @@ BondOrder	Atom_O::bondOrderTo( Atom_sp other )
   VectorBond::iterator	b;
   Atom_sp				a2;
   Atom_sp me = this->sharedThis<Atom_O>();
-  for ( b=this->bonds.begin();b!=this->bonds.end() ; b++ ) {
+  for ( b=this->_Bonds.begin();b!=this->_Bonds.end() ; b++ ) {
     a2 = (*b)->getOtherAtom(me);
     if ( a2 == other ) {
       return (*b)->getOrderFromAtom(me);
@@ -1227,23 +1147,23 @@ void Atom_O::reorderBonds(core::List_sp atoms) {
   VectorBond newBonds;
   size_t numAtoms = core::cl__length(atoms);
   Atom_sp me = this->sharedThis<Atom_O>();
-  if ( numAtoms != this->bonds.size()) {
-    SIMPLE_ERROR("The number of atoms %d must match the number of bonds %d", numAtoms, this->bonds.size() );
+  if ( numAtoms != this->_Bonds.size()) {
+    SIMPLE_ERROR("The number of atoms %d must match the number of bonds %d", numAtoms, this->_Bonds.size() );
   }
   for ( auto cur : atoms ) {
     Atom_sp atom = gc::As<Atom_sp>(CONS_CAR(cur));
     VectorBond::iterator b;
-    for ( b = this->bonds.begin(); b != this->bonds.end(); b++ ) {
+    for ( b = this->_Bonds.begin(); b != this->_Bonds.end(); b++ ) {
       if ( (*b)->getOtherAtom(me) == atom ) {
         newBonds.push_back(*b);
         break;
       }
     }
-    if (b == this->bonds.end()) {
+    if (b == this->_Bonds.end()) {
       SIMPLE_ERROR("For atom %s not find bond with other atom %s bonded-atoms: %s", _rep_(me), _rep_(atom), _rep_(this->bondedAtomsAsList()));
     }
   }
-  this->bonds = newBonds;
+  this->_Bonds = newBonds;
 }
 
 //
@@ -1255,9 +1175,9 @@ CL_DEFMETHOD     bool Atom_O::testConsistancy(Matter_sp parentShouldBe)
 {_OF();
   VectorBond::iterator	b;
   Atom_sp				a2,atemp;
-  LOG("bonds array start = 0x%08x" , ((void*)&(this->bonds[0]))  );
+  LOG("bonds array start = 0x%08x" , ((void*)&(this->_Bonds[0]))  );
   Atom_sp me = this->sharedThis<Atom_O>();
-  for ( b=this->bonds.begin();b!=this->bonds.end() ; b++ )
+  for ( b=this->_Bonds.begin();b!=this->_Bonds.end() ; b++ )
   {
     a2 = (*b)->getOtherAtom(me);
     if ( !(a2->isBondedToWithBondOrder(me,(*b)->getRawOrder())) )
@@ -1290,8 +1210,8 @@ Matter_sp Atom_O::copyDontRedirectAtoms(core::T_sp new_to_old)
   LOG("Copying atom @%p" , this );
   Atom_sp myself = this->sharedThis<Atom_O>();
   auto  aNew  = gctools::GC<Atom_O>::copy( *this); // = RP_Copy<Atom_O>(this);
-  aNew->bonds.clear();
-  this->copyAtom = aNew;
+  aNew->_Bonds.clear();
+  this->_CopyAtom = aNew;
   if (this->_Properties.notnilp()) {
     aNew->_Properties = core::cl__copy_seq(this->_Properties);
   }
@@ -1308,18 +1228,6 @@ Matter_sp Atom_O::copyDontRedirectAtoms(core::T_sp new_to_old)
 //	Redirect the bonds of this atom to their copies.
 void Atom_O::redirectAtoms()
 {
-#if 0
-  VectorBond::iterator	b;
-  LOG("Redirecting bonds for %s" , this->description());
-  printf("%s:%d redirecting atoms for %zu bonds\n", __FILE__, __LINE__, bonds.size());
-  Atom_sp myself = this->sharedThis<Atom_O>();
-  for ( b=bonds.begin();b!=bonds.end() ; b++ ) {
-    if ( (*b)->isAtom1(myself->getCopyAtom()) ) {
-      printf("%s:%d Redirecting atoms for bond: %zu\n", __FILE__, __LINE__, (b-bonds.begin()));
-      (*b)->redirectAtoms();
-    }
-  }
-#endif
   this->redirectRestraintAtoms();
 }
 
@@ -1331,7 +1239,7 @@ VectorAtom Atom_O::getBondedAtoms()
   VectorBond::iterator	b;
   VectorAtom			vAtoms;
   Atom_sp me = this->sharedThis<Atom_O>();
-  for (b=this->bonds.begin();b!=this->bonds.end(); b++ )
+  for (b=this->_Bonds.begin();b!=this->_Bonds.end(); b++ )
   {
     vAtoms.push_back((*b)->getOtherAtom(me));
   }
@@ -1344,22 +1252,11 @@ CL_DEFMETHOD     core::List_sp Atom_O::bondedAtomsAsList() const
   ql::list ll;
   VectorBond::iterator	b;
   Atom_sp me(const_cast<Atom_O*>(this));
-  for (b=this->bonds.begin();b!=this->bonds.end(); b++ ) {
+  for (b=this->_Bonds.begin();b!=this->_Bonds.end(); b++ ) {
     ll << (*b)->getOtherAtom(me);
   }
   return ll.result();
 }
-
-void	advanceAtomBuildCounter()
-{
-  __AtomBuildCounter++;
-  if (__AtomBuildCounter==0) __AtomBuildCounter++;
-};
-
-long	getAtomBuildCounter()
-{
-  return __AtomBuildCounter;
-};
 
 
 CL_LISPIFY_NAME("getBondList");
@@ -1367,7 +1264,7 @@ CL_DEFMETHOD     BondList_sp	Atom_O::getBondList()
 {
   VectorBond::iterator	b;
   auto  bl  = gctools::GC<BondList_O>::allocate_with_default_constructor();
-  for (b=this->bonds.begin();b!=this->bonds.end(); b++ )
+  for (b=this->_Bonds.begin();b!=this->_Bonds.end(); b++ )
   {
     bl->addBond(*b);
   }
@@ -1407,7 +1304,7 @@ CL_DEFMETHOD     uint Atom_O::totalBondOrder()
   VectorBond::iterator	b;
   core::List_sp		list;
   uint twice = 0;
-  for (b=this->bonds.begin();b!=this->bonds.end(); b++ ) 
+  for (b=this->_Bonds.begin();b!=this->_Bonds.end(); b++ ) 
   {
     BondOrder bo = (*b)->getRawOrder();
     if ( Bond_O::singleBondP(bo)) twice += 2;
@@ -1435,7 +1332,7 @@ CL_DEFMETHOD     core::List_sp Atom_O::bondsAsList() const
 {
   ql::list ll;
   VectorBond::iterator	b;
-  for (b=this->bonds.begin();b!=this->bonds.end(); b++ ) {
+  for (b=this->_Bonds.begin();b!=this->_Bonds.end(); b++ ) {
     ll << *b;
   }
   return ll.result();
@@ -1454,7 +1351,7 @@ CL_DEFMETHOD     BondList_sp	Atom_O::getHeavyAtomBondList()
   VectorBond::iterator	b;
   auto  bl  = gctools::GC<BondList_O>::allocate_with_default_constructor();
   Atom_sp me = this->sharedThis<Atom_O>();
-  for (b=this->bonds.begin();b!=this->bonds.end(); b++ )
+  for (b=this->_Bonds.begin();b!=this->_Bonds.end(); b++ )
   {
     if ( (*b)->getOtherAtom(me)->getElement() != element_H )
     {
@@ -1495,7 +1392,7 @@ CL_DEFMETHOD     int     Atom_O::getBondedHydrogenCount()
   Atom_sp				weakAtomTo;
   hs=0;
   Atom_sp me = this->sharedThis<Atom_O>();
-  for (b=this->bonds.begin();b!=this->bonds.end(); b++ )
+  for (b=this->_Bonds.begin();b!=this->_Bonds.end(); b++ )
   {
     Atom_sp other = (*b)->getOtherAtom(me);
     if ( other->getElement() == element_H ) hs++;
@@ -1579,7 +1476,7 @@ CL_DEFMETHOD     int     Atom_O::getValence()
   VectorBond::iterator	b;
   BondOrder       bo;
   int valence2 = 0;
-  for (b=this->bonds.begin();b!=this->bonds.end(); b++ ) {
+  for (b=this->_Bonds.begin();b!=this->_Bonds.end(); b++ ) {
     bo = (*b)->getRawOrder();
     if (Bond_O::singleBondP(bo)) {
       valence2 += 2;
@@ -1610,7 +1507,7 @@ core::List_sp Atom_O::_expandLocalSpanningTree(Atom_sp avoidAtom, Bond_sp incomi
   core::Cons_sp localTree = core::Cons_O::create(incomingBond,nil<core::T_O>());
   if ( depth <= 0 ) return localTree;
   core::List_sp tail = localTree;
-  for ( VectorBond::iterator bi=this->bonds.begin(); bi!=this->bonds.end(); bi++ )
+  for ( VectorBond::iterator bi=this->_Bonds.begin(); bi!=this->_Bonds.end(); bi++ )
   {
     Atom_sp neighborAtom = (*bi)->getOtherAtom(this->sharedThis<Atom_O>());
     if ( neighborAtom == avoidAtom ) continue;
@@ -1627,7 +1524,7 @@ CL_DEFMETHOD     core::List_sp Atom_O::localSpanningTree(uint depth)
   core::Cons_sp localTree = core::Cons_O::create(this->sharedThis<Atom_O>(),nil<core::T_O>());
   if ( depth <= 0 ) return localTree;
   core::List_sp tail = localTree;
-  for ( VectorBond::iterator bi=this->bonds.begin(); bi!=this->bonds.end(); bi++ )
+  for ( VectorBond::iterator bi=this->_Bonds.begin(); bi!=this->_Bonds.end(); bi++ )
   {
     Atom_sp neighborAtom = (*bi)->getOtherAtom(this->sharedThis<Atom_O>());
     core::List_sp one = neighborAtom->_expandLocalSpanningTree(this->sharedThis<Atom_O>(),*bi,depth-1);
@@ -1650,22 +1547,22 @@ CL_DEFMETHOD void Atom_O::setAbsoluteConfiguration(ConfigurationEnum config, Ato
   Bond_sp b2(unbound<Bond_O>());
   Bond_sp b3(unbound<Bond_O>());
   Bond_sp b4(unbound<Bond_O>());
-  if (!(this->bonds.size()==4||this->bonds.size()==3)) {
-    SIMPLE_ERROR(("You cannot define the absolute configuration of an atom that has %d bonds - it must have 3 or 4") , this->bonds.size());
+  if (!(this->_Bonds.size()==4||this->_Bonds.size()==3)) {
+    SIMPLE_ERROR(("You cannot define the absolute configuration of an atom that has %d bonds - it must have 3 or 4") , this->_Bonds.size());
   }
-  for ( int bi=0; bi<this->bonds.size(); bi++ ) {
-    Bond_sp bc = this->bonds[bi];
+  for ( int bi=0; bi<this->_Bonds.size(); bi++ ) {
+    Bond_sp bc = this->_Bonds[bi];
     Atom_sp other = bc->getOtherAtom(this->asSmartPtr());
     if (other==n1) b1 = bc;
     else if (other==n2) b2 = bc;
     else if (other==n3) b3 = bc;
     else b4 = bc;
   }
-  this->bonds[0] = b1;
-  this->bonds[1] = b2;
-  this->bonds[2] = b3;
+  this->_Bonds[0] = b1;
+  this->_Bonds[1] = b2;
+  this->_Bonds[2] = b3;
   if (!b4.unboundp()) {
-    this->bonds[3] = b4;
+    this->_Bonds[3] = b4;
   }
   this->_StereochemistryType = chiralCenter;
   this->setConfiguration(config);
@@ -1676,15 +1573,9 @@ CL_DEFMETHOD void Atom_O::setAbsoluteConfiguration(ConfigurationEnum config, Ato
 void Atom_O::invertStructureAndRestraints()
 {
 	/*! Invert the Z coordinate */
-  Vector3& pos=this->position;
-  this->position.set(pos.getX(),pos.getY(),pos.getZ()*-1.0);
-#if ATOMIC_ANCHOR
-  Vector3& anchor = this->_AnchorRestraint._AnchorPos;
-  anchor.set(anchor.getX(),anchor.getY(),anchor.getZ()*-1.0);
-#else
+  Vector3& pos=this->_Position;
+  this->_Position.set(pos.getX(),pos.getY(),pos.getZ()*-1.0);
   this->invertStereochemistryOfRestraints();
-#endif
-	
   ConfigurationEnum config = this->_Configuration;
   ConfigurationEnum newconfig = config;
   if ( config == S_Configuration ) {
@@ -1754,7 +1645,7 @@ void Atom_O::_describeAtomRecursively(string prefix, Atom_sp parent, BondOrder o
     ss << " ";
   }
   ss << this->description() << std::endl;
-  for ( VectorBond::const_iterator bi=this->bonds.begin(); bi!=this->bonds.end(); bi++ )
+  for ( VectorBond::const_iterator bi=this->_Bonds.begin(); bi!=this->_Bonds.end(); bi++ )
   {
     Atom_sp other = (*bi)->getOtherAtom(this->const_sharedThis<Atom_O>());
     if ( other!=parent)
@@ -1804,10 +1695,10 @@ Atom_sp Atom_O::atomWithAtomId(const AtomId& atomId) const
 void	Atom_O::bumpPosition(double dist)
 {_OF();
   double		x, y, z;
-  x = core::randomNumber01()*dist*2.0-dist+this->position.getX();
-  y = core::randomNumber01()*dist*2.0-dist+this->position.getY();
-  z = core::randomNumber01()*dist*2.0-dist+this->position.getZ();
-  this->position.set(x,y,z);
+  x = core::randomNumber01()*dist*2.0-dist+this->_Position.getX();
+  y = core::randomNumber01()*dist*2.0-dist+this->_Position.getY();
+  z = core::randomNumber01()*dist*2.0-dist+this->_Position.getZ();
+  this->_Position.set(x,y,z);
 }
 
 
@@ -1850,7 +1741,7 @@ CL_END_ENUM(_sym__PLUS_atomFlagSymbolConverter_PLUS_);
 
 ConstitutionAtom_sp Atom_O::asConstitutionAtom(ConstitutionAtomIndex0N index)
 {_OF();
-  ConstitutionAtom_sp ca = makeConstitutionAtom(this->getName(),this->_Element,this->type, index,this->_StereochemistryType, this->_Properties);
+  ConstitutionAtom_sp ca = makeConstitutionAtom(this->getName(),this->_Element,this->_Type, index,this->_StereochemistryType, this->_Properties);
   return ca;
 }
 
@@ -1858,7 +1749,7 @@ void	Atom_O::defineConstitutionAtomBonding(ConstitutionAtom_sp consAtom, MapAtom
 {_OF();
   Atom_O::bondIterator bi;
   Atom_sp me = this->sharedThis<Atom_O>();
-  for ( bi=this->bonds.begin(); bi!=this->bonds.end(); bi++ )
+  for ( bi=this->_Bonds.begin(); bi!=this->_Bonds.end(); bi++ )
   {
     Atom_sp otherAtom = (*bi)->getOtherAtom(me);
     if (atomMap.find(otherAtom) != atomMap.end()) {

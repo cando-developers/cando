@@ -170,10 +170,10 @@ bool	Molecule_O::equal(core::T_sp obj) const
       if ( this->eq(obj) ) return true;
       if ( Molecule_sp other = obj.asOrNull<Molecule_O>() ) {
 	if ( other->getName() != this->getName() ) return false;
-	if ( other->_contents.size() != this->_contents.size() ) return false;
-	Matter_O::const_contentIterator tit = this->_contents.begin();
-	Matter_O::const_contentIterator oit = this->_contents.begin();
-	for ( ; tit!=this->_contents.end(); tit++, oit++ )
+	if ( other->_Contents.size() != this->_Contents.size() ) return false;
+	Matter_O::const_contentIterator tit = this->_Contents.begin();
+	Matter_O::const_contentIterator oit = this->_Contents.begin();
+	for ( ; tit!=this->_Contents.end(); tit++, oit++ )
 	{
           if ( ! (*tit)->equal(*oit) ) return false;
 	}
@@ -195,8 +195,8 @@ void Molecule_O::transferCoordinates(Matter_sp obj)
 	    SIMPLE_ERROR(("You can only transfer coordinates if the two Molecules have the same number of contents"));
 	}
 	Matter_O::contentIterator tit,oit;
-	for ( tit=this->_contents.begin(), oit=other->_contents.begin();
-	      tit!=this->_contents.end(); tit++, oit++ )
+	for ( tit=this->_Contents.begin(), oit=other->_Contents.begin();
+	      tit!=this->_Contents.end(); tit++, oit++ )
 	{
 	    (*tit)->transferCoordinates(*oit);
 	}
@@ -355,17 +355,17 @@ AtomIdToAtomMap_sp Molecule_O::buildAtomIdMap() const
   AtomIdToAtomMap_sp atomIdMap = AtomIdToAtomMap_O::create();
   atomIdMap->resize(1);
   int mid = 0;
-  int numResidues = this->_contents.size();
+  int numResidues = this->_Contents.size();
   atomIdMap->resize(mid,numResidues);
   for ( int rid =0; rid<numResidues; rid++ )
   {
-    int numAtoms = this->_contents[rid]->_contents.size();
+    int numAtoms = this->_Contents[rid]->_Contents.size();
     core::write_bf_stream(fmt::sprintf("%s:%d rid %d of %d  numAtoms-> %d\n" , __FILE__ , __LINE__ , rid , numResidues , numAtoms ));
     atomIdMap->resize(mid,rid,numAtoms);
     for ( int aid=0; aid<numAtoms; aid++ )
     {
       AtomId atomId(mid,rid,aid);
-      Atom_sp atom = this->_contents[rid]->_contents[aid].as<Atom_O>();
+      Atom_sp atom = this->_Contents[rid]->_Contents[aid].as<Atom_O>();
       core::write_bf_stream(fmt::sprintf("%s:%d Adding %d %d %d -> %s\n" , __FILE__ , __LINE__ , mid , rid , aid , _rep_(atom)));
       atomIdMap->set(atomId,atom);
     }
@@ -376,12 +376,12 @@ AtomIdToAtomMap_sp Molecule_O::buildAtomIdMap() const
     Atom_sp Molecule_O::atomWithAtomId(const AtomId& atomId) const
     {_OF();
 	int resId = atomId.residueId();
-	if ( resId >=0 && resId <=(int)this->_contents.size() )
+	if ( resId >=0 && resId <=(int)this->_Contents.size() )
 	{
-	    Residue_sp residue = this->_contents[resId].as<Residue_O>();
+	    Residue_sp residue = this->_Contents[resId].as<Residue_O>();
 	    return residue->atomWithAtomId(atomId);
 	}
-	SIMPLE_ERROR(("Illegal residueId[%d] must be less than %d") , resId , this->_contents.size() );
+	SIMPLE_ERROR(("Illegal residueId[%d] must be less than %d") , resId , this->_Contents.size() );
     }
 
 

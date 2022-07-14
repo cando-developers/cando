@@ -28,12 +28,6 @@ This is an open source license for the CANDO software from Temple University, bu
 
 #include <cando/chem/chemPackage.h>
 
-/*! Defines whether each atom has a single built in Anchor restraint or
-if it maintains a list of restraints which can contain mulitple
-AnchorRestraints */
-#define ATOMIC_ANCHOR 0
-
-
 namespace chem
 {
     typedef unsigned int AtomFlags;

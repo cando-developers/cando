@@ -115,27 +115,25 @@ class Matter_O : public core::CxxObject_O
 //	void	serialize(serialize::SNode snode);
 
   friend	class Loop;
-protected:
-//  int			_NextContentId;
-  int			_Id;
-//  int			_TempFileId;	//!< Use to define temporary index while reading/writing to non XML formats
-  MatterName			name;
-  gctools::Vec0_uncopyable<Matter_sp>		_contents;	// KEEP THIS as a vector
-						// A lot depends on residues
-						// maintaining an identical
-						// order of atoms
-						// Through the database
-						// building process
 public:
   typedef gctools::Vec0_uncopyable<Matter_sp>::iterator contentIterator;
   typedef gctools::Vec0_uncopyable<Matter_sp>::const_iterator const_contentIterator;
-  
-		/*! Store Symbol keyed properties of matter
+
+protected:
+  int			_Id;
+  MatterName		_Name;
+  /*! KEEP THIS as a vector
+      A lot depends on residues
+      maintaining an identical
+      order of atoms
+      Through the database
+      building process */
+  gctools::Vec0_uncopyable<Matter_sp>		_Contents;
+  /*! Store Symbol keyed properties of matter
 		 */
   core::List_sp   	_Properties;
- private:
 	/*! Maintain a list of restraints that span this Matter_O object */
-  core::List_sp	_RestraintList;
+  core::List_sp	        _RestraintList;
  public:
 	/*! Adjust the size of the contents array */
   void resizeContents(int sz);
@@ -184,10 +182,10 @@ public:
   virtual void redirectRestraintAtoms();
 
  public:
-  contentIterator begin_contents() { return this->_contents.begin(); };
-  contentIterator end_contents() { return this->_contents.end(); };
-  const_contentIterator begin_contents() const { return this->_contents.begin(); };
-  const_contentIterator end_contents() const { return this->_contents.end(); };
+  contentIterator begin_contents() { return this->_Contents.begin(); };
+  contentIterator end_contents() { return this->_Contents.end(); };
+  const_contentIterator begin_contents() const { return this->_Contents.begin(); };
+  const_contentIterator end_contents() const { return this->_Contents.end(); };
 		/*! Transfer the coordinates from an equivalent (equal) Matter.
 		 * If the (other) isnt equal then throw an exception.
 		 */
@@ -249,7 +247,7 @@ public:
 
   void	eraseContents(); // Empty the contents vector, don't free the memory
 
-  contentIterator eraseContent(contentIterator x) {return this->_contents.erase(x);};
+  contentIterator eraseContent(contentIterator x) {return this->_Contents.erase(x);};
 
   virtual void	makeAllAtomNamesInEachResidueUnique();
   virtual size_t fillInImplicitHydrogens();
@@ -259,10 +257,10 @@ public:
 
 
   CL_LISPIFY_NAME("setName");
-  CL_DEFMETHOD   void	setName(MatterName sName) { this->name = sName; };
-  MatterName getName() const { return this->name; };
+  CL_DEFMETHOD   void	setName(MatterName sName) { this->_Name = sName; };
+  MatterName getName() const { return this->_Name; };
   CL_LISPIFY_NAME("getName");
-  CL_DEFMETHOD   MatterName getName_notConst() { return this->name; };
+  CL_DEFMETHOD   MatterName getName_notConst() { return this->_Name; };
 
   virtual void	addMatter( Matter_sp child );
   void	addMatterRetainId( Matter_sp child );
@@ -326,8 +324,8 @@ public:
   CL_LISPIFY_NAME("contentAt");
   CL_DEFMETHOD   Matter_sp	contentAt( size_t i ) const;
   CL_LISPIFY_NAME("contentSize");
-  CL_DEFMETHOD   size_t		contentSize( ) { return this->_contents.size(); };
-  size_t length() const { return this->_contents.size(); };
+  CL_DEFMETHOD   size_t		contentSize( ) { return this->_Contents.size(); };
+  size_t length() const { return this->_Contents.size(); };
   void	translateAllAtoms(const Vector3& v);
 
   void	setAtomAliasesForResiduesNamed(core::List_sp residueAliasAtoms, core::List_sp atomAliases );
@@ -340,7 +338,7 @@ public:
   virtual	string	subMatter() {_OF(); SUBCLASS_MUST_IMPLEMENT(); };
   virtual	int	totalNetResidueCharge();
 
-  virtual	string	description() const { stringstream ss; ss << "container("<<_rep_(this->name)<<")@"<<std::hex<<this<<std::dec; return ss.str();}
+  virtual	string	description() const { stringstream ss; ss << "container("<<_rep_(this->_Name)<<")@"<<std::hex<<this<<std::dec; return ss.str();}
   Vector3		geometricCenter();
   core::T_mv momentOfInertiaTensor();
   core::T_mv momentOfGeometry();
@@ -383,9 +381,9 @@ public:
 //_NextContentId(1),
 //    _Id(1),
 //    _TempFileId(0),
-  name(nil<core::Symbol_O>()),
-    _Properties(nil<core::T_O>()),
-    _RestraintList(nil<core::T_O>()) {};
+  _Name(nil<core::Symbol_O>()),
+  _Properties(nil<core::T_O>()),
+  _RestraintList(nil<core::T_O>()) {};
 };
 
 };

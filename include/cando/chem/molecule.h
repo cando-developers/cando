@@ -82,10 +82,10 @@ namespace chem {
 
     virtual string __repr__() const;
 
-    contentIterator begin_residues() { return this->_contents.begin(); };
-    contentIterator end_residues() {return this->_contents.end(); };
-    const_contentIterator begin_residues() const { return this->_contents.begin(); };
-    const_contentIterator end_residues() const {return this->_contents.end(); };
+    contentIterator begin_residues() { return this->_Contents.begin(); };
+    contentIterator end_residues() {return this->_Contents.end(); };
+    const_contentIterator begin_residues() const { return this->_Contents.begin(); };
+    const_contentIterator end_residues() const {return this->_Contents.end(); };
 
 //    virtual bool equal(core::T_sp obj) const;
     virtual void	transferCoordinates(Matter_sp other);
@@ -116,7 +116,7 @@ namespace chem {
 
     virtual bool isMolecule() { return true;};
 
-    CL_DEFMETHOD size_t residueCount() {return (this->_contents.size());};
+    CL_DEFMETHOD size_t residueCount() {return (this->_Contents.size());};
 
     void		moveAllAtomsIntoFirstResidue();
 

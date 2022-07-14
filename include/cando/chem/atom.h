@@ -78,18 +78,6 @@ namespace chem
 #include <cando/chem/elements.h>
 
 
-#if ATOMIC_ANCHOR
-  struct	AnchorRestraint {
-    bool	_Defined;
-    Vector3	_AnchorPos;
-
-	//! If the restraint is defined return true
-    bool isDefined() { return this->_Defined; };
-	//! Set if the restraint is defined
-    void setIsDefined(bool d) { this->_Defined = d; };
-	//! Serialize the object
-  };
-#endif
   inline	string	XmlTag_Atom() { return "Atom";};
 
     // Atom flags
@@ -145,21 +133,6 @@ namespace chem
                   LastFlag      = LAST_FLAG
   } AtomFlagEnum;
 
-
-  struct PertFields {
-    Element _Element;
-    core::Symbol_sp _Name;
-    AtomType _Type;
-    double _Charge;
-    double _Polar;
-  };
-
-  extern	long	__AtomBuildCounter;
-
-  extern	void	advanceAtomBuildCounter();
-  extern	long	getAtomBuildCounter();
-
-
   SMART(Bond);
   SMART(BondList);
 
@@ -191,28 +164,26 @@ namespace chem {
   public:
     size_t              _UniqueAtomOrder;
     core::Symbol_sp	_Alias;	//!< alias name
-    ATOM_FLAGS	        flags;
-    Vector3		position;
-//    Vector3		_Force;
-#if ATOMIC_ANCHOR
-    AnchorRestraint	_AnchorRestraint;
-#endif
-    AtomType	        type;
-    VectorBond	        bonds;
-    double		charge;
-	// copy atoms
-    Atom_sp		copyAtom;
-	// Specific to MOE
-//    MoeType 	moeType;	// type string as read from MOE
-//    int		moeIndex;
-    int		backCount;
-    int		tempInt;
-    double      dAtomTemp; // a temporary double value - terrible idea
-    int		seenId;
-    float		occupancy;
-    float		tempFactor;
-    float		vdwRadius;
-    float		covalentRadius;
+    ATOM_FLAGS	        _Flags;
+    Vector3		_Position;
+    AtomType	        _Type;
+    VectorBond	        _Bonds;
+    double		_Charge;
+    //! Used to duplicate matter - NOT THREAD SAFE - switch to hashtable
+    Atom_sp		_CopyAtom;
+    //! What uses this? - NOT THREAD SAFE - switch to hashtable
+    int		        _BackCount;
+    //! Used for a variety of things - NOT THREAD SAFE - switch to hashtable
+    int		        _TempInt;
+    /*! Used for octree code - NOT THREAD SAFE - switch to hashtable and tagged float?
+       Does octree code require higher precision? It subdivides space.
+       Is there a non IEEE double precision value that can be tagged
+       and quickly converted into a double???
+       I wish, I wish we had a way to store a double in a tagged word.
+    */
+    double              _dAtomTemp; // a temporary double value - terrible idea
+    float		_VdwRadius;
+    float		_CovalentRadius;
     StereochemistryType _StereochemistryType;
     ConfigurationEnum   _Configuration;
 	// Selection mask
@@ -220,20 +191,18 @@ namespace chem {
     Element		_Element;
     Hybridization 	_Hybridization;
 	// Ring membership
-    ushort       _RingMembershipCount;
-    short        _Ionization;
-  public:
+    ushort              _RingMembershipCount;
+    short               _Ionization;
   public:
     static Atom_sp make(MatterName name, Element element);
   public:
       static int priorityOrder(Atom_sp a, Atom_sp b, core::HashTable_sp cip_priority);
-//	static double vdwRadiusForElement(Element element);
   public:
     uint	getMask() { return this->_Mask; };
     void	setMask(uint m) { this->_Mask = m; };
 
 //	void	duplicateFrom(Atom_O* a);
-    Atom_sp	getCopyAtom()			{return this->copyAtom;};
+    Atom_sp	getCopyAtom()			{return this->_CopyAtom;};
 
 
     void	_addHydrogenWithName(Residue_sp residueContainedBy, core::Symbol_sp name);
@@ -256,15 +225,15 @@ namespace chem {
     virtual void	transferCoordinates(Matter_sp other);
 
     int	totalNetResidueCharge() { THROW_HARD_ERROR("Atoms can't calculate totalNetResidueCharge");};
-    VectorBond::iterator bonds_begin() { return this->bonds.begin(); };
-    VectorBond::iterator bonds_end() {return this->bonds.end(); };
+    VectorBond::iterator bonds_begin() { return this->_Bonds.begin(); };
+    VectorBond::iterator bonds_end() {return this->_Bonds.end(); };
 
     char	getMatterType()	{ return ATOM_CLASS; };
 
 //    CL_LISPIFY_NAME("getAtomId");
 //    CL_DEFMETHOD 	int	getAtomId() { return this->getId(); };
-    int	getTempInt() { return this->tempInt; };
-    void	setTempInt(int o) { this->tempInt = o;};
+    int	getTempInt() { return this->_TempInt; };
+    void	setTempInt(int o) { this->_TempInt = o;};
 
       int getRelativePriority(core::HashTable_sp cip) const;
       
@@ -275,22 +244,22 @@ namespace chem {
 
 
     CL_LISPIFY_NAME("getFlags");
-    CL_DEFMETHOD 	ATOM_FLAGS	getFlags() { return this->flags; };
+    CL_DEFMETHOD 	ATOM_FLAGS	getFlags() { return this->_Flags; };
     CL_LISPIFY_NAME("resetFlags");
-    CL_DEFMETHOD 	void	resetFlags() { this->flags = 0; };
+    CL_DEFMETHOD 	void	resetFlags() { this->_Flags = 0; };
     CL_LISPIFY_NAME("turnOnFlags");
-    CL_DEFMETHOD 	void	turnOnFlags(ATOM_FLAGS o) { this->flags |= o; };
+    CL_DEFMETHOD 	void	turnOnFlags(ATOM_FLAGS o) { this->_Flags |= o; };
     CL_LISPIFY_NAME("turnOffFlags");
-    CL_DEFMETHOD 	void	turnOffFlags(ATOM_FLAGS o) { this->flags &= ~o; };
+    CL_DEFMETHOD 	void	turnOffFlags(ATOM_FLAGS o) { this->_Flags &= ~o; };
     void	modifyFlags(int op, ATOM_FLAGS o);
     CL_LISPIFY_NAME("testAllFlags");
-    CL_DEFMETHOD 	bool    testAllFlags( ATOM_FLAGS o ) const { return (this->flags&o)==o;};
+    CL_DEFMETHOD 	bool    testAllFlags( ATOM_FLAGS o ) const { return (this->_Flags&o)==o;};
     CL_LISPIFY_NAME("testAnyFlags");
-    CL_DEFMETHOD 	bool    testAnyFlags( ATOM_FLAGS o ) const { return (this->flags&o)!=0;};
+    CL_DEFMETHOD 	bool    testAnyFlags( ATOM_FLAGS o ) const { return (this->_Flags&o)!=0;};
     void	clearAllRingMembershipFlags();
     CL_LISPIFY_NAME("isInRing");
-    CL_DEFMETHOD 	bool    isInRing() const { return (this->flags&inRing)!= 0; };
-    CL_DEFMETHOD bool needs_build() const { return (this->flags&needsBuild)!=0;};
+    CL_DEFMETHOD 	bool    isInRing() const { return (this->_Flags&inRing)!= 0; };
+    CL_DEFMETHOD bool needs_build() const { return (this->_Flags&needsBuild)!=0;};
     CL_DEFMETHOD void setf_needs_build(bool val) {
       if (val) this->turnOnFlags(needsBuild);
       else this->turnOffFlags(needsBuild);
@@ -314,9 +283,9 @@ namespace chem {
     bool	hasAtomNameAttribute(char c);
 
     CL_LISPIFY_NAME("getType");
-    CL_DEFMETHOD         AtomType getType() { return this->type; };
+    CL_DEFMETHOD         AtomType getType() { return this->_Type; };
     CL_LISPIFY_NAME("setType");
-    CL_DEFMETHOD 	void	setType(AtomType o) { this->type = o; };
+    CL_DEFMETHOD 	void	setType(AtomType o) { this->_Type = o; };
     CL_LISPIFY_NAME("getHybridization");
     CL_DEFMETHOD         Hybridization getHybridization() { return this->_Hybridization; };
     string getHybridizationAsString();
@@ -344,39 +313,22 @@ namespace chem {
 #endif
     void getPosition_BANG_(Vector3& pos);
     CL_LISPIFY_NAME("getPosition");
-    CL_DEFMETHOD 	Vector3 getPosition() { return this->position; };
+    CL_DEFMETHOD 	Vector3 getPosition() { return this->_Position; };
     CL_DEFMETHOD bool atomWithinAngstroms(Atom_sp other, float angstroms) const;
     CL_LISPIFY_NAME("getPositionInNanometers");
-    CL_DEFMETHOD 	Vector3 getPositionInNanometers() { return this->position.inNanometers(); };
-    Vector3& getPositionRef() { return this->position; };
+    CL_DEFMETHOD 	Vector3 getPositionInNanometers() { return this->_Position.inNanometers(); };
+    Vector3& getPositionRef() { return this->_Position; };
     CL_LISPIFY_NAME("setPosition");
-    CL_DEFMETHOD 	void	setPosition(const Vector3& o) { this->position= o; };
+    CL_DEFMETHOD 	void	setPosition(const Vector3& o) { this->_Position= o; };
     CL_DEFMETHOD 	void	setPositionXYZ(double x, double y, double z) {
-      this->position.getX() = x;
-      this->position.getY() = y;
-      this->position.getZ() = z;
+      this->_Position.getX() = x;
+      this->_Position.getY() = y;
+      this->_Position.getZ() = z;
     }
     void	setPositionInNanometers(Vector3 o);
-#if 0
-    Vector3 getForce() { return this->_Force; };
-    void	setForce(Vector3 o) { this->_Force= o; };
-#endif
-#if ATOMIC_ANCHOR
-    void	setAnchorRestraintOn() { this->_AnchorRestraint.setIsDefined(true); };
-    void	setAnchorRestraintOff() { this->_AnchorRestraint.setIsDefined(false); };
-    bool	isAnchorRestraintOn() { return this->_AnchorRestraint.isDefined(); };
-    Vector3 getAnchorPos() { return this->_AnchorRestraint._AnchorPos; };
-    void	setAnchorPos(Vector3 o) { this->_AnchorRestraint._AnchorPos = o; };
-#endif
     float distanceSquaredToAtom(Atom_sp other);
 	//! Atoms should throw an exception
     void	makeAllAtomNamesInEachResidueUnique();
-#if 0
-    CL_LISPIFY_NAME("getTouched");
-    CL_DEFMETHOD 	bool	getTouched() { return this->touched; };
-    CL_LISPIFY_NAME("setTouched");
-    CL_DEFMETHOD 	void	setTouched(bool o) { this->touched = o; };
-#endif
     CL_DEFMETHOD 	void setMembershipAr1(bool b) { if (b) turnOnFlags(MembershipAr1); else turnOffFlags(MembershipAr1);};
     CL_DEFMETHOD 	void setMembershipAr2(bool b) { if (b) turnOnFlags(MembershipAr2); else turnOffFlags(MembershipAr2);};
     CL_DEFMETHOD 	void setMembershipAr3(bool b) { if (b) turnOnFlags(MembershipAr3); else turnOffFlags(MembershipAr3);};
@@ -392,25 +344,17 @@ namespace chem {
     CL_LISPIFY_NAME("setIonization");
     CL_DEFMETHOD 	void	setIonization(int c)	{ this->_Ionization = c; };
     CL_LISPIFY_NAME("getCharge");
-    CL_DEFMETHOD 	double	getCharge()	{ return this->charge; };
+    CL_DEFMETHOD 	double	getCharge()	{ return this->_Charge; };
     CL_LISPIFY_NAME("setCharge");
-    CL_DEFMETHOD 	void	setCharge(double c)	{ this->charge = c; };
-    CL_LISPIFY_NAME("getOccupancy");
-    CL_DEFMETHOD 	double	getOccupancy()	{ return this->occupancy; };
-    CL_LISPIFY_NAME("setOccupancy");
-    CL_DEFMETHOD 	void	setOccupancy(double c)	{ this->occupancy = c; };
-    CL_LISPIFY_NAME("getTempFactor");
-    CL_DEFMETHOD 	double	getTempFactor()	{ return this->tempFactor; };
-    CL_LISPIFY_NAME("setTempFactor");
-    CL_DEFMETHOD 	void	setTempFactor(double c)	{ this->tempFactor = c; };
+    CL_DEFMETHOD 	void	setCharge(double c)	{ this->_Charge = c; };
     CL_LISPIFY_NAME("getVdwRadius");
-    CL_DEFMETHOD 	double	getVdwRadius()	{ return this->vdwRadius; };
+    CL_DEFMETHOD 	double	getVdwRadius()	{ return this->_VdwRadius; };
     CL_LISPIFY_NAME("setVdwRadius");
-    CL_DEFMETHOD 	void	setVdwRadius(double c)	{ this->vdwRadius = c; };
+    CL_DEFMETHOD 	void	setVdwRadius(double c)	{ this->_VdwRadius = c; };
     CL_LISPIFY_NAME("getCovalentRadius");
-    CL_DEFMETHOD 	double	getCovalentRadius()	{ return this->covalentRadius; };
+    CL_DEFMETHOD 	double	getCovalentRadius()	{ return this->_CovalentRadius; };
     CL_LISPIFY_NAME("setCovalentRadius");
-    CL_DEFMETHOD 	void	setCovalentRadius(double c)	{ this->covalentRadius = c; };
+    CL_DEFMETHOD 	void	setCovalentRadius(double c)	{ this->_CovalentRadius = c; };
 #if 0
     CL_LISPIFY_NAME("getMoeIndex");
     CL_DEFMETHOD 	int	getMoeIndex() { return this->moeIndex; };
@@ -440,9 +384,9 @@ namespace chem {
     Residue_sp aliasResidueOrNil(Alias_sp alias) {IMPLEMENT_ME();};
 
     CL_LISPIFY_NAME("flagsSet");
-    CL_DEFMETHOD 	bool	flagsSet(int f)	{return (bool)((this->flags&f)!=0);};
+    CL_DEFMETHOD 	bool	flagsSet(int f)	{return (bool)((this->_Flags&f)!=0);};
     void	applyTransformToAtoms(const Matrix& m);
-    VectorBond& getBonds()		{return this->bonds; };
+    VectorBond& getBonds()		{return this->_Bonds; };
     VectorAtom getBondedAtoms();
     core::List_sp	bondedAtomsAsList() const;
 
@@ -580,20 +524,18 @@ namespace chem {
     _Alias(nil<core::Symbol_O>()),
       _Element(element_Undefined),
       _Hybridization(hybridization_undefined),
-      type(nil<core::Symbol_O>()),
-      flags(0),
+      _Type(nil<core::Symbol_O>()),
+      _Flags(0),
       _StereochemistryType(undefinedCenter),
       _Configuration(undefinedConfiguration),
       _Ionization(0),
-      charge(0.0),
-      occupancy(0.0),
-      tempFactor(1.0),
-      vdwRadius(0.0),
-      covalentRadius(0.0),
+      _Charge(0.0),
+      _VdwRadius(0.0),
+      _CovalentRadius(0.0),
       _Mask(0),
-      copyAtom(unbound<chem::Atom_O>()),
+      _CopyAtom(unbound<chem::Atom_O>()),
       _RingMembershipCount(0),
-      tempInt(0)
+      _TempInt(0)
 //      moeIndex(0),
 //      moeType(_Nil<core::Symbol_O>())
       {};

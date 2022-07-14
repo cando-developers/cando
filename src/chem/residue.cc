@@ -73,10 +73,10 @@ CL_DEFMETHOD bool	Residue_O::Residue_equal(core::T_sp obj) const
     if ( !obj.isA<Residue_O>() ) return false;
     Residue_sp other = obj.as<Residue_O>();
     if ( other->getName() != this->getName() ) return false;
-    if ( other->_contents.size() != this->_contents.size() ) return false;
+    if ( other->_Contents.size() != this->_Contents.size() ) return false;
     Matter_O::const_contentIterator tit,oit;
-    for ( tit=this->_contents.begin(), oit=other->_contents.begin();
-	    tit!=this->_contents.end(); tit++, oit++ )
+    for ( tit=this->_Contents.begin(), oit=other->_Contents.begin();
+	    tit!=this->_Contents.end(); tit++, oit++ )
     {
 	if ( ! (*tit)->equal(*oit) ) return false;
     }
@@ -91,13 +91,13 @@ void Residue_O::transferCoordinates(Matter_sp obj)
 	SIMPLE_ERROR(("You can only transfer coordinates to a Residue from another Residue"));
     }
     Residue_sp other = obj.as<Residue_O>();
-    if ( other->_contents.size() != this->_contents.size() )
+    if ( other->_Contents.size() != this->_Contents.size() )
     {
 	SIMPLE_ERROR(("You can only transfer coordinates if the two residues have the same number of atoms"));
     }
     Matter_O::contentIterator tit,oit;
-    for ( tit=this->_contents.begin(), oit=other->_contents.begin();
-	    tit!=this->_contents.end(); tit++, oit++ )
+    for ( tit=this->_Contents.begin(), oit=other->_Contents.begin();
+	    tit!=this->_Contents.end(); tit++, oit++ )
     {
 	(*tit)->transferCoordinates(*oit);
     }
@@ -163,7 +163,7 @@ void	Residue_O::fields( core::Record_sp node )
 {
   LOG("Status" );
   node->field_if_not_unbound(INTERN_(kw,type),this->_Type);
-  node->field_if_not_nil( INTERN_(kw,pdbName),this->pdbName);
+  node->field_if_not_nil( INTERN_(kw,pdbName),this->_PdbName);
   node->field( INTERN_(kw,uniqueLabel),this->_UniqueLabel);
   node->/*pod_*/field_if_not_default( INTERN_(kw,NetCharge),this->_NetCharge,0);
   node->/*pod_*/field_if_not_default( INTERN_(kw,fileSeqNum),this->_FileSequenceNumber,UndefinedUnsignedInt);
@@ -224,7 +224,7 @@ void	Residue_O::initialize()
     this->_NetCharge = 0;
     this->_MonomerAliases = nil<core::T_O>();
     this->_UniqueLabel = nil<core::T_O>();
-    this->pdbName = nil<core::Symbol_O>();
+    this->_PdbName = nil<core::Symbol_O>();
 }
 
 //
@@ -234,8 +234,8 @@ Residue_O::Residue_O(const Residue_O& res)
 	:Matter_O(res)
 {
     this->_Selected = res._Selected;
-    this->tempInt = res.tempInt;
-    this->pdbName = res.pdbName;
+    this->_TempInt = res._TempInt;
+    this->_PdbName = res._PdbName;
 //    ANN(res._Constitution);
 //    this->_Constitution = res._Constitution;
     this->_FileSequenceNumber = res._FileSequenceNumber;
@@ -408,7 +408,7 @@ contentIterator	aCur;
 	 * Pull out the atoms into a separate vector first and
 	 * then iterate over that
 	 */
-    for ( aCur=this->_contents.begin();aCur!=this->_contents.end(); aCur++ ) 
+    for ( aCur=this->_Contents.begin();aCur!=this->_Contents.end(); aCur++ ) 
     {
 	atoms.push_back((*aCur).as<Atom_O>());
     }
@@ -655,7 +655,7 @@ BondList_sp	Residue_O::getOutGoingBonds()
 Atom_sp Residue_O::atomWithAliasOrNil(core::Symbol_sp alias)
 {
 contentIterator	aCur;
-    for ( aCur=this->_contents.begin();aCur!=this->_contents.end(); aCur++ )
+    for ( aCur=this->_Contents.begin();aCur!=this->_Contents.end(); aCur++ )
     {
 	Atom_sp a = (*aCur).as<Atom_O>();
 	LOG("Looking at(%s) for alias(%s)" , (*aCur)->getName().c_str() , _rep_(alias)  );
@@ -671,9 +671,9 @@ Atom_sp Residue_O::atomWithAlias(core::Symbol_sp alias)
 {
     Atom_sp a = this->atomWithAliasOrNil(alias);
     if ( a.notnilp() ) return a;
-    LOG("Matter(%s) with %d contents does not contain content with alias(%s)" , this->name.c_str() , this->_contents.size() , _rep_(alias)  );
+    LOG("Matter(%s) with %d contents does not contain content with alias(%s)" , this->name.c_str() , this->_Contents.size() , _rep_(alias)  );
     stringstream ss;
-    ss << "residue (" << this->name << ") does not contain atom with alias(" << _rep_(alias) << ")";
+    ss << "residue (" << this->_Name << ") does not contain atom with alias(" << _rep_(alias) << ")";
     SIMPLE_ERROR((ss.str()));
 }
 
@@ -695,7 +695,7 @@ CL_DEFMETHOD
 core::T_mv Residue_O::atomWithName(MatterName name, bool errorp)
 {
   contentIterator	aCur;
-  for ( aCur=this->_contents.begin();aCur!=this->_contents.end(); aCur++ ) {
+  for ( aCur=this->_Contents.begin();aCur!=this->_Contents.end(); aCur++ ) {
     LOG("Looking at(%s) for(%s)" , (*aCur)->getName().c_str() , sName.c_str()  );
     if ( (*aCur)->getName() == name ) {
       return Values(*aCur,_lisp->_true());
@@ -705,7 +705,7 @@ core::T_mv Residue_O::atomWithName(MatterName name, bool errorp)
     return Values(nil<core::T_O>(),nil<core::T_O>());
   }
   stringstream ss;
-  ss << this->className() << " (" << _rep_(this->name) << ") does not contain name(" << _rep_(name) << ")";
+  ss << this->className() << " (" << _rep_(this->_Name) << ") does not contain name(" << _rep_(name) << ")";
   SIMPLE_ERROR((ss.str()));
 }
 
@@ -725,23 +725,12 @@ void	Residue_O::failIfInvalid()
 CL_LISPIFY_NAME("useAtomCoordinatesToDefineAnchors");
 CL_DEFMETHOD void	Residue_O::useAtomCoordinatesToDefineAnchors()
 {
-#if ATOMIC_ANCHOR
-contentIterator	aPPCur;
-Atom_sp				a;
-    for ( aPPCur=this->begin_atoms();
-		aPPCur != this->end_atoms(); aPPCur++ ) {
-      a = (*aPPCur).as<Atom_O>();
-	a->setAnchorPos(a->getPosition());
-	a->setAnchorRestraintOn();
-    }
-#else
     IMPLEMENT_ME();
-#endif
 }
 
 uint Residue_O::numberOfAtoms()
 {
-    return this->_contents.size();
+    return this->_Contents.size();
 }
 
 
@@ -752,12 +741,12 @@ uint Residue_O::numberOfAtoms()
 	int mid = 0;
 	atomIdMap->resize(mid,1);
 	int rid = 0;
-	int numAtoms = this->_contents[mid]->_contents[rid]->_contents.size();
+	int numAtoms = this->_Contents[mid]->_Contents[rid]->_Contents.size();
 	atomIdMap->resize(mid,rid,numAtoms);
 	for ( int aid=0; aid<numAtoms; aid++ )
 	{
 	    AtomId atomId(mid,rid,aid);
-	    atomIdMap->set(atomId,this->_contents[mid]->_contents[rid]->_contents[aid].as<Atom_O>());
+	    atomIdMap->set(atomId,this->_Contents[mid]->_Contents[rid]->_Contents[aid].as<Atom_O>());
 	}
 	return atomIdMap;
     }
@@ -767,12 +756,12 @@ uint Residue_O::numberOfAtoms()
     Atom_sp Residue_O::atomWithAtomId(const AtomId& atomId) const
     {_OF();
 	int aid = atomId.atomId();
-	if ( aid >=0 && aid <=(int)this->_contents.size() )
+	if ( aid >=0 && aid <=(int)this->_Contents.size() )
 	{
-	    Atom_sp atom = this->_contents[aid].as<Atom_O>();
+	    Atom_sp atom = this->_Contents[aid].as<Atom_O>();
 	    return atom;
 	}
-	SIMPLE_ERROR(("Illegal atomId[%d] must be less than %d") , aid , this->_contents.size() );
+	SIMPLE_ERROR(("Illegal atomId[%d] must be less than %d") , aid , this->_Contents.size() );
     }
 
 

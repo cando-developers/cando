@@ -318,19 +318,19 @@ CL_DEFMETHOD void Aggregate_O::makUnboundBoundingBox() {
     AtomIdToAtomMap_sp Aggregate_O::buildAtomIdMap() const
     {_OF();
 	AtomIdToAtomMap_sp atomIdMap = AtomIdToAtomMap_O::create();
-	atomIdMap->resize(this->_contents.size());
-	for ( int mid = 0; mid<(int)this->_contents.size(); mid++ )
+	atomIdMap->resize(this->_Contents.size());
+	for ( int mid = 0; mid<(int)this->_Contents.size(); mid++ )
 	{
-	    int numResidues = this->_contents[mid]->_contents.size();
+	    int numResidues = this->_Contents[mid]->_Contents.size();
 	    atomIdMap->resize(mid,numResidues);
 	    for ( int rid =0; rid<numResidues; rid++ )
 	    {
-		int numAtoms = this->_contents[mid]->_contents[rid]->_contents.size();
+		int numAtoms = this->_Contents[mid]->_Contents[rid]->_Contents.size();
 		atomIdMap->resize(mid,rid,numAtoms);
 		for ( int aid=0; aid<numAtoms; aid++ )
 		{
 		    AtomId atomId(mid,rid,aid);
-		    atomIdMap->set(atomId,this->_contents[mid]->_contents[rid]->_contents[aid].as<Atom_O>());
+		    atomIdMap->set(atomId,this->_Contents[mid]->_Contents[rid]->_Contents[aid].as<Atom_O>());
 		}
 	    }
 	}
@@ -341,29 +341,29 @@ CL_DEFMETHOD void Aggregate_O::makUnboundBoundingBox() {
 Atom_sp Aggregate_O::atomWithAtomId(const AtomId& atomId) const
     {_OF();
 	int molId = atomId.moleculeId();
-	if ( molId >=0 && molId <=(int)this->_contents.size() )
+	if ( molId >=0 && molId <=(int)this->_Contents.size() )
 	{
-	    Molecule_sp molecule = this->_contents[molId].as<Molecule_O>();
+	    Molecule_sp molecule = this->_Contents[molId].as<Molecule_O>();
 	    return molecule->atomWithAtomId(atomId);
 	}
-	SIMPLE_ERROR(("Illegal moleculeId[%d] must be less than %d") , molId , this->_contents.size() );
+	SIMPLE_ERROR(("Illegal moleculeId[%d] must be less than %d") , molId , this->_Contents.size() );
     }
 
 
 #if 0
     Atom_sp Aggregate_O::lookupAtom(const AtomId& atomId) const
     {_OF();
-	ASSERTF((int)this->_contents.size()==this->_AtomIdMap.numberOfMolecules(),
+	ASSERTF((int)this->_Contents.size()==this->_AtomIdMap.numberOfMolecules(),
 		("The AtomIdMap is out of sync with the Aggregate contents - wrong number of molecules - use updateAtomIdMap to correct this"));
 	this->_AtomIdMap.throwIfInvalidMoleculeId(atomId);
 	int molId = atomId.moleculeId();
-	ASSERTF((int)this->_contents[molId]->_contents.size()==this->_AtomIdMap.numberOfResidues(molId),
+	ASSERTF((int)this->_Contents[molId]->_Contents.size()==this->_AtomIdMap.numberOfResidues(molId),
 		("The AtomIdMap is out of sync with the Aggregate contents "
 		   "- wrong number of residues in molecule[%d] - use updateAtomIdMap to correct this")
 		, molId );
 	this->_AtomIdMap.throwIfInvalidResidueId(atomId);
 	int resId = atomId.residueId();
-	ASSERTF((int)this->_contents[molId]->_contents[resId]->_contents.size()==this->_AtomIdMap.numberOfAtoms(molId,resId),
+	ASSERTF((int)this->_Contents[molId]->_Contents[resId]->_Contents.size()==this->_AtomIdMap.numberOfAtoms(molId,resId),
 		("The AtomIdMap is out of sync with the Aggregate contents "
 		   "- wrong number of atoms in residue[%d]s in molecule[%d] - use updateAtomIdMap to correct this")
 		, resId , molId );
@@ -452,10 +452,10 @@ bool	Aggregate_O::equal(core::T_sp obj) const
 	if ( !obj.isA<Aggregate_O>() ) return false;
 	Aggregate_sp other = obj.as<Aggregate_O>();
 	if ( other->getName() != this->getName() ) return false;
-	if ( other->_contents.size() != this->_contents.size() ) return false;
+	if ( other->_Contents.size() != this->_Contents.size() ) return false;
 	Matter_O::const_contentIterator tit,oit;
-	for ( tit=this->_contents.begin(), oit=other->_contents.begin();
-	      tit!=this->_contents.end(); tit++, oit++ )
+	for ( tit=this->_Contents.begin(), oit=other->_Contents.begin();
+	      tit!=this->_Contents.end(); tit++, oit++ )
 	{
 	    if ( ! (*tit)->equal(*oit) ) return false;
 	}
@@ -470,13 +470,13 @@ bool	Aggregate_O::equal(core::T_sp obj) const
 	    SIMPLE_ERROR(("You can only transfer coordinates to a Aggregate from another Aggregate"));
 	}
 	Aggregate_sp other = obj.as<Aggregate_O>();
-	if ( other->_contents.size() != this->_contents.size() )
+	if ( other->_Contents.size() != this->_Contents.size() )
 	{
 	    SIMPLE_ERROR(("You can only transfer coordinates if the two Aggregates have the same number of contents"));
 	}
 	Matter_O::contentIterator tit,oit;
-	for ( tit=this->_contents.begin(), oit=other->_contents.begin();
-	      tit!=this->_contents.end(); tit++, oit++ )
+	for ( tit=this->_Contents.begin(), oit=other->_Contents.begin();
+	      tit!=this->_Contents.end(); tit++, oit++ )
 	{
 	    (*tit)->transferCoordinates(*oit);
 	}
@@ -760,7 +760,7 @@ CL_DEFMETHOD     MatterName  Aggregate_O::firstMoleculeName()
 	LOG("allocating mol" );
 	Molecule_sp mol;
 	Matter_sp c;
-	ASSERTP(this->_contents.size()>0,"Aggregate_O::firstMoleculeName contains no molecules");
+	ASSERTP(this->_Contents.size()>0,"Aggregate_O::firstMoleculeName contains no molecules");
 	c = this->contentAt(0);
 	LOG("about to downcast mol" );
 	mol = (c).as<Molecule_O>();

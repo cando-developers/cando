@@ -96,9 +96,9 @@ namespace chem {
   private:
     bool	_Selected;
     int		_NetCharge;
-    int		tempInt;
-    MatterName	pdbName;
-    uint		_FileSequenceNumber;
+    int		_TempInt;
+    MatterName	_PdbName;
+    uint	_FileSequenceNumber;
 //	CandoDatabaseReference_sp	_Constitution;
         /*! Stores a unique label that is set when
          * a residue is created from a monomer.
@@ -118,7 +118,7 @@ namespace chem {
          * their atoms 1 to 1 and allows coordinates to
          * be copied from either molecule to the other.
          */
-    gc::Nilable<MatterName>	_UniqueLabel;
+    gc::Nilable<MatterName>	        _UniqueLabel;
     gc::Nilable<adapt::SymbolSet_sp>	_MonomerAliases;
   public:
     static Residue_sp make(MatterName name);
@@ -129,10 +129,10 @@ namespace chem {
     CL_DEFMETHOD core::Symbol_sp residue_type() { return this->_Type; };
     CL_DEFMETHOD core::Symbol_sp setf_residue_type(core::Symbol_sp type) { this->_Type = type; return type; };
   
-    contentIterator begin_atoms() { return this->_contents.begin(); };
-    contentIterator end_atoms() {return this->_contents.end(); };
-    const_contentIterator begin_atoms() const { return this->_contents.begin(); };
-    const_contentIterator end_atoms() const {return this->_contents.end(); };
+    contentIterator begin_atoms() { return this->_Contents.begin(); };
+    contentIterator end_atoms() {return this->_Contents.end(); };
+    const_contentIterator begin_atoms() const { return this->_Contents.begin(); };
+    const_contentIterator end_atoms() const {return this->_Contents.end(); };
 
     virtual	char	getClass()	{return residueId; };
     char	getMatterType() { return RESIDUE_CLASS; };
@@ -157,9 +157,9 @@ namespace chem {
     void ensureAllAtomNamesAreUnique() const;
     
     CL_LISPIFY_NAME("getPdbName");
-    CL_DEFMETHOD 	MatterName getPdbName() { return this->pdbName; };
+    CL_DEFMETHOD 	MatterName getPdbName() { return this->_PdbName; };
     CL_LISPIFY_NAME("setPdbName");
-    CL_DEFMETHOD 	void	setPdbName(MatterName p) { this->pdbName = p;};
+    CL_DEFMETHOD 	void	setPdbName(MatterName p) { this->_PdbName = p;};
 
     void	setFileSequenceNumber(uint seq) { this->_FileSequenceNumber = seq;};
     CL_LISPIFY_NAME("getFileSequenceNumber");
@@ -173,8 +173,6 @@ namespace chem {
     CL_LISPIFY_NAME("setNetCharge");
     CL_DEFMETHOD 	void	setNetCharge(int nc) { this->_NetCharge = nc; };
 
-    int		getTempInt() {return this->tempInt;};
-    void		setTempInt(int j) {this->tempInt = j;};
     adapt::SymbolSet_sp	getAtomNamesAsSymbolSet();
 
     void		addAtom(Atom_sp a );
