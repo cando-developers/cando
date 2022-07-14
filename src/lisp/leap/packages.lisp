@@ -268,7 +268,8 @@
    #:load-amber-params
    #:load-atom-type-rules
    #:add-gaff
-   #:easy-gaff)
+   #:easy-gaff
+   #:easy-gaff2)
   (:use :common-lisp #+(or):chem :geom))
 
 (eval-when (:execute :load-toplevel)

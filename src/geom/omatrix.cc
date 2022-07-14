@@ -89,7 +89,38 @@ CL_DEFMETHOD Vector3 OMatrix_O::getTranslation()
   pos.set( this->_Value[3], this->_Value[7], this->_Value[11]);
   return pos;
 }
+/*
+   0  1  2  3
+   4  5  6  7 
+   8  9 10 11
+*/
+CL_DEFMETHOD Vector3 OMatrix_O::getX_Column() const
+{
+  Vector3 pos;
+  pos.set( this->_Value[0], this->_Value[4], this->_Value[8]);
+  return pos;
+}
 
+CL_DEFMETHOD Vector3 OMatrix_O::getY_Column() const
+{
+  Vector3 pos;
+  pos.set( this->_Value[0+1], this->_Value[4+1], this->_Value[8+1]);
+  return pos;
+}
+
+CL_DEFMETHOD Vector3 OMatrix_O::getZ_Column() const
+{
+  Vector3 pos;
+  pos.set( this->_Value[0+2], this->_Value[4+2], this->_Value[8+2]);
+  return pos;
+}
+
+CL_DEFMETHOD Matrix OMatrix_O::flipXY() const {
+  Matrix flipped;
+  flipped = this->_Value.flipXY();
+  return flipped;
+}
+  
 CL_DEFMETHOD void OMatrix_O::setFromVector(core::Array_sp array)
 {
   if (gc::IsA<core::SimpleVector_double_sp>(array)) {

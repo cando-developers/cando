@@ -33,7 +33,7 @@ atoms to indices into the matrix."
     (let ((topological-distance-matrix (make-array (list (hash-table-count atom-indices) (hash-table-count atom-indices)) :initial-element 0)))
       (loop for xi below (hash-table-count atom-indices)
             for xatom = (elt (molecule-graph-atoms graph) xi)
-            do (let ((spanning-loop (chem:make-spanning-loop xatom)))
+            do (let ((spanning-loop (chem:spanning-loop/make xatom)))
                  (loop for next-atom = (chem:advance-loop-and-process spanning-loop)
                        if next-atom
                          do (let* ((atm (chem:get-atom spanning-loop))

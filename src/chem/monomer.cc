@@ -214,7 +214,8 @@ CL_DEFMETHOD     core::List_sp	Monomer_O::plugNamesAndCouplingsAsList()
 }
 
 
-bool Monomer_O::hasRingClosingOutPlug() const
+CL_NAME(CHEM:MONOMER/HAS-RING-CLOSING-OUT-PLUG);
+CL_DEFMETHOD bool Monomer_O::hasRingClosingOutPlug() const
 {_OF();
   Couplings::iterator it;
   for ( it=this->_Couplings.begin(); it!=this->_Couplings.end(); it++ )
@@ -642,6 +643,8 @@ void Monomer_O::fields(core::Record_sp node)
 {
   node->field_if_not_nil(INTERN_(kw,id),this->_Id);
   node->field(INTERN_(kw,seqnum),this->_SequenceNumber);
+  node->field(INTERN_(kw,couplings),this->_Couplings);
+#if 0
   gctools::Vec0<core::T_sp> pairs;
   switch (node->stage()) {
   case core::Record_O::saving:
@@ -669,6 +672,7 @@ void Monomer_O::fields(core::Record_sp node)
   }
       break;
   }
+#endif
   node->field(INTERN_(kw,index),this->_CurrentMonomerIndex);
   node->field(INTERN_(kw,monomers),this->_Monomers);
 //  node->field(INTERN_(kw,groupName),this->_GroupName);

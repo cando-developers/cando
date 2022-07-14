@@ -1,3 +1,5 @@
+(in-package :asdf-user)
+
 (asdf:defsystem #:cando-user
   :description "The CANDO user system"
   :version "0.0.1"
@@ -6,7 +8,7 @@
   :depends-on (#:cando-primop
                #:cando
                #:charges
-               #:design
+               #+(or)#:design
                #:smiles
                #:leap
                #:leap-commands

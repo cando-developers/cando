@@ -123,7 +123,7 @@ public:
     /*! Build an AtomIdMap that maps moleculeId/residueId/atomId to atoms
      Call this after you make any changes to the structure of the Aggregate.
     This is automatically called whenever an Aggregate is loaded. */
-    virtual AtomIdToAtomMap_sp buildAtomIdMap() const;
+    virtual AtomIdMap_sp buildAtomIdMap() const;
 
 
     virtual Atom_sp atomWithAtomId(const AtomId& atomId) const;
@@ -147,9 +147,9 @@ public:
 //    virtual bool equal(core::T_sp obj) const;
     virtual void	transferCoordinates(Matter_sp other);
 
-    virtual void addMatter(Matter_sp matter);
+    virtual Matter_mv addMatter(Matter_sp matter);
 CL_LISPIFY_NAME("addMolecule");
-CL_DEFMETHOD     Aggregate_sp	addMolecule( Molecule_sp a ) {this->addMatter(a); return this->sharedThis<Aggregate_O>();};
+CL_DEFMETHOD     void	addMolecule( Molecule_sp a ) {this->addMatter(a);};
     Aggregate_sp	addMoleculeRetainId( Molecule_sp a ) {this->addMatterRetainId(Matter_sp(a)); return this->sharedThis<Aggregate_O>();};
     Molecule_sp      firstMolecule();
     MatterName     firstMoleculeName();

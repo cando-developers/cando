@@ -159,6 +159,9 @@ CL_DEFMETHOD Residue_sp Topology_O::buildResidueForIsomer(size_t isomer) const
     atom->turnOnFlags(needsBuild);
 //    printf("%s:%d  Creating atom@%d -> %s\n", __FILE__, __LINE__, ai->_ConstitutionAtomIndex, _rep_(atom).c_str());
     atoms[ai->_ConstitutionAtomIndex] = atom;
+    if (ai->_ConstitutionAtomIndex != idx) {
+      SIMPLE_ERROR(("The atom %s _ConstitutionAtomIndex %lu does not match the StereoisomerAtoms idx %lu") , _rep_(atom) , ai->_ConstitutionAtomIndex , idx );
+    }
     res->putMatter(idx,atom); // order atoms as in Topology
   }
   for ( size_t i=0, iEnd(constitutionAtoms->numberOfAtoms()); i<iEnd; ++i ) {
@@ -355,15 +358,23 @@ CL_DEFUN void connect_residues(Topology_sp prev_topology,
   Atom_sp out_atom = gc::As_unsafe<Atom_sp>(prev_residue->atomWithName(out_plug_atom_name));
   Atom_sp in_atom = gc::As_unsafe<Atom_sp>(next_residue->atomWithName(in_plug_atom_name));
 //  printf("%s:%d  out_atom = %s  in_atom = %s\n", __FILE__, __LINE__, _rep_(out_atom).c_str(), _rep_(in_atom).c_str());
-  BondOrder bo = in_plug->getBondOrder0();
-  Bond_O::canonicalizeBondOrder(in_atom,out_atom,bo);
-  in_atom->bondTo(out_atom, bo);
+  BondOrder boIn0 = in_plug->getBondOrder0();
+  BondOrder boOut0 = out_plug->getBondOrder0();
+  Bond_O::canonicalizeBondOrder(in_atom,out_atom,boIn0);
+  if (boIn0!=boOut0) {
+    SIMPLE_ERROR(("bond order of in-plug %s/%s does not match bond order of out-plug %s/%s") , _rep_(in_plug_name) , bondOrderToString(boIn0) , _rep_(out_plug_name) , bondOrderToString(boOut0));
+  }
+  in_atom->bondTo(out_atom, boIn0);
   if (in_plug->getB1().notnilp()) {
     Atom_sp out_atom = gc::As_unsafe<Atom_sp>(prev_residue->atomWithName(out_plug->getB1()));
     Atom_sp in_atom = gc::As_unsafe<Atom_sp>(next_residue->atomWithName(in_plug->getB1()));
-    BondOrder bo = in_plug->getBondOrder1();
-    Bond_O::canonicalizeBondOrder(in_atom,out_atom,bo);
-    in_atom->bondTo(out_atom, bo);
+    BondOrder boIn1 = in_plug->getBondOrder1();
+    BondOrder boOut1 = out_plug->getBondOrder1();
+    Bond_O::canonicalizeBondOrder(in_atom,out_atom,boIn1);
+    if (boIn1!=boOut1) {
+      SIMPLE_ERROR(("bond order 1 of in-plug %s/%s does not match bond order of out-plug %s/%s") , _rep_(in_plug_name) , bondOrderToString(boIn1) , _rep_(out_plug_name) , bondOrderToString(boOut1));
+    }
+    in_atom->bondTo(out_atom, boIn1);
   }
 }
 
@@ -414,7 +425,7 @@ CL_DEFMETHOD     Topology_O::plugType Topology_O::getInPlug()
 }
 
 
-CL_LISPIFY_NAME("plugsAsList");
+CL_NAME(CHEM:TOPOLOGY/PLUGS-AS-LIST);
 CL_DEFMETHOD     core::List_sp Topology_O::plugsAsList()
 {_OF();
   core::Cons_sp first = core::Cons_O::create(nil<core::T_O>(),nil<core::T_O>());
@@ -647,7 +658,7 @@ CL_DEFMETHOD void Topology_O::setProperty(core::Symbol_sp symbol, core::T_sp val
 }
 
 CL_DOCSTRING(R"dx(Return the property **symbol** of **this** (a chem:topology) - if it isn't defined return NIL.)dx")
-CL_LISPIFY_NAME("getProperty");
+CL_NAME(CHEM:TOPOLOGY/GET-PROPERTY);
 CL_DEFMETHOD core::T_sp Topology_O::getProperty(core::Symbol_sp symbol)
 {
   core::T_sp res = core::cl__getf(this->_Properties,symbol,unbound<core::T_O>());

@@ -48,7 +48,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <llvm/Transforms/IPO.h>
 #include <llvm/IR/InlineAsm.h>
 #include <llvm/Support/FormattedStream.h>
-#include <llvm/Support/TargetRegistry.h>
+#include <llvm/MC/TargetRegistry.h>
 #include <llvm/Support/MathExtras.h>
 #include <llvm/Pass.h>
 #include <llvm/IR/LegacyPassManager.h>
@@ -331,15 +331,22 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/units/unitsPackage.h>
 
 #ifdef USE_KINEMATICS
-#include <cando/kinematics/aggregateNode.h>
 #include <cando/kinematics/joint.fwd.h>
 #include <cando/kinematics/joint.h>
+#include <cando/kinematics/dofType.h>
+#include <cando/kinematics/stub.fwd.h>
+#include <cando/kinematics/stub.h>
+#include <cando/kinematics/jump.h>
+#include <cando/kinematics/jumpJoint.h>
+#include <cando/kinematics/bondedJoint.h>
+#include <cando/kinematics/complexBondedJoint.h>
+
+# if 0
+#include <cando/kinematics/aggregateNode.h>
 #include <cando/kinematics/jointTemplate.fwd.h>
 #include <cando/kinematics/jointTemplate.h>
-#include <cando/kinematics/jointTree.h>
 #include <cando/kinematics/bondId.fwd.h>
 #include <cando/kinematics/bondId.h>
-#include <cando/kinematics/bondedJoint.h>
 #include <cando/kinematics/chainNode.fwd.h>
 #include <cando/kinematics/chainNode.h>
 #include <cando/kinematics/chiDihedrals.fwd.h>
@@ -349,10 +356,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/kinematics/coordinateCalculators.h>
 #include <cando/kinematics/delayedBondedJoint.h>
 #include <cando/kinematics/dofId.h>
-#include <cando/kinematics/dofType.h>
 #include <cando/kinematics/foldTree.h>
-#include <cando/kinematics/jump.h>
-#include <cando/kinematics/jumpJoint.h>
 #include <cando/kinematics/kinFoundation.h>
 #include <cando/kinematics/kinematicsPackage.h>
 #include <cando/kinematics/monomerBaseNode.fwd.h>
@@ -368,8 +372,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/kinematics/rootJointInfo.h>
 #include <cando/kinematics/rootBondedJoint.h>
 #include <cando/kinematics/rotamer.h>
-#include <cando/kinematics/stub.fwd.h>
-#include <cando/kinematics/stub.h>
+# endif
 #endif
 
 #endif
@@ -398,14 +401,16 @@ GC_MANAGED_TYPE(gctools::GCVector_moveable<chem::RigidBodyAtomInfo>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::SmallOrderedSet<gctools::smart_ptr<chem::Atom_O>>>);
 
 #ifdef USE_KINEMATICS
+GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<kinematics::Joint_O>>);
+#if 0
 GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<kinematics::JointTemplate_O>>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<kinematics::MonomerNode_O>>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<kinematics::ChainNode_O>>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<kinematics::Rotamer_O>>);
-GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<kinematics::Joint_O>>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<kinematics::ChiDihedral_O>>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<kinematics::BackboneDependentRotamerSet_O>>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<kinematics::MonomerNode_O>>> );
+#endif
 #endif
 
 
@@ -716,7 +721,7 @@ class Vector3;
     class AtomTest_O;
     class Logical_O;
     class StepReport_O;
-    class AtomIdToAtomMap_O;
+    class AtomIdMap_O;
     class FFVdwDb_O;
     class OctNode_O;
     class Octree_O;

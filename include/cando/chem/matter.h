@@ -262,7 +262,7 @@ protected:
   CL_LISPIFY_NAME("getName");
   CL_DEFMETHOD   MatterName getName_notConst() { return this->_Name; };
 
-  virtual void	addMatter( Matter_sp child );
+  virtual Matter_mv	addMatter( Matter_sp child );
   void	addMatterRetainId( Matter_sp child );
   void	removeMatter( Matter_sp child );
 
@@ -368,7 +368,7 @@ protected:
   core::List_sp allImproperTorsionsAsList(bool allowVirtualAtoms) const;
 
 	/*! Build a map of AtomIds to Atoms */
-  virtual AtomIdToAtomMap_sp buildAtomIdMap() const;
+  virtual AtomIdMap_sp buildAtomIdMap() const;
 
 	/*! Return the atom with the AtomId */
   virtual Atom_sp atomWithAtomId(const AtomId& atomId) const;

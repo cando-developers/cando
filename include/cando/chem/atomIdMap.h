@@ -28,6 +28,8 @@ This is an open source license for the CANDO software from Temple University, bu
 
 #include <clasp/core/common.h>
 #include <cando/chem/atomId.h>
+#include <clasp/core/array.h>
+
 
 namespace chem
 {
@@ -37,18 +39,18 @@ namespace chem
 class AtomIdMapFunctor
 {
 public:
-  virtual void operator()(const AtomId& atomId, Atom_sp atom) = 0;
+  virtual void operator()(const AtomId& atomId, core::T_sp atom) = 0;
 };
 
 
-
+#if 0
 template <class T>
-class AtomIdMap
+class AtomIdMap_
 {
 public:
-  typedef	gctools::Vec0<T>		AtomMap;
-  typedef	gctools::Vec0<AtomMap>		ResidueMap;
-  typedef	gctools::Vec0<ResidueMap>	MoleculeMap;
+  typedef	core::SimpleVector_sp	AtomMap;
+  typedef	core::SimpleVector_sp	ResidueMap;
+  typedef	core::SimpleVector_sp	MoleculeMap;
 
 public:	// Functions here
 
@@ -179,35 +181,83 @@ public:
   T		_DefaultValue;
   MoleculeMap	_MoleculeMap;
 };
+#endif
 
 
 
-
-FORWARD(AtomIdToAtomMap);
-class AtomIdToAtomMap_O : public core::CxxObject_O
+FORWARD(AtomIdMap);
+class AtomIdMap_O : public core::CxxObject_O
 {
-  LISP_CLASS(chem,ChemPkg,AtomIdToAtomMap_O,"AtomIdToAtomMap",core::CxxObject_O);
+  LISP_CLASS(chem,ChemPkg,AtomIdMap_O,"AtomIdMap",core::CxxObject_O);
 private:
-  AtomIdMap<Atom_sp>	_AtomIdMap;
+  core::ComplexVector_T_sp _AtomIdMap;
 public:
   bool fieldsp() const { return true; };
   void fields(core::Record_sp node);
   void initialize();
-
 public:
-  void resize(int numMolecules);
-  void resize(int mol, int numRes);
-  void resize(int mol, int res, int numAtoms);
-  void set(AtomId const& atomId, Atom_sp atom);
-  Atom_sp lookupAtom(const AtomId& atomId) const ;
+  AtomIdMap_sp make();
+public:
+  core::T_sp safeLookup(const AtomId& atomId) const
+  {
+    if (atomId.moleculeId()<this->_AtomIdMap->length()) {
+      core::ComplexVector_T_sp residues = gc::As<core::ComplexVector_T_sp>(this->_AtomIdMap->rowMajorAref(atomId.moleculeId()));
+      if (atomId.residueId()<residues->length()) {
+        core::ComplexVector_T_sp atoms = gc::As<core::ComplexVector_T_sp>(residues->rowMajorAref(atomId.residueId()));
+        if (atomId.atomId()<atoms->length()) {
+          return atoms->rowMajorAref(atomId.atomId());
+        }
+        SIMPLE_ERROR(("atom index %lu is out of range %lu") , atomId.atomId() , atoms->length() );
+      }
+      SIMPLE_ERROR(("residue index %lu is out of range %lu") , atomId.residueId() , residues->length() );
+    }
+    SIMPLE_ERROR(("molecule index %lu is out of range %lu") , atomId.moleculeId() , this->_AtomIdMap->length());
+  }
+
+  void safeSet(const AtomId& atomId, core::T_sp value) const
+  {
+    if (atomId.moleculeId()<this->_AtomIdMap->length()) {
+      core::ComplexVector_T_sp residues = gc::As<core::ComplexVector_T_sp>(this->_AtomIdMap->rowMajorAref(atomId.moleculeId()));
+      if (atomId.residueId()<residues->length()) {
+        core::ComplexVector_T_sp atoms = gc::As<core::ComplexVector_T_sp>(residues->rowMajorAref(atomId.residueId()));
+        if (atomId.atomId()<atoms->length()) {
+          atoms->rowMajorAset( atomId.atomId(), value );
+          return;
+        }
+        SIMPLE_ERROR(("atom index %lu is out of range %lu") , atomId.atomId() , atoms->length() );
+      }
+      SIMPLE_ERROR(("residue index %lu is out of range %lu") , atomId.residueId() , residues->length() );
+    }
+    SIMPLE_ERROR(("molecule index %lu is out of range %lu") , atomId.moleculeId() , this->_AtomIdMap->length());
+  }
+
+  	/*! Iterate over every atom in the AtomIdMap and call the Functor with the AtomId and the atom */
+  void iterate(AtomIdMapFunctor& functor) const
+  {
+    for ( int mid=0; mid<(int)this->_AtomIdMap->length(); mid++ ) {
+      core::ComplexVector_T_sp residues = gc::As<core::ComplexVector_T_sp>(this->_AtomIdMap->rowMajorAref(mid));
+      for ( int rid=0; rid<(int)residues->length(); rid++ ) {
+        core::ComplexVector_T_sp atoms = gc::As<core::ComplexVector_T_sp>(residues->rowMajorAref(mid));
+        for ( int aid=0; aid<(int)atoms->length(); aid++ ) {
+          AtomId atomId(mid,rid,aid);
+          functor(atomId,atoms->rowMajorAref(aid));
+        }
+      }
+    }
+  }
+
+  void resizeAggregate(int numMolecules);
+  void resizeMolecule(int mol, int numRes);
+  void resizeResidue(int mol, int res, int numAtoms);
+  void set(AtomId const& atomId, core::T_sp atom);
+  void AtomIdMap_set(AtomId const& atomId, core::T_sp );
+  core::T_sp AtomIdMap_get(const AtomId& atomId) const ;
   void walk(core::Function_sp callback);
-  DEFAULT_CTOR_DTOR(AtomIdToAtomMap_O);
+  AtomIdMap_O() {};
 };
 
 
 
 }; /* chem */
-
-TRANSLATE(chem::AtomIdToAtomMap_O);
 
 #endif /* _ATOMIDMAP_H */

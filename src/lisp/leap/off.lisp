@@ -216,10 +216,12 @@ Use eof-error-p and eof as in read."
     atoms))
 
 (defun assemble-hierarchy (read-hierarchy residues atoms)
-  (let ((unit (chem:make-aggregate)))
+  (let ((unit (chem:make-aggregate))
+        (unit-single-molecule (chem:make-molecule)))
+    (chem:add-matter unit unit-single-molecule)
     (flet ((object-of-type (type index)
              (cond
-               ((equal type "U") unit)
+               ((equal type "U") unit-single-molecule)
                ((equal type "M") (error "Implement way to get molecule"))
                ((equal type "R") (elt residues (1- index)))
                ((equal type "A") (elt atoms (1- index)))

@@ -315,18 +315,18 @@ CL_DEFMETHOD void Aggregate_O::makUnboundBoundingBox() {
 
 
 
-    AtomIdToAtomMap_sp Aggregate_O::buildAtomIdMap() const
+    AtomIdMap_sp Aggregate_O::buildAtomIdMap() const
     {_OF();
 	AtomIdToAtomMap_sp atomIdMap = AtomIdToAtomMap_O::create();
-	atomIdMap->resize(this->_Contents.size());
+	atomIdMap->resizeAggregate(this->_Contents.size());
 	for ( int mid = 0; mid<(int)this->_Contents.size(); mid++ )
 	{
 	    int numResidues = this->_Contents[mid]->_Contents.size();
-	    atomIdMap->resize(mid,numResidues);
+	    atomIdMap->resizeMolecule(mid,numResidues);
 	    for ( int rid =0; rid<numResidues; rid++ )
 	    {
 		int numAtoms = this->_Contents[mid]->_Contents[rid]->_Contents.size();
-		atomIdMap->resize(mid,rid,numAtoms);
+		atomIdMap->resizeResidue(mid,rid,numAtoms);
 		for ( int aid=0; aid<numAtoms; aid++ )
 		{
 		    AtomId atomId(mid,rid,aid);
@@ -677,17 +677,20 @@ CL_DEFMETHOD     Molecule_sp Aggregate_O::firstMoleculeWithAtomNamed(core::Symbo
 }
 
 
-    void Aggregate_O::addMatter(Matter_sp matter)
+Matter_mv Aggregate_O::addMatter(Matter_sp matter)
+{
+  if ( matter.isA<Molecule_O>() ) return this->Base::addMatter(matter);
+  SIMPLE_ERROR(("Don't add anything other than molecules"));
+#if 0
+  if ( matter.isA<Aggregate_O>())
+  {
+    for ( Matter_O::contentIterator it=matter->begin_contents(); it!=matter->end_contents(); it++ )
     {
-	if ( matter.isA<Molecule_O>() ) this->Base::addMatter(matter);
-	if ( matter.isA<Aggregate_O>())
-	{
-	    for ( Matter_O::contentIterator it=matter->begin_contents(); it!=matter->end_contents(); it++ )
-	    {
-		this->Base::addMatter(*it);
-	    }
-	}
+      this->Base::addMatter(*it);
     }
+  }
+#endif
+}
 
 
     Atom_sp	Aggregate_O::firstAtomWithName( MatterName name )

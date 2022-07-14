@@ -44,14 +44,11 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/symbolTable.h>
 #include <clasp/core/wrappers.h>
 
+SYMBOL_EXPORT_SC_(ChemPkg,warn_estimated_stretch_term);
 
 
 namespace chem
 {
-
-
-
-
 
 
 #ifdef XML_ARCHIVE
@@ -83,7 +80,7 @@ void	EstimateStretch::parseFromXml(adapt::QDomNode_sp node)
                            + t2->symbolName()->get_std_string());
     }
 
-CL_NAME(CHEM:FFSTRETCH-DB-ADD);
+CL_NAME(CHEM:FFSTRETCH-DB/ADD);
 CL_DEFMETHOD void    FFStretchDb_O::add(FFStretch_sp term)
 {
     core::Symbol_sp key;
@@ -103,7 +100,7 @@ CL_DEFUN core::Symbol_sp chem__canonicalStretchKey(core::Symbol_sp type1, core::
 }
 
 CL_LISPIFY_NAME("findTerm");
-CL_DOCSTRING(R"dx(Return the stretch term or NIL if none was found)dx")
+CL_DOCSTRING(R"dx(Return the stretch term or estimate if none was found)dx")
 CL_DEFMETHOD core::T_sp	FFStretchDb_O::findTerm(chem::Atom_sp a1, chem::Atom_sp a2)
 {
   FFStretch_sp	match;

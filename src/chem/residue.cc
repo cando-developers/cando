@@ -734,15 +734,15 @@ uint Residue_O::numberOfAtoms()
 }
 
 
-    AtomIdToAtomMap_sp Residue_O::buildAtomIdMap() const
+    AtomIdMap_sp Residue_O::buildAtomIdMap() const
     {_OF();
-	AtomIdToAtomMap_sp atomIdMap = AtomIdToAtomMap_O::create();
-	atomIdMap->resize(1);
+	AtomIdMap_sp atomIdMap = AtomIdMap_O::create();
+	atomIdMap->resizeAggregate(1);
 	int mid = 0;
-	atomIdMap->resize(mid,1);
+	atomIdMap->resizeMolecule(mid,1);
 	int rid = 0;
 	int numAtoms = this->_Contents[mid]->_Contents[rid]->_Contents.size();
-	atomIdMap->resize(mid,rid,numAtoms);
+	atomIdMap->resizeResidue(mid,rid,numAtoms);
 	for ( int aid=0; aid<numAtoms; aid++ )
 	{
 	    AtomId atomId(mid,rid,aid);

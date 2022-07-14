@@ -54,9 +54,9 @@ But that is a superset of what we want to display if the user asks
 for a list of symbols.  When they ask for a list of symbols we use this list.")))
 
 
-(defparameter *leap-env* (make-instance 'leap-environment))
+(defvar *leap-env* (make-instance 'leap-environment))
 
-(defparameter *leap-variable-case* :upcase)
+(defvar *leap-variable-case* :upcase)
 
 (defun convert-leap-case (name)
   "Convert the case of the string according to leap-variable-case"
@@ -185,8 +185,9 @@ Lookup the object in the variable space."
                           (format t "; eval ~a~%" value))
                         (eval value)))
                      (:function
-                      (let ((function-name (function-lookup name environment))
-                            (args (first (funcall recurse :relations '(:argument)))))
+                      (let* ((function-name (function-lookup name environment))
+                             (recurse-return (funcall recurse :relations '(:argument)))
+                             (args (first recurse-return)))
                         (when *load-verbose*
                           (format t "; eval ~a ~a~%" function-name args))
                         (if (listp args)
@@ -195,7 +196,7 @@ Lookup the object in the variable space."
                      (:assignment
                       (let ((value (first (first (funcall recurse :relations '(:value))))))
                         (when *load-verbose*
-                          (format t "; eval ~a = ~a~%" name value))
+                          (format t "; eval ~s = ~a~%" name value))
                         (register-variable name (lookup-variable value))))
                      (t
                       (funcall recurse))))

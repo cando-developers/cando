@@ -547,6 +547,12 @@ SIMPLE_ERROR(("I wasn't sure if this was ever called.  Take out this THROW if it
 //    SIGNAL(this,Coupling_connectionsChanged);
 };
 
+CL_NAME(CHEM:COUPLING/IS-RING-CLOSING);
+CL_DEFMETHOD bool Coupling_O::isRingClosing() const
+{
+  return false;
+}
+
 
 Coupling_sp DirectionalCoupling_O::copyAndReplaceMonomers( Monomer_sp monomer1, Monomer_sp monomer2 ) {
   return DirectionalCoupling_O::make( monomer1, this->_SourcePlugName, this->_TargetPlugName, monomer2 );

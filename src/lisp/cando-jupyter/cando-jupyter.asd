@@ -12,4 +12,5 @@
                #:amber-jupyter)
   :serial t
   :components ((:file "packages")
+               (:file "ui")
                (:file "kernel")))

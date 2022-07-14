@@ -35,61 +35,107 @@ namespace kinematics
 // ----------------------------------------------------------------------
 //
 
-    Stub::Stub(Vector3 const& center,
-	       Vector3 const& a,
-	       Vector3 const& b,
-	       Vector3 const& c)
-    {
-	this->fromFourJoints(center,a,b,c);
-    }
+Stub::Stub(Vector3 const& center,
+           Vector3 const& a,
+           Vector3 const& b,
+           Vector3 const& c)
+{
+  this->fromFourPoints(center,a,b,c);
+}
 
 
 
-    bool Stub::isOrthogonal(double tol) const
-    {
-	return this->_Transform.is3x3Orthogonal(tol);
-    }
+bool Stub::isOrthogonal(double tol) const
+{
+  return this->_Transform.is3x3Orthogonal(tol);
+}
 
 
-    void Stub::fromFourJoints(Vector3 const& center,
-			      Vector3 const& a,
-			      Vector3 const& b,
-			      Vector3 const& c)
-    {
-	this->_Transform.setToIdentity();
-	LOG("center = %s" , center.asString());
-	LOG("a = %s" , a.asString());
-	LOG("b = %s" , b.asString());
-	LOG("c = %s" , c.asString());
-	Vector3 e1(a-b);
-	e1 = e1.normalized();
-	LOG("e1 = (a-b).normalized : %s" , e1.asString() );
-	Vector3 e3(e1.crossProduct(c-b));
-	e3 = e3.normalized();
-	LOG("e3 = (e1.crossProduct(c-b)).normalized : %s" , e3.asString() );
-	Vector3 e2(e3.crossProduct(e1));
-	LOG("e2 = (e3.crossProduct(e1)): %s" , e2.asString() );
-	LOG("Stub before being set: %s" , this->_Transform.asStringFormatted());
-	this->_Transform.colX(e1).colY(e2).colZ(e3).setTranslate(center);
-	LOG("Stub = \n%s" , this->_Transform.asStringFormatted());
-    }
+/** Generate a Stub using four points centered on center.
+    The Stub axes are e1_ = normalized(a-b).
+                      e3_ = normalized(crossProduct(e1_,(c-b)))
+                      e2_ = crossProduct(e3_,e1_)
+    Stub is colX(e1).colY(e2).colZ(e3).setTranslate(center)
+*/
+void Stub::fromFourPoints(Vector3 const& center,
+                          Vector3 const& a,
+                          Vector3 const& b,
+                          Vector3 const& c)
+{
+  LOG(("center = %s") , center.asString());
+  LOG(("a = %s") , a.asString());
+  LOG(("b = %s") , b.asString());
+  LOG(("c = %s") , c.asString());
+  Vector3 e1(a-b);
+  e1 = e1.normalized();
+  LOG(("e1 = (a-b).normalized : %s") , e1.asString() );
+  Vector3 e3(e1.crossProduct(c-b));
+  e3 = e3.normalized();
+  LOG(("e3 = (e1.crossProduct(c-b)).normalized : %s") , e3.asString() );
+  Vector3 e2(e3.crossProduct(e1));
+  LOG(("e2 = (e3.crossProduct(e1)): %s") , e2.asString() );
+  LOG(("Stub before being set: %s") , this->_Transform.asStringFormatted());
+  this->_Transform.colX(e1).colY(e2).colZ(e3).setTranslate(center);
+  LOG(("Stub = \n%s") , this->_Transform.asStringFormatted());
+}
 
 
-    void Stub::multiplyRotationPart(const Matrix& multiplier)
-    {
-	this->_Transform.multiply3x3SaveTranslation(multiplier);
-    }
+#if 0
+void Stub::fromTwoPoints(Vector3 const& center,
+                         Vector3 const& a)
+{
+  LOG(BF("center = %s") % center.asString());
+  LOG(BF("a = %s") % a.asString());
+  Vector3 e1(a-center);
+  e1 = e1.normalized();
+  LOG(BF("e1 = (a-b).normalized : %s") % e1.asString() );
+  Vector3 unit1(0.0,1.0,0.0);
+  Vector3 e2;
+  Vector3 e3Try1(e1.crossProduct(unit1));
+  Vector3 e3;
+  if (e3Try1.lengthSquared()<0.01) {
+    Vector3 unit2(0.0,0.0,1.0);
+    e3 = e1.crossProduct(unit2);
+    e3 = e3.normalized();
+  } else {
+    e3 = e3Try1.normalized();
+  }
+  e2 = e3.crossProduct(e1);
+  LOG(BF("e2 = (e3.crossProduct(e1)): %s") % e2.asString() );
+  LOG(BF("Stub before being set: %s") % this->_Transform.asStringFormatted());
+  this->_Transform.colX(e1).colY(e2).colZ(e3).setTranslate(center);
+  LOG(BF("Stub = \n%s") % this->_Transform.asStringFormatted());
+}
+#endif
+
+void Stub::fromCenterAndRotation(const Vector3& center,
+                                 const Matrix& transform) {
+  this->_Transform.colX(transform.colX())
+      .colY(transform.colY())
+      .colZ(transform.colZ())
+      .setTranslate(center);
+}
+
+void Stub::fromMatrix(const Matrix& transform) {
+  this->_Transform = transform;
+}
+
+
+void Stub::multiplyRotationPart(const Matrix& multiplier)
+{
+  this->_Transform.multiply3x3SaveTranslation(multiplier);
+}
 	    
 
-    void Stub::addToTranslation(const Vector3& offset)
-    {
-	this->_Transform.addToTranslation(offset);
-    }
+void Stub::addToTranslation(const Vector3& offset)
+{
+  this->_Transform.addToTranslation(offset);
+}
 
-    Vector3 Stub::rotationColX() const
-    {
-	return this->_Transform.colX();
-    }
+Vector3 Stub::rotationColX() const
+{
+  return this->_Transform.colX();
+}
 
 
 }; /* kinematics */

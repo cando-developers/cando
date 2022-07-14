@@ -149,7 +149,7 @@ CL_PRE_GC_STARTUP void cando_initialize_gc()
   std::vector<string> parts = core::split(core::global_options->_ExecutableName, "/");
   std::string exec_name = parts[parts.size()-1];
   if (exec_name.find("leap") != std::string::npos ||
-      core::global_options->_Features.contains("LEAP-SYNTAX")) {
+      core::global_options->_Features.find("LEAP-SYNTAX") != core::global_options->_Features.end()) {
     core::global_options->_ProcessArguments = leap_process_arguments;
   }
 }
@@ -157,7 +157,7 @@ CL_PRE_GC_STARTUP void cando_initialize_gc()
 
 CL_INITIALIZER void cando_initializer()
 {
-  if (!core::global_options->_Features.contains("IGNORE-EXTENSIONS")) {
+  if (core::global_options->_Features.find("IGNORE-EXTENSIONS") == core::global_options->_Features.end()) {
     geom::GeomExposer_O* GeomPkg = new geom::GeomExposer_O(_lisp);
     units::UnitsExposer_O* UnitsPkg = new units::UnitsExposer_O(_lisp);
     adapt::AdaptExposer_O* AdaptPkg = new adapt::AdaptExposer_O(_lisp);

@@ -790,7 +790,7 @@ MTRIX- Used to build a list of matrices."
 
 (defun atom-names-match-topology (atom-names topology)
   (let* ((constitution (chem:get-constitution topology))
-         (constitution-atoms (chem:get-constitution-atoms constitution))
+         (constitution-atoms (chem:constitution/get-constitution-atoms constitution))
          (constitution-atoms-as-list (chem:constitution-atoms-as-list constitution-atoms)))
     (let ((topology-atom-names (loop for ca in constitution-atoms-as-list
                                      collect (chem:atom-name ca))))

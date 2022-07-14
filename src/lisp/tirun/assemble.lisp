@@ -133,7 +133,7 @@
           (loop for index below (length atom-vector)
                 for atom = (aref atom-vector index)
                 when atom
-                  do (let* ((spanning-loop (chem:make-spanning-loop atom))
+                  do (let* ((spanning-loop (chem:spanning-loop/make atom))
                             (group (loop for span-atom in (chem:all-atoms spanning-loop)
                                          for index = (gethash span-atom atom-to-index)
                                          do (setf (aref atom-vector index) nil)

@@ -8,7 +8,7 @@
              (mol (chem:content-at agg 0))
              (res (chem:content-at mol 0))
              (atm (chem:content-at res 0))
-             (span (chem:make-spanning-loop atm))
+             (span (chem:spanning-loop/make atm))
              (atoms (chem:all-atoms span)))
         (length atoms))
       (95))

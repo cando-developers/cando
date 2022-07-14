@@ -402,6 +402,11 @@ This will place the calculated bond on one or the other side of the x1,y1-x2,y2 
               (multiple-value-bind (pos1 pos2 delta12 len12 dir12 left start stop)
                   (calculate-bond-geometry atom-node1 atom-node2)
                 (cond
+                  ((eq :no-bond bond-order)
+                   (list (make-instance 'line :p1 (calc-pos pos1 dir12 start)
+                                              :p2 (calc-pos pos1 dir12 stop)
+                                              :class bond-class
+                                              :color "blue")))
                   ((eq :unknown-order-bond bond-order)
                    (list (make-instance 'line :p1 (calc-pos pos1 dir12 start)
                                               :p2 (calc-pos pos1 dir12 stop)

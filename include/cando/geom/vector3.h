@@ -108,12 +108,15 @@ public:
   void	setVector( double x, double y, double z) {this->set(x,y,z);};
   Vector3 crossProduct( const Vector3& v ) const;
   void crossProductSet(const Vector3& v, Vector3& result ) const;
-  double dotProduct( const Vector3& v ) {
+  double dotProduct( const Vector3& v ) const {
     return(this->getX()*v.getX()
            +this->getY()*v.getY()
            +this->getZ()*v.getZ());
   }
   double	length() const;
+  double	lengthSquared() const {
+    return this->dotProduct(*this);
+  }
 
   //! If the Vector3 is not defined then set all coordinates to 0.0
   void	setIsDefined(bool isDef) { if ( !isDef ) { this->set(0.0,0.0,0.0); }; };

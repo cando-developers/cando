@@ -1,3 +1,106 @@
+(cl:in-package #:common-lisp-user)
+
+(defpackage #:design.load
+  (:use #:cl )
+  (:export
+   load-cdxml
+   #:setup)
+  (:documentation
+   "Load cdxml files and build topologies for doing design"))
+
+
+(defpackage #:design.joint-tree
+  (:use #:cl )
+  (:export
+   #:joint-template
+   #:bonded-joint-template
+   #:in-plug-bonded-joint-template
+   #:complex-bonded-joint-template
+   #:jump-joint-template
+   #:in-plug
+   #:name
+   #:id
+   #:children
+   #:constitution
+   #:atom-name
+   #:parent
+   #:input-stub-joints
+   #:plugs
+   #:stereo-information
+   #:build-internal-coordinate-joint-template-tree
+   #:extract-prepare-topologys)
+  (:documentation
+   "Embryonic joint-tree code"))
+
+(defpackage #:design
+  (:use #:cl )
+  (:export
+   #:configure
+   #:make-design
+   #:grammar
+   #:cap-name-map
+   #:build-molecule
+   #:*complex-plugs*
+   #:complex-plug
+   #:name
+   #:smarts
+   #:compiled-smarts
+   #:complex-plug-or-nil
+   #:dkp
+   #:define-part
+   #:make-oligomer
+   #:context
+   #:design
+   #:chemdraw
+   #:complex-plugs
+   #:topologys
+   #:cap-name-map
+   #:trainers
+   #:oligomer
+   #:canonical-sequence
+   #:build-trainers
+   #:save-design
+   #:load-design
+   #:augment-trainer-with-superposable-conformation-collection
+   #:jostle-trainer
+   #:build-charge-solvate
+   #:build-all-trainers
+   #:canonical-sequence
+   #:joint-tree
+   #:root
+   #:build-training-oligomers)
+  (:documentation
+   "Embryonic joint-tree code"))
+
+(defpackage #:design.graphviz-draw-joint-template
+  (:use #:cl)
+  (:export
+   #:draw-joint-template))
+
+(defpackage #:design.graphviz-draw-joint-tree
+  (:use #:cl)
+  (:export
+   #:draw-joint-tree))
+
+(defpackage #:design.graphviz-draw-fold-tree
+  (:use #:cl)
+  (:export
+   #:draw-fold-tree))
+
+(defpackage #:design.graphviz-draw-joint-tree
+  (:use #:cl)
+  (:export
+   #:draw-joint-tree))
+
+
+(defpackage #:design.debug
+  (:use #:cl)
+  (:export
+   #:residue-graph
+   #:matter-graph
+   #:joint-template-graph
+   ))
+
 ;;;
 ;;;    File: packages.lisp
 ;;;
@@ -23,77 +126,3 @@
 ;; This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
 
 ;; -^-
-(cl:in-package #:common-lisp-user)
-
-(defpackage #:design.load
-  (:use #:cl )
-  (:export
-   load-cdxml
-   )
-  (:documentation
-   "Load cdxml files and build topologies for doing design"))
-
-(defpackage #:design.joint-tree
-  (:use #:cl )
-  (:export
-   name
-   constitution
-   plugs
-   stereo-information
-   build-internal-coordinate-joint-template-tree
-   extract-prepare-topologys)
-  (:documentation
-   "Embryonic joint-tree code"))
-
-(defpackage #:design
-  (:use #:cl )
-  (:export
-   #:build-molecule
-   #:*complex-plugs*
-   #:complex-plug
-   #:name
-   #:smarts
-   #:compiled-smarts
-   #:complex-plug-or-nil
-   #:dkp
-   #:define-part
-   #:make-oligomer
-   #:context
-   #:design
-   #:topologys
-   #:cap-name-map
-   #:trainers
-   #:oligomer
-   #:canonical-sequence
-   #:build-trainers
-   #:save-design
-   #:load-design
-   #:augment-trainer-with-superposable-conformation-collection
-   #:jostle-trainer
-   #:build-charge-solvate
-   #:build-all-trainers
-   #:canonical-sequence
-   )
-  (:documentation
-   "Embryonic joint-tree code"))
-
-
-(defpackage #:design.graphviz-draw-joint-template
-  (:use #:cl)
-  (:export
-   #:draw-joint-template))
-
-(defpackage #:design.graphviz-draw-joint-tree
-  (:use #:cl)
-  (:export
-   #:draw-joint-tree))
-
-(defpackage #:design.graphviz-draw-fold-tree
-  (:use #:cl)
-  (:export
-   #:draw-fold-tree))
-
-(defpackage #:work
-  (:use #:cl)
-  (:export
-   ))

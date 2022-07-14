@@ -122,6 +122,31 @@ string Plug_O::__repr__() const
   return ss.str();
 }
 
+CL_NAME(CHEM:PLUG/GET-B0);
+CL_DEFMETHOD core::Symbol_sp Plug_O::getB0() const	{ SUBIMP(); };
+CL_NAME(CHEM:PLUG/GET-B1);
+CL_DEFMETHOD core::Symbol_sp Plug_O::getB1() const	{ SUBIMP(); };
+CL_NAME(CHEM:PLUG/GET-BOND-ORDER0);
+CL_DEFMETHOD BondOrder Plug_O::getBondOrder0() const { SUBIMP(); };
+CL_NAME(CHEM:PLUG/GET-BOND-ORDER1);
+CL_DEFMETHOD BondOrder Plug_O::getBondOrder1() const { SUBIMP(); };
+
+CL_NAME(CHEM:PLUG/SET-NAME);
+CL_DEFMETHOD void Plug_O::setName(core::Symbol_sp s) {
+  this->_Name = s;
+}
+
+CL_NAME(CHEM:PLUG/GET-NAME);
+CL_DEFMETHOD core::Symbol_sp Plug_O::getName() const {
+  return this->_Name;
+}
+
+CL_DEFMETHOD bool Plug_O::getIsIn() const {_OF(); SUBCLASS_MUST_IMPLEMENT();};
+CL_DEFMETHOD bool Plug_O::getIsOrigin() const {return false;};
+CL_DEFMETHOD bool Plug_O::getIsRingClosing() const { return false; };
+
+
+
 CL_DEFMETHOD bool Plug_O::getIsOut() const
 {
   return !(this->getIsIn()||this->getIsRingClosing());
@@ -155,7 +180,9 @@ CL_DEFMETHOD     core::Symbol_sp Plug_O::otherSidePlugName()
 void PlugWithMates_O::fields(core::Record_sp node)
 {
   node->field(INTERN_(kw,b0),this->_B0);
-  node->field_if_not_nil(INTERN_(kw,b1),this->_B1);
+  node->field(INTERN_(kw,bo0),this->_BondOrder0);
+  node->field(INTERN_(kw,b1),this->_B1);
+  node->field(INTERN_(kw,bo1),this->_BondOrder1);
   node->field(INTERN_(kw,mates),this->_Mates);
   this->Base::fields(node);
 }
