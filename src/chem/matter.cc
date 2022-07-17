@@ -19,7 +19,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
- 
+
 This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
 */
 /* -^- */
@@ -225,7 +225,7 @@ void Matter_O::applyPropertyList(core::List_sp list)
     cur = oCdr(cur);
   }
 }
-    
+
 CL_LISPIFY_NAME("clearProperty");
 CL_DEFMETHOD void Matter_O::clearProperty(core::Symbol_sp symbol)
 {
@@ -385,7 +385,7 @@ CL_LISPIFY_NAME("makeAllAtomNamesInEachResidueUnique");
 CL_DEFMETHOD void	Matter_O::makeAllAtomNamesInEachResidueUnique()
 {
   contentIterator	aCur;
-  for ( aCur=this->begin_contents();aCur!=this->end_contents(); aCur++ ) 
+  for ( aCur=this->begin_contents();aCur!=this->end_contents(); aCur++ )
   {
     (*aCur)->makeAllAtomNamesInEachResidueUnique();
   }
@@ -396,7 +396,7 @@ CL_DEFMETHOD size_t	Matter_O::fillInImplicitHydrogens()
 {
   contentIterator	aCur;
   size_t count = 0;
-  for ( aCur=this->begin_contents();aCur!=this->end_contents(); aCur++ ) 
+  for ( aCur=this->begin_contents();aCur!=this->end_contents(); aCur++ )
   {
     count += (*aCur)->fillInImplicitHydrogens();
   }
@@ -407,7 +407,7 @@ CL_LISPIFY_NAME("randomizeAtomPositions");
 CL_DEFMETHOD void	Matter_O::randomizeAtomPositions()
 {
   contentIterator	aCur;
-  for ( aCur=this->begin_contents();aCur!=this->end_contents(); aCur++ ) 
+  for ( aCur=this->begin_contents();aCur!=this->end_contents(); aCur++ )
   {
     (*aCur)->randomizeAtomPositions();
   }
@@ -418,7 +418,7 @@ CL_LISPIFY_NAME("perturbAtomPositions");
 CL_DEFMETHOD void	Matter_O::perturbAtomPositions(double dist)
 {
   contentIterator	aCur;
-  for ( aCur=this->begin_contents();aCur!=this->end_contents(); aCur++ ) 
+  for ( aCur=this->begin_contents();aCur!=this->end_contents(); aCur++ )
   {
     (*aCur)->perturbAtomPositions(dist);
   }
@@ -584,7 +584,7 @@ size_t Matter_O::nextId() const {
   return maxId+1; // _Id's start counting at 1
 }
 
-      
+
 
 /*! Add the Matter as a child of this Matter
  */
@@ -850,15 +850,15 @@ CL_DEFMETHOD core::T_mv	Matter_O::momentOfInertiaTensor()
     count++;
   }
   Matrix mres;
-  mres.atRowColPut(0,0,ixx);
-  mres.atRowColPut(0,1,ixy);
-  mres.atRowColPut(0,2,ixz);
-  mres.atRowColPut(1,0,ixy);
-  mres.atRowColPut(1,1,iyy);
-  mres.atRowColPut(1,2,iyz);
-  mres.atRowColPut(2,0,ixz);
-  mres.atRowColPut(2,1,iyz);
-  mres.atRowColPut(2,2,izz);
+  mres.at(0, 0) = ixx;
+  mres.at(0, 1) = ixy;
+  mres.at(0, 2) = ixz;
+  mres.at(1, 0) = ixy;
+  mres.at(1, 1) = iyy;
+  mres.at(1, 2) = iyz;
+  mres.at(2, 0) = ixz;
+  mres.at(2, 1) = iyz;
+  mres.at(2, 2) = izz;
   geom::OMatrix_sp mm = geom::OMatrix_O::create();
   mm->setAll(mres);
   return Values(mm,geom::OVector3_O::createFromVector3(center));
@@ -902,15 +902,15 @@ CL_DEFMETHOD core::T_mv	Matter_O::momentOfGeometry()
     count++;
   }
   Matrix mres;
-  mres.atRowColPut(0,0,ixx);
-  mres.atRowColPut(0,1,ixy);
-  mres.atRowColPut(0,2,ixz);
-  mres.atRowColPut(1,0,ixy);
-  mres.atRowColPut(1,1,iyy);
-  mres.atRowColPut(1,2,iyz);
-  mres.atRowColPut(2,0,ixz);
-  mres.atRowColPut(2,1,iyz);
-  mres.atRowColPut(2,2,izz);
+  mres.at(0, 0) = ixx;
+  mres.at(0, 1) = ixy;
+  mres.at(0, 2) = ixz;
+  mres.at(1, 0) = ixy;
+  mres.at(1, 1) = iyy;
+  mres.at(1, 2) = iyz;
+  mres.at(2, 0) = ixz;
+  mres.at(2, 1) = iyz;
+  mres.at(2, 2) = izz;
   Vector4 evals;
   Matrix evecs;
   mres.eigenSystem(evals,evecs);
@@ -925,7 +925,7 @@ CL_DEFMETHOD core::T_mv	Matter_O::momentOfGeometry()
 
 
 CL_LISPIFY_NAME("matter-calculate-bounding-cuboid");
-CL_DEFMETHOD geom::BoundingCuboid_sp Matter_O::matterCalculateBoundingCuboid(double pad) 
+CL_DEFMETHOD geom::BoundingCuboid_sp Matter_O::matterCalculateBoundingCuboid(double pad)
 {
   Vector3	sum;
   int	count;

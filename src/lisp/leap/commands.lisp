@@ -1086,7 +1086,7 @@ for files specified by other commands.
 "
   (leap.core:add-path "amber:dat;leap;prep;"))
 
-(defun leap-align-axes (unit-name)
+(defun leap-align-axes (unit-name &rest args)
 "     alignAxes unit
 
       UNIT                         _unit_
@@ -1100,8 +1100,9 @@ This command modifies the coordinates of the UNIT. It may be
 especially useful for preparing long solutes such as nucleic acids
 for solvation.
 "
-  (let ((unit (leap.core:lookup-variable unit-name)))
-  (leap.align-axes:tool-orient-principle-axis-along-coordinate-axis unit)))
+  (apply #'chem:align-to-principle-axes
+         (leap.core:lookup-variable unit-name)
+         args))
 
 (defun leap-transform (atoms-name matrix)
 "    transform atoms matrix
@@ -1132,7 +1133,7 @@ translations along the appropriate axes (0 for no translation).
           (dolist (elements-x elements-y)
             (if (< ix 4)
                 (progn
-                  (geom:at-row-col-put transform ix iy elements-x)
+                  (setf (geom:at transform ix iy) elements-x)
                   (incf ix)))))
       (setf ix 0)
       (incf iy))
@@ -1144,15 +1145,15 @@ translations along the appropriate axes (0 for no translation).
               (y-position (geom:get-y atom-position))
               (z-position (geom:get-z atom-position)))
          (geom:set-all3 atom-position
-                        (+ (* (geom:at-row-col-get transform 0 0) (geom:get-x atom-position))
-                           (* (geom:at-row-col-get transform 1 0) (geom:get-y atom-position))
-                           (* (geom:at-row-col-get transform 2 0) (geom:get-z atom-position)))
-                        (+ (* (geom:at-row-col-get transform 0 1) (geom:get-x atom-position))
-                           (* (geom:at-row-col-get transform 1 1) (geom:get-y atom-position))
-                           (* (geom:at-row-col-get transform 2 1) (geom:get-z atom-position)))
-                        (+ (* (geom:at-row-col-get transform 0 2) (geom:get-x atom-position))
-                           (* (geom:at-row-col-get transform 1 2) (geom:get-y atom-position))
-                           (* (geom:at-row-col-get transform 2 2) (geom:get-z atom-position))))
+                        (+ (* (geom:at transform 0 0) (geom:get-x atom-position))
+                           (* (geom:at transform 1 0) (geom:get-y atom-position))
+                           (* (geom:at transform 2 0) (geom:get-z atom-position)))
+                        (+ (* (geom:at transform 0 1) (geom:get-x atom-position))
+                           (* (geom:at transform 1 1) (geom:get-y atom-position))
+                           (* (geom:at transform 2 1) (geom:get-z atom-position)))
+                        (+ (* (geom:at transform 0 2) (geom:get-x atom-position))
+                           (* (geom:at transform 1 2) (geom:get-y atom-position))
+                           (* (geom:at transform 2 2) (geom:get-z atom-position))))
          #+(or)(geom:set-all3 atom-position
                               (geom:get-x (geom:m*v transform atom-position))
                               (geom:get-y (geom:m*v transform atom-position))

@@ -38,7 +38,7 @@
       instance
     (when message
       (setf (jw:widget-description bar) message))
-    (when (> (- (get-universal-time) update-time) 1)
+    (when (> (- (get-universal-time) update-time) 0.2)
       (setf (jw:widget-value bar) counter
             update-time (get-universal-time))
       (let* ((fraction (/ counter (jw:widget-max bar)))

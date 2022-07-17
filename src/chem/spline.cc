@@ -19,11 +19,11 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
- 
+
 This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
 */
 /* -^- */
-       
+
 //
 // (C) 2004 Christian E. Schafmeister
 //
@@ -100,25 +100,25 @@ Vector3	p1, p2, p3, p4;
    p2 = points[i4-2];
    p3 = points[i4-1];
    p4 = points[i4];
-   m.atRowColPut( 0, 0, p1.getX() );
-   m.atRowColPut( 1, 0, p1.getY() );
-   m.atRowColPut( 2, 0, p1.getZ() );
-   m.atRowColPut( 3, 0, 1.0 );
+   m.at(0, 0) = p1.getX();
+   m.at(1, 0) = p1.getY();
+   m.at(2, 0) = p1.getZ();
+   m.at(3, 0) = 1.0;
 
-   m.atRowColPut( 0, 1, p2.getX() );
-   m.atRowColPut( 1, 1, p2.getY() );
-   m.atRowColPut( 2, 1, p2.getZ() );
-   m.atRowColPut( 3, 1, 1.0 );
+   m.at(0, 1) = p2.getX();
+   m.at(1, 1) = p2.getY();
+   m.at(2, 1) = p2.getZ();
+   m.at(3, 1) = 1.0;
 
-   m.atRowColPut( 0, 2, p3.getX() );
-   m.atRowColPut( 1, 2, p3.getY() );
-   m.atRowColPut( 2, 2, p3.getZ() );
-   m.atRowColPut( 3, 2, 1.0 );
+   m.at(0, 2) = p3.getX();
+   m.at(1, 2) = p3.getY();
+   m.at(2, 2) = p3.getZ();
+   m.at(3, 2) = 1.0;
 
-   m.atRowColPut( 0, 3, p4.getX() );
-   m.atRowColPut( 1, 3, p4.getY() );
-   m.atRowColPut( 2, 3, p4.getZ() );
-   m.atRowColPut( 3, 3, 1.0 );
+   m.at(0, 3) = p4.getX();
+   m.at(1, 3) = p4.getY();
+   m.at(2, 3) = p4.getZ();
+   m.at(3, 3) = 1.0;
    return m;
 }
 

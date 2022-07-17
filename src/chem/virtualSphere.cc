@@ -19,7 +19,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
- 
+
 This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
 */
 /* -^- */
@@ -45,7 +45,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #define	SCALE_IN_VIRTUAL_SPHERE 1
 
 
-namespace chem 
+namespace chem
 {
 
     SYMBOL_EXPORT_SC_(ChemPkg,idle);
@@ -84,7 +84,7 @@ matrix_multiply(double m1[4][4], double m2[4][4], Matrix& result )
 			tmp = 0;
 			for (k = 0; k < 4; k++)
 				tmp += m1[i][k] * m2[k][j];
-			result.atRowColPut(i,j,tmp);
+			result.at(i, j) = tmp;
 		}
 }
 
@@ -285,7 +285,7 @@ SYMBOL_EXPORT_SC_(ChemKwPkg,translate);
 SYMBOL_EXPORT_SC_(ChemKwPkg,rotate);
 SYMBOL_EXPORT_SC_(ChemKwPkg,scale);
 
-    VirtualSphereMotionMode 
+    VirtualSphereMotionMode
     VirtualSphere_O::mouseModeFromSymbol(core::Symbol_sp sym)
     {_OF();
 	VirtualSphereMotionMode mode = vsIdle;
@@ -497,7 +497,7 @@ void	VirtualSphere_O::setTranslate(const Vector3& pos )
 {
     LOG("setTranslate to %s" , pos.asString() );
     this->_Translate = pos;
-    this->_Recalculate = true; 
+    this->_Recalculate = true;
 }
 
 /*! Get the scale of the VirtualSphere,

@@ -9,6 +9,7 @@
                (:file "basic")
                (:file "infix")
                (:file "chem")
+               (:file "mechanics")
                (:file "environment")
                (:file "print-read")
                (:file "conditions")

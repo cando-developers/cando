@@ -19,7 +19,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
- 
+
 This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
 */
 /* -^- */
@@ -54,7 +54,7 @@ CL_DEFUN OMatrix_sp OMatrix_O::make(bool ident)
   auto om = gctools::GC<OMatrix_O>::allocate(ident);
   return om;
 };
-  
+
 
 string	OMatrix_O::__repr__() const
 {
@@ -91,7 +91,7 @@ CL_DEFMETHOD Vector3 OMatrix_O::getTranslation()
 }
 /*
    0  1  2  3
-   4  5  6  7 
+   4  5  6  7
    8  9 10 11
 */
 CL_DEFMETHOD Vector3 OMatrix_O::getX_Column() const
@@ -120,7 +120,12 @@ CL_DEFMETHOD Matrix OMatrix_O::flipXY() const {
   flipped = this->_Value.flipXY();
   return flipped;
 }
-  
+
+CL_LISPIFY_NAME("geom:at");
+CL_DEFUN_SETF double setf_at(double v, OMatrix_sp obj, int row, int col) {
+  return (obj->_Value.at(row, col) = v);
+};
+
 CL_DEFMETHOD void OMatrix_O::setFromVector(core::Array_sp array)
 {
   if (gc::IsA<core::SimpleVector_double_sp>(array)) {
@@ -139,7 +144,7 @@ CL_DEFMETHOD void OMatrix_O::setFromVector(core::Array_sp array)
     }
   }
 }
-    
+
 void	OMatrix_O::setAll(const Matrix& m)
 {
   this->_Value.setAll(m);
@@ -218,11 +223,25 @@ CL_DEFUN OMatrix_sp make_m4_rotate_axis(double radians,Vector3 axis)
   return res;
 }
 
+CL_LISPIFY_NAME("clone");
+DOCGROUP(cando)
 OMatrix_sp OMatrix_O::clone() const
 {
   auto clone = gctools::GC<OMatrix_O>::copy(*this);
   return clone;
 }
+
+CL_NAME("M+");
+CL_DEFMETHOD Matrix OMatrix_O::m_PLUS_(const Matrix& other) const
+{
+  return _Value + other;
+};
+
+CL_NAME("M+!");
+CL_DEFMETHOD void OMatrix_O::m_PLUS__BANG_(const Matrix& other)
+{
+  _Value += other;
+};
 
 CL_NAME("M*M");
 CL_DEFMETHOD Matrix OMatrix_O::m_TIMES_m(const Matrix& other) const

@@ -19,8 +19,9 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
- 
-This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
+
+This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University
+at mailto:techtransfer@temple.edu if you would like a different license.
 */
 /* -^- */
 #include <clasp/core/common.h>
@@ -37,7 +38,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/largeSquareMatrix.h>
 #include <cando/chem/alias.h>
 #include <cando/chem/angle.h>
-//#include "atomGrid.h"
 #include <cando/chem/atomIdMap.h>
 #include <cando/chem/atomId.h>
 #include <cando/chem/atomIndexer.h>
@@ -46,15 +46,11 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/bond.h>
 #include <cando/chem/chemdraw.h>
 #include <cando/chem/calculatePosition.h>
-//#include <cando/chem/candoDatabaseReference.h>
-//#include "candoDatabase.h"
 #include <cando/chem/chemInfo.h>
 #include <cando/chem/loop.fwd.h>
 #include <cando/chem/cipPrioritizer.h>
 #include <cando/chem/command.h>
 #include <cando/chem/complexRestraints.h>
-//#include "conformationCollection.h"
-//#include "conformationExplorer.h"
 #include <cando/chem/constitutionAtoms.h>
 #include <cando/chem/coordSys.h>
 #include <cando/chem/coupling.h>
@@ -62,7 +58,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/energyComponent.h>
 #include <cando/chem/energyFunction.h>
 #include <cando/chem/entity.h>
-//#include "externalInterface.h"
 #include <cando/chem/ffBaseDb.h>
 #include <cando/chem/ffNonbondDb.h>
 #include <cando/chem/forceField.h>
@@ -95,9 +90,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/structureList.h>
 #include <cando/chem/superposeEngine.h>
 #include <cando/chem/topology.h>
-//#include "trainerArchive.h"
-//#include "trainer.h"
-//#include "jobHistory.h"
 #include <cando/chem/trajectory.h>
 #include <cando/chem/twister.h>
 #include <cando/chem/virtualSphere.h>
@@ -126,219 +118,94 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/iterateMatter.h>
 #include <cando/chem/iterateRestraints.h>
 #include <cando/chem/molecule.h>
-//#include "grPickableMatter.h"
 #include <cando/chem/residue.h>
 #include <cando/chem/superposableConformationCollection.h>
 #include <cando/chem/virtualAtom.h>
 #include <cando/chem/monomerPack.h>
 #include <cando/chem/representedEntityNameSet.h>
 
-SYMBOL_SHADOW_EXPORT_SC_(ChemPkg,atom);
-SYMBOL_EXPORT_SC_(ChemPkg,R);
-SYMBOL_EXPORT_SC_(ChemPkg,S);
-SYMBOL_EXPORT_SC_(ChemPkg,UnknownConfiguration);
+SYMBOL_SHADOW_EXPORT_SC_(ChemPkg, atom);
+SYMBOL_EXPORT_SC_(ChemPkg, R);
+SYMBOL_EXPORT_SC_(ChemPkg, S);
+SYMBOL_EXPORT_SC_(ChemPkg, UnknownConfiguration);
 
-SYMBOL_EXPORT_SC_(ChemPkg,STARcandoDatabaseSTAR);
-SYMBOL_EXPORT_SC_(ChemPkg,constitutionForNameOrPdb);
-SYMBOL_EXPORT_SC_(ChemPkg,recognizesNameOrPdb);
-SYMBOL_EXPORT_SC_(ChemPkg,getMonomerNameForNameOrPdb);
-SYMBOL_EXPORT_SC_(ChemPkg,monomerNameForNameOrPdb);
-SYMBOL_EXPORT_SC_(ChemPkg,pdbNameForNameOrPdb);
-SYMBOL_EXPORT_SC_(ChemPkg,STARverboseSTAR); // slow operations print extra output if this is true
+SYMBOL_EXPORT_SC_(ChemPkg, STARcandoDatabaseSTAR);
+SYMBOL_EXPORT_SC_(ChemPkg, constitutionForNameOrPdb);
+SYMBOL_EXPORT_SC_(ChemPkg, recognizesNameOrPdb);
+SYMBOL_EXPORT_SC_(ChemPkg, getMonomerNameForNameOrPdb);
+SYMBOL_EXPORT_SC_(ChemPkg, monomerNameForNameOrPdb);
+SYMBOL_EXPORT_SC_(ChemPkg, pdbNameForNameOrPdb);
+SYMBOL_EXPORT_SC_(ChemPkg, STARverboseSTAR); // slow operations print extra output if this is true
 
-namespace chem
-{
-#if 0
-#define EXPOSE_TO_CANDO
-#define Use_ChemPkg
-#define EXTERN_REGISTER
-#include <clasp/core/initClasses.h>
-#undef EXTERN_REGISTER
-#undef Use_ChemPkg
-#undef EXPOSE_TO_CANDO
-#endif
-};
-
-#if 0
-void chem_package_initializer()
-{
-//  printf("%s:%d Running chem_packageinitializer\n", __FILE__, __LINE__ );
-                    // Create the CHEM-KW package
-  std::list<std::string> nicknames = { "CK" };
-  std::list<std::string> usePackages = { };
-          // core::Package_sp chemkwpkg = _lisp->makePackage(ChemKwPkg,nicknames,usePackages);
-          // chemkwpkg->setActsLikeKeywordPackage(true);
-
-  core::T_sp pn;
-  char* env = getenv("CANDO_LISP_SOURCE_DIR");
-  if ( env != NULL ) {
-    pn = core::cl__translate_logical_pathname(core::Str_O::create(std::string(env)+"/**/*.*"));
-  } else {
-    pn = core::cl__translate_logical_pathname(core::Str_O::create("APP-RESOURCES:CANDO;**;*.*"));
-  }
-  core::Cons_sp pts = core::Cons_O::createList(core::Str_O::create("cando:**;*.*"),pn);
-  core::Cons_sp ptsList = core::Cons_O::createList(pts);
-  core::core__pathname_translations(core::Str_O::create("CANDO"),_lisp->_true(),ptsList);
-  chem::energyFunction_initializeSmarts();
-  chem::setupCandoPrimitives(_lisp);
-  chem::initialize_chimera();
-  chem::initializeElementsAndHybridization();
-}
-
-core::Initializer global_chem_package_initializer(chem_package_initializer);
-#endif
-
-
-
-
-namespace chem
-{
-
-
-    const char* Chem_nicknames[] = {""};
+namespace chem {
 
 //! The default CandoDatabase
-    SYMBOL_EXPORT_SC_(ChemPkg,candoDatabase);
-    SYMBOL_EXPORT_SC_(ChemPkg,AM1_BCC_ar5);
-    SYMBOL_EXPORT_SC_(ChemPkg,AM1_BCC_ar6);
-    SYMBOL_EXPORT_SC_(ChemPkg,AM1_BCC_ar7);
+SYMBOL_EXPORT_SC_(ChemPkg, candoDatabase);
+SYMBOL_EXPORT_SC_(ChemPkg, AM1_BCC_ar5);
+SYMBOL_EXPORT_SC_(ChemPkg, AM1_BCC_ar6);
+SYMBOL_EXPORT_SC_(ChemPkg, AM1_BCC_ar7);
 
-    extern void	Initialize_Mol2_TypeRules(core::LispPtr lisp);
+extern void Initialize_Mol2_TypeRules(core::LispPtr lisp);
 
+void ChemExposer_O::expose(core::LispPtr lisp, WhatToExpose what) const {
+  switch (what) {
+  case candoClasses:
+    _sym_STARverboseSTAR->defparameter(nil<core::T_O>());
+    _sym_STARdebug_octreeSTAR->defparameter(nil<core::T_O>());
+    _sym_STARcurrent_matchSTAR->defparameter(nil<core::T_O>());
+    _sym_STARcurrent_aromaticity_informationSTAR->defparameter(unbound<core::T_O>());
+    _sym_STARcurrent_ringsSTAR->defparameter(unbound<core::T_O>());
+    break;
+  case candoFunctions:
+    setupCandoPrimitives(_lisp);
+    break;
+  case candoGlobals:
+    initialize_chimera();
+    initializeElementsAndHybridization();
+    break;
+  default:
+    break;
+  }
+}
 
-
-    void ChemExposer_O::expose(core::LispPtr lisp, WhatToExpose what) const
-    {
-	switch (what)
-	{
-	case candoClasses:
-	{
-                    // Create the CHEM-KW package
-          std::list<std::string> nicknames = { "CK" };
-          std::list<std::string> usePackages = { };
-          // core::Package_sp chemkwpkg = _lisp->makePackage(ChemKwPkg,nicknames,usePackages);
-          // chemkwpkg->setActsLikeKeywordPackage(true);
-#if 0
-          core::T_sp pn;
-          char* env = getenv("CANDO_LISP_SOURCE_DIR");
-          if ( env != NULL ) {
-            pn = core::cl__translate_logical_pathname(core::Str_O::create(std::string(env)+"/**/*.*"));
-          } else {
-            pn = core::cl__translate_logical_pathname(core::Str_O::create("SOURCE-DIR:EXTENSIONS;CANDO;**;*.*"));
-          }
-          core::Cons_sp pts = core::Cons_O::createList(core::Str_O::create("cando:**;*.*"),pn);
-          core::Cons_sp ptsList = core::Cons_O::createList(pts);
-          core::core__pathname_translations(core::Str_O::create("CANDO"),_lisp->_true(),ptsList);
-#endif
-          _sym_STARverboseSTAR->defparameter(nil<core::T_O>());
-          _sym_STARdebug_octreeSTAR->defparameter(nil<core::T_O>());
-          _sym_STARcurrent_matchSTAR->defparameter(nil<core::T_O>());
-          _sym_STARcurrent_aromaticity_informationSTAR->defparameter(unbound<core::T_O>());
-          _sym_STARcurrent_ringsSTAR->defparameter(unbound<core::T_O>());
-	}
-	break;
-	case candoFunctions:
-	{
-          setupCandoPrimitives(_lisp);
-	}
-	break;
-	case candoGlobals:
-	{
-            initialize_chimera();
-	    initializeElementsAndHybridization();
-//	    _lisp->defvar(_sym_candoDatabase,cdb);
-	}
-	break;
-	case pythonClasses:
-	{
-	}
-	break;
-	case pythonFunctions:
-	{
-	    setupPythonPrimitives(_lisp);
-	    // nothing
-	}
-	break;
-	case pythonGlobals:
-	{
-	    // nothing currently
-	}
-	break;
-	}
-    }
-
-CandoDatabase_sp getCandoDatabase()
-{
+CandoDatabase_sp getCandoDatabase() {
   if (_sym_STARcandoDatabaseSTAR->symbolValue().notnilp()) {
     return gc::As<CandoDatabase_sp>(_sym_STARcandoDatabaseSTAR->symbolValue());
   }
   SIMPLE_ERROR(("*cando-database* is not defined"));
 }
 
-
-#if 0
-
-    /*! Intern a symbol in the ChemKwPkg and return it.
-      The symbol is automatically exported */
-    MatterName chemkw_intern(const string& name) {
-        core::Package_sp chemkwPkg = _lisp->findPackage(ChemKwPkg);
-        string upperName = name;
-        for ( char* cP = upperName.c_str(); *cP; ++cP ) {
-            *cP = toupper(*cp);
-        }
-        core::Symbol_sp sym = chemkwPkg->intern(upperName);
-        chemkwPkg->export(sym);
-        return sym;
-    }
-#endif
-
-
-
-
-core::Symbol_sp chemkw_intern(const string& symName)
-{
-  if ( symName == "" ) return nil<core::Symbol_O>();
+core::Symbol_sp chemkw_intern(const string &symName) {
+  if (symName == "")
+    return nil<core::Symbol_O>();
   const string trimmed = core::trimWhiteSpace(symName);
   core::Package_sp chemkwPkg = _lisp->keywordPackage();
   core::SimpleBaseString_sp strimmed = core::SimpleBaseString_O::make(trimmed);
   if (trimmed == ",") {
-    printf("%s:%d chemkw_intern of %s @%p\n", __FILE__, __LINE__, trimmed.c_str(), (void*)strimmed.raw_());
+    printf("%s:%d chemkw_intern of %s @%p\n", __FILE__, __LINE__, trimmed.c_str(), (void *)strimmed.raw_());
   }
   core::Symbol_sp sym = chemkwPkg->intern(strimmed);
   chemkwPkg->_export2(sym);
   return sym;
-//  return chemkw_intern(trimmed);
 }
 
-core::Symbol_sp chemkw_intern(core::String_sp symName)
-{
+core::Symbol_sp chemkw_intern(core::String_sp symName) {
   ASSERT(cl__stringp(symName));
   string s = symName->get_std_string();
-  if ( s == "" ) return nil<core::Symbol_O>();
-  return chemkw_intern(s);
+  return (s == "") ? nil<core::Symbol_O>() : chemkw_intern(s);
 }
 
-void chem_initializer()
-{
-//    printf("%s:%d Running chem_initializer\n", __FILE__, __LINE__ );
+void chem_initializer() {
 }
 
 core::Initializer global_ChemInitializer(chem_initializer);
 
 /*! Return true of the value of chem:*verbose* is not nil and >= level
-*/
+ */
 DOCGROUP(cando)
-CL_DEFUN bool chem__verbose(size_t level)
-{
+CL_DEFUN bool chem__verbose(size_t level) {
   core::T_sp verbose = _sym_STARverboseSTAR->symbolValue();
-  if (verbose.notnilp()) {
-    if (verbose.fixnump()) {
-      if (verbose.unsafe_fixnum() >= level) return true;
-      return false;
-    }
-    return true;
-  }
-  return false;
+  return verbose.notnilp() && (!verbose.fixnump() || verbose.unsafe_fixnum() >= level);
 }
 
-};
+}; // namespace chem

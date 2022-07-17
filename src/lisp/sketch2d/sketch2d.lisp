@@ -3,11 +3,11 @@
 (eval-when (:compile-toplevel :load-toplevel :execute)
   (push :debug-sketch2d *features*))
 
-#| 
+#|
 Implement the algorithm described in:
 Simulation-Based Algorithm for two-Dimensional Chemical Structure Diagram Generation of
 Complex Molecules and Ligand-Protein Interactions
-Tomasz Fraczek, 
+Tomasz Fraczek,
 J. Chem. Inf. Model. 2016, 56, 2320-2335
 DOI; 10.1021/acs.jcim.6b00391
 
@@ -636,8 +636,8 @@ to check if two line segments (bonds) overlap/intersect
       ((< 0.0 orient) 1)
       (t 2))))
 
-;;; Given three colinear points p, q, r, the function checks if 
-;;; point q lies on line segment 'pr' 
+;;; Given three colinear points p, q, r, the function checks if
+;;; point q lies on line segment 'pr'
 (defun on-segment (p q r)
   (and (<= (geom:get-x q) (max (geom:get-x p) (geom:get-x r)))
        (>= (geom:get-x q) (max (geom:get-x p) (geom:get-x r)))
@@ -682,7 +682,7 @@ to check if two line segments (bonds) overlap/intersect
         (format t "Passed test1~%")
         (error "failed test   (not (bonds-intersect ~a ~a ~a ~a))")))
   (let ((p1 (geom:vec 10 0 0))
-        (q1 (geom:vec 0 10 0 )) 
+        (q1 (geom:vec 0 10 0 ))
         (p2 (geom:vec 0 0 0 ))
         (q2 (geom:vec 10 10 0)))
     (if (bonds-intersect p1 q1 p2 q2)
@@ -690,9 +690,9 @@ to check if two line segments (bonds) overlap/intersect
         (error "failed test   (bonds-intersect ~a ~a ~a ~a)~%" p1 q1 p2 q2))
     (format t "Intersection-point ~a~%" (intersection-point p1 q1 p2 q2)))
   (let ((p1 (geom:vec -5 -5 0))
-        (q1 (geom:vec 0 0 0 )) 
+        (q1 (geom:vec 0 0 0 ))
         (p2 (geom:vec 1 1 0 ))
-        (q2 (geom:vec 10 10 0))) 
+        (q2 (geom:vec 10 10 0)))
     (if (not (bonds-intersect p1 q1 p2 q2))
         (format t "Passed test3~%")
         (error "failed test   (not (bonds-intersect ~a ~a ~a ~a))"))))
@@ -895,7 +895,7 @@ to check if two line segments (bonds) overlap/intersect
                             (randomize-neighbor-near-unfrozen-atom coordinates neighbor-index*3 (* index 3))
                             (return-from inner nil))))))
     new-frozen))
-                          
+
 (defun geometric-center-of-unfrozen-atoms (atom-table coordinates frozen)
   (declare (ignore atom-table))
   (let ((xpos 0.0)
@@ -1033,7 +1033,7 @@ to check if two line segments (bonds) overlap/intersect
         when (and (< (length ring) 7) (position atom ring))
           do (return-from is-in-small-ring t))
   nil)
-             
+
 (defun find-bad-angle-groups (sketch)
   ;; Find the bad angles
   (let* ((molecule (molecule sketch))
@@ -1248,15 +1248,15 @@ are in the order (low, middle, high) and the column eigen-vectors are in the sam
          (col0 (cdr (first sorted-values)))
          (col1 (cdr (second sorted-values)))
          (col2 (cdr (third sorted-values))))
-      (geom:at-row-col-put new-eigen-vectors 0 col0 (geom:at-row-col-get eigen-vector-matrix 0 0))
-      (geom:at-row-col-put new-eigen-vectors 1 col0 (geom:at-row-col-get eigen-vector-matrix 1 0))
-      (geom:at-row-col-put new-eigen-vectors 2 col0 (geom:at-row-col-get eigen-vector-matrix 2 0))
-      (geom:at-row-col-put new-eigen-vectors 0 col1 (geom:at-row-col-get eigen-vector-matrix 0 1))
-      (geom:at-row-col-put new-eigen-vectors 1 col1 (geom:at-row-col-get eigen-vector-matrix 1 1))
-      (geom:at-row-col-put new-eigen-vectors 2 col1 (geom:at-row-col-get eigen-vector-matrix 2 1))
-      (geom:at-row-col-put new-eigen-vectors 0 col2 (geom:at-row-col-get eigen-vector-matrix 0 2))
-      (geom:at-row-col-put new-eigen-vectors 1 col2 (geom:at-row-col-get eigen-vector-matrix 1 2))
-    (geom:at-row-col-put new-eigen-vectors 2 col2 (geom:at-row-col-get eigen-vector-matrix 2 2))
+      (setf (geom:at new-eigen-vectors 0 col0) (geom:at eigen-vector-matrix 0 0)
+            (geom:at new-eigen-vectors 1 col0) (geom:at eigen-vector-matrix 1 0)
+            (geom:at new-eigen-vectors 2 col0) (geom:at eigen-vector-matrix 2 0)
+            (geom:at new-eigen-vectors 0 col1) (geom:at eigen-vector-matrix 0 1)
+            (geom:at new-eigen-vectors 1 col1) (geom:at eigen-vector-matrix 1 1)
+            (geom:at new-eigen-vectors 2 col1) (geom:at eigen-vector-matrix 2 1)
+            (geom:at new-eigen-vectors 0 col2) (geom:at eigen-vector-matrix 0 2)
+            (geom:at new-eigen-vectors 1 col2) (geom:at eigen-vector-matrix 1 2)
+            (geom:at new-eigen-vectors 2 col2) (geom:at eigen-vector-matrix 2 2))
     (values new-eigen-vectors (mapcar #'car sorted-values))))
 
 (defun align-molecule-horizontal (molecule)
@@ -1304,7 +1304,7 @@ are in the order (low, middle, high) and the column eigen-vectors are in the sam
     (if (null lst)
         (list item)
         (if (funcall compare item-key (funcall key (car lst)))
-            (cons item lst) 
+            (cons item lst)
             (cons (car lst) (insert item (cdr lst) compare key))))))
 
 (defun insertion-sort (lst compare key)
@@ -1361,7 +1361,7 @@ are in the order (low, middle, high) and the column eigen-vectors are in the sam
              when (not (member orig-atm chiral-atoms))
                do (return-from select-best-chiral-neighbor atm))
        (sketch-atom (car sketch-neighbors)))))
-  
+
 (defun augment-sketch-with-stereochemistry (sketch2d)
   ;; Gather the chiral atoms
   (let ((chiral-atoms (let (chirals)
@@ -1375,7 +1375,7 @@ are in the order (low, middle, high) and the column eigen-vectors are in the sam
     (cando:do-atoms (sketch-atom (molecule sketch2d))
       (let ((original-atom (gethash sketch-atom (sketch-atoms-to-original sketch2d))))
         (setf (gethash original-atom original-to-sketch) sketch-atom)))
-    ;; 
+    ;;
     (loop for chiral-atom in chiral-atoms
           for chiral-sketch-atom = (gethash chiral-atom original-to-sketch)
           for bonds = (chem:bonds-as-list chiral-atom)
@@ -1502,7 +1502,7 @@ are in the order (low, middle, high) and the column eigen-vectors are in the sam
                       (push chiral-info (chiral-infos sketch2d)))))
                  (t (warn "Handle config ~a for atom ~a" config chiral-atom)))))))
 
-          
+
 
 (defun sketch2d (matter &key accumulate-coordinates verbose one-shot)
   (chem:calculate-stereochemistry-from-structure matter :only_undefined_configuration t)
@@ -1514,9 +1514,9 @@ are in the order (low, middle, high) and the column eigen-vectors are in the sam
 (defgeneric similar-sketch2d (thing anchor-sketch2d &key accumulate-coordinates atom-match-callback))
 
 (defmethod similar-sketch2d ((molecule chem:molecule) anchor-sketch2d &key accumulate-coordinates (atom-match-callback #'molecule-graph:element-match))
-  "Generates a sketch of molecule that shares a common substructure 
-with the molecule in anchor-sketch2d 
-and aligns the new sketch the same way.  
+  "Generates a sketch of molecule that shares a common substructure
+with the molecule in anchor-sketch2d
+and aligns the new sketch the same way.
 If atom-match-callback is NIL then all atoms can match each other.
 Otherwise pass a function that takes two atoms and returns T if they are matchable."
   (check-type molecule chem:molecule)

@@ -19,11 +19,11 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
- 
+
 This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
 */
 /* -^- */
-       
+
 #define	DEBUG_LEVEL_NONE
 
 //
@@ -83,17 +83,17 @@ CL_DEFMETHOD Matrix	CoordinateSystem_O::matrixFromCanonical()
 {
 Matrix	mt, m;
 
-    mt.atColRowPut( 0, 0, this->x.getX() );
-    mt.atColRowPut( 0, 1, this->x.getY() );
-    mt.atColRowPut( 0, 2, this->x.getZ() );
+    mt.at(0, 0) = this->x.getX();
+    mt.at(1, 0) = this->x.getY();
+    mt.at(2, 0) = this->x.getZ();
 
-    mt.atColRowPut( 1, 0, this->y.getX() );
-    mt.atColRowPut( 1, 1, this->y.getY() );
-    mt.atColRowPut( 1, 2, this->y.getZ() );
+    mt.at(0, 1) = this->x.getX();
+    mt.at(1, 1) = this->x.getY();
+    mt.at(2, 1) = this->x.getZ();
 
-    mt.atColRowPut( 2, 0, this->z.getX() );
-    mt.atColRowPut( 2, 1, this->z.getY() );
-    mt.atColRowPut( 2, 2, this->z.getZ() );
+    mt.at(0, 2) = this->x.getX();
+    mt.at(1, 2) = this->x.getY();
+    mt.at(2, 2) = this->x.getZ();
 
     m.translate(this->origin);
     m = m*mt;
@@ -116,17 +116,17 @@ CL_DEFMETHOD Matrix	CoordinateSystem_O::matrixToCanonical()
 {
 Matrix  mt, m, mn;
 Vector3 vt;
-    m.atRowColPut( 0, 0, this->x.getX() );
-    m.atRowColPut( 0, 1, this->x.getY() );
-    m.atRowColPut( 0, 2, this->x.getZ() );
+    m.at(0, 0) = this->x.getX();
+    m.at(0, 1) = this->x.getY();
+    m.at(0, 2) = this->x.getZ();
 
-    m.atRowColPut( 1, 0, this->y.getX() );
-    m.atRowColPut( 1, 1, this->y.getY() );
-    m.atRowColPut( 1, 2, this->y.getZ() );
+    m.at(1, 0) = this->y.getX();
+    m.at(1, 1) = this->y.getY();
+    m.at(1, 2) = this->y.getZ();
 
-    m.atRowColPut( 2, 0, this->z.getX() );
-    m.atRowColPut( 2, 1, this->z.getY() );
-    m.atRowColPut( 2, 2, this->z.getZ() );
+    m.at(2, 0) = this->z.getX();
+    m.at(2, 1) = this->z.getY();
+    m.at(2, 2) = this->z.getZ();
 
     vt = this->origin.multiplyByScalar(-1.0);
     mt.translate(vt);

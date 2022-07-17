@@ -722,29 +722,29 @@ MTRIX- Used to build a list of matrices."
                        line-data
                      (declare (ignore serial))
                      (let ((matrix (geom:make-matrix-identity)))
-                       (geom:at-row-col-put matrix 0 0 x)
-                       (geom:at-row-col-put matrix 0 1 y)
-                       (geom:at-row-col-put matrix 0 2 z)
-                       (geom:at-row-col-put matrix 0 3 tt)
+                       (setf (geom:at matrix 0 0) x
+                             (geom:at matrix 0 1) y
+                             (geom:at matrix 0 2) z
+                             (geom:at matrix 0 3) tt)
                        (push matrix (matrices scanner)))))
                   (mtrix2-line
                    (with-slots (serial x y z tt)
                        line-data
                      (declare (ignore serial))
                      (let ((matrix (car (matrices scanner))))
-                       (geom:at-row-col-put matrix 1 0 x)
-                       (geom:at-row-col-put matrix 1 1 y)
-                       (geom:at-row-col-put matrix 1 2 z)
-                       (geom:at-row-col-put matrix 1 3 tt))))
+                       (setf (geom:at matrix 1 0) x
+                             (geom:at matrix 1 1) y
+                             (geom:at matrix 1 2) z
+                             (geom:at matrix 1 3) tt))))
                   (mtrix3-line
                    (with-slots (serial x y z tt)
                        line-data
                      (declare (ignore serial))
                      (let ((matrix (car (matrices scanner))))
-                       (geom:at-row-col-put matrix 2 0 x)
-                       (geom:at-row-col-put matrix 2 1 y)
-                       (geom:at-row-col-put matrix 2 2 z)
-                       (geom:at-row-col-put matrix 2 3 tt))))
+                       (setf (geom:at matrix 2 0) x
+                             (geom:at matrix 2 1) y
+                             (geom:at matrix 2 2) z
+                             (geom:at matrix 2 3) tt))))
                   (otherwise nil)))))))))
 
 (defgeneric adjust-residue-name (residue-name pdb-residue scanner system))
@@ -1131,10 +1131,10 @@ then multiply res-seq by 10 and add the i-code digit to it."
 - eof-errorp : boolean
 - eof : T
 - big-z :: boolean
-* Description 
-Read the next line from the PDB file and process it, 
+* Description
+Read the next line from the PDB file and process it,
 filling in the information in the pdb-atom-reader.
-Pass big-z parse-line to tell it how to process the z-coordinate." 
+Pass big-z parse-line to tell it how to process the z-coordinate."
   (let ((line (read-line fin eof-errorp eof))
         pdb-residue
         sequences-index
@@ -1311,7 +1311,12 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
               (setf (molecule pdb-atom-reader) nil)
               (loop for lineno from 1
                     for x = (read-and-process-line fin pdb-atom-reader nil :eof (big-z pdb-scanner) lineno)
+<<<<<<< HEAD
                     do (when bar
+=======
+                    do (when (and (= 0 (floor lineno 100))
+                                  bar)
+>>>>>>> f7dfa02c (Improve leap's alignAxes)
                          (cando:progress-advance bar (file-position fin)))
                     until (eq x :eof))
               (when progress (format t "Loaded pdb~%")))
@@ -1419,7 +1424,7 @@ specified in PDB files.
 
 #|
 (defun read-line (pdb-atom-reader)
-  
+
 (defun read-atom (pdb-atom-reader)
   (
 
