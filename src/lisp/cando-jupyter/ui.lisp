@@ -39,7 +39,8 @@
     (when message
       (setf (jw:widget-description bar) message))
     (when (> (- (get-universal-time) update-time) 1)
-      (setf (jw:widget-value bar) counter)
+      (setf (jw:widget-value bar) counter
+            update-time (get-universal-time))
       (let* ((fraction (/ counter (jw:widget-max bar)))
              (elapsed-time (- (get-universal-time) start-time))
              (remaining-time (* elapsed-time (1- (/ fraction)))))
