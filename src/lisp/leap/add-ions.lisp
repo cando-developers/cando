@@ -6,9 +6,9 @@
      (finish-output ,stream)))
 
 (defun ion-topology-atom-type (ion-topology)
-  (let* ((constitution (chem:get-constitution ion-topology))
+  (let* ((constitution (chem:topology/get-constitution ion-topology))
          (constitution-atoms (chem:constitution/get-constitution-atoms constitution))
-         (number-of-atoms (chem:number-of-atoms constitution-atoms)))
+         (number-of-atoms (chem:constitution-atoms/number-of-atoms constitution-atoms)))
     (if (= number-of-atoms 1)
         (let ((constitution-atom (chem:atom-with-id constitution-atoms 0)))
           (chem:atom-type constitution-atom))
@@ -131,7 +131,13 @@
           (chem:octree-init-charges octree at-octree dielectric ion1-size)
         (loop 
            for new-point = (if (< (chem:get-charge ion1-atom) 0) max-charge-point min-charge-point)
-           for ion1-copy = (chem:matter-copy ion1-agg)
+           for ion1-copy = (let ((ic (chem:matter-copy ion1-agg)))
+                             (cond
+                               ((typep ic 'chem:aggregate)
+                                (cando:mol ic 0))
+                               ((typep ic 'chem:molecule)
+                                ic)
+                               (t (error "ion1-agg must be an aggregate or molecule"))))
            for ion1-transform = (geom:make-m4-translate new-point)
            while (if ion2
                      (or (> ion1-number 0)

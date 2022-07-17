@@ -789,7 +789,7 @@ MTRIX- Used to build a list of matrices."
                  do (try-to-assign-topology residue scanner))))
 
 (defun atom-names-match-topology (atom-names topology)
-  (let* ((constitution (chem:get-constitution topology))
+  (let* ((constitution (chem:topology/get-constitution topology))
          (constitution-atoms (chem:constitution/get-constitution-atoms constitution))
          (constitution-atoms-as-list (chem:constitution-atoms-as-list constitution-atoms)))
     (let ((topology-atom-names (loop for ca in constitution-atoms-as-list
@@ -1311,7 +1311,9 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
               (setf (molecule pdb-atom-reader) nil)
               (loop for lineno from 1
                     for x = (read-and-process-line fin pdb-atom-reader nil :eof (big-z pdb-scanner) lineno)
-                    do (when bar (cando:progress-advance bar (file-position fin)))
+                    do (when (and (= 0 (floor lineno 100))
+                                  bar)
+                         (cando:progress-advance bar (file-position fin)))
                     until (eq x :eof))
               (when progress (format t "Loaded pdb~%")))
           (ran-out-of-sequence ()

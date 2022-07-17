@@ -220,7 +220,7 @@ is written to the log file as if the verbosity level were set to 2."
     (format stream "~20s type: ~a~%" atom (chem:get-type atom))))
 
 (defmethod describe-object ((object chem:topology) stream)
-  (let* ((constitution (chem:get-constitution object))
+  (let* ((constitution (chem:topology/get-constitution object))
          (constitution-atoms (chem:constitution/get-constitution-atoms constitution)))
     (loop for index from 0 below (chem:number-of-atoms constitution-atoms)
           for atom = (chem:atom-with-id constitution-atoms index)
