@@ -1311,12 +1311,7 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
               (setf (molecule pdb-atom-reader) nil)
               (loop for lineno from 1
                     for x = (read-and-process-line fin pdb-atom-reader nil :eof (big-z pdb-scanner) lineno)
-<<<<<<< HEAD
                     do (when bar
-=======
-                    do (when (and (= 0 (floor lineno 100))
-                                  bar)
->>>>>>> f7dfa02c (Improve leap's alignAxes)
                          (cando:progress-advance bar (file-position fin)))
                     until (eq x :eof))
               (when progress (format t "Loaded pdb~%")))

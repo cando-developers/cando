@@ -60,7 +60,7 @@
                 (- dxmax dxmin)
                 (- dymax dymin)
                 (- dzmax  dzmin)))))
-         
+
 ;;; xstart,ystart,zstart is the CENTER of the first solvent box that goes at the max XYZ corner.
 ;;; ix,iy,iz is the number of solvent boxes
 (defun tool-add-all-boxes (solute test-function solvent ix iy iz xstart ystart zstart xsolvent ysolvent zsolvent &key verbose)
@@ -91,8 +91,7 @@
                                           (format t "Counter = ~d~%" counter)
                                           (finish-output))
                                   (incf counter)
-                                  (when (= 0 (floor counter 10))
-                                    (cando:progress-advance progress-bar counter))
+                                  (cando:progress-advance progress-bar counter)
                                   (when (funcall test-function solvent-mol)
                                     (chem:set-name solvent-mol (intern (format nil "WAT_~a" counter) :keyword))
                                     (chem:setf-molecule-type solvent-mol :solvent)
@@ -129,7 +128,7 @@
            (transform-to-origin (geom:make-m4-translate (geom:v* solute-center -1.0))))
       (chem:apply-transform-to-atoms solute transform-to-origin))
     (multiple-value-setq (solute-xvec solute-yvec solute-zvec solute-x-width solute-y-width solute-z-width)
-      (tool-build-solute-array solute))   
+      (tool-build-solute-array solute))
     (setf xwidth (+ solute-x-width (* (first width-list) 2))
           ywidth (+ solute-y-width (* (second width-list) 2))
           zwidth (+ solute-z-width (* (third width-list) 2)))
@@ -148,7 +147,7 @@
                 solute-y-width widthtemp
                 solute-z-width widthtemp))
         (format t "Total bounding box for atom centers:  ~6,2f ~6,2f ~6,2f~%" xwidth ywidth zwidth))
-    (setf 
+    (setf
      ix (+ (truncate (/ xwidth solvent-x-width)) 1)
      iy (+ (truncate (/ ywidth solvent-y-width)) 1)
      iz (+ (truncate (/ zwidth solvent-z-width)) 1)
@@ -183,8 +182,8 @@
          ix iy iz
          xstart ystart zstart)
     (multiple-value-setq (solute-xvec solute-yvec solute-zvec solute-x-width solute-y-width solute-z-width)
-      (tool-build-solute-array solute))   
-    (setf 
+      (tool-build-solute-array solute))
+    (setf
      ix (+ (truncate (/ diam solvent-x-width)) 1)
      iy (+ (truncate (/ diam solvent-y-width)) 1)
      iz (+ (truncate (/ diam solvent-z-width)) 1)
@@ -256,7 +255,7 @@
                z-solvent (geom:get-z solvent-pos))
          (if (and (<= (- (* (* 2sqrt half-width-avr) 2by3)) z-solvent)
                   (>=  (* (* 2sqrt half-width-avr) 2by3) z-solvent))
-             (progn                                 
+             (progn
                (when (>= x-solvent 0.0)
                  (if (and (<= (- (* 2sqrt x-solvent) (* 2sqrt half-width-avr)) z-solvent)
                           (>= (+ (* (- 2sqrt) x-solvent) (* 2sqrt half-width-avr)) z-solvent))
