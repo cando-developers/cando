@@ -6,6 +6,8 @@
 (defclass progress-bar ()
   ((start-time :reader progress-bar-start-time
                :initform (get-universal-time))
+   (update-time :accessor progress-bar-update-time
+                :initform (get-universal-time))
    (bar :reader progress-bar-bar
         :initarg :bar)
    (label :reader progress-bar-label
@@ -29,22 +31,25 @@
 
 (defmethod cando:progress-advance ((instance progress-bar) counter &optional message)
   (with-accessors ((start-time progress-bar-start-time)
+                   (update-time progress-bar-update-time)
                    (bar progress-bar-bar)
                    (label progress-bar-label)
                    (style progress-bar-style))
       instance
     (when message
       (setf (jw:widget-description bar) message))
-    (setf (jw:widget-value bar) counter)
-    (let* ((fraction (/ counter (jw:widget-max bar)))
-           (elapsed-time (- (get-universal-time) start-time))
-           (remaining-time (* elapsed-time (1- (/ fraction)))))
-      (setf (jw:widget-value label)
-            (format nil "~3d%, ~@[Elapsed: ~a, ~]Remaining: ~a"
-                    (round (* 100 fraction))
-                    (when (eq style :time)
-                      (cando::progress-convenient-time elapsed-time))
-                    (cando::progress-convenient-time remaining-time))))))
+    (when (> (- (get-universal-time) update-time) 1)
+      (setf (jw:widget-value bar) counter
+            update-time (get-universal-time))
+      (let* ((fraction (/ counter (jw:widget-max bar)))
+             (elapsed-time (- (get-universal-time) start-time))
+             (remaining-time (* elapsed-time (1- (/ fraction)))))
+        (setf (jw:widget-value label)
+              (format nil "~3d%, ~@[Elapsed: ~a, ~]Remaining: ~a"
+                      (round (* 100 fraction))
+                      (when (eq style :time)
+                        (cando::progress-convenient-time elapsed-time))
+                      (cando::progress-convenient-time remaining-time)))))))
 
 (defmethod cando:progress-done ((instance progress-bar))
   (with-accessors ((bar progress-bar-bar)
