@@ -66,9 +66,9 @@
                                       (not (= 2 (car (elt columns z))))))
                              -1
                              1)
-          with x-scale = (if (zerop x) reflect 1)
+          with x-scale = (if (= 1 x) reflect 1)
           with y-scale = (if (= 1 y) reflect 1)
-          with z-scale = (if (= 2 z) reflect 1)
+          with z-scale = (if (= 1 z) reflect 1)
           finally (chem:apply-transform-to-atoms matter (geom:invert-transform permuted-S))
           for row below 4
           do (setf (geom:at permuted-S row 0) (* x-scale (geom:at S row (car (elt columns x))))
