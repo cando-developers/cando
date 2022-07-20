@@ -162,7 +162,7 @@ fin : A Stream
 eof-error-p : bool
 eof : An object
 * Description
-Read the enntry of the unit from fin.  
+Read the enntry of the unit from fin.
 Use eof-error-p and eof as in read."
   (flet ((my-split (string &key (delimiterp #'(lambda (x) (eq x #\.))))
            (loop :for beg = (position-if-not delimiterp string)
@@ -172,7 +172,7 @@ Use eof-error-p and eof as in read."
               :while end)))
     (multiple-value-bind (header body)
         (read-off-data-block fin eof-error-p eof)
-      (if header 
+      (if header
         (let* ((header-parts (my-split (name header)))
                (unit-name (second header-parts))
                (unit-part (fourth header-parts)))
@@ -254,7 +254,7 @@ Use eof-error-p and eof as in read."
          (chem:bond-to a1 a2 :single-bond))
         ((= bo 2)
          (chem:bond-to a1 a2 :double-bond))
-        (t 
+        (t
          (error "Handle bond-order of ~a" bo))))))
 
 (defun set-positions (read-positions atoms)
@@ -343,10 +343,11 @@ if the caller wants to do that."
                       (xbox (elt (elt read-bound-box 2) 0))
                       (ybox (elt (elt read-bound-box 3) 0))
                       (zbox (elt (elt read-bound-box 4) 0)))
-                  (chem:set-bounding-box aggregate (chem:make-bounding-box (list xbox ybox zbox)
-                                                                           :angles-degrees (list (/ angle-rad 0.0174533)
-                                                                                                (/ angle-rad 0.0174533)
-                                                                                                (/ angle-rad 0.0174533))))))
+                  (setf (chem:bounding-box aggregate)
+                        (chem:make-bounding-box (list xbox ybox zbox)
+                                                :angles-degrees (list (/ angle-rad 0.0174533)
+                                                                      (/ angle-rad 0.0174533)
+                                                                      (/ angle-rad 0.0174533))))))
               (values aggregate read-connect read-residues))))))))
 
 (defun translate-off-object (unit-name unit connect residues)

@@ -25,7 +25,7 @@
          (pn (target-pathname joblet)))
     (ensure-jobs-directories-exist pn)
     (write-file-if-it-has-changed pn substituted-script)))
-   
+
 ;;; What is this for????
 (defparameter *vdw-bonded* "ifsc=1, scmask1=':1@H6', scmask2=':2@O1,H6'")
 
@@ -105,7 +105,7 @@
    scmask1 = ':%SCMASK1%', scmask2 = ':%SCMASK2%'
  /
  &ewald
- / 
+ /
 ")
 
 (defparameter *prepare-heat-in*
@@ -130,11 +130,11 @@
    scmask1 = ':%SCMASK1%', scmask2 = ':%SCMASK2%'
  /
  &ewald
- / 
+ /
 
  &wt
    type='TEMP0',
-   istep1 = 0, istep2 = 8000,                                      
+   istep1 = 0, istep2 = 8000,
    value1 = 5.0, value2 = 300.0
  /
 
@@ -165,7 +165,7 @@
    scmask1 = ':%SCMASK1%', scmask2 = ':%SCMASK2%'
  /
  &ewald
- / 
+ /
 
 ")
 
@@ -191,7 +191,7 @@
 
  &ewald
  /
- 
+
 ")
 
 (defun build-decharge-recharge-aggregate (top-crd keep-index)
@@ -205,7 +205,7 @@
           for mol = (chem:matter-copy (chem:content-at aggregate index))
           do (chem:add-matter new-agg mol))
     (if (chem:bounding-box-bound-p aggregate)
-        (chem:set-bounding-box new-agg (chem:bounding-box aggregate))
+        (setf (chem:bounding-box new-agg) (chem:bounding-box aggregate))
         (chem:mak-unbound-bounding-box new-agg))
     new-agg))
 
@@ -234,7 +234,7 @@
     (leap.topology:save-amber-parm-format
      decharge output-topology-fn output-coordinate-fn
      :residue-name-to-pdb-alist (tirun:residue-name-to-pdb-alist tiruns))))
-  
+
 (defparameter *decharge*
   (let ((*package* (find-package :keyword)))
     (cl:format nil "~{~s~%~}"
@@ -257,7 +257,7 @@
                    ":%RECHARGE-TOPOLOGY%" ":%RECHARGE-COORDINATES%")
                  (ext:quit)))))
 
-(defparameter *decharge-recharge-heat-in* 
+(defparameter *decharge-recharge-heat-in*
   "heating
  &cntrl
    imin = 0, nstlim = :%DECHARGE-RECHARGE-HEAT-IN.NSTLIM%, irest = 0, ntx = 1, dt = :%DT%,
@@ -280,11 +280,11 @@
  /
 
  &ewald
- / 
+ /
 
  &wt
    type='TEMP0',
-   istep1 = 0, istep2 = 8000,                                      
+   istep1 = 0, istep2 = 8000,
    value1 = 50.0, value2 = 300.0
  /
 
@@ -292,7 +292,7 @@
  /
 ")
 
-(defparameter *vdw-heat-in* 
+(defparameter *vdw-heat-in*
   "heating
  &cntrl
    imin = 0, nstlim = :%VDW-HEAT-IN.NSTLIM%, irest = 0, ntx = 1, dt = :%DT%,
@@ -315,7 +315,7 @@
  /
 
  &ewald
- / 
+ /
 
  &wt
    type='TEMP0',
@@ -348,7 +348,7 @@
  /
 
  &ewald
- / 
+ /
 " (if (use-smooth-step morph)
       "gti_lam_sch=1, gti_output=1,"
       "")))
@@ -375,7 +375,7 @@
  /
 
  &ewald
- / 
+ /
 " (if (use-smooth-step morph)
       "gti_lam_sch=1, gti_output=1,"
       "")))
@@ -476,7 +476,7 @@ TypeVDW, smooth_step2, complementary, 0.0, 1.0
              (window-name (car (last (pathname-directory window-dir))))
              (window-float (read-from-string window-name)))
         (cons window-float (list mean (/ std (sqrt (step% dvdl))) std))))))
-    
+
 (defun read-dvdl-windows (windows)
   (let (rev-data)
     (loop for window in windows
@@ -492,8 +492,8 @@ TypeVDW, smooth_step2, complementary, 0.0, 1.0
       (:linear (process-linear x y))
       (:polyfit (process-polyfit x y)))
     (values x y data)))
-           
-               
+
+
 (defun run-dvdl (output-filename windows)
   (multiple-value-bind (x y data)
       (calculate-dvdl windows)
@@ -521,8 +521,8 @@ TypeVDW, smooth_step2, complementary, 0.0, 1.0
          (windows (coerce windows-vec 'list)))
     (format t \"run-dvdl output: ~s\n\" output-filename)
     (run-dvdl output-filename windows)))
-    
-  
+
+
 (main)
 (format t \"Done getdvdl~%\")
 (ext:quit)
@@ -593,7 +593,7 @@ if __name__ == '__main__':
     cwd = os.getcwd()
 #    os.chdir(os.path.dirname(os.path.realpath(window)))
 ###    print >>fout, 'window = %s' % window
-    dVdl = OnlineAvVar()    
+    dVdl = OnlineAvVar()
     ln = 0
 
     for en in [ window ]: # used to be glob.glob(glob_pattern):
@@ -731,7 +731,7 @@ if __name__ == '__main__':
 
 (defun read-file (infile)
   (with-open-file (instream infile :direction :input :if-does-not-exist nil)
-    (when instream 
+    (when instream
       (let ((string (make-string (file-length instream))))
         (read-sequence string instream)
         string))))
@@ -970,13 +970,13 @@ its for and then create a new class for it."))
 
 (defclass read-charges-job (cando-job)
   ())
-                     
+
 (defclass scripted-job (job)
   ())
 
 (defclass morph-job (scripted-job)
   ((morph :initarg :morph :accessor morph)))
-  
+
 (defclass sqm-job-mixin ()
   ())
 
@@ -1563,7 +1563,7 @@ exec \"$@\"
 
 #+(or)
 (defmethod print-object ((object chem:aggregate) stream)
-  "Aggregates can have atom graphs that are way too wide and deep to print the 
+  "Aggregates can have atom graphs that are way too wide and deep to print the
 normal way - so we short circuit it here using a mol2 file"
   (let ((agg-string (chem:aggregate-as-mol2-string object)))
     (format stream "#.(with-input-from-string (sin ~s) (chem:read-mol2 sin)) " agg-string)))

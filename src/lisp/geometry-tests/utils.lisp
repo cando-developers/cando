@@ -80,7 +80,7 @@ Returns the plane or nil"
         (p0 (centroid plane))
         (n (normal plane)))
     (declare (dynamic-extent l0 l1 l p delta))
-    ;; Loop over all bonds 
+    ;; Loop over all bonds
     (chem:map-bonds
      'nil
      (lambda (a0 a1 order bond)
@@ -102,7 +102,7 @@ Returns the plane or nil"
                ;; If d < 0.0 or d > 1.0 then the bond cannot intersect the ring.
                (when (<= 0.0 d 1.0)
                  (geom:v*! l d p)
-                 (geom:v+! p l0 p)
+                 (geom:v+! p l0)
                  (geom:v-! p p0 delta)
                  (let ((distance (geom:vlength delta)))
                    (declare (double-float distance))

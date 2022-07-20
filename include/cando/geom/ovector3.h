@@ -19,7 +19,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
- 
+
 This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
 */
 /* -^- */
@@ -87,17 +87,17 @@ public:
   void crossProduct_BANG_(const Vector3& other, Vector3& result );
 
   Vector3 sub(const Vector3& other);
-      
+
   Vector3 _PLUS_(const Vector3& other);
   Vector3 _MINUS_(const Vector3& other);
   void v_PLUS__BANG_(const Vector3& other, Vector3& result);
   void v_MINUS__BANG_(const Vector3& other, Vector3& result);
-        
+
   double magnitude();
   Vector3 normalized();
 
   core::List_sp vlist() const;
-  
+
 	/*! add two vectors
 	 */
   core::T_sp add(core::List_sp points);
@@ -112,7 +112,7 @@ public:
                                  double dihedral, OVector3_sp dihedralPos);
   OVector3_O() {};
   OVector3_O(double x, double y, double z) : _Value{x,y,z} {};
-    
+
 };
 }; // namespace geom
 
@@ -223,3 +223,4 @@ struct	to_object<const Vector3& >
 
 
 #endif
+

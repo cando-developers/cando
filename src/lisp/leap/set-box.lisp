@@ -16,19 +16,11 @@ buffer object, which extends either type of box by an arbitrary amount.
 "
   (check-type aggregate chem:aggregate)
 
-  (let ((buffer-vec (make-array 3))
-        (dx 0)
-        (dy 0)
-        (dz 0))
+  (let ((buffer-vec (make-array 3)))
     (if (and (not (eq :vdw enclosure))
              (not (eq :centers enclosure)))
         (error "~s - Expected :vdw or :centers for second argument~%" enclosure))
-    (if (eq :vdw enclosure)
-        (center-unit-by-radii aggregate)
-        (let* ((center (chem:geometric-center aggregate))
-               (trans (geom:make-m4-translate (geom:v* center -1.0))))
-          (chem:apply-transform-to-atoms aggregate trans)
-          (set-unit-box-by-centers aggregate)))
+    (calculate-bounding-box aggregate (eq :vdw enclosure))
     (when buffer
       (if (listp buffer)
           (progn
@@ -50,122 +42,36 @@ buffer object, which extends either type of box by an arbitrary amount.
             (setf (aref buffer-vec 1) (aref buffer-vec 0))
             (setf (aref buffer-vec 2) (aref buffer-vec 0))))
       (let ((bounding-box (chem:bounding-box aggregate)))
-        (setf dx (+ (chem:get-x-width bounding-box) (aref buffer-vec 0)))
-        (setf dy (+ (chem:get-y-width bounding-box) (aref buffer-vec 1)))
-        (setf dz (+ (chem:get-z-width bounding-box) (aref buffer-vec 2))))
-      (chem:set-bounding-box aggregate (chem:make-bounding-box (list dx dy dz))))
+        (setf (chem:bounding-box aggregate)
+              (chem:make-bounding-box (list (+ (chem:get-x-width bounding-box) (aref buffer-vec 0))
+                                            (+ (chem:get-y-width bounding-box) (aref buffer-vec 1))
+                                            (+ (chem:get-z-width bounding-box) (aref buffer-vec 2)))))))
     (let ((bounding-box (chem:bounding-box aggregate)))
       (format t "Box dimensions ~a ~a ~a~%"
               (chem:get-x-width bounding-box)
               (chem:get-y-width bounding-box)
               (chem:get-z-width bounding-box)))))
 
-(defun center-unit-by-radii (aggregate)
-  (check-type aggregate chem:aggregate)
-  (let ((atom-default-radius 1.5)
-        (ifirst 1)
-        (x 0.0)
-        (y 0.0)
-        (z 0.0)
-        (x-max 0.0)
-        (y-max 0.0)
-        (z-max 0.0)
-        (x-min 0.0)
-        (y-min 0.0)
-        (z-min 0.0)
-        (radius 0.0))
-    (chem:map-atoms
-     nil
-     (lambda (a)
-       (setf radius (chem:get-vdw-radius a))
-       (if (< radius 0.1)
-           (if (eq (chem:get-element-as-symbol a) :H)
-               (setf radius 1.0)
-               (progn
-                 #+(or)(format t "(using default radius ~a for ~a)~%"
-                               atom-default-radius (chem:get-name a))
-                 (setf radius atom-default-radius))))
-       (chem:set-vdw-radius a radius)
-       (setf x (+ (geom:get-x (chem:get-position a)) radius))
-       (setf y (+ (geom:get-y (chem:get-position a)) radius))
-       (setf z (+ (geom:get-z (chem:get-position a)) radius))
-       (if (=  ifirst 1)
-           (setf x-max x
-                 y-max y
-                 z-max z
-                 ifirst 0)
-           (progn
-             (if (> x x-max)
-                 (setf x-max x))
-             (if (> y y-max)
-                 (setf y-max y))
-             (if (> z z-max)
-                 (setf z-max z))))
-       (setf x (- (geom:get-x (chem:get-position a)) radius))
-       (setf y (- (geom:get-y (chem:get-position a)) radius))
-       (setf z (- (geom:get-z (chem:get-position a)) radius))
-       (if (=  ifirst 1)
-           (setf x-min x
-                 y-min y
-                 z-min z
-                 ifirst 0)
-           (progn
-             (if (< x x-min)
-                 (setf x-min x))
-             (if (< y y-min)
-                 (setf y-min y))
-             (if (< z z-min)
-                 (setf z-min z)))))
-     aggregate)
-
-    ;;Define center of bounding box
-    (setf x (+ x-min (* (- x-max x-min) 0.5)))
-    (setf y (+ x-min (* (- x-max x-min) 0.5)))
-    (setf z (+ x-min (* (- x-max x-min) 0.5)))
-
-    ;;Translate center to origin
-    (let* ((translate-mol (geom:vec (- x) (- y) (- z)))
-           (mol-transform (geom:make-m4-translate translate-mol)))
-      (chem:apply-transform-to-atoms aggregate mol-transform)
-      (chem:set-bounding-box aggregate (chem:make-bounding-box (list (- x-max x-min) (- y-max y-min) (- z-max z-min)))))))
-
-(defun set-unit-box-by-centers (aggregate)
-  (let ((ifirst 1)
-        (x 0.0)
-        (y 0.0)
-        (z 0.0)
-        (x-max 0.0)
-        (y-max 0.0)
-        (z-max 0.0)
-        (x-min 0.0)
-        (y-min 0.0)
-        (z-min 0.0))
-    (chem:map-atoms
-     nil
-     (lambda (a)
-       (setf x (geom:get-x (chem:get-position a)))
-       (setf y (geom:get-y (chem:get-position a)))
-       (setf z (geom:get-z (chem:get-position a)))
-       (if (=  ifirst 1)
-           (setf x-max x
-                 x-min x
-                 y-max y
-                 y-min y
-                 z-max z
-                 z-min z
-                 ifirst 0))
-       (if (> x x-max)
-           (setf x-max x)
-           (if (< x x-min)
-               (setf x-min x)))
-       (if (> y y-max)
-           (setf y-max y)
-           (if (< y y-min)
-               (setf y-min y)))
-       (if (> z z-max)
-           (setf z-max z)
-           (if (< z z-min)
-               (setf z-min z))))
-     aggregate)
-    (chem:set-bounding-box aggregate
-                           (chem:make-bounding-box (list (- x-max x-min) (- y-max y-min) (- z-max z-min))))))
+(defun calculate-bounding-box (aggregate vdw)
+  (let ((cuboid (geom:make-bounding-cuboid)))
+    (chem:map-atoms nil
+                    (lambda (atom)
+                      (let* ((radius (cond ((not vdw)
+                                            0)
+                                           ((plusp (chem:get-vdw-radius atom))
+                                            (chem:get-vdw-radius atom))
+                                           (t
+                                            (chem:vdw-radius-for-element (chem:get-element atom)))))
+                             (corner (geom:vec radius radius radius)))
+                        (geom:expand-to-encompass-point cuboid
+                                                        (geom:v+ (chem:get-position atom) corner))
+                        (geom:expand-to-encompass-point cuboid
+                                                        (geom:v- (chem:get-position atom) corner))))
+                    aggregate)
+    (setf (chem:bounding-box aggregate)
+          (chem:make-bounding-box (list (geom:get-extent-x cuboid)
+                                        (geom:get-extent-y cuboid)
+                                        (geom:get-extent-z cuboid))
+                                  :center (list (geom:get-x (geom:get-center cuboid))
+                                                (geom:get-y (geom:get-center cuboid))
+                                                (geom:get-z (geom:get-center cuboid)))))))

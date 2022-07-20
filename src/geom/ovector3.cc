@@ -19,7 +19,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
- 
+
 This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
 */
 /* -^- */
@@ -87,7 +87,7 @@ CL_DEFUN bool geom__vec_p(OVector3_sp ov) {
 #ifdef XML_ARCHIVE
     void	OVector3_O::archiveBase(core::ArchiveP node)
 {
-    node->archivePlainObjectIfDefined<Vector3>( "pos","V3", 
+    node->archivePlainObjectIfDefined<Vector3>( "pos","V3",
     					this->_Value.isDefined(), this->_Value);
 }
 #endif
@@ -177,8 +177,8 @@ OVector3_sp OVector3_O::sum(core::List_sp args)
 
 
 
-    
-    
+
+
 CL_NAME("VSUM");
 CL_DEFMETHOD core::T_sp OVector3_O::add(core::List_sp points)
 {
@@ -283,7 +283,7 @@ extern "C" {
   core::T_sp cc_OVector3_make(double x, double y, double z) {
     return geom::OVector3_O::make(x,y,z);
   }
-  
+
   double cc_OVector3_vx(core::T_sp tvec3) {
     return gc::As<geom::OVector3_sp>(tvec3)->_Value[0];
   };
@@ -298,3 +298,4 @@ extern "C" {
 
 
 };
+

@@ -3,39 +3,36 @@
 (defgeneric show (instance &rest kwargs &key &allow-other-keys)
   (:documentation "Display a residue, molecule, aggregate or a trajectory in a Jupyter notebook"))
 
-(defun add-axes (component)
-  (setf (ngl:representations component)
-        (append (ngl:representations component)
-                (list (make-instance 'ngl:buffer-representation
-                                     :name "axes"
-                                     :buffer (list :type "wideline"
-                                                   :position1 (vector 0 0 0
-                                                                      0 0 0
-                                                                      0 0 0)
-                                                   :position2 (vector 10 0 0
-                                                                      0 10 0
-                                                                      0 0 10)
-                                                   :color #(#xFF 0 0 0 0xFF 0 0 0 0xFF)
-                                                   :color2 #(#xFF 0 0 0 0xFF 0 0 0 0xFF)))))))
+(defun make-axes (visible)
+  (make-instance 'ngl:buffer-representation
+                 :name nil
+                 :visible visible
+                 :buffer (list :type "wideline"
+                               :position1 (vector 0 0 0
+                                                  0 0 0
+                                                  0 0 0)
+                               :position2 (vector 10 0 0
+                                                  0 10 0
+                                                  0 0 10)
+                               :color #(#xFF 0 0 0 0xFF 0 0 0 0xFF)
+                               :color2 #(#xFF 0 0 0 0xFF 0 0 0 0xFF))))
 
 (defun add-bounding-box (component aggregate)
   (unless (chem:bounding-box-bound-p aggregate)
     (error "There is no bounding-box defined for aggregate"))
   (let* ((bounding-box (chem:bounding-box aggregate))
-         (center (chem:get-bounding-box-center bounding-box))
-         (x-width/2 (/ (chem:get-x-width bounding-box) 2.0))
-         (y-width/2 (/ (chem:get-y-width bounding-box) 2.0))
-         (z-width/2 (/ (chem:get-z-width bounding-box) 2.0))
-         (minx (- (geom:get-x center) x-width/2))
-         (miny (- (geom:get-y center) y-width/2))
-         (minz (- (geom:get-z center) z-width/2))
-         (maxx (+ (geom:get-x center) x-width/2))
-         (maxy (+ (geom:get-y center) y-width/2))
-         (maxz (+ (geom:get-z center) z-width/2)))
+         (min (chem:min-corner bounding-box))
+         (max (chem:max-corner bounding-box))
+         (minx (geom:get-x min))
+         (miny (geom:get-y min))
+         (minz (geom:get-z min))
+         (maxx (geom:get-x max))
+         (maxy (geom:get-y max))
+         (maxz (geom:get-z max)))
     (setf (ngl:representations component)
           (append (ngl:representations component)
                   (list (make-instance 'ngl:buffer-representation
-                                       :name "bounding-box"
+                                       :name nil
                                        :buffer (list :type "wideline"
                                                      :position1 (vector minx miny minz
                                                                         minx miny minz
@@ -191,7 +188,8 @@
 
 
 (defun ngl-show (instance &rest kwargs &key &allow-other-keys)
-  (let* ((component (make-ngl-structure instance
+  (let* ((axes (make-axes (getf kwargs :axes)))
+         (component (make-ngl-structure instance
                                         :auto-view-duration 0
                                         :representations (list (make-instance 'ngl:backbone
                                                                               :name "Backbone"
@@ -219,7 +217,9 @@
                                                                (make-instance 'ngl:surface
                                                                               :name "Surface" :use-worker t
                                                                               :color-scheme "residueindex"
-                                                                              :visible nil :lazy t))))
+                                                                              :visible nil :lazy t)
+                                                               axes)))
+
          (stage (apply #'make-instance 'ngl:stage
                        :clip-dist 0
                        :background-color "white"
@@ -236,7 +236,9 @@
                        kwargs))
          (representation-dropdown (make-instance 'jw:dropdown
                                                  :description "Representation"
-                                                 :%options-labels (mapcar #'ngl:name (ngl:representations component))
+                                                 :%options-labels (mapcan (lambda (rep &aux (name (ngl:name rep)))
+                                                                            (when name (list name)))
+                                                                          (ngl:representations component))
                                                  :index (position-if #'ngl:visible (ngl:representations component))
                                                  :style (make-instance 'jw:description-style
                                                                        :description-width "min-content")
@@ -249,17 +251,27 @@
                                                                 :description-width "min-content")
                                           :layout (make-instance 'jw:layout
                                                                  :margin ".5em"
-                                                                 :width "max-content"))))
+                                                                 :width "max-content")))
+         (axes-button (jw:make-toggle-button :icon "cube"
+                                             :tooltip "Toggle Axes"
+                                             :value (getf kwargs :axes)
+                                             :style (make-instance 'jw:description-style
+                                                                       :description-width "min-content")
+                                             :layout (jw:make-layout :margin ".5em .1em .5em .1em"
+                                                                     :width "max-content"))))
     (when (and (typep instance 'chem:aggregate)
                (chem:bounding-box-bound-p instance))
       (add-bounding-box component instance))
-    (when (getf kwargs :axes)
-      (add-axes component))
     (jw:observe representation-dropdown :value
       (lambda (inst type name old-value new-value source)
         (declare (ignore inst type name old-value source))
         (dolist (representation (ngl:representations component))
-          (setf (ngl:visible representation) (equalp new-value (ngl:name representation))))))
+          (when (ngl:name representation)
+            (setf (ngl:visible representation) (equalp new-value (ngl:name representation)))))))
+    (jw:observe axes-button :value
+      (lambda (inst type name old-value new-value source)
+        (declare (ignore inst type name old-value source))
+        (setf (ngl:visible axes) new-value)))
     (jw:on-button-click auto-view-button
       (lambda (inst)
         (declare (ignore inst))
@@ -268,7 +280,8 @@
                    :children (list stage
                                    (make-instance 'jw:box
                                                   :children (append (list representation-dropdown
-                                                                          auto-view-button)
+                                                                          auto-view-button
+                                                                          axes-button)
                                                                     (ngl-show-trajectory (first (ngl:trajectories component))))
                                                   :layout (make-instance 'jw:layout
                                                                          :flex-flow "row wrap"

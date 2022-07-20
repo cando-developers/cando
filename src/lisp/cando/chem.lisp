@@ -132,7 +132,7 @@ multiple force-fields and know how a more recently added force-field shadows a l
   (:documentation "Return the number of nodes in the node-table"))
 
 (defgeneric chem:node-table-coordinate-index-times3 (node-table index)
-  (:documentation "Return a coordinate index (an index into a coordinate vector, a multiple of 3) 
+  (:documentation "Return a coordinate index (an index into a coordinate vector, a multiple of 3)
 for the node in the table."))
 
 (defgeneric chem:node-table-node-at-index (node-table index)
@@ -174,12 +174,15 @@ for the node in the table."))
 ;;;
 
 (defgeneric chem:bounding-box (object)
-  (:documentation "Return the bounding-box for the object"))
+  (:documentation "Return the bounding-box for the object")
+  (:method (object)
+    (declare (ignore object))
+    nil))
 
 (defgeneric chem:bounding-box-bound-p (object)
   (:documentation "Return T if the bounding-box is bound to a value."))
 
-(defgeneric chem:set-bounding-box (object bounding-box)
+(defgeneric (setf chem:bounding-box) (bounding-box object)
   (:documentation "Set the bounding box to the value."))
 
 (defgeneric chem:mak-unbound-bounding-box (object)
@@ -191,12 +194,12 @@ for the node in the table."))
 (defmethod chem:bounding-box-bound-p ((atom-table chem:atom-table))
   (chem:atom-table-bounding-box-bound-p atom-table))
 
-(defmethod chem:set-bounding-box ((atom-table chem:atom-table) bounding-box)
-  (chem:atom-table-set-bounding-box atom-table bounding-box))
+(defmethod (setf chem:bounding-box) (bounding-box (atom-table chem:atom-table))
+  (chem:atom-table-set-bounding-box atom-table bounding-box)
+  bounding-box)
 
 (defmethod chem:mak-unbound-bounding-box ((atom-table chem:atom-table))
   (chem:atom-table-mak-unbound-bounding-box atom-table))
-
 
 
 (defmethod chem:bounding-box ((aggregate chem:aggregate))
@@ -205,15 +208,17 @@ for the node in the table."))
 (defmethod chem:bounding-box-bound-p ((aggregate chem:aggregate))
   (chem:aggregate-bounding-box-bound-p aggregate))
 
-(defmethod chem:set-bounding-box ((aggregate chem:aggregate) bounding-box)
-  (chem:aggregate-set-bounding-box aggregate bounding-box))
+(defmethod (setf chem:bounding-box) (bounding-box (aggregate chem:aggregate))
+  (chem:aggregate-set-bounding-box aggregate bounding-box)
+  bounding-box)
 
 (defmethod chem:mak-unbound-bounding-box ((aggregate chem:aggregate))
   (chem:aggregate-mak-unbound-bounding-box aggregate))
 
 
-(defmethod chem:set-bounding-box ((octtree chem:add-ion-octree) bounding-box)
-  (chem:aggregate-set-bounding-box octtree bounding-box))
+(defmethod (setf chem:bounding-box) (bounding-box (octtree chem:add-ion-octree))
+  (chem:aggregate-set-bounding-box octtree bounding-box)
+  bounding-box)
 
 
 (defmethod chem:bounding-box ((rigid-body-energy-function chem:rigid-body-energy-function))
@@ -222,8 +227,9 @@ for the node in the table."))
 (defmethod chem:bounding-box-bound-p ((rigid-body-energy-function chem:rigid-body-energy-function))
   (chem:rigid-body-energy-function-bounding-box-bound-p rigid-body-energy-function))
 
-(defmethod chem:set-bounding-box ((rigid-body-energy-function chem:rigid-body-energy-function) bounding-box)
-  (chem:rigid-body-energy-function-set-bounding-box rigid-body-energy-function bounding-box))
+(defmethod (setf chem:bounding-box) (bounding-box (rigid-body-energy-function chem:rigid-body-energy-function))
+  (chem:rigid-body-energy-function-set-bounding-box rigid-body-energy-function bounding-box)
+  bounding-box)
 
 (defmethod chem:mak-unbound-bounding-box ((rigid-body-energy-function chem:rigid-body-energy-function))
   (chem:rigid-body-energy-function-mak-unbound-bounding-box rigid-body-energy-function))
@@ -235,9 +241,9 @@ for the node in the table."))
 (defmethod chem:bounding-box-bound-p ((energy-function chem:energy-function))
   (chem:energy-function-bounding-box-bound-p energy-function))
 
-(defmethod chem:set-bounding-box ((energy-function chem:energy-function) bounding-box)
-  (chem:energy-function-set-bounding-box energy-function bounding-box))
+(defmethod (setf chem:bounding-box) (bounding-box (energy-function chem:energy-function))
+  (chem:energy-function-set-bounding-box energy-function bounding-box)
+  bounding-box)
 
 (defmethod chem:mak-unbound-bounding-box ((energy-function chem:energy-function))
   (chem:energy-function-mak-unbound-bounding-box energy-function))
-
