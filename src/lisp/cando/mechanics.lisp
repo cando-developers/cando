@@ -9,7 +9,7 @@
                     (lambda (atom)
                       (let ((mass (chem:atomic-weight-for-element (chem:get-element atom))))
                         (incf total-mass mass)
-                        (geom:v+! mass-vector mass-vector (geom:v* (chem:get-position atom) mass))))
+                        (geom:v+! mass-vector (geom:v* (chem:get-position atom) mass) mass-vector)))
                     matter)
     (geom:v* mass-vector (/ total-mass))))
 
