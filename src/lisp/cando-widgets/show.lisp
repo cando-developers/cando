@@ -1,7 +1,35 @@
 (in-package :cando-widgets)
 
-(defgeneric show (instance &rest kwargs &key &allow-other-keys)
-  (:documentation "Display a residue, molecule, aggregate or a trajectory in a Jupyter notebook"))
+(defparameter *panes* (make-hash-table :test #'equal))
+
+(defparameter *default-pane* nil)
+
+(defgeneric make-pane (object &rest rest &key &allow-other-keys))
+
+(defgeneric show-on-pane (pane-instance object &rest rest &key &allow-other-keys))
+
+(defun show (object &rest rest &key (pane *default-pane*) &allow-other-keys)
+  "Display a residue, molecule, aggregate or a trajectory in a Jupyter notebook"
+  (if pane
+      (let ((existing (gethash pane *panes*)))
+        (if existing
+            (apply #'show-on-pane existing object rest)
+            (let ((sidecar (jw:make-sidecar :title pane)))
+              (jw:with-output sidecar
+                (setf (gethash pane *panes*)
+                      (apply #'show-on-pane nil object rest))))))
+      (apply #'show-on-pane nil object rest))
+  (values))
+
+;;; sketch2d
+
+(defmethod show-on-pane (pane-instance (sketch sketch2d:sketch2d) &rest rest &key &allow-other-keys)
+  (apply #'show-on-pane pane-instance (sketch2d:svg sketch) rest))
+
+(defmethod show-on-pane (pane-instance (sketch sketch2d:sketch-svg) &rest rest &key pane &allow-other-keys)
+  (declare (ignore rest))
+  (jupyter:svg (sketch2d:render-svg-to-string sketch) :display t :id pane :update (and pane-instance t))
+  pane)
 
 (defun make-axes (visible)
   (make-instance 'ngl:buffer-representation
@@ -17,50 +45,60 @@
                                :color #(#xFF 0 0 0 0xFF 0 0 0 0xFF)
                                :color2 #(#xFF 0 0 0 0xFF 0 0 0 0xFF))))
 
-(defun add-bounding-box (component aggregate)
-  (unless (chem:bounding-box-bound-p aggregate)
-    (error "There is no bounding-box defined for aggregate"))
-  (let* ((bounding-box (chem:bounding-box aggregate))
-         (min (chem:min-corner bounding-box))
-         (max (chem:max-corner bounding-box))
-         (minx (geom:get-x min))
-         (miny (geom:get-y min))
-         (minz (geom:get-z min))
-         (maxx (geom:get-x max))
-         (maxy (geom:get-y max))
-         (maxz (geom:get-z max)))
-    (setf (ngl:representations component)
-          (append (ngl:representations component)
-                  (list (make-instance 'ngl:buffer-representation
-                                       :name nil
-                                       :buffer (list :type "wideline"
-                                                     :position1 (vector minx miny minz
-                                                                        minx miny minz
-                                                                        minx miny minz
-                                                                        minx miny maxz
-                                                                        minx miny maxz
-                                                                        minx maxy minz
-                                                                        minx maxy minz
-                                                                        maxx miny minz
-                                                                        maxx miny minz
-                                                                        minx maxy maxz
-                                                                        maxx miny maxz
-                                                                        maxx maxy minz)
-                                                     :position2 (vector minx miny maxz
-                                                                        minx maxy minz
-                                                                        maxx miny minz
-                                                                        minx maxy maxz
-                                                                        maxx miny maxz
-                                                                        minx maxy maxz
-                                                                        maxx maxy minz
-                                                                        maxx miny maxz
-                                                                        maxx maxy minz
-                                                                        maxx maxy maxz
-                                                                        maxx maxy maxz
-                                                                        maxx maxy maxz)
-                                                     :color #(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
-                                                     :color2 #(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0))))))))
+(defun cylinder-buffer (position1 position2 radius color)
+  (list :type "cylinder"
+        :position1 (apply #'append position1)
+        :position2 (apply #'append position2)
+        :radius (make-list (length position1) :initial-element radius)
+        :color (loop for p on position1
+                     append color)
+        :color2 (loop for p on position1
+                      append color)))
 
+(defun sphere-buffer (position radius color)
+  (list :type "sphere"
+        :position (apply #'append position)
+        :radius (make-list (length position) :initial-element radius)
+        :color (loop for p on position
+                     append color)))
+
+(defvar +bounding-box-color+ '(1 .65 0))
+(defvar +bounding-box-radius+ 0.15)
+
+(defun add-bounding-box (component aggregate)
+  (when (chem:bounding-box-bound-p aggregate)
+    (let* ((bounding-box (chem:bounding-box aggregate))
+           (min (chem:min-corner bounding-box))
+           (max (chem:max-corner bounding-box))
+           (minx (geom:get-x min))
+           (miny (geom:get-y min))
+           (minz (geom:get-z min))
+           (maxx (geom:get-x max))
+           (maxy (geom:get-y max))
+           (maxz (geom:get-z max))
+           (p000 (list minx miny minz))
+           (p001 (list minx miny maxz))
+           (p010 (list minx maxy minz))
+           (p011 (list minx maxy maxz))
+           (p100 (list maxx miny minz))
+           (p101 (list maxx miny maxz))
+           (p110 (list maxx maxy minz))
+           (p111 (list maxx maxy maxz))
+           (cyl (cylinder-buffer (list p000 p000 p000 p001 p001 p010
+                                       p010 p100 p100 p111 p111 p111)
+                                 (list p001 p010 p100 p011 p101 p011
+                                       p110 p101 p110 p110 p101 p011)
+                                 +bounding-box-radius+
+                                 +bounding-box-color+))
+           (sph (sphere-buffer (list p000 p001 p010 p011 p100 p101 p110 p111)
+                               +bounding-box-radius+
+                               +bounding-box-color+)))
+      (setf (ngl:representations component)
+            (append (ngl:representations component)
+                    (list (ngl:make-buffer-representation :name nil :visible t
+                                                          :buffer cyl)
+                          (ngl:make-buffer-representation :name nil :visible t
+                                                          :buffer sph)))))))
 
 (defun ngl-show-trajectory (trajectory)
   (when trajectory
@@ -186,9 +224,120 @@
               (ngl:pause trajectory)))))
       (list play-back-2 play-back-1 stop-button pause-button play-fore-1 play-fore-2 mode-button frame-slider))))
 
+(defclass ngl-pane ()
+  ((stage :reader ngl-pane-stage
+          :initform (ngl:make-stage :clip-dist 0 ;:background-color "white"
+                                    :layout (make-instance 'jw:layout :width "100%" :height "auto"
+                                                           :border "var(--jp-widgets-border-width) solid var(--jp-border-color1)"
+                                                           :grid-row "row1-start / last-line"
+                                                           :grid-area "stage")))
+   (grid :reader ngl-pane-grid
+         :initform (resizable-box:make-resizable-grid-box
+                     :enable-full-screen t
+                     :layout (resizable-box:make-resizable-layout
+                               :grid-gap "1em"
+                               :overflow "hidden"
+                               :padding "0 24px 0 0"
+                               :grid-auto-rows "min-content"
+                               :grid-auto-flow "row"
+                               :grid-template-rows "1fr"
+                               :grid-template-columns "min-content min-content 1fr"
+                               :grid-template-areas "'stage stage stage'")))))
 
-(defun ngl-show (instance &rest kwargs &key &allow-other-keys)
-  (let* ((axes (make-axes (getf kwargs :axes)))
+(defmethod initialize-instance :after ((instance ngl-pane) &rest initargs &key pane &allow-other-keys)
+  (declare (ignore initargs))
+  (setf (jw:widget-children (ngl-pane-grid instance))
+        (list (ngl-pane-stage instance)))
+  (let ((layout (jw:widget-layout (ngl-pane-grid instance))))
+    (if pane
+        (setf (jw:widget-height layout) "100%")
+        (setf (resizable-box:resize layout) "vertical"
+              (jw:widget-min-height layout) "480px"))))
+
+(defun make-representations (representation)
+  (list (make-instance 'ngl:backbone
+                       :name "Backbone"
+                       :visible (eq representation :backbone)
+                       :lazy t)
+        (make-instance 'ngl:ball-and-stick
+                       :name "Ball and Stick"
+                       :visible (eq representation :ball-and-stick)
+                       :lazy t)
+        (make-instance 'ngl:cartoon
+                       :name "Cartoon"
+                       :color-scheme "residueindex"
+                       :visible (eq representation :cartoon)
+                       :lazy t)
+        (make-instance 'ngl:licorice
+                       :name "Licorice"
+                       :visible (eq representation :licorice)
+                       :lazy t)
+        (make-instance 'ngl:line
+                       :name "Line"
+                       :visible (eq representation :line)
+                       :lazy t)
+        (make-instance 'ngl:ribbon
+                       :name "Ribbon"
+                       :color-scheme "residueindex"
+                       :visible (eq representation :ribbon)
+                       :lazy t)
+        (make-instance 'ngl:spacefill
+                       :name "Spacefill"
+                       :visible (eq representation :spacefill)
+                       :lazy t)
+        (make-instance 'ngl:surface
+                       :name "Surface" :use-worker t
+                       :color-scheme "residueindex"
+                       :visible (eq representation :surface)
+                       :lazy t)))
+
+(defun ngl-show-on-pane (pane-instance object &rest rest
+                         &key pane append (representation :ball-and-stick) &allow-other-keys)
+  (unless pane-instance
+    (setf pane-instance (make-instance 'ngl-pane :pane pane))
+    (j:display (ngl-pane-grid pane-instance)))
+  (unless append
+    (setf (jw:widget-children (ngl-pane-grid pane-instance))
+          (list (first (jw:widget-children (ngl-pane-grid pane-instance))))
+          (ngl:components (ngl-pane-stage pane-instance)) nil))
+  (let* ((representations (make-representations representation))
+         (component (make-ngl-structure object :auto-view-duration 0 :representations representations))
+         (auto-view-button (jw:make-button :description "Auto View"
+                                           :style (jw:make-description-style :description-width "min-content")
+                                           :layout (jw:make-layout :align-self "center"
+                                                                   :width "min-content")))
+         (representation-dropdown (jw:make-dropdown :description "Representation"
+                                                    :%options-labels (mapcan (lambda (rep &aux (name (ngl:name rep)))
+                                                                               (when name (list name)))
+                                                                             representations)
+                                                    :index (position-if #'ngl:visible representations)
+                                                    :style (jw:make-description-style :description-width "min-content")
+                                                    :layout (jw:make-layout :align-self "center"
+                                                                            :width "max-content"))))
+    (add-bounding-box component object)
+    (jw:on-button-click auto-view-button
+      (lambda (inst)
+        (declare (ignore inst))
+        (ngl:auto-view component 1000)))
+    (jw:observe representation-dropdown :value
+      (lambda (inst type name old-value new-value source)
+        (declare (ignore inst type name old-value source))
+        (dolist (representation (ngl:representations component))
+          (when (ngl:name representation)
+            (setf (ngl:visible representation) (equalp new-value (ngl:name representation)))))))
+    (setf (ngl:components (ngl-pane-stage pane-instance)) (append (ngl:components (ngl-pane-stage pane-instance))
+                                                         (list component))
+          (jw:widget-children (ngl-pane-grid pane-instance)) (append (jw:widget-children (ngl-pane-grid pane-instance))
+                                                            (list (jw:make-label :value (or (chem:get-name object) "")
+                                                                                 :style (jw:make-description-style :description-width "min-content")
+                                                                                 :layout (jw:make-layout :align-self "center"
+                                                                                                         :width "min-content"))
+                                                                  auto-view-button
+                                                                  representation-dropdown))))
+  pane-instance)
+
+(defun ngl-show (instance &rest rest &key &allow-other-keys)
+  (let* ((axes (make-axes (getf rest :axes)))
          (component (make-ngl-structure instance
                                         :auto-view-duration 0
                                         :representations (list (make-instance 'ngl:backbone
@@ -225,15 +374,15 @@
                        :background-color "white"
                        :components (list component
                                          (make-instance 'ngl:shape
-                                                        :primitives (getf kwargs :shapes)
+                                                        :primitives (getf rest :shapes)
                                                         :representations (list (make-instance 'ngl:buffer-representation
-                                                                                              :opacity (getf kwargs :shapes-opacity 1d0)))))
+                                                                                              :opacity (getf rest :shapes-opacity 1d0)))))
                        :layout (make-instance 'jw:layout
                                               :width "100%"
                                               :height "auto"
                                               :border "var(--jp-widgets-border-width) solid var(--jp-border-color1)"
                                               :grid-area "stage")
-                       kwargs))
+                       rest))
          (representation-dropdown (make-instance 'jw:dropdown
                                                  :description "Representation"
                                                  :%options-labels (mapcan (lambda (rep &aux (name (ngl:name rep)))
@@ -254,7 +403,7 @@
                                                                  :width "max-content")))
          (axes-button (jw:make-toggle-button :icon "cube"
                                              :tooltip "Toggle Axes"
-                                             :value (getf kwargs :axes)
+                                             :value (getf rest :axes)
                                              :style (make-instance 'jw:description-style
                                                                        :description-width "min-content")
                                              :layout (jw:make-layout :margin ".5em .1em .5em .1em"
@@ -301,13 +450,6 @@
                                           :grid-template-columns "1fr"
                                           :grid-template-areas "'stage' 'controls"))))
 
-
-(defmethod show ((instance chem:aggregate) &rest kwargs &key &allow-other-keys)
-  (apply #'ngl-show instance kwargs))
-
-(defmethod show ((instance chem:molecule) &rest kwargs &key &allow-other-keys)
-  (apply #'ngl-show instance kwargs))
-
 (defun isolate-residue (residue)
   (let* ((agg (chem:make-aggregate nil))
          (mol (chem:make-molecule nil))
@@ -329,21 +471,20 @@
     (chem:add-matter mol res)
     agg))
 
-(defmethod show ((residue chem:residue)  &rest kwargs &key &allow-other-keys)
-  (let ((agg (isolate-residue residue)))
-    (apply 'show agg kwargs)))
+(defmethod show-on-pane (pane-instance (object chem:aggregate) &rest rest &key &allow-other-keys)
+  (apply #'ngl-show-on-pane pane-instance object rest))
 
-(defmethod show ((sketch sketch2d:sketch2d) &rest kwargs &key &allow-other-keys)
-  (show (sketch2d:svg sketch)))
+(defmethod show-on-pane (pane-instance (object chem:molecule) &rest rest &key &allow-other-keys)
+  (apply #'ngl-show-on-pane pane-instance object rest))
 
-(defmethod show ((sketch sketch2d:sketch-svg) &rest kwargs &key &allow-other-keys)
-  (jupyter:svg (sketch2d:render-svg-to-string sketch)))
+(defmethod show-on-pane (pane-instance (object chem:residue) &rest rest &key &allow-other-keys)
+  (apply #'ngl-show-on-pane pane-instance (isolate-residue object) rest))
 
-(defmethod show ((instance dynamics:trajectory) &rest kwargs &key &allow-other-keys)
-  (apply #'ngl-show instance kwargs))
+(defmethod show-on-pane (pane-instance (object dynamics:trajectory) &rest rest &key &allow-other-keys)
+  (apply #'ngl-show-on-pane pane-instance object rest))
 
-(defmethod show ((instance dynamics:simulation) &rest kwargs &key &allow-other-keys)
-  (apply #'ngl-show (dynamics:make-trajectory instance) kwargs))
+(defmethod show-on-pane (pane-instance (object dynamics:simulation) &rest rest &key &allow-other-keys)
+  (apply #'ngl-show-on-pane pane-instance (dynamics:make-trajectory object) rest))
 
-(defmethod show ((instance leap.topology:amber-topology-trajectory-pair) &rest kwargs &key &allow-other-keys)
-  (apply #'ngl-show instance kwargs))
+(defmethod show-on-pane (pane-instance (object leap.topology:amber-topology-trajectory-pair) &rest rest &key &allow-other-keys)
+  (apply #'ngl-show-on-pane pane-instance object rest))
