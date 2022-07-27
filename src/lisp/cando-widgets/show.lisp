@@ -32,7 +32,7 @@
   pane)
 
 (defun make-axes (visible)
-  (make-instance 'ngl:buffer-representation
+  (ngl:make-buffer-representation
                  :name nil
                  :visible visible
                  :buffer (list :type "wideline"
@@ -65,7 +65,7 @@
 (defvar +bounding-box-color+ '(1 .65 0))
 (defvar +bounding-box-radius+ 0.15)
 
-(defun add-bounding-box (component aggregate)
+(defun add-bounding-box (component aggregate visible)
   (when (chem:bounding-box-bound-p aggregate)
     (let* ((bounding-box (chem:bounding-box aggregate))
            (min (chem:min-corner bounding-box))
@@ -95,9 +95,11 @@
                                +bounding-box-color+)))
       (setf (ngl:representations component)
             (append (ngl:representations component)
-                    (list (ngl:make-buffer-representation :name nil :visible t
+                    (list (ngl:make-buffer-representation :name "_box"
+                                                          :visible visible
                                                           :buffer cyl)
-                          (ngl:make-buffer-representation :name nil :visible t
+                          (ngl:make-buffer-representation :name "_box"
+                                                          :visible visible
                                                           :buffer sph)))))))
 
 (defun ngl-show-trajectory (trajectory)
@@ -106,37 +108,45 @@
            (play-back-2 (jw:make-toggle-button :icon "backward" :tooltip "Fast backward"
                                                :style desc-style
                                                :layout (jw:make-layout :margin ".5em .1em .5em .5em"
-                                                                       :width "max-content")))
+                                                                       :width "max-content"
+                                                                       :grid-area (symbol-name (gensym)))))
            (play-back-1 (jw:make-toggle-button :icon "caret-left" :tooltip "Backward"
                                                :style desc-style
                                                :layout (jw:make-layout :margin ".5em .1em .5em .1em"
-                                                                       :width "max-content")))
+                                                                       :width "max-content"
+                                                                       :grid-area (symbol-name (gensym)))))
            (stop-button (jw:make-button :icon "stop"
                                         :tooltip "Stop"
                                         :style desc-style
                                         :layout (jw:make-layout :margin ".5em .1em .5em .1em"
-                                                                :width "max-content")))
+                                                                :width "max-content"
+                                                                :grid-area (symbol-name (gensym)))))
            (pause-button (jw:make-button :icon "pause"
                                          :tooltip "Pause"
                                          :style desc-style
                                          :layout (jw:make-layout :margin ".5em .1em .5em .1em"
-                                                                 :width "max-content")))
+                                                                 :width "max-content"
+                                                                 :grid-area (symbol-name (gensym)))))
            (play-fore-1 (jw:make-toggle-button :icon "play" :tooltip "Foreward"
                                                :style desc-style
                                                :layout (jw:make-layout :margin ".5em .1em .5em .1em"
-                                                                       :width "max-content")))
+                                                                       :width "max-content"
+                                                                       :grid-area (symbol-name (gensym)))))
            (play-fore-2 (jw:make-toggle-button :icon "forward" :tooltip "Fast foreward"
                                                :style desc-style
                                                :layout (jw:make-layout :margin ".5em .1em .5em .1em"
-                                                                       :width "max-content")))
+                                                                       :width "max-content"
+                                                                       :grid-area (symbol-name (gensym)))))
            (mode-button (jw:make-toggle-button :icon "retweet"
                                                :tooltip "Loop"
                                                :value t
                                                :style desc-style
                                                :layout (jw:make-layout :margin ".5em .1em .5em .1em"
-                                                                       :width "max-content")))
+                                                                       :width "max-content"
+                                                                       :grid-area (symbol-name (gensym)))))
            (frame-slider (jw:make-int-slider :layout (jw:make-layout :align-self "center"
-                                                                     :margin ".25em"))))
+                                                                     :margin ".25em"
+                                                                     :grid-area (symbol-name (gensym))))))
       (jw:on-button-click pause-button
         (lambda (inst)
           (declare (ignore inst))
@@ -227,22 +237,20 @@
 (defclass ngl-pane ()
   ((stage :reader ngl-pane-stage
           :initform (ngl:make-stage :clip-dist 0 ;:background-color "white"
-                                    :layout (make-instance 'jw:layout :width "100%" :height "auto"
-                                                           :border "var(--jp-widgets-border-width) solid var(--jp-border-color1)"
-                                                           :grid-row "row1-start / last-line"
-                                                           :grid-area "stage")))
+                                    :layout (jw:make-layout :width "100%" :height "auto"
+                                                            :border "var(--jp-widgets-border-width) solid var(--jp-border-color1)"
+                                                            :grid-area "stage")))
    (grid :reader ngl-pane-grid
          :initform (resizable-box:make-resizable-grid-box
                      :enable-full-screen t
                      :layout (resizable-box:make-resizable-layout
-                               :grid-gap "1em"
+                               ;:grid-gap "1em"
                                :overflow "hidden"
                                :padding "0 24px 0 0"
                                :grid-auto-rows "min-content"
-                               :grid-auto-flow "row"
                                :grid-template-rows "1fr"
-                               :grid-template-columns "min-content min-content 1fr"
-                               :grid-template-areas "'stage stage stage'")))))
+                               :grid-template-columns "repeat(13, min-content) 1fr"
+                               :grid-template-areas "'stage stage stage stage stage stage stage stage stage stage stage stage stage stage'")))))
 
 (defmethod initialize-instance :after ((instance ngl-pane) &rest initargs &key pane &allow-other-keys)
   (declare (ignore initargs))
@@ -254,201 +262,130 @@
         (setf (resizable-box:resize layout) "vertical"
               (jw:widget-min-height layout) "480px"))))
 
-(defun make-representations (representation)
-  (list (make-instance 'ngl:backbone
-                       :name "Backbone"
-                       :visible (eq representation :backbone)
-                       :lazy t)
-        (make-instance 'ngl:ball-and-stick
-                       :name "Ball and Stick"
-                       :visible (eq representation :ball-and-stick)
-                       :lazy t)
-        (make-instance 'ngl:cartoon
-                       :name "Cartoon"
-                       :color-scheme "residueindex"
-                       :visible (eq representation :cartoon)
-                       :lazy t)
-        (make-instance 'ngl:licorice
-                       :name "Licorice"
-                       :visible (eq representation :licorice)
-                       :lazy t)
-        (make-instance 'ngl:line
-                       :name "Line"
-                       :visible (eq representation :line)
-                       :lazy t)
-        (make-instance 'ngl:ribbon
-                       :name "Ribbon"
-                       :color-scheme "residueindex"
-                       :visible (eq representation :ribbon)
-                       :lazy t)
-        (make-instance 'ngl:spacefill
-                       :name "Spacefill"
-                       :visible (eq representation :spacefill)
-                       :lazy t)
-        (make-instance 'ngl:surface
-                       :name "Surface" :use-worker t
-                       :color-scheme "residueindex"
-                       :visible (eq representation :surface)
-                       :lazy t)))
+(defun make-representations (representation sele)
+  (list (ngl:make-backbone :name "Backbone" :sele sele
+                           :visible (eq representation :backbone))
+        (ngl:make-ball-and-stick :name "Ball and Stick" :lazy t :sele sele
+                                 :visible (eq representation :ball-and-stick))
+        (ngl:make-cartoon :name "Cartoon" :lazy t :sele sele
+                          :color-scheme "residueindex"
+                          :visible (eq representation :cartoon))
+        (ngl:make-licorice :name "Licorice" :lazy t :sele sele
+                           :visible (eq representation :licorice))
+        (ngl:make-line :name "Line" :lazy t :sele sele
+                       :visible (eq representation :line))
+        (ngl:make-ribbon :name "Ribbon" :lazy t :sele sele
+                         :color-scheme "residueindex"
+                         :visible (eq representation :ribbon))
+        (ngl:make-spacefill :name "Spacefill" :lazy t :sele sele
+                            :visible (eq representation :spacefill))
+        (ngl:make-surface :name "Surface" :lazy t :sele sele :use-worker t
+                          :color-scheme "residueindex"
+                          :visible (eq representation :surface))))
 
 (defun ngl-show-on-pane (pane-instance object &rest rest
-                         &key pane append (representation :ball-and-stick) &allow-other-keys)
+                         &key pane append (representation :ball-and-stick)
+                              box sele
+                         &allow-other-keys
+                         &aux (display (not pane-instance)))
   (unless pane-instance
-    (setf pane-instance (make-instance 'ngl-pane :pane pane))
-    (j:display (ngl-pane-grid pane-instance)))
+    (setf pane-instance (make-instance 'ngl-pane :pane pane)))
   (unless append
     (setf (jw:widget-children (ngl-pane-grid pane-instance))
           (list (first (jw:widget-children (ngl-pane-grid pane-instance))))
-          (ngl:components (ngl-pane-stage pane-instance)) nil))
-  (let* ((representations (make-representations representation))
+          (ngl:components (ngl-pane-stage pane-instance)) nil
+          (jw:widget-grid-template-areas (jw:widget-layout (ngl-pane-grid pane-instance)))
+          "'stage stage stage stage stage stage stage stage stage stage stage stage stage stage'"))
+  (let* ((representations (make-representations representation sele))
          (component (make-ngl-structure object :auto-view-duration 0 :representations representations))
-         (auto-view-button (jw:make-button :description "Auto View"
-                                           :style (jw:make-description-style :description-width "min-content")
+         (traj-controls (ngl-show-trajectory (first (ngl:trajectories component))))
+         (auto-view-button (jw:make-button :icon "compress"
+                                           :tooltip "Auto View"
+                                           ;:style (jw:make-description-style :description-width "min-content")
                                            :layout (jw:make-layout :align-self "center"
-                                                                   :width "min-content")))
-         (representation-dropdown (jw:make-dropdown :description "Representation"
+                                                                   :grid-area (symbol-name (gensym))
+                                                                   :width "max-content")))
+         (view-button (jw:make-toggle-button :icon "eye"
+                                             :tooltip "Toggle Visibility"
+                                             :value t
+                                             ;:style (jw:make-description-style :description-width "min-content")
+                                             :layout (jw:make-layout :align-self "center"
+                                                                     :grid-area (symbol-name (gensym))
+                                                                     :width "min-content")))
+         (box-button (jw:make-toggle-button :icon "cube"
+                                            :tooltip "Toggle Bounding Box"
+                                            :value (and box (chem:bounding-box-bound-p (cando:agg object)))
+                                            :disabled (not (chem:bounding-box-bound-p (cando:agg object)))
+                                            ;:style (jw:make-description-style :description-width "min-content")
+                                            :layout (jw:make-layout :align-self "center"
+                                                                    :grid-area (symbol-name (gensym))
+                                                                    :width "min-content")))
+         (representation-dropdown (jw:make-dropdown :tooltip "Representation"
                                                     :%options-labels (mapcan (lambda (rep &aux (name (ngl:name rep)))
                                                                                (when name (list name)))
                                                                              representations)
                                                     :index (position-if #'ngl:visible representations)
-                                                    :style (jw:make-description-style :description-width "min-content")
+                                                    ;:style (jw:make-description-style :description-width "min-content")
                                                     :layout (jw:make-layout :align-self "center"
-                                                                            :width "max-content"))))
-    (add-bounding-box component object)
+                                                                            :grid-area (symbol-name (gensym))
+                                                                            :width "max-content")))
+         (sele-text (jw:make-text :tooltip "Selection" :value (or sele "")
+                                  :layout (jw:make-layout :align-self "center"
+                                                          :grid-area (symbol-name (gensym))
+                                                          :width "8em")))
+         (controls (list* (jw:make-label :value (or (chem:get-name (cando:agg object)) "")
+                                         :style (jw:make-description-style :description-width "min-content")
+                                         :layout (jw:make-layout :align-self "center"
+                                                                 :grid-area (symbol-name (gensym))
+                                                                 :width "min-content"))
+                          view-button
+                          box-button
+                          representation-dropdown
+                          sele-text
+                          auto-view-button
+                          traj-controls)))
+    (add-bounding-box component (cando:agg object) box)
     (jw:on-button-click auto-view-button
       (lambda (inst)
         (declare (ignore inst))
         (ngl:auto-view component 1000)))
+    (jw:observe view-button :value
+      (lambda (inst type name old-value new-value source)
+        (declare (ignore type name old-value source))
+        (setf (ngl:visible component) new-value
+              (jw:widget-icon inst) (if new-value "eye" "eye-slash"))))
+    (jw:observe sele-text :value
+      (lambda (inst type name old-value new-value source)
+        (declare (ignore type name old-value source))
+        (loop for representation in (ngl:representations component)
+              unless (equal "_box" (ngl:name representation))
+                do (setf (ngl:sele representation) new-value))))
+    (jw:observe box-button :value
+      (lambda (inst type name old-value new-value source)
+        (declare (ignore inst type name old-value source))
+        (loop for representation in (ngl:representations component)
+              when (equal "_box" (ngl:name representation))
+                do (setf (ngl:visible representation) new-value))))
     (jw:observe representation-dropdown :value
       (lambda (inst type name old-value new-value source)
         (declare (ignore inst type name old-value source))
         (dolist (representation (ngl:representations component))
-          (when (ngl:name representation)
+          (when (and (ngl:name representation)
+                     (char/= (char (ngl:name representation) 0) #\_))
             (setf (ngl:visible representation) (equalp new-value (ngl:name representation)))))))
     (setf (ngl:components (ngl-pane-stage pane-instance)) (append (ngl:components (ngl-pane-stage pane-instance))
                                                          (list component))
+          (jw:widget-grid-template-areas (jw:widget-layout (ngl-pane-grid pane-instance)))
+          (format nil "~a~%'~{~a~^ ~}'"
+                  (jw:widget-grid-template-areas (jw:widget-layout (ngl-pane-grid pane-instance)))
+                  (loop for i below 14
+                        collect (jw:widget-grid-area (jw:widget-layout (or (nth i controls)
+                                                                           (car (last controls)))))))
           (jw:widget-children (ngl-pane-grid pane-instance)) (append (jw:widget-children (ngl-pane-grid pane-instance))
-                                                            (list (jw:make-label :value (or (chem:get-name object) "")
-                                                                                 :style (jw:make-description-style :description-width "min-content")
-                                                                                 :layout (jw:make-layout :align-self "center"
-                                                                                                         :width "min-content"))
-                                                                  auto-view-button
-                                                                  representation-dropdown))))
+                                                                     controls)))
+  (when display
+    (j:display (ngl-pane-grid pane-instance)))
   pane-instance)
-
-(defun ngl-show (instance &rest rest &key &allow-other-keys)
-  (let* ((axes (make-axes (getf rest :axes)))
-         (component (make-ngl-structure instance
-                                        :auto-view-duration 0
-                                        :representations (list (make-instance 'ngl:backbone
-                                                                              :name "Backbone"
-                                                                              :visible nil :lazy t)
-                                                               (make-instance 'ngl:ball-and-stick
-                                                                              :name "Ball and Stick"
-                                                                              :visible t :lazy t)
-                                                               (make-instance 'ngl:cartoon
-                                                                              :name "Cartoon"
-                                                                              :color-scheme "residueindex"
-                                                                              :visible nil :lazy t)
-                                                               (make-instance 'ngl:licorice
-                                                                              :name "Licorice"
-                                                                              :visible nil :lazy t)
-                                                               (make-instance 'ngl:line
-                                                                              :name "Line"
-                                                                              :visible nil :lazy t)
-                                                               (make-instance 'ngl:ribbon
-                                                                              :name "Ribbon"
-                                                                              :color-scheme "residueindex"
-                                                                              :visible nil :lazy t)
-                                                               (make-instance 'ngl:spacefill
-                                                                              :name "Spacefill"
-                                                                              :visible nil :lazy t)
-                                                               (make-instance 'ngl:surface
-                                                                              :name "Surface" :use-worker t
-                                                                              :color-scheme "residueindex"
-                                                                              :visible nil :lazy t)
-                                                               axes)))
-
-         (stage (apply #'make-instance 'ngl:stage
-                       :clip-dist 0
-                       :background-color "white"
-                       :components (list component
-                                         (make-instance 'ngl:shape
-                                                        :primitives (getf rest :shapes)
-                                                        :representations (list (make-instance 'ngl:buffer-representation
-                                                                                              :opacity (getf rest :shapes-opacity 1d0)))))
-                       :layout (make-instance 'jw:layout
-                                              :width "100%"
-                                              :height "auto"
-                                              :border "var(--jp-widgets-border-width) solid var(--jp-border-color1)"
-                                              :grid-area "stage")
-                       rest))
-         (representation-dropdown (make-instance 'jw:dropdown
-                                                 :description "Representation"
-                                                 :%options-labels (mapcan (lambda (rep &aux (name (ngl:name rep)))
-                                                                            (when name (list name)))
-                                                                          (ngl:representations component))
-                                                 :index (position-if #'ngl:visible (ngl:representations component))
-                                                 :style (make-instance 'jw:description-style
-                                                                       :description-width "min-content")
-                                                 :layout (make-instance 'jw:layout
-                                                                        :margin ".5em"
-                                                                        :width "max-content")))
-         (auto-view-button (make-instance 'jw:button
-                                          :description "Auto View"
-                                          :style (make-instance 'jw:description-style
-                                                                :description-width "min-content")
-                                          :layout (make-instance 'jw:layout
-                                                                 :margin ".5em"
-                                                                 :width "max-content")))
-         (axes-button (jw:make-toggle-button :icon "cube"
-                                             :tooltip "Toggle Axes"
-                                             :value (getf rest :axes)
-                                             :style (make-instance 'jw:description-style
-                                                                       :description-width "min-content")
-                                             :layout (jw:make-layout :margin ".5em .1em .5em .1em"
-                                                                     :width "max-content"))))
-    (when (and (typep instance 'chem:aggregate)
-               (chem:bounding-box-bound-p instance))
-      (add-bounding-box component instance))
-    (jw:observe representation-dropdown :value
-      (lambda (inst type name old-value new-value source)
-        (declare (ignore inst type name old-value source))
-        (dolist (representation (ngl:representations component))
-          (when (ngl:name representation)
-            (setf (ngl:visible representation) (equalp new-value (ngl:name representation)))))))
-    (jw:observe axes-button :value
-      (lambda (inst type name old-value new-value source)
-        (declare (ignore inst type name old-value source))
-        (setf (ngl:visible axes) new-value)))
-    (jw:on-button-click auto-view-button
-      (lambda (inst)
-        (declare (ignore inst))
-        (ngl:auto-view stage 1000)))
-    (make-instance 'resizable-box:resizable-grid-box
-                   :children (list stage
-                                   (make-instance 'jw:box
-                                                  :children (append (list representation-dropdown
-                                                                          auto-view-button
-                                                                          axes-button)
-                                                                    (ngl-show-trajectory (first (ngl:trajectories component))))
-                                                  :layout (make-instance 'jw:layout
-                                                                         :flex-flow "row wrap"
-                                                                         :justify-content "center"
-                                                                         ;:margin "-.5em"
-                                                                         :align-items "baseline"
-                                                                         :align-content "flex-start"
-                                                                         :grid-area "controls")))
-                   :enable-full-screen t
-                   :layout (make-instance 'resizable-box:resizable-layout
-                                          :resize "vertical"
-                                          :grid-gap "1em"
-                                          :min-height "480px"
-                                          :overflow "hidden"
-                                          :padding "0 24px 0 0"
-                                          :grid-template-rows "1fr min-content"
-                                          :grid-template-columns "1fr"
-                                          :grid-template-areas "'stage' 'controls"))))
 
 (defun isolate-residue (residue)
   (let* ((agg (chem:make-aggregate nil))

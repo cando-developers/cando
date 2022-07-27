@@ -178,6 +178,15 @@ CL_DEFUN OMatrix_sp make_matrix_identity()
   return res;
 }
 
+CL_LISPIFY_NAME("make-matrix-scale");
+DOCGROUP(cando)
+CL_DEFUN OMatrix_sp make_matrix_scale(double scale)
+{
+  OMatrix_sp res = OMatrix_O::create();
+  res->_Value.scale(scale);
+  return res;
+}
+
 CL_LISPIFY_NAME("make-m4-translate");
 DOCGROUP(cando)
 CL_DEFUN OMatrix_sp make_m4_translate(const Vector3& pos)

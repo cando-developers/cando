@@ -12,6 +12,8 @@
 (defgeneric atm (object id)
   (:documentation "Return the atom that the object/id represents"))
 
+(defmethod agg ((object chem:aggregate))
+  object)
 
 (defmethod mol ((object chem:aggregate) (id integer))
   (chem:content-at object id))
