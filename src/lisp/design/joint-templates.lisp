@@ -642,7 +642,7 @@ Return a list of prepare-topology objects - one for each residue that we need to
   (error "This function is messed up - fix it")
   (let ((res nil))
     (loop for p in plugs
-          do (let ((atom-name (chem:get-b0 p)))
+          do (let ((atom-name (chem:plug/get-b0 p)))
                (unless (not (contains res atom-name))
                  (error "The atom name[~s] is already in the set[~s]" atom-name res))
                (push atom-name res)))
@@ -651,8 +651,8 @@ Return a list of prepare-topology objects - one for each residue that we need to
 (defun get-all-out-plug-bond1atoms-as-set (plugs out-plug-bond0-atoms-set )
   (let ((res nil))
     (loop for p in plugs
-          do (when (chem:get-b1 p)
-               (let ((atom-name (chem:get-b1 p)))
+          do (when (chem:plug/get-b1 p)
+               (let ((atom-name (chem:plug/get-b1 p)))
                  (unless (not (member atom-name res))
                    (error "The atom name[~s] is already in the listset[~s]" atom-name res))
                  (unless (not (member atom-name out-plug-bond0-atoms-set))
@@ -667,7 +667,7 @@ Return a list of prepare-topology objects - one for each residue that we need to
         (plug-counter 0))
     (loop for p in plugs
           do (when (chem:has-stub-pivot-atom p)
-               (let ((atom-name (chem:get-b1 p)))
+               (let ((atom-name (chem:plug/get-b1 p)))
                  (unless (not (member atom-name res))
                    (error "The atom name[~s] is already in the set[~s]" atom-name res))
                  (unless (not (member atom-name out-plug-bond0-atoms-set))
@@ -797,7 +797,7 @@ Return a list of prepare-topology objects - one for each residue that we need to
          (atomid (list atmolecule-index atresidue-index constitution-atoms-index))
          (joint (kin:make-jump-joint atomid atom-name)))
     (kin:put-joint atresidue joint constitution-atoms-index)
-    (when parent-joint (kin:add-child parent-joint joint))
+    (when parent-joint (kin:joint/add-child parent-joint joint))
     joint))
 
 (defmethod write-into-joint-tree ((joint-template complex-bonded-joint-template) parent-joint atresidue atmolecule-index atresidue-index)
@@ -891,9 +891,9 @@ Return a list of prepare-topology objects - one for each residue that we need to
       (loop for plug in plugs
             do (cond
                  ((typep plug 'chem:out-plug)
-                  (let ((bond0-atom (chem:atom-with-name residue (chem:get-b0 plug)))
-                        (bond1-atom (when (chem:get-b1 plug)
-                                      (chem:atom-with-name residue (chem:get-b1 plug))))
+                  (let ((bond0-atom (chem:atom-with-name residue (chem:plug/get-b0 plug)))
+                        (bond1-atom (when (chem:plug/get-b1 plug)
+                                      (chem:atom-with-name residue (chem:plug/get-b1 plug))))
                         (stub-pivot-atom (when (chem:has-stub-pivot-atom plug)
                                            (chem:atom-with-name residue (chem:get-stub-pivot-atom plug)))))
                     (unless (not (and (or bond1-atom stub-pivot-atom) (eq bond1-atom stub-pivot-atom)))
