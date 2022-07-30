@@ -16,6 +16,8 @@
     #:center-on
     #:clear-ligands
     #:container
+    #:*default-pane*
+    #:default-pane
     #:distance-two-positions
     #:make-amber-netcdf-trajectory
     #:make-file-task-page
@@ -35,11 +37,11 @@
     #:page
     #:picked-atoms
     #:pick-history
-    #:run-task
     #:repr
     #:rotate-x
     #:rotate-y
     #:rotate-z
+    #:run-task
     #:run-task
     #:selected
     #:show

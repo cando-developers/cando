@@ -53,30 +53,33 @@
 
 
 (defmethod make-ngl-structure ((instance chem:aggregate) &rest initargs &key &allow-other-keys)
-  (apply #'make-instance 'ngl:structure :ext "mol2"
-                                        :value (chem:aggregate-as-mol2-string instance t)
-                                        :trajectories (apply #'make-ngl-trajectories instance initargs)
-                                        initargs))
-
+  (values (apply #'ngl:make-structure :ext "mol2"
+                 :value (chem:aggregate-as-mol2-string instance t)
+                 :trajectories (apply #'make-ngl-trajectories instance initargs)
+                 initargs)
+          instance))
 
 (defmethod make-ngl-structure ((instance chem:molecule) &rest initargs &key &allow-other-keys)
   (let ((agg (chem:make-aggregate (chem:get-name instance))))
     (chem:add-matter agg instance)
-    (apply #'make-instance 'ngl:structure :ext "mol2"
-                                          :value (chem:aggregate-as-mol2-string agg t)
-                                          :trajectories (apply #'make-ngl-trajectories instance initargs)
-                                          initargs)))
+    (values (apply #'ngl:make-structure :ext "mol2"
+                   :value (chem:aggregate-as-mol2-string agg t)
+                   :trajectories (apply #'make-ngl-trajectories instance initargs)
+                   initargs)
+            agg)))
 
 (defmethod make-ngl-structure ((instance dynamics:trajectory) &rest initargs &key &allow-other-keys)
-  (apply #'make-instance 'ngl:structure :ext "mol2"
-                                        :value (chem:aggregate-as-mol2-string (dynamics:matter instance) t)
-                                        :trajectories (apply #'make-ngl-trajectories instance initargs)
-                                        initargs))
+  (let ((agg (dynamics:matter instance)))
+    (values (apply #'ngl:make-structure :ext "mol2"
+                   :value (chem:aggregate-as-mol2-string agg t)
+                   :trajectories (apply #'make-ngl-trajectories instance initargs)
+                   initargs)
+            agg)))
 
 (defmethod make-ngl-structure ((instance leap.topology:amber-topology-trajectory-pair) &rest initargs &key &allow-other-keys)
-  (apply #'make-instance 'ngl:structure :ext "mol2"
-                                        :value (chem:aggregate-as-mol2-string (leap.topology:aggregate instance) t)
-                                        :trajectories (apply #'make-ngl-trajectories (leap.topology:netcdf instance) initargs)
-                                        initargs))
-
-
+  (let ((agg (leap.topology:aggregate instance)))
+    (values (apply #'ngl:make-structure :ext "mol2"
+                   :value (chem:aggregate-as-mol2-string agg t)
+                   :trajectories (apply #'make-ngl-trajectories (leap.topology:netcdf instance) initargs)
+                   initargs)
+            agg)))

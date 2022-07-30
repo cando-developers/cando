@@ -19,7 +19,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
- 
+
 This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
 */
 /* -^- */
@@ -150,8 +150,8 @@ void	CDNode_O::parseFromXml(adapt::QDomNode_sp xml, bool verbose)
   this->_Color = xml->getAttributeIntDefault("color",3);
   std::string pos = xml->getAttributeString("p");
   std::vector<std::string> posparts = core::split(pos," ");
-  float x = std::stof(posparts[0]);
-  float y = std::stof(posparts[1]);
+  float x = std::stof(posparts[0]) * 0.1;
+  float y = std::stof(posparts[1]) * 0.1;
   this->_Pos = geom::Vector2(x,y);
   this->_Label = this->_extractLabel(xml);
   if (verbose) core::write_bf_stream(fmt::sprintf("CDNode id(%s) color(%s) label(%s)\n" , this->_Id , this->_Color , this->_Label ));
@@ -288,13 +288,13 @@ void	CDBond_O::parseFromXml(adapt::QDomNode_sp xml, bool verbose)
   } else if ( order == "2" )
   {
     this->_Order = doubleCDBond;
-  } else if ( order == "3" ) 
+  } else if ( order == "3" )
   {
     this->_Order = tripleCDBond;
   } else if ( order == "dative" )
   {
     this->_Order = dativeCDBond;
-  } else 
+  } else
   {
     Warn(core::SimpleBaseString_O::make(fmt::sprintf("Unknown bond order %s" , this->_Order)),
          nil<core::T_O>());
@@ -422,7 +422,7 @@ void CDFragment_O::addProperties(core::HashTableEq_sp d)
 #endif
 
 /*!
- * Take a label of the form "xxxx:yyyy" and convert the xxxx part into a keyword symbol and 
+ * Take a label of the form "xxxx:yyyy" and convert the xxxx part into a keyword symbol and
  * the yyyy part into a string object
  * return false if there it wasn't in xxxx:yyyy form
  */
@@ -499,7 +499,7 @@ core::Symbol_mv parse_property(core::T_sp stream, const string& propertyValue, C
   core::T_sp value = core::cl__read(stream,nil<core::T_O>(),eof);
   if ( value == eof ) {
     // If no value is provided then it will default to NIL
-    value = nil<core::T_O>(); 
+    value = nil<core::T_O>();
     // SIMPLE_ERROR(("Could not parse second part of \"%s\" as a (symbol value) pair - in property bond of order %s other side of bond is \"%s\"") , propertyValue , bond->getOrderAsString() , otherSideValue );
   }
 //  printf("%s:%d Parsed value: %s\n", __FILE__, __LINE__, _rep_(value).c_str());
@@ -646,7 +646,7 @@ bool CDFragment_O::interpret(bool verbose, bool addHydrogens)
 
   this->_Molecule->makeAllAtomNamesInEachResidueUnique();
 
-#if 0    
+#if 0
 
   Residue_sp res = this->getEntireResidue();
   core::List_sp carbons = res->allAtomsOfElementAsList(element_C);
@@ -724,7 +724,7 @@ void CDFragment_O::createAtomsAndBonds()
 {
 	// First create atoms that are on the ends
 	// of solid and dashed bonds or the arrow-head of a dative bond
-	// 
+	//
   CDBonds::iterator bi;
   for ( bi=this->_Bonds.begin(); bi!=this->_Bonds.end(); bi++ )
   {
@@ -938,7 +938,7 @@ Residue_sp CDFragment_O::createResidueOfSelectedAtoms()
 }
 
 
-/*! Build the residue.  If constitutionOnly is false then 
+/*! Build the residue.  If constitutionOnly is false then
  * all atoms connected by solid or dashed bonds are included
  * If it is true then only atoms connected by solid bonds are included
  */
@@ -1042,7 +1042,7 @@ bool CDText_O::parseFromXml(adapt::QDomNode_sp text, bool verbose)
     gc::As<core::StringInputStream_sp>(core::cl__make_string_input_stream(core::Str_O::create(stext)
                                                                           ,core::clasp_make_fixnum(0)
                                                                           ,nil<core::T_O>()));
-  
+
   core::DynamicScopeManager scope(cl::_sym_STARpackageSTAR,_lisp->findPackage(ChemPkg));
   core::List_sp block = read_lisp_object(sin,true,nil<core::T_O>(),false);
   core::cl__close(sin);
@@ -1080,7 +1080,7 @@ CL_INITIALIZE void initialize_valid_chemdraw_keywords()
   chem::_sym__PLUS_validChemdrawKeywords_PLUS_->defparameter(vck);
 };
 
-  
+
 
 
 
@@ -1311,7 +1311,7 @@ CL_VALUE_ENUM(_sym_wavyCDBond,wavyCDBond);
 CL_VALUE_ENUM(_sym_unknownCDBond,unknownCDBond);
 CL_END_ENUM(_sym__PLUS_CDBondOrderConverter_PLUS_);
 
-    
+
 
 
 

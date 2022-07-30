@@ -76,13 +76,22 @@ buffer object, which extends either type of box by an arbitrary amount.
     (leap.pdb:scanIgnoreAtoms pdb-scanner list))
   :no-output)
 
+(defun leap.default-pane (pane)
+  (funcall (find-symbol "DEFAULT-PANE" :cando-user) pane))
+
 (defun leap.show (arg &rest kwargs)
   "    Show the structure
 
-       show aggregate [[:axes t] ...]
+       show aggregate [option...]
 
-       UNIT/AGGREGATE       structure to show
-       :axes t              show axes
+       UNIT/AGGREGATE          structure to show
+       :axes t                 show axes
+       :box t                  show bounding box
+       :representation <name>  one of :backbone, :ball-and-stick, :cartoon,
+                               :licorice, :line, :ribbon, :spacefill or :surface
+       :sele \"pattern\"       selection pattern
+       :pane \"name\"          name of display pane
+       :append t               append to display pane
 "
   (let ((val (leap.core:lookup-variable arg)))
     (apply (find-symbol "SHOW" :cando-user) val kwargs)))
@@ -1643,6 +1652,7 @@ Provide a list of commands that cleap has available to mimic tleap."
           ("setBox" . leap.set-box)
           ("smiles" . leap.smiles )
           ("showPaths" . leap.show-paths)
+          ("defaultPane" . leap.default-pane)
           ("show" . leap.show )
           ("zMatrix" . leap.z-matrix )
           ("createAtom" . create-atom )
