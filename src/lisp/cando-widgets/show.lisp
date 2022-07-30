@@ -150,45 +150,37 @@
     (let* ((desc-style (jw:make-description-style :description-width "min-content"))
            (play-back-2 (jw:make-toggle-button :icon "backward" :tooltip "Fast backward"
                                                :style desc-style
-                                               :layout (jw:make-layout ;:margin ".5em .1em .5em .5em"
-                                                                       :width "max-content"
+                                               :layout (jw:make-layout :width "max-content"
                                                                        :grid-area (symbol-name (gensym)))))
            (play-back-1 (jw:make-toggle-button :icon "caret-left" :tooltip "Backward"
                                                :style desc-style
-                                               :layout (jw:make-layout ;:margin ".5em .1em .5em .1em"
-                                                                       :width "max-content"
+                                               :layout (jw:make-layout :width "max-content"
                                                                        :grid-area (symbol-name (gensym)))))
            (stop-button (jw:make-button :icon "stop"
                                         :tooltip "Stop"
                                         :style desc-style
-                                        :layout (jw:make-layout ;:margin ".5em .1em .5em .1em"
-                                                                :width "max-content"
+                                        :layout (jw:make-layout :width "max-content"
                                                                 :grid-area (symbol-name (gensym)))))
            (pause-button (jw:make-button :icon "pause"
                                          :tooltip "Pause"
                                          :style desc-style
-                                         :layout (jw:make-layout ;:margin ".5em .1em .5em .1em"
-                                                                 :width "max-content"
+                                         :layout (jw:make-layout :width "max-content"
                                                                  :grid-area (symbol-name (gensym)))))
            (play-fore-1 (jw:make-toggle-button :icon "play" :tooltip "Foreward"
                                                :style desc-style
-                                               :layout (jw:make-layout ;:margin ".5em .1em .5em .1em"
-                                                                       :width "max-content"
+                                               :layout (jw:make-layout :width "max-content"
                                                                        :grid-area (symbol-name (gensym)))))
            (play-fore-2 (jw:make-toggle-button :icon "forward" :tooltip "Fast foreward"
                                                :style desc-style
-                                               :layout (jw:make-layout ;:margin ".5em .1em .5em .1em"
-                                                                       :width "max-content"
+                                               :layout (jw:make-layout :width "max-content"
                                                                        :grid-area (symbol-name (gensym)))))
            (mode-button (jw:make-toggle-button :icon "retweet"
                                                :tooltip "Loop"
                                                :value t
                                                :style desc-style
-                                               :layout (jw:make-layout ;:margin ".5em .1em .5em .1em"
-                                                                       :width "max-content"
+                                               :layout (jw:make-layout :width "max-content"
                                                                        :grid-area (symbol-name (gensym)))))
            (frame-slider (jw:make-int-slider :layout (jw:make-layout :align-self "center"
-                                                                     ;:margin ".25em"
                                                                      :grid-area (symbol-name (gensym))))))
       (jw:on-button-click pause-button
         (lambda (inst)
@@ -385,7 +377,6 @@
                                                             :grid-area (symbol-name (gensym))
                                                             :width "8em")))
            (controls (list* (jw:make-label :value (or (chem:get-name agg) "")
-                                           :description-tooltip "Aggregate Name"
                                            :style (jw:make-description-style :description-width "min-content")
                                            :layout (jw:make-layout :align-self "center"
                                                                    :grid-area (symbol-name (gensym))
@@ -394,8 +385,7 @@
                             box-button
                             axes-button
                             representation-dropdown
-                            (jw:make-html :value "<span class='fa fa-filter'/>"
-                                          :description-tooltip "Selection Filter"
+                            (jw:make-html :value "<span title='Selection Filter' class='fa fa-filter'/>"
                                           :style (jw:make-description-style :description-width "min-content")
                                           :layout (jw:make-layout :align-self "center"
                                                                   :margin "0 0 0 .5em"

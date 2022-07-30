@@ -77,7 +77,7 @@
             agg)))
 
 (defmethod make-ngl-structure ((instance leap.topology:amber-topology-trajectory-pair) &rest initargs &key &allow-other-keys)
-  (let ((agg (leap.topology:aggregate instance)))
+  (let ((agg (leap.topology:read-frame-into-atoms instance 0)))
     (values (apply #'ngl:make-structure :ext "mol2"
                    :value (chem:aggregate-as-mol2-string agg t)
                    :trajectories (apply #'make-ngl-trajectories (leap.topology:netcdf instance) initargs)
