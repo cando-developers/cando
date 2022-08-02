@@ -20,13 +20,11 @@
 
 (defun add-path (path)
   "Add a path to the *path* dynamic variable"
-  (declare (pathname path))
   (push (translate-logical-pathname path) *path*))
 
 (defun search-path (filename)
   "Search the *path* list for a directory that contains filename and return it.
   Otherwise return NIL."
-  (declare (pathname filename))
   (if (probe-file filename)
       (probe-file filename)
       (loop for path in (reverse *path*)
