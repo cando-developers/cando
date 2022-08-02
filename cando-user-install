@@ -4,8 +4,7 @@ mkdir -p "$HOME/.local/bin" # TODO Check to see if it is in the path
 
 echo "Updating Jupyter extensions..."
 jupyter-labextension install -y --no-build @jupyter-widgets/jupyterlab-manager @jupyter-widgets/jupyterlab-sidecar cytoscape-clj kekule-clj ngl-clj resizable-box-clj jupyterlab-debugger-restarts jupyterlab-molviewer
-jupyter-labextension update -y --no-build --all
-jupyter-labextension build -y
+jupyter-labextension update -y --all
 
 if [ ! -f "$HOME/quicklisp/setup.lisp" ]; then
   echo "Installing Quicklisp..."
