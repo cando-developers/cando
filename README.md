@@ -22,9 +22,9 @@ Binary packages for Cando are built nightly starting about 2:00 AM EST and take 
 
 #### Installing from the Nightly Linux Package Repository for Ubuntu 22.04 or Debian Bookworm.
 
-1. Install jupyter-lab using [miniconda](https://docs.conda.io/en/latest/miniconda.html).
+1. Install jupyter-lab using [miniconda](https://docs.conda.io/en/latest/miniconda.html). This can be skipped for distributions with very new JupyterLab versions like Arch.
    ```bash
-   conda install -c conda-forge jupyterlab
+   conda install -c conda-forge jupyterlab nodejs=17.9.0
    ```
   
 2. Install Cando (this should detect and work for both Ubuntu or Debian)
@@ -35,16 +35,6 @@ Binary packages for Cando are built nightly starting about 2:00 AM EST and take 
 3. Install Cando user snapshot and Jupyter kernels
    ```bash
    cando-user-install
-   ```
-
-4. Enhance the jupyter-lab/Cando environment by installing jupyter-lab widgets, drawing and visualization tools.
-   ```bash
-   conda install -c conda-forge nodejs=17.9.0
-   ```
-   and then...
-  
-   ```bash
-   jupyter-labextension install @jupyter-widgets/jupyterlab-manager @jupyter-widgets/jupyterlab-sidecar cytoscape-clj kekule-clj ngl-clj resizable-box-clj jupyterlab-debugger-restarts jupyterlab-molviewer
    ```
 
 Now the installation is done!  Scroll to the instructions below to [download cando-demos and run jupyter-lab/cando](https://github.com/cando-developers/cando/blob/main/README.md#cando--jupyter-demonstrations)!
@@ -103,11 +93,6 @@ To install Cando do the following:
 These Homebrew formula can be built from source by adding the `--build-from-source` option and can be built directly the most recent commit by adding the `--HEAD` option.
 
 After the initial install, to upgrade to the latest nightly build use `brew update && brew upgrade`. The `brew update` only needs to be done occasionally to update homebrew itself.
-
-4. Enhance the jupyter-lab/Cando environment by installing jupyter-lab widgets, drawing and visualization tools.
-   ```bash
-   jupyter-labextension install cytoscape-clj kekule-clj ngl-clj resizable-box-clj @jupyter-widgets/jupyterlab-manager  jupyterlab_templates jupyterlab-debugger-restarts jupyterlab-molviewer
-   ```
 
 # Cando + Jupyter Demonstrations
 Several JupyterLab notebooks that demonstrate how Cando can be used for computational chemistry can be found in [Cando-demos](https://github.com/cando-developers/cando-demos).
