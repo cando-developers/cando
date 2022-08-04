@@ -65,7 +65,7 @@ If step 2 fails to detect your operating system then you can install manually vi
   
 #### Installing from the Nightly Homebrew Tap
 
-Binary packages for MacOS Catalina, Big Sur and Monterey are available from the `clasp-developers/clasp` tap. 
+Binary packages for MacOS Big Sur and Monterey are available from the `clasp-developers/clasp` tap. 
 
 Currently Cando only runs on x86-64 systems or Apple Silicon using rosetta2. The rosetta2 environment on Apple Silicon is excellent and quite performant. In the near future we will support native Apple Silicon - this is awaiting updates from Apple to the llvm JIT compiler.
 
