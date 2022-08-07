@@ -1289,10 +1289,15 @@ void internalCoordinatesFromPointAndCoordinateSystem(const Vector3 &D, const Mat
   VEC_LOG("_Phi = %lf deg\n", (phi / 0.0174533));
   Vector3 dox(1.0, 0.0, 0.0);
   Vector3 dop(dx, dy, dz);
+  double f = dop.dotProduct(dox);
   VEC_LOG("dop = %s\n", dop.asString());
   VEC_LOG("dop.dotProduct(dox) = %lf\n", dop.dotProduct(dox));
-  if (dop.dotProduct(dox) > (1.0 - SMALL_NUMBER)) {
+  if (f > (1.0 - SMALL_NUMBER)) {
     theta = 0.0;
+    return;
+  }
+  if (f < (-1.0 + SMALL_NUMBER)) {
+    theta = M_PI;
     return;
   }
   Vector3 doz = dox.crossProduct(dop);
