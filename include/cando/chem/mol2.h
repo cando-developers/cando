@@ -19,12 +19,12 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
- 
+
 This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
 */
 /* -^- */
-       
-       
+
+
 //
 // (C) 2004 Christian E. Schafmeister
 //
@@ -57,28 +57,9 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace chem {
 
-  extern chem::TypeAssignmentRules_sp	sybylRules;
+extern chem::TypeAssignmentRules_sp	sybylRules;
 
-
-struct AtomInfo {
-  Atom_sp		_Atom;
-  Residue_sp            _Residue;
-    core::Symbol_sp 		_Type;
-};
-struct ResidueOut {
-  Molecule_sp  mol;
-  Residue_sp	res;
-  uint		firstAtom;
-};
-
-
-
-
-};
-
-namespace chem {
-
-class	Mol2File 
+class	Mol2File
 {
 public:
   core::T_sp	fIn;
@@ -113,7 +94,7 @@ string	mol2AtomType(Atom_sp a);
 
 
  void initialize_mol2_type_rules();
- 
+
 };
 
 

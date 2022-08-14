@@ -19,12 +19,12 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
- 
+
 This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
 */
 /* -^- */
-       
-       
+
+
 //
 // (C) 2004 Christian E. Schafmeister
 //
@@ -48,12 +48,23 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace chem {
 
+struct AtomInfo {
+  Atom_sp _Atom;
+  Residue_sp _Residue;
+  core::Symbol_sp _Type;
+};
+
+struct ResidueOut {
+  Molecule_sp mol;
+  Residue_sp res;
+  uint firstAtom;
+};
 
 SMART(Restraint);
 SMART(Lisp);
 
 FORWARD(BoundingBox);
-class  BoundingBox_O : public  core::CxxObject_O 
+class  BoundingBox_O : public  core::CxxObject_O
 {
   LISP_CLASS(chem,ChemPkg,BoundingBox_O,"BoundingBox", core::CxxObject_O );
 //    DECLARE_SERIALIZE();
@@ -96,11 +107,11 @@ public:
   double distance_squared_between_two_atoms(Atom_sp a1, Atom_sp a2);
 
   bool intersects(BoundingBox_sp other);
-  
+
   BoundingBox_O(const Vector3& widths, const Vector3& angles_degrees, const Vector3& center);
 };
 
-class  Aggregate_O : public  Matter_O 
+class  Aggregate_O : public  Matter_O
 {
     LISP_CLASS(chem,ChemPkg,Aggregate_O,"Aggregate", Matter_O );
 //    DECLARE_SERIALIZE();
@@ -132,7 +143,7 @@ public:
   bool boundingBoxBoundP() const;
   void setBoundingBox(BoundingBox_sp bounding_box);
   void makUnboundBoundingBox();
-  
+
     /*! Lookup an Atom using the atomId */
 //    Atom_sp lookupAtom(const AtomId& atomId) const;
 
@@ -211,13 +222,13 @@ CL_DEFMETHOD     void		saveAs(const string& fileName) { _G(); this->writeToFile(
 
 public:
     virtual Matter_sp	copy(core::T_sp new_to_old);
-    
+
     virtual Matter_sp copyDontRedirectAtoms(core::T_sp new_to_old);
 	virtual void redirectAtoms();
 
   core::T_sp force_field_name() const;
   void setf_force_field_name(core::T_sp name);
-    
+
 
   Aggregate_O() : _ForceFieldName(kw::_sym_default), _BoundingBox(unbound<BoundingBox_O>()) {};
 };
