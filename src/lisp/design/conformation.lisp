@@ -73,3 +73,5 @@
                                (declare (ignore atom-id))
                                (kin:set-position joint (geom:vec 0.0 0.0 0.0))))))
 
+(export '(make-conformation
+          ))

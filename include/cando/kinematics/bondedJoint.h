@@ -113,9 +113,9 @@ FORWARD(BondedJoint);
 
       CL_NAME(KIN:BONDED-JOINT/GET-DISTANCE);
       CL_DEFMETHOD double getDistance() const { return this->_Distance; }
-      CL_NAME(KIN:BONDED-JOINT/GET-ANGLE);
+      CL_NAME(KIN:BONDED-JOINT/GET-THETA);
       CL_DEFMETHOD double getTheta() const { return this->_Theta; };
-      CL_NAME(KIN:BONDED-JOINT/GET-DIHEDRAL);
+      CL_NAME(KIN:BONDED-JOINT/GET-PHI);
       CL_DEFMETHOD double getPhi() const { return this->_Phi; };
 
       CL_DEFMETHOD void setDistance(double distance) { this->_Distance = distance;}

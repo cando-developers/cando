@@ -682,7 +682,7 @@ Return a list of prepare-topology objects - one for each residue that we need to
          (atomid (list atmolecule-index atresidue-index constitution-atoms-index))
          (joint (make-jump-joint atomid atom-name)))
     (put-joint atresidue joint constitution-atoms-index)
-    (when parent-joint (add-child parent-joint joint))
+    (when parent-joint (kin:joint/add-child parent-joint joint))
     joint))
 
 (defmethod write-into-joint-tree ((joint-template complex-bonded-joint-template) parent-joint atresidue atmolecule-index atresidue-index)
@@ -709,7 +709,7 @@ Return a list of prepare-topology objects - one for each residue that we need to
                 (input-stub1 (aref (joints atresidue) input-stub1-index)))
            (set-input-stub-joint1 joint input-stub0)
            (set-input-stub-joint2 joint input-stub1))))
-      (when parent-joint (add-child parent-joint joint))
+      (when parent-joint (kin:joint/add-child parent-joint joint))
       joint)))
 
 (defmethod write-into-joint-tree ((joint-template bonded-joint-template) parent-joint atresidue atmolecule-index atresidue-index)
@@ -718,7 +718,7 @@ Return a list of prepare-topology objects - one for each residue that we need to
          (atomid (list atmolecule-index atresidue-index constitution-atoms-index))
          (joint (make-bonded-joint atomid atom-name)))
     (put-joint atresidue joint constitution-atoms-index)
-    (when parent-joint (add-child parent-joint joint))
+    (when parent-joint (kin:joint/add-child parent-joint joint))
     joint))
 
 ;;
@@ -740,7 +740,7 @@ Return a list of prepare-topology objects - one for each residue that we need to
                                                                            constitution-atoms
                                                                            constitution-name
                                                                            topology-name )))
-                 (add-child root-template child-template)))
+                 (kin:joint/add-child root-template child-template)))
     root-template))
 
 

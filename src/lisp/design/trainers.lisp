@@ -184,16 +184,16 @@
                     (walk-joints residue
                                  (lambda (index joint)
                                    (format t "Extracting internal for ~a index: ~a atom-id: ~a~%"
-                                           (kin:name joint)
+                                           (kin:joint/name joint)
                                            index
                                            (third (kin:atom-id joint)))
                                    (cond
                                      ((typep joint 'kin:bonded-joint)
                                       (vector-push-extend (third (kin:atom-id joint)) internals)
-                                      (vector-push-extend (kin:name joint) internals)
-                                      (vector-push-extend (kin:get-distance joint) internals)
-                                      (vector-push-extend (kin:get-theta joint) internals)
-                                      (vector-push-extend (kin:get-phi joint) internals)))))
+                                      (vector-push-extend (kin:joint/name joint) internals)
+                                      (vector-push-extend (kin:bonded-joint/get-distance joint) internals)
+                                      (vector-push-extend (kin:bonded-joint/get-theta joint) internals)
+                                      (vector-push-extend (kin:bonded-joint/get-phi joint) internals)))))
                     internals))))
 
 

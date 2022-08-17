@@ -63,7 +63,7 @@
 
   (defun cbj (atom-id atom distance-joint &optional angle-joint dihedral-joint)
     (let ((joint (kin:make-complex-bonded-joint atom-id (chem:get-name atom))))
-      (kin:add-child distance-joint joint)
+      (kin:joint/add-child distance-joint joint)
       (when dihedral-joint
         (kin:set-input-stub-joint2 joint dihedral-joint))
       (when angle-joint
@@ -74,7 +74,7 @@
 
   (defun bj (atom-id atom parent)
     (let ((joint (kin:make-bonded-joint atom-id (chem:get-name atom))))
-      (kin:add-child parent joint)
+      (kin:joint/add-child parent joint)
       (chem:atom-id-map-set aimj atom-id joint)
       (chem:atom-id-map-set aima atom-id atom)
       joint))

@@ -28,7 +28,7 @@
 
 (defmethod label ((joint kin:joint))
   (let ((name (string (class-name (class-of joint)))))
-    (format nil "~a/~a~%~a" name (kin:name joint) (kin:atom-id joint))))
+    (format nil "~a/~a~%~a" name (kin:joint/name joint) (kin:atom-id joint))))
 
 (defmethod stream-draw-joint (joint atom-tree stream)
   (format stream "   ~a [label = \"~a\"];~%" (id joint) (label joint)))
@@ -75,9 +75,9 @@
             highlight
             (label joint)
 ;;;            (kin:atom-id joint)
-            (kin:get-distance joint)
-            (/ (kin:get-theta joint) 0.0174533)
-            (/ (kin:get-phi joint) 0.0174533)
+            (kin:bonded-joint/get-distance joint)
+            (/ (kin:bonded-joint/get-theta joint) 0.0174533)
+            (/ (kin:bonded-joint/get-phi joint) 0.0174533)
             nil #+(or)(kin:get-stub joint)
             (kin:get-position joint)
             (kin:properties joint))))

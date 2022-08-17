@@ -824,7 +824,7 @@ Return a list of prepare-topology objects - one for each residue that we need to
                 (input-stub1 (aref (kin:joints atresidue) input-stub1-index)))
            (kin:set-input-stub-joint1 joint input-stub0)
            (kin:set-input-stub-joint2 joint input-stub1))))
-      (when parent-joint (kin:add-child parent-joint joint))
+      (when parent-joint (kin:joint/add-child parent-joint joint))
       joint)))
 
 (defmethod write-into-joint-tree ((joint-template bonded-joint-template) parent-joint atresidue atmolecule-index atresidue-index)
@@ -833,7 +833,7 @@ Return a list of prepare-topology objects - one for each residue that we need to
          (atomid (list atmolecule-index atresidue-index constitution-atoms-index))
          (joint (kin:make-bonded-joint atomid atom-name)))
     (kin:put-joint atresidue joint constitution-atoms-index)
-    (when parent-joint (kin:add-child parent-joint joint))
+    (when parent-joint (kin:joint/add-child parent-joint joint))
     joint))
 
 ;;
@@ -996,8 +996,8 @@ Return a list of prepare-topology objects - one for each residue that we need to
 
 #+(or)
 (defun save-joint-templates (node vec)
-  (format t "Setting ~a -> ~a~%" (kin:id node) (kin:name node))
-  (setf (aref vec (kin:id node)) (kin:name node))
+  (format t "Setting ~a -> ~a~%" (kin:id node) (kin:joint/name node))
+  (setf (aref vec (kin:id node)) (kin:joint/name node))
   (loop for child in (kin:children node)
         do (save-joint-templates child vec)))
 
