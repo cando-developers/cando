@@ -282,7 +282,7 @@ CL_LISPIFY_NAME("assignCahnIngoldPrelogPriorityToAtomsRelativePriority");
 	byP.setCipPrioritizer(this->sharedThis<CipPrioritizer_O>());
 	if ( mAtoms.size()>1 ) 
 	{
-	    sort::quickSort(mAtoms.begin(),mAtoms.end(),byP);
+          sort::quickSortVec0(mAtoms, 0, mAtoms.size(), byP);
 	}
 
 	C.clear();
@@ -356,7 +356,7 @@ CL_LISPIFY_NAME("assignCahnIngoldPrelogPriorityToAtomsRelativePriority");
 		    if (mys.size()>1) {
                       int* begin = &mys[0];
                       int* end = &mys[mys.size()];
-                      sort::quickSort(begin,end);
+                      sort::quickSortVec0(mys, 0, mys.size());
                       LOG("Done sort" );
                       sort::reverse(begin,end);
                       LOG("Done reverse" );
@@ -430,7 +430,7 @@ CL_LISPIFY_NAME("assignCahnIngoldPrelogPriorityToAtomsRelativePriority");
 			    LOG("    %s" , (*ssi)->description().c_str() );
 			}
 #endif
-			if (S.size()>1) sort::quickSort(S.begin(),S.end(),byS);
+			if (S.size()>1) sort::quickSortVec0(S, 0, S.size(), byS);
 			LOG("done sort" );
 		    }
 //		    int i = 0;
@@ -575,7 +575,7 @@ CL_DEFMETHOD core::HashTable_sp CipPrioritizer_O::setStereochemicalTypeForAllAto
 		priority.push_back((*bi)->getOtherAtom(a));
 	    }
             OrderByPriority orderByPriority(cip);
-	    sort::quickSort(priority.begin(), priority.end(), orderByPriority);
+	    sort::quickSortVec0(priority, 0, priority.size(), orderByPriority);
 	    //  now figure out if they are four different priorities
 	    uint prevPriority = UndefinedUnsignedInt;
 	    int diff = 0;

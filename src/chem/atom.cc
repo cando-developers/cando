@@ -675,7 +675,7 @@ core::List_sp	Atom_O::getNeighborsByRelativePriority(core::HashTable_sp cip_prio
   }
   OrderByPriorityAndName orderer(cip_priority);
   core::List_sp ncons = nil<core::T_O>();
-  sort::quickSort(reversedNeighbors.begin(),reversedNeighbors.end(),orderer);
+  sort::quickSortVec0(reversedNeighbors, 0, reversedNeighbors.size(), orderer);
 	// At this point the sorted in reverse order
 	// 
 	// Now copy them into a Cons list backwards to get the
@@ -760,7 +760,7 @@ CL_DEFMETHOD     bool	Atom_O::isBondedToElementOrder(Element el, BondOrder o)
 CL_LISPIFY_NAME("hasBondWithOrder");
 CL_DEFMETHOD     bool Atom_O::hasBondWithOrder(BondOrder o) const
 {
-  VectorBond::iterator	b;
+  VectorBond::const_iterator	b;
   if (Bond_O::singleBondP(o)) {
     for ( b=this->_Bonds.begin();b!=this->_Bonds.end() ; b++ ) {
       if ( Bond_O::singleBondP((*b)->getRawOrder())) return true;
@@ -777,7 +777,7 @@ CL_DEFMETHOD     bool Atom_O::hasBondWithOrder(BondOrder o) const
 CL_LISPIFY_NAME("isBondedToElementHybridization");
 CL_DEFMETHOD     bool	Atom_O::isBondedToElementHybridization(Element el, Hybridization hy)
 {
-  VectorBond::iterator	b;
+  VectorBond::const_iterator	b;
 
   for ( b=this->_Bonds.begin();b!=this->_Bonds.end() ; b++ ) 
   {
@@ -797,8 +797,8 @@ CL_DEFMETHOD     bool	Atom_O::isBondedToElementHybridizationElementHybridization
 {_OF();
   IMPLEMENT_ME(); // Handle new way of handling bonds
 #if 0
-  VectorBond::iterator	b;
-  VectorBond::iterator	b2;
+  VectorBond::const_iterator	b;
+  VectorBond::const_iterator	b2;
   Atom_sp	a1;
   Atom_sp	a2;
   for ( b=this->_Bonds.begin();b!=this->_Bonds.end() ; b++ ) 
@@ -879,7 +879,7 @@ CL_DEFMETHOD     void	Atom_O::removeBondTo(Atom_sp a)
 CL_LISPIFY_NAME("removeAllBonds");
 CL_DEFMETHOD     void	Atom_O::removeAllBonds()
 {_OF();
-  VectorBond::iterator	b;
+  VectorBond::const_iterator	b;
   Atom_sp				atemp;
 	// Remove back bond
   LOG("Bond_O::removeAllBonds for %s" , this->description() );
@@ -1250,7 +1250,7 @@ CL_LISPIFY_NAME("Atom/bondedAtomsAsList");
 CL_DEFMETHOD     core::List_sp Atom_O::bondedAtomsAsList() const
 {
   ql::list ll;
-  VectorBond::iterator	b;
+  VectorBond::const_iterator	b;
   Atom_sp me(const_cast<Atom_O*>(this));
   for (b=this->_Bonds.begin();b!=this->_Bonds.end(); b++ ) {
     ll << (*b)->getOtherAtom(me);
@@ -1262,7 +1262,7 @@ CL_DEFMETHOD     core::List_sp Atom_O::bondedAtomsAsList() const
 CL_LISPIFY_NAME("getBondList");
 CL_DEFMETHOD     BondList_sp	Atom_O::getBondList()
 {
-  VectorBond::iterator	b;
+  VectorBond::const_iterator	b;
   auto  bl  = gctools::GC<BondList_O>::allocate_with_default_constructor();
   for (b=this->_Bonds.begin();b!=this->_Bonds.end(); b++ )
   {
@@ -1331,7 +1331,7 @@ CL_LISPIFY_NAME("bondsAsList");
 CL_DEFMETHOD     core::List_sp Atom_O::bondsAsList() const
 {
   ql::list ll;
-  VectorBond::iterator	b;
+  VectorBond::const_iterator	b;
   for (b=this->_Bonds.begin();b!=this->_Bonds.end(); b++ ) {
     ll << *b;
   }
@@ -1348,7 +1348,7 @@ bool	Atom_O::isHeavyAtom()
 CL_LISPIFY_NAME("getHeavyAtomBondList");
 CL_DEFMETHOD     BondList_sp	Atom_O::getHeavyAtomBondList()
 {
-  VectorBond::iterator	b;
+  VectorBond::const_iterator	b;
   auto  bl  = gctools::GC<BondList_O>::allocate_with_default_constructor();
   Atom_sp me = this->sharedThis<Atom_O>();
   for (b=this->_Bonds.begin();b!=this->_Bonds.end(); b++ )

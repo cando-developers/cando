@@ -171,9 +171,9 @@ namespace chem
     Stereoisomer_sp	getStereoisomer(core::T_sp nameOrPdb);
 
 	    //! Return true if this StereoInformation recognizes the name or pdb name
-    bool	recognizesNameOrPdb(core::T_sp nm)
+    bool recognizesNameOrPdb(core::T_sp nm) const
     {
-      return ( this->_NameOrPdbToStereoisomer.contains(nm) != 0);
+      return this->_NameOrPdbToStereoisomer.contains(nm);
     };
 	    //! The name of the monomer with the nameOrPdb
     core::T_sp	nameFromNameOrPdb(core::T_sp np)

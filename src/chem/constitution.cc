@@ -163,7 +163,7 @@ void	Constitution_O::makeResidueConsistentWithStereoisomerNamed(Residue_sp res,
 
 RepresentativeList_sp	Constitution_O::expandedRepresentativeList() const
 {
-    gctools::Vec0<Stereoisomer_sp>::iterator	si;
+    gctools::Vec0<Stereoisomer_sp>::const_iterator	si;
     RepresentativeList_sp allRepresentatives  = RepresentativeList_O::create();
     for (si=this->begin_Stereoisomers(); si!=this->end_Stereoisomers(); si++)
     {
@@ -226,7 +226,7 @@ CL_DEFMETHOD adapt::SymbolSet_sp	Constitution_O::getMonomerNamesAsSymbolSet()
 
 bool Constitution_O::hasStereoisomerWithName(core::Symbol_sp stereoisomerName)
 {
-    gctools::Vec0<Stereoisomer_sp>::iterator	si;
+    const_stereoisomerIterator	si;
     LOG("Looking for Stereoisomer with name(%s)" , _rep_(stereoisomerName) );
     for (si=this->begin_Stereoisomers(); si!=this->end_Stereoisomers(); si++)
     {
@@ -243,7 +243,7 @@ bool Constitution_O::hasStereoisomerWithName(core::Symbol_sp stereoisomerName)
 
     Stereoisomer_sp Constitution_O::getStereoisomerWithName(core::Symbol_sp stereoisomerName) const
 {
-  stereoisomerIterator	si;
+    const_stereoisomerIterator	si;
     LOG("Looking for Stereoisomer with name(%s)" , _rep_(stereoisomerName) );
     for (si=this->begin_Stereoisomers(); si!=this->end_Stereoisomers(); si++)
     {

@@ -899,7 +899,7 @@ CL_DEFMETHOD string	Oligomer_O::sequenceAsString() const
   this->_fillMonomerAsString(mon2,seq);
   seq << std::endl;
   this->_fillSequenceAsStringForChildren(mon2,seq);
-  for (gctools::Vec0<Coupling_sp>::iterator ci=this->_Couplings.begin(); ci!=this->_Couplings.end(); ci++ )
+  for (gctools::Vec0<Coupling_sp>::const_iterator ci=this->_Couplings.begin(); ci!=this->_Couplings.end(); ci++ )
   {
     if ( (*ci).isA<RingCoupling_O>() )
     {

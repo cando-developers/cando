@@ -318,37 +318,35 @@ public:
     }
 };
 
-StereoInformation_sp StereoInformation_O::make(core::List_sp stereoisomers, core::List_sp restraints)
-{
-  auto  me  = gctools::GC<StereoInformation_O>::allocate_with_default_constructor();
-  core::fillVec0(stereoisomers,me->_Stereoisomers);
+StereoInformation_sp StereoInformation_O::make(core::List_sp stereoisomers, core::List_sp restraints) {
+  auto me = gctools::GC<StereoInformation_O>::allocate_with_default_constructor();
+  core::fillVec0(stereoisomers, me->_Stereoisomers);
   // sort the stereoisomers by index
   OrderByStereoisomerIndex byStereoisomerIndex;
-  sort::quickSort(me->_Stereoisomers.begin(),me->_Stereoisomers.end(),byStereoisomerIndex);
+  sort::quickSortVec0(me->_Stereoisomers, 0, me->_Stereoisomers.size(), byStereoisomerIndex);
   me->_NameOrPdbToStereoisomer.clear();
   size_t index = 0;
-  for ( gctools::Vec0<Stereoisomer_sp>::iterator it = me->_Stereoisomers.begin();
-        it != me->_Stereoisomers.end(); it++ ) {
-    if ( core::clasp_number_compare(core::make_fixnum(index),(*it)->getStereoisomerIndex()) != 0) {
-      SIMPLE_WARN("Stereoisomer with stereoisomer index %d does not match the array index in StereoInformation %d" , core::_rep_((*it)->getStereoisomerIndex()) ,index);
+  for (gctools::Vec0<Stereoisomer_sp>::iterator it = me->_Stereoisomers.begin(); it != me->_Stereoisomers.end(); it++) {
+    if (core::clasp_number_compare(core::make_fixnum(index), (*it)->getStereoisomerIndex()) != 0) {
+      SIMPLE_WARN("Stereoisomer with stereoisomer index %d does not match the array index in StereoInformation %d",
+                  core::_rep_((*it)->getStereoisomerIndex()), index);
     }
-    if ( me->_NameOrPdbToStereoisomer.count((*it)->getName())>0 ) {
-      SIMPLE_ERROR(("addStereoisomer monomer name (%s) has already been used") , core::_rep_((*it)->getName()));
+    if (me->_NameOrPdbToStereoisomer.count((*it)->getName()) > 0) {
+      SIMPLE_ERROR(("addStereoisomer monomer name (%s) has already been used"), core::_rep_((*it)->getName()));
     }
     if ((*it)->getName().notnilp()) {
-      me->_NameOrPdbToStereoisomer.set((*it)->getName(),(*it));
+      me->_NameOrPdbToStereoisomer.set((*it)->getName(), (*it));
     } else {
-      SIMPLE_ERROR(("A stereoisomer name in %s is NIL - this is not allowed") , _rep_(stereoisomers));
+      SIMPLE_ERROR(("A stereoisomer name in %s is NIL - this is not allowed"), _rep_(stereoisomers));
     }
     if ((*it)->getPdb().notnilp()) {
       // only non NIL names are added
-      me->_NameOrPdbToStereoisomer.set((*it)->getPdb(),(*it));
+      me->_NameOrPdbToStereoisomer.set((*it)->getPdb(), (*it));
     }
     index++;
   }
   return me;
 };
-
 
 //
 //	getMonomerNames

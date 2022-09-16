@@ -389,7 +389,7 @@ void Bond_O::canonicalizeBondOrder(Atom_sp& a1, Atom_sp& a2, BondOrder& order) {
 ConstitutionBond_sp Bond_O::asConstitutionBond(Atom_sp from, const MapAtomsToConstitutionAtomIndex0N& atomMap)
 {_OF();
   Atom_sp to = this->getOtherAtom(from);
-  MapAtomsToConstitutionAtomIndex0N::iterator it = atomMap.find(to);
+  MapAtomsToConstitutionAtomIndex0N::const_iterator it = atomMap.find(to);
   if ( it == atomMap.end() )
   {
     SIMPLE_ERROR(("Could not find atom[%s] in atomMap") , _rep_(to));
@@ -612,7 +612,7 @@ Create a new BondList_O and create a new copy of the Vec0 in the BondList_O but
 use the same Bond_O's */
 BondList_sp	BondList_O::deepishCopy() const
 {
-  BondList_O::iterator	bi;
+  BondList_O::const_iterator bi;
   auto  bl  = gctools::GC<BondList_O>::allocate_with_default_constructor();
   for ( bi=this->_Bonds.begin(); bi!=this->_Bonds.end(); bi++ ) bl->addBond(*bi);
   return bl;
@@ -620,7 +620,7 @@ BondList_sp	BondList_O::deepishCopy() const
 
 string	BondList_O::description() const
 {
-  BondList_O::iterator	bi;
+  BondList_O::const_iterator bi;
   stringstream ss;
   ss << "(BondList numBonds=" << this->_Bonds.size() << std::endl;
   for ( bi=this->_Bonds.begin(); bi!=this->_Bonds.end(); bi++ ) {
@@ -632,7 +632,7 @@ string	BondList_O::description() const
 
 string	BondList_O::describeOthers(Atom_sp from) const
 {
-  BondList_O::iterator	bi;
+  BondList_O::const_iterator bi;
   stringstream ss;
   ss << "BondList[[[" << std::endl;
   for ( bi=this->_Bonds.begin(); bi!=this->_Bonds.end(); bi++ ) {

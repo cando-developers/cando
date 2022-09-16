@@ -123,6 +123,7 @@ public:
   core::HashTableEq_sp			        _Data;
 public:
   typedef	gctools::Vec0<ConformationCollectionEntry_sp>::iterator	entryIterator;
+  typedef	gctools::Vec0<ConformationCollectionEntry_sp>::const_iterator	const_entryIterator;
   typedef	gctools::SmallOrderedSet<Atom_sp>::iterator	atomIterator;
 public:
   geom::SimpleVectorCoordinate_sp	_SimpleVectorCoordinate(Matter_sp matter);
@@ -148,10 +149,10 @@ public:
   entryIterator	end_Entries()
   { return this->_Entries.end();};
 
-  entryIterator	begin_Entries() const
-  { return this->_Entries.begin();};
-  entryIterator	end_Entries() const
-  { return this->_Entries.end();};
+  const_entryIterator	begin_Entries() const
+  { return this->_Entries.begin(); };
+  const_entryIterator	end_Entries() const
+  { return this->_Entries.end(); };
 
 		//! Return the index of the entry
   size_t	getEntryIndex(ConformationCollectionEntry_sp entry);

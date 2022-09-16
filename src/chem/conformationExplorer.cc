@@ -778,7 +778,7 @@ CL_DEFMETHOD     void	ConformationExplorer_O::sort(core::T_sp stageName, core::S
 	OrderStageAndKeyValue comparer;
 	comparer._StageName = stageName;
 	comparer._KeyName = keyName;
-	sort::quickSort(this->_Entries.begin(), this->_Entries.end(), comparer);
+	sort::quickSortVec0(this->_Entries, 0, this->_Entries.size(), comparer);
     }
 
 
@@ -1031,7 +1031,7 @@ CL_DEFMETHOD     void	ConformationExplorer_O::sortByEnergyAscendingForStage(core
     {
 	OrderByEnergyAscending order;
 	order._StageName = stageName;
-	sort::quickSort(this->_Entries.begin(),this->_Entries.end(),order);
+	sort::quickSortVec0(this->_Entries, 0, this->_Entries.size(), order);
     }
 
     void	ConformationExplorerMatch_O::initialize()
