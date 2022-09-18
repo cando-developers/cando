@@ -283,11 +283,12 @@ void	RestrainedExoCyclicAtom_O::archiveBase(core::ArchiveP node)
     Atom_sp exoCyclicAtom = gc::As_unsafe<Atom_sp>(residue->atomWithName(this->_ExoCyclicAtomName));
     Root_sp atomExoToSixMemberedRing = gctools::As<Root_sp>(chem::_sym_STARAtomExoToSixMemberedRingSTAR->symbolValue());
     core::T_mv match_mv = chem__chem_info_match(atomExoToSixMemberedRing,exoCyclicAtom);
+    core::MultipleValues &values = core::lisp_multipleValues();
     if ( match_mv.nilp() )
     {
 	SIMPLE_ERROR(("In residue(%s) the atom with name(%s) is not exo-cyclic to a six-membered ring") , residue->description() , _rep_(this->_ExoCyclicAtomName) );
     }
-    ChemInfoMatch_sp match = gc::As<ChemInfoMatch_sp>(match_mv.second());
+    ChemInfoMatch_sp match = gc::As<ChemInfoMatch_sp>(values.second(match_mv.number_of_values()));
     Atom_sp a1 = match->tag(core::make_fixnum(1));
     Atom_sp a2 = match->tag(core::make_fixnum(2));
     Atom_sp a3 = match->tag(core::make_fixnum(3));

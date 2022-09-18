@@ -20,11 +20,11 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
- 
+
 This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
 */
 /* -^- */
-       
+
 //#include "core/archiveNode.h"
 //#include "core/archive.h"
 #include <clasp/core/foundation.h>
@@ -56,11 +56,11 @@ This is an open source license for the CANDO software from Temple University, bu
 
 
 
-namespace chem 
+namespace chem
 {
 EnergyAtom::EnergyAtom() : _Flag(0) {};
 EnergyAtom::EnergyAtom(Atom_sp atom,uint coordinateIndex) : Base(atom,coordinateIndex), _Flag(0)  {} ;
-EnergyAtom::EnergyAtom(core::T_sp forceField, Atom_sp atom, uint coordinateIndex ) : Base(atom,coordinateIndex), _Flag(0) 
+EnergyAtom::EnergyAtom(core::T_sp forceField, Atom_sp atom, uint coordinateIndex ) : Base(atom,coordinateIndex), _Flag(0)
 {
   this->defineForAtom(forceField,atom,coordinateIndex);
 }
@@ -205,22 +205,14 @@ CL_DEFMETHOD core::HashTableEq_sp AtomTable_O::getAtomTableIndices() {
 CL_DOCSTRING(R"dx(Return the index of ATOM or NIL if it is not found.  The second return value is T if found and NIL if not.)dx")
 CL_DEFMETHOD core::T_mv AtomTable_O::getAtomIndexOrNil(Atom_sp atom)
 {
-  core::T_mv res= this->_AtomTableIndices->gethash(atom);
-#if 0
-  core::write_bf_stream(fmt::sprintf("Number of results %d\n" , res.number_of_values()));
-  core::write_bf_stream(fmt::sprintf("res -> %s\n" , _rep_(res)));
-  core::write_bf_stream(fmt::sprintf("res.second() -> %s \n" , _rep_(res.second())));
-#endif
-  if (res.second().nilp()) {
-    return Values(nil<core::T_O>(),nil<core::T_O>());
-  }
-  return Values(res,_lisp->_true());
+  return _AtomTableIndices->gethash(atom);
 }
 
 EnergyAtom* AtomTable_O::getEnergyAtomPointer(Atom_sp a)
 {_OF();
   core::T_mv it = this->_AtomTableIndices->gethash(a);
-  if ( it.second().nilp() ) // it == this->_AtomTableIndices.end() )
+  core::MultipleValues &values = core::lisp_multipleValues();
+  if ( values.second(it.number_of_values()).nilp() ) // it == this->_AtomTableIndices.end() )
   {
     SIMPLE_ERROR(("Could not find atom[%s] in AtomTable") , _rep_(a) );
   }
@@ -485,11 +477,11 @@ void AtomTable_O::constructFromMolecule(Molecule_sp mol, core::T_sp nonbondForce
       Loop loop;
       Atom_sp a1;
       loop.loopTopGoal(res,ATOMS);
-      while ( loop.advanceLoopAndProcess() ) 
+      while ( loop.advanceLoopAndProcess() )
       {
         a1 = loop.getAtom();
         if ( activeAtoms.notnilp() && !inAtomSet(activeAtoms,a1) ) continue;
-        if ( a1.isA<VirtualAtom_O>() ) 
+        if ( a1.isA<VirtualAtom_O>() )
         {
           LOG("Skipping virtual atom[%s]" , _rep_(a1) );
           continue; // skip virtuals
@@ -554,7 +546,7 @@ CL_DEFMETHOD size_t AtomTable_O::push_back_excluded_atom_indices_and_sort( core:
   for ( int ri = 0; ri<=EnergyAtom::max_remove; ++ri ) {
     for (auto bi = ea->_AtomsAtRemoveBondAngle14[ri].begin(); bi!=ea->_AtomsAtRemoveBondAngle14[ri].end(); ++bi ) {
       otherIndex = this->_AtomTableIndices->gethash(*bi).unsafe_fixnum();
-      // Amber starts counting atom indices from 1 but Clasp starts with 0 
+      // Amber starts counting atom indices from 1 but Clasp starts with 0
       if (otherIndex > atomIndex) {
         excludedAtomIndices->vectorPushExtend(otherIndex);
       }
@@ -564,7 +556,7 @@ CL_DEFMETHOD size_t AtomTable_O::push_back_excluded_atom_indices_and_sort( core:
   if (end_size == start_size ) {
     // Amber rules are that if there are no excluded atoms then put -1 in the
     // excluded atom list - this will be incremented to zero (0) when written out.
-    // Oct 2019 - 
+    // Oct 2019 -
     //     This is in the Swails description http://ambermd.org/prmtop.pdf
     excludedAtomIndices->vectorPushExtend(-1); // Use -1 here because it will be incremented by one when writing out and will be written as 0
     ++end_size;
@@ -583,7 +575,7 @@ CL_DEFMETHOD size_t AtomTable_O::push_back_excluded_atom_indices_and_sort( core:
 
 SYMBOL_EXPORT_SC_(ClPkg,copy_seq);
 
-/*! Calculate the AMBER excluded atom list and return two vectors, one containing the number of 
+/*! Calculate the AMBER excluded atom list and return two vectors, one containing the number of
 excluded atoms for each atom and the second containing the sorted excluded atom list */
 CL_DEFMETHOD core::T_mv AtomTable_O::calculate_excluded_atom_list()
 {

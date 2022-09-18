@@ -963,7 +963,8 @@ void EnergyNonbond_O::constructExcludedAtomListFromAtomTable(AtomTable_sp atomTa
   this->_FFNonbondDb = nbForceField;
   core::T_mv values_mv = this->_AtomTable->calculate_excluded_atom_list();
   core::SimpleVector_int32_t_sp number_of_excluded_atoms = gc::As<core::SimpleVector_int32_t_sp>(values_mv);
-  core::SimpleVector_int32_t_sp excluded_atoms_list = gc::As<core::SimpleVector_int32_t_sp>(values_mv.second());
+  core::MultipleValues &values = core::lisp_multipleValues();
+  core::SimpleVector_int32_t_sp excluded_atoms_list = gc::As<core::SimpleVector_int32_t_sp>(values.second(values_mv.number_of_values()));
   this->_NumberOfExcludedAtomIndices = number_of_excluded_atoms;
   this->_ExcludedAtomIndices = excluded_atoms_list;
 }

@@ -19,17 +19,16 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
- 
-This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
+
+This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University
+at mailto:techtransfer@temple.edu if you would like a different license.
 */
 /* -^- */
-#define	DEBUG_LEVEL_NONE
-
+#define DEBUG_LEVEL_NONE
 
 //
 // (C) 2004 Christian E. Schafmeister
 //
-
 
 #include <cando/chem/candoDatabase.h>
 
@@ -67,77 +66,62 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/candoDatabaseDependent.h>
 #include <clasp/core/wrappers.h>
 
-
-namespace chem 
-{
-    /*!Store a list of all CandoDatabases so that they can be consolidated
-     */
+namespace chem {
+/*!Store a list of all CandoDatabases so that they can be consolidated
+ */
 //    core::WeakVector0<CandoDatabase_O>	AllCandoDatabases;
 
-void	CandoDatabase_O::initialize()
-{_OF();
+void CandoDatabase_O::initialize() {
+  _OF();
   this->Base::initialize();
   this->_Entities = core::HashTableEq_O::create_default();
   this->_Topologys = core::HashTableEq_O::create_default();
-//    AllCandoDatabases.append(this->sharedThis<CandoDatabase_O>());
+  //    AllCandoDatabases.append(this->sharedThis<CandoDatabase_O>());
 }
 
-
-void CandoDatabase_O::fields(core::Record_sp node)
-{
-  node->field_if_not_nil(INTERN_(kw,Name),this->_Name);
-  node->field(INTERN_(kw,Entities),this->_Entities);
-  node->field(INTERN_(kw,Topologys),this->_Topologys);
+void CandoDatabase_O::fields(core::Record_sp node) {
+  node->field_if_not_nil(INTERN_(kw, Name), this->_Name);
+  node->field(INTERN_(kw, Entities), this->_Entities);
+  node->field(INTERN_(kw, Topologys), this->_Topologys);
 }
-  
 
-core::List_sp CandoDatabase_O::entitiesSubClassOfAsList(core::Instance_sp mc)
-{_OF();
+core::List_sp CandoDatabase_O::entitiesSubClassOfAsList(core::Instance_sp mc) {
+  _OF();
   core::List_sp result = nil<core::T_O>();
-  this->_Entities->maphash( [&result,&mc] (core::T_sp key, core::T_sp value) {
-                   if ( core::cl__class_of(value) == mc ) {
-                     result = core::Cons_O::create(value,result);
-                   }
-                 });
+  this->_Entities->maphash([&result, &mc](core::T_sp key, core::T_sp value) {
+    if (core::cl__class_of(value) == mc) {
+      result = core::Cons_O::create(value, result);
+    }
+  });
   return result;
 }
 
-
-bool CandoDatabase_O::recognizesEntitySubClassOf(core::Symbol_sp name, core::Instance_sp mc)
-{_OF();
-  core::T_mv find = this->_Entities->gethash(name);
-  if ( find.second().nilp()) return false;
-  if ( core::cl__class_of(find) == mc ) return true;
-  return false;
+bool CandoDatabase_O::recognizesEntitySubClassOf(core::Symbol_sp name, core::Instance_sp mc) {
+  _OF();
+  core::KeyValuePair pair = this->_Entities->find(name);
+  return pair && core::cl__class_of(pair->_Value) == mc;
 }
 
-bool CandoDatabase_O::recognizesEntityOfClass(core::Symbol_sp name, core::Instance_sp aclass)
-{_OF();
-  core::T_mv find = this->_Entities->gethash(name);
-  if ( find.second().nilp()) return false;
-  if ( core::cl__class_of(find) == aclass) return true;
-  return false;
+bool CandoDatabase_O::recognizesEntityOfClass(core::Symbol_sp name, core::Instance_sp aclass) {
+  _OF();
+  core::KeyValuePair pair = this->_Entities->find(name);
+  return pair && core::cl__class_of(pair->_Value) == aclass;
 }
-
-
-
 
 CL_LISPIFY_NAME("constitutionsAsList");
-CL_DEFMETHOD     core::List_sp	CandoDatabase_O::constitutionsAsList() 
-{_OF();
+CL_DEFMETHOD core::List_sp CandoDatabase_O::constitutionsAsList() {
+  _OF();
   return this->entitiesSubClassOfAsList(gc::As<core::Instance_sp>(core::cl__find_class(Constitution_O::static_classSymbol())));
 };
 
-
-bool CandoDatabase_O::recognizesMonomerName(core::Symbol_sp name)
-{_OF();
-  return this->recognizesEntitySubClassOf(name,gc::As<core::Instance_sp>(core::cl__find_class(Stereoisomer_O::static_classSymbol())));
+bool CandoDatabase_O::recognizesMonomerName(core::Symbol_sp name) {
+  _OF();
+  return this->recognizesEntitySubClassOf(name,
+                                          gc::As<core::Instance_sp>(core::cl__find_class(Stereoisomer_O::static_classSymbol())));
 }
 
-
 CL_LISPIFY_NAME("addEntity");
-CL_DEFMETHOD     Entity_sp CandoDatabase_O::addEntity(Entity_sp entity)
-{
+CL_DEFMETHOD Entity_sp CandoDatabase_O::addEntity(Entity_sp entity) {
   IMPLEMENT_ME();
 #if 0
   this->_Entities.set(entity->getName(),entity);
@@ -149,76 +133,56 @@ CL_DEFMETHOD     Entity_sp CandoDatabase_O::addEntity(Entity_sp entity)
 #endif
 }
 
-
 CL_LISPIFY_NAME("representedEntityNameSetsAsList");
-CL_DEFMETHOD     core::List_sp CandoDatabase_O::representedEntityNameSetsAsList()
-{_OF();
-  return this->entitiesSubClassOfAsList(gc::As<core::Instance_sp>(core::cl__find_class(RepresentedEntityNameSet_O::static_classSymbol())));
+CL_DEFMETHOD core::List_sp CandoDatabase_O::representedEntityNameSetsAsList() {
+  _OF();
+  return this->entitiesSubClassOfAsList(
+      gc::As<core::Instance_sp>(core::cl__find_class(RepresentedEntityNameSet_O::static_classSymbol())));
 }
-
-
-
-
-
-
 
 CL_LISPIFY_NAME("recognizesRepresentedEntityNameSet");
-CL_DEFMETHOD     bool CandoDatabase_O::recognizesRepresentedEntityNameSet(core::Symbol_sp name)
-{_OF();
-  return this->recognizesEntityOfClass(name,gc::As_unsafe<core::Instance_sp>(core::cl__find_class(RepresentedEntityNameSet_O::static_classSymbol())));
+CL_DEFMETHOD bool CandoDatabase_O::recognizesRepresentedEntityNameSet(core::Symbol_sp name) {
+  _OF();
+  return this->recognizesEntityOfClass(
+      name, gc::As_unsafe<core::Instance_sp>(core::cl__find_class(RepresentedEntityNameSet_O::static_classSymbol())));
 }
 
-
-bool CandoDatabase_O::recognizesMonomerPack(core::Symbol_sp name)
-{_OF();
-  core::T_mv find = this->_Entities->gethash(name);
-  if ( find.second().nilp() ) return false;
-  Entity_sp entity = gc::As<Entity_sp>(find);
-  return entity.isA<MonomerPack_O>();
+bool CandoDatabase_O::recognizesMonomerPack(core::Symbol_sp name) {
+  _OF();
+  core::KeyValuePair pair = this->_Entities->find(name);
+  return pair && gc::As<Entity_sp>(pair->_Value).isA<MonomerPack_O>();
 }
 
+SYMBOL_EXPORT_SC_(ChemKwPkg, constitution);
+SYMBOL_EXPORT_SC_(ChemKwPkg, entity);
+SYMBOL_EXPORT_SC_(ChemKwPkg, frameRecognizer);
 
-SYMBOL_EXPORT_SC_(ChemKwPkg,constitution);
-SYMBOL_EXPORT_SC_(ChemKwPkg,entity);
-SYMBOL_EXPORT_SC_(ChemKwPkg,frameRecognizer);
-
-core::T_sp	CandoDatabase_O::oGetResource(core::Symbol_sp resource, core::Symbol_sp name )
-{_OF();
-  if ( resource == chemkw::_sym_constitution )
-  {
-    return core::eval::funcall(_sym_constitutionForNameOrPdb,this->asSmartPtr(),name);
+core::T_sp CandoDatabase_O::oGetResource(core::Symbol_sp resource, core::Symbol_sp name) {
+  _OF();
+  if (resource == chemkw::_sym_constitution) {
+    return core::eval::funcall(_sym_constitutionForNameOrPdb, this->asSmartPtr(), name);
   }
-  if ( resource == chemkw::_sym_entity )
-  {
+  if (resource == chemkw::_sym_entity) {
     return this->getEntity(name);
   }
-  if ( resource == chemkw::_sym_frameRecognizer )
-  {
+  if (resource == chemkw::_sym_frameRecognizer) {
     return this->getFrameRecognizer(name);
   }
-  SIMPLE_ERROR(("Unknown CandoDatabase Resource %s %s") , _rep_(resource) , _rep_(name));
+  SIMPLE_ERROR(("Unknown CandoDatabase Resource %s %s"), _rep_(resource), _rep_(name));
 }
-
-
 
 CL_LISPIFY_NAME("addFrameRecognizer");
-CL_DEFMETHOD     void CandoDatabase_O::addFrameRecognizer(FrameRecognizer_sp rec)
-{ 
-  this->_frameRecognizers.set(rec->getRecognizerName(),rec);
+CL_DEFMETHOD void CandoDatabase_O::addFrameRecognizer(FrameRecognizer_sp rec) {
+  this->_frameRecognizers.set(rec->getRecognizerName(), rec);
 }
-
 
 CL_LISPIFY_NAME("recognizesFrameRecognizerName");
-CL_DEFMETHOD     bool	CandoDatabase_O::recognizesFrameRecognizerName(core::Symbol_sp nm)
-{ 
+CL_DEFMETHOD bool CandoDatabase_O::recognizesFrameRecognizerName(core::Symbol_sp nm) {
   bool rec;
   rec = this->_frameRecognizers.contains(nm);
-  LOG("found = %d" , rec  );
+  LOG("found = %d", rec);
   return rec;
 }
-
-
-
 
 #if 0
 core::T_sp CandoDatabase_O::oGetReference(core::ObjRef_sp ref)
@@ -235,70 +199,62 @@ core::T_sp CandoDatabase_O::oGetReference(core::ObjRef_sp ref)
 }
 #endif
 
-
-
-bool	CandoDatabase_O::recognizesEntityNameSetName(core::Symbol_sp nm)
-{
-  return this->recognizesEntityOfClass(nm,gc::As_unsafe<core::Instance_sp>(core::cl__find_class(EntityNameSet_O::static_classSymbol())));
+bool CandoDatabase_O::recognizesEntityNameSetName(core::Symbol_sp nm) {
+  return this->recognizesEntityOfClass(
+      nm, gc::As_unsafe<core::Instance_sp>(core::cl__find_class(EntityNameSet_O::static_classSymbol())));
 }
 
 CL_LISPIFY_NAME("getEntityNameSet");
-CL_DEFMETHOD     EntityNameSet_sp CandoDatabase_O::getEntityNameSet( core::Symbol_sp nm )
-{
-  return gc::As<EntityNameSet_sp>(this->getEntityOfClass(nm,gc::As_unsafe<core::Instance_sp>(core::cl__find_class(EntityNameSet_O::static_classSymbol()))));
+CL_DEFMETHOD EntityNameSet_sp CandoDatabase_O::getEntityNameSet(core::Symbol_sp nm) {
+  return gc::As<EntityNameSet_sp>(
+      this->getEntityOfClass(nm, gc::As_unsafe<core::Instance_sp>(core::cl__find_class(EntityNameSet_O::static_classSymbol()))));
 };
-
-
 
 CL_LISPIFY_NAME("getRepresentedEntityNameSet");
-CL_DEFMETHOD     RepresentedEntityNameSet_sp CandoDatabase_O::getRepresentedEntityNameSet( core::Symbol_sp nm )
-{
-  return this->getEntityOfClass(nm,gc::As_unsafe<core::Instance_sp>(core::cl__find_class(RepresentedEntityNameSet_O::static_classSymbol()))).as<RepresentedEntityNameSet_O>();
+CL_DEFMETHOD RepresentedEntityNameSet_sp CandoDatabase_O::getRepresentedEntityNameSet(core::Symbol_sp nm) {
+  return this
+      ->getEntityOfClass(nm,
+                         gc::As_unsafe<core::Instance_sp>(core::cl__find_class(RepresentedEntityNameSet_O::static_classSymbol())))
+      .as<RepresentedEntityNameSet_O>();
 };
 
-
-
 CL_LISPIFY_NAME("recognizesSetOrConstitutionOrMonomerName");
-CL_DEFMETHOD     bool	CandoDatabase_O::recognizesSetOrConstitutionOrMonomerName(core::Symbol_sp nm)
-{_OF();
-  return this->_Entities->gethash(nm).second().notnilp();
+CL_DEFMETHOD bool CandoDatabase_O::recognizesSetOrConstitutionOrMonomerName(core::Symbol_sp nm) {
+  _OF();
+  return this->_Entities->contains(nm);
 }
 
 CL_LISPIFY_NAME("getEntity");
-CL_DEFMETHOD     Entity_sp CandoDatabase_O::getEntity(core::Symbol_sp nm) const
-{
+CL_DEFMETHOD Entity_sp CandoDatabase_O::getEntity(core::Symbol_sp nm) const {
   return gc::As<Entity_sp>(this->_Entities->gethash(nm));
 }
 
-
-Entity_sp CandoDatabase_O::getEntityOfClass(core::Symbol_sp nm, core::Instance_sp mc)
-{
+Entity_sp CandoDatabase_O::getEntityOfClass(core::Symbol_sp nm, core::Instance_sp mc) {
   Entity_sp entity = this->getEntity(nm);
-  if ( core::cl__class_of(entity) != mc )
-  {
-    SIMPLE_ERROR(("You asked for Entity[%s] of class[%s] and there is one with that name but it has the wrong class[%s]") , _rep_(nm) , mc->className() , entity->className() );
+  if (core::cl__class_of(entity) != mc) {
+    SIMPLE_ERROR(("You asked for Entity[%s] of class[%s] and there is one with that name but it has the wrong class[%s]"),
+                 _rep_(nm), mc->className(), entity->className());
   }
   return entity;
 }
 
 CL_LISPIFY_NAME("expandEntityNameToTerminals");
-CL_DEFMETHOD     adapt::SymbolSet_sp CandoDatabase_O::expandEntityNameToTerminals(core::Symbol_sp nm) const
-{_OF();
+CL_DEFMETHOD adapt::SymbolSet_sp CandoDatabase_O::expandEntityNameToTerminals(core::Symbol_sp nm) const {
+  _OF();
   Entity_sp entity = this->getEntity(nm);
   return entity->expandedNameSet();
 }
 
 CL_LISPIFY_NAME("expandEntityNamesToTerminals");
-CL_DEFMETHOD     adapt::SymbolSet_sp CandoDatabase_O::expandEntityNamesToTerminals(adapt::SymbolSet_sp nm) const
-{_OF();
+CL_DEFMETHOD adapt::SymbolSet_sp CandoDatabase_O::expandEntityNamesToTerminals(adapt::SymbolSet_sp nm) const {
+  _OF();
   adapt::SymbolSet_sp names = adapt::SymbolSet_O::create();
-  nm->map( [this,&names] (core::Symbol_sp sym) {
-             Entity_sp entity = this->getEntity(sym);
-             names->insertSymbolSet(entity->expandedNameSet());
-           } );
+  nm->map([this, &names](core::Symbol_sp sym) {
+    Entity_sp entity = this->getEntity(sym);
+    names->insertSymbolSet(entity->expandedNameSet());
+  });
   return names;
 }
-
 
 #if 0
 bool	CandoDatabase_O::monomersAreDefinedForSetOrConstitutionOrMonomerName(core::Symbol_sp nm)
@@ -317,15 +273,15 @@ bool	CandoDatabase_O::monomersAreDefinedForSetOrConstitutionOrMonomerName(core::
 #endif
 
 CL_LISPIFY_NAME("getMonomersForSetOrConstitutionOrMonomerName");
-CL_DEFMETHOD     adapt::SymbolSet_sp CandoDatabase_O::getMonomersForSetOrConstitutionOrMonomerName(core::Symbol_sp nm)
-{ _OF();
-	// Use expandEntityNameToTerminals
+CL_DEFMETHOD adapt::SymbolSet_sp CandoDatabase_O::getMonomersForSetOrConstitutionOrMonomerName(core::Symbol_sp nm) {
+  _OF();
+  // Use expandEntityNameToTerminals
   DEPRECATED();
 #if 0
   adapt::SymbolSet_sp	names;
   Entity_sp obj;
 
-#ifdef	DEBUG_ON
+#ifdef DEBUG_ON
 
   if ( !this->_Entities.contains(nm) )
   {
@@ -354,7 +310,7 @@ CL_DEFMETHOD     adapt::SymbolSet_sp CandoDatabase_O::getMonomersForSetOrConstit
 
 #if 0
 RepresentativeList_sp CandoDatabase_O::expandEntityNameToListOfRepresentatives(core::Symbol_sp nm)
-{ 
+{
   Entity_sp obj;
   geom::ObjectList_sp 	ll;
   LOG("Looking for name(%s)" , _rep_(nm)  );
@@ -365,36 +321,32 @@ RepresentativeList_sp CandoDatabase_O::expandEntityNameToListOfRepresentatives(c
 }
 #endif
 
-
-
 CL_LISPIFY_NAME("recognizesNameOrPdb");
-CL_DEFMETHOD     bool	CandoDatabase_O::recognizesNameOrPdb(core::Symbol_sp nm)
-{
-  if ( !this->recognizesMonomerName(nm) ) return false;
-//    ASSERTNOTNULL(this->_Names);
-//    ASSERTvalue(this->_Entities.contains(nm), nm); // REMOVE
-    
+CL_DEFMETHOD bool CandoDatabase_O::recognizesNameOrPdb(core::Symbol_sp nm) {
+  if (!this->recognizesMonomerName(nm))
+    return false;
+  //    ASSERTNOTNULL(this->_Names);
+  //    ASSERTvalue(this->_Entities.contains(nm), nm); // REMOVE
+
   Entity_sp obj = this->getEntity(nm);
-  if ( obj->isTerminalName() ) return true;
-  LOG("The name(%s) is in the namespace but its not a terminal" , nm);
+  if (obj->isTerminalName())
+    return true;
+  LOG("The name(%s) is in the namespace but its not a terminal", nm);
   return false;
 };
 
-
 #ifdef XML_ARCHIVE
-void	CandoDatabase_O::archiveBase(core::ArchiveP node)
-{
+void CandoDatabase_O::archiveBase(core::ArchiveP node) {
   this->Base::archiveBase(node);
-  node->attribute("name",this->_Name);
-  node->attributeIfNotDefault<string>("dateCreated",this->_DateCreated,"");
-  node->attributeIfNotDefault<string>("dateUpdated",this->_DateUpdated,"");
-  node->archiveSymbolMap( "entities", this->_Entities);
-  node->archiveSymbolMap("frameRecognizers",this->_frameRecognizers);
-//	node->archiveMapOfObjectsSubClassOf( this->_MonomerCoordinates );
+  node->attribute("name", this->_Name);
+  node->attributeIfNotDefault<string>("dateCreated", this->_DateCreated, "");
+  node->attributeIfNotDefault<string>("dateUpdated", this->_DateUpdated, "");
+  node->archiveSymbolMap("entities", this->_Entities);
+  node->archiveSymbolMap("frameRecognizers", this->_frameRecognizers);
+  //	node->archiveMapOfObjectsSubClassOf( this->_MonomerCoordinates );
   node->needsFinalization();
 }
 #endif
-
 
 #if 0
 CL_LISPIFY_NAME("constitutionForNameOrPdb");
@@ -439,9 +391,6 @@ core::Symbol_sp CandoDatabase_O::getPdbNameForNameOrPdb(core::Symbol_sp name)
 }
 #endif
 
-
-
-
 #if 0
 //
 //	allMonomerNamesAsStringSet
@@ -463,8 +412,6 @@ adapt::SymbolSet_sp CandoDatabase_O::allMonomerNamesAsSymbolSet()
 }
 #endif
 
-
-
 #if 0
 /*!
   Add the CouplingRule to the CandoDatabase
@@ -480,7 +427,7 @@ void	CandoDatabase_O::addCouplingRule( Coupling_spRule rule )
 /*!
   Add the MonomerFragment to the CandoDatabase
 */
-#if 0 //[
+#if 0  //[
 void	CandoDatabase_O::addCoreFragmentCoordinatesTable( FragmentCoordinates_spTable& frag )
 {
   LOG("Adding fragment with name=%s to CandoDatabase" , (frag->getName().c_str() ) );
@@ -521,9 +468,6 @@ FragmentCoordinates_spTable	CandoDatabase_O::getFinishFragmentCoordinatesTableWi
 }
 #endif //]
 
-
-
-
 // ---------------------------------------------------------------------
 // ---------------------------------------------------------------------
 // ---------------------------------------------------------------------
@@ -533,56 +477,46 @@ FragmentCoordinates_spTable	CandoDatabase_O::getFinishFragmentCoordinatesTableWi
 //
 //
 
-
-
-
 CL_LISPIFY_NAME("addMonomerCoordinates");
-CL_DEFMETHOD     uint CandoDatabase_O::addMonomerCoordinates(MonomerCoordinates_sp mc)
-{
-  SpecificContextSet_sp	allContexts;
-  MonomerContext_sp	context;
-  SpecificContextSet_O::iterator	si;
-  LOG("about to generate specific keys" );
+CL_DEFMETHOD uint CandoDatabase_O::addMonomerCoordinates(MonomerCoordinates_sp mc) {
+  SpecificContextSet_sp allContexts;
+  MonomerContext_sp context;
+  SpecificContextSet_O::iterator si;
+  LOG("about to generate specific keys");
   context = mc->getContext();
-//  core::writeln_bf_stream(fmt::sprintf("%s %u addMonomerCoordinates context:\n%s" , __FILE__% __LINE__ , context->asXmlString().c_str() ));
+  //  core::writeln_bf_stream(fmt::sprintf("%s %u addMonomerCoordinates context:\n%s" , __FILE__% __LINE__ ,
+  //  context->asXmlString().c_str() ));
   allContexts = context->getAllSpecificContexts();
-  LOG("There are %u specific contexts" , (allContexts->size() ) );
-//    _lisp->print(BF("%s %u There are %u specific contexts") , __FILE__% __LINE__ , allContexts->size() );
+  LOG("There are %u specific contexts", (allContexts->size()));
+  //    _lisp->print(BF("%s %u There are %u specific contexts") , __FILE__% __LINE__ , allContexts->size() );
   uint count = 0;
-  for ( si=allContexts->begin(); si!=allContexts->end(); si++ )
-  {
-//        _lisp->print(BF("    %s %u Looking at specific contexts: %s") , __FILE__% __LINE__ , si->first.c_str() );
-    if ( si->second->allMonomersInDatabase(this->sharedThis<CandoDatabase_O>()) )
-    {
-//	    _lisp->print(BF("      %s %u  Adding it") , __FILE__ , __LINE__ );
-      LOG("Adding context: %s" , (si->first).c_str()  );
-      this->_MonomerCoordinates.set(si->first,mc);
+  for (si = allContexts->begin(); si != allContexts->end(); si++) {
+    //        _lisp->print(BF("    %s %u Looking at specific contexts: %s") , __FILE__% __LINE__ , si->first.c_str() );
+    if (si->second->allMonomersInDatabase(this->sharedThis<CandoDatabase_O>())) {
+      //	    _lisp->print(BF("      %s %u  Adding it") , __FILE__ , __LINE__ );
+      LOG("Adding context: %s", (si->first).c_str());
+      this->_MonomerCoordinates.set(si->first, mc);
       count++;
-    } else
-    {
-//	    core::writeln_bf_stream(fmt::sprintf("      %s %u  Ignoring it" , __FILE__ , __LINE__ ));
+    } else {
+      //	    core::writeln_bf_stream(fmt::sprintf("      %s %u  Ignoring it" , __FILE__ , __LINE__ ));
     }
   }
-  LOG("Only %u of the specific contexts were used" , count  );
+  LOG("Only %u of the specific contexts were used", count);
   return count;
 }
 
-
 CL_LISPIFY_NAME("uniqueMonomerCoordinatesAsList");
-CL_DEFMETHOD     core::List_sp CandoDatabase_O::uniqueMonomerCoordinatesAsList()
-{
+CL_DEFMETHOD core::List_sp CandoDatabase_O::uniqueMonomerCoordinatesAsList() {
   core::Cons_sp first, cur;
-  first = core::Cons_O::create(nil<core::T_O>(),nil<core::T_O>());
+  first = core::Cons_O::create(nil<core::T_O>(), nil<core::T_O>());
   cur = first;
   monomerCoordinatesIterator it;
   gctools::SmallOrderedSet<MonomerCoordinates_sp> unique;
-  for ( it=this->begin_MonomerCoordinates(); it!=this->end_MonomerCoordinates(); it++ )
-  {
+  for (it = this->begin_MonomerCoordinates(); it != this->end_MonomerCoordinates(); it++) {
     unique.insert(it->second);
   }
-  for ( gctools::SmallOrderedSet<MonomerCoordinates_sp>::iterator ui=unique.begin(); ui!=unique.end(); ui++ )
-  {
-    core::Cons_sp one = core::Cons_O::create((*ui),nil<core::T_O>());
+  for (gctools::SmallOrderedSet<MonomerCoordinates_sp>::iterator ui = unique.begin(); ui != unique.end(); ui++) {
+    core::Cons_sp one = core::Cons_O::create((*ui), nil<core::T_O>());
     cur->setCdr(one);
     cur = one;
   }
@@ -590,71 +524,58 @@ CL_DEFMETHOD     core::List_sp CandoDatabase_O::uniqueMonomerCoordinatesAsList()
 }
 
 CL_LISPIFY_NAME("monomerCoordinatesKeysAsList");
-CL_DEFMETHOD     core::List_sp CandoDatabase_O::monomerCoordinatesKeysAsList()
-{
+CL_DEFMETHOD core::List_sp CandoDatabase_O::monomerCoordinatesKeysAsList() {
   core::Cons_sp first, cur;
-  first = core::Cons_O::create(nil<core::T_O>(),nil<core::T_O>());
+  first = core::Cons_O::create(nil<core::T_O>(), nil<core::T_O>());
   cur = first;
   monomerCoordinatesIterator it;
-  for ( it=this->begin_MonomerCoordinates(); it!=this->end_MonomerCoordinates(); it++ )
-  {
-    core::Cons_sp one = core::Cons_O::create(it->first,nil<core::T_O>());
+  for (it = this->begin_MonomerCoordinates(); it != this->end_MonomerCoordinates(); it++) {
+    core::Cons_sp one = core::Cons_O::create(it->first, nil<core::T_O>());
     cur->setCdr(one);
     cur = one;
   }
   return first->cdr();
 }
 
-
-
-
 CL_LISPIFY_NAME("recognizesMonomerCoordinatesKey");
-CL_DEFMETHOD     bool	CandoDatabase_O::recognizesMonomerCoordinatesKey(core::Symbol_sp key)
-{
+CL_DEFMETHOD bool CandoDatabase_O::recognizesMonomerCoordinatesKey(core::Symbol_sp key) {
   return this->_MonomerCoordinates.contains(key);
 }
 
 CL_LISPIFY_NAME("getMonomerCoordinatesWithKey");
-CL_DEFMETHOD     MonomerCoordinates_sp	CandoDatabase_O::getMonomerCoordinatesWithKey(core::Symbol_sp key )
-{
-  if ( this->_MonomerCoordinates.contains(key) )
-  {
+CL_DEFMETHOD MonomerCoordinates_sp CandoDatabase_O::getMonomerCoordinatesWithKey(core::Symbol_sp key) {
+  if (this->_MonomerCoordinates.contains(key)) {
     return this->_MonomerCoordinates.get(key);
   }
   return nil<MonomerCoordinates_O>();
 }
 
-
 CL_LISPIFY_NAME("CandoDatabase-get");
-CL_DEFMETHOD     MonomerCoordinates_sp	CandoDatabase_O::get(MonomerContext_sp context)
-{
+CL_DEFMETHOD MonomerCoordinates_sp CandoDatabase_O::get(MonomerContext_sp context) {
   core::Symbol_sp key = context->getKey();
-  if ( this->_MonomerCoordinates.contains(key) )
-  {
+  if (this->_MonomerCoordinates.contains(key)) {
     return this->_MonomerCoordinates.get(key);
   }
   return nil<MonomerCoordinates_O>();
 }
 
 CL_LISPIFY_NAME("recognizesContext");
-CL_DEFMETHOD     bool	CandoDatabase_O::recognizesContext(MonomerContext_sp context)
-{
-  bool	foundIt;
+CL_DEFMETHOD bool CandoDatabase_O::recognizesContext(MonomerContext_sp context) {
+  bool foundIt;
   core::Symbol_sp key = context->getKey();
-  LOG("Looking for context: %s" , key.c_str()  );
+  LOG("Looking for context: %s", key.c_str());
   foundIt = this->_MonomerCoordinates.contains(key);
-  LOG("Found it = %d" , foundIt  );
+  LOG("Found it = %d", foundIt);
   return foundIt;
 }
 
 CL_LISPIFY_NAME("saveAs");
-CL_DEFMETHOD     void	CandoDatabase_O::saveAs(const string& fn)
-{
+CL_DEFMETHOD void CandoDatabase_O::saveAs(const string &fn) {
   IMPLEMENT_ME();
 #ifdef XML_ARCHIVE
-  core::XmlSaveArchive_sp	xml;
+  core::XmlSaveArchive_sp xml;
   xml = core::XmlSaveArchive_O::create();
-  xml->put("candoDatabase",this->sharedThis<CandoDatabase_O>());
+  xml->put("candoDatabase", this->sharedThis<CandoDatabase_O>());
   xml->saveAs(fn);
 #endif
 }
@@ -708,18 +629,15 @@ void CandoDatabase_O::removeMonomerCoordinatesNotRequiredByAlchemists(core::List
 #endif
 
 CL_LISPIFY_NAME("allSpecificMonomerContexts");
-CL_DEFMETHOD     SpecificContextSet_sp CandoDatabase_O::allSpecificMonomerContexts()
-{
+CL_DEFMETHOD SpecificContextSet_sp CandoDatabase_O::allSpecificMonomerContexts() {
   SpecificContextSet_sp all = SpecificContextSet_O::create();
   monomerCoordinatesIterator mi;
-  gctools::SmallOrderedSet<MonomerCoordinates_sp>	uniqueMonomerCoordinates;
-  for ( mi=this->_MonomerCoordinates.begin(); mi!=this->_MonomerCoordinates.end(); mi++ )
-  {
+  gctools::SmallOrderedSet<MonomerCoordinates_sp> uniqueMonomerCoordinates;
+  for (mi = this->_MonomerCoordinates.begin(); mi != this->_MonomerCoordinates.end(); mi++) {
     uniqueMonomerCoordinates.insert(mi->second);
   }
-  for (gctools::SmallOrderedSet<MonomerCoordinates_sp>::iterator si=uniqueMonomerCoordinates.begin();
-       si!=uniqueMonomerCoordinates.end(); si++ )
-  {
+  for (gctools::SmallOrderedSet<MonomerCoordinates_sp>::iterator si = uniqueMonomerCoordinates.begin();
+       si != uniqueMonomerCoordinates.end(); si++) {
     SpecificContextSet_sp one = (*si)->getContext()->getAllSpecificContexts();
     all->merge(one);
   }
@@ -728,11 +646,10 @@ CL_DEFMETHOD     SpecificContextSet_sp CandoDatabase_O::allSpecificMonomerContex
 
 CL_LISPIFY_NAME(make-cando-database);
 CL_DEF_CLASS_METHOD
-CandoDatabase_sp CandoDatabase_O::make(core::Symbol_sp name)
-{
-  auto  me  = gctools::GC<CandoDatabase_O>::allocate_with_default_constructor();
+CandoDatabase_sp CandoDatabase_O::make(core::Symbol_sp name) {
+  auto me = gctools::GC<CandoDatabase_O>::allocate_with_default_constructor();
   me->_Name = name;
-#if 0  
+#if 0
   me->_frameRecognizers.clear();
   for ( auto cur : frameRecognizers ) {
     FrameRecognizer_sp fr = cur->car<FrameRecognizer_O>();
@@ -756,16 +673,12 @@ CandoDatabase_sp CandoDatabase_O::make(core::Symbol_sp name)
   return me;
 };
 
-
-CL_DEFMETHOD void CandoDatabase_O::walk_topologys(core::Function_sp func)
-{
-  this->_Topologys->maphash([&func] (core::T_sp key, core::T_sp value) {
-                              core::eval::funcall(func,value);
-                            });
+CL_DEFMETHOD void CandoDatabase_O::walk_topologys(core::Function_sp func) {
+  this->_Topologys->maphash([&func](core::T_sp key, core::T_sp value) { core::eval::funcall(func, value); });
 }
 
 CL_DEFMETHOD void CandoDatabase_O::setf_findTopology(core::T_sp name, Topology_sp topology) {
-  this->_Topologys->setf_gethash(name,topology);
+  this->_Topologys->setf_gethash(name, topology);
 }
 
 core::T_mv CandoDatabase_O::findTopology(core::T_sp name, bool errorp) const {
@@ -773,19 +686,17 @@ core::T_mv CandoDatabase_O::findTopology(core::T_sp name, bool errorp) const {
   core::SimpleString_sp sname = gc::As<core::SimpleString_sp>(sym_name->symbolName());
   core::T_sp keyword_name = _lisp->_Roots._KeywordPackage->intern(sname);
   core::T_mv result_mv = this->_Topologys->gethash(keyword_name);
-  if (result_mv.second().nilp()) {
-    if (!errorp) return Values(nil<core::T_O>(),nil<core::T_O>());
-    SIMPLE_ERROR(("Could not find topology with name %s") , core::_rep_(name));
+  core::MultipleValues &values = core::lisp_multipleValues();
+  if (errorp && values.second(result_mv.number_of_values()).nilp()) {
+    SIMPLE_ERROR(("Could not find topology with name %s"), core::_rep_(name));
   }
   return result_mv;
 }
 
-
 DOCGROUP(cando)
 CL_DEFUN core::T_mv chem__findTopology(core::T_sp name, bool errorp) {
   CandoDatabase_sp cdb = chem::getCandoDatabase();
-  return cdb->findTopology(name,errorp);
+  return cdb->findTopology(name, errorp);
 };
 
-
-};
+}; // namespace chem

@@ -525,6 +525,7 @@ bool CDFragment_O::interpret(bool verbose, bool addHydrogens)
   if ( this->_Bonds.size() == 0 ) {return false;}
   CDBonds::iterator bi;
   bool foundHashedBond = false;
+  core::MultipleValues &values = core::lisp_multipleValues();
 //  adapt::SymbolSet_sp allNames = adapt::SymbolSet_O::create();
   {
     for ( bi=this->_Bonds.begin(); bi!=this->_Bonds.end(); bi++ ) {
@@ -576,7 +577,7 @@ bool CDFragment_O::interpret(bool verbose, bool addHydrogens)
         core::Symbol_mv parsedProperty;
         do {
           parsedProperty = parse_property(stream, propertyCode, *bi, targetNode->_Label);
-          core::T_sp value = parsedProperty.second();
+          core::T_sp value = values.second(parsedProperty.number_of_values());
           if ( parsedProperty.notnilp() && parsedProperty.number_of_values() == 2 ) {
             if ( cdorder == dativeCDBond ) {
               if (verbose) core::write_bf_stream(fmt::sprintf("Adding atom property %s value: %s\n" , _rep_(parsedProperty) , _rep_(value)));

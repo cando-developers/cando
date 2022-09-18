@@ -105,7 +105,8 @@ CL_LAMBDA((types-db !) atom)CL_DEFMETHOD core::Symbol_sp FFTypesDb_O::assignType
     {
       Root_sp root = (*it)->_Test;
       core::T_mv matches_mv = chem::chem__chem_info_match(root,atom);
-      ChemInfoMatch_sp match = gc::As<ChemInfoMatch_sp>(matches_mv.second());
+      core::MultipleValues &values = core::lisp_multipleValues();
+      ChemInfoMatch_sp match = gc::As<ChemInfoMatch_sp>(values.second(matches_mv.number_of_values()));
       if ( matches_mv.notnilp() ) {
         LOG("Rule MATCH!!!" );
         if (chem__verbose(2)) core::write_bf_stream(fmt::sprintf("Matched %s type-> %s\n" , _rep_(root) , _rep_((*it)->_Type)));
@@ -146,6 +147,7 @@ CL_DEFMETHOD void    FFTypesDb_O::assignTypes(chem::Matter_sp matter)
   }
   Loop lRes;
   lRes.loopTopGoal(matter,RESIDUES);
+  core::MultipleValues &values = core::lisp_multipleValues();
   while (lRes.advanceLoopAndProcess()) {
     Residue_sp res = lRes.getResidue();
     core::T_sp name = res->getName();
@@ -154,7 +156,7 @@ CL_DEFMETHOD void    FFTypesDb_O::assignTypes(chem::Matter_sp matter)
     }
     if (name.notnilp()) {
       core::T_mv result_mv = chem__findTopology(name,false);
-      core::T_sp found = result_mv.second();
+      core::T_sp found = values.second(result_mv.number_of_values());
       if (chem__verbose(2)) {
         core::write_bf_stream(fmt::sprintf("chem__findTopology -> %s %s\n" , _rep_(result_mv) , _rep_(found)));
       }
@@ -174,7 +176,7 @@ CL_DEFMETHOD void    FFTypesDb_O::assignTypes(chem::Matter_sp matter)
             core::write_bf_stream(fmt::sprintf("Looking for atom with name: %s\n" , _rep_(atom_name)));
           }
           core::T_mv constitution_atom_mv = constitution_atoms->atomWithName(atom_name,false);
-          if (constitution_atom_mv.second().notnilp()) {
+          if (values.second(constitution_atom_mv.number_of_values()).notnilp()) {
             core::T_sp single = constitution_atom_mv;
             ConstitutionAtom_sp constitution_atom = gc::As_unsafe<ConstitutionAtom_sp>(single);
             core::T_sp type = constitution_atom->_AtomType;

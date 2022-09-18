@@ -1120,8 +1120,9 @@ void EnergyFunction_O::__createSecondaryAmideRestraints(gctools::Vec0<Atom_sp>& 
   {
     SmartsRoot_sp secondaryAmide = gctools::As<SmartsRoot_sp>(chem::_sym_STARsecondaryAmideSmartsSTAR->symbolValue());
     core::T_mv match_mv = chem__chem_info_match(secondaryAmide,*ni);
+    core::MultipleValues &values = core::lisp_multipleValues();
     if ( match_mv.notnilp() ) {
-      ChemInfoMatch_sp match = gc::As<ChemInfoMatch_sp>(match_mv.second());
+      ChemInfoMatch_sp match = gc::As<ChemInfoMatch_sp>(values.second(match_mv.number_of_values()));
       Atom_sp ax = match->tag(core::make_fixnum(1));
       Atom_sp ax1 = match->tag(core::make_fixnum(2));
       Atom_sp ax2 = match->tag(core::make_fixnum(3));

@@ -161,7 +161,8 @@ FFTypesDb_sp ReadAmberParameters_O::parseTypeRules(core::T_sp fin)
   {
     AntechamberRoot_mv rule_type_mv = chem__compile_antechamber(ei->second,wildCardElementDictionary);
     AntechamberRoot_sp rule = rule_type_mv;
-    core::T_sp type = rule_type_mv.second();
+    core::MultipleValues &values = core::lisp_multipleValues();
+    core::T_sp type = values.second(rule_type_mv.number_of_values());
     FFTypeRule_sp one = FFTypeRule_O::make(rule,type);
     ffTypesDb->add(one);
   }
@@ -726,8 +727,9 @@ ForceField_sp ReadAmberParameters_O::parseFrcModFile(core::T_sp fin, core::T_sp 
 
 ForceField_sp ReadAmberParameters_O::parseAmberFormattedForceFieldOrFrcMod(core::T_sp strm, core::T_sp system) {
   core::T_mv test_mv = this->determineParmSetFrcModType(strm);
-  core::T_sp masses = test_mv.second();
-  core::T_sp nonbond = test_mv.third();
+  core::MultipleValues &values = core::lisp_multipleValues();
+  core::T_sp masses = values.second(test_mv.number_of_values());
+  core::T_sp nonbond = values.third(test_mv.number_of_values());
   if (test_mv.nilp()) {
     return this->parseAmberFormattedForceField(strm,system);
   } else {

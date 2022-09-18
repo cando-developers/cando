@@ -907,6 +907,7 @@ CL_DEFMETHOD void AddIonOctree_O::OctreeCreate(Aggregate_sp uUnit, AddIonOctreeE
 	 *  Create the octree "object" and initialize
 	 */
   auto  octTree = gctools::GC<AddIonOctree_O>::allocate_with_default_constructor();
+  core::MultipleValues &values = core::lisp_multipleValues();
  // octTree->iType = iType;
   //octTree->dGridSize = dGridSpace;
   this->type = type;
@@ -952,7 +953,7 @@ CL_DEFMETHOD void AddIonOctree_O::OctreeCreate(Aggregate_sp uUnit, AddIonOctreeE
             // iDefaultedRadius += iAtomSetTmpRadius( aAtom );
                 core::T_mv result = core::eval::funcall(chem::_sym_lookup_atom_properties_radius,aAtom, nonbondDb);
                 aAtom->_dAtomTemp = core::clasp_to_double(result);
-                core::T_sp defaulted = result.second();
+                core::T_sp defaulted = values.second(result.number_of_values());
                 iDefaultedRadius += defaulted.isTrue() ? 1 : 0;
               }
             }
@@ -983,7 +984,7 @@ CL_DEFMETHOD void AddIonOctree_O::OctreeCreate(Aggregate_sp uUnit, AddIonOctreeE
           //iDefaultedRadius += iAtomSetTmpRadius( aAtom );
               core::T_mv result = core::eval::funcall(chem::_sym_lookup_atom_properties_radius,aAtom);
               aAtom->_dAtomTemp = core::clasp_to_double(result);
-              core::T_sp defaulted = result.second();
+              core::T_sp defaulted = values.second(result.number_of_values());
               iDefaultedRadius += defaulted.isTrue() ? 1 : 0;
               i++;
             }
