@@ -98,13 +98,13 @@ core::List_sp CandoDatabase_O::entitiesSubClassOfAsList(core::Instance_sp mc) {
 
 bool CandoDatabase_O::recognizesEntitySubClassOf(core::Symbol_sp name, core::Instance_sp mc) {
   _OF();
-  core::KeyValuePair pair = this->_Entities->find(name);
+  core::KeyValuePair *pair = this->_Entities->find(name);
   return pair && core::cl__class_of(pair->_Value) == mc;
 }
 
 bool CandoDatabase_O::recognizesEntityOfClass(core::Symbol_sp name, core::Instance_sp aclass) {
   _OF();
-  core::KeyValuePair pair = this->_Entities->find(name);
+  core::KeyValuePair *pair = this->_Entities->find(name);
   return pair && core::cl__class_of(pair->_Value) == aclass;
 }
 
@@ -149,7 +149,7 @@ CL_DEFMETHOD bool CandoDatabase_O::recognizesRepresentedEntityNameSet(core::Symb
 
 bool CandoDatabase_O::recognizesMonomerPack(core::Symbol_sp name) {
   _OF();
-  core::KeyValuePair pair = this->_Entities->find(name);
+  core::KeyValuePair *pair = this->_Entities->find(name);
   return pair && gc::As<Entity_sp>(pair->_Value).isA<MonomerPack_O>();
 }
 

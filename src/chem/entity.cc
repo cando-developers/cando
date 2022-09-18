@@ -76,7 +76,7 @@ CL_DEFMETHOD RepresentativeList_sp Entity_O::minimalRepresentativeList() const {
     RepresentedEntityNameSet_sp curNameSet = expandedList->rowMajorAref(i).as<RepresentedEntityNameSet_O>();
     core::Symbol_sp representor = curNameSet->getRepresentative();
     RepresentedEntityNameSet_sp minimalRepresentedEntityNameSet;
-    core::KeyVauePair* pair = binder->find(representor);
+    core::KeyValuePair* pair = binder->find(representor);
     if (pair) {
       minimalRepresentedEntityNameSet =
           pair->_Value.as<RepresentedEntityNameSet_O>(); // binder->indexed_value(bi).as<RepresentedEntityNameSet_O>();
