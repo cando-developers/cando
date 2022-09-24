@@ -8,7 +8,7 @@
              (format t "Creating logical host AMBER with a root path of ~a~%"
                      amber-home))
            (setf (logical-pathname-translations "amber")
-                 (list (list "amber:**;*.*"
+                 (list (list "**;*.*"
                              (concatenate 'string (namestring amber-home) "/**/*.*"))))
            (leap:setup-default-paths))
           ((not (core:noprint-p))
