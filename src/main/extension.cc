@@ -135,8 +135,8 @@ void leap_process_arguments(core::CommandLineOptions* options) {
              " -t c       Startup using cclasp and quicklisp for all systems\n");
       exit(0);
     } else if (arg == "-t") {
-      options->_StartupStage = options->_RawArguments[++iarg][0];
-      printf("Loading stage %c\n", options->_StartupStage );
+      options->_Stage = options->_RawArguments[++iarg][0];
+      printf("Loading stage %c\n", options->_Stage );
     }
   }
   options->_LoadEvalList.push_back(std::pair<core::LoadEvalEnum,std::string>(core::cloEval,"(leap.commands:leap-repl-then-exit)"));
