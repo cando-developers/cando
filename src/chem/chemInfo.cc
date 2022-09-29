@@ -2701,7 +2701,7 @@ CL_DEFUN MoleculeGraph_sp chem__make_molecule_graph() {
   return graph;
 }
 
-CL_LAMBDA(matter &optional(exclude_hydrogens nil))
+CL_LAMBDA(matter &optional (exclude_hydrogens nil))
 DOCGROUP(cando)
 CL_DEFUN MoleculeGraph_sp chem__make_molecule_graph_from_molecule(Molecule_sp matter, bool exclude_hydrogens) {
   auto graph = gctools::GC<MoleculeGraph_O>::allocate(matter);
