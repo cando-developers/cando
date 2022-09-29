@@ -3260,8 +3260,7 @@ The **match-callback** will only be invoked if the match is longer than any prev
 The **vertex-matcher** argument is a lambda that takes two atoms and returns T if they are considered equivalent.
 The **match-callback** argument is a lambda that takes three arguments (RESULTS GRAPH1 GRAPH2) and its return value is ignored.
 Edges are matched using bond orders.)dx")
-CL_LAMBDA(molecule - graph1 molecule - graph2 only - connected - subgraphs vertex - matcher match - callback &
-          optional(maximum - callbacks 1000))
+CL_LAMBDA(molecule-graph1 molecule-graph2 only-connected-subgraphs vertex-matcher match-callback &optional (maximum-callbacks 1000))
 DOCGROUP(cando)
 CL_DEFUN core::List_sp chem__boost_graph_mcgregor_common_subgraphs(MoleculeGraph_sp moleculeGraph1, MoleculeGraph_sp moleculeGraph2,
                                                                    bool only_connected_subgraphs, core::T_sp vertex_matcher,
