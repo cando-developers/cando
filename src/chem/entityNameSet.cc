@@ -104,7 +104,7 @@ CL_DEFMETHOD     adapt::SymbolSet_sp	EntityNameSetBase_O::getUnExpandedNames()
 #else
 
     core::T_sp EntityNameSetBase_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp environ, core::LispPtr lisp)
-    {_OF();
+    {
 	core::List_sp entityNamesCons = translate::from_object<core::List_V>::convert(environ->lookup(Pkg(),"entityNames"));
 	if ( entityNamesCons.notnilp() )
 	{
@@ -181,7 +181,7 @@ CL_DEFMETHOD     adapt::SymbolSet_sp	EntityNameSetBase_O::expandedNameSet()
 
 CL_LISPIFY_NAME("expandToTerminalEntityNames");
 CL_DEFMETHOD     void EntityNameSetBase_O::expandToTerminalEntityNames()
-    {_OF();
+    {
 	adapt::SymbolSet_sp expandedEntityNames = this->expandedNameSet();
 	this->_EntityNames = expandedEntityNames;
     }
@@ -189,7 +189,7 @@ CL_DEFMETHOD     void EntityNameSetBase_O::expandToTerminalEntityNames()
 
 CL_LISPIFY_NAME("contractEntityNames");
 CL_DEFMETHOD     void EntityNameSetBase_O::contractEntityNames(adapt::SymbolSet_sp entityNames)
-    {_OF();
+    {
 	adapt::SymbolSet_sp myExpanded = this->expandedNameSet();
 	CandoDatabase_sp cdb = getCandoDatabase();
         entityNames->map([&cdb,&myExpanded] (core::Symbol_sp it) {
@@ -207,7 +207,7 @@ CL_DEFMETHOD     void EntityNameSetBase_O::contractEntityNames(adapt::SymbolSet_
 
 
     void EntityNameSetBase_O::mergeEntityNames(Entity_sp other)
-    {_OF();
+    {
 	adapt::SymbolSet_sp os = other->expandedNameSet();
 	this->_EntityNames->insertSymbolSet(os);
     }
@@ -292,7 +292,7 @@ CL_DEFMETHOD     void	EntityNameSetBase_O::addMonomerNameNoChecks(core::Symbol_s
     }
 
     void EntityNameSetBase_O::_clear()
-    {_OF();
+    {
 	this->_EntityNames->clear();
     };
 
@@ -513,7 +513,7 @@ CL_DEFMETHOD     core::List_sp	EntityNameSetBase_O::getMonomerNamesOrdered()
 
 
     void	EntityNameSet_O::initialize()
-    {_OF();
+    {
 	this->Base::initialize();
 	this->_Name = _lisp->intern("undefinedEntityNameSetName");
     };
@@ -533,7 +533,7 @@ CL_DEFMETHOD     core::List_sp	EntityNameSetBase_O::getMonomerNamesOrdered()
 #else
 
     core::T_sp EntityNameSet_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::LispPtr lisp)
-    {_OF();
+    {
 	this->Base::__init__(exec,args,env,lisp);
 	this->_Name = translate::from_object<core::Symbol_O>::convert(env->lookup(Pkg(),"name"));
 	return _Nil<core::T_O>();

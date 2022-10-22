@@ -48,7 +48,7 @@ void OMatrix_O::archiveBase(core::ArchiveP node)
 #endif
 
 CL_NAME("MAKE-MATRIX");
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN OMatrix_sp OMatrix_O::make(bool ident)
 {
   auto om = gctools::GC<OMatrix_O>::allocate(ident);
@@ -170,7 +170,7 @@ void OMatrix_O::rotationZ(double radians) { this->_Value.rotationZ(radians); }
 
 
 CL_LISPIFY_NAME("make-matrix-identity");
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN OMatrix_sp make_matrix_identity()
 {
   OMatrix_sp res = OMatrix_O::create();
@@ -179,7 +179,7 @@ CL_DEFUN OMatrix_sp make_matrix_identity()
 }
 
 CL_LISPIFY_NAME("make-matrix-scale");
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN OMatrix_sp make_matrix_scale(double scale)
 {
   OMatrix_sp res = OMatrix_O::create();
@@ -188,7 +188,7 @@ CL_DEFUN OMatrix_sp make_matrix_scale(double scale)
 }
 
 CL_LISPIFY_NAME("make-m4-translate");
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN OMatrix_sp make_m4_translate(const Vector3& pos)
 {
   OMatrix_sp res = OMatrix_O::create();
@@ -197,7 +197,7 @@ CL_DEFUN OMatrix_sp make_m4_translate(const Vector3& pos)
 }
 
 CL_LISPIFY_NAME("make-m4-rotate-x");
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN OMatrix_sp make_m4_rotate_x(double radians)
 {
   OMatrix_sp res = OMatrix_O::create();
@@ -206,7 +206,7 @@ CL_DEFUN OMatrix_sp make_m4_rotate_x(double radians)
 }
 
 CL_LISPIFY_NAME("make-m4-rotate-y");
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN OMatrix_sp make_m4_rotate_y(double radians)
 {
   OMatrix_sp res = OMatrix_O::create();
@@ -215,7 +215,7 @@ CL_DEFUN OMatrix_sp make_m4_rotate_y(double radians)
 }
 
 CL_LISPIFY_NAME("make-m4-rotate-z");
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN OMatrix_sp make_m4_rotate_z(double radians)
 {
   OMatrix_sp res = OMatrix_O::create();
@@ -224,7 +224,7 @@ CL_DEFUN OMatrix_sp make_m4_rotate_z(double radians)
 }
 
 CL_LISPIFY_NAME("make-m4-rotate-axis");
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN OMatrix_sp make_m4_rotate_axis(double radians,Vector3 axis)
 {
   OMatrix_sp res = OMatrix_O::create();
@@ -233,7 +233,7 @@ CL_DEFUN OMatrix_sp make_m4_rotate_axis(double radians,Vector3 axis)
 }
 
 CL_LISPIFY_NAME("clone");
-DOCGROUP(cando)
+DOCGROUP(cando);
 OMatrix_sp OMatrix_O::clone() const
 {
   auto clone = gctools::GC<OMatrix_O>::copy(*this);
@@ -259,7 +259,7 @@ CL_DEFMETHOD Matrix OMatrix_O::m_TIMES_m(const Matrix& other) const
   return res;
 };
 
-CL_NAME("M*V")
+CL_NAME("M*V");
 CL_DEFMETHOD Vector3 OMatrix_O::m_TIMES_v(const Vector3& vec) const
 {
   Vector3 res = this->_Value*vec;
@@ -282,8 +282,8 @@ void OMatrix_O::decode(core::List_sp c) {
   }
 }
 
-CL_DOCSTRING(R"dx(Return the (values EIGEN-VALUES EIGEN-VECTOR-MATRIX) of the MATRIX.)dx")
-DOCGROUP(cando)
+CL_DOCSTRING(R"dx(Return the (values EIGEN-VALUES EIGEN-VECTOR-MATRIX) of the MATRIX.)dx");
+DOCGROUP(cando);
 CL_DEFUN core::T_mv geom__eigen_system(OMatrix_sp matrix)
 {
   Vector4 evals;
@@ -299,8 +299,8 @@ CL_DEFUN core::T_mv geom__eigen_system(OMatrix_sp matrix)
 };
 
 
-CL_DOCSTRING(R"dx(Convert a homogeneous matrix into a quaternion/translation. This takes the matrix and returns seven numbers, the w,x,y,z,tx,ty,tz where w,x,y,z are the quaternion and the tx,ty,tz is the translation.)dx")
-DOCGROUP(cando)
+CL_DOCSTRING(R"dx(Convert a homogeneous matrix into a quaternion/translation. This takes the matrix and returns seven numbers, the w,x,y,z,tx,ty,tz where w,x,y,z are the quaternion and the tx,ty,tz is the translation.)dx");
+DOCGROUP(cando);
 CL_DEFUN core::T_mv geom__matrix_to_quaternion_translation(OMatrix_sp om)
 {
   Matrix& m = om->_Value;
@@ -319,7 +319,7 @@ CL_DEFUN core::T_mv geom__matrix_to_quaternion_translation(OMatrix_sp om)
 };
 
 
-CL_DOCSTRING(R"dx(Set the matrix from a quaternion/translation - a set of seven numbers qw,qx,qy,qz,tx,ty,tz)dx")
+CL_DOCSTRING(R"dx(Set the matrix from a quaternion/translation - a set of seven numbers qw,qx,qy,qz,tx,ty,tz)dx");
 CL_DEFMETHOD void OMatrix_O::set_from_quaternion(double qw, double qx, double qy, double qz, double tx, double ty, double tz) {
   quaternion_to_matrix(this->_Value,qw,qx,qy,qz,tx,ty,tz);
 }

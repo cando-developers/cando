@@ -71,7 +71,7 @@ that look like:   #1:1.A@H_289092  into a list of lists that have the form:
 ((residue-number chain-id atom-name) ...)
 The chain-id and atom-name will be CKW keyword symbols.
 */
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN core::List_sp chem__parseChimeraAtomSpecs(const string& spec)
 {
   vector<string> specs = core::split(spec," \n\t");

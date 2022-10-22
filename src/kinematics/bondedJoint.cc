@@ -102,7 +102,7 @@ BondedJoint_sp BondedJoint_O::make(const chem::AtomId& atomId, core::T_sp name) 
 
 
 void BondedJoint_O::_appendChild(Joint_sp c)
-{_OF();
+{
   size_t index = this->_NumberOfChildren++;
   LOG(" Appending to node %s child %s at index %lu\n" , _rep_(this->asSmartPtr()) , _rep_(c) , index);
   this->_Children[index] = c;
@@ -148,7 +148,7 @@ void BondedJoint_O::_releaseAllChildren()
 }
 
 void BondedJoint_O::_updateInternalCoord()
-{_OF();
+{
   KIN_LOG(" <<< %s\n" , _rep_(this->asSmartPtr()));
 //	using numeric::x_rotation_matrix_radians;
 //	using numerioc::z_rotation_matrix_radians;
@@ -219,7 +219,7 @@ void BondedJoint_O::_updateInternalCoord()
 }
 
 bool BondedJoint_O::keepDofFixed(DofType dof) const
-{_OF();
+{
   IMPLEMENT_ME();
 #if 0
   if ( dof == DofType::distance ) {
@@ -262,7 +262,7 @@ string BondedJoint_O::asString() const
     (3)    <JumpJoint_sp>(A)
 */
 Stub BondedJoint_O::getInputStub() const
-{_OF();
+{
   Stub stub;
   stub.fromFourPoints(this->inputStubJoint0()->position(),
                       this->inputStubJoint1()->position(),
@@ -334,7 +334,7 @@ CL_DEFMETHOD void BondedJoint_O::updateXyzCoord() {
 
 
 double BondedJoint_O::dof(DofType const& dof) const
-{_OF();
+{
   if ( dof == DofType::phi )
   {
     return this->_Phi;
@@ -349,7 +349,7 @@ double BondedJoint_O::dof(DofType const& dof) const
 }
 
 
-core::Symbol_sp BondedJoint_O::typeSymbol() const {_OF(); return _sym_bonded;};
+core::Symbol_sp BondedJoint_O::typeSymbol() const { return _sym_bonded;};
 
 
 

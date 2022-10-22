@@ -51,7 +51,7 @@ namespace chem
 
 #if 0
 CL_LISPIFY_NAME(make-atom-id);
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN AtomId_sp AtomId_O::make(int mol, int res, int atom)
     {
       auto  ai  = gctools::GC<AtomId_O>::allocate_with_default_constructor();

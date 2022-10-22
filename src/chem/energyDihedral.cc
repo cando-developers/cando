@@ -622,7 +622,7 @@ double	EnergyDihedral_O::evaluateAllComponent( ScoringFunction_sp score,
 
 void	EnergyDihedral_O::compareAnalyticalAndNumericalForceAndHessianTermByTerm(
                                                                                  NVector_sp 	pos)
-{_OF();
+{
   int	fails = 0;
   bool	calcForce = true;
   bool	calcDiagonalHessian = true;

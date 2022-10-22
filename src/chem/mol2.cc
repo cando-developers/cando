@@ -113,7 +113,7 @@ bool	Mol2File::hasDataLine() {
   return false;
 };
 void	Mol2File::openFileName(core::T_sp pn)
-{_OF();
+{
   this->fIn = core::clasp_openRead(pn);
   if ( this->fIn.nilp() ) {
     SIMPLE_ERROR(("Mol2 file doesn't exist: %s" ) , _rep_(pn) );

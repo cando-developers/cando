@@ -115,7 +115,7 @@ namespace chem{
 //core::T_sp              stream;
 
 
-CL_DOCSTRING(R"dx(Make an oct-tree using the aggregate)dx")
+CL_DOCSTRING(R"dx(Make an oct-tree using the aggregate)dx");
 CL_DOCSTRING_LONG(R"dx(
 TYPE - Can be one of (:shell, :interior-solute, :interior-solvent).
 GRID-SPACE - Is the size of each smallest node.
@@ -125,7 +125,7 @@ NONBOND-DB - A nonbond database for the aggregate - use chem:compute-merged-nonb
 INCLUDE-SOLVENT - 0 if don't include solvent and 1 if you do.
 VERBOSE - T if verbosity is desired and NIL if not.)dx")
 CL_LISPIFY_NAME("make-oct-tree");
-CL_LAMBDA(aggregate type grid-space add-extent shell-extent nonbond-db include-solvent &optional verbose)
+CL_LAMBDA(aggregate type grid-space add-extent shell-extent nonbond-db include-solvent &optional verbose);
 CL_DEF_CLASS_METHOD
 AddIonOctree_sp AddIonOctree_O::make(Aggregate_sp aggregate, AddIonOctreeEnum iType, double dGridSpace, 
                                      double dAddExtent, double dShellExtent, FFNonbondDb_sp nonbondDb, int iIncludeSolvent, bool bVerbose)
@@ -184,7 +184,7 @@ void AddIonOctree_O::fields(core::Record_sp node)
 }
 
 
-CL_DOCSTRING(R"dx(Set the bounding-box of the oct-tree - all distance calculations will use the bounding box)dx")
+CL_DOCSTRING(R"dx(Set the bounding-box of the oct-tree - all distance calculations will use the bounding box)dx");
 CL_LISPIFY_NAME("octree_set_bounding_box");
 CL_DEFMETHOD
 void AddIonOctree_O::setBoundingBox(BoundingBox_sp bounding_box)
@@ -2251,8 +2251,8 @@ core::T_sp AddIonOctree_O::rOctreeCheckSolvent( /*AddIonOctree_sp octTree,*/ Vec
 
 
 
-CL_DOCSTRING(R"dx(Find the closest atom in the oct-tree. Return the (values atom residue molecule) of the closest atom.)dx")
-DOCGROUP(cando)
+CL_DOCSTRING(R"dx(Find the closest atom in the oct-tree. Return the (values atom residue molecule) of the closest atom.)dx");
+DOCGROUP(cando);
 CL_DEFUN
 core::T_mv chem__oct_tree_find_closest_atom(AddIonOctree_sp oct_tree, const Vector3& point )
 {
@@ -2447,8 +2447,8 @@ void GenericOctree_O::getPointsWithinCutoffNoTransform(double cutoff_squared, do
 
 
 CL_LISPIFY_NAME(generic-octree-get-points-within-cutoff);
-CL_LAMBDA(octree cutoff query-data query-point results &key (bounding-box nil bounding-box-p) (octree-transform nil octree-transform-p))
-DOCGROUP(cando)
+CL_LAMBDA(octree cutoff query-data query-point results &key (bounding-box nil bounding-box-p) (octree-transform nil octree-transform-p));
+DOCGROUP(cando);
 CL_DEFUN void chem__generic_octree_get_points_within_cutoff(GenericOctree_sp octree, double cutoff, core::T_sp query_data, const Vector3& querypoint, core::ComplexVector_sp results, core::T_sp bounding_box, bool bounding_box_p, core::T_sp octree_transform, bool octree_transform_p) {
   if (bounding_box_p) {
     if (!gc::IsA<BoundingBox_sp>(bounding_box)) {
@@ -2481,7 +2481,7 @@ CL_DEFUN void chem__generic_octree_get_points_within_cutoff(GenericOctree_sp oct
 
 
 
-CL_DOCSTRING(R"dx(Walk the octree and call the CALLBACK with each node.  The CALLBACK must take a single argument and that is the generic-octree node.)dx")
+CL_DOCSTRING(R"dx(Walk the octree and call the CALLBACK with each node.  The CALLBACK must take a single argument and that is the generic-octree node.)dx");
 CL_DEFMETHOD
 void GenericOctree_O::walkGenericOctree(core::Function_sp callback)
 {
@@ -2576,7 +2576,7 @@ void GenericOctree_O::fields(core::Record_sp node)
   node->field( INTERN_(kw,depth), this->_depth);
 }
 
-CL_DOCSTRING(R"dx(Test if two transformed octree's in a bounding-box intersect each other)dx")
+CL_DOCSTRING(R"dx(Test if two transformed octree's in a bounding-box intersect each other)dx");
 CL_DEFMETHOD
 bool GenericOctree_O::octreeTransformedIntersectsInBoundingBox(const Matrix& myTransform, GenericOctree_sp other, const Matrix& otherTransform, BoundingBox_sp boundingBox)
 {

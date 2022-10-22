@@ -72,7 +72,7 @@ Unit_sp Unit_O::createSquareRoot(Unit_sp orig)
 eg: (make-unit (list units:meters 1 units:seconds -1))
 */
 CL_LISPIFY_NAME(make-unit);
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN Unit_sp Unit_O::make(core::List_sp args)
     {
       auto u = gctools::GC<Unit_O>::allocate_with_default_constructor();
@@ -145,7 +145,7 @@ CL_DEFUN Unit_sp Unit_O::make(core::List_sp args)
 #endif
 
     void Unit_O::initialize()
-    {_OF();
+    {
         this->Base::initialize();
 	Dimension_O::zeroPowers(this->_Powers);
 	this->_Amount = 1.0;
@@ -154,7 +154,7 @@ CL_DEFUN Unit_sp Unit_O::make(core::List_sp args)
 
 
     void Unit_O::incorporateUnit(Unit_sp u, double amountScale, int power)
-    {_OF();
+    {
 	/*Set the default system as units:*SI* */
 //	core::Binder_sp unitDatabase = _lisp->symbol(_sym_UnitsPkg_StarUnitDatabaseStar)->symbolValue().as<core::Binder_O>();
 	// Repeat this block for multiple symbols
@@ -166,7 +166,7 @@ CL_DEFUN Unit_sp Unit_O::make(core::List_sp args)
 
 
     void Unit_O::adjustPowersAndAmountScale(int power, int powers[], double& amountScale ) const
-    {_OF();
+    {
 	for ( int id=0; id<NumBaseDimensions; id++ )
 	{
 	    powers[id] += this->_Powers[id]*power;
@@ -185,12 +185,12 @@ CL_DEFUN Unit_sp Unit_O::make(core::List_sp args)
 
 CL_LISPIFY_NAME("test_set_amount");
 CL_DEFMETHOD     void Unit_O::test_set_amount(double amount)
-    {_OF();
+    {
 	this->_Amount = amount;
     }
 
     string Unit_O::unitsOnlyAsString() const
-    {_OF();
+    {
 	stringstream units;
 	for ( int i=0; i<NumBaseDimensions; i++ )
 	{
@@ -210,7 +210,7 @@ CL_DEFMETHOD     void Unit_O::test_set_amount(double amount)
 
 CL_LISPIFY_NAME("unit_is_compatible");
 CL_DEFMETHOD     bool Unit_O::is_compatible(Unit_sp other,int power) const
-    {_OF();
+    {
 	for ( int i=0; i<NumBaseDimensions; i++ )
 	{
 	    if ( this->_Powers[i] != other->_Powers[i]*power ) return false;
@@ -220,7 +220,7 @@ CL_DEFMETHOD     bool Unit_O::is_compatible(Unit_sp other,int power) const
 
 CL_LISPIFY_NAME("conversion_factor_to");
 CL_DEFMETHOD     double Unit_O::conversion_factor_to(Unit_sp other, int power) const
-    {_OF();
+    {
 	if ( this->is_compatible(other,power) )
 	{
 	    double conversion = this->_Amount/::pow(other->_Amount,power);
@@ -231,7 +231,7 @@ CL_DEFMETHOD     double Unit_O::conversion_factor_to(Unit_sp other, int power) c
     }
 
     Unit_sp Unit_O::copyWithoutName() const
-    {_OF();
+    {
 	Unit_sp result = Unit_O::create();
 	Dimension_O::copyPowers(result->_Powers,this->_Powers);
         result->_Amount = this->_Amount;
@@ -240,7 +240,7 @@ CL_DEFMETHOD     double Unit_O::conversion_factor_to(Unit_sp other, int power) c
 
 CL_LISPIFY_NAME("*");
 CL_DEFMETHOD     core::T_sp Unit_O::operator*(core::T_sp obj) const
-    {_OF();
+    {
 	core::T_sp result;
 	if ( obj.isA<Unit_O>() )
 	{
@@ -270,7 +270,7 @@ CL_DEFMETHOD     core::T_sp Unit_O::operator*(core::T_sp obj) const
 
 CL_LISPIFY_NAME("/");
 CL_DEFMETHOD     core::T_sp Unit_O::operator/(core::T_sp obj) const
-    {_OF();
+    {
 	if ( obj.isA<Unit_O>() )
 	{
 	    Unit_sp other = obj.as<Unit_O>();

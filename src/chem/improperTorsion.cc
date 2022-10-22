@@ -56,7 +56,7 @@ namespace chem
 
 
     void ImproperTorsion_O::setup(Atom_sp a1, Atom_sp a2, Atom_sp a3central, Atom_sp a4)
-    {_OF();
+    {
 	this->_a1 = a1;
 	this->_a2 = a2;
 	this->_a3central = a3central;
@@ -80,7 +80,7 @@ namespace chem
 
 
     void ImproperTorsion_O::initialize()
-    {_OF();
+    {
         this->Base::initialize();
     }
 

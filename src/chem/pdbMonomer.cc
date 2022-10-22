@@ -146,7 +146,7 @@ struct FormulaMonomerRec
 
 
 
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN PdbMonomerDatabase_sp chem__readPdbMonomerConnectivityDatabase(const string& fileName)
     {
 	char buffer[1024];
@@ -241,7 +241,7 @@ CL_DEFUN PdbMonomerDatabase_sp chem__readPdbMonomerConnectivityDatabase(const st
 #endif
 
 uint PdbMonomerConnectivity_O::connectAtomsAndReturnUnconnected(Residue_sp res, gctools::Vec0<Atom_sp>& unconnected )
-{_OF();
+{
     uint unconCount = 0;
     uint unknown = 0;
     uint bondsMade = 0;
@@ -351,7 +351,7 @@ void PdbMonomerDatabase_O::addMonomer(PdbMonomerConnectivity_sp mon)
 
 
 uint PdbMonomerDatabase_O::connectVdwOverlappingUnconnectedAtoms(gctools::Vec0<Atom_sp>& atoms)
-{_OF();
+{
     uint connected = 0;
     LOG("There are %d unconnected atoms to connect together" , atoms.size()  );
     for ( gctools::Vec0<Atom_sp>::iterator i1 = atoms.begin(); i1!=atoms.end()-1; i1++ )
@@ -387,7 +387,7 @@ uint PdbMonomerDatabase_O::connectVdwOverlappingUnconnectedAtoms(gctools::Vec0<A
 
 CL_LISPIFY_NAME("connectAtoms");
 CL_DEFMETHOD     void PdbMonomerDatabase_O::connectAtoms(Matter_sp matter)
-    {_OF();
+    {
         gctools::Vec0<Atom_sp>	unconnectedAtoms;
 	Loop lResidues;
 	uint numConnect = 0;

@@ -383,14 +383,14 @@ Aggregate_sp PdbReader_O::loadPdbConnectAtoms(core::T_sp fileName)
 
     
     
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN core::T_sp chem__simple_load_pdb(core::String_sp fileName)
 {
   Aggregate_sp agg = PdbReader_O::loadPdbConnectAtoms(fileName);
   return agg;
 }
 
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN core::T_sp chem__load_pdb_from_stream(core::T_sp stream)
 {
   Aggregate_sp agg = PdbReader_O::loadPdbFromStreamConnectAtoms(stream);
@@ -466,7 +466,7 @@ PdbWriter_sp PdbWriter_O::make(core::T_sp fileName)
 
 core::T_sp PdbWriter_O::__init__(core::Function_sp exec, core::Cons_sp args,
                                  core::Environment_sp env)
-{_OF();
+{
   string fn = env->lookup(_lisp->internWithPackageName(ChemPkg,"fileName")).as<core::Str_O>()->get();
   this->open(fn);
   return _Nil<core::T_O>();
@@ -570,7 +570,7 @@ void _writeAtomAndConnectRecords( core::T_sp fout, gctools::Vec0<AtomPdbRec>& pd
 
 CL_LISPIFY_NAME("pdb-open");
 CL_DEFMETHOD void PdbWriter_O::open(core::T_sp pathDesignator)
-{_OF();
+{
   this->_Out = core::clasp_openWrite(pathDesignator);
   if ( this->_Out.nilp() ) {
     SIMPLE_ERROR(("Could not open file: %s") , _rep_(pathDesignator));
@@ -578,7 +578,7 @@ CL_DEFMETHOD void PdbWriter_O::open(core::T_sp pathDesignator)
 }
 
 void	PdbWriter_O::write(Matter_sp matter)
-{_OF();
+{
   size_t serialStart = 1;
   if ( matter.isA<Aggregate_O>() )
   {
@@ -607,7 +607,7 @@ void	PdbWriter_O::write(Matter_sp matter)
 
 CL_LISPIFY_NAME("writeModel");
 CL_DEFMETHOD     void PdbWriter_O::writeModel(Matter_sp matter, int model)
-{_OF();
+{
   core::clasp_write_string(fmt::sprintf("MODEL     %d\n" , model ), this->_Out);
   this->write(matter);
   core::clasp_write_string("ENDMDL\n",this->_Out);
@@ -623,7 +623,7 @@ CL_DEFMETHOD     void PdbWriter_O::close()
 }
 
 CL_LISPIFY_NAME(save-pdb);
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN void	PdbWriter_O::savePdb(Matter_sp matter, core::T_sp fileName )
 {
   PdbWriter_sp writer = PdbWriter_O::create();

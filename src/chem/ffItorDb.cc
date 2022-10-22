@@ -98,7 +98,7 @@ void    FFItor_O::setTypes(core::Symbol_sp t1, core::Symbol_sp t2, core::Symbol_
 }
 
 double  FFItor_O::getV_kJ(int period) const
-{_OF();
+{
     if ( period < 1 || period > IMaxPeriodicity ) {
         SIMPLE_ERROR(("Illegal index for getV"));
     }
@@ -106,7 +106,7 @@ double  FFItor_O::getV_kJ(int period) const
 }
 
 void    FFItor_O::setV_kJ(int period, double val)
-{_OF();
+{
     if ( period < 1 || period > IMaxPeriodicity ) {
         SIMPLE_ERROR(("Illegal index for setV"));
     }
@@ -116,25 +116,25 @@ void    FFItor_O::setV_kJ(int period, double val)
 
 
 bool FFItor_O::hasPeriodicity(int period) const
-{_OF();
+{
     ASSERTF(period>=1 && period<=FFItor_O::IMaxPeriodicity, ("hasPeriodicityperiod[%d] must be in [1,%d]") , period , IMaxPeriodicity );
     return this->_hasPeriodicity[period-1];
 }
 
 
 double  FFItor_O::getV_kCal(int period) const
-{_OF();
+{
     return kJ_to_kCal(this->getV_kJ(period));
 }
 
 void    FFItor_O::setV_kCal(int period, double val)
-{_OF();
+{
     this->setV_kJ(period,kCal_to_kJ(val));
 }
 
 
 double  FFItor_O::getPhaseRad(int period) const
-{_OF();
+{
     if ( period < 1 || period > IMaxPeriodicity ) {
         SIMPLE_ERROR(("Illegal index for getPhaseRad"));
     }
@@ -142,7 +142,7 @@ double  FFItor_O::getPhaseRad(int period) const
 }
 
 void    FFItor_O::setPhaseRad(int period, double val)
-{_OF();
+{
     if ( period < 1 || period > IMaxPeriodicity ) {
         SIMPLE_ERROR(("Illegal index for setPhaseRad"));
     }
@@ -223,7 +223,7 @@ void FFItorDb_O::improperAtomSort(Atom_sp& a1, Atom_sp& a2, Atom_sp& a4)
   if (!ordered(a1,a2)) {ta = a1; a1 = a2; a2 = ta;}
 }
 
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN core::T_mv chem__improperAtomSort(Atom_sp a1, Atom_sp a2, Atom_sp a3)
 {
   FFItorDb_O::improperAtomSort(a1,a2,a3);
@@ -287,7 +287,7 @@ core::T_sp FFItorDb_O::findBestTerm( core::Symbol_sp t1, core::Symbol_sp t2, cor
 
 
 void    FFItorDb_O::cantFind(core::Symbol_sp t1, core::Symbol_sp t2, core::Symbol_sp t3, core::Symbol_sp t4 )
-{_OF();
+{
     stringstream ss;
     ss << "Can't find itor term for ("<<t1<<")-("<<t2<<")-("<<t3<<")-("<<t4<<")";
     SIMPLE_ERROR(("%s") , ss.str());

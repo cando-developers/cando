@@ -49,12 +49,12 @@ void AggregateNode_O::fields(core::Record_sp node)
 
 
 void AggregateNode_O::initialize()
-{_OF();
+{
   this->Base::initialize();
 }
 
 void AggregateNode_O::resizeChains(int numChains)
-{_OF();
+{
   int numMolsOld = this->_Chains.size();
   this->_Chains.resize(numChains);
   if ( numChains > numMolsOld )

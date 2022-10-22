@@ -164,7 +164,7 @@ CL_DEFMETHOD void CoordinateSystem_O::canonical()
 //	the z axis is orthogonal to (axy) and x axis
 //	the y axis is orthogonal to the new x and z axes
 CL_LISPIFY_NAME("defineForAtoms");
-CL_DOCSTRING(R"dx(Define a coordinate system using the origin, x-axis and another vector in the xy plane)dx")
+CL_DOCSTRING(R"dx(Define a coordinate system using the origin, x-axis and another vector in the xy plane)dx");
 CL_DEFMETHOD void	CoordinateSystem_O::defineForAtoms( Atom_sp aorigin, Atom_sp ax, Atom_sp axy )
 {
     Vector3	vo, vx, vxy, vz, vy;
@@ -369,7 +369,7 @@ CL_DEFMETHOD void	CoordinateSystem_O::defineForVectorsOriginXDirZDir(
 
 CL_LISPIFY_NAME("defineRandom");
 CL_DEFMETHOD void	CoordinateSystem_O::defineRandom( )
-{_OF();
+{
 double x,y,z;
 #define	RANGE	20.0
 x = core::randomNumber01()*RANGE - (RANGE/2.0);

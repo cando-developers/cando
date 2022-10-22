@@ -72,7 +72,7 @@ void ConstitutionAtom_O::fields(core::Record_sp node)
   this->Base::fields(node);
 }  
 
-CL_DOCSTRING(R"(Build a chem:atom from this chem:constitution-atom.)")
+CL_DOCSTRING(R"(Build a chem:atom from this chem:constitution-atom.)");
 CL_DEFMETHOD Atom_sp ConstitutionAtom_O::buildAtom() const
 {
   Atom_sp atom = Atom_O::create();
@@ -115,7 +115,7 @@ void ConstitutionVirtualAtom_O::fields(core::Record_sp node)
 }  
 
 
-CL_DOCSTRING(R"(Build a chem:virtual-atom from this chem:constitution-virtual-atom.)")
+CL_DOCSTRING(R"(Build a chem:virtual-atom from this chem:constitution-virtual-atom.)");
 CL_DEFMETHOD Atom_sp ConstitutionVirtualAtom_O::buildAtom() const
 {
   VirtualAtom_sp atom = VirtualAtom_O::create(this->_AtomName,this->_CalculatePositionCode);
@@ -128,8 +128,8 @@ CL_DEFMETHOD Atom_sp ConstitutionVirtualAtom_O::buildAtom() const
   
 
 CL_LISPIFY_NAME(makeConstitutionAtomsFromResidue);
-CL_LAMBDA(residue &optional verbose)
-DOCGROUP(cando)
+CL_LAMBDA(residue &optional verbose);
+DOCGROUP(cando);
 CL_DEFUN ConstitutionAtoms_sp ConstitutionAtoms_O::makeConstitutionAtomsFromResidue(Residue_sp residue, bool verbose)
 {
   residue->ensureAllAtomNamesAreUnique();
@@ -161,14 +161,14 @@ CL_DEFUN ConstitutionAtoms_sp ConstitutionAtoms_O::makeConstitutionAtomsFromResi
 
 
 void ConstitutionAtoms_O::addConstitutionVirtualAtom(ConstitutionVirtualAtom_sp ca)
-{_OF();
+{
   ConstitutionAtomIndex0N nextIndex = this->_Atoms.size();
   this->_Atoms.push_back(ca);
 };
 
 
 ConstitutionAtom_sp& ConstitutionAtoms_O::operator[](ConstitutionAtomIndex0N idx)
-{_OF();
+{
   ASSERTF(idx>=0&&idx<(int)(this->_Atoms.size()),("index[%d] out of range") , idx );
   ConstitutionAtom_sp& ca = this->_Atoms[(uint)idx];
 //  ASSERTF(idx==ca->_AtomIndex,("A mismatch has occured between the index[%d] in the ConstitutionAtoms array and the ConstitutionAtom index[%d] - these have to match or we can't quickly look up atoms by their index") , idx , ca->_AtomIndex );
@@ -177,7 +177,7 @@ ConstitutionAtom_sp& ConstitutionAtoms_O::operator[](ConstitutionAtomIndex0N idx
 
 CL_LISPIFY_NAME("atomNamesAsSymbolSet");
 CL_DEFMETHOD     adapt::SymbolSet_sp ConstitutionAtoms_O::atomNamesAsSymbolSet()
-{_OF();
+{
   adapt::SymbolSet_sp ss = adapt::SymbolSet_O::create();
   for ( gctools::Vec0<ConstitutionAtom_sp>::const_iterator ci=this->_Atoms.begin();
         ci!=this->_Atoms.end(); ci++ )
@@ -196,9 +196,10 @@ void ConstitutionAtoms_O::fields(core::Record_sp node)
 
 CL_DOCSTRING(R"dx(Return (values constitution-atom T) if the atom with NAME is found.
 If it is not found and ERRORP is NIL then return (values NIL NIL), otherwise signal an error.)dx")
+CL_LAMBDA(atom-name &optional (errorp t));
 CL_LISPIFY_NAME("atomWithName");
-CL_LAMBDA(atom-name &optional (errorp t))CL_DEFMETHOD     core::T_mv ConstitutionAtoms_O::atomWithName(MatterName nm, bool errorp )
-{_OF();
+CL_DEFMETHOD core::T_mv ConstitutionAtoms_O::atomWithName(MatterName nm, bool errorp )
+{
   for ( gctools::Vec0<ConstitutionAtom_sp>::const_iterator ci=this->_Atoms.begin();
         ci!=this->_Atoms.end(); ci++ )
   {
@@ -219,7 +220,7 @@ CL_DEFMETHOD     ConstitutionAtom_sp ConstitutionAtoms_O::atomWithId(Constitutio
 
 CL_NAME(CHEM:CONSTITUTION-ATOMS/INDEX);
 CL_DEFMETHOD     int ConstitutionAtoms_O::index(MatterName name) const
-{_OF();
+{
   for ( int idx=0; idx<(int)this->_Atoms.size(); idx++ )
   {
     const ConstitutionAtom_sp& atom = this->_Atoms[idx];

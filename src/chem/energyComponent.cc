@@ -100,8 +100,8 @@ string EnergyComponent_O::summarizeEnergyAsString()
 
 
 
-CL_DOCSTRING(R"dx(Evaluate the energy of a component)dx")
-DOCGROUP(cando)
+CL_DOCSTRING(R"dx(Evaluate the energy of a component)dx");
+DOCGROUP(cando);
 CL_DEFUN
 double chem__energy_component_evaluate_energy(EnergyFunction_sp energy_function,
                                        EnergyComponent_sp component,
@@ -117,8 +117,8 @@ double chem__energy_component_evaluate_energy(EnergyFunction_sp energy_function,
   return val;
 };
 
-CL_DOCSTRING(R"dx(Evaluate the energy and force of a component)dx")
-DOCGROUP(cando)
+CL_DOCSTRING(R"dx(Evaluate the energy and force of a component)dx");
+DOCGROUP(cando);
 CL_DEFUN
 double chem__energy_component_evaluate_energy_force(EnergyFunction_sp energy_function,
                                              EnergyComponent_sp component,

@@ -54,7 +54,7 @@ namespace chem {
   };
 
 void	SpecificContext_O::initialize()
-{_OF();
+{
     this->Base::initialize();
     this->_Neighbors.clear();
     this->_SelfName = nil<core::Symbol_O>();
@@ -62,7 +62,7 @@ void	SpecificContext_O::initialize()
 
 
 void SpecificContext_O::clear()
-{_OF();
+{
     this->_Neighbors.clear();
     this->_SelfName = nil<core::Symbol_O>();
 }
@@ -167,7 +167,7 @@ CL_DEFMETHOD SpecificContext_sp SpecificContext_O::copySpecificContext()
 #else
 
     core::T_sp 	SpecificContextSet_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::LispPtr lisp)
-{_OF();
+{
     IMPLEMENT_ME();
     LOG("Creating SpecificContextSet" );
     	// your stuff here

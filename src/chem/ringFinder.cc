@@ -76,7 +76,7 @@ void PathMessage_O::initialize()
 
 
     PathMessage_O::PathMessage_O(const PathMessage_O& orig) : core::CxxObject_O(orig)
-{_OF();
+{
     this->_graph = orig._graph;
     LOG("About to copy beep" );
     LOG(" beep.nilp() = %d" , orig._beep.nilp()  );
@@ -967,7 +967,7 @@ CL_DEF_CLASS_METHOD core::List_sp RingFinder_O::identifyRings(Matter_sp matter)
 }
 
 CL_LISPIFY_NAME(ring-bonds);
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN core::List_sp RingFinder_O::ringBonds(core::List_sp atoms) {
   core::List_sp ringBonds = nil<core::T_O>();
   gctools::SmallOrderedSet<Atom_sp> atomSet;

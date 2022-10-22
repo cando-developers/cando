@@ -73,7 +73,7 @@ MonomerNode_sp MonomerNode_O::make()
 };
 
 void MonomerNode_O::initialize()
-{_OF();
+{
   this->Base::initialize();
 }
 
@@ -167,7 +167,7 @@ chem::Constitution_mv MonomerNode_O::identifyConstitutionAndTopology()
 
 
 void MonomerNode_O::describeRecursivelyIntoStringStream(const string& prefix, stringstream& output) const
-{_OF();
+{
   LOG("Describing %s[%s]" , this->className() , _rep_(this->_StereoisomerName) );
   output << prefix;
   if ( this->_ParentPlugName.notnilp() )
@@ -186,7 +186,7 @@ void MonomerNode_O::describeRecursivelyIntoStringStream(const string& prefix, st
 }
 
 string MonomerNode_O::asString() const
-{_OF();
+{
   stringstream out;
   this->describeRecursivelyIntoStringStream("",out);
   return out.str();
@@ -223,7 +223,7 @@ CL_DEFMETHOD MonomerId MonomerNode_O::monomerId() const
   return this->_Id;
 }
 
-CL_DOCSTRING(R"dx(Walk the joints of this monomer-node. Provide a callback that takes two arguments, the joint atom-id index and the joint.)dx")
+CL_DOCSTRING(R"dx(Walk the joints of this monomer-node. Provide a callback that takes two arguments, the joint atom-id index and the joint.)dx");
 CL_DEFMETHOD void MonomerNode_O::walkJoints(core::Function_sp callback) {
   for ( int i=0, iEnd(this->_Joints.size()); i<iEnd; ++i ) {
     core::eval::funcall(callback,core::make_fixnum(i),this->_Joints[i]);

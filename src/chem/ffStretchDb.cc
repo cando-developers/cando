@@ -89,7 +89,7 @@ CL_DEFMETHOD void    FFStretchDb_O::add(FFStretch_sp term)
 }
 
 //  (chem:canonical-stretch-key (chem:get-type atom1) (chem:get-type atom2))
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN core::Symbol_sp chem__canonicalStretchKey(core::Symbol_sp type1, core::Symbol_sp type2) {
   std::string type1str = type1->symbolNameAsString();
   std::string type2str = type2->symbolNameAsString();
@@ -100,7 +100,7 @@ CL_DEFUN core::Symbol_sp chem__canonicalStretchKey(core::Symbol_sp type1, core::
 }
 
 CL_LISPIFY_NAME("findTerm");
-CL_DOCSTRING(R"dx(Return the stretch term or estimate if none was found)dx")
+CL_DOCSTRING(R"dx(Return the stretch term or estimate if none was found)dx");
 CL_DEFMETHOD core::T_sp	FFStretchDb_O::findTerm(chem::Atom_sp a1, chem::Atom_sp a2)
 {
   FFStretch_sp	match;

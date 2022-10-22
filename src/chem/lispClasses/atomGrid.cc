@@ -293,7 +293,7 @@ Vector3	diff;
 //	Paint the grid points that are contained within the atom
 //
 bool AtomGrid_O::paintAtom( const Vector3& pos, double radius )
-{_OF();
+{
 int		xBegin, yBegin, zBegin;
 int		xEnd, yEnd, zEnd;
 double		xp, yp, zp, rad2, dist2;
@@ -355,7 +355,7 @@ int		iTotal;
 void	AtomGrid_O::privateBuildGrid( 	Matter_sp container,
 				double	addRadius,
 				double	stepSize )
-{_OF();
+{
 Loop	lAtoms;
 Atom_sp	a;
 Vector3	diff;
@@ -409,7 +409,7 @@ void	AtomGrid_O::buildGridWithinBoundingBox( Matter_sp container,
 			double addRadius,
 			double stepSize,
 			geom::BoundingBox_sp bbox )
-{_OF();
+{
     ASSERT(bbox->isDefined());
     this->stepSize = stepSize;
     this->xMin = bbox->minCorner().getX();
@@ -687,7 +687,7 @@ void AtomGrid_O::invert()
 //	atom/residue at the requested position
 //
 bool	AtomGrid_O::collisionAt( const Vector3& pos )
-{_OF();
+{
 int	xi,yi,zi;
 int	ii;
     xi = xIndex(this,pos.getX());

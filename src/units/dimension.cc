@@ -58,7 +58,7 @@ namespace units
 #endif
 
     void Dimension_O::initialize()
-    {_OF();
+    {
         this->Base::initialize();
     }
 
@@ -75,7 +75,7 @@ namespace units
     }
 
     void Dimension_O::adjustPowersAndAmountScale(int power, int powers[], double& amountScale ) const
-    {_OF();
+    {
 	SUBCLASS_MUST_IMPLEMENT();
     }
 

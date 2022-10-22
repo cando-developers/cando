@@ -96,7 +96,7 @@ void	RotamerAtom::archive(core::ArchiveP node)
 
 
     void Rotamer_O::initialize()
-    {_OF();
+    {
         this->Base::initialize();
     }
 

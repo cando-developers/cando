@@ -61,7 +61,7 @@ Structure_Old_ListEntry_sp	Structure_Old_ListEntry_O::create(Structure_Old_List_
 
 
 void	Structure_Old_ListEntry_O::initialize()
-{_OF();
+{
     this->Base::initialize();
     LOG("Created StructureListEntry" );
     this->_Members = 0;
@@ -320,7 +320,7 @@ uint Structure_Old_List_O::addEntry(Structure_Old_ListEntry_sp entry)
 
 
 void	Structure_Old_List_O::addAllEntries(Structure_Old_List_sp orig)
-{_OF();
+{
 Matter_sp			matter;
 Structure_Old_List_O::entryIterator	si;
 Structure_Old_ListEntry_sp		entry;
@@ -477,7 +477,7 @@ frames = geom::FrameList_O::create();
 
 
 Structure_Old_ListEntry_sp	Structure_Old_List_O::getEntry(uint i)
-{_OF();
+{
     ASSERT_lessThan(i,this->_Entries.size());
     Structure_Old_ListEntry_sp e;
     e = this->_Entries[i];

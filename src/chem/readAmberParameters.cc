@@ -46,7 +46,7 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace chem {
 
 
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN ReadAmberParameters_sp chem__make_read_amber_parameters()
 {
   return ReadAmberParameters_O::create();
@@ -573,7 +573,7 @@ SYMBOL_EXPORT_SC_(ChemPkg,parse_ptor_db);
 SYMBOL_EXPORT_SC_(ChemPkg,parse_nonbond_line);
 
 ForceField_sp ReadAmberParameters_O::parseAmberFormattedForceField(core::T_sp fin, core::T_sp system)
-{_OF();
+{
     string line = core::cl__read_line(fin).as<core::String_O>()->get_std_string();
     auto  ffNonbondsDb  = gctools::GC<FFNonbondDb_O>::allocate_with_default_constructor();
     ffNonbondsDb = this->parseMasses(fin,ffNonbondsDb);

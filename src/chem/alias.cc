@@ -60,7 +60,7 @@ namespace chem
 #define ARGS_chem__alias "(monAlias atomAlias)"
 #define DECL_chem__alias ""
 #define DOCS_chem__alias "alias"
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN core::T_sp chem__alias(core::Symbol_sp monAlias, core::Symbol_sp atomAlias)
     {
 	return Alias_O::create(monAlias,atomAlias);
@@ -102,7 +102,7 @@ CL_DEFUN core::T_sp chem__alias(core::Symbol_sp monAlias, core::Symbol_sp atomAl
 
 #if 0
     Fingerprint_sp Alias_O::fingerprint()
-    {_OF();
+    {
 	ASSERTF(this->_WeakFingerprint.pointerp(), ("The _WeakFingerprint should never be NULL"));
 	return this->_WeakFingerprint;
     }

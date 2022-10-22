@@ -61,7 +61,7 @@ namespace chem {
 
 CL_DOCSTRING(R"dx(Create a chem:bounding-box using three lengths in angstroms and zero to three angles (in degrees).
 When angles are missing they are assumed to be 90.0 degrees.)dx")
-CL_LAMBDA(widths &key angles-degrees center)
+CL_LAMBDA(widths &key angles-degrees center);
 CL_LISPIFY_NAME(make-bounding-box);
 CL_DEF_CLASS_METHOD
 BoundingBox_sp BoundingBox_O::make(core::List_sp widths, core::T_sp angles_degrees, core::T_sp center)
@@ -128,7 +128,7 @@ std::string BoundingBox_O::__repr__() const {
   return ss.str();
 }
 
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN double chem__bounding_box_distance_squared_between_two_points(BoundingBox_sp bounding_box, const Vector3& v1, const Vector3& v2)
 {
   return bounding_box->distance_squared_between_two_points(v1,v2);
@@ -142,7 +142,7 @@ double BoundingBox_O::distance_squared_between_two_atoms(Atom_sp a1, Atom_sp a2)
   return this->distance_squared_between_two_points(pos1,pos2);
 }
 
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN double chem__bounding_box_distance_squared_between_two_atoms(BoundingBox_sp bounding_box, Atom_sp a1, Atom_sp a2)
 {
   return bounding_box->distance_squared_between_two_atoms(a1,a2);
@@ -283,7 +283,7 @@ void Aggregate_O::fields(core::Record_sp node)
 }
 
 
-CL_DOCSTRING(R"dx(Return the bounding-box for the atom-table.)dx")
+CL_DOCSTRING(R"dx(Return the bounding-box for the atom-table.)dx");
 CL_LISPIFY_NAME(aggregate-bounding-box);
 CL_DEFMETHOD BoundingBox_sp Aggregate_O::boundingBox() const
 {
@@ -293,20 +293,20 @@ CL_DEFMETHOD BoundingBox_sp Aggregate_O::boundingBox() const
   SIMPLE_ERROR(("The bounding-box slot is unbound"));
 }
 
-CL_DOCSTRING(R"dx(Return T if the bounding-box is bound)dx")
+CL_DOCSTRING(R"dx(Return T if the bounding-box is bound)dx");
 CL_LISPIFY_NAME(aggregate-bounding-box-bound-p);
 CL_DEFMETHOD bool Aggregate_O::boundingBoxBoundP() const
 {
   return this->_BoundingBox.boundp();
 }
 
-CL_DOCSTRING(R"dx(Set the bounding-box)dx")
+CL_DOCSTRING(R"dx(Set the bounding-box)dx");
 CL_LISPIFY_NAME(aggregate-set-bounding-box);
 CL_DEFMETHOD void Aggregate_O::setBoundingBox(BoundingBox_sp boundingBox) {
   this->_BoundingBox = boundingBox;
 }
 
-CL_DOCSTRING(R"dx(Make the bounding-box unbound)dx")
+CL_DOCSTRING(R"dx(Make the bounding-box unbound)dx");
 CL_LISPIFY_NAME(aggregate-mak-unbound-bounding-box);
 CL_DEFMETHOD void Aggregate_O::makUnboundBoundingBox() {
   this->_BoundingBox = unbound<BoundingBox_O>();
@@ -316,7 +316,7 @@ CL_DEFMETHOD void Aggregate_O::makUnboundBoundingBox() {
 
 
     AtomIdMap_sp Aggregate_O::buildAtomIdMap() const
-    {_OF();
+    {
 	AtomIdMap_sp atomIdMap = AtomIdMap_O::create();
 	atomIdMap->resizeAggregate(this->_Contents.size());
 	for ( int mid = 0; mid<(int)this->_Contents.size(); mid++ )
@@ -339,7 +339,7 @@ CL_DEFMETHOD void Aggregate_O::makUnboundBoundingBox() {
 
 
 Atom_sp Aggregate_O::atomWithAtomId(const AtomId& atomId) const
-    {_OF();
+    {
 	int molId = atomId.moleculeId();
 	if ( molId >=0 && molId <=(int)this->_Contents.size() )
 	{
@@ -352,7 +352,7 @@ Atom_sp Aggregate_O::atomWithAtomId(const AtomId& atomId) const
 
 #if 0
     Atom_sp Aggregate_O::lookupAtom(const AtomId& atomId) const
-    {_OF();
+    {
 	ASSERTF((int)this->_Contents.size()==this->_AtomIdMap.numberOfMolecules(),
 		("The AtomIdMap is out of sync with the Aggregate contents - wrong number of molecules - use updateAtomIdMap to correct this"));
 	this->_AtomIdMap.throwIfInvalidMoleculeId(atomId);
@@ -415,7 +415,7 @@ Matter_sp Aggregate_O::copy(core::T_sp new_to_old)
 
 
 Matter_sp Aggregate_O::copyDontRedirectAtoms(core::T_sp new_to_old)
-{_OF();
+{
   auto  newAgg  = gctools::GC<Aggregate_O>::copy( *this); // = RP_Copy<Aggregate_O>(this);
   if (gc::IsA<core::HashTable_sp>(new_to_old)) {
     core::HashTable_sp new_to_old_ht = gc::As_unsafe<core::HashTable_sp>(new_to_old);
@@ -434,7 +434,7 @@ Matter_sp Aggregate_O::copyDontRedirectAtoms(core::T_sp new_to_old)
 
 
     void Aggregate_O::redirectAtoms()
-    {_OF();
+    {
 	LOG("Aggregate_O::redirectAtoms START" );
 	for ( contentIterator a=this->begin_contents(); a!=this->end_contents(); a++ ) {
 	    (*a)->redirectAtoms();
@@ -610,7 +610,7 @@ CL_DEFMETHOD core::List_sp	Aggregate_O::atomsWithChimeraSpecifications(const str
 //
 CL_LISPIFY_NAME("removeMolecule");
 CL_DEFMETHOD     void Aggregate_O::removeMolecule( Molecule_sp a )
-    {_OF();
+    {
 	contentIterator	it;
 	for ( it=this->begin_molecules(); it!= this->end_molecules(); it++ ) {
           if ((*it).as<Molecule_O>() == a ) 
@@ -694,7 +694,7 @@ Matter_mv Aggregate_O::addMatter(Matter_sp matter)
 
 
     Atom_sp	Aggregate_O::firstAtomWithName( MatterName name )
-    {_OF();
+    {
 	Loop		lAtoms;
 	Atom_sp		a;
 	Aggregate_sp	agg;
@@ -721,7 +721,7 @@ Matter_mv Aggregate_O::addMatter(Matter_sp matter)
 
 CL_LISPIFY_NAME("writeToFile");
 CL_DEFMETHOD     void	Aggregate_O::writeToFile(const string& fileName)
-    {_OF();
+    {
 	IMPLEMENT_ME();
 #ifdef XML_ARCHIVE
 	Aggregate_sp	agg;
@@ -792,7 +792,7 @@ CL_DEFMETHOD     MatterName  Aggregate_O::firstMoleculeName()
 #define	MAX_ADJUST_CYCLES	10
 CL_LISPIFY_NAME("perturbAtomPositions");
 CL_DEFMETHOD     void	Aggregate_O::perturbAtomPositions(double dist)
-    {_OF();
+    {
 	Atom_sp				a;
 	Loop				lb;
 	double				xd,yd,zd;
@@ -886,9 +886,9 @@ CL_DEFMETHOD     void	Aggregate_O::perturbAtomPositions(double dist)
 #define ARGS_Aggregate_O_make "(&key (name :agg))"
 #define DECL_Aggregate_O_make ""
 #define DOCS_Aggregate_O_make "make Aggregate args: &key name"
-CL_LAMBDA(&optional (name nil))
+CL_LAMBDA(&optional (name nil));
 CL_LISPIFY_NAME(make-aggregate);
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN Aggregate_sp Aggregate_O::make(core::Symbol_sp name)
     {
       auto me = gctools::GC<Aggregate_O>::allocate_with_default_constructor();

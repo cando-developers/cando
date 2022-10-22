@@ -192,9 +192,9 @@ void	Minimizer_O::changeOptions(core::List_sp optionCons)
 #endif
 }
 
-CL_LAMBDA(energy-function)
+CL_LAMBDA(energy-function);
 CL_LISPIFY_NAME(make-minimizer);
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN Minimizer_sp Minimizer_O::make(ScoringFunction_sp givenEnergyFunction)
 {
   auto  me  = gctools::GC<Minimizer_O>::allocate_with_default_constructor();
@@ -276,7 +276,7 @@ string	Minimizer_O::statusAsShortString()
   return status;
 }
 
-CL_LISPIFY_NAME(minimizer-set-initial-line-search-step)
+CL_LISPIFY_NAME(minimizer-set-initial-line-search-step);
 CL_DEFMETHOD
 void Minimizer_O::set_initial_line_search_step(double step)
 {
@@ -719,7 +719,7 @@ void Minimizer_O::lineSearchInitialReport( StepReport_sp report,
 #if 0
 CL_LISPIFY_NAME("throwMinimizerExceededMaxSteps");
 CL_DEFMETHOD     void Minimizer_O::throwMinimizerExceededMaxSteps()
-{_OF();
+{
       
   MINIMIZER_EXCEEDED_MAX_STEPS_ERROR("test throw of MinimizerExceededMaxSteps");
 };
@@ -727,14 +727,14 @@ CL_DEFMETHOD     void Minimizer_O::throwMinimizerExceededMaxSteps()
 
 CL_LISPIFY_NAME("throwMinimizerStuck");
 CL_DEFMETHOD     void Minimizer_O::throwMinimizerStuck()
-{_OF();
+{
   MINIMIZER_STUCK_ERROR("test throw of MinimizerStuck");
 };
 
 
 CL_LISPIFY_NAME("throwMinimizerError");
 CL_DEFMETHOD     void Minimizer_O::throwMinimizerError()
-{_OF();
+{
   MINIMIZER_ERROR("test throw of MinimizerError");
 };
 
@@ -742,7 +742,7 @@ CL_DEFMETHOD     void Minimizer_O::throwMinimizerError()
 
 void Minimizer_O::lineSearchFinalReport( StepReport_sp report, double step, double fMin,
                                          int energyEvals, int forceEvals, int dbrentSteps )
-{_OF();
+{
   ASSERT(report->_Iteration == this->_Iteration);
   report->_DbrentSteps = dbrentSteps;
   report->_EnergyEvals = energyEvals;
@@ -753,7 +753,7 @@ void Minimizer_O::lineSearchFinalReport( StepReport_sp report, double step, doub
 
 
 void	Minimizer_O::stepReport( StepReport_sp report, double energy, NVector_sp force )
-{_OF();
+{
   ASSERT(report->_Iteration == this->_Iteration);
   report->_ForceMagnitude = magnitude(force,this->_Frozen);
   report->_TotalEnergy = energy;
@@ -2004,7 +2004,7 @@ CL_DEFMETHOD void Minimizer_O::setDebugOn(bool debugOn) {
 
 
 CL_LISPIFY_NAME("enablePrintIntermediateResults");
-CL_LAMBDA((chem:minimizer chem:minimizer) cl:&optional (steps 1) (level 1))
+CL_LAMBDA((chem:minimizer chem:minimizer) cl:&optional (steps 1) (level 1));
 CL_DEFMETHOD     void	Minimizer_O::enablePrintIntermediateResults(size_t steps, size_t level)
 {
   if (steps < 1 ) {
@@ -2036,7 +2036,7 @@ CL_DEFMETHOD     void	Minimizer_O::setEnergyFunction(ScoringFunction_sp f)
 
 CL_LISPIFY_NAME("evaluateEnergyAndForceManyTimes");
 CL_DEFMETHOD     void	Minimizer_O::evaluateEnergyAndForceManyTimes(int numSteps)
-{_OF();
+{
   NVector_sp	pos;
   ASSERT(this->_ScoringFunction);
   this->_Iteration = 1;
@@ -2165,7 +2165,7 @@ CL_DEFMETHOD     void	Minimizer_O::restart()
 }
 
 
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN void chem__restart_minimizer()
 {
   throw RestartMinimizer();

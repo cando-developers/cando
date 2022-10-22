@@ -52,7 +52,7 @@ namespace chem
 
 
     void Angle_O::setup(Atom_sp a1, Atom_sp a2, Atom_sp a3)
-    {_OF();
+    {
 	this->_a1 = a1;
 	this->_a2 = a2;
 	this->_a3 = a3;
@@ -69,7 +69,7 @@ namespace chem
 
 
     void Angle_O::initialize()
-    {_OF();
+    {
         this->Base::initialize();
     }
 

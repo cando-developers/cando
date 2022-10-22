@@ -69,7 +69,7 @@ string Entity_O::__repr__() const {
 
 CL_LISPIFY_NAME("minimalRepresentativeList");
 CL_DEFMETHOD RepresentativeList_sp Entity_O::minimalRepresentativeList() const {
-  _OF();
+  
   RepresentativeList_sp expandedList = this->expandedRepresentativeList();
   core::HashTableEq_sp binder = core::HashTableEq_O::create_default();
   for (int i(0), iEnd(expandedList->length()); i < iEnd; ++i) {

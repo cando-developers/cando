@@ -80,7 +80,7 @@ Joint_sp DelayedBondedJoint_O::stubJoint3(JointTree_sp tree) const
 }
 
 
-core::Symbol_sp DelayedBondedJoint_O::typeSymbol() const {_OF(); return _sym_delayed;};
+core::Symbol_sp DelayedBondedJoint_O::typeSymbol() const { return _sym_delayed;};
 
 
 

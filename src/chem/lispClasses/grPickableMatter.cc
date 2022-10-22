@@ -60,7 +60,7 @@ namespace chem
 
 
 void RenderMatterAtom_O::defineForAtom(Atom_sp atom,GrPickableMatter_sp renderMatter)
-{_OF();
+{
     this->_Atom = atom;
     this->_Style = atom->getPropertyOrDefault(kw::_sym_renderStyle,kw::_sym_ballAndStick).as<core::Symbol_O>();
     this->_ShowLabel = atom->getPropertyOrDefault(kw::_sym_showLabel,_lisp->_false()).isTrue();
@@ -93,7 +93,7 @@ void RenderMatterAtom_O::defineForAtom(Atom_sp atom,GrPickableMatter_sp renderMa
 
 #ifdef XML_ARCHIVE
     void RenderMatterAtom_O::archiveBase(core::ArchiveP node)
-{_OF();
+{
     this->Base::archiveBase(node);
     node->attribute("style",this->_Style);
     node->attribute("sl",this->_ShowLabel);
@@ -191,7 +191,7 @@ geom::Color_sp GrPickableMatter_O::elementToColor(Element element, core::LispPtr
 
 
 void	GrPickableMatter_O::initialize()
-{_OF();
+{
     this->Base::initialize();
     this->setName(_lisp->internKeyword("matter"));
 }
@@ -258,7 +258,7 @@ void GrPickableMatter_O::check()
 
 
 geom::Render_sp GrPickableMatter_O::findChild(core::Cons_sp symbolPath, geom::RenderController_sp controller)
-{_OF();
+{
     if ( !this->isOn(controller) ) return _Nil<geom::Render_O>();
     if ( this->_Name.nilp() )
     {

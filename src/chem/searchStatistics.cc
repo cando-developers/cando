@@ -89,7 +89,7 @@ void	SearchStatistics_O::setReportFrequency(uint i)
 
 CL_LISPIFY_NAME("incrementBuilds");
 CL_DEFMETHOD void	SearchStatistics_O::incrementBuilds()
-{_OF();
+{
     this->_Builds++;
     if ( this->_ReportFrequency == UndefinedUnsignedInt ) return;
     if ( ( this->_Builds % this->_ReportFrequency ) == 0 )

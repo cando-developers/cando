@@ -90,7 +90,7 @@ string BoundingCuboid_O::__repr__() const {
   return ss.str();
 }
 
-CL_LAMBDA(bounding-cuboid point)
+CL_LAMBDA(bounding-cuboid point);
 CL_LISPIFY_NAME("geom:expandToEncompassPoint");
 CL_DEFMETHOD void BoundingCuboid_O::expandToEncompassPoint(const Vector3 &p) {
   if (_Defined) {
@@ -104,7 +104,7 @@ CL_DEFMETHOD void BoundingCuboid_O::expandToEncompassPoint(const Vector3 &p) {
 }
 
 bool BoundingCuboid_O::encompasses(const Vector3 &p) {
-  _OF();
+  
   ASSERT(this->_Defined);
   if (!(this->_MinCorner.getX() <= p.getX() && p.getX() <= this->_MaxCorner.getX()))
     return false;
@@ -117,7 +117,7 @@ bool BoundingCuboid_O::encompasses(const Vector3 &p) {
 
 CL_LISPIFY_NAME("pad");
 CL_DEFMETHOD void BoundingCuboid_O::pad(double add) {
-  _OF();
+  
   ASSERT(this->_Defined);
   Vector3 vadd;
   vadd.set(add, add, add);

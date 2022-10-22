@@ -107,7 +107,7 @@ void Residue_O::transferCoordinates(Matter_sp obj)
 
 CL_LISPIFY_NAME("addAtom");
 CL_DEFMETHOD void	Residue_O::addAtom(Atom_sp a)
-{_OF();
+{
     this->addMatter(a);
     LOG("Added %s to %s" , a->description().c_str() , this->description().c_str() );
 }
@@ -292,7 +292,7 @@ Matter_sp	Residue_O::copyDontRedirectAtoms(core::T_sp new_to_old)
 
 
 void Residue_O::redirectAtoms()
-{_OF();
+{
     for ( contentIterator a=this->begin_contents(); a!=this->end_contents(); a++ )
     {
 	Atom_sp at = (*a).as<Atom_O>();
@@ -341,7 +341,7 @@ CL_DEFMETHOD void Residue_O::removeAtomsWithNames(core::List_sp args)
 //	Remove the atom from the residue and delete its bonds
 CL_LISPIFY_NAME("removeAtomDeleteBonds");
 CL_DEFMETHOD void	Residue_O::removeAtomDeleteBonds(Atom_sp a)
-{_OF();
+{
   contentIterator	atom;
   Atom_sp		aTemp;
   LOG("Residue_O::removeAtomsDeleteBonds| Removing a:%x from r:%x" , &a , this  );
@@ -378,7 +378,7 @@ CL_DEFMETHOD bool	Residue_O::containsAtom(Atom_sp a)
 //	This does not delete the atom!
 CL_LISPIFY_NAME("removeAtomDontDeleteBonds");
 CL_DEFMETHOD void	Residue_O::removeAtomDontDeleteBonds(Atom_sp a)
-{_OF();
+{
 contentIterator	atom;
 Atom_sp				aTemp;
     LOG("Residue_O::removeAtomsDontDeleteBonds| Removing a:%x from r:%x" , &a , this  );
@@ -607,7 +607,7 @@ Atom_sp				aTemp;
 //
 //	Return a set of all atoms
 VectorAtom	Residue_O::getAtoms()
-{_OF();
+{
 VectorAtom			atoms;
 Atom_sp				aTemp;
 contentIterator	atom;
@@ -690,7 +690,7 @@ Atom_sp				a;
     return false;
 }
 
-CL_LAMBDA(atom-name &optional (errorp t))
+CL_LAMBDA(atom-name &optional (errorp t));
 CL_DEFMETHOD
 core::T_mv Residue_O::atomWithName(MatterName name, bool errorp)
 {
@@ -715,7 +715,7 @@ Vector3 Residue_O::positionOfAtomWithName(MatterName name)
     return a->getPosition();
 }
 void	Residue_O::failIfInvalid()
-{_OF();
+{
     if ( this->invalid() ) {
       SIMPLE_ERROR(("INVALID %s") , this->description());
     }
@@ -735,7 +735,7 @@ uint Residue_O::numberOfAtoms()
 
 
     AtomIdMap_sp Residue_O::buildAtomIdMap() const
-    {_OF();
+    {
 	AtomIdMap_sp atomIdMap = AtomIdMap_O::create();
 	atomIdMap->resizeAggregate(1);
 	int mid = 0;
@@ -754,7 +754,7 @@ uint Residue_O::numberOfAtoms()
 
 
     Atom_sp Residue_O::atomWithAtomId(const AtomId& atomId) const
-    {_OF();
+    {
 	int aid = atomId.atomId();
 	if ( aid >=0 && aid <=(int)this->_Contents.size() )
 	{
@@ -771,7 +771,7 @@ uint Residue_O::numberOfAtoms()
 
 
 CL_LISPIFY_NAME(make-residue);
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN Residue_sp Residue_O::make(core::Symbol_sp name)
 {
   auto me = gctools::GC<Residue_O>::allocate_with_default_constructor();

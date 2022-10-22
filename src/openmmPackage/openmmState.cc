@@ -61,7 +61,7 @@ namespace omm
     };
 
     void State_O::updateCandoMatterWithPositions(chem::Matter_sp matter) const
-    {_OF();
+    {
 	units::Quantity_sp coords;
 	try
 	{
@@ -83,7 +83,7 @@ namespace omm
     }
 
     units::Quantity_sp State_O::getPositions() const
-    {_OF();
+    {
 	core::SimpleVectorCoordinate_sp pos_in_nm; 
 	try
 	{
@@ -101,7 +101,7 @@ namespace omm
     };
 
     units::Quantity_sp State_O::getVelocities() const
-    {_OF();
+    {
 	core::SimpleVectorCoordinate_sp vel_in_nm_per_ps;
 	try
 	{
@@ -119,7 +119,7 @@ namespace omm
 
 #if 0
     core::SimpleVectorCoordinate_sp State_O::getForces() const
-    {_OF();
+    {
 	// Get the forces in whatever units they come and convert them to SI 
 	core::SimpleVectorCoordinate_sp res;
 	try
@@ -138,7 +138,7 @@ namespace omm
 
 
     units::Quantity_sp State_O::getKineticEnergy()
-    {_OF();
+    {
 	double e_in_kj_per_mole;
 	try
 	{
@@ -156,7 +156,7 @@ namespace omm
     }
 
     units::Quantity_sp State_O::getPotentialEnergy()
-    {_OF();
+    {
 	double e_in_kj_per_mole;
 	try
 	{
@@ -176,7 +176,7 @@ namespace omm
 
 #if 0
     core::Cons_sp State_O::getPeriodicBoxVectors()
-{_OF();
+{
     OpenMM::Vec3 a,b,c;
     this->_State.getPeriodicBoxVectors(a,b,c);
     core::Cons_sp res = core::Cons_O::createList(translate::to_object<OpenMM::Vec3>::convert(_lisp,a),

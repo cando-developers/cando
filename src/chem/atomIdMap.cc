@@ -103,14 +103,14 @@ CL_DEFUN core::T_sp chem__lookup_atom(AtomIdMap_sp map, const chem::AtomId& atom
 }
 
 void AtomIdMap_O::initialize()
-{_OF();
+{
   this->_AtomIdMap = core::ComplexVector_T_O::make(0);
   this->Base::initialize();
 }
 
 
 CL_DEFMETHOD void AtomIdMap_O::resizeAggregate(int numMols)
-{_OF();
+{
   size_t oldNumMols = this->_AtomIdMap->length();
   this->_AtomIdMap->resize(numMols);
   for ( size_t it = oldNumMols; it<numMols; it++ ) {
@@ -119,7 +119,7 @@ CL_DEFMETHOD void AtomIdMap_O::resizeAggregate(int numMols)
 }
 
 CL_DEFMETHOD void AtomIdMap_O::resizeMolecule(int mol, int numRes)
-{_OF();
+{
   if (mol<this->_AtomIdMap->length()) {
     core::ComplexVector_T_sp residues = gc::As<core::ComplexVector_T_sp>(this->_AtomIdMap->rowMajorAref(mol));
     size_t oldNumRes = residues->length();
@@ -133,7 +133,7 @@ CL_DEFMETHOD void AtomIdMap_O::resizeMolecule(int mol, int numRes)
 }
 
 CL_DEFMETHOD void AtomIdMap_O::resizeResidue(int mol, int res, int numAtoms)
-{_OF();
+{
   if (mol<this->_AtomIdMap->length()) {
     core::ComplexVector_T_sp residues = gc::As<core::ComplexVector_T_sp>(this->_AtomIdMap->rowMajorAref(mol));
     if (res<residues->length()) {
@@ -148,7 +148,7 @@ CL_DEFMETHOD void AtomIdMap_O::resizeResidue(int mol, int res, int numAtoms)
 }
 
 void AtomIdMap_O::set(AtomId const& atomId, core::T_sp atom)
-{_OF();
+{
   this->safeSet( atomId, atom );
 }
 

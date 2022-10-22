@@ -149,7 +149,7 @@ void	MacroModelFile_O::close()
 //
 //
 Molecule_sp	MacroModelFile_O::readMolecule()
-{_OF();
+{
 MMAtoms			atoms;
 MMAtomType		oneAtom;
 Atom_sp			aPAtom;

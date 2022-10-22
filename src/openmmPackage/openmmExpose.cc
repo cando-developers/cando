@@ -156,7 +156,7 @@ namespace omm
 
 
     void System_O::takeOwnershipOfSystem(OpenMM::System* sys)
-    {_OF();
+    {
 	if ( this->_externalSystem) delete this->_externalSystem;
 	this->_externalSystem = sys;
     }
@@ -164,7 +164,7 @@ namespace omm
 
 
     core::Cons_sp System_O::getDefaultPeriodicBoxVectors()
-    {_OF();
+    {
 	OpenMM::Vec3 a, b, c;
 	this->wrappedPtr()->getDefaultPeriodicBoxVectors(a,b,c);
 	core::Cons_sp result = core::Cons_O::createList(translate::to_object<OpenMM::Vec3>::convert(_lisp,a),
@@ -175,7 +175,7 @@ namespace omm
     }
 
     Force_sp System_O::getForce(int index)
-    {_OF();
+    {
 	if ( index <0 ) 
 	{
 	    SIMPLE_ERROR(("Index must be positive"));
@@ -192,7 +192,7 @@ namespace omm
 
 
     units::Quantity_sp System_O::getParticleMass(int i)
-    {_OF();
+    {
 	double amu = this->wrappedPtr()->getParticleMass(i);
 	return units::Quantity_O::create(amu,_lisp->symbol(units::_sym_daltons)->dyn<units::Unit_O>(),_lisp);
     }
@@ -200,7 +200,7 @@ namespace omm
 
 
     int System_O::addRawForce(OpenMM::Force* rawForce)
-    {_OF();
+    {
 	int idx = this->wrappedPtr()->addForce(rawForce);
         core::writeln_bf_stream(fmt::sprintf("Added force[%d] = %p" , idx , rawForce ));
 	return idx;
@@ -208,7 +208,7 @@ namespace omm
 
 
     int System_O::addForce(Force_sp force)
-    {_OF();
+    {
 	OpenMM::Force* rawForce = static_cast<OpenMM::Force*>(force->externalObject());
 	return this->addRawForce(rawForce);
     }
@@ -216,7 +216,7 @@ namespace omm
 
     /*! Add an Atom to the System and set the atoms ParticleIndex property to the index */
     int	System_O::addCandoAtom(chem::Atom_sp atom)
-    {_OF();
+    {
 	double mass = atom->getAtomicWeight();
 	int index = this->wrappedPtr()->addParticle(mass);
 	atom->setProperty(_lisp->internWithPackageName(Pkg(),ParticleIndex),core::clasp_make_fixnum(index));
@@ -224,7 +224,7 @@ namespace omm
     }
 
     core::Cons_sp System_O::getConstraintParameters(int index)
-    {_OF();
+    {
 	int particle1, particle2;
 	double distance;
 	this->wrappedPtr()->getConstraintParameters(index,particle1,particle2,distance);
@@ -245,7 +245,7 @@ namespace omm
     }
 
     void Context_O::setup(System_sp system, Integrator_sp integrator, Platform_sp platform )
-    {_OF();
+    {
 	if ( platform.nilp() )
 	{
 	    this->_externalContext = new OpenMM::Context(*system->wrappedPtr(),
@@ -260,14 +260,14 @@ namespace omm
 
 
     Platform_sp Context_O::getPlatform()
-    {_OF();
+    {
 	core::Instance_sp mc = metaClassForOmmClass<OpenMM::Platform>(_lisp);
 	Platform_sp platform = wrap_ommObject(&(this->_externalContext->getPlatform()),mc,_lisp).as<Platform_O>();
 	return platform;
     }
 
     System_sp Context_O::getSystem() const
-    {_OF();
+    {
 	core::Instance_sp mc = metaClassForOmmClass<OpenMM::System>(_lisp);
 	System_sp system = wrap_ommObject(&(this->_externalContext->getSystem()),mc,_lisp).as<System_O>();
 	return system;
@@ -275,7 +275,7 @@ namespace omm
 	
 
     Integrator_sp Context_O::getIntegrator() const
-    {_OF();
+    {
 	OpenMM::Integrator* integrator = &(this->_externalContext->getIntegrator());
 	{
 	    OpenMM::LangevinIntegrator* subInt = dynamic_cast<OpenMM::LangevinIntegrator*>(integrator);
@@ -307,7 +307,7 @@ namespace omm
     ARGUMENT_SC_(enforcePeriodicBox);
     core::T_sp Context_O::getState(core::Function_sp exec, core::Cons_sp args,
 				  core::Environment_sp env, core::LispPtr lisp)
-    {_OF();
+    {
 	State_sp state = State_O::create(_lisp);
 	int types;
 	bool positions = env->lookup(_lisp->symbol(_sym_positions))->isTrue();
@@ -328,14 +328,14 @@ namespace omm
 
 
     void Context_O::takeOwnershipOfContext(OpenMM::Context* context)
-    {_OF();
+    {
 	if ( this->_externalContext ) delete this->_externalContext;
 	this->_externalContext = context;
     }
 
 
     void Context_O::setPositions(units::Quantity_sp coords)
-    {_OF();
+    {
 	vector<OpenMM::Vec3> positions;
 	positions.resize(coords->size());
 	for ( int i=0; i<(int)coords->size(); i++ )
@@ -348,7 +348,7 @@ namespace omm
     }
 
     void Context_O::setVelocities(units::Quantity_sp coords)
-    {_OF();
+    {
 	ASSERTF(coords->notNil(),("velocities coordinate array is nil"));
 	ASSERTF(coords->size()!=0,("There are no velocities"));
 	vector<OpenMM::Vec3> velocities;
@@ -364,7 +364,7 @@ namespace omm
 
 
     int HarmonicBondForce_O::addCandoBond(chem::Bond_sp b, chem::ForceField_sp forceField)
-    {_OF();
+    {
 	chem::Atom_sp a1 = b->getAtom1();
 	chem::Atom_sp a2 = b->getAtom2();
 	chem::FFStretch_sp term = forceField->getStretchDb()->findTerm(a1,a2);
@@ -380,7 +380,7 @@ namespace omm
 
 
     core::Cons_sp HarmonicBondForce_O::getBondParameters(int index) const
-    {_OF();
+    {
 	int particle1, particle2;
 	double length, k;
 	ASSERT(this->_Force!=NULL);
@@ -396,7 +396,7 @@ namespace omm
 
 
     int HarmonicAngleForce_O::addCandoAngle(chem::Angle_sp ang, chem::ForceField_sp forceField)
-    {_OF();
+    {
 	chem::Atom_sp a1 = ang->getA1();
 	chem::Atom_sp a2 = ang->getA2();
 	chem::Atom_sp a3 = ang->getA3();
@@ -414,7 +414,7 @@ namespace omm
 
 
     core::Cons_sp HarmonicAngleForce_O::getAngleParameters(int index) const
-    {_OF();
+    {
 	int particle1, particle2, particle3;
 	double angle, k;
 	ASSERT(this->_Force!=NULL);
@@ -439,7 +439,7 @@ namespace omm
       return a Cons of indexes for the new Torsion terms added */
     core::Cons_sp PeriodicTorsionForce_O::addCandoProperTorsions(chem::ProperTorsion_sp tor,
 								 chem::ForceField_sp forceField)
-    {_OF();
+    {
 	chem::Atom_sp a1 = tor->getA1();
 	chem::Atom_sp a2 = tor->getA2();
 	chem::Atom_sp a3 = tor->getA3();
@@ -483,7 +483,7 @@ namespace omm
 
     core::Cons_sp PeriodicTorsionForce_O::addCandoImproperTorsions(chem::ImproperTorsion_sp tor,
 								   chem::ForceField_sp forceField)
-    {_OF();
+    {
 	chem::Atom_sp a1 = tor->getA1();
 	chem::Atom_sp a2 = tor->getA2();
 	chem::Atom_sp a3central = tor->getA3Central();
@@ -539,7 +539,7 @@ namespace omm
 
 
     int NonbondedForce_O::addNonbondedAtom(chem::Atom_sp atom, chem::ForceField_sp forceField)
-    {_OF();
+    {
 	string ty = atom->getTypeString();
 	if ( !forceField->getNonbondDb()->hasType(ty) )
 	{
@@ -556,7 +556,7 @@ namespace omm
     }
 
     core::Symbol_sp NonbondedForce_O::getNonbondedMethod()
-    {_OF();
+    {
 	OpenMM::NonbondedForce::NonbondedMethod nbm = this->wrappedPtr()->getNonbondedMethod();
 	switch (nbm)
 	{
@@ -592,7 +592,7 @@ namespace omm
 
 
     void NonbondedForce_O::setNonbondedMethod(core::Symbol_sp sym)
-    {_OF();
+    {
 	OpenMM::NonbondedForce::NonbondedMethod nbm;
 	if ( sym == _sym_NoCutoff )
 	{
@@ -617,7 +617,7 @@ namespace omm
     }
 
     core::Cons_sp NonbondedForce_O::getParticleParameters(int p)
-    {_OF();
+    {
 	double charge, sigma, epsilon;
 	this->wrappedPtr()->getParticleParameters(p,charge,sigma,epsilon);
 	core::Cons_sp res = core::Cons_O::createList(core::DoubleFloat_O::create(charge),
@@ -627,7 +627,7 @@ namespace omm
     }
 
     core::Cons_sp NonbondedForce_O::getExceptionParameters(int p)
-    {_OF();
+    {
 	int part1, part2;
 	double chargeProd, sigma, epsilon;
 	this->wrappedPtr()->getExceptionParameters(p,part1,part2,chargeProd,sigma,epsilon);
@@ -640,7 +640,7 @@ namespace omm
     }
 
     int NonbondedForce_O::addException(int part1, int part2, double chargeProd, double sigma, double epsilon, bool replace )
-    {_OF();
+    {
 	int idx = this->wrappedPtr()->addException(part1,part2,chargeProd,sigma,epsilon,replace);
 	return idx;
     }

@@ -145,7 +145,7 @@ void CDNode_O::getParsedLabel(string& name, bool& saw_ionization, int& ionizatio
 }
 
 void	CDNode_O::parseFromXml(adapt::QDomNode_sp xml, bool verbose)
-{_OF();
+{
   this->_Id = xml->getAttributeInt("id");
   this->_Color = xml->getAttributeIntDefault("color",3);
   std::string pos = xml->getAttributeString("p");
@@ -317,7 +317,7 @@ void CDFragment_O::fields(core::Record_sp node)
 }
 
 void	CDFragment_O::initialize()
-{_OF();
+{
   this->Base::initialize();
   this->_ConstitutionName = nil<core::Symbol_O>();
   this->_Nodes.clear();
@@ -693,7 +693,7 @@ bool CDFragment_O::interpret(bool verbose, bool addHydrogens)
 
 
 Atom_sp CDFragment_O::createOneAtom(CDNode_sp n)
-{_OF();
+{
   Atom_sp a = Atom_O::create();
   Vector3 pos3;
   pos3.set(n->_Pos.getX(),n->_Pos.getY(), 0.0 );
@@ -1105,9 +1105,9 @@ void ChemDraw_O::fields(core::Record_sp node)
 */
 
 CL_LISPIFY_NAME(make-chem-draw);
-CL_LAMBDA(file-name &optional verbose (add-hydrogens t))
-CL_DOCSTRING(R"dx(Make a chem:chem-draw object from a string.  If verbose is T then print info to *standard-output*.)dx")
-DOCGROUP(cando)
+CL_LAMBDA(file-name &optional verbose (add-hydrogens t));
+CL_DOCSTRING(R"dx(Make a chem:chem-draw object from a string.  If verbose is T then print info to *standard-output*.)dx");
+DOCGROUP(cando);
 CL_DEFUN ChemDraw_sp ChemDraw_O::make(core::T_sp stream, bool verbose, bool addHydrogens)
 {
   auto  me  = gctools::GC<ChemDraw_O>::allocate_with_default_constructor();
@@ -1130,7 +1130,7 @@ void ChemDraw_O::setFragmentProperties(core::Symbol_sp name
                                        , core::T_sp restrained_pi_bonds
                                        , core::T_sp caps
                                        )
-{_OF();
+{
   CDFragment_sp frag = this->_NamedFragments.get(name);
   core::HashTableEq_sp properties = core::HashTableEq_O::create_default();
   if ( comment.notnilp() ) properties->setf_gethash(kw::_sym_comment, comment );
@@ -1225,7 +1225,7 @@ void	ChemDraw_O::parse( core::T_sp strm, bool verbose, bool addHydrogens )
 
 CL_LISPIFY_NAME("asAggregate");
 CL_DEFMETHOD     Aggregate_sp ChemDraw_O::asAggregate()
-{_OF();
+{
   core::List_sp fragments = this->allFragmentsAsList();
   Aggregate_sp agg = Aggregate_O::create();
   for ( auto cur : fragments ) {

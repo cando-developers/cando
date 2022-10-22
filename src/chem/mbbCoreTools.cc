@@ -221,7 +221,7 @@ Residue_sp		res;
     }
 
 
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN void chem__connectAtomsInMatterInCovalentContact(Matter_sp matter)
     {
         gctools::Vec0<Atom_sp>	atoms;
@@ -241,7 +241,7 @@ CL_DEFUN void chem__connectAtomsInMatterInCovalentContact(Matter_sp matter)
 
     /*! Return all of the atoms in the matter that are within the sphere indicated by center/radius
      */
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN adapt::ObjectSet_sp chem__atomsWithinSphereAsObjectSet( Matter_sp matter, Vector3 center, double radius )
     {
 	LOG("Looking for atoms in sphere with center(%s) and radius(%lf)" , center.asString() , radius );
@@ -267,7 +267,7 @@ CL_DEFUN adapt::ObjectSet_sp chem__atomsWithinSphereAsObjectSet( Matter_sp matte
 
     /*! Return all of the atoms in the matter that are within the sphere indicated by center/radius
      */
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN adapt::ObjectSet_sp chem__atomsInMatterAsObjectSet( Matter_sp matter)
     {
 	adapt::ObjectSet_sp result = adapt::ObjectSet_O::create();

@@ -485,7 +485,7 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateUsingExcludedAtoms(Scori
 
 
 void	EnergyPeriodicBoundaryConditionsNonbond_O::compareAnalyticalAndNumericalForceAndHessianTermByTerm(ScoringFunction_sp score, NVector_sp 	pos)
-{_OF();
+{
   int	fails = 0;
   bool	calcForce = true;
   bool	calcDiagonalHessian = true;

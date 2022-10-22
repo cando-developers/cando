@@ -78,7 +78,7 @@ private:
 
 
 void MySaxDomHandler::setTopNode(QDomNode_O* n)
-{_OF();
+{
     this->topNode = n;
     LOG("Setting _currentNode to NULL");
     this->_currentNode=NULL;
@@ -160,7 +160,7 @@ void QDomNode_O::initialize() {
 
 
 void	QDomNode_O::throwErrorForChildren()
-{_OF();
+{
 VectorQDomNodes		children;
 QDomNode_sp		child;
 
@@ -179,7 +179,7 @@ QDomNode_sp		child;
 
 
 void	QDomNode_O::throwErrorForChildrenWithoutName(string nm)
-{_OF();
+{
     VectorQDomNodes		children;
     QDomNode_sp		child;
 
@@ -201,7 +201,7 @@ void	QDomNode_O::throwErrorForChildrenWithoutName(string nm)
 //
 //      Return true if the data is all white space
 bool    QDomNode_O::dataIsAllWhiteSpace()
-{_OF();
+{
   bool                        sawChar;
   string                      val;
   string::iterator    it;
@@ -457,7 +457,7 @@ int		start, stop;
 }
 
 vector<double>	QDomNode_O::getDataAsVectorOfDoubles()
-{_OF();
+{
 string		s;
 vector<double>	vs;
 uint	cur;
@@ -555,7 +555,7 @@ VectorQDomNodes::iterator	it;
 
 CL_LISPIFY_NAME("childWithName");
 CL_DEFMETHOD QDomNode_sp	QDomNode_O::childWithName( const string& name ) 
-{_OF();
+{
 QDomNode_sp			child;
 iterator	it;
 int				children;
@@ -580,7 +580,7 @@ int				children;
 
 CL_LISPIFY_NAME("onlyChild");
 CL_DEFMETHOD QDomNode_sp	QDomNode_O::onlyChild()
-{_OF();
+{
 QDomNode_sp			child;
     if ( this->_children.size() != 1 ) {
         SIMPLE_ERROR(("This node must have one and only one child file(%s) line(%d) ") , this->getFileName() , this->getLineNumber() );
@@ -592,7 +592,7 @@ QDomNode_sp			child;
 
 
 VectorQDomNodes QDomNode_O::getChildrenWithNameAndRemoveThem( const string& name )
-{_OF();
+{
 VectorQDomNodes 			childs;
 iterator		it;
     LOG("QDomNode_O::getChildrenWithNameAndRemoveThem" );
@@ -718,7 +718,7 @@ void	QDomNode_O::eraseAll() {
 
 #if 0
 void	QDomNode_O::parseStream(core::Stream_sp fIn)
-{_OF();
+{
     MySaxDomHandler	handler;
     bool		res;
 
@@ -789,7 +789,7 @@ gc::Nilable<QDomNode_sp>  QDomNode_O::parse(core::T_sp stream)
 
 CL_LISPIFY_NAME("asString");
 CL_DEFMETHOD string	QDomNode_O::asString()
-{_OF();
+{
 stringstream	ss;
     this->dumpToStream(ss);
     return ss.str();

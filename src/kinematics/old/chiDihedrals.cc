@@ -78,12 +78,12 @@ CL_LISPIFY_NAME(make-ChiDihedral);
 
 
     void ChiDihedral_O::initialize()
-    {_OF();
+    {
         this->Base::initialize();
     }
 
     core::T_mv ChiDihedral_O::atomIndices() const
-    {_OF();
+    {
 	return Values(
 	    core::clasp_make_fixnum(this->_Atom1),
 	    core::clasp_make_fixnum(this->_Atom2),
@@ -119,12 +119,12 @@ CL_LISPIFY_NAME(make-ChiDihedral);
 
 
     void ChiList_O::initialize()
-    {_OF();
+    {
         this->Base::initialize();
     }
 
     void ChiList_O::append(ChiDihedral_sp chi)
-    {_OF();
+    {
 	this->_Chis.push_back(chi);
     }
 

@@ -35,7 +35,7 @@ namespace chem {
 
 
 void	FrameRecognizer_O::initialize()
-{_OF();
+{
     this->_Name = nil<core::Symbol_O>();
     this->_GroupName = nil<core::Symbol_O>();
 }

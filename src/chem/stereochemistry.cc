@@ -237,7 +237,7 @@ void StereoInformation_O::fields(core::Record_sp node) {
 }
 
 void	StereoInformation_O::addStereoisomer(Stereoisomer_sp s)
-{_OF();
+{
   if ( this->_NameOrPdbToStereoisomer.count(s->getName())>0 ) {
     SIMPLE_ERROR(("addStereoisomer monomer name (%s) has already been used") , core::_rep_(s->getName()));
   }
@@ -250,7 +250,7 @@ void	StereoInformation_O::addStereoisomer(Stereoisomer_sp s)
 
 CL_LISPIFY_NAME("validate");
 CL_DEFMETHOD void StereoInformation_O::validate()
-{_OF();
+{
   for ( gctools::Vec0<Stereoisomer_sp>::iterator it=this->_Stereoisomers.begin(); it!=this->_Stereoisomers.end(); it++ )
   {
     if ( (*it)->getName().nilp() ) {
@@ -285,7 +285,7 @@ void	StereoInformation_O::addProChiralCenter(RPProChiralCenter s)
 
 
 Stereoisomer_sp	StereoInformation_O::getStereoisomer(core::T_sp  nameOrPdb )
-{_OF();
+{
   return this->_NameOrPdbToStereoisomer.get(nameOrPdb);
 }
 

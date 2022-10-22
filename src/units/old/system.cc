@@ -57,7 +57,7 @@ namespace units
 
 
     void System_O::initialize()
-    {_OF();
+    {
         this->Base::initialize();
     }
 
@@ -88,7 +88,7 @@ namespace units
 
 
     string System_O::unitsAsString(double& amount, Quantity_sp quantity) const
-    {_OF();
+    {
 	if ( this.nilp() ) return "-nil-quantity-";
 	stringstream units;
 	for ( int i=0; i<NumBaseDimensions; i++ )
@@ -111,7 +111,7 @@ namespace units
 
 
     string System_O::quantityAsString(double amount, Quantity_sp quantity) const
-    {_OF();
+    {
 	if ( this.nilp() ) return "-nil-quantity-";
 	stringstream units;
 	units << this->unitsAsString(amount,quantity);

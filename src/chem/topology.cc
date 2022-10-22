@@ -72,8 +72,8 @@ void Topology_O::fields(core::Record_sp node)
 
 
 CL_LISPIFY_NAME(makeTopologyFromResidue);
-CL_LAMBDA(residue topology-name &optional constitution)
-CL_DOCSTRING(R"dx(Create a topology from a residue. The constitution may be NIL or a constitution to use to define the atoms)dx")
+CL_LAMBDA(residue topology-name &optional constitution);
+CL_DOCSTRING(R"dx(Create a topology from a residue. The constitution may be NIL or a constitution to use to define the atoms)dx");
 CL_DEF_CLASS_METHOD Topology_mv Topology_O::makeTopologyFromResidue(chem::Residue_sp residue, core::Symbol_sp topologyName, core::T_sp tconstitution )
 {
   core::Symbol_sp stereoisomerName = topologyName;
@@ -333,7 +333,7 @@ struct OverlappingFragments {
 };
 
 CL_LISPIFY_NAME(connect_residues);
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN void connect_residues(Topology_sp prev_topology,
                                Residue_sp prev_residue,
                                core::Symbol_sp out_plug_name,
@@ -427,7 +427,7 @@ CL_DEFMETHOD     Topology_O::plugType Topology_O::getInPlug()
 
 CL_NAME(CHEM:TOPOLOGY/PLUGS-AS-LIST);
 CL_DEFMETHOD     core::List_sp Topology_O::plugsAsList()
-{_OF();
+{
   core::Cons_sp first = core::Cons_O::create(nil<core::T_O>(),nil<core::T_O>());
   core::Cons_sp cur = first;
   LOG("The number of plugs = %d" , this->_Plugs.size()  );
@@ -514,7 +514,7 @@ bool Topology_O::hasMatchingPlugsWithMates(adapt::SymbolSet_sp plugSet)
   return match;
 }
 
-CL_DOCSTRING(R"dx(Return true if this topology has identically named plugs of the other)dx")
+CL_DOCSTRING(R"dx(Return true if this topology has identically named plugs of the other)dx");
 CL_DEFMETHOD bool Topology_O::matchesPlugs(Topology_sp other)
 {
   if (this->_Plugs.size() != other->_Plugs.size()) {
@@ -651,13 +651,13 @@ CL_DEFMETHOD void Topology_O::clearProperty(core::Symbol_sp symbol)
 {
   this->_Properties = core::core__rem_f(this->_Properties,symbol);
 }
-CL_DOCSTRING(R"dx(Set the property **symbol** of **this** (a chem:topology) to **value**.)dx")
+CL_DOCSTRING(R"dx(Set the property **symbol** of **this** (a chem:topology) to **value**.)dx");
 CL_DEFMETHOD void Topology_O::setProperty(core::Symbol_sp symbol, core::T_sp value)
 {
   this->_Properties = core::core__put_f(this->_Properties,value,symbol);
 }
 
-CL_DOCSTRING(R"dx(Return the property **symbol** of **this** (a chem:topology) - if it isn't defined return NIL.)dx")
+CL_DOCSTRING(R"dx(Return the property **symbol** of **this** (a chem:topology) - if it isn't defined return NIL.)dx");
 CL_NAME(CHEM:TOPOLOGY/GET-PROPERTY);
 CL_DEFMETHOD core::T_sp Topology_O::getProperty(core::Symbol_sp symbol)
 {
@@ -670,14 +670,14 @@ CL_DEFMETHOD core::T_sp Topology_O::getProperty(core::Symbol_sp symbol)
   return res;
 }
 
-CL_DOCSTRING(R"dx(Return the property **symbol** of **this** (a chem:topology) - if it isn't defined return **defval**.)dx")
+CL_DOCSTRING(R"dx(Return the property **symbol** of **this** (a chem:topology) - if it isn't defined return **defval**.)dx");
 CL_LISPIFY_NAME("getPropertyOrDefault");
 CL_DEFMETHOD core::T_sp Topology_O::getPropertyOrDefault(core::Symbol_sp prop,core::T_sp defval)
 {
   return core::cl__getf(this->_Properties,prop,defval);
 }
 
-CL_DOCSTRING(R"dx(Return T if the property **symbol** of **this** (a chem:topology) is defined.)dx")
+CL_DOCSTRING(R"dx(Return T if the property **symbol** of **this** (a chem:topology) is defined.)dx");
 CL_LISPIFY_NAME("hasProperty");
 CL_DEFMETHOD bool Topology_O::hasProperty(core::Symbol_sp symbol)
 {
@@ -686,7 +686,7 @@ CL_DEFMETHOD bool Topology_O::hasProperty(core::Symbol_sp symbol)
 
 
 
-CL_DOCSTRING(R"(Coding can be either :absolute or :coded. :absolute means the bitvector/integer stereoisomer index is used to determine which stereoisomer is specified.  Coded means the stereoisomer index is looked up in the _StereoisomerAtomProperties.)")
+CL_DOCSTRING(R"(Coding can be either :absolute or :coded. :absolute means the bitvector/integer stereoisomer index is used to determine which stereoisomer is specified.  Coded means the stereoisomer index is looked up in the _StereoisomerAtomProperties.)");
 CL_DEFMETHOD void Topology_O::setStereoisomerAtoms(core::Symbol_sp coding, core::List_sp stereoisomer_atoms) {
   this->_StereoisomerCoding = coding;
   this->_StereoisomerAtomProperties.clear();
@@ -699,7 +699,7 @@ CL_DEFMETHOD void Topology_O::setStereoisomerAtoms(core::Symbol_sp coding, core:
 
 
 CL_LISPIFY_NAME("lookupStereoisomerAtoms");
-CL_DOCSTRING(R"dx(Return (values stereoisomer-atoms coded-or-absolute isomer))dx")CL_DEFMETHOD core::T_mv Topology_O::lookupStereoisomerAtoms(Fixnum isomer)
+CL_DOCSTRING(R"dx(Return (values stereoisomer-atoms coded-or-absolute isomer))dx");CL_DEFMETHOD core::T_mv Topology_O::lookupStereoisomerAtoms(Fixnum isomer)
 {
   if (this->_StereoisomerCoding == kw::_sym_coded) {
     return Values(this->_StereoisomerAtomProperties[isomer],this->_StereoisomerCoding,core::make_fixnum(isomer));

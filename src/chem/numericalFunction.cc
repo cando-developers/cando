@@ -207,7 +207,7 @@ double	highY;
     and create a NumericalFunction using x#,y# where # is xindex,yindex
 */
 void	NumericalFunction_O::parseFromXYFile(string fn, int xindex, int yindex)
-{_OF();
+{
   FILE*				fIn;
   double				x, y;
   double				values[10];
@@ -255,7 +255,7 @@ void	NumericalFunction_O::reset()
 
 
 NumericalFunction_sp NumericalFunction_O::add(NumericalFunction_sp fn)
-{_OF();
+{
 NumericalFunction_sp		newFunc;
 double				xMin, xMax, x;
 int				thisIndex, fnIndex, vals;
@@ -300,7 +300,7 @@ int				thisIndex, fnIndex, vals;
 }
 
 NumericalFunction_sp NumericalFunction_O::sub(NumericalFunction_sp fn)
-{_OF();
+{
 NumericalFunction_sp		newFunc;
 double				xMin, xMax, x;
 int				thisIndex, fnIndex, vals;

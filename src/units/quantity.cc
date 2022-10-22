@@ -178,7 +178,7 @@ Quantity_sp Quantity_O::create( double dbl, Unit_sp unit)
 
 
 CL_LISPIFY_NAME(make-quantity);
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN Quantity_sp Quantity_O::make(core::T_sp val, Unit_sp unit)
     {
       auto quant = gctools::GC<Quantity_O>::allocate_with_default_constructor();
@@ -205,14 +205,14 @@ CL_DEFUN Quantity_sp Quantity_O::make(core::T_sp val, Unit_sp unit)
 #endif
 
     void Quantity_O::initialize()
-    {_OF();
+    {
         this->Base::initialize();
     }
 
 
 CL_LISPIFY_NAME("rawAsString");
 CL_DEFMETHOD     string Quantity_O::rawAsString() const
-    {_OF();
+    {
 	stringstream ss;
 	if ( this->_Value.isA<core::DoubleFloat_O>() )
 	{
@@ -228,7 +228,7 @@ CL_DEFMETHOD     string Quantity_O::rawAsString() const
 
 
     string Quantity_O::__repr__() const
-    {_OF();
+    {
 	stringstream ss;
 	core::T_sp valueCopy = Quantity_O::copyAndScaleValue(this->_Value,this->_Unit->_Amount);
 	ss << _rep_(valueCopy);
@@ -243,7 +243,7 @@ CL_DEFMETHOD     string Quantity_O::rawAsString() const
 
 CL_LISPIFY_NAME("quantity_is_compatible");
 CL_DEFMETHOD     bool Quantity_O::is_compatible(core::T_sp other) const
-    {_OF();
+    {
 	if ( other.isA<Unit_O>() )
 	{
 	    Unit_sp uother = other.as<Unit_O>();
@@ -258,7 +258,7 @@ CL_DEFMETHOD     bool Quantity_O::is_compatible(core::T_sp other) const
 
 CL_LISPIFY_NAME("value_in_unit");
 CL_DEFMETHOD     core::T_sp Quantity_O::value_in_unit(Unit_sp other, int power) const
-    {_OF();
+    {
 	double conversion = this->_Unit->conversion_factor_to(other,power);
 	core::T_sp valueCopy = Quantity_O::copyAndScaleValue(this->_Value,conversion);
 	return valueCopy;
@@ -266,7 +266,7 @@ CL_DEFMETHOD     core::T_sp Quantity_O::value_in_unit(Unit_sp other, int power) 
 
 
     double Quantity_O::value_in_unit_asReal(Unit_sp other, int power) const
-    {_OF();
+    {
 	core::DoubleFloat_sp val = this->value_in_unit(other,power).as<core::DoubleFloat_O>();
 	double dval = val->get();
 	return dval;
@@ -274,14 +274,14 @@ CL_DEFMETHOD     core::T_sp Quantity_O::value_in_unit(Unit_sp other, int power) 
 
 
     Quantity_sp Quantity_O::getElement(uint i) const
-    {_OF();
+    {
 	core::T_sp val = Quantity_O::copyValueElement(this->_Value,i);
 	return Quantity_O::create(val,this->_Unit);
     }
 
 CL_LISPIFY_NAME("getElement_in_unit");
 CL_DEFMETHOD     core::T_sp Quantity_O::getElement_in_unit(uint index, Unit_sp other ) const
-    {_OF();
+    {
 	double conversion = this->_Unit->conversion_factor_to(other);
 	core::T_sp valueCopy = Quantity_O::copyAndScaleValueElement(this->_Value,index,conversion);
 	return valueCopy;
@@ -289,7 +289,7 @@ CL_DEFMETHOD     core::T_sp Quantity_O::getElement_in_unit(uint index, Unit_sp o
 
 CL_LISPIFY_NAME("setElement");
 CL_DEFMETHOD     core::T_sp Quantity_O::setElement(uint index, Quantity_sp other)
-    {_OF();
+    {
 	// At this point (this) is a Quantity in a particular set of units
 	// and other is a Quantity in (hopefully) compatible units
 	// I want to convert other into my units and put it into
@@ -307,7 +307,7 @@ CL_DEFMETHOD     core::T_sp Quantity_O::setElement(uint index, Quantity_sp other
     }
 
     Vector3 Quantity_O::getElement_in_unit_asVector3(uint index, Unit_sp other) const
-    {_OF();
+    {
 	geom::OVector3_sp element = this->getElement_in_unit(index,other).as<geom::OVector3_O>();
 	return element->get();
     }
@@ -315,7 +315,7 @@ CL_DEFMETHOD     core::T_sp Quantity_O::setElement(uint index, Quantity_sp other
 
 CL_LISPIFY_NAME("size");
 CL_DEFMETHOD     int Quantity_O::size() const
-    {_OF();
+    {
 	return Quantity_O::sizeOfValue(this->_Value);
     }
 
@@ -324,7 +324,7 @@ CL_DEFMETHOD     int Quantity_O::size() const
 
 CL_LISPIFY_NAME("*");
 CL_DEFMETHOD     core::T_sp Quantity_O::operator*(core::T_sp other) const
-    {_OF();
+    {
 	if ( other.nilp() ) return this->const_sharedThis<Quantity_O>();
 	if ( other.isA<core::DoubleFloat_O>() )
 	{
@@ -371,7 +371,7 @@ CL_DEFMETHOD     core::T_sp Quantity_O::operator*(core::T_sp other) const
 
 CL_LISPIFY_NAME("/");
 CL_DEFMETHOD     core::T_sp Quantity_O::operator/(core::T_sp other) const
-    {_OF();
+    {
 	if ( other.nilp() ) return this->const_sharedThis<Quantity_O>();
 	if ( other.isA<core::DoubleFloat_O>() )
 	{
@@ -404,7 +404,7 @@ CL_DEFMETHOD     core::T_sp Quantity_O::operator/(core::T_sp other) const
 
 CL_LISPIFY_NAME("+");
 CL_DEFMETHOD     core::T_sp Quantity_O::operator+(core::T_sp other) const
-    {_OF();
+    {
 	if ( other.nilp() ) return this->const_sharedThis<Quantity_O>();
 	if ( other.isA<Quantity_O>() )
 	{
@@ -431,7 +431,7 @@ CL_DEFMETHOD     core::T_sp Quantity_O::operator+(core::T_sp other) const
 
 CL_LISPIFY_NAME("-");
 CL_DEFMETHOD     core::T_sp Quantity_O::operator-(core::T_sp other) const
-    {_OF();
+    {
 	if ( other.nilp() ) return this->const_sharedThis<Quantity_O>();
 	if ( other.isA<Quantity_O>() )
 	{
@@ -460,7 +460,7 @@ CL_DEFMETHOD     core::T_sp Quantity_O::operator-(core::T_sp other) const
 
 CL_LISPIFY_NAME("power");
 CL_DEFMETHOD     core::T_sp Quantity_O::power(int pwr) const
-    {_OF();
+    {
 	if ( this->_Value.isA<core::Number_O>() )
 	{
           double myValue = ::pow(core::clasp_to_double(this->_Value.as<core::Number_O>()),(double)pwr);
@@ -472,7 +472,7 @@ CL_DEFMETHOD     core::T_sp Quantity_O::power(int pwr) const
 
 CL_LISPIFY_NAME("sqrt");
 CL_DEFMETHOD     core::T_sp Quantity_O::sqrt() const
-    {_OF();
+    {
 	if ( this->_Value.isA<core::Number_O>() )
 	{
           double myValue = ::sqrt(core::clasp_to_double(this->_Value.as<core::Number_O>()));
@@ -485,13 +485,13 @@ CL_DEFMETHOD     core::T_sp Quantity_O::sqrt() const
 
 CL_LISPIFY_NAME("isnan");
 CL_DEFMETHOD     bool Quantity_O::isnan() const
-    {_OF();
+    {
 	return Quantity_O::isnanValue(this->_Value);
     }
 
 
     core::T_sp Quantity_O::deepCopy() const
-    {_OF();
+    {
 	/* units are immutable so we don't need to copy them */
       IMPLEMENT_ME();
       // Implement deepCopy
@@ -504,7 +504,7 @@ CL_DEFMETHOD     bool Quantity_O::isnan() const
 
 CL_LISPIFY_NAME("<");
 CL_DEFMETHOD     bool Quantity_O::operator<(core::T_sp other) const
-    {_OF();
+    {
 	if ( other.isA<Quantity_O>() )
 	{
 	    Quantity_sp qother = other.as<Quantity_O>();
@@ -516,7 +516,7 @@ CL_DEFMETHOD     bool Quantity_O::operator<(core::T_sp other) const
 
 CL_LISPIFY_NAME("<=");
 CL_DEFMETHOD     bool Quantity_O::operator<=(core::T_sp other) const
-    {_OF();
+    {
 	if ( other.isA<Quantity_O>() )
 	{
 	    Quantity_sp qother = other.as<Quantity_O>();
@@ -529,7 +529,7 @@ CL_DEFMETHOD     bool Quantity_O::operator<=(core::T_sp other) const
 
 CL_LISPIFY_NAME(">");
 CL_DEFMETHOD     bool Quantity_O::operator>(core::T_sp other) const
-    {_OF();
+    {
 	if ( other.isA<Quantity_O>() )
 	{
 	    Quantity_sp qother = other.as<Quantity_O>();
@@ -541,7 +541,7 @@ CL_DEFMETHOD     bool Quantity_O::operator>(core::T_sp other) const
 
 CL_LISPIFY_NAME(">=");
 CL_DEFMETHOD     bool Quantity_O::operator>=(core::T_sp other) const
-    {_OF();
+    {
 	if ( other.isA<Quantity_O>() )
 	{
 	    Quantity_sp qother = other.as<Quantity_O>();

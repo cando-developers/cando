@@ -104,7 +104,7 @@ RestrainedPiBond_sp RestrainedPiBond_O::make(core::Symbol_sp config, core::List_
 #else
 
     core::T_sp 	RestrainedPiBond_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::LispPtr lisp)
-{_OF();
+{
     this->_Configuration = env->lookup(Pkg(),"config").as<core::Str_O>()->get();
     core::Cons_sp piAtoms = env->lookup(Pkg(),"piAtoms").as<core::Cons_O>();
     if ( this->_Configuration != "E" && this->_Configuration != "Z" )
@@ -150,7 +150,7 @@ void	RestrainedPiBond_O::fillOneDihedralRestraint(Residue_sp residue,
  * for "Z"  x1&y1 cis
  */
     void	RestrainedPiBond_O::fillRestraints(Residue_sp residue, core::HashTable_sp cip)
-{_OF();
+{
     core::Symbol_sp config = this->_Configuration;
     Atom_sp pX  = gc::As_unsafe<Atom_sp>(residue->atomWithName(this->getPiAtomX()));
     Atom_sp pY  = gc::As_unsafe<Atom_sp>(residue->atomWithName(this->getPiAtomY()));
@@ -225,7 +225,7 @@ bool RestrainedExoCyclicAtom_O::_LazyInitializedSmarts = false;
 SYMBOL_EXPORT_SC_(ChemPkg,STARAtomExoToSixMemberedRingSTAR);
 
 void	RestrainedExoCyclicAtom_O::lazyInitializeSmarts()
-{_OF();
+{
   SIMPLE_ERROR(("Fix me - my smarts is wrong"));
     if ( !RestrainedExoCyclicAtom_O::_LazyInitializedSmarts )
     {
@@ -273,7 +273,7 @@ void	RestrainedExoCyclicAtom_O::archiveBase(core::ArchiveP node)
 
 
     void RestrainedExoCyclicAtom_O::fillRestraints(Residue_sp residue, core::HashTable_sp cip )
-{_OF();
+{
   SIMPLE_ERROR(("Fix the implementation of %s") , __FUNCTION__);
     this->lazyInitializeSmarts();
     if ( !residue->hasAtomWithName(this->_ExoCyclicAtomName) )

@@ -426,7 +426,7 @@ CL_DEFMETHOD     core::T_sp	ZMatrixDihedralInternal_O::getDihedralAtomZMatrixNam
 
 CL_LISPIFY_NAME("get-zmatrix-atom-name-at-index");
 CL_DEFMETHOD     core::T_sp ZMatrix_O::getZMatrixAtomNameAtIndex(uint i) const
-    {_OF();
+    {
 	return this->_getAtomZMatrixNameAtIndex(i);
     }
 
@@ -621,13 +621,13 @@ CL_DEFMETHOD     void	ZMatrix_O::extractInternals()
 
 CL_LISPIFY_NAME("entriesAsList");
 CL_DEFMETHOD     core::List_sp ZMatrix_O::entriesAsList() const
-    {_OF();
+    {
 	return core::Cons_O::createFromVec0(this->_ZMatrix);
     };
 
 CL_LISPIFY_NAME("zmatrix-entry-with-name");
 CL_DEFMETHOD     ZMatrixEntry_sp ZMatrix_O::zMatrixEntryWithName(core::T_sp atomZMatrixName) const
-    {_OF();
+    {
 	for ( const_zMatrixEntryIterator it = this->begin_ZMatrixEntries();
 	      it != this->end_ZMatrixEntries(); it++ )
 	{
@@ -639,7 +639,7 @@ CL_DEFMETHOD     ZMatrixEntry_sp ZMatrix_O::zMatrixEntryWithName(core::T_sp atom
 
 CL_LISPIFY_NAME("all-zmatrix-atom-names-as-string");
 CL_DEFMETHOD     string ZMatrix_O::allZMatrixAtomNamesAsString() const
-    {_OF();
+    {
 	stringstream ss;
 	for ( const_zMatrixEntryIterator it = this->begin_ZMatrixEntries();
 	      it != this->end_ZMatrixEntries(); it++ )

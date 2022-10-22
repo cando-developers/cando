@@ -79,14 +79,14 @@ namespace units
 
 
     void Float_O::initialize()
-    {_OF();
+    {
         this->Base::initialize();
 	this->_Amount = 0.0;
     }
 
 
     Object_sp Float_O::amount_matchUnits(core::Executable_sp exec, core::Cons_sp args, core::Environment_sp env, core::LispPtr lisp)
-    {_OF();
+    {
 	int matchPowers[NumBaseDimensions] = {0,0,0,0,0,0,0};
 	double amountScale = 1.0;
 	this->parseDimensionSymbolList(matchPowers,amountScale,args->cdr(),false);
@@ -95,7 +95,7 @@ namespace units
     }
 
     double Float_O::amount_matchUnit(core::Symbol_sp dim, int power)
-    {_OF();
+    {
 	int matchPowers[NumBaseDimensions] = {0,0,0,0,0,0,0};
 	double amountScale = 1.0;
 	this->parseDimensionSymbols(matchPowers,amountScale,dim,power);
@@ -107,7 +107,7 @@ namespace units
 
 
     Object_sp Float_O::amount() const
-    {_OF();
+    {
 	int zeroPowers[NumBaseDimensions] = {0,0,0,0,0,0,0};
 	if ( this->powersMatch(zeroPowers) )
 	{
@@ -123,13 +123,13 @@ namespace units
 
 
     Object_sp Float_O::unsafeAmount() const
-    {_OF();
+    {
 	return core::Double_float_O::create(this->_Amount,_lisp);
     }
 
 
     string Float_O::__repr__() const
-    {_OF();
+    {
 	stringstream ss;
 	return this->system()->quantityAsString(this->_Amount,this->sharedThis<Float_O>());
     }
@@ -141,7 +141,7 @@ namespace units
 
 
     Quantity_sp Float_O::add(Quantity_sp other) const
-    {_OF();
+    {
 	Float_sp result = RP_Copy(this);
 	if ( other->notNil() )
 	{
@@ -156,7 +156,7 @@ namespace units
 
 	
     Quantity_sp Float_O::sub(Quantity_sp other) const
-    {_OF();
+    {
 	Float_sp result = RP_Copy(this);
 	if ( other->notNil() )
 	{
@@ -170,7 +170,7 @@ namespace units
     }
 
     Quantity_sp Float_O::negate() const
-    {_OF();
+    {
 	Float_sp result = RP_Copy(this);
 	result->_Amount = - result->_Amount;
 	return result;
@@ -178,7 +178,7 @@ namespace units
 
 
     Quantity_sp Float_O::mul(Quantity_sp other) const
-    {_OF();
+    {
 	Float_sp result = RP_Copy(this);
 	for ( int i=0; i<NumBaseDimensions; i++ )
 	{
@@ -189,7 +189,7 @@ namespace units
     }
 
     Quantity_sp Float_O::div(Quantity_sp other) const
-    {_OF();
+    {
 	Float_sp result = RP_Copy(this);
 	for ( int i=0; i<NumBaseDimensions; i++ )
 	{
@@ -202,7 +202,7 @@ namespace units
 
 
     Quantity_sp Float_O::reciprocal() const
-    {_OF();
+    {
 	Float_sp result = RP_Copy(this);
 	if ( this->_Amount == 0.0 )
 	{
@@ -217,7 +217,7 @@ namespace units
     }
 
     Quantity_sp Float_O::sqrt() const
-    {_OF();
+    {
 	Float_sp result = RP_Copy(this);
 	if ( this->_Amount < 0.0  )
 	{
@@ -240,7 +240,7 @@ namespace units
 
 
     Quantity_sp Float_O::mulByScalar(double scalar) const
-    {_OF();
+    {
 	Float_sp result = RP_Copy(this);
 	result->_Amount *= scalar;
 	return result;
@@ -249,7 +249,7 @@ namespace units
 
 
     Quantity_sp Float_O::divByScalar(double scalar) const
-    {_OF();
+    {
 	Float_sp result = RP_Copy(this);
 	if ( scalar == 0.0 )
 	{
@@ -262,7 +262,7 @@ namespace units
 
 
     Quantity_sp Float_O::pow(int power) const
-    {_OF();
+    {
 	Float_sp result = RP_Copy(this);
 	for ( int i=0; i<NumBaseDimensions; i++ )
 	{
@@ -274,13 +274,13 @@ namespace units
 
 
     bool Float_O::isnan() const
-    {_OF();
+    {
 	return this->_Amount != this->_Amount;
     }
 
 
     string Float_O::dump() const
-    {_OF();
+    {
 	return this->__repr__();
     }
 

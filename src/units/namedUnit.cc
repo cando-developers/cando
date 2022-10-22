@@ -111,7 +111,7 @@ namespace units
 #endif
 
     void NamedUnit_O::initialize()
-    {_OF();
+    {
         this->Base::initialize();
     }
 

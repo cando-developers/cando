@@ -49,7 +49,7 @@ namespace kinematics
 
 
     core::Symbol_sp RootBondedJoint_O::typeSymbol() const
-    {_OF();
+    {
 	return _sym_rootBonded;
     };
 };

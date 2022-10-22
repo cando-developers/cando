@@ -392,7 +392,7 @@ double EnergyStretch_O::evaluateAllComponent( ScoringFunction_sp score,
 
 
 void	EnergyStretch_O::compareAnalyticalAndNumericalForceAndHessianTermByTerm( NVector_sp 	pos)
-{_OF();
+{
   int	fails = 0;
   bool	calcForce = true;
   bool	calcDiagonalHessian = true;
@@ -456,7 +456,7 @@ SYMBOL_EXPORT_SC_(KeywordPkg,force);
 
 
 core::List_sp	EnergyStretch_O::checkForBeyondThresholdInteractionsWithPosition(NVector_sp pos, double threshold)
-{_OF();
+{
   ql::list result;
   int	fails = 0;
   bool calcForce = true;
@@ -522,7 +522,7 @@ core::List_sp	EnergyStretch_O::checkForBeyondThresholdInteractionsWithPosition(N
 
 
 void	EnergyStretch_O::dumpTerms()
-{_OF();
+{
   gctools::Vec0<EnergyStretch>::iterator	esi;
   string				as1,as2,as3,as4;
   string				str1, str2, str3, str4;

@@ -182,7 +182,7 @@ uint		x,y;
 
 
 void	AbstractLargeSquareMatrix_O::multiplyByVector(NVector_sp result, NVector_sp d)
-{_OF();
+{
 uint	x,y;
 double	sum;
     if ( result->size() != this->_Rows ) {
@@ -298,7 +298,7 @@ AbstractLargeSquareMatrix_sp	FullLargeSquareMatrix_O::copy()
 
 
 void	FullLargeSquareMatrix_O::coordinatesFromIndex(uint ii, uint& x, uint& y)
-{_OF();
+{
 uint		f2;
 uint		i;
     if ( ii < this->indexBegin() || ii >= this->indexEnd() ) {
@@ -671,7 +671,7 @@ void	SparseLargeSquareMatrix_O::debug()
 
 
     uint	SparseLargeSquareMatrix_O::indexOfLastElementOnRow(uint y)
-    {_OF();
+    {
 	ASSERT_lessThan(y,this->_Rows);
 	return this->_RowStarts[y+1]-1;
     }

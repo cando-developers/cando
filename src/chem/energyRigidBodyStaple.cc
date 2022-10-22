@@ -307,7 +307,7 @@ double EnergyRigidBodyStaple_O::evaluateAllComponent( ScoringFunction_sp score,
 
 
 void	EnergyRigidBodyStaple_O::dumpTerms()
-{_OF();
+{
   gctools::Vec0<EnergyRigidBodyStaple>::iterator	esi;
   string				as1,as2,as3,as4;
   string				str1, str2, str3, str4;

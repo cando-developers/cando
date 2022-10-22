@@ -87,14 +87,14 @@ namespace units
 
 
     void SimpleVectorCoordinate_O::initialize()
-    {_OF();
+    {
         this->Base::initialize();
 	this->_Coordinates = core::SimpleVectorCoordinate_O::create(_lisp);
     }
 
 
     Object_sp SimpleVectorCoordinate_O::amount_matchUnits(core::Executable_sp exec, core::Cons_sp args, core::Environment_sp env, core::LispPtr lisp)
-    {_OF();
+    {
 	int matchPowers[NumBaseDimensions] = {0,0,0,0,0,0,0};
 	double amountScale = 1.0;
 	this->parseDimensionSymbolList(matchPowers,amountScale,args->cdr(),false);
@@ -107,7 +107,7 @@ namespace units
 
 
     Object_sp SimpleVectorCoordinate_O::getElement_matchUnits(core::Executable_sp exec, core::Cons_sp args, core::Environment_sp env, core::LispPtr lisp)
-    {_OF();
+    {
 	int matchPowers[NumBaseDimensions] = {0,0,0,0,0,0,0};
 	double amountScale = 1.0;
 	int i = args->ocadr().as<core::Rational_O>()->asInt();
@@ -119,14 +119,14 @@ namespace units
 
 
     Xyz_sp SimpleVectorCoordinate_O::getElement(int i) const
-    {_OF();
+    {
 	return Xyz_O::create(this->_Coordinates->getElement(i),this->sharedThis<SimpleVectorCoordinate_O>(),_lisp);
     }
 
 
 
     Vector3 SimpleVectorCoordinate_O::getElement(int i, core::Symbol_sp unit1, int power1)
-    {_OF();
+    {
 	int matchPowers[NumBaseDimensions] = {0,0,0,0,0,0,0};
 	double amountScale = 1.0;
 	this->parseDimensionSymbols(matchPowers,amountScale,unit1,power1);
@@ -136,7 +136,7 @@ namespace units
     }
 
     Vector3 SimpleVectorCoordinate_O::getElement(int i, core::Symbol_sp unit1, int power1, core::Symbol_sp unit2, int power2)
-    {_OF();
+    {
 	int matchPowers[NumBaseDimensions] = {0,0,0,0,0,0,0};
 	double amountScale = 1.0;
 	this->parseDimensionSymbols(matchPowers,amountScale,unit1,power1);
@@ -150,7 +150,7 @@ namespace units
 
 
     Object_sp SimpleVectorCoordinate_O::amount() const
-    {_OF();
+    {
 	int zeroPowers[NumBaseDimensions] = {0,0,0,0,0,0,0};
 	if ( this->powersMatch(zeroPowers) )
 	{
@@ -163,7 +163,7 @@ namespace units
 
 
     void SimpleVectorCoordinate_O::append(Xyz_sp xyz)
-    {_OF();
+    {
 	ASSERTF(this->_System==xyz->_System,("Systems must match"));
 	this->_Coordinates->append(xyz->_Pos);
     }
@@ -172,13 +172,13 @@ namespace units
 
 
     Object_sp SimpleVectorCoordinate_O::unsafeAmount() const
-    {_OF();
+    {
 	return this->_Coordinates->copy();
     }
 
 
     string SimpleVectorCoordinate_O::__repr__() const
-    {_OF();
+    {
 	stringstream ss;
 	double amount = 1.0;
 	System_sp system = this->system();
@@ -188,7 +188,7 @@ namespace units
 
 
     SimpleVectorCoordinate_sp SimpleVectorCoordinate_O::copy() const
-    {_OF();
+    {
 	SimpleVectorCoordinate_sp ca = RP_Copy(this);
 	ca->_Coordinates = this->_Coordinates->copy();
 	return ca;
@@ -197,7 +197,7 @@ namespace units
 
 
     string SimpleVectorCoordinate_O::dump() const
-    {_OF();
+    {
 	stringstream ss;
 	for ( int i=0; i<this->size(); i++ )
 	{

@@ -115,7 +115,7 @@ Oligomer_O::Oligomer_O(const Oligomer_O& original)
 }
 
 void Oligomer_O::initialize()
-{_OF();
+{
     this->Base::initialize();
     this->empty();
 }
@@ -477,7 +477,7 @@ CL_DEFMETHOD void	Oligomer_O::throwIfBadConnections()
 
 
 
-CL_LAMBDA("(oligomer !) source-monomer coupling-or-source-plug-name target-monomer &optional (target-plug-name nil)")
+CL_LAMBDA("(oligomer !) source-monomer coupling-or-source-plug-name target-monomer &optional (target-plug-name nil)");
 CL_NAME(CHEM:OLIGOMER/COUPLE);
 CL_DEFMETHOD DirectionalCoupling_sp	Oligomer_O::couple( Monomer_sp sourceMon, core::T_sp couplingOrSourcePlugName, Monomer_sp targetMon, core::Symbol_sp targetPlugName  )
 {
@@ -552,7 +552,7 @@ CL_DEFMETHOD DirectionalCoupling_sp	Oligomer_O::couple( Monomer_sp sourceMon, co
 
 
 CL_DEFMETHOD RingCoupling_sp	Oligomer_O::ringCouple( Monomer_sp mon1, Monomer_sp mon2 )
-{_OF();
+{
 RingCoupling_sp	coupling;
 bool		found1, found2;
 gctools::Vec0<Monomer_sp>::iterator	mi;
@@ -1004,7 +1004,7 @@ CL_DEFMETHOD SpecificContextSet_sp Oligomer_O::allSpecificMonomerContexts()
 #define ARGS_chem__oligomer_sequence "(olig)"
 #define DECL_chem__oligomer_sequence ""
 #define DOCS_chem__oligomer_sequence "oligomerSequence"
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN core::T_sp chem__oligomer_sequence(Oligomer_sp olig)
 {
     string seq = olig->sequenceAsString();

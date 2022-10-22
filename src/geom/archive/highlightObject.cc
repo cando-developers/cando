@@ -174,7 +174,7 @@ void	HighlightedObject_O::initialize()
 
 
     T_sp HighlightedHolder_O::make_init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp environ, core::LispPtr lisp)
-{_OF();
+{
     SYMBOL_SC_(GeomPkg,obj);
     core::T_sp obj = translate::from_object<T_sp>::convert(environ->lookup(_sym_obj));
     this->_HeldObject = obj;

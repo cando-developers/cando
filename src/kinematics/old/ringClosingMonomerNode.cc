@@ -74,7 +74,7 @@ RingClosingMonomerNode_sp RingClosingMonomerNode_O::make()
 
 
     void RingClosingMonomerNode_O::initialize()
-    {_OF();
+    {
         this->Base::initialize();
     }
 

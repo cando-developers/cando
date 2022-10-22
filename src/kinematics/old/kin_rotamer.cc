@@ -137,7 +137,7 @@ Rotamer_sp Rotamer_O::make(core::List_sp dihedrals, core::List_sp sigmas, core::
 
 
     void Rotamer_O::initialize()
-    {_OF();
+    {
         this->Base::initialize();
     }
 
@@ -175,18 +175,18 @@ CL_LISPIFY_NAME(make-ChiDihedral);
 
 
     void RotamerSetBase_O::initialize()
-    {_OF();
+    {
         this->Base::initialize();
     }
 
     Rotamer_sp RotamerSetBase_O::addRotamer(Rotamer_sp rotamer)
-    {_OF();
+    {
 	this->_Rotamers.push_back(rotamer);
 	return rotamer;
     }
 
     Rotamer_sp RotamerSetBase_O::get(int i) const
-    {_OF();
+    {
 	ASSERTF(i>=0 && i<(int)this->_Rotamers.size(),("Illegal index for rotamer[%d]") , i);
 	return this->_Rotamers[i];
     }
@@ -226,7 +226,7 @@ core::List_sp RotamerSetBase_O::asList() const
 
 #if INIT_TO_FACTORIES
 
-CL_LISPIFY_NAME(make-RotamerSet)
+CL_LISPIFY_NAME(make-RotamerSet);
 RotamerSet_sp RotamerSet_O::make()
     {
       IMPLEMENT_ME();
@@ -250,7 +250,7 @@ RotamerSet_sp RotamerSet_O::make()
 
 
     void RotamerSet_O::initialize()
-    {_OF();
+    {
         this->Base::initialize();
     }
 
@@ -365,13 +365,13 @@ BackboneDependentRotamerLibrary_sp BackboneDependentRotamerLibrary_O::make(const
 
 
     void BackboneDependentRotamerLibrary_O::initialize()
-    {_OF();
+    {
         this->Base::initialize();
     }
 
 
     bool BackboneDependentRotamerLibrary_O::validPhiPsi(int phi, int psi) const
-    {_OF();
+    {
 	int ophi = phi-this->_PhiStart;
 	int mphi = ophi/this->_PhiStep;
 	int rphi = ophi % this->_PhiStep;
@@ -386,7 +386,7 @@ BackboneDependentRotamerLibrary_sp BackboneDependentRotamerLibrary_O::make(const
     }
 
     int	BackboneDependentRotamerLibrary_O::_index(int phi, int psi, int& mphi, int& mpsi) const
-    {_OF();
+    {
 	int ophi = phi-this->_PhiStart;
 	mphi = ophi/this->_PhiStep;
 	int opsi = psi-this->_PsiStart;
@@ -397,7 +397,7 @@ BackboneDependentRotamerLibrary_sp BackboneDependentRotamerLibrary_O::make(const
 	
 
     void BackboneDependentRotamerLibrary_O::addRotamerSet(BackboneDependentRotamerSet_sp rotamerSet)
-    {_OF();
+    {
 	if ( !this->validPhiPsi(rotamerSet->_Phi,rotamerSet->_Psi) )
 	{
 	    int mphi;

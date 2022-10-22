@@ -96,7 +96,7 @@ bool	EnergyNonbond::defineFrom(core::T_sp	forceField,
                                   EnergyAtom	*iea1,
                                   EnergyAtom	*iea2,
                                   EnergyNonbond_sp energyNonbond)
-{_OF();
+{
   double				epsilonij;
   double				vdwScale;
   double				electrostaticScale;
@@ -768,7 +768,7 @@ CL_DEFMETHOD void EnergyNonbond_O::expandExcludedAtomsToTerms()
 
 void	EnergyNonbond_O::compareAnalyticalAndNumericalForceAndHessianTermByTerm(ScoringFunction_sp score,
                                                                                 NVector_sp 	pos)
-{_OF();
+{
   int	fails = 0;
   bool	calcForce = true;
   bool	calcDiagonalHessian = true;
@@ -875,7 +875,7 @@ string EnergyNonbond_O::beyondThresholdInteractionsAsString()
 
 void EnergyNonbond_O::construct14InteractionTerms(AtomTable_sp atomTable, Matter_sp matter, core::T_sp forceField, core::T_sp activeAtoms)
 {
-  _OF();
+  
   {
     EnergyNonbond energyNonbond;
     Loop loop;

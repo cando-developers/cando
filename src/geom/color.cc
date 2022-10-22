@@ -233,7 +233,7 @@ string	Color_O::asString()
 
 
 void Color_O::setRGB(double r, double g, double b)
-{_OF();
+{
 uint	ir, ig, ib;
     if ( r < 0.0 || r > 1.0 )
     {

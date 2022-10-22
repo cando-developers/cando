@@ -105,7 +105,7 @@ struct	VdwRadiiPairs
 
 
 CL_LISPIFY_NAME(make-atom);
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN Atom_sp Atom_O::make(core::Symbol_sp name, chem::Element element)
 {
   auto atom = gctools::GC<Atom_O>::allocate_with_default_constructor();
@@ -115,7 +115,7 @@ CL_DEFUN Atom_sp Atom_O::make(core::Symbol_sp name, chem::Element element)
 };
 
 CL_LISPIFY_NAME("randomizeAtomPosition");
-CL_LAMBDA((core::a chem:atom) &optional (width 10.0))
+CL_LAMBDA((core::a chem:atom) &optional (width 10.0));
 CL_DEFMETHOD void Atom_O::randomizeAtomPosition(double width)
 {
   double				x,y,z;
@@ -263,7 +263,7 @@ CL_DEFMETHOD bool Atom_O::Atom_equal(core::T_sp obj) const
 }
 
 void Atom_O::transferCoordinates(Matter_sp obj)
-{_OF();
+{
   if ( !this->Atom_equal(obj) )
   {
     SIMPLE_ERROR(("This atom(%s) is not equal to %s so you cannot transfer coordinates") , this->description() , obj->description() );
@@ -318,7 +318,7 @@ Atom_O::Atom_O(const Atom_O& ss) :Matter_O(ss)
 
 CL_LISPIFY_NAME("setConfiguration");
 CL_DEFMETHOD     void Atom_O::setConfiguration(ConfigurationEnum conf)
-{_OF();
+{
   this->_Configuration = conf;
   if (chem__verbose(1)) {
     core::write_bf_stream(fmt::sprintf("Changed configuration of atom %s to %s\n" , _rep_(this->asSmartPtr()) , this->getConfigurationAsString()));
@@ -539,9 +539,9 @@ gc::Nilable<Atom_sp> Atom_O::lowestPriorityNeighborThatIsnt(gc::Nilable<Atom_sp>
 
 
 
-CL_LISPIFY_NAME("getBondTo")
+CL_LISPIFY_NAME("getBondTo");
 CL_DEFMETHOD Bond_sp Atom_O::getBondTo(Atom_sp a)
-{_OF();
+{
   VectorBond::iterator	b;
   for ( b=this->_Bonds.begin();b!=this->_Bonds.end() ; b++ )
   {
@@ -551,12 +551,12 @@ CL_DEFMETHOD Bond_sp Atom_O::getBondTo(Atom_sp a)
 }
 
 void Atom_O::_addExistingBond(Bond_sp const& bond)
-{_OF();
+{
   this->_Bonds.push_back(bond);
 }
 
 void Atom_O::addBond(Bond_sp bond)
-{_OF();
+{
   this->_Bonds.push_back(bond);
 }
 
@@ -566,7 +566,7 @@ If error-if-exists is NIL and the bond already exists then remove the old bond a
 CL_LISPIFY_NAME("bondTo");
 CL_LAMBDA((from !) to bond_order &optional (error_if_exists t) (error_if_exceed_valence t));
 CL_DEFMETHOD     Bond_sp Atom_O::bondTo( Atom_sp to, BondOrder o, bool error_if_exists, bool error_if_exceed_valence )
-{_OF();
+{
 	// Check if there is already a bond to this atom and
 	// throw an exception if there is
   Atom_sp from = this->sharedThis<Atom_O>();
@@ -609,7 +609,7 @@ CL_DEFMETHOD     Bond_sp Atom_O::bondToOrderInt( Atom_sp to, int o )
 
 CL_LISPIFY_NAME("bondToSingle");
 CL_DEFMETHOD     Bond_sp Atom_O::bondToSingle(  Atom_sp a )
-{_OF();
+{
   return this->bondTo(a,singleBond);
 }
 
@@ -663,7 +663,7 @@ core::List_sp	Atom_O::getNeighborsForAbsoluteConfiguration()
   return l.cons();
 }
 
-CL_DOCSTRING(R"dx(Return the neighbors sorted from highest CIP priority to lowest)dx")
+CL_DOCSTRING(R"dx(Return the neighbors sorted from highest CIP priority to lowest)dx");
 CL_DEFMETHOD
 core::List_sp	Atom_O::getNeighborsByRelativePriority(core::HashTable_sp cip_priority)
 {
@@ -794,7 +794,7 @@ CL_DEFMETHOD     bool	Atom_O::isBondedToElementHybridization(Element el, Hybridi
 
 CL_LISPIFY_NAME("isBondedToElementHybridizationElementHybridization");
 CL_DEFMETHOD     bool	Atom_O::isBondedToElementHybridizationElementHybridization(Element el1, Hybridization hy1, Element el2, Hybridization hy2)
-{_OF();
+{
   IMPLEMENT_ME(); // Handle new way of handling bonds
 #if 0
   VectorBond::const_iterator	b;
@@ -830,9 +830,9 @@ float Atom_O::distanceSquaredToAtom(Atom_sp other)
   return delta.getX()*delta.getX()+delta.getY()*delta.getY()+delta.getZ()*delta.getZ();
 }
 
-CL_DOCSTRING(R"dx(Return the distance squared between two atoms)dx")
-CL_DOCSTRING_LONG(R"dx(This provides a way to compare atom positions without allocating memory.)dx")
-DOCGROUP(cando)
+CL_DOCSTRING(R"dx(Return the distance squared between two atoms)dx");
+CL_DOCSTRING_LONG(R"dx(This provides a way to compare atom positions without allocating memory.)dx");
+DOCGROUP(cando);
 CL_DEFUN
 float chem__distance_squared_between_two_atoms(Atom_sp atom1, Atom_sp atom2)
 {
@@ -847,7 +847,7 @@ void Atom_O::makeAllAtomNamesInEachResidueUnique()
 
 
 void Atom_O::basicRemoveBondTo(Atom_sp a)
-{_OF();
+{
   VectorBond::iterator	b;
   Bond_sp				bb;
   Atom_sp				aa;
@@ -868,7 +868,7 @@ void Atom_O::basicRemoveBondTo(Atom_sp a)
 
 CL_LISPIFY_NAME("removeBondTo");
 CL_DEFMETHOD     void	Atom_O::removeBondTo(Atom_sp a)
-{_OF();
+{
   Atom_sp	atemp;
   LOG("Bond_O::removeBondTo" );
   this->basicRemoveBondTo(a);
@@ -878,7 +878,7 @@ CL_DEFMETHOD     void	Atom_O::removeBondTo(Atom_sp a)
 
 CL_LISPIFY_NAME("removeAllBonds");
 CL_DEFMETHOD     void	Atom_O::removeAllBonds()
-{_OF();
+{
   VectorBond::const_iterator	b;
   Atom_sp				atemp;
 	// Remove back bond
@@ -951,7 +951,7 @@ bool Atom_O::applyPropertyToSlot(core::Symbol_sp prop, core::T_sp value ) {
 }
 CL_LISPIFY_NAME("setPositionInNanometers");
 CL_DEFMETHOD     void Atom_O::setPositionInNanometers(Vector3 o)
-{_OF();
+{
   Vector3 angpos = o.multiplyByScalar(10.0);
   this->_Position = angpos;
 }
@@ -1013,7 +1013,7 @@ string	Atom_O::description() const
  * Add all unique intra residue bonds to the BondList_sp
  */
 void	Atom_O::addUniqueIntraResidueBondCopiesToBondList(core::HashTable_sp atomToResidue,BondList_sp list)
-{_OF();
+{
   VectorBond			bonds;
   VectorBond::iterator	b;
   ASSERTNOTNULL(list);
@@ -1035,7 +1035,7 @@ void	Atom_O::addUniqueIntraResidueBondCopiesToBondList(core::HashTable_sp atomTo
  * Add all unique inter residue bonds to the BondList_sp
  */
 void Atom_O::addUniqueInterResidueBondCopiesToBondList(core::HashTable_sp atomToResidue, BondList_sp list)
-{_OF();
+{
   VectorBond			bonds;
   VectorBond::iterator	b;
   ASSERTNOTNULL(list);
@@ -1070,7 +1070,7 @@ void Atom_O::addInterResidueBondsToBondList(core::HashTable_sp atomToResidue, Bo
 // bond order
 CL_LISPIFY_NAME("isBondedToWithBondOrder");
 CL_DEFMETHOD     bool Atom_O::isBondedToWithBondOrder( Atom_sp aTarget, BondOrder o )
-{_OF();
+{
   VectorBond::iterator	b;
   Atom_sp				a2;
   Atom_sp me = this->sharedThis<Atom_O>();
@@ -1124,7 +1124,7 @@ CL_DEFMETHOD     bool	Atom_O::isBondedTo( Atom_sp aTarget)
 //
 // Return the bond order by which we are bonded to the atom.
 // Return noBond if there is no bond.
-CL_DOCSTRING(R"dx(Return the bond-order to the OTHER atom.)dx")
+CL_DOCSTRING(R"dx(Return the bond-order to the OTHER atom.)dx");
 CL_DEFMETHOD
 BondOrder	Atom_O::bondOrderTo( Atom_sp other )
 {
@@ -1172,7 +1172,7 @@ void Atom_O::reorderBonds(core::List_sp atoms) {
 //	Make sure that all of the bonds are consistant
 CL_LISPIFY_NAME("testConsistancy");
 CL_DEFMETHOD     bool Atom_O::testConsistancy(Matter_sp parentShouldBe)
-{_OF();
+{
   VectorBond::iterator	b;
   Atom_sp				a2,atemp;
   LOG("bonds array start = 0x%08x" , ((void*)&(this->_Bonds[0]))  );
@@ -1192,7 +1192,7 @@ CL_DEFMETHOD     bool Atom_O::testConsistancy(Matter_sp parentShouldBe)
 
 
 Matter_sp Atom_O::copy(core::T_sp new_to_old)
-{_OF();
+{
   SIMPLE_ERROR(("Don't copy single atoms - bonds will be messed up"));
 }
 
@@ -1206,7 +1206,7 @@ Matter_sp Atom_O::copy(core::T_sp new_to_old)
 //	Keep track of the new atom so that we can redirect pointers to the copy.
 //
 Matter_sp Atom_O::copyDontRedirectAtoms(core::T_sp new_to_old)
-{_OF();
+{
   LOG("Copying atom @%p" , this );
   Atom_sp myself = this->sharedThis<Atom_O>();
   auto  aNew  = gctools::GC<Atom_O>::copy( *this); // = RP_Copy<Atom_O>(this);
@@ -1386,7 +1386,7 @@ double	Atom_O::getAtomicWeight()
 
 CL_LISPIFY_NAME("getBondedHydrogenCount");
 CL_DEFMETHOD     int     Atom_O::getBondedHydrogenCount()
-{_OF();
+{
   VectorBond::iterator	b;
   int                             hs;
   Atom_sp				weakAtomTo;
@@ -1403,7 +1403,7 @@ CL_DEFMETHOD     int     Atom_O::getBondedHydrogenCount()
 
 CL_LISPIFY_NAME("inRingSize");
 CL_DEFMETHOD     bool    Atom_O::inRingSize(int r) const
-{_OF();
+{
   bool result = false;
   switch (r)
   {
@@ -1441,7 +1441,7 @@ void Atom_O::clearAllRingMembershipFlags()
 
 
 void Atom_O::setInRingOfSize(int r)
-{_OF();
+{
   LOG("Setting %s in ring of size[%d]" , this->description() , r );
   switch (r) {
   case 3:
@@ -1634,7 +1634,7 @@ string	Atom_O::getConfigurationPriorityLowest()
 
 
 void Atom_O::_describeAtomRecursively(string prefix, Atom_sp parent, BondOrder order, int maxDepth, stringstream& ss) const
-{_OF();
+{
   if ( maxDepth == 0 ) return;
   ss << prefix;
   if ( order != noBond )
@@ -1657,7 +1657,7 @@ void Atom_O::_describeAtomRecursively(string prefix, Atom_sp parent, BondOrder o
 
 
 string Atom_O::localEnvironment(int maxDepth) const
-{_OF();
+{
   stringstream ss;
   this->_describeAtomRecursively("",nil<Atom_O>(),noBond,maxDepth,ss);
   return ss.str();
@@ -1679,13 +1679,13 @@ bool	Atom_O::invalid()
 
 
 AtomIdMap_sp Atom_O::buildAtomIdMap() const
-{_OF();
+{
   SIMPLE_ERROR(("Atom should never buildAtomIdMap"));
 };
 
 
 Atom_sp Atom_O::atomWithAtomId(const AtomId& atomId) const
-{_OF();
+{
   SIMPLE_ERROR(("Atom should never return atomWithAtomId"));
 };
 
@@ -1693,7 +1693,7 @@ Atom_sp Atom_O::atomWithAtomId(const AtomId& atomId) const
 
 
 void	Atom_O::bumpPosition(double dist)
-{_OF();
+{
   double		x, y, z;
   x = core::randomNumber01()*dist*2.0-dist+this->_Position.getX();
   y = core::randomNumber01()*dist*2.0-dist+this->_Position.getY();
@@ -1703,7 +1703,7 @@ void	Atom_O::bumpPosition(double dist)
 
 
 void	Atom_O::failIfInvalid()
-{_OF();
+{
   if ( this->invalid() ) {
     SIMPLE_ERROR(("INVALID %s") , this->description());
   }
@@ -1740,13 +1740,13 @@ CL_END_ENUM(_sym__PLUS_atomFlagSymbolConverter_PLUS_);
 
 
 ConstitutionAtom_sp Atom_O::asConstitutionAtom(ConstitutionAtomIndex0N index)
-{_OF();
+{
   ConstitutionAtom_sp ca = makeConstitutionAtom(this->getName(),this->_Element,this->_Type, index,this->_StereochemistryType, this->_Properties);
   return ca;
 }
 
 void	Atom_O::defineConstitutionAtomBonding(ConstitutionAtom_sp consAtom, MapAtomsToConstitutionAtomIndex0N atomMap)
-{_OF();
+{
   Atom_O::bondIterator bi;
   Atom_sp me = this->sharedThis<Atom_O>();
   for ( bi=this->_Bonds.begin(); bi!=this->_Bonds.end(); bi++ )

@@ -124,7 +124,7 @@ StereoisomerAtoms_sp StereoisomerAtoms_O::create(core::Symbol_sp stereoisomerNam
   return stereoisomerAtoms;
 }
 
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN StereoisomerAtoms_sp chem__make_stereoisomer_atoms(core::Symbol_sp stereoisomerName, ConstitutionAtoms_sp constitutionAtoms)
 {
   return StereoisomerAtoms_O::create(stereoisomerName,constitutionAtoms);
@@ -136,7 +136,7 @@ CL_DEFMETHOD core::Symbol_sp StereoisomerAtoms_O::getName() const {
 }
 
 CL_DEFMETHOD void StereoisomerAtoms_O::addStereoisomerAtom(StereoisomerAtom_sp ca)
-{_OF();
+{
   ConstitutionAtomIndex0N nextIndex = this->_Atoms.size();
   ca->_ConstitutionAtomIndex = nextIndex;
   this->_Atoms.push_back(ca);
@@ -144,7 +144,7 @@ CL_DEFMETHOD void StereoisomerAtoms_O::addStereoisomerAtom(StereoisomerAtom_sp c
 
 
 StereoisomerAtom_sp& StereoisomerAtoms_O::operator[](ConstitutionAtomIndex0N idx)
-{_OF();
+{
   ASSERTF(idx>=0&&idx<(int)(this->_Atoms.size()),("index[%d] out of range") , idx );
   StereoisomerAtom_sp& ca = this->_Atoms[(uint)idx];
 //  ASSERTF(idx==ca->_AtomIndex,("A mismatch has occured between the index[%d] in the StereoisomerAtoms array and the StereoisomerAtom index[%d] - these have to match or we can't quickly look up atoms by their index") , idx , ca->_AtomIndex );
@@ -153,7 +153,7 @@ StereoisomerAtom_sp& StereoisomerAtoms_O::operator[](ConstitutionAtomIndex0N idx
 
 CL_LISPIFY_NAME("atomNamesAsSymbolSet");
 CL_DEFMETHOD     adapt::SymbolSet_sp StereoisomerAtoms_O::atomNamesAsSymbolSet()
-{_OF();
+{
   adapt::SymbolSet_sp ss = adapt::SymbolSet_O::create();
   for ( gctools::Vec0<StereoisomerAtom_sp>::const_iterator ci=this->_Atoms.begin();
         ci!=this->_Atoms.end(); ci++ )
@@ -164,10 +164,10 @@ CL_DEFMETHOD     adapt::SymbolSet_sp StereoisomerAtoms_O::atomNamesAsSymbolSet()
 };
 
 
-CL_LAMBDA(name &optional (errorp t))
+CL_LAMBDA(name &optional (errorp t));
 CL_LISPIFY_NAME("atomWithName");
 CL_DEFMETHOD     core::T_mv StereoisomerAtoms_O::atomWithName(MatterName nm,bool errorp)
-{_OF();
+{
   for ( gctools::Vec0<StereoisomerAtom_sp>::const_iterator ci=this->_Atoms.begin();
         ci!=this->_Atoms.end(); ci++ )
   {
@@ -188,7 +188,7 @@ CL_DEFMETHOD     StereoisomerAtom_sp StereoisomerAtoms_O::atomWithId(Constitutio
 
 CL_LISPIFY_NAME("stereoisomer-atoms-index");
 CL_DEFMETHOD     int StereoisomerAtoms_O::index(MatterName name) const
-{_OF();
+{
   for ( int idx=0; idx<(int)this->_Atoms.size(); idx++ )
   {
     const StereoisomerAtom_sp& atom = this->_Atoms[idx];

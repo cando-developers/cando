@@ -69,7 +69,7 @@ size_t ComplexVectorCoordinate_O::vectorPushExtend_Vector3(const Vector3& newEle
 
 SYMBOL_EXPORT_SC_(GeomPkg,vector3);
 #if 0
-CL_LAMBDA(fnsize &optional vals)
+CL_LAMBDA(fnsize &optional vals);
 CL_LISPIFY_NAME(make-coordinate-array);
 CL_DEF_CLASS_METHOD SimpleVectorCoordinate_sp SimpleVectorCoordinate_O::make(core::T_sp fnsize, core::List_sp vals)
 {
@@ -127,7 +127,7 @@ void SimpleVectorCoordinate_O::zeroAllCoordinates()
 }
 
 void SimpleVectorCoordinate_O::addPoints(SimpleVectorCoordinate_sp y)
-{_OF();
+{
   int  sz;
 //  ASSERT_eq(this->_Points.size(),y->size());
   sz = this->length();
@@ -138,7 +138,7 @@ void SimpleVectorCoordinate_O::addPoints(SimpleVectorCoordinate_sp y)
 
 
 double SimpleVectorCoordinate_O::distanceTo(SimpleVectorCoordinate_sp y)
-{_OF();
+{
   int  sz;
   double dist = 0.0;
   sz = this->length();
@@ -214,7 +214,7 @@ void SimpleVectorCoordinate_O::fields(core::Record_sp node)
 #if 0
 CL_LISPIFY_NAME("write-to-stream");
 CL_DEFMETHOD     void SimpleVectorCoordinate_O::writeToStream(string const& info, core::T_sp sout)
-{_OF();
+{
   core::clasp_write_string(fmt::sprintf(("+++SimpleVectorCoordinate %d\n") , this->_Points.size() ),sout);
   core::clasp_write_string(fmt::sprintf(("+ %s\n") , info),sout);
   for (int i=0; i<(int)this->_Points.size(); i++ )
@@ -257,7 +257,7 @@ void SimpleVectorCoordinate_O::decode(core::List_sp c) {
 
 #if 0
 string SimpleVectorCoordinate_O::parseFromStream(core::Stream_sp sin)
-{_OF();
+{
   streampos spos;
   string line, info;
   int numLines;
@@ -355,7 +355,7 @@ namespace geom {
 
 
 CL_LISPIFY_NAME(transform);
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN void geom__in_place_transform(ArrayCoordinate_sp array, const Matrix& transform) {
   core::AbstractSimpleVector_sp sv;
   size_t start;
@@ -368,7 +368,7 @@ CL_DEFUN void geom__in_place_transform(ArrayCoordinate_sp array, const Matrix& t
 };
 
 CL_LISPIFY_NAME(transform);
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN void geom__in_place_mul_scalar(ArrayCoordinate_sp array, double mul) {
   core::AbstractSimpleVector_sp sv;
   size_t start;
@@ -380,7 +380,7 @@ CL_DEFUN void geom__in_place_mul_scalar(ArrayCoordinate_sp array, double mul) {
   }
 };
 
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN core::T_sp geom__unit_vectors()
 {
   Vector3 v;

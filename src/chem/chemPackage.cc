@@ -202,7 +202,7 @@ core::Initializer global_ChemInitializer(chem_initializer);
 
 /*! Return true of the value of chem:*verbose* is not nil and >= level
  */
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN bool chem__verbose(size_t level) {
   core::T_sp verbose = _sym_STARverboseSTAR->symbolValue();
   return verbose.notnilp() && (!verbose.fixnump() || verbose.unsafe_fixnum() >= level);

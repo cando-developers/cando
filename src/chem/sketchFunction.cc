@@ -105,7 +105,7 @@ SYMBOL_EXPORT_SC_(ChemPkg,node_set_position);
 bool sketchFunctionInitialized = false;
 
 
-CL_DOCSTRING(R"dx(Create a sketch-function from a molecule. Pass an instance of a dummy sketch-nonbond-force-field passed to chem:find-atom-type-position.)dx")
+CL_DOCSTRING(R"dx(Create a sketch-function from a molecule. Pass an instance of a dummy sketch-nonbond-force-field passed to chem:find-atom-type-position.)dx");
 CL_LISPIFY_NAME(make-sketch-function);
 CL_DEF_CLASS_METHOD
 SketchFunction_sp SketchFunction_O::make(core::T_sp graph, core::T_sp sketchNonbondForceField)
@@ -178,7 +178,7 @@ size_t SketchFunction_O::getNVectorSize()
 
 
 void	SketchFunction_O::setOption( core::Symbol_sp option, core::T_sp val)
-{_OF();
+{
   SIMPLE_ERROR(("Unknown SketchFunction setOption keyword[%s]") , _rep_(option) );
 }
 
@@ -285,7 +285,7 @@ void SketchFunction_O::setupHessianPreconditioner(NVector_sp nvPosition,
 
 
 uint	SketchFunction_O::countTermsBeyondThreshold()
-{_OF();
+{
   int		terms;
   terms = 0;
   SIMPLE_ERROR(("Should there be something here?"));
@@ -595,7 +595,7 @@ void	SketchFunction_O::evaluateNumericalForce(NVector_sp pos, NVector_sp numForc
 /*! Calculate the hessian numerically
  */
 void	SketchFunction_O::evaluateNumericalHessian(NVector_sp pos, AbstractLargeSquareMatrix_sp hessian, bool calcOffDiagonal, double delta )
-{_OF();
+{
   double		fval;
   uint		c, r;
 
@@ -804,7 +804,7 @@ void	SketchFunction_O::dealWithProblem(core::Symbol_sp error_symbol, core::T_sp 
 
 
 CL_LAMBDA(scoring-function position velocity force force-dt delta-t-over-mass delta-t &optional frozen)CL_LISPIFY_NAME("sketch-function-velocity-verlet-step");
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN void chem__SketchFunction_velocity_verlet_step(SketchFunction_sp sketchFunc,
                                                         NVector_sp position,
                                                         NVector_sp velocity,

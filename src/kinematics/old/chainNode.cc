@@ -62,7 +62,7 @@ void ChainNode_O::fields(core::Record_sp node) {
     };
 
     void ChainNode_O::initialize()
-    {_OF();
+    {
         this->Base::initialize();
     }
 
@@ -86,7 +86,7 @@ void ChainNode_O::fields(core::Record_sp node) {
     }
 
     void ChainNode_O::makeRingClosingConnections(RingClosingMonomerMap ringClosings)
-    {_OF();
+    {
 	if ( ringClosings->size() == 0 ) return;
 	IMPLEMENT_ME(); // Make connections between RingClosingMonomerNodes
     }
@@ -95,7 +95,7 @@ void ChainNode_O::fields(core::Record_sp node) {
 
 
     void ChainNode_O::buildUsingOligomer(chem::Oligomer_sp oligomer, int chainId)
-    {_OF();
+    {
 	chem::Monomer_sp rootMonomer = oligomer->rootMonomer();
 	RingClosingMonomerMap	ringClosingMonomerMap = core::HashTableEq_O::create_default();
 	MonomerNode_sp rootMonomerNode = this->monomerNodeFactory(this->asSmartPtr(),ringClosingMonomerMap,rootMonomer);
@@ -107,12 +107,12 @@ void ChainNode_O::fields(core::Record_sp node) {
     }
 
     void ChainNode_O::resizeMonomers(int numMonomers)
-    {_OF();
+    {
 	this->_IndexedMonomerNodes.resize(numMonomers);
     }
 
     MonomerNode_sp ChainNode_O::lookupMonomerId(int monomerId) const
-    {_OF();
+    {
 	ASSERTF(monomerId < (int)this->_IndexedMonomerNodes.size(),
 		("Illegal monomerId[%d] - there are only %d monomerNodes")
 		, monomerId

@@ -120,7 +120,7 @@ void ComplexBondedJoint_O::_updateChildrenXyzCoords() {
 }
 
 void ComplexBondedJoint_O::_updateInternalCoord()
-{_OF();
+{
   KIN_LOG((" <<< %s\n") , _rep_(this->asSmartPtr()));
 //	using numeric::x_rotation_matrix_radians;
 //	using numerioc::z_rotation_matrix_radians;

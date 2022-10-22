@@ -38,7 +38,7 @@ namespace chem {
 
 
     void ReportBase_O::initialize()
-    {_OF();
+    {
 	this->Base::initialize();
 	this->_Time = (unsigned long)std::time(0);
     }

@@ -66,7 +66,7 @@ void MonomerBaseNode_O::archiveBase(core::ArchiveP node)
 
 
 void MonomerBaseNode_O::initialize()
-{_OF();
+{
   this->Base::initialize();
 }
 

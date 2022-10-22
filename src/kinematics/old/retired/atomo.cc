@@ -56,7 +56,7 @@ namespace kinematics
     Atom_O::~Atom_O() {}
 
     Atom_O& Atom_O::operator=(const Atom_O& other)
-	    {_OF();
+	    {
 		ASSERTF(this->_PointTree == other._PointTree,("You tried to copy Atom_Os that are not referencing the same PointTree"));
 		// Assignment operator
 		if ( this != &other ) // avoid self-assignment
@@ -77,7 +77,7 @@ namespace kinematics
     };
 
     core::T_mv Atom_O::atomIdValues() const
-    {_OF();
+    {
 	return Values(
 	    core::clasp_make_fixnum(this->get()->id().moleculeId()),
 	    core::clasp_make_fixnum(this->get()->id().residueId()),
@@ -85,7 +85,7 @@ namespace kinematics
     }
 
     core::Symbol_sp Atom_O::typeSymbol() const
-    {_OF();
+    {
 	Atom const* atom = this->get();
 	if ( atom == NULL ) return _Nil<core::Symbol_O>();
 	return atom->typeSymbol();
@@ -107,7 +107,7 @@ namespace kinematics
     }
 
     void Atom_O::appendChild(Atom_sp child)
-    {_OF();
+    {
 	ASSERT(this->_PointTree == child->_PointTree);
 	Atom* parent = this->get();
 	parent->appendChild(child);
@@ -115,7 +115,7 @@ namespace kinematics
 	
 
     void Atom_O::insertChild(Atom_sp child)
-    {_OF();
+    {
 	ASSERT(this->_PointTree == child->_PointTree);
 	Atom* parent = this->get();
 	parent->insertChild(child);
@@ -149,14 +149,14 @@ namespace kinematics
     }
 
 gc::Nilable<Atom_sp> Atom_O::parent() const
-    {_OF();
+    {
       if ( this->_Handle.notDefined() ) return _Nil<core::T_O>();
 	const Atom* atom = this->_Handle.get();
 	return Atom_O::create(atom->parent());
     }
 
 gc::Nilable<Atom_sp> Atom_O::stubAtom1() const
-    {_OF();
+    {
       if ( this->_Handle.notDefined() ) return _Nil<core::T_O>();
 	const Atom* atom = this->_Handle.get();
 	RefCountedAtomHandle sa = atom->stubAtom1();
@@ -165,7 +165,7 @@ gc::Nilable<Atom_sp> Atom_O::stubAtom1() const
     }
 
 gc::Nilable<Atom_sp> Atom_O::stubAtom2() const
-{_OF();
+{
   if ( this->_Handle.notDefined() ) return _Nil<core::T_O>();
   const Atom* atom = this->_Handle.get();
   RefCountedAtomHandle sa = atom->stubAtom2();
@@ -174,7 +174,7 @@ gc::Nilable<Atom_sp> Atom_O::stubAtom2() const
 }
 
 gc::Nilable<Atom_sp> Atom_O::stubAtom3(PointTree_sp at) const
-{_OF();
+{
   if ( this->_Handle.notDefined() ) return _Nil<core::T_O>();
   const Atom* atom = this->_Handle.get();
   RefCountedAtomHandle sa = atom->stubAtom3(at);

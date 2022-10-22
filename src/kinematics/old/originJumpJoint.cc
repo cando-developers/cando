@@ -39,7 +39,7 @@ namespace kinematics
 
 void OriginJumpJoint_O::updateInternalCoords(bool const recursive,
                                              JointTree_sp at)
-{_OF();
+{
   if ( recursive ) {
     for (int childIdx=0; childIdx<this->_numberOfChildren(); childIdx++ ) {
       this->_child(childIdx)->updateInternalCoords(true,at);
@@ -59,13 +59,13 @@ Stub OriginJumpJoint_O::getStub() const {
 
 
 core::Symbol_sp OriginJumpJoint_O::typeSymbol() const
-{_OF();
+{
   return _sym_origin;
 };
 
 
 void OriginJumpJoint_O::_updateXyzCoord(Stub& stub)
-{_OF();
+{
   Vector3 origin(0.0,0.0,0.0);
   this->position(origin);
 }

@@ -248,7 +248,7 @@ Matter_sp	Molecule_O::copyDontRedirectAtoms(core::T_sp new_to_old)
 }
 
 void	Molecule_O::redirectAtoms()
-    {_OF();
+    {
 	LOG("Molecule_O::redirectAtoms START" );
 	for ( contentIterator a=this->begin_contents(); a!=this->end_contents(); a++ )
 	{
@@ -374,7 +374,7 @@ AtomIdMap_sp Molecule_O::buildAtomIdMap() const
 }
 
     Atom_sp Molecule_O::atomWithAtomId(const AtomId& atomId) const
-    {_OF();
+    {
 	int resId = atomId.residueId();
 	if ( resId >=0 && resId <=(int)this->_Contents.size() )
 	{
@@ -390,9 +390,9 @@ AtomIdMap_sp Molecule_O::buildAtomIdMap() const
 #define ARGS_Molecule_O_make "(&key (name \"\"))"
 #define DECL_Molecule_O_make ""
 #define DOCS_Molecule_O_make "make Molecule args: &key name"
-CL_LAMBDA(&optional (name nil))
+CL_LAMBDA(&optional (name nil));
 CL_LISPIFY_NAME(make-molecule);
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN Molecule_sp Molecule_O::make(core::Symbol_sp name)
 {
   auto me = gctools::GC<Molecule_O>::allocate_with_default_constructor();

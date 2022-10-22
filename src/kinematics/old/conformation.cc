@@ -58,7 +58,7 @@ void Conformation_O::fields(core::Record_sp node) {
 //
 CL_LISPIFY_NAME(make-conformation);
 CL_DEF_CLASS_METHOD Conformation_sp Conformation_O::make(core::List_sp oligomers)
-{_OF();
+{
   auto  me  = gctools::GC<Conformation_O>::allocate_with_default_constructor();
   me->resizeMolecules(core::cl__length(oligomers));
   int moleculeId = 0;
@@ -80,7 +80,7 @@ Conformation_sp Conformation_O::create(chem::Oligomer_sp oligomer)
 
 
 void Conformation_O::initialize()
-{_OF();
+{
   this->Base::initialize();
   this->_FoldTree = FoldTree_O::create();
   this->_JointTree = JointTree_O::create();
@@ -88,12 +88,12 @@ void Conformation_O::initialize()
 
 
 int Conformation_O::numberOfMolecules() const
-{_OF();
+{
   return this->_FoldTree->numberOfChains();
 }
 
 void Conformation_O::resizeMolecules(int numMolecules)
-{_OF();
+{
   ASSERTF(numMolecules > 0, ("You must allocate more than 0 molecules"));
   int oldNumberOfMolecules = this->_FoldTree->numberOfChains();
   this->_FoldTree->resizeChains(numMolecules);
@@ -113,7 +113,7 @@ void Conformation_O::resizeMolecules(int numMolecules)
 
 
 void Conformation_O::buildMoleculeUsingOligomer(int moleculeId, chem::Oligomer_sp oligomer)
-{_OF();
+{
   ASSERTF(moleculeId<this->numberOfMolecules(), ("Illegal moleculeId[%d]") , moleculeId );
   ChainNode_sp chainNode =
     this->_FoldTree->buildChainUsingOligomer(moleculeId,oligomer);

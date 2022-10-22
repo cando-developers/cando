@@ -72,7 +72,7 @@ namespace chem {
 //    core::WeakVector0<CandoDatabase_O>	AllCandoDatabases;
 
 void CandoDatabase_O::initialize() {
-  _OF();
+  
   this->Base::initialize();
   this->_Entities = core::HashTableEq_O::create_default();
   this->_Topologys = core::HashTableEq_O::create_default();
@@ -86,7 +86,7 @@ void CandoDatabase_O::fields(core::Record_sp node) {
 }
 
 core::List_sp CandoDatabase_O::entitiesSubClassOfAsList(core::Instance_sp mc) {
-  _OF();
+  
   core::List_sp result = nil<core::T_O>();
   this->_Entities->maphash([&result, &mc](core::T_sp key, core::T_sp value) {
     if (core::cl__class_of(value) == mc) {
@@ -97,25 +97,25 @@ core::List_sp CandoDatabase_O::entitiesSubClassOfAsList(core::Instance_sp mc) {
 }
 
 bool CandoDatabase_O::recognizesEntitySubClassOf(core::Symbol_sp name, core::Instance_sp mc) {
-  _OF();
+  
   core::KeyValuePair *pair = this->_Entities->find(name);
   return pair && core::cl__class_of(pair->_Value) == mc;
 }
 
 bool CandoDatabase_O::recognizesEntityOfClass(core::Symbol_sp name, core::Instance_sp aclass) {
-  _OF();
+  
   core::KeyValuePair *pair = this->_Entities->find(name);
   return pair && core::cl__class_of(pair->_Value) == aclass;
 }
 
 CL_LISPIFY_NAME("constitutionsAsList");
 CL_DEFMETHOD core::List_sp CandoDatabase_O::constitutionsAsList() {
-  _OF();
+  
   return this->entitiesSubClassOfAsList(gc::As<core::Instance_sp>(core::cl__find_class(Constitution_O::static_classSymbol())));
 };
 
 bool CandoDatabase_O::recognizesMonomerName(core::Symbol_sp name) {
-  _OF();
+  
   return this->recognizesEntitySubClassOf(name,
                                           gc::As<core::Instance_sp>(core::cl__find_class(Stereoisomer_O::static_classSymbol())));
 }
@@ -135,20 +135,20 @@ CL_DEFMETHOD Entity_sp CandoDatabase_O::addEntity(Entity_sp entity) {
 
 CL_LISPIFY_NAME("representedEntityNameSetsAsList");
 CL_DEFMETHOD core::List_sp CandoDatabase_O::representedEntityNameSetsAsList() {
-  _OF();
+  
   return this->entitiesSubClassOfAsList(
       gc::As<core::Instance_sp>(core::cl__find_class(RepresentedEntityNameSet_O::static_classSymbol())));
 }
 
 CL_LISPIFY_NAME("recognizesRepresentedEntityNameSet");
 CL_DEFMETHOD bool CandoDatabase_O::recognizesRepresentedEntityNameSet(core::Symbol_sp name) {
-  _OF();
+  
   return this->recognizesEntityOfClass(
       name, gc::As_unsafe<core::Instance_sp>(core::cl__find_class(RepresentedEntityNameSet_O::static_classSymbol())));
 }
 
 bool CandoDatabase_O::recognizesMonomerPack(core::Symbol_sp name) {
-  _OF();
+  
   core::KeyValuePair *pair = this->_Entities->find(name);
   return pair && gc::As<Entity_sp>(pair->_Value).isA<MonomerPack_O>();
 }
@@ -158,7 +158,7 @@ SYMBOL_EXPORT_SC_(ChemKwPkg, entity);
 SYMBOL_EXPORT_SC_(ChemKwPkg, frameRecognizer);
 
 core::T_sp CandoDatabase_O::oGetResource(core::Symbol_sp resource, core::Symbol_sp name) {
-  _OF();
+  
   if (resource == chemkw::_sym_constitution) {
     return core::eval::funcall(_sym_constitutionForNameOrPdb, this->asSmartPtr(), name);
   }
@@ -220,7 +220,7 @@ CL_DEFMETHOD RepresentedEntityNameSet_sp CandoDatabase_O::getRepresentedEntityNa
 
 CL_LISPIFY_NAME("recognizesSetOrConstitutionOrMonomerName");
 CL_DEFMETHOD bool CandoDatabase_O::recognizesSetOrConstitutionOrMonomerName(core::Symbol_sp nm) {
-  _OF();
+  
   return this->_Entities->contains(nm);
 }
 
@@ -240,14 +240,14 @@ Entity_sp CandoDatabase_O::getEntityOfClass(core::Symbol_sp nm, core::Instance_s
 
 CL_LISPIFY_NAME("expandEntityNameToTerminals");
 CL_DEFMETHOD adapt::SymbolSet_sp CandoDatabase_O::expandEntityNameToTerminals(core::Symbol_sp nm) const {
-  _OF();
+  
   Entity_sp entity = this->getEntity(nm);
   return entity->expandedNameSet();
 }
 
 CL_LISPIFY_NAME("expandEntityNamesToTerminals");
 CL_DEFMETHOD adapt::SymbolSet_sp CandoDatabase_O::expandEntityNamesToTerminals(adapt::SymbolSet_sp nm) const {
-  _OF();
+  
   adapt::SymbolSet_sp names = adapt::SymbolSet_O::create();
   nm->map([this, &names](core::Symbol_sp sym) {
     Entity_sp entity = this->getEntity(sym);
@@ -274,7 +274,7 @@ bool	CandoDatabase_O::monomersAreDefinedForSetOrConstitutionOrMonomerName(core::
 
 CL_LISPIFY_NAME("getMonomersForSetOrConstitutionOrMonomerName");
 CL_DEFMETHOD adapt::SymbolSet_sp CandoDatabase_O::getMonomersForSetOrConstitutionOrMonomerName(core::Symbol_sp nm) {
-  _OF();
+  
   // Use expandEntityNameToTerminals
   DEPRECATED();
 #if 0
@@ -693,7 +693,7 @@ core::T_mv CandoDatabase_O::findTopology(core::T_sp name, bool errorp) const {
   return result_mv;
 }
 
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN core::T_mv chem__findTopology(core::T_sp name, bool errorp) {
   CandoDatabase_sp cdb = chem::getCandoDatabase();
   return cdb->findTopology(name, errorp);

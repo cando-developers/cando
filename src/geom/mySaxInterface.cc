@@ -189,7 +189,7 @@ namespace geom {
 
 
     bool	MySaxParser::initialize()
-    {_OF();
+    {
 	LOG("MySaxParser::initialize starting" );
 	LOG("MySaxParser::initialize Creating expat parser" );
 	this->parser= XML_ParserCreate( "UTF-8" );

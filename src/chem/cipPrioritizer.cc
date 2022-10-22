@@ -148,13 +148,13 @@ void	CipPrioritizer_O::initialize()
 }
 
     int	CipPrioritizer_O::getP(Atom_sp a, core::HashTable_sp cip)
-{_OF();
+{
     ASSERT_lessThan(a->getRelativePriority(cip),this->_p.size());
     return this->_p[a->getRelativePriority(cip)];
 }
 
 gctools::Vec0<int>& CipPrioritizer_O::getS(Atom_sp a, core::HashTable_sp cip)
-{_OF();
+{
     ASSERTNOTNULL(a);
     if ( ! ( a->getRelativePriority(cip) < this->_s.size() ) )
     {
@@ -187,7 +187,7 @@ gctools::Vec0<int>& CipPrioritizer_O::getS(Atom_sp a, core::HashTable_sp cip)
 
 
 CL_LISPIFY_NAME(chem:assign-priorities-hash-table);
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN core::HashTable_sp CipPrioritizer_O::assignPrioritiesHashTable(Matter_sp matter)
 {
     core::HashTable_sp cip = core::HashTableEq_O::create_default();
@@ -614,11 +614,11 @@ CL_DEFMETHOD core::HashTable_sp CipPrioritizer_O::setStereochemicalTypeForAllAto
     return cip;
 }
 
-CL_DOCSTRING(R"dx(Calculate the stereochemistry for each atom in the aggregate or molecule)dx")
+CL_DOCSTRING(R"dx(Calculate the stereochemistry for each atom in the aggregate or molecule)dx");
 CL_DOCSTRING_LONG(R"dx(Start from the three-dimensional structure. If only-undefined-configuration is passed T then 
 only centers with unefinedConfiguration are changed.)dx")
-CL_LAMBDA(matter &key (only_undefined_configuration t))
-DOCGROUP(cando)
+CL_LAMBDA(matter &key (only_undefined_configuration t));
+DOCGROUP(cando);
 CL_DEFUN void chem__calculateStereochemistryFromStructure(Matter_sp matter,bool onlyUndefinedConfiguration)
 {
   CipPrioritizer_sp prior;

@@ -163,7 +163,7 @@ CL_DEFMETHOD core::T_sp Joint_O::name() const {
 
 
 string Joint_O::asString() const
-{_OF();
+{
   stringstream ss;
   ss << "Node[" << _rep_(this->typeSymbol()) << "]  id=" << this->_Id.asString() << std::endl;
   ss << "Children: ";
@@ -191,14 +191,14 @@ void Joint_O::setParent(Joint_sp parent)
 
 CL_DEFMETHOD
 void Joint_O::insertChild(int before, Joint_sp child )
-{_OF();
+{
   this->_insertChild(before,child);
   child->setParent(this->asSmartPtr());
 }
 
 CL_DEFMETHOD
 void Joint_O::appendChild(Joint_sp child)
-{_OF();
+{
   if ( gc::IsA<JumpJoint_sp>(child) )
   {
     int idx = this->firstNonJumpChildIndex();
@@ -212,7 +212,7 @@ void Joint_O::appendChild(Joint_sp child)
 
 CL_DEFMETHOD
 void Joint_O::eraseChild(Joint_sp child)
-{_OF();
+{
   Joint_sp atom = this->asSmartPtr();
   for (int i=0; i<atom->_numberOfChildren(); i++ ) {
     if (child == atom->_child(i)) {
@@ -226,7 +226,7 @@ void Joint_O::eraseChild(Joint_sp child)
 
 CL_DEFMETHOD
 int Joint_O::indexOfChild(Joint_sp child)
-{_OF();
+{
   Joint_sp atom = this->asSmartPtr();
   for (int i=0; i<atom->_numberOfChildren(); i++ )
   {
@@ -240,7 +240,7 @@ int Joint_O::indexOfChild(Joint_sp child)
 CL_NAME(KIN:JOINT/ADD-CHILD);
 CL_DEFMETHOD
 void Joint_O::addChild(Joint_sp child)
-{_OF();
+{
   LOG(("Inserting child: %s") , _rep_(child));
   if ( gc::IsA<JumpJoint_sp>(child) ) {
     LOG(("It's a jump, inserting it at the start"));
@@ -261,7 +261,7 @@ RootJointInfo const* Joint_O::rootJointInfo() const
 }
 
 int Joint_O::firstNonJumpChildIndex() const
-{_OF();
+{
   for ( int i=0; i<this->_numberOfChildren(); i++ )
   {
     if ( !gc::IsA<JumpJoint_sp>(this->_child(i)) ) return i;
@@ -273,7 +273,7 @@ int Joint_O::firstNonJumpChildIndex() const
 
 
 void Joint_O::recursiveDumpChildrenIntoStringStream(const string& prefix, stringstream& out)
-{_OF();
+{
   out << prefix << this->typeSymbol() << "/";
   out << this->_Id.asString() << " ";
 #if DEBUG_KIN_ATOM
@@ -364,14 +364,14 @@ CL_DEFMETHOD void Joint_O::clearProperty(core::Symbol_sp symbol)
   this->_Properties = core::core__rem_f(this->_Properties,symbol);
 }
 
-CL_DOCSTRING(R"dx(Set the property **symbol** of **this** (a chem:matter) to **value**.)dx")
+CL_DOCSTRING(R"dx(Set the property **symbol** of **this** (a chem:matter) to **value**.)dx");
 CL_DEFMETHOD void Joint_O::setProperty(core::Symbol_sp symbol, core::T_sp value)
 {
   this->_Properties = core::core__put_f(this->_Properties,value,symbol);
 }
 
 
-CL_DOCSTRING(R"dx(Return the property **symbol** of **this** (a chem:matter) - if it isn't defined return NIL.)dx")
+CL_DOCSTRING(R"dx(Return the property **symbol** of **this** (a chem:matter) - if it isn't defined return NIL.)dx");
 CL_LISPIFY_NAME("getProperty");
 CL_DEFMETHOD core::T_sp Joint_O::getProperty(core::Symbol_sp symbol)
 {
@@ -384,14 +384,14 @@ CL_DEFMETHOD core::T_sp Joint_O::getProperty(core::Symbol_sp symbol)
   return res;
 }
 
-CL_DOCSTRING(R"dx(Return the property **symbol** of **this** (a chem:matter) - if it isn't defined return **defval**.)dx")
+CL_DOCSTRING(R"dx(Return the property **symbol** of **this** (a chem:matter) - if it isn't defined return **defval**.)dx");
 CL_LISPIFY_NAME("getPropertyOrDefault");
 CL_DEFMETHOD core::T_sp Joint_O::getPropertyOrDefault(core::Symbol_sp prop,core::T_sp defval)
 {
   return core::cl__getf(this->_Properties,prop,defval);
 }
 
-CL_DOCSTRING(R"dx(Return T if the property **symbol** of **this** (a chem:matter) is defined.)dx")
+CL_DOCSTRING(R"dx(Return T if the property **symbol** of **this** (a chem:matter) is defined.)dx");
 CL_LISPIFY_NAME("hasProperty");
 CL_DEFMETHOD bool Joint_O::hasProperty(core::Symbol_sp symbol)
 {
@@ -399,7 +399,7 @@ CL_DEFMETHOD bool Joint_O::hasProperty(core::Symbol_sp symbol)
 }
        
 CL_DEFMETHOD void Joint_O::walkChildren(core::Function_sp callback)
-{_OF();
+{
   LOG("There are %d children" , this->_numberOfChildren() );
   for ( int i=0; i<this->_numberOfChildren(); i++ )
   {
@@ -415,7 +415,7 @@ CL_DEFUN void kin__walk(Joint_sp joint, core::Function_sp callback) {
 }
 
 void Joint_O::walkResidueTree(int residueId, core::Function_sp callback)
-{_OF();
+{
   LOG("There are %d children" , this->_numberOfChildren() );
   for ( int i=0; i<this->_numberOfChildren(); i++ )
   {
@@ -455,7 +455,7 @@ void Joint_O::_updateChildrenXyzCoords() {
 
 
 CL_DEFMETHOD void Joint_O::updateXyzCoord()
-{_OF();
+{
   KIN_LOG("base method\n");
   Stub stub = this->getInputStub();
   this->_updateXyzCoord(stub);
@@ -463,14 +463,14 @@ CL_DEFMETHOD void Joint_O::updateXyzCoord()
 
 
 CL_DEFMETHOD void Joint_O::updateXyzCoords()
-{_OF();
+{
   Stub stub = this->getInputStub();
   this->_updateXyzCoord(stub);
   this->_updateChildrenXyzCoords();
 }
 
 SYMBOL_SC_(KinPkg,atom);
-core::Symbol_sp Joint_O::typeSymbol() const {_OF(); return _sym_atom;};
+core::Symbol_sp Joint_O::typeSymbol() const { return _sym_atom;};
 
 CL_DEFMETHOD core::T_sp Joint_O::getParent() const {
   return this->_Parent.unboundp() ? nil<core::T_O>() : gc::As_unsafe<core::T_sp>(this->_Parent);

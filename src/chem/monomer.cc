@@ -64,9 +64,9 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace chem {
 
 CL_LISPIFY_NAME("CHEM:NAME");
-CL_LAMBDA(value isoname)
-CL_DOCSTRING(R"dx(isoname-name-set)dx")
-DOCGROUP(cando)
+CL_LAMBDA(value isoname);
+CL_DOCSTRING(R"dx(isoname-name-set)dx");
+DOCGROUP(cando);
 CL_DEFUN_SETF core::Symbol_sp chem__isoname_name_set(core::Symbol_sp name, Isoname_sp isoname)
 {
   isoname->_Name = name;
@@ -74,9 +74,9 @@ CL_DEFUN_SETF core::Symbol_sp chem__isoname_name_set(core::Symbol_sp name, Isona
 }
 
 CL_LISPIFY_NAME("CHEM:ISOMER");
-CL_LAMBDA(value isoname)
-CL_DOCSTRING(R"dx(isoname-isomer-set)dx")
-DOCGROUP(cando)
+CL_LAMBDA(value isoname);
+CL_DOCSTRING(R"dx(isoname-isomer-set)dx");
+DOCGROUP(cando);
 CL_DEFUN_SETF Fixnum chem__isoname_isomer_set(Fixnum isomer, Isoname_sp isoname)
 {
   isoname->_Isomer = isomer;
@@ -216,7 +216,7 @@ CL_DEFMETHOD     core::List_sp	Monomer_O::plugNamesAndCouplingsAsList()
 
 CL_NAME(CHEM:MONOMER/HAS-RING-CLOSING-OUT-PLUG);
 CL_DEFMETHOD bool Monomer_O::hasRingClosingOutPlug() const
-{_OF();
+{
   Couplings::const_iterator it;
   for ( it=this->_Couplings.begin(); it!=this->_Couplings.end(); it++ )
   {
@@ -690,8 +690,9 @@ void Monomer_O::initialize()
 }
 
 
-CL_DOCSTRING(R"dx(Create a monomer using a list of topology objects)dx")
-CL_LAMBDA(&optional topology-list)CL_DEF_CLASS_METHOD 
+CL_DOCSTRING(R"dx(Create a monomer using a list of topology objects)dx");
+CL_LAMBDA(&optional topology-list);
+CL_DEF_CLASS_METHOD 
 Monomer_sp Monomer_O::makeMonomer(core::List_sp topology_list)
 {
   auto  me  = gctools::GC<Monomer_O>::allocate_with_default_constructor();
@@ -704,7 +705,7 @@ Monomer_sp Monomer_O::makeMonomer(core::List_sp topology_list)
 
 
 CL_DEFMETHOD core::Symbol_sp Monomer_O::currentStereoisomerName() const
-{_OF();
+{
   if ( this->_Monomers.size() == 0 ) {
     return nil<core::Symbol_O>();
   }
@@ -1024,7 +1025,7 @@ bool Monomer_O::incrementMonomerIndex()
 
 
 gctools::Vec0<Coupling_sp>	Monomer_O::getOutCouplings()
-{_OF();
+{
   gctools::Vec0<Coupling_sp>	outCouplings;
   Monomer_O::Couplings::iterator wci;
   Coupling_sp		coup;

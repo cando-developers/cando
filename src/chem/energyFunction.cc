@@ -159,7 +159,7 @@ core::List_sp EnergyFunction_O::allComponents() const {
 }
 
   
-CL_LAMBDA(&key matter (use-excluded-atoms t) active-atoms (assign-types t) bounding-box)
+CL_LAMBDA(&key matter (use-excluded-atoms t) active-atoms (assign-types t) bounding-box);
 CL_LISPIFY_NAME(make_energy_function);
 CL_DEF_CLASS_METHOD EnergyFunction_sp EnergyFunction_O::make(core::T_sp matter, bool useExcludedAtoms, core::T_sp activeAtoms, bool assign_types, core::T_sp bounding_box)
 {
@@ -278,7 +278,7 @@ void EnergyFunction_O::fields(core::Record_sp node)
   this->Base::fields(node);
 }
 
-CL_DOCSTRING(R"dx(Return the bounding-box for the atom-table.)dx")
+CL_DOCSTRING(R"dx(Return the bounding-box for the atom-table.)dx");
 CL_LISPIFY_NAME(energyFunction-bounding-box);
 CL_DEFMETHOD BoundingBox_sp EnergyFunction_O::boundingBox() const
 {
@@ -288,20 +288,20 @@ CL_DEFMETHOD BoundingBox_sp EnergyFunction_O::boundingBox() const
   SIMPLE_ERROR(("The bounding-box slot is unbound"));
 }
 
-CL_DOCSTRING(R"dx(Return T if the bounding-box is bound)dx")
+CL_DOCSTRING(R"dx(Return T if the bounding-box is bound)dx");
 CL_LISPIFY_NAME(energyFunction-bounding-box-bound-p);
 CL_DEFMETHOD bool EnergyFunction_O::boundingBoxBoundP() const
 {
   return this->_BoundingBox.boundp();
 }
 
-CL_DOCSTRING(R"dx(Set the bounding-box)dx")
+CL_DOCSTRING(R"dx(Set the bounding-box)dx");
 CL_LISPIFY_NAME(energyFunction-set-bounding-box);
 CL_DEFMETHOD void EnergyFunction_O::setBoundingBox(BoundingBox_sp boundingBox) {
   this->_BoundingBox = boundingBox;
 }
 
-CL_DOCSTRING(R"dx(Make the bounding-box unbound)dx")
+CL_DOCSTRING(R"dx(Make the bounding-box unbound)dx");
 CL_LISPIFY_NAME(energyFunction-mak-unbound-bounding-box);
 CL_DEFMETHOD void EnergyFunction_O::makUnboundBoundingBox() {
   this->_BoundingBox = unbound<BoundingBox_O>();
@@ -335,7 +335,7 @@ double EnergyFunction_O::getDihedralRestraintComponentEnergy()
 
 
 void	EnergyFunction_O::setOption( core::Symbol_sp option, core::T_sp val)
-{_OF();
+{
   if ( option == _sym_nonbondTerm)
   {
     bool onval = val.isTrue();
@@ -483,7 +483,7 @@ void EnergyFunction_O::setupHessianPreconditioner(NVector_sp nvPosition,
 
 
 uint	EnergyFunction_O::countTermsBeyondThreshold()
-{_OF();
+{
   int		terms;
   terms = 0;
   SIMPLE_ERROR(("Should there be something here?"));
@@ -879,7 +879,7 @@ void	EnergyFunction_O::evaluateNumericalForce(NVector_sp pos, NVector_sp numForc
 /*! Calculate the hessian numerically
  */
 void	EnergyFunction_O::evaluateNumericalHessian(NVector_sp pos, AbstractLargeSquareMatrix_sp hessian, bool calcOffDiagonal, double delta )
-{_OF();
+{
   double		fval;
   uint		c, r;
 
@@ -1102,7 +1102,7 @@ int EnergyFunction_O::_applyRestraints(core::T_sp nonbondDb, core::Iterator_sp r
 }
 
 void EnergyFunction_O::_addDihedralRestraint(Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, double minDegrees, double maxDegrees, double weight, core::T_sp activeAtoms)
-{_OF();
+{
   if ( activeAtoms.notnilp() &&
        (!inAtomSet(activeAtoms,a1) || !inAtomSet(activeAtoms,a2) || !inAtomSet(activeAtoms,a3) || !inAtomSet(activeAtoms,a4)) ) return;
   this->_DihedralRestraint->addDihedralRestraint(this->asSmartPtr(),a1,a2,a3,a4,minDegrees*0.0174533,maxDegrees*0.0174533,weight);
@@ -1178,9 +1178,9 @@ SYMBOL_EXPORT_SC_(ChemPkg,identify_aromatic_rings);
 SYMBOL_EXPORT_SC_(ChemPkg,STARcurrent_aromaticity_informationSTAR);
 
 CL_LISPIFY_NAME("defineForMatter");
-CL_LAMBDA((energy-function !) matter &key use-excluded-atoms active-atoms (assign-types t))
+CL_LAMBDA((energy-function !) matter &key use-excluded-atoms active-atoms (assign-types t));
 CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, bool useExcludedAtoms, core::T_sp activeAtoms, bool assign_types )
-{_OF();
+{
 
   if ( !(matter.isA<Aggregate_O>() || matter.isA<Molecule_O>() ) )
   {
@@ -1241,9 +1241,9 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, bool useEx
 }
 
 
-CL_LAMBDA((energy-function !) matter &key use-excluded-atoms active-atoms (assign-types t) cip-priorities)
+CL_LAMBDA((energy-function !) matter &key use-excluded-atoms active-atoms (assign-types t) cip-priorities);
 CL_DEFMETHOD void EnergyFunction_O::defineForMatterWithAtomTypes(Matter_sp matter, bool useExcludedAtoms, core::T_sp activeAtoms, core::T_sp cip_priorities)
-{_OF();
+{
   if (!gc::IsA<core::HashTable_sp>(cip_priorities)) {
     SIMPLE_ERROR(("You need to provide a hash-table of atoms to relative CIP priorities - see CipPrioritizer_O::assignPrioritiesHashTable(matter)"));
   }
@@ -1394,8 +1394,8 @@ core::HashTable_sp createAtomToResidueHashTable(Matter_sp molecule)
       
 
 
-CL_LAMBDA((energy-function !) molecule force-field &key active-atoms)
-CL_DOCSTRING(R"dx(Generate the standard energy function tables. The atom types, and CIP priorities need to be precalculated.)dx")
+CL_LAMBDA((energy-function !) molecule force-field &key active-atoms);
+CL_DOCSTRING(R"dx(Generate the standard energy function tables. The atom types, and CIP priorities need to be precalculated.)dx");
 CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_sp molecule, CombinedForceField_sp combinedForceField, core::T_sp activeAtoms )
 {
   Loop loop;
@@ -1676,9 +1676,9 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
 
 SYMBOL_EXPORT_SC_(ChemPkg,prepare_amber_energy_nonbond);
 
-CL_DOCSTRING(R"dx(Generate the nonbond energy function tables. The atom types, and CIP priorities need to be precalculated.)dx")
+CL_DOCSTRING(R"dx(Generate the nonbond energy function tables. The atom types, and CIP priorities need to be precalculated.)dx");
 CL_DEFMETHOD void EnergyFunction_O::generateNonbondEnergyFunctionTables(bool useExcludedAtoms, Matter_sp matter, core::T_sp nonbondForceField, core::T_sp activeAtoms )
-{_OF();
+{
   if (chem__verbose(0))
     core::write_bf_stream(fmt::sprintf("Built atom table for %d atoms\n" , this->_AtomTable->getNumberOfAtoms()));
 #ifdef	DEBUG_DEFINE_ENERGY
@@ -1709,7 +1709,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateNonbondEnergyFunctionTables(bool use
 }
 
 
-CL_LAMBDA((energy-function !) matter force-field &key active-atoms cip-priorities)
+CL_LAMBDA((energy-function !) matter force-field &key active-atoms cip-priorities);
 CL_DOCSTRING(R"dx(Generate the restraint energy function tables. The atom types, and CIP priorities need to be precalculated.
 This should be called after generateStandardEnergyFunctionTables.
 You need to pass a hash-table of atoms to relative CIP priorities (calculated using CipPrioritizer_O::assignPrioritiesHashTable(matter) for stereochemical restraints.)dx")
@@ -1954,8 +1954,8 @@ void	EnergyFunction_O::loadCoordinatesIntoVector(NVector_sp pos)
 }
 
 
-CL_DOCSTRING(R"dx(Return the coordinate vector of the energy function)dx")
-DOCGROUP(cando)
+CL_DOCSTRING(R"dx(Return the coordinate vector of the energy function)dx");
+DOCGROUP(cando);
 CL_DEFUN NVector_sp chem__energy_function_coordinate_vector(EnergyFunction_sp energy_function)
 {
   NVector_sp pos = NVector_O::create(energy_function->getNVectorSize());
@@ -1963,8 +1963,8 @@ CL_DEFUN NVector_sp chem__energy_function_coordinate_vector(EnergyFunction_sp en
   return pos;
 }
 
-CL_DOCSTRING(R"dx(Return an empty force vector of the energy function)dx")
-DOCGROUP(cando)
+CL_DOCSTRING(R"dx(Return an empty force vector of the energy function)dx");
+DOCGROUP(cando);
 CL_DEFUN NVector_sp chem__energy_function_empty_force_vector(EnergyFunction_sp energy_function)
 {
   NVector_sp pos = NVector_O::make(energy_function->getNVectorSize(),0.0,true);
@@ -2027,7 +2027,7 @@ EnergyAtom*	EnergyFunction_O::getEnergyAtomPointer(Atom_sp a)
 
 
 void	EnergyFunction_O::dealWithProblem(core::Symbol_sp problem, core::T_sp error_args)
-{_OF();
+{
   core::List_sp atoms = nil<core::T_O>();
   if ( error_args.consp() && CONS_CAR(error_args) == kw::_sym_atoms ) {
     atoms = atoms;
@@ -2134,7 +2134,7 @@ SYMBOL_EXPORT_SC_(KeywordPkg,angle);
 SYMBOL_EXPORT_SC_(KeywordPkg,dihedral);
 SYMBOL_EXPORT_SC_(KeywordPkg,nonbond);
 
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN void chem__fill_energy_function_from_alist(EnergyFunction_sp energy, core::List_sp alist)
 {
   energy->_AtomTable = (safe_alist_lookup<AtomTable_sp>(alist,kw::_sym_atom_table));

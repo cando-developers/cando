@@ -112,7 +112,7 @@ void        SuperposeEngine_O::eraseFixedPoints()
 
 CL_DEFMETHOD
     void SuperposeEngine_O::appendMoveablePoint(const Vector3& pos)
-{_OF();
+{
     ASSERT(this->_MoveableIndices.notnilp());
     ASSERT(this->_MoveableCoordinates.notnilp());
     LOG("appendMoveablePoint vector: %s" , pos.asString() );
@@ -124,7 +124,7 @@ CL_DEFMETHOD
 }
 
     void SuperposeEngine_O::appendFixedPoint(const Vector3& pos)
-{_OF();
+{
     ASSERT(this->_FixedIndices.notnilp());
     ASSERT(this->_FixedCoordinates.notnilp());
     LOG("appendFixedPoint vector: %s" , pos.asString() );
@@ -158,7 +158,7 @@ I don't recall the original reference I used.
 */
 CL_DEFMETHOD
 void        SuperposeEngine_O::doSuperpose()
-{_OF();
+{
     VectorVector3s                        Sj;
     VectorVector3s                        Si;
     VectorVector3s::iterator        itS,itSi,itSj;
@@ -595,7 +595,7 @@ CL_DEFMETHOD void SuperposeSelectedAtoms_O::copyMatterCoordinatesIntoMoveableCoo
 }
 
 
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN void chem__superpose_one(Matter_sp moveable_matter, core::List_sp moveable_atoms, core::List_sp fixed_atoms)
 {
   size_t num_moveable = core::cl__length(moveable_atoms);

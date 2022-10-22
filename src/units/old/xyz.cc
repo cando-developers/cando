@@ -79,14 +79,14 @@ namespace units
 
 
     void Xyz_O::initialize()
-    {_OF();
+    {
         this->Base::initialize();
 	this->_Pos.set(0.0,0.0,0.0);
     }
 
 
     Object_sp Xyz_O::amount_matchUnits(core::Executable_sp exec, core::Cons_sp args, core::Environment_sp env, core::LispPtr lisp)
-    {_OF();
+    {
 	int matchPowers[NumBaseDimensions] = {0,0,0,0,0,0,0};
 	double amountScale = 1.0;
 	this->parseDimensionSymbolList(matchPowers,amountScale,args->cdr(),false);
@@ -107,7 +107,7 @@ namespace units
 
 
     Object_sp Xyz_O::amount() const
-    {_OF();
+    {
 	int zeroPowers[NumBaseDimensions] = {0,0,0,0,0,0,0};
 	if ( this->powersMatch(zeroPowers) )
 	{
@@ -123,13 +123,13 @@ namespace units
 
 
     Object_sp Xyz_O::unsafeAmount() const
-    {_OF();
+    {
 	return core::OVector3_O::create(this->_Pos,_lisp);
     }
 
 
     string Xyz_O::__repr__() const
-    {_OF();
+    {
 	double amount = 1.0;
 	Vector3 pos = this->_Pos;
 	stringstream units;
@@ -147,7 +147,7 @@ namespace units
 
 
     Quantity_sp Xyz_O::add(Quantity_sp other) const
-    {_OF();
+    {
 	Xyz_sp result = RP_Copy(this);
 	if ( other->notNil() )
 	{
@@ -162,7 +162,7 @@ namespace units
 
 	
     Quantity_sp Xyz_O::sub(Quantity_sp other) const
-    {_OF();
+    {
 	Xyz_sp result = RP_Copy(this);
 	if ( other->notNil() )
 	{
@@ -180,7 +180,7 @@ namespace units
 
 
     Quantity_sp Xyz_O::mulByFloat(Float_sp f) const
-    {_OF();
+    {
 	Xyz_sp result = RP_Copy(this);
 	for ( int i=0; i<NumBaseDimensions; i++ )
 	{
@@ -195,7 +195,7 @@ namespace units
 
 
     bool Xyz_O::isnan() const
-    {_OF();
+    {
 	return (
 	    (this->_Pos.getX() != this->_Pos.getX())||
 	    (this->_Pos.getY() != this->_Pos.getY())||

@@ -141,7 +141,7 @@ CL_DEFMETHOD core::Symbol_sp Plug_O::getName() const {
   return this->_Name;
 }
 
-CL_DEFMETHOD bool Plug_O::getIsIn() const {_OF(); SUBCLASS_MUST_IMPLEMENT();};
+CL_DEFMETHOD bool Plug_O::getIsIn() const { SUBCLASS_MUST_IMPLEMENT();};
 CL_DEFMETHOD bool Plug_O::getIsOrigin() const {return false;};
 CL_DEFMETHOD bool Plug_O::getIsRingClosing() const { return false; };
 
@@ -219,12 +219,12 @@ void OutPlug_O::fields(core::Record_sp node)
 
 CL_LISPIFY_NAME("ringClosingMatesAsList");
 CL_DEFMETHOD     core::List_sp OutPlug_O::ringClosingMatesAsList()
-{_OF();
+{
   return core::Cons_O::createFromVec0(this->_Mates);
 }
 
 bool OutPlug_O::recognizesRingClosingMate(core::Symbol_sp mateName)
-{_OF();
+{
   gctools::Vec0<Mate_sp>::iterator it;
   for ( it=this->_Mates.begin(); it!=this->_Mates.end(); it++ )
   {
@@ -309,13 +309,13 @@ RingClosingPlug_O::RingClosingPlug_O(const RingClosingPlug_O& p) : RingClosingPl
 
 CL_LISPIFY_NAME("ringClosingMatesAsList");
 CL_DEFMETHOD     core::List_sp RingClosingPlug_O::ringClosingMatesAsList()
-{_OF();
+{
   return core::Cons_O::createFromVec0(this->_Mates);
 }
 
 
 bool RingClosingPlug_O::recognizesRingClosingMate(core::Symbol_sp mateName)
-{_OF();
+{
   gctools::Vec0<Mate_sp>::iterator it;
   for ( it=this->_Mates.begin(); it!=this->_Mates.end(); it++ )
   {

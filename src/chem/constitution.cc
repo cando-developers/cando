@@ -94,7 +94,7 @@ Constitution_sp Constitution_O::make(core::Symbol_sp name, core::String_sp comme
   };
 
 void Constitution_O::addStereoisomersToCandoDatabase(CandoDatabase_sp db)
-{_OF();
+{
 	for ( stereoisomerIterator si=this->begin_Stereoisomers(); 
 	      si!=this->end_Stereoisomers(); si++ )
 	{
@@ -397,7 +397,7 @@ tres = nil<Topology_O>();
 
 CL_LISPIFY_NAME("topologyWithName");
 CL_DEFMETHOD     Topology_sp	Constitution_O::topologyWithName(core::Symbol_sp name) const
-    {_OF();
+    {
 	Topology_sp			tres;
 	ASSERTF(this->_Topologies.contains(name),("There is no topology with name[%s] in constitution[%s]") , _rep_(name) , _rep_(this->getName()) );
 	return this->_Topologies.get(name);
@@ -656,7 +656,7 @@ bool	Constitution_O::isTopologyValid( Topology_sp cm )
 
 
 void	Constitution_O::initialize()
-{_OF();
+{
     this->Base::initialize();
     this->_Comment = core::Str_O::create("");
     this->_Name = nil<core::Symbol_O>();

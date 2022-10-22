@@ -58,7 +58,7 @@ void JumpJoint_O::_insertChild(int idx, Joint_sp c)
 
 
 void JumpJoint_O::_appendChild(Joint_sp c)
-{_OF();
+{
   Joint_sp empty;
   size_t index = this->_Children.size();
   this->_Children.push_back(empty);
@@ -81,7 +81,7 @@ void JumpJoint_O::_releaseAllChildren()
 
 
 void JumpJoint_O::_updateInternalCoord()
-{_OF();
+{
 #if 0
   KIN_LOG((" <<< %s\n") , _rep_(this->asSmartPtr()));
   Vector3 O = this->_Position;
@@ -153,7 +153,7 @@ bool JumpJoint_O::keepDofFixed(DofType dof) const
 
 
 void JumpJoint_O::_updateXyzCoord(Stub& stub)
-{_OF();
+{
   ASSERTF(stub.isOrthogonal(1e-3),("Stub is not orthogonal - stub:\n%s") , stub.asString());
   this->_LabFrame = stub._Transform.multiplyByMatrix(this->_ParentRelativeTransform);
   this->position(this->_LabFrame.getTranslation());
@@ -169,7 +169,7 @@ void JumpJoint_O::updateXyzCoord()
 
     /*! Update the external coordinates using the input stub */
 void JumpJoint_O::_updateChildrenXyzCoords()
-{_OF();
+{
   Stub newStub;
   newStub._Transform = this->_LabFrame;
   for ( int ii=0; ii < this->_numberOfChildren(); ii++) {
@@ -191,7 +191,7 @@ Stub JumpJoint_O::getInputStub() const {
 
 
 double JumpJoint_O::dof(DofType const& dof) const
-{_OF();
+{
   if ( dof.isRigidBodyDof() )
   {
     SIMPLE_ERROR(("Do something for dof"));
@@ -201,7 +201,7 @@ double JumpJoint_O::dof(DofType const& dof) const
 }
 
 
-core::Symbol_sp JumpJoint_O::typeSymbol() const {_OF(); return _sym_jump;};
+core::Symbol_sp JumpJoint_O::typeSymbol() const { return _sym_jump;};
 
 
 

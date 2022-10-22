@@ -53,7 +53,7 @@ FoldTree_sp FoldTree_O::make()
 
 
 void FoldTree_O::initialize()
-{_OF();
+{
   this->Base::initialize();
   this->_AggregateNode = AggregateNode_O::create();
 }
@@ -70,14 +70,14 @@ void FoldTree_O::resizeChains(int numChains)
 }
 
 void FoldTree_O::resizeMonomers(int chainId, int numMonomers)
-{_OF();
+{
   ASSERTF(chainId<(int)this->_AggregateNode->_Chains.size(), ("Illegal chainId[%d] - there are only %d chains") , chainId , this->_AggregateNode->_Chains.size());
   this->_AggregateNode->_Chains[chainId]->resizeMonomers(numMonomers);
 }
 
 
 ChainNode_sp FoldTree_O::buildChainUsingOligomer(int chainId, chem::Oligomer_sp oligomer)
-{_OF();
+{
   ASSERTF(chainId<this->numberOfChains(),("Illegal chainId[%d]") , chainId );
   this->resizeMonomers(chainId,oligomer->numberOfMonomers());
   this->_AggregateNode->_Chains[chainId]->buildUsingOligomer(oligomer,chainId);
@@ -85,7 +85,7 @@ ChainNode_sp FoldTree_O::buildChainUsingOligomer(int chainId, chem::Oligomer_sp 
 }
 	
 ChainNode_sp FoldTree_O::getChainNode(int chainId) const
-{_OF();
+{
   ASSERTF(chainId>0 && chainId<this->numberOfChains(), ("Illegal chainId[%d]") , chainId );
   return this->_AggregateNode->_Chains[chainId];
 }
@@ -93,9 +93,9 @@ ChainNode_sp FoldTree_O::getChainNode(int chainId) const
 CL_DEFMETHOD AggregateNode_sp FoldTree_O::root() const { return this->_AggregateNode; };
 
 
-CL_DOCSTRING(R"dx(Return the monomer-node that corresponds to the monomer-id)dx")
+CL_DOCSTRING(R"dx(Return the monomer-node that corresponds to the monomer-id)dx");
 CL_DEFMETHOD MonomerNode_sp FoldTree_O::lookupMonomerId(MonomerId const& monomerId) const
-{_OF();
+{
   ASSERTF(monomerId.chainId()<(int)this->_AggregateNode->_Chains.size(),
           ("Illegal chainId[%d] - there are only %d chains") , monomerId.chainId()
           , this->_AggregateNode->_Chains.size() );

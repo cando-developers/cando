@@ -73,7 +73,7 @@ namespace chem
 
 #ifdef XML_ARCHIVE
     void	MonomerContext_O::archiveBase(core::ArchiveP node)
-    {_OF();
+    {
 #ifdef DEBUG_ON
 	if ( node->saving() )
 	{
@@ -110,7 +110,7 @@ namespace chem
 
 CL_LISPIFY_NAME("addNeighbor");
 CL_DEFMETHOD     void	MonomerContext_O::addNeighbor( core::Symbol_sp cn, EntityNameSetBase_sp r)
-    {_OF();
+    {
       LOG("Added neighbor with key plug: %s" , _rep_(cn)  );
 	getCandoDatabase();
 	ASSERTF(DirectionalCoupling_O::isPlugName(cn), ("addNeighbor ILLEGAL PLUG NAME plugName=(%s)") , cn );
@@ -400,7 +400,7 @@ CL_DEFMETHOD     void	MonomerContext_O::setFocusFromMonomer(Monomer_sp mon)
 
 CL_LISPIFY_NAME("getPlugNames");
 CL_DEFMETHOD     adapt::SymbolSet_sp MonomerContext_O::getPlugNames() const
-    {_OF();
+    {
 	adapt::SymbolSet_sp names = adapt::SymbolSet_O::create();
 	for ( NeighborMap::const_iterator it=this->_Neighbors.begin();
 	      it!=this->_Neighbors.end(); it++ )
@@ -413,7 +413,7 @@ CL_DEFMETHOD     adapt::SymbolSet_sp MonomerContext_O::getPlugNames() const
 
 CL_LISPIFY_NAME("getNeighbor");
 CL_DEFMETHOD     EntityNameSetBase_sp MonomerContext_O::getNeighbor(core::Symbol_sp name) const
-    {_OF();
+    {
 	if ( this->_Neighbors.count(name) == 0 )
 	{
           SIMPLE_ERROR(("Unknown MonomerContext-plugName[%s]") , _rep_(name) );

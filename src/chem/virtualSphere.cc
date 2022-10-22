@@ -269,7 +269,7 @@ void	VirtualSphere_O::initialize()
 
 CL_LISPIFY_NAME("dump");
 CL_DEFMETHOD void VirtualSphere_O::dump()
-{_OF();
+{
     stringstream ss;
     ss << "VirtualSphere dump  _Recalculate = " << this->_Recalculate << std::endl;
     ss << "_Scale = " << this->_Scale << std::endl;
@@ -287,7 +287,7 @@ SYMBOL_EXPORT_SC_(ChemKwPkg,scale);
 
     VirtualSphereMotionMode
     VirtualSphere_O::mouseModeFromSymbol(core::Symbol_sp sym)
-    {_OF();
+    {
 	VirtualSphereMotionMode mode = vsIdle;
 	if ( sym == chemkw::_sym_idle ) {mode = vsIdle;}
 	else if ( sym == chemkw::_sym_translate ) {mode = vsTranslate;}
@@ -299,7 +299,7 @@ SYMBOL_EXPORT_SC_(ChemKwPkg,scale);
 
 CL_LISPIFY_NAME("setMouseStart");
 CL_DEFMETHOD     void VirtualSphere_O::setMouseStartSymbol( core::Symbol_sp sym, int x, int y, int w, int h )
-    {_OF();
+    {
 	VirtualSphereMotionMode mode = this->mouseModeFromSymbol(sym);
 	this->setMouseStart(mode,x,y,w,h);
     }
@@ -319,7 +319,7 @@ CL_DEFMETHOD     void VirtualSphere_O::setMouseStartSymbol( core::Symbol_sp sym,
 
 CL_LISPIFY_NAME("setMouseMove");
 CL_DEFMETHOD void	VirtualSphere_O::setMouseMove( int x, int y )
-{_OF();
+{
 double	sx,sy,tx,ty,scaleDelta;
 Vector3	delta;
 int	result;
@@ -400,7 +400,7 @@ Matrix	mtemp;
 CL_LISPIFY_NAME("setMouseXAxisWheelChange");
 CL_DEFMETHOD     void
     VirtualSphere_O::setMouseXAxisWheelChange(core::Symbol_sp smode, double w)
-    {_OF();
+    {
 	VirtualSphereMotionMode mode = this->mouseModeFromSymbol(smode);
 	LOG("Mouse mode=%d" , mode );
 	switch ( mode )
@@ -444,7 +444,7 @@ CL_DEFMETHOD     void
 CL_LISPIFY_NAME("setMouseYAxisWheelChange");
 CL_DEFMETHOD     void
     VirtualSphere_O::setMouseYAxisWheelChange(core::Symbol_sp smode, double w)
-    {_OF();
+    {
 	VirtualSphereMotionMode mode = this->mouseModeFromSymbol(smode);
 	LOG("Mouse mode=%d" , mode );
 	switch ( mode )

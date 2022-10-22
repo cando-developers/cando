@@ -65,7 +65,7 @@ SYMBOL_EXPORT_SC_(ChemKwPkg,singleHashEnd);
 
 string	XmlName_Bond = "bond";
 
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN bool chem__single_bond_p(chem::BondOrder o)
 {
   return Bond_O::singleBondP(o);
@@ -92,7 +92,7 @@ Bond_sp	Bond_O::create(Atom_sp from, Atom_sp to, BondOrder o)
 
 
 void Bond_O::initialize()
-{_OF();
+{
   this->Base::initialize();
   this->_DirectionalOrder = singleBond;
   LOG("Setting fromAtom and toAtom to nil" ); //
@@ -115,7 +115,7 @@ Bond_O::Bond_O(const Bond_O& bb)  : core::CxxObject_O(bb)
 
 
 bool Bond_O::isAtom1(Atom_sp a) const
-{_OF();
+{
   ASSERTNOTNULL(this->_Atom1);
   if (this->_Atom1==a) return true;
   ASSERTNOTNULL(this->_Atom2);
@@ -127,13 +127,13 @@ bool Bond_O::isAtom1(Atom_sp a) const
 
 
 Bond_sp Bond_O::copyDontRedirectAtoms()
-{_OF();
+{
   auto  bondNew  = gctools::GC<Bond_O>::copy( *this); // = RP_Copy<Bond_O>(this);
   return bondNew;
 }
 
 void Bond_O::addYourselfToCopiedAtoms()
-{_OF();
+{
 //  printf("%s:%d Redirecting bond from atoms %s@%p - %s@%p\n", __FILE__, __LINE__, _rep_(this->_Atom1).c_str(), this->_Atom1.raw_(), _rep_(this->_Atom2).c_str(), this->_Atom2.raw_() );
 //  printf("%s:%d                    to atoms %s@%p - %s@%p\n", __FILE__, __LINE__, _rep_(this->_Atom1->getCopyAtom()).c_str(), this->_Atom1->getCopyAtom().raw_(), _rep_(this->_Atom2->getCopyAtom()).c_str(), this->_Atom2->getCopyAtom().raw_());
   ASSERTNOTNULL(this->_Atom1);
@@ -269,7 +269,7 @@ bool Bond_O::isBondBetween(Atom_sp a, Atom_sp b) const
 
 
 string  Bond_O::description() const
-{_OF();
+{
   stringstream    ss;
   ss << "(Bond ";
   Atom_sp wa1 = this->_Atom1;
@@ -283,7 +283,7 @@ string  Bond_O::description() const
 }
 
 string  Bond_O::describeOther(Atom_sp from) const
-{_OF();
+{
   ASSERTF(from==this->_Atom1||from==this->_Atom2,"describeFrom failed because from atom[%s] is not part of bond: %s" , from->description() , this->description() );
   stringstream    ss;
   ss << "Bond(";
@@ -298,7 +298,7 @@ string  Bond_O::describeOther(Atom_sp from) const
 
 
 bool	Bond_O::invalid(Atom_sp a)
-{_OF();
+{
   ASSERTNOTNULL(this->_Atom1);
   ASSERTNOTNULL(this->_Atom2);
   if ( this->_Atom1.nilp() ) return true;
@@ -387,7 +387,7 @@ void Bond_O::canonicalizeBondOrder(Atom_sp& a1, Atom_sp& a2, BondOrder& order) {
 }
 
 ConstitutionBond_sp Bond_O::asConstitutionBond(Atom_sp from, const MapAtomsToConstitutionAtomIndex0N& atomMap)
-{_OF();
+{
   Atom_sp to = this->getOtherAtom(from);
   MapAtomsToConstitutionAtomIndex0N::const_iterator it = atomMap.find(to);
   if ( it == atomMap.end() )
@@ -410,7 +410,7 @@ CL_DEFMETHOD string	Bond_O::getOrderFromAtomAsString(Atom_sp fromAtom)
 }
 
 void	Bond_O::joinYourAtoms()
-{_OF();
+{
   IMPLEMENT_ME(); // handle new way of storing bonds
 #if 0
   ASSERTNOTNULLP(this->fromAtom,"Bond_O::joinYourAtoms from atom is undefined!");
@@ -542,7 +542,7 @@ char bondOrderToChar(BondOrder bo)
 
 
 BondList_O::BondList_O(const BondList_O& orig) : Base(orig), _Bonds(orig._Bonds)
-{_OF();
+{
 }
 
 
@@ -579,7 +579,7 @@ void	BondList_O::removeBond(Bond_sp b)
 }
 
 void	BondList_O::removeBondBetween(Atom_sp a,Atom_sp b)
-{_OF();
+{
   BondList_O::iterator	bi;
   for ( bi=this->_Bonds.begin(); bi!=this->_Bonds.end(); bi++ )
   {

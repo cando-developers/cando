@@ -311,8 +311,8 @@ void Matrix::transform_nvector_point(double &xdest, double &ydest, double &zdest
 }
 
 namespace geom {
-CL_DOCSTRING(R"dx(Transform a point in an nvector by the matrix and put the result in the destination)dx")
-DOCGROUP(cando)
+CL_DOCSTRING(R"dx(Transform a point in an nvector by the matrix and put the result in the destination)dx");
+DOCGROUP(cando);
 CL_DEFUN
 void geom__inplace_transform_nvector_point(Vector3 &destination, const Matrix &transform, chem::NVector_sp source,
                                            size_t source_index) {
@@ -420,8 +420,8 @@ Matrix Matrix::invertTransform() const {
 }
 
 namespace geom {
-CL_DOCSTRING(R"dx(Return a matrix that will invert the transform of the argument)dx")
-DOCGROUP(cando)
+CL_DOCSTRING(R"dx(Return a matrix that will invert the transform of the argument)dx");
+DOCGROUP(cando);
 CL_DEFUN
 Matrix geom__invertTransform(const Matrix &matrix) { return matrix.invertTransform(); }
 
@@ -1314,14 +1314,14 @@ void internalCoordinatesFromPointAndCoordinateSystem(const Vector3 &D, const Mat
 }
 
 namespace geom {
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN Vector3 geom__pointFromMatrixAndInternalCoordinates(const Matrix &coordinateSystem, double distance, double angle,
                                                              double dihedral) {
   Vector3 d2;
   return pointFromMatrixAndInternalCoordinates(coordinateSystem, distance, angle, dihedral, d2);
 };
 
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN core::DoubleFloat_mv geom__internalCoordinatesFromPointAndCoordinateSystem(const Vector3 &D,
                                                                                     const Matrix &coordinateSystem) {
   double distance;

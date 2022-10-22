@@ -42,7 +42,7 @@ namespace chem
 
 
     void	RepresentedEntityNameSet_O::initialize()
-    {_OF();
+    {
 	LOG("RepresentedEntityNameSet_O::initialize()" );
 	this->Base::initialize();
 	this->_Representative = nil<core::Symbol_O>();
@@ -120,7 +120,7 @@ CL_DEFMETHOD     bool	RepresentedEntityNameSet_O::hasRepresentative()
 
 
     RepresentativeList_sp RepresentedEntityNameSet_O::expandedRepresentativeList() const
-    {_OF();
+    {
 	RepresentativeList_sp		objList;
 	Entity_sp			obj;
 	CandoDatabase_sp		bdb;

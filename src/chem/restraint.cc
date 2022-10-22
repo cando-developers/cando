@@ -295,7 +295,7 @@ RestraintDihedral_O::RestraintDihedral_O(const RestraintDihedral_O& old) : Restr
 }
 
 Restraint_sp	RestraintDihedral_O::copyDontRedirectAtoms()
-{_OF();
+{
   auto  rest  = gctools::GC<RestraintDihedral_O>::copy( *this); // = RP_Copy<RestraintDihedral_O>(this);
   rest->_A = this->getAtomA();
   rest->_B = this->getAtomB();

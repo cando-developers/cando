@@ -590,7 +590,7 @@ double	EnergyRigidBodyNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
     
 void	EnergyRigidBodyNonbond_O::compareAnalyticalAndNumericalForceAndHessianTermByTerm(
                                                                                 NVector_sp 	pos)
-{_OF();
+{
   IMPLEMENT_ME();
   // Use the code below
 #if 0

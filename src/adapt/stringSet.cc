@@ -164,7 +164,7 @@ CL_DEFMETHOD bool StringSet_O::containsSubset(StringSet_sp sub) {
 
 CL_LISPIFY_NAME("clear");
 CL_DEFMETHOD void StringSet_O::clear() {
-  _OF();
+  
   LOG("StringSet::clear size=%d" , (this->strs.size()));
   if (this->strs.size() == 0)
     return;
@@ -194,7 +194,7 @@ bool StringSet_O::equal(T_sp obj) const {
 #endif
 
 void StringSet_O::remove(const string &s) {
-  _OF();
+  
 #ifdef DEBUG_ON
   if (this->strs.count(s) != 1) {
     SIMPLE_ERROR(("The string: %s was not found in StringSet") , s);

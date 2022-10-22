@@ -38,7 +38,7 @@ namespace geom {
 
 
     core::T_sp IntegerKeyObjectDictionary_O::get(int ikey)
-{_OF();
+{
     core::T_sp obj;
     if ( this->_Map.count(ikey) == 0 ) {
         stringstream ss;
@@ -78,7 +78,7 @@ string	IntegerKeyObjectDictionary_O::__repr__() const
 
 
 core::T_sp IntegerKeyObjectDictionary_O::getAndRemove(int ikey)
-{_OF();
+{
     core::T_sp	obj;
     if ( this->_Map.count(ikey) == 0 ) 
     {

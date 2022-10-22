@@ -82,7 +82,7 @@ namespace chem
 #else
 
     core::T_sp ExternalInterface_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::LispPtr lisp)
-    {_OF();
+    {
 	this->_WeakConformationExplorer = translate::from_object<ConformationExplorer_O>::convert(env->lookup(Pkg(),"conformationExplorer"));
 	this->_StageName = translate::from_object<core::Str_O>::convert(env->lookup(Pkg(),"stageName"))->get();
 	return _Nil<core::T_O>();

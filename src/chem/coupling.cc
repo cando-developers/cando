@@ -103,7 +103,7 @@ CL_DEFMETHOD core::T_sp DirectionalCoupling_O::getTargetPlugName() const
     return IN_PLUG_PREFIX;
 }
 
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN bool DirectionalCoupling_O::isCouplingName(core::Symbol_sp name)
 {
   core::SimpleString_sp ss = name->symbolName();
@@ -116,7 +116,7 @@ CL_DEFUN bool DirectionalCoupling_O::isCouplingName(core::Symbol_sp name)
     If the name is an in-plug-name and contains a hash - then signal an error 
        - because the coupling name cannot be determined - you will need the coupling to get the coupling name.
  */
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN core::Symbol_sp  DirectionalCoupling_O::couplingName(core::Symbol_sp name)
 {
   string sname = name->symbolNameAsString();
@@ -132,7 +132,7 @@ CL_DEFUN core::Symbol_sp  DirectionalCoupling_O::couplingName(core::Symbol_sp na
 }
 
 
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN core::Symbol_sp DirectionalCoupling_O::inPlugName(core::Symbol_sp name)
 {
   string sname = name->symbolNameAsString();
@@ -156,7 +156,7 @@ CL_DEFUN core::Symbol_sp DirectionalCoupling_O::inPlugName(core::Symbol_sp name)
   return chemkw_intern(ss.str());
 };
 
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN bool DirectionalCoupling_O::outPlugNameMatchesInPlugName(core::Symbol_sp outPlugName, core::Symbol_sp inPlugName) {
   core::SimpleString_sp out = outPlugName->symbolName();
   core::SimpleString_sp in = inPlugName->symbolName();
@@ -176,7 +176,7 @@ CL_DEFUN bool DirectionalCoupling_O::outPlugNameMatchesInPlugName(core::Symbol_s
   return true;
 }
 
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN core::Symbol_sp DirectionalCoupling_O::outPlugName(core::Symbol_sp name)
 {
   string sname = name->symbolNameAsString();
@@ -198,14 +198,14 @@ bool DirectionalCoupling_O::isInPlugName(core::Symbol_sp plugName)
   return plugName->symbolName()->rowMajorAref(0).unsafe_character() == IN_PLUG_PREFIX;
 };
 
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN bool chem__is_in_plug_name(core::Symbol_sp plugName)
 {
   return DirectionalCoupling_O::isInPlugName(plugName);
 }
 
 
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN core::Symbol_sp DirectionalCoupling_O::otherPlugName(core::Symbol_sp name)
 {
   stringstream	ss;
@@ -304,24 +304,24 @@ bool	DirectionalCoupling_O::isInCouplingToMonomer(Monomer_sp mon)
 
 CL_LISPIFY_NAME("getSourceMonomer");
 CL_DEFMETHOD Monomer_sp	DirectionalCoupling_O::getSourceMonomer()
-{_OF();
+{
     return this->_SourceMonomer;
 };
 
 Monomer_sp	DirectionalCoupling_O::getSourceMonomer_const() const
-{_OF();
+{
     return this->_SourceMonomer;
 };
 
 
 CL_LISPIFY_NAME("getTargetMonomer");
 CL_DEFMETHOD Monomer_sp	DirectionalCoupling_O::getTargetMonomer()
-{_OF();
+{
     return this->_TargetMonomer;
 };
 
 Monomer_sp	DirectionalCoupling_O::getTargetMonomer_const() const
-{_OF();
+{
     return this->_TargetMonomer;
 };
 
@@ -353,7 +353,7 @@ CL_DEFMETHOD     core::Symbol_sp	DirectionalCoupling_O::getTargetMonomerPlugName
 
 
 string	DirectionalCoupling_O::description() const
-{_OF();
+{
 stringstream	ss;
  ss << "DirectionalCoupling( "<< _rep_(this->getName());
     ss << "@";
@@ -432,7 +432,7 @@ CL_DEFMETHOD void DirectionalCoupling_O::setTargetMonomer(Monomer_sp m)
 
 
 DirectionalCouplingSide DirectionalCoupling_O::couplingSideOfMonomer( Monomer_sp mon )
-{_OF();
+{
     ASSERTNOTNULL( mon );
     ASSERT(mon.notnilp());
     if ( mon == this->getSourceMonomer() ) return InSide;
@@ -534,7 +534,7 @@ Plug_sp	DirectionalCoupling_O::getPlugForOtherMonomer(Monomer_sp mon)
 
 
 void	DirectionalCoupling_O::couple( Monomer_sp sin, Monomer_sp sout )
-{_OF();
+{
 DirectionalCoupling_sp	me;
 SIMPLE_ERROR(("I wasn't sure if this was ever called.  Take out this THROW if it is"));
     this->setSourceMonomer_NoSignal(sin);
@@ -593,14 +593,14 @@ CL_DEFMETHOD void	RingCoupling_O::setMonomer1(Monomer_sp mon)
 
 CL_LISPIFY_NAME("getMonomer1");
 CL_DEFMETHOD Monomer_sp RingCoupling_O::getMonomer1()
-{_OF();
+{
     ASSERTNOTNULLP(this->_Monomer1,
     	"SourceMonomer is NULL for coupling: "+this->description());
     return this->_Monomer1;
 }
 
 Monomer_sp RingCoupling_O::getMonomer1_const() const
-{_OF();
+{
     ASSERTNOTNULLP(this->_Monomer1,
     	"SourceMonomer is NULL for coupling: "+this->description());
     return this->_Monomer1;
@@ -615,14 +615,14 @@ CL_DEFMETHOD void	RingCoupling_O::setMonomer2(Monomer_sp mon)
 
 CL_LISPIFY_NAME("getMonomer2");
 CL_DEFMETHOD Monomer_sp RingCoupling_O::getMonomer2()
-{_OF();
+{
     ASSERTNOTNULLP(this->_Monomer2,
     	"Monomer2 is NULL for coupling: "+this->description());
     return this->_Monomer2;
 }
 
 Monomer_sp RingCoupling_O::getMonomer2_const() const
-{_OF();
+{
     ASSERTNOTNULLP(this->_Monomer2,
     	"Monomer2 is NULL for coupling: "+this->description());
     return this->_Monomer2;
@@ -720,17 +720,17 @@ void RingCoupling_O::setPlug2(core::Symbol_sp p)
 
 CL_LISPIFY_NAME("getPlug1");
 CL_DEFMETHOD core::Symbol_sp RingCoupling_O::getPlug1()
-{_OF();
+{
     return this->_Plug1;
 }
 CL_LISPIFY_NAME("getPlug2");
 CL_DEFMETHOD core::Symbol_sp RingCoupling_O::getPlug2()
-{_OF();
+{
     return this->_Plug2;
 }
 
 string	RingCoupling_O::description() const
-{_OF();
+{
 stringstream	ss;
  ss << "RingCoupling( "<< _rep_(this->getName());
     ss << "@";

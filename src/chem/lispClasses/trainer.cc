@@ -107,7 +107,7 @@ Bignum TrainerHeader_O::getSecondsSpentConformationalSearching()
 
 
 core::Path_sp TrainerHeader_O::constructPath( string const& fileName ) const
-    {_OF();
+    {
 	core::Path_sp path = core::Path_O::create(this->_Path->getPath());
 	core::Path_O* p = path.get();
 	(*p) /= fileName;
@@ -229,7 +229,7 @@ void	Trainer_O::initialize()
 #endif
 
 void	Trainer_O::write()
-{_OF();
+{
     IMPLEMENT_ME();
 #ifdef XML_ARCHIVE
     core::XmlSaveArchive_sp a = core::XmlSaveArchive_O::create();
@@ -240,11 +240,11 @@ void	Trainer_O::write()
 }
 
 ConformationExplorer_sp Trainer_O::getConformationExplorer()
-{_OF();
+{
   return (this->getData(_lisp->internWithPackageName(ChemPkg,"_ConformationExplorer"))).as<ConformationExplorer_O>();
 };
 void Trainer_O::setConformationExplorer(ConformationExplorer_sp str )
-{_OF();
+{
     this->setData(_lisp->internWithPackageName(ChemPkg,"_ConformationExplorer"),str);
 };
 
@@ -446,23 +446,23 @@ bool TrainerOrganizer_O::hasData( core::Symbol_sp key)
 #endif
 
 void TrainerOrganizer_O::setTopDirectory(const string& topDir)
-{_OF();
+{
     core::Str_sp val;
     val = core::Str_O::create(topDir);
    this->_Data->extend(_lisp->internWithPackageName(ChemPkg,"_TopDirectory"), val );
 }
 string TrainerOrganizer_O::getTopDirectory()
-{_OF();
+{
   return (this->_Data->lookup(_lisp->internWithPackageName(ChemPkg,"_TopDirectory"))).as<core::Str_O>()->get();
 }
 void TrainerOrganizer_O::setCandoDatabaseFileName(const string& str)
-{_OF();
+{
     core::Str_sp val;
     val = core::Str_O::create(str);
     this->_Data->extend(_lisp->internWithPackageName(ChemPkg,"_CandoDatabaseFileName"), val );
 }
 string TrainerOrganizer_O::getCandoDatabaseFileName()
-{_OF();
+{
   return (this->_Data->lookup(ChemPkg,"_CandoDatabaseFileName")).as<core::Str_O>()->get();
 }
 

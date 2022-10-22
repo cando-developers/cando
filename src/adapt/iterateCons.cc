@@ -55,7 +55,7 @@ void IterateCons_O::next()
   this->_Cur = oCdr(this->_Cur);
 };
 bool IterateCons_O::isDone() 
-{_OF();
+{
     ASSERTNOTNULL(this->_Cur);
     return (this->_Cur.nilp());
 };

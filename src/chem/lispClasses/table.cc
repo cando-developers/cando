@@ -222,7 +222,7 @@ namespace chem
 
 #ifdef XML_ARCHIVE
     void	Table_O::archiveBase(core::ArchiveP node)
-    {_OF();
+    {
 	this->Base::archiveBase(node);
 	if ( node->saving() )
 	{
@@ -282,7 +282,7 @@ namespace chem
 
 
     uint Table_O::indexOfField(core::Symbol_sp positionSymbol)
-    {_OF();
+    {
         core::T_mv pi = this->_FieldIndices->gethash(positionSymbol);
 	if ( pi.second().nilp() ) 
 	{
@@ -354,7 +354,7 @@ namespace chem
 
 
     void Table_O::writeField(uint entryIdx, core::Symbol_sp field, core::T_sp val )
-    {_OF();
+    {
 	ASSERT_lt(entryIdx,this->_Entries.size());
 	uint fieldIdx =  this->indexOfField(field);
 	TableEntry_sp entry = this->_Entries[entryIdx];
@@ -366,7 +366,7 @@ namespace chem
     }
 
     void Table_O::write(uint entryIdx, core::Cons_sp values )
-    {_OF();
+    {
 	ASSERT_lt(entryIdx,this->_Entries.size());
 	while ( values.notnilp() )
 	{

@@ -63,7 +63,7 @@ namespace kinematics
 
 
     Atom* WeakAtomHandle::get()
-    {_OF();
+    {
 	if ( this->notDefined() )
 	{
 	    SIMPLE_ERROR(("This handle is Undefined and you tried to get its pointed to object"));
@@ -105,7 +105,7 @@ namespace kinematics
     }
 
     Atom const* WeakAtomHandle::get() const
-    {_OF();
+    {
 	if ( this->notDefined() )
 	{
 	    SIMPLE_ERROR(("This handle is Undefined and you tried to get its pointed to object"));
@@ -143,13 +143,13 @@ namespace kinematics
 
 
     AtomHolder* WeakAtomHandle::holder()
-    {_OF();
+    {
 	ASSERTF(!this->notDefined(), ("Undefined WeakAtomHandle"));
 	return &(this->_Tree->_AtomHolders[this->_HolderIndex]);
     }
 
     const AtomHolder* WeakAtomHandle::holder() const
-    {_OF();
+    {
 	ASSERTF(!this->notDefined(), ("Undefined WeakAtomHandle"));
 	return &(this->_Tree->_AtomHolders[this->_HolderIndex]);
     }
@@ -226,7 +226,7 @@ namespace kinematics
 
 
     void RefCountedAtomHandle::incrementRefCount()
-    {_OF();
+    {
 #if DEBUG_REFCOUNT
 	printf("\n%s:%d - About to increment refCount->[%d] for handle[%d] nodeType[%s]",
 	       __FILE__, __LINE__, this->holder()->refCount(), this->_HolderIndex,
@@ -249,7 +249,7 @@ namespace kinematics
     }
 
     bool RefCountedAtomHandle::decrementRefCountAndReleaseIfZero()
-    {_OF();
+    {
 #if DEBUG_REFCOUNT
 	printf("\n%s:%d - About to decrement refCount->[%d] for handle[%d] nodeType[%s]",
 	       __FILE__, __LINE__, this->holder()->refCount(), this->_HolderIndex,

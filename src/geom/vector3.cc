@@ -268,7 +268,7 @@ void Vector3::fillFromCons(core::Cons_sp vals)
 
 
 namespace geom {
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN double	calculateDistance( const Vector3& va,
                                    const Vector3& vb)
 {
@@ -276,7 +276,7 @@ CL_DEFUN double	calculateDistance( const Vector3& va,
   return vc.length();
 }
 
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN double	calculateDistanceSquared( const Vector3& va,
                                           const Vector3& vb)
 {
@@ -287,7 +287,7 @@ CL_DEFUN double	calculateDistanceSquared( const Vector3& va,
 
 /*! Return the angle in radians
  */
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN double calculateAngle( const Vector3& va,
                                 const Vector3& vb,
                                 const Vector3& vc )
@@ -301,7 +301,7 @@ CL_DEFUN double calculateAngle( const Vector3& va,
 
 /*! Return the dihedral in radians
  */
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN double calculateDihedral( const Vector3& va,
                                    const Vector3& vb,
                                    const Vector3& vc,
@@ -325,16 +325,16 @@ CL_DEFUN double calculateDihedral( const Vector3& va,
 
 
 
-CL_DOCSTRING(R"dx(Return a vector (0 0 0))dx")
-DOCGROUP(cando)
+CL_DOCSTRING(R"dx(Return a vector (0 0 0))dx");
+DOCGROUP(cando);
 CL_DEFUN Vector3 geom__build_origin()
 {
   return Vector3(0.0,0.0,0.0);
 }
 
 
-CL_DOCSTRING(R"dx(Return a vector along the x axis distance away from vb)dx")
-DOCGROUP(cando)
+CL_DOCSTRING(R"dx(Return a vector along the x axis distance away from vb)dx");
+DOCGROUP(cando);
 CL_DEFUN Vector3 geom__build_using_bond( double distance, const Vector3& vb )
 {
   Vector3	vTarget;
@@ -343,7 +343,7 @@ CL_DEFUN Vector3 geom__build_using_bond( double distance, const Vector3& vb )
 }
 
 //! Build a vector at distance from vb and angle from va
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN Vector3 geom__build_using_bond_angle( double distance, const Vector3& vb,
                                                double angle, const Vector3& va)
 {
@@ -361,7 +361,7 @@ CL_DEFUN Vector3 geom__build_using_bond_angle( double distance, const Vector3& v
 }
 
 
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN Vector3 geom__build_using_bond_angle_dihedral( double distance, const Vector3& vc,
                                                         double angle, const Vector3& vb,
                                                         double dihedral, const Vector3& va)
@@ -637,7 +637,7 @@ CL_DEFUN Vector3 geom__build_using_bond_two_angles_orientation(
   return vNew;
 }
 
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN double geom__planeVectorAngle(double dx, double dy)
 {
   double dlen = std::sqrt(dx*dx+dy*dy);
@@ -654,9 +654,9 @@ CL_DEFUN double geom__planeVectorAngle(double dx, double dy)
 }
 
 
-CL_DOCSTRING(R"dx(Extract a geom:vec from a nvector at the particular index.)dx")
+CL_DOCSTRING(R"dx(Extract a geom:vec from a nvector at the particular index.)dx");
 CL_LISPIFY_NAME("vec-extract");
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN void geom__vec_extract(Vector3& vec, chem::NVector_sp coordinates, size_t index0)
 {
   if ((index0+2)<coordinates->length()) {
@@ -668,9 +668,9 @@ CL_DEFUN void geom__vec_extract(Vector3& vec, chem::NVector_sp coordinates, size
   SIMPLE_ERROR(("Out of bounds extraction of geom:vec from nvector. Trying to extract starting at %lu and the nvector length is %lu") , index0 , coordinates->length());
 }
 
-CL_DOCSTRING(R"dx(Put a geom:vec into a nvector at the particular index.)dx")
+CL_DOCSTRING(R"dx(Put a geom:vec into a nvector at the particular index.)dx");
 CL_LISPIFY_NAME("vec-put");
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN void geom__vec_put(chem::NVector_sp coordinates, const Vector3& pos, size_t index0)
 {
   if ((index0+2)<coordinates->length()) {
@@ -682,9 +682,9 @@ CL_DEFUN void geom__vec_put(chem::NVector_sp coordinates, const Vector3& pos, si
   SIMPLE_ERROR(("Out of bounds extraction of geom:vec from nvector. Trying to put starting at %lu and the nvector length is %lu") , index0 , coordinates->length());
 }
 
-CL_DOCSTRING(R"dx(Extract a geom:vec from a nvector at the particular index.)dx")
+CL_DOCSTRING(R"dx(Extract a geom:vec from a nvector at the particular index.)dx");
 CL_LISPIFY_NAME("vec-extract-transformed");
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN void geom__vec_extract_transformed(Vector3& vec, chem::NVector_sp coordinates, size_t index0, const Matrix& transform)
 {
   if ((index0+2)<coordinates->length()) {

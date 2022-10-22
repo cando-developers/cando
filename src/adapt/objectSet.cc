@@ -156,7 +156,7 @@ CL_DEFMETHOD void ObjectSet_O::addObjectsInCons(List_sp c) {
 
 #if defined(XML_ARCHIVE)
 void ObjectSet_O::archive(ArchiveP node) {
-  _OF();
+  
   stringstream suid;
   if (node->saving()) {
     

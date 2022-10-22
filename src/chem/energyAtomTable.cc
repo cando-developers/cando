@@ -202,14 +202,14 @@ CL_DEFMETHOD size_t AtomTable_O::getCoordinateIndexForAtomAtIndex(size_t index)
 CL_DEFMETHOD core::HashTableEq_sp AtomTable_O::getAtomTableIndices() {
   return this->_AtomTableIndices;
 }
-CL_DOCSTRING(R"dx(Return the index of ATOM or NIL if it is not found.  The second return value is T if found and NIL if not.)dx")
+CL_DOCSTRING(R"dx(Return the index of ATOM or NIL if it is not found.  The second return value is T if found and NIL if not.)dx");
 CL_DEFMETHOD core::T_mv AtomTable_O::getAtomIndexOrNil(Atom_sp atom)
 {
   return _AtomTableIndices->gethash(atom);
 }
 
 EnergyAtom* AtomTable_O::getEnergyAtomPointer(Atom_sp a)
-{_OF();
+{
   core::T_mv it = this->_AtomTableIndices->gethash(a);
   core::MultipleValues &values = core::lisp_multipleValues();
   if ( values.second(it.number_of_values()).nilp() ) // it == this->_AtomTableIndices.end() )
@@ -221,7 +221,7 @@ EnergyAtom* AtomTable_O::getEnergyAtomPointer(Atom_sp a)
 
 CL_LISPIFY_NAME("addAtomInfo");
 CL_DEFMETHOD     int AtomTable_O::addAtomInfo(Atom_sp atom, units::Quantity_sp charge, units::Quantity_sp mass, int typeIndex, uint atomicNumber )
-{_OF();
+{
   int coordinateIndex = this->getNumberOfAtoms()*3;
   EnergyAtom ea(atom,coordinateIndex);
   ea._Charge = charge->value_in_unit_asReal(units::_sym_elementaryCharge->symbolValue().as<units::Unit_O>());
@@ -360,7 +360,7 @@ SYMBOL_EXPORT_SC_(ChemPkg,bounding_box_bound_p);
 SYMBOL_EXPORT_SC_(ChemPkg,set_bounding_box);
 SYMBOL_EXPORT_SC_(ChemPkg,mak_unbound_bounding_box);
 
-CL_DOCSTRING(R"dx(Return the bounding-box for the atom-table.)dx")
+CL_DOCSTRING(R"dx(Return the bounding-box for the atom-table.)dx");
 CL_LISPIFY_NAME(atom-table-bounding-box);
 CL_DEFMETHOD core::T_sp AtomTable_O::boundingBox() const {
   if (this->_BoundingBox.unboundp()) {
@@ -369,19 +369,19 @@ CL_DEFMETHOD core::T_sp AtomTable_O::boundingBox() const {
   return this->_BoundingBox;
 }
 
-CL_DOCSTRING(R"dx(Return T if the bounding-box is bound)dx")
+CL_DOCSTRING(R"dx(Return T if the bounding-box is bound)dx");
 CL_LISPIFY_NAME(atom-table-bounding-box-bound-p);
 CL_DEFMETHOD bool AtomTable_O::boundingBoxBoundP() const {
   return !this->_BoundingBox.unboundp();
 }
 
-CL_DOCSTRING(R"dx(Set the bounding-box)dx")
+CL_DOCSTRING(R"dx(Set the bounding-box)dx");
 CL_LISPIFY_NAME(atom-table-set-bounding-box);
 CL_DEFMETHOD void AtomTable_O::setBoundingBox(core::T_sp boundingBox) {
   this->_BoundingBox = boundingBox;
 }
 
-CL_DOCSTRING(R"dx(Make the bounding-box unbound)dx")
+CL_DOCSTRING(R"dx(Make the bounding-box unbound)dx");
 CL_LISPIFY_NAME(atom-table-mak-unbound-bounding-box);
 CL_DEFMETHOD void AtomTable_O::makUnboundBoundingBox() {
   this->_BoundingBox = unbound<core::T_O>();
@@ -642,7 +642,7 @@ CL_DEFMETHOD void  AtomTable_O::fill_atom_table_from_vectors(core::List_sp vecto
 }
 
 
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN core::List_sp chem__atoms_at_remove(AtomTable_sp table, size_t index, size_t remove ) {
   if (index<table->_Atoms.size()) {
     EnergyAtom* ea = &(table->_Atoms[index]);

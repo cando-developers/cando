@@ -91,7 +91,8 @@ Root_sp FFTypeRule_O::getTest() const
 SYMBOL_EXPORT_SC_(ChemPkg,assignType);
 
 CL_LISPIFY_NAME("assignType");
-CL_LAMBDA((types-db !) atom)CL_DEFMETHOD core::Symbol_sp FFTypesDb_O::assignType(chem::Atom_sp atom) {
+CL_LAMBDA((types-db !) atom);
+CL_DEFMETHOD core::Symbol_sp FFTypesDb_O::assignType(chem::Atom_sp atom) {
   LOG("Got atom" );
   LOG("atom name: %s" , atom->getName().c_str() );
   LOG("Assigning type for atom: %s" , atom->description().c_str()  );
@@ -222,7 +223,7 @@ string FFTypeRule_O::__repr__() const {
   return ss.str();
 }
 
-CL_DOCSTRING(R"dx(Return the atom types as a hash-table with the atoms as keys and types as values)dx")
+CL_DOCSTRING(R"dx(Return the atom types as a hash-table with the atoms as keys and types as values)dx");
 CL_DEFMETHOD core::HashTableEq_sp    FFTypesDb_O::atomTypes(chem::Matter_sp matter)
 { 
   chem::Loop    				lAtoms;
@@ -251,7 +252,7 @@ void FFTypesDb_O::fields(core::Record_sp node)
 
 CL_LISPIFY_NAME("FFTypes-getRule");
 CL_DEFMETHOD chem::FFTypeRule_sp FFTypesDb_O::getRule(uint index)
-{_OF();
+{
   if ( index < this->_TypeAssignmentRules.size() ) {
     return this->_TypeAssignmentRules[index];
   }
@@ -259,7 +260,7 @@ CL_DEFMETHOD chem::FFTypeRule_sp FFTypesDb_O::getRule(uint index)
 }
 
 
-DOCGROUP(cando)
+DOCGROUP(cando);
 CL_DEFUN FFTypesDb_sp chem__make_fftypes_db()
 {
   return FFTypesDb_O::create();

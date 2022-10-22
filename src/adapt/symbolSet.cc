@@ -175,7 +175,7 @@ CL_DEFMETHOD bool SymbolSet_O::containsSubset(SymbolSet_sp sub) {
 
 CL_LISPIFY_NAME("clear");
 CL_DEFMETHOD void SymbolSet_O::clear() {
-  _OF();
+  
   this->_Symbols->clrhash();
 }
 
@@ -203,7 +203,7 @@ bool SymbolSet_O::equal(T_sp obj) const {
 }
 #endif
 void SymbolSet_O::remove(Symbol_sp s) {
-  _OF();
+  
 #ifdef DEBUG_ON
   if (this->strs.count(s) != 1) {
     SIMPLE_ERROR(("The string: %s was not found in SymbolSet") , s);
