@@ -31,7 +31,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include "core/metaClass.h"
 #include "core/hashTableEq.h"
 //#include "core/archive.h"
-#include "core/environment.h"
 
 // last include is wrappers.h
 #include "core/wrappers.h"

@@ -26,7 +26,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #define	DEBUG_LEVEL_NONE
 
 #include <clasp/core/common.h>
-#include <clasp/core/environment.h>
 #include <cando/chem/atom.h>
 #include <cando/chem/angle.h>
 #include <clasp/core/wrappers.h>

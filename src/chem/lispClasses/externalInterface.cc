@@ -33,7 +33,6 @@ This is an open source license for the CANDO software from Temple University, bu
 //#include "core/archiveNode.h"
 //#include "core/archive.h"
 #include "core/array.h"
-#include "core/environment.h"
 #include "structureComparer.h"
 #include "superposableConformationCollection.h"
 #include "externalInterface.h"

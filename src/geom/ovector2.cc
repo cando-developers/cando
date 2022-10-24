@@ -31,7 +31,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/geom/ovector2.h>
 #include <cando/geom/vector2.h>
 //#include "core/archiveNode.h"
-#include <clasp/core/environment.h>
 #include <clasp/core/wrappers.h>
 
 namespace geom {

@@ -103,7 +103,6 @@ typedef bool _Bool;
 #include <clasp/core/sexpLoadArchive.h>
 #include <clasp/core/sexpSaveArchive.h>
 #include <clasp/core/loadTimeValues.h>
-#include <clasp/core/specialForm.h>
 #include <clasp/core/singleDispatchGenericFunction.h>
 #include <clasp/core/arguments.h>
 #include <clasp/core/bootStrapCoreSymbolMap.h>

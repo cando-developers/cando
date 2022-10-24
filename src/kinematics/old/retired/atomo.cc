@@ -26,7 +26,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #define	DEBUG_LEVEL_NONE
 
 #include <clasp/core/common.h>
-#include <clasp/core/environment.h>
 #include <cando/geom/vector3.h>
 #include <cando/geom/ovector3.h>
 #include <cando/kinematics/atomo.h>

@@ -40,7 +40,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/residue.h>
 #include <clasp/core/evaluator.h>
 #include <cando/chem/aggregate.h>
-#include <clasp/core/environment.h>
 #include <clasp/core/lispStream.h>
 #include <clasp/core/lispReader.h>
 #include <clasp/core/symbolTable.h>

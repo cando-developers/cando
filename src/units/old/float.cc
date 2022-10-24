@@ -26,7 +26,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #define	DEBUG_LEVEL_NONE
 
 #include "core/common.h"
-#include "core/environment.h"
 #include "float.h"
 #include "system.h"
 #include "singleDimension.h"

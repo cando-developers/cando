@@ -29,7 +29,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/evaluator.h>
 #include <cando/kinematics/jointTemplate.h>
 #include <cando/chem/plug.h>
-#include <clasp/core/environment.h>
 #include <cando/chem/candoDatabase.h>
 #include <cando/chem/constitution.h>
 #include <cando/chem/constitutionAtoms.h>

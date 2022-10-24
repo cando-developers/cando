@@ -47,7 +47,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/monomerContext.h>
 #include <cando/chem/plug.h>
 #include <cando/chem/constitution.h>
-#include <clasp/core/environment.h>
 #include <cando/chem/constitutionAtoms.h>
 #include <cando/chem/stereoisomerAtoms.h>
 #include <cando/chem/stereochemistry.h>

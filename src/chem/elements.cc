@@ -27,7 +27,6 @@ This is an open source license for the CANDO software from Temple University, bu
 
 #include <clasp/core/common.h>
 #include <clasp/core/symbolToEnumConverter.h>
-#include <clasp/core/environment.h>
 #include <clasp/core/evaluator.h>
 #include <clasp/core/array.h>
 #include <clasp/core/ql.h>

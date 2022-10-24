@@ -31,7 +31,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/symbolTable.h>
 #include <cando/geom/highlightObject.h>
 #include <clasp/core/multipleValues.h>
-#include <clasp/core/environment.h>
 //#include "core/archiveNode.h"
 //#include "core/archive.h"
 #include <clasp/core/lisp.h>

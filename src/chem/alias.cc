@@ -28,7 +28,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/alias.h>
 //#include "core/archiveNode.h"
 //#include "core/archive.h"
-#include <clasp/core/environment.h>
 #include <clasp/core/wrappers.h>
 namespace chem 
 {

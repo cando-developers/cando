@@ -33,7 +33,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/candoDatabase.h>
 #include <clasp/core/cons.h>
 #include <cando/chem/coupling.h>
-#include <clasp/core/environment.h>
 #include <clasp/core/numbers.h>
 #include <cando/chem/constitution.h>
 #include <clasp/core/wrappers.h>

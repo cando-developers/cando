@@ -26,7 +26,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #define DEBUG_LEVEL_NONE
 
 #include <clasp/core/common.h>
-#include <clasp/core/environment.h>
 #include <clasp/core/lispStream.h>
 #include <cando/kinematics/jointTree.h>
 #include <cando/kinematics/monomerId.h>

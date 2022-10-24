@@ -42,7 +42,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include "geom/objectDictionary.h"
 #include "geom/ovector3.h"
 #include "core/symbolVector.h"
-#include "core/environment.h"
 #include "geom/integerKeyObjectDictionary.h"
 #include "geom/renderController.h"
 #include "grPickableMatter.h"

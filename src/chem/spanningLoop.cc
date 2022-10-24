@@ -42,7 +42,6 @@ at mailto:techtransfer@temple.edu if you would like a different license.
 #include <cando/chem/aggregate.h>
 #include <cando/chem/molecule.h>
 #include <cando/chem/residue.h>
-#include <clasp/core/environment.h>
 #include <cando/chem/atom.h>
 #include <cando/chem/bond.h>
 #include <clasp/core/wrappers.h>

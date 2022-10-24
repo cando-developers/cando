@@ -48,7 +48,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include "loop.h"
 #include "geom/color.h"
 #include "geom/render.h"
-#include "core/environment.h"
 #include "geom/boundingBox.h"
 #include "atomGrid.h"
 #include "core/wrappers.h"

@@ -49,7 +49,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/lispList.h>
 #include <cando/geom/ovector3.h>
 #include <cando/chem/restraint.h>
-#include <clasp/core/environment.h>
 #include <cando/geom/boundingBox.h>
 #include <cando/chem/virtualAtom.h>
 #include <cando/chem/bond.h>

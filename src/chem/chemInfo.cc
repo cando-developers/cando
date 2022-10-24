@@ -52,7 +52,6 @@ at mailto:techtransfer@temple.edu if you would like a different license.
 //#include "core/archiveNode.h"
 #include <clasp/core/evaluator.h>
 #include <clasp/core/lispStream.h>
-#include <clasp/core/environment.h>
 //#include "boundFrame.h"
 #include <cando/adapt/symbolMap.h>
 #include <cando/adapt/symbolSet.h>

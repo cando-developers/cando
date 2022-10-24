@@ -34,7 +34,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/geom/coloredVertexList.h>
 //#include "core/archiveNode.h"
 #include <cando/geom/ovector3.h>
-#include <clasp/core/environment.h>
 #include <cando/geom/color.h>
 #ifdef RENDER
 #include <geom/render.h>

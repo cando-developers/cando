@@ -34,7 +34,6 @@ This is an open source license for the CANDO software from Temple University, bu
 //#include "core/archive.h"
 #include <cando/adapt/adapters.h>
 #include <cando/adapt/symbolList.h>
-#include <clasp/core/environment.h>
 #include <cando/chem/candoDatabase.h>
 #include <clasp/core/numbers.h>
 #include <cando/adapt/stringList.h>

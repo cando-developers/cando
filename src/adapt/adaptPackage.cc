@@ -28,7 +28,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/object.h>
 #include <clasp/core/lisp.h>
 #include <clasp/core/package.h>
-#include <clasp/core/environment.h>
 #include <cando/adapt/adaptPackage.h>
 #include <cando/adapt/indexedObjectBag.h>
 #include <cando/adapt/objectSet.h>
@@ -41,7 +40,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/cons.h>
 #include <clasp/core/cxxObject.h>
 #include <clasp/core/fileSystem.h>
-#include <clasp/core/environment.h>
 #include <clasp/core/externalObject.h>
 #include <clasp/core/hashTable.h>
 #include <clasp/core/primitives.h>
@@ -139,7 +137,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/twister.h>
 #include <cando/chem/virtualSphere.h>
 #include <cando/chem/zMatrix.h>
-#include <clasp/core/activationFrame.h>
 #include <clasp/core/hashTableEq.h>
 #include <clasp/core/hashTableEql.h>
 #include <clasp/core/hashTableEqual.h>
@@ -147,7 +144,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/instance.h>
 #include <clasp/core/null.h>
 #include <clasp/core/singleDispatchGenericFunction.h>
-#include <clasp/core/specialForm.h>
 #include <cando/geom/boundingBox.h>
 #include <cando/geom/color.h>
 #include <cando/geom/omatrix.h>

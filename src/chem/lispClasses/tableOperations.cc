@@ -31,8 +31,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include "core/sort.h"
 #include "loop.h"
 #include "symbolTable.h"
-#include "core/environment.h"
-#include "core/activationFrame.h"
 #include "tableOperations.h"
 #include "superposeEngine.h"
 #include "core/wrappers.h"

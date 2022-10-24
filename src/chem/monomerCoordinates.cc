@@ -32,7 +32,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/superposableConformationCollection.h>
 #include <cando/chem/topology.h>
 #include <cando/chem/monomer.h>
-#include <clasp/core/environment.h>
 #include <cando/chem/constitution.h>
 #include <clasp/core/lispStream.h>
 #include <cando/chem/rotamer.h>

@@ -32,7 +32,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/evaluator.h>
 #include <clasp/core/package.h>
 #include <clasp/core/stringList.h>
-#include <clasp/core/environment.h>
 #include <core/renderController.h>
 #include <clasp/core/lambdaListHandler.h>
 #include <clasp/core/numbers.h>

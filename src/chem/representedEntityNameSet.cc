@@ -27,7 +27,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/common.h>
 #include <cando/adapt/stringSet.h>
 #include <cando/adapt/adapters.h>
-#include <clasp/core/environment.h>
 //#include "core/archiveNode.h"
 //#include "core/archive.h"
 #include <cando/chem/representedEntityNameSet.h>

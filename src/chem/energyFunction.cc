@@ -46,7 +46,6 @@ __END_DOC
 #include <cando/chem/loop.h>
 #include <cando/adapt/indexedObjectBag.h>
 #include <clasp/core/lispStream.h>
-#include <clasp/core/environment.h>
 #include <clasp/core/evaluator.h>
 #include <cando/chem/minimizerLog.h>
 #include <cando/chem/restraint.h>

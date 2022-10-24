@@ -45,7 +45,6 @@ __END_DOC
 #include <cando/chem/energyFunction.h>
 #include <cando/chem/loop.h>
 #include <cando/adapt/indexedObjectBag.h>
-#include <clasp/core/environment.h>
 #include <cando/chem/minimizerLog.h>
 #include <cando/chem/restraint.h>
 #include <cando/chem/iterateRestraints.h>
