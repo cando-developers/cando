@@ -117,6 +117,18 @@
                    when (chem:ffptor/has-periodicity ptor periodicity)
                      do (write-ptor-periodicity ptor periodicity max-periodicity stream)))))
 
+(defun write-nonbond-parameters (ffnonbond-db stream)
+  (let ((ffnonbond-term-vector (chem:ffnonbond-db/term-vector ffnonbond-db)))
+    (loop for index below (length ffnonbond-term-vector)
+          for nonbond = (aref ffnonbond-term-vector index)
+          for type = (chem:ffnonbond/get-type nonbond)
+          for radius = (chem:ffnonbond/get-radius-angstroms nonbond)
+          for epsilon = (chem:ffnonbond/get-epsilon-kcal)
+          do (sys:bformat stream "  %-2s%16.4f%8.4f\n"
+                          (string type)
+                          radius
+                          epsilon ))))
+
 (defun write-force-field-parameters (force-field &optional (stream t))
   (write-atom-parameters (chem:get-nonbond-db force-field) stream)
   (sys:bformat stream "%N")
@@ -126,5 +138,6 @@
   (sys:bformat stream "%N")
   (write-ptor-parameters (chem:get-ptor-db force-field) stream)
   (sys:bformat stream "%N")
+  (write-nonbond-parameters (chem:get-nonbond-db force-field) stream)
   )
 
