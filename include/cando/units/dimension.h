@@ -28,6 +28,7 @@ This is an open source license for the CANDO software from Temple University, bu
 
 #include <clasp/core/common.h>
 #include <cando/units/unitsPackage.h>
+#include <cando/units/quantity.fwd.h>
 #include <cando/units/dimension.fwd.h>
 namespace units
 {
@@ -46,9 +47,9 @@ public:
 private: // instance variables here
 public: // Functions here
 
-	static void zeroPowers(int powers[]);
-	static void copyPowers(int powers[], int const other[]);
-	virtual void adjustPowersAndAmountScale(int power, int powers[NumBaseDimensions],double& amountScale) const;
+	static void zeroPowers(SimpleRational powers[]);
+	static void copyPowers(SimpleRational powers[], SimpleRational const other[]);
+	virtual void adjustPowersAndAmountScale(int power, SimpleRational powers[NumBaseDimensions],double& amountScale) const;
 
 	static string baseDimensionUnitName(int i);
 

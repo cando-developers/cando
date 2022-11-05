@@ -19,8 +19,9 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
- 
-This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
+
+This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University
+at mailto:techtransfer@temple.edu if you would like a different license.
 */
 /* -^- */
 /* @(#)quantity.fwd.h
@@ -29,13 +30,64 @@ This is an open source license for the CANDO software from Temple University, bu
 #ifndef _units_Quantity_fwd_H
 #define _units_Quantity_fwd_H
 
+namespace units {
 
-namespace units
-{
+inline int gcd(int a, int b) {
+  if (a == 0)
+    return b;
+  return gcd(b % a, a);
+}
+
+struct SimpleRational {
+  int _Num;
+  int _Denom;
+
+  SimpleRational() : _Num(0), _Denom(1){};
+  SimpleRational(int num) : _Num(num), _Denom(1){};
+  SimpleRational(int num, int denom) : _Num(num), _Denom(denom){};
+
+  SimpleRational operator*(const SimpleRational &other) const {
+    return SimpleRational(this->_Num * other._Num, this->_Denom * other._Denom);
+  }
+
+  SimpleRational operator/(const SimpleRational &other) const {
+    return SimpleRational(this->_Num * other._Denom, this->_Denom * other._Num);
+  }
+
+  SimpleRational operator+(const SimpleRational &other) const {
+    if (this->_Denom == other._Denom)
+      return SimpleRational(this->_Num + other._Num, this->_Denom);
+    auto result = SimpleRational(this->_Num * other._Denom + other._Num * this->_Denom, this->_Denom * other._Denom);
+    return result.maybe_simplify();
+  }
+
+  SimpleRational operator-(const SimpleRational &other) const {
+    if (this->_Denom == other._Denom)
+      return SimpleRational(this->_Num - other._Num, this->_Denom);
+    auto result = SimpleRational(this->_Num * other._Denom - other._Num * this->_Denom, this->_Denom * other._Denom);
+    return result.maybe_simplify();
+  }
+  bool operator==(const SimpleRational &other) const { return (this->_Num == other._Num && this->_Denom == other._Denom); }
+
+  double as_double() const { return (double)this->_Num / (double)this->_Denom; }
+
+  SimpleRational maybe_simplify() const {
+    if (this->_Num % this->_Denom == 0) {
+      return SimpleRational(this->_Num / this->_Denom, 1);
+    }
+    int gcd_ = gcd(this->_Num, this->_Denom);
+    if (gcd_ > 1) {
+      return SimpleRational(this->_Num / gcd_, this->_Denom / gcd_);
+    }
+    return *this;
+  }
+};
+
+}; // namespace units
+
+namespace units {
 FORWARD(Quantity);
 
-
-
-    }; /* units */
+}; // namespace units
 
 #endif /* _units_Quantity_fwd_H */

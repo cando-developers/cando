@@ -88,20 +88,6 @@ public: // Functions here
 	/*! Return true if the powers all match - then the quantities have the same dimension */
 	bool dimensionsMatch(Quantity_sp other) const;
 
-	/*! Add the quantity to another quantity - this means powers must match */
-	virtual Quantity_sp add(Quantity_sp other) const;
-
-	/*! Subtract the quantity from another quantity - powers must match */
-	virtual Quantity_sp sub(Quantity_sp other) const;
-
-
-	/*! Multiply the quantity by another quantity - this means adding powers */
-	virtual Quantity_sp mul(Quantity_sp other) const;
-
-	/*! Divide the quantity by another quantity - this means adding powers */
-	virtual Quantity_sp div(Quantity_sp other) const;
-
-
 	/*! Return the reciprocal
 	 Throw exception if divide by zero */
 	virtual Quantity_sp negate() const;
@@ -144,6 +130,21 @@ public: // Functions here
 
 	string __repr__() const;
 };
+
+
+	/*! Add the quantity to another quantity - this means powers must match */
+Quantity_sp two_arg_add(T_sp first, T_sp second);
+
+	/*! Subtract the quantity from another quantity - powers must match */
+Quantity_sp two_arg_sub(T_sp first, T_sp second);
+
+	/*! Multiply the quantity by another quantity - this means adding powers */
+Quantity_sp two_arg_mul(T_sp first, T_sp second);
+
+	/*! Divide the quantity by another quantity - this means adding powers */
+Quantity_sp two_arg_div(T_sp first, T_sp second);
+
+
 
 }; /* units */
 
