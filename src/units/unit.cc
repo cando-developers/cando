@@ -161,9 +161,9 @@ CL_DEFMETHOD void Unit_O::test_set_amount(double amount) { this->_Amount = amoun
 string Unit_O::unitsOnlyAsString() const {
   stringstream units;
   for (int i = 0; i < NumBaseDimensions; i++) {
-    if (this->_Powers[i] != 0) {
+    if (this->_Powers[i]._Num != 0) {
       units << Dimension_O::baseDimensionUnitName(i);
-      if (this->_Powers[i] != 1) {
+      if (this->_Powers[i]._Num != this->_Powers[i]._Denom) {
         units << "^" << this->_Powers[i]._Num;
         if (this->_Powers[i]._Denom>1) {
           units<< "/" << this->_Powers[i]._Denom;
