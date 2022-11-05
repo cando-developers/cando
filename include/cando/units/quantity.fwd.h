@@ -47,11 +47,15 @@ struct SimpleRational {
   SimpleRational(int num, int denom) : _Num(num), _Denom(denom){};
 
   SimpleRational operator*(const SimpleRational &other) const {
-    return SimpleRational(this->_Num * other._Num, this->_Denom * other._Denom);
+    return SimpleRational(this->_Num * other._Num, this->_Denom * other._Denom).maybe_simplify();
+  }
+
+  SimpleRational operator*(int other) const {
+    return SimpleRational(this->_Num * other, this->_Denom).maybe_simplify();
   }
 
   SimpleRational operator/(const SimpleRational &other) const {
-    return SimpleRational(this->_Num * other._Denom, this->_Denom * other._Num);
+    return SimpleRational(this->_Num * other._Denom, this->_Denom * other._Num).maybe_simplify();
   }
 
   SimpleRational operator+(const SimpleRational &other) const {
@@ -68,6 +72,14 @@ struct SimpleRational {
     return result.maybe_simplify();
   }
   bool operator==(const SimpleRational &other) const { return (this->_Num == other._Num && this->_Denom == other._Denom); }
+  bool operator!=(const SimpleRational &other) const {
+    // Assume everything is normalized
+    return (this->_Num != other._Num) || (this->_Denom != other._Denom);
+  }
+
+  bool operator!=(int other) const {
+    return (this->_Denom * other) == this->_Num;
+  }
 
   double as_double() const { return (double)this->_Num / (double)this->_Denom; }
 
