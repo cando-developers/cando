@@ -63,6 +63,10 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace       chem
 {
+  FORWARD(FFStretchDb);
+  FORWARD(FFAngleDb);
+  FORWARD(FFPtorDb);
+  FORWARD(FFItorDb);
   FORWARD(FFNonbondDb);
   
   class EnergyAtom;
@@ -263,7 +267,12 @@ namespace chem {
     void assignAtomTypes(Matter_sp matter, bool show_progress);
     void defineForMatter(Matter_sp agg, bool useExcludedAtoms, core::T_sp activeAtomSet=nil<core::T_O>(), bool assign_types=true );
     void defineForMatterWithAtomTypes(Matter_sp matter, bool useExcludedAtoms, core::T_sp activeAtoms, core::T_sp cip_priorities);
-    void generateStandardEnergyFunctionTables(Matter_sp mol, CombinedForceField_sp forceField, core::T_sp activeAtomSet=nil<core::T_O>());
+    void generateStandardEnergyFunctionTables(Matter_sp mol,
+                                              FFStretchDb_sp stretchDb,
+                                              FFAngleDb_sp angleDb,
+                                              FFPtorDb_sp ptorDb,
+                                              FFItorDb_sp itorDb,
+                                              core::T_sp activeAtomSet=nil<core::T_O>());
     void generateNonbondEnergyFunctionTables(bool useExcludedAtoms, Matter_sp agg, core::T_sp forceField, core::T_sp activeAtomSet=nil<core::T_O>());
     void generateRestraintEnergyFunctionTables(Matter_sp agg, core::T_sp nonbonds, core::T_sp activeAtomSet=nil<core::T_O>(), core::T_sp cip_priorities=nil<core::T_O>());
 

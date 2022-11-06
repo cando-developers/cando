@@ -51,17 +51,11 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace chem
 {
 
-
-
-void FFAngle_O::fields(core::Record_sp node)
-{
-  node->field(INTERN_(kw,type1),this->_Type1);
-  node->field(INTERN_(kw,type2),this->_Type2);
-  node->field(INTERN_(kw,type3),this->_Type3);
-  node->field(INTERN_(kw,angRad), this->_AngRad);
-  node->field(INTERN_(kw,k2),this->_K2__kJPerRadianSquared);
-  this->Base::fields(node);
+CL_LISPIFY_NAME(FFAngleDb/make);
+CL_DEF_CLASS_METHOD FFAngleDb_sp FFAngleDb_O::make() {
+  return FFAngleDb_O::create();
 }
+
 
 void	FFAngleDb_O::fields(core::Record_sp node)
 {
@@ -81,28 +75,58 @@ void	FFAngleDb_O::initialize()
 
 
 
-
-void FFAngle_O::setK2_kCalPerRadianSquared(double val)
+void FFAngle_O::fields(core::Record_sp node)
 {
-    this->_K2__kJPerRadianSquared = kCalPerRadianSquared_to_kJPerRadianSquared(val);
+  node->field(INTERN_(kw,type1),this->_Type1);
+  node->field(INTERN_(kw,type2),this->_Type2);
+  node->field(INTERN_(kw,type3),this->_Type3);
+  node->field(INTERN_(kw,angRad), this->_AngRad);
+  node->field(INTERN_(kw,k2),this->_K2__kjPerRadianSquared);
+  this->Base::fields(node);
+}
+
+CL_LISPIFY_NAME(FFAngle/getTypes);
+CL_DEFMETHOD
+core::T_mv FFAngle_O::getTypes() const
+{
+  return Values(this->_Type1,this->_Type2,this->_Type3);
+}
+
+CL_LISPIFY_NAME(FFAngle/getAngle_Radian);
+CL_DEFMETHOD
+double FFAngle_O::getAngle_Radian() const {
+  return this->_AngRad;
+};
+
+CL_LISPIFY_NAME(FFAngle/setK2_kcalPerRadianSquared);
+CL_DEFMETHOD
+void FFAngle_O::setK2_kcalPerRadianSquared(double val)
+{
+    this->_K2__kjPerRadianSquared = kcalPerRadianSquared_to_kjPerRadianSquared(val);
 }
 
 
-void FFAngle_O::setK2_kJPerRadianSquared(double val)
+CL_LISPIFY_NAME(FFAngle/setK2_kjPerRadianSquared);
+CL_DEFMETHOD
+void FFAngle_O::setK2_kjPerRadianSquared(double val)
 {
-    this->_K2__kJPerRadianSquared = val;
+    this->_K2__kjPerRadianSquared = val;
 }
 
 
-double FFAngle_O::getK2_kCalPerRadianSquared() const
+CL_LISPIFY_NAME(FFAngle/getK2_kcalPerRadianSquared);
+CL_DEFMETHOD
+double FFAngle_O::getK2_kcalPerRadianSquared() const
 {
-    return kJPerRadianSquared_to_kCalPerRadianSquared(this->_K2__kJPerRadianSquared);
+    return kjPerRadianSquared_to_kcalPerRadianSquared(this->_K2__kjPerRadianSquared);
 }
 
 
-double FFAngle_O::getK2_kJPerRadianSquared() const
+CL_LISPIFY_NAME(FFAngle/getK2_kjPerRadianSquared);
+CL_DEFMETHOD
+double FFAngle_O::getK2_kjPerRadianSquared() const
 {
-    return this->_K2__kJPerRadianSquared;
+    return this->_K2__kjPerRadianSquared;
 }
 
 
@@ -110,14 +134,14 @@ double FFAngle_O::getK2_kJPerRadianSquared() const
 
 
 
-    core::Symbol_sp angleKey(core::Symbol_sp t1
-                             , core::Symbol_sp t2
-                             , core::Symbol_sp t3)
-    {
-        return chemkw_intern(t1->symbolName()->get_std_string()+"-"
-                           + t2->symbolName()->get_std_string()+"-"
-                           + t3->symbolName()->get_std_string());
-    }
+core::Symbol_sp angleKey(core::Symbol_sp t1
+                         , core::Symbol_sp t2
+                         , core::Symbol_sp t3)
+{
+  return chemkw_intern(t1->symbolName()->get_std_string()+"-"
+                       + t2->symbolName()->get_std_string()+"-"
+                       + t3->symbolName()->get_std_string());
+}
 
 
 
@@ -157,7 +181,7 @@ void	FFAngle_O::initialize()
     this->_Type2 = nil<core::Symbol_O>();
     this->_Type3 = nil<core::Symbol_O>();
     this->_AngRad = 0.0;
-    this->_K2__kJPerRadianSquared = 0.0;
+    this->_K2__kjPerRadianSquared = 0.0;
 //    this->_K3 = 0.0;
 //    this->_K4 = 0.0;
 //    this->_Ub_k = 0.0;
@@ -204,8 +228,8 @@ core::Symbol_sp		t1, t2, t3;
     z1 = this->_ZConstants.get(element1)->get();
     c2 = this->_CConstants.get(element2)->get();
     z3 = this->_ZConstants.get(element3)->get();
-    r12 = gc::As_unsafe<FFStretch_sp>(ffstretch->findTerm(a1,a2));
-    r32 = gc::As_unsafe<FFStretch_sp>(ffstretch->findTerm(a3,a2));
+    r12 = gc::As_unsafe<FFStretch_sp>(ffstretch->findTermForTypes(t1,t2));
+    r32 = gc::As_unsafe<FFStretch_sp>(ffstretch->findTermForTypes(t3,t2));
     LOG("status" );
     if ( r12.nilp() ) goto GUESS;
     LOG("status" );
@@ -221,10 +245,10 @@ core::Symbol_sp		t1, t2, t3;
       angle->_Type2 = t2;
       angle->_Type3 = t3;
       angle->_AngRad = angRad;
-      angle->setK2_kCalPerRadianSquared(k);
+      angle->setK2_kcalPerRadianSquared(k);
       core::eval::funcall(_sym_warn_estimated_angle_term,t1,t2,t3,
                           core::clasp_make_double_float(angle->getAngle_Radian()),
-                          core::clasp_make_double_float(angle->getK2_kCalPerRadianSquared()));
+                          core::clasp_make_double_float(angle->getK2_kcalPerRadianSquared()));
       return angle;
     }
 GUESS:
@@ -245,13 +269,13 @@ GUESS:
       }
 		// See Gaff paper for where I get these force constants
       if ( a1->getElement() == element_H && a3->getElement() == element_H ) {
-	angle->_K2__kJPerRadianSquared = kCalPerRadianSquared_to_kJPerRadianSquared(32.5);
+	angle->_K2__kjPerRadianSquared = kcalPerRadianSquared_to_kjPerRadianSquared(32.5);
       } else if ( a1->getElement() == element_H || a3->getElement() == element_H ) {
-	angle->_K2__kJPerRadianSquared = kCalPerRadianSquared_to_kJPerRadianSquared(50.0);
+	angle->_K2__kjPerRadianSquared = kcalPerRadianSquared_to_kjPerRadianSquared(50.0);
       } else {
-	angle->_K2__kJPerRadianSquared = kCalPerRadianSquared_to_kJPerRadianSquared(70.0);
+	angle->_K2__kjPerRadianSquared = kcalPerRadianSquared_to_kjPerRadianSquared(70.0);
       }
-      core::eval::funcall(_sym_warn_estimated_angle_term,t1,t2,t3,core::clasp_make_double_float(angle->getAngle_Radian()),core::clasp_make_double_float(angle->getK2_kCalPerRadianSquared()));
+      core::eval::funcall(_sym_warn_estimated_angle_term,t1,t2,t3,core::clasp_make_double_float(angle->getAngle_Radian()),core::clasp_make_double_float(angle->getK2_kcalPerRadianSquared()));
       return angle;
     }
 }

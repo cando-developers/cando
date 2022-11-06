@@ -1,5 +1,3 @@
-
-
 (in-package :leap)
 
 
@@ -29,21 +27,22 @@
     (loop for line = (read-line stream-in nil :eof)
           until (eq line :eof)
           until (= (length line) 0)
-          do (multiple-value-bind (atom1 atom2 atom3 atom4 barrier phase periodicity scee scnb comment)
+          do (multiple-value-bind (atom1 atom2 atom3 atom4 idivf barrier phase periodicity scee scnb comment)
                  (parse-ptor-line line)
                (let ((iperiod (floor (+ (abs periodicity) 0.5))))
                  (if (not (<= 1 iperiod 6))
                      (error "bad multiplicity in line: ~a" line) #+(or)(signal  'bad-multiplicity :line line :multiplicity periodicity)
                      (progn
                        (unless ptor
-                         (setf ptor (core:make-cxx-object 'chem:ffptor :type1 atom1 :type2 atom2 :type3 atom3 :type4 atom4 :level :parameterized)))
-                       (chem:set-v-k-cal ptor iperiod barrier)
-                       (chem:set-phase-rad ptor iperiod phase)
+                         (setf ptor (core:make-cxx-object 'chem:ffptor :type1 atom1 :type2 atom2 :type3 atom3 :type4 atom4 :level :parameterized :comment nil)))
+                       (chem:ffptor/set-idivf ptor iperiod idivf)
+                       (chem:ffptor/set-v-kcal ptor iperiod barrier)
+                       (chem:ffptor/set-phase-degrees ptor iperiod phase)
                        (when (and (> scee 0.0) (> scnb 0.0))
-                         (chem:set-scee ptor scee)
-                         (chem:set-scnb ptor scnb))
+                         (chem:ffptor/set-scee ptor scee)
+                         (chem:ffptor/set-scnb ptor scnb))
                        (when (> (length comment) 0)
-                         (chem:set-ptor-comment ptor comment))
+                         (chem:ffparameter/set-comment ptor comment))
                        (when (> periodicity 0.0)
                          (chem:add-ffptor ffptordb ptor)
                          (setf ptor nil)))))))
@@ -142,7 +141,7 @@
 
 (defun parse-ptor-line (line)
   (let ((parse (esrap:parse 'ptor-rule line)))
-    (destructuring-bind (type-names idivf barrier phase periodicity comment)
+    (destructuring-bind (type-names idivf pk phase periodicity comment)
         parse
       (destructuring-bind (atom1 atom2 atom3 atom4)
           (mapcar (lambda (name) (intern name :keyword)) type-names)
@@ -160,8 +159,12 @@
                   maybe-scee-scnb
                 (setf scee got-scee
                       scnb got-scnb))))
-          (let ((barrier (/ barrier idivf)))
-            (values atom1 atom2 atom3 atom4 barrier phase periodicity scee scnb comment)))))))
+          (let ((barrier (/ pk idivf))) ; From https://ambermd.org/FileFormats.php#topology
+                                        ; The factor by which the torsional barrier is divided.
+                                        ; Consult Weiner, et al., JACS 106:765 (1984) p. 769 for
+                                        ; details. Basically, the actual torsional potential is
+                                        ; (PK/IDIVF) * (1 + cos(PN*phi - PHASE))
+            (values atom1 atom2 atom3 atom4 idivf barrier phase periodicity scee scnb comment)))))))
 
 
 

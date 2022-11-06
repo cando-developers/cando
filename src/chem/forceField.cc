@@ -99,8 +99,7 @@ void	ForceField_O::initialize()
 
 void	ForceField_O::fields(core::Record_sp node)
 {
-  node->field( INTERN_(kw,title),this->_Title);
-  node->field( INTERN_(kw,ref),this->_Ref);
+  node->field( INTERN_(kw,title), this->_title);
   node->field( INTERN_(kw,bondDistinctions), this->_SingleBondMultiBondDistinctions );
   node->field( INTERN_(kw,Info), this->_Info );
   node->field( INTERN_(kw,Types), this->_Types );
@@ -113,17 +112,7 @@ void	ForceField_O::fields(core::Record_sp node)
 }
 
 
-#ifdef XML_ARCHIVE
-void	ForceField_O::saveAs(const string& fileName)
-{
-  core::XmlSaveArchive_sp	xml;
-  xml = core::XmlSaveArchive_O::create();
-  xml->put("forceField",this->sharedThis<ForceField_O>());
-  xml->saveAs(fileName);
-}
-#endif
-
-
+CL_LISPIFY_NAME(ForceField/forceFieldMerge);
 CL_DEFMETHOD void ForceField_O::forceFieldMerge(ForceField_sp other)
 {
   this->_Info->forceFieldMerge(other->_Info);
@@ -147,42 +136,63 @@ CL_DEFMETHOD void	ForceField_O::assignTypes(Matter_sp matter)
 string ForceField_O::__repr__() const {
   stringstream ss;
   ss << "#<FORCE-FIELD ";
-  ss << this->_Title;
+  ss << _rep_(this->_title);
   ss << ">";
   return ss.str();
 }
   
-
-
+CL_LISPIFY_NAME(ForceField/setTitle);
+CL_DEFMETHOD
 void	ForceField_O::setTitle(const string& title)
 {
-  this->_Title = title;
+  this->_title = core::SimpleBaseString_O::make(title);
 }
 
+CL_LISPIFY_NAME(ForceField/getTitle);
+CL_DEFMETHOD
+core::SimpleBaseString_sp ForceField_O::getTitle() const
+{
+  return this->_title;
+}
+
+CL_LISPIFY_NAME(ForceField/setInfoDb);
+CL_DEFMETHOD
 void	ForceField_O::setInfoDb( InfoDb_sp Info )
 {
   this->_Info = Info;
 }
 
+CL_LISPIFY_NAME(ForceField/setFFTypeDb);
+CL_DEFMETHOD
 void	ForceField_O::setFFTypeDb( FFTypesDb_sp Types)
 {
   this->_Types = Types;
 }
 
 
+CL_LISPIFY_NAME(ForceField/setFFStretchDb);
+CL_DEFMETHOD
 void	ForceField_O::setFFStretchDb( FFStretchDb_sp Stretches)
 {
   this->_Stretches = Stretches;
 }
 
+CL_LISPIFY_NAME(ForceField/setFFAngleDb);
+CL_DEFMETHOD
 void	ForceField_O::setFFAngleDb( FFAngleDb_sp Angles)
 {
   this->_Angles = Angles;
 }
+
+CL_LISPIFY_NAME(ForceField/setFFItorDb);
+CL_DEFMETHOD
 void	ForceField_O::setFFItorDb( FFItorDb_sp Itors)
 {
   this->_Itors = Itors;
 }
+
+CL_LISPIFY_NAME(ForceField/setFFPtorDb);
+CL_DEFMETHOD
 void	ForceField_O::setFFPtorDb( FFPtorDb_sp Ptors)
 {
   this->_Ptors = Ptors;
@@ -191,13 +201,14 @@ void	ForceField_O::setFFNonbondDb(FFNonbondDb_sp Nonbonds )
 {
   this->_Nonbonds = Nonbonds;
 }
+
+CL_DEFMETHOD
 void	ForceField_O::setFFVdwDb(FFVdwDb_sp Vdws )
 {
   this->_Vdws = Vdws;
 }
 
-
-CL_LISPIFY_NAME("make-CombinedForceField");
+CL_LISPIFY_NAME("CombinedForceField/make");
 CL_DEF_CLASS_METHOD
 CombinedForceField_sp CombinedForceField_O::make() {
   auto ff = gctools::GC<CombinedForceField_O>::allocate_with_default_constructor();
@@ -211,7 +222,7 @@ void	CombinedForceField_O::fields(core::Record_sp node)
 
 
 
-CL_LISPIFY_NAME(CombinedForceField_addShadowingForceField);
+CL_LISPIFY_NAME(CombinedForceField/addShadowingForceField);
 CL_DEFMETHOD
 void CombinedForceField_O::addShadowingForceField(ForceField_sp forceField, core::T_sp info)
 {
@@ -220,7 +231,7 @@ void CombinedForceField_O::addShadowingForceField(ForceField_sp forceField, core
 }
 
 
-CL_LISPIFY_NAME(CombinedForceField_forceFieldsAsList);
+CL_LISPIFY_NAME(CombinedForceField/forceFieldsAsList);
 CL_DEFMETHOD
 core::List_sp CombinedForceField_O::forceFieldsAsList() const {
   ql::list result;
@@ -232,7 +243,7 @@ core::List_sp CombinedForceField_O::forceFieldsAsList() const {
 }
 
 
-CL_LISPIFY_NAME(CombinedForceField_clear);
+CL_LISPIFY_NAME(CombinedForceField/clear);
 CL_DEFMETHOD
 void CombinedForceField_O::clear()
 {
@@ -240,7 +251,7 @@ void CombinedForceField_O::clear()
 }
 
 
-CL_LISPIFY_NAME(CombinedForceField_assignForceFieldTypes);
+CL_LISPIFY_NAME(CombinedForceField/assignForceFieldTypes);
 CL_DEFMETHOD
 core::T_sp CombinedForceField_O::assignForceFieldTypes(Matter_sp molecule) {
   FFTypesDb_sp fftypes = FFTypesDb_O::create();

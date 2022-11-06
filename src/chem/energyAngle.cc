@@ -103,7 +103,7 @@ void EnergyAngle::defineFrom( FFAngle_sp term , EnergyAtom *ea1, EnergyAtom *ea2
 //    this->_Type2 = term->_Type2;
 //    this->_Type3 = term->_Type3;
     this->term.t0 = term->_AngRad;
-    this->term.kt = term->getK2_kCalPerRadianSquared()*scale;
+    this->term.kt = term->getK2_kcalPerRadianSquared()*scale;
 //    this->_K3 = term->_K3;
 //    this->_K4 = term->_K4;
 //    this->_Ub_k = term->_Ub_k;

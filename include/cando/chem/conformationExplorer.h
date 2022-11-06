@@ -72,7 +72,7 @@ private:
   ConformationExplorerEntry_sp	_WeakConformationExplorerEntry;
   geom::SimpleVectorCoordinate_sp	_FinalCoordinates;
   core::HashTableEq_sp			_Binder;
-			//! Energy of the conformation in kCal as calculated by the package/model
+			//! Energy of the conformation in kcal as calculated by the package/model
   double				_EnergyKCal;
 			//! ExternalInterfaceName is cando, gamess, gaussian, nwchem etc
   core::T_sp		_ExternalInterfaceName;

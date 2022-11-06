@@ -8,3 +8,4 @@ local.config
 *.info
 *~
 .ipynb_checkpoints
+\#*\#

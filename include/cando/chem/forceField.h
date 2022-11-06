@@ -119,29 +119,22 @@ public:
 public:
 //		/*! Read the forceField from a file*/
 //	static ForceField_sp	open_ForceField(const string& fn);
-  CL_LISPIFY_NAME("make-ForceField");
+  CL_LISPIFY_NAME("ForceField/make");
   CL_DEF_CLASS_METHOD static ForceField_sp make() {
     auto ff = gctools::GC<ForceField_O>::allocate_with_default_constructor();
     return ff;
   };
 public:
-  string				_Title;
-  string				_Ref;
-  gctools::Vec0<core::Symbol_sp>		_SingleBondMultiBondDistinctions;
-  InfoDb_sp			_Info;
-  FFTypesDb_sp	_Types;
-  FFStretchDb_sp	_Stretches;
-  FFAngleDb_sp	_Angles;
-  FFItorDb_sp	_Itors;
-  FFPtorDb_sp	_Ptors;
-  FFNonbondDb_sp	_Nonbonds;
-  FFVdwDb_sp		_Vdws;
-//	bool				_Disable[sizeof(DisableEnum)];
-#if 0
-  RPFFEquivalenceDb		Equivalences;
-  RPFFOutOfPlaneDb		OutOfPlanes;
-  FFStretch_spBendDb		StretchBends;
-#endif
+  core::SimpleBaseString_sp      _title;
+  gctools::Vec0<core::Symbol_sp> _SingleBondMultiBondDistinctions;
+  InfoDb_sp			 _Info;
+  FFTypesDb_sp	                 _Types;
+  FFStretchDb_sp	         _Stretches;
+  FFAngleDb_sp	                 _Angles;
+  FFItorDb_sp	                 _Itors;
+  FFPtorDb_sp	                 _Ptors;
+  FFNonbondDb_sp	         _Nonbonds;
+  FFVdwDb_sp		         _Vdws;
 public:
   ForceField_O() :
     _Info(unbound<InfoDb_O>()),
@@ -158,6 +151,8 @@ public:
     this->_SingleBondMultiBondDistinctions.push_back(s);
   };
 
+  core::SimpleBaseString_sp getTitle() const;
+  
   CL_LISPIFY_NAME("getTypes");
   CL_DEFMETHOD FFTypesDb_sp getTypes() { return this->_Types; };
 
@@ -175,26 +170,25 @@ public:
   CL_DEFMETHOD 	FFVdwDb_sp getVdwDb() { return this->_Vdws;};
 
   void forceFieldMerge(ForceField_sp other);
-  CL_DEFMETHOD  void	assignTypes(Matter_sp matter);
-  CL_DEFMETHOD  void	setTitle(const string& title);
-  CL_DEFMETHOD void	setInfoDb( InfoDb_sp Info );
-  CL_LISPIFY_NAME("setTypeDb");
-  CL_DEFMETHOD  void	setFFTypeDb( FFTypesDb_sp Types);
-  CL_DEFMETHOD  void	setFFStretchDb( FFStretchDb_sp Stretches);
-  CL_DEFMETHOD  void	setFFAngleDb( FFAngleDb_sp Angles);
-  CL_DEFMETHOD  void	setFFItorDb( FFItorDb_sp Itors);
-  CL_DEFMETHOD  void	setFFPtorDb( FFPtorDb_sp Ptors);
-  CL_DEFMETHOD  void	setFFNonbondDb(FFNonbondDb_sp Nonbonds );
-  CL_DEFMETHOD  void	setFFVdwDb(FFVdwDb_sp Vdws );
+  void	assignTypes(Matter_sp matter);
+  void	setTitle(const string& title);
+  void	setInfoDb( InfoDb_sp Info );
+  void	setFFTypeDb( FFTypesDb_sp Types);
+   void	setFFStretchDb( FFStretchDb_sp Stretches);
+   void	setFFAngleDb( FFAngleDb_sp Angles);
+   void	setFFItorDb( FFItorDb_sp Itors);
+   void	setFFPtorDb( FFPtorDb_sp Ptors);
+   void	setFFNonbondDb(FFNonbondDb_sp Nonbonds );
+   void	setFFVdwDb(FFVdwDb_sp Vdws );
 
 //	void		parseFromMoeStream(istream in);
   void		parseFromMoeFormatFileName(string name);
 
-
   void	pointAllPartsToForceField(ForceField_sp ff);
 
-  void	saveAs(const string& fileName);
   string __repr__() const;
+
+  //  void writeAmberForceFieldParameterFile(core::T_sp stream, core::T_sp system);
 };
 
 

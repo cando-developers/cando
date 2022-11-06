@@ -17,7 +17,7 @@
 (cando:set-stereoisomer-func *stereocenters* (lambda (c) :S))
 (chem:set-property *chemagg* :solvent-box '(50.0 50.0 50.0))
 (:= *ff* (leap.core::merged-force-field))
-(chem:assign-types (chem:get-types *ff*) *chemagg*)
+(chem:force-field/assign-types (chem:get-types *ff*) *chemagg*)
 (chem:map-atoms 'list (lambda (a) (chem:get-type a)) *chemagg*)
 (cando:save-mol2 *chemagg* "alanine2.mol2")
 ;(energy::setup-amber)
@@ -191,7 +191,7 @@
 (leap:source "leaprc.protein.ff14SB")
 (:= energy:*ff* (leap.core::merged-force-field))
 
-(chem:assign-types energy:*ff* *agg*)
+(chem:force-field/assign-types energy:*ff* *agg*)
 (chem:set-type *c3* :CX)
 
 
@@ -208,7 +208,7 @@
 
 (energy::setup-amber)
 
-(chem:assign-types (chem:get-types energy:*ff*) *agg*)
+(chem:force-field/assign-types (chem:get-types energy:*ff*) *agg*)
 (apropos "energy:*ff*")
 
 

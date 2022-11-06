@@ -182,12 +182,12 @@ SYMBOL_EXPORT_SC_(UnitsPkg,nm_per_ps);
           _sym_joules->exportYourself()->defparameter(unit_joules);
           NamedUnit_sp unit_kilojoules = NamedUnit_O::create(_sym_kilojoules,
                                                              1000.0, unit_joules,
-                                                             "kilojoules","kJ");
+                                                             "kilojoules","kj");
           _sym_kilojoules->exportYourself()->defparameter(unit_kilojoules);
 
           NamedUnit_sp unit_kilojoules_per_mole = NamedUnit_O::create(_sym_kilojoules_per_mole,
                                                                       1.0, unit_kilojoules,
-                                                                      "kiloJoules_per_mole","kJ/mole");
+                                                                      "kiloJoules_per_mole","kj/mole");
           unit_kilojoules_per_mole->incorporateUnit(unit_moles,1.0,-1);
           _sym_kilojoules_per_mole->exportYourself()->defparameter(unit_kilojoules_per_mole);
 

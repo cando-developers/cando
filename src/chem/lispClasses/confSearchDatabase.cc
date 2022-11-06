@@ -54,7 +54,7 @@ namespace chem {
 void	ConformationalSearchDatabase_O::initialize()
 {
     this->Base::initialize();
-    this->_EnergyCutOff = 5.0; // kCal/mole
+    this->_EnergyCutOff = 5.0; // kcal/mole
     this->setRmsCutOff(0.1);
     this->enableDisplayProgress();
 }

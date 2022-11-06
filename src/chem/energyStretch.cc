@@ -97,7 +97,7 @@ void EnergyStretch::defineFrom( FFStretch_sp stretch, EnergyAtom *ea1, EnergyAto
       , this->_Atom1->description() , this->_Atom2->description() );
   this->term.I1 = ea1->coordinateIndexTimes3();
   this->term.I2 = ea2->coordinateIndexTimes3();
-  this->term.kb = stretch->getKb_kCalPerAngstromSquared();
+  this->term.kb = stretch->getKb_kcalPerAngstromSquared();
   this->term.r0 = stretch->getR0_Angstrom();
 }
 

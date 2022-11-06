@@ -56,42 +56,46 @@ namespace       chem
 
 #define	FFItorWildCardCode	-1
 
-  SMART(FFItor);
-  class FFItor_O : public FFParameter_O
-  {
-    LISP_CLASS(chem,ChemPkg,FFItor_O,"FFItor",FFParameter_O);
-  public:
-    static int const IMaxPeriodicity = 6;
-  public:
-    void initialize();
-    bool fieldsp() const { return true; };
-    void fields(core::Record_sp node);
-  public:
-    core::Symbol_sp         _T1;
-    core::Symbol_sp 	_T2;
-    core::Symbol_sp 	_T3;
-    core::Symbol_sp 	_T4;
-    bool      	_hasPeriodicity[IMaxPeriodicity];
-    double      _Vs_kJ[IMaxPeriodicity];
-    double      _PhaseRads[IMaxPeriodicity];
+SMART(FFItor);
+class FFItor_O : public FFParameter_O
+{
+  LISP_CLASS(chem,ChemPkg,FFItor_O,"FFItor",FFParameter_O);
+public:
+  static int const IMaxPeriodicity = 6;
+public:
+  void initialize();
+  bool fieldsp() const { return true; };
+  void fields(core::Record_sp node);
+public:
+  core::Symbol_sp         _T1;
+  core::Symbol_sp 	_T2;
+  core::Symbol_sp 	_T3;
+  core::Symbol_sp 	_T4;
+  bool      	_hasPeriodicity[IMaxPeriodicity];
+  double      _Vs_kj[IMaxPeriodicity];
+  double      _PhaseDegrees[IMaxPeriodicity];
 
-    void	setTypes( core::Symbol_sp a1, core::Symbol_sp a2, core::Symbol_sp a3, core::Symbol_sp a4);
+  core::T_mv getTypes() const;
+  void	setTypes( core::Symbol_sp a1, core::Symbol_sp a2, core::Symbol_sp a3, core::Symbol_sp a4);
 
-    bool hasPeriodicity(int period) const;
-    double  getV_kJ(int period) const;
-    double  getV_kCal(int period) const;
-    void    setV_kJ(int period, double v);
-    void    setV_kCal(int period, double v);
-    double  getPhaseRad(int period) const;
-    void    setPhaseRad(int period, double v);
+  size_t maxPeriodicity() const;
+  bool hasPeriodicity(int period) const;
+  double  getV_kj(int period) const;
+  double  getV_kcal(int period) const;
+  void    setV_kj(int period, double v);
+  void    setV_kcal(int period, double v);
+  double  getPhaseRadians(int period) const;
+  void    setPhaseRadians(int period, double v);
+  double  getPhaseDegrees(int period) const;
+  void    setPhaseDegrees(int period, double v);
 
-    void    mergeWith(FFItor_sp itor);
+  void    mergeWith(FFItor_sp itor);
 
 
-    virtual	string	levelDescription();
-    virtual ParameterType type() { return itor; };
-    DEFAULT_CTOR_DTOR(FFItor_O);
-  };
+  virtual	string	levelDescription();
+  virtual ParameterType type() { return itor; };
+  DEFAULT_CTOR_DTOR(FFItor_O);
+};
 
 
 
@@ -99,32 +103,34 @@ namespace       chem
 ////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////
-  SMART(FFItorDb);
-  class FFItorDb_O : public FFParameterBaseDb_O
-  {
-    LISP_CLASS(chem,ChemPkg,FFItorDb_O,"FFItorDb",FFParameterBaseDb_O);
+SMART(FFItorDb);
+class FFItorDb_O : public FFParameterBaseDb_O
+{
+  LISP_CLASS(chem,ChemPkg,FFItorDb_O,"FFItorDb",FFParameterBaseDb_O);
 
-  public:
-    bool fieldsp() const { return true; };
-    void fields(core::Record_sp node);
-  public:
-    static void improperAtomSort(Atom_sp& a1, Atom_sp& a2, Atom_sp& a4);
-    void initialize();
-  public:
-    void	add( FFItor_sp itor );
+public:
+  static FFItorDb_sp make();
+public:
+  bool fieldsp() const { return true; };
+  void fields(core::Record_sp node);
+public:
+  static void improperAtomSort(Atom_sp& a1, Atom_sp& a2, Atom_sp& a4);
+  void initialize();
+public:
+  void	add( FFItor_sp itor );
 
-    core::T_sp findExactTerm( core::Symbol_sp a1, core::Symbol_sp a2, core::Symbol_sp a3, core::Symbol_sp a4 );
+  core::T_sp findExactTerm( core::Symbol_sp a1, core::Symbol_sp a2, core::Symbol_sp a3, core::Symbol_sp a4 );
 
-	//! Look for exact term then general one
-    core::T_sp findBestTerm( core::Symbol_sp a1, core::Symbol_sp a2, core::Symbol_sp a3, core::Symbol_sp a4 );
+  //! Look for exact term then general one
+  core::T_sp findBestTerm( core::Symbol_sp a1, core::Symbol_sp a2, core::Symbol_sp a3, core::Symbol_sp a4 );
 
-    void    cantFind(core::Symbol_sp t1, core::Symbol_sp t2, core::Symbol_sp t3, core::Symbol_sp t4 );
+  void    cantFind(core::Symbol_sp t1, core::Symbol_sp t2, core::Symbol_sp t3, core::Symbol_sp t4 );
 
-    void forceFieldMerge(FFBaseDb_sp bother);
+  void forceFieldMerge(FFBaseDb_sp bother);
 
-	//! Dump all ptors to stdout that match these types
-    DEFAULT_CTOR_DTOR(FFItorDb_O);
-  };
+  //! Dump all ptors to stdout that match these types
+  DEFAULT_CTOR_DTOR(FFItorDb_O);
+};
 
 
 };

@@ -59,7 +59,7 @@ void FFNonbondCrossTermTable_O::fillUsingFFNonbondDb( FFNonbondDb_sp db )
       FFNonbond_sp ffNonbond1 = db->getFFNonbondUsingTypeIndex(it1);
       FFNonbond_sp ffNonbond2 = db->getFFNonbondUsingTypeIndex(it2);
       term._RStar = ffNonbond1->getRadius_Angstroms() + ffNonbond2->getRadius_Angstroms();
-      double epsilonij = sqrt(ffNonbond1->getEpsilon_kCal()*ffNonbond2->getEpsilon_kCal());
+      double epsilonij = sqrt(ffNonbond1->getEpsilon_kcal()*ffNonbond2->getEpsilon_kcal());
       term._A = epsilonij*pow(term._RStar,12.0);
       term._C = 2.0*epsilonij*pow(term._RStar,6.0);
       this->_CrossTerms.push_back(term);
@@ -181,7 +181,7 @@ FFNonbond_sp FFNonbond_O::make_FFNonbond(core::Symbol_sp type,
   auto  res = gctools::GC<FFNonbond_O>::allocate_with_default_constructor();
   res->_Type = type;
   res->_Radius_Nanometers = radius_nanometers;
-  res->_Epsilon_kJ = epsilon_kj;
+  res->_Epsilon_kj = epsilon_kj;
   res->_Apol = apol;
   res->_Neff = neff;
   res->_Mass = mass;
@@ -197,7 +197,7 @@ void	FFNonbond_O::fields(core::Record_sp node)
 {
   node->field(INTERN_(kw,type),this->_Type );
   node->field(INTERN_(kw,radius),this->_Radius_Nanometers);
-  node->field(INTERN_(kw,well),this->_Epsilon_kJ);
+  node->field(INTERN_(kw,well),this->_Epsilon_kj);
   node->field_if_not_default(INTERN_(kw,apol),this->_Apol,0.0);
   node->field_if_not_default(INTERN_(kw,neff),this->_Neff,0.0);
   node->field(INTERN_(kw,mass),this->_Mass);
@@ -207,6 +207,8 @@ void	FFNonbond_O::fields(core::Record_sp node)
   node->field_if_not_default(INTERN_(kw,pbci),this->_Pbci,0.0);
   node->field(INTERN_(kw,da),this->_DonorAcceptor );
   node->field(INTERN_(kw,sameParms),this->_SameParms);
+  node->field_if_not_nil(INTERN_(kw,type_comment),this->_TypeComment);
+  node->field_if_not_nil(INTERN_(kw,nonbond_comment),this->_NonbondComment);
   this->Base::fields(node);
 }
 
@@ -338,6 +340,17 @@ void	FFNonbondDb_O::fields(core::Record_sp node)
   this->Base::fields(node);
 }
 
+
+CL_LISPIFY_NAME(FFNonbondDb/termVector);
+CL_DEFMETHOD core::SimpleVector_sp FFNonbondDb_O::termVector() const
+{
+  core::SimpleVector_sp terms = core::SimpleVector_O::make(this->_Terms.size());
+  for ( size_t ii=0; ii<this->_Terms.size(); ii++ ) {
+    terms->rowMajorAset(ii,this->_Terms[ii]);
+  }
+  return terms;
+}
+
 CL_LISPIFY_NAME(FFNonbondDb_add);
 CL_DEFMETHOD void    FFNonbondDb_O::add(FFNonbond_sp nb)
 {
@@ -408,7 +421,7 @@ void FFNonbond_O::initialize()
   this->Base::initialize();
   this->_Type = nil<core::Symbol_O>();
   this->_Radius_Nanometers = 0.0;
-  this->_Epsilon_kJ = 0.0; // Depth of the VDW well
+  this->_Epsilon_kj = 0.0; // Depth of the VDW well
   this->_Apol = 0.0;
   this->_Neff = 0.0;
   this->_Mass = 0.0;
@@ -420,21 +433,29 @@ void FFNonbond_O::initialize()
 }
 
 
+CL_LISPIFY_NAME(FFNonbond/setRadius_Nanometers);
+CL_DEFMETHOD
 void FFNonbond_O::setRadius_Nanometers(double n)
 {
   this->_Radius_Nanometers = n;
 }
 
+CL_LISPIFY_NAME(FFNonbond/setRadius_Angstroms);
+CL_DEFMETHOD
 void FFNonbond_O::setRadius_Angstroms(double n)
 {
   this->_Radius_Nanometers = n/10.0;
 }
 
+CL_LISPIFY_NAME(FFNonbond/getRadius_Nanometers);
+CL_DEFMETHOD
 double FFNonbond_O::getRadius_Nanometers() const
 {
   return this->_Radius_Nanometers;
 }
 
+CL_LISPIFY_NAME(FFNonbond/getRadius_Angstroms);
+CL_DEFMETHOD
 double FFNonbond_O::getRadius_Angstroms() const
 {
   return this->_Radius_Nanometers*10.0;
@@ -442,41 +463,83 @@ double FFNonbond_O::getRadius_Angstroms() const
 
 
 
-void FFNonbond_O::setEpsilon_kJ(double kj)
+CL_LISPIFY_NAME(FFNonbond/setEpsilon_kj);
+CL_DEFMETHOD
+void FFNonbond_O::setEpsilon_kj(double kj)
 {
-  this->_Epsilon_kJ = kj;
+  this->_Epsilon_kj = kj;
 }
 
-void FFNonbond_O::setEpsilon_kCal(double kcal)
+CL_LISPIFY_NAME(FFNonbond/setEpsilon_kcal);
+CL_DEFMETHOD
+void FFNonbond_O::setEpsilon_kcal(double kcal)
 {
-  this->_Epsilon_kJ = kCal_to_kJ(kcal);
+  this->_Epsilon_kj = kcal_to_kj(kcal);
 }
 
 
-double FFNonbond_O::getEpsilon_kCal() const
+CL_LISPIFY_NAME(FFNonbond/getEpsilon_kcal);
+CL_DEFMETHOD
+double FFNonbond_O::getEpsilon_kcal() const
 {
-  return kJ_to_kCal(this->_Epsilon_kJ);
+  return kj_to_kcal(this->_Epsilon_kj);
 }
 
-double FFNonbond_O::getEpsilon_kJ() const
+CL_LISPIFY_NAME(FFNonbond/getEpsilon_kj);
+CL_DEFMETHOD
+double FFNonbond_O::getEpsilon_kj() const
 {
-  return this->_Epsilon_kJ;
+  return this->_Epsilon_kj;
 }
 
+CL_LISPIFY_NAME(FFNonbond/setSameParms);
+CL_DEFMETHOD
 void FFNonbond_O::setSameParms(core::T_sp sameparms)
 {
   this->_SameParms = sameparms;
 }
 
+CL_LISPIFY_NAME(FFNonbond/getSameParms);
+CL_DEFMETHOD
 core::T_sp FFNonbond_O::getSameParms() const
 {
   ASSERT(this->_SameParms.boundp());
   return this->_SameParms;
 }
 
+CL_LISPIFY_NAME(FFNonbond/getMass);
 CL_DEFMETHOD double FFNonbond_O::getMass() const
 {
   return this->_Mass;
+}
+
+
+CL_LISPIFY_NAME(FFNonbond/getTypeComment);
+CL_DEFMETHOD
+core::T_sp FFNonbond_O::getTypeComment() const
+{
+  return this->_TypeComment;
+}
+
+CL_LISPIFY_NAME(FFNonbond/setTypeComment);
+CL_DEFMETHOD
+void FFNonbond_O::setTypeComment(core::T_sp comment)
+{
+  this->_TypeComment = comment;
+}
+
+CL_LISPIFY_NAME(FFNonbond/getNonbondComment);
+CL_DEFMETHOD
+core::T_sp FFNonbond_O::getNonbondComment() const
+{
+  return this->_NonbondComment;
+}
+
+CL_LISPIFY_NAME(FFNonbond/setNonbondComment);
+CL_DEFMETHOD
+void FFNonbond_O::setNonbondComment(core::T_sp comment)
+{
+  this->_NonbondComment = comment;
 }
 
 

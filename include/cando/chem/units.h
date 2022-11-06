@@ -43,7 +43,7 @@ namespace chem
 
 
 
-    static const double Const_kJ_per_kCal = 4.1868;
+    static const double Const_kj_per_kcal = 4.1868;
 
 
 
@@ -53,34 +53,34 @@ inline double angstrom_to_nanometer(double val)
 }
 
 
-inline double kCalPerAngstromSquared_to_kJPerNanometerSquared(double val)
+inline double kcalPerAngstromSquared_to_kjPerNanometerSquared(double val)
 {
-	return val*Const_kJ_per_kCal*100.0;
+	return val*Const_kj_per_kcal*100.0;
 }
 
-inline double kJPerNanometerSquared_to_kCalPerAngstromSquared(double val)
+inline double kjPerNanometerSquared_to_kcalPerAngstromSquared(double val)
 {
-    return val/100.0/Const_kJ_per_kCal;
+    return val/100.0/Const_kj_per_kcal;
 }
 
-inline double kCalPerRadianSquared_to_kJPerRadianSquared(double val)
+inline double kcalPerRadianSquared_to_kjPerRadianSquared(double val)
 {
-    return val*Const_kJ_per_kCal;
+    return val*Const_kj_per_kcal;
 }
 
-inline double kJPerRadianSquared_to_kCalPerRadianSquared(double val)
+inline double kjPerRadianSquared_to_kcalPerRadianSquared(double val)
 {
-    return val/Const_kJ_per_kCal;
+    return val/Const_kj_per_kcal;
 }
 
-inline double kCal_to_kJ(double val)
+inline double kcal_to_kj(double val)
 {
-    return val*Const_kJ_per_kCal;
+    return val*Const_kj_per_kcal;
 }
 
-inline double kJ_to_kCal(double val)
+inline double kj_to_kcal(double val)
 {
-    return val/Const_kJ_per_kCal;
+    return val/Const_kj_per_kcal;
 }
 
 
