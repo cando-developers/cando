@@ -69,6 +69,10 @@ public:
 
 public: // Functions here
   string __repr__() const;
+  void __write__(core::T_sp) const;
+
+  bool fieldsp() const override { return true; }
+  void fields(core::Record_sp node) override;
 
   /*! For testing only! - set amount by hand to check conversions from one unit to another */
   void test_set_amount(double amount);

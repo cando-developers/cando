@@ -80,6 +80,11 @@ public: // Handle different kinds of values
 	static bool isnanValue(core::T_sp val);
 
 public: // Functions here
+
+        /*! For serialization */
+        bool fieldsp() const override { return true;}
+        void fields(core::Record_sp node) override;
+  
 	/*! Return true if the Unit or Quantity other is compatible with my unit */
 	bool is_compatible(core::T_sp other) const;
 
