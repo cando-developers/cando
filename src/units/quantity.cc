@@ -207,6 +207,11 @@ string Quantity_O::__repr__() const {
   return ss.str();
 }
 
+void Quantity_O::fields(core::Record_sp node) {
+  node->field(INTERN_(units, value), this->_Value);
+  node->field(INTERN_(units, unit), this->_Unit);
+}
+
 CL_LISPIFY_NAME("quantity_is_compatible");
 CL_DEFMETHOD bool Quantity_O::is_compatible(core::T_sp other) const {
   if (other.isA<Unit_O>()) {

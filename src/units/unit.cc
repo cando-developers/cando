@@ -34,6 +34,7 @@ at mailto:techtransfer@temple.edu if you would like a different license.
 #include <cando/units/quantity.h>
 #include <cando/units/unit.h>
 #include <clasp/core/wrappers.h>
+#include <clasp/core/num_co.h> // cl:numerator, cl:denominator
 
 namespace units {
 
@@ -93,37 +94,56 @@ void Unit_O::parseUnitList(double &amountScale, SimpleRational powers[NumBaseDim
   LOG("The amountScale[%lf]", amountScale);
 }
 
-#ifdef OLD_SERIALIZE
-void Unit_O::serialize(serialize::SNode node) {
-  // Archive other instance variables here
-  ASSERTF(NumBaseDimensions == 8, ("You changed NumBaseDimensions but didnt change Unit_O::archiveBase"));
-  node->attribute("amt", this->_Amount);
-  node->attributeIfNotDefault("d0", this->_Powers[0], 0);
-  node->attributeIfNotDefault("w1", this->_Powers[1], 0);
-  node->attributeIfNotDefault("t2", this->_Powers[2], 0);
-  node->attributeIfNotDefault("c3", this->_Powers[3], 0);
-  node->attributeIfNotDefault("t4", this->_Powers[4], 0);
-  node->attributeIfNotDefault("l5", this->_Powers[5], 0);
-  node->attributeIfNotDefault("a6", this->_Powers[6], 0);
-  node->attributeIfNotDefault("r7", this->_Powers[7], 0);
+void Unit_O::fields(core::Record_sp node) {
+#define UFIELDS() \
+  node->field(INTERN_(units, amount), amt);\
+  node->field(INTERN_(units, meters), meters);\
+  node->field(INTERN_(units, kilograms), kilograms);\
+  node->field(INTERN_(units, seconds), seconds);\
+  node->field(INTERN_(units, amperes), amperes);\
+  node->field(INTERN_(units, kelvin), kelvin);\
+  node->field(INTERN_(units, candelas), candelas);\
+  node->field(INTERN_(units, moles), moles);\
+  node->field(INTERN_(units, radians), radians);
+  switch (node->stage()) {
+  case core::Record_O::initializing: [[fallthrough]];
+  case core::Record_O::loading: {
+    core::DoubleFloat_sp amt;
+    core::Rational_sp meters, kilograms, seconds, amperes, kelvin, candelas, moles, radians;
+    UFIELDS();
+    this->_Amount = amt->as_double_();
+#define RAT(rat) SimpleRational(core::clasp_to_integral<int>(cl__numerator(rat)), core::clasp_to_integral<int>(cl__denominator(rat)))
+    this->_Powers[0] = RAT(meters);
+    this->_Powers[1] = RAT(kilograms);
+    this->_Powers[2] = RAT(seconds);
+    this->_Powers[3] = RAT(amperes);
+    this->_Powers[4] = RAT(kelvin);
+    this->_Powers[5] = RAT(candelas);
+    this->_Powers[6] = RAT(moles);
+    this->_Powers[7] = RAT(radians);
+#undef RAT
+    break;
+  }
+  case core::Record_O::saving: {
+#define RAT(dim) core::Rational_O::create(core::Integer_O::create((dim)._Num), core::Integer_O::create((dim)._Denom))
+    core::DoubleFloat_sp amt = core::DoubleFloat_O::create(this->_Amount);
+    core::Rational_sp meters = RAT(this->_Powers[0]);
+    core::Rational_sp kilograms = RAT(this->_Powers[1]);
+    core::Rational_sp seconds = RAT(this->_Powers[2]);
+    core::Rational_sp amperes = RAT(this->_Powers[3]);
+    core::Rational_sp kelvin = RAT(this->_Powers[4]);
+    core::Rational_sp candelas = RAT(this->_Powers[5]);
+    core::Rational_sp moles = RAT(this->_Powers[6]);
+    core::Rational_sp radians = RAT(this->_Powers[7]);
+    UFIELDS();
+#undef RAT
+    break;
+  }
+  default:
+      IMPLEMENT_MEF("Add support to patch units");
+  }
+#undef UFIELDS
 }
-#endif
-
-#ifdef XML_ARCHIVE
-void Unit_O::archiveBase(::core::ArchiveP node) {
-  // Archive other instance variables here
-  ASSERTF(NumBaseDimensions == 8, ("You changed NumBaseDimensions but didnt change Unit_O::archiveBase"));
-  node->attribute("amt", this->_Amount);
-  node->attribute("d0", this->_Powers[0]);
-  node->attribute("w1", this->_Powers[1]);
-  node->attribute("t2", this->_Powers[2]);
-  node->attribute("c3", this->_Powers[3]);
-  node->attribute("t4", this->_Powers[4]);
-  node->attribute("l5", this->_Powers[5]);
-  node->attribute("a6", this->_Powers[6]);
-  node->attribute("r7", this->_Powers[7]);
-}
-#endif
 
 void Unit_O::initialize() {
   this->Base::initialize();
@@ -153,6 +173,12 @@ string Unit_O::__repr__() const {
   stringstream ss;
   ss << this->_Amount << "*" << this->unitsOnlyAsString();
   return ss.str();
+}
+
+void Unit_O::__write__(core::T_sp stream) const {
+  core::clasp_write_string("#<UNIT ", stream);
+  core::clasp_write_string(this->__repr__(), stream);
+  core::clasp_write_char('>', stream);
 }
 
 CL_LISPIFY_NAME("test_set_amount");
