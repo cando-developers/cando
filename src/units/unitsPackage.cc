@@ -187,21 +187,6 @@ void UnitsExposer_O::expose(core::LispPtr lisp, WhatToExpose what) const {
 
     DEFDIM(kelvin, 1.0, "K", temperatureKelvin, 1);
 
-    NamedUnit_sp unit_joules = NamedUnit_O::create(_sym_joules,"joules","J");
-    unit_joules->incorporateUnit(unit_kilograms,1.0,1);
-    unit_joules->incorporateUnit(unit_meters,1.0,2);
-    unit_joules->incorporateUnit(unit_seconds,1.0,-2);
-    _sym_joules->exportYourself()->defparameter(unit_joules);
-    NamedUnit_sp unit_kilojoules = NamedUnit_O::create(_sym_kilojoules,
-                                                       1000.0, unit_joules,
-                                                       "kilojoules","kj");
-    _sym_kilojoules->exportYourself()->defparameter(unit_kilojoules);
-    
-    NamedUnit_sp unit_kilojoules_per_mole = NamedUnit_O::create(_sym_kilojoules_per_mole,
-                                                                1.0, unit_kilojoules,
-                                                                "kiloJoules_per_mole","kj/mole");
-    unit_kilojoules_per_mole->incorporateUnit(unit_moles,1.0,-1);
-    _sym_kilojoules_per_mole->exportYourself()->defparameter(unit_kilojoules_per_mole);
     DEFDIM(candelas, 1.0, "cd", luminosityCandela, 1);
 
     DEFDIM(moles, 1.0, "mol", amountMole, 1);
@@ -244,10 +229,12 @@ void UnitsExposer_O::expose(core::LispPtr lisp, WhatToExpose what) const {
     NamedUnit_sp unit_kilojoules = NamedUnit_O::create(_sym_kilojoules, 1000.0, unit_joules, "kilojoules", "kJ");
     _sym_kilojoules->exportYourself()->defparameter(unit_kilojoules);
 
-    NamedUnit_sp unit_kilojoules_per_mole =
-        NamedUnit_O::create(_sym_kilojoules_per_mole, 1.0, unit_kilojoules, "kiloJoules_per_mole", "kJ/mole");
-    unit_kilojoules_per_mole->incorporateUnit(unit_moles, 1.0, -1);
+    NamedUnit_sp unit_kilojoules_per_mole = NamedUnit_O::create(_sym_kilojoules_per_mole,
+                                                                1.0, unit_kilojoules,
+                                                                "kiloJoules_per_mole","kj/mole");
+    unit_kilojoules_per_mole->incorporateUnit(unit_moles,1.0,-1);
     _sym_kilojoules_per_mole->exportYourself()->defparameter(unit_kilojoules_per_mole);
+
 
     NamedUnit_sp unit_kilocalorie = NamedUnit_O::create(_sym_kilocalorie, 4.184, unit_kilojoules, "kilocalorie", "kcal");
     _sym_kilocalorie->defparameter(unit_kilocalorie);
