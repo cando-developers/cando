@@ -34,4 +34,5 @@
                (:file "energy")
                (:file "formula-weight")
                (:file "matter-hierarchy")
+               (:file "units")
                (:file "psf-files")))

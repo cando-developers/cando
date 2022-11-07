@@ -63,17 +63,17 @@ namespace units
 
 
 
-    void Dimension_O::zeroPowers(int powers[])
+    void Dimension_O::zeroPowers(SimpleRational powers[])
     {
-	for (int i=0; i<NumBaseDimensions; i++ ) powers[i] = 0;
+      for (int i=0; i<NumBaseDimensions; i++ ) powers[i] = SimpleRational();
     }
 
-    void Dimension_O::copyPowers(int dest[], int const src[])
+    void Dimension_O::copyPowers(SimpleRational dest[], SimpleRational const src[])
     {
 	for (int i=0; i<NumBaseDimensions; i++ ) dest[i] = src[i];
     }
 
-    void Dimension_O::adjustPowersAndAmountScale(int power, int powers[], double& amountScale ) const
+    void Dimension_O::adjustPowersAndAmountScale(int power, SimpleRational powers[], double& amountScale ) const
     {
 	SUBCLASS_MUST_IMPLEMENT();
     }
