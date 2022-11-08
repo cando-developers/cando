@@ -230,7 +230,7 @@ FFNonbondDb_sp ReadAmberParameters_O::parseMasses(core::T_sp fin, FFNonbondDb_sp
         // Is there a comment?
         size_t length = cl__length(sol);
         core::T_sp comment = nil<core::T_O>();
-        if ((length-25)>0) {
+        if (length > 25) {
           std::string scomment = sol->get_std_string().substr(25);
           trim(scomment);
           comment = core::SimpleBaseString_O::make(scomment);
