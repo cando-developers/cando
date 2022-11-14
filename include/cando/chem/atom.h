@@ -50,7 +50,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/bond.fwd.h>
 #include <cando/chem/atom.fwd.h>
 #include <cando/chem/atomIdMap.fwd.h>
-#include <clasp/core/serialize.h>
 #include <cando/chem/atomId.fwd.h>
 #include <cando/chem/chemPackage.h>
 

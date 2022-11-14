@@ -57,7 +57,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/atom.h>
 #include <cando/chem/restraint.h>
 //#include "core/archiveNode.h"
-//#include "core/serialize.h"
 //#include "core/archive.h"
 #include <clasp/core/wrappers.h>
 

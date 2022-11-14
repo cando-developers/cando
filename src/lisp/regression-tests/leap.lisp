@@ -2,11 +2,11 @@
 (in-package #:clasp-tests)
 
 (leap:setup-default-paths)
-
+#+(or)
 (test-type load-frcmod
            (leap:load-amber-params "frcmod.ff99SB")
            chem:force-field)
-
+#+(or)
 (test-type load-frcmod-scee-scnb
            (leap:load-amber-params "frcmod.fb15")
            chem:force-field)
