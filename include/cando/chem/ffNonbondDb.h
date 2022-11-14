@@ -43,6 +43,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <vector>
 #include <set>
 #include <clasp/core/common.h>
+#include <clasp/core/symbolToEnumConverter.h> // ENUM_TRANSLATOR
 #include <cando/chem/bond.h>
 #include <cando/geom/vector3.h>
 //#include	"conformation.h"

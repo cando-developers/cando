@@ -38,7 +38,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/multipleValues.h>
 #include <cando/adapt/stringList.h>
 #include <clasp/core/array.h>
-#include <clasp/core/serialize.h>
 #include <clasp/core/cons.h>
 #include <clasp/core/numbers.h>
 #include <clasp/core/wrappers.h>

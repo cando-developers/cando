@@ -100,8 +100,6 @@ typedef bool _Bool;
 #include <clasp/core/hashTableEqual.h>
 #include <clasp/core/hashTableEqualp.h>
 #include <clasp/core/userData.h>
-#include <clasp/core/sexpLoadArchive.h>
-#include <clasp/core/sexpSaveArchive.h>
 #include <clasp/core/loadTimeValues.h>
 #include <clasp/core/singleDispatchGenericFunction.h>
 #include <clasp/core/arguments.h>

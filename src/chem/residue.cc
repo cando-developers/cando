@@ -40,7 +40,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/matter.h>
 #include <cando/chem/monomer.h>
 //#include "core/archiveNode.h"
-//#include "core/serialize.h"
 //#include <cando/chem/candoDatabaseReference.h>
 #include <cando/adapt/stringSet.h>
 #include <cando/chem/loop.h>

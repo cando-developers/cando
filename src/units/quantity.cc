@@ -27,7 +27,6 @@ at mailto:techtransfer@temple.edu if you would like a different license.
 #define DEBUG_LEVEL_NONE
 
 #include <clasp/core/common.h>
-//#include "core/serialize.h"
 #include <cando/geom/coordinateArray.h>
 #include <cando/geom/ovector3.h>
 #include <clasp/core/array.h>
