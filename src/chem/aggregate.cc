@@ -45,7 +45,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/loop.h>
 #include <cando/chem/moe.h>
 #include <cando/chem/mol2.h>
-//#include "core/serialize.h"
 #include <clasp/core/numerics.h>
 //#include "core/xmlSaveArchive.h"
 //#include "core/xmlLoadArchive.h"

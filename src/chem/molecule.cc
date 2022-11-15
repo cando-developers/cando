@@ -38,7 +38,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/molecule.h>
 #include <cando/chem/loop.h>
 #include <clasp/core/numerics.h>
-//#include "core/serialize.h"
 #include <cando/chem/restraint.h>
 #include <cando/chem/bond.h>
 #include <clasp/core/translators.h>
