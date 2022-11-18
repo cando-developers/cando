@@ -677,7 +677,7 @@ CL_DEFMETHOD void CandoDatabase_O::walk_topologys(core::Function_sp func) {
   this->_Topologys->maphash([&func](core::T_sp key, core::T_sp value) { core::eval::funcall(func, value); });
 }
 
-CL_DEFMETHOD void CandoDatabase_O::setf_findTopology(core::T_sp name, Topology_sp topology) {
+CL_DEFMETHOD void CandoDatabase_O::setf_findTopology(core::T_sp name, core::T_sp topology) {
   this->_Topologys->setf_gethash(name, topology);
 }
 

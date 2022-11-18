@@ -8,6 +8,9 @@
   :depends-on ()
   :serial t
   :components ((:file "packages")
-               (:file "constitution")
-               (:file "topology")
+               (:file "topology-classes")
+               (:file "joint-templates")
+               (:file "define-topology")
+               (:file "oligomer")
+               (:file "design")
                (:file "graphviz")))

@@ -26,6 +26,12 @@
    #:parent
    #:input-stub-joints
    #:plugs
+   #:add-child
+   #:sibling
+   #:make-in-plug-bonded-joint-template
+   #:make-bonded-joint-template
+   #:make-jump-joint-template
+   #:make-complex-bonded-joint-template
    #:stereo-information
    #:build-internal-coordinate-joint-template-tree
    #:extract-prepare-topologys)
@@ -92,13 +98,10 @@
   (:export
    #:draw-joint-tree))
 
-
-(defpackage #:design.debug
+(defpackage #:design.topology
   (:use #:cl)
   (:export
-   #:residue-graph
-   #:matter-graph
-   #:joint-template-graph
+   #:build-joint-template
    ))
 
 ;;;

@@ -1,11 +1,14 @@
-(in-package :topology.joint-templates)
-
+(in-package :topology)
 
 (defclass joint-template ()
   ((parent :initform nil :initarg :parent :accessor parent)
    (atom-name :initarg :atom-name :accessor atom-name)
    (constitution-atoms-index :initarg :constitution-atoms-index :accessor constitution-atoms-index)
    ))
+
+(defmethod print-object ((obj joint-template) stream)
+  (print-unreadable-object (obj stream :type t)
+    (format stream "~a" (atom-name obj))))
 
 (defclass bonded-joint-template (joint-template)
   ((children :initform nil :initarg :children :accessor children)
@@ -69,10 +72,10 @@
 (defun sibling (joint-template index)
   (nth index (children joint-template)))
 
-(defun new-joint-template-factory (parent-template atom child-indexes in-plug constitution-atoms constitution-name topology-name)
-  (declare (ignore atom constitution-atoms topology-name constitution-name))
-  (let* ((atom-name (chem:get-name atom))
-         (constitution-atoms-index (chem:constitution-atoms/index constitution-atoms atom-name))
+(defun new-joint-template-factory (parent-template node in-plug)
+  (let* ((atom-name (topology:name node))
+         (child-indexes (mapcar #'topology:constitution-atom-index (topology:children node)))
+         (constitution-atoms-index (topology:constitution-atom-index node))
          (gparent-template (if parent-template
                                (parent parent-template)
                                nil))
@@ -80,12 +83,12 @@
                                 (parent gparent-template)
                                 nil)))
     (cond
-      ((and (null parent-template) (typep in-plug 'chem:in-plug))
+      ((and (null parent-template) (typep in-plug 'topology:in-plug))
        (make-in-plug-bonded-joint-template constitution-atoms-index
                                            :atom-name atom-name
                                            :parent nil
                                            :in-plug in-plug))
-      ((typep in-plug 'chem:in-plug)
+      ((typep in-plug 'topology:in-plug)
        (make-bonded-joint-template constitution-atoms-index
                                    :atom-name atom-name
                                    :parent parent-template))
@@ -108,64 +111,6 @@
                                              :stub-joints stub-joints)))
       ((null ggparent-template)
        (let ((stub-joints (cond
-                            ((and (eql 0 (first child-indexes)) (eql 0 (second child-indexes)))
-                             (list parent-template
-                                   gparent-template))
-                            ((and (> 0 (first child-indexes)) (eql 0 (second child-indexes)))
-                             (list parent-template
-                                   gparent-template
-                                   (sibling parent-template 0)))
-                            (t
-                             (list parent-template
-                                   gparent-template
-                                   (sibling gparent-template 0))))))
-         (make-complex-bonded-joint-template constitution-atoms-index
-                                             :atom-name atom-name
-                                             :stub-joints stub-joints)))
-      (t (make-bonded-joint-template constitution-atoms-index
-                                     :atom-name atom-name
-                                     :parent parent-template)))))
-
-
-(defun new-joint-template-factory (parent-template node in-plug)
-  (let* ((atom-name (topology:name node))
-         (child-indexes (mapcar #'topology:constitution-atom-index (topology:children node)))
-         (constitution-atoms-index (topology:constitution-atom-index node))
-         (gparent-template (if parent-template
-                               (design.joint-tree:parent parent-template)
-                               nil))
-         (ggparent-template (if gparent-template
-                                (design.joint-tree:parent gparent-template)
-                                nil)))
-    (cond
-      ((and (null parent-template) (typep in-plug 'topology:in-plug))
-       (design.joint-tree:make-in-plug-bonded-joint-template constitution-atoms-index
-                                           :atom-name atom-name
-                                           :parent nil
-                                           :in-plug in-plug))
-      ((typep in-plug 'topology:in-plug)
-       (design.joint-tree:make-bonded-joint-template constitution-atoms-index
-                                   :atom-name atom-name
-                                   :parent parent-template))
-      ((null parent-template)
-       (design.joint-tree:make-jump-joint-template constitution-atoms-index
-                                 :atom-name atom-name
-                                 ))
-      ((null gparent-template)
-       (let ((stub-joints (cond
-                            ((eql 0 (first child-indexes))
-                             (list parent-template))
-                            ((eql 1 (first child-indexes))
-                             (list parent-template (design.joint-tree:sibling parent-template 0)))
-                            (t
-                             (list parent-template
-                                   (design.joint-tree:sibling parent-template 1)
-                                   (design.joint-tree:sibling parent-template 0))))))
-         (design.joint-tree:make-complex-bonded-joint-template constitution-atoms-index
-                                             :atom-name atom-name
-                                             :stub-joints stub-joints)))
-      ((null ggparent-template)
-       (let ((stub-joints (cond
                             ((and (>= (length child-indexes) 2)
                                   (eql 0 (first child-indexes))
                                   (eql 0 (second child-indexes)))
@@ -176,15 +121,15 @@
                                   (eql 0 (second child-indexes)))
                              (list parent-template
                                    gparent-template
-                                   (design.joint-tree:sibling parent-template 0)))
+                                   (sibling parent-template 0)))
                             (t
                              (list parent-template
                                    gparent-template
-                                   (design.joint-tree:sibling gparent-template 0))))))
-         (design.joint-tree:make-complex-bonded-joint-template constitution-atoms-index
+                                   (sibling gparent-template 0))))))
+         (make-complex-bonded-joint-template constitution-atoms-index
                                                                :atom-name atom-name
                                                                :stub-joints stub-joints)))
-      (t (design.joint-tree:make-bonded-joint-template constitution-atoms-index
+      (t (make-bonded-joint-template constitution-atoms-index
                                                        :atom-name atom-name
                                                        :parent parent-template)))))
 
@@ -197,7 +142,7 @@
           do (let ((child-template (build-joint-template-recursively root-template
                                                                      child
                                                                      in-plug)))
-               (design.joint-tree:add-child root-template child-template)))
+               (add-child root-template child-template)))
     root-template))
 
 (defun build-joint-template (graph)

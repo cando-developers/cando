@@ -124,7 +124,7 @@ multiple force-fields and know how a more recently added force-field shadows a l
           (ffptor-db (chem:get-ptor-db merged-force-field))
           (ffitor-db (chem:get-itor-db merged-force-field)))
       (warn "At this point we should run parmchk2 on the stretch/angle/ptor/itor components of the merged-force-field - any missing parameters should be provided by parmchk2")
-      (chem:generate-standard-energy-function-tables energy-function molecule ffstretch-db ffangle-db ffptor-db ffitor-db active-atoms))))
+      (chem:energy-function/generate-standard-energy-function-tables energy-function molecule ffstretch-db ffangle-db ffptor-db ffitor-db :active-atoms active-atoms))))
 
 
 ;;; ------------------------------------------------------------

@@ -157,12 +157,13 @@ CL_DEFMETHOD void    FFTypesDb_O::assignTypes(chem::Matter_sp matter)
     }
     if (name.notnilp()) {
       core::T_mv result_mv = chem__findTopology(name,false);
+      core::T_sp ttopology = result_mv;
       core::T_sp found = values.second(result_mv.number_of_values());
       if (chem__verbose(2)) {
         core::write_bf_stream(fmt::sprintf("chem__findTopology -> %s %s\n" , _rep_(result_mv) , _rep_(found)));
       }
-      if (found.notnilp()) {
-        Topology_sp topology = gc::As<Topology_sp>(result_mv);
+      if (found.notnilp() && gc::IsA<Topology_sp>(ttopology) ) {
+        Topology_sp topology = gc::As<Topology_sp>(ttopology);
         if (chem__verbose(2)) {
           core::write_bf_stream(fmt::sprintf("Found topology for residue name: %s\n" , _rep_(name)));
         }

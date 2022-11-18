@@ -45,14 +45,32 @@
    (topology-list :initform nil :initarg :topology-list :accessor topology-list)
    (stereo-information :initarg :stereo-information :accessor stereo-information)))
 
+(defclass stereoisomer-atom ()
+  ((atom-name :initarg :atom-name :accessor atom-name)
+   (constitution-atom-index :initarg :constitution-atom-index :accessor constitution-atom-index)
+   (atom-charge :initarg :atom-charge :accessor atom-charge)
+   (atom-type :initarg :atom-type :accessor atom-type)))
+
+(defclass stereoisomer-virtual-atom (stereoisomer-atom)
+  ())
+
 (defclass topology ()
   ((name :initarg :name :accessor name)
    (constitution :initarg :constitution :accessor constitution)
    (property-list :initform nil :initarg :property-list :accessor property-list)
    (plugs :initarg :plugs :accessor plugs)
-   (stereoisomer-atoms :initarg :stereoisomer-atoms :accessor stereoisomer-atoms)
-   (default-out-plug-name :initarg :default-out-plug-name :accessor default-out-plug-name)))
+   (joint-template :initarg :joint-template :accessor joint-template)
+   (stereoisomer-atoms :initform (make-array 4 :adjustable t :fill-pointer 0)
+                       :initarg :stereoisomer-atoms :accessor stereoisomer-atoms)
+   ))
 
 (defmethod print-object ((obj topology) stream)
   (print-unreadable-object (obj stream :type t)
     (format stream "~a" (name obj))))
+
+(defun has-plug-named (topology plug-name)
+  (gethash plug-name (plugs topology)))
+
+(defun plug-named (topology plug-name)
+  (gethash plug-name (plugs topology)))
+

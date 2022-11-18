@@ -1,19 +1,47 @@
 (in-package :topology)
 
-(defclass plug ()
-  ((name :initarg :name :accessor name)
-   (atom-names :initform (make-array 16)
-               :accessor atom-names)))
+#|
+Create topology instances using a graph described using an s-expression.
 
-(defclass in-plug (plug)
-  ())
+(topology:define-topology 'gly '((C C :plugs (+dkp.1)) (= O)
+                                 - CA (- HA1) (- HA2)
+                                 - (N N :plugs (+dkp.0))
+                                 - CN (- HN1) (- HN2) - HN3))
 
-(defclass out-plug (plug)
-  ())
+(topology:define-topology 'pro4 '((CAC C :plugs (-dkp.0)) (= OA)
+                                  - (CA :C :stereochemistry-type :chiral) (- HA)
+                                  - CB (- HB1) (- HB2)
+                                  - (CG :C :stereochemistry-type :chiral)
+                                  (- (NG N :plugs (+side.0 +dkp.0)))
+                                  (- (CGC C :plugs (+dkp.1)) = OG)
+                                  - CD (- HD1) (- HD2) -
+                                  (NA N :plugs (-dkp.1)) - CA ))
+
+(topology:define-topology 'pro '((C C :plugs (-dkp.0)) (= O)
+                                 - (CA C :stereochemistry-type :chiral) (- HA)
+                                 - CB (- HB1) (- HB2)
+                                 - CG (- HG1) (- HG2)
+                                 - CD (- HD1) (- HD2)
+                                 - (N N :plugs (-dkp.1)) - CA ))
+
+(topology:define-topology 'bnz '((CM C :plugs (-side.0)) (- HM1) (- HM2)
+                                 - C1
+                                 = C2 (- H2)
+                                 - C3 (- H3)
+                                 = C4 (- H4)
+                                 - C5 (- H5)
+                                 = C6 (- H6)
+                                 - C1))
+|#
+
 
 (defclass node ()
   ((name :initarg :name :accessor name)
    ))
+
+(defmethod print-object ((obj node) stream)
+  (print-unreadable-object (obj stream :type t)
+    (format stream "~a" (name obj))))
 
 (defclass atom-node (node)
   ((element :initarg :element :accessor element)
@@ -34,40 +62,47 @@
 (defclass graph ()
   ((name :initarg :name :accessor name)
    (root-node :initarg :root-node :accessor root-node)
+   (in-plug :initform nil :initarg :in-plug :accessor in-plug)
    (edges :initform nil :initarg :edges :accessor edges)
    (nodes :initform (make-hash-table) :initarg :nodes :accessor nodes)
    (plugs :initform (make-hash-table) :accessor plugs)
    (next-atom-index :initform 0 :accessor next-atom-index)))
 
 ;; A plug node
-(defun parse-plug-name (keyword-atm atom-name plugs)
+(defun parse-plug-name (keyword-atm atom-name plugs graph)
+  "Parse plug names like -dkp.0, +dkp.1, +side, -side"
   (let* ((sname (symbol-name keyword-atm))
          (direction-char (schar sname 0)))
     (when (member direction-char '(#\- #\+))
       (let* ((dot-pos (position #\. sname))
-             (plug-name (intern (subseq sname 0 dot-pos) :keyword))
-             (plug-index (parse-integer sname :start (1+ dot-pos) :junk-allowed t)))
-        (let ((plug (gethash plug-name plugs)))
-          (unless plug
-            (cond
-              ((char= direction-char #\-)
-               (setf plug (make-instance 'in-plug :name plug-name)))
-              ((char= direction-char #\+)
-               (setf plug (make-instance 'out-plug :name plug-name)))
-              (t (error "Illegal direction-char ~s" direction-char)))
-            (setf (gethash plug-name plugs) plug))
-          (setf (elt (atom-names plug) plug-index) atom-name))))))
+             (plug-name-str (if dot-pos
+                                (subseq sname 0 dot-pos)
+                                sname))
+             (plug-name (intern plug-name-str :keyword))
+             (plug-index (if dot-pos
+                             (parse-integer sname :start (1+ dot-pos) :junk-allowed t)
+                             0))
+             (plug (gethash plug-name plugs)))
+        (unless plug
+          (cond
+            ((char= direction-char #\-)
+             (let ((in-plug (make-instance 'in-plug :name plug-name)))
+               (setf plug in-plug
+                     (in-plug graph) in-plug)))
+            ((char= direction-char #\+)
+             (setf plug (make-instance 'out-plug :name plug-name)))
+            (t (error "Illegal direction-char ~s" direction-char)))
+          (setf (gethash plug-name plugs) plug))
+        (setf (elt (atom-names plug) plug-index) atom-name)))))
 
 (defun node-from-symbol-entry (keyword-atm graph)
   (let ((keyword-element (chem:element-from-atom-name-string (symbol-name keyword-atm))))
+    (when (bond-symbol keyword-atm)
+      (error "Don't create atoms with name ~a" keyword-atm))
     (make-instance 'atom-node
                    :name keyword-atm
                    :element keyword-element
                    :constitution-atom-index (prog1 (next-atom-index graph) (incf (next-atom-index graph))))))
-
-(defmethod print-object ((obj node) stream)
-  (print-unreadable-object (obj stream :type t)
-    (format stream "~a" (name obj))))
 
 (defun ensure-keyword (name)
   (intern (symbol-name name) :keyword))
@@ -78,7 +113,7 @@
        (let* ((keyword-atm (ensure-keyword atm))
              (seen-node (gethash keyword-atm (nodes graph))))
          (if seen-node
-             seen-node
+             (values seen-node t)
              (let ((node (node-from-symbol-entry keyword-atm graph)))
                (setf (gethash keyword-atm (nodes graph)) node)
                node))))
@@ -88,10 +123,13 @@
                            (ensure-keyword (cadr atm))
                            (chem:element-from-atom-name-string (symbol-name atm))))
               (property-list (cddr atm))
-              (node (make-instance 'atom-node :name keyword-atm
-                                              :element element
-                                              :property-list property-list
-                                              :constitution-atom-index (prog1 (next-atom-index graph) (incf (next-atom-index graph))))))
+              (node (progn
+                      (when (bond-symbol keyword-atm)
+                        (error "Don't create atoms with name ~a" keyword-atm))
+                      (make-instance 'atom-node :name keyword-atm
+                                                :element element
+                                                :property-list property-list
+                                                :constitution-atom-index (prog1 (next-atom-index graph) (incf (next-atom-index graph)))))))
          (setf (gethash keyword-atm (nodes graph)) node)
          node))
       (t (error "Illegal atm ~s" atm))))
@@ -99,53 +137,61 @@
 (defun bond-symbol (name)
   (when (symbolp name)
     (let ((kw-name (intern (symbol-name name) :keyword)))
-      (when (member kw-name '(:- := :# :~)) kw-name))))
+      (when (member kw-name '(:- := :# :~))
+        kw-name))))
+
+(defun atom-sexp (sexp)
+  (or (and (consp sexp) (null (bond-symbol (car sexp))))
+      (and (symbolp sexp) (null (bond-symbol sexp)))))
 
 (defun parse-atom-or-bond (sexp graph prev-node)
   (cond
     ((null sexp) nil)
+    ((and (null prev-node) (atom-sexp (car sexp)))
+     (let ((node (parse-atom (car sexp) graph)))
+       (setf (root-node graph) node)
+       (setf prev-node node))
+     (parse-atom-or-bond (cdr sexp) graph prev-node))
     ((and (symbolp (car sexp)) (bond-symbol (car sexp)))
-     (let* ((bond-symbol (bond-symbol (car sexp)))
-            (node (if (cadr sexp)
-                      (parse-atom (cadr sexp) graph)
-                      (error "Missing atom at end of ~s" sexp))))
-       (if prev-node
-           (progn
-             (setf (children prev-node) (append (children prev-node) (list node)))
-             (push (make-instance 'edge
-                                  :from-node prev-node
-                                  :to-node node
-                                  :edge-type bond-symbol)
-                   (edges graph)))
-           (error "Missing prev-node"))
-       (parse-atom-or-bond (cddr sexp) graph node)))
-    ((and (symbolp (car sexp)))
-     (let* ((bond-symbol :-)
-            (node (if (car sexp)
-                      (parse-atom (car sexp) graph)
-                      (error "Missing atom at end of ~s" sexp))))
-       (if prev-node
-           (progn
-             (setf (children prev-node) (append (children prev-node) (list node)))
-             (push (make-instance 'edge
-                                  :from-node prev-node
-                                  :to-node node
-                                  :edge-type bond-symbol)
-                   (edges graph))))
-       (parse-atom-or-bond (cdr sexp) graph node)
-       node))
+     (let* ((bond-symbol (bond-symbol (car sexp))))
+       (multiple-value-bind (node seen)
+           (if (cadr sexp)
+               (parse-atom (cadr sexp) graph)
+               (error "Missing atom at end of ~s" sexp))
+         (if prev-node
+             (progn
+               (unless seen
+                 (setf (children prev-node) (append (children prev-node) (list node))))
+               (push (make-instance 'edge
+                                    :from-node prev-node
+                                    :to-node node
+                                    :edge-type bond-symbol)
+                     (edges graph)))
+             (error "Missing prev-node"))
+         (parse-atom-or-bond (cddr sexp) graph node))))
+    ((and (car sexp) prev-node (atom-sexp (caar sexp)))
+     (let* ((bond-symbol :-))
+       (multiple-value-bind (node seen)
+           (if (car sexp)
+               (parse-atom (car sexp) graph)
+               (error "Missing atom at end of ~s" sexp))
+         (if prev-node
+             (progn
+               (unless seen
+                 (setf (children prev-node) (append (children prev-node) (list node))))
+               (push (make-instance 'edge
+                                    :from-node prev-node
+                                    :to-node node
+                                    :edge-type bond-symbol)
+                     (edges graph))))
+         (parse-atom-or-bond (cdr sexp) graph node)
+         node)))
     ((and (consp (car sexp)) (bond-symbol (car (car sexp))))
      (if prev-node
          (parse-atom-or-bond (car sexp) graph prev-node)
          (error "Missing prev-node"))
      (parse-atom-or-bond (cdr sexp) graph prev-node))
-    ((and (consp (car sexp)))
-     (if prev-node
-         (error "Atom node ~s allowed in first position only when no prev-node. prev-node = ~s" sexp prev-node)
-         (let ((node (parse-atom (car sexp) graph)))
-           (setf (root-node graph) node)
-           (setf prev-node node)))
-     (parse-atom-or-bond (cdr sexp) graph prev-node))))
+    (t (error "Atom node ~s allowed in first position only when no prev-node. prev-node = ~s" sexp prev-node))))
 
 (defun interpret (name sexp)
   (let ((graph (make-instance 'graph :name name)))
@@ -182,7 +228,7 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
                                                 (declare (ignore atom))
                                                 (format nil "~A"
                                                         (string config))) chiral-atoms configurations)))
-             (new-name (intern new-name-string :keyword)))
+             (new-name (intern new-name-string (symbol-package name))))
         #+(or)
         (progn
           (format t "name -> ~a~%" name)
@@ -260,7 +306,7 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
             when plug-names
               do (progn
                    (loop for name in plug-names
-                         do (parse-plug-name name atom-name plugs))))
+                         do (parse-plug-name name atom-name plugs graph))))
       (maphash (lambda (key plug)
                  (declare (ignore key))
                  (setf (atom-names plug) (subseq (atom-names plug) 0 (position nil (atom-names plug)))))
@@ -284,23 +330,34 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
                    :plugs plugs
                    :stereo-information stereo-information)))
 
-
-
 (defun topologies-from-graph (graph)
-  (let* ((constitution (constitution-from-graph graph))
-         (plugs (plugs constitution))
-         (stereo-information (stereo-information constitution)))
-    (loop for stereoisomer in stereo-information
-          for name = (name stereoisomer)
-          for configurations = (configurations stereoisomer)
-          for topology = (make-instance 'topology
-                                        :name name
-                                        :constitution constitution
-                                        :plugs plugs
-                                        :stereoisomer-atoms configurations)
-          for joint-template = (build-joint-tree-template graph)
-          do (push topology (topology-list constitution))
-          do (format t "stereoisomer ~a ~s~%" name configurations)
-          do (setf (property-list topology) (list* :joint-template joint-template (property-list topology)))
-          do (cando:register-topology topology name)
-          collect topology)))
+  (let* ((constitution (topology:constitution-from-graph graph))
+         (plugs (topology:plugs constitution))
+         (stereo-information (topology:stereo-information constitution))
+         (tops (loop for stereoisomer in stereo-information
+                     for name = (topology:name stereoisomer)
+                     for configurations = (topology:configurations stereoisomer)
+                     for joint-template = (build-joint-template graph)
+                     for topology = (make-instance 'topology:topology
+                                                   :name name
+                                                   :constitution constitution
+                                                   :plugs plugs
+                                                   :joint-template joint-template
+                                                   :stereoisomer-atoms configurations)
+                     do (push topology (topology:topology-list constitution))
+                     do (format t "stereoisomer ~a ~s~%" name configurations)
+                     do (setf (topology:property-list topology) (list* :joint-template joint-template (topology:property-list topology)))
+                     do (cando:register-topology topology name)
+                     collect topology)))
+    (setf (topology:topology-list constitution) tops)
+    tops))
+
+
+(defun do-define-topology (name sexp)
+  (let ((graph (interpret name sexp)))
+    (topologies-from-graph graph)))
+
+
+(defmacro define-topology (name sexp)
+  `(do-define-topology ',name ',sexp))
+

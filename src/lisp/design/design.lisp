@@ -220,7 +220,7 @@ This is for looking up parts but if the thing returned is not a part then return
            (values (gethash (second names) labels) (list (third names) (fourth names)))
            (my-add-monomers oligomer names)))
       (t (error "Handle ~a" names)))))
-            
+
 (defun interpret-part (oligomer part-info labels)
   (destructuring-bind (names &key label)
       (cond

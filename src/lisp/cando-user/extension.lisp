@@ -1,6 +1,6 @@
 (in-package #:cando-user)
 
-(defun initialize ()
+(defun initialize-cando-user ()
   (let ((amber-home (uiop:getenv-absolute-directory "AMBERHOME"))
         (threads (core:num-logical-processors)))
     (cond (amber-home
@@ -20,11 +20,11 @@
     (core:symbol-global-value-set '*package* (find-package :cando-user))
     (setf *package* (find-package :cando-user))))
 
-(push #'initialize core:*initialize-hooks*)
+(push #'initialize-cando-user core:*initialize-hooks*)
 
-(defun terminate ()
+(defun terminate-cando-user ()
   (setf (logical-pathname-translations "amber") nil)
   (unless (member :no-auto-lparallel *features*)
     (lparallel:end-kernel :wait t)))
 
-(push #'terminate core:*terminate-hooks*)    
+(push #'terminate-cando-user core:*terminate-hooks*)    

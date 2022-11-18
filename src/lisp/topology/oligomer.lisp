@@ -41,32 +41,32 @@
         unless (has-in-coupling-p monomer)
           do (return-from root-monomer monomer)))
 
-
 (defun canonical-sequence-monomer (coupling root monomer-out-couplings unique-ring-couplings)
   (let* ((outs (gethash root monomer-out-couplings))
-         (result (list* (chem:current-stereoisomer-name root)
+         (result (list* (current-stereoisomer-name root)
                         (when outs
-                          (let ((sorted-outs (sort outs #'string< :key (lambda (coup) (string (chem:get-name coup))))))
+                          (let ((sorted-outs (sort outs #'string< :key (lambda (coup) (string (name coup))))))
                             (loop for sorted-out in sorted-outs
-                                  for target-monomer = (chem:get-target-monomer sorted-out)
+                                  for target-monomer = (target-monomer sorted-out)
                                   collect (canonical-sequence-monomer
                                            sorted-out
                                            target-monomer
                                            monomer-out-couplings
                                            unique-ring-couplings)))))))
     (if coupling
-      (cons (chem:get-name coupling) result)
-      result)))
+        (cons (name coupling) result)
+        result)))
 
 
 
 (defun canonical-sequence (oligomer)
   "Return a canonical sequence for the oligomer that can be compared to other oligomers to
    determine if they are equivalent"
-  (let ((root-monomer (chem:oligomer/root-monomer oligomer)))
+  (let ((root-monomer (root-monomer oligomer)))
     (let ((monomer-out-couplings (make-hash-table))
           (unique-ring-couplings nil))
-      (loop for coupling in (chem:oligomer/couplings-as-list oligomer)
+      (loop for index below (length (couplings oligomer))
+            for coupling = (elt (couplings oligomer) index)
             if (typep coupling 'chem:directional-coupling)
               do (push coupling (gethash (chem:get-source-monomer coupling) monomer-out-couplings))
             else
@@ -183,7 +183,7 @@
         (values agg molecule monomer-positions)))))
 
 
-(defun build-all-molecules (oligomer &optional (number-of-sequences (chem:oligomer/number-of-sequences oligomer)))
+(defun build-all-molecules (oligomer &optional (number-of-sequences (number-of-sequences oligomer)))
   "Return a list of all built molecules for the oligomer.
 The number of entries can be limited by passing a lower value for the optional argument **number-of-sequences**
 than the (chem:oligomer/number-of-sequences oligomer)."

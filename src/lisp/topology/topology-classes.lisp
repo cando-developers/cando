@@ -1,5 +1,115 @@
 (in-package :topology)
 
+(defclass constitution-atom ()
+  ((atom-name :initarg :atom-name :accessor atom-name)
+   (index :initarg :index :accessor index)
+   (element :initarg :element :accessor element)
+   (atom-type :initarg :atom-type :accessor atom-type)
+   (stereochemistry-type :initarg :stereochemistry-type :accessor stereochemistry-type)
+   (properties :initform nil :initarg :properties :accessor properties)
+   (bonds :initform nil :initarg :bonds :accessor bonds)))
+
+(defmethod print-object ((obj constitution-atom) stream)
+  (print-unreadable-object (obj stream :type t)
+    (format stream "~a" (atom-name obj))))
+
+(defclass constitution-bond ()
+  ((to-atom-index :initarg :to-atom-index :accessor to-atom-index)
+   (order :initarg :order :accessor order)))
+
+(defclass constitution-atoms ()
+  ((atoms :initarg :atoms :accessor atoms)))
+
+(defclass stereoconfiguration ()
+  ((atom-name :initarg :atom-name :accessor atom-name)
+   (configuration :initarg :configuration :accessor configuration)))
+
+(defmethod print-object ((obj stereoconfiguration) stream)
+  (print-unreadable-object (obj stream :type t)
+    (format stream "~a ~a" (atom-name obj) (configuration obj))))
+
+(defclass stereoisomer ()
+  ((name :initarg :name :accessor name)
+   (pdb :initarg :pdb :accessor pdb)
+   (stereoisomer-index :initarg :stereoisomer-index :accessor stereoisomer-index)
+   (configurations :initarg :configurations :accessor configurations)))
+
+(defmethod print-object ((obj stereoisomer) stream)
+  (print-unreadable-object (obj stream :type t)
+    (format stream "~a ~s" (name obj) (configurations obj))))
+
+(defclass constitution ()
+  ((name :initarg :name :accessor name)
+   (constitution-atoms :initarg :constitution-atoms :accessor constitution-atoms)
+   (plugs :initarg :plugs :accessor plugs)
+   (topology-list :initform nil :initarg :topology-list :accessor topology-list)
+   (stereo-information :initarg :stereo-information :accessor stereo-information)))
+
+(defclass stereoisomer-atom ()
+  ((atom-name :initarg :atom-name :accessor atom-name)
+   (constitution-atom-index :initarg :constitution-atom-index :accessor constitution-atom-index)
+   (atom-charge :initarg :atom-charge :accessor atom-charge)
+   (atom-type :initarg :atom-type :accessor atom-type)))
+
+(defclass stereoisomer-virtual-atom (stereoisomer-atom)
+  ())
+
+(defclass topology ()
+  ((name :initarg :name :accessor name)
+   (constitution :initarg :constitution :accessor constitution)
+   (property-list :initform nil :initarg :property-list :accessor property-list)
+   (plugs :initarg :plugs :accessor plugs)
+   (joint-template :initarg :joint-template :accessor joint-template)
+   (stereoisomer-atoms :initform (make-array 4 :adjustable t :fill-pointer 0)
+                       :initarg :stereoisomer-atoms :accessor stereoisomer-atoms)
+   ))
+
+(defmethod print-object ((obj topology) stream)
+  (print-unreadable-object (obj stream :type t)
+    (format stream "~a" (name obj))))
+
+(defun has-plug-named (topology plug-name)
+  (gethash plug-name (plugs topology)))
+
+(defun plug-named (topology plug-name)
+  (gethash plug-name (plugs topology)))
+
+(defun find-in-plug (topology)
+  (maphash (lambda (name plug)
+             (declare (ignore name))
+             (when (typep plug 'in-plug)
+               (return-from find-in-plug plug)))
+           (plugs topology)))
+
+(defun out-plugs-as-list (topology)
+  (let (out-plugs)
+    (maphash (lambda (name plug)
+               (declare (ignore name))
+               (when (typep plug 'out-plug)
+                 (push plug out-plugs)))
+             (plugs topology))
+    out-plugs))
+
+(defun all-out-plug-names-that-match-in-plug-name (topology in-plug-name)
+  (let (out-plugs
+        (in-coupling-name (coupling-name in-plug-name)))
+    (maphash (lambda (name plug)
+               (declare (ignore name))
+               (when (and (typep plug 'out-plug)
+                          (eq (coupling-name (name plug))
+                              in-coupling-name))
+                 (push (name plug) out-plugs)))
+             (plugs topology))
+    out-plugs))
+
+(defun plugs-as-list (topology)
+  (let (plugs)
+    (maphash (lambda (name plug)
+               (declare (ignore name))
+               (push plug plugs))
+             (plugs topology))
+    plugs))
+
 (defclass plug ()
   ((name :initarg :name :accessor name)
    (atom-names :initform (make-array 16)
@@ -11,284 +121,89 @@
 (defclass out-plug (plug)
   ())
 
-(defclass node ()
-  ((name :initarg :name :accessor name)
-   ))
-
-(defclass atom-node (node)
-  ((element :initarg :element :accessor element)
-   (property-list :initform nil :initarg :property-list :accessor property-list)
-   (constitution-atom-index :initarg :constitution-atom-index :accessor constitution-atom-index)
-   (children :initform nil :accessor children)
-   ))
-
-(defclass edge ()
-  ((from-node :initarg :from-node :accessor from-node)
-   (to-node :initarg :to-node :accessor to-node)
-   (edge-type :initarg :edge-type :accessor edge-type)))
-
-(defmethod print-object ((obj edge) stream)
+(defmethod print-object ((obj plug) stream)
   (print-unreadable-object (obj stream :type t)
-    (format stream "~a ~a ~a" (name (from-node obj)) (edge-type obj) (name (to-node obj)))))
-
-(defclass graph ()
-  ((name :initarg :name :accessor name)
-   (root-node :initarg :root-node :accessor root-node)
-   (in-plug :initform nil :initarg :in-plug :accessor in-plug)
-   (edges :initform nil :initarg :edges :accessor edges)
-   (nodes :initform (make-hash-table) :initarg :nodes :accessor nodes)
-   (plugs :initform (make-hash-table) :accessor plugs)
-   (next-atom-index :initform 0 :accessor next-atom-index)))
-
-;; A plug node
-(defun parse-plug-name (keyword-atm atom-name plugs graph)
-  (let* ((sname (symbol-name keyword-atm))
-         (direction-char (schar sname 0)))
-    (when (member direction-char '(#\- #\+))
-      (let* ((dot-pos (position #\. sname))
-             (plug-name (intern (subseq sname 0 dot-pos) :keyword))
-             (plug-index (parse-integer sname :start (1+ dot-pos) :junk-allowed t)))
-        (let ((plug (gethash plug-name plugs)))
-          (unless plug
-            (cond
-              ((char= direction-char #\-)
-               (let ((in-plug (make-instance 'in-plug :name plug-name)))
-               (setf plug in-plug
-                     (in-plug graph) in-plug)))
-              ((char= direction-char #\+)
-               (setf plug (make-instance 'out-plug :name plug-name)))
-              (t (error "Illegal direction-char ~s" direction-char)))
-            (setf (gethash plug-name plugs) plug))
-          (setf (elt (atom-names plug) plug-index) atom-name))))))
-
-(defun node-from-symbol-entry (keyword-atm graph)
-  (let ((keyword-element (chem:element-from-atom-name-string (symbol-name keyword-atm))))
-    (make-instance 'atom-node
-                   :name keyword-atm
-                   :element keyword-element
-                   :constitution-atom-index (prog1 (next-atom-index graph) (incf (next-atom-index graph))))))
-
-(defmethod print-object ((obj node) stream)
-  (print-unreadable-object (obj stream :type t)
-    (format stream "~a" (name obj))))
-
-(defun ensure-keyword (name)
-  (intern (symbol-name name) :keyword))
-
-(defun parse-atom (atm graph)
-    (cond
-      ((symbolp atm)
-       (let* ((keyword-atm (ensure-keyword atm))
-             (seen-node (gethash keyword-atm (nodes graph))))
-         (if seen-node
-             (values seen-node t)
-             (let ((node (node-from-symbol-entry keyword-atm graph)))
-               (setf (gethash keyword-atm (nodes graph)) node)
-               node))))
-      ((consp atm)
-       (let* ((keyword-atm (ensure-keyword (car atm)))
-              (element (if (cadr atm)
-                           (ensure-keyword (cadr atm))
-                           (chem:element-from-atom-name-string (symbol-name atm))))
-              (property-list (cddr atm))
-              (node (make-instance 'atom-node :name keyword-atm
-                                              :element element
-                                              :property-list property-list
-                                              :constitution-atom-index (prog1 (next-atom-index graph) (incf (next-atom-index graph))))))
-         (setf (gethash keyword-atm (nodes graph)) node)
-         node))
-      (t (error "Illegal atm ~s" atm))))
-
-(defun bond-symbol (name)
-  (when (symbolp name)
-    (let ((kw-name (intern (symbol-name name) :keyword)))
-      (when (member kw-name '(:- := :# :~)) kw-name))))
-
-(defun parse-atom-or-bond (sexp graph prev-node)
-  (cond
-    ((null sexp) nil)
-    ((and (symbolp (car sexp)) (bond-symbol (car sexp)))
-     (let* ((bond-symbol (bond-symbol (car sexp))))
-       (multiple-value-bind (node seen)
-           (if (cadr sexp)
-               (parse-atom (cadr sexp) graph)
-               (error "Missing atom at end of ~s" sexp))
-         (if prev-node
-             (progn
-               (unless seen
-                 (setf (children prev-node) (append (children prev-node) (list node))))
-               (push (make-instance 'edge
-                                    :from-node prev-node
-                                    :to-node node
-                                    :edge-type bond-symbol)
-                     (edges graph)))
-             (error "Missing prev-node"))
-         (parse-atom-or-bond (cddr sexp) graph node))))
-    ((and (symbolp (car sexp)))
-     (let* ((bond-symbol :-))
-       (multiple-value-bind (node seen)
-           (if (car sexp)
-               (parse-atom (car sexp) graph)
-               (error "Missing atom at end of ~s" sexp))
-         (if prev-node
-             (progn
-               (unless seen
-                 (setf (children prev-node) (append (children prev-node) (list node))))
-               (push (make-instance 'edge
-                                    :from-node prev-node
-                                    :to-node node
-                                    :edge-type bond-symbol)
-                     (edges graph))))
-         (parse-atom-or-bond (cdr sexp) graph node)
-         node)))
-    ((and (consp (car sexp)) (bond-symbol (car (car sexp))))
-     (if prev-node
-         (parse-atom-or-bond (car sexp) graph prev-node)
-         (error "Missing prev-node"))
-     (parse-atom-or-bond (cdr sexp) graph prev-node))
-    ((and (consp (car sexp)))
-     (if prev-node
-         (error "Atom node ~s allowed in first position only when no prev-node. prev-node = ~s" sexp prev-node)
-         (let ((node (parse-atom (car sexp) graph)))
-           (setf (root-node graph) node)
-           (setf prev-node node)))
-     (parse-atom-or-bond (cdr sexp) graph prev-node))))
-
-(defun interpret (name sexp)
-  (let ((graph (make-instance 'graph :name name)))
-    (parse-atom-or-bond sexp graph nil)
-    graph))
-
-(defun bond-order-from-edge-type (edge-type)
-  (case edge-type
-    (:- :single-bond)
-    (:= :double-bond)
-    (:# :triple-bond)
-    (otherwise (error "Handle edge-type ~a" edge-type))))
+    (format stream "~a ~a" (name obj) (atom-names obj))))
 
 
-
-(defun build-stereoisomer (name chiral-atoms stereoisomer-index)
-  "Build a stereoisomer. Assemble a name for the stereiosomer using the name and
-the stereoisomer-index.   The stereoisomer-index is like a bit-vector that indicates
-the stereochemistry of this stereoisomer (0 is :S and 1 is :R).
-The name is constructed by appending \"{chiral-atom-name/(S|R),...}\".
-So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
-  (if chiral-atoms
-      (let* ((configurations (loop for chiral-index below (length chiral-atoms)
-                                   for config = (if (logbitp chiral-index stereoisomer-index) :S :R)
-                                   collect config))
-             (stereo-configurations (mapcar (lambda (atom config)
-                                              (make-instance 'stereoconfiguration
-                                                             :atom-name (atom-name atom)
-                                                             :configuration config))
-                                            chiral-atoms configurations))
-             (new-name-string (format nil "~A~{~A~}"
-                                      name
-                                      (mapcar (lambda (atom config)
-                                                (declare (ignore atom))
-                                                (format nil "~A"
-                                                        (string config))) chiral-atoms configurations)))
-             (new-name (intern new-name-string :keyword)))
-        #+(or)
-        (progn
-          (format t "name -> ~a~%" name)
-          (format t "chiral-atoms -> ~a~%" chiral-atoms)
-          (format t "stereoisomer-index -> ~a~%" stereoisomer-index)
-          (format t "new-name -> ~a~%" new-name))
-        (make-instance 'stereoisomer
-                       :name new-name
-                       :pdb nil
-                       :stereoisomer-index stereoisomer-index
-                       :configurations stereo-configurations))
-      (progn
-        ;;#+(or)(format t "Single stereoisomer name -> ~a~%" name)
-        (make-instance 'stereoisomer
-                       :name name
-                       :name name
-                       :stereoisomer-index 0
-                       :configurations nil))))
-
-(defun build-stereo-information (name chiral-constitution-atoms)
-  "Build stereoinformation from all of this and return it."
-  (let* ((chiral-atoms chiral-constitution-atoms)
-         (number-of-chiral-atoms (length chiral-atoms))
-         (number-of-stereoisomers (expt 2 number-of-chiral-atoms)))
-    #+(or)
-    (progn
-      (format t "residue: ~s~%" residue)
-      (format t "root atom: ~s~%" root-atom)
-      (format t "chiral atoms: ~s~%" chiral-atoms)
-      (terpri)
-      (terpri))
-    (let ((stereoisomers (loop for stereoisomer-index below number-of-stereoisomers
-                               for stereoisomer = (build-stereoisomer name chiral-atoms stereoisomer-index)
-                               collect stereoisomer)))
-      stereoisomers)))
-
-(defun constitution-atoms-from-graph (graph)
-  (let ((constitution-atoms (make-array (hash-table-count (nodes graph)))))
-    (maphash (lambda (key node)
-               (declare (ignore key))
-               (when (typep node 'atom-node)
-                 (let* ((property-list (property-list node))
-                        (stereochemistry-type (getf property-list :stereochemistry-type :undefined-center)))
-                   (setf (aref constitution-atoms (constitution-atom-index node))
-                         (make-instance 'constitution-atom
-                                        :atom-name (name node)
-                                        :element (element node)
-                                        :index (constitution-atom-index node)
-                                        :properties property-list
-                                        :stereochemistry-type stereochemistry-type)))))
-             (nodes graph))
-    (loop for edge in (edges graph)
-          for from-node = (from-node edge)
-          for to-node = (to-node edge)
-          for edge-type = (edge-type edge)
-          for bond-order = (bond-order-from-edge-type edge-type)
-          for from-index = (constitution-atom-index from-node)
-          for to-index = (constitution-atom-index to-node)
-          for from-constitution-atom = (aref constitution-atoms from-index)
-          for to-constitution-atom = (aref constitution-atoms to-index)
-          do (push (make-instance 'constitution-bond
-                                  :to-atom-index from-index
-                                  :order bond-order)
-                   (bonds to-constitution-atom))
-          do (push (make-instance 'constitution-bond
-                                  :to-atom-index to-index
-                                  :order bond-order)
-                   (bonds from-constitution-atom)))
-    (let ((plugs (make-hash-table)))
-      (loop for index below (length constitution-atoms)
-            for ca = (elt constitution-atoms index)
-            for atom-name = (atom-name ca)
-            for properties = (properties ca)
-            for plug-names = (getf properties :plugs)
-            when plug-names
-              do (progn
-                   (loop for name in plug-names
-                         do (parse-plug-name name atom-name plugs graph))))
-      (maphash (lambda (key plug)
-                 (declare (ignore key))
-                 (setf (atom-names plug) (subseq (atom-names plug) 0 (position nil (atom-names plug)))))
-               plugs)
-      (let* ((stereocenters (loop for index below (length constitution-atoms)
-                                  for ca = (elt constitution-atoms index)
-                                  for prop-list = (properties ca)
-                                  for stereochemistry-type = (stereochemistry-type ca)
-                                  when (eq :chiral stereochemistry-type)
-                                    collect ca))
-             (stereo-information (build-stereo-information (name graph) stereocenters)))
-        (values constitution-atoms plugs stereo-information)))))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;;; Monomer, coupling, and oligomer
+;;;
 
 
-(defun constitution-from-graph (graph)
-  (multiple-value-bind (constitution-atoms plugs stereo-information)
-      (constitution-atoms-from-graph graph)
-    (make-instance 'constitution
-                   :name (name graph)
-                   :constitution-atoms constitution-atoms
-                   :plugs plugs
-                   :stereo-information stereo-information)))
+(defclass monomer ()
+  ((id :initarg :id :accessor id)
+   (couplings :initform (make-hash-table)
+              :accessor couplings)
+   (current-stereoisomer-offset :initform 0 :accessor current-stereoisomer-offset)
+   (monomers :initarg :monomers :accessor monomers)))
+
+(defmethod print-object ((obj monomer) stream)
+   (print-unreadable-object (obj stream :type t)
+    (format stream "~a" (monomers obj))))
+
+(defun number-of-stereoisomers (monomer)
+  (length (monomers monomer)))
+
+(defun current-stereoisomer-name (monomer)
+  (elt (monomers monomer) (current-stereoisomer-offset monomer)))
+
+(defun get-current-topology (monomer)
+  (let ((name (elt (monomers monomer) (current-stereoisomer-offset monomer))))
+    (chem:find-topology name t)))
+
+(defun has-in-coupling-p (monomer)
+  (maphash (lambda (plug-name plug)
+             (declare (ignore plug-name))
+             (when (typep plug 'topology:in-plug)
+               (return-from has-in-coupling-p t)))
+           (couplings monomer)))
+
+(defun monomer-plug-named (monomer plug-name)
+  (gethash plug-name (couplings monomer)))
+
+(defclass coupling ()
+  ())
+
+(defclass directional-coupling (coupling)
+  (
+   (source-plug-name :initarg :source-plug-name :accessor source-plug-name)
+   (target-plug-name :initarg :target-plug-name :accessor target-plug-name)
+   (source-monomer :initarg :source-monomer :accessor source-monomer)
+   (target-monomer :initarg :target-monomer :accessor target-monomer)))
+
+(defmethod print-object ((obj directional-coupling) stream)
+   (print-unreadable-object (obj stream :type t)
+    (format stream "~a ~a ~a ~a" (source-monomer obj) (source-plug-name obj) (target-plug-name obj) (target-monomer obj))))
 
 
+(defclass ring-coupling (coupling)
+  (
+   (plug1 :initarg :plug1 :accessor plug1)
+   (plug2 :initarg :plug2 :accessor plug2)
+   (monomer1 :initarg :monomer1 :accessor monomer1)
+   (monomer2 :initarg :monomer2 :accessor monomer2)))
+
+(defclass oligomer ()
+  ((monomers :initform (make-array 16 :adjustable t :fill-pointer 0)
+             :initarg :monomers :accessor monomers)
+   (couplings :initform (make-array 16 :adjustable t :fill-pointer 0)
+              :initarg :couplings :accessor couplings)))
+
+(defun add-monomer (oligomer monomer)
+  (vector-push-extend monomer (monomers oligomer)))
+
+(defun number-of-sequences (oligomer)
+  (let ((num 1))
+  (loop for monomer across (monomers oligomer)
+        do (setf num (* num (length (monomers monomer)))))
+    num))
+
+(defun goto-sequence (oligomer index)
+  (let* ((bases (loop for monomer across (monomers oligomer)
+                      collect (length (monomers monomer))))
+         (digits (sys:positive-integer-to-mixed-base-digits index bases)))
+    (loop for monomer across (monomers oligomer)
+          for digit in digits
+          do (setf (current-stereoisomer-offset monomer) digit))))

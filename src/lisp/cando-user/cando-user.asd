@@ -16,7 +16,9 @@
                #:tirun
                #:sketch2d
                #:cando-build
-               #:lparallel)
+               #:lparallel
+               #:topology
+               #:design)
   :serial t
   :components ((:file "packages")
                (:file "start-swank")

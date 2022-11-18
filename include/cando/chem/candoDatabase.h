@@ -207,7 +207,7 @@ public:
 
   /*! Return (values topology t/nil) */
   core::T_mv findTopology(core::T_sp name,bool errorp) const;
-  void setf_findTopology(core::T_sp name, Topology_sp topology);
+  void setf_findTopology(core::T_sp name, core::T_sp topology);
 
   void walk_topologys(core::Function_sp func);
   

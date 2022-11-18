@@ -717,6 +717,7 @@ Return a list of prepare-topology objects - one for each residue that we need to
     (dump-build-order-recursively cur-template child constitution-atoms sout)))
 
 
+#+(or)
 (defun joint-template-factory (parent-template atom constitution-atoms constitution-name topology-name)
   (let* ((out-plug-atom-prop (chem:matter-get-property-or-default atom :out-plug nil))
          (entity-to-delay-children-for (chem:matter-get-property-or-default atom :entity-to-delay-children-for nil))
@@ -840,6 +841,7 @@ Return a list of prepare-topology objects - one for each residue that we need to
 ;; Build an AtomTreeTemplate recursively using the properties defined
 ;; for each atom
 ;;
+#+(or)
 (defun build-atom-tree-template-recursively (parent root child-indexes in-plug residue constitution-atoms constitution-name topology-name )
   (let ((root-template (new-joint-template-factory parent root child-indexes in-plug constitution-atoms constitution-name topology-name))
         (children (progn
@@ -858,7 +860,7 @@ Return a list of prepare-topology objects - one for each residue that we need to
                  (add-child root-template child-template)))
     root-template))
 
-
+#+(or)
 (defun build-internal-coordinate-joint-template-tree (prepare-topology)
 ;;;chemdraw-fragment constitution-atoms plugs constitution-name topology-name)
   (with-accessors ((name name) (residue residue) (plugs plugs) (constitution constitution))
