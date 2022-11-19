@@ -132,11 +132,11 @@ void leap_process_arguments(core::CommandLineOptions* options) {
              " -s         Ignore leaprc startup file.\n"
              " -I {dir}   Add {dir} to search path.\n"
              " -f {file}  Source {file}.\n"
-             " -t c       Startup using cclasp and quicklisp for all systems\n");
+             " -B         Startup using base image and quicklisp for all systems\n");
       exit(0);
     } else if (arg == "-t") {
-      options->_Stage = options->_RawArguments[++iarg][0];
-      printf("Loading stage %c\n", options->_Stage );
+      options->_StartupType = core::cloBaseImage;
+      printf("Loading base image\n");
     }
   }
   options->_LoadEvalList.push_back(std::pair<core::LoadEvalEnum,std::string>(core::cloEval,"(leap.commands:leap-repl-then-exit)"));
