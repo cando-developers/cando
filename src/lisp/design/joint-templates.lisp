@@ -797,7 +797,7 @@ Return a list of prepare-topology objects - one for each residue that we need to
          (atom-name (atom-name joint-template))
          (atomid (list atmolecule-index atresidue-index constitution-atoms-index))
          (joint (kin:make-jump-joint atomid atom-name)))
-    (kin:put-joint atresidue joint constitution-atoms-index)
+    (put-joint atresidue joint constitution-atoms-index)
     (when parent-joint (kin:joint/add-child parent-joint joint))
     joint))
 
@@ -807,7 +807,7 @@ Return a list of prepare-topology objects - one for each residue that we need to
          (atomid (list atmolecule-index atresidue-index constitution-atoms-index))
          (joint (kin:make-complex-bonded-joint atomid atom-name))
          (input-stub-joints (input-stub-joints joint-template)))
-    (kin:put-joint atresidue joint constitution-atoms-index)
+    (put-joint atresidue joint constitution-atoms-index)
     (let ((input-stub0-template (aref input-stub-joints 0))
           (input-stub1-template (aref input-stub-joints 1)))
       (cond
@@ -833,7 +833,7 @@ Return a list of prepare-topology objects - one for each residue that we need to
          (atom-name (atom-name joint-template))
          (atomid (list atmolecule-index atresidue-index constitution-atoms-index))
          (joint (kin:make-bonded-joint atomid atom-name)))
-    (kin:put-joint atresidue joint constitution-atoms-index)
+    (put-joint atresidue joint constitution-atoms-index)
     (when parent-joint (kin:joint/add-child parent-joint joint))
     joint))
 

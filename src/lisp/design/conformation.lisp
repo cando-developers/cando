@@ -1,5 +1,5 @@
 
-(in-package :kin)
+(in-package :topology)
 
 (defclass conformation ()
   ((aggregate :initarg :aggregate :accessor aggregate)
@@ -12,7 +12,7 @@
          (joint-tree (make-joint-tree)))
     (resize-atmolecules ataggregate 1)
     (multiple-value-bind (molecule monomer-positions)
-        (design:build-molecule oligomer)
+        (topology:build-molecule oligomer)
       (format t "monomer-positions: ~a~%" (alexandria:hash-table-alist monomer-positions))
       (multiple-value-bind (molecule molecule-index)
           (chem:add-matter aggregate molecule)

@@ -42,7 +42,7 @@
            (symbolp plug-name)
            (not (is-coupling-name-p plug-name)))
       (intern (subseq (symbol-name plug-name) 1) :keyword)
-      (error "~s must be a plug-name" plug-name)))
+      plug-name))
 
 (defun in-plug-name (name)
   (unless (is-coupling-name-p name)
@@ -88,6 +88,7 @@
   (multiple-value-bind (source-plug-name target-plug-name)
       (validate-couple oligomer source-mon coupling-or-source-plug-name target-mon target-plug-name)
     (let ((coupling (make-instance 'directional-coupling
+                                   :name (coupling-name coupling-or-source-plug-name)
                                    :source-monomer source-mon
                                    :target-monomer target-mon
                                    :source-plug-name source-plug-name
@@ -240,7 +241,7 @@ This is for looking up parts but if the thing returned is not a part then return
         (out-plug-name (chem:out-plug-name coupling-name)))
     (let ((previous-monomer (loop for part in previous-parts
                                   for name = (current-stereoisomer-name part)
-                                  for topology = (current-topology part) ; lookup-topology name)
+                                  for topology = (get-current-topology part) ; lookup-topology name)
 #|                                  do (progn
                                        (format *debug-io* "do-coupling       part -> ~s~%" part)
                                        (format *debug-io* "  (chem:current-stereoisomer-name part) -> ~s~%" (chem:current-stereoisomer-name part))
@@ -253,7 +254,7 @@ This is for looking up parts but if the thing returned is not a part then return
                                   when (topology:has-plug-named topology out-plug-name)
                                     collect part))
           (next-monomer (loop for part in next-parts
-                              for topology = (current-topology part) ; lookup-topology (chem:monomer-name part))
+                              for topology = (get-current-topology part) ; lookup-topology (chem:monomer-name part))
                               when (topology:has-plug-named topology in-plug-name)
                                 collect part)))
       (when (= (length previous-monomer) 0)
@@ -357,7 +358,7 @@ of out-plugs."
 (defun ensure-one-unique-out-plug-name (other-monomer in-plug-name)
   "Ensure that there is one topology with one out-plug with a name that corresponds to in-plug-name on
    a monomer that this one out-plug will be coupled through"
-  (let* ((topology (current-topology other-monomer))
+  (let* ((topology (get-current-topology other-monomer))
          (out-plug-names (all-out-plug-names-that-match-in-plug-name topology in-plug-name)))
     (format *debug-io* "out-plug-names -> ~s~%" out-plug-names)
     (case (length out-plug-names)
@@ -403,7 +404,7 @@ of out-plugs."
         (progn
           (when verbose (format *debug-io* "Extending oligomer with caps~%"))
           (loop for (monomer . plug-name) in monomers-plugs
-                for topology = (current-topology monomer)
+                for topology = (get-current-topology monomer)
                 for plug = (plug-named topology plug-name)
                 for cap = (gethash (name plug) cap-name-map)
                 do (when verbose (format *debug-io* "Extending monomer ~s  plug ~s~%" monomer plug))
@@ -422,8 +423,7 @@ of out-plugs."
                        (etypecase plug
                          (out-plug
                           (let* ((other-monomer-in-plug-name (in-plug-name (coupling-name plug-name)))
-                                 (other-monomer-topology (current-topology other-monomer)))
-                            
+                                 (other-monomer-topology (get-current-topology other-monomer)))
                             (unless (plug-named other-monomer-topology other-monomer-in-plug-name)
                               (error "While trying to couple monomer ~s with out-plug named ~s we could not find a corresponding in-plug named ~s in the cap monomer ~s"
                                      monomer plug-name other-monomer-in-plug-name other-monomer))

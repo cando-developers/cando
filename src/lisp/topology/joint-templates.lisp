@@ -171,3 +171,56 @@
                      collect topology)))
     (setf (topology:topology-list constitution) tops)
     tops))
+
+
+(defgeneric write-into-joint-tree (joint-template parent-joint atresidue atmolecule-index atresidue-index))
+
+(defmethod write-into-joint-tree ((joint-template t) parent-joint atresidue atmolecule-index atresidue-index)
+  (error "write-into-joint-tree - handle joint-template ~a" joint-template))
+
+
+(defmethod write-into-joint-tree ((joint-template jump-joint-template) parent-joint atresidue atmolecule-index atresidue-index)
+  (let* ((constitution-atoms-index (constitution-atoms-index joint-template))
+         (atom-name (atom-name joint-template))
+         (atomid (list atmolecule-index atresidue-index constitution-atoms-index))
+         (joint (kin:make-jump-joint atomid atom-name)))
+    (put-joint atresidue joint constitution-atoms-index)
+    (when parent-joint (kin:joint/add-child parent-joint joint))
+    joint))
+
+(defmethod write-into-joint-tree ((joint-template complex-bonded-joint-template) parent-joint atresidue atmolecule-index atresidue-index)
+  (let* ((constitution-atoms-index (constitution-atoms-index joint-template))
+         (atom-name (atom-name joint-template))
+         (atomid (list atmolecule-index atresidue-index constitution-atoms-index))
+         (joint (kin:make-complex-bonded-joint atomid atom-name))
+         (input-stub-joints (input-stub-joints joint-template)))
+    (put-joint atresidue joint constitution-atoms-index)
+    (let ((input-stub0-template (aref input-stub-joints 0))
+          (input-stub1-template (aref input-stub-joints 1)))
+      (cond
+        ((null input-stub0-template)
+         ;; Do nothing
+         )
+        ((null input-stub1-template)
+         (let* ((input-stub0-index (constitution-atoms-index input-stub0-template))
+                (input-stub0 (aref (joints atresidue) input-stub0-index)))
+           (kin:set-input-stub-joint1 joint input-stub0)))
+        (t
+         (let* ((input-stub0-index (constitution-atoms-index input-stub0-template))
+                (input-stub0 (aref (joints atresidue) input-stub0-index))
+                (input-stub1-index (constitution-atoms-index input-stub1-template))
+                (input-stub1 (aref (joints atresidue) input-stub1-index)))
+           (kin:set-input-stub-joint1 joint input-stub0)
+           (kin:set-input-stub-joint2 joint input-stub1))))
+      (when parent-joint (kin:joint/add-child parent-joint joint))
+      joint)))
+
+(defmethod write-into-joint-tree ((joint-template bonded-joint-template) parent-joint atresidue atmolecule-index atresidue-index)
+  (let* ((constitution-atoms-index (constitution-atoms-index joint-template))
+         (atom-name (atom-name joint-template))
+         (atomid (list atmolecule-index atresidue-index constitution-atoms-index))
+         (joint (kin:make-bonded-joint atomid atom-name)))
+    (put-joint atresidue joint constitution-atoms-index)
+    (when parent-joint (kin:joint/add-child parent-joint joint))
+    joint))
+

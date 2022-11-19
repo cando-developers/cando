@@ -56,4 +56,16 @@
    #:extract-prepare-topologys
    #:target-monomer
    #:define-cap
+   #:build-molecule
+
+   #:make-joint-tree
+   #:joint-tree
+   #:children
+   #:root
+   #:atom-id-map
+   #:make-conformation
+
+   ;;;
+   #:update-joint-tree-internal-coordinates
+   #:build-all-atom-tree-external-coordinates
    ))

@@ -8,7 +8,6 @@
   :depends-on (#:cando-primop
                #:cando
                #:charges
-               #+(or)#:design
                #:smiles
                #:leap
                #:leap-commands
@@ -18,7 +17,7 @@
                #:cando-build
                #:lparallel
                #:topology
-               #:design)
+               )
   :serial t
   :components ((:file "packages")
                (:file "start-swank")

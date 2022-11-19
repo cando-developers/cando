@@ -41,7 +41,7 @@
 (defclass constitution ()
   ((name :initarg :name :accessor name)
    (constitution-atoms :initarg :constitution-atoms :accessor constitution-atoms)
-   (plugs :initarg :plugs :accessor plugs)
+   (plugs :type hash-table :initarg :plugs :accessor plugs)
    (topology-list :initform nil :initarg :topology-list :accessor topology-list)
    (stereo-information :initarg :stereo-information :accessor stereo-information)))
 
@@ -58,7 +58,7 @@
   ((name :initarg :name :accessor name)
    (constitution :initarg :constitution :accessor constitution)
    (property-list :initform nil :initarg :property-list :accessor property-list)
-   (plugs :initarg :plugs :accessor plugs)
+   (plugs :type hash-table :initarg :plugs :accessor plugs)
    (joint-template :initarg :joint-template :accessor joint-template)
    (stereoisomer-atoms :initform (make-array 4 :adjustable t :fill-pointer 0)
                        :initarg :stereoisomer-atoms :accessor stereoisomer-atoms)
@@ -134,7 +134,8 @@
 
 (defclass monomer ()
   ((id :initarg :id :accessor id)
-   (couplings :initform (make-hash-table)
+   (couplings :type hash-table
+              :initform (make-hash-table)
               :accessor couplings)
    (current-stereoisomer-offset :initform 0 :accessor current-stereoisomer-offset)
    (monomers :initarg :monomers :accessor monomers)))
@@ -164,7 +165,7 @@
   (gethash plug-name (couplings monomer)))
 
 (defclass coupling ()
-  ())
+  ((name :initarg :name :accessor name)))
 
 (defclass directional-coupling (coupling)
   (
@@ -179,17 +180,27 @@
 
 
 (defclass ring-coupling (coupling)
-  (
-   (plug1 :initarg :plug1 :accessor plug1)
+  ((plug1 :initarg :plug1 :accessor plug1)
    (plug2 :initarg :plug2 :accessor plug2)
    (monomer1 :initarg :monomer1 :accessor monomer1)
    (monomer2 :initarg :monomer2 :accessor monomer2)))
+
+
+(defun has-ring-closing-coupling (monomer)
+  (maphash (lambda (plug-name coupling)
+             (declare (ignore plug-name))
+             (when (typep coupling 'ring-coupling)
+               (return-from has-ring-closing-coupling t)))
+           (couplings monomer)))
 
 (defclass oligomer ()
   ((monomers :initform (make-array 16 :adjustable t :fill-pointer 0)
              :initarg :monomers :accessor monomers)
    (couplings :initform (make-array 16 :adjustable t :fill-pointer 0)
               :initarg :couplings :accessor couplings)))
+
+(defun number-of-monomers (oligomer)
+  (length (monomers oligomer)))
 
 (defun add-monomer (oligomer monomer)
   (vector-push-extend monomer (monomers oligomer)))

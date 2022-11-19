@@ -67,8 +67,8 @@
           (unique-ring-couplings nil))
       (loop for index below (length (couplings oligomer))
             for coupling = (elt (couplings oligomer) index)
-            if (typep coupling 'chem:directional-coupling)
-              do (push coupling (gethash (chem:get-source-monomer coupling) monomer-out-couplings))
+            if (typep coupling 'directional-coupling)
+              do (push coupling (gethash (source-monomer coupling) monomer-out-couplings))
             else
               do (pushnew coupling unique-ring-couplings))
       (canonical-sequence-monomer nil root-monomer monomer-out-couplings unique-ring-couplings))))
@@ -85,7 +85,7 @@
                                    monomer-positions)
   (loop for out-coupling in (gethash prev-monomer monomer-out-couplings)
         for next-monomer = (target-monomer out-coupling)
-        for next-topology = (let ((next-top (current-topology next-monomer)))
+        for next-topology = (let ((next-top (get-current-topology next-monomer)))
                               (unless (typep next-top 'topology:topology)
                                 (error "Unexpected object - expected a topology - got ~s" next-top))
                               next-top)
@@ -127,7 +127,7 @@
           else
             do (pushnew coupling ring-couplings)) ; Only add ring coupling when unique
     (let* ((molecule (chem:make-molecule :mol))
-           (root-topology (let ((top (current-topology root-monomer)))
+           (root-topology (let ((top (get-current-topology root-monomer)))
                             (unless (typep top 'topology:topology)
                               (error "Unexpected object - expected a topology - got ~s" top))
                             top))
@@ -156,10 +156,10 @@
       ;; Now close the rings
       (loop for ring-coupling in ring-couplings
             for monomer1 = (monomer1 ring-coupling)
-            for topology1 = (current-topology monomer1)
+            for topology1 = (get-current-topology monomer1)
             for residue1 = (gethash monomer1 monomers-to-residues)
             for monomer2 = (monomer2 ring-coupling)
-            for topology2 = (current-topology monomer2)
+            for topology2 = (get-current-topology monomer2)
             for residue2 = (gethash monomer2 monomers-to-residues)
             for plug1name = (plug1 ring-coupling)
             for plug2name = (plug2 ring-coupling)

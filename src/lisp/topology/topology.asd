@@ -12,5 +12,8 @@
                (:file "joint-templates")
                (:file "define-topology")
                (:file "oligomer")
+               (:file "joint-tree")
+               (:file "fold")
+               (:file "conformation")
                (:file "design")
                (:file "graphviz")))
