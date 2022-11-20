@@ -68,4 +68,5 @@
    ;;;
    #:update-joint-tree-internal-coordinates
    #:build-all-atom-tree-external-coordinates
+   #:define-part
    ))

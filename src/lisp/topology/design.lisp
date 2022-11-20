@@ -174,11 +174,7 @@
 (defun lookup-maybe-part (name)
   "Lookup a named object and return it.
 This is for looking up parts but if the thing returned is not a part then return nil."
-  (let ((maybe-part (cando:lookup-entity name nil)))
-    (if (typep maybe-part 'part)
-        maybe-part
-        nil)))
-
+  (gethash name *parts*))
 
 (defclass subtree ()
   ((name :initarg :name :accessor name)
@@ -188,16 +184,18 @@ This is for looking up parts but if the thing returned is not a part then return
   (make-instance 'subtree :name name :code code))
 
 (defclass part ()
-  ((name :initform :name :accessor name)
-   (tree :initform :tree :accessor tree)))
+  ((name :initarg :name :accessor name)
+   (tree :initarg :tree :accessor tree)))
 
 (defun make-part (name tree)
   (make-instance 'part :name name :tree tree))
 
+(defparameter *parts* (make-hash-table))
+
 (defun define-part (name tree)
   "Create a part and register it by name with leap.core:register-variable."
   (let ((part (make-part name tree)))
-    (cando:register-entity name part)))
+    (setf (gethash name *parts*) part)))
 
 (defun my-add-monomers (oligomer names)
   (let ((monomer (make-instance 'monomer :monomers names)))
@@ -209,7 +207,7 @@ This is for looking up parts but if the thing returned is not a part then return
     (cond
       ((and (symbolp names)
             (setf maybe-part (lookup-maybe-part names)))
-       (values (interpret-subtree oligomer maybe-part labels) nil))
+       (values (interpret-subtree oligomer (tree maybe-part) labels) nil))
       ((symbolp names)
        (my-add-monomers oligomer (list names)))
       ((consp names)
