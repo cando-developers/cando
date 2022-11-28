@@ -134,7 +134,7 @@ void leap_process_arguments(core::CommandLineOptions* options) {
              " -f {file}  Source {file}.\n"
              " -B         Startup using base image and quicklisp for all systems\n");
       exit(0);
-    } else if (arg == "-t") {
+    } else if (arg == "-B") {
       options->_StartupType = core::cloBaseImage;
       printf("Loading base image\n");
     }
