@@ -106,7 +106,7 @@ ObjectSet_sp ObjectSet_O::cartesianProduct(ObjectSet_sp b) {
   ObjectSet_sp nset;
   stringstream sstr;
   nset = ObjectSet_O::create();
-  this->map([&b, &nset, this](T_sp si) {
+  this->map([&nset, this](T_sp si) {
             this->map( [&si,&nset] (T_sp bi) {
                     Cons_sp op = _lisp->create<Cons_O>(si,bi);
                     nset->insert(op);
@@ -124,7 +124,7 @@ ObjectSet_sp ObjectSet_O::cartesianProductWrapped(ObjectSet_sp b, const ObjectSe
   stringstream sstr;
   nset = ObjectSet_O::create();
 
-  this->map([&b, &nset, this, &wrapper](T_sp si) {
+  this->map([&nset, this, &wrapper](T_sp si) {
             this->map( [&si,&nset,&wrapper] (T_sp bi) {
                     T_sp op = wrapper(si,bi);
                     nset->insert(op);

@@ -190,7 +190,6 @@ void	EnergyRigidBodyNonbond_O::dumpTerms()
 CL_DEFMETHOD core::List_sp EnergyRigidBodyNonbond_O::parts_as_list(NVector_sp pos)
 {
   ql::list result;
-  size_t istart = 0;
 #undef	NONBOND_POSITION_RB_SET_PARAMETER
 #define	NONBOND_POSITION_RB_SET_PARAMETER(x)	{}
 #undef	NONBOND_POSITION_RB_SET_POSITION
@@ -198,7 +197,7 @@ CL_DEFMETHOD core::List_sp EnergyRigidBodyNonbond_O::parts_as_list(NVector_sp po
 #undef	NONBOND_POSITION_RB_SET_POINT
 #define	NONBOND_POSITION_RB_SET_POINT(x,ii,of)	{x=ii._Position.of;}
 #pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_NONBONDRBPB_POSITIONS_termDeclares.cc>
 #pragma clang diagnostic pop
   double am, bm, cm, dm, xm, ym, zm;
@@ -246,7 +245,6 @@ output : A complex-vector-float where the transformed points are written.
 )dx")
 CL_DEFMETHOD core::ComplexVector_float_sp EnergyRigidBodyNonbond_O::write_rigid_body_coordinates_to_complex_vector_float(NVector_sp rigid_body_pos, core::Array_sp end_indicesx3, NVector_sp coordinates, core::ComplexVector_float_sp output)
 {
-  size_t istart = 0;
 #undef	NONBOND_POSITION_RB_SET_PARAMETER
 #define	NONBOND_POSITION_RB_SET_PARAMETER(x)	{}
 #undef	NONBOND_POSITION_RB_SET_POSITION
@@ -254,13 +252,13 @@ CL_DEFMETHOD core::ComplexVector_float_sp EnergyRigidBodyNonbond_O::write_rigid_
 #undef	NONBOND_POSITION_RB_SET_POINT
 #define	NONBOND_POSITION_RB_SET_POINT(x,ii,of)	{x=ii.of;}
 #pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_NONBONDRBPB_POSITIONS_termDeclares.cc>
 #pragma clang diagnostic pop
   double am, bm, cm, dm, xm, ym, zm;
   double pxm, pym, pzm;
   int	I1;
-  size_t coordIndex = 0;
+//  size_t coordIndex = 0;
   size_t I1start = 0;
   coordinate_lookup ea1(coordinates); 
   for ( size_t iI1 = 0; iI1<end_indicesx3->length(); ++iI1 ) {
@@ -294,7 +292,6 @@ CL_DEFMETHOD core::ComplexVector_float_sp EnergyRigidBodyNonbond_O::write_rigid_
 
 CL_DEFMETHOD core::ComplexVector_float_sp EnergyRigidBodyNonbond_O::write_nonbond_atom_coordinates_to_complex_vector_float(NVector_sp pos, core::ComplexVector_float_sp parts)
 {
-  size_t istart = 0;
 #undef	NONBOND_POSITION_RB_SET_PARAMETER
 #define	NONBOND_POSITION_RB_SET_PARAMETER(x)	{}
 #undef	NONBOND_POSITION_RB_SET_POSITION
@@ -302,7 +299,7 @@ CL_DEFMETHOD core::ComplexVector_float_sp EnergyRigidBodyNonbond_O::write_nonbon
 #undef	NONBOND_POSITION_RB_SET_POINT
 #define	NONBOND_POSITION_RB_SET_POINT(x,ii,of)	{x=ii._Position.of;}
 #pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_NONBONDRBPB_POSITIONS_termDeclares.cc>
 #pragma clang diagnostic pop
   double am, bm, cm, dm, xm, ym, zm;
@@ -350,7 +347,6 @@ CL_DEFMETHOD core::ComplexVector_float_sp EnergyRigidBodyNonbond_O::write_nonbon
 
 CL_DEFMETHOD core::ComplexVector_sp EnergyRigidBodyNonbond_O::write_nonbond_atoms_to_complex_vector(core::ComplexVector_sp parts)
 {
-  size_t istart = 0;
 #undef	NONBOND_POSITION_RB_SET_PARAMETER
 #define	NONBOND_POSITION_RB_SET_PARAMETER(x)	{}
 #undef	NONBOND_POSITION_RB_SET_POSITION
@@ -358,12 +354,9 @@ CL_DEFMETHOD core::ComplexVector_sp EnergyRigidBodyNonbond_O::write_nonbond_atom
 #undef	NONBOND_POSITION_RB_SET_POINT
 #define	NONBOND_POSITION_RB_SET_POINT(x,ii,of)	{x=ii._Position.of;}
 #pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_NONBONDRBPB_POSITIONS_termDeclares.cc>
 #pragma clang diagnostic pop
-  double am, bm, cm, dm, xm, ym, zm;
-  double pxm, pym, pzm;
-  int	I1;
   size_t I1start = 0;
   for ( size_t iI1 = 0; iI1<this->_RigidBodyEndAtom->length(); ++iI1 ) {
     size_t I1end = (*this->_RigidBodyEndAtom)[iI1];
@@ -404,14 +397,11 @@ double	EnergyRigidBodyNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
 {
   this->_Evaluations++;
   if (this->_CrossTerms.size() == 0 ) this->initializeCrossTerms(false);
-  double vdwScale = this->getVdwScale();
   double electrostaticScale = this->getElectrostaticScale()*ELECTROSTATIC_MODIFIER/this->getDielectricConstant();
   this->_EnergyElectrostatic = 0.0;
   this->_EnergyVdw = 0.0;
   this->_TotalEnergy = 0.0;
   bool	hasForce = force.notnilp();
-  bool	hasHessian = hessian.notnilp();
-  bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
   RigidBodyEnergyFunction_sp rigidBodyEnergyFunction = gc::As<RigidBodyEnergyFunction_sp>(score);
   BoundingBox_sp boundingBox = rigidBodyEnergyFunction->boundingBox();
   if (boundingBox.unboundp()) {
@@ -462,7 +452,7 @@ double	EnergyRigidBodyNonbond_O::evaluateAllComponent( ScoringFunction_sp score,
 	    // arrays so that only one thread updates each element at a time.
   LOG("Nonbond component is enabled" );
 #pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_NONBONDRBPB_termDeclares.cc>
 #pragma clang diagnostic pop
   double dA,dC,dQ1Q2;
@@ -629,7 +619,7 @@ void	EnergyRigidBodyNonbond_O::compareAnalyticalAndNumericalForceAndHessianTermB
   {
     
 #pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_NONBONDRBPB_termDeclares.cc>
 #pragma clang diagnostic pop
     double x1,y1,z1,x2,y2,z2,dA,dC,dQ1Q2;

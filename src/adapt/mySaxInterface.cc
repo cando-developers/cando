@@ -45,10 +45,8 @@ namespace adapt {
 //
 
     string	MySaxHandlerDefault::getAttribute(char* str) {
-	int		iCount;
 	const XML_Char	**pos;
 	string	res;
-	iCount = 0;
 	pos = this->attributes;
 	while (*pos) {
 	    if ( strcmp(*pos,str)==0 ) {

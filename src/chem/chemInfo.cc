@@ -2269,8 +2269,6 @@ bool Root_O::matches_Atom(Root_sp root, chem::Atom_sp atom) {
   
   LOG("%s\natom: %s", this->asSmarts(), _rep_(atom));
   chem::BondList_sp nextBonds;
-  bool matches;
-  matches = false;
   if (this->_Node.notnilp()) {
     CI_LOG(("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__));
     LOG("_Node is notNil - testing");
@@ -2306,8 +2304,6 @@ bool SmartsRoot_O::matches_Atom(Root_sp root, chem::Atom_sp atom) {
   
   LOG("%s\natom: %s", this->asSmarts(), _rep_(atom));
   chem::BondList_sp nextBonds;
-  bool matches;
-  matches = false;
   if (!this->Root_O::matches_Atom(root, atom))
     goto FAIL;
   // SUCCESS:
@@ -2353,8 +2349,6 @@ bool AntechamberRoot_O::matches_Atom(Root_sp root, chem::Atom_sp atom) {
   
   LOG("%s\natom: %s", this->asSmarts(), _rep_(atom));
   chem::BondList_sp nextBonds;
-  bool matches;
-  matches = false;
   if (!this->Base::matches_Atom(root, atom)) {
     goto FAIL;
   }
@@ -2831,7 +2825,6 @@ void ChemInfoGraph_O::buildFromRoot_() {
         core::write_bf_stream(fmt::sprintf("Converting AtomTest to chem-info-graph nodes head: %s\n", _rep_(atomTest)));
       }
       graph->_nodes_to_index->setf_gethash(atomTest, core::make_fixnum(graph->_atomNodes.size()));
-      size_t node_index = graph->_atomNodes.size();
       graph->_atomNodes.push_back(atomTest);
       return true;
     } else if (parentOrNil.nilp() && gc::IsA<Logical_sp>(node)) {
@@ -2840,7 +2833,6 @@ void ChemInfoGraph_O::buildFromRoot_() {
         core::write_bf_stream(fmt::sprintf("Converting logical to chem-info-graph nodes head: %s\n", _rep_(logical)));
       }
       graph->_nodes_to_index->setf_gethash(logical, core::make_fixnum(graph->_atomNodes.size()));
-      size_t node_index = graph->_atomNodes.size();
       graph->_atomNodes.push_back(logical);
       return true;
     } else {
@@ -2854,7 +2846,7 @@ void ChemInfoGraph_O::buildFromRoot_() {
   // This is tricky code
   core::HashTableEq_sp parent_nodes = core::HashTableEq_O::create_default();
   walk_nodes_with_parent(
-      nil<core::T_O>(), pattern->_Node, [&graph, &parent_nodes, &closers](core::T_sp parentOrNil, ChemInfoNode_sp node) {
+      nil<core::T_O>(), pattern->_Node, [&graph, &parent_nodes](core::T_sp parentOrNil, ChemInfoNode_sp node) {
         if (chem__verbose(2)) {
           core::write_bf_stream(fmt::sprintf("Walking pattern parent: %s node: %s\n", _rep_(parentOrNil), _rep_(node)));
         }
@@ -3241,8 +3233,8 @@ public:
           this->_results->vectorPushExtend(core::make_fixnum(get(correspondence_map_1_to_2, vertex1)));
         }
       }
-      core::T_sp bres = core::eval::funcall(this->m_callback, this->_results, core::make_fixnum((*this->_count_callbacks)),
-                                            this->m_graph1, this->m_graph2);
+      core::eval::funcall(this->m_callback, this->_results, core::make_fixnum((*this->_count_callbacks)),
+                          this->m_graph1, this->m_graph2);
     }
     if (this->_count_callbacks != NULL) {
       (*this->_count_callbacks)++;

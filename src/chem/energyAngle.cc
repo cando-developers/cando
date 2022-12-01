@@ -209,9 +209,10 @@ double	_evaluateEnergyOnly_Angle(
 
 
 #pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-but-set-variable"
 #include <cando/chem/energy_functions/_Angle_termDeclares.cc>
-#pragma clang diagnostic pop
+
 #if !USE_EXPLICIT_DECLARES
 	double fx1;
 	double fy1;
@@ -227,7 +228,8 @@ double	_evaluateEnergyOnly_Angle(
     fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
     fx3 = 0.0; fy3 = 0.0; fz3 = 0.0;
 #include <cando/chem/energy_functions/_Angle_termCode.cc>
-
+#pragma clang diagnostic pop
+    
     return Energy;
 }
 
@@ -306,9 +308,9 @@ bool		calcOffDiagonalHessian = true;
 
  {
 #pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-but-set-variable"
 #include	<cando/chem/energy_functions/_Angle_termDeclares.cc>
-#pragma clang diagnostic pop
 	fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
 	fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
 	fx3 = 0.0; fy3 = 0.0; fz3 = 0.0;
@@ -318,6 +320,7 @@ bool		calcOffDiagonalHessian = true;
 		    ai!=this->_Terms.end(); ai++ )
 	{
 #include	<cando/chem/energy_functions/_Angle_termCode.cc>
+#pragma clang diagnostic pop
 	}
     }
 
@@ -378,7 +381,7 @@ double EnergyAngle_O::evaluateAllComponent( ScoringFunction_sp score,
 
   {
 #pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_Angle_termDeclares.cc>
 #pragma clang diagnostic pop
     fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
@@ -501,9 +504,9 @@ bool	calcOffDiagonalHessian = true;
  {
 		
 #pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-but-set-variable"
 #include <cando/chem/energy_functions/_Angle_termDeclares.cc>
-#pragma clang diagnostic pop
 	    fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
 	    fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
 	    fx3 = 0.0; fy3 = 0.0; fz3 = 0.0;
@@ -537,6 +540,7 @@ bool	calcOffDiagonalHessian = true;
 		LOG("z3 = %le" , z3  );
 		int index = i;
 #include <cando/chem/energy_functions/_Angle_debugFiniteDifference.cc>
+#pragma clang diagnostic pop
 	    }
 	}
 
@@ -551,7 +555,6 @@ SYMBOL_EXPORT_SC_(KeywordPkg,angle_deviation);
 core::List_sp	EnergyAngle_O::checkForBeyondThresholdInteractionsWithPosition(chem::NVector_sp pos, double threshold)
 {
   ql::list result;
-  int	fails = 0;
 #if 0
   bool	calcForce = false;
   bool	calcDiagonalHessian = false;
@@ -582,9 +585,9 @@ core::List_sp	EnergyAngle_O::checkForBeyondThresholdInteractionsWithPosition(che
   {
     
 #pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-but-set-variable"
 #include <cando/chem/energy_functions/_Angle_termDeclares.cc>
-#pragma clang diagnostic pop
     fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
     fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
     fx3 = 0.0; fy3 = 0.0; fz3 = 0.0;
@@ -610,6 +613,7 @@ core::List_sp	EnergyAngle_O::checkForBeyondThresholdInteractionsWithPosition(che
     }
   }
   return result.cons();
+#pragma clang diagnostic pop
 }
 
 
@@ -726,9 +730,6 @@ core::List_sp	EnergyAngle_O::lookupAngleTerms(AtomTable_sp atomTable, Atom_sp a1
   if (!tia1.fixnump()) SIMPLE_ERROR(("Could not find %s in energy function") , _rep_(a1));
   if (!tia2.fixnump()) SIMPLE_ERROR(("Could not find %s in energy function") , _rep_(a2));
   if (!tia3.fixnump()) SIMPLE_ERROR(("Could not find %s in energy function") , _rep_(a3));
-  int ia1 = tia1.unsafe_fixnum();
-  int ia2 = tia2.unsafe_fixnum();
-  int ia3 = tia3.unsafe_fixnum();
   for (auto edi=this->_Terms.begin();edi!=this->_Terms.end();edi++) {
     if ((edi->_Atom1==a1 &&
          edi->_Atom2==a2 &&

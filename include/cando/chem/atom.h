@@ -521,23 +521,22 @@ namespace chem {
   Atom_O() :
     _UniqueAtomOrder(nextUniqueAtomOrder()),
     _Alias(nil<core::Symbol_O>()),
-      _Element(element_Undefined),
-      _Hybridization(hybridization_undefined),
-      _Type(nil<core::Symbol_O>()),
-      _Flags(0),
-      _StereochemistryType(undefinedCenter),
-      _Configuration(undefinedConfiguration),
-      _Ionization(0),
-      _Charge(0.0),
-      _VdwRadius(0.0),
-      _CovalentRadius(0.0),
-      _Mask(0),
-      _CopyAtom(unbound<chem::Atom_O>()),
-      _RingMembershipCount(0),
-      _TempInt(0)
+    _Flags(0),
+    _Type(nil<core::Symbol_O>()),
+    _Charge(0.0),
+    _CopyAtom(unbound<chem::Atom_O>()),_TempInt(0),
+    _VdwRadius(0.0),
+    _CovalentRadius(0.0),
+    _StereochemistryType(undefinedCenter),
+    _Configuration(undefinedConfiguration),
+    _Mask(0),
+    _Element(element_Undefined),
+    _Hybridization(hybridization_undefined),
+    _RingMembershipCount(0),
+    _Ionization(0)
 //      moeIndex(0),
 //      moeType(_Nil<core::Symbol_O>())
-      {};
+    {};
     virtual ~Atom_O() {};
   };
 

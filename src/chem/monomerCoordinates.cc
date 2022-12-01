@@ -256,9 +256,9 @@ CL_DEFMETHOD core::List_sp	MonomerCoordinates_O::testExtraction(
     stage->extractCoordinatesFromMatter(aggregate);
     stage->setComplete(true);
     conformationExplorer->appendEntry(entry);
-    core::T_sp problems = core::clasp_make_string_output_stream();
     IMPLEMENT_MEF("The following code catches an exception - figure out how to do it using Conditions");
 #if 0
+    core::T_sp problems = core::clasp_make_string_output_stream();
     TRY()
     {
         this->_defineFromConformationExplorerOrDebug(topology,conformationExplorer,focusMonomer,true,UndefinedUnsignedInt);

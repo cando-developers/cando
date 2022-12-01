@@ -325,8 +325,6 @@ DOCGROUP(cando);
 CL_DEFUN
 NVector_sp chem__apply_transform_to_coordinates(NVector_sp destination, NVector_sp coordinates, const Matrix& transform )
 {
-  Vector3* pos;
-  Vector3* dest;
   size_t len = coordinates->length();
   for ( size_t index = 0; index < len; index+=3) {
 //    printf("%s:%d  coordinates[%lu/%lu] -> %lf %lf %lf\n", __FILE__, __LINE__, index, len, (*coordinates)[index],(*coordinates)[index+1],(*coordinates)[index+2]);
@@ -401,15 +399,11 @@ core::T_mv chem__find_close_contact_in_bounding_box(NVector_sp coord1, size_t le
   double x_rsize = 1.0 / x_size;
   double y_rsize = 1.0 / y_size;
   double z_rsize = 1.0 / z_size;
-  Vector3* pos1 = (Vector3*)&(*coord1)[0];
-  Vector3* pos2 = (Vector3*)&(*coord2)[0];
   size_t min_i1 = 0;
   size_t min_i2 = 0;
   double min_dist_squared = dist_squared_bounding_box(coord1,0,coord2,0,x_size,y_size,z_size,x_rsize,y_rsize,z_rsize);
   for ( size_t i1=0; i1<length1; i1+=3 ) {
-    pos1 = (Vector3*)&(*coord1)[i1];
     for ( size_t i2=0; i2<length2; i2+=3 ) {
-      pos2 = (Vector3*)&(*coord2)[i2];
       double d_squared = dist_squared_bounding_box(coord1,i1,coord2,i2,x_size,y_size,z_size,x_rsize,y_rsize,z_rsize);
       if (d_squared < min_dist_squared) {
         min_dist_squared = d_squared;
@@ -436,11 +430,9 @@ geom::BoundingCuboid_sp chem__nvector_bounding_cuboid(NVector_sp coords, core::T
   geom::BoundingCuboid_sp bcuboid = geom::BoundingCuboid_O::create();
   size_t coord_len = coords->length();
   if (coordinates_length.fixnump()) {
-    if (coordinates_length.unsafe_fixnum()<=coords->length())
-      coord_len = coordinates_length.unsafe_fixnum();
-    else {
+    if (coordinates_length.unsafe_fixnum()>coord_len) {
       SIMPLE_ERROR(("coordinates-length %s is out of bounds - must be less than or equal to %lu")
-                   , _rep_(coordinates_length) , coords->length());
+                   , _rep_(coordinates_length) , coord_len);
     }
   } else if (coordinates_length.notnilp()) {
     SIMPLE_ERROR(("coordinates-length must be NIL or a fixnum - it was %s") , _rep_(coordinates_length));

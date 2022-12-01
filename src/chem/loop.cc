@@ -620,7 +620,6 @@ Matter_sp	Loop::nextHierarchyMatter()
 void	Loop::advanceLoop()
 {
   Matter_sp	retVal;
-  int		goalOnly;
 
   LOG("Loop::next start" );
   if ( this->done ) {
@@ -628,8 +627,6 @@ void	Loop::advanceLoop()
     return;
   }
   LOG("Loop::next running" );
-
-  goalOnly = this->goal & GOALONLY;
 
   LOG("Loop::next running" );
   retVal = this->nextHierarchyMatter();

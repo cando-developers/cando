@@ -81,9 +81,7 @@ CL_DEF_CLASS_METHOD Topology_mv Topology_O::makeTopologyFromResidue(chem::Residu
     SIMPLE_ERROR(("The constitution was nil - you need to pass a constitution"));
   }
   constitution = gc::As<Constitution_sp>(tconstitution);
-  ConstitutionAtoms_sp ca = constitution->getConstitutionAtoms();
   Topology_sp topology = Topology_O::make(topologyName, constitution, nil<core::T_O>() );
-  core::ComplexVector_T_sp vec = core::ComplexVector_T_O::make(residue->numberOfAtoms(),nil<core::T_O>());
   int atomIndex = 0;
   StereoisomerAtoms_sp stereoisomerAtoms = StereoisomerAtoms_O::create(stereoisomerName);
   for ( auto ai = residue->begin_atoms(); ai!=residue->end_atoms(); ++ai, ++atomIndex) {
@@ -145,7 +143,6 @@ CL_DEFMETHOD Residue_sp Topology_O::buildResidueForIsomer(size_t isomer) const
   gctools::Vec0<Atom_sp> atoms;
   atoms.resize(numAtoms);
   res->resizeContents(numAtoms);
-  size_t idx = 0;
   for ( size_t idx=0, idxEnd(numAtoms); idx<idxEnd; ++idx ) {
     StereoisomerAtom_sp ai = (*info)[idx];
     Atom_sp atom = Atom_O::create();
@@ -240,7 +237,6 @@ CL_DEFMETHOD Residue_sp Topology_O::buildResidueForIsoname(Isoname_sp isoname) c
 }
 
 CL_DEFMETHOD Residue_sp Topology_O::buildResidueSingleName() const {
-  core::HashTable_sp cip = core::HashTableEq_O::create_default(); // dummy hash table
   if (this->_StereoisomerAtomProperties.size()==1) {
       return this->buildResidueForIsomer(0);
   }

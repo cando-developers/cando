@@ -378,9 +378,6 @@ CL_DEFUN size_t chem__rigid_body_velocity_verlet_step_limit_displacement(Scoring
   } else if (tfrozen.notnilp()) {
     SIMPLE_ERROR(("frozen must be a simple-bit-vector or NIL"));
   }
-  double delta_tsquared = delta_t*delta_t;
-  double delta_tsquared_div2 = delta_tsquared/2.0;
-  NVector_sp position_dt = NVector_O::create(position->size());
   size_t body_idx = 0;
   size_t body_limited = 0;
   for ( size_t idx = 0; idx<position->size(); idx += 7) {

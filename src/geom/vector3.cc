@@ -347,11 +347,8 @@ CL_DEFUN Vector3 geom__build_using_bond_angle( double distance, const Vector3& v
                                                double angle, const Vector3& va)
 {
   Vector3 vd, vdn, vr;
-  double	ca, sa;
   vd = va-vb;
   vdn = vd.normalized();
-  ca = cos(angle);
-  sa = sin(angle);
   vr = Vector3(vdn.getX()*cos(angle)+vdn.getY()*sin(angle),
                -vdn.getX()*sin(angle)+vdn.getY()*cos(angle), 0.0);
   vr = vr.multiplyByScalar(distance);
@@ -428,7 +425,7 @@ double
 dVectorAbsAngle( const Vector3& vX, const Vector3& vY, const Vector3& vRef )
 {
   Vector3  vT1, vT2, vT;
-  double  dLen, dAngle;
+  double  dAngle;
 
   vT1 = vX.normalized();
   vT2 = vY.normalized();
@@ -465,7 +462,7 @@ Vector3 zvZMatrixCalculatePositionFromAngles( double dAngleA, double dAngleB,
 {
   int             iCount;
   double		dCosA, dSinA;
-  double		dCosB, dSinB;
+  double		dCosB;
   double		dCosC, dSinC;
   double		dCosX, dSinX;
   double		dX, dXNew;
@@ -475,7 +472,7 @@ Vector3 zvZMatrixCalculatePositionFromAngles( double dAngleA, double dAngleB,
   dCosA = cos(dAngleA);
   dSinA = sin(dAngleA);
   dCosB = cos(dAngleB);
-  dSinB = sin(dAngleB);
+
   dCosC = cos(dAngleC);
   dSinC = sin(dAngleC);
 
@@ -687,7 +684,6 @@ DOCGROUP(cando);
 CL_DEFUN void geom__vec_extract_transformed(Vector3& vec, chem::NVector_sp coordinates, size_t index0, const Matrix& transform)
 {
   if ((index0+2)<coordinates->length()) {
-    double xp, yp, zp;
     transform.transform_nvector_point(vec.getX(),vec.getY(),vec.getZ(),coordinates,index0);
     return;
   }

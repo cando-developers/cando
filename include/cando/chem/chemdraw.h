@@ -118,13 +118,13 @@ class CDNode_O : public core::CxxObject_O
 
   CDNode_O( const CDNode_O& ss ); //!< Copy constructor
 
- CDNode_O() : _Atom(nil<core::T_O>())
-    , _BackSpan(nil<core::T_O>())
-    , _NextSpan(nil<core::T_O>())
-    , _AtomProperties(nil<core::T_O>())
-    , _ResidueProperties(nil<core::T_O>())
-    , _MoleculeProperties(nil<core::T_O>())
-  {};
+  CDNode_O() : _AtomProperties(nil<core::T_O>())
+             , _ResidueProperties(nil<core::T_O>())
+             , _MoleculeProperties(nil<core::T_O>())
+             , _Atom(nil<core::T_O>())
+             , _BackSpan(nil<core::T_O>())
+             , _NextSpan(nil<core::T_O>())
+       {};
   virtual ~CDNode_O() {};
 };
 

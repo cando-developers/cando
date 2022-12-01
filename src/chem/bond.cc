@@ -155,7 +155,6 @@ void Bond_O::addYourselfToCopiedAtoms()
 //
 bool	Bond_O::isInterResidueBond(core::HashTable_sp atomToResidue)
 {
-  Atom_sp a1 = this->_Atom1;
   core::T_sp res1 = atomToResidue->gethash(this->_Atom1);
   core::T_sp res2 = atomToResidue->gethash(this->_Atom2);
   return (res1!=res2);

@@ -288,7 +288,8 @@ double	_evaluateEnergyOnly_Dihedral(
 
 
 #pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-but-set-variable"
 #include <cando/chem/energy_functions/_Dihedral_termDeclares.cc>
 #pragma clang diagnostic pop
   fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
@@ -378,10 +379,6 @@ core::List_sp	EnergyDihedral_O::lookupDihedralTerms(AtomTable_sp atomTable, Atom
   if (!tia2.fixnump()) SIMPLE_ERROR(("Could not find %s in energy function") , _rep_(a2));
   if (!tia3.fixnump()) SIMPLE_ERROR(("Could not find %s in energy function") , _rep_(a3));
   if (!tia4.fixnump()) SIMPLE_ERROR(("Could not find %s in energy function") , _rep_(a4));
-  int ia1 = tia1.unsafe_fixnum();
-  int ia2 = tia2.unsafe_fixnum();
-  int ia3 = tia3.unsafe_fixnum();
-  int ia4 = tia4.unsafe_fixnum();
   for (edi=this->_Terms.begin();edi!=this->_Terms.end();edi++) {
     if ((edi->_Atom1==a1 &&
          edi->_Atom2==a2 &&
@@ -442,7 +439,8 @@ void	EnergyDihedral_O::setupHessianPreconditioner(
 #define DIHEDRAL_CALC_OFF_DIAGONAL_HESSIAN
   {
 #pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-but-set-variable"
 #include	<cando/chem/energy_functions/_Dihedral_termDeclares.cc>
 #pragma clang diagnostic pop
     fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
@@ -513,7 +511,7 @@ double	EnergyDihedral_O::evaluateAllComponent( ScoringFunction_sp score,
 #define	DIHEDRAL_OFF_DIAGONAL_HESSIAN_ACCUMULATE OffDiagHessAcc
 
 #pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_Dihedral_termDeclares.cc>
 #pragma clang diagnostic pop
     fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
@@ -654,7 +652,8 @@ void	EnergyDihedral_O::compareAnalyticalAndNumericalForceAndHessianTermByTerm(
   {
     
 #pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-but-set-variable"
 #include <cando/chem/energy_functions/_Dihedral_termDeclares.cc>
 #pragma clang diagnostic pop
     fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;

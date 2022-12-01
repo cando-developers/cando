@@ -189,9 +189,9 @@ double	_evaluateEnergyOnly_Stretch (
 
 
 #pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-variable"
 #pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_Stretch_termDeclares.cc>
 #pragma clang diagnostic pop
 #pragma clang diagnostic pop
@@ -241,7 +241,8 @@ void	EnergyStretch_O::setupHessianPreconditioner(
 
   {
 #pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-but-set-variable"
 #include <cando/chem/energy_functions/_Stretch_termDeclares.cc>
 #pragma clang diagnostic pop
 #if !USE_EXPLICIT_DECLARES
@@ -317,7 +318,7 @@ double EnergyStretch_O::evaluateAllComponent( ScoringFunction_sp score,
 #define	STRETCH_OFF_DIAGONAL_HESSIAN_ACCUMULATE OffDiagHessAcc
 
 #pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_Stretch_termDeclares.cc>
 #pragma clang diagnostic pop
   fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
@@ -393,7 +394,7 @@ double EnergyStretch_O::evaluateAllComponent( ScoringFunction_sp score,
 
 void	EnergyStretch_O::compareAnalyticalAndNumericalForceAndHessianTermByTerm( NVector_sp 	pos)
 {
-  int	fails = 0;
+  int  fails = 0;
   bool	calcForce = true;
   bool	calcDiagonalHessian = true;
   bool	calcOffDiagonalHessian = true;
@@ -418,7 +419,8 @@ void	EnergyStretch_O::compareAnalyticalAndNumericalForceAndHessianTermByTerm( NV
     {
       
 #pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-but-set-variable"
 #include <cando/chem/energy_functions/_Stretch_termDeclares.cc>
 #pragma clang diagnostic pop
       fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
@@ -458,7 +460,6 @@ SYMBOL_EXPORT_SC_(KeywordPkg,force);
 core::List_sp	EnergyStretch_O::checkForBeyondThresholdInteractionsWithPosition(NVector_sp pos, double threshold)
 {
   ql::list result;
-  int	fails = 0;
   bool calcForce = true;
 //	bool	calcForce = false;
 //	bool	calcDiagonalHessian = false;
@@ -483,7 +484,8 @@ core::List_sp	EnergyStretch_O::checkForBeyondThresholdInteractionsWithPosition(N
   {
     
 #pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-but-set-variable"
 #include <cando/chem/energy_functions/_Stretch_termDeclares.cc>
 #pragma clang diagnostic pop
     fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
@@ -692,8 +694,6 @@ core::List_sp	EnergyStretch_O::lookupStretchTerms(AtomTable_sp atomTable, Atom_s
   core::T_sp tia2 = atomTable->_AtomTableIndices->gethash(a2);
   if (!tia1.fixnump()) SIMPLE_ERROR(("Could not find %s in energy function") , _rep_(a1));
   if (!tia2.fixnump()) SIMPLE_ERROR(("Could not find %s in energy function") , _rep_(a2));
-  int ia1 = tia1.unsafe_fixnum();
-  int ia2 = tia2.unsafe_fixnum();
   for (auto edi=this->_Terms.begin();edi!=this->_Terms.end();edi++) {
     if ((edi->_Atom1==a1 &&
          edi->_Atom2==a2)

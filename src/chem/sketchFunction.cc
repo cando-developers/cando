@@ -728,9 +728,7 @@ void	SketchFunction_O::loadCoordinatesIntoVector(NVector_sp pos)
 
 void    SketchFunction_O::saveCoordinatesFromVector(NVector_sp pos)
 {
-  int                             ci;
   double                          x,y,z;
-  gctools::Vec0<EnergyAtom>::iterator    ai;
   Vector3                         v;
   core::T_sp tsize = core::eval::funcall(_sym_node_table_size,this->_NodeTable);
   ASSERT(tsize.fixnump());
@@ -823,8 +821,6 @@ CL_DEFUN void chem__SketchFunction_velocity_verlet_step(SketchFunction_sp sketch
     SIMPLE_ERROR(("frozen must be a simple-bit-vector or NIL"));
   }
     
-  double delta_tsquared = delta_t*delta_t;
-  double delta_tsquared_div2 = delta_tsquared/2.0;
   size_t atom_idx = 0;
   for ( size_t idx = 0; idx<position->size(); idx += 3) {
     if (!frozen || frozen->testBit(idx+0)==0) {

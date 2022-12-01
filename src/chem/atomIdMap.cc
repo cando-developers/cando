@@ -138,7 +138,6 @@ CL_DEFMETHOD void AtomIdMap_O::resizeResidue(int mol, int res, int numAtoms)
     core::ComplexVector_T_sp residues = gc::As<core::ComplexVector_T_sp>(this->_AtomIdMap->rowMajorAref(mol));
     if (res<residues->length()) {
       core::ComplexVector_T_sp atoms = gc::As<core::ComplexVector_T_sp>(residues->rowMajorAref(res));
-      size_t oldNumAtoms = atoms->length();
       atoms->resize(numAtoms);
       return;
     }

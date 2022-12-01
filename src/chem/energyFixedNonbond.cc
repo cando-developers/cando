@@ -85,7 +85,7 @@ double	_evaluateEnergyOnly_FixedNonbond(
 #undef	FNONBOND_CALC_FORCE	// Don't calculate FORCE or HESSIAN
 
 #pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_FixedNonbond_termDeclares.cc>
 #pragma clang diagnostic pop
 #include <cando/chem/energy_functions/_FixedNonbond_termCode.cc>
@@ -305,7 +305,8 @@ double EnergyFixedNonbondRestraint_O::evaluateAllComponent( ScoringFunction_sp s
     {
       LOG("FixedNonbond component is enabled" );
 #pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-but-set-variable"
 #include <cando/chem/energy_functions/_FixedNonbond_termDeclares.cc>
 #pragma clang diagnostic pop
       double x1,y1,z1,xf,yf,zf, dQ1Q2;
@@ -432,7 +433,7 @@ bool	calcOffDiagonalHessian = true;
  {
 		
 #pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_FixedNonbond_termDeclares.cc>
 #pragma clang diagnostic pop
 	    double x1,y1,z1,x2,y2,z2,dA,dC,dQ1Q2;
@@ -485,7 +486,7 @@ int	fails = 0;
 
     { 
 #pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_FixedNonbond_termDeclares.cc>
 #pragma clang diagnostic pop
 	double x1,y1,z1,xf,yf,zf,dQ1Q2;

@@ -104,7 +104,7 @@ It stores the atom name, element, properties and a vector of bonds in the form o
     virtual bool isVirtualAtom() { return false;};
 	/*! Append a ConstitutionBond_sp to our list of bonds */
     void addConstitutionBond(ConstitutionBond_sp cb) {this->_Bonds.push_back(cb);};
-    ConstitutionAtom_O(MatterName atomName, Element element, core::T_sp atomType, size_t index, StereochemistryType stype, core::List_sp properties ) : _AtomName(atomName), _Element(element), _AtomType(atomType), _Index(index), _StereochemistryType(stype), _Properties(properties) {};
+    ConstitutionAtom_O(MatterName atomName, Element element, core::T_sp atomType, size_t index, StereochemistryType stype, core::List_sp properties ) : _AtomName(atomName),  _Index(index), _Element(element), _AtomType(atomType), _StereochemistryType(stype), _Properties(properties) {};
     ConstitutionAtom_O() : _AtomType(nil<core::T_O>()) {};
     virtual Atom_sp buildAtom() const;
   };

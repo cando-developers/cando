@@ -57,8 +57,6 @@ This is an open source license for the CANDO software from Temple University, bu
   if ((deltasquared)>this->_NonbondCutoffSquared) goto DONE;
 
 //#define DEBUG_NONBOND_TERM 1
-#define LOG_ENERGY(x)
-//#define LOG_ENERGY core::write_bf_stream
 
 namespace chem
 {
@@ -119,7 +117,8 @@ double	_evaluateEnergyOnly_PeriodicBoundaryConditionsNonbond(ScoringFunction_sp 
 #undef	NONBOND_CALC_FORCE	// Don't calculate FORCE or HESSIAN
 
 #pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-but-set-variable"
 #include <cando/chem/energy_functions/_Nonbond_termDeclares.cc>
 #pragma clang diagnostic pop
 #include <cando/chem/energy_functions/_Nonbond_termCode.cc>
@@ -163,9 +162,6 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateTerms(ScoringFunction_sp
   double x_width = energyFunction->boundingBox()->get_x_width();
   double y_width = energyFunction->boundingBox()->get_y_width();
   double z_width = energyFunction->boundingBox()->get_z_width();
-    double half_x_size = x_width*0.5;
-  double half_y_size = y_width*0.5;
-  double half_z_size = z_width*0.5;
 
 #define NONBOND_CALC_FORCE
 #define NONBOND_CALC_DIAGONAL_HESSIAN
@@ -195,8 +191,9 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateTerms(ScoringFunction_sp
     {
       LOG("Nonbond component is enabled" );
 #pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
-
+#pragma clang diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-but-set-variable"
+      
 #include <cando/chem/energy_functions/_Nonbond_termDeclares.cc>
 
 #pragma clang diagnostic pop
@@ -298,7 +295,6 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateUsingExcludedAtoms(Scori
   }
   core::SimpleVector_int32_t_sp numberOfExcludedAtoms = this->_NumberOfExcludedAtomIndices;
   core::SimpleVector_int32_t_sp excludedAtomIndices = this->_ExcludedAtomIndices;
-  double vdwScale = this->getVdwScale();
   double electrostaticScale = this->getElectrostaticScale()*ELECTROSTATIC_MODIFIER/this->getDielectricConstant();
 //  printf("%s:%d electrostaticcharge %lf\n", __FILE__, __LINE__, electrostaticScale );
   bool	hasForce = force.notnilp();
@@ -311,9 +307,6 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateUsingExcludedAtoms(Scori
   double x_width = energyFunction->boundingBox()->get_x_width();
   double y_width = energyFunction->boundingBox()->get_y_width();
   double z_width = energyFunction->boundingBox()->get_z_width();
-  double half_x_size = x_width*0.5;
-  double half_y_size = y_width*0.5;
-  double half_z_size = z_width*0.5;
   
 #define NONBOND_CALC_FORCE
 #define NONBOND_CALC_DIAGONAL_HESSIAN
@@ -338,11 +331,12 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::evaluateUsingExcludedAtoms(Scori
   // arrays so that only one thread updates each element at a time.
   LOG("Nonbond component is enabled" );
 #pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-but-set-variable"
 #include <cando/chem/energy_functions/_Nonbond_termDeclares.cc>
 #pragma clang diagnostic pop
   // printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
-  double x1,y1,z1,x2,y2,z2,dA,dC,dQ1Q2,dA_old,dC_old,dQ1Q2_old;
+  double x1,y1,z1,x2,y2,z2,dA,dC,dQ1Q2;
   int	I1, I2;
   int i = 0;
   int endIndex = pos->length()/3;
@@ -498,9 +492,6 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::compareAnalyticalAndNumericalFor
   double x_width = energyFunction->boundingBox()->get_x_width();
   double y_width = energyFunction->boundingBox()->get_y_width();
   double z_width = energyFunction->boundingBox()->get_z_width();
-  double half_x_size = x_width*0.5;
-  double half_y_size = y_width*0.5;
-  double half_z_size = z_width*0.5;
   
 
 //
@@ -532,7 +523,8 @@ void	EnergyPeriodicBoundaryConditionsNonbond_O::compareAnalyticalAndNumericalFor
   {
     
 #pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-but-set-variable"
 #include <cando/chem/energy_functions/_Nonbond_termDeclares.cc>
 #pragma clang diagnostic pop
     double x1,y1,z1,x2,y2,z2,dA,dC,dQ1Q2;
@@ -565,9 +557,6 @@ core::List_sp	EnergyPeriodicBoundaryConditionsNonbond_O::checkForBeyondThreshold
   double x_width = energyFunction->boundingBox()->get_x_width();
   double y_width = energyFunction->boundingBox()->get_y_width();
   double z_width = energyFunction->boundingBox()->get_z_width();
-  double half_x_size = x_width*0.5;
-  double half_y_size = y_width*0.5;
-  double half_z_size = z_width*0.5;
   ql::list result;
   bool calcForce = true;
 //  printf("%s:%d:%s   number of entries pos -> %lu\n", __FILE__, __LINE__, __FUNCTION__, pos->length()/3);
@@ -578,8 +567,7 @@ core::List_sp	EnergyPeriodicBoundaryConditionsNonbond_O::checkForBeyondThreshold
   }
   core::SimpleVector_int32_t_sp numberOfExcludedAtoms = this->_NumberOfExcludedAtomIndices;
   core::SimpleVector_int32_t_sp excludedAtomIndices = this->_ExcludedAtomIndices;
-  double vdwScale = this->getVdwScale();
-  double electrostaticScale = this->getElectrostaticScale()*ELECTROSTATIC_MODIFIER/this->getDielectricConstant();
+//  double electrostaticScale = this->getElectrostaticScale()*ELECTROSTATIC_MODIFIER/this->getDielectricConstant();
 //  printf("%s:%d electrostaticcharge %lf\n", __FILE__, __LINE__, electrostaticScale );
 #define NONBOND_CALC_FORCE
 #undef  NONBOND_CALC_DIAGONAL_HESSIAN
@@ -605,11 +593,12 @@ core::List_sp	EnergyPeriodicBoundaryConditionsNonbond_O::checkForBeyondThreshold
 	    // arrays so that only one thread updates each element at a time.
   LOG("Nonbond component is enabled" );
 #pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-but-set-variable"
 #include <cando/chem/energy_functions/_Nonbond_termDeclares.cc>
 #pragma clang diagnostic pop
   // printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
-  double x1,y1,z1,x2,y2,z2,dA,dC,dQ1Q2,dA_old,dC_old,dQ1Q2_old;
+  double x1,y1,z1,x2,y2,z2,dA,dC,dQ1Q2;
   int	I1, I2;
   int i = 0;
   int endIndex = pos->length()/3;
@@ -629,7 +618,7 @@ core::List_sp	EnergyPeriodicBoundaryConditionsNonbond_O::checkForBeyondThreshold
     bool has_excluded_atoms = ((*excludedAtomIndices)[excludedAtomIndex] >= 0);
     int numberOfExcludedAtomsRemaining = numberOfExcludedAtoms->operator[](index1);
     double charge11 = (*this->_charge_vector)[index1];
-    double electrostatic_scaled_charge11 = charge11*electrostaticScale;
+//    double electrostatic_scaled_charge11 = charge11*electrostaticScale;
     for ( int index2 = index1+1, index2_end(endIndex); index2 < index2_end; ++index2 ) {
       LOG("    --- top of inner loop   numberOfExcludedAtomsRemaining -> %d    index2 -> %d\n" , numberOfExcludedAtomsRemaining , index2 );
       int maybe_excluded_atom = (*excludedAtomIndices)[excludedAtomIndex];

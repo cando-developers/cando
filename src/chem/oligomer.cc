@@ -178,7 +178,6 @@ CL_NAME(CHEM:OLIGOMER/COUPLINGS-AS-LIST);
 CL_DEFMETHOD core::List_sp Oligomer_O::couplingsAsList()
 {
   ql::list result;
-  core::List_sp cons = nil<core::T_O>();
   gctools::Vec0<Coupling_sp>::iterator	mi;
   for ( mi=this->_Couplings.begin(); mi!=this->_Couplings.end(); mi++ )
   {
@@ -807,12 +806,9 @@ Bignum				numSeq;
 CL_DEFMETHOD bool Oligomer_O::incrementSequence()
 {
     gctools::Vec0<Monomer_sp>::iterator	mi;
-long unsigned int numSeq;
-    numSeq = 1;
     for ( mi=this->_Monomers.begin(); mi!=this->_Monomers.end(); mi++ )
     {
         if ( (*mi)->incrementMonomerIndex() ) return true;
-        numSeq *= (*mi)->numberOfStereoisomers();
     }
     return false;
 }

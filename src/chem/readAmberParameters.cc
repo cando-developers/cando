@@ -522,7 +522,6 @@ string ReadAmberParameters_O::parseNonbondLabelKindNB(core::T_sp fin)
 SYMBOL_EXPORT_SC_(KeywordPkg,end);
 void ReadAmberParameters_O::parseNonbondDb(core::T_sp fin, FFNonbondDb_sp ffNonbondDb)
 {
-  bool done = false;
   while ( 1 ) {
     core::T_sp tline = core::cl__read_line(fin,nil<T_O>(),nil<T_O>());
     if (tline.nilp()) break;
@@ -723,7 +722,6 @@ ForceField_sp ReadAmberParameters_O::parseAmberFormattedForceField(core::T_sp fi
 ForceField_sp ReadAmberParameters_O::parseFrcModFile(core::T_sp fin, core::T_sp system) {
   auto  ff = gctools::GC<ForceField_O>::allocate_with_default_constructor();
   auto  nonbondDb = gctools::GC<FFNonbondDb_O>::allocate_with_default_constructor();
-  int lastSegment = 0;
   bool readMasses = false;
   bool readNonbond = false;
   core::T_mv mv_title = core::cl__read_line(fin,nil<core::T_O>());
@@ -737,26 +735,20 @@ ForceField_sp ReadAmberParameters_O::parseFrcModFile(core::T_sp fin, core::T_sp 
     LOG("Read line(%s)" , line  );
     if ( line.size()>=4 && line.substr(0,4) == "MASS") {
       nonbondDb = this->parseMasses(fin,nonbondDb);
-      lastSegment = 1;
       readMasses = true;
     } else if ( line.size()>=4 && line.substr(0,4) == "BOND") {
       ff->setFFStretchDb(this->parseStretchDb(fin));
-      lastSegment = 2;
     } else if ( line.size()>=4 && line.substr(0,4) == "ANGL") {
       ff->setFFAngleDb(this->parseAngleDb(fin));
-      lastSegment = 3;
     } else if ( line.size()>=4 && line.substr(0,4) == "DIHE") {
       ff->setFFPtorDb(this->parsePtorDb(fin,system));
-      lastSegment = 4;
     } else if ( line.size()>=4 && line.substr(0,4) == "IMPR") {
       ff->setFFItorDb(this->parseItorDb(fin));
-      lastSegment = 5;
     } else if ( line.size()>=4 && line.substr(0,4) == "HBON") {
       SIMPLE_WARN("Skipping HBON FrcMod term");
     } else if ( line.size()>=4 && line.substr(0,4) == "NONB") {
       this->parseNonbondDb(fin,nonbondDb);
       readNonbond = true;
-      lastSegment = 7;
     } else {
       if (line.size()>0) {
         SIMPLE_WARN("Ignoring %s in FrcMod", line );

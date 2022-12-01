@@ -61,8 +61,6 @@ double EnergyPointToLineRestraint_O::evaluateAllComponent( ScoringFunction_sp sc
 {
   this->_Evaluations++;
   bool	hasForce = force.notnilp();
-  bool	hasHessian = hessian.notnilp();
-  bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
 //
 // Copy from implementAmberFunction::evaluateAll
 //

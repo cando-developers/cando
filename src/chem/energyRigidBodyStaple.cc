@@ -87,9 +87,9 @@ double	_evaluateEnergyOnly_STAPLE (double ak,
 
 
 #pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-variable"
 #pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-variable"
 #include <cando/energy-functions/_STAPLE_termDeclares.cc>
 #pragma clang diagnostic pop
 #pragma clang diagnostic pop
@@ -116,10 +116,6 @@ void	EnergyRigidBodyStaple_O::setupHessianPreconditioner(
                                                             AbstractLargeSquareMatrix_sp m )
 {
   bool		calcForce = true;
-  bool		calcDiagonalHessian = true;
-  bool		calcOffDiagonalHessian = true;
-  double        ks;
-  size_t        rba, rbb;
   double        pxk, pyk, pzk;
   double        pxl, pyl, pzl;
   double        ak, bk, ck, dk, xk, yk, zk;
@@ -148,7 +144,8 @@ void	EnergyRigidBodyStaple_O::setupHessianPreconditioner(
 
   {
 #pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-but-set-variable"
 #include <cando/energy-functions/_STAPLE_termDeclares.cc>
 #pragma clang diagnostic pop
     //    double x1,y1,z1,x2,y2,z2,kxb,r0;
@@ -186,10 +183,7 @@ double EnergyRigidBodyStaple_O::evaluateAllComponent( ScoringFunction_sp score,
   ANN(hdvec);
   ANN(dvec);
   bool	hasForce = force.notnilp();
-  bool	hasHessian = hessian.notnilp();
-  bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
   double        ks, r0;
-  size_t        rba, rbb;
   double        pxk, pyk, pzk;
   double        pxl, pyl, pzl;
   double        ak, bk, ck, dk, xk, yk, zk;
@@ -215,7 +209,7 @@ double EnergyRigidBodyStaple_O::evaluateAllComponent( ScoringFunction_sp score,
 
   { 
 #pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-variable"
 #include <cando/energy-functions/_STAPLE_termDeclares.cc>
 #pragma clang diagnostic pop
     int I1, I2,i;
@@ -334,9 +328,11 @@ void EnergyRigidBodyStaple_O::addTerm(const EnergyRigidBodyStaple& term)
 
 
 CL_DEFMETHOD core::List_sp EnergyRigidBodyStaple_O::parts_as_list(NVector_sp 	pos) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-but-set-variable"
   ql::list result;
   double        ks, r0;
-  size_t        rba, rbb;
   double        pxk, pyk, pzk;
   double        pxl, pyl, pzl;
   double        ak, bk, ck, dk, xk, yk, zk;
@@ -349,8 +345,6 @@ CL_DEFMETHOD core::List_sp EnergyRigidBodyStaple_O::parts_as_list(NVector_sp 	po
 #undef	STAPLE_POSITION_SET_POSITION
 #define	STAPLE_POSITION_SET_POSITION(x,ii,of)	{x = pos->getElement(ii+of);}
 
-#pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/energy-functions/_STAPLE_POSITIONS_termDeclares.cc>
 #pragma clang diagnostic pop
   int i;

@@ -107,7 +107,6 @@ gctools::SmallOrderedSet<Atom_sp>::iterator		ai;
 CL_DEFMETHOD void	ConformationCollectionEntry_O::extractCoordinatesFromMatter(Matter_sp matter)
 {
 ConformationCollection_sp	sl;
-vector<Vector3>::iterator	ci;
 #ifdef	DEBUG_ConformationCollectionEntry
     this->_Status->addMessage("extractCoordinatesFromMatter");
 #endif
@@ -293,7 +292,6 @@ Matter_sp			matter;
 ConformationCollection_O::entryIterator	si;
 ConformationCollectionEntry_sp	entry;
 geom::SimpleVectorCoordinate_sp		superposeCoords;
-geom::SimpleVectorCoordinate_O::iterator	ci;
 frames = geom::FrameList_O::create();
     matter = this->getMatter();
     for ( si=this->begin_Entries(); si!=this->end_Entries(); si++ )

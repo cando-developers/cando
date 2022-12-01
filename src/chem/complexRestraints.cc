@@ -289,12 +289,12 @@ void	RestrainedExoCyclicAtom_O::archiveBase(core::ArchiveP node)
 	SIMPLE_ERROR(("In residue(%s) the atom with name(%s) is not exo-cyclic to a six-membered ring") , residue->description() , _rep_(this->_ExoCyclicAtomName) );
     }
     ChemInfoMatch_sp match = gc::As<ChemInfoMatch_sp>(values.second(match_mv.number_of_values()));
-    Atom_sp a1 = match->tag(core::make_fixnum(1));
-    Atom_sp a2 = match->tag(core::make_fixnum(2));
-    Atom_sp a3 = match->tag(core::make_fixnum(3));
-    Atom_sp a4 = match->tag(core::make_fixnum(4));
-    Atom_sp a5 = match->tag(core::make_fixnum(5));
-    Atom_sp a6 = match->tag(core::make_fixnum(6));
+    match->tag(core::make_fixnum(1));
+    match->tag(core::make_fixnum(2));
+    match->tag(core::make_fixnum(3));
+    match->tag(core::make_fixnum(4));
+    match->tag(core::make_fixnum(5));
+    match->tag(core::make_fixnum(6));
     FIX_ME(); // is the above correct?
 }
 

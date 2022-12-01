@@ -280,7 +280,6 @@ CL_LISPIFY_NAME("extractCoordinatesFromMatter");
 CL_DEFMETHOD     void	ConformationExplorerEntryStage_O::extractCoordinatesFromMatter(Matter_sp matter)
     {
 	ConformationExplorer_sp	sl;
-        geom::SimpleVectorCoordinate_O::iterator	ci;
 	LOG("About to get ConformationExplorer" );
 	sl = this->getConformationExplorer();
 	LOG("Got ConformationExplorer" );
@@ -853,8 +852,6 @@ CL_DEFMETHOD     ConformationExplorerEntry_sp	ConformationExplorer_O::createEntr
 bool	ConformationExplorer_O::hasStageNameInAllEntries(core::T_sp stageKey)
     {
 	entryIterator		ei;
-	bool			inAll;
-	inAll = false;
 	for ( ei=this->begin_Entries(); ei!=this->end_Entries(); ei++ )
 	{
 	    if ( !(*ei)->hasEntryStageWithName(stageKey) )
