@@ -54,7 +54,7 @@ jobs:
     - name: Build Clasp (koga/Ubuntu)
       if: matrix.os == 'ubuntu-22.04'
       run: |
-        ./koga --no-clang-cpp --ldlibs=-ldl --extensions=cando,seqan-clasp --skip-sync=cando
+        ./koga --no-clang-cpp --ldlibs=-ldl --extensions=cando,seqan-clasp --skip-sync=cando --broken-stdlib
 
     - name: Build Clasp (koga/MacOS)
       if: matrix.os == 'macos-latest'
