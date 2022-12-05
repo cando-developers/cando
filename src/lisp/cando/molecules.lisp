@@ -192,7 +192,7 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
   (chem:set-steepest-descent-tolerance minimizer sd-tolerance)
   (chem:set-conjugate-gradient-tolerance minimizer cg-tolerance)
   (chem:set-truncated-newton-tolerance minimizer tn-tolerance))
-  
+
 (defun optimize-structure (matter &key active-atoms (turn-off-nonbond t))
   (let* ((energy-function (chem:make-energy-function :matter matter
                                                      :assign-types t
@@ -210,7 +210,6 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
     (chem:set-option energy-function 'chem:nonbond-term t)
     (finish-output t)
     (minimize-no-fail min)
-    (format t "Done.~%")
     (finish-output t))
   matter)
 

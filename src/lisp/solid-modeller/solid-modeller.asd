@@ -11,5 +11,6 @@
   :components
   ((:file "packages")
    (:file "modeller")
+   (:file "molecule-modeller")
    ))
 

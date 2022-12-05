@@ -78,7 +78,15 @@ Stub ComplexBondedJoint_O::getInputStub() const
   }
   if (this->inputStubJoint2().unboundp()) {
     if (gc::IsA<JumpJoint_sp>(this->parent())) {
-      IMPLEMENT_MEF(("Handle inputStubJoint1() is defined but parent() is the JumpJoint"));
+      Vector3 origin = this->parent()->getPosition();
+      Vector3 axisX = Vector3(1.0,0.0,0.0);
+      Vector3 axisY = Vector3(0.0,1.0,0.0);
+      Vector3 axisZ = Vector3(0.0,0.0,1.0);
+      Vector3 originPX = origin.add(axisX);
+      Vector3 originPY = origin.add(axisY);
+      Vector3 originPZ = origin.add(axisZ);
+      stub.fromFourPoints(origin, originPX, originPY, originPZ);
+      return stub;
     }
     stub.fromCenterAndRotation( this->inputStubJoint0()->getPosition(), gc::As<JumpJoint_sp>(this->inputStubJoint1())->transform().flipXY());
 //    stub.fromCenterAndRotation( this->inputStubJoint0()->getPosition(), gc::As<JumpJoint_sp>(this->inputStubJoint1())->transform());
@@ -142,56 +150,13 @@ void ComplexBondedJoint_O::_updateInternalCoord()
       KIN_LOG(("_Phi = %lf\n") , (this->_Phi/0.0174533));
       return;
     }
+  } else if (!this->inputStubJoint2().unboundp()) {
+    Joint_sp jB = this->inputStubJoint2();
+    Vector3 B = jB->position();
+//    this->_Theta = PREPARE_ANGLE(geom::calculateAngle(this->_Position,C,B)); // Must be from incoming direction
+    this->_Theta = geom::calculateAngle(this->_Position,C,B); // Must be from incoming direction
+    KIN_LOG(("_Theta = %lf\n") , (this->_Theta/0.0174533));
   }
-  
-#if 0
-#if 1
-  internalCoordinatesFromPointAndCoordinateSystem(this->getPosition(),this->getInputStub()._Transform,
-                                                  this->_Distance, this->_Theta, this->_Phi );
-#else
-  KIN_LOG(("gc::IsA<JumpJoint_sp>(jC)   jC = %s\n") , _rep_(jC));
-  Stub stub = jC->getStub();
-  KIN_LOG(("stub = \n%s\n") , stub._Transform.asString());
-  Vector3 x = stub._Transform.colX();
-  Vector3 y = stub._Transform.colY();
-  Vector3 z = stub._Transform.colZ();
-  KIN_LOG(("x = %s\n") , x.asString());
-  KIN_LOG(("y = %s\n") , y.asString());
-  KIN_LOG(("z = %s\n") , z.asString());
-  Vector3 D = this->getPosition();
-  Vector3 CD = D - C;
-  double lengthCD = CD.length();
-  if (lengthCD<SMALL_NUMBER) SIMPLE_ERROR(("About to divide by zero"));
-  Vector3 d = CD*(1.0/lengthCD);
-  KIN_LOG(("d = %s\n") , d.asString());
-  double dx = d.dotProduct(x);
-  double dy = d.dotProduct(y);
-  double dz = d.dotProduct(z);
-  KIN_LOG(("dx = %lf  dy = %lf  dz = %lf\n") , dx , dy , dz );
-  this->_Phi = geom::geom__planeVectorAngle(dy,dz);
-  KIN_LOG(("  dy = %lf   dz = %lf\n") , dy , dz );
-  KIN_LOG(("_Phi = %lf deg\n") , (this->_Phi/0.0174533));
-  Vector3 dox(1.0,0.0,0.0);
-  Vector3 dop(dx,dy,dz);
-  KIN_LOG(("dop = %s\n") , dop.asString());
-  KIN_LOG(("dop.dotProduct(dox) = %lf\n") , dop.dotProduct(dox));
-  if (dop.dotProduct(dox) > (1.0-SMALL_NUMBER)) {
-    this->_Theta = 0.0;
-    return;
-  }
-  Vector3 doz = dox.crossProduct(dop);
-  doz = doz.normalized();
-  KIN_LOG(("doz = %s\n") , doz.asString());
-  Vector3 doy = doz.crossProduct(dox);
-  KIN_LOG(("doy = %s\n") , doy.asString());
-  double eox = dop.dotProduct(dox);
-  double eoy = dop.dotProduct(doy);
-  KIN_LOG(("eox = %lf  eoy = %lf\n") , eox , eoy );
-//  double eoz = dop.dotProduct(doz); // Must be 0.0
-  this->_Theta = geom::geom__planeVectorAngle(eox,eoy);
-  KIN_LOG(("    this->_Theta = %lf deg\n") , (this->_Theta/0.0174533));
-#endif
-  #endif
 }
 
 };

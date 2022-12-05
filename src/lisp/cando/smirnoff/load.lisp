@@ -236,7 +236,19 @@
 (defun parse-improper-torsion-force (root)
   (setf (improper-torsion-force *smirnoff*)
         (parse-torsion-force root "Improper" 'improper-term 'improper-torsion-force)))
-  
+
+(defun parse-rmin_half (attrs)
+  (let ((rmin_half (gethash "rmin_half" attrs))
+        (sigma (gethash "sigma" attrs)))
+    (cond
+      (rmin_half
+       (nanometer-length (parse-quantity rmin_half)))
+      (sigma
+       (let* ((sigma-nm (nanometer-length (parse-quantity sigma)))
+              (rmin_half-nm (* (/ sigma-nm 2.0) (expt 2.0 (/ 1.0 6.0)))))
+         rmin_half-nm))
+      (t (error "Need either rmin_half or sigma for vdw parameter")))))
+
 (defun parse-vdw-force (root)
   (flet ((safe-gethash (key ht)
            (let ((val (gethash key ht)))
@@ -269,14 +281,7 @@
                (smirks (safe-gethash "smirks" attrs))
                (id (safe-gethash "id" attrs))
                (epsilon (canonical-kj/mol (parse-quantity (safe-gethash "epsilon" attrs))))
-               (rmin-half
-                 (nanometer-length
-                  (parse-quantity
-                   (cond ((gethash "rmin_half" attrs))
-                         ((gethash "sigma" attrs)
-                          ;; FIXME: handle sigma
-                          (error "Handle sigma"))
-                         (t (error "Neither rmin_half or sigma was provided"))))))
+               (rmin-half (parse-rmin_half attrs))
                (type (or (gethash smirks *smirnoff-types*)
                          (let ((type (next-smirnoff-type-symbol)))
                            (setf (gethash smirks *smirnoff-types*) type)

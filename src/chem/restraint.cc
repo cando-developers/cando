@@ -282,6 +282,20 @@ void	RestraintAngle_O::serialize(serialize::SNode node)
 #endif
 
 
+CL_DEFUN RestraintDihedral_sp make_RestraintDihedral(Atom_sp atom1, Atom_sp atom2, Atom_sp atom3, Atom_sp atom4,
+                                                     double minDegrees, double maxDegrees, double weight)
+{
+  RestraintDihedral_sp rest  = gctools::GC<RestraintDihedral_O>::allocate();
+  rest->_A = atom1;
+  rest->_B = atom2;
+  rest->_C = atom3;
+  rest->_D = atom4;
+  rest->_MinDegrees = minDegrees;
+  rest->_MaxDegrees = maxDegrees;
+  rest->_Weight = weight;
+  return rest;
+}
+
 RestraintDihedral_O::RestraintDihedral_O(const RestraintDihedral_O& old) : Restraint_O(old)
 {
   this->_A = old._A;

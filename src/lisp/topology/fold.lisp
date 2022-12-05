@@ -62,7 +62,7 @@
          (atmolecule (make-instance 'atmolecule :molecule molecule))
          (residue-index (gethash root-monomer monomer-positions))
          (residue (chem:content-at molecule residue-index))
-         (topology (get-current-topology root-monomer))
+         (topology (monomer-topology root-monomer oligomer))
          (root-atresidue (atresidue-factory residue ring-closing-monomer-map root-monomer topology)))
     (adjust-array (atresidues atmolecule) (number-of-monomers oligomer))
     (put-atresidue atmolecule root-atresidue residue-index)
@@ -74,6 +74,7 @@
                                 nil
                                 nil
                                 root-monomer
+                                oligomer
                                 monomer-positions
                                 molecule-index
                                 residue-index
@@ -118,6 +119,7 @@
                                    parent-atresidue
                                    coupling
                                    monomer
+                                   oligomer
                                    monomer-positions
                                    atmolecule-index
                                    atresidue-index
@@ -128,8 +130,8 @@
   (when coupling
     (setf (parent-plug-name atresidue) (target-plug-name coupling)))
   (let ((outgoing-plug-names-to-joint-map (fill-atresidue joint-tree atresidue parent-joint atmolecule-index atresidue-index))
-        (current-topology (get-current-topology monomer)))
-    (setf (stereoisomer-name atresidue) (current-stereoisomer-name monomer)
+        (current-topology (monomer-topology monomer oligomer)))
+    (setf (stereoisomer-name atresidue) (current-stereoisomer-name monomer oligomer)
           (topology atresidue) current-topology
           (conformation-index atresidue) 0)
     (maphash (lambda (plug-name coupling)
@@ -138,7 +140,7 @@
                  (let ((directional-coupling coupling))
                    (when (eq (source-monomer directional-coupling) monomer)
                      (let* ((other-monomer (target-monomer directional-coupling))
-                            (other-topology (get-current-topology other-monomer))
+                            (other-topology (monomer-topology other-monomer oligomer))
                             (other-residue-index (gethash other-monomer monomer-positions))
                             (other-residue (chem:content-at molecule other-residue-index))
                             (other-atresidue (atresidue-factory other-residue
@@ -157,6 +159,7 @@
                                                      atresidue
                                                      directional-coupling
                                                      other-monomer
+                                                     oligomer
                                                      monomer-positions
                                                      atmolecule-index
                                                      other-residue-index

@@ -45,11 +45,38 @@
     (bp:node* (:bond :kind (or bond :single-or-aromatic) :bounds (cons start end))
       (1 :atom atom))))
 
+(defrule bond-smarts
+    (or language.smiles.parser:bond #\@))
+
+(defrule ring-close-label-one-digit
+    (or #\0 #\1 #\2 #\3 #\4 #\5 #\6 #\7 #\8 #\9)
+  (:function parse-integer))
+
+(defrule ring-close-label-two-digit
+    (and #\% ring-close-label-one-digit ring-close-label-one-digit)
+  (:function rest)
+  (:destructure (msd lsd)
+    (+ (* msd 10) lsd)))
+
+(defrule ring-close-label
+    (or ring-close-label-one-digit ring-close-label-two-digit))
+
+(defrule open-bond-label-pattern
+    (and (? bond-smarts) ring-close-label)
+  (:destructure (bond-type label &bounds start end)
+                (declare (ignore start end))
+                (if label
+                    (list label bond-type)
+                    nil)))
+
 (defrule atom-pattern ; TODO duplicated form SMILES?
-    (and acyclic-atom-pattern (? parser.common-rules:integer-literal/decimal))
-  (:destructure (atom label &bounds start end)
-    (if label
-        (progn
+    (and acyclic-atom-pattern (? open-bond-label-pattern)) ; was (? parser.common-rules:integer-literal/decimal))
+  (:destructure (atom label-bond-type &bounds start end)
+    (if label-bond-type
+        (let ((bond-type (second label-bond-type))
+              (label (first label-bond-type)))
+          (when bond-type
+            (warn "What do I do with <bond-type><label> bond-type ~s flag - look at https://github.com/openforcefield/openforcefield-forcebalance/issues/15" bond-type))
 ;;          (format t "atom-pattern got label |~s| of type |~s|~%" label (class-of label))
           (bp:node* (:labeled :label label :bounds (cons start end))
                                                (1 :atom atom)))
@@ -86,7 +113,7 @@
            (symbol (let ((*package* (find-package :keyword)))
                      (read-from-string label))))
       (bp:node* (:atom :lisp-function symbol
-                                                  :bounds (cons start end))))))
+                       :bounds (cons start end))))))
 
 ;;; SMARTS 4.1 Atomic Primitives
 

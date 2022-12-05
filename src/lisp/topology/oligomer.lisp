@@ -1,5 +1,7 @@
 (in-package :topology)
 
+(defun safe-atom-with-name (residue name)
+  (chem:atom-with-name residue name))
 
 (defun build-residue-for-monomer-name (topology monomer-name)
   (let* ((residue (chem:make-residue monomer-name))
@@ -29,10 +31,20 @@
           for atom-name = (atom-name stereoisomer-atom)
           for atm = (gethash atom-name named-atoms)
           for stereochemistry-type = :chiral
-          do (format t "atm ~a stereoisomer-atom -> ~s~%" atm stereoisomer-atom)
           do (chem:set-stereochemistry-type atm stereochemistry-type)
           do (chem:set-configuration atm (configuration stereoisomer-atom)))
-    (warn "Set chiral restraints from here: https://github.com/cando-developers/cando/blob/main/src/chem/topology.cc#L191")
+    (loop for restraint in (restraints topology)
+          for rr = (etypecase restraint
+                     (dihedral-restraint
+                      (let* ((atom1 (safe-atom-with-name residue (atom1-name restraint)))
+                             (atom2 (safe-atom-with-name residue (atom2-name restraint)))
+                             (atom3 (safe-atom-with-name residue (atom3-name restraint)))
+                             (atom4 (safe-atom-with-name residue (atom4-name restraint))))
+                        (chem:make-restraint-dihedral atom1 atom2 atom3 atom4
+                                                      (dihedral-min-degrees restraint)
+                                                      (dihedral-max-degrees restraint)
+                                                      (weight restraint)))))
+          do (chem:add-restraint residue rr))
     residue))
 
 (defun root-monomer (oligomer)
@@ -41,14 +53,15 @@
         unless (has-in-coupling-p monomer)
           do (return-from root-monomer monomer)))
 
-(defun canonical-sequence-monomer (coupling root monomer-out-couplings unique-ring-couplings)
+(defun canonical-sequence-monomer (oligomer coupling root monomer-out-couplings unique-ring-couplings)
   (let* ((outs (gethash root monomer-out-couplings))
-         (result (list* (current-stereoisomer-name root)
+         (result (list* (current-stereoisomer-name root oligomer)
                         (when outs
                           (let ((sorted-outs (sort outs #'string< :key (lambda (coup) (string (name coup))))))
                             (loop for sorted-out in sorted-outs
                                   for target-monomer = (target-monomer sorted-out)
                                   collect (canonical-sequence-monomer
+                                           oligomer
                                            sorted-out
                                            target-monomer
                                            monomer-out-couplings
@@ -75,7 +88,8 @@
 
 
 
-(defun recursively-build-molecule (prev-monomer
+(defun recursively-build-molecule (oligomer
+                                   prev-monomer
                                    prev-topology
                                    prev-residue
                                    monomer-out-couplings
@@ -85,11 +99,11 @@
                                    monomer-positions)
   (loop for out-coupling in (gethash prev-monomer monomer-out-couplings)
         for next-monomer = (target-monomer out-coupling)
-        for next-topology = (let ((next-top (get-current-topology next-monomer)))
+        for next-topology = (let ((next-top (monomer-topology next-monomer oligomer)))
                               (unless (typep next-top 'topology:topology)
                                 (error "Unexpected object - expected a topology - got ~s" next-top))
                               next-top)
-        for next-stereoisomer-name = (current-stereoisomer-name next-monomer)
+        for next-stereoisomer-name = (current-stereoisomer-name next-monomer oligomer)
         for next-residue = (progn
                              (build-residue-for-monomer-name next-topology next-stereoisomer-name))
         do (setf (gethash next-monomer monomers-to-residues) next-residue
@@ -104,7 +118,8 @@
                                   next-topology
                                   next-residue
                                   (target-plug-name out-coupling))
-           (recursively-build-molecule next-monomer
+           (recursively-build-molecule oligomer
+                                       next-monomer
                                        next-topology
                                        next-residue
                                        monomer-out-couplings
@@ -112,6 +127,12 @@
                                        monomers-to-residues
                                        monomers-to-topologys
                                        monomer-positions)))
+
+
+(defparameter *default-molecule-force-field-name* :smirnoff)
+
+(defun set-default-molecule-force-field-name (name)
+  (setf *default-molecule-force-field-name* name))
 
 (defun build-molecule (oligomer)
   (let ((root-monomer (root-monomer oligomer))
@@ -126,12 +147,14 @@
             do (push coupling (gethash (source-monomer coupling) monomer-out-couplings))
           else
             do (pushnew coupling ring-couplings)) ; Only add ring coupling when unique
-    (let* ((molecule (chem:make-molecule :mol))
-           (root-topology (let ((top (get-current-topology root-monomer)))
+    (let* ((molecule (let ((mol (chem:make-molecule :mol)))
+                       (chem:setf-force-field-name mol *default-molecule-force-field-name*)
+                       mol))
+           (root-topology (let ((top (monomer-topology root-monomer oligomer)))
                             (unless (typep top 'topology:topology)
                               (error "Unexpected object - expected a topology - got ~s" top))
                             top))
-           (stereoisomer-name (current-stereoisomer-name root-monomer))
+           (stereoisomer-name (current-stereoisomer-name root-monomer oligomer))
            (root-residue (progn
                            (build-residue-for-monomer-name root-topology stereoisomer-name))))
       (setf (gethash root-monomer monomers-to-residues) root-residue
@@ -145,7 +168,8 @@
           (declare (ignore next-residue-index))
           (chem:resize-contents molecule number-of-residues)
           (chem:put-matter molecule monomer-position root-residue))
-        (recursively-build-molecule root-monomer
+        (recursively-build-molecule oligomer
+                                    root-monomer
                                     root-topology
                                     root-residue
                                     monomer-out-couplings
@@ -156,10 +180,10 @@
       ;; Now close the rings
       (loop for ring-coupling in ring-couplings
             for monomer1 = (monomer1 ring-coupling)
-            for topology1 = (get-current-topology monomer1)
+            for topology1 = (monomer-topology monomer1 oligomer)
             for residue1 = (gethash monomer1 monomers-to-residues)
             for monomer2 = (monomer2 ring-coupling)
-            for topology2 = (get-current-topology monomer2)
+            for topology2 = (monomer-topology monomer2 oligomer)
             for residue2 = (gethash monomer2 monomers-to-residues)
             for plug1name = (plug1 ring-coupling)
             for plug2name = (plug2 ring-coupling)

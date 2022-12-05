@@ -108,31 +108,40 @@ Create topology instances using a graph described using an s-expression.
   (intern (symbol-name name) :keyword))
 
 (defun parse-atom (atm graph)
-    (cond
-      ((symbolp atm)
-       (let* ((keyword-atm (ensure-keyword atm))
-             (seen-node (gethash keyword-atm (nodes graph))))
-         (if seen-node
-             (values seen-node t)
-             (let ((node (node-from-symbol-entry keyword-atm graph)))
-               (setf (gethash keyword-atm (nodes graph)) node)
-               node))))
-      ((consp atm)
-       (let* ((keyword-atm (ensure-keyword (car atm)))
-              (element (if (cadr atm)
-                           (ensure-keyword (cadr atm))
-                           (chem:element-from-atom-name-string (symbol-name atm))))
-              (property-list (cddr atm))
-              (node (progn
-                      (when (bond-symbol keyword-atm)
-                        (error "Don't create atoms with name ~a" keyword-atm))
-                      (make-instance 'atom-node :name keyword-atm
-                                                :element element
-                                                :property-list property-list
-                                                :constitution-atom-index (prog1 (next-atom-index graph) (incf (next-atom-index graph)))))))
-         (setf (gethash keyword-atm (nodes graph)) node)
-         node))
-      (t (error "Illegal atm ~s" atm))))
+  (cond
+    ((symbolp atm)
+     (let* ((keyword-atm (ensure-keyword atm))
+            (seen-node (gethash keyword-atm (nodes graph))))
+       (if seen-node
+           (values seen-node t)
+           (let ((node (node-from-symbol-entry keyword-atm graph)))
+             (setf (gethash keyword-atm (nodes graph)) node)
+             node))))
+    ((consp atm)
+     (let* ((keyword-atm (ensure-keyword (car atm)))
+            (element (if (cadr atm)
+                         (ensure-keyword (cadr atm))
+                         (chem:element-from-atom-name-string (symbol-name atm))))
+            (property-list (let ((pl (cddr atm)))
+                             (unless (and (evenp (length pl))
+                                          (loop named keywords
+                                                for (a b) on pl by #'cddr
+                                                unless (keywordp a)
+                                                  do (return-from keywords nil)
+                                                finally (return-from keywords t))
+                                          t)
+                               (error "Atom sexp ~s should end with a property list" atm))
+                             pl))
+            (node (progn
+                    (when (bond-symbol keyword-atm)
+                      (error "Don't create atoms with name ~a" keyword-atm))
+                    (make-instance 'atom-node :name keyword-atm
+                                              :element element
+                                              :property-list property-list
+                                              :constitution-atom-index (prog1 (next-atom-index graph) (incf (next-atom-index graph)))))))
+       (setf (gethash keyword-atm (nodes graph)) node)
+       node))
+    (t (error "Illegal atm ~s" atm))))
 
 (defun bond-symbol (name)
   (when (symbolp name)
@@ -330,7 +339,28 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
                    :plugs plugs
                    :stereo-information stereo-information)))
 
-(defun topologies-from-graph (graph)
+(defparameter *topology-groups* (make-hash-table))
+
+(defun parse-restraints (restraints)
+  (loop for restraint-batch in restraints
+        for kind = (car restraint-batch)
+        for data = (cdr restraint-batch)
+        append (cond
+                 ((eq kind :dihedral-restraints)
+                  (loop for restraint in data
+                        collect (destructuring-bind (atom1 atom2 atom3 atom4 min-deg max-deg weight)
+                                    restraint
+                                  (make-instance 'dihedral-restraint
+                                                 :atom1-name (intern (string atom1) :keyword)
+                                                 :atom2-name (intern (string atom2) :keyword)
+                                                 :atom3-name (intern (string atom3) :keyword)
+                                                 :atom4-name (intern (string atom4) :keyword)
+                                                 :dihedral-min-degrees min-deg
+                                                 :dihedral-max-degrees max-deg
+                                                 :weight weight))))
+                 (t (error "Add support for restraint ~a" kind)))))
+
+(defun topologies-from-graph (graph group-names restraints)
   (let* ((constitution (topology:constitution-from-graph graph))
          (plugs (topology:plugs constitution))
          (stereo-information (topology:stereo-information constitution))
@@ -343,21 +373,32 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
                                                    :constitution constitution
                                                    :plugs plugs
                                                    :joint-template joint-template
-                                                   :stereoisomer-atoms configurations)
+                                                   :stereoisomer-atoms configurations
+                                                   :restraints (parse-restraints restraints))
+                     do (loop for group-name in (list* name group-names)
+                              do (pushnew name (gethash group-name *topology-groups* nil)))
                      do (push topology (topology:topology-list constitution))
-                     do (format t "stereoisomer ~a ~s~%" name configurations)
                      do (setf (topology:property-list topology) (list* :joint-template joint-template (topology:property-list topology)))
                      do (cando:register-topology topology name)
                      collect topology)))
     (setf (topology:topology-list constitution) tops)
     tops))
 
+(defun do-define-topology (name sexp &key restraints)
+  (when restraints
+    (format t "restraints = ~a~%" restraints))
+  (let ((graph (interpret (if (consp name)
+                              (first name)
+                              name)
+                          sexp))
+        (group-names (if (consp name)
+                         name
+                         (list name))))
+    (topologies-from-graph graph group-names restraints)))
 
-(defun do-define-topology (name sexp)
-  (let ((graph (interpret name sexp)))
-    (topologies-from-graph graph)))
 
-
-(defmacro define-topology (name sexp)
-  `(do-define-topology ',name ',sexp))
+(defmacro define-topology (name sexp &key restraints)
+  (if restraints
+      `(do-define-topology ',name ',sexp :restraints ',restraints)
+      `(do-define-topology ',name ',sexp)))
 

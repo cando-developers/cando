@@ -21,11 +21,11 @@
                (declare (ignore bo-out0))
                (chem:bond-to in-atom out-atom bo-in0)))))
 
-(defun is-out-plug-name-p (name)
+(defun out-plug-name-p (name)
   (when (and name (symbolp name))
     (char= #\+ (elt (symbol-name name) 0))))
 
-(defun is-in-plug-name-p (name)
+(defun in-plug-name-p (name)
   (when (and name (symbolp name))
     (char= #\- (elt (symbol-name name) 0))))
 
@@ -71,10 +71,10 @@
            (setf source-plug-name (out-plug-name coupling-or-source-plug-name)
                  target-plug-name (in-plug-name coupling-or-source-plug-name))
            (progn
-             (unless (is-out-plug-name-p coupling-or-source-plug-name)
+             (unless (out-plug-name-p coupling-or-source-plug-name)
                (error "coupling-or-source-plug-name must be a source-plug-name - it is a ~a" coupling-or-source-plug-name))
              (setf source-plug-name coupling-or-source-plug-name)
-             (unless (is-in-plug-name-p target-plug-name)
+             (unless (in-plug-name-p target-plug-name)
                (error "target-plug-name must be a in-plug-name - it is a ~a" target-plug-name)))))
       (t (error "coupling-or-source-plug-name must be a cons or a symbol - it is ~a" coupling-or-source-plug-name)))
     (let ((found-in (position source-mon (monomers oligomer)))
@@ -171,10 +171,10 @@
           do (cando:register-topology topology))
     foldamer))
 
-(defun lookup-maybe-part (name)
+(defun lookup-maybe-part (name parts)
   "Lookup a named object and return it.
 This is for looking up parts but if the thing returned is not a part then return nil."
-  (gethash name *parts*))
+  (gethash name parts))
 
 (defclass subtree ()
   ((name :initarg :name :accessor name)
@@ -202,11 +202,11 @@ This is for looking up parts but if the thing returned is not a part then return
     (vector-push-extend monomer (monomers oligomer))
     (values (list monomer) nil)))
 
-(defun translate-part (oligomer names labels)
+(defun translate-part (oligomer names labels &key (parts *parts*))
   (let (maybe-part)
     (cond
       ((and (symbolp names)
-            (setf maybe-part (lookup-maybe-part names)))
+            (setf maybe-part (lookup-maybe-part names parts)))
        (values (interpret-subtree oligomer (tree maybe-part) labels) nil))
       ((symbolp names)
        (my-add-monomers oligomer (list names)))
@@ -216,7 +216,7 @@ This is for looking up parts but if the thing returned is not a part then return
            (my-add-monomers oligomer names)))
       (t (error "Handle ~a" names)))))
 
-(defun interpret-part (oligomer part-info labels)
+(defun interpret-part (oligomer part-info labels &key (parts *parts*))
   (destructuring-bind (names &key label)
       (cond
         ((and (consp part-info) (symbolp (first part-info)) (string= (first part-info) :cycle))
@@ -226,35 +226,24 @@ This is for looking up parts but if the thing returned is not a part then return
         ((symbolp part-info)
          (list part-info)))
     (multiple-value-bind (new-parts ringp)
-        (translate-part oligomer names labels)
+        (translate-part oligomer names labels :parts parts)
       (when label
         (loop for new-part in new-parts
               do (push new-part (gethash label labels))))
       (values new-parts ringp))))
+
+(defun parts-with-plugs (parts plug-name)
+  (loop for part in parts
+        when (monomer-topologys-all-have-plug-named part plug-name)
+          collect part))
 
 (defun do-coupling (oligomer coupling-name ring-info previous-parts next-parts)
   (unless next-parts
     (error "There are no next parts to add to ~a" previous-parts))
   (let ((in-plug-name (chem:in-plug-name coupling-name))
         (out-plug-name (chem:out-plug-name coupling-name)))
-    (let ((previous-monomer (loop for part in previous-parts
-                                  for name = (current-stereoisomer-name part)
-                                  for topology = (get-current-topology part) ; lookup-topology name)
-#|                                  do (progn
-                                       (format *debug-io* "do-coupling       part -> ~s~%" part)
-                                       (format *debug-io* "  (chem:current-stereoisomer-name part) -> ~s~%" (chem:current-stereoisomer-name part))
-                                       (format *debug-io* "      (type-of part) -> ~s~%" (type-of part))
-                                       (format *debug-io* "  name -> ~s~%" name)
-                                       (format *debug-io* "  (type-of name) -> ~s~%" (type-of name))
-                                       (format *debug-io* "              topology -> ~s~%" topology)
-                                       (format *debug-io* "         out-plug-name -> ~s~%" out-plug-name))
-|#
-                                  when (topology:has-plug-named topology out-plug-name)
-                                    collect part))
-          (next-monomer (loop for part in next-parts
-                              for topology = (get-current-topology part) ; lookup-topology (chem:monomer-name part))
-                              when (topology:has-plug-named topology in-plug-name)
-                                collect part)))
+    (let ((previous-monomer (parts-with-plugs previous-parts out-plug-name))
+          (next-monomer (parts-with-plugs next-parts in-plug-name)))
       (when (= (length previous-monomer) 0)
         (error "There is no monomer found with the out-plug-name ~a in the parts ~a" out-plug-name previous-parts))
       (unless (= (length previous-monomer) 1)
@@ -277,30 +266,34 @@ This is for looking up parts but if the thing returned is not a part then return
                                               (first next-monomer)
                                               plug2name))))))
 
-(defun interpret-subtree (oligomer subtree labels)
+(defun interpret-subtree (oligomer subtree labels &key (parts *parts*))
   (let* ((root-monomer-info (pop subtree))
-         (previous-parts (interpret-part oligomer root-monomer-info labels))
+         (previous-parts (interpret-part oligomer root-monomer-info labels :parts parts))
          (accumulated-parts previous-parts))
     (loop
       (when (null subtree) (return accumulated-parts))
       (let ((info (pop subtree)))
         (if (consp info)
-            (let* ((coupling (first info)) ; interpret a branch
-                   (node-info (cdr info)))
-              (multiple-value-bind (new-parts ringp)
-                  (interpret-part oligomer node-info labels)
-                (setf accumulated-parts (append accumulated-parts new-parts))
-                (do-coupling oligomer coupling ringp previous-parts new-parts)))
-            (let* ((coupling info)      ; Interpret a chain
-                   (node-info (pop subtree)))
-              (multiple-value-bind (new-parts ringp)
-                  (interpret-part oligomer node-info labels)
-                (setf accumulated-parts (append accumulated-parts new-parts))
-                (do-coupling oligomer coupling ringp previous-parts new-parts)
-                (setf previous-parts new-parts))))))))
+            (progn
+              (format *debug-io* "interpret-subtree info: ~s~%" info)
+              (let* ((coupling (first info)) ; interpret a branch
+                     (node-info (cdr info)))
+                (multiple-value-bind (new-parts ringp)
+                    (interpret-part oligomer node-info labels :parts parts)
+                  (setf accumulated-parts (append accumulated-parts new-parts))
+                  (do-coupling oligomer coupling ringp previous-parts new-parts))))
+            (progn
+              (format *debug-io* "interpret-subtree info: ~s~%" info)
+              (let* ((coupling info)    ; Interpret a chain
+                     (node-info (pop subtree)))
+                (multiple-value-bind (new-parts ringp)
+                    (interpret-part oligomer node-info labels :parts parts)
+                  (setf accumulated-parts (append accumulated-parts new-parts))
+                  (do-coupling oligomer coupling ringp previous-parts new-parts)
+                  (setf previous-parts new-parts)))))))))
 
-(defun make-oligomer (tree)
-  "Make an oligomer from a description in the **tree**.
+(defun make-oligomer-space (foldamer tree &key (parts *parts*))
+  "Make an oligomer-space from a description in the **tree**.
 The tree is a nested list of lists that look like 
 (component coupling component coupling component ... ).
 It starts with the name of a topology or a design:part.
@@ -308,16 +301,17 @@ The component can be a name of a single topology, it can be a design:part,
 or it can 
 
 Examples:
-(make-oligomer '(:ccap :default :ala :default :ala :default :ser :default :ncap))
-(make-oligomer '((:lego3 :label :first)
+(make-oligomer-space '(:ccap :default :ala :default :ala :default :ser :default :ncap))
+(make-oligomer-space '((:lego3 :label :first)
                  :default :lego3
                  :default :lego3
                  :default (cycle :first)))
 "
-  (let* ((oligomer (make-instance 'oligomer))
+  (let* ((oligomer-space (make-instance 'oligomer-space
+                                        :foldamer foldamer))
          (labels (make-hash-table)))
-    (interpret-subtree oligomer tree labels)
-    oligomer))
+    (interpret-subtree oligomer-space tree labels :parts parts)
+    oligomer-space))
 
 (defun classify-topologys (topology-hash-table)
   (let ((origins (make-hash-table))
@@ -356,7 +350,7 @@ of out-plugs."
 (defun ensure-one-unique-out-plug-name (other-monomer in-plug-name)
   "Ensure that there is one topology with one out-plug with a name that corresponds to in-plug-name on
    a monomer that this one out-plug will be coupled through"
-  (let* ((topology (get-current-topology other-monomer))
+  (let* ((topology (monomer-topology other-monomer))
          (out-plug-names (all-out-plug-names-that-match-in-plug-name topology in-plug-name)))
     (format *debug-io* "out-plug-names -> ~s~%" out-plug-names)
     (case (length out-plug-names)
@@ -368,19 +362,19 @@ of out-plugs."
        (error "There are multiple out-plugs ~s in ~s that match the in-plug-name ~s"
               out-plug-names other-monomer in-plug-name)))))
 
-(defun find-unsatisfied-monomer-plug-pairs (oligomer)
+(defun find-unsatisfied-monomer-plug-pairs (oligomer-space)
   (let ((monomer-plug-work-list (make-hash-table :test #'equal)))
-    (loop for monomer-index below (length (monomers oligomer))
-          for monomer = (elt (monomers oligomer) monomer-index)
-          for topology = (get-current-topology monomer)
+    (loop for monomer-index below (length (monomers oligomer-space))
+          for monomer = (elt (monomers oligomer-space) monomer-index)
+          for topology = (monomer-topology monomer)
           for plugs = (plugs-as-list topology)
           do (loop for plug in plugs
                    for plug-name = (name plug)
                    when (or (typep plug 'in-plug)
                             (typep plug 'out-plug))
                      do (setf (gethash (cons monomer plug-name) monomer-plug-work-list) t)))
-    (loop for coupling-index below (length (couplings oligomer))
-          for coupling = (elt (couplings oligomer) coupling-index)
+    (loop for coupling-index below (length (couplings oligomer-space))
+          for coupling = (elt (couplings oligomer-space) coupling-index)
           when (typep coupling 'directional-coupling)
             do (setf (gethash (cons (source-monomer coupling)
                                     (source-plug-name coupling))
@@ -395,14 +389,14 @@ of out-plugs."
                monomer-plug-work-list)
       result)))
 
-(defun one-round-extend-oligomer-with-caps (oligomer cap-name-map topology-map &key (verbose t))
-  (let ((monomers-plugs (find-unsatisfied-monomer-plug-pairs oligomer)))
+(defun one-round-extend-oligomer-space-with-caps (oligomer-space cap-name-map topology-map &key (verbose t))
+  (let ((monomers-plugs (find-unsatisfied-monomer-plug-pairs oligomer-space)))
     (when verbose (format *debug-io* "monomers-plugs: ~%~a~%" monomers-plugs))
     (if monomers-plugs
         (progn
-          (when verbose (format *debug-io* "Extending oligomer with caps~%"))
+          (when verbose (format *debug-io* "Extending oligomer-space with caps~%"))
           (loop for (monomer . plug-name) in monomers-plugs
-                for topology = (get-current-topology monomer)
+                for topology = (monomer-topology monomer)
                 for plug = (plug-named topology plug-name)
                 for cap = (gethash (name plug) cap-name-map)
                 do (when verbose (format *debug-io* "Extending monomer ~s  plug ~s~%" monomer plug))
@@ -417,21 +411,21 @@ of out-plugs."
                      (let ((other-monomer (make-instance 'monomer
                                                          :monomers (list (name other-topology)))))
                        (when verbose (format *debug-io* "Adding new monomer ~s~%" other-monomer))
-                       (add-monomer oligomer other-monomer)
+                       (add-monomer oligomer-space other-monomer)
                        (etypecase plug
                          (out-plug
                           (let* ((other-monomer-in-plug-name (in-plug-name (coupling-name plug-name)))
-                                 (other-monomer-topology (get-current-topology other-monomer)))
+                                 (other-monomer-topology (monomer-topology other-monomer)))
                             (unless (plug-named other-monomer-topology other-monomer-in-plug-name)
                               (error "While trying to couple monomer ~s with out-plug named ~s we could not find a corresponding in-plug named ~s in the cap monomer ~s"
                                      monomer plug-name other-monomer-in-plug-name other-monomer))
                             (when verbose (format *debug-io* "Coupling to out-coupling ~s ~s ~s ~s~%" monomer plug-name other-monomer other-monomer-in-plug-name))
-                            (couple oligomer monomer plug-name other-monomer other-monomer-in-plug-name)))
+                            (couple oligomer-space monomer plug-name other-monomer other-monomer-in-plug-name)))
                          (in-plug
                           (when verbose (format *debug-io* "Coupling monomer ~s with in coupling~%" other-monomer))
                           (let ((other-monomer-out-plug-name (ensure-one-unique-out-plug-name other-monomer plug-name)))
                             (when verbose (format *debug-io* "Coupling to in-coupling ~s ~s ~s ~s~%" other-monomer other-monomer-out-plug-name monomer plug-name))
-                            (couple oligomer other-monomer other-monomer-out-plug-name monomer plug-name)))
+                            (couple oligomer-space other-monomer other-monomer-out-plug-name monomer plug-name)))
                          ))))
           t)
         nil)))
@@ -465,23 +459,23 @@ of out-plugs."
       joints)))
 
 
-(defun build-one-training-oligomer (focus-topologys-in-list cap-name-map topology-map &key test)
-  "Build a training oligomer with a list of topologys in a focus-residue and then repeatedly
+(defun build-one-training-oligomer-space (focus-topologys-in-list cap-name-map topology-map &key test)
+  "Build a training oligomer-space with a list of topologys in a focus-residue and then repeatedly
 add cap monomers until no more cap monomers are needed."
-  (let ((oligomer (make-instance 'oligomer))
+  (let ((oligomer-space (make-instance 'oligomer-space))
         (focus-monomer (make-instance 'monomer :monomers (mapcar #'name focus-topologys-in-list))))
     (format *debug-io* "focus-monomer: ~a~%" focus-monomer)
-    (add-monomer oligomer focus-monomer)
+    (add-monomer oligomer-space focus-monomer)
     ;; Now repeatedly cap the focus monomer until it's finished.
     (unless test
       (loop for step from 0
-            while (one-round-extend-oligomer-with-caps oligomer cap-name-map topology-map)
+            while (one-round-extend-oligomer-space-with-caps oligomer-space cap-name-map topology-map)
             when (> step 10)
-              do (error "Too many rounds of extending oligomer")))
-    oligomer))
+              do (error "Too many rounds of extending oligomer-space")))
+    oligomer-space))
 
-(defun build-training-oligomers (foldamer)
-  "Create oligomers that describe training molecules"
+(defun build-training-oligomer-spaces (foldamer)
+  "Create oligomer-spaces that describe training molecules"
   (let* ((list-of-topology-names (topology-list foldamer))
          (topology-map (let ((ht (make-hash-table)))
                          (loop for top-name in list-of-topology-names
@@ -490,28 +484,28 @@ add cap monomers until no more cap monomers are needed."
                          ht)))
     (multiple-value-bind (origins body caps)
         (classify-topologys topology-map)
-      ;; Build training oligomers for origins
-      ;; First make the focus monomer and add it to the oligomer
+      ;; Build training oligomer-spaces for origins
+      ;; First make the focus monomer and add it to the oligomer-space
       (let ((clustered-origins (cluster-topologys-using-out-plugs origins))
             (clustered-bodys (cluster-topologys-using-out-plugs body))
             (cap-name-map (cap-name-map foldamer)))
         (format *debug-io* "clustered-origins -> ~s~%" clustered-origins)
         (format *debug-io* "clustered-bodys -> ~s~%" clustered-bodys)
-        (let ((all-oligomers (append
+        (let ((all-oligomer-spaces (append
                               (loop for focus-topologys in (append clustered-origins clustered-bodys)
-                                    collect (build-one-training-oligomer focus-topologys
+                                    collect (build-one-training-oligomer-space focus-topologys
                                                                          cap-name-map
                                                                          topology-map))
                               (loop for focus-cap-topology in caps
-                                    collect (build-one-training-oligomer (list focus-cap-topology)
+                                    collect (build-one-training-oligomer-space (list focus-cap-topology)
                                                                          cap-name-map
                                                                          topology-map)))))
-          ;; Eliminate oligomers that cover the same sequence space
-          (let ((unique-oligomers (make-hash-table :test 'equal)))
-            (loop for oligomer in all-oligomers
-                  for canonical-sequence = (canonical-sequence oligomer)
-                  do (setf (gethash canonical-sequence unique-oligomers) oligomer))
-            (alexandria:hash-table-values unique-oligomers)))))))
+          ;; Eliminate oligomer-spaces that cover the same sequence space
+          (let ((unique-oligomer-spaces (make-hash-table :test 'equal)))
+            (loop for oligomer-space in all-oligomer-spaces
+                  for canonical-sequence = (canonical-sequence oligomer-space)
+                  do (setf (gethash canonical-sequence unique-oligomer-spaces) oligomer-space))
+            (alexandria:hash-table-values unique-oligomer-spaces)))))))
 
 #+(or)
 (defun monomer-node-context (monomer-node)
@@ -557,3 +551,19 @@ add cap monomers until no more cap monomers are needed."
           '((defparameter *design* (load ":%DESIGN-INPUT-FILE%"))
             (def
 |#
+
+
+#||
+(define-foldamer-schema :spiro
+  '(bnz pbe pro4 apro4 cbala bala ace cgly)
+  '((:side :-side pro4 (:-dkp pro4 :-dkp cgly) :+dkp pro4 (:+side (:cap bnz)) :+dkp (:cap pros))
+    (:side :-side apro4 (:-amide cbala) (:+amide ace) :+dkp pro4 (:+side (:cap bnz)) :+dkp (:cap pros))
+    (:side :-side apro4 (:-amide cbala) (:+amide ace) :+dkp pro))
+    (:pro4 (:-dkp pro4 (:-dkp (:cap cgly)) (:+side (:cap bnz))) (:+side (:cap bnz)) :+dkp (:cap pros))
+    (:pro4 (:-dkp apro4 (:-amide (:cap cbala)) (:+side (:cap bnz)) (:+amide (:cap ace))) :+dkp (:cap pros))
+    (:apro4 (:-amide cbala) (:+amide (:cap ace)) (:+side (:cap bnz)) :+dkp pro)
+    (:cbala (:+amide (:cap ace)))
+    (:bala (:-amide (:cap cbala)) :+amide (:cap ace))
+    (:ace :-amide (:cap cbala))
+(:cgly :+dkp pro))
+||#

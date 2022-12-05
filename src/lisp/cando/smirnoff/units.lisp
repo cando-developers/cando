@@ -45,10 +45,10 @@
     (and (? whitespace+) mult (? whitespace+) unit)
   (:function fourth))
 
-(defrule quantity (and double-float-literal (* quantity-unit-part))
+(defrule quantity (and (or double-float-literal integer-literal/decimal) (* quantity-unit-part))
   (:destructure (num units)
     ;; NUM is a float, UNITS is a list of QUANTITYs.
-    (let ((res (dimensionless num)))
+    (let ((res (dimensionless (float num 1.0d0))))
       (loop for unit in units
             do (setf res (units:* res unit)))
       res)))

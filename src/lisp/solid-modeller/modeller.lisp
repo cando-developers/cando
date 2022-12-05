@@ -1,4 +1,4 @@
-(in-package :modeller)
+(in-package :solid-modeller)
 
 (defparameter unitx (geom:vec 1.0 0.0 0.0))
 (defparameter unity (geom:vec 0.0 1.0 0.0))
@@ -9,7 +9,7 @@
 (defclass scene ()
   ((shapes :initform nil :initarg shapes :accessor shapes)))
 
-(defun add-shape (scene shape)
+(defun add-shape (shape scene)
   (push shape (shapes scene)))
 
 (defclass shape ()

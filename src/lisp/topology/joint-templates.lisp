@@ -6,13 +6,19 @@
    (constitution-atoms-index :initarg :constitution-atoms-index :accessor constitution-atoms-index)
    ))
 
-(defmethod print-object ((obj joint-template) stream)
-  (print-unreadable-object (obj stream :type t)
-    (format stream "~a" (atom-name obj))))
+(cando:make-class-save-load
+ joint-template
+ :print-unreadably
+ (lambda (obj stream)
+   (print-unreadable-object (obj stream :type t)
+     (format stream "~a" (atom-name obj)))))
 
 (defclass bonded-joint-template (joint-template)
   ((children :initform nil :initarg :children :accessor children)
    ))
+
+(cando:make-class-save-load
+ bonded-joint-template)
 
 (defun make-bonded-joint-template (constitution-atoms-index &key atom-name parent)
   (make-instance 'bonded-joint-template
@@ -23,6 +29,9 @@
 (defclass in-plug-bonded-joint-template (bonded-joint-template)
   ((in-plug :initarg :in-plug :accessor in-plug)))
 
+(cando:make-class-save-load
+ in-plug-bonded-joint-template)
+
 (defun make-in-plug-bonded-joint-template (constitution-atoms-index &key atom-name parent in-plug)
   (make-instance 'in-plug-bonded-joint-template
                  :constitution-atoms-index constitution-atoms-index
@@ -32,6 +41,9 @@
 
 (defclass complex-bonded-joint-template (bonded-joint-template)
   ((input-stub-joints :initform (make-array 2) :initarg :input-stub-joints :accessor input-stub-joints)))
+
+(cando:make-class-save-load
+ complex-bonded-joint-template)
 
 (defun make-complex-bonded-joint-template (constitution-atoms-index &key atom-name stub-joints)
   (cond
@@ -59,6 +71,9 @@
 
 (defclass jump-joint-template (joint-template)
   ((children :initform nil :initarg :children :accessor children)))
+
+(cando:make-class-save-load
+ jump-joint-template)
 
 (defun make-jump-joint-template (constitution-atoms-index &key atom-name)
   (make-instance 'jump-joint-template
@@ -147,7 +162,6 @@
 
 (defun build-joint-template (graph)
   (let ((root-node (topology:root-node graph)))
-    (format t "root-node = ~a~%" root-node)
     (build-joint-template-recursively nil root-node (topology:in-plug graph))))
 
 (defun topologies-from-graph (graph)
@@ -165,7 +179,6 @@
                                                    :joint-template joint-template
                                                    :stereoisomer-atoms configurations)
                      do (push topology (topology:topology-list constitution))
-                     do (format t "stereoisomer ~a ~s~%" name configurations)
                      do (setf (topology:property-list topology) (list* :joint-template joint-template (topology:property-list topology)))
                      do (cando:register-topology topology name)
                      collect topology)))
@@ -198,13 +211,17 @@
     (let ((input-stub0-template (aref input-stub-joints 0))
           (input-stub1-template (aref input-stub-joints 1)))
       (cond
-        ((null input-stub0-template)
+        ((and (null input-stub0-template) (null input-stub1-template))
          ;; Do nothing
          )
-        ((null input-stub1-template)
+        ((and input-stub0-template (null input-stub1-template))
          (let* ((input-stub0-index (constitution-atoms-index input-stub0-template))
                 (input-stub0 (aref (joints atresidue) input-stub0-index)))
            (kin:set-input-stub-joint1 joint input-stub0)))
+        ((and (null input-stub0-template) input-stub1-template)
+         (let* ((input-stub1-index (constitution-atoms-index input-stub1-template))
+                (input-stub1 (aref (joints atresidue) input-stub1-index)))
+           (kin:set-input-stub-joint1 joint input-stub1)))
         (t
          (let* ((input-stub0-index (constitution-atoms-index input-stub0-template))
                 (input-stub0 (aref (joints atresidue) input-stub0-index))

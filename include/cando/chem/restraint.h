@@ -93,12 +93,8 @@ SMART(RestraintAnchor);
 class RestraintAnchor_O : public Restraint_O
 {
     LISP_CLASS(chem,ChemPkg,RestraintAnchor_O,"RestraintAnchor",Restraint_O);
-#if INIT_TO_FACTORIES
  public:
     static RestraintAnchor_sp make(Atom_sp atom, const Vector3& pos, double weight);
-#else
-    DECLARE_INIT();
-#endif
 
 public:
 
@@ -186,35 +182,15 @@ class RestraintDistance_O : public Restraint_O
  public:
   Atom_sp		_A;
   Atom_sp		_B;
-#if 0
-  double		_Min;
-  double		_Max;
-  double		_Weight;
-#endif
   double          _K;
   double          _R0;
 
  public:
-
-
-#if 0
-  void	setParameters(double ouble mn,double mx, double wt ) {
-    this->_Min=mn;
-    this->_Max=mx;
-    this->_Weight=wt;
-  };
-#endif
   Atom_sp	getAtomA() {_OF();ASSERTNOTNULL(this->_A);return this->_A;};
   void	setAtomA(Atom_sp a) {this->_A=a;};
   Atom_sp	getAtomB() {_OF();ASSERTNOTNULL(this->_B);return this->_B;};
   void	setAtomB(Atom_sp a) {this->_B=a;};
 
-#if 0
-  double	getMin() {return this->_Min;};
-  double	getMax() {return this->_Max;};
-  double	getWeight() {return this->_Weight;};
-#endif
-        
   Restraint_sp	copyDontRedirectAtoms();
   void redirectAtoms();
 
@@ -346,11 +322,4 @@ public:
 
 
 };
-TRANSLATE(chem::Restraint_O);
-TRANSLATE(chem::RestraintAnchor_O);
-TRANSLATE(chem::RestraintChiral_O);
-TRANSLATE(chem::RestraintDistance_O);
-TRANSLATE(chem::RestraintAngle_O);
-TRANSLATE(chem::RestraintDihedral_O);
-TRANSLATE(chem::RestraintFixedNonbond_O);
 #endif

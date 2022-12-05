@@ -79,7 +79,7 @@ Methods are specialized on this class in cando-nglview.lisp."))
                            1.0
                            mass))
           for dt-over-m = (/ delta-t mass)
-          do (setf (aref delta-t-over-mass index) dt-over-m))
+          do (setf (aref delta-t-over-mass index) (float dt-over-m 1.0d0)))
     (chem:load-coordinates-into-vector scoring-function coordinates)
     (chem:evaluate-energy-force scoring-function coordinates t forces)
     (let ((sim (make-instance 'simulation

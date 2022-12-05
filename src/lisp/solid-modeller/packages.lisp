@@ -10,4 +10,5 @@
    #:make-icosphere
    #:make-cuboid
    #:make-cylinder
+   #:molecule
    ))

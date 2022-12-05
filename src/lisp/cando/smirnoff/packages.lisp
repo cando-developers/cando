@@ -35,4 +35,6 @@
    #:build-energy-function
    #:load-smirnoff
    #:combined-smirnoff-force-field
+   #:missing-dihedral
+   #:molecule
    ))

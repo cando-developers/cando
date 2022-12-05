@@ -107,7 +107,36 @@ The chem:force-field-type-rules-merged generic function was used to organize the
      molecule)
     bonds))
 
-(defun missing-dihedral-message (a1 a2 a3 a4)
+(define-condition parameterization-error (error)
+  ()
+  )
+
+(define-condition missing-dihedral (parameterization-error)
+  ((molecule :initarg :molecule :accessor molecule)
+   (a1-name :initarg :a1-name :accessor a1-name)
+   (a2-name :initarg :a2-name :accessor a2-name)
+   (a3-name :initarg :a3-name :accessor a3-name)
+   (a4-name :initarg :a4-name :accessor a4-name)
+   (a1-element :initarg :a1-element :accessor a1-element)
+   (a2-element :initarg :a2-element :accessor a2-element)
+   (a3-element :initarg :a3-element :accessor a3-element)
+   (a4-element :initarg :a4-element :accessor a4-element)
+   (a1-a2-bond-order :initarg :a1-a2-bond-order :accessor a1-a2-bond-order)
+   (a2-a3-bond-order :initarg :a2-a3-bond-order :accessor a2-a3-bond-order)
+   (a3-a4-bond-order :initarg :a3-a4-bond-order :accessor a3-a4-bond-order))
+  (:report (lambda (obj stream)
+             (format stream "~a(~a) ~a(~a) ~a(~a) ~a(~a)"
+                     (a1-name obj)
+                     (a1-element obj)
+                     (a2-name obj)
+                     (a2-element obj)
+                     (a3-name obj)
+                     (a3-element obj)
+                     (a4-name obj)
+                     (a4-element obj)
+                     ))))
+
+(defun missing-dihedral-error (a1 a2 a3 a4 molecule)
   (let ((a1-name (chem:get-name a1))
         (a2-name (chem:get-name a2))
         (a3-name (chem:get-name a3))
@@ -116,18 +145,22 @@ The chem:force-field-type-rules-merged generic function was used to organize the
         (a2-element (chem:get-element a2))
         (a3-element (chem:get-element a3))
         (a4-element (chem:get-element a4))
-        (a1-a2 (chem:bond-order-to a1 a2))
-        (a2-a3 (chem:bond-order-to a2 a3))
-        (a3-a4 (chem:bond-order-to a3 a4)))
-    (format nil "~a/~a-~a-~a/~a-~a-~a/~a-~a-~a/~a"
-            a1-name a1-element
-            a1-a2
-            a2-name a2-element
-            a2-a3
-            a3-name a3-element
-            a3-a4
-            a4-name a4-element)))
-        
+        (a1-a2-bond-order (chem:bond-order-to a1 a2))
+        (a2-a3-bond-order (chem:bond-order-to a2 a3))
+        (a3-a4-bond-order (chem:bond-order-to a3 a4)))
+    (error 'missing-dihedral
+           :molecule molecule
+           :a1-name a1-name
+           :a2-name a2-name
+           :a3-name a3-name
+           :a4-name a4-name
+           :a1-element a1-element
+           :a2-element a2-element
+           :a3-element a3-element
+           :a4-element a4-element
+           :a1-a2-bond-order a1-a2-bond-order
+           :a2-a3-bond-order a2-a3-bond-order
+           :a3-a4-bond-order a3-a4-bond-order)))
 
 (defmethod chem:generate-molecule-energy-function-tables (energy-function molecule (combined-smirnoff-force-field combined-smirnoff-force-field) active-atoms)
   (let* ((molecule-graph (chem:make-molecule-graph-from-molecule molecule))
@@ -275,7 +308,8 @@ The chem:force-field-type-rules-merged generic function was used to organize the
                              for idivf = (idivf part)
                              for v = (/ k idivf)
                              do (chem:add-dihedral-term dihedral-energy atom-table a1 a2 a3 a4 phase t v periodicity))
-                       (warn "Could not find proper torsion parameters for ~s" (missing-dihedral-message a1 a2 a3 a4)))))
+                       (progn
+                         (missing-dihedral-error a1 a2 a3 a4 molecule)))))
                ptors)
       (loop for force-field in (reverse (chem:force-fields-as-list combined-smirnoff-force-field))
             for improper-torsion-force = (if (slot-boundp force-field 'improper-torsion-force)
