@@ -36,4 +36,6 @@
   (core:expand-associative 'geom::+ 'geom:v+ numbers 0))
 
 (defmethod print-object ((vec geom:v3) stream)
-  (format stream "#<geom:v3 ~a ~a ~a>" (geom:vx vec) (geom:vy vec) (geom:vz vec)))
+  (if *print-readably*
+      (call-next-method)
+      (format stream "#<geom:v3 ~a ~a ~a>" (geom:vx vec) (geom:vy vec) (geom:vz vec))))
