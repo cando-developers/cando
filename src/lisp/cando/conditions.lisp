@@ -49,10 +49,20 @@
 (define-condition minimizer-error (error)
   ((message :initarg :message :reader message)
    (minimizer :initarg :minimizer :reader minimizer)
-   (coordinates :initarg :coordinates :reader coordinates)))
+   (coordinates :initarg :coordinates :reader coordinates))
+  (:report (lambda (condition stream)
+             (format stream "minimizer-error ~a" (message error)))))
 
 (define-condition minimizer-exceeded-max-steps (minimizer-error)
-  ((number-of-steps :initarg :number-of-steps :accessor number-of-steps)))
+  ((number-of-steps :initarg :number-of-steps :accessor number-of-steps))
+  (:report (lambda (condition stream)
+             (format stream "~a :steps ~a"
+                     (class-name (class-of condition))
+                     (number-of-steps condition)))))
+
+(define-condition minimizer-exceeded-sd-max-steps (minimizer-exceeded-max-steps) ())
+(define-condition minimizer-exceeded-gc-max-steps (minimizer-exceeded-max-steps) ())
+(define-condition minimizer-exceeded-tn-max-steps (minimizer-exceeded-max-steps) ())
 
 (defun make-minimizer-exceeded-max-steps (minimizer coordinates number-of-steps)
   (make-condition 'minimizer-exceeded-max-steps

@@ -159,10 +159,14 @@
            #:set-all-stereocenters-to
            #:number-of-stereoisomers
            #:optimize-structure
+           #:optimize-structure-with-restarts
            #:configure-minimizer
            #:minimize-no-fail
+           #:minimize-with-restarts
+           #:with-ignore-minimizer-errors
            #:build-good-geometry-from-random
            #:starting-geometry
+           #:starting-geometry-with-restarts
            #:build-molecules-from-atom-connectivity
            #:chimera
            #:bad-geometry-p

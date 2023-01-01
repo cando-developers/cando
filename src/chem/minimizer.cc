@@ -87,6 +87,9 @@ SYMBOL_EXPORT_SC_(ChemPkg,steepest_descent);
 SYMBOL_EXPORT_SC_(ChemPkg,conjugate_gradient);
 SYMBOL_EXPORT_SC_(ChemPkg,truncated_newton);
 
+SYMBOL_EXPORT_SC_(ChemPkg,MinimizerExceededSD_MaxSteps);
+SYMBOL_EXPORT_SC_(ChemPkg,MinimizerExceededCG_MaxSteps);
+SYMBOL_EXPORT_SC_(ChemPkg,MinimizerExceededTN_MaxSteps);
 SYMBOL_EXPORT_SC_(ChemPkg,MinimizerExceededMaxSteps);
 SYMBOL_EXPORT_SC_(ChemPkg,MinimizerStuck);
 SYMBOL_EXPORT_SC_(ChemPkg,MinimizerError);
@@ -715,15 +718,6 @@ void Minimizer_O::lineSearchInitialReport( StepReport_sp report,
   }
 };
 
-#if 0
-CL_LISPIFY_NAME("throwMinimizerExceededMaxSteps");
-CL_DEFMETHOD     void Minimizer_O::throwMinimizerExceededMaxSteps()
-{
-      
-  MINIMIZER_EXCEEDED_MAX_STEPS_ERROR("test throw of MinimizerExceededMaxSteps");
-};
-#endif
-
 CL_LISPIFY_NAME("throwMinimizerStuck");
 CL_DEFMETHOD     void Minimizer_O::throwMinimizerStuck()
 {
@@ -1052,7 +1046,7 @@ void	Minimizer_O::_steepestDescent( int numSteps,
 	    //
         fp = dTotalEnergyForce( x, force );
         this->_ScoringFunction->saveCoordinatesAndForcesFromVectors(x,force);
-        ERROR(_sym_MinimizerExceededMaxSteps, (ql::list() 
+        ERROR(_sym_MinimizerExceededSD_MaxSteps, (ql::list() 
                                                << kw::_sym_minimizer << this->asSmartPtr()
                                                << kw::_sym_number_of_steps << core::make_fixnum(localSteps)
                                                << kw::_sym_coordinates << x).result());
@@ -1317,7 +1311,7 @@ void	Minimizer_O::_conjugateGradient(int numSteps,
 	//
           fp = dTotalEnergyForce( x, force );
           this->_ScoringFunction->saveCoordinatesAndForcesFromVectors(x,force);
-          ERROR(_sym_MinimizerExceededMaxSteps, (ql::list() 
+          ERROR(_sym_MinimizerExceededCG_MaxSteps, (ql::list() 
                                                  << kw::_sym_minimizer << this->asSmartPtr()
                                                  << kw::_sym_number_of_steps << core::make_fixnum(localSteps)
                                                  << kw::_sym_coordinates << x).result());
@@ -1851,7 +1845,7 @@ void	Minimizer_O::_truncatedNewton(
 	//
         dTotalEnergyForce( xK, forceK );
         this->_ScoringFunction->saveCoordinatesAndForcesFromVectors(xK,forceK);
-        ERROR(_sym_MinimizerExceededMaxSteps, (ql::list() 
+        ERROR(_sym_MinimizerExceededTN_MaxSteps, (ql::list() 
                                                << kw::_sym_minimizer << this->asSmartPtr()
                                                << kw::_sym_number_of_steps << core::make_fixnum(kk)
                                                << kw::_sym_coordinates << xK).result());

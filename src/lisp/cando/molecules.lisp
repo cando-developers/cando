@@ -155,7 +155,7 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
   (restart-case
       (handler-bind
           ((chem:minimizer-error (lambda (err)
-                                   (warn "The minimizer reported: ~a" err)
+                                   (warn "In minimize-no-fail - the minimizer reported: ~a" err)
                                    (invoke-restart 'skip-rest-of-minimization err))))
         (with-handle-linear-angles-dihedrals
             (chem:minimize minimizer)))
@@ -164,6 +164,30 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
       :report "Skip the rest of the current minimization - continue processing"
       (chem:write-intermediate-results-to-energy-function minimizer)
       (when resignal-error (error err)))))
+
+(defmacro with-ignore-minimizer-errors (&body body)
+  `(handler-bind
+       ((chem:minimizer-error (lambda (err)
+                                (warn "In with-ignore-minimizer-errors - the minimizer reported: ~a" err)
+                                (invoke-restart 'skip-rest-of-minimization err))))
+     (progn
+       ,@body)))
+
+;; Recover from minimization problems using Common Lisp restarts
+(defun minimize-with-restarts (minimizer &key resignal-error)
+  (chem:disable-print-intermediate-results minimizer)
+  (restart-case
+      (with-handle-linear-angles-dihedrals
+          (chem:minimize minimizer))
+    ;; skip-rest-of-minimization can also be triggered by the user from the debugger
+    (skip-rest-of-minimization (err)
+      :report "Skip the rest of the current minimization - continue processing"
+      (chem:write-intermediate-results-to-energy-function minimizer)
+      (when resignal-error (error err)))
+    (save-and-skip-rest-of-minimization (pathname)
+      :report "Save the current structure to a file and skip the rest of the current minimization - continue processing"
+      (chem:write-intermediate-results-to-energy-function minimizer)
+      (cando:save-cando (chem:get-matter (chem:get-energy-function minimizer)) pathname))))
 
 
 (defun minimizer-obey-interrupt (minimizer)
@@ -199,9 +223,9 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
                                                      :active-atoms active-atoms))
          (min (chem:make-minimizer energy-function)))
     (configure-minimizer min
-                         :max-sd-steps 1000
+                         :max-sd-steps 5000
                          :max-cg-steps 50000
-                         :max-tn-steps 100)
+                         :max-tn-steps 500)
     (chem:enable-print-intermediate-results min)
     (when turn-off-nonbond
       (chem:set-option energy-function 'chem::nonbond-term nil)
@@ -210,6 +234,26 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
     (chem:set-option energy-function 'chem:nonbond-term t)
     (finish-output t)
     (minimize-no-fail min)
+    (finish-output t))
+  matter)
+
+(defun optimize-structure-with-restarts (matter &key active-atoms (turn-off-nonbond t))
+  (let* ((energy-function (chem:make-energy-function :matter matter
+                                                     :assign-types t
+                                                     :active-atoms active-atoms))
+         (min (chem:make-minimizer energy-function)))
+    (configure-minimizer min
+                         :max-sd-steps 5000
+                         :max-cg-steps 50000
+                         :max-tn-steps 500)
+    (chem:enable-print-intermediate-results min)
+    (when turn-off-nonbond
+      (chem:set-option energy-function 'chem::nonbond-term nil)
+      (finish-output t)
+      (minimize-with-restarts min))
+    (chem:set-option energy-function 'chem:nonbond-term t)
+    (finish-output t)
+    (minimize-with-restarts min)
     (finish-output t))
   matter)
 
@@ -405,6 +449,36 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
       (dotimes (i 1000) (advance-simulation dynamics :frozen nil)))
     (dynamics:write-coordinates-back-to-matter dynamics)
     (optimize-structure agg :turn-off-nonbond nil)
+    dynamics
+    ))
+
+(defun starting-geometry-with-restarts (agg &key accumulate-coordinates)
+  "Rapidly calculate a starting geometry for the single molecule in the aggregate"
+  (unless (= (chem:content-size agg) 1)
+    (format t "The aggregate must have a single molecule.")
+    (return-from starting-geometry-with-restarts nil))
+  (chem:map-atoms
+   nil
+   (lambda (atm)
+     (chem:set-type atm :sketch))
+   agg)
+  (let* ((mol (cando:mol agg 0))
+         (dummy-sketch-nonbond-ff (make-instance 'sketch-nonbond-force-field))
+         (sketch-function (chem:make-sketch-function mol dummy-sketch-nonbond-ff))
+         (dynamics (dynamics:make-atomic-simulation sketch-function 
+                                                    :accumulate-coordinates accumulate-coordinates))
+         (energy-sketch-nonbond (chem:get-sketch-nonbond-component sketch-function)))
+    (randomize-coordinates (dynamics:coordinates dynamics) :from-zero t :frozen nil)
+    (chem:disable (chem:get-point-to-line-restraint-component sketch-function))
+    (apply #'chem:setf-velocity-scale sketch-function *stage1-flatten-force-components*)
+    ;; stage 1  step 0 - 1999
+    (progn
+      (prepare-stage1-sketch-function sketch-function)
+      (chem:set-scale-sketch-nonbond energy-sketch-nonbond *stage1-nonbond-constant*)
+      ;; Everything interesting happens in 1000 steps
+      (dotimes (i 1000) (advance-simulation dynamics :frozen nil)))
+    (dynamics:write-coordinates-back-to-matter dynamics)
+    (optimize-structure-with-restarts agg :turn-off-nonbond nil)
     dynamics
     ))
 

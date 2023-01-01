@@ -229,7 +229,6 @@
         do (cando:register-topology topology (topology:name topology))))
 
 (defun build-trainer (trainer-context &key (steps 3) (load-pathname *load-pathname*))
-  (leap:load-smirnoff-params "~/Development/openff-sage/inputs-and-results/optimizations/vdw-v1/forcefield/force-field.offxml")
   (format t "Loading foldamer.dat for building ~s~%" trainer-context)
   (let ((root-pathname (make-pathname :directory (butlast (pathname-directory load-pathname)))))
     (multiple-value-bind (input-file done-file sdf-file internals-file log-file svg-file)
@@ -247,7 +246,6 @@
                                     (topology:load-fragment-pool internals-file)
                                     (make-instance 'topology:fragment-pool
                                                    :monomer-context trainer-context)))
-                 (fragment-pool-length (length (topology:fragments fragment-pool)))
                  (foldamer-dat-pathname (merge-pathnames #P"foldamer.dat" root-pathname))
                  (foldamer (cando:load-cando foldamer-dat-pathname)))
             (register-topologys foldamer)
@@ -273,7 +271,14 @@
                   (handler-case
                       (loop for count below steps
                             do (handler-case
-                                   (cando:starting-geometry agg)
+                                   (handler-bind
+                                       ((chem:minimizer-error (lambda (err)
+                                                                (let ((save-filename (make-pathname :name (format nil "~a-~a" (pathname-name flog) count)
+                                                                                                    :type "cando"
+                                                                                                    :defaults flog)))
+                                                                (warn "build-trainer - the minimizer reported: ~a - writing to ~a" err save-filename)
+                                                                (invoke-restart 'save-and-skip-rest-of-minimization save-filename))))
+                                     (cando:starting-geometry-with-restarts agg)))
                                  (smirnoff:missing-dihedral (err)
                                    (let ((save-filename (make-pathname :type "cando" :defaults flog)))
                                      (format flog "Missing dihedral ~a - saving molecule to ~s~%" err save-filename)
@@ -337,9 +342,13 @@
                 (topology:save-fragment-pool fragment-pool internals-file)
                 (with-open-file (fout done-file :direction :output :if-exists :supersede)
                   (format fout "finished-steps ~a~%" total-count)
-                  (format fout "hits ~a~%" fragment-pool-length)
-                  (format fout "Hit to total ratio = ~5,4f~%" (/ (float fragment-pool-length 1.0d0) (float total-count 1.0d0))))))))))))
+                  (let ((fragment-pool-length (length (topology:fragments fragment-pool))))
+                    (format fout "hits ~a~%" fragment-pool-length)
+                    (format fout "hit-to-total-ratio ~5,4f~%" (/ (float fragment-pool-length 1.0d0) (float total-count 1.0d0)))))))))))))
 
+
+(defun prepare-to-build-trainer (&key (smirnoff #P"~/Development/openff-sage/inputs-and-results/optimizations/vdw-v1/forcefield/force-field.offxml" ))
+  (leap:load-smirnoff-params smirnoff))
 
 (defun assemble-fragment-pool-map (filename)
   (let* ((foldamer-filename (merge-pathnames #P"foldamer.dat" filename))

@@ -59,7 +59,7 @@
       (handler-case
           (chem:minimize minimizer)
         (chem:minimizer-error (c)
-          (warn "The minimizer reported: ~a" c)
+          (warn "data/molecules/molecules.lisp: The minimizer reported: ~a" c)
           (invoke-restart 'skip-rest-of-minimization)))
     ;; skip-rest-of-minimization can also be triggered by the user from the debugger
     (skip-rest-of-minimization ()

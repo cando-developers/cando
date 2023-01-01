@@ -137,6 +137,7 @@
    #:generate-training-oligomers
    #:find-oligomer-for-monomer-context
    #:build-trainer
+   #:prepare-to-build-trainer
    #:assemble-fragment-pool-map
    #:foldamer-monomer-context
    ))
