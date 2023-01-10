@@ -2057,7 +2057,8 @@ CL_DEFMETHOD     void	Minimizer_O::minimize()
   ASSERT(this->_ScoringFunction);
   pos = NVector_O::create(this->_ScoringFunction->getNVectorSize());
   this->_Position = pos;
-  retries = 100;
+  int maxRetries = 100;
+  retries = maxRetries;
   do {
     try {
       this->_ScoringFunction->loadCoordinatesIntoVector(pos);
@@ -2096,12 +2097,19 @@ CL_DEFMETHOD     void	Minimizer_O::minimize()
       goto DONE;
     } catch ( RestartMinimizer ld ) {
       retries--;
-      ERROR(_sym_MinimizerError, (ql::list() 
+#if 0
+      ERROR(_sym_MinimizerError, (ql::list()
+                                  << kw::_sym_message << core::SimpleBaseString_O::make("RestartMinimizer")
                                   << kw::_sym_minimizer << this->asSmartPtr()
                                   << kw::_sym_coordinates << pos).result());
+#endif
     }
   } while ( retries > 0 );
-  DONE:
+  ERROR(_sym_MinimizerError, (ql::list()
+                              << kw::_sym_message << core::SimpleBaseString_O::make("too-many-RestartMinimizer")
+                              << kw::_sym_minimizer << this->asSmartPtr()
+                              << kw::_sym_coordinates << pos).result());
+ DONE:
     return;
 }
 

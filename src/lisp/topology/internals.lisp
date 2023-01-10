@@ -23,10 +23,37 @@
 
 (cando:make-class-save-load complex-bonded-internal)
 
+(defclass out-of-focus-internal ()
+  ((name :initarg :name :accessor name)
+   (atresidue-name :initarg :atresidue-name :accessor atresidue-name)
+   (parent-name :initarg :parent-name :accessor parent-name)
+   (parent-atresidue-name :initarg :parent-atresidue-name :accessor parent-atresidue-name)
+   (grandparent-name :initarg :grandparent-name :accessor grandparent-name)
+   (grandparent-atresidue-name :initarg :grandparent-atresidue-name :accessor grandparent-atresidue-name)
+   (greatgrandparent-name :initarg :greatgrandparent-name :accessor greatgrandparent-name)
+   (greatgrandparent-atresidue-name :initarg :greatgrandparent-atresidue-name :accessor greatgrandparent-atresidue-name)
+   (dihedral-degrees :initarg :dihedral-degrees :accessor dihedral-degrees)))
+
+(cando:make-class-save-load
+ out-of-focus-internal
+ :print-unreadably
+ (lambda (obj stream)
+   (print-unreadable-object (obj stream :type t)
+     (format stream "~a(~a) ~a(~a) ~a(~a) ~a(~a) ~5,2f"
+             (name obj)
+             (atresidue-name obj)
+             (parent-name obj)
+             (parent-atresidue-name obj)
+             (grandparent-name obj)
+             (grandparent-atresidue-name obj)
+             (greatgrandparent-name obj)
+             (greatgrandparent-atresidue-name obj)
+             (dihedral-degrees obj)))))
 
 (defclass fragment-internals ()
   ((index :initarg :index :accessor index)
-   (internals :initarg :internals :accessor internals)))
+   (internals :initarg :internals :accessor internals)
+   (out-of-focus-internals :initarg :out-of-focus-internals :accessor out-of-focus-internals)))
 
 (cando:make-class-save-load fragment-internals)
 
@@ -37,11 +64,12 @@
 
 (cando:make-class-save-load fragment-pool)
 
-(defclass fragment-pool-map ()
+(defclass fragment-conformations ()
   ((monomer-context-to-fragment-pool :initform (make-hash-table :test 'equal)
+                                     :initarg :monomer-context-to-fragment-pool
                                      :accessor monomer-context-to-fragment-pool)))
 
-(cando:make-class-save-load fragment-pool-map)
+(cando:make-class-save-load fragment-conformations)
 
 
 (defconstant +dihedral-threshold+ (* 10.0 0.0174533))

@@ -156,7 +156,7 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
       (handler-bind
           ((chem:minimizer-error (lambda (err)
                                    (warn "In minimize-no-fail - the minimizer reported: ~a" err)
-                                   (invoke-restart 'skip-rest-of-minimization err))))
+                                   (invoke-restart 'cando:skip-rest-of-minimization err))))
         (with-handle-linear-angles-dihedrals
             (chem:minimize minimizer)))
     ;; skip-rest-of-minimization can also be triggered by the user from the debugger
@@ -169,7 +169,7 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
   `(handler-bind
        ((chem:minimizer-error (lambda (err)
                                 (warn "In with-ignore-minimizer-errors - the minimizer reported: ~a" err)
-                                (invoke-restart 'skip-rest-of-minimization err))))
+                                (invoke-restart 'cando:skip-rest-of-minimization err))))
      (progn
        ,@body)))
 

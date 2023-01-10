@@ -30,6 +30,7 @@
    #:define-topology
    #:constitution
    #:constitution-atoms
+   #:stereoisomer-name
    #:joint-template
    #:bonded-joint-template
    #:in-plug-bonded-joint-template
@@ -53,6 +54,7 @@
    #:load-fragment-pool
    #:fragment-pool
    #:fragment-internals
+   #:out-of-focus-internal
    #:internal
    #:jump-internal
    #:bonded-internal
@@ -64,9 +66,9 @@
    #:dihedral
    #:save-fragment-pool
    #:load-fragment-pool
-   #:fragment-pool-map
+   #:fragment-conformations
    #:monomer-context-to-fragment-pool
-   #:assemble-fragment-pool-map
+   #:assemble-fragment-conformations
    #:dump-fragment-internals
    #:index
    #:total-count
@@ -134,12 +136,17 @@
    #:define-foldamer
    #:parse
    #:oligomer-space
+   #:unused-trainer-contexts
+   #:maybe-remove-unused-trainers
    #:generate-training-oligomers
    #:find-oligomer-for-monomer-context
    #:build-trainer
    #:prepare-to-build-trainer
-   #:assemble-fragment-pool-map
+   #:assemble-fragment-conformations
    #:foldamer-monomer-context
+   #:calculate-files
+   #:verify-foldamer-describes-oligomer-space
+   #:valid-trainer-contexts
    ))
 
 (defpackage #:monomer-context

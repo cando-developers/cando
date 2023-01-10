@@ -1291,7 +1291,7 @@ are in the order (low, middle, high) and the column eigen-vectors are in the sam
                  (return-from do-sketch2d sketch))
                (incf count)
                (progn
-                 (format t "There were ~a problems for try ~a~%" problems count)
+                 (format t "There were ~a sketch2d problems for try ~a~%" problems count)
                  (finish-output))
                (sketch2d-dynamics sketch (dynamics sketch)
                                   :accumulate-coordinates accumulate-coordinates

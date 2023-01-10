@@ -163,6 +163,8 @@
            #:configure-minimizer
            #:minimize-no-fail
            #:minimize-with-restarts
+           #:skip-rest-of-minimization
+           #:save-and-skip-rest-of-minimization
            #:with-ignore-minimizer-errors
            #:build-good-geometry-from-random
            #:starting-geometry

@@ -275,7 +275,7 @@ This is for looking up parts but if the thing returned is not a part then return
       (let ((info (pop subtree)))
         (if (consp info)
             (progn
-              (format *debug-io* "interpret-subtree info: ~s~%" info)
+              #+(or)(format *debug-io* "interpret-subtree info: ~s~%" info)
               (let* ((coupling (first info)) ; interpret a branch
                      (node-info (cdr info)))
                 (multiple-value-bind (new-parts ringp)
@@ -283,7 +283,7 @@ This is for looking up parts but if the thing returned is not a part then return
                   (setf accumulated-parts (append accumulated-parts new-parts))
                   (do-coupling oligomer coupling ringp previous-parts new-parts))))
             (progn
-              (format *debug-io* "interpret-subtree info: ~s~%" info)
+              #+(or)(format *debug-io* "interpret-subtree info: ~s~%" info)
               (let* ((coupling info)    ; Interpret a chain
                      (node-info (pop subtree)))
                 (multiple-value-bind (new-parts ringp)

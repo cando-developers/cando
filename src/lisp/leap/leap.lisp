@@ -12,7 +12,8 @@
 (defun setup-default-paths ()
   (setup-amber-paths)
   (leap.core:add-path *default-pathname-defaults*)
-  (show-paths))
+  (unless (or (sys:noinform-p) (sys:noprint-p))
+    (show-paths)))
 
 (defun show-paths ()
   (format t "Paths: ~a~%" leap.core::*path*))

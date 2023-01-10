@@ -138,7 +138,7 @@
             (loop for context in contexts
                   collect (multiple-value-bind (oligomer-space focus-monomer)
                               (parse-for-oligomer-space foldamer context)
-                            (format t "trainers ~a ~a~%" (topology:number-of-sequences oligomer-space) context)
+                            #+(or)(format t "trainers ~a ~a~%" (topology:number-of-sequences oligomer-space) context)
                             (let ((topologys-in-oligomer-space (topology:topologys-in-oligomer-space oligomer-space)))
                               (loop for topology in topologys-in-oligomer-space
                                     do (pushnew topology topologys)))
@@ -152,7 +152,6 @@
       (reinitialize-instance foldamer
                              :topologys topologys
                              :training-oligomer-spaces training-oligomer-spaces)
-      (format t "Total trainers: ~a~%" total-sequences)
       (setf (gethash name *foldamers*)
             foldamer))))
 
@@ -185,42 +184,66 @@
          (done-file (make-pathname :name trainer-context :type "done" :defaults output-dir)))
     (values input-file done-file sdf-file internals-file log-file svg-file)))
 
-(defun generate-training-oligomers (foldamer path &key force-save)
+(defun valid-trainer-contexts (foldamer)
+  (let ((training-spaces (training-oligomer-spaces foldamer)))
+    (loop for training-space in training-spaces
+          for oligomer-space = (oligomer-space training-space)
+          for focus-monomer = (focus-monomer training-space)
+          for monomer-context-matcher = (monomer-context-matcher training-space)
+          for num-sequences = (topology:number-of-sequences oligomer-space)
+          append (loop for num-seq below num-sequences
+                   for oligomer = (topology:make-oligomer oligomer-space num-seq)
+                   for match = (monomer-context:match monomer-context-matcher focus-monomer oligomer)
+                   unless match
+                     do (error "Bad match")
+                       collect (monomer-context:match-as-string match)))))
+
+(defun unused-trainer-contexts (foldamer path)
+  (let ((valid-trainer-contexts (valid-trainer-contexts foldamer))
+        (inputs (directory (merge-pathnames #P"*.input" path))))
+    (loop for input in inputs
+          for input-context = (pathname-name input)
+          unless (find input-context valid-trainer-contexts :test #'string=)
+            collect input-context)))
+
+(defun maybe-remove-unused-trainers (foldamer path &key doit)
+  (let ((unused-trainer-contexts (unused-trainer-contexts foldamer path)))
+    (loop for trainer-context in unused-trainer-contexts
+          for files = (multiple-value-list (calculate-files trainer-context))
+          do (loop for file in files
+                   do (format t "~a ~a~%" (if doit
+                                              "Removing"
+                                              "Would remove")
+                              file)
+                   when doit
+                   do (delete-file file)))))
+
+(defun generate-training-oligomers (foldamer path &key force-save print)
   (ensure-directories-exist path)
   (let ((foldamer-path (merge-pathnames #P"foldamer.dat" path)))
     (cando:save-cando foldamer foldamer-path))
-  (let ((training-spaces (training-oligomer-spaces foldamer))
-        (index 0))
+  (let ((training-spaces (training-oligomer-spaces foldamer)))
     (with-open-file (fmakefile (merge-pathnames "makefile" path) :direction :output :if-exists :supersede)
       (let ((all-done-files nil))
-        (loop for training-space in training-spaces
-              for oligomer-space = (oligomer-space training-space)
-              for focus-monomer = (focus-monomer training-space)
-              for monomer-context-matcher = (monomer-context-matcher training-space)
-              for num-sequences = (topology:number-of-sequences oligomer-space)
-              do (loop for num-seq below num-sequences
-                       for oligomer = (topology:make-oligomer oligomer-space num-seq)
-                       for match = (monomer-context:match monomer-context-matcher focus-monomer oligomer)
-                       unless match
-                         do (error "Bad match")
-                       do (incf index)
-                       do (let* ((trainer-name (monomer-context:match-as-string match)))
-                            (multiple-value-bind (input-file done-file)
-                                (calculate-files trainer-name path)
-                              (multiple-value-bind (local-input-file local-done-file)
-                                  (calculate-files trainer-name)
-                                (ensure-directories-exist input-file)
-                                (when (or force-save (null (probe-file input-file)))
-                                  (with-open-file (fout input-file :direction :output :if-exists :supersede)
-                                    (format fout "(ql:quickload :topology)~%")
-                                    (format fout "(format t \"Building trainer in file ~~s~~%\" *load-pathname*)~%")
-                                    (format fout "(defparameter agg (foldamer:build-trainer ~s))~%" trainer-name)
-                                    (format fout "(sys:exit 0)~%")
-                                    )
-                                  (push local-done-file all-done-files)
-                                  (format fmakefile "~a : ~a~%" local-done-file local-input-file)
-                                  (format fmakefile "~a$(CLASP) -t c -f cclasp -l ~s~%~%" #\tab (namestring local-input-file))
-                                  ))))))
+        (loop for trainer-context in (valid-trainer-contexts foldamer)
+              do (multiple-value-bind (input-file done-file)
+                     (calculate-files trainer-context path)
+                   (multiple-value-bind (local-input-file local-done-file)
+                       (calculate-files trainer-context)
+                     (ensure-directories-exist input-file)
+                     (when (or force-save (null (probe-file input-file)))
+                       (with-open-file (fout input-file :direction :output :if-exists :supersede)
+                         (format fout "(ql:quickload :topology)~%")
+                         (format fout "(format t \"Building trainer in file ~~s~~%\" *load-pathname*)~%")
+                         (format fout "(defparameter agg (foldamer:build-trainer ~s))~%" trainer-context)
+                         (format fout "(sys:exit 0)~%")
+                         (when print
+                           (format t "Generating trainer for ~a~%" trainer-context))
+                         )
+                       (push local-done-file all-done-files)
+                       (format fmakefile "~a : ~a~%" local-done-file local-input-file)
+                       (format fmakefile "~a$(CLASP) -t c -f cclasp -l ~s~%~%" #\tab (namestring local-input-file))
+                       ))))
         (format fmakefile "all: ~{~a ~}~%" all-done-files)
         ))))
 
@@ -228,8 +251,84 @@
   (loop for topology in (topologys foldamer)
         do (cando:register-topology topology (topology:name topology))))
 
-(defun build-trainer (trainer-context &key (steps 3) (load-pathname *load-pathname*))
-  (format t "Loading foldamer.dat for building ~s~%" trainer-context)
+(defun out-of-focus-atresidue-internals (atmolecule focus-atresidue)
+  (let ((joint-to-atresidue (make-hash-table)))
+    (loop with atresidues = (topology:atresidues atmolecule)
+          for atresidue-index below (length atresidues)
+          for atresidue = (aref atresidues atresidue-index)
+          do (loop with joints = (topology:joints atresidue)
+                   for joint-index below (length joints)
+                   for joint = (aref joints joint-index)
+                   do (setf (gethash joint joint-to-atresidue) atresidue)))
+    (let ((out-of-focus-internals nil))
+      (loop with atresidues = (topology:atresidues atmolecule)
+            for atresidue-index below (length atresidues)
+            for atresidue = (aref atresidues atresidue-index)
+            do (loop with joints = (topology:joints atresidue)
+                     for joint-index below (length joints)
+                     for joint = (aref joints joint-index)
+                     for joint-atresidue = (gethash joint joint-to-atresidue)
+                     do (when (not (eq joint-atresidue focus-atresidue))
+                          (let* ((parent (kin:get-parent joint))
+                                 (parent-atresidue (gethash parent joint-to-atresidue))
+                                 (grandparent (when parent (kin:get-parent parent))))
+                            (when grandparent
+                              (let ((grandparent-atresidue (gethash grandparent joint-to-atresidue)))
+                                (when (eq focus-atresidue grandparent-atresidue)
+                                  (let* ((greatgrandparent (when grandparent (kin:get-parent grandparent)))
+                                         (greatgrandparent-atresidue (gethash greatgrandparent joint-to-atresidue)))
+                                    (when (eq focus-atresidue greatgrandparent-atresidue)
+                                      (let ((phi (/ (kin:bonded-joint/get-phi joint) 0.0174533)))
+                                        (push (make-instance 'topology:out-of-focus-internal
+                                                             :name (kin:joint/name joint)
+                                                             :atresidue-name (topology:stereoisomer-name joint-atresidue)
+                                                             :parent-name (kin:joint/name parent)
+                                                             :parent-atresidue-name (topology:stereoisomer-name parent-atresidue)
+                                                             :grandparent-name (kin:joint/name grandparent)
+                                                             :grandparent-atresidue-name (topology:stereoisomer-name grandparent-atresidue)
+                                                             :greatgrandparent-name (kin:joint/name greatgrandparent)
+                                                             :greatgrandparent-atresidue-name (topology:stereoisomer-name greatgrandparent-atresidue)
+                                                             :dihedral-degrees phi)
+                                              out-of-focus-internals)))))))))))
+      out-of-focus-internals)))
+
+(defun extract-focus-atresidue-internals (conf focus-atresidue atmolecule total-count flog)
+  "Extract the internal coordinates for the atresidue"
+  (let* ((internals (loop for joint across (topology:joints focus-atresidue)
+                          for name = (kin:joint/name joint)
+                          collect (cond
+                                    ((typep joint 'kin:jump-joint)
+                                     (make-instance 'topology:jump-internal
+                                                    :name name))
+                                    ((typep joint 'kin:complex-bonded-joint)
+                                     (let ((distance (kin:bonded-joint/get-distance joint))
+                                           (angle (kin:bonded-joint/get-theta joint))
+                                           (dihedral (kin:bonded-joint/get-phi joint)))
+                                       (make-instance 'topology:complex-bonded-internal
+                                                      :name name
+                                                      :bond distance
+                                                      :angle angle
+                                                      :dihedral dihedral)))
+                                    ((typep joint 'kin:bonded-joint)
+                                     (let ((distance (kin:bonded-joint/get-distance joint))
+                                           (angle (kin:bonded-joint/get-theta joint))
+                                           (dihedral (kin:bonded-joint/get-phi joint)))
+                                       (make-instance 'topology:bonded-internal
+                                                      :name name
+                                                      :bond distance
+                                                      :angle angle
+                                                      :dihedral dihedral)))
+                                    (t (format flog "unknown-joint ~a ~a~%" name joint)))))
+         (out-of-focus-internals (out-of-focus-atresidue-internals atmolecule focus-atresidue)))
+    (when out-of-focus-internals
+      (format t "out-of-focus-internals = ~a~%" out-of-focus-internals))
+    (make-instance 'topology:fragment-internals
+                   :index total-count
+                   :internals internals
+                   :out-of-focus-internals out-of-focus-internals)))
+
+
+(defun build-trainer (foldamer trainer-context &key (steps 3) (load-pathname *load-pathname*))
   (let ((root-pathname (make-pathname :directory (butlast (pathname-directory load-pathname)))))
     (multiple-value-bind (input-file done-file sdf-file internals-file log-file svg-file)
         (calculate-files trainer-context root-pathname)
@@ -246,12 +345,11 @@
                                     (topology:load-fragment-pool internals-file)
                                     (make-instance 'topology:fragment-pool
                                                    :monomer-context trainer-context)))
-                 (foldamer-dat-pathname (merge-pathnames #P"foldamer.dat" root-pathname))
-                 (foldamer (cando:load-cando foldamer-dat-pathname)))
+                 )
             (register-topologys foldamer)
             (multiple-value-bind (oligomer focus-monomer)
                 (find-oligomer-for-monomer-context foldamer trainer-context)
-              (format flog "Building trainer for monomer context ~a~%" (dump-local-monomer-context focus-monomer))
+              #+(or)(format flog "Building trainer for monomer context ~a~%" (dump-local-monomer-context focus-monomer))
               (let* ((conf (topology:make-conformation oligomer :focus-monomer focus-monomer))
                      (agg (topology:aggregate conf))
                      (molecule (cando:mol agg 0))
@@ -267,55 +365,36 @@
                     (cl-svg:stream-out fout (sketch2d:render-svg-scene svg))))
                 (flet ((to-deg (rad)
                          (/ rad 0.0174533)))
-                  (format flog "internals ~a~%" trainer-context)
-                  (handler-case
-                      (loop for count below steps
-                            do (handler-case
-                                   (handler-bind
-                                       ((chem:minimizer-error (lambda (err)
-                                                                (let ((save-filename (make-pathname :name (format nil "~a-~a" (pathname-name flog) count)
-                                                                                                    :type "cando"
-                                                                                                    :defaults flog)))
-                                                                (warn "build-trainer - the minimizer reported: ~a - writing to ~a" err save-filename)
-                                                                (invoke-restart 'save-and-skip-rest-of-minimization save-filename))))
+                  (when (plusp (- steps total-count)) 
+                    (format t "About to build trainer ~a~%" trainer-context)
+                    (format flog "internals ~a~%" trainer-context)
+                    (loop for count below (- steps total-count)
+                          do (progn
+                               (block once
+                                 (format t "About to handler-bind~%")
+                                 (handler-bind
+                                     ((chem:minimizer-error (lambda (err)
+                                                              (let ((save-filename (make-pathname :name (format nil "~a-~a" (pathname-name flog) count)
+                                                                                                  :type "cando"
+                                                                                                  :defaults flog)))
+                                                                (format flog "build-trainer - the minimizer reported: ~a - writing to ~a~%" err save-filename)
+                                                                (invoke-restart 'cando:save-and-skip-rest-of-minimization save-filename)
+                                                                (return-from once nil))))
+                                      (smirnoff:missing-dihedral (lambda (err)
+                                                                   (let ((save-filename (make-pathname :type "cando" :defaults flog)))
+                                                                     (format flog "Missing dihedral ~a - saving molecule to ~s~%" err save-filename)
+                                                                     (cando:save-cando (smirnoff:molecule err) save-filename))
+                                                                   (signal err))))
+                                   (progn
+                                     (format t "About to cando:starting-geometry-with-restarts~%")
                                      (cando:starting-geometry-with-restarts agg)))
-                                 (smirnoff:missing-dihedral (err)
-                                   (let ((save-filename (make-pathname :type "cando" :defaults flog)))
-                                     (format flog "Missing dihedral ~a - saving molecule to ~s~%" err save-filename)
-                                     (cando:save-cando (smirnoff:molecule err) save-filename))
-                                   (signal err)))
-                            do (when (not (topology:bad-geometry-p agg))
-                                 (topology::copy-atom-positions-into-joints conf)
-                                 (topology::update-joint-tree-internal-coordinates conf)
-                                 (let* ((internals (loop for joint across (topology:joints focus-atresidue)
-                                                         for name = (kin:joint/name joint)
-                                                         collect (cond
-                                                                   ((typep joint 'kin:jump-joint)
-                                                                    (make-instance 'topology:jump-internal
-                                                                                   :name name))
-                                                                   ((typep joint 'kin:complex-bonded-joint)
-                                                                    (let ((distance (kin:bonded-joint/get-distance joint))
-                                                                          (angle (kin:bonded-joint/get-theta joint))
-                                                                          (dihedral (kin:bonded-joint/get-phi joint)))
-                                                                      (make-instance 'topology:complex-bonded-internal
-                                                                                     :name name
-                                                                                     :bond distance
-                                                                                     :angle angle
-                                                                                     :dihedral dihedral)))
-                                                                   ((typep joint 'kin:bonded-joint)
-                                                                    (let ((distance (kin:bonded-joint/get-distance joint))
-                                                                          (angle (kin:bonded-joint/get-theta joint))
-                                                                          (dihedral (kin:bonded-joint/get-phi joint)))
-                                                                      (make-instance 'topology:bonded-internal
-                                                                                     :name name
-                                                                                     :bond distance
-                                                                                     :angle angle
-                                                                                     :dihedral dihedral)))
-                                                                   (t (format flog "unknown-joint ~a ~a~%" name joint)))))
-                                        (fragment-internals (make-instance 'topology:fragment-internals
-                                                                           :index total-count
-                                                                           :internals internals)))
-                                   (let ((seen-index (topology:seen-fragment-internals fragment-pool fragment-internals)))
+                                 (format flog "Found a starting geometry for count: ~a~%" count)
+                                 (when (not (topology:bad-geometry-p agg))
+                                   (format t "Found a good starting geometry for count: ~a~%" count)
+                                   (topology::copy-atom-positions-into-joints conf)
+                                   (topology::update-joint-tree-internal-coordinates conf)
+                                   (let* ((fragment-internals (extract-focus-atresidue-internals conf focus-atresidue atmolecule total-count flog))
+                                          (seen-index (topology:seen-fragment-internals fragment-pool fragment-internals)))
                                      (if (topology:good-fragment-internals fragment-internals)
                                          (if (not seen-index)
                                              (progn
@@ -331,51 +410,38 @@
                                            (format flog "Ignoring conformation ~a - bad geometry~%" total-count)
                                            (topology:dump-fragment-internals fragment-internals flog)
                                            )))))
-                            do (incf total-count)
-                            )
-                    (error (err)
-                      (format flog "There was an error ~a- terminating~%" err) ;
-                      (return-from build-trainer nil) ;
-                      ))
-                  )
-                (setf (topology:total-count fragment-pool) total-count)
-                (topology:save-fragment-pool fragment-pool internals-file)
-                (with-open-file (fout done-file :direction :output :if-exists :supersede)
-                  (format fout "finished-steps ~a~%" total-count)
-                  (let ((fragment-pool-length (length (topology:fragments fragment-pool))))
-                    (format fout "hits ~a~%" fragment-pool-length)
-                    (format fout "hit-to-total-ratio ~5,4f~%" (/ (float fragment-pool-length 1.0d0) (float total-count 1.0d0)))))))))))))
+                               (incf total-count))))
+                  (setf (topology:total-count fragment-pool) total-count)
+                  (topology:save-fragment-pool fragment-pool internals-file)
+                  (with-open-file (fout done-file :direction :output :if-exists :supersede)
+                    (format fout "(:finished-steps ~a " total-count)
+                    (let ((fragment-pool-length (length (topology:fragments fragment-pool))))
+                      (format fout ":hits ~a " fragment-pool-length)
+                      (if (/= total-count 0)
+                          (format fout ":hit-to-total-ratio ~5,4f " (/ (float fragment-pool-length 1.0d0) (float total-count 1.0d0)))
+                          (format fout ":hit-to-total-ratio 0.0 "))
+                      (format fout ")~%"))))))))))))
 
 
 (defun prepare-to-build-trainer (&key (smirnoff #P"~/Development/openff-sage/inputs-and-results/optimizations/vdw-v1/forcefield/force-field.offxml" ))
-  (leap:load-smirnoff-params smirnoff))
+  (leap:load-smirnoff-params smirnoff)
+  )
 
-(defun assemble-fragment-pool-map (filename)
+(defun assemble-fragment-conformations (filename)
   (let* ((foldamer-filename (merge-pathnames #P"foldamer.dat" filename))
          (foldamer (cando:load-cando foldamer-filename))
-         (fragment-pool-map (make-instance 'topology:fragment-pool-map))
-         (training-oligomer-spaces (training-oligomer-spaces foldamer))
-         (fragment-pool-map (make-instance 'topology:fragment-pool-map)))
-    (loop for training-space in training-oligomer-spaces
-          for oligomer-space = (oligomer-space training-space)
-          for focus-monomer = (focus-monomer training-space)
-          for monomer-context-matcher = (monomer-context-matcher training-space)
-          for num-sequences = (topology:number-of-sequences oligomer-space)
-          do (loop for num-seq below num-sequences
-                   for oligomer = (topology:make-oligomer oligomer-space num-seq)
-                   for match = (monomer-context:match monomer-context-matcher focus-monomer oligomer)
-                   unless match
-                     do (error "Bad match")
-                   do (let* ((trainer-name (monomer-context:match-as-string match)))
-                        (format t "Loading internals for ~a~%" trainer-name)
-                        (finish-output)
-                        (multiple-value-bind (input-file done-file sdf-file internals-file)
-                            (calculate-files trainer-name filename)
-                          (declare (ignore input-file done-file sdf-file))
-                          (let ((fragment-pool (topology:load-fragment-pool internals-file)))
-                            (setf (gethash trainer-name (topology:monomer-context-to-fragment-pool fragment-pool-map))
-                                  fragment-pool))))))
-    fragment-pool-map))
+         (fragment-conformations (make-instance 'topology:fragment-conformations))
+         (fragment-conformations (make-instance 'topology:fragment-conformations)))
+    (loop for trainer-name in (valid-trainer-contexts foldamer)
+          do (format t "Extracting internals for ~a~%" trainer-name)
+             (finish-output)
+             (multiple-value-bind (input-file done-file sdf-file internals-file)
+                 (calculate-files trainer-name filename)
+               (declare (ignore input-file done-file sdf-file))
+               (let ((fragment-pool (topology:load-fragment-pool internals-file)))
+                 (setf (gethash trainer-name (topology:monomer-context-to-fragment-pool fragment-conformations))
+                       fragment-pool))))
+    fragment-conformations))
 
 (defun recursive-dump-local-monomer-context (monomer prev-monomer depth)
   (when (>= depth 0)
@@ -406,10 +472,12 @@
          :context (dump-local-monomer-context monomer)))
 
 
-(defun check-foldamer-describes-oligomer-space (foldamer oligomer-space)
+(defun verify-foldamer-describes-oligomer-space (foldamer oligomer-space &key print)
+  "Check that every monomer in the oligomer space has a monomer-context within the foldamer"
   (loop for monomer across (topology:monomers oligomer-space)
         for monomer-context = (foldamer-monomer-context monomer oligomer-space foldamer)
-        when monomer-context
-          do (format t "monomer-context ~a~%   is matched by ~a~%" (recursive-dump-local-monomer-context monomer nil 1) monomer-context)
-        )
-  (format t "foldamer completely describes oligomer-space~%"))
+        if monomer-context
+          do (when print
+               (format t "monomer-context ~a~%   is matched by ~a~%" (recursive-dump-local-monomer-context monomer nil 1) monomer-context))
+        else
+          do (error "Foldamer does not describe oligomer space")))

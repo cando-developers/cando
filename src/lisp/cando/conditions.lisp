@@ -47,11 +47,11 @@
 
 
 (define-condition minimizer-error (error)
-  ((message :initarg :message :reader message)
+  ((message :initform "There was a minimizer-error" :initarg :message :reader message)
    (minimizer :initarg :minimizer :reader minimizer)
    (coordinates :initarg :coordinates :reader coordinates))
   (:report (lambda (condition stream)
-             (format stream "minimizer-error ~a" (message error)))))
+             (format stream "~a ~a" (class-name (class-of condition)) (message condition)))))
 
 (define-condition minimizer-exceeded-max-steps (minimizer-error)
   ((number-of-steps :initarg :number-of-steps :accessor number-of-steps))

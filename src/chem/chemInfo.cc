@@ -2870,7 +2870,7 @@ void ChemInfoGraph_O::buildFromRoot_() {
           AtomOrBondMatchNode_sp ahead = gc::As<AtomOrBondMatchNode_sp>(head);
           core::T_sp head_index = graph->_nodes_to_index->gethash(ahead);
           if (!head_index.fixnump())
-            SIMPLE_ERROR(("There was no index for %s"), _rep_(ahead));
+            SIMPLE_ERROR(("(A) There was no index for %s"), _rep_(ahead));
           if (parentOrNil.nilp()) {
             // The parent is NIL - we are at the top, create a vertex
             size_t index = head_index.unsafe_fixnum();
@@ -2895,7 +2895,7 @@ void ChemInfoGraph_O::buildFromRoot_() {
           AtomOrBondMatchNode_sp ahead = gc::As<AtomOrBondMatchNode_sp>(head);
           core::T_sp head_index = graph->_nodes_to_index->gethash(ahead);
           if (!head_index.fixnump())
-            SIMPLE_ERROR(("There was no index for %s"), _rep_(ahead));
+            SIMPLE_ERROR(("(B) There was no index for %s"), _rep_(ahead));
           if (parentOrNil.nilp()) {
             // The parent is NIL - we are at the top, create a vertex
             size_t index = head_index.unsafe_fixnum();
@@ -2929,7 +2929,7 @@ void ChemInfoGraph_O::buildFromRoot_() {
           parent_nodes->setf_gethash(chain, ahead);
           core::T_sp head_index = graph->_nodes_to_index->gethash(ahead);
           if (!head_index.fixnump())
-            SIMPLE_ERROR(("There was no index for %s"), _rep_(ahead));
+            SIMPLE_ERROR(("(C) There was no index for %s"), _rep_(ahead));
           if (parentOrNil.nilp()) {
             // The parent is NIL - we are at the top, create a vertex
             size_t index = head_index.unsafe_fixnum();
@@ -2954,7 +2954,7 @@ void ChemInfoGraph_O::buildFromRoot_() {
               ChemInfoNode_sp up = gc::As<ChemInfoNode_sp>(tup);
               core::T_sp up_index = graph->_nodes_to_index->gethash(up);
               if (!up_index.fixnump()) {
-                SIMPLE_ERROR(("There was no index for %s"), _rep_(up));
+                SIMPLE_ERROR(("(D) There was no index for %s"), _rep_(up));
               }
               // The head must be a BondToAtomTest_sp
               BondToAtomTest_sp bondToAtomTest = gc::As<BondToAtomTest_sp>(chain->_Head);

@@ -386,7 +386,7 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
 
 (defun do-define-topology (name sexp &key restraints)
   (when restraints
-    (format t "restraints = ~a~%" restraints))
+    #+(or)(format t "restraints = ~a~%" restraints))
   (let ((graph (interpret (if (consp name)
                               (first name)
                               name)
