@@ -320,8 +320,6 @@
                                                       :dihedral dihedral)))
                                     (t (format flog "unknown-joint ~a ~a~%" name joint)))))
          (out-of-focus-internals (out-of-focus-atresidue-internals atmolecule focus-atresidue)))
-    (when out-of-focus-internals
-      (format t "out-of-focus-internals = ~a~%" out-of-focus-internals))
     (make-instance 'topology:fragment-internals
                    :index total-count
                    :internals internals
@@ -366,12 +364,10 @@
                 (flet ((to-deg (rad)
                          (/ rad 0.0174533)))
                   (when (plusp (- steps total-count)) 
-                    (format t "About to build trainer ~a~%" trainer-context)
                     (format flog "internals ~a~%" trainer-context)
                     (loop for count below (- steps total-count)
                           do (progn
                                (block once
-                                 (format t "About to handler-bind~%")
                                  (handler-bind
                                      ((chem:minimizer-error (lambda (err)
                                                               (let ((save-filename (make-pathname :name (format nil "~a-~a" (pathname-name flog) count)
@@ -386,11 +382,9 @@
                                                                      (cando:save-cando (smirnoff:molecule err) save-filename))
                                                                    (signal err))))
                                    (progn
-                                     (format t "About to cando:starting-geometry-with-restarts~%")
                                      (cando:starting-geometry-with-restarts agg)))
                                  (format flog "Found a starting geometry for count: ~a~%" count)
                                  (when (not (topology:bad-geometry-p agg))
-                                   (format t "Found a good starting geometry for count: ~a~%" count)
                                    (topology::copy-atom-positions-into-joints conf)
                                    (topology::update-joint-tree-internal-coordinates conf)
                                    (let* ((fragment-internals (extract-focus-atresidue-internals conf focus-atresidue atmolecule total-count flog))
