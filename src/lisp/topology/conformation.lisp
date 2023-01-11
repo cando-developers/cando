@@ -102,13 +102,17 @@
                               fp)
         for rand-limit = (length (fragments fragment-pool))
         for rand-index = (if index index (random rand-limit))
-        for fragment-internals = (elt (fragments fragment-pool) rand-index)
+        for fragment-internals = (let ((fragments (fragments fragment-pool)))
+                                   (unless fragments
+                                     (error "fragments is NIL for context ~a" monomer-context))
+                                   (elt (fragments fragment-pool) rand-index))
         do (loop for joint across (joints atres)
                  for internal in (internals fragment-internals)
                  do (fill-joint-internals joint internal))
         ))
 
 (defun build-conformation (oligomer-space fragment-conformations)
+  (format t "Entered build-conformation~%")
   (let* ((oligomer (topology:make-oligomer oligomer-space 0))
          (conf (topology:make-conformation oligomer)))
     (topology::fill-internals-from-fragments conf fragment-conformations)
