@@ -69,7 +69,11 @@
                                      :initarg :monomer-context-to-fragment-pool
                                      :accessor monomer-context-to-fragment-pool)))
 
-(cando:make-class-save-load fragment-conformations)
+(cando:make-class-save-load
+ fragment-conformations
+ :print-unreadably
+ (lambda (obj stream)
+   (print-unreadable-object (obj stream :type t))))
 
 
 (defconstant +dihedral-threshold+ (* 10.0 0.0174533))

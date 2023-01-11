@@ -308,7 +308,11 @@
               :initarg :couplings :accessor couplings)))
 
 (cando:make-class-save-load
- oligomer-space)
+ oligomer-space
+  :print-unreadably
+ (lambda (obj stream)
+   (print-unreadable-object (obj stream :type t))))
+
 
 (defun topologys-in-oligomer-space (oligomer-space)
   (loop for monomer across (monomers oligomer-space)
