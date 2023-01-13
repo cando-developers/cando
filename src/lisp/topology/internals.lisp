@@ -64,13 +64,13 @@
 
 (cando:make-class-save-load fragment-conformations)
 
-(defclass fragment-conformations ()
+(defclass fragment-conformations-map ()
   ((monomer-context-to-fragment-conformations :initform (make-hash-table :test 'equal)
                                      :initarg :monomer-context-to-fragment-conformations
                                      :accessor monomer-context-to-fragment-conformations)))
 
 (cando:make-class-save-load
- fragment-conformations
+ fragment-conformations-map
  :print-unreadably
  (lambda (obj stream)
    (print-unreadable-object (obj stream :type t))))

@@ -1,4 +1,4 @@
-(in-package :topology)
+(in-package :foldamer)
 
 
 (defun classify-dihedral-angle (angle-degrees)
@@ -24,21 +24,6 @@ and convert that into a base 12 value."
              (format t "~a~%" key))
            conformations))
 
-(defun assemble-fragment-conformations (filename)
-  (let* ((foldamer-filename (merge-pathnames #P"foldamer.dat" filename))
-         (foldamer (cando:load-cando foldamer-filename))
-         (fragment-conformations (make-instance 'topology:fragment-conformations))
-         (fragment-conformations (make-instance 'topology:fragment-conformations)))
-    (loop for trainer-name in (valid-trainer-contexts foldamer)
-          do (format t "Extracting internals for ~a~%" trainer-name)
-             (finish-output)
-             (multiple-value-bind (input-file done-file sdf-file internals-file)
-                 (calculate-files trainer-name filename)
-               (declare (ignore input-file done-file sdf-file))
-               (let ((fragment-conformations (topology:load-fragment-conformations internals-file)))
-                 (setf (gethash trainer-name (topology:monomer-context-to-fragment-conformations fragment-conformations))
-                       fragment-conformations))))
-    fragment-conformations))
 
 
 

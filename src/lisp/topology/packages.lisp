@@ -68,8 +68,8 @@
    #:save-fragment-conformations
    #:load-fragment-conformations
    #:fragment-conformations
+   #:fragment-conformations-map
    #:monomer-context-to-fragment-conformations
-   #:assemble-fragment-conformations
    #:dump-fragment-internals
    #:index
    #:total-count
@@ -143,11 +143,11 @@
    #:find-oligomer-for-monomer-context
    #:build-trainer
    #:prepare-to-build-trainer
-   #:assemble-fragment-conformations
    #:foldamer-monomer-context
    #:calculate-files
    #:verify-foldamer-describes-oligomer-space
    #:valid-trainer-contexts
+   #:assemble-fragment-conformations-map
    ))
 
 (defpackage #:monomer-context
