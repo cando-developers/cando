@@ -84,7 +84,36 @@
               do (push coupling (gethash (source-monomer coupling) monomer-out-couplings))
             else
               do (pushnew coupling unique-ring-couplings))
-      (canonical-sequence-monomer nil root-monomer monomer-out-couplings unique-ring-couplings))))
+      (canonical-sequence-monomer oligomer nil root-monomer monomer-out-couplings unique-ring-couplings))))
+
+
+(defun ordered-sequence-monomers (oligomer coupling root monomer-out-couplings unique-ring-couplings)
+  (let* ((outs (gethash root monomer-out-couplings))
+         (result (list* root
+                        (when outs
+                          (let ((sorted-outs (sort outs #'string< :key (lambda (coup) (string (name coup))))))
+                            (loop for sorted-out in sorted-outs
+                                  for target-monomer = (target-monomer sorted-out)
+                                  append (ordered-sequence-monomers
+                                           oligomer
+                                           sorted-out
+                                           target-monomer
+                                           monomer-out-couplings
+                                           unique-ring-couplings)))))))
+    result))
+
+(defun ordered-monomers (oligomer)
+  "Return a canonical sequence of monomers"
+  (let ((root-monomer (root-monomer oligomer)))
+    (let ((monomer-out-couplings (make-hash-table))
+          (unique-ring-couplings nil))
+      (loop for index below (length (couplings oligomer))
+            for coupling = (elt (couplings oligomer) index)
+            if (typep coupling 'directional-coupling)
+              do (push coupling (gethash (source-monomer coupling) monomer-out-couplings))
+            else
+              do (pushnew coupling unique-ring-couplings))
+      (ordered-sequence-monomers oligomer nil root-monomer monomer-out-couplings unique-ring-couplings))))
 
 
 

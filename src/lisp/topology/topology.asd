@@ -15,6 +15,7 @@
                (:file "joint-tree")
                (:file "fold")
                (:file "conformation")
+               (:file "optimize-conformations")
                (:file "internals")
                (:file "design")
                (:file "context")

@@ -48,11 +48,12 @@
    #:add-child
    #:sibling
    #:aggregate
+   #:ordered-monomers
 
    #:seen-fragment-internals
    #:good-fragment-internals
-   #:load-fragment-pool
-   #:fragment-pool
+   #:load-fragment-conformations
+   #:fragment-conformations
    #:fragment-internals
    #:out-of-focus-internal
    #:internal
@@ -64,10 +65,10 @@
    #:bond
    #:angle
    #:dihedral
-   #:save-fragment-pool
-   #:load-fragment-pool
+   #:save-fragment-conformations
+   #:load-fragment-conformations
    #:fragment-conformations
-   #:monomer-context-to-fragment-pool
+   #:monomer-context-to-fragment-conformations
    #:assemble-fragment-conformations
    #:dump-fragment-internals
    #:index

@@ -25,14 +25,14 @@
 
 (defclass out-of-focus-internal ()
   ((name :initarg :name :accessor name)
-   (atresidue-name :initarg :atresidue-name :accessor atresidue-name)
-   (parent-name :initarg :parent-name :accessor parent-name)
-   (parent-atresidue-name :initarg :parent-atresidue-name :accessor parent-atresidue-name)
-   (grandparent-name :initarg :grandparent-name :accessor grandparent-name)
-   (grandparent-atresidue-name :initarg :grandparent-atresidue-name :accessor grandparent-atresidue-name)
-   (greatgrandparent-name :initarg :greatgrandparent-name :accessor greatgrandparent-name)
-   (greatgrandparent-atresidue-name :initarg :greatgrandparent-atresidue-name :accessor greatgrandparent-atresidue-name)
-   (dihedral-degrees :initarg :dihedral-degrees :accessor dihedral-degrees)))
+   (atres-name :initarg :atres-name :accessor atres-name)
+   (p-name :initarg :p-name :accessor p-name)
+   (p-atres-name :initarg :p-atres-name :accessor p-atres-name)
+   (gp-name :initarg :gp-name :accessor gp-name)
+   (gp-atres-name :initarg :gp-atres-name :accessor gp-atres-name)
+   (ggp-name :initarg :ggp-name :accessor ggp-name)
+   (ggp-atres-name :initarg :ggp-atres-name :accessor ggp-atres-name)
+   (dihedral-rad :initarg :dihedral-rad :accessor dihedral-rad)))
 
 (cando:make-class-save-load
  out-of-focus-internal
@@ -41,14 +41,14 @@
    (print-unreadable-object (obj stream :type t)
      (format stream "~a(~a) ~a(~a) ~a(~a) ~a(~a) ~5,2f"
              (name obj)
-             (atresidue-name obj)
-             (parent-name obj)
-             (parent-atresidue-name obj)
-             (grandparent-name obj)
-             (grandparent-atresidue-name obj)
-             (greatgrandparent-name obj)
-             (greatgrandparent-atresidue-name obj)
-             (dihedral-degrees obj)))))
+             (atres-name obj)
+             (p-name obj)
+             (p-atres-name obj)
+             (gp-name obj)
+             (gp-atres-name obj)
+             (ggp-name obj)
+             (ggp-atres-name obj)
+             (dihedral-rad obj)))))
 
 (defclass fragment-internals ()
   ((index :initarg :index :accessor index)
@@ -57,17 +57,17 @@
 
 (cando:make-class-save-load fragment-internals)
 
-(defclass fragment-pool ()
+(defclass fragment-conformations ()
   ((monomer-context :initarg :monomer-context :accessor monomer-context)
    (total-count :initform 0 :initarg :total-count :accessor total-count)
    (fragments :initform nil :initarg :fragments :accessor fragments)))
 
-(cando:make-class-save-load fragment-pool)
+(cando:make-class-save-load fragment-conformations)
 
 (defclass fragment-conformations ()
-  ((monomer-context-to-fragment-pool :initform (make-hash-table :test 'equal)
-                                     :initarg :monomer-context-to-fragment-pool
-                                     :accessor monomer-context-to-fragment-pool)))
+  ((monomer-context-to-fragment-conformations :initform (make-hash-table :test 'equal)
+                                     :initarg :monomer-context-to-fragment-conformations
+                                     :accessor monomer-context-to-fragment-conformations)))
 
 (cando:make-class-save-load
  fragment-conformations
@@ -89,8 +89,8 @@
                  (return-from similar-internals-p nil)))))
   t)
 
-(defun seen-fragment-internals (fragment-pool fragment-internals)
-  (loop for seen-frag in (fragments fragment-pool)
+(defun seen-fragment-internals (fragment-conformations fragment-internals)
+  (loop for seen-frag in (fragments fragment-conformations)
         when (similar-internals-p seen-frag fragment-internals)
           do (return-from seen-fragment-internals (index seen-frag)))
   nil)
@@ -107,10 +107,10 @@
 
 
 
-(defun save-fragment-pool (fragment-pool filename)
-  (cando:save-cando fragment-pool filename))
+(defun save-fragment-conformations (fragment-conformations filename)
+  (cando:save-cando fragment-conformations filename))
 
-(defun load-fragment-pool (filename)
+(defun load-fragment-conformations (filename)
   (cando:load-cando filename))
 
 (defun dump-fragment-internals (fragment-internals finternals)
