@@ -6,7 +6,7 @@
 
 (defun write-sdf-stream (aggregate stream &key name)
   #+(or)(warn "write-sdf-stream doesn't handle charges properly yet")
-  (format stream "~a~%                    3D~%Structure written by MMmdl.~%"
+  (format stream "~a~%                    3D~%Structure written by Cando.~%"
           (if name
               name
               (string (chem:get-name aggregate))))
