@@ -8,6 +8,10 @@
    (ataggregate :initarg :ataggregate :accessor ataggregate)
    (joint-tree :initarg :joint-tree :accessor joint-tree)))
 
+(defgeneric monomer-context (focus-monomer oligomer foldamer)
+  :documentation "Return a monomer-context for a monomer in the oligomer using the foldamer.
+Specialize the foldamer argument to provide methods")
+
 (defun make-conformation (oligomer &key focus-monomer)
   "Build a conformation for the oligomer.   If focus-monomer is set (to a monomer) then
    only worry about that monomers monomer-context."
@@ -15,10 +19,10 @@
          (foldamer (foldamer oligomer-space))
          (monomer-contexts (make-hash-table)))
     (if focus-monomer
-        (let ((monomer-context (foldamer:foldamer-monomer-context focus-monomer oligomer foldamer)))
+        (let ((monomer-context (monomer-context focus-monomer oligomer foldamer)))
           (setf (gethash focus-monomer monomer-contexts) monomer-context))
         (loop for monomer across (monomers oligomer-space)
-              for monomer-context = (foldamer:foldamer-monomer-context monomer oligomer foldamer)
+              for monomer-context = (monomer-context monomer oligomer foldamer)
               do (setf (gethash monomer monomer-contexts) monomer-context)))
     (multiple-value-bind (aggregate molecule monomer-positions)
         (topology:build-molecule oligomer)

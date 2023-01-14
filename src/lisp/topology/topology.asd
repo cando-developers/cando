@@ -20,5 +20,4 @@
                (:file "design")
                (:file "context")
                (:file "badgeom")
-               (:file "foldamer")
                (:file "graphviz")))
