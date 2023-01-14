@@ -340,9 +340,9 @@
                                        :if-does-not-exist :create)
           (ensure-directories-exist log-file)
           (let* ((fragment-conformations (if (probe-file internals-file)
-                                    (topology:load-fragment-conformations internals-file)
-                                    (make-instance 'topology:fragment-conformations
-                                                   :monomer-context trainer-context)))
+                                             (topology:load-fragment-conformations internals-file)
+                                             (make-instance 'topology:fragment-conformations
+                                                            :monomer-context trainer-context)))
                  )
             (register-topologys foldamer)
             (multiple-value-bind (oligomer focus-monomer)
@@ -385,30 +385,31 @@
                                      (cando:starting-geometry-with-restarts agg)))
                                  (format flog "Found a starting geometry for total-count: ~a~%" total-count)
                                  (sdf:write-sdf-stream agg fsdf)
-                                 (if (not (topology:bad-geometry-p agg))
-                                     (progn
-                                       (format flog "Passed (not (topology:bad-geometry-p agg))~%")
-                                       (topology::copy-atom-positions-into-joints conf)
-                                       (topology::update-joint-tree-internal-coordinates conf)
-                                       (let* ((fragment-internals (extract-focus-atresidue-internals conf focus-atresidue atmolecule total-count flog))
-                                              (seen-index (topology:seen-fragment-internals fragment-conformations fragment-internals)))
-                                         (if (topology:good-fragment-internals fragment-internals)
-                                             (if (not seen-index)
-                                                 (progn
-                                                   (format flog "Saving fragment internals for conformation: ~a~%" total-count)
-                                                   (topology:dump-fragment-internals fragment-internals flog)
-                                                   (push fragment-internals (topology:fragments fragment-conformations)))
-                                                 (progn
-                                                   (format flog "Ignoring conformation ~a - seen before at ~a~%" total-count seen-index)
-                                                   (topology:dump-fragment-internals fragment-internals flog)
-                                                   ))
-                                             (progn
-                                               (format flog "Ignoring conformation ~a - failed (topology:good-fragment-internals fragment-internals)~%" total-count)
-                                               (topology:dump-fragment-internals fragment-internals flog)
-                                               ))))
-                                     (progn
-                                       (format flog "Failed (not (topology:bad-geometry-p agg)) for conformation: ~a~%" total-count))))
-                               (incf total-count))))
+                                 (let ((maybe-bad-geometry (topology:bad-geometry-p agg)))
+                                   (if (null maybe-bad-geometry)
+                                       (progn
+                                         (format flog "Passed (not (topology:bad-geometry-p agg))~%")
+                                         (topology::copy-atom-positions-into-joints conf)
+                                         (topology::update-joint-tree-internal-coordinates conf)
+                                         (let* ((fragment-internals (extract-focus-atresidue-internals conf focus-atresidue atmolecule total-count flog))
+                                                (seen-index (topology:seen-fragment-internals fragment-conformations fragment-internals)))
+                                           (if (topology:good-fragment-internals fragment-internals)
+                                               (if (not seen-index)
+                                                   (progn
+                                                     (format flog "Saving fragment internals for conformation: ~a~%" total-count)
+                                                     (topology:dump-fragment-internals fragment-internals flog)
+                                                     (push fragment-internals (topology:fragments fragment-conformations)))
+                                                   (progn
+                                                     (format flog "Ignoring conformation ~a - seen before at ~a~%" total-count seen-index)
+                                                     (topology:dump-fragment-internals fragment-internals flog)
+                                                     ))
+                                               (progn
+                                                 (format flog "Ignoring conformation ~a - failed (topology:good-fragment-internals fragment-internals)~%" total-count)
+                                                 (topology:dump-fragment-internals fragment-internals flog)
+                                                 ))))
+                                       (progn
+                                         (format flog "Failed (not (topology:bad-geometry-p agg)) for conformation: ~a~%problem: ~a~%" total-count maybe-bad-geometry))))
+                                 (incf total-count)))))
                   (setf (topology:total-count fragment-conformations) total-count)
                   (topology:save-fragment-conformations fragment-conformations internals-file)
                   (with-open-file (fout done-file :direction :output :if-exists :supersede)
