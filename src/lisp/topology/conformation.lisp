@@ -9,8 +9,8 @@
    (joint-tree :initarg :joint-tree :accessor joint-tree)))
 
 (defgeneric monomer-context (focus-monomer oligomer foldamer)
-  :documentation "Return a monomer-context for a monomer in the oligomer using the foldamer.
-Specialize the foldamer argument to provide methods")
+  (:documentation "Return a monomer-context for a monomer in the oligomer using the foldamer.
+Specialize the foldamer argument to provide methods"))
 
 (defun make-conformation (oligomer &key focus-monomer)
   "Build a conformation for the oligomer.   If focus-monomer is set (to a monomer) then
