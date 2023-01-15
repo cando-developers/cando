@@ -1,4 +1,4 @@
-(in-package :foldamer)
+(in-package :topology)
 
 
 (defun classify-dihedral-angle (angle-degrees)
