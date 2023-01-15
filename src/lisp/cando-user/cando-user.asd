@@ -16,7 +16,6 @@
                #:sketch2d
                #:cando-build
                #:lparallel
-               #:topology
                )
   :serial t
   :components ((:file "packages")
