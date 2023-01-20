@@ -103,7 +103,7 @@ double	_evaluateEnergyOnly_ChiralRestraint(
     return Energy;
 }
 
-
+SYMBOL_EXPORT_SC_(KeywordPkg,central_atom3);
 
 core::List_sp EnergyChiralRestraint::encode() const {
   return core::Cons_O::createList(core::Cons_O::create(INTERN_(kw,k),core::clasp_make_double_float(this->term.K)),
@@ -114,8 +114,8 @@ core::List_sp EnergyChiralRestraint::encode() const {
                                   core::Cons_O::create(INTERN_(kw,i4), core::make_fixnum(this->term.I4)),
                                   core::Cons_O::create(INTERN_(kw,atom1), this->_Atom1),
                                   core::Cons_O::create(INTERN_(kw,atom2), this->_Atom2),
-                                  core::Cons_O::create(INTERN_(kw,atom2), this->_Atom3),
-                                  core::Cons_O::create(INTERN_(kw,atom3), this->_Atom4));
+                                  core::Cons_O::create(INTERN_(kw,central_atom3), this->_Atom3),
+                                  core::Cons_O::create(INTERN_(kw,atom4), this->_Atom4));
 }
 
 

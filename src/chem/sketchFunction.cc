@@ -447,11 +447,11 @@ double	SketchFunction_O::evaluateAll( NVector_sp 	pos,
   this->_TotalEnergy += this->_PointToLineRestraint->getEnergy();
   this->_TotalEnergy += this->_OutOfZPlane->getEnergy();
   if (chem__verbose(1)) {
-    core::write_bf_stream(fmt::sprintf("Stretch energy -> %d.\n" , this->_Stretch->getEnergy() ));
-    core::write_bf_stream(fmt::sprintf("Nonbond energy -> %d.\n" , this->_Nonbond->getEnergy() ));
-    core::write_bf_stream(fmt::sprintf("PointToLineRestraint energy -> %d.\n" , this->_PointToLineRestraint->getEnergy() ));
-    core::write_bf_stream(fmt::sprintf("OutOfZPlane energy -> %d.\n" , this->_OutOfZPlane->getEnergy() ));
-    core::write_bf_stream(fmt::sprintf("Total energy -> %d.\n" , this->_TotalEnergy ));
+    core::write_bf_stream(fmt::sprintf("Stretch energy -> %f.\n" , this->_Stretch->getEnergy() ));
+    core::write_bf_stream(fmt::sprintf("Nonbond energy -> %f.\n" , this->_Nonbond->getEnergy() ));
+    core::write_bf_stream(fmt::sprintf("PointToLineRestraint energy -> %f.\n" , this->_PointToLineRestraint->getEnergy() ));
+    core::write_bf_stream(fmt::sprintf("OutOfZPlane energy -> %f.\n" , this->_OutOfZPlane->getEnergy() ));
+    core::write_bf_stream(fmt::sprintf("Total energy -> %f.\n" , this->_TotalEnergy ));
   }
 
 ////	_lisp->profiler().timer(core::timerEnergy).stop();
