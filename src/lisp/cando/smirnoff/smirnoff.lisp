@@ -255,9 +255,6 @@ The chem:force-field-type-rules-merged generic function was used to organize the
                         (angle (angle term)))
                    (chem:add-angle-term angle-energy atom-table a1 a2 a3 k-amber angle)))
                angles))
-
-
-    
     (when (chem:verbose 2) (format t "Generating dihedral terms~%"))
     (let ((dihedral-energy (chem:get-dihedral-component energy-function)))
       (chem:map-dihedrals nil (lambda (a1 a2 a3 a4)
