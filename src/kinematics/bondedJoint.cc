@@ -264,9 +264,8 @@ string BondedJoint_O::asString() const
 Stub BondedJoint_O::getInputStub() const
 {
   Stub stub;
-  stub.fromFourPoints(this->inputStubJoint0()->position(),
+  stub.fromThreePoints(this->inputStubJoint0()->position(),
                       this->inputStubJoint1()->position(),
-                      this->inputStubJoint0()->position(),
                       this->inputStubJoint2()->position());
   return stub;
 }

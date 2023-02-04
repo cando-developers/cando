@@ -2,9 +2,13 @@
 
 (defvar *started-swank* nil)
 
+(defvar *swank-home* nil
+  "You can set cando-user:*swank-home* in your .clasprc to the pathname where slime is installed to start swank")
+
 (defun start-swank-server (&optional (port 4005))
-  (format t "Checking SLIME_HOME~%")
-  (let* ((slime-home (and (ext:getenv "SLIME_HOME") (probe-file (pathname (ext:getenv "SLIME_HOME"))))))
+  (format t "Checking SLIME_HOME and cando-user:*swank-home*~%")
+  (let ((slime-home (or (and (ext:getenv "SLIME_HOME") (probe-file (pathname (ext:getenv "SLIME_HOME"))))
+                         (and *swank-home* (probe-file (pathname *swank-home*))))))
     (if slime-home
         (let ((swank-loader (probe-file (merge-pathnames "swank-loader.lisp" slime-home))))
           (load swank-loader)

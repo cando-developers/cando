@@ -100,6 +100,7 @@ void bond_angle_to_internal(Joint_sp joint) {
 
 
 void bond_angle_to_external(Joint_sp joint) {
+  printf("%s:%d:%s Calculating\n", __FILE__, __LINE__, __FUNCTION__ );
 #if 0
   BondedJoint_sp bjoint = gc::As<BondedJoint_sp>(joint);
   Joint_sp bondJoint = joint->_Parent;

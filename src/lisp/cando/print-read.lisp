@@ -36,6 +36,7 @@
   (with-input-from-string (sin str)
     (read sin)))
 
+
 (defun save-cando (obj pathname)
   "* Arguments
 - obj :: An object.
@@ -94,3 +95,24 @@ Save the object to the file PATHNAME as an s-expression."
          (progn
            (print-object-readably-with-slots obj stream (quote ,skip-slot-names)))
          (funcall ,print-unreadably obj stream))))
+
+
+#+use-mpi
+(eval-when (:load-toplevel :execute)
+  (setf mpi:*decode-object-hook*
+        (lambda (str)
+          (with-input-from-string (sin str)
+            (let ((*readtable* *cando-reader*))
+              (read sin)))))
+
+  (setf mpi:*encode-object-hook*
+        (lambda (obj)
+          (let ((str (make-array 256 :element-type 'base-char :adjustable t :fill-pointer 0)))
+          (with-output-to-string (fout str)
+            (let ((*print-readably* t)
+                  (*print-pretty* nil)
+                  (*print-circle* t)
+                  (*package* (find-package :keyword)))
+              (cl:print obj fout))
+            (copy-seq str))))))
+

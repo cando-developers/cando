@@ -617,6 +617,10 @@ The caller provided functions should use cl-svg to render additional graphics."
                 (after-render sketch) after-render)
           (values sketch))))))
 
+(defun sketch2d-svg (matter)
+  (let ((sketch (sketch2d matter)))
+    (svg sketch)))
+
 (defun render-svg-scene (sketch-svg)
   (let ((scene (scene sketch-svg)))
     (when (before-render sketch-svg)

@@ -35,7 +35,15 @@
                            collect (geom:vec xpos ypos zpos)))) 
       (format stream "A ~a occurred~%Atoms ~a~%Coordinates: ~a~%" (class-name (class-of condition)) (chem:atoms condition) positions))))
   
-(define-condition chem::linear-atoms-error (error)
+
+(define-condition minimizer-error (error)
+  ((message :initform "There was a minimizer-error" :initarg :message :reader message)
+   (minimizer :initarg :minimizer :reader minimizer)
+   (coordinates :initarg :coordinates :reader coordinates))
+  (:report (lambda (condition stream)
+             (format stream "~a ~a" (class-name (class-of condition)) (message condition)))))
+
+(define-condition chem::linear-atoms-error (chem:minimizer-error)
   ((atoms :initarg :atoms :reader chem:atoms)
    (coordinates :initarg :coordinates :reader coordinates)
    (indices :initarg :indices :reader chem::indices))
@@ -45,13 +53,6 @@
 (define-condition chem:linear-dihedral-error (linear-atoms-error) ())
 (define-condition chem:linear-improper-restraint-error (linear-atoms-error) ())
 
-
-(define-condition minimizer-error (error)
-  ((message :initform "There was a minimizer-error" :initarg :message :reader message)
-   (minimizer :initarg :minimizer :reader minimizer)
-   (coordinates :initarg :coordinates :reader coordinates))
-  (:report (lambda (condition stream)
-             (format stream "~a ~a" (class-name (class-of condition)) (message condition)))))
 
 (define-condition minimizer-exceeded-max-steps (minimizer-error)
   ((number-of-steps :initarg :number-of-steps :accessor number-of-steps))

@@ -70,7 +70,8 @@ Stub ComplexBondedJoint_O::getInputStub() const
   if (this->inputStubJoint1().unboundp()) {
     if (gc::IsA<JumpJoint_sp>(this->parent())) {
       JumpJoint_sp jumpJoint = gc::As_unsafe<JumpJoint_sp>(this->parent());
-      Matrix flipped = jumpJoint->transform().flipXY();
+//      Matrix flipped = jumpJoint->transform().flipXY();
+      Matrix flipped = jumpJoint->transform(); // .flipXY();
       stub.fromMatrix(flipped);
       return stub;
     }
@@ -84,18 +85,17 @@ Stub ComplexBondedJoint_O::getInputStub() const
       Vector3 axisZ = Vector3(0.0,0.0,1.0);
       Vector3 originPX = origin.add(axisX);
       Vector3 originPY = origin.add(axisY);
-      Vector3 originPZ = origin.add(axisZ);
-      stub.fromFourPoints(origin, originPX, originPY, originPZ);
+//      stub.fromFourPoints(origin, originPX, origin, originPY);
+      stub.fromThreePoints(origin, originPX, originPY);
       return stub;
     }
     stub.fromCenterAndRotation( this->inputStubJoint0()->getPosition(), gc::As<JumpJoint_sp>(this->inputStubJoint1())->transform().flipXY());
 //    stub.fromCenterAndRotation( this->inputStubJoint0()->getPosition(), gc::As<JumpJoint_sp>(this->inputStubJoint1())->transform());
     return stub;
   }
-  stub.fromFourPoints(this->inputStubJoint0()->position(),
-                      this->inputStubJoint1()->position(),
-                      this->inputStubJoint0()->position(),
-                      this->inputStubJoint2()->position());
+  stub.fromThreePoints(this->inputStubJoint0()->position(),
+                       this->inputStubJoint1()->position(),
+                       this->inputStubJoint2()->position());
   return stub;
 }
 

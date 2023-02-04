@@ -132,32 +132,40 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
   (let ((stereocenters (cando:gather-stereocenters agg)))
     (sort stereocenters #'string< :key #'chem:get-name)))
 
-(defmacro with-handle-linear-angles-dihedrals (&body body)
-  `(handler-bind
-       ((chem::linear-atoms-error
-          (lambda (condition)
-            (let* ((width 2.0)
-                   (half-width (/ width 2.0)))
-              (loop for atom in (chem:atoms condition)
-                    do (let* ((cp (chem:get-position atom))
-                              (pos (geom:vec
-                                    (+ (- (random width) half-width) (geom:get-x cp))
-                                    (+ (- (random width) half-width) (geom:get-y cp))
-                                    (+ (- (random width) half-width) (geom:get-z cp)))))
-                         (chem:set-position atom pos))))
-            (chem:restart-minimizer))))
-     (progn
-       ,@body)))
+(defmacro with-handle-linear-angles-dihedrals ((&key (max-times 3) verbose) &body body)
+  `(let ((remaining-linear-handles ,max-times))
+     (handler-bind
+         ((chem::linear-atoms-error
+            (lambda (condition)
+              (let* ((width 2.0)
+                     (half-width (/ width 2.0)))
+                (loop for atom in (chem:atoms condition)
+                      do (let* ((cp (chem:get-position atom))
+                                (pos (geom:vec
+                                      (+ (- (random width) half-width) (geom:get-x cp))
+                                      (+ (- (random width) half-width) (geom:get-y cp))
+                                      (+ (- (random width) half-width) (geom:get-z cp)))))
+                           (chem:set-position atom pos))))
+              (when ,verbose (format t "Encountered linear-atoms-error restarting~%"))
+              (decf remaining-linear-handles)
+              (when (> remaining-linear-handles 0)
+                (chem:restart-minimizer)))))
+       (progn
+         ,@body))))
 
 ;; Recover from minimization problems using Common Lisp restarts
-(defun minimize-no-fail (minimizer &key resignal-error)
-  (chem:disable-print-intermediate-results minimizer)
+(defun minimize-no-fail (minimizer &key resignal-error verbose)
+  (if verbose
+      (progn
+        (chem:enable-print-intermediate-results minimizer)
+        (format t "enable-print-intermediate-results ~%"))
+      (chem:disable-print-intermediate-results minimizer))
   (restart-case
       (handler-bind
           ((chem:minimizer-error (lambda (err)
                                    (warn "In minimize-no-fail - the minimizer reported: ~a" err)
                                    (invoke-restart 'cando:skip-rest-of-minimization err))))
-        (with-handle-linear-angles-dihedrals
+        (with-handle-linear-angles-dihedrals (:max-times 3 :verbose verbose)
             (chem:minimize minimizer)))
     ;; skip-rest-of-minimization can also be triggered by the user from the debugger
     (skip-rest-of-minimization (err)
@@ -174,10 +182,14 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
        ,@body)))
 
 ;; Recover from minimization problems using Common Lisp restarts
-(defun minimize-with-restarts (minimizer &key resignal-error)
-  (chem:disable-print-intermediate-results minimizer)
+(defun minimize-with-restarts (minimizer &key resignal-error verbose)
+  (if verbose
+      (progn
+        (chem:enable-print-intermediate-results minimizer)
+        (format t "enable-print-intermediate-results ~%"))
+      (chem:disable-print-intermediate-results minimizer))
   (restart-case
-      (with-handle-linear-angles-dihedrals
+      (with-handle-linear-angles-dihedrals (:verbose verbose)
           (chem:minimize minimizer))
     ;; skip-rest-of-minimization can also be triggered by the user from the debugger
     (skip-rest-of-minimization (err)
@@ -217,7 +229,7 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
   (chem:set-conjugate-gradient-tolerance minimizer cg-tolerance)
   (chem:set-truncated-newton-tolerance minimizer tn-tolerance))
 
-(defun optimize-structure (matter &key active-atoms (turn-off-nonbond t))
+(defun optimize-structure (matter &key active-atoms (turn-off-nonbond t) verbose)
   (let* ((energy-function (chem:make-energy-function :matter matter
                                                      :assign-types t
                                                      :active-atoms active-atoms))
@@ -226,7 +238,7 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
                          :max-sd-steps 5000
                          :max-cg-steps 50000
                          :max-tn-steps 500)
-    (chem:enable-print-intermediate-results min)
+    (when verbose (chem:enable-print-intermediate-results min))
     (when turn-off-nonbond
       (chem:set-option energy-function 'chem::nonbond-term nil)
       (finish-output t)
@@ -237,7 +249,7 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
     (finish-output t))
   matter)
 
-(defun optimize-structure-with-restarts (matter &key active-atoms (turn-off-nonbond t))
+(defun optimize-structure-with-restarts (matter &key active-atoms (turn-off-nonbond t) verbose)
   (let* ((energy-function (chem:make-energy-function :matter matter
                                                      :assign-types t
                                                      :active-atoms active-atoms))
@@ -246,14 +258,18 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
                          :max-sd-steps 5000
                          :max-cg-steps 50000
                          :max-tn-steps 500)
-    (chem:enable-print-intermediate-results min)
+    (when verbose (chem:enable-print-intermediate-results min))
     (when turn-off-nonbond
       (chem:set-option energy-function 'chem::nonbond-term nil)
-      (finish-output t)
-      (minimize-with-restarts min))
+      (when verbose
+        (format t "Optimization with nonbond term off~%")
+        (finish-output t))
+      (minimize-with-restarts min :verbose t))
     (chem:set-option energy-function 'chem:nonbond-term t)
-    (finish-output t)
-    (minimize-with-restarts min)
+    (when verbose
+      (format t "Optimization with nonbond term on~%")
+      (finish-output t))
+    (minimize-with-restarts min :verbose t)
     (finish-output t))
   matter)
 
@@ -422,7 +438,7 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
    :velocity-verlet-function #'chem:sketch-function-velocity-verlet-step
    :frozen frozen))
 
-(defun starting-geometry (agg &key accumulate-coordinates)
+(defun starting-geometry (agg &key accumulate-coordinates verbose)
   "Rapidly calculate a starting geometry for the single molecule in the aggregate"
   (unless (= (chem:content-size agg) 1)
     (format t "The aggregate must have a single molecule.")
@@ -448,11 +464,11 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
       ;; Everything interesting happens in 1000 steps
       (dotimes (i 1000) (advance-simulation dynamics :frozen nil)))
     (dynamics:write-coordinates-back-to-matter dynamics)
-    (optimize-structure agg :turn-off-nonbond nil)
+    (optimize-structure agg :turn-off-nonbond nil :verbose verbose)
     dynamics
     ))
 
-(defun starting-geometry-with-restarts (agg &key accumulate-coordinates)
+(defun starting-geometry-with-restarts (agg &key accumulate-coordinates verbose)
   "Rapidly calculate a starting geometry for the single molecule in the aggregate"
   (unless (= (chem:content-size agg) 1)
     (format t "The aggregate must have a single molecule.")
@@ -472,13 +488,17 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
     (chem:disable (chem:get-point-to-line-restraint-component sketch-function))
     (apply #'chem:setf-velocity-scale sketch-function *stage1-flatten-force-components*)
     ;; stage 1  step 0 - 1999
+    (when verbose
+      (format t "Generating starting structure~%"))
     (progn
       (prepare-stage1-sketch-function sketch-function)
       (chem:set-scale-sketch-nonbond energy-sketch-nonbond *stage1-nonbond-constant*)
       ;; Everything interesting happens in 1000 steps
       (dotimes (i 1000) (advance-simulation dynamics :frozen nil)))
     (dynamics:write-coordinates-back-to-matter dynamics)
-    (optimize-structure-with-restarts agg :turn-off-nonbond nil)
+    (when verbose
+      (format t "Optimizing structure~%"))
+    (optimize-structure-with-restarts agg :turn-off-nonbond nil :verbose verbose)
     dynamics
     ))
 

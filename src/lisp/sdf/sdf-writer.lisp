@@ -4,9 +4,12 @@
   (with-open-file (fout filename :direction :output :if-exists :supersede)
     (write-sdf-stream aggregate fout)))
 
-(defun write-sdf-stream (aggregate stream &key name)
+(defun write-sdf-stream (aggregate stream &key name data-items)
   #+(or)(warn "write-sdf-stream doesn't handle charges properly yet")
-  (format stream "~a~%                    3D~%Structure written by Cando.~%"
+  (format stream "~a~%~a~%Source - Cando.~%"
+          (if name
+              name
+              (string (chem:get-name aggregate)))
           (if name
               name
               (string (chem:get-name aggregate))))
@@ -56,13 +59,10 @@
                                   0
                                   0)))
                       aggregate)
-      (format stream "M  END
-> <ID>
-CHEMBL1078774
+      (format stream "M  END~%")
+      (loop for data-item in data-items
+            do (format stream "> <~a>~%" (car data-item))
+            do (format stream "~a~%" (cdr data-item))
+            do (format stream "~%"))
+      (format stream "$$$$~%"))))
 
-> <IC50[nM]>
-17
-
-$$$$~%"))))
-                
-                        

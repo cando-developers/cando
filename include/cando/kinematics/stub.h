@@ -45,20 +45,30 @@ public: // Functions here
 
   Stub(const Matrix& mat) { this->_Transform = mat;};
 
+#if 0
   Stub(Vector3 const& v1,
        Vector3 const& v2,
        Vector3 const& v3,
        Vector3 const& v4);
-
+#endif
 	/*! Return true if the stub is orthogonal to the tolerance (tol) */
   bool isOrthogonal(double tol) const;
 
   Matrix const& getTransform() const { return this->_Transform;};
 
-	/*! Define a stub from four Joints
+	/*! Define a stub from three Joints a,b,c
+	  Orthogonal coordinate frame contains three unit vectors by column,
+	  the first one is the unit vector from b Joint to a
+	  the second is the unit vector in the plane defined by vector b->a and  c->a
+	  and the third is the cross product of the first two. */
+  void fromThreePoints( Vector3 const& a,
+                        Vector3 const& b,
+                        Vector3 const& c );
+
+  	/*! Define a stub from four Joints
 	  A center and three Joints a,b,c
 	  Orthogonal coordinate frame contains three unit vectors by column,
-	  the first one is the unit vector from b Jointing to a
+	  the first one is the unit vector from a Joint to b
 	  the second is the unit vector in the plane defined by vector b->a and perpendicular to b->a
 	  and the third is the cross product of the first two. */
   void fromFourPoints(Vector3 const& center,

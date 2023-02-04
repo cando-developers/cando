@@ -695,6 +695,7 @@ core::T_mv CandoDatabase_O::findTopology(core::T_sp name, bool errorp) const {
 }
 
 DOCGROUP(cando);
+CL_LAMBDA(name &optional errorp);
 CL_DEFUN core::T_mv chem__findTopology(core::T_sp name, bool errorp) {
   CandoDatabase_sp cdb = chem::getCandoDatabase();
   return cdb->findTopology(name, errorp);

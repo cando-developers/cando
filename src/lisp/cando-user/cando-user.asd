@@ -20,6 +20,7 @@
   :serial t
   :components ((:file "packages")
                (:file "start-swank")
+               (:file "sharp-bang-subshell")
                (:file "graphviz")
                (:file "cl-jupyter")
                (:file "extension")))

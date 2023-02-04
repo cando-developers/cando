@@ -61,8 +61,7 @@
                 (list x y z label (mapcar #'second nrest))))
 
 (esrap:defrule bond-line
-    (and number/s number/s number/s number/s number (+ (and parser.common-rules:whitespace+ number))
-         parser.common-rules:whitespace*)
+    (and digits3 digits3 digits3 digits3 digits3 digits3 parser.common-rules:whitespace*)
   (:lambda (x)
     x))
 
@@ -86,11 +85,23 @@
   (:lambda (data)
     data))
 
-(esrap:defrule header-line
-    (and number/s number/s number/s number/s number/s number/s (+ number/s) "V2000"))
+(esrap:defrule digit-or-space
+    (or #\space #\0 #\1 #\2 #\3 #\4 #\5 #\6 #\7 #\8 #\9)
+  (:lambda (data)
+    (if (string= data " ")
+        0
+        (parse-integer data :junk-allowed t))))
+
+(esrap:defrule digits3
+    (and digit-or-space digit-or-space digit-or-space)
+  (:destructure (d0 d1 d2)
+                (+ (* 100 d0) (* 10 d1) d2)))
+
+(esrap:defrule count-line
+    (and digits3 digits3 digits3 digits3 digits3 digits3 (* #\space) (+ number/s) "V2000"))
 
 #|
-(esrap:parse 'header-line "8  8  0  0  0  0  0  0  0  0999 V2000")
+(esrap:parse 'count-line "8  8  0  0  0  0  0  0  0  0999 V2000")
 (esrap:parse 'atom-line "  0.0000    4.9000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0")
 |#
 
@@ -150,15 +161,15 @@
            (name (terminating-read-line sin))
            (blank1 (terminating-read-line sin))
            (blank2 (terminating-read-line sin))
-           (header-line (string-trim '(#\space) (terminating-read-line sin)))
-           (header (esrap:parse 'header-line header-line))
+           (count-line (terminating-read-line sin))
+           (header (esrap:parse 'count-line count-line))
            (num-atoms (first header))
            (num-bonds (second header))
            (atoms (loop for atom-index below num-atoms
                         for line = (string-trim '(#\space) (terminating-read-line sin))
                         collect (esrap:parse 'atom-line line)))
            (bonds (loop for bond-index below num-bonds
-                        for line = (string-trim '(#\space) (terminating-read-line sin))
+                        for line = (terminating-read-line sin)
                         collect (esrap:parse 'bond-line line)))
            (atom-vector (build-atom-vector atoms bonds)))
       ;; parse the M lines

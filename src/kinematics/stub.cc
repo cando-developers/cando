@@ -34,6 +34,7 @@ namespace kinematics
 // ----------------------------------------------------------------------
 //
 
+#if 0
 Stub::Stub(Vector3 const& center,
            Vector3 const& a,
            Vector3 const& b,
@@ -41,7 +42,7 @@ Stub::Stub(Vector3 const& center,
 {
   this->fromFourPoints(center,a,b,c);
 }
-
+#endif
 
 
 bool Stub::isOrthogonal(double tol) const
@@ -50,6 +51,33 @@ bool Stub::isOrthogonal(double tol) const
 }
 
 
+/** Generate a Stub using four points centered on center.
+    The Stub axes are e1_ = normalized(b-a).
+                      e3_ = normalized(crossProduct(e1_,(c-a)))
+                      e2_ = crossProduct(e3_,e1_)
+    Stub is colX(e1).colY(e2).colZ(e3).setTranslate(a)
+*/
+void Stub::fromThreePoints(Vector3 const& a,
+                           Vector3 const& b,
+                           Vector3 const& c)
+{
+  LOG(("a = %s") , a.asString());
+  LOG(("b = %s") , b.asString());
+  LOG(("c = %s") , c.asString());
+  Vector3 e1(b-a);
+  e1 = e1.normalized();
+  LOG(("e1 = (b-a).normalized : %s") , e1.asString() );
+  Vector3 e3(e1.crossProduct(c-a));
+  e3 = e3.normalized();
+  LOG(("e3 = (e1.crossProduct(c-b)).normalized : %s") , e3.asString() );
+  Vector3 e2(e3.crossProduct(e1));
+  LOG(("e2 = (e3.crossProduct(e1)): %s") , e2.asString() );
+  LOG(("Stub before being set: %s") , this->_Transform.asStringFormatted());
+  this->_Transform.colX(e1).colY(e2).colZ(e3).setTranslate(a);
+  LOG(("Stub = \n%s") , this->_Transform.asStringFormatted());
+}
+
+#if 0
 /** Generate a Stub using four points centered on center.
     The Stub axes are e1_ = normalized(a-b).
                       e3_ = normalized(crossProduct(e1_,(c-b)))
@@ -77,6 +105,7 @@ void Stub::fromFourPoints(Vector3 const& center,
   this->_Transform.colX(e1).colY(e2).colZ(e3).setTranslate(center);
   LOG(("Stub = \n%s") , this->_Transform.asStringFormatted());
 }
+#endif
 
 
 #if 0

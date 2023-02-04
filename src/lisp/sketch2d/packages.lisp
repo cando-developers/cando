@@ -47,4 +47,4 @@
    #:width
    #:sketch2d*
    #:scene
-   ))
+   #:sketch2d-svg))
