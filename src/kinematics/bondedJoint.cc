@@ -93,11 +93,11 @@ CL_DEFMETHOD Joint_sp BondedJoint_O::inputStubJoint1() const { return this->pare
 CL_DEFMETHOD Joint_sp BondedJoint_O::inputStubJoint2() const { return this->parent()->parent()->parent(); };
 
 
-CL_LAMBDA(atom-id &optional name);
+CL_LAMBDA(atom-id name atom-table);
 CL_LISPIFY_NAME("make_BondedJoint");
 CL_DEF_CLASS_METHOD
-BondedJoint_sp BondedJoint_O::make(const chem::AtomId& atomId, core::T_sp name) {
-  return gctools::GC<BondedJoint_O>::allocate(atomId,name);
+BondedJoint_sp BondedJoint_O::make(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable) {
+  return gctools::GC<BondedJoint_O>::allocate(atomId,name,atomTable);
 }
 
 
@@ -147,31 +147,31 @@ void BondedJoint_O::_releaseAllChildren()
   this->_NumberOfChildren = 0;
 }
 
-void BondedJoint_O::_updateInternalCoord()
+void BondedJoint_O::_updateInternalCoord(chem::NVector_sp coords)
 {
   KIN_LOG(" <<< %s\n" , _rep_(this->asSmartPtr()));
 //	using numeric::x_rotation_matrix_radians;
 //	using numerioc::z_rotation_matrix_radians;
 //	using numeric::constants::d::pi;
   Joint_sp jC = this->parent();
-  Vector3 C = jC->position();
-  this->_Distance = geom::calculateDistance(this->_Position,C);
+  Vector3 C = jC->position(coords);
+  this->_Distance = geom::calculateDistance(this->position(coords),C);
   KIN_LOG("Calculated _Distance = %lf\n" , this->_Distance );
   if (gc::IsA<BondedJoint_sp>(jC) && gc::IsA<BondedJoint_sp>(jC->parent())) { // don't move past JumpJoint_O nodes
     KIN_LOG("!gc::IsA<JumpJoint_sp>(jC)   jC = %s\n" , _rep_(jC));
     Joint_sp jB = jC->parent();
-    Vector3 B = jB->position();
-    this->_Theta = geom::calculateAngle(this->_Position,C,B); // Must be from incoming direction
+    Vector3 B = jB->position(coords);
+    this->_Theta = geom::calculateAngle(this->position(coords),C,B); // Must be from incoming direction
     KIN_LOG("_Theta = %lf\n" , (this->_Theta/0.0174533));
     Joint_sp jA = jB->parent();
-    Vector3 A = jA->position();
-    double phi = geom::calculateDihedral(this->_Position,C,B,A);
+    Vector3 A = jA->position(coords);
+    double phi = geom::calculateDihedral(this->position(coords),C,B,A);
     this->setPhi(phi);
     KIN_LOG(("_Phi = %lf\n") , (this->_Phi/0.0174533));
     return;
   }
 #if 1
-  internalCoordinatesFromPointAndCoordinateSystem(this->getPosition(),this->getInputStub()._Transform,
+  internalCoordinatesFromPointAndCoordinateSystem(this->position(coords),this->getInputStub(coords)._Transform,
                                                   this->_Distance, this->_Theta, this->_Phi );
 #else
   KIN_LOG(("gc::IsA<JumpJoint_sp>(jC)   jC = %s\n") , _rep_(jC));
@@ -183,7 +183,7 @@ void BondedJoint_O::_updateInternalCoord()
   KIN_LOG(("x = %s\n") , x.asString());
   KIN_LOG(("y = %s\n") , y.asString());
   KIN_LOG(("z = %s\n") , z.asString());
-  Vector3 D = this->getPosition();
+  Vector3 D = this->position(coords);
   Vector3 CD = D - C;
   double lengthCD = CD.length();
   if (lengthCD<SMALL_NUMBER) SIMPLE_ERROR(("About to divide by zero"));
@@ -261,41 +261,41 @@ string BondedJoint_O::asString() const
     (2)    <BondedJoint_sp>(B) <JumpJoint_sp>(A)
     (3)    <JumpJoint_sp>(A)
 */
-Stub BondedJoint_O::getInputStub() const
+Stub BondedJoint_O::getInputStub(chem::NVector_sp coords) const
 {
   Stub stub;
-  stub.fromThreePoints(this->inputStubJoint0()->position(),
-                      this->inputStubJoint1()->position(),
-                      this->inputStubJoint2()->position());
+  stub.fromThreePoints(this->inputStubJoint0()->position(coords),
+                      this->inputStubJoint1()->position(coords),
+                      this->inputStubJoint2()->position(coords));
   return stub;
 }
 
 
-void BondedJoint_O::_updateChildrenXyzCoords() {
+void BondedJoint_O::_updateChildrenXyzCoords(chem::NVector_sp coords) {
   if (this->_numberOfChildren()>0) {
     int firstNonJumpIndex = this->firstNonJumpChildIndex();
     for ( int ii=0; ii < firstNonJumpIndex; ii++) {
-      Stub jstub = this->_child(ii)->getInputStub();
+      Stub jstub = this->_child(ii)->getInputStub(coords);
     // I should ratchet the newStub around the X axis and use relative dihedral
-      this->_child(ii)->_updateXyzCoord(jstub);
+      this->_child(ii)->_updateXyzCoord(coords,jstub);
     // ratchet newStub
 //    this->_DofChangePropagatesToYoungerSiblings = false;
       this->noteXyzUpToDate();
     }
-    Stub stub = this->_child(firstNonJumpIndex)->getInputStub();
+    Stub stub = this->_child(firstNonJumpIndex)->getInputStub(coords);
     for ( int ii=firstNonJumpIndex; ii < this->_numberOfChildren(); ii++) {
     // I should ratchet the stub around the X axis and use relative dihedral
-      this->_child(ii)->_updateXyzCoord(stub);
+      this->_child(ii)->_updateXyzCoord(coords,stub);
 //    this->_DofChangePropagatesToYoungerSiblings = false;
       this->noteXyzUpToDate();
     }
     for ( int ii=0; ii < this->_numberOfChildren(); ii++) {
-      this->_child(ii)->_updateChildrenXyzCoords();
+      this->_child(ii)->_updateChildrenXyzCoords(coords);
     }
   }
 }
 
-void BondedJoint_O::_updateXyzCoord(Stub& stub)
+void BondedJoint_O::_updateXyzCoord(chem::NVector_sp coords, Stub& stub)
 {
       // https://math.stackexchange.com/questions/133177/finding-a-unit-vector-perpendicular-to-another-vector
   KIN_LOG(("stub = \n%s\n") , stub._Transform.asString());
@@ -305,7 +305,7 @@ void BondedJoint_O::_updateXyzCoord(Stub& stub)
   Vector3 d2;
 //  printf("%s:%d:%s Calculating position for joint %s\n", __FILE__, __LINE__, __FUNCTION__, _rep_(this->_Name).c_str());
 //  printf("%s:%d:%s distance = %lf  angle_deg = %lf   dihedral_deg = %lf\n", __FILE__, __LINE__, __FUNCTION__, this->_Distance, this->_Theta/0.0174533, this->_Phi/0.0174533 );
-  this->_Position = pointFromMatrixAndInternalCoordinates(stub._Transform,this->_Distance, bcTheta, this->_Phi, d2 );
+  this->setPosition(coords,pointFromMatrixAndInternalCoordinates(stub._Transform,this->_Distance, bcTheta, this->_Phi, d2 ));
 //  printf("%s:%d:%s d2 = %lf, %lf, %lf\n", __FILE__, __LINE__, __FUNCTION__, d2.getX(), d2.getY(), d2.getZ() );
   Vector3 colX = stub._Transform.colX();
   Vector3 colY = stub._Transform.colY();
@@ -321,14 +321,14 @@ void BondedJoint_O::_updateXyzCoord(Stub& stub)
   double sinPhi = std::sin(this->_Phi);
   Vector3 d2(this->_Distance*cosTheta,this->_Distance*cosPhi*sinTheta,this->_Distance*sinPhi*sinTheta);
   KIN_LOG(("d2 = %s\n") , d2.asString());
-  this->_Position = stub._Transform * d2;
-  KIN_LOG(("this->_Position = %s\n") , this->_Position.asString());
+  this->setPosition(coords, stub._Transform * d2);
+  KIN_LOG(("this->position(coords) = %s\n") , this->position(coords).asString());
 #endif
 }
 
-CL_DEFMETHOD void BondedJoint_O::updateXyzCoord() {
-  Stub stub = this->getInputStub();
-  this->_updateXyzCoord(stub);
+CL_DEFMETHOD void BondedJoint_O::updateXyzCoord(chem::NVector_sp coords) {
+  Stub stub = this->getInputStub(coords);
+  this->_updateXyzCoord(coords,stub);
 }
 
 

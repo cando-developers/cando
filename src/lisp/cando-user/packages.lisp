@@ -33,7 +33,7 @@
            #:loadPdb
            #:jupyterlab-fork-server
            #:force-field-viewer
-           #:*swank-home*
+           #:*slime-home*
            )
   )
 

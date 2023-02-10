@@ -33,25 +33,25 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace kinematics
 {
-  typedef void(*CoordinateCalculator)(Joint_sp joint);
+  typedef void(*CoordinateCalculator)(chem::NVector_sp coords, Joint_sp joint);
 
-  void noop_to_external(Joint_sp joint);
-  void noop_to_internal(Joint_sp joint);
+  void noop_to_external(chem::NVector_sp coords, Joint_sp joint);
+  void noop_to_internal(chem::NVector_sp coords, Joint_sp joint);
   
-  void origin_to_external(Joint_sp joint);
-  void origin_to_internal(Joint_sp joint);
+  void origin_to_external(chem::NVector_sp coords, Joint_sp joint);
+  void origin_to_internal(chem::NVector_sp coords, Joint_sp joint);
 
-  void bond_to_external(Joint_sp joint);
-  void bond_to_internal(Joint_sp joint);
+  void bond_to_external(chem::NVector_sp coords, Joint_sp joint);
+  void bond_to_internal(chem::NVector_sp coords, Joint_sp joint);
   
-  void bond_angle_to_external(Joint_sp joint);
-  void bond_angle_to_internal(Joint_sp joint);
+  void bond_angle_to_external(chem::NVector_sp coords, Joint_sp joint);
+  void bond_angle_to_internal(chem::NVector_sp coords, Joint_sp joint);
   
-  void bond_angle_dihedral_to_external(Joint_sp joint);
-  void bond_angle_dihedral_to_internal(Joint_sp joint);
+  void bond_angle_dihedral_to_external(chem::NVector_sp coords, Joint_sp joint);
+  void bond_angle_dihedral_to_internal(chem::NVector_sp coords, Joint_sp joint);
   
-  void general_to_external(Joint_sp joint);
-  void general_to_internal(Joint_sp joint);
+  void general_to_external(chem::NVector_sp coords, Joint_sp joint);
+  void general_to_internal(chem::NVector_sp coords, Joint_sp joint);
 }
 
 #endif

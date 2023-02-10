@@ -36,11 +36,11 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace kinematics
 {
 
-CL_LAMBDA(atom-id &optional name);
+CL_LAMBDA(atom-id name atom-table);
 CL_LISPIFY_NAME("make_JumpJoint");
 CL_DEF_CLASS_METHOD
-JumpJoint_sp JumpJoint_O::make(const chem::AtomId& atomId, core::T_sp name) {
-  return gctools::GC<JumpJoint_O>::allocate(atomId, name);
+JumpJoint_sp JumpJoint_O::make(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable) {
+  return gctools::GC<JumpJoint_O>::allocate(atomId, name, atomTable);
 }
 
 void JumpJoint_O::fields(core::Record_sp node) {
@@ -80,14 +80,14 @@ void JumpJoint_O::_releaseAllChildren()
 }
 
 
-void JumpJoint_O::_updateInternalCoord()
+void JumpJoint_O::_updateInternalCoord(chem::NVector_sp coords)
 {
-#if 0
   KIN_LOG((" <<< %s\n") , _rep_(this->asSmartPtr()));
-  Vector3 O = this->_Position;
+#if 0
+  Vector3 O = this->position(coords);
   if (this->_numberOfChildren()>=2) {
-    Vector3 A = this->_child(0)->_Position;
-    Vector3 B = this->_child(1)->_Position;
+    Vector3 A = this->_child(0)->position(coords);
+    Vector3 B = this->_child(1)->position(coords);
     Vector3 OA = A - O;
     double lengthOA = OA.length();
     if (lengthOA<1e-6) SIMPLE_ERROR(("You are about to divide by zero"));
@@ -109,7 +109,7 @@ void JumpJoint_O::_updateInternalCoord()
     this->_ParentRelativeTransform = labFrame*parentInverted;
     KIN_LOG("relativeTransform = \n%s\n" , this->_ParentRelativeTransform.asString());
   } else if (this->_numberOfChildren()==1) {
-    Vector3 A = this->_child(0)->_Position;
+    Vector3 A = this->_child(0)->position(coords);
     Vector3 OA = A - O;
     double lengthOA = OA.length();
     if (lengthOA<1e-6) SIMPLE_ERROR(("You are about to divide by zero"));
@@ -152,38 +152,38 @@ bool JumpJoint_O::keepDofFixed(DofType dof) const
 }
 
 
-void JumpJoint_O::_updateXyzCoord(Stub& stub)
+void JumpJoint_O::_updateXyzCoord(chem::NVector_sp coords, Stub& stub)
 {
   ASSERTF(stub.isOrthogonal(1e-3),("Stub is not orthogonal - stub:\n%s") , stub.asString());
   this->_LabFrame = stub._Transform.multiplyByMatrix(this->_ParentRelativeTransform);
-  this->position(this->_LabFrame.getTranslation());
+  this->setPosition(coords,this->_LabFrame.getTranslation());
   KIN_LOG(("LabFrame.getTranslation() = %s\n") , this->_LabFrame.getTranslation().asString());
 }
 
-void JumpJoint_O::updateXyzCoord()
+void JumpJoint_O::updateXyzCoord(chem::NVector_sp coords)
 {
   Stub newStub;
   newStub._Transform = this->_LabFrame;
-  this->_updateXyzCoord(newStub);
+  this->_updateXyzCoord(coords,newStub);
 }
 
     /*! Update the external coordinates using the input stub */
-void JumpJoint_O::_updateChildrenXyzCoords()
+void JumpJoint_O::_updateChildrenXyzCoords(chem::NVector_sp coords)
 {
   Stub newStub;
   newStub._Transform = this->_LabFrame;
   for ( int ii=0; ii < this->_numberOfChildren(); ii++) {
-    this->_child(ii)->_updateXyzCoord(newStub);
+    this->_child(ii)->_updateXyzCoord(coords,newStub);
     // ratchet newStub
 //    this->_DofChangePropagatesToYoungerSiblings = false;
     this->noteXyzUpToDate();
   }
   for ( int ii=0; ii < this->_numberOfChildren(); ii++) {
-    this->_child(ii)->_updateChildrenXyzCoords();
+    this->_child(ii)->_updateChildrenXyzCoords(coords);
   }
 }
 
-Stub JumpJoint_O::getInputStub() const {
+Stub JumpJoint_O::getInputStub(chem::NVector_sp coords) const {
   Stub jj;
   jj._Transform = this->_LabFrame;
   return jj;

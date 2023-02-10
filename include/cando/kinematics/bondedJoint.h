@@ -56,7 +56,7 @@ FORWARD(BondedJoint);
 	Real		_Distance;
 	bool		_DofChangePropagatesToYoungerSiblings;
     public:
-      static BondedJoint_sp make(const chem::AtomId& atomId, core::T_sp name);
+      static BondedJoint_sp make(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable );
     public:
 	/*! Bonded atoms can have different numbers of children wrt JumpJoints */
 	virtual int _maxNumberOfChildren() const { return MaxChildren;};
@@ -78,7 +78,7 @@ FORWARD(BondedJoint);
 
     public:
     BondedJoint_O() : Joint_O(), _NumberOfChildren(0), _Children{unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>(),unbound<Joint_O>()} {};
-    BondedJoint_O(const chem::AtomId& atomId, core::T_sp name) : Joint_O(atomId,name), _NumberOfChildren(0) {};
+      BondedJoint_O(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable) : Joint_O(atomId,name,atomTable), _NumberOfChildren(0) {};
 
 	virtual core::Symbol_sp typeSymbol() const;
 
@@ -91,22 +91,22 @@ FORWARD(BondedJoint);
 	/*! Return the stubJoint3 */
       virtual Joint_sp inputStubJoint2() const;
 
-      virtual void _updateInternalCoord();
+      virtual void _updateInternalCoord(chem::NVector_sp coords);
 
 	bool keepDofFixed(DofType dof) const;
 
 
 	string asString() const;
 
-      void _updateChildrenXyzCoords();
+      void _updateChildrenXyzCoords(chem::NVector_sp coords);
 
 	/*! Update the external coordinates using the input stub */
-      virtual void _updateXyzCoord(Stub& stub);
+      virtual void _updateXyzCoord(chem::NVector_sp coords,Stub& stub);
 
       /*! Get the stub and update the XYZ coordinate */
-      void updateXyzCoord();
+      void updateXyzCoord(chem::NVector_sp coords);
       
-      virtual Stub getInputStub() const;
+      virtual Stub getInputStub(chem::NVector_sp coords) const;
 
 	/*! Geta the value of the DOF */
 	double dof(DofType const& dof) const;

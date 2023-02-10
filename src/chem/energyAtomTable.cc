@@ -190,13 +190,55 @@ CL_DEFMETHOD size_t AtomTable_O::getCoordinateIndex(Atom_sp a)
   return ea->coordinateIndexTimes3();
 }
 
+CL_DOCSTRING("Read coordinates from atoms into an NVector of coordinates");
+CL_DEFMETHOD void AtomTable_O::readAtomCoordinates(NVector_sp coords) const
+{
+  if (coords->length() != this->getNVectorSize()) {
+    SIMPLE_ERROR("The passed NVector has length %d but the atom-table needs length %d", coords->length(), this->getNVectorSize() );
+  }
+  int len = coords->length();
+  this->_AtomTableIndices->mapHash( [len,&coords] (core::T_sp key, core::T_sp value) {
+    int indexX3 = value.unsafe_fixnum()*3;
+#ifdef DEBUG_ASSERT
+    if ((indexX3%3) || indexX3>=len) SIMPLE_ERROR("indexX3 %d not multiple of 3 or out of range %d", indexX3, len);
+#endif
+    Atom_sp atom = gc::As_unsafe<Atom_sp>(key);
+    Vector3 pos = atom->getPosition();
+    (*coords)[indexX3+0] = pos.getX();
+    (*coords)[indexX3+1] = pos.getY();
+    (*coords)[indexX3+2] = pos.getZ();
+  });
+}
+
+CL_DOCSTRING("Write coordinates into atoms from an NVector of coordinates");
+CL_DEFMETHOD void AtomTable_O::writeAtomCoordinates(NVector_sp coords)
+{
+  if (coords->length() != this->getNVectorSize()) {
+    SIMPLE_ERROR("The passed NVector has length %d but the atom-table needs length %d", coords->length(), this->getNVectorSize() );
+  }
+  int len = coords->length();
+  this->_AtomTableIndices->mapHash( [len,&coords] (core::T_sp key, core::T_sp value) {
+    int indexX3 = value.unsafe_fixnum()*3;
+#ifdef DEBUG_ASSERT
+    if ((indexX3%3) || indexX3>=len) SIMPLE_ERROR("indexX3 %d not multiple of 3 or out of range %d", indexX3, len);
+#endif
+    Atom_sp atom = gc::As_unsafe<Atom_sp>(key);
+    Vector3 pos ((*coords)[indexX3+0],
+                 (*coords)[indexX3+1],
+                 (*coords)[indexX3+2]);
+    atom->setPosition(pos);
+  });
+}
+
+
+      
 CL_DEFMETHOD size_t AtomTable_O::getCoordinateIndexForAtomAtIndex(size_t index)
 {
   if (index<this->_Atoms.size()) {
     EnergyAtom& ea = this->_Atoms[index];
     return this->getCoordinateIndex(ea._SharedAtom);
   }
-  SIMPLE_ERROR(("Atom index %d is out of range (0...%d)") , this->_Atoms.size());
+  SIMPLE_ERROR(("Atom index %d is out of range (0...%d)") , index, this->_Atoms.size());
 }
 
 CL_DEFMETHOD core::HashTableEq_sp AtomTable_O::getAtomTableIndices() {

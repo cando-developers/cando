@@ -117,6 +117,12 @@ CL_DEFMETHOD double	ScoringFunction_O::evaluateEnergyForce( NVector_sp pos, bool
   return energy;
 }
 
+CL_DEFMETHOD NVector_sp ScoringFunction_O::makeCoordinates() const
+{
+  NVector_sp pos = NVector_O::make(this->getNVectorSize(),0.0,true);
+  return pos;
+};
+
 
 CL_LISPIFY_NAME("evaluateEnergyForceFullHessian");
 CL_DEFMETHOD double	ScoringFunction_O::evaluateEnergyForceFullHessian(

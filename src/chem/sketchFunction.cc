@@ -166,7 +166,7 @@ Matter_sp SketchFunction_O::getMatter() {
   return gc::As<Matter_sp>(this->_Graph);
 }
 
-size_t SketchFunction_O::getNVectorSize() 
+size_t SketchFunction_O::getNVectorSize() const
 {
   core::T_sp tsize = core::eval::funcall(_sym_node_table_size,this->_NodeTable);
   if (tsize.fixnump()) {

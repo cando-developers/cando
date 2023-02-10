@@ -153,7 +153,7 @@ void Joint_O::fields(core::Record_sp node) {
   node->field_if_not_unbound(INTERN_(kw,parent),this->_Parent);
   node->field(INTERN_(kw,name),this->_Name); // name
   node->field(INTERN_(kw,id),this->_Id);
-  node->field(INTERN_(kw,pos),this->_Position);
+  node->field(INTERN_(kw,posIndexX3),this->_PositionIndexX3);
 }
 
 CL_NAME(KIN:JOINT/NAME);
@@ -178,7 +178,7 @@ string Joint_O::asString() const
     }
   }
   ss << std::endl;
-  ss << "Position: " << this->_Position.asString() << std::endl;
+  ss << "PositionIndexX3: " << this->_PositionIndexX3 << std::endl;
   return ss.str();
 }
 
@@ -346,15 +346,28 @@ CL_DEFMETHOD core::List_sp Joint_O::jointChildren() const
     */
 
 
-CL_DEFMETHOD Vector3 Joint_O::getPosition() const
+CL_DEFMETHOD Vector3 Joint_O::position(chem::NVector_sp coords) const
 {
-  Vector3 pos = this->_Position;
-  return pos;
+  if (this->_PositionIndexX3>=0 && this->_PositionIndexX3 <coords->length()) {
+    Vector3 pos(  (*coords)[this->_PositionIndexX3+0],
+                  (*coords)[this->_PositionIndexX3+1],
+                  (*coords)[this->_PositionIndexX3+2]);
+    return pos;
+  }
+  SIMPLE_ERROR("Out of range Joint_O::position %s at %d when coord length is %lu _EndPositionIndexX3 = %d",
+               _rep_(this->asSmartPtr()), this->_PositionIndexX3, coords->length(), this->_EndPositionIndexX3);
 }
 
-CL_DEFMETHOD void Joint_O::setPosition(const Vector3& pos)
+CL_DEFMETHOD void Joint_O::setPosition(chem::NVector_sp coords,const Vector3& pos)
 {
-  this->_Position = pos;
+  if (this->_PositionIndexX3>=0 && this->_PositionIndexX3 <coords->length()) {
+    (*coords)[this->_PositionIndexX3+0] = pos.getX();
+    (*coords)[this->_PositionIndexX3+1] = pos.getY();
+    (*coords)[this->_PositionIndexX3+2] = pos.getZ();
+    return;
+  }
+  SIMPLE_ERROR("Out of range Joint_O::setPosition %s at %d when coord length is %lu _EndPositionIndexX3 = %d",
+               _rep_(this->asSmartPtr()), this->_PositionIndexX3, coords->length(), this->_EndPositionIndexX3);
 }
 
 
@@ -409,6 +422,17 @@ CL_DEFMETHOD void Joint_O::walkChildren(core::Function_sp callback)
   }
 }
 
+SYMBOL_EXPORT_SC_(KinPkg,joint_calculate_position_index);
+int Joint_O::calculatePositionIndex(chem::AtomTable_sp atomTable) {
+  core::T_sp index = core::eval::funcall(_sym_joint_calculate_position_index, this->asSmartPtr(), atomTable);
+  if (index.fixnump()) {
+    int indexX3 = index.unsafe_fixnum()*3;
+    return indexX3;
+  }
+  SIMPLE_ERROR("joint-calculate-position-index did not return a fixnum");
+}
+
+
 CL_DEFUN void kin__walk(Joint_sp joint, core::Function_sp callback) {
   core::eval::funcall(callback, joint);
   joint->walkChildren(callback);
@@ -426,55 +450,55 @@ void Joint_O::walkResidueTree(int residueId, core::Function_sp callback)
   }
 }
 
-CL_DEFMETHOD void Joint_O::updateInternalCoord()
+CL_DEFMETHOD void Joint_O::updateInternalCoord(chem::NVector_sp coords)
 {
-  this->_updateInternalCoord();
+  this->_updateInternalCoord(coords);
 }
 
-CL_DEFMETHOD void Joint_O::updateInternalCoords()
+CL_DEFMETHOD void Joint_O::updateInternalCoords(chem::NVector_sp coords)
 {
-  this->_updateInternalCoord();
+  this->_updateInternalCoord(coords);
   for (int childIdx=0; childIdx<this->_numberOfChildren(); childIdx++ ) {
-    this->_child(childIdx)->updateInternalCoords();
+    this->_child(childIdx)->updateInternalCoords(coords);
   }
 }
 
-void Joint_O::_updateChildrenXyzCoords() {
+void Joint_O::_updateChildrenXyzCoords(chem::NVector_sp coords) {
   for ( int ii=0; ii < this->_numberOfChildren(); ii++) {
-    Stub stub = this->_child(ii)->getInputStub();
+    Stub stub = this->_child(ii)->getInputStub(coords);
     // I should ratchet the newStub around the X axis and use relative dihedral
-    this->_child(ii)->_updateXyzCoord(stub);
+    this->_child(ii)->_updateXyzCoord(coords,stub);
     // ratchet newStub
 //    this->_DofChangePropagatesToYoungerSiblings = false;
     this->noteXyzUpToDate();
   }
   for ( int ii=0; ii < this->_numberOfChildren(); ii++) {
-    this->_child(ii)->_updateChildrenXyzCoords();
+    this->_child(ii)->_updateChildrenXyzCoords(coords);
   }
 }
 
 
-CL_DEFMETHOD void Joint_O::updateXyzCoord()
+CL_DEFMETHOD void Joint_O::updateXyzCoord(chem::NVector_sp coords)
 {
   KIN_LOG("base method\n");
-  Stub stub = this->getInputStub();
-  this->_updateXyzCoord(stub);
+  Stub stub = this->getInputStub(coords);
+  this->_updateXyzCoord(coords,stub);
 }
 
 
-CL_DEFMETHOD void Joint_O::updateXyzCoords()
+CL_DEFMETHOD void Joint_O::updateXyzCoords(chem::NVector_sp coords)
 {
-  Stub stub = this->getInputStub();
-  this->_updateXyzCoord(stub);
-  this->_updateChildrenXyzCoords();
+  Stub stub = this->getInputStub(coords);
+  this->_updateXyzCoord(coords,stub);
+  this->_updateChildrenXyzCoords(coords);
 }
 
-SYMBOL_SC_(KinPkg,atom);
-core::Symbol_sp Joint_O::typeSymbol() const { return _sym_atom;};
-
-CL_DEFMETHOD core::T_sp Joint_O::getParent() const {
+CL_DEFMETHOD core::T_sp Joint_O::getParentOrNil() const {
   return this->_Parent.unboundp() ? nil<core::T_O>() : gc::As_unsafe<core::T_sp>(this->_Parent);
 };
 
+
+SYMBOL_SC_(KinPkg,atom);
+core::Symbol_sp Joint_O::typeSymbol() const { return _sym_atom;};
 
 };

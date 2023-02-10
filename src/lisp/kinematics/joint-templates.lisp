@@ -670,13 +670,13 @@ Return a list of prepare-topology objects - one for each residue that we need to
 
 
 
-(defgeneric write-into-joint-tree (joint-template parent-joint atresidue atmolecule-index atresidue-index))
+(defgeneric write-into-joint-tree (joint-template parent-joint atresidue atmolecule-index atresidue-index atom-tree))
 
-(defmethod write-into-joint-tree ((joint-template t) parent-joint atresidue atmolecule-index atresidue-index)
+(defmethod write-into-joint-tree ((joint-template t) parent-joint atresidue atmolecule-index atresidue-index atom-tree)
   (error "write-into-joint-tree - handle joint-template ~a" joint-template))
 
 
-(defmethod write-into-joint-tree ((joint-template jump-joint-template) parent-joint atresidue atmolecule-index atresidue-index)
+(defmethod write-into-joint-tree ((joint-template jump-joint-template) parent-joint atresidue atmolecule-index atresidue-index atom-tree )
   (let* ((constitution-atoms-index (constitution-atoms-index joint-template))
          (atom-name (atom-name joint-template))
          (atomid (list atmolecule-index atresidue-index constitution-atoms-index))
@@ -685,7 +685,7 @@ Return a list of prepare-topology objects - one for each residue that we need to
     (when parent-joint (kin:joint/add-child parent-joint joint))
     joint))
 
-(defmethod write-into-joint-tree ((joint-template complex-bonded-joint-template) parent-joint atresidue atmolecule-index atresidue-index)
+(defmethod write-into-joint-tree ((joint-template complex-bonded-joint-template) parent-joint atresidue atmolecule-index atresidue-index atom-tree)
   (let* ((constitution-atoms-index (constitution-atoms-index joint-template))
          (atom-name (atom-name joint-template))
          (atomid (list atmolecule-index atresidue-index constitution-atoms-index))
@@ -712,7 +712,7 @@ Return a list of prepare-topology objects - one for each residue that we need to
       (when parent-joint (kin:joint/add-child parent-joint joint))
       joint)))
 
-(defmethod write-into-joint-tree ((joint-template bonded-joint-template) parent-joint atresidue atmolecule-index atresidue-index)
+(defmethod write-into-joint-tree ((joint-template bonded-joint-template) parent-joint atresidue atmolecule-index atresidue-index atom-tree)
   (let* ((constitution-atoms-index (constitution-atoms-index joint-template))
          (atom-name (atom-name joint-template))
          (atomid (list atmolecule-index atresidue-index constitution-atoms-index))

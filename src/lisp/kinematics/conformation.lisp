@@ -22,7 +22,7 @@
           (chem:add-matter aggregate molecule)
         ;; This is where I would invoke Conformation_O::buildMoleculeUsingOligomer
         ;; Use the monomers-to-topologys
-        (let* ((atmolecule (build-atmolecule-using-oligomer oligomer molecule molecule-index monomer-positions joint-tree)))
+        (let* ((atmolecule (build-atmolecule-using-oligomer oligomer molecule molecule-index monomer-positions joint-tree atom-tree)))
           (put-atmolecule ataggregate atmolecule molecule-index)
           (let ((conf (make-instance 'conformation
                                      :oligomer oligomer

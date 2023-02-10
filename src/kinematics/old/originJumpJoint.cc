@@ -64,10 +64,10 @@ core::Symbol_sp OriginJumpJoint_O::typeSymbol() const
 };
 
 
-void OriginJumpJoint_O::_updateXyzCoord(Stub& stub)
+void OriginJumpJoint_O::_updateXyzCoord(chem::NVector_sp coords,Stub& stub)
 {
   Vector3 origin(0.0,0.0,0.0);
-  this->position(origin);
+  this->setPosition(coords,origin);
 }
 
 

@@ -23,21 +23,24 @@
                                          parent-joint
                                          atresidue
                                          atmolecule-index
-                                         atresidue-index)
+                                         atresidue-index
+                                         atom-tree)
   (let ((joint (write-into-joint-tree joint-template
-                                                              parent-joint
-                                                              atresidue
-                                                              atmolecule-index
-                                                              atresidue-index)))
+                                      parent-joint
+                                      atresidue
+                                      atmolecule-index
+                                      atresidue-index
+                                      atom-tree)))
     (loop for child-joint-template in (children joint-template)
           do (recursively-write-into-atresidue child-joint-template
                                                joint
                                                atresidue
                                                atmolecule-index
-                                               atresidue-index))
+                                               atresidue-index
+                                               atom-tree))
     joint))
 
-(defun fill-atresidue (joint-tree atresidue parent-joint atmolecule-index atresidue-index)
+(defun fill-atresidue (joint-tree atresidue parent-joint atmolecule-index atresidue-index atom-tree)
   "Recursively build an atom-tree into the atresidues of an ataggregate.
 This duplicates https://github.com/cando-developers/cando/blob/main/src/kinematics/pointTree.cc#L172
 JointTree_O::recursivelyBuildMolecule
@@ -53,7 +56,8 @@ If (null parent-joint) then this is the root atresidue
                                                          parent-joint
                                                          atresidue
                                                          atmolecule-index
-                                                         atresidue-index)))
+                                                         atresidue-index
+                                                         atom-tree)))
       (unless (slot-boundp joint-tree 'root)
         (setf (root joint-tree) root-joint))
       (let ((outgoing-plug-names-to-joint-map (make-hash-table)))

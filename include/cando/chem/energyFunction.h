@@ -182,7 +182,7 @@ namespace chem {
     void	loadCoordinatesIntoVector(NVector_sp pos);
     void	saveCoordinatesFromVector(NVector_sp pos);
     void	saveCoordinatesAndForcesFromVectors(NVector_sp pos, NVector_sp force);
-    size_t	getNVectorSize();
+    size_t	getNVectorSize() const;
     double	evaluateRaw( NVector_sp pos, NVector_sp force );
 //    double	evaluate( NVector_sp pos, NVector_sp force, bool calculateForce );
     adapt::QDomNode_sp	identifyTermsBeyondThreshold();

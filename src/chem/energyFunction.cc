@@ -309,7 +309,7 @@ CL_DEFMETHOD void EnergyFunction_O::makUnboundBoundingBox() {
 
 
 
-size_t EnergyFunction_O::getNVectorSize() 
+size_t EnergyFunction_O::getNVectorSize() const
 { 
   return this->_AtomTable->getNVectorSize();
 };

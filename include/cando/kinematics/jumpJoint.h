@@ -52,7 +52,7 @@ namespace kinematics
 	/*! JumpJoints can have unlimited numbers of children */
     gc::Vec0< Joint_sp >	_Children;
   public:
-    static JumpJoint_sp make(const chem::AtomId& atomId, core::T_sp name);
+    static JumpJoint_sp make(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable );
   protected:
 	/*! Bonded atoms can have different numbers of children wrt JumpJoints */
     virtual int _maxNumberOfChildren() const { return INT_MAX;};
@@ -77,7 +77,7 @@ namespace kinematics
 	/*! Empty ctor */
     JumpJoint_O() {};
 
-  JumpJoint_O(const chem::AtomId& atomId, core::T_sp name) : Joint_O(atomId,name) {};
+    JumpJoint_O(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable) : Joint_O(atomId,name,atomTable) {};
 
     // Return the 'external' coordinate    
     CL_DEFMETHOD Matrix getLabFrame() const { return this->_LabFrame; };
@@ -86,9 +86,9 @@ namespace kinematics
 
     virtual core::Symbol_sp typeSymbol() const;
 
-    Stub getInputStub() const;
+    Stub getInputStub(chem::NVector_sp coords) const;
 
-    virtual void _updateInternalCoord();
+    virtual void _updateInternalCoord(chem::NVector_sp coords);
     
 	/*! Yes, this is a JumpJoint */
     bool isJump() const { return true;};
@@ -106,12 +106,12 @@ namespace kinematics
 
     bool keepDofFixed(DofType dof) const;
 
-    virtual void updateXyzCoord();
+    virtual void updateXyzCoord(chem::NVector_sp coords);
 
     /*! Update just this joints position */
-    virtual void _updateXyzCoord(Stub& stub);
+    virtual void _updateXyzCoord(chem::NVector_sp coords,Stub& stub);
 
-    virtual void _updateChildrenXyzCoords();
+    virtual void _updateChildrenXyzCoords(chem::NVector_sp coords);
 
 	/*! Return the DOF */
     double dof(DofType const& dof) const;

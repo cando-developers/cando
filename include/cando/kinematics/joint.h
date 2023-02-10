@@ -28,6 +28,7 @@ This is an open source license for the CANDO software from Temple University, bu
 
 #include <clasp/core/foundation.h>
 #include <cando/geom/vector3.h>
+#include <cando/chem/energyAtomTable.h>
 #include <cando/kinematics/kinematicsPackage.h>
 #include <cando/kinematics/dofType.h>
 #include <cando/kinematics/stub.fwd.h>
@@ -71,10 +72,11 @@ class Joint_O : public core::CxxObject_O
   LISP_CLASS(kinematics,KinPkg,Joint_O,"Joint",core::CxxObject_O);
 public:
 	//! Joint to the parent Joint (also used to contruct linked list of unused PoolMembers)
-  Joint_sp 	_Parent;
-  core::T_sp      _Name;
-  chem::AtomId	_Id;
-  Vector3		_Position;
+  Joint_sp 	        _Parent;
+  core::T_sp            _Name;
+  chem::AtomId	        _Id;
+  int                   _PositionIndexX3;
+  int                   _EndPositionIndexX3;
   core::List_sp         _Properties;
 private:
 	/*! Track my position in my owner's list of Joints with modified DOFs
@@ -107,22 +109,33 @@ public:
 	/*! Destructors need to delete all Children */
   virtual void _releaseAllChildren() = 0;
   virtual core::List_sp jointChildren() const;
+  CL_DEFMETHOD int positionIndexX3() const { return this->_PositionIndexX3; };
 public:
 
   Joint_O() : _Parent(unbound<Joint_O>()), _Name(nil<core::T_O>()), _Id() {};
-  Joint_O(const chem::AtomId& atomId, core::T_sp name = nil<T_O>() ) :
+  Joint_O(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable ) :
     _Parent(unbound<Joint_O>()),
     _Name(name),
     _Id(atomId),
-    _Properties(nil<core::T_O>())    
-  {};
+    _Properties(nil<core::T_O>()) {
+    this->_PositionIndexX3 = this->calculatePositionIndex(atomTable);
+    this->_EndPositionIndexX3 = atomTable->getNVectorSize();
+#ifdef DEBUG_ASSERT
+    if ((this->_PositionIndexX3%3) || this->_PositionIndexX3 >= this->_EndPositionIndexX3) {
+      printf("%s:%d:%s this->_PositionIndexX3 %d is not 3 aligned or >= this->_EndPositionIndexX3 %d\n", __FILE__, __LINE__, __FUNCTION__,
+             this->_PositionIndexX3, this->_EndPositionIndexX3);
+    }
+#endif
+  };
 
+  int calculatePositionIndex(chem::AtomTable_sp atomTable);
+  
   /*! Returns true if the joint represents an Joint */
   CL_DEFMETHOD virtual bool correspondsToJoint() const { return true; };
-  
-  chem::AtomId id() const { return this->_Id;};
-  core::T_sp name() const;
-        
+
+  CL_DEFMETHOD chem::AtomId id() const { return this->_Id;};
+  CL_DEFMETHOD core::T_sp name() const;
+
   virtual core::Symbol_sp typeSymbol() const;
   virtual string asString() const;
   virtual string __repr__() const;
@@ -131,9 +144,8 @@ public:
   void setParent(Joint_sp parent);
 
 	/*! Return a Joint_sp for the parent */
-  bool parentBoundP() const { return this->_Parent.boundp(); };
-  Joint_sp parent() const { return this->_Parent; };
-  core::T_sp getParent() const;
+  CL_DEFMETHOD bool parentBoundP() const { return this->_Parent.boundp(); };
+  CL_DEFMETHOD Joint_sp parent() const { if (this->_Parent.boundp()) return this->_Parent; SIMPLE_ERROR("parent of %s is not bound", _rep_(this->asSmartPtr())); };
   
 	/*! Insert the child before the (before) index. */
   void insertChild( int before, Joint_sp child );
@@ -179,10 +191,10 @@ public:
   void recursiveDumpChildrenIntoStringStream(const string& prefix,
                                              stringstream& out);
 
-  void updateInternalCoord();
-  virtual void _updateInternalCoord() { THROW_HARD_ERROR("Subclass must implement"); };
+  void updateInternalCoord(chem::NVector_sp coords);
+  virtual void _updateInternalCoord(chem::NVector_sp coords) { THROW_HARD_ERROR("Subclass must implement"); };
 	/*! Update the internal coordinates */
-  void updateInternalCoords();
+  void updateInternalCoords(chem::NVector_sp coords);
 
 	/*! Return true if this Joint is a JumpJoint (or subclass) */
   virtual bool isJump() const { return false;};
@@ -197,12 +209,10 @@ public:
 
 
 	/*! Return the position */
-  Vector3 position() const { return this->_Position;};
+  Vector3 position(chem::NVector_sp coords) const;
 
 	/*! Set the position */
-  void position(const Vector3& pos) { this->_Position = pos;};
-  Vector3 getPosition() const;
-  void setPosition(const Vector3& pos);
+  void setPosition(chem::NVector_sp coords, const Vector3& pos);
 
   CL_LISPIFY_NAME("KIN:PROPERTIES");
   CL_DEFMETHOD core::List_sp getProperties() const { return this->_Properties; };
@@ -239,17 +249,17 @@ public:
 
 
 	/*! Update the external coordinates after calculating the input stub */
-  virtual void updateXyzCoords();
+  virtual void updateXyzCoords(chem::NVector_sp coords);
 
   /*! Update the external coordinate of just this node */
-  virtual void updateXyzCoord();
+  virtual void updateXyzCoord(chem::NVector_sp coords);
 
 	/*! Update the external coordinates using the input stub */
-  virtual void _updateXyzCoords(Stub& stub) {THROW_HARD_ERROR("Subclass must implement");};
+  virtual void _updateXyzCoords(chem::NVector_sp coords, Stub& stub) {THROW_HARD_ERROR("Subclass must implement");};
 
-  virtual void _updateXyzCoord(Stub& stub) {THROW_HARD_ERROR("Subclass must implement");};
+  virtual void _updateXyzCoord(chem::NVector_sp coords,Stub& stub) {THROW_HARD_ERROR("Subclass must implement");};
 
-  void _updateChildrenXyzCoords();
+  void _updateChildrenXyzCoords(chem::NVector_sp coords);
 
 	/*! Ensure proper function of the output-sensitive refold subroutine
 	  derived classes must invoke this function during their updateXyzCoords subroutines
@@ -261,11 +271,12 @@ public:
 
 
 	/*! Return the input stub */
-  virtual CL_DEFMETHOD Stub getInputStub() const { THROW_HARD_ERROR("Subclass must implement"); };
+  virtual CL_DEFMETHOD Stub getInputStub(chem::NVector_sp coords) const { THROW_HARD_ERROR("Subclass must implement"); };
 
 
 	/*! Return the value of the DOF */
   virtual double dof(DofType const& dof) const { THROW_HARD_ERROR("SubClass must implement");};
+  core::T_sp getParentOrNil() const;
 
 };
 

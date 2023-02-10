@@ -50,10 +50,11 @@ namespace kinematics
     Stub getStub() const;
 
 	/*! Update the internal coordinates */
-    virtual void updateInternalCoords(bool const recursive,
+    virtual void updateInternalCoords(chem::NVector_sp coords,
+                                      bool const recursive,
                                       JointTree_sp at);
 
-    void _updateXyzCoord(Stub& stub);
+    void _updateXyzCoord(chem::NVector_sp coords,Stub& stub);
 
 
   };

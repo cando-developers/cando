@@ -136,15 +136,17 @@ namespace kinematics
 	return ss.str();
     }
 
+
     void Atom_O::setPosition(const Vector3& pos)
     {
 	if ( this->_Handle.notDefined() ) return;
 	this->get()->position(pos);
     }
 
-    Vector3 Atom_O::getPosition() const
+    void Atom_O::setPosition(const Vector3& pos)
     {
-	return this->get()->position();
+	if ( this->_Handle.notDefined() ) return;
+	this->get()->position(pos);
     }
 
 gc::Nilable<Atom_sp> Atom_O::parent() const

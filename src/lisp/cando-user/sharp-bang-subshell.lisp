@@ -1,6 +1,6 @@
 (in-package :cando-user)
 
-(defun sharp-!-reader (stream subchar arg)
+(defun sharp-!-reader-subshell (stream subchar arg)
   "Read to the end of a line honoring continuation characters \\ and accumulate a string
    that is passed to a bash subshell.  The output from the evaluation of the command
    in the subshell is printed to the standard-output.
@@ -21,7 +21,7 @@
                              do (return-from accumulate (get-output-stream-string sout))
                            do (princ #\space sout))))
     (multiple-value-bind (instream return-code process)
-        (ext:run-program "/bin/bash" (list "-c" accumulated))
+        (ext:run-program "/bin/bash" (list "-c" accumulated) :wait nil)
       (declare (ignore return-code process))
       (loop named print-output
             for line = (read-line instream nil nil)
@@ -33,5 +33,5 @@
 
 (eval-when (:execute :load-toplevel)
   ;; Install the dispatching reader macro
-  (set-dispatch-macro-character #\# #\! 'sharp-!-reader))
+  (set-dispatch-macro-character #\# #\! 'sharp-!-reader-subshell))
 

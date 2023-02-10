@@ -249,10 +249,12 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
     (finish-output t))
   matter)
 
-(defun optimize-structure-with-restarts (matter &key active-atoms (turn-off-nonbond t) verbose)
-  (let* ((energy-function (chem:make-energy-function :matter matter
-                                                     :assign-types t
-                                                     :active-atoms active-atoms))
+(defun optimize-structure-with-restarts (matter &key active-atoms (turn-off-nonbond t) verbose energy-function)
+  (let* ((energy-function (if energy-function
+                              energy-function
+                              (chem:make-energy-function :matter matter
+                                                         :assign-types t
+                                                         :active-atoms active-atoms)))
          (min (chem:make-minimizer energy-function)))
     (configure-minimizer min
                          :max-sd-steps 5000
@@ -468,7 +470,7 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
     dynamics
     ))
 
-(defun starting-geometry-with-restarts (agg &key accumulate-coordinates verbose)
+(defun starting-geometry-with-restarts (agg &key accumulate-coordinates verbose energy-function)
   "Rapidly calculate a starting geometry for the single molecule in the aggregate"
   (unless (= (chem:content-size agg) 1)
     (format t "The aggregate must have a single molecule.")
@@ -498,7 +500,9 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
     (dynamics:write-coordinates-back-to-matter dynamics)
     (when verbose
       (format t "Optimizing structure~%"))
-    (optimize-structure-with-restarts agg :turn-off-nonbond nil :verbose verbose)
+    (if energy-function
+        (optimize-structure-with-restarts agg :turn-off-nonbond nil :verbose verbose :energy-function energy-function)
+        (optimize-structure-with-restarts agg :turn-off-nonbond nil :verbose verbose))
     dynamics
     ))
 

@@ -13,8 +13,8 @@
 (defclass kernel (jupyter/common-lisp:kernel)
   ()
   (:default-initargs
-    :package (find-package :cando-user)
-    :banner "cando-jupyter: a Cando Jupyter kernel
+   :package (find-package :cando-user)
+   :banner "cando-jupyter: a Cando Jupyter kernel
 (C) 2020-2021 Christian Schafmeister (LGPL-3.0)"))
 
 (defun lisp-code-p (code)
@@ -22,10 +22,20 @@
       ((>= index (length code)))
     (case (char code index)
       ((#\( #\*)
-        (return t))
+       (return t))
+      (#\#
+       ;; This will be a problem because common lisp reader sharp macros need to be handled
+       ;; on a case-by-case bases and leap comments may get treated as common lisp reader macros
+       (if (< (1+ index) (length code))
+           (let ((dispatch-char (char code (1+ index))))
+             (case dispatch-char
+               ((#\!)
+                (return t))
+               (t (return nil))))
+           (return nil)))
       ((#\space #\tab #\newline))
-      (otherwise
-        (return nil)))))
+      (t
+       (return nil)))))
 
 (defun leap-read (code)
   (architecture.builder-protocol:with-builder ('list)

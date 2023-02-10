@@ -68,7 +68,7 @@
     (error "Implement me")))
              
 
-(defun build-atmolecule-using-oligomer (oligomer molecule molecule-index monomer-positions joint-tree)
+(defun build-atmolecule-using-oligomer (oligomer molecule molecule-index monomer-positions joint-tree atom-tree)
   (let* ((root-monomer (chem:oligomer/root-monomer oligomer))
          (ring-closing-monomer-map (make-hash-table))
          (atmolecule (make-instance 'atmolecule :molecule molecule))
@@ -90,6 +90,7 @@
                                 molecule-index
                                 residue-index
                                 nil
+                                atom-tree
                                 )
     (make-ring-closing-connections ring-closing-monomer-map)
     (setf (root-atresidue atmolecule) root-atresidue)
@@ -145,13 +146,14 @@
                                    monomer-positions
                                    atmolecule-index
                                    atresidue-index
-                                   parent-joint)
+                                   parent-joint
+                                   atom-tree)
   "Recursively build a atmolecule from an oligomer by linking together atresidues"
   (when parent-atresidue
     (setf (parent atresidue) parent-atresidue))
   (when coupling
     (setf (parent-plug-name atresidue) (chem:get-target-monomer-plug-name coupling)))
-  (let ((outgoing-plug-names-to-joint-map (fill-atresidue joint-tree atresidue parent-joint atmolecule-index atresidue-index))
+  (let ((outgoing-plug-names-to-joint-map (fill-atresidue joint-tree atresidue parent-joint atmolecule-index atresidue-index atom-tree))
         (current-topology (chem:current-topology monomer)))
     (setf (stereoisomer-name atresidue) (chem:current-stereoisomer-name monomer)
           (topology-name atresidue) (chem:get-name current-topology)
@@ -185,7 +187,7 @@
                                                    atmolecule-index
                                                    other-residue-index
                                                    new-parent-joint
-                                                   ))))))))
+                                                   atom-tree))))))))
 
 (defun describe-recursively (atresidue prefix stream)
   (princ prefix stream)

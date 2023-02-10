@@ -49,12 +49,12 @@ public:
   static const int MaxInputStubJoints = 2;
   Joint_sp         _InputStubJoints[MaxInputStubJoints];
 public:
-  static ComplexBondedJoint_sp make(const chem::AtomId& atomId, core::T_sp name);
+  static ComplexBondedJoint_sp make(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable );
 public:
-  ComplexBondedJoint_O(const chem::AtomId& atomId, core::T_sp name ) : BondedJoint_O(atomId,name) {};
+  ComplexBondedJoint_O(const chem::AtomId& atomId, core::T_sp name, chem::AtomTable_sp atomTable ) : BondedJoint_O(atomId,name,atomTable) {};
   ComplexBondedJoint_O() {};
 public:
-  virtual Stub getInputStub() const;
+  virtual Stub getInputStub(chem::NVector_sp coords) const;
 
   	/*! Return the stubJoint1 */
   virtual Joint_sp inputStubJoint0() const { return this->parent();}
@@ -75,8 +75,8 @@ public:
   void setInputStubJoint2(Joint_sp joint);
   void makeUnboundInputStubJoint2();
 
-  void _updateInternalCoord();
-  void _updateChildrenXyzCoords();
+  virtual void _updateInternalCoord(chem::NVector_sp coords);
+  void _updateChildrenXyzCoords(chem::NVector_sp coords);
 
 };
 };

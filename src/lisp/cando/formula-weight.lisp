@@ -3,6 +3,7 @@
 
 (defparameter *most-abundant-isotopes*
   '((:H . 1.007825)
+    (:D . 2.0141017)
     (:C . 12.00000)
     (:N . 14.003074)
     (:O . 15.994915)

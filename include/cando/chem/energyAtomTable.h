@@ -196,7 +196,12 @@ public:
   void setNonbondForceFieldForAggregate(core::T_sp forceField);
   void makUnboundNonbondForceFieldForAggregate();
 
-  uint	getNVectorSize()	{ return this->_Atoms.size()*3;};
+  uint	getNVectorSize() const { return this->_Atoms.size()*3;};
+  // Read coordinates from atoms into an NVector of coordinates
+  void readAtomCoordinates(NVector_sp coords) const;
+  // Write coordinates from atoms into an NVector of coordinates
+  void writeAtomCoordinates(NVector_sp coords);
+  
   EnergyAtom*	getEnergyAtomPointer(Atom_sp a);
   EnergyAtom&	energyAtomEntry(uint i) { return this->_Atoms[i]; };
   EnergyAtom*	findEnergyAtomWithCoordinateIndex(uint i) { return &this->_Atoms[i/3]; };
