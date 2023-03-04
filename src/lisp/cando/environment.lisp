@@ -9,13 +9,14 @@
   "Register a topology with cando "
   (unless name
     (setf name (chem:get-name topology)))
-  (unless (keywordp name)
-    (setf name (intern (string-upcase (string name)) :keyword)))
+  #+(or)(unless (keywordp name)
+          (setf name (intern (string-upcase (string name)) :keyword)))
+  (export name (symbol-package name))
   (chem:setf-find-topology chem:*cando-database* name topology))
 
 (defun lookup-topology (name &optional errorp)
   (multiple-value-bind (topology foundp)
-      (chem:find-topology (intern (string-upcase (string name)) :keyword) errorp)
+      (chem:find-topology #+(or)(intern (string-upcase (string name)) :keyword) name errorp)
     topology))
 
 (defun walk-topologys (func)

@@ -533,7 +533,7 @@ We need assemble-ligands for the tirun demo."
                            (case bond-order
                              (:single-wedge-begin 1.0)
                              (:single-hash-begin -1.0))))
-                  (config (if (> 0.0 side)
+                  (config (if (< 0.0 side)
                               :right-handed
                               :left-handed)))
              (chem:set-absolute-configuration center config atom-a atom-b ba2)

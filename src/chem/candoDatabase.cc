@@ -683,10 +683,7 @@ CL_DEFMETHOD void CandoDatabase_O::setf_findTopology(core::T_sp name, core::T_sp
 }
 
 core::T_mv CandoDatabase_O::findTopology(core::T_sp name, bool errorp) const {
-  core::Symbol_sp sym_name = gc::As<core::Symbol_sp>(name);
-  core::SimpleString_sp sname = gc::As<core::SimpleString_sp>(sym_name->symbolName());
-  core::T_sp keyword_name = _lisp->_Roots._KeywordPackage->intern(sname);
-  core::T_mv result_mv = this->_Topologys->gethash(keyword_name);
+  core::T_mv result_mv = this->_Topologys->gethash(name);
   core::MultipleValues &values = core::lisp_multipleValues();
   if (errorp && values.second(result_mv.number_of_values()).nilp()) {
     SIMPLE_ERROR(("Could not find topology with name %s"), core::_rep_(name));

@@ -6,12 +6,11 @@
      (finish-output ,stream)))
 
 (defun ion-topology-atom-type (ion-topology)
-  (let* ((constitution (chem:topology/get-constitution ion-topology))
-         (constitution-atoms (chem:constitution/get-constitution-atoms constitution))
-         (number-of-atoms (chem:constitution-atoms/number-of-atoms constitution-atoms)))
+  (let* ((stereoisomer-atoms (chem:topology/get-stereoisomer-atoms  ion-topology (chem:topology/get-name ion-topology)))
+         (number-of-atoms (chem:stereoisomer-atoms/number-of-atoms stereoisomer-atoms)))
     (if (= number-of-atoms 1)
-        (let ((constitution-atom (chem:atom-with-id constitution-atoms 0)))
-          (chem:atom-type constitution-atom))
+        (let ((stereoisomer-atom (chem:stereoisomer-atoms/atom-with-id stereoisomer-atoms 0)))
+          (chem:get-atom-type stereoisomer-atom))
         (error "The topology ~s must have only one atom" ion-topology))))
 
 (defun add-ions (mol ion1 ion1-number &optional ion2 ion2-number)

@@ -1485,7 +1485,7 @@ are in the order (low, middle, high) and the column eigen-vectors are in the sam
                              (vec2 (geom:v- (chem:get-position atm-2)
                                             (chem:get-position atm-ch)))
                              (cross (geom:vcross vec1 vec2))
-                             (draw-config (if (< (geom:get-z cross) 0.0) :right-handed :left-handed)))
+                             (draw-config (if (> (geom:get-z cross) 0.0) :right-handed :left-handed)))
                         (multiple-value-bind (bond-type1 bond-type2)
                             (if (eq draw-config config)
                                 (values :single-wedge-begin :single-hash-begin)
