@@ -1736,9 +1736,9 @@ CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter
             } else if ( a1->getConfiguration() == S_Configuration ) {
               side = -1.0;
             } else if ( a1->getConfiguration() == RightHanded_Configuration ) {
-              side = -1.0;
-            } else if ( a1->getConfiguration() == LeftHanded_Configuration ) {
               side = 1.0;
+            } else if ( a1->getConfiguration() == LeftHanded_Configuration ) {
+              side = -1.0;
             }
           } else {
             if ( a1->getStereochemistryType() == prochiralCenter ) {

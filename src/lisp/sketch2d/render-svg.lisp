@@ -219,7 +219,9 @@ This will place the calculated bond on one or the other side of the x1,y1-x2,y2 
              (aromaticity-info (aromaticity-info sketch2d)))
         (loop for ring in rings
               do (loop for atom in ring
-                       for atom-node = (gethash atom atoms)
+                       for atom-node = (let ((an (gethash atom atoms)))
+                                         (unless an (error "Could not find ~s in atoms ~s" atom atoms))
+                                         an)
                        do (push ring (rings atom-node))))
         (make-instance 'sketch-svg
                        :molecule molecule

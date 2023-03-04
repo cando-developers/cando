@@ -16,7 +16,7 @@
       (gethash (cons name context) *map-pdb-names-to-topology-names*)
     (if foundp
         (cando:lookup-topology topology-name t)
-        (let ((topology (cando:lookup-topology (intern (string name)) nil)))
+        (let ((topology (cando:lookup-topology (intern (string name) leap.core:*variable-package*) nil)))
           topology))))
 
 (defun add-pdb-res-map (mappings)
@@ -41,7 +41,7 @@ the distribution contains default mappings."
              (if (symbolp name) name (intern name package)))
            (do-add-map (res-name term-sym var-name)
              (let* ((res-sym (ensure-symbol res-name))
-                    (var-sym (ensure-symbol var-name *package*))
+                    (var-sym (ensure-symbol var-name leap.core:*variable-package*))
                     (key (cons res-sym term-sym))
                     (var-old (gethash key *map-pdb-names-to-topology-names*)))
                (when (and var-old (not (eq var-old var-sym)))
@@ -1358,7 +1358,7 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
         (let ((name-only (if filename
                              (pathname-name (pathname filename))
                              "unknown")))
-          (chem:set-name aggregate (intern name-only *package*)))
+          (chem:set-name aggregate (intern name-only leap.core:*variable-package*)))
         (values aggregate pdb-scanner pdb-atom-reader)))))
 
 

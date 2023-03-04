@@ -510,9 +510,9 @@ of the chem:MOLECULE class with the appropriate atoms and bonds."
                  (chem:set-stereochemistry-type chiral-atom :chiral)
                  (ecase orientation
                    (:anticlockwise
-                    (chem:set-configuration chiral-atom :right-handed))
+                    (chem:set-configuration chiral-atom :left-handed))
                    (:clockwise
-                    (chem:set-configuration chiral-atom :left-handed))))))
+                    (chem:set-configuration chiral-atom :right-handed))))))
 
     ;; 3. Add double-bond-configurations for explicit spatial
     ;; arrangements around double bonds, based on the information

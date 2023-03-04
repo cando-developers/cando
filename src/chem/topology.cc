@@ -118,8 +118,8 @@ Topology_sp Topology_O::make(core::Symbol_sp name, Constitution_sp constitution,
 
 string Topology_O::__repr__() const {
   stringstream ss;
-  ss << "#<TOPOLOGY ";
-  ss << " :name " << _rep_(this->_Name);
+  ss << "#<" << this->_instanceClass()->_classNameAsString();
+  ss << " :name " << this->_Name->formattedName(true);
 #ifdef USE_BOEHM
   ss << " @" << (void*)this;
 #endif
@@ -377,7 +377,7 @@ CL_DEFUN void connect_residues(Topology_sp prev_topology,
   }
 }
 
-StereoisomerAtoms_sp Topology_O::getStereoisomerAtoms(core::Symbol_sp stereoisomerName) const
+CL_DEFMETHOD StereoisomerAtoms_sp Topology_O::getStereoisomerAtoms(core::Symbol_sp stereoisomerName) const
 {
   for (int i(0); i<this->_StereoisomerAtomProperties.size(); ++i ) {
     if (stereoisomerName == this->_StereoisomerAtomProperties[i]->getName() ) {

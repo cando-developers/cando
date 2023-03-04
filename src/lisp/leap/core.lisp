@@ -8,6 +8,8 @@
 (defvar *path* nil)
 (defvar *default-force-field* nil)
 
+(defparameter *variable-package* :cando-user)
+
 (defun leap-error (fmt &rest args)
   (apply 'error fmt args))
 
@@ -31,6 +33,12 @@
             for full-path = (merge-pathnames filename path)
             when (probe-file full-path)
               return it)))
+
+(defgeneric topologyp (obj)
+  (:documentation "Return T if the object is a topology"))
+
+(defmethod topologyp ((obj t)) nil)
+(defmethod topologyp ((obj chem:topology)) t)
 
 ;;; --
 ;;;
@@ -88,26 +96,16 @@ for a list of symbols.  When they ask for a list of symbols we use this list."))
 
 (defun lookup-variable* (name package &optional errorp error-value)
   "Lookup a variable in the given environment"
-  (cond
-    ((keywordp name)
-     (let ((topology (cando:lookup-topology name)))
-       (if topology
-           topology
-           (multiple-value-bind (sym status)
-               (find-symbol (string name) package)
-             (if status
-                 (symbol-value sym)
-                 (if errorp
-                     (error "The variable ~S is not defined" name)
-                     error-value))))))
-    ((ext:specialp name)
-     (let ((topology (cando:lookup-topology name)))
-       (if topology
-           topology
-           (symbol-value name))))
-    (errorp
-     (error "The variable ~S is not defined" name))
-    (t error-value)))
+  (let ((topology (cando:lookup-topology name)))
+    (if topology
+        topology
+        (multiple-value-bind (sym status)
+            (find-symbol (string name) package)
+          (if status
+              (symbol-value sym)
+              (if errorp
+                  (error "The variable ~S is not defined" name)
+                  error-value))))))
 
 (defun (setf lookup-variable*) (new-value name environment)
   (declare (ignore environment))
@@ -117,9 +115,11 @@ for a list of symbols.  When they ask for a list of symbols we use this list."))
       ((eq expanded name)
        (setf (gethash (string name) (%variables *leap-env*)) (string name))
        ;;
-       (when (and (symbolp name) (typep new-value 'chem:topology))
+       (when (and (symbolp name)
+                  (topologyp new-value))
          (cando:register-topology new-value name))
        (setf (ext:specialp name) t)
+       (export name (symbol-package name))
        (set name new-value))
       (t (error "What do you do with name: ~s" name)))))
 
@@ -140,7 +140,7 @@ for a list of symbols.  When they ask for a list of symbols we use this list."))
 Associate the name with the object"
   (let ((expanded (macroexpand name)))
     (if (eq expanded name)
-        (setf (lookup-variable* name *package*) object)
+        (setf (lookup-variable* name leap.core:*variable-package*) object)
         (let ((expression `(setf ,expanded ',object)))
           (eval expression)))))
 
@@ -152,7 +152,7 @@ Associate the name with the object"
 Lookup the object in the variable space."
   (cond
     ((symbolp name-or-object)
-     (lookup-variable* name-or-object *package* errorp error-value))
+     (lookup-variable* name-or-object leap.core:*variable-package* errorp error-value))
     ((stringp name-or-object)
      (let ((obj (leap.parser:parse-sub-matter name-or-object)))
        (if obj

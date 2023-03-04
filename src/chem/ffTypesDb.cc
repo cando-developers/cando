@@ -43,7 +43,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/ffTypesDb.h>
 #include <cando/chem/topology.h>
 #include <cando/chem/constitution.h>
-#include <cando/chem/constitutionAtoms.h>
+#include <cando/chem/stereoisomerAtoms.h>
 #include <cando/chem/candoDatabase.h>
 #include <cando/chem/loop.h>
 #include <clasp/core/symbolTable.h>
@@ -167,8 +167,8 @@ CL_DEFMETHOD void    FFTypesDb_O::assignTypes(chem::Matter_sp matter)
         if (chem__verbose(2)) {
           core::write_bf_stream(fmt::sprintf("Found topology for residue name: %s\n" , _rep_(name)));
         }
-        Constitution_sp constitution = topology->getConstitution();
-        ConstitutionAtoms_sp constitution_atoms = constitution->getConstitutionAtoms();
+        SIMPLE_WARN("Getting stereoisomerAtoms for %s\n", _rep_(name) );
+        StereoisomerAtoms_sp stereoisomerAtoms = topology->getStereoisomerAtoms(name);
         // Use the Topology to assign atom types
         lAtoms.loopTopGoal(res,ATOMS);
         while (lAtoms.advanceLoopAndProcess()) {
@@ -177,11 +177,11 @@ CL_DEFMETHOD void    FFTypesDb_O::assignTypes(chem::Matter_sp matter)
           if (chem__verbose(2)) {
             core::write_bf_stream(fmt::sprintf("Looking for atom with name: %s\n" , _rep_(atom_name)));
           }
-          core::T_mv constitution_atom_mv = constitution_atoms->atomWithName(atom_name,false);
-          if (values.second(constitution_atom_mv.number_of_values()).notnilp()) {
-            core::T_sp single = constitution_atom_mv;
-            ConstitutionAtom_sp constitution_atom = gc::As_unsafe<ConstitutionAtom_sp>(single);
-            core::T_sp type = constitution_atom->_AtomType;
+          core::T_mv stereoisomer_atom_mv = stereoisomerAtoms->atomWithName(atom_name,false);
+          if (values.second(stereoisomer_atom_mv.number_of_values()).notnilp()) {
+            core::T_sp single = stereoisomer_atom_mv;
+            StereoisomerAtom_sp stereoisomer_atom = gc::As<StereoisomerAtom_sp>(single);
+            core::T_sp type = stereoisomer_atom->_AtomType;
             atom->setType(type);
             if (chem__verbose(2)) {
               core::write_bf_stream(fmt::sprintf("Assigned atom type %s using topology %s\n" , _rep_(type) , _rep_(name)));

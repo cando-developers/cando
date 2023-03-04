@@ -26,6 +26,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #define	DEBUG_LEVEL_NONE
 
 #include <clasp/core/common.h>
+#include <clasp/core/ql.h>
 #include <cando/adapt/stringSet.h>
 #include <cando/adapt/adapters.h>
 #include <cando/chem/stereoisomerAtoms.h>
@@ -70,7 +71,7 @@ string StereoisomerAtom_O::__repr__() const
 {
   stringstream ss;
   ss << "( " << this->className() << " ";
-  ss << " :atomName \"" << this->_AtomName << "\"";
+  ss << " :atomName " << _rep_(this->_AtomName);
   ss << " :constitutionAtomIndex " << this->_ConstitutionAtomIndex << " )";
   return ss.str();
 }
@@ -163,6 +164,14 @@ CL_DEFMETHOD     adapt::SymbolSet_sp StereoisomerAtoms_O::atomNamesAsSymbolSet()
   return ss;
 };
 
+
+CL_DEFMETHOD core::List_sp StereoisomerAtoms_O::atomsAsList() const {
+  ql::list ll;
+  for ( int iii = 0; iii<this->numberOfAtoms(); iii++ ) {
+    ll << this->_Atoms[(uint)iii];
+  }
+  return ll.cons();
+}
 
 CL_LAMBDA(name &optional (errorp t));
 CL_LISPIFY_NAME("atomWithName");

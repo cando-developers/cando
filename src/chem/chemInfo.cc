@@ -2704,6 +2704,7 @@ CL_DEFMETHOD void MoleculeGraph_O::walk_edges(core::T_sp callback) {
 
 void MoleculeGraph_O::initialize() {
   this->_nodes_to_index = core::HashTableEq_O::create_default();
+  this->_nodes_to_index->setupThreadSafeHashTable();
   this->_moleculeGraph = nullptr;
   this->_nodes = core::ComplexVector_T_O::make(64, nil<core::T_O>(), core::make_fixnum(0));
 }
@@ -2943,8 +2944,9 @@ void ChemInfoGraph_O::buildFromRoot_() {
             core::write_bf_stream(fmt::format("   setting parent_node of {} to {}\n", _rep_(chain), _rep_(ahead)));
           parent_nodes->setf_gethash(chain, ahead);
           core::T_sp head_index = graph->_nodes_to_index->gethash(ahead);
-          if (!head_index.fixnump())
+          if (!head_index.fixnump()) {
             SIMPLE_ERROR(("(C) There was no index for %s"), _rep_(ahead));
+          }
           if (parentOrNil.nilp()) {
             // The parent is NIL - we are at the top, create a vertex
             size_t index = head_index.unsafe_fixnum();

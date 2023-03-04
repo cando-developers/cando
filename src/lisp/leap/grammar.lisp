@@ -184,7 +184,7 @@
 (defrule current-package-variable-name
     (and variable-name-string)
   (:destructure (variable-name-string)
-                (intern variable-name-string *package*)))
+                (intern variable-name-string leap.core:*variable-package*)))
 
 
 (defrule/s variable-name
@@ -304,7 +304,7 @@
 (defrule aggregate
     (aggregate-name-p aggregate-name-string)
   (:lambda (name)
-    (leap.core:lookup-variable (intern name))))
+    (leap.core:lookup-variable (intern name leap.core:*variable-package*))))
 
 (defrule/s aggregate.pdb-sequence-number
     (and aggregate #\. integer-literal/decimal)

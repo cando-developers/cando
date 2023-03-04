@@ -385,7 +385,7 @@ Return the hash-table."
         (entire-file (read-entire-off-file fin))
         (object-ht (make-hash-table)))
     (maphash (lambda (entry-name-string entry-parts)
-               (let ((entry-name (intern (leap.core:convert-leap-case entry-name-string) *package*)))
+               (let ((entry-name (intern (leap.core:convert-leap-case entry-name-string) leap.core:*variable-package*)))
                  (multiple-value-bind (unit residue-connect residues)
                      (read-off-unit-with-name entry-parts entry-name)
                    (let ((object (translate-off-object entry-name unit residue-connect residues)))
@@ -400,7 +400,8 @@ Return the hash-table."
 - filename : Pathname
 * Description
 Load the OFF file containing forms into new-leap."
-  (let ((absolute-filename (leap.core:ensure-path filename)))
+  (let ((*package* (find-package leap.core:*variable-package*))
+        (absolute-filename (leap.core:ensure-path filename)))
     (with-open-file (fin absolute-filename :direction :input)
       (let ((ht (leap.off:read-off-lib fin))
             names)
