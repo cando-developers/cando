@@ -1237,7 +1237,7 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, bool useEx
         core::T_sp aromaticity_info = core::eval::funcall(_sym_identify_aromatic_rings,matter,force_field_name);
         if (aromaticity_info.nilp()) SIMPLE_ERROR(("The aromaticity-info was NIL when about to assign force field types - it should not be"));
         core::DynamicScopeManager aromaticity_scope(_sym_STARcurrent_aromaticity_informationSTAR,aromaticity_info);
-        gc::As<core::HashTable_sp>(core::eval::funcall(_sym_assign_force_field_types,combined_force_field,molecule,atomTypes));
+        core::eval::funcall(_sym_assign_force_field_types,combined_force_field,molecule,atomTypes);
       } else {
         Loop atom_loop;
         atom_loop.loopTopGoal(molecule,ATOMS);
