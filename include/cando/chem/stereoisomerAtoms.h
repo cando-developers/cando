@@ -1,3 +1,5 @@
+
+#ifdef USE_TOPOLOGY
 /*
     File: stereoisomerAtoms.h
 */
@@ -43,7 +45,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/elements.fwd.h>
 
 #include <cando/chem/chemPackage.h>
-
 
 namespace chem
 {
@@ -159,3 +160,4 @@ is a list of stereoisomer-atoms.)");
 
 };
 #endif //]
+#endif

@@ -34,6 +34,8 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace chem
 {
 
+typedef int ConstitutionAtomIndex0N;
+
 class AtomId
 {
 public:

@@ -144,7 +144,7 @@ void EnergyDihedralRestraint_O::addDihedralRestraint(EnergyFunction_sp energyFun
 
 
 
-void	EnergyDihedralRestraint_O::dumpTerms()
+void	EnergyDihedralRestraint_O::dumpTerms(core::HashTable_sp atomTypes)
 {
 }
 

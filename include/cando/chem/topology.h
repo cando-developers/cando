@@ -94,6 +94,9 @@ namespace chem
   between 0 and N-(the number of unique Topologys in the database).  This is to facilitate atom based lookups
   that describe the number of bonds between atoms in two interconnected Topologys.
 */
+
+#ifdef USE_TOPOLOGY
+
 template <>
 struct gctools::GCInfo<chem::Topology_O> {
   static bool constexpr NeedsInitialization = true;
@@ -271,4 +274,5 @@ void connect_residues(Topology_sp prev_topology,
 
 };
 
+#endif
 #endif

@@ -71,7 +71,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/residue.fwd.h>
 
 
-
+#ifdef USE_TOPOLOGY
 namespace chem
 {
 
@@ -82,7 +82,6 @@ namespace chem
   FORWARD(Oligomer);
   FORWARD(Constitution);
   FORWARD(StereoInformation);
-  FORWARD(Topology);
   FORWARD(Plug);
 FORWARD(Monomer);
   FORWARD(Stereoisomer);
@@ -249,4 +248,5 @@ FORWARD(Monomer);
 
 
 TRANSLATE(chem::Constitution_O);
+#endif
 #endif

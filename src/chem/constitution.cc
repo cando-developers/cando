@@ -49,7 +49,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/wrappers.h>
 
 
-
+#ifdef USE_TOPOLOGY
 namespace chem {
 
 
@@ -726,3 +726,4 @@ void	Constitution_O::archiveBase(core::ArchiveP node)
 
 
 }; // namespace chem
+#endif

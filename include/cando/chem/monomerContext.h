@@ -1,3 +1,4 @@
+#ifdef USE_TOPOLOGY
 /*
     File: monomerContext.h
 */
@@ -191,3 +192,4 @@ inline MonomerContext_sp create_MonomerContext()
 };
 TRANSLATE(chem::MonomerContext_O);
 #endif //]
+#endif

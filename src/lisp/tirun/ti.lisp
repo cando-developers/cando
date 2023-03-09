@@ -1570,10 +1570,10 @@ normal way - so we short circuit it here using a mol2 file"
 
 
 (defun save-tiruns (tiruns tiruns-file)
-  (cando:save-cando tiruns tiruns-file))
+  (cando.serialize:save-cando tiruns tiruns-file))
 
 (defun load-tiruns (tiruns-file)
-  (cando:load-cando tiruns-file))
+  (cando.serialize:load-cando tiruns-file))
 
 #+(or)
 (defun save-tiruns (tiruns tiruns-file)
@@ -1590,19 +1590,19 @@ normal way - so we short circuit it here using a mol2 file"
 #+(or)
 (defun load-tiruns (tiruns-file)
   "Load a tiruns database and register the topologys"
-  (let ((tiruns (cando:load-cando tiruns-file))
+  (let ((tiruns (cando.serialize:load-cando tiruns-file))
         reversed-receptors)
     (loop for receptor-string in (receptor-strings tiruns)
           for receptor = (with-input-from-string (sin receptor-string)
                            (chem:read-mol2 sin))
           do (push receptor reversed-receptors))
     (setf (receptors tiruns) (nreverse reversed-receptors))
-    (cando:register-topology (chem:get-name (core-topology tiruns)) (core-topology tiruns))
+    (chem:register-topology (chem:get-name (core-topology tiruns)) (core-topology tiruns))
     (maphash (lambda (part-name name-topologys)
                (format t "name-topologys = ~s~%" name-topologys)
                (loop for (name . topology) in name-topologys
                      do (format t "Registering ~a ~a~%" name topology)
-                     do (cando:register-topology name topology)))
+                     do (chem:register-topology name topology)))
              (side-topologys tiruns))
     tiruns))
 

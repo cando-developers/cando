@@ -1,3 +1,17 @@
+#include <clasp/core/common.h>
+
+// FIX_TOPOLOGY
+// Get the stereoisomer atoms from a topology
+SYMBOL_EXPORT_SC_(ChemPkg, stereoisomer_atoms);
+SYMBOL_EXPORT_SC_(ChemPkg, stereoisomer_atom_with_name);
+// Get atom type of stereoisomer_atom
+SYMBOL_EXPORT_SC_(ChemPkg, stereoisomer_atom_type);
+
+
+
+
+#if 0
+
 /*
     File: stereoisomerAtoms.cc
 */
@@ -208,3 +222,4 @@ CL_DEFMETHOD     int StereoisomerAtoms_O::index(MatterName name) const
 
 
 };
+#endif

@@ -11,7 +11,7 @@
 (defun calc-mol-charge (molecule)
   "Calculate the charge on all atoms assigned to -molecule-, can be a single atom up to a whole molecule."
   (let ((charge-a 0.0))
-    (Cando:do-atoms (atm molecule)
+    (chem:do-atoms (atm molecule)
       (incf charge-a (chem:get-charge atm)))
     charge-a))
 

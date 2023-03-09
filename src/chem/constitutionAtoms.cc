@@ -40,6 +40,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/bond.h>
 #include <clasp/core/wrappers.h>
 
+#ifdef USE_TOPOLOGY
 namespace chem
 {
 
@@ -279,3 +280,4 @@ CL_DEFMETHOD     Residue_sp ConstitutionAtoms_O::buildResidue()
 // Stuff
 
 };
+#endif

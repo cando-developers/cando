@@ -60,19 +60,19 @@ namespace chem
 {
 EnergyAtom::EnergyAtom() : _Flag(0) {};
 EnergyAtom::EnergyAtom(Atom_sp atom,uint coordinateIndex) : Base(atom,coordinateIndex), _Flag(0)  {} ;
-EnergyAtom::EnergyAtom(core::T_sp forceField, Atom_sp atom, uint coordinateIndex ) : Base(atom,coordinateIndex), _Flag(0)
+EnergyAtom::EnergyAtom(core::T_sp forceField, Atom_sp atom, uint coordinateIndex, core::HashTable_sp atomTypes ) : Base(atom,coordinateIndex), _Flag(0)
 {
-  this->defineForAtom(forceField,atom,coordinateIndex);
+  this->defineForAtom(forceField,atom,coordinateIndex,atomTypes);
 }
 
 
-void EnergyAtom::defineForAtom(core::T_sp forceField, Atom_sp a1, uint coordinateIndex)
+void EnergyAtom::defineForAtom(core::T_sp forceField, Atom_sp a1, uint coordinateIndex, core::HashTable_sp atomTypes )
 {
   this->setupBase(a1,coordinateIndex);
-  if (a1->getType().nilp()) {
+  if (a1->getType(atomTypes).nilp()) {
     SIMPLE_ERROR(("The atom type of %s is NIL!") , _rep_(a1));
   }
-  core::T_sp typeIndex = core::eval::funcall(_sym_find_atom_type_position,forceField,a1->getType());
+  core::T_sp typeIndex = core::eval::funcall(_sym_find_atom_type_position,forceField,a1->getType(atomTypes));
   if (!typeIndex.fixnump()) {
     TYPE_ERROR(typeIndex,cl::_sym_fixnum);
   }
@@ -309,7 +309,7 @@ void	AtomTable_O::archiveBase(core::ArchiveP node)
 
 
 
-CL_DEFMETHOD void	AtomTable_O::dumpTerms()
+CL_DEFMETHOD void	AtomTable_O::dumpTerms(core::HashTable_sp atomTypes)
 {
   gctools::Vec0<EnergyAtom>::iterator	eai;
   string				as1,as2,as3,as4;
@@ -317,7 +317,7 @@ CL_DEFMETHOD void	AtomTable_O::dumpTerms()
   int index = 0;
   for ( eai=this->_Atoms.begin(); eai!=this->_Atoms.end(); eai++ ) {
     as1 = atomLabel(eai->atom());
-    str1 = eai->atom()->getType();
+    str1 = eai->atom()->getType(atomTypes);
     core::write_bf_stream(fmt::sprintf("(TERM %d ATOM %-9s %-9s :charge %8.5lf :mass %8.5lf :typeIndex %d)\n"
               , index
               , as1
@@ -502,7 +502,7 @@ size_t AtomTable_O::getAtomFlag(size_t index) {
 }
 
 CL_DEFMETHOD
-void AtomTable_O::constructFromMolecule(Molecule_sp mol, core::T_sp nonbondForceField, core::T_sp activeAtoms )
+void AtomTable_O::constructFromMolecule(Molecule_sp mol, core::T_sp nonbondForceField, core::T_sp activeAtoms, core::HashTable_sp atomTypes )
 {
   uint idx = this->_Atoms.size();
   uint coordinateIndex = idx*3;
@@ -530,7 +530,7 @@ void AtomTable_O::constructFromMolecule(Molecule_sp mol, core::T_sp nonbondForce
         }
         LOG("Setting atom[%s] in AtomTable[%d]" , _rep_(a1) , idx );
         this->_AtomTableIndices->setf_gethash(a1,core::clasp_make_fixnum(idx));
-        EnergyAtom ea(nonbondForceField,a1,coordinateIndex);
+        EnergyAtom ea(nonbondForceField,a1,coordinateIndex,atomTypes);
         ea._AtomName = a1->getName();
         {
           LOG("Spanning tree for atom: %s\n" , _rep_(a1->getName()));
@@ -635,8 +635,8 @@ CL_DEFMETHOD core::T_mv AtomTable_O::calculate_excluded_atom_list()
   return Values(t_number_excluded_atoms, t_excluded_atoms_list);
 }
 
-CL_DEFMETHOD core::Symbol_sp AtomTable_O::elt_atom_type(int index) {
-  return this->_Atoms[index]._SharedAtom->getType();
+CL_DEFMETHOD core::Symbol_sp AtomTable_O::elt_atom_type(int index,core::HashTable_sp atomTypes) {
+  return this->_Atoms[index]._SharedAtom->getType(atomTypes);
 };
 SYMBOL_EXPORT_SC_(KeywordPkg,atom_vector);
 SYMBOL_EXPORT_SC_(KeywordPkg,atom_name_vector);
@@ -668,7 +668,7 @@ CL_DEFMETHOD void  AtomTable_O::fill_atom_table_from_vectors(core::List_sp vecto
     this->_AtomTableIndices->setf_gethash(atom,core::clasp_make_fixnum(i));
     core::T_sp type = atom_type_vec->rowMajorAref(i);
 //    printf("%s:%d  type -> %s\n", __FILE__, __LINE__, _rep_(type).c_str());
-    atom->setType(atom_type_vec->rowMajorAref(i));
+    atom->setAtomType(atom_type_vec->rowMajorAref(i));
     double charge  =  translate::from_object<double>(charge_vec->rowMajorAref(i))._v;   // charge-vector
     this->_Atoms[i]._Charge       =  charge;
     atom->setCharge(charge);

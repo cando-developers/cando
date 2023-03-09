@@ -30,6 +30,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/chemPackage.h>
 #include <cando/chem/constitutionAtoms.fwd.h>
 
+#ifdef USE_TOPOLOGY
 namespace chem
 {
 
@@ -40,4 +41,5 @@ namespace chem
     FORWARD(StereoisomerAtoms);
 
 };
+#endif
 #endif

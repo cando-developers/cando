@@ -136,7 +136,7 @@
 lowest normal valence consistent with the number of pre-existing bonds
 for that atom. Returns two values, molecule and a list of the newly
 added hydrogen ATOMs."
-  (cando:do-atoms (atom (chem-molecule molecule))
+  (chem:do-atoms (atom (chem-molecule molecule))
     (chem:fill-in-implicit-hydrogens-with-residue atom (chem-residue molecule))))
 
 (defparameter *bond-orders*

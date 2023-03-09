@@ -66,7 +66,7 @@ private: // instance variables
 public:	// Creation class functions
 public:
 
-    virtual void fillRestraints(Residue_sp residue, core::HashTable_sp cip) {_OF();SUBCLASS_MUST_IMPLEMENT();};
+  CL_DEFMETHOD virtual void fillRestraints(Residue_sp residue, core::HashTable_sp cip) {_OF();SUBCLASS_MUST_IMPLEMENT();};
 
 public:
 	ComplexRestraint_O( const ComplexRestraint_O& ss ); //!< Copy constructor

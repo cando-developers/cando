@@ -61,6 +61,7 @@ This is an open source license for the CANDO software from Temple University, bu
 
 
 
+#ifdef USE_TOPOLOGY
 namespace chem {
 
 CL_LISPIFY_NAME("CHEM:NAME");
@@ -1056,3 +1057,4 @@ Monomer_O::Monomer_O(const Monomer_O& other)
 }
 
 };
+#endif

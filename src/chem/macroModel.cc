@@ -421,7 +421,7 @@ char			caPart[254], *cPTemp;
 //	sTemp = caString;
 	sTemp = atoms[i].caAtomName;
 	aPAtom->setName(chemkw_intern(sTemp));
-	aPAtom->setType(chemkw_intern(mmodToAmberTypes[atoms[i].iType]));
+	aPAtom->setAtomType(chemkw_intern(mmodToAmberTypes[atoms[i].iType]));
 	aPAtom->setElementFromString(mmodToAmberElement[atoms[i].iType]);
 	vPos = Vector3( atoms[i].x, atoms[i].y, atoms[i].z );
 	aPAtom->setPosition(vPos);

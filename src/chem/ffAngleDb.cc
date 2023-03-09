@@ -153,14 +153,14 @@ void    FFAngleDb_O::add(FFAngle_sp ang)
 }
 
 
-FFAngle_sp FFAngleDb_O::findTerm(FFStretchDb_sp ffstretch, chem::Atom_sp a1, chem::Atom_sp a2, chem::Atom_sp a3 )
+FFAngle_sp FFAngleDb_O::findTerm(FFStretchDb_sp ffstretch, chem::Atom_sp a1, chem::Atom_sp a2, chem::Atom_sp a3, core::HashTable_sp atomTypes )
 { 
 FFAngle_sp       match;
 core::Symbol_sp          key;
 core::Symbol_sp		t1, t2, t3;
-    t1 = a1->getType();
-    t2 = a2->getType();
-    t3 = a3->getType();
+    t1 = a1->getType(atomTypes);
+    t2 = a2->getType(atomTypes);
+    t3 = a3->getType(atomTypes);
     key = angleKey(t1,t2,t3);
     core::T_sp parm;
     parm = this->_Parameters->gethash(key);
@@ -168,7 +168,7 @@ core::Symbol_sp		t1, t2, t3;
     key = angleKey(t3,t2,t1);
     parm = this->_Parameters->gethash(key);
     if (parm.notnilp()) return gc::As<FFAngle_sp>(parm);
-    match = this->estimateTerm(ffstretch,a1,a2,a3);
+    match = this->estimateTerm(ffstretch,a1,a2,a3,atomTypes);
     return match;
 }
 
@@ -191,7 +191,7 @@ void	FFAngle_O::initialize()
 SYMBOL_EXPORT_SC_(ChemPkg,warn_estimated_angle_term);
 
 /*! Estimate the angle term according to Wang et al. J. Comput. Chem 25, 1157-1174 (2004) */
-FFAngle_sp	FFAngleDb_O::estimateTerm(FFStretchDb_sp ffstretch, chem::Atom_sp a1, chem::Atom_sp a2, chem::Atom_sp a3 )
+FFAngle_sp	FFAngleDb_O::estimateTerm(FFStretchDb_sp ffstretch, chem::Atom_sp a1, chem::Atom_sp a2, chem::Atom_sp a3, core::HashTable_sp atomTypes )
 {
 FFStretch_sp	r12,r32;
 FFAngle_sp	ff_121;
@@ -200,15 +200,15 @@ double		d, z1, c2, z3, angRad, k;
 core::Symbol_sp		element1, element2, element3;
 core::Symbol_sp		t1, t2, t3;
     LOG("status" );
-    t1 = a1->getType();
-    t2 = a2->getType();
-    t3 = a3->getType();
+    t1 = a1->getType(atomTypes);
+    t2 = a2->getType(atomTypes);
+    t3 = a3->getType(atomTypes);
     LOG("status" );
     // To avoid an std::endless loop of estimating terms just go straight to guess if t1==t3
     if ( t1==t3 ) goto GUESS;
     LOG("status" );
-    ff_121 = this->findTerm(ffstretch,a1,a2,a1);
-    ff_323 = this->findTerm(ffstretch,a3,a2,a3);
+    ff_121 = this->findTerm(ffstretch,a1,a2,a1,atomTypes);
+    ff_323 = this->findTerm(ffstretch,a3,a2,a3,atomTypes);
     LOG("status" );
     if ( ff_121.nilp() ) goto GUESS;
     LOG("status" );

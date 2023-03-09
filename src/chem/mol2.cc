@@ -513,7 +513,7 @@ core::T_sp mol2Read(Mol2File& fIn)
     LOG("Creating atom with id: %d name: %s element: %s charge: %8.2f" , ai->second.mIndex , ai->second.atom_name.c_str() , el.c_str() , ai->second.mCharge  );
     pos.set(ai->second.mX,ai->second.mY,ai->second.mZ);
     a->setPosition(pos);
-    a->setType(chemkw_intern(ai->second.mType));
+    a->setAtomType(chemkw_intern(ai->second.mType));
     a->setCharge(ai->second.mCharge);
     LOG(" atom info: %s" , a->description().c_str()  );
     if (ai->second.mArrayIndex<atoms.size()) {
@@ -746,8 +746,8 @@ void	mol2WriteAggregateStream( Aggregate_sp agg, std::ostream &out, bool useSyby
           one._Type = type;
               //core::write_bf_stream(fmt::sprintf("Assigned sybyl type %s to %s\n" , _rep_(one._Type) , _rep_(a)));
         } else {
-          if ( a->getType().notnilp() ) {
-            core::Symbol_sp type = gc::As<core::Symbol_sp>(a->getType());
+          if ( a->atomType().notnilp() ) {
+            core::Symbol_sp type = gc::As<core::Symbol_sp>(a->atomType());
             one._Type = type;
           } else {
             one._Type = nil<core::Symbol_O>();

@@ -121,9 +121,9 @@ void EnergyAngle::defineFrom( FFAngle_sp term , EnergyAtom *ea1, EnergyAtom *ea2
 #if 0 //[
 void	EnergyAngle::defineMissing( EnergyAtom *ea1, EnergyAtom *ea2, EnergyAtom *ea3 )
 {
-    this->_Type1 = ea1->_Atom->getType();
-    this->_Type2 = ea2->_Atom->getType();
-    this->_Type3 = ea3->_Atom->getType();
+    this->_Type1 = ea1->_Atom->getType(atomTypes);
+    this->_Type2 = ea2->_Atom->getType(atomTypes);
+    this->_Type3 = ea3->_Atom->getType(atomTypes);
 }
 #endif //]
 
@@ -246,7 +246,7 @@ string EnergyAngle_O::beyondThresholdInteractionsAsString()
 
 
 
-void	EnergyAngle_O::dumpTerms()
+void	EnergyAngle_O::dumpTerms(core::HashTable_sp atomTypes)
 {
 gctools::Vec0<EnergyAngle>::iterator	eai;
 string				as1,as2,as3,as4;
@@ -717,7 +717,7 @@ CL_DEFMETHOD void EnergyAngle_O::addAngleTerm(AtomTable_sp atomTable, Atom_sp a1
 
 
 CL_DEFMETHOD
-core::List_sp	EnergyAngle_O::lookupAngleTerms(AtomTable_sp atomTable, Atom_sp a1, Atom_sp a2, Atom_sp a3)
+core::List_sp	EnergyAngle_O::lookupAngleTerms(AtomTable_sp atomTable, Atom_sp a1, Atom_sp a2, Atom_sp a3, core::HashTable_sp atomTypes )
 {
   ql::list  result;
   core::T_sp tia1 = atomTable->_AtomTableIndices->gethash(a1);
@@ -737,9 +737,9 @@ core::List_sp	EnergyAngle_O::lookupAngleTerms(AtomTable_sp atomTable, Atom_sp a1
             edi->_Atom2==a2 &&
             edi->_Atom1==a3)) {
       ql::list oneResult;
-      oneResult << INTERN_(kw,type1) << edi->_Atom1->getType()
-                << INTERN_(kw,type2) << edi->_Atom2->getType()
-                << INTERN_(kw,type3) << edi->_Atom3->getType()
+      oneResult << INTERN_(kw,type1) << edi->_Atom1->getType(atomTypes)
+                << INTERN_(kw,type2) << edi->_Atom2->getType(atomTypes)
+                << INTERN_(kw,type3) << edi->_Atom3->getType(atomTypes)
                 << INTERN_(kw,kt) << core::clasp_make_double_float(edi->term.kt)
                 << INTERN_(kw,t0) << core::clasp_make_double_float(edi->term.t0/0.0174533);
       result << oneResult.result();

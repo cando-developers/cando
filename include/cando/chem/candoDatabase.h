@@ -43,10 +43,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <vector>
 #include <clasp/core/common.h>
 #include <cando/adapt/stringList.fwd.h>
-#include <cando/chem/monomer.h>
 #include <cando/geom/vector3.h>
-#include <cando/adapt/symbolMap.h>
-#include <cando/chem/entity.fwd.h>
 #include <cando/chem/chemPackage.h>
 
 
@@ -95,25 +92,13 @@ public:
 
 public:
   typedef gc::SmallMap<core::Symbol_sp,FrameRecognizer_sp>	FrameRecognizers;
-  typedef gc::SmallMap<core::Symbol_sp,MonomerCoordinates_sp>		MonomerCoordinates;
   typedef gc::SmallMap<core::Symbol_sp, Entity_sp>		Entities;
 private: // archive
   core::Symbol_sp				_Name;
   string				_DateCreated;
   string				_DateUpdated;
-  FrameRecognizers		_frameRecognizers;
-  MonomerCoordinates		_MonomerCoordinates;
-			/*! The Entities object maps
-			 * names of Stereoisomers, Constitutions, RepresentedEntityNameSets
-			 * and MonomerPacks to their respective objects.
-			 * Any object that can be expanded ultimately into a list
-			 * of Stereoisomer names is stored here.
-			 */
-  core::HashTableEq_sp          _Entities;
   core::HashTableEq_sp          _Topologys;
   
-public:
-  typedef MonomerCoordinates::iterator	monomerCoordinatesIterator;
 private:
 	/*! Return true if the entity with the name (name) is recognized and is a subclass of classId
 	 */
@@ -148,7 +133,9 @@ public:
 
 
 	/*! Access contents using resource/name */
+#ifdef USE_TOPOLOGY
   core::T_sp	oGetResource(core::Symbol_sp resource, core::Symbol_sp name );
+#endif
 
   bool recognizesMonomerName(core::Symbol_sp nm);
 
@@ -171,40 +158,6 @@ public:
 //	core::Symbol_sp getPdbNameForNameOrPdb(core::Symbol_sp name);
 
 
-  CL_LISPIFY_NAME("getFrameRecognizer");
-  CL_DEFMETHOD 	FrameRecognizer_sp	getFrameRecognizer(core::Symbol_sp nm)
-  { _G();
-    FrameRecognizer_sp gr;
-    LOG(( "Agroup name in database=%d") , this->recognizesFrameRecognizerName(nm) );
-    FrameRecognizers::iterator ig = this->_frameRecognizers.find(nm);
-    if ( ig == this->_frameRecognizers.end() ) {
-      SIMPLE_ERROR(("Could not find %s") , _rep_(nm));
-    }
-    return ig->second;
-  };
-
-
-  void addFrameRecognizer(FrameRecognizer_sp rec);
-  bool	recognizesFrameRecognizerName(core::Symbol_sp nm);
-
-
-  bool	recognizesEntityNameSetName(core::Symbol_sp nm);
-
-  bool	recognizesRepresentedEntityNameSet(core::Symbol_sp nm);
-
-
-
-	
-	/*! Return true if the Symbol references a MonomerPack */
-  bool	recognizesMonomerPack(core::Symbol_sp nm);
-
-
-  EntityNameSet_sp	getEntityNameSet(core::Symbol_sp nm);
-  RepresentedEntityNameSet_sp getRepresentedEntityNameSet(core::Symbol_sp nm);
-
-
-  bool	recognizesSetOrConstitutionOrMonomerName(core::Symbol_sp nm);
-
   /*! Return (values topology t/nil) */
   core::T_mv findTopology(core::T_sp name,bool errorp) const;
   void setf_findTopology(core::T_sp name, core::T_sp topology);
@@ -221,6 +174,7 @@ public:
 public:
 
 
+#ifdef USE_TOPOLOGY
   adapt::SymbolSet_sp getMonomersForSetOrConstitutionOrMonomerName(core::Symbol_sp nm);
 
 
@@ -232,9 +186,11 @@ public:
 
 
   Entity_sp getEntity(core::Symbol_sp nm) const;
+#endif
 
-
+#ifdef USE_TOPOLOGY
   adapt::SymbolSet_sp allUniqueCouplingNames();
+#endif
 
 		/*! When objects that depend on different CandoDatabase(s)
 		 * are to be combined they have to reference a common CandoDatabase
@@ -246,52 +202,6 @@ public:
 
   core::List_sp	allMonomerNamesOrdered();
   void		testConsistency(std::ostream& out);
-
-public:
-
-  monomerCoordinatesIterator begin_MonomerCoordinates_keyValue()
-  { return this->_MonomerCoordinates.begin(); };
-  monomerCoordinatesIterator end_MonomerCoordinates_keyValue()
-  { return this->_MonomerCoordinates.end(); };
-
-  monomerCoordinatesIterator	begin_MonomerCoordinates() {
-    return this->_MonomerCoordinates.begin();
-  };
-  monomerCoordinatesIterator	end_MonomerCoordinates() {
-    return this->_MonomerCoordinates.end();
-  };
-
-#if 0
-  monomerCoordinatesValueIterator	begin_value_MonomerCoordinates() {
-    return this->_MonomerCoordinates.begin_value();
-  };
-  monomerCoordinatesValueIterator	end_value_MonomerCoordinates() {
-    return this->_MonomerCoordinates.end_value();
-  };
-#endif
-		/*! Add the MonomerCoordinates but only
-		 * with those context keys that this database requires
-		 * Return the number of contexts that were added
-		 */
-  uint addMonomerCoordinates(MonomerCoordinates_sp coords);
-
-  MonomerCoordinates_sp	getMonomerCoordinatesWithKey(MonomerName key);
-  bool			recognizesMonomerCoordinatesKey(MonomerName key);
-
-  core::List_sp uniqueMonomerCoordinatesAsList();
-  core::List_sp monomerCoordinatesKeysAsList();
-
-  SpecificContextSet_sp allSpecificMonomerContexts();
-
-  MonomerCoordinates_sp	get(MonomerContext_sp context);
-  bool recognizesContext(MonomerContext_sp context);
-
-  void	saveAs(const string& fileName);
-
-#if 0
-	// I'll need to add this back once I figure out what Alchemists do
-  void removeMonomerCoordinatesNotRequiredByAlchemists(core::List_sp alchemists);
-#endif
 public:
 
   DEFAULT_CTOR_DTOR(CandoDatabase_O);

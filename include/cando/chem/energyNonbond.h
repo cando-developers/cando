@@ -100,7 +100,8 @@ public:
                    bool		is14,
                    EnergyAtom	*iea1,
                    EnergyAtom	*iea2,
-                   EnergyNonbond_sp nb);
+                   EnergyNonbond_sp nb,
+                   core::HashTable_sp atomTypes );
 
 public:
 public:
@@ -218,7 +219,7 @@ class EnergyNonbond_O : public EnergyComponent_O
   CL_DEFMETHOD core::SimpleVector_int32_t_sp excluded_atom_list() const { return this->_ExcludedAtomIndices;}
  public:
   void addTerm(const TermType& term);
-  virtual void dumpTerms();
+  virtual void dumpTerms(core::HashTable_sp atomTypes);
   virtual	void	zeroEnergy();
 
   void setNonbondCutoff(double cutoff);
@@ -270,8 +271,8 @@ class EnergyNonbond_O : public EnergyComponent_O
   core::T_sp getFFNonbondDb();
 
   void constructFromAtomTable(bool useExcludedAtoms, AtomTable_sp atomTable, core::T_sp nbforceField);
-  void constructNonbondTermsFromAtomTable(bool ignore14s, AtomTable_sp atomTable, core::T_sp nbforceField);
-  void construct14InteractionTerms(AtomTable_sp atomTable, Matter_sp matter, core::T_sp nbforceField, core::T_sp activeAtoms);
+  void constructNonbondTermsFromAtomTable(bool ignore14s, AtomTable_sp atomTable, core::T_sp nbforceField, core::HashTable_sp atomTypes);
+  void construct14InteractionTerms(AtomTable_sp atomTable, Matter_sp matter, core::T_sp nbforceField, core::T_sp activeAtoms, core::HashTable_sp atomTypes );
   void constructExcludedAtomListFromAtomTable(AtomTable_sp atomTable, core::T_sp nbforceField);
 
   void constructNonbondTermsFromAtomTableUsingExcludedAtoms(EnergyFunction_sp energyFunction,

@@ -342,11 +342,11 @@ string RigidBodyEnergyFunction_O::energyComponentsAsString() {
 }
  
 
-void RigidBodyEnergyFunction_O::dumpTerms()
+void RigidBodyEnergyFunction_O::dumpTerms(core::HashTable_sp atomTypes)
 {
   for ( auto cur : this->_Terms ) {
     EnergyRigidBodyComponent_sp term = gc::As<EnergyRigidBodyComponent_sp>(CONS_CAR(cur));
-    term->dumpTerms();
+    term->dumpTerms(atomTypes);
   }
 }
 

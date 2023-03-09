@@ -29,10 +29,11 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/chemPackage.h>
 
 
+#ifdef USE_TOPOLOGY
 namespace chem
 {
-    FORWARD(Topology);
     typedef uint	TopologyIndex0N;
 
 };
+#endif
 #endif // topology_FWD_H

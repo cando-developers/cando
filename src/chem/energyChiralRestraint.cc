@@ -131,7 +131,7 @@ void EnergyChiralRestraint_O::addTerm(const EnergyChiralRestraint& e)
     this->_Terms.push_back(e);
 }
 
-void EnergyChiralRestraint_O::dumpTerms()
+void EnergyChiralRestraint_O::dumpTerms(core::HashTable_sp atomTypes)
 {
     gctools::Vec0<EnergyChiralRestraint>::iterator cri;
     int i;

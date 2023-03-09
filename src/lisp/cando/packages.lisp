@@ -203,9 +203,6 @@
            ;;; directory utilities
            #:set-current-directory
            #:current-directory
-           #:do-molecules
-           #:do-residues
-           #:do-atoms
            #:remove-molecules
            #:combine
            #:assign-solvent-molecules-using-residue-name

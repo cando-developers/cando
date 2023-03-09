@@ -1,3 +1,5 @@
+#ifdef USE_TOPOLOGY
+
 /*
     File: coupling.h
 */
@@ -267,4 +269,5 @@ namespace chem {
 
 
 };
+#endif
 #endif

@@ -75,6 +75,12 @@ CL_DEFMETHOD Matter_sp Matter_O::contentAt(size_t i) const
   return this->_Contents[i];
 }
 
+CL_DEFMETHOD void Matter_O::setContentAt(size_t i, Matter_sp m)
+{
+  BOUNDS_ASSERT(i<this->_Contents.size());
+  this->_Contents[i] = m;
+}
+
 string Matter_O::__repr__() const
 {
   stringstream ss;
@@ -989,7 +995,7 @@ core::Vector_sp	Matter_O::allAtomsOfElement(Element element)
   return atoms;
 }
 
-
+#ifdef USE_TOPOLOGY
 CL_LISPIFY_NAME("aliasResidueOrNil");
 CL_DEFMETHOD Residue_sp	Matter_O::aliasResidueOrNil(Alias_sp alias)
 {
@@ -1028,7 +1034,7 @@ CL_DEFMETHOD Atom_sp Matter_O::aliasAtom(Alias_sp alias)
   if ( a.notnilp() ) return a;
   SIMPLE_ERROR(("could not find aliasAtom"));
 }
-
+#endif
 
 
 

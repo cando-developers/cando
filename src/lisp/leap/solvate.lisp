@@ -3,7 +3,7 @@
 (defun remove-solvent (aggregate)
   (check-type aggregate chem:aggregate)
   (let ((solvents nil))
-    (cando:do-molecules (mol aggregate)
+    (chem:do-molecules (mol aggregate)
       (when (eq (chem:molecule-type mol) :solvent)
         (push mol solvents)))
     (loop for solvent in solvents

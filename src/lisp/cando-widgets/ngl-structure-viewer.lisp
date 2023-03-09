@@ -396,7 +396,7 @@
 (defun crd (agg)
   (let ((arr (make-array (* 3 (chem:number-of-atoms agg)) :element-type 'single-float))
         (index -1))
-    (cando:do-atoms (atm agg)
+    (chem:do-atoms (atm agg)
       (let ((pos (chem:get-position atm)))
         (setf (aref arr (incf index)) (float (geom:get-x pos) 1.0s0)
               (aref arr (incf index)) (float (geom:get-y pos) 1.0s0)

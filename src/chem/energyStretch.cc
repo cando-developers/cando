@@ -521,7 +521,7 @@ core::List_sp	EnergyStretch_O::checkForBeyondThresholdInteractionsWithPosition(N
 
 
 
-void	EnergyStretch_O::dumpTerms()
+void	EnergyStretch_O::dumpTerms(core::HashTable_sp atomTypes)
 {
   gctools::Vec0<EnergyStretch>::iterator	esi;
   string				as1,as2,as3,as4;
@@ -685,7 +685,7 @@ void EnergyStretch_O::reset()
 }
 
 CL_DEFMETHOD
-core::List_sp	EnergyStretch_O::lookupStretchTerms(AtomTable_sp atomTable, Atom_sp a1, Atom_sp a2)
+core::List_sp	EnergyStretch_O::lookupStretchTerms(AtomTable_sp atomTable, Atom_sp a1, Atom_sp a2, core::HashTable_sp atomTypes)
 {
   ql::list  result;
   core::T_sp tia1 = atomTable->_AtomTableIndices->gethash(a1);
@@ -700,8 +700,8 @@ core::List_sp	EnergyStretch_O::lookupStretchTerms(AtomTable_sp atomTable, Atom_s
         || (edi->_Atom2==a1 &&
             edi->_Atom1==a2)) {
       ql::list oneResult;
-      oneResult << INTERN_(kw,type1) << edi->_Atom1->getType()
-                << INTERN_(kw,type2) << edi->_Atom2->getType()
+      oneResult << INTERN_(kw,type1) << edi->_Atom1->getType(atomTypes)
+                << INTERN_(kw,type2) << edi->_Atom2->getType(atomTypes)
                 << INTERN_(kw,kb) << core::clasp_make_double_float(edi->term.kb)
                 << INTERN_(kw,r0) << core::clasp_make_double_float(edi->term.r0);
       result << oneResult.result();

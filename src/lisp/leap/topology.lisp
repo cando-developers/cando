@@ -597,6 +597,7 @@ then don't calculate 1,4 interactions"
 
 (defun chem:prepare-amber-energy-nonbond (energy-function ffnonbond-db)
   (let* ((atom-table (chem:atom-table energy-function))
+         (atom-types (chem:atom-types energy-function))
          (natom (chem:get-number-of-atoms atom-table))
          (atom-name-vector (make-array natom))
          (atom-type-vector (make-array natom))
@@ -610,7 +611,7 @@ then don't calculate 1,4 interactions"
 ;;;    (format t "ffnonbond-db -> ~a~%" ffnonbond-db)
     (loop for i from 0 below natom
        for atom-name = (chem:elt-atom-name atom-table i)
-       for atom-type = (chem:elt-atom-type atom-table i)
+       for atom-type = (chem:elt-atom-type atom-table i atom-types)
        for charge = (chem:elt-charge atom-table i)
        ;;for mass = (chem:elt-mass atom-table i)
        for type-index = (chem:elt-type-index atom-table i)

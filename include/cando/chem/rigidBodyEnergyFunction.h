@@ -170,7 +170,7 @@ FORWARD(RigidBodyEnergyFunction);
 CL_LISPIFY_NAME("rigid-body-energy-function-normalize-position");
     CL_DEFMETHOD void normalizePosition(NVector_sp pos);
 
-    void dumpTerms();
+    void dumpTerms(core::HashTable_sp atomTypes);
     
     RigidBodyEnergyFunction_O(size_t number_of_rigid_bodies, BoundingBox_sp boundingBox)
     : _RigidBodies(number_of_rigid_bodies),

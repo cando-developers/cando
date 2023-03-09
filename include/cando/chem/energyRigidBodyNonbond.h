@@ -144,7 +144,7 @@ class EnergyRigidBodyNonbond_O : public EnergyRigidBodyComponent_O
 //    int countBadVdwOverlaps(double scaleSumOfVdwRadii, NVector_sp pos, geom::DisplayList_sp displayIn, core::LispPtr );
 
   virtual	double	getEnergy();
-  virtual void dumpTerms();
+  virtual void dumpTerms(core::HashTable_sp atomTypes);
   core::List_sp parts_as_list(NVector_sp pos);
   core::ComplexVector_float_sp write_nonbond_atom_coordinates_to_complex_vector_float(NVector_sp pos, core::ComplexVector_float_sp parts);
   core::ComplexVector_float_sp write_rigid_body_coordinates_to_complex_vector_float(NVector_sp rigid_body_pos, core::Array_sp end_indicesx3, NVector_sp coordinates, core::ComplexVector_float_sp output);

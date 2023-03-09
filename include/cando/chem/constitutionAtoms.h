@@ -26,6 +26,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #ifndef	ConstitutionAtoms_H //[
 #define ConstitutionAtoms_H
 
+#if 0
 
 
 #include <stdio.h>
@@ -42,7 +43,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/elements.fwd.h>
 
 #include <cando/chem/chemPackage.h>
-
 
 namespace chem
 {
@@ -196,3 +196,4 @@ the chem:constitution-atom(s) can be accessed using integer indices.)");
   }
 };
 #endif //]
+#endif

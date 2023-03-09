@@ -153,7 +153,6 @@
   (:use #:common-lisp)
   (:export
    #:*variable-package*
-   #:topologyp
    #:leap-error
    #:with-path
    #:ensure-path

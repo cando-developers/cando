@@ -225,24 +225,17 @@ is written to the log file as if the verbosity level were set to 2."
       (setf cl:*standard-output* broadcast))))
 
 (defmethod describe-object ((object chem:residue) stream)
-  (cando:do-atoms (atom object)
+  (chem:do-atoms (atom object)
     (format stream "~20s type: ~a~%" atom (chem:get-type atom))))
-
-(defmethod describe-object ((object chem:topology) stream)
-  (let* ((constitution (chem:topology/get-constitution object))
-         (constitution-atoms (chem:constitution/get-constitution-atoms constitution)))
-    (loop for index from 0 below (chem:number-of-atoms constitution-atoms)
-          for atom = (chem:atom-with-id constitution-atoms index)
-          do (format stream "~a~%" (core:encode atom)))))
 
 (defmethod describe-object ((object chem:molecule) stream)
   (format stream "Force-field-name: ~a~%" (chem:force-field-name object))
   (format stream "   Molecule-type: ~a~%" (chem:molecule-type object))
-  (cando:do-residues (res object)
+  (chem:do-residues (res object)
     (format stream "~s~%" res)))
 
 (defmethod describe-object ((object chem:aggregate) stream)
-  (cando:do-molecules (mol object)
+  (chem:do-molecules (mol object)
     (format stream "~s ~a atoms~%" mol (chem:number-of-atoms mol))))
 
 
@@ -258,7 +251,7 @@ is written to the log file as if the verbosity level were set to 2."
   (chem:set-name object value))
 
 (defmethod set-property ((object chem:matter) (property (eql :type)) value)
-  (chem:set-type object value))
+  (chem:set-atom-type object value))
 
 (defmethod set-property ((object chem:matter) (property (eql :element)) value)
   (chem:set-element object (intern (string value) :keyword)))
@@ -354,21 +347,21 @@ Print a description of the object.
   (error "~a does not directly contain ~a" a b))
 
 (defmethod do-remove ((a chem:aggregate) (b chem:molecule))
-  (cando:do-molecules (mol a)
+  (chem:do-molecules (mol a)
     (when (eq mol b)
       (chem:remove-molecule a b)
       (return-from do-remove b)))
   (call-next-method))
 
 (defmethod do-remove ((a chem:molecule) (b chem:residue))
-  (cando:do-residues (res a)
+  (chem:do-residues (res a)
     (when (eq res b)
       (chem:remove-residue a b)
       (return-from do-remove b)))
   (call-next-method))
 
 (defmethod do-remove ((a chem:residue) (b chem:atom))
-  (cando:do-atoms (atm a)
+  (chem:do-atoms (atm a)
     (when (eq atm b)
       (chem:remove-atom-delete-bonds a b)
       (return-from do-remove b)))
@@ -438,7 +431,7 @@ Cando internally defined types that correspond to unique SMIRKS patterns."
     (leap:assign-atom-types object)
     (let ((total-atoms 0)
           (total-atoms-with-types 0))
-      (cando:do-atoms (atm object)
+      (chem:do-atoms (atm object)
         (incf total-atoms)
         (when (chem:get-type atm) (incf total-atoms-with-types)))
       (unless (= total-atoms total-atoms-with-types)
@@ -447,14 +440,14 @@ Cando internally defined types that correspond to unique SMIRKS patterns."
         (cond
           ((typep object 'chem:aggregate)
            (format t "Aggregate~%")
-           (cando:do-molecules (mol object)
-             (cando:do-residues (res mol)
-               (cando:do-atoms (atm res)
+           (chem:do-molecules (mol object)
+             (chem:do-residues (res mol)
+               (chem:do-atoms (atm res)
                  (unless (chem:get-type atm)
                    (format t "~a ~a ~a~%" mol res atm))))))
           ((typep object 'chem:molecule)
-           (cando:do-residues (res object)
-             (cando:do-atoms (atm res)
+           (chem:do-residues (res object)
+             (chem:do-atoms (atm res)
                (unless (chem:get-type atm)
                  (format t "~a ~a~%" res atm)))))))
       (format t "Assigned ~a types of a total of ~a atoms.~%" total-atoms-with-types total-atoms))))
@@ -500,7 +493,7 @@ Return a new ATOM with _name_, _type_, and _charge_.
   (let* ((name-sym (intern (string name) :keyword))
          (element (chem:element-from-atom-name-string (string name-sym)))
          (atom (chem:make-atom name-sym element)))
-    (chem:set-type atom type)
+    (chem:set-atom-type atom type)
     (chem:set-charge atom charge)
     atom))
 
@@ -1182,7 +1175,7 @@ The unperturbed and perturbed total charge are displayed.
         (total-charge 0.0)
         (pert-charge 0.0))
     ;; We don't handle pert-charge - and it would be a delta
-    (cando:do-atoms (atm container)
+    (chem:do-atoms (atm container)
       (incf total-charge (chem:get-charge atm)))
     (format t "Total unperturbed charge:    ~,6f~%" total-charge)
     (format t "Total perturbed charge:      ~,6f~%" (+ total-charge pert-charge))))

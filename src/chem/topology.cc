@@ -53,6 +53,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/complexRestraints.h>
 #include <clasp/core/wrappers.h>
 
+#ifdef USE_TOPOLOGY
 namespace chem
 {
 
@@ -90,7 +91,7 @@ CL_DEF_CLASS_METHOD Topology_mv Topology_O::makeTopologyFromResidue(chem::Residu
     Atom_sp atom = gc::As_unsafe<Atom_sp>(*ai);
     ConstitutionAtomIndex0N constitutionIndex = constitution->getConstitutionAtoms()->index(atom->getName());
     StereoisomerAtom_sp sai = StereoisomerAtom_O::make(atom->getName(),
-                                                       atom->getType(),
+                                                       atom->getType(atomTypes),
                                                        atom->getCharge(),
                                                        constitutionIndex);
     stereoisomerAtoms->addStereoisomerAtom(sai);
@@ -717,3 +718,5 @@ CL_DEFMETHOD void Topology_O::walkStereoisomerAtoms(core::Function_sp func)
 };
 
 };
+
+#endif

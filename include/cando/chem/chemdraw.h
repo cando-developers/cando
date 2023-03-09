@@ -202,16 +202,6 @@ CL_DEFMETHOD     core::Symbol_sp getConstitutionName() { return this->_Constitut
 
   core::List_sp getBonds() const;
   
-#if 0
-    core::HashTableEq_sp getProperties() { return this->_Properties;};
-    void	addProperties(core::HashTableEq_sp dict);
-    //! Get the property for this ChemDraw Fragment
-    core::T_sp getProperty(core::Symbol_sp key);
-    core::T_sp getPropertyOrDefault(core::Symbol_sp key, core::T_sp df);
-    bool hasProperty(core::Symbol_sp key);
-    core::T_sp setProperty(core::Symbol_sp key, core::T_sp df);
-    string describeProperties();
-#endif
     Atom_sp createOneAtom(CDNode_sp n);
     void	createAtomsAndBonds();
     void	createImplicitHydrogen(CDNode_sp from, const string& name);
@@ -234,7 +224,7 @@ CL_DEFMETHOD core::T_sp getMolecule() { return this->_Molecule; };
     Residue_sp createResidueOfSelectedAtoms();
 
 //    Residue_sp getEntireResidue();
-    ConstitutionAtoms_sp asConstitutionAtoms();
+  core::T_sp asConstitutionAtoms();
 
     string __repr__() const;
 

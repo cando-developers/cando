@@ -1,3 +1,4 @@
+#ifdef USE_TOPOLOGY
 /*
     File: specificContext.h
 */
@@ -146,3 +147,4 @@ CL_DEFMETHOD 	uint size() { return this->_KeySets.size(); };
 TRANSLATE(chem::SpecificContext_O);
 TRANSLATE(chem::SpecificContextSet_O);
 #endif //]
+#endif

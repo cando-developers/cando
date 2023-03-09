@@ -95,7 +95,8 @@ bool	EnergyNonbond::defineFrom(core::T_sp	forceField,
                                   bool		is14,
                                   EnergyAtom	*iea1,
                                   EnergyAtom	*iea2,
-                                  EnergyNonbond_sp energyNonbond)
+                                  EnergyNonbond_sp energyNonbond,
+                                  core::HashTable_sp atomTypes )
 {
   double				epsilonij;
   double				vdwScale;
@@ -103,8 +104,8 @@ bool	EnergyNonbond::defineFrom(core::T_sp	forceField,
   this->_Is14 = is14;
   this->_Atom1 = iea1->atom();
   this->_Atom2 = iea2->atom();
-  core::Symbol_sp t1 = iea1->atom()->getType();
-  core::Symbol_sp t2 = iea2->atom()->getType();
+  core::Symbol_sp t1 = iea1->atom()->getType(atomTypes);
+  core::Symbol_sp t2 = iea2->atom()->getType(atomTypes);
   LOG("Defining nonbond between types: %s - %s" , _rep_(t1) , _rep_(t2));
   ASSERT(forceField&&forceField.notnilp());
   LOG("forceField @%p   .notnilp()->%d" , (void*)forceField.raw_() , forceField.notnilp());
@@ -113,13 +114,13 @@ bool	EnergyNonbond::defineFrom(core::T_sp	forceField,
   ANN(tffNonbond1);
   if ( tffNonbond1.nilp() )
   {
-//     	SIMPLE_ERROR(("Unknown force field type(",iea1->_Atom->getType().c_str(),") for non-bonded interaction"));
+//     	SIMPLE_ERROR(("Unknown force field type(",iea1->_Atom->getType(atomTypes).c_str(),") for non-bonded interaction"));
     return false;
   }
   ANN(tffNonbond2);
   if ( tffNonbond2.nilp() )
   {
-//     	SIMPLE_ERROR(("Unknown force field type(",iea2->_Atom->getType().c_str(),") for non-bonded interaction"));
+//     	SIMPLE_ERROR(("Unknown force field type(",iea2->_Atom->getType(atomTypes).c_str(),") for non-bonded interaction"));
     return false;
   }
   if ( is14 ) {
@@ -226,7 +227,7 @@ double	EnergyNonbond_O::getEnergy()
 }
 
 
-void	EnergyNonbond_O::dumpTerms()
+void	EnergyNonbond_O::dumpTerms(core::HashTable_sp atomTypes)
 {
   gctools::Vec0<EnergyNonbond>::iterator	eni;
   string				as1,as2,as3,as4;
@@ -873,7 +874,7 @@ string EnergyNonbond_O::beyondThresholdInteractionsAsString()
 }
 
 
-void EnergyNonbond_O::construct14InteractionTerms(AtomTable_sp atomTable, Matter_sp matter, core::T_sp forceField, core::T_sp activeAtoms)
+void EnergyNonbond_O::construct14InteractionTerms(AtomTable_sp atomTable, Matter_sp matter, core::T_sp forceField, core::T_sp activeAtoms, core::HashTable_sp atomTypes )
 {
   
   {
@@ -889,7 +890,7 @@ void EnergyNonbond_O::construct14InteractionTerms(AtomTable_sp atomTable, Matter
              || !inAtomSet(activeAtoms,a4) )) continue;
       auto ea1 = atomTable->getEnergyAtomPointer(a1);
       auto ea4 = atomTable->getEnergyAtomPointer(a4);
-      energyNonbond.defineFrom(forceField,true,&*ea1,&*ea4,this->asSmartPtr());
+      energyNonbond.defineFrom(forceField,true,&*ea1,&*ea4,this->asSmartPtr(),atomTypes);
       LOG("About to addTerm");
       this->addTerm(energyNonbond);
       LOG("Returned from addTerm");
@@ -899,7 +900,7 @@ void EnergyNonbond_O::construct14InteractionTerms(AtomTable_sp atomTable, Matter
   }
 }
 
-void EnergyNonbond_O::constructNonbondTermsFromAtomTable(bool ignore14s, AtomTable_sp atomTable, core::T_sp nbForceField)
+void EnergyNonbond_O::constructNonbondTermsFromAtomTable(bool ignore14s, AtomTable_sp atomTable, core::T_sp nbForceField, core::HashTable_sp atomTypes )
 {
       printf("%s:%d In :constructNonbondTermsFromAtomTable\n", __FILE__, __LINE__ );
 
@@ -928,7 +929,7 @@ void EnergyNonbond_O::constructNonbondTermsFromAtomTable(bool ignore14s, AtomTab
  //             LOG_ENERGY(("Nonbonded interaction between %s - %s in14[%d]\n") , _rep_(iea1->atom()) , _rep_(iea2->atom()) , in14 );
               EnergyNonbond energyNonbond;
               if ( energyNonbond.defineFrom(nbForceField, in14,
-                                            &(*iea1),&(*iea2),this->sharedThis<EnergyNonbond_O>()) )  {
+                                            &(*iea1),&(*iea2),this->sharedThis<EnergyNonbond_O>(), atomTypes) )  {
                 this->addTerm(energyNonbond);
                 LOG_ENERGY(("nonbond  interaction between %s - %s in14[%d] dA %lf\n") , _rep_(iea1->atom()) , _rep_(iea2->atom()) , in14  , energyNonbond.term.dA);                 
               }
@@ -937,7 +938,7 @@ void EnergyNonbond_O::constructNonbondTermsFromAtomTable(bool ignore14s, AtomTab
 //            LOG_ENERGY(("Nonbonded interaction between %s - %s in14[%d]\n") , _rep_(iea1->atom()) , _rep_(iea2->atom()) , in14 );
             EnergyNonbond energyNonbond;
             if ( energyNonbond.defineFrom(nbForceField, in14,
-                                          &(*iea1),&(*iea2),this->sharedThis<EnergyNonbond_O>()) )  {
+                                          &(*iea1),&(*iea2),this->sharedThis<EnergyNonbond_O>(), atomTypes) )  {
               this->addTerm(energyNonbond);
               LOG_ENERGY(("nonbond  interaction between %s - %s in14[%d] dA %lf\n") , _rep_(iea1->atom()) , _rep_(iea2->atom()) , in14  , energyNonbond.term.dA);                 
 

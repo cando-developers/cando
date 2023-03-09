@@ -254,7 +254,7 @@
   #+nosmarts(format t "Not calling chem:initialize-sybyl-type-rules~%"))
 
 
-(defmethod chem:compute-merged-nonbond-force-field-for-aggregate (aggregate)
+(defmethod chem:compute-merged-nonbond-force-field-for-aggregate (aggregate atom-types)
   (let* ((aggregate-force-field-name (chem:force-field-name aggregate))
          (aggregate-force-field (leap.core:nonbond-force-field-component aggregate-force-field-name))
          (force-field-names (chem:map-molecules
@@ -266,4 +266,4 @@
          (force-fields-and-name-alist (loop for name in unique-force-field-names
                                             for nonbond-force-field = (leap.core:nonbond-force-field-component name)
                                             collect (cons nonbond-force-field name))))
-    (chem:combine-nonbond-force-fields aggregate-force-field force-fields-and-name-alist)))
+    (chem:combine-nonbond-force-fields aggregate-force-field force-fields-and-name-alist atom-types)))

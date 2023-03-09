@@ -134,8 +134,8 @@
 
 (defun find-residue (molecule cur-atm)
   (let* ((residue (block find-residue
-                    (cando:do-residues (res molecule)
-                      (cando:do-atoms (atm res)
+                    (chem:do-residues (res molecule)
+                      (chem:do-atoms (atm res)
                         (when (eq atm cur-atm)
                           (return-from find-residue res))))
                     nil)))
@@ -164,7 +164,7 @@
   "Calculate the name of a new atom with ELEMENT that has the form ELEMENT# like N5 
 that is unique given all the other atom names with the same element"
   (let ((name-index 1))
-    (cando:do-atoms (atm residue)
+    (chem:do-atoms (atm residue)
       (let* ((name (string (chem:get-name atm)))
              (number-start (position-if-not #'digit-char-p name :from-end t))
              (number (if (< number-start (1- (length name)))
@@ -203,7 +203,7 @@ that is unique given all the other atom names with the same element"
 
 (defun calculate-name-counter (molecule)
   (let ((max-counter -1))
-    (cando:do-atoms (atm molecule)
+    (chem:do-atoms (atm molecule)
       (let* ((name (string (chem:get-name atm)))
              (first-digit-pos (1+ (position-if-not #'digit-char-p name :from-end t))))
         (when (< first-digit-pos (length name))
@@ -251,8 +251,8 @@ that is unique given all the other atom names with the same element"
                  build)
         ;; Now walk the build instructions and apply them to the molecule
         (let* ((atoms-to-residues (let ((ht (make-hash-table)))
-                                    (cando:do-residues (res new-mol)
-                                      (cando:do-atoms (atm res)
+                                    (chem:do-residues (res new-mol)
+                                      (chem:do-atoms (atm res)
                                         (setf (gethash atm ht) res)))
                                     ht))
                (context (make-instance 'build-context

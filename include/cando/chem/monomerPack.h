@@ -1,3 +1,5 @@
+#ifdef USE_TOPOLOGY
+
 /*
     File: monomerPack.h
 */
@@ -102,4 +104,5 @@ public:
 
 
 TRANSLATE(chem::MonomerPack_O);
+#endif
 #endif

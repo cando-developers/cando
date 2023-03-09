@@ -90,11 +90,11 @@
  
 (defun ecr-charge-rule (mol-a mol-b)
   (let ((charge-a 0.0))
-    (Cando:do-atoms (atm mol-a)
+    (chem:do-atoms (atm mol-a)
       (incf charge-a (chem:get-charge atm)))
     (let ((charge-b 0.0)
           (ecr 0))
-      (cando:do-atoms (atm mol-b)
+      (chem:do-atoms (atm mol-b)
         (incf charge-b (chem:get-charge atm)))
       (cond ((/= charge-a charge-b) (setq ecr 0))
             (t (setq ecr 1)))
@@ -102,7 +102,7 @@
 
 (defun calc-mol-charge (molecule)
   (let ((charge-a 0.0))
-    (Cando:do-atoms (atm molecule)
+    (chem:do-atoms (atm molecule)
       (incf charge-a (chem:get-charge atm)))
     charge-a))
 
@@ -230,7 +230,7 @@
 
 (defun number-of-heavy-atoms (molecule)
  (let ((count 0))
-   (cando:do-atoms (atm molecule)
+   (chem:do-atoms (atm molecule)
                    (when (/= (chem:get-atomic-number atm) 1)
                      (incf count)))
    count))

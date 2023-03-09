@@ -154,8 +154,8 @@ I'll use an angle term instead of a bond term.
 (defun debug-set-unique-atom-names (matter inc)
   "Assign each atom in the sketch a unique name"
   (let ((idx 0))
-    (cando:do-residues (res matter)
-      (cando:do-atoms (atm res)
+    (chem:do-residues (res matter)
+      (chem:do-atoms (atm res)
         (let* ((element (chem:get-element atm))
                (name-str (format nil "~a~a" (string element) idx)))
           (when inc (incf idx))
@@ -230,7 +230,7 @@ I'll use an angle term instead of a bond term.
          double-nonbond-pairs
          (atom-ids (make-hash-table)))
     (let ((idx 0))
-      (cando:do-atoms (atm molecule)
+      (chem:do-atoms (atm molecule)
         (setf (gethash atm atom-ids) (incf idx))))
     (progn
       (loop for tbc in three-bond-centers
@@ -362,13 +362,13 @@ I'll use an angle term instead of a bond term.
 (defun add-flatten-function (sketch-function molecule &optional (scale +oozp-scale+))
   (let ((atom-table (chem:node-table sketch-function))
         (oozp-component (chem:get-out-of-zplane-component sketch-function)))
-    (cando:do-atoms (atom molecule)
+    (chem:do-atoms (atom molecule)
       (let ((atom-coord-index (chem:get-coordinate-index atom-table atom)))
       (chem:add-out-of-zplane-term oozp-component atom-coord-index scale 0.0))
       )))
 
 (defun add-atom-annotations (molecule)
-  (cando:do-atoms (atom molecule)
+  (chem:do-atoms (atom molecule)
     (let ((hydrogens 0))
       (cond
         ((/= (chem:get-atomic-number atom) 1)
@@ -473,8 +473,8 @@ I'll use an angle term instead of a bond term.
            (remove-connected-hydrogens (mol sketch-atoms-to-original atoms &optional (number-to-remove 999) verbose)
              (declare (ignore verbose))
              (let ((connected-hydrogens nil))
-               (cando:do-residues (res mol)
-                 (cando:do-atoms (atm res)
+               (chem:do-residues (res mol)
+                 (chem:do-atoms (atm res)
                    (when (member atm atoms)
                      (let ((neighbors (chem:atom/bonded-atoms-as-list atm))
                            (number-removed 0))
@@ -533,11 +533,11 @@ I'll use an angle term instead of a bond term.
               (atom-to-residue-map (make-hash-table))
               (atoms-need-lps nil))
           ;; Map atoms to residues
-          (cando:do-residues (res mol-copy)
-            (cando:do-atoms (atm res)
+          (chem:do-residues (res mol-copy)
+            (chem:do-atoms (atm res)
               (setf (gethash atm atom-to-residue-map) res)))
           ;; Collect all atoms that need lone-pairs.
-          (cando:do-atoms (atm mol-copy)
+          (chem:do-atoms (atm mol-copy)
             (when (and (member (chem:get-element atm) '(:O :N :S)) (= (chem:number-of-bonds atm) 2))
               (push atm atoms-need-lps)))
           ;; Add lone pairs to atoms that need them
@@ -602,12 +602,13 @@ I'll use an angle term instead of a bond term.
 (defparameter *edited-mol* nil)
 (defun setup-simulation (molecule &key accumulate-coordinates verbose)
   (let* ((sketch (system-preparation molecule :verbose verbose))
-         (edited-mol (molecule sketch)))
+         (edited-mol (molecule sketch))
+         (atom-types (make-hash-table)))
     (setf *edited-mol* edited-mol)
-    (cando:do-atoms (atom edited-mol)
-      (chem:set-type atom :sketch))
+    (chem:do-atoms (atom edited-mol)
+      (setf (gethash atom atom-types) :sketch))
     (let* ((dummy-sketch-nonbond-ff (make-instance 'sketch-nonbond-force-field))
-           (sketch-function (chem:make-sketch-function edited-mol dummy-sketch-nonbond-ff))
+           (sketch-function (chem:make-sketch-function edited-mol dummy-sketch-nonbond-ff atom-types))
            (dynamics (dynamics:make-atomic-simulation sketch-function
                                                       :accumulate-coordinates accumulate-coordinates)))
       (setf (dynamics sketch) dynamics)
@@ -1365,14 +1366,14 @@ are in the order (low, middle, high) and the column eigen-vectors are in the sam
 (defun augment-sketch-with-stereochemistry (sketch2d)
   ;; Gather the chiral atoms
   (let ((chiral-atoms (let (chirals)
-                        (cando:do-atoms (atm (original-molecule sketch2d))
+                        (chem:do-atoms (atm (original-molecule sketch2d))
                           (when (eq (chem:get-stereochemistry-type atm) :chiral)
                             (push atm chirals)))
                         chirals))
         (original-to-sketch (make-hash-table))
         (cip (chem:assign-priorities-hash-table (original-molecule sketch2d))))
     ;; calculate original atom to sketch atom map
-    (cando:do-atoms (sketch-atom (molecule sketch2d))
+    (chem:do-atoms (sketch-atom (molecule sketch2d))
       (let ((original-atom (gethash sketch-atom (sketch-atoms-to-original sketch2d))))
         (setf (gethash original-atom original-to-sketch) sketch-atom)))
     ;;

@@ -1,3 +1,5 @@
+#ifdef USE_TOPOLOGY
+
 /*
     File: representedEntityNameSet.cc
 */
@@ -170,3 +172,4 @@ CL_DEFMETHOD     bool	RepresentedEntityNameSet_O::hasRepresentative()
 
 
 }; // namespace chem
+#endif

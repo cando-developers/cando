@@ -116,7 +116,7 @@ void EnergyOutOfZPlane_O::addOutOfZPlaneTerm(size_t index, double kb, double r0)
   this->addTerm(term);
 }
 
-void	EnergyOutOfZPlane_O::dumpTerms()
+void	EnergyOutOfZPlane_O::dumpTerms(core::HashTable_sp atomTypes)
 {
 }
 

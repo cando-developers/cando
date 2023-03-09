@@ -198,7 +198,7 @@ public:
 
 public:
     void addTerm(const TermType& term);
-    virtual void dumpTerms();
+    virtual void dumpTerms(core::HashTable_sp atomTypes);
 
     CL_DEFMETHOD core::T_mv safe_amber_energy_dihedral_term(size_t index) {
       if (index >= this->numberOfTerms() ) {
@@ -241,7 +241,7 @@ public:
 
     void addDihedralTerm(AtomTable_sp at, Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, double phase, bool proper, double v, int multiplicity);
 
-  core::List_sp lookupDihedralTerms(AtomTable_sp at, Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4);
+  core::List_sp lookupDihedralTerms(AtomTable_sp at, Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, core::HashTable_sp atomTypes );
 
 public:
     EnergyDihedral_O( const EnergyDihedral_O& ss ); //!< Copy constructor

@@ -98,7 +98,7 @@ class EnergyRigidBodyStaple_O : public EnergyRigidBodyComponent_O
   CL_DEFMETHOD void energy_rigid_body_staple_add_term(double ks, double r0, size_t cylk, const Vector3& pointk, size_t cyll, const Vector3& pointl);
     
   void addTerm(const TermType& term);
-  virtual void dumpTerms();
+  virtual void dumpTerms(core::HashTable_sp atomTypes);
 
   virtual void setupHessianPreconditioner(NVector_sp nvPosition,
                                           AbstractLargeSquareMatrix_sp m );

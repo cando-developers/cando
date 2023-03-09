@@ -1,3 +1,4 @@
+#ifdef USE_TOPOLOGY
 /*
     File: monomerCoordinates.fwd.h
 */
@@ -29,4 +30,5 @@ namespace  chem
 {
 FORWARD(MonomerCoordinates);
 }
+#endif
 #endif

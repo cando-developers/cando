@@ -165,7 +165,7 @@ public:
 public:
     virtual size_t numberOfTerms() { return this->_Terms.size();};
     void addTerm(const TermType& term);
-    virtual void dumpTerms();
+    virtual void dumpTerms(core::HashTable_sp atomTypes);
 
     CL_DEFMETHOD core::T_mv safe_amber_energy_stretch_term(size_t index) {
       if (index >= this->numberOfTerms() ) {
@@ -210,7 +210,7 @@ public:
   void modifyStretchTermKb(size_t index, float kb);
   void modifyStretchTermR0(size_t index, float r0);
 
-  core::List_sp lookupStretchTerms(AtomTable_sp at, Atom_sp a1, Atom_sp a2 );
+  core::List_sp lookupStretchTerms(AtomTable_sp at, Atom_sp a1, Atom_sp a2, core::HashTable_sp atomTypes );
 
   void reset();
 public:

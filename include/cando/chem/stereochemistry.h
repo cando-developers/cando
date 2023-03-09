@@ -1,3 +1,5 @@
+#ifdef USE_TOPOLOGY
+
 /*
     File: stereochemistry.h
 */
@@ -203,4 +205,5 @@ namespace chem
 
 
 };
+#endif
 #endif

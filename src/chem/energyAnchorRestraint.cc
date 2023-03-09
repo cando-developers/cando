@@ -160,7 +160,7 @@ void	EnergyAnchorRestraint_O::addTerm(const EnergyAnchorRestraint& r)
     this->_Terms.push_back(r);
 }
 
-void	EnergyAnchorRestraint_O::dumpTerms()
+void	EnergyAnchorRestraint_O::dumpTerms(core::HashTable_sp atomTypes)
 {
 }
 
