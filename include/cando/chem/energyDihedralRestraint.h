@@ -166,7 +166,7 @@ class EnergyDihedralRestraint_O : public EnergyComponent_O
 
   virtual bool is_restraint() const { return true; };
   
-  virtual void dumpTerms();
+  virtual void dumpTerms(core::HashTable_sp atomTypes);
 
   virtual void setupHessianPreconditioner(NVector_sp nvPosition,
                                           AbstractLargeSquareMatrix_sp m );

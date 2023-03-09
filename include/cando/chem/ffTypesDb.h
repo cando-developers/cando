@@ -123,7 +123,7 @@ CL_DEFMETHOD     int	numberOfRules() { return this->_TypeAssignmentRules.size();
 
     core::HashTableEq_sp atomTypes(chem::Matter_sp matter);
     
-  void    assignTypes( chem::Matter_sp matter );
+  core::HashTable_sp assignTypes( chem::Matter_sp matter );
     core::Symbol_sp    assignType( chem::Atom_sp atom );
     void	initialize();
 

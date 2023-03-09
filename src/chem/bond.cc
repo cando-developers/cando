@@ -386,6 +386,7 @@ void Bond_O::canonicalizeBondOrder(Atom_sp& a1, Atom_sp& a2, BondOrder& order) {
   }
 }
 
+#ifdef USE_TOPOLOGY
 ConstitutionBond_sp Bond_O::asConstitutionBond(Atom_sp from, const MapAtomsToConstitutionAtomIndex0N& atomMap)
 {
   Atom_sp to = this->getOtherAtom(from);
@@ -399,6 +400,7 @@ ConstitutionBond_sp Bond_O::asConstitutionBond(Atom_sp from, const MapAtomsToCon
   ConstitutionBond_sp cb = makeConstitutionBond(index, order);
   return cb;
 }
+#endif
 
 
 

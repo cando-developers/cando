@@ -157,7 +157,7 @@ void ChemExposer_O::expose(core::LispPtr lisp, WhatToExpose what) const {
     _sym_STARcurrent_ringsSTAR->defparameter(unbound<core::T_O>());
     break;
   case candoFunctions:
-    setupCandoPrimitives(_lisp);
+      //setupCandoPrimitives(_lisp);
     break;
   case candoGlobals:
     initialize_chimera();

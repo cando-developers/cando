@@ -16,7 +16,7 @@
   (defparameter *mol* (chem:content-at *agg* 0))
   (defparameter *m* (sketch2d::adjust-structure *mol*))
   (cando:jostle *m* 1.0 t)
-  (cando:do-atoms (atom *m*) (chem:set-type atom :sketch))
+  (chem:do-atoms (atom *m*) (chem:set-atom-type atom :sketch))
   (defparameter *sk* (sketch2d::generate-sketch-function *m*))
   (defparameter *v* (make-array (chem:get-nvector-size *sk*) :element-type 'double-float :initial-element 0.0d0))
   (defparameter *f* (make-array (chem:get-nvector-size *sk*) :element-type 'double-float :initial-element 0.0d0))

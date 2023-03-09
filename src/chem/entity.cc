@@ -1,3 +1,4 @@
+#ifdef USE_TOPOLOGY
 /*
     File: entity.cc
 */
@@ -96,3 +97,4 @@ CL_DEFMETHOD RepresentativeList_sp Entity_O::minimalRepresentativeList() const {
 }
 
 }; // namespace chem
+#endif

@@ -106,7 +106,7 @@ namespace chem {
   {
     LISP_CLASS(chem,ChemPkg,SketchFunction_O,"SketchFunction",ScoringFunction_O);
   public:
-    static SketchFunction_sp make(core::T_sp graph, core::T_sp sketchNonbondForceField);
+    static SketchFunction_sp make(core::T_sp graph, core::T_sp sketchNonbondForceField, core::HashTable_sp atomTypes);
   public:
     void initialize();
   public:
@@ -186,7 +186,7 @@ namespace chem {
     void	disableDebug();
 
     void	summarizeTerms();
-    void	dumpTerms();
+    void	dumpTerms(core::HashTable_sp atomTypes);
     CL_DEFMETHOD     core::T_sp	getMessage() { return this->_Message;};
 
     /*! Print the energy components as a single, multi-line string

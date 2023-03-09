@@ -132,17 +132,17 @@ double	e;
 
 SYMBOL_EXPORT_SC_(ChemPkg,find_atom_type_position)
 
-void	EnergyFixedNonbondRestraint_O::addFixedAtom(core::T_sp nonbondDb, Atom_sp fa)
+void	EnergyFixedNonbondRestraint_O::addFixedAtom(core::T_sp nonbondDb, Atom_sp fa, core::HashTable_sp atomTypes)
 {
     FixedNonbondRestraint entry;
     entry._FixedAtom = fa;
     entry._FixedCharge = fa->getCharge();
     try
     {
-      if (fa->getType().nilp()) {
+      if (fa->getType(atomTypes).nilp()) {
         SIMPLE_ERROR(("The atom type of %s is NIL!") , _rep_(fa));
       }
-      core::T_sp pos = core::eval::funcall(_sym_find_atom_type_position,nonbondDb,fa->getType());
+      core::T_sp pos = core::eval::funcall(_sym_find_atom_type_position,nonbondDb,fa->getType(atomTypes));
       if (pos.fixnump()) {
         entry._FixedType = pos.unsafe_fixnum();
       } else {
@@ -151,7 +151,7 @@ void	EnergyFixedNonbondRestraint_O::addFixedAtom(core::T_sp nonbondDb, Atom_sp f
     } catch (UnknownType& err)
     {
 	stringstream serr;
-	serr << "Unknown type("<<fa->getType()<<") for fixed atom: " << fa->description() << std::endl;
+	serr << "Unknown type("<<fa->getType(atomTypes)<<") for fixed atom: " << fa->description() << std::endl;
 	serr << "Were types assigned for the fixed molecule?" << std::endl;
 	SIMPLE_ERROR((serr.str()));
     }
@@ -161,7 +161,7 @@ void	EnergyFixedNonbondRestraint_O::addFixedAtom(core::T_sp nonbondDb, Atom_sp f
 
 
 
-void	EnergyFixedNonbondRestraint_O::dumpTerms()
+void	EnergyFixedNonbondRestraint_O::dumpTerms(core::HashTable_sp atomTypes)
 {
   gc::Vec0<FixedNonbondRestraint>::iterator	eni;
 string					as1;

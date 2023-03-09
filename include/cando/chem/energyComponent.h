@@ -302,7 +302,7 @@ public:
   CL_DEFMETHOD     virtual double getEnergy() { return this->_TotalEnergy; };
 
   virtual void zeroEnergy();
-  CL_DEFMETHOD virtual void dumpTerms() {_OF();SUBCLASS_MUST_IMPLEMENT();};
+  CL_DEFMETHOD virtual void dumpTerms(core::HashTable_sp atomTypes) {_OF();SUBCLASS_MUST_IMPLEMENT();};
 
   virtual	double evaluateAllComponent( ScoringFunction_sp scorer,
                                     NVector_sp 	pos,

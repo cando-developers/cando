@@ -1676,6 +1676,11 @@ bool	Atom_O::invalid()
   IMPLEMENT_ME();
 }
 
+CL_LISPIFY_NAME("getType");
+CL_DEFMETHOD core::T_sp Atom_O::getType(core::HashTable_sp atomTypes) const {
+  return atomTypes->gethash(this->asSmartPtr());
+}
+
 
 
 AtomIdMap_sp Atom_O::buildAtomIdMap() const
@@ -1739,6 +1744,7 @@ CL_VALUE_ENUM(_sym_needs_build, needsBuild);
 CL_END_ENUM(_sym__PLUS_atomFlagSymbolConverter_PLUS_);
 
 
+#ifdef USE_TOPOLOGY
 ConstitutionAtom_sp Atom_O::asConstitutionAtom(ConstitutionAtomIndex0N index)
 {
   ConstitutionAtom_sp ca = makeConstitutionAtom(this->getName(),this->_Element,/*this->_Type,*/ index,this->_StereochemistryType, this->_Properties);
@@ -1759,6 +1765,8 @@ void	Atom_O::defineConstitutionAtomBonding(ConstitutionAtom_sp consAtom, MapAtom
     }
   }
 }
+#endif
+
 
 CL_DEFUN double chem__calculate_dihedral_for_atoms(Atom_sp a, Atom_sp b, Atom_sp c, Atom_sp d) {
   Vector3 va = a->getPosition();

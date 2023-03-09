@@ -6,12 +6,12 @@
 
 (defmethod chem:constitution-for-name-or-pdb ((db chem:cando-database) name)
   (let* ((topology (leap.core:lookup-variable name))
-         (constitution (chem:topology/get-constitution topology)))
+         (constitution (topology:constitution topology)))
     constitution))
 
 (defmethod chem:constitution-for-name-or-pdb ((db null) name)
   (let* ((topology (leap.core:lookup-variable name))
-         (constitution (chem:topology/get-constitution topology)))
+         (constitution (topology:constitution topology)))
     constitution))
 
 (defmethod chem:monomer-name-for-name-or-pdb ((db chem:cando-database) name)

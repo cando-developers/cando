@@ -1,3 +1,5 @@
+#ifdef USE_TOPOLOGY
+
 /*
     File: entity.fwd.h
 */
@@ -38,4 +40,5 @@ FORWARD(Entity);
 
 
 }
+#endif
 #endif

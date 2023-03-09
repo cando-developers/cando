@@ -25,8 +25,10 @@
      (let* ((force-field-name (chem:force-field-name molecule))
             (combined-force-field (chem:find-force-field force-field-name))
             (chem:*current-rings* (chem:identify-rings molecule))
-            (chem:*current-aromaticity-information* (chem:identify-aromatic-rings molecule (chem:force-field-name molecule))))
-       (chem:assign-force-field-types combined-force-field molecule)))
+            (chem:*current-aromaticity-information* (chem:identify-aromatic-rings molecule (chem:force-field-name molecule)))
+            (atom-types (make-hash-table)))
+       (error "What do I do with atom-types")
+       (chem:assign-force-field-types combined-force-field molecule atom-types)))
    matter))
 
 
@@ -216,7 +218,7 @@ the AMBER general type \"X\" is replaced with the LEaP general type \"?\".
     (cond
       ((typep matter 'chem:aggregate)
        (let ((mol-ht (make-hash-table :test #'equal)))
-         (cando:do-molecules (mol matter)
+         (chem:do-molecules (mol matter)
            (let* ((key (list (chem:get-name mol) (chem:force-field-name mol) (chem:molecule-type mol)))
                   (entry (gethash key mol-ht)))
              (if entry

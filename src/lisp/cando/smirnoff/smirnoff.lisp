@@ -62,10 +62,10 @@ The first rule that matches is used to assign the type."
     (make-instance 'smirnoff-type-rules :rules all-rules)))
 
 
-(defmethod chem:assign-force-field-types ((combined-smirnoff-force-field combined-smirnoff-force-field) molecule)
+(defmethod chem:assign-force-field-types ((combined-smirnoff-force-field combined-smirnoff-force-field) molecule atom-types)
   "The first rule that matches is used to assign the types.
 The chem:force-field-type-rules-merged generic function was used to organize the rules."
-  (cando:do-atoms (atom molecule)
+  (chem:do-atoms (atom molecule)
     (let ((type (loop named assign-type
                       for field in (chem:force-fields-as-list combined-smirnoff-force-field)
                       for vdw-force = (vdw-force field)
@@ -78,7 +78,7 @@ The chem:force-field-type-rules-merged generic function was used to organize the
                                when match
                                  do (return-from assign-type type)))))
       (if type
-          (chem:set-type atom type)
+          (setf (gethash atom atom-types) type)
           (error "Could not set type of atom ~s in force-field ~s" atom :smirnoff)))))
       
 

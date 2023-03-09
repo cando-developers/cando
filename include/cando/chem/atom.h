@@ -281,10 +281,11 @@ namespace chem {
 
     bool	hasAtomNameAttribute(char c);
 
-    CL_LISPIFY_NAME("getType");
-    CL_DEFMETHOD         AtomType getType() { return this->_Type; };
-    CL_LISPIFY_NAME("setType");
-    CL_DEFMETHOD 	void	setType(AtomType o) { this->_Type = o; };
+    core::T_sp getType(core::HashTable_sp atomTypes) const;
+    CL_LISPIFY_NAME("atomType");
+    CL_DEFMETHOD         AtomType atomType() { return this->_Type; };
+    CL_LISPIFY_NAME("setAtomType");
+    CL_DEFMETHOD 	void	setAtomType(AtomType o) { this->_Type = o; };
     CL_LISPIFY_NAME("getHybridization");
     CL_DEFMETHOD         Hybridization getHybridization() { return this->_Hybridization; };
     string getHybridizationAsString();
@@ -304,12 +305,6 @@ namespace chem {
     double	getAtomicWeight();
     int     getValence();
     virtual bool isVirtual() const { return false;};
-#if 0
-    CL_LISPIFY_NAME("getSelected");
-    CL_DEFMETHOD 	bool	getSelected() { return this->_selected; };
-    CL_LISPIFY_NAME("setSelected");
-    CL_DEFMETHOD 	void	setSelected(bool o) { this->_selected = o; };
-#endif
     void getPosition_BANG_(Vector3& pos);
     CL_LISPIFY_NAME("getPosition");
     CL_DEFMETHOD 	Vector3 getPosition() { return this->_Position; };
@@ -354,24 +349,14 @@ namespace chem {
     CL_DEFMETHOD 	double	getCovalentRadius()	{ return this->_CovalentRadius; };
     CL_LISPIFY_NAME("setCovalentRadius");
     CL_DEFMETHOD 	void	setCovalentRadius(double c)	{ this->_CovalentRadius = c; };
-#if 0
-    CL_LISPIFY_NAME("getMoeIndex");
-    CL_DEFMETHOD 	int	getMoeIndex() { return this->moeIndex; };
-    CL_LISPIFY_NAME("setMoeIndex");
-    CL_DEFMETHOD 	void	setMoeIndex(int o) { this->moeIndex = o; };
-    CL_LISPIFY_NAME("setMoeType");
-    CL_DEFMETHOD 	void	setMoeType(MoeType type) {this->moeType=type;};
-    CL_LISPIFY_NAME("getMoeType");
-    CL_DEFMETHOD 	MoeType	getMoeType() {return this->moeType;};
-#endif
 	/*! Return a ConstitutionAtom for this atom and give it the ConstitutionAtomIndex0N (index)
 	  @param index The ConstitutionAtomIndex0N that will be assigned to the new ConstitutionAtom */
-    ConstitutionAtom_sp asConstitutionAtom(ConstitutionAtomIndex0N index);
+//    ConstitutionAtom_sp asConstitutionAtom(ConstitutionAtomIndex0N index);
 	/*! For every bond that this atom makes, define a ConstitutionBond and add it to the (consAtom).
 	  Use the (atomMap) to map bonded Atoms to ConstiutionAtomIndex0N indexes.
 	  @param consAtom  The ConstitutionAtom to add the ConstitutionBonds to
 	  @param atomMap   A map of Atoms to ConstitutionAtomIndex0N values */
-    void defineConstitutionAtomBonding(ConstitutionAtom_sp consAtom, MapAtomsToConstitutionAtomIndex0N atomMap);
+//    void defineConstitutionAtomBonding(ConstitutionAtom_sp consAtom, MapAtomsToConstitutionAtomIndex0N atomMap);
 
   private:
     core::List_sp 	_expandLocalSpanningTree(Atom_sp avoid, Bond_sp bond, uint depth);

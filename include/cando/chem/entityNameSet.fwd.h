@@ -1,3 +1,5 @@
+#ifdef USE_TOPOLOGY
+
 /*
     File: entityNameSet.fwd.h
 */
@@ -31,4 +33,5 @@ FORWARD(EntityNameSetBase);
 FORWARD(EntityNameSet);
 FORWARD(EntityNameSetWithCap);
 }
+#endif
 #endif

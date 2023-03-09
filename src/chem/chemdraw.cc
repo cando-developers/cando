@@ -681,7 +681,7 @@ bool CDFragment_O::interpret(bool verbose, bool addHydrogens)
 	// Now build the :constitutionAtoms property
 	// and the :builtResidue property
 	//
-  ConstitutionAtoms_sp ca = this->asConstitutionAtoms();
+  core::T_sp ca = this->asConstitutionAtoms();
   this->setProperty(INTERN_(kw,constitutionAtoms),ca);
   Residue_sp builtResidue = ca->makeResidue();
   this->setProperty(INTERN_(kw,builtResidue),builtResidue);
@@ -993,8 +993,10 @@ Residue_sp	CDFragment_O::getEntireResidue()
   return this->_buildResidue(false);
 }
 #endif
+
+
 CL_LISPIFY_NAME("asConstitutionAtoms");
-CL_DEFMETHOD     ConstitutionAtoms_sp	CDFragment_O::asConstitutionAtoms()
+CL_DEFMETHOD     core::T_sp	CDFragment_O::asConstitutionAtoms()
 {
   IMPLEMENT_ME();
 #if 0

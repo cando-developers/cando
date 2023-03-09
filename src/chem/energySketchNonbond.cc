@@ -27,6 +27,7 @@ This is an open source license for the CANDO software from Temple University, bu
 
 #include <clasp/core/foundation.h>
 #include <clasp/core/bformat.h>
+#include <clasp/core/hashTableEq.h>
 #include <cando/chem/energySketchNonbond.h>
 #include <cando/chem/energyFunction.h>
 #include <clasp/core/lispStream.h>

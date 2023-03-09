@@ -293,8 +293,8 @@
                                (plug-atom (gethash name (attachment-atoms core)))
                                (plug-atom-name (chem:get-name plug-atom))
                                #+(or)(_ (format t "Making out plug plug-name: ~a    name: ~a~%" plug-name plug-atom-name))
-                               (out-plug (chem:make-out-plug plug-name nil nil plug-atom-name :single-bond)))
-                          (chem:add-plug (topology core) (chem:get-name out-plug) out-plug)))
+                               (out-plug (topology:make-out-plug plug-name plug-atom-name :single-bond)))
+                          (topology:add-plug (topology core) (chem:get-name out-plug) out-plug)))
                       (out-vectors core)))
     (let ((side-chain-attachment-names (make-hash-table)))
       (loop for side-chain-name being the hash-keys in (side-chain-groups assembly) using (hash-value side-chain-group)
@@ -311,9 +311,9 @@
             do (let* ((side-chain-topology (cando:make-simple-topology-from-residue side-chain-residue))
                       (short-name (short-name (chem:get-name side-chain-residue)))
                       (plug-name (intern (format nil "-~a" (string short-name)) :keyword))
-                      (in-plug (chem:make-in-plug plug-name nil (chem:get-name attachment-atom) :single-bond)))
+                      (in-plug (topology:make-in-plug plug-name (chem:get-name attachment-atom) :single-bond)))
                  (setf (gethash side-chain-topology topology-to-residue) side-chain-residue)
-                 (chem:add-plug side-chain-topology plug-name in-plug)
+                 (topology:add-plug side-chain-topology plug-name in-plug)
                  (setf (gethash side-chain-name (side-chain-topologys assembly)) side-chain-topology)))
       (setf (topology-to-residue assembly) topology-to-residue)
       (setf (side-chain-attachment-names assembly) side-chain-attachment-names))
@@ -336,8 +336,8 @@
                             (plug-atom (atom-with-property core-residue :attach name))
                             (plug-atom-name (chem:get-name plug-atom))
                             #+(or)(_ (format t "Making out plug plug-name: ~a    name: ~a~%" plug-name plug-atom-name))
-                            (out-plug (chem:make-out-plug plug-name nil nil plug-atom-name :single-bond)))
-                       (chem:add-plug core-topology (chem:get-name out-plug) out-plug)))
+                            (out-plug (topology:make-out-plug plug-name plug-atom-name :single-bond)))
+                       (topology:add-plug core-topology (chem:get-name out-plug) out-plug)))
                    core-vectors)
           (loop for side-chain-name being the hash-keys in side-chain-groups using (hash-value side-chain-group)
                 with side-chain-residue
@@ -350,9 +350,9 @@
                 do (let* ((side-chain-topology (cando:make-simple-topology-from-residue side-chain-residue))
                           (short-name (intern (subseq (string (chem:get-name side-chain-residue)) 0 2) :keyword))
                           (plug-name (intern (format nil "-~a" (string short-name)) :keyword))
-                          (in-plug (chem:make-in-plug plug-name nil short-name :single-bond)))
+                          (in-plug (topology:make-in-plug plug-name short-name :single-bond)))
                      (setf (gethash side-chain-topology topology-to-residue) side-chain-residue)
-                     (chem:add-plug side-chain-topology plug-name in-plug)
+                     (topology:add-plug side-chain-topology plug-name in-plug)
                      (push (cons (chem:get-name side-chain-residue) side-chain-topology) (gethash short-name side-chains))))
           (values core-topology side-chains topology-to-residue map-names-numbers))))))
 
@@ -421,19 +421,19 @@
                      (loop for cart in cartesian
                            for name = (structure-name core cart)
                            for molecule = (chem:make-molecule name)
-                           for core-residue = (let ((res (chem:build-residue-single-name (topology core))))
+                           for core-residue = (let ((res (topology:build-residue-single-name (topology core))))
                                                 (set-coordinates-for-residue res (residue core))
                                                 res)
                            collect (let (side-chain-residue-names)
                                      (chem:add-matter molecule core-residue)
                                      (loop for top-name in cart
                                            for top = (gethash top-name (side-chain-topologys assembly))
-                                           for side-residue = (let ((res (chem:build-residue-single-name top)))
+                                           for side-residue = (let ((res (topology:build-residue-single-name top)))
                                                                 (set-coordinates-for-residue res (gethash top (topology-to-residue assembly)))
                                                                 res)
-                                           for in-plug = (chem:get-in-plug top)
-                                           for in-plug-name = (chem:get-name in-plug)
-                                           for out-plug-name = (chem:other-plug-name in-plug-name)
+                                           for in-plug = (topology:find-in-plug top)
+                                           for in-plug-name = (topology:name in-plug)
+                                           for out-plug-name = (topology:other-plug-name in-plug-name)
                                            for side-atoms = (chem:map-atoms 'list #'identity side-residue)
                                            do (progn
                                                 (push (chem:get-name side-residue) side-chain-residue-names)
@@ -444,7 +444,7 @@
                                                              #+(or)(format t "Atom: ~a   number: ~a~%" atom number)
                                                              (chem:set-property atom :map number)))
                                                          (map-names-numbers assembly))
-                                                (chem:connect-residues (topology core)
+                                                (topology:connect-residues (topology core)
                                                                        core-residue
                                                                        out-plug-name
                                                                        top
@@ -457,7 +457,7 @@
                                                                      :side-chain-residue-names side-chain-residue-names))))
                    (let* ((name (name core))
                           (molecule (chem:make-molecule name))
-                          (core-residue (let ((res (chem:build-residue-single-name (topology core))))
+                          (core-residue (let ((res (topology:build-residue-single-name (topology core))))
                                           (set-coordinates-for-residue res (residue core))
                                           res)))
                      (chem:add-matter molecule core-residue)
@@ -575,16 +575,16 @@ We need assemble-ligands for the tirun demo."
 
 (defun find-atom-with-name (tiruns name)
   (loop for ligand in (ligands tiruns)
-        do (cando:do-residues (res (drawing ligand))
-             (cando:do-atoms (atm res)
+        do (chem:do-residues (res (drawing ligand))
+             (chem:do-atoms (atm res)
                (when (eq (chem:get-name atm) name)
                  (return-from find-atom-with-name (values atm res (drawing ligand))))))))
 
 
 (defun summarize-stereochemistry (ligands)
   (loop for ligand in ligands
-        do (cando:do-residues (res ligand)
-             (cando:do-atoms (atm res)
+        do (chem:do-residues (res ligand)
+             (chem:do-atoms (atm res)
                (when (eq (chem:get-stereochemistry-type atm) :chiral)
                  (format t "~a  ~a ~a~%" atm (chem:get-stereochemistry-type atm) (chem:get-configuration atm))
                  (format t "~a~%" (chem:bonds-as-list atm)))))))
@@ -612,7 +612,7 @@ But this code is necessary for the tirun demo."
                                  (setf (core-atoms ligand) core-atoms))
                                (loop for side-chain-name in (side-chain-residue-names ligand)
                                      for side-chain-residue = (unique-residue-with-name mol side-chain-name)
-                                     do (cando:do-atoms (a side-chain-residue)
+                                     do (chem:do-atoms (a side-chain-residue)
                                           (push a side-chain-atoms)))
                                (setf (side-chain-atoms ligand) side-chain-atoms)
                                (combine-into-single-residue mol (core-residue-name ligand))
@@ -645,7 +645,7 @@ But this code is necessary for the tirun demo."
                                   counters)))
     ;; Ensure that all atom names in side-residues are unique
     (loop for residue in side-residues
-          do (cando:do-atoms (atom1 residue)
+          do (chem:do-atoms (atom1 residue)
                (let ((unique-atom-name (unique-name atom1 element-name-counters)))
                  (chem:set-name atom1 unique-atom-name))))
     ;; Now merge all of the atoms from side-residues into the core residue

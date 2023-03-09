@@ -150,7 +150,7 @@ public:
 
 public:
     void addTerm(const TermType& term);
-    virtual void dumpTerms();
+    virtual void dumpTerms(core::HashTable_sp atomTypes);
     virtual bool is_restraint() const { return true; };
 
 

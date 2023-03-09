@@ -175,7 +175,7 @@ Vector3 EnergyRigidBodyNonbond_O::getPosition(size_t index)
 }
 
 
-void	EnergyRigidBodyNonbond_O::dumpTerms()
+void	EnergyRigidBodyNonbond_O::dumpTerms(core::HashTable_sp atomTypes)
 {
   size_t istart = 0;
   for ( size_t rb = 0; rb<this->_RigidBodyEndAtom->length(); ++rb) {

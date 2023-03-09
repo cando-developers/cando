@@ -2,10 +2,10 @@
 
 
 (defun summarize-stereochemistry (aggregate)
-  (cando:do-molecules (mol aggregate)
+  (chem:do-molecules (mol aggregate)
     (format t "Molecule: ~a~%" mol)
-    (cando:do-residues (res mol)
-      (cando:do-atoms (atm res)
+    (chem:do-residues (res mol)
+      (chem:do-atoms (atm res)
         (when (eq (chem:get-stereochemistry-type atm) :chiral)
           (format t "~a  ~a ~a~%" atm (chem:get-stereochemistry-type atm) (chem:get-configuration atm))
           (format t "~a~%" (chem:bonds-as-list atm)))))

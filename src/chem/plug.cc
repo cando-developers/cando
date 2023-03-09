@@ -1,3 +1,5 @@
+#ifdef USE_TOPOLOGY
+
 /*
     File: plug.cc
 */
@@ -327,3 +329,4 @@ bool RingClosingPlug_O::recognizesRingClosingMate(core::Symbol_sp mateName)
 
 
 }; //namespace chem
+#endif

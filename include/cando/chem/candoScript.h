@@ -42,6 +42,9 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace chem {
 
+
+#ifdef USE_TOPOLOGY
+
 extern	void	setupCandoPrimitives(core::LispPtr);
 extern	void	setupPythonPrimitives(core::LispPtr);
 
@@ -101,7 +104,7 @@ public:
     virtual Monomer_sp createMonomer(CandoDatabase_sp bdb);
     DEFAULT_CTOR_DTOR(OligomerPart_Link_O);
 };
-
+#endif
 
 extern void setCandoDatabase(CandoDatabase_sp bdb);
 
@@ -114,7 +117,4 @@ geom::SimpleVectorCoordinate_sp chem__make_simple_vector_coordinate_from_atom_li
 
 
 };
-TRANSLATE(chem::OligomerPart_Base_O);
-TRANSLATE(chem::OligomerPart_Monomer_O);
-TRANSLATE(chem::OligomerPart_Link_O);
 #endif //]

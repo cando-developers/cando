@@ -179,7 +179,7 @@ Returns the plane or nil"
                (format t "(gethash \"z\" (gethash \"atom\" pick)) -> ~s~%" pz)
                (format t "(hash-table-plist (gethash \"position\" pick) -> ~s~%" (alexandria:hash-table-plist (gethash "position" pick)))
                (let ((compare nil))
-                 (cando:do-atoms (atm matter)
+                 (chem:do-atoms (atm matter)
                    (let* ((dx (abs (- px (geom:get-x (chem:get-position atm)))))
                           (dy (abs (- px (geom:get-y (chem:get-position atm)))))
                           (dz (abs (- px (geom:get-z (chem:get-position atm)))))

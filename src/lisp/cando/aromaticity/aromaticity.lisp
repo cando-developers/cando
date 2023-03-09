@@ -155,7 +155,7 @@ associating the atom with its aromaticity info in a hash-table and return the ha
     (error "chem:*current-rings* must be bound to a list of rings in the molecule identified using chem:identify-rings"))
   (let* ((aromaticity-info (make-hash-table))
          (chem:*current-aromaticity-information* aromaticity-info))
-    (cando:do-molecules (molecule matter)
+    (chem:do-molecules (molecule matter)
       (let ((molecule-graph (chem:make-molecule-graph-from-molecule molecule)))
         (exhaustively-apply-aromatic-rule aromaticity-info molecule-graph *rule1* :ar6 :rule1)
         (exhaustively-apply-aromatic-rule aromaticity-info molecule-graph *rule2* :ar6 :rule2)
@@ -175,7 +175,7 @@ associating the atom with its aromaticity info in a hash-table and return the ha
   (let* ((aromaticity-info (make-hash-table))
          (chem:*current-aromaticity-information* aromaticity-info))
     (unless chem:*current-rings*
-      (cando:do-molecules (molecule matter)
+      (chem:do-molecules (molecule matter)
         (let ((molecule-graph (chem:make-molecule-graph-from-molecule molecule)))
           (exhaustively-apply-aromatic-rule aromaticity-info molecule-graph *rule1* :ar6 :rule1)
           (exhaustively-apply-aromatic-rule aromaticity-info molecule-graph *rule2* :ar6 :rule2)
@@ -187,19 +187,5 @@ associating the atom with its aromaticity info in a hash-table and return the ha
   (chem:identify-aromatic-rings matter :mdl))
 
 
-
-;;
-;; Identify all rings, isolate atoms in rings and apply all of the aromaticity rules
-;; from Jakalian, Jack, and Bayly • Vol. 23, No. 16 • Journal of Computational Chemistry
-;; Return the rings for bond type assignment
-;; Make this work using the hash-table returned by chem:identify-aromatic-rings
-
-
-(defmacro with-aromaticity-information ((matter force-field-name) &body body)
-  "Provide a dynamic environment where the aromaticity:is-aromatic function works.
-This macro first calculates the aromaticity information of the matter and then
-evaluates the body in that dynamic environment."
-  `(let ((chem:*current-aromaticity-information* (chem:identify-aromatic-rings ,matter ,force-field-name)))
-     ,@body))
 
 

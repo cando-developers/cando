@@ -406,7 +406,17 @@ CL_DEFMETHOD void Molecule_O::setf_force_field_name(core::T_sp name) {
 }
 
 CL_DEFMETHOD core::T_sp Molecule_O::force_field_name() const {
+  if (this->_ForceFieldName.consp()) {
+    return CONS_CAR(this->_ForceFieldName);
+  }
   return this->_ForceFieldName;
+}
+
+CL_DEFMETHOD core::T_sp Molecule_O::force_field_use_given_types() const {
+  if (this->_ForceFieldName.consp()) {
+    return CONS_CDR(this->_ForceFieldName);
+  }
+  return nil<core::T_O>();
 }
 
 

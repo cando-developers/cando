@@ -108,7 +108,7 @@
   (all-edges *workspace*))
 
 
-(cando:make-class-save-load workspace :skip-slot-names (jupyter-widgets:on-trait-change))
+(cando.serialize:make-class-save-load workspace :skip-slot-names (jupyter-widgets:on-trait-change))
    
 (defvar *workspace* nil)
 
@@ -184,7 +184,7 @@
       (finish-output)
       (format t "Opening workspace ~A...~%" path)
       (finish-output)
-      (cando:load-cando path)
+      (cando.serialize:load-cando path)
       (write-line "Open complete.")
       (finish-output)
       t)
@@ -199,7 +199,7 @@
   (format t "Saving workspace ~A...~%" path)
   (finish-output)
   (ensure-directories-exist path)
-  (cando:save-cando *workspace* path)
+  (cando.serialize:save-cando *workspace* path)
   (write-line "Save complete.")
   (finish-output)
   t)

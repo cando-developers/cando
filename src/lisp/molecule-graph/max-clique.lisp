@@ -6,7 +6,7 @@
 
 (defun build-molecule-graph (molecule &key (exclude-hydrogens t))
   (let ((atoms (make-array 256 :adjustable t :fill-pointer 0)))
-    (cando:do-atoms (atm molecule)
+    (chem:do-atoms (atm molecule)
       (unless (and exclude-hydrogens (= (chem:get-atomic-number atm) 1))
         (vector-push-extend atm atoms)))
     (let ((edges (make-array (list (length atoms) (length atoms)) :element-type 'ext:byte8 :initial-element 0)))
@@ -225,7 +225,7 @@ The last constraint abs(T(v1,v1')-T(v2,v2'))<=theta is the topological constrain
         collect (cons xatom yatom)))
 
 (defun rename-atoms (mol prefix)
-  (cando:do-atoms (atm mol)
+  (chem:do-atoms (atm mol)
                   (let* ((name (chem:get-name atm))
                          (new-name (intern (format nil "~a~a" prefix (string name)))))
                     (chem:set-name atm new-name))))

@@ -190,7 +190,7 @@ public:	// Creation class functions
 
 public:
     void addTerm(const TermType& term);
-    virtual void dumpTerms();
+    virtual void dumpTerms(core::HashTable_sp atomTypes);
 
     virtual core::List_sp extract_vectors_as_alist() const;
     virtual void fill_from_vectors_in_alist(core::List_sp vectors);
@@ -218,7 +218,7 @@ public:
   void addAngleTerm(AtomTable_sp at, Atom_sp a1, Atom_sp a2, Atom_sp a3, double kt, double t0);
 
 
-  core::List_sp lookupAngleTerms(AtomTable_sp at, Atom_sp a1, Atom_sp a2 , Atom_sp a3 );
+  core::List_sp lookupAngleTerms(AtomTable_sp at, Atom_sp a1, Atom_sp a2 , Atom_sp a3, core::HashTable_sp atomTypes );
 
 
     EnergyAngle_O( const EnergyAngle_O& ss ); //!< Copy constructor

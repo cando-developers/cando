@@ -1,3 +1,4 @@
+#ifdef USE_TOPOLOGY
 /*
     File: specificContext.fwd.h
 */
@@ -30,4 +31,5 @@ namespace  chem
 FORWARD(SpecificContext);
 FORWARD(SpecificContextSet);
 }
+#endif
 #endif

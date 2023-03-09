@@ -142,7 +142,7 @@ public:
 
 //    virtual void	summarizeTerms() = 0;
   CL_LISPIFY_NAME("dumpTerms");
-  CL_DEFMETHOD virtual void	dumpTerms() = 0;
+  CL_DEFMETHOD virtual void	dumpTerms(core::HashTable_sp atomTypes) = 0;
 
     /*! Print the scoring components as a single, multi-line string
      */

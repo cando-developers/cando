@@ -29,7 +29,7 @@ This is an open source license for the CANDO software from Temple University, bu
 
 #include <cando/chem/chemPackage.h>
 
-
+#ifdef USE_TOPOLOGY
 namespace chem
 {
 
@@ -46,4 +46,5 @@ namespace chem
     FORWARD(ConstitutionAtoms);
 
 };
+#endif
 #endif

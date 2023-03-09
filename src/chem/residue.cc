@@ -41,9 +41,9 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/monomer.h>
 //#include "core/archiveNode.h"
 //#include <cando/chem/candoDatabaseReference.h>
-#include <cando/adapt/stringSet.h>
+//#include <cando/adapt/stringSet.h>
 #include <cando/chem/loop.h>
-#include <cando/adapt/symbolSet.h>
+//#include <cando/adapt/symbolSet.h>
 #include <cando/chem/restraint.h>
 #include <cando/chem/virtualAtom.h>
 #include <cando/chem/calculatePosition.h>
@@ -111,7 +111,7 @@ CL_DEFMETHOD void	Residue_O::addAtom(Atom_sp a)
     LOG("Added %s to %s" , a->description().c_str() , this->description().c_str() );
 }
 
-
+#if 0
 bool Residue_O::recognizesMonomerAlias(core::Symbol_sp s)
 {
     if ( this->_MonomerAliases.nilp() ) return false;
@@ -140,6 +140,7 @@ adapt::SymbolSet_sp Residue_O::getMonomerAliases()
     ASSERTNOTNULL(this->_MonomerAliases);
     return this->_MonomerAliases;
 }
+#endif
 
 
 void	Residue_O::addVirtualAtom(MatterName name, CalculatePosition_sp proc)
@@ -569,6 +570,7 @@ void Residue_O::setAliasesForAtoms(core::List_sp aliasAtoms, core::List_sp atomA
 //	getAllUniqueAtomNames
 //
 //	Return a set of all unique atom names
+#ifdef USE_TOPOLOGY
 CL_LISPIFY_NAME("getAtomNamesAsSymbolSet");
 CL_DEFMETHOD adapt::SymbolSet_sp	Residue_O::getAtomNamesAsSymbolSet()
 {
@@ -582,12 +584,13 @@ adapt::SymbolSet_sp unique = adapt::SymbolSet_O::create();
     }
     return unique;
 }
-
+#endif
 
 //
 //	getAllUniqueAtomNames
 //
 //	Return a set of all unique atom names
+#ifdef USE_TOPOLOGY
 adapt::SymbolSet_sp	Residue_O::getAllUniqueAtomNames()
 {
     adapt::SymbolSet_sp unique;
@@ -600,6 +603,7 @@ Atom_sp				aTemp;
     }
     return unique;
 }
+#endif
 
 //
 //	getAtoms

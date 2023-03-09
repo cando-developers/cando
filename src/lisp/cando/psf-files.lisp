@@ -82,7 +82,7 @@
                        (atom (chem:make-atom atom-name
                                              (chem:element-from-atom-name-string-case-insensitive
                                               (string atom-name)))))
-                   (chem:set-type atom atom-type)
+                   (chem:set-atom-type atom atom-type)
                    (chem:set-charge atom charge)
                    (unless (setf residue (gethash unique-residue-id residues))
                      (setq residue (chem:make-residue residue-name))

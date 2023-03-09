@@ -272,7 +272,7 @@ void	RestrainedExoCyclicAtom_O::archiveBase(core::ArchiveP node)
 
 
 
-    void RestrainedExoCyclicAtom_O::fillRestraints(Residue_sp residue, core::HashTable_sp cip )
+void RestrainedExoCyclicAtom_O::fillRestraints(Residue_sp residue, core::HashTable_sp cip )
 {
   SIMPLE_ERROR(("Fix the implementation of %s") , __FUNCTION__);
     this->lazyInitializeSmarts();

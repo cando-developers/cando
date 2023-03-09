@@ -12,7 +12,7 @@
                  (mass (elt parts 1))
                  (polarizability (elt parts 2))
                  (nb (chem:make-ffnonbond)))
-            (chem:set-type nb (intern typename :keyword))
+            (chem:set-atom-type nb (intern typename :keyword))
             (chem:set-mass nb (util:parse-float mass))
             (chem:set-polarizability nb (util:parse-float polarizability))
             (chem:ffnonbond-db-add nonbond-db nb)))

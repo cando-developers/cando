@@ -173,7 +173,7 @@ public:
 public:
     /*! Add a fixed atom to this FixedNonbond component
      */
-  void	addFixedAtom(core::T_sp nonbondDb, Atom_sp a);
+  void	addFixedAtom(core::T_sp nonbondDb, Atom_sp a, core::HashTable_sp atomTypes);
   void	setupForEvaluation(AtomTable_sp m, FFNonbondCrossTermTable_sp crossTerms);
 
 public:
@@ -192,7 +192,7 @@ public:
 public:
 
     void addTerm(const TermType& term);
-    virtual void dumpTerms();
+    virtual void dumpTerms(core::HashTable_sp atomTypes);
     virtual bool is_restraint() const { return true; };
 
 

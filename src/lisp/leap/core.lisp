@@ -34,12 +34,6 @@
             when (probe-file full-path)
               return it)))
 
-(defgeneric topologyp (obj)
-  (:documentation "Return T if the object is a topology"))
-
-(defmethod topologyp ((obj t)) nil)
-(defmethod topologyp ((obj chem:topology)) t)
-
 ;;; --
 ;;;
 ;;; Leap environment
@@ -116,8 +110,8 @@ for a list of symbols.  When they ask for a list of symbols we use this list."))
        (setf (gethash (string name) (%variables *leap-env*)) (string name))
        ;;
        (when (and (symbolp name)
-                  (topologyp new-value))
-         (cando:register-topology new-value name))
+                  (topology:topologyp new-value))
+         (chem:register-topology new-value name))
        (setf (ext:specialp name) t)
        (export name (symbol-package name))
        (set name new-value))

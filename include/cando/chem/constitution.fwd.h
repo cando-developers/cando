@@ -28,7 +28,7 @@ This is an open source license for the CANDO software from Temple University, bu
 
 #include <cando/chem/chemPackage.h>
 
-
+#if 0
 namespace chem
 {
 
@@ -36,4 +36,5 @@ namespace chem
     typedef	int	ConstitutionIndex0N;
 
 };
+#endif
 #endif // constitution_FWD_H
