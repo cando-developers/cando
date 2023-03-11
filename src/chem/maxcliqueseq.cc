@@ -206,8 +206,7 @@ typedef KillTimer KillTimer1;
 #include <vector>
 #include <sstream>
 
-#define __linux
-#ifndef __linux
+#if defined(_WIN32) || defined(_WIN64)
 	#include <windows.h>
 	typedef LARGE_INTEGER time_type ;
 	
@@ -238,12 +237,12 @@ public:
 #endif //WIN32
 	}
 	
-#ifdef __linux
-	void getSysTime() {clock_gettime(CLOCK_REALTIME, &time);} // when linking, must include: -lrt
-	void init() {time.tv_sec = time.tv_nsec = 0l;}
+#if defined WIN32 || WIN64
+  void getSysTime() {QueryPerformanceCounter(&time);}
+  void init() {time.QuadPart = 0;}
 #else
-	void getSysTime() {QueryPerformanceCounter(&time);}
-	void init() {time.QuadPart = 0;}
+  void getSysTime() {clock_gettime(CLOCK_REALTIME, &time);} // when linking, must include: -lrt
+  void init() {time.tv_sec = time.tv_nsec = 0l;}
 #endif //linux
 	
 	TimeType operator- (const TimeType& t) const {return TimeType(time_sub(time, t.time));}
@@ -1236,7 +1235,7 @@ public:
             std::cout << "-- " << std::setw(80-3) << std::setfill('-') << std::left << algorithmName.str();
             std::cout.flags(basefmt);
             std::cout << std::setfill(baseFill) << "\n";
-            unsigned long long steps = 0, sorts = 0;
+            unsigned long long steps = 0;
             for (size_t i = 0; i < workerSteps.size(); ++i) {
                 steps += workerSteps[i];
             }

@@ -566,13 +566,11 @@ CL_DEFMETHOD core::List_sp	Aggregate_O::atomsWithChimeraSpecifications(const str
       mol = gc::As<Molecule_sp>(*mi);
 //      printf("%s:%d mol->getName()= %s  matches chainSym[%s] = %d\n", __FILE__, __LINE__, _rep_(mol->getName()).c_str(),_rep_(chainSym).c_str(), mol->getName()==chainSym);
       if ( mol->getName() == chainSym ) {
-        bool foundResidue = false;
         for ( ri = mol->begin_residues(); ri!=mol->end_residues(); ri++ ) {
           res = (*ri).as<Residue_O>();
 //          printf("%s:%d res->getFileSequenceNumber()= %d  matches fileSequenceNumber[%d] = %d\n", __FILE__, __LINE__, res->getFileSequenceNumber(), fileSequenceNumber,  res->getFileSequenceNumber()==fileSequenceNumber);
 //          printf("%s:%d     res->getId() = %d\n", __FILE__, __LINE__, res->getId());
           if ( res->getFileSequenceNumber() == fileSequenceNumber ) {
-            foundResidue = true;
 //            printf("%s:%d res->hasAtomWithName(%s) = %d\n",  __FILE__, __LINE__, _rep_(atomSym).c_str(), res->hasAtomWithName(atomSym));
             if ( res->hasAtomWithName(atomSym) ) {
               core::T_mv atom_mv = res->atomWithName(atomSym);

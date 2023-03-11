@@ -327,7 +327,7 @@ void AddIonOctree_O::PonMakeChildren(OctNode_sp ponNode, int iDepth, int iStatus
 	 *  Make nodes & set simple stuff by initializing 1st node
 	 *	and copying it.
 	 */
-  auto  PonChildren = gctools::GC<OctNode_O>::allocate_with_default_constructor();
+//  auto  PonChildren = gctools::GC<OctNode_O>::allocate_with_default_constructor();
 	//memset(PonChildren, 0, sizeof(OctNode_sp));
 	//ponNode->PonChildren->iStatus = iStatus;
 	//ponNode->PonChildren->iDepth = iDepth;
@@ -891,7 +891,7 @@ CL_DEFMETHOD void AddIonOctree_O::OctreeCreate(Aggregate_sp uUnit, AddIonOctreeE
   //gctools::Vec0<Atom_sp>  PaAtoms;
   Residue_sp		  rRes;
   size_t                   imd;
-  int	          	i, j, iAtoms, iDefaultedRadius, iBuild;
+  int	          	i, j, iAtoms, iDefaultedRadius;
   double		dMaxRadius, dCharge, dShellRadius;
   double		dTx, dTy, dTz, dTmax, dTmp, volumePercentage;
 
@@ -906,7 +906,7 @@ CL_DEFMETHOD void AddIonOctree_O::OctreeCreate(Aggregate_sp uUnit, AddIonOctreeE
 	/*
 	 *  Create the octree "object" and initialize
 	 */
-  auto  octTree = gctools::GC<AddIonOctree_O>::allocate_with_default_constructor();
+//  auto  octTree = gctools::GC<AddIonOctree_O>::allocate_with_default_constructor();
   core::MultipleValues &values = core::lisp_multipleValues();
  // octTree->iType = iType;
   //octTree->dGridSize = dGridSpace;
@@ -1213,14 +1213,14 @@ return(octTree);
 
   switch ( type ) {
   case Shell:
-      iBuild = iBuildShellOctant( this->onHead, iAtoms, vaAtoms, dShellRadius ); //PaAtoms );
+      iBuildShellOctant( this->onHead, iAtoms, vaAtoms, dShellRadius ); //PaAtoms );
       break;
   case InteriorSolute:
   case InteriorSolvent:
       if (bVerbose) {
         core::write_bf_stream(fmt::sprintf( "About to build interior octant iAtoms -> %lu\n" , iAtoms ));
       }
-      iBuild = iBuildInteriorOctant( this->onHead, iAtoms, vaAtoms ); //PaAtoms );
+      iBuildInteriorOctant( this->onHead, iAtoms, vaAtoms ); //PaAtoms );
       break;
   default:
       SIMPLE_ERROR(("bad switch\n"));

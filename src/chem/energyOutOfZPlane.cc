@@ -88,7 +88,7 @@ double	_evaluateEnergyOnly_Oozp(
 
 
 #pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_Oozp_termDeclares.cc>
 #pragma clang diagnostic pop
 #include <cando/chem/energy_functions/_Oozp_termCode.cc>
@@ -175,15 +175,16 @@ bool		calcOffDiagonalHessian = true;
 
  {
 #pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-but-set-variable"
 #include <cando/chem/energy_functions/_Oozp_termDeclares.cc>
-#pragma clang diagnostic pop
 	;
 	double x1,y1,z1,za,kb;
 	int	I1;
 	for ( gctools::Vec0<EnergyOutOfZPlane>::iterator cri=this->_Terms.begin();
 		    cri!=this->_Terms.end(); cri++ ) {
 #include <cando/chem/energy_functions/_Oozp_termCode.cc>
+#pragma clang diagnostic pop
 	}
     }
 
@@ -209,8 +210,6 @@ double EnergyOutOfZPlane_O::evaluateAllComponent( ScoringFunction_sp score,
 {
   this->_Evaluations++;
   bool	hasForce = force.notnilp();
-  bool	hasHessian = hessian.notnilp();
-  bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
 //
 // Copy from implementAmberFunction::evaluateAll
 //
@@ -235,7 +234,7 @@ double EnergyOutOfZPlane_O::evaluateAllComponent( ScoringFunction_sp score,
 #define	OOZP_OFF_DIAGONAL_HESSIAN_ACCUMULATE OffDiagHessAcc
 
 #pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_Oozp_termDeclares.cc>
 #pragma clang diagnostic pop
 
@@ -319,7 +318,8 @@ bool	calcOffDiagonalHessian = true;
  {
 		
 #pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-but-set-variable"
 #include <cando/chem/energy_functions/_Oozp_termDeclares.cc>
 #pragma clang diagnostic pop
 	    double x1,y1,z1,za,kb;
@@ -387,7 +387,7 @@ int	fails = 0;
     {
       
 #pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_Oozp_termDeclares.cc>
 #pragma clang diagnostic pop
       double x1,y1,z1,za,kb;

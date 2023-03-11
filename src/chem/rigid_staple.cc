@@ -85,7 +85,7 @@ CL_DEFUN double chem__rigid_staple_evaluate( core::SimpleVector_double_sp helix_
 
   { 
 #pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-variable"
 #include <cando/energy-functions/_STAPLE_termDeclares.cc>
 #pragma clang diagnostic pop
 #if 0

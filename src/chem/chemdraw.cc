@@ -520,10 +520,8 @@ core::Symbol_mv parse_property(core::T_sp stream, const string& propertyValue, C
 bool CDFragment_O::interpret(bool verbose, bool addHydrogens)
 {
 //  printf("%s:%d  Interpreting a fragment\n", __FILE__, __LINE__ );
-  int nextFragmentNameIndex = 1;
   if ( this->_Bonds.size() == 0 ) {return false;}
   CDBonds::iterator bi;
-  bool foundHashedBond = false;
   core::MultipleValues &values = core::lisp_multipleValues();
 //  adapt::SymbolSet_sp allNames = adapt::SymbolSet_O::create();
   {

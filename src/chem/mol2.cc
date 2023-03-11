@@ -492,7 +492,6 @@ core::T_sp mol2Read(Mol2File& fIn)
     // First create all of the Aggregate
     //	(Tripos calls this a molecule and it can have multiple chains.)
     //
-  auto mi = molecules.begin();
   Aggregate_sp aggregate = Aggregate_O::create();
   if (boundingBox.notnilp()) {
     BoundingBox_sp bb = BoundingBox_O::make(boundingBox,nil<core::T_O>(),nil<core::T_O>());

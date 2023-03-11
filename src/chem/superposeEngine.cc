@@ -161,7 +161,7 @@ void        SuperposeEngine_O::doSuperpose()
 {
     VectorVector3s                        Sj;
     VectorVector3s                        Si;
-    VectorVector3s::iterator        itS,itSi,itSj;
+    VectorVector3s::iterator        itSi,itSj;
     Vector3                                fixedCenter,vTemp;
     Vector3                                moveableCenter;
     Matrix                                mat,M, MT, trM, P,evecs,em,trans,rot;
@@ -172,6 +172,8 @@ void        SuperposeEngine_O::doSuperpose()
     int                                fixedIndicesSize, moveableIndicesSize;
     fixedIndicesSize = this->_FixedIndices->length();
     moveableIndicesSize = this->_MoveableIndices->length();
+    (void)fixedIndicesSize;
+    (void)moveableIndicesSize;
     LOG("Moveable indices fixed(%d) moveable(%d)" , fixedIndicesSize , moveableIndicesSize );
     ASSERTP(fixedIndicesSize==moveableIndicesSize,"num. fixed points must equal num. of moveable points");
     ASSERTF(fixedIndicesSize>=3, ("You must have at least 3 points to superpose and you only have: %d") , fixedIndicesSize );
@@ -348,8 +350,9 @@ double        SuperposeEngine_O::sumOfSquaresOfDifferences(ScorerState_sp scorer
 CL_DEFMETHOD
 double        SuperposeEngine_O::sumOfSquaresOfDifferences()
 {
+#ifdef DEBUG_ON
   size_t                itFixed;
-  size_t                 ititMoved;
+#endif
   Vector3                                moved, diff;
   double                                sum;
 
@@ -431,7 +434,6 @@ CL_DEFMETHOD void        SuperposeEngine_O::setFixedPoints( core::ComplexVector_
 CL_LISPIFY_NAME("setFixedAllPoints");
 CL_DEFMETHOD void        SuperposeEngine_O::setFixedAllPoints( geom::SimpleVectorCoordinate_sp fc )
 {
-  size_t ia;
   size_t ii;
   this->_FixedCoordinates = geom::ComplexVectorCoordinate_O::make_vector(fc->length(),Vector3(),core::make_fixnum(fc->length()));
   this->_FixedIndices = core::ComplexVector_byte32_t_O::make_vector(fc->length());
@@ -461,7 +463,6 @@ CL_DEFMETHOD void        SuperposeEngine_O::setMoveablePoints( core::ComplexVect
 CL_LISPIFY_NAME("setMoveableAllPoints");
 CL_DEFMETHOD void        SuperposeEngine_O::setMoveableAllPoints( geom::SimpleVectorCoordinate_sp mc )
 {
-  size_t ia;
   uint                ii;
   ASSERTF(mc->length()>=3,("You must have at least three moveable points and there are only %d") , mc->length() );
   this->_MoveableCoordinates = geom::ComplexVectorCoordinate_O::make_vector(mc->length(),Vector3(),core::make_fixnum(mc->length()));

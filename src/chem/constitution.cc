@@ -122,7 +122,6 @@ void	Constitution_O::makeResidueConsistentWithStereoisomerNamed(Residue_sp res,
   string					atomName;
   Atom_sp					aa;
   core::T_sp bdb = getCandoDatabase();
-  Constitution_sp residueConstitution = this->asSmartPtr();
   core::Symbol_sp fullName = gc::As<core::Symbol_sp>(core::eval::funcall(_sym_monomerNameForNameOrPdb,bdb,stereoisomerName));
   core::Symbol_sp pdbName = gc::As<core::Symbol_sp>(core::eval::funcall(_sym_pdbNameForNameOrPdb,bdb,stereoisomerName));
   res->setName(fullName);

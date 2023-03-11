@@ -84,11 +84,9 @@ double	_evaluateEnergyOnly_SketchStretch (
 
 
 #pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
-#pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-but-set-variable"
 #include <cando/chem/energy_functions/_Stretch_termDeclares.cc>
-#pragma clang diagnostic pop
 #pragma clang diagnostic pop
 
 #if !USE_EXPLICIT_DECLARES
@@ -136,7 +134,8 @@ void	EnergySketchStretch_O::setupHessianPreconditioner(
 
   {
 #pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-but-set-variable"
 #include <cando/chem/energy_functions/_Stretch_termDeclares.cc>
 #pragma clang diagnostic pop
 #if !USE_EXPLICIT_DECLARES
@@ -199,7 +198,7 @@ double EnergySketchStretch_O::evaluateAllComponent( ScoringFunction_sp score,
 
   { 
 #pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_Stretch_termDeclares.cc>
 #pragma clang diagnostic pop
     fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;

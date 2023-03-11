@@ -591,6 +591,7 @@ core::T_sp	ZMatrix_O::_getAtomZMatrixNameAtIndex(uint i) const
 		break;
 	    }
 	}
+        (void)gotPeripheralAtom; // sham use
 	ASSERTP(gotPeripheralAtom,"There were no peripheral atoms in the matter");
 	this->defineForMatterWithStartingAtom(matter,atom);
     }

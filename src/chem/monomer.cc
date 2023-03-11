@@ -790,7 +790,6 @@ CL_DEFMETHOD void	Monomer_O::addIsoname(Isoname_sp name)
 CL_DEFMETHOD void Monomer_O::addTopologyName(core::Symbol_sp name)
 {
   Topology_sp topology = gc::As<Topology_sp>(chem__findTopology(name));
-  core::List_sp plugs = topology->plugsAsList();
   if (this->_Monomers.size()!=0) {
     Topology_sp topology0 = gc::As<Topology_sp>(chem__findTopology(this->_Monomers[0]));
     if (!topology0->matchesPlugs(topology)) {

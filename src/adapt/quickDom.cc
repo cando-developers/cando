@@ -202,10 +202,7 @@ void	QDomNode_O::throwErrorForChildrenWithoutName(string nm)
 //      Return true if the data is all white space
 bool    QDomNode_O::dataIsAllWhiteSpace()
 {
-  bool                        sawChar;
   string                      val;
-  string::iterator    it;
-  sawChar = false;
   for (size_t idx = 0; idx<this->characters->_Contents->length(); idx++ ) {
     claspCharacter c = cl__char(this->characters->_Contents,idx).unsafe_character();
     if (!isspace(c))
@@ -222,7 +219,6 @@ bool    QDomNode_O::dataIsAllWhiteSpace()
 int	QDomNode_O::dataCountNewLines()
 {
   string			val;
-  string::iterator	it;
   int			newLines;
   newLines = 0;
   for (size_t idx = 0; idx<this->characters->_Contents->length(); idx++ ) {

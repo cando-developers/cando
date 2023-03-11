@@ -55,8 +55,6 @@ This is an open source license for the CANDO software from Temple University, bu
 
 
 #define DEBUG_NONBOND_TERM 1
-#define LOG_ENERGY(...)
-//#define LOG_ENERGY core::write_bf_stream
 
 namespace chem
 {
@@ -193,7 +191,7 @@ double	_evaluateEnergyOnly_Nonbond(ScoringFunction_sp score,
 #undef	NONBOND_CALC_FORCE	// Don't calculate FORCE or HESSIAN
 
 #pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_Nonbond_termDeclares.cc>
 #pragma clang diagnostic pop
 #include <cando/chem/energy_functions/_Nonbond_termCode.cc>
@@ -336,8 +334,9 @@ void	EnergyNonbond_O::evaluateTerms(ScoringFunction_sp score,
     {
       LOG("Nonbond component is enabled" );
 #pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
-
+#pragma clang diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-but-set-variable"
+      
 #include <cando/chem/energy_functions/_Nonbond_termDeclares.cc>
 
 #pragma clang diagnostic pop
@@ -435,8 +434,7 @@ void	EnergyNonbond_O::evaluateUsingExcludedAtoms(ScoringFunction_sp score,
   }
   core::SimpleVector_int32_t_sp numberOfExcludedAtoms = this->_NumberOfExcludedAtomIndices;
   core::SimpleVector_int32_t_sp excludedAtomIndices = this->_ExcludedAtomIndices;
-  double vdwScale = this->getVdwScale();
-  double electrostaticScale = this->getElectrostaticScale()*ELECTROSTATIC_MODIFIER/this->getDielectricConstant();
+//  double electrostaticScale = this->getElectrostaticScale()*ELECTROSTATIC_MODIFIER/this->getDielectricConstant();
 //  printf("%s:%d electrostaticcharge %lf\n", __FILE__, __LINE__, electrostaticScale );
   bool	hasForce = force.notnilp();
   bool	hasHessian = hessian.notnilp();
@@ -465,11 +463,12 @@ void	EnergyNonbond_O::evaluateUsingExcludedAtoms(ScoringFunction_sp score,
 	    // arrays so that only one thread updates each element at a time.
   LOG("Nonbond component is enabled" );
 #pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-but-set-variable"
 #include <cando/chem/energy_functions/_Nonbond_termDeclares.cc>
 #pragma clang diagnostic pop
   // printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
-  double x1,y1,z1,x2,y2,z2,dA,dC,dQ1Q2,dA_old,dC_old,dQ1Q2_old;
+  double x1,y1,z1,x2,y2,z2,dA,dC,dQ1Q2;
   int	I1, I2;
   int i = 0;
   int endIndex = pos->length()/3;
@@ -490,7 +489,7 @@ void	EnergyNonbond_O::evaluateUsingExcludedAtoms(ScoringFunction_sp score,
     bool has_excluded_atoms = ((*excludedAtomIndices)[excludedAtomIndex] >= 0);
     int numberOfExcludedAtomsRemaining = numberOfExcludedAtoms->operator[](index1);
     double charge11 = (*this->_charge_vector)[index1];
-    double electrostatic_scaled_charge11 = charge11*electrostaticScale;
+//    double electrostatic_scaled_charge11 = charge11*electrostaticScale;
     for ( int index2 = index1+1, index2_end(endIndex); index2 < index2_end; ++index2 ) {
       int maybe_excluded_atom = (*excludedAtomIndices)[excludedAtomIndex];
       // state TOP-INNER
@@ -612,11 +611,9 @@ CL_DEFMETHOD void EnergyNonbond_O::expandExcludedAtomsToTerms()
   }
   core::SimpleVector_int32_t_sp numberOfExcludedAtoms = this->_NumberOfExcludedAtomIndices;
   core::SimpleVector_int32_t_sp excludedAtomIndices = this->_ExcludedAtomIndices;
-  double vdwScale = this->getVdwScale();
-  double electrostaticScale = this->getElectrostaticScale()*ELECTROSTATIC_MODIFIER/this->getDielectricConstant();
   LOG("Nonbond component is enabled" );
   // printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
-  double x1,y1,z1,x2,y2,z2,dA,dC,dQ1Q2,dA_old,dC_old,dQ1Q2_old;
+  double dA,dC;
   int	I1, I2;
   int i = 0;
 //  int endIndex = pos->length()/3;
@@ -671,7 +668,6 @@ CL_DEFMETHOD void EnergyNonbond_O::expandExcludedAtomsToTerms()
     bool has_excluded_atoms = ((*excludedAtomIndices)[excludedAtomIndex] >= 0);
     int numberOfExcludedAtomsRemaining = numberOfExcludedAtoms->operator[](index1);
     double charge11 = (*this->_charge_vector)[index1];
-    double electrostatic_scaled_charge11 = charge11*electrostaticScale;
     for ( int index2 = index1+1, index2_end(endIndex); index2 < index2_end; ++index2 ) {
       LOG("    --- top of inner loop   numberOfExcludedAtomsRemaining -> %d    index2 -> %d\n" , numberOfExcludedAtomsRemaining , index2 );
       int maybe_excluded_atom = (*excludedAtomIndices)[excludedAtomIndex];
@@ -804,9 +800,9 @@ void	EnergyNonbond_O::compareAnalyticalAndNumericalForceAndHessianTermByTerm(Sco
   {
     
 #pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-but-set-variable"
 #include <cando/chem/energy_functions/_Nonbond_termDeclares.cc>
-#pragma clang diagnostic pop
     double x1,y1,z1,x2,y2,z2,dA,dC,dQ1Q2;
     int	I1, I2,i;
     gctools::Vec0<EnergyNonbond>::iterator nbi;
@@ -817,7 +813,7 @@ void	EnergyNonbond_O::compareAnalyticalAndNumericalForceAndHessianTermByTerm(Sco
 #define ENERGY_FUNCTION score
 #include <cando/chem/energy_functions/_Nonbond_debugFiniteDifference.cc>
 #undef ENERGY_FUNCTION
-
+#pragma clang diagnostic pop
     }
   }
 }

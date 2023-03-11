@@ -103,7 +103,7 @@ bool	RestraintActive;
 #undef	IMPROPER_RESTRAINT_CALC_FORCE	// Don't calculate FORCE or HESSIAN
 
 #pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_ImproperRestraint_termDeclares.cc>
 #pragma clang diagnostic pop
 #include <cando/chem/energy_functions/_ImproperRestraint_termCode.cc>
@@ -200,7 +200,8 @@ bool		calcOffDiagonalHessian = true;
 
  {
 #pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-but-set-variable"
 #include	<cando/chem/energy_functions/_ImproperRestraint_termDeclares.cc>
 #pragma clang diagnostic pop
 	double x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4;
@@ -269,7 +270,7 @@ double EnergyDihedralRestraint_O::evaluateAllComponent( ScoringFunction_sp score
 
   {
 #pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_ImproperRestraint_termDeclares.cc>
 #pragma clang diagnostic pop
     double x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4;
@@ -442,7 +443,8 @@ void	EnergyDihedralRestraint_O::compareAnalyticalAndNumericalForceAndHessianTerm
   {
     
 #pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-but-set-variable"
 #include <cando/chem/energy_functions/_ImproperRestraint_termDeclares.cc>
 #pragma clang diagnostic pop
     double x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4;
@@ -499,7 +501,8 @@ int	EnergyDihedralRestraint_O::checkForBeyondThresholdInteractions(
   {
     
 #pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-but-set-variable"
 #include <cando/chem/energy_functions/_ImproperRestraint_termDeclares.cc>
 #pragma clang diagnostic pop
     double x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4;

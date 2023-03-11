@@ -62,12 +62,12 @@ core::T_sp Quantity_O::copyAndScaleValue(core::T_sp obj, double conversion) {
     geom::OVector3_sp nval = geom::OVector3_O::create(oval->get().multiplyByScalar(conversion));
     return nval;
   } else if (obj.isA<core::Array_O>()) {
-    core::Array_sp array = obj.as<core::Array_O>();
-    // core::Array_sp narray = array->deepCopy().as<core::Array_O>();
     FIX_ME();
 #if 0
-	    narray->multiplyByScalar(conversion);
-	    return narray;
+    core::Array_sp array = obj.as<core::Array_O>();
+    core::Array_sp narray = array->deepCopy().as<core::Array_O>();
+    narray->multiplyByScalar(conversion);
+    return narray;
 #endif
   }
   SIMPLE_ERROR(("Illegal value type[%s] for copyAndScaleValue"), core::cl__class_of(obj)->_classNameAsString());
@@ -84,9 +84,9 @@ core::T_sp Quantity_O::copyAndScaleValueElement(core::T_sp obj, uint index, doub
 
 core::T_sp Quantity_O::copyValueElement(core::T_sp obj, uint index) {
   if (obj.isA<core::Vector_O>()) {
-    core::Vector_sp vec = gc::As_unsafe<core::Vector_sp>(obj);
     FIX_ME(); // implement copy of object?
 #if 0
+    core::Vector_sp vec = gc::As_unsafe<core::Vector_sp>(obj);
           // Why am I copying objects?
           //core::T_sp element = vec->rowMajorAref(index).as<core::General_O>()->deepCopy();
           return element;

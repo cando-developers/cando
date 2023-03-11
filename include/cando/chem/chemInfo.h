@@ -114,7 +114,7 @@ CL_DEFMETHOD     chem::Atom_sp tag(core::T_sp tag) { return this->getAtomWithTag
 	 */
     BoundFrame_sp boundFrame();
 
-    ChemInfoMatch_O(Root_sp root, size_t maxtagPlus1) : _Root(root), _Matches(false), _MaxTagPlus1(maxtagPlus1), _TagHistory(nil<core::T_O>()) {};
+    ChemInfoMatch_O(Root_sp root, size_t maxtagPlus1) : _Matches(false), _MaxTagPlus1(maxtagPlus1), _Root(root), _TagHistory(nil<core::T_O>()) {};
   };
 
 
@@ -1074,9 +1074,9 @@ public:
   virtual	ChemInfoType	type() { return root; };
   virtual	bool		matches_Atom( Root_sp root, chem::Atom_sp atom );
   virtual	bool		matches_Bond( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );
-  Root_O(const std::string& code, ChemInfoNode_sp node, size_t maxtag) : _Code(code), _Node(node), _Tests(nil<core::T_O>()), _MaxTag(maxtag) {}
+  Root_O(const std::string& code, ChemInfoNode_sp node, size_t maxtag) : _Node(node), _Tests(nil<core::T_O>()), _MaxTag(maxtag), _Code(code) {}
   Root_O(const std::string& code) : _Code(code) {};
-  Root_O() : _Code(""), _Node(nil<core::T_O>()), _Tests(nil<core::T_O>()), _MaxTag(0) {};
+  Root_O() : _Node(nil<core::T_O>()), _Tests(nil<core::T_O>()), _MaxTag(0), _Code("") {};
 };
 
 

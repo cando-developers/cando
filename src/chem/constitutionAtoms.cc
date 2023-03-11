@@ -162,7 +162,6 @@ CL_DEFUN ConstitutionAtoms_sp ConstitutionAtoms_O::makeConstitutionAtomsFromResi
 
 void ConstitutionAtoms_O::addConstitutionVirtualAtom(ConstitutionVirtualAtom_sp ca)
 {
-  ConstitutionAtomIndex0N nextIndex = this->_Atoms.size();
   this->_Atoms.push_back(ca);
 };
 

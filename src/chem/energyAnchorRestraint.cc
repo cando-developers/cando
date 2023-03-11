@@ -146,7 +146,7 @@ double	_evaluateEnergyOnly_AnchorRestraint(
 
 
 #pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_AnchorRestraint_termDeclares.cc>
 #pragma clang diagnostic pop
 #include <cando/chem/energy_functions/_AnchorRestraint_termCode.cc>
@@ -214,7 +214,8 @@ bool		calcOffDiagonalHessian = true;
 
  {
 #pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-but-set-variable"
 #include <cando/chem/energy_functions/_AnchorRestraint_termDeclares.cc>
 #pragma clang diagnostic pop
 	;
@@ -276,7 +277,7 @@ double EnergyAnchorRestraint_O::evaluateAllComponent( ScoringFunction_sp score,
 
   {
 #pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_AnchorRestraint_termDeclares.cc>
 #pragma clang diagnostic pop
     double x1,y1,z1,xa,ya,za,ka;
@@ -365,7 +366,8 @@ bool	calcOffDiagonalHessian = true;
  {
    
 #pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-but-set-variable"
 #include <cando/chem/energy_functions/_AnchorRestraint_termDeclares.cc>
 #pragma clang diagnostic pop
    double x1,y1,z1,xa,ya,za,ka;
@@ -434,7 +436,7 @@ int	fails = 0;
     {
 		
 #pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_AnchorRestraint_termDeclares.cc>
 #pragma clang diagnostic pop
 	    double x1,y1,z1,xa,ya,za,ka;

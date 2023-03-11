@@ -200,8 +200,6 @@ DOCGROUP(cando);
 CL_DEFUN Minimizer_sp Minimizer_O::make(ScoringFunction_sp givenEnergyFunction)
 {
   auto  me  = gctools::GC<Minimizer_O>::allocate_with_default_constructor();
-  bool initialized = false;
-  initialized = true;
   me->setEnergyFunction(givenEnergyFunction);
   return me;
 }
@@ -771,9 +769,7 @@ void	Minimizer_O::lineSearch(	double	*dPstep,
   double	xa, xb, xc;
   double	fa, fb, fc;
   double	step = 0.0;
-  int	functionEvals;
 
-  functionEvals = 0;
   LOG("Starting" );
 
     //
@@ -923,8 +919,7 @@ void	Minimizer_O::_steepestDescent( int numSteps,
   double	step, fnew, dirMag;
   double	cosAngle = 0.0;
   bool		steepestDescent;
-  int		innerSteps;
-  int		localSteps, k;
+  int		localSteps;
   bool          printedLatestMessage;
 
   LOG("Checking status" );
@@ -934,7 +929,6 @@ void	Minimizer_O::_steepestDescent( int numSteps,
   LOG("step" );
 
   localSteps = 0;
-  k = 0;
   step = 0.0;
 
   LOG("step" );
@@ -952,7 +946,6 @@ void	Minimizer_O::_steepestDescent( int numSteps,
   tv2 = NVector_O::create(iRestartSteps);
   LOG("step" );
 	// Done
-  innerSteps = MIN(iRestartSteps,ITMAX);
   LOG("step" );
   double fp = this->dTotalEnergyForce( x, force );
   LOG("step" );
@@ -992,6 +985,7 @@ void	Minimizer_O::_steepestDescent( int numSteps,
   deltaNew = dotProduct(force,dir,this->_Frozen);
   delta0 = deltaNew;
   eSquaredDelta0 = forceTolerance*delta0;
+  (void)eSquaredDelta0; // sham use
   LOG("eSquaredDelta0 = %lf" , (eSquaredDelta0 ) );
   LOG("forceTolerance = %lf" , (forceTolerance ) );
   LOG("delta0 = %lf" , (delta0 ) );
@@ -1203,11 +1197,10 @@ void	Minimizer_O::_conjugateGradient(int numSteps,
   double		delta0, deltaNew, deltaMid, deltaOld;
   double		eSquaredDelta0;
   double		step, fnew ;
-  int		innerSteps;
   int		localSteps, k;
   double		beta, cosAngle, dirMag;
   bool		steepestDescent;
-  int		refactor;
+  // int		refactor;
   size_t        printedLatestMessage;
 
   if ( this->_Status == minimizerError ) return;
@@ -1215,7 +1208,7 @@ void	Minimizer_O::_conjugateGradient(int numSteps,
   this->_CurrentPreconditioner = noPreconditioner;
   localSteps = 0;
   k = 0;
-  refactor = 0;
+  //refactor = 0;
 
     /* Calculate how many conjugate gradient steps can be */
     /* taken before a restart must be done */
@@ -1229,7 +1222,6 @@ void	Minimizer_O::_conjugateGradient(int numSteps,
   tv1 = NVector_O::create(iRestartSteps);
   tv2 = NVector_O::create(iRestartSteps);
     // Done
-  innerSteps = MIN(iRestartSteps,ITMAX);
   double fp = dTotalEnergyForce( x, force );
 //    r->inPlaceTimesScalar(-1.0);
     // TODO calculate preconditioner here
@@ -1264,6 +1256,7 @@ void	Minimizer_O::_conjugateGradient(int numSteps,
   deltaNew = dotProduct(force,d,this->_Frozen);
   delta0 = deltaNew;
   eSquaredDelta0 = forceTolerance*delta0;
+  (void)eSquaredDelta0;
   LOG("eSquaredDelta0 = %lf" , (eSquaredDelta0 ) );
   LOG("forceTolerance = %lf" , (forceTolerance ) );
   LOG("delta0 = %lf" , (delta0 ) );
@@ -1434,7 +1427,7 @@ void	Minimizer_O::_conjugateGradient(int numSteps,
 		    //		if ( refactor >= 5 ) {
             this->_EnergyFunction->setupHessianPreconditioner(x,m);
             this->_EnergyFunction->unconventionalModifiedCholeskyFactorization(m,ldlt);
-            refactor = 0;
+            // refactor = 0;
 		    //		}
             this->_EnergyFunction->backSubstituteLDLt(ldlt,s,force);
             break;
@@ -1885,13 +1878,10 @@ void	Minimizer_O::_evaluateEnergyAndForceManyTimes( int numSteps,  NVector_sp nv
 #define MINCHANGE       0.01
 
   NVector_sp         nvDir, nvNewPos, nvNewForce, nvTempPos, nvTempForce;
-  double          dEnergy, dX, dRms;
   int             iCount;
   int		iSize;
 
     /* Create the Direction vector */
-  dRms = 0.0;
-  dX = 1.0;
   iSize = nvPos->size();
   nvDir       = NVector_O::create( iSize );
   nvNewPos    = NVector_O::create( iSize );
@@ -1902,7 +1892,7 @@ void	Minimizer_O::_evaluateEnergyAndForceManyTimes( int numSteps,  NVector_sp nv
   iCount = 0;
   this->_Iteration = 1;
   do {
-    dEnergy = this->dTotalEnergyForce( nvPos, nvNewForce);
+    this->dTotalEnergyForce( nvPos, nvNewForce);
     if ( iCount % 10000 == 0 ) {
       core::clasp_writeln_string(fmt::sprintf("Evaluating energy step#%d" , iCount ));
     }

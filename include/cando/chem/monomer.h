@@ -113,7 +113,7 @@ namespace chem {
     CL_DEFMETHOD core::Symbol_sp name() const { return this->_Name; };
     CL_DEFMETHOD Fixnum isomer() const { return this->_Isomer; };
     CL_DEFMETHOD Topology_sp topology() const { return this->_Topology; };
-  Isoname_O(core::Symbol_sp name, Topology_sp topology, Fixnum isomer ) : _Name(name), _Topology(topology), _Isomer(isomer) {};
+    Isoname_O(core::Symbol_sp name, Topology_sp topology, Fixnum isomer ) : _Name(name), _Isomer(isomer), _Topology(topology) {};
   };
 };
 

@@ -96,7 +96,6 @@ struct translate::from_object<kinematics::CoordinateCalculator>
   DeclareType _v;
   from_object(core::T_sp o)
   {
-    core::Symbol_sp sym = o.as<core::Symbol_O>();
     if (o == kw::_sym_noop_to_external) {
       this->_v = kinematics::noop_to_external;
     } else if (o == kw::_sym_noop_to_internal) {
@@ -248,7 +247,6 @@ void Joint_O::addChild(Joint_sp child)
     child->setParent(this->asSmartPtr());
   } else {
     LOG("It's a non-jump atom");
-    int firstNonJumpIndex = this->firstNonJumpChildIndex();
     LOG(BF("We are at the end of the Children - appending"));
     this->_appendChild(child);
     child->setParent(this->asSmartPtr());

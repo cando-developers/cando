@@ -732,12 +732,10 @@ core::List_sp EnergyFunction_O::checkForBeyondThresholdInteractions(double thres
 {
   NVector_sp	pos;
   stringstream	info;
-  int	fails = 0;
 
   info.str("");
   pos = NVector_O::create(this->getNVectorSize());
   this->loadCoordinatesIntoVector(pos);
-  fails = 0;
   ql::list result;
   result & this->_Stretch->checkForBeyondThresholdInteractionsWithPosition(pos,threshold);
   result & this->_Angle->checkForBeyondThresholdInteractionsWithPosition(pos,threshold);
@@ -1403,11 +1401,10 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
   Loop loop;
   Atom_sp          a1, a2, a3, a4, aImproperCenter;
   core::Symbol_sp  t1, t2, t3, t4, t141, t144;
-  EnergyAtom      *eaCenter, *ea1, *ea2, *ea3, *ea4;
+  EnergyAtom       *ea1, *ea2, *ea3, *ea4;
   FFPtor_sp        ffPtor;
   FFItor_sp        ffItor;
   FFNonbond_sp	ffNonbond1, ffNonbond2;
-  int             coordinateIndex;
 
   //
   // Define a Nonbond cross term table
@@ -1427,7 +1424,6 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
 	//
   ALL_ENERGY_COMPONENTS(initialize());
   this->_eraseMissingParameters();
-  coordinateIndex = 0;
   ASSERTNOTNULL(forceField);
   // Search the stretch terms
   {
@@ -1686,7 +1682,6 @@ CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter
   FFPtor_sp        ffPtor;
   FFItor_sp        ffItor;
   FFNonbond_sp	ffNonbond1, ffNonbond2;
-  int             coordinateIndex;
   if (chem__verbose(1)) core::write_bf_stream(fmt::sprintf("In generateRestraintEnergyFunctionTables\n"));
   
     	//
@@ -1991,14 +1986,8 @@ EnergyAtom*	EnergyFunction_O::getEnergyAtomPointer(Atom_sp a)
 
 void	EnergyFunction_O::dealWithProblem(core::Symbol_sp problem, core::T_sp error_args)
 {
-  core::List_sp atoms = nil<core::T_O>();
-  if ( error_args.consp() && CONS_CAR(error_args) == kw::_sym_atoms ) {
-    atoms = atoms;
-  }
-  for ( auto cur : atoms ) {
-    Atom_sp a = gctools::As<Atom_sp>(oCar(cur));
-    a->bumpPosition(0.1);
-  }
+  // FIXME? Nothing seems to call this function, but it was buggy and doing
+  // nothing, so I (Bike) deleted it.
 }
 
 

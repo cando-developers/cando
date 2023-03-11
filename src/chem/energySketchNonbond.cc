@@ -54,8 +54,6 @@ This is an open source license for the CANDO software from Temple University, bu
 
 
 #define DEBUG_NONBOND_TERM 1
-#define LOG_ENERGY(x)
-//#define LOG_ENERGY core::write_bf_stream
 
 namespace chem
 {
@@ -136,9 +134,6 @@ void	EnergySketchNonbond_O::evaluateTerms(NVector_sp 	pos,
 {
   this->_Evaluations++;
 //  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
-  bool	hasForce = force.notnilp();
-  bool	hasHessian = hessian.notnilp();
-  bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
 #define Log(x) log(x)
 #define EREP_CALC_FORCE
 #define EREP_CALC_DIAGONAL_HESSIAN
@@ -156,16 +151,18 @@ void	EnergySketchNonbond_O::evaluateTerms(NVector_sp 	pos,
 #define	EREP_DIAGONAL_HESSIAN_ACCUMULATE 	DiagHessAcc
 #define	EREP_OFF_DIAGONAL_HESSIAN_ACCUMULATE OffDiagHessAcc
 #define MAYBE_BAIL(val) {} if (val <=0.1 ) goto TOO_CLOSE; if ( val >= this->_LongDistanceCutoff) goto TOO_FAR;
-  
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_Erep_termDeclares.cc>
+#pragma clang diagnostic pop
 
   double* coordinates_ptr = (double*)(pos->rowMajorAddressOfElement_(0));
   double* force_ptr = (double*)(force->rowMajorAddressOfElement_(0));
   double x1,y1,z1,x2,y2,z2,crep;
   double dx, dy, dz;
-  double dsq, ERepDistance;
+  double dsq;
   double crep_over_dsq;
-  double cutoff_sq = this->_LongDistanceCutoff*this->_LongDistanceCutoff;
   for ( size_t index = 0; index<this->_Terms.size(); ++index ) {
     EnergySketchNonbond& ea = this->_Terms[index];
     if (this->_FreezeFlags&ea._FreezeFlags) continue;
