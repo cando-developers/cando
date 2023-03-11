@@ -161,6 +161,8 @@ Lookup the object in the variable space."
                  (lambda (recurse relation relation-args node kind relations
                           &key name value &allow-other-keys)
                    (declare (ignore relation relation-args relations))
+                   (when *load-verbose*
+                     (format t "; evaluate ~s :kind ~s~%" value kind))
                    (case kind
                      (:literal
                       (let ((expansion (macroexpand value)))
