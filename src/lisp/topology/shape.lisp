@@ -23,13 +23,18 @@
    (out-monomers :initarg :out-monomers :accessor out-monomers)
    ))
 
+(defclass receptor-shape (oligomer-shape)
+  ((aggregate :initarg :aggregate :accessor aggregate)))
 
-(defun make-oligomer-shape (oligomer matched-fragment-conformations-map foldamer)
+  
+
+(defun make-oligomer-shape (oligomer matched-fragment-conformations-map)
   (multiple-value-bind (monomer-shape-vector the-root-monomer in-monomers out-monomers monomer-shape-map)
       (loop with monomer-shape-vector = (make-array (length (monomers oligomer)))
             with in-monomers = (make-hash-table)
             with out-monomers = (make-hash-table)
             with the-root-monomer = nil
+            with foldamer = (foldamer (oligomer-space oligomer))
             with monomer-shape-map = (make-hash-table)
             for index from 0
             for monomer across (monomers oligomer)
@@ -66,7 +71,7 @@
     (make-instance 'oligomer-shape
                    :oligomer oligomer
                    :matched-fragment-conformations-map matched-fragment-conformations-map
-                   :foldamer foldamer
+                   :foldamer (foldamer (oligomer-space oligomer))
                    :monomer-shape-vector monomer-shape-vector
                    :monomer-shape-map monomer-shape-map
                    :the-root-monomer the-root-monomer
@@ -115,16 +120,22 @@
             (random (length (topology:fragments fragment-conformations))))
       (random-fragment-conformation-index-impl root-monomer-shape oligomer-shape))))
 
-
-(defun build-shape (oligomer-shape)
-  (let* ((oligomer (oligomer oligomer-shape))
-         (conf (topology:make-conformation oligomer))
-         (fragment-conformations (matched-fragment-conformations-map oligomer-shape)))
-    (topology::fill-internals-from-oligomer-shape conf fragment-conformations oligomer-shape)
-    #+(or)(topology:zero-all-atom-tree-external-coordinates conf)
-    (let ((coordinates (chem:make-coordinates (topology:energy-function conf))))
-      (topology:build-all-atom-tree-external-coordinates conf coordinates)
-      (warn "Handle copying vector into atoms")
-      (chem:energy-function/save-coordinates-from-vector (topology:energy-function conf) coordinates)
-      (topology:aggregate conf))))
+(defun build-shapes (oligomer-shapes conf &optional monomer-order)
+  (let ((coordinates (chem:make-coordinates (topology:energy-function conf))))
+    (chem:energy-function/load-coordinates-into-vector (topology:energy-function conf) coordinates)
+    (loop for oligomer-shape in oligomer-shapes
+          for oligomer = (oligomer oligomer-shape)
+          for fragment-conformations = (matched-fragment-conformations-map oligomer-shape)
+          do (topology::fill-internals-from-oligomer-shape conf fragment-conformations oligomer-shape)
+             (if monomer-order
+                 (loop for monomer in monomer-order
+                       for monomer-position = (gethash monomer (monomer-positions conf))
+                       for molecule-index = (monomer-position-molecule-index monomer-position)
+                       for residue-index = (monomer-position-residue-index monomer-position)
+                       for atmolecule = (aref (ataggregate conf) molecule-index)
+                       for atresidue = (aref (atresidues atmolecule) residue-index)
+                       do (build-atresidue-atom-tree-external-coordinates atresidue coordinates))
+                 (topology:build-all-atom-tree-external-coordinates conf oligomer coordinates)))
+    (chem:energy-function/save-coordinates-from-vector (topology:energy-function conf) coordinates)
+    (topology:aggregate conf)))
 

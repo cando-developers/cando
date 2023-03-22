@@ -12,6 +12,10 @@
                 :initform (chem:make-atom-id-map)
                 :accessor atom-id-map)))
 
+(defmethod print-object ((obj joint-tree) stream)
+  (print-unreadable-object (obj stream :type t)
+    (format stream ":roots ~s" (roots obj))))
+
 (defun make-joint-tree ()
   (make-instance 'joint-tree))
 

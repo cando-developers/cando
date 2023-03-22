@@ -11,6 +11,10 @@
                          in-plug-name)
   (let* ((out-plug (topology:plug-named prev-topology out-plug-name))
          (in-plug (topology:plug-named next-topology in-plug-name)))
+    (unless out-plug
+      (error "Could not find plug in ~a named ~a" prev-topology out-plug-name))
+    (unless in-plug
+      (error "Could not find plug in ~a named ~a" next-topology in-plug-name))
     (unless (= (length (topology:plug-bonds out-plug)) (length (topology:plug-bonds in-plug)))
       (error "There is a mismatch between the number of plug-bonds in ~s and ~s" out-plug in-plug))
     (loop for bond-index below (length (topology:plug-bonds out-plug))

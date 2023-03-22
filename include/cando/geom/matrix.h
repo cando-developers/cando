@@ -55,6 +55,7 @@ public:
   Matrix(bool identity);
 
   virtual ~Matrix();
+  Matrix& operator=(const Matrix& other);
   Matrix operator*(const Matrix &m) const;
   //	Matrix operator*( Matrix m );
   Vector3 operator*(const Vector3 &v) const;

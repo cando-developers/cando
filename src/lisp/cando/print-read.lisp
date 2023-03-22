@@ -82,7 +82,7 @@ Save the object to the file PATHNAME as an s-expression."
   `(defmethod print-object ((obj ,class-name) stream)
      (if *print-readably*
          (progn
-           (clos:print-object-readably-with-slots obj stream (quote ,skip-slot-names)))
+           (cando.serialize:print-object-readably-with-slots obj stream (quote ,skip-slot-names)))
          (funcall ,print-unreadably obj stream))))
 
 
