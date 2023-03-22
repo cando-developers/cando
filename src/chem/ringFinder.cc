@@ -321,18 +321,31 @@ void AGVertex_O::acceptMessage(PathMessage_sp msg)
 };
 
 
+__attribute__((noinline)) PathMessage_sp edgeArrayCopy(PathMessage_sp orig) {
+  return orig->copy();
+}
+
+__attribute__((noinline)) PathMessage_sp edgeArrayRingCopy(PathMessage_sp orig) {
+  return orig->copy();
+}
+
+__attribute__((noinline)) void edgeArrayResize(RingFinder_sp graph, gctools::Vec0<PathMessage_sp>& edgeArray) {
+  edgeArray.resize(graph->getNumberOfEdges(),nil<PathMessage_O>());
+}
 
 
-void AGVertex_O::receive(uint stage)
+void AGVertex_O::receive(uint stage, gctools::Vec0<PathMessage_sp>& edgeArray0, gctools::Vec0<PathMessage_sp>& edgeArray1 )
 {
   if ( this->_edges.size() == 0 ) return;
 	    //
 	    // First cluster all the direct edge messages
 	    // and merge them
-  gctools::Vec0<PathMessage_sp>	edgeArray0, edgeArray1;
   RingFinder_sp		graph = this->getGraph();
-  edgeArray0.resize(graph->getNumberOfEdges(), nil<PathMessage_O>());
-  edgeArray1.resize(graph->getNumberOfEdges(), nil<PathMessage_O>());
+#if 0
+  gctools::Vec0<PathMessage_sp>	edgeArray0, edgeArray1;
+  edgeArrayResize(graph,edgeArray0);
+  edgeArrayResize(graph,edgeArray1);
+#endif
   LOG("Stage(%d) Vertex(%s) distributing receiveBuffer, there are %d messages" , stage , this->_atom->description().c_str() , this->_receiveBuffer->length() );
   uint addedMessages = 0;
     		// isolated atoms will have empty receive buffers
@@ -375,7 +388,7 @@ void AGVertex_O::receive(uint stage)
 		    // detect odd-membered rings
       if ( edgeArray0[i].notnilp() && edgeArray1[i].notnilp() )
       {
-        PathMessage_sp ring = edgeArray0[i]->copy();
+        PathMessage_sp ring = edgeArrayCopy(edgeArray0[i]);
         ring->join(edgeArray1[i]);
         edgeArray0[i] = nil<PathMessage_O>();
         edgeArray1[i] = nil<PathMessage_O>();
@@ -419,100 +432,30 @@ void AGVertex_O::receive(uint stage)
 	    //
   {
     vertexDict->maphash( [this,&graph,stage] (core::T_sp key, core::T_sp value) {
-        AGVertex_sp nodeId = gc::As<AGVertex_sp>(key);
-        core::List_sp list = gc::As<core::List_sp>(value);
+      AGVertex_sp nodeId = gc::As<AGVertex_sp>(key);
+      core::List_sp list = gc::As<core::List_sp>(value);
 		    // If there is more than one PathMessage 
 		    // with the same FirstVertex then there is 
 		    // a node-collision, combine the messages and
 		    // register an even membered ring
 
-        if ( oCdr(list).notnilp() ) {
-          for ( auto first : list ) {
-            core::Cons_sp second;
-            for ( core::List_sp second = oCdr(first); second.notnilp(); second = oCdr(second) ) {
-              PathMessage_sp ring = gc::As<PathMessage_sp>(oCar(first))->copy();
-              PathMessage_sp secondRing = gc::As<PathMessage_sp>(oCar(second));
-              ring->join(secondRing);
-              ring->updateLastVertex(this->asSmartPtr());
-              graph->addRing(ring,stage);
-            }
+      if ( oCdr(list).notnilp() ) {
+        for ( auto first : list ) {
+          core::Cons_sp second;
+          for ( core::List_sp second = oCdr(first); second.notnilp(); second = oCdr(second) ) {
+            PathMessage_sp ring = edgeArrayRingCopy(gc::As<PathMessage_sp>(oCar(first)));
+            PathMessage_sp secondRing = gc::As<PathMessage_sp>(oCar(second));
+            ring->join(secondRing);
+            ring->updateLastVertex(this->asSmartPtr());
+            graph->addRing(ring,stage);
           }
-        } else
-        {
-          this->_sendBuffer = core::Cons_O::create(gc::As<PathMessage_sp>(oCar(list)), this->_sendBuffer);
         }
-      } );
+      } else
+      {
+        this->_sendBuffer = core::Cons_O::create(gc::As<PathMessage_sp>(oCar(list)), this->_sendBuffer);
+      }
+    } );
   }
-#if 0 // original code
-    map<void*,core::Cons_sp>	vertexDict;
-    {
-	LOG("Filling vertexDict" );
-	for ( uint i=0; i<numEdges; i++ )
-	{ 
-	    LOG("Detecting even-membered rings: i = %d" , i );
-	    if ( edgeArray0[i].notnilp() )
-	    {
-		PathMessage_sp msg = edgeArray0[i];
-		void* nodeId = msg->getFirstVertex()->getId();
-		if ( vertexDict.count(nodeId) )
-		{
-		    vertexDict[nodeId] = core::Cons_O::create(msg,vertexDict[nodeId]);
-		} else
-		{
-		    vertexDict[nodeId]=core::Cons_O::create(msg,_Nil<core::T_O>());
-		}
-	    }
-	    if ( edgeArray1[i].notnilp() )
-	    {
-		PathMessage_sp msg = edgeArray1[i];
-		void* nodeId = msg->getFirstVertex()->getId();
-		if ( vertexDict.count(nodeId) )
-		{
-		    vertexDict[nodeId] = core::Cons_O::create(msg,vertexDict[nodeId]);
-		} else
-		{
-		    vertexDict[nodeId]=core::Cons_O::create(msg,_Nil<core::T_O>());
-		}
-	    }
-	}
-    }
-	    //
-	    // join all the vertex collision messages in pairs
-	    // and add them as rings
-	    // messages that aren't collisions are tossed into the
-	    // send buffer
-	    //
-    {
-	map<void*,core::Cons_sp>::iterator	it;
-	for ( it=vertexDict.begin(); it!=vertexDict.end(); it++ )
-	{
-		    // If there is more than one PathMessage 
-		    // with the same FirstVertex then there is 
-		    // a node-collision, combine the messages and
-		    // register an even membered ring
-		    //
-	    if ( it->second->cdr().notnilp() )
-	    {
-		core::Cons_sp first;
-		for ( first=it->second; first.notnilp(); first = first->cdr() )
-		{
-		    core::Cons_sp second;
-		    for ( second=first->cdr();second.notnilp();second=second->cdr())
-		    {
-			PathMessage_sp ring = first->car<PathMessage_O>()->copy();
-			ring->join(second->car<PathMessage_O>());
-			ring->updateLastVertex(this->sharedThis<AGVertex_O>());
-			graph->addRing(ring,stage);
-		    }
-		}
-	    } else
-	    {
-		this->_sendBuffer = core::Cons_O::create(it->second->car<PathMessage_O>(),
-						    this->_sendBuffer,_lisp);
-	    }
-	}
-    }
-#endif
   this->emptyReceiveBuffer();
 }
 
@@ -726,23 +669,33 @@ public:
 class RingFinderVertexReceive : public core::KeyValueMapper
 {
 public:
-    uint _Stage;
-    RingFinderVertexReceive(uint stage) : _Stage(stage) {};
-    virtual bool mapKeyValue(core::T_sp key, core::T_sp value) {
-	value.as<AGVertex_O>()->receive(this->_Stage);
-	return true;
+  uint _Stage;
+  size_t _numberOfEdges;
+  gctools::Vec0<PathMessage_sp> _edgeArray0;
+  gctools::Vec0<PathMessage_sp> _edgeArray1;
+  RingFinderVertexReceive(uint stage, size_t numberOfEdges ) : _Stage(stage), _numberOfEdges(numberOfEdges) {
+    this->_edgeArray0.resize(numberOfEdges,nil<PathMessage_O>());
+    this->_edgeArray1.resize(numberOfEdges,nil<PathMessage_O>());
+  };
+  virtual bool mapKeyValue(core::T_sp key, core::T_sp value) {
+    for ( size_t ii = 0; ii<this->_numberOfEdges; ii++ ) {
+      this->_edgeArray0[ii] = nil<PathMessage_O>();
+      this->_edgeArray1[ii] = nil<PathMessage_O>();
     }
+    value.as<AGVertex_O>()->receive(this->_Stage,this->_edgeArray0,this->_edgeArray1);
+    return true;
+  }
 };
 
 
-void RingFinder_O::advanceRingSearch(uint stage)
+void RingFinder_O::advanceRingSearch(uint stage, size_t numberOfEdges)
 {
     {
 	RingFinderVertexSend sender;
 	this->_vertices->lowLevelMapHash(&sender);
     }
     {
-	RingFinderVertexReceive receiver(stage);
+      RingFinderVertexReceive receiver(stage, numberOfEdges );
 	this->_vertices->lowLevelMapHash(&receiver);
     }
 }
@@ -770,7 +723,7 @@ CL_DEFMETHOD void RingFinder_O::findRings(int numAtoms)
   for (int numSteps = 0; numSteps<std::min(numAtoms,10); ++numSteps ) {
 //  while ( this->_finalRings.size() < numberOfRingsExpected ) {
     LOG("Looking for rings, stage= %d : trigger[%d] : numAtoms[%d] : numberOfRingsExpected[%d]" , stage , trigger , numAtoms , numberOfRingsExpected  );
-    this->advanceRingSearch(stage);
+    this->advanceRingSearch(stage,this->getNumberOfEdges());
     LOG("After ring search, number of rings found = %d"
         , this->_finalRings.size()  );
     // Stop once we find all the rings we expect to find

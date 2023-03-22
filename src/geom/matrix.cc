@@ -320,6 +320,12 @@ void geom__inplace_transform_nvector_point(Vector3 &destination, const Matrix &t
 }
 }; // namespace geom
 
+Matrix& Matrix::operator=(const Matrix& other) {
+  if (this==&other) return *this;
+  this->elements = other.elements;
+  return *this;
+}
+
 Matrix Matrix::operator*(const Matrix &m) const {
   Matrix res;
   double acc;

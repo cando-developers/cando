@@ -838,6 +838,7 @@ bool aromatic_information_available_p() {
 bool _matchInAromaticBond(Atom_sp a1, Atom_sp a2) {
   if (a1.boundp() && a2.boundp() && chem::_sym_STARcurrent_ringsSTAR->boundP() &&
       chem::_sym_STARcurrent_aromaticity_informationSTAR->boundP()) {
+    if (!(unsafe_is_aromatic(a1) && unsafe_is_aromatic(a2))) return false;
     core::List_sp rings = chem::_sym_STARcurrent_ringsSTAR->symbolValue();
     // If a1 and other are in the same ring
     if (chem__verbose(1)) {
@@ -854,10 +855,8 @@ bool _matchInAromaticBond(Atom_sp a1, Atom_sp a2) {
       found_a2 = false;
       for (auto cur2 : ring) {
         core::T_sp one = CONS_CAR(cur2);
-        if (one == a1 && unsafe_is_aromatic(a1))
-          found_a1 = true;
-        else if (one == a2 && unsafe_is_aromatic(a2))
-          found_a2 = true;
+        if (one == a1) found_a1 = true;
+        else if (one == a2) found_a2 = true;
       }
       if (chem__verbose(1)) {
         core::write_bf_stream(fmt::format("found_a1 = {} found_a2 = {}\n", found_a1, found_a2));

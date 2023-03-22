@@ -439,6 +439,11 @@ Examples:
 
 (cando.serialize:make-class-save-load oligomer)
 
+(defun copy-oligomer (oligomer)
+  (make-instance 'oligomer
+                 :monomer-indices (copy-seq (monomer-indices oligomer))
+                 :oligomer-space (oligomer-space oligomer)))
+
 (defun goto-sequence (oligomer index)
   (let* ((bases (loop for monomer across (monomers (oligomer-space oligomer))
                       collect (length (monomers monomer))))

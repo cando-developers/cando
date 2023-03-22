@@ -15,6 +15,7 @@
    #:constitution-atom-index
    #:atom-name
    #:element
+   #:roots
    #:bonds
    #:index
    #:to-atom-index
@@ -128,6 +129,10 @@
    #:other-monomer
    #:goto-sequence
    #:monomer-positions
+   #:monomer-position-molecule-index
+   #:monomer-position-residue-index
+   #:residue
+   #:copy-externals
    #:ataggregate
    #:atmolecules
    #:atresidues
@@ -172,7 +177,7 @@
    #:monomer-contexts-vector
    #:focus-monomer-name
    
-   #:build-shape
+   #:build-shapes
    #:monomer-shapes
    #:monomer-shape-vector
    #:root-monomer
@@ -199,7 +204,9 @@
    #:oligomer
    #:build-residue-for-isomer
    #:stereoisomer-atom
-   #:atom-charge))
+   #:atom-charge
+   #:copy-oligomer
+   #:monomer-indices))
 
 (defpackage #:monomer-context
   (:use #:common-lisp)

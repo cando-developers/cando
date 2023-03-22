@@ -303,6 +303,9 @@ double	_evaluateEnergyOnly_Dihedral(
 
 void EnergyDihedral_O::addTerm(const EnergyDihedral& term)
 {
+  if (this->_Terms.size() == this->_Terms.capacity()-1) {
+    this->_Terms.reserve(this->_Terms.size()*2);
+  }
   this->_Terms.push_back(term);
 }
 

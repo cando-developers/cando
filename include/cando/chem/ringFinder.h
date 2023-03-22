@@ -115,7 +115,7 @@ public:
     void initializeRingSearch();
     void send();
     void acceptMessage(PathMessage_sp msg);
-    void receive(uint stage);
+  void receive(uint stage, gctools::Vec0<PathMessage_sp>& edgeArray0, gctools::Vec0<PathMessage_sp>& edgeArray1 );
 
     DEFAULT_CTOR_DTOR(AGVertex_O);
 };
@@ -186,7 +186,7 @@ public:
     int getNumberOfRingsExpected();
     void addRing(PathMessage_sp ring, uint stage );
     void initializeRingSearch();
-    void advanceRingSearch(uint stage);
+  void advanceRingSearch(uint stage, size_t numberOfEdges );
     void findRings(int numAtoms);
     bool linearlyIndependentRing(PathMessage_sp ring);
     core::List_sp getAllRingsAsListsOfAtoms();

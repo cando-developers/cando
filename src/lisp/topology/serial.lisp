@@ -5,7 +5,7 @@
 
 (defmethod print-object ((obj serializable) stream)
   (if *print-readably*
-      (clos:print-object-readably-with-slots obj stream) ; in subclass: (call-next-method)
+      (cando.serialize:print-object-readably-with-slots obj stream) ; in subclass: (call-next-method)
       (print-unreadable-object (obj stream :type t)
         ;; in subclass: whatever you want here
                                 )))

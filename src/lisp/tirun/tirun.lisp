@@ -35,7 +35,7 @@
 (defmethod print-object ((obj job-graph) stream)
   (if *print-readably*
       (progn
-        (clos:print-object-readably-with-slots obj stream))
+        (cando.serialize:print-object-readably-with-slots obj stream))
       (print-unreadable-object (obj stream)
         (format stream "~a" (class-name (class-of obj))))))
 
@@ -58,7 +58,7 @@
 
 (defmethod print-object ((obj tirun-morph) stream)
   (if *print-readably*
-      (clos:print-object-readably-with-slots obj stream)
+      (cando.serialize:print-object-readably-with-slots obj stream)
       (print-unreadable-object (obj stream)
         (format stream "~a" (class-name (class-of obj))))))
 
@@ -91,7 +91,7 @@
 
 (defmethod print-object ((obj simple-tirun-structure) stream)
   (if *print-readably*
-      (clos:print-object-readably-with-slots obj stream)
+      (cando.serialize:print-object-readably-with-slots obj stream)
       (print-unreadable-object (obj stream)
         (format stream "~a ~a" (class-name (class-of obj)) (string (name obj))))))
 
@@ -414,7 +414,7 @@ Otherwise return NIL."
 (defmethod print-object ((obj ti-mask) stream)
   (if *print-readably*
       (progn
-        (clos:print-object-readably-with-slots obj stream))
+        (cando.serialize:print-object-readably-with-slots obj stream))
       (print-unreadable-object (obj stream)
         (format stream "~a" (class-name (class-of obj))))))
 
