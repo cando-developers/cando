@@ -274,7 +274,7 @@ void OVector3_O::fields(core::Record_sp node)
 
 
 
-};
+}; // namespace geom
 
 
 
@@ -299,3 +299,19 @@ extern "C" {
 
 };
 
+namespace geom {
+
+// Lisp-accessible functions for the above.
+// The compiler is taught how to use the above more directly in cando-primops.
+
+CL_DEFUN double geom__vx(core::T_sp tvec3) {
+  return cc_OVector3_vx(tvec3);
+}
+CL_DEFUN double geom__vy(core::T_sp tvec3) {
+  return cc_OVector3_vy(tvec3);
+}
+CL_DEFUN double geom__vz(core::T_sp tvec3) {
+  return cc_OVector3_vz(tvec3);
+}
+
+}; // namespace geom
