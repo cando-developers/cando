@@ -206,7 +206,13 @@
    #:stereoisomer-atom
    #:atom-charge
    #:copy-oligomer
-   #:monomer-indices))
+   #:monomer-indices
+   #:internals-values
+   #:internals-types
+   #:save-linearized-matched-fragment-conformations-map
+   #:create-linearized-matched-fragment-conformations-map
+   #:linearized-matched-fragment-conformations-map
+   #:read-linearized-matched-fragment-conformations-map))
 
 (defpackage #:monomer-context
   (:use #:common-lisp)

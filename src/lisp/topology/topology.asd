@@ -5,7 +5,7 @@
   :version "0.0.1"
   :author "Christian Schafmeister <chris.schaf@verizon.net>"
   :licence "LGPL-3.0"
-  :depends-on (:chem-extras :cando-serialize :cl-conspack)
+  :depends-on (:chem-extras :cando-serialize :cl-conspack :netcdf)
   :serial t
   :components ((:file "packages")
                (:file "serial")
@@ -18,6 +18,7 @@
                (:file "fold")
                (:file "conformation")
                (:file "internals")
+               (:file "linearize-internals")
                (:file "design")
                (:file "context")
                (:file "badgeom")

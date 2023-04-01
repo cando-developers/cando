@@ -92,7 +92,7 @@
 
 (defclass fragment-internals (serial:serializable)
   ((index :initarg :index :accessor index)
-   (probability :initarg :probability :accessor probability)
+   (probability :initform nil :initarg :probability :accessor probability)
    (internals :initarg :internals :accessor internals)
    (out-of-focus-internals :initarg :out-of-focus-internals :accessor out-of-focus-internals)))
 
@@ -116,6 +116,7 @@
 
 (cando.serialize:make-class-save-load fragment-conformations)
 
+
 (defclass fragment-conformations-map (serial:serializable)
   ((monomer-context-to-fragment-conformations :initform (make-hash-table :test 'equal)
                                               :initarg :monomer-context-to-fragment-conformations
@@ -133,6 +134,8 @@
 
 (cando.serialize:make-class-save-load matched-fragment-conformations-map)
 
+(cando.serialize:make-class-save-load matched-fragment-conformations-map)
+
 (defun matched-fragment-conformations-summary (matched-fragment-conformations-map)
   (let ((total-fragment-conformations 0)
         (matching-fragment-conformations 0)
@@ -146,15 +149,17 @@
                (incf matching-fragment-conformations (length value)))
              (fragment-matches matched-fragment-conformations-map))
     (maphash (lambda (key value)
-               (declare (ignorable key))
+               (declare (ignore key))
                (loop for val across value
                      when (= (length val) 0)
                        do (incf missing-fragment-conformations)))
              (fragment-matches matched-fragment-conformations-map))
     (let ((missing-monomer-contexts nil))
       (maphash (lambda (monomer-context fragment-conformations)
+                 (declare (ignore fragment-conformations))
                  (block inner-search
                    (maphash (lambda (monomer-context-pair allowed-fragment-indices)
+                              (declare (ignore allowed-fragment-indices))
                               (when (or (string= (car monomer-context-pair) monomer-context)
                                         (string= (cdr monomer-context-pair) monomer-context))
                                 (return-from inner-search nil)))
@@ -261,3 +266,4 @@
   (kin:set-theta joint (angle internal))
   (kin:set-phi joint (dihedral internal))
   )
+
