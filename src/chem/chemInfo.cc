@@ -691,6 +691,7 @@ string Logical_O::__repr__() const {
   if (this->_RingTest != SARNone) {
     ss << " :ring-id " << this->_RingId;
   }
+  ss << "@" << (void*)this->asSmartPtr().raw_();
   ss << ">";
   return ss.str();
 }
@@ -2780,7 +2781,10 @@ ChemInfoGraph_O::~ChemInfoGraph_O() {
   }
 }
 
-void ChemInfoGraph_O::initialize() { this->_nodes_to_index = core::HashTableEq_O::create_default(); }
+void ChemInfoGraph_O::initialize() {
+  this->_nodes_to_index = core::HashTableEq_O::create_default();
+  this->_nodes_to_index->setupThreadSafeHashTable();
+}
 
 CL_DOCSTRING(R"dx(Make a chem:chem-info-graph from a chem:root object)dx");
 DOCGROUP(cando);
@@ -2790,8 +2794,11 @@ CL_DEFUN ChemInfoGraph_sp chem__make_chem_info_graph(Root_sp pattern) {
   return graph;
 }
 
+#define DEBUG_BUILD_FROM_ROOT 0
+#define DEBUG_SETF_GETHASH 1
+
 void ChemInfoGraph_O::buildFromRoot_() {
-  if (chem__verbose(1)) {
+  if (DEBUG_BUILD_FROM_ROOT || chem__verbose(1)) {
     core::write_bf_stream(fmt::format("Starting make-chem-info-graph\n"));
   }
   this->_nodeOrder.clear();
@@ -2801,23 +2808,33 @@ void ChemInfoGraph_O::buildFromRoot_() {
   ChemInfoGraph_sp graph = this->asSmartPtr();
   Root_sp pattern = graph->_Root;
   std::vector<RingClosers> closers;
-  walk_nodes_with_parent(nil<core::T_O>(), pattern->_Node, [&graph, &closers](core::T_sp parentOrNil, ChemInfoNode_sp node) {
+#if DEBUG_SETF_GETHASH
+  std::map<void*,size_t> save_pointers;
+#endif
+  walk_nodes_with_parent(nil<core::T_O>(), pattern->_Node, [&graph, &closers
+#if DEBUG_SETF_GETHASH
+                                                            ,&save_pointers
+#endif
+                                                            ](core::T_sp parentOrNil, ChemInfoNode_sp node) {
     //      printf("%s:%d ChemInfoNode_sp -> %s\n", __FILE__, __LINE__, _rep_(node).c_str());
     if (gc::IsA<Chain_sp>(node)) {
       Chain_sp chain = gc::As_unsafe<Chain_sp>(node);
       ChemInfoNode_sp head = gc::As<ChemInfoNode_sp>(chain->_Head);
-      if (chem__verbose(1)) {
+      if (DEBUG_BUILD_FROM_ROOT || chem__verbose(1)) {
         core::write_bf_stream(fmt::format("Converting chain to chem-info-graph nodes head: {}\n", _rep_(head)));
       }
       if (gc::IsA<BondToAtomTest_sp>(head)) {
         head = gc::As_unsafe<BondToAtomTest_sp>(head)->_AtomTest;
       }
-      graph->_nodes_to_index->setf_gethash(head, core::make_fixnum(graph->_atomNodes.size()));
       size_t node_index = graph->_atomNodes.size();
+      graph->_nodes_to_index->setf_gethash(head, core::make_fixnum(node_index));
+#if DEBUG_SETF_GETHASH
+      save_pointers[(void*)head.raw_()] = node_index;
+#endif
       graph->_atomNodes.push_back(head);
       AtomOrBondMatchNode_sp ahead = gc::As<AtomOrBondMatchNode_sp>(head);
       if (ahead->_RingTest == SARRingSet) {
-        if (chem__verbose(1)) {
+        if (DEBUG_BUILD_FROM_ROOT || chem__verbose(1)) {
           core::write_bf_stream(fmt::format("Found SARRingSet _RingId = {}\n", ahead->_RingId));
         }
         if (ahead->_RingId >= closers.size()) {
@@ -2826,7 +2843,7 @@ void ChemInfoGraph_O::buildFromRoot_() {
         closers[ahead->_RingId]._Active = true;
         closers[ahead->_RingId]._NodeIndex = node_index;
       } else if (ahead->_RingTest == SARRingTest) {
-        if (chem__verbose(1)) {
+        if (DEBUG_BUILD_FROM_ROOT || chem__verbose(1)) {
           core::write_bf_stream(fmt::format("Found SARRingTest _RingId = {}\n", ahead->_RingId));
         }
         if (ahead->_RingId >= closers.size()) {
@@ -2842,20 +2859,27 @@ void ChemInfoGraph_O::buildFromRoot_() {
       return true;
     } else if (parentOrNil.nilp() && gc::IsA<AtomTest_sp>(node)) {
       AtomTest_sp atomTest = gc::As_unsafe<AtomTest_sp>(node);
-      if (chem__verbose(1)) {
+      if (DEBUG_BUILD_FROM_ROOT || chem__verbose(1)) {
         core::write_bf_stream(fmt::format("Converting AtomTest to chem-info-graph nodes head: {}\n", _rep_(atomTest)));
       }
-      graph->_nodes_to_index->setf_gethash(atomTest, core::make_fixnum(graph->_atomNodes.size()));
       size_t node_index = graph->_atomNodes.size();
+      graph->_nodes_to_index->setf_gethash(atomTest, core::make_fixnum(node_index));
+#if DEBUG_SETF_GETHASH
+      save_pointers[(void*)atomTest.raw_()] = node_index;
+#endif
       graph->_atomNodes.push_back(atomTest);
       return true;
     } else if (parentOrNil.nilp() && gc::IsA<Logical_sp>(node)) {
       Logical_sp logical = gc::As_unsafe<Logical_sp>(node);
-      if (chem__verbose(1)) {
+      if (DEBUG_BUILD_FROM_ROOT || chem__verbose(1)) {
         core::write_bf_stream(fmt::format("Converting logical to chem-info-graph nodes head: {}\n", _rep_(logical)));
       }
-      graph->_nodes_to_index->setf_gethash(logical, core::make_fixnum(graph->_atomNodes.size()));
       size_t node_index = graph->_atomNodes.size();
+      core::write_bf_stream(fmt::format("Adding logical @{} to hash-table with value {}\n", (void*)logical.raw_(), node_index ));
+#if DEBUG_SETF_GETHASH
+      save_pointers[(void*)logical.raw_()] = node_index;
+#endif
+      graph->_nodes_to_index->setf_gethash(logical, core::make_fixnum(node_index));
       graph->_atomNodes.push_back(logical);
       return true;
     } else {
@@ -2869,13 +2893,17 @@ void ChemInfoGraph_O::buildFromRoot_() {
   // This is tricky code
   core::HashTableEq_sp parent_nodes = core::HashTableEq_O::create_default();
   walk_nodes_with_parent(
-      nil<core::T_O>(), pattern->_Node, [&graph, &parent_nodes, &closers](core::T_sp parentOrNil, ChemInfoNode_sp node) {
-        if (chem__verbose(2)) {
+      nil<core::T_O>(), pattern->_Node, [&graph, &parent_nodes, &closers
+#if DEBUG_SETF_GETHASH
+                                                            ,&save_pointers
+#endif
+                                         ](core::T_sp parentOrNil, ChemInfoNode_sp node) {
+        if (DEBUG_BUILD_FROM_ROOT || chem__verbose(2)) {
           core::write_bf_stream(fmt::format("Walking pattern parent: {} node: {}\n", _rep_(parentOrNil), _rep_(node)));
         }
         if (parentOrNil.nilp() && gc::IsA<AtomTest_sp>(node)) {
           AtomTest_sp atomTest = gc::As_unsafe<AtomTest_sp>(node);
-          if (chem__verbose(1)) {
+          if (DEBUG_BUILD_FROM_ROOT || chem__verbose(1)) {
             core::write_bf_stream(fmt::format("AtomTest node id({})\n", atomTest->_Id));
           }
           core::T_sp thead = atomTest;
@@ -2889,7 +2917,7 @@ void ChemInfoGraph_O::buildFromRoot_() {
           if (parentOrNil.nilp()) {
             // The parent is NIL - we are at the top, create a vertex
             size_t index = head_index.unsafe_fixnum();
-            if (chem__verbose(1))
+            if (DEBUG_BUILD_FROM_ROOT || chem__verbose(1))
               core::write_bf_stream(fmt::format("Adding vertex: {}\n", index));
             add_vertex(ChemInfoVertexData(index), *graph->_chemInfoGraph);
             graph->_nodeOrder.push_back(index);
@@ -2900,7 +2928,7 @@ void ChemInfoGraph_O::buildFromRoot_() {
           return true;
         } else if (parentOrNil.nilp() && gc::IsA<Logical_sp>(node)) {
           Logical_sp logical = gc::As_unsafe<Logical_sp>(node);
-          if (chem__verbose(1)) {
+          if (DEBUG_BUILD_FROM_ROOT || chem__verbose(1)) {
             core::write_bf_stream(fmt::format("Logical node id({})\n", logical->_Id));
           }
           core::T_sp thead = logical;
@@ -2914,7 +2942,7 @@ void ChemInfoGraph_O::buildFromRoot_() {
           if (parentOrNil.nilp()) {
             // The parent is NIL - we are at the top, create a vertex
             size_t index = head_index.unsafe_fixnum();
-            if (chem__verbose(1))
+            if (DEBUG_BUILD_FROM_ROOT || chem__verbose(1))
               core::write_bf_stream(fmt::format("Adding vertex: {}\n", index));
             add_vertex(ChemInfoVertexData(index), *graph->_chemInfoGraph);
             graph->_nodeOrder.push_back(index);
@@ -2925,7 +2953,7 @@ void ChemInfoGraph_O::buildFromRoot_() {
           return true;
         } else if (gc::IsA<Chain_sp>(node)) {
           Chain_sp chain = gc::As_unsafe<Chain_sp>(node);
-          if (chem__verbose(1)) {
+          if (DEBUG_BUILD_FROM_ROOT || chem__verbose(1)) {
             core::write_bf_stream(fmt::format("Chain node id({})\n", chain->_Id));
             core::write_bf_stream(fmt::format("Chain node     -> {}\n", _rep_(chain->_Head).c_str()));
           }
@@ -2939,17 +2967,29 @@ void ChemInfoGraph_O::buildFromRoot_() {
             head = gc::As_unsafe<BondToAtomTest_sp>(head)->_AtomTest;
           }
           AtomOrBondMatchNode_sp ahead = gc::As<AtomOrBondMatchNode_sp>(head);
-          if (chem__verbose(1))
+          if (DEBUG_BUILD_FROM_ROOT || chem__verbose(1))
             core::write_bf_stream(fmt::format("   setting parent_node of {} to {}\n", _rep_(chain), _rep_(ahead)));
           parent_nodes->setf_gethash(chain, ahead);
           core::T_sp head_index = graph->_nodes_to_index->gethash(ahead);
           if (!head_index.fixnump()) {
-            SIMPLE_ERROR(("(C) There was no index for %s"), _rep_(ahead));
+            core::write_bf_stream(fmt::format("head_index must be a fixnum - it is: {}\n", _rep_(head_index) ));
+            core::write_bf_stream(fmt::format("graph->_nodes_to_index->hash_table_count() = {}\n", graph->_nodes_to_index->hashTableCount()) );
+            core::write_bf_stream(fmt::format(" dump of save_pointers\n"));
+            for ( auto i : save_pointers ) {
+              core::write_bf_stream(fmt::format("   key = {}  value = {}\n", (void*)i.first, i.second ));
+            }
+            core::write_bf_stream(fmt::format(" dump of graph->_nodes_to_index\n"));
+            graph->_nodes_to_index->maphash([](core::T_sp key, core::T_sp value) {
+              core::write_bf_stream(fmt::format("   key = {}  value = {}\n", (void*)key.raw_(), value.unsafe_fixnum() ));
+            }
+              );
+            core::write_bf_stream(fmt::format("  dump of hash-table -> \n{} \n", graph->_nodes_to_index->hash_table_dump() ));
+            SIMPLE_ERROR(("(C) In graph @%p hash-table @%p  - there was no index for %s@%p"), (void*)graph.raw_(), (void*)graph->_nodes_to_index.raw_(), _rep_(ahead), (void*)ahead.raw_());
           }
           if (parentOrNil.nilp()) {
             // The parent is NIL - we are at the top, create a vertex
             size_t index = head_index.unsafe_fixnum();
-            if (chem__verbose(1))
+            if (DEBUG_BUILD_FROM_ROOT || chem__verbose(1))
               core::write_bf_stream(fmt::format("Adding vertex: {}\n", index));
             add_vertex(ChemInfoVertexData(index), *graph->_chemInfoGraph);
             graph->_nodeOrder.push_back(index);
@@ -2963,7 +3003,7 @@ void ChemInfoGraph_O::buildFromRoot_() {
             } else {
               // If parentOrNil is not NIL and it has a parent then keep adding to the graph
               size_t index = head_index.unsafe_fixnum();
-              if (chem__verbose(1))
+              if (DEBUG_BUILD_FROM_ROOT || chem__verbose(1))
                 core::write_bf_stream(fmt::format("Adding vertex: {}\n", index));
               add_vertex(ChemInfoVertexData(index), *graph->_chemInfoGraph);
               graph->_nodeOrder.push_back(index);
@@ -2976,7 +3016,7 @@ void ChemInfoGraph_O::buildFromRoot_() {
               BondToAtomTest_sp bondToAtomTest = gc::As<BondToAtomTest_sp>(chain->_Head);
               int edge_index = graph->_bondNodes.size();
               graph->_bondNodes.push_back(bondToAtomTest);
-              if (chem__verbose(1)) {
+              if (DEBUG_BUILD_FROM_ROOT || chem__verbose(1)) {
                 core::write_bf_stream(fmt::format("Adding edge: {} {}\n", up_index.unsafe_fixnum(), head_index.unsafe_fixnum()));
               }
               add_edge(up_index.unsafe_fixnum(), head_index.unsafe_fixnum(), EdgeProperty(edge_index), *graph->_chemInfoGraph);
@@ -2988,14 +3028,14 @@ void ChemInfoGraph_O::buildFromRoot_() {
             SIMPLE_ERROR(("Branches should always have a parent"));
           }
           Branch_sp branch = gc::As_unsafe<Branch_sp>(node);
-          if (chem__verbose(1))
+          if (DEBUG_BUILD_FROM_ROOT || chem__verbose(1))
             core::write_bf_stream(fmt::format("Branch node id({})\n", branch->_Id));
           ChemInfoNode_sp parent = gc::As_unsafe<ChemInfoNode_sp>(parentOrNil);
           core::T_sp tup = parent_nodes->gethash(parent);
           if (tup.nilp())
             SIMPLE_ERROR(("The parent of %s is NIL"), _rep_(parent));
           ChemInfoNode_sp up = gc::As<ChemInfoNode_sp>(tup);
-          if (chem__verbose(1))
+          if (DEBUG_BUILD_FROM_ROOT || chem__verbose(1))
             core::write_bf_stream(fmt::format("   setting parent_node of {} to {}\n", _rep_(branch), _rep_(up)));
           parent_nodes->setf_gethash(branch, up);
           return true;
@@ -3011,7 +3051,7 @@ void ChemInfoGraph_O::buildFromRoot_() {
         auto dummyRingAtomTest = gctools::GC<BondToAtomTest_O>::allocate(closers[ii]._Bonds[jj]._Bond);
         int edge_index = graph->_bondNodes.size();
         graph->_bondNodes.push_back(dummyRingAtomTest);
-        if (chem__verbose(1)) {
+        if (DEBUG_BUILD_FROM_ROOT || chem__verbose(1)) {
           core::write_bf_stream(
               fmt::format("Adding ring closing edge: {} {}\n", closers[ii]._NodeIndex, closers[ii]._Bonds[jj]._NodeIndex));
         }
