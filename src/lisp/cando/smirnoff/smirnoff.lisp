@@ -162,7 +162,7 @@ The chem:force-field-type-rules-merged generic function was used to organize the
            :a2-a3-bond-order a2-a3-bond-order
            :a3-a4-bond-order a3-a4-bond-order)))
 
-(defvar *cached-smirnoff* (make-hash-table))
+(defvar *cached-smirnoff* (make-hash-table :thread-safe t))
 
 (defun maybe-cached-smirnoff-term (term)
   (let ((cached (gethash term *cached-smirnoff*)))
