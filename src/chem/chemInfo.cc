@@ -2704,7 +2704,6 @@ CL_DEFMETHOD void MoleculeGraph_O::walk_edges(core::T_sp callback) {
 
 void MoleculeGraph_O::initialize() {
   this->_nodes_to_index = core::HashTableEq_O::create_default();
-  this->_nodes_to_index->setupThreadSafeHashTable();
   this->_moleculeGraph = nullptr;
   this->_nodes = core::ComplexVector_T_O::make(64, nil<core::T_O>(), core::make_fixnum(0));
 }
@@ -2783,7 +2782,6 @@ ChemInfoGraph_O::~ChemInfoGraph_O() {
 
 void ChemInfoGraph_O::initialize() {
   this->_nodes_to_index = core::HashTableEq_O::create_default();
-  this->_nodes_to_index->setupThreadSafeHashTable();
 }
 
 CL_DOCSTRING(R"dx(Make a chem:chem-info-graph from a chem:root object)dx");
@@ -2983,7 +2981,8 @@ void ChemInfoGraph_O::buildFromRoot_() {
               core::write_bf_stream(fmt::format("   key = {}  value = {}\n", (void*)key.raw_(), value.unsafe_fixnum() ));
             }
               );
-            core::write_bf_stream(fmt::format("  dump of hash-table -> \n{} \n", graph->_nodes_to_index->hash_table_dump() ));
+            core::write_bf_stream(fmt::format("  dump of hash-table -> \n{} \nAborting\n", graph->_nodes_to_index->hash_table_dump() ));
+            gctools::wait_for_user_signal("could not find index");
             SIMPLE_ERROR(("(C) In graph @%p hash-table @%p  - there was no index for %s@%p"), (void*)graph.raw_(), (void*)graph->_nodes_to_index.raw_(), _rep_(ahead), (void*)ahead.raw_());
           }
           if (parentOrNil.nilp()) {
