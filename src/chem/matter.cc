@@ -252,7 +252,7 @@ CL_DEFMETHOD void Matter_O::setPropertyTrue(core::Symbol_sp symbol)
 
 CL_DOCSTRING(R"dx(Return the property **symbol** of **this** (a chem:matter) - if it isn't defined return NIL.)dx");
 CL_LISPIFY_NAME("Matter-getProperty");
-CL_DEFMETHOD core::T_sp Matter_O::getProperty(core::Symbol_sp symbol)
+CL_DEFMETHOD core::T_sp Matter_O::getProperty(core::Symbol_sp symbol) const
 {
   core::T_sp res = core::cl__getf(this->_Properties,symbol,unbound<core::T_O>());
   if (res.unboundp()) {

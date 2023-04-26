@@ -2281,7 +2281,7 @@ cando-extensions               : T if you want cando-extensions written to the t
                                         ;     (setf atom-table-vectors (acons :residue-names residue-labels atom-table-vectors))
 
         ;;(rlog "atom-table-vectors -> ~s~%" atom-table-vectors)
-        (chem::fill-atom-table-from-vectors atom-table atom-table-vectors)
+        (chem:fill-atom-table-from-vectors atom-table atom-table-vectors)
 
         ;;nonbond
         (rlog "Create nonbond vectors~%")

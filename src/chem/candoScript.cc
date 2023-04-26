@@ -115,21 +115,19 @@ CL_DEFUN geom::SimpleVectorCoordinate_sp chem__make_simple_vector_coordinate_fro
 
 CL_DOCSTRING(R"dx(Load the only or the first aggregate from the mol2 file.)dx");
  DOCGROUP(cando);
-CL_DEFUN core::T_sp chem__read_mol2(core::T_sp stream)
+CL_DEFUN core::T_mv chem__read_mol2(core::T_sp stream)
 {
   Mol2File fin(stream);
-  Aggregate_sp agg = gc::As<Aggregate_sp>(mol2Read(fin));
-  return agg;
+  return mol2Read(fin);
 }
 
 CL_DOCSTRING(R"dx(Read the only or the first aggregate from the mol2 file.)dx");
  DOCGROUP(cando);
-CL_DEFUN core::T_sp chem__load_mol2(core::T_sp fileName)
+CL_DEFUN core::T_mv chem__load_mol2(core::T_sp fileName)
 {
   Mol2File fin;
   fin.openFileName(fileName);
-  Aggregate_sp agg = gc::As<Aggregate_sp>(mol2Read(fin));
-  return agg;
+  return mol2Read(fin);
 }
 
 
@@ -167,9 +165,13 @@ core::T_sp chem__read_mol2_list_common(Mol2File& fin, core::T_sp number_to_load)
   size_t num = 0;
   while (!fin.eof()) {
     if (count) {
-      core::T_sp tagg = mol2Read(fin);
+      core::T_mv res = mol2Read(fin);
+      core::T_sp tagg = res;
+      core::MultipleValues &values = core::lisp_multipleValues();
+      values.second(res.number_of_values());
+      core::T_sp atom_types = values.second(res.number_of_values());
       if (gc::IsA<Aggregate_sp>(tagg)) {
-        result << tagg;
+        result << core::Cons_O::createList(tagg,atom_types);
         if (chem__verbose(0)) {
           if (number_to_load.nilp()) {
             core::eval::funcall(progress_advance, progress_bar, core::cl__file_position(fin.fIn,nil<core::T_O>()));
@@ -218,37 +220,55 @@ __END_DOC
  */
 
 
-CL_LAMBDA(matter dest-desig &optional use-sybyl-types);
+CL_LAMBDA(matter dest-desig &optional use-sybyl-types atom-types);
  DOCGROUP(cando);
-CL_DEFUN core::T_sp chem__save_mol2(Matter_sp matter, core::T_sp destDesig, bool useSybylTypes)
+CL_DEFUN core::T_sp chem__save_mol2(Matter_sp matter, core::T_sp destDesig, bool useSybylTypes, core::T_sp atom_types)
 {
-  mol2WriteMatterToFileName(matter,destDesig,useSybylTypes);
+  core::HashTable_sp ht;
+  if (useSybylTypes) {
+    ht = assignSybylTypes(matter);
+  } else {
+    ht = gc::As<core::HashTable_sp>(atom_types);
+  }
+  mol2WriteMatterToFileName(matter,destDesig,ht);
   return nil<core::T_O>();
 }
 
 
-CL_LAMBDA(matter &optional use-sybyl-types);
+CL_LAMBDA(matter &optional use-sybyl-types atom-types);
  DOCGROUP(cando);
-CL_DEFUN std::string chem__aggregate_as_mol2_string(Aggregate_sp matter, bool useSybylTypes)
+CL_DEFUN std::string chem__aggregate_as_mol2_string(Aggregate_sp matter, bool useSybylTypes, core::T_sp atom_types)
 {
+  core::HashTable_sp ht;
+  if (useSybylTypes) {
+    ht = assignSybylTypes(matter);
+  } else {
+    ht = gc::As<core::HashTable_sp>(atom_types);
+  }
   stringstream ss;
-  mol2WriteAggregateStream(matter,ss,useSybylTypes);
+  mol2WriteAggregateStream(matter,ss,ht);
   return ss.str();
 }
 
-CL_LAMBDA(matter &optional use-sybyl-types);
+CL_LAMBDA(matter &optional use-sybyl-types atom-types);
  DOCGROUP(cando);
-CL_DEFUN std::string chem__matter_as_mol2_string(Matter_sp matter, bool useSybylTypes)
+CL_DEFUN std::string chem__matter_as_mol2_string(Matter_sp matter, bool useSybylTypes, core::T_sp atom_types)
 {
+  core::HashTable_sp ht;
+  if (useSybylTypes) {
+    ht = assignSybylTypes(matter);
+  } else {
+    ht = gc::As<core::HashTable_sp>(atom_types);
+  }
   stringstream ss;
   if (gc::IsA<Aggregate_sp>(matter)) {
     Aggregate_sp agg = gc::As_unsafe<Aggregate_sp>(matter);
-    mol2WriteAggregateStream(agg,ss,useSybylTypes);
+    mol2WriteAggregateStream(agg,ss,ht);
     return ss.str();
   } else if (gc::IsA<Molecule_sp>(matter)) {
     Aggregate_sp agg = Aggregate_O::create();
     agg->addMatter(gc::As_unsafe<Molecule_sp>(matter));
-    mol2WriteAggregateStream(agg,ss,useSybylTypes);
+    mol2WriteAggregateStream(agg,ss,ht);
     return ss.str();
   }
   SIMPLE_ERROR(("Matter must be an aggregate or molecule - it is %s") , _rep_(matter));

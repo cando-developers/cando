@@ -422,7 +422,7 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
                                                  :weight weight))))
                  (t (error "Add support for restraint ~a" kind)))))
 
-(defun topologies-from-graph (graph group-names restraints &key types)
+(defun topologies-from-graph (graph group-names restraints &key types dihedrals)
   (multiple-value-bind (constitution plugs stereoisomers)
       (parse-graph graph)
     (let* ((tops (loop for stereoisomer in stereoisomers
@@ -446,9 +446,17 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
               for type = (second name-type)
               for ca = (constitution-atom-named constitution name)
               do (setf (atom-type ca) type)))
+      (when dihedrals
+        (loop for name-dihedral in dihedrals
+              for name = (first name-dihedral)
+              for dihedral = (second name-dihedral)
+              for ca = (constitution-atom-named constitution name)
+              do (push dihedral (properties ca))
+              do (push :dihedral (properties ca))
+              ))
       tops)))
 
-(defun do-define-topology (name sexp &key restraints types)
+(defun do-define-topology (name sexp &key restraints types dihedrals)
   (when restraints
     #+(or)(format t "restraints = ~a~%" restraints))
   (let ((graph (interpret (if (consp name)
@@ -458,9 +466,10 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
         (group-names (if (consp name)
                          name
                          (list name))))
-    (topologies-from-graph graph group-names restraints :types types)))
+    (topologies-from-graph graph group-names restraints :types types
+                           :dihedrals dihedrals)))
 
 
-(defmacro define-topology (name sexp &key restraints types)
-  `(do-define-topology ',name ',sexp :restraints ',restraints))
+(defmacro define-topology (name sexp &key restraints types dihedrals)
+  `(do-define-topology ',name ',sexp :restraints ',restraints :dihedrals ',dihedrals))
 

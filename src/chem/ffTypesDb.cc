@@ -123,7 +123,7 @@ CL_DEFMETHOD core::Symbol_sp FFTypesDb_O::assignType(chem::Atom_sp atom) {
 
 
 CL_LISPIFY_NAME("assignTypes");
-CL_DEFMETHOD core::HashTable_sp FFTypesDb_O::assignTypes(chem::Matter_sp matter)
+CL_DEFMETHOD core::HashTable_sp FFTypesDb_O::assignTypes(chem::Matter_sp matter, core::HashTable_sp atom_types )
 { 
   chem::Loop    				lAtoms;
   chem::Atom_sp  				atom;
@@ -136,8 +136,6 @@ CL_DEFMETHOD core::HashTable_sp FFTypesDb_O::assignTypes(chem::Matter_sp matter)
   size_t missing_types = 0;
   size_t total_atoms = 0;
 
-  atomTypes = core::HashTableEq_O::create_default();
-  
   // first clear out old atom types
   lAtoms.loopTopGoal(matter,ATOMS);
   while (lAtoms.advanceLoopAndProcess()) {
@@ -184,7 +182,7 @@ CL_DEFMETHOD core::HashTable_sp FFTypesDb_O::assignTypes(chem::Matter_sp matter)
           if (values.second(stereoisomer_atom_mv.number_of_values()).notnilp()) {
             core::T_sp stereoisomer_atom = stereoisomer_atom_mv;
             core::T_sp type = core::eval::funcall(_sym_stereoisomer_atom_type, stereoisomer_atom);
-            atomTypes->setf_gethash(atom,type);
+            atom_types->setf_gethash(atom,type);
             if (chem__verbose(2)) {
               core::write_bf_stream(fmt::sprintf("Assigned atom type %s using topology %s\n" , _rep_(type) , _rep_(name)));
             }
@@ -199,16 +197,16 @@ CL_DEFMETHOD core::HashTable_sp FFTypesDb_O::assignTypes(chem::Matter_sp matter)
     lAtoms.loopTopGoal(res,ATOMS);
     while (lAtoms.advanceLoopAndProcess()) {
       atom = lAtoms.getAtom();
-      if (atom->getType(atomTypes).nilp()) {
+      if (atom->getType(atom_types).nilp()) {
         if (this->_TypeAssignmentRules.size()!=0) {
           core::T_sp type = this->assignType(atom);
           if (chem__verbose(2)) {
             core::write_bf_stream(fmt::sprintf("Assigned atom type %s using type rules\n" , _rep_(type)));
           }
-          atomTypes->setf_gethash(atom,type);
+          atom_types->setf_gethash(atom,type);
         }
       }
-      if (atom->getType(atomTypes).nilp()) {
+      if (atom->getType(atom_types).nilp()) {
         atoms_with_no_types = core::Cons_O::create(atom,atoms_with_no_types);
         missing_types++;
       }
@@ -217,7 +215,7 @@ CL_DEFMETHOD core::HashTable_sp FFTypesDb_O::assignTypes(chem::Matter_sp matter)
   if (missing_types>0) {
     SIMPLE_WARN("There were %lu missing types of %lu atoms - %s" ,missing_types ,total_atoms ,_rep_(atoms_with_no_types));
   }
-  return atomTypes;
+  return atom_types;
 }
 
 

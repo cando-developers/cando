@@ -123,8 +123,8 @@ CL_DEFMETHOD     int	numberOfRules() { return this->_TypeAssignmentRules.size();
 
     core::HashTableEq_sp atomTypes(chem::Matter_sp matter);
     
-  core::HashTable_sp assignTypes( chem::Matter_sp matter );
-    core::Symbol_sp    assignType( chem::Atom_sp atom );
+  core::HashTable_sp assignTypes( chem::Matter_sp matter, core::HashTable_sp atom_types );
+  core::Symbol_sp    assignType( chem::Atom_sp atom );
     void	initialize();
 
     DEFAULT_CTOR_DTOR(FFTypesDb_O);

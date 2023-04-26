@@ -165,7 +165,7 @@ namespace chem {
     core::Symbol_sp	_Alias;	//!< alias name
     ATOM_FLAGS	        _Flags;
     Vector3		_Position;
-    AtomType	        _Type;
+//    AtomType	        _Type;
     VectorBond	        _Bonds;
     double		_Charge;
     //! Used to duplicate matter - NOT THREAD SAFE - switch to hashtable
@@ -282,10 +282,10 @@ namespace chem {
     bool	hasAtomNameAttribute(char c);
 
     core::T_sp getType(core::HashTable_sp atomTypes) const;
-    CL_LISPIFY_NAME("atomType");
-    CL_DEFMETHOD         AtomType atomType() { return this->_Type; };
-    CL_LISPIFY_NAME("setAtomType");
-    CL_DEFMETHOD 	void	setAtomType(AtomType o) { this->_Type = o; };
+
+    AtomType atomType() const;
+    void	setAtomType(AtomType o);
+
     CL_LISPIFY_NAME("getHybridization");
     CL_DEFMETHOD         Hybridization getHybridization() { return this->_Hybridization; };
     string getHybridizationAsString();
@@ -508,7 +508,7 @@ namespace chem {
     _Alias(nil<core::Symbol_O>()),
       _Element(element_Undefined),
       _Hybridization(hybridization_undefined),
-      _Type(nil<core::Symbol_O>()),
+//      _Type(nil<core::Symbol_O>()),
       _Flags(0),
       _StereochemistryType(undefinedCenter),
       _Configuration(undefinedConfiguration),

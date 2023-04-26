@@ -291,7 +291,6 @@ Atom_O::Atom_O(const Atom_O& ss) :Matter_O(ss)
   this->_UniqueAtomOrder = nextUniqueAtomOrder();
   this->_Element = ss._Element;
   this->_Alias = ss._Alias;
-  this->_Type = ss._Type;
   this->_Hybridization = ss._Hybridization;
   this->_Flags = ss._Flags;
   this->_Mask = ss._Mask;
@@ -926,6 +925,16 @@ CL_DEFMETHOD core::Symbol_sp Atom_O::getElementAsSymbol() const
   return symbolFromElement(this->getElement());
 }
 
+SYMBOL_EXPORT_SC_(KeywordPkg,given_atom_type);
+
+CL_LISPIFY_NAME("atomType");
+CL_DEFMETHOD AtomType Atom_O::atomType() const {
+  return this->getProperty(kw::_sym_given_atom_type);
+};
+CL_LISPIFY_NAME("setAtomType");
+CL_DEFMETHOD 	void	Atom_O::setAtomType(AtomType o) {
+  this->setProperty(kw::_sym_given_atom_type,o);
+}
 
 void	Atom_O::fields(core::Record_sp node)
 {
@@ -935,7 +944,6 @@ void	Atom_O::fields(core::Record_sp node)
   node->/*pod_*/field_if_not_default( INTERN_(kw,hybridization), this->_Hybridization,hybridization_sp3 );
   node->/*pod_*/field_if_not_default( INTERN_(kw,chg), this->_Charge, 0.0 );
   node->/*pod_*/field_if_not_default<short>( INTERN_(kw,ion), this->_Ionization, 0 );
-  node->field_if_not_nil( INTERN_(kw,type), this->_Type);
   node->/*pod_*/field_if_not_default<ushort>( INTERN_(kw,rings), this->_RingMembershipCount, 0 );
   node->/*pod_*/field_if_not_default( INTERN_(kw,mask), this->_Mask, (uint)(0) );
   node->/*pod_*/field_if_not_default( INTERN_(kw,configuration), this->_Configuration, undefinedConfiguration  );

@@ -212,7 +212,8 @@
    #:save-linearized-matched-fragment-conformations-map
    #:create-linearized-matched-fragment-conformations-map
    #:linearized-matched-fragment-conformations-map
-   #:read-linearized-matched-fragment-conformations-map))
+   #:read-linearized-matched-fragment-conformations-map
+   #:constitution-atom-named))
 
 (defpackage #:monomer-context
   (:use #:common-lisp)

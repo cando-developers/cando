@@ -170,7 +170,7 @@ public:
   CL_DEFMETHOD 	FFVdwDb_sp getVdwDb() { return this->_Vdws;};
 
   void forceFieldMerge(ForceField_sp other);
-  void	assignTypes(Matter_sp matter);
+  void	assignTypes(Matter_sp matter, core::HashTable_sp atom_types);
   void	setTitle(const string& title);
   void	setInfoDb( InfoDb_sp Info );
   void	setFFTypeDb( FFTypesDb_sp Types);
@@ -219,7 +219,7 @@ public:
   core::List_sp forceFieldsAsList() const;
   void clear();
 
-  core::T_sp assignForceFieldTypes(Matter_sp molecule);
+  core::T_sp assignForceFieldTypes(Matter_sp molecule, core::HashTable_sp atom_types );
   void assignMolecularEnergyTables(Matter_sp molecule,core::T_sp activeAtoms);
   
   CombinedForceField_O() : _ForceFields(nil<core::T_O>()) {};

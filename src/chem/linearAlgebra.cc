@@ -26,6 +26,7 @@ This is an open source license for the CANDO software from Temple University, bu
        
 #define	TURN_DEBUG_OFF
 #include <clasp/core/common.h>
+#include <clasp/core/evaluator.h>
 #include <cando/chem/linearAlgebra.h>
 
 
@@ -207,44 +208,141 @@ double	ldltJk;
 //    _lisp->profiler().timer(core::timerPreconditioner).stop();
 }
 
+#define TEST_SPARSE 1
+#define USE_SPARSE 1
+#define DEBUG_BACK_SUBSTITUTE 1
+
+SYMBOL_EXPORT_SC_(ChemPkg,trap_back_substitute_ldl);
 
 void	backSubstituteLDLt(AbstractLargeSquareMatrix_sp ldlt,
-					NVector_sp s, NVector_sp b )
+                           NVector_sp s1, NVector_sp b )
 {
-    NVector_sp	tx;
-    uint	x,y;
-    double	sum, dd;
-//    _lisp->profiler().timer(core::timerPreconditioner).start();
-//    _lisp->profiler().timer(core::timerPreconditionerSolver).start();
-//    _lisp->profiler().timer(core::timerPreconditionerSolverBackSubstitute).start();
-    tx = NVector_O::create(b->size());
-//	backSubstituteL(ldlt,s,b);
+  ASSERT(ldlt->_Triangle==SymmetricDiagonalLower);
+  NVector_sp	tx;
+  int	        x,y;
+  double	sum, dd;
+  tx = NVector_O::create(b->size());
+#ifdef TEST_SPARSE0
+  NVector_sp s0 = NVector_O::create(s1->size());
+  NVector_sp tx0 = NVector_O::create(b->size());
+  copyVector(s0,s1);
+#endif
+  if (gc::IsA<SparseLargeSquareMatrix_sp>(ldlt)) {
+    SparseLargeSquareMatrix_sp slsm = gc::As_unsafe<SparseLargeSquareMatrix_sp>(ldlt);
+      // Lower diagonal
+#ifdef TEST_SPARSE0
     for ( y=0; y<b->size(); y++ ) {
-	sum = 0.0;
-	for ( x=0; x<y; x++ ) {
-	    sum += ldlt->element(x,y)*s->element(x);
-	}
-	s->setElement(y,b->element(y)-sum);
+      sum = 0.0;
+      for ( x=0; x<y; x++ ) {
+        double value = ldlt->element(x,y);
+        double element = s0->element(x);
+        sum += value * element;
+#if 0
+        if (value!=0.0) {
+          printf("%s:%d:%s first OLD row/col %u/%u value: %lf element: %lf sum: %lf\n",
+                 __FILE__, __LINE__, __FUNCTION__,
+                 y, x, value, element, sum );
+        }
+#endif
+      }
+      s0->setElement(y,b->element(y)-sum);
+    }
+#endif // TEST_SPARSE0
+    for ( y=0; y<b->size(); y++ ) {
+      sum = 0.0;
+      slsm->loopOverRowLowerDiagonal(y,0,y,[&s1,&sum](uint col, uint row, double value) {
+        double element = s1->element(col);
+        sum += value * element;
+#if 0
+        printf("%s:%d:%s first NEW row/col %u/%u value: %lf element: %lf sum: %lf\n",
+               __FILE__, __LINE__, __FUNCTION__,
+               row, col, value, element, sum );
+#endif
+      } );
+      s1->setElement(y,b->element(y)-sum);
+    }
+#ifdef TEST_SPARSE0
+    for ( y=0; y<b->size(); y++ ) {
+      if (s0->element(y) != s1->element(y)) {
+        printf("%s:%d:%s Mismatch first stage in row %u sum1 %lf and sum2 %lf\n", __FILE__, __LINE__, __FUNCTION__, y, s1->element(y), s1->element(y) );
+      }
+    }
+#endif
+#ifdef TEST_SPARSE0
+    for ( x=0; x<s0->size(); x++ ) {
+      dd = ldlt->element(x,x);
+      ASSERTP(dd!=0.0,"backSubstituteLDLt diagonal element shouldn't be zero");
+      tx0->setElement(x,s0->element(x)/dd);
+    }
+#endif // TEST_SPARSE0
+
+    for ( x=0; x<s1->size(); x++ ) {
+      dd = ldlt->element(x,x);
+      ASSERTP(dd!=0.0,"backSubstituteLDLt diagonal element shouldn't be zero");
+      tx->setElement(x,s1->element(x)/dd);
     }
 
-//    backSubstituteD(ldlt,tx,s);
-    for ( x=0; x<s->size(); x++ ) {
-	dd = ldlt->element(x,x);
-	ASSERTP(dd!=0.0,"backSubstituteLDLt diagonal element shouldn't be zero");
-	tx->setElement(x,s->element(x)/dd);
+#ifdef TEST_SPARSE0
+    for ( y=b->size()-1; y>=0; y-- ) {
+      sum = 0.0;
+      for ( x=y+1; x<b->size(); x++ ) {
+        double value = ldlt->element(x,y);
+        double element = s0->element(x);
+        sum += value * element;
+#if 0
+        if (value!=0.0) {
+          printf("%s:%d:%s second OLD col/row %u/%u value: %lf element: %lf sum: %lf\n",
+                 __FILE__, __LINE__, __FUNCTION__,
+                 x, y, value, element, sum );
+        }
+#endif
+      }
+      s0->setElement(y,tx0->element(y)-sum);
     }
-
-//    backSubstituteLt(ldlt,s,tx);
-    for ( y=b->size()-1; y < b->size(); y-- ) {
-	sum = 0.0;
-	for ( x=y+1; x<b->size(); x++ ) {
-	    sum += ldlt->element(x,y)*s->element(x);
-	}
-	s->setElement(y,tx->element(y)-sum);
+#endif // TEST_SPARSE0
+    for ( y=b->size()-1; y>=0; y-- ) {
+      sum = 0.0;
+      slsm->loopOverColumnLowerDiagonal(y,y+1,b->size(),[&s1,&sum](uint col, uint row, double value) {
+        double element = s1->element(col);
+        sum += value * element;
+#if 0
+        printf("%s:%d:%s second NEW col/row %u/%u value: %lf element: %lf sum: %lf\n",
+               __FILE__, __LINE__, __FUNCTION__,
+               col, row, value, element, sum );
+#endif
+      } );
+      s1->setElement(y,tx->element(y)-sum);
     }
-//    _lisp->profiler().timer(core::timerPreconditionerSolverBackSubstitute).stop();
-//    _lisp->profiler().timer(core::timerPreconditionerSolver).stop();
-//    _lisp->profiler().timer(core::timerPreconditioner).stop();
+#ifdef TEST_SPARSE0
+    for ( y=0; y<b->size(); y++ ) {
+      if (s0->element(y) != s1->element(y)) {
+        printf("%s:%d:%s Mismatch second stage in row %u sum1 %lf and sum2 %lf\n", __FILE__, __LINE__, __FUNCTION__, y, s0->element(y), s1->element(y) );
+      }
+    }
+#endif
+  } else {
+    for ( y=0; y<b->size(); y++ ) {
+      sum = 0.0;
+      for ( x=0; x<y; x++ ) {
+        sum += ldlt->element(x,y)*s1->element(x);
+      }
+      s1->setElement(y,b->element(y)-sum);
+    }
+    for ( x=0; x<s1->size(); x++ ) {
+      dd = ldlt->element(x,x);
+      ASSERTP(dd!=0.0,"backSubstituteLDLt diagonal element shouldn't be zero");
+      tx->setElement(x,s1->element(x)/dd);
+    }
+    for ( y=b->size()-1; y >= 0; y-- ) {
+      sum = 0.0;
+      for ( x=y+1; x<b->size(); x++ ) {
+        double val = ldlt->element(x,y);
+        double element = s1->element(x);
+        sum += val*element;
+      }
+      s1->setElement(y,tx->element(y)-sum);
+    }
+  }
 }
 
 

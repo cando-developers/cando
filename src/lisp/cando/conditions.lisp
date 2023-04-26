@@ -36,7 +36,7 @@
       (format stream "A ~a occurred~%Atoms ~a~%Coordinates: ~a~%" (class-name (class-of condition)) (chem:atoms condition) positions))))
   
 
-(define-condition minimizer-error (error)
+(define-condition chem:minimizer-error (error)
   ((message :initform "There was a minimizer-error" :initarg :message :reader message)
    (minimizer :initarg :minimizer :reader minimizer)
    (coordinates :initarg :coordinates :reader coordinates))
@@ -54,27 +54,27 @@
 (define-condition chem:linear-improper-restraint-error (linear-atoms-error) ())
 
 
-(define-condition minimizer-exceeded-max-steps (minimizer-error)
+(define-condition chem:minimizer-exceeded-max-steps (chem:minimizer-error)
   ((number-of-steps :initarg :number-of-steps :accessor number-of-steps))
   (:report (lambda (condition stream)
              (format stream "~a :steps ~a"
                      (class-name (class-of condition))
                      (number-of-steps condition)))))
 
-(define-condition minimizer-exceeded-sd-max-steps (minimizer-exceeded-max-steps) ())
-(define-condition minimizer-exceeded-gc-max-steps (minimizer-exceeded-max-steps) ())
-(define-condition minimizer-exceeded-tn-max-steps (minimizer-exceeded-max-steps) ())
+(define-condition chem:minimizer-exceeded-sd-max-steps (chem:minimizer-exceeded-max-steps) ())
+(define-condition chem:minimizer-exceeded-cg-max-steps (chem:minimizer-exceeded-max-steps) ())
+(define-condition chem:minimizer-exceeded-tn-max-steps (chem:minimizer-exceeded-max-steps) ())
 
 (defun make-minimizer-exceeded-max-steps (minimizer coordinates number-of-steps)
-  (make-condition 'minimizer-exceeded-max-steps
+  (make-condition 'chem:minimizer-exceeded-max-steps
                   :minimizer minimizer
                   :coordinates coordinates
                   :number-of-steps number-of-steps))
 
-(define-condition minimizer-stuck (minimizer-error) ())
+(define-condition chem:minimizer-stuck (chem:minimizer-error) ())
 
 (defun make-minimizer-stuck (minimizer coordinates number-of-steps)
-  (make-condition 'minimizer-stuck
+  (make-condition 'chem:minimizer-stuck
                   :minimizer minimizer
                   :coordinates coordinates))
 

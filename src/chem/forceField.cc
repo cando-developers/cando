@@ -126,10 +126,10 @@ CL_DEFMETHOD void ForceField_O::forceFieldMerge(ForceField_sp other)
 }
 
 CL_LISPIFY_NAME("assignTypes");
-CL_DEFMETHOD void	ForceField_O::assignTypes(Matter_sp matter)
+CL_DEFMETHOD void	ForceField_O::assignTypes(Matter_sp matter, core::HashTable_sp atom_types)
 {
   FFTypesDb_sp types = this->getTypes();
-  types->assignTypes(matter);
+  types->assignTypes(matter,atom_types);
 }
 
 
@@ -253,7 +253,7 @@ void CombinedForceField_O::clear()
 
 CL_LISPIFY_NAME(CombinedForceField/assignForceFieldTypes);
 CL_DEFMETHOD
-core::T_sp CombinedForceField_O::assignForceFieldTypes(Matter_sp molecule) {
+core::T_sp CombinedForceField_O::assignForceFieldTypes(Matter_sp molecule,core::HashTable_sp atom_types) {
   FFTypesDb_sp fftypes = FFTypesDb_O::create();
   core::List_sp parts = this->forceFieldsAsList();
   if (chem__verbose(1)) {
@@ -268,7 +268,7 @@ core::T_sp CombinedForceField_O::assignForceFieldTypes(Matter_sp molecule) {
     fftypes->forceFieldMerge(other_fftypes);
   }
   if (chem__verbose(0)) core::write_bf_stream(fmt::sprintf("%s:%d Assigning atom types for molecule %s using %s.\n" , __FILE__ , __LINE__ , _rep_(molecule->getName()) , _rep_(fftypes)));
-  fftypes->assignTypes(molecule);
+  fftypes->assignTypes(molecule,atom_types);
   return fftypes;
 }
 

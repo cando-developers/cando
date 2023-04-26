@@ -234,7 +234,7 @@ protected:
 		/*! Return the value of the property.
 		 * Throw an exception if the property isn't defined.
 		 */
-  core::T_sp getProperty(core::Symbol_sp propertySymbol );
+  core::T_sp getProperty(core::Symbol_sp propertySymbol ) const;
 		/*! Return the value of the property or the
 		 * default if it isn't defined.
 		 */

@@ -668,7 +668,7 @@ CL_DEFMETHOD void  AtomTable_O::fill_atom_table_from_vectors(core::List_sp vecto
     this->_AtomTableIndices->setf_gethash(atom,core::clasp_make_fixnum(i));
     core::T_sp type = atom_type_vec->rowMajorAref(i);
 //    printf("%s:%d  type -> %s\n", __FILE__, __LINE__, _rep_(type).c_str());
-    atom->setAtomType(atom_type_vec->rowMajorAref(i));
+//    atom->setAtomType(atom_type_vec->rowMajorAref(i));
     double charge  =  translate::from_object<double>(charge_vec->rowMajorAref(i))._v;   // charge-vector
     this->_Atoms[i]._Charge       =  charge;
     atom->setCharge(charge);

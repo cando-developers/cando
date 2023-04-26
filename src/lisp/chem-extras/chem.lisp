@@ -99,6 +99,7 @@ multiple force-fields and know how a more recently added force-field shadows a l
   (:documentation  "Assign force-field types"))
 
 (defmethod chem:assign-force-field-types ((combined-force-field chem:combined-force-field) molecule atom-types)
+  (format t "Entered chem:assign-force-field-types atom-types for: ~a~%" (alexandria:hash-table-keys atom-types))
   (chem:combined-force-field/assign-force-field-types combined-force-field molecule atom-types))
 
 

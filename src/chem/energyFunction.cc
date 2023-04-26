@@ -1181,7 +1181,6 @@ CL_LISPIFY_NAME("defineForMatter");
 CL_LAMBDA((energy-function !) matter &key use-excluded-atoms active-atoms (assign-types t));
 CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, bool useExcludedAtoms, core::T_sp activeAtoms, bool assign_types )
 {
-
   if ( !(matter.isA<Aggregate_O>() || matter.isA<Molecule_O>() ) )
   {
     SIMPLE_ERROR(("You can only define energy functions for Aggregates or Molecules"));
@@ -1239,6 +1238,7 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, bool useEx
         core::DynamicScopeManager aromaticity_scope(_sym_STARcurrent_aromaticity_informationSTAR,aromaticity_info);
         core::eval::funcall(_sym_assign_force_field_types,combined_force_field,molecule,atomTypes);
       } else {
+        if (chem__verbose(0)) core::write_bf_stream(fmt::sprintf("Assigning atom types for molecule %s using given-types for %s.\n" , _rep_(molecule->getName()) , _rep_(force_field_name)));
         Loop atom_loop;
         atom_loop.loopTopGoal(molecule,ATOMS);
         while (atom_loop.advanceLoopAndProcess()) {
@@ -1252,7 +1252,7 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, bool useEx
 }
 
 
-CL_LAMBDA((energy-function !) matter &key use-excluded-atoms active-atoms cip-priorities);
+CL_LAMBDA((energy-function !) matter &key use-excluded-atoms active-atoms cip-priorities atom-types);
 CL_DEFMETHOD void EnergyFunction_O::defineForMatterWithAtomTypes(Matter_sp matter, bool useExcludedAtoms, core::T_sp activeAtoms, core::T_sp cip_priorities, core::HashTable_sp atomTypes )
 {
   if (!gc::IsA<core::HashTable_sp>(cip_priorities)) {

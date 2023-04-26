@@ -255,10 +255,11 @@ void	_calculateElementAndHybridization(Atom_sp a)
 }
 
 
-/*! If the mol2 file contains multiple @<TRIPOS>MOLECULE entries then return a list of aggregates.
-Othersise return a single aggregate */
-core::T_sp mol2Read(Mol2File& fIn)
+/*! If the mol2 file contains multiple @<TRIPOS>MOLECULE entries then return a list of aggregates and a hash-table with atom-types.
+Otherwise return (values aggregate atom-types) */
+core::T_mv mol2Read(Mol2File& fIn)
 {
+  core::HashTable_sp                    atom_types = core::HashTableEq_O::create_default();
   string				line;
   TriposMolecule			mol;
   vector<TriposMolecule>		molecules;
@@ -487,7 +488,7 @@ core::T_sp mol2Read(Mol2File& fIn)
       }
     }
   }
-  if (molecules.size()==0) return nil<core::T_O>();
+  if (molecules.size()==0) return Values( nil<core::T_O>(), nil<core::T_O>());
     //
     // First create all of the Aggregate
     //	(Tripos calls this a molecule and it can have multiple chains.)
@@ -513,7 +514,7 @@ core::T_sp mol2Read(Mol2File& fIn)
     LOG("Creating atom with id: %d name: %s element: %s charge: %8.2f" , ai->second.mIndex , ai->second.atom_name.c_str() , el.c_str() , ai->second.mCharge  );
     pos.set(ai->second.mX,ai->second.mY,ai->second.mZ);
     a->setPosition(pos);
-    a->setAtomType(chemkw_intern(ai->second.mType));
+    atom_types->setf_gethash(a,chemkw_intern(ai->second.mType));
     a->setCharge(ai->second.mCharge);
     LOG(" atom info: %s" , a->description().c_str()  );
     if (ai->second.mArrayIndex<atoms.size()) {
@@ -662,13 +663,30 @@ core::T_sp mol2Read(Mol2File& fIn)
     Atom_sp aa = gc::As<Atom_sp>((*atoms_sv)[ai->second.mArrayIndex]);
     _calculateElementAndHybridization(aa);
   }
-  return aggregate;
+  return Values(aggregate,atom_types);
 }
 
 SYMBOL_EXPORT_SC_(ChemPkg,initialize_sybyl_type_rules);
 SYMBOL_EXPORT_SC_(ChemPkg,STARsybyl_type_assignment_rulesSTAR);
 
-void	mol2WriteAggregateStream( Aggregate_sp agg, std::ostream &out, bool useSybylTypes )
+
+core::HashTable_sp assignSybylTypes( Matter_sp matter) {
+  if (chem::_sym_STARsybyl_type_assignment_rulesSTAR->symbolValue().nilp()) {
+    SIMPLE_ERROR(("The chem:*sybyl-type-assignment-rules* dynamic variable needs to be bound to a chem:fftypes-db database for sybyl types"));
+  }
+  FFTypesDb_sp sybylRules = gc::As<FFTypesDb_sp>(chem::_sym_STARsybyl_type_assignment_rulesSTAR->symbolValue());
+  core::HashTableEq_sp atom_types = core::HashTableEq_O::create_default();
+  Loop lAtoms;
+  lAtoms.loopTopGoal(matter,ATOMS);
+  while ( lAtoms.advanceLoopAndProcess() ) {
+    Atom_sp a = lAtoms.getAtom();
+    core::Symbol_sp type = sybylRules->assignType(a);
+    atom_types->setf_gethash(a,type);
+  }
+  return atom_types;
+}
+
+void	mol2WriteAggregateStream( Aggregate_sp agg, std::ostream &out, core::HashTable_sp atom_types )
 {
   Loop		loop, lRes;
   uint		atomCount, bondCount, residueCount;
@@ -716,12 +734,6 @@ void	mol2WriteAggregateStream( Aggregate_sp agg, std::ostream &out, bool useSyby
   uint atomId = 1;
   uint resId = 1;
   chem::FFTypesDb_sp sybylRules;
-  if (useSybylTypes) {
-    if (chem::_sym_STARsybyl_type_assignment_rulesSTAR->symbolValue().nilp()) {
-      SIMPLE_ERROR(("The chem:*sybyl-type-assignment-rules* dynamic variable needs to be bound to a chem:fftypes-db database for sybyl types"));
-    }
-    sybylRules = gc::As<FFTypesDb_sp>(chem::_sym_STARsybyl_type_assignment_rulesSTAR->symbolValue());
-  }
   Loop lMol;
   lMol.loopTopGoal(agg,MOLECULES);
   while (lMol.advanceLoopAndProcess()) {
@@ -740,18 +752,11 @@ void	mol2WriteAggregateStream( Aggregate_sp agg, std::ostream &out, bool useSyby
         a = loop.getAtom();
         ht->setf_gethash(a,core::clasp_make_fixnum(atomId));
         one._Atom = a;
-        if ( useSybylTypes ) {
-          ASSERT(sybylRules);
-          core::Symbol_sp type = sybylRules->assignType(a);
+        if ( a->getType(atom_types).notnilp() ) {
+          core::Symbol_sp type = gc::As<core::Symbol_sp>(a->getType(atom_types));
           one._Type = type;
-              //core::write_bf_stream(fmt::sprintf("Assigned sybyl type %s to %s\n" , _rep_(one._Type) , _rep_(a)));
         } else {
-          if ( a->atomType().notnilp() ) {
-            core::Symbol_sp type = gc::As<core::Symbol_sp>(a->atomType());
-            one._Type = type;
-          } else {
-            one._Type = nil<core::Symbol_O>();
-          }
+          one._Type = nil<core::Symbol_O>();
         }
         one._Residue = r;
         atomList.push_back(one);
@@ -902,27 +907,27 @@ void	mol2WriteAggregateStream( Aggregate_sp agg, std::ostream &out, bool useSyby
 
 
 
-void	mol2WriteAggregateToFileName( Aggregate_sp agg, core::T_sp fname, bool useSybylTypes )
+void	mol2WriteAggregateToFileName( Aggregate_sp agg, core::T_sp fname, core::HashTable_sp atom_types )
 {
   std::string sname = gc::As<core::String_sp>(core::cl__namestring(fname))->get_std_string();
   std::ofstream	fout;
   fout.open(sname.c_str(),std::ios::out);
-  mol2WriteAggregateStream( agg, fout, useSybylTypes );
+  mol2WriteAggregateStream( agg, fout, atom_types );
   fout.close();
 }
 
 
 
-void	mol2WriteMatterToFileName(Matter_sp matter, core::T_sp fileName, bool useSybylTypes )
+void	mol2WriteMatterToFileName(Matter_sp matter, core::T_sp fileName, core::HashTable_sp atom_types )
 {
   if ( Aggregate_sp agg = matter.asOrNull<Aggregate_O>() ) {
-    mol2WriteAggregateToFileName(agg,fileName,useSybylTypes);
+    mol2WriteAggregateToFileName(agg,fileName,atom_types);
     return;
   }
   if ( Molecule_sp mol = matter.asOrNull<Molecule_O>() ) {
     Aggregate_sp agg = Aggregate_O::create();
     agg->addMolecule(mol);
-    mol2WriteAggregateToFileName(agg,fileName,useSybylTypes);
+    mol2WriteAggregateToFileName(agg,fileName,atom_types);
     return;
   }
   SIMPLE_ERROR(("You must pass a Molecule or Aggregate"));

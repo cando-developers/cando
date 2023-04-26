@@ -29,7 +29,18 @@
   ((name :initarg :name :accessor name)
    (constitution-atoms :initarg :constitution-atoms :accessor constitution-atoms)))
 
-(cando.serialize:make-class-save-load constitution)
+(cando.serialize:make-class-save-load
+ constitution
+  :print-unreadably
+ (lambda (obj stream)
+   (print-unreadable-object (obj stream :type t)
+     (format stream "~s" (name obj)))))
+
+(defun constitution-atom-named (constitution name)
+  (loop for ca across (constitution-atoms constitution)
+        when (eq name (atom-name ca))
+          do (return ca)
+        finally (error "Could not find constitution-atom with name ~a in ~a" name constitution)))
 
 (defclass stereoisomer-atom ()
   ((atom-name :initarg :atom-name :accessor atom-name)
