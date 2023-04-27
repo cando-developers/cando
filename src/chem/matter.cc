@@ -86,7 +86,7 @@ string Matter_O::__repr__() const
   stringstream ss;
   ss << "#<" << this->className() << " " << _rep_(this->getName());
   ss << " :id " << this->_Id;
-  ss << " 0x" << std::setbase(16) << core::lisp_general_badge(this->asSmartPtr());
+  ss << " 0x" << std::setbase(16) << gctools::lisp_general_badge(this->asSmartPtr());
   ss << ">";
   return ss.str();
 }

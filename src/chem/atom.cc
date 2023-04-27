@@ -1002,7 +1002,7 @@ CL_DEFMETHOD     string	Atom_O::getConfigurationAsString()
 string	Atom_O::__repr__() const
 {
   stringstream ss;
-  ss << "#<" << this->className() << " " << this->_Name << "/" << _rep_(symbolFromElement(this->_Element)) << " :id " << this->_Id << " 0x" << std::setbase(16) << core::lisp_general_badge(this->asSmartPtr()) << ">";
+  ss << "#<" << this->className() << " " << this->_Name << "/" << _rep_(symbolFromElement(this->_Element)) << " :id " << this->_Id << " 0x" << std::setbase(16) << gctools::lisp_general_badge(this->asSmartPtr()) << ">";
   return ss.str();
 }
 

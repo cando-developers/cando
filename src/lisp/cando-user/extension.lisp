@@ -2,7 +2,9 @@
 
 (defun initialize-cando-user ()
   (let ((amber-home (uiop:getenv-absolute-directory "AMBERHOME"))
-        (threads (sys:num-logical-processors)))
+        (threads (if (ext:getenv "CANDO_THREADS")
+                     (parse-integer (ext:getenv "CANDO_THREADS"))
+                     (sys:num-logical-processors))))
     (cond (amber-home
            (unless (or (sys:noinform-p) (sys:noprint-p))
              (format t "Creating logical host AMBER with a root path of ~a~%"

@@ -2793,7 +2793,7 @@ CL_DEFUN ChemInfoGraph_sp chem__make_chem_info_graph(Root_sp pattern) {
 }
 
 #define DEBUG_BUILD_FROM_ROOT 0
-#define DEBUG_SETF_GETHASH 1
+#define DEBUG_SETF_GETHASH 0
 
 void ChemInfoGraph_O::buildFromRoot_() {
   if (DEBUG_BUILD_FROM_ROOT || chem__verbose(1)) {
@@ -2873,7 +2873,6 @@ void ChemInfoGraph_O::buildFromRoot_() {
         core::write_bf_stream(fmt::format("Converting logical to chem-info-graph nodes head: {}\n", _rep_(logical)));
       }
       size_t node_index = graph->_atomNodes.size();
-      core::write_bf_stream(fmt::format("Adding logical @{} to hash-table with value {}\n", (void*)logical.raw_(), node_index ));
 #if DEBUG_SETF_GETHASH
       save_pointers[(void*)logical.raw_()] = node_index;
 #endif
@@ -2972,6 +2971,7 @@ void ChemInfoGraph_O::buildFromRoot_() {
           if (!head_index.fixnump()) {
             core::write_bf_stream(fmt::format("head_index must be a fixnum - it is: {}\n", _rep_(head_index) ));
             core::write_bf_stream(fmt::format("graph->_nodes_to_index->hash_table_count() = {}\n", graph->_nodes_to_index->hashTableCount()) );
+#if DEBUG_SETF_GETHASH
             core::write_bf_stream(fmt::format(" dump of save_pointers\n"));
             for ( auto i : save_pointers ) {
               core::write_bf_stream(fmt::format("   key = {}  value = {}\n", (void*)i.first, i.second ));
@@ -2983,6 +2983,7 @@ void ChemInfoGraph_O::buildFromRoot_() {
               );
             core::write_bf_stream(fmt::format("  dump of hash-table -> \n{} \nAborting\n", graph->_nodes_to_index->hash_table_dump() ));
             gctools::wait_for_user_signal("could not find index");
+#endif
             SIMPLE_ERROR(("(C) In graph @%p hash-table @%p  - there was no index for %s@%p"), (void*)graph.raw_(), (void*)graph->_nodes_to_index.raw_(), _rep_(ahead), (void*)ahead.raw_());
           }
           if (parentOrNil.nilp()) {
