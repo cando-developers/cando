@@ -215,6 +215,13 @@
          (values molecule name)))
       (t (error 'sdf-parse-error :message "Deal with multiple molecules in sdf")))))
 
+(defun parse-data-item (line fin eof-error-p eof)
+  (let* ((data-name-start (position #\< line))
+         (data-name-end (position #\> line :start data-name-start))
+         (data-name (subseq line (1+ data-name-start) data-name-end))
+         (data-val (read fin eof-error-p eof)))
+    (values (intern data-name :keyword) data-val)))
+
 (defun parse-sdf-section (fin eof-error-p eof)
   (multiple-value-bind (molecule name)
       (parse-mdl-molecule fin eof-error-p eof)
@@ -222,6 +229,10 @@
         eof
         (progn
           (loop for line = (read-line fin eof-error-p eof)
+                when (and (> (length line) 0) (char= (elt line 0) #\>))
+                  do (multiple-value-bind (data-name data-val)
+                         (parse-data-item line fin eof-error-p eof)
+                       (chem:matter/set-property molecule data-name data-val))
                 until (string= line "$$$$"))
           (values molecule name)))))
 
@@ -236,7 +247,7 @@
             while cur
             do (when (string= name prev-name)
                  (let ((new-name (format nil "~a_~a" name (incf counter))))
-                   (format t "prev-name: ~a  name: ~a  new-name: ~a~%" prev-name name new-name)
+                   #+(or)(format t "prev-name: ~a  name: ~a  new-name: ~a~%" prev-name name new-name)
                    (rplaca (car cur) new-name)))
                (setf prev-name name
                      prev-molecule molecule))

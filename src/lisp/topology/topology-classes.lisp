@@ -20,10 +20,10 @@
 
 (cando.serialize:make-class-save-load constitution-bond)
 
-(defclass constitution-atoms ()
+#+(or)(defclass constitution-atoms ()
   ((atoms :initarg :atoms :accessor atoms)))
 
-(cando.serialize:make-class-save-load constitution-atoms)
+#+(or)(cando.serialize:make-class-save-load constitution-atoms)
 
 (defclass constitution ()
   ((name :initarg :name :accessor name)

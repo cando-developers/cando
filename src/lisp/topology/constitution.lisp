@@ -39,3 +39,9 @@
              (constitution-atom (elt constitution-atoms cai)))
         (define-constitution-atom-bonding constitution-atom atm atoms-to-index-map)))
     constitution-atoms))
+
+(defun constitution-atom-names-with-dihedrals (constitution)
+  (let ((constitution-atoms (constitution-atoms constitution)))
+    (loop for ca across constitution-atoms
+          when (getf (properties ca) :dihedral)
+            collect (atom-name ca))))

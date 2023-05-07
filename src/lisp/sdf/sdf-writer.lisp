@@ -62,7 +62,9 @@
       (format stream "M  END~%")
       (loop for data-item in data-items
             do (format stream "> <~a>~%" (car data-item))
-            do (format stream "~a~%" (cdr data-item))
+            do (let ((*print-readably* t))
+                 (format stream "~s~%" (cdr data-item)) ; write readably
+                 )
             do (format stream "~%"))
       (format stream "$$$$~%"))))
 
