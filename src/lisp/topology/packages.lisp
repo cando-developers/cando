@@ -79,6 +79,7 @@
    #:ordered-monomers
 
    #:seen-fragment-internals
+   #:seen-index
    #:bad-fragment-internals
    #:load-fragment-conformations
    #:fragment-conformations
@@ -213,7 +214,12 @@
    #:create-linearized-matched-fragment-conformations-map
    #:linearized-matched-fragment-conformations-map
    #:read-linearized-matched-fragment-conformations-map
-   #:constitution-atom-named))
+   #:constitution-atom-named
+   #:constitution-atom-names-with-dihedrals
+   #:monomer-topology
+   #:cluster-dihedral-names
+   #:cluster-dihedral-vector
+   #:cluster-dihedral-point-vector))
 
 (defpackage #:monomer-context
   (:use #:common-lisp)

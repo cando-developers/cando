@@ -221,7 +221,7 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
                               (max-tn-steps 100)
                               (sd-tolerance 2000.0)
                               (cg-tolerance 0.5)
-                              (tn-tolerance 0.000001))
+                              (tn-tolerance 0.00001))
   (chem:set-maximum-number-of-steepest-descent-steps minimizer max-sd-steps)
   (chem:set-maximum-number-of-conjugate-gradient-steps minimizer max-cg-steps)
   (chem:set-maximum-number-of-truncated-newton-steps minimizer max-tn-steps)

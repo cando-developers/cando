@@ -94,9 +94,15 @@
   ((index :initarg :index :accessor index)
    (probability :initform nil :initarg :probability :accessor probability)
    (internals :initarg :internals :accessor internals)
-   (out-of-focus-internals :initarg :out-of-focus-internals :accessor out-of-focus-internals)))
+   (out-of-focus-internals :initarg :out-of-focus-internals :accessor out-of-focus-internals)
+   ))
 
-(cando.serialize:make-class-save-load fragment-internals)
+(cando.serialize:make-class-save-load
+ fragment-internals
+ :print-unreadably
+ (lambda (obj stream)
+   (print-unreadable-object (obj stream :type t)
+     (format stream "~a" (index obj)))))
 
 (defun copy-fragment-internals (fragment-internals)
   (make-instance 'fragment-internals
@@ -107,6 +113,60 @@
                                                       (setf (gethash key ht) (copy-seq value)))
                                                     (out-of-focus-internals fragment-internals))
                                            ht)))
+
+(defun find-named-fragment-internals (fragment-internals name-or-plug-names)
+  (cond
+    ((symbolp name-or-plug-names)
+     (loop for internal across (internals fragment-internals)
+           when (and (typep internal 'bonded-internal) (eq name-or-plug-names (name internal)))
+             do (return (list (topology:dihedral internal)))
+           finally (error "Could not find internal with atom-name ~a" name-or-plug-names)))
+    ((consp name-or-plug-names)
+     (let* ((plug-name (first name-or-plug-names))
+            (out-of-focus-internals (gethash plug-name (out-of-focus-internals fragment-internals))))
+       (loop for name in (cdr name-or-plug-names)
+             collect (loop for internal across out-of-focus-internals
+                           when (eq (name internal) name)
+                             do (return (topology:dihedral internal))))))
+    (t (error "Handle arg ~a" name-or-plug-names))))
+
+(defun cluster-dihedral-vector (fragment-internals names)
+  (coerce (loop for name-or-plug-names in names
+                append (find-named-fragment-internals fragment-internals name-or-plug-names))
+          'vector))
+
+(defun cluster-dihedral-point-vector (fragment-internals names)
+  (let ((dihedrals (loop for name-or-plug-names in names
+                         append (find-named-fragment-internals fragment-internals name-or-plug-names))))
+    (make-array (* (length dihedrals) 2) :element-type 'single-float
+                                           :initial-contents (loop for dihedral in dihedrals
+                                                                   collect (cos dihedral)
+                                                                   collect (sin dihedral)))))
+
+
+
+(defun cluster-dihedral-names (focus-monomer oligomer)
+  "Calculate the atom-names for dihedrals that are used to cluster fragment-internals"
+  (let* ((out-couplings (loop for coupling across (topology:couplings oligomer)
+                             when (eq (topology:source-monomer coupling) focus-monomer)
+                               collect (let* ((other-monomer (topology:target-monomer coupling))
+                                              (target-topology (topology:monomer-topology other-monomer oligomer))
+                                              (coupling-name (topology:target-plug-name coupling))
+                                              (target-constitution (topology:constitution target-topology))
+                                              (target-names (loop for ca across (topology:constitution-atoms target-constitution)
+                                                                  when (getf (topology:properties ca) :dihedral)
+                                                                  collect (topology:atom-name ca)))
+                                              )
+                                         (cons coupling-name (subseq target-names 0 2)))))
+         (sorted-out (sort out-couplings #'string< :key (lambda (x) (string (car x)))))
+         (focus-topology (topology:monomer-topology focus-monomer oligomer))
+         (focus-constitution (topology:constitution focus-topology))
+         (focus-names (loop for ca across (topology:constitution-atoms focus-constitution)
+                            when (getf (topology:properties ca) :dihedral)
+                              collect (topology:atom-name ca))))
+    (append focus-names sorted-out)
+  ))
+
 
 (defclass fragment-conformations (serial:serializable)
   ((focus-monomer-name :initarg :focus-monomer-name :accessor focus-monomer-name)
@@ -168,23 +228,45 @@
                (monomer-context-to-fragment-conformations matched-fragment-conformations-map))
       (values total-fragment-conformations matching-fragment-conformations missing-fragment-conformations missing-monomer-contexts))))
 
-(defconstant +dihedral-threshold+ (* 10.0 0.0174533))
+(defparameter *dihedral-threshold* 20.0)
+(defparameter *dihedral-rms-threshold* 15.0)
 
-(defun similar-internals-p (frag1 frag2 &optional )
+(defun internals-are-different-p (frag1 frag2 &optional )
   (loop for frag1-int across (internals frag1)
         for frag2-int across (internals frag2)
         do (when (and (typep frag1-int 'bonded-internal)
                       (typep frag2-int 'bonded-internal))
-             (let* ((aa (- (dihedral frag1-int) (dihedral frag2-int)))
-                    (aamod (- (mod (+ aa 180) 360) 180)))
-               (when (> (abs aamod) +dihedral-threshold+)
-                 (return-from similar-internals-p nil)))))
-  t)
+             (let* ((dihedral-frag1 (rad-to-deg (dihedral frag1-int)))
+                    (dihedral-frag2 (rad-to-deg (dihedral frag2-int)))
+                    (aa (degree-difference dihedral-frag1 dihedral-frag2))
+                    (different-p (> (abs aa) *dihedral-threshold*)))
+               (when different-p
+                 (return-from internals-are-different-p t)))))
+  nil)
+
+(defun dihedrals-rms (frag1 frag2)
+  (let ((sum-of-squares 0.0)
+        (num-squares 0))
+  (loop for frag1-int across (internals frag1)
+        for frag2-int across (internals frag2)
+        do (when (and (typep frag1-int 'bonded-internal)
+                      (typep frag2-int 'bonded-internal))
+             (let* ((dihedral-frag1 (rad-to-deg (dihedral frag1-int)))
+                    (dihedral-frag2 (rad-to-deg (dihedral frag2-int)))
+                    (aa (degree-difference dihedral-frag1 dihedral-frag2)))
+               (incf sum-of-squares (* aa aa))
+               (incf num-squares))))
+    (let ((rms (sqrt (/ sum-of-squares (float num-squares)))))
+      rms)))
+
+(defun rms-internals-are-different-p (frag1 frag2)
+  (> (dihedrals-rms frag1 frag2) *dihedral-rms-threshold*))
 
 (defun seen-fragment-internals (fragment-conformations fragment-internals)
   (loop for seen-frag across (fragments fragment-conformations)
-        when (similar-internals-p seen-frag fragment-internals)
-          do (return-from seen-fragment-internals (index seen-frag)))
+        unless (rms-internals-are-different-p seen-frag fragment-internals)
+          do (progn
+               (return-from seen-fragment-internals (index seen-frag))))
   nil)
 
 

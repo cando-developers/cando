@@ -887,8 +887,8 @@ bool	Minimizer_O::_displayIntermediateMessage(
       }
       sout << (fmt::sprintf(" %5.1lf" , angle));
     }
-    sout << (fmt::sprintf(" %18.3lf" , fenergy ));
-    sout << (fmt::sprintf(" %18.3lf" , forceRMSMag));
+    sout << (fmt::sprintf(" %18.5lf" , fenergy ));
+    sout << (fmt::sprintf(" %18.5lf" , forceRMSMag));
     if ( this->_ScoringFunction->scoringFunctionName().notnilp() ) 
     {
       sout << fmt::sprintf(" %s" , this->_ScoringFunction->scoringFunctionName());
