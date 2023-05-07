@@ -145,10 +145,12 @@ namespace chem {
     virtual bool applyPropertyToSlot(core::Symbol_sp prop, core::T_sp value);
 
 
+#ifdef USE_TOPOLOGY
     adapt::SymbolSet_sp getMonomerAliases();
     bool recognizesMonomerAlias(core::Symbol_sp s);
     void setMonomerAliases(adapt::SymbolSet_sp s);
     void addMonomerAlias(core::Symbol_sp s);
+#endif
 
 	/*! Return true if this residue contains the atom a
 	 */
@@ -173,7 +175,9 @@ namespace chem {
     CL_LISPIFY_NAME("setNetCharge");
     CL_DEFMETHOD 	void	setNetCharge(int nc) { this->_NetCharge = nc; };
 
+#if USE_TOPOLOGY
     adapt::SymbolSet_sp	getAtomNamesAsSymbolSet();
+#endif
 
     void		addAtom(Atom_sp a );
     void		addAtomRetainId(Atom_sp a ) {this->addMatterRetainId(Matter_sp(a));};
@@ -219,7 +223,9 @@ namespace chem {
     CL_DEFMETHOD         Atom_sp		atomWithId( int lid ) { return this->contentWithId(lid).as<Atom_O>(); };
     CL_LISPIFY_NAME("hasAtomWithId");
     CL_DEFMETHOD 	bool		hasAtomWithId( int lid ) { return this->hasContentWithId(lid); };
+#ifdef USE_TOPOLOGY
     adapt::SymbolSet_sp 	getAllUniqueAtomNames();
+#endif
 
         /*! Return true if all the atom names are unique
          * If not describe the atoms with overlapping names in (problems).

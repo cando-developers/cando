@@ -85,11 +85,11 @@ public:
 
   EnergyAtom();
   EnergyAtom(Atom_sp atom, uint coordinateIndex);
-  EnergyAtom(core::T_sp forceField, Atom_sp atom, uint coordinateIndex);
+  EnergyAtom(core::T_sp forceField, Atom_sp atom, uint coordinateIndex, core::HashTable_sp atomTypes );
 
 		// methods
   core::List_sp encode() const;
-  void		defineForAtom(core::T_sp forceField, Atom_sp atom, uint coordinateIndex);
+  void		defineForAtom(core::T_sp forceField, Atom_sp atom, uint coordinateIndex, core::HashTable_sp atomTypes );
   string		getResidueAndName(Residue_sp res);
 //	adapt::QDomNode_sp	asXmlRelativeToContainer(chem::Matter_sp parent);
 //	void		parseFromXmlRelativeToContainer( adapt::QDomNode_sp xml, chem::Matter_sp parent );
@@ -217,8 +217,8 @@ public:
   void setAtomFlag(size_t index, size_t flag);
   size_t getAtomFlag(size_t index);
 
-  void	dumpTerms();
-  void constructFromMolecule(Molecule_sp mol, core::T_sp nonbondForceField, core::T_sp activeAtoms );
+  void	dumpTerms(core::HashTable_sp atomTypes);
+  void constructFromMolecule(Molecule_sp mol, core::T_sp nonbondForceField, core::T_sp activeAtoms, core::HashTable_sp atomTypes );
 
   size_t push_back_excluded_atom_indices_and_sort(core::ComplexVector_int32_t_sp excludedAtomIndices, size_t atomIndex);
   /*! Calculate the excluded atom list with atom indices starting at 0.
@@ -235,7 +235,7 @@ public:
   //
   core::HashTableEq_sp getAtomTableIndices();
   CL_DEFMETHOD MatterName elt_atom_name(int index) { return this->_Atoms[index]._AtomName; };
-  CL_DEFMETHOD core::Symbol_sp elt_atom_type(int index);
+  CL_DEFMETHOD core::Symbol_sp elt_atom_type(int index,core::HashTable_sp atomTypes);
   CL_DEFMETHOD Atom_sp elt_atom(int index) { return this->_Atoms[index].atom(); };
   CL_DEFMETHOD int elt_atom_coordinate_index_times3(int index) { return this->_Atoms[index].coordinateIndexTimes3(); };
   CL_DEFMETHOD double elt_charge(int index) { return this->_Atoms[index]._Charge; };

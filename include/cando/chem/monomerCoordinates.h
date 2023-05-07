@@ -1,3 +1,4 @@
+#ifdef USE_TOPOLOGY
 /*
     File: monomerCoordinates.h
 */
@@ -112,3 +113,4 @@ CL_DEFMETHOD 	MonomerContext_sp getContext() { return this->_Context; };
 };
 TRANSLATE(chem::MonomerCoordinates_O);
 #endif //]
+#endif

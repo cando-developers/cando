@@ -268,26 +268,26 @@ core::Symbol_sp         key;
 // If the atom types are the same then order on atom name (alphabetical)
 // If the atom types are different then order on atom type (alphabetical)
 // Atom names and atom types are stored as interned names (Symbols)
-bool ordered(Atom_sp a1, Atom_sp a2) {
-  if (a1->getType() == a2->getType()) {
+bool ordered(Atom_sp a1, Atom_sp a2, core::HashTable_sp atomTypes) {
+  if (a1->getType(atomTypes) == a2->getType(atomTypes)) {
     return a1->getName()->symbolNameAsString() < a2->getName()->symbolNameAsString();
   }
-  return gc::As<core::Symbol_sp>(a1->getType())->symbolNameAsString() < gc::As<core::Symbol_sp>(a2->getType())->symbolNameAsString();
+  return gc::As<core::Symbol_sp>(a1->getType(atomTypes))->symbolNameAsString() < gc::As<core::Symbol_sp>(a2->getType(atomTypes))->symbolNameAsString();
 }
 
 // Sort the three atoms of an improper a1-a2-a3-a4 where a3 is the central atom.
-void FFItorDb_O::improperAtomSort(Atom_sp& a1, Atom_sp& a2, Atom_sp& a4)
+void FFItorDb_O::improperAtomSort(Atom_sp& a1, Atom_sp& a2, Atom_sp& a4, core::HashTable_sp atomTypes)
 {
   Atom_sp ta;
-  if (!ordered(a1,a2)) {ta = a1; a1 = a2; a2 = ta;}
-  if (!ordered(a2,a4)) {ta = a2; a2 = a4; a4 = ta;}
-  if (!ordered(a1,a2)) {ta = a1; a1 = a2; a2 = ta;}
+  if (!ordered(a1,a2,atomTypes)) {ta = a1; a1 = a2; a2 = ta;}
+  if (!ordered(a2,a4,atomTypes)) {ta = a2; a2 = a4; a4 = ta;}
+  if (!ordered(a1,a2,atomTypes)) {ta = a1; a1 = a2; a2 = ta;}
 }
 
 DOCGROUP(cando);
-CL_DEFUN core::T_mv chem__improperAtomSort(Atom_sp a1, Atom_sp a2, Atom_sp a3)
+CL_DEFUN core::T_mv chem__improperAtomSort(Atom_sp a1, Atom_sp a2, Atom_sp a3, core::HashTable_sp atomTypes)
 {
-  FFItorDb_O::improperAtomSort(a1,a2,a3);
+  FFItorDb_O::improperAtomSort(a1,a2,a3,atomTypes);
   return Values(a1,a2,a3);
 }
 

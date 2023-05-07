@@ -291,7 +291,6 @@ Atom_O::Atom_O(const Atom_O& ss) :Matter_O(ss)
   this->_UniqueAtomOrder = nextUniqueAtomOrder();
   this->_Element = ss._Element;
   this->_Alias = ss._Alias;
-  this->_Type = ss._Type;
   this->_Hybridization = ss._Hybridization;
   this->_Flags = ss._Flags;
   this->_Mask = ss._Mask;
@@ -926,6 +925,16 @@ CL_DEFMETHOD core::Symbol_sp Atom_O::getElementAsSymbol() const
   return symbolFromElement(this->getElement());
 }
 
+SYMBOL_EXPORT_SC_(KeywordPkg,given_atom_type);
+
+CL_LISPIFY_NAME("atomType");
+CL_DEFMETHOD AtomType Atom_O::atomType() const {
+  return this->getProperty(kw::_sym_given_atom_type);
+};
+CL_LISPIFY_NAME("setAtomType");
+CL_DEFMETHOD 	void	Atom_O::setAtomType(AtomType o) {
+  this->setProperty(kw::_sym_given_atom_type,o);
+}
 
 void	Atom_O::fields(core::Record_sp node)
 {
@@ -935,7 +944,6 @@ void	Atom_O::fields(core::Record_sp node)
   node->/*pod_*/field_if_not_default( INTERN_(kw,hybridization), this->_Hybridization,hybridization_sp3 );
   node->/*pod_*/field_if_not_default( INTERN_(kw,chg), this->_Charge, 0.0 );
   node->/*pod_*/field_if_not_default<short>( INTERN_(kw,ion), this->_Ionization, 0 );
-  node->field_if_not_nil( INTERN_(kw,type), this->_Type);
   node->/*pod_*/field_if_not_default<ushort>( INTERN_(kw,rings), this->_RingMembershipCount, 0 );
   node->/*pod_*/field_if_not_default( INTERN_(kw,mask), this->_Mask, (uint)(0) );
   node->/*pod_*/field_if_not_default( INTERN_(kw,configuration), this->_Configuration, undefinedConfiguration  );
@@ -994,7 +1002,7 @@ CL_DEFMETHOD     string	Atom_O::getConfigurationAsString()
 string	Atom_O::__repr__() const
 {
   stringstream ss;
-  ss << "#<" << this->className() << " " << this->_Name << "/" << _rep_(symbolFromElement(this->_Element)) << " :id " << this->_Id << " 0x" << std::setbase(16) << core::lisp_general_badge(this->asSmartPtr()) << ">";
+  ss << "#<" << this->className() << " " << this->_Name << "/" << _rep_(symbolFromElement(this->_Element)) << " :id " << this->_Id << " 0x" << std::setbase(16) << gctools::lisp_general_badge(this->asSmartPtr()) << ">";
   return ss.str();
 }
 
@@ -1676,6 +1684,11 @@ bool	Atom_O::invalid()
   IMPLEMENT_ME();
 }
 
+CL_LISPIFY_NAME("getType");
+CL_DEFMETHOD core::T_sp Atom_O::getType(core::HashTable_sp atomTypes) const {
+  return atomTypes->gethash(this->asSmartPtr());
+}
+
 
 
 AtomIdMap_sp Atom_O::buildAtomIdMap() const
@@ -1739,9 +1752,10 @@ CL_VALUE_ENUM(_sym_needs_build, needsBuild);
 CL_END_ENUM(_sym__PLUS_atomFlagSymbolConverter_PLUS_);
 
 
+#ifdef USE_TOPOLOGY
 ConstitutionAtom_sp Atom_O::asConstitutionAtom(ConstitutionAtomIndex0N index)
 {
-  ConstitutionAtom_sp ca = makeConstitutionAtom(this->getName(),this->_Element,this->_Type, index,this->_StereochemistryType, this->_Properties);
+  ConstitutionAtom_sp ca = makeConstitutionAtom(this->getName(),this->_Element,/*this->_Type,*/ index,this->_StereochemistryType, this->_Properties);
   return ca;
 }
 
@@ -1759,6 +1773,8 @@ void	Atom_O::defineConstitutionAtomBonding(ConstitutionAtom_sp consAtom, MapAtom
     }
   }
 }
+#endif
+
 
 CL_DEFUN double chem__calculate_dihedral_for_atoms(Atom_sp a, Atom_sp b, Atom_sp c, Atom_sp d) {
   Vector3 va = a->getPosition();

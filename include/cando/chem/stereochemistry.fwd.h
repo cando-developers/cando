@@ -1,3 +1,5 @@
+#ifdef USE_TOPOLOGY
+
 /*
     File: stereochemistry.fwd.h
 */
@@ -31,4 +33,5 @@ FORWARD(StereoConfiguration);
 FORWARD(Stereoisomer);
 FORWARD(StereoInformation);
 }
+#endif
 #endif

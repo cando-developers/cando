@@ -68,7 +68,7 @@ public:
 
 	bool		atEnd();
 
-	Molecule_sp	readMolecule();
+      Molecule_sp	readMolecule(core::HashTable_sp atom_types);
 	void		writeAggregate( Aggregate_sp );
 private:
 	int		lines;

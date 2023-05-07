@@ -210,43 +210,6 @@ Break up the molecules in the aggregate into a list of molecules using spanning 
     (values new-molecule atoms-spanned)))
 
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;
-;;; Loops for molecules, residues, atoms
-;;;
-
-
-(defmacro do-molecules ((molecule-var matter) &body body)
-  `(flet ((do-one-molecule (,molecule-var)
-            ,@body))
-     (if (typep ,matter 'chem:molecule)
-         (funcall #'do-one-molecule ,matter) 
-         (chem:map-molecules
-          nil
-          #'do-one-molecule
-          ,matter))))
-
-(defmacro do-residues ((residue-var matter) &body body)
-  `(flet ((do-one-residue (,residue-var)
-            ,@body))
-     (if (typep ,matter 'chem:residue)
-         (funcall #'do-one-residue ,matter) 
-         (chem:map-residues
-          nil
-          #'do-one-residue
-          ,matter))))
-
-(defmacro do-atoms ((atom-var matter) &body body)
-  `(flet ((do-one-atom (,atom-var)
-            ,@body))
-     (if (typep ,matter 'chem:atom)
-         (funcall #'do-one-atom ,matter) 
-         (chem:map-atoms
-          nil
-          #'do-one-atom
-          ,matter))))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Remove molecules of a particular type
@@ -254,7 +217,7 @@ Break up the molecules in the aggregate into a list of molecules using spanning 
 
 (defun remove-molecules (aggregate molecule-type)
   (let (molecules)
-    (do-molecules (molecule aggregate)
+    (chem:do-molecules (molecule aggregate)
       (when (eq (chem:molecule-type molecule) molecule-type)
         (push molecule molecules)))
     (loop for molecule in molecules
@@ -273,7 +236,7 @@ Break up the molecules in the aggregate into a list of molecules using spanning 
                ((typep matter 'chem:molecule)
                 (chem:add-matter new-agg matter))
                ((typep matter 'chem:aggregate)
-                (do-molecules (mol matter)
+                (chem:do-molecules (mol matter)
                   (chem:add-matter new-agg mol)))
                (t (error "You cannot combine a ~s" matter))))
     new-agg))
@@ -289,7 +252,7 @@ Break up the molecules in the aggregate into a list of molecules using spanning 
    then rename the atoms using the smirks labels.
    The atom names become <element><smirks#> and attached hydrogens 
    are named using a scheme that I'll have to come up with."
-  (cando:do-atoms (a matter)
+  (chem:do-atoms (a matter)
     (multiple-value-bind (matched match)
         (smarts:match smirks-root a)
       (format t "Do something with the match ~s~%" match))))
@@ -303,7 +266,7 @@ Break up the molecules in the aggregate into a list of molecules using spanning 
 (defun assign-solvent-molecules-using-residue-name (matter solvent-residue-name)
   "Search through the matter for molecules that contain a single residue that has the 
 solvent-residue-name. Set the molecule-type of those molecules to :solvent"
-  (cando:do-molecules (mol matter)
+  (chem:do-molecules (mol matter)
     (when (and (= (chem:content-size mol) 1)
                (eq (chem:get-name (chem:content-at mol 0)) solvent-residue-name))
       (chem:setf-molecule-type mol :solvent))))
@@ -311,7 +274,7 @@ solvent-residue-name. Set the molecule-type of those molecules to :solvent"
 (defun identify-solvent-residue-name (matter)
   "Figure out the residue name of solvent by looking at the name of the single
 residue in any molecules that have the molecule-type :solvent."
-  (cando:do-molecules (mol matter)
+  (chem:do-molecules (mol matter)
     (when (eq (chem:molecule-type mol) :solvent)
       (if (= (chem:content-size mol) 1)
           (chem:get-name (chem:content-at mol 0))
@@ -319,7 +282,7 @@ residue in any molecules that have the molecule-type :solvent."
 
 (defun ensure-unique-hydrogen-names (matter)
   (let ((hydrogen-counter 0))
-    (cando:do-atoms (atom1 matter)
+    (chem:do-atoms (atom1 matter)
       (when (eq (chem:get-element atom1) :H)
         (let ((hydrogen-name (intern (format nil "H~a" (incf hydrogen-counter)) :keyword)))
           (chem:set-name atom1 hydrogen-name))))))

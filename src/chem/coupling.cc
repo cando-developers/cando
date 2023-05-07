@@ -1,3 +1,4 @@
+#ifdef USE_TOPOLOGY
 /*
     File: coupling.cc
 */
@@ -825,3 +826,4 @@ Coupling_sp RingCoupling_O::copyAndReplaceMonomers( Monomer_sp monomer1, Monomer
 
 
 };
+#endif

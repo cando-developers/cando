@@ -140,8 +140,8 @@ public:
   void	addZConstant(core::Symbol_sp element, double value ) { this->_ZConstants.set(element,core::DoubleFloat_O::create(value));};
   void	addCConstant(core::Symbol_sp element, double value ) { this->_CConstants.set(element,core::DoubleFloat_O::create(value));};
 
-  FFAngle_sp	findTerm( FFStretchDb_sp ffstretch, chem::Atom_sp a1, chem::Atom_sp a2, chem::Atom_sp a3);
-  FFAngle_sp	estimateTerm( FFStretchDb_sp ffstretch, chem::Atom_sp a1, chem::Atom_sp a2, chem::Atom_sp a3 );
+  FFAngle_sp	findTerm( FFStretchDb_sp ffstretch, chem::Atom_sp a1, chem::Atom_sp a2, chem::Atom_sp a3, core::HashTable_sp atomTypes );
+  FFAngle_sp	estimateTerm( FFStretchDb_sp ffstretch, chem::Atom_sp a1, chem::Atom_sp a2, chem::Atom_sp a3, core::HashTable_sp atomTypes );
 
   void	initialize();
 

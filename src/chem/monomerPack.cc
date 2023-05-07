@@ -1,3 +1,5 @@
+#ifdef USE_TOPOLOGY
+
 /*
     File: monomerPack.cc
 */
@@ -479,3 +481,4 @@ int	MonomerPack_O::getInterestingAtomAliasIndex(Alias_sp alias)
 
 
 };
+#endif

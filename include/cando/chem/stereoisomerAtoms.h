@@ -1,3 +1,5 @@
+
+#ifdef USE_TOPOLOGY
 /*
     File: stereoisomerAtoms.h
 */
@@ -43,7 +45,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/elements.fwd.h>
 
 #include <cando/chem/chemPackage.h>
-
 
 namespace chem
 {
@@ -125,7 +126,7 @@ is a list of stereoisomer-atoms.)");
   public:
 
 	/*! Return the number of atoms */
-    int numberOfAtoms() const { return this->_Atoms.size();};
+    CL_DEFMETHOD int numberOfAtoms() const { return this->_Atoms.size();};
 
 	/*! Return the index of the StereoisomerAtom with the given name */
     int	index(MatterName name) const;
@@ -147,6 +148,7 @@ is a list of stereoisomer-atoms.)");
 	//! Return a StringSet of the StereoisomerAtom names
     adapt::SymbolSet_sp atomNamesAsSymbolSet();
 
+    core::List_sp atomsAsList() const;
 
 	/*! Create a Residue that has all the atoms/bonds and all the necessary atom/bond
 	  properties set properly for this StereoisomerAtoms */
@@ -158,3 +160,4 @@ is a list of stereoisomer-atoms.)");
 
 };
 #endif //]
+#endif

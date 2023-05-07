@@ -46,6 +46,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <vector>
 #include <set>
 #include <clasp/core/common.h>
+#include <clasp/core/hashTableEq.h>
 #include <cando/geom/vector3.h>
 #include <cando/chem/scoringFunction.h>
 #include <cando/chem/energyComponent.fwd.h>
@@ -134,6 +135,7 @@ namespace chem {
     /*! Stores cross terms for evaluating nonbond interactions
      */
     FFNonbondCrossTermTable_sp		_NonbondCrossTermTable;
+    core::HashTable_sp                  _AtomTypes;
     AtomTable_sp			_AtomTable;
     EnergyStretch_sp			_Stretch;
 #if USE_ALL_ENERGY_COMPONENTS
@@ -168,7 +170,7 @@ namespace chem {
     void	flagDihedralRestraintsAboveThreshold(NVector_sp nvPosition);
 
   private:
-    int _applyRestraints(core::T_sp forceField, core::Iterator_sp restraintIterator, core::T_sp activeAtoms );
+    int _applyRestraints(core::T_sp forceField, core::Iterator_sp restraintIterator, core::T_sp activeAtoms, core::HashTable_sp atomTypes );
     void _addDihedralRestraint(Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, double min, double max, double weight, core::T_sp activeAtoms );
 
   public:
@@ -204,6 +206,7 @@ namespace chem {
     /*! Set a single options */
     void	setOption( core::Symbol_sp option, core::T_sp val);
 
+    CL_DEFMETHOD core::HashTable_sp atomTypes() const { return this->_AtomTypes; };
 
     /*! Set the energy function options. List the options as a flat list of keyword/value pairs */
     void	setOptions( core::List_sp options );
@@ -250,7 +253,7 @@ namespace chem {
     void	disableDebug();
 
     void	summarizeTerms();
-    void	dumpTerms();
+    void	dumpTerms(core::HashTable_sp atomTypes);
     CL_DEFMETHOD     core::T_sp	getMessage() { return this->_Message;};
 
     /*! Print the energy components as a single, multi-line string
@@ -266,22 +269,23 @@ namespace chem {
 
     void assignAtomTypes(Matter_sp matter, bool show_progress);
     void defineForMatter(Matter_sp agg, bool useExcludedAtoms, core::T_sp activeAtomSet=nil<core::T_O>(), bool assign_types=true );
-    void defineForMatterWithAtomTypes(Matter_sp matter, bool useExcludedAtoms, core::T_sp activeAtoms, core::T_sp cip_priorities);
+    void defineForMatterWithAtomTypes(Matter_sp matter, bool useExcludedAtoms, core::T_sp activeAtoms, core::T_sp cip_priorities, core::HashTable_sp atomTypes );
     void generateStandardEnergyFunctionTables(Matter_sp mol,
                                               FFStretchDb_sp stretchDb,
                                               FFAngleDb_sp angleDb,
                                               FFPtorDb_sp ptorDb,
                                               FFItorDb_sp itorDb,
-                                              core::T_sp activeAtomSet=nil<core::T_O>());
-    void generateNonbondEnergyFunctionTables(bool useExcludedAtoms, Matter_sp agg, core::T_sp forceField, core::T_sp activeAtomSet=nil<core::T_O>());
-    void generateRestraintEnergyFunctionTables(Matter_sp agg, core::T_sp nonbonds, core::T_sp activeAtomSet=nil<core::T_O>(), core::T_sp cip_priorities=nil<core::T_O>());
+                                              core::T_sp activeAtomSet,
+                                              core::HashTable_sp atomTypes);
+    void generateNonbondEnergyFunctionTables(bool useExcludedAtoms, Matter_sp agg, core::T_sp forceField, core::T_sp activeAtomSet, core::HashTable_sp atomTypes );
+    void generateRestraintEnergyFunctionTables(Matter_sp agg, core::T_sp nonbonds, core::T_sp activeAtomSet, core::T_sp cip_priorities, core::HashTable_sp atomTypes );
 
 
     /*! Add the restraints to the energy function.
      * This allows restraints to be applied to the system
      * without having to add them to the molecule/aggregate.
      */
-    void	addTermsForListOfRestraints( ForceField_sp forceField,  core::List_sp restraintList, core::T_sp activeAtoms );
+    void	addTermsForListOfRestraints( ForceField_sp forceField,  core::List_sp restraintList, core::T_sp activeAtoms, core::HashTable_sp atomTypes );
 
 
     double	calculateNumericalDerivative(NVector_sp pos, double delta, uint i );
@@ -315,6 +319,7 @@ namespace chem {
 
     EnergyFunction_O(BoundingBox_sp bounding_box) :
       _Matter(unbound<Matter_O>())
+      , _AtomTypes(core::HashTableEq_O::create_default())
       , _NonbondCrossTermTable(unbound<FFNonbondCrossTermTable_O>())
       , _AtomTable(unbound<AtomTable_O>())
       , _Stretch(unbound<EnergyStretch_O>())
@@ -334,6 +339,7 @@ namespace chem {
     
   EnergyFunction_O() :
     _Matter(unbound<Matter_O>())
+      , _AtomTypes(core::HashTableEq_O::create_default())
       , _NonbondCrossTermTable(unbound<FFNonbondCrossTermTable_O>())
       , _AtomTable(unbound<AtomTable_O>())
       , _Stretch(unbound<EnergyStretch_O>())

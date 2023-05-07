@@ -40,6 +40,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/bond.h>
 #include <clasp/core/wrappers.h>
 
+#ifdef USE_TOPOLOGY
 namespace chem
 {
 
@@ -65,7 +66,6 @@ void ConstitutionAtom_O::fields(core::Record_sp node)
   node->field(INTERN_(kw,name),this->_AtomName);
   node->field(INTERN_(kw,index),this->_Index);
   node->field(INTERN_(kw,element),this->_Element);
-  node->field(INTERN_(kw,type),this->_AtomType);
   node->field_if_not_default(INTERN_(kw,stereochemType), this->_StereochemistryType, undefinedCenter);
   node->field(INTERN_(kw,bonds),this->_Bonds);
   node->field_if_not_nil(INTERN_(kw,properties),this->_Properties);
@@ -88,12 +88,13 @@ CL_DEFMETHOD 	MatterName ConstitutionAtom_O::atomName() const {
   return this->_AtomName;
 };
 
+#if 0
 CL_LISPIFY_NAME("atomType");
 CL_DEFMETHOD 	core::T_sp ConstitutionAtom_O::atomType() const
 {
   return this->_AtomType;
 };
-
+#endif
 
 string ConstitutionAtom_O::__repr__() const
 {
@@ -279,3 +280,4 @@ CL_DEFMETHOD     Residue_sp ConstitutionAtoms_O::buildResidue()
 // Stuff
 
 };
+#endif

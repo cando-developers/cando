@@ -107,10 +107,10 @@ bool sketchFunctionInitialized = false;
 CL_DOCSTRING(R"dx(Create a sketch-function from a molecule. Pass an instance of a dummy sketch-nonbond-force-field passed to chem:find-atom-type-position.)dx");
 CL_LISPIFY_NAME(make-sketch-function);
 CL_DEF_CLASS_METHOD
-SketchFunction_sp SketchFunction_O::make(core::T_sp graph, core::T_sp sketchNonbondForceField)
+SketchFunction_sp SketchFunction_O::make(core::T_sp graph, core::T_sp sketchNonbondForceField,core::HashTable_sp atomTypes)
 {
   auto sf = gctools::GC<SketchFunction_O>::allocate(graph);
-  sf->_NodeTable = core::eval::funcall(chem::_sym_make_node_table_from_graph,graph,sketchNonbondForceField);
+  sf->_NodeTable = core::eval::funcall(chem::_sym_make_node_table_from_graph,graph,sketchNonbondForceField,atomTypes);
   return sf;
 }
 
@@ -696,11 +696,11 @@ ForceMatchReport_sp SketchFunction_O::checkIfAnalyticalForceMatchesNumericalForc
 }
 
 
-void	SketchFunction_O::dumpTerms()
+void	SketchFunction_O::dumpTerms(core::HashTable_sp atomTypes)
 {
-  this->_Stretch->dumpTerms();
-  this->_PointToLineRestraint->dumpTerms();
-  this->_OutOfZPlane->dumpTerms();
+  this->_Stretch->dumpTerms(atomTypes);
+  this->_PointToLineRestraint->dumpTerms(atomTypes);
+  this->_OutOfZPlane->dumpTerms(atomTypes);
 }
 
 

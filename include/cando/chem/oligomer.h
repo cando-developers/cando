@@ -59,6 +59,7 @@ This is an open source license for the CANDO software from Temple University, bu
 
 #include <cando/chem/chemPackage.h>
 
+#ifdef USE_TOPOLOGY
 
 namespace chem {
 
@@ -224,5 +225,6 @@ extern	Oligomer_sp create_Oligomer();
 
 };
 
-TRANSLATE(chem::Oligomer_O);
+#endif
+
 #endif

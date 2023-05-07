@@ -1248,8 +1248,8 @@ void	Minimizer_O::_conjugateGradient(int numSteps,
       this->_EnergyFunction->backSubstituteDiagonalPreconditioner(diag,s,force);
       break;
   case hessianPreconditioner:
-      m = new_SparseLargeSquareMatrix_sp(iRestartSteps,SymmetricUpperDiagonal);
-      ldlt=new_SparseLargeSquareMatrix_sp(iRestartSteps,SymmetricUpperDiagonal);
+      m = new_SparseLargeSquareMatrix_sp(iRestartSteps,SymmetricDiagonalLower);
+      ldlt=new_SparseLargeSquareMatrix_sp(iRestartSteps,SymmetricDiagonalLower);
       m->fill(0.0);
       ldlt->fill(0.0);
       this->_EnergyFunction->setupHessianPreconditioner(x,m);
@@ -1703,8 +1703,8 @@ void	Minimizer_O::_truncatedNewton(
   zj = NVector_O::create(iDimensions);
   qj = NVector_O::create(iDimensions);
   kSum = NVector_O::create(iDimensions);
-  mprecon = SparseLargeSquareMatrix_O::create(iDimensions,SymmetricUpperDiagonal);
-  ldlt=SparseLargeSquareMatrix_O::create(iDimensions,SymmetricUpperDiagonal);
+  mprecon = SparseLargeSquareMatrix_O::create(iDimensions,SymmetricDiagonalLower);
+  ldlt = SparseLargeSquareMatrix_O::create(iDimensions,SymmetricDiagonalLower);
   mprecon->fill(0.0);
   ldlt->fill(0.0);
     //

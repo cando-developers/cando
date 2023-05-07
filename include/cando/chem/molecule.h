@@ -90,7 +90,11 @@ namespace chem {
 //    virtual bool equal(core::T_sp obj) const;
     virtual void	transferCoordinates(Matter_sp other);
 
+    // A force field name is either a symbol or a (cons symbol T/NIL)
+    // The CDR of the cons is T if the given types should be used
+    //                     and NIL if types should be calculated
     core::T_sp force_field_name() const;
+    core::T_sp force_field_use_given_types() const;
     void setf_force_field_name(core::T_sp name);
     
     CL_LISPIFY_NAME("firstResidue");

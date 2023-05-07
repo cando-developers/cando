@@ -188,7 +188,7 @@
 (defun build-atom-to-residue-map (mol)
   (let ((a2r (make-hash-table)))
     (cando:do-residues (res mol)
-      (cando:do-atoms (atm res)
+      (chem:do-atoms (atm res)
         (setf (gethash atm a2r) res)))
     a2r))
 

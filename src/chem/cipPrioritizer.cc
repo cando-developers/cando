@@ -50,120 +50,118 @@ namespace chem {
 
 uint atomicNumber(Atom_sp a)
 {
-    return a->getAtomicNumber();
+  return a->getAtomicNumber();
 }
-
 
 struct	OrderByBase
 {
-    OrderByBase(core::HashTable_sp cip) : _cip(cip) {};
-    core::HashTable_sp _cip;
-    CipPrioritizer_sp	prior;
-    void setCipPrioritizer(CipPrioritizer_sp p) { this->prior = p;};
-    virtual bool operator() (Atom_sp x, Atom_sp y) = 0;
+  OrderByBase() {};
+  CipPrioritizer_sp	prior;
+  void setCipPrioritizer(CipPrioritizer_sp p) { this->prior = p;};
+  virtual bool operator() (AtomPriority& x, AtomPriority& y) = 0;
 };
 
-    struct OrderByPriority : public OrderByBase {
-    public:
-        bool operator()(Atom_sp x, Atom_sp y )
-        {
-            return y->getRelativePriority(this->_cip) < x->getRelativePriority(this->_cip);
-        }
-        OrderByPriority(core::HashTable_sp cip) : OrderByBase(cip) {};
-    };        
+struct OrderByPriority : public OrderByBase {
+public:
+  bool operator()(AtomPriority& x, AtomPriority& y )
+  {
+    return y._relativePriority < x._relativePriority;
+  }
+  OrderByPriority() : OrderByBase() {};
+};
 
 struct	OrderByP : public OrderByBase
 {
 public:
-    bool operator()(Atom_sp x, Atom_sp y )
-    {
-	if ( prior->getP(x,this->_cip) <= prior->getP(y,this->_cip) ) return true;
-	return false;
-    }
-    OrderByP(core::HashTable_sp cip) : OrderByBase(cip) {};
+  bool operator()(AtomPriority& x, AtomPriority& y )
+  {
+    if ( prior->getP(x) <= prior->getP(y) ) return true;
+    return false;
+  }
+  OrderByP() : OrderByBase() {};
 };
 
 
 struct	OrderByS : public OrderByBase
 {
-    OrderByS(core::HashTable_sp cip) : OrderByBase(cip) {};
-    int cmpByS(Atom_sp x, Atom_sp y )
-{
-        ASSERTNOTNULL(x);
-        ASSERTNOTNULL(y);
-        gctools::Vec0<int>&	xv = prior->getS(x,this->_cip);
-        gctools::Vec0<int>&	yv = prior->getS(y,this->_cip);
-        gctools::Vec0<int>::iterator	xi = xv.begin();
-        gctools::Vec0<int>::iterator	yi = yv.begin();
-	bool done=false;
-	int res;
-	done =  (( xi == xv.end() ) || ( yi == yv.end() ));
-	while ( !done )
-	{
-	    if ( *xi < *yi )
-	    {
-		res = -1;
-		goto done;
-	    }
-	    if ( *xi > *yi ) 
-	    {
-		res = 1;
-		goto done;
-	    }
-	    xi++;
-	    yi++;
-	    done |=  (( xi == xv.end() ) || ( yi == yv.end() ));
-	}
-	if ( xi==xv.end() && yi==yv.end() ) 
-	{
-	    res = 0;
-	    goto done;
-	}
-	if ( xi==xv.end() )
-	{
-	    	// x is shorter than y so x<=y
-	    res = -1;
-	    goto done;
-	}
-	res = 1;
-    done: 
-        return res;
-    }
-
-
-    bool operator()(Atom_sp x, Atom_sp y )
+  OrderByS() {};
+  int cmpByS(AtomPriority& x, AtomPriority& y )
+  {
+    ASSERTNOTNULL(x);
+    ASSERTNOTNULL(y);
+    gctools::Vec0<int>&	xv = prior->getS(x);
+    gctools::Vec0<int>&	yv = prior->getS(y);
+    gctools::Vec0<int>::iterator	xi = xv.begin();
+    gctools::Vec0<int>::iterator	yi = yv.begin();
+    bool done=false;
+    int res;
+    done =  (( xi == xv.end() ) || ( yi == yv.end() ));
+    while ( !done )
     {
-        int order = this->cmpByS(x,y);
-	if ( order < 0 ) return true;
-	if ( order == 0 ) return true;
-	return false;
+      if ( *xi < *yi )
+      {
+        res = -1;
+        goto done;
+      }
+      if ( *xi > *yi ) 
+      {
+        res = 1;
+        goto done;
+      }
+      xi++;
+      yi++;
+      done |=  (( xi == xv.end() ) || ( yi == yv.end() ));
     }
+    if ( xi==xv.end() && yi==yv.end() ) 
+    {
+      res = 0;
+      goto done;
+    }
+    if ( xi==xv.end() )
+    {
+	    	// x is shorter than y so x<=y
+      res = -1;
+      goto done;
+    }
+    res = 1;
+  done: 
+    return res;
+  }
+
+
+  bool operator()(AtomPriority& x, AtomPriority& y )
+  {
+    int order = this->cmpByS(x,y);
+    if ( order < 0 ) return true;
+    if ( order == 0 ) return true;
+    return false;
+  }
 };
 
 
 
 void	CipPrioritizer_O::initialize()
 {
-    this->Base::initialize();
+  this->Base::initialize();
 }
 
-    int	CipPrioritizer_O::getP(Atom_sp a, core::HashTable_sp cip)
+int	CipPrioritizer_O::getP(AtomPriority& a)
 {
-    ASSERT_lessThan(a->getRelativePriority(cip),this->_p.size());
-    return this->_p[a->getRelativePriority(cip)];
+  ASSERT_lessThan(a._relativePriority,this->_p.size());
+  return this->_p[a._relativePriority];
 }
 
-gctools::Vec0<int>& CipPrioritizer_O::getS(Atom_sp a, core::HashTable_sp cip)
+gctools::Vec0<int>& CipPrioritizer_O::getS(AtomPriority& a)
 {
-    ASSERTNOTNULL(a);
-    if ( ! ( a->getRelativePriority(cip) < this->_s.size() ) )
-    {
-	LOG("Bad priority for atom" );
-	LOG("Bad priority for atom: %s" , a->description().c_str()  );
-	LOG("   priority value = %d" , a->getRelativePriority(cip)  );
-    }
-    ASSERT_lessThan(a->getRelativePriority(cip),this->_s.size());
-    return this->_s[a->getRelativePriority(cip)];
+  ASSERTNOTNULL(a);
+  if ( ! ( a._relativePriority < this->_s.size() ) )
+  {
+    LOG("Bad priority for atom" );
+    LOG("Bad priority for atom: %s" , a._Atom->description().c_str()  );
+    LOG("   priority value = %d" , a._relativePriority  );
+  }
+  ASSERT_lessThan(a._relativePriority,this->_s.size());
+  return this->_s[a._relativePriority];
 }
 
 
@@ -171,18 +169,18 @@ gctools::Vec0<int>& CipPrioritizer_O::getS(Atom_sp a, core::HashTable_sp cip)
 /*!
  * partition the atoms between cBegin and cEnd-1 into classes based on orderFn
  */
-    vector<int>	partition(gctools::Vec0<Atom_sp> atoms,int indexOffset, OrderByS& orderer)
+vector<int>	partition(gctools::Vec0<AtomPriority> atoms,int indexOffset, OrderByS& orderer)
 {
-    vector<int> part;
-    part.push_back(indexOffset);
-    for ( uint i=1; i<atoms.size(); i++ )
+  vector<int> part;
+  part.push_back(indexOffset);
+  for ( uint i=1; i<atoms.size(); i++ )
+  {
+    if ( orderer.cmpByS(atoms[i-1],atoms[i])!=0 )
     {
-	if ( orderer.cmpByS(atoms[i-1],atoms[i])!=0 )
-	{
-	    part.push_back(i+indexOffset);
-	}
+      part.push_back(i+indexOffset);
     }
-    return part;
+  }
+  return part;
 }
 
 
@@ -190,23 +188,23 @@ CL_LISPIFY_NAME(chem:assign-priorities-hash-table);
 DOCGROUP(cando);
 CL_DEFUN core::HashTable_sp CipPrioritizer_O::assignPrioritiesHashTable(Matter_sp matter)
 {
-    core::HashTable_sp cip = core::HashTableEq_O::create_default();
-    CipPrioritizer_sp prior;
-    if (gc::IsA<Molecule_sp>(matter)) {
-        prior = CipPrioritizer_O::create();
-        prior->assignCahnIngoldPrelogPriorityToAtomsRelativePriority(matter,cip);
-    } else if (gc::IsA<Aggregate_sp>(matter)) {
-        Loop l;
-        l.loopTopGoal(matter,MOLECULES);
-        while ( l.advanceLoopAndProcess() ) {
-            Molecule_sp mol = l.getMolecule();
-            prior = CipPrioritizer_O::create();
-            prior->assignCahnIngoldPrelogPriorityToAtomsRelativePriority(mol,cip);
-        }
-    } else {
-        TYPE_ERROR(matter,core::Cons_O::createList(_sym_Aggregate_O,_sym_Molecule_O));
+  core::HashTable_sp cip = core::HashTableEq_O::create_default();
+  CipPrioritizer_sp prior;
+  if (gc::IsA<Molecule_sp>(matter)) {
+    prior = CipPrioritizer_O::create();
+    prior->assignCahnIngoldPrelogPriorityToAtomsRelativePriority(matter,cip);
+  } else if (gc::IsA<Aggregate_sp>(matter)) {
+    Loop l;
+    l.loopTopGoal(matter,MOLECULES);
+    while ( l.advanceLoopAndProcess() ) {
+      Molecule_sp mol = l.getMolecule();
+      prior = CipPrioritizer_O::create();
+      prior->assignCahnIngoldPrelogPriorityToAtomsRelativePriority(mol,cip);
     }
-    return cip;
+  } else {
+    TYPE_ERROR(matter,core::Cons_O::createList(_sym_Aggregate_O,_sym_Molecule_O));
+  }
+  return cip;
 }
 
 
@@ -236,11 +234,11 @@ p and s arrays.
 Write the relative cip priority in the _RelativePriority slot of each atom.
 )dx")
 CL_LISPIFY_NAME("assignCahnIngoldPrelogPriorityToAtomsRelativePriority");
-    CL_DEFMETHOD void CipPrioritizer_O::assignCahnIngoldPrelogPriorityToAtomsRelativePriority(Matter_sp molOrAgg, core::HashTable_sp cip)
+CL_DEFMETHOD void CipPrioritizer_O::assignCahnIngoldPrelogPriorityToAtomsRelativePriority(Matter_sp molOrAgg, core::HashTable_sp cip)
 {
-    gctools::Vec0<Atom_sp>	mAtoms;
-    vector<int> newC;
-    vector<int> C;
+  gctools::Vec0<AtomPriority>	mAtoms;
+  vector<int> newC;
+  vector<int> C;
     // 
     //  Determination of topological RS chirality
     //  see: http://www.chemcomp.com/journal/chiral.htm
@@ -265,57 +263,60 @@ CL_LISPIFY_NAME("assignCahnIngoldPrelogPriorityToAtomsRelativePriority");
     // p and s arrays
     //
     // 
-    { 
-	this->_p.clear();
-	Loop l;
-	l.loopTopGoal(molOrAgg,ATOMS);
-	while ( l.advanceLoopAndProcess() )
-	{
-	    Atom_sp a = l.getAtom();
-	    if ( a.isA<VirtualAtom_O>() ) continue;
-            cip->setf_gethash(a,core::clasp_make_fixnum(mAtoms.size()));
-	    mAtoms.push_back(a);
-	    this->_p.push_back(atomicNumber(a));
-	}
-
-	OrderByP byP(cip);
-	byP.setCipPrioritizer(this->sharedThis<CipPrioritizer_O>());
-	if ( mAtoms.size()>1 ) 
-	{
-          sort::quickSortVec0(mAtoms, 0, mAtoms.size(), byP);
-	}
-
-	C.clear();
-	int pcur = -1;
-	for ( uint ai=0; ai<mAtoms.size(); ai++ )
-	{
-	    Atom_sp a = mAtoms[ai];
-	    uint idx = a->getRelativePriority(cip);
-	    if (pcur != this->_p[idx])
-	    {
-		C.push_back(ai);
-		pcur = this->_p[idx];
-	    }
-	}
-#ifdef	DEBUG_ON
-	int cidx = 0;
-	LOG("Assigning priorities STAGE1" );
-	for ( gctools::Vec0<Atom_sp>::iterator mit=mAtoms.begin(); 
-		    mit!=mAtoms.end(); mit++ )
-	{
-	    stringstream ss;
-	    ss << "Atom: " << (*mit)->getName();
-	    ss << " priority: " << this->getP((*mit));
-	    ASSERT_lessThan(cidx,(int)(C.size()+1));
-	    if ( cidx < (int)(C.size()) && mit-mAtoms.begin() == C[cidx] )
-	    {
-		cidx++;
-	    }
-	    ss << " C-class: " << cidx-1;
-	    LOG("%s" , ss.str().c_str()  );
-	}
-#endif
+  { 
+    this->_p.clear();
+    Loop l;
+    l.loopTopGoal(molOrAgg,ATOMS);
+    while ( l.advanceLoopAndProcess() )
+    {
+      Atom_sp a = l.getAtom();
+      if ( a.isA<VirtualAtom_O>() ) continue;
+      size_t relativePriority = core::clasp_make_fixnum(mAtoms.size());
+      cip->setf_gethash(a,core::clasp_make_fixnum(relativePriority));
+      AtomPriority ap(a,relativePriority);
+      mAtoms.push_back(ap);
+      this->_p.push_back(atomicNumber(a));
     }
+
+    OrderByP byP;
+    byP.setCipPrioritizer(this->sharedThis<CipPrioritizer_O>());
+    if ( mAtoms.size()>1 ) 
+    {
+      sort::quickSortVec0(mAtoms, 0, mAtoms.size(), byP);
+    }
+
+    C.clear();
+    int pcur = -1;
+    for ( uint ai=0; ai<mAtoms.size(); ai++ )
+    {
+      AtomPriority& ap = mAtoms[ai];
+      Atom_sp a = mAtoms[ai]._Atom;
+      uint idx = mAtoms[ai]._relativePriority;
+      if (pcur != this->_p[idx])
+      {
+        C.push_back(ai);
+        pcur = this->_p[idx];
+      }
+    }
+#ifdef	DEBUG_ON
+    int cidx = 0;
+    LOG("Assigning priorities STAGE1" );
+    for ( gctools::Vec0<Atom_sp>::iterator mit=mAtoms.begin(); 
+          mit!=mAtoms.end(); mit++ )
+    {
+      stringstream ss;
+      ss << "Atom: " << (*mit)->getName();
+      ss << " priority: " << this->getP((*mit));
+      ASSERT_lessThan(cidx,(int)(C.size()+1));
+      if ( cidx < (int)(C.size()) && mit-mAtoms.begin() == C[cidx] )
+      {
+        cidx++;
+      }
+      ss << " C-class: " << cidx-1;
+      LOG("%s" , ss.str().c_str()  );
+    }
+#endif
+  }
     // C.append(len(mAtoms))
 
     // print "Classes go from C[i] to C[i+1] unless last i then end, C=",C
@@ -326,63 +327,63 @@ CL_LISPIFY_NAME("assignCahnIngoldPrelogPriorityToAtomsRelativePriority");
     //  multiplicities with repeated values (i.e., if atom i is double 
     //  bonded to an atom with priority p, then put p in the list twice).
 
-    {
+  {
 		    // previously this was at the top of step 3
-	bool didPartition = true;
-	while ( didPartition )
-	{
-	    this->_s.clear();
-	    this->_s.resize(mAtoms.size());
-	    { 
-		for ( gctools::Vec0<Atom_sp>::iterator mi =mAtoms.begin();
-				 mi!=mAtoms.end(); mi++ )
-		{
-		    Atom_sp myatom = *mi;
-		    LOG("About to fill mys" );
-                    gctools::Vec0<int>	mys;
-		    for ( gctools::Vec0<Bond_sp>::iterator bi=myatom->bonds_begin();
-				 bi!=myatom->bonds_end(); bi++ )
-		    {
-			int bondOrder = 1;
-			if ( Bond_O::singleBondP((*bi)->getRawOrder()) ) bondOrder = 1;
-			if ( (*bi)->getRawOrder() == doubleBond ) bondOrder = 2;
-			if ( (*bi)->getRawOrder() == tripleBond ) bondOrder = 3;
-			for ( int oi=0; oi<bondOrder; oi++ )
-			{
-			    mys.push_back(this->_p[(*bi)->getOtherAtom(myatom)->getRelativePriority(cip)]);
-			}
-		    }
-		    LOG("About to sort %d mys objects" , mys.size()  );
-		    if (mys.size()>1) {
-                      int* begin = &mys[0];
-                      int* end = &mys[mys.size()];
-                      sort::quickSortVec0(mys, 0, mys.size());
-                      LOG("Done sort" );
-                      sort::reverse(begin,end);
-                      LOG("Done reverse" );
-                    }
+    bool didPartition = true;
+    while ( didPartition )
+    {
+      this->_s.clear();
+      this->_s.resize(mAtoms.size());
+      { 
+        for ( gctools::Vec0<AtomPriority>::iterator mi =mAtoms.begin();
+              mi!=mAtoms.end(); mi++ )
+        {
+          Atom_sp myatom = (*mi)._Atom;
+          LOG("About to fill mys" );
+          gctools::Vec0<int>	mys;
+          for ( gctools::Vec0<Bond_sp>::iterator bi=myatom->bonds_begin();
+                bi!=myatom->bonds_end(); bi++ )
+          {
+            int bondOrder = 1;
+            if ( Bond_O::singleBondP((*bi)->getRawOrder()) ) bondOrder = 1;
+            if ( (*bi)->getRawOrder() == doubleBond ) bondOrder = 2;
+            if ( (*bi)->getRawOrder() == tripleBond ) bondOrder = 3;
+            for ( int oi=0; oi<bondOrder; oi++ )
+            {
+              mys.push_back(this->_p[(*bi)->getOtherAtom(myatom)->getRelativePriority(cip)]);
+            }
+          }
+          LOG("About to sort %d mys objects" , mys.size()  );
+          if (mys.size()>1) {
+            int* begin = &mys[0];
+            int* end = &mys[mys.size()];
+            sort::quickSortVec0(mys, 0, mys.size());
+            LOG("Done sort" );
+            sort::reverse(begin,end);
+            LOG("Done reverse" );
+          }
 		    // print "atom(%s) mys = %s"%(myatom.getName(),str(mys))
-		    this->_s[myatom->getRelativePriority(cip)] = mys;
-		}
-	    }
+          this->_s[myatom->getRelativePriority(cip)] = mys;
+        }
+      }
 #ifdef	DEBUG_ON
-	    { 
+      { 
     //	vector< vector<int> >::iterator sit;
-                gctools::Vec0<Atom_sp>::iterator ait;
-	    LOG("Reverse sorted neighbor priorities for each atom" );
-	    for ( ait=mAtoms.begin(); ait!=mAtoms.end(); ait++ )
-	    {
-		vector<int>::iterator zit;
-		stringstream ss;
-		for ( zit=this->_s[(*ait)->getRelativePriority()].begin();
-			    zit!=this->_s[(*ait)->getRelativePriority()].end();
-			    zit++ )
-		{
-		    ss << " " << *zit;
-		}
-		LOG("  reverse sorted priorities of neighbors of %s - %s" , (*ait)->getName().c_str() , ss.str().c_str()  );
-	    }
-	}
+        gctools::Vec0<Atom_sp>::iterator ait;
+        LOG("Reverse sorted neighbor priorities for each atom" );
+        for ( ait=mAtoms.begin(); ait!=mAtoms.end(); ait++ )
+        {
+          vector<int>::iterator zit;
+          stringstream ss;
+          for ( zit=this->_s[(*ait)->getRelativePriority()].begin();
+                zit!=this->_s[(*ait)->getRelativePriority()].end();
+                zit++ )
+          {
+            ss << " " << *zit;
+          }
+          LOG("  reverse sorted priorities of neighbors of %s - %s" , (*ait)->getName().c_str() , ss.str().c_str()  );
+        }
+      }
 #endif
 	// 3.	For each class Cr, partition the atoms in the class into 
 	//  ordered subclasses (S1,...,Sk) such that for each atom i in subclass 
@@ -393,135 +394,137 @@ CL_LISPIFY_NAME("assignCahnIngoldPrelogPriorityToAtomsRelativePriority");
 
 	// didPartition = True
 	// while ( didPartition ):
-	    newC.clear();
-	    {
-		didPartition = false;
-		uint classIndex;
-		for ( classIndex = 0; classIndex < C.size(); classIndex++ )
-		{ 
-		    uint classBegin = C[classIndex];
-		    uint classEnd;
-		    if ( classIndex == C.size()-1 )
-		    {
-			classEnd = mAtoms.size();
-		    } else
-		    {
-			classEnd = C[classIndex+1];
-		    }
-		    LOG("Looking at class (%u)-(%u)" , classBegin , classEnd  );
-                    gctools::Vec0<Atom_sp> S;
-		    {
-			for ( uint ci = classBegin; ci<classEnd; ci++ )
-			{
-			    Atom_sp a = mAtoms[ci];
-			    S.push_back(a);
+      newC.clear();
+      {
+        didPartition = false;
+        uint classIndex;
+        for ( classIndex = 0; classIndex < C.size(); classIndex++ )
+        { 
+          uint classBegin = C[classIndex];
+          uint classEnd;
+          if ( classIndex == C.size()-1 )
+          {
+            classEnd = mAtoms.size();
+          } else
+          {
+            classEnd = C[classIndex+1];
+          }
+          LOG("Looking at class (%u)-(%u)" , classBegin , classEnd  );
+          gctools::Vec0<AtomPriority> S;
+          {
+            for ( uint ci = classBegin; ci<classEnd; ci++ )
+            {
+              S.push_back(mAtoms[ci]);
 			    // print "Before sort S.atom(%s) s=%s"%(a.getName(),str(s[a.getRelativePriority()]))
-			}
-		    }
-		    OrderByS byS(cip);
-		    {
-			LOG("Setting up prioritizer" );
-			byS.setCipPrioritizer(this->sharedThis<CipPrioritizer_O>());
-			LOG("about to sort number of elements = %d" , S.size()  );
+            }
+          }
+          OrderByS byS;
+          {
+            LOG("Setting up prioritizer" );
+            byS.setCipPrioritizer(this->sharedThis<CipPrioritizer_O>());
+            LOG("about to sort number of elements = %d" , S.size()  );
 #ifdef DEBUG_ON
-			LOG("Contents of S" );
-			for ( gctools::Vec0<Atom_sp>::iterator ssi=S.begin();ssi!=S.end();ssi++)
-			{
-			    LOG("    %s" , (*ssi)->description().c_str() );
-			}
+            LOG("Contents of S" );
+            for ( gctools::Vec0<Atom_sp>::iterator ssi=S.begin();ssi!=S.end();ssi++)
+            {
+              LOG("    %s" , (*ssi)->description().c_str() );
+            }
 #endif
-			if (S.size()>1) sort::quickSortVec0(S, 0, S.size(), byS);
-			LOG("done sort" );
-		    }
+            if (S.size()>1) sort::quickSortVec0(S, 0, S.size(), byS);
+            LOG("done sort" );
+          }
 //		    int i = 0;
-		    LOG("About to dump sort results" );
+          LOG("About to dump sort results" );
 #ifdef	DEBUG_ON
-                    gctools::Vec0<Atom_sp>::iterator iiS;
-for ( iiS=S.begin(); iiS!=S.end(); iiS++)
-{
-    stringstream sz;
-    sz << "After sort S[" << iiS-S.begin() << "].atom("<<(*iiS)->getName();
-    sz << " neighbors: ";
-    vector<int>::iterator zit;
-    for ( zit=this->_s[(*iiS)->getRelativePriority()].begin();
-		zit!=this->_s[(*iiS)->getRelativePriority()].end();
-		zit++ )
-    {
-	sz << " " << *zit;
-    }
+          gctools::Vec0<Atom_sp>::iterator iiS;
+          for ( iiS=S.begin(); iiS!=S.end(); iiS++)
+          {
+            stringstream sz;
+            sz << "After sort S[" << iiS-S.begin() << "].atom("<<(*iiS)->getName();
+            sz << " neighbors: ";
+            vector<int>::iterator zit;
+            for ( zit=this->_s[(*iiS)->getRelativePriority()].begin();
+                  zit!=this->_s[(*iiS)->getRelativePriority()].end();
+                  zit++ )
+            {
+              sz << " " << *zit;
+            }
 
-    LOG("%s" , sz.str().c_str()  );
-}
+            LOG("%s" , sz.str().c_str()  );
+          }
 #endif
 		//    for a in S:
 		// 	print "After sort S[%d].atom(%s) s=%s"%(classBegin+i,a.getName(),str(s[a.getRelativePriority()]))
 		// 	i += 1
-		    LOG("Replacing mAtoms from (%u)-(%u) with S" , classBegin , classEnd );
-		    uint si, mi;
-		    for ( si=0, mi=classBegin; mi!=classEnd; mi++, si++ ) mAtoms[mi] = S[si];
-		    LOG("Partitioning based on s" );
-		    vector<int> partitionS = partition(S,classBegin,byS);
+          LOG("Replacing mAtoms from (%u)-(%u) with S" , classBegin , classEnd );
+          uint si, mi;
+          for ( si=0, mi=classBegin; mi!=classEnd; mi++, si++ ) {
+            mAtoms[mi]._Atom = S[si]._Atom;
+            mAtoms[mi]._relativePriority = S[si]._relativePriority;
+          }
+          LOG("Partitioning based on s" );
+          vector<int> partitionS = partition(S,classBegin,byS);
 #if DEBUG_ON
-		    vector<int>::iterator pSi;
-		    stringstream Ss;
-		    for ( pSi=partitionS.begin(); pSi!=partitionS.end(); pSi++)
-		    {
-			Ss << " " << *pSi;
-		    }
-		    LOG(" partitionS = %s" , Ss.str().c_str()  );
+          vector<int>::iterator pSi;
+          stringstream Ss;
+          for ( pSi=partitionS.begin(); pSi!=partitionS.end(); pSi++)
+          {
+            Ss << " " << *pSi;
+          }
+          LOG(" partitionS = %s" , Ss.str().c_str()  );
 #endif
-		    if ( partitionS.size()>1 ) 
-		    {
-			LOG(" Did partition of S" );
-			didPartition = true;
-		    }
-		    for ( vector<int>::iterator psi=partitionS.begin(); psi!=partitionS.end(); psi++ )
-		    {
-			newC.push_back(*psi);
-		    }
-		}
-	    }
+          if ( partitionS.size()>1 ) 
+          {
+            LOG(" Did partition of S" );
+            didPartition = true;
+          }
+          for ( vector<int>::iterator psi=partitionS.begin(); psi!=partitionS.end(); psi++ )
+          {
+            newC.push_back(*psi);
+          }
+        }
+      }
 	// 4.	If every class was partitioned into only one subclass then 
 	//  terminate with p(i) as the priority of atom i.
-	    { 
-		if ( !didPartition ) break;
-	    }
+      { 
+        if ( !didPartition ) break;
+      }
 
 	    // print "Repartitioning"
 	// 5.	Form a new partition of all the atoms by concatenating 
 	//  	all of the computed subclasses of all of the classes (in the 
 	//  	same sequence as the original classes).
 
-	    { 
-		C = newC;
-	    }
+      { 
+        C = newC;
+      }
 	    // print "Regenerated C = ", C
 
 	// 6.	For each class Cr and for each atom i in Cr set 
 	// 	p(i) to r and go to Step 3.
 	// 
 	    // print "Resetting p's"
-	    { 
-		uint classBegin, classEnd;
-		for ( uint classIndex= 0; classIndex < C.size(); classIndex++ )
-		{
-		    classBegin = C[classIndex];
-		    if ( classIndex == C.size()-1 )
-		    {
-			classEnd = mAtoms.size();
-		    } else
-		    {
-			classEnd = C[classIndex+1];
-		    }
-		    for ( uint cci =classBegin; cci!=classEnd; cci++ )
-		    {
-			Atom_sp a = mAtoms[cci];
-			this->_p[a->getRelativePriority(cip)] = classIndex;
-		    }
-		}
-	    }
-	}
+      { 
+        uint classBegin, classEnd;
+        for ( uint classIndex= 0; classIndex < C.size(); classIndex++ )
+        {
+          classBegin = C[classIndex];
+          if ( classIndex == C.size()-1 )
+          {
+            classEnd = mAtoms.size();
+          } else
+          {
+            classEnd = C[classIndex+1];
+          }
+          for ( uint cci =classBegin; cci!=classEnd; cci++ )
+          {
+            AtomPriority& a = mAtoms[cci];
+            this->_p[a._relativePriority] = classIndex;
+          }
+        }
+      }
     }
+  }
     // The partitioning steps can be effected with sorting and since 
     // all other steps require linear time, we have that each iteration 
     // of the algorithm requires O(nlogn) time (assuming bounded degree 
@@ -539,14 +542,14 @@ for ( iiS=S.begin(); iiS!=S.end(); iiS++)
     // assignment into account. This process will create new 
     // chiral centers based on the chirality of the branches.
     //  now write the CIP relative priority into RelativePriority 
-    { 
-	for ( gctools::Vec0<Atom_sp>::iterator ai=mAtoms.begin(); ai!=mAtoms.end(); ai++ )
-	{
-	    uint relPriority = this->_p[(*ai)->getRelativePriority(cip)];
-            cip->setf_gethash((*ai),core::clasp_make_fixnum(relPriority));
-	    LOG("Assigned to atom: %s priority: %d" , (*ai)->getName().c_str() , relPriority  );
-	}
+  { 
+    for ( gctools::Vec0<AtomPriority>::iterator ai=mAtoms.begin(); ai!=mAtoms.end(); ai++ )
+    {
+      uint relPriority = this->_p[(*ai)._relativePriority];
+      cip->setf_gethash((*ai)._Atom,core::clasp_make_fixnum(relPriority));
+      LOG("Assigned to atom: %s priority: %d" , (*ai)._Atom->getName().c_str() , relPriority  );
     }
+  }
 }
 
 
@@ -558,60 +561,61 @@ bool orderByName( Atom_sp p1, Atom_sp p2 )
 CL_LISPIFY_NAME("setStereochemicalTypeForAllAtoms");
 CL_DEFMETHOD core::HashTable_sp CipPrioritizer_O::setStereochemicalTypeForAllAtoms(Matter_sp molOrAgg)
 {
-    core::HashTable_sp cip = core::HashTableEq_O::create_default();
-    this->assignCahnIngoldPrelogPriorityToAtomsRelativePriority(molOrAgg,cip);
-    Loop l;
-    l.loopTopGoal(molOrAgg,ATOMS);
-    while ( l.advanceLoopAndProcess() )
+  core::HashTable_sp cip = core::HashTableEq_O::create_default();
+  this->assignCahnIngoldPrelogPriorityToAtomsRelativePriority(molOrAgg,cip);
+  Loop l;
+  l.loopTopGoal(molOrAgg,ATOMS);
+  while ( l.advanceLoopAndProcess() )
+  {
+    Atom_sp a = l.getAtom();
+    if ( a.isA<VirtualAtom_O>() ) continue;
+    if ( a->numberOfBonds() == 4 )
     {
-	Atom_sp a = l.getAtom();
-	if ( a.isA<VirtualAtom_O>() ) continue;
-	if ( a->numberOfBonds() == 4 )
-	{
 	    //  get the names of the atoms in order of priority
-            gctools::Vec0<Atom_sp> priority;
-	    for ( gctools::Vec0<Bond_sp>::iterator bi = a->bonds_begin(); bi!=a->bonds_end(); bi++ )
-	    {
-		priority.push_back((*bi)->getOtherAtom(a));
-	    }
-            OrderByPriority orderByPriority(cip);
-	    sort::quickSortVec0(priority, 0, priority.size(), orderByPriority);
+      gctools::Vec0<AtomPriority> priority;
+      for ( gctools::Vec0<Bond_sp>::iterator bi = a->bonds_begin(); bi!=a->bonds_end(); bi++ )
+      {
+        AtomPriority ap((*bi)->getOtherAtom(a),a->getRelativePriority(cip));
+        priority.push_back(ap);
+      }
+      OrderByPriority orderByPriority;
+      sort::quickSortVec0(priority, 0, priority.size(), orderByPriority);
 	    //  now figure out if they are four different priorities
-	    uint prevPriority = UndefinedUnsignedInt;
-	    int diff = 0;
-	    for ( gctools::Vec0<Atom_sp>::iterator pi=priority.begin(); 
-	    		pi!=priority.end(); pi++ )
-	    {
-		if ( (*pi)->getRelativePriority(cip) != prevPriority )
-		{
-		    diff += 1;
-		}
-		prevPriority = (*pi)->getRelativePriority(cip);
-	    }
-	    if ( diff == 4 )
-	    {
+      uint prevPriority = UndefinedUnsignedInt;
+      int diff = 0;
+      for ( gctools::Vec0<AtomPriority>::iterator pi=priority.begin(); 
+            pi!=priority.end(); pi++ )
+      {
+        if ( (*pi)._relativePriority != prevPriority )
+        {
+          diff += 1;
+        }
+        prevPriority = (*pi)._relativePriority;
+      }
+      if ( diff == 4 )
+      {
 		//  they are all different, this is a chiral atom
 		// If the stereochemistry type has already been assigned then don't overwrite it.
-		if ( a->getStereochemistryType() != chiralCenter )
-		{
-		    a->setStereochemistryType(chiralCenter);
-		    a->setConfiguration(undefinedConfiguration);
-		}
-	    } else 
-	    {
+        if ( a->getStereochemistryType() != chiralCenter )
+        {
+          a->setStereochemistryType(chiralCenter);
+          a->setConfiguration(undefinedConfiguration);
+        }
+      } else 
+      {
 		//  there are less than 4 different priorities that means
 		//  we treat this as a proChiral center, methyls will also order
 		//  their atoms
-		a->setStereochemistryType(prochiralCenter);
-		a->setConfiguration(undefinedConfiguration);
-	    }
-	} else
-	{
-	    a->setConfiguration(undefinedConfiguration);
-	    a->setStereochemistryType(undefinedCenter);
-	}
+        a->setStereochemistryType(prochiralCenter);
+        a->setConfiguration(undefinedConfiguration);
+      }
+    } else
+    {
+      a->setConfiguration(undefinedConfiguration);
+      a->setStereochemistryType(undefinedCenter);
     }
-    return cip;
+  }
+  return cip;
 }
 
 CL_DOCSTRING(R"dx(Calculate the stereochemistry for each atom in the aggregate or molecule)dx");

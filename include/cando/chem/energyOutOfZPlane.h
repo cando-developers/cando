@@ -150,7 +150,7 @@ public:
 public:
   void addTerm(const TermType& term);
   void addOutOfZPlaneTerm(size_t index, double kb, double r0);
-  virtual void dumpTerms();
+  virtual void dumpTerms(core::HashTable_sp atomTypes);
 
   virtual void setupHessianPreconditioner(NVector_sp nvPosition,
                                           AbstractLargeSquareMatrix_sp m );

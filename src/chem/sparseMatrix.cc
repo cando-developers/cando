@@ -46,20 +46,6 @@ This is an open source license for the CANDO software from Temple University, bu
 
 
 using namespace chem;
-#ifdef	USEBOOSTPYTHON //[
-void	
-I nitPython_SparseMatrix()
-{
-
-    boost::python::def("XmlTag_SparseMatrix",XmlTag_SparseMatrix);
-
-#ifdef USEBOOSTPYTHON
-    PYTHON_CLASS(ChemPkg,Dumb,"","",_lisp)
-	.def(boost::python::init<int,int> () )
-	;
-#endif
-}
-#endif //]
 
 /*
  *      Dumb_SparseMatrix 

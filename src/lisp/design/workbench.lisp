@@ -1,4 +1,0 @@
-
-
-(ql:quickload :design)
-

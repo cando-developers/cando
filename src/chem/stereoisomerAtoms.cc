@@ -1,3 +1,17 @@
+#include <clasp/core/common.h>
+
+// FIX_TOPOLOGY
+// Get the stereoisomer atoms from a topology
+SYMBOL_EXPORT_SC_(ChemPkg, stereoisomer_atoms);
+SYMBOL_EXPORT_SC_(ChemPkg, stereoisomer_atom_with_name);
+// Get atom type of stereoisomer_atom
+SYMBOL_EXPORT_SC_(ChemPkg, stereoisomer_atom_type);
+
+
+
+
+#if 0
+
 /*
     File: stereoisomerAtoms.cc
 */
@@ -26,6 +40,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #define	DEBUG_LEVEL_NONE
 
 #include <clasp/core/common.h>
+#include <clasp/core/ql.h>
 #include <cando/adapt/stringSet.h>
 #include <cando/adapt/adapters.h>
 #include <cando/chem/stereoisomerAtoms.h>
@@ -70,7 +85,7 @@ string StereoisomerAtom_O::__repr__() const
 {
   stringstream ss;
   ss << "( " << this->className() << " ";
-  ss << " :atomName \"" << this->_AtomName << "\"";
+  ss << " :atomName " << _rep_(this->_AtomName);
   ss << " :constitutionAtomIndex " << this->_ConstitutionAtomIndex << " )";
   return ss.str();
 }
@@ -164,6 +179,14 @@ CL_DEFMETHOD     adapt::SymbolSet_sp StereoisomerAtoms_O::atomNamesAsSymbolSet()
 };
 
 
+CL_DEFMETHOD core::List_sp StereoisomerAtoms_O::atomsAsList() const {
+  ql::list ll;
+  for ( int iii = 0; iii<this->numberOfAtoms(); iii++ ) {
+    ll << this->_Atoms[(uint)iii];
+  }
+  return ll.cons();
+}
+
 CL_LAMBDA(name &optional (errorp t));
 CL_LISPIFY_NAME("atomWithName");
 CL_DEFMETHOD     core::T_mv StereoisomerAtoms_O::atomWithName(MatterName nm,bool errorp)
@@ -199,3 +222,4 @@ CL_DEFMETHOD     int StereoisomerAtoms_O::index(MatterName name) const
 
 
 };
+#endif

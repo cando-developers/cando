@@ -167,6 +167,8 @@
            #:save-and-skip-rest-of-minimization
            #:with-ignore-minimizer-errors
            #:build-good-geometry-from-random
+           #:randomize-coordinates
+           #:prepare-stage1-sketch-function
            #:starting-geometry
            #:starting-geometry-with-restarts
            #:build-molecules-from-atom-connectivity
@@ -193,6 +195,7 @@
            #:make-progress-bar
            #:do-make-progress-bar
            #:*ui-client*
+           #:*stage1-nonbond-constant*
            #:progress-done
            #:home/
            #:make-simple-topology-from-residue
@@ -203,13 +206,12 @@
            ;;; directory utilities
            #:set-current-directory
            #:current-directory
-           #:do-molecules
-           #:do-residues
-           #:do-atoms
            #:remove-molecules
            #:combine
            #:assign-solvent-molecules-using-residue-name
-           #:identify-solvent-residue-name))
+           #:identify-solvent-residue-name
+           #:make-rapid-starting-geometry
+           #:next-rapid-starting-geometry))
 
 (defpackage #:dynamics
   (:use #:common-lisp)

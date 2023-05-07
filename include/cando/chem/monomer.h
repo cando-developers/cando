@@ -1,3 +1,4 @@
+#ifdef USE_TOPOLOGY
 /*
     File: monomer.h
 */
@@ -279,3 +280,4 @@ public:
 
 
 
+#endif

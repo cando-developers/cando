@@ -1,3 +1,4 @@
+#ifdef USE_TOPOLOGY
 /*
     File: monomerCoordinates.cc
 */
@@ -295,3 +296,4 @@ CL_DEFMETHOD core::List_sp	MonomerCoordinates_O::testExtraction(
 
 
 };
+#endif

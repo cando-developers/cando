@@ -149,11 +149,6 @@ CL_DEFMETHOD   Atom_sp getAtom2() const { return this->_Atom2; };
 
   BondOrder maybeFlipOrder(Atom_sp from);
 
-
-	/*! Return a ConstitutionBond_sp object using the ConstitutionBond_O::atomIdMap 
-	  to map Atoms to ConstitutionAtomIndex0N values */
-  ConstitutionBond_sp asConstitutionBond(Atom_sp from, const MapAtomsToConstitutionAtomIndex0N& atomMap);
-
 		//! For bonds that are read from XML we instruct them to join the atoms that they are supposed to join
   void		joinYourAtoms();
 

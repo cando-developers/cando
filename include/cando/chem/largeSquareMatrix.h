@@ -74,12 +74,11 @@ class AbstractLargeSquareMatrix_O : public core::CxxObject_O
 {
     LISP_CLASS(chem,ChemPkg,AbstractLargeSquareMatrix_O,"AbstractLargeSquareMatrix",core::CxxObject_O);
 
-protected:
+public:
     TriangleType 	_Triangle;
     uint   		_Columns;
     uint		_Rows;
 
-public:
 protected:
     virtual	uint	indexBegin() {SUBIMP();};
     virtual	uint	indexEnd() {SUBIMP();}
@@ -201,7 +200,7 @@ class SparseLargeSquareMatrix_O : public AbstractLargeSquareMatrix_O
 {
     LISP_CLASS(chem,ChemPkg,SparseLargeSquareMatrix_O,"SparseLargeSquareMatrix",AbstractLargeSquareMatrix_O);
 
-private:
+public:
   bool		_InsertionIsComplete;
   uint		_RowStartEntries;
   gctools::Vec0<uint> 	_RowStarts;
@@ -239,7 +238,64 @@ virtual	void	debug();
 virtual	void	setAtIndex(uint ii, double d) { this->_Values[ii] = d;};
 virtual	double	getAtIndex(uint ii) { return this->_Values[ii];};
 
-	uint	columnForIndex(uint ii) { return this->_ColumnForValue[ii];};
+  template <typename Func>
+  void loopOverRowLowerDiagonal(uint row, uint start_col, uint end_col, Func f) {
+    uint ib = this->_RowStarts[row];
+    uint ie = this->_RowStarts[row+1]-1;
+    for ( uint ii = ib; ii<=ie; ii++ ) {
+      uint col = this->_ColumnForValue[ii];
+      if (start_col<=col && col < end_col) {
+        f(col,row,this->_Values[ii]);
+      }
+    }
+  }
+
+    template <typename Func>
+    void loopOverColumnLowerDiagonal(uint column, uint row_start, uint row_end, Func f) {
+    for ( int row = row_start; row < row_end; row++ ) {
+      uint ib = this->_RowStarts[row];
+      uint ie = this->_RowStarts[row+1];
+      auto it = std::find( this->_ColumnForValue.begin()+ib,
+                           this->_ColumnForValue.begin()+ie,
+                           column );
+      if (it != this->_ColumnForValue.begin()+ie) {
+        int idx = std::distance(this->_ColumnForValue.begin(),it);
+        uint col = this->_ColumnForValue[idx];
+        double val = this->_Values[idx];
+        f(col,row,val);
+      }
+    }
+  }
+
+#if 0
+  template <typename Func>
+  void loopOverRowUpperOffDiagonal(uint row, uint start_col, uint end_col, Func f) {
+    uint ib = this->_RowStarts[row];
+    uint ie = this->_RowStarts[row+1]-1;
+    for ( uint ii = ib; ii<=ie; ii++ ) {
+      uint col = this->_ColumnForValue[ii];
+      if (start_col<=col && col < end_col) {
+        f(row,this->_ColumnForValue[ii],this->_Values[ii]);
+      }
+    }
+  }
+
+  template <typename Func>
+  void loopOverColumnUpperOffDiagonal(uint column, Func f) {
+    for ( int row = 0; row < this->_RowStarts.size() - 1; row++ ) {
+      uint ib = this->_RowStarts[row];
+      uint ie = this->_RowStarts[row+1];
+      auto it = std::find( this->_ColumnForValue.begin()+ib,
+                           this->_ColumnForValue.begin()+ie,
+                           column );
+      if (it != this->_ColumnForValue.begin()+ie) {
+        double val = this->_Values[std::distance(this->_ColumnForValue.begin(),it)];
+        f(row,it,val);
+      }
+    }
+  }
+#endif  
+  uint	columnForIndex(uint ii) { return this->_ColumnForValue[ii];};
 
 		/*! Return the index of the element in row(y)
 		 * that immediatly follows column (x)

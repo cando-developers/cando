@@ -114,7 +114,7 @@ public:
   bool fieldsp() const { return true; };
   void fields(core::Record_sp node);
 public:
-  static void improperAtomSort(Atom_sp& a1, Atom_sp& a2, Atom_sp& a4);
+  static void improperAtomSort(Atom_sp& a1, Atom_sp& a2, Atom_sp& a4, core::HashTable_sp atomTypes );
   void initialize();
 public:
   void	add( FFItor_sp itor );

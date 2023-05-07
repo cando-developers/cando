@@ -8,7 +8,7 @@
   (let ((xpos (gethash "x" atom-ht))
         (ypos (gethash "y" atom-ht))
         (zpos (gethash "z" atom-ht)))
-    (cando:do-atoms (atm aggregate)
+    (chem:do-atoms (atm aggregate)
       (let ((deltax (abs (- xpos (geom:get-x (chem:get-position atm)))))
             (deltay (abs (- ypos (geom:get-y (chem:get-position atm)))))
             (deltaz (abs (- zpos (geom:get-z (chem:get-position atm))))))

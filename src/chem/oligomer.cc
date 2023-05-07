@@ -71,6 +71,7 @@ This is an open source license for the CANDO software from Temple University, bu
  */
 
 
+#ifdef USE_TOPOLOGY
 
 
 namespace chem {
@@ -1077,3 +1078,4 @@ Oligomer_sp Oligomer_O::make(core::List_sp parts)
 
 
 }; // namespace chem
+#endif

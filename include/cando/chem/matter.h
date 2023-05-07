@@ -193,11 +193,12 @@ protected:
 
 		/*! Return the first atom that matches the alias
 		 */
+#ifdef USE_TOPOLOGY
   virtual Atom_sp	aliasAtomOrNil(Alias_sp alias);
 		/*! Return the first residue that matches the alias
 		 */
   virtual Residue_sp aliasResidueOrNil(Alias_sp alias);
-
+#endif
 		/*! Return the first atom that matches the alias
 		 */
   Atom_sp	aliasAtom(Alias_sp alias);
@@ -233,7 +234,7 @@ protected:
 		/*! Return the value of the property.
 		 * Throw an exception if the property isn't defined.
 		 */
-  core::T_sp getProperty(core::Symbol_sp propertySymbol );
+  core::T_sp getProperty(core::Symbol_sp propertySymbol ) const;
 		/*! Return the value of the property or the
 		 * default if it isn't defined.
 		 */
@@ -321,6 +322,8 @@ protected:
 //	int	get_StorageId() { return this->_StorageId; };
 
   int		contentIndex( Matter_sp c);
+  CL_LISPIFY_NAME("setContentAt");
+  CL_DEFMETHOD   void setContentAt( size_t i, Matter_sp c );
   CL_LISPIFY_NAME("contentAt");
   CL_DEFMETHOD   Matter_sp	contentAt( size_t i ) const;
   CL_LISPIFY_NAME("contentSize");

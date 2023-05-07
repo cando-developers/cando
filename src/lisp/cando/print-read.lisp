@@ -69,17 +69,6 @@ Save the object to the file PATHNAME as an s-expression."
     (let ((*readtable* *cando-reader*))
       (read fin))))
 
-(defun print-object-readably-with-slots (obj stream skip-slot-names)
-  (format stream "#$(~s " (class-name (class-of obj)))
-  (loop for slot in (clos:class-slots (class-of obj))
-        for slot-name = (clos:slot-definition-name slot)
-        for initargs = (clos:slot-definition-initargs slot)
-        if (and (car initargs)
-                (not (position slot-name skip-slot-names))
-                (slot-boundp obj slot-name))
-          do (format stream "~s ~s " (car initargs) (slot-value obj slot-name)))
-  (format stream ") "))
-
 (defmacro make-class-save-load (class-name &key skip-slot-names
                                              (print-unreadably
                                               `(lambda (obj stream)
@@ -93,7 +82,7 @@ Save the object to the file PATHNAME as an s-expression."
   `(defmethod print-object ((obj ,class-name) stream)
      (if *print-readably*
          (progn
-           (print-object-readably-with-slots obj stream (quote ,skip-slot-names)))
+           (cando.serialize:print-object-readably-with-slots obj stream (quote ,skip-slot-names)))
          (funcall ,print-unreadably obj stream))))
 
 

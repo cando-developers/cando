@@ -39,6 +39,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/nVector.h>
 #include <clasp/core/lispStream.h>
 #include <cando/chem/aggregate.h>
+#include <xmmintrin.h>
 
 namespace chem {
 /*

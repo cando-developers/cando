@@ -195,10 +195,10 @@ void EnergyDihedral::defineFrom( int n, FFItor_sp term , EnergyAtom *ea1, Energy
 void	EnergyDihedral::defineMissingProper( EnergyAtom *ea1, EnergyAtom *ea2, EnergyAtom *ea3, EnergyAtom *ea4 )
 {
   this->_Proper = true;
-//    this->_Type1 = ea1->_Atom->getType();
-//    this->_Type2 = ea2->_Atom->getType();
-  /    this->_Type3 = ea3->_Atom->getType();
-  this->_Type4 = ea4->_Atom->getType();
+//    this->_Type1 = ea1->_Atom->getType(atomTypes);
+//    this->_Type2 = ea2->_Atom->getType(atomTypes);
+  /    this->_Type3 = ea3->_Atom->getType(atomTypes);
+  this->_Type4 = ea4->_Atom->getType(atomTypes);
 }
 #endif //]
 
@@ -303,6 +303,9 @@ double	_evaluateEnergyOnly_Dihedral(
 
 void EnergyDihedral_O::addTerm(const EnergyDihedral& term)
 {
+  if (this->_Terms.size() == this->_Terms.capacity()-1) {
+    this->_Terms.reserve(this->_Terms.size()*2);
+  }
   this->_Terms.push_back(term);
 }
 
@@ -314,7 +317,7 @@ string EnergyDihedral_O::beyondThresholdInteractionsAsString()
 
 
 
-void	EnergyDihedral_O::dumpTerms()
+void	EnergyDihedral_O::dumpTerms(core::HashTable_sp atomTypes)
 {
   gctools::Vec0<EnergyDihedral>::iterator	edi;
   string				as1,as2,as3,as4;
@@ -364,7 +367,7 @@ void	EnergyDihedral_O::dumpTerms()
 
 
 CL_DEFMETHOD
-core::List_sp	EnergyDihedral_O::lookupDihedralTerms(AtomTable_sp atomTable, Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4)
+core::List_sp	EnergyDihedral_O::lookupDihedralTerms(AtomTable_sp atomTable, Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, core::HashTable_sp atomTypes )
 {
   gctools::Vec0<EnergyDihedral>::iterator	edi;
   string				as1,as2,as3,as4;
@@ -392,10 +395,10 @@ core::List_sp	EnergyDihedral_O::lookupDihedralTerms(AtomTable_sp atomTable, Atom
             edi->_Atom2==a3 &&
             edi->_Atom1==a4)) {
       ql::list oneResult;
-      oneResult << INTERN_(kw,type1) << edi->_Atom1->getType()
-                << INTERN_(kw,type2) << edi->_Atom2->getType()
-                << INTERN_(kw,type3) << edi->_Atom3->getType()
-                << INTERN_(kw,type4) << edi->_Atom4->getType()
+      oneResult << INTERN_(kw,type1) << edi->_Atom1->getType(atomTypes)
+                << INTERN_(kw,type2) << edi->_Atom2->getType(atomTypes)
+                << INTERN_(kw,type3) << edi->_Atom3->getType(atomTypes)
+                << INTERN_(kw,type4) << edi->_Atom4->getType(atomTypes)
                 << INTERN_(kw,proper) << _lisp->_boolean(edi->_Proper)
                 << INTERN_(kw,multiplicity) << core::clasp_make_fixnum(edi->term.IN)
                 << INTERN_(kw,phase_degrees) << core::clasp_make_double_float(edi->_PhaseRad)

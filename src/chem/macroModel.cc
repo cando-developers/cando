@@ -41,6 +41,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <map>
 #include <iostream>
 #include <clasp/core/common.h>
+#include <clasp/core/hashTable.h>
 #include <cando/chem/matter.h>
 #include <cando/chem/molecule.h>
 #include <cando/chem/residue.h>
@@ -148,7 +149,7 @@ void	MacroModelFile_O::close()
 //	readMolecule( )
 //
 //
-Molecule_sp	MacroModelFile_O::readMolecule()
+Molecule_sp	MacroModelFile_O::readMolecule(core::HashTable_sp atom_types)
 {
 MMAtoms			atoms;
 MMAtomType		oneAtom;
@@ -421,7 +422,8 @@ char			caPart[254], *cPTemp;
 //	sTemp = caString;
 	sTemp = atoms[i].caAtomName;
 	aPAtom->setName(chemkw_intern(sTemp));
-	aPAtom->setType(chemkw_intern(mmodToAmberTypes[atoms[i].iType]));
+//	aPAtom->setAtomType(chemkw_intern(mmodToAmberTypes[atoms[i].iType]));
+        atom_types->setf_gethash(aPAtom,chemkw_intern(mmodToAmberTypes[atoms[i].iType]));
 	aPAtom->setElementFromString(mmodToAmberElement[atoms[i].iType]);
 	vPos = Vector3( atoms[i].x, atoms[i].y, atoms[i].z );
 	aPAtom->setPosition(vPos);

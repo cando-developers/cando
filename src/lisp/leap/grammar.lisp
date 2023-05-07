@@ -184,7 +184,7 @@
 (defrule current-package-variable-name
     (and variable-name-string)
   (:destructure (variable-name-string)
-                (intern variable-name-string *package*)))
+                (intern variable-name-string leap.core:*variable-package*)))
 
 
 (defrule/s variable-name
@@ -304,15 +304,15 @@
 (defrule aggregate
     (aggregate-name-p aggregate-name-string)
   (:lambda (name)
-    (leap.core:lookup-variable (intern name))))
+    (leap.core:lookup-variable (intern name leap.core:*variable-package*))))
 
 (defrule/s aggregate.pdb-sequence-number
     (and aggregate #\. integer-literal/decimal)
   (:destructure (aggregate dot pdb-sequence-number)
                 (declare (ignore dot))
                 (block residue
-                  (cando:do-molecules (mol aggregate)
-                    (cando:do-residues (res mol)
+                  (chem:do-molecules (mol aggregate)
+                    (chem:do-residues (res mol)
                       (when (= (chem:get-id res) pdb-sequence-number)
                         (return-from residue res)))))))
 
@@ -322,8 +322,8 @@
                 (declare (ignore dot))
                 (let ((residue-name (intern residue-name :keyword)))
                   (block residue
-                    (cando:do-molecules (mol aggregate)
-                      (cando:do-residues (res mol)
+                    (chem:do-molecules (mol aggregate)
+                      (chem:do-residues (res mol)
                         (when (eq (chem:get-name res) residue-name)
                           (return-from residue res))))))))
 
@@ -333,7 +333,7 @@
                 (declare (ignore dot))
                 (chem:content-with-id aggregate molecule-number)
                 #+(or)(block molecule
-                  (cando:do-molecules (mol aggregate)
+                  (chem:do-molecules (mol aggregate)
                     (when (= (chem:get-id mol) molecule-number)
                         (return-from molecule mol))))))
 
@@ -343,10 +343,10 @@
   (:destructure (aggregate dot1 residue-number dot2 atom-number)
                 (declare (ignore dot1 dot2))
                 (block atom
-                  (cando:do-molecules (mol aggregate)
-                    (cando:do-residues (res mol)
+                  (chem:do-molecules (mol aggregate)
+                    (chem:do-residues (res mol)
                       (when (= (chem:get-id res) residue-number)
-                        (cando:do-atoms (atm res)
+                        (chem:do-atoms (atm res)
                           (when (eq (chem:get-id atm) atom-number)
                             (return-from atom atm)))))))))
 
@@ -356,10 +356,10 @@
                 (declare (ignore dot1 dot2))
                 (let ((atom-name (intern atom-name :keyword)))
                   (block atom
-                    (cando:do-molecules (mol aggregate)
-                      (cando:do-residues (res mol)
+                    (chem:do-molecules (mol aggregate)
+                      (chem:do-residues (res mol)
                         (when (= (chem:get-id res) residue-number)
-                          (cando:do-atoms (atm res)
+                          (chem:do-atoms (atm res)
                             (when (eq (chem:get-name atm) atom-name)
                               (return-from atom atm))))))))))
 
@@ -369,11 +369,11 @@
                 (declare (ignore at dot1 dot2))
                 (let ((atom-name (intern atom-name :keyword)))
                   (block atom
-                    (cando:do-molecules (mol aggregate)
+                    (chem:do-molecules (mol aggregate)
                       (when (= (chem:get-id mol) molecule-number)
-                        (cando:do-residues (res mol)
+                        (chem:do-residues (res mol)
                           (when (= (chem:get-id res) residue-number)
-                            (cando:do-atoms (atm res)
+                            (chem:do-atoms (atm res)
                               (when (eq (chem:get-name atm) atom-name)
                                 (return-from atom atm)))))))))))
 
@@ -382,11 +382,11 @@
   (:destructure (aggregate at molecule-number dot1 residue-number dot2 atom-number)
                 (declare (ignore at dot1 dot2))
                 (block atom
-                  (cando:do-molecules (mol aggregate)
+                  (chem:do-molecules (mol aggregate)
                     (when (= (chem:get-id mol) molecule-number)
-                        (cando:do-residues (res mol)
+                        (chem:do-residues (res mol)
                           (when (= (chem:get-id res) residue-number)
-                            (cando:do-atoms (atm res)
+                            (chem:do-atoms (atm res)
                               (when (eq (chem:get-id atm) atom-number)
                                 (return-from atom atm))))))))))
 
@@ -395,9 +395,9 @@
   (:destructure (aggregate at molecule-number dot1 residue-number)
                 (declare (ignore at dot1 dot2))
                 (block residue
-                  (cando:do-molecules (mol aggregate)
+                  (chem:do-molecules (mol aggregate)
                     (when (= (chem:get-id mol) molecule-number)
-                      (cando:do-residues (res mol)
+                      (chem:do-residues (res mol)
                         (when (= (chem:get-id res) residue-number)
                           (return-from residue res))))))))
 

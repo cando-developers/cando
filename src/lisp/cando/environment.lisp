@@ -1,21 +1,9 @@
 
 (in-package :cando)
 
-(defparameter chem:*cando-database* (chem:make-cando-database :default)
-  "This is where topology's are stored")
-
-
-(defun register-topology (topology &optional name)
-  "Register a topology with cando "
-  (unless name
-    (setf name (chem:get-name topology)))
-  (unless (keywordp name)
-    (setf name (intern (string-upcase (string name)) :keyword)))
-  (chem:setf-find-topology chem:*cando-database* name topology))
-
-(defun lookup-topology (name &optional errorp)
+-(defun lookup-topology (name &optional errorp)
   (multiple-value-bind (topology foundp)
-      (chem:find-topology (intern (string-upcase (string name)) :keyword) errorp)
+      (chem:find-topology #+(or)(intern (string-upcase (string name)) :keyword) name errorp)
     topology))
 
 (defun walk-topologys (func)

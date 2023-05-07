@@ -192,14 +192,14 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
       (with-handle-linear-angles-dihedrals (:verbose verbose)
           (chem:minimize minimizer))
     ;; skip-rest-of-minimization can also be triggered by the user from the debugger
-    (skip-rest-of-minimization (err)
+    (skip-rest-of-minimization (&optional err)
       :report "Skip the rest of the current minimization - continue processing"
       (chem:write-intermediate-results-to-energy-function minimizer)
       (when resignal-error (error err)))
     (save-and-skip-rest-of-minimization (pathname)
       :report "Save the current structure to a file and skip the rest of the current minimization - continue processing"
       (chem:write-intermediate-results-to-energy-function minimizer)
-      (cando:save-cando (chem:get-matter (chem:get-energy-function minimizer)) pathname))))
+      (cando.serialize:save-cando (chem:get-matter (chem:get-energy-function minimizer)) pathname))))
 
 
 (defun minimizer-obey-interrupt (minimizer)
@@ -249,7 +249,10 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
     (finish-output t))
   matter)
 
-(defun optimize-structure-with-restarts (matter &key active-atoms (turn-off-nonbond t) verbose energy-function)
+(defun optimize-structure-with-restarts (matter &key active-atoms (turn-off-nonbond t) verbose energy-function
+                                                  (max-cg-steps 50000)
+                                                  (max-tn-steps 500)
+                                                  )
   (let* ((energy-function (if energy-function
                               energy-function
                               (chem:make-energy-function :matter matter
@@ -258,20 +261,20 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
          (min (chem:make-minimizer energy-function)))
     (configure-minimizer min
                          :max-sd-steps 5000
-                         :max-cg-steps 50000
-                         :max-tn-steps 500)
+                         :max-cg-steps max-cg-steps
+                         :max-tn-steps max-tn-steps)
     (when verbose (chem:enable-print-intermediate-results min))
     (when turn-off-nonbond
       (chem:set-option energy-function 'chem::nonbond-term nil)
       (when verbose
         (format t "Optimization with nonbond term off~%")
         (finish-output t))
-      (minimize-with-restarts min :verbose t))
+      (minimize-with-restarts min :verbose verbose))
     (chem:set-option energy-function 'chem:nonbond-term t)
     (when verbose
       (format t "Optimization with nonbond term on~%")
       (finish-output t))
-    (minimize-with-restarts min :verbose t)
+    (minimize-with-restarts min :verbose verbose)
     (finish-output t))
   matter)
 
@@ -338,8 +341,6 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
   (declare (ignore force-field type))
   0)
 
-(defparameter *stage1-flatten-force-components* (list 0.85 0.85 0.85))
-
 (defun randomize-coordinates (coordinates &key frozen from-zero (width 40.0) &aux (half-width (/ width 2.0)))
   "Randomly jostle atoms from their current positions"
   (flet ((jostle-atom (index)
@@ -364,6 +365,7 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
                  (jostle-atom coord-index)))))
 
 (defparameter *stage1-scale-sketch-nonbond* 0.04)
+(defparameter *stage1-flatten-force-components* (list 0.85 0.85 0.85))
 (defparameter *stage1-sketch-nonbond-force* 0.2)
 (defparameter *stage1-bond-length* 1.5)
 (defparameter *first-bond-force* 0.1)
@@ -445,66 +447,128 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
   (unless (= (chem:content-size agg) 1)
     (format t "The aggregate must have a single molecule.")
     (return-from starting-geometry nil))
-  (chem:map-atoms
-   nil
-   (lambda (atm)
-     (chem:set-type atm :sketch))
-   agg)
-  (let* ((mol (cando:mol agg 0))
-         (dummy-sketch-nonbond-ff (make-instance 'sketch-nonbond-force-field))
-         (sketch-function (chem:make-sketch-function mol dummy-sketch-nonbond-ff))
-         (dynamics (dynamics:make-atomic-simulation sketch-function 
-                                                    :accumulate-coordinates accumulate-coordinates))
-         (energy-sketch-nonbond (chem:get-sketch-nonbond-component sketch-function)))
-    (randomize-coordinates (dynamics:coordinates dynamics) :from-zero t :frozen nil)
-    (chem:disable (chem:get-point-to-line-restraint-component sketch-function))
-    (apply #'chem:setf-velocity-scale sketch-function *stage1-flatten-force-components*)
-    ;; stage 1  step 0 - 1999
-    (progn
-      (prepare-stage1-sketch-function sketch-function)
-      (chem:set-scale-sketch-nonbond energy-sketch-nonbond *stage1-nonbond-constant*)
-      ;; Everything interesting happens in 1000 steps
-      (dotimes (i 1000) (advance-simulation dynamics :frozen nil)))
-    (dynamics:write-coordinates-back-to-matter dynamics)
-    (optimize-structure agg :turn-off-nonbond nil :verbose verbose)
-    dynamics
-    ))
+  (let ((atom-types (make-hash-table)))
+    (chem:map-atoms
+     nil
+     (lambda (atm)
+       (setf (gethash atm atom-types) :sketch))
+     agg)
+    (error "starting-geometry - what do I do with atom-types")
+    (let* ((mol (cando:mol agg 0))
+           (dummy-sketch-nonbond-ff (make-instance 'sketch-nonbond-force-field))
+           (sketch-function (chem:make-sketch-function mol dummy-sketch-nonbond-ff atom-types))
+           (dynamics (dynamics:make-atomic-simulation sketch-function 
+                                                      :accumulate-coordinates accumulate-coordinates))
+           (energy-sketch-nonbond (chem:get-sketch-nonbond-component sketch-function)))
+      (chem:disable (chem:get-point-to-line-restraint-component sketch-function))
+      (apply #'chem:setf-velocity-scale sketch-function *stage1-flatten-force-components*)
+      ;; stage 1  step 0 - 1999
+      (progn
+        (prepare-stage1-sketch-function sketch-function)
+        (chem:set-scale-sketch-nonbond energy-sketch-nonbond *stage1-nonbond-constant*)
+        ;; Everything interesting happens in 1000 steps
+        (randomize-coordinates (dynamics:coordinates dynamics) :from-zero t :frozen nil)
+        (dotimes (i 1000) (advance-simulation dynamics :frozen nil)))
+      (dynamics:write-coordinates-back-to-matter dynamics)
+      (optimize-structure agg :turn-off-nonbond nil :verbose verbose)
+      dynamics
+      )))
 
-(defun starting-geometry-with-restarts (agg &key accumulate-coordinates verbose energy-function)
+
+(defclass rapid-starting-geometry ()
+  ((dynamics :initarg :dynamics :accessor dynamics)
+   (energy-function :initarg :energy-function :accessor energy-function)))
+
+(defun make-rapid-starting-geometry (agg &key energy-function accumulate-coordinates verbose active-atoms)
   "Rapidly calculate a starting geometry for the single molecule in the aggregate"
-  (unless (= (chem:content-size agg) 1)
-    (format t "The aggregate must have a single molecule.")
-    (return-from starting-geometry-with-restarts nil))
-  (chem:map-atoms
-   nil
-   (lambda (atm)
-     (chem:set-type atm :sketch))
-   agg)
-  (let* ((mol (cando:mol agg 0))
-         (dummy-sketch-nonbond-ff (make-instance 'sketch-nonbond-force-field))
-         (sketch-function (chem:make-sketch-function mol dummy-sketch-nonbond-ff))
-         (dynamics (dynamics:make-atomic-simulation sketch-function 
-                                                    :accumulate-coordinates accumulate-coordinates))
-         (energy-sketch-nonbond (chem:get-sketch-nonbond-component sketch-function)))
+  (let ((atom-types (make-hash-table))
+        (energy-function (if energy-function
+                             energy-function
+                             (chem:make-energy-function :matter agg
+                                                        :assign-types t
+                                                        :active-atoms active-atoms))))
+    (unless (= (chem:content-size agg) 1)
+      (format t "The aggregate must have a single molecule.")
+      (return-from make-rapid-starting-geometry nil))
+    (chem:map-atoms
+     nil
+     (lambda (atm)
+       (setf (gethash atm atom-types) :sketch))
+     agg)
+    (let* ((mol (cando:mol agg 0))
+           (dummy-sketch-nonbond-ff (make-instance 'sketch-nonbond-force-field))
+           (sketch-function (chem:make-sketch-function mol dummy-sketch-nonbond-ff atom-types))
+           (dynamics (dynamics:make-atomic-simulation sketch-function 
+                                                      :accumulate-coordinates accumulate-coordinates))
+           (energy-sketch-nonbond (chem:get-sketch-nonbond-component sketch-function)))
+      (chem:disable (chem:get-point-to-line-restraint-component sketch-function))
+      (apply #'chem:setf-velocity-scale sketch-function *stage1-flatten-force-components*)
+      ;; stage 1  step 0 - 1999
+      (when verbose
+        (format t "Generating starting structure~%"))
+      (progn
+        (prepare-stage1-sketch-function sketch-function)
+        (chem:set-scale-sketch-nonbond energy-sketch-nonbond *stage1-nonbond-constant*)
+        ;; Everything interesting happens in 1000 steps
+        (make-instance 'rapid-starting-geometry
+                       :dynamics dynamics
+                       :energy-function energy-function)))))
+
+
+(defun next-rapid-starting-geometry (rapid-starting-geometry &key verbose)
+  (with-slots (dynamics energy-function) rapid-starting-geometry
     (randomize-coordinates (dynamics:coordinates dynamics) :from-zero t :frozen nil)
-    (chem:disable (chem:get-point-to-line-restraint-component sketch-function))
-    (apply #'chem:setf-velocity-scale sketch-function *stage1-flatten-force-components*)
-    ;; stage 1  step 0 - 1999
-    (when verbose
-      (format t "Generating starting structure~%"))
-    (progn
-      (prepare-stage1-sketch-function sketch-function)
-      (chem:set-scale-sketch-nonbond energy-sketch-nonbond *stage1-nonbond-constant*)
-      ;; Everything interesting happens in 1000 steps
-      (dotimes (i 1000) (advance-simulation dynamics :frozen nil)))
+    (dotimes (i 1000) (advance-simulation dynamics :frozen nil))
     (dynamics:write-coordinates-back-to-matter dynamics)
     (when verbose
       (format t "Optimizing structure~%"))
     (if energy-function
         (optimize-structure-with-restarts agg :turn-off-nonbond nil :verbose verbose :energy-function energy-function)
         (optimize-structure-with-restarts agg :turn-off-nonbond nil :verbose verbose))
-    dynamics
-    ))
+    rapid-starting-geometry))
+
+(defun starting-geometry-with-restarts (agg &key accumulate-coordinates verbose energy-function
+                                              (max-cg-steps 50000)
+                                              (max-tn-steps 500))
+  "Rapidly calculate a starting geometry for the single molecule in the aggregate"
+  (let ((atom-types (make-hash-table)))
+    (unless (= (chem:content-size agg) 1)
+      (format t "The aggregate must have a single molecule.")
+      (return-from starting-geometry-with-restarts nil))
+    (chem:map-atoms
+     nil
+     (lambda (atm)
+       (setf (gethash atm atom-types) :sketch))
+     agg)
+    (let* ((mol (cando:mol agg 0))
+           (dummy-sketch-nonbond-ff (make-instance 'sketch-nonbond-force-field))
+           (sketch-function (chem:make-sketch-function mol dummy-sketch-nonbond-ff atom-types))
+           (dynamics (dynamics:make-atomic-simulation sketch-function 
+                                                      :accumulate-coordinates accumulate-coordinates))
+           (energy-sketch-nonbond (chem:get-sketch-nonbond-component sketch-function)))
+      (chem:disable (chem:get-point-to-line-restraint-component sketch-function))
+      (apply #'chem:setf-velocity-scale sketch-function *stage1-flatten-force-components*)
+      ;; stage 1  step 0 - 1999
+      (when verbose
+        (format t "Generating starting structure~%"))
+      (prepare-stage1-sketch-function sketch-function)
+      (chem:set-scale-sketch-nonbond energy-sketch-nonbond *stage1-nonbond-constant*)
+      (randomize-coordinates (dynamics:coordinates dynamics) :from-zero t :frozen nil)
+      ;; The time consuming part of this happens next 1000 steps of dynamics
+      ;;  followed by structure optimization
+      (dotimes (i 1000) (advance-simulation dynamics :frozen nil))
+      (dynamics:write-coordinates-back-to-matter dynamics)
+      (when verbose
+        (format t "Optimizing structure~%"))
+      (if energy-function
+          (optimize-structure-with-restarts agg :turn-off-nonbond nil :verbose verbose :energy-function energy-function
+                                                :max-cg-steps max-cg-steps
+                                                :max-tn-steps max-tn-steps)
+          (optimize-structure-with-restarts agg :turn-off-nonbond nil :verbose verbose
+                                                :max-cg-steps max-cg-steps
+                                                :max-tn-steps max-tn-steps))
+      dynamics
+      )))
 
 (defun build-good-geometry-from-random (agg)
   (let (bad-geom)

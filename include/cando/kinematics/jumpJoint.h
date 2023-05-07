@@ -81,8 +81,10 @@ namespace kinematics
 
     // Return the 'external' coordinate    
     CL_DEFMETHOD Matrix getLabFrame() const { return this->_LabFrame; };
+    CL_DEFMETHOD void setLabFrame(const Matrix& m) { this->_LabFrame = m; };
     // Return the 'internal' coordinate
     CL_DEFMETHOD Matrix getParentRelativeTransform() const { return this->_ParentRelativeTransform; };
+    CL_DEFMETHOD void setParentRelativeTransform(const Matrix& m) { this->_ParentRelativeTransform = m; };
 
     virtual core::Symbol_sp typeSymbol() const;
 

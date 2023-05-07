@@ -33,6 +33,7 @@
    #:svg
    #:sketch-svg
    #:sketch-atoms-to-original
+   #:sketch-nonbond-force-field
    #:molecule
    #:dynamics
    #:*svg-stylesheet*
@@ -43,8 +44,10 @@
    #:pos
    #:render-svg-scene
    #:render-svg-to-string
+   #:*stage1-flatten-force-components*
    #:height
    #:width
    #:sketch2d*
    #:scene
-   #:sketch2d-svg))
+   #:sketch2d-svg
+   #:advance-simulation))

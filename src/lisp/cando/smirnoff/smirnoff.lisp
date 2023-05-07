@@ -62,10 +62,10 @@ The first rule that matches is used to assign the type."
     (make-instance 'smirnoff-type-rules :rules all-rules)))
 
 
-(defmethod chem:assign-force-field-types ((combined-smirnoff-force-field combined-smirnoff-force-field) molecule)
+(defmethod chem:assign-force-field-types ((combined-smirnoff-force-field combined-smirnoff-force-field) molecule atom-types)
   "The first rule that matches is used to assign the types.
 The chem:force-field-type-rules-merged generic function was used to organize the rules."
-  (cando:do-atoms (atom molecule)
+  (chem:do-atoms (atom molecule)
     (let ((type (loop named assign-type
                       for field in (chem:force-fields-as-list combined-smirnoff-force-field)
                       for vdw-force = (vdw-force field)
@@ -78,7 +78,7 @@ The chem:force-field-type-rules-merged generic function was used to organize the
                                when match
                                  do (return-from assign-type type)))))
       (if type
-          (chem:set-type atom type)
+          (setf (gethash atom atom-types) type)
           (error "Could not set type of atom ~s in force-field ~s" atom :smirnoff)))))
       
 
@@ -162,6 +162,17 @@ The chem:force-field-type-rules-merged generic function was used to organize the
            :a2-a3-bond-order a2-a3-bond-order
            :a3-a4-bond-order a3-a4-bond-order)))
 
+(defvar *cached-smirnoff* (make-hash-table :thread-safe t))
+
+(defun maybe-cached-smirnoff-term (term)
+  (let ((cached (gethash term *cached-smirnoff*)))
+    (unless cached
+      (let* ((compiled-smirks (compiled-smirks term))
+             (smirks-graph (chem:make-chem-info-graph compiled-smirks)))
+        (setf (gethash term *cached-smirnoff*) smirks-graph
+              cached smirks-graph)))
+    cached))
+
 (defmethod chem:generate-molecule-energy-function-tables (energy-function molecule (combined-smirnoff-force-field combined-smirnoff-force-field) active-atoms)
   (let* ((molecule-graph (chem:make-molecule-graph-from-molecule molecule))
          (atom-table (chem:atom-table energy-function))
@@ -177,8 +188,7 @@ The chem:force-field-type-rules-merged generic function was used to organize the
       (loop for force-field in (reverse (chem:force-fields-as-list combined-smirnoff-force-field))
             for bonds-force = (bonds-force force-field)
             do (loop for term across (terms bonds-force)
-                     for compiled-smirks = (compiled-smirks term)
-                     for smirks-graph = (chem:make-chem-info-graph compiled-smirks)
+                     for smirks-graph = (maybe-cached-smirnoff-term term)
                      for hits = (chem:boost-graph-vf2 smirks-graph molecule-graph)
                      do (loop for hit in hits
                               for a1 = (aref hit 1)
@@ -220,8 +230,7 @@ The chem:force-field-type-rules-merged generic function was used to organize the
             do (loop for term across (terms angles-force)
                      for smirks = (progn
                                     (smirks term))
-                     for compiled-smirks = (compiled-smirks term)
-                     for smirks-graph = (chem:make-chem-info-graph compiled-smirks)
+                     for smirks-graph = (maybe-cached-smirnoff-term term)
                      for hits = (progn
                                   (chem:boost-graph-vf2 smirks-graph molecule-graph))
                      do (loop for hit in hits
@@ -267,9 +276,7 @@ The chem:force-field-type-rules-merged generic function was used to organize the
                                            nil)
             do (when proper-torsion-force
                  (loop for term across (terms proper-torsion-force)
-                       for smirks = (smirks term)
-                       for compiled-smirks = (compiled-smirks term)
-                       for smirks-graph = (chem:make-chem-info-graph compiled-smirks)
+                       for smirks-graph = (maybe-cached-smirnoff-term term)
                        for hits = (chem:boost-graph-vf2 smirks-graph molecule-graph)
                        do (loop for hit in hits
                                 for a1 = (aref hit 1)
@@ -314,10 +321,7 @@ The chem:force-field-type-rules-merged generic function was used to organize the
                                              nil)
             do (when improper-torsion-force
                  (loop for term across (terms improper-torsion-force)
-                       for smirks = (progn
-                                      (smirks term))
-                       for compiled-smirks = (compiled-smirks term)
-                       for smirks-graph = (chem:make-chem-info-graph compiled-smirks)
+                       for smirks-graph = (maybe-cached-smirnoff-term term)
                        for hits = (chem:boost-graph-vf2 smirks-graph molecule-graph)
                        do (loop for hit in hits
                                 for a1 = (aref hit 1)

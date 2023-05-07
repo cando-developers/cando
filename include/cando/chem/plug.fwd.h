@@ -1,3 +1,4 @@
+#ifdef USE_TOPOLOGY
 /*
     File: plug.fwd.h
 */
@@ -37,4 +38,5 @@ FORWARD(OriginPlug);
 
  typedef OutPlug_sp RingClosingPlug_sp;
 }
+#endif
 #endif

@@ -1,3 +1,5 @@
+#ifdef USE_TOPOLOGY
+
 /*
     File: entityNameSet.cc
 */
@@ -643,3 +645,4 @@ CL_DEFMETHOD     void	EntityNameSetWithCap_O::addGroupName(core::Symbol_sp nm)
 
 
 }; //namespace chem
+#endif

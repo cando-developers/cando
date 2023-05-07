@@ -26,6 +26,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #ifndef	ConstitutionAtoms_H //[
 #define ConstitutionAtoms_H
 
+#if 0
 
 
 #include <stdio.h>
@@ -42,7 +43,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/elements.fwd.h>
 
 #include <cando/chem/chemPackage.h>
-
 
 namespace chem
 {
@@ -90,7 +90,7 @@ It stores the atom name, element, properties and a vector of bonds in the form o
     MatterName                          _AtomName;
     size_t                              _Index;
     Element			        _Element;
-    core::T_sp                          _AtomType;
+    //core::T_sp                          _AtomType;
     StereochemistryType                 _StereochemistryType;
     core::List_sp                       _Properties;
     gctools::Vec0<ConstitutionBond_sp>	_Bonds;
@@ -104,16 +104,16 @@ It stores the atom name, element, properties and a vector of bonds in the form o
     virtual bool isVirtualAtom() { return false;};
 	/*! Append a ConstitutionBond_sp to our list of bonds */
     void addConstitutionBond(ConstitutionBond_sp cb) {this->_Bonds.push_back(cb);};
-    ConstitutionAtom_O(MatterName atomName, Element element, core::T_sp atomType, size_t index, StereochemistryType stype, core::List_sp properties ) : _AtomName(atomName), _Element(element), _AtomType(atomType), _Index(index), _StereochemistryType(stype), _Properties(properties) {};
-    ConstitutionAtom_O() : _AtomType(nil<core::T_O>()) {};
+    ConstitutionAtom_O(MatterName atomName, Element element/*, core::T_sp atomType*/, size_t index, StereochemistryType stype, core::List_sp properties ) : _AtomName(atomName), _Element(element) /*, _AtomType(atomType)*/, _Index(index), _StereochemistryType(stype), _Properties(properties) {};
+    ConstitutionAtom_O()  /*: _AtomType(nil<core::T_O>())*/ {};
     virtual Atom_sp buildAtom() const;
   };
 
   // Put the namespace in front of the types - otherwise there will be problems with the wrappers
   DOCGROUP(cando)
-    CL_DEFUN inline ConstitutionAtom_sp makeConstitutionAtom(chem::MatterName uniqueAtomName, chem::Element element, core::T_sp atomType, size_t index, chem::StereochemistryType stereochemistry_type, core::List_sp properties) {
+  CL_DEFUN inline ConstitutionAtom_sp makeConstitutionAtom(chem::MatterName uniqueAtomName, chem::Element element/*, core::T_sp atomType*/, size_t index, chem::StereochemistryType stereochemistry_type, core::List_sp properties) {
   core::List_sp copy_prop = core::cl__copy_list(properties);
-  return gctools::GC<ConstitutionAtom_O>::allocate(uniqueAtomName,element,atomType,index,stereochemistry_type,copy_prop);
+  return gctools::GC<ConstitutionAtom_O>::allocate(uniqueAtomName,element/*,atomType*/,index,stereochemistry_type,copy_prop);
 }
 
   class ConstitutionVirtualAtom_O : public ConstitutionAtom_O
@@ -128,7 +128,7 @@ It stores the atom name, element, properties and a vector of bonds in the form o
 
   public:
   ConstitutionVirtualAtom_O(MatterName atomname, Element element, size_t index, StereochemistryType stype, core::List_sp properties, CalculatePosition_sp calcPos) :
-    ConstitutionAtom_O(atomname,element,nil<core::T_O>(),index,stype,properties), _CalculatePositionCode(calcPos) {};
+      ConstitutionAtom_O(atomname,element/*,nil<core::T_O>()*/,index,stype,properties), _CalculatePositionCode(calcPos) {};
     ConstitutionVirtualAtom_O() {};
     virtual Atom_sp buildAtom() const;
   };
@@ -196,3 +196,4 @@ the chem:constitution-atom(s) can be accessed using integer indices.)");
   }
 };
 #endif //]
+#endif

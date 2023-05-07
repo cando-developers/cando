@@ -1,3 +1,5 @@
+#ifdef USE_TOPOLOGY
+
 /*
     File: plug.h
 */
@@ -343,3 +345,4 @@ typedef OutPlug_sp RingClosingPlug_sp;
 };
 
 #endif //]
+#endif

@@ -285,12 +285,12 @@ T if they are equivalent and NIL if they are not.  This callback should at least
               do (setf (gethash node1 equivs12) node2)
               do (setf (gethash node2 equivs21) node1))
         (let (diff1 diff2)
-          (cando:do-atoms (atom molecule1)
+          (chem:do-atoms (atom molecule1)
             (unless (and exclude-hydrogens
                          (= (chem:get-atomic-number atom) 1))
               (unless (gethash atom equivs12)
                 (push atom diff1))))
-          (cando:do-atoms (atom molecule2)
+          (chem:do-atoms (atom molecule2)
             (unless (and exclude-hydrogens
                          (= (chem:get-atomic-number atom) 1))
               (unless (gethash atom equivs21)

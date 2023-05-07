@@ -43,6 +43,16 @@ namespace chem {
 SMART(Matter);
 SMART(Atom);
 
+
+
+struct AtomPriority {
+  AtomPriority(Atom_sp a, int p) : _Atom(a), _relativePriority(p) {};
+  AtomPriority() : _Atom(nil<Atom_O>()), _relativePriority(0) {};
+  Atom_sp _Atom;
+  int     _relativePriority;
+};
+
+
 SMART(CipPrioritizer );
 class CipPrioritizer_O : public core::CxxObject_O
 {
@@ -56,8 +66,8 @@ public:
 public:
     static core::HashTable_sp assignPrioritiesHashTable(Matter_sp molOrAgg);
 public:
-  int	getP(Atom_sp a, core::HashTable_sp cip);
-  gctools::Vec0<int>& getS(Atom_sp a, core::HashTable_sp cip);
+  int	getP(AtomPriority& a);
+  gctools::Vec0<int>& getS(AtomPriority& a);
   void assignCahnIngoldPrelogPriorityToAtomsRelativePriority(Matter_sp molOrAgg,core::HashTable_sp cip);
 public:
 

@@ -1,3 +1,4 @@
+#ifdef USE_TOPOLOGY
 /*
     File: coupling.fwd.h
 */
@@ -31,4 +32,5 @@ FORWARD(Coupling);
 FORWARD(DirectionalCoupling);
 FORWARD(RingCoupling);
 }
+#endif
 #endif

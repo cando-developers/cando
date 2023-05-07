@@ -1,3 +1,4 @@
+#ifdef USE_TOPOLOGY
 /*
     File: specificContext.cc
 */
@@ -275,3 +276,4 @@ CL_DEFMETHOD core::List_sp SpecificContextSet_O::asCons()
 
 
 };
+#endif

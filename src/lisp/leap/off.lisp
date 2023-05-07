@@ -210,7 +210,7 @@ Use eof-error-p and eof as in read."
                          (chem:element-from-atom-name-string (string atom-name)))
                         (t (chem:element-for-atomic-number atomic-number))))
              (atom (chem:make-atom atom-name element)))
-        (chem:set-type atom atom-type)
+        (chem:set-atom-type atom atom-type)
         (chem:set-charge atom atomic-charge)
         (vector-push atom atoms)))
     atoms))
@@ -366,14 +366,12 @@ Otherwise it's an Aggregate. Return the object."
                 (out-plug-idx (1- (elt (elt connect 1) 0)))) ;; connect atoms 1- index
             (when (>= in-plug-idx 0)
               (let* ((in-plug-atom (chem:content-at res in-plug-idx))
-                     (in-plug (chem:make-in-plug :-default nil (chem:atom-name in-plug-atom) :single-bond)))
-                (chem:add-plug topology (chem:plug/get-name in-plug) in-plug)
-                (chem:add-plug constitution (chem:plug/get-name in-plug) in-plug)))
+                     (in-plug (topology:make-in-plug :-default (chem:atom-name in-plug-atom) :single-bond)))
+                (topology:add-plug topology (topology:name in-plug) in-plug)))
             (when (>= out-plug-idx 0)
               (let* ((out-plug-atom (chem:content-at res out-plug-idx))
-                     (out-plug (chem:make-out-plug  :+default nil nil (chem:atom-name out-plug-atom) :single-bond)))
-                (chem:add-plug topology (chem:plug/get-name out-plug) out-plug)
-                (chem:add-plug constitution (chem:plug/get-name out-plug) out-plug))))
+                     (out-plug (topology:make-out-plug  :+default (chem:atom-name out-plug-atom) :single-bond)))
+                (topology:add-plug topology (topology:name out-plug) out-plug))))
           topology))
       unit))
 
@@ -385,7 +383,7 @@ Return the hash-table."
         (entire-file (read-entire-off-file fin))
         (object-ht (make-hash-table)))
     (maphash (lambda (entry-name-string entry-parts)
-               (let ((entry-name (intern (leap.core:convert-leap-case entry-name-string) *package*)))
+               (let ((entry-name (intern (leap.core:convert-leap-case entry-name-string) leap.core:*variable-package*)))
                  (multiple-value-bind (unit residue-connect residues)
                      (read-off-unit-with-name entry-parts entry-name)
                    (let ((object (translate-off-object entry-name unit residue-connect residues)))
@@ -400,7 +398,8 @@ Return the hash-table."
 - filename : Pathname
 * Description
 Load the OFF file containing forms into new-leap."
-  (let ((absolute-filename (leap.core:ensure-path filename)))
+  (let ((*package* (find-package leap.core:*variable-package*))
+        (absolute-filename (leap.core:ensure-path filename)))
     (with-open-file (fin absolute-filename :direction :input)
       (let ((ht (leap.off:read-off-lib fin))
             names)

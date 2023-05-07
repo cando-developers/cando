@@ -43,7 +43,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/ffTypesDb.h>
 #include <cando/chem/topology.h>
 #include <cando/chem/constitution.h>
-#include <cando/chem/constitutionAtoms.h>
+#include <cando/chem/stereoisomerAtoms.h>
 #include <cando/chem/candoDatabase.h>
 #include <cando/chem/loop.h>
 #include <clasp/core/symbolTable.h>
@@ -123,7 +123,7 @@ CL_DEFMETHOD core::Symbol_sp FFTypesDb_O::assignType(chem::Atom_sp atom) {
 
 
 CL_LISPIFY_NAME("assignTypes");
-CL_DEFMETHOD void    FFTypesDb_O::assignTypes(chem::Matter_sp matter)
+CL_DEFMETHOD core::HashTable_sp FFTypesDb_O::assignTypes(chem::Matter_sp matter, core::HashTable_sp atom_types )
 { 
   chem::Loop    				lAtoms;
   chem::Atom_sp  				atom;
@@ -132,13 +132,14 @@ CL_DEFMETHOD void    FFTypesDb_O::assignTypes(chem::Matter_sp matter)
   chem::Residue_sp				res;
   core::List_sp                                 atoms_with_no_types = nil<core::T_O>();
   string 		                        name;
+  core::HashTable_sp                            atomTypes;
   size_t missing_types = 0;
   size_t total_atoms = 0;
+
   // first clear out old atom types
   lAtoms.loopTopGoal(matter,ATOMS);
   while (lAtoms.advanceLoopAndProcess()) {
     atom = lAtoms.getAtom();
-    atom->setType(nil<core::T_O>());
     total_atoms++;
   }
   // Now assign the types first checking for residues and then
@@ -157,18 +158,18 @@ CL_DEFMETHOD void    FFTypesDb_O::assignTypes(chem::Matter_sp matter)
     }
     if (name.notnilp()) {
       core::T_mv result_mv = chem__findTopology(name,false);
-      core::T_sp ttopology = result_mv;
+      core::T_sp topology = result_mv;
       core::T_sp found = values.second(result_mv.number_of_values());
       if (chem__verbose(2)) {
         core::write_bf_stream(fmt::sprintf("chem__findTopology -> %s %s\n" , _rep_(result_mv) , _rep_(found)));
       }
-      if (found.notnilp() && gc::IsA<Topology_sp>(ttopology) ) {
-        Topology_sp topology = gc::As<Topology_sp>(ttopology);
+      if (found.notnilp()) {
         if (chem__verbose(2)) {
           core::write_bf_stream(fmt::sprintf("Found topology for residue name: %s\n" , _rep_(name)));
         }
-        Constitution_sp constitution = topology->getConstitution();
-        ConstitutionAtoms_sp constitution_atoms = constitution->getConstitutionAtoms();
+        SIMPLE_WARN("Getting stereoisomerAtoms for %s\n", _rep_(name) );
+        core::T_sp stereoisomerAtoms = core::eval::funcall(_sym_stereoisomer_atoms, topology );
+        // StereoisomerAtoms_sp stereoisomerAtoms = topology->getStereoisomerAtoms(name);
         // Use the Topology to assign atom types
         lAtoms.loopTopGoal(res,ATOMS);
         while (lAtoms.advanceLoopAndProcess()) {
@@ -177,12 +178,11 @@ CL_DEFMETHOD void    FFTypesDb_O::assignTypes(chem::Matter_sp matter)
           if (chem__verbose(2)) {
             core::write_bf_stream(fmt::sprintf("Looking for atom with name: %s\n" , _rep_(atom_name)));
           }
-          core::T_mv constitution_atom_mv = constitution_atoms->atomWithName(atom_name,false);
-          if (values.second(constitution_atom_mv.number_of_values()).notnilp()) {
-            core::T_sp single = constitution_atom_mv;
-            ConstitutionAtom_sp constitution_atom = gc::As_unsafe<ConstitutionAtom_sp>(single);
-            core::T_sp type = constitution_atom->_AtomType;
-            atom->setType(type);
+          core::T_mv stereoisomer_atom_mv = core::eval::funcall(_sym_stereoisomer_atom_with_name, stereoisomerAtoms, atom_name );
+          if (values.second(stereoisomer_atom_mv.number_of_values()).notnilp()) {
+            core::T_sp stereoisomer_atom = stereoisomer_atom_mv;
+            core::T_sp type = core::eval::funcall(_sym_stereoisomer_atom_type, stereoisomer_atom);
+            atom_types->setf_gethash(atom,type);
             if (chem__verbose(2)) {
               core::write_bf_stream(fmt::sprintf("Assigned atom type %s using topology %s\n" , _rep_(type) , _rep_(name)));
             }
@@ -197,16 +197,16 @@ CL_DEFMETHOD void    FFTypesDb_O::assignTypes(chem::Matter_sp matter)
     lAtoms.loopTopGoal(res,ATOMS);
     while (lAtoms.advanceLoopAndProcess()) {
       atom = lAtoms.getAtom();
-      if (atom->getType().nilp()) {
+      if (atom->getType(atom_types).nilp()) {
         if (this->_TypeAssignmentRules.size()!=0) {
           core::T_sp type = this->assignType(atom);
           if (chem__verbose(2)) {
             core::write_bf_stream(fmt::sprintf("Assigned atom type %s using type rules\n" , _rep_(type)));
           }
-          atom->setType(type);
+          atom_types->setf_gethash(atom,type);
         }
       }
-      if (atom->getType().nilp()) {
+      if (atom->getType(atom_types).nilp()) {
         atoms_with_no_types = core::Cons_O::create(atom,atoms_with_no_types);
         missing_types++;
       }
@@ -215,6 +215,7 @@ CL_DEFMETHOD void    FFTypesDb_O::assignTypes(chem::Matter_sp matter)
   if (missing_types>0) {
     SIMPLE_WARN("There were %lu missing types of %lu atoms - %s" ,missing_types ,total_atoms ,_rep_(atoms_with_no_types));
   }
+  return atom_types;
 }
 
 

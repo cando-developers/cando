@@ -3,15 +3,13 @@
   :version "0.0.1"
   :author "Christian Schafmeister <chris.schaf@verizon.net>"
   :licence "LGPL-3.0"
-  :depends-on (#:smarts)
+  :depends-on (#:smarts #:chem-extras #:cando-serialize #:topology)
   :serial t
   :components ((:file "packages")
                (:file "basic")
                (:file "infix")
-               (:file "chem")
                (:file "mechanics")
                (:file "environment")
-               (:file "print-read")
                (:file "conditions")
                (:file "chemistry")
                (:file "select")
@@ -22,7 +20,6 @@
                (:file "anchor")
                (:file "struct")
                (:file "fortran")
-               (:file "monomers")
                (:file "dynamics")
                (:file "modelling")
                (:file "constitution")

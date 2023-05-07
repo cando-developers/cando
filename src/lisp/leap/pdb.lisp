@@ -16,7 +16,7 @@
       (gethash (cons name context) *map-pdb-names-to-topology-names*)
     (if foundp
         (cando:lookup-topology topology-name t)
-        (let ((topology (cando:lookup-topology (intern (string name)) nil)))
+        (let ((topology (cando:lookup-topology (intern (string name) leap.core:*variable-package*) nil)))
           topology))))
 
 (defun add-pdb-res-map (mappings)
@@ -41,7 +41,7 @@ the distribution contains default mappings."
              (if (symbolp name) name (intern name package)))
            (do-add-map (res-name term-sym var-name)
              (let* ((res-sym (ensure-symbol res-name))
-                    (var-sym (ensure-symbol var-name *package*))
+                    (var-sym (ensure-symbol var-name leap.core:*variable-package*))
                     (key (cons res-sym term-sym))
                     (var-old (gethash key *map-pdb-names-to-topology-names*)))
                (when (and var-old (not (eq var-old var-sym)))
@@ -789,11 +789,10 @@ MTRIX- Used to build a list of matrices."
                  do (try-to-assign-topology residue scanner))))
 
 (defun atom-names-match-topology (atom-names topology)
-  (let* ((constitution (chem:topology/get-constitution topology))
-         (constitution-atoms (chem:constitution/get-constitution-atoms constitution))
-         (constitution-atoms-as-list (chem:constitution-atoms-as-list constitution-atoms)))
-    (let ((topology-atom-names (loop for ca in constitution-atoms-as-list
-                                     collect (chem:atom-name ca))))
+  (let* ((constitution (topology:constitution topology))
+         (constitution-atoms (topology:constitution-atoms constitution)))
+    (let ((topology-atom-names (loop for ca across constitution-atoms
+                                     collect (topology:atom-name ca))))
       (if (= (length atom-names) (length topology-atom-names))
           (loop for nm in topology-atom-names
                 unless (member nm atom-names)
@@ -1185,7 +1184,7 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
                          (cur-top (current-topology reader)))
                      (if cur-top
                          ;; There is a topology - use it
-                         (let ((cur-res (chem:build-residue-single-name cur-top)))
+                         (let ((cur-res (topology:build-residue-single-name cur-top)))
                            (chem:set-pdb-name cur-res (residue-name pdb-residue))
                            #+(or)(format *debug-io* "built residue with name ~a using topology ~a~%" cur-res cur-top)
                            (chem:set-id cur-res (calculate-residue-sequence-number residue-sequence-number i-code))
@@ -1197,7 +1196,7 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
                                  (error "Could not find topology for ~a" prev-res))
                                (unless cur-top
                                  (error "Could not find topology for ~a cur-top" cur-res))
-                               (chem:connect-residues prev-top
+                               (topology:connect-residues prev-top
                                                       prev-res
                                                       :+default
                                                       cur-top
@@ -1358,7 +1357,7 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
         (let ((name-only (if filename
                              (pathname-name (pathname filename))
                              "unknown")))
-          (chem:set-name aggregate (intern name-only *package*)))
+          (chem:set-name aggregate (intern name-only leap.core:*variable-package*)))
         (values aggregate pdb-scanner pdb-atom-reader)))))
 
 
@@ -1410,7 +1409,7 @@ specified in PDB files.
 (defmethod classify-molecules (aggregate system)
   (declare (ignore system))
   (let ((mol-id 0))
-    (cando:do-molecules (molecule aggregate)
+    (chem:do-molecules (molecule aggregate)
       (chem:set-id molecule (incf mol-id))
       (cond
         ((member (chem:get-name molecule) (list :hoh :wat))

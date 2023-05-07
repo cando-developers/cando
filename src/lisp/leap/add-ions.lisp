@@ -6,12 +6,11 @@
      (finish-output ,stream)))
 
 (defun ion-topology-atom-type (ion-topology)
-  (let* ((constitution (chem:topology/get-constitution ion-topology))
-         (constitution-atoms (chem:constitution/get-constitution-atoms constitution))
-         (number-of-atoms (chem:constitution-atoms/number-of-atoms constitution-atoms)))
+  (let* ((stereoisomer-atoms (topology:stereoisomer-atoms ion-topology (topology:name ion-topology)))
+         (number-of-atoms (length (topology:stereoisomer-atoms stereoisomer-atoms))))
     (if (= number-of-atoms 1)
-        (let ((constitution-atom (chem:atom-with-id constitution-atoms 0)))
-          (chem:atom-type constitution-atom))
+        (let ((stereoisomer-atom (elt stereoisomer-atoms 0)))
+          (topology:atom-type stereoisomer-atom))
         (error "The topology ~s must have only one atom" ion-topology))))
 
 (defun add-ions (mol ion1 ion1-number &optional ion2 ion2-number)
@@ -19,13 +18,13 @@
   (when (chem:verbose 1) (fformat t "Entered add-ions~%"))
   (let* ((force-field-name :default)
          (nonbond-db (leap.core:nonbond-force-field-component force-field-name))
-         (ion1-topology (if (typep ion1 'chem:topology) ion1
+         (ion1-topology (if (typep ion1 'topology:topology) ion1
                             (cando:lookup-topology ion1)))
          (ion1-type (ion-topology-atom-type ion1-topology))
          (ion1-type-index (chem:find-type-index nonbond-db ion1-type))
          (ion1-ffnonbond (chem:get-ffnonbond-using-type-index nonbond-db ion1-type-index))
          (ion1-size (chem:ffnonbond/get-radius-angstroms ion1-ffnonbond))
-         (ion1-residue (chem:build-residue-single-name ion1-topology))
+         (ion1-residue (topology:build-residue-single-name ion1-topology))
          (ion1-atom (chem:content-at ion1-residue 0))
          (ion1-mol (chem:make-molecule))
          (ion1-agg (chem:make-aggregate))
@@ -117,7 +116,7 @@
       (if ion2
           (progn 
             (setf ion2-topology (cando:lookup-topology ion2)
-                  ion2-residue (chem:build-residue-single-name ion2-topology)
+                  ion2-residue (topology:build-residue-single-name ion2-topology)
                   ion2-atom (chem:content-at ion2-residue 0))
             (chem:add-matter ion2-mol ion2-residue)
             (chem:add-matter ion2-agg ion2-mol)))
@@ -197,7 +196,7 @@
          (ion1-type-index (chem:find-type-index nonbond-db ion1-type))
          (ion1-ffnonbond (chem:get-ffnonbond-using-type-index nonbond-db ion1-type-index))
          (ion1-size (chem:ffnonbond/get-radius-angstroms ion1-ffnonbond))
-         (ion1-residue (chem:build-residue-single-name ion1-topology))
+         (ion1-residue (topology:build-residue-single-name ion1-topology))
          (ion1-atom (chem:content-at ion1-residue 0))
          (ion1-mol (chem:make-molecule))
          (ion1-agg (chem:make-aggregate))
@@ -281,7 +280,7 @@
       (if ion2
           (progn 
             (setf ion2-topology (cando:lookup-topology ion2)
-                  ion2-residue (chem:build-residue-single-name ion2-topology)
+                  ion2-residue (topology:build-residue-single-name ion2-topology)
                   ion2-atom (chem:content-at ion2-residue 0))
             (chem:add-matter ion2-mol ion2-residue)
             (chem:add-matter ion2-agg ion2-mol)))
@@ -407,7 +406,7 @@
          (ion1-type-index (chem:find-type-index nonbond-db ion1-type))
          (ion1-ffnonbond (chem:get-ffnonbond-using-type-index nonbond-db ion1-type-index))
          (ion1-size (chem:ffnonbond/get-radius-angstroms ion1-ffnonbond))
-         (ion1-residue (chem:build-residue-single-name ion1-topology))
+         (ion1-residue (topology:build-residue-single-name ion1-topology))
          (ion1-atom (chem:content-at ion1-residue 0))
          (ion1-mol (chem:make-molecule))
          (ion1-agg (chem:make-aggregate))
@@ -447,7 +446,7 @@
           (setf ion2-ffnonbond (chem:get-ffnonbond-using-type-index nonbond-db ion2-type-index))
           (setf ion2-size (chem:ffnonbond/get-radius-angstroms ion2-ffnonbond))
           (setf ion2-topology (cando:lookup-topology ion2))
-          (setf ion2-residue (chem:build-residue-single-name ion2-topology))
+          (setf ion2-residue (topology:build-residue-single-name ion2-topology))
           (setf ion2-atom (chem:content-at ion2-residue 0))
           (setf ion2-mol (chem:make-molecule))
           (setf ion2-agg (chem:make-aggregate))

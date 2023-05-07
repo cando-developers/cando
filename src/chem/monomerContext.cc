@@ -1,3 +1,4 @@
+#ifdef USE_TOPOLOGY
 /*
     File: monomerContext.cc
 */
@@ -435,3 +436,4 @@ CL_DEFMETHOD     EntityNameSetBase_sp MonomerContext_O::getNeighbor(core::Symbol
 
 
 };
+#endif

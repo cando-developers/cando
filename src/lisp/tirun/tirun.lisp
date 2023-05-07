@@ -28,15 +28,6 @@
 (defun incf-tirun-time ()
   (incf *tirun-time*))
 
-(defun print-object-readably-with-slots (obj stream)
-  (format stream "#$(~s " (class-name (class-of obj)))
-  (loop for slot in (clos:class-slots (class-of obj))
-        for slot-name = (clos:slot-definition-name slot)
-        for initargs = (clos:slot-definition-initargs slot)
-        if (and (car initargs) (slot-boundp obj slot-name))
-          do (format stream "~s ~s " (car initargs) (slot-value obj slot-name)))
-  (format stream ") "))
-
 (defclass job-graph ()
   ((nodes :initform nil :initarg :nodes :accessor nodes)
    (morphs :initform nil :initarg :morphs :accessor morphs)))
@@ -44,7 +35,7 @@
 (defmethod print-object ((obj job-graph) stream)
   (if *print-readably*
       (progn
-        (print-object-readably-with-slots obj stream))
+        (cando.serialize:print-object-readably-with-slots obj stream))
       (print-unreadable-object (obj stream)
         (format stream "~a" (class-name (class-of obj))))))
 
@@ -67,7 +58,7 @@
 
 (defmethod print-object ((obj tirun-morph) stream)
   (if *print-readably*
-      (print-object-readably-with-slots obj stream)
+      (cando.serialize:print-object-readably-with-slots obj stream)
       (print-unreadable-object (obj stream)
         (format stream "~a" (class-name (class-of obj))))))
 
@@ -100,7 +91,7 @@
 
 (defmethod print-object ((obj simple-tirun-structure) stream)
   (if *print-readably*
-      (print-object-readably-with-slots obj stream)
+      (cando.serialize:print-object-readably-with-slots obj stream)
       (print-unreadable-object (obj stream)
         (format stream "~a ~a" (class-name (class-of obj)) (string (name obj))))))
 
@@ -273,7 +264,7 @@ Otherwise return NIL."
                            for in-file = (make-instance 'sqm-input-file :name (name ligand))
                            for order-file = (make-instance 'sqm-atom-order-file :name (name ligand))
                            for molecule-charge = (let ((charge 0.0))
-                                                   (cando:do-atoms (atom (molecule ligand))
+                                                   (chem:do-atoms (atom (molecule ligand))
                                                      (incf charge (chem:get-charge atom)))
                                                    charge)
                            for atom-order = (let (atom-order)
@@ -381,7 +372,7 @@ Otherwise return NIL."
 
 (defun relax-receptor-around-ligand (receptor-aggregate ligand-molecule &key (weight 100.0))
   "Relax the receptor around the ligand."
-  (cando:do-atoms (atom receptor-aggregate)
+  (chem:do-atoms (atom receptor-aggregate)
     (let ((restraint-anchor (core:make-cxx-object
                              'chem:restraint-anchor
                              :atom atom
@@ -390,7 +381,7 @@ Otherwise return NIL."
       (chem:clear-restraints atom)
       (chem:add-restraint atom restraint-anchor)))
   (chem:add-matter receptor-aggregate ligand-molecule)
-  (cando:do-atoms (atom ligand-molecule)
+  (chem:do-atoms (atom ligand-molecule)
     (let ((restraint-anchor (core:make-cxx-object
                              'chem:restraint-anchor
                              :atom atom
@@ -401,7 +392,7 @@ Otherwise return NIL."
 
 (defun pattern-atoms (smarts structure)
   "Given a smarts pattern and a structure, return a hash-table of tags to atoms"
-  (cando:do-atoms (atom structure)
+  (chem:do-atoms (atom structure)
     (let (match)
       (when (setf match (chem:matches smarts atom))
         (return-from pattern-atoms (chem:tags-as-hashtable match))))))
@@ -423,7 +414,7 @@ Otherwise return NIL."
 (defmethod print-object ((obj ti-mask) stream)
   (if *print-readably*
       (progn
-        (print-object-readably-with-slots obj stream))
+        (cando.serialize:print-object-readably-with-slots obj stream))
       (print-unreadable-object (obj stream)
         (format stream "~a" (class-name (class-of obj))))))
 
@@ -435,7 +426,7 @@ user to define new ways to calculate masks"))
 
 (defun unique-residue-with-name (molecule name)
   (let (residues)
-    (cando:do-residues (res molecule)
+    (chem:do-residues (res molecule)
       (when (eq (chem:get-name res) name)
         (push res residues)))
     (if (= (length residues) 1)
@@ -459,12 +450,12 @@ METHOD controls how the masks are calculated"
             (target-scmask-atom-names (loop for atom in target-softcore-atoms
                                             collect (chem:get-name atom)))
             (source-core-atom-names (let (names)
-                                      (cando:do-atoms (atom source-core-residue)
+                                      (chem:do-atoms (atom source-core-residue)
                                         (unless (member (chem:get-name atom) source-scmask-atom-names)
                                           (push (chem:get-name atom) names)))
                                       names))
             (target-core-atom-names (let (names)
-                                      (cando:do-atoms (atom target-core-residue)
+                                      (chem:do-atoms (atom target-core-residue)
                                         (unless (member (chem:get-name atom) target-scmask-atom-names)
                                           (push (chem:get-name atom) names)))
                                       names)))
@@ -569,11 +560,11 @@ METHOD controls how the masks are calculated"
     (let ((scale (/ 1.5 (/ total-length num-bonds))))
       (loop for ligand in (ligands calculation)
             for mol = (drawing ligand)
-            do (cando:do-atoms (atm mol)
+            do (chem:do-atoms (atm mol)
                  (chem:set-position atm (geom:v* (chem:get-position atm) scale)))))))
 
 (defun validate-atom-types (matter)
-  (cando:do-atoms (atom matter)
+  (chem:do-atoms (atom matter)
     (let ((type (chem:get-type atom)))
       (when (or (null type) (eq :du type))
         (error "Illegal type ~a for ~a in ~a" type atom matter)))))

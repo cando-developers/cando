@@ -79,18 +79,19 @@ public:
 
 void	_calculateElementAndHybridization(Atom_sp a);
 
-core::T_sp mol2Read( Mol2File& fin);
+core::T_mv mol2Read( Mol2File& fin);
 
 //Aggregate_sp	mol2ReadAggregate( string fileName );
 string	mol2AtomType(Atom_sp a);
 
 
- void	mol2WriteAggregateStream( Aggregate_sp agg, std::ostream &out, bool useSybylTypes );
- void	mol2WriteAggregateToFileName( Aggregate_sp a, core::T_sp sFileName, bool useSybylTypes );
+core::HashTable_sp assignSybylTypes(Matter_sp matter);
 
- void	mol2WriteDumbAggregateToFileName( Aggregate_O& a, core::T_sp sFileName );
+void	mol2WriteAggregateStream( Aggregate_sp agg, std::ostream &out, core::HashTable_sp atom_types );
+void	mol2WriteAggregateToFileName( Aggregate_sp a, core::T_sp sFileName, core::HashTable_sp atom_types );
 
- void	mol2WriteMatterToFileName( Matter_sp matter, core::T_sp fileName, bool useSybylTypes );
+void	mol2WriteDumbAggregateToFileName( Aggregate_O& a, core::T_sp sFileName, core::HashTable_sp atom_types );
+ void	mol2WriteMatterToFileName( Matter_sp matter, core::T_sp fileName, core::HashTable_sp atom_types );
 
 
  void initialize_mol2_type_rules();

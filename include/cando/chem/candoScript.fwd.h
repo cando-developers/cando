@@ -1,3 +1,5 @@
+#ifdef USE_TOPOLOGY
+
 /*
     File: candoScript.fwd.h
 */
@@ -31,4 +33,5 @@ FORWARD(OligomerPart);
 FORWARD(OligomerPart);
 FORWARD(OligomerPart);
 }
+#endif
 #endif

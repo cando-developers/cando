@@ -25,6 +25,10 @@
 ;; -^-
 (cl:in-package #:common-lisp-user)
 
+(defpackage #:leap.names
+  (:use)
+  )
+
 (defpackage #:leap.antechamber-type-definition-parser
   (:use #:common-lisp #:esrap #:parser.common-rules #:PARSER.COMMON-RULES.OPERATORS)
   (:export
@@ -148,6 +152,7 @@
 (defpackage #:leap.core
   (:use #:common-lisp)
   (:export
+   #:*variable-package*
    #:leap-error
    #:with-path
    #:ensure-path
