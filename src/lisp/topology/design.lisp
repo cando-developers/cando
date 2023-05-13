@@ -205,17 +205,21 @@ This is for looking up parts but if the thing returned is not a part then return
 (defun my-add-monomers (oligomer names)
   (when (consp (car names))
     (error "Illegal names - must be simple list - instead got ~s" names))
+  (when (and (= (length names) 1) (null (car names)))
+    (error "Illegal monomer names ~s" names))
   (let ((monomer (make-instance 'monomer :monomers names)))
     (vector-push-extend monomer (monomers oligomer))
     (values (list monomer) nil)))
 
-(defun translate-part (oligomer names labels &key (parts *parts*))
+(defun translate-part (oligomer names labels part-info &key (parts *parts*))
   (let (maybe-part)
     (cond
       ((and (symbolp names)
             (setf maybe-part (lookup-maybe-part names parts)))
        (values (interpret-subtree oligomer (tree maybe-part) labels) nil))
       ((symbolp names)
+       (when (null names)
+         (error "In translate-part illegal name ~s part-info ~s" names part-info))
        (my-add-monomers oligomer (list names)))
       ((consp names)
        (if (and (symbolp (first names)) (string= (first names) :cycle))
@@ -228,12 +232,19 @@ This is for looking up parts but if the thing returned is not a part then return
       (cond
         ((and (consp part-info) (symbolp (first part-info)) (string= (first part-info) :cycle))
          (list part-info))
+        ((and (consp part-info) (gethash (car part-info) *topology-groups*))
+         (let ((group-names (gethash (car part-info) *topology-groups*)))
+           (list* group-names (cdr part-info))))
         ((consp part-info)
          part-info)
         ((symbolp part-info)
-         (list part-info)))
+         (let ((group-names (gethash part-info *topology-groups*)))
+           (list part-info)
+           (list group-names))))
+    (format t "Got names: ~a~%" names)
     (multiple-value-bind (new-parts ringp)
-        (translate-part oligomer names labels :parts parts)
+        (translate-part oligomer names labels part-info :parts parts)
+      (format t "Got new-parts: ~a~%" new-parts)
       (when label
         (loop for new-part in new-parts
               do (push new-part (gethash label labels))))
@@ -395,6 +406,8 @@ of out-plugs."
                      (when verbose (format *debug-io* "other-topology ~s~%" other-topology))
                      (unless found
                        (error "Could not find topology for cap ~s~%" cap))
+                     (when (null (name other-topology))
+                       (error "Illegal monomer with name ~s" (name other-topology)))
                      (let ((other-monomer (make-instance 'monomer
                                                          :monomers (list (name other-topology)))))
                        (when verbose (format *debug-io* "Adding new monomer ~s~%" other-monomer))
@@ -450,7 +463,10 @@ of out-plugs."
   "Build a training oligomer-space with a list of topologys in a focus-residue and then repeatedly
 add cap monomers until no more cap monomers are needed."
   (let ((oligomer-space (make-instance 'oligomer-space))
-        (focus-monomer (make-instance 'monomer :monomers (mapcar #'name focus-topologys-in-list))))
+        (focus-monomer (let ((names (mapcar #'name focus-topologys-in-list)))
+                         (when (null (car names))
+                           (error "Illegal names for monomer ~s" names))
+                         (make-instance 'monomer :monomers names))))
     (format *debug-io* "focus-monomer: ~a~%" focus-monomer)
     (add-monomer oligomer-space focus-monomer)
     ;; Now repeatedly cap the focus monomer until it's finished.

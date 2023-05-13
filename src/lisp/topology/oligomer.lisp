@@ -274,14 +274,17 @@
       molecule)))
 
 
-(defun build-all-molecules (oligomer &optional (number-of-sequences (number-of-sequences oligomer)))
-  "Return a list of all built molecules for the oligomer.
+(defun build-all-molecules (oligomer-space &optional (number-of-sequences (number-of-sequences oligomer-space)))
+  "Return a list of all built molecules for the oligomer-space.
+Also return a hash-table that maps monomers to molecule/residue indices.
 The number of entries can be limited by passing a lower value for the optional argument **number-of-sequences**
 than the (chem:oligomer/number-of-sequences oligomer)."
-  (loop for index from 0 below number-of-sequences
-        for aggregate = (chem:make-aggregate (intern (format nil "seq-~a" index) :keyword))
-        for molecule = (progn
-                         (topology:goto-sequence oligomer index)
-                         (build-molecule oligomer))
-        do (chem:add-matter aggregate molecule)
-        collect aggregate))
+  (let* ((monomer-positions (make-hash-table))
+         (oligomer (topology:make-oligomer oligomer-space 0))
+         (aggregates (loop for index from 0 below number-of-sequences
+                           for aggregate = (chem:make-aggregate (intern (format nil "seq-~a" index) :keyword))
+                           for molecule = (progn
+                                            (topology:goto-sequence oligomer index)
+                                            (build-molecule oligomer aggregate index monomer-positions))
+                           collect aggregate)))
+    (values aggregates monomer-positions)))

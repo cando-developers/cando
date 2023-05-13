@@ -473,3 +473,16 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
 (defmacro define-topology (name sexp &key restraints types dihedrals)
   `(do-define-topology ',name ',sexp :restraints ',restraints :dihedrals ',dihedrals))
 
+(defun define-topology-charges (residue-charges)
+  (loop for topology-charge in residue-charges
+        for topology-name = (first topology-charge)
+        for topology = (chem:find-topology topology-name)
+        for stereoisomer = (stereoisomer topology)
+        for stereoisomer-atoms = (stereoisomer-atoms stereoisomer)
+        for name-charges = (second topology-charge)
+        do (loop for atom-charge in name-charges
+                 for atom-name = (car atom-charge)
+                 for stereoisomer-atom = (find atom-name stereoisomer-atoms :key 'topology:atom-name)
+                 for charge = (cdr atom-charge)
+                 do (setf (atom-charge stereoisomer-atom) charge)
+                )))

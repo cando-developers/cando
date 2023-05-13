@@ -94,6 +94,7 @@
   ((index :initarg :index :accessor index)
    (probability :initform nil :initarg :probability :accessor probability)
    (internals :initarg :internals :accessor internals)
+   (energy :initarg :energy :accessor energy)
    (out-of-focus-internals :initarg :out-of-focus-internals :accessor out-of-focus-internals)
    ))
 
@@ -135,15 +136,16 @@
                 append (find-named-fragment-internals fragment-internals name-or-plug-names))
           'vector))
 
-(defun cluster-dihedral-point-vector (fragment-internals names)
+(defun convert-dihedral-rad-vector-to-xy-vector (rad-vector)
+  (make-array (* (length rad-vector) 2) :element-type 'single-float
+                                        :initial-contents (loop for dihedral in rad-vector
+                                                                collect (cos dihedral)
+                                                                collect (sin dihedral))))
+
+(defun cluster-dihedral-rad-vector (fragment-internals names)
   (let ((dihedrals (loop for name-or-plug-names in names
                          append (find-named-fragment-internals fragment-internals name-or-plug-names))))
-    (make-array (* (length dihedrals) 2) :element-type 'single-float
-                                           :initial-contents (loop for dihedral in dihedrals
-                                                                   collect (cos dihedral)
-                                                                   collect (sin dihedral)))))
-
-
+    dihedrals))
 
 (defun cluster-dihedral-names (focus-monomer oligomer)
   "Calculate the atom-names for dihedrals that are used to cluster fragment-internals"
@@ -171,7 +173,7 @@
 (defclass fragment-conformations (serial:serializable)
   ((focus-monomer-name :initarg :focus-monomer-name :accessor focus-monomer-name)
    (monomer-context :initarg :monomer-context :accessor monomer-context)
-   (total-count :initform 0 :initarg :total-count :accessor total-count)
+   (next-index :initform 0 :initarg :next-index :accessor next-index)
    (fragments :initform (make-array 16 :adjustable t :fill-pointer 0) :initarg :fragments :accessor fragments)))
 
 (cando.serialize:make-class-save-load fragment-conformations)

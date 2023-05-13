@@ -23,7 +23,7 @@ THE SOFTWARE.
 This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
 */
 /* -^- */
-#define	DEBUG_LEVEL_NONE
+#define	DEBUG_LEVEL_FULL
 
 #include <cando/chem/cipPrioritizer.h>
 //#include "core/archiveNode.h"
@@ -156,9 +156,9 @@ gctools::Vec0<int>& CipPrioritizer_O::getS(AtomPriority& a)
   ASSERTNOTNULL(a);
   if ( ! ( a._relativePriority < this->_s.size() ) )
   {
-    LOG("Bad priority for atom" );
-    LOG("Bad priority for atom: %s" , a._Atom->description().c_str()  );
-    LOG("   priority value = %d" , a._relativePriority  );
+    FLOG("Bad priority for atom" );
+    FLOG("Bad priority for atom: {}" , a._Atom->description().c_str()  );
+    FLOG("   priority value = {}" , a._relativePriority  );
   }
   ASSERT_lessThan(a._relativePriority,this->_s.size());
   return this->_s[a._relativePriority];
@@ -212,26 +212,18 @@ CL_DEFUN core::HashTable_sp CipPrioritizer_O::assignPrioritiesHashTable(Matter_s
 // ! Assign the CIP priority to the RelativePriority of each Atom in the molecule
 CL_DOCSTRING(R"dx(
 Assign the topological RS chirality
-see: http://www.chemcomp.com/journal/chiral.htm
-The objective of the algorithm is to assign a priority, p(i) to every 
-atom i in the molecule so that if p(i)<p(j) then atom i has strictly 
-lower CIP priority than atom j with equality only occurring when the 
-atoms are indistinguishable (topologically). In essence, the algorithm 
-maintains an ordered list of equivalence classes of atoms. Each atom 
-in an equivalence class is assigned the priority of the -1 of the 
-class in the sorted list. The algorithm repeatedly splits classes 
-(maintaining the ordering) until no changes occur. The final priority 
-assignments are then output as the CIP priorities.
+see: http://www.chemcomp.com/journal/chiral.htm  (dead link now - check Wayback Machine)
 
-The algorithm proceeds as follows:
+An Efficient Algorithm For The Determination Of Topological RS Chirality
+P. Labute
+Chemical Computing Group Inc.
+1010 Sherbrooke Street W, Suite 910; Montreal, Quebec; Canada H3A 2R7.
+November 20, 1996
 
-1. 	For each atom i, set p(i) equal to the atomic number of atom i. 
-Set the initial partition to be an ordered list of classes (C1,...,Ck) 
-such that for each atom i in class Cr and each atom j in class Cs we 
-have (i) p(i)<p(j) iff r<s; and (ii) p(i)=p(j) iff r=s.
-Use the RelativePriority value of each atom to store its position in the 
-p and s arrays.
-Write the relative cip priority in the _RelativePriority slot of each atom.
+Determination of chiral centers and labeling by the RS system as proposed by Cohen, Ingold and Prelog is important in computational chemistry for a number of reasons. Aside the usual uses of nomenclature, specification of chiral constraints during energy minimization and detection of symmetries, proper labeling of chirality is extremely useful for 2D renderings of conformations. A number of algorithms have been proposed. Many are incorrect or do not correspond to the CIP system. Others are computationally expensive.
+
+We present an efficient algorithm for the assignment of CIP priorities to every atom in a molecule. This information can then be used to assign R, S, cis or trans labels.
+
 )dx")
 CL_LISPIFY_NAME("assignCahnIngoldPrelogPriorityToAtomsRelativePriority");
 CL_DEFMETHOD void CipPrioritizer_O::assignCahnIngoldPrelogPriorityToAtomsRelativePriority(Matter_sp molOrAgg, core::HashTable_sp cip)
@@ -241,7 +233,7 @@ CL_DEFMETHOD void CipPrioritizer_O::assignCahnIngoldPrelogPriorityToAtomsRelativ
   vector<int> C;
     // 
     //  Determination of topological RS chirality
-    //  see: http://www.chemcomp.com/journal/chiral.htm
+    //  see: http://www.chemcomp.com/journal/chiral.htm (link dead see Wayback machine) paper included below
     // The objective of the algorithm is to assign a priority, p(i) to every 
     // atom i in the molecule so that if p(i)<p(j) then atom i has strictly 
     // lower CIP priority than atom j with equality only occurring when the 
@@ -263,6 +255,10 @@ CL_DEFMETHOD void CipPrioritizer_O::assignCahnIngoldPrelogPriorityToAtomsRelativ
     // p and s arrays
     //
     // 
+    // C.append(len(mAtoms))
+
+    // print "Classes go from C[i] to C[i+1] unless last i then end, C=",C
+
   { 
     this->_p.clear();
     Loop l;
@@ -271,24 +267,31 @@ CL_DEFMETHOD void CipPrioritizer_O::assignCahnIngoldPrelogPriorityToAtomsRelativ
     {
       Atom_sp a = l.getAtom();
       if ( a.isA<VirtualAtom_O>() ) continue;
-      size_t relativePriority = core::clasp_make_fixnum(mAtoms.size());
+      size_t relativePriority = mAtoms.size();
       cip->setf_gethash(a,core::clasp_make_fixnum(relativePriority));
       AtomPriority ap(a,relativePriority);
       mAtoms.push_back(ap);
-      this->_p.push_back(atomicNumber(a));
+      this->_p.push_back(atomicNumber(a)); // p(i) = atomic_number of atom
+      FLOG("Atom {} has atomicNumber() {}\n", _rep_(a), atomicNumber(a));
     }
-
     OrderByP byP;
     byP.setCipPrioritizer(this->sharedThis<CipPrioritizer_O>());
-    if ( mAtoms.size()>1 ) 
-    {
+#ifdef	DEBUG_ON
+    FLOG("Assigning initial priorities STAGE1" );
+    for ( auto mit=mAtoms.begin(); mit!=mAtoms.end(); mit++ ) {
+      FLOG("\nAtom: {} _relativePriority {} p-> {}\n", _rep_((*mit)._Atom), (*mit)._relativePriority, this->getP(*mit));
+    }
+    for ( auto cidx=0; cidx<C.size(); cidx++ ) {
+      FLOG("\nC[{}] = {}\n", cidx, C[cidx]);
+    }
+#endif
+    if ( mAtoms.size()>1 ) {
       sort::quickSortVec0(mAtoms, 0, mAtoms.size(), byP);
     }
 
     C.clear();
     int pcur = -1;
-    for ( uint ai=0; ai<mAtoms.size(); ai++ )
-    {
+    for ( uint ai=0; ai<mAtoms.size(); ai++ ) {
       AtomPriority& ap = mAtoms[ai];
       Atom_sp a = mAtoms[ai]._Atom;
       uint idx = mAtoms[ai]._relativePriority;
@@ -299,28 +302,15 @@ CL_DEFMETHOD void CipPrioritizer_O::assignCahnIngoldPrelogPriorityToAtomsRelativ
       }
     }
 #ifdef	DEBUG_ON
-    int cidx = 0;
-    LOG("Assigning priorities STAGE1" );
-    for ( gctools::Vec0<Atom_sp>::iterator mit=mAtoms.begin(); 
-          mit!=mAtoms.end(); mit++ )
-    {
-      stringstream ss;
-      ss << "Atom: " << (*mit)->getName();
-      ss << " priority: " << this->getP((*mit));
-      ASSERT_lessThan(cidx,(int)(C.size()+1));
-      if ( cidx < (int)(C.size()) && mit-mAtoms.begin() == C[cidx] )
-      {
-        cidx++;
-      }
-      ss << " C-class: " << cidx-1;
-      LOG("%s" , ss.str().c_str()  );
+    FLOG("Assigning priorities STAGE1" );
+    for ( auto mit=mAtoms.begin(); mit!=mAtoms.end(); mit++ ) {
+      FLOG("\nAtom: {} _relativePriority {} p-> {}\n", _rep_((*mit)._Atom), (*mit)._relativePriority, this->getP(*mit));
+    }
+    for ( auto cidx=0; cidx<C.size(); cidx++ ) {
+      FLOG("\nC[{}] = {}\n", cidx, C[cidx]);
     }
 #endif
   }
-    // C.append(len(mAtoms))
-
-    // print "Classes go from C[i] to C[i+1] unless last i then end, C=",C
-
 
     // 2.	For each atom i set s(i)=abc...z to be an ordered list of 
     //  neighboring p(j) numbers in decreasing order accounting for bond 
@@ -339,7 +329,7 @@ CL_DEFMETHOD void CipPrioritizer_O::assignCahnIngoldPrelogPriorityToAtomsRelativ
               mi!=mAtoms.end(); mi++ )
         {
           Atom_sp myatom = (*mi)._Atom;
-          LOG("About to fill mys" );
+          FLOG("About to fill mys" );
           gctools::Vec0<int>	mys;
           for ( gctools::Vec0<Bond_sp>::iterator bi=myatom->bonds_begin();
                 bi!=myatom->bonds_end(); bi++ )
@@ -353,35 +343,31 @@ CL_DEFMETHOD void CipPrioritizer_O::assignCahnIngoldPrelogPriorityToAtomsRelativ
               mys.push_back(this->_p[(*bi)->getOtherAtom(myatom)->getRelativePriority(cip)]);
             }
           }
-          LOG("About to sort %d mys objects" , mys.size()  );
+          FLOG("About to sort {} mys objects" , mys.size()  );
           if (mys.size()>1) {
             int* begin = &mys[0];
             int* end = &mys[mys.size()];
             sort::quickSortVec0(mys, 0, mys.size());
-            LOG("Done sort" );
+            FLOG("Done sort" );
             sort::reverse(begin,end);
-            LOG("Done reverse" );
+            FLOG("Done reverse" );
           }
-		    // print "atom(%s) mys = %s"%(myatom.getName(),str(mys))
           this->_s[myatom->getRelativePriority(cip)] = mys;
         }
       }
 #ifdef	DEBUG_ON
       { 
-    //	vector< vector<int> >::iterator sit;
-        gctools::Vec0<Atom_sp>::iterator ait;
-        LOG("Reverse sorted neighbor priorities for each atom" );
-        for ( ait=mAtoms.begin(); ait!=mAtoms.end(); ait++ )
+        FLOG("Reverse sorted neighbor priorities for each atom" );
+        for ( auto ait=mAtoms.begin(); ait!=mAtoms.end(); ait++ )
         {
-          vector<int>::iterator zit;
           stringstream ss;
-          for ( zit=this->_s[(*ait)->getRelativePriority()].begin();
-                zit!=this->_s[(*ait)->getRelativePriority()].end();
+          for ( auto zit=this->_s[(*ait)._relativePriority].begin();
+                zit!=this->_s[(*ait)._relativePriority].end();
                 zit++ )
           {
             ss << " " << *zit;
           }
-          LOG("  reverse sorted priorities of neighbors of %s - %s" , (*ait)->getName().c_str() , ss.str().c_str()  );
+          FLOG("  reverse sorted priorities of neighbors of {} - {}" , _rep_((*ait)._Atom), ss.str().c_str()  );
         }
       }
 #endif
@@ -409,60 +395,54 @@ CL_DEFMETHOD void CipPrioritizer_O::assignCahnIngoldPrelogPriorityToAtomsRelativ
           {
             classEnd = C[classIndex+1];
           }
-          LOG("Looking at class (%u)-(%u)" , classBegin , classEnd  );
+          FLOG("Looking at class ({})-({})" , classBegin , classEnd  );
           gctools::Vec0<AtomPriority> S;
           {
             for ( uint ci = classBegin; ci<classEnd; ci++ )
             {
               S.push_back(mAtoms[ci]);
-			    // print "Before sort S.atom(%s) s=%s"%(a.getName(),str(s[a.getRelativePriority()]))
             }
           }
           OrderByS byS;
           {
-            LOG("Setting up prioritizer" );
+            FLOG("Setting up prioritizer" );
             byS.setCipPrioritizer(this->sharedThis<CipPrioritizer_O>());
-            LOG("about to sort number of elements = %d" , S.size()  );
+            FLOG("about to sort number of elements = {}" , S.size()  );
 #ifdef DEBUG_ON
-            LOG("Contents of S" );
-            for ( gctools::Vec0<Atom_sp>::iterator ssi=S.begin();ssi!=S.end();ssi++)
+            FLOG("Contents of S" );
+            for ( auto ssi=S.begin();ssi!=S.end();ssi++)
             {
-              LOG("    %s" , (*ssi)->description().c_str() );
+              FLOG("    {} relativePriority {}" , _rep_((*ssi)._Atom), (*ssi)._relativePriority );
             }
 #endif
             if (S.size()>1) sort::quickSortVec0(S, 0, S.size(), byS);
-            LOG("done sort" );
+            FLOG("done sort" );
           }
 //		    int i = 0;
-          LOG("About to dump sort results" );
+          FLOG("About to dump sort results" );
 #ifdef	DEBUG_ON
-          gctools::Vec0<Atom_sp>::iterator iiS;
-          for ( iiS=S.begin(); iiS!=S.end(); iiS++)
+          for ( auto iiS=S.begin(); iiS!=S.end(); iiS++)
           {
             stringstream sz;
-            sz << "After sort S[" << iiS-S.begin() << "].atom("<<(*iiS)->getName();
+            sz << "After sort S[" << iiS-S.begin() << "].atom("<<_rep_((*iiS)._Atom);
             sz << " neighbors: ";
-            vector<int>::iterator zit;
-            for ( zit=this->_s[(*iiS)->getRelativePriority()].begin();
-                  zit!=this->_s[(*iiS)->getRelativePriority()].end();
+            for ( auto zit=this->_s[(*iiS)._relativePriority].begin();
+                  zit!=this->_s[(*iiS)._relativePriority].end();
                   zit++ )
             {
               sz << " " << *zit;
             }
 
-            LOG("%s" , sz.str().c_str()  );
+            FLOG("{}" , sz.str().c_str()  );
           }
 #endif
-		//    for a in S:
-		// 	print "After sort S[%d].atom(%s) s=%s"%(classBegin+i,a.getName(),str(s[a.getRelativePriority()]))
-		// 	i += 1
-          LOG("Replacing mAtoms from (%u)-(%u) with S" , classBegin , classEnd );
+          FLOG("Replacing mAtoms from ({})-({}) with S" , classBegin , classEnd );
           uint si, mi;
           for ( si=0, mi=classBegin; mi!=classEnd; mi++, si++ ) {
             mAtoms[mi]._Atom = S[si]._Atom;
             mAtoms[mi]._relativePriority = S[si]._relativePriority;
           }
-          LOG("Partitioning based on s" );
+          FLOG("Partitioning based on s" );
           vector<int> partitionS = partition(S,classBegin,byS);
 #if DEBUG_ON
           vector<int>::iterator pSi;
@@ -471,11 +451,11 @@ CL_DEFMETHOD void CipPrioritizer_O::assignCahnIngoldPrelogPriorityToAtomsRelativ
           {
             Ss << " " << *pSi;
           }
-          LOG(" partitionS = %s" , Ss.str().c_str()  );
+          FLOG(" partitionS = {}" , Ss.str().c_str()  );
 #endif
           if ( partitionS.size()>1 ) 
           {
-            LOG(" Did partition of S" );
+            FLOG(" Did partition of S" );
             didPartition = true;
           }
           for ( vector<int>::iterator psi=partitionS.begin(); psi!=partitionS.end(); psi++ )
@@ -547,7 +527,7 @@ CL_DEFMETHOD void CipPrioritizer_O::assignCahnIngoldPrelogPriorityToAtomsRelativ
     {
       uint relPriority = this->_p[(*ai)._relativePriority];
       cip->setf_gethash((*ai)._Atom,core::clasp_make_fixnum(relPriority));
-      LOG("Assigned to atom: %s priority: %d" , (*ai)._Atom->getName().c_str() , relPriority  );
+      FLOG("Assigned to atom: {} priority: {}" , _rep_((*ai)._Atom->getName()) , relPriority  );
     }
   }
 }
@@ -665,3 +645,58 @@ CL_DEFUN void chem__calculateStereochemistryFromStructure(Matter_sp matter,bool 
 
 
 };
+
+#if 0
+An Efficient Algorithm For The Determination Of Topological RS Chirality
+
+
+P. Labute
+Chemical Computing Group Inc.
+1010 Sherbrooke Street W, Suite 910; Montreal, Quebec; Canada H3A 2R7.
+
+
+November 20, 1996
+
+
+Abstract. In this work, we describe an efficient method to detect and label chiral centers as per the RS system.
+INTRODUCTION
+
+
+Determination of chiral centers and labeling by the RS system as proposed by Cohen, Ingold and Prelog is important in computational chemistry for a number of reasons. Aside the usual uses of nomenclature, specification of chiral constraints during energy minimization and detection of symmetries, proper labeling of chirality is extremely useful for 2D renderings of conformations. A number of algorithms have been proposed. Many are incorrect or do not correspond to the CIP system. Others are computationally expensive.
+
+We present an efficient algorithm for the assignment of CIP priorities to every atom in a molecule. This information can then be used to assign R, S, cis or trans labels.
+
+METHOD
+
+
+The objective of the algorithm is to assign a priority, p(i) to every atom i in the molecule so that if p(i)<p(j) then atom i has strictly lower CIP priority than atom j with equality only occurring when the atoms are indistinguishable (topologically). In essence, the algorithm maintains an ordered list of equivalence classes of atoms. Each atom in an equivalence class is assigned the priority of the -1 of the class in the sorted list. The algorithm repeatedly splits classes (maintaining the ordering) until no changes occur. The final priority assignments are then output as the CIP priorities.
+
+The algorithm proceeds as follows:
+
+For each atom i, set p(i) equal to the atomic number of atom i. Set the initial partition to be an ordered list of classes (C1,…,Ck) such that for each atom i in class Cr and each atom j in class Cs we have (i) p(i)<p(j) iff r<s; and (ii) p(i)=p(j) iff r=s.
+For each atom i set s(i)=abc…z to be an ordered list of neighboring p(j) numbers in decreasing order accounting for bond multiplicities with repeated values (i.e., if atom i is double bonded to an atom with priority p, then put p in the list twice).
+For each class Cr, partition the atoms in the class into ordered subclasses (S1,…,Sk) such that for each atom i in subclass Sr and each atom j in subclass Ss we have (i) s(i)<s(j) iff r<s; and (ii) s(i)=s(j) iff r=s. (Note, the s(i) strings are compared lexicographically.)
+If every class was partitioned into only one subclass then terminate with p(i) as the priority of atom i.
+Form a new partition of all the atoms by concatenating all of the computed subclasses of all of the classes (in the same sequence as the original classes).
+For each class Cr and for each atom i in Cr set p(i) to r and go to Step 3.
+The partitioning steps can be effected with sorting and since all other steps require linear time, we have that each iteration of the algorithm requires O(nlogn) time (assuming bounded degree of all n atoms). At most n iterations are required giving a total running time of O(n2logn).
+
+Once CIP priorities have been assigned to every atom in a molecule it is a simple matter to order the neighbors of each atom and compute the appropriate signed volume tests on the atomic coordinates to make topological R, S, cis, or trans assignments.
+
+Once the basic chiral assignments have been made, the classes can be further partitioned taking the initial assignment into account. This process will create new chiral centers based on the chirality of the branches.
+
+DISCUSSION
+
+
+The RS system uses bond orders which, from a computational standpoint, is unfortunate since (i) a particular resonance structure must be chosen; (ii) the "phantom" atoms, although easy to deal with, are an unnecessary complication.
+
+As an alternative we propose the following system. The algorithm to compute assignments is the same as the one presented except for the initial assignment of priorities. With CIP priorities, the initial string is made up of the neighboring atomic numbers taking multiplicities into account. The new system need only replace the initial priority assignment of atomic number with a code taking into account further properties.
+
+Initially each atom is assigned a code of the following form:
+
+(a128+s)8+b
+where a is the atomic number of the atom, s is the isotope number, b is the hybridization of the atom coded as sp=6, sp2=5, d3sp3=4, d2sp3=3, dsp3=2, sp3=1, and the ground state being coded as 0.
+
+This system has the advantage that the hybridization state is invariant under resonance, is easy to detect, assignable in the absence of hydrogens, and will still be close to the original CIP priorities.
+
+#endif

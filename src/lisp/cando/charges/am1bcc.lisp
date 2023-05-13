@@ -87,7 +87,7 @@
     (310942 0.3195) (310951 0.1530) (310952 0.3916) (310953 0.3228) (510953 0.5218)
     ))
 
-(defvar *am1-bcc-parameters* (make-hash-table :test #'eql))
+(defvar *am1-bcc-parameters* (make-hash-table :test #'eql :thread-safe t))
 
 ;(loop for pair in *am1-bcc-table*
 ;                  (setf (gethash (car pair) *am1-bcc-parameters*) (second pair)))
@@ -311,11 +311,11 @@
               ((= num-bonds 3) (set-am1-bcc-type a 52))
               (t  (set-am1-bcc-type a 51)))))
          ((eq ae :P) (apply-phosphorous-atom-types a))
-         ((eq ae :Si) (set-am1-bcc-type a 61))
+         ((eq ae :|Si|) (set-am1-bcc-type a 61))
          ((eq ae :H)  (set-am1-bcc-type a 91))
          ((eq ae :F)  (set-am1-bcc-type a 71))
-         ((eq ae :Cl) (set-am1-bcc-type a 72))
-         ((eq ae :Br) (set-am1-bcc-type a 73))
+         ((eq ae :|Cl|) (set-am1-bcc-type a 72))
+         ((eq ae :|Br|) (set-am1-bcc-type a 73))
          ((eq ae :I)  (set-am1-bcc-type a 74))
          (t (warn "Unhandled element in am1-bcc charge calculation [~s]" ae)
             (set-am1-bcc-type a nil))
@@ -411,23 +411,40 @@
                 atoms-to-am1-charges)
     atoms-to-am1-bcc-charges))
 
-(defun calculate-am1-bcc-charges (aggregate &key (maxcyc 9999))
+(defun sqm-executable ()
+  (probe-file "amber:bin;sqm"))
+  
+(defun calculate-am1-bcc-charges (aggregate &key (maxcyc 9999) verbose)
   "Calculate Am1-Bcc charges and add the results to the aggregate."
-  (let ((bcc (calculate-bcc-corrections aggregate))
-        (order (charges:write-sqm-calculation (open "/tmp/sqm-input.txt" :direction :output) aggregate
-                                              :maxcyc maxcyc))
-        (output-file-name "/tmp/sqm-output.out"))
-    (ext:vfork-execvp (list (namestring (translate-logical-pathname #P"amber:bin;sqm"))
-                            "-O"
-                            "-i" "/tmp/sqm-input.txt"
-                            "-o" output-file-name))
-    (unless (probe-file "/tmp/sqm-output.out")
-      (error "The AM1 charge calculation using the external sqm program did not generate output ~a - did sqm run?" output-file-name))
-    (let* ((am1 (charges:read-am1-charges "/tmp/sqm-output.out" order))
-           (am1-bcc (combine-am1-bcc-charges am1 bcc)))
-      (maphash (lambda (atom charge)
-                 (chem:set-charge atom charge))
-               am1-bcc))))
+  (let* ((bcc (calculate-bcc-corrections aggregate))
+         (input-filename (sys:mkstemp "/tmp/sqm-input-"))
+         (output-filename (sys:mkstemp "/tmp/sqm-output-"))
+         (order (charges:write-sqm-calculation (open input-filename :direction :output) aggregate
+                                               :maxcyc maxcyc))
+         (sqm-executable (sqm-executable))
+         (args (list "-O"
+                     "-i" input-filename
+                     "-o" output-filename)))
+    (unless sqm-executable
+      (error "Could not find the executable ~a" sqm-executable))
+    (when verbose (format t "About to invoke ~s~%" args))
+    (multiple-value-bind (process-stream status external-process)
+        (ext:run-program "/bin/bash" (list "-c" (format nil "~a ~{~a~^ ~}" (namestring sqm-executable) args)))
+      (unless (probe-file output-filename)
+        (let ((output (loop for line = (read-line process-stream nil :eof)
+                            if (not (eq line :eof))
+                              collect line into lines
+                            else
+                              do (return lines)
+                            )))
+          (error "The AM1 charge calculation using the external sqm program (~a) did not generate output ~a - did sqm run?~%Output was: ~a status: ~a" (list* sqm-executable args) output-filename output status)))
+      (let* ((am1 (charges:read-am1-charges output-filename order))
+             (am1-bcc (combine-am1-bcc-charges am1 bcc)))
+        (when verbose (format t "Read charges from ~a~%" output-filename))
+        (maphash (lambda (atom charge)
+                   (chem:set-charge atom charge)
+                   (when verbose (format t "Set charge for ~a to ~f~%" atom charge)))
+                 am1-bcc)))))
 
 (defun calculate-mopac-am1-bcc-charges (aggregate &key (version :2016))
   "Calculate Am1-Bcc charges (Am1 charges are calculated in mopac) and add the results to the aggregate."
@@ -442,6 +459,8 @@
       (maphash (lambda (atom charge)
                  (chem:set-charge atom charge))
                am1-bcc))))
+
+
 
 #||
 (defun describe-fragment-and-residue (frag res am1-charges bcc-corrections am1bcc-charges)

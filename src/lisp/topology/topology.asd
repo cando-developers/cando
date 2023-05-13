@@ -20,6 +20,7 @@
                (:file "internals")
                (:file "linearize-internals")
                (:file "design")
+               (:file "oligomer-space-dag")
                (:file "context")
                (:file "badgeom")
                (:file "shape")

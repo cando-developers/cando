@@ -275,8 +275,8 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
       (format t "Optimization with nonbond term on~%")
       (finish-output t))
     (minimize-with-restarts min :verbose verbose)
-    (finish-output t))
-  matter)
+    (finish-output t)
+    (values matter energy-function)))
 
 (defun indexed-pathname (template index)
   (let* ((filename (format nil "~a~3,'0d" (pathname-name template) index)))
@@ -453,7 +453,6 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
      (lambda (atm)
        (setf (gethash atm atom-types) :sketch))
      agg)
-    (error "starting-geometry - what do I do with atom-types")
     (let* ((mol (cando:mol agg 0))
            (dummy-sketch-nonbond-ff (make-instance 'sketch-nonbond-force-field))
            (sketch-function (chem:make-sketch-function mol dummy-sketch-nonbond-ff atom-types))
@@ -560,15 +559,18 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
       (dynamics:write-coordinates-back-to-matter dynamics)
       (when verbose
         (format t "Optimizing structure~%"))
-      (if energy-function
-          (optimize-structure-with-restarts agg :turn-off-nonbond nil :verbose verbose :energy-function energy-function
-                                                :max-cg-steps max-cg-steps
-                                                :max-tn-steps max-tn-steps)
-          (optimize-structure-with-restarts agg :turn-off-nonbond nil :verbose verbose
-                                                :max-cg-steps max-cg-steps
-                                                :max-tn-steps max-tn-steps))
-      dynamics
-      )))
+      (multiple-value-bind (matter energy-function)
+          (if energy-function
+              (optimize-structure-with-restarts agg :turn-off-nonbond nil :verbose verbose :energy-function energy-function
+                                                    :max-cg-steps max-cg-steps
+                                                    :max-tn-steps max-tn-steps)
+              (optimize-structure-with-restarts agg :turn-off-nonbond nil :verbose verbose
+                                                    :max-cg-steps max-cg-steps
+                                                    :max-tn-steps max-tn-steps))
+        (unless energy-function
+          (error "starting-geometry-with-restarts energy-function is nil"))
+        (values dynamics energy-function)
+        ))))
 
 (defun build-good-geometry-from-random (agg)
   (let (bad-geom)
@@ -607,7 +609,7 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
     (let ((transform (chem:superpose superposer)))
       (chem:apply-transform-to-atoms moveable-matter transform))))
 
-(defun superpose-all (aggs atomspec)
+(defun superpose-all (aggs &optional atomspec)
   (let* ((fixed-agg (car aggs))
          (rest-aggs (cdr aggs))
          (fixed-coords (simple-vector-coordinate-for-atomspec fixed-agg atomspec))
@@ -759,5 +761,3 @@ Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))"
             (format t "anchoring ~a to ~a~%" a p)
             (anchor-atom a p))
           (coerce centers 'list) points)))
-
-

@@ -77,7 +77,8 @@
    #:target
    #:action
    #:panel-summary-estimated-time-remaining
-   ))
+   #:replica-exchange-equilibrate
+   #:replica-exchange))
 
 (defpackage #:graphviz-amber
   (:use #:common-lisp)

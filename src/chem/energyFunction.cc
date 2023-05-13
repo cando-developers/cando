@@ -1219,6 +1219,16 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, bool useEx
     }
   }
   core::HashTable_sp atomTypes = core::HashTableEq_O::create_default();
+  // Assign given atom-types
+  Loop atom_loop;
+  atom_loop.loopTopGoal(matter,ATOMS);
+  while (atom_loop.advanceLoopAndProcess()) {
+    Atom_sp atom = atom_loop.getAtom();
+    core::T_sp type = atom->getPropertyOrDefault( kw::_sym_given_atom_type, nil<core::T_O>() );
+    if (type.notnilp()) {
+      atomTypes->setf_gethash(atom,type);
+    }
+  }
   this->_AtomTypes = atomTypes;
   if (assign_types) {
     if (chem__verbose(0)) core::write_bf_stream(fmt::sprintf("Assigning atom types.\n"));
@@ -1227,7 +1237,7 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, bool useEx
       Molecule_sp molecule = moleculeLoop.getMolecule();
       core::T_sp force_field_name = molecule->force_field_name();
       core::T_sp use_given_types = molecule->force_field_use_given_types();
-      if (use_given_types.nilp()) {
+//      if (use_given_types.nilp()) {
         core::T_sp combined_force_field = force_fields->gethash(force_field_name);
         if (chem__verbose(0)) core::write_bf_stream(fmt::sprintf("Assigning atom types for molecule %s using %s.\n" , _rep_(molecule->getName()) , _rep_(force_field_name)));
   //
@@ -1237,6 +1247,7 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, bool useEx
         if (aromaticity_info.nilp()) SIMPLE_ERROR(("The aromaticity-info was NIL when about to assign force field types - it should not be"));
         core::DynamicScopeManager aromaticity_scope(_sym_STARcurrent_aromaticity_informationSTAR,aromaticity_info);
         core::eval::funcall(_sym_assign_force_field_types,combined_force_field,molecule,atomTypes);
+#if 0
       } else {
         if (chem__verbose(0)) core::write_bf_stream(fmt::sprintf("Assigning atom types for molecule %s using given-types for %s.\n" , _rep_(molecule->getName()) , _rep_(force_field_name)));
         Loop atom_loop;
@@ -1246,6 +1257,7 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, bool useEx
           atomTypes->setf_gethash(atom,atom->atomType());
         }
       }
+#endif
     }
   }
   this->defineForMatterWithAtomTypes(matter,useExcludedAtoms,activeAtoms,cip,atomTypes);

@@ -78,10 +78,11 @@ public:
   Clusters EmptyClusters();
   core::SimpleVector_sp EmptyCenters();
   float Wcss(core::SimpleVector_sp centers, Clusters clusters );
-  int RunKmean(core::SimpleVector_sp centers, Clusters clusters);
+  int RunKmean(core::SimpleVector_sp centers, Clusters clusters, bool centerOnPoints );
   void Cluster(core::SimpleVector_sp centers, Clusters clusters);
   int Center(core::SimpleVector_sp centers, Clusters clusters);
-  core::SimpleVector_sp ClosestPointIndexToCenter(Clusters clusters);
+  core::SimpleVector_sp CenterOnPoints(core::SimpleVector_sp centers, Clusters clusters);
+  core::SimpleVector_float_sp PointDistancesToClusterCenters(core::SimpleVector_sp centers, Clusters clusters);
   CL_DEFMETHOD int GetK() const {return this->_K;};
   core::SimpleVector_sp GetPoints() const;
   core::T_sp GetPoint(size_t idx);

@@ -70,7 +70,7 @@ void EnergyAtom::defineForAtom(core::T_sp forceField, Atom_sp a1, uint coordinat
 {
   this->setupBase(a1,coordinateIndex);
   if (a1->getType(atomTypes).nilp()) {
-    SIMPLE_ERROR(("The atom type of %s is NIL!") , _rep_(a1));
+    SIMPLE_ERROR(("In EnergyAtom::defineForAtom - the atom type of %s is NIL!") , _rep_(a1));
   }
   core::T_sp typeIndex = core::eval::funcall(_sym_find_atom_type_position,forceField,a1->getType(atomTypes));
   if (!typeIndex.fixnump()) {

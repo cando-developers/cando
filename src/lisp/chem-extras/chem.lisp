@@ -99,7 +99,6 @@ multiple force-fields and know how a more recently added force-field shadows a l
   (:documentation  "Assign force-field types"))
 
 (defmethod chem:assign-force-field-types ((combined-force-field chem:combined-force-field) molecule atom-types)
-  (format t "Entered chem:assign-force-field-types atom-types for: ~a~%" (alexandria:hash-table-keys atom-types))
   (chem:combined-force-field/assign-force-field-types combined-force-field molecule atom-types))
 
 
@@ -124,7 +123,7 @@ multiple force-fields and know how a more recently added force-field shadows a l
           (ffangle-db (chem:get-angle-db merged-force-field))
           (ffptor-db (chem:get-ptor-db merged-force-field))
           (ffitor-db (chem:get-itor-db merged-force-field)))
-      (warn "At this point we should run parmchk2 on the stretch/angle/ptor/itor components of the merged-force-field - any missing parameters should be provided by parmchk2")
+      #+(or)(warn "At this point we should run parmchk2 on the stretch/angle/ptor/itor components of the merged-force-field - any missing parameters should be provided by parmchk2")
       (chem:energy-function/generate-standard-energy-function-tables energy-function molecule ffstretch-db ffangle-db ffptor-db ffitor-db :active-atoms active-atoms :atom-types (chem:atom-types energy-function)))))
 
 

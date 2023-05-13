@@ -103,7 +103,7 @@
    #:monomer-context-to-fragment-conformations
    #:dump-fragment-internals
    #:index
-   #:total-count
+   #:next-index
    #:bad-geometry-p
    
    #:make-in-plug-bonded-joint-template
@@ -219,7 +219,23 @@
    #:monomer-topology
    #:cluster-dihedral-names
    #:cluster-dihedral-vector
-   #:cluster-dihedral-point-vector))
+   #:cluster-dihedral-rad-vector
+   #:convert-dihedral-rad-vector-to-xy-vector
+   #:build-all-molecules
+   #:energy
+   #:monomer-context
+   #:define-topology-charges))
+
+  
+(defpackage #:topology.dag
+  (:use #:common-lisp)
+  (:nicknames #:tsd)
+  (:export
+   #:make-topology-from-residue
+   #:parse-oligomer-space-labeled-dag
+   #:parse-oligomer-space-dag
+   #:validate-dag
+   ))
 
 (defpackage #:monomer-context
   (:use #:common-lisp)

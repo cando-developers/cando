@@ -12,7 +12,7 @@
 
 
 (defmethod make-ngl-trajectories ((instance netcdf:netcdf) &rest initargs &key &allow-other-keys)
-  (let* ((atom-count (netcdf:get-dimension instance "atom"))
+  (let* ((atom-count (netcdf::dimension instance "atom"))
          (coords (static-vectors:make-static-vector (* 3 atom-count)
                                                     :element-type 'single-float))
          (frame-count (netcdf:get-dimension instance "frame")))

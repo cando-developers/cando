@@ -5,12 +5,13 @@
     :version "0.0.1"
     :author "Shiho Nagai <>"
     :licence "LGPL-2.0"
-    :depends-on (:aromaticity :smarts :cando)
+    :depends-on (:aromaticity :smarts :cando :lparallel)
     :serial t
     :components
     ((:file "packages")
      (:file "am1bcc")
      (:file "sqm-interface")
+     (:file "charges")
      (:file "mopac-interface")
      ;;     (:file "bcc")
      ))

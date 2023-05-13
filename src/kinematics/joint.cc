@@ -249,7 +249,7 @@ void Joint_O::addChild(Joint_sp child)
   } else {
     LOG("It's a non-jump atom");
     int firstNonJumpIndex = this->firstNonJumpChildIndex();
-    LOG(BF("We are at the end of the Children - appending"));
+    LOG("We are at the end of the Children - appending");
     this->_appendChild(child);
     child->setParent(this->asSmartPtr());
   }

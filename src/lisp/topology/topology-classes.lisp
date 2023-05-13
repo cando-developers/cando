@@ -386,6 +386,7 @@
              :initarg :monomers :accessor monomers)
    (couplings :initform (make-array 16 :adjustable t :fill-pointer 0)
               :initarg :couplings :accessor couplings)
+   (labeled-monomers :initform (make-hash-table) :accessor labeled-monomers)
    (%number-of-sequences :initform nil
                         :initarg :number-of-sequences
                         :accessor %number-of-sequences)))
@@ -442,6 +443,7 @@ Examples:
     (interpret-subtree oligomer-space tree labels :parts parts)
     (setf (%number-of-sequences oligomer-space)
           (calculate-number-of-sequences oligomer-space))
+    (setf (labeled-monomers oligomer-space) labels)
     oligomer-space))
 
 (defclass oligomer ()

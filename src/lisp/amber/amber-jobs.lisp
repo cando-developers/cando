@@ -28,11 +28,12 @@
 
 (defclass job-name ()
   ((path :initform nil :initarg :path :accessor path)
+   (stage :initform 0 :initarg :stage :accessor stage)
    (action :initarg :action :accessor action)
    (target :initarg :target :accessor target)))
 
 (defun job-pathname (job-name &key type)
-  (make-pathname :name (format nil "~a-~a" (string (action job-name)) (string (target job-name)))
+  (make-pathname :name (format nil "~a-~3,'0d-~a" (string (action job-name)) (stage job-name) (string (target job-name)))
                  :type type))
 
 
@@ -91,6 +92,7 @@
    (aggregates :initform (make-hash-table) :accessor aggregates)
    (parameters :initform (make-hash-table) :accessor parameters)
    (jobs :initform nil :initarg :jobs :accessor jobs)
+   (stage :initform 0 :initarg :stage :accessor stage)
    (process-stream :initform nil :accessor process-stream)
    (external-process :initform nil :accessor external-process)))
 
@@ -536,7 +538,9 @@ added to inputs and outputs but not option-inputs or option-outputs"
                                        :input-topology-file (job-file prev-job :|-p|)
                                        :input-coordinate-file (job-file prev-job :|-r|)
                                        :script *min-in*
-                                       :job-name (make-instance 'job-name :action name :target (target (job-name prev-job)))
+                                       :job-name (make-instance 'job-name :action name
+                                                                          :stage (stage simulation)
+                                                                          :target (target (job-name prev-job)))
                                        :micro-name #\m
                                        :job-kind :minimize ; minimize jobs have different info files - we need to keep track of this for later
                                        :minimize-job-steps steps ; minimize jobs don't print how many steps are left
@@ -546,6 +550,7 @@ added to inputs and outputs but not option-inputs or option-outputs"
                                        :output-args '(:|-o| :|-inf| :|-r|)
                                        :rule-clause *minimize-rule*))))
     (setf (latest-jobs simulation) jobs))
+  (incf (stage simulation))
   simulation)
 
 (defparameter *heat-in*
@@ -593,7 +598,9 @@ added to inputs and outputs but not option-inputs or option-outputs"
                                        :input-topology-file (job-file prev-job :|-p|)
                                        :input-coordinate-file (job-file prev-job :|-r|)
                                        :script *heat-in*
-                                       :job-name (make-instance 'job-name :action name :target (target (job-name prev-job)))
+                                       :job-name (make-instance 'job-name :action name
+                                                                          :stage (stage simulation)
+                                                                          :target (target (job-name prev-job)))
                                        :micro-name #\h
                                        :parameters (list*
                                                     (cons :%STEPS-PER-WRITE% steps-per-write)
@@ -606,6 +613,7 @@ added to inputs and outputs but not option-inputs or option-outputs"
                                                                                     :description "Heat system"
                                                                                     :command "sander"))))))
     (setf (latest-jobs simulation) jobs))
+  (incf (stage simulation))
   simulation)
 
 (defparameter *press-in*
@@ -644,7 +652,9 @@ added to inputs and outputs but not option-inputs or option-outputs"
                                        :input-topology-file (job-file prev-job :|-p|)
                                        :input-coordinate-file (job-file prev-job :|-r|)
                                        :script *press-in*
-                                       :job-name (make-instance 'job-name :action name :target (target (job-name prev-job)))
+                                       :job-name (make-instance 'job-name :action name
+                                                                          :stage (stage simulation)
+                                                                          :target (target (job-name prev-job)))
                                        :micro-name #\p
                                        :parameters (list*
                                                     (cons :%STEPS-PER-WRITE% steps-per-write)
@@ -657,12 +667,13 @@ added to inputs and outputs but not option-inputs or option-outputs"
                                                                                     :description "Pressurize system"
                                                                                     :command "sander"))))))
     (setf (latest-jobs simulation) jobs))
+  (incf (stage simulation))
   simulation)
 
 (defparameter *dynamics-in*
   "dynamics
  &cntrl
-   imin = 0, nstlim = :%STEPS%, irest = 0, ntx = 1, dt = :%TIME-STEP-PS%,
+   imin = 0, nstlim = :%STEPS%, irest = 0, ntx = 5, dt = :%TIME-STEP-PS%,
    nmropt = 1,
    ntt = 3, temp0 = :%TEMPERATURE%, gamma_ln = 2.0, ig = -1,
    tempi = 5.0, tautp = 1.0,
@@ -707,7 +718,9 @@ added to inputs and outputs but not option-inputs or option-outputs"
                                        :input-topology-file (job-file prev-job :|-p|)
                                        :input-coordinate-file (job-file prev-job :|-r|)
                                        :script *dynamics-in*
-                                       :job-name (make-instance 'job-name :action name :target (target (job-name prev-job)))
+                                       :job-name (make-instance 'job-name :action name
+                                                                          :stage (stage simulation)
+                                                                          :target (target (job-name prev-job)))
                                        :micro-name #\D
                                        :parameters (list*
                                                     (cons :%STEPS-PER-WRITE% steps-per-write)
@@ -720,6 +733,7 @@ added to inputs and outputs but not option-inputs or option-outputs"
                                                                                     :description "Molecular dynamics"
                                                                                     :command "sander"))))))
     (setf (latest-jobs simulation) jobs))
+  (incf (stage simulation))
   simulation)
 
 (defun mdcrd (job)
@@ -730,7 +744,7 @@ added to inputs and outputs but not option-inputs or option-outputs"
 (defparameter *replica-exchange-equilibration1*
   "Equilibration
  &cntrl
-   irest = 0, ntx = 1, 
+   irest = 0, ntx = 5, 
    nstlim = :%STEPS%, dt = :%TIME-STEP-PS%,
    irest = 0, ntt = 3, gamma_ln = 1.0,
    temp0 = :%TEMPERATURE%, ig = :%RANDOM-SEED%,
@@ -748,7 +762,7 @@ added to inputs and outputs but not option-inputs or option-outputs"
     (simulation
      &key
        (name "replica-exchange-equilibrate")
-       (temperature 300.0)
+       (temperatures '(300.0 320.0 340.0 360.0 380.0 400.0))
        (steps 10000 stepsp)
        (time-step-ps 0.002)
        (time-ps 10 time-ps-p)
@@ -762,11 +776,13 @@ added to inputs and outputs but not option-inputs or option-outputs"
                                        :input-topology-file (job-file prev-job :|-p|)
                                        :input-coordinate-file (job-file prev-job :|-r|)
                                        :script *dynamics-in*
-                                       :job-name (make-instance 'job-name :action name :target (target (job-name prev-job)))
+                                       :job-name (make-instance 'job-name :action name
+                                                                          :stage (stage simulation)
+                                                                          :target (target (job-name prev-job)))
                                        :micro-name #\r
                                        :parameters (list*
                                                     (cons :%STEPS-PER-WRITE% steps-per-write)
-                                                    (cons :%TEMPERATURE% temperature)
+                                                    (cons :%TEMPERATURE% "TEMPERATURE")
                                                     (cons :%RANDOM-SEED% (if (eq random-seed t)
                                                                              (random 32768)
                                                                              random-seed))
@@ -778,12 +794,13 @@ added to inputs and outputs but not option-inputs or option-outputs"
                                                                                     :description "Replica exchange equilibrate"
                                                                                     :command "sander"))))))
     (setf (latest-jobs simulation) jobs))
+  (incf (stage simulation))
   simulation)
 
 (defparameter *replica-exchange-run1*
   "Replica exchange
  &cntrl
-   irest = 0, ntx = 1, 
+   irest = 0, ntx = 5, 
    nstlim = :%STEPS%, dt = :%TIME-STEP-PS%,
    irest = 0, ntt = 3, gamma_ln = 1.0,
    temp0 = :%TEMPERATURE%, ig = :%RANDOM-SEED%,
@@ -817,7 +834,9 @@ added to inputs and outputs but not option-inputs or option-outputs"
                                        :input-topology-file (job-file prev-job :|-p|)
                                        :input-coordinate-file (job-file prev-job :|-r|)
                                        :script *dynamics-in*
-                                       :job-name (make-instance 'job-name :action name :target (target (job-name prev-job)))
+                                       :job-name (make-instance 'job-name :action name
+                                                                          :stage (stage simulation)
+                                                                          :target (target (job-name prev-job)))
                                        :micro-name #\R
                                        :parameters (list*
                                                     (cons :%STEPS-PER-WRITE% steps-per-write)
@@ -833,6 +852,7 @@ added to inputs and outputs but not option-inputs or option-outputs"
                                                                                     :description "Replica exchange"
                                                                                     :command "sander"))))))
     (setf (latest-jobs simulation) jobs))
+  (incf (stage simulation))
   simulation)
 
 (defun read-file (infile)
