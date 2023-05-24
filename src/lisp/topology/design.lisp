@@ -241,10 +241,8 @@ This is for looking up parts but if the thing returned is not a part then return
          (let ((group-names (gethash part-info *topology-groups*)))
            (list part-info)
            (list group-names))))
-    (format t "Got names: ~a~%" names)
     (multiple-value-bind (new-parts ringp)
         (translate-part oligomer names labels part-info :parts parts)
-      (format t "Got new-parts: ~a~%" new-parts)
       (when label
         (loop for new-part in new-parts
               do (push new-part (gethash label labels))))

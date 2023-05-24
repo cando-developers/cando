@@ -45,28 +45,28 @@
             for configuration = (configuration stereoconfiguration)
             for atm = (gethash atom-name named-atoms)
             do (chem:set-stereochemistry-type atm :chiral)
-            do (chem:set-configuration atm configuration)))
-    ;; assign stereochem for prochiral atoms so they aren't random
-    (chem:do-atoms (atm residue)
-      (when (= (chem:number-of-bonds atm) 4)
-        (chem:set-hybridization atm :sp3)
-        (when (not (eq (chem:get-stereochemistry-type atm) :chiral))
-          (chem:set-stereochemistry-type atm :prochiral)
-          (chem:set-configuration atm :left-handed))))
-    ;; Add restraints to the residue
-    ;;  dihedral restraints is all we can specify here for the time being
-    (loop for restraint in (restraints topology)
-          for rr = (etypecase restraint
-                     (dihedral-restraint
-                      (let* ((atom1 (safe-atom-with-name residue (atom1-name restraint)))
-                             (atom2 (safe-atom-with-name residue (atom2-name restraint)))
-                             (atom3 (safe-atom-with-name residue (atom3-name restraint)))
-                             (atom4 (safe-atom-with-name residue (atom4-name restraint))))
-                        (chem:make-restraint-dihedral atom1 atom2 atom3 atom4
-                                                      (dihedral-min-degrees restraint)
-                                                      (dihedral-max-degrees restraint)
-                                                      (weight restraint)))))
-          do (chem:add-restraint residue rr))
+            do (chem:set-configuration atm configuration))
+      ;; assign stereochem for prochiral atoms so they aren't random
+      (chem:do-atoms (atm residue)
+        (when (= (chem:number-of-bonds atm) 4)
+          (chem:set-hybridization atm :sp3)
+          (when (not (eq (chem:get-stereochemistry-type atm) :chiral))
+            (chem:set-stereochemistry-type atm :prochiral)
+            (chem:set-configuration atm :left-handed))))
+      ;; Add restraints to the residue
+      ;;  dihedral restraints is all we can specify here for the time being
+      (loop for restraint in (restraints topology)
+            for rr = (etypecase restraint
+                       (dihedral-restraint
+                        (let* ((atom1 (safe-atom-with-name residue (atom1-name restraint)))
+                               (atom2 (safe-atom-with-name residue (atom2-name restraint)))
+                               (atom3 (safe-atom-with-name residue (atom3-name restraint)))
+                               (atom4 (safe-atom-with-name residue (atom4-name restraint))))
+                          (chem:make-restraint-dihedral atom1 atom2 atom3 atom4
+                                                        (dihedral-min-degrees restraint)
+                                                        (dihedral-max-degrees restraint)
+                                                        (weight restraint)))))
+            do (chem:add-restraint residue rr)))
     residue))
 
 (defun build-one-molecule-for-topology (topology)

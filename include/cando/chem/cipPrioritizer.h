@@ -77,7 +77,7 @@ public:
   void assignCahnIngoldPrelogPriorityToAtomsRelativePriority(Matter_sp molOrAgg,core::HashTable_sp cip);
 public:
 
-  core::HashTable_sp setStereochemicalTypeForAllAtoms(Matter_sp molOrAgg);
+  core::HashTable_mv calculateStereochemistryTypeForAllAtoms(Matter_sp molOrAgg);
   CipPrioritizer_O( const CipPrioritizer_O& ss ); //!< Copy constructor
 
 };

@@ -538,103 +538,105 @@ bool orderByName( Atom_sp p1, Atom_sp p2 )
   return core::SymbolComparer::order(p1->getName(),p2->getName())<=0;
 }
 
-CL_LISPIFY_NAME("setStereochemicalTypeForAllAtoms");
-CL_DEFMETHOD core::HashTable_sp CipPrioritizer_O::setStereochemicalTypeForAllAtoms(Matter_sp molOrAgg)
+CL_DOCSTRING("Return (values atom-to-cip-relative-priorities-map atom-to-stereochemistry-type)")
+CL_DOCSTRING_LONG(R"dx(For each atom in the matter calculate the relative CIP priority and the stereochemistry type.
+Return these two values in a pair of hash-tables each keyed on the atom)dx")
+CL_LISPIFY_NAME("calculateStereochemicalTypeForAllAtoms");
+CL_DEFMETHOD core::HashTable_mv CipPrioritizer_O::calculateStereochemistryTypeForAllAtoms( Matter_sp molOrAgg )
 {
   core::HashTable_sp cip = core::HashTableEq_O::create_default();
-  this->assignCahnIngoldPrelogPriorityToAtomsRelativePriority(molOrAgg,cip);
+  core::HashTable_sp stereochemistryType = core::HashTableEq_O::create_default();
+  this->assignCahnIngoldPrelogPriorityToAtomsRelativePriority( molOrAgg, cip );
   Loop l;
-  l.loopTopGoal(molOrAgg,ATOMS);
-  while ( l.advanceLoopAndProcess() )
-  {
+  l.loopTopGoal( molOrAgg, ATOMS );
+  while ( l.advanceLoopAndProcess() ) {
     Atom_sp a = l.getAtom();
     if ( a.isA<VirtualAtom_O>() ) continue;
-    if ( a->numberOfBonds() == 4 )
-    {
+    if ( a->numberOfBonds() == 4 ) {
 	    //  get the names of the atoms in order of priority
       gctools::Vec0<AtomPriority> priority;
-      for ( gctools::Vec0<Bond_sp>::iterator bi = a->bonds_begin(); bi!=a->bonds_end(); bi++ )
-      {
-        AtomPriority ap((*bi)->getOtherAtom(a),a->getRelativePriority(cip));
+      for ( gctools::Vec0<Bond_sp>::iterator bi = a->bonds_begin(); bi!=a->bonds_end(); bi++ ) {
+        AtomPriority ap( (*bi)->getOtherAtom(a), a->getRelativePriority(cip) );
         priority.push_back(ap);
       }
       OrderByPriority orderByPriority;
-      sort::quickSortVec0(priority, 0, priority.size(), orderByPriority);
+      sort::quickSortVec0( priority, 0, priority.size(), orderByPriority );
 	    //  now figure out if they are four different priorities
       uint prevPriority = UndefinedUnsignedInt;
       int diff = 0;
-      for ( gctools::Vec0<AtomPriority>::iterator pi=priority.begin(); 
-            pi!=priority.end(); pi++ )
-      {
-        if ( (*pi)._relativePriority != prevPriority )
-        {
+      for ( gctools::Vec0<AtomPriority>::iterator pi=priority.begin(); pi!=priority.end(); pi++ ) {
+        if ( (*pi)._relativePriority != prevPriority ) {
           diff += 1;
         }
         prevPriority = (*pi)._relativePriority;
       }
-      if ( diff == 4 )
-      {
+      if ( diff == 4 ) {
 		//  they are all different, this is a chiral atom
 		// If the stereochemistry type has already been assigned then don't overwrite it.
-        if ( a->getStereochemistryType() != chiralCenter )
-        {
-          a->setStereochemistryType(chiralCenter);
-          a->setConfiguration(undefinedConfiguration);
+        if ( a->getStereochemistryType() != chiralCenter ) {
+          stereochemistryType->setf_gethash( a, chemkw::_sym_chiral );
         }
-      } else 
-      {
+      } else {
 		//  there are less than 4 different priorities that means
 		//  we treat this as a proChiral center, methyls will also order
 		//  their atoms
-        a->setStereochemistryType(prochiralCenter);
-        a->setConfiguration(undefinedConfiguration);
+        stereochemistryType->setf_gethash( a, chemkw::_sym_prochiral );
       }
-    } else
-    {
-      a->setConfiguration(undefinedConfiguration);
-      a->setStereochemistryType(undefinedCenter);
+    } else {
+      stereochemistryType->setf_gethash( a, chemkw::_sym_undefinedCenter );
     }
   }
-  return cip;
+  return Values(cip, stereochemistryType );
 }
 
-CL_DOCSTRING(R"dx(Calculate the stereochemistry for each atom in the aggregate or molecule)dx");
-CL_DOCSTRING_LONG(R"dx(Start from the three-dimensional structure. If only-undefined-configuration is passed T then 
-only centers with unefinedConfiguration are changed.)dx")
-CL_LAMBDA(matter &key (only_undefined_configuration t));
-DOCGROUP(cando);
-CL_DEFUN void chem__calculateStereochemistryFromStructure(Matter_sp matter,bool onlyUndefinedConfiguration)
-{
+
+void doCalculateStereochemistry( bool useStructure, Molecule_sp matter, core::HashTable_sp cips, core::HashTable_sp stereochemistryTypes, core::HashTable_sp configurations ) {
   CipPrioritizer_sp prior;
-  if (gc::IsA<Molecule_sp>(matter)) {
-    prior = CipPrioritizer_O::create();
-    core::HashTable_sp cip = prior->setStereochemicalTypeForAllAtoms(matter);
-    Loop la;
-    la.loopTopGoal(matter,ATOMS);
-    while (la.advanceLoopAndProcess() ) {
-      Atom_sp atm = la.getAtom();
-      if (atm->getStereochemistryType()==chiralCenter) {
-        if (!onlyUndefinedConfiguration) {
-          ConfigurationEnum ce = atm->calculateStereochemicalConfiguration(cip);
-          atm->setConfiguration(ce);
-        } else if (onlyUndefinedConfiguration&&atm->getConfiguration()==undefinedConfiguration) {
-          ConfigurationEnum ce = atm->calculateStereochemicalConfiguration(cip);
-          atm->setConfiguration(ce);
-        }
-      }
+  prior = CipPrioritizer_O::create();
+  core::HashTable_mv cip = prior->calculateStereochemistryTypeForAllAtoms(matter);
+  core::MultipleValues &values = core::lisp_multipleValues();
+  core::HashTable_sp stereochemistryType = gc::As<core::HashTable_sp>(values.second( cip.number_of_values() ));
+  Loop la;
+  la.loopTopGoal(matter,ATOMS);
+  while (la.advanceLoopAndProcess() ) {
+    Atom_sp atm = la.getAtom();
+    core::T_sp st = stereochemistryType->gethash(atm);
+    if ( st.notnilp() ) {
+      ConfigurationEnum ce;
+      if (useStructure) ce = atm->calculateStereochemicalConfiguration(cip);
+      else stereochemistryTypes->setf_gethash( atm, st );
+      configurations->setf_gethash( atm, translate::to_object<ConfigurationEnum>::convert(ce) );
+      cips->setf_gethash( atm, cip->gethash(atm) );
     }
+  }
+}
+
+
+CL_DOCSTRING(R"dx(Calculate the stereochemistry for each atom in the aggregate or molecule)dx");
+CL_DOCSTRING_LONG(R"dx(If use-structure is T then use the three-dimensional structure to calculate the configuration of each atom.
+Otherwise pull the configuration out of the atoms _Configuration slot.
+Return (values atom-to-stereochemistry-type-hash-table atom-to-configuration-hash-table atom-to-relative-cip-hash-table) )dx")
+CL_LAMBDA(matter &key use-structure)
+DOCGROUP(cando);
+CL_DEFUN core::HashTable_mv chem__calculateStereochemistry( Matter_sp matter, bool useStructure ) {
+  core::HashTableEq_sp stereochemistryTypes = core::HashTableEq_O::create_default();
+  core::HashTableEq_sp configurations = core::HashTableEq_O::create_default();
+  core::HashTableEq_sp cips = core::HashTableEq_O::create_default();
+  if (gc::IsA<Molecule_sp>(matter)) {
+    doCalculateStereochemistry( useStructure, gc::As_unsafe<Molecule_sp>( matter ), cips, stereochemistryTypes, configurations );
   } else if (gc::IsA<Aggregate_sp>(matter)) {
     Loop l;
     l.loopTopGoal(matter,MOLECULES);
     while ( l.advanceLoopAndProcess() ) {
       Molecule_sp mol = l.getMolecule();
-      chem__calculateStereochemistryFromStructure(mol,onlyUndefinedConfiguration);
+      doCalculateStereochemistry( useStructure, mol, cips, stereochemistryTypes, configurations );
     }
   } else {
     TYPE_ERROR(matter,core::Cons_O::createList(_sym_Aggregate_O,_sym_Molecule_O));
   }
+  return Values( stereochemistryTypes, configurations, cips );
 }
-  
+
 
 
 

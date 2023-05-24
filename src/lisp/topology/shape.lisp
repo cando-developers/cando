@@ -126,7 +126,7 @@
     (loop for oligomer-shape in oligomer-shapes
           for oligomer = (oligomer oligomer-shape)
           for fragment-conformations = (matched-fragment-conformations-map oligomer-shape)
-          do (topology::fill-internals-from-oligomer-shape conf fragment-conformations oligomer-shape)
+          do (topology::fill-internals-from-oligomer-shape conf oligomer-shape)
              (if monomer-order
                  (loop for monomer in monomer-order
                        for monomer-position = (gethash monomer (monomer-positions conf))

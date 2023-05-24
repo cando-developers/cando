@@ -167,7 +167,6 @@ CL_DEFMETHOD core::HashTable_sp FFTypesDb_O::assignTypes(chem::Matter_sp matter,
         if (chem__verbose(2)) {
           core::write_bf_stream(fmt::sprintf("Found topology for residue name: %s\n" , _rep_(name)));
         }
-        SIMPLE_WARN("Getting stereoisomerAtoms for %s\n", _rep_(name) );
         core::T_sp stereoisomerAtoms = core::eval::funcall(_sym_stereoisomer_atoms, topology );
         // StereoisomerAtoms_sp stereoisomerAtoms = topology->getStereoisomerAtoms(name);
         // Use the Topology to assign atom types

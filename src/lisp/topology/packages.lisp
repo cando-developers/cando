@@ -81,7 +81,6 @@
    #:seen-fragment-internals
    #:seen-index
    #:bad-fragment-internals
-   #:load-fragment-conformations
    #:fragment-conformations
    #:fragment-internals
    #:out-of-focus-internal
@@ -96,8 +95,8 @@
    #:angle
    #:dihedral
    #:foldamer-monomer-context
-   #:save-fragment-conformations
-   #:load-fragment-conformations
+   #:save-clusterable-fragment-conformations
+   #:load-clusterable-fragment-conformations
    #:fragment-conformations
    #:fragment-conformations-map
    #:monomer-context-to-fragment-conformations
@@ -217,6 +216,7 @@
    #:constitution-atom-named
    #:constitution-atom-names-with-dihedrals
    #:monomer-topology
+   #:calculate-cluster-dihedral-names
    #:cluster-dihedral-names
    #:cluster-dihedral-vector
    #:cluster-dihedral-rad-vector
@@ -224,7 +224,13 @@
    #:build-all-molecules
    #:energy
    #:monomer-context
-   #:define-topology-charges))
+   #:define-topology-charges
+   #:clusterable-fragment-conformations
+   #:fill-internals-from-oligomer-shape
+   #:monomer-shape-map
+   #:in-monomers
+   #:out-monomers
+   #:fragment-conformation-index))
 
   
 (defpackage #:topology.dag

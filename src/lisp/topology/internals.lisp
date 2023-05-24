@@ -64,7 +64,12 @@
 (defclass jump-internal (internal)
   ())
 
-(cando.serialize:make-class-save-load jump-internal)
+(cando.serialize:make-class-save-load
+ jump-internal
+ :print-unreadably
+ (lambda (obj stream)
+   (print-unreadable-object (obj stream :type t)
+     (format stream "~a" (name obj)))))
 
 (defclass bonded-internal (internal)
   ((bond :initarg :bond :accessor bond)
@@ -88,7 +93,12 @@
 (defclass complex-bonded-internal (bonded-internal)
   ())
 
-(cando.serialize:make-class-save-load complex-bonded-internal)
+(cando.serialize:make-class-save-load
+ complex-bonded-internal
+ :print-unreadably
+ (lambda (obj stream)
+   (print-unreadable-object (obj stream :type t)
+     (format stream "~a" (name obj)))))
 
 (defclass fragment-internals (serial:serializable)
   ((index :initarg :index :accessor index)
@@ -102,8 +112,10 @@
  fragment-internals
  :print-unreadably
  (lambda (obj stream)
+   (let ((*print-pretty* nil))
    (print-unreadable-object (obj stream :type t)
-     (format stream "~a" (index obj)))))
+     (let ((internals (coerce (subseq (internals obj) 0 (min (length (internals obj)) 4) ) 'list)))
+       (format stream ":index ~a :energy ~10,3f first internals: ~{(~{~s ~6,2f~}) ~}" (index obj) (energy obj) (mapcar (lambda (x) (list (name x) (rad-to-deg (dihedral x)))) internals )))))))
 
 (defun copy-fragment-internals (fragment-internals)
   (make-instance 'fragment-internals
@@ -119,8 +131,11 @@
   (cond
     ((symbolp name-or-plug-names)
      (loop for internal across (internals fragment-internals)
-           when (and (typep internal 'bonded-internal) (eq name-or-plug-names (name internal)))
-             do (return (list (topology:dihedral internal)))
+           when (eq name-or-plug-names (name internal))
+             do (cond
+                  ((typep internal 'bonded-internal)
+                   (return (list (topology:dihedral internal))))
+                  (t (return (list 0.0))))
            finally (error "Could not find internal with atom-name ~a" name-or-plug-names)))
     ((consp name-or-plug-names)
      (let* ((plug-name (first name-or-plug-names))
@@ -147,7 +162,7 @@
                          append (find-named-fragment-internals fragment-internals name-or-plug-names))))
     dihedrals))
 
-(defun cluster-dihedral-names (focus-monomer oligomer)
+(defun calculate-cluster-dihedral-names (focus-monomer oligomer)
   "Calculate the atom-names for dihedrals that are used to cluster fragment-internals"
   (let* ((out-couplings (loop for coupling across (topology:couplings oligomer)
                              when (eq (topology:source-monomer coupling) focus-monomer)
@@ -159,7 +174,10 @@
                                                                   when (getf (topology:properties ca) :dihedral)
                                                                   collect (topology:atom-name ca)))
                                               )
-                                         (cons coupling-name (subseq target-names 0 2)))))
+                                         (cons coupling-name (cond
+                                                               ((> (length target-names) 2)
+                                                                (subseq target-names 0 2))
+                                                               (t target-names))))))
          (sorted-out (sort out-couplings #'string< :key (lambda (x) (string (car x)))))
          (focus-topology (topology:monomer-topology focus-monomer oligomer))
          (focus-constitution (topology:constitution focus-topology))
@@ -178,6 +196,14 @@
 
 (cando.serialize:make-class-save-load fragment-conformations)
 
+(defmethod fragment-conformations ((obj fragment-conformations))
+  obj)
+
+(defclass clusterable-fragment-conformations (serial:serializable)
+  ((cluster-dihedral-names :initarg :cluster-dihedral-names :accessor cluster-dihedral-names)
+   (fragment-conformations :initarg :fragment-conformations :accessor fragment-conformations)))
+
+(cando.serialize:make-class-save-load clusterable-fragment-conformations)
 
 (defclass fragment-conformations-map (serial:serializable)
   ((monomer-context-to-fragment-conformations :initform (make-hash-table :test 'equal)
@@ -194,9 +220,13 @@
                      :initarg :fragment-matches
                      :accessor fragment-matches)))
 
-(cando.serialize:make-class-save-load matched-fragment-conformations-map)
-
-(cando.serialize:make-class-save-load matched-fragment-conformations-map)
+(cando.serialize:make-class-save-load
+ matched-fragment-conformations-map
+ :print-unreadably
+ (lambda (obj stream)
+   (print-unreadable-object (obj stream :type t)
+     (format stream " length-fragment-matches ~d length-fragments ~d" (hash-table-count (fragment-matches obj))
+             (hash-table-count (monomer-context-to-fragment-conformations obj))))))
 
 (defun matched-fragment-conformations-summary (matched-fragment-conformations-map)
   (let ((total-fragment-conformations 0)
@@ -285,10 +315,10 @@
         do (setf previous-internal internal))
   nil)
 
-(defun save-fragment-conformations (fragment-conformations filename)
-  (cando.serialize:save-cando fragment-conformations filename))
+(defun save-clusterable-fragment-conformations (clusterable-fragment-conformations filename)
+  (cando.serialize:save-cando clusterable-fragment-conformations filename))
 
-(defun load-fragment-conformations (filename)
+(defun load-clusterable-fragment-conformations (filename)
   (cando.serialize:load-cando filename))
 
 (defun dump-fragment-internals (fragment-internals finternals)

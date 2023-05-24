@@ -56,12 +56,15 @@
 - pathname :: A pathname.
 * Description
 Save the object to the file PATHNAME as an s-expression."
-  (with-open-file (fout pathname :direction :output)
-    (let ((*print-readably* t)
-          (*print-pretty* nil)
-          (*print-circle* t)
-          (*package* (find-package :keyword)))
-      (cl:print obj fout))))
+  (let ((temp-pathname (pathname (sys:mkstemp (format nil "~a-" (namestring pathname)))))
+        (new-pathname (merge-pathnames pathname *default-pathname-defaults*)))
+    (with-open-file (fout temp-pathname :direction :output)
+      (let ((*print-readably* t)
+            (*print-pretty* nil)
+            (*print-circle* t)
+            (*package* (find-package :keyword)))
+        (cl:print obj fout)))
+    (rename-file temp-pathname new-pathname :if-exists :supersede)))
 
 
 (defun sharp-$-reader (stream subchar arg)

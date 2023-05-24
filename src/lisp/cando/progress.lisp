@@ -20,6 +20,7 @@
                    (message "Completed")
                    (message-width 10)
                    (bar-character #\*)
+                   (terminal :dumb)
                    (width 50)
                    (style :time)
                    (advance-every-n-calls 1000) ;; Only advance every 1000 calls to progress-advance
@@ -31,6 +32,7 @@
   on total (advance-counter 1) advance-every-n-calls
   (style :time)
   (bar-character #\*)
+  (terminal :dumb)
   (width 50)
   (start-time (get-universal-time))
   divisions message message-width spacing (next 0))
@@ -59,21 +61,27 @@
        (let* ((star-width (floor (* fraction (progress-bar-width bar))))
               (stars (make-string (max 0 star-width) :initial-element (progress-bar-bar-character bar)))
               (lines (make-string (max 0 (- (progress-bar-width bar) star-width)) :initial-element #\.)))
-         (format t "~C~va [~a~a] ETC: ~a"
-                 (if (core:is-interactive-lisp) #\return #\space)
+         (format t "~C~va [~a~a] ETC: ~a   "
+                 (if (and (not (eq (progress-bar-terminal bar) :dumb)) (core:is-interactive-lisp)) #\return #\space)
                  (progress-bar-message-width bar)
                  (progress-bar-message bar)
                  stars
                  lines
-                 (progress-convenient-time remaining-time))))
+                 (progress-convenient-time remaining-time)
+                 )
+         (if (and (not (eq (progress-bar-terminal bar) :dumb)) (core:is-interactive-lisp)) nil (format t "~%"))
+         ))
       (otherwise
        (format t "~C~va ~5,1f%~@[ elapsed: ~a~]~@[ ETC: ~a~]   "
-               (if (core:is-interactive-lisp) #\return #\space)
+               (if (and (not (eq (progress-bar-terminal bar) :dumb)) (core:is-interactive-lisp)) #\return #\space)
                (progress-bar-message-width bar)
                (progress-bar-message bar)
                (floor (* fraction 100.0))
                (progress-convenient-time elapsed-time)
-               (progress-convenient-time remaining-time))))
+               (progress-convenient-time remaining-time)
+               )
+       (if (and (not (eq (progress-bar-terminal bar) :dumb)) (core:is-interactive-lisp)) nil (format t "~%"))
+       ))
     (finish-output)
     (let* ((new-next (* (1+ (floor (/ counter (progress-bar-spacing bar)))) (progress-bar-spacing bar))))
       (setf (progress-bar-next bar) new-next))))

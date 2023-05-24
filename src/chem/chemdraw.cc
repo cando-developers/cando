@@ -641,7 +641,14 @@ bool CDFragment_O::interpret(bool verbose, bool addHydrogens)
 
   {
     CipPrioritizer_sp cip = CipPrioritizer_O::create();
-    cip->setStereochemicalTypeForAllAtoms(mol);
+    core::HashTable_mv cips = cip->calculateStereochemistryTypeForAllAtoms(mol);
+    core::MultipleValues &values = core::lisp_multipleValues();
+    core::HashTable_sp stereochemistryType = gc::As<core::HashTable_sp>(values.second( cip.number_of_values() ));
+    stereochemistryType->mapHash([](core::T_sp key, core::T_sp val) {
+      StereochemistryType st = translate::from_object<StereochemistryType,std::true_type>(val)._v;
+        gc::As<Atom_sp>(key)->_StereochemistryType = st;
+      }
+      );
   }
 
   this->_Molecule->makeAllAtomNamesInEachResidueUnique();
@@ -665,28 +672,6 @@ bool CDFragment_O::interpret(bool verbose, bool addHydrogens)
   }
 #endif
 
-#if 0
-  Residue_sp everything = this->getEntireResidue();
-
-    	//
-	// Here we want to assign cipPriorities and
-	// determine whether atoms will be chiral or prochiral
-	//
-  {
-    CipPrioritizer_sp cip = CipPrioritizer_O::create();
-    cip->setStereochemicalTypeForAllAtoms(everything);
-  }
-
-	//
-	// Now build the :constitutionAtoms property
-	// and the :builtResidue property
-	//
-  core::T_sp ca = this->asConstitutionAtoms();
-  this->setProperty(INTERN_(kw,constitutionAtoms),ca);
-  Residue_sp builtResidue = ca->makeResidue();
-  this->setProperty(INTERN_(kw,builtResidue),builtResidue);
-  return true;
-#endif
   return true;
 }
 

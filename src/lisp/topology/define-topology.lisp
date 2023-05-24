@@ -360,7 +360,7 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
                    (t (error "Error in plug-bonds ~s" plug))))
                plugs)
       (multiple-value-bind (stereocenter-info stereoisomer-atoms)
-          (loop with stereocenter-info = nil
+          (loop with rev-stereocenter-info = nil
                 for index below (length constitution-atoms)
                 for constitution-atom = (elt constitution-atoms index)
                 for prop-list = (properties constitution-atom)
@@ -382,16 +382,16 @@ So if name is \"ALA\" and stereoisomer-index is 1 the name becomes ALA{CA/S}."
                       (unless (eq stereochemistry-type :undefined-center)
                         (push (make-instance 'stereocenter-info
                                              :constitution-atom constitution-atom
-                                             :type stereochemistry-type) stereocenter-info)))
+                                             :type stereochemistry-type) rev-stereocenter-info)))
                      ((and (eq ca-element :c) (= 4 number-of-bonds))
                       ;; prochiral atoms are always :left-handed
                       (push (make-instance 'stereocenter-info
                                            :constitution-atom constitution-atom
-                                           :type :left-handed) stereocenter-info))
+                                           :type :left-handed) rev-stereocenter-info))
                      (stereochemistry-type
                       (error "Do not specify stereochemistry-type ~s for ~a" stereochemistry-type constitution-atom))
                      )
-                finally (return (values stereocenter-info stereoisomer-atoms)))
+                finally (return (values (nreverse rev-stereocenter-info) stereoisomer-atoms)))
         ;; build stereochemistry here
         (let ((stereo-information (build-stereo-information (name graph) stereocenter-info stereoisomer-atoms)))
           (values (make-instance 'constitution

@@ -238,6 +238,12 @@ CL_DEFMETHOD core::SimpleVector_sp Kmeans_O::EmptyCenters() {
  */
 CL_DEFMETHOD int Kmeans_O::RunKmean(core::SimpleVector_sp centers, Clusters clusters, bool centerOnPoints )
 {
+  if (centers->length() != this->_K) {
+    SIMPLE_ERROR("There is a mismatch between the number of centers %lu and _K %d", centers->length(), this->_K);
+  }
+  if (clusters->length() != this->_Points->length()) {
+    SIMPLE_ERROR("There is a mismatch between the number of clusters %lu and number of points %lu", clusters->length(), this->_Points->length());
+  }
   core::SimpleVector_sp originalCenters = centers;
   core::SimpleVector_sp oldCenter;
   this->_MaxIteration = 100;
