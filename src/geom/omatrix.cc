@@ -336,4 +336,38 @@ CL_DEFMETHOD core::T_mv OMatrix_O::rotation_to_quaternion() const {
                 core::DoubleFloat_O::create(qy),
                 core::DoubleFloat_O::create(qz));
 };
+
+CL_DEFMETHOD void OMatrix_O::set_from_normalized_rotor3(double rscalar, double rxy, double ryz, double rzx, double tx, double ty, double tz) {
+  normalized_rotor3_to_matrix(this->_Value,rscalar,rxy,ryz,rzx,tx,ty,tz);
+}
+
+CL_DEFMETHOD core::T_mv OMatrix_O::rotation_to_rotor3() const {
+  double rscalar, rxy, ryz, rzx;
+  rotation_matrix_to_rotor3(rscalar,rxy,ryz,rzx,this->_Value);
+  return Values(core::DoubleFloat_O::create(rscalar),
+                core::DoubleFloat_O::create(rxy),
+                core::DoubleFloat_O::create(ryz),
+                core::DoubleFloat_O::create(rzx));
+};
+
+
+CL_DOCSTRING(R"dx(Convert a homogeneous matrix into a rotor3/translation. This takes the matrix and returns seven numbers, the scalar,xy,yz,zx,tx,ty,tz where w,x,y,z are the rotor3 components and the tx,ty,tz is the translation.)dx");
+DOCGROUP(cando);
+CL_DEFUN core::T_mv geom__matrix_to_rotor3_translation(OMatrix_sp om)
+{
+  Matrix& m = om->_Value;
+  double tx = m.elements[0+3];
+  double ty = m.elements[4+3];
+  double tz = m.elements[8+3];
+  double rscalar,rxy, ryz, rzx;
+  rotation_matrix_to_rotor3(rscalar,rxy,ryz,rzx,m);
+  return Values(core::clasp_make_double_float(rscalar),
+                core::clasp_make_double_float(rxy),
+                core::clasp_make_double_float(ryz),
+                core::clasp_make_double_float(rzx),
+                core::clasp_make_double_float(tx),
+                core::clasp_make_double_float(ty),
+                core::clasp_make_double_float(tz));
+};
+
 };
